@@ -1,0 +1,6 @@
+{
+  "privateKey": {
+    "message": "Private Key",
+    "description": "select this type of file to use to import an account"
+  }
+}
