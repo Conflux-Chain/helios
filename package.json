@@ -52,6 +52,7 @@
     }
   },
   "dependencies": {
+    "crx-hotreload": "^1.0.6",
     "ramda": "^0.27.1",
     "webextension-polyfill": "^0.7.0"
   },

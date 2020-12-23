@@ -51,9 +51,14 @@ copy([
 copy([
   path.resolve(
     pwd,
-    "node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map"
+    "node_modules/webextension-polyfill/dist/browser-polyfill.min.js"
   ),
-  path.resolve(pwd, "build/browser-polyfill.min.js.map"),
+  path.resolve(pwd, "build/browser-polyfill.min.js"),
+]);
+
+copy([
+  path.resolve(pwd, "node_modules/crx-hotreload/hot-reload.js"),
+  path.resolve(pwd, "build/hot-reload.js"),
 ]);
 
 const cp = R.pipe(pathToSrcAndDestPath, copy);
