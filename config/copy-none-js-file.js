@@ -19,6 +19,7 @@ const WATCHING =
 const watcher = chokidar.watch(path.resolve(pwd, "src/**/*"), {
   ignored: [/\.js$/, /.DS_Store$/],
 });
+const isProd = process.env.NODE_ENV === "production";
 
 const pathToSrcAndDestPath = (p) => {
   const pathRelativeToSrc = path.relative(srcDir, p);
@@ -41,11 +42,8 @@ const copy = ([src, dest]) => {
 };
 
 copy([
-  path.resolve(
-    pwd,
-    "node_modules/webextension-polyfill/dist/browser-polyfill.min.js"
-  ),
-  path.resolve(pwd, "build/browser-polyfill.min.js"),
+  path.resolve(pwd, "config/livereload-setting.js"),
+  path.resolve(pwd, "build/livereload-setting.js"),
 ]);
 
 copy([
@@ -57,9 +55,24 @@ copy([
 ]);
 
 copy([
-  path.resolve(pwd, "node_modules/crx-hotreload/hot-reload.js"),
-  path.resolve(pwd, "build/hot-reload.js"),
+  path.resolve(
+    pwd,
+    "node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map"
+  ),
+  path.resolve(pwd, "build/browser-polyfill.min.js.map"),
 ]);
+
+if (!isProd) {
+  copy([
+    path.resolve(pwd, "node_modules/livereload-js/dist/livereload.js"),
+    path.resolve(pwd, "build/livereload.js"),
+  ]);
+} else {
+  copy([
+    path.resolve(pwd, "config/empty.js"),
+    path.resolve(pwd, "build/livereload.js"),
+  ]);
+}
 
 const cp = R.pipe(pathToSrcAndDestPath, copy);
 

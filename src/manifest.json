@@ -32,7 +32,12 @@
   },
   "default_locale": "en",
   "background": {
-    "scripts": ["hot-reload.js", "browser-polyfill.min.js", "background.js"],
+    "scripts": [
+      "livereload-setting.js",
+      "livereload.js",
+      "browser-polyfill.min.js",
+      "background.js"
+    ],
     "persistent": true
   },
   "browser_action": {

@@ -6,12 +6,13 @@
   "license": "MIT",
   "scripts": {
     "watch:js": "chokidar 'src/**/*.js' './spack.config.js' 'config/spack.utils.js' --initial -c 'yarn run build:dev'",
-    "dev": "concurrently --names watch:js,watch:non-js --prefix-colors blue,blue 'yarn run watch:js' 'yarn run watch:non-js'",
+    "dev": "cross-env NODE_ENV=development concurrently --names livereload,watch:js,watch:non-js --prefix-colors blue,blue,blue 'yarn run livereload' 'yarn run watch:js' 'yarn run watch:non-js'",
+    "livereload": "livereload ./build --wait 100 --debug",
     "watch:non-js": "yarn run cp:non-js --watch",
     "cp:non-js": "node config/copy-none-js-file.js",
-    "build:dev": "cross-env NODE_ENV=development spack",
-    "build:prod": "cross-env NODE_ENV=production spack --mode production",
-    "prod": "concurrently --names build:prod,cp:non-js --prefix-colors blue,blue 'yarn run build:prod' 'yarn run cp:non-js'",
+    "build:dev": "spack",
+    "build:prod": "spack --mode production",
+    "prod": "cross-env NODE_ENV=production concurrently --names build:prod,cp:non-js --prefix-colors blue,blue 'yarn run build:prod' 'yarn run cp:non-js'",
     "lint": "eslint  --ignore-path .gitignore src config",
     "lint:fix": "yarn run lint --fix"
   },
@@ -33,6 +34,8 @@
     "fs-extra": "^9.0.1",
     "husky": ">=4",
     "lint-staged": ">=10",
+    "livereload": "^0.9.1",
+    "livereload-js": "^3.3.1",
     "prettier": "^2.2.1"
   },
   "browserslist": [
@@ -52,7 +55,6 @@
     }
   },
   "dependencies": {
-    "crx-hotreload": "^1.0.6",
     "ramda": "^0.27.1",
     "webextension-polyfill": "^0.7.0"
   },
