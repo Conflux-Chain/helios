@@ -16,13 +16,13 @@
     }
   },
   "icons": {
-    "16": "images/icon-16.png",
-    "19": "images/icon-19.png",
-    "32": "images/icon-32.png",
-    "38": "images/icon-38.png",
-    "64": "images/icon-64.png",
-    "128": "images/icon-128.png",
-    "512": "images/icon-512.png"
+    "16": "src/images/icon-16.png",
+    "19": "src/images/icon-19.png",
+    "32": "src/images/icon-32.png",
+    "38": "src/images/icon-38.png",
+    "64": "src/images/icon-64.png",
+    "128": "src/images/icon-128.png",
+    "512": "src/images/icon-512.png"
   },
   "applications": {
     "gecko": {
@@ -32,23 +32,18 @@
   },
   "default_locale": "en",
   "background": {
-    "scripts": [
-      "livereload-setting.js",
-      "livereload.js",
-      "browser-polyfill.min.js",
-      "background.js"
-    ],
+    "scripts": ["src/background/dev.js"],
     "persistent": true
   },
   "browser_action": {
     "default_icon": {
-      "16": "images/icon-16.png",
-      "19": "images/icon-19.png",
-      "32": "images/icon-32.png",
-      "38": "images/icon-38.png",
-      "64": "images/icon-64.png",
-      "128": "images/icon-128.png",
-      "512": "images/icon-512.png"
+      "16": "src/images/icon-16.png",
+      "19": "src/images/icon-19.png",
+      "32": "src/images/icon-32.png",
+      "38": "src/images/icon-38.png",
+      "64": "src/images/icon-64.png",
+      "128": "src/images/icon-128.png",
+      "512": "src/images/icon-512.png"
     },
     "default_title": "Protal",
     "default_popup": "popup.html"
@@ -56,22 +51,26 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["browser-polyfill.min.js", "inpage.js"],
+      "js": ["src/inpage/dev.js"],
       "run_at": "document_start",
       "all_frames": true
     }
   ],
+  "content_security_policy": "script-src 'self' 'unsafe-inline' http://localhost:18001 http://localhost:18002 http://localhost:18003; object-src 'self';",
   "permissions": [
     "storage",
     "unlimitedStorage",
     "clipboardWrite",
     "http://localhost:12537/",
+    "http://localhost:18001/",
+    "http://localhost:18002/",
+    "http://localhost:18003/",
     "https://confluxscan.io/*",
     "activeTab",
     "webRequest",
     "notifications"
   ],
-  "web_accessible_resources": ["browser-polyfill.min.js", "inpage.js"],
+  "web_accessible_resources": ["src/inpage/dev.js"],
   "externally_connectable": {
     "matches": [
       "https://confluxscan.io/*",

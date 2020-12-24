@@ -5,23 +5,21 @@
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "watch:js": "chokidar 'src/**/*.js' './spack.config.js' 'config/spack.utils.js' --initial -c 'yarn run build:dev'",
-    "dev": "cross-env NODE_ENV=development concurrently --names livereload,watch:js,watch:non-js --prefix-colors blue,blue,blue 'yarn run livereload' 'yarn run watch:js' 'yarn run watch:non-js'",
-    "livereload": "livereload ./build --wait 100 --debug",
-    "watch:non-js": "yarn run cp:non-js --watch",
-    "cp:non-js": "node config/copy-none-js-file.js",
-    "build:dev": "spack",
-    "build:prod": "spack --mode production",
-    "prod": "cross-env NODE_ENV=production concurrently --names build:prod,cp:non-js --prefix-colors blue,blue 'yarn run build:prod' 'yarn run cp:non-js'",
+    "dev:background": "yarn run dev:base --config snowpack.background.config.js",
+    "dev:popup": "yarn run dev:base --config snowpack.popup.config.js",
+    "dev:inpage": "yarn run dev:base --config snowpack.inpage.config.js",
+    "dev:base": "cross-env NODE_ENV=development snowpack dev",
+    "dev": "concurrently --names dev:background,dev:popup,dev:inpage --prefix-colors blue,blue,blue 'yarn run dev:background' 'yarn run dev:popup' 'yarn run dev:inpage'",
+    "prod:background": "yarn run prod:base --config snowpack.background.config.js",
+    "prod:popup": "yarn run prod:base --config snowpack.popup.config.js",
+    "prod:inpage": "yarn run prod:base --config snowpack.inpage.config.js",
+    "prod:base": "cross-env NODE_ENV=production snowpack build",
+    "prod": "concurrently --names prod:background,prod:popup,prod:inpage --prefix-colors blue,blue,blue 'yarn run prod:background' 'yarn run prod:popup' 'yarn run prod:inpage'",
     "lint": "eslint  --ignore-path .gitignore src config",
     "lint:fix": "yarn run lint --fix"
   },
   "devDependencies": {
-    "@swc/cli": "^0.1.27",
-    "@swc/core": "^1.2.40",
     "browserslist": "^4.16.0",
-    "chokidar": "^3.4.3",
-    "chokidar-cli": "^2.1.0",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.16.0",
@@ -36,7 +34,8 @@
     "lint-staged": ">=10",
     "livereload": "^0.9.1",
     "livereload-js": "^3.3.1",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "snowpack": "^3.0.0-rc.2"
   },
   "browserslist": [
     "last 2 Chrome versions",
