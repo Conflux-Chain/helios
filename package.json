@@ -46,6 +46,21 @@
       "pre-commit": "lint-staged"
     }
   },
+  "prettier": {
+    "bracketSpacing": false,
+    "proseWrap": "never",
+    "singleQuote": true,
+    "trailingComma": "all",
+    "arrowParens": "avoid",
+    "overrides": [
+      {
+        "files": ".yarnrc.yml",
+        "options": {
+          "singleQuote": false
+        }
+      }
+    ]
+  },
   "lint-staged": {
     "*.{js,jsx}": [
       "eslint --cache --fix",
