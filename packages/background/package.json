@@ -1,0 +1,10 @@
+{
+  "name": "protal-background",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "author": "yqrashawn <namy.19@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "webextension-polyfill": "^0.7.0"
+  }
+}

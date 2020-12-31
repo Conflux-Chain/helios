@@ -1,0 +1,13 @@
+{
+  "name": "protal",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "yqrashawn <namy.19@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "protal-background": "workspace:packages/background",
+    "protal-inpage": "workspace:packages/inpage",
+    "protal-popup": "workspace:packages/popup",
+    "webextension-polyfill": "^0.7.0"
+  }
+}

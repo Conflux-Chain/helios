@@ -1,9 +1,7 @@
 {
-  "name": "protal",
-  "version": "1.0.0",
-  "main": "index.js",
-  "author": "yqrashawn <namy.19@gmail.com>",
-  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "sp": "scripts/snowpack.js",
     "before:all": "node scripts/before_all.js",
@@ -22,7 +20,6 @@
     "lint:fix": "yarn run lint --fix"
   },
   "devDependencies": {
-    "browserslist": "^4.16.0",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.16.0",
@@ -35,8 +32,6 @@
     "fs-extra": "^9.0.1",
     "husky": ">=4",
     "lint-staged": ">=10",
-    "livereload": "^0.9.1",
-    "livereload-js": "^3.3.1",
     "mustache": "^4.1.0",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
@@ -46,22 +41,6 @@
     "last 2 Chrome versions",
     "last 2 Firefox versions"
   ],
-  "eslintConfig": {
-    "extends": [
-      "standard",
-      "prettier"
-    ],
-    "plugins": [
-      "prettier"
-    ],
-    "globals": {
-      "browser": "readonly"
-    }
-  },
-  "dependencies": {
-    "ramda": "^0.27.1",
-    "webextension-polyfill": "^0.7.0"
-  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"

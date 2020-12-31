@@ -1,0 +1,10 @@
+{
+  "name": "protal-popup",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "yqrashawn <namy.19@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "webextension-polyfill": "^0.7.0"
+  }
+}

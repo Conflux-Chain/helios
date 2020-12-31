@@ -7,7 +7,7 @@
 !.yarn/versions
 
 ### Custom ###
-/build/
+build
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,vscode,emacs,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,vscode,emacs,node
@@ -232,5 +232,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,vscode,emacs,node
-/app/popup/popup.html
-/app/manifest.json
+/packages/popup/index.html
+/packages/brwoser-extension/manifest.json
