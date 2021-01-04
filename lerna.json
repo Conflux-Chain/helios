@@ -1,0 +1,12 @@
+{
+  "npmClient": "yarn",
+  "packages": ["packages/*"],
+  "version": "independent",
+  "command": {
+    "publish": {
+      "ignoreChanges": ["ignored-file", "*.md"],
+      "message": "chore(release): publish %s"
+    }
+  },
+  "useWorkspaces": true
+}
