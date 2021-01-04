@@ -6,7 +6,7 @@ mustacheRender(
   '../packages/popup/index.html',
   {
     scripts: isDev()
-      ? '<script src="http://localhost:18001/popup/dev.js" type="module" charset="utf-8"></script>'
+      ? '<script src="http://localhost:18001/popup/index.dev.js" type="module" charset="utf-8"></script>'
       : '<script src="index.js" type="module" charset="utf-8"></script>',
   },
 );
@@ -21,7 +21,8 @@ module.exports = mergeConfig(baseConfig, {
   },
   buildOptions: {
     // out: "build/popup",
+    webModulesUrl: 'popup/m',
     baseUrl: 'popup',
   },
-  mount: {'packages/popup': '/'},
+  mount: {'packages/popup': '/popup'},
 });

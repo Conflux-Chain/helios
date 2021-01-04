@@ -14,6 +14,5 @@ module.exports = {
     out: 'packages/browser-extension/build',
     metaDir: 'snowpackMeta',
     sourceMaps: true,
-    webModulesUrl: 'm',
   },
 };

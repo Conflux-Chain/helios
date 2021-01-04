@@ -1,12 +1,13 @@
 {
-  "name": "protal",
-  "version": "1.0.0",
+  "name": "portal",
+  "version": "0.0.0",
   "main": "index.js",
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
+  "private": true,
   "dependencies": {
-    "protal-background": "workspace:packages/background",
-    "protal-inpage": "workspace:packages/inpage",
-    "protal-popup": "workspace:packages/popup"
+    "portal-background": "*",
+    "portal-inpage": "*",
+    "portal-popup": "*"
   }
 }

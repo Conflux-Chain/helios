@@ -11,7 +11,8 @@ module.exports = mergeConfig(baseConfig, {
   },
   buildOptions: {
     // out: "build/inpage",
+    webModulesUrl: 'inpage/m',
     baseUrl: 'inpage',
   },
-  mount: {'packages/inpage': '/'},
+  mount: {'packages/inpage': '/inpage'},
 });

@@ -11,7 +11,8 @@ module.exports = mergeConfig(baseConfig, {
   },
   buildOptions: {
     // out: "build/background",
+    webModulesUrl: 'background/m',
     baseUrl: 'background',
   },
-  mount: {'packages/background': '/'},
+  mount: {'packages/background': '/background'},
 });

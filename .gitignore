@@ -233,4 +233,4 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,vscode,emacs,node
 /packages/popup/index.html
-/packages/brwoser-extension/manifest.json
+/packages/browser-extension/manifest.json
