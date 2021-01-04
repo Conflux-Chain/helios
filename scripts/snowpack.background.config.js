@@ -1,16 +1,17 @@
-const baseConfig = require("./snowpack.base.config");
-const { mergeConfig } = require("./snowpack.utils");
+const baseConfig = require('./snowpack.base.config');
+const {mergeConfig} = require('./snowpack.utils');
 
 module.exports = mergeConfig(baseConfig, {
   installOptions: {
-    fallback: "background/background.html",
+    fallback: 'packages/background/index.html',
   },
   devOptions: {
     port: 18003,
-    fallback: "background/background.html",
+    fallback: 'packages/background/index.html',
   },
   buildOptions: {
     // out: "build/background",
-    baseUrl: "background",
+    baseUrl: 'background',
   },
+  mount: {'packages/background': '/'},
 });

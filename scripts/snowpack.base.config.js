@@ -8,12 +8,12 @@ module.exports = {
     // polyfillNode: true
   },
   devOptions: {
-    open: "none",
+    open: 'none',
   },
   buildOptions: {
-    metaDir: "snowpackMeta",
+    out: 'packages/browser-extension/build',
+    metaDir: 'snowpackMeta',
     sourceMaps: true,
-    webModulesUrl: "m",
+    webModulesUrl: 'm',
   },
-  mount: { app: "/" },
 };

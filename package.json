@@ -3,7 +3,7 @@
     "packages/*"
   ],
   "scripts": {
-    "sp": "scripts/snowpack.js",
+    "sp": "yarn node scripts/snowpack.js",
     "before:all": "node scripts/before_all.js",
     "after:prod": "node scripts/after_prod.js",
     "dev:background": "yarn run dev:base --config scripts/snowpack.background.config.js",
@@ -33,9 +33,11 @@
     "husky": ">=4",
     "lint-staged": ">=10",
     "mustache": "^4.1.0",
+    "ndb": "^1.1.5",
     "prettier": "^2.2.1",
+    "ramda": "^0.27.1",
     "rimraf": "^3.0.2",
-    "snowpack": "^3.0.0-rc.2"
+    "snowpack": "2.17.1"
   },
   "browserslist": [
     "last 2 Chrome versions",
@@ -69,5 +71,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "webextension-polyfill": "^0.7.0"
   }
 }

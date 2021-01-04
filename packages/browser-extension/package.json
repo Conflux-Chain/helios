@@ -7,7 +7,6 @@
   "dependencies": {
     "protal-background": "workspace:packages/background",
     "protal-inpage": "workspace:packages/inpage",
-    "protal-popup": "workspace:packages/popup",
-    "webextension-polyfill": "^0.7.0"
+    "protal-popup": "workspace:packages/popup"
   }
 }

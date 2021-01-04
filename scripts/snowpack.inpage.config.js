@@ -1,16 +1,17 @@
-const baseConfig = require("./snowpack.base.config");
-const { mergeConfig } = require("./snowpack.utils");
+const baseConfig = require('./snowpack.base.config');
+const {mergeConfig} = require('./snowpack.utils');
 
 module.exports = mergeConfig(baseConfig, {
   installOptions: {
-    fallback: "inpage/inpage.html",
+    fallback: 'packages/inpage/index.html',
   },
   devOptions: {
     port: 18002,
-    fallback: "inpage/inpage.html",
+    fallback: 'packages/inpage/index.html',
   },
   buildOptions: {
     // out: "build/inpage",
-    baseUrl: "inpage",
+    baseUrl: 'inpage',
   },
+  mount: {'packages/inpage': '/'},
 });
