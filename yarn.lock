@@ -4140,7 +4140,6 @@ fsevents@~2.1.2:
     ramda: ^0.27.1
     rimraf: ^3.0.2
     snowpack: 2.17.1
-    webextension-polyfill: ^0.7.0
   languageName: unknown
   linkType: soft
 
