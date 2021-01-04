@@ -8,7 +8,7 @@ mustacheRender(
     backgroundScripts: isDev()
       ? '"background.dev.js"'
       : '"background/index.prod.js"',
-    inpageScripts: isDev() ? '"inpage.dev.js"' : '"inpage/index.prod.js"',
+    inpageScripts: isDev() ? '"inpage.dev.js"' : '"inpage/index.js"',
     popupHTML: isDev() ? 'popup.html' : 'popup/popup.html',
     contentSecurityPolicy: isDev()
       ? "\"content_security_policy\": \"script-src 'self' 'unsafe-inline' http://localhost:18001 http://localhost:18002 http://localhost:18003; object-src 'self';\","

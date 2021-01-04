@@ -1,10 +1,15 @@
 module.exports = {
-  extends: ["standard", "prettier"],
-  plugins: ["prettier"],
+  extends: [
+    'standard',
+    'plugin:jest/recommended',
+    'plugin:testing-library/react',
+    'prettier',
+  ],
+  plugins: ['prettier'],
   globals: {
-    browser: "readonly",
+    browser: 'readonly',
   },
   rules: {
-    "import/no-duplicates": 0,
+    'import/no-duplicates': 0,
   },
 };

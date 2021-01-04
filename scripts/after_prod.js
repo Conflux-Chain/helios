@@ -8,6 +8,18 @@ const cp = fs.copy;
 (async function () {
   await Promise.all([
     rm(
+      path.resolve(
+        __dirname,
+        '../packages/browser-extension/build/**/index.dev.js',
+      ),
+    ),
+    rm(
+      path.resolve(
+        __dirname,
+        '../packages/browser-extension/build/**/package.json',
+      ),
+    ),
+    rm(
       path.resolve(__dirname, '../packages/browser-extension/build/**/dev.js'),
     ),
     rm(
@@ -19,13 +31,13 @@ const cp = fs.copy;
     rm(
       path.resolve(
         __dirname,
-        '../packages/browser-extension/build/background/background.html',
+        '../packages/browser-extension/build/background/index.html',
       ),
     ),
     rm(
       path.resolve(
         __dirname,
-        '../packages/browser-extension/build/inpage/inpage.html',
+        '../packages/browser-extension/build/inpage/index.html',
       ),
     ),
     cp(
