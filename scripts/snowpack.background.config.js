@@ -1,18 +1,26 @@
-const baseConfig = require('./snowpack.base.config');
-const {mergeConfig} = require('./snowpack.utils');
+const baseConfig = require('./snowpack.base.config')
+const {mergeConfig} = require('./snowpack.utils')
+const path = require('path')
 
+const root = path.resolve(__dirname, '../packages/background')
 module.exports = mergeConfig(baseConfig, {
-  installOptions: {
-    fallback: 'packages/background/index.html',
+  root,
+  mount: {
+    [path.resolve(root, './public')]: {url: '/', static: true},
+    [path.resolve(root, './src')]: {url: '/dist'},
   },
+  routes: [{match: 'routes', src: '.*', dest: '/index.html'}],
+  packageOptions: {},
   devOptions: {
     port: 18003,
-    fallback: 'packages/background/index.html',
   },
   buildOptions: {
-    // out: "build/background",
-    webModulesUrl: 'background/m',
-    baseUrl: 'background',
+    out: path.resolve(
+      __dirname,
+      '../packages/browser-extension/build/background',
+    ),
   },
-  mount: {'packages/background': '/background'},
-});
+  optimize: {
+    entrypoints: ['dist/index.js', 'dist/index.prod.js'],
+  },
+})

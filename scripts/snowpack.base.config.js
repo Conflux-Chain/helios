@@ -1,18 +1,27 @@
+const path = require('path')
+
 module.exports = {
-  installOptions: {
-    sourceMap: true,
+  plugins: [],
+  packageOptions: {
+    sourcemap: true,
     env: {
       NODE_ENV: true,
     },
-    treeshake: true,
     // polyfillNode: true
   },
   devOptions: {
     open: 'none',
   },
   buildOptions: {
-    out: 'packages/browser-extension/build',
-    metaDir: 'snowpackMeta',
-    sourceMaps: true,
+    out: path.resolve(__dirname, '../packages/browser-extension/build'),
+    sourcemap: true,
+    baseUrl: 'dist',
+    metaUrlPath: 'sp_',
   },
-};
+  optimize: {
+    splitting: true,
+    minify: true,
+    bundle: true,
+    treeshake: true,
+  },
+}

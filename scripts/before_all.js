@@ -1,4 +1,4 @@
-const {isDev, mustacheRender} = require('./snowpack.utils');
+const {isDev, mustacheRender} = require('./snowpack.utils')
 
 mustacheRender(
   '../packages/browser-extension/manifest.json.mustache',
@@ -7,9 +7,9 @@ mustacheRender(
     name: isDev() ? 'APortal' : 'Portal',
     backgroundScripts: isDev()
       ? '"background.dev.js"'
-      : '"background/index.prod.js"',
-    inpageScripts: isDev() ? '"inpage.dev.js"' : '"inpage/index.js"',
-    popupHTML: isDev() ? 'popup.html' : 'popup/popup.html',
+      : '"background/dist/index.prod.js"',
+    inpageScripts: isDev() ? '"inpage.dev.js"' : '"inpage/dist/index.js"',
+    popupHTML: isDev() ? 'popup.html' : 'popup/index.html',
     contentSecurityPolicy: isDev()
       ? "\"content_security_policy\": \"script-src 'self' 'unsafe-inline' http://localhost:18001 http://localhost:18002 http://localhost:18003; object-src 'self';\","
       : '',
@@ -17,4 +17,4 @@ mustacheRender(
       ? '"http://localhost:18001/",\n "http://localhost:18002/",\n "http://localhost:18003/",\n'
       : '',
   },
-);
+)
