@@ -4,7 +4,7 @@ mustacheRender(
   '../packages/browser-extension/manifest.json.mustache',
   '../packages/browser-extension/manifest.json',
   {
-    name: isDev() ? 'APortal' : 'Portal',
+    name: isDev() ? 'AHelios' : 'Helios',
     backgroundScripts: isDev()
       ? '"background.dev.js"'
       : '"background/dist/index.prod.js"',

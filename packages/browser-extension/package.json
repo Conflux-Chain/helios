@@ -1,13 +1,13 @@
 {
-  "name": "portal",
+  "name": "browser-extension",
   "version": "0.0.0",
   "main": "index.js",
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "portal-background": "*",
-    "portal-inpage": "*",
-    "portal-popup": "*"
+    "helios-background": "*",
+    "helios-inpage": "*",
+    "helios-popup": "*"
   }
 }
