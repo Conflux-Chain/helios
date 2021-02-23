@@ -1,0 +1,8 @@
+{
+  "name": "@cfxjs/wallet-state",
+  "type": "module",
+  "main": "./index.js",
+  "dependencies": {
+    "zustand": "^3.3.2"
+  }
+}
