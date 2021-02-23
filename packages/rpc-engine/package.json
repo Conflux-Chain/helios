@@ -1,0 +1,6 @@
+{
+  "name": "@cfxjs/rpc-engine",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0"
+}

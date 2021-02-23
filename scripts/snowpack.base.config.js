@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-  plugins: [],
+  plugins: ['@snowpack/plugin-dotenv'],
   packageOptions: {
     sourcemap: true,
     env: {

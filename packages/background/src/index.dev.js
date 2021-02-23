@@ -1,3 +1,5 @@
+// or the regenerator-runtime will throw an error
+window.regeneratorRuntime = undefined
 window.HMR_WEBSOCKET_URL = 'ws://localhost:18003'
 
 if (!document.head) {

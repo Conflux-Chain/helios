@@ -1,3 +1,6 @@
+// or the regenerator-runtime will throw an error
+window.regeneratorRuntime = undefined
+
 if (!document.head) {
   document.querySelector('html').appendChild(document.createElement('head'))
 }

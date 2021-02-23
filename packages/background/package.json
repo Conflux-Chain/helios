@@ -1,10 +1,16 @@
 {
   "name": "helios-background",
   "version": "0.0.0",
+  "type": "module",
   "main": "src/index.js",
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "webextension-polyfill": "^0.7.0"
+    "@cfxjs/cfx_getTransactionByHash": "workspace:packages/rpcs/cfx_getTransactionByHash",
+    "@cfxjs/rpc-engine": "workspace:packages/rpc-engine",
+    "@cfxjs/wallet_importMnemonic": "workspace:packages/rpcs/wallet_importMnemonic",
+    "regenerator-runtime": "^0.13.7",
+    "webextension-polyfill": "^0.7.0",
+    "zustand": "^3.3.2"
   }
 }

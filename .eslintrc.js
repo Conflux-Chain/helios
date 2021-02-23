@@ -17,7 +17,7 @@ module.exports = {
     node: true,
   },
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 12,
     sourceType: 'module',
     ecmaFeatures: {
       jsx: true,
@@ -32,4 +32,4 @@ module.exports = {
       version: 'detect',
     },
   },
-};
+}

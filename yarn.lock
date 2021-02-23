@@ -615,6 +615,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/rpc-engine@workspace:packages/rpc-engine":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/rpc-engine@workspace:packages/rpc-engine"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet-state@workspace:packages/wallet-state":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet-state@workspace:packages/wallet-state"
@@ -6141,7 +6147,12 @@ fsevents@~2.1.2:
   version: 0.0.0-use.local
   resolution: "helios-background@workspace:packages/background"
   dependencies:
+    "@cfxjs/cfx_getTransactionByHash": "workspace:packages/rpcs/cfx_getTransactionByHash"
+    "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
+    "@cfxjs/wallet_importMnemonic": "workspace:packages/rpcs/wallet_importMnemonic"
+    regenerator-runtime: ^0.13.7
     webextension-polyfill: ^0.7.0
+    zustand: ^3.3.2
   languageName: unknown
   linkType: soft
 
@@ -6597,7 +6608,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.1.0":
+"is-core-module@npm:^2.1.0, is-core-module@npm:^2.2.0":
   version: 2.2.0
   resolution: "is-core-module@npm:2.2.0"
   dependencies:
@@ -10371,7 +10382,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"resolve@^1.10.0, resolve@^1.13.1, resolve@^1.17.0, resolve@^1.18.1, resolve@^1.9.0":
+"resolve@^1.10.0, resolve@^1.17.0, resolve@^1.18.1, resolve@^1.9.0":
   version: 1.19.0
   resolution: "resolve@npm:1.19.0"
   dependencies:
@@ -10381,13 +10392,33 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.10.0#builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#builtin<compat/resolve>, resolve@patch:resolve@^1.18.1#builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#builtin<compat/resolve>":
+resolve@^1.13.1:
+  version: 1.20.0
+  resolution: "resolve@npm:1.20.0"
+  dependencies:
+    is-core-module: ^2.2.0
+    path-parse: ^1.0.6
+  checksum: 0f5206d454b30e74d9b2d575b5f8aedf443c4d8b90b84cdf79474ade29bb459075220da3127b682896872a16022ed65cc4db09e0f23849654144d3d75c65cd1b
+  languageName: node
+  linkType: hard
+
+"resolve@patch:resolve@^1.10.0#builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#builtin<compat/resolve>, resolve@patch:resolve@^1.18.1#builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#builtin<compat/resolve>":
   version: 1.19.0
   resolution: "resolve@patch:resolve@npm%3A1.19.0#builtin<compat/resolve>::version=1.19.0&hash=3388aa"
   dependencies:
     is-core-module: ^2.1.0
     path-parse: ^1.0.6
   checksum: 188d5167e8578a9af8d194faf382b8f3526aad5145391c24ecdc6246c6fc82c10fc66d6352267f8e93c5977c503d61803169c91b9e2ee36dd2de759915c9b673
+  languageName: node
+  linkType: hard
+
+"resolve@patch:resolve@^1.13.1#builtin<compat/resolve>":
+  version: 1.20.0
+  resolution: "resolve@patch:resolve@npm%3A1.20.0#builtin<compat/resolve>::version=1.20.0&hash=3388aa"
+  dependencies:
+    is-core-module: ^2.2.0
+    path-parse: ^1.0.6
+  checksum: c4a515b76026806b5b26513fc7bdb80458c532bc91c02ef45ac928d1025585f93bec0b904be39c02131118a37ff7e3f9258f1526850b025d2ec0948bb5fd03d0
   languageName: node
   linkType: hard
 
