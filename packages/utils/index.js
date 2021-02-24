@@ -1,6 +1,6 @@
 /**
- * @fileOverview utilities
- * @name utils.js
+ * @fileOverview general utils for extension wallet
+ * @name index.js
  */
 
 export function isTestMode() {

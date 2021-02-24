@@ -3933,6 +3933,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"consts@workspace:packages/consts":
+  version: 0.0.0-use.local
+  resolution: "consts@workspace:packages/consts"
+  languageName: unknown
+  linkType: soft
+
 "contains-path@npm:^0.1.0":
   version: 0.1.0
   resolution: "contains-path@npm:0.1.0"
@@ -6150,7 +6156,10 @@ fsevents@~2.1.2:
     "@cfxjs/cfx_getTransactionByHash": "workspace:packages/rpcs/cfx_getTransactionByHash"
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
     "@cfxjs/wallet_importMnemonic": "workspace:packages/rpcs/wallet_importMnemonic"
+    consts: "workspace:packages/consts"
+    ramda: ^0.27.1
     regenerator-runtime: ^0.13.7
+    utils: "workspace:packages/utils"
     webextension-polyfill: ^0.7.0
     zustand: ^3.3.2
   languageName: unknown
@@ -9661,6 +9670,23 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"portal_initNetwork@workspace:packages/rpcs/portal_initNetwork":
+  version: 0.0.0-use.local
+  resolution: "portal_initNetwork@workspace:packages/rpcs/portal_initNetwork"
+  dependencies:
+    consts: "workspace:packages/consts"
+  languageName: unknown
+  linkType: soft
+
+"portal_initState@workspace:packages/rpcs/portal_initState":
+  version: 0.0.0-use.local
+  resolution: "portal_initState@workspace:packages/rpcs/portal_initState"
+  dependencies:
+    consts: "workspace:packages/consts"
+    utils: "workspace:packages/utils"
+  languageName: unknown
+  linkType: soft
+
 "posix-character-classes@npm:^0.1.0":
   version: 0.1.1
   resolution: "posix-character-classes@npm:0.1.1"
@@ -12043,6 +12069,12 @@ resolve@^1.13.1:
   checksum: 6682ea8239076243495c45e81f19c2c002e02805de4de08554dc815500805923f27f504ec1a9c7599d420b62bf7452efbab6fa078219d529188b0ca830f142a5
   languageName: node
   linkType: hard
+
+"utils@workspace:packages/utils":
+  version: 0.0.0-use.local
+  resolution: "utils@workspace:packages/utils"
+  languageName: unknown
+  linkType: soft
 
 "uuid@npm:^3.0.1, uuid@npm:^3.3.2":
   version: 3.4.0

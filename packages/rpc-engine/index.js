@@ -4,5 +4,14 @@
  */
 
 export class RpcEngine {
-  constructor() {}
+  constructor(store, opts) {
+    opts.forEach(rpc => {
+      rpc.register(store)
+    })
+    this.store = store
+  }
+
+  request({method, params}) {
+    return this.store[method](params)
+  }
 }

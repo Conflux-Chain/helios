@@ -1,0 +1,9 @@
+{
+  "name": "portal_initNetwork",
+  "type": "module",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "consts": "workspace:packages/consts"
+  }
+}

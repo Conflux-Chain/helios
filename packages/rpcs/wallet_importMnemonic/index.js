@@ -5,3 +5,5 @@
 
 // # rpc method name
 export const NAME = 'wallet_importMnemonic'
+
+export function main() {}

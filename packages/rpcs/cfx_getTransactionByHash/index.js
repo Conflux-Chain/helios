@@ -5,3 +5,5 @@
 
 // # rpc method name
 export const NAME = 'cfx_getTransactionByHash'
+
+export function main() {}

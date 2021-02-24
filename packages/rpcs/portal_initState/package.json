@@ -1,0 +1,10 @@
+{
+  "name": "portal_initState",
+  "type": "module",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "consts": "workspace:packages/consts",
+    "utils": "workspace:packages/utils"
+  }
+}

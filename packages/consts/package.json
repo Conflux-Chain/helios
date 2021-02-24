@@ -1,0 +1,6 @@
+{
+  "name": "consts",
+  "type": "module",
+  "private": true,
+  "main": "index.js"
+}
