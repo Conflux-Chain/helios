@@ -4,13 +4,13 @@
  */
 
 export function isTestMode() {
-  return import.meta.env.MODE === 'test'
+  return process.env.NODE_ENV === 'test'
 }
 
 export function isDevMode() {
-  return import.meta.env.MODE === 'development'
+  return process.env.NODE_ENV === 'development'
 }
 
 export function isProdMode() {
-  return import.meta.env.MODE === 'production'
+  return process.env.NODE_ENV === 'production'
 }

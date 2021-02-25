@@ -42,7 +42,6 @@ const store = createStore(() => {})
 if (!isProdMode()) window.s = store
 
 // ## initialize rpc engine
-// TODO: can't read snowpack env in utils consts package
 const rpcEngine = new RpcEngine(rpcEngineOpts)
 ;(async () => {
   await rpcEngine.request({method: 'portal_initState'})

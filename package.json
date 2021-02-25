@@ -1,10 +1,7 @@
 {
   "name": "helios",
   "private": true,
-  "workspaces": [
-    "packages/rpcs/*",
-    "packages/*"
-  ],
+  "workspaces": ["packages/rpcs/*", "packages/*"],
   "scripts": {
     "postinstall": "yarn run husky install",
     "compile:inpage": "swc --config-file scripts/inpage.swcrc.json -o packages/browser-extension/build/inpage/dist/index.js -s true packages/browser-extension/build/inpage/dist/index.js",
@@ -16,7 +13,7 @@
     "dev:popup": "yarn run dev-base --config scripts/snowpack.popup.config.js",
     "dev:inpage": "yarn run dev-base --config scripts/snowpack.inpage.config.js",
     "dev-base": "yarn sp dev",
-    "dev-all": "concurrently --kill-others --prefix-colors blue 'yarn:dev:*'",
+    "dev-all": "concurrently --kill-others --kill-others-on-fail --prefix-colors blue 'yarn:dev:*'",
     "dev": "cross-env NODE_ENV=development run-s before:all dev-all",
     "prod:background": "yarn run prod-base --config scripts/snowpack.background.config.js",
     "prod:popup": "yarn run prod-base --config scripts/snowpack.popup.config.js",
@@ -37,6 +34,8 @@
     "browserslist": "^4.16.3",
     "concurrently": "^6.0.0",
     "cross-env": "^7.0.3",
+    "dot-env": "^0.0.1",
+    "dotenv-expand": "^5.1.0",
     "eslint": "^7.20.0",
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-import": "^2.22.1",
@@ -60,10 +59,7 @@
     "rimraf": "^3.0.2",
     "snowpack": "3.0.12"
   },
-  "browserslist": [
-    "last 2 Chrome versions",
-    "last 2 Firefox versions"
-  ],
+  "browserslist": ["last 2 Chrome versions", "last 2 Firefox versions"],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -86,12 +82,7 @@
     ]
   },
   "lint-staged": {
-    "*.{js,jsx}": [
-      "eslint --cache --fix",
-      "prettier --write"
-    ],
-    "*.{json,md}": [
-      "prettier --write"
-    ]
+    "*.{js,jsx}": ["eslint --cache --fix", "prettier --write"],
+    "*.{json,md}": ["prettier --write"]
   }
 }

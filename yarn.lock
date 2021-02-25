@@ -4551,6 +4551,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dot-env@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "dot-env@npm:0.0.1"
+  checksum: 035189edd9f93af583ff769ce08de935c30636839ab387e880796905432a25d85c40f97323889f305a3fb7734478d10b53fd85c127a37abb3b6963df75a46c7b
+  languageName: node
+  linkType: hard
+
 "dot-prop@npm:^4.2.0, dot-prop@npm:^4.2.1":
   version: 4.2.1
   resolution: "dot-prop@npm:4.2.1"
@@ -6191,6 +6198,8 @@ fsevents@~2.1.2:
     browserslist: ^4.16.3
     concurrently: ^6.0.0
     cross-env: ^7.0.3
+    dot-env: ^0.0.1
+    dotenv-expand: ^5.1.0
     eslint: ^7.20.0
     eslint-config-prettier: ^8.0.0
     eslint-plugin-import: ^2.22.1

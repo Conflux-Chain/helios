@@ -7,18 +7,17 @@ import {MAINNET, TESTNET, LOCALHOST} from 'consts'
 
 export const NAME = 'portal_initNetwork'
 
-// import.meta.env is injected by snowpack https://www.snowpack.dev/reference/environment-variables
 // select testnet in dev, mainnet in prod, localhost in test
 const DEFAULT_NETWORK = {
   development: TESTNET,
   test: LOCALHOST,
   production: MAINNET,
-}[import.meta.env.MODE]
+}[process.env.NODE_ENV]
 
 const NETWORK_ENDPOINTS = {
-  MAINNET: import.meta.env.SNOWPACK_PUBLIC_MAINNET_RPC_ENDPOINT,
-  TESTNET: import.meta.env.SNOWPACK_PUBLIC_TESTNET_RPC_ENDPOINT,
-  LOCALHOST: import.meta.env.SNOWPACK_PUBLIC_LOCALHOST_RPC_ENDPOINT,
+  MAINNET: process.env.SNOWPACK_PUBLIC_MAINNET_RPC_ENDPOINT,
+  TESTNET: process.env.SNOWPACK_PUBLIC_TESTNET_RPC_ENDPOINT,
+  LOCALHOST: process.env.SNOWPACK_PUBLIC_LOCALHOST_RPC_ENDPOINT,
 }
 
 const BUILT_IN_NETWORKS = {
