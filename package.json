@@ -1,7 +1,10 @@
 {
   "name": "helios",
   "private": true,
-  "workspaces": ["packages/rpcs/*", "packages/*"],
+  "workspaces": [
+    "packages/rpcs/*",
+    "packages/*"
+  ],
   "scripts": {
     "postinstall": "yarn run husky install",
     "compile:inpage": "swc --config-file scripts/inpage.swcrc.json -o packages/browser-extension/build/inpage/dist/index.js -s true packages/browser-extension/build/inpage/dist/index.js",
@@ -46,7 +49,10 @@
     "rimraf": "^3.0.2",
     "snowpack": "3.0.12"
   },
-  "browserslist": ["last 2 Chrome versions", "last 2 Firefox versions"],
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -69,7 +75,12 @@
     ]
   },
   "lint-staged": {
-    "*.{js,jsx}": ["eslint --cache --fix", "prettier --write"],
-    "*.{json,md}": ["prettier --write"]
+    "*.{js,jsx}": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   }
 }

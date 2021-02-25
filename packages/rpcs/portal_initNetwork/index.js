@@ -38,31 +38,29 @@ const BUILT_IN_NETWORKS = {
   },
 }
 
-export function main({setState, getState}) {
-  return async () => {
-    const {
-      networks: userNetworks,
-      wallet_currentChainId,
-      wallet_currentNetworkId,
-    } = getState()
-    const newNetworks = {...userNetworks, ...BUILT_IN_NETWORKS}
-    // set built-in networks
-    setState({networks: newNetworks})
+export async function main({params, setState, getState}) {
+  const {
+    networks: userNetworks,
+    wallet_currentChainId,
+    wallet_currentNetworkId,
+  } = getState()
+  const newNetworks = {...userNetworks, ...BUILT_IN_NETWORKS}
+  // set built-in networks
+  setState({networks: newNetworks})
 
-    // set currentNetwork first to enable rpcs fetching network info
-    const currentNetworkEndpoint = NETWORK_ENDPOINTS[DEFAULT_NETWORK]
-    setState({currentNetworkEndpoint})
+  // set currentNetwork first to enable rpcs fetching network info
+  const currentNetworkEndpoint = NETWORK_ENDPOINTS[DEFAULT_NETWORK]
+  setState({currentNetworkEndpoint})
 
-    const currentNetworkConfig = newNetworks[currentNetworkEndpoint]
+  const currentNetworkConfig = newNetworks[currentNetworkEndpoint]
 
-    currentNetworkConfig.chainId = await wallet_currentChainId()
-    currentNetworkConfig.networkId = await wallet_currentNetworkId()
+  currentNetworkConfig.chainId = await wallet_currentChainId()
+  currentNetworkConfig.networkId = await wallet_currentNetworkId()
 
-    setState({
-      networks: {
-        ...newNetworks,
-        [currentNetworkEndpoint]: currentNetworkConfig,
-      },
-    })
-  }
+  setState({
+    networks: {
+      ...newNetworks,
+      [currentNetworkEndpoint]: currentNetworkConfig,
+    },
+  })
 }
