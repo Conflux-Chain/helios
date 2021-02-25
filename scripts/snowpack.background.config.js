@@ -3,6 +3,7 @@ const {mergeConfig} = require('./snowpack.utils')
 const path = require('path')
 
 const root = path.resolve(__dirname, '../packages/background')
+
 module.exports = mergeConfig(baseConfig, {
   root,
   mount: {

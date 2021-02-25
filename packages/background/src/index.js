@@ -42,7 +42,7 @@ const store = createStore(() => {})
 if (!isProdMode()) window.s = store
 
 // ## initialize rpc engine
-const rpcEngine = new RpcEngine(rpcEngineOpts)
+const rpcEngine = new RpcEngine(store, rpcEngineOpts)
 ;(async () => {
   await rpcEngine.request({method: 'portal_initState'})
 })()

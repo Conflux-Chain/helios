@@ -1,4 +1,5 @@
 const path = require('path')
+const getWorkspacePackages = require('./get-workspaces-packages')
 
 const env = {NODE_ENV: true}
 
@@ -9,9 +10,25 @@ for (const e in process.env) {
   }
 }
 
+const mount = {}
+const alias = {}
+getWorkspacePackages([
+  'helios',
+  'helios-background',
+  'helios-inpage',
+  'helios-popup',
+]).forEach(({location, name}) => {
+  const packageAbsPath = path.resolve(__dirname, '../', location)
+  mount[packageAbsPath] = {url: `/dist/${name}`}
+  alias[name] = packageAbsPath
+})
+
 module.exports = {
   plugins: ['@snowpack/plugin-dotenv'],
+  mount,
+  alias,
   packageOptions: {
+    source: 'local',
     sourcemap: true,
     env,
     // polyfillNode: true
@@ -20,6 +37,7 @@ module.exports = {
     open: 'none',
   },
   buildOptions: {
+    clean: true,
     out: path.resolve(__dirname, '../packages/browser-extension/build'),
     sourcemap: true,
     baseUrl: 'dist',
