@@ -2,7 +2,7 @@
  * @fileOverview rpc-engine
  * @name index.js
  */
-import {Channel} from '@thi.ng/csp'
+import { Channel } from '@thi.ng/csp';
 
 /**
  * manage and handle response of rpc request
@@ -62,11 +62,18 @@ export class RpcEngine {
   }
 
   /**
+   *indicating if rpc engine is listening for rpc requests
+   * @type {boolean}
+   * @private
+   */
+  #listening = true
+
+  /**
    * start listening for rpc requests
    * @private
    */
   async #start() {
-    while (true) {
+    while (this.#listening) {
       const {method, req, c} = await this.chan.read()
       // TODO: move rpc result handler elsewhere
       this.store[method](req)

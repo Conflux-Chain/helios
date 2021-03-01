@@ -10,8 +10,7 @@ export const NAME = 'portal_initState'
 
 const INIT_STATE = {a: 1}
 
-export async function main({params: externalInitState, setState, rpcs}) {
-  const {portal_initNetwork} = rpcs
+export async function main({params: externalInitState, setState}) {
   const stateFromStorage = await browser.storage.local.get(EXT_STORAGE)
   setState({
     ...INIT_STATE,

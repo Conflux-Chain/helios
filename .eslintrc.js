@@ -1,4 +1,5 @@
 module.exports = {
+  parser: '@babel/eslint-parser',
   extends: [
     'eslint:recommended',
     'plugin:import/errors',
@@ -17,6 +18,7 @@ module.exports = {
     node: true,
   },
   parserOptions: {
+    requireConfigFile: false,
     ecmaVersion: 12,
     sourceType: 'module',
     ecmaFeatures: {

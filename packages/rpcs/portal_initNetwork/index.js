@@ -38,13 +38,13 @@ const BUILT_IN_NETWORKS = {
   },
 }
 
-export async function main({params, setState, getState}) {
+export async function main({params = BUILT_IN_NETWORKS, setState, getState}) {
   const {
     networks: userNetworks,
     wallet_currentChainId,
     wallet_currentNetworkId,
   } = getState()
-  const newNetworks = {...userNetworks, ...BUILT_IN_NETWORKS}
+  const newNetworks = {...userNetworks, ...params}
   // set built-in networks
   setState({networks: newNetworks})
 
