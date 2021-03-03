@@ -230,6 +230,5 @@ $RECYCLE.BIN/
 /packages/popup/index.html
 /packages/browser-extension/manifest.json
 packages/popup/public/index.html
-/.husky/
 .env.*.local
 .env.local
