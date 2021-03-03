@@ -30,4 +30,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install --immutable
-      - run: yarn test
+      - run: yarn test --coverage
+      - uses: codecov/codecov-action@v1
+        with:
+          functionalities: coveragepy, html
+          verbose: true
