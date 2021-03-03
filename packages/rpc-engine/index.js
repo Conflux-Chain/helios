@@ -2,101 +2,103 @@
  * @fileOverview rpc-engine
  * @name index.js
  */
-import { Channel } from '@thi.ng/csp';
+import {chan} from '@cfxjs/csp'
+import {comp, sideEffect, map} from '@thi.ng/transducers'
+import {partial} from '@thi.ng/compose'
+import {utils as rpcUtils} from '@cfxjs/json-rpc'
 
-/**
- * manage and handle response of rpc request
- */
-export class RpcEngine {
-  /**
-   * RpcEngine constructor
-   * @param {object} store a state store compatible with zustand store
-   * @param {object} opts rpc engine options
-   * @param {array} opts.method rpc methods used to initialize the engine
-   */
-  constructor(store, opts = {methods: []}) {
-    const {methods} = opts
-    // store rpc methods
-    this.store = new Set()
+function rpcErrorHandler(err = {}, c, req) {
+  err.message = err.message =
+    'RPC Stack: \n-> ' + req._rpcStack.join('\n-> ') + '\n' + err.message
 
-    // rpc request channel
-    this.chan = new Channel('rpc channel')
+  req._c.write({
+    jsonrpc: '2.0',
+    error: {code: -32603, message: err.message, data: err},
+    id: req.id || 2,
+  })
+}
 
-    // register rpc methods
-    methods.forEach(rpc => {
-      this.store[rpc.NAME] = rpc.main
-    })
+const request = (c, req = {}) => {
+  const localChan = chan(1)
+  c.write({...req, _c: localChan, __c: c})
+  return localChan.read()
+}
 
-    // wallet store
-    this.parentStore = store
+function validateJsonRpc(req = {}) {
+  req.jsonrpc = req.jsonrpc || '2.0'
+  req.id = req.id || 2
+  if (!rpcUtils.isValidRequest(req)) throw new Error('invalid rpc request')
+}
 
-    // start listen for rpc request
-    this.start()
-  }
+function validateRpcMethod(rpcStore, {method} = {}) {
+  if (!method || !rpcStore[method]) throw new Error('Method not found')
+}
 
-  /**
-   * send a rpc request to rpc engine
-   * @param {string} method rpc method name
-   * @param {array|string|object} params rpc request params
-   * @returns {Promise} Promise resolves to rpc response or rpc error, won't reject
-   */
-  request({method, params}) {
-    const c = new Channel(1)
-    const _rpcStack = [method]
-    this.chan.write({
-      method,
-      req: {
-        _rpcStack,
-        params,
-        ...this.parentStore,
-        rpcs: new Proxy(this.store, {
-          get() {
-            _rpcStack.push(arguments[1])
-            return Reflect.get(...arguments)
-          },
-        }),
-      },
-      c,
-    })
-    return c.read()
-  }
-
-  /**
-   *indicating if rpc engine is listening for rpc requests
-   * @type {boolean}
-   * @private
-   */
-  #listening = true
-
-  /**
-   * start listening for rpc requests
-   * @private
-   */
-  async #start() {
-    while (this.#listening) {
-      const {method, req, c} = await this.chan.read()
-      // TODO: move rpc result handler elsewhere
-      this.store[method](req)
-        .then(rst => {
-          const result = {jsonrpc: '2.0', id: 1}
-          result.result = rst || '0x1'
-          c.write.call(c, result)
-        })
-        .catch(err => {
-          // TODO: move rpc error handler elsewhere
-          err.message =
-            'RPC Stack: \n-> ' +
-            req._rpcStack.join('\n-> ') +
-            '\n' +
-            err.message
-          console.error(err)
-          const result = {
-            jsonrpc: '2.0',
-            error: {code: -32603, message: err.message, data: err},
-            id: 2,
+function injectRpcStore(rpcStore) {
+  return req => {
+    const {method, __c} = req
+    const _rpcStack = req._rpcStack || []
+    _rpcStack.push(method)
+    return {
+      ...req,
+      _rpcStack,
+      rpcs: new Proxy(rpcStore, {
+        get() {
+          const methodName = arguments[1]
+          _rpcStack.push(methodName)
+          return function (params) {
+            const req = {method: methodName, params, _rpcStack}
+            return request(__c, req)
           }
-          c.write.call(c, result)
-        })
+        },
+      }),
     }
   }
+}
+
+function injectParentStore(parentStore) {
+  return req => ({...parentStore, ...req})
+}
+
+function callRpcMethod(rpcStore) {
+  return req => [req, rpcStore[req.method](req)]
+}
+
+function afterCallRpcMethod() {
+  return ([req, res]) => [
+    req,
+    {jsonrpc: '2.0', result: res || '0x1', id: req.id},
+  ]
+}
+
+function endRpcCall() {
+  return ([req, res]) => req._c.write(res)
+}
+
+async function startChan(c) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    await c.read()
+  }
+}
+
+export function defRpcEngine(store, opts = {methods: []}) {
+  const {methods} = opts
+  const rpcStore = new Set() // TODO: use https://github.com/thi-ng/umbrella/tree/develop/packages/associative
+  methods.forEach(rpc => (rpcStore[rpc.NAME] = rpc.main))
+
+  const rpcTransducer = comp(
+    sideEffect(validateJsonRpc), // validate request format
+    sideEffect(partial(validateRpcMethod, rpcStore)), // validate rpc method
+    map(injectRpcStore(rpcStore)),
+    map(injectParentStore(store)),
+    map(callRpcMethod(rpcStore)),
+    map(afterCallRpcMethod()),
+    sideEffect(endRpcCall()),
+  )
+
+  const rpcChan = chan(rpcTransducer, rpcErrorHandler)
+  startChan(rpcChan)
+
+  return {request: partial(request, rpcChan)}
 }

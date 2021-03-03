@@ -15,7 +15,7 @@ const builds = [
   'scripts/snowpack.popup.config.js',
   'scripts/snowpack.inpage.config.js',
 ]
-let servers = []
+// let servers = []
 
 async function cleanup(exitCode) {
   console.log('Clanup before exit...')
@@ -31,9 +31,8 @@ process.on('SIGUSR1', cleanup)
 process.on('SIGUSR2', cleanup)
 process.on('uncaughtException', cleanup)
 ;(async () => {
-  servers = await Promise.all([
+  /* servers =  */ await Promise.all([
     builds.map(b => {
-      debugger
       return loadConfiguration(undefined, b).then(config =>
         startServer({config}),
       )

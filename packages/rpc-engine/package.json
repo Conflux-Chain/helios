@@ -4,6 +4,10 @@
   "main": "index.js",
   "version": "0.0.0",
   "dependencies": {
-    "@thi.ng/csp": "^1.1.51"
+    "@cfxjs/csp": "workspace:packages/csp",
+    "@cfxjs/json-rpc": "workspace:packages/json-rpc",
+    "@thi.ng/compose": "^1.4.24",
+    "@thi.ng/csp": "^1.1.51",
+    "@thi.ng/transducers": "^7.6.1"
   }
 }

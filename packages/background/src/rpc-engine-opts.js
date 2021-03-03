@@ -9,11 +9,13 @@ import * as portalInitNetwork from 'portal_initNetwork'
 import * as cfxGetTransactionByHash from '@cfxjs/cfx_getTransactionByHash'
 import * as walletImportMnemonic from '@cfxjs/wallet_importMnemonic'
 
-export const rpcEngineOpts = [
-  // init
-  portalInitState,
-  portalInitNetwork,
+export const rpcEngineOpts = {
+  methods: [
+    // init
+    portalInitState,
+    portalInitNetwork,
 
-  walletImportMnemonic,
-  cfxGetTransactionByHash,
-]
+    walletImportMnemonic,
+    cfxGetTransactionByHash,
+  ],
+}

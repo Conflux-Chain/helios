@@ -1,17 +1,17 @@
-import 'regenerator-runtime/runtime';
+import 'regenerator-runtime/runtime'
 
-import { RpcEngine } from '@cfxjs/rpc-engine';
-import { EXT_STORAGE } from 'consts';
-import apply from 'ramda/es/apply';
-import identity from 'ramda/es/identity';
-import partialRight from 'ramda/es/partialRight';
-import pipe from 'ramda/es/pipe';
-import { isProdMode } from 'utils';
-import browser from 'webextension-polyfill';
-import { persist } from 'zustand/middleware';
-import create from 'zustand/vanilla';
+import {defRpcEngine} from '@cfxjs/rpc-engine'
+import {EXT_STORAGE} from 'consts'
+import apply from 'ramda/es/apply'
+import identity from 'ramda/es/identity'
+import partialRight from 'ramda/es/partialRight'
+import pipe from 'ramda/es/pipe'
+import {isProdMode} from 'utils'
+import browser from 'webextension-polyfill'
+import {persist} from 'zustand/middleware'
+import create from 'zustand/vanilla'
 
-import { rpcEngineOpts } from './rpc-engine-opts';
+import {rpcEngineOpts} from './rpc-engine-opts'
 
 // # initialize
 // ## initialize store middle
@@ -49,7 +49,13 @@ const store = createStore(() => {})
 if (!isProdMode()) window.s = store
 
 // ## initialize rpc engine
-const rpcEngine = new RpcEngine(store, rpcEngineOpts)
+const {request} = defRpcEngine(store, rpcEngineOpts)
 ;(async () => {
-  await rpcEngine.request({method: 'portal_initState'})
+  console.log(await request({method: 'portal_initState'}))
+  console.log(await request({method: 'portal_initState'}))
+  console.log(await request({method: 'portal_initState'}))
+  console.log(await request({method: 'portal_initState'}))
+  console.log(await request({method: 'portal_initState'}))
+  console.log(await request({method: 'portal_initState'}))
+  console.log(await request({method: 'portal_initNetwork'}))
 })()
