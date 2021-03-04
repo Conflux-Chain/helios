@@ -8,3 +8,5 @@ import {Channel} from '@thi.ng/csp'
 export function chan() {
   return new Channel(...arguments)
 }
+
+export const fromPromise = Channel.fromPromise
