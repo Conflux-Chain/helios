@@ -13,6 +13,7 @@ for (const e in process.env) {
 const mount = {}
 const alias = {}
 getWorkspacePackages([
+  'browser-extension',
   'helios',
   'helios-background',
   'helios-inpage',
