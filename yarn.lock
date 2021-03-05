@@ -638,6 +638,8 @@ __metadata:
     "@cfxjs/transducers": "workspace:packages/transducers"
     "@thi.ng/compose": ^1.4.24
     "@thi.ng/csp": ^1.1.51
+    ramda: ^0.27.1
+    utils: "workspace:packages/utils"
   languageName: unknown
   linkType: soft
 
@@ -657,9 +659,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_addNetwork@workspace:packages/rpcs/wallet_addNetwork":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_addNetwork@workspace:packages/rpcs/wallet_addNetwork"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/wallet_initState@workspace:packages/rpcs/wallet_initState":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_initState@workspace:packages/rpcs/wallet_initState"
   languageName: unknown
   linkType: soft
 
@@ -4369,7 +4383,9 @@ fsevents@~2.1.2:
   dependencies:
     "@cfxjs/cfx_getTransactionByHash": "workspace:packages/rpcs/cfx_getTransactionByHash"
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
+    "@cfxjs/wallet_addNetwork": "workspace:packages/rpcs/wallet_addNetwork"
     "@cfxjs/wallet_importMnemonic": "workspace:packages/rpcs/wallet_importMnemonic"
+    "@cfxjs/wallet_initState": "workspace:packages/rpcs/wallet_initState"
     consts: "workspace:packages/consts"
     ramda: ^0.27.1
     regenerator-runtime: ^0.13.7
@@ -6863,23 +6879,6 @@ fsevents@~2.1.2:
   checksum: 34cf86f6d577877df5e9ced0bda57babd97bd2dc7e5965a67f990337f01ccd5203a98dc5aa7971e10088b2b1b29628d51d9770996151c7d306ed0069b4ecd745
   languageName: node
   linkType: hard
-
-"portal_initNetwork@workspace:packages/rpcs/portal_initNetwork":
-  version: 0.0.0-use.local
-  resolution: "portal_initNetwork@workspace:packages/rpcs/portal_initNetwork"
-  dependencies:
-    consts: "workspace:packages/consts"
-  languageName: unknown
-  linkType: soft
-
-"portal_initState@workspace:packages/rpcs/portal_initState":
-  version: 0.0.0-use.local
-  resolution: "portal_initState@workspace:packages/rpcs/portal_initState"
-  dependencies:
-    consts: "workspace:packages/consts"
-    utils: "workspace:packages/utils"
-  languageName: unknown
-  linkType: soft
 
 "posix-character-classes@npm:^0.1.0":
   version: 0.1.1

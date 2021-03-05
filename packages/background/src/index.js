@@ -12,6 +12,7 @@ import {persist} from 'zustand/middleware'
 import create from 'zustand/vanilla'
 
 import {rpcEngineOpts} from './rpc-engine-opts'
+import {BUILT_IN_NETWORKS} from './network/config'
 
 // # initialize
 // ## initialize store middle
@@ -51,11 +52,18 @@ if (!isProdMode()) window.s = store
 // ## initialize rpc engine
 const {request} = defRpcEngine(store, rpcEngineOpts)
 ;(async () => {
-  console.log(await request({method: 'portal_initState'}))
-  console.log(await request({method: 'portal_initState'}))
-  console.log(await request({method: 'portal_initState'}))
-  console.log(await request({method: 'portal_initState'}))
-  console.log(await request({method: 'portal_initState'}))
-  console.log(await request({method: 'portal_initState'}))
-  console.log(await request({method: 'portal_initNetwork'}))
+  console.log(
+    await browser.storage.local
+      .get()
+      .then(s => s[EXT_STORAGE])
+      .then(s =>
+        request({
+          method: 'wallet_initState',
+          params: {oldState: s, initState: {a: 1}},
+        }),
+      ),
+  )
+  console.log(
+    await request({method: 'wallet_addNetwork', params: BUILT_IN_NETWORKS}),
+  )
 })()
