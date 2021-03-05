@@ -4,6 +4,6 @@
   "main": "index.js",
   "version": "0.0.0",
   "dependencies": {
-    "@thi.ng/csp": "^1.1.51"
+    "@thi.ng/csp": "^1.1.55"
   }
 }
