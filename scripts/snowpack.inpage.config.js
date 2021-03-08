@@ -13,6 +13,7 @@ module.exports = mergeConfig(baseConfig, {
   packageOptions: {},
   devOptions: {
     port: 18002,
+    hmrErrorOverlay: false,
   },
   buildOptions: {
     out: path.resolve(__dirname, '../packages/browser-extension/build/inpage'),
