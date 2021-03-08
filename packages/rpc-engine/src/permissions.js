@@ -4,7 +4,7 @@
  */
 import mergeDeepLeft from 'ramda/es/mergeDeepLeft'
 
-const defaultPermissions = {
+export const defaultPermissions = {
   methods: [],
   store: {set: false, get: false},
 }
@@ -14,6 +14,7 @@ export const format = (rpcPermissions = {}) =>
 
 export const getRpc = (rpcStore, callerMethodName, callingMethodName) => {
   const {permissions} = rpcStore[callerMethodName]
+
   return (
     permissions.methods.includes(callingMethodName) &&
     rpcStore[callingMethodName]

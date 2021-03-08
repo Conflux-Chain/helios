@@ -11,8 +11,5 @@ export const permissions = {
 
 export async function main({params = {}, setWalletState}) {
   const {oldState = {}, initState = {}} = params
-  setWalletState({
-    ...initState,
-    ...oldState,
-  })
+  setWalletState({...initState, ...oldState})
 }
