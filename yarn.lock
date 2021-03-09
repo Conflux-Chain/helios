@@ -609,12 +609,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cfxjs/cfx_getTransactionByHash@workspace:packages/rpcs/cfx_getTransactionByHash":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_getTransactionByHash@workspace:packages/rpcs/cfx_getTransactionByHash"
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/csp@workspace:packages/csp":
   version: 0.0.0-use.local
   resolution: "@cfxjs/csp@workspace:packages/csp"
@@ -651,23 +645,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet-state@workspace:packages/wallet-state":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet-state@workspace:packages/wallet-state"
-  dependencies:
-    zustand: ^3.3.3
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/wallet_addNetwork@workspace:packages/rpcs/wallet_addNetwork":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_addNetwork@workspace:packages/rpcs/wallet_addNetwork"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic"
   languageName: unknown
   linkType: soft
 
@@ -1217,6 +1197,13 @@ __metadata:
     "@swc/core-win32-x64-msvc":
       optional: true
   checksum: 1e29bb3b36cb4ddc0fe6b462f19b3637ddf13221b7ff15be36c488dc5d302548f667e6e2794eebe3fa8294042fcbebb64769ad2d51b3000c301712097e772c07
+  languageName: node
+  linkType: hard
+
+"@swc/helpers@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "@swc/helpers@npm:0.2.4"
+  checksum: 45948651d813ad4d28ab21a67516c992c2d2f2ff8683383a9e41db9d5cf20eb96b287d572d5584420ef0351a41ca12d1defbdb0bd78b4de0109949cf81b02912
   languageName: node
   linkType: hard
 
@@ -3071,14 +3058,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:^24.1.8":
-  version: 24.1.8
-  resolution: "eslint-plugin-jest@npm:24.1.8"
+"eslint-plugin-jest@npm:^24.1.9":
+  version: 24.1.9
+  resolution: "eslint-plugin-jest@npm:24.1.9"
   dependencies:
     "@typescript-eslint/experimental-utils": ^4.0.1
   peerDependencies:
     eslint: ">=5"
-  checksum: d59d7cf49fb13633c7b66603985874224e2e5d43a0815454c3825fc2d43c9397d28e3db5c60c26fe89c3a5294ea0a15cc0989c1962ccdaae4972030ddecf0530
+  checksum: f7aa6cd0d2b201e09d82929ae2ce26acfbffe98087f9c7d09f4444b03b18635a1a924e7485f7ada61c0fdd811cb8e996bc98ad134df2154f6a4018a6f205efc3
   languageName: node
   linkType: hard
 
@@ -3930,10 +3917,8 @@ fsevents@^2.1.2:
   version: 0.0.0-use.local
   resolution: "helios-background@workspace:packages/background"
   dependencies:
-    "@cfxjs/cfx_getTransactionByHash": "workspace:packages/rpcs/cfx_getTransactionByHash"
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
     "@cfxjs/wallet_addNetwork": "workspace:packages/rpcs/wallet_addNetwork"
-    "@cfxjs/wallet_importMnemonic": "workspace:packages/rpcs/wallet_importMnemonic"
     "@cfxjs/wallet_initState": "workspace:packages/rpcs/wallet_initState"
     consts: "workspace:packages/consts"
     ramda: ^0.27.1
@@ -3966,6 +3951,7 @@ fsevents@^2.1.2:
     "@snowpack/plugin-react-refresh": ^2.4.0
     "@swc/cli": ^0.1.35
     "@swc/core": ^1.2.50
+    "@swc/helpers": ^0.2.4
     "@swc/jest": ^0.1.2
     browserslist: ^4.16.3
     concurrently: ^6.0.0
@@ -3975,7 +3961,7 @@ fsevents@^2.1.2:
     eslint: ^7.21.0
     eslint-config-prettier: ^8.1.0
     eslint-plugin-import: ^2.22.1
-    eslint-plugin-jest: ^24.1.8
+    eslint-plugin-jest: ^24.1.9
     eslint-plugin-jsx-a11y: ^6.4.1
     eslint-plugin-prettier: ^3.3.1
     eslint-plugin-react: ^7.22.0

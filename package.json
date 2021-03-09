@@ -5,6 +5,9 @@
     "packages/rpcs/*",
     "packages/*"
   ],
+  "engines": {
+    "node": ">=15"
+  },
   "scripts": {
     "postinstall": "husky install",
     "compile:inpage": "swc --config-file scripts/inpage.swcrc.json -o packages/browser-extension/build/inpage/dist/index.js -s true packages/browser-extension/build/inpage/dist/index.js",
@@ -13,13 +16,14 @@
     "prod": "cross-env NODE_ENV=production run-s prod-all compile:inpage",
     "lint": "eslint  --ignore-path .gitignore packages",
     "lint:fix": "yarn run lint --fix",
-    "test": "jest"
+    "test": "cross-env NODE_ENV=test jest --no-cache"
   },
   "devDependencies": {
     "@snowpack/plugin-dotenv": "^2.0.5",
     "@snowpack/plugin-react-refresh": "^2.4.0",
     "@swc/cli": "^0.1.35",
     "@swc/core": "^1.2.50",
+    "@swc/helpers": "^0.2.4",
     "@swc/jest": "^0.1.2",
     "browserslist": "^4.16.3",
     "concurrently": "^6.0.0",
@@ -29,7 +33,7 @@
     "eslint": "^7.21.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^24.1.8",
+    "eslint-plugin-jest": "^24.1.9",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
@@ -49,7 +53,8 @@
   },
   "browserslist": [
     "last 2 Chrome versions",
-    "last 2 Firefox versions"
+    "last 2 Firefox versions",
+    "last 2 Edge versions"
   ],
   "husky": {
     "hooks": {

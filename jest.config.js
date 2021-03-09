@@ -2,6 +2,7 @@
  * For a detailed explanation regarding each configuration property, visit:
  * https://jestjs.io/docs/en/configuration.html
  */
+const path = require('path')
 
 module.exports = {
   // All imported modules in your tests should be mocked automatically
@@ -26,9 +27,16 @@ module.exports = {
   coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
-  // coveragePathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    'index.dev.js',
+    'index.prod.js',
+    '/packages/browser-extension',
+    '/packages/csp',
+    '/packages/consts',
+    '/packages/utils',
+    '/packages/utils/env.js',
+  ],
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: 'v8',
@@ -84,7 +92,7 @@ module.exports = {
   // moduleNameMapper: {},
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
-  // modulePathIgnorePatterns: [],
+  modulePathIgnorePatterns: ['/packages/browser-extension'],
 
   // Activates notifications for test results
   // notify: false,
@@ -171,7 +179,10 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\\.(t|j)sx?$': ['@swc/jest'],
+    '^.+\\.(t|j)sx?$': path.resolve(
+      __dirname,
+      './scripts/jest-transformers.js',
+    ),
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

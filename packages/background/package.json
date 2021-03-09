@@ -6,10 +6,8 @@
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@cfxjs/cfx_getTransactionByHash": "workspace:packages/rpcs/cfx_getTransactionByHash",
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine",
     "@cfxjs/wallet_addNetwork": "workspace:packages/rpcs/wallet_addNetwork",
-    "@cfxjs/wallet_importMnemonic": "workspace:packages/rpcs/wallet_importMnemonic",
     "@cfxjs/wallet_initState": "workspace:packages/rpcs/wallet_initState",
     "consts": "workspace:packages/consts",
     "ramda": "^0.27.1",
