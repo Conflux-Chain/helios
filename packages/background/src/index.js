@@ -6,7 +6,7 @@ import apply from 'ramda/es/apply'
 import identity from 'ramda/es/identity'
 import partialRight from 'ramda/es/partialRight'
 import pipe from 'ramda/es/pipe'
-import {isProdMode} from 'utils'
+import {IS_PROD_MODE} from 'utils'
 import browser from 'webextension-polyfill'
 import {persist} from 'zustand/middleware'
 import create from 'zustand/vanilla'
@@ -32,7 +32,7 @@ const persistToExtensionStorage = partialRight(persist, [
 
 const middlewares = [persistToExtensionStorage]
 
-if (!isProdMode()) window.b = browser
+if (!IS_PROD_MODE) window.b = browser
 
 const createStore = apply(pipe, [...middlewares, create])
 
@@ -47,7 +47,7 @@ const createStore = apply(pipe, [...middlewares, create])
  * @property {function} destroy - a function that can destroy the store
  */
 const store = createStore(() => {})
-if (!isProdMode()) window.s = store
+if (!IS_PROD_MODE) window.s = store
 
 // ## initialize rpc engine
 const {request} = defRpcEngine(store, rpcEngineOpts)

@@ -1,11 +1,5 @@
-export function isTestMode() {
-  return import.meta.env.NODE_ENV === 'test'
-}
+export const IS_TEST_MODE = import.meta.env.NODE_ENV === 'test'
 
-export function isDevMode() {
-  return import.meta.env.NODE_ENV === 'development'
-}
+export const IS_DEV_MODE = import.meta.env.NODE_ENV === 'development'
 
-export function isProdMode() {
-  return import.meta.env.NODE_ENV === 'production'
-}
+export const IS_PROD_MODE = import.meta.env.NODE_ENV === 'production'

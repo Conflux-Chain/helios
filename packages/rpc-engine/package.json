@@ -7,6 +7,7 @@
     "@cfxjs/csp": "workspace:packages/csp",
     "@cfxjs/json-rpc": "workspace:packages/json-rpc",
     "@cfxjs/transducers": "workspace:packages/transducers",
+    "@thi.ng/checks": "^2.9.4",
     "@thi.ng/compose": "^1.4.28",
     "@thi.ng/csp": "^1.1.55",
     "ramda": "^0.27.1",

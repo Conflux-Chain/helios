@@ -9,23 +9,7 @@ import {comp, sideEffectP as sideEffect, mapP as map} from '@cfxjs/transducers'
 import {partial} from '@thi.ng/compose'
 import {utils as rpcUtils} from '@cfxjs/json-rpc'
 import * as perms from './src/permissions'
-import {isDevMode} from 'utils'
-
-// ## error handler
-const rpcErrorHandler = (err = {}, _, req) => {
-  err.message = err.message =
-    '\nRPC Stack: \n-> ' +
-    (req._rpcStack || [req.method]).join('\n-> ') +
-    '\n' +
-    err.message
-
-  if (isDevMode) console.error(err)
-  req._c.write({
-    jsonrpc: '2.0',
-    error: {code: -32603, message: err.message, data: err},
-    id: req.id || 2,
-  })
-}
+import {rpcErrorHandler} from './src/error'
 
 const request = (c, req = {}) => {
   const localChan = chan(1)
