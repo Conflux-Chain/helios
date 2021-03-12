@@ -609,11 +609,42 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cfxjs/checks@workspace:packages/checks":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/checks@workspace:packages/checks"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/compose@workspace:packages/compose":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/compose@workspace:packages/compose"
+  dependencies:
+    "@thi.ng/compose": ^1.4.28
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/csp@workspace:packages/csp":
   version: 0.0.0-use.local
   resolution: "@cfxjs/csp@workspace:packages/csp"
   dependencies:
+    "@cfxjs/checks": "workspace:packages/checks"
     "@thi.ng/csp": ^1.1.55
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/errors@workspace:packages/errors":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/errors@workspace:packages/errors"
+  dependencies:
+    "@thi.ng/errors": ^1.2.31
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/iterators@workspace:packages/iterators":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/iterators@workspace:packages/iterators"
+  dependencies:
+    "@thi.ng/iterators": ^5.1.55
   languageName: unknown
   linkType: soft
 
@@ -627,10 +658,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/rpc-engine@workspace:packages/rpc-engine"
   dependencies:
+    "@cfxjs/checks": "workspace:packages/checks"
+    "@cfxjs/compose": "workspace:packages/compose"
     "@cfxjs/csp": "workspace:packages/csp"
+    "@cfxjs/errors": "workspace:packages/errors"
+    "@cfxjs/iterators": "workspace:packages/iterators"
     "@cfxjs/json-rpc": "workspace:packages/json-rpc"
     "@cfxjs/transducers": "workspace:packages/transducers"
-    "@thi.ng/checks": ^2.9.4
     "@thi.ng/compose": ^1.4.28
     "@thi.ng/csp": ^1.1.55
     ramda: ^0.27.1
@@ -1313,6 +1347,17 @@ __metadata:
   version: 0.2.4
   resolution: "@thi.ng/hex@npm:0.2.4"
   checksum: a67c9356f82a180b07d5c1e86e1d52290d1c80ad0922819a1112ce4cbe85ff82b5e5cc21c537a68ef1ecd694a3a3248695be80da333910b4a984fff83b902c13
+  languageName: node
+  linkType: hard
+
+"@thi.ng/iterators@npm:^5.1.55":
+  version: 5.1.55
+  resolution: "@thi.ng/iterators@npm:5.1.55"
+  dependencies:
+    "@thi.ng/api": ^7.1.3
+    "@thi.ng/dcons": ^2.3.15
+    "@thi.ng/errors": ^1.2.31
+  checksum: 8792cf67d46d9313b3af1629b55e6d15359b4267c6618b41e99287b59f30b9aa7c5e43c58aa6bf2dbda80ada1a8259672df7ff3628c19cc82bf58ecd459dd7e1
   languageName: node
   linkType: hard
 

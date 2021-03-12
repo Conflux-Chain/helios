@@ -1,0 +1,6 @@
+{
+  "name": "@cfxjs/compose",
+  "dependencies": {
+    "@thi.ng/compose": "^1.4.28"
+  }
+}

@@ -6,7 +6,7 @@ describe('RPCEngine', function () {
     const mockOpts = {
       methods: [
         {
-          main: jest.fn(),
+          main: jest.fn(() => Promise.resolve()),
           NAME: 'cfx_mockRpc',
           permissions: {
             methods: [],

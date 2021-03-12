@@ -30,7 +30,6 @@ module.exports = {
   alias,
   packageOptions: {
     source: 'local',
-    sourcemap: true,
     env,
     // polyfillNode: true
   },

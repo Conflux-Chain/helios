@@ -8,7 +8,7 @@ require('./setup-dotenv')
 const {setEnvBasedOnArgv} = require('./snowpack.utils')
 setEnvBasedOnArgv()
 
-const {loadConfiguration, startServer} = require('snowpack')
+const {loadConfiguration, startServer, clearCache} = require('snowpack')
 
 const builds = [
   'scripts/snowpack.background.config.js',
@@ -31,6 +31,7 @@ process.on('SIGUSR1', cleanup)
 process.on('SIGUSR2', cleanup)
 process.on('uncaughtException', cleanup)
 ;(async () => {
+  await clearCache()
   /* servers =  */ await Promise.all([
     builds.map(b => {
       return loadConfiguration(undefined, b).then(config =>

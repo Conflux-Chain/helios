@@ -5,7 +5,7 @@
 import {IS_DEV_MODE} from 'utils'
 
 export const appendRpcStackToErrorMessage = (err, stack) => {
-  const stackMessage = `RPC Stack:\n-> ${stack.join('\n-> ')}\n`
+  const stackMessage = `\nRPC Stack:\n-> ${stack.join('\n-> ')}\n`
   err.message += stackMessage
   return err
 }
