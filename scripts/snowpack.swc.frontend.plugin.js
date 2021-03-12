@@ -50,7 +50,6 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
     // load(a, b, c) {
     //   console.log(a, b, c)
     //   throw new Error('kkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
-    //   debugger
     // },
   }
 }

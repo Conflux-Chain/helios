@@ -11,9 +11,9 @@ setEnvBasedOnArgv()
 const {loadConfiguration, startServer /* clearCache */} = require('snowpack')
 
 const builds = [
-  'scripts/snowpack.background.config.js',
+  // 'scripts/snowpack.background.config.js',
   'scripts/snowpack.popup.config.js',
-  'scripts/snowpack.inpage.config.js',
+  // 'scripts/snowpack.inpage.config.js',
 ]
 // let servers = []
 
