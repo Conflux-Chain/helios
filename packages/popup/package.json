@@ -6,6 +6,8 @@
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "webextension-polyfill": "^0.7.0"
   }
 }

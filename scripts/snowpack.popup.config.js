@@ -4,13 +4,16 @@ const path = require('path')
 
 mustacheRender(
   '../packages/popup/public/index.html.mustache',
-  '../packages/popup/public/index.html',
+  // '../packages/popup/public/index.html',
+  '../packages/browser-extension/popup.html',
   {
     scripts: isDev()
-      ? '<script src="http://localhost:18001/dist/index.dev.js" type="module" charset="utf-8"></script>'
+      ? `<script src="http://localhost:18001/dist/index.dev.js" type="module" charset="utf-8"></script>`
       : '<script src="dist/index.js" type="module" charset="utf-8"></script>',
+    body: isDev() ? `` : '',
   },
 )
+
 const root = path.resolve(__dirname, '../packages/popup')
 
 module.exports = mergeConfig(baseConfig, {
@@ -22,8 +25,8 @@ module.exports = mergeConfig(baseConfig, {
   routes: [{match: 'routes', src: '.*', dest: '/index.html'}],
   plugins: [
     ...baseConfig.plugins,
+    [path.resolve(__dirname, './snowpack.swc.frontend.plugin.js'), {}],
     '@snowpack/plugin-react-refresh',
-    '@snowpack/plugin-dotenv',
   ],
   packageOptions: {},
   devOptions: {
