@@ -22,6 +22,7 @@ const request = (c, req = {}) => {
   return localChan.read()
 }
 
+// TODO: move rpc handlers elsewhere and add tests
 const rpcHandlers = {
   before: [
     {
@@ -116,7 +117,17 @@ const rpcHandlers = {
       },
     },
     {
-      name: 'callRpcMethod',
+      name: 'beforeCallRpc',
+      main({rpcStore}, req) {
+        // TODO: we don't need to call every before, only those we want to validate
+        // like rpcs called directly by user
+        const {before} = rpcStore[req.method]
+        if (before) before(req)
+      },
+      sideEffect: true,
+    },
+    {
+      name: 'callRpc',
       main({rpcStore, onError, afterChan}, req) {
         rpcStore[req.method]
           .main(req)
