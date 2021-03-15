@@ -4,8 +4,9 @@ const path = require('path')
 
 mustacheRender(
   '../packages/popup/public/index.html.mustache',
-  // '../packages/popup/public/index.html',
-  '../packages/browser-extension/popup.html',
+  isDev()
+    ? '../packages/browser-extension/popup.html'
+    : '../packages/popup/public/index.html',
   {
     scripts: isDev()
       ? `<script src="http://localhost:18001/dist/index.dev.js" type="module" charset="utf-8"></script>`

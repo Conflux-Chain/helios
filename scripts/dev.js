@@ -8,7 +8,7 @@ require('./setup-dotenv')
 const {setEnvBasedOnArgv} = require('./snowpack.utils')
 setEnvBasedOnArgv()
 
-const {loadConfiguration, startServer /* clearCache */} = require('snowpack')
+const {loadConfiguration, startServer, clearCache} = require('snowpack')
 
 const builds = [
   'scripts/snowpack.background.config.js',
@@ -24,6 +24,9 @@ async function cleanup(exitCode) {
   process.exit(exitCode)
 }
 
+const shouldCleanCache =
+  process.argv.includes['-r'] || process.argv.includes['--reload']
+
 process.on('exit', cleanup)
 process.on('SIGINT', cleanup)
 process.on('SIGTERM', cleanup)
@@ -31,7 +34,7 @@ process.on('SIGUSR1', cleanup)
 process.on('SIGUSR2', cleanup)
 process.on('uncaughtException', cleanup)
 ;(async () => {
-  // await clearCache()
+  if (shouldCleanCache) await clearCache()
   /* servers =  */ await Promise.all([
     builds.map(b => {
       return loadConfiguration(undefined, b).then(config =>
