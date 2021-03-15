@@ -25,7 +25,8 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
     transform({contents, fileExt, id}) {
       if (fileExt !== '.js' && fileExt !== '.jsx') return
       // add code for react hmr
-      if (id.endsWith('/packages/popup/src/index.dev.js'))
+      const devJSFile = id.endsWith('/packages/popup/src/index.dev.js')
+      if (devJSFile)
         contents =
           `function debounce(e,t){let u;return()=>{clearTimeout(u),u=setTimeout(e,t)}}
   {
@@ -44,7 +45,7 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
         cwd: root,
         root,
         filename: id,
-        sourceMaps: 'inline',
+        sourceMaps: devJSFile ? false : 'inline',
       }).code
     },
     // load(a, b, c) {
