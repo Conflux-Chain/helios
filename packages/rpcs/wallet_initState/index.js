@@ -21,8 +21,21 @@ export function documentation() {
   }
 }
 
-export function before({params, Err}) {
-  if (!isObject(params)) throw Err('Invalid params')
+export const validator = {
+  input() {
+    return {
+      // used to check the input/output, generate documentation, generate fake data
+      // TODO: add the functionality of validating input/output with schema
+      // eg: a function validate(schema, input) returns a structured error
+      // TODO: add the functionality to generate fake data with schema
+      // eg: a function `generateFakeData(schema)`
+      // TODO: add the functionality to generate input/output documentation with schema
+      // eg: a function `generateDocumentation(schema)`
+      schema: isObject,
+      // optional, used to generate fake data directly
+      generate: () => new Object(),
+    }
+  },
 }
 
 export async function main({params = {}, setWalletState}) {
