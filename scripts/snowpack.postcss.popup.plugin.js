@@ -3,7 +3,9 @@
  * @name snowpack.postcss.popup.plugin.js
  */
 const autoprefixer = require('autoprefixer')
+const tailwindcss = require('tailwindcss')
 const postcss = require('postcss')
+const tailwindConfig = require('./tailwind.popup.config')
 // const precss = require('precss')
 const fs = require('fs')
 const util = require('util')
@@ -17,9 +19,14 @@ module.exports = function () {
     },
     async load({filePath}) {
       const origCSS = await util.promisify(fs.readFile)(filePath)
-      const {css} = postcss([autoprefixer]).process(origCSS.toString(), {
+      const {css} = await postcss([
+        autoprefixer(),
+        tailwindcss(tailwindConfig),
+      ]).process(origCSS.toString(), {
         from: filePath,
-        to: '/dist/App.css',
+        map: {
+          inline: true,
+        },
       })
       return css
     },
