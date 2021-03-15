@@ -11,8 +11,8 @@
     "@cfxjs/iterators": "workspace:packages/iterators",
     "@cfxjs/json-rpc": "workspace:packages/json-rpc",
     "@cfxjs/transducers": "workspace:packages/transducers",
-    "@thi.ng/compose": "^1.4.28",
-    "@thi.ng/csp": "^1.1.55",
+    "@thi.ng/compose": "^1.4.29",
+    "@thi.ng/csp": "^1.1.56",
     "ramda": "^0.27.1",
     "utils": "workspace:packages/utils"
   }
