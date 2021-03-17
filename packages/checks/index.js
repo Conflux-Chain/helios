@@ -6,8 +6,10 @@
 export * from '@thi.ng/checks'
 import {isFunction, isString} from '@thi.ng/checks'
 
+const AsyncFunction = (async () => {}).constructor
+
 export const isAsyncFunction = fn =>
-  isFunction(fn) && fn.constructor.name === 'AsyncFunction'
+  isFunction(fn) && fn instanceof AsyncFunction
 
 export const isHexAddress = addr =>
   isString(addr) && /^0x[0-9a-fA-F]{40}$/.test(addr)
