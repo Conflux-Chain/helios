@@ -1,1 +1,1 @@
-console.log("inpage.js");
+console.log('inpage.js')

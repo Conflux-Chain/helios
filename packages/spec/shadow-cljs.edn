@@ -1,0 +1,17 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :dev-http {8000 ["public" "src"]}
+
+ :dependencies
+ [[metosin/malli "0.3.0"]]
+
+ :builds
+ {:app {:target :esm
+        :output-dir "src"
+        :modules {:shared {}
+                  :spec {:exports {default cfxjs.spec.core/exports}
+                         :depends-on #{:shared}} }}}}

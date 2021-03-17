@@ -3,6 +3,7 @@
  * @name index.js
  */
 import {isObject} from '@cfxjs/checks'
+import s from '@cfxjs/spec'
 
 export const NAME = 'wallet_initState'
 
@@ -11,8 +12,13 @@ export const permissions = {
   store: {set: true},
 }
 
-export function generateParams() {
-  return {}
+export const schemas = {
+  input: [
+    s.map,
+    s.closed,
+    ['oldState', s.optional, s.mapp],
+    ['initState', s.optional, s.mapp],
+  ],
 }
 
 export function documentation() {

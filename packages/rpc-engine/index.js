@@ -15,6 +15,12 @@ import {utils as rpcUtils} from '@cfxjs/json-rpc'
 import * as perms from './src/permissions'
 import {rpcErrorHandler} from './src/error'
 import {map} from '@cfxjs/iterators'
+import s from '@cfxjs/spec'
+
+import {defError} from '@cfxjs/errors'
+import {identity} from '@cfxjs/compose'
+
+export const RpcEngineError = defError(() => '[@cfxjs/rpc-engin] ', identity)
 
 const request = (c, req = {}) => {
   const localChan = chan(1)
@@ -117,6 +123,16 @@ const rpcHandlers = {
       },
     },
     {
+      name: 'validateParams',
+      main({rpcStore}, req) {
+        const {params, method} = req
+        const {schema, Err} = rpcStore[method]
+        if (schema.input && !s.validate(schema.input, params))
+          throw Err(s.explain(schema.input, params))
+      },
+      sideEffect: true,
+    },
+    {
       name: 'beforeCallRpc',
       main({rpcStore}, req) {
         // TODO: we don't need to call every before, only those we want to validate
@@ -168,9 +184,11 @@ const defRpcEngineFactory = (
   const rpcStore = new Object() // to store rpc defination
 
   methods.forEach(rpc => {
-    const {NAME, permissions, main} = rpc
+    const {NAME, permissions, main, schema = {}} = rpc
     rpcStore[rpc.NAME] = {
+      Err: defError(() => `[${rpc.NAME}] `, identity),
       NAME,
+      schema,
       main: async (...args) => main(...args),
       permissions: perms.format(permissions),
     }

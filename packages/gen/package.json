@@ -5,7 +5,6 @@
   "main": "index.js",
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
-    "@cfxjs/checks": "workspace:packages/checks",
-    "@cfxjs/utils": "workspace:packages/utils"
+    "@cfxjs/checks": "workspace:packages/checks"
   }
 }
