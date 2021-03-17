@@ -758,6 +758,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cfxjs/account@workspace:packages/account":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/account@workspace:packages/account"
+  dependencies:
+    "@cfxjs/bytes": "workspace:packages/bytes"
+    "@cfxjs/keccak": "workspace:packages/keccak"
+    "@cfxjs/nat": "workspace:packages/nat"
+    "@cfxjs/rlp": "workspace:packages/rlp"
+    buffer: ^6.0.3
+    elliptic: ^6.5.4
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/associative@workspace:packages/associative":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/associative@workspace:packages/associative"
+  dependencies:
+    "@thi.ng/associative": ^5.1.6
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/bytes@workspace:packages/bytes":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/bytes@workspace:packages/bytes"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/checks@workspace:packages/checks":
   version: 0.0.0-use.local
   resolution: "@cfxjs/checks@workspace:packages/checks"
@@ -789,6 +816,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/gen@workspace:packages/gen":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/gen@workspace:packages/gen"
+  dependencies:
+    "@cfxjs/account": "workspace:packages/account"
+    "@cfxjs/checks": "workspace:packages/checks"
+    "@cfxjs/utils": "workspace:packages/utils"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/iterators@workspace:packages/iterators":
   version: 0.0.0-use.local
   resolution: "@cfxjs/iterators@workspace:packages/iterators"
@@ -803,10 +840,32 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/keccak@workspace:packages/keccak":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/keccak@workspace:packages/keccak"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/nat@workspace:packages/nat":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/nat@workspace:packages/nat"
+  dependencies:
+    "@cfxjs/bytes": "workspace:packages/bytes"
+    bn.js: ^5.2.0
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/rlp@workspace:packages/rlp":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/rlp@workspace:packages/rlp"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/rpc-engine@workspace:packages/rpc-engine":
   version: 0.0.0-use.local
   resolution: "@cfxjs/rpc-engine@workspace:packages/rpc-engine"
   dependencies:
+    "@cfxjs/associative": "workspace:packages/associative"
     "@cfxjs/checks": "workspace:packages/checks"
     "@cfxjs/compose": "workspace:packages/compose"
     "@cfxjs/csp": "workspace:packages/csp"
@@ -817,7 +876,7 @@ __metadata:
     "@thi.ng/compose": ^1.4.29
     "@thi.ng/csp": ^1.1.56
     ramda: ^0.27.1
-    utils: "workspace:packages/utils"
+    utils: "workspace:packages/inner-utils"
   languageName: unknown
   linkType: soft
 
@@ -829,9 +888,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/utils@workspace:packages/utils":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/utils@workspace:packages/utils"
+  dependencies:
+    randombytes: ^2.1.0
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_addNetwork@workspace:packages/rpcs/wallet_addNetwork":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_addNetwork@workspace:packages/rpcs/wallet_addNetwork"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/wallet_generatePrivateKey@workspace:packages/rpcs/wallet_generatePrivateKey":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_generatePrivateKey@workspace:packages/rpcs/wallet_generatePrivateKey"
+  dependencies:
+    "@cfxjs/account": "workspace:packages/account"
+    "@cfxjs/utils": "workspace:packages/utils"
   languageName: unknown
   linkType: soft
 
@@ -1454,6 +1530,32 @@ __metadata:
     "@thi.ng/errors": ^1.2.32
     "@thi.ng/random": ^2.3.6
   checksum: c07b068af15d7dcac0c3f6e9bdf5994cb43f5bb151c6f858a2e1a2028cb5ccf341632a0c3237ecab77f332c5fc92f51ecc5741ae22fc11f8d020d1ce2b9438ad
+  languageName: node
+  linkType: hard
+
+"@thi.ng/associative@npm:^5.1.6":
+  version: 5.1.6
+  resolution: "@thi.ng/associative@npm:5.1.6"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/binary": ^2.2.4
+    "@thi.ng/checks": ^2.9.5
+    "@thi.ng/compare": ^1.3.28
+    "@thi.ng/dcons": ^2.3.16
+    "@thi.ng/equiv": ^1.0.41
+    "@thi.ng/errors": ^1.2.32
+    "@thi.ng/transducers": ^7.6.6
+    tslib: ^2.1.0
+  checksum: 2f8b1648f89ebd39e21fdde3b57616d73d5f55b517278f7fe108081f71b5c11237a281ab4e36178987479ba700ed39fd821df9ed3261026b143cc2c7a0aa710f
+  languageName: node
+  linkType: hard
+
+"@thi.ng/binary@npm:^2.2.4":
+  version: 2.2.4
+  resolution: "@thi.ng/binary@npm:2.2.4"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+  checksum: bb3d46070548161a949365dc3f66e1fcd4689deb1d53324dbe63165ccb8b33287b5f2b7aca52bc343ce88dcf446151857e315f1f23922bd66d1788f3d5ebe17a
   languageName: node
   linkType: hard
 
@@ -2354,6 +2456,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base64-js@npm:^1.3.1":
+  version: 1.5.1
+  resolution: "base64-js@npm:1.5.1"
+  checksum: c1b41a26ddc6620eb7f1ee6c29c812f5942a4e328e74263f995872cfb8ca3aee08542beb25cd10fd7ef16e4f16603e25c35a26e776c01fd55277e5035e829e0e
+  languageName: node
+  linkType: hard
+
 "base@npm:^0.11.1":
   version: 0.11.2
   resolution: "base@npm:0.11.2"
@@ -2382,6 +2491,20 @@ __metadata:
   version: 1.6.48
   resolution: "big-integer@npm:1.6.48"
   checksum: 311f86a45e28513ddb12415082c5f437b868d80914bff71689a99e16f597beee5c0f12b0c9e65713b70b0516e6ed27f4006e256ea5393bfcf68bb18dc453f976
+  languageName: node
+  linkType: hard
+
+"bn.js@npm:^4.11.9":
+  version: 4.12.0
+  resolution: "bn.js@npm:4.12.0"
+  checksum: cfe7494de9c8a472c3534418f64f9c30a3f18134a8ad0c3ba4e0e934feb5d1a9110bba049a47ec6b79a1d649467df212f64ba6b22aaccbea0c3c208bef0b4110
+  languageName: node
+  linkType: hard
+
+"bn.js@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "bn.js@npm:5.2.0"
+  checksum: 7a73bdbba63013a7f9953fbbd6ea3351e4cf36d6fdbb5adf7969fcd65255b9c04f2994b0132d89d74ffe608a0eb5a48322526bee20c0e03e71e502603b420f63
   languageName: node
   linkType: hard
 
@@ -2431,6 +2554,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"brorand@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "brorand@npm:1.1.0"
+  checksum: 4536dd73f07f6884d89c09c906345b606abff477e87babef64a85656e8cf12b1c5f40d06313b91dac12bf3e031ac190b5d548f2c3bf75f655344c3fcf90cbc8a
+  languageName: node
+  linkType: hard
+
 "browser-extension@workspace:packages/browser-extension":
   version: 0.0.0-use.local
   resolution: "browser-extension@workspace:packages/browser-extension"
@@ -2476,6 +2606,16 @@ __metadata:
   version: 1.1.1
   resolution: "buffer-from@npm:1.1.1"
   checksum: 540ceb79c4f5bfcadaabbc18324fa84c50dc52905084be7c03596a339cf5a88513bee6831ce9b36ddd046fab09257a7c80686e129d0559a0cfd141da196ad956
+  languageName: node
+  linkType: hard
+
+"buffer@npm:^6.0.3":
+  version: 6.0.3
+  resolution: "buffer@npm:6.0.3"
+  dependencies:
+    base64-js: ^1.3.1
+    ieee754: ^1.2.1
+  checksum: a8cf6a58571dc7c43b24ab821ad4c72222d9040775f49fd143a30fad45f33ec0a8e0d572ca80d589ad4f8b4715aa012c029dc2b925dc95467f135c2d13d7abfb
   languageName: node
   linkType: hard
 
@@ -3365,6 +3505,21 @@ __metadata:
   version: 1.3.653
   resolution: "electron-to-chromium@npm:1.3.653"
   checksum: 339dc3dc42446c6fdd23d852d36c349ed7862db71ecdc9ebb5f928462410a2a964935e1a8270369cc3c62107a09e009f852d78f8bbf8a8300c06e0a71b3df28b
+  languageName: node
+  linkType: hard
+
+"elliptic@npm:^6.5.4":
+  version: 6.5.4
+  resolution: "elliptic@npm:6.5.4"
+  dependencies:
+    bn.js: ^4.11.9
+    brorand: ^1.1.0
+    hash.js: ^1.0.0
+    hmac-drbg: ^1.0.1
+    inherits: ^2.0.4
+    minimalistic-assert: ^1.0.1
+    minimalistic-crypto-utils: ^1.0.1
+  checksum: e0fb360fb6800666e0f69c837ae1f19656583322f81e106e458242055b8e241e80a48c92da8f1324684d1ff348751ff38abeadcfc1f28c54157c29d229d039a1
   languageName: node
   linkType: hard
 
@@ -4561,17 +4716,28 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
+"hash.js@npm:^1.0.0, hash.js@npm:^1.0.3":
+  version: 1.1.7
+  resolution: "hash.js@npm:1.1.7"
+  dependencies:
+    inherits: ^2.0.3
+    minimalistic-assert: ^1.0.1
+  checksum: fceb7fb87e224f4b399212f902d3a34c3ed8512560868b56dde92f617fac9c66b501e583bab2996ed7493be5ab3385e05a69d2209fa6a9144391b22e1c2d245b
+  languageName: node
+  linkType: hard
+
 "helios-background@*, helios-background@workspace:packages/background":
   version: 0.0.0-use.local
   resolution: "helios-background@workspace:packages/background"
   dependencies:
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
     "@cfxjs/wallet_addNetwork": "workspace:packages/rpcs/wallet_addNetwork"
+    "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey"
     "@cfxjs/wallet_initState": "workspace:packages/rpcs/wallet_initState"
     consts: "workspace:packages/consts"
     ramda: ^0.27.1
     regenerator-runtime: ^0.13.7
-    utils: "workspace:packages/utils"
+    utils: "workspace:packages/inner-utils"
     webextension-polyfill: ^0.7.0
     zustand: ^3.3.3
   languageName: unknown
@@ -4636,6 +4802,17 @@ fsevents@^2.1.2:
     tailwindcss: ^2.0.3
   languageName: unknown
   linkType: soft
+
+"hmac-drbg@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "hmac-drbg@npm:1.0.1"
+  dependencies:
+    hash.js: ^1.0.3
+    minimalistic-assert: ^1.0.0
+    minimalistic-crypto-utils: ^1.0.1
+  checksum: 729d5a55bf793619830aca5e62d101dfdb4164fe30c056cdcaecb32b1a69a23aa663d88e876d9d56cb69b1c3d95395ea60b0a715763c461188b37dca3dea930d
+  languageName: node
+  linkType: hard
 
 "hosted-git-info@npm:^2.1.4":
   version: 2.8.8
@@ -4726,6 +4903,13 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
+"ieee754@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "ieee754@npm:1.2.1"
+  checksum: 6c1cfab995ecab3b0dbb6cfb7e192686eb02f0f8e788f2d962e1fc02e2d5ab38a85e06d417221f136bd029663a77cdb920d99605d68d3730a05597dd7910426a
+  languageName: node
+  linkType: hard
+
 "ignore@npm:^4.0.6":
   version: 4.0.6
   resolution: "ignore@npm:4.0.6"
@@ -4800,7 +4984,7 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"inherits@npm:2, inherits@npm:^2.0.1, inherits@npm:^2.0.3, inherits@npm:~2.0.3":
+"inherits@npm:2, inherits@npm:^2.0.1, inherits@npm:^2.0.3, inherits@npm:^2.0.4, inherits@npm:~2.0.3":
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
   checksum: 98426da247ddfc3dcd7d7daedd90c3ca32d5b08deca08949726f12d49232aef94772a07b36cf4ff833e105ae2ef931777f6de4a6dd8245a216b9299ad4a50bea
@@ -6364,6 +6548,20 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
+"minimalistic-assert@npm:^1.0.0, minimalistic-assert@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "minimalistic-assert@npm:1.0.1"
+  checksum: 28f1de3cf9edfb82613428a58eb3dd38ec6d33ab761b98abf2d130c81104ea86be540c7e5eb8284f13e0a065ead8b17501de09419b9a98987ed27268ad538dba
+  languageName: node
+  linkType: hard
+
+"minimalistic-crypto-utils@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "minimalistic-crypto-utils@npm:1.0.1"
+  checksum: 736067bddd0e5036a1a4943abe7b63eb1dd0115ad87588420310d26a3d56fc4cd4694b7077fa102956c88d3922dbf7cbc5b7ffe749f27441d13c3e1b1133ab40
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^3.0.4":
   version: 3.0.4
   resolution: "minimatch@npm:3.0.4"
@@ -7474,6 +7672,15 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
+"randombytes@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "randombytes@npm:2.1.0"
+  dependencies:
+    safe-buffer: ^5.1.0
+  checksum: ede2693af09732ceab1c273dd70db787f34a7b8d95bab13f1aca763483c0113452a78e53d61ff18d393dcea586d388e01f198a5132a4a85cebba31ec54164b75
+  languageName: node
+  linkType: hard
+
 "react-dom@npm:^17.0.1":
   version: 17.0.1
   resolution: "react-dom@npm:17.0.1"
@@ -7918,7 +8125,7 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:~5.2.0":
+"safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.2, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: 0bb57f0d8f9d1fa4fe35ad8a2db1f83a027d48f2822d59ede88fd5cd4ddad83c0b497213feb7a70fbf90597a70c5217f735b0eb1850df40ce9b4ae81dd22b3f9
@@ -9206,9 +9413,9 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"utils@workspace:packages/utils":
+"utils@workspace:packages/inner-utils":
   version: 0.0.0-use.local
-  resolution: "utils@workspace:packages/utils"
+  resolution: "utils@workspace:packages/inner-utils"
   languageName: unknown
   linkType: soft
 

@@ -4,6 +4,7 @@
   "main": "index.js",
   "version": "0.0.0",
   "dependencies": {
+    "@cfxjs/associative": "workspace:packages/associative",
     "@cfxjs/checks": "workspace:packages/checks",
     "@cfxjs/compose": "workspace:packages/compose",
     "@cfxjs/csp": "workspace:packages/csp",
@@ -14,6 +15,6 @@
     "@thi.ng/compose": "^1.4.29",
     "@thi.ng/csp": "^1.1.56",
     "ramda": "^0.27.1",
-    "utils": "workspace:packages/utils"
+    "utils": "workspace:packages/inner-utils"
   }
 }

@@ -1,6 +1,5 @@
-/**
- * @fileOverview general utils for extension wallet
- * @name index.js
- */
+import randombytes from 'randombytes'
 
-export * from './env'
+export const randomHex = function (size) {
+  return '0x' + randombytes(size).toString('hex')
+}

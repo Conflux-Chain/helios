@@ -51,6 +51,8 @@ if (!IS_PROD_MODE) window.s = store
 
 // ## initialize rpc engine
 const {request} = defRpcEngine(store, rpcEngineOpts)
+
+// test
 ;(async () => {
   console.log(
     await browser.storage.local
@@ -63,6 +65,7 @@ const {request} = defRpcEngine(store, rpcEngineOpts)
         }),
       ),
   )
+  console.log(await request({method: 'wallet_generatePrivateKey'}))
   console.log(
     await request({method: 'wallet_addNetwork', params: BUILT_IN_NETWORKS}),
   )

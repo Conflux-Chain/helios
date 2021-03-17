@@ -8,11 +8,12 @@
   "dependencies": {
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine",
     "@cfxjs/wallet_addNetwork": "workspace:packages/rpcs/wallet_addNetwork",
+    "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey",
     "@cfxjs/wallet_initState": "workspace:packages/rpcs/wallet_initState",
     "consts": "workspace:packages/consts",
     "ramda": "^0.27.1",
     "regenerator-runtime": "^0.13.7",
-    "utils": "workspace:packages/utils",
+    "utils": "workspace:packages/inner-utils",
     "webextension-polyfill": "^0.7.0",
     "zustand": "^3.3.3"
   }

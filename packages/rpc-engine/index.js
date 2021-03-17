@@ -15,6 +15,8 @@ import {utils as rpcUtils} from '@cfxjs/json-rpc'
 import * as perms from './src/permissions'
 import {rpcErrorHandler} from './src/error'
 import {map} from '@cfxjs/iterators'
+import {isAsyncFunction} from '@cfxjs/checks'
+import {RpcEngineError} from './error'
 
 const request = (c, req = {}) => {
   const localChan = chan(1)
@@ -169,6 +171,10 @@ const defRpcEngineFactory = (
 
   methods.forEach(rpc => {
     const {NAME, permissions, main} = rpc
+    if (!isAsyncFunction(main))
+      throw RpcEngineError(
+        'main function of rpc defination must be a async function',
+      )
     rpcStore[rpc.NAME] = {
       NAME,
       main,

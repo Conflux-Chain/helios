@@ -2,7 +2,7 @@
  * @fileOverview fns to deal with rpc permissions
  * @name permissions.js
  */
-import mergeDeepLeft from 'ramda/es/mergeDeepLeft'
+import {mergeDeepObj} from '@cfxjs/associative'
 
 export const defaultPermissions = {
   methods: [],
@@ -10,7 +10,7 @@ export const defaultPermissions = {
 }
 
 export const format = (rpcPermissions = {}) =>
-  mergeDeepLeft(rpcPermissions, defaultPermissions)
+  mergeDeepObj(defaultPermissions, rpcPermissions)
 
 export const getRpc = (rpcStore, callerMethodName, callingMethodName) => {
   const {permissions} = rpcStore[callerMethodName]
