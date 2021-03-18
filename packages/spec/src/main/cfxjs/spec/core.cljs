@@ -1,6 +1,5 @@
 (ns cfxjs.spec.core
-  (:require [malli.core :as m]
-            [malli.generator :as mg]))
+  (:require [malli.core :as m]))
 
 (defn j->c [a] (js->clj a :keywordize-keys true))
 

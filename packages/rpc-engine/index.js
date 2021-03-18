@@ -9,7 +9,7 @@ import {applyTransducer, chan} from '@cfxjs/csp'
 import {defError} from '@cfxjs/errors'
 import {map} from '@cfxjs/iterators'
 import {utils as rpcUtils} from '@cfxjs/json-rpc'
-import s from '@cfxjs/spec'
+import {validate, explain} from '@cfxjs/spec'
 import {
   comp as txComp,
   map as txMap,
@@ -126,8 +126,8 @@ const rpcHandlers = {
       main({rpcStore}, req) {
         const {params, method} = req
         const {schema, Err} = rpcStore[method]
-        if (schema.input && !s.validate(schema.input, params))
-          throw Err(s.explain(schema.input, params))
+        if (schema.input && !validate(schema.input, params))
+          throw Err(explain(schema.input, params))
       },
       sideEffect: true,
     },

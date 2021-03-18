@@ -931,14 +931,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_updatePassword@workspace:packages/rpcs/wallet_updatePassword":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_updatePassword@workspace:packages/rpcs/wallet_updatePassword"
-  dependencies:
-    "@cfxjs/checks": "workspace:packages/checks"
-  languageName: unknown
-  linkType: soft
-
 "@cnakazawa/watch@npm:^1.0.3":
   version: 1.0.4
   resolution: "@cnakazawa/watch@npm:1.0.4"

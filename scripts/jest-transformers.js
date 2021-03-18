@@ -21,10 +21,11 @@ module.exports = {
         ...transformOptions,
         filename: path,
         jsc: {
-          target: 'es2020',
+          externalHelpers: false,
+          parser: {},
+          // target: 'es2020',
           loose: false,
           transform: {
-            //@ts-ignore
             hidden: {
               jest: true,
             },

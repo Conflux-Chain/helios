@@ -2,7 +2,7 @@
  * @fileOverview rpc defination of wallet_initState
  * @name index.js
  */
-import s from '@cfxjs/spec'
+import {map, mapp} from '@cfxjs/spec'
 
 export const NAME = 'wallet_initState'
 
@@ -13,10 +13,10 @@ export const permissions = {
 
 export const schemas = {
   input: [
-    s.map,
-    s.closed,
-    ['oldState', s.optional, s.mapp],
-    ['initState', s.optional, s.mapp],
+    map,
+    {closed: true},
+    ['oldState', {optional: true}, mapp],
+    ['initState', {optional: true}, mapp],
   ],
 }
 
