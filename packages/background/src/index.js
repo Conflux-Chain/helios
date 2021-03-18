@@ -69,4 +69,9 @@ const {request} = defRpcEngine(store, rpcEngineOpts)
   console.log(
     await request({method: 'wallet_addNetwork', params: BUILT_IN_NETWORKS}),
   )
+  console.log(
+    await request({
+      method: 'wallet_generateMnemonic',
+    }),
+  )
 })()

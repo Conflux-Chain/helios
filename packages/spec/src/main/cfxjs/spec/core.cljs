@@ -21,10 +21,15 @@
     (clj->js rst)))
 
 (defn def-rest-schemas [opts]
-  (let [{:keys [createAccount]} (j->c opts)
+  (let [{:keys [createAccount validateMnemonic generateMnemonic]} (j->c opts)
         ;; randomPk (comp createAccount j->c :privateKey clj->js)
         randomAddr (comp createAccount j->c :address clj->js)]
-    {:hexAddress (m/-simple-schema
+    {:mnemonic (m/-simple-schema
+                {:type :mnemonic
+                 :pred #(and (string? %) (validateMnemonic %))
+                 :type-properties {:error/message "should be a valid mnemonic"}
+                 :gen/gen generateMnemonic})
+     :hexAddress (m/-simple-schema
                   {:type :hexAddress
                    :pred #(re-matches #"^0x[0-9a-fA-F]{40}$" %)
                    :type-properties {:error/message "should be a valid hex address"}
@@ -39,6 +44,8 @@
                            :pred #(re-matches #"^0x0[0-9a-fA-F]{39}$" %)
                            :type-properties {:error/message "should be a valid hex contract address"}
                            :gen/gen (comp randomAddr #(.replace % #"0x\d" "0x8"))})}))
+
+(def Password [:string {:min 8 :max 128}])
 
 (comment
   (m/validate [:? int?] 1)
@@ -162,5 +169,6 @@
     ;; :arrayOf array-of
     :k keyword
 
+    :password Password
     ;; :tap tap>
     })

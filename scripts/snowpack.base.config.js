@@ -31,7 +31,7 @@ module.exports = {
   packageOptions: {
     source: 'local',
     env,
-    // polyfillNode: true
+    polyfillNode: true,
   },
   devOptions: {
     open: 'none',

@@ -885,6 +885,7 @@ __metadata:
   resolution: "@cfxjs/spec@workspace:packages/spec"
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
+    bip39: ^3.0.3
     highlight.js: 9.18.1
     react: 16.14.0
     react-dom: 16.14.0
@@ -915,11 +916,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_generateMnemonic@workspace:packages/rpcs/wallet_generateMnemonic":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_generateMnemonic@workspace:packages/rpcs/wallet_generateMnemonic"
+  dependencies:
+    bip39: ^3.0.3
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_generatePrivateKey@workspace:packages/rpcs/wallet_generatePrivateKey":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_generatePrivateKey@workspace:packages/rpcs/wallet_generatePrivateKey"
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
@@ -1808,6 +1825,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:11.11.6":
+  version: 11.11.6
+  resolution: "@types/node@npm:11.11.6"
+  checksum: 2b64bfc2344f60fdcf3baea2f9f2e065189cee3a6144d3dbdcb32cb6728dd64933808e2da8bd4d69033f04510f7de1397c08d54d8f89d505b3a957b24dcc583f
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.0
   resolution: "@types/normalize-package-data@npm:2.4.0"
@@ -2532,6 +2556,18 @@ __metadata:
   version: 1.6.48
   resolution: "big-integer@npm:1.6.48"
   checksum: 311f86a45e28513ddb12415082c5f437b868d80914bff71689a99e16f597beee5c0f12b0c9e65713b70b0516e6ed27f4006e256ea5393bfcf68bb18dc453f976
+  languageName: node
+  linkType: hard
+
+"bip39@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "bip39@npm:3.0.3"
+  dependencies:
+    "@types/node": 11.11.6
+    create-hash: ^1.1.0
+    pbkdf2: ^3.0.9
+    randombytes: ^2.0.1
+  checksum: 948443cd3713921ea1a5a5d15b52cd62280d0c30fc4a5cee3df261567808cde5e11622c0d34bccee8fadefdffa7db4244682a5567be6b9f70e195948b9d23bf8
   languageName: node
   linkType: hard
 
@@ -5008,6 +5044,7 @@ fsevents@^2.1.2:
   dependencies:
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
     "@cfxjs/wallet_addNetwork": "workspace:packages/rpcs/wallet_addNetwork"
+    "@cfxjs/wallet_generateMnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
     "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey"
     "@cfxjs/wallet_initState": "workspace:packages/rpcs/wallet_initState"
     consts: "workspace:packages/consts"
@@ -7682,7 +7719,7 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"pbkdf2@npm:^3.0.3":
+"pbkdf2@npm:^3.0.3, pbkdf2@npm:^3.0.9":
   version: 3.1.1
   resolution: "pbkdf2@npm:3.1.1"
   dependencies:

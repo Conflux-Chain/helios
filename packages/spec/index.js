@@ -1,12 +1,18 @@
 import spec from './src/spec'
 
 import {create as createAccount} from '@cfxjs/account'
+import {validateMnemonic, generateMnemonic} from 'bip39'
 
 export const {
   hexAddress,
   hexAccountAddress,
   hexContractAddress,
-} = spec.defRestSchemas({createAccount})
+  mnemonic,
+} = spec.defRestSchemas({
+  createAccount,
+  validateMnemonic,
+  generateMnemonic,
+})
 
 export const defRestSchemas = spec.defRestSchemas
 export const anyp = spec.anyp
@@ -104,3 +110,4 @@ export const raw = spec.raw - schema
 export const validate = spec.validate
 export const explain = spec.explain
 export const k = spec.k
+export const password = spec.password

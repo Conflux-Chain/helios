@@ -54,7 +54,7 @@ const toChecksum = address => {
 }
 
 const fromPrivate = privateKey => {
-  const buffer = new Buffer(privateKey.slice(2), 'hex')
+  const buffer = Buffer.from(privateKey.slice(2), 'hex')
   const ecKey = secp256k1.keyFromPrivate(buffer)
   const publicKey = '0x' + ecKey.getPublic(false, 'hex').slice(2)
   const publicHash = keccak256(publicKey)
