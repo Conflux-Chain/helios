@@ -6,7 +6,7 @@ import {mergeDeepObj} from '@cfxjs/associative'
 
 export const defaultPermissions = {
   methods: [],
-  store: {set: false, get: false},
+  store: {write: false, read: false},
 }
 
 export const format = (rpcPermissions = {}) =>
@@ -25,9 +25,9 @@ export const getWalletStore = (rpcStore, walletStore, methodName) => {
   const {getState, setState} = walletStore
 
   const protectedStore = {}
-  if (rpcStore[methodName].permissions.store.get)
+  if (rpcStore[methodName].permissions.store.read)
     protectedStore.getState = getState
-  if (rpcStore[methodName].permissions.store.set)
+  if (rpcStore[methodName].permissions.store.write)
     protectedStore.setState = setState
 
   return protectedStore

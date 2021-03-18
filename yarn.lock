@@ -927,8 +927,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_initState@workspace:packages/rpcs/wallet_initState"
   dependencies:
-    "@cfxjs/checks": "workspace:packages/checks"
     "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/wallet_updatePassword@workspace:packages/rpcs/wallet_updatePassword":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_updatePassword@workspace:packages/rpcs/wallet_updatePassword"
+  dependencies:
+    "@cfxjs/checks": "workspace:packages/checks"
   languageName: unknown
   linkType: soft
 

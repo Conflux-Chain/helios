@@ -36,6 +36,7 @@ module.exports = {
     '/packages/consts',
     '/packages/utils',
     '/packages/utils/env.js',
+    '/packages/spec/',
   ],
 
   // Indicates which provider should be used to instrument code for coverage

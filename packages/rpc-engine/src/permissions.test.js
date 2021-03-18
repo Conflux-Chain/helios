@@ -8,9 +8,9 @@ describe('permissions', function () {
         ...defaultPermissions,
         methods: ['cfx_mockRpc'],
       })
-      expect(format({store: {get: true}})).toStrictEqual({
+      expect(format({store: {read: true}})).toStrictEqual({
         ...defaultPermissions,
-        store: {...defaultPermissions.store, get: true},
+        store: {...defaultPermissions.store, read: true},
       })
     })
   })
@@ -52,7 +52,7 @@ describe('permissions', function () {
           getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').setState,
         ).toBeUndefined()
 
-        rpcStore.cfx_mockRpc.permissions.store.get = true
+        rpcStore.cfx_mockRpc.permissions.store.read = true
         expect(
           getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').getState,
         ).toBeDefined()
@@ -62,7 +62,7 @@ describe('permissions', function () {
         getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').getState(1)
         expect(walletStore.getState).toBeCalledWith(1)
 
-        rpcStore.cfx_mockRpc.permissions.store.set = true
+        rpcStore.cfx_mockRpc.permissions.store.write = true
         expect(
           getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').getState,
         ).toBeDefined()
