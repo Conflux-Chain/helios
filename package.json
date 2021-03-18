@@ -9,11 +9,10 @@
     "node": ">=15"
   },
   "scripts": {
-    "postinstall": "husky install",
+    "postinstall": "husky install && yarn run prod:spec",
     "compile:inpage": "swc --config-file scripts/inpage.swcrc.json -o packages/browser-extension/build/inpage/dist/index.js -s true packages/browser-extension/build/inpage/dist/index.js",
     "dev": "cross-env NODE_ENV=development node scripts/dev.js",
     "prod-all": "node scripts/prod.js",
-    "prepare": "yarn run prod:spec",
     "prod:spec": "yarn workspace @cfxjs/spec build",
     "prod": "cross-env NODE_ENV=production run-s prod-all compile:inpage",
     "lint": "eslint  --ignore-path .gitignore packages",

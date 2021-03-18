@@ -4,21 +4,20 @@
  */
 
 // # rpc engine
-import {chan, applyTransducer} from '@cfxjs/csp'
+import {identity} from '@cfxjs/compose'
+import {applyTransducer, chan} from '@cfxjs/csp'
+import {defError} from '@cfxjs/errors'
+import {map} from '@cfxjs/iterators'
+import {utils as rpcUtils} from '@cfxjs/json-rpc'
+import s from '@cfxjs/spec'
 import {
   comp as txComp,
-  sideEffect as txSideEffect,
   map as txMap,
+  sideEffect as txSideEffect,
 } from '@cfxjs/transducers'
 import {partial} from '@thi.ng/compose'
-import {utils as rpcUtils} from '@cfxjs/json-rpc'
-import * as perms from './src/permissions'
 import {rpcErrorHandler} from './src/error'
-import {map} from '@cfxjs/iterators'
-import s from '@cfxjs/spec'
-
-import {defError} from '@cfxjs/errors'
-import {identity} from '@cfxjs/compose'
+import * as perms from './src/permissions'
 
 export const RpcEngineError = defError(() => '[@cfxjs/rpc-engin] ', identity)
 
