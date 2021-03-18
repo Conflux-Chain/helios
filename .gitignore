@@ -230,6 +230,8 @@ $RECYCLE.BIN/
 /packages/popup/index.html
 /packages/browser-extension/manifest.json
 /packages/browser-extension/popup.html
-packages/popup/public/index.html
+/packages/popup/public/index.html
 .env.*.local
 .env.local
+
+/packages/spec/**/*.js

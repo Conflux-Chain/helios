@@ -19,8 +19,6 @@
 
 (defn explain [schema data]
   (let [rst (m/explain (j->c schema) (js->clj data))]
-    (when goog.DEBUG (tap> rst))
-    (when goog.DEBUG (tap> (j->c schema)))
     (clj->js rst)))
 
 (defn def-rest-schemas [opts]
@@ -165,4 +163,5 @@
     ;; :arrayOf array-of
     :k keyword
 
-    :tap tap>})
+    ;; :tap tap>
+    })
