@@ -1,3 +1,4 @@
+import {expect} from '@jest/globals'
 import {defaultPermissions, format, getRpc, getWalletStore} from './permissions'
 
 describe('permissions', function () {

@@ -1,3 +1,4 @@
+import {expect} from '@jest/globals'
 import {rpcErrorHandler} from './error'
 
 describe('error', function () {

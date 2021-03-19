@@ -1,3 +1,4 @@
+import {expect} from '@jest/globals'
 import {defRpcEngine} from './index'
 
 describe('RPCEngine', function () {

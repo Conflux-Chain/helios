@@ -65,7 +65,12 @@ const {request} = defRpcEngine(store, rpcEngineOpts)
         }),
       ),
   )
-  console.log(await request({method: 'wallet_generatePrivateKey'}))
+  console.log(
+    await request({
+      method: 'wallet_generatePrivateKey',
+      params: {entropy: 'abc'},
+    }),
+  )
   console.log(
     await request({method: 'wallet_addNetwork', params: BUILT_IN_NETWORKS}),
   )
