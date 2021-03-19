@@ -4,8 +4,8 @@
 ((nil . ((eval defun +insert-jest-expect ()
                (save-excursion
                  (goto-char (point-min))
-                 (when (not (re-search-forward "import.*expect.*from.*@jest/globals" (point-max) t))
-                   (insert "import {expect, describe, it} from '@jest/globals'\n"))))
+                 (when (not (re-search-forward "from.*@jest/globals" (point-max) t))
+                   (insert "// eslint-disable-next-line no-unused-vars\nimport {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore\n"))))
          (eval defun +jest-test-file-p ()
                (and (buffer-file-name) (string-match-p "\\.\\(spec\\|test\\)\\.js" (buffer-file-name))))
          (eval defun +ensure-jest-expect ()

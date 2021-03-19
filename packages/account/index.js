@@ -75,8 +75,8 @@ const decodeSignature = hex => [
 
 const makeSigner = addToV => (hash, privateKey) => {
   const signature = secp256k1
-    .keyFromPrivate(new Buffer(privateKey.slice(2), 'hex'))
-    .sign(new Buffer(hash.slice(2), 'hex'), {canonical: true})
+    .keyFromPrivate(Buffer.from(privateKey.slice(2), 'hex'))
+    .sign(Buffer.from(hash.slice(2), 'hex'), {canonical: true})
   return encodeSignature([
     Nat.fromString(Bytes.fromNumber(addToV + signature.recoveryParam)),
     Bytes.pad(32, Bytes.fromNat('0x' + signature.r.toString(16))),
@@ -94,7 +94,7 @@ const recover = (hash, signature) => {
     s: vals[2].slice(2),
   }
   const ecPublicKey = secp256k1.recoverPubKey(
-    new Buffer(hash.slice(2), 'hex'),
+    Buffer.from(hash.slice(2), 'hex'),
     vrs,
     vrs.v < 2 ? vrs.v : 1 - (vrs.v % 2),
   ) // because odd vals mean v=0... sadly that means v=0 means v=1... I hate that

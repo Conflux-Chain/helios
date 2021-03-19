@@ -1,4 +1,5 @@
-import {expect} from '@jest/globals'
+// eslint-disable-next-line no-unused-vars
+import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {defaultPermissions, format, getRpc, getWalletStore} from './permissions'
 
 describe('permissions', function () {
