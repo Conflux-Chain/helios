@@ -1,9 +1,16 @@
-import {main, NAME} from './'
+import {main, schemas} from './'
+import {validate} from '@cfxjs/spec'
 
 describe('wallet_initState', () => {
-  describe('NAME', function () {
-    it('should be right', async function () {
-      expect(NAME).toBe('wallet_initState')
+  describe('schema', function () {
+    it('should validate the data on schema', async function () {
+      expect(validate(schemas.input, {oldState: {}})).toBeTruthy()
+      expect(
+        validate(schemas.input, {oldState: {}, initState: {}}),
+      ).toBeTruthy()
+      expect(validate(schemas.input, {})).toBeTruthy()
+      expect(validate(schemas.input, {oldState: undefined})).toBeFalsy()
+      expect(validate(schemas.input, {initState: 'str'})).toBeFalsy()
     })
   })
 

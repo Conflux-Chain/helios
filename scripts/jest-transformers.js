@@ -19,7 +19,7 @@ module.exports = {
     if (/\.(t|j)sx?$/.test(path)) {
       return transformSync(src, {
         ...transformOptions,
-        filename: path,
+        filename: path.endsWith('packages/spec/src/spec.js') ? undefined : path,
         jsc: {
           externalHelpers: false,
           parser: {},

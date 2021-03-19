@@ -1,4 +1,4 @@
-import spec from './src/spec'
+import spec from './src/spec.js'
 
 import {create as createAccount} from '@cfxjs/account'
 import {validateMnemonic, generateMnemonic} from 'bip39'
