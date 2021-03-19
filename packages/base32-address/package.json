@@ -1,0 +1,9 @@
+{
+  "name": "@cfxjs/base32-address",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/base32": "workspace:packages/base32"
+  }
+}
