@@ -24,6 +24,7 @@
   (let [{:keys [createAccount validateMnemonic generateMnemonic]} (j->c opts)
         ;; randomPk (comp createAccount j->c :privateKey clj->js)
         randomAddr (comp createAccount j->c :address clj->js)]
+    #js
     {:mnemonic (m/-simple-schema
                 {:type :mnemonic
                  :pred #(and (string? %) (validateMnemonic %))

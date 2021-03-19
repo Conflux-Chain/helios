@@ -19,7 +19,9 @@ module.exports = {
     if (/\.(t|j)sx?$/.test(path)) {
       return transformSync(src, {
         ...transformOptions,
-        filename: path.endsWith('packages/spec/src/spec.js') ? undefined : path,
+        // when filename not specified, swc won't read configs from swcrc, which
+        // we don't need here for transforming files for jest
+        // filename: path.endsWith('packages/spec/src/spec.js') ? undefined : path,
         jsc: {
           externalHelpers: false,
           parser: {},
