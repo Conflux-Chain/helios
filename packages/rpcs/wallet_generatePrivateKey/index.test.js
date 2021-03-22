@@ -1,6 +1,8 @@
-import {expect} from '@jest/globals'
+// eslint-disable-next-line no-unused-vars
+import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {validate} from '@cfxjs/spec'
-import {schemas} from './'
+import {schemas, main} from './'
+import {randomPrivateKey, validatePrivateKey} from '@cfxjs/account'
 
 describe('wallet_generatePrivateKey', function () {
   describe('schemas', function () {
@@ -9,6 +11,13 @@ describe('wallet_generatePrivateKey', function () {
       expect(validate(schemas.input, {})).toBe(true)
       expect(validate(schemas.input, {entropy: 'abc'})).toBe(true)
       expect(validate(schemas.input, {entropy: 123})).toBe(false)
+      expect(validate(schemas.output, randomPrivateKey())).toBe(true)
+    })
+  })
+
+  describe('main', function () {
+    it('should return a valid private key', async function () {
+      expect(validatePrivateKey(await main())).toBe(true)
     })
   })
 })

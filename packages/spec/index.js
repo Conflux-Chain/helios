@@ -13,6 +13,7 @@ export const {
   hexAccountAddress,
   hexContractAddress,
   mnemonic,
+  privateKey,
 } = spec.defRestSchemas({
   validatePrivateKey,
   randomHexAddress,
