@@ -12,6 +12,9 @@
  :builds
  {:app {:target :esm
         :output-dir "src"
+        :compiler-options {:cross-chunk-method-motion false}
         :modules {:shared {}
                   :spec {:exports {default cfxjs.spec.core/exports}
-                         :depends-on #{:shared}} }}}}
+                         :depends-on #{:shared}}
+                  :gen {:exports {gen cfxjs.spec.gen/gen}
+                        :depends-on #{:shared :spec}}}}}}
