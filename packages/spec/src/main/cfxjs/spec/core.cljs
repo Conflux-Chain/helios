@@ -21,30 +21,51 @@
     (clj->js rst)))
 
 (defn def-rest-schemas [opts]
-  (let [{:keys [createAccount validateMnemonic generateMnemonic]} (j->c opts)
-        ;; randomPk (comp createAccount j->c :privateKey clj->js)
-        randomAddr (comp createAccount j->c :address clj->js)]
+  (let [{:keys [randomHexAddress randomPrivateKey validateMnemonic generateMnemonic validatePrivateKey]} (j->c opts)]
     #js
     {:mnemonic (m/-simple-schema
                 {:type :mnemonic
                  :pred #(and (string? %) (validateMnemonic %))
                  :type-properties {:error/message "should be a valid mnemonic"}
                  :gen/gen generateMnemonic})
+     :privateKey (m/-simple-schema
+                  {:type :privateKey
+                   :pred #(validatePrivateKey %)
+                   :type-properties {:error/message "invalid private key"}
+                   :gen/gen randomPrivateKey})
      :hexAddress (m/-simple-schema
                   {:type :hexAddress
                    :pred #(re-matches #"^0x[0-9a-fA-F]{40}$" %)
-                   :type-properties {:error/message "should be a valid hex address"}
-                   :gen/gen randomAddr})
+                   :type-properties {:error/message "invalid hex address"}
+                   :gen/gen randomHexAddress})
      :hexAccountAddress (m/-simple-schema
                          {:type :hexAccountAddress
                           :pred #(re-matches #"^0x8[0-9a-fA-F]{39}$" %)
-                          :type-properties {:error/message "should be a valid hex account address"}
-                          :gen/gen (comp randomAddr #(.replace % #"0x\d" "0x1"))})
+                          :type-properties {:error/message "invalid hex account address, should be start with 0x1"}
+                          :gen/gen (comp randomHexAddress #(.replace % #"0x\d" "0x1"))})
      :hexContractAddress (m/-simple-schema
                           {:type :hexContractAddress
                            :pred #(re-matches #"^0x0[0-9a-fA-F]{39}$" %)
-                           :type-properties {:error/message "should be a valid hex contract address"}
-                           :gen/gen (comp randomAddr #(.replace % #"0x\d" "0x8"))})}))
+                           :type-properties {:error/message "invalid hex contract address, should be start with 0x8"}
+                           :gen/gen (comp randomHexAddress #(.replace % #"0x\d" "0x8"))})}))
+
+(defn def-base32-address-schema
+  ([pred gen network-id-or-type] (def-base32-address-schema pred gen network-id-or-type nil))
+  ([pred gen network-id-or-type-1 network-id-or-type-2]
+   (let [network-id (cond (number? network-id-or-type-1) network-id-or-type-1
+                          (number? network-id-or-type-2) network-id-or-type-2
+                          :else nil)
+         address-type (cond (string? network-id-or-type-1) network-id-or-type-1
+                            (string? network-id-or-type-2) network-id-or-type-2
+                            :else nil)
+         network-id-str (if network-id (str "-" (.toString network-id)) "")
+         address-type-str (if address-type (str "-" address-type) "")
+         type (keyword (str "base32Address" network-id-str address-type-str))]
+     (m/-simple-schema
+      {:type type
+       :pred #(pred % address-type network-id)
+       :type-properties {:error/message "invalid base32 address"}
+       :gen/gen #(gen network-id address-type)}))))
 
 (def Password [:string {:min 8 :max 128}])
 
@@ -55,6 +76,7 @@
   #js
    {;; factory for schemas that needs helper functions from js side
     :defRestSchemas def-rest-schemas
+    :defBase32AddressSchema def-base32-address-schema
     ;; pred schemas
     :anyp any?
     :some some?

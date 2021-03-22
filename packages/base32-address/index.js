@@ -4,6 +4,7 @@ import {
   toWords,
   fromWords,
 } from '@cfxjs/base32'
+import {randomHexAddress} from '@cfxjs/account'
 
 const VERSION_BYTE = 0
 const NET_ID_LIMIT = 0xffffffff
@@ -149,17 +150,17 @@ export function decode(address) {
   return returnValue
 }
 
-export function validateBase32Address(address) {
+export function validateBase32Address(address, ...args) {
   let netId, type, decoded
 
   let valid = false
 
-  if (arguments[1] !== undefined) {
-    if (typeof arguments[1] === 'number') netId = arguments[1]
-    if (typeof arguments[1] === 'string') type = arguments[1]
-    if (arguments[2] !== undefined) {
-      if (typeof arguments[2] === 'number') netId = arguments[2]
-      if (typeof arguments[2] === 'string') type = arguments[2]
+  if (args[0] !== undefined) {
+    if (typeof args[0] === 'number') netId = args[0]
+    if (typeof args[0] === 'string') type = args[0]
+    if (args[1] !== undefined) {
+      if (typeof args[1] === 'number') netId = args[1]
+      if (typeof args[1] === 'string') type = args[1]
     }
   }
 
@@ -173,4 +174,27 @@ export function validateBase32Address(address) {
   }
 
   return valid
+}
+
+export const randomBase32Address = (...args) => {
+  let netId, type
+
+  if (args[0] !== undefined) {
+    if (typeof args[0] === 'number') netId = args[0]
+    if (typeof args[0] === 'string') type = args[0]
+    if (args[1] !== undefined) {
+      if (typeof args[1] === 'number') netId = args[1]
+      if (typeof args[1] === 'string') type = args[1]
+    }
+  }
+
+  if (type === undefined) type = 'user'
+  if (netId === undefined) netId = 1029
+
+  const hexAddress = randomHexAddress()
+  if (type === 'user') hexAddress.replace(/0x\d/, '0x1')
+  else if (type === 'contract') hexAddress.replace(/0x\d/, '0x8')
+  else if (type === 'builtin') hexAddress.replace(/0x\d/, '0x0')
+
+  return encode(hexAddress, netId)
 }

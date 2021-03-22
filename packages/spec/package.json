@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
+    "@cfxjs/base32-address": "workspace:packages/base32-address",
     "bip39": "^3.0.3",
     "highlight.js": "9.18.1",
     "react": "16.14.0",

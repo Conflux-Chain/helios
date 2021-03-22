@@ -104,6 +104,26 @@ const recover = (hash, signature) => {
   return address
 }
 
+export const randomHexAddress = entropy => {
+  return create(entropy).address
+}
+
+export const randomPrivateKey = entropy => {
+  return create(entropy).privateKey
+}
+
+export const validatePrivateKey = privateKey => {
+  let valid = false
+  try {
+    const rst = fromPrivate(privateKey)
+    valid = Boolean(rst.address)
+  } catch (err) {
+    valid = false
+  }
+
+  return valid
+}
+
 export {
   create,
   toChecksum,

@@ -1,7 +1,12 @@
 import spec from './src/spec.js'
 
-import {create as createAccount} from '@cfxjs/account'
+import {
+  randomHexAddress,
+  randomPrivateKey,
+  validatePrivateKey,
+} from '@cfxjs/account'
 import {validateMnemonic, generateMnemonic} from 'bip39'
+import {validateBase32Address, randomBase32Address} from '@cfxjs/base32-address'
 
 export const {
   hexAddress,
@@ -9,10 +14,20 @@ export const {
   hexContractAddress,
   mnemonic,
 } = spec.defRestSchemas({
-  createAccount,
+  validatePrivateKey,
+  randomHexAddress,
+  randomPrivateKey,
   validateMnemonic,
   generateMnemonic,
 })
+
+export const defBase32AddressSchema = (...args) => {
+  return spec.defBase32AddressSchema(
+    validateBase32Address,
+    randomBase32Address,
+    ...args,
+  )
+}
 
 export const defRestSchemas = spec.defRestSchemas
 export const anyp = spec.anyp
