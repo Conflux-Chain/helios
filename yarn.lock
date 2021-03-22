@@ -937,6 +937,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_addVault@workspace:packages/rpcs/wallet_addVault":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_addVault@workspace:packages/rpcs/wallet_addVault"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+    browser-passworder: ^2.0.3
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_generateMnemonic@workspace:packages/rpcs/wallet_generateMnemonic":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_generateMnemonic@workspace:packages/rpcs/wallet_generateMnemonic"
@@ -953,6 +962,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_getVaults@workspace:packages/rpcs/wallet_getVaults":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_getVaults@workspace:packages/rpcs/wallet_getVaults"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic"
@@ -966,6 +983,15 @@ __metadata:
   resolution: "@cfxjs/wallet_initState@workspace:packages/rpcs/wallet_initState"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/wallet_validatePassword@workspace:packages/rpcs/wallet_validatePassword":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_validatePassword@workspace:packages/rpcs/wallet_validatePassword"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+    browser-passworder: ^2.0.3
   languageName: unknown
   linkType: soft
 
@@ -2676,6 +2702,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"browser-passworder@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "browser-passworder@npm:2.0.3"
+  dependencies:
+    browserify-unibabel: ^3.0.0
+  checksum: f1c4f73f833b5d5c5aa9b13a70cd34ad371adf358824c7b6d0c8e1cbc87b5f810e11d0cf554da2468ee02e2fc774a1b52a5c7bd1c337fd52aaa7185641d86a98
+  languageName: node
+  linkType: hard
+
 "browser-process-hrtime@npm:^1.0.0":
   version: 1.0.0
   resolution: "browser-process-hrtime@npm:1.0.0"
@@ -2744,6 +2779,13 @@ __metadata:
     readable-stream: ^3.6.0
     safe-buffer: ^5.2.0
   checksum: 931127b9c50c1223eef5e99c431db609fa55eef7ee3af878e891ee01649f5e62ed81c3e88b6cc51c33f972ef7f5a4342ede74334c57c5c6edb90b24c968aa06c
+  languageName: node
+  linkType: hard
+
+"browserify-unibabel@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "browserify-unibabel@npm:3.0.0"
+  checksum: a38dda3c6689760e2895e1cf624f540eb55602551ef4c077b6c4e009aafd6071f265d4d7f607313a6f6b0142bb086477b98238dd70f4fa9c6fc760631622b5ba
   languageName: node
   linkType: hard
 

@@ -30,6 +30,9 @@ export const defBase32AddressSchema = (...args) => {
   )
 }
 
+export const base32AccountMainnetAddress = defBase32AddressSchema('user', 1029)
+export const base32AccountTestnetAddress = defBase32AddressSchema('user', 1)
+
 export const defRestSchemas = spec.defRestSchemas
 export const anyp = spec.anyp
 export const some = spec.some
