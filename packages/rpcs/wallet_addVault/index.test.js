@@ -36,7 +36,7 @@ describe('@cfxjs/wallet_addVault', function () {
 
     beforeEach(function () {
       input = {
-        Err: (...args) => new Error(...args),
+        Err: Error,
         rpcs: {wallet_validatePassword: jest.fn(() => true)},
         params: {password: '11111111', mnemonic: 'abc'},
         getWalletState: jest.fn(() => ({Vaults: []})),

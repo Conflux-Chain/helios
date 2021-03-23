@@ -3,7 +3,6 @@ import 'regenerator-runtime/runtime'
 import {defRpcEngine} from '@cfxjs/rpc-engine'
 import {EXT_STORAGE} from 'consts'
 import apply from 'ramda/es/apply'
-import identity from 'ramda/es/identity'
 import partialRight from 'ramda/es/partialRight'
 import pipe from 'ramda/es/pipe'
 import {IS_PROD_MODE} from 'utils'
@@ -12,19 +11,23 @@ import {persist} from 'zustand/middleware'
 import create from 'zustand/vanilla'
 
 import {rpcEngineOpts} from './rpc-engine-opts'
-import {BUILT_IN_NETWORKS} from './network/config'
+// import {BUILT_IN_NETWORKS} from './network/config'
 
+let MemStore = null
 // # initialize
 // ## initialize store middle
 const persistToExtensionStorage = partialRight(persist, [
   {
     name: EXT_STORAGE,
-    serialize: identity,
-    deserialize: identity,
+    serialize: store => (
+      (MemStore = store.state.MemStore), {...store.state, MemStore: null}
+    ),
+    deserialize: store => ({...store[EXT_STORAGE], MemStore}),
     getStorage: () => ({
       getItem: browser.storage.local.get,
       setItem(k, v) {
-        return browser.storage.local.set({[k]: v.state})
+        // k is EXT_STORAGE, v is the store with MemStore=null
+        return browser.storage.local.set({[k]: v})
       },
     }),
   },
@@ -61,7 +64,10 @@ const {request} = defRpcEngine(store, rpcEngineOpts)
       .then(s =>
         request({
           method: 'wallet_initState',
-          params: {oldState: s, initState: {a: 1}},
+          params: {
+            oldState: s,
+            initState: {a: 1, MemStore: {password: 'jjjj'}},
+          },
         }),
       ),
   )
@@ -72,11 +78,19 @@ const {request} = defRpcEngine(store, rpcEngineOpts)
     }),
   )
   console.log(
-    await request({method: 'wallet_addNetwork', params: BUILT_IN_NETWORKS}),
+    await request({
+      method: 'wallet_generateMnemonic',
+    }),
   )
   console.log(
     await request({
-      method: 'wallet_generateMnemonic',
+      method: 'wallet_unlock',
+      params: {password: '12345678'},
+    }),
+  )
+  console.log(
+    await request({
+      method: 'wallet_lock',
     }),
   )
 })()

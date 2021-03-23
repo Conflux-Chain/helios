@@ -51,7 +51,8 @@ export async function main(
   } = {params: {}},
 ) {
   const {wallet_validatePassword} = rpcs
-  if (!(await wallet_validatePassword(password))) throw Err('Invalid password')
+  if (!(await wallet_validatePassword(password)))
+    throw new Err('Invalid password')
   const keyring = mnemonic || privateKey || address
   let keyringType
   if (address) keyringType = 'pub'
@@ -71,7 +72,7 @@ export async function main(
       ),
     ),
   )
-  if (anyDuplicateVaults.includes(true)) throw Err('Duplicate credential')
+  if (anyDuplicateVaults.includes(true)) throw new Err('Duplicate credential')
 
   setWalletState({
     Vaults: [...vaults, encrypted],

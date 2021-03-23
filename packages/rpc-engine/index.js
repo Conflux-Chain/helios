@@ -72,12 +72,11 @@ const rpcHandlers = {
             get() {
               const targetRpcName = arguments[1]
 
-              _rpcStack.push(targetRpcName)
-
               if (!perms.getRpc(rpcStore, req.method, targetRpcName))
                 throw new Error(
                   `No permission to call method ${targetRpcName} in ${req.method}`,
                 )
+              _rpcStack.push(targetRpcName)
 
               return params => {
                 const req = {method: targetRpcName, params, _rpcStack}
@@ -85,7 +84,9 @@ const rpcHandlers = {
               }
             },
             set() {
-              throw new Error('Invalid operation: modifiying rpc store')
+              throw new Error(
+                'Invalid operation: no permission to alter rpc store',
+              )
             },
           }),
         }
@@ -104,11 +105,17 @@ const rpcHandlers = {
         // external-loaded rpc methods
         return {
           setWalletState: (...args) => {
+            const [newState, replace] = args
             if (!protectedStore.setState)
               throw new Error(
                 `No permission to set wallet state in ${req.method}`,
               )
-            return protectedStore.setState(...args)
+
+            return protectedStore.setState(
+              replace
+                ? newState
+                : Object.assign({}, parentStore.getState(), newState),
+            )
           },
           getWalletState: (...args) => {
             if (!protectedStore.getState)
@@ -126,8 +133,10 @@ const rpcHandlers = {
       main({rpcStore}, req) {
         const {params, method} = req
         const {schema, Err} = rpcStore[method]
-        if (schema.input && !validate(schema.input, params))
-          throw Err(explain(schema.input, params))
+        if (schema.input && !validate(schema.input, params)) {
+          // TODO: make error message more readable
+          throw new Err(explain(schema.input, params))
+        }
       },
       sideEffect: true,
     },
