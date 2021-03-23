@@ -1,10 +1,10 @@
-import {arr, string, map} from '@cfxjs/spec'
+import {arr, string} from '@cfxjs/spec'
 
 export const NAME = 'wallet_getVaults'
 
 export const schema = {
-  output: [map, ['Vaults', [arr, string]]],
-  getWalletState: [map, ['Vaults', [arr, string]]],
+  output: [arr, string],
+  getWalletState: [arr, string],
 }
 
 export const permissions = {

@@ -7,7 +7,6 @@
   "license": "MIT",
   "dependencies": {
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine",
-    "@cfxjs/wallet_addNetwork": "workspace:packages/rpcs/wallet_addNetwork",
     "@cfxjs/wallet_generateMnemonic": "workspace:packages/rpcs/wallet_generateMnemonic",
     "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey",
     "@cfxjs/wallet_initState": "workspace:packages/rpcs/wallet_initState",

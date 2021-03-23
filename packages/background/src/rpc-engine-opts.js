@@ -4,7 +4,6 @@
  */
 
 import * as walletInitState from '@cfxjs/wallet_initState'
-import * as walletAddNetwork from '@cfxjs/wallet_addNetwork'
 import * as walletGeneratePrivateKey from '@cfxjs/wallet_generatePrivateKey'
 import * as walletGenerateMnemonic from '@cfxjs/wallet_generateMnemonic'
 
@@ -15,7 +14,6 @@ export const rpcEngineOpts = {
   methods: [
     // init
     walletInitState,
-    walletAddNetwork,
     walletGeneratePrivateKey,
     walletGenerateMnemonic,
 

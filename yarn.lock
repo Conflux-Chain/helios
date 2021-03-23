@@ -834,15 +834,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/gen@workspace:packages/gen":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/gen@workspace:packages/gen"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-    "@cfxjs/checks": "workspace:packages/checks"
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/iterators@workspace:packages/iterators":
   version: 0.0.0-use.local
   resolution: "@cfxjs/iterators@workspace:packages/iterators"
@@ -928,12 +919,6 @@ __metadata:
   resolution: "@cfxjs/utils@workspace:packages/utils"
   dependencies:
     randombytes: ^2.1.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_addNetwork@workspace:packages/rpcs/wallet_addNetwork":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_addNetwork@workspace:packages/rpcs/wallet_addNetwork"
   languageName: unknown
   linkType: soft
 
@@ -5113,7 +5098,6 @@ fsevents@^2.1.2:
   resolution: "helios-background@workspace:packages/background"
   dependencies:
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
-    "@cfxjs/wallet_addNetwork": "workspace:packages/rpcs/wallet_addNetwork"
     "@cfxjs/wallet_generateMnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
     "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey"
     "@cfxjs/wallet_initState": "workspace:packages/rpcs/wallet_initState"

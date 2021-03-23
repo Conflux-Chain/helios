@@ -33,14 +33,8 @@ const random = bytes => {
     window.crypto.getRandomValues
   )
     rnd = window.crypto.getRandomValues(new Uint8Array(bytes))
-  else if (
-    typeof window !== 'undefined' &&
-    window.crypto &&
-    window.crypto.randomBytes
-  )
-    rnd = window.crypto.randomBytes(bytes)
-  else if (typeof require !== 'undefined')
-    rnd = require('c' + 'rypto').randomBytes(bytes)
+  // else if (typeof require !== 'undefined')
+  //   rnd = require('c' + 'rypto').randomBytes(bytes)
   else {
     throw 'Safe random numbers not available.'
   }
