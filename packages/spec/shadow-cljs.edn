@@ -14,7 +14,122 @@
         :output-dir "src"
         :compiler-options {:cross-chunk-method-motion false}
         :modules {:shared {}
-                  :spec {:exports {default cfxjs.spec.core/exports}
+                  :spec {:exports { ;; default cfxjs.spec.core/exports
+
+                                   ;; factory for schemas that needs helper functions from js side
+                                   defRestSchemas cfxjs.spec.core/export-defRestSchemas
+                                   defBase32AddressSchemaFactory cfxjs.spec.core/export-defBase32AddressSchemaFactory
+                                   ;; pred schemas
+                                   anyp cfxjs.spec.core/export-anyp
+                                   some cfxjs.spec.core/export-some
+                                   number cfxjs.spec.core/export-number
+                                   integer cfxjs.spec.core/export-integer
+                                   intp cfxjs.spec.core/export-intp
+                                   posInt cfxjs.spec.core/export-posInt
+                                   negInt cfxjs.spec.core/export-negInt
+                                   natInt cfxjs.spec.core/export-natInt
+                                   pos cfxjs.spec.core/export-pos
+                                   neg cfxjs.spec.core/export-neg
+                                   float cfxjs.spec.core/export-float
+                                   doublep cfxjs.spec.core/export-doublep
+                                   booleanp cfxjs.spec.core/export-booleanp
+                                   stringp cfxjs.spec.core/export-stringp
+                                   ident cfxjs.spec.core/export-ident
+                                   simpleIdent cfxjs.spec.core/export-simpleIdent
+                                   qualifiedIdent cfxjs.spec.core/export-qualifiedIdent
+                                   keywordp cfxjs.spec.core/export-keywordp
+                                   ;; (def simple-keyword simple-keyword?)
+                                   ;; (def export-qualified-keyword qualified-keyword?)
+                                   symbolp cfxjs.spec.core/export-symbolp
+                                   ;; (def simple-symbol simple-symbol?)
+                                   ;; (def export-qualified-symbol qualified-symbol?)
+                                   uuidp cfxjs.spec.core/export-uuidp
+                                   uri cfxjs.spec.core/export-uri
+                                   inst cfxjs.spec.core/export-inst
+                                   seqable cfxjs.spec.core/export-seqable
+                                   indexed cfxjs.spec.core/export-indexed
+                                   mapp cfxjs.spec.core/export-mapp
+                                   objp cfxjs.spec.core/export-objp
+                                   vectorp cfxjs.spec.core/export-vectorp
+                                   list cfxjs.spec.core/export-list
+                                   seq cfxjs.spec.core/export-seq
+                                   char cfxjs.spec.core/export-char
+                                   setp cfxjs.spec.core/export-setp
+                                   nul cfxjs.spec.core/export-nil
+                                   falsep cfxjs.spec.core/export-falsep
+                                   truep cfxjs.spec.core/export-truep
+                                   zero cfxjs.spec.core/export-zero
+                                   coll cfxjs.spec.core/export-coll
+                                   empty cfxjs.spec.core/export-empty
+                                   associative cfxjs.spec.core/export-associative
+                                   sequentialp cfxjs.spec.core/export-sequentialp
+
+                                   ;; class schemas
+                                   regexp cfxjs.spec.core/export-regexp
+
+                                   ;; comparator schemas
+                                   gt cfxjs.spec.core/export-gt
+                                   gte cfxjs.spec.core/export-gte
+                                   lt cfxjs.spec.core/export-lt
+                                   lte cfxjs.spec.core/export-lte
+                                   eq cfxjs.spec.core/export-eq
+                                   neq cfxjs.spec.core/export-neq
+
+                                   ;; type schemas
+                                   any cfxjs.spec.core/export-any
+                                   string cfxjs.spec.core/export-string
+                                   int cfxjs.spec.core/export-int
+                                   double cfxjs.spec.core/export-double
+                                   boolean cfxjs.spec.core/export-boolean
+                                   keyword cfxjs.spec.core/export-keyword
+                                   symbol cfxjs.spec.core/export-symbol
+                                   uuid cfxjs.spec.core/export-uuid
+                                   qualifiedSymbol cfxjs.spec.core/export-qualifiedSymbol
+                                   qualifiedKeyword cfxjs.spec.core/export-qualifiedKeyword
+
+                                   ;; sequence schemas
+                                   oneOrMore cfxjs.spec.core/export-oneOrMore
+                                   plus cfxjs.spec.core/export-plus
+                                   zeroOrMore cfxjs.spec.core/export-zeroOrMore
+                                   asterisk cfxjs.spec.core/export-asterisk
+                                   zeroOrOne cfxjs.spec.core/export-zeroOrOne
+                                   questionMark cfxjs.spec.core/export-questionMark
+                                   repeat cfxjs.spec.core/export-repeat
+                                   cat cfxjs.spec.core/export-cat
+                                   alt cfxjs.spec.core/export-alt
+                                   catn cfxjs.spec.core/export-catn
+                                   altn cfxjs.spec.core/export-altn
+
+                                   ;; base schemas
+                                   and cfxjs.spec.core/export-and
+                                   or cfxjs.spec.core/export-or
+                                   orn cfxjs.spec.core/export-orn
+                                   not cfxjs.spec.core/export-not
+                                   map cfxjs.spec.core/export-map
+                                   obj cfxjs.spec.core/export-obj
+                                   vector cfxjs.spec.core/export-vector
+                                   arr cfxjs.spec.core/export-arr
+                                   sequential cfxjs.spec.core/export-sequential
+                                   set cfxjs.spec.core/export-set
+                                   ;; enum cfxjs.spec.core/export-enum
+                                   maybe cfxjs.spec.core/export-maybe
+                                   tuple cfxjs.spec.core/export-tuple
+                                   multi cfxjs.spec.core/export-multi
+                                   re cfxjs.spec.core/export-re
+                                   fn cfxjs.spec.core/export-fn
+                                   ref cfxjs.spec.core/export-ref
+                                   ;; functionSchema cfxjs.spec.core/export-function
+                                   schema cfxjs.spec.core/export-schema
+                                   mapOf cfxjs.spec.core/export-mapOf
+                                   objOf cfxjs.spec.core/export-objOf
+                                   f cfxjs.spec.core/export-f
+                                   rawSchema cfxjs.spec.core/export-raw-schema
+
+                                   validate cfxjs.spec.core/export-validate
+                                   explain cfxjs.spec.core/export-explain
+                                   k cfxjs.spec.core/export-k
+
+                                   password cfxjs.spec.core/export-password}
                          :depends-on #{:shared}}
                   :gen {:exports {gen cfxjs.spec.gen/gen}
                         :depends-on #{:shared :spec}}}}}}

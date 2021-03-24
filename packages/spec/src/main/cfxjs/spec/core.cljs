@@ -49,8 +49,8 @@
                            :type-properties {:error/message "invalid hex contract address, should be start with 0x8"}
                            :gen/gen (comp randomHexAddress #(.replace % #"0x\d" "0x8"))})}))
 
-(defn def-base32-address-schema
-  ([pred gen network-id-or-type] (def-base32-address-schema pred gen network-id-or-type nil))
+(defn def-base32-address-schema-factory
+  ([pred gen network-id-or-type] (def-base32-address-schema-factory pred gen network-id-or-type nil))
   ([pred gen network-id-or-type-1 network-id-or-type-2]
    (let [network-id (cond (number? network-id-or-type-1) network-id-or-type-1
                           (number? network-id-or-type-2) network-id-or-type-2
@@ -72,126 +72,124 @@
 (comment
   (m/validate [:? int?] 1)
   (m/validate [:maybe string?] nil))
-(def exports
-  #js
-   {;; factory for schemas that needs helper functions from js side
-    :defRestSchemas def-rest-schemas
-    :defBase32AddressSchema def-base32-address-schema
-    ;; pred schemas
-    :anyp any?
-    :some some?
-    :number number?
-    :integer integer?
-    :intp int?
-    :posInt pos-int?
-    :negInt neg-int?
-    :natInt nat-int?
-    :pos pos?
-    :neg neg?
-    :float float?
-    :doublep double?
-    :booleanp boolean?
-    :stringp string?
-    :ident ident?
-    :simpleIdent simple-ident?
-    :qualifiedIdent qualified-ident?
-    :keywordp keyword?
-               ;; :simple-keyword simple-keyword?
-               ;; :qualified-keyword qualified-keyword?
-    :symbolp symbol?
-               ;; :simple-symbol simple-symbol?
-               ;; :qualified-symbol qualified-symbol?
-    :uuidp uuid?
-    :uri uri?
-    :inst inst?
-    :seqable seqable?
-    :indexed indexed?
-    :mapp map?
-    :objp map?
-    :vectorp vector?
-    :list list?
-    :seq seq?
-    :char char?
-    :setp set?
-    :nil nil?
-    :falsep false?
-    :truep true?
-    :zero zero?
-    :coll coll?
-    :empty empty?
-    :associative associative?
-    :sequentialp sequential?
 
-               ;; class schemas
-    :regexp js/RegExp
+;; factory for schemas that needs helper functions from js side
+(def export-defRestSchemas def-rest-schemas)
+(def export-defBase32AddressSchemaFactory def-base32-address-schema-factory)
+;; pred schemas
+(def export-anyp any?)
+(def export-some some?)
+(def export-number number?)
+(def export-integer integer?)
+(def export-intp int?)
+(def export-posInt pos-int?)
+(def export-negInt neg-int?)
+(def export-natInt nat-int?)
+(def export-pos pos?)
+(def export-neg neg?)
+(def export-float float?)
+(def export-doublep double?)
+(def export-booleanp boolean?)
+(def export-stringp string?)
+(def export-ident ident?)
+(def export-simpleIdent simple-ident?)
+(def export-qualifiedIdent qualified-ident?)
+(def export-keywordp keyword?)
+;; (def export-simple-keyword simple-keyword?)
+;; (def export-qualified-keyword qualified-keyword?)
+(def export-symbolp symbol?)
+;; (def export-simple-symbol simple-symbol?)
+;; (def export-qualified-symbol qualified-symbol?)
+(def export-uuidp uuid?)
+(def export-uri uri?)
+(def export-inst inst?)
+(def export-seqable seqable?)
+(def export-indexed indexed?)
+(def export-mapp map?)
+(def export-objp map?)
+(def export-vectorp vector?)
+(def export-list list?)
+(def export-seq seq?)
+(def export-char char?)
+(def export-setp set?)
+(def export-nil nil?)
+(def export-falsep false?)
+(def export-truep true?)
+(def export-zero zero?)
+(def export-coll coll?)
+(def export-empty empty?)
+(def export-associative associative?)
+(def export-sequentialp sequential?)
 
-               ;; comparator schemas
-    :gt :>
-    :gte :>=
-    :lt :<
-    :lte :<=
-    :eq :=
-    :neq :not=
+;; class schemas
+(def export-regexp js/RegExp)
 
-               ;; type schemas
-    :any :any
-    :string :string
-    :int :int
-    :double :double
-    :boolean :boolean
-    :keyword :keyword
-    :symbol :symbol
-    :uuid :uuid
-    :qualifiedSymbol :qualified-symbol
-    :qualifiedKeyword :qualified-keyword
+;; comparator schemas
+(def export-gt :>)
+(def export-gte :>=)
+(def export-lt :<)
+(def export-lte :<=)
+(def export-eq :=)
+(def export-neq :not=)
 
-               ;; sequence schemas
-    :oneOrMore :+
-    :plus :+
-    :zeroOrMore :*
-    :asterisk :*
-    :zeroOrOne :?
-    :questionMark :?
-    :repeat :repeat
-    :cat :cat
-    :alt :alt
-    :catn :catn
-    :altn :altn
+;; type schemas
+(def export-any :any)
+(def export-string :string)
+(def export-int :int)
+(def export-double :double)
+(def export-boolean :boolean)
+(def export-keyword :keyword)
+(def export-symbol :symbol)
+(def export-uuid :uuid)
+(def export-qualifiedSymbol :qualified-symbol)
+(def export-qualifiedKeyword :qualified-keyword)
 
-               ;; base schemas
-    :and :and
-    :or :or
-    :orn :orn
-    :not :not
-    :map :map
-    :closed {:closed true}
-    :optional {:optional true}
-    :obj :map
-    :vector :vector
-    :arr :vector
-    :sequential :sequential
-    :set :set
-    :enum :enum
-    :maybe :maybe
-    :tuple :tuple
-    :multi :multi
-    :re :re
-    :fn :fn
-    :ref :ref
-    :function :function
-    :schema :schema
-    :mapOf :map-of
-    :objOf :map-of
-    :f :=>
-    :raw-schema ::schema
+;; sequence schemas
+(def export-oneOrMore :+)
+(def export-plus :+)
+(def export-zeroOrMore :*)
+(def export-asterisk :*)
+(def export-zeroOrOne :?)
+(def export-questionMark :?)
+(def export-repeat :repeat)
+(def export-cat :cat)
+(def export-alt :alt)
+(def export-catn :catn)
+(def export-altn :altn)
 
-    :validate validate
-    :explain explain
-    ;; :object (partial object-of {:closed false})
-    ;; :objectc (partial object-of {:closed true})
-    ;; :arrayOf array-of
-    :k keyword
+;; base schemas
+(def export-and :and)
+(def export-or :or)
+(def export-orn :orn)
+(def export-not :not)
+(def export-map :map)
+(def export-closed {:closed true})
+(def export-optional {:optional true})
+(def export-obj :map)
+(def export-vector :vector)
+(def export-arr :vector)
+(def export-sequential :sequential)
+(def export-set :set)
+(def export-enum :enum)
+(def export-maybe :maybe)
+(def export-tuple :tuple)
+(def export-multi :multi)
+(def export-re :re)
+(def export-fn :fn)
+(def export-ref :ref)
+(def export-function :function)
+(def export-schema :schema)
+(def export-mapOf :map-of)
+(def export-objOf :map-of)
+(def export-f :=>)
+(def export-raw-schema ::schema)
 
-    :password Password
-    ;; :tap tap>
-    })
+(def export-validate validate)
+(def export-explain explain)
+;; (def export-object (partial object-of {:closed false}))
+;; (def export-objectc (partial object-of {:closed true}))
+;; (def export-arrayOf array-of)
+(def export-k keyword)
+
+(def export-password Password)
+;; (def export-tap tap>)
