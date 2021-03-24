@@ -7,13 +7,23 @@
  :dev-http {8000 ["public" "src"]}
 
  :dependencies
- [[metosin/malli "0.3.0"]]
+ [[metosin/malli "0.3.0"]
+  [binaryage/oops "0.7.0"]
+  [datascript "1.0.7"]]
 
  :builds
  {:app {:target :esm
         :output-dir "src"
         :compiler-options {:cross-chunk-method-motion false}
         :modules {:shared {}
+                  :db {:exports {createdb cfxjs.db.core/create-db
+                                 ;; createVault cfxjs.db.core/export-create-vault
+                                 ;; getVault cfxjs.db.core/export-get-vault
+                                 k cfxjs.db.core/k
+                                 e cfxjs.db.core/e
+                                 q cfxjs.db.core/q
+                                 t cfxjs.db.core/t}
+                       :depends-on #{:shared}}
                   :spec {:exports { ;; default cfxjs.spec.core/exports
 
                                    ;; factory for schemas that needs helper functions from js side

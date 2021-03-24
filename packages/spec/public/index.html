@@ -10,8 +10,39 @@
     <meta name="keywords" content="">
     <script type="module" src="shared.js"></script>
     <script type="module">
-     import s from "/spec.js"
+     import * as s from "/spec.js"
+     import * as db from "/db.js"
      window.s = s
+     window.db = db
+     const schema = {
+       vault: {
+         type: {
+           doc: 'Type of vault: public, pk, mnemonic',
+         },
+         data: {
+           doc: 'Encrypted vault data',
+         },
+       },
+       account: {
+         hexAddress: {
+           identity: true,
+           doc: 'Account hex address',
+         },
+         vault: {
+           ref: true,
+           doc: 'Entity ID of vault',
+         },
+       },
+     }
+     const d = db.createdb(schema)
+     const {getVaultByType, getVault, getAccount} = d
+     window.c = getVaultByType('public')
+     window.gg = getAccount
+     window.e = getAccount({vault: window.c[0], hexAddress: "0x1111111111111111111111111111111111111111", $or: true})
+     console.log(window.e)
+     console.log(
+       getAccount({vault: {type: "public"}})
+     )
     </script>
   </head>
   <body>
