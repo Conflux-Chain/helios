@@ -3121,13 +3121,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cli-spinners@npm:^2.5.0":
-  version: 2.6.0
-  resolution: "cli-spinners@npm:2.6.0"
-  checksum: 653ba6818e0091d4ad7aa052022f6c6a0df0d4674ff6069f6ae366e6130c1eb91a6c332ddfdd2029d234411632ff6428950aa3311872daf515ce54da498c1357
-  languageName: node
-  linkType: hard
-
 "cli-truncate@npm:^2.1.0":
   version: 2.1.0
   resolution: "cli-truncate@npm:2.1.0"
@@ -4046,12 +4039,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.9.3":
-  version: 0.9.7
-  resolution: "esbuild@npm:0.9.7"
+"esbuild@npm:^0.8.7":
+  version: 0.8.57
+  resolution: "esbuild@npm:0.8.57"
   bin:
     esbuild: bin/esbuild
-  checksum: 78a45e561156d8ecedfdbccddb83486b14f892a2624c100ff4a5150353a416b85a881d298a11da3447d3a2655571237dc9049a011ca10f4fedded2ffaab397c9
+  checksum: 0942950a21a30b57a324380cfedcb425cc1245412e720593415afa0d4f1b7c5f931aa6330937dc1353c754d45c1e5ff7dbc52eb514f54d85517114971300b454
   languageName: node
   linkType: hard
 
@@ -4618,13 +4611,6 @@ __metadata:
   dependencies:
     bser: 2.1.1
   checksum: f9ec24592a45026a6a7f54034a4b5efb010cac7d7fbc234fe9ae5d725c13efa9be0ded1ae348473fc42af4e28eea53f8b993857c0c49e6d721f7c9eb5b21217f
-  languageName: node
-  linkType: hard
-
-"fdir@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "fdir@npm:5.0.0"
-  checksum: 1a277b8bd97bab8805e027782a0d14f059e4ef953a06d818abba572fcf0356b396f6fdeb0af1197ba101088bc127fd544a18ca65ed4d917844caa85b667cd130
   languageName: node
   linkType: hard
 
@@ -5271,7 +5257,7 @@ fsevents@^2.1.2:
     regenerator-runtime: ^0.13.8
     rimraf: ^3.0.2
     shadow-cljs: ^2.11.26
-    snowpack: 3.1.2
+    snowpack: 3.0.13
     stylelint: ^13.12.0
     stylelint-config-prettier: ^8.0.2
     stylelint-config-standard: ^21.0.0
@@ -7963,7 +7949,7 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"picomatch@npm:^2.0.4, picomatch@npm:^2.0.5, picomatch@npm:^2.2.1, picomatch@npm:^2.2.2":
+"picomatch@npm:^2.0.4, picomatch@npm:^2.0.5, picomatch@npm:^2.2.1":
   version: 2.2.2
   resolution: "picomatch@npm:2.2.2"
   checksum: 20fa75e0a58b39d83425b3db68744d5f6f361fd4fd66ec7745d884036d502abba0d553a637703af79939b844164b13e60eea339ccb043d7fbd74c3da2592b864
@@ -9281,17 +9267,14 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"snowpack@npm:3.1.2":
-  version: 3.1.2
-  resolution: "snowpack@npm:3.1.2"
+"snowpack@npm:3.0.13":
+  version: 3.0.13
+  resolution: "snowpack@npm:3.0.13"
   dependencies:
-    cli-spinners: ^2.5.0
     default-browser-id: ^2.0.0
-    esbuild: ^0.9.3
-    fdir: ^5.0.0
+    esbuild: ^0.8.7
     fsevents: ^2.2.0
     open: ^7.0.4
-    picomatch: ^2.2.2
     resolve: ^1.20.0
     rollup: ^2.34.0
   dependenciesMeta:
@@ -9300,7 +9283,7 @@ resolve@^2.0.0-next.3:
   bin:
     snowpack: index.bin.js
     sp: index.bin.js
-  checksum: 06c66dd44c5ff597b69e3d022e1222077980420ece36edf11e99b0494258ccce2f8036f1a1a07c9ad45704a3be0d5d569373af3a36636541b49d06fcf7abcecb
+  checksum: 5ed74e2fb07727096aa3d61f52079d20c3d2926ac3a34c6df548abd91ee576b49c253ea2381ae0b293b5d417ceb2cea31fec66f70bbd893862760f3b6c61b658
   languageName: node
   linkType: hard
 
