@@ -1,0 +1,13 @@
+{
+  "name": "browser-extension",
+  "version": "0.0.0",
+  "main": "index.js",
+  "author": "yqrashawn <namy.19@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "helios-background": "*",
+    "helios-inpage": "*",
+    "helios-popup": "*"
+  }
+}

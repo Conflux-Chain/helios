@@ -1,0 +1,6 @@
+{
+  "name": "utils",
+  "private": true,
+  "type": "module",
+  "main": "index.js"
+}

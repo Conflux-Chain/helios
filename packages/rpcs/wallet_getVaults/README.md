@@ -1,0 +1,1 @@
+# @cfxjs/wallet_getVaults

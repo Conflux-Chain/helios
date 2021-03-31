@@ -1,0 +1,14 @@
+{
+  "name": "@cfxjs/account",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@cfxjs/bytes": "workspace:packages/bytes",
+    "@cfxjs/keccak": "workspace:packages/keccak",
+    "@cfxjs/nat": "workspace:packages/nat",
+    "@cfxjs/rlp": "workspace:packages/rlp",
+    "buffer": "^6.0.3",
+    "elliptic": "^6.5.4"
+  }
+}

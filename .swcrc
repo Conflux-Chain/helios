@@ -1,0 +1,25 @@
+{
+  "env": {
+    "loose": true
+  },
+  "jsc": {
+    "parser": {
+      "syntax": "ecmascript",
+      "jsx": true,
+      "dynamicImport": true,
+      "privateMethod": true,
+      "functionBind": false,
+      "exportDefaultFrom": true,
+      "exportNamespaceFrom": true,
+      "decorators": false,
+      "decoratorsBeforeExport": false,
+      "topLevelAwait": true,
+      "importMeta": true
+    },
+    "transform": {
+      "optimizer": {}
+    },
+    "loose": false,
+    "externalHelpers": true
+  }
+}
