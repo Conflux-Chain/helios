@@ -167,6 +167,8 @@ module.exports = {
   testPathIgnorePatterns: [
     '/node_modules/',
     '/packages/*/build',
+    '/.shadow-cljs',
+    '/packages/db/.shadow-cljs/',
     '/packages/spec/src/spec.js',
     '/packages/spec/.shadow-cljs/',
   ],

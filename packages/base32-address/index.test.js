@@ -1,3 +1,4 @@
+/* eslint-disable jest/expect-expect */
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {encode, decode, validateBase32Address} from './'

@@ -18,4 +18,5 @@
                                                          (dir-locals-find-file default-directory))))
                                                     (set
                                                      (make-local-variable 'flycheck-javascript-eslint-executable)
-                                                     (concat project-directory ".yarn/sdks/eslint/bin/eslint.js")))))))
+                                                     (concat project-directory ".yarn/sdks/eslint/bin/eslint.js"))))))
+ ((clojure-mode clojurec-mode clojurescript-mode) . ((cider-shadow-cljs-command . "yarn run shadow-cljs"))))

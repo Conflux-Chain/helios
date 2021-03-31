@@ -826,6 +826,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/db@workspace:packages/db":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/db@workspace:packages/db"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/errors@workspace:packages/errors":
   version: 0.0.0-use.local
   resolution: "@cfxjs/errors@workspace:packages/errors"
@@ -898,10 +904,6 @@ __metadata:
     "@cfxjs/account": "workspace:packages/account"
     "@cfxjs/base32-address": "workspace:packages/base32-address"
     bip39: ^3.0.3
-    highlight.js: 9.18.5
-    react: 17.0.2
-    react-dom: 17.0.2
-    react-highlight.js: 1.0.7
     shadow-cljs: ^2.11.26
   languageName: unknown
   linkType: soft
@@ -5239,6 +5241,7 @@ fsevents@^2.1.2:
     eslint-plugin-react-hooks: ^4.2.0
     eslint-plugin-testing-library: ^3.10.2
     fs-extra: ^9.1.0
+    highlight.js: 9.18.1
     husky: ^6.0.0
     jest: ^26.6.3
     lint-staged: ^10.5.4
@@ -5247,8 +5250,12 @@ fsevents@^2.1.2:
     postcss: ^8.2.9
     prettier: ^2.2.1
     ramda: ^0.27.1
+    react: ^16.13.0
+    react-dom: ^16.13.0
+    react-highlight.js: 1.0.7
     regenerator-runtime: ^0.13.8
     rimraf: ^3.0.2
+    shadow-cljs: ^2.11.26
     snowpack: 3.1.2
     stylelint: ^13.12.0
     stylelint-config-prettier: ^8.0.2
@@ -5257,7 +5264,14 @@ fsevents@^2.1.2:
   languageName: unknown
   linkType: soft
 
-"highlight.js@npm:9.18.5, highlight.js@npm:^9.3.0":
+"highlight.js@npm:9.18.1":
+  version: 9.18.1
+  resolution: "highlight.js@npm:9.18.1"
+  checksum: 3fe99105e4cda17ae8dac7b49b791065b9b8306c1de40955cd59ce1a2cd2bed2683135a26f9ffd8f872a1d6e9d77935c48ffbb2557c228e647fe940a3bbbc4f2
+  languageName: node
+  linkType: hard
+
+"highlight.js@npm:^9.3.0":
   version: 9.18.5
   resolution: "highlight.js@npm:9.18.5"
   checksum: dea74c216cec83604e35cd3187aa9fa7a7da4876d1da6519a7bb1b635566e6525fcb3a3d8f2158a11e930499acee9506c710c5121ce30d328342af2e49fe59da
@@ -8264,7 +8278,7 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.0, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -8395,7 +8409,21 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"react-dom@npm:17.0.2, react-dom@npm:^17.0.2":
+"react-dom@npm:^16.13.0":
+  version: 16.14.0
+  resolution: "react-dom@npm:16.14.0"
+  dependencies:
+    loose-envify: ^1.1.0
+    object-assign: ^4.1.1
+    prop-types: ^15.6.2
+    scheduler: ^0.19.1
+  peerDependencies:
+    react: ^16.14.0
+  checksum: a13558f0e7c6d1a98684214460bcd4b9005500015b5048fb1b0d2856786b8764dbc713e6b078a5b1a56e17866400e1d862183c7a0a513ae8351de11f6f6749d2
+  languageName: node
+  linkType: hard
+
+"react-dom@npm:^17.0.2":
   version: 17.0.2
   resolution: "react-dom@npm:17.0.2"
   dependencies:
@@ -8442,7 +8470,18 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"react@npm:17.0.2, react@npm:^17.0.2":
+"react@npm:^16.13.0":
+  version: 16.14.0
+  resolution: "react@npm:16.14.0"
+  dependencies:
+    loose-envify: ^1.1.0
+    object-assign: ^4.1.1
+    prop-types: ^15.6.2
+  checksum: 2769580b22952a52de3b5b2ea0f09cb904030b762d759739f49ab4da0b1f550e5c087ce3728c4be90f423d09481e0c075483c0c30b1ea9c549445c8b12020fd3
+  languageName: node
+  linkType: hard
+
+"react@npm:^17.0.2":
   version: 17.0.2
   resolution: "react@npm:17.0.2"
   dependencies:
@@ -8962,6 +9001,16 @@ resolve@^2.0.0-next.3:
   dependencies:
     xmlchars: ^2.2.0
   checksum: 6ad14be68da9b84af0fa3de346fd78bd3a8e8a73a462e2852279a1fff1e2619988919294001abe3ecef3783f9498962a0619d960ccca4ec2ca914526fde1acc2
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.19.1":
+  version: 0.19.1
+  resolution: "scheduler@npm:0.19.1"
+  dependencies:
+    loose-envify: ^1.1.0
+    object-assign: ^4.1.1
+  checksum: 804f990b9f370cca6d42b65f3cba2cc2bfed4973ee5623bed1ea36a6627842db8c891e2e5ac003f06f9ee892d1d3396921e27fa077346caf0213af05776e8dee
   languageName: node
   linkType: hard
 

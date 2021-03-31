@@ -234,4 +234,6 @@ $RECYCLE.BIN/
 .env.*.local
 .env.local
 
+/packages/db/**/*.js
 /packages/spec/**/*.js
+/.shadow-cljs/
