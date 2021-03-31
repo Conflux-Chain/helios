@@ -7,15 +7,15 @@
     "build": "shadow-cljs release app"
   },
   "devDependencies": {
-    "shadow-cljs": "^2.11.23"
+    "shadow-cljs": "^2.11.26"
   },
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
     "@cfxjs/base32-address": "workspace:packages/base32-address",
     "bip39": "^3.0.3",
-    "highlight.js": "9.18.1",
-    "react": "16.14.0",
-    "react-dom": "16.14.0",
+    "highlight.js": "9.18.5",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "react-highlight.js": "1.0.7"
   }
 }

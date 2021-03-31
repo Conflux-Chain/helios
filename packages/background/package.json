@@ -17,7 +17,7 @@
     "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword",
     "consts": "workspace:packages/consts",
     "ramda": "^0.27.1",
-    "regenerator-runtime": "^0.13.7",
+    "regenerator-runtime": "^0.13.8",
     "utils": "workspace:packages/inner-utils",
     "webextension-polyfill": "^0.7.0",
     "zustand": "^3.3.3"

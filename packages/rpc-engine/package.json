@@ -13,8 +13,8 @@
     "@cfxjs/json-rpc": "workspace:packages/json-rpc",
     "@cfxjs/spec": "workspace:packages/spec",
     "@cfxjs/transducers": "workspace:packages/transducers",
-    "@thi.ng/compose": "^1.4.29",
-    "@thi.ng/csp": "^1.1.56",
+    "@thi.ng/compose": "^1.4.30",
+    "@thi.ng/csp": "^1.1.59",
     "ramda": "^0.27.1",
     "utils": "workspace:packages/inner-utils"
   }
