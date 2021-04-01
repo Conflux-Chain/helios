@@ -1,7 +1,7 @@
 (ns cfxjs.db.core
   (:require [datascript.core :as d]
             [datascript.impl.entity :refer [entity?]])
-  (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and]]))
+  (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and]]))
 
 (defn j->c [v]
   (js->clj v :keywordize-keys true))
@@ -132,6 +132,24 @@
               (q query (mapv #(get % 2) data))))]
     (comp clj->js #(map (comp entity->proxy e) %) f)))
 
+(defn def-get-one-fn
+  [{:keys [attrs model]}]
+  (let [f (fn [attr-map]
+            (let [attr-map (j->c attr-map)
+                  data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
+                                                          nil
+                                                          (let [symbol (->attr-symbol attr)
+                                                                query-attr-k (->attrk model attr)
+                                                                value (get attr-map attr)
+                                                                value (or (get-in value [:_entity :db/id]) value)]
+                                                            [symbol query-attr-k value])))
+                                             attrs))
+                  symbols (mapv first data)
+                  query-attr-k (mapv second data)
+                  query (def-get-one-query-and query-attr-k symbols)]
+              (q query (mapv #(get % 2) data))))]
+    (comp clj->js entity->proxy e f)))
+
 (defn def-get-by-fn
   "Given model eg. :vault, attr eg. :type create the getVaultByType function"
   [{:keys [attr model]}]
@@ -161,6 +179,8 @@
         attrs (map second struct)
         get-fn-k (keyword (str "get" Model-name))
         get-fn (def-get-fn {:model model :attrs attrs})
+        get-one-fn-k (keyword (str "getOne" Model-name))
+        get-one-fn (def-get-one-fn {:model model :attrs attrs})
         create-fn-k (keyword (str "create" Model-name))
         create-fn (def-create-fn {:model model :attrs attrs})
         attr->attr-fn-map (fn [attr]
@@ -169,7 +189,7 @@
                                   get-by-fn-k (keyword (str "get" Model-name "By" Attr-name))
                                   get-by-fn (def-get-by-fn {:attr attr :model model})]
                               {get-by-fn-k get-by-fn}))]
-    (apply merge {create-fn-k create-fn} {get-fn-k get-fn} (map attr->attr-fn-map attrs))))
+    (apply merge {create-fn-k create-fn} {get-one-fn-k get-one-fn} {get-fn-k get-fn} (map attr->attr-fn-map attrs))))
 
 (defn create-db
   "Create a database with js format schema, return a map with generated query methods for model and the database at :_db"

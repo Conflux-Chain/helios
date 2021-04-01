@@ -116,4 +116,17 @@ describe('db', function () {
       expect(rst.length).toBe(2)
     })
   })
+
+  describe('get one fn', function () {
+    it('should get the right data', async function () {
+      const conn = db.createdb(schema)
+      conn.createVault({type: 'a', data: 'b'})
+      conn.createVault({type: 'a', data: 'c'})
+      let vault
+      vault = conn.getOneVault({type: 'a'})
+      expect(vault.data).toBe('b')
+      expect(vault.type).toBe('a')
+      expect(vault.id).toBe(1)
+    })
+  })
 })
