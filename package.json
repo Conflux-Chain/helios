@@ -26,6 +26,7 @@
     "@swc/core": "^1.2.51",
     "@swc/helpers": "^0.2.4",
     "@swc/jest": "^0.1.2",
+    "@tailwindcss/jit": "^0.1.17",
     "autoprefixer": "^10.2.5",
     "browserslist": "^4.16.3",
     "concurrently": "^6.0.0",
