@@ -47,10 +47,19 @@
       },
     },
   }
+  ```
 
   Corresponding clj schema:
-  TODO: add docs
-  ```"
+
+  ```clojure
+  {:vault/type {:db/doc 'Type of vault: public pk mnemonic'}
+   :vault/data {:db/doc 'Encrypted vault data'}
+   :account/hexAddress {:db/unique :db.unique/identity
+                        :db/doc 'Account hex address'}
+   :account/vault {:db/valueType :db.type/ref
+                   :db/doc 'Entity ID of vault'}}
+  ```
+"
   [s]
   (into {}
         (mapcat
@@ -75,7 +84,9 @@
          (map (fn [[attrk]]
                 [parentk attrk]) attrs)) s))
 
-(defn ->attrk [model attr]
+(defn ->attrk
+  "Say model is :account, attr is :hexAddress, ->attrk returns :account/hexAddress"
+  [model attr]
   (keyword (str (name model) "/" (name attr))))
 
 (defn- entity->obj [e]
@@ -129,6 +140,17 @@
         f (fn [attrv] (q query attrv))]
     (comp clj->js #(map (comp entity->proxy e) %) f)))
 
+(defn def-create-fn [{:keys [attrs model]}]
+  (let [input-attr-map->transact-attr-map (fn [acc attr attrv]
+                                            (if (some #{attr} attrs)
+                                              (assoc acc (->attrk model attr) attrv) acc))
+        f (fn [attr-map]
+            (let [attr-map (j->c attr-map)
+                  attr-map (reduce-kv input-attr-map->transact-attr-map {:db/id -1} attr-map)]
+              (t [attr-map])))
+        guardf #(get-in % [:tempids -1])]
+    (comp guardf f)))
+
 (defn- js-query-model-structure->query-fn
   "Read a model structure, create getModel getModelByModelAttribute methods.
   Model structure are data like [[:vault :type] [:vault :data]]"
@@ -139,13 +161,15 @@
         attrs (map second struct)
         get-fn-k (keyword (str "get" Model-name))
         get-fn (def-get-fn {:model model :attrs attrs})
+        create-fn-k (keyword (str "create" Model-name))
+        create-fn (def-create-fn {:model model :attrs attrs})
         attr->attr-fn-map (fn [attr]
                             (let [attr-name (name attr)
                                   Attr-name (str (.toUpperCase (subs attr-name 0 1)) (subs attr-name 1))
                                   get-by-fn-k (keyword (str "get" Model-name "By" Attr-name))
                                   get-by-fn (def-get-by-fn {:attr attr :model model})]
                               {get-by-fn-k get-by-fn}))]
-    (apply merge {get-fn-k get-fn} (map attr->attr-fn-map attrs))))
+    (apply merge {create-fn-k create-fn} {get-fn-k get-fn} (map attr->attr-fn-map attrs))))
 
 (defn create-db
   "Create a database with js format schema, return a map with generated query methods for model and the database at :_db"
@@ -155,15 +179,7 @@
         rst (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
         rst (assoc rst :_db db)]
     (reset! conn @db)
-    ;; example data
-    (t [{:db/id -1 :vault/type "mnemonic" :vault/data "mn1"}
-        {:account/vault -1 :account/hexAddress "0x1000000000000000000000000000000000000000"}
-        {:db/id -1 :vault/type "mnemonic" :vault/data "mn2"}
-        {:account/vault -1 :account/hexAddress "0x1200000000000000000000000000000000000000"}
-        {:vault/type "mnemonic" :vault/data "mn3"}
-        {:account/vault -1 :account/hexAddress "0x1300000000000000000000000000000000000000"}
-        {:vault/type "public" :vault/data "0x1000000000000000000000000000000000000000"}
-        {:account/vault -1 :account/hexAddress "0x1111111111111111111111111111111111111111"}])
+    ;; (def kkk rst)
     (clj->js rst)))
 
 (comment

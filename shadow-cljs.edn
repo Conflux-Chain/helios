@@ -7,7 +7,7 @@
   "packages/db/src/main"
   "packages/db/src/test"]
 
- :dev-http {8000 ["packages/spec" "packages/db"]}
+ :dev-http {8000 ["packages"]}
 
  :dependencies
  [[metosin/malli "0.3.0"]
