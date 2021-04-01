@@ -10,6 +10,12 @@ const schema = {
     data: {
       doc: 'Encrypted vault data',
     },
+    accounts: {
+      doc: 'Accounts belong to this vault',
+      many: true,
+      ref: true,
+      component: true,
+    },
   },
   account: {
     hexAddress: {
@@ -127,6 +133,43 @@ describe('db', function () {
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
       expect(vault.id).toBe(1)
+    })
+  })
+
+  describe('delete one fn', function () {
+    it('should remove the right data', async function () {
+      const conn = db.createdb(schema)
+      const vault1Id = conn.createVault({type: 'a', data: 'b', accounts: [3]})
+      conn.createVault({type: 'a', data: 'c'})
+      conn.createAccount({
+        vault: vault1Id,
+        hexAddress: '0x10000000000000000000000000000000000000000000000000',
+      })
+      let vault
+      // TODO: accounts should be alter the original Entity type or create a new
+      // type to extend it
+      expect(conn.getOneVault({data: 'b'}).accounts).toBeDefined()
+      conn.deleteOneVault({data: 'b'})
+      vault = conn.getOneVault({type: 'a'})
+      expect(vault.data).toBe('c')
+      expect(vault.type).toBe('a')
+      expect(vault.id).toBe(2)
+    })
+  })
+
+  describe('Entity', function () {
+    it('should have the right instance method', async function () {
+      const conn = db.createdb(schema)
+      conn.createVault({type: 'a', data: 'b', accounts: [2]})
+      const vault = conn.getOneVault({data: 'b'})
+      expect(vault._entity).toBeDefined()
+      expect(vault._entity.get('id')).toBe(1)
+      expect(vault._entity.get('data')).toBe('b')
+      expect(vault._entity.get('type')).toBe('a')
+      expect(vault._entity.modelName()).toBe('vault')
+      expect(vault._entity.attr__GT_key('a').toString()).toBe(':vault/a')
+      expect(vault._entity.attr__GT_key(':a').toString()).toBe(':a')
+      expect(vault._entity.attr__GT_key('id').toString()).toBe(':db/id')
     })
   })
 })
