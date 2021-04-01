@@ -18,7 +18,8 @@
  {:spec {:target :esm
          :output-dir "packages/spec/src"
          :js-options {:js-package-dirs ["packages/spec/node_modules"]}
-         :compiler-options {:cross-chunk-method-motion false}
+         :compiler-options {:cross-chunk-method-motion false
+                            :infer-externs :auto}
          :modules {:shared {}
                    :spec {:exports { ;; default cfxjs.spec.core/exports
 
@@ -142,7 +143,10 @@
   :db {:target :esm
        :output-dir "packages/db/src"
        :js-options {:js-package-dirs ["packages/db/node_modules"]}
-       :compiler-options {:cross-chunk-method-motion false}
+       :compiler-options {:cross-chunk-method-motion false
+                          :infer-externs :auto
+                          :output-feature-set :es-next
+                          :externs ["datascript/externs.js"]}
        :modules {:shared {}
                  :db {:exports {createdb cfxjs.db.core/create-db
                                 ;; createVault cfxjs.db.core/export-create-vault
@@ -151,4 +155,5 @@
                                 e cfxjs.db.core/e
                                 q cfxjs.db.core/q
                                 t cfxjs.db.core/t}
-                      :depends-on #{:shared}}}}}}
+                      :depends-on #{:shared}
+                      :prepend-js "if(window)window.datascript={};"}}}}}
