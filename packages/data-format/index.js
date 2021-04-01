@@ -112,10 +112,11 @@ export const formatAmount = num => {
   }
 }
 
+// only format the address not containing networkid
 export const formatAddress = address => {
   if (!address || typeof address !== 'string') return address
   const arr = address.split(':')
-  if (arr.length < 2) return address
+  if (arr.length !== 2) return address
   const length = arr[1].length
   if (length !== 42) return address
 
