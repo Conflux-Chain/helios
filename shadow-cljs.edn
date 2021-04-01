@@ -149,8 +149,12 @@
                           :externs ["datascript/externs.js"]}
        :modules {:shared {}
                  :db {:exports {createdb cfxjs.db.core/create-db
-                                ;; createVault cfxjs.db.core/export-create-vault
-                                ;; getVault cfxjs.db.core/export-get-vault
+
+                                ;; debug funcs
+
+                                ;; tap cfxjs.db.core/tppp
+                                ;; prn cfxjs.db.core/ppp
+                                ;; jtc cfxjs.db.core/jtc
                                 k cfxjs.db.core/k
                                 e cfxjs.db.core/e
                                 q cfxjs.db.core/q

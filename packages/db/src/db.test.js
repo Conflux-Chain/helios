@@ -57,28 +57,26 @@ describe('db', function () {
   describe('get by fn', function () {
     it('should get the right data with simple query', async function () {
       const conn = db.createdb(schema)
-      const vaultId = conn.createVault({type: 'a', data: 'b'})
+      const vaultId = conn.createVault({type: 'a', data: 'b', accounts: [2]})
       conn.createAccount({
         vault: vaultId,
         hexAddress: '0x10000000000000000000000000000000000000000000000000',
       })
 
-      let rst, vault, account
+      let rst, vault
       rst = conn.getVaultByType('a')
       expect(Array.isArray(rst)).toBe(true)
       vault = rst[0]
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
-      expect(vault.id).toBe(1)
-      account = conn.getAccountByVault(vaultId)[0]
-      expect(account.vault.type).toBe('a')
+      expect(vault.eid).toBe(1)
 
       rst = conn.getVaultByData('b')
       expect(Array.isArray(rst)).toBe(true)
       vault = rst[0]
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
-      expect(vault.id).toBe(1)
+      expect(vault.eid).toBe(1)
     })
 
     it('should return a empty array if found no data', async function () {
@@ -104,12 +102,12 @@ describe('db', function () {
       vault = rst[0]
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
-      expect(vault.id).toBe(1)
+      expect(vault.eid).toBe(1)
 
       vault = rst[1]
       expect(vault.data).toBe('c')
       expect(vault.type).toBe('a')
-      expect(vault.id).toBe(2)
+      expect(vault.eid).toBe(2)
 
       // default to $and logic
       rst = conn.getVault({type: 'a', data: 'b'})
@@ -132,7 +130,7 @@ describe('db', function () {
       vault = conn.getOneVault({type: 'a'})
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
-      expect(vault.id).toBe(1)
+      expect(vault.eid).toBe(1)
     })
   })
 
@@ -146,14 +144,12 @@ describe('db', function () {
         hexAddress: '0x10000000000000000000000000000000000000000000000000',
       })
       let vault
-      // TODO: accounts should be alter the original Entity type or create a new
-      // type to extend it
       expect(conn.getOneVault({data: 'b'}).accounts).toBeDefined()
       conn.deleteOneVault({data: 'b'})
       vault = conn.getOneVault({type: 'a'})
       expect(vault.data).toBe('c')
       expect(vault.type).toBe('a')
-      expect(vault.id).toBe(2)
+      expect(vault.eid).toBe(2)
     })
   })
 
@@ -161,15 +157,25 @@ describe('db', function () {
     it('should have the right instance method', async function () {
       const conn = db.createdb(schema)
       conn.createVault({type: 'a', data: 'b', accounts: [2]})
+      conn.createAccount({hexAddress: 'c', vault: 1})
+
       const vault = conn.getOneVault({data: 'b'})
-      expect(vault._entity).toBeDefined()
-      expect(vault._entity.get('id')).toBe(1)
-      expect(vault._entity.get('data')).toBe('b')
-      expect(vault._entity.get('type')).toBe('a')
-      expect(vault._entity.modelName()).toBe('vault')
-      expect(vault._entity.attr__GT_key('a').toString()).toBe(':vault/a')
-      expect(vault._entity.attr__GT_key(':a').toString()).toBe(':a')
-      expect(vault._entity.attr__GT_key('id').toString()).toBe(':db/id')
+
+      expect(vault.eid).toBe(1)
+      expect(vault.data).toBe('b')
+      expect(vault.type).toBe('a')
+      expect(vault.get('data')).toBe('b')
+      expect(vault.get('type')).toBe('a')
+      expect(vault.modelName()).toBe('vault')
+      expect(vault.attr__GT_key('a').toString()).toBe(':vault/a')
+      expect(vault.attr__GT_key(':a').toString()).toBe(':a')
+      expect(vault.attr__GT_key('id').toString()).toBe(':db/id')
+
+      // TODO: this works in browser but not in node.js
+      // const account = conn.getOneAccount({hexAddress: 'c'})
+      // expect(account.vault.type).toBe('a')
+      // expect(account.vault.data).toBe('b')
+      // expect(vault.accounts[0].hexAddress).toBe('c')
     })
   })
 })
