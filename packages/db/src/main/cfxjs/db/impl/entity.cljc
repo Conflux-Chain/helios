@@ -1,7 +1,8 @@
 (ns ^:no-doc cfxjs.db.impl.entity
   (:refer-clojure :exclude [keys get])
   (:require [#?(:cljs cljs.core :clj clojure.core) :as c]
-            [datascript.db :as db]))
+            [datascript.db :as db]
+            [cfxjs.db.schema :as dcs]))
 
 (declare entity ->Entity equiv-entity lookup-entity touch)
 
@@ -11,25 +12,36 @@
             (keyword? eid))
     (db/entid db eid)))
 
-(defn entity [db eid]
+(defn entity [db model attr-keys eid]
   {:pre [(db/db? db)]}
   (when-let [e (entid db eid)]
-    (->Entity db e (volatile! false) (volatile! {}))))
+    (let [e (->Entity db model attr-keys e (volatile! false) (volatile! {}))]
+      (doseq [attr attr-keys]
+        (let [attr (name attr)]
+          (doto e
+            (js/Object.defineProperty attr
+                                      #js {:get #(this-as t (clj->js (.get t attr)))}))))
+      e)))
 
 (defn- entity-attr [db a datoms]
-  (if (db/multival? db a)
-    (if (db/ref? db a)
-      (reduce #(conj %1 (entity db (:v %2))) #{} datoms)
-      (reduce #(conj %1 (:v %2)) #{} datoms))
-    (if (db/ref? db a)
-      (entity db (:v (first datoms)))
-      (:v (first datoms)))))
+  (let [ref? (db/ref? db a)
+        model (when ref? (dcs/ref-qattr->model a))
+        attr-keys (when ref? (dcs/model->attr-keys model))]
+    (if (db/multival? db a)
+      (if ref?
+        (reduce #(conj %1 (entity db model attr-keys (:v %2))) #{} datoms)
+        (reduce #(conj %1 (:v %2)) #{} datoms))
+      (if ref?
+        (entity db model attr-keys (:v (first datoms)))
+        (:v (first datoms))))))
 
 (defn- -lookup-backwards [db eid attr not-found]
   (if-let [datoms (not-empty (db/-search db [nil attr eid]))]
-    (if (db/component? db attr)
-      (entity db (:e (first datoms)))
-      (reduce #(conj %1 (entity db (:e %2))) #{} datoms))
+    (let [model (dcs/qattr->model attr)
+          attr-keys (dcs/qattr->attr-keys attr)]
+      (if (db/component? db attr)
+        (entity db model attr-keys (:e (first datoms)))
+        (reduce #(conj % 1 (entity db model attr-keys (:e % 2))) #{} datoms)))
     not-found))
 
 #?(:cljs
@@ -44,11 +56,10 @@
          [a (multival->js v)]
          [a v]))))
 
-(deftype Entity [db eid touched cache]
+(deftype Entity [db model attr-keys eid touched cache]
   #?@(:cljs
       [Object
-       (modelName [this]
-                  (-> this .key_set first namespace))
+       (modelName [_] (name model))
        (attr->key [this attr]
                   (cond (keyword? attr) attr
                         (= "id" attr) :db/id
@@ -79,6 +90,8 @@
                       multival->js)
                   (cond-> (lookup-entity this attr)
                     (db/multival? db attr) multival->js)))))
+       (touch [this]
+              (touch this))
        (forEach [this f]
                 (doseq [[a v] (js-seq this)]
                   (f v a this)))
@@ -151,8 +164,7 @@
 
        clojure.lang.IFn
        (invoke [e k]      (lookup-entity e k))
-       (invoke [e k not-found] (lookup-entity e k not-found))
-       ]))
+       (invoke [e k not-found] (lookup-entity e k not-found))]))
 
 (defn entity? [x] (instance? Entity x))
 
@@ -186,18 +198,18 @@
 (defn touch-components [db a->v]
   (reduce-kv (fn [acc a v]
                (assoc acc a
-                 (if (db/component? db a)
-                   (if (db/multival? db a)
-                     (set (map touch v))
-                     (touch v))
-                   v)))
+                      (if (db/component? db a)
+                        (if (db/multival? db a)
+                          (set (map touch v))
+                          (touch v))
+                        v)))
              {} a->v))
 
 (defn- datoms->cache [db datoms]
   (reduce (fn [acc part]
-    (let [a (:a (first part))]
-      (assoc acc a (entity-attr db a part))))
-    {} (partition-by :a datoms)))
+            (let [a (:a (first part))]
+              (assoc acc a (entity-attr db a part))))
+          {} (partition-by :a datoms)))
 
 (defn touch [^Entity e]
   {:pre [(entity? e)]}
@@ -209,4 +221,18 @@
       (vreset! (.-touched e) true)))
   e)
 
-#?(:cljs (goog/exportSymbol "datascript.impl.entity.Entity" Entity))
+#?(:cljs (goog/exportSymbol "cfxjs.db.impl.entity.Entity" Entity))
+
+(comment
+  {:vault/accounts #{{:account/hexAddress "c"
+                      :account/vault {:vault/accounts #{{:account/hexAddress "c"
+                                                         :account/vault #:db{:id 1}
+                                                         :db/id 2}}
+                                      :vault/data "b"
+                                      :vault/type "a"
+                                      :db/id 1}
+                      :db/id 2}}
+   :vault/data "b"
+   :vault/type "a"
+   :db/id 1}
+  (.get (goog.object.get js/window.a "vault") "data"))
