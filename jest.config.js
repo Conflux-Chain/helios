@@ -37,7 +37,7 @@ module.exports = {
     '/packages/utils',
     '/packages/utils/env.js',
     '/packages/spec/',
-    '/packages/db/',
+    '/packages/db/src/cljs-runtime',
     '/packages/bytes/',
     '/testlib/',
   ],
