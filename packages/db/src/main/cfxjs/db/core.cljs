@@ -1,7 +1,7 @@
 (ns cfxjs.db.core
   (:require [datascript.core :as d]
             [cfxjs.db.impl.entity :refer [entity?] :as de]
-            [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure]])
+            [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]])
   (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and]]))
 
 (defn j->c [v]
@@ -116,13 +116,21 @@
                               {get-by-fn-k get-by-fn}))]
     (apply merge {delete-one-fn-k delete-one-fn} {create-fn-k create-fn} {get-one-fn-k get-one-fn} {get-fn-k get-fn} (map attr->attr-fn-map attr-keys))))
 
+(defn get-by-id [id]
+  (when-let [data (d/pull @conn '[*] id)]
+    (when-let [qattr (first (second data))]
+      (let [model (qattr->model qattr)
+            attr-keys (model->attr-keys model)]
+        (e model attr-keys id)))))
+
 (defn create-db
   "Create a database with js format schema, return a map with generated query methods for model and the database at :_db"
   [js-schema]
   (let [js-schema (j->c js-schema)
         db (d/create-conn (js-schema->schema js-schema))
         rst (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
-        rst (assoc rst :_db db)]
+        rst (assoc rst :_db db)
+        rst (assoc rst :getById (comp clj->js get-by-id))]
     (reset! conn @db)
     ;; (def kkk rst)
     (clj->js rst)))

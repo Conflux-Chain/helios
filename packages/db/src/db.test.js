@@ -134,6 +134,19 @@ describe('db', function () {
     })
   })
 
+  describe('get by id fn', function () {
+    it('should return the right result', async function () {
+      const conn = db.createdb(schema)
+      const vaultId = conn.createVault({type: 'a', data: 'b'})
+      const vault = conn.getById(vaultId)
+      expect(vault).toBeDefined()
+      expect(vault.data).toBe('b')
+      expect(vault.type).toBe('a')
+      expect(vault.eid).toBe(vaultId)
+      expect(conn.getById(2)).toBeNull()
+    })
+  })
+
   describe('delete one fn', function () {
     it('should remove the right data', async function () {
       const conn = db.createdb(schema)
