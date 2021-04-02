@@ -5,7 +5,6 @@ import {
   fromCfxToDrip,
   formatDigit,
   toThousands,
-  removeZero,
   formatAmount,
   formatAddress,
 } from './'
@@ -42,17 +41,6 @@ describe('@cfxjs/data-format', function () {
     expect(toThousands('0.00001')).toBe('0.00001')
     expect(toThousands(null)).toBe(null)
   })
-
-  it('removeZero', async function () {
-    expect(removeZero('100000')).toBe('100000')
-    expect(removeZero('100000.0')).toBe('100000')
-    expect(removeZero('100000.0001')).toBe('100000.0001')
-    expect(removeZero('100000.1000')).toBe('100000.1')
-    expect(removeZero('0.0000')).toBe('0')
-    expect(removeZero('0.00001')).toBe('0.00001')
-    expect(removeZero(null)).toBe(null)
-  })
-
   it('formatAmount', async function () {
     expect(formatAmount('1999999.999999')).toBe('1.999 M')
     expect(formatAmount('19999999.999999')).toBe('19.999 M')

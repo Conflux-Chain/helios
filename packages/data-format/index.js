@@ -3,32 +3,32 @@ import Big from 'big.js'
 Big.RM = 0
 Big.NE = -19
 
-export const fromDripToCfx = number => {
+export const fromDripToCfx = numOrStr => {
   try {
-    const cfx = new Big(number).div(1e18).toString()
+    const cfx = new Big(numOrStr).div(1e18).toString()
     return cfx
   } catch (e) {
-    return number
+    return numOrStr
   }
 }
 
-export const fromCfxToDrip = number => {
+export const fromCfxToDrip = numOrStr => {
   try {
-    const cfx = new Big(number).times(1e18).toString()
+    const cfx = new Big(numOrStr).times(1e18).toString()
     return cfx
   } catch (e) {
-    return number
+    return numOrStr
   }
 }
 
-export const formatDigit = (num, digit) => {
+export const formatDigit = (numOrStr, digit) => {
   try {
-    const bNum = new Big(num)
-    const str = num + ''
-    const strWithoutZero = removeZero(str)
+    const bNum = new Big(numOrStr)
+    const str = numOrStr + ''
+    const strWithoutZero = bNum.toString(10)
     const strArr = strWithoutZero.split('.')
     // no digit
-    if (!digit) return num
+    if (!digit) return numOrStr
     // no decimal or digit < integer length
     else if (!strArr[1] || strArr[0].length >= digit)
       return toThousands(strArr[0])
@@ -36,17 +36,17 @@ export const formatDigit = (num, digit) => {
       return toThousands(strWithoutZero)
     else {
       const decimal = strArr[1].substring(0, digit - strArr[0].length)
-      return toThousands(removeZero([strArr[0], decimal].join('.')))
+      return toThousands(new Big([strArr[0], decimal].join('.')).toString(10))
     }
   } catch (e) {
-    return num
+    return numOrStr
   }
 }
 
-export const toThousands = (num, delimiter = ',', prevDelimiter = ',') => {
+export const toThousands = (numOrStr, delimiter = ',', prevDelimiter = ',') => {
   try {
-    const bNum = new Big(num)
-    let str = num + ''
+    const bNum = new Big(numOrStr)
+    let str = numOrStr + ''
     return str
       .replace(new RegExp(prevDelimiter, 'igm'), '')
       .split('.')
@@ -58,57 +58,27 @@ export const toThousands = (num, delimiter = ',', prevDelimiter = ',') => {
         }
       }, '')
   } catch (e) {
-    return num
+    return numOrStr
   }
 }
 
-export const removeZero = num => {
+export const formatAmount = numOrStr => {
   try {
-    const bNum = new Big(num)
-    let str = num + ''
-    let end = str.length - 1
-    const strArr = str.split('.')
-    if (!strArr[1]) return str
-    else if (strArr[1].length === 0) return str.substring(0, end)
-    else {
-      for (let i = strArr[1].length; i > 0; i--) {
-        // if str ends with 0
-        end = str.length - 1
-        if (str.lastIndexOf('0') === end) {
-          // the length of decimal part is 1 and ends with 0
-          if (str.charAt(end - 1) === '.') {
-            return str.substring(0, end - 1)
-          } else {
-            str = str.substring(0, end)
-          }
-        } else {
-          // if str ends with not 0
-          return str
-        }
-      }
-    }
-  } catch (e) {
-    return num
-  }
-}
-
-export const formatAmount = num => {
-  try {
-    let bNum = new Big(num)
-    const str = num + ''
+    let bNum = new Big(numOrStr)
+    const str = numOrStr + ''
     if (bNum.gte(Big(0)) && bNum.lt(Big(1e6))) {
       return formatDigit(str, 7)
     } else if (bNum.gte(Big(1e6)) && bNum.lt(Big(1e9))) {
-      return toThousands(removeZero(bNum.div(1e6).round(3).toString())) + ' M'
+      return toThousands(bNum.div(1e6).round(3).toString(10)) + ' M'
     } else if (bNum.gte(Big(1e9)) && bNum.lt(Big(1e12))) {
-      return toThousands(removeZero(bNum.div(1e9).round(3).toString())) + ' G'
+      return toThousands(bNum.div(1e9).round(3).toString(10)) + ' G'
     } else if (bNum.gte(Big(1e12)) && bNum.lt(Big(1e15))) {
-      return toThousands(removeZero(bNum.div(1e12).round(3).toString())) + ' T'
+      return toThousands(bNum.div(1e12).round(3).toString(10)) + ' T'
     } else if (bNum.gte(Big(1e15))) {
-      return toThousands(bNum.div(1e12).round().toString()) + ' T'
+      return toThousands(bNum.div(1e12).round().toString(10)) + ' T'
     }
   } catch (e) {
-    return num
+    return numOrStr
   }
 }
 
