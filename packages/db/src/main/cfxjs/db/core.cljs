@@ -77,6 +77,16 @@
 (defn delete-by-id [id]
   (if (t [[:db.fn/retractEntity id]]) true false))
 
+(defn def-delete-fn
+  [get-fn]
+  (fn [attr-map]
+    (if (->> attr-map
+             get-fn
+             (filter #(entity? %))
+             (map (fn [entity] [:db.fn/retractEntity (.-eid entity)]))
+             t)
+      true false)))
+
 (defn def-get-by-fn
   "Given model eg. :vault, attr eg. :type create the getVaultByType function"
   [{:keys [attr model]}]
@@ -105,6 +115,8 @@
         ->entity (partial e model attr-keys)
         get-fn-k (keyword (str "get" Model-name))
         get-fn (comp clj->js #(map ->entity %) (def-get-fn {:model model :attr-keys attr-keys}))
+        delete-fn-k (keyword (str "delete" Model-name))
+        delete-fn (def-delete-fn get-fn)
         get-one-fn-k (keyword (str "getOne" Model-name))
         get-one-fn (comp clj->js ->entity (def-get-one-fn {:model model :attr-keys attr-keys}))
         delete-one-fn-k (keyword (str "deleteOne" Model-name))
@@ -117,7 +129,11 @@
                                   get-by-fn-k (keyword (str "get" Model-name "By" Attr-name))
                                   get-by-fn (comp clj->js #(map ->entity %) (def-get-by-fn {:attr attr :model model}))]
                               {get-by-fn-k get-by-fn}))]
-    (apply merge {delete-one-fn-k delete-one-fn} {create-fn-k create-fn} {get-one-fn-k get-one-fn} {get-fn-k get-fn} (map attr->attr-fn-map attr-keys))))
+    (apply merge {delete-one-fn-k delete-one-fn
+                  delete-fn-k delete-fn
+                  create-fn-k create-fn
+                  get-one-fn-k get-one-fn
+                  get-fn-k get-fn} (map attr->attr-fn-map attr-keys))))
 
 (defn get-by-id [id]
   (when-let [data (d/pull @conn '[*] id)]

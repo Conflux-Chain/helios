@@ -166,6 +166,30 @@ describe('db', function () {
     })
   })
 
+  describe('delete many fn', function () {
+    it('should remove the right data', async function () {
+      const conn = db.createdb(schema)
+
+      conn.createVault({type: 'a', data: '1'})
+      conn.createVault({type: 'a', data: '2'})
+      conn.createVault({type: 'a', data: '3'})
+      conn.createVault({type: 'a', data: '4'})
+      conn.createVault({type: 'b', data: '5'})
+      conn.createVault({type: 'b', data: '6'})
+
+      expect(conn.getVault({type: 'a'}).length).toBe(4)
+      expect(conn.getVault({type: 'b'}).length).toBe(2)
+
+      expect(conn.deleteVault({type: 'a', data: '1'})).toBe(true)
+      expect(conn.getVault({type: 'a'}).length).toBe(3)
+      expect(conn.getVault({type: 'a', data: '1'}).length).toBe(0)
+
+      expect(conn.deleteVault({type: 'a', data: '5', $or: true})).toBe(true)
+      expect(conn.getVault({type: 'a'}).length).toBe(0)
+      expect(conn.getVaultByData('5').length).toBe(0)
+    })
+  })
+
   describe('delete by id fn', function () {
     it('should remove the right data', async function () {
       const conn = db.createdb(schema)
