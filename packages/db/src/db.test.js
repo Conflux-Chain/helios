@@ -166,6 +166,22 @@ describe('db', function () {
     })
   })
 
+  describe('delete by id fn', function () {
+    it('should remove the right data', async function () {
+      const conn = db.createdb(schema)
+      const vaultId = conn.createVault({type: 'a', data: 'b', accounts: [2]})
+      const accountId = conn.createAccount({hexAddress: 'a', vault: 1})
+      expect(conn.getById(vaultId)).toBeDefined()
+      expect(conn.getById(accountId)).toBeDefined()
+      expect(conn.deleteById(vaultId)).toBe(true)
+      expect(conn.getById(vaultId)).toBeNull()
+
+      // vault has many accounts as component
+      // retract a vault will retract all its accounts
+      expect(conn.getById(accountId)).toBeNull()
+    })
+  })
+
   describe('Entity', function () {
     it('should have the right instance method', async function () {
       const conn = db.createdb(schema)
