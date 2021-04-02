@@ -74,6 +74,9 @@
            (def-get-one-fn arg))]
     f))
 
+(defn delete-by-id [id]
+  (if (t [[:db.fn/retractEntity id]]) true false))
+
 (defn def-get-by-fn
   "Given model eg. :vault, attr eg. :type create the getVaultByType function"
   [{:keys [attr model]}]
@@ -130,7 +133,8 @@
         db (d/create-conn (js-schema->schema js-schema))
         rst (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
         rst (assoc rst :_db db)
-        rst (assoc rst :getById (comp clj->js get-by-id))]
+        rst (assoc rst :getById (comp clj->js get-by-id))
+        rst (assoc rst :deleteById delete-by-id)]
     (reset! conn @db)
     ;; (def kkk rst)
     (clj->js rst)))
