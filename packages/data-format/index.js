@@ -21,22 +21,28 @@ export const fromCfxToDrip = numOrStr => {
   }
 }
 
+export const trimZero = numOrStr => {
+  try {
+    return new Big(numOrStr).toString(10)
+  } catch (err) {
+    return numOrStr
+  }
+}
+
 export const formatDigit = (numOrStr, digit) => {
   try {
-    const bNum = new Big(numOrStr)
-    const str = numOrStr + ''
-    const strWithoutZero = bNum.toString(10)
-    const strArr = strWithoutZero.split('.')
+    const str = trimZero(numOrStr)
+    const strArr = str.split('.')
     // no digit
     if (!digit) return numOrStr
     // no decimal or digit < integer length
     else if (!strArr[1] || strArr[0].length >= digit)
       return toThousands(strArr[0])
     else if (strArr[0].length + strArr[1].length <= digit)
-      return toThousands(strWithoutZero)
+      return toThousands(str)
     else {
       const decimal = strArr[1].substring(0, digit - strArr[0].length)
-      return toThousands(new Big([strArr[0], decimal].join('.')).toString(10))
+      return toThousands(trimZero([strArr[0], decimal].join('.')))
     }
   } catch (e) {
     return numOrStr
@@ -45,8 +51,7 @@ export const formatDigit = (numOrStr, digit) => {
 
 export const toThousands = (numOrStr, delimiter = ',', prevDelimiter = ',') => {
   try {
-    const bNum = new Big(numOrStr)
-    let str = numOrStr + ''
+    let str = trimZero(numOrStr)
     return str
       .replace(new RegExp(prevDelimiter, 'igm'), '')
       .split('.')
@@ -64,8 +69,8 @@ export const toThousands = (numOrStr, delimiter = ',', prevDelimiter = ',') => {
 
 export const formatAmount = numOrStr => {
   try {
-    let bNum = new Big(numOrStr)
-    const str = numOrStr + ''
+    const bNum = new Big(numOrStr)
+    const str = trimZero(numOrStr)
     if (bNum.gte(Big(0)) && bNum.lt(Big(1e6))) {
       return formatDigit(str, 7)
     } else if (bNum.gte(Big(1e6)) && bNum.lt(Big(1e9))) {
