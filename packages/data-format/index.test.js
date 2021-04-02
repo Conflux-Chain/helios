@@ -45,6 +45,7 @@ describe('@cfxjs/data-format', function () {
 
   it('removeZero', async function () {
     expect(removeZero('100000')).toBe('100000')
+    expect(removeZero('100000.0')).toBe('100000')
     expect(removeZero('100000.0001')).toBe('100000.0001')
     expect(removeZero('100000.1000')).toBe('100000.1')
     expect(removeZero('0.0000')).toBe('0')
@@ -73,6 +74,9 @@ describe('@cfxjs/data-format', function () {
     expect(
       formatAddress('cfx:aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg'),
     ).toBe('cfx:aarc...h4xg')
+    expect(
+      formatAddress('CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG'),
+    ).toBe('CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG')
     expect(formatAmount(null)).toBe(null)
   })
 })
