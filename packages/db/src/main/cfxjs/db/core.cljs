@@ -82,10 +82,33 @@
   (fn [attr-map]
     (if (->> attr-map
              get-fn
-             (filter #(entity? %))
              (map (fn [entity] [:db.fn/retractEntity (.-eid entity)]))
              t)
       true false)))
+
+(defn def-update-fn
+  [{:keys [model] :as arg}]
+  (fn [attr-map updates]
+    (when-let [updates (dissoc (j->c updates) :id)]
+      (if-not (> (count (keys updates)) 0) nil)
+      (let [->attrk (partial ->attrk model)
+            updates (reduce-kv (fn [m k v] (assoc m (->attrk k) v)) {} updates)
+            eids ((def-get-fn arg) attr-map)
+            txs (map (fn [eid] (merge updates {:db/id eid})) eids)
+            rst (t txs)]
+        (if rst eids [])))))
+
+(defn def-update-one-fn
+  [{:keys [model] :as arg}]
+  (fn [attr-map updates]
+    (when-let [updates (dissoc (j->c updates) :id)]
+      (if-not (> (count (keys updates)) 0) nil)
+      (let [->attrk (partial ->attrk model)
+            updates (reduce-kv (fn [m k v] (assoc m (->attrk k) v)) {} updates)
+            eid ((def-get-one-fn arg) attr-map)
+            txs (merge updates {:db/id eid})
+            rst (t [txs])]
+        (if rst eid nil)))))
 
 (defn def-get-by-fn
   "Given model eg. :vault, attr eg. :type create the getVaultByType function"
@@ -115,6 +138,10 @@
         ->entity (partial e model attr-keys)
         get-fn-k (keyword (str "get" Model-name))
         get-fn (comp clj->js #(map ->entity %) (def-get-fn {:model model :attr-keys attr-keys}))
+        update-fn-k (keyword (str "update" Model-name))
+        update-fn (comp clj->js #(map ->entity %) (def-update-fn {:model model :attr-keys attr-keys}))
+        update-one-fn-k (keyword (str "updateOne" Model-name))
+        update-one-fn (comp clj->js ->entity (def-update-one-fn {:model model :attr-keys attr-keys}))
         delete-fn-k (keyword (str "delete" Model-name))
         delete-fn (def-delete-fn get-fn)
         get-one-fn-k (keyword (str "getOne" Model-name))
@@ -131,6 +158,8 @@
                               {get-by-fn-k get-by-fn}))]
     (apply merge {delete-one-fn-k delete-one-fn
                   delete-fn-k delete-fn
+                  update-fn-k update-fn
+                  update-one-fn-k update-one-fn
                   create-fn-k create-fn
                   get-one-fn-k get-one-fn
                   get-fn-k get-fn} (map attr->attr-fn-map attr-keys))))
@@ -142,6 +171,14 @@
             attr-keys (model->attr-keys model)]
         (e model attr-keys id)))))
 
+(defn update-by-id [id updates]
+  (when-let [^de/Entity entity (get-by-id id)]
+    (let [updates (dissoc (j->c updates) :id)
+          model (.-model entity)
+          ->attrk (partial ->attrk model)
+          updates (reduce-kv (fn [m k v] (assoc m (->attrk k) v)) {} updates)]
+      (if (t [(merge updates {:db/id id})]) (e model (.-attr-keys entity) (.-eid entity)) nil))))
+
 (defn create-db
   "Create a database with js format schema, return a map with generated query methods for model and the database at :_db"
   [js-schema]
@@ -150,32 +187,13 @@
         rst (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
         rst (assoc rst :_db db)
         rst (assoc rst :getById (comp clj->js get-by-id))
-        rst (assoc rst :deleteById delete-by-id)]
+        rst (assoc rst :deleteById delete-by-id)
+        rst (assoc rst :updateById update-by-id)]
     (reset! conn @db)
     ;; (def kkk rst)
     (clj->js rst)))
 
+;; for debug
 (def jtc #(clj->js % :keywordize-keys true))
 (def ppp prn)
 (def tppp tap>)
-
-(comment
-  (satisfies? IEncodeClojure (new js/Proxy #js {} #js {:get (fn [a b c] (js/console.log a b c) (js-debugger))}))
-  (let [attrk :vault/type
-        query (def-get-by-query attrk)]
-    (q query "public"))
-  (let [keywords [:vault/type :vault/data]
-        symbols ['?type '?data]
-        query (def-get-query-and keywords symbols)]
-    (q query {:type "public"}))
-  (->> 4
-       (e)
-       (de/touch)
-       (map (fn [[k v]] {(name k) v}))
-       (apply merge))
-  (q '[:find [?e ...]
-       :in $ ?v
-       :where
-       [?e :vault/type ?v]] "public")
-  (:vault/type (e 1))
-  (p '[*] [1 2 3 4 5]))
