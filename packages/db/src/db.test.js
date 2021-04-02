@@ -206,6 +206,73 @@ describe('db', function () {
     })
   })
 
+  describe('update fn', function () {
+    it('should update the right data in db', async function () {
+      const conn = db.createdb(schema)
+
+      conn.createVault({type: 'a', data: '1'})
+      conn.createVault({type: 'a', data: '2'})
+      conn.createVault({type: 'a', data: '3'})
+      conn.createVault({type: 'a', data: '4'})
+      conn.createVault({type: 'b', data: '5'})
+      conn.createVault({type: 'b', data: '6'})
+
+      expect(conn.getVault({type: 'a'}).length).toBe(4)
+      expect(conn.getVault({type: 'b'}).length).toBe(2)
+
+      expect(
+        conn.updateVault({type: 'a', data: '1'}, {data: '2'})[0].data,
+      ).toBe('2')
+
+      expect(conn.getVault({type: 'a', data: '2'}).length).toBe(2)
+
+      expect(
+        conn.updateVault(
+          {type: 'a', data: '6', $or: true},
+          {type: 'b', data: '5'},
+        ).length,
+      ).toBe(5)
+
+      expect(conn.getVault({type: 'b', data: '5'}).length).toBe(6)
+    })
+  })
+
+  describe('update one fn', function () {
+    it('should update the right data in db', async function () {
+      const conn = db.createdb(schema)
+
+      conn.createVault({type: 'a', data: '1'})
+      conn.createVault({type: 'a', data: '2'})
+      conn.createVault({type: 'b', data: '3'})
+
+      expect(conn.getVault({type: 'a'}).length).toBe(2)
+      expect(conn.getVault({type: 'b'}).length).toBe(1)
+
+      expect(conn.updateOneVault({type: 'a'}, {type: 'b'}).data).toBe('1')
+      expect(conn.getVault({type: 'b'}).length).toBe(2)
+    })
+  })
+
+  describe('update by id fn', function () {
+    it('should update the right data in db', async function () {
+      const conn = db.createdb(schema)
+
+      conn.createVault({type: 'a', data: '1'})
+      conn.createVault({type: 'a', data: '2'})
+
+      expect(conn.updateById(1, {data: '3'}).data).toBe('3')
+      expect(conn.updateById(2, {data: '4'}).data).toBe('4')
+
+      const vaults = conn.getVault({type: 'a'})
+
+      expect(vaults.length).toBe(2)
+      expect(vaults[0].eid).toBe(1)
+      expect(vaults[0].data).toBe('3')
+      expect(vaults[1].eid).toBe(2)
+      expect(vaults[1].data).toBe('4')
+    })
+  })
+
   describe('Entity', function () {
     it('should have the right instance method', async function () {
       const conn = db.createdb(schema)
