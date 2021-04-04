@@ -298,4 +298,38 @@ describe('db', function () {
       // expect(vault.accounts[0].hexAddress).toBe('c')
     })
   })
+
+  describe('persist', function () {
+    it('should be able to persist and restore the data', async function () {
+      const fakeLocalStorage = {
+        storage: {},
+        setItem(k, v) {
+          fakeLocalStorage.storage[k] = v
+        },
+        getItem(k) {
+          return fakeLocalStorage.storage[k]
+        },
+      }
+
+      let conn = db.createdb(schema, d => fakeLocalStorage.setItem('dsdata', d))
+      conn.createVault({type: 'a', data: '1'})
+      conn.createVault({type: 'a', data: '2'})
+      conn.createVault({type: 'a', data: '3'})
+      conn.createVault({type: 'a', data: '4'})
+      expect(conn.getVaultByType('a').length).toBe(4)
+      expect(conn.getVaultByData('1').length).toBe(1)
+
+      conn = db.createdb(
+        schema,
+        d => fakeLocalStorage.setItem('dsdata', d),
+        fakeLocalStorage.getItem('dsdata'),
+      )
+      conn.createVault({type: 'a', data: '1'})
+      conn.createVault({type: 'a', data: '2'})
+      conn.createVault({type: 'a', data: '3'})
+      conn.createVault({type: 'a', data: '4'})
+      expect(conn.getVaultByType('a').length).toBe(8)
+      expect(conn.getVaultByData('1').length).toBe(2)
+    })
+  })
 })
