@@ -7,12 +7,7 @@
 (defn j->c [v]
   (js->clj v :keywordize-keys true))
 
-(def conn (atom nil))
-
-(def t (partial d/transact! conn))
-(def q (fn [query & args] (apply d/q query @conn args)))
-(def p (partial d/pull @conn))
-(defn e [model attr-keys & args] (apply de/entity @conn model attr-keys args))
+(declare conn t q p e)
 
 (defn ->attrk
   "Say model is :account, attr is :hexAddress, ->attrk returns :account/hexAddress"
@@ -135,7 +130,7 @@
   [[model {:keys [attr-keys]}]]
   (let [model-name (name model)
         Model-name (str (.toUpperCase (subs model-name 0 1)) (subs model-name 1))
-        ->entity (partial e model attr-keys)
+        ->entity (fn [eid] (e model attr-keys eid))
         get-fn-k (keyword (str "get" Model-name))
         get-fn (comp clj->js #(map ->entity %) (def-get-fn {:model model :attr-keys attr-keys}))
         update-fn-k (keyword (str "update" Model-name))
@@ -165,7 +160,7 @@
                   get-fn-k get-fn} (map attr->attr-fn-map attr-keys))))
 
 (defn get-by-id [id]
-  (when-let [data (d/pull @conn '[*] id)]
+  (when-let [data (d/pull (d/db conn) '[*] id)]
     (when-let [qattr (first (second data))]
       (let [model (qattr->model qattr)
             attr-keys (model->attr-keys model)]
@@ -179,19 +174,36 @@
           updates (reduce-kv (fn [m k v] (assoc m (->attrk k) v)) {} updates)]
       (if (t [(merge updates {:db/id id})]) (e model (.-attr-keys entity) (.-eid entity)) nil))))
 
+(def read-db #(cljs.reader/read-string %))
+
 (defn create-db
   "Create a database with js format schema, return a map with generated query methods for model and the database at :_db"
-  [js-schema]
-  (let [js-schema (j->c js-schema)
-        db (d/create-conn (js-schema->schema js-schema))
-        rst (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
-        rst (assoc rst :_db db)
-        rst (assoc rst :getById (comp clj->js get-by-id))
-        rst (assoc rst :deleteById delete-by-id)
-        rst (assoc rst :updateById update-by-id)]
-    (reset! conn @db)
-    ;; (def kkk rst)
-    (clj->js rst)))
+  ([js-schema] (create-db js-schema nil nil))
+  ([js-schema persistfn] (create-db js-schema persistfn nil))
+  ([js-schema persistfn data-to-restore]
+   (let [js-schema (j->c js-schema)
+         db-to-restore (when data-to-restore (cljs.reader/read-string data-to-restore))
+         db (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn (js-schema->schema js-schema)))
+         rst (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
+         rst (assoc rst :_db db)
+         rst (assoc rst :getById (comp clj->js get-by-id))
+         rst (assoc rst :deleteById delete-by-id)
+         rst (assoc rst :updateById update-by-id)]
+     (def conn db)
+     (def t (partial d/transact! conn))
+     (def q (fn [query & args] (apply d/q query (d/db conn) args)))
+     (def p (partial d/pull (d/db conn)))
+     (defn e [model attr-keys & args] (apply de/entity (d/db conn) model attr-keys args))
+
+     (when persistfn
+       (d/listen! conn "persist" (fn [_]
+                                   (->> conn
+                                        d/db
+                                        pr-str
+                                        clj->js
+                                        (.call persistfn nil)))))
+     ;; (def kkk rst)
+     (clj->js rst))))
 
 ;; for debug
 (def jtc #(clj->js % :keywordize-keys true))

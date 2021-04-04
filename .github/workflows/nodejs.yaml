@@ -52,8 +52,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install --immutable
+      - run: git add -f ./packages/db/src/db.js
       - run: yarn test --coverage
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@master
         with:
           directory: ./coverage
           functionalities: coveragepy, html
