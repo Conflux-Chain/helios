@@ -52,7 +52,7 @@ export const formatAmount = numOrStr => {
   } else if (bNum.gte(Big(1e6)) && bNum.lt(Big(1e9))) {
     return toThousands(bNum.div(1e6).round(3).toString(10)) + ' M'
   } else if (bNum.gte(Big(1e9)) && bNum.lt(Big(1e12))) {
-    return toThousands(bNum.div(1e9).round(3).toString(10)) + ' B'
+    return toThousands(bNum.div(1e9).round(3).toString(10)) + ' G'
   } else if (bNum.gte(Big(1e12)) && bNum.lt(Big(1e15))) {
     return toThousands(bNum.div(1e12).round(3).toString(10)) + ' T'
   } else if (bNum.gte(Big(1e15))) {
