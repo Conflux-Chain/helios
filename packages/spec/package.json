@@ -6,9 +6,6 @@
   "scripts": {
     "build": "shadow-cljs release app"
   },
-  "devDependencies": {
-    "shadow-cljs": "^2.11.26"
-  },
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
     "@cfxjs/base32-address": "workspace:packages/base32-address",

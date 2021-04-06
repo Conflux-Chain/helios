@@ -19,7 +19,7 @@
     "@thi.ng/rstream": "^6.0.5",
     "@thi.ng/rstream-csp": "^2.0.64",
     "consts": "workspace:packages/consts",
-    "regenerator-runtime": "^0.13.8",
+    "regenerator-runtime": "^0.13.7",
     "utils": "workspace:packages/inner-utils",
     "webextension-polyfill": "^0.7.0"
   }
