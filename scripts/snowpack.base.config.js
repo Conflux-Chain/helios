@@ -12,13 +12,15 @@ for (const e in process.env) {
 
 const mount = {}
 const alias = {}
-getWorkspacePackages([
-  'browser-extension',
-  'helios',
-  'helios-background',
-  'helios-inpage',
-  'helios-popup',
-]).forEach(({location, name}) => {
+getWorkspacePackages({
+  ignore: [
+    'browser-extension',
+    'helios',
+    'helios-background',
+    'helios-inpage',
+    'helios-popup',
+  ],
+}).forEach(({location, name}) => {
   const packageAbsPath = path.resolve(__dirname, '../', location)
   mount[packageAbsPath] = {url: `/dist/${name}`}
   alias[name] = packageAbsPath
@@ -28,13 +30,14 @@ module.exports = {
   plugins: ['@snowpack/plugin-dotenv'],
   mount,
   alias,
+  devOptions: {
+    output: 'stream',
+    open: 'none',
+  },
   packageOptions: {
     source: 'local',
     env,
     polyfillNode: true,
-  },
-  devOptions: {
-    open: 'none',
   },
   buildOptions: {
     clean: true,

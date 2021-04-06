@@ -6,7 +6,7 @@
 const childProcess = require('child_process')
 const path = require('path')
 
-module.exports = function (ignore = []) {
+module.exports = function ({ignore = []} = {}) {
   const rst = childProcess.spawnSync('yarn', ['workspaces', 'list', '--json'], {
     cwd: path.resolve(__dirname, '../'),
   })
