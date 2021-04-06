@@ -8,7 +8,7 @@ require('./setup-dotenv')
 const {setEnvBasedOnArgv} = require('./snowpack.utils')
 setEnvBasedOnArgv()
 
-const {loadConfiguration, build} = require('snowpack')
+const {loadConfiguration, build} = require('@yqrashawn/snowpack')
 
 const builds = [
   'scripts/snowpack.background.config.js',
