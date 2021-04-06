@@ -15,11 +15,13 @@ describe('wallet_getVaults', function () {
 
   describe('main', function () {
     it('should return the vaults', async function () {
-      const fakeStore = {Vaults: {foo: 'bar'}}
+      const fakeVaults = []
       const input = {
-        getWalletState: jest.fn(() => fakeStore),
+        db: {
+          getVault: jest.fn(() => fakeVaults),
+        },
       }
-      await expect(main(input)).resolves.toEqual(fakeStore.Vaults)
+      await expect(main(input)).resolves.toEqual(fakeVaults)
     })
   })
 })

@@ -93,37 +93,12 @@ const rpcHandlers = {
       },
     },
     {
-      name: 'injectParentStore',
-      main({rpcStore, parentStore}, req) {
-        const protectedStore = perms.getWalletStore(
-          rpcStore,
-          parentStore,
-          req.method,
-        )
+      name: 'injectWalletDB',
+      main({rpcStore, db}, req) {
+        const protectedDB = perms.getWalletDB(rpcStore, db, req.method)
 
-        // TODO: we need to guard the subtree of wallet store if we want to support
-        // external-loaded rpc methods
         return {
-          setWalletState: (...args) => {
-            const [newState, replace] = args
-            if (!protectedStore.setState)
-              throw new Error(
-                `No permission to set wallet state in ${req.method}`,
-              )
-
-            return protectedStore.setState(
-              replace
-                ? newState
-                : Object.assign({}, parentStore.getState(), newState),
-            )
-          },
-          getWalletState: (...args) => {
-            if (!protectedStore.getState)
-              throw new Error(
-                `No permission to get wallet state in ${req.method}`,
-              )
-            return protectedStore.getState(...args)
-          },
+          db: protectedDB,
           ...req,
         }
       },
@@ -185,7 +160,7 @@ const startChan = async c => {
 
 const defRpcEngineFactory = (
   handlers = {before: [], after: []},
-  parentStore,
+  db,
   options = {methods: []},
 ) => {
   const {methods} = options
@@ -217,7 +192,7 @@ const defRpcEngineFactory = (
         beforeChan,
         afterChan,
         rpcStore,
-        parentStore,
+        db,
         onError: (err, req) => rpcErrorHandler(err, undefined, req),
       }),
     )

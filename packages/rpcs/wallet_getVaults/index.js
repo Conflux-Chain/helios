@@ -4,13 +4,12 @@ export const NAME = 'wallet_getVaults'
 
 export const schema = {
   output: [arr, string],
-  getWalletState: [arr, string],
 }
 
 export const permissions = {
-  store: {read: true},
+  db: ['getVault'],
 }
 
-export async function main({getWalletState}) {
-  return getWalletState().Vaults
+export async function main({db: {getVault}}) {
+  return getVault()
 }

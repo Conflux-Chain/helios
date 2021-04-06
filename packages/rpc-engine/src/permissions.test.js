@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
-import {defaultPermissions, format, getRpc, getWalletStore} from './permissions'
+import {defaultPermissions, format, getRpc, getWalletDB} from './permissions'
 
 describe('permissions', function () {
   describe('format', function () {
@@ -18,18 +18,18 @@ describe('permissions', function () {
   })
 
   describe('permissions check', function () {
-    let rpcStore, walletStore
+    let rpcStore, db
 
     beforeEach(function () {
       rpcStore = {
         cfx_mockRpc: {
           NAME: 'cfx_mockRpc',
           main: jest.fn(),
-          permissions: format(),
+          permissions: {...format()},
         },
         cfx_mockRpc2: 'cfx_mockRpc2',
       }
-      walletStore = {setState: jest.fn(), getState: jest.fn()}
+      db = {getVault: jest.fn(), createVault: jest.fn()}
     })
 
     describe('getRpc', function () {
@@ -45,36 +45,36 @@ describe('permissions', function () {
       })
     })
 
-    describe('getWalletStore', function () {
+    describe('getWalletDB', function () {
       it('should return the protectedStore based on permission', async function () {
+        expect(() => getWalletDB(rpcStore, db, 'cfx_mockRpc').getVault).toThrow(
+          'No permission to call db method getVault in cfx_mockRpc',
+        )
         expect(
-          getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').getState,
-        ).toBeUndefined()
-        expect(
-          getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').setState,
-        ).toBeUndefined()
+          () => getWalletDB(rpcStore, db, 'cfx_mockRpc').createVault,
+        ).toThrow('No permission to call db method createVault in cfx_mockRpc')
 
-        rpcStore.cfx_mockRpc.permissions.store.read = true
+        rpcStore.cfx_mockRpc.permissions.db = ['getVault']
         expect(
-          getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').getState,
+          () => getWalletDB(rpcStore, db, 'cfx_mockRpc').getVault,
         ).toBeDefined()
         expect(
-          getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').setState,
-        ).toBeUndefined()
-        getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').getState(1)
-        expect(walletStore.getState).toBeCalledWith(1)
+          () => getWalletDB(rpcStore, db, 'cfx_mockRpc').createVault,
+        ).toThrow('No permission to call db method createVault in cfx_mockRpc')
+        getWalletDB(rpcStore, db, 'cfx_mockRpc').getVault(1)
+        expect(db.getVault).toBeCalledWith(1)
 
-        rpcStore.cfx_mockRpc.permissions.store.write = true
+        rpcStore.cfx_mockRpc.permissions.db = ['getVault', 'createVault']
         expect(
-          getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').getState,
+          () => getWalletDB(rpcStore, db, 'cfx_mockRpc').getVault,
         ).toBeDefined()
         expect(
-          getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').setState,
+          () => getWalletDB(rpcStore, db, 'cfx_mockRpc').createVault,
         ).toBeDefined()
-        getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').getState(1)
-        expect(walletStore.getState).toBeCalledWith(1)
-        getWalletStore(rpcStore, walletStore, 'cfx_mockRpc').setState(2)
-        expect(walletStore.setState).toBeCalledWith(2)
+        getWalletDB(rpcStore, db, 'cfx_mockRpc').getVault(1)
+        expect(db.getVault).toBeCalledWith(1)
+        getWalletDB(rpcStore, db, 'cfx_mockRpc').createVault(2)
+        expect(db.createVault).toBeCalledWith(2)
       })
     })
   })

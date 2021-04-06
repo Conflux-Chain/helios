@@ -37,20 +37,18 @@ export const schema = {
 }
 
 export const permissions = {
-  methods: ['wallet_validatePassword'],
-  store: {read: true, write: true},
+  methods: ['wallet_validatePassword', 'wallet_getVaults'],
+  db: ['createVault'],
 }
 
 export async function main(
   {
-    getWalletState,
-    setWalletState,
+    db: {createVault},
     params: {password, mnemonic, privateKey, address},
-    rpcs,
+    rpcs: {wallet_getVaults, wallet_validatePassword},
     Err,
   } = {params: {}},
 ) {
-  const {wallet_validatePassword} = rpcs
   if (!(await wallet_validatePassword(password)))
     throw new Err('Invalid password')
   const keyring = mnemonic || privateKey || address
@@ -58,11 +56,8 @@ export async function main(
   if (address) keyringType = 'pub'
   if (privateKey) keyringType = 'pk'
   if (mnemonic) keyringType = 'hd'
-  const encrypted = await encrypt(
-    password,
-    JSON.stringify({data: keyring, type: keyringType}),
-  )
-  const vaults = getWalletState().Vaults || []
+  const encrypted = await encrypt(password, keyring)
+  const vaults = wallet_getVaults() || []
   const anyDuplicateVaults = await Promise.all(
     vaults.map(
       compL(
@@ -74,7 +69,5 @@ export async function main(
   )
   if (anyDuplicateVaults.includes(true)) throw new Err('Duplicate credential')
 
-  setWalletState({
-    Vaults: [...vaults, encrypted],
-  })
+  createVault({data: encrypted, type: keyringType})
 }
