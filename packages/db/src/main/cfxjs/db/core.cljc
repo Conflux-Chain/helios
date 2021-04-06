@@ -15,3 +15,14 @@
      :in ~'$ ~symbols
      :where
      ~@(map-indexed (fn [idx symbol] ['?e (nth query-attr-k idx) symbol]) symbols)])
+
+(defmacro def-get-one-query-and [query-attr-k symbols]
+  '`[:find ~'?e .
+     :in ~'$ ~symbols
+     :where
+     ~@(map-indexed (fn [idx symbol] ['?e (nth query-attr-k idx) symbol]) symbols)])
+
+(defmacro def-get-all-query [all-attr-keys]
+  '`[:find [~'?e ...]
+     :where
+     (~'or ~@(map #(conj ['?e %]) all-attr-keys))])

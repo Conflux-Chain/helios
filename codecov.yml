@@ -8,3 +8,7 @@ coverage:
         base: auto
         flags:
           - unit
+
+ignore:
+  - 'packages/db'
+  - 'packages/spec'

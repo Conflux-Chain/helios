@@ -37,6 +37,7 @@ module.exports = {
     '/packages/utils',
     '/packages/utils/env.js',
     '/packages/spec/',
+    '/packages/db/',
     '/packages/bytes/',
     '/testlib/',
   ],
