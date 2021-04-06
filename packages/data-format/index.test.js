@@ -7,20 +7,18 @@ import {
   toThousands,
   trimZero,
   formatAmount,
-  formatAddress,
+  shortenAddress,
 } from './'
 
 describe('@cfxjs/data-format', function () {
   it('fromDripToCfx', async function () {
     expect(fromDripToCfx('1000000000000000000')).toBe('1')
     expect(fromDripToCfx('1')).toBe('0.000000000000000001')
-    expect(fromDripToCfx(null)).toBe(null)
   })
 
   it('fromCfxToDrip', async function () {
     expect(fromCfxToDrip('1')).toBe('1000000000000000000')
     expect(fromCfxToDrip('0.000000000000000001')).toBe('1')
-    expect(fromCfxToDrip(null)).toBe(null)
   })
 
   it('formatDigit', async function () {
@@ -32,7 +30,6 @@ describe('@cfxjs/data-format', function () {
     expect(formatDigit('199999.999999', 7)).toBe('199,999.9')
     expect(formatDigit('199999.999999', 6)).toBe('199,999')
     expect(formatDigit('199999.999999')).toBe('199999.999999')
-    expect(formatDigit(null)).toBe(null)
   })
 
   it('toThousands', async function () {
@@ -40,7 +37,6 @@ describe('@cfxjs/data-format', function () {
     expect(toThousands('1000.00001')).toBe('1,000.00001')
     expect(toThousands('1000000000.00001')).toBe('1,000,000,000.00001')
     expect(toThousands('0.00001')).toBe('0.00001')
-    expect(toThousands(null)).toBe(null)
   })
 
   it('trimZero', async function () {
@@ -50,7 +46,6 @@ describe('@cfxjs/data-format', function () {
     expect(trimZero('100000.1000')).toBe('100000.1')
     expect(trimZero('0.0000')).toBe('0')
     expect(trimZero('0.00001')).toBe('0.00001')
-    expect(trimZero(null)).toBe(null)
   })
 
   it('formatAmount', async function () {
@@ -67,16 +62,16 @@ describe('@cfxjs/data-format', function () {
     expect(formatAmount('19999999999999999.000000')).toBe('19,999 T')
     expect(formatAmount('1.123450')).toBe('1.12345')
     expect(formatAmount('1260999.999999')).toBe('1.26 M')
-    expect(formatAmount(null)).toBe(null)
   })
 
-  it('formatAddress', async function () {
+  it('shortenAddress', async function () {
     expect(
-      formatAddress('cfx:aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg'),
+      shortenAddress('cfx:aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg'),
     ).toBe('cfx:aarc...h4xg')
     expect(
-      formatAddress('CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG'),
+      shortenAddress(
+        'CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG',
+      ),
     ).toBe('CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG')
-    expect(formatAmount(null)).toBe(null)
   })
 })
