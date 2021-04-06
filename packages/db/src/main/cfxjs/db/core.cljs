@@ -2,7 +2,7 @@
   (:require [datascript.core :as d]
             [cfxjs.db.impl.entity :refer [entity?] :as de]
             [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]])
-  (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and]]))
+  (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query]]))
 
 (defn j->c [v]
   (js->clj v :keywordize-keys true))
@@ -21,21 +21,25 @@
   "Given model eg. :vault, attr-keys eg. [:type :data] create the getVault function"
   [{:keys [attr-keys model]}]
   (let [f (fn [attr-map]
-            (let [attr-map (j->c attr-map)
-                  data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
-                                                          nil
-                                                          (let [symbol (->attr-symbol attr)
-                                                                query-attr-k (->attrk model attr)
-                                                                value (get attr-map attr)
-                                                                value (or (get-in value [:_entity :db/id]) value)]
-                                                            [symbol query-attr-k value])))
-                                             attr-keys))
-                  symbols (mapv first data)
-                  query-attr-k (mapv second data)
-                  or? (true? (get attr-map :$or))
-                  query (if or? (def-get-query-or query-attr-k symbols)
-                            (def-get-query-and query-attr-k symbols))]
-              (q query (mapv #(get % 2) data))))]
+            (if attr-map
+                (let [attr-map (j->c attr-map)
+                      data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
+                                                              nil
+                                                              (let [symbol (->attr-symbol attr)
+                                                                    query-attr-k (->attrk model attr)
+                                                                    value (get attr-map attr)
+                                                                    value (or (get-in value [:_entity :db/id]) value)]
+                                                                [symbol query-attr-k value])))
+                                                 attr-keys))
+                      symbols (mapv first data)
+                      query-attr-k (mapv second data)
+                      or? (true? (get attr-map :$or))
+                      query (if or? (def-get-query-or query-attr-k symbols)
+                                (def-get-query-and query-attr-k symbols))]
+                  (q query (mapv #(get % 2) data)))
+                (let [all-attr-keys (map (partial ->attrk model) attr-keys)
+                      query (def-get-all-query all-attr-keys)]
+                  (q query))))]
     f))
 
 (defn def-get-one-fn

@@ -98,6 +98,7 @@ describe('db', function () {
       rst = conn.getVault({type: 'a'})
       expect(Array.isArray(rst)).toBe(true)
       expect(rst.length).toBe(2)
+      expect(conn.getVault().length).toBe(2)
 
       vault = rst[0]
       expect(vault.data).toBe('b')
@@ -187,6 +188,8 @@ describe('db', function () {
       expect(conn.deleteVault({type: 'a', data: '5', $or: true})).toBe(true)
       expect(conn.getVault({type: 'a'}).length).toBe(0)
       expect(conn.getVaultByData('5').length).toBe(0)
+      expect(conn.deleteVault()).toBe(true)
+      expect(conn.getVault().length).toBe(0)
     })
   })
 
@@ -234,6 +237,9 @@ describe('db', function () {
       ).toBe(5)
 
       expect(conn.getVault({type: 'b', data: '5'}).length).toBe(6)
+
+      expect(conn.updateVault(null, {type: 'a'}).length).toBe(6)
+      expect(conn.getVault({type: 'a'}).length).toBe(6)
     })
   })
 
