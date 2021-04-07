@@ -17,7 +17,7 @@ describe('error', function () {
 
       expect(fakeCWrite.mock.calls[0][0].jsonrpc).toBe('2.0')
       expect(fakeCWrite.mock.calls[0][0].id).toBe(2)
-      expect(fakeCWrite.mock.calls[0][0].error.code).toBe(-32603)
+      expect(fakeCWrite.mock.calls[0][0].error.code).toBe(-32000)
       expect(fakeCWrite.mock.calls[0][0].error.message).toContain('RPC Stack:')
       expect(fakeCWrite.mock.calls[0][0].error.message).toContain(
         'original error message',

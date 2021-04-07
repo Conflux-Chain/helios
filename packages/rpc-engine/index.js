@@ -22,20 +22,9 @@ import * as rpcerr from '@cfxjs/json-rpc-error'
 
 export const RpcEngineError = defError(() => '[@cfxjs/rpc-engin] ', identity)
 
-const errorStackPop = error => {
-  if (error?.stack) {
-    const found = error.stack.match(/^\s*at\s.*\..*:\d+\)?$/m)
-    if (found) {
-      const start = found.index
-      const end = found.index + found[0].length
-      error.stack = error.stack.slice(0, start) + error.stack.slice(end)
-    }
-  }
-}
-
 const wrapRpcError = (methodName, ErrConstructor) => errorMessage => {
   const error = new ErrConstructor(`In method ${methodName}\n${errorMessage}`)
-  errorStackPop(error)
+  rpcerr.errorStackPop(error)
   return error
 }
 
@@ -54,7 +43,7 @@ const rpcHandlers = {
         req.jsonrpc = req.jsonrpc || '2.0'
         req.id = req.id || 2
         if (!rpcUtils.isValidRequest(req))
-          throw new Error(
+          throw new rpcerr.InvalidRequest(
             'invalid rpc request:\n' +
               JSON.stringify(
                 {
@@ -75,7 +64,7 @@ const rpcHandlers = {
       name: 'validateRpcMethod',
       main({rpcStore}, {method} = {}) {
         if (!method || !rpcStore[method])
-          throw new Error(`Method ${method} not found`)
+          throw new rpcerr.MethodNotFound(`Method ${method} not found`)
       },
       sideEffect: true,
     },
@@ -104,7 +93,7 @@ const rpcHandlers = {
               const targetRpcName = arguments[1]
 
               if (!perms.getRpc(rpcStore, req.method, targetRpcName))
-                throw new Error(
+                throw new rpcerr.InvalidRequest(
                   `No permission to call method ${targetRpcName} in ${req.method}`,
                 )
               _rpcStack.push(targetRpcName)
@@ -115,7 +104,7 @@ const rpcHandlers = {
               }
             },
             set() {
-              throw new Error(
+              throw new rpcerr.InvalidRequest(
                 'Invalid operation: no permission to alter rpc store',
               )
             },
