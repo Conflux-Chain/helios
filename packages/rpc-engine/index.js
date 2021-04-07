@@ -18,8 +18,26 @@ import {
 import {partial} from '@thi.ng/compose'
 import {rpcErrorHandler} from './src/error'
 import * as perms from './src/permissions'
+import * as rpcerr from '@cfxjs/json-rpc-error'
 
 export const RpcEngineError = defError(() => '[@cfxjs/rpc-engin] ', identity)
+
+const errorStackPop = error => {
+  if (error?.stack) {
+    const found = error.stack.match(/^\s*at\s.*\..*:\d+\)?$/m)
+    if (found) {
+      const start = found.index
+      const end = found.index + found[0].length
+      error.stack = error.stack.slice(0, start) + error.stack.slice(end)
+    }
+  }
+}
+
+const wrapRpcError = (methodName, ErrConstructor) => errorMessage => {
+  const error = new ErrConstructor(`In method ${methodName}\n${errorMessage}`)
+  errorStackPop(error)
+  return error
+}
 
 const request = (c, req = {}) => {
   const localChan = chan(1)
@@ -123,7 +141,7 @@ const rpcHandlers = {
         const {schemas, Err} = rpcStore[method]
         if (schemas.input && !validate(schemas.input, params)) {
           // TODO: make error message more readable
-          throw new Err(
+          throw Err.InvalidParams(
             '\n' + JSON.stringify(explain(schemas.input, params), null, '\t'),
           )
         }
@@ -184,7 +202,14 @@ const defRpcEngineFactory = (
   methods.forEach(rpc => {
     const {NAME, permissions, main, schemas = {}} = rpc
     rpcStore[rpc.NAME] = {
-      Err: defError(() => `[${rpc.NAME}] `, identity),
+      Err: {
+        Parse: wrapRpcError(rpc.NAME, rpcerr.Parse),
+        InvalidRequest: wrapRpcError(rpc.NAME, rpcerr.InvalidRequest),
+        MethodNotFound: wrapRpcError(rpc.NAME, rpcerr.MethodNotFound),
+        InvalidParams: wrapRpcError(rpc.NAME, rpcerr.InvalidParams),
+        Internal: wrapRpcError(rpc.NAME, rpcerr.Internal),
+        Server: wrapRpcError(rpc.NAME, rpcerr.Server),
+      },
       NAME,
       schemas,
       main: async (...args) => main(...args),

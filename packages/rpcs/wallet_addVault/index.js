@@ -45,7 +45,7 @@ export async function main({
   Err,
 }) {
   if (!(await wallet_validatePassword({password})))
-    throw new Err('Invalid password')
+    throw Err.InvalidParams('Invalid password')
   const keyring = mnemonic || privateKey || address
   let keyringType
   if (address) keyringType = 'pub'
@@ -62,7 +62,8 @@ export async function main({
       ),
     ),
   )
-  if (anyDuplicateVaults.includes(true)) throw new Err('Duplicate credential')
+  if (anyDuplicateVaults.includes(true))
+    throw Err.InvalidParams('Duplicate credential')
 
   createVault({data: encrypted, type: keyringType})
 }
