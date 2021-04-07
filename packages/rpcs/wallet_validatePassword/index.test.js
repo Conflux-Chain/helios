@@ -44,11 +44,4 @@ describe('wallet_validatePassword', function () {
       expect(validate(schemas.input, {password: '111'})).toBe(false)
     })
   })
-
-  describe('schema', function () {
-    it('should validate the input password', async function () {
-      expect(validate(schemas.input, {password: '11111111'})).toBe(true)
-      expect(validate(schemas.input, {password: '111'})).toBe(false)
-    })
-  })
 })
