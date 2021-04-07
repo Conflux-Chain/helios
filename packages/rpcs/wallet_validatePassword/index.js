@@ -4,7 +4,7 @@ import {decrypt} from 'browser-passworder'
 export const NAME = 'wallet_validatePassword'
 
 export const schemas = {
-  input: [map, ['password', password]],
+  input: [map, {closed: true}, ['password', password]],
   output: boolean,
 }
 
@@ -12,9 +12,7 @@ export const permissions = {
   methods: ['wallet_getVaults'],
 }
 
-export async function main(
-  {rpcs: {wallet_getVaults}, params: {password}} = {params: {}},
-) {
+export async function main({rpcs: {wallet_getVaults}, params: {password}}) {
   const vaults = await wallet_getVaults()
   if (!vaults.length) return true
   let valid = false

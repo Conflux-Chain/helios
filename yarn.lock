@@ -981,14 +981,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_initState@workspace:packages/rpcs/wallet_initState":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_initState@workspace:packages/rpcs/wallet_initState"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/wallet_lock@workspace:packages/rpcs/wallet_lock":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_lock@workspace:packages/rpcs/wallet_lock"
