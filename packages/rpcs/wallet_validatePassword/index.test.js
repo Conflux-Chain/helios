@@ -26,7 +26,7 @@ describe('wallet_validatePassword', function () {
       expect(valid).toBe(true)
     })
 
-    it('should return true with no vaults', async function () {
+    it('should return true with no vault', async function () {
       input.params.password = '11111111'
       input.rpcs.wallet_getVaults = jest.fn(() => [])
       const valid = await main(input)

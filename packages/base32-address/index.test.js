@@ -91,6 +91,12 @@ describe('@cfxjs/base32-address', function () {
       'net10086:aaag4wt2mbmbb44sp6szd783ry0jtad5benr1ap5gp',
     )
   })
+
+  it('test error eamples', async function () {
+    expect(() =>
+      encode('106d49f8505410eb4e671d51f7d96d2c87807b09', 1029),
+    ).toThrowError('hexAddress should be passed as a Buffer')
+  })
   describe('validateBase32Address', function () {
     it('should return the right validation result', async function () {
       expect(

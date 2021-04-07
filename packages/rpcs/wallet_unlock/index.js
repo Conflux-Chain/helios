@@ -16,7 +16,7 @@ export const main = async ({
   db: {setPassword},
   rpcs: {wallet_validatePassword},
   Err,
-} = {}) => {
+}) => {
   if (!(await wallet_validatePassword({password})))
     throw new Err('Invalid password')
   setPassword(password)
