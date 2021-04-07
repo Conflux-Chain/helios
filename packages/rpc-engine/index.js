@@ -36,7 +36,20 @@ const rpcHandlers = {
         req.jsonrpc = req.jsonrpc || '2.0'
         req.id = req.id || 2
         if (!rpcUtils.isValidRequest(req))
-          throw new Error('invalid rpc request')
+          throw new Error(
+            'invalid rpc request:\n' +
+              JSON.stringify(
+                {
+                  method: req.method,
+                  params: req.params,
+                  jsonrpc: req.jsonrpc,
+                  id: req.id,
+                },
+                null,
+                '\t',
+              ) +
+              '\n',
+          )
       },
       sideEffect: true,
     },
