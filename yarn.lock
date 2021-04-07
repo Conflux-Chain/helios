@@ -910,6 +910,7 @@ __metadata:
   resolution: "@cfxjs/spec@workspace:packages/spec"
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
+    "@cfxjs/associative": "workspace:packages/associative"
     "@cfxjs/base32-address": "workspace:packages/base32-address"
     bip39: ^3.0.3
   languageName: unknown
@@ -967,6 +968,14 @@ __metadata:
 "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/wallet_importPrivateKey@workspace:packages/rpcs/wallet_importPrivateKey":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_importPrivateKey@workspace:packages/rpcs/wallet_importPrivateKey"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
@@ -5531,6 +5540,7 @@ fsevents@~2.1.2:
     "@cfxjs/wallet_generateMnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
     "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey"
     "@cfxjs/wallet_getVaults": "workspace:packages/rpcs/wallet_getVaults"
+    "@cfxjs/wallet_importPrivateKey": "workspace:packages/rpcs/wallet_importPrivateKey"
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock"
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
     "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword"
@@ -5590,6 +5600,7 @@ fsevents@~2.1.2:
     highlight.js: 9.18.1
     husky: ^6.0.0
     jest: ^26.6.3
+    jest-webextension-mock: ^3.7.9
     lint-staged: ^10.5.4
     mustache: ^4.2.0
     npm-run-all: ^4.1.5
@@ -6880,6 +6891,13 @@ fsevents@~2.1.2:
     jest-util: ^26.6.2
     string-length: ^4.0.1
   checksum: d4a13c17c7b9bd98616d7a4ff087c0c16346038ba6b6db6f4a15acbce2ea9a9c7b8b873d174ade3f458c9ad5607f7cadd29309aa13f03a844f984d3711b57805
+  languageName: node
+  linkType: hard
+
+"jest-webextension-mock@npm:^3.7.9":
+  version: 3.7.9
+  resolution: "jest-webextension-mock@npm:3.7.9"
+  checksum: ce9e5301bf15943ec611c6908e70e722690be6f271e8b128d891d756d1868bd9d47cfe32e95d32d009bbb9983e81a575aa1e9e4628ff3d9545313507ebf35b9e
   languageName: node
   linkType: hard
 

@@ -39,27 +39,26 @@ describe('@cfxjs/wallet_addVault', function () {
         Err: Error,
         db: {createVault: jest.fn(() => 1)},
         rpcs: {
-          wallet_getVaults: jest.fn(() => true),
+          wallet_getVaults: jest.fn(() => []),
           wallet_validatePassword: jest.fn(() => true),
         },
         params: {password: '11111111', mnemonic: 'abc'},
-        getWalletState: jest.fn(() => ({Vaults: []})),
       }
     })
 
     it('should throw invalid password error with invalid password', async function () {
       input.rpcs.wallet_validatePassword = jest.fn(() => false)
       await expect(main(input)).rejects.toThrow(input.Err('Invalid password'))
-      expect(input.rpcs.wallet_validatePassword).toBeCalledWith(
-        input.params.password,
-      )
+      expect(input.rpcs.wallet_validatePassword).toBeCalledWith({
+        password: input.params.password,
+      })
     })
 
     it('should throw duplicate credentials error with duplicate credentials', async function () {
-      const encrypted = await encrypt(
-        input.params.password,
-        JSON.stringify({data: input.params.mnemonic, type: 'hd'}),
-      )
+      const encrypted = {
+        type: 'hd',
+        data: await encrypt(input.params.password, input.params.mnemonic),
+      }
       input.rpcs.wallet_getVaults = () => [encrypted]
       await expect(main(input)).rejects.toThrow('Duplicate credential')
     })

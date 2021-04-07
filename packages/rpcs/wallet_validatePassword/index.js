@@ -19,7 +19,7 @@ export async function main(
   if (!vaults.length) return true
   let valid = false
   try {
-    await decrypt(password, vaults[0])
+    await decrypt(password, vaults[0].data)
     valid = true
   } catch (err) {
     valid = false

@@ -7,8 +7,6 @@ import {
   base32AccountTestnetAddress,
   hexAccountAddress,
   password,
-  arr,
-  string,
 } from '@cfxjs/spec'
 import {encrypt, decrypt} from 'browser-passworder'
 import {partial, compL} from '@cfxjs/compose'
@@ -33,7 +31,6 @@ const addressSchema = [
 
 export const schemas = {
   input: [or, menomicSchema, privateKeySchema, addressSchema],
-  setWalletState: [map, ['Vaults', [arr, string]]],
 }
 
 export const permissions = {
@@ -49,7 +46,7 @@ export async function main(
     Err,
   } = {params: {}},
 ) {
-  if (!(await wallet_validatePassword(password)))
+  if (!(await wallet_validatePassword({password})))
     throw new Err('Invalid password')
   const keyring = mnemonic || privateKey || address
   let keyringType
@@ -57,13 +54,13 @@ export async function main(
   if (privateKey) keyringType = 'pk'
   if (mnemonic) keyringType = 'hd'
   const encrypted = await encrypt(password, keyring)
-  const vaults = wallet_getVaults() || []
+  const vaults = (await wallet_getVaults()) || []
   const anyDuplicateVaults = await Promise.all(
     vaults.map(
       compL(
+        v => v.data,
         partial(decrypt, password), // decrypt vault, returns stringified { data:..., type:...}
-        p => p.then(data => JSON.parse(data)),
-        p => p.then(({data}) => data === keyring),
+        p => p.then(data => data === keyring),
       ),
     ),
   )

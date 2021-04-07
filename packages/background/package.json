@@ -13,6 +13,7 @@
     "@cfxjs/wallet_generateMnemonic": "workspace:packages/rpcs/wallet_generateMnemonic",
     "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey",
     "@cfxjs/wallet_getVaults": "workspace:packages/rpcs/wallet_getVaults",
+    "@cfxjs/wallet_importPrivateKey": "workspace:packages/rpcs/wallet_importPrivateKey",
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock",
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock",
     "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword",

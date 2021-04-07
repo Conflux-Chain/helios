@@ -7,10 +7,7 @@ describe('wallet_validatePassword', function () {
   describe('main', function () {
     let vault, input
     beforeAll(async () => {
-      vault = await encrypt(
-        '11111111',
-        JSON.stringify({type: 'pk', data: 'foo'}),
-      )
+      vault = {type: 'pk', data: await encrypt('11111111', 'foo')}
       input = {
         params: {password: '00000000'},
         rpcs: {wallet_getVaults: async () => [vault]},

@@ -93,7 +93,7 @@ const rpcHandlers = {
 
               return params => {
                 const req = {method: targetRpcName, params, _rpcStack}
-                return request(__c, req)
+                return request(__c, req).then(res => res.result)
               }
             },
             set() {
@@ -120,10 +120,12 @@ const rpcHandlers = {
       name: 'validateParams',
       main({rpcStore}, req) {
         const {params, method} = req
-        const {schema, Err} = rpcStore[method]
-        if (schema.input && !validate(schema.input, params)) {
+        const {schemas, Err} = rpcStore[method]
+        if (schemas.input && !validate(schemas.input, params)) {
           // TODO: make error message more readable
-          throw new Err(explain(schema.input, params))
+          throw new Err(
+            '\n' + JSON.stringify(explain(schemas.input, params), null, '\t'),
+          )
         }
       },
       sideEffect: true,
@@ -180,11 +182,11 @@ const defRpcEngineFactory = (
   const rpcStore = new Object() // to store rpc defination
 
   methods.forEach(rpc => {
-    const {NAME, permissions, main, schema = {}} = rpc
+    const {NAME, permissions, main, schemas = {}} = rpc
     rpcStore[rpc.NAME] = {
       Err: defError(() => `[${rpc.NAME}] `, identity),
       NAME,
-      schema,
+      schemas,
       main: async (...args) => main(...args),
       permissions: perms.format(permissions),
     }

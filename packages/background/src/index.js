@@ -25,16 +25,17 @@ import {rpcEngineOpts} from './rpc-engine-opts'
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
 
   {
-    // test
+    const {result: pk} = await request({
+      method: 'wallet_generatePrivateKey',
+      params: {entropy: 'abc'},
+    })
+    const {result: mn} = await request({
+      method: 'wallet_generateMnemonic',
+    })
+    console.log(pk, mn)
     console.log(
       await request({
-        method: 'wallet_generatePrivateKey',
-        params: {entropy: 'abc'},
-      }),
-    )
-    console.log(
-      await request({
-        method: 'wallet_generateMnemonic',
+        method: 'wallet_lock',
       }),
     )
     console.log(
@@ -43,10 +44,10 @@ import {rpcEngineOpts} from './rpc-engine-opts'
         params: {password: '12345678'},
       }),
     )
-    console.log(
-      await request({
-        method: 'wallet_lock',
-      }),
-    )
+    const a = await request({
+      method: 'wallet_importMnemonic',
+      params: {password: '12345678', mnemonic: mn},
+    })
+    console.log(a)
   }
 })()
