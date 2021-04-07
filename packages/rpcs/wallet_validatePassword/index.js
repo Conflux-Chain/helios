@@ -15,7 +15,7 @@ export const permissions = {
 export async function main(
   {rpcs: {wallet_getVaults}, params: {password}} = {params: {}},
 ) {
-  const vaults = (await wallet_getVaults()) || []
+  const vaults = await wallet_getVaults()
   if (!vaults.length) return true
   let valid = false
   try {

@@ -54,7 +54,7 @@ export async function main(
   if (privateKey) keyringType = 'pk'
   if (mnemonic) keyringType = 'hd'
   const encrypted = await encrypt(password, keyring)
-  const vaults = (await wallet_getVaults()) || []
+  const vaults = await wallet_getVaults()
   const anyDuplicateVaults = await Promise.all(
     vaults.map(
       compL(
