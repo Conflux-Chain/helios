@@ -31,6 +31,8 @@ module.exports = {
   mount,
   alias,
   devOptions: {
+    hmr: true,
+    hmrDelay: 100,
     output: 'stream',
     open: 'none',
   },
