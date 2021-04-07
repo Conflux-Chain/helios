@@ -53,5 +53,6 @@ module.exports = {
     minify: true,
     bundle: true,
     treeshake: true,
+    sourcemap: 'inline',
   },
 }
