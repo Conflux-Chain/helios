@@ -1,15 +1,15 @@
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
-import {main, schema} from './'
+import {main, schemas} from './'
 import {encrypt} from 'browser-passworder'
 import {validate} from '@cfxjs/spec'
 
 describe('@cfxjs/wallet_addVault', function () {
-  describe('schema', function () {
+  describe('schemas', function () {
     describe('input', function () {
       it('should return false with invalid data', async function () {
         expect(
-          validate(schema.input, {
+          validate(schemas.input, {
             password: '12345678',
             mnemonic:
               'chest nasty rude robot holiday indicate pride tooth number palace strategy fiction',
@@ -21,7 +21,7 @@ describe('@cfxjs/wallet_addVault', function () {
 
       it('should return true with valid data', async function () {
         expect(
-          validate(schema.input, {
+          validate(schemas.input, {
             password: '12345678',
             mnemonic:
               'chest nasty rude robot holiday indicate pride tooth number palace strategy fiction',

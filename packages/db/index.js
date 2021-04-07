@@ -10,13 +10,12 @@ const LOCKED = Symbol('locked')
 // eslint-disable-next-line import/export
 export const createdb = (...args) => {
   const conn = createDatascriptDB(...args)
-  conn.setPassword = p => MemStore.set(PASSWORD, p)
+  conn.setPassword = p => (MemStore.set(PASSWORD, p), conn.setLocked(false))
   conn.getPassword = () => MemStore.get(PASSWORD)
   conn.deletePassword = () => MemStore.delete(PASSWORD)
 
-  conn.setLocked = p => MemStore.set(LOCKED, p)
+  conn.setLocked = p => (p && conn.deletePassword(), MemStore.set(LOCKED, p))
   conn.getLocked = () => MemStore.get(LOCKED)
-  conn.deleteLocked = () => MemStore.delete(LOCKED)
 
   return conn
 }

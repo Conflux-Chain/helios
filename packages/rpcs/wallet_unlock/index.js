@@ -2,7 +2,7 @@ import {map, password} from '@cfxjs/spec'
 
 export const NAME = 'wallet_unlock'
 
-export const schema = {
+export const schemas = {
   input: [map, ['password', password]],
 }
 

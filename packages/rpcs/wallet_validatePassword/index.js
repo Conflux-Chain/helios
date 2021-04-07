@@ -3,7 +3,7 @@ import {decrypt} from 'browser-passworder'
 
 export const NAME = 'wallet_validatePassword'
 
-export const schema = {
+export const schemas = {
   input: [map, ['password', password]],
   output: boolean,
 }

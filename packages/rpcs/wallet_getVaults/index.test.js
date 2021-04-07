@@ -1,14 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
-import {schema, main} from '.'
+import {schemas, main} from '.'
 import {validate} from '@cfxjs/spec'
 
 describe('wallet_getVaults', function () {
-  describe('schema', function () {
+  describe('schemas', function () {
     describe('output', function () {
       it('should validate the vaults', async function () {
-        expect(validate(schema.output, ['a', 'b'])).toBe(true)
-        expect(validate(schema.output, ['a', 1])).toBe(false)
+        expect(validate(schemas.output, ['a', 'b'])).toBe(true)
+        expect(validate(schemas.output, ['a', 1])).toBe(false)
       })
     })
   })

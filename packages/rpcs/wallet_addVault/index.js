@@ -31,7 +31,7 @@ const addressSchema = [
   ],
 ]
 
-export const schema = {
+export const schemas = {
   input: [or, menomicSchema, privateKeySchema, addressSchema],
   setWalletState: [map, ['Vaults', [arr, string]]],
 }

@@ -2,7 +2,7 @@ import {arr, string} from '@cfxjs/spec'
 
 export const NAME = 'wallet_getVaults'
 
-export const schema = {
+export const schemas = {
   output: [arr, string],
 }
 
