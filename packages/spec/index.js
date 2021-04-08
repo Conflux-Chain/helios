@@ -28,6 +28,7 @@ export const {
   hexAddress,
   hexAccountAddress,
   hexContractAddress,
+  hexBuiltInAddress,
   mnemonic,
   privateKey,
 } = defRestSchemas({
