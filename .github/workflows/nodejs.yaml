@@ -56,7 +56,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
       - run: yarn install --immutable
-      - run: git add -f ./packages/db/src/db.js
       - run: yarn test --coverage
       - uses: codecov/codecov-action@master
         with:
