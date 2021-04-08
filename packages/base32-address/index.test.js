@@ -1,7 +1,7 @@
 /* eslint-disable jest/expect-expect */
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
-import {encode, decode, validateBase32Address} from './'
+import {encode, decode, validateBase32Address, randomBase32Address} from './'
 
 function verify(hexAddress, netId, base32Address) {
   let verbose = false
@@ -96,7 +96,36 @@ describe('@cfxjs/base32-address', function () {
     expect(() =>
       encode('106d49f8505410eb4e671d51f7d96d2c87807b09', 1029),
     ).toThrowError('hexAddress should be passed as a Buffer')
+
+    expect(() => encode(Buffer.from('1', 'hex'), 1029)).toThrowError(
+      'hexAddress should be at least 20 bytes',
+    )
+
+    expect(() =>
+      encode(
+        Buffer.from('106d49f8505410eb4e671d51f7d96d2c87807b09', 'hex'),
+        1029n,
+      ),
+    ).toThrowError('netId should be passed as an integer')
+    expect(() =>
+      encode(
+        Buffer.from('106d49f8505410eb4e671d51f7d96d2c87807b09', 'hex'),
+        -1,
+      ),
+    ).toThrowError('netId should be passed as in range [1, 0xFFFFFFFF]')
+
+    expect(() =>
+      decode('cfx:Aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg'),
+    ).toThrowError(/Mixed-case address /)
+
+    expect(() => decode('cfx:aarc9abycue0hhzgyrr53m6cxedgccr')).toThrowError(
+      /Invalid checksum for /,
+    )
+    expect(() =>
+      decode('cfx:type.null:aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg'),
+    ).toThrowError(/Type of address doesn't match/)
   })
+
   describe('validateBase32Address', function () {
     it('should return the right validation result', async function () {
       expect(
@@ -123,6 +152,74 @@ describe('@cfxjs/base32-address', function () {
           'ne10086:aaag4wt2mbmbb44sp6szd783ry0jtad5benr1ap5gp',
         ),
       ).toBeFalsy()
+      expect(() =>
+        validateBase32Address(
+          'cfx:aajg4wt2mbmbb44sp6szd783ry0jtad5bea80xdy7p',
+          1028n,
+        ),
+      ).toThrowError(
+        'Invalid type or networkId, type must be string, networkId must be number',
+      )
+
+      expect(() =>
+        validateBase32Address(
+          'cfx:aajg4wt2mbmbb44sp6szd783ry0jtad5bea80xdy7p',
+          'user',
+          1028n,
+        ),
+      ).toThrowError(
+        'Invalid type or networkId, type must be string, networkId must be number',
+      )
+    })
+  })
+
+  describe('randomBase32Address', function () {
+    it('should return a valid random address', async function () {
+      expect(validateBase32Address(randomBase32Address())).toBe(true)
+      expect(validateBase32Address(randomBase32Address(1), 1)).toBe(true)
+      expect(validateBase32Address(randomBase32Address('user'), 'user')).toBe(
+        true,
+      )
+      expect(
+        validateBase32Address(randomBase32Address('user', 1029), 'user', 1029),
+      ).toBe(true)
+      expect(
+        validateBase32Address(
+          randomBase32Address('contract', 1029),
+          'contract',
+          1029,
+        ),
+      ).toBe(true)
+      expect(
+        validateBase32Address(
+          randomBase32Address('builtin', 1029),
+          'builtin',
+          1029,
+        ),
+      ).toBe(true)
+
+      expect(
+        validateBase32Address(randomBase32Address(9999, 'user'), 9999, 'user'),
+      ).toBe(true)
+
+      expect(() =>
+        validateBase32Address(randomBase32Address(9999n, 'user'), 9999, 'user'),
+      ).toThrowError(
+        'Invalid type or networkId, type must be string, networkId must be number',
+      )
+      expect(() =>
+        validateBase32Address(randomBase32Address(9999, true), 9999, 'user'),
+      ).toThrowError(
+        'Invalid type or networkId, type must be string, networkId must be number',
+      )
+
+      expect(() =>
+        validateBase32Address(
+          randomBase32Address(9999, 'invalid'),
+          9999,
+          'user',
+        ),
+      ).toThrowError('Invalid address type: invalid')
     })
   })
 })
