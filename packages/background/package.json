@@ -6,20 +6,22 @@
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@cfxjs/db": "workspace:packages/db",
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine",
+    "@cfxjs/transducers": "workspace:packages/transducers",
     "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault",
     "@cfxjs/wallet_generateMnemonic": "workspace:packages/rpcs/wallet_generateMnemonic",
     "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey",
     "@cfxjs/wallet_getVaults": "workspace:packages/rpcs/wallet_getVaults",
-    "@cfxjs/wallet_initState": "workspace:packages/rpcs/wallet_initState",
+    "@cfxjs/wallet_importPrivateKey": "workspace:packages/rpcs/wallet_importPrivateKey",
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock",
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock",
     "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword",
+    "@thi.ng/rstream": "^6.0.5",
+    "@thi.ng/rstream-csp": "^2.0.64",
     "consts": "workspace:packages/consts",
-    "ramda": "^0.27.1",
     "regenerator-runtime": "^0.13.8",
     "utils": "workspace:packages/inner-utils",
-    "webextension-polyfill": "^0.7.0",
-    "zustand": "^3.3.3"
+    "webextension-polyfill": "^0.7.0"
   }
 }

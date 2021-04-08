@@ -6,7 +6,6 @@ import {mergeDeepObj} from '@cfxjs/associative'
 
 export const defaultPermissions = {
   methods: [],
-  store: {write: false, read: false},
 }
 
 export const format = (rpcPermissions = {}) =>
@@ -21,14 +20,19 @@ export const getRpc = (rpcStore, callerMethodName, callingMethodName) => {
   )
 }
 
-export const getWalletStore = (rpcStore, walletStore, methodName) => {
-  const {getState, setState} = walletStore
+export const getWalletDB = (rpcStore, db, methodName) => {
+  return new Proxy(
+    {},
+    {
+      get() {
+        const targetMethodName = arguments[1]
+        if (!rpcStore[methodName].permissions?.db?.includes?.(targetMethodName))
+          throw new Error(
+            `No permission to call db method ${targetMethodName} in ${methodName}`,
+          )
 
-  const protectedStore = {}
-  if (rpcStore[methodName].permissions.store.read)
-    protectedStore.getState = getState
-  if (rpcStore[methodName].permissions.store.write)
-    protectedStore.setState = setState
-
-  return protectedStore
+        return db[targetMethodName]
+      },
+    },
+  )
 }

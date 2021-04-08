@@ -2,15 +2,14 @@ import {arr, string} from '@cfxjs/spec'
 
 export const NAME = 'wallet_getVaults'
 
-export const schema = {
+export const schemas = {
   output: [arr, string],
-  getWalletState: [arr, string],
 }
 
 export const permissions = {
-  store: {read: true},
+  db: ['getVault'],
 }
 
-export async function main({getWalletState}) {
-  return getWalletState().Vaults
+export async function main({db: {getVault}}) {
+  return getVault()
 }

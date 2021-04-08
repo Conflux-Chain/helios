@@ -36,7 +36,20 @@ const rpcHandlers = {
         req.jsonrpc = req.jsonrpc || '2.0'
         req.id = req.id || 2
         if (!rpcUtils.isValidRequest(req))
-          throw new Error('invalid rpc request')
+          throw new Error(
+            'invalid rpc request:\n' +
+              JSON.stringify(
+                {
+                  method: req.method,
+                  params: req.params,
+                  jsonrpc: req.jsonrpc,
+                  id: req.id,
+                },
+                null,
+                '\t',
+              ) +
+              '\n',
+          )
       },
       sideEffect: true,
     },
@@ -80,7 +93,7 @@ const rpcHandlers = {
 
               return params => {
                 const req = {method: targetRpcName, params, _rpcStack}
-                return request(__c, req)
+                return request(__c, req).then(res => res.result)
               }
             },
             set() {
@@ -93,37 +106,12 @@ const rpcHandlers = {
       },
     },
     {
-      name: 'injectParentStore',
-      main({rpcStore, parentStore}, req) {
-        const protectedStore = perms.getWalletStore(
-          rpcStore,
-          parentStore,
-          req.method,
-        )
+      name: 'injectWalletDB',
+      main({rpcStore, db}, req) {
+        const protectedDB = perms.getWalletDB(rpcStore, db, req.method)
 
-        // TODO: we need to guard the subtree of wallet store if we want to support
-        // external-loaded rpc methods
         return {
-          setWalletState: (...args) => {
-            const [newState, replace] = args
-            if (!protectedStore.setState)
-              throw new Error(
-                `No permission to set wallet state in ${req.method}`,
-              )
-
-            return protectedStore.setState(
-              replace
-                ? newState
-                : Object.assign({}, parentStore.getState(), newState),
-            )
-          },
-          getWalletState: (...args) => {
-            if (!protectedStore.getState)
-              throw new Error(
-                `No permission to get wallet state in ${req.method}`,
-              )
-            return protectedStore.getState(...args)
-          },
+          db: protectedDB,
           ...req,
         }
       },
@@ -132,10 +120,12 @@ const rpcHandlers = {
       name: 'validateParams',
       main({rpcStore}, req) {
         const {params, method} = req
-        const {schema, Err} = rpcStore[method]
-        if (schema.input && !validate(schema.input, params)) {
+        const {schemas, Err} = rpcStore[method]
+        if (schemas.input && !validate(schemas.input, params)) {
           // TODO: make error message more readable
-          throw new Err(explain(schema.input, params))
+          throw new Err(
+            '\n' + JSON.stringify(explain(schemas.input, params), null, '\t'),
+          )
         }
       },
       sideEffect: true,
@@ -185,18 +175,18 @@ const startChan = async c => {
 
 const defRpcEngineFactory = (
   handlers = {before: [], after: []},
-  parentStore,
+  db,
   options = {methods: []},
 ) => {
   const {methods} = options
   const rpcStore = new Object() // to store rpc defination
 
   methods.forEach(rpc => {
-    const {NAME, permissions, main, schema = {}} = rpc
+    const {NAME, permissions, main, schemas = {}} = rpc
     rpcStore[rpc.NAME] = {
       Err: defError(() => `[${rpc.NAME}] `, identity),
       NAME,
-      schema,
+      schemas,
       main: async (...args) => main(...args),
       permissions: perms.format(permissions),
     }
@@ -217,7 +207,7 @@ const defRpcEngineFactory = (
         beforeChan,
         afterChan,
         rpcStore,
-        parentStore,
+        db,
         onError: (err, req) => rpcErrorHandler(err, undefined, req),
       }),
     )

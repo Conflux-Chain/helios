@@ -1,9 +1,9 @@
 export const NAME = 'wallet_lock'
 
 export const permissions = {
-  store: {write: true},
+  db: ['setLocked'],
 }
 
-export const main = async ({setWalletState}) => {
-  setWalletState({MemStore: {password: null, locked: true}})
+export const main = async ({db: {setLocked}}) => {
+  setLocked(true)
 }

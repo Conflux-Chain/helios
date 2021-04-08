@@ -5,14 +5,17 @@
 import {IS_DEV_MODE} from 'utils'
 
 export const appendRpcStackToErrorMessage = (err, stack) => {
-  const stackMessage = `\nRPC Stack:\n-> ${stack.join('\n-> ')}\n`
+  const reversedStack = stack.slice().reverse()
+  const stackMessage = `\nRPC Stack:\n-> ${reversedStack.join('\n-> ')}\n`
   err.message += stackMessage
   return err
 }
 
-export const rpcErrorHandler = (err = {message: ''}, _, req) => {
+export const rpcErrorHandler = (err, _, req) => {
+  if (!err || !err.message) throw new Error('Invalid error')
   err = appendRpcStackToErrorMessage(err, req._rpcStack || [req.method])
 
+  /* istanbul ignore if  */
   if (IS_DEV_MODE) console.error(err)
   req._c.write({
     jsonrpc: '2.0',

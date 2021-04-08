@@ -6,7 +6,7 @@ export const permissions = {
   methods: ['wallet_addVault'],
 }
 
-export const schema = {
+export const schemas = {
   input: [map, {closed: true}, ['mnemonic', mnemonic], ['password', password]],
 }
 

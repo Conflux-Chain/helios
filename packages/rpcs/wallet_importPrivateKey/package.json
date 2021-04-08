@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/wallet_initState",
+  "name": "@cfxjs/wallet_importPrivateKey",
   "version": "0.0.0",
   "type": "module",
   "main": "index.js",

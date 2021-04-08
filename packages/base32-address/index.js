@@ -158,9 +158,17 @@ export function validateBase32Address(address, ...args) {
   if (args[0] !== undefined) {
     if (typeof args[0] === 'number') netId = args[0]
     if (typeof args[0] === 'string') type = args[0]
+    if (type === undefined && netId === undefined)
+      throw new Error(
+        'Invalid type or networkId, type must be string, networkId must be number',
+      )
     if (args[1] !== undefined) {
       if (typeof args[1] === 'number') netId = args[1]
       if (typeof args[1] === 'string') type = args[1]
+      if (type === undefined || netId === undefined)
+        throw new Error(
+          'Invalid type or networkId, type must be string, networkId must be number',
+        )
     }
   }
 
@@ -182,19 +190,28 @@ export const randomBase32Address = (...args) => {
   if (args[0] !== undefined) {
     if (typeof args[0] === 'number') netId = args[0]
     if (typeof args[0] === 'string') type = args[0]
+    if (type === undefined && netId === undefined)
+      throw new Error(
+        'Invalid type or networkId, type must be string, networkId must be number',
+      )
     if (args[1] !== undefined) {
       if (typeof args[1] === 'number') netId = args[1]
       if (typeof args[1] === 'string') type = args[1]
+      if (type === undefined || netId === undefined)
+        throw new Error(
+          'Invalid type or networkId, type must be string, networkId must be number',
+        )
     }
   }
 
   if (type === undefined) type = 'user'
   if (netId === undefined) netId = 1029
 
-  const hexAddress = randomHexAddress()
-  if (type === 'user') hexAddress.replace(/0x\d/, '0x1')
-  else if (type === 'contract') hexAddress.replace(/0x\d/, '0x8')
-  else if (type === 'builtin') hexAddress.replace(/0x\d/, '0x0')
+  let hexAddress = randomHexAddress()
+  if (type === 'user') hexAddress = hexAddress.replace(/0x./, '1')
+  else if (type === 'contract') hexAddress = hexAddress.replace(/0x./, '8')
+  else if (type === 'builtin') hexAddress = hexAddress.replace(/0x./, '0')
+  else throw new Error(`Invalid address type: ${type}`)
 
-  return encode(hexAddress, netId)
+  return encode(Buffer.from(hexAddress, 'hex'), netId)
 }

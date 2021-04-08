@@ -3,22 +3,19 @@
  * @name rpc-engine-opts.js
  */
 
-import * as walletInitState from '@cfxjs/wallet_initState'
 import * as walletGeneratePrivateKey from '@cfxjs/wallet_generatePrivateKey'
 import * as walletGenerateMnemonic from '@cfxjs/wallet_generateMnemonic'
 import * as walletUnlock from '@cfxjs/wallet_unlock'
 import * as walletLock from '@cfxjs/wallet_lock'
 import * as walletImportMnemonic from '@cfxjs/wallet_importMnemonic'
+import * as walletImportPrivateKey from '@cfxjs/wallet_importPrivateKey'
 import * as walletValidatePassword from '@cfxjs/wallet_validatePassword'
 import * as walletGetVaults from '@cfxjs/wallet_getVaults'
 import * as walletAddVault from '@cfxjs/wallet_addVault'
 
-// import * as cfxGetTransactionByHash from '@cfxjs/cfx_getTransactionByHash'
-
 export const rpcEngineOpts = {
   methods: [
     // init
-    walletInitState,
     walletGeneratePrivateKey,
     walletGenerateMnemonic,
 
@@ -28,6 +25,7 @@ export const rpcEngineOpts = {
     walletLock,
     walletUnlock,
     walletImportMnemonic,
+    walletImportPrivateKey,
 
     // cfxGetTransactionByHash,
   ],
