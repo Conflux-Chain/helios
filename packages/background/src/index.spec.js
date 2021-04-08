@@ -55,6 +55,23 @@ describe('accounts', function () {
         expect(db.getVaultByType('pk').length).toBe(1)
         expect(db.getVaultByType('hd').length).toBe(0)
       })
+
+      it('should be able to import a address vault', async function () {
+        setupdb()
+
+        await expect(
+          request({
+            method: 'wallet_importAddress',
+            params: {
+              address: 'cfx:aamwwx800rcw63n42kbehesuukjdjcnuaafa2ucfuw',
+              password,
+            },
+          }),
+        ).resolves.toHaveProperty('result', '0x1')
+
+        expect(db.getVault().length).toBe(1)
+        expect(db.getVaultByType('pub').length).toBe(1)
+      })
     })
   })
 })
