@@ -20,6 +20,10 @@
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --no-cache"
   },
   "devDependencies": {
+    "@babel/core": "^7.13.14",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-react": "^7.13.13",
+    "@snowpack/app-scripts-react": "^2.0.1",
     "@snowpack/plugin-dotenv": "^2.1.0",
     "@snowpack/plugin-react-refresh": "^2.4.2",
     "@swc/cli": "^0.1.36",
@@ -29,6 +33,7 @@
     "@tailwindcss/jit": "^0.1.18",
     "@yqrashawn/snowpack": "3.2.2-patch1",
     "autoprefixer": "^10.2.5",
+    "babel-jest": "^26.6.3",
     "browserslist": "^4.16.3",
     "concurrently": "^6.0.1",
     "cross-env": "^7.0.3",
