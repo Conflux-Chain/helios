@@ -27,6 +27,24 @@ describe('error', function () {
       expect(fakeCWrite.mock.calls[0][0].error.data.message).toStrictEqual(
         fakeCWrite.mock.calls[0][0].error.message,
       )
+
+      rpcErrorHandler({message: 'original error message'}, undefined, {
+        method: 'm0',
+        _c: {
+          write: fakeCWrite,
+        },
+      })
+
+      expect(fakeCWrite.mock.calls[1][0].error.message).toContain('-> m0')
+
+      expect(() =>
+        rpcErrorHandler(null, undefined, {
+          method: 'm0',
+          _c: {
+            write: fakeCWrite,
+          },
+        }),
+      ).toThrowError('Invalid error')
     })
 
     it('should return the response with the same req id', async function () {

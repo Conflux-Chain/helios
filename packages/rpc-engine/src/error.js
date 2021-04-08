@@ -11,9 +11,11 @@ export const appendRpcStackToErrorMessage = (err, stack) => {
   return err
 }
 
-export const rpcErrorHandler = (err = {message: ''}, _, req) => {
+export const rpcErrorHandler = (err, _, req) => {
+  if (!err || !err.message) throw new Error('Invalid error')
   err = appendRpcStackToErrorMessage(err, req._rpcStack || [req.method])
 
+  /* istanbul ignore if  */
   if (IS_DEV_MODE) console.error(err)
   req._c.write({
     jsonrpc: '2.0',
