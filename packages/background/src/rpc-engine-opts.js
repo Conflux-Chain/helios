@@ -12,6 +12,7 @@ import * as walletImportPrivateKey from '@cfxjs/wallet_importPrivateKey'
 import * as walletValidatePassword from '@cfxjs/wallet_validatePassword'
 import * as walletGetVaults from '@cfxjs/wallet_getVaults'
 import * as walletAddVault from '@cfxjs/wallet_addVault'
+import * as walletImportAddress from '@cfxjs/wallet_importAddress'
 
 export const rpcEngineOpts = {
   methods: [
@@ -24,8 +25,10 @@ export const rpcEngineOpts = {
     walletValidatePassword,
     walletLock,
     walletUnlock,
+
     walletImportMnemonic,
     walletImportPrivateKey,
+    walletImportAddress,
 
     // cfxGetTransactionByHash,
   ],
