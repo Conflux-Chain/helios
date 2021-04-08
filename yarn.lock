@@ -2303,6 +2303,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_importAddress@workspace:packages/rpcs/wallet_importAddress":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_importAddress@workspace:packages/rpcs/wallet_importAddress"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic"
