@@ -27,6 +27,21 @@ describe('@cfxjs/wallet_addVault', function () {
               'chest nasty rude robot holiday indicate pride tooth number palace strategy fiction',
           }),
         ).toBe(true)
+
+        expect(
+          validate(schemas.input, {
+            password: '12345678',
+            privateKey:
+              '85f99f8b29a256ac93bc61899f8ba139864e1b39afbc947bdaee192c683d0205',
+          }),
+        ).toBe(true)
+
+        expect(
+          validate(schemas.input, {
+            password: '12345678',
+            address: 'cfxtest:aajzvxnvv0cj6f6paa9skdafxm9jytbybpka95hm1m',
+          }),
+        ).toBe(true)
       })
     })
   })
@@ -61,6 +76,37 @@ describe('@cfxjs/wallet_addVault', function () {
       }
       input.rpcs.wallet_getVaults = () => [encrypted]
       await expect(main(input)).rejects.toThrow('Duplicate credential')
+    })
+
+    it('should call createVault with the valid data', async function () {
+      input.params = {
+        password: '11111111',
+        privateKey:
+          '85f99f8b29a256ac93bc61899f8ba139864e1b39afbc947bdaee192c683d0205',
+      }
+      await main(input)
+      expect(input.db.createVault).toHaveBeenCalledWith(
+        expect.objectContaining({type: 'pk'}),
+      )
+
+      input.params = {
+        password: '11111111',
+        address: 'cfxtest:aajzvxnvv0cj6f6paa9skdafxm9jytbybpka95hm1m',
+      }
+      await main(input)
+      expect(input.db.createVault).toHaveBeenCalledWith(
+        expect.objectContaining({type: 'pub'}),
+      )
+
+      input.params = {
+        password: '11111111',
+        mnemonic:
+          'chest nasty rude robot holiday indicate pride tooth number palace strategy fiction',
+      }
+      await main(input)
+      expect(input.db.createVault).toHaveBeenCalledWith(
+        expect.objectContaining({type: 'hd'}),
+      )
     })
   })
 })

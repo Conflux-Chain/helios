@@ -38,14 +38,12 @@ export const permissions = {
   db: ['createVault'],
 }
 
-export async function main(
-  {
-    db: {createVault},
-    params: {password, mnemonic, privateKey, address},
-    rpcs: {wallet_getVaults, wallet_validatePassword},
-    Err,
-  } = {params: {}},
-) {
+export async function main({
+  db: {createVault},
+  params: {password, mnemonic, privateKey, address},
+  rpcs: {wallet_getVaults, wallet_validatePassword},
+  Err,
+}) {
   if (!(await wallet_validatePassword({password})))
     throw new Err('Invalid password')
   const keyring = mnemonic || privateKey || address

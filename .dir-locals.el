@@ -11,6 +11,7 @@
          (eval defun +ensure-jest-expect ()
                (when (+jest-test-file-p) (+insert-jest-expect)))
          (eval add-hook 'find-file-hook '+ensure-jest-expect nil t)))
+
  ((rjsx-mode js2-mode typescript-mode) . ((lsp-enabled-clients . (ts-ls eslint))
                                           (eval . (lexical-let
                                                       ((project-directory
@@ -19,4 +20,6 @@
                                                     (set
                                                      (make-local-variable 'flycheck-javascript-eslint-executable)
                                                      (concat project-directory ".yarn/sdks/eslint/bin/eslint.js"))))))
- ((clojure-mode clojurec-mode clojurescript-mode) . ((cider-shadow-cljs-command . "yarn run shadow-cljs"))))
+
+ ((clojure-mode clojurec-mode clojurescript-mode) . ((cider-shadow-cljs-command . "yarn run shadow-cljs")))
+ )
