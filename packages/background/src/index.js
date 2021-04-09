@@ -44,10 +44,5 @@ import {rpcEngineOpts} from './rpc-engine-opts'
         params: {password: '12345678'},
       }),
     )
-    const a = await request({
-      method: 'wallet_importMnemonic',
-      params: 1,
-    })
-    console.log(a)
   }
 })()
