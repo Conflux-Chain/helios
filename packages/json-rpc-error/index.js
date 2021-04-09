@@ -1,7 +1,3 @@
-/**
- * @fileOverview
- * @name index.js
- */
 import {defError} from '@cfxjs/errors'
 
 export const errorStackPop = error => {

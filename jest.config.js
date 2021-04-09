@@ -4,10 +4,17 @@
  */
 const path = require('path')
 
-const snowpackReactJestConfig = require('@snowpack/app-scripts-react/jest.config.js')()
+// const snowpackReactJestConfig = require('@snowpack/app-scripts-react/jest.config.js')()
 
 module.exports = {
-  ...snowpackReactJestConfig,
+  // ...snowpackReactJestConfig,
+
+  transform: {
+    '^.+\\.(t|j)sx?$': path.resolve(
+      __dirname,
+      './scripts/jest-transformers.js',
+    ),
+  },
 
   // The glob patterns Jest uses to detect test files
   testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
@@ -19,7 +26,7 @@ module.exports = {
   roots: ['<rootDir>'],
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: [...snowpackReactJestConfig.setupFiles],
+  // setupFiles: [...snowpackReactJestConfig.setupFiles],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: [
@@ -58,7 +65,7 @@ module.exports = {
   injectGlobals: true,
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: 'babel', // v8 is not stable
+  coverageProvider: 'v8', // v8 is not stable
 
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [

@@ -4,6 +4,9 @@ import {
   toWords,
   fromWords,
 } from '@cfxjs/base32'
+import {randomInt} from 'utils'
+import {NULL_HEX_ADDRESS, INTERNAL_CONTRACTS_HEX_ADDRESS} from 'consts'
+
 import {randomHexAddress} from '@cfxjs/account'
 
 const VERSION_BYTE = 0
@@ -208,9 +211,13 @@ export const randomBase32Address = (...args) => {
   if (netId === undefined) netId = 1029
 
   let hexAddress = randomHexAddress()
-  if (type === 'user') hexAddress = hexAddress.replace(/0x./, '1')
-  else if (type === 'contract') hexAddress = hexAddress.replace(/0x./, '8')
-  else if (type === 'builtin') hexAddress = hexAddress.replace(/0x./, '0')
+  if (type === 'user') hexAddress = hexAddress.replace(/^0x./, '1')
+  else if (type === 'contract') hexAddress = hexAddress.replace(/^0x./, '8')
+  else if (type === 'builtin')
+    hexAddress = INTERNAL_CONTRACTS_HEX_ADDRESS[
+      randomInt(INTERNAL_CONTRACTS_HEX_ADDRESS.length)
+    ].replace(/^0x/, '')
+  else if (type === 'null') hexAddress = NULL_HEX_ADDRESS.replace(/^0x/, '')
   else throw new Error(`Invalid address type: ${type}`)
 
   return encode(Buffer.from(hexAddress, 'hex'), netId)

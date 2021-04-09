@@ -27,6 +27,8 @@ import * as Nat from '@cfxjs/nat'
 import elliptic from 'elliptic'
 import {keccak256, keccak256s} from '@cfxjs/keccak'
 import {Buffer} from 'buffer'
+import {randomInt} from 'utils'
+import {NULL_HEX_ADDRESS, INTERNAL_CONTRACTS_HEX_ADDRESS} from 'consts'
 
 const secp256k1 = elliptic.ec('secp256k1')
 
@@ -104,8 +106,31 @@ const recover = (hash, signature) => {
   return address
 }
 
-export const randomHexAddress = entropy => {
-  return create(entropy).address
+export const toAccountAddress = address => {
+  return address.replace(/^0x./, '0x1')
+}
+
+export const toContractAddress = address => {
+  return address.replace(/^0x./, '0x8')
+}
+
+export const randomHexAddress = (type, entropy) => {
+  if (type === 'builtin')
+    return INTERNAL_CONTRACTS_HEX_ADDRESS[
+      randomInt(INTERNAL_CONTRACTS_HEX_ADDRESS.length)
+    ]
+  if (type === 'null') return NULL_HEX_ADDRESS
+  const addr = create(entropy).address
+  if (type === 'user') return toAccountAddress(addr)
+  if (type === 'contract') return toContractAddress(addr)
+  return addr
+}
+
+export const randomCfxHexAddress = entropy => {
+  return randomHexAddress(
+    ['user', 'contract', 'builtin', 'null'][randomInt(4)],
+    entropy,
+  )
 }
 
 export const randomPrivateKey = entropy => {

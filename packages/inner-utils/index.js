@@ -3,4 +3,5 @@
  * @name index.js
  */
 
-export * from './env'
+export * from './env.js'
+export * from './math.js'

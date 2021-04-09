@@ -9,6 +9,8 @@
     "@cfxjs/nat": "workspace:packages/nat",
     "@cfxjs/rlp": "workspace:packages/rlp",
     "buffer": "^6.0.3",
-    "elliptic": "^6.5.4"
+    "consts": "workspace:packages/consts",
+    "elliptic": "^6.5.4",
+    "utils": "workspace:packages/inner-utils"
   }
 }
