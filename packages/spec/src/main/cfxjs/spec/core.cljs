@@ -48,12 +48,12 @@
                           {:type :hexContractAddress
                            :pred #(re-matches #"^0x8[0-9a-fA-F]{39}$" %)
                            :type-properties {:error/message "invalid hex contract address, should be start with 0x8"}
-                           :gen/gen (comp randomHexAddress #(.replace % #"0x\d" "0x1"))})
+                           :gen/gen (comp randomHexAddress #(.replace % #"0x\d" "0x8"))})
      :hexBuiltInAddress (m/-simple-schema
                          {:type :hexBuiltinAddress
                           :pred #(re-matches #"^0x0[0-9a-fA-F]{39}$" %)
                           :type-properties {:error/message "invalid hex builtin address, should be start with 0x0"}
-                          :gen/gen (comp randomHexAddress #(.replace % #"0x\d" "0x8"))})}))
+                          :gen/gen (comp randomHexAddress #(.replace % #"0x\d" "0x0"))})}))
 
 (defn def-base32-address-schema-factory
   ([pred gen network-id-or-type] (def-base32-address-schema-factory pred gen network-id-or-type nil))
