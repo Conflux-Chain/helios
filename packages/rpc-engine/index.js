@@ -131,7 +131,15 @@ const rpcHandlers = {
         if (schemas.input && !validate(schemas.input, params)) {
           // TODO: make error message more readable
           throw Err.InvalidParams(
-            '\n' + JSON.stringify(explain(schemas.input, params), null, '\t'),
+            `input params:\n${JSON.stringify(
+              params,
+              null,
+              '\t',
+            )}\n\nError:\n${JSON.stringify(
+              explain(schemas.input, params),
+              null,
+              '\t',
+            )}`,
           )
         }
       },

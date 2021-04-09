@@ -1,11 +1,6 @@
 export * from './src/spec.js' // eslint-disable-line import/export
-import {dissocObj} from '@cfxjs/associative'
 
-import {
-  defRestSchemas,
-  defBase32AddressSchemaFactory,
-  explain as explaincljs,
-} from './src/spec.js'
+import {defRestSchemas, defBase32AddressSchemaFactory} from './src/spec.js'
 
 import {
   randomHexAddress,
@@ -14,15 +9,6 @@ import {
 } from '@cfxjs/account'
 import {validateMnemonic, generateMnemonic} from 'bip39'
 import {validateBase32Address, randomBase32Address} from '@cfxjs/base32-address'
-
-const dissocObjSchema = obj => dissocObj(obj, ['schema'])
-
-// eslint-disable-next-line import/export
-export const explain = (...args) => {
-  const explanation = explaincljs(...args)
-  explanation.errors = explanation.errors.map(dissocObjSchema)
-  return dissocObjSchema(explanation)
-}
 
 export const {
   hexAddress,
