@@ -10,7 +10,7 @@ module.exports = {
   ...snowpackReactJestConfig,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+  testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
 
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
