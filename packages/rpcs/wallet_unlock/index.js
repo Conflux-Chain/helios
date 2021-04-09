@@ -18,6 +18,6 @@ export const main = async ({
   Err,
 }) => {
   if (!(await wallet_validatePassword({password})))
-    throw new Err('Invalid password')
+    throw Err.InvalidParams('Invalid password')
   setPassword(password)
 }

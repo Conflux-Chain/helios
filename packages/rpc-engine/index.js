@@ -18,8 +18,15 @@ import {
 import {partial} from '@thi.ng/compose'
 import {rpcErrorHandler} from './src/error'
 import * as perms from './src/permissions'
+import * as jsonRpcErr from '@cfxjs/json-rpc-error'
 
 export const RpcEngineError = defError(() => '[@cfxjs/rpc-engin] ', identity)
+
+const wrapRpcError = (methodName, ErrConstructor) => errorMessage => {
+  const error = new ErrConstructor(`In method ${methodName}\n${errorMessage}`)
+  jsonRpcErr.errorStackPop(error)
+  return error
+}
 
 const request = (c, req = {}) => {
   const localChan = chan(1)
@@ -36,7 +43,7 @@ const rpcHandlers = {
         req.jsonrpc = req.jsonrpc || '2.0'
         req.id = req.id || 2
         if (!rpcUtils.isValidRequest(req))
-          throw new Error(
+          throw new jsonRpcErr.InvalidRequest(
             'invalid rpc request:\n' +
               JSON.stringify(
                 {
@@ -57,7 +64,7 @@ const rpcHandlers = {
       name: 'validateRpcMethod',
       main({rpcStore}, {method} = {}) {
         if (!method || !rpcStore[method])
-          throw new Error(`Method ${method} not found`)
+          throw new jsonRpcErr.MethodNotFound(`Method ${method} not found`)
       },
       sideEffect: true,
     },
@@ -86,7 +93,7 @@ const rpcHandlers = {
               const targetRpcName = arguments[1]
 
               if (!perms.getRpc(rpcStore, req.method, targetRpcName))
-                throw new Error(
+                throw new jsonRpcErr.InvalidRequest(
                   `No permission to call method ${targetRpcName} in ${req.method}`,
                 )
               _rpcStack.push(targetRpcName)
@@ -97,7 +104,7 @@ const rpcHandlers = {
               }
             },
             set() {
-              throw new Error(
+              throw new jsonRpcErr.InvalidRequest(
                 'Invalid operation: no permission to alter rpc store',
               )
             },
@@ -123,7 +130,7 @@ const rpcHandlers = {
         const {schemas, Err} = rpcStore[method]
         if (schemas.input && !validate(schemas.input, params)) {
           // TODO: make error message more readable
-          throw new Err(
+          throw Err.InvalidParams(
             '\n' + JSON.stringify(explain(schemas.input, params), null, '\t'),
           )
         }
@@ -184,7 +191,14 @@ const defRpcEngineFactory = (
   methods.forEach(rpc => {
     const {NAME, permissions, main, schemas = {}} = rpc
     rpcStore[rpc.NAME] = {
-      Err: defError(() => `[${rpc.NAME}] `, identity),
+      Err: {
+        Parse: wrapRpcError(rpc.NAME, jsonRpcErr.Parse),
+        InvalidRequest: wrapRpcError(rpc.NAME, jsonRpcErr.InvalidRequest),
+        MethodNotFound: wrapRpcError(rpc.NAME, jsonRpcErr.MethodNotFound),
+        InvalidParams: wrapRpcError(rpc.NAME, jsonRpcErr.InvalidParams),
+        Internal: wrapRpcError(rpc.NAME, jsonRpcErr.Internal),
+        Server: wrapRpcError(rpc.NAME, jsonRpcErr.Server),
+      },
       NAME,
       schemas,
       main: async (...args) => main(...args),

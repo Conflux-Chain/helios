@@ -51,7 +51,7 @@ describe('@cfxjs/wallet_addVault', function () {
 
     beforeEach(function () {
       input = {
-        Err: Error,
+        Err: {InvalidParams: msg => new Error(msg)},
         db: {createVault: jest.fn(() => 1)},
         rpcs: {
           wallet_getVaults: jest.fn(() => []),
@@ -63,7 +63,9 @@ describe('@cfxjs/wallet_addVault', function () {
 
     it('should throw invalid password error with invalid password', async function () {
       input.rpcs.wallet_validatePassword = jest.fn(() => false)
-      await expect(main(input)).rejects.toThrow(input.Err('Invalid password'))
+      await expect(main(input)).rejects.toThrow(
+        input.Err.InvalidParams('Invalid password'),
+      )
       expect(input.rpcs.wallet_validatePassword).toBeCalledWith({
         password: input.params.password,
       })

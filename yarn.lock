@@ -2185,6 +2185,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/json-rpc-error@workspace:packages/json-rpc-error":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/json-rpc-error@workspace:packages/json-rpc-error"
+  dependencies:
+    "@cfxjs/errors": "workspace:packages/errors"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/json-rpc@workspace:packages/json-rpc":
   version: 0.0.0-use.local
   resolution: "@cfxjs/json-rpc@workspace:packages/json-rpc"
@@ -2225,6 +2233,7 @@ __metadata:
     "@cfxjs/errors": "workspace:packages/errors"
     "@cfxjs/iterators": "workspace:packages/iterators"
     "@cfxjs/json-rpc": "workspace:packages/json-rpc"
+    "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error"
     "@cfxjs/spec": "workspace:packages/spec"
     "@cfxjs/transducers": "workspace:packages/transducers"
     "@thi.ng/compose": ^1.4.30

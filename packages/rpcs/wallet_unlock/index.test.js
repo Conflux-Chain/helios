@@ -17,7 +17,7 @@ describe('wallet_unlock', function () {
       params: {password: '12345678'},
       db: {setPassword: jest.fn()},
       rpcs: {wallet_validatePassword: jest.fn(() => true)},
-      Err: Error,
+      Err: {InvalidParams: msg => new Error(msg)},
     }
 
     it('should set the password in db', async function () {

@@ -3,6 +3,7 @@
  * @name error.js
  */
 import {IS_DEV_MODE} from 'utils'
+import {errorInstanceToErrorCode} from '@cfxjs/json-rpc-error'
 
 export const appendRpcStackToErrorMessage = (err, stack) => {
   const reversedStack = stack.slice().reverse()
@@ -19,7 +20,11 @@ export const rpcErrorHandler = (err, _, req) => {
   if (IS_DEV_MODE) console.error(err)
   req._c.write({
     jsonrpc: '2.0',
-    error: {code: -32603, message: err.message, data: err},
+    error: {
+      code: errorInstanceToErrorCode(err) || -32000,
+      message: err.message,
+      data: err,
+    },
     id: req.id === undefined ? 2 : req.id,
   })
 }

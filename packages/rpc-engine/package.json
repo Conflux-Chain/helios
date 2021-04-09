@@ -11,6 +11,7 @@
     "@cfxjs/errors": "workspace:packages/errors",
     "@cfxjs/iterators": "workspace:packages/iterators",
     "@cfxjs/json-rpc": "workspace:packages/json-rpc",
+    "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error",
     "@cfxjs/spec": "workspace:packages/spec",
     "@cfxjs/transducers": "workspace:packages/transducers",
     "@thi.ng/compose": "^1.4.30",
