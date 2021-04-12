@@ -1,7 +1,12 @@
 export * from './src/spec.js' // eslint-disable-line import/export
 import {INTERNAL_CONTRACTS_HEX_ADDRESS, NULL_HEX_ADDRESS} from 'consts'
 
-import {defRestSchemas, defBase32AddressSchemaFactory, or} from './src/spec.js'
+import {
+  defRestSchemas,
+  defBase32AddressSchemaFactory,
+  or,
+  integer,
+} from './src/spec.js'
 
 import {
   randomHexAddress,
@@ -47,5 +52,6 @@ export const defBase32AddressSchema = (...args) => {
   )
 }
 
+export const dbid = integer
 export const base32AccountMainnetAddress = defBase32AddressSchema('user', 1029)
 export const base32AccountTestnetAddress = defBase32AddressSchema('user', 1)
