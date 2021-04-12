@@ -951,6 +951,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_addVault@workspace:packages/rpcs/wallet_addVault"
   dependencies:
+    "@cfxjs/base32-address": "workspace:packages/base32-address"
     "@cfxjs/spec": "workspace:packages/spec"
     browser-passworder: ^2.0.3
   languageName: unknown
