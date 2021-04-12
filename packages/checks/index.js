@@ -4,17 +4,10 @@
  */
 
 export * from '@thi.ng/checks'
-import {isFunction, isString} from '@thi.ng/checks'
+import {isFunction} from '@thi.ng/checks'
 
 const AsyncFunction = (async () => {}).constructor
 
 // this can't detect a normal function that returns a promise
 export const isAsyncFunction = fn =>
   isFunction(fn) && fn instanceof AsyncFunction
-
-export const isHexAddress = addr =>
-  isString(addr) && /^0x[0-9a-fA-F]{40}$/.test(addr)
-export const isHexAccountAddress = addr =>
-  isString(addr) && /^0x1[0-9a-fA-F]{39}$/.test(addr)
-export const isHexContractAddress = addr =>
-  isString(addr) && /^0x8[0-9a-fA-F]{39}$/.test(addr)

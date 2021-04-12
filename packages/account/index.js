@@ -132,6 +132,33 @@ export const randomHexAddress = (type, entropy) => {
   return addr
 }
 
+export const isHexAddress = address => /^0x[0-9a-fA-F]{40}$/.test(address)
+export const isUserHexAddress = address => address.startsWith('0x1')
+export const isContractAddress = address => address.startsWith('0x8')
+export const isBuiltInAddress = address =>
+  INTERNAL_CONTRACTS_HEX_ADDRESS.includes(address.toLowerCase())
+export const isNullHexAddress = address => address === NULL_HEX_ADDRESS
+export const isCfxHexAddress = address =>
+  isUserHexAddress(address) ||
+  isContractAddress(address) ||
+  isBuiltInAddress(address) ||
+  isNullHexAddress(address)
+
+export const validateHexAddress = (address, type) => {
+  if (typeof address !== 'string')
+    throw new Error('Invalid address, must be a 0x-prefixed string')
+  if (!address.startsWith('0x'))
+    throw new Error('Invalid address, must be a 0x-prefixed string')
+
+  if (!isHexAddress(address)) return false
+  if (type === 'eth') return true
+  if (type === 'user') return isUserHexAddress(address)
+  if (type === 'contract') return isContractAddress(address)
+  if (type === 'builtin') return isBuiltInAddress(address)
+  if (type === 'null') return isNullHexAddress(address)
+  return isCfxHexAddress(address)
+}
+
 export const randomAddressType = () => {
   return ADDRESS_TYPES[randomInt(ADDRESS_TYPES.length)]
 }
