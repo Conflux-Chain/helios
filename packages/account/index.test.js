@@ -8,7 +8,16 @@ import {
   toChecksum,
   recover,
   create,
+  randomHexAddress,
+  isHexAddress,
+  isUserHexAddress,
+  isContractAddress,
+  isNullHexAddress,
+  isBuiltInAddress,
+  isCfxHexAddress,
+  validateHexAddress,
 } from './'
+import {NULL_HEX_ADDRESS, INTERNAL_CONTRACTS_HEX_ADDRESS} from 'consts'
 
 const echash =
   '0x82ff40c0a986c6a5cfad4ddf4c3aa6996f1a7837f9c398e17e5de5cbd5a12b28'
@@ -75,6 +84,165 @@ describe('account', function () {
         expect.stringMatching(/^0x[0-9a-fA-F]{40}$/),
       )
       expect(fromPrivate(account.privateKey).address).toEqual(account.address)
+    })
+  })
+
+  describe('randomHexAddress', function () {
+    it('should generate a random builtin address', async function () {
+      expect(
+        INTERNAL_CONTRACTS_HEX_ADDRESS.includes(randomHexAddress('builtin')),
+      ).toBe(true)
+    })
+
+    it('should generate the null address', async function () {
+      expect(randomHexAddress('null')).toEqual(NULL_HEX_ADDRESS)
+    })
+
+    it('should generate a contract address', async function () {
+      expect(randomHexAddress('contract').startsWith('0x8')).toBe(true)
+    })
+
+    it('should generate a account address', async function () {
+      expect(randomHexAddress('user').startsWith('0x1')).toBe(true)
+    })
+  })
+
+  describe('checks', function () {
+    it('isHexAddress', function () {
+      expect(isHexAddress('0x0000000000000000000000000000000000000000')).toBe(
+        true,
+      )
+      expect(isHexAddress('0x000000000000000000000000000000000000000')).toBe(
+        false,
+      )
+    })
+
+    it('isNullHexAddress', function () {
+      expect(
+        isNullHexAddress('0x0000000000000000000000000000000000000000'),
+      ).toBe(true)
+    })
+
+    it('isContractAddress', function () {
+      expect(
+        isContractAddress('0x8000000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        isContractAddress('0x1000000000000000000000000000000000000000'),
+      ).toBe(false)
+      expect(
+        isContractAddress('0x2000000000000000000000000000000000000000'),
+      ).toBe(false)
+    })
+
+    it('isUserHexAddress', function () {
+      expect(
+        isUserHexAddress('0x8000000000000000000000000000000000000000'),
+      ).toBe(false)
+      expect(
+        isUserHexAddress('0x1000000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        isUserHexAddress('0x2000000000000000000000000000000000000000'),
+      ).toBe(false)
+    })
+
+    it('isBuiltInAddress', function () {
+      expect(
+        isBuiltInAddress('0x0888000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        isBuiltInAddress('0x0888000000000000000000000000000000000001'),
+      ).toBe(true)
+      expect(
+        isBuiltInAddress('0x0888000000000000000000000000000000000002'),
+      ).toBe(true)
+      expect(
+        isBuiltInAddress('0x0888000000000000000000000000000000000003'),
+      ).toBe(false)
+      expect(
+        isBuiltInAddress('0x0888000000000000000000000000000000000004'),
+      ).toBe(false)
+    })
+
+    it('isCfxHexAddress', function () {
+      expect(
+        isCfxHexAddress('0x0888000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        isCfxHexAddress('0x1888000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        isCfxHexAddress('0x8888000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        isCfxHexAddress('0x0000000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        isCfxHexAddress('0x2000000000000000000000000000000000000000'),
+      ).toBe(false)
+      expect(
+        isCfxHexAddress('0x0200000000000000000000000000000000000000'),
+      ).toBe(false)
+    })
+
+    it('validateHexAddress', function () {
+      expect(
+        validateHexAddress('0x0888000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        validateHexAddress('0x1888000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        validateHexAddress('0x8888000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        validateHexAddress('0x0000000000000000000000000000000000000000'),
+      ).toBe(true)
+      expect(
+        validateHexAddress('0x2000000000000000000000000000000000000000'),
+      ).toBe(false)
+      expect(
+        validateHexAddress('0x0200000000000000000000000000000000000000'),
+      ).toBe(false)
+
+      expect(
+        validateHexAddress(
+          '0x0888000000000000000000000000000000000000',
+          'builtin',
+        ),
+      ).toBe(true)
+      expect(
+        validateHexAddress(
+          '0x1888000000000000000000000000000000000000',
+          'user',
+        ),
+      ).toBe(true)
+      expect(
+        validateHexAddress(
+          '0x8888000000000000000000000000000000000000',
+          'contract',
+        ),
+      ).toBe(true)
+      expect(
+        validateHexAddress(
+          '0x0000000000000000000000000000000000000000',
+          'null',
+        ),
+      ).toBe(true)
+      expect(
+        validateHexAddress('0x2000000000000000000000000000000000000000', 'eth'),
+      ).toBe(true)
+      expect(
+        validateHexAddress('0x0200000000000000000000000000000000000000', 'eth'),
+      ).toBe(true)
+
+      expect(() => validateHexAddress(1)).toThrow(
+        'Invalid address, must be a 0x-prefixed string',
+      )
+      expect(() =>
+        validateHexAddress('0000000000000000000000000000000000000000'),
+      ).toThrow('Invalid address, must be a 0x-prefixed string')
     })
   })
 })

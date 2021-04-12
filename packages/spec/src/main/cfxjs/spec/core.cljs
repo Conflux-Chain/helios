@@ -4,56 +4,56 @@
 
 (defn j->c [a] (js->clj a :keywordize-keys true))
 
-;; (defn object-of [opt schema]
-;;   (let [{:keys [closed]} opt
-;;         prefix (if closed [:map {:closed true}] [:map])
-;;         schema (into prefix (j->c schema))]
-;;     (prn schema)
-;;     schema))
-
-;; (defn array-of [schema]
-;;   (let [schema (into [:vector] (j->c schema))] schema))
-
-(defn validate [schema data]
-  (m/validate (j->c schema) (js->clj data)))
-
 (defn explain [schema data]
   (let [rst (humanize (m/explain (j->c schema) (js->clj data)))]
     (clj->js rst)))
 
+(defn validate [schema data]
+  (let [s (j->c schema)
+        d (js->clj data)
+        rst (m/validate s d)]
+    ;; (when (and goog.DEBUG (not rst))
+    ;;   (js/console.error #js {:value data
+    ;;                          :error (explain s d)}))
+    rst))
+
 (defn def-rest-schemas [opts]
-  (let [{:keys [randomHexAddress randomPrivateKey validateMnemonic generateMnemonic validatePrivateKey]} (j->c opts)]
+  (let [{:keys [INTERNAL_CONTRACTS_HEX_ADDRESS randomHexAddress randomCfxHexAddress randomPrivateKey validateMnemonic generateMnemonic validatePrivateKey]} (j->c opts)
+        INTERNAL_CONTRACTS_HEX_ADDRESS (js->clj INTERNAL_CONTRACTS_HEX_ADDRESS)]
     #js
     {:mnemonic (m/-simple-schema
                 {:type :mnemonic
                  :pred #(and (string? %) (validateMnemonic %))
                  :type-properties {:error/message "should be a valid mnemonic"}
-                 :gen/gen generateMnemonic})
+                 :gen/fmap #(.call generateMnemonic)})
      :privateKey (m/-simple-schema
                   {:type :privateKey
                    :pred #(validatePrivateKey %)
                    :type-properties {:error/message "invalid private key"}
-                   :gen/gen randomPrivateKey})
-     :hexAddress (m/-simple-schema
-                  {:type :hexAddress
-                   :pred #(re-matches #"^0x[0-9a-fA-F]{40}$" %)
-                   :type-properties {:error/message "invalid hex address"}
-                   :gen/gen randomHexAddress})
-     :hexAccountAddress (m/-simple-schema
+                   :gen/fmap #(.call randomPrivateKey)})
+     :ethHexAddress [:re
+                     {:type :ethHexAddress
+                      :type-properties {:error/message "invalid hex address"}
+                      :gen/fmap #(.call randomHexAddress)}
+                     #"^0x[0-9a-fA-F]{40}$"]
+     :hexAccountAddress [:re
                          {:type :hexAccountAddress
-                          :pred #(re-matches #"^0x1[0-9a-fA-F]{39}$" %)
                           :type-properties {:error/message "invalid hex account address, should be start with 0x1"}
-                          :gen/gen (comp randomHexAddress #(.replace % #"0x\d" "0x1"))})
-     :hexContractAddress (m/-simple-schema
+                          :gen/fmap #(.call randomHexAddress nil "user")}
+                         #"^0x1[0-9a-fA-F]{39}$"]
+     :hexContractAddress [:re
                           {:type :hexContractAddress
-                           :pred #(re-matches #"^0x8[0-9a-fA-F]{39}$" %)
                            :type-properties {:error/message "invalid hex contract address, should be start with 0x8"}
-                           :gen/gen (comp randomHexAddress #(.replace % #"0x\d" "0x8"))})
-     :hexBuiltInAddress (m/-simple-schema
-                         {:type :hexBuiltinAddress
-                          :pred #(re-matches #"^0x0[0-9a-fA-F]{39}$" %)
-                          :type-properties {:error/message "invalid hex builtin address, should be start with 0x0"}
-                          :gen/gen (comp randomHexAddress #(.replace % #"0x\d" "0x0"))})}))
+                           :gen/fmap #(.call randomHexAddress nil "contract")}
+                          #"^0x8[0-9a-fA-F]{39}$"]
+     :hexBuiltInAddress (into [:enum
+                               {:type :hexBuiltinAddress
+                                :type-properties {:error/message (str "invalid hex builtin address, can only be one of " INTERNAL_CONTRACTS_HEX_ADDRESS)}
+                                :gen/elements INTERNAL_CONTRACTS_HEX_ADDRESS}]
+                              INTERNAL_CONTRACTS_HEX_ADDRESS)
+     :hexNullAddress [:= {:type :hexNullAddress
+                          :type-properties {:error/message "invalid hex null address, should be 0x0000000000000000000000000000000000000000"}}
+                      "0x0000000000000000000000000000000000000000"]}))
 
 (defn def-base32-address-schema-factory
   ([pred gen network-id-or-type] (def-base32-address-schema-factory pred gen network-id-or-type nil))
@@ -71,11 +71,16 @@
       {:type type
        :pred #(pred % address-type network-id)
        :type-properties {:error/message "invalid base32 address"}
-       :gen/gen #(gen network-id address-type)}))))
+       :gen/fmap #(.call gen nil network-id address-type)}))))
 
 (def Password [:string {:min 8 :max 128}])
+(def NetworkId [:and :integer [:>= 0] [:<= 4294967295]])
+(def AddressType [:enum "user" "contract" "builtin" "null"])
 
 (comment
+  (#(re-matches #"^0x[0-9a-fA-F]{40}$" %) "0x0000000000000000000000000000000000000000")
+  (m/validate #(re-matches #"^0x[0-9a-fA-F]{40}$" %) "0x0000000000000000000000000000000000000000")
+  (m/validate int? 1)
   (m/validate [:? int?] 1)
   (m/validate [:maybe string?] nil))
 
@@ -198,4 +203,6 @@
 (def export-k keyword)
 
 (def export-password Password)
+(def export-networkId NetworkId)
+(def export-addressType AddressType)
 ;; (def export-tap tap>)

@@ -118,7 +118,7 @@
                                     arr cfxjs.spec.core/export-arr
                                     sequential cfxjs.spec.core/export-sequential
                                     set cfxjs.spec.core/export-set
-                                    ;; enum cfxjs.spec.core/export-enum
+                                    enums cfxjs.spec.core/export-enum
                                     maybe cfxjs.spec.core/export-maybe
                                     tuple cfxjs.spec.core/export-tuple
                                     multi cfxjs.spec.core/export-multi
@@ -136,7 +136,9 @@
                                     explain cfxjs.spec.core/export-explain
                                     k cfxjs.spec.core/export-k
 
-                                    password cfxjs.spec.core/export-password}
+                                    password cfxjs.spec.core/export-password
+                                    networkId cfxjs.spec.core/export-networkId
+                                    addressType cfxjs.spec.core/export-addressType}
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}
                          :depends-on #{:shared :spec}}}}

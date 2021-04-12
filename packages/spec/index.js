@@ -1,9 +1,11 @@
 export * from './src/spec.js' // eslint-disable-line import/export
+import {INTERNAL_CONTRACTS_HEX_ADDRESS, NULL_HEX_ADDRESS} from 'consts'
 
-import {defRestSchemas, defBase32AddressSchemaFactory} from './src/spec.js'
+import {defRestSchemas, defBase32AddressSchemaFactory, or} from './src/spec.js'
 
 import {
   randomHexAddress,
+  randomCfxHexAddress,
   randomPrivateKey,
   validatePrivateKey,
 } from '@cfxjs/account'
@@ -11,19 +13,31 @@ import {validateMnemonic, generateMnemonic} from 'bip39'
 import {validateBase32Address, randomBase32Address} from '@cfxjs/base32-address'
 
 export const {
-  hexAddress,
+  ethHexAddress,
   hexAccountAddress,
   hexContractAddress,
   hexBuiltInAddress,
+  hexNullAddress,
   mnemonic,
   privateKey,
 } = defRestSchemas({
+  INTERNAL_CONTRACTS_HEX_ADDRESS,
+  NULL_HEX_ADDRESS,
   validatePrivateKey,
   randomHexAddress,
+  randomCfxHexAddress,
   randomPrivateKey,
   validateMnemonic,
   generateMnemonic,
 })
+
+export const cfxHexAddress = [
+  or,
+  hexAccountAddress,
+  hexContractAddress,
+  hexBuiltInAddress,
+  hexNullAddress,
+]
 
 export const defBase32AddressSchema = (...args) => {
   return defBase32AddressSchemaFactory(

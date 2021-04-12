@@ -5,6 +5,7 @@
   "version": "0.0.0",
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
-    "@cfxjs/base32": "workspace:packages/base32"
+    "@cfxjs/base32": "workspace:packages/base32",
+    "@cfxjs/utils": "workspace:packages/utils"
   }
 }
