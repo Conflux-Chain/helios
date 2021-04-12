@@ -1014,6 +1014,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_isLocked@workspace:packages/rpcs/wallet_isLocked":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_isLocked@workspace:packages/rpcs/wallet_isLocked"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_lock@workspace:packages/rpcs/wallet_lock":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_lock@workspace:packages/rpcs/wallet_lock"

@@ -1,0 +1,6 @@
+{
+  "name": "@cfxjs/wallet_isLocked",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0"
+}
