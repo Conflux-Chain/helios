@@ -4,4 +4,3 @@
  */
 
 export * from './env.js'
-export * from './math.js'

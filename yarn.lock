@@ -766,10 +766,10 @@ __metadata:
     "@cfxjs/keccak": "workspace:packages/keccak"
     "@cfxjs/nat": "workspace:packages/nat"
     "@cfxjs/rlp": "workspace:packages/rlp"
+    "@cfxjs/utils": "workspace:packages/utils"
     buffer: ^6.0.3
     consts: "workspace:packages/consts"
     elliptic: ^6.5.4
-    utils: "workspace:packages/inner-utils"
   languageName: unknown
   linkType: soft
 
@@ -787,8 +787,7 @@ __metadata:
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
     "@cfxjs/base32": "workspace:packages/base32"
-    consts: "workspace:packages/consts"
-    utils: "workspace:packages/inner-utils"
+    "@cfxjs/utils": "workspace:packages/utils"
   languageName: unknown
   linkType: soft
 
@@ -942,7 +941,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/utils@workspace:packages/utils"
   dependencies:
+    is-hex-prefixed: ^1.0.0
     randombytes: ^2.1.0
+    strip-hex-prefix: ^1.0.0
   languageName: unknown
   linkType: soft
 
@@ -6241,6 +6242,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"is-hex-prefixed@npm:1.0.0, is-hex-prefixed@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "is-hex-prefixed@npm:1.0.0"
+  checksum: f873105d8d2bf4d4fda29ecf111a6db10d398bcf8ed8c9d2f52397f642c44322a414a8d4af70df3fd758403cbf0d65be04608ed587a190c7d355ffb607bfb50f
+  languageName: node
+  linkType: hard
+
 "is-hexadecimal@npm:^1.0.0":
   version: 1.0.4
   resolution: "is-hexadecimal@npm:1.0.4"
@@ -10496,6 +10504,15 @@ resolve@^2.0.0-next.3:
   version: 2.0.0
   resolution: "strip-final-newline@npm:2.0.0"
   checksum: 74dbd8a602409706748db730200efab53ba739ed7888310e74e45697efbd760981df6d6f0fa34b23e973135fb07d3b22adae6e6d58898f692a094e49692c6c33
+  languageName: node
+  linkType: hard
+
+"strip-hex-prefix@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "strip-hex-prefix@npm:1.0.0"
+  dependencies:
+    is-hex-prefixed: 1.0.0
+  checksum: 38a438000f8f95ee93596d6905c27ad13a9f9f3249522248442b954000f2ca527b0a952cb90ddf4df36108b523948d0a76252b62513522de5c93313b5eb82e1a
   languageName: node
   linkType: hard
 

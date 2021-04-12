@@ -27,8 +27,12 @@ import * as Nat from '@cfxjs/nat'
 import elliptic from 'elliptic'
 import {keccak256, keccak256s} from '@cfxjs/keccak'
 import {Buffer} from 'buffer'
-import {randomInt} from 'utils'
-import {NULL_HEX_ADDRESS, INTERNAL_CONTRACTS_HEX_ADDRESS} from 'consts'
+import {randomInt} from '@cfxjs/utils'
+import {
+  NULL_HEX_ADDRESS,
+  INTERNAL_CONTRACTS_HEX_ADDRESS,
+  ADDRESS_TYPES,
+} from 'consts'
 
 const secp256k1 = elliptic.ec('secp256k1')
 
@@ -115,6 +119,8 @@ export const toContractAddress = address => {
 }
 
 export const randomHexAddress = (type, entropy) => {
+  if (type && !ADDRESS_TYPES.includes(type))
+    throw new Error(`Invalid address type ${type}`)
   if (type === 'builtin')
     return INTERNAL_CONTRACTS_HEX_ADDRESS[
       randomInt(INTERNAL_CONTRACTS_HEX_ADDRESS.length)
@@ -126,11 +132,12 @@ export const randomHexAddress = (type, entropy) => {
   return addr
 }
 
+export const randomAddressType = () => {
+  return ADDRESS_TYPES[randomInt(ADDRESS_TYPES.length)]
+}
+
 export const randomCfxHexAddress = entropy => {
-  return randomHexAddress(
-    ['user', 'contract', 'builtin', 'null'][randomInt(4)],
-    entropy,
-  )
+  return randomHexAddress(randomAddressType(), entropy)
 }
 
 export const randomPrivateKey = entropy => {

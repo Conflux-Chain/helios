@@ -20,3 +20,5 @@ export const INTERNAL_CONTRACTS_HEX_ADDRESS = [
   SPONSOR_WHITELIST_CONTROL_HEX_ADDRESS,
   STAKING_HEX_ADDRESS,
 ]
+
+export const ADDRESS_TYPES = ['user', 'contract', 'builtin', 'null']

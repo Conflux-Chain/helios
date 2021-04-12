@@ -197,7 +197,6 @@ describe('@cfxjs/base32-address', function () {
           1029,
         ),
       ).toBe(true)
-
       expect(
         validateBase32Address(randomBase32Address(9999, 'user'), 9999, 'user'),
       ).toBe(true)
@@ -212,14 +211,9 @@ describe('@cfxjs/base32-address', function () {
       ).toThrowError(
         'Invalid type or networkId, type must be string, networkId must be number',
       )
-
-      expect(() =>
-        validateBase32Address(
-          randomBase32Address(9999, 'invalid'),
-          9999,
-          'user',
-        ),
-      ).toThrowError('Invalid address type: invalid')
+      expect(() => randomBase32Address(9999, 'invalid')).toThrowError(
+        'Invalid address type invalid',
+      )
     })
   })
 })

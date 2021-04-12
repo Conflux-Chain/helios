@@ -1,1 +1,1 @@
-# wallet_generateAddress
+# @cfxjs/wallet_generateAddress

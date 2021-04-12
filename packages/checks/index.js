@@ -8,6 +8,7 @@ import {isFunction, isString} from '@thi.ng/checks'
 
 const AsyncFunction = (async () => {}).constructor
 
+// this can't detect a normal function that returns a promise
 export const isAsyncFunction = fn =>
   isFunction(fn) && fn instanceof AsyncFunction
 

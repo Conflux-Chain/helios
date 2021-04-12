@@ -6,7 +6,6 @@
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
     "@cfxjs/base32": "workspace:packages/base32",
-    "consts": "workspace:packages/consts",
-    "utils": "workspace:packages/inner-utils"
+    "@cfxjs/utils": "workspace:packages/utils"
   }
 }
