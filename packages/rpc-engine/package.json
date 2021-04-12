@@ -15,7 +15,7 @@
     "@cfxjs/spec": "workspace:packages/spec",
     "@cfxjs/transducers": "workspace:packages/transducers",
     "@thi.ng/compose": "^1.4.30",
-    "@thi.ng/csp": "^1.1.60",
+    "@thi.ng/csp": "^1.1.61",
     "ramda": "^0.27.1",
     "utils": "workspace:packages/inner-utils"
   }

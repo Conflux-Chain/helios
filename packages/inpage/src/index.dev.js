@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/no-node-access */
 window.HMR_WEBSOCKET_URL = 'ws://localhost:18002'
 
 if (!document.head) {

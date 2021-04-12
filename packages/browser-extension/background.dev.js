@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/no-node-access */
 if (!document.head) {
   document.querySelector('html').appendChild(document.createElement('head'))
 }

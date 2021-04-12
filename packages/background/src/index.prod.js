@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/no-node-access */
 // or the regenerator-runtime will throw an error
 window.regeneratorRuntime = undefined
 
