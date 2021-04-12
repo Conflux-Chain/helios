@@ -1,5 +1,6 @@
 (ns cfxjs.spec.core
-  (:require [malli.core :as m]))
+  (:require [malli.core :as m]
+            [malli.error :refer [humanize]]))
 
 (defn j->c [a] (js->clj a :keywordize-keys true))
 
@@ -17,7 +18,7 @@
   (m/validate (j->c schema) (js->clj data)))
 
 (defn explain [schema data]
-  (let [rst (m/explain (j->c schema) (js->clj data))]
+  (let [rst (humanize (m/explain (j->c schema) (js->clj data)))]
     (clj->js rst)))
 
 (defn def-rest-schemas [opts]
