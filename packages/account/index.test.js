@@ -8,7 +8,9 @@ import {
   toChecksum,
   recover,
   create,
+  randomHexAddress,
 } from './'
+import {NULL_HEX_ADDRESS, INTERNAL_CONTRACTS_HEX_ADDRESS} from 'consts'
 
 const echash =
   '0x82ff40c0a986c6a5cfad4ddf4c3aa6996f1a7837f9c398e17e5de5cbd5a12b28'
@@ -75,6 +77,26 @@ describe('account', function () {
         expect.stringMatching(/^0x[0-9a-fA-F]{40}$/),
       )
       expect(fromPrivate(account.privateKey).address).toEqual(account.address)
+    })
+  })
+
+  describe('randomHexAddress', function () {
+    it('should generate a random builtin address', async function () {
+      expect(
+        INTERNAL_CONTRACTS_HEX_ADDRESS.includes(randomHexAddress('builtin')),
+      ).toBe(true)
+    })
+
+    it('should generate the null address', async function () {
+      expect(randomHexAddress('null')).toEqual(NULL_HEX_ADDRESS)
+    })
+
+    it('should generate a contract address', async function () {
+      expect(randomHexAddress('contract').startsWith('0x8')).toBe(true)
+    })
+
+    it('should generate a account address', async function () {
+      expect(randomHexAddress('user').startsWith('0x1')).toBe(true)
     })
   })
 })
