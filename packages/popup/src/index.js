@@ -8,7 +8,7 @@ ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root'),
+  document.getElementById('root'), // eslint-disable-line testing-library/no-node-access
 )
 
 // If you want to start measuring performance in your app, pass a function
