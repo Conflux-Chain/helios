@@ -148,7 +148,7 @@
        :compiler-options {:cross-chunk-method-motion false
                           :infer-externs :auto
                           :output-feature-set :es-next
-                          :externs ["datascript/externs.js"]}
+                          :externs ["cfxjs/db/impl/externs.js"]}
        :modules {:shared {}
                  :db {:exports {createdb cfxjs.db.core/create-db
 

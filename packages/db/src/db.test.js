@@ -2,6 +2,7 @@
 import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import * as db from './db.js'
 
+/* eslint-disable testing-library/prefer-screen-queries */
 const schema = {
   vault: {
     type: {
@@ -293,9 +294,9 @@ describe('db', function () {
       expect(vault.get('data')).toBe('b')
       expect(vault.get('type')).toBe('a')
       expect(vault.modelName()).toBe('vault')
-      expect(vault.attr__GT_key('a').toString()).toBe(':vault/a')
-      expect(vault.attr__GT_key(':a').toString()).toBe(':a')
-      expect(vault.attr__GT_key('id').toString()).toBe(':db/id')
+      expect(vault.attrToKey('a').toString()).toBe(':vault/a')
+      expect(vault.attrToKey(':a').toString()).toBe(':a')
+      expect(vault.attrToKey('id').toString()).toBe(':db/id')
 
       // TODO: this works in browser but not in node.js
       // const account = conn.getOneAccount({hexAddress: 'c'})

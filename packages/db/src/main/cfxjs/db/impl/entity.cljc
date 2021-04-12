@@ -60,7 +60,7 @@
   #?@(:cljs
       [Object
        (modelName [_] (name model))
-       (attr->key [this attr]
+       (attrToKey [this attr]
                   (cond (keyword? attr) attr
                         (= "id" attr) :db/id
                         (string? attr) (if (.startsWith attr ":")
@@ -82,7 +82,7 @@
        (has [this attr]
             (not (nil? (.get this attr))))
        (get [this attr]
-            (let [attr (.attr->key this attr)]
+            (let [attr (.attrToKey this attr)]
               (if (= attr :db/id)
                 eid
                 (if (db/reverse-ref? attr)
