@@ -1,0 +1,10 @@
+{
+  "name": "@cfxjs/hdkey",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "bip39": "^3.0.3",
+    "ethereumjs-wallet": "^1.0.1"
+  }
+}

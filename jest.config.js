@@ -63,6 +63,10 @@ module.exports = {
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   modulePathIgnorePatterns: ['/packages/browser-extension'],
   injectGlobals: true,
+  globals: {
+    // fixes (Buffer.from(...) instanceof Uint8Array) === true
+    Uint8Array: Uint8Array,
+  },
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: 'v8', // v8 is not stable
