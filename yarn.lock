@@ -966,6 +966,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_createAccount@workspace:packages/rpcs/wallet_createAccount":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_createAccount@workspace:packages/rpcs/wallet_createAccount"
+  dependencies:
+    "@cfxjs/account": "workspace:packages/account"
+    "@cfxjs/hdkey": "workspace:packages/hdkey"
+    "@cfxjs/spec": "workspace:packages/spec"
+    browser-passworder: ^2.0.3
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_generateAddress@workspace:packages/rpcs/wallet_generateAddress":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_generateAddress@workspace:packages/rpcs/wallet_generateAddress"

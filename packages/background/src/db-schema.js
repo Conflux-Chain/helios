@@ -17,13 +17,20 @@ const schema = {
     },
   },
   account: {
-    hexAddress: {
+    ethHexAddress: {
       identity: true,
-      doc: 'Account hex address',
+      doc: 'Account eth hex address',
+    },
+    cfxHexAddress: {
+      identity: true,
+      doc: 'Account cfx hex address',
     },
     vault: {
       ref: true,
       doc: 'Entity ID of vault',
+    },
+    hdIndex: {
+      doc: 'The index of this account in hd wallet',
     },
   },
 }
