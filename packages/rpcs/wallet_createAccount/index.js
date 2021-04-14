@@ -24,7 +24,7 @@ export const schemas = {
       {
         optional: true,
         doc:
-          'hd wallet derivation path, check https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#abstract for detail',
+          'hd wallet derivation path without the last address_index, check https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#abstract for detail',
       },
       string,
     ],
