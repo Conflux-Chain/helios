@@ -5353,6 +5353,8 @@ fsevents@~2.1.2:
 "get-all-rpcs@workspace:packages/get-all-rpcs":
   version: 0.0.0-use.local
   resolution: "get-all-rpcs@workspace:packages/get-all-rpcs"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
