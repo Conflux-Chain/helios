@@ -4,7 +4,7 @@ import {main} from './'
 import {
   validate,
   ethHexAddress,
-  hexAccountAddress,
+  hexUserAddress,
   cfxHexAddress,
   hexBuiltInAddress,
   hexContractAddress,
@@ -20,7 +20,7 @@ describe('wallet_generateAddress', function () {
       expect(validate(ethHexAddress, main({params: {eth: true}}))).toBe(true)
       expect(validate(cfxHexAddress, main({params: {hex: true}}))).toBe(true)
       expect(
-        validate(hexAccountAddress, main({params: {hex: true, type: 'user'}})),
+        validate(hexUserAddress, main({params: {hex: true, type: 'user'}})),
       ).toBe(true)
       expect(
         validate(

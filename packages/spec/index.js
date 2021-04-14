@@ -19,7 +19,7 @@ import {validateBase32Address, randomBase32Address} from '@cfxjs/base32-address'
 
 export const {
   ethHexAddress,
-  hexAccountAddress,
+  hexUserAddress,
   hexContractAddress,
   hexBuiltInAddress,
   hexNullAddress,
@@ -38,7 +38,7 @@ export const {
 
 export const cfxHexAddress = [
   or,
-  hexAccountAddress,
+  hexUserAddress,
   hexContractAddress,
   hexBuiltInAddress,
   hexNullAddress,

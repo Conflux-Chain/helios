@@ -1,4 +1,3 @@
-/* eslint-disable */
 import {map, dbid, truep, string} from '@cfxjs/spec'
 import {decrypt} from 'browser-passworder'
 import {getNthAccountOfHDKey} from '@cfxjs/hdkey'
@@ -10,12 +9,24 @@ export const schemas = {
   input: [
     map,
     {closed: true},
+    ['vaultId', {doc: 'natural number, id of vault in database'}, dbid],
     [
-      map,
-      {closed: true},
-      ['vaultId', dbid],
-      ['only0x1Prefixed', {optional: true}, truep],
-      ['hdPath', {optional: true}, string],
+      'only0x1Prefixed',
+      {
+        optional: true,
+        doc:
+          'only create 0x1-prefixed account(both in conflux and ethereum-like chains) if specify true',
+      },
+      truep,
+    ],
+    [
+      'hdPath',
+      {
+        optional: true,
+        doc:
+          'hd wallet derivation path, check https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#abstract for detail',
+      },
+      string,
     ],
   ],
 }

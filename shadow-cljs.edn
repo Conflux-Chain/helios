@@ -141,7 +141,9 @@
                                     addressType cfxjs.spec.core/export-addressType}
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}
-                         :depends-on #{:shared :spec}}}}
+                         :depends-on #{:shared}}
+                   :doc {:exports {generateDocumentation cfxjs.spec.doc/gen}
+                         :depends-on #{:shared}}}}
   :db {:target :esm
        :output-dir "packages/db/src"
        :js-options {:js-package-dirs ["packages/db/node_modules"]}

@@ -2,7 +2,7 @@ import {
   map,
   password,
   or,
-  hexAccountAddress,
+  hexUserAddress,
   base32AccountMainnetAddress,
   base32AccountTestnetAddress,
 } from '@cfxjs/spec'
@@ -18,7 +18,7 @@ export const schemas = {
       'address',
       [
         or,
-        hexAccountAddress,
+        hexUserAddress,
         base32AccountMainnetAddress,
         base32AccountTestnetAddress,
       ],
