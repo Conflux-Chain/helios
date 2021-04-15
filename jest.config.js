@@ -16,6 +16,7 @@ module.exports = {
     ),
   },
 
+  testEnvironment: './scripts/jest-test-jsdom-env.js',
   // The glob patterns Jest uses to detect test files
   testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
 
@@ -26,7 +27,7 @@ module.exports = {
   roots: ['<rootDir>'],
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  // setupFiles: [...snowpackReactJestConfig.setupFiles],
+  // setupFiles: ['jest-webextension-mock'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: [
