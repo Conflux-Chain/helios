@@ -26,6 +26,7 @@ jobs:
           path: |
             ~/.m2/repository
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ./.shadow-cljs
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
@@ -52,6 +53,7 @@ jobs:
           path: |
             ~/.m2/repository
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ./.shadow-cljs
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
@@ -84,6 +86,7 @@ jobs:
           path: |
             ~/.m2/repository
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ./.shadow-cljs
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
