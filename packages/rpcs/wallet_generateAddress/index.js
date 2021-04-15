@@ -8,13 +8,13 @@ const hex = ['hex', truep]
 const base32 = ['base32', truep]
 const addrType = ['type', addressType]
 const cfx = ['cfx', {optional: true}, truep]
-const ethAddressSchema = [...base, ['hex', truep], ['eth', truep]]
-const cfxHexAddressSchema = [...base, ...hex, ...cfx, ...addrType]
+const ethAddressSchema = [...base, hex, ['eth', truep]]
+const cfxHexAddressSchema = [...base, hex, cfx, addrType]
 const cfxBase32AddressSchema = [
   ...base,
-  ...base32,
-  ...cfx,
-  ...addrType,
+  base32,
+  cfx,
+  addrType,
   ['networkId', networkId],
 ]
 

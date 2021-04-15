@@ -36,7 +36,10 @@ process.on('SIGINT', cleanup)
 process.on('SIGTERM', cleanup)
 process.on('SIGUSR1', cleanup)
 process.on('SIGUSR2', cleanup)
-process.on('uncaughtException', cleanup)
+process.on(
+  'uncaughtException',
+  (...args) => (console.error(...args), cleanup(...args)),
+)
 ;(async () => {
   if (shouldCleanCache) await clearCache()
   /* servers =  */ await Promise.all([
