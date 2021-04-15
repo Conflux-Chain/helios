@@ -1,7 +1,7 @@
 {
   "name": "@cfxjs/wallet_addVault",
-  "main": "index.js",
   "type": "module",
+  "main": "index.js",
   "version": "0.0.0",
   "dependencies": {
     "@cfxjs/base32-address": "workspace:packages/base32-address",

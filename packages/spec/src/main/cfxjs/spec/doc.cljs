@@ -1,5 +1,17 @@
 (ns cfxjs.spec.doc
-  (:require [malli.core :as m]))
+  (:require [malli.core :as m]
+            [malli.error :refer [humanize]]))
+
+(defn j->c [a] (js->clj a :keywordize-keys true))
+
+(defn explain [schema data]
+  (let [rst (humanize (m/explain (j->c schema) (js->clj data)))]
+    (clj->js rst)))
+
+(defn validate [schema data]
+  (let [s (j->c schema)
+        d (js->clj data)
+        rst (m/validate s d)] rst))
 
 (defn -recur [schema {::keys [recursion recursion-limit] :or {recursion-limit 4} :as options}]
   (let [form (m/form schema)
@@ -32,9 +44,9 @@
 
 (defn schema-type->html-type
   ([schema] (schema-type->html-type schema nil))
-  ([schema {:doc/keys [html-element]}]
-   (if html-element
-     html-element
+  ([schema {:doc/keys [htmlElement]}]
+   (if htmlElement
+     htmlElement
      (case (if (m/schema? schema) (m/type schema) schema)
        :password {:el :input :type :password}
        :int {:el :input :type :number}
@@ -68,31 +80,37 @@
                (str (m/type schema) " " "no doc found"))
          d (if append (str d append) d)
          d (if prepend (str d prepend) d)
-         rst {:doc d}
+         rst {:doc d :schema schema}
          rst (if optional-key (assoc rst :optional true) rst)
          rst (if html-type (assoc rst :html-type html-type) rst)
          type (or (-schema-type schema) :unknown)
          rst (assoc rst :type (keyword type))
-         rst (assoc rst :html-element (schema-type->html-type (if (= type :unknown) type schema)))]
+         rst (assoc rst :htmlElement (schema-type->html-type (if (= type :unknown) type schema)))]
      rst)))
 
 (defmulti -schema-doc-generator (fn [schema options] (m/type schema options)) :default ::default)
-(defmethod -schema-doc-generator ::default [schema options] (-schema-get-doc schema options))
-(defmethod -schema-doc-generator :or [schema options] ["one of" (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))])
-(defmethod -schema-doc-generator :and [schema options] ["and" (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))])
-(defmethod -schema-doc-generator :not [schema options] ["not" (-schema-doc-generator schema options)])
+(defmethod -schema-doc-generator ::default [schema options] {:type (keyword (m/type schema)) :value (-schema-get-doc schema options)})
+(defmethod -schema-doc-generator :or [schema options] {:type :or :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
+(defmethod -schema-doc-generator :and [schema options] {:type :and :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
+(defmethod -schema-doc-generator :not [schema options] (let [rst (-schema-doc-generator schema options)
+                                                             rst (assoc rst :not true)]
+                                                         rst))
 (defmethod -schema-doc-generator :re [schema options] (let [re (-schema-re schema options)
-                                                            options (assoc options :doc/append (str ", confrom to regex " re))]
-                                                        (-schema-get-doc schema options)))
+                                                            options (assoc options :doc/append (str ", confrom to regex " re))
+                                                            rst (-schema-get-doc schema options)]
+                                                        {:type :re :value rst}))
 (defmethod -schema-doc-generator :map [schema options]
   (let [entries (m/entries schema)
         value-gen (fn [k s] (let [options (if (-> s m/properties :optional) (assoc options :doc/optional-key true) options)
-                                  options (if (-> s m/properties :doc) (assoc options :doc/pdoc (-> s m/properties :doc)) options)]
-                              [k (-schema-doc-generator s options)]))
+                                 options (if (-> s m/properties :doc) (assoc options :doc/pdoc (-> s m/properties :doc)) options)
+                                 rst (-schema-doc-generator s options)
+                                 rst (assoc rst :kv true)
+                                 rst (assoc rst :k k)]
+                              rst))
         gen-req (->> entries
                      ;; (remove #(-> % last m/properties :optional))
                      (mapv (fn [[k s]] (value-gen k s))))]
-    ["map of" gen-req]))
+    {:type :map :children gen-req}))
 
 (defmethod -schema-doc-generator ::m/val [schema options]
   (-schema-doc-generator (first (m/children schema)) options))
@@ -100,6 +118,9 @@
 (defn gen [schema options]
   (clj->js (-schema-doc-generator (js->clj schema :keywordize-keys true)
                                   (js->clj options :keywordize-keys true))))
+
+(def export-explain explain)
+(def export-validate validate)
 
 (comment
   (def s (js->clj (-> js/window .-s .-mnemonic) :keywordize-keys true))

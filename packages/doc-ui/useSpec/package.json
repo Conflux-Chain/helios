@@ -1,0 +1,13 @@
+{
+  "name": "@cfxjs/doc-use-spec",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "peerDependencies": {
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
+  },
+  "dependencies": {
+    "zustand": "^3.4.1"
+  }
+}

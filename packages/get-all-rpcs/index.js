@@ -35,7 +35,7 @@ const getAllRpcs = async (
   return dirs
     .reduce(
       (acc, dir) =>
-        dir[2]
+        dir[2] && dir[1].includes('wallet_addVault')
           ? [
               ...acc,
               {
@@ -53,7 +53,3 @@ const getAllRpcs = async (
 }
 
 export default getAllRpcs
-// ;(async () => {
-//   const rpcData = await getAllRpcs()
-//   console.log(rpcData)
-// })()

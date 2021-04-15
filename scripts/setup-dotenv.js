@@ -32,3 +32,10 @@ dotenvFiles.forEach(dotenvFile => {
     )
   }
 })
+
+// expose all SNOWPACK_PUBLIC_ env to process.env
+for (const e in process.env) {
+  if (e.startsWith('SNOWPACK_PUBLIC_')) {
+    process.env[e.slice(16)] = process.env[e]
+  }
+}

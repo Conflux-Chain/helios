@@ -142,7 +142,9 @@
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}
                          :depends-on #{:shared}}
-                   :doc {:exports {generateDocumentation cfxjs.spec.doc/gen}
+                   :doc {:exports {generateDocumentation cfxjs.spec.doc/gen
+                                   explain cfxjs.spec.doc/export-explain
+                                   validate cfxjs.spec.doc/export-validate}
                          :depends-on #{:shared}}}}
   :db {:target :esm
        :output-dir "packages/db/src"
