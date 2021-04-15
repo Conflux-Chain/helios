@@ -1,5 +1,6 @@
 (ns cfxjs.spec.core
   (:require [malli.core :as m]
+            [malli.util :as mu]
             [malli.error :refer [humanize]]))
 
 (defn j->c [a] (js->clj a :keywordize-keys true))
@@ -17,43 +18,59 @@
     ;;                          :error (explain s d)}))
     rst))
 
+(defn update-properties [schema & forms]
+  (let [trans (partition 2 forms)
+        [in v] (first trans)
+        in (if (vector? in) in [in])
+        ;; in (into [:type-properties] in)
+        schema (mu/update-properties schema assoc-in in v)
+        trans (flatten (rest trans))]
+    (if (empty? trans) schema
+        (apply update-properties schema trans))))
+
 (defn def-rest-schemas [opts]
   (let [{:keys [INTERNAL_CONTRACTS_HEX_ADDRESS randomHexAddress randomCfxHexAddress randomPrivateKey validateMnemonic generateMnemonic validatePrivateKey]} (j->c opts)
         INTERNAL_CONTRACTS_HEX_ADDRESS (js->clj INTERNAL_CONTRACTS_HEX_ADDRESS)]
     #js
-    {:mnemonic (m/-simple-schema
-                {:type :mnemonic
-                 :pred #(and (string? %) (validateMnemonic %))
-                 :type-properties {:error/message "should be a valid mnemonic"}
-                 :gen/fmap #(.call generateMnemonic)})
-     :privateKey (m/-simple-schema
-                  {:type :privateKey
-                   :pred #(validatePrivateKey %)
-                   :type-properties {:error/message "invalid private key"}
-                   :gen/fmap #(.call randomPrivateKey)})
-     :ethHexAddress [:re
-                     {:type :ethHexAddress
-                      :type-properties {:error/message "invalid hex address"}
-                      :gen/fmap #(.call randomHexAddress)}
-                     #"^0x[0-9a-fA-F]{40}$"]
-     :hexAccountAddress [:re
-                         {:type :hexAccountAddress
-                          :type-properties {:error/message "invalid hex account address, should be start with 0x1"}
-                          :gen/fmap #(.call randomHexAddress nil "user")}
-                         #"^0x1[0-9a-fA-F]{39}$"]
-     :hexContractAddress [:re
-                          {:type :hexContractAddress
-                           :type-properties {:error/message "invalid hex contract address, should be start with 0x8"}
-                           :gen/fmap #(.call randomHexAddress nil "contract")}
-                          #"^0x8[0-9a-fA-F]{39}$"]
-     :hexBuiltInAddress (into [:enum
-                               {:type :hexBuiltinAddress
-                                :type-properties {:error/message (str "invalid hex builtin address, can only be one of " INTERNAL_CONTRACTS_HEX_ADDRESS)}
-                                :gen/elements INTERNAL_CONTRACTS_HEX_ADDRESS}]
-                              INTERNAL_CONTRACTS_HEX_ADDRESS)
-     :hexNullAddress [:= {:type :hexNullAddress
-                          :type-properties {:error/message "invalid hex null address, should be 0x0000000000000000000000000000000000000000"}}
-                      "0x0000000000000000000000000000000000000000"]}))
+     {:mnemonic (m/-simple-schema
+                 {:type :mnemonic
+                  :pred #(and (string? %) (validateMnemonic %))
+                  :type-properties {:error/message "should be a valid mnemonic"
+                                    :doc "Mnemonic phrase"}
+                  :gen/fmap #(.call generateMnemonic)})
+      :privateKey (m/-simple-schema
+                   {:type :privateKey
+                    :pred #(validatePrivateKey %)
+                    :type-properties {:error/message "invalid private key" :doc "0x-prefixed private key"}
+                    :gen/fmap #(.call randomPrivateKey)})
+      :ethHexAddress (update-properties
+                      [:re #"^0x[0-9a-fA-F]{40}$"]
+                      :gen/fmap #(.call randomHexAddress)
+                      :error/message "invalid hex address"
+                      :doc "0x-prefixed address")
+      :hexUserAddress (update-properties
+                       [:re #"^0x1[0-9a-fA-F]{39}$"]
+                       :type :hexUserAddress
+                       :gen/fmap #(.call randomHexAddress nil "user")
+                       :error/message "invalid hex user address"
+                       :doc "Conflux hex user address")
+      :hexContractAddress (update-properties
+                           [:re #"^0x8[0-9a-fA-F]{39}$"]
+                           :type :hexContractAddress
+                           :error/message "invalid hex contract address"
+                           :doc "Conflux hex user address"
+                           :gen/fmap #(.call randomHexAddress nil "contract"))
+      :hexBuiltInAddress (update-properties
+                          (into [:enum] INTERNAL_CONTRACTS_HEX_ADDRESS)
+                          :type :hexBuiltInAddress
+                          :error/message (str "invalid hex builtin address, can only be one of " INTERNAL_CONTRACTS_HEX_ADDRESS)
+                          :doc "Hex address of conflux internal contract, can be found at https://confluxscan.io/contracts"
+                          :gen/elements INTERNAL_CONTRACTS_HEX_ADDRESS)
+      :hexNullAddress (update-properties
+                       [:= "0x0000000000000000000000000000000000000000"]
+                       :type :hexNullAddress
+                       :doc "Null address: 0x0000000000000000000000000000000000000000"
+                       :error/message "invalid hex null address, should be 0x0000000000000000000000000000000000000000")}))
 
 (defn def-base32-address-schema-factory
   ([pred gen network-id-or-type] (def-base32-address-schema-factory pred gen network-id-or-type nil))
@@ -70,12 +87,16 @@
      (m/-simple-schema
       {:type type
        :pred #(pred % address-type network-id)
-       :type-properties {:error/message "invalid base32 address"}
+       :type-properties {:error/message "invalid base32 address"
+                         :doc (str "Conflux base32 address with '" address-type "' type and networkId is " network-id)}
        :gen/fmap #(.call gen nil network-id address-type)}))))
 
-(def Password [:string {:min 8 :max 128}])
-(def NetworkId [:and :integer [:>= 0] [:<= 4294967295]])
-(def AddressType [:enum "user" "contract" "builtin" "null"])
+(def Password (update-properties [:string {:min 8 :max 128}]
+                                 :doc "String between 8 to 128 character" :type :password))
+(def NetworkId (update-properties [:and :int [:>= 0] [:<= 4294967295]]
+                                  :type :network-id :doc "1029 for mainnet, 1 for testnet, 0 <= networkId <= 4294967295"))
+(def AddressType (update-properties [:enum "user" "contract" "builtin" "null"]
+                                    :type :address-type :doc "Is string, one of user contract builtin null"))
 
 (comment
   (#(re-matches #"^0x[0-9a-fA-F]{40}$" %) "0x0000000000000000000000000000000000000000")

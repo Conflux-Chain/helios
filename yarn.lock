@@ -5350,6 +5350,14 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"get-all-rpcs@workspace:packages/get-all-rpcs":
+  version: 0.0.0-use.local
+  resolution: "get-all-rpcs@workspace:packages/get-all-rpcs"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "get-caller-file@npm:^2.0.1, get-caller-file@npm:^2.0.5":
   version: 2.0.5
   resolution: "get-caller-file@npm:2.0.5"
