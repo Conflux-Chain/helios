@@ -237,3 +237,4 @@ $RECYCLE.BIN/
 /packages/db/**/*.js
 /packages/spec/**/*.js
 /.shadow-cljs/
+/stories
