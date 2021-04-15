@@ -1,3 +1,5 @@
+const {resolve} = require('path')
+
 module.exports = {
   stories: [
     '../packages/**/*.stories.mdx',
@@ -10,5 +12,15 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-viewport',
     '@storybook/addon-docs',
+    '@storybook/addon-a11y',
+    {
+      name: '@storybook/addon-postcss',
+      options: {
+        postcssLoaderOptions: {
+          implementation: () =>
+            require(resolve(__dirname, '../scripts/postcss.config.js')),
+        },
+      },
+    },
   ],
 }

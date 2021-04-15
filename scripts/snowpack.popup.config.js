@@ -26,7 +26,7 @@ module.exports = mergeConfig(baseConfig, {
   routes: [{match: 'routes', src: '.*', dest: '/index.html'}],
   plugins: [
     ...baseConfig.plugins,
-    [path.resolve(__dirname, './snowpack.postcss.popup.plugin.js'), {}],
+    [path.resolve(__dirname, './snowpack.postcss.plugin.js'), {}],
     [path.resolve(__dirname, './snowpack.swc.frontend.plugin.js'), {}],
     '@snowpack/plugin-react-refresh',
   ],
