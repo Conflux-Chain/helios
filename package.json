@@ -2,6 +2,7 @@
   "name": "helios",
   "private": true,
   "workspaces": [
+    "websites/*",
     "packages/doc-ui/*",
     "packages/ui/*",
     "packages/rpcs/*",
