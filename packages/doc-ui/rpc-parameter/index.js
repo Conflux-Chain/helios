@@ -112,7 +112,7 @@ const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
   const pathId = (k || parentK || '') + '-' + path.join('-')
   const entryId = `${rpcName}-${pathId}-entry`
   const name = <Var>{k || path[path.length - 1]}</Var>
-  const {setData, data, valid, error} = useSpec(entryId, {
+  const {setData, data, valid, error, gen} = useSpec(entryId, {
     schema: value?.schema,
   })
 
@@ -163,6 +163,19 @@ const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
                     error={error ?? []}
                     {...value}
                   />
+                </td>
+              </tr>
+              <tr key="generator">
+                <td>Random data</td>
+                <td>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      gen && value?.schema && setData(gen(value?.schema))
+                    }
+                  >
+                    fill
+                  </button>
                 </td>
               </tr>
             </tbody>

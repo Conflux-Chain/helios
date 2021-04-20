@@ -36,13 +36,13 @@
                  {:type :mnemonic
                   :pred #(and (string? %) (validateMnemonic %))
                   :type-properties {:error/message "should be a valid mnemonic"
-                                    :doc "Mnemonic phrase"}
-                  :gen/fmap #(.call generateMnemonic)})
+                                    :doc "Mnemonic phrase"
+                                    :gen/fmap #(.call generateMnemonic)}})
       :privateKey (m/-simple-schema
                    {:type :privateKey
                     :pred #(validatePrivateKey %)
-                    :type-properties {:error/message "invalid private key" :doc "0x-prefixed private key"}
-                    :gen/fmap #(.call randomPrivateKey)})
+                    :type-properties {:error/message "invalid private key" :doc "0x-prefixed private key"
+                                      :gen/fmap #(.call randomPrivateKey)}})
       :ethHexAddress (update-properties
                       [:re #"^0x[0-9a-fA-F]{40}$"]
                       :gen/fmap #(.call randomHexAddress)
@@ -88,8 +88,8 @@
       {:type type
        :pred #(pred % address-type network-id)
        :type-properties {:error/message "invalid base32 address"
-                         :doc (str "Conflux base32 address with '" address-type "' type and networkId is " network-id)}
-       :gen/fmap #(.call gen nil network-id address-type)}))))
+                         :doc (str "Conflux base32 address with '" address-type "' type and networkId is " network-id)
+                         :gen/fmap #(.call gen nil network-id address-type)}}))))
 
 (def Password (update-properties [:string {:min 8 :max 128}]
                                  :doc "String between 8 to 128 character" :type :password))

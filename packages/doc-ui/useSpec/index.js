@@ -2,18 +2,23 @@ import {useEffect} from 'react'
 import create from 'zustand'
 
 let SPEC = null
+let GEN = null
 const Stores = {}
 
 const createSpec = id =>
   create((set, get) => ({
     _id: id,
-    _retryCount: 0,
+    _specRetryCount: 0,
+    _genRetryCount: 0,
     cantLoadSpec: null,
+    cantLoadGen: null,
     loadingSpec: true,
+    loadingGen: true,
     schema: null,
     doc: null,
     data: null,
     spec: SPEC,
+    gen: GEN,
     error: null,
     valid: null,
     validating: false,
@@ -70,15 +75,39 @@ const createSpec = id =>
           .then(() => get().validate())
           .then(() => get().setDoc())
           .catch(err => {
-            const {_retryCount, setSpec} = get()
-            if (_retryCount < 5) {
-              set(({_retryCount}) => ({_retryCount: _retryCount + 1}))
+            const {_specRetryCount, setSpec} = get()
+            if (_specRetryCount < 5) {
+              set(({_specRetryCount}) => ({
+                _specRetryCount: _specRetryCount + 1,
+              }))
               setSpec()
               return
             }
 
             console.error(err)
             set({cantLoadSpec: err})
+          })
+    },
+    setGen: () => {
+      const {gen} = get()
+      if (gen) return
+
+      window &&
+        import('@cfxjs/spec/src/gen.js')
+          .then(({gen}) => {
+            GEN = gen
+            set({gen, loadingGen: false})
+          })
+          .catch(err => {
+            const {_genRetryCount, setGen} = get()
+            if (_genRetryCount < 5) {
+              set(({_genRetryCount}) => ({_genRetryCount: _genRetryCount + 1}))
+              setGen()
+              return
+            }
+
+            console.error(err)
+            set({cantLoadGen: err})
           })
     },
   }))
@@ -101,7 +130,10 @@ export const useSpec = (id, {schema, data} = {}) => {
   }, [data])
 
   useEffect(() => {
-    if (isNewSpec) s.setSpec()
+    if (isNewSpec) {
+      s.setSpec()
+      s.setGen()
+    }
   }, [isNewSpec])
 
   return s
