@@ -155,3 +155,55 @@ wallet_addVault.args = {
   },
   rpcName: 'wallet_addVault',
 }
+
+export const wallet_createAccount = Template.bind({})
+wallet_createAccount.args = {
+  parameters: {
+    type: 'map',
+    children: [
+      {
+        type: 'integer?',
+        value: {
+          doc: 'natural number, id of vault in database',
+          type: 'integer?',
+          htmlElement: {
+            el: 'input',
+            type: 'number',
+          },
+        },
+        kv: true,
+        k: 'vaultId',
+      },
+      {
+        type: 'true?',
+        value: {
+          doc:
+            'only create 0x1-prefixed account(both in conflux and ethereum-like chains) if specify true',
+          optional: true,
+          type: 'true?',
+          htmlElement: {
+            el: 'input',
+            type: 'checkbox',
+          },
+        },
+        kv: true,
+        k: 'only0x1Prefixed',
+      },
+      {
+        type: 'string',
+        value: {
+          doc:
+            'hd wallet derivation path without the last address_index, check https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#abstract for detail',
+          optional: true,
+          type: 'string',
+          htmlElement: {
+            el: 'input',
+          },
+        },
+        kv: true,
+        k: 'hdPath',
+      },
+    ],
+  },
+  rpcName: 'wallet_createAccount',
+}

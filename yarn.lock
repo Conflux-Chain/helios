@@ -2190,9 +2190,6 @@ __metadata:
   dependencies:
     "@cfxjs/doc-use-rpc": "workspace:packages/doc-ui/useRPC"
     "@cfxjs/doc-use-spec": "workspace:packages/doc-ui/useSpec"
-    "@cfxjs/spec": "workspace:packages/spec"
-    "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault"
-    "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword"
     prop-types: ^15.7.2
     zustand: 3.4.1
   peerDependencies:

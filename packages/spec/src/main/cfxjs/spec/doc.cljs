@@ -48,7 +48,8 @@
    (if htmlElement
      htmlElement
      (case (if (m/schema? schema) (m/type schema) schema)
-       :password {:el :input :type :password}
+       :mnemonic {:el :textarea}
+       :password {:el :input}
        :int {:el :input :type :number}
        :double {:el :input :type :number}
        int? {:el :input :type :number}
@@ -61,7 +62,7 @@
        true? {:el :input :type :checkbox}
        false? {:el :input :type :checkbox}
        :boolean {:el :input :type :checkbox}
-       :enum {:el :select :vaules (m/children schema)}
+       :enum {:el :select :values (m/children schema)}
        {:el :input}))))
 
 (defn -schema-get-doc

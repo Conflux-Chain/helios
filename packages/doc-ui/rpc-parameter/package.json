@@ -12,10 +12,5 @@
     "@cfxjs/doc-use-spec": "workspace:packages/doc-ui/useSpec",
     "prop-types": "^15.7.2",
     "zustand": "3.4.1"
-  },
-  "devDependencies": {
-    "@cfxjs/spec": "workspace:packages/spec",
-    "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault",
-    "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword"
   }
 }

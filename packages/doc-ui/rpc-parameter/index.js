@@ -58,20 +58,36 @@ export const Parameters = ({parameters, rpcName}) => {
 
 const Doc = ({doc}) => <p>{doc}</p>
 const Type = ({type}) => <Var>{type}</Var>
-const DataEntry = ({htmlElement, rpcName, id, ...props}) => {
+const DataEntry = ({htmlElement, rpcName, id, onChange, value}) => {
   const Tag = htmlElement?.el || 'input'
+  const otherProps = {}
+  if (Tag === 'select')
+    // eslint-disable-next-line testing-library/no-node-access
+    otherProps.children = htmlElement.values.map((v, idx) => (
+      <option key={idx} value={v}>
+        {v}
+      </option>
+    ))
+
+  if (htmlElement?.type === 'checkbox') {
+    otherProps.checked = value
+  } else {
+    otherProps.value = value
+  }
+
   return (
     <Tag
       id={id}
+      onChange={onChange}
       form={`rpc-form-${rpcName}`}
       type={htmlElement?.type || 'text'}
-      {...props}
+      {...otherProps}
     />
   )
 }
 
 const Validator = ({valid, error, empty}) => {
-  return <p>{empty ? '' : valid ? 'Valid!' : error}</p>
+  return <p>{empty ? 'Empty' : valid ? 'Valid!' : error}</p>
 }
 
 const obj = <Var>object</Var>
@@ -108,6 +124,9 @@ const ParamWithChildren = ({type, children, rpcName, k, kv, path}) => {
   )
 }
 
+const TypeToHideValidation = ['checkbox', 'radio']
+const ElementToHideValidation = ['select']
+
 const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
   const pathId = (k || parentK || '') + '-' + path.join('-')
   const entryId = `${rpcName}-${pathId}-entry`
@@ -115,6 +134,9 @@ const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
   const {setData, data, valid, error, gen} = useSpec(entryId, {
     schema: value?.schema,
   })
+  const hideValidation =
+    TypeToHideValidation.includes(value?.htmlElement?.type) ||
+    ElementToHideValidation.includes(value?.htmlElement?.el)
 
   return (
     <tr className="childparam">
@@ -146,7 +168,11 @@ const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
                 <td>Entry</td>
                 <td>
                   <DataEntry
-                    onChange={e => setData(e.target.value)}
+                    onChange={e => {
+                      if (e.target.type === 'checkbox')
+                        setData(e.target.checked)
+                      else setData(e.target.value)
+                    }}
                     value={data === null ? '' : data}
                     rpcName={rpcName}
                     id={entryId}
@@ -154,30 +180,35 @@ const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
                   />
                 </td>
               </tr>
-              <tr key="validator">
-                <td>Validation</td>
-                <td>
-                  <Validator
-                    empty={data === null || data === ''}
-                    valid={valid ?? true}
-                    error={error ?? []}
-                    {...value}
-                  />
-                </td>
-              </tr>
-              <tr key="generator">
-                <td>Random data</td>
-                <td>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      gen && value?.schema && setData(gen(value?.schema))
-                    }
-                  >
-                    fill
-                  </button>
-                </td>
-              </tr>
+              {!hideValidation && (
+                <tr key="validator">
+                  <td>Validation</td>
+                  <td>
+                    <Validator
+                      empty={data === null || data === ''}
+                      valid={valid ?? true}
+                      error={error ?? []}
+                      {...value}
+                    />
+                  </td>
+                </tr>
+              )}
+              {!hideValidation && (
+                <tr key="generator">
+                  <td>Random data</td>
+                  <td>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!gen || !value?.schema) return
+                        setData(gen(value?.schema))
+                      }}
+                    >
+                      fill
+                    </button>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </fieldset>
@@ -198,12 +229,15 @@ Type.propTypes = {
   type: PropTypes.string.isRequired,
 }
 DataEntry.propTypes = {
-  id: PropTypes.string.isRequired,
-  rpcName: PropTypes.string.isRequired,
-  htmlElement: PropTypes.shape({
+  htmlElement: PropTypes.objectOf({
     el: PropTypes.string,
     type: PropTypes.string,
+    values: PropTypes.arrayOf(PropTypes.string),
   }),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+  onChange: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  rpcName: PropTypes.string.isRequired,
 }
 DataEntry.defaulProps = {
   htmlElement: {
