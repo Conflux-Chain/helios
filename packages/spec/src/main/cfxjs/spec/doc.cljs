@@ -67,7 +67,7 @@
 
 (defn -schema-get-doc
   ([schema] (-schema-get-doc schema nil))
-  ([schema {:doc/keys [append prepend optional-key pdoc html-type]}]
+  ([schema {:doc/keys [append prepend optional-key pdoc html-type gen-no-schema]}]
    (let [d (or (-> schema
                    m/properties
                    :doc)
@@ -81,7 +81,8 @@
                (str (m/type schema) " " "no doc found"))
          d (if append (str d append) d)
          d (if prepend (str d prepend) d)
-         rst {:doc d :schema schema}
+         rst {:doc d}
+         rst (if gen-no-schema rst (assoc rst :schema schema))
          rst (if optional-key (assoc rst :optional true) rst)
          rst (if html-type (assoc rst :html-type html-type) rst)
          type (or (-schema-type schema) :unknown)
@@ -117,8 +118,11 @@
   (-schema-doc-generator (first (m/children schema)) options))
 
 (defn gen [schema options]
-  (clj->js (-schema-doc-generator (js->clj schema :keywordize-keys true)
-                                  (js->clj options :keywordize-keys true))))
+  (let [schema (js->clj schema :keywordize-keys true)
+        options (js->clj options :keywordize-keys true)
+        options (assoc options :doc/gen-no-schema (get options :noSchema))
+        options (dissoc options :noSchema)]
+    (clj->js (-schema-doc-generator schema options))))
 
 (def export-explain explain)
 (def export-validate validate)

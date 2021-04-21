@@ -8372,6 +8372,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chokidar@npm:3.5.1, chokidar@npm:^3.4.1, chokidar@npm:^3.4.2, chokidar@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "chokidar@npm:3.5.1"
+  dependencies:
+    anymatch: ~3.1.1
+    braces: ~3.0.2
+    fsevents: ~2.3.1
+    glob-parent: ~5.1.0
+    is-binary-path: ~2.1.0
+    is-glob: ~4.0.1
+    normalize-path: ~3.0.0
+    readdirp: ~3.5.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  checksum: 61b3f710f9e7dc69d76f638d8b0d37bad586497444165125ca8062f7192695f35403b5f622cbd7dfdd06805201ceaba40ff90e53ea2974df9a8087861192a99b
+  languageName: node
+  linkType: hard
+
 "chokidar@npm:^2.1.8":
   version: 2.1.8
   resolution: "chokidar@npm:2.1.8"
@@ -8392,25 +8411,6 @@ __metadata:
     fsevents:
       optional: true
   checksum: 0758dcc7c6c7ace5924cf3c68088210932d391ab41026376b0adb8e07013ac87232e029f13468dfc9ca4dd59adae62a2b7eaedebb6c4e4f0ba92cbf3ac9e3721
-  languageName: node
-  linkType: hard
-
-"chokidar@npm:^3.4.1, chokidar@npm:^3.4.2, chokidar@npm:^3.5.1":
-  version: 3.5.1
-  resolution: "chokidar@npm:3.5.1"
-  dependencies:
-    anymatch: ~3.1.1
-    braces: ~3.0.2
-    fsevents: ~2.3.1
-    glob-parent: ~5.1.0
-    is-binary-path: ~2.1.0
-    is-glob: ~4.0.1
-    normalize-path: ~3.0.0
-    readdirp: ~3.5.0
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  checksum: 61b3f710f9e7dc69d76f638d8b0d37bad586497444165125ca8062f7192695f35403b5f622cbd7dfdd06805201ceaba40ff90e53ea2974df9a8087861192a99b
   languageName: node
   linkType: hard
 
@@ -12114,14 +12114,6 @@ fsevents@~2.3.1:
   checksum: d523437689c97b3aba9c5cdeca4677d5fff9a29d620db693fea40d852bad63563110f16979d0170248439dbcd2ecee0780fb2533d3f0519f019081aa10767c60
   languageName: node
   linkType: hard
-
-"get-all-rpcs@workspace:packages/get-all-rpcs":
-  version: 0.0.0-use.local
-  resolution: "get-all-rpcs@workspace:packages/get-all-rpcs"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
 
 "get-caller-file@npm:^2.0.1, get-caller-file@npm:^2.0.5":
   version: 2.0.5
@@ -23958,6 +23950,15 @@ resolve@^2.0.0-next.3:
   checksum: f1ff1b619f37d304b4d0011ee2d2648b5ee93a984ed8ef869c7d42386d36fd042c63ae797a720dd4a32d9d0a7686e84ebbee2dbb26e0b00cf0cfbd65bc4f19eb
   languageName: node
   linkType: hard
+
+"workspace-tools@workspace:packages/workspace-tools":
+  version: 0.0.0-use.local
+  resolution: "workspace-tools@workspace:packages/workspace-tools"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+    chokidar: 3.5.1
+  languageName: unknown
+  linkType: soft
 
 "wrap-ansi@npm:^5.1.0":
   version: 5.1.0

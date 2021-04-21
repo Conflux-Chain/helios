@@ -19,7 +19,7 @@ getWorkspacePackages({
     'helios-background',
     'helios-inpage',
     'helios-popup',
-    'get-all-rpcs',
+    'workspace-tools',
   ],
 }).forEach(({location, name}) => {
   const packageAbsPath = path.resolve(__dirname, '../', location)
