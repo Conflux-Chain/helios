@@ -1,1 +1,1 @@
-# @cfxjs/rpc-parameter
+# @cfxjs/doc-rpc-parameter

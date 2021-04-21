@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/rpc-parameter",
+  "name": "@cfxjs/doc-rpc-parameter",
   "version": "0.0.0",
   "type": "module",
   "main": "index.js",

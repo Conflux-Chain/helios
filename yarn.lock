@@ -2363,6 +2363,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/doc-rpc-parameter@workspace:packages/doc-ui/rpc-parameter":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/doc-rpc-parameter@workspace:packages/doc-ui/rpc-parameter"
+  dependencies:
+    "@cfxjs/doc-use-rpc": "workspace:packages/doc-ui/useRPC"
+    "@cfxjs/doc-use-spec": "workspace:packages/doc-ui/useSpec"
+    prop-types: ^15.7.2
+    zustand: 3.4.1
+  peerDependencies:
+    react: ^17.0.0
+    react-dom: ^17.0.0
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/doc-use-rpc@workspace:packages/doc-ui/useRPC":
   version: 0.0.0-use.local
   resolution: "@cfxjs/doc-use-rpc@workspace:packages/doc-ui/useRPC"
@@ -2382,6 +2396,12 @@ __metadata:
   peerDependencies:
     react: ^17.0.0
     react-dom: ^17.0.0
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/docusaurus-plugin-webpack@workspace:packages/docusaurus-plugin-webpack":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/docusaurus-plugin-webpack@workspace:packages/docusaurus-plugin-webpack"
   languageName: unknown
   linkType: soft
 
@@ -2465,20 +2485,6 @@ __metadata:
     "@thi.ng/csp": ^1.1.61
     ramda: ^0.27.1
     utils: "workspace:packages/inner-utils"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/rpc-parameter@workspace:packages/doc-ui/rpc-parameter":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/rpc-parameter@workspace:packages/doc-ui/rpc-parameter"
-  dependencies:
-    "@cfxjs/doc-use-rpc": "workspace:packages/doc-ui/useRPC"
-    "@cfxjs/doc-use-spec": "workspace:packages/doc-ui/useSpec"
-    prop-types: ^15.7.2
-    zustand: 3.4.1
-  peerDependencies:
-    react: ^17.0.0
-    react-dom: ^17.0.0
   languageName: unknown
   linkType: soft
 
@@ -7244,15 +7250,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-dynamic-import-node@npm:^2.3.3":
-  version: 2.3.3
-  resolution: "babel-plugin-dynamic-import-node@npm:2.3.3"
-  dependencies:
-    object.assign: ^4.1.0
-  checksum: 6745b8edca96f6c8bc34ab65935b5676358d2e55323e8e823b8de7aa353e3e6398a495ce434c9c36ad5fb1609467a1b1a0028946e1490bf7de8f97df3ae7f3b1
-  languageName: node
-  linkType: hard
-
 "babel-plugin-emotion@npm:^10.0.27":
   version: 10.2.2
   resolution: "babel-plugin-emotion@npm:10.2.2"
@@ -10061,12 +10058,29 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "doc@workspace:websites/doc"
   dependencies:
+    "@cfxjs/doc-rpc-parameter": "workspace:packages/doc-ui/rpc-parameter"
+    "@cfxjs/docusaurus-plugin-webpack": "workspace:packages/docusaurus-plugin-webpack"
+    "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault"
+    "@cfxjs/wallet_createAccount": "workspace:packages/rpcs/wallet_createAccount"
+    "@cfxjs/wallet_generateAddress": "workspace:packages/rpcs/wallet_generateAddress"
+    "@cfxjs/wallet_generateMnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
+    "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey"
+    "@cfxjs/wallet_getVaults": "workspace:packages/rpcs/wallet_getVaults"
+    "@cfxjs/wallet_importAddress": "workspace:packages/rpcs/wallet_importAddress"
+    "@cfxjs/wallet_importMnemonic": "workspace:packages/rpcs/wallet_importMnemonic"
+    "@cfxjs/wallet_importPrivateKey": "workspace:packages/rpcs/wallet_importPrivateKey"
+    "@cfxjs/wallet_isLocked": "workspace:packages/rpcs/wallet_isLocked"
+    "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock"
+    "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
+    "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword"
     "@docusaurus/core": 2.0.0-alpha.73
     "@docusaurus/preset-classic": 2.0.0-alpha.73
     "@mdx-js/react": ^1.6.21
     clsx: ^1.1.1
+    mustache: 4.2.0
     react: ^17.0.1
     react-dom: ^17.0.1
+    workspace-tools: "workspace:packages/workspace-tools"
   languageName: unknown
   linkType: soft
 
@@ -16543,7 +16557,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"mustache@npm:^4.2.0":
+"mustache@npm:4.2.0, mustache@npm:^4.2.0":
   version: 4.2.0
   resolution: "mustache@npm:4.2.0"
   bin:

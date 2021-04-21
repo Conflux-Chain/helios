@@ -99,4 +99,5 @@ module.exports = {
       },
     ],
   ],
+  // plugins: ['@cfxjs/docusaurus-plugin-webpack'],
 }

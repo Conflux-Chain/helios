@@ -229,20 +229,21 @@ Type.propTypes = {
   type: PropTypes.string.isRequired,
 }
 DataEntry.propTypes = {
-  htmlElement: PropTypes.objectOf({
-    el: PropTypes.string,
-    type: PropTypes.string,
-    values: PropTypes.arrayOf(PropTypes.string),
-  }),
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
   onChange: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
   rpcName: PropTypes.string.isRequired,
+  htmlElement: PropTypes.shape({
+    el: PropTypes.string,
+    type: PropTypes.string,
+    values: PropTypes.array,
+  }),
 }
 DataEntry.defaulProps = {
   htmlElement: {
     el: 'input',
     type: 'text',
+    values: undefined,
   },
 }
 Parameters.propTypes = {

@@ -19,9 +19,11 @@ const createRPC = rpcName =>
 
       window &&
         import(
-          /* webpackInclude: /@cfxjs\/(wallet|cfx)_.*\.js$/ */
-          /* webpackExclude: /test\.js$/ */
-          `@cfxjs/${get().rpcName}`
+          /* webpackPreload: true */
+          /* webpackMode: "lazy-once" */
+          /* webpackInclude: /(cfx|wallet)_\w+\/index\.js$/ */
+          /* webpackExclude: /(\test\.js|\.md)$/ */
+          '@cfxjs/' + get().rpcName
         )
           .then(rpc => set({...rpc, loadingRPC: false}))
           .catch(err => {

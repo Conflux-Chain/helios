@@ -3,17 +3,31 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
+    "docusaurus": "node docusaurus.js",
+    "start": "yarn docusaurus start",
+    "build": "yarn docusaurus build",
+    "swizzle": "yarn docusaurus swizzle",
+    "deploy": "yarn docusaurus deploy",
+    "clear": "yarn docusaurus clear",
+    "serve": "yarn docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids"
   },
   "dependencies": {
+    "@cfxjs/doc-rpc-parameter": "workspace:packages/doc-ui/rpc-parameter",
+    "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault",
+    "@cfxjs/wallet_createAccount": "workspace:packages/rpcs/wallet_createAccount",
+    "@cfxjs/wallet_generateAddress": "workspace:packages/rpcs/wallet_generateAddress",
+    "@cfxjs/wallet_generateMnemonic": "workspace:packages/rpcs/wallet_generateMnemonic",
+    "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey",
+    "@cfxjs/wallet_getVaults": "workspace:packages/rpcs/wallet_getVaults",
+    "@cfxjs/wallet_importAddress": "workspace:packages/rpcs/wallet_importAddress",
+    "@cfxjs/wallet_importMnemonic": "workspace:packages/rpcs/wallet_importMnemonic",
+    "@cfxjs/wallet_importPrivateKey": "workspace:packages/rpcs/wallet_importPrivateKey",
+    "@cfxjs/wallet_isLocked": "workspace:packages/rpcs/wallet_isLocked",
+    "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock",
+    "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock",
+    "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword",
     "@docusaurus/core": "2.0.0-alpha.73",
     "@docusaurus/preset-classic": "2.0.0-alpha.73",
     "@mdx-js/react": "^1.6.21",
@@ -23,14 +37,19 @@
   },
   "browserslist": {
     "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
     ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@cfxjs/docusaurus-plugin-webpack": "workspace:packages/docusaurus-plugin-webpack",
+    "mustache": "4.2.0",
+    "workspace-tools": "workspace:packages/workspace-tools"
   }
 }

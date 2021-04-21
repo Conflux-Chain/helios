@@ -13,7 +13,7 @@ export default function watchRpcs(fn /* opts = {} */) {
     ignored: /(^|[/\\])\../, // ignore dotfiles
   })
 
-  const close = watcher.close()
+  const close = watcher.close.bind(watcher)
   process.on('exit', close)
   process.on('SIGINT', close)
   process.on('SIGTERM', close)
