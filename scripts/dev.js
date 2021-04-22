@@ -39,11 +39,11 @@ process.on('SIGUSR2', cleanup)
 process.on('uncaughtException', (...args) => console.error(...args))
 ;(async () => {
   if (shouldCleanCache) await clearCache()
-  /* servers =  */ await Promise.all([
+  /* servers =  */ await Promise.all(
     builds.map(b => {
       return loadConfiguration(undefined, b).then(config =>
         startServer({config}),
       )
     }),
-  ])
+  )
 })()

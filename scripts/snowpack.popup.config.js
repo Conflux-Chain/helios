@@ -18,6 +18,7 @@ mustacheRender(
 const root = path.resolve(__dirname, '../packages/popup')
 
 module.exports = mergeConfig(baseConfig, {
+  cacheDir: 'sp-popup',
   root,
   mount: {
     [path.resolve(root, './public')]: {url: '/', static: true},

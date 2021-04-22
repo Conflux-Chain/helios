@@ -27,10 +27,11 @@ process.on('SIGUSR1', cleanup)
 process.on('SIGUSR2', cleanup)
 process.on('uncaughtException', (...args) => console.error(...args))
 ;(async () => {
-  await Promise.all([
+  await Promise.all(
     builds.map(b =>
       loadConfiguration(undefined, b).then(config => build({config})),
     ),
-  ])
+  )
   require('./after_prod')
+  process.exit(0)
 })()

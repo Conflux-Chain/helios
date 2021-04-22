@@ -5,6 +5,7 @@ const path = require('path')
 const root = path.resolve(__dirname, '../packages/background')
 
 module.exports = mergeConfig(baseConfig, {
+  cacheDir: 'sp-bg',
   root,
   mount: {
     [path.resolve(root, './public')]: {url: '/', static: true},

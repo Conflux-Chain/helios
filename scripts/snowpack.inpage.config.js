@@ -4,6 +4,7 @@ const path = require('path')
 
 const root = path.resolve(__dirname, '../packages/inpage')
 module.exports = mergeConfig(baseConfig, {
+  cacheDir: 'sp-inpage',
   root,
   mount: {
     [path.resolve(root, './public')]: {url: '/', static: true},

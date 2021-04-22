@@ -1,6 +1,6 @@
 {
   "env": {
-    "loose": true
+    "loose": false
   },
   "jsc": {
     "parser": {
@@ -20,6 +20,6 @@
       "optimizer": {}
     },
     "loose": false,
-    "externalHelpers": true
+    "externalHelpers": false
   }
 }

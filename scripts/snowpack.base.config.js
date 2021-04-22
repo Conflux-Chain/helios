@@ -20,6 +20,8 @@ getWorkspacePackages({
     'helios-inpage',
     'helios-popup',
     'workspace-tools',
+    'doc',
+    '@cfxjs/storybook',
   ],
 }).forEach(({location, name}) => {
   const packageAbsPath = path.resolve(__dirname, '../', location)
@@ -28,7 +30,11 @@ getWorkspacePackages({
 })
 
 module.exports = {
-  plugins: ['@snowpack/plugin-dotenv'],
+  workspaceRoot: path.resolve(__dirname, '../'),
+  plugins: [
+    '@snowpack/plugin-dotenv',
+    path.resolve(__dirname, './snowpack.swc.plugin.js'),
+  ],
   mount,
   alias,
   devOptions: {
