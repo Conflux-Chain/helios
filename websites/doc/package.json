@@ -48,7 +48,7 @@
     ]
   },
   "devDependencies": {
-    "@cfxjs/docusaurus-plugin-webpack": "workspace:packages/docusaurus-plugin-webpack",
+    "@cfxjs/docusaurus-plugin": "workspace:packages/docusaurus-plugin",
     "mustache": "4.2.0",
     "workspace-tools": "workspace:packages/workspace-tools"
   }

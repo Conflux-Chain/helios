@@ -3,8 +3,10 @@ module.exports = {
     content: [
       './packages/popup/**/*.html',
       './packages/popup/**/*.js',
-      './packages/ui-components/**/*.html',
-      './packages/ui-components/**/*.js',
+      './packages/doc-ui/**/*.html',
+      './packages/doc-ui/**/*.js',
+      './packages/ui/**/*.html',
+      './packages/ui/**/*.js',
     ],
     options: {
       keyframes: true,

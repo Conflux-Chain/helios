@@ -2399,9 +2399,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/docusaurus-plugin-webpack@workspace:packages/docusaurus-plugin-webpack":
+"@cfxjs/docusaurus-plugin@workspace:packages/docusaurus-plugin":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/docusaurus-plugin-webpack@workspace:packages/docusaurus-plugin-webpack"
+  resolution: "@cfxjs/docusaurus-plugin@workspace:packages/docusaurus-plugin"
   languageName: unknown
   linkType: soft
 
@@ -10197,7 +10197,7 @@ __metadata:
   resolution: "doc@workspace:websites/doc"
   dependencies:
     "@cfxjs/doc-rpc-parameter": "workspace:packages/doc-ui/rpc-parameter"
-    "@cfxjs/docusaurus-plugin-webpack": "workspace:packages/docusaurus-plugin-webpack"
+    "@cfxjs/docusaurus-plugin": "workspace:packages/docusaurus-plugin"
     "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault"
     "@cfxjs/wallet_createAccount": "workspace:packages/rpcs/wallet_createAccount"
     "@cfxjs/wallet_generateAddress": "workspace:packages/rpcs/wallet_generateAddress"
