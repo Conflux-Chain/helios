@@ -2,18 +2,23 @@
  * @fileOverview snowpack dev
  * @name snowpackjs.js
  */
-require('./before_all')
-require('./setup-dotenv')
+require('./before_all.js')
+require('./setup-dotenv.js')
+const {resolve} = require('path')
 
-const {setEnvBasedOnArgv} = require('./snowpack.utils')
+const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
 setEnvBasedOnArgv()
 
-const {loadConfiguration, startServer, clearCache} = require('snowpack')
+const {
+  loadConfiguration,
+  startServer,
+  clearCache,
+} = require('@yqrashawn/snowpack')
 
 const builds = [
-  'scripts/snowpack.background.config.js',
-  'scripts/snowpack.popup.config.js',
-  'scripts/snowpack.inpage.config.js',
+  resolve(__dirname, '../packages/background/snowpack.config.cjs'),
+  resolve(__dirname, '../packages/popup/snowpack.config.cjs'),
+  resolve(__dirname, '../packages/inpage/snowpack.config.cjs'),
 ]
 // let servers = []
 

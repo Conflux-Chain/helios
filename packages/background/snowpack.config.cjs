@@ -1,11 +1,11 @@
-const baseConfig = require('./snowpack.base.config')
-const {mergeConfig} = require('./snowpack.utils')
+const baseConfig = require('../../scripts//snowpack.base.config.js')
+const {mergeConfig} = require('../../scripts/snowpack.utils.js')
 const path = require('path')
 
-const root = path.resolve(__dirname, '../packages/background')
+const root = __dirname
 
 module.exports = mergeConfig(baseConfig, {
-  cacheDir: 'sp-bg',
+  cacheDir: 'snowpack-background',
   root,
   mount: {
     [path.resolve(root, './public')]: {url: '/', static: true},
@@ -18,10 +18,7 @@ module.exports = mergeConfig(baseConfig, {
     hmrErrorOverlay: false,
   },
   buildOptions: {
-    out: path.resolve(
-      __dirname,
-      '../packages/browser-extension/build/background',
-    ),
+    out: path.resolve(__dirname, '../browser-extension/build/background'),
   },
   optimize: {
     entrypoints: ['dist/index.js', 'dist/index.prod.js'],

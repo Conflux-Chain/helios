@@ -6364,6 +6364,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yqrashawn/snowpack@npm:3.3.4-patch1":
+  version: 3.3.4-patch1
+  resolution: "@yqrashawn/snowpack@npm:3.3.4-patch1"
+  dependencies:
+    cli-spinners: ^2.5.0
+    default-browser-id: ^2.0.0
+    esbuild: ^0.9.3
+    fdir: ^5.0.0
+    fsevents: ^2.2.0
+    open: ^7.0.4
+    pacote: ^11.3.1
+    picomatch: ^2.2.2
+    resolve: ^1.20.0
+    rollup: ~2.37.1
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    snowpack: index.bin.js
+    sp: index.bin.js
+  checksum: 9b751cfa1979c3e66792ef41c1f0d22ccacf8d67ed3711a36ba0d16fc691db238cdd586238ebdf9541c41960a49e6bfe3b82d3daf79a331f3f9b108cdc557942
+  languageName: node
+  linkType: hard
+
 "abab@npm:^2.0.3, abab@npm:^2.0.5":
   version: 2.0.5
   resolution: "abab@npm:2.0.5"
@@ -12842,6 +12866,7 @@ fsevents@~2.3.1:
     "@swc/helpers": ^0.2.5
     "@swc/jest": ^0.1.2
     "@tailwindcss/jit": ^0.1.18
+    "@yqrashawn/snowpack": 3.3.4-patch1
     autoprefixer: ^10.2.5
     browserslist: ^4.16.3
     concurrently: ^6.0.1
@@ -12874,7 +12899,6 @@ fsevents@~2.3.1:
     regenerator-runtime: ^0.13.8
     rimraf: ^3.0.2
     shadow-cljs: ^2.12.4
-    snowpack: 3.3.5
     stylelint: ^13.12.0
     stylelint-config-prettier: ^8.0.2
     stylelint-config-standard: ^21.0.0
@@ -21161,30 +21185,6 @@ resolve@^2.0.0-next.3:
     source-map-resolve: ^0.5.0
     use: ^3.1.0
   checksum: c30b63a732bf37dbd2147bf57b4d9eac651ab7b313d1521f73855154b2c2f5a3f2ad18bd47e21cc64b6991f868ecb2a99f8da973ca86da39956f1f0f720b7033
-  languageName: node
-  linkType: hard
-
-"snowpack@npm:3.3.5":
-  version: 3.3.5
-  resolution: "snowpack@npm:3.3.5"
-  dependencies:
-    cli-spinners: ^2.5.0
-    default-browser-id: ^2.0.0
-    esbuild: ^0.9.3
-    fdir: ^5.0.0
-    fsevents: ^2.2.0
-    open: ^7.0.4
-    pacote: ^11.3.1
-    picomatch: ^2.2.2
-    resolve: ^1.20.0
-    rollup: ~2.37.1
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    snowpack: index.bin.js
-    sp: index.bin.js
-  checksum: b9a9b107110cf782d79e7562e37a32290d16330ea474028d376909580d172429d10ac0721b9039b89b01a93b3eb030d0dc8d75684f154d173ead595857a6a355
   languageName: node
   linkType: hard
 

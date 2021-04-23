@@ -31,17 +31,20 @@ getWorkspacePackages({
 
 module.exports = {
   workspaceRoot: path.resolve(__dirname, '../'),
+  exclude: ['**/node_modules/**', '**/*.cjs'],
+  mount,
+  alias,
   plugins: [
     '@snowpack/plugin-dotenv',
     path.resolve(__dirname, './snowpack.swc.plugin.js'),
   ],
-  mount,
-  alias,
   devOptions: {
+    secure: false,
+    hostname: 'localhost',
+    open: 'none',
+    output: 'stream',
     hmr: true,
     hmrDelay: 100,
-    output: 'stream',
-    open: 'none',
   },
   packageOptions: {
     source: 'local',
@@ -55,11 +58,12 @@ module.exports = {
     baseUrl: 'dist',
     metaUrlPath: 'sp_',
   },
-  optimize: {
-    splitting: true,
-    minify: true,
-    bundle: true,
-    treeshake: true,
-    sourcemap: 'inline',
-  },
+  // optimize: {
+  //   splitting: true,
+  //   minify: true,
+  //   bundle: true,
+  //   treeshake: true,
+  //   sourcemap: 'inline',
+  // },
+  optimize: false,
 }
