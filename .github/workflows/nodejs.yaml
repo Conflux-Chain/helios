@@ -120,6 +120,34 @@ jobs:
       - run: yarn install --immutable
       - run: yarn workspace doc build
 
+      - name: Prepare tag
+        id: prepare_tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG_NAME="${GITHUB_REF##refs/tags/}"
+          echo "::set-output name=tag_name::${TAG_NAME}"
+          echo "::set-output name=deploy_tag_name::deploy-${TAG_NAME}"
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+          external_repository: Conflux-Chain/fluent-wallet-doc
+          publish_branch: main
+          publish_dir: ./websites/doc/build
+          tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
+          tag_message: 'Deployment ${{ steps.prepare_tag.outputs.tag_name }}'
+
+      - name: Deploy test
+        if: ${{ !startsWith(github.ref , 'refs/tags/') }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+          external_repository: Conflux-Chain/fluent-wallet-doc
+          publish_branch: main
+          publish_dir: ./websites/doc/build
+
   build-storybook:
     runs-on: ubuntu-20.04
     strategy:
@@ -146,3 +174,31 @@ jobs:
             ${{ runner.os }}-yarn-and-maven-
       - run: yarn install --immutable
       - run: yarn build-storybook
+
+      - name: Prepare tag
+        id: prepare_tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG_NAME="${GITHUB_REF##refs/tags/}"
+          echo "::set-output name=tag_name::${TAG_NAME}"
+          echo "::set-output name=deploy_tag_name::deploy-${TAG_NAME}"
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+          external_repository: Conflux-Chain/fluent-wallet-storybook
+          publish_branch: main
+          publish_dir: ./storybook-static
+          tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
+          tag_message: 'Deployment ${{ steps.prepare_tag.outputs.tag_name }}'
+
+      - name: Deploy test
+        if: ${{ !startsWith(github.ref , 'refs/tags/') }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+          external_repository: Conflux-Chain/fluent-wallet-storybook
+          publish_branch: main
+          publish_dir: ./storybook-static

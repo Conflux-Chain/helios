@@ -3,7 +3,7 @@ module.exports = {
   title: 'My Site',
   tagline: 'Dinosaurs are cool',
   url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
+  baseUrl: '/fluent-wallet-doc/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
@@ -17,14 +17,19 @@ module.exports = {
         src: 'img/logo.svg',
       },
       items: [
+        // {
+        //   to: 'docs/intro',
+        //   position: 'left',
+        //   label: 'Intro',
+        // },
         {
           to: 'docs/rpc',
           position: 'left',
           label: 'Docs',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        // {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/Conflux-Chain/helios',
           label: 'GitHub',
           position: 'right',
         },
@@ -40,40 +45,52 @@ module.exports = {
               label: 'Tutorial',
               to: '/docs/intro',
             },
+            {
+              label: 'RPC',
+              to: '/docs/rpc',
+            },
           ],
         },
         {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
+              label: 'Bounty',
+              href: 'https://bounty.conflux-chain.org',
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/Conflux-Chain',
+            },
+            // {
+            //   label: 'Stack Overflow',
+            //   href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+            // },
+            {
+              label: 'Discord',
+              href: 'https://discord.gg/DR8MeQTjrx',
+            },
+            {
+              label: 'Twitter',
+              href: 'https://twitter.com/Conflux_Network',
             },
           ],
         },
+        // {
+        //   title: 'More',
+        //   items: [
+        //     {
+        //       label: 'Blog',
+        //       to: '/blog',
+        //     },
+        //     {
+        //       label: 'GitHub',
+        //       href: 'https://github.com/facebook/docusaurus',
+        //     },
+        //   ],
+        // },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `© ${new Date().getFullYear()} Conflux. All Rights Reserved.`,
     },
   },
   presets: [

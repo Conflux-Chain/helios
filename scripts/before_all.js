@@ -1,5 +1,8 @@
 const {isDev, mustacheRender} = require('./snowpack.utils')
 const path = require('path')
+const {ensureDirSync} = require('fs-extra')
+
+ensureDirSync(path.resolve(__dirname, '../packages/browser-extension/build'))
 
 mustacheRender(
   path.resolve(

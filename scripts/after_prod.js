@@ -55,8 +55,5 @@ module.exports = async function () {
       path.resolve(__dirname, '../packages/browser-extension/_locales'),
       path.resolve(__dirname, '../packages/browser-extension/build/_locales'),
     ),
-  ]).catch(err => {
-    console.log('failed to remove dev file in prod build')
-    throw err
-  })
+  ]).catch(err => {}) // eslint-disable-line no-unused-vars
 }
