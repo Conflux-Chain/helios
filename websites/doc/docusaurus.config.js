@@ -116,5 +116,5 @@ module.exports = {
       },
     ],
   ],
-  // plugins: ['@cfxjs/docusaurus-plugin-webpack'],
+  plugins: ['@cfxjs/docusaurus-plugin'],
 }

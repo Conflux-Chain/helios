@@ -7,6 +7,8 @@ module.exports = {
       './packages/doc-ui/**/*.js',
       './packages/ui/**/*.html',
       './packages/ui/**/*.js',
+      './websites/doc/**/*.html',
+      './websites/doc/**/*.js',
     ],
     options: {
       keyframes: true,

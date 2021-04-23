@@ -22,15 +22,15 @@ const builds = [
 ]
 // let servers = []
 
+const shouldCleanCache =
+  process.argv.includes['-r'] || process.argv.includes['--reload']
+
 async function cleanup(exitCode) {
   console.log('Clanup before exit...')
   // await Promise.all(servers.map(s => s && s.shutdown && s.shutdown()))
   // if (exitCode || exitCode === 0) console.log(exitCode)
   process.exit(exitCode)
 }
-
-const shouldCleanCache =
-  process.argv.includes['-r'] || process.argv.includes['--reload']
 
 process.on('exit', cleanup)
 process.on('SIGINT', cleanup)
