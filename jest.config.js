@@ -90,6 +90,8 @@ module.exports = {
     '/testlib/',
     '/packages/storybook',
     '/packages/workspace-tools',
+    '/packages/docusaurus-plugin',
+    '/packages/doc-ui',
   ],
 
   // The directory where Jest should output its coverage files
