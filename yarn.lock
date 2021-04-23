@@ -3645,13 +3645,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/ci-detect@npm:^1.0.0":
-  version: 1.3.0
-  resolution: "@npmcli/ci-detect@npm:1.3.0"
-  checksum: e7517cc2c9388dc50ebff2a18e9f94f315d638ac5ab3da6a94125d4c507a8412da16d6164d71bf0712c82b1c92e1dac9a4a48add5ee72d0601f1f17881bfb4f2
-  languageName: node
-  linkType: hard
-
 "@npmcli/git@npm:^2.0.1":
   version: 2.0.8
   resolution: "@npmcli/git@npm:2.0.8"
@@ -3707,15 +3700,15 @@ __metadata:
   linkType: hard
 
 "@npmcli/run-script@npm:^1.8.2":
-  version: 1.8.4
-  resolution: "@npmcli/run-script@npm:1.8.4"
+  version: 1.8.5
+  resolution: "@npmcli/run-script@npm:1.8.5"
   dependencies:
     "@npmcli/node-gyp": ^1.0.2
     "@npmcli/promise-spawn": ^1.3.2
     infer-owner: ^1.0.4
     node-gyp: ^7.1.0
     read-package-json-fast: ^2.0.1
-  checksum: e4f8a5198ddaa9611f7e3b868baa4d446e20f970859fa55711f80b497793be41cbed5a403afc36fd97b3d21f44ee62c0d9bffc9af0eab53b72ea3018b3e1a0f9
+  checksum: cd66f3aa45c2c88c47b60c697cf1ac5d2959559452d6a639ceda42a225b2e698acebc6e1c0c97e956bcab492caa3772c86959ebd54b134d5dc84afd5e49d66e2
   languageName: node
   linkType: hard
 
@@ -6368,30 +6361,6 @@ __metadata:
   version: 4.2.2
   resolution: "@xtuc/long@npm:4.2.2"
   checksum: ec09a359f98e9f8c47bf6c965e73b520a1a65e93f1febf6472babc8b6b0b425a2084452be103da5be11aec8c502ecfa29400713d55ef774579d04f691db44a2d
-  languageName: node
-  linkType: hard
-
-"@yqrashawn/snowpack@npm:3.2.2-patch1":
-  version: 3.2.2-patch1
-  resolution: "@yqrashawn/snowpack@npm:3.2.2-patch1"
-  dependencies:
-    cli-spinners: ^2.5.0
-    default-browser-id: ^2.0.0
-    esbuild: ^0.9.3
-    fdir: ^5.0.0
-    fsevents: ^2.2.0
-    open: ^7.0.4
-    pacote: ^11.3.1
-    picomatch: ^2.2.2
-    resolve: ^1.20.0
-    rollup: ~2.37.1
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    snowpack: index.bin.js
-    sp: index.bin.js
-  checksum: ef90bda1d13ee7676ef012892be7b482fd3e25b2f4d9f89ffe2ee51546041284d71b3b1337e6f4b6ced0f00438fd63cd0e4efa2236ae65a294a2cda8166a959f
   languageName: node
   linkType: hard
 
@@ -12873,7 +12842,6 @@ fsevents@~2.3.1:
     "@swc/helpers": ^0.2.5
     "@swc/jest": ^0.1.2
     "@tailwindcss/jit": ^0.1.18
-    "@yqrashawn/snowpack": 3.2.2-patch1
     autoprefixer: ^10.2.5
     browserslist: ^4.16.3
     concurrently: ^6.0.1
@@ -12906,6 +12874,7 @@ fsevents@~2.3.1:
     regenerator-runtime: ^0.13.8
     rimraf: ^3.0.2
     shadow-cljs: ^2.12.4
+    snowpack: 3.3.5
     stylelint: ^13.12.0
     stylelint-config-prettier: ^8.0.2
     stylelint-config-standard: ^21.0.0
@@ -16919,11 +16888,11 @@ fsevents@~2.3.1:
   linkType: hard
 
 "npm-bundled@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "npm-bundled@npm:1.1.1"
+  version: 1.1.2
+  resolution: "npm-bundled@npm:1.1.2"
   dependencies:
     npm-normalize-package-bin: ^1.0.1
-  checksum: f51ddba86970fc568a40449f51348de535ac71d93a2ce31195e978d0189899a0da696b3e51a5eb6e77a88890482ac873767c58c81763dda3dab410c9c1e99ca5
+  checksum: 3fbbc69d1c831e00a0e2a68e565dd8bf6c7557fc75be35d09d64ecaf7310b75e58e3d3a076525232f6af17b70c0bdb53d47e58eef5461bc151c748f60c6d34ed
   languageName: node
   linkType: hard
 
@@ -16980,11 +16949,10 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"npm-registry-fetch@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "npm-registry-fetch@npm:9.0.0"
+"npm-registry-fetch@npm:^10.0.0":
+  version: 10.1.0
+  resolution: "npm-registry-fetch@npm:10.1.0"
   dependencies:
-    "@npmcli/ci-detect": ^1.0.0
     lru-cache: ^6.0.0
     make-fetch-happen: ^8.0.9
     minipass: ^3.1.3
@@ -16992,7 +16960,7 @@ fsevents@~2.3.1:
     minipass-json-stream: ^1.0.1
     minizlib: ^2.0.0
     npm-package-arg: ^8.0.0
-  checksum: 91017b73d3c95e20d71f21791fed83e035f20bcddd42d20365f06c6091650616485d2c0f9cbd068467bccd1e9719995256fd0ad9e11d1af0915aab1fa3b04462
+  checksum: a6f3152b1ec3d950cce2985ff2b2280484f62df6dc14cadf55e2af08c241f631acdcfff27dead318685d8bf491b95da20d839b940a9cbfb7b44d0d0d83a9abcb
   languageName: node
   linkType: hard
 
@@ -17575,8 +17543,8 @@ fsevents@~2.3.1:
   linkType: hard
 
 "pacote@npm:^11.3.1":
-  version: 11.3.1
-  resolution: "pacote@npm:11.3.1"
+  version: 11.3.2
+  resolution: "pacote@npm:11.3.2"
   dependencies:
     "@npmcli/git": ^2.0.1
     "@npmcli/installed-package-contents": ^1.0.6
@@ -17591,7 +17559,7 @@ fsevents@~2.3.1:
     npm-package-arg: ^8.0.1
     npm-packlist: ^2.1.4
     npm-pick-manifest: ^6.0.0
-    npm-registry-fetch: ^9.0.0
+    npm-registry-fetch: ^10.0.0
     promise-retry: ^2.0.1
     read-package-json-fast: ^2.0.1
     rimraf: ^3.0.2
@@ -17599,7 +17567,7 @@ fsevents@~2.3.1:
     tar: ^6.1.0
   bin:
     pacote: lib/bin.js
-  checksum: b244ec1ad7ec4d09d12db54d33f4481e3fd8c23384028782b3b69364ac6d8bd50324c0e4d405244652b6a897e75d9b15151d31cd00fb7d63bd39ab9069e3e11f
+  checksum: 34b32a91c4d5a960ce1b9632598b40156ec670b7b9f25e8b3f00a28ed36a3a866e973c0eb5de01f05af337c5592ac7a370acb4a639009b80c2338c73f6e893be
   languageName: node
   linkType: hard
 
@@ -21193,6 +21161,30 @@ resolve@^2.0.0-next.3:
     source-map-resolve: ^0.5.0
     use: ^3.1.0
   checksum: c30b63a732bf37dbd2147bf57b4d9eac651ab7b313d1521f73855154b2c2f5a3f2ad18bd47e21cc64b6991f868ecb2a99f8da973ca86da39956f1f0f720b7033
+  languageName: node
+  linkType: hard
+
+"snowpack@npm:3.3.5":
+  version: 3.3.5
+  resolution: "snowpack@npm:3.3.5"
+  dependencies:
+    cli-spinners: ^2.5.0
+    default-browser-id: ^2.0.0
+    esbuild: ^0.9.3
+    fdir: ^5.0.0
+    fsevents: ^2.2.0
+    open: ^7.0.4
+    pacote: ^11.3.1
+    picomatch: ^2.2.2
+    resolve: ^1.20.0
+    rollup: ~2.37.1
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    snowpack: index.bin.js
+    sp: index.bin.js
+  checksum: b9a9b107110cf782d79e7562e37a32290d16330ea474028d376909580d172429d10ac0721b9039b89b01a93b3eb030d0dc8d75684f154d173ead595857a6a355
   languageName: node
   linkType: hard
 
