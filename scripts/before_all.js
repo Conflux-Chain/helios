@@ -1,8 +1,20 @@
 const {isDev, mustacheRender} = require('./snowpack.utils')
+const path = require('path')
+const {ensureDirSync} = require('fs-extra')
+
+ensureDirSync(path.resolve(__dirname, '../packages/browser-extension/build'))
 
 mustacheRender(
-  '../packages/browser-extension/manifest.json.mustache',
-  '../packages/browser-extension/manifest.json',
+  path.resolve(
+    __dirname,
+    '../packages/browser-extension/manifest.json.mustache',
+  ),
+  isDev()
+    ? path.resolve(__dirname, '../packages/browser-extension/manifest.json')
+    : path.resolve(
+        __dirname,
+        '../packages/browser-extension/build/manifest.json',
+      ),
   {
     contentSecurityPolicy: isDev()
       ? `

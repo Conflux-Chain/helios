@@ -4,7 +4,8 @@
  */
 const fs = require('fs')
 const util = require('util')
-const postcss = require('./postcss.config.js')
+const postcss = require('postcss')
+const postcssConfig = require('./postcss.config.js')
 
 module.exports = function () {
   return {
@@ -15,12 +16,15 @@ module.exports = function () {
     },
     async load({filePath}) {
       const origCSS = await util.promisify(fs.readFile)(filePath)
-      const {css} = await postcss.process(origCSS.toString(), {
-        from: filePath,
-        map: {
-          inline: true,
+      const {css} = await postcss(postcssConfig.plugins).process(
+        origCSS.toString(),
+        {
+          from: filePath,
+          map: {
+            inline: true,
+          },
         },
-      })
+      )
       return css
     },
   }

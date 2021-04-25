@@ -19,7 +19,9 @@ getWorkspacePackages({
     'helios-background',
     'helios-inpage',
     'helios-popup',
-    'get-all-rpcs',
+    'workspace-tools',
+    'doc',
+    '@cfxjs/storybook',
   ],
 }).forEach(({location, name}) => {
   const packageAbsPath = path.resolve(__dirname, '../', location)
@@ -28,14 +30,21 @@ getWorkspacePackages({
 })
 
 module.exports = {
-  plugins: ['@snowpack/plugin-dotenv'],
+  workspaceRoot: path.resolve(__dirname, '../'),
+  exclude: ['**/node_modules/**', '**/*.cjs'],
   mount,
   alias,
+  plugins: [
+    '@snowpack/plugin-dotenv',
+    path.resolve(__dirname, './snowpack.swc.plugin.js'),
+  ],
   devOptions: {
+    secure: false,
+    hostname: 'localhost',
+    open: 'none',
+    output: 'stream',
     hmr: true,
     hmrDelay: 100,
-    output: 'stream',
-    open: 'none',
   },
   packageOptions: {
     source: 'local',
@@ -49,11 +58,12 @@ module.exports = {
     baseUrl: 'dist',
     metaUrlPath: 'sp_',
   },
-  optimize: {
-    splitting: true,
-    minify: true,
-    bundle: true,
-    treeshake: true,
-    sourcemap: 'inline',
-  },
+  // optimize: {
+  //   splitting: true,
+  //   minify: true,
+  //   bundle: true,
+  //   treeshake: true,
+  //   sourcemap: 'inline',
+  // },
+  optimize: false,
 }

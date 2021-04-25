@@ -2,10 +2,11 @@
  * @fileOverview snowpack dev
  * @name snowpackjs.js
  */
-require('./before_all')
-require('./setup-dotenv')
+require('./before_all.js')
+require('./setup-dotenv.js')
+const {resolve} = require('path')
 
-const {setEnvBasedOnArgv} = require('./snowpack.utils')
+const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
 setEnvBasedOnArgv()
 
 const {
@@ -15,11 +16,14 @@ const {
 } = require('@yqrashawn/snowpack')
 
 const builds = [
-  'scripts/snowpack.background.config.js',
-  'scripts/snowpack.popup.config.js',
-  'scripts/snowpack.inpage.config.js',
+  resolve(__dirname, '../packages/background/snowpack.config.cjs'),
+  resolve(__dirname, '../packages/popup/snowpack.config.cjs'),
+  resolve(__dirname, '../packages/inpage/snowpack.config.cjs'),
 ]
 // let servers = []
+
+const shouldCleanCache =
+  process.argv.includes['-r'] || process.argv.includes['--reload']
 
 async function cleanup(exitCode) {
   console.log('Clanup before exit...')
@@ -28,25 +32,19 @@ async function cleanup(exitCode) {
   process.exit(exitCode)
 }
 
-const shouldCleanCache =
-  process.argv.includes['-r'] || process.argv.includes['--reload']
-
 process.on('exit', cleanup)
 process.on('SIGINT', cleanup)
 process.on('SIGTERM', cleanup)
 process.on('SIGUSR1', cleanup)
 process.on('SIGUSR2', cleanup)
-process.on(
-  'uncaughtException',
-  (...args) => (console.error(...args), cleanup(...args)),
-)
+process.on('uncaughtException', (...args) => console.error(...args))
 ;(async () => {
   if (shouldCleanCache) await clearCache()
-  /* servers =  */ await Promise.all([
+  /* servers =  */ await Promise.all(
     builds.map(b => {
       return loadConfiguration(undefined, b).then(config =>
         startServer({config}),
       )
     }),
-  ])
+  )
 })()

@@ -238,3 +238,4 @@ $RECYCLE.BIN/
 /packages/spec/**/*.js
 /.shadow-cljs/
 /stories
+/storybook-static

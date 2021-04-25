@@ -1,6 +1,12 @@
 const autoprefixer = require('autoprefixer')
 const twcssJit = require('@tailwindcss/jit')
-const postcss = require('postcss')
-const tailwindConfig = require('./tailwind.popup.config')
+// const postcss = require('postcss')
+const tailwindConfig = require('./tailwind.config.js')
 
-module.exports = postcss([twcssJit(tailwindConfig), autoprefixer()])
+module.exports = {
+  plugins: [twcssJit(tailwindConfig), autoprefixer()],
+  tailwindConfig,
+  autoprefixer,
+  twcssJit,
+}
+//postcss([twcssJit(tailwindConfig), autoprefixer()])

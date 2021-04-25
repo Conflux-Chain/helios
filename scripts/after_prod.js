@@ -1,11 +1,11 @@
-const path = require('path');
-const {promisify} = require('util');
-const rimraf = require('rimraf');
-const rm = promisify(rimraf);
-const fs = require('fs-extra');
-const cp = fs.copy;
+const path = require('path')
+const {promisify} = require('util')
+const rimraf = require('rimraf')
+const rm = promisify(rimraf)
+const fs = require('fs-extra')
+const cp = fs.copy
 
-(async function () {
+module.exports = async function () {
   await Promise.all([
     rm(
       path.resolve(
@@ -55,8 +55,5 @@ const cp = fs.copy;
       path.resolve(__dirname, '../packages/browser-extension/_locales'),
       path.resolve(__dirname, '../packages/browser-extension/build/_locales'),
     ),
-  ]).catch(err => {
-    console.log('failed to remove dev file in prod build');
-    throw err;
-  });
-})();
+  ]).catch(err => {}) // eslint-disable-line no-unused-vars
+}

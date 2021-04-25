@@ -18,11 +18,11 @@
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock",
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock",
     "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword",
-    "@thi.ng/rstream": "^6.0.6",
-    "@thi.ng/rstream-csp": "^2.0.65",
+    "@thi.ng/rstream": "^6.0.7",
+    "@thi.ng/rstream-csp": "^2.0.66",
     "consts": "workspace:packages/consts",
     "regenerator-runtime": "^0.13.8",
     "utils": "workspace:packages/inner-utils",
-    "webextension-polyfill": "^0.7.0"
+    "webextension-polyfill": "^0.8.0"
   }
 }

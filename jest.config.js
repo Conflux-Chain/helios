@@ -78,6 +78,7 @@ module.exports = {
     '/node_modules/',
     'index.dev.js',
     'index.prod.js',
+    '/websites/doc',
     '/packages/browser-extension',
     '/packages/csp',
     '/packages/consts',
@@ -88,6 +89,9 @@ module.exports = {
     '/packages/bytes/',
     '/testlib/',
     '/packages/storybook',
+    '/packages/workspace-tools',
+    '/packages/docusaurus-plugin',
+    '/packages/doc-ui',
   ],
 
   // The directory where Jest should output its coverage files

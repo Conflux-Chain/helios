@@ -29,20 +29,26 @@
         (apply update-properties schema trans))))
 
 (defn def-rest-schemas [opts]
-  (let [{:keys [INTERNAL_CONTRACTS_HEX_ADDRESS randomHexAddress randomCfxHexAddress randomPrivateKey validateMnemonic generateMnemonic validatePrivateKey]} (j->c opts)
+  (let [{:keys [INTERNAL_CONTRACTS_HEX_ADDRESS randomHexAddress randomPrivateKey validateMnemonic generateMnemonic validatePrivateKey validateHDPath randomHDPath]} (j->c opts)
         INTERNAL_CONTRACTS_HEX_ADDRESS (js->clj INTERNAL_CONTRACTS_HEX_ADDRESS)]
     #js
-     {:mnemonic (m/-simple-schema
-                 {:type :mnemonic
-                  :pred #(and (string? %) (validateMnemonic %))
-                  :type-properties {:error/message "should be a valid mnemonic"
-                                    :doc "Mnemonic phrase"}
-                  :gen/fmap #(.call generateMnemonic)})
+    {:hdPath (m/-simple-schema
+                {:type :hd-path
+                 :pred #(and (string? %) (validateHDPath %))
+                 :type-properties {:error/message "should be a valid hdPath without the last address index"
+                                   :doc "hd wallet derivation path without the last address_index, check https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#abstract for detail"
+                                   :gen/fmap #(.call randomHDPath)}})
+     :mnemonic (m/-simple-schema
+                {:type :mnemonic
+                 :pred #(and (string? %) (validateMnemonic %))
+                 :type-properties {:error/message "should be a valid mnemonic"
+                                   :doc "Mnemonic phrase"
+                                   :gen/fmap #(.call generateMnemonic)}})
       :privateKey (m/-simple-schema
                    {:type :privateKey
                     :pred #(validatePrivateKey %)
-                    :type-properties {:error/message "invalid private key" :doc "0x-prefixed private key"}
-                    :gen/fmap #(.call randomPrivateKey)})
+                    :type-properties {:error/message "invalid private key" :doc "0x-prefixed private key"
+                                      :gen/fmap #(.call randomPrivateKey)}})
       :ethHexAddress (update-properties
                       [:re #"^0x[0-9a-fA-F]{40}$"]
                       :gen/fmap #(.call randomHexAddress)
@@ -88,8 +94,8 @@
       {:type type
        :pred #(pred % address-type network-id)
        :type-properties {:error/message "invalid base32 address"
-                         :doc (str "Conflux base32 address with '" address-type "' type and networkId is " network-id)}
-       :gen/fmap #(.call gen nil network-id address-type)}))))
+                         :doc (str "Conflux base32 address with '" address-type "' type and networkId is " network-id)
+                         :gen/fmap #(.call gen nil network-id address-type)}}))))
 
 (def Password (update-properties [:string {:min 8 :max 128}]
                                  :doc "String between 8 to 128 character" :type :password))
