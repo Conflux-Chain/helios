@@ -29,15 +29,21 @@
         (apply update-properties schema trans))))
 
 (defn def-rest-schemas [opts]
-  (let [{:keys [INTERNAL_CONTRACTS_HEX_ADDRESS randomHexAddress randomCfxHexAddress randomPrivateKey validateMnemonic generateMnemonic validatePrivateKey]} (j->c opts)
+  (let [{:keys [INTERNAL_CONTRACTS_HEX_ADDRESS randomHexAddress randomPrivateKey validateMnemonic generateMnemonic validatePrivateKey validateHDPath randomHDPath]} (j->c opts)
         INTERNAL_CONTRACTS_HEX_ADDRESS (js->clj INTERNAL_CONTRACTS_HEX_ADDRESS)]
     #js
-     {:mnemonic (m/-simple-schema
-                 {:type :mnemonic
-                  :pred #(and (string? %) (validateMnemonic %))
-                  :type-properties {:error/message "should be a valid mnemonic"
-                                    :doc "Mnemonic phrase"
-                                    :gen/fmap #(.call generateMnemonic)}})
+    {:hdPath (m/-simple-schema
+                {:type :hd-path
+                 :pred #(and (string? %) (validateHDPath %))
+                 :type-properties {:error/message "should be a valid hdPath without the last address index"
+                                   :doc "hd wallet derivation path without the last address_index, check https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#abstract for detail"
+                                   :gen/fmap #(.call randomHDPath)}})
+     :mnemonic (m/-simple-schema
+                {:type :mnemonic
+                 :pred #(and (string? %) (validateMnemonic %))
+                 :type-properties {:error/message "should be a valid mnemonic"
+                                   :doc "Mnemonic phrase"
+                                   :gen/fmap #(.call generateMnemonic)}})
       :privateKey (m/-simple-schema
                    {:type :privateKey
                     :pred #(validatePrivateKey %)

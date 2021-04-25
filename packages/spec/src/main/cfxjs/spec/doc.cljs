@@ -86,6 +86,7 @@
          rst (if optional-key (assoc rst :optional true) rst)
          rst (if html-type (assoc rst :html-type html-type) rst)
          type (or (-schema-type schema) :unknown)
+         type (if (= type :re) :regex type)
          rst (assoc rst :type (keyword type))
          rst (assoc rst :htmlElement (schema-type->html-type (if (= type :unknown) type schema)))]
      rst)))

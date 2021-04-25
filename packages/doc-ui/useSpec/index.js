@@ -26,7 +26,7 @@ const createSpec = id =>
     setData: data => (set({data}), get().validate()),
     isLoading: () => get().loadingSpec,
 
-    validate: () => {
+    validate: async () => {
       const s = get()
       if (
         s.loadingSpec ||
@@ -37,7 +37,7 @@ const createSpec = id =>
       )
         return null
       set({validating: true})
-      const valid = s.spec.validate(s.schema, s.data)
+      const valid = await s.spec.validate(s.schema, s.data)
       set({valid, validating: false})
       s.setError()
       return valid
@@ -49,10 +49,10 @@ const createSpec = id =>
       set({doc})
       return doc
     },
-    setError: () => {
+    setError: async () => {
       const s = get()
       if (s.validating || s.valid === null || s.valid) return null
-      let error = s.spec.explain(s.schema, s.data)
+      let error = await s.spec.explain(s.schema, s.data)
       if (!Array.isArray(error)) error = [error]
       set({error})
       return error

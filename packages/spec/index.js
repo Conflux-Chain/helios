@@ -16,6 +16,7 @@ import {
 } from '@cfxjs/account'
 import {validateMnemonic, generateMnemonic} from 'bip39'
 import {validateBase32Address, randomBase32Address} from '@cfxjs/base32-address'
+import {randomHDPath, validateHDPath} from '@cfxjs/hdkey'
 
 export const {
   ethHexAddress,
@@ -25,6 +26,7 @@ export const {
   hexNullAddress,
   mnemonic,
   privateKey,
+  hdPath,
 } = defRestSchemas({
   INTERNAL_CONTRACTS_HEX_ADDRESS,
   NULL_HEX_ADDRESS,
@@ -34,6 +36,8 @@ export const {
   randomPrivateKey,
   validateMnemonic,
   generateMnemonic,
+  validateHDPath,
+  randomHDPath,
 })
 
 export const cfxHexAddress = [

@@ -4,6 +4,7 @@
   "main": "index.js",
   "version": "0.0.0",
   "dependencies": {
+    "@cfxjs/utils": "workspace:packages/utils",
     "bip39": "^3.0.3",
     "ethereumjs-wallet": "^1.0.1"
   }
