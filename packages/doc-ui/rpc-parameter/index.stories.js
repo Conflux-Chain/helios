@@ -2,7 +2,7 @@ import React from 'react'
 import {Parameters} from './'
 
 export default {
-  title: 'Doc Component/Input',
+  title: 'Doc Component/RPC Parameters',
   component: Parameters,
 }
 
