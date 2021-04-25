@@ -6,6 +6,7 @@
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "webextension-polyfill": "^0.8.0"
   }
 }

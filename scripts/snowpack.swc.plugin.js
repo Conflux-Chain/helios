@@ -17,7 +17,7 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
         cwd: root,
         root,
         filename: id,
-        sourceMaps: 'inline',
+        sourceMaps: isProd() ? 'inline' : false,
       }).code
     },
     optimize(/* {buildDirectory, log} */) {

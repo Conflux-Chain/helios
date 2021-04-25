@@ -8,6 +8,7 @@ import {EXT_STORAGE} from 'consts'
 import {IS_PROD_MODE} from 'utils'
 import browser from 'webextension-polyfill'
 import SCHEMA from './db-schema'
+import {listen} from '@cfxjs/extension-runtime/background.js'
 
 if (!IS_PROD_MODE) window.b = browser
 import {rpcEngineOpts} from './rpc-engine-opts'
@@ -23,6 +24,9 @@ import {rpcEngineOpts} from './rpc-engine-opts'
 
   // ## initialize rpc engine
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
+
+  const s = listen({isDev: !IS_PROD_MODE})
+  console.log('stream', s)
 
   {
     const {result: pk} = await request({

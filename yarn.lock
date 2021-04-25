@@ -2413,6 +2413,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/extension-runtime@workspace:packages/extension-runtime":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/extension-runtime@workspace:packages/extension-runtime"
+  dependencies:
+    "@cfxjs/compose": "workspace:packages/compose"
+    "@cfxjs/csp": "workspace:packages/csp"
+    "@cfxjs/transducers": "workspace:packages/transducers"
+    "@thi.ng/rstream": 6.0.8
+    "@thi.ng/rstream-csp": 2.0.67
+    webextension-polyfill: 0.8.0
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/hdkey@workspace:packages/hdkey":
   version: 0.0.0-use.local
   resolution: "@cfxjs/hdkey@workspace:packages/hdkey"
@@ -5354,6 +5367,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/associative@npm:^5.2.4":
+  version: 5.2.4
+  resolution: "@thi.ng/associative@npm:5.2.4"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/binary": ^2.2.4
+    "@thi.ng/checks": ^2.9.6
+    "@thi.ng/compare": ^1.3.28
+    "@thi.ng/dcons": ^2.3.23
+    "@thi.ng/equiv": ^1.0.41
+    "@thi.ng/errors": ^1.3.0
+    "@thi.ng/transducers": ^7.7.2
+    tslib: ^2.1.0
+  checksum: ac54677e2b6cdb283f497d1cc881e49313e2d143f494661a082906ec01db9e77287556784cc9fd80eb366746b5b0f7648da57f33ac3a12191d7dac6db9496e3b
+  languageName: node
+  linkType: hard
+
 "@thi.ng/atom@npm:^4.1.35":
   version: 4.1.35
   resolution: "@thi.ng/atom@npm:4.1.35"
@@ -5418,6 +5448,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/csp@npm:^1.1.63":
+  version: 1.1.63
+  resolution: "@thi.ng/csp@npm:1.1.63"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/arrays": ^0.10.11
+    "@thi.ng/checks": ^2.9.6
+    "@thi.ng/dcons": ^2.3.23
+    "@thi.ng/errors": ^1.3.0
+    "@thi.ng/transducers": ^7.7.2
+  checksum: f0a7410c3cfd9fd91c3524180c2f246bf8cca918e7dccfbc00728dd8d600fb05db0f1ce1a02b3132552d9cfaf841175dc2aa3486a0ccb50944587997318209de
+  languageName: node
+  linkType: hard
+
 "@thi.ng/dcons@npm:^2.3.22":
   version: 2.3.22
   resolution: "@thi.ng/dcons@npm:2.3.22"
@@ -5430,6 +5474,21 @@ __metadata:
     "@thi.ng/random": ^2.4.0
     "@thi.ng/transducers": ^7.7.1
   checksum: 10116c422d22d8d7556213133143f145a1cd621fcbe9c7f1796a08f37b835ab07fc372cb8465e9678c5d877770f515db420520686dbfc383b79daa27848f1186
+  languageName: node
+  linkType: hard
+
+"@thi.ng/dcons@npm:^2.3.23":
+  version: 2.3.23
+  resolution: "@thi.ng/dcons@npm:2.3.23"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/checks": ^2.9.6
+    "@thi.ng/compare": ^1.3.28
+    "@thi.ng/equiv": ^1.0.41
+    "@thi.ng/errors": ^1.3.0
+    "@thi.ng/random": ^2.4.0
+    "@thi.ng/transducers": ^7.7.2
+  checksum: 2536bce1ff310458f3abfe4a6bfa9195bdf7e6a469afe9d5fbeaa8e4e758a4eee6038e9b16f0747538782805b7e27cd1b9b5bdb8e8f36a7c7b2e16edd1df86e2
   languageName: node
   linkType: hard
 
@@ -5474,6 +5533,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/math@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@thi.ng/math@npm:4.0.0"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+  checksum: 2eb14501e0f402942f79b04181038784a0ab4f819b9e0a078a9e9437aade11ca458f43a55c1c0585ac4a9d4f94ee1d92b900c6f573ae8081a7984f20e93748f8
+  languageName: node
+  linkType: hard
+
 "@thi.ng/paths@npm:^4.2.7":
   version: 4.2.7
   resolution: "@thi.ng/paths@npm:4.2.7"
@@ -5496,6 +5564,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/rstream-csp@npm:2.0.67":
+  version: 2.0.67
+  resolution: "@thi.ng/rstream-csp@npm:2.0.67"
+  dependencies:
+    "@thi.ng/csp": ^1.1.63
+    "@thi.ng/rstream": ^6.0.8
+  checksum: 64f1e3d9912bee50278ab45d4f6d6e3107238898673716419b0dc5ef3a59128aa9ca0a72a65a0acd3db60dab39b0448b0111895a5760fff8b15936c19f5a7239
+  languageName: node
+  linkType: hard
+
 "@thi.ng/rstream-csp@npm:^2.0.66":
   version: 2.0.66
   resolution: "@thi.ng/rstream-csp@npm:2.0.66"
@@ -5503,6 +5581,21 @@ __metadata:
     "@thi.ng/csp": ^1.1.62
     "@thi.ng/rstream": ^6.0.7
   checksum: d426ddb91a34fec06874b50b464302d3c52108b34916cece09f768e2d63501090b905daf6d60b554202814929311b1664568acb1c7a1084e35a7b066516ef7c7
+  languageName: node
+  linkType: hard
+
+"@thi.ng/rstream@npm:6.0.8, @thi.ng/rstream@npm:^6.0.8":
+  version: 6.0.8
+  resolution: "@thi.ng/rstream@npm:6.0.8"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/arrays": ^0.10.11
+    "@thi.ng/associative": ^5.2.4
+    "@thi.ng/atom": ^4.1.35
+    "@thi.ng/checks": ^2.9.6
+    "@thi.ng/errors": ^1.3.0
+    "@thi.ng/transducers": ^7.7.2
+  checksum: 79dd1d1eabac7ff15d8e378aab88beb40fdb106e8effbf70a809c0625ad461d8aeb27aba63b7e2d3c1e359f6709b7c48125dadcdfdbbe4cc266b0d4d6dab476c
   languageName: node
   linkType: hard
 
@@ -5534,6 +5627,22 @@ __metadata:
     "@thi.ng/math": ^3.4.0
     "@thi.ng/random": ^2.4.0
   checksum: d1b72af6ce33c46b3e5636a858d9d6e005191556375bfd22e6fc918caa4fa2d7614e42039b1b5386da5668ecc1fcc8f9fc1cbff539e70256dba5195cc67b7fe7
+  languageName: node
+  linkType: hard
+
+"@thi.ng/transducers@npm:^7.7.2":
+  version: 7.7.2
+  resolution: "@thi.ng/transducers@npm:7.7.2"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/arrays": ^0.10.11
+    "@thi.ng/checks": ^2.9.6
+    "@thi.ng/compare": ^1.3.28
+    "@thi.ng/compose": ^1.4.30
+    "@thi.ng/errors": ^1.3.0
+    "@thi.ng/math": ^4.0.0
+    "@thi.ng/random": ^2.4.0
+  checksum: 9e26c79a076d8b3b6acc81dd3e274cfbe19cff29a428205a12dccbdb8c824b0e957a96fffeaed251162c8c7dbe2c023b246b8b14943b4e151f8dd8da6b1b84f1
   languageName: node
   linkType: hard
 
@@ -12858,6 +12967,7 @@ fsevents@~2.3.1:
   resolution: "helios-background@workspace:packages/background"
   dependencies:
     "@cfxjs/db": "workspace:packages/db"
+    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
     "@cfxjs/transducers": "workspace:packages/transducers"
     "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault"
@@ -12888,6 +12998,7 @@ fsevents@~2.3.1:
   version: 0.0.0-use.local
   resolution: "helios-popup@workspace:packages/popup"
   dependencies:
+    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     webextension-polyfill: ^0.8.0
   languageName: unknown
   linkType: soft
@@ -23626,7 +23737,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"webextension-polyfill@npm:^0.8.0":
+"webextension-polyfill@npm:0.8.0, webextension-polyfill@npm:^0.8.0":
   version: 0.8.0
   resolution: "webextension-polyfill@npm:0.8.0"
   checksum: 2e66ba52cc70b9e631edadce3d06b43a5aecbe3cbef73920c344e2b062aaf970b3c53e1aaae733086c4e50a1e34d63ed7d3f836b5ee995efa255f1e9f55e67fd
