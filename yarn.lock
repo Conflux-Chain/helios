@@ -2417,11 +2417,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/extension-runtime@workspace:packages/extension-runtime"
   dependencies:
-    "@cfxjs/compose": "workspace:packages/compose"
-    "@cfxjs/csp": "workspace:packages/csp"
-    "@cfxjs/transducers": "workspace:packages/transducers"
     "@thi.ng/rstream": 6.0.8
-    "@thi.ng/rstream-csp": 2.0.67
     webextension-polyfill: 0.8.0
   languageName: unknown
   linkType: soft
@@ -2470,6 +2466,20 @@ __metadata:
   dependencies:
     "@cfxjs/bytes": "workspace:packages/bytes"
     bn.js: ^5.2.0
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/provider-api@workspace:packages/ui/provider-api":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/provider-api@workspace:packages/ui/provider-api"
+  dependencies:
+    "@cfxjs/random-id": "workspace:packages/random-id"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/random-id@workspace:packages/random-id":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/random-id@workspace:packages/random-id"
   languageName: unknown
   linkType: soft
 
@@ -2554,6 +2564,19 @@ __metadata:
   resolution: "@cfxjs/transducers@workspace:packages/transducers"
   dependencies:
     "@thi.ng/transducers": ^7.7.1
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/use-rpc@workspace:packages/ui/useRPC":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/use-rpc@workspace:packages/ui/useRPC"
+  dependencies:
+    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
+    "@cfxjs/provider-api": "workspace:packages/ui/provider-api"
+    swr: 0.5.5
+    webextension-polyfill: 0.8.0
+  peerDependencies:
+    react: "*"
   languageName: unknown
   linkType: soft
 
@@ -5448,20 +5471,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/csp@npm:^1.1.63":
-  version: 1.1.63
-  resolution: "@thi.ng/csp@npm:1.1.63"
-  dependencies:
-    "@thi.ng/api": ^7.1.4
-    "@thi.ng/arrays": ^0.10.11
-    "@thi.ng/checks": ^2.9.6
-    "@thi.ng/dcons": ^2.3.23
-    "@thi.ng/errors": ^1.3.0
-    "@thi.ng/transducers": ^7.7.2
-  checksum: f0a7410c3cfd9fd91c3524180c2f246bf8cca918e7dccfbc00728dd8d600fb05db0f1ce1a02b3132552d9cfaf841175dc2aa3486a0ccb50944587997318209de
-  languageName: node
-  linkType: hard
-
 "@thi.ng/dcons@npm:^2.3.22":
   version: 2.3.22
   resolution: "@thi.ng/dcons@npm:2.3.22"
@@ -5564,16 +5573,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/rstream-csp@npm:2.0.67":
-  version: 2.0.67
-  resolution: "@thi.ng/rstream-csp@npm:2.0.67"
-  dependencies:
-    "@thi.ng/csp": ^1.1.63
-    "@thi.ng/rstream": ^6.0.8
-  checksum: 64f1e3d9912bee50278ab45d4f6d6e3107238898673716419b0dc5ef3a59128aa9ca0a72a65a0acd3db60dab39b0448b0111895a5760fff8b15936c19f5a7239
-  languageName: node
-  linkType: hard
-
 "@thi.ng/rstream-csp@npm:^2.0.66":
   version: 2.0.66
   resolution: "@thi.ng/rstream-csp@npm:2.0.66"
@@ -5584,7 +5583,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/rstream@npm:6.0.8, @thi.ng/rstream@npm:^6.0.8":
+"@thi.ng/rstream@npm:6.0.8":
   version: 6.0.8
   resolution: "@thi.ng/rstream@npm:6.0.8"
   dependencies:
@@ -10032,6 +10031,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dequal@npm:2.0.2":
+  version: 2.0.2
+  resolution: "dequal@npm:2.0.2"
+  checksum: 3b5b019a873da282a25512c632c077e5e8e2a019e71c5b6968836443b861e44176ee3934facfecdc14994d553c1ff4a6c7232278d6aef87baf65e2413d41760c
+  languageName: node
+  linkType: hard
+
 "des.js@npm:^1.0.0":
   version: 1.0.1
   resolution: "des.js@npm:1.0.1"
@@ -12999,6 +13005,7 @@ fsevents@~2.3.1:
   resolution: "helios-popup@workspace:packages/popup"
   dependencies:
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
+    "@cfxjs/use-rpc": "workspace:packages/ui/useRPC"
     webextension-polyfill: ^0.8.0
   languageName: unknown
   linkType: soft
@@ -22268,6 +22275,17 @@ resolve@^2.0.0-next.3:
   bin:
     svgo: ./bin/svgo
   checksum: e1659738423f625561fa23769d0a010f5ba08e83926ce697491153fa29a8cb2452fa5abb14c1bb489aa186718856f8768d4da870210a79302d47535c57c30d30
+  languageName: node
+  linkType: hard
+
+"swr@npm:0.5.5":
+  version: 0.5.5
+  resolution: "swr@npm:0.5.5"
+  dependencies:
+    dequal: 2.0.2
+  peerDependencies:
+    react: ^16.11.0 || ^17.0.0
+  checksum: 80ff924020e57631c4ab6a58356ac2c0edeb59220ca10a362210c760a4e4cccb28db41b5b600d018790475bed087032fe217c3e138dedd448939345dbbba13ef
   languageName: node
   linkType: hard
 

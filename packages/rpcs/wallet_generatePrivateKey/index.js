@@ -8,6 +8,6 @@ export const schemas = {
   output: privateKey,
 }
 
-export async function main({params: {entropy}} = {params: {}}) {
-  return randomPrivateKey(entropy)
+export async function main({params}) {
+  return randomPrivateKey(params?.entropy)
 }

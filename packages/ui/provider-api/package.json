@@ -1,0 +1,9 @@
+{
+  "name": "@cfxjs/provider-api",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/random-id": "workspace:packages/random-id"
+  }
+}

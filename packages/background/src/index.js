@@ -25,8 +25,19 @@ import {rpcEngineOpts} from './rpc-engine-opts'
   // ## initialize rpc engine
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
 
-  const s = listen({isDev: !IS_PROD_MODE})
-  console.log('stream', s)
+  const {inpageStream, popupStream} = listen()
+
+  popupStream.subscribe({
+    next(req) {
+      request(req).then(popupStream.post)
+    },
+  })
+
+  inpageStream.subscribe({
+    next(req) {
+      request(req).then(inpageStream.post)
+    },
+  })
 
   {
     const {result: pk} = await request({
