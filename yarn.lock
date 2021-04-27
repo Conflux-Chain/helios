@@ -2340,6 +2340,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/content-script@workspace:packages/content-script":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/content-script@workspace:packages/content-script"
+  dependencies:
+    "@thi.ng/rstream": 6.0.8
+    webextension-polyfill: 0.8.0
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/csp@workspace:packages/csp":
   version: 0.0.0-use.local
   resolution: "@cfxjs/csp@workspace:packages/csp"
@@ -11444,6 +11453,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ext-reload@workspace:packages/ext-reload":
+  version: 0.0.0-use.local
+  resolution: "ext-reload@workspace:packages/ext-reload"
+  dependencies:
+    webextension-polyfill: 0.8.0
+  languageName: unknown
+  linkType: soft
+
 "extend-shallow@npm:^2.0.1":
   version: 2.0.1
   resolution: "extend-shallow@npm:2.0.1"
@@ -12997,6 +13014,11 @@ fsevents@~2.3.1:
 "helios-inpage@*, helios-inpage@workspace:packages/inpage":
   version: 0.0.0-use.local
   resolution: "helios-inpage@workspace:packages/inpage"
+  dependencies:
+    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
+    "@cfxjs/provider-api": "workspace:packages/ui/provider-api"
+    "@thi.ng/rstream": 6.0.8
+    webextension-polyfill: 0.8.0
   languageName: unknown
   linkType: soft
 

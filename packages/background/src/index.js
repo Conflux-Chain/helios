@@ -12,6 +12,7 @@ import {listen} from '@cfxjs/extension-runtime/background.js'
 
 if (!IS_PROD_MODE) window.b = browser
 import {rpcEngineOpts} from './rpc-engine-opts'
+
 // import {BUILT_IN_NETWORKS} from './network/config'
 
 // # initialize
@@ -28,14 +29,14 @@ import {rpcEngineOpts} from './rpc-engine-opts'
   const {inpageStream, popupStream} = listen()
 
   popupStream.subscribe({
-    next(req) {
-      request(req).then(popupStream.post)
+    next([req, post]) {
+      request(req).then(post)
     },
   })
 
   inpageStream.subscribe({
-    next(req) {
-      request(req).then(inpageStream.post)
+    next([req, post]) {
+      request(req).then(post)
     },
   })
 

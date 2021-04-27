@@ -5,6 +5,9 @@
 require('./before_all.js')
 require('./setup-dotenv.js')
 const {resolve} = require('path')
+const buildContentScript = require('./build-content-script.js')
+const buildExtReload = require('./build-reload.js')
+const buildInpage = require('./build-inpage.js')
 
 const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
 setEnvBasedOnArgv()
@@ -18,7 +21,6 @@ const {
 const builds = [
   resolve(__dirname, '../packages/background/snowpack.config.cjs'),
   resolve(__dirname, '../packages/popup/snowpack.config.cjs'),
-  resolve(__dirname, '../packages/inpage/snowpack.config.cjs'),
 ]
 // let servers = []
 
@@ -40,11 +42,14 @@ process.on('SIGUSR2', cleanup)
 process.on('uncaughtException', (...args) => console.error(...args))
 ;(async () => {
   if (shouldCleanCache) await clearCache()
-  /* servers =  */ await Promise.all(
-    builds.map(b => {
+  /* servers =  */ await Promise.all([
+    ...builds.map(b => {
       return loadConfiguration(undefined, b).then(config =>
         startServer({config}),
       )
     }),
-  )
+    buildExtReload(),
+    buildContentScript(),
+    buildInpage(),
+  ])
 })()

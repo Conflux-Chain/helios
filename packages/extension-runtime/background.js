@@ -16,11 +16,13 @@ const inpageStream = stream({
 
 function onConnect(port) {
   if (port?.name === 'popup') {
-    port.onMessage.addListener(popupStream.next.bind(popupStream))
-    popupStream.post = port.postMessage.bind(port)
-  } else if (port?.name === 'inpage') {
-    port.onMessage.addListener(inpageStream.next.bind(inpageStream))
-    inpageStream.post = port.postMessage.bind(port)
+    port.onMessage.addListener(req =>
+      popupStream.next.call(popupStream, [req, port.postMessage.bind(port)]),
+    )
+  } else if (port?.name === 'content-script') {
+    port.onMessage.addListener(req =>
+      inpageStream.next.call(inpageStream, [req, port.postMessage.bind(port)]),
+    )
   }
 }
 

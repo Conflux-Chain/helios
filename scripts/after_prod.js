@@ -34,22 +34,15 @@ module.exports = async function () {
         '../packages/browser-extension/build/background/index.html',
       ),
     ),
-    rm(
-      path.resolve(
-        __dirname,
-        '../packages/browser-extension/build/inpage/index.html',
-      ),
-    ),
+    // rm(
+    //   path.resolve(
+    //     __dirname,
+    //     '../packages/browser-extension/build/inpage/index.html',
+    //   ),
+    // ),
     cp(
       path.resolve(__dirname, '../packages/browser-extension/images'),
       path.resolve(__dirname, '../packages/browser-extension/build/images'),
-    ),
-    cp(
-      path.resolve(__dirname, '../packages/browser-extension/manifest.json'),
-      path.resolve(
-        __dirname,
-        '../packages/browser-extension/build/manifest.json',
-      ),
     ),
     cp(
       path.resolve(__dirname, '../packages/browser-extension/_locales'),

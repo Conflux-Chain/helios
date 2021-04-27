@@ -2,19 +2,15 @@ const {isDev, mustacheRender} = require('./snowpack.utils')
 const path = require('path')
 const {ensureDirSync} = require('fs-extra')
 
-ensureDirSync(path.resolve(__dirname, '../packages/browser-extension/build'))
+const extDir = path.resolve(__dirname, '../packages/browser-extension')
+
+ensureDirSync(path.resolve(extDir, 'build'))
 
 mustacheRender(
-  path.resolve(
-    __dirname,
-    '../packages/browser-extension/manifest.json.mustache',
-  ),
+  path.resolve(extDir, 'manifest.json.mustache'),
   isDev()
-    ? path.resolve(__dirname, '../packages/browser-extension/manifest.json')
-    : path.resolve(
-        __dirname,
-        '../packages/browser-extension/build/manifest.json',
-      ),
+    ? path.resolve(extDir, 'manifest.json')
+    : path.resolve(extDir, 'build/manifest.json'),
   {
     contentSecurityPolicy: isDev()
       ? `
@@ -30,9 +26,10 @@ media-src * data: blob: filesystem:;",`.replaceAll('\n', ' ')
       : '',
     name: isDev() ? 'AHelios' : 'Helios',
     backgroundScripts: isDev()
-      ? '"background.dev.js"'
+      ? '"reload.js","background.dev.js"'
       : '"background/dist/index.prod.js"',
-    inpageScripts: isDev() ? '"inpage.dev.js"' : '"inpage/dist/index.js"',
+    contentScripts: '"content-script.js"',
+    webResources: '"content-script.js","inpage.js"',
     popupHTML: isDev() ? 'popup.html' : 'popup/index.html',
     permissions: isDev()
       ? '"http://localhost:18001/",\n "http://localhost:18002/",\n "http://localhost:18003/",\n'

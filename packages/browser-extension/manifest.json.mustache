@@ -51,7 +51,7 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": [{{{inpageScripts}}}],
+      "js": [{{{contentScripts}}}],
       "run_at": "document_start",
       "all_frames": true
     }
@@ -68,7 +68,7 @@
     "webRequest",
     "notifications"
   ],
-  "web_accessible_resources": [{{{inpageScripts}}}],
+  "web_accessible_resources": [{{{webResources}}}],
   "externally_connectable": {
     "matches": [
       "https://confluxscan.io/*",

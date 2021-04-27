@@ -1,0 +1,11 @@
+{
+  "name": "@cfxjs/content-script",
+  "private": true,
+  "main": "index.js",
+  "type": "module",
+  "version": "0.0.0",
+  "dependencies": {
+    "@thi.ng/rstream": "6.0.8",
+    "webextension-polyfill": "0.8.0"
+  }
+}
