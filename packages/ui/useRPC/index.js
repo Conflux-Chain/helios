@@ -17,14 +17,17 @@ const setupProvider = ({name = RUNTIME_NAME} = {}) => {
   PROVIDER = initProvider(rpcStream(port))
 }
 
-export const useRPC = (deps = [], params) => {
+export const useRPC = (deps = [], params, opts) => {
   setupProvider()
   if (typeof deps === 'string') deps = [deps]
   const [method] = deps
-  const {data} = useSWR(deps, () =>
-    PROVIDER.request({method, params}).then(
-      ({result, error}) => result || error,
-    ),
+  const {data} = useSWR(
+    deps,
+    () =>
+      PROVIDER.request({method, params}).then(
+        ({result, error}) => result || error,
+      ),
+    opts,
   )
   return data
 }
