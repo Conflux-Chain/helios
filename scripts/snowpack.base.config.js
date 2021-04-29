@@ -22,6 +22,8 @@ getWorkspacePackages({
     'workspace-tools',
     'doc',
     '@cfxjs/storybook',
+    'ext-reload',
+    '@cfxjs/content-script',
   ],
 }).forEach(({location, name}) => {
   const packageAbsPath = path.resolve(__dirname, '../', location)
