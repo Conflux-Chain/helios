@@ -1,1 +1,1 @@
-# @cfxjs/wallet_importAddress
+# @cfxjs/wallet_import-address

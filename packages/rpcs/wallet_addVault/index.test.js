@@ -4,7 +4,7 @@ import {main, schemas} from './'
 import {encrypt} from 'browser-passworder'
 import {validate} from '@cfxjs/spec'
 
-describe('@cfxjs/wallet_addVault', function () {
+describe('@cfxjs/wallet_add-vault', function () {
   describe('schemas', function () {
     describe('input', function () {
       it('should return false with invalid data', async function () {

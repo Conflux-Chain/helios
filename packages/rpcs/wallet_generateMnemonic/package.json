@@ -1,6 +1,6 @@
 {
-  "name": "@cfxjs/wallet_generateMnemonic",
-  "version": "0.0.0",
+  "name": "@cfxjs/wallet_generate-mnemonic",
+  "version": "0.0.1",
   "type": "module",
   "main": "index.js",
   "dependencies": {

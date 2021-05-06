@@ -1,1 +1,1 @@
-# @cfxjs/wallet_importPrivateKey
+# @cfxjs/wallet_import-private-key

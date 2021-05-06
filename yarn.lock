@@ -2610,9 +2610,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_addVault@workspace:packages/rpcs/wallet_addVault":
+"@cfxjs/wallet_add-vault@workspace:packages/rpcs/wallet_addVault":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_addVault@workspace:packages/rpcs/wallet_addVault"
+  resolution: "@cfxjs/wallet_add-vault@workspace:packages/rpcs/wallet_addVault"
   dependencies:
     "@cfxjs/base32-address": "workspace:packages/base32-address"
     "@cfxjs/spec": "workspace:packages/spec"
@@ -2620,9 +2620,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_createAccount@workspace:packages/rpcs/wallet_createAccount":
+"@cfxjs/wallet_create-account@workspace:packages/rpcs/wallet_createAccount":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_createAccount@workspace:packages/rpcs/wallet_createAccount"
+  resolution: "@cfxjs/wallet_create-account@workspace:packages/rpcs/wallet_createAccount"
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
     "@cfxjs/hdkey": "workspace:packages/hdkey"
@@ -2631,9 +2631,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_generateAddress@workspace:packages/rpcs/wallet_generateAddress":
+"@cfxjs/wallet_generate-address@workspace:packages/rpcs/wallet_generateAddress":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_generateAddress@workspace:packages/rpcs/wallet_generateAddress"
+  resolution: "@cfxjs/wallet_generate-address@workspace:packages/rpcs/wallet_generateAddress"
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
     "@cfxjs/base32-address": "workspace:packages/base32-address"
@@ -2641,57 +2641,57 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_generateMnemonic@workspace:packages/rpcs/wallet_generateMnemonic":
+"@cfxjs/wallet_generate-mnemonic@workspace:packages/rpcs/wallet_generateMnemonic":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_generateMnemonic@workspace:packages/rpcs/wallet_generateMnemonic"
+  resolution: "@cfxjs/wallet_generate-mnemonic@workspace:packages/rpcs/wallet_generateMnemonic"
   dependencies:
     bip39: ^3.0.3
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_generatePrivateKey@workspace:packages/rpcs/wallet_generatePrivateKey":
+"@cfxjs/wallet_generate-private-key@workspace:packages/rpcs/wallet_generatePrivateKey":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_generatePrivateKey@workspace:packages/rpcs/wallet_generatePrivateKey"
+  resolution: "@cfxjs/wallet_generate-private-key@workspace:packages/rpcs/wallet_generatePrivateKey"
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_getVaults@workspace:packages/rpcs/wallet_getVaults":
+"@cfxjs/wallet_get-vaults@workspace:packages/rpcs/wallet_getVaults":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_getVaults@workspace:packages/rpcs/wallet_getVaults"
+  resolution: "@cfxjs/wallet_get-vaults@workspace:packages/rpcs/wallet_getVaults"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_importAddress@workspace:packages/rpcs/wallet_importAddress":
+"@cfxjs/wallet_import-address@workspace:packages/rpcs/wallet_importAddress":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_importAddress@workspace:packages/rpcs/wallet_importAddress"
+  resolution: "@cfxjs/wallet_import-address@workspace:packages/rpcs/wallet_importAddress"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic":
+"@cfxjs/wallet_import-mnemonic@workspace:packages/rpcs/wallet_importMnemonic":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_importMnemonic@workspace:packages/rpcs/wallet_importMnemonic"
+  resolution: "@cfxjs/wallet_import-mnemonic@workspace:packages/rpcs/wallet_importMnemonic"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_importPrivateKey@workspace:packages/rpcs/wallet_importPrivateKey":
+"@cfxjs/wallet_import-private-key@workspace:packages/rpcs/wallet_importPrivateKey":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_importPrivateKey@workspace:packages/rpcs/wallet_importPrivateKey"
+  resolution: "@cfxjs/wallet_import-private-key@workspace:packages/rpcs/wallet_importPrivateKey"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_isLocked@workspace:packages/rpcs/wallet_isLocked":
+"@cfxjs/wallet_is-locked@workspace:packages/rpcs/wallet_isLocked":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_isLocked@workspace:packages/rpcs/wallet_isLocked"
+  resolution: "@cfxjs/wallet_is-locked@workspace:packages/rpcs/wallet_isLocked"
   languageName: unknown
   linkType: soft
 
@@ -2709,9 +2709,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_validatePassword@workspace:packages/rpcs/wallet_validatePassword":
+"@cfxjs/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_validatePassword@workspace:packages/rpcs/wallet_validatePassword"
+  resolution: "@cfxjs/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
     browser-passworder: ^2.0.3
@@ -10213,19 +10213,19 @@ __metadata:
   dependencies:
     "@cfxjs/doc-rpc-parameter": "workspace:packages/doc-ui/rpc-parameter"
     "@cfxjs/docusaurus-plugin": "workspace:packages/docusaurus-plugin"
-    "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault"
-    "@cfxjs/wallet_createAccount": "workspace:packages/rpcs/wallet_createAccount"
-    "@cfxjs/wallet_generateAddress": "workspace:packages/rpcs/wallet_generateAddress"
-    "@cfxjs/wallet_generateMnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
-    "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey"
-    "@cfxjs/wallet_getVaults": "workspace:packages/rpcs/wallet_getVaults"
-    "@cfxjs/wallet_importAddress": "workspace:packages/rpcs/wallet_importAddress"
-    "@cfxjs/wallet_importMnemonic": "workspace:packages/rpcs/wallet_importMnemonic"
-    "@cfxjs/wallet_importPrivateKey": "workspace:packages/rpcs/wallet_importPrivateKey"
-    "@cfxjs/wallet_isLocked": "workspace:packages/rpcs/wallet_isLocked"
+    "@cfxjs/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault"
+    "@cfxjs/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount"
+    "@cfxjs/wallet_generate-address": "workspace:packages/rpcs/wallet_generateAddress"
+    "@cfxjs/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
+    "@cfxjs/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey"
+    "@cfxjs/wallet_get-vaults": "workspace:packages/rpcs/wallet_getVaults"
+    "@cfxjs/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
+    "@cfxjs/wallet_import-mnemonic": "workspace:packages/rpcs/wallet_importMnemonic"
+    "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
+    "@cfxjs/wallet_is-locked": "workspace:packages/rpcs/wallet_isLocked"
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock"
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
-    "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword"
+    "@cfxjs/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
     "@docusaurus/core": 2.0.0-alpha.73
     "@docusaurus/preset-classic": 2.0.0-alpha.73
     "@mdx-js/react": ^1.6.22
@@ -13000,15 +13000,15 @@ fsevents@~2.3.1:
     "@cfxjs/fluent-wallet-inner-utils": "workspace:packages/inner-utils"
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
     "@cfxjs/transducers": "workspace:packages/transducers"
-    "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault"
-    "@cfxjs/wallet_generateMnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
-    "@cfxjs/wallet_generatePrivateKey": "workspace:packages/rpcs/wallet_generatePrivateKey"
-    "@cfxjs/wallet_getVaults": "workspace:packages/rpcs/wallet_getVaults"
-    "@cfxjs/wallet_importAddress": "workspace:packages/rpcs/wallet_importAddress"
-    "@cfxjs/wallet_importPrivateKey": "workspace:packages/rpcs/wallet_importPrivateKey"
+    "@cfxjs/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault"
+    "@cfxjs/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
+    "@cfxjs/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey"
+    "@cfxjs/wallet_get-vaults": "workspace:packages/rpcs/wallet_getVaults"
+    "@cfxjs/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
+    "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock"
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
-    "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword"
+    "@cfxjs/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
     "@thi.ng/rstream": ^6.0.7
     "@thi.ng/rstream-csp": ^2.0.66
     regenerator-runtime: ^0.13.8

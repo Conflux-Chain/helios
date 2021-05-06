@@ -1,1 +1,1 @@
-# @cfxjs/wallet_validatePassword
+# @cfxjs/wallet_validate-password

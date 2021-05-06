@@ -1,7 +1,7 @@
 {
-  "name": "@cfxjs/wallet_getVaults",
+  "name": "@cfxjs/wallet_get-vaults",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "dependencies": {
     "@cfxjs/spec": "workspace:packages/spec"
