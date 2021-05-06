@@ -17,7 +17,10 @@ import {
   isCfxHexAddress,
   validateHexAddress,
 } from './'
-import {NULL_HEX_ADDRESS, INTERNAL_CONTRACTS_HEX_ADDRESS} from 'consts'
+import {
+  NULL_HEX_ADDRESS,
+  INTERNAL_CONTRACTS_HEX_ADDRESS,
+} from '@cfxjs/fluent-wallet-consts'
 
 const echash =
   '0x82ff40c0a986c6a5cfad4ddf4c3aa6996f1a7837f9c398e17e5de5cbd5a12b28'

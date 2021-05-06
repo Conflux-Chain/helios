@@ -3,11 +3,14 @@
   "version": "0.0.0",
   "type": "module",
   "main": "src/index.js",
+  "private": true,
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@cfxjs/db": "workspace:packages/db",
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
+    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",
+    "@cfxjs/fluent-wallet-inner-utils": "workspace:packages/inner-utils",
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine",
     "@cfxjs/transducers": "workspace:packages/transducers",
     "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault",
@@ -21,9 +24,7 @@
     "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword",
     "@thi.ng/rstream": "^6.0.7",
     "@thi.ng/rstream-csp": "^2.0.66",
-    "consts": "workspace:packages/consts",
     "regenerator-runtime": "^0.13.8",
-    "utils": "workspace:packages/inner-utils",
     "webextension-polyfill": "^0.8.0"
   }
 }

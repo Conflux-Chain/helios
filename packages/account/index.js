@@ -32,7 +32,7 @@ import {
   NULL_HEX_ADDRESS,
   INTERNAL_CONTRACTS_HEX_ADDRESS,
   ADDRESS_TYPES,
-} from 'consts'
+} from '@cfxjs/fluent-wallet-consts'
 
 const secp256k1 = elliptic.ec('secp256k1')
 

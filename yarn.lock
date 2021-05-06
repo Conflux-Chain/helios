@@ -2283,12 +2283,12 @@ __metadata:
   resolution: "@cfxjs/account@workspace:packages/account"
   dependencies:
     "@cfxjs/bytes": "workspace:packages/bytes"
+    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
     "@cfxjs/keccak": "workspace:packages/keccak"
     "@cfxjs/nat": "workspace:packages/nat"
     "@cfxjs/rlp": "workspace:packages/rlp"
     "@cfxjs/utils": "workspace:packages/utils"
     buffer: ^6.0.3
-    consts: "workspace:packages/consts"
     elliptic: ^6.5.4
   languageName: unknown
   linkType: soft
@@ -2431,6 +2431,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/fluent-wallet-consts@workspace:packages/consts":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/fluent-wallet-consts@workspace:packages/consts"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/fluent-wallet-inner-utils@workspace:packages/inner-utils":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/fluent-wallet-inner-utils@workspace:packages/inner-utils"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/hdkey@workspace:packages/hdkey":
   version: 0.0.0-use.local
   resolution: "@cfxjs/hdkey@workspace:packages/hdkey"
@@ -2509,6 +2521,7 @@ __metadata:
     "@cfxjs/compose": "workspace:packages/compose"
     "@cfxjs/csp": "workspace:packages/csp"
     "@cfxjs/errors": "workspace:packages/errors"
+    "@cfxjs/fluent-wallet-inner-utils": "workspace:packages/inner-utils"
     "@cfxjs/iterators": "workspace:packages/iterators"
     "@cfxjs/json-rpc": "workspace:packages/json-rpc"
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error"
@@ -2517,7 +2530,6 @@ __metadata:
     "@thi.ng/compose": ^1.4.30
     "@thi.ng/csp": ^1.1.62
     ramda: ^0.27.1
-    utils: "workspace:packages/inner-utils"
   languageName: unknown
   linkType: soft
 
@@ -2530,7 +2542,6 @@ __metadata:
     "@cfxjs/base32-address": "workspace:packages/base32-address"
     "@cfxjs/hdkey": "workspace:packages/hdkey"
     bip39: ^3.0.3
-    consts: "workspace:packages/consts"
   languageName: unknown
   linkType: soft
 
@@ -9076,12 +9087,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"consts@workspace:packages/consts":
-  version: 0.0.0-use.local
-  resolution: "consts@workspace:packages/consts"
-  languageName: unknown
-  linkType: soft
-
 "contains-path@npm:^0.1.0":
   version: 0.1.0
   resolution: "contains-path@npm:0.1.0"
@@ -12991,6 +12996,8 @@ fsevents@~2.3.1:
   dependencies:
     "@cfxjs/db": "workspace:packages/db"
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
+    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
+    "@cfxjs/fluent-wallet-inner-utils": "workspace:packages/inner-utils"
     "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
     "@cfxjs/transducers": "workspace:packages/transducers"
     "@cfxjs/wallet_addVault": "workspace:packages/rpcs/wallet_addVault"
@@ -13004,9 +13011,7 @@ fsevents@~2.3.1:
     "@cfxjs/wallet_validatePassword": "workspace:packages/rpcs/wallet_validatePassword"
     "@thi.ng/rstream": ^6.0.7
     "@thi.ng/rstream-csp": ^2.0.66
-    consts: "workspace:packages/consts"
     regenerator-runtime: ^0.13.8
-    utils: "workspace:packages/inner-utils"
     webextension-polyfill: ^0.8.0
   languageName: unknown
   linkType: soft
@@ -23540,12 +23545,6 @@ resolve@^2.0.0-next.3:
   checksum: a457956ebc09efbda05da8bf213ab89140bb9dffa3c42b3315dd8fc3c45d67a1b802741f58b7bba4872113201fc275fc86470289d8bd32b74297b5e5b5980705
   languageName: node
   linkType: hard
-
-"utils@workspace:packages/inner-utils":
-  version: 0.0.0-use.local
-  resolution: "utils@workspace:packages/inner-utils"
-  languageName: unknown
-  linkType: soft
 
 "uuid-browser@npm:^3.1.0":
   version: 3.1.0

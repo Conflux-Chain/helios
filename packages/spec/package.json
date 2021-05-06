@@ -11,7 +11,6 @@
     "@cfxjs/associative": "workspace:packages/associative",
     "@cfxjs/base32-address": "workspace:packages/base32-address",
     "@cfxjs/hdkey": "workspace:packages/hdkey",
-    "bip39": "^3.0.3",
-    "consts": "workspace:packages/consts"
+    "bip39": "^3.0.3"
   }
 }

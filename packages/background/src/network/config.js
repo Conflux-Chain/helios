@@ -3,7 +3,7 @@
  * @name config.js
  */
 
-import {MAINNET, TESTNET, LOCALHOST} from 'consts'
+import {MAINNET, TESTNET, LOCALHOST} from '@cfxjs/fluent-wallet-consts'
 
 // select testnet in dev, mainnet in prod, localhost in test
 export const DEFAULT_NETWORK = {

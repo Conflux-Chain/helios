@@ -5,12 +5,12 @@
   "main": "index.js",
   "dependencies": {
     "@cfxjs/bytes": "workspace:packages/bytes",
+    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",
     "@cfxjs/keccak": "workspace:packages/keccak",
     "@cfxjs/nat": "workspace:packages/nat",
     "@cfxjs/rlp": "workspace:packages/rlp",
     "@cfxjs/utils": "workspace:packages/utils",
     "buffer": "^6.0.3",
-    "consts": "workspace:packages/consts",
     "elliptic": "^6.5.4"
   }
 }
