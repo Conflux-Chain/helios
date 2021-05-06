@@ -216,6 +216,8 @@ jobs:
         node-version: [15]
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # https://yarnpkg.com/features/release-workflow/#commit-history
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
