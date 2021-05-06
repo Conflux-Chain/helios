@@ -2540,6 +2540,7 @@ __metadata:
     "@cfxjs/account": "workspace:packages/account"
     "@cfxjs/associative": "workspace:packages/associative"
     "@cfxjs/base32-address": "workspace:packages/base32-address"
+    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
     "@cfxjs/hdkey": "workspace:packages/hdkey"
     bip39: ^3.0.3
   languageName: unknown
