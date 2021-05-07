@@ -2521,13 +2521,10 @@ __metadata:
     "@cfxjs/compose": "workspace:packages/compose"
     "@cfxjs/csp": "workspace:packages/csp"
     "@cfxjs/errors": "workspace:packages/errors"
-    "@cfxjs/fluent-wallet-inner-utils": "workspace:packages/inner-utils"
-    "@cfxjs/iterators": "workspace:packages/iterators"
     "@cfxjs/json-rpc": "workspace:packages/json-rpc"
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error"
     "@cfxjs/spec": "workspace:packages/spec"
-    "@cfxjs/transducers": "workspace:packages/transducers"
-    "@thi.ng/compose": ^1.4.30
+    "@thi.ng/atom": 4.1.35
     "@thi.ng/csp": ^1.1.62
     ramda: ^0.27.1
   languageName: unknown
@@ -5428,7 +5425,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/atom@npm:^4.1.35":
+"@thi.ng/atom@npm:4.1.35, @thi.ng/atom@npm:^4.1.35":
   version: 4.1.35
   resolution: "@thi.ng/atom@npm:4.1.35"
   dependencies:

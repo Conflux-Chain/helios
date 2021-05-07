@@ -1,0 +1,6 @@
+releases:
+  "@cfxjs/rpc-engine": patch
+
+declined:
+  - helios-background
+  - "@cfxjs/fluent-wallet-inner-utils"
