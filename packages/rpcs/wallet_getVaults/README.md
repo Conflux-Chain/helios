@@ -1,1 +1,1 @@
-# @cfxjs/wallet_getVaults
+# @cfxjs/wallet_get-vaults

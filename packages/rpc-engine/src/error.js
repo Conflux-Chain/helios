@@ -2,7 +2,7 @@
  * @fileOverview error handler used in rpc engine
  * @name error.js
  */
-import {IS_DEV_MODE} from 'utils'
+import {IS_DEV_MODE} from '@cfxjs/fluent-wallet-inner-utils'
 import {errorInstanceToErrorCode} from '@cfxjs/json-rpc-error'
 
 export const appendRpcStackToErrorMessage = (err, stack) => {

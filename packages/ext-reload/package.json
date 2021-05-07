@@ -1,0 +1,10 @@
+{
+  "name": "ext-reload",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "webextension-polyfill": "0.8.0"
+  }
+}

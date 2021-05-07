@@ -1,1 +1,1 @@
-# @cfxjs/wallet_createAccount
+# @cfxjs/wallet_create-account

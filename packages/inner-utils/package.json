@@ -1,6 +1,6 @@
 {
-  "name": "utils",
-  "private": true,
+  "name": "@cfxjs/fluent-wallet-inner-utils",
   "type": "module",
-  "main": "index.js"
+  "main": "index.js",
+  "version": "0.0.1"
 }

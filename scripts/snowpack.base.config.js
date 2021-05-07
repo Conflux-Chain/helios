@@ -22,6 +22,8 @@ getWorkspacePackages({
     'workspace-tools',
     'doc',
     '@cfxjs/storybook',
+    'ext-reload',
+    '@cfxjs/content-script',
   ],
 }).forEach(({location, name}) => {
   const packageAbsPath = path.resolve(__dirname, '../', location)
@@ -33,6 +35,7 @@ module.exports = {
   workspaceRoot: path.resolve(__dirname, '../'),
   exclude: ['**/node_modules/**', '**/*.cjs'],
   mount,
+  routes: [{match: 'routes', src: '.*', dest: '/index.html'}],
   alias,
   plugins: [
     '@snowpack/plugin-dotenv',
@@ -54,7 +57,7 @@ module.exports = {
   buildOptions: {
     clean: true,
     out: path.resolve(__dirname, '../packages/browser-extension/build'),
-    sourcemap: true,
+    sourcemap: false,
     baseUrl: 'dist',
     metaUrlPath: 'sp_',
   },
@@ -63,7 +66,7 @@ module.exports = {
   //   minify: true,
   //   bundle: true,
   //   treeshake: true,
-  //   sourcemap: 'inline',
+  //   sourcemap: false,
   // },
   optimize: false,
 }

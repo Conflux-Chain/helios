@@ -1,7 +1,7 @@
 {
   "name": "@cfxjs/compose",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "dependencies": {
     "@thi.ng/compose": "^1.4.30"

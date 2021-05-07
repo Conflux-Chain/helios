@@ -1,1 +1,1 @@
-# @cfxjs/wallet_isLocked
+# @cfxjs/wallet_is-locked

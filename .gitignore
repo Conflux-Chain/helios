@@ -239,3 +239,6 @@ $RECYCLE.BIN/
 /.shadow-cljs/
 /stories
 /storybook-static
+/packages/browser-extension/content-script.js
+/packages/browser-extension/reload.js
+/packages/browser-extension/inpage.js

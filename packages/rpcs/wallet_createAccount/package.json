@@ -1,8 +1,8 @@
 {
-  "name": "@cfxjs/wallet_createAccount",
+  "name": "@cfxjs/wallet_create-account",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
     "@cfxjs/hdkey": "workspace:packages/hdkey",

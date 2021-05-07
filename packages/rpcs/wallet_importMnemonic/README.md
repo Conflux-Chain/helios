@@ -1,1 +1,1 @@
-# @cfxjs/wallet_importMnemonic
+# @cfxjs/wallet_import-mnemonic

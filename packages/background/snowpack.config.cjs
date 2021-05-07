@@ -11,7 +11,7 @@ module.exports = mergeConfig(baseConfig, {
     [path.resolve(root, './public')]: {url: '/', static: true},
     [path.resolve(root, './src')]: {url: '/dist'},
   },
-  routes: [{match: 'routes', src: '.*', dest: '/index.html'}],
+  routes: [...baseConfig.routes],
   packageOptions: {},
   devOptions: {
     port: 18003,

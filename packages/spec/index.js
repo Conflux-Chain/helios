@@ -1,5 +1,8 @@
 export * from './src/spec.js' // eslint-disable-line import/export
-import {INTERNAL_CONTRACTS_HEX_ADDRESS, NULL_HEX_ADDRESS} from 'consts'
+import {
+  INTERNAL_CONTRACTS_HEX_ADDRESS,
+  NULL_HEX_ADDRESS,
+} from '@cfxjs/fluent-wallet-consts'
 
 import {
   defRestSchemas,

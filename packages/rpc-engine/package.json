@@ -2,13 +2,14 @@
   "name": "@cfxjs/rpc-engine",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "dependencies": {
     "@cfxjs/associative": "workspace:packages/associative",
     "@cfxjs/checks": "workspace:packages/checks",
     "@cfxjs/compose": "workspace:packages/compose",
     "@cfxjs/csp": "workspace:packages/csp",
     "@cfxjs/errors": "workspace:packages/errors",
+    "@cfxjs/fluent-wallet-inner-utils": "workspace:packages/inner-utils",
     "@cfxjs/iterators": "workspace:packages/iterators",
     "@cfxjs/json-rpc": "workspace:packages/json-rpc",
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error",
@@ -16,7 +17,6 @@
     "@cfxjs/transducers": "workspace:packages/transducers",
     "@thi.ng/compose": "^1.4.30",
     "@thi.ng/csp": "^1.1.62",
-    "ramda": "^0.27.1",
-    "utils": "workspace:packages/inner-utils"
+    "ramda": "^0.27.1"
   }
 }

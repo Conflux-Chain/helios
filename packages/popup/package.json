@@ -1,11 +1,13 @@
 {
   "name": "helios-popup",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
+    "@cfxjs/use-rpc": "workspace:packages/ui/useRPC",
     "webextension-polyfill": "^0.8.0"
   }
 }

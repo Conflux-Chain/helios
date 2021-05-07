@@ -1,1 +1,1 @@
-# @cfxjs/wallet_addVault
+# @cfxjs/wallet_add-vault
