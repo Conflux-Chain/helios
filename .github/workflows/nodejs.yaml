@@ -264,16 +264,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
       - run: yarn install --immutable
-      - run: yarn version apply --all
+      - run: yarn version apply --all || true
       - run: yarn workspaces foreach -viptA --no-private npm publish --tolerate-republish
       - run: git add .
       - run: |
           git \
               -c user.name='ConfluxBot' \
               -c user.email='confluxbot@users.noreply.github.com' \
-              commit --message 'chore(release-pkg): release packages'
+              commit --message 'chore(release-pkg): release packages' || true
       - env:
-          GH_TOKEN: ${ secrets.CONFLUX_BOT_GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
         run: git push --force "https://ConfluxBot:${GH_TOKEN}/${GITHUB_REPOSITORY}" __release-pkg
       - run: |
           if ! hub pull-request \
