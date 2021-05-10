@@ -21,7 +21,6 @@ getWorkspacePackages({
     'helios-popup',
     'workspace-tools',
     'doc',
-    '@cfxjs/storybook',
     'ext-reload',
     '@cfxjs/content-script',
   ],

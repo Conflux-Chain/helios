@@ -59,7 +59,6 @@ module.exports = {
     '/packages/db/.shadow-cljs/',
     '/packages/spec/src/spec.js',
     '/packages/spec/.shadow-cljs/',
-    '/packages/storybook',
   ],
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -88,7 +87,6 @@ module.exports = {
     '/packages/db/',
     '/packages/bytes/',
     '/testlib/',
-    '/packages/storybook',
     '/packages/workspace-tools',
     '/packages/docusaurus-plugin',
     '/packages/doc-ui',
