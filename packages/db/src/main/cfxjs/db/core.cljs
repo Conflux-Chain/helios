@@ -1,6 +1,7 @@
 (ns cfxjs.db.core
-  (:require [datascript.core :as d]
-            [cfxjs.db.impl.entity :refer [entity?] :as de]
+  (:require [cfxjs.db.datascript.core :as d]
+            [cfxjs.db.datascript.db :as ddb]
+            [cfxjs.db.datascript.impl.entity :refer [entity?] :as de]
             [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]])
   (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query]]))
 
@@ -8,6 +9,8 @@
   (js->clj v :keywordize-keys true))
 
 (declare conn t q p e)
+
+(comment (:db/memOnly (.-rschema @conn)))
 
 (defn ->attrk
   "Say model is :account, attr is :hexAddress, ->attrk returns :account/hexAddress"
@@ -199,10 +202,19 @@
      (def p (partial d/pull (d/db conn)))
      (defn e [model attr-keys & args] (apply de/entity (d/db conn) model attr-keys args))
 
+     (defn custom-pr-impl [obj writer opts]
+       (-write writer (str "TYPE->" (type->str obj)))
+       (pr-writer-impl obj writer opts))
+
+     (defn custom-pr-str [& objs]
+       (pr-str-with-opts objs
+                         (assoc (pr-opts) :alt-impl custom-pr-impl)))
+
      (when persistfn
        (d/listen! conn "persist" (fn [_]
                                    (->> conn
                                         d/db
+                                        ;; custom-pr-str
                                         pr-str
                                         clj->js
                                         (.call persistfn nil)))))

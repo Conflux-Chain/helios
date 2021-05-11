@@ -5,7 +5,6 @@ import {createdb as createDatascriptDB} from './src/db.js'
 const MemStore = new Map()
 
 const PASSWORD = Symbol('password')
-const LOCKED = Symbol('locked')
 
 // eslint-disable-next-line import/export
 export const createdb = (...args) => {
@@ -14,8 +13,8 @@ export const createdb = (...args) => {
   conn.getPassword = () => MemStore.get(PASSWORD)
   conn.deletePassword = () => MemStore.delete(PASSWORD)
 
-  conn.setLocked = p => (p && conn.deletePassword(), MemStore.set(LOCKED, p))
-  conn.getLocked = () => MemStore.get(LOCKED)
+  conn.setLocked = p => p && conn.deletePassword()
+  conn.getLocked = () => !MemStore.get(PASSWORD)
 
   return conn
 }

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Title</title>
+    <meta http-equiv="content-type" Content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="Index, Follow">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+  </head>
+  <body>
+    <script type="module">
+     import schema from './background/src/db-schema.js'
+     import {createdb} from './db/index.js'
+
+     window.db = createdb(schema, console.log)
+     window.v1 = db.createVault({type: 'a', data: '2'})
+     window.v2 = db.createVault({type: 'a', data: '3', pdata: 'ok'})
+    </script>
+    <p>html used to debug db and spec</p>
+  </body>
+</html>
