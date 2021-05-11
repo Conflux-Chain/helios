@@ -1,5 +1,6 @@
 import {useEffect} from 'react'
 import create from 'zustand'
+import {paramCase} from 'param-case'
 
 const RPCS = {}
 const Stores = {}
@@ -16,14 +17,18 @@ const createRPC = rpcName =>
       const {rpcName} = get()
       if (!rpcName) return
       if (RPCS[rpcName]) return set({...RPCS[rpcName], loadingRPC: false})
+      const rpcPkgName = `${rpcName.slice(
+        0,
+        rpcName.lastIndexOf('_') + 1,
+      )}${paramCase(rpcName.slice(rpcName.lastIndexOf('_') + 1))}`
 
       window &&
         import(
           /* webpackPreload: true */
           /* webpackMode: "lazy-once" */
-          /* webpackInclude: /(cfx|wallet)_\w+\/index\.js$/ */
+          /* webpackInclude: /(cfx|wallet)_.*\/index\.js$/ */
           /* webpackExclude: /(\test\.js|\.md)$/ */
-          '@cfxjs/' + get().rpcName
+          '@cfxjs/' + rpcPkgName
         )
           .then(rpc => set({...rpc, loadingRPC: false}))
           .catch(err => {

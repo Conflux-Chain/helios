@@ -1,17 +1,22 @@
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
-import {rpcErrorHandler} from './error'
+import {rpcErrorHandlerFactory} from './error'
 
 describe('error', function () {
-  describe('rpcErrorHandler', function () {
+  describe('rpcErrorHandlerFactory', function () {
     it('should append the error message with rpc stack', async function () {
       const fakeCWrite = jest.fn()
 
-      rpcErrorHandler({message: 'original error message'}, undefined, {
-        method: 'm0',
-        _rpcStack: ['m1', 'm2'],
-        _c: {
-          write: fakeCWrite,
+      rpcErrorHandlerFactory()({
+        err: {message: 'original error message'},
+        ctx: {
+          req: {
+            method: 'm0',
+            _rpcStack: ['m1', 'm2'],
+          },
+          _c: {
+            write: fakeCWrite,
+          },
         },
       })
 
@@ -28,20 +33,30 @@ describe('error', function () {
         fakeCWrite.mock.calls[0][0].error.message,
       )
 
-      rpcErrorHandler({message: 'original error message'}, undefined, {
-        method: 'm0',
-        _c: {
-          write: fakeCWrite,
+      rpcErrorHandlerFactory()({
+        err: {message: 'original error message'},
+        ctx: {
+          req: {
+            method: 'm0',
+          },
+          _c: {
+            write: fakeCWrite,
+          },
         },
       })
 
       expect(fakeCWrite.mock.calls[1][0].error.message).toContain('-> m0')
 
       expect(() =>
-        rpcErrorHandler(null, undefined, {
-          method: 'm0',
-          _c: {
-            write: fakeCWrite,
+        rpcErrorHandlerFactory()({
+          err: null,
+          ctx: {
+            req: {
+              method: 'm0',
+            },
+            _c: {
+              write: fakeCWrite,
+            },
           },
         }),
       ).toThrowError('Invalid error')
@@ -50,12 +65,17 @@ describe('error', function () {
     it('should return the response with the same req id', async function () {
       const fakeCWrite = jest.fn()
 
-      rpcErrorHandler({message: 'original error message'}, undefined, {
-        method: 'm0',
-        id: 3,
-        _rpcStack: ['m1', 'm2'],
-        _c: {
-          write: fakeCWrite,
+      rpcErrorHandlerFactory()({
+        err: {message: 'original error message'},
+        ctx: {
+          req: {
+            method: 'm0',
+            id: 3,
+            _rpcStack: ['m1', 'm2'],
+          },
+          _c: {
+            write: fakeCWrite,
+          },
         },
       })
 

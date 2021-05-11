@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import {IS_DEV_MODE} from '@cfxjs/fluent-wallet-inner-utils'
 import * as walletGeneratePrivateKey from '@cfxjs/wallet_generate-private-key'
 import * as walletGenerateMnemonic from '@cfxjs/wallet_generate-mnemonic'
 import * as walletUnlock from '@cfxjs/wallet_unlock'
@@ -15,6 +16,7 @@ import * as walletAddVault from '@cfxjs/wallet_add-vault'
 import * as walletImportAddress from '@cfxjs/wallet_import-address'
 
 export const rpcEngineOpts = {
+  isDev: IS_DEV_MODE,
   methods: [
     // init
     walletGeneratePrivateKey,

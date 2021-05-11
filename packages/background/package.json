@@ -22,8 +22,8 @@
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock",
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock",
     "@cfxjs/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword",
-    "@thi.ng/rstream": "^6.0.7",
-    "@thi.ng/rstream-csp": "^2.0.66",
+    "@thi.ng/rstream": "^6.0.8",
+    "@thi.ng/rstream-csp": "^2.0.67",
     "regenerator-runtime": "^0.13.8",
     "webextension-polyfill": "^0.8.0"
   }

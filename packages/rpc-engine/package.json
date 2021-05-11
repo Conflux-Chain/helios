@@ -9,14 +9,11 @@
     "@cfxjs/compose": "workspace:packages/compose",
     "@cfxjs/csp": "workspace:packages/csp",
     "@cfxjs/errors": "workspace:packages/errors",
-    "@cfxjs/fluent-wallet-inner-utils": "workspace:packages/inner-utils",
-    "@cfxjs/iterators": "workspace:packages/iterators",
     "@cfxjs/json-rpc": "workspace:packages/json-rpc",
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error",
     "@cfxjs/spec": "workspace:packages/spec",
-    "@cfxjs/transducers": "workspace:packages/transducers",
-    "@thi.ng/compose": "^1.4.30",
-    "@thi.ng/csp": "^1.1.62",
+    "@thi.ng/atom": "4.1.35",
+    "@thi.ng/csp": "^1.1.63",
     "ramda": "^0.27.1"
   }
 }

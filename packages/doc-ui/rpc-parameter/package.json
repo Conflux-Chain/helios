@@ -11,6 +11,6 @@
     "@cfxjs/doc-use-rpc": "workspace:packages/doc-ui/useRPC",
     "@cfxjs/doc-use-spec": "workspace:packages/doc-ui/useSpec",
     "prop-types": "^15.7.2",
-    "zustand": "3.4.1"
+    "zustand": "3.5.1"
   }
 }

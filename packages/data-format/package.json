@@ -4,6 +4,6 @@
   "main": "index.js",
   "version": "0.0.1",
   "dependencies": {
-    "big.js": "^6.0.3"
+    "big.js": "^6.1.1"
   }
 }
