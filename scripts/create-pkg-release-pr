@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+set -u
+set -o pipefail
+
+if ! hub pull-request \
+            --message 'chore(release-pkg): release packages' \
+            --base "origin/__release-pkg" \
+            --head "origin/${GITHUB_HEAD_REF}"
+then
+  printf '%s\n' 'Pull Request already exists'
+fi
