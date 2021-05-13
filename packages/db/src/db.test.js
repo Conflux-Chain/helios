@@ -11,6 +11,10 @@ const schema = {
     data: {
       doc: 'Encrypted vault data',
     },
+    ddata: {
+      doc: 'Decrypted vault data',
+      persist: false,
+    },
     accounts: {
       doc: 'Accounts belong to this vault',
       many: true,
@@ -331,7 +335,12 @@ describe('db', function () {
         d => fakeLocalStorage.setItem('dsdata', d),
         fakeLocalStorage.getItem('dsdata'),
       )
-      conn.createVault({type: 'a', data: '1'})
+      conn.createVault({type: 'a', data: '1', ddata: '11'})
+
+      // data with persist: false should be only apperare once in the schema section
+      expect(
+        fakeLocalStorage.storage.dsdata.match(/:vault\/ddata/).length,
+      ).toBe(1)
       conn.createVault({type: 'a', data: '2'})
       conn.createVault({type: 'a', data: '3'})
       conn.createVault({type: 'a', data: '4'})

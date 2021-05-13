@@ -1,7 +1,7 @@
-(ns ^:no-doc cfxjs.db.impl.entity
+(ns ^:no-doc cfxjs.db.datascript.impl.entity
   (:refer-clojure :exclude [keys get])
   (:require [#?(:cljs cljs.core :clj clojure.core) :as c]
-            [datascript.db :as db]
+            [cfxjs.db.datascript.db :as db]
             [cfxjs.db.schema :as dcs]))
 
 (declare entity ->Entity equiv-entity lookup-entity touch)
@@ -12,7 +12,7 @@
             (keyword? eid))
     (db/entid db eid)))
 
-(defn entity [db model attr-keys eid]
+(defn entity [db model & [attr-keys eid]]
   {:pre [(db/db? db)]}
   (when-let [e (entid db eid)]
     (let [e (->Entity db model attr-keys e (volatile! false) (volatile! {}))]
@@ -135,9 +135,11 @@
        (-invoke [this k not-found]
                 (lookup-entity this k not-found))
 
-       IPrintWithWriter
-       (-pr-writer [_ writer opts]
-                   (-pr-writer (assoc @cache :db/id eid) writer opts))]
+       ;; IPrintWithWriter
+       ;; (-pr-writer [_ writer opts]
+       ;;             (js/console.log "writer" writer)
+       ;;             (-pr-writer (assoc @cache :db/id eid) writer opts))
+       ]
 
       :clj
       [Object

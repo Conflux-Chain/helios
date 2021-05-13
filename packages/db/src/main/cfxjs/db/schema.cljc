@@ -2,14 +2,17 @@
 
 (def current-schema (atom nil))
 
-(defn- parse-attr-value [{:keys [ref many one doc identity value component]}]
+(defn- parse-attr-value [{:keys [ref many one doc identity value component persist index tuples]}]
   (cond ref [:db/valueType :db.type/ref]
         many [:db/cardinality :db.cardinality/many]
         one [:db/cardinality :db.cardinality/one]
         doc [:db/doc doc]
         identity [:db/unique :db.unique/identity]
         value [:db/unique :db.unique/value]
-        component [:db/isComponent true]))
+        index [:db/unique :db/index]
+        (false? persist) [:db/persist false]
+        component [:db/isComponent true]
+        tuples (mapv keyword tuples)))
 
 (defn js-schema->schema
   "Convert js schema format to datascript schema,
