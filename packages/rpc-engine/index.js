@@ -6,6 +6,7 @@ import {defError} from '@cfxjs/errors'
 import {utils as rpcUtils} from '@cfxjs/json-rpc'
 import {validate, explain} from '@cfxjs/spec'
 import {rpcErrorHandlerFactory} from './src/error'
+import rndId from '@cfxjs/random-id'
 import * as perms from './src/permissions'
 import * as jsonRpcErr from '@cfxjs/json-rpc-error'
 
@@ -29,7 +30,7 @@ const rpcHandlers = [
     name: 'validateJsonRpc',
     main(_, {req}) {
       req.jsonrpc = req.jsonrpc || '2.0'
-      req.id = req.id || 2
+      req.id = req.id ?? rndId()
       if (!rpcUtils.isValidRequest(req))
         throw new jsonRpcErr.InvalidRequest(
           'invalid rpc request:\n' +

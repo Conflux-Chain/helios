@@ -2429,6 +2429,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/cache-rpc@workspace:packages/cache-rpc":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/cache-rpc@workspace:packages/cache-rpc"
+  dependencies:
+    "@thi.ng/cache": 1.0.83
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/checks@workspace:packages/checks":
   version: 0.0.0-use.local
   resolution: "@cfxjs/checks@workspace:packages/checks"
@@ -2535,6 +2551,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/fetch-rpc@workspace:packages/fetch-rpc":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/fetch-rpc@workspace:packages/fetch-rpc"
+  dependencies:
+    "@thi.ng/cache": 1.0.83
+    ky: 0.28.0
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/fluent-wallet-consts@workspace:packages/consts":
   version: 0.0.0-use.local
   resolution: "@cfxjs/fluent-wallet-consts@workspace:packages/consts"
@@ -2627,6 +2652,7 @@ __metadata:
     "@cfxjs/errors": "workspace:packages/errors"
     "@cfxjs/json-rpc": "workspace:packages/json-rpc"
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error"
+    "@cfxjs/random-id": "workspace:packages/random-id"
     "@cfxjs/spec": "workspace:packages/spec"
     "@thi.ng/atom": 4.1.35
     "@thi.ng/csp": ^1.1.63
@@ -5634,6 +5660,17 @@ __metadata:
   dependencies:
     "@thi.ng/api": ^7.1.4
   checksum: bb3d46070548161a949365dc3f66e1fcd4689deb1d53324dbe63165ccb8b33287b5f2b7aca52bc343ce88dcf446151857e315f1f23922bd66d1788f3d5ebe17a
+  languageName: node
+  linkType: hard
+
+"@thi.ng/cache@npm:1.0.83":
+  version: 1.0.83
+  resolution: "@thi.ng/cache@npm:1.0.83"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/dcons": ^2.3.23
+    "@thi.ng/transducers": ^7.7.2
+  checksum: 8b0c474dc322e8e9be38d5d96f45f495271538ef24beb5152a8bbcedc9931f4d21fcccf230b8f8f5727c3529f82644d1e12ddddeff5d302ebc646891986c60de
   languageName: node
   linkType: hard
 
@@ -15652,6 +15689,13 @@ fsevents@~2.3.1:
   version: 0.21.0
   resolution: "known-css-properties@npm:0.21.0"
   checksum: b5f0afd2aaab2cc3249f3bba2e92b227bb7d6b0f7ec447f8655ee719b3140641133a19aab926e5f12718a201ee40f39181fed01632fcf58d919d5d7d2b55b9fd
+  languageName: node
+  linkType: hard
+
+"ky@npm:0.28.0":
+  version: 0.28.0
+  resolution: "ky@npm:0.28.0"
+  checksum: aec806255d242251cdb42ec81fc1ffd72f976ffb12f048b5b640b1e250e522e159c87a3e78bc960f5b0a9b520109c9451bf62b26415bddb420103dcc088639ef
   languageName: node
   linkType: hard
 
