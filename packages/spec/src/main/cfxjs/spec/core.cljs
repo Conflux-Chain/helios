@@ -232,4 +232,9 @@
 (def export-password Password)
 (def export-networkId NetworkId)
 (def export-addressType AddressType)
+(def export-hex-string (update-properties
+                        [:re #"^0(x|X)?[a-fA-F0-9]+$"]
+                        :type :hexString
+                        :error/message "invalid hex string"
+                        :doc "hexadecimal string"))
 ;; (def export-tap tap>)
