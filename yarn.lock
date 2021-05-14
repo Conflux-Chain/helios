@@ -2429,22 +2429,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/cache-rpc@workspace:packages/cache-rpc":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cache-rpc@workspace:packages/cache-rpc"
-  dependencies:
-    "@thi.ng/cache": 1.0.83
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/checks@workspace:packages/checks":
   version: 0.0.0-use.local
   resolution: "@cfxjs/checks@workspace:packages/checks"
@@ -2551,15 +2535,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/fetch-rpc@workspace:packages/fetch-rpc":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/fetch-rpc@workspace:packages/fetch-rpc"
-  dependencies:
-    "@thi.ng/cache": 1.0.83
-    ky: 0.28.0
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/fluent-wallet-consts@workspace:packages/consts":
   version: 0.0.0-use.local
   resolution: "@cfxjs/fluent-wallet-consts@workspace:packages/consts"
@@ -2654,8 +2629,10 @@ __metadata:
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error"
     "@cfxjs/random-id": "workspace:packages/random-id"
     "@cfxjs/spec": "workspace:packages/spec"
+    "@cfxjs/transducers": "workspace:packages/transducers"
     "@thi.ng/atom": 4.1.35
     "@thi.ng/csp": ^1.1.63
+    "@thi.ng/rstream-graph": 3.2.68
     ramda: ^0.27.1
   languageName: unknown
   linkType: soft
@@ -5663,17 +5640,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/cache@npm:1.0.83":
-  version: 1.0.83
-  resolution: "@thi.ng/cache@npm:1.0.83"
-  dependencies:
-    "@thi.ng/api": ^7.1.4
-    "@thi.ng/dcons": ^2.3.23
-    "@thi.ng/transducers": ^7.7.2
-  checksum: 8b0c474dc322e8e9be38d5d96f45f495271538ef24beb5152a8bbcedc9931f4d21fcccf230b8f8f5727c3529f82644d1e12ddddeff5d302ebc646891986c60de
-  languageName: node
-  linkType: hard
-
 "@thi.ng/checks@npm:^2.9.6":
   version: 2.9.6
   resolution: "@thi.ng/checks@npm:2.9.6"
@@ -5794,6 +5760,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/resolve-map@npm:^4.2.20":
+  version: 4.2.20
+  resolution: "@thi.ng/resolve-map@npm:4.2.20"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/checks": ^2.9.6
+    "@thi.ng/errors": ^1.3.0
+    "@thi.ng/paths": ^4.2.7
+  checksum: 600a0479af1923349ece0e1a5d6d10de413320f214fb05d429f8536deb151fd6f152b5e77849683192f40e773618c60bb033ef48539f54ae9e880b6c414e6f04
+  languageName: node
+  linkType: hard
+
 "@thi.ng/rstream-csp@npm:^2.0.67":
   version: 2.0.67
   resolution: "@thi.ng/rstream-csp@npm:2.0.67"
@@ -5801,6 +5779,22 @@ __metadata:
     "@thi.ng/csp": ^1.1.63
     "@thi.ng/rstream": ^6.0.8
   checksum: 64f1e3d9912bee50278ab45d4f6d6e3107238898673716419b0dc5ef3a59128aa9ca0a72a65a0acd3db60dab39b0448b0111895a5760fff8b15936c19f5a7239
+  languageName: node
+  linkType: hard
+
+"@thi.ng/rstream-graph@npm:3.2.68":
+  version: 3.2.68
+  resolution: "@thi.ng/rstream-graph@npm:3.2.68"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/atom": ^4.1.35
+    "@thi.ng/checks": ^2.9.6
+    "@thi.ng/errors": ^1.3.0
+    "@thi.ng/paths": ^4.2.7
+    "@thi.ng/resolve-map": ^4.2.20
+    "@thi.ng/rstream": ^6.0.8
+    "@thi.ng/transducers": ^7.7.2
+  checksum: f397316a764ab6b75f4b9d094fca1992bc35b996ae676da5aac7769dbb17f6899917441c99b095a85393f317269eaed2a09f33865574cbf69bd48ee800e8e456
   languageName: node
   linkType: hard
 
@@ -15689,13 +15683,6 @@ fsevents@~2.3.1:
   version: 0.21.0
   resolution: "known-css-properties@npm:0.21.0"
   checksum: b5f0afd2aaab2cc3249f3bba2e92b227bb7d6b0f7ec447f8655ee719b3140641133a19aab926e5f12718a201ee40f39181fed01632fcf58d919d5d7d2b55b9fd
-  languageName: node
-  linkType: hard
-
-"ky@npm:0.28.0":
-  version: 0.28.0
-  resolution: "ky@npm:0.28.0"
-  checksum: aec806255d242251cdb42ec81fc1ffd72f976ffb12f048b5b640b1e250e522e159c87a3e78bc960f5b0a9b520109c9451bf62b26415bddb420103dcc088639ef
   languageName: node
   linkType: hard
 

@@ -8,12 +8,10 @@ describe('error', function () {
       const fakeCWrite = jest.fn()
 
       rpcErrorHandlerFactory()({
-        err: {message: 'original error message'},
-        ctx: {
-          req: {
-            method: 'm0',
-            _rpcStack: ['m1', 'm2'],
-          },
+        message: 'original error message',
+        rpcData: {
+          method: 'm0',
+          _rpcStack: ['m1', 'm2'],
           _c: {
             write: fakeCWrite,
           },
@@ -34,11 +32,9 @@ describe('error', function () {
       )
 
       rpcErrorHandlerFactory()({
-        err: {message: 'original error message'},
-        ctx: {
-          req: {
-            method: 'm0',
-          },
+        message: 'original error message',
+        rpcData: {
+          method: 'm0',
           _c: {
             write: fakeCWrite,
           },
@@ -47,32 +43,18 @@ describe('error', function () {
 
       expect(fakeCWrite.mock.calls[1][0].error.message).toContain('-> m0')
 
-      expect(() =>
-        rpcErrorHandlerFactory()({
-          err: null,
-          ctx: {
-            req: {
-              method: 'm0',
-            },
-            _c: {
-              write: fakeCWrite,
-            },
-          },
-        }),
-      ).toThrowError('Invalid error')
+      expect(() => rpcErrorHandlerFactory()(null)).toThrowError('Invalid error')
     })
 
     it('should return the response with the same req id', async function () {
       const fakeCWrite = jest.fn()
 
       rpcErrorHandlerFactory()({
-        err: {message: 'original error message'},
-        ctx: {
-          req: {
-            method: 'm0',
-            id: 3,
-            _rpcStack: ['m1', 'm2'],
-          },
+        message: 'original error message',
+        rpcData: {
+          method: 'm0',
+          id: 3,
+          _rpcStack: ['m1', 'm2'],
           _c: {
             write: fakeCWrite,
           },

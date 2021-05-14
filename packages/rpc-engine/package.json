@@ -13,8 +13,10 @@
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error",
     "@cfxjs/random-id": "workspace:packages/random-id",
     "@cfxjs/spec": "workspace:packages/spec",
+    "@cfxjs/transducers": "workspace:packages/transducers",
     "@thi.ng/atom": "4.1.35",
     "@thi.ng/csp": "^1.1.63",
+    "@thi.ng/rstream-graph": "3.2.68",
     "ramda": "^0.27.1"
   }
 }

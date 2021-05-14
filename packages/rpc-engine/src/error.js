@@ -12,15 +12,18 @@ export const appendRpcStackToErrorMessage = (err, stack) => {
 }
 
 export const rpcErrorHandlerFactory = (isDev = false) => {
-  return ({err, ctx} = {}) => {
-    if (!err || !err.message || !ctx || !ctx.req || !ctx._c)
+  return function (err) {
+    if (!err || !err.message || !err.rpcData) {
+      if (isDev)
+        console.error('invalid error, missing [message] or [rpcData]\n', err)
       throw new Error('Invalid error')
-    const {req, _c} = ctx
+    }
+    const req = err.rpcData
     err = appendRpcStackToErrorMessage(err, req._rpcStack || [req.method])
 
     /* istanbul ignore if  */
     if (isDev) console.error(err)
-    _c.write({
+    req._c.write({
       jsonrpc: '2.0',
       error: {
         code: errorInstanceToErrorCode(err) || -32000,
