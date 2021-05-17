@@ -5,6 +5,7 @@ const s = stream({
   closeIn: false,
   closeOut: false,
 })
+
 const pb = pubsub({topic: ({id} = {}) => id})
 s.subscribe(pb)
 

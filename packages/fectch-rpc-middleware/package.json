@@ -1,0 +1,8 @@
+{
+  "name": "@cfxjs/fectch-rpc-middleware",
+  "dependencies": {
+    "@cfxjs/fetch-rpc": "workspace:packages/fetch-rpc",
+    "@cfxjs/rpc-engine": "workspace:packages/rpc-engine",
+    "@thi.ng/rstream": "6.0.8"
+  }
+}

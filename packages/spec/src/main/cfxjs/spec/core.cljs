@@ -1,7 +1,8 @@
 (ns cfxjs.spec.core
   (:require [malli.core :as m]
             [malli.util :as mu]
-            [malli.error :refer [humanize]]))
+            [malli.error :refer [humanize]]
+            [goog.math :refer [randomInt]]))
 
 (defn j->c [a] (js->clj a :keywordize-keys true))
 
@@ -235,6 +236,14 @@
 (def export-hex-string (update-properties
                         [:re #"^0(x|X)?[a-fA-F0-9]+$"]
                         :type :hexString
+                        :gen/fmap #(str "0x"
+                                        (-> js/Number.MAX_SAFE_INTEGER randomInt (.toString 16)))
                         :error/message "invalid hex string"
                         :doc "hexadecimal string"))
+(def export-epoch-tag
+  (update-properties
+   [:or [:enum "latest_mined" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil js/undefined] export-hex-string]
+   :type :epoch-tag
+   :error/message "invalid epoch tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"
+   :doc "epoch number tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"))
 ;; (def export-tap tap>)

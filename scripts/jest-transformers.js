@@ -10,7 +10,12 @@ const snowpackImportMetaEnv = code =>
 module.exports = {
   process: (...args) => {
     args[0] = snowpackImportMetaEnv(...args)
-    const [src /* path, jestConfig */] = args
+    let [src /* path, jestConfig */] = args
+    if (src.includes("import ky from 'ky'"))
+      src = src.replace(
+        "import ky from 'ky'",
+        "import ky from 'ky/distribution/index.js'",
+      )
     // const [, , transformOptions = {}] =
     //   (jestConfig.transform || []).find(
     //     ([, transformerPath]) => transformerPath === __filename,
