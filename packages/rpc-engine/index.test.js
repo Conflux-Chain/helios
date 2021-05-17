@@ -23,7 +23,8 @@ describe('RPCEngine', function () {
         method: 'cfx_mockRpc',
         params: {mockParams: 'mockParams'},
       })
-      expect(res).toStrictEqual({jsonrpc: '2.0', id: 2, result: '0x1'})
+      expect(res.jsonrpc).toBe('2.0')
+      expect(res.result).toBe('0x1')
     })
   })
 })

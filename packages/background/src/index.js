@@ -50,10 +50,22 @@ import {rpcEngineOpts} from './rpc-engine-opts'
     })
     console.log(pk, mn)
     console.log(
+      await Promise.all([
+        request({
+          method: 'wallet_generateMnemonic',
+        }),
+        request({
+          method: 'wallet_generatePrivateKey',
+          params: {entropy: 'abc'},
+        }),
+      ]),
+    )
+    console.log(
       await request({
         method: 'wallet_lock',
       }),
     )
+
     console.log(
       await request({
         method: 'wallet_unlock',

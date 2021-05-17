@@ -1,0 +1,20 @@
+releases:
+  "@cfxjs/errors": patch
+  "@cfxjs/json-rpc-error": patch
+  "@cfxjs/rpc-engine": patch
+  "@cfxjs/spec": patch
+  "@cfxjs/transducers": patch
+
+declined:
+  - helios-background
+  - "@cfxjs/wallet_add-vault"
+  - "@cfxjs/wallet_create-account"
+  - "@cfxjs/wallet_generate-address"
+  - "@cfxjs/wallet_get-vaults"
+  - "@cfxjs/wallet_import-address"
+  - "@cfxjs/wallet_import-mnemonic"
+  - "@cfxjs/wallet_import-private-key"
+  - "@cfxjs/wallet_unlock"
+  - "@cfxjs/wallet_validate-password"
+  - "@cfxjs/provider-api"
+  - workspace-tools

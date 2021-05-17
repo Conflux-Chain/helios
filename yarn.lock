@@ -2627,9 +2627,12 @@ __metadata:
     "@cfxjs/errors": "workspace:packages/errors"
     "@cfxjs/json-rpc": "workspace:packages/json-rpc"
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error"
+    "@cfxjs/random-id": "workspace:packages/random-id"
     "@cfxjs/spec": "workspace:packages/spec"
+    "@cfxjs/transducers": "workspace:packages/transducers"
     "@thi.ng/atom": 4.1.35
     "@thi.ng/csp": ^1.1.63
+    "@thi.ng/rstream-graph": 3.2.68
     ramda: ^0.27.1
   languageName: unknown
   linkType: soft
@@ -5757,6 +5760,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/resolve-map@npm:^4.2.20":
+  version: 4.2.20
+  resolution: "@thi.ng/resolve-map@npm:4.2.20"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/checks": ^2.9.6
+    "@thi.ng/errors": ^1.3.0
+    "@thi.ng/paths": ^4.2.7
+  checksum: 600a0479af1923349ece0e1a5d6d10de413320f214fb05d429f8536deb151fd6f152b5e77849683192f40e773618c60bb033ef48539f54ae9e880b6c414e6f04
+  languageName: node
+  linkType: hard
+
 "@thi.ng/rstream-csp@npm:^2.0.67":
   version: 2.0.67
   resolution: "@thi.ng/rstream-csp@npm:2.0.67"
@@ -5764,6 +5779,22 @@ __metadata:
     "@thi.ng/csp": ^1.1.63
     "@thi.ng/rstream": ^6.0.8
   checksum: 64f1e3d9912bee50278ab45d4f6d6e3107238898673716419b0dc5ef3a59128aa9ca0a72a65a0acd3db60dab39b0448b0111895a5760fff8b15936c19f5a7239
+  languageName: node
+  linkType: hard
+
+"@thi.ng/rstream-graph@npm:3.2.68":
+  version: 3.2.68
+  resolution: "@thi.ng/rstream-graph@npm:3.2.68"
+  dependencies:
+    "@thi.ng/api": ^7.1.4
+    "@thi.ng/atom": ^4.1.35
+    "@thi.ng/checks": ^2.9.6
+    "@thi.ng/errors": ^1.3.0
+    "@thi.ng/paths": ^4.2.7
+    "@thi.ng/resolve-map": ^4.2.20
+    "@thi.ng/rstream": ^6.0.8
+    "@thi.ng/transducers": ^7.7.2
+  checksum: f397316a764ab6b75f4b9d094fca1992bc35b996ae676da5aac7769dbb17f6899917441c99b095a85393f317269eaed2a09f33865574cbf69bd48ee800e8e456
   languageName: node
   linkType: hard
 

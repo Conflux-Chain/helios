@@ -1,4 +1,4 @@
-import {defError} from '@cfxjs/errors'
+import {defRpcError} from '@cfxjs/errors'
 
 export const errorStackPop = error => {
   if (error?.stack) {
@@ -20,35 +20,35 @@ export const ERROR = {
   SERVER: {code: -32000, name: 'ServerError'},
 }
 
-export const Parse = defError(
+export const Parse = defRpcError(
   () => `JSON-RPC ${ERROR.PARSE.name} ${ERROR.PARSE.code}\n\n`,
   msg => msg,
 )
 
-export const InvalidRequest = defError(
+export const InvalidRequest = defRpcError(
   () =>
     `JSON-RPC ${ERROR.INVALID_REQUEST.name} ${ERROR.INVALID_REQUEST.code}\n\n`,
   msg => msg,
 )
 
-export const MethodNotFound = defError(
+export const MethodNotFound = defRpcError(
   () =>
     `JSON-RPC ${ERROR.METHOD_NOT_FOUND.name} ${ERROR.METHOD_NOT_FOUND.code}\n\n`,
   msg => msg,
 )
 
-export const InvalidParams = defError(
+export const InvalidParams = defRpcError(
   () =>
     `JSON-RPC ${ERROR.INVALID_PARAMS.name} ${ERROR.INVALID_PARAMS.code}\n\n`,
   msg => msg,
 )
 
-export const Internal = defError(
+export const Internal = defRpcError(
   () => `JSON-RPC ${ERROR.INTERNAL.name} ${ERROR.INTERNAL.code}\n\n`,
   msg => msg,
 )
 
-export const Server = defError(
+export const Server = defRpcError(
   () => `JSON-RPC ${ERROR.SERVER.name} ${ERROR.SERVER.code}\n\n`,
   msg => msg,
 )
