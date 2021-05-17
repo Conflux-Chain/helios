@@ -2,7 +2,7 @@
   "name": "@cfxjs/rpc-engine",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@cfxjs/associative": "workspace:packages/associative",
     "@cfxjs/checks": "workspace:packages/checks",
