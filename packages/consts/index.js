@@ -22,3 +22,6 @@ export const INTERNAL_CONTRACTS_HEX_ADDRESS = [
 ]
 
 export const ADDRESS_TYPES = ['user', 'contract', 'builtin', 'null']
+
+export const CONFLUX_MAINNET_RPC_ENDPOINT = 'https://portal-main.confluxrpc.com'
+export const CONFLUX_TESTNET_RPC_ENDPOINT = 'https://portal-test.confluxrpc.com'

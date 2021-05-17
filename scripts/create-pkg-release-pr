@@ -5,9 +5,9 @@ set -u
 set -o pipefail
 
 if ! hub pull-request \
-            --message 'chore(release-pkg): release packages' \
-            --base "origin/__release-pkg" \
-            --head "origin/${GITHUB_HEAD_REF}"
+     --message 'chore(release-pkg): release packages' \
+     --base "dev" \
+     --head "__release-pkg"
 then
   printf '%s\n' 'Pull Request already exists'
 fi

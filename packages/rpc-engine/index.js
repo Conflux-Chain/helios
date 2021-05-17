@@ -1,8 +1,7 @@
 // # rpc engine
 import {stream} from '@thi.ng/rstream'
-import {identity, partial} from '@cfxjs/compose'
+import {partial} from '@cfxjs/compose'
 import {chan} from '@cfxjs/csp'
-import {defError} from '@cfxjs/errors'
 import {rpcErrorHandlerFactory} from './src/error.js'
 import * as perms from './src/permissions.js'
 import * as jsonRpcErr from '@cfxjs/json-rpc-error'
@@ -10,8 +9,6 @@ import {pluck} from '@cfxjs/transducers'
 import * as middlewares from './middlewares/index.js'
 import {addMiddleware} from './middleware.js'
 import {node, initGraph} from '@thi.ng/rstream-graph'
-
-export const RpcEngineError = defError(() => '[@cfxjs/rpc-engin] ', identity)
 
 const wrapRpcError =
   (methodName, ErrConstructor) =>
@@ -35,7 +32,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
   const rpcStore = new Object() // to store rpc defination
 
   methods.forEach(rpc => {
-    const {NAME, permissions, main, schemas = {}} = rpc
+    const {NAME, permissions, main, schemas = {}, cache} = rpc
     rpcStore[rpc.NAME] = {
       Err: {
         Parse: wrapRpcError(rpc.NAME, jsonRpcErr.Parse),
@@ -47,6 +44,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
       },
       NAME,
       schemas,
+      cache,
       main: async (...args) => main(...args),
       permissions: perms.format(permissions),
     }
@@ -96,6 +94,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
   addM(middlewares.validateRpcMethodMiddleware)
   addM(middlewares.injectRpcStoreMiddleware)
   addM(middlewares.injectWalletDBMiddleware)
+  addM(middlewares.fetchMiddleware)
   addM(middlewares.validateRpcParamsMiddleware)
   addM(middlewares.callRpcMiddleware)
 

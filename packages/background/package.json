@@ -7,6 +7,7 @@
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@cfxjs/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber",
     "@cfxjs/db": "workspace:packages/db",
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",
