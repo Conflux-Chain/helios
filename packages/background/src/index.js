@@ -72,5 +72,18 @@ import {rpcEngineOpts} from './rpc-engine-opts'
         params: {password: '12345678'},
       }),
     )
+
+    console.log(
+      await Promise.all([
+        request({method: 'cfx_epochNumber', params: ['latest_state']}),
+        request({method: 'cfx_epochNumber', params: ['latest_mined']}),
+      ]),
+    )
+    console.log(
+      await Promise.all([
+        request({method: 'cfx_epochNumber', params: ['latest_state']}),
+        request({method: 'cfx_epochNumber', params: ['latest_mined']}),
+      ]),
+    )
   }
 })()

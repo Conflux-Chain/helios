@@ -274,5 +274,5 @@ jobs:
               commit --message 'chore(release-pkg): release packages' || true
       - env:
           GH_TOKEN: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
-        run: git push --force --verbose "https://ConfluxBot:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" HEAD:refs/heads/__release_pkg
+        run: git push --force --verbose "https://ConfluxBot:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" HEAD:refs/heads/__release-pkg
       - run: ./scripts/create-pkg-release-pr

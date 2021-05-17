@@ -4,7 +4,7 @@ import {validate, explain} from '@cfxjs/spec'
 export default defMiddleware(({tx: {map}}) => ({
   id: 'validateRpcParams',
   ins: {
-    req: {stream: '/injectWalletDB/node'},
+    req: {stream: '/injectFetchFn/node'},
   },
   fn: map(({rpcStore, req}) => {
     const {params, method} = req

@@ -139,7 +139,8 @@
                                     password cfxjs.spec.core/export-password
                                     networkId cfxjs.spec.core/export-networkId
                                     addressType cfxjs.spec.core/export-addressType
-                                    hex cfxjs.spec.core/export-hex-string}
+                                    hex cfxjs.spec.core/export-hex-string
+                                    epoch cfxjs.spec.core/export-epoch-tag}
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}
                          :depends-on #{:shared}}

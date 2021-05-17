@@ -11,12 +11,16 @@
   </head>
   <body>
     <script type="module">
+     import * as s from 'http://localhost:18003/dist/@cfxjs/spec/index.js'
+     import * as g from 'http://localhost:18003/dist/@cfxjs/spec/src/gen.js'
      import schema from './background/src/db-schema.js'
      import {createdb} from './db/index.js'
 
      window.db = createdb(schema, console.log)
      window.v1 = db.createVault({type: 'a', data: '2'})
      window.v2 = db.createVault({type: 'a', data: '3', pdata: 'ok'})
+     window.s = s
+     window.g = g
     </script>
     <p>html used to debug db and spec</p>
   </body>
