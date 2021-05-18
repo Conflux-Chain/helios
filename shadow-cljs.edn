@@ -140,7 +140,8 @@
                                     networkId cfxjs.spec.core/export-networkId
                                     addressType cfxjs.spec.core/export-addressType
                                     hex cfxjs.spec.core/export-hex-string
-                                    epochTag cfxjs.spec.core/export-epoch-tag}
+                                    epochTag cfxjs.spec.core/export-epoch-tag
+                                    undefine cfxjs.spec.core/export-js-undefined}
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}
                          :depends-on #{:shared}}

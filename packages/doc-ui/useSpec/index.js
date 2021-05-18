@@ -16,6 +16,7 @@ const createSpec = id =>
     loadingGen: true,
     schema: null,
     doc: null,
+    parsedData: null,
     data: null,
     spec: SPEC,
     gen: GEN,
@@ -23,7 +24,18 @@ const createSpec = id =>
     valid: null,
     validating: false,
 
-    setData: data => (set({data}), get().validate()),
+    setData: data => {
+      let parsedData
+      try {
+        // spec like arr/cat may accept arr as input, so we need to parse user
+        // input with JSON.parse
+        parsedData = JSON.parse(data)
+      } catch (err) {} // eslint-disable-line no-empty
+      if (parsedData !== undefined) set({parsedData})
+      else set({parsedData: data})
+      set({data})
+      get().validate()
+    },
     isLoading: () => get().loadingSpec,
 
     validate: async () => {
@@ -37,7 +49,7 @@ const createSpec = id =>
       )
         return null
       set({validating: true})
-      const valid = await s.spec.validate(s.schema, s.data)
+      let valid = await s.spec.validate(s.schema, s.parsedData)
       set({valid, validating: false})
       s.setError()
       return valid
@@ -52,7 +64,7 @@ const createSpec = id =>
     setError: async () => {
       const s = get()
       if (s.validating || s.valid === null || s.valid) return null
-      let error = await s.spec.explain(s.schema, s.data)
+      let error = await s.spec.explain(s.schema, s.parsedData)
       if (!Array.isArray(error)) error = [error]
       set({error})
       return error

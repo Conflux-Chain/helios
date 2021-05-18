@@ -151,7 +151,12 @@
 (def export-seq seq?)
 (def export-char char?)
 (def export-setp set?)
-(def export-nil nil?)
+(def export-nil (m/-simple-schema
+                 {:type :nil
+                  :pred nil?
+                  :type-properties {:error/message "should be null or cljs nil"
+                                    :doc "javascript null or cljs nil"
+                                    :gen/fmap (fn [& args] nil)}}))
 (def export-falsep false?)
 (def export-truep true?)
 (def export-zero zero?)
@@ -240,9 +245,16 @@
                                         (-> js/Number.MAX_SAFE_INTEGER randomInt (.toString 16)))
                         :error/message "invalid hex string"
                         :doc "hexadecimal string"))
+(def export-js-undefined
+  (m/-simple-schema
+   {:type :undefined
+    :pred #(= js/undefined)
+    :type-properties {:error/message "should be undefined"
+                      :doc "javascript undefined"
+                      :gen/fmap (fn [& args] js/undefined)}}))
 (def export-epoch-tag
   (update-properties
-   [:or [:enum "latest_mined" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil js/undefined] export-hex-string]
+   [:or [:enum "latest_mined" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil] export-hex-string]
    :type :epoch-tag
    :error/message "invalid epoch tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"
    :doc "epoch number tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"))
