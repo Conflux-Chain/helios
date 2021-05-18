@@ -4,10 +4,11 @@ set -e
 set -u
 set -o pipefail
 
-if ! hub pull-request \
-     --message 'chore(release-pkg): release packages' \
-     --base "dev" \
-     --head "__release-pkg"
+if ! gh pr create \
+   --base origin/dev \
+   --head origin/__release-pkg_tmp \
+   --title 'chore(release-pkg): release packages' \
+   --body ''
 then
   printf '%s\n' 'Pull Request already exists'
 fi
