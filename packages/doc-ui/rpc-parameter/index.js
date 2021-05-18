@@ -61,13 +61,15 @@ const Type = ({type}) => <Var>{type}</Var>
 const DataEntry = ({htmlElement, rpcName, id, onChange, value}) => {
   const Tag = htmlElement?.el || 'input'
   const otherProps = {}
-  if (Tag === 'select')
+  if (Tag === 'select') {
     // eslint-disable-next-line testing-library/no-node-access
+    console.log(htmlElement.values)
     otherProps.children = htmlElement.values.map((v, idx) => (
       <option key={idx} value={v}>
-        {v}
+        {'' + v}
       </option>
     ))
+  }
 
   if (htmlElement?.type === 'checkbox') {
     otherProps.checked = value
@@ -93,7 +95,15 @@ const Validator = ({valid, error, empty}) => {
 const obj = <Var>object</Var>
 
 const ParamWithChildren = ({type, children, rpcName, k, kv, path}) => {
-  const legendOpts = {or: 'one of', and: 'all of', map: <>{obj} with keys</>}
+  const legendOpts = {
+    cat: 'array of',
+    or: 'one of',
+    and: 'all of',
+    map: <>{obj} with keys</>,
+    '?': 'array with zero or one',
+    '*': 'array with zero or more item as described',
+    '+': 'array with one or more as described',
+  }
   const entryId = `${rpcName}-${kv && k}-entry`
   const mapKey = (
     <label htmlFor={entryId}>
@@ -201,7 +211,15 @@ const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
                       type="button"
                       onClick={() => {
                         if (!gen || !value?.schema) return
-                        setData(gen(value?.schema))
+                        let generated = gen(value?.schema)
+                        if (
+                          Array.isArray(generated) ||
+                          typeof generated === 'object'
+                        )
+                          try {
+                            generated = JSON.stringify(generated)
+                          } catch (err) {} // eslint-disable-line no-empty
+                        setData(generated)
                       }}
                     >
                       fill
@@ -271,7 +289,8 @@ ParamWithChildren.propTypes = {
   k: PropTypes.string,
   kv: PropTypes.bool,
   rpcName: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['map', 'or', 'and']).isRequired,
+  type: PropTypes.oneOf(['map', 'or', 'and', 'cat', '+', '*', '?', 'alt'])
+    .isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,

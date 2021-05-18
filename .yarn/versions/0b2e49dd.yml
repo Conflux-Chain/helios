@@ -1,5 +1,20 @@
 releases:
   "@cfxjs/cfx_epoch-number": patch
+  "@cfxjs/doc-rpc-parameter": patch
+  "@cfxjs/doc-use-spec": patch
+  "@cfxjs/spec": patch
 
 declined:
   - helios-background
+  - "@cfxjs/rpc-engine"
+  - "@cfxjs/wallet_add-vault"
+  - "@cfxjs/wallet_create-account"
+  - "@cfxjs/wallet_generate-address"
+  - "@cfxjs/wallet_get-vaults"
+  - "@cfxjs/wallet_import-address"
+  - "@cfxjs/wallet_import-mnemonic"
+  - "@cfxjs/wallet_import-private-key"
+  - "@cfxjs/wallet_unlock"
+  - "@cfxjs/wallet_validate-password"
+  - workspace-tools
+  - doc
