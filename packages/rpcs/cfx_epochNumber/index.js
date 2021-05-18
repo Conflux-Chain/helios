@@ -1,9 +1,9 @@
-import {epoch, arr, or, nul} from '@cfxjs/spec'
+import {epochTag, cat, or, nul} from '@cfxjs/spec'
 
 export const NAME = 'cfx_epochNumber'
 
 export const schemas = {
-  input: [or, [arr, epoch], nul],
+  input: [or, [cat, epochTag], nul],
 }
 
 export const cache = {
