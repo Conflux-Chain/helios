@@ -1,0 +1,5 @@
+releases:
+  "@cfxjs/cfx_epoch-number": patch
+
+declined:
+  - helios-background

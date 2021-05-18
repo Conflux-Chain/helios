@@ -11,6 +11,9 @@ describe('@cfxjs/cfx_epoch-number', function () {
       expect(validate(schemas.input, [undefined])).toBeTruthy()
       expect(validate(schemas.input, ['0x1'])).toBeTruthy()
       expect(validate(schemas.input, ['latest_state'])).toBeTruthy()
+      expect(
+        validate(schemas.input, ['latest_state', 'latest_mined']),
+      ).toBeFalsy()
       expect(validate(schemas.input, [1])).toBeFalsy()
     })
   })
