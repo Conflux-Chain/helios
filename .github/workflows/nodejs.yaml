@@ -12,267 +12,272 @@ name: NodeJS CI
 on: push
 
 jobs:
-  lint:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [15]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
-        id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: |
-            ~/.m2/repository
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            ./.shadow-cljs
-          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-and-maven-
-      - run: yarn install --immutable
-      - run: yarn lint
+  # lint:
+  #   runs-on: ubuntu-20.04
+  #   strategy:
+  #     matrix:
+  #       node-version: [15]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - name: Get yarn cache directory path
+  #       id: yarn-cache-dir-path
+  #       run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+  #     - uses: actions/cache@v2
+  #       id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
+  #       with:
+  #         path: |
+  #           ~/.m2/repository
+  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #           ./.shadow-cljs
+  #         key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-yarn-and-maven-
+  #     - run: yarn install --immutable
+  #     - run: yarn lint
 
-  test:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [15]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
-        id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: |
-            ~/.m2/repository
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            ./.shadow-cljs
-          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-and-maven-
-      - run: yarn install --immutable
-      - run: yarn test --coverage
-      - uses: codecov/codecov-action@master
-        with:
-          directory: ./coverage
-          functionalities: coveragepy, html
-          verbose: true
+  # test:
+  #   runs-on: ubuntu-20.04
+  #   strategy:
+  #     matrix:
+  #       node-version: [15]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - name: Get yarn cache directory path
+  #       id: yarn-cache-dir-path
+  #       run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+  #     - uses: actions/cache@v2
+  #       id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
+  #       with:
+  #         path: |
+  #           ~/.m2/repository
+  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #           ./.shadow-cljs
+  #         key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-yarn-and-maven-
+  #     - run: yarn install --immutable
+  #     - run: yarn test --coverage
+  #     - uses: codecov/codecov-action@master
+  #       with:
+  #         directory: ./coverage
+  #         functionalities: coveragepy, html
+  #         verbose: true
 
-  build:
-    needs: [lint, test]
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [15]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
-        id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: |
-            ~/.m2/repository
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            ./.shadow-cljs
-          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-and-maven-
-      - run: yarn install --immutable
-      - run: yarn prod
+  # build:
+  #   runs-on: ubuntu-20.04
+  #   strategy:
+  #     matrix:
+  #       node-version: [15]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - name: Get yarn cache directory path
+  #       id: yarn-cache-dir-path
+  #       run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+  #     - uses: actions/cache@v2
+  #       id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
+  #       with:
+  #         path: |
+  #           ~/.m2/repository
+  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #           ./.shadow-cljs
+  #         key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-yarn-and-maven-
+  #     - run: yarn install --immutable
+  #     - run: yarn prod
 
-  build-doc:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [15]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
-        id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: |
-            ~/.m2/repository
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            ./.shadow-cljs
-          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-and-maven-
-      - run: yarn install --immutable
-      - run: yarn workspace doc build
+  # build-doc:
+  #   runs-on: ubuntu-20.04
+  #   strategy:
+  #     matrix:
+  #       node-version: [15]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - name: Get yarn cache directory path
+  #       id: yarn-cache-dir-path
+  #       run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+  #     - uses: actions/cache@v2
+  #       id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
+  #       with:
+  #         path: |
+  #           ~/.m2/repository
+  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #           ./.shadow-cljs
+  #         key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-yarn-and-maven-
+  #     - run: yarn install --immutable
+  #     - run: yarn workspace doc build
 
-      - name: Prepare tag
-        id: prepare_tag
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          TAG_NAME="${GITHUB_REF##refs/tags/}"
-          echo "::set-output name=tag_name::${TAG_NAME}"
-          echo "::set-output name=deploy_tag_name::deploy-${TAG_NAME}"
+  #     - name: Prepare tag
+  #       id: prepare_tag
+  #       if: startsWith(github.ref, 'refs/tags/')
+  #       run: |
+  #         TAG_NAME="${GITHUB_REF##refs/tags/}"
+  #         echo "::set-output name=tag_name::${TAG_NAME}"
+  #         echo "::set-output name=deploy_tag_name::deploy-${TAG_NAME}"
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
-          external_repository: Conflux-Chain/fluent-wallet-doc
-          publish_branch: main
-          publish_dir: ./websites/doc/build
-          tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
-          tag_message: 'Deployment ${{ steps.prepare_tag.outputs.tag_name }}'
+  #     - name: Deploy
+  #       uses: peaceiris/actions-gh-pages@v3
+  #       if: startsWith(github.ref, 'refs/tags/')
+  #       with:
+  #         personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+  #         external_repository: Conflux-Chain/fluent-wallet-doc
+  #         publish_branch: main
+  #         publish_dir: ./websites/doc/build
+  #         tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
+  #         tag_message: 'Deployment ${{ steps.prepare_tag.outputs.tag_name }}'
 
-      - name: Deploy test
-        if: ${{ !startsWith(github.ref , 'refs/tags/') }}
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
-          external_repository: Conflux-Chain/fluent-wallet-doc
-          publish_branch: main
-          publish_dir: ./websites/doc/build
+  #     - name: Deploy test
+  #       if: ${{ !startsWith(github.ref , 'refs/tags/') }}
+  #       uses: peaceiris/actions-gh-pages@v3
+  #       with:
+  #         personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+  #         external_repository: Conflux-Chain/fluent-wallet-doc
+  #         publish_branch: main
+  #         publish_dir: ./websites/doc/build
 
-  build-storybook:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [15]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
-        id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: |
-            ~/.m2/repository
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            ./.shadow-cljs
-          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-and-maven-
-      - run: yarn install --immutable
-      - run: yarn build-storybook
+  # build-storybook:
+  #   runs-on: ubuntu-20.04
+  #   strategy:
+  #     matrix:
+  #       node-version: [15]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - name: Get yarn cache directory path
+  #       id: yarn-cache-dir-path
+  #       run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+  #     - uses: actions/cache@v2
+  #       id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
+  #       with:
+  #         path: |
+  #           ~/.m2/repository
+  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #           ./.shadow-cljs
+  #         key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-yarn-and-maven-
+  #     - run: yarn install --immutable
+  #     - run: yarn build-storybook
 
-      - name: Prepare tag
-        id: prepare_tag
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          TAG_NAME="${GITHUB_REF##refs/tags/}"
-          echo "::set-output name=tag_name::${TAG_NAME}"
-          echo "::set-output name=deploy_tag_name::deploy-${TAG_NAME}"
+  #     - name: Prepare tag
+  #       id: prepare_tag
+  #       if: startsWith(github.ref, 'refs/tags/')
+  #       run: |
+  #         TAG_NAME="${GITHUB_REF##refs/tags/}"
+  #         echo "::set-output name=tag_name::${TAG_NAME}"
+  #         echo "::set-output name=deploy_tag_name::deploy-${TAG_NAME}"
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
-          external_repository: Conflux-Chain/fluent-wallet-storybook
-          publish_branch: main
-          publish_dir: ./storybook-static
-          tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
-          tag_message: 'Deployment ${{ steps.prepare_tag.outputs.tag_name }}'
+  #     - name: Deploy
+  #       uses: peaceiris/actions-gh-pages@v3
+  #       if: startsWith(github.ref, 'refs/tags/')
+  #       with:
+  #         personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+  #         external_repository: Conflux-Chain/fluent-wallet-storybook
+  #         publish_branch: main
+  #         publish_dir: ./storybook-static
+  #         tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
+  #         tag_message: 'Deployment ${{ steps.prepare_tag.outputs.tag_name }}'
 
-      - name: Deploy test
-        if: ${{ !startsWith(github.ref , 'refs/tags/') }}
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
-          external_repository: Conflux-Chain/fluent-wallet-storybook
-          publish_branch: main
-          publish_dir: ./storybook-static
+  #     - name: Deploy test
+  #       if: ${{ !startsWith(github.ref , 'refs/tags/') }}
+  #       uses: peaceiris/actions-gh-pages@v3
+  #       with:
+  #         personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+  #         external_repository: Conflux-Chain/fluent-wallet-storybook
+  #         publish_branch: main
+  #         publish_dir: ./storybook-static
 
-  version-check:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [15]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # https://yarnpkg.com/features/release-workflow/#commit-history
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
-        id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: |
-            ~/.m2/repository
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            ./.shadow-cljs
-          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-and-maven-
-      - run: yarn version check
+  # version-check:
+  #   runs-on: ubuntu-20.04
+  #   strategy:
+  #     matrix:
+  #       node-version: [15]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0 # https://yarnpkg.com/features/release-workflow/#commit-history
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - name: Get yarn cache directory path
+  #       id: yarn-cache-dir-path
+  #       run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+  #     - uses: actions/cache@v2
+  #       id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
+  #       with:
+  #         path: |
+  #           ~/.m2/repository
+  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #           ./.shadow-cljs
+  #         key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-yarn-and-maven-
+  #     - run: yarn version check
 
   release-pkg:
-    if: ${{ github.ref == 'refs/heads/dev'}}
-    needs: [lint, test, build, build-doc, build-storybook, version-check]
+    if: ${{ github.ref == 'refs/heads/test_gh_action'}}
+    # needs: [lint, test, build, build-doc, build-storybook, version-check]
     runs-on: ubuntu-20.04
     strategy:
       matrix:
         node-version: [15]
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
-        id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: |
-            ~/.m2/repository
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            ./.shadow-cljs
-          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-and-maven-
-      - run: yarn install --immutable
-      - run: yarn version apply --all || true
-      - run: node ./scripts/publish-all.js || true
+      # - name: Use Node.js ${{ matrix.node-version }}
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: ${{ matrix.node-version }}
+      # - name: Get yarn cache directory path
+      #   id: yarn-cache-dir-path
+      #   run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      # - uses: actions/cache@v2
+      #   id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
+      #   with:
+      #     path: |
+      #       ~/.m2/repository
+      #       ${{ steps.yarn-cache-dir-path.outputs.dir }}
+      #       ./.shadow-cljs
+      #     key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-yarn-and-maven-
+      # - run: yarn install --immutable
+      # - run: yarn version apply --all || true
+      # - env:
+      #     YARN_NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      #   run: node ./scripts/publish-all.js || true
+      - run: touch a
       - run: git add .
       - run: |
           git \
+              -n --allow-empty \
               -c user.name='ConfluxBot' \
               -c user.email='confluxbot@users.noreply.github.com' \
               commit --message 'chore(release-pkg): release packages' || true
       - env:
           GH_TOKEN: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
-        run: git push --force --verbose "https://ConfluxBot:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" HEAD:refs/heads/__release-pkg
-      - run: ./scripts/create-pkg-release-pr
+        run: git push --force --verbose "https://ConfluxBot:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" HEAD:refs/heads/__release-pkg_tmp
+      - env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: ./scripts/create-pkg-release-pr
