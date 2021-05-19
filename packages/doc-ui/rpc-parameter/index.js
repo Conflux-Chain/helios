@@ -63,7 +63,6 @@ const DataEntry = ({htmlElement, rpcName, id, onChange, value}) => {
   const otherProps = {}
   if (Tag === 'select') {
     // eslint-disable-next-line testing-library/no-node-access
-    console.log(htmlElement.values)
     otherProps.children = htmlElement.values.map((v, idx) => (
       <option key={idx} value={v}>
         {'' + v}
@@ -100,9 +99,9 @@ const ParamWithChildren = ({type, children, rpcName, k, kv, path}) => {
     or: 'one of',
     and: 'all of',
     map: <>{obj} with keys</>,
-    '?': 'array with zero or one',
-    '*': 'array with zero or more item as described',
-    '+': 'array with one or more as described',
+    '?': 'zero or one',
+    '*': 'zero or more',
+    '+': 'one or more',
   }
   const entryId = `${rpcName}-${kv && k}-entry`
   const mapKey = (

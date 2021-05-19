@@ -1,22 +1,36 @@
 releases:
-  "@cfxjs/base32-address": patch
-  "@cfxjs/cfx_epoch-number": patch
-  "@cfxjs/cfx_get-account": patch
-  "@cfxjs/doc-rpc-parameter": patch
-  "@cfxjs/doc-use-spec": patch
-  "@cfxjs/spec": patch
+  '@cfxjs/base32-address': patch
+  '@cfxjs/cfx_epoch-number': patch
+  '@cfxjs/cfx_get-account': patch
+  '@cfxjs/doc-rpc-parameter': patch
+  '@cfxjs/doc-use-spec': patch
+  '@cfxjs/spec': patch
 
 declined:
+  - '@cfxjs/account'
   - helios-background
-  - "@cfxjs/rpc-engine"
-  - "@cfxjs/wallet_add-vault"
-  - "@cfxjs/wallet_create-account"
-  - "@cfxjs/wallet_generate-address"
-  - "@cfxjs/wallet_get-vaults"
-  - "@cfxjs/wallet_import-address"
-  - "@cfxjs/wallet_import-mnemonic"
-  - "@cfxjs/wallet_import-private-key"
-  - "@cfxjs/wallet_unlock"
-  - "@cfxjs/wallet_validate-password"
+  - '@cfxjs/base32'
+  - '@cfxjs/content-script'
+  - '@cfxjs/data-format'
+  - '@cfxjs/extension-runtime'
+  - '@cfxjs/hdkey'
+  - helios-inpage
+  - '@cfxjs/json-rpc-error'
+  - '@cfxjs/random-id'
+  - '@cfxjs/rlp'
+  - '@cfxjs/rpc-engine'
+  - '@cfxjs/wallet_add-vault'
+  - '@cfxjs/wallet_create-account'
+  - '@cfxjs/wallet_generate-address'
+  - '@cfxjs/wallet_generate-private-key'
+  - '@cfxjs/wallet_get-vaults'
+  - '@cfxjs/wallet_import-address'
+  - '@cfxjs/wallet_import-mnemonic'
+  - '@cfxjs/wallet_import-private-key'
+  - '@cfxjs/wallet_is-locked'
+  - '@cfxjs/wallet_lock'
+  - '@cfxjs/wallet_unlock'
+  - '@cfxjs/wallet_validate-password'
+  - '@cfxjs/provider-api'
   - workspace-tools
   - doc

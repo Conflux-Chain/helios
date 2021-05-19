@@ -1,4 +1,5 @@
-import {expect, describe, it} from '@jest/globals'
+// eslint-disable-next-line no-unused-vars
+import { expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach } from '@jest/globals' // prettier-ignore
 import {dataTree} from './testlib/randomData'
 import {encode, decode} from './index'
 import * as rlp from 'rlp'
