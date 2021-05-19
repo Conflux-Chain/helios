@@ -259,8 +259,15 @@
                       :gen/fmap (fn [& args] js/undefined)}}))
 (def export-epoch-tag
   (update-properties
-   [:or [:enum "latest_mined" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil] export-hex-string]
+   [:enum "latest_mined" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil]
    :type :epoch-tag
-   :error/message "invalid epoch tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"
+   :error/message "must be one of latest_mined latest_confirmed latest_state latest_checkpoint earliest or null"
+   :doc "one of latest_mined latest_confirmed latest_state latest_checkpoint earliest or null"))
+
+(def export-epoch-ref
+  (update-properties
+   [:or export-epoch-tag export-hex-string]
+   :type :epoch-ref
+   :error/message "invalid epoch ref, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"
    :doc "epoch number tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"))
 ;; (def export-tap tap>)

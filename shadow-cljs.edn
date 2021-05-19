@@ -141,6 +141,7 @@
                                     addressType cfxjs.spec.core/export-addressType
                                     hex cfxjs.spec.core/export-hex-string
                                     epochTag cfxjs.spec.core/export-epoch-tag
+                                    epochRef cfxjs.spec.core/export-epoch-ref
                                     undefine cfxjs.spec.core/export-js-undefined}
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}
