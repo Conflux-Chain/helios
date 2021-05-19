@@ -3,7 +3,6 @@ import {stream} from '@thi.ng/rstream'
 import {initFetcher} from '@cfxjs/fetch-rpc'
 import {chan} from '@cfxjs/csp'
 import {init as initCache} from '@cfxjs/cache-rpc'
-import {isArray, isFunction, isObject, isString} from '@cfxjs/checks'
 
 const fetcher = initFetcher()
 
@@ -15,26 +14,6 @@ const s = stream({
 })
 
 const {get: getCache, set: setCache} = initCache()
-
-const getCacheKey = (key, req) => {
-  const k = isFunction(key) ? key(req) : key
-  if (isString(k)) return k
-  if (isArray(k) || isObject(k)) return JSON.stringify(k)
-  throw new Error(`Invalid cache key: ${k}`)
-}
-
-const cget = (req, cache) => {
-  if (!cache) return
-  const {key} = cache
-  const k = getCacheKey(key, req)
-  const c = getCache({k, conf: cache})
-  if (c) return c
-}
-
-const cset = (req, res, cache) => {
-  if (!cache) return
-  setCache({k: getCacheKey(cache.key, req), v: res.result, conf: cache})
-}
 
 function fetch({id, method, params, jsonrpc}) {
   return fetcher.post('https://portal-main.confluxrpc.com', {
@@ -57,8 +36,7 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
           c.read().then(resolve)
 
           s.next({
-            id: req.id,
-            method: req.method,
+            ...req,
             ...newReq,
             jsonrpc: '2.0',
             resC: c,
@@ -79,7 +57,7 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
       // no cache strategy
       if (!cache) return req
 
-      const c = cget(req, cache)
+      const c = getCache({req, conf: cache})
 
       // cache found
       if (c) {
@@ -120,7 +98,7 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
       },
     },
     fn: map(({ctx: {res, req}, rpcStore}) => {
-      cset(req, res, rpcStore[req.method].cache)
+      setCache({req, res, conf: rpcStore[req.method].cache})
       req.resC.write(res)
     }),
   },

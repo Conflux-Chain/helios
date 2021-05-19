@@ -8,6 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "@cfxjs/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber",
+    "@cfxjs/cfx_get-account": "workspace:packages/rpcs/cfx_getAccount",
     "@cfxjs/db": "workspace:packages/db",
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",

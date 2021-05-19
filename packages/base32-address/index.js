@@ -4,6 +4,7 @@ import {
   toWords,
   fromWords,
 } from '@cfxjs/base32'
+import {Buffer} from 'buffer'
 import {randomHexAddress, randomAddressType} from '@cfxjs/account'
 import {stripHexPrefix} from '@cfxjs/utils'
 
@@ -155,7 +156,7 @@ export function validateBase32Address(address, ...args) {
 
   let valid = false
 
-  if (args[0] !== undefined) {
+  if (args[0] !== undefined && args[0] !== null) {
     if (Number.isSafeInteger(args[0])) netId = args[0]
     else if (typeof args[0] === 'string') type = args[0]
     else
@@ -163,7 +164,7 @@ export function validateBase32Address(address, ...args) {
         'Invalid type or networkId, type must be string, networkId must be number',
       )
 
-    if (args[1] !== undefined) {
+    if (args[1] !== undefined && args[1] !== null) {
       if (Number.isSafeInteger(args[1])) netId = args[1]
       else if (typeof args[1] === 'string') type = args[1]
       else
@@ -188,14 +189,14 @@ export function validateBase32Address(address, ...args) {
 export const randomBase32Address = (...args) => {
   let netId, type
 
-  if (args[0] !== undefined) {
+  if (args[0] !== undefined && args[0] !== null) {
     if (Number.isSafeInteger(args[0])) netId = args[0]
     else if (typeof args[0] === 'string') type = args[0]
     else
       throw new Error(
         'Invalid type or networkId, type must be string, networkId must be number',
       )
-    if (args[1] !== undefined) {
+    if (args[1] !== undefined && args[1] !== null) {
       if (Number.isSafeInteger(args[1])) netId = args[1]
       else if (typeof args[1] === 'string') type = args[1]
       else

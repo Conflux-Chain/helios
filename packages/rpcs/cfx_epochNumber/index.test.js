@@ -29,37 +29,37 @@ describe('@cfxjs/cfx_epoch-number', function () {
       expect(input.f).toHaveBeenCalledTimes(1)
     })
 
-    it('should call the injected fetch function with the default params', async function () {
-      let input = {
-        f: jest.fn(p => p),
-      }
-      let res = await main(input)
-      expect(res).toStrictEqual({params: ['latest_state']})
-      expect(input.f).toHaveBeenCalledTimes(1)
+    // it('should call the injected fetch function with the default params', async function () {
+    //   let input = {
+    //     f: jest.fn(p => p),
+    //   }
+    //   let res = await main(input)
+    //   expect(res).toStrictEqual({params: ['latest_state']})
+    //   expect(input.f).toHaveBeenCalledTimes(1)
 
-      input = {
-        f: jest.fn(p => p),
-        params: null,
-      }
-      res = await main(input)
-      expect(res).toStrictEqual({params: ['latest_state']})
-      expect(input.f).toHaveBeenCalledTimes(1)
+    //   input = {
+    //     f: jest.fn(p => p),
+    //     params: null,
+    //   }
+    //   res = await main(input)
+    //   expect(res).toStrictEqual({params: ['latest_state']})
+    //   expect(input.f).toHaveBeenCalledTimes(1)
 
-      input = {
-        f: jest.fn(p => p),
-        params: [],
-      }
-      res = await main(input)
-      expect(res).toStrictEqual({params: ['latest_state']})
-      expect(input.f).toHaveBeenCalledTimes(1)
+    //   input = {
+    //     f: jest.fn(p => p),
+    //     params: [],
+    //   }
+    //   res = await main(input)
+    //   expect(res).toStrictEqual({params: ['latest_state']})
+    //   expect(input.f).toHaveBeenCalledTimes(1)
 
-      input = {
-        f: jest.fn(p => p),
-        params: [null],
-      }
-      res = await main(input)
-      expect(res).toStrictEqual({params: ['latest_state']})
-      expect(input.f).toHaveBeenCalledTimes(1)
-    })
+    //   input = {
+    //     f: jest.fn(p => p),
+    //     params: [null],
+    //   }
+    //   res = await main(input)
+    //   expect(res).toStrictEqual({params: ['latest_state']})
+    //   expect(input.f).toHaveBeenCalledTimes(1)
+    // })
   })
 })

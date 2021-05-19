@@ -19,42 +19,42 @@ function initNetwork(d) {
   if (d.getNetwork().length) return
 
   d.createNetwork({
-    nickname: CFX_MAINNET_NAME,
+    name: CFX_MAINNET_NAME,
     endpoint: CONFLUX_MAINNET_RPC_ENDPOINT,
     type: 'cfx',
     hdpath: DEFAULT_CFX_HDPATH,
   })
 
   d.createNetwork({
-    nickname: CFX_TESTNET_NAME,
+    name: CFX_TESTNET_NAME,
     endpoint: CONFLUX_TESTNET_RPC_ENDPOINT,
     type: 'cfx',
     hdpath: DEFAULT_CFX_HDPATH,
   })
 
   d.createNetwork({
-    nickname: ETH_MAINNET_NAME,
+    name: ETH_MAINNET_NAME,
     endpoint: ETH_MAINNET_RPC_ENDPOINT,
     type: 'eth',
     hdpath: DEFAULT_ETH_HDPATH,
   })
 
   d.createNetwork({
-    nickname: ETH_ROPSTEN_NAME,
+    name: ETH_ROPSTEN_NAME,
     endpoint: ETH_ROPSTEN_RPC_ENDPOINT,
     type: 'eth',
     hdpath: DEFAULT_ETH_HDPATH,
   })
 
   d.createNetwork({
-    nickname: BSC_MAINNET_NAME,
+    name: BSC_MAINNET_NAME,
     endpoint: BSC_MAINNET_RPC_ENDPOINT,
     type: 'eth',
     hdpath: DEFAULT_ETH_HDPATH,
   })
 
   d.createNetwork({
-    nickname: BSC_TESTNET_NAME,
+    name: BSC_TESTNET_NAME,
     endpoint: BSC_TESTNET_RPC_ENDPOINT,
     type: 'eth',
     hdpath: DEFAULT_ETH_HDPATH,

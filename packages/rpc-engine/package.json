@@ -15,6 +15,7 @@
     "@cfxjs/json-rpc": "workspace:packages/json-rpc",
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error",
     "@cfxjs/random-id": "workspace:packages/random-id",
+    "@cfxjs/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref",
     "@cfxjs/spec": "workspace:packages/spec",
     "@cfxjs/transducers": "workspace:packages/transducers",
     "@thi.ng/atom": "4.1.35",
