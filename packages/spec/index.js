@@ -69,6 +69,7 @@ export const defBase32AddressSchema = (...args) => {
 export const dbid = integer
 export const base32AccountMainnetAddress = defBase32AddressSchema('user', 1029)
 export const base32AccountTestnetAddress = defBase32AddressSchema('user', 1)
+export const base32Address = defBase32AddressSchema()
 export const base32AccountAddress = defBase32AddressSchema('user')
 export const base32ContractAddress = defBase32AddressSchema('contract')
 export const base32BuiltInAddress = defBase32AddressSchema('builtin')

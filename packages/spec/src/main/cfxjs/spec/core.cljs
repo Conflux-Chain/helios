@@ -80,6 +80,7 @@
                        :error/message "invalid hex null address, should be 0x0000000000000000000000000000000000000000")}))
 
 (defn def-base32-address-schema-factory
+  ([pred gen] (def-base32-address-schema-factory pred gen nil nil))
   ([pred gen network-id-or-type] (def-base32-address-schema-factory pred gen network-id-or-type nil))
   ([pred gen network-id-or-type-1 network-id-or-type-2]
    (let [network-id (cond (number? network-id-or-type-1) network-id-or-type-1
@@ -261,8 +262,8 @@
   (update-properties
    [:enum "latest_mined" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil]
    :type :epoch-tag
-   :error/message "must be one of latest_mined latest_confirmed latest_state latest_checkpoint earliest or null"
-   :doc "one of latest_mined latest_confirmed latest_state latest_checkpoint earliest or null"))
+   :error/message "must be one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null"
+   :doc "one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null"))
 
 (def export-epoch-ref
   (update-properties
@@ -270,4 +271,18 @@
    :type :epoch-ref
    :error/message "invalid epoch ref, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"
    :doc "epoch number tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"))
+
+(def export-block-tag
+  (update-properties
+   [:enum "latest" "earliest" "pending" nil]
+   :type :epoch-tag
+   :error/message "invalid block tag, must be one of latest pending earliest or null"
+   :doc "one of latest pending earliest or null"))
+
+(def export-block-ref
+  (update-properties
+   [:or export-block-tag export-hex-string]
+   :type :epoch-ref
+   :error/message "invalid block ref, must be one of latest, pwnding, earliest, block number or null"
+   :doc "one of latest, pwnding, earliest, block number or null"))
 ;; (def export-tap tap>)
