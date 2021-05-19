@@ -2681,6 +2681,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/rpc-epoch-ref@workspace:packages/rpc-epoch-ref":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/rpc-epoch-ref@workspace:packages/rpc-epoch-ref"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/spec@workspace:packages/spec":
   version: 0.0.0-use.local
   resolution: "@cfxjs/spec@workspace:packages/spec"
