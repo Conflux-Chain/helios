@@ -52,7 +52,7 @@ function defRpcProxy({
 export default defMiddleware(
   ({perms: {getRpc}, tx: {map, comp, sideEffect}, err: {InvalidRequest}}) => ({
     id: 'injectRpcStore',
-    ins: {req: {stream: '/validateRpcMethod/node'}},
+    ins: {req: {stream: '/validateRpcDataEnd/node'}},
     fn: comp(
       sideEffect(({req}) => updateReqRpcStack(req)),
       map(({sendNewRpcRequest, req, rpcStore}) => ({

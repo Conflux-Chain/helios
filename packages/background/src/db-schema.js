@@ -62,6 +62,23 @@ const schema = {
       doc: 'The index of this account in hd wallet',
     },
   },
+  network: {
+    name: {
+      value: true,
+      doc: "Name of a network, used as id of network, builtin network name can't be changed, reload(reinit) the extension if network name changed",
+    },
+    endpoint: {
+      value: true,
+      doc: "RPC endpoint of a network, can't be duplicate",
+    },
+    type: {
+      doc: "One of 'cfx'/'eth', indicating type of rpc set of this network",
+    },
+    hdPath: {
+      // TODO: should we bind hdpath with network?
+      doc: 'Default hdpath of this network, user may specify different hdpath',
+    },
+  },
 }
 
 export default schema

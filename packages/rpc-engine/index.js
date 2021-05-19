@@ -90,8 +90,8 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
     errorHandler: s.error.bind(s),
   })
 
-  addM(middlewares.validateJsonRpcMiddleware)
-  addM(middlewares.validateRpcMethodMiddleware)
+  addM(middlewares.validateJsonRpcFormatMiddleware)
+  addM(middlewares.validateRpcDataMiddleware)
   addM(middlewares.injectRpcStoreMiddleware)
   addM(middlewares.injectWalletDBMiddleware)
   addM(middlewares.fetchMiddleware)
