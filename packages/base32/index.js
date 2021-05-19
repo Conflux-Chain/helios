@@ -102,19 +102,17 @@ export function decode(str) {
     throw new Error('Mixed-case string ' + str)
   }
 
-  str = lowered
-
-  const split = str.lastIndexOf(SEPARATOR)
+  const split = lowered.lastIndexOf(SEPARATOR)
   if (split === -1) {
-    throw new Error('No separator character for ' + str)
+    throw new Error('No separator character for ' + lowered)
   }
 
   if (split === 0) {
-    throw new Error('Missing prefix for ' + str)
+    throw new Error('Missing prefix for ' + lowered)
   }
 
-  const prefix = str.slice(0, split)
-  const wordChars = str.slice(split + 1)
+  const prefix = lowered.slice(0, split)
+  const wordChars = lowered.slice(split + 1)
   if (wordChars.length < 6) {
     throw new Error('Data too short')
   }
@@ -137,7 +135,7 @@ export function decode(str) {
   }
 
   if (chk.toString(10) !== '1') {
-    throw new Error('Invalid checksum for ' + str)
+    throw new Error('Invalid checksum for ' + lowered)
   }
 
   return {prefix, words}

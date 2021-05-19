@@ -2433,6 +2433,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/cache-rpc@workspace:packages/cache-rpc"
   dependencies:
+    "@cfxjs/checks": "workspace:packages/checks"
+    "@cfxjs/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref"
     "@thi.ng/cache": 1.0.83
   languageName: unknown
   linkType: soft
@@ -2674,6 +2676,7 @@ __metadata:
     "@cfxjs/json-rpc": "workspace:packages/json-rpc"
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error"
     "@cfxjs/random-id": "workspace:packages/random-id"
+    "@cfxjs/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref"
     "@cfxjs/spec": "workspace:packages/spec"
     "@cfxjs/transducers": "workspace:packages/transducers"
     "@thi.ng/atom": 4.1.35
@@ -3826,8 +3829,8 @@ __metadata:
   linkType: hard
 
 "@npmcli/git@npm:^2.0.1":
-  version: 2.0.8
-  resolution: "@npmcli/git@npm:2.0.8"
+  version: 2.0.9
+  resolution: "@npmcli/git@npm:2.0.9"
   dependencies:
     "@npmcli/promise-spawn": ^1.3.2
     lru-cache: ^6.0.0
@@ -3837,7 +3840,7 @@ __metadata:
     promise-retry: ^2.0.1
     semver: ^7.3.5
     which: ^2.0.2
-  checksum: b0361ccdc08efc79a9b12427b5c21007391aa440adf6a86693053ebb9ad161c9d7642fa7177c51648f6974309f4390f5809d5abdb71eb988b27bb7a142b2f305
+  checksum: 31280e4ca4cd77919c44b1d4f1afa5dfb20cd31e69b802d5c904bc756f27b526b8d2f85671f04dc93b3b28746064981e3f5034ac316bc8a3a5fc43f90a3f4f7c
   languageName: node
   linkType: hard
 
@@ -6731,30 +6734,6 @@ __metadata:
   version: 4.2.2
   resolution: "@xtuc/long@npm:4.2.2"
   checksum: ec09a359f98e9f8c47bf6c965e73b520a1a65e93f1febf6472babc8b6b0b425a2084452be103da5be11aec8c502ecfa29400713d55ef774579d04f691db44a2d
-  languageName: node
-  linkType: hard
-
-"@yqrashawn/snowpack@npm:3.3.4-patch1":
-  version: 3.3.4-patch1
-  resolution: "@yqrashawn/snowpack@npm:3.3.4-patch1"
-  dependencies:
-    cli-spinners: ^2.5.0
-    default-browser-id: ^2.0.0
-    esbuild: ^0.9.3
-    fdir: ^5.0.0
-    fsevents: ^2.2.0
-    open: ^7.0.4
-    pacote: ^11.3.1
-    picomatch: ^2.2.2
-    resolve: ^1.20.0
-    rollup: ~2.37.1
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    snowpack: index.bin.js
-    sp: index.bin.js
-  checksum: 9b751cfa1979c3e66792ef41c1f0d22ccacf8d67ed3711a36ba0d16fc691db238cdd586238ebdf9541c41960a49e6bfe3b82d3daf79a331f3f9b108cdc557942
   languageName: node
   linkType: hard
 
@@ -13255,6 +13234,7 @@ fsevents@~2.3.1:
   resolution: "helios-background@workspace:packages/background"
   dependencies:
     "@cfxjs/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber"
+    "@cfxjs/cfx_get-account": "workspace:packages/rpcs/cfx_getAccount"
     "@cfxjs/db": "workspace:packages/db"
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
@@ -13322,7 +13302,6 @@ fsevents@~2.3.1:
     "@swc/helpers": ^0.2.11
     "@swc/jest": ^0.1.2
     "@tailwindcss/jit": ^0.1.18
-    "@yqrashawn/snowpack": 3.3.4-patch1
     autoprefixer: ^10.2.5
     babel-loader: 8.2.2
     browserslist: ^4.16.6
@@ -13356,6 +13335,7 @@ fsevents@~2.3.1:
     regenerator-runtime: ^0.13.8
     rimraf: ^3.0.2
     shadow-cljs: ^2.13.0
+    snowpack: 3.4.0
     storybook: 6.2.9
     storybook-addon-outline: 1.2.0
     storybook-addon-pseudo-states: 1.0.0
@@ -13790,11 +13770,11 @@ fsevents@~2.3.1:
   linkType: hard
 
 "ignore-walk@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "ignore-walk@npm:3.0.3"
+  version: 3.0.4
+  resolution: "ignore-walk@npm:3.0.4"
   dependencies:
     minimatch: ^3.0.4
-  checksum: 08394ce8c47dc086d44ef65a1e1d30352ff3d6605bdec90f59e985b710cc660aafa7975cb30312891d21d826d10b3a8b3210c5d68251678e2dcd366362865170
+  checksum: 1222a74f6898c0c72eb382002d260223c71de2b8f973f010d3d59e79a2599b9f0f3e683b12b51b436362abfa0570f8c6f0bd746a2ea8dfc9c0a229bd1da235e0
   languageName: node
   linkType: hard
 
@@ -17419,8 +17399,8 @@ fsevents@~2.3.1:
   linkType: hard
 
 "npm-packlist@npm:^2.1.4":
-  version: 2.1.5
-  resolution: "npm-packlist@npm:2.1.5"
+  version: 2.2.2
+  resolution: "npm-packlist@npm:2.2.2"
   dependencies:
     glob: ^7.1.6
     ignore-walk: ^3.0.3
@@ -17428,7 +17408,7 @@ fsevents@~2.3.1:
     npm-normalize-package-bin: ^1.0.1
   bin:
     npm-packlist: bin/index.js
-  checksum: 8ad6d000476251a8f4d2cdbc4f6ea8051ad8611f610d3d8c5b3ae6991eaad1738c6326e3c8b97754ebe8f4004a41ac7241999db2df7cc8a67007c403c78d2240
+  checksum: 3b1126a32a2bb296ab45e0eb71f6bda74a65b002fad226d225c1745ad36c52443b85f23378d45e93bf45d4a67cd43ddf0dea5407e4b252c6494bf950243f9cc2
   languageName: node
   linkType: hard
 
@@ -17445,8 +17425,8 @@ fsevents@~2.3.1:
   linkType: hard
 
 "npm-registry-fetch@npm:^10.0.0":
-  version: 10.1.0
-  resolution: "npm-registry-fetch@npm:10.1.0"
+  version: 10.1.1
+  resolution: "npm-registry-fetch@npm:10.1.1"
   dependencies:
     lru-cache: ^6.0.0
     make-fetch-happen: ^8.0.9
@@ -17455,7 +17435,7 @@ fsevents@~2.3.1:
     minipass-json-stream: ^1.0.1
     minizlib: ^2.0.0
     npm-package-arg: ^8.0.0
-  checksum: a6f3152b1ec3d950cce2985ff2b2280484f62df6dc14cadf55e2af08c241f631acdcfff27dead318685d8bf491b95da20d839b940a9cbfb7b44d0d0d83a9abcb
+  checksum: 485ee8cffcd9481cddbe8c5f441be5bc1b3404566b14efc97afe6fe5fb0b0f2864f2163d18a70bf97a6afb3735f4c2967750d38c4096c4ceb88f3db0b32909e6
   languageName: node
   linkType: hard
 
@@ -18019,8 +17999,8 @@ fsevents@~2.3.1:
   linkType: hard
 
 "pacote@npm:^11.3.1":
-  version: 11.3.2
-  resolution: "pacote@npm:11.3.2"
+  version: 11.3.3
+  resolution: "pacote@npm:11.3.3"
   dependencies:
     "@npmcli/git": ^2.0.1
     "@npmcli/installed-package-contents": ^1.0.6
@@ -18043,7 +18023,7 @@ fsevents@~2.3.1:
     tar: ^6.1.0
   bin:
     pacote: lib/bin.js
-  checksum: 34b32a91c4d5a960ce1b9632598b40156ec670b7b9f25e8b3f00a28ed36a3a866e973c0eb5de01f05af337c5592ac7a370acb4a639009b80c2338c73f6e893be
+  checksum: 0dc1afb33f29558261dcc9398ce1ad8cec943970fd7493a8e4d1ad5f9535214807c98f803d1831bab14f2c713b82b164d522e87e20ceb320e7afe941f9925ce1
   languageName: node
   linkType: hard
 
@@ -21660,6 +21640,30 @@ resolve@^2.0.0-next.3:
     source-map-resolve: ^0.5.0
     use: ^3.1.0
   checksum: c30b63a732bf37dbd2147bf57b4d9eac651ab7b313d1521f73855154b2c2f5a3f2ad18bd47e21cc64b6991f868ecb2a99f8da973ca86da39956f1f0f720b7033
+  languageName: node
+  linkType: hard
+
+"snowpack@npm:3.4.0":
+  version: 3.4.0
+  resolution: "snowpack@npm:3.4.0"
+  dependencies:
+    cli-spinners: ^2.5.0
+    default-browser-id: ^2.0.0
+    esbuild: ^0.9.3
+    fdir: ^5.0.0
+    fsevents: ^2.2.0
+    open: ^7.0.4
+    pacote: ^11.3.1
+    picomatch: ^2.2.2
+    resolve: ^1.20.0
+    rollup: ~2.37.1
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    snowpack: index.bin.js
+    sp: index.bin.js
+  checksum: 2277449b3d734219dda88ec35b791bd8dc9b8559e93cb9b819ce7dd4f56db64512c15cee363d753e233ee39a691ba5de81b5df651257f731ef158e63c6da856e
   languageName: node
   linkType: hard
 
