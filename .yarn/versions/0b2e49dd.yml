@@ -1,5 +1,7 @@
 releases:
+  "@cfxjs/base32-address": patch
   "@cfxjs/cfx_epoch-number": patch
+  "@cfxjs/cfx_get-account": patch
   "@cfxjs/doc-rpc-parameter": patch
   "@cfxjs/doc-use-spec": patch
   "@cfxjs/spec": patch

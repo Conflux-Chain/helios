@@ -65,19 +65,16 @@
        :enum {:el :select :values (m/children schema)}
        {:el :input}))))
 
+(def built-in-schema-doc {:enum "enum"})
+
 (defn -schema-get-doc
   ([schema] (-schema-get-doc schema nil))
   ([schema {:doc/keys [append prepend optional-key pdoc html-type gen-no-schema]}]
-   (let [d (or (-> schema
-                   m/properties
-                   :doc)
-               (-> schema
-                   m/type-properties
-                   :doc)
-               (-> schema
-                   m/form
-                   :doc)
+   (let [d (or (-> schema m/properties :doc)
+               (-> schema m/type-properties :doc)
+               (-> schema m/form :doc)
                pdoc
+               (get built-in-schema-doc (m/type schema))
                (str (m/type schema) " " "no doc found"))
          d (if append (str d append) d)
          d (if prepend (str d prepend) d)

@@ -2445,6 +2445,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/cfx_get-account@workspace:packages/rpcs/cfx_getAccount":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/cfx_get-account@workspace:packages/rpcs/cfx_getAccount"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/checks@workspace:packages/checks":
   version: 0.0.0-use.local
   resolution: "@cfxjs/checks@workspace:packages/checks"

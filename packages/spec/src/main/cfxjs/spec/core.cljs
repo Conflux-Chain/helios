@@ -95,7 +95,12 @@
       {:type type
        :pred #(pred % address-type network-id)
        :type-properties {:error/message "invalid base32 address"
-                         :doc (str "Conflux base32 address with '" address-type "' type and networkId is " network-id)
+                         :doc (str "Conflux base32 address"
+                                   (when (or address-type network-id)
+                                     "with '"
+                                     (cond (and address-type network-id) (str address-type "' address type and '" network-id "' network id")
+                                           address-type (str address-type "' address type")
+                                           network-id (str network-id "' network id"))))
                          :gen/fmap #(.call gen nil network-id address-type)}}))))
 
 (def Password (update-properties [:string {:min 8 :max 128}]

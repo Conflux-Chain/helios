@@ -156,16 +156,17 @@ export function validateBase32Address(address, ...args) {
   let valid = false
 
   if (args[0] !== undefined) {
-    if (typeof args[0] === 'number') netId = args[0]
-    if (typeof args[0] === 'string') type = args[0]
-    if (type === undefined && netId === undefined)
+    if (Number.isSafeInteger(args[0])) netId = args[0]
+    else if (typeof args[0] === 'string') type = args[0]
+    else
       throw new Error(
         'Invalid type or networkId, type must be string, networkId must be number',
       )
+
     if (args[1] !== undefined) {
-      if (typeof args[1] === 'number') netId = args[1]
-      if (typeof args[1] === 'string') type = args[1]
-      if (type === undefined || netId === undefined)
+      if (Number.isSafeInteger(args[1])) netId = args[1]
+      else if (typeof args[1] === 'string') type = args[1]
+      else
         throw new Error(
           'Invalid type or networkId, type must be string, networkId must be number',
         )
@@ -188,16 +189,16 @@ export const randomBase32Address = (...args) => {
   let netId, type
 
   if (args[0] !== undefined) {
-    if (typeof args[0] === 'number') netId = args[0]
-    if (typeof args[0] === 'string') type = args[0]
-    if (type === undefined && netId === undefined)
+    if (Number.isSafeInteger(args[0])) netId = args[0]
+    else if (typeof args[0] === 'string') type = args[0]
+    else
       throw new Error(
         'Invalid type or networkId, type must be string, networkId must be number',
       )
     if (args[1] !== undefined) {
-      if (typeof args[1] === 'number') netId = args[1]
-      if (typeof args[1] === 'string') type = args[1]
-      if (type === undefined || netId === undefined)
+      if (Number.isSafeInteger(args[1])) netId = args[1]
+      else if (typeof args[1] === 'string') type = args[1]
+      else
         throw new Error(
           'Invalid type or networkId, type must be string, networkId must be number',
         )
