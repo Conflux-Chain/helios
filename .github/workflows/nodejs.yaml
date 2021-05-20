@@ -209,6 +209,7 @@ jobs:
           publish_dir: ./storybook-static
 
   version-check:
+    if: ${{ github.ref != 'refs/heads/__release-pkg'}}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -278,5 +279,5 @@ jobs:
           GH_TOKEN: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
         run: git push --force --verbose "https://ConfluxBot:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" HEAD:refs/heads/__release-pkg
       - env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.CONFLUX_BOT_GH_TOKEN}}
         run: ./scripts/create-pkg-release-pr
