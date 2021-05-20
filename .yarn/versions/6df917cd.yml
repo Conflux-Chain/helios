@@ -1,0 +1,8 @@
+releases:
+  "@cfxjs/fluent-wallet-consts": patch
+  "@cfxjs/rpc-engine": patch
+
+declined:
+  - "@cfxjs/account"
+  - helios-background
+  - "@cfxjs/spec"

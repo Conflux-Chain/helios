@@ -269,11 +269,11 @@ jobs:
         run: node ./scripts/publish-all.js || true
       - run: git add .
       - run: |
-          git \
-              -n \
-              -c user.name='ConfluxBot' \
+          git -c user.name='ConfluxBot' \
               -c user.email='confluxbot@users.noreply.github.com' \
-              commit --message 'chore(release-pkg): release packages' || true
+              commit \
+              --no-verify \
+              --message 'chore(release-pkg): release packages' || true
       - env:
           GH_TOKEN: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
         run: git push --force --verbose "https://ConfluxBot:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" HEAD:refs/heads/__release-pkg

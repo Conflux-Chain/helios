@@ -11,6 +11,7 @@
     "@cfxjs/csp": "workspace:packages/csp",
     "@cfxjs/errors": "workspace:packages/errors",
     "@cfxjs/fetch-rpc": "workspace:packages/fetch-rpc",
+    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",
     "@cfxjs/json-rpc": "workspace:packages/json-rpc",
     "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error",
     "@cfxjs/random-id": "workspace:packages/random-id",

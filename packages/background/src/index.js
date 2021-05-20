@@ -9,6 +9,7 @@ import {IS_PROD_MODE} from '@cfxjs/fluent-wallet-inner-utils'
 import browser from 'webextension-polyfill'
 import SCHEMA from './db-schema'
 import {listen} from '@cfxjs/extension-runtime/background.js'
+import initDB from './init-db.js'
 
 if (!IS_PROD_MODE) window.b = browser
 import {rpcEngineOpts} from './rpc-engine-opts'
@@ -22,6 +23,7 @@ import {rpcEngineOpts} from './rpc-engine-opts'
 
   const dbConnection = createdb(SCHEMA, persist, data || null)
   if (!IS_PROD_MODE) window.d = dbConnection
+  initDB(dbConnection)
 
   // ## initialize rpc engine
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
