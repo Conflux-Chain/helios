@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import {expect, describe, it} from '@jest/globals' // prettier-ignore
+import {expect, describe, test, it} from '@jest/globals' // prettier-ignore
 import {
   fromDripToCfx,
   fromCfxToDrip,

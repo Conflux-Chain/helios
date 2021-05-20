@@ -65,19 +65,16 @@
        :enum {:el :select :values (m/children schema)}
        {:el :input}))))
 
+(def built-in-schema-doc {:enum "enum"})
+
 (defn -schema-get-doc
   ([schema] (-schema-get-doc schema nil))
   ([schema {:doc/keys [append prepend optional-key pdoc html-type gen-no-schema]}]
-   (let [d (or (-> schema
-                   m/properties
-                   :doc)
-               (-> schema
-                   m/type-properties
-                   :doc)
-               (-> schema
-                   m/form
-                   :doc)
+   (let [d (or (-> schema m/properties :doc)
+               (-> schema m/type-properties :doc)
+               (-> schema m/form :doc)
                pdoc
+               (get built-in-schema-doc (m/type schema))
                (str (m/type schema) " " "no doc found"))
          d (if append (str d append) d)
          d (if prepend (str d prepend) d)
@@ -94,6 +91,10 @@
 (defmulti -schema-doc-generator (fn [schema options] (m/type schema options)) :default ::default)
 (defmethod -schema-doc-generator ::default [schema options] {:type (keyword (m/type schema)) :value (-schema-get-doc schema options)})
 (defmethod -schema-doc-generator :or [schema options] {:type :or :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
+(defmethod -schema-doc-generator :cat [schema options] {:type :cat :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
+(defmethod -schema-doc-generator :? [schema options] {:type :? :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
+(defmethod -schema-doc-generator :* [schema options] {:type :* :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
+(defmethod -schema-doc-generator :+ [schema options] {:type :+ :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
 (defmethod -schema-doc-generator :and [schema options] {:type :and :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
 (defmethod -schema-doc-generator :not [schema options] (let [rst (-schema-doc-generator schema options)
                                                              rst (assoc rst :not true)]

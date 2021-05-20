@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {validate} from '@cfxjs/spec'
 import {main, schemas} from './index.js'
 
@@ -9,8 +9,11 @@ describe('@cfxjs/cfx_epoch-number', function () {
       expect(validate(schemas.input)).toBeTruthy()
       expect(validate(schemas.input, [null])).toBeTruthy()
       expect(validate(schemas.input, [undefined])).toBeTruthy()
-      expect(validate(schemas.input, ['0x1'])).toBeTruthy()
+      expect(validate(schemas.input, ['0x1'])).toBeFalsy()
       expect(validate(schemas.input, ['latest_state'])).toBeTruthy()
+      expect(
+        validate(schemas.input, ['latest_state', 'latest_mined']),
+      ).toBeFalsy()
       expect(validate(schemas.input, [1])).toBeFalsy()
     })
   })
@@ -19,10 +22,43 @@ describe('@cfxjs/cfx_epoch-number', function () {
     it('should call the injected fetch function with the input params', async function () {
       const input = {
         f: jest.fn(p => p),
-        params: {foo: 'bar'},
+        params: ['bar'],
       }
       const res = await main(input)
       expect(res).toStrictEqual({params: input.params})
+      expect(input.f).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call the injected fetch function with the default params', async function () {
+      let input = {
+        f: jest.fn(p => p),
+      }
+      let res = await main(input)
+      expect(res).toStrictEqual({params: ['latest_state']})
+      expect(input.f).toHaveBeenCalledTimes(1)
+
+      input = {
+        f: jest.fn(p => p),
+        params: null,
+      }
+      res = await main(input)
+      expect(res).toStrictEqual({params: ['latest_state']})
+      expect(input.f).toHaveBeenCalledTimes(1)
+
+      input = {
+        f: jest.fn(p => p),
+        params: [],
+      }
+      res = await main(input)
+      expect(res).toStrictEqual({params: ['latest_state']})
+      expect(input.f).toHaveBeenCalledTimes(1)
+
+      input = {
+        f: jest.fn(p => p),
+        params: [null],
+      }
+      res = await main(input)
+      expect(res).toStrictEqual({params: ['latest_state']})
       expect(input.f).toHaveBeenCalledTimes(1)
     })
   })

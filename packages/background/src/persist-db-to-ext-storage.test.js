@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {persist} from './persist-db-to-ext-storage.js'
 import browser from 'webextension-polyfill'
 import {EXT_STORAGE} from '@cfxjs/fluent-wallet-consts'

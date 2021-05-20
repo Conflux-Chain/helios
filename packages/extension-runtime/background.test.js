@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {listen} from './background.js'
 
 describe('@cfxjs/extension-runtime/background.js', function () {

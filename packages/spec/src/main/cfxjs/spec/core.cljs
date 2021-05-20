@@ -80,6 +80,7 @@
                        :error/message "invalid hex null address, should be 0x0000000000000000000000000000000000000000")}))
 
 (defn def-base32-address-schema-factory
+  ([pred gen] (def-base32-address-schema-factory pred gen nil nil))
   ([pred gen network-id-or-type] (def-base32-address-schema-factory pred gen network-id-or-type nil))
   ([pred gen network-id-or-type-1 network-id-or-type-2]
    (let [network-id (cond (number? network-id-or-type-1) network-id-or-type-1
@@ -95,7 +96,12 @@
       {:type type
        :pred #(pred % address-type network-id)
        :type-properties {:error/message "invalid base32 address"
-                         :doc (str "Conflux base32 address with '" address-type "' type and networkId is " network-id)
+                         :doc (str "Conflux base32 address"
+                                   (when (or address-type network-id)
+                                     "with '"
+                                     (cond (and address-type network-id) (str address-type "' address type and '" network-id "' network id")
+                                           address-type (str address-type "' address type")
+                                           network-id (str network-id "' network id"))))
                          :gen/fmap #(.call gen nil network-id address-type)}}))))
 
 (def Password (update-properties [:string {:min 8 :max 128}]
@@ -151,7 +157,12 @@
 (def export-seq seq?)
 (def export-char char?)
 (def export-setp set?)
-(def export-nil nil?)
+(def export-nil (m/-simple-schema
+                 {:type :nil
+                  :pred nil?
+                  :type-properties {:error/message "should be null or cljs nil"
+                                    :doc "javascript null or cljs nil"
+                                    :gen/fmap (fn [& args] nil)}}))
 (def export-falsep false?)
 (def export-truep true?)
 (def export-zero zero?)
@@ -240,10 +251,38 @@
                                         (-> js/Number.MAX_SAFE_INTEGER randomInt (.toString 16)))
                         :error/message "invalid hex string"
                         :doc "hexadecimal string"))
+(def export-js-undefined
+  (m/-simple-schema
+   {:type :undefined
+    :pred #(= js/undefined)
+    :type-properties {:error/message "should be undefined"
+                      :doc "javascript undefined"
+                      :gen/fmap (fn [& args] js/undefined)}}))
 (def export-epoch-tag
   (update-properties
-   [:or [:enum "latest_mined" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil js/undefined] export-hex-string]
+   [:enum "latest_mined" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil]
    :type :epoch-tag
-   :error/message "invalid epoch tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"
+   :error/message "must be one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null"
+   :doc "one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null"))
+
+(def export-epoch-ref
+  (update-properties
+   [:or export-epoch-tag export-hex-string]
+   :type :epoch-ref
+   :error/message "invalid epoch ref, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"
    :doc "epoch number tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"))
+
+(def export-block-tag
+  (update-properties
+   [:enum "latest" "earliest" "pending" nil]
+   :type :epoch-tag
+   :error/message "invalid block tag, must be one of latest pending earliest or null"
+   :doc "one of latest pending earliest or null"))
+
+(def export-block-ref
+  (update-properties
+   [:or export-block-tag export-hex-string]
+   :type :epoch-ref
+   :error/message "invalid block ref, must be one of latest, pwnding, earliest, block number or null"
+   :doc "one of latest, pwnding, earliest, block number or null"))
 ;; (def export-tap tap>)
