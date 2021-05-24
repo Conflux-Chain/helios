@@ -15,6 +15,7 @@ import * as walletGetVaults from '@cfxjs/wallet_get-vaults'
 import * as walletAddVault from '@cfxjs/wallet_add-vault'
 import * as walletImportAddress from '@cfxjs/wallet_import-address'
 import * as cfxEpochNumber from '@cfxjs/cfx_epoch-number'
+import * as cfxGetAccount from '@cfxjs/cfx_get-account'
 
 export const rpcEngineOpts = {
   isDev: IS_DEV_MODE,
@@ -35,5 +36,6 @@ export const rpcEngineOpts = {
 
     // cfxGetTransactionByHash,
     cfxEpochNumber,
+    cfxGetAccount,
   ],
 }

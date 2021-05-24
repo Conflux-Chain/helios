@@ -87,5 +87,17 @@ import {rpcEngineOpts} from './rpc-engine-opts'
         request({method: 'cfx_epochNumber', params: ['latest_mined']}),
       ]),
     )
+    console.log(
+      await request({
+        method: 'cfx_getAccount',
+        params: ['cfx:aamwwx800rcw63n42kbehesuukjdjcnu4ueu84nhp5'],
+      }),
+    )
+    console.log(
+      await request({
+        method: 'cfx_getAccount',
+        params: ['cfx:aamwwx800rcw63n42kbehesuukjdjcnu4ueu84nhp5'],
+      }),
+    )
   }
 })()

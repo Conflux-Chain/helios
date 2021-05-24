@@ -9,10 +9,9 @@ export const schemas = {
 export const cache = {
   type: 'ttl',
   ttl: 500,
-  key: ({params}) => `${NAME}${params[0]}`,
+  key: ({params}) => `EPOCH${params[0]}`,
 }
 
 export const main = async ({f, params}) => {
-  if (!params || !params[0]) params = ['latest_state']
   return await f({params})
 }

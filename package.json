@@ -50,7 +50,6 @@
     "@swc/helpers": "^0.2.11",
     "@swc/jest": "^0.1.2",
     "@tailwindcss/jit": "^0.1.18",
-    "@yqrashawn/snowpack": "3.3.4-patch1",
     "autoprefixer": "^10.2.5",
     "babel-loader": "8.2.2",
     "browserslist": "^4.16.6",
@@ -84,6 +83,7 @@
     "regenerator-runtime": "^0.13.8",
     "rimraf": "^3.0.2",
     "shadow-cljs": "^2.13.0",
+    "snowpack": "3.4.0",
     "storybook": "6.2.9",
     "storybook-addon-outline": "1.2.0",
     "storybook-addon-pseudo-states": "1.0.0",
@@ -100,8 +100,7 @@
   "husky": {
     "hooks": {
       "pre-commit": [
-        "lint-staged",
-        "yarn version check"
+        "lint-staged"
       ]
     }
   },

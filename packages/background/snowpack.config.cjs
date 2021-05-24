@@ -12,7 +12,6 @@ module.exports = mergeConfig(baseConfig, {
     [path.resolve(root, './src')]: {url: '/dist'},
   },
   routes: [...baseConfig.routes],
-  packageOptions: {},
   devOptions: {
     port: 18003,
     hmrErrorOverlay: false,

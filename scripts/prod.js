@@ -11,7 +11,7 @@ const buildInpage = require('./build-inpage.js')
 const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
 setEnvBasedOnArgv()
 
-const {loadConfiguration, build} = require('@yqrashawn/snowpack')
+const {loadConfiguration, build} = require('snowpack')
 
 const builds = [
   resolve(__dirname, '../packages/background/snowpack.config.cjs'),
