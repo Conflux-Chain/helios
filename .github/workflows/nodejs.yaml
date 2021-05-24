@@ -1,4 +1,5 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
 # Workflow syntax for GitHub Actions
@@ -9,7 +10,7 @@
 
 name: NodeJS CI
 
-on: push
+on: [push, pull_request]
 
 jobs:
   lint:
@@ -209,7 +210,7 @@ jobs:
           publish_dir: ./storybook-static
 
   version-check:
-    if: ${{ github.ref != 'refs/heads/__release-pkg'}}
+    if: ${{ ( startsWith(github.ref, 'refs/pull') && github.head_ref != '__release-pkg' ) || ( !startsWith(github.ref, 'refs/pull') && github.ref != 'refs/heads/__release-pkg' )}}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
