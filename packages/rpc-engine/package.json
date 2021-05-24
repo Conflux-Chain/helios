@@ -2,7 +2,7 @@
   "name": "@cfxjs/rpc-engine",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "dependencies": {
     "@cfxjs/associative": "workspace:packages/associative",
     "@cfxjs/cache-rpc": "workspace:packages/cache-rpc",
