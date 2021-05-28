@@ -14,8 +14,6 @@ import initDB from './init-db.js'
 if (!IS_PROD_MODE) window.b = browser
 import {rpcEngineOpts} from './rpc-engine-opts'
 
-// import {BUILT_IN_NETWORKS} from './network/config'
-
 // # initialize
 // ## initialize db
 ;(async () => {
