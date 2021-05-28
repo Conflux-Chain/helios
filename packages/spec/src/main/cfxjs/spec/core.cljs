@@ -2,22 +2,38 @@
   (:require [malli.core :as m]
             [malli.util :as mu]
             [malli.error :refer [humanize]]
+            [clojure.walk :refer [postwalk]]
             [goog.math :refer [randomInt]]))
 
 (defn j->c [a] (js->clj a :keywordize-keys true))
 
-(defn explain [schema data]
-  (let [rst (humanize (m/explain (j->c schema) (js->clj data)))]
-    (clj->js rst)))
+(defn explain
+  ([schema data] (explain schema data {}))
+  ([schema data opt]
+   (let [rst (humanize (m/explain (j->c schema) (js->clj data)))]
+     (clj->js rst))))
 
-(defn validate [schema data]
-  (let [s (j->c schema)
-        d (js->clj data)
-        rst (m/validate s d)]
-    ;; (when (and goog.DEBUG (not rst))
-    ;;   (js/console.error #js {:value data
-    ;;                          :error (explain s d)}))
-    rst))
+(declare base32-address)
+(declare base32-user-address)
+(declare base32-contract-address)
+(declare base32-builtin-address)
+(declare base32-null-address)
+(declare base32-schemas)
+
+(defn- inject-netId-to-base32-schemas [netId s]
+  (if (some #{s} base32-schemas) [s {:netId netId}] s))
+
+(defn validate
+  ([schema] (validate schema js/undefined {}))
+  ([schema data] (validate schema data {}))
+  ([schema data opt]
+   (let [s (j->c schema)
+         opt (j->c opt)
+         s (if-let [netId (get opt :netId)]
+             (postwalk (partial inject-netId-to-base32-schemas netId) s)
+             s)
+         d (js->clj data)]
+     (m/validate s d opt))))
 
 (defn update-properties [schema & forms]
   (let [trans (partition 2 forms)
@@ -79,30 +95,48 @@
                        :doc "Null address: 0x0000000000000000000000000000000000000000"
                        :error/message "invalid hex null address, should be 0x0000000000000000000000000000000000000000")}))
 
-(defn def-base32-address-schema-factory
-  ([pred gen] (def-base32-address-schema-factory pred gen nil nil))
-  ([pred gen network-id-or-type] (def-base32-address-schema-factory pred gen network-id-or-type nil))
-  ([pred gen network-id-or-type-1 network-id-or-type-2]
-   (let [network-id (cond (number? network-id-or-type-1) network-id-or-type-1
-                          (number? network-id-or-type-2) network-id-or-type-2
-                          :else nil)
-         address-type (cond (string? network-id-or-type-1) network-id-or-type-1
-                            (string? network-id-or-type-2) network-id-or-type-2
-                            :else nil)
-         network-id-str (if network-id (str "-" (.toString network-id)) "")
-         address-type-str (if address-type (str "-" address-type) "")
-         type (keyword (str "base32Address" network-id-str address-type-str))]
-     (m/-simple-schema
-      {:type type
-       :pred #(pred % address-type network-id)
-       :type-properties {:error/message "invalid base32 address"
-                         :doc (str "Conflux base32 address"
-                                   (when (or address-type network-id)
-                                     "with '"
-                                     (cond (and address-type network-id) (str address-type "' address type and '" network-id "' network id")
-                                           address-type (str address-type "' address type")
-                                           network-id (str network-id "' network id"))))
-                         :gen/fmap #(.call gen nil network-id address-type)}}))))
+(defn def-base32-address-schema-factory [pred gen]
+  (def base32-address (m/-simple-schema
+                       (fn [{:keys [netId]} _]
+                         { ;; :type (schema-type address-type netId)
+                          :pred #(pred % netId)
+                          :type-properties {:error/message (str "Invalid base32 address" (if netId (str ", with network id " netId) ""))
+                                            :doc (str "Base32 address" (if netId (str ", with network id " netId) ""))
+                                            :gen/fmap #(.call gen nil netId)}})))
+  (def base32-user-address
+    (m/-simple-schema
+     (fn [{:keys [netId]} _]
+       { ;; :type (schema-type address-type netId)
+        :pred #(pred % "user" netId)
+        :type-properties {:error/message (str "Invalid base32 user address" (if netId (str ", with network id " netId) ""))
+                          :doc (str "Base32 user address" (if netId (str ", with network id " netId) ""))
+                          :gen/fmap #(.call gen nil netId)}})))
+  (def base32-contract-address
+    (m/-simple-schema
+     (fn [{:keys [netId]} _]
+       { ;; :type (schema-type address-type netId)
+        :pred #(pred % "contract" netId)
+        :type-properties {:error/message (str "Invalid base32 contract address" (if netId (str ", with network id " netId) ""))
+                          :doc (str "Base32 contract address" (if netId (str ", with network id " netId) ""))
+                          :gen/fmap #(.call gen nil netId)}})))
+  (def base32-builtin-address
+    (m/-simple-schema
+     (fn [{:keys [netId]} _]
+       { ;; :type (schema-type address-type netId)
+        :pred #(pred % "builtin" netId)
+        :type-properties {:error/message (str "Invalid base32 builtin address" (if netId (str ", with network id " netId) ""))
+                          :doc (str "Base32 builtin address" (if netId (str ", with network id " netId) ""))
+                          :gen/fmap #(.call gen nil netId)}})))
+  (def base32-null-address
+    (m/-simple-schema
+     (fn [{:keys [netId]} _]
+       { ;; :type (schema-type address-type netId)
+        :pred #(pred % "null" netId)
+        :type-properties {:error/message (str "Invalid base32 null address" (if netId (str ", with network id " netId) ""))
+                          :doc (str "Base32 null address" (if netId (str ", with network id " netId) ""))
+                          :gen/fmap #(.call gen nil netId)}})))
+  (def base32-schemas [base32-address base32-user-address base32-contract-address base32-builtin-address base32-null-address])
+  base32-schemas)
 
 (def Password (update-properties [:string {:min 8 :max 128}]
                                  :doc "String between 8 to 128 character" :type :password))
@@ -274,10 +308,10 @@
 
 (def export-block-tag
   (update-properties
-   [:enum "latest" "earliest" "pending" nil]
+   [:enum "latest" "earliest" "pending"]
    :type :epoch-tag
-   :error/message "invalid block tag, must be one of latest pending earliest or null"
-   :doc "one of latest pending earliest or null"))
+   :error/message "invalid block tag, must be one of latest pending or earliest"
+   :doc "one of latest pending or earliest"))
 
 (def export-block-ref
   (update-properties
@@ -285,4 +319,10 @@
    :type :epoch-ref
    :error/message "invalid block ref, must be one of latest, pwnding, earliest, block number or null"
    :doc "one of latest, pwnding, earliest, block number or null"))
-;; (def export-tap tap>)
+
+(def export-address-type
+  (update-properties
+   [:enum "builtin" "user" "contract"]
+   :type :address-type
+   :error/message "invalid conflux user type, must be one of builtin user contract"
+   :doc "one of builtin user contract"))

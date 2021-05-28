@@ -3,8 +3,7 @@ import {
   map,
   mnemonic,
   privateKey,
-  base32AccountMainnetAddress,
-  base32AccountTestnetAddress,
+  base32UserAddress,
   ethHexAddress,
   password,
 } from '@cfxjs/spec'
@@ -19,15 +18,7 @@ const menomicSchema = [...baseInputSchema, ['mnemonic', mnemonic]]
 const privateKeySchema = [...baseInputSchema, ['privateKey', privateKey]]
 const addressSchema = [
   ...baseInputSchema,
-  [
-    'address',
-    [
-      or,
-      ethHexAddress,
-      base32AccountMainnetAddress,
-      base32AccountTestnetAddress,
-    ],
-  ],
+  ['address', [or, ethHexAddress, base32UserAddress]],
 ]
 
 export const schemas = {
