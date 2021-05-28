@@ -10,6 +10,7 @@
      :in ~'$ ~symbols
      :where
      (~'or ~@(map-indexed (fn [idx symbol] ['?e (nth query-attr-k idx) symbol]) symbols))])
+
 (defmacro def-get-query-and [query-attr-k symbols]
   '`[:find [~'?e ...]
      :in ~'$ ~symbols

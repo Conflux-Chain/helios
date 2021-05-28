@@ -33,15 +33,7 @@ export default defMiddleware(
       id: 'afterCallRpc',
       ins: {
         ctx: {
-          stream: r =>
-            r('/callRpc/node').subscribe(
-              resolve({
-                fail: function (err) {
-                  if (this?.parent?.error) this.parent.error(err)
-                  else throw err
-                },
-              }),
-            ),
+          stream: r => r('/callRpc/node').subscribe(resolve()),
         },
       },
       fn: map(({ctx: {req, res}}) => ({

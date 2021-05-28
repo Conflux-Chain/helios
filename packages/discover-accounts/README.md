@@ -1,1 +1,1 @@
-# discover-accounts
+# @cfxjs/discover-accounts
