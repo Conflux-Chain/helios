@@ -22,6 +22,10 @@ function verify(hexAddress, netId, base32Address) {
 
 describe('@cfxjs/base32-address', function () {
   it('test examples in different types', async function () {
+    expect(encode('106d49f8505410eb4e671d51f7d96d2c87807b09', 1029)).toBe(
+      'cfx:aajg4wt2mbmbb44sp6szd783ry0jtad5bea80xdy7p',
+    )
+
     verify(
       '1a2f80341409639ea6a35bbcab8299066109aa55',
       1029,
@@ -93,10 +97,6 @@ describe('@cfxjs/base32-address', function () {
   })
 
   it('test error eamples', async function () {
-    expect(() =>
-      encode('106d49f8505410eb4e671d51f7d96d2c87807b09', 1029),
-    ).toThrowError('hexAddress should be passed as a Buffer')
-
     expect(() => encode(Buffer.from('1', 'hex'), 1029)).toThrowError(
       'hexAddress should be at least 20 bytes',
     )

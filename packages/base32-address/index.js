@@ -89,7 +89,7 @@ function getAddressType(hexAddress) {
 
 export function encode(hexAddress, netId, verbose = false) {
   if (!(hexAddress instanceof Buffer)) {
-    throw new Error('hexAddress should be passed as a Buffer')
+    hexAddress = Buffer.from(stripHexPrefix(hexAddress), 'hex')
   }
 
   if (hexAddress.length < 20) {
@@ -163,15 +163,15 @@ export function validateBase32Address(address, ...args) {
       throw new Error(
         'Invalid type or networkId, type must be string, networkId must be number',
       )
+  }
 
-    if (args[1] !== undefined && args[1] !== null) {
-      if (Number.isSafeInteger(args[1])) netId = args[1]
-      else if (typeof args[1] === 'string') type = args[1]
-      else
-        throw new Error(
-          'Invalid type or networkId, type must be string, networkId must be number',
-        )
-    }
+  if (args[1] !== undefined && args[1] !== null) {
+    if (Number.isSafeInteger(args[1])) netId = args[1]
+    else if (typeof args[1] === 'string') type = args[1]
+    else
+      throw new Error(
+        'Invalid type or networkId, type must be string, networkId must be number',
+      )
   }
 
   try {
@@ -196,14 +196,15 @@ export const randomBase32Address = (...args) => {
       throw new Error(
         'Invalid type or networkId, type must be string, networkId must be number',
       )
-    if (args[1] !== undefined && args[1] !== null) {
-      if (Number.isSafeInteger(args[1])) netId = args[1]
-      else if (typeof args[1] === 'string') type = args[1]
-      else
-        throw new Error(
-          'Invalid type or networkId, type must be string, networkId must be number',
-        )
-    }
+  }
+
+  if (args[1] !== undefined && args[1] !== null) {
+    if (Number.isSafeInteger(args[1])) netId = args[1]
+    else if (typeof args[1] === 'string') type = args[1]
+    else
+      throw new Error(
+        'Invalid type or networkId, type must be string, networkId must be number',
+      )
   }
 
   if (type === undefined) type = randomAddressType()
