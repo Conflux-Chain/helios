@@ -52,7 +52,16 @@ describe('@cfxjs/wallet_add-vault', function () {
     beforeEach(function () {
       input = {
         Err: {InvalidParams: msg => new Error(msg)},
-        db: {createVault: jest.fn(() => 1)},
+        db: {
+          getNetwork: jest.fn(() => [{type: 'cfx'}, {type: 'eth'}]),
+          getOneVault: jest.fn(() => ({id: 1})),
+          createVault: jest.fn(() => 1),
+          createAccountGroup: jest.fn(() => 2),
+          getAccountGroup: jest.fn(() => [2]),
+          getById: jest.fn(() => ({})),
+          createAddress: jest.fn(() => 3),
+          createAccount: jest.fn(() => 4),
+        },
         rpcs: {
           wallet_getVaults: jest.fn(() => []),
           wallet_validatePassword: jest.fn(() => true),

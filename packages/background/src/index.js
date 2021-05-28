@@ -76,6 +76,13 @@ import {rpcEngineOpts} from './rpc-engine-opts'
     )
 
     console.log(
+      await request({
+        method: 'wallet_importMnemonic',
+        params: {mnemonic: mn, password: '12345678'},
+      }),
+    )
+
+    console.log(
       await Promise.all([
         request({method: 'cfx_epochNumber', params: ['latest_state']}),
         request({method: 'cfx_epochNumber', params: ['latest_mined']}),

@@ -24,43 +24,26 @@
   children of the parent entity.
   */
 const schema = {
+  /*
+    vault, container of credential (address/pk/mnemonic)
+    */
   vault: {
-    type: {
-      doc: 'Type of vault: public, pk, mnemonic',
-    },
-    data: {
-      doc: 'Encrypted vault data',
-    },
-    ddata: {
-      doc: 'Decrypted vault data only in memory',
-      persist: false,
-    },
+    type: {doc: 'Type of vault: public, pk, mnemonic'},
+    data: {doc: 'Encrypted vault data'},
+    ddata: {doc: 'Decrypted vault data only in memory', persist: false},
     cfxOnly: {
       doc: 'If this vault is only for conflux chain. This is used for address vault (vault data is a public address)',
     },
-    accounts: {
-      doc: 'Accounts belong to this vault',
+    addresses: {
+      doc: 'Addresses belong to this vault',
       many: true,
       ref: true,
       component: true,
     },
   },
-  account: {
-    ethHexAddress: {
-      value: true,
-      doc: 'Account eth hex address',
-    },
-    cfxHexAddress: {
-      identity: true,
-      doc: 'Account cfx hex address',
-    },
-    vault: {
-      ref: true,
-      doc: 'Entity ID of vault',
-    },
-    hdIndex: {
-      doc: 'The index of this account in hd wallet',
-    },
+  hdpath: {
+    value: {value: true},
+    name: {value: true},
   },
   network: {
     name: {
@@ -74,9 +57,45 @@ const schema = {
     type: {
       doc: "One of 'cfx'/'eth', indicating type of rpc set of this network",
     },
-    hdPath: {
-      // TODO: should we bind hdpath with network?
-      doc: 'Default hdpath of this network, user may specify different hdpath',
+    hdpath: {ref: true},
+    chainId: {doc: 'Network chain id'},
+    netId: {doc: 'Network id'},
+    ticker: {doc: 'Network currency symbol'},
+  },
+  address: {
+    network: {ref: true},
+    vault: {ref: true, doc: 'Entity ID of vault'},
+    hdpath: {ref: true, doc: 'Entity ID of hd path'},
+    index: {doc: 'Address index in hd path'},
+    hex: {doc: 'The vaule of the address, not cfx hex address'},
+    cfxHex: {doc: 'The value of cfx hex address'},
+    base32Mainnet: {doc: 'cfx mainnet base32 address'},
+    pk: {doc: 'the private key of the address', persist: false},
+  },
+  account: {
+    index: {
+      doc: 'index of account in account group',
+    },
+    nickname: {
+      doc: 'account nickname',
+    },
+    accountGroup: {ref: true},
+    addresses: {
+      ref: true,
+      many: true,
+    },
+  },
+  accountGroup: {
+    vault: {ref: true, doc: 'Entity ID of vault'},
+    nickname: {value: true},
+    supportedNetworks: {
+      ref: true,
+      many: true,
+      doc: 'Used to filter account group based on network, so that user can hide specific account group by network',
+    },
+    customHdpath: {
+      ref: true,
+      doc: 'Entity ID of hd path, when set, will use this custom hd path for whatever network',
     },
   },
 }

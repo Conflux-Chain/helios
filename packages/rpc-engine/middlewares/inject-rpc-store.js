@@ -16,41 +16,49 @@ function updateReqRpcStack(req) {
       const tmp = rpcs.cfx_sendTransaction
       rpcs.cfx_sendTransaction(...)
 */
-function defRpcProxy({
-  getRpcPermissions,
-  InvalidRequestErr,
-  rpcStore,
-  req,
-  sendNewRpcRequest,
-}) {
+function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
   return new Proxy(rpcStore, {
     get() {
       const targetRpcName = arguments[1]
+      const {InvalidRequest} = rpcStore[req.method].Err
 
       if (!getRpcPermissions(rpcStore, req.method, targetRpcName))
-        throw new InvalidRequestErr(
+        throw InvalidRequest(
           `No permission to call method ${targetRpcName} in ${req.method}`,
+          req,
         )
       req._rpcStack.push(targetRpcName)
 
-      return params => {
+      return (...args) => {
+        let params, overrides
+        if (args.length === 1) {
+          params = args[0]
+          overrides = {}
+        } else if (args.length === 2) {
+          overrides = args[0]
+          params = args[1]
+        }
         return sendNewRpcRequest({
-          method: targetRpcName,
           params,
+          networkName: req.networkName,
+          ...overrides,
+          method: targetRpcName,
           _rpcStack: req._rpcStack,
         }).then(res => res.result)
       }
     },
     set() {
-      throw new InvalidRequestErr(
+      const {InvalidRequest} = rpcStore[req.method].Err
+      throw InvalidRequest(
         'Invalid operation: no permission to alter rpc store',
+        req,
       )
     },
   })
 }
 
 export default defMiddleware(
-  ({perms: {getRpc}, tx: {map, comp, sideEffect}, err: {InvalidRequest}}) => ({
+  ({perms: {getRpc}, tx: {map, comp, sideEffect}}) => ({
     id: 'injectRpcStore',
     ins: {req: {stream: '/validateRpcDataEnd/node'}},
     fn: comp(
@@ -60,7 +68,6 @@ export default defMiddleware(
         ...rpcStore[req.method],
         rpcs: defRpcProxy({
           getRpcPermissions: getRpc,
-          InvalidRequestErr: InvalidRequest,
           rpcStore,
           req,
           sendNewRpcRequest,

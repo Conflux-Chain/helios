@@ -3,6 +3,8 @@ import {stream} from '@thi.ng/rstream'
 import {initFetcher} from '@cfxjs/fetch-rpc'
 import {chan} from '@cfxjs/csp'
 import {init as initCache} from '@cfxjs/cache-rpc'
+import rndId from '@cfxjs/random-id'
+import {REGENERATE} from '@cfxjs/fluent-wallet-consts'
 
 const fetcher = initFetcher()
 
@@ -15,8 +17,9 @@ const s = stream({
 
 const {get: getCache, set: setCache} = initCache()
 
-function fetch({id, method, params, jsonrpc}) {
-  return fetcher.post('https://portal-main.confluxrpc.com', {
+function fetch({id, method, params, jsonrpc, network: {endpoint}}) {
+  return fetcher.post(endpoint, {
+    searchParams: {method},
     json: {id, method, params, jsonrpc},
   })
 }
@@ -29,19 +32,34 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
     },
     fn: map(({req}) => ({
       ...req,
-      f: newReq =>
-        new Promise((resolve, reject) => {
+      f: (...args) => {
+        let params, overrides
+        if (args.length === 0) {
+          params = {}
+          overrides = {}
+        } else if (args.length === 1) {
+          params = args[0]
+          overrides = {}
+        } else if (args.length === 2) {
+          params = args[1]
+          overrides = args[0]
+          if (overrides.id === REGENERATE) overrides.id = rndId()
+        }
+
+        return new Promise((resolve, reject) => {
           const c = chan(1)
           c.onerror = reject
           c.read().then(resolve)
 
           s.next({
             ...req,
-            ...newReq,
+            params,
+            ...overrides,
             jsonrpc: '2.0',
             resC: c,
           })
-        }),
+        })
+      },
     })),
   },
 
@@ -50,7 +68,7 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
     ins: {
       req: {stream: () => s},
     },
-    fn: map(({req, rpcStore}) => {
+    fn: map(({req, rpcStore, db}) => {
       const {resC, jsonrpc, method} = req
       const cache = rpcStore[method].cache
 
@@ -65,7 +83,8 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
         return
       }
 
-      return req
+      const network = db.getOneNetwork({name: req.networkName})
+      return {...req, network}
     }),
   },
   {
