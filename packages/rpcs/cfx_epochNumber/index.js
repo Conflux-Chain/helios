@@ -13,5 +13,5 @@ export const cache = {
 }
 
 export const main = async ({f, params}) => {
-  return await f({params})
+  return await f(params)
 }
