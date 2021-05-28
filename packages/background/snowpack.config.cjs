@@ -5,7 +5,6 @@ const path = require('path')
 const root = __dirname
 
 module.exports = mergeConfig(baseConfig, {
-  cacheDir: 'snowpack-background',
   root,
   mount: {
     [path.resolve(root, './public')]: {url: '/', static: true},
@@ -17,6 +16,7 @@ module.exports = mergeConfig(baseConfig, {
     hmrErrorOverlay: false,
   },
   buildOptions: {
+    cacheDirPath: path.resolve(__dirname, '../../node_modules/.cache/snowpack-background'),
     out: path.resolve(__dirname, '../browser-extension/build/background'),
   },
   optimize: {
