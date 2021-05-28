@@ -1,0 +1,10 @@
+{
+  "name": "@cfxjs/wallet_get-next-nonce",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/addr-by-network": "workspace:packages/addr-by-network",
+    "@cfxjs/spec": "workspace:packages/spec"
+  }
+}
