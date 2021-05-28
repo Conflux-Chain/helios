@@ -31,6 +31,7 @@ declined:
   - helios-background
   - browser-extension
   - "@cfxjs/db"
+  - "@cfxjs/json-rpc"
   - helios-popup
   - "@cfxjs/wallet_create-account"
   - "@cfxjs/wallet_generate-private-key"
