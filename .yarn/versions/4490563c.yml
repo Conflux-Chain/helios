@@ -1,0 +1,39 @@
+releases:
+  "@cfxjs/account": patch
+  "@cfxjs/addr-by-network": patch
+  "@cfxjs/base32-address": patch
+  "@cfxjs/cfx_epoch-number": patch
+  "@cfxjs/cfx_get-account": patch
+  "@cfxjs/cfx_get-balance": patch
+  "@cfxjs/cfx_get-code": patch
+  "@cfxjs/cfx_get-next-nonce": patch
+  "@cfxjs/discover-accounts": patch
+  "@cfxjs/eth_block-number": patch
+  "@cfxjs/eth_get-balance": patch
+  "@cfxjs/eth_get-code": patch
+  "@cfxjs/eth_get-transaction-count": patch
+  "@cfxjs/fetch-rpc": patch
+  "@cfxjs/fluent-wallet-consts": patch
+  "@cfxjs/rpc-engine": patch
+  "@cfxjs/spec": patch
+  "@cfxjs/wallet_add-vault": patch
+  "@cfxjs/wallet_generate-address": patch
+  "@cfxjs/wallet_get-balance": patch
+  "@cfxjs/wallet_get-next-nonce": patch
+  "@cfxjs/wallet_get-vaults": patch
+  "@cfxjs/wallet_import-address": patch
+  "@cfxjs/wallet_import-mnemonic": patch
+  "@cfxjs/wallet_import-private-key": patch
+  "@cfxjs/wallet_validate-base32-address": patch
+  workspace-tools: patch
+
+declined:
+  - helios-background
+  - browser-extension
+  - "@cfxjs/db"
+  - helios-popup
+  - "@cfxjs/wallet_create-account"
+  - "@cfxjs/wallet_generate-private-key"
+  - "@cfxjs/wallet_unlock"
+  - "@cfxjs/wallet_validate-password"
+  - doc
