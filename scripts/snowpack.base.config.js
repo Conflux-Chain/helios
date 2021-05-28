@@ -32,7 +32,13 @@ getWorkspacePackages({
 
 module.exports = {
   workspaceRoot: path.resolve(__dirname, '../'),
-  exclude: ['**/node_modules/**', '**/*.cjs'],
+  exclude: [
+    '**/node_modules/**',
+    '**/*.cjs',
+    '**/*.cljs',
+    '**/*.cljc',
+    '**/*.md',
+  ],
   mount,
   routes: [{match: 'routes', src: '.*', dest: '/index.html'}],
   alias,
