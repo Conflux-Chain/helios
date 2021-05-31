@@ -74,29 +74,40 @@ import {rpcEngineOpts} from './rpc-engine-opts'
       await request({
         method: 'wallet_importMnemonic',
         params: {
-          mnemonic:
-            'error mom brown point sun magnet armor fish urge business until plastic',
-          password: '12345678',
-        },
-      }),
-    )
-    console.log(
-      'wallet_importMnemonic',
-      await request({
-        method: 'wallet_importMnemonic',
-        params: {
           mnemonic: mn,
           password: '12345678',
         },
       }),
     )
+    // console.log(
+    //   'wallet_importMnemonic',
+    //   await request({
+    //     method: 'wallet_importMnemonic',
+    //     params: {
+    //       mnemonic:
+    //         'error mom brown point sun magnet armor fish urge business until plastic',
+    //       password: '12345678',
+    //     },
+    //   }),
+    // )
+    // console.log(
+    //   'wallet_importPrivateKey',
+    //   await request({
+    //     method: 'wallet_importPrivateKey',
+    //     params: {
+    //       privateKey:
+    //         '0xe11910396cc6d896160315bb18d219e182fcb415ad80dccda4fad65a3190218c',
+    //       password: '12345678',
+    //     },
+    //   }),
+    // )
+
     console.log(
-      'wallet_importPrivateKey',
+      'wallet_importAddress',
       await request({
-        method: 'wallet_importPrivateKey',
+        method: 'wallet_importAddress',
         params: {
-          privateKey:
-            '0xe11910396cc6d896160315bb18d219e182fcb415ad80dccda4fad65a3190218c',
+          address: 'cfx:aajj1b1gm7k51mhzm80czcx31kwxrm2f6jxvy30mvk',
           password: '12345678',
         },
       }),
@@ -132,6 +143,7 @@ import {rpcEngineOpts} from './rpc-engine-opts'
         params: ['cfx:aamwwx800rcw63n42kbehesuukjdjcnu4ueu84nhp5'],
       }),
     )
+
     // console.log(dbConnection.getAccount().map(({eid}) => eid))
     // console.log(dbConnection.getAddress().map(({eid}) => eid))
   }

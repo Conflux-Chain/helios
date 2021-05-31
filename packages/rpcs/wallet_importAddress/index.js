@@ -15,5 +15,7 @@ export const permissions = {
   methods: ['wallet_addVault'],
 }
 
-export const main = async ({params, rpcs: {wallet_addVault}}) =>
-  await wallet_addVault(params)
+export const main = async ({
+  params: {password, address},
+  rpcs: {wallet_addVault},
+}) => await wallet_addVault({password, address: address.toLowerCase()})

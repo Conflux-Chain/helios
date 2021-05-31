@@ -22,7 +22,7 @@ export const rpcErrorHandlerFactory = (isDev = false) => {
     err = appendRpcStackToErrorMessage(err, req._rpcStack || [req.method])
 
     /* istanbul ignore if  */
-    if (isDev) console.error(err)
+    if (isDev) console.error(err.message, '\n', err.stack)
     req._c.write({
       jsonrpc: '2.0',
       error: {

@@ -75,7 +75,7 @@ describe('wallet_importAddress', function () {
       const input = {
         params: {
           password: '12345678',
-          address: 'CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG',
+          address: 'cfx:type.user:aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg',
         },
         rpcs: {wallet_addVault: jest.fn(() => 1)},
       }

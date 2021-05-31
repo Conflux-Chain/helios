@@ -27,7 +27,6 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
           `No permission to call method ${targetRpcName} in ${req.method}`,
           req,
         )
-      req._rpcStack.push(targetRpcName)
 
       return (...args) => {
         let params, overrides
@@ -38,13 +37,18 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
           overrides = args[0]
           params = args[1]
         }
+
         return sendNewRpcRequest({
           params,
           networkName: req.networkName,
           ...overrides,
           method: targetRpcName,
           _rpcStack: req._rpcStack,
-        }).then(res => res.result)
+        }).then(res => {
+          req._rpcStack.pop()
+          if (res.error) req._c.write(res)
+          else return res.result
+        })
       }
     },
     set() {

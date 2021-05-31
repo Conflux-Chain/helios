@@ -8,7 +8,6 @@ const path = require('path')
 
 module.exports = {
   // ...snowpackReactJestConfig,
-
   transform: {
     '^.+\\.(t|j)sx?$': path.resolve(
       __dirname,

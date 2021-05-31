@@ -46,7 +46,8 @@ export const discoverAccounts = async ({
       hasBalance({getBalance, address: rst.address}),
     ])
 
-    if (txOk || balanceOk) onFindOne(rst)
+    // always return the first address
+    if (i === 0 || txOk || balanceOk) onFindOne(rst)
     else return
   }
 }
