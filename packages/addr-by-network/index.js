@@ -2,6 +2,13 @@ import {encode, decode, validateBase32Address} from '@cfxjs/base32-address'
 import {ADDRESS_TYPES} from '@cfxjs/fluent-wallet-consts'
 import {fromPrivate} from '@cfxjs/account'
 
+const ADDR_TYPE_TO_PREFIX = {
+  user: '0x1',
+  contract: '0x8',
+  null: '0x0',
+  builtin: '0x0',
+}
+
 const addrByNetwork = ({
   address,
   networkType,
@@ -27,12 +34,24 @@ const addrByNetwork = ({
     )
 
   if (networkType === 'cfx') {
+    if (addressType === 'null')
+      address = '0x0000000000000000000000000000000000000000'
+
     if (validateBase32Address(address, networkId, addressType)) return address
+
     if (address.includes(':')) {
+      if (addressType && !validateBase32Address(address, addressType))
+        throw new Error('Invalid base32 address, address type is invalid')
       return encode(decode(address).hexAddress, networkId, true)
     }
 
-    return encode(address.toLowerCase().replace(/0x./, '0x1'), networkId, true)
+    if (!addressType) addressType = 'user'
+
+    return encode(
+      address.toLowerCase().replace(/0x./, ADDR_TYPE_TO_PREFIX[addressType]),
+      networkId,
+      true,
+    )
   }
 
   if (networkType === 'eth') {
