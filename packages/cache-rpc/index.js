@@ -1,10 +1,14 @@
-import {isArray, isFunction, isObject, isString} from '@cfxjs/checks'
+import {isArray, isFunction, isNumber, isObject, isString} from '@cfxjs/checks'
 import {TLRUCache, LRUCache} from '@thi.ng/cache'
 import EpochRefConf from '@cfxjs/rpc-epoch-ref'
 
 const CACHE = {}
 
-const getCacheStore = ({networkName, params, method}, {type}) => {
+export const getCacheStore = (
+  {networkName, network, params, method},
+  {type},
+) => {
+  if (!networkName) networkName = network?.name
   if (!CACHE[networkName]) CACHE[networkName] = {}
   const netCache = CACHE[networkName]
 
@@ -36,14 +40,15 @@ const getCacheStore = ({networkName, params, method}, {type}) => {
   }
 }
 
-const getCacheKey = (key, req) => {
+export const getCacheKey = (key, req) => {
   const k = isFunction(key) ? key(req) : key
   if (isString(k)) return k
+  if (isNumber(k)) return k.toString()
   if (isArray(k) || isObject(k)) return JSON.stringify(k)
   throw new Error(`Invalid cache key: ${k}`)
 }
 
-const getCache = ({req, conf}) => {
+export const getCache = ({req, conf}) => {
   if (!conf || !conf.type || !conf.key) return
   const {key} = conf
 
@@ -54,7 +59,7 @@ const getCache = ({req, conf}) => {
   return Cache.get(k)
 }
 
-const setCache = ({req, res, conf}) => {
+export const setCache = ({req, res, conf}) => {
   if (!conf || !conf.type || !conf.key || !res || !res.result) return
   const {ttl, key} = conf
 

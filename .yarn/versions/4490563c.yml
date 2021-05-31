@@ -2,6 +2,7 @@ releases:
   "@cfxjs/account": patch
   "@cfxjs/addr-by-network": patch
   "@cfxjs/base32-address": patch
+  "@cfxjs/cache-rpc": patch
   "@cfxjs/cfx_epoch-number": patch
   "@cfxjs/cfx_get-account": patch
   "@cfxjs/cfx_get-balance": patch
