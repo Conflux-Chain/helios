@@ -17,7 +17,7 @@ import {rpcEngineOpts} from './rpc-engine-opts'
 // # initialize
 // ## initialize db
 ;(async () => {
-  const data = await browser.storage.local.get(EXT_STORAGE)?.[EXT_STORAGE]
+  const data = (await browser.storage.local.get(EXT_STORAGE))?.[EXT_STORAGE]
 
   const dbConnection = createdb(SCHEMA, persist, data || null)
   if (!IS_PROD_MODE) window.d = dbConnection
@@ -60,13 +60,9 @@ import {rpcEngineOpts} from './rpc-engine-opts'
         }),
       ]),
     )
-    console.log(
-      await request({
-        method: 'wallet_lock',
-      }),
-    )
 
     console.log(
+      'wallet_unlock',
       await request({
         method: 'wallet_unlock',
         params: {password: '12345678'},
@@ -74,31 +70,42 @@ import {rpcEngineOpts} from './rpc-engine-opts'
     )
 
     console.log(
+      'wallet_importMnemonic',
       await request({
         method: 'wallet_importMnemonic',
-        params: {mnemonic: mn, password: '12345678'},
+        params: {
+          mnemonic:
+            'error mom brown point sun magnet armor fish urge business until plastic',
+          password: '12345678',
+        },
       }),
     )
 
     console.log(
+      'latest_state',
+      'latest_mined',
       await Promise.all([
         request({method: 'cfx_epochNumber', params: ['latest_state']}),
         request({method: 'cfx_epochNumber', params: ['latest_mined']}),
       ]),
     )
     console.log(
+      'latest_state',
+      'latest_mined',
       await Promise.all([
         request({method: 'cfx_epochNumber', params: ['latest_state']}),
         request({method: 'cfx_epochNumber', params: ['latest_mined']}),
       ]),
     )
     console.log(
+      'cfx_getAccount',
       await request({
         method: 'cfx_getAccount',
         params: ['cfx:aamwwx800rcw63n42kbehesuukjdjcnu4ueu84nhp5'],
       }),
     )
     console.log(
+      'cfx_getAccount',
       await request({
         method: 'cfx_getAccount',
         params: ['cfx:aamwwx800rcw63n42kbehesuukjdjcnu4ueu84nhp5'],
