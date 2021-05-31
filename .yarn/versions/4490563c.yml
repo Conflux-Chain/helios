@@ -24,7 +24,6 @@ releases:
   "@cfxjs/wallet_import-address": patch
   "@cfxjs/wallet_import-mnemonic": patch
   "@cfxjs/wallet_import-private-key": patch
-  "@cfxjs/wallet_validate-base32-address": patch
   workspace-tools: patch
 
 declined:

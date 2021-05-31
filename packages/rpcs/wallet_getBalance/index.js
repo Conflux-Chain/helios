@@ -1,10 +1,10 @@
-import {or, cat, base32Address, ethHexAddress} from '@cfxjs/spec'
+import {or, cat, base32UserAddress, ethHexAddress} from '@cfxjs/spec'
 import addrByNet from '@cfxjs/addr-by-network'
 
 export const NAME = 'wallet_getBalance'
 
 export const schemas = {
-  input: [or, [cat, ethHexAddress], [cat, base32Address]],
+  input: [or, [cat, ethHexAddress], [cat, base32UserAddress]],
 }
 
 export const permissions = {methods: ['cfx_getBalance', 'eth_getBalance']}

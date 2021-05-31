@@ -2931,15 +2931,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/wallet_validate-base32-address@workspace:packages/rpcs/wallet_validateBase32Address":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_validate-base32-address@workspace:packages/rpcs/wallet_validateBase32Address"
-  dependencies:
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword"
@@ -13357,7 +13348,6 @@ fsevents@~2.3.1:
     "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock"
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
-    "@cfxjs/wallet_validate-base32-address": "workspace:packages/rpcs/wallet_validateBase32Address"
     "@cfxjs/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
     "@thi.ng/rstream": ^6.0.8
     "@thi.ng/rstream-csp": ^2.0.67

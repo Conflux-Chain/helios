@@ -31,7 +31,6 @@
     "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey",
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock",
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock",
-    "@cfxjs/wallet_validate-base32-address": "workspace:packages/rpcs/wallet_validateBase32Address",
     "@cfxjs/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword",
     "@thi.ng/rstream": "^6.0.8",
     "@thi.ng/rstream-csp": "^2.0.67",
