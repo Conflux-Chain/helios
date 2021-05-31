@@ -84,6 +84,9 @@ const schema = {
       ref: true,
       many: true,
     },
+    hidden: {
+      doc: 'If hide this account in ui',
+    },
   },
   accountGroup: {
     vault: {ref: true, doc: 'Entity ID of vault'},
@@ -96,6 +99,9 @@ const schema = {
     customHdpath: {
       ref: true,
       doc: 'Entity ID of hd path, when set, will use this custom hd path for whatever network',
+    },
+    hidden: {
+      doc: 'If hide this accountGroup in ui',
     },
   },
 }
