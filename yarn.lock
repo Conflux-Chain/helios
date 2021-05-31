@@ -2540,6 +2540,7 @@ __metadata:
   resolution: "@cfxjs/discover-accounts@workspace:packages/discover-accounts"
   dependencies:
     "@cfxjs/hdkey": "workspace:packages/hdkey"
+    "@cfxjs/utils": "workspace:packages/utils"
     bn.js: 5.2.0
   languageName: unknown
   linkType: soft
