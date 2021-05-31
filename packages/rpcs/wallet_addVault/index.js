@@ -13,6 +13,7 @@ import {validateBase32Address, decode} from '@cfxjs/base32-address'
 import {discoverAccounts} from '@cfxjs/discover-accounts'
 import {fromPrivate} from '@cfxjs/account'
 import {encode} from '@cfxjs/base32-address'
+import {stripHexPrefix} from '@cfxjs/utils'
 
 export const NAME = 'wallet_addVault'
 
@@ -180,8 +181,10 @@ export async function main(arg) {
 
   const vault = {}
   vault.data = mnemonic || privateKey || address
-  if (privateKey) vault.type = 'pk'
-  else if (mnemonic) vault.type = 'hd'
+  if (privateKey) {
+    vault.type = 'pk'
+    vault.data = stripHexPrefix(privateKey)
+  } else if (mnemonic) vault.type = 'hd'
   else if (address) {
     const validateResult = processAddress(address, Err)
     vault.type = 'pub'

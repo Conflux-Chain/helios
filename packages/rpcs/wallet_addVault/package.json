@@ -9,6 +9,7 @@
     "@cfxjs/discover-accounts": "workspace:packages/discover-accounts",
     "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",
     "@cfxjs/spec": "workspace:packages/spec",
+    "@cfxjs/utils": "workspace:packages/utils",
     "browser-passworder": "^2.0.3"
   }
 }
