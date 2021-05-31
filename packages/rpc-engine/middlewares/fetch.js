@@ -19,7 +19,7 @@ const {get: getCache, set: setCache} = initCache()
 
 function fetch({id, method, params, jsonrpc, network: {endpoint}}) {
   return fetcher.post(endpoint, {
-    searchParams: {method},
+    searchParams: {m: method},
     json: {id, method, params, jsonrpc},
   })
 }

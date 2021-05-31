@@ -5,6 +5,6 @@
   "main": "index.js",
   "dependencies": {
     "@thi.ng/cache": "1.0.83",
-    "ky": "0.28.2"
+    "ky": "0.28.3"
   }
 }
