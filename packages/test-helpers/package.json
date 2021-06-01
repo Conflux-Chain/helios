@@ -1,0 +1,9 @@
+{
+  "name": "@cfxjs/test-helpers",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/fullnode": "1.7.2"
+  }
+}
