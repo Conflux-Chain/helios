@@ -36,5 +36,8 @@
     "@thi.ng/rstream-csp": "^2.0.67",
     "regenerator-runtime": "^0.13.8",
     "webextension-polyfill": "^0.8.0"
+  },
+  "devDependencies": {
+    "@cfxjs/test-helpers": "workspace:packages/test-helpers"
   }
 }

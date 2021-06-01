@@ -114,7 +114,7 @@ export async function newAccounts(arg) {
           hex: fromPrivate(vault.ddata).address,
           pk: vault.ddata,
         }
-        console.log('kkk', fromPrivate(vault.ddata))
+
         if (type === 'cfx')
           addr.base32Mainnet = encode(
             addr.hex.replace(/0x./, '0x1'),

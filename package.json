@@ -27,7 +27,8 @@
     "prod": "cross-env NODE_ENV=production run-s prod-all compile:inpage",
     "lint": "eslint  --ignore-path .gitignore packages",
     "lint:fix": "yarn run lint --fix",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --no-cache"
+    "test:unit": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --no-cache --testPathIgnorePatterns '.*\\.integration\\.test\\.jsx?'",
+    "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test node ./scripts/integration-test.js --no-cache --testMatch '**/*.integration.test.[jt]s?(x)'"
   },
   "devDependencies": {
     "@babel/core": "7.14.0",

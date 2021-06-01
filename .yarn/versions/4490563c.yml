@@ -17,6 +17,7 @@ releases:
   "@cfxjs/fluent-wallet-consts": patch
   "@cfxjs/rpc-engine": patch
   "@cfxjs/spec": patch
+  "@cfxjs/test-helpers": patch
   "@cfxjs/wallet_add-vault": patch
   "@cfxjs/wallet_generate-address": patch
   "@cfxjs/wallet_get-balance": patch

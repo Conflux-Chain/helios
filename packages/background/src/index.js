@@ -14,12 +14,14 @@ import initDB from './init-db.js'
 if (!IS_PROD_MODE) window.b = browser
 import {rpcEngineOpts} from './rpc-engine-opts'
 
-export const initBG = async ({customInitDBFn = initDB} = {}) => {
-  const data = (await browser.storage.local.get(EXT_STORAGE))?.[EXT_STORAGE]
+export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
+  const data = skipRestore
+    ? null
+    : (await browser.storage.local.get(EXT_STORAGE))?.[EXT_STORAGE]
 
   const dbConnection = createdb(SCHEMA, persist, data || null)
   if (!IS_PROD_MODE) window.d = dbConnection
-  customInitDBFn(dbConnection)
+  initDBFn(dbConnection)
 
   // ## initialize rpc engine
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)

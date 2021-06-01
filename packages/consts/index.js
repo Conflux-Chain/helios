@@ -74,3 +74,9 @@ export const CFX_LOCALNET_NAME = 'CFX_LOCALNET'
 export const CFX_LOCALNET_CHAINID = 2999
 export const CFX_LOCALNET_NETID = 2999
 export const CFX_LOCALNET_CURRENCY_SYMBOL = 'CFX'
+
+export const ETH_LOCALNET_RPC_ENDPOINT = 'http://localhost:8545'
+export const ETH_LOCALNET_NAME = 'ETH_LOCALNET'
+export const ETH_LOCALNET_CHAINID = 1
+export const ETH_LOCALNET_NETID = 1337
+export const ETH_LOCALNET_CURRENCY_SYMBOL = 'ETH'
