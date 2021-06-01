@@ -28,7 +28,7 @@ const request = (s, req = {}) => {
 }
 
 const defRpcEngineFactory = (db, options = {methods: []}) => {
-  const {methods, isDev = false} = options
+  const {methods, isProd = true} = options
   const rpcStore = new Object() // to store rpc defination
 
   methods.forEach(rpc => {
@@ -55,7 +55,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
     closeIn: false,
     closeOut: false,
     cache: false,
-    error: rpcErrorHandlerFactory(isDev),
+    error: rpcErrorHandlerFactory(isProd),
   })
 
   const sendNewRpcRequest = partial(request, s)

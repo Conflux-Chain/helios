@@ -68,3 +68,9 @@ export const DEFAULT_CFX_HDPATH = `m/44'/503'/0'/0`
 export const DEFAULT_ETH_HDPATH = `m/44'/60'/0'/0`
 
 export const REGENERATE = 'REGENERATE'
+
+export const CFX_LOCALNET_RPC_ENDPOINT = 'http://localhost:12537'
+export const CFX_LOCALNET_NAME = 'CFX_LOCALNET'
+export const CFX_LOCALNET_CHAINID = 2999
+export const CFX_LOCALNET_NETID = 2999
+export const CFX_LOCALNET_CURRENCY_SYMBOL = 'CFX'

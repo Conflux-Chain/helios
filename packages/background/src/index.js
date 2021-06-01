@@ -5,7 +5,7 @@ import {persist} from './persist-db-to-ext-storage'
 import {createdb} from '@cfxjs/db'
 
 import {EXT_STORAGE} from '@cfxjs/fluent-wallet-consts'
-import {IS_PROD_MODE} from '@cfxjs/fluent-wallet-inner-utils'
+import {IS_PROD_MODE, IS_DEV_MODE} from '@cfxjs/fluent-wallet-inner-utils'
 import browser from 'webextension-polyfill'
 import SCHEMA from './db-schema'
 import {listen} from '@cfxjs/extension-runtime/background.js'
@@ -14,14 +14,12 @@ import initDB from './init-db.js'
 if (!IS_PROD_MODE) window.b = browser
 import {rpcEngineOpts} from './rpc-engine-opts'
 
-// # initialize
-// ## initialize db
-;(async () => {
+export const initBG = async ({customInitDBFn = initDB} = {}) => {
   const data = (await browser.storage.local.get(EXT_STORAGE))?.[EXT_STORAGE]
 
   const dbConnection = createdb(SCHEMA, persist, data || null)
   if (!IS_PROD_MODE) window.d = dbConnection
-  initDB(dbConnection)
+  customInitDBFn(dbConnection)
 
   // ## initialize rpc engine
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
@@ -40,7 +38,14 @@ import {rpcEngineOpts} from './rpc-engine-opts'
     },
   })
 
-  {
+  return {db: dbConnection, request}
+}
+
+// # initialize
+// ## initialize db
+;(async () => {
+  const {request} = await initBG()
+  if (IS_DEV_MODE) {
     const {result: pk} = await request({
       method: 'wallet_generatePrivateKey',
       params: {entropy: 'abc'},
