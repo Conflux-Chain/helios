@@ -91,6 +91,8 @@ module.exports = {
     '/packages/doc-ui',
     '/packages/ext-reload',
     '/packages/test-helpers',
+    '.*.test.jsx?', // eslint-disable-line no-useless-escape
+    '.*.integration.test.jsx?', // eslint-disable-line no-useless-escape
   ],
 
   // The directory where Jest should output its coverage files
