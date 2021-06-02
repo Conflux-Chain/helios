@@ -106,19 +106,23 @@ describe('integration test', function () {
         expect(db.getAddress().length).toBe(1)
       })
 
-      test.skip('should be able to import a address vault', async function () {
-        await expect(
-          request({
-            method: 'wallet_importAddress',
-            params: {
-              address: 'cfx:aamwwx800rcw63n42kbehesuukjdjcnuaafa2ucfuw',
-              password,
-            },
-          }),
-        ).resolves.toHaveProperty('result', 5)
+      test('should be able to import a address vault', async function () {
+        expect(db.getVault().length).toBe(0)
+        expect(db.getVaultByType('pub').length).toBe(0)
+
+        await request({
+          method: 'wallet_importAddress',
+          params: {
+            address:
+              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            password,
+          },
+        })
 
         expect(db.getVault().length).toBe(1)
         expect(db.getVaultByType('pub').length).toBe(1)
+        expect(db.getAccount().length).toBe(1)
+        expect(db.getAddress().length).toBe(1)
       })
     })
   })
