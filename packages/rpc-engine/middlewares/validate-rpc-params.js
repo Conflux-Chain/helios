@@ -10,19 +10,20 @@ export default defMiddleware(({tx: {map}}) => ({
     const {params, method} = req
     const {schemas, Err} = rpcStore[method]
     if (schemas.input) {
-      if (!validate(schemas.input, params, {netId: req.network.netId}))
+      if (!validate(schemas.input, params, {netId: req.network.netId})) {
         throw Err.InvalidParams(
           `input params:\n${JSON.stringify(
             params,
             null,
             '\t',
           )}\n\nError:\n${JSON.stringify(
-            explain(schemas.input, params),
+            explain(schemas.input, params, {netId: req.network.netId}),
             null,
             '\t',
           )}`,
           req,
         )
+      }
     }
 
     return req

@@ -7,12 +7,6 @@
 
 (defn j->c [a] (js->clj a :keywordize-keys true))
 
-(defn explain
-  ([schema data] (explain schema data {}))
-  ([schema data opt]
-   (let [rst (humanize (m/explain (j->c schema) (js->clj data)))]
-     (clj->js rst))))
-
 (declare base32-address)
 (declare base32-user-address)
 (declare base32-contract-address)
@@ -23,17 +17,30 @@
 (defn- inject-netId-to-base32-schemas [netId s]
   (if (some #{s} base32-schemas) [s {:netId netId}] s))
 
+(defn- pre-process-schema
+  ([s] (pre-process-schema s {}))
+  ([s opt]
+   (let [s (j->c s)]
+     (if-let [netId (get opt :netId)]
+       (postwalk (partial inject-netId-to-base32-schemas netId) s)
+       s))))
+
 (defn validate
   ([schema] (validate schema js/undefined {}))
   ([schema data] (validate schema data {}))
   ([schema data opt]
-   (let [s (j->c schema)
-         opt (j->c opt)
-         s (if-let [netId (get opt :netId)]
-             (postwalk (partial inject-netId-to-base32-schemas netId) s)
-             s)
+   (let [opt (j->c opt)
+         s ((memoize pre-process-schema) schema opt)
          d (js->clj data)]
      (m/validate s d opt))))
+
+(defn explain
+  ([schema data] (explain schema data {}))
+  ([schema data opt]
+   (let [opt (j->c opt)
+         s ((memoize pre-process-schema) schema opt)
+         rst (humanize (m/explain s (js->clj data) opt))]
+     (clj->js rst))))
 
 (defn update-properties [schema & forms]
   (let [trans (partition 2 forms)
@@ -49,18 +56,18 @@
   (let [{:keys [INTERNAL_CONTRACTS_HEX_ADDRESS randomHexAddress randomPrivateKey validateMnemonic generateMnemonic validatePrivateKey validateHDPath randomHDPath]} (j->c opts)
         INTERNAL_CONTRACTS_HEX_ADDRESS (js->clj INTERNAL_CONTRACTS_HEX_ADDRESS)]
     #js
-    {:hdPath (m/-simple-schema
-                {:type :hd-path
-                 :pred #(and (string? %) (validateHDPath %))
-                 :type-properties {:error/message "should be a valid hdPath without the last address index"
-                                   :doc "hd wallet derivation path without the last address_index, check https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#abstract for detail"
-                                   :gen/fmap #(.call randomHDPath)}})
-     :mnemonic (m/-simple-schema
-                {:type :mnemonic
-                 :pred #(and (string? %) (validateMnemonic %))
-                 :type-properties {:error/message "should be a valid mnemonic"
-                                   :doc "Mnemonic phrase"
-                                   :gen/fmap #(.call generateMnemonic)}})
+     {:hdPath (m/-simple-schema
+               {:type :hd-path
+                :pred #(and (string? %) (validateHDPath %))
+                :type-properties {:error/message "should be a valid hdPath without the last address index"
+                                  :doc "hd wallet derivation path without the last address_index, check https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#abstract for detail"
+                                  :gen/fmap #(.call randomHDPath)}})
+      :mnemonic (m/-simple-schema
+                 {:type :mnemonic
+                  :pred #(and (string? %) (validateMnemonic %))
+                  :type-properties {:error/message "should be a valid mnemonic"
+                                    :doc "Mnemonic phrase"
+                                    :gen/fmap #(.call generateMnemonic)}})
       :privateKey (m/-simple-schema
                    {:type :privateKey
                     :pred #(validatePrivateKey %)
@@ -95,10 +102,18 @@
                        :doc "Null address: 0x0000000000000000000000000000000000000000"
                        :error/message "invalid hex null address, should be 0x0000000000000000000000000000000000000000")}))
 
+(defn- base32-address-schema-type [address-type netId]
+  (keyword
+   (str "base32"
+        (if address-type
+          (str "-" (if netId (str address-type "-" netId) (str address-type)))
+          (if netId (str "-" netId) ""))
+        "-address")))
+
 (defn def-base32-address-schema-factory [pred gen]
   (def base32-address (m/-simple-schema
                        (fn [{:keys [netId]} _]
-                         { ;; :type (schema-type address-type netId)
+                         {:type (base32-address-schema-type nil netId)
                           :pred #(pred % netId)
                           :type-properties {:error/message (str "Invalid base32 address" (if netId (str ", with network id " netId) ""))
                                             :doc (str "Base32 address" (if netId (str ", with network id " netId) ""))
@@ -106,7 +121,7 @@
   (def base32-user-address
     (m/-simple-schema
      (fn [{:keys [netId]} _]
-       { ;; :type (schema-type address-type netId)
+       {:type (base32-address-schema-type "user" netId)
         :pred #(pred % "user" netId)
         :type-properties {:error/message (str "Invalid base32 user address" (if netId (str ", with network id " netId) ""))
                           :doc (str "Base32 user address" (if netId (str ", with network id " netId) ""))
@@ -114,7 +129,7 @@
   (def base32-contract-address
     (m/-simple-schema
      (fn [{:keys [netId]} _]
-       { ;; :type (schema-type address-type netId)
+       {:type (base32-address-schema-type "contract" netId)
         :pred #(pred % "contract" netId)
         :type-properties {:error/message (str "Invalid base32 contract address" (if netId (str ", with network id " netId) ""))
                           :doc (str "Base32 contract address" (if netId (str ", with network id " netId) ""))
@@ -122,7 +137,7 @@
   (def base32-builtin-address
     (m/-simple-schema
      (fn [{:keys [netId]} _]
-       { ;; :type (schema-type address-type netId)
+       {:type (base32-address-schema-type "builtin" netId)
         :pred #(pred % "builtin" netId)
         :type-properties {:error/message (str "Invalid base32 builtin address" (if netId (str ", with network id " netId) ""))
                           :doc (str "Base32 builtin address" (if netId (str ", with network id " netId) ""))
@@ -130,7 +145,7 @@
   (def base32-null-address
     (m/-simple-schema
      (fn [{:keys [netId]} _]
-       { ;; :type (schema-type address-type netId)
+       {:type (base32-address-schema-type "null" netId)
         :pred #(pred % "null" netId)
         :type-properties {:error/message (str "Invalid base32 null address" (if netId (str ", with network id " netId) ""))
                           :doc (str "Base32 null address" (if netId (str ", with network id " netId) ""))
