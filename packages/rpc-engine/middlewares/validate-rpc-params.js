@@ -9,20 +9,21 @@ export default defMiddleware(({tx: {map}}) => ({
   fn: map(({rpcStore, req}) => {
     const {params, method} = req
     const {schemas, Err} = rpcStore[method]
-    if (schemas.input && !validate(schemas.input, params)) {
-      // TODO: make error message more readable
-      throw Err.InvalidParams(
-        `input params:\n${JSON.stringify(
-          params,
-          null,
-          '\t',
-        )}\n\nError:\n${JSON.stringify(
-          explain(schemas.input, params),
-          null,
-          '\t',
-        )}`,
-        req,
-      )
+    if (schemas.input) {
+      if (!validate(schemas.input, params, {netId: req.network.netId})) {
+        throw Err.InvalidParams(
+          `input params:\n${JSON.stringify(
+            params,
+            null,
+            '\t',
+          )}\n\nError:\n${JSON.stringify(
+            explain(schemas.input, params, {netId: req.network.netId}),
+            null,
+            '\t',
+          )}`,
+          req,
+        )
+      }
     }
 
     return req

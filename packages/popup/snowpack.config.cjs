@@ -22,7 +22,6 @@ mustacheRender(
 const root = __dirname
 
 module.exports = mergeConfig(baseConfig, {
-  cacheDir: 'snowpack-popup',
   root,
   mount: {
     [path.resolve(root, './public')]: {url: '/', static: true},
@@ -52,6 +51,7 @@ module.exports = mergeConfig(baseConfig, {
     port: 18001,
   },
   buildOptions: {
+    cacheDirPath: path.resolve(__dirname, '../../node_modules/.cache/snowpack-popup'),
     out: path.resolve(root, '../browser-extension/build/popup'),
     // webModulesUrl: 'popup/m',
   },

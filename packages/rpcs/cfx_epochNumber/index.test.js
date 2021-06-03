@@ -25,7 +25,7 @@ describe('@cfxjs/cfx_epoch-number', function () {
         params: ['bar'],
       }
       const res = await main(input)
-      expect(res).toStrictEqual({params: input.params})
+      expect(res).toStrictEqual(input.params)
       expect(input.f).toHaveBeenCalledTimes(1)
     })
   })

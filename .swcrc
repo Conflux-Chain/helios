@@ -8,7 +8,7 @@
       "jsx": true,
       "dynamicImport": true,
       "privateMethod": true,
-      "functionBind": false,
+      "functionBind": true,
       "exportDefaultFrom": true,
       "exportNamespaceFrom": true,
       "decorators": false,
@@ -17,9 +17,12 @@
       "importMeta": true
     },
     "transform": {
-      "optimizer": {}
+      "react": {
+        "runtime": "automatic"
+      }
     },
     "loose": false,
-    "externalHelpers": false
+    "externalHelpers": false,
+    "keepClassNames": true
   }
 }

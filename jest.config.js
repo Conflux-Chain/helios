@@ -8,7 +8,6 @@ const path = require('path')
 
 module.exports = {
   // ...snowpackReactJestConfig,
-
   transform: {
     '^.+\\.(t|j)sx?$': path.resolve(
       __dirname,
@@ -18,7 +17,7 @@ module.exports = {
 
   testEnvironment: './scripts/jest-test-jsdom-env.js',
   // The glob patterns Jest uses to detect test files
-  testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
+  testMatch: ['**/*.test.[jt]s?(x)'],
 
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
@@ -27,7 +26,7 @@ module.exports = {
   roots: ['<rootDir>'],
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  // setupFiles: ['jest-webextension-mock'],
+  // setupFiles: [path.resolve(__dirname, './scripts/jest-global-setup.js'),],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: [
@@ -91,6 +90,9 @@ module.exports = {
     '/packages/docusaurus-plugin',
     '/packages/doc-ui',
     '/packages/ext-reload',
+    '/packages/test-helpers',
+    '.*.test.jsx?', // eslint-disable-line no-useless-escape
+    '.*.integration.test.jsx?', // eslint-disable-line no-useless-escape
   ],
 
   // The directory where Jest should output its coverage files
@@ -98,4 +100,6 @@ module.exports = {
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: ['packages/**/*.js'],
+
+  // globalSetup: path.resolve(__dirname, './scripts/jest-global-setup.js')
 }

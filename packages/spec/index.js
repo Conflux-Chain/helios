@@ -51,25 +51,12 @@ export const cfxHexAddress = [
   hexNullAddress,
 ]
 
-const Base32AddressSchemaCache = new Map()
-
-export const defBase32AddressSchema = (...args) => {
-  let schema = Base32AddressSchemaCache.get(args)
-  if (schema) return schema
-
-  schema = defBase32AddressSchemaFactory(
-    validateBase32Address,
-    randomBase32Address,
-    ...args,
-  )
-  Base32AddressSchemaCache.set(args, schema)
-  return schema
-}
+export const [
+  base32Address,
+  base32UserAddress,
+  base32ContractAddress,
+  base32BuiltinAddress,
+  base32NullAddress,
+] = defBase32AddressSchemaFactory(validateBase32Address, randomBase32Address)
 
 export const dbid = integer
-export const base32AccountMainnetAddress = defBase32AddressSchema('user', 1029)
-export const base32AccountTestnetAddress = defBase32AddressSchema('user', 1)
-export const base32Address = defBase32AddressSchema()
-export const base32AccountAddress = defBase32AddressSchema('user')
-export const base32ContractAddress = defBase32AddressSchema('contract')
-export const base32BuiltInAddress = defBase32AddressSchema('builtin')

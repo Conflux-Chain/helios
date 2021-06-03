@@ -1,0 +1,11 @@
+{
+  "name": "@cfxjs/discover-accounts",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/hdkey": "workspace:packages/hdkey",
+    "@cfxjs/utils": "workspace:packages/utils",
+    "bn.js": "5.2.0"
+  }
+}

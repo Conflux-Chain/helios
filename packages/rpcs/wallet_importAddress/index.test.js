@@ -60,21 +60,13 @@ describe('wallet_importAddress', function () {
           password: '11111111',
           address: '0x0000000000000000000000000000000000000000',
         }),
-      ).toBe(false)
+      ).toBe(true)
       expect(
         validate(schemas.input, {
           password: '11111111',
           address: '0x8888888888888888888888888888888888888888',
         }),
-      ).toBe(false)
-
-      // only mainnet and testnet base32address
-      expect(
-        validate(schemas.input, {
-          password: '11111111',
-          address: 'net10086:aaag4wt2mbmbb44sp6szd783ry0jtad5benr1ap5gp',
-        }),
-      ).toBe(false)
+      ).toBe(true)
     })
   })
 
@@ -83,7 +75,7 @@ describe('wallet_importAddress', function () {
       const input = {
         params: {
           password: '12345678',
-          address: 'CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG',
+          address: 'cfx:type.user:aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg',
         },
         rpcs: {wallet_addVault: jest.fn(() => 1)},
       }

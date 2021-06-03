@@ -9,7 +9,13 @@
   "dependencies": {
     "@cfxjs/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber",
     "@cfxjs/cfx_get-account": "workspace:packages/rpcs/cfx_getAccount",
+    "@cfxjs/cfx_get-balance": "workspace:packages/rpcs/cfx_getBalance",
+    "@cfxjs/cfx_get-code": "workspace:packages/rpcs/cfx_getCode",
+    "@cfxjs/cfx_get-next-nonce": "workspace:packages/rpcs/cfx_getNextNonce",
     "@cfxjs/db": "workspace:packages/db",
+    "@cfxjs/eth_get-balance": "workspace:packages/rpcs/eth_getBalance",
+    "@cfxjs/eth_get-code": "workspace:packages/rpcs/eth_getCode",
+    "@cfxjs/eth_get-transaction-count": "workspace:packages/rpcs/eth_getTransactionCount",
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",
     "@cfxjs/fluent-wallet-inner-utils": "workspace:packages/inner-utils",
@@ -18,6 +24,8 @@
     "@cfxjs/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault",
     "@cfxjs/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic",
     "@cfxjs/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey",
+    "@cfxjs/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance",
+    "@cfxjs/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce",
     "@cfxjs/wallet_get-vaults": "workspace:packages/rpcs/wallet_getVaults",
     "@cfxjs/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress",
     "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey",
@@ -28,5 +36,8 @@
     "@thi.ng/rstream-csp": "^2.0.67",
     "regenerator-runtime": "^0.13.8",
     "webextension-polyfill": "^0.8.0"
+  },
+  "devDependencies": {
+    "@cfxjs/test-helpers": "workspace:packages/test-helpers"
   }
 }

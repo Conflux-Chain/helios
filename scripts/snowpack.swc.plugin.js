@@ -11,6 +11,14 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
     name: 'helios-snowpack-swc-plugin',
     transform({contents, fileExt, id}) {
       if (fileExt !== '.js' && fileExt !== '.jsx') return
+
+      // fix the assert node polyfill (in ethereumjs pakcages)
+      if (contents.includes('assert_1.default('))
+        contents = contents.replaceAll(
+          'assert_1.default(',
+          'assert_1.default.assert(',
+        )
+
       if (ignores.reduce((acc, test) => acc || id.includes(test), false))
         return contents
       return swc.transformSync(contents, {

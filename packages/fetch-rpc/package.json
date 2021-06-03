@@ -5,6 +5,9 @@
   "main": "index.js",
   "dependencies": {
     "@thi.ng/cache": "1.0.83",
-    "ky": "0.28.1"
+    "ky": "0.28.5"
+  },
+  "devDependencies": {
+    "ky-universal": "0.9.1"
   }
 }

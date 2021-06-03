@@ -12,7 +12,7 @@ describe('@cfxjs/cfx_get-account', function () {
 
       const res = await main(input)
       expect(input.f).toHaveBeenCalledTimes(1)
-      expect(res).toStrictEqual({params: input.params})
+      expect(res).toStrictEqual(input.params)
     })
   })
 })

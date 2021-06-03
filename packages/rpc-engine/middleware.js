@@ -1,9 +1,8 @@
 import * as tx from '@cfxjs/transducers'
-import * as jsonRpcErr from '@cfxjs/json-rpc-error'
 import * as comp from '@cfxjs/compose' // eslint-disable-line import/namespace
 import {addNode, node} from '@thi.ng/rstream-graph'
 import * as perms from './src/permissions.js'
-import {resolve} from '@thi.ng/rstream'
+import * as S from '@thi.ng/rstream'
 
 function validateMiddlewareConfig(conf = {}) {
   if (!conf.id) throw new Error('Invalid rpc middleware, id not specified')
@@ -11,7 +10,7 @@ function validateMiddlewareConfig(conf = {}) {
 }
 
 const resolveWithFailSet = (resolveOpts = {}) =>
-  resolve({
+  S.resolve({
     fail: function (err) {
       if (this?.parent?.error) this.parent.error(err)
       else throw err
@@ -22,10 +21,9 @@ const resolveWithFailSet = (resolveOpts = {}) =>
 export const defMiddleware = f => {
   const conf = f({
     tx,
-    err: jsonRpcErr,
     comp,
     perms,
-    stream: {resolve: resolveWithFailSet},
+    stream: {...S, resolve: resolveWithFailSet},
   })
   if (Array.isArray(conf)) conf.forEach(validateMiddlewareConfig)
   else validateMiddlewareConfig(conf)

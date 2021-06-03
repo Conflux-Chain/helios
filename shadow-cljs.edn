@@ -10,7 +10,7 @@
  :dev-http {8000 ["packages"]}
 
  :dependencies
- [[metosin/malli "0.3.0"]
+ [[metosin/malli "0.5.1"]
   [binaryage/oops "0.7.0"]
   [datascript "1.0.7"]]
 
@@ -142,6 +142,8 @@
                                     hex cfxjs.spec.core/export-hex-string
                                     epochTag cfxjs.spec.core/export-epoch-tag
                                     epochRef cfxjs.spec.core/export-epoch-ref
+                                    blockTag cfxjs.spec.core/export-block-tag
+                                    blockRef cfxjs.spec.core/export-block-ref
                                     undefine cfxjs.spec.core/export-js-undefined}
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}

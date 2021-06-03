@@ -21,7 +21,7 @@ export default async function parseRpcPackage(dir, withSchema) {
     },
   }
 
-  rpc.module = await import(resolve(dir, rpc.packageJSON.main))
+  rpc.module = await import(resolve(dir, rpc.packageJSON.main || 'index.js'))
 
   if (rpc.module?.schemas?.input) {
     rpc.paramDoc.input = generateDocumentation(rpc.module?.schemas?.input, {
