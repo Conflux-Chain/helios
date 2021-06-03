@@ -252,6 +252,10 @@ jobs:
         node-version: [15]
     steps:
       - uses: actions/checkout@v2
+        with:
+          # to trigger next gh action
+          # https://github.community/t/push-from-action-even-with-pat-does-not-trigger-action/17622/6
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
