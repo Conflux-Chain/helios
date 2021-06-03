@@ -2,7 +2,7 @@
   "name": "@cfxjs/cache-rpc",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@cfxjs/checks": "workspace:packages/checks",
     "@cfxjs/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref",

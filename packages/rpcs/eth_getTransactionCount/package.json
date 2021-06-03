@@ -2,7 +2,7 @@
   "name": "@cfxjs/eth_get-transaction-count",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "dependencies": {
     "@cfxjs/spec": "workspace:packages/spec"
   }
