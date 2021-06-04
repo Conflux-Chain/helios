@@ -14098,6 +14098,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ext-reload@workspace:packages/ext-reload"
   dependencies:
+    "@cfxjs/csp": "workspace:packages/csp"
     webextension-polyfill: 0.8.0
   languageName: unknown
   linkType: soft
