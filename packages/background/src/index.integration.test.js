@@ -7,13 +7,13 @@ import {
   CFX_LOCALNET_NETID,
   CFX_LOCALNET_CURRENCY_SYMBOL,
   DEFAULT_CFX_HDPATH,
+  ETH_LOCALNET_RPC_ENDPOINT,
+  ETH_LOCALNET_CHAINID,
+  ETH_LOCALNET_NETID,
+  ETH_LOCALNET_CURRENCY_SYMBOL,
+  DEFAULT_ETH_HDPATH,
 } from '@cfxjs/fluent-wallet-consts'
-import {
-  MNEMONIC,
-  ACCOUNTS,
-  delay,
-  sendCFX, // , sendETH
-} from '@cfxjs/test-helpers'
+import {MNEMONIC, ACCOUNTS, delay, sendCFX, sendETH} from '@cfxjs/test-helpers'
 
 const password = '12345678'
 let request, db
@@ -27,7 +27,10 @@ beforeEach(async () => {
         name: 'cfx-default',
         value: DEFAULT_CFX_HDPATH,
       })
-
+      const ethHdpath = d.createHdpath({
+        name: 'eth-default',
+        value: DEFAULT_ETH_HDPATH,
+      })
       d.createNetwork({
         name: 'CFX_MAINNET',
         endpoint: CFX_LOCALNET_RPC_ENDPOINT,
@@ -36,6 +39,15 @@ beforeEach(async () => {
         netId: CFX_LOCALNET_NETID,
         ticker: CFX_LOCALNET_CURRENCY_SYMBOL,
         hdpath: cfxHdpath,
+      })
+      d.createNetwork({
+        name: 'ETH_MAINNET',
+        endpoint: ETH_LOCALNET_RPC_ENDPOINT,
+        type: 'eth',
+        chainId: ETH_LOCALNET_CHAINID,
+        netId: ETH_LOCALNET_NETID,
+        ticker: ETH_LOCALNET_CURRENCY_SYMBOL,
+        hdpath: ethHdpath,
       })
     },
   })
@@ -58,17 +70,18 @@ describe('integration test', function () {
         const groups = db.getAccountGroup()
         expect(groups.length).toBe(1)
 
-        expect(groups[0].eid).toBe(4)
-
-        await delay(1000)
+        await delay(2000)
         expect(db.getAccount().length).toBe(1)
-        expect(db.getAddress().length).toBe(1)
+        expect(db.getAddress().length).toBe(2)
       })
 
       test('import hd vault with first two account has balance', async function () {
         await sendCFX({to: ACCOUNTS[0].address, balance: 1})
         await sendCFX({to: ACCOUNTS[1].address, balance: 1})
         await sendCFX({to: ACCOUNTS[2].address, balance: 1})
+        await sendETH({to: ACCOUNTS[0].address, balance: 1})
+        await sendETH({to: ACCOUNTS[1].address, balance: 1})
+        await sendETH({to: ACCOUNTS[2].address, balance: 1})
         await request({
           method: 'wallet_importMnemonic',
           params: {mnemonic: MNEMONIC, password},
@@ -79,11 +92,10 @@ describe('integration test', function () {
 
         const groups = db.getAccountGroup()
         expect(groups.length).toBe(1)
-        expect(groups[0].eid).toBe(4)
 
         await delay(1000)
         expect(db.getAccount().length).toBe(3)
-        expect(db.getAddress().length).toBe(3)
+        expect(db.getAddress().length).toBe(6)
       })
 
       test('import private key vault', async function () {
@@ -103,7 +115,7 @@ describe('integration test', function () {
         expect(db.getVaultByType('pk').length).toBe(1)
         expect(db.getVault().length).toBe(1)
         expect(db.getAccount().length).toBe(1)
-        expect(db.getAddress().length).toBe(1)
+        expect(db.getAddress().length).toBe(2)
       })
 
       test('should be able to import a address vault', async function () {
