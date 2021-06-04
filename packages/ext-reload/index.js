@@ -1,57 +1,53 @@
 import browser from 'webextension-polyfill'
+import {chan} from '@cfxjs/csp'
 
-const reloadDir = ['images', '_locales']
+const changedChan = chan()
+const watchingDirRegex = /.*/
+const ignoreDirRegex = /(\/\.|\/build\/)/
+const ignoreFileRegex = /(^\.|^package\.json$)/
+const watchingFileRegex = /.*/
 
-const filesInDirectory = dir =>
-  new Promise(resolve =>
-    dir.createReader().readEntries(entries =>
-      Promise.all(
-        entries
-          .filter(e => e.name[0] !== '.')
-          .map(e => {
-            if (e.isDirectory && reloadDir.includes(e.name))
-              return filesInDirectory(e)
-            if (e.isFile) return new Promise(resolve => e.file(resolve))
-            return Promise.resolve(false)
-          }),
-      )
-        .then(files => [].concat(...files))
-        .then(resolve),
-    ),
-  )
-
-const timestampForFilesInDirectory = async dir => {
-  const files = await filesInDirectory(dir)
-  return files
-    .reduce((acc, f) => {
-      if (!f) return acc
-      if (f.name.endsWith('.html') || f.name.endsWith('.js'))
-        acc.push(f.name + f.lastModifiedDate)
-      return acc
-    }, [])
-    .join()
+const reload = () => {
+  const tab = browser.tabs.query({active: true, lastFocusedWindow: true})[0]
+  if (tab?.url?.startsWith('http')) browser.tabs.reload(tab.id)
+  browser.runtime.reload()
 }
 
-const watchChanges = (dir, lastTimestamp) => {
-  timestampForFilesInDirectory(dir).then(timestamp => {
-    if (!lastTimestamp || lastTimestamp === timestamp) {
-      setTimeout(() => watchChanges(dir, timestamp), 500)
-    } else {
-      browser.runtime.reload()
-    }
-  })
+const filesInDirectory = dir => {
+  dir.createReader().readEntries(entries =>
+    entries.forEach(e => {
+      if (
+        e.isDirectory &&
+        !ignoreDirRegex.test(e.fullPath) &&
+        watchingDirRegex.test(e.fullPath)
+      )
+        filesInDirectory(e)
+      else if (
+        e.isFile &&
+        !ignoreFileRegex.test(e.name) &&
+        watchingFileRegex.test(e.name)
+      )
+        e.file(changedChan.write.bind(changedChan))
+    }),
+  )
 }
 
 // firefox don't have this function
 if (browser.runtime.getPackageDirectoryEntry)
   browser.management.getSelf().then(self => {
     if (self.installType === 'development') {
-      browser.runtime.getPackageDirectoryEntry(dir => watchChanges(dir))
-      browser.tabs.query({active: true, lastFocusedWindow: true}).then(tabs => {
-        // NB: see https://github.com/xpl/crx-hotreload/issues/5
-        if (tabs[0]) {
-          setTimeout(() => browser.tabs.reload(tabs[0].id), 400)
-        }
-      })
+      setInterval(
+        () => browser.runtime.getPackageDirectoryEntry(filesInDirectory),
+        500,
+      )
     }
   })
+;(async () => {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const changedFile = await changedChan.read()
+    if (new Date().getTime() - changedFile.lastModified < 500) {
+      setTimeout(reload, 500)
+    }
+  }
+})()

@@ -5,6 +5,7 @@
   "type": "module",
   "main": "index.js",
   "dependencies": {
+    "@cfxjs/csp": "workspace:packages/csp",
     "webextension-polyfill": "0.8.0"
   }
 }
