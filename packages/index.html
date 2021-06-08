@@ -16,10 +16,9 @@
      import schema from './background/src/db-schema.js'
      import {createdb} from './db/index.js'
 
-     window.db = createdb(schema, console.log)
-     db.t([ {vault: {type: 'a', data: '1'}, eid: -1}, {address: {vault: -1, index: 10}}])
-     db.t([ {vault: {type: 'a', data: '2'}, }, ])
-     db.t([ {vault: {type: 'a', data: '3'}, }, ])
+     window.db = createdb(schema)
+     db.t([ {eid: -1, vault: {type: 'a', data: '2',addresses: [{ address: {vault: -1, hex: 'foo'}  }]}}, ])
+     console.log(db.getVault()[0].addresses[0].hex)
      window.s = s
      window.g = g
     </script>

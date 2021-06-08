@@ -16,12 +16,15 @@
   Means the attribute won't be available in the result of `SerializeToStr(db)`.
   Note that this is a custom implementation in this project.
 
-  - ref: true (default to false)
+  - ref: true/model-name (default to false)
   Means this attribute is a reference to another entity.
+  When set to true, use the attribute name as the ref model name.
+  When set to string, use the string as the ref model name.
 
   - component: true (default to false)
   Means this attribute is the representation of an entity and it's one of the
   children of the parent entity.
+  Doc about component feature https://blog.datomic.com/2013/06/component-entities.html
   */
 const schema = {
   /*
@@ -37,7 +40,7 @@ const schema = {
     addresses: {
       doc: 'Addresses belong to this vault',
       many: true,
-      ref: true,
+      ref: 'address',
       component: true,
     },
   },

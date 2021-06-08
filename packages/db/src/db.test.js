@@ -110,6 +110,43 @@ describe('db', function () {
       expect(conn.getAccount()[0].vault.type).toBe('foo')
       expect(conn.getAccount()[0].vault.data).toBe('bar')
     })
+
+    it('should insert the right entity with nested components', async function () {
+      const conn = db.createdb({
+        country: {
+          cites: {ref: 'city', many: true, component: true},
+          name: {doc: 'country name'},
+        },
+        city: {name: {doc: 'city name'}, country: {ref: true}},
+      })
+      conn.t([
+        {
+          eid: -1,
+          country: {
+            name: 'china',
+            cites: [{city: {name: 'beijing', country: -1}}],
+          },
+        },
+      ])
+      expect(conn.getCountry()[0].cites[0].name).toBe('beijing')
+      expect(conn.getCountry()[0].cites[0].country.name).toBe('china')
+    })
+
+    test("inidcating that db can't do two way bind automatically on entities with same ref/component", async function () {
+      const conn = db.createdb({
+        country: {
+          cites: {ref: 'city', many: true, component: true},
+          name: {doc: 'country name'},
+        },
+        city: {name: {doc: 'city name'}, country: {ref: true}},
+      })
+      conn.t([
+        {eid: -1, country: {name: 'china', cites: [{city: {name: 'beijing'}}]}},
+      ])
+      expect(conn.getCountry()[0].cites[0].name).toBe('beijing')
+      // NOTE: the db component/ref function can't do two-way bind
+      expect(conn.getCountry()[0].cites[0].country).toBe(null)
+    })
   })
 
   describe('get by fn', function () {
