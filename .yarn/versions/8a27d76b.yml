@@ -5,6 +5,9 @@ releases:
 
 declined:
   - helios-background
+  - "@cfxjs/doc-rpc-parameter"
+  - "@cfxjs/doc-use-rpc"
+  - "@cfxjs/doc-use-spec"
   - helios-inpage
   - helios-popup
   - "@cfxjs/use-rpc"
