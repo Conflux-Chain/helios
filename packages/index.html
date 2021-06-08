@@ -17,8 +17,9 @@
      import {createdb} from './db/index.js'
 
      window.db = createdb(schema, console.log)
-     window.v1 = db.createVault({type: 'a', data: '2'})
-     window.v2 = db.createVault({type: 'a', data: '3', pdata: 'ok'})
+     db.t([ {vault: {type: 'a', data: '1'}, eid: -1}, {address: {vault: -1, index: 10}}])
+     db.t([ {vault: {type: 'a', data: '2'}, }, ])
+     db.t([ {vault: {type: 'a', data: '3'}, }, ])
      window.s = s
      window.g = g
     </script>

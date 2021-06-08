@@ -1,9 +1,14 @@
 (ns cfxjs.db.core
   (:require [cfxjs.db.datascript.core :as d]
-            [cfxjs.db.datascript.db :as ddb]
-            [cfxjs.db.datascript.impl.entity :refer [entity?] :as de]
+            [cljs.reader]
+            ;; [cfxjs.db.datascript.db :as ddb]
+            [cfxjs.db.datascript.impl.entity :as de]
+            [goog.string :as gs]
             [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]])
   (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query]]))
+
+(defn random-tmp-id []
+  (gs/getRandomString))
 
 (defn j->c [v]
   (js->clj v :keywordize-keys true))
@@ -20,29 +25,50 @@
 (defn- ->attr-symbol [attrk]
   (->> attrk (name) (str "?") (symbol)))
 
+(defn- parse-js-transact-arg
+  ([arg] (parse-js-transact-arg arg "datomic.tx" false))
+  ([arg tmp-id] (parse-js-transact-arg arg tmp-id false))
+  ([arg tmp-id to-lookup-ref]
+   (let [arg (cond (map? (get arg :eid))
+                   (assoc arg :db/id (parse-js-transact-arg (:eid arg) tmp-id true))
+                   (or (int? (get arg :eid)) (string? (get arg :eid)))
+                   (assoc arg :db/id (:eid arg))
+                   (get arg :eid) (throw (js/Error. "Invalid eid, must be a object, string or integer"))
+                   to-lookup-ref arg
+                   :else (assoc arg :db/id tmp-id))
+         arg (dissoc arg :eid)
+         init (if to-lookup-ref [] {})
+         arg (reduce-kv (fn [m k v]
+                          (let [->attrk (partial ->attrk k)
+                                conj-f (if to-lookup-ref conj assoc)
+                                v (if (map? v) (reduce-kv (fn [m k v] (conj-f m (->attrk k) v)) init v) (conj-f m k v))]
+                            (into m v)))
+                        init arg)]
+     arg)))
+
 (defn def-get-fn
   "Given model eg. :vault, attr-keys eg. [:type :data] create the getVault function"
   [{:keys [attr-keys model]}]
   (let [f (fn [attr-map]
             (if attr-map
-                (let [attr-map (j->c attr-map)
-                      data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
-                                                              nil
-                                                              (let [symbol (->attr-symbol attr)
-                                                                    query-attr-k (->attrk model attr)
-                                                                    value (get attr-map attr)
-                                                                    value (or (get-in value [:_entity :db/id]) value)]
-                                                                [symbol query-attr-k value])))
-                                                 attr-keys))
-                      symbols (mapv first data)
-                      query-attr-k (mapv second data)
-                      or? (true? (get attr-map :$or))
-                      query (if or? (def-get-query-or query-attr-k symbols)
-                                (def-get-query-and query-attr-k symbols))]
-                  (q query (mapv #(get % 2) data)))
-                (let [all-attr-keys (map (partial ->attrk model) attr-keys)
-                      query (def-get-all-query all-attr-keys)]
-                  (q query))))]
+              (let [attr-map (j->c attr-map)
+                    data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
+                                                            nil
+                                                            (let [symbol (->attr-symbol attr)
+                                                                  query-attr-k (->attrk model attr)
+                                                                  value (get attr-map attr)
+                                                                  value (or (get-in value [:_entity :db/id]) value)]
+                                                              [symbol query-attr-k value])))
+                                               attr-keys))
+                    symbols (mapv first data)
+                    query-attr-k (mapv second data)
+                    or? (true? (get attr-map :$or))
+                    query (if or? (def-get-query-or query-attr-k symbols)
+                              (def-get-query-and query-attr-k symbols))]
+                (q query (mapv #(get % 2) data)))
+              (let [all-attr-keys (map (partial ->attrk model) attr-keys)
+                    query (def-get-all-query all-attr-keys)]
+                (q query))))]
     f))
 
 (defn def-get-one-fn
@@ -195,20 +221,26 @@
          rst (assoc rst :_db db)
          rst (assoc rst :getById (comp clj->js get-by-id))
          rst (assoc rst :deleteById delete-by-id)
-         rst (assoc rst :updateById update-by-id)]
+         rst (assoc rst :updateById update-by-id)
+         rst (assoc rst :tmpid random-tmp-id)]
      (def conn db)
      (def t (partial d/transact! conn))
      (def q (fn [query & args] (apply d/q query (d/db conn) args)))
      (def p (partial d/pull (d/db conn)))
      (defn e [model attr-keys & args] (apply de/entity (d/db conn) model attr-keys args))
+     (defn db-transact [arg]
+       (let [arg (j->c arg)
+             arg (if (vector? arg) arg [arg])
+             arg (map #(parse-js-transact-arg % "datomic.tx" false) arg)]
+         (clj->js (t arg))))
 
-     (defn custom-pr-impl [obj writer opts]
-       (-write writer (str "TYPE->" (type->str obj)))
-       (pr-writer-impl obj writer opts))
+     ;; (defn custom-pr-impl [obj writer opts]
+     ;;   (-write writer (str "TYPE->" (type->str obj)))
+     ;;   (pr-writer-impl obj writer opts))
 
-     (defn custom-pr-str [& objs]
-       (pr-str-with-opts objs
-                         (assoc (pr-opts) :alt-impl custom-pr-impl)))
+     ;; (defn custom-pr-str [& objs]
+     ;;   (pr-str-with-opts objs
+     ;;                     (assoc (pr-opts) :alt-impl custom-pr-impl)))
 
      (when persistfn
        (d/listen! conn "persist" (fn [_]
@@ -219,7 +251,9 @@
                                         clj->js
                                         (.call persistfn nil)))))
      ;; (def kkk rst)
-     (clj->js rst))))
+     (let [rst (assoc rst :t db-transact)
+           rst (assoc rst :transact db-transact)]
+       (clj->js rst)))))
 
 ;; for debug
 (def jtc #(clj->js % :keywordize-keys true))
