@@ -41,7 +41,12 @@
          arg (reduce-kv (fn [m k v]
                           (let [->attrk (partial ->attrk k)
                                 conj-f (if to-lookup-ref conj assoc)
-                                v (if (map? v) (reduce-kv (fn [m k v] (conj-f m (->attrk k) v)) init v) (conj-f m k v))]
+                                v (if (map? v) (reduce-kv (fn [m k v]
+                                                            (conj-f m (->attrk k)
+                                                                    (if (vector? v)
+                                                                      ;; nested db/isComponents
+                                                                      (map #(parse-js-transact-arg % (random-tmp-id)) v) v)))
+                                                          init v) (conj-f m k v))]
                             (into m v)))
                         init arg)]
      arg)))
