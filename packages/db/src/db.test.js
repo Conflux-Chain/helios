@@ -59,6 +59,59 @@ describe('db', function () {
     })
   })
 
+  describe('transact fn', function () {
+    it('should insert the right entity', async function () {
+      const conn = db.createdb(schema)
+      conn.t([
+        {eid: -1, vault: {data: 1, type: 'foo'}},
+        {account: {hexAddress: '0xfoo', vault: -1}},
+      ])
+      expect(conn.getAccount().length).toBe(1)
+      expect(conn.getAccount()[0].hexAddress).toBe('0xfoo')
+      expect(conn.getAccount()[0].vault.data).toBe(1)
+      expect(conn.getAccount()[0].vault.type).toBe('foo')
+    })
+
+    it('should insert the right entity with datomic.tx tmpid', async function () {
+      const conn = db.createdb(schema)
+      conn.t([
+        {vault: {data: 1, type: 'foo'}},
+        {account: {hexAddress: '0xfoo', vault: 'datomic.tx'}},
+      ])
+      expect(conn.getAccount().length).toBe(1)
+      expect(conn.getAccount()[0].hexAddress).toBe('0xfoo')
+      expect(conn.getAccount()[0].vault.data).toBe(1)
+      expect(conn.getAccount()[0].vault.type).toBe('foo')
+    })
+
+    it('should insert the right entity with tmpid from tmpid fn', async function () {
+      const conn = db.createdb(schema)
+      const tmpid = conn.tmpid()
+      conn.t([
+        {eid: tmpid, vault: {data: 1, type: 'foo'}},
+        {account: {hexAddress: '0xfoo', vault: tmpid}},
+      ])
+      expect(conn.getAccount().length).toBe(1)
+      expect(conn.getAccount()[0].hexAddress).toBe('0xfoo')
+      expect(conn.getAccount()[0].vault.data).toBe(1)
+      expect(conn.getAccount()[0].vault.type).toBe('foo')
+    })
+
+    it('should insert the right entity with lookup ref', async function () {
+      const conn = db.createdb(schema)
+      conn.t({account: {hexAddress: '0xfoo'}})
+      conn.t([
+        {eid: -1, vault: {type: 'foo', data: 'bar'}},
+        {eid: {account: {hexAddress: '0xfoo'}}, account: {vault: -1}},
+      ])
+      expect(conn.getVault().length).toBe(1)
+      expect(conn.getAccount().length).toBe(1)
+      expect(conn.getAccount()[0].hexAddress).toBe('0xfoo')
+      expect(conn.getAccount()[0].vault.type).toBe('foo')
+      expect(conn.getAccount()[0].vault.data).toBe('bar')
+    })
+  })
+
   describe('get by fn', function () {
     it('should get the right data with simple query', async function () {
       const conn = db.createdb(schema)

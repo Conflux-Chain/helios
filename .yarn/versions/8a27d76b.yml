@@ -1,4 +1,5 @@
 releases:
+  "@cfxjs/db": patch
   "@cfxjs/extension-runtime": patch
   "@cfxjs/test-helpers": patch
   ext-reload: patch
