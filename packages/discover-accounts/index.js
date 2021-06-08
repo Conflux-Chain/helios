@@ -28,7 +28,7 @@ export const discoverAccounts = async ({
   getBalance,
   getTxCount,
   mnemonic,
-  hdpath,
+  hdPath,
   max = 10,
   only0x1Prefixed = false,
   onFindOne = () => {},
@@ -36,7 +36,7 @@ export const discoverAccounts = async ({
   for (let i = 0; i < max; i++) {
     const rst = await getNthAccountOfHDKey({
       mnemonic,
-      hdpath,
+      hdPath,
       nth: i + 1,
       only0x1Prefixed,
     })
@@ -47,7 +47,8 @@ export const discoverAccounts = async ({
     ])
 
     // always return the first address
-    if (i === 0 || txOk || balanceOk) onFindOne(rst)
+    // nth: the try times starts at 0
+    if (i === 0 || txOk || balanceOk) onFindOne({...rst, nth: i})
     else return
   }
 }

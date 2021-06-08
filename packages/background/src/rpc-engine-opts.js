@@ -11,7 +11,6 @@ import * as walletLock from '@cfxjs/wallet_lock'
 import * as walletImportMnemonic from '@cfxjs/wallet_import-mnemonic'
 import * as walletImportPrivateKey from '@cfxjs/wallet_import-private-key'
 import * as walletValidatePassword from '@cfxjs/wallet_validate-password'
-import * as walletGetVaults from '@cfxjs/wallet_get-vaults'
 import * as walletAddVault from '@cfxjs/wallet_add-vault'
 import * as walletImportAddress from '@cfxjs/wallet_import-address'
 import * as walletGetNextNonce from '@cfxjs/wallet_get-next-nonce'
@@ -24,6 +23,7 @@ import * as ethGetTransactionCount from '@cfxjs/eth_get-transaction-count'
 import * as cfxGetBalance from '@cfxjs/cfx_get-balance'
 import * as ethGetBalance from '@cfxjs/eth_get-balance'
 import * as walletGetBalance from '@cfxjs/wallet_get-balance'
+import * as walletDiscoverAccounts from '@cfxjs/wallet_discoverAccounts'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -33,7 +33,6 @@ export const rpcEngineOpts = {
     walletGenerateMnemonic,
 
     walletAddVault,
-    walletGetVaults,
     walletValidatePassword,
     walletLock,
     walletUnlock,
@@ -41,6 +40,7 @@ export const rpcEngineOpts = {
     walletImportMnemonic,
     walletImportPrivateKey,
     walletImportAddress,
+    walletDiscoverAccounts,
 
     walletGetNextNonce,
     walletGetBalance,

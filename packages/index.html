@@ -16,6 +16,7 @@
      import schema from './background/src/db-schema.js'
      import {createdb} from './db/index.js'
 
+     window.schema = schema
      window.db = createdb(schema)
      db.t([ {eid: -1, vault: {type: 'a', data: '2',addresses: [{ address: {vault: -1, hex: 'foo'}  }]}}, ])
      console.log(db.getVault()[0].addresses[0].hex)

@@ -10,7 +10,6 @@ import {
 import {encrypt, decrypt} from 'browser-passworder'
 import {partial, compL} from '@cfxjs/compose'
 import {validateBase32Address, decode, encode} from '@cfxjs/base32-address'
-import {discoverAccounts} from '@cfxjs/discover-accounts'
 import {fromPrivate} from '@cfxjs/account'
 import {stripHexPrefix} from '@cfxjs/utils'
 
@@ -29,161 +28,113 @@ export const schemas = {
 }
 
 export const permissions = {
+  internal: true,
   methods: [
+    'wallet_discoverAccounts',
     'wallet_getBalance',
     'wallet_getNextNonce',
     'wallet_validatePassword',
-    'wallet_getVaults',
   ],
   db: [
+    't',
     'getById',
-    'updateById',
+    'getVault',
     'createVault',
-    'createAccountGroup',
     'getAccountGroup',
     'getNetwork',
-    'createAccount',
-    'createAddress',
+    'getOneAccount',
   ],
 }
 
 export async function newAccounts(arg) {
   const {
     groupId,
-    rpcs: {wallet_getNextNonce, wallet_getBalance},
+    rpcs: {wallet_discoverAccounts},
     vault,
-    db: {createAccount, createAddress, getNetwork, updateById, getById},
+    db: {getNetwork, t, getOneAccount},
   } = arg
-  const accounts = []
+
+  if (vault.type === 'hd') {
+    await wallet_discoverAccounts({accountGroupId: groupId, limit: 10})
+    return
+  }
 
   const networks = getNetwork()
-  await Promise.all(
-    networks.map(({name, hdpath, eid, netId, type}) => {
-      let accountCount = 0
 
-      if (vault.type === 'hd') {
-        return discoverAccounts({
-          getBalance: partial(wallet_getBalance, {networkName: name}),
-          getTxCount: partial(wallet_getNextNonce, {networkName: name}),
-          mnemonic: vault.ddata,
-          hdpath: hdpath.value,
-          max: 10,
-          onFindOne: ({address, privateKey, index}) => {
-            const addr = {
-              vault: vault.eid,
-              hdpath: hdpath.eid,
-              network: eid,
-              index,
-              hex: address,
-              cfxHex: address.replace(/0x./, '0x1'),
-              pk: privateKey,
-            }
-            if (type === 'cfx')
-              addr.base32Mainnet = encode(
-                address.replace(/0x./, '0x1'),
-                netId,
-                true,
-              )
-            const addressId = createAddress(addr)
-
-            if (accounts[accountCount]) {
-              updateById(accounts[accountCount].eid, {
-                addresses: [
-                  ...accounts[accountCount].addresses.map(a => a.eid),
-                  addressId,
-                ],
-              })
-            } else {
-              const accountId = createAccount({
-                accountGroup: groupId,
-                nickname: `Account ${accountCount + 1}`,
-                addresses: [addressId],
-                index: accountCount,
-              })
-              accounts.push(getById(accountId))
-            }
-            accountCount++
+  networks.forEach(({eid, netId, type}) => {
+    const account = getOneAccount({index: 0, accountGroup: groupId})
+    if (vault.type === 'pk') {
+      t([
+        {
+          eid: -1,
+          address: {
+            hex: fromPrivate(vault.ddata).address,
+            pk: vault.ddata,
+            vault: vault.eid,
+            network: eid,
           },
-        })
-      }
-
-      if (vault.type === 'pk') {
-        const addr = {
-          network: eid,
-          vault: vault.eid,
-          hex: fromPrivate(vault.ddata).address,
-          pk: vault.ddata,
-        }
-
-        if (type === 'cfx')
-          addr.base32Mainnet = encode(
-            addr.hex.replace(/0x./, '0x1'),
-            netId,
-            true,
-          )
-        const addressId = createAddress(addr)
-
-        if (accounts[0]) {
-          updateById(accounts[0].eid, {
-            addresses: [...accounts[0].addresses.map(a => a.eid), addressId],
-          })
-        } else {
-          const accountId = createAccount({
+        },
+        {
+          eid: account?.eid ?? -2,
+          account: {
             accountGroup: groupId,
-            nickname: `Account 1`,
-            addresses: [addressId],
+            address: -1,
             index: 0,
-          })
-          accounts.push(getById(accountId))
-        }
-        return
-      }
+            nickname: 'Account 1',
+            hidden: false,
+          },
+        },
+      ])
 
-      if (vault.cfxOnly && type !== 'cfx') return
+      return
+    }
 
-      const addr = {vault: vault.eid, network: eid}
-      if (vault.cfxOnly) addr.cfxHex = vault.ddata
-      else addr.hex = vault.ddata
-      if (type === 'cfx') addr.base32Mainnet = encode(addr.cfxHex, netId, true)
-      const addressId = createAddress(addr)
-      if (accounts[0]) {
-        updateById(accounts[0].eid, {
-          addresses: [...accounts[0].addresses.map(a => a.eid), addressId],
-        })
-      } else {
-        const accountId = createAccount({
-          accountGroup: groupId,
-          nickname: `Account 1`,
-          addresses: [addressId],
+    if (vault.cfxOnly && type !== 'cfx') return
+
+    t([
+      {eid: -1, address: {hex: vault.ddata, vault: vault.eid, network: eid}},
+      vault.cfxOnly && {eid: -1, address: {cfxHex: vault.ddata}},
+      type === 'cfx' && {
+        eid: -1,
+        address: {base32Mainnet: encode(vault.ddata, netId, true)},
+      },
+      {
+        eid: account?.eid ?? -2,
+        account: {
           index: 0,
-        })
-        accounts.push(getById(accountId))
-      }
-    }),
-  )
-
-  return
+          nickname: 'Account 1',
+          address: -1,
+          accountGroup: groupId,
+          hidden: false,
+        },
+      },
+    ])
+  })
 }
 
 export function newAccountGroup(arg) {
   const {
-    db: {getAccountGroup, getNetwork, createAccountGroup, getById},
+    db: {getAccountGroup, getNetwork, getById, t},
     vaultId,
   } = arg
   const groups = getAccountGroup()
   const vault = getById(vaultId)
+  const groupName = `Vault ${groups.length + 1}`
+
   const networks = getNetwork().reduce((acc, n) => {
     if (vault.cfxOnly && n.type === 'cfx') return acc
     acc.push(n)
     return acc
   }, [])
-  const groupName = `Vault ${groups.length + 1}`
 
-  const groupId = createAccountGroup({
-    nickname: groupName,
-    supportedNetworks: networks.map(n => n.eid),
-    vault: vaultId,
-  })
+  const {tempids} = t([
+    {
+      eid: -1,
+      accountGroup: {nickname: groupName, vault: vaultId, hidden: false},
+    },
+    ...networks.map(({eid}) => ({eid: -1, accountGroup: {network: eid}})),
+  ])
+  const groupId = tempids['-1']
 
   newAccounts({...arg, vault, groupId})
 
@@ -201,8 +152,8 @@ const processAddress = address => {
 
 export async function main(arg) {
   const {
-    db: {createVault},
-    rpcs: {wallet_getVaults, wallet_validatePassword},
+    db: {createVault, getVault},
+    rpcs: {wallet_validatePassword},
     params: {password, mnemonic, privateKey, address},
     Err,
   } = arg
@@ -222,7 +173,7 @@ export async function main(arg) {
     vault.cfxOnly = validateResult.cfxOnly
   }
 
-  const vaults = await wallet_getVaults()
+  const vaults = getVault()
   const anyDuplicateVaults = await Promise.all(
     vaults.map(
       compL(

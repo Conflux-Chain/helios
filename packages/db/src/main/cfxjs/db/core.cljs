@@ -1,5 +1,6 @@
 (ns cfxjs.db.core
   (:require [cfxjs.db.datascript.core :as d]
+            [cfxjs.db.queries :refer [apply-queries]]
             [cljs.reader]
             ;; [cfxjs.db.datascript.db :as ddb]
             [cfxjs.db.datascript.impl.entity :as de]
@@ -13,6 +14,9 @@
 (defn j->c [v]
   (js->clj v :keywordize-keys true))
 
+;; debug
+(set! (.-jtc js/window) j->c)
+
 (declare conn t q p e)
 
 (comment (:db/memOnly (.-rschema @conn)))
@@ -25,30 +29,42 @@
 (defn- ->attr-symbol [attrk]
   (->> attrk (name) (str "?") (symbol)))
 
+(defn- ->lookup-ref [arg]
+  (reduce-kv (fn [_ k1 v1]
+               (reduce-kv (fn [_ k2 v2] [(keyword (str k1 "/" k2)) v2]) nil v1))
+             nil arg))
+
 (defn- parse-js-transact-arg
-  ([arg] (parse-js-transact-arg arg "datomic.tx" false))
-  ([arg tmp-id] (parse-js-transact-arg arg tmp-id false))
-  ([arg tmp-id to-lookup-ref]
-   (let [arg (cond (map? (get arg :eid))
-                   (assoc arg :db/id (parse-js-transact-arg (:eid arg) tmp-id true))
-                   (or (int? (get arg :eid)) (string? (get arg :eid)))
-                   (assoc arg :db/id (:eid arg))
-                   (get arg :eid) (throw (js/Error. "Invalid eid, must be a object, string or integer"))
-                   to-lookup-ref arg
-                   :else (assoc arg :db/id tmp-id))
+  ([arg] (parse-js-transact-arg arg "datomic.tx"))
+  ([arg tmp-id]
+   (let [arg (cond
+               (or (int? (get arg :eid)) (string? (get arg :eid)))
+               (assoc arg :db/id (:eid arg))
+               (get arg :eid) (throw (js/Error. "Invalid eid, must be a string or integer"))
+               :else (assoc arg :db/id tmp-id))
          arg (dissoc arg :eid)
-         init (if to-lookup-ref [] {})
+         all-keys (keys arg)
+         _ (when-not (or (= (count all-keys) 1)
+                         (and (= (count all-keys) 2)
+                              (some #{:db/id} all-keys)))
+             (throw (js/Error. "Invalid transaction params, too many top level keys")))
          arg (reduce-kv (fn [m k v]
                           (let [->attrk (partial ->attrk k)
-                                conj-f (if to-lookup-ref conj assoc)
-                                v (if (map? v) (reduce-kv (fn [m k v]
-                                                            (conj-f m (->attrk k)
-                                                                    (if (vector? v)
-                                                                      ;; nested db/isComponents
-                                                                      (map #(parse-js-transact-arg % (random-tmp-id)) v) v)))
-                                                          init v) (conj-f m k v))]
+                                v (cond
+                                    (map? v) (reduce-kv
+                                              (fn [m k v]
+                                                (let [qualified-k (->attrk k)
+                                                      processed-v (cond (map? v) ;; lookup-ref
+                                                                        (->lookup-ref v)
+                                                                        (vector? v) ;; db/isComponents
+                                                                        (map #(parse-js-transact-arg % (random-tmp-id)) v)
+                                                                        :else v)]
+                                                  (assoc m qualified-k processed-v)))
+                                              {} v)
+                                    (= k :db/id) (assoc m k v)
+                                    :else m)]
                             (into m v)))
-                        init arg)]
+                        {} arg)]
      arg)))
 
 (defn def-get-fn
@@ -227,7 +243,8 @@
          rst (assoc rst :getById (comp clj->js get-by-id))
          rst (assoc rst :deleteById delete-by-id)
          rst (assoc rst :updateById update-by-id)
-         rst (assoc rst :tmpid random-tmp-id)]
+         rst (assoc rst :tmpid random-tmp-id)
+         rst (apply-queries rst)]
      (def conn db)
      (def t (partial d/transact! conn))
      (def q (fn [query & args] (apply d/q query (d/db conn) args)))
@@ -236,7 +253,8 @@
      (defn db-transact [arg]
        (let [arg (j->c arg)
              arg (if (vector? arg) arg [arg])
-             arg (map #(parse-js-transact-arg % "datomic.tx" false) arg)]
+             arg (filter map? arg)
+             arg (map #(parse-js-transact-arg % "datomic.tx") arg)]
          (clj->js (t arg))))
 
      ;; (defn custom-pr-impl [obj writer opts]
@@ -261,6 +279,51 @@
        (clj->js rst)))))
 
 ;; for debug
-(def jtc #(clj->js % :keywordize-keys true))
+(def jtc #(js->clj % :keywordize-keys true))
 (def ppp prn)
 (def tppp tap>)
+
+
+(comment
+  (create-db (.-schema js/window))
+  (js/console.log (clj->js (t [{:db/id "a" :hdPath/name "a"}
+                               {:db/id "a" :hdPath/value "b"}])))
+  (t [{:db/id -1 :hdPath/name "a"}
+      {:db/id -2 :network/type "cfx"}
+      {:db/id -3 :network/type "eth"}
+      {:db/id -4 :vault/type "hd"}
+      ;; {:db/id -5 :accountGroup/vault 4 :accountGroup/nickname "a"}
+      ])
+  (js/console.log (clj->js (t [{:address/network 2 :address/hex "a" :address/pk "b"}])))
+  (t [{:db/id -5 :accountGroup/vault 4 :accountGroup/nickname "a"}])
+  (js/console.log (clj->js (t [{:accountGroup/nickname "acc"}])))
+  (q '[:find [?e ...]
+       :where
+       [?e :accountGroup/nickname "a"]])
+  (t [{:db/id -6 :address/hex "a" :address/vault 4 :address/network 2 :address/index 0}
+      {:db/id -7 :address/hex "b" :address/vault 4 :address/network 3 :address/index 0}
+      {:db/id -8 :account/index 0 :account/nickname "a" :account/accountGroup [:accountGroup/vault 4] :account/address [-6 -7]}])
+
+  (t
+   [{:db/id -8
+     :account/index 0
+     :account/nickname "a"
+     :account/accountGroup [:accountGroup/vault 4]
+     :account/address [{:db/id -6
+                        :address/hex "a"
+                        :address/vault 4
+                        :address/network 2
+                        :address/index 0}
+                       {:db/id -7
+                        :address/hex "b"
+                        :address/vault 4
+                        :address/network 3
+                        :address/index 0}]}])
+  (q '[:find [?e ...]
+       :where
+       [?e :address/hex "a"]])
+  (q '[:find [?a ...]
+       :where
+       [?e :account/index 0]
+       [?e :account/nickname "a"]
+       [?e :account/address ?a]]))

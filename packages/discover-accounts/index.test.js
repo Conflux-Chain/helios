@@ -33,7 +33,7 @@ describe('@cfxjs/discover-accounts', function () {
           'error mom brown point sun magnet armor fish urge business until plastic',
         max: 2,
         onFindOne: jest.fn(),
-        hdpath: `m/44'/503'/0'/0`,
+        hdPath: `m/44'/503'/0'/0`,
       }
       await discoverAccounts(params)
       expect(params.getBalance).toHaveBeenCalledTimes(2)
@@ -50,6 +50,7 @@ describe('@cfxjs/discover-accounts', function () {
         privateKey:
           '0xe77d4353a349d770b7d2f6d0f1870231f2e7a850b9b0c0a50da6b34f1db46da9',
         index: 2,
+        nth: 1,
       })
     })
   })
