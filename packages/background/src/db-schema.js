@@ -94,6 +94,11 @@ const schema = {
   accountGroup: {
     vault: {ref: true, doc: 'Entity ID of vault'},
     nickname: {value: true},
+    accounts: {
+      component: true,
+      ref: 'account',
+      many: true,
+    },
     supportedNetworks: {
       ref: true,
       many: true,
