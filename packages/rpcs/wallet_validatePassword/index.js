@@ -9,11 +9,11 @@ export const schemas = {
 }
 
 export const permissions = {
-  methods: ['wallet_getVaults'],
+  db: ['getVault'],
 }
 
-export async function main({rpcs: {wallet_getVaults}, params: {password}}) {
-  const vaults = await wallet_getVaults()
+export async function main({db: {getVault}, params: {password}}) {
+  const vaults = getVault()
   if (!vaults.length) return true
   let valid = false
   try {

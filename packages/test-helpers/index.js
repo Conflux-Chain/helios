@@ -8,7 +8,7 @@ const cfx = new CFXNODE({killPortProcess: true})
 const MNEMONIC =
   'error mom brown point sun magnet armor fish urge business until plastic'
 
-const ACCOUNTS = [
+const CFX_ACCOUNTS = [
   {
     address: '0xe68539313a4a03211ee03f5f9a6c149751fb4f44',
     privateKey:
@@ -70,13 +70,85 @@ const ACCOUNTS = [
     index: 10,
   },
 ]
+const ETH_ACCOUNTS = [
+  {
+    address: '0x28b19b15abd3b20c71c7c808403ab934f2fd9cb1',
+    privateKey:
+      '0xecd08979ab150d6bc0569f291b7a6db501bdc21f83a1db704b59a9a6f7910811',
+    index: 1,
+  },
+
+  {
+    address: '0x65e4e03771f45eb921520631419f8c56533cf931',
+    privateKey:
+      '0x5bb8bf17f890b11446867583e7c33c1ca368285f48c67ecbe6c7c2a45a0625f9',
+    index: 2,
+  },
+
+  {
+    address: '0xb73e9bf43ec0614e46c0b37e1b975ff8510da729',
+    privateKey:
+      '0xbeafcc0a688c709fcc248efc12e70b044a553252ec18daafefceec5b6e5fcb6b',
+    index: 3,
+  },
+
+  {
+    address: '0x968018ae9540ac2a6a0e2a1114143a73ce0a0f92',
+    privateKey:
+      '0x82ba11e7be74c679ad6ad9ee1ddbff7f5f62ca4ffa019d46bd6af127c625191d',
+    index: 4,
+  },
+
+  {
+    address: '0x57c642a48debd1ca4215fe6c1a3dd32f29c3f723',
+    privateKey:
+      '0xf591befc556bb49604f01731aec5ede1e68f6cb74f5128b98171bb5d5046a798',
+    index: 5,
+  },
+
+  {
+    address: '0xb2d1bbbfc1020e1a451255dc82876cbbff7f2ad0',
+    privateKey:
+      '0xceec445c1aae819954133b63dba28a42eb40c1fd6cf6daef45ecc29b560e2bef',
+    index: 6,
+  },
+
+  {
+    address: '0x968b1c2d4911668062a584663a69253fc172f30d',
+    privateKey:
+      '0xb25f23901da9d45bf2e1e2cb218be60a753c366f4b0f98472dbc1bb719d6f863',
+    index: 7,
+  },
+
+  {
+    address: '0xb7ce762f7af433545800c1b2c7130e65f922379f',
+    privateKey:
+      '0xe685a39c8a41c48581bacfab7d9f3c5c6334fb6c59e4831fda34131172ce62cb',
+    index: 8,
+  },
+
+  {
+    address: '0xc15ed446a0d2db804314e93192666ccfc2021a4a',
+    privateKey:
+      '0x617a260992af90f20fbbe43cd2e2a4edb9a0ec2ded468de133797184be3cd818',
+    index: 9,
+  },
+
+  {
+    address: '0x02bfa4267e0a09dd481b1234399361f5728967bd',
+    privateKey:
+      '0xb71b0d49258a5ef6e16dfa1dd5966f0c49ddefe80e76db12e04b06f3541c1c81',
+    index: 10,
+  },
+]
 
 module.exports = {
   delay,
   cfx,
   // eth,
   MNEMONIC,
-  ACCOUNTS,
+  CFX_ACCOUNTS,
+  ETH_ACCOUNTS,
   sendCFX,
   sendETH,
 }

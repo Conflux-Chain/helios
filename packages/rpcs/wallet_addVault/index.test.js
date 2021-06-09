@@ -53,17 +53,17 @@ describe('@cfxjs/wallet_add-vault', function () {
       input = {
         Err: {InvalidParams: jest.fn(msg => new Error(msg))},
         db: {
-          getNetwork: jest.fn(() => [{type: 'cfx'}, {type: 'eth'}]),
-          getOneVault: jest.fn(() => ({id: 1})),
+          t: jest.fn(() => ({tempids: {'-1': 2}})),
+          getNetwork: jest.fn(() => [
+            {type: 'cfx', netId: 1029},
+            {type: 'eth', netId: 1},
+          ]),
           createVault: jest.fn(() => 1),
-          createAccountGroup: jest.fn(() => 2),
           getAccountGroup: jest.fn(() => [2]),
           getById: jest.fn(() => ({})),
-          createAddress: jest.fn(() => 3),
-          createAccount: jest.fn(() => 4),
+          getVault: jest.fn(() => []),
         },
         rpcs: {
-          wallet_getVaults: jest.fn(() => []),
           wallet_validatePassword: jest.fn(() => true),
         },
         params: {password: '11111111', mnemonic: 'abc'},
@@ -85,38 +85,41 @@ describe('@cfxjs/wallet_add-vault', function () {
         type: 'hd',
         data: await encrypt(input.params.password, input.params.mnemonic),
       }
-      input.rpcs.wallet_getVaults = () => [encrypted]
+      input.db.getVault = () => [encrypted]
       await expect(main(input)).rejects.toThrow('Duplicate credential')
     })
 
-    it.skip('should call createVault with the valid data', async function () {
+    it('should call createVault with the valid pk', async function () {
       input.params = {
         password: '11111111',
         privateKey:
           '85f99f8b29a256ac93bc61899f8ba139864e1b39afbc947bdaee192c683d0205',
       }
+      input.db.getById = jest.fn(id =>
+        id === 1
+          ? {
+              ddata:
+                '85f99f8b29a256ac93bc61899f8ba139864e1b39afbc947bdaee192c683d0205',
+            }
+          : {},
+      )
       await main(input)
       expect(input.db.createVault).toHaveBeenCalledWith(
         expect.objectContaining({type: 'pk'}),
       )
+    })
 
+    it('should call createVault with the valid address', async function () {
       input.params = {
         password: '11111111',
-        address: 'cfxtest:aajzvxnvv0cj6f6paa9skdafxm9jytbybpka95hm1m',
+        address: '0x1111111111111111111111111111111111111111',
       }
+      input.db.getById = jest.fn(id =>
+        id === 1 ? {ddata: '0x1111111111111111111111111111111111111111'} : {},
+      )
       await main(input)
       expect(input.db.createVault).toHaveBeenCalledWith(
         expect.objectContaining({type: 'pub'}),
-      )
-
-      input.params = {
-        password: '11111111',
-        mnemonic:
-          'chest nasty rude robot holiday indicate pride tooth number palace strategy fiction',
-      }
-      await main(input)
-      expect(input.db.createVault).toHaveBeenCalledWith(
-        expect.objectContaining({type: 'hd'}),
       )
     })
   })

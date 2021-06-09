@@ -11,7 +11,7 @@ describe('wallet_validatePassword', function () {
       vault = {type: 'pk', data: await encrypt('11111111', 'foo')}
       input = {
         params: {password: '00000000'},
-        rpcs: {wallet_getVaults: async () => [vault]},
+        db: {getVault: () => [vault]},
       }
     })
 
@@ -28,10 +28,10 @@ describe('wallet_validatePassword', function () {
 
     it('should return true with no vault', async function () {
       input.params.password = '11111111'
-      input.rpcs.wallet_getVaults = jest.fn(() => [])
+      input.db.getVault = jest.fn(() => [])
       const valid = await main(input)
       expect(valid).toBe(true)
-      expect(input.rpcs.wallet_getVaults).toHaveBeenCalled()
+      expect(input.db.getVault).toHaveBeenCalled()
     })
   })
 

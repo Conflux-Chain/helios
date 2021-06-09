@@ -20,7 +20,6 @@
     "@cfxjs/wallet_generate-address": "workspace:packages/rpcs/wallet_generateAddress",
     "@cfxjs/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic",
     "@cfxjs/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey",
-    "@cfxjs/wallet_get-vaults": "workspace:packages/rpcs/wallet_getVaults",
     "@cfxjs/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress",
     "@cfxjs/wallet_import-mnemonic": "workspace:packages/rpcs/wallet_importMnemonic",
     "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey",
