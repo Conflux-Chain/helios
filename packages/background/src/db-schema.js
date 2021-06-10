@@ -79,7 +79,7 @@ const schema = {
     index: {doc: 'Address index in hd path'},
     hex: {doc: 'The value of the address, not cfx hex address'},
     cfxHex: {doc: 'The value of cfx hex address'},
-    base32Mainnet: {doc: 'cfx mainnet base32 address'},
+    base32: {doc: 'cfx mainnet base32 address'},
     pk: {doc: 'the private key of the address', persist: false},
   },
   account: {

@@ -88,39 +88,5 @@ describe('@cfxjs/wallet_add-vault', function () {
       input.db.getVault = () => [encrypted]
       await expect(main(input)).rejects.toThrow('Duplicate credential')
     })
-
-    it('should call createVault with the valid pk', async function () {
-      input.params = {
-        password: '11111111',
-        privateKey:
-          '85f99f8b29a256ac93bc61899f8ba139864e1b39afbc947bdaee192c683d0205',
-      }
-      input.db.getById = jest.fn(id =>
-        id === 1
-          ? {
-              ddata:
-                '85f99f8b29a256ac93bc61899f8ba139864e1b39afbc947bdaee192c683d0205',
-            }
-          : {},
-      )
-      await main(input)
-      expect(input.db.createVault).toHaveBeenCalledWith(
-        expect.objectContaining({type: 'pk'}),
-      )
-    })
-
-    it('should call createVault with the valid address', async function () {
-      input.params = {
-        password: '11111111',
-        address: '0x1111111111111111111111111111111111111111',
-      }
-      input.db.getById = jest.fn(id =>
-        id === 1 ? {ddata: '0x1111111111111111111111111111111111111111'} : {},
-      )
-      await main(input)
-      expect(input.db.createVault).toHaveBeenCalledWith(
-        expect.objectContaining({type: 'pub'}),
-      )
-    })
   })
 })

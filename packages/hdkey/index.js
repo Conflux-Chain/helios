@@ -55,7 +55,7 @@ export const validateHDPath = hdPath => {
 export const getNthAccountOfHDKey = async ({
   mnemonic,
   hdPath,
-  nth,
+  nth, // start from 0
   only0x1Prefixed = false,
 }) => {
   const k = await defHDKey(mnemonic, hdPath)

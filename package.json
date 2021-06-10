@@ -91,7 +91,8 @@
     "stylelint": "^13.13.1",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^22.0.0",
-    "tailwindcss": "^2.1.4"
+    "tailwindcss": "^2.1.4",
+    "wait-for-expect": "3.0.2"
   },
   "browserslist": [
     "last 2 Chrome versions",

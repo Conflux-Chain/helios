@@ -31,7 +31,7 @@
 
 (defn- ->lookup-ref [arg]
   (reduce-kv (fn [_ k1 v1]
-               (reduce-kv (fn [_ k2 v2] [(keyword (str k1 "/" k2)) v2]) nil v1))
+               (reduce-kv (fn [_ k2 v2] [(keyword (str (name k1) "/" (name k2))) v2]) nil v1))
              nil arg))
 
 (defn- parse-js-transact-arg
@@ -54,6 +54,7 @@
                                     (map? v) (reduce-kv
                                               (fn [m k v]
                                                 (let [qualified-k (->attrk k)
+                                                      ;; note, we can't use look up-ref as identifier in map-form
                                                       processed-v (cond (map? v) ;; lookup-ref
                                                                         (->lookup-ref v)
                                                                         (vector? v) ;; db/isComponents

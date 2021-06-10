@@ -96,7 +96,7 @@ export async function newAccounts(arg) {
       vault.cfxOnly && {eid: -1, address: {cfxHex: vault.ddata}},
       type === 'cfx' && {
         eid: -1,
-        address: {base32Mainnet: encode(vault.ddata, netId, true)},
+        address: {base32: encode(vault.ddata, netId, true)},
       },
       {
         eid: account?.eid ?? -2,

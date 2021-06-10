@@ -2539,6 +2539,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/discover-accounts@workspace:packages/discover-accounts"
   dependencies:
+    "@cfxjs/checks": "workspace:packages/checks"
     "@cfxjs/hdkey": "workspace:packages/hdkey"
     "@cfxjs/utils": "workspace:packages/utils"
     bn.js: 5.2.0
@@ -2865,6 +2866,7 @@ __metadata:
   resolution: "@cfxjs/wallet_create-account@workspace:packages/rpcs/wallet_createAccount"
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
+    "@cfxjs/base32-address": "workspace:packages/base32-address"
     "@cfxjs/hdkey": "workspace:packages/hdkey"
     "@cfxjs/spec": "workspace:packages/spec"
     browser-passworder: ^2.0.3
@@ -2875,7 +2877,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_discoverAccounts@workspace:packages/rpcs/wallet_discoverAccounts"
   dependencies:
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
     "@cfxjs/discover-accounts": "workspace:packages/discover-accounts"
     "@cfxjs/spec": "workspace:packages/spec"
     browser-passworder: 2.0.3
@@ -15933,6 +15934,7 @@ fsevents@~2.3.1:
     "@cfxjs/test-helpers": "workspace:packages/test-helpers"
     "@cfxjs/transducers": "workspace:packages/transducers"
     "@cfxjs/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault"
+    "@cfxjs/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount"
     "@cfxjs/wallet_discoverAccounts": "workspace:packages/rpcs/wallet_discoverAccounts"
     "@cfxjs/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
     "@cfxjs/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey"
@@ -16036,6 +16038,7 @@ fsevents@~2.3.1:
     stylelint-config-prettier: ^8.0.2
     stylelint-config-standard: ^22.0.0
     tailwindcss: ^2.1.4
+    wait-for-expect: 3.0.2
   languageName: unknown
   linkType: soft
 
@@ -28210,6 +28213,13 @@ resolve@~1.17.0:
   dependencies:
     xml-name-validator: ^3.0.0
   checksum: 2327c8a6c7302ed4b685125c193f4b4b859ee12cd6e1938407a02dda9cfcfff7f0c103de387b268444c4b61d7892d5260b5c684eb7519886fb3a07798bd565ba
+  languageName: node
+  linkType: hard
+
+"wait-for-expect@npm:3.0.2":
+  version: 3.0.2
+  resolution: "wait-for-expect@npm:3.0.2"
+  checksum: 487de701ccb29f9edc2fb2d77b3212c29266266156cd13f51b34556faa1061151f078b7200763c684553fcd67823084cd5f871a965d2b6cce97e3b9224b63bdb
   languageName: node
   linkType: hard
 
