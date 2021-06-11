@@ -3,8 +3,22 @@ import Big from 'big.js'
 Big.RM = 0
 Big.NE = -19
 
-export const fromDripToCfx = numOrStr => {
-  return new Big(numOrStr).div(1e18).toString(10)
+export const CFX_DECIMAL = 18
+export const BTC_DECIMAL = 6
+export const USDT_DECIMAL = 8
+export const COMMOM_DECIMAL = 18
+
+export const convertDecimal = (
+  numOrStr,
+  action = 'divide',
+  decimal = COMMOM_DECIMAL,
+) => {
+  if (action === 'divide') {
+    return new Big(numOrStr).div(`1e${decimal}`).toString(10)
+  } else if (action === 'multiply') {
+    return new Big(numOrStr).times(`1e${decimal}`).toString(10)
+  }
+  return numOrStr
 }
 
 export const fromCfxToDrip = numOrStr => {
