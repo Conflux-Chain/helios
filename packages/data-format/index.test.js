@@ -1,24 +1,32 @@
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, test, it} from '@jest/globals' // prettier-ignore
 import {
-  fromDripToCfx,
-  fromCfxToDrip,
+  convertDecimal,
   formatDigit,
   toThousands,
   trimZero,
   formatAmount,
   shortenAddress,
+  CFX_DECIMAL,
 } from './'
 
 describe('@cfxjs/data-format', function () {
-  it('fromDripToCfx', async function () {
-    expect(fromDripToCfx('1000000000000000000')).toBe('1')
-    expect(fromDripToCfx('1')).toBe('0.000000000000000001')
+  it('convertDecimal', async function () {
+    expect(convertDecimal('1000000000000000000', 'divide', CFX_DECIMAL)).toBe(
+      '1',
+    )
+    expect(convertDecimal('1', 'divide', CFX_DECIMAL)).toBe(
+      '0.000000000000000001',
+    )
   })
 
   it('fromCfxToDrip', async function () {
-    expect(fromCfxToDrip('1')).toBe('1000000000000000000')
-    expect(fromCfxToDrip('0.000000000000000001')).toBe('1')
+    expect(convertDecimal('1', 'multiply', CFX_DECIMAL)).toBe(
+      '1000000000000000000',
+    )
+    expect(
+      convertDecimal('0.000000000000000001', 'multiply', CFX_DECIMAL),
+    ).toBe('1')
   })
 
   it('formatDigit', async function () {
