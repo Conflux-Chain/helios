@@ -6,6 +6,10 @@ export const schemas = {
   input: [cat, ethHexAddress, blockRef],
 }
 
+export const permissions = {
+  locked: true,
+}
+
 export const main = async ({f, params}) => {
   return await f(params)
 }

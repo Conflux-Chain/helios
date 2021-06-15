@@ -21,6 +21,9 @@ const cfxBase32AddressSchema = [
 export const schemas = {
   input: [or, ethAddressSchema, cfxHexAddressSchema, cfxBase32AddressSchema],
 }
+export const permissons = {
+  locked: true,
+}
 
 const genRandomCfxHexAddress = type => {
   if (!type) return randomCfxHexAddress()

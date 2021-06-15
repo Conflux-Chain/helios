@@ -25,22 +25,28 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 
   // ## initialize rpc engine
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
+  const protectedRequest = (req = {}) =>
+    request({
+      networkName: req.networkName,
+      method: req.method,
+      params: req.params,
+    })
 
   const {inpageStream, popupStream} = listen()
 
   popupStream.subscribe({
     next([req, post]) {
-      request(req).then(post)
+      protectedRequest(req).then(post)
     },
   })
 
   inpageStream.subscribe({
     next([req, post]) {
-      request(req).then(post)
+      protectedRequest(req).then(post)
     },
   })
 
-  return {db: dbConnection, request}
+  return {db: dbConnection, request: protectedRequest}
 }
 
 // # initialize

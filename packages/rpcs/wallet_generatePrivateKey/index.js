@@ -7,6 +7,9 @@ export const schemas = {
   input: [or, nul, [map, ['entropy', {optional: true}, string]]],
   output: privateKey,
 }
+export const permissons = {
+  locked: true,
+}
 
 export async function main({params} = {}) {
   return randomPrivateKey(params?.entropy)

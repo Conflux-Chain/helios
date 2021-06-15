@@ -67,6 +67,40 @@ beforeEach(async () => {
 })
 
 describe('integration test', function () {
+  describe('rpc engine', function () {
+    describe('validate permissions', function () {
+      test('error call internal method', async () => {
+        res = await request({
+          method: 'wallet_validatePassword',
+          params: {password: '11111111'},
+        })
+        expect(res.error.message).toMatch(
+          /Method wallet_validatePassword not found, not allowed to call internal method directly/,
+        )
+      })
+      test('error call restrict method when wallet locked', async () => {
+        db.setLocked(true)
+        res = await request({
+          method: 'wallet_importPrivateKey',
+          params: {password: '11111111', privateKey: 'abc'},
+        })
+        expect(res.error.message).toMatch(
+          /Method wallet_importPrivateKey not found, wallet is locked/,
+        )
+      })
+      test('error call method on incorrect network', async () => {
+        res = await request({
+          method: 'eth_getBalance',
+          params: {password: '11111111', privateKey: 'abc'},
+          networkName: 'CFX_MAINNET',
+        })
+        expect(res.error.message).toMatch(
+          /Method eth_getBalance not supported by network CFX_MAINNET/,
+        )
+      })
+    })
+  })
+
   describe('vault', function () {
     describe('import', function () {
       test('import hd vault with default node', async function () {
