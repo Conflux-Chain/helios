@@ -66,18 +66,6 @@ describe('db', function () {
       expect(conn.getAccount()[0].vault.type).toBe('foo')
     })
 
-    it('should insert the right entity with datomic.tx tmpid', async function () {
-      const conn = db.createdb(schema)
-      conn.t([
-        {vault: {data: 1, type: 'foo'}},
-        {account: {hexAddress: '0xfoo', vault: 'datomic.tx'}},
-      ])
-      expect(conn.getAccount().length).toBe(1)
-      expect(conn.getAccount()[0].hexAddress).toBe('0xfoo')
-      expect(conn.getAccount()[0].vault.data).toBe(1)
-      expect(conn.getAccount()[0].vault.type).toBe('foo')
-    })
-
     it('should insert the right entity with tmpid from tmpid fn', async function () {
       const conn = db.createdb(schema)
       const tmpid = conn.tmpid()

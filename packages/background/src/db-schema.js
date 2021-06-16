@@ -73,7 +73,7 @@ const schema = {
     hidden: {doc: 'If hide this accountGroup in ui'},
   },
   address: {
-    id: {tuples: [':address/network', ':address/hex'], identity: true},
+    id: {tuples: ['address/network', 'address/hex'], identity: true},
     vault: {ref: true},
     network: {ref: true},
     index: {doc: 'Address index in hd path'},
@@ -83,7 +83,7 @@ const schema = {
     pk: {doc: 'the private key of the address', persist: false},
   },
   account: {
-    id: {tuples: [':account/index', ':account/accountGroup'], identity: true},
+    id: {tuples: ['account/index', 'account/accountGroup'], identity: true},
     index: {doc: 'index of account in account group'},
     nickname: {doc: 'account nickname'},
     address: {ref: 'address', many: true},
