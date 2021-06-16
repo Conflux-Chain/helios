@@ -2539,6 +2539,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/discover-accounts@workspace:packages/discover-accounts"
   dependencies:
+    "@cfxjs/checks": "workspace:packages/checks"
     "@cfxjs/hdkey": "workspace:packages/hdkey"
     "@cfxjs/utils": "workspace:packages/utils"
     bn.js: 5.2.0
@@ -2853,7 +2854,6 @@ __metadata:
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
     "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/discover-accounts": "workspace:packages/discover-accounts"
     "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
     "@cfxjs/spec": "workspace:packages/spec"
     "@cfxjs/utils": "workspace:packages/utils"
@@ -2866,9 +2866,20 @@ __metadata:
   resolution: "@cfxjs/wallet_create-account@workspace:packages/rpcs/wallet_createAccount"
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
+    "@cfxjs/base32-address": "workspace:packages/base32-address"
     "@cfxjs/hdkey": "workspace:packages/hdkey"
     "@cfxjs/spec": "workspace:packages/spec"
     browser-passworder: ^2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/wallet_discoverAccounts@workspace:packages/rpcs/wallet_discoverAccounts":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_discoverAccounts@workspace:packages/rpcs/wallet_discoverAccounts"
+  dependencies:
+    "@cfxjs/discover-accounts": "workspace:packages/discover-accounts"
+    "@cfxjs/spec": "workspace:packages/spec"
+    browser-passworder: 2.0.3
   languageName: unknown
   linkType: soft
 
@@ -2912,14 +2923,6 @@ __metadata:
   resolution: "@cfxjs/wallet_get-next-nonce@workspace:packages/rpcs/wallet_getNextNonce"
   dependencies:
     "@cfxjs/addr-by-network": "workspace:packages/addr-by-network"
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_get-vaults@workspace:packages/rpcs/wallet_getVaults":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_get-vaults@workspace:packages/rpcs/wallet_getVaults"
-  dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -9593,7 +9596,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"browser-passworder@npm:^2.0.3":
+"browser-passworder@npm:2.0.3, browser-passworder@npm:^2.0.3":
   version: 2.0.3
   resolution: "browser-passworder@npm:2.0.3"
   dependencies:
@@ -12283,7 +12286,6 @@ __metadata:
     "@cfxjs/wallet_generate-address": "workspace:packages/rpcs/wallet_generateAddress"
     "@cfxjs/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
     "@cfxjs/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey"
-    "@cfxjs/wallet_get-vaults": "workspace:packages/rpcs/wallet_getVaults"
     "@cfxjs/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
     "@cfxjs/wallet_import-mnemonic": "workspace:packages/rpcs/wallet_importMnemonic"
     "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
@@ -15932,11 +15934,12 @@ fsevents@~2.3.1:
     "@cfxjs/test-helpers": "workspace:packages/test-helpers"
     "@cfxjs/transducers": "workspace:packages/transducers"
     "@cfxjs/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault"
+    "@cfxjs/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount"
+    "@cfxjs/wallet_discoverAccounts": "workspace:packages/rpcs/wallet_discoverAccounts"
     "@cfxjs/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
     "@cfxjs/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey"
     "@cfxjs/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
     "@cfxjs/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
-    "@cfxjs/wallet_get-vaults": "workspace:packages/rpcs/wallet_getVaults"
     "@cfxjs/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
     "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock"
@@ -16035,6 +16038,7 @@ fsevents@~2.3.1:
     stylelint-config-prettier: ^8.0.2
     stylelint-config-standard: ^22.0.0
     tailwindcss: ^2.1.4
+    wait-for-expect: 3.0.2
   languageName: unknown
   linkType: soft
 
@@ -28209,6 +28213,13 @@ resolve@~1.17.0:
   dependencies:
     xml-name-validator: ^3.0.0
   checksum: 2327c8a6c7302ed4b685125c193f4b4b859ee12cd6e1938407a02dda9cfcfff7f0c103de387b268444c4b61d7892d5260b5c684eb7519886fb3a07798bd565ba
+  languageName: node
+  linkType: hard
+
+"wait-for-expect@npm:3.0.2":
+  version: 3.0.2
+  resolution: "wait-for-expect@npm:3.0.2"
+  checksum: 487de701ccb29f9edc2fb2d77b3212c29266266156cd13f51b34556faa1061151f078b7200763c684553fcd67823084cd5f871a965d2b6cce97e3b9224b63bdb
   languageName: node
   linkType: hard
 

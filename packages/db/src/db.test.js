@@ -15,12 +15,6 @@ const schema = {
       doc: 'Decrypted vault data',
       persist: false,
     },
-    accounts: {
-      doc: 'Accounts belong to this vault',
-      many: true,
-      ref: true,
-      component: true,
-    },
   },
   account: {
     hexAddress: {
@@ -59,10 +53,99 @@ describe('db', function () {
     })
   })
 
+  describe('transact fn', function () {
+    it('should insert the right entity', async function () {
+      const conn = db.createdb(schema)
+      conn.t([
+        {eid: -1, vault: {data: 1, type: 'foo'}},
+        {account: {hexAddress: '0xfoo', vault: -1}},
+      ])
+      expect(conn.getAccount().length).toBe(1)
+      expect(conn.getAccount()[0].hexAddress).toBe('0xfoo')
+      expect(conn.getAccount()[0].vault.data).toBe(1)
+      expect(conn.getAccount()[0].vault.type).toBe('foo')
+    })
+
+    it('should insert the right entity with datomic.tx tmpid', async function () {
+      const conn = db.createdb(schema)
+      conn.t([
+        {vault: {data: 1, type: 'foo'}},
+        {account: {hexAddress: '0xfoo', vault: 'datomic.tx'}},
+      ])
+      expect(conn.getAccount().length).toBe(1)
+      expect(conn.getAccount()[0].hexAddress).toBe('0xfoo')
+      expect(conn.getAccount()[0].vault.data).toBe(1)
+      expect(conn.getAccount()[0].vault.type).toBe('foo')
+    })
+
+    it('should insert the right entity with tmpid from tmpid fn', async function () {
+      const conn = db.createdb(schema)
+      const tmpid = conn.tmpid()
+      conn.t([
+        {eid: tmpid, vault: {data: 1, type: 'foo'}},
+        {account: {hexAddress: '0xfoo', vault: tmpid}},
+      ])
+      expect(conn.getAccount().length).toBe(1)
+      expect(conn.getAccount()[0].hexAddress).toBe('0xfoo')
+      expect(conn.getAccount()[0].vault.data).toBe(1)
+      expect(conn.getAccount()[0].vault.type).toBe('foo')
+    })
+
+    it('should insert the right entity with lookup ref', async function () {
+      const conn = db.createdb({
+        vault: {name: {identity: true}},
+        addr: {hex: {identity: true}, vault: {ref: true}},
+      })
+      conn.t({vault: {name: 'a'}})
+
+      // {vault: {name: 'a'} } is a lookup-ref to look up vault entity, as the
+      // name of vault is set to identity in schema
+      conn.t({addr: {hex: 'foo', vault: {vault: {name: 'a'}}}})
+      expect(conn.getAddr()[0].vault.name).toBe('a')
+    })
+
+    it('should insert the right entity with nested components', async function () {
+      const conn = db.createdb({
+        country: {
+          cites: {ref: 'city', many: true, component: true},
+          name: {doc: 'country name'},
+        },
+        city: {name: {doc: 'city name'}, country: {ref: true}},
+      })
+      conn.t([
+        {
+          eid: -1,
+          country: {
+            name: 'china',
+            cites: [{city: {name: 'beijing', country: -1}}],
+          },
+        },
+      ])
+      expect(conn.getCountry()[0].cites[0].name).toBe('beijing')
+      expect(conn.getCountry()[0].cites[0].country.name).toBe('china')
+    })
+
+    test("inidcating that db can't do two way bind automatically on entities with same ref/component", async function () {
+      const conn = db.createdb({
+        country: {
+          cites: {ref: 'city', many: true, component: true},
+          name: {doc: 'country name'},
+        },
+        city: {name: {doc: 'city name'}, country: {ref: true}},
+      })
+      conn.t([
+        {eid: -1, country: {name: 'china', cites: [{city: {name: 'beijing'}}]}},
+      ])
+      expect(conn.getCountry()[0].cites[0].name).toBe('beijing')
+      // NOTE: the db component/ref function can't do two-way bind
+      expect(conn.getCountry()[0].cites[0].country).toBe(null)
+    })
+  })
+
   describe('get by fn', function () {
     it('should get the right data with simple query', async function () {
       const conn = db.createdb(schema)
-      const vaultId = conn.createVault({type: 'a', data: 'b', accounts: [2]})
+      const vaultId = conn.createVault({type: 'a', data: 'b'})
       conn.createAccount({
         vault: vaultId,
         hexAddress: '0x10000000000000000000000000000000000000000000000000',
@@ -156,14 +239,14 @@ describe('db', function () {
   describe('delete one fn', function () {
     it('should remove the right data', async function () {
       const conn = db.createdb(schema)
-      const vault1Id = conn.createVault({type: 'a', data: 'b', accounts: [3]})
+      const vault1Id = conn.createVault({type: 'a', data: 'b'})
       conn.createVault({type: 'a', data: 'c'})
       conn.createAccount({
         vault: vault1Id,
         hexAddress: '0x10000000000000000000000000000000000000000000000000',
       })
       let vault
-      expect(conn.getOneVault({data: 'b'}).accounts).toBeDefined()
+      expect(conn.getOneVault({data: 'b'})).toBeDefined()
       conn.deleteOneVault({data: 'b'})
       vault = conn.getOneVault({type: 'a'})
       expect(vault.data).toBe('c')
@@ -201,7 +284,7 @@ describe('db', function () {
   describe('delete by id fn', function () {
     it('should remove the right data', async function () {
       const conn = db.createdb(schema)
-      const vaultId = conn.createVault({type: 'a', data: 'b', accounts: [2]})
+      const vaultId = conn.createVault({type: 'a', data: 'b'})
       const accountId = conn.createAccount({hexAddress: 'a', vault: 1})
       expect(conn.getById(vaultId)).toBeDefined()
       expect(conn.getById(accountId)).toBeDefined()
@@ -210,7 +293,7 @@ describe('db', function () {
 
       // vault has many accounts as component
       // retract a vault will retract all its accounts
-      expect(conn.getById(accountId)).toBeNull()
+      expect(conn.getById(accountId).vault).toBeNull()
     })
   })
 
@@ -287,7 +370,7 @@ describe('db', function () {
   describe('Entity', function () {
     it('should have the right instance method', async function () {
       const conn = db.createdb(schema)
-      conn.createVault({type: 'a', data: 'b', accounts: [2]})
+      conn.createVault({type: 'a', data: 'b'})
       conn.createAccount({hexAddress: 'c', vault: 1})
 
       const vault = conn.getOneVault({data: 'b'})
@@ -300,13 +383,10 @@ describe('db', function () {
       expect(vault.modelName()).toBe('vault')
       expect(vault.attrToKey('a').toString()).toBe(':vault/a')
       expect(vault.attrToKey(':a').toString()).toBe(':a')
-      expect(vault.attrToKey('id').toString()).toBe(':db/id')
 
-      // TODO: this works in browser but not in node.js
-      // const account = conn.getOneAccount({hexAddress: 'c'})
-      // expect(account.vault.type).toBe('a')
-      // expect(account.vault.data).toBe('b')
-      // expect(vault.accounts[0].hexAddress).toBe('c')
+      const account = conn.getOneAccount({hexAddress: 'c'})
+      expect(account.vault.type).toBe('a')
+      expect(account.vault.data).toBe('b')
     })
   })
 

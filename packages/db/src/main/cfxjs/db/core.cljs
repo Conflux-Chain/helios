@@ -1,12 +1,21 @@
 (ns cfxjs.db.core
   (:require [cfxjs.db.datascript.core :as d]
-            [cfxjs.db.datascript.db :as ddb]
-            [cfxjs.db.datascript.impl.entity :refer [entity?] :as de]
+            [cfxjs.db.queries :refer [apply-queries]]
+            [cljs.reader]
+            ;; [cfxjs.db.datascript.db :as ddb]
+            [cfxjs.db.datascript.impl.entity :as de]
+            [goog.string :as gs]
             [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]])
   (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query]]))
 
+(defn random-tmp-id []
+  (gs/getRandomString))
+
 (defn j->c [v]
   (js->clj v :keywordize-keys true))
+
+;; debug
+(set! (.-jtc js/window) j->c)
 
 (declare conn t q p e)
 
@@ -20,29 +29,68 @@
 (defn- ->attr-symbol [attrk]
   (->> attrk (name) (str "?") (symbol)))
 
+(defn- ->lookup-ref [arg]
+  (reduce-kv (fn [_ k1 v1]
+               (reduce-kv (fn [_ k2 v2] [(keyword (str (name k1) "/" (name k2))) v2]) nil v1))
+             nil arg))
+
+(defn- parse-js-transact-arg
+  ([arg] (parse-js-transact-arg arg "datomic.tx"))
+  ([arg tmp-id]
+   (let [arg (cond
+               (or (int? (get arg :eid)) (string? (get arg :eid)))
+               (assoc arg :db/id (:eid arg))
+               (get arg :eid) (throw (js/Error. "Invalid eid, must be a string or integer"))
+               :else (assoc arg :db/id tmp-id))
+         arg (dissoc arg :eid)
+         all-keys (keys arg)
+         _ (when-not (or (= (count all-keys) 1)
+                         (and (= (count all-keys) 2)
+                              (some #{:db/id} all-keys)))
+             (throw (js/Error. "Invalid transaction params, too many top level keys")))
+         arg (reduce-kv (fn [m k v]
+                          (let [->attrk (partial ->attrk k)
+                                v (cond
+                                    (map? v) (reduce-kv
+                                              (fn [m k v]
+                                                (let [qualified-k (->attrk k)
+                                                      ;; note, we can't use look up-ref as identifier in map-form
+                                                      processed-v (cond (map? v) ;; lookup-ref
+                                                                        (->lookup-ref v)
+                                                                        (vector? v) ;; db/isComponents
+                                                                        (map #(parse-js-transact-arg % (random-tmp-id)) v)
+                                                                        :else v)]
+                                                  (assoc m qualified-k processed-v)))
+                                              {} v)
+                                    (= k :db/id) (assoc m k v)
+                                    :else m)]
+                            (into m v)))
+                        {} arg)]
+     arg)))
+
 (defn def-get-fn
   "Given model eg. :vault, attr-keys eg. [:type :data] create the getVault function"
   [{:keys [attr-keys model]}]
   (let [f (fn [attr-map]
             (if attr-map
-                (let [attr-map (j->c attr-map)
-                      data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
-                                                              nil
-                                                              (let [symbol (->attr-symbol attr)
-                                                                    query-attr-k (->attrk model attr)
-                                                                    value (get attr-map attr)
-                                                                    value (or (get-in value [:_entity :db/id]) value)]
-                                                                [symbol query-attr-k value])))
-                                                 attr-keys))
-                      symbols (mapv first data)
-                      query-attr-k (mapv second data)
-                      or? (true? (get attr-map :$or))
-                      query (if or? (def-get-query-or query-attr-k symbols)
-                                (def-get-query-and query-attr-k symbols))]
-                  (q query (mapv #(get % 2) data)))
-                (let [all-attr-keys (map (partial ->attrk model) attr-keys)
-                      query (def-get-all-query all-attr-keys)]
-                  (q query))))]
+              (let [attr-map (j->c attr-map)
+                    data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
+                                                            nil
+                                                            (let [symbol (->attr-symbol attr)
+                                                                  query-attr-k (->attrk model attr)
+                                                                  value (get attr-map attr)
+                                                                  value (or (get-in value [:_entity :db/id]) value)]
+                                                              [symbol query-attr-k value])))
+                                               attr-keys))
+                    symbols (mapv first data)
+                    query-attr-k (mapv second data)
+                    or? (true? (get attr-map :$or))
+                    query (if or? (def-get-query-or query-attr-k symbols)
+                              (def-get-query-and query-attr-k symbols))]
+                (q query (mapv #(get % 2) data)))
+              (let [all-attr-keys (map (partial ->attrk model) attr-keys)
+                    query (def-get-all-query all-attr-keys)]
+                (q query))))]
     f))
 
 (defn def-get-one-fn
@@ -195,20 +243,28 @@
          rst (assoc rst :_db db)
          rst (assoc rst :getById (comp clj->js get-by-id))
          rst (assoc rst :deleteById delete-by-id)
-         rst (assoc rst :updateById update-by-id)]
+         rst (assoc rst :updateById update-by-id)
+         rst (assoc rst :tmpid random-tmp-id)
+         rst (apply-queries rst)]
      (def conn db)
      (def t (partial d/transact! conn))
      (def q (fn [query & args] (apply d/q query (d/db conn) args)))
      (def p (partial d/pull (d/db conn)))
      (defn e [model attr-keys & args] (apply de/entity (d/db conn) model attr-keys args))
+     (defn db-transact [arg]
+       (let [arg (j->c arg)
+             arg (if (vector? arg) arg [arg])
+             arg (filter map? arg)
+             arg (map #(parse-js-transact-arg % "datomic.tx") arg)]
+         (clj->js (t arg))))
 
-     (defn custom-pr-impl [obj writer opts]
-       (-write writer (str "TYPE->" (type->str obj)))
-       (pr-writer-impl obj writer opts))
+     ;; (defn custom-pr-impl [obj writer opts]
+     ;;   (-write writer (str "TYPE->" (type->str obj)))
+     ;;   (pr-writer-impl obj writer opts))
 
-     (defn custom-pr-str [& objs]
-       (pr-str-with-opts objs
-                         (assoc (pr-opts) :alt-impl custom-pr-impl)))
+     ;; (defn custom-pr-str [& objs]
+     ;;   (pr-str-with-opts objs
+     ;;                     (assoc (pr-opts) :alt-impl custom-pr-impl)))
 
      (when persistfn
        (d/listen! conn "persist" (fn [_]
@@ -219,9 +275,56 @@
                                         clj->js
                                         (.call persistfn nil)))))
      ;; (def kkk rst)
-     (clj->js rst))))
+     (let [rst (assoc rst :t db-transact)
+           rst (assoc rst :transact db-transact)]
+       (clj->js rst)))))
 
 ;; for debug
-(def jtc #(clj->js % :keywordize-keys true))
+(def jtc #(js->clj % :keywordize-keys true))
 (def ppp prn)
 (def tppp tap>)
+
+
+(comment
+  (create-db (.-schema js/window))
+  (js/console.log (clj->js (t [{:db/id "a" :hdPath/name "a"}
+                               {:db/id "a" :hdPath/value "b"}])))
+  (t [{:db/id -1 :hdPath/name "a"}
+      {:db/id -2 :network/type "cfx"}
+      {:db/id -3 :network/type "eth"}
+      {:db/id -4 :vault/type "hd"}
+      ;; {:db/id -5 :accountGroup/vault 4 :accountGroup/nickname "a"}
+      ])
+  (js/console.log (clj->js (t [{:address/network 2 :address/hex "a" :address/pk "b"}])))
+  (t [{:db/id -5 :accountGroup/vault 4 :accountGroup/nickname "a"}])
+  (js/console.log (clj->js (t [{:accountGroup/nickname "acc"}])))
+  (q '[:find [?e ...]
+       :where
+       [?e :accountGroup/nickname "a"]])
+  (t [{:db/id -6 :address/hex "a" :address/vault 4 :address/network 2 :address/index 0}
+      {:db/id -7 :address/hex "b" :address/vault 4 :address/network 3 :address/index 0}
+      {:db/id -8 :account/index 0 :account/nickname "a" :account/accountGroup [:accountGroup/vault 4] :account/address [-6 -7]}])
+
+  (t
+   [{:db/id -8
+     :account/index 0
+     :account/nickname "a"
+     :account/accountGroup [:accountGroup/vault 4]
+     :account/address [{:db/id -6
+                        :address/hex "a"
+                        :address/vault 4
+                        :address/network 2
+                        :address/index 0}
+                       {:db/id -7
+                        :address/hex "b"
+                        :address/vault 4
+                        :address/network 3
+                        :address/index 0}]}])
+  (q '[:find [?e ...]
+       :where
+       [?e :address/hex "a"]])
+  (q '[:find [?a ...]
+       :where
+       [?e :account/index 0]
+       [?e :account/nickname "a"]
+       [?e :account/address ?a]]))

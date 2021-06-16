@@ -1,6 +1,7 @@
 import {getNthAccountOfHDKey} from '@cfxjs/hdkey'
 import {stripHexPrefix} from '@cfxjs/utils'
 import BN from 'bn.js'
+import {isFunction} from '@cfxjs/checks'
 
 const ZERO = new BN(0, 10)
 
@@ -28,16 +29,19 @@ export const discoverAccounts = async ({
   getBalance,
   getTxCount,
   mnemonic,
-  hdpath,
+  hdPath,
+  startFrom = 0,
   max = 10,
   only0x1Prefixed = false,
-  onFindOne = () => {},
+  return0 = false,
+  onFindOne,
 } = {}) => {
-  for (let i = 0; i < max; i++) {
+  const found = []
+  for (let i = startFrom; i < startFrom + max; i++) {
     const rst = await getNthAccountOfHDKey({
       mnemonic,
-      hdpath,
-      nth: i + 1,
+      hdPath,
+      nth: i,
       only0x1Prefixed,
     })
 
@@ -47,7 +51,14 @@ export const discoverAccounts = async ({
     ])
 
     // always return the first address
-    if (i === 0 || txOk || balanceOk) onFindOne(rst)
-    else return
+    // nth: the try times starts at 0
+    if ((return0 && i === 0) || txOk || balanceOk) {
+      if (isFunction(onFindOne)) await onFindOne({...rst, nth: i})
+      found.push({...rst, nth: i})
+    } else {
+      return found
+    }
   }
+
+  return found
 }

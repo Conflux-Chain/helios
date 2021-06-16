@@ -62,7 +62,6 @@
        (modelName [_] (name model))
        (attrToKey [this attr]
                   (cond (keyword? attr) attr
-                        (= "id" attr) :db/id
                         (string? attr) (if (.startsWith attr ":")
                                          (keyword (subs attr 1))
                                          (keyword (str (.modelName this) "/" attr)))

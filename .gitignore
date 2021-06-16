@@ -237,6 +237,8 @@ $RECYCLE.BIN/
 /packages/db/**/*.js
 /packages/spec/**/*.js
 !/packages/spec/index.js
+!/packages/db/src/db.test.js
+!/packages/db/index.js
 /.shadow-cljs/
 /stories
 /storybook-static

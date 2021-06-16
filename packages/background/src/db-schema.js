@@ -16,14 +16,38 @@
   Means the attribute won't be available in the result of `SerializeToStr(db)`.
   Note that this is a custom implementation in this project.
 
-  - ref: true (default to false)
+  - ref: true/model-name (default to false)
   Means this attribute is a reference to another entity.
+  When set to true, use the attribute name as the ref model name.
+  When set to string, use the string as the ref model name.
 
   - component: true (default to false)
   Means this attribute is the representation of an entity and it's one of the
   children of the parent entity.
+  Doc about component feature https://blog.datomic.com/2013/06/component-entities.html
   */
 const schema = {
+  hdPath: {
+    value: {value: true},
+    name: {identity: true},
+  },
+  network: {
+    name: {
+      identity: true,
+      doc: "Name of a network, used as id of network, builtin network name can't be changed, reload(reinit) the extension if network name changed",
+    },
+    endpoint: {
+      value: true,
+      doc: "RPC endpoint of a network, can't be duplicate",
+    },
+    type: {
+      doc: "One of 'cfx'/'eth', indicating type of rpc set of this network",
+    },
+    hdPath: {ref: true},
+    chainId: {doc: 'Network chain id'},
+    netId: {doc: 'Network id'},
+    ticker: {doc: 'Network currency symbol'},
+  },
   /*
     vault, container of credential (address/pk/mnemonic)
     */
@@ -34,75 +58,37 @@ const schema = {
     cfxOnly: {
       doc: 'If this vault is only for conflux chain. This is used for address vault (vault data is a public address)',
     },
-    addresses: {
-      doc: 'Addresses belong to this vault',
-      many: true,
+  },
+  accountGroup: {
+    vault: {ref: true, doc: 'Entity ID of vault', identity: true},
+    nickname: {value: true},
+    customHdPath: {
+      ref: 'hdPath',
+      doc: 'Entity ID of hd path, when set, will use this custom hd path for whatever network',
+    },
+    network: {
+      doc: 'Network supported by this account group',
       ref: true,
-      component: true,
     },
-  },
-  hdpath: {
-    value: {value: true},
-    name: {value: true},
-  },
-  network: {
-    name: {
-      value: true,
-      doc: "Name of a network, used as id of network, builtin network name can't be changed, reload(reinit) the extension if network name changed",
-    },
-    endpoint: {
-      value: true,
-      doc: "RPC endpoint of a network, can't be duplicate",
-    },
-    type: {
-      doc: "One of 'cfx'/'eth', indicating type of rpc set of this network",
-    },
-    hdpath: {ref: true},
-    chainId: {doc: 'Network chain id'},
-    netId: {doc: 'Network id'},
-    ticker: {doc: 'Network currency symbol'},
+    hidden: {doc: 'If hide this accountGroup in ui'},
   },
   address: {
+    id: {tuples: [':address/network', ':address/hex'], identity: true},
+    vault: {ref: true},
     network: {ref: true},
-    vault: {ref: true, doc: 'Entity ID of vault'},
-    hdpath: {ref: true, doc: 'Entity ID of hd path'},
     index: {doc: 'Address index in hd path'},
-    hex: {doc: 'The vaule of the address, not cfx hex address'},
+    hex: {doc: 'The value of the address, not cfx hex address'},
     cfxHex: {doc: 'The value of cfx hex address'},
-    base32Mainnet: {doc: 'cfx mainnet base32 address'},
+    base32: {doc: 'cfx mainnet base32 address'},
     pk: {doc: 'the private key of the address', persist: false},
   },
   account: {
-    index: {
-      doc: 'index of account in account group',
-    },
-    nickname: {
-      doc: 'account nickname',
-    },
+    id: {tuples: [':account/index', ':account/accountGroup'], identity: true},
+    index: {doc: 'index of account in account group'},
+    nickname: {doc: 'account nickname'},
+    address: {ref: 'address', many: true},
     accountGroup: {ref: true},
-    addresses: {
-      ref: true,
-      many: true,
-    },
-    hidden: {
-      doc: 'If hide this account in ui',
-    },
-  },
-  accountGroup: {
-    vault: {ref: true, doc: 'Entity ID of vault'},
-    nickname: {value: true},
-    supportedNetworks: {
-      ref: true,
-      many: true,
-      doc: 'Used to filter account group based on network, so that user can hide specific account group by network',
-    },
-    customHdpath: {
-      ref: true,
-      doc: 'Entity ID of hd path, when set, will use this custom hd path for whatever network',
-    },
-    hidden: {
-      doc: 'If hide this accountGroup in ui',
-    },
+    hidden: {doc: 'If hide this account in ui'},
   },
 }
 
