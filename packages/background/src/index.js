@@ -30,19 +30,29 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
       networkName: req.networkName,
       method: req.method,
       params: req.params,
+      _popup: req._popup,
+      _inpage: req._inpage,
+      _origin: req._origin,
     })
 
   const {inpageStream, popupStream} = listen()
 
   popupStream.subscribe({
     next([req, post]) {
-      protectedRequest(req).then(post)
+      protectedRequest({
+        ...(req || {}),
+        _popup: true,
+        _inpage: false,
+        _origin: undefined,
+      }).then(post)
     },
   })
 
   inpageStream.subscribe({
     next([req, post]) {
-      protectedRequest(req).then(post)
+      protectedRequest({...(req || {}), _popup: false, _inpage: true}).then(
+        post,
+      )
     },
   })
 

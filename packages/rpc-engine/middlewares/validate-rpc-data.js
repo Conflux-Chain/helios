@@ -1,4 +1,4 @@
-import {CFX_MAINNET_NAME} from '@cfxjs/fluent-wallet-consts'
+import {CFX_MAINNET_NAME, SAFE_INPAGE_DOMAIN} from '@cfxjs/fluent-wallet-consts'
 import {defMiddleware} from '../middleware.js'
 import EpochRefConf from '@cfxjs/rpc-epoch-ref'
 import * as jsonRpcErr from '@cfxjs/json-rpc-error'
@@ -12,15 +12,33 @@ function validateRpcMehtod({req, rpcStore}) {
   }
 }
 
-function validateInternalMethod({req, rpcStore}) {
-  const {method} = req
-  if (rpcStore[method]?.permissions.internal && !req._rpcStack) {
+function validateExternalMethod({req, rpcStore}) {
+  const {method, _inpage, _origin, _popup} = req
+  const external = rpcStore[method]?.permissions?.external
+
+  const isSafeInpageOrigin = SAFE_INPAGE_DOMAIN.includes(_origin)
+
+  // fluent wallet's own origin
+  if (isSafeInpageOrigin) return
+
+  // internal only
+  if (external.length === 0 && !req._rpcStack) {
     const err = new jsonRpcErr.MethodNotFound(
       `Method ${method} not found, not allowed to call internal method directly`,
     )
     err.rpcData = req
     throw err
   }
+
+  const methodNotFoundErr = new jsonRpcErr.MethodNotFound()
+  methodNotFoundErr.rpcData = req
+
+  const allowInpage = external.includes('inpage')
+  const allowPopup = external.includes('popup')
+
+  if (_inpage && (!allowInpage || !_origin)) throw methodNotFoundErr
+
+  if (_popup && !allowPopup) throw methodNotFoundErr
 }
 
 function validateLockState({req, rpcStore, db}) {
@@ -86,16 +104,16 @@ export default defMiddleware(({tx: {check, comp, pluck, map, filter}}) => [
     fn: comp(check(validateRpcMehtod), pluck('req')),
   },
   {
-    id: 'validateInternalMethod',
+    id: 'validateExternalMethod',
     ins: {
       req: {stream: '/validateRpcMethod/node'},
     },
-    fn: comp(check(validateInternalMethod), pluck('req')),
+    fn: comp(check(validateExternalMethod), pluck('req')),
   },
   {
     id: 'validateLockState',
     ins: {
-      req: {stream: '/validateInternalMethod/node'},
+      req: {stream: '/validateExternalMethod/node'},
     },
     fn: comp(check(validateLockState), pluck('req')),
   },

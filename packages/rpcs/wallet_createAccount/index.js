@@ -35,6 +35,7 @@ export const permissions = {
     't',
     'getAccount',
   ],
+  external: ['popup'],
 }
 
 export const main = async ({

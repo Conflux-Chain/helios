@@ -4,6 +4,7 @@ export const NAME = 'wallet_importMnemonic'
 
 export const permissions = {
   methods: ['wallet_addVault'],
+  external: ['popup'],
 }
 
 export const schemas = {

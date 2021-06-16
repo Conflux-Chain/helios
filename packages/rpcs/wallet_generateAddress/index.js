@@ -23,6 +23,7 @@ export const schemas = {
 }
 export const permissions = {
   locked: true,
+  external: ['popup', 'inpage'],
 }
 
 const genRandomCfxHexAddress = type => {

@@ -98,6 +98,27 @@ describe('integration test', function () {
           /Method eth_getBalance not supported by network CFX_MAINNET/,
         )
       })
+      test('error call method with incorrect scope', async function () {
+        res = await request({
+          method: 'wallet_isLocked',
+          _inpage: true,
+          _origin: 'example.com',
+        })
+        expect(res.error.message).toMatch(/MethodNotFound/)
+
+        res = await request({
+          method: 'wallet_isLocked',
+          _inpage: true,
+          _origin: 'conflux-chain.github.io',
+        })
+        expect(res.result).toBe(false)
+
+        res = await request({
+          method: 'wallet_isLocked',
+          _popup: true,
+        })
+        expect(res.result).toBe(false)
+      })
     })
   })
 
