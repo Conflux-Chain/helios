@@ -170,7 +170,13 @@ describe('db', function () {
       const conn = db.createdb(schema)
       conn.createVault({type: 'a', data: 'b'})
       conn.createVault({type: 'a', data: 'c'})
+
       let rst, vault
+      rst = conn.getVault({eid: 1})
+      expect(Array.isArray(rst)).toBe(true)
+      expect(rst.length).toBe(1)
+      expect(rst[0].data).toBe('b')
+
       rst = conn.getVault({type: 'a'})
       expect(Array.isArray(rst)).toBe(true)
       expect(rst.length).toBe(2)

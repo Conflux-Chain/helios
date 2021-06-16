@@ -167,6 +167,11 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
       }),
     )
 
+    console.log(
+      'wallet_getAccountGroup',
+      await request({method: 'wallet_getAccountGroup'}),
+    )
+
     // await request({
     //   method: 'wallet_updateAccount',
     //   params: {
