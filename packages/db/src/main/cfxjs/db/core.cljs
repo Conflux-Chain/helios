@@ -72,31 +72,35 @@
   "Given model eg. :vault, attr-keys eg. [:type :data] create the getVault function"
   [{:keys [attr-keys model]}]
   (let [f (fn [attr-map]
-            (if attr-map
-              (let [attr-map (j->c attr-map)
-                    data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
-                                                            nil
-                                                            (let [symbol (->attr-symbol attr)
-                                                                  query-attr-k (->attrk model attr)
-                                                                  value (get attr-map attr)
-                                                                  value (or (get-in value [:_entity :db/id]) value)]
-                                                              [symbol query-attr-k value])))
-                                               attr-keys))
-                    symbols (mapv first data)
-                    query-attr-k (mapv second data)
-                    or? (true? (get attr-map :$or))
-                    query (if or? (def-get-query-or query-attr-k symbols)
-                              (def-get-query-and query-attr-k symbols))]
-                (q query (mapv #(get % 2) data)))
-              (let [all-attr-keys (map (partial ->attrk model) attr-keys)
-                    query (def-get-all-query all-attr-keys)]
-                (q query))))]
+            (let [attr-map (and attr-map (j->c attr-map))
+                  attr-map (if (empty? attr-map) nil attr-map)]
+              (if (or (not attr-map) (get attr-map :eid))
+                (let [all-attr-keys (map (partial ->attrk model) attr-keys)
+                      query (def-get-all-query all-attr-keys)
+                      eids (q query)
+                      eids (if-let [eid (get attr-map :eid)] (filter #(= eid %) eids) eids)]
+                  eids)
+                (let [data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
+                                                             nil
+                                                             (let [symbol (->attr-symbol attr)
+                                                                   query-attr-k (->attrk model attr)
+                                                                   value (get attr-map attr)
+                                                                   value (or (get-in value [:_entity :db/id]) value)]
+                                                               [symbol query-attr-k value])))
+                                                 attr-keys))
+                      symbols (mapv first data)
+                      query-attr-k (mapv second data)
+                      or? (true? (get attr-map :$or))
+                      query (if or? (def-get-query-or query-attr-k symbols)
+                                (def-get-query-and query-attr-k symbols))]
+                  (q query (mapv #(get % 2) data))))))]
     f))
 
 (defn def-get-one-fn
   [{:keys [attr-keys model]}]
   (let [f (fn [attr-map]
             (let [attr-map (j->c attr-map)
+                  _ (when (empty? attr-map) (throw (js/Error. "Invalid empty query map")))
                   data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
                                                           nil
                                                           (let [symbol (->attr-symbol attr)

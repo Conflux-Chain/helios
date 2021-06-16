@@ -28,6 +28,7 @@ import * as walletCreateAccount from '@cfxjs/wallet_create-account'
 import * as walletUpdateAccount from '@cfxjs/wallet_update-account'
 import * as walletUpdateAccountGroup from '@cfxjs/wallet_update-account-group'
 import * as walletIsLocked from '@cfxjs/wallet_is-locked'
+import * as walletGetAccountGroup from '@cfxjs/wallet_get-account-group'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -50,6 +51,7 @@ export const rpcEngineOpts = {
     walletCreateAccount,
     walletUpdateAccount,
     walletUpdateAccountGroup,
+    walletGetAccountGroup,
 
     walletGetNextNonce,
     walletGetBalance,
