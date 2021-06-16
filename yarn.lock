@@ -2552,7 +2552,7 @@ __metadata:
     "@cfxjs/doc-use-rpc": "workspace:packages/doc-ui/useRPC"
     "@cfxjs/doc-use-spec": "workspace:packages/doc-ui/useSpec"
     prop-types: ^15.7.2
-    zustand: 3.5.1
+    zustand: ^3.5.2
   peerDependencies:
     react: ^17.0.0
     react-dom: ^17.0.0
@@ -2564,7 +2564,7 @@ __metadata:
   resolution: "@cfxjs/doc-use-rpc@workspace:packages/doc-ui/useRPC"
   dependencies:
     param-case: 3.0.4
-    zustand: ^3.5.1
+    zustand: ^3.5.2
   peerDependencies:
     react: ^17.0.0
     react-dom: ^17.0.0
@@ -2575,7 +2575,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/doc-use-spec@workspace:packages/doc-ui/useSpec"
   dependencies:
-    zustand: ^3.5.1
+    zustand: ^3.5.2
   peerDependencies:
     react: ^17.0.0
     react-dom: ^17.0.0
@@ -3599,20 +3599,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/eslintrc@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "@eslint/eslintrc@npm:0.4.1"
+"@eslint/eslintrc@npm:^0.4.2":
+  version: 0.4.2
+  resolution: "@eslint/eslintrc@npm:0.4.2"
   dependencies:
     ajv: ^6.12.4
     debug: ^4.1.1
     espree: ^7.3.0
-    globals: ^12.1.0
+    globals: ^13.9.0
     ignore: ^4.0.6
     import-fresh: ^3.2.1
     js-yaml: ^3.13.1
     minimatch: ^3.0.4
     strip-json-comments: ^3.1.1
-  checksum: 418f5810c8dd9897d2457ceef098197d0e5f1ad345fbe4cd9256fd4223d7ea83d5e350f9091b3ab3483b6b1c367fa560df3ba1fccc7eb8ca6e1aae5a5b126d60
+  checksum: 60b66ce4257bf5c36a920dea83a056102fef746e7afd7100a6fe245a126ff455f67f4948e75d28ed73090bff8f8556b6a996e74a124911ca703440bc245dbc23
   languageName: node
   linkType: hard
 
@@ -13246,12 +13246,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^7.27.0":
-  version: 7.27.0
-  resolution: "eslint@npm:7.27.0"
+"eslint@npm:^7.28.0":
+  version: 7.28.0
+  resolution: "eslint@npm:7.28.0"
   dependencies:
     "@babel/code-frame": 7.12.11
-    "@eslint/eslintrc": ^0.4.1
+    "@eslint/eslintrc": ^0.4.2
     ajv: ^6.10.0
     chalk: ^4.0.0
     cross-spawn: ^7.0.2
@@ -13268,7 +13268,7 @@ __metadata:
     fast-deep-equal: ^3.1.3
     file-entry-cache: ^6.0.1
     functional-red-black-tree: ^1.0.1
-    glob-parent: ^5.0.0
+    glob-parent: ^5.1.2
     globals: ^13.6.0
     ignore: ^4.0.6
     import-fresh: ^3.0.0
@@ -13291,7 +13291,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: c91a9a88091fb2654ec599b452f6d8aff22daa4a21761e762536877ec8b65cd6386c29ea2e0fec2668125a07c62973bc23922f924c999e140c1042b8cffca030
+  checksum: 9d49d53ed56a1f1ccba9c71482722a91f2423432df70a3694d36ea478f0e3bb058034f170219f34f3d6b5cd5d47510b269b75e2b4117f88a3241b1db9cb95828
   languageName: node
   linkType: hard
 
@@ -14098,6 +14098,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ext-reload@workspace:packages/ext-reload"
   dependencies:
+    "@cfxjs/csp": "workspace:packages/csp"
     webextension-polyfill: 0.8.0
   languageName: unknown
   linkType: soft
@@ -15242,7 +15243,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"glob-parent@npm:^5.0.0, glob-parent@npm:^5.1.0":
+"glob-parent@npm:^5.1.0":
   version: 5.1.1
   resolution: "glob-parent@npm:5.1.1"
   dependencies:
@@ -15251,7 +15252,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"glob-parent@npm:^5.1.1, glob-parent@npm:~5.1.0":
+"glob-parent@npm:^5.1.1, glob-parent@npm:^5.1.2, glob-parent@npm:~5.1.0":
   version: 5.1.2
   resolution: "glob-parent@npm:5.1.2"
   dependencies:
@@ -15352,21 +15353,21 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"globals@npm:^12.1.0":
-  version: 12.4.0
-  resolution: "globals@npm:12.4.0"
-  dependencies:
-    type-fest: ^0.8.1
-  checksum: 0b9764bdeab0bc9762dea8954a0d4c5db029420bd8bf693df9098ce7e045ccaf9b2d259185396fd048b051d42fdc8dc7ab02af62e3dbeb2324a78a05aac8d33c
-  languageName: node
-  linkType: hard
-
 "globals@npm:^13.6.0":
   version: 13.6.0
   resolution: "globals@npm:13.6.0"
   dependencies:
     type-fest: ^0.20.2
   checksum: 0322d9c1b210be233060aa79592bc65c45572237be8dbedabf830dbd70120ac21f8721309a396782463e60c4cc0b92a6476a348b4b13e481f35e361195328b8e
+  languageName: node
+  linkType: hard
+
+"globals@npm:^13.9.0":
+  version: 13.9.0
+  resolution: "globals@npm:13.9.0"
+  dependencies:
+    type-fest: ^0.20.2
+  checksum: 26d71f2c286c80d806faad49c801bfb2ac5144497b5c844c5a718b2c3fad51e0d507d9069474e89f110f16a38bf212ec56e6e40936a4f24b1a645e7f21001d1d
   languageName: node
   linkType: hard
 
@@ -16000,7 +16001,7 @@ fsevents@~2.3.1:
     cross-env: ^7.0.3
     dot-env: ^0.0.1
     dotenv-expand: ^5.1.0
-    eslint: ^7.27.0
+    eslint: ^7.28.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.23.4
     eslint-plugin-jest: ^24.3.6
@@ -16013,27 +16014,27 @@ fsevents@~2.3.1:
     highlight.js: 9.18.5
     husky: ^6.0.0
     jest: ^26.6.3
-    jest-webextension-mock: ^3.7.13
+    jest-webextension-mock: ^3.7.14
     lint-staged: ^11.0.0
     mustache: ^4.2.0
     npm-run-all: ^4.1.5
     postcss: ^8.3.0
-    prettier: ^2.3.0
+    prettier: ^2.3.1
     ramda: ^0.27.1
     react: ^16.13.0
     react-dom: ^16.13.0
     react-highlight.js: 1.0.7
     regenerator-runtime: ^0.13.8
     rimraf: ^3.0.2
-    shadow-cljs: ^2.14.2
-    snowpack: 3.5.2
+    shadow-cljs: ^2.14.3
+    snowpack: 3.5.5
     storybook: 6.2.9
     storybook-addon-outline: 1.2.0
     storybook-addon-pseudo-states: 1.0.0
     stylelint: ^13.13.1
     stylelint-config-prettier: ^8.0.2
     stylelint-config-standard: ^22.0.0
-    tailwindcss: ^2.1.2
+    tailwindcss: ^2.1.4
   languageName: unknown
   linkType: soft
 
@@ -18055,10 +18056,10 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"jest-webextension-mock@npm:^3.7.13":
-  version: 3.7.13
-  resolution: "jest-webextension-mock@npm:3.7.13"
-  checksum: 56ba9156455b48c3fcc81b55e94f6ced2997fcf35f9b5ad6010e9fd21580a9d270bc9a0f9c84f78464c41953f562ceb9bb657b4c6171802132fa781e38e3046e
+"jest-webextension-mock@npm:^3.7.14":
+  version: 3.7.14
+  resolution: "jest-webextension-mock@npm:3.7.14"
+  checksum: 2c83910024e78d9b4cc88103273771bf183715932193f8781b2ac4c3dabd6d3adc895fb97a7a2f31f527478531121520de6693a9b426b62de79c22d43f8e7d94
   languageName: node
   linkType: hard
 
@@ -22750,12 +22751,12 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "prettier@npm:2.3.0"
+"prettier@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "prettier@npm:2.3.1"
   bin:
     prettier: bin-prettier.js
-  checksum: 652640cc8b71bc5277cfb8bf6f161783ca588efcf683c3d630837b39da8d57fef35c9e00ae5855a8e3c75136c42274046c913cc2b2d2968558315f31c6a26981
+  checksum: 9b4a695b87ce5f510fc20feec01cce7371f0fa0b92ffe79d543f6be52e2004c532861629de4d7ab1c577e1f649dce3cfccd62cb2ca6526b1da8d9c63eb84bf36
   languageName: node
   linkType: hard
 
@@ -25265,9 +25266,9 @@ resolve@~1.17.0:
   languageName: node
   linkType: hard
 
-"shadow-cljs@npm:^2.14.2":
-  version: 2.14.2
-  resolution: "shadow-cljs@npm:2.14.2"
+"shadow-cljs@npm:^2.14.3":
+  version: 2.14.3
+  resolution: "shadow-cljs@npm:2.14.3"
   dependencies:
     node-libs-browser: ^2.2.1
     readline-sync: ^1.4.7
@@ -25277,7 +25278,7 @@ resolve@~1.17.0:
     ws: ^3.0.0
   bin:
     shadow-cljs: cli/runner.js
-  checksum: 46ec798ff1a19790624c86586b6b93048e44986080e70c44c5bc79ecb17777f1cf318db70314efcb6762b416d908f0b534efc61b73675f179fca78a679072ee3
+  checksum: 543b473a40a5f731f856b54a664579977fd689c0ac9fffd667325e835458badaf6efb2619c4f37df914d298423a7ec20c3c4fcb4a12531c26a74a9e44c0198f1
   languageName: node
   linkType: hard
 
@@ -25517,9 +25518,9 @@ resolve@~1.17.0:
   languageName: node
   linkType: hard
 
-"snowpack@npm:3.5.2":
-  version: 3.5.2
-  resolution: "snowpack@npm:3.5.2"
+"snowpack@npm:3.5.5":
+  version: 3.5.5
+  resolution: "snowpack@npm:3.5.5"
   dependencies:
     cli-spinners: ^2.5.0
     default-browser-id: ^2.0.0
@@ -25537,7 +25538,7 @@ resolve@~1.17.0:
   bin:
     snowpack: index.bin.js
     sp: index.bin.js
-  checksum: b046249531592712eb451bbb5adbdb01a4d0555decfe67baf7ea1c628df61e900cb053cea5ae22c8290dbb4b09ff59de37a200d7b9ed6b650a16031a2663cd7f
+  checksum: fd5897268adda72009c83b788f569144f3cbacefeee4ce52076a9890774f7752bb55b945cdae7dbbb1360f5ad2af214208c2cbf3521fc5c667738ccd32fd8ee9
   languageName: node
   linkType: hard
 
@@ -26635,9 +26636,9 @@ resolve@~1.17.0:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "tailwindcss@npm:2.1.2"
+"tailwindcss@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "tailwindcss@npm:2.1.4"
   dependencies:
     "@fullhuman/postcss-purgecss": ^3.1.3
     bytes: ^3.0.0
@@ -26672,7 +26673,7 @@ resolve@~1.17.0:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 0e1c12073ab3a86016ac417b06aee014e868cf93f7d9c71cf11cd725d1cb3ab576cd0d776f5a3eaab179e427a35575f9bc39ae5a912a81040f35a61ad2008e45
+  checksum: 478fc098fa9b7e57c5bc16dc0a51179c05bca7d82bffdcfdb61a0057e0e0e5004851d6d22bcaaffd4f64bfd0863ad9b897827d54296538c869b930cec71aa0dc
   languageName: node
   linkType: hard
 
@@ -29379,12 +29380,15 @@ resolve@~1.17.0:
   languageName: node
   linkType: hard
 
-"zustand@npm:3.5.1, zustand@npm:^3.5.1":
-  version: 3.5.1
-  resolution: "zustand@npm:3.5.1"
+"zustand@npm:^3.5.2":
+  version: 3.5.2
+  resolution: "zustand@npm:3.5.2"
   peerDependencies:
     react: ">=16.8"
-  checksum: fdd1e6caaecbb0c3b7e869064752ace7113a16eabca56ab2f8cae6b1a0588ead08662289b7b7dde6a550d9ddf30881af370292406ca0b37d6d5d78a93e7db2b2
+  peerDependenciesMeta:
+    react:
+      optional: true
+  checksum: f5df58852571142d7448ba09b259843d38c5e6b2313d7a864a868bfb7e4e16182e80ffc381a2124958dfc625e710182ec917d849c3286c1c067c981a9095e2f5
   languageName: node
   linkType: hard
 

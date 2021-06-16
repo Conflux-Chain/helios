@@ -1,0 +1,13 @@
+releases:
+  "@cfxjs/extension-runtime": patch
+  "@cfxjs/test-helpers": patch
+  ext-reload: patch
+
+declined:
+  - helios-background
+  - "@cfxjs/doc-rpc-parameter"
+  - "@cfxjs/doc-use-rpc"
+  - "@cfxjs/doc-use-spec"
+  - helios-inpage
+  - helios-popup
+  - "@cfxjs/use-rpc"

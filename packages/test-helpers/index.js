@@ -1,5 +1,6 @@
 const {CFXNODE, sendCFX} = require('./cfx.js')
 // const {Ganache, sendETH} = require('./eth.js')
+const sendETH = require('./sendETH.js')
 const delay = require('delay')
 
 const cfx = new CFXNODE({killPortProcess: true})
@@ -77,5 +78,5 @@ module.exports = {
   MNEMONIC,
   ACCOUNTS,
   sendCFX,
-  // sendETH,
+  sendETH,
 }
