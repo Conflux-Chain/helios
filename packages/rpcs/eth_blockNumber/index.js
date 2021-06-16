@@ -2,7 +2,7 @@ export const NAME = 'eth_blockNumber'
 
 export const schemas = {}
 
-export const permissons = {
+export const permissions = {
   locked: true,
 }
 

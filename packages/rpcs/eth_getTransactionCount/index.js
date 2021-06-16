@@ -6,7 +6,7 @@ export const schemas = {
   input: [cat, ethHexAddress, blockTag],
 }
 
-export const permissons = {
+export const permissions = {
   locked: true,
 }
 

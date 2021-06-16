@@ -6,7 +6,7 @@ export const NAME = 'wallet_generateMnemonic'
 export const schemas = {
   output: mnemonic,
 }
-export const permissons = {
+export const permissions = {
   locked: true,
 }
 
