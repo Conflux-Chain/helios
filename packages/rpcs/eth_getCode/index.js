@@ -11,7 +11,7 @@ export const cache = {
   ttl: 3600,
   key: ({params}) => `${NAME}${params[0]}`,
 }
-export const permissons = {
+export const permissions = {
   locked: true,
 }
 
