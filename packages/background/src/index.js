@@ -21,7 +21,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 
   const dbConnection = createdb(SCHEMA, persist, data || null)
   if (!IS_PROD_MODE) window.d = dbConnection
-  initDBFn(dbConnection)
+  if (!data) initDBFn(dbConnection)
 
   // ## initialize rpc engine
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)

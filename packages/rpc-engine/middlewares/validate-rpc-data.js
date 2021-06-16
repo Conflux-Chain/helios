@@ -57,6 +57,7 @@ function formatRpcNetwork(arg) {
       `Invalid network name ${req.networkName}`,
     )
     err.rpcData = req
+    throw err
   }
   return {...arg, req}
 }
