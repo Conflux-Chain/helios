@@ -157,6 +157,14 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
       }),
     )
 
+    // await request({
+    //   method: 'wallet_updateAccount',
+    //   params: {
+    //     accountId: 14,
+    //     nickname: 'foo',
+    //   }
+    // })
+
     // console.log(dbConnection.getAccount().map(({eid}) => eid))
     // console.log(dbConnection.getAddress().map(({eid}) => eid))
   }

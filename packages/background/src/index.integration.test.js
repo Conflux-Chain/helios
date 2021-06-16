@@ -149,6 +149,36 @@ describe('integration test', function () {
         expect(res.error.message).toMatch(
           /Invalid nickname "Account 1", duplicate with other account in the same account group/,
         )
+
+        let account0 = db.getAccount()[0]
+        expect(account0.nickname).toBe('Account 1')
+        expect(account0.hidden).toBe(false)
+
+        await request({
+          method: 'wallet_updateAccount',
+          params: {accountId: account0.eid, hidden: true, nickname: 'foo'},
+        })
+
+        account0 = db.getById(account0.eid)
+        expect(account0.nickname).toBe('foo')
+        expect(account0.hidden).toBe(true)
+
+        let accountGroup0 = db.getAccountGroup()[0]
+        expect(accountGroup0.nickname).toBe('Vault 1')
+        expect(accountGroup0.hidden).toBe(false)
+
+        await request({
+          method: 'wallet_updateAccountGroup',
+          params: {
+            accountGroupId: accountGroup0.eid,
+            hidden: true,
+            nickname: 'foo',
+          },
+        })
+
+        accountGroup0 = db.getById(accountGroup0.eid)
+        expect(accountGroup0.nickname).toBe('foo')
+        expect(accountGroup0.hidden).toBe(true)
       })
 
       test('import hd vault with first two account has balance', async function () {

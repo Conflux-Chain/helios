@@ -25,6 +25,8 @@ import * as ethGetBalance from '@cfxjs/eth_get-balance'
 import * as walletGetBalance from '@cfxjs/wallet_get-balance'
 import * as walletDiscoverAccounts from '@cfxjs/wallet_discoverAccounts'
 import * as walletCreateAccount from '@cfxjs/wallet_create-account'
+import * as walletUpdateAccount from '@cfxjs/wallet_update-account'
+import * as walletUpdateAccountGroup from '@cfxjs/wallet_update-account-group'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -43,6 +45,8 @@ export const rpcEngineOpts = {
     walletImportAddress,
     walletDiscoverAccounts,
     walletCreateAccount,
+    walletUpdateAccount,
+    walletUpdateAccountGroup,
 
     walletGetNextNonce,
     walletGetBalance,
