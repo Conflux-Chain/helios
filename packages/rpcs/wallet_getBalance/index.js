@@ -10,6 +10,7 @@ export const schemas = {
 export const permissions = {
   locked: true,
   methods: ['cfx_getBalance', 'eth_getBalance'],
+  external: ['popup', 'inpage'],
 }
 
 export const main = async ({

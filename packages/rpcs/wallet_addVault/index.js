@@ -28,7 +28,6 @@ export const schemas = {
 }
 
 export const permissions = {
-  internal: true,
   methods: [
     'wallet_discoverAccounts',
     'wallet_getBalance',

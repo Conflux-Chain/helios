@@ -15960,6 +15960,7 @@ fsevents@~2.3.1:
     "@cfxjs/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
     "@cfxjs/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
     "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
+    "@cfxjs/wallet_is-locked": "workspace:packages/rpcs/wallet_isLocked"
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock"
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
     "@cfxjs/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount"

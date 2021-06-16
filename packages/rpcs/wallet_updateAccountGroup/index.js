@@ -26,6 +26,7 @@ export const schemas = {
 
 export const permissions = {
   db: ['t', 'getById', 'getAccountGroupByNickname'],
+  external: ['popup'],
 }
 
 export const main = async ({

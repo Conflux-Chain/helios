@@ -9,7 +9,6 @@ export const schemas = {
 }
 
 export const permissions = {
-  internal: true,
   locked: true,
   db: ['getVault'],
 }

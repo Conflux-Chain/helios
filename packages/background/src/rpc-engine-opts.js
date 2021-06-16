@@ -27,10 +27,13 @@ import * as walletDiscoverAccounts from '@cfxjs/wallet_discoverAccounts'
 import * as walletCreateAccount from '@cfxjs/wallet_create-account'
 import * as walletUpdateAccount from '@cfxjs/wallet_update-account'
 import * as walletUpdateAccountGroup from '@cfxjs/wallet_update-account-group'
+import * as walletIsLocked from '@cfxjs/wallet_is-locked'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
   methods: [
+    walletIsLocked,
+
     // init
     walletGeneratePrivateKey,
     walletGenerateMnemonic,

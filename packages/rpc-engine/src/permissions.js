@@ -8,7 +8,7 @@ export const defaultPermissions = {
   methods: [],
   locked: false,
   db: [],
-  internal: false,
+  external: [],
 }
 
 export const format = (rpcPermissions = {}) =>
