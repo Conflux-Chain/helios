@@ -95,6 +95,7 @@ const obj = <Var>object</Var>
 
 const ParamWithChildren = ({type, children, rpcName, k, kv, path}) => {
   const legendOpts = {
+    maybe: 'optional',
     cat: 'array of',
     or: 'one of',
     and: 'all of',
@@ -288,8 +289,17 @@ ParamWithChildren.propTypes = {
   k: PropTypes.string,
   kv: PropTypes.bool,
   rpcName: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['map', 'or', 'and', 'cat', '+', '*', '?', 'alt'])
-    .isRequired,
+  type: PropTypes.oneOf([
+    'map',
+    'or',
+    'and',
+    'cat',
+    '+',
+    '*',
+    '?',
+    'alt',
+    'maybe',
+  ]).isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
