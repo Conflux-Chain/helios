@@ -2,7 +2,7 @@
   "name": "@cfxjs/wallet_update-account-group",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "dependencies": {
     "@cfxjs/checks": "workspace:packages/checks",
     "@cfxjs/spec": "workspace:packages/spec"
