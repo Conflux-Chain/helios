@@ -27,7 +27,6 @@ export const schemas = {
 }
 
 export const permissions = {
-  unlocked: true,
   db: [
     'getNetwork',
     'getPassword',

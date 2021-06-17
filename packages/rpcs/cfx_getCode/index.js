@@ -12,6 +12,10 @@ export const schemas = {
   input: [cat, base32ContractAddress, epochRef],
 }
 
+export const permissions = {
+  locked: true,
+}
+
 export const main = async ({f, params}) => {
   return await f(params)
 }

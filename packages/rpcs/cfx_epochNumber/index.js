@@ -6,6 +6,10 @@ export const schemas = {
   input: [or, [zeroOrOne, epochTag], nul],
 }
 
+export const permissions = {
+  locked: true,
+}
+
 export const cache = {
   type: 'ttl',
   ttl: 500,

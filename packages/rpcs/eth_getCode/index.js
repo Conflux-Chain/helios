@@ -11,6 +11,9 @@ export const cache = {
   ttl: 3600,
   key: ({params}) => `${NAME}${params[0]}`,
 }
+export const permissons = {
+  locked: true,
+}
 
 export const main = async ({f, params}) => {
   return await f(params)
