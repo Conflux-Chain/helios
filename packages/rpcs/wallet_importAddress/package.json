@@ -2,7 +2,7 @@
   "name": "@cfxjs/wallet_import-address",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "dependencies": {
     "@cfxjs/spec": "workspace:packages/spec"
   }
