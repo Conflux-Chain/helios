@@ -2,7 +2,7 @@
   "name": "@cfxjs/wallet_get-balance",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@cfxjs/addr-by-network": "workspace:packages/addr-by-network",
     "@cfxjs/spec": "workspace:packages/spec"

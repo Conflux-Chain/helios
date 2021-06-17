@@ -2,7 +2,7 @@
   "name": "@cfxjs/cfx_get-account",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "dependencies": {
     "@cfxjs/spec": "workspace:packages/spec"
   }
