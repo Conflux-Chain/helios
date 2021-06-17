@@ -66,7 +66,18 @@
        :enum {:el :select :values (m/children schema)}
        {:el :input}))))
 
-(def built-in-schema-doc {:enum "enum"})
+(def built-in-schema-doc {:enum "enum"
+                          'pos-int? "positive integer"
+                          'integer? "integer"
+                          'neg-int? "negative integer"
+                          'true? "the value true"
+                          :int "integer"
+                          :>= "greater than"
+                          :<= "less than"
+                          :string "string"
+                          'string? "string"
+                          :boolean "boolean"
+                          'boolean? "boolean"})
 
 (defn -schema-get-doc
   ([schema] (-schema-get-doc schema nil))
