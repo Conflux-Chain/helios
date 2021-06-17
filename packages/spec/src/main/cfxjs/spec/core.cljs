@@ -155,7 +155,7 @@
 
 (def Password (update-properties [:string {:min 8 :max 128}]
                                  :doc "String between 8 to 128 character" :type :password))
-(def NetworkId (update-properties [:and :int [:>= 0] [:<= 4294967295]]
+(def NetworkId (update-properties [:int {:min 0 :max 4294967295}]
                                   :type :network-id :doc "1029 for mainnet, 1 for testnet, 0 <= networkId <= 4294967295"))
 (def AddressType (update-properties [:enum "user" "contract" "builtin" "null"]
                                     :type :address-type :doc "Is string, one of user contract builtin null"))
