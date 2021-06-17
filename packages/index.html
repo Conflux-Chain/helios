@@ -13,15 +13,16 @@
     <script type="module">
      import * as s from 'http://localhost:18003/dist/@cfxjs/spec/index.js'
      import * as g from 'http://localhost:18003/dist/@cfxjs/spec/src/gen.js'
+     import * as d from 'http://localhost:18003/dist/@cfxjs/spec/src/doc.js'
      import schema from './background/src/db-schema.js'
      import {createdb} from './db/index.js'
 
      window.schema = schema
      window.db = createdb(schema)
      db.t([ {eid: -1, vault: {type: 'a', data: '2',addresses: [{ address: {vault: -1, hex: 'foo'}  }]}}, ])
-     console.log(db.getVault()[0].addresses[0].hex)
      window.s = s
      window.g = g
+     window.d = d
     </script>
     <p>html used to debug db and spec</p>
   </body>
