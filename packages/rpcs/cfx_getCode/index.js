@@ -14,6 +14,7 @@ export const schemas = {
 
 export const permissions = {
   locked: true,
+  external: ['popup', 'inpage'],
 }
 
 export const main = async ({f, params}) => {

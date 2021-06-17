@@ -13,6 +13,7 @@ export const schemas = {
 
 export const permissions = {
   methods: ['wallet_addVault'],
+  external: ['popup'],
 }
 
 export const main = async ({

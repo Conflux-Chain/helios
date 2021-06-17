@@ -80,3 +80,5 @@ export const ETH_LOCALNET_NAME = 'ETH_LOCALNET'
 export const ETH_LOCALNET_CHAINID = 1
 export const ETH_LOCALNET_NETID = 1337
 export const ETH_LOCALNET_CURRENCY_SYMBOL = 'ETH'
+
+export const SAFE_INPAGE_DOMAIN = ['conflux-chain.github.io']

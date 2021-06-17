@@ -9,6 +9,7 @@ export const schemas = {
 }
 export const permissions = {
   locked: true,
+  external: ['popup', 'inpage'],
 }
 
 export async function main({params} = {}) {
