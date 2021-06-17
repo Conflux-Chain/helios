@@ -31,7 +31,7 @@ const listenToInpageMessage = e => {
 window.addEventListener('message', listenToInpageMessage, false)
 
 port.onDisconnect.addListener(() =>
-  window.removeEventListener(listenToInpageMessage),
+  window.removeEventListener('message', listenToInpageMessage),
 )
 
 port.onMessage.addListener(e =>
