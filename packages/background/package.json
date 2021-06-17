@@ -37,8 +37,8 @@
     "@cfxjs/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount",
     "@cfxjs/wallet_update-account-group": "workspace:packages/rpcs/wallet_updateAccountGroup",
     "@cfxjs/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword",
-    "@thi.ng/rstream": "^6.0.8",
-    "@thi.ng/rstream-csp": "^2.0.67",
+    "@thi.ng/rstream": "^6.0.9",
+    "@thi.ng/rstream-csp": "^2.0.68",
     "regenerator-runtime": "^0.13.8",
     "webextension-polyfill": "^0.8.0"
   },

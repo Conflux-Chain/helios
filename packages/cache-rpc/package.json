@@ -6,6 +6,6 @@
   "dependencies": {
     "@cfxjs/checks": "workspace:packages/checks",
     "@cfxjs/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref",
-    "@thi.ng/cache": "1.0.83"
+    "@thi.ng/cache": "1.0.84"
   }
 }
