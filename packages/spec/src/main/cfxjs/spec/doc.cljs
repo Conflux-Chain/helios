@@ -1,5 +1,6 @@
 (ns cfxjs.spec.doc
   (:require [malli.core :as m]
+            [oops.core :refer [oset!]]
             [malli.error :refer [humanize]]))
 
 (defn j->c [a] (js->clj a :keywordize-keys true))
@@ -106,10 +107,10 @@
 (defmethod -schema-doc-generator :map [schema options]
   (let [entries (m/entries schema)
         value-gen (fn [k s] (let [options (if (-> s m/properties :optional) (assoc options :doc/optional-key true) options)
-                                 options (if (-> s m/properties :doc) (assoc options :doc/pdoc (-> s m/properties :doc)) options)
-                                 rst (-schema-doc-generator s options)
-                                 rst (assoc rst :kv true)
-                                 rst (assoc rst :k k)]
+                                  options (if (-> s m/properties :doc) (assoc options :doc/pdoc (-> s m/properties :doc)) options)
+                                  rst (-schema-doc-generator s options)
+                                  rst (assoc rst :kv true)
+                                  rst (assoc rst :k k)]
                               rst))
         gen-req (->> entries
                      ;; (remove #(-> % last m/properties :optional))
@@ -119,12 +120,16 @@
 (defmethod -schema-doc-generator ::m/val [schema options]
   (-schema-doc-generator (first (m/children schema)) options))
 
-(defn gen [schema options]
-  (let [schema (js->clj schema :keywordize-keys true)
+(defn gen [js-schema options]
+  (let [schema (js->clj js-schema :keywordize-keys true)
         options (js->clj options :keywordize-keys true)
         options (assoc options :doc/gen-no-schema (get options :noSchema))
-        options (dissoc options :noSchema)]
-    (clj->js (-schema-doc-generator schema options))))
+        options (dissoc options :noSchema)
+        rst (clj->js (-schema-doc-generator schema options))
+        rst (if (get options :doc/gen-no-schema)
+              rst
+              (oset! rst "!value.!schema" js-schema))]
+    rst))
 
 (def export-explain explain)
 (def export-validate validate)
