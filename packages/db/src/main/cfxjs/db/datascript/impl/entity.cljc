@@ -134,11 +134,9 @@
        (-invoke [this k not-found]
                 (lookup-entity this k not-found))
 
-       ;; IPrintWithWriter
-       ;; (-pr-writer [_ writer opts]
-       ;;             (js/console.log "writer" writer)
-       ;;             (-pr-writer (assoc @cache :db/id eid) writer opts))
-       ]
+       IPrintWithWriter
+       (-pr-writer [_ writer opts]
+                   (-pr-writer (assoc @cache :db/id eid) writer opts))]
 
       :clj
       [Object
