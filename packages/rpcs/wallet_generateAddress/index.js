@@ -21,7 +21,7 @@ const cfxBase32AddressSchema = [
 export const schemas = {
   input: [or, ethAddressSchema, cfxHexAddressSchema, cfxBase32AddressSchema],
 }
-export const permissons = {
+export const permissions = {
   locked: true,
 }
 

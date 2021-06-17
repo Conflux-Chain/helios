@@ -21,7 +21,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 
   const dbConnection = createdb(SCHEMA, persist, data || null)
   if (!IS_PROD_MODE) window.d = dbConnection
-  initDBFn(dbConnection)
+  if (!data) initDBFn(dbConnection)
 
   // ## initialize rpc engine
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
@@ -156,6 +156,14 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
         params: ['cfx:aamwwx800rcw63n42kbehesuukjdjcnu4ueu84nhp5'],
       }),
     )
+
+    // await request({
+    //   method: 'wallet_updateAccount',
+    //   params: {
+    //     accountId: 14,
+    //     nickname: 'foo',
+    //   }
+    // })
 
     // console.log(dbConnection.getAccount().map(({eid}) => eid))
     // console.log(dbConnection.getAddress().map(({eid}) => eid))

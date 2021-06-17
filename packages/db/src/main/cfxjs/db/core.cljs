@@ -35,7 +35,7 @@
              nil arg))
 
 (defn- parse-js-transact-arg
-  ([arg] (parse-js-transact-arg arg "datomic.tx"))
+  ([arg] (parse-js-transact-arg arg (random-tmp-id)))
   ([arg tmp-id]
    (let [arg (cond
                (or (int? (get arg :eid)) (string? (get arg :eid)))
@@ -255,7 +255,7 @@
        (let [arg (j->c arg)
              arg (if (vector? arg) arg [arg])
              arg (filter map? arg)
-             arg (map #(parse-js-transact-arg % "datomic.tx") arg)]
+             arg (map #(parse-js-transact-arg % (random-tmp-id)) arg)]
          (clj->js (t arg))))
 
      ;; (defn custom-pr-impl [obj writer opts]

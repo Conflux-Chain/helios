@@ -7,7 +7,7 @@ export const schemas = {
   input: [or, nul, [map, ['entropy', {optional: true}, string]]],
   output: privateKey,
 }
-export const permissons = {
+export const permissions = {
   locked: true,
 }
 
