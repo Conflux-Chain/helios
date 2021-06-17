@@ -81,4 +81,11 @@ export const ETH_LOCALNET_CHAINID = 1
 export const ETH_LOCALNET_NETID = 1337
 export const ETH_LOCALNET_CURRENCY_SYMBOL = 'ETH'
 
-export const SAFE_INPAGE_DOMAIN = ['conflux-chain.github.io']
+export const SAFE_INPAGE_DOMAIN = [
+  'conflux-chain.github.io',
+  'dev.fluent.wallet',
+  'doc.fluent.wallet',
+  'story.fluent.wallet',
+  'doclocal.fluent.wallet',
+  'storylocal.fluent.wallet',
+]
