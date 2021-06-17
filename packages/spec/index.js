@@ -8,7 +8,7 @@ import {
   defRestSchemas,
   defBase32AddressSchemaFactory,
   or,
-  integer,
+  posInt,
 } from './src/spec.js'
 
 import {
@@ -59,4 +59,4 @@ export const [
   base32NullAddress,
 ] = defBase32AddressSchemaFactory(validateBase32Address, randomBase32Address)
 
-export const dbid = integer
+export const dbid = posInt
