@@ -120,8 +120,13 @@
   ```
   "
   [s]
-  (let [reduce-attr-property (fn [acc k v] (if (= k :ref) (assoc acc k (keyword v)) acc))
-        reduce-model-attr (fn [acc k v] (assoc acc k (reduce-kv reduce-attr-property v v)))
+  (let [;; reduce-attr-property (fn [acc k3 v3] (if (= k :ref) (assoc acc k3 (keyword v3)) acc))
+        reduce-model-attr (fn [acc k2 v2] (assoc acc k2 (reduce-kv
+                                                        (fn [acc k3 v3] (cond
+                                                                         (and (= k3 :ref) (string? v3)) (assoc acc :ref (keyword v3))
+                                                                         (= k3 :ref) (assoc acc :ref k2)
+                                                                         :else acc))
+                                                        v2 v2)))
         reduce-schema-model (fn [acc k v]
                               (let [v (reduce-kv reduce-model-attr {} v)
                                     acc (assoc-in acc [k :attr-keys] (keys v))

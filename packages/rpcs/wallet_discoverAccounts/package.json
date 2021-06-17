@@ -1,0 +1,11 @@
+{
+  "name": "@cfxjs/wallet_discoverAccounts",
+  "main": "index.js",
+  "type": "module",
+  "version": "0.0.1",
+  "dependencies": {
+    "@cfxjs/discover-accounts": "workspace:packages/discover-accounts",
+    "@cfxjs/spec": "workspace:packages/spec",
+    "browser-passworder": "2.0.3"
+  }
+}
