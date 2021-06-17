@@ -82,7 +82,6 @@ function formatRpcNetwork(arg) {
 
 function formatEpochRef(arg) {
   const {db, req} = arg
-  req.params = req.params || []
   const {method, params = []} = req
   const epochRefPos = EpochRefConf[method]
   if (epochRefPos !== undefined && !params[epochRefPos]) {
