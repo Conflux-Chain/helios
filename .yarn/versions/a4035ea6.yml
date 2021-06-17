@@ -1,7 +1,0 @@
-releases:
-  "@cfxjs/db": patch
-  "@cfxjs/rpc-engine": patch
-
-declined:
-  - helios-background
-  - "@cfxjs/wallet_get-account-group"
