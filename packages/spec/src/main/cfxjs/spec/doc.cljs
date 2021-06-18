@@ -119,10 +119,10 @@
 (defmethod -schema-doc-generator :map [schema options]
   (let [entries (m/entries schema)
         value-gen (fn [k s] (let [options (if (-> s m/properties :optional) (assoc options :doc/optional-key true) options)
-                                  options (if (-> s m/properties :doc) (assoc options :doc/pdoc (-> s m/properties :doc)) options)
-                                  rst (-schema-doc-generator s options)
-                                  rst (assoc rst :kv true)
-                                  rst (assoc rst :k k)]
+                                 options (if (-> s m/properties :doc) (assoc options :doc/pdoc (-> s m/properties :doc)) options)
+                                 rst (-schema-doc-generator s options)
+                                 rst (assoc rst :kv true)
+                                 rst (assoc rst :k k)]
                               rst))
         gen-req (->> entries
                      ;; (remove #(-> % last m/properties :optional))

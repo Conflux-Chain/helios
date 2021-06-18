@@ -93,7 +93,7 @@ const Validator = ({valid, error, empty}) => {
 
 const obj = <Var>object</Var>
 
-const ParamWithChildren = ({type, children, rpcName, k, kv, path}) => {
+const ParamWithChildren = ({type, children, rpcName, k, kv, path, value}) => {
   const legendOpts = {
     maybe: 'optional',
     cat: 'array of',
@@ -108,6 +108,7 @@ const ParamWithChildren = ({type, children, rpcName, k, kv, path}) => {
   const mapKey = (
     <label htmlFor={entryId}>
       <Var>{k}</Var>
+      {value?.optional && '(optional)'}
     </label>
   )
 
@@ -122,7 +123,7 @@ const ParamWithChildren = ({type, children, rpcName, k, kv, path}) => {
                 {mapKey} {`: `} {legendOpts[type]}
               </>
             )}
-            {!kv && legendOpts[type]}
+            {!kv && legendOpts[type]} {value?.optional && ' (optional)'}
           </legend>
           <table>
             {/* <caption>caption</caption> */}
@@ -174,6 +175,12 @@ const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
                   <Doc {...value} />
                 </td>
               </tr>
+              {value?.optional && (
+                <tr key="optional">
+                  <td>Optional</td>
+                  <td>true</td>
+                </tr>
+              )}
               <tr key="data-entry">
                 <td>Entry</td>
                 <td>
@@ -222,7 +229,7 @@ const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
                         setData(generated)
                       }}
                     >
-                      fill
+                      Random
                     </button>
                   </td>
                 </tr>
@@ -300,12 +307,14 @@ ParamWithChildren.propTypes = {
     'alt',
     'maybe',
   ]).isRequired,
+  value: PropTypes.object,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
 }
 ParamWithChildren.defaultProps = {
+  value: undefined,
   k: undefined,
   kv: undefined,
   parentK: undefined,
