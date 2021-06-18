@@ -27,6 +27,8 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
   const protectedRequest = (req = {}) =>
     request({
+      id: req.id,
+      jsonrpc: req.jsonrpc,
       networkName: req.networkName,
       method: req.method,
       params: req.params,
