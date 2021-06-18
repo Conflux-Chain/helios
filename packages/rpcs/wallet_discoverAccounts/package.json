@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/wallet_discoverAccounts",
+  "name": "@cfxjs/wallet_discover-accounts",
   "main": "index.js",
   "type": "module",
   "version": "0.0.3",

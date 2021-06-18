@@ -7,6 +7,6 @@
     "@cfxjs/spec": "workspace:packages/spec"
   },
   "devDependencies": {
-    "chokidar": "3.5.1"
+    "chokidar": "3.5.2"
   }
 }

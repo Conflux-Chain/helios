@@ -9,7 +9,7 @@
   "dependencies": {
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/provider-api": "workspace:packages/ui/provider-api",
-    "@thi.ng/rstream": "6.0.8",
+    "@thi.ng/rstream": "6.0.9",
     "webextension-polyfill": "0.8.0"
   }
 }

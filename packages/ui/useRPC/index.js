@@ -1,33 +1,31 @@
-import browser from 'webextension-polyfill'
 import useSWR from 'swr'
-import {rpcStream} from '@cfxjs/extension-runtime/rpc-stream.js'
-import {initProvider} from '@cfxjs/provider-api'
-
-let RUNTIME_NAME = 'popup'
-let PROVIDER = null
-
-export const initHooks = ({name} = {}) => {
-  RUNTIME_NAME = name
-}
-
-const setupProvider = ({name = RUNTIME_NAME} = {}) => {
-  if (PROVIDER) return
-  const port = browser.runtime.connect({name})
-  port.onDisconnect.addListener(() => (PROVIDER = null))
-  PROVIDER = initProvider(rpcStream(port))
-}
+import {setupProvider} from './setup-provider.js'
+import {useAsyncRetry} from 'react-use'
+import {useEffect} from 'react'
 
 export const useRPC = (deps = [], params, opts) => {
-  setupProvider()
+  const {
+    value: provider,
+    loading,
+    error,
+    retry,
+  } = useAsyncRetry(setupProvider, [])
   if (typeof deps === 'string') deps = [deps]
   const [method] = deps
+
+  useEffect(() => {
+    if (loading) return
+    if (error) retry()
+  }, [loading, error, retry])
+
   const {data} = useSWR(
-    deps,
+    !loading && provider && !error ? deps : null,
     () =>
-      PROVIDER.request({method, params}).then(
-        ({result, error}) => result || error,
-      ),
+      provider
+        ?.request({method, params})
+        .then(({result, error}) => result || error),
     opts,
   )
+
   return data
 }

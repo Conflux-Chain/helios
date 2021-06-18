@@ -1,1 +1,1 @@
-# @cfxjs/wallet_discoverAccounts
+# @cfxjs/wallet_discover-accounts

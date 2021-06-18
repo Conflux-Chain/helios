@@ -1,5 +1,6 @@
 (ns cfxjs.spec.doc
   (:require [malli.core :as m]
+            [oops.core :refer [oset!]]
             [malli.error :refer [humanize]]))
 
 (defn j->c [a] (js->clj a :keywordize-keys true))
@@ -65,7 +66,18 @@
        :enum {:el :select :values (m/children schema)}
        {:el :input}))))
 
-(def built-in-schema-doc {:enum "enum"})
+(def built-in-schema-doc {:enum "enum"
+                          'pos-int? "positive integer"
+                          'integer? "integer"
+                          'neg-int? "negative integer"
+                          'true? "the value true"
+                          :int "integer"
+                          :>= "greater than"
+                          :<= "less than"
+                          :string "string"
+                          'string? "string"
+                          :boolean "boolean"
+                          'boolean? "boolean"})
 
 (defn -schema-get-doc
   ([schema] (-schema-get-doc schema nil))
@@ -90,6 +102,7 @@
 
 (defmulti -schema-doc-generator (fn [schema options] (m/type schema options)) :default ::default)
 (defmethod -schema-doc-generator ::default [schema options] {:type (keyword (m/type schema)) :value (-schema-get-doc schema options)})
+(defmethod -schema-doc-generator :maybe [schema options] {:type :maybe :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
 (defmethod -schema-doc-generator :or [schema options] {:type :or :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
 (defmethod -schema-doc-generator :cat [schema options] {:type :cat :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
 (defmethod -schema-doc-generator :? [schema options] {:type :? :children (into [] (keep #(some->> (-maybe-recur % options) (-schema-doc-generator %)) (m/children schema options)))})
@@ -119,12 +132,16 @@
 (defmethod -schema-doc-generator ::m/val [schema options]
   (-schema-doc-generator (first (m/children schema)) options))
 
-(defn gen [schema options]
-  (let [schema (js->clj schema :keywordize-keys true)
+(defn gen [js-schema options]
+  (let [schema (js->clj js-schema :keywordize-keys true)
         options (js->clj options :keywordize-keys true)
         options (assoc options :doc/gen-no-schema (get options :noSchema))
-        options (dissoc options :noSchema)]
-    (clj->js (-schema-doc-generator schema options))))
+        options (dissoc options :noSchema)
+        rst (clj->js (-schema-doc-generator schema options))
+        rst (if (get options :doc/gen-no-schema)
+              rst
+              (oset! rst "!value.!schema" js-schema))]
+    rst))
 
 (def export-explain explain)
 (def export-validate validate)

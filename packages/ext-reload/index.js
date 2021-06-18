@@ -7,11 +7,12 @@ const ignoreDirRegex = /(\/\.|\/build\/)/
 const ignoreFileRegex = /(^\.|^package\.json$)/
 const watchingFileRegex = /.*/
 
-const reload = () => {
-  const tab = browser.tabs.query({active: true, lastFocusedWindow: true})[0]
-  if (tab?.url?.startsWith('http')) browser.tabs.reload(tab.id)
-  browser.runtime.reload()
-}
+const reload = () =>
+  browser.tabs.query({active: true, lastFocusedWindow: true}).then(tabs => {
+    const tab = tabs[0]
+    if (tab?.url?.startsWith('http')) browser.tabs.reload(tab.id)
+    browser.runtime.reload()
+  })
 
 const filesInDirectory = dir => {
   dir.createReader().readEntries(entries =>

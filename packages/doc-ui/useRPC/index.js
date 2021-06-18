@@ -26,11 +26,13 @@ const createRPC = rpcName =>
         import(
           /* webpackPreload: true */
           /* webpackMode: "lazy-once" */
-          /* webpackInclude: /(cfx|wallet)_.*\/index\.js$/ */
+          /* webpackInclude: /(cfx|eth|wallet)_(\w|-)+\/index\.js$/ */
           /* webpackExclude: /(\test\.js|\.md)$/ */
           '@cfxjs/' + rpcPkgName
         )
-          .then(rpc => set({...rpc, loadingRPC: false}))
+          .then(rpc => {
+            return set({...rpc, loadingRPC: false})
+          })
           .catch(err => {
             const {_retryCount, setRPC} = get()
             if (_retryCount < 5) {
