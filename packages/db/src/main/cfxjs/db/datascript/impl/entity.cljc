@@ -64,10 +64,19 @@
                   (cond (keyword? attr) attr
                         (string? attr) (if (.startsWith attr ":")
                                          (keyword (subs attr 1))
-                                         (keyword (str (.modelName this) "/" attr)))
+                                         (keyword (.modelName this) attr))
                         :else attr))
-       (toString [this]
-                 (pr-str* this))
+       (toString [this include-persist?]
+                 (js/JSON.stringify (.toJSON this include-persist?)))
+       (toJSON [this include-persist?]
+               (let [json (reduce (fn [acc k]
+                                    (let [attr (keyword model k)]
+                                      (if (and (not include-persist?) (db/mem-only? db attr))
+                                        acc
+                                        (assoc acc k (.get this (keyword model k))))))
+                                  {} attr-keys)
+                     json (assoc json :eid eid)]
+                 (clj->js json)))
        (equiv [this other]
               (equiv-entity this other))
 
