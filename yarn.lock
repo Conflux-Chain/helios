@@ -2998,6 +2998,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_validate-mnemonic@workspace:packages/rpcs/wallet_validateMnemonic":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_validate-mnemonic@workspace:packages/rpcs/wallet_validateMnemonic"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+    bip39: 3.0.4
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword"
@@ -9531,7 +9540,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip39@npm:^3.0.4":
+"bip39@npm:3.0.4, bip39@npm:^3.0.4":
   version: 3.0.4
   resolution: "bip39@npm:3.0.4"
   dependencies:
@@ -16139,6 +16148,7 @@ fsevents@~2.3.1:
     "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
     "@cfxjs/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount"
     "@cfxjs/wallet_update-account-group": "workspace:packages/rpcs/wallet_updateAccountGroup"
+    "@cfxjs/wallet_validate-mnemonic": "workspace:packages/rpcs/wallet_validateMnemonic"
     "@cfxjs/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
     "@thi.ng/rstream": ^6.0.9
     "@thi.ng/rstream-csp": ^2.0.68
