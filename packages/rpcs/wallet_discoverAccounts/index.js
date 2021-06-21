@@ -48,10 +48,10 @@ export const main = async ({
   const oldAccountsCount =
     getAccount({accountGroup: accountGroupId})?.length ?? 0
 
-  const vault = getById(accountGroup.vault.eid)
+  const {vault} = accountGroup
   if (vault.type !== 'hd') return // no need to discover accounts for none hd vault
 
-  const mnemonic = await decrypt(getPassword(), vault.data)
+  const mnemonic = vault.ddata || (await decrypt(getPassword(), vault.data))
 
   const networks = getNetwork()
 

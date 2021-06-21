@@ -177,19 +177,16 @@ export async function main(arg) {
     await Promise.all(
       vaults.map(
         compL(
-          async v => {
-            v.ddata = await decrypt(password, v.data)
-            return v
-          },
-          p => p.then(v => (v.ddata === vault.data ? v : null)),
+          async v => [v.ddata || (await decrypt(password, v.data)), v.eid],
+          p => p.then(([ddata, eid]) => (ddata === vault.data ? eid : null)),
         ),
       ),
     )
   ).filter(v => Boolean(v))
 
   if (anyDuplicateVaults.length) {
-    const [duplicateVault] = anyDuplicateVaults
-    const [duplicateAccountGroup] = getAccountGroup({vault: duplicateVault.eid})
+    const [duplicateVaultId] = anyDuplicateVaults
+    const [duplicateAccountGroup] = getAccountGroup({vault: duplicateVaultId})
     const err = Err.InvalidParams(
       `Duplicate credential with account group ${duplicateAccountGroup.eid}`,
     )

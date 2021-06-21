@@ -223,7 +223,7 @@
     (when-let [qattr (first (second data))]
       (let [model (qattr->model qattr)
             attr-keys (model->attr-keys model)]
-        (e model attr-keys id)))))
+        (e model attr-keys (:db/id data))))))
 
 (defn update-by-id [id updates]
   (when-let [^de/Entity entity (get-by-id id)]

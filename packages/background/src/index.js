@@ -169,9 +169,15 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
       }),
     )
 
+    const groups = await request({method: 'wallet_getAccountGroup'})
+    console.log('wallet_getAccountGroup', groups)
+
     console.log(
-      'wallet_getAccountGroup',
-      await request({method: 'wallet_getAccountGroup'}),
+      'wallet_exportAccountGroup',
+      await request({
+        method: 'wallet_exportAccountGroup',
+        params: {password: '12345678', accountGroupId: groups.result[0].eid},
+      }),
     )
 
     // await request({

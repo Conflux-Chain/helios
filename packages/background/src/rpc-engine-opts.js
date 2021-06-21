@@ -31,6 +31,8 @@ import * as walletIsLocked from '@cfxjs/wallet_is-locked'
 import * as walletGetAccountGroup from '@cfxjs/wallet_get-account-group'
 import * as walletValidateMnemonic from '@cfxjs/wallet_validate-mnemonic'
 import * as walletValidatePrivateKey from '@cfxjs/wallet_validate-private-key'
+import * as walletExportAccount from '@cfxjs/wallet_export-account'
+import * as walletExportAccountGroup from '@cfxjs/wallet_export-account-group'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -56,6 +58,8 @@ export const rpcEngineOpts = {
     walletUpdateAccount,
     walletUpdateAccountGroup,
     walletGetAccountGroup,
+    walletExportAccount,
+    walletExportAccountGroup,
 
     walletGetNextNonce,
     walletGetBalance,

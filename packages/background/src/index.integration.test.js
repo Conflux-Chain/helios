@@ -123,6 +123,54 @@ describe('integration test', function () {
   })
 
   describe('vault', function () {
+    describe('export', function () {
+      test('export hd vault', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {password, mnemonic: MNEMONIC},
+        })
+
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccountGroup',
+              params: {password, accountGroupId: db.getAccountGroup()[0].eid},
+            })
+          ).result,
+        ).toBe(MNEMONIC)
+
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        res = await request({
+          method: 'wallet_exportAccount',
+          params: {password, accountId: db.getAccount()[0].eid},
+        })
+        expect(res.result[0].hex).toBe(
+          '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
+        )
+        expect(res.result[0].cfxHex).toBe(null)
+        expect(res.result[0].base32).toBe(null)
+        expect(res.result[0].privateKey).toBe(
+          '0x6a94c1f02edc1caff0849d46a068ff2819c0a338774fb99674e3d286a3351552',
+        )
+        expect(res.result[0].network.name).toBe('ETH_MAINNET')
+        expect(res.result[1].hex).toBe(
+          '0x7b3d01a14c84181f4df3983ae68118e4bad48407',
+        )
+        expect(res.result[1].cfxHex).toBe(
+          '0x1b3d01a14c84181f4df3983ae68118e4bad48407',
+        )
+        expect(res.result[1].base32).toBe(
+          'NET2999:TYPE.USER:AARX4ARBKWCBUH4R8SPDZ3YBDDWNZZEEA6THG8YTMR',
+        )
+        expect(res.result[1].privateKey).toBe(
+          '0xf581242f2de1111638b9da336c283f177ca1e17cb3d6e3b09434161e26135992',
+        )
+        expect(res.result[1].network.name).toBe('CFX_MAINNET')
+      })
+    })
+
     describe('import', function () {
       test('import hd vault with default node', async function () {
         expect(db.getVault().length).toBe(0)
@@ -281,6 +329,23 @@ describe('integration test', function () {
         expect(db.getVaultByType('pk').length).toBe(1)
         expect(db.getAccount().length).toBe(1)
         expect(db.getAddress().length).toBe(2)
+
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccount',
+              params: {password, accountId: db.getAccount()[0].eid},
+            })
+          ).result,
+        ).toBe(pk.replace(/^0x/, ''))
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccountGroup',
+              params: {password, accountGroupId: db.getAccountGroup()[0].eid},
+            })
+          ).result,
+        ).toBe(pk.replace(/^0x/, ''))
       })
 
       test('should be able to import a address vault', async function () {
@@ -300,6 +365,23 @@ describe('integration test', function () {
         expect(db.getVaultByType('pub').length).toBe(1)
         expect(db.getAccount().length).toBe(1)
         expect(db.getAddress().length).toBe(1)
+
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccount',
+              params: {password, accountId: db.getAccount()[0].eid},
+            })
+          ).result,
+        ).toBe('CFX:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAAFA2UCFUW')
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccountGroup',
+              params: {password, accountGroupId: db.getAccountGroup()[0].eid},
+            })
+          ).result,
+        ).toBe('CFX:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAAFA2UCFUW')
       })
     })
   })

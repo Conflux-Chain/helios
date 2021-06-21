@@ -56,7 +56,7 @@ const schema = {
     data: {doc: 'Encrypted vault data'},
     ddata: {doc: 'Decrypted vault data only in memory', persist: false},
     cfxOnly: {
-      doc: 'If this vault is only for conflux chain. This is used for address vault (vault data is a public address)',
+      doc: 'If this vault is only for conflux chain. This is used for address vault (vault data is a public address) or 0x1 prefix only hd vault',
     },
   },
   accountGroup: {
@@ -76,7 +76,7 @@ const schema = {
     id: {tuples: ['address/network', 'address/hex'], identity: true},
     vault: {ref: true},
     network: {ref: true},
-    index: {doc: 'Address index in hd path'},
+    index: {doc: 'Address index in hd path, starts from 0'},
     hex: {doc: 'The value of the address, not cfx hex address'},
     cfxHex: {doc: 'The value of cfx hex address'},
     base32: {doc: 'cfx mainnet base32 address'},
