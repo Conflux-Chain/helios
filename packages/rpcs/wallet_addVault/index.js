@@ -8,7 +8,7 @@ import {
   password,
 } from '@cfxjs/spec'
 import {encrypt, decrypt} from 'browser-passworder'
-import {partial, compL} from '@cfxjs/compose'
+import {compL} from '@cfxjs/compose'
 import {validateBase32Address, decode, encode} from '@cfxjs/base32-address'
 import {fromPrivate} from '@cfxjs/account'
 import {stripHexPrefix} from '@cfxjs/utils'
@@ -151,7 +151,7 @@ const processAddress = address => {
 
 export async function main(arg) {
   const {
-    db: {createVault, getVault},
+    db: {createVault, getVault, getAccountGroup},
     rpcs: {wallet_validatePassword},
     params: {password, mnemonic, privateKey, address},
     Err,
@@ -173,18 +173,29 @@ export async function main(arg) {
   }
 
   const vaults = getVault()
-  const anyDuplicateVaults = await Promise.all(
-    vaults.map(
-      compL(
-        v => v.data,
-        partial(decrypt, password), // decrypt vault, returns stringified { data:..., type:...}
-        p => p.then(data => data === vault.data),
+  const anyDuplicateVaults = (
+    await Promise.all(
+      vaults.map(
+        compL(
+          async v => {
+            v.ddata = await decrypt(password, v.data)
+            return v
+          },
+          p => p.then(v => (v.ddata === vault.data ? v : null)),
+        ),
       ),
-    ),
-  )
+    )
+  ).filter(v => Boolean(v))
 
-  if (anyDuplicateVaults.includes(true))
-    throw Err.InvalidParams('Duplicate credential')
+  if (anyDuplicateVaults.length) {
+    const [duplicateVault] = anyDuplicateVaults
+    const [duplicateAccountGroup] = getAccountGroup({vault: duplicateVault.eid})
+    const err = Err.InvalidParams(
+      `Duplicate credential with account group ${duplicateAccountGroup.eid}`,
+    )
+    err.duplicateAccountGroupId = duplicateAccountGroup.eid
+    throw err
+  }
 
   vault.ddata = vault.data
   vault.data = await encrypt(password, vault.data)

@@ -59,7 +59,7 @@ describe('@cfxjs/wallet_add-vault', function () {
             {type: 'eth', netId: 1},
           ]),
           createVault: jest.fn(() => 1),
-          getAccountGroup: jest.fn(() => [2]),
+          getAccountGroup: jest.fn(() => [{eid: 2}]),
           getById: jest.fn(() => ({})),
           getVault: jest.fn(() => []),
         },
@@ -86,7 +86,9 @@ describe('@cfxjs/wallet_add-vault', function () {
         data: await encrypt(input.params.password, input.params.mnemonic),
       }
       input.db.getVault = () => [encrypted]
-      await expect(main(input)).rejects.toThrow('Duplicate credential')
+      await expect(main(input)).rejects.toThrow(
+        'Duplicate credential with account group 2',
+      )
     })
   })
 })
