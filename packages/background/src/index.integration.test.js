@@ -200,6 +200,18 @@ describe('integration test', function () {
         accountGroup0 = db.getById(accountGroup0.eid)
         expect(accountGroup0.nickname).toBe('foo')
         expect(accountGroup0.hidden).toBe(true)
+
+        res = await request({
+          method: 'wallet_getAccountGroup',
+          params: {type: 'hd'},
+        })
+        expect(res.result.length).toBe(1)
+
+        res = await request({
+          method: 'wallet_getAccountGroup',
+          params: {type: 'pk'},
+        })
+        expect(res.result.length).toBe(0)
       })
 
       test('import hd vault with first two account has balance', async function () {
