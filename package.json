@@ -58,7 +58,7 @@
     "cross-env": "^7.0.3",
     "dot-env": "^0.0.1",
     "dotenv-expand": "^5.1.0",
-    "eslint": "^7.28.0",
+    "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-jest": "^24.3.6",
@@ -91,7 +91,7 @@
     "stylelint": "^13.13.1",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^22.0.0",
-    "tailwindcss": "^2.1.4",
+    "tailwindcss": "^2.2.2",
     "wait-for-expect": "3.0.2"
   },
   "browserslist": [
