@@ -3016,6 +3016,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_validate-private-key@workspace:packages/rpcs/wallet_validatePrivateKey":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_validate-private-key@workspace:packages/rpcs/wallet_validatePrivateKey"
+  dependencies:
+    "@cfxjs/account": "workspace:packages/account"
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@choojs/findup@npm:^0.2.1":
   version: 0.2.1
   resolution: "@choojs/findup@npm:0.2.1"
@@ -16150,6 +16159,7 @@ fsevents@~2.3.1:
     "@cfxjs/wallet_update-account-group": "workspace:packages/rpcs/wallet_updateAccountGroup"
     "@cfxjs/wallet_validate-mnemonic": "workspace:packages/rpcs/wallet_validateMnemonic"
     "@cfxjs/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
+    "@cfxjs/wallet_validate-private-key": "workspace:packages/rpcs/wallet_validatePrivateKey"
     "@thi.ng/rstream": ^6.0.9
     "@thi.ng/rstream-csp": ^2.0.68
     regenerator-runtime: ^0.13.8
