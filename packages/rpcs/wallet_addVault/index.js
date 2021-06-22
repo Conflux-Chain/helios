@@ -33,15 +33,15 @@ export const permissions = {
     'wallet_getBalance',
     'wallet_getNextNonce',
     'wallet_validatePassword',
+    'wallet_deleteAccountGroup',
   ],
   db: [
     't',
-    'getById',
     'getVault',
     'createVault',
     'getAccountGroup',
     'getNetwork',
-    'getOneAccount',
+    'getOneAccountByGroupAndIndex',
   ],
 }
 
@@ -50,7 +50,7 @@ export async function newAccounts(arg) {
     groupId,
     rpcs: {wallet_discoverAccounts},
     vault,
-    db: {getNetwork, t, getOneAccount},
+    db: {getNetwork, t, getOneAccountByGroupAndIndex},
   } = arg
 
   if (vault.type === 'hd') {
@@ -61,7 +61,7 @@ export async function newAccounts(arg) {
   const networks = getNetwork()
 
   networks.forEach(({eid, netId, type}) => {
-    const account = getOneAccount({index: 0, accountGroup: groupId})
+    const account = getOneAccountByGroupAndIndex({index: 0, groupId})
     if (vault.type === 'pk') {
       t([
         {
@@ -70,19 +70,19 @@ export async function newAccounts(arg) {
             hex: fromPrivate(vault.ddata).address,
             pk: vault.ddata,
             vault: vault.eid,
-            network: eid,
           },
         },
+        {eid, network: {address: -1}},
         {
           eid: account?.eid ?? -2,
           account: {
-            accountGroup: groupId,
             address: -1,
             index: 0,
             nickname: 'Account 1',
             hidden: false,
           },
         },
+        {eid: groupId, accountGroup: {account: account?.eid ?? -2}},
       ])
 
       return
@@ -91,7 +91,8 @@ export async function newAccounts(arg) {
     if (vault.cfxOnly && type !== 'cfx') return
 
     t([
-      {eid: -1, address: {hex: vault.ddata, vault: vault.eid, network: eid}},
+      {eid: -1, address: {hex: vault.ddata, vault: vault.eid}},
+      {eid, network: {address: -1}},
       vault.cfxOnly && {eid: -1, address: {cfxHex: vault.ddata}},
       type === 'cfx' && {
         eid: -1,
@@ -103,9 +104,12 @@ export async function newAccounts(arg) {
           index: 0,
           nickname: 'Account 1',
           address: -1,
-          accountGroup: groupId,
           hidden: false,
         },
+      },
+      {
+        eid: groupId,
+        accountGroup: {account: account?.eid ?? -2},
       },
     ])
   })
@@ -113,11 +117,11 @@ export async function newAccounts(arg) {
 
 export function newAccountGroup(arg) {
   const {
-    db: {getAccountGroup, getNetwork, getById, t},
+    db: {getAccountGroup, getNetwork, getVault, t},
     vaultId,
   } = arg
   const groups = getAccountGroup()
-  const vault = getById(vaultId)
+  const [vault] = getVault({eid: vaultId})
   const groupName = `Vault ${groups.length + 1}`
 
   const networks = getNetwork().reduce((acc, n) => {
@@ -152,8 +156,10 @@ const processAddress = address => {
 export async function main(arg) {
   const {
     db: {createVault, getVault, getAccountGroup},
-    rpcs: {wallet_validatePassword},
-    params: {password, mnemonic, privateKey, address},
+    rpcs: {
+      wallet_validatePassword, // wallet_deleteAccountGroup
+    },
+    params: {password, mnemonic, privateKey, address, cfxOnly, force},
     Err,
   } = arg
   if (!(await wallet_validatePassword({password})))
@@ -164,8 +170,10 @@ export async function main(arg) {
   if (privateKey) {
     vault.type = 'pk'
     vault.data = stripHexPrefix(privateKey)
-  } else if (mnemonic) vault.type = 'hd'
-  else if (address) {
+  } else if (mnemonic) {
+    vault.type = 'hd'
+    if (cfxOnly) vault.cfxOnly = true
+  } else if (address) {
     const validateResult = processAddress(address, Err)
     vault.type = 'pub'
     vault.data = validateResult.address
@@ -187,11 +195,29 @@ export async function main(arg) {
   if (anyDuplicateVaults.length) {
     const [duplicateVaultId] = anyDuplicateVaults
     const [duplicateAccountGroup] = getAccountGroup({vault: duplicateVaultId})
-    const err = Err.InvalidParams(
-      `Duplicate credential with account group ${duplicateAccountGroup.eid}`,
-    )
-    err.duplicateAccountGroupId = duplicateAccountGroup.eid
-    throw err
+    const [duplicateVault] = getVault({eid: duplicateVaultId})
+
+    if (force) {
+      // const [duplicateAccountGroup] = getAccountGroup({vault: duplicateVaultId})
+      // await wallet_deleteAccountGroup({
+      //   accountGroupId: duplicateAccountGroup.eid,
+      //   password,
+      // })
+    } else {
+      let err
+      if (vault.type === 'hd' && duplicateVault.cfxOnly !== vault.cfxOnly) {
+        err = Err.InvalidParams(
+          `Duplicate credential(with different cfxOnly setting) with account group ${duplicateAccountGroup.eid}`,
+        )
+        err.updateCfxOnly = true
+      } else {
+        err = Err.InvalidParams(
+          `Duplicate credential with account group ${duplicateAccountGroup.eid}`,
+        )
+      }
+      err.duplicateAccountGroupId = duplicateAccountGroup.eid
+      throw err
+    }
   }
 
   vault.ddata = vault.data

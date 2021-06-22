@@ -47,6 +47,7 @@ const schema = {
     chainId: {doc: 'Network chain id'},
     netId: {doc: 'Network id'},
     ticker: {doc: 'Network currency symbol'},
+    address: {ref: true, many: true, component: true},
   },
   /*
     vault, container of credential (address/pk/mnemonic)
@@ -71,11 +72,11 @@ const schema = {
       ref: true,
     },
     hidden: {doc: 'If hide this accountGroup in ui'},
+    account: {ref: true, many: true, component: true},
   },
   address: {
     id: {tuples: ['address/network', 'address/hex'], identity: true},
     vault: {ref: true},
-    network: {ref: true},
     index: {doc: 'Address index in hd path, starts from 0'},
     hex: {doc: 'The value of the address, not cfx hex address'},
     cfxHex: {doc: 'The value of cfx hex address'},
@@ -86,8 +87,7 @@ const schema = {
     id: {tuples: ['account/index', 'account/accountGroup'], identity: true},
     index: {doc: 'index of account in account group'},
     nickname: {doc: 'account nickname'},
-    address: {ref: 'address', many: true},
-    accountGroup: {ref: true},
+    address: {many: true, component: true, ref: true},
     hidden: {doc: 'If hide this account in ui'},
   },
 }

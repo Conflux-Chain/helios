@@ -60,8 +60,7 @@ describe('@cfxjs/wallet_add-vault', function () {
           ]),
           createVault: jest.fn(() => 1),
           getAccountGroup: jest.fn(() => [{eid: 2}]),
-          getById: jest.fn(() => ({})),
-          getVault: jest.fn(() => []),
+          getVault: jest.fn(() => [{}]),
         },
         rpcs: {
           wallet_validatePassword: jest.fn(() => true),

@@ -122,14 +122,55 @@ describe('integration test', function () {
     })
   })
 
-  describe('vault', function () {
-    describe('export', function () {
-      test('export hd vault', async () => {
+  describe('rpcs', function () {
+    describe('wallet_importAddress', function () {
+      test('wallet_importAddress', async function () {
+        expect(db.getVault().length).toBe(0)
+        expect(db.getVaultByType('pub').length).toBe(0)
+
         await request({
-          method: 'wallet_importMnemonic',
-          params: {password, mnemonic: MNEMONIC},
+          method: 'wallet_importAddress',
+          params: {
+            address:
+              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            password,
+          },
         })
 
+        expect(db.getVault().length).toBe(1)
+        expect(db.getVaultByType('pub').length).toBe(1)
+        expect(db.getAccount().length).toBe(1)
+        expect(db.getAddress().length).toBe(1)
+      })
+    })
+    describe('wallet_importPrivateKey', function () {
+      test('wallet_importPrivateKey', async function () {
+        const {result: pk} = await request({
+          method: 'wallet_generatePrivateKey',
+          params: {entropy: 'abc'},
+        })
+
+        expect(db.getVaultByType('pk').length).toBe(0)
+        expect(db.getVault().length).toBe(0)
+
+        await request({
+          method: 'wallet_importPrivateKey',
+          params: {privateKey: pk, password},
+        })
+
+        expect(db.getVault().length).toBe(1)
+        expect(db.getVaultByType('pk').length).toBe(1)
+        expect(db.getAccount().length).toBe(1)
+        expect(db.getAddress().length).toBe(2)
+
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccount',
+              params: {password, accountId: db.getAccount()[0].eid},
+            })
+          ).result,
+        ).toBe(pk.replace(/^0x/, ''))
         expect(
           (
             await request({
@@ -137,42 +178,11 @@ describe('integration test', function () {
               params: {password, accountGroupId: db.getAccountGroup()[0].eid},
             })
           ).result,
-        ).toBe(MNEMONIC)
-
-        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
-        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
-
-        res = await request({
-          method: 'wallet_exportAccount',
-          params: {password, accountId: db.getAccount()[0].eid},
-        })
-        expect(res.result[0].hex).toBe(
-          '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
-        )
-        expect(res.result[0].cfxHex).toBe(null)
-        expect(res.result[0].base32).toBe(null)
-        expect(res.result[0].privateKey).toBe(
-          '0x6a94c1f02edc1caff0849d46a068ff2819c0a338774fb99674e3d286a3351552',
-        )
-        expect(res.result[0].network.name).toBe('ETH_MAINNET')
-        expect(res.result[1].hex).toBe(
-          '0x7b3d01a14c84181f4df3983ae68118e4bad48407',
-        )
-        expect(res.result[1].cfxHex).toBe(
-          '0x1b3d01a14c84181f4df3983ae68118e4bad48407',
-        )
-        expect(res.result[1].base32).toBe(
-          'NET2999:TYPE.USER:AARX4ARBKWCBUH4R8SPDZ3YBDDWNZZEEA6THG8YTMR',
-        )
-        expect(res.result[1].privateKey).toBe(
-          '0xf581242f2de1111638b9da336c283f177ca1e17cb3d6e3b09434161e26135992',
-        )
-        expect(res.result[1].network.name).toBe('CFX_MAINNET')
+        ).toBe(pk.replace(/^0x/, ''))
       })
     })
-
-    describe('import', function () {
-      test('import hd vault with default node', async function () {
+    describe('wallet_importMnemonic', function () {
+      test('wallet_importMnemonic', async function () {
         expect(db.getVault().length).toBe(0)
 
         await request({
@@ -182,72 +192,101 @@ describe('integration test', function () {
 
         expect(db.getVault().length).toBe(1)
         expect(db.getVaultByType('hd').length).toBe(1)
-
-        const groups = db.getAccountGroup()
-        expect(groups.length).toBe(1)
+        expect(db.getAccountGroup().length).toBe(1)
 
         await waitForExpect(() => expect(db.getAccount().length).toBe(1))
         await waitForExpect(() => expect(db.getAddress().length).toBe(2))
 
-        const cfxAddr = db.getAddress({network: cfxNetId})[0]
+        const cfxAddr = db.getNetwork({eid: cfxNetId})[0].address[0]
         expect(cfxAddr.hex).toBe(CFX_ACCOUNTS[0].address)
         expect(cfxAddr.cfxHex).toBe(CFX_ACCOUNTS[0].cfxHex)
         expect(cfxAddr.pk).toBe(CFX_ACCOUNTS[0].privateKey)
         expect(cfxAddr.index).toBe(CFX_ACCOUNTS[0].index)
         expect(cfxAddr.base32).toBe(CFX_ACCOUNTS[0].base32)
-        const ethAddr = db.getAddress({network: ethNetId})[0]
+        const ethAddr = db.getNetwork({eid: ethNetId})[0].address[0]
         expect(ethAddr.hex).toBe(ETH_ACCOUNTS[0].address)
         expect(ethAddr.pk).toBe(ETH_ACCOUNTS[0].privateKey)
         expect(ethAddr.index).toBe(ETH_ACCOUNTS[0].index)
         expect(ethAddr.cfxHex).toBeNull()
         expect(ethAddr.base32).toBeNull()
+      })
+    })
+    describe('wallet_createAccount', function () {
+      test('wallet_createAccount', async function () {
+        expect(db.getVault().length).toBe(0)
+
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
 
         await request({
           method: 'wallet_createAccount',
-          params: {accountGroupId: groups[0].eid},
+          params: {accountGroupId: db.getAccountGroup()[0].eid},
         })
 
         expect(db.getAccount().length).toBe(2)
         expect(db.getAddress().length).toBe(4)
+      })
+      test('wallet_createAccount with nickname', async function () {
+        expect(db.getVault().length).toBe(0)
+
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        await request({
+          method: 'wallet_createAccount',
+          params: {
+            accountGroupId: db.getAccountGroup()[0].eid,
+            nickname: 'foo',
+          },
+        })
+
+        expect(db.getAccount().length).toBe(2)
+        expect(db.getAddress().length).toBe(4)
+        expect(db.getAccount({nickname: 'foo'}).length).toBe(1)
+      })
+      test('wallet_createAccount with duplicate nickname', async function () {
+        expect(db.getVault().length).toBe(0)
+
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
 
         res = await request({
           method: 'wallet_createAccount',
-          params: {accountGroupId: groups[0].eid, nickname: 'Account 1'},
+          params: {
+            accountGroupId: db.getAccountGroup()[0].eid,
+            nickname: 'Account 1',
+          },
         })
 
         expect(res.error.message).toMatch(
           /Invalid nickname "Account 1", duplicate with other account in the same account group/,
         )
-
-        let account0 = db.getAccount()[0]
-        expect(account0.nickname).toBe('Account 1')
-        expect(account0.hidden).toBe(false)
-
+      })
+    })
+    describe('wallet_getAccountGroup', function () {
+      test('wallet_getAccountGroup', async function () {
         await request({
-          method: 'wallet_updateAccount',
-          params: {accountId: account0.eid, hidden: true, nickname: 'foo'},
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
         })
 
-        account0 = db.getById(account0.eid)
-        expect(account0.nickname).toBe('foo')
-        expect(account0.hidden).toBe(true)
-
-        let accountGroup0 = db.getAccountGroup()[0]
-        expect(accountGroup0.nickname).toBe('Vault 1')
-        expect(accountGroup0.hidden).toBe(false)
-
-        await request({
-          method: 'wallet_updateAccountGroup',
-          params: {
-            accountGroupId: accountGroup0.eid,
-            hidden: true,
-            nickname: 'foo',
-          },
-        })
-
-        accountGroup0 = db.getById(accountGroup0.eid)
-        expect(accountGroup0.nickname).toBe('foo')
-        expect(accountGroup0.hidden).toBe(true)
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
 
         res = await request({
           method: 'wallet_getAccountGroup',
@@ -261,8 +300,244 @@ describe('integration test', function () {
         })
         expect(res.result.length).toBe(0)
       })
+    })
+    describe('wallet_updateAccountGroup', function () {
+      test('wallet_updateAccountGroup', async function () {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
 
-      test('import hd vault with first two account has balance', async function () {
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        expect(db.getAccountGroup()[0].nickname).toBe('Vault 1')
+        expect(db.getAccountGroup()[0].hidden).toBeFalsy()
+        await request({
+          method: 'wallet_updateAccountGroup',
+          params: {
+            accountGroupId: db.getAccountGroup()[0].eid,
+            hidden: true,
+            nickname: 'foo',
+          },
+        })
+        expect(db.getAccountGroup()[0].nickname).toBe('foo')
+        expect(db.getAccountGroup()[0].hidden).toBe(true)
+      })
+    })
+    describe('wallet_updateAccount', function () {
+      test('wallet_updateAccount', async function () {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        expect(db.getAccount()[0].nickname).toBe('Account 1')
+        expect(db.getAccount()[0].hidden).toBeFalsy()
+        await request({
+          method: 'wallet_updateAccount',
+          params: {
+            accountId: db.getAccount()[0].eid,
+            hidden: true,
+            nickname: 'foo',
+          },
+        })
+        expect(db.getAccount()[0].nickname).toBe('foo')
+        expect(db.getAccount()[0].hidden).toBe(true)
+      })
+      test('wallet_updateAccount with duplicate nickname', async function () {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        expect(db.getAccount()[0].nickname).toBe('Account 1')
+        expect(db.getAccount()[0].hidden).toBeFalsy()
+        res = await request({
+          method: 'wallet_updateAccount',
+          params: {
+            accountId: db.getAccount()[0].eid,
+            nickname: 'Account 1',
+          },
+        })
+        expect(res.error.message).toMatch(
+          /Invalid nickname Account 1, duplicate with other account in the same account group/,
+        )
+      })
+    })
+    describe('wallet_exportAccount', function () {
+      test('export private key account', async function () {
+        const {result: pk} = await request({
+          method: 'wallet_generatePrivateKey',
+          params: {entropy: 'abc'},
+        })
+
+        await request({
+          method: 'wallet_importPrivateKey',
+          params: {privateKey: pk, password},
+        })
+
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccount',
+              params: {password, accountId: db.getAccount()[0].eid},
+            })
+          ).result,
+        ).toBe(pk.replace(/^0x/, ''))
+      })
+
+      test('export pub account', async function () {
+        await request({
+          method: 'wallet_importAddress',
+          params: {
+            address:
+              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            password,
+          },
+        })
+
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccount',
+              params: {password, accountId: db.getAccount()[0].eid},
+            })
+          ).result,
+        ).toBe('CFX:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAAFA2UCFUW')
+      })
+
+      test('export hd account', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {password, mnemonic: MNEMONIC},
+        })
+
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        res = await request({
+          method: 'wallet_exportAccount',
+          params: {password, accountId: db.getAccount()[0].eid},
+        })
+        expect(res.result[0].hex).toBe(
+          '0x7b3d01a14c84181f4df3983ae68118e4bad48407',
+        )
+        expect(res.result[0].cfxHex).toBe(
+          '0x1b3d01a14c84181f4df3983ae68118e4bad48407',
+        )
+        expect(res.result[0].base32).toBe(
+          'NET2999:TYPE.USER:AARX4ARBKWCBUH4R8SPDZ3YBDDWNZZEEA6THG8YTMR',
+        )
+        expect(res.result[0].privateKey).toBe(
+          '0xf581242f2de1111638b9da336c283f177ca1e17cb3d6e3b09434161e26135992',
+        )
+        expect(res.result[0].network.name).toBe('CFX_MAINNET')
+        expect(res.result[1].hex).toBe(
+          '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
+        )
+        expect(res.result[1].cfxHex).toBe(null)
+        expect(res.result[1].base32).toBe(null)
+        expect(res.result[1].privateKey).toBe(
+          '0x6a94c1f02edc1caff0849d46a068ff2819c0a338774fb99674e3d286a3351552',
+        )
+        expect(res.result[1].network.name).toBe('ETH_MAINNET')
+      })
+    })
+    describe('wallet_exportAccountGroup', function () {
+      test('export private key account group', async function () {
+        const {result: pk} = await request({
+          method: 'wallet_generatePrivateKey',
+          params: {entropy: 'abc'},
+        })
+
+        await request({
+          method: 'wallet_importPrivateKey',
+          params: {privateKey: pk, password},
+        })
+
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccountGroup',
+              params: {password, accountGroupId: db.getAccountGroup()[0].eid},
+            })
+          ).result,
+        ).toBe(pk.replace(/^0x/, ''))
+      })
+
+      test('export pub account group', async function () {
+        await request({
+          method: 'wallet_importAddress',
+          params: {
+            address:
+              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            password,
+          },
+        })
+
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccountGroup',
+              params: {password, accountGroupId: db.getAccountGroup()[0].eid},
+            })
+          ).result,
+        ).toBe('CFX:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAAFA2UCFUW')
+      })
+
+      test('export hd account group', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {password, mnemonic: MNEMONIC},
+        })
+
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        expect(
+          (
+            await request({
+              method: 'wallet_exportAccountGroup',
+              params: {password, accountGroupId: db.getAccountGroup()[0].eid},
+            })
+          ).result,
+        ).toBe(MNEMONIC)
+      })
+    })
+    describe('wallet_deleteAccountGroup', function () {
+      test('wallet_deleteAccountGroup', async () => {
+        const {result: pk} = await request({
+          method: 'wallet_generatePrivateKey',
+          params: {entropy: 'abc'},
+        })
+
+        await request({
+          method: 'wallet_importPrivateKey',
+          params: {privateKey: pk, password},
+        })
+
+        expect(db.getAccountGroup().length).toBe(1)
+
+        await request({
+          method: 'wallet_deleteAccountGroup',
+          params: {
+            password,
+            accountGroupId: db.getAccountGroup()[0].eid,
+          },
+        })
+
+        expect(db.getAccountGroup().length).toBe(0)
+      })
+    })
+    describe('wallet_discoverAccount', function () {
+      test('wallet_discoverAccount', async function () {
         await sendCFX({to: CFX_ACCOUNTS[0].address, balance: 1})
         await sendCFX({to: CFX_ACCOUNTS[1].address, balance: 1})
         await sendCFX({to: CFX_ACCOUNTS[2].address, balance: 1})
@@ -309,79 +584,6 @@ describe('integration test', function () {
 
         await waitForExpect(() => expect(db.getAccount().length).toBe(6))
         await waitForExpect(() => expect(db.getAddress().length).toBe(12))
-      })
-
-      test('import private key vault', async function () {
-        const {result: pk} = await request({
-          method: 'wallet_generatePrivateKey',
-          params: {entropy: 'abc'},
-        })
-
-        expect(db.getVaultByType('pk').length).toBe(0)
-        expect(db.getVault().length).toBe(0)
-
-        await request({
-          method: 'wallet_importPrivateKey',
-          params: {privateKey: pk, password},
-        })
-
-        expect(db.getVault().length).toBe(1)
-        expect(db.getVaultByType('pk').length).toBe(1)
-        expect(db.getAccount().length).toBe(1)
-        expect(db.getAddress().length).toBe(2)
-
-        expect(
-          (
-            await request({
-              method: 'wallet_exportAccount',
-              params: {password, accountId: db.getAccount()[0].eid},
-            })
-          ).result,
-        ).toBe(pk.replace(/^0x/, ''))
-        expect(
-          (
-            await request({
-              method: 'wallet_exportAccountGroup',
-              params: {password, accountGroupId: db.getAccountGroup()[0].eid},
-            })
-          ).result,
-        ).toBe(pk.replace(/^0x/, ''))
-      })
-
-      test('should be able to import a address vault', async function () {
-        expect(db.getVault().length).toBe(0)
-        expect(db.getVaultByType('pub').length).toBe(0)
-
-        await request({
-          method: 'wallet_importAddress',
-          params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
-            password,
-          },
-        })
-
-        expect(db.getVault().length).toBe(1)
-        expect(db.getVaultByType('pub').length).toBe(1)
-        expect(db.getAccount().length).toBe(1)
-        expect(db.getAddress().length).toBe(1)
-
-        expect(
-          (
-            await request({
-              method: 'wallet_exportAccount',
-              params: {password, accountId: db.getAccount()[0].eid},
-            })
-          ).result,
-        ).toBe('CFX:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAAFA2UCFUW')
-        expect(
-          (
-            await request({
-              method: 'wallet_exportAccountGroup',
-              params: {password, accountGroupId: db.getAccountGroup()[0].eid},
-            })
-          ).result,
-        ).toBe('CFX:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAAFA2UCFUW')
       })
     })
   })

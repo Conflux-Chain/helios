@@ -23,6 +23,7 @@
     "@cfxjs/transducers": "workspace:packages/transducers",
     "@cfxjs/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault",
     "@cfxjs/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount",
+    "@cfxjs/wallet_delete-account-group": "workspace:packages/rpcs/wallet_deleteAccountGroup",
     "@cfxjs/wallet_discover-accounts": "workspace:packages/rpcs/wallet_discoverAccounts",
     "@cfxjs/wallet_export-account": "workspace:packages/rpcs/wallet_exportAccount",
     "@cfxjs/wallet_export-account-group": "workspace:packages/rpcs/wallet_exportAccountGroup",

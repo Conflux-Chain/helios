@@ -243,18 +243,22 @@
    (let [js-schema (j->c js-schema)
          db-to-restore (when data-to-restore (cljs.reader/read-string data-to-restore))
          db (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn (js-schema->schema js-schema)))
+         tfn (partial d/transact! db)
+         qfn (fn [query & args] (apply d/q query (d/db db) args))
+         pfn (partial d/pull (d/db db))
+         efn (fn [model attr-keys & args] (apply de/entity (d/db db) model attr-keys args))
          rst (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
          rst (assoc rst :_db db)
-         rst (assoc rst :getById (comp clj->js get-by-id))
+         ;; rst (assoc rst :getById (comp clj->js get-by-id))
          rst (assoc rst :deleteById delete-by-id)
          rst (assoc rst :updateById update-by-id)
          rst (assoc rst :tmpid random-tmp-id)
-         rst (apply-queries rst)]
+         rst (apply-queries rst qfn efn)]
      (def conn db)
-     (def t (partial d/transact! conn))
-     (def q (fn [query & args] (apply d/q query (d/db conn) args)))
-     (def p (partial d/pull (d/db conn)))
-     (defn e [model attr-keys & args] (apply de/entity (d/db conn) model attr-keys args))
+     (def t tfn)
+     (def q qfn)
+     (def p pfn)
+     (def e efn)
      (defn db-transact [arg]
        (let [arg (j->c arg)
              arg (if (vector? arg) arg [arg])
@@ -290,6 +294,13 @@
 
 
 (comment
+  (q '[:find [?e ...]
+       :in $ ?gid
+       :where
+       [?g :accountGroup/nickname]
+       [(?gid ?g)]
+       [?g :accountGroup/account ?e]]
+     #(= % 24))
   (create-db (.-schema js/window))
   (js/console.log (clj->js (t [{:db/id "a" :hdPath/name "a"}
                                {:db/id "a" :hdPath/value "b"}])))

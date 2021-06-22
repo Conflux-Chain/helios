@@ -9,37 +9,38 @@ export const schemas = {
 }
 
 export const permissions = {
-  db: ['getById'],
+  db: ['getAccount', 'getOneAccountGroup', 'getAddressNetwork'],
   methods: ['wallet_validatePassword', 'wallet_exportAccountGroup'],
   external: ['popup'],
 }
 
 export const main = async ({
   Err,
-  db: {getById},
+  db: {getAccount, getOneAccountGroup, getAddressNetwork},
   rpcs: {wallet_validatePassword, wallet_exportAccountGroup},
   params: {password, accountId},
 }) => {
   if (!(await wallet_validatePassword({password})))
     throw Err.InvalidParams('Invalid password')
 
-  const account = getById(accountId)
-  if (!account?.accountGroup?.vault?.type)
+  const [account] = getAccount({eid: accountId})
+  const accountGroup = getOneAccountGroup({account: account.eid})
+  if (!accountGroup?.vault?.type)
     throw Err.InvalidParams(`Invalid account id ${accountId}`)
 
-  const {vault} = account.accountGroup
+  const {vault} = accountGroup
   if (vault.type !== 'hd')
     return await wallet_exportAccountGroup({
       password,
-      accountGroupId: account.accountGroup.eid,
+      accountGroupId: accountGroup.eid,
     })
 
   const decrypted = vault.ddata || decrypt(password, vault.data)
 
   const rst = account.address.map(
-    async ({network, index, hex, cfxHex, base32, pk}) => {
-      const hdPath =
-        account.accountGroup.customHdPath?.value || network.hdPath.value
+    async ({index, hex, cfxHex, base32, pk, eid}) => {
+      const network = getAddressNetwork(eid)
+      const hdPath = accountGroup.customHdPath?.value || network.hdPath.value
       const privateKey =
         pk ||
         (

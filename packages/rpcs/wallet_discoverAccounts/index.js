@@ -26,27 +26,19 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   methods: ['wallet_getBalance', 'wallet_getNextNonce', 'wallet_createAccount'],
-  db: [
-    't',
-    'getById',
-    'getNetwork',
-    'getPassword',
-    'getOneAccount',
-    'getAccount',
-  ],
+  db: ['getAccountGroup', 'getNetwork', 'getPassword'],
 }
 
 export const main = async ({
   rpcs: {wallet_getBalance, wallet_getNextNonce, wallet_createAccount},
-  db: {getById, getNetwork, getPassword, getAccount},
+  db: {getAccountGroup, getNetwork, getPassword},
   params: {accountGroupId, limit = 10, waitTillFinish},
   Err: {InvalidParams},
 }) => {
-  const accountGroup = getById(accountGroupId)
+  const [accountGroup] = getAccountGroup({eid: accountGroupId})
   if (!accountGroup)
     throw InvalidParams('Invalid accountGroupId, account group not found')
-  const oldAccountsCount =
-    getAccount({accountGroup: accountGroupId})?.length ?? 0
+  const oldAccountsCount = accountGroup.account?.length ?? 0
 
   const {vault} = accountGroup
   if (vault.type !== 'hd') return // no need to discover accounts for none hd vault
