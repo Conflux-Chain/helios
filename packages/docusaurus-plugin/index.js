@@ -4,13 +4,13 @@ module.exports = function (/* context, options */) {
     // configureWebpack(config, isServer, utils) {return {}},
     configurePostCss(postcssOptions) {
       // Appends new PostCSS plugin.
-      const {
-        tailwindConfig,
-        autoprefixer,
-        twcssJit,
-      } = require('../../scripts/postcss.config.js')
-      postcssOptions.plugins.push(twcssJit({...tailwindConfig, prefix: 'tw-'}))
-      postcssOptions.plugins.push(autoprefixer())
+      postcssOptions.plugins.push(
+        require('tailwindcss')({
+          ...require('../../scripts/tailwind.config.js'),
+          prefix: 'tw-',
+        }),
+      )
+      postcssOptions.plugins.push(require('autoprefixer')())
       return postcssOptions
     },
   }

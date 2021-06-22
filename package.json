@@ -50,7 +50,6 @@
     "@swc/core": "1.2.61",
     "@swc/helpers": "0.2.12",
     "@swc/jest": "^0.1.2",
-    "@tailwindcss/jit": "^0.1.18",
     "autoprefixer": "^10.2.6",
     "babel-loader": "8.2.2",
     "browserslist": "^4.16.6",
