@@ -75,7 +75,7 @@ const schema = {
     account: {ref: true, many: true, component: true},
   },
   address: {
-    id: {tuples: ['address/network', 'address/hex'], identity: true},
+    _id: {tuples: ['address/network', 'address/hex'], identity: true},
     vault: {ref: true},
     index: {doc: 'Address index in hd path, starts from 0'},
     hex: {doc: 'The value of the address, not cfx hex address'},
@@ -84,7 +84,6 @@ const schema = {
     pk: {doc: 'the private key of the address', persist: false},
   },
   account: {
-    id: {tuples: ['account/index', 'account/accountGroup'], identity: true},
     index: {doc: 'index of account in account group'},
     nickname: {doc: 'account nickname'},
     address: {many: true, component: true, ref: true},

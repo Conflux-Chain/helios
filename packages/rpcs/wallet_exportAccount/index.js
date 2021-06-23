@@ -9,22 +9,22 @@ export const schemas = {
 }
 
 export const permissions = {
-  db: ['getAccount', 'getOneAccountGroup', 'getAddressNetwork'],
+  db: ['getAccountById', 'getAddressNetwork', 'getAccountAccountGroup'],
   methods: ['wallet_validatePassword', 'wallet_exportAccountGroup'],
   external: ['popup'],
 }
 
 export const main = async ({
   Err,
-  db: {getAccount, getOneAccountGroup, getAddressNetwork},
+  db: {getAccountById, getAddressNetwork, getAccountAccountGroup},
   rpcs: {wallet_validatePassword, wallet_exportAccountGroup},
   params: {password, accountId},
 }) => {
   if (!(await wallet_validatePassword({password})))
     throw Err.InvalidParams('Invalid password')
 
-  const [account] = getAccount({eid: accountId})
-  const accountGroup = getOneAccountGroup({account: account.eid})
+  const account = getAccountById(accountId)
+  const accountGroup = getAccountAccountGroup(accountId)
   if (!accountGroup?.vault?.type)
     throw Err.InvalidParams(`Invalid account id ${accountId}`)
 

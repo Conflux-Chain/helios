@@ -12,7 +12,8 @@
  :dependencies
  [[metosin/malli "0.5.1"]
   [binaryage/oops "0.7.1"]
-  [datascript "1.0.7"]]
+  [datascript "1.0.7"]
+  [hashp "0.2.1"]]
 
  :builds
  {:spec {:target :esm
@@ -20,6 +21,7 @@
          :js-options {:js-package-dirs ["packages/spec/node_modules"]}
          :compiler-options {:cross-chunk-method-motion false
                             :infer-externs :auto}
+         :devtools {:preloads [hashp.core]}
          :modules {:shared {}
                    :spec {:exports { ;; default cfxjs.spec.core/exports
 
@@ -154,6 +156,7 @@
                          :depends-on #{:shared}}}}
   :db {:target :esm
        :output-dir "packages/db/src"
+       :devtools {:preloads [hashp.core]}
        :js-options {:js-package-dirs ["packages/db/node_modules"]}
        :compiler-options {:cross-chunk-method-motion false
                           :infer-externs :auto

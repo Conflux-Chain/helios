@@ -162,23 +162,6 @@ describe('integration test', function () {
         expect(db.getVaultByType('pk').length).toBe(1)
         expect(db.getAccount().length).toBe(1)
         expect(db.getAddress().length).toBe(2)
-
-        expect(
-          (
-            await request({
-              method: 'wallet_exportAccount',
-              params: {password, accountId: db.getAccount()[0].eid},
-            })
-          ).result,
-        ).toBe(pk.replace(/^0x/, ''))
-        expect(
-          (
-            await request({
-              method: 'wallet_exportAccountGroup',
-              params: {password, accountGroupId: db.getAccountGroup()[0].eid},
-            })
-          ).result,
-        ).toBe(pk.replace(/^0x/, ''))
       })
     })
     describe('wallet_importMnemonic', function () {
@@ -197,13 +180,13 @@ describe('integration test', function () {
         await waitForExpect(() => expect(db.getAccount().length).toBe(1))
         await waitForExpect(() => expect(db.getAddress().length).toBe(2))
 
-        const cfxAddr = db.getNetwork({eid: cfxNetId})[0].address[0]
+        const cfxAddr = db.getNetworkById(cfxNetId).address[0]
         expect(cfxAddr.hex).toBe(CFX_ACCOUNTS[0].address)
         expect(cfxAddr.cfxHex).toBe(CFX_ACCOUNTS[0].cfxHex)
         expect(cfxAddr.pk).toBe(CFX_ACCOUNTS[0].privateKey)
         expect(cfxAddr.index).toBe(CFX_ACCOUNTS[0].index)
         expect(cfxAddr.base32).toBe(CFX_ACCOUNTS[0].base32)
-        const ethAddr = db.getNetwork({eid: ethNetId})[0].address[0]
+        const ethAddr = db.getNetworkById(ethNetId).address[0]
         expect(ethAddr.hex).toBe(ETH_ACCOUNTS[0].address)
         expect(ethAddr.pk).toBe(ETH_ACCOUNTS[0].privateKey)
         expect(ethAddr.index).toBe(ETH_ACCOUNTS[0].index)

@@ -38,6 +38,7 @@ export const permissions = {
   db: [
     't',
     'getVault',
+    'getVaultById',
     'createVault',
     'getAccountGroup',
     'getNetwork',
@@ -117,11 +118,11 @@ export async function newAccounts(arg) {
 
 export function newAccountGroup(arg) {
   const {
-    db: {getAccountGroup, getNetwork, getVault, t},
+    db: {getAccountGroup, getNetwork, getVaultById, t},
     vaultId,
   } = arg
   const groups = getAccountGroup()
-  const [vault] = getVault({eid: vaultId})
+  const vault = getVaultById(vaultId)
   const groupName = `Vault ${groups.length + 1}`
 
   const networks = getNetwork().reduce((acc, n) => {
@@ -155,7 +156,7 @@ const processAddress = address => {
 
 export async function main(arg) {
   const {
-    db: {createVault, getVault, getAccountGroup},
+    db: {createVault, getVault, getAccountGroup, getVaultById},
     rpcs: {
       wallet_validatePassword, // wallet_deleteAccountGroup
     },
@@ -195,7 +196,7 @@ export async function main(arg) {
   if (anyDuplicateVaults.length) {
     const [duplicateVaultId] = anyDuplicateVaults
     const [duplicateAccountGroup] = getAccountGroup({vault: duplicateVaultId})
-    const [duplicateVault] = getVault({eid: duplicateVaultId})
+    const duplicateVault = getVaultById(duplicateVaultId)
 
     if (force) {
       // const [duplicateAccountGroup] = getAccountGroup({vault: duplicateVaultId})

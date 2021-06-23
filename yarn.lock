@@ -2553,7 +2553,7 @@ __metadata:
     "@cfxjs/doc-use-rpc": "workspace:packages/doc-ui/useRPC"
     "@cfxjs/doc-use-spec": "workspace:packages/doc-ui/useSpec"
     prop-types: ^15.7.2
-    zustand: ^3.5.2
+    zustand: ^3.5.4
   peerDependencies:
     react: ^17.0.0
     react-dom: ^17.0.0
@@ -2565,7 +2565,7 @@ __metadata:
   resolution: "@cfxjs/doc-use-rpc@workspace:packages/doc-ui/useRPC"
   dependencies:
     param-case: 3.0.4
-    zustand: ^3.5.2
+    zustand: ^3.5.4
   peerDependencies:
     react: ^17.0.0
     react-dom: ^17.0.0
@@ -2576,7 +2576,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/doc-use-spec@workspace:packages/doc-ui/useSpec"
   dependencies:
-    zustand: ^3.5.2
+    zustand: ^3.5.4
   peerDependencies:
     react: ^17.0.0
     react-dom: ^17.0.0
@@ -29869,15 +29869,15 @@ resolve@~1.17.0:
   languageName: node
   linkType: hard
 
-"zustand@npm:^3.5.2":
-  version: 3.5.2
-  resolution: "zustand@npm:3.5.2"
+"zustand@npm:^3.5.4":
+  version: 3.5.4
+  resolution: "zustand@npm:3.5.4"
   peerDependencies:
     react: ">=16.8"
   peerDependenciesMeta:
     react:
       optional: true
-  checksum: f5df58852571142d7448ba09b259843d38c5e6b2313d7a864a868bfb7e4e16182e80ffc381a2124958dfc625e710182ec917d849c3286c1c067c981a9095e2f5
+  checksum: 0bcc0d15e47dcb503ff51dec3551a15ee1b6521315f820cb805531f4ba4124a61a9b7f7639bb4c8d0ffc5d77f7ff75f057388fee1b69ce087c3fe490a6193521
   languageName: node
   linkType: hard
 

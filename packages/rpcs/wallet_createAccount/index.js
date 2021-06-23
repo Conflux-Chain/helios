@@ -30,7 +30,7 @@ export const permissions = {
   db: [
     'getNetwork',
     'getPassword',
-    'getAccountGroup',
+    'getAccountGroupById',
     'getOneAccountByGroupAndIndex',
     't',
   ],
@@ -43,12 +43,12 @@ export const main = async ({
     getNetwork,
     getOneAccountByGroupAndIndex,
     t,
-    getAccountGroup,
+    getAccountGroupById,
   },
   params: {accountGroupId, nickname},
   Err,
 }) => {
-  const [group] = getAccountGroup({eid: accountGroupId})
+  const group = getAccountGroupById(accountGroupId)
   if (!group) throw Err.InvalidParams('Invalid account group id')
   const {vault} = group
   if (vault.type !== 'hd')

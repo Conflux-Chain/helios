@@ -26,16 +26,16 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   methods: ['wallet_getBalance', 'wallet_getNextNonce', 'wallet_createAccount'],
-  db: ['getAccountGroup', 'getNetwork', 'getPassword'],
+  db: ['getAccountGroupById', 'getNetwork', 'getPassword'],
 }
 
 export const main = async ({
   rpcs: {wallet_getBalance, wallet_getNextNonce, wallet_createAccount},
-  db: {getAccountGroup, getNetwork, getPassword},
+  db: {getAccountGroupById, getNetwork, getPassword},
   params: {accountGroupId, limit = 10, waitTillFinish},
   Err: {InvalidParams},
 }) => {
-  const [accountGroup] = getAccountGroup({eid: accountGroupId})
+  const accountGroup = getAccountGroupById(accountGroupId)
   if (!accountGroup)
     throw InvalidParams('Invalid accountGroupId, account group not found')
   const oldAccountsCount = accountGroup.account?.length ?? 0

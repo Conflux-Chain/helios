@@ -12,7 +12,7 @@ export const schemas = {
 }
 
 export const permissions = {
-  db: ['deleteById', 'getAccountGroup'],
+  db: ['deleteAccountGroupById'],
   external: ['popup'],
   methods: ['wallet_validatePassword'],
 }
@@ -20,15 +20,14 @@ export const permissions = {
 export const main = async ({
   Err,
   rpcs: {wallet_validatePassword},
-  db: {deleteById, getAccountGroup},
+  db: {deleteAccountGroupById},
   params: {accountGroupId, password},
 }) => {
   if (!(await wallet_validatePassword({password})))
     throw Err.InvalidParams('Incorrect password')
 
-  const [group] = getAccountGroup({eid: accountGroupId})
-  if (!group)
+  const deleted = deleteAccountGroupById(accountGroupId)
+  if (!deleted)
     throw Err.InvalidParams(`Invalid account group id ${accountGroupId}`)
-
-  return deleteById(group.eid)
+  return deleted
 }

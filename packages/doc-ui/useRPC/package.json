@@ -9,6 +9,6 @@
   },
   "dependencies": {
     "param-case": "3.0.4",
-    "zustand": "^3.5.2"
+    "zustand": "^3.5.4"
   }
 }
