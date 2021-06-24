@@ -146,7 +146,8 @@
                                     epochRef cfxjs.spec.core/export-epoch-ref
                                     blockTag cfxjs.spec.core/export-block-tag
                                     blockRef cfxjs.spec.core/export-block-ref
-                                    undefine cfxjs.spec.core/export-js-undefined}
+                                    undefine cfxjs.spec.core/export-js-undefined
+                                    url cfxjs.spec.core/export-url}
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}
                          :depends-on #{:shared}}
