@@ -10,7 +10,8 @@
                (save-excursion
                  (goto-char (point-min))
                  (when (not (re-search-forward "from.*@jest/globals" (point-max) t))
-                   (insert "// eslint-disable-next-line no-unused-vars\nimport {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore\n"))))
+                   (insert "// eslint-disable-next-line no-unused-vars\nimport {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore\n")
+                   (insert "// eslint-disable-next-line no-unused-vars\nimport waitForExpect from 'wait-for-expect'\n"))))
          (eval defun +jest-test-file-p ()
                (and (buffer-file-name) (string-match-p "\\.\\(integration\.test\\|spec\\|test\\)\\.js" (buffer-file-name))))
          (eval defun +ensure-jest-expect ()
