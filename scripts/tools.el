@@ -1,0 +1,91 @@
+(defun helios->new-pkg-name (name)
+  (let* ((parts (s-split "_" name t))
+         (prefix (car parts))
+         (rpc-name-camel (second parts))
+         (rpc-name-dash (s-dashed-words rpc-name-camel)))
+    (concat "@cfxjs/" prefix "_" rpc-name-dash)))
+
+(defun helios-pkg-p ()
+  (let ((name (buffer-file-name)))
+    (and (string= (file-name-nondirectory name) "package.json")
+         (string-match-p "helios/packages/" name)
+         (not (save-excursion
+                (goto-char (point-min))
+                (re-search-forward "\"private\": true" nil t))))))
+
+(defun helios-set-pkg-type ()
+  (interactive)
+  (when (helios-pkg-p)
+    (save-excursion
+      (goto-char (point-min))
+      (let* ((no-type-p (not (re-search-forward "\"type\":" nil t)))
+             (name-line-end (and no-type-p (re-search-forward "\"name\":.*$"))))
+        (when no-type-p
+          (goto-char name-line-end)
+          (let* ((has-comma (= 44 (char-before name-line-end)))
+                 (to-insert "\n  \"type\": \"module\"")
+                 (to-insert (if has-comma (concat to-insert ",") (concat "," to-insert))))
+            (insert to-insert)))))))
+
+(defun helios-set-pkg-main ()
+  (interactive)
+  (when (helios-pkg-p)
+    (save-excursion
+      (goto-char (point-min))
+      (let* ((no-main-p (not (re-search-forward "\"main\":" nil t)))
+             (name-line-end (and no-main-p (re-search-forward "\"name\":.*$"))))
+        (when no-main-p
+          (goto-char name-line-end)
+          (let* ((has-comma (= 44 (char-before name-line-end)))
+                 (to-insert "\n  \"main\": \"index.js\"")
+                 (to-insert (if has-comma (concat to-insert ",") (concat "," to-insert))))
+            (insert to-insert)))))))
+
+(defun helios-set-pkg-version ()
+  (interactive)
+  (when (helios-pkg-p)
+    (save-excursion
+      (goto-char (point-min))
+      (let* ((no-version-p (not (re-search-forward "\"version\":" nil t)))
+             (insert-pos (and no-version-p (re-search-forward "\"\n"))))
+        (when (and no-version-p insert-pos)
+          (goto-char (- insert-pos 1))
+          (insert ",")
+          (forward-char)
+          (insert "  \"version\": \"0.0.0\"\n"))))))
+
+
+(defun helios-change-pkg-readme (old-name new-name)
+  (let ((readmef (concat (file-name-directory (buffer-file-name)) "README.md")))
+    (when (and old-name new-name (f-file? readmef))
+      (with-current-buffer (find-file-noselect readmef)
+        (save-excursion
+          (goto-char (point-min))
+          (re-search-forward old-name nil t)
+          (replace-match new-name)
+          (save-buffer))))))
+
+(defun helios-change-pkg-name ()
+  (interactive)
+  (when (helios-pkg-p)
+    (save-excursion
+      (goto-char (point-min))
+      (let* ((rpcpkgp (re-search-forward "\"name\":\s\"\\(wallet\\|cfx\\|eth\\)_" nil t))
+             (name-start (and rpcpkgp (goto-char (point-min)) (re-search-forward "\"name\":\s\"")))
+             (name (thing-at-point 'sexp t))
+             (new-name (and name (helios->new-pkg-name name))))
+        (when (and rpcpkgp name)
+          (re-search-forward "\\(wallet\\|cfx\\|eth\\)_\\w+" nil t)
+          (replace-match new-name)
+          (helios-change-pkg-readme name new-name))))))
+
+(defun helios-setup-pkg-json ()
+  (interactive)
+  (when (helios-pkg-p)
+    (helios-change-pkg-name)
+    (helios-set-pkg-main)
+    (helios-set-pkg-type)
+    (helios-set-pkg-version)
+    (save-buffer)))
+
+(add-hook! json-mode 'helios-setup-pkg-json)

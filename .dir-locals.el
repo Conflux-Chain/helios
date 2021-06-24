@@ -23,7 +23,8 @@
                (if (+jest-integration-test-file-p)
                    (with-eval-after-load 'jest (setq-local jest-executable "yarn run test:integration"))
                  (with-eval-after-load 'jest (setq-local jest-executable "yarn run test:unit"))))
-         (eval add-hook 'find-file-hook '+jest-setup-integration-test nil t)))
+         (eval add-hook 'find-file-hook '+jest-setup-integration-test nil t)
+         (eval load-file (concat (car (dir-locals-find-file ".")) "scripts/tools.el"))))
 
  ((rjsx-mode js2-mode typescript-mode) . ((lsp-enabled-clients . (ts-ls eslint))
                                           (eval . (lexical-let
