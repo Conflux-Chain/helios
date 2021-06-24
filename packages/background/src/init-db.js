@@ -48,6 +48,7 @@ function initNetwork(d) {
         netId: CFX_MAINNET_NETID,
         ticker: CFX_MAINNET_CURRENCY_SYMBOL,
         hdPath: -1,
+        builtin: true,
       },
     },
     {
@@ -59,6 +60,7 @@ function initNetwork(d) {
         netId: CFX_TESTNET_NETID,
         ticker: CFX_TESTNET_CURRENCY_SYMBOL,
         hdPath: -1,
+        builtin: true,
       },
     },
     {
@@ -70,6 +72,7 @@ function initNetwork(d) {
         netId: ETH_MAINNET_NETID,
         ticker: ETH_MAINNET_CURRENCY_SYMBOL,
         hdPath: -2,
+        builtin: true,
       },
     },
     {
@@ -81,6 +84,7 @@ function initNetwork(d) {
         netId: ETH_ROPSTEN_NETID,
         ticker: ETH_ROPSTEN_CURRENCY_SYMBOL,
         hdPath: -2,
+        builtin: true,
       },
     },
     {
@@ -92,6 +96,7 @@ function initNetwork(d) {
         netId: BSC_MAINNET_NETID,
         ticker: BSC_MAINNET_CURRENCY_SYMBOL,
         hdPath: -2,
+        builtin: true,
       },
     },
     {
@@ -103,6 +108,7 @@ function initNetwork(d) {
         netId: BSC_TESTNET_NETID,
         ticker: BSC_TESTNET_CURRENCY_SYMBOL,
         hdPath: -2,
+        builtin: true,
       },
     },
   ])
