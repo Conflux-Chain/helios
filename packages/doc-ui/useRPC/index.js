@@ -26,7 +26,7 @@ const createRPC = rpcName =>
         import(
           /* webpackPreload: true */
           /* webpackMode: "lazy-once" */
-          /* webpackInclude: /(cfx|eth|wallet)_(\w|-)+\/index\.js$/ */
+          /* webpackInclude: /(cfx|eth|wallet|net|web3)_(\w|-)+\/index\.js$/ */
           /* webpackExclude: /(\test\.js|\.md)$/ */
           '@cfxjs/' + rpcPkgName
         )

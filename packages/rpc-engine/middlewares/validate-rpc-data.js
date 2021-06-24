@@ -54,9 +54,10 @@ function validateLockState({req, rpcStore, db}) {
 function validateNetworkSupport({req}) {
   const {method, network} = req
 
+  const startsWithCfx = method.startsWith('cfx')
   if (
-    (network.type === 'cfx' && method.startsWith('eth')) ||
-    (network.type === 'eth' && method.startsWith('cfx'))
+    (network.type === 'cfx' && startsWithCfx) ||
+    (network.type === 'eth' && !startsWithCfx)
   ) {
     const err = new jsonRpcErr.MethodNotFound(
       `Method ${method} not supported by network ${network.name}`,
