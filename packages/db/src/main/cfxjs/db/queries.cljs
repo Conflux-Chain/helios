@@ -41,7 +41,22 @@
                                                                       [?g :accountGroup/account ?aid]
                                                                       [?g :accountGroup/account ?as]
                                                                       [?as :account/nickname ?to-check-nick]]
-                                                                    accountId nickname))))})
+                                                                    accountId nickname))))
+              :filterAccountGroupByNetworkType (fn [network-type]
+                                                    (map #(e :accountGroup %) (if (= network-type "eth")
+                                                                                ;; accountGroup without vault with
+                                                                                ;; network-type "pub", cfxOnly true
+                                                                                (q '[:find [?g ...]
+                                                                                     :where
+                                                                                     [?g :accountGroup/vault ?v]
+                                                                                     [?v :vault/cfxOnly ?cfxOnly]
+                                                                                     [?v :vault/type ?vtype]
+                                                                                     (not [?v :vault/cfxOnly true]
+                                                                                          [?v :vault/type "pub"])])
+                                                                                ;; all accountGroup
+                                                                                (q '[:find [?g ...]
+                                                                                     :where
+                                                                                     [?g :accountGroup/vault]]))))})
 
 (defn apply-queries [conn qfn entity]
   (def q qfn)
