@@ -71,14 +71,19 @@ export const main = async ({
 
   return (
     await Promise.all(
-      networks.map(async ({eid, hdPath, netId, type}) => {
-        const {address, index, privateKey} = await getNthAccountOfHDKey({
+      networks.map(async ({eid, hdPath, netId, type}) => ({
+        eid,
+        netId,
+        type,
+        addr: await getNthAccountOfHDKey({
           mnemonic: decrypted,
           hdPath: hdPath.value,
           nth: nextAccountIdx,
           only0x1Prefixed: vault.cfxOnly,
-        })
-
+        }),
+      })),
+    ).then(params =>
+      params.map(({eid, netId, type, addr: {address, index, privateKey}}) => {
         let accountId =
           getOneAccountByGroupAndIndex({
             index: nextAccountIdx,
@@ -95,7 +100,6 @@ export const main = async ({
               pk: privateKey,
             },
           },
-          {eid, network: {address: -1}},
           type === 'cfx' && {
             eid: -1,
             address: {
@@ -103,6 +107,7 @@ export const main = async ({
               base32: encode(toAccountAddress(address), netId, true),
             },
           },
+          {eid, network: {address: -1}},
           {
             eid: accountId,
             account: {
