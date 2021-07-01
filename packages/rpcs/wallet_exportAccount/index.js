@@ -40,7 +40,7 @@ export const main = async ({
   const rst = account.address.map(
     async ({index, hex, cfxHex, base32, pk, eid}) => {
       const network = getAddressNetwork(eid)
-      const hdPath = accountGroup.customHdPath?.value || network.hdPath.value
+      const hdPath = network.hdPath.value // accountGroup.customHdPath?.value ||
       const privateKey =
         pk ||
         (
