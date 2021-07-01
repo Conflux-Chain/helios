@@ -60,6 +60,7 @@
                                     mapp cfxjs.spec.core/export-mapp
                                     objp cfxjs.spec.core/export-objp
                                     vectorp cfxjs.spec.core/export-vectorp
+                                    arrp cfxjs.spec.core/export-vectorp
                                     list cfxjs.spec.core/export-list
                                     seq cfxjs.spec.core/export-seq
                                     char cfxjs.spec.core/export-char
@@ -147,7 +148,8 @@
                                     blockTag cfxjs.spec.core/export-block-tag
                                     blockRef cfxjs.spec.core/export-block-ref
                                     undefine cfxjs.spec.core/export-js-undefined
-                                    url cfxjs.spec.core/export-url}
+                                    url cfxjs.spec.core/export-url
+                                    dbid cfxjs.spec.core/export-dbid}
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}
                          :depends-on #{:shared}}
