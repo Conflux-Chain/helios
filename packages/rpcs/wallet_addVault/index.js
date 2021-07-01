@@ -10,7 +10,7 @@ import {
 import {encrypt, decrypt} from 'browser-passworder'
 import {compL} from '@cfxjs/compose'
 import {validateBase32Address, decode, encode} from '@cfxjs/base32-address'
-import {fromPrivate} from '@cfxjs/account'
+import {fromPrivate, toAccountAddress} from '@cfxjs/account'
 import {stripHexPrefix} from '@cfxjs/utils'
 
 export const NAME = 'wallet_addVault'
@@ -64,13 +64,21 @@ export async function newAccounts(arg) {
   networks.forEach(({eid, netId, type}) => {
     const account = getOneAccountByGroupAndIndex({index: 0, groupId})
     if (vault.type === 'pk') {
+      const addr = fromPrivate(vault.ddata).address
       t([
         {
           eid: -1,
           address: {
-            hex: fromPrivate(vault.ddata).address,
+            hex: addr,
             pk: vault.ddata,
             vault: vault.eid,
+          },
+        },
+        type === 'cfx' && {
+          eid: -1,
+          address: {
+            cfxHex: toAccountAddress(addr),
+            base32: encode(toAccountAddress(addr), netId, true),
           },
         },
         {eid, network: {address: -1}},
@@ -93,12 +101,14 @@ export async function newAccounts(arg) {
 
     t([
       {eid: -1, address: {hex: vault.ddata, vault: vault.eid}},
-      {eid, network: {address: -1}},
-      vault.cfxOnly && {eid: -1, address: {cfxHex: vault.ddata}},
       type === 'cfx' && {
         eid: -1,
-        address: {base32: encode(vault.ddata, netId, true)},
+        address: {
+          base32: encode(toAccountAddress(vault.ddata), netId, true),
+          cfxHex: toAccountAddress(vault.ddata),
+        },
       },
+      {eid, network: {address: -1}},
       {
         eid: account?.eid ?? -2,
         account: {
@@ -154,19 +164,17 @@ const processAddress = address => {
   }
 }
 
-export async function main(arg) {
+export const main = async arg => {
   const {
     db: {createVault, getVault, getAccountGroup, getVaultById},
-    rpcs: {
-      wallet_validatePassword, // wallet_deleteAccountGroup
-    },
+    rpcs: {wallet_validatePassword, wallet_deleteAccountGroup},
     params: {password, mnemonic, privateKey, address, cfxOnly, force},
     Err,
   } = arg
   if (!(await wallet_validatePassword({password})))
     throw Err.InvalidParams('Invalid password')
 
-  const vault = {}
+  const vault = {cfxOnly: false}
   vault.data = mnemonic || privateKey || address
   if (privateKey) {
     vault.type = 'pk'
@@ -199,11 +207,12 @@ export async function main(arg) {
     const duplicateVault = getVaultById(duplicateVaultId)
 
     if (force) {
-      // const [duplicateAccountGroup] = getAccountGroup({vault: duplicateVaultId})
-      // await wallet_deleteAccountGroup({
-      //   accountGroupId: duplicateAccountGroup.eid,
-      //   password,
-      // })
+      if (duplicateVault.type !== 'hd')
+        throw Err.InvalidParams("Can't force import none hd vault")
+      await wallet_deleteAccountGroup({
+        accountGroupId: duplicateAccountGroup.eid,
+        password,
+      })
     } else {
       let err
       if (vault.type === 'hd' && duplicateVault.cfxOnly !== vault.cfxOnly) {
