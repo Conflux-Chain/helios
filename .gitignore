@@ -245,3 +245,4 @@ $RECYCLE.BIN/
 /packages/browser-extension/content-script.js
 /packages/browser-extension/reload.js
 /packages/browser-extension/inpage.js
+/.lsp/

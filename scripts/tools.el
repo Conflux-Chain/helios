@@ -70,12 +70,12 @@
   (when (helios-pkg-p)
     (save-excursion
       (goto-char (point-min))
-      (let* ((rpcpkgp (re-search-forward "\"name\":\s\"\\(wallet\\|cfx\\|eth\\)_" nil t))
+      (let* ((rpcpkgp (re-search-forward "\"name\":\s\"\\(wallet\\|cfx\\|eth\\|net\\|web3\\)_" nil t))
              (name-start (and rpcpkgp (goto-char (point-min)) (re-search-forward "\"name\":\s\"")))
              (name (thing-at-point 'sexp t))
              (new-name (and name (helios->new-pkg-name name))))
         (when (and rpcpkgp name)
-          (re-search-forward "\\(wallet\\|cfx\\|eth\\)_\\w+" nil t)
+          (re-search-forward "\\(wallet\\|cfx\\|eth\\|net\\|web3\\)_\\w+" nil t)
           (replace-match new-name)
           (helios-change-pkg-readme name new-name))))))
 
@@ -89,3 +89,33 @@
     (save-buffer)))
 
 (add-hook! json-mode 'helios-setup-pkg-json)
+
+(defun helios-setup-rpc-indexjs ()
+  (interactive)
+  (let ((path (buffer-file-name)))
+    (when (and path (string-match-p "packages/rpcs/\\(wallet\\|cfx\\|eth\\|net\\|web3\\)_\\w+/index.js" path))
+      (let* ((rpc-name (with-temp-buffer
+                         (insert path)
+                         (goto-char (point-max))
+                         (let* ((start (re-search-backward "\\(wallet\\|cfx\\|eth\\|net\\|web3\\)_\\w+"))
+                                (end (- (search-forward "/" (buffer-file-name)) 1)))
+                           (buffer-substring start end))))
+             (imspec (concat "import {map} from '@cfxjs/spec'\n\n"))
+             (name (concat "export const NAME = '" rpc-name "'\n\n"))
+             (schemas (concat "export const schemas = {\n  inputs: [],\n}\n\n"))
+             (perms (concat "export const permissions = {\n  external: ['popup', 'inpage'],\n  locked: true,\n  methods: [],\n  db: [],\n}\n\n"))
+             (main (concat "export const main = ({Err: {}, db: {}, rpcs: {}, f, params: {}}) => {\n  \n}")))
+        (save-excursion
+          (goto-char (point-min))
+          (when (not (re-search-forward "from.*@cfxjs/spec" nil t))
+            (insert imspec))
+          (when (not (re-search-forward "export.*const.*NAME" nil t))
+            (insert name))
+          (when (not (re-search-forward "export.*const.*schemas" nil t))
+            (insert schemas))
+          (when (not (re-search-forward "export.*const.*permissions" nil t))
+            (insert perms))
+          (when (not (re-search-forward "export.*const.*main" nil t))
+            (insert main)))))))
+
+(add-hook! js2-mode 'helios-setup-rpc-indexjs)

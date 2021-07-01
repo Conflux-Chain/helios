@@ -1,11 +1,11 @@
 ;;; Directory Local Variables
 ;;; For more information see (info "(emacs) Directory Variables")
 
-((nil . ((eval projectile-register-project-type 'yarn '("package.json")
-               :project-file "package.json"
-               :compile "yarn install"
-               :test "yarn test"
-               :test-suffix ".test")
+((nil . (;; (eval projectile-register-project-type 'yarn '("package.json")
+         ;;       :project-file "package.json"
+         ;;       :compile "yarn install"
+         ;;       :test "yarn test"
+         ;;       :test-suffix ".test")
          (eval defun +insert-jest-expect ()
                (save-excursion
                  (goto-char (point-min))
