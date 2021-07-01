@@ -2912,6 +2912,16 @@ __metadata:
     "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
+
+"@cfxjs/wallet_add-network@workspace:packages/rpcs/wallet_addNetwork":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_add-network@workspace:packages/rpcs/wallet_addNetwork"
+  dependencies:
+    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_add-vault@workspace:packages/rpcs/wallet_addVault":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_add-vault@workspace:packages/rpcs/wallet_addVault"
