@@ -2449,9 +2449,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/cfx_chain-id@workspace:packages/rpcs/cfx_chainId":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/cfx_chain-id@workspace:packages/rpcs/cfx_chainId"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber":
   version: 0.0.0-use.local
   resolution: "@cfxjs/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/cfx_gas-price@workspace:packages/rpcs/cfx_gasPrice":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/cfx_gas-price@workspace:packages/rpcs/cfx_gasPrice"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
@@ -2484,6 +2500,22 @@ __metadata:
 "@cfxjs/cfx_get-next-nonce@workspace:packages/rpcs/cfx_getNextNonce":
   version: 0.0.0-use.local
   resolution: "@cfxjs/cfx_get-next-nonce@workspace:packages/rpcs/cfx_getNextNonce"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/cfx_get-status@workspace:packages/rpcs/cfx_getStatus":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/cfx_get-status@workspace:packages/rpcs/cfx_getStatus"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/cfx_net-version@workspace:packages/rpcs/cfx_netVersion":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/cfx_net-version@workspace:packages/rpcs/cfx_netVersion"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
@@ -2600,6 +2632,22 @@ __metadata:
 "@cfxjs/eth_block-number@workspace:packages/rpcs/eth_blockNumber":
   version: 0.0.0-use.local
   resolution: "@cfxjs/eth_block-number@workspace:packages/rpcs/eth_blockNumber"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/eth_chain-id@workspace:packages/rpcs/eth_chainId":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/eth_chain-id@workspace:packages/rpcs/eth_chainId"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/eth_gas-price@workspace:packages/rpcs/eth_gasPrice":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/eth_gas-price@workspace:packages/rpcs/eth_gasPrice"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
@@ -2738,6 +2786,14 @@ __metadata:
   dependencies:
     "@cfxjs/bytes": "workspace:packages/bytes"
     bn.js: ^5.2.0
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/net_version@workspace:packages/rpcs/net_version":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/net_version@workspace:packages/rpcs/net_version"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
