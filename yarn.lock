@@ -2905,6 +2905,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_add-hd-path@workspace:packages/rpcs/wallet_addHdPath":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_add-hd-path@workspace:packages/rpcs/wallet_addHdPath"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
 "@cfxjs/wallet_add-vault@workspace:packages/rpcs/wallet_addVault":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_add-vault@workspace:packages/rpcs/wallet_addVault"
