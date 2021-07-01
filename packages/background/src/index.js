@@ -14,7 +14,7 @@ import initDB from './init-db.js'
 if (!IS_PROD_MODE) window.b = browser
 import {rpcEngineOpts} from './rpc-engine-opts'
 
-export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
+export const initBG = async ({initDBFn = initDB, skipRestore = true} = {}) => {
   const data = skipRestore
     ? null
     : (await browser.storage.local.get(EXT_STORAGE))?.[EXT_STORAGE]
@@ -58,6 +58,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
     },
   })
 
+  if (!IS_PROD_MODE) window.r = protectedRequest
   return {db: dbConnection, request: protectedRequest}
 }
 
@@ -66,26 +67,6 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 ;(async () => {
   const {request} = await initBG()
   if (IS_DEV_MODE) {
-    const {result: pk} = await request({
-      method: 'wallet_generatePrivateKey',
-      params: {entropy: 'abc'},
-    })
-    const {result: mn} = await request({
-      method: 'wallet_generateMnemonic',
-    })
-    console.log(pk, mn)
-    console.log(
-      await Promise.all([
-        request({
-          method: 'wallet_generateMnemonic',
-        }),
-        request({
-          method: 'wallet_generatePrivateKey',
-          params: {entropy: 'abc'},
-        }),
-      ]),
-    )
-
     console.log(
       'wallet_unlock',
       await request({
@@ -99,96 +80,19 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
       await request({
         method: 'wallet_importMnemonic',
         params: {
-          mnemonic: mn,
-          password: '12345678',
-        },
-      }),
-    )
-    // console.log(
-    //   'wallet_importMnemonic',
-    //   await request({
-    //     method: 'wallet_importMnemonic',
-    //     params: {
-    //       mnemonic:
-    //         'error mom brown point sun magnet armor fish urge business until plastic',
-    //       password: '12345678',
-    //     },
-    //   }),
-    // )
-    // console.log(
-    //   'wallet_importPrivateKey',
-    //   await request({
-    //     method: 'wallet_importPrivateKey',
-    //     params: {
-    //       privateKey:
-    //         '0xe11910396cc6d896160315bb18d219e182fcb415ad80dccda4fad65a3190218c',
-    //       password: '12345678',
-    //     },
-    //   }),
-    // )
-
-    console.log(
-      'wallet_importAddress',
-      await request({
-        method: 'wallet_importAddress',
-        params: {
-          address: 'cfx:aajj1b1gm7k51mhzm80czcx31kwxrm2f6jxvy30mvk',
+          mnemonic:
+            'error mom brown point sun magnet armor fish urge business until plastic',
           password: '12345678',
         },
       }),
     )
 
-    console.log(
-      'latest_state',
-      'latest_mined',
-      await Promise.all([
-        request({method: 'cfx_epochNumber', params: ['latest_state']}),
-        request({method: 'cfx_epochNumber', params: ['latest_mined']}),
-      ]),
-    )
-    console.log(
-      'latest_state',
-      'latest_mined',
-      await Promise.all([
-        request({method: 'cfx_epochNumber', params: ['latest_state']}),
-        request({method: 'cfx_epochNumber', params: ['latest_mined']}),
-      ]),
-    )
-    console.log(
-      'cfx_getAccount',
-      await request({
-        method: 'cfx_getAccount',
-        params: ['cfx:aamwwx800rcw63n42kbehesuukjdjcnu4ueu84nhp5'],
-      }),
-    )
-    console.log(
-      'cfx_getAccount',
-      await request({
-        method: 'cfx_getAccount',
-        params: ['cfx:aamwwx800rcw63n42kbehesuukjdjcnu4ueu84nhp5'],
-      }),
-    )
-
-    const groups = await request({method: 'wallet_getAccountGroup'})
-    console.log('wallet_getAccountGroup', groups)
-
-    console.log(
-      'wallet_exportAccountGroup',
-      await request({
-        method: 'wallet_exportAccountGroup',
-        params: {password: '12345678', accountGroupId: groups.result[0].eid},
-      }),
-    )
-
-    // await request({
-    //   method: 'wallet_updateAccount',
-    //   params: {
-    //     accountId: 14,
-    //     nickname: 'foo',
-    //   }
-    // })
-
-    // console.log(dbConnection.getAccount().map(({eid}) => eid))
-    // console.log(dbConnection.getAddress().map(({eid}) => eid))
+    await request({
+      method: 'wallet_importAddress',
+      params: {
+        address: 'cfx:aamysddjren1zfp36agsek5fxt2w0st8feps3297ek',
+        password: '12345678',
+      },
+    })
   }
 })()

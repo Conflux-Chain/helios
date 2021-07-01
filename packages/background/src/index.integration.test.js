@@ -1,14 +1,16 @@
 // eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import { expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach } from '@jest/globals' // prettier-ignore
 import waitForExpect from 'wait-for-expect'
 
 import {initBG} from './index.js'
 import {
+  CFX_MAINNET_NAME,
   CFX_LOCALNET_RPC_ENDPOINT,
   CFX_LOCALNET_CHAINID,
   CFX_LOCALNET_NETID,
   CFX_LOCALNET_CURRENCY_SYMBOL,
   DEFAULT_CFX_HDPATH,
+  ETH_MAINNET_NAME,
   ETH_LOCALNET_RPC_ENDPOINT,
   ETH_LOCALNET_CHAINID,
   ETH_LOCALNET_NETID,
@@ -41,7 +43,7 @@ beforeEach(async () => {
         value: DEFAULT_ETH_HDPATH,
       })
       d.createNetwork({
-        name: 'CFX_MAINNET',
+        name: CFX_MAINNET_NAME,
         endpoint: CFX_LOCALNET_RPC_ENDPOINT,
         type: 'cfx',
         chainId: CFX_LOCALNET_CHAINID,
@@ -51,7 +53,7 @@ beforeEach(async () => {
       })
       cfxNetId = 3
       d.createNetwork({
-        name: 'ETH_MAINNET',
+        name: ETH_MAINNET_NAME,
         endpoint: ETH_LOCALNET_RPC_ENDPOINT,
         type: 'eth',
         chainId: ETH_LOCALNET_CHAINID,
@@ -92,7 +94,7 @@ describe('integration test', function () {
         res = await request({
           method: 'eth_getBalance',
           params: {password: '11111111', privateKey: 'abc'},
-          networkName: 'CFX_MAINNET',
+          networkName: CFX_MAINNET_NAME,
         })
         expect(res.error.message).toMatch(
           /Method eth_getBalance not supported by network CFX_MAINNET/,
@@ -123,6 +125,217 @@ describe('integration test', function () {
   })
 
   describe('rpcs', function () {
+    describe('cfx_getStatus', function () {
+      test('cfx_getStatus', async () => {
+        const stat = await request({method: 'cfx_getStatus'})
+        expect(stat.jsonrpc).toBe('2.0')
+        expect(stat.result.chainId).toBe('0xbb7')
+        expect(stat.result.networkId).toBe('0xbb7')
+      })
+    })
+    describe('cfx_chainId', function () {
+      test('cfx_chainId', async () => {
+        const stat = await request({method: 'cfx_chainId'})
+        expect(stat.result).toBe('0xbb7')
+      })
+    })
+    describe('cfx_netVersion', function () {
+      test('cfx_netVersion', async () => {
+        const stat = await request({method: 'cfx_netVersion'})
+        expect(stat.result).toBe('2999')
+      })
+    })
+    describe('eth_chainId', function () {
+      test('eth_chainId', async () => {
+        expect(
+          (
+            await request({
+              method: 'eth_chainId',
+              params: [],
+              networkName: ETH_MAINNET_NAME,
+            })
+          ).result,
+        ).toBe('0x539')
+      })
+    })
+    describe('net_version', function () {
+      test('net_version', async () => {
+        expect(
+          (
+            await request({
+              method: 'net_version',
+              params: [],
+              networkName: ETH_MAINNET_NAME,
+            })
+          ).result,
+        ).toBe('1337')
+      })
+    })
+    describe('wallet_detectNetworkType', function () {
+      test('wallet_detectNetworkType', async () => {
+        expect(
+          (
+            await request({
+              method: 'wallet_detectNetworkType',
+              params: {url: CFX_LOCALNET_RPC_ENDPOINT},
+            })
+          ).result,
+        ).toStrictEqual({chainId: '0xbb7', netId: '2999', type: 'cfx'})
+        expect(
+          (
+            await request({
+              method: 'wallet_detectNetworkType',
+              params: {url: ETH_LOCALNET_RPC_ENDPOINT},
+            })
+          ).result,
+        ).toStrictEqual({chainId: '0x539', netId: '1337', type: 'eth'})
+      })
+    })
+    describe('wallet_deleteNetwork', function () {
+      test('wallet_deleteNetwork', async () => {
+        expect(db.getVault().length).toBe(0)
+        expect(db.getNetwork().length).toBe(2)
+        expect(db.getNetworkByType('eth').length).toBe(1)
+
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        expect(
+          (
+            await request({
+              method: 'wallet_deleteNetwork',
+              params: {password, networkId: db.getNetworkByType('eth')[0].eid},
+            })
+          ).result,
+        ).toBe(true)
+        expect(db.getNetworkByType('eth').length).toBe(0)
+        expect(db.getNetwork().length).toBe(1)
+        expect(db.getAccount().length).toBe(1)
+        expect(db.getAddress().length).toBe(1)
+      })
+      test('delete builtin network', async () => {
+        db.createNetwork({
+          name: 'foo',
+          endpoint: 'http://example.com',
+          type: 'cfx',
+          chainId: '0x1',
+          netId: 1,
+          ticker: 'CFX',
+          hdPath: 1,
+          builtin: true,
+        })
+        expect(db.getNetwork().length).toBe(3)
+        expect(
+          (
+            await request({
+              method: 'wallet_deleteNetwork',
+              params: {password, networkId: db.getNetworkByName('foo')[0].eid},
+            })
+          ).error.message,
+        ).toMatch(/Not allowed to delete builtin network/)
+        expect(db.getNetwork().length).toBe(3)
+      })
+    })
+    describe('wallet_addNetwork', function () {
+      test('add cfx network omit hdPath', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        const networkId = (
+          await request({
+            method: 'wallet_addNetwork',
+            params: {
+              url: CFX_LOCALNET_RPC_ENDPOINT + '/',
+              name: 'cfxfoo',
+              ticker: 'cfx',
+            },
+          })
+        ).result
+
+        expect(db.getAccount().length).toBe(1)
+        const addrs = db.getAddress()
+        expect(addrs.length).toBe(3)
+        expect(addrs[addrs.length - 1].hex).toBe(CFX_ACCOUNTS[0].address)
+        expect(addrs[addrs.length - 1].cfxHex).toBe(CFX_ACCOUNTS[0].cfxHex)
+        expect(db.getNetworkById(networkId).address[0].eid).toBe(
+          addrs[addrs.length - 1].eid,
+        )
+      })
+      test('add eth network omit hdPath', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        const networkId = (
+          await request({
+            method: 'wallet_addNetwork',
+            params: {
+              url: ETH_LOCALNET_RPC_ENDPOINT + '/',
+              name: 'ethfoo',
+              ticker: 'eth',
+            },
+          })
+        ).result
+
+        expect(db.getAccount().length).toBe(1)
+        const addrs = db.getAddress()
+        expect(addrs.length).toBe(3)
+        expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
+        expect(addrs[addrs.length - 1].cfxHex).toBe(null)
+        expect(db.getNetworkById(networkId).address[0].eid).toBe(
+          addrs[addrs.length - 1].eid,
+        )
+      })
+      test('add eth network, with cfxOnly: true, type: pub vault', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        await request({
+          method: 'wallet_importAddress',
+          params: {
+            address:
+              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            password,
+          },
+        })
+        await waitForExpect(() => expect(db.getAccount().length).toBe(2))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(3))
+
+        const networkEid = (
+          await request({
+            method: 'wallet_addNetwork',
+            params: {
+              url: ETH_LOCALNET_RPC_ENDPOINT + '/',
+              name: 'ethfoo',
+              ticker: 'eth',
+            },
+          })
+        ).result
+
+        await waitForExpect(() => expect(db.getAccount().length).toBe(2))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(4))
+
+        const addrs = db.getAddress()
+        expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
+        expect(addrs[addrs.length - 1].cfxHex).toBe(null)
+        expect(db.getNetworkById(networkEid).address[0].eid).toBe(
+          addrs[addrs.length - 1].eid,
+        )
+      })
+    })
     describe('wallet_importAddress', function () {
       test('wallet_importAddress', async function () {
         expect(db.getVault().length).toBe(0)
@@ -421,7 +634,7 @@ describe('integration test', function () {
         expect(res.result[0].privateKey).toBe(
           '0xf581242f2de1111638b9da336c283f177ca1e17cb3d6e3b09434161e26135992',
         )
-        expect(res.result[0].network.name).toBe('CFX_MAINNET')
+        expect(res.result[0].network.name).toBe(CFX_MAINNET_NAME)
         expect(res.result[1].hex).toBe(
           '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
         )
@@ -430,7 +643,7 @@ describe('integration test', function () {
         expect(res.result[1].privateKey).toBe(
           '0x6a94c1f02edc1caff0849d46a068ff2819c0a338774fb99674e3d286a3351552',
         )
-        expect(res.result[1].network.name).toBe('ETH_MAINNET')
+        expect(res.result[1].network.name).toBe(ETH_MAINNET_NAME)
       })
     })
     describe('wallet_exportAccountGroup', function () {
