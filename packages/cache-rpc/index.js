@@ -24,7 +24,7 @@ export const getCacheStore = (
       throw new Error(
         'Invalid cache option, no epoch/block ref pos in @cfxjs/rpc-epoch-ref',
       )
-    let epoch = params[epochPos]
+    let epoch = params[epochPos] ?? 'default'
 
     // epoch is latest...
     if (!epoch.startsWith('0x')) {
@@ -55,7 +55,10 @@ export const getCache = ({req, conf}) => {
   const {key} = conf
 
   const Cache = getCacheStore(req, conf)
-  if (!Cache) return
+  if (!Cache) {
+    if (isFunction(conf?.afterGet)) return conf.afterGet(req)
+    return
+  }
 
   const k = getCacheKey(key, req)
 
