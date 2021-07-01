@@ -94,7 +94,7 @@
                       query        (if or? (def-get-query-or query-attr-k symbols)
                                        (def-get-query-and query-attr-k symbols))]
                   (q query (mapv #(get % 2) data))))))]
-    f))
+    (comp sort f)))
 
 (defn def-get-by-id-fn
   "Given model eg. :vault, attr-keys eg. [:type :data] create the getVaultById function;"
@@ -183,7 +183,7 @@
   (let [attrk (->attrk model attr)
         query (def-get-by-query attrk)
         f     (fn [attrv] (q query attrv))]
-    f))
+    (comp sort f)))
 
 (defn def-create-fn [{:keys [attr-keys model]}]
   (let [input-attr-map->transact-attr-map (fn [acc attr attrv]
@@ -264,7 +264,7 @@
    (let [js-schema     (j->c js-schema)
          db-to-restore (when data-to-restore (cljs.reader/read-string data-to-restore))
          db            (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn (js-schema->schema js-schema)))
-         tfn           (partial d/transact! db)
+         tfn           (fn [txs] (d/transact! db txs))
          qfn           (fn [query & args] (apply d/q query (d/db db) args))
          pfn           (partial d/pull (d/db db))
          efn           (fn [model attr-keys & args] (apply de/entity (d/db db) model attr-keys args))
@@ -362,4 +362,36 @@
        :where
        [?e :account/index 0]
        [?e :account/nickname "a"]
-       [?e :account/address ?a]]))
+       [?e :account/address ?a]])
+
+  (q '[:find [?a ...]
+       :where
+       [?a :address/index]])
+
+  (q '[:find ?g ?n ?v ?acc ?addr ?addr-idx ?addr-hex
+       :keys accountGroupId networkId vaultId accountId addressId addressIndex addressHex
+       :where
+       [?v :vault/cfxOnly ?cfxOnly]
+       [?v :vault/type ?vtype]
+       [(and (not= ?cfxOnly true)
+             (not= ?vtype "pub"))]
+       [?g :accountGroup/vault ?v]
+       [?g :accountGroup/account ?acc]
+       [?g :accountGroup/network ?n]
+       [?acc :account/address ?addr]
+       [?addr :address/hex ?addr-hex]
+       [?addr :address/index ?addr-idx]])
+
+  (tap> (map first (->> (count (q '[:find ?g ?n ?v ?acc ?addr ?addr-idx ?addr-hex ?addr-cfx-hex ?addr-base32
+                                    :keys accountGroupId networkId vaultId accountId addressId addressIndex addressHex addressCfxHex addressBase32
+                                    :where
+                                    [?g :accountGroup/vault ?v]
+                                    [?g :accountGroup/account ?acc]
+                                    [?g :accountGroup/network ?n]
+                                    [?acc :account/address ?addr]
+                                    [?addr :address/index ?addr-idx]
+                                    [?addr :address/hex ?addr-hex]
+                                    [?addr :address/cfxHex ?addr-cfx-hex]
+                                    [?addr :address/base32 ?addr-base32]]))
+                        (group-by :accountId)
+                        vals))))
