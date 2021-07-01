@@ -2946,6 +2946,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_detect-network-type@workspace:packages/rpcs/wallet_detectNetworkType":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_detect-network-type@workspace:packages/rpcs/wallet_detectNetworkType"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_discover-accounts@workspace:packages/rpcs/wallet_discoverAccounts":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_discover-accounts@workspace:packages/rpcs/wallet_discoverAccounts"
