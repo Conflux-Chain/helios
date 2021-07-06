@@ -8,6 +8,11 @@ export const schemas = {
   input: [map, {closed: true}, ['mnemonic', [stringp, {min: 1}]]],
 }
 
+export const permissions = {
+  external: ['popup', 'inpage'],
+  locked: true,
+}
+
 function getWordListByWord(word) {
   for (const lang in wordlists) {
     if (wordlists[lang]?.includes(word)) return lang

@@ -115,7 +115,8 @@
             (insert schemas))
           (when (not (re-search-forward "export.*const.*permissions" nil t))
             (insert perms))
-          (when (not (re-search-forward "export.*const.*main" nil t))
+          (when (and (not (re-search-forward "export.*const.*main" nil t))
+                     (not (re-search-forward "export.*function.*main" nil t)))
             (insert main)))))))
 
 (add-hook! js2-mode 'helios-setup-rpc-indexjs)
