@@ -38,7 +38,16 @@ releases:
 declined:
   - "@cfxjs/account"
   - "@cfxjs/addr-by-network"
+  - "@cfxjs/associative"
   - helios-background
+  - "@cfxjs/compose"
+  - "@cfxjs/content-script"
+  - "@cfxjs/csp"
+  - "@cfxjs/errors"
+  - "@cfxjs/extension-runtime"
+  - "@cfxjs/fetch-rpc"
+  - helios-inpage
+  - "@cfxjs/iterators"
   - "@cfxjs/cfx_epoch-number"
   - "@cfxjs/cfx_get-account"
   - "@cfxjs/cfx_get-balance"
@@ -55,3 +64,5 @@ declined:
   - "@cfxjs/wallet_unlock"
   - workspace-tools
   - doc
+  - "@cfxjs/test-helpers"
+  - "@cfxjs/transducers"

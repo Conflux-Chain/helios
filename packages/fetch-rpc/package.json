@@ -4,7 +4,7 @@
   "version": "0.0.2",
   "main": "index.js",
   "dependencies": {
-    "@thi.ng/cache": "1.0.84",
+    "@thi.ng/cache": "1.0.85",
     "ky": "0.28.5"
   },
   "devDependencies": {
