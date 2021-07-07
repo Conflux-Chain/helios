@@ -69,10 +69,10 @@ const schema = {
     //   ref: 'hdPath',
     //   doc: 'Entity ID of hd path, when set, will use this custom hd path for whatever network',
     // },
-    network: {
-      doc: 'Network supported by this account group',
-      ref: true,
-    },
+    // network: {
+    //   doc: 'Network supported by this account group',
+    //   ref: true,
+    // },
     hidden: {doc: 'If hide this accountGroup in ui'},
     account: {ref: true, many: true, component: true},
   },

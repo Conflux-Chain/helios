@@ -128,25 +128,18 @@ export async function newAccounts(arg) {
 
 export function newAccountGroup(arg) {
   const {
-    db: {getAccountGroup, getNetwork, getVaultById, t},
+    db: {getAccountGroup, getVaultById, t},
     vaultId,
   } = arg
   const groups = getAccountGroup()
   const vault = getVaultById(vaultId)
   const groupName = `Vault ${groups.length + 1}`
 
-  const networks = getNetwork().reduce((acc, n) => {
-    if (vault.cfxOnly && n.type === 'cfx') return acc
-    acc.push(n)
-    return acc
-  }, [])
-
   const {tempids} = t([
     {
       eid: -1,
       accountGroup: {nickname: groupName, vault: vaultId, hidden: false},
     },
-    ...networks.map(({eid}) => ({eid: -1, accountGroup: {network: eid}})),
   ])
   const groupId = tempids['-1']
 
