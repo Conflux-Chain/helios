@@ -1,5 +1,6 @@
 import {map, stringp, boolean, dbid} from '@cfxjs/spec'
 import {isBoolean} from '@cfxjs/checks'
+import {isUndefined} from '@cfxjs/checks'
 
 export const NAME = 'wallet_updateAccount'
 
@@ -20,6 +21,7 @@ export const schemas = {
         },
       ],
     ],
+    ['offline', {optional: true}, boolean],
     ['hidden', {optional: true}, boolean],
   ],
 }
@@ -32,7 +34,7 @@ export const permissions = {
 export const main = async ({
   Err: {InvalidParams},
   db: {getAccountById, t, anyDupNickAccount},
-  params: {nickname, hidden, accountId},
+  params: {nickname, hidden, accountId, offline},
 }) => {
   const account = getAccountById(accountId)
   if (!account) throw InvalidParams(`Invalid account id ${accountId}`)
@@ -44,5 +46,6 @@ export const main = async ({
   t([
     nickname && {eid: accountId, account: {nickname}},
     isBoolean(hidden) && {eid: accountId, account: {hidden}},
+    !isUndefined(offline) && {eid: accountId, account: {offline}},
   ])
 }
