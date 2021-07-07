@@ -49,6 +49,7 @@ const schema = {
     ticker: {doc: 'Network currency symbol'},
     address: {ref: true, many: true, component: true},
     builtin: {doc: "Indicating builtin network, shouldn't be deleted"},
+    scanUrl: {doc: 'Url of block chain explorer'},
   },
   /*
     vault, container of credential (address/pk/mnemonic)

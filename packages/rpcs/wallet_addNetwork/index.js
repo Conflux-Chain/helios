@@ -11,6 +11,7 @@ export const schemas = {
     map,
     {closed: true},
     ['url', url],
+    ['explorerUrl', {optional: true}, url],
     ['name', [stringp, {min: 3, max: 128}]],
     ['ticker', [stringp, {min: 2, max: 16}]],
     [
@@ -58,7 +59,7 @@ export const main = async ({
     getOneHdPath,
     filterAccountGroupByNetworkType,
   },
-  params: {url, name, ticker, hdPath},
+  params: {url, name, ticker, hdPath, explorerUrl},
 }) => {
   const [dupNameNetwork] = getNetworkByName(name)
   if (dupNameNetwork) throw InvalidParam('Duplicate network name')
@@ -105,6 +106,7 @@ export const main = async ({
         builtin: false,
       },
     },
+    explorerUrl && {eid: 'networkId', network: {scanUrl: explorerUrl}},
   ])
 
   const groups = filterAccountGroupByNetworkType(networkType)
