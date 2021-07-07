@@ -1,10 +1,17 @@
 (ns cfxjs.db.queries
   (:require
+   [cfxjs.db.datascript.core :as d]
    [cfxjs.db.schema :refer [model->attr-keys]]))
 
-(declare q e)
+(declare q e t fdb)
 
-(def queries {:getOneAccountByGroupAndNickname (fn [{:keys [groupId nickname]}]
+(def queries {:batchTx (fn [txs]
+                         (let [txs (-> txs js/window.JSON.parse (js->clj :keywordize-keys true))
+                               txs (map (fn [[e a v]] [:db/add e (keyword a) v]) txs)
+                               rst #p (t txs)]
+                           (clj->js rst)))
+
+              :getOneAccountByGroupAndNickname (fn [{:keys [groupId nickname]}]
                                                  (e :account
                                                     (first (q '[:find [?e ...]
                                                                 :in $ ?gid ?eqnick
@@ -43,24 +50,41 @@
                                                                       [?as :account/nickname ?to-check-nick]]
                                                                     accountId nickname))))
               :filterAccountGroupByNetworkType (fn [network-type]
-                                                    (map #(e :accountGroup %) (if (= network-type "eth")
-                                                                                ;; accountGroup without vault with
-                                                                                ;; network-type "pub", cfxOnly true
-                                                                                (q '[:find [?g ...]
-                                                                                     :where
-                                                                                     [?g :accountGroup/vault ?v]
-                                                                                     [?v :vault/cfxOnly ?cfxOnly]
-                                                                                     [?v :vault/type ?vtype]
-                                                                                     (not [?v :vault/cfxOnly true]
-                                                                                          [?v :vault/type "pub"])])
-                                                                                ;; all accountGroup
-                                                                                (q '[:find [?g ...]
-                                                                                     :where
-                                                                                     [?g :accountGroup/vault]]))))})
+                                                 (map #(e :accountGroup %) (if (= network-type "eth")
+                                                                             ;; accountGroup without vault with
+                                                                             ;; network-type "pub", cfxOnly true
+                                                                             (q '[:find [?g ...]
+                                                                                  :where
+                                                                                  [?g :accountGroup/vault ?v]
+                                                                                  [?v :vault/cfxOnly ?cfxOnly]
+                                                                                  [?v :vault/type ?vtype]
+                                                                                  (not [?v :vault/cfxOnly true]
+                                                                                       [?v :vault/type "pub"])])
+                                                                             ;; all accountGroup
+                                                                             (q '[:find [?g ...]
+                                                                                  :where
+                                                                                  [?g :accountGroup/vault]]))))
+              :getExportAllData                (fn []
+                                                 (let [to-export                #{"hdPath" "network" "vault" "accountGroup" "account" "address"}
+                                                       datoms                   (d/datoms
+                                                                                 (fdb (fn [db datom]
+                                                                                        (contains? to-export (namespace (.-a datom))))) :eavt)
+                                                       is-builtin-network-datom #(= :network/builtin (.-a %))
+                                                       builtin-entity-id        (reduce (fn [acc d]
+                                                                                          (if (and (is-builtin-network-datom d) (true? (.-v d)))
+                                                                                            (conj acc (.-e d))
+                                                                                            acc))
+                                                                                        #{1 2} datoms)
+                                                       datoms                   (filter #(not (contains? builtin-entity-id (.-e %))) datoms)]
+                                                   (clj->js (map
+                                                             (fn [d] [(.-e d) (str (namespace (.-a d)) "/" (name (.-a d))) (.-v d)])
+                                                             datoms))))})
 
-(defn apply-queries [conn qfn entity]
+(defn apply-queries [conn qfn entity tfn ffn]
   (def q qfn)
   (def e (fn [model eid] (entity model (model->attr-keys model) eid)))
+  (def t tfn)
+  (def fdb ffn)
   (reduce-kv
    (fn
      [acc k v]

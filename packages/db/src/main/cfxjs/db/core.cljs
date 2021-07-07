@@ -17,7 +17,7 @@
 ;; debug
 (set! (.-jtc js/window) j->c)
 
-(declare conn t q p e)
+(declare conn t q p e fdb)
 
 (comment (:db/memOnly (.-rschema @conn)))
 
@@ -268,18 +268,20 @@
          qfn           (fn [query & args] (apply d/q query (d/db db) args))
          pfn           (partial d/pull (d/db db))
          efn           (fn [model attr-keys & args] (apply de/entity (d/db db) model attr-keys args))
+         ffn           (fn [f] (d/filter (d/db db) f))
          rst           (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
          rst           (assoc rst :_db db)
          ;; rst           (assoc rst :getById (comp clj->js get-by-id))
          ;; rst           (assoc rst :deleteById delete-by-id)
          ;; rst           (assoc rst :updateById update-by-id)
          rst           (assoc rst :tmpid random-tmp-id)
-         rst           (apply-queries rst qfn efn)]
+         rst           (apply-queries rst qfn efn tfn ffn)]
      (def conn db)
      (def t tfn)
      (def q qfn)
      (def p pfn)
      (def e efn)
+     (def fdb ffn)
      (defn db-transact [arg]
        (let [arg (j->c arg)
              arg (if (vector? arg) arg [arg])
@@ -394,4 +396,12 @@
                                     [?addr :address/cfxHex ?addr-cfx-hex]
                                     [?addr :address/base32 ?addr-base32]]))
                         (group-by :accountId)
-                        vals))))
+                        vals)))
+
+  (q '[:find ?vault
+       :keys vault
+       :where
+       [?vault :vault/type]])
+  (d/datoms
+   (fdb (fn [db datom] (not= "vault" (namespace (:a datom)))))
+   :eavt))

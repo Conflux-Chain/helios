@@ -3014,6 +3014,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/wallet_export-all@workspace:packages/rpcs/wallet_exportAll":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_export-all@workspace:packages/rpcs/wallet_exportAll"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+    browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/wallet_generate-address@workspace:packages/rpcs/wallet_generateAddress":
   version: 0.0.0-use.local
   resolution: "@cfxjs/wallet_generate-address@workspace:packages/rpcs/wallet_generateAddress"
@@ -3071,6 +3080,16 @@ __metadata:
   resolution: "@cfxjs/wallet_import-address@workspace:packages/rpcs/wallet_importAddress"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/wallet_import-all@workspace:packages/rpcs/wallet_importAll":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wallet_import-all@workspace:packages/rpcs/wallet_importAll"
+  dependencies:
+    "@cfxjs/spec": "workspace:packages/spec"
+    browser-passworder: 2.0.3
+    webextension-polyfill: 0.8.0
   languageName: unknown
   linkType: soft
 
@@ -16490,12 +16509,14 @@ fsevents@~2.3.1:
     "@cfxjs/wallet_discover-accounts": "workspace:packages/rpcs/wallet_discoverAccounts"
     "@cfxjs/wallet_export-account": "workspace:packages/rpcs/wallet_exportAccount"
     "@cfxjs/wallet_export-account-group": "workspace:packages/rpcs/wallet_exportAccountGroup"
+    "@cfxjs/wallet_export-all": "workspace:packages/rpcs/wallet_exportAll"
     "@cfxjs/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
     "@cfxjs/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey"
     "@cfxjs/wallet_get-account-group": "workspace:packages/rpcs/wallet_getAccountGroup"
     "@cfxjs/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
     "@cfxjs/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
     "@cfxjs/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
+    "@cfxjs/wallet_import-all": "workspace:packages/rpcs/wallet_importAll"
     "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
     "@cfxjs/wallet_is-locked": "workspace:packages/rpcs/wallet_isLocked"
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock"
@@ -16507,6 +16528,7 @@ fsevents@~2.3.1:
     "@cfxjs/wallet_validate-private-key": "workspace:packages/rpcs/wallet_validatePrivateKey"
     "@thi.ng/rstream": ^6.0.10
     "@thi.ng/rstream-csp": ^2.0.69
+    browser-passworder: 2.0.3
     regenerator-runtime: ^0.13.8
     webextension-polyfill: ^0.8.0
   languageName: unknown

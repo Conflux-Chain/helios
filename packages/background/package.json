@@ -39,12 +39,14 @@
     "@cfxjs/wallet_discover-accounts": "workspace:packages/rpcs/wallet_discoverAccounts",
     "@cfxjs/wallet_export-account": "workspace:packages/rpcs/wallet_exportAccount",
     "@cfxjs/wallet_export-account-group": "workspace:packages/rpcs/wallet_exportAccountGroup",
+    "@cfxjs/wallet_export-all": "workspace:packages/rpcs/wallet_exportAll",
     "@cfxjs/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic",
     "@cfxjs/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey",
     "@cfxjs/wallet_get-account-group": "workspace:packages/rpcs/wallet_getAccountGroup",
     "@cfxjs/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance",
     "@cfxjs/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce",
     "@cfxjs/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress",
+    "@cfxjs/wallet_import-all": "workspace:packages/rpcs/wallet_importAll",
     "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey",
     "@cfxjs/wallet_is-locked": "workspace:packages/rpcs/wallet_isLocked",
     "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock",
@@ -60,6 +62,7 @@
     "webextension-polyfill": "^0.8.0"
   },
   "devDependencies": {
-    "@cfxjs/test-helpers": "workspace:packages/test-helpers"
+    "@cfxjs/test-helpers": "workspace:packages/test-helpers",
+    "browser-passworder": "2.0.3"
   }
 }

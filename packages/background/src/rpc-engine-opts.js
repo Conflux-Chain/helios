@@ -34,6 +34,8 @@ import * as walletValidateMnemonic from '@cfxjs/wallet_validate-mnemonic'
 import * as walletValidatePrivateKey from '@cfxjs/wallet_validate-private-key'
 import * as walletExportAccount from '@cfxjs/wallet_export-account'
 import * as walletExportAccountGroup from '@cfxjs/wallet_export-account-group'
+import * as walletExportAll from '@cfxjs/wallet_export-all'
+import * as walletImportAll from '@cfxjs/wallet_import-all'
 import * as walletDeleteAccountGroup from '@cfxjs/wallet_delete-account-group'
 import * as cfxGetStatus from '@cfxjs/cfx_get-status'
 import * as ethChainId from '@cfxjs/eth_chain-id'
@@ -72,6 +74,8 @@ export const rpcEngineOpts = {
     walletGetAccountGroup,
     walletExportAccount,
     walletExportAccountGroup,
+    walletExportAll,
+    walletImportAll,
     walletDeleteAccountGroup,
     walletAddHdPath,
     walletAddNetwork,

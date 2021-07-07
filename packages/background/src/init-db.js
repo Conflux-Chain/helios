@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill'
+
 import {
   CFX_MAINNET_RPC_ENDPOINT,
   CFX_MAINNET_NAME,
@@ -114,6 +116,15 @@ function initNetwork(d) {
   ])
 }
 
-export default function initDB(d) {
+export default async function initDB(d, opts = {}) {
+  const {importAllTx} = opts
+  if (importAllTx) {
+    await browser.storage.local.clear()
+  }
+
   initNetwork(d)
+
+  if (importAllTx) {
+    d.batchTx(importAllTx)
+  }
 }

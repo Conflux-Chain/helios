@@ -14,14 +14,17 @@ import initDB from './init-db.js'
 if (!IS_PROD_MODE) window.b = browser
 import {rpcEngineOpts} from './rpc-engine-opts'
 
-export const initBG = async ({initDBFn = initDB, skipRestore = true} = {}) => {
-  const data = skipRestore
-    ? null
-    : (await browser.storage.local.get(EXT_STORAGE))?.[EXT_STORAGE]
+export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
+  const importAllTx = (await browser.storage.local.get('wallet_importAll'))
+    ?.wallet_importAll
+  const data =
+    skipRestore || Boolean(importAllTx)
+      ? null
+      : (await browser.storage.local.get(EXT_STORAGE))?.[EXT_STORAGE]
 
   const dbConnection = createdb(SCHEMA, persist, data || null)
   if (!IS_PROD_MODE) window.d = dbConnection
-  if (!data) initDBFn(dbConnection)
+  if (!data) await initDBFn(dbConnection, {importAllTx})
 
   // ## initialize rpc engine
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)

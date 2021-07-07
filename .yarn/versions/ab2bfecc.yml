@@ -27,7 +27,9 @@ releases:
   "@cfxjs/wallet_discover-accounts": patch
   "@cfxjs/wallet_export-account": patch
   "@cfxjs/wallet_export-account-group": patch
+  "@cfxjs/wallet_export-all": patch
   "@cfxjs/wallet_get-account-group": patch
+  "@cfxjs/wallet_import-all": patch
   "@cfxjs/wallet_import-mnemonic": patch
   "@cfxjs/wallet_update-account": patch
   "@cfxjs/wallet_update-account-group": patch
@@ -62,7 +64,7 @@ declined:
   - "@cfxjs/wallet_import-address"
   - "@cfxjs/wallet_import-private-key"
   - "@cfxjs/wallet_unlock"
-  - workspace-tools
-  - doc
   - "@cfxjs/test-helpers"
   - "@cfxjs/transducers"
+  - workspace-tools
+  - doc

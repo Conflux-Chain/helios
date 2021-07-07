@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach } from '@jest/globals' // prettier-ignore
 import waitForExpect from 'wait-for-expect'
+import {decrypt} from 'browser-passworder'
 
 import {initBG} from './index.js'
 import {
@@ -646,6 +647,63 @@ describe('integration test', function () {
         expect(res.result[1].network.name).toBe(ETH_MAINNET_NAME)
       })
     })
+    describe('wallet_exportAll', function () {
+      test('wallet_exportAll', async () => {
+        const {result: pk} = await request({
+          method: 'wallet_generatePrivateKey',
+          params: {entropy: 'abc'},
+        })
+
+        await request({
+          method: 'wallet_importPrivateKey',
+          params: {privateKey: pk, password},
+        })
+
+        const {result: rst} = await request({
+          method: 'wallet_exportAll',
+          params: {password, encryptPassword: '11111111'},
+        })
+        expect(rst.encrypted).toBeDefined()
+        const decrypted = await decrypt('11111111', rst.encrypted)
+        expect(Array.isArray(JSON.parse(decrypted))).toBe(true)
+      })
+    })
+    describe('wallet_importAll', function () {
+      test('wallet_importAll', async () => {
+        expect(db.getAccountGroup().length).toBe(0)
+
+        res = await request({
+          method: 'wallet_generatePrivateKey',
+          params: {entropy: 'abc'},
+        })
+
+        await request({
+          method: 'wallet_importPrivateKey',
+          params: {privateKey: res.result, password},
+        })
+        expect(db.getAccountGroup().length).toBe(1)
+
+        const {result: rst} = await request({
+          method: 'wallet_exportAll',
+          params: {password, encryptPassword: '11111111'},
+        })
+
+        browser.runtime.reload = jest.fn()
+        expect(
+          (
+            await request({
+              method: 'wallet_importAll',
+              params: {
+                vaults: JSON.stringify(rst),
+                decryptPassword: '11111111',
+              },
+            })
+          ).result,
+        ).toBe('0x1')
+        expect(browser.runtime.reload).toHaveBeenCalledTimes(1)
+      })
+    })
+
     describe('wallet_exportAccountGroup', function () {
       test('export private key account group', async function () {
         const {result: pk} = await request({
