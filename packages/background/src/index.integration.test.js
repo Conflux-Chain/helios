@@ -689,21 +689,19 @@ describe('integration test', function () {
         })
 
         browser.runtime.reload = jest.fn()
-        expect(
-          (
-            await request({
-              method: 'wallet_importAll',
-              params: {
-                vaults: JSON.stringify(rst),
-                decryptPassword: '11111111',
-              },
-            })
-          ).result,
-        ).toBe('0x1')
+        res = await request({
+          method: 'wallet_importAll',
+          params: {
+            password,
+            vaults: JSON.stringify(rst),
+            decryptPassword: '11111111',
+          },
+        })
+
+        expect(res.result).toBe('0x1')
         expect(browser.runtime.reload).toHaveBeenCalledTimes(1)
       })
     })
-
     describe('wallet_exportAccountGroup', function () {
       test('export private key account group', async function () {
         const {result: pk} = await request({

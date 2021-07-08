@@ -8,7 +8,7 @@
 (def queries {:batchTx (fn [txs]
                          (let [txs (-> txs js/window.JSON.parse (js->clj :keywordize-keys true))
                                txs (map (fn [[e a v]] [:db/add e (keyword a) v]) txs)
-                               rst #p (t txs)]
+                               rst (t txs)]
                            (clj->js rst)))
 
               :getOneAccountByGroupAndNickname (fn [{:keys [groupId nickname]}]
