@@ -84,11 +84,11 @@ describe('integration test', function () {
       test('error call restrict method when wallet locked', async () => {
         db.setLocked(true)
         res = await request({
-          method: 'wallet_importPrivateKey',
-          params: {password: '11111111', privateKey: 'abc'},
+          method: 'wallet_exportAll',
+          params: {password: '11111111', encryptPassword: '11111111'},
         })
         expect(res.error.message).toMatch(
-          /Method wallet_importPrivateKey not found, wallet is locked/,
+          /Method wallet_exportAll not found, wallet is locked/,
         )
       })
       test('error call method on incorrect network', async () => {
