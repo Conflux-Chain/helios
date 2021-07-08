@@ -2,11 +2,6 @@ import {privateKey, map, password} from '@cfxjs/spec'
 
 export const NAME = 'wallet_importPrivateKey'
 
-export const permissions = {
-  methods: ['wallet_addVault'],
-  external: ['popup'],
-}
-
 export const schemas = {
   input: [
     map,
@@ -14,6 +9,12 @@ export const schemas = {
     ['privateKey', privateKey],
     ['password', password],
   ],
+}
+
+export const permissions = {
+  locked: true,
+  methods: ['wallet_addVault'],
+  external: ['popup'],
 }
 
 export const main = async ({params, rpcs: {wallet_addVault}}) =>
