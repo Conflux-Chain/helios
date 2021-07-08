@@ -13,6 +13,7 @@ releases:
   "@cfxjs/eth_chain-id": patch
   "@cfxjs/eth_gas-price": patch
   "@cfxjs/fluent-wallet-consts": patch
+  "@cfxjs/json-rpc-error": patch
   "@cfxjs/net_version": patch
   "@cfxjs/rpc-engine": patch
   "@cfxjs/spec": patch
