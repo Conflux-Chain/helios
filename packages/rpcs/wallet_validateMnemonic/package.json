@@ -2,7 +2,7 @@
   "name": "@cfxjs/wallet_validate-mnemonic",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "dependencies": {
     "@cfxjs/spec": "workspace:packages/spec",
     "bip39": "3.0.4"
