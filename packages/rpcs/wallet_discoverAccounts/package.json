@@ -2,7 +2,7 @@
   "name": "@cfxjs/wallet_discover-accounts",
   "main": "index.js",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "dependencies": {
     "@cfxjs/discover-accounts": "workspace:packages/discover-accounts",
     "@cfxjs/spec": "workspace:packages/spec",
