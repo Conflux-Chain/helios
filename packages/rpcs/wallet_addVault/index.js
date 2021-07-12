@@ -8,9 +8,9 @@ import {
   password,
 } from '@cfxjs/spec'
 import {encrypt, decrypt} from 'browser-passworder'
-import {partial, compL} from '@cfxjs/compose'
+import {compL} from '@cfxjs/compose'
 import {validateBase32Address, decode, encode} from '@cfxjs/base32-address'
-import {fromPrivate} from '@cfxjs/account'
+import {fromPrivate, toAccountAddress} from '@cfxjs/account'
 import {stripHexPrefix} from '@cfxjs/utils'
 
 export const NAME = 'wallet_addVault'
@@ -33,15 +33,16 @@ export const permissions = {
     'wallet_getBalance',
     'wallet_getNextNonce',
     'wallet_validatePassword',
+    'wallet_deleteAccountGroup',
   ],
   db: [
     't',
-    'getById',
     'getVault',
+    'getVaultById',
     'createVault',
     'getAccountGroup',
     'getNetwork',
-    'getOneAccount',
+    'getOneAccountByGroupAndIndex',
   ],
 }
 
@@ -50,7 +51,7 @@ export async function newAccounts(arg) {
     groupId,
     rpcs: {wallet_discoverAccounts},
     vault,
-    db: {getNetwork, t, getOneAccount},
+    db: {getNetwork, t, getOneAccountByGroupAndIndex},
   } = arg
 
   if (vault.type === 'hd') {
@@ -61,28 +62,36 @@ export async function newAccounts(arg) {
   const networks = getNetwork()
 
   networks.forEach(({eid, netId, type}) => {
-    const account = getOneAccount({index: 0, accountGroup: groupId})
+    const account = getOneAccountByGroupAndIndex({index: 0, groupId})
     if (vault.type === 'pk') {
+      const addr = fromPrivate(vault.ddata).address
       t([
         {
           eid: -1,
           address: {
-            hex: fromPrivate(vault.ddata).address,
+            hex: addr,
             pk: vault.ddata,
             vault: vault.eid,
-            network: eid,
           },
         },
+        type === 'cfx' && {
+          eid: -1,
+          address: {
+            cfxHex: toAccountAddress(addr),
+            base32: encode(toAccountAddress(addr), netId, true),
+          },
+        },
+        {eid, network: {address: -1}},
         {
           eid: account?.eid ?? -2,
           account: {
-            accountGroup: groupId,
             address: -1,
             index: 0,
             nickname: 'Account 1',
             hidden: false,
           },
         },
+        {eid: groupId, accountGroup: {account: account?.eid ?? -2}},
       ])
 
       return
@@ -91,21 +100,27 @@ export async function newAccounts(arg) {
     if (vault.cfxOnly && type !== 'cfx') return
 
     t([
-      {eid: -1, address: {hex: vault.ddata, vault: vault.eid, network: eid}},
-      vault.cfxOnly && {eid: -1, address: {cfxHex: vault.ddata}},
+      {eid: -1, address: {hex: vault.ddata, vault: vault.eid}},
       type === 'cfx' && {
         eid: -1,
-        address: {base32: encode(vault.ddata, netId, true)},
+        address: {
+          base32: encode(toAccountAddress(vault.ddata), netId, true),
+          cfxHex: toAccountAddress(vault.ddata),
+        },
       },
+      {eid, network: {address: -1}},
       {
         eid: account?.eid ?? -2,
         account: {
           index: 0,
           nickname: 'Account 1',
           address: -1,
-          accountGroup: groupId,
           hidden: false,
         },
+      },
+      {
+        eid: groupId,
+        accountGroup: {account: account?.eid ?? -2},
       },
     ])
   })
@@ -113,25 +128,18 @@ export async function newAccounts(arg) {
 
 export function newAccountGroup(arg) {
   const {
-    db: {getAccountGroup, getNetwork, getById, t},
+    db: {getAccountGroup, getVaultById, t},
     vaultId,
   } = arg
   const groups = getAccountGroup()
-  const vault = getById(vaultId)
+  const vault = getVaultById(vaultId)
   const groupName = `Vault ${groups.length + 1}`
-
-  const networks = getNetwork().reduce((acc, n) => {
-    if (vault.cfxOnly && n.type === 'cfx') return acc
-    acc.push(n)
-    return acc
-  }, [])
 
   const {tempids} = t([
     {
       eid: -1,
       accountGroup: {nickname: groupName, vault: vaultId, hidden: false},
     },
-    ...networks.map(({eid}) => ({eid: -1, accountGroup: {network: eid}})),
   ])
   const groupId = tempids['-1']
 
@@ -149,23 +157,25 @@ const processAddress = address => {
   }
 }
 
-export async function main(arg) {
+export const main = async arg => {
   const {
-    db: {createVault, getVault},
-    rpcs: {wallet_validatePassword},
-    params: {password, mnemonic, privateKey, address},
+    db: {createVault, getVault, getAccountGroup, getVaultById},
+    rpcs: {wallet_validatePassword, wallet_deleteAccountGroup},
+    params: {password, mnemonic, privateKey, address, cfxOnly, force},
     Err,
   } = arg
   if (!(await wallet_validatePassword({password})))
     throw Err.InvalidParams('Invalid password')
 
-  const vault = {}
+  const vault = {cfxOnly: false}
   vault.data = mnemonic || privateKey || address
   if (privateKey) {
     vault.type = 'pk'
     vault.data = stripHexPrefix(privateKey)
-  } else if (mnemonic) vault.type = 'hd'
-  else if (address) {
+  } else if (mnemonic) {
+    vault.type = 'hd'
+    if (cfxOnly) vault.cfxOnly = true
+  } else if (address) {
     const validateResult = processAddress(address, Err)
     vault.type = 'pub'
     vault.data = validateResult.address
@@ -173,18 +183,45 @@ export async function main(arg) {
   }
 
   const vaults = getVault()
-  const anyDuplicateVaults = await Promise.all(
-    vaults.map(
-      compL(
-        v => v.data,
-        partial(decrypt, password), // decrypt vault, returns stringified { data:..., type:...}
-        p => p.then(data => data === vault.data),
+  const anyDuplicateVaults = (
+    await Promise.all(
+      vaults.map(
+        compL(
+          async v => [v.ddata || (await decrypt(password, v.data)), v.eid],
+          p => p.then(([ddata, eid]) => (ddata === vault.data ? eid : null)),
+        ),
       ),
-    ),
-  )
+    )
+  ).filter(v => Boolean(v))
 
-  if (anyDuplicateVaults.includes(true))
-    throw Err.InvalidParams('Duplicate credential')
+  if (anyDuplicateVaults.length) {
+    const [duplicateVaultId] = anyDuplicateVaults
+    const [duplicateAccountGroup] = getAccountGroup({vault: duplicateVaultId})
+    const duplicateVault = getVaultById(duplicateVaultId)
+
+    if (force) {
+      if (duplicateVault.type !== 'hd')
+        throw Err.InvalidParams("Can't force import none hd vault")
+      await wallet_deleteAccountGroup({
+        accountGroupId: duplicateAccountGroup.eid,
+        password,
+      })
+    } else {
+      let err
+      if (vault.type === 'hd' && duplicateVault.cfxOnly !== vault.cfxOnly) {
+        err = Err.InvalidParams(
+          `Duplicate credential(with different cfxOnly setting) with account group ${duplicateAccountGroup.eid}`,
+        )
+        err.updateCfxOnly = true
+      } else {
+        err = Err.InvalidParams(
+          `Duplicate credential with account group ${duplicateAccountGroup.eid}`,
+        )
+      }
+      err.duplicateAccountGroupId = duplicateAccountGroup.eid
+      throw err
+    }
+  }
 
   vault.ddata = vault.data
   vault.data = await encrypt(password, vault.data)

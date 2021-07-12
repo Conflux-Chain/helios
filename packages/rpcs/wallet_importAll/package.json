@@ -1,0 +1,11 @@
+{
+  "name": "@cfxjs/wallet_import-all",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/spec": "workspace:packages/spec",
+    "browser-passworder": "2.0.3",
+    "webextension-polyfill": "0.8.0"
+  }
+}

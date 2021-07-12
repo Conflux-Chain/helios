@@ -54,9 +54,14 @@ function validateLockState({req, rpcStore, db}) {
 function validateNetworkSupport({req}) {
   const {method, network} = req
 
+  const cfxRpc = method.startsWith('cfx')
+  const startsWithEth = method.startsWith('eth')
+  const startsWithNet = method.startsWith('net')
+  const startsWithWeb3 = method.startsWith('web3')
+  const ethRpc = startsWithEth || startsWithNet || startsWithWeb3
   if (
-    (network.type === 'cfx' && method.startsWith('eth')) ||
-    (network.type === 'eth' && method.startsWith('cfx'))
+    (network.type === 'cfx' && ethRpc) ||
+    (network.type === 'eth' && cfxRpc)
   ) {
     const err = new jsonRpcErr.MethodNotFound(
       `Method ${method} not supported by network ${network.name}`,

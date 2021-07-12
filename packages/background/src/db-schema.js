@@ -44,51 +44,52 @@ const schema = {
       doc: "One of 'cfx'/'eth', indicating type of rpc set of this network",
     },
     hdPath: {ref: true},
-    chainId: {doc: 'Network chain id'},
-    netId: {doc: 'Network id'},
+    chainId: {doc: 'Network chain id, hexadecimal'},
+    netId: {doc: 'Network id, decimal'},
     ticker: {doc: 'Network currency symbol'},
+    address: {ref: true, many: true, component: true},
+    builtin: {doc: "Indicating builtin network, shouldn't be deleted"},
+    scanUrl: {doc: 'Url of block chain explorer'},
   },
   /*
     vault, container of credential (address/pk/mnemonic)
     */
   vault: {
-    type: {doc: 'Type of vault: public, pk, mnemonic'},
+    type: {doc: 'Type of vault: pub, pk, hd'},
     data: {doc: 'Encrypted vault data'},
     ddata: {doc: 'Decrypted vault data only in memory', persist: false},
     cfxOnly: {
-      doc: 'If this vault is only for conflux chain. This is used for address vault (vault data is a public address)',
+      doc: 'If type is pub, means this vault is only for cfx type network, if type is hd, means only generate 0x1 prefix account',
     },
   },
   accountGroup: {
-    vault: {ref: true, doc: 'Entity ID of vault', identity: true},
     nickname: {value: true},
-    customHdPath: {
-      ref: 'hdPath',
-      doc: 'Entity ID of hd path, when set, will use this custom hd path for whatever network',
-    },
-    network: {
-      doc: 'Network supported by this account group',
-      ref: true,
-    },
+    vault: {ref: true, doc: 'Entity ID of vault', identity: true},
+    // customHdPath: {
+    //   ref: 'hdPath',
+    //   doc: 'Entity ID of hd path, when set, will use this custom hd path for whatever network',
+    // },
+    // network: {
+    //   doc: 'Network supported by this account group',
+    //   ref: true,
+    // },
     hidden: {doc: 'If hide this accountGroup in ui'},
+    account: {ref: true, many: true, component: true},
   },
   address: {
-    id: {tuples: ['address/network', 'address/hex'], identity: true},
+    index: {doc: 'Address index in hd path, starts from 0'},
     vault: {ref: true},
-    network: {ref: true},
-    index: {doc: 'Address index in hd path'},
     hex: {doc: 'The value of the address, not cfx hex address'},
     cfxHex: {doc: 'The value of cfx hex address'},
     base32: {doc: 'cfx mainnet base32 address'},
     pk: {doc: 'the private key of the address', persist: false},
   },
   account: {
-    id: {tuples: ['account/index', 'account/accountGroup'], identity: true},
     index: {doc: 'index of account in account group'},
     nickname: {doc: 'account nickname'},
-    address: {ref: 'address', many: true},
-    accountGroup: {ref: true},
+    address: {many: true, component: true, ref: true},
     hidden: {doc: 'If hide this account in ui'},
+    offline: {doc: 'Offline account'},
   },
 }
 

@@ -4,6 +4,6 @@
   "version": "0.0.2",
   "main": "index.js",
   "dependencies": {
-    "@thi.ng/compose": "^1.4.31"
+    "@thi.ng/compose": "^1.4.32"
   }
 }

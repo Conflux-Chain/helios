@@ -1,16 +1,17 @@
 ;;; Directory Local Variables
 ;;; For more information see (info "(emacs) Directory Variables")
 
-((nil . ((eval projectile-register-project-type 'yarn '("package.json")
-               :project-file "package.json"
-               :compile "yarn install"
-               :test "yarn test"
-               :test-suffix ".test")
+((nil . (;; (eval projectile-register-project-type 'yarn '("package.json")
+         ;;       :project-file "package.json"
+         ;;       :compile "yarn install"
+         ;;       :test "yarn test"
+         ;;       :test-suffix ".test")
          (eval defun +insert-jest-expect ()
                (save-excursion
                  (goto-char (point-min))
                  (when (not (re-search-forward "from.*@jest/globals" (point-max) t))
-                   (insert "// eslint-disable-next-line no-unused-vars\nimport {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore\n"))))
+                   (insert "// eslint-disable-next-line no-unused-vars\nimport {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore\n")
+                   (insert "// eslint-disable-next-line no-unused-vars\nimport waitForExpect from 'wait-for-expect'\n"))))
          (eval defun +jest-test-file-p ()
                (and (buffer-file-name) (string-match-p "\\.\\(integration\.test\\|spec\\|test\\)\\.js" (buffer-file-name))))
          (eval defun +ensure-jest-expect ()
@@ -23,7 +24,8 @@
                (if (+jest-integration-test-file-p)
                    (with-eval-after-load 'jest (setq-local jest-executable "yarn run test:integration"))
                  (with-eval-after-load 'jest (setq-local jest-executable "yarn run test:unit"))))
-         (eval add-hook 'find-file-hook '+jest-setup-integration-test nil t)))
+         (eval add-hook 'find-file-hook '+jest-setup-integration-test nil t)
+         (eval load-file (concat (car (dir-locals-find-file ".")) "scripts/tools.el"))))
 
  ((rjsx-mode js2-mode typescript-mode) . ((lsp-enabled-clients . (ts-ls eslint))
                                           (eval . (lexical-let

@@ -51,7 +51,7 @@ describe('json-rpc-error', function () {
       const stackAfter = error.stack.slice()
       const linesBefore = stackBefore.split('\n')
       const linesAfter = stackAfter.split('\n')
-      expect(linesBefore.length - linesAfter.length).toBe(1)
+      expect(linesBefore.length - linesAfter.length).toBe(2)
       expect(linesBefore[linesBefore.length - 1]).toEqual(
         linesAfter[linesAfter.length - 1],
       )

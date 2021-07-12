@@ -1,0 +1,9 @@
+{
+  "name": "@cfxjs/cfx_chain-id",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/spec": "workspace:packages/spec"
+  }
+}

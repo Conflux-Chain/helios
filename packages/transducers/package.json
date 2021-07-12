@@ -4,6 +4,6 @@
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "@thi.ng/transducers": "^7.7.3"
+    "@thi.ng/transducers": "^7.7.4"
   }
 }

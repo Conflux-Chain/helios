@@ -49,7 +49,7 @@ setup()
 
 function injectInpage() {
   const inpage = document.createElement('script')
-  inpage.src = browser.extension.getURL('inpage.js')
+  inpage.src = browser.runtime.getURL('inpage.js')
   inpage.async = false
   document.head.appendChild(inpage)
 }

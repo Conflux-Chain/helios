@@ -6,7 +6,7 @@
             [cfxjs.db.datascript.impl.entity :as de]
             [goog.string :as gs]
             [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]])
-  (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query]]))
+  (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query def-get-by-id-query]]))
 
 (defn random-tmp-id []
   (gs/getRandomString))
@@ -17,7 +17,7 @@
 ;; debug
 (set! (.-jtc js/window) j->c)
 
-(declare conn t q p e)
+(declare conn t q p e fdb)
 
 (comment (:db/memOnly (.-rschema @conn)))
 
@@ -37,35 +37,35 @@
 (defn- parse-js-transact-arg
   ([arg] (parse-js-transact-arg arg (random-tmp-id)))
   ([arg tmp-id]
-   (let [arg (cond
-               (or (int? (get arg :eid)) (string? (get arg :eid)))
-               (assoc arg :db/id (:eid arg))
-               (get arg :eid) (throw (js/Error. "Invalid eid, must be a string or integer"))
-               :else (assoc arg :db/id tmp-id))
-         arg (dissoc arg :eid)
+   (let [arg      (cond
+                    (or (int? (get arg :eid)) (string? (get arg :eid)))
+                    (assoc arg :db/id (:eid arg))
+                    (get arg :eid) (throw (js/Error. "Invalid eid, must be a string or integer"))
+                    :else          (assoc arg :db/id tmp-id))
+         arg      (dissoc arg :eid)
          all-keys (keys arg)
-         _ (when-not (or (= (count all-keys) 1)
-                         (and (= (count all-keys) 2)
-                              (some #{:db/id} all-keys)))
-             (throw (js/Error. "Invalid transaction params, too many top level keys")))
-         arg (reduce-kv (fn [m k v]
-                          (let [->attrk (partial ->attrk k)
-                                v (cond
-                                    (map? v) (reduce-kv
-                                              (fn [m k v]
-                                                (let [qualified-k (->attrk k)
-                                                      ;; note, we can't use look up-ref as identifier in map-form
-                                                      processed-v (cond (map? v) ;; lookup-ref
-                                                                        (->lookup-ref v)
-                                                                        (vector? v) ;; db/isComponents
-                                                                        (map #(parse-js-transact-arg % (random-tmp-id)) v)
-                                                                        :else v)]
-                                                  (assoc m qualified-k processed-v)))
-                                              {} v)
-                                    (= k :db/id) (assoc m k v)
-                                    :else m)]
-                            (into m v)))
-                        {} arg)]
+         _        (when-not (or (= (count all-keys) 1)
+                                (and (= (count all-keys) 2)
+                                     (some #{:db/id} all-keys)))
+                    (throw (js/Error. "Invalid transaction params, too many top level keys")))
+         arg      (reduce-kv (fn [m k v]
+                               (let [->attrk (partial ->attrk k)
+                                     v       (cond
+                                               (map? v)     (reduce-kv
+                                                             (fn [m k v]
+                                                               (let [qualified-k (->attrk k)
+                                                                     ;; note, we can't use look up-ref as identifier in map-form
+                                                                     processed-v (cond (map? v)    ;; lookup-ref
+                                                                                       (->lookup-ref v)
+                                                                                       (vector? v) ;; db/isComponents
+                                                                                       (map #(parse-js-transact-arg % (random-tmp-id)) v)
+                                                                                       :else       v)]
+                                                                 (assoc m qualified-k processed-v)))
+                                                             {} v)
+                                               (= k :db/id) (assoc m k v)
+                                               :else        m)]
+                                 (into m v)))
+                             {} arg)]
      arg)))
 
 (defn def-get-fn
@@ -76,43 +76,56 @@
                   attr-map (if (empty? attr-map) nil attr-map)]
               (if (or (not attr-map) (get attr-map :eid))
                 (let [all-attr-keys (map (partial ->attrk model) attr-keys)
-                      query (def-get-all-query all-attr-keys)
-                      eids (q query)
-                      eids (if-let [eid (get attr-map :eid)] (filter #(= eid %) eids) eids)]
+                      query         (def-get-all-query all-attr-keys)
+                      eids          (q query)
+                      eids          (if-let [eid (get attr-map :eid)] (filter #(= eid %) eids) eids)]
                   eids)
-                (let [data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
-                                                             nil
-                                                             (let [symbol (->attr-symbol attr)
-                                                                   query-attr-k (->attrk model attr)
-                                                                   value (get attr-map attr)
-                                                                   value (or (get-in value [:_entity :db/id]) value)]
-                                                               [symbol query-attr-k value])))
-                                                 attr-keys))
-                      symbols (mapv first data)
+                (let [data         (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
+                                                                      nil
+                                                                      (let [symbol       (->attr-symbol attr)
+                                                                            query-attr-k (->attrk model attr)
+                                                                            value        (get attr-map attr)
+                                                                            value        (or (get-in value [:_entity :db/id]) value)]
+                                                                        [symbol query-attr-k value])))
+                                                         attr-keys))
+                      symbols      (mapv first data)
                       query-attr-k (mapv second data)
-                      or? (true? (get attr-map :$or))
-                      query (if or? (def-get-query-or query-attr-k symbols)
-                                (def-get-query-and query-attr-k symbols))]
+                      or?          (true? (get attr-map :$or))
+                      query        (if or? (def-get-query-or query-attr-k symbols)
+                                       (def-get-query-and query-attr-k symbols))]
                   (q query (mapv #(get % 2) data))))))]
-    f))
+    (comp sort f)))
+
+(defn def-get-by-id-fn
+  "Given model eg. :vault, attr-keys eg. [:type :data] create the getVaultById function;"
+  [{:keys [attr-keys model]}]
+  (let [attrk (->attrk model (first attr-keys))
+        query (def-get-by-id-query attrk)]
+    (fn [eid] (first (q query eid)))))
+
+(defn def-delete-by-id-fn
+  "Given model eg. :vault, attr-keys eg. [:type :data] create the getVaultById function;"
+  [{:keys [get-fn]}]
+  (fn [eid]
+    (if (and (get-fn eid) (t [[:db.fn/retractEntity eid]])) true false)))
 
 (defn def-get-one-fn
   [{:keys [attr-keys model]}]
   (let [f (fn [attr-map]
-            (let [attr-map (j->c attr-map)
-                  _ (when (empty? attr-map) (throw (js/Error. "Invalid empty query map")))
-                  data (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
-                                                          nil
-                                                          (let [symbol (->attr-symbol attr)
-                                                                query-attr-k (->attrk model attr)
-                                                                value (get attr-map attr)
-                                                                value (or (get-in value [:_entity :db/id]) value)]
-                                                            [symbol query-attr-k value])))
-                                             attr-keys))
-                  symbols (mapv first data)
+            (let [attr-map     (j->c attr-map)
+                  _            (when (empty? attr-map) (throw (js/Error. "Invalid empty query map")))
+                  data         (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
+                                                                  nil
+                                                                  (let [symbol       (->attr-symbol attr)
+                                                                        query-attr-k (->attrk model attr)
+                                                                        value        (get attr-map attr)
+                                                                        value        (or (get-in value [:_entity :db/id]) value)]
+                                                                    [symbol query-attr-k value])))
+                                                     attr-keys))
+                  symbols      (mapv first data)
                   query-attr-k (mapv second data)
-                  query (def-get-one-query-and query-attr-k symbols)
-                  rst (q query (mapv #(get % 2) data))]
+                  query        (def-get-one-query-and query-attr-k symbols)
+                  rst          (q query (mapv #(get % 2) data))]
               rst))]
     f))
 
@@ -128,8 +141,8 @@
            (def-get-one-fn arg))]
     f))
 
-(defn delete-by-id [id]
-  (if (t [[:db.fn/retractEntity id]]) true false))
+;; (defn delete-by-id [id]
+;;   (if (t [[:db.fn/retractEntity id]]) true false))
 
 (defn def-delete-fn
   [get-fn]
@@ -147,9 +160,9 @@
       (if-not (> (count (keys updates)) 0) nil)
       (let [->attrk (partial ->attrk model)
             updates (reduce-kv (fn [m k v] (assoc m (->attrk k) v)) {} updates)
-            eids ((def-get-fn arg) attr-map)
-            txs (map (fn [eid] (merge updates {:db/id eid})) eids)
-            rst (t txs)]
+            eids    ((def-get-fn arg) attr-map)
+            txs     (map (fn [eid] (merge updates {:db/id eid})) eids)
+            rst     (t txs)]
         (if rst eids [])))))
 
 (defn def-update-one-fn
@@ -159,9 +172,9 @@
       (if-not (> (count (keys updates)) 0) nil)
       (let [->attrk (partial ->attrk model)
             updates (reduce-kv (fn [m k v] (assoc m (->attrk k) v)) {} updates)
-            eid ((def-get-one-fn arg) attr-map)
-            txs (merge updates {:db/id eid})
-            rst (t [txs])]
+            eid     ((def-get-one-fn arg) attr-map)
+            txs     (merge updates {:db/id eid})
+            rst     (t [txs])]
         (if rst eid nil)))))
 
 (defn def-get-by-fn
@@ -169,69 +182,77 @@
   [{:keys [attr model]}]
   (let [attrk (->attrk model attr)
         query (def-get-by-query attrk)
-        f (fn [attrv] (q query attrv))]
-    f))
+        f     (fn [attrv] (q query attrv))]
+    (comp sort f)))
 
 (defn def-create-fn [{:keys [attr-keys model]}]
   (let [input-attr-map->transact-attr-map (fn [acc attr attrv]
                                             (if (some #{attr} attr-keys)
                                               (assoc acc (->attrk model attr) attrv) acc))
-        f (fn [attr-map]
-            (let [attr-map (j->c attr-map)
-                  attr-map (reduce-kv input-attr-map->transact-attr-map {:db/id -1} attr-map)]
-              (t [attr-map])))
-        guardf #(get-in % [:tempids -1])]
+        f                                 (fn [attr-map]
+                                            (let [attr-map (j->c attr-map)
+                                                  attr-map (reduce-kv input-attr-map->transact-attr-map {:db/id -1} attr-map)]
+                                              (t [attr-map])))
+        guardf                            #(get-in % [:tempids -1])]
     (comp guardf f)))
 
 (defn- js-query-model-structure->query-fn
   "Read a model structure, create getModel getModelByModelAttribute methods.
   Model structure are data like [[:vault :type] [:vault :data]]"
   [[model {:keys [attr-keys]}]]
-  (let [model-name (name model)
-        Model-name (str (.toUpperCase (subs model-name 0 1)) (subs model-name 1))
-        ->entity (fn [eid] (e model attr-keys eid))
-        get-fn-k (keyword (str "get" Model-name))
-        get-fn (comp clj->js #(map ->entity %) (def-get-fn {:model model :attr-keys attr-keys}))
-        update-fn-k (keyword (str "update" Model-name))
-        update-fn (comp clj->js #(map ->entity %) (def-update-fn {:model model :attr-keys attr-keys}))
-        update-one-fn-k (keyword (str "updateOne" Model-name))
-        update-one-fn (comp clj->js ->entity (def-update-one-fn {:model model :attr-keys attr-keys}))
-        delete-fn-k (keyword (str "delete" Model-name))
-        delete-fn (def-delete-fn get-fn)
-        get-one-fn-k (keyword (str "getOne" Model-name))
-        get-one-fn (comp clj->js ->entity (def-get-one-fn {:model model :attr-keys attr-keys}))
-        delete-one-fn-k (keyword (str "deleteOne" Model-name))
-        delete-one-fn (def-delete-one-fn {:model model :attr-keys attr-keys})
-        create-fn-k (keyword (str "create" Model-name))
-        create-fn (def-create-fn {:model model :attr-keys attr-keys})
+  (let [model-name        (name model)
+        Model-name        (str (.toUpperCase (subs model-name 0 1)) (subs model-name 1))
+        ->entity          (fn [eid] (e model attr-keys eid))
+        get-fn-k          (keyword (str "get" Model-name))
+        get-fn            (comp clj->js #(map ->entity %) (def-get-fn {:model model :attr-keys attr-keys}))
+        get-by-id-fn-k    (keyword (str "get" Model-name "ById"))
+        get-by-id-fn      (comp clj->js ->entity (def-get-by-id-fn {:model model :attr-keys attr-keys}))
+        delete-by-id-fn-k (keyword (str "delete" Model-name "ById"))
+        delete-by-id-fn   (def-delete-by-id-fn {:get-fn get-by-id-fn})
+        update-fn-k       (keyword (str "update" Model-name))
+        update-fn         (comp clj->js #(map ->entity %) (def-update-fn {:model model :attr-keys attr-keys}))
+        update-one-fn-k   (keyword (str "updateOne" Model-name))
+        update-one-fn     (comp clj->js ->entity (def-update-one-fn {:model model :attr-keys attr-keys}))
+        delete-fn-k       (keyword (str "delete" Model-name))
+        delete-fn         (def-delete-fn get-fn)
+        get-one-fn-k      (keyword (str "getOne" Model-name))
+        get-one-fn        (comp clj->js ->entity (def-get-one-fn {:model model :attr-keys attr-keys}))
+        delete-one-fn-k   (keyword (str "deleteOne" Model-name))
+        delete-one-fn     (def-delete-one-fn {:model model :attr-keys attr-keys})
+        create-fn-k       (keyword (str "create" Model-name))
+        create-fn         (def-create-fn {:model model :attr-keys attr-keys})
         attr->attr-fn-map (fn [attr]
-                            (let [attr-name (name attr)
-                                  Attr-name (str (.toUpperCase (subs attr-name 0 1)) (subs attr-name 1))
-                                  get-by-fn-k (keyword (str "get" Model-name "By" Attr-name))
-                                  get-by-fn (comp clj->js #(map ->entity %) (def-get-by-fn {:attr attr :model model}))]
-                              {get-by-fn-k get-by-fn}))]
-    (apply merge {delete-one-fn-k delete-one-fn
-                  delete-fn-k delete-fn
-                  update-fn-k update-fn
-                  update-one-fn-k update-one-fn
-                  create-fn-k create-fn
-                  get-one-fn-k get-one-fn
-                  get-fn-k get-fn} (map attr->attr-fn-map attr-keys))))
+                            (if (= attr :id) {}
+                                (let [attr-name   (name attr)
+                                      Attr-name   (str (.toUpperCase (subs attr-name 0 1)) (subs attr-name 1))
+                                      get-by-fn-k (keyword (str "get" Model-name "By" Attr-name))
+                                      get-by-fn   (comp clj->js #(map ->entity %) (def-get-by-fn {:attr attr :model model}))]
+                                  {get-by-fn-k get-by-fn})))]
+    (apply merge {delete-one-fn-k   delete-one-fn
+                  delete-fn-k       delete-fn
+                  update-fn-k       update-fn
+                  update-one-fn-k   update-one-fn
+                  create-fn-k       create-fn
+                  get-one-fn-k      get-one-fn
+                  get-fn-k          get-fn
+                  get-by-id-fn-k    get-by-id-fn
+                  delete-by-id-fn-k delete-by-id-fn}
+           (map attr->attr-fn-map attr-keys))))
 
-(defn get-by-id [id]
-  (when-let [data (d/pull (d/db conn) '[*] id)]
-    (when-let [qattr (first (second data))]
-      (let [model (qattr->model qattr)
-            attr-keys (model->attr-keys model)]
-        (e model attr-keys id)))))
+;; (defn get-by-id [id]
+;;   (when-let [data (d/pull (d/db conn) '[*] id)]
+;;     (when-let [qattr (first (second data))]
+;;       (let [model     (qattr->model qattr)
+;;             attr-keys (model->attr-keys model)]
+;;         (e model attr-keys (:db/id data))))))
 
-(defn update-by-id [id updates]
-  (when-let [^de/Entity entity (get-by-id id)]
-    (let [updates (dissoc (j->c updates) :id)
-          model (.-model entity)
-          ->attrk (partial ->attrk model)
-          updates (reduce-kv (fn [m k v] (assoc m (->attrk k) v)) {} updates)]
-      (if (t [(merge updates {:db/id id})]) (e model (.-attr-keys entity) (.-eid entity)) nil))))
+;; (defn update-by-id [id updates]
+;;   (when-let [^de/Entity entity (get-by-id id)]
+;;     (let [updates (dissoc (j->c updates) :id)
+;;           model   (.-model entity)
+;;           ->attrk (partial ->attrk model)
+;;           updates (reduce-kv (fn [m k v] (assoc m (->attrk k) v)) {} updates)]
+;;       (if (t [(merge updates {:db/id id})]) (e model (.-attr-keys entity) (.-eid entity)) nil))))
 
 (def read-db #(cljs.reader/read-string %))
 
@@ -240,21 +261,27 @@
   ([js-schema] (create-db js-schema nil nil))
   ([js-schema persistfn] (create-db js-schema persistfn nil))
   ([js-schema persistfn data-to-restore]
-   (let [js-schema (j->c js-schema)
+   (let [js-schema     (j->c js-schema)
          db-to-restore (when data-to-restore (cljs.reader/read-string data-to-restore))
-         db (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn (js-schema->schema js-schema)))
-         rst (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
-         rst (assoc rst :_db db)
-         rst (assoc rst :getById (comp clj->js get-by-id))
-         rst (assoc rst :deleteById delete-by-id)
-         rst (assoc rst :updateById update-by-id)
-         rst (assoc rst :tmpid random-tmp-id)
-         rst (apply-queries rst)]
+         db            (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn (js-schema->schema js-schema)))
+         tfn           (fn [txs] (d/transact! db txs))
+         qfn           (fn [query & args] (apply d/q query (d/db db) args))
+         pfn           (partial d/pull (d/db db))
+         efn           (fn [model attr-keys & args] (apply de/entity (d/db db) model attr-keys args))
+         ffn           (fn [f] (d/filter (d/db db) f))
+         rst           (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
+         rst           (assoc rst :_db db)
+         ;; rst           (assoc rst :getById (comp clj->js get-by-id))
+         ;; rst           (assoc rst :deleteById delete-by-id)
+         ;; rst           (assoc rst :updateById update-by-id)
+         rst           (assoc rst :tmpid random-tmp-id)
+         rst           (apply-queries rst qfn efn tfn ffn)]
      (def conn db)
-     (def t (partial d/transact! conn))
-     (def q (fn [query & args] (apply d/q query (d/db conn) args)))
-     (def p (partial d/pull (d/db conn)))
-     (defn e [model attr-keys & args] (apply de/entity (d/db conn) model attr-keys args))
+     (def t tfn)
+     (def q qfn)
+     (def p pfn)
+     (def e efn)
+     (def fdb ffn)
      (defn db-transact [arg]
        (let [arg (j->c arg)
              arg (if (vector? arg) arg [arg])
@@ -288,8 +315,14 @@
 (def ppp prn)
 (def tppp tap>)
 
-
 (comment
+  (q '[:find [?e ...]
+       :in $ ?gid
+       :where
+       [?g :accountGroup/nickname]
+       [(?gid ?g)]
+       [?g :accountGroup/account ?e]]
+     #(= % 24))
   (create-db (.-schema js/window))
   (js/console.log (clj->js (t [{:db/id "a" :hdPath/name "a"}
                                {:db/id "a" :hdPath/value "b"}])))
@@ -310,20 +343,20 @@
       {:db/id -8 :account/index 0 :account/nickname "a" :account/accountGroup [:accountGroup/vault 4] :account/address [-6 -7]}])
 
   (t
-   [{:db/id -8
-     :account/index 0
-     :account/nickname "a"
+   [{:db/id                -8
+     :account/index        0
+     :account/nickname     "a"
      :account/accountGroup [:accountGroup/vault 4]
-     :account/address [{:db/id -6
-                        :address/hex "a"
-                        :address/vault 4
-                        :address/network 2
-                        :address/index 0}
-                       {:db/id -7
-                        :address/hex "b"
-                        :address/vault 4
-                        :address/network 3
-                        :address/index 0}]}])
+     :account/address      [{:db/id           -6
+                             :address/hex     "a"
+                             :address/vault   4
+                             :address/network 2
+                             :address/index   0}
+                            {:db/id           -7
+                             :address/hex     "b"
+                             :address/vault   4
+                             :address/network 3
+                             :address/index   0}]}])
   (q '[:find [?e ...]
        :where
        [?e :address/hex "a"]])
@@ -331,4 +364,44 @@
        :where
        [?e :account/index 0]
        [?e :account/nickname "a"]
-       [?e :account/address ?a]]))
+       [?e :account/address ?a]])
+
+  (q '[:find [?a ...]
+       :where
+       [?a :address/index]])
+
+  (q '[:find ?g ?n ?v ?acc ?addr ?addr-idx ?addr-hex
+       :keys accountGroupId networkId vaultId accountId addressId addressIndex addressHex
+       :where
+       [?v :vault/cfxOnly ?cfxOnly]
+       [?v :vault/type ?vtype]
+       [(and (not= ?cfxOnly true)
+             (not= ?vtype "pub"))]
+       [?g :accountGroup/vault ?v]
+       [?g :accountGroup/account ?acc]
+       [?g :accountGroup/network ?n]
+       [?acc :account/address ?addr]
+       [?addr :address/hex ?addr-hex]
+       [?addr :address/index ?addr-idx]])
+
+  (tap> (map first (->> (count (q '[:find ?g ?n ?v ?acc ?addr ?addr-idx ?addr-hex ?addr-cfx-hex ?addr-base32
+                                    :keys accountGroupId networkId vaultId accountId addressId addressIndex addressHex addressCfxHex addressBase32
+                                    :where
+                                    [?g :accountGroup/vault ?v]
+                                    [?g :accountGroup/account ?acc]
+                                    [?g :accountGroup/network ?n]
+                                    [?acc :account/address ?addr]
+                                    [?addr :address/index ?addr-idx]
+                                    [?addr :address/hex ?addr-hex]
+                                    [?addr :address/cfxHex ?addr-cfx-hex]
+                                    [?addr :address/base32 ?addr-base32]]))
+                        (group-by :accountId)
+                        vals)))
+
+  (q '[:find ?vault
+       :keys vault
+       :where
+       [?vault :vault/type]])
+  (d/datoms
+   (fdb (fn [db datom] (not= "vault" (namespace (:a datom)))))
+   :eavt))

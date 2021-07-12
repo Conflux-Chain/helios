@@ -25,23 +25,24 @@ export const schemas = {
 }
 
 export const permissions = {
-  db: ['t', 'getById', 'getAccountGroupByNickname'],
+  db: ['t', 'getAccountGroupById', 'getAccountGroupByNickname'],
   external: ['popup'],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {getById, t, getAccountGroupByNickname},
+  db: {getAccountGroupById, t, getAccountGroupByNickname},
   params: {nickname, hidden, accountGroupId},
 }) => {
-  const group = getById(accountGroupId)
+  const group = getAccountGroupById(accountGroupId)
   if (!group) throw InvalidParams(`Invalid accountGroupId ${accountGroupId}`)
   if (nickname && getAccountGroupByNickname(nickname).length)
     throw InvalidParams(
       `Invalid nickname ${nickname}, duplicate with other account group`,
     )
+
   t([
-    nickname && {eid: accountGroupId, account: {nickname}},
-    isBoolean(hidden) && {eid: accountGroupId, account: {hidden}},
+    nickname && {eid: accountGroupId, accountGroup: {nickname}},
+    isBoolean(hidden) && {eid: accountGroupId, accountGroup: {hidden}},
   ])
 }

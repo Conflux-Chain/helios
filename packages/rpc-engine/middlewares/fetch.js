@@ -33,13 +33,10 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
     fn: map(({req}) => ({
       ...req,
       f: (...args) => {
-        let params, overrides
-        if (args.length === 0) {
-          params = {}
-          overrides = {}
-        } else if (args.length === 1) {
+        let params
+        let overrides = {}
+        if (args.length === 1) {
           params = args[0]
-          overrides = {}
         } else if (args.length === 2) {
           params = args[1]
           overrides = args[0]
@@ -83,7 +80,7 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
         return
       }
 
-      const network = db.getOneNetwork({name: req.networkName})
+      const network = req.network || db.getOneNetwork({name: req.networkName})
       return {...req, network}
     }),
   },

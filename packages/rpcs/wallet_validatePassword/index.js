@@ -10,10 +10,14 @@ export const schemas = {
 
 export const permissions = {
   locked: true,
-  db: ['getVault'],
+  db: ['getVault', 'getPassword', 'getLocked'],
 }
 
-export async function main({db: {getVault}, params: {password}}) {
+export async function main({
+  db: {getVault, getLocked, getPassword},
+  params: {password},
+}) {
+  if (!getLocked()) return password === getPassword()
   const vaults = getVault()
   if (!vaults.length) return true
   let valid = false

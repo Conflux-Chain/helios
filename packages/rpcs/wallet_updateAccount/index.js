@@ -1,5 +1,6 @@
 import {map, stringp, boolean, dbid} from '@cfxjs/spec'
 import {isBoolean} from '@cfxjs/checks'
+import {isUndefined} from '@cfxjs/checks'
 
 export const NAME = 'wallet_updateAccount'
 
@@ -20,26 +21,24 @@ export const schemas = {
         },
       ],
     ],
+    ['offline', {optional: true}, boolean],
     ['hidden', {optional: true}, boolean],
   ],
 }
 
 export const permissions = {
-  db: ['t', 'getById', 'getAccount'],
+  db: ['t', 'getAccountById', 'getAccountGroup', 'anyDupNickAccount'],
   external: ['popup'],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {getById, t, getAccount},
-  params: {nickname, hidden, accountId},
+  db: {getAccountById, t, anyDupNickAccount},
+  params: {nickname, hidden, accountId, offline},
 }) => {
-  const account = getById(accountId)
-  if (!account) throw InvalidParams(`Invalid accountId ${accountId}`)
-  if (
-    nickname &&
-    getAccount({accountGroup: account.accountGroup.eid, nickname}).length
-  )
+  const account = getAccountById(accountId)
+  if (!account) throw InvalidParams(`Invalid account id ${accountId}`)
+  if (nickname && anyDupNickAccount({accountId, nickname}))
     throw InvalidParams(
       `Invalid nickname ${nickname}, duplicate with other account in the same account group`,
     )
@@ -47,5 +46,6 @@ export const main = async ({
   t([
     nickname && {eid: accountId, account: {nickname}},
     isBoolean(hidden) && {eid: accountId, account: {hidden}},
+    !isUndefined(offline) && {eid: accountId, account: {offline}},
   ])
 }

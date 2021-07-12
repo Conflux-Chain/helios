@@ -1,0 +1,13 @@
+{
+  "name": "@cfxjs/wallet_create-address",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/account": "workspace:packages/account",
+    "@cfxjs/base32-address": "workspace:packages/base32-address",
+    "@cfxjs/hdkey": "workspace:packages/hdkey",
+    "@cfxjs/spec": "workspace:packages/spec",
+    "browser-passworder": "2.0.3"
+  }
+}
