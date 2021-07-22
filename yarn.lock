@@ -2544,6 +2544,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/contract-method-name@workspace:packages/contract-method-name":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/contract-method-name@workspace:packages/contract-method-name"
+  dependencies:
+    eth-method-registry: 2.0.0
+    ethjs: 0.4.0
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/csp@workspace:packages/csp":
   version: 0.0.0-use.local
   resolution: "@cfxjs/csp@workspace:packages/csp"
@@ -13989,6 +13998,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eth-method-registry@npm:2.0.0":
+  version: 2.0.0
+  resolution: "eth-method-registry@npm:2.0.0"
+  dependencies:
+    ethjs: ^0.4.0
+  checksum: 0ddeafa4eff6f5e99cf67044f79b0443372d90bc5d488a0a7128b06ad26f3bfb37cf3f6f9807f0d13ca490fcbbec44c597e4bffc6e6406e55391f0945eed86f9
+  languageName: node
+  linkType: hard
+
 "eth-query@npm:^2.0.2, eth-query@npm:^2.1.0, eth-query@npm:^2.1.2":
   version: 2.1.2
   resolution: "eth-query@npm:2.1.2"
@@ -14399,6 +14417,99 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ethjs-abi@npm:0.2.0":
+  version: 0.2.0
+  resolution: "ethjs-abi@npm:0.2.0"
+  dependencies:
+    bn.js: 4.11.6
+    js-sha3: 0.5.5
+    number-to-bn: 1.7.0
+  checksum: 44c16d1adfe6afa2e6234b1ed43fdc1daba876ec22dcf9955c08467a8e77a9c0c2da99b3c02f6892476e21ac0c41d05f9bc7fed9635242084ae4705d010aa915
+  languageName: node
+  linkType: hard
+
+"ethjs-abi@npm:0.2.1":
+  version: 0.2.1
+  resolution: "ethjs-abi@npm:0.2.1"
+  dependencies:
+    bn.js: 4.11.6
+    js-sha3: 0.5.5
+    number-to-bn: 1.7.0
+  checksum: 2de39be6170c0318df989111f5be0c19884ddd8d03a5e2a128373201f09b7fca56cf46ce2aa1324eb62241d7d219e0a8f623cd292b107c86b0ba878fe02c10f6
+  languageName: node
+  linkType: hard
+
+"ethjs-contract@npm:0.2.3":
+  version: 0.2.3
+  resolution: "ethjs-contract@npm:0.2.3"
+  dependencies:
+    babel-runtime: ^6.26.0
+    ethjs-abi: 0.2.0
+    ethjs-filter: 0.1.8
+    ethjs-util: 0.1.3
+    js-sha3: 0.5.5
+  checksum: 8bc52f25de4d0d688bc8c7ea3bc3781183e89a6222dfdb93e7dc456852c03d225b07a798a7d04658c6b3afb4546e29244308523650ad0e2de06d5392cdc4e34b
+  languageName: node
+  linkType: hard
+
+"ethjs-filter@npm:0.1.8":
+  version: 0.1.8
+  resolution: "ethjs-filter@npm:0.1.8"
+  checksum: 6cc4138c8d1013f27069f542e67bc766c4a7b0666f915cc798c60c0ed6360fb6624fca78e1383673d737dfe37926cc9375411eff498ec0ee468078f34a4af0eb
+  languageName: node
+  linkType: hard
+
+"ethjs-format@npm:0.2.7":
+  version: 0.2.7
+  resolution: "ethjs-format@npm:0.2.7"
+  dependencies:
+    bn.js: 4.11.6
+    ethjs-schema: 0.2.1
+    ethjs-util: 0.1.3
+    is-hex-prefixed: 1.0.0
+    number-to-bn: 1.7.0
+    strip-hex-prefix: 1.0.0
+  checksum: bd5c994b0b2c408442f20821bed178da1f538c8433b6c0c2d97cbac2ba6a39f4a3c4c9161d09ce5b0b758da5f7ce96841de3cfa62c2c2f25aecf3a95f33fbd7b
+  languageName: node
+  linkType: hard
+
+"ethjs-provider-http@npm:0.1.6":
+  version: 0.1.6
+  resolution: "ethjs-provider-http@npm:0.1.6"
+  dependencies:
+    xhr2: 0.1.3
+  checksum: ba4a541c51466293e4f5250cfa5edc2c956d328411ca76f28641afc981fba3c3156017ac27d9d5431c3b3169ba91d3762833c5b696abfa6e42297238bb1fc92e
+  languageName: node
+  linkType: hard
+
+"ethjs-query@npm:0.3.8":
+  version: 0.3.8
+  resolution: "ethjs-query@npm:0.3.8"
+  dependencies:
+    babel-runtime: ^6.26.0
+    ethjs-format: 0.2.7
+    ethjs-rpc: 0.2.0
+    promise-to-callback: ^1.0.0
+  checksum: e714c132f000cd0fe4245ab13406c69a9dc7ec9377e33bddea7c3b9463a8d1980e0c6065ef4464a59bce1480ae5db8a17f37a9cca089b7817b072a2609863995
+  languageName: node
+  linkType: hard
+
+"ethjs-rpc@npm:0.2.0":
+  version: 0.2.0
+  resolution: "ethjs-rpc@npm:0.2.0"
+  dependencies:
+    promise-to-callback: ^1.0.0
+  checksum: b1383e7b9d843a7987577494c6c1f6483fc7c6dcc1f1a47f4a31a34c0bb6ad1e1897928b2575fea664fab19952633efed1ba072da6c56b11717c6353346c225d
+  languageName: node
+  linkType: hard
+
+"ethjs-schema@npm:0.2.1":
+  version: 0.2.1
+  resolution: "ethjs-schema@npm:0.2.1"
+  checksum: 74d5ee5da9a0ba554263fed94e8895efa93917fac24bb89bc985ac5a8b0abfe8f1d8f5cc1e1d7aaa6d57b816367cad6a6e1189b4b8e0836f7b7d16569919c499
+  languageName: node
+  linkType: hard
+
 "ethjs-unit@npm:0.1.6":
   version: 0.1.6
   resolution: "ethjs-unit@npm:0.1.6"
@@ -14409,6 +14520,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ethjs-util@npm:0.1.3":
+  version: 0.1.3
+  resolution: "ethjs-util@npm:0.1.3"
+  dependencies:
+    is-hex-prefixed: 1.0.0
+    strip-hex-prefix: 1.0.0
+  checksum: 3b7660a83774270478ecb4490ac661f1441d920d391c7d0c932eebef40b7671a39dd5aa5a852f1be5f0fefced5b7479ebf7e41808a19c1bf246aa68aff1baddf
+  languageName: node
+  linkType: hard
+
 "ethjs-util@npm:0.1.6, ethjs-util@npm:^0.1.3":
   version: 0.1.6
   resolution: "ethjs-util@npm:0.1.6"
@@ -14416,6 +14537,24 @@ __metadata:
     is-hex-prefixed: 1.0.0
     strip-hex-prefix: 1.0.0
   checksum: 3ba90234cc4219983203e0dfcf5789f149c3f691ecba18a774b4d2d348aefee02d8d56b947237ec65639d0fd4338598320332f9a86b24844b0ccba1f649ac8b7
+  languageName: node
+  linkType: hard
+
+"ethjs@npm:0.4.0, ethjs@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "ethjs@npm:0.4.0"
+  dependencies:
+    bn.js: 4.11.6
+    ethjs-abi: 0.2.1
+    ethjs-contract: 0.2.3
+    ethjs-filter: 0.1.8
+    ethjs-provider-http: 0.1.6
+    ethjs-query: 0.3.8
+    ethjs-unit: 0.1.6
+    ethjs-util: 0.1.3
+    js-sha3: 0.5.5
+    number-to-bn: 1.7.0
+  checksum: e4265813cb948b35e195787be4233072345f72ccd9cee13594cf272643f7de1fac2e0ee5cd0f985e48b0202813aad7ac4a8209c46e8666f562b0a0bb5510b467
   languageName: node
   linkType: hard
 
@@ -18742,6 +18881,13 @@ fsevents@~2.3.1:
   version: 2.2.1
   resolution: "js-cookie@npm:2.2.1"
   checksum: c110f78427cb7715f67c69df0b3430f7cf9dafb5ddb13014df171d4fb61ccda0b1caf9767412cde63cab4bad697a5d4ce83b0c2e7ec650ec9929ed70750d20ae
+  languageName: node
+  linkType: hard
+
+"js-sha3@npm:0.5.5":
+  version: 0.5.5
+  resolution: "js-sha3@npm:0.5.5"
+  checksum: 9875c97db38c8617fb02da0987da985c711f5763a968f3da71744c545cc0c6a47f5b8863c87a65f6083f2969f99e226e7a15f0e640b79301ba6dc6bbf82e1de1
   languageName: node
   linkType: hard
 
@@ -30050,6 +30196,13 @@ resolve@~1.17.0:
   dependencies:
     cookiejar: ^2.1.1
   checksum: e69e77bc34e902fdc2debe67a2812885b386743e17ffa9c373ed8719f3682749a44e23f89d04bab145a0908a622a87bf7331d53cb356cb3236dbc11949d3e6a4
+  languageName: node
+  linkType: hard
+
+"xhr2@npm:0.1.3":
+  version: 0.1.3
+  resolution: "xhr2@npm:0.1.3"
+  checksum: 58cf970798898687e5477fce22d8755b8d8bce2067e45beb44d79b5823e1dac2da4711676e7da7384ccf177a391d129c116b85d4880e2e5bf42c8b58fb78cd69
   languageName: node
   linkType: hard
 

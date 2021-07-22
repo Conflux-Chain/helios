@@ -1,0 +1,10 @@
+{
+  "name": "@cfxjs/contract-method-name",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.2",
+  "dependencies": {
+    "eth-method-registry": "2.0.0",
+    "ethjs": "0.4.0"
+  }
+}
