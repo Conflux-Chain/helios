@@ -5,6 +5,7 @@
   "version": "0.0.2",
   "dependencies": {
     "eth-method-registry": "2.0.0",
-    "ethjs": "0.4.0"
+    "ethjs": "0.4.0",
+    "js-conflux-sdk": "1.6.9"
   }
 }

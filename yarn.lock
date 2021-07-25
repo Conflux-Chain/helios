@@ -2550,6 +2550,7 @@ __metadata:
   dependencies:
     eth-method-registry: 2.0.0
     ethjs: 0.4.0
+    js-conflux-sdk: 1.6.9
   languageName: unknown
   linkType: soft
 
@@ -18874,6 +18875,23 @@ fsevents@~2.3.1:
     superagent: ^5.1.0
     websocket: ^1.0.31
   checksum: 24e78d7032fd67ac75fe355f6e8f41bb5254b97acca8573fe937a1bc945f6f76e700cdf5a19df053dd45d267be9c06d3acf2877724ca81c0c02326c7cd15a327
+  languageName: node
+  linkType: hard
+
+"js-conflux-sdk@npm:1.6.9":
+  version: 1.6.9
+  resolution: "js-conflux-sdk@npm:1.6.9"
+  dependencies:
+    "@babel/runtime": ^7.8.4
+    "@conflux-dev/conflux-address-js": ^1.0.0
+    big.js: ^5.2.2
+    keccak: ^2.0.0
+    lodash: ^4.17.19
+    scrypt-js: ^3.0.1
+    secp256k1: ^3.7.1
+    superagent: ^5.1.0
+    websocket: ^1.0.31
+  checksum: 28358bb8cefb38e63c4e6f1813d1fb4df8363e1a98c0b2742de91022d404cf54d35d126e070e26a6d6418a529d46ff6754b4006b1d39b6ee4e92246c89b63989
   languageName: node
   linkType: hard
 

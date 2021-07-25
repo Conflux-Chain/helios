@@ -96,3 +96,9 @@ export const SECOND = MILLISECOND * 1000
 export const MINUTE = SECOND * 60
 export const HOUR = MINUTE * 60
 export const DAY = HOUR * 24
+
+export const ETH_FOUR_BYTE_DOMAIN = 'https://www.4byte.directory'
+
+export const CFX_SCAN_MAINNET_DOMAIN = 'https://confluxscan.io'
+
+export const CFX_SCAN_TESTNET_DOMAIN = 'https://testnet.confluxscan.io'
