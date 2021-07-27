@@ -1,2 +1,2 @@
-export {getEthContractName} from './eth-name'
-export {getCFXContractName} from './cfx-name'
+export {getEthContractMethodSignature} from './eth-name'
+export {getCFXContractMethodSignature} from './cfx-name'

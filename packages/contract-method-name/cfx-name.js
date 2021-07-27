@@ -2,7 +2,7 @@ import {Conflux} from 'js-conflux-sdk'
 import {CFX_SCAN_TESTNET_DOMAIN, CFX_SCAN_MAINNET_DOMAIN} from './constance'
 import fetchHelper from './util/fetch-helper'
 
-// retun conflux scan domian. Param networkType can be mainnet or testnet
+// return conflux scan domain. Param networkType can be mainnet or testnet
 export const getCFXScanDomain = networkType => {
   return networkType === 'mainnet'
     ? CFX_SCAN_MAINNET_DOMAIN
@@ -16,7 +16,7 @@ export const getCFXAbi = async (address, networkType) => {
   )
 }
 
-export const getCFXContractName = async (
+export const getCFXContractMethodSignature = async (
   address,
   transactionData,
   networkType,
@@ -28,7 +28,7 @@ export const getCFXContractName = async (
       .Contract({abi, address})
       .abi.decodeData(transactionData)
   } catch (e) {
-    console.log('e', e)
+    // console.log('error message', e)
     return {}
   }
 }

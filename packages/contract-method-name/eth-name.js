@@ -3,9 +3,14 @@ import {ETH_ENDPOINT} from './constance'
 import {ETH_FOUR_BYTE_DOMAIN} from './constance'
 import fetchHelper from './util/fetch-helper'
 
-import Eth from 'ethjs'
+// networkType must be any of Mainnet,Ropsten,Rinkeby,Kovan,Goerli
+export const getETHEndpoint = networkType => {
+  return Object.prototype.hasOwnProperty.call(ETH_ENDPOINT, networkType)
+    ? ETH_ENDPOINT[networkType]
+    : null
+}
 
-export const getEthMethodName = async fourBytePrefix => {
+export const geTextSignature = async fourBytePrefix => {
   if (
     typeof fourBytePrefix === 'string' &&
     fourBytePrefix.length === 10 &&
@@ -23,19 +28,23 @@ export const getEthMethodName = async fourBytePrefix => {
   return null
 }
 
-// networkType must be any of Mainnet,Ropsten,Rinkeby,Kovan,Goerli
-export const getETHEndpoint = networkType => {
-  return Object.prototype.hasOwnProperty.call(ETH_ENDPOINT, networkType)
-    ? ETH_ENDPOINT[networkType]
-    : null
-}
-
-export const getEthContractName = async (transactionData, networkType) => {
+export const getEthContractMethodSignature = async (
+  transactionData,
+  ethProvider,
+  networkType,
+) => {
   try {
-    const provider = new Eth.HttpProvider(getETHEndpoint(networkType))
+    let provider
+    if (ethProvider) {
+      provider = ethProvider
+    } else {
+      const Eth = (await import('ethjs')).default
+      provider = new Eth.HttpProvider(getETHEndpoint(networkType))
+    }
+
     const registry = new MethodRegistry({provider})
     const fourBytePrefix = transactionData.substr(0, 10)
-    const fourByteSig = getEthMethodName(fourBytePrefix).catch(() => {
+    const fourByteSig = geTextSignature(fourBytePrefix).catch(() => {
       return null
     })
 
@@ -52,7 +61,7 @@ export const getEthContractName = async (transactionData, networkType) => {
       params: parsedResult.args,
     }
   } catch (error) {
-    console.log('error', error)
+    // console.log('error', error)
     return {}
   }
 }

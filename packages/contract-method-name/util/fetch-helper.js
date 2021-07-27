@@ -1,5 +1,12 @@
+// import fetch from 'node-fetch'
 const fetchHelper = async (url, method, options) => {
-  const response = await fetch(url, {
+  let request =
+    window?.fetch && typeof window.fetch === 'function' ? window.fetch : null
+  if (!request) {
+    // request = fetch
+    request = (await import('node-fetch')).default
+  }
+  const response = await request(url, {
     method,
     headers: {
       'content-type': 'application/json',
