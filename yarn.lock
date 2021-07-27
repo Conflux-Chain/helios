@@ -2551,6 +2551,7 @@ __metadata:
     eth-method-registry: 2.0.0
     ethjs: 0.4.0
     js-conflux-sdk: 1.6.9
+    nock: 13.1.1
   languageName: unknown
   linkType: soft
 
@@ -20026,6 +20027,13 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
+"lodash.set@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "lodash.set@npm:4.3.2"
+  checksum: 4dfedacae1c1cf86385a2b6e30ba538f06c90d703a0abd83a11432d80ec24b4016fe27359cdc0554a02a31a468789cbb282801dd755e54581cf0295477e2341d
+  languageName: node
+  linkType: hard
+
 "lodash.some@npm:^4.4.0":
   version: 4.6.0
   resolution: "lodash.some@npm:4.6.0"
@@ -21322,6 +21330,18 @@ fsevents@~2.3.1:
     lower-case: ^2.0.2
     tslib: ^2.0.3
   checksum: 84db4909caec37504c6655f995a004067f8733be8cd8d849f1578661b60a1685e086325fa4e1a5e8ce94e7416c1d0f037e2a00f635a14457183de80ab4fc7612
+  languageName: node
+  linkType: hard
+
+"nock@npm:13.1.1":
+  version: 13.1.1
+  resolution: "nock@npm:13.1.1"
+  dependencies:
+    debug: ^4.1.0
+    json-stringify-safe: ^5.0.1
+    lodash.set: ^4.3.2
+    propagate: ^2.0.0
+  checksum: fa118c2c62a432b4665fa2a8fe549959ba41666bebf5939873a0fbc3a860310580272de74b3ea9538758a7f08dddd807edf35f162854763a0056f2ed892b210f
   languageName: node
   linkType: hard
 
@@ -23790,6 +23810,13 @@ fsevents@~2.3.1:
     object-assign: ^4.1.1
     react-is: ^16.8.1
   checksum: a440dd406c5cf53bf39f3e898d2c65178511d34ca3c8c789b30c177992408b9e4273969726b274719aa69ccce5ab34b2fd8caa60b90f23cd2e910cdcf682de52
+  languageName: node
+  linkType: hard
+
+"propagate@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "propagate@npm:2.0.1"
+  checksum: dd67518106bb3f1ee230b7e246a18285467e010b89703844f120c38e1462b52d79bddd4be0f8db080377a3d55218209674eae9eb672c29a033bf6b44cfc42828
   languageName: node
   linkType: hard
 

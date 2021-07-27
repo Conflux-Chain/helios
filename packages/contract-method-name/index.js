@@ -1,2 +1,2 @@
-export {default as getEthContractName} from './eth-name'
-export {default as getCFXContractName} from './cfx-name'
+export {getEthContractName} from './eth-name'
+export {getCFXContractName} from './cfx-name'

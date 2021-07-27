@@ -10,5 +10,3 @@ export const randomInt = function (a) {
 
 export {default as stripHexPrefix} from 'strip-hex-prefix'
 export {default as isHexPrefixed} from 'is-hex-prefixed'
-export {getStorageItem, setStorageItem} from './storage-helper'
-export {default as fetchWithStorage} from './fetch-with-storage'

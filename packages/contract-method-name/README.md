@@ -1,1 +1,1 @@
-# contract-method-name
+# @cfxjs/contract-method-name

@@ -1,36 +1,34 @@
 import {Conflux} from 'js-conflux-sdk'
-import {
-  CFX_SCAN_TESTNET_DOMAIN,
-  CFX_SCAN_MAINNET_DOMAIN,
-} from '@cfxjs/fluent-wallet-consts'
+import {CFX_SCAN_TESTNET_DOMAIN, CFX_SCAN_MAINNET_DOMAIN} from './constance'
+import fetchHelper from './util/fetch-helper'
 
-import {initFetcher} from '@cfxjs/fetch-rpc'
-
-const fetcher = initFetcher()
-
-const scanDomain =
-  import.meta.env.NODE_ENV === 'production'
+// retun conflux scan domian. Param networkType can be mainnet or testnet
+export const getCFXScanDomain = networkType => {
+  return networkType === 'mainnet'
     ? CFX_SCAN_MAINNET_DOMAIN
     : CFX_SCAN_TESTNET_DOMAIN
-
-const getAbiRes = async address => {
-  return await fetcher
-    .get(`${scanDomain}/v1/contract/${address}?fields=abi`)
-    .then(res => res)
-    .catch(() => null)
+}
+export const getCFXAbi = async (address, networkType) => {
+  const scanDomain = getCFXScanDomain(networkType)
+  return await fetchHelper(
+    `${scanDomain}/v1/contract/${address}?fields=abi`,
+    'GET',
+  )
 }
 
-export default async (address, transactionData) => {
+export const getCFXContractName = async (
+  address,
+  transactionData,
+  networkType,
+) => {
   try {
-    const response = await getAbiRes(address)
-    if (response.ok) {
-      const responseJson = await response.json()
-      const abi = JSON.parse(responseJson.abi)
-      return new Conflux()
-        .Contract({abi, address})
-        .abi.decodeData(transactionData)
-    }
+    const response = await getCFXAbi(address, networkType)
+    const abi = JSON.parse(response.abi)
+    return new Conflux()
+      .Contract({abi, address})
+      .abi.decodeData(transactionData)
   } catch (e) {
+    console.log('e', e)
     return {}
   }
 }
