@@ -2552,6 +2552,7 @@ __metadata:
     ethjs: 0.4.0
     js-conflux-sdk: 1.6.9
     nock: 13.1.1
+    node-fetch: 2.6.1
   languageName: unknown
   linkType: soft
 

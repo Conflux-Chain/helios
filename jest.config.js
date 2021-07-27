@@ -58,6 +58,7 @@ module.exports = {
     '/packages/db/.shadow-cljs/',
     '/packages/spec/src/spec.js',
     '/packages/spec/.shadow-cljs/',
+    '/packages/contract-method-name/constance.js',
   ],
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

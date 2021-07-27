@@ -5,6 +5,13 @@ import fetchHelper from './util/fetch-helper'
 
 import Eth from 'ethjs'
 
+// networkType must be any of Mainnet,Ropsten,Rinkeby,Kovan,Goerli
+export const getETHEndpoint = networkType => {
+  return Object.prototype.hasOwnProperty.call(ETH_ENDPOINT, networkType)
+    ? ETH_ENDPOINT[networkType]
+    : null
+}
+
 export const getEthMethodName = async fourBytePrefix => {
   if (
     typeof fourBytePrefix === 'string' &&
@@ -21,13 +28,6 @@ export const getEthMethodName = async fourBytePrefix => {
   }
 
   return null
-}
-
-// networkType must be any of Mainnet,Ropsten,Rinkeby,Kovan,Goerli
-export const getETHEndpoint = networkType => {
-  return Object.prototype.hasOwnProperty.call(ETH_ENDPOINT, networkType)
-    ? ETH_ENDPOINT[networkType]
-    : null
 }
 
 export const getEthContractName = async (transactionData, networkType) => {
@@ -52,7 +52,7 @@ export const getEthContractName = async (transactionData, networkType) => {
       params: parsedResult.args,
     }
   } catch (error) {
-    console.log('error', error)
+    // console.log('error', error)
     return {}
   }
 }
