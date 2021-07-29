@@ -2,7 +2,7 @@ import {expect, describe, afterEach, jest} from '@jest/globals'
 import nock from 'nock'
 
 import {CFX_SCAN_TESTNET_DOMAIN, CFX_SCAN_MAINNET_DOMAIN} from './constance'
-import {getCFXScanDomain, getCFXContractName} from './cfx-name'
+import {getCFXScanDomain, getCFXContractMethodSignature} from './cfx-name'
 
 jest.mock('./cfx-name', () => ({getCFXAbi: jest.fn()}))
 
@@ -17,7 +17,7 @@ describe('CFX Name', () => {
     })
   })
 
-  describe('getCFXContractName', () => {
+  describe('getCFXContractMethodSignature', () => {
     afterEach(() => {
       nock.cleanAll()
     })
@@ -43,7 +43,7 @@ describe('CFX Name', () => {
           abi: '[{"inputs":[],"name":"retrieve","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"num","type":"uint256"}],"name":"store","outputs":[],"stateMutability":"nonpayable","type":"function"}]',
           isRegistered: true,
         })
-      const res = await getCFXContractName(
+      const res = await getCFXContractMethodSignature(
         'cfxtest:acgd1ex04h88ybdyxxdg45wjj0mrcwx1fak1snk3db',
         '0x6057361d0000000000000000000000000000000000000000000000000000000000000064',
         'testnet',
@@ -54,7 +54,7 @@ describe('CFX Name', () => {
       nock('https://testnet.confluxscan.io/v1/contract')
         .get('/some-wrong-address?fields=abi')
         .reply(500)
-      const res = await getCFXContractName(
+      const res = await getCFXContractMethodSignature(
         'some-wrong-address',
         '0x6057361d0000000000000000000000000000000000000000000000000000000000000064',
         'testnet',

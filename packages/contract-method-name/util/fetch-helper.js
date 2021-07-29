@@ -1,6 +1,9 @@
-import fetch from 'node-fetch'
+let request = window?.fetch
 const fetchHelper = async (url, method, options) => {
-  const response = await fetch(url, {
+  if (!request) {
+    request = await (await import('node-fetch')).default
+  }
+  const response = await request(url, {
     method,
     headers: {
       'content-type': 'application/json',

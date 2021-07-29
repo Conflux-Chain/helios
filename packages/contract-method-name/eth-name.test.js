@@ -1,7 +1,11 @@
 import nock from 'nock'
 import {expect, describe, afterEach} from '@jest/globals'
 import {ETH_ENDPOINT} from './constance'
-import {getETHEndpoint, getEthMethodName, getEthContractName} from './eth-name'
+import {
+  getETHEndpoint,
+  geTextSignature,
+  getEthContractMethodSignature,
+} from './eth-name'
 describe('ETH Name', () => {
   afterEach(() => {
     nock.cleanAll()
@@ -18,16 +22,16 @@ describe('ETH Name', () => {
       expect(getETHEndpoint('some net')).toBeNull()
     })
   })
-  describe('getEthMethodName', () => {
+  describe('geTextSignature', () => {
     it('should return null when got wrong prefix', async () => {
-      const res = await getEthMethodName('some error prefix')
+      const res = await geTextSignature('some error prefix')
       expect(res).toEqual(null)
     })
     it('should return null when request got wrong data', async () => {
       nock('https://www.4byte.directory/api/v1')
         .get('/signatures/?hex_signature=0x6057361d')
         .reply(500)
-      const res = await getEthMethodName(
+      const res = await geTextSignature(
         '0x6057361d0000000000000000000000000000000000000000000000000000000000000064',
       )
       expect(res).toEqual(null)
@@ -50,11 +54,11 @@ describe('ETH Name', () => {
             },
           ],
         })
-      const res = await getEthMethodName('0x6057361d')
+      const res = await geTextSignature('0x6057361d')
       expect(res).toBe('store(uint256)')
     })
   })
-  describe('getEthContractName', () => {
+  describe('getEthContractMethodSignature', () => {
     it('should return eth contract method name', async () => {
       nock('https://www.4byte.directory/api/v1')
         .get('/signatures/?hex_signature=0x6057361d')
@@ -72,8 +76,9 @@ describe('ETH Name', () => {
             },
           ],
         })
-      const res = await getEthContractName(
+      const res = await getEthContractMethodSignature(
         '0x6057361d000000000000000000000000000000000000000000000000000000000000022b',
+        null,
         'Ropsten',
       )
       expect(res).toHaveProperty('fullName', 'store(uint256)')
@@ -83,8 +88,9 @@ describe('ETH Name', () => {
       nock('https://www.4byte.directory/api/v1')
         .get('/signatures/?hex_signature=0x6057361d')
         .reply(500)
-      const res = await getEthContractName(
+      const res = await getEthContractMethodSignature(
         '0x6057361d000000000000000000000000000000000000000000000000000000000000022b',
+        null,
         'Ropsten',
       )
       expect(res).toEqual({})

@@ -16,7 +16,7 @@ export const getCFXAbi = async (address, networkType) => {
   )
 }
 
-export const getCFXContractName = async (
+export const getCFXContractMethodSignature = async (
   address,
   transactionData,
   networkType,
