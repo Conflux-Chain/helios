@@ -1,7 +1,7 @@
 {
   "name": "@cfxjs/contract-method-name",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "dependencies": {
     "eth-method-registry": "2.0.0",
