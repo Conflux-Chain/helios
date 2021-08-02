@@ -1,6 +1,5 @@
 import {map, password, stringp} from '@cfxjs/spec'
 import {decrypt} from 'browser-passworder'
-import browser from 'webextension-polyfill'
 
 export const NAME = 'wallet_importAll'
 
@@ -22,7 +21,7 @@ export const permissions = {
 }
 
 export const main = async ({
-  Err: {InvalidParams},
+  Err: {InvalidParams, Internal},
   rpcs: {wallet_addVault, wallet_validatePassword},
   params: {password, decryptPassword, vaults},
 }) => {
@@ -47,8 +46,13 @@ export const main = async ({
   }
 
   if (data.wallet === 'fluent') {
-    await browser.storage.local.set({wallet_importAll: decrypted})
-    browser.runtime.reload()
+    if (window) {
+      const browser = (await import('webextension-polyfill')).default
+      await browser.storage.local.set({wallet_importAll: decrypted})
+      browser.runtime.reload()
+    } else {
+      throw Internal('Invalid running env, window is not defined')
+    }
     return
   }
 
