@@ -1,0 +1,65 @@
+template: |
+  ## What's Changed
+
+  $CHANGES
+
+name-template: "v$NEXT_PATCH_VERSION"
+tag-template: "v$NEXT_PATCH_VERSION"
+version-resolver:
+  major:
+    labels:
+      - 'major'
+      - 'breaking-change'
+  minor:
+    labels:
+      - 'minor'
+      - 'feature'
+  patch:
+    labels:
+      - 'patch'
+      - 'fix'
+  default: patch
+
+categories:
+  - title: '🚀 Features'
+    label: 'feature'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+exclude-labels:
+  - 'skip-changelog'
+autolabeler:
+  - label: 'chore'
+    title:
+      - '/chore(\(.*\))?:/'
+  - label: 'documentation'
+    title:
+      - '/doc(\(.*\))?:/'
+    files:
+      - 'websites/doc/docs/**/*'
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/fix(\(.*\))?:/'
+  - label: 'enhancement'
+    title:
+      - '/feat(\(.*\))?:/'
+    branch:
+      - '/feature\/.+/'
+    body:
+      - '/new\sfeature/'
+      - '/implement/'
+  - label: 'ci'
+    title:
+      - '/ci(\(.*\))?:/'
+  - label: 'tests'
+    title:
+      - '/test(\(.*\))?:/'
+    files:
+      - 'packages/**/*.test.js'
+  - label: 'breaking-change'
+    title:
+      - '/BREAKING\sCHANGE/'
+    body:
+      - '/BREAKING\sCHANGE/'
