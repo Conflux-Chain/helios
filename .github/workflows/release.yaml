@@ -8,13 +8,18 @@
 # Context and expression syntax for GitHub Actions
 # https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
 
-name: NodeJS PR CI
+name: Publish Release Version
 
-on: [pull_request]
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
 
 jobs:
-  version-check:
-    if: ${{ github.head_ref != '__release-pkg' }}
+  release:
+    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -22,7 +27,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0 # https://yarnpkg.com/features/release-workflow/#commit-history
+          # to trigger next gh action
+          # https://github.community/t/push-from-action-even-with-pat-does-not-trigger-action/17622/6
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -40,4 +47,19 @@ jobs:
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
-      - run: yarn version check
+      - run: yarn install --immutable
+      - uses: release-drafter/release-drafter@v5
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          config-name: release-drafter.yml
+          publish: true
+      - name: build and release
+        env:
+          FLUENT_VERSION: ${{steps.create_release.tag_name}}
+        run: yarn prod:release
+      - uses: shogo82148/actions-upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.upload_url }}
+          asset_path: releases/*
