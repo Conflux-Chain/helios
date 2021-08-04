@@ -58,9 +58,9 @@ jobs:
           prerelease: true
       - name: build and release
         env:
-          FLUENT_VERSION: ${{ steps.create_release.tag_name }}
+          FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
         run: yarn prod:release
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create_release.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: releases/*

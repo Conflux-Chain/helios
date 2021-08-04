@@ -9,7 +9,7 @@
 # https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
 
 # push only, not merge
-name: Deploy Storybook
+name: Deploy Doc
 
 on:
   pull_request:
