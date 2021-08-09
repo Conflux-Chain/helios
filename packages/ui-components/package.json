@@ -1,7 +1,7 @@
 {
   "name": "@cfxjs/ui-components",
   "type": "module",
-  "main": "index.js",
+  "main": "components/index.js",
   "dependencies": {
     "rc-dropdown": "3.2.0",
     "rc-notification": "4.5.7",

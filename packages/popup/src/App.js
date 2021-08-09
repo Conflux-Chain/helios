@@ -2,7 +2,7 @@ import React from 'react'
 import './App.css'
 import './index.css'
 import {useRPC} from '@cfxjs/use-rpc'
-// import {Alert} from '../../ui-components/index.js'
+// import {Alert} from '../../ui-components/components'
 function App() {
   const a = useRPC('wallet_generateMnemonic')
   const b = useRPC('wallet_generatePrivateKey')
