@@ -8,6 +8,8 @@ module.exports = {
       './packages/doc-ui/**/*.js',
       './packages/ui/**/*.html',
       './packages/ui/**/*.js',
+      './packages/ui-components/**/*.html',
+      './packages/ui-components/**/*.js',
       './websites/doc/**/*.html',
       './websites/doc/**/*.js',
     ],

@@ -1,3 +1,142 @@
+/* stylelint-disable  at-rule-no-unknown */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer base {
+  @font-face {
+    font-family: 'Circular Std';
+    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Book.ttf)
+      format('truetype');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Circular Std';
+    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Book-Italic.ttf)
+      format('truetype');
+    font-style: italic;
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Circular Std';
+    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Medium.ttf)
+      format('truetype');
+    font-weight: 500;
+  }
+  @font-face {
+    font-family: 'Circular Std';
+    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Medium-Italic.ttf)
+      format('truetype');
+    font-style: italic;
+    font-weight: 500;
+  }
+  @font-face {
+    font-family: 'Circular Std';
+    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Bold.ttf)
+      format('truetype');
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: 'Circular Std';
+    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Bold-Italic.ttf)
+      format('truetype');
+    font-style: italic;
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: 'Circular Std';
+    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Black.ttf)
+      format('truetype');
+    font-weight: 800;
+  }
+  @font-face {
+    font-family: 'Circular Std';
+    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Black-Italic.ttf)
+      format('truetype');
+    font-style: italic;
+    font-weight: 800;
+  }
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #fff;
+  @apply font-body;
+  @apply text-sm;
+  @apply font-normal;
+}
+
+strong {
+  @apply text-warning-dark;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+#root,
+body,
+html {
+  height: 100%;
+}
+
+.light {
+  --color-primary-10: #f0fcfa;
+  --color-primary-90: #1e2a28;
+  --color-error-10: #fdf2f1;
+  --color-error-90: #2b2021;
+  --color-success-10: #edf9ec;
+  --color-success-90: #252e25;
+  --color-warning-10: #fff7ed;
+  --color-warning-90: #2b2820;
+  --color-info-10: #f4f7ff;
+  --color-info-90: #0d1032;
+  --color-gray-0: #fff;
+  --color-gray-10: #f7f8fa;
+  --color-gray-20: #eaecef;
+  --color-gray-40: #a9abb2;
+  --color-gray-60: #898d9a;
+  --color-gray-80: #3d3f4c;
+  --color-gray-90: #2a2c33;
+  --color-gray-100: #1b1b1c;
+  --shadow-common: 2px 8px 44px #e3edff;
+  @apply bg-light;
+  @apply bg-no-repeat;
+  @apply bg-cover;
+}
+
+.dark {
+  --color-primary-10: #1e2a28;
+  --color-primary-90: #f0fcfa;
+  --color-error-10: #2b2021;
+  --color-error-90: #fdf2f1;
+  --color-success-10: #252e25;
+  --color-success-90: #edf9ec;
+  --color-warning-10: #2b2820;
+  --color-warning-90: #fff7ed;
+  --color-info-10: #0d1032;
+  --color-info-90: #f4f7ff;
+  --color-gray-0: #1b1b1c;
+  --color-gray-10: #2a2c33;
+  --color-gray-20: #3d3f4c;
+  --color-gray-40: #898d9a;
+  --color-gray-60: #a9abb2;
+  --color-gray-80: #eaecef;
+  --color-gray-90: #f7f8fa;
+  --color-gray-100: #fff;
+  --shadow-common: 2px 8px 44px #1d1d1d;
+  @apply bg-dark;
+  @apply bg-no-repeat;
+  @apply bg-cover;
+}
+
+.home {
+  --color-gray-20: #3d3f4c;
+  --color-gray-40: #898d9a;
+  --color-gray-60: #a9abb2;
+  --color-gray-80: #eaecef;
+  @apply bg-home;
+}

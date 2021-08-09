@@ -1,0 +1,191 @@
+/* @tooltip-arrow-shadow-width: 4px;
+
+@tooltip-arrow-rotate-width: 15px;
+
+@tooltip-arrow-offset-vertical: 4px;
+@tooltip-arrow-offset-horizontal: 12px;
+
+@tooltip-max-width: 200px;
+
+@tooltip-arrow-width: 5px;
+
+@tooltip-distance: 8px;
+
+@tooltip-arrow-color: rgba(0, 0, 0, 0.75); */
+
+/* Base class */
+.tooltip {
+  @apply absolute;
+  @apply z-20;
+  @apply block;
+  @apply w-max;
+  @apply max-w-60;
+  @apply visible;
+}
+.tooltip-hidden {
+  @apply hidden;
+}
+
+.tooltip-placement-top,
+.tooltip-placement-topLeft,
+.tooltip-placement-topRight {
+  @apply pb-2;
+}
+
+.tooltip-placement-right,
+.tooltip-placement-rightTop,
+.tooltip-placement-rightBottom {
+  @apply pl-2;
+}
+
+.tooltip-placement-bottom,
+.tooltip-placement-bottomLeft,
+.tooltip-placement-bottomRight {
+  @apply pt-2;
+}
+
+.tooltip-placement-left,
+.tooltip-placement-leftTop,
+.tooltip-placement-leftBottom {
+  @apply pr-2;
+}
+
+/* Wrapper for the tooltip content */
+.tooltip-inner {
+  @apply min-w-8;
+  @apply min-h-8;
+  @apply px-2;
+  @apply py-1.5;
+  @apply text-gray-0;
+  @apply text-left;
+  @apply text-xs;
+  @apply no-underline;
+  @apply break-words;
+  @apply bg-gray-100;
+  @apply border-2;
+  @apply shadow-1;
+}
+
+/* Arrows */
+.tooltip-arrow {
+  @apply absolute;
+  @apply block;
+  @apply w-4;
+  @apply h-4;
+  @apply overflow-hidden;
+  @apply bg-transparent;
+  @apply pointer-events-none;
+}
+.tooltip-arrow-content {
+  @apply absolute;
+  @apply inset-0;
+  @apply block;
+  @apply w-2;
+  @apply h-2;
+  @apply m-auto;
+  @apply bg-gray-100;
+  @apply pointer-events-auto;
+}
+
+.tooltip-placement-top .tooltip-arrow,
+.tooltip-placement-topLeft .tooltip-arrow,
+.tooltip-placement-topRight .tooltip-arrow {
+  @apply -bottom-1.25;
+}
+
+.tooltip-placement-top .tooltip-arrow-content,
+.tooltip-placement-topLeft .tooltip-arrow-content,
+.tooltip-placement-topRight .tooltip-arrow-content {
+  box-shadow: 4px 4px 7px rgba(0, 0, 0, 7%);
+  transform: translateY(-7.5px) rotate(45deg);
+}
+
+.tooltip-placement-top .tooltip-arrow {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-placement-topLeft .tooltip-arrow {
+  @apply left-3;
+}
+
+.tooltip-placement-topRight .tooltip-arrow {
+  @apply right-3;
+}
+
+.tooltip-placement-right .tooltip-arrow,
+.tooltip-placement-rightTop .tooltip-arrow,
+.tooltip-placement-rightBottom .tooltip-arrow {
+  @apply -left-1.25;
+}
+
+.tooltip-placement-right .tooltip-arrow-content,
+.tooltip-placement-rightTop .tooltip-arrow-content,
+.tooltip-placement-rightBottom .tooltip-arrow-content {
+  box-shadow: -4px 4px 7px fade('#000', 7%);
+  transform: translateX(7.5px) rotate(45deg);
+}
+
+.tooltip-placement-right .tooltip-arrow {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip-placement-rightTop .tooltip-arrow {
+  @apply top-1;
+}
+
+.tooltip-placement-rightBottom .tooltip-arrow {
+  @apply bottom-1;
+}
+
+.tooltip-placement-left .tooltip-arrow,
+.tooltip-placement-leftTop .tooltip-arrow,
+.tooltip-placement-leftBottom .tooltip-arrow {
+  @apply -right-1.25;
+}
+
+.tooltip-placement-left .tooltip-arrow-content,
+.tooltip-placement-leftTop .tooltip-arrow-content,
+.tooltip-placement-leftBottom .tooltip-arrow-content {
+  box-shadow: 4px -4px 7px rgba(0, 0, 0, 7%);
+  transform: translateX(-7.5px) rotate(45deg);
+}
+
+.tooltip-placement-left .tooltip-arrow {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip-placement-leftTop .tooltip-arrow {
+  @apply top-1;
+}
+
+.tooltip-placement-leftBottom .tooltip-arrow {
+  @apply bottom-1;
+}
+
+.tooltip-placement-bottom .tooltip-arrow,
+.tooltip-placement-bottomLeft .tooltip-arrow,
+.tooltip-placement-bottomRight .tooltip-arrow {
+  @apply -top-1.25;
+}
+.tooltip-placement-bottom .tooltip-arrow-content,
+.tooltip-placement-bottomLeft .tooltip-arrow-content,
+.tooltip-placement-bottomRight .tooltip-arrow-content {
+  box-shadow: -4px -4px 7px rgba(0, 0, 0, 7%);
+  transform: translateY(7.5px) rotate(45deg);
+}
+
+.tooltip-placement-bottom .tooltip-arrow {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-placement-bottomLeft .tooltip-arrow {
+  @apply left-3;
+}
+
+.tooltip-placement-bottomRight .tooltip-arrow {
+  @apply right-3;
+}
