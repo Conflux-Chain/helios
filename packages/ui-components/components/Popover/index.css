@@ -1,0 +1,204 @@
+/* @popover-min-width: 180px;
+@popover-min-height: 32px;
+@popover-arrow-width: 6px;
+
+@popover-distance: 10px;
+@popover-padding-horizontal: 16px;
+
+
+@popover-arrow-rotate-width: 8;
+
+@popover-arrow-offset-vertical: 12px;
+@popover-arrow-offset-horizontal: 16px;
+
+@popover-max-width: 200px; */
+
+/* Base class */
+.popover {
+  @apply absolute;
+  @apply z-20;
+  @apply block;
+  @apply w-max;
+  @apply max-w-60;
+  @apply visible;
+}
+.popover::after {
+  @apply absolute;
+
+  background: fade('#fff', 1%);
+}
+.popover-hidden {
+  @apply hidden;
+}
+.popover-content {
+  @apply shadow-1;
+}
+
+.popover-placement-top,
+.popover-placement-topLeft,
+.popover-placement-topRight {
+  @apply pb-2.5;
+}
+
+.popover-placement-right,
+.popover-placement-rightTop,
+.popover-placement-rightBottom {
+  @apply pl-2.5;
+}
+
+.popover-placement-bottom,
+.popover-placement-bottomLeft,
+.popover-placement-bottomRight {
+  @apply pt-2.5;
+}
+
+.popover-placement-left,
+.popover-placement-leftTop,
+.popover-placement-leftBottom {
+  @apply pr-2.5;
+}
+
+.popover-title {
+  @apply m-0;
+  @apply pb-1;
+  @apply text-gray-80;
+  @apply text-sm;
+}
+.popover-inner-content {
+  @apply m-0;
+  @apply text-gray-60;
+  @apply text-xs;
+}
+
+/* Wrapper for the popover content */
+.popover-inner {
+  @apply p-3;
+  @apply text-left;
+  @apply no-underline;
+  @apply break-words;
+  @apply bg-gray-0;
+}
+
+/* Arrows */
+.popover-arrow {
+  @apply absolute;
+  @apply block;
+  @apply w-2;
+  @apply h-2;
+  @apply overflow-hidden;
+  @apply bg-transparent;
+  @apply pointer-events-none;
+}
+.popover-arrow-content {
+  @apply absolute;
+  @apply inset-0;
+  @apply block;
+  @apply w-1.5;
+  @apply h-1.5;
+  @apply m-auto;
+  @apply bg-gray-0;
+  @apply pointer-events-auto;
+}
+
+.popover-placement-top .popover-arrow,
+.popover-placement-topLeft .popover-arrow,
+.popover-placement-topRight .popover-arrow {
+  @apply bottom-0.5;
+}
+
+.popover-placement-top .popover-arrow-content,
+.popover-placement-topLeft .popover-arrow-content,
+.popover-placement-topRight .popover-arrow-content {
+  box-shadow: 4px 4px 7px rgba(0, 0, 0, 7%);
+  transform: translateY(-4px) rotate(45deg);
+}
+
+.popover-placement-top .popover-arrow {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.popover-placement-topLeft .popover-arrow {
+  @apply left-4;
+}
+
+.popover-placement-topRight .popover-arrow {
+  @apply right-4;
+}
+
+.popover-placement-right .popover-arrow,
+.popover-placement-rightTop .popover-arrow,
+.popover-placement-rightBottom .popover-arrow {
+  @apply left-0.5;
+}
+
+.popover-placement-right .popover-arrow-content,
+.popover-placement-rightTop .popover-arrow-content,
+.popover-placement-rightBottom .popover-arrow-content {
+  box-shadow: -4px 4px 7px fade('#000', 7%);
+  transform: translateX(4px) rotate(45deg);
+}
+
+.popover-placement-right .popover-arrow {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.popover-placement-rightTop .popover-arrow {
+  @apply top-3;
+}
+
+.popover-placement-rightBottom .popover-arrow {
+  @apply bottom-3;
+}
+
+.popover-placement-left .popover-arrow,
+.popover-placement-leftTop .popover-arrow,
+.popover-placement-leftBottom .popover-arrow {
+  @apply right-0.5;
+}
+
+.popover-placement-left .popover-arrow-content,
+.popover-placement-leftTop .popover-arrow-content,
+.popover-placement-leftBottom .popover-arrow-content {
+  box-shadow: 4px -4px 7px rgba(0, 0, 0, 7%);
+  transform: translateX(-4px) rotate(45deg);
+}
+
+.popover-placement-left .popover-arrow {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.popover-placement-leftTop .popover-arrow {
+  @apply top-3;
+}
+
+.popover-placement-leftBottom .popover-arrow {
+  @apply bottom-3;
+}
+
+.popover-placement-bottom .popover-arrow,
+.popover-placement-bottomLeft .popover-arrow,
+.popover-placement-bottomRight .popover-arrow {
+  @apply top-0.5;
+}
+.popover-placement-bottom .popover-arrow-content,
+.popover-placement-bottomLeft .popover-arrow-content,
+.popover-placement-bottomRight .popover-arrow-content {
+  box-shadow: -4px -4px 7px rgba(0, 0, 0, 7%);
+  transform: translateY(4px) rotate(45deg);
+}
+
+.popover-placement-bottom .popover-arrow {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.popover-placement-bottomLeft .popover-arrow {
+  @apply left-4;
+}
+
+.popover-placement-bottomRight .popover-arrow {
+  @apply right-4;
+}

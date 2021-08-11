@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgMobileLogo(props) {
   return (
     <svg

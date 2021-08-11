@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgSend(props) {
   return (
     <svg

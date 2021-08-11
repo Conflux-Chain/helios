@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgErrorFilled(props) {
   return (
     <svg

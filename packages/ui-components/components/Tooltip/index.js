@@ -1,5 +1,5 @@
 import * as React from 'react'
-import PropTypes, {string} from 'prop-types'
+import PropTypes from 'prop-types'
 import RcTooltip from 'rc-tooltip'
 import useMergedState from 'rc-util/lib/hooks/useMergedState'
 import classNames from 'classnames'
@@ -77,15 +77,15 @@ const Tooltip = React.forwardRef((props, ref) => {
     defaultValue: props.defaultVisible,
   })
 
-  const isNoTitle = () => {
-    const {title, overlay} = props
-    return !title && !overlay && title !== 0 // overlay for old version compatibility
+  const isNoContent = () => {
+    const {content, overlay} = props
+    return !content && !overlay && content !== 0 // overlay for old version compatibility
   }
 
   const onVisibleChange = vis => {
-    setVisible(isNoTitle() ? false : vis)
+    setVisible(isNoContent() ? false : vis)
 
-    if (!isNoTitle()) {
+    if (!isNoContent()) {
       props.onVisibleChange?.(vis)
     }
   }
@@ -139,11 +139,11 @@ const Tooltip = React.forwardRef((props, ref) => {
   }
 
   const getOverlay = () => {
-    const {title, overlay} = props
-    if (title === 0) {
-      return title
+    const {content, overlay} = props
+    if (content === 0) {
+      return content
     }
-    return overlay || title || ''
+    return overlay || content || ''
   }
 
   const {getPopupContainer, ...otherProps} = props
@@ -154,12 +154,13 @@ const Tooltip = React.forwardRef((props, ref) => {
     overlayClassName,
     overlayInnerStyle,
     children,
+    prefixCls: customPrefixCls,
   } = props
-  const prefixCls = 'tooltip'
+  const prefixCls = customPrefixCls || 'tooltip'
 
   let tempVisible = visible
-  // Hide tooltip when there is no title
-  if (!('visible' in props) && isNoTitle()) {
+  // Hide tooltip when there is no content
+  if (!('visible' in props) && isNoContent()) {
     tempVisible = false
   }
 
@@ -209,7 +210,7 @@ const Tooltip = React.forwardRef((props, ref) => {
 Tooltip.displayName = 'Tooltip'
 
 Tooltip.propTypes = {
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  content: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   overlay: PropTypes.bool,
   visible: PropTypes.bool,
   defaultVisible: PropTypes.bool,
@@ -223,9 +224,10 @@ Tooltip.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
-  builtinPlacements: string,
+  builtinPlacements: PropTypes.string,
   arrowPointAtCenter: PropTypes.bool,
   autoAdjustOverflow: PropTypes.bool,
+  prefixCls: PropTypes.string,
 }
 
 Tooltip.defaultProps = {

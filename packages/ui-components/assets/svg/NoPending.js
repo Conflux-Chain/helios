@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgNoPending(props) {
   return (
     <svg

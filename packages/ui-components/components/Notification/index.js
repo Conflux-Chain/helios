@@ -165,13 +165,15 @@ function getRCNoticeProps(args) {
 
   return {
     content: (
-      <div className="flex" role="alert">
-        {iconNode}
-        <div className="flex flex-col flex-1">
-          <div className="text-gray-80 font-medium text-base pr-6 mb-2">
-            {title}
+      <div className="flex flex-col" role="alert">
+        <div className="flex mb-2">
+          {iconNode}
+          <div className="flex flex-col flex-1">
+            <div className="text-gray-80 font-medium text-base pr-6 mb-2">
+              {title}
+            </div>
+            <div className="text-gray-60">{content}</div>
           </div>
-          <div className="text-gray-60">{content}</div>
         </div>
         {actions ? <span className="flex justify-end">{actions}</span> : null}
       </div>

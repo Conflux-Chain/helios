@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgMetamaskLogo(props) {
   return (
     <svg

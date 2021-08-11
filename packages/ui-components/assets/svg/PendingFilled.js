@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgPendingFilled(props) {
   return (
     <svg

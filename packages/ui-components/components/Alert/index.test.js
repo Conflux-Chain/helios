@@ -2,13 +2,12 @@
 
 import React from 'react'
 import testLibrary from '@testing-library/react'
-import {describe} from '@jest/globals'
+import {describe, expect} from '@jest/globals'
 import Alert from './index.js'
-const {render} = testLibrary
-console.log(render)
+const {render, screen} = testLibrary
 describe('Alert', () => {
   it('xxx', () => {
-    const {container} = render(
+    render(
       <Alert
         open={true}
         type="warning"
@@ -17,6 +16,8 @@ describe('Alert', () => {
         width="w-full"
       />,
     )
-    console.log('container', container)
+    // eslint-disable-next-line testing-library/no-debug
+    // screen.debug()
+    expect(screen.getByText('6666')).toBeInTheDocument()
   })
 })

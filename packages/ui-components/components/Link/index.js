@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
 
-function CustomLink({
+function Link({
   onClick,
   className = '',
   children,
@@ -73,7 +73,7 @@ function CustomLink({
   )
 }
 
-CustomLink.propTypes = {
+Link.propTypes = {
   className: PropTypes.string,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   disabled: PropTypes.bool,
@@ -86,4 +86,4 @@ CustomLink.propTypes = {
   endIcon: PropTypes.node,
 }
 
-export default CustomLink
+export default Link

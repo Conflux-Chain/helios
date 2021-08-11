@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgChainEthLogo(props) {
   return (
     <svg

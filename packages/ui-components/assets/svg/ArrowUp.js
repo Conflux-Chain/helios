@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgArrowUp(props) {
   return (
     <svg
