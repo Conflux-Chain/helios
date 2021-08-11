@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgEnglishIcon(props) {
   return (
     <svg

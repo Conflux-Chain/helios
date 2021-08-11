@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgSearch(props) {
   return (
     <svg

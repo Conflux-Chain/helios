@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgNoChecked(props) {
   return (
     <svg

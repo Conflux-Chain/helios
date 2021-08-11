@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgForbbiden(props) {
   return (
     <svg

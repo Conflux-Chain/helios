@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgPlus(props) {
   return (
     <svg

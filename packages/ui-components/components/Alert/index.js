@@ -70,6 +70,7 @@ function Alert({
 
   return (
     <div
+      data-testid="alert-wrapper"
       className={`flex items-center justify-between px-4 py-3 ${style} ${width} ${className}`}
     >
       <div className="flex items-center">
@@ -77,7 +78,11 @@ function Alert({
         <span className={`${contentStyle}`}>{content}</span>
       </div>
       {closable && (
-        <span aria-hidden="true" onClick={e => onCloseClick(e)}>
+        <span
+          aria-hidden="true"
+          data-testid="alert-close"
+          onClick={e => onCloseClick(e)}
+        >
           {closeIcon ? (
             closeIconComp
           ) : (

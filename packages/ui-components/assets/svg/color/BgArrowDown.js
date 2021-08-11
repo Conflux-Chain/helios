@@ -1,3 +1,5 @@
+import React from 'react'
+
 function SvgBgArrowDown(props) {
   return (
     <svg
