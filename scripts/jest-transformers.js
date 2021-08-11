@@ -1,7 +1,7 @@
 require('./setup-dotenv')
 // const swcJest = require('@swc/jest')
 // const {transformSync} = require('@swc/core')
-
+const babelJest = require('babel-jest')
 const snowpackImportMetaEnv = code =>
   typeof code === 'string'
     ? code.replaceAll('import.meta.env', 'process.env')
@@ -13,6 +13,7 @@ module.exports = {
     let [src /* path, jestConfig */] = args
     if (src.includes("import ky from 'ky'"))
       src = src.replace("import ky from 'ky'", "import ky from 'ky-universal'")
+    src = babelJest.process(...args)
 
     // if (
     //   /import\((@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*\)/.test(src)

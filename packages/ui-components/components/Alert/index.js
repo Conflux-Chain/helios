@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   ErrorFilled,
@@ -7,6 +7,8 @@ import {
   InfoFilled,
 } from '../../assets/svg'
 import {Close} from '../../assets/svg'
+const {useMemo} = React
+
 function Alert({
   type = 'success',
   icon,
