@@ -1,11 +1,8 @@
-/* eslint-disable testing-library/no-debug */
-/* eslint-disable jest/expect-expect */
-
 import React from 'react'
-import testLibrary from '@testing-library/react'
+import testingLibrary from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Alert from './index.js'
-const {render, screen, fireEvent} = testLibrary
+const {render, screen, fireEvent} = testingLibrary
 describe('Alert', () => {
   describe('Dom structure', () => {
     beforeEach(() => {
@@ -18,20 +15,20 @@ describe('Alert', () => {
           width="w-full"
         />,
       )
+    })
 
-      it('should render expected text content', () => {
-        expect(screen.getByText('testValue')).toBeInTheDocument()
-      })
-      it('should render expected color', () => {
-        expect(screen.getByTestId('alert-wrapper')).toHaveClass('bg-warning-10')
-      })
-      it('should render expected width', () => {
-        expect(screen.getByTestId('alert-wrapper')).toHaveClass('bg-warning-10')
-      })
+    it('should render expected text content', () => {
+      expect(screen.getByText('testValue')).toBeInTheDocument()
+    })
+    it('should render expected color', () => {
+      expect(screen.getByTestId('alert-wrapper')).toHaveClass('bg-warning-10')
+    })
+    it('should render expected width', () => {
+      expect(screen.getByTestId('alert-wrapper')).toHaveClass('bg-warning-10')
+    })
 
-      it('should not render close icon', () => {
-        expect(screen.getByTestId('alert-close')).not.toBeInTheDocument()
-      })
+    it('should not render close icon', () => {
+      expect(screen.queryByTestId('alert-close')).not.toBeInTheDocument()
     })
   })
 

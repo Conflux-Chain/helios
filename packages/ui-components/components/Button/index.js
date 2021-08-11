@@ -1,5 +1,6 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+const {useMemo} = React
 function Button({
   onClick,
   className = '',
@@ -79,6 +80,7 @@ function Button({
 
   return (
     <button
+      data-testid="button-wrapper"
       onClick={e => onClick && onClick(e)}
       disabled={disabled}
       className={`
