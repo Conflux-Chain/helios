@@ -16492,6 +16492,13 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
+"harmony-reflect@npm:^1.4.6":
+  version: 1.6.2
+  resolution: "harmony-reflect@npm:1.6.2"
+  checksum: 8c6ffbe85247f3af11ed5dddf65c444bbd5f1c46d13d0d6ad14644f94e3736c61692d7a4a3487b344a0b6725dc2b221cdb48642a65f0e84edebcdaafe0eb2894
+  languageName: node
+  linkType: hard
+
 "has-ansi@npm:^2.0.0":
   version: 2.0.0
   resolution: "has-ansi@npm:2.0.0"
@@ -16893,6 +16900,7 @@ fsevents@~2.3.1:
     fs-extra: ^10.0.0
     highlight.js: 9.18.5
     husky: ^6.0.0
+    identity-obj-proxy: 3.0.0
     jest: ^26.6.3
     jest-webextension-mock: ^3.7.14
     lint-staged: ^11.0.0
@@ -17350,6 +17358,15 @@ fsevents@~2.3.1:
   peerDependencies:
     postcss: ^8.1.0
   checksum: 4bf5c2e25b106a6c1f58d5f7b35134810aa785455f0c30e31939d873d4110964c5e470862026e0af51608b6d64853c614d9c724018f73cd59974106c0927e982
+  languageName: node
+  linkType: hard
+
+"identity-obj-proxy@npm:3.0.0":
+  version: 3.0.0
+  resolution: "identity-obj-proxy@npm:3.0.0"
+  dependencies:
+    harmony-reflect: ^1.4.6
+  checksum: 87f71cb15bc6173123a97f37f4fe2a9e1e44d9ceaceb19b0b233a0ab62bcc08793a019bc00241d876a73421ec4005fd28952805ef72725cda5866d712d789fe7
   languageName: node
   linkType: hard
 

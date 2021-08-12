@@ -103,5 +103,8 @@ module.exports = {
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: ['packages/**/*.js'],
 
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+  },
   // globalSetup: path.resolve(__dirname, './scripts/jest-global-setup.js')
 }

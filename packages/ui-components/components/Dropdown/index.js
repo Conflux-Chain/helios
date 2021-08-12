@@ -1,20 +1,12 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import PropTypes from 'prop-types'
-import RcDropdown from 'rc-dropdown'
+import ReactDropdown from 'rc-dropdown'
 import 'rc-dropdown/assets/index.css'
 import {ArrowDownOutlined} from '../../assets/svg'
-function Dropdown({
-  overlay,
-  trigger,
-  mouseEnterDelay = 0.15,
-  mouseLeaveDelay = 0.1,
-  transitionName,
-  disabled,
-  placement,
-  children,
-  ...props
-}) {
+
+const RcDropdown = ReactDropdown.default
+function Dropdown({overlay, trigger, disabled, placement, children, ...props}) {
   // TODO: custom animation name
   // const getTransitionName = () => {
   //   if (transitionName !== undefined) {
@@ -91,36 +83,29 @@ function Dropdown({
   }
 
   return (
-    <RcDropdown
-      alignPoint={alignPoint}
-      // transitionName={getTransitionName()}
-      animation="slide-up"
-      trigger={triggerActions}
-      overlay={() => renderOverlay()}
-      placement={getPlacement()}
-      {...props}
-    >
-      {dropdownTrigger}
-    </RcDropdown>
+    <div data-testid="dropdown-wrapper">
+      <RcDropdown
+        alignPoint={alignPoint}
+        animation="slide-up"
+        trigger={triggerActions}
+        overlay={() => renderOverlay()}
+        placement={getPlacement()}
+        {...props}
+      >
+        {dropdownTrigger}
+      </RcDropdown>
+    </div>
   )
 }
 
 Dropdown.propTypes = {
-  arrow: PropTypes.bool,
   trigger: PropTypes.array,
   overlay: PropTypes.oneOfType([PropTypes.func, PropTypes.node]).isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
-  onVisibleChange: PropTypes.func,
-  visible: PropTypes.bool,
   disabled: PropTypes.bool,
-  align: PropTypes.object,
-  getPopupContainer: PropTypes.func,
-  prefixCls: PropTypes.string,
-  className: PropTypes.string,
-  transitionName: PropTypes.string,
   placement: PropTypes.oneOf([
     'topLeft',
     'topCenter',
@@ -129,12 +114,6 @@ Dropdown.propTypes = {
     'bottomCenter',
     'bottomRight',
   ]),
-  overlayClassName: PropTypes.string,
-  overlayStyle: PropTypes.object,
-  forceRender: PropTypes.bool,
-  mouseEnterDelay: PropTypes.number,
-  mouseLeaveDelay: PropTypes.number,
-  openClassName: PropTypes.string,
 }
 
 export default Dropdown

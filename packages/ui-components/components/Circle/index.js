@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 
 function Circle({
@@ -8,9 +9,11 @@ function Circle({
 }) {
   return (
     <div
+      data-testid="circle-wrapper"
       className={`h-4.5 w-4 flex items-center justify-center flex-shrink-0 ${containerClassName}`}
     >
       <div
+        data-testid="circle-inner"
         className={`rounded-full flex-shrink-0 ${color} ${size} ${className}`}
       />
     </div>
