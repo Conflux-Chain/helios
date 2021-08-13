@@ -1,6 +1,6 @@
-import {useState, useMemo} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-
+const {useState, useMemo} = React
 function Input({
   prefix,
   suffix,
@@ -34,8 +34,9 @@ function Input({
   }, [bordered, errorMessage, focused])
 
   return (
-    <div className={`${width}`}>
+    <div className={`${width}`} data-testid="input-wrapper">
       <div
+        data-testid="input-container"
         className={`flex justify-between items-center rounded ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}
       >
         {prefix && (
@@ -48,6 +49,7 @@ function Input({
           </div>
         )}
         <input
+          data-testid="input-text"
           value={value}
           onFocus={() => setFocused(true)}
           onBlur={() => {

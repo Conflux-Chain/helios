@@ -36,7 +36,7 @@ describe('Dropdown', () => {
     })
   })
 
-  it('should place incoming position', () => {
+  it('should place menu with incoming position', () => {
     render(
       <Dropdown overlay={<div>test menu</div>} placement="bottomCenter">
         <span>test content</span>
