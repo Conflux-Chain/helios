@@ -1,6 +1,8 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {SuccessFilled, Disabled} from '../../assets/svg'
+
+const {useMemo} = React
 function MenuItem({
   children,
   itemKey,
@@ -30,6 +32,7 @@ function MenuItem({
 
   return (
     <div
+      data-testid="menu-item-wrapper"
       key={itemKey}
       aria-hidden="true"
       onClick={() => !disabled && onClick && onClick(itemKey)}
@@ -46,9 +49,17 @@ function MenuItem({
         (selectedIcon ? (
           selectedIconComp
         ) : (
-          <SuccessFilled className="w-4 h-4" />
+          <SuccessFilled
+            className="w-4 h-4"
+            data-testid="success-icon-wrapper"
+          />
         ))}
-      {disabled && <Disabled className="text-gray-40 w-4 h-4" />}
+      {disabled && (
+        <Disabled
+          className="text-gray-40 w-4 h-4"
+          data-testid="disable-icon-wrapper"
+        />
+      )}
     </div>
   )
 }

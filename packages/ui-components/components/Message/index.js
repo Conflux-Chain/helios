@@ -1,4 +1,4 @@
-import Notification from 'rc-notification'
+import ReactNotification from 'rc-notification'
 import {Loading} from '../../components'
 import {
   ErrorFilled,
@@ -6,6 +6,8 @@ import {
   WarningFilled,
   InfoFilled,
 } from '../../assets/svg'
+
+const Notification = ReactNotification.default
 
 const IconTypes = ['info', 'success', 'error', 'warning', 'loading']
 

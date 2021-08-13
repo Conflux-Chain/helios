@@ -1,10 +1,17 @@
+import React from 'react'
+
 import PropTypes from 'prop-types'
 import MenuItem from './MenuItem'
 
 //TODO: extend menu with rc-menu
 function Menu({children, className = '', onClick}) {
   return (
-    <div className={`${className}`} onClick={onClick} aria-hidden="true">
+    <div
+      className={`${className}`}
+      onClick={onClick}
+      aria-hidden="true"
+      data-testid="menu-wrapper"
+    >
       {children}
     </div>
   )
