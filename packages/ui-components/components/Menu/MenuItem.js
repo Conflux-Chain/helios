@@ -49,10 +49,7 @@ function MenuItem({
         (selectedIcon ? (
           selectedIconComp
         ) : (
-          <SuccessFilled
-            className="w-4 h-4"
-            data-testid="success-icon-wrapper"
-          />
+          <SuccessFilled className="w-4 h-4" />
         ))}
       {disabled && (
         <Disabled

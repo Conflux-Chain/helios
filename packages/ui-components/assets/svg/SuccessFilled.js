@@ -9,6 +9,7 @@ function SvgSuccessFilled(props) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
+      data-testid="success-filled-wrapper"
     >
       <circle cx={12} cy={12} r={10} fill="#44D7B6" />
       <path

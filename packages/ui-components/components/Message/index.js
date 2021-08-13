@@ -1,5 +1,5 @@
 import ReactNotification from 'rc-notification'
-import {Loading} from '../../components'
+import Loading from '../Loading/index'
 import {
   ErrorFilled,
   SuccessFilled,
@@ -97,6 +97,7 @@ function getRCNoticeProps(args) {
     onClose,
     onClick,
     icon,
+    props = {},
   } = args
 
   const duration = durationArg === undefined ? defaultDuration : durationArg
@@ -109,6 +110,7 @@ function getRCNoticeProps(args) {
     )
 
   return {
+    props,
     key,
     duration,
     style,

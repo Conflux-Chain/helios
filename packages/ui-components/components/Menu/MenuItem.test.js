@@ -12,7 +12,7 @@ describe('MenuItem', () => {
       </MenuItem>,
     )
     expect(screen.getByTestId('menu-item-wrapper')).toContainElement(
-      screen.getByTestId('success-icon-wrapper'),
+      screen.getByTestId('success-filled-wrapper'),
     )
   })
   it('test selected when disabled is true', () => {
