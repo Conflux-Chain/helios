@@ -1,6 +1,6 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-
+const {useMemo} = React
 function Link({
   onClick,
   className = '',
@@ -59,9 +59,9 @@ function Link({
 
   return (
     <a
+      data-testid="link-wrapper"
       aria-hidden="true"
-      onClick={e => onClick && onClick(e)}
-      disabled={disabled}
+      onClick={e => onClick && !disabled && onClick(e)}
       className={`
       flex justify-center items-center focus:outline-none rounded ${disabledStyle} ${colorStyle} ${sizeStyle} ${className}`}
       {...props}
