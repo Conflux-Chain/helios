@@ -1,3 +1,4 @@
+import React from 'react'
 import ReactNotification from 'rc-notification'
 import Loading from '../Loading/index'
 import {
