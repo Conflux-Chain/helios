@@ -10,10 +10,14 @@ const snowpackImportMetaEnv = code =>
 module.exports = {
   process: (...args) => {
     args[0] = snowpackImportMetaEnv(...args)
-    let [src /* path, jestConfig */] = args
-    if (src.includes("import ky from 'ky'"))
-      src = src.replace("import ky from 'ky'", "import ky from 'ky-universal'")
-    src = babelJest.process(...args)
+    if (args[0].includes("import ky from 'ky'")) {
+      args[0] = args[0].replace(
+        "import ky from 'ky'",
+        "import ky from 'ky-universal'",
+      )
+    }
+
+    return babelJest.process(...args)
 
     // if (
     //   /import\((@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*\)/.test(src)
@@ -47,7 +51,6 @@ module.exports = {
     //     // },
     //   })
     // }
-    return src
 
     // args[0] = swcJest.process(...args)
     // return args[0]
