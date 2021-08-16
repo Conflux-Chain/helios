@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-import React, {useEffect} from 'react'
-
+import React from 'react'
+const {useEffect} = React
 function Toast({
   className = '',
   open,
@@ -25,6 +25,7 @@ function Toast({
   if (type === 'block') {
     return (
       <div
+        data-testid="block-toast-wrapper"
         className={`absolute flex flex-col items-center justify-center rounded-sm bg-black bg-opacity-60 p-3 w-35 max-h-52 shadow-1 z-20 ${className}`}
         {...props}
       >
@@ -38,6 +39,7 @@ function Toast({
   } else if (type === 'line' || !title) {
     return (
       <div
+        data-testid="line-toast-wrapper"
         className={`absolute flex items-center justify-center h-10 px-4 max-w-sm rounded-sm bg-black bg-opacity-60 shadow-1 z-20 ${className}`}
         {...props}
       >
