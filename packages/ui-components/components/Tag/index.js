@@ -1,7 +1,7 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Close} from '../../assets/svg'
-
+const {useMemo} = React
 function Tag({
   onClose,
   onClick,
@@ -82,6 +82,7 @@ function Tag({
       {children}
       {closable && (
         <span
+          data-testid="close-icon-wrapper"
           aria-hidden="true"
           onClick={e => onCloseClick(e)}
           className={`ml-1`}
@@ -89,7 +90,10 @@ function Tag({
           {closeIcon ? (
             closeIconComp
           ) : (
-            <Close className={`${iconColor} ${iconSize}`} />
+            <Close
+              data-testid="close-icon"
+              className={`${iconColor} ${iconSize}`}
+            />
           )}
         </span>
       )}
