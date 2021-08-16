@@ -123,8 +123,4 @@ html {
   --color-gray-80: #eaecef;
   --color-gray-90: #f7f8fa;
   --color-gray-100: #fff;
-  --shadow-common: 2px 8px 44px #1d1d1d;
-  @apply bg-dark;
-  @apply bg-no-repeat;
-  @apply bg-cover;
 }

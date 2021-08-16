@@ -63,7 +63,6 @@ module.exports = {
         1: '0px 4px 6px rgba(0, 0, 0, 0.12)',
         2: '0px 6px 16px rgba(0, 0, 0, 0.08)',
         3: '0px 8px 36px rgba(0, 0, 0, 0.06)',
-        common: 'var(--shadow-common)',
       },
       colors: {
         white: '#fff',
