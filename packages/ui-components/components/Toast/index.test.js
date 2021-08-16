@@ -2,7 +2,7 @@ import React from 'react'
 import testingLibrary from '@testing-library/react'
 import {describe, expect, jest, beforeEach, afterEach} from '@jest/globals'
 import Toast from './index.js'
-const {render, screen, waitFor} = testingLibrary
+const {render, screen} = testingLibrary
 describe('Tag', () => {
   beforeEach(() => {
     jest.useFakeTimers()
@@ -49,14 +49,23 @@ describe('Tag', () => {
     render(<Toast open={true} content="test-content" />)
     expect(screen.getByText('test-content')).toBeInTheDocument()
   })
-  it('onClose', async () => {
+  it('test onClose', async () => {
     const onClose = jest.fn()
     render(<Toast open={true} content="test-content" onClose={onClose} />)
-    await waitFor(
-      () => {
-        expect(onClose).toHaveBeenCalledTimes(1)
-      },
-      {timeout: 2100},
+    jest.advanceTimersByTime(2000)
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+  it('test autoHideDuration', async () => {
+    const onClose = jest.fn()
+    render(
+      <Toast
+        open={true}
+        content="test-content"
+        onClose={onClose}
+        autoHideDuration={3000}
+      />,
     )
+    jest.advanceTimersByTime(3000)
+    expect(onClose).toHaveBeenCalledTimes(1)
   })
 })

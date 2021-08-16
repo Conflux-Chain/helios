@@ -1,3 +1,5 @@
+import React from 'react'
+
 import PropTypes from 'prop-types'
 import {CircleBg, SquareBg} from '../../assets/svg'
 
@@ -12,6 +14,7 @@ function WrapIcon({
 }) {
   return (
     <div
+      data-testid="wrap-icon-test-id"
       onClick={e => onClick && onClick(e)}
       aria-hidden="true"
       className={`${size} relative flex justify-center items-center ${
@@ -19,8 +22,12 @@ function WrapIcon({
       } ${className}`}
       {...props}
     >
-      {type === 'circle' && <CircleBg className={size} />}
-      {type === 'square' && <SquareBg className={size} />}
+      {type === 'circle' && (
+        <CircleBg className={size} data-testid="circle-id" />
+      )}
+      {type === 'square' && (
+        <SquareBg className={size} data-testid="square-id" />
+      )}
       <div
         className={`${size} absolute inset-0 flex justify-center items-center text-gray-40`}
       >
