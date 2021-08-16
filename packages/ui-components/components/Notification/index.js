@@ -1,4 +1,6 @@
-import Notification from 'rc-notification'
+import React from 'react'
+
+import ReactNotification from 'rc-notification'
 import {Close} from '../../assets/svg'
 import {
   ErrorFilled,
@@ -6,6 +8,7 @@ import {
   WarningFilled,
   InfoFilled,
 } from '../../assets/svg'
+const Notification = ReactNotification.default
 
 export const NotificationPlacement = [
   'topLeft',
@@ -152,6 +155,7 @@ function getRCNoticeProps(args) {
     key,
     style = {},
     className = '',
+    props = {},
   } = args
 
   const duration = durationArg === undefined ? defaultDuration : durationArg
@@ -178,6 +182,7 @@ function getRCNoticeProps(args) {
         {actions ? <span className="flex justify-end">{actions}</span> : null}
       </div>
     ),
+    props,
     duration,
     closable: true,
     onClose,

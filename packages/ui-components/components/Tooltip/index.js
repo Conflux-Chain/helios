@@ -1,11 +1,13 @@
-import * as React from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import RcTooltip from 'rc-tooltip'
-import useMergedState from 'rc-util/lib/hooks/useMergedState'
+import ReactTooltip from 'rc-tooltip'
+import useMState from 'rc-util/lib/hooks/useMergedState'
 import classNames from 'classnames'
 import getPlacements from './Placements'
 import './index.css'
+const useMergedState = useMState.default
 
+const RcTooltip = ReactTooltip.default
 const splitObject = (obj, keys) => {
   const picked = {}
   const omitted = {...obj}

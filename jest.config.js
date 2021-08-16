@@ -95,6 +95,7 @@ module.exports = {
     '.*.integration.test.jsx?', // eslint-disable-line no-useless-escape
     '/packages/contract-method-name/constance.js',
     '/packages/ui-components/assets/*',
+    '/packages/ui-components/components/Tooltip/Placements.js',
   ],
 
   // The directory where Jest should output its coverage files

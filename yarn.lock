@@ -2908,6 +2908,7 @@ __metadata:
     rc-dropdown: 3.2.0
     rc-notification: 4.5.7
     rc-tooltip: 5.1.1
+    react-use: 17.2.4
   languageName: unknown
   linkType: soft
 

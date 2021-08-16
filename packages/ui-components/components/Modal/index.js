@@ -1,8 +1,8 @@
-import React, {useRef} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {useClickAway} from 'react-use'
 import {Close} from '../../assets/svg'
-
+const {useRef} = React
 function Modal({
   className = '',
   width,
@@ -47,10 +47,12 @@ function Modal({
   if (!open) return null
   return (
     <div
+      data-testid="modal-wrapper"
       ref={ref}
       className="fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-black bg-opacity-60 transation flex justify-center items-center z-10"
     >
       <div
+        data-testid="modal-content"
         className={`relative overflow-auto flex flex-col items-center z-20 ${
           width
             ? width
@@ -65,6 +67,7 @@ function Modal({
             aria-hidden="true"
             onClick={e => onCloseClick(e)}
             className="absolute top-3 right-3"
+            data-testid="modal-close-wrapper"
           >
             {closeIcon ? (
               closeIconComp
