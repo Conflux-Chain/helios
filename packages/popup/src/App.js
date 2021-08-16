@@ -2,7 +2,6 @@ import React from 'react'
 import './App.css'
 import './index.css'
 import {useRPC} from '@cfxjs/use-rpc'
-// import {Alert} from '../../ui-components/components'
 function App() {
   const a = useRPC('wallet_generateMnemonic')
   const b = useRPC('wallet_generatePrivateKey')
@@ -16,13 +15,6 @@ function App() {
           Edit <code>src/App.js</code> and save to reload.
         </p>
       </header>
-      {/* <Alert
-        open={true}
-        type="warning"
-        closable={false}
-        content="6666"
-        width="w-full"
-      /> */}
     </div>
   )
 }

@@ -102,10 +102,6 @@ html {
   --color-gray-80: #3d3f4c;
   --color-gray-90: #2a2c33;
   --color-gray-100: #1b1b1c;
-  --shadow-common: 2px 8px 44px #e3edff;
-  @apply bg-light;
-  @apply bg-no-repeat;
-  @apply bg-cover;
 }
 
 .dark {
@@ -131,12 +127,4 @@ html {
   @apply bg-dark;
   @apply bg-no-repeat;
   @apply bg-cover;
-}
-
-.home {
-  --color-gray-20: #3d3f4c;
-  --color-gray-40: #898d9a;
-  --color-gray-60: #a9abb2;
-  --color-gray-80: #eaecef;
-  @apply bg-home;
 }
