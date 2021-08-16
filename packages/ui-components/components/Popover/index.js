@@ -5,21 +5,19 @@ import './index.css'
 
 const Popover = React.forwardRef(
   ({prefixCls: customizePrefixCls, title, content, ...otherProps}, ref) => {
+    const prefixCls = customizePrefixCls || 'popover'
     const getOverlay = prefixCls => (
       <>
         {title && <div className={`${prefixCls}-title`}>{title}</div>}
         <div className={`${prefixCls}-inner-content`}>{content}</div>
       </>
     )
-
-    const prefixCls = customizePrefixCls || 'popover'
-
     return (
       <Tooltip
         {...otherProps}
         prefixCls={prefixCls}
         ref={ref}
-        overlay={getOverlay(prefixCls)}
+        content={getOverlay(prefixCls)}
       />
     )
   },

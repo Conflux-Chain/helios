@@ -4,7 +4,7 @@ import testingLibrary from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Tooltip from './index.js'
 const {render, screen, waitFor, fireEvent} = testingLibrary
-describe('Notification', () => {
+describe('Tooltip', () => {
   describe('shows and hides itself on hover', () => {
     it('should show tooltip-content at the beginning', () => {
       render(
@@ -113,7 +113,7 @@ describe('Notification', () => {
       fireEvent.mouseOver(screen.getByTestId('test-children'))
       await waitFor(() => {
         expect(screen.getByTestId('test-children')).toHaveClass(
-          'test-open-class',
+          'test-prefix-class-open',
         )
       })
     })
