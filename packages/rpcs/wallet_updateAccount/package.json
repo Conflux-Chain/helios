@@ -1,0 +1,10 @@
+{
+  "name": "@cfxjs/wallet_update-account",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.3",
+  "dependencies": {
+    "@cfxjs/checks": "workspace:packages/checks",
+    "@cfxjs/spec": "workspace:packages/spec"
+  }
+}

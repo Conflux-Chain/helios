@@ -6,6 +6,11 @@ export const schemas = {
   input: [or, [zeroOrOne, epochTag], nul],
 }
 
+export const permissions = {
+  locked: true,
+  external: ['popup', 'inpage'],
+}
+
 export const cache = {
   type: 'ttl',
   ttl: 500,

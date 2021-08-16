@@ -66,18 +66,6 @@ describe('db', function () {
       expect(conn.getAccount()[0].vault.type).toBe('foo')
     })
 
-    it('should insert the right entity with datomic.tx tmpid', async function () {
-      const conn = db.createdb(schema)
-      conn.t([
-        {vault: {data: 1, type: 'foo'}},
-        {account: {hexAddress: '0xfoo', vault: 'datomic.tx'}},
-      ])
-      expect(conn.getAccount().length).toBe(1)
-      expect(conn.getAccount()[0].hexAddress).toBe('0xfoo')
-      expect(conn.getAccount()[0].vault.data).toBe(1)
-      expect(conn.getAccount()[0].vault.type).toBe('foo')
-    })
-
     it('should insert the right entity with tmpid from tmpid fn', async function () {
       const conn = db.createdb(schema)
       const tmpid = conn.tmpid()
@@ -182,7 +170,13 @@ describe('db', function () {
       const conn = db.createdb(schema)
       conn.createVault({type: 'a', data: 'b'})
       conn.createVault({type: 'a', data: 'c'})
+
       let rst, vault
+      rst = conn.getVault({eid: 1})
+      expect(Array.isArray(rst)).toBe(true)
+      expect(rst.length).toBe(1)
+      expect(rst[0].data).toBe('b')
+
       rst = conn.getVault({type: 'a'})
       expect(Array.isArray(rst)).toBe(true)
       expect(rst.length).toBe(2)
@@ -227,12 +221,11 @@ describe('db', function () {
     it('should return the right result', async function () {
       const conn = db.createdb(schema)
       const vaultId = conn.createVault({type: 'a', data: 'b'})
-      const vault = conn.getById(vaultId)
+      const vault = conn.getVaultById(vaultId)
       expect(vault).toBeDefined()
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
       expect(vault.eid).toBe(vaultId)
-      expect(conn.getById(2)).toBeNull()
     })
   })
 
@@ -286,14 +279,14 @@ describe('db', function () {
       const conn = db.createdb(schema)
       const vaultId = conn.createVault({type: 'a', data: 'b'})
       const accountId = conn.createAccount({hexAddress: 'a', vault: 1})
-      expect(conn.getById(vaultId)).toBeDefined()
-      expect(conn.getById(accountId)).toBeDefined()
-      expect(conn.deleteById(vaultId)).toBe(true)
-      expect(conn.getById(vaultId)).toBeNull()
+      expect(conn.getVaultById(vaultId)).toBeDefined()
+      expect(conn.getAccountById(accountId)).toBeDefined()
+      expect(conn.deleteVaultById(vaultId)).toBe(true)
+      expect(conn.getVaultById(vaultId)).toBeNull()
 
       // vault has many accounts as component
       // retract a vault will retract all its accounts
-      expect(conn.getById(accountId).vault).toBeNull()
+      expect(conn.getAccountById(accountId).vault).toBeNull()
     })
   })
 
@@ -344,26 +337,6 @@ describe('db', function () {
 
       expect(conn.updateOneVault({type: 'a'}, {type: 'b'}).data).toBe('1')
       expect(conn.getVault({type: 'b'}).length).toBe(2)
-    })
-  })
-
-  describe('update by id fn', function () {
-    it('should update the right data in db', async function () {
-      const conn = db.createdb(schema)
-
-      conn.createVault({type: 'a', data: '1'})
-      conn.createVault({type: 'a', data: '2'})
-
-      expect(conn.updateById(1, {data: '3'}).data).toBe('3')
-      expect(conn.updateById(2, {data: '4'}).data).toBe('4')
-
-      const vaults = conn.getVault({type: 'a'})
-
-      expect(vaults.length).toBe(2)
-      expect(vaults[0].eid).toBe(1)
-      expect(vaults[0].data).toBe('3')
-      expect(vaults[1].eid).toBe(2)
-      expect(vaults[1].data).toBe('4')
     })
   })
 

@@ -2,12 +2,12 @@
   "name": "@cfxjs/doc-use-spec",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "peerDependencies": {
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
   },
   "dependencies": {
-    "zustand": "^3.5.2"
+    "zustand": "^3.5.5"
   }
 }

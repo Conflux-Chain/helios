@@ -2,12 +2,15 @@ import {defRpcError} from '@cfxjs/errors'
 
 export const errorStackPop = error => {
   if (error?.stack) {
-    const found = error.stack.match(/^\s*at\s.*\..*:\d+\)?$/m)
-    if (found) {
-      const start = found.index
-      const end = found.index + found[0].length
-      error.stack = error.stack.slice(0, start) + error.stack.slice(end + 1) // +1 is for the \n
-    }
+    const stack = error.stack.split('\n')
+    error.stack = stack.reduce(
+      ([s, poped], line) => {
+        if (!poped && /^\s*at\s.*\..*:\d+\)?$/.test(line)) return [s, true]
+        if (/@thi\.ng/.test(line)) return [s, poped]
+        return [s + '\n' + line]
+      },
+      [''],
+    )[0]
   }
 }
 

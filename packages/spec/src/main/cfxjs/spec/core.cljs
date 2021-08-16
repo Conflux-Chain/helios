@@ -155,7 +155,7 @@
 
 (def Password (update-properties [:string {:min 8 :max 128}]
                                  :doc "String between 8 to 128 character" :type :password))
-(def NetworkId (update-properties [:and :int [:>= 0] [:<= 4294967295]]
+(def NetworkId (update-properties [:int {:min 0 :max 4294967295}]
                                   :type :network-id :doc "1029 for mainnet, 1 for testnet, 0 <= networkId <= 4294967295"))
 (def AddressType (update-properties [:enum "user" "contract" "builtin" "null"]
                                     :type :address-type :doc "Is string, one of user contract builtin null"))
@@ -341,3 +341,18 @@
    :type :address-type
    :error/message "invalid conflux user type, must be one of builtin user contract"
    :doc "one of builtin user contract"))
+
+(def export-url
+  (update-properties
+   [:re #"(?i)^(?:(?:https?)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))?\.?)(?::\d{2,5})?(?:[/?#]\S*)?$"]
+   :gen/fmap (fn [] "https://example.com/")
+   :type :url
+   :error/message "invalid http/https url"
+   :doc "http/https url"))
+
+(def export-dbid
+  (update-properties
+   pos-int?
+   :type :dbid
+   :error/message "invalid dbid, must be a positive integer"
+   :doc "database id, positive integer"))

@@ -4,12 +4,7 @@ import {
   NULL_HEX_ADDRESS,
 } from '@cfxjs/fluent-wallet-consts'
 
-import {
-  defRestSchemas,
-  defBase32AddressSchemaFactory,
-  or,
-  integer,
-} from './src/spec.js'
+import {defRestSchemas, defBase32AddressSchemaFactory, or} from './src/spec.js'
 
 import {
   randomHexAddress,
@@ -58,5 +53,3 @@ export const [
   base32BuiltinAddress,
   base32NullAddress,
 ] = defBase32AddressSchemaFactory(validateBase32Address, randomBase32Address)
-
-export const dbid = integer

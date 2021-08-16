@@ -2,7 +2,7 @@ import {defMiddleware} from '../middleware.js'
 
 function formatRes(res, id) {
   const template = {id, jsonrpc: '2.0'}
-  if (res) {
+  if (res !== undefined) {
     // already valid res (from fullnode)
     if (res.jsonrpc && Object.prototype.hasOwnProperty.call(res, 'id'))
       return res

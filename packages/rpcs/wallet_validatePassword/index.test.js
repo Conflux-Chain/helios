@@ -11,7 +11,11 @@ describe('wallet_validatePassword', function () {
       vault = {type: 'pk', data: await encrypt('11111111', 'foo')}
       input = {
         params: {password: '00000000'},
-        db: {getVault: () => [vault]},
+        db: {
+          getVault: () => [vault],
+          getLocked: () => true,
+          getPassword: jest.fn(),
+        },
       }
     })
 

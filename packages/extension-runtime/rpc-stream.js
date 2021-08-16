@@ -14,7 +14,10 @@ export const rpcStream = port => {
   return function send(req) {
     const result = new Promise(resolve => {
       pb.subscribeTopic(req.id, {
-        next: rst => (pb.unsubscribeTopic(req.id), resolve(rst)),
+        next: rst => {
+          pb.unsubscribeTopic(req.id)
+          resolve(rst)
+        },
       })
     })
     port.postMessage(req)

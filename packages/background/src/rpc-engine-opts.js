@@ -23,12 +23,35 @@ import * as ethGetTransactionCount from '@cfxjs/eth_get-transaction-count'
 import * as cfxGetBalance from '@cfxjs/cfx_get-balance'
 import * as ethGetBalance from '@cfxjs/eth_get-balance'
 import * as walletGetBalance from '@cfxjs/wallet_get-balance'
-import * as walletDiscoverAccounts from '@cfxjs/wallet_discoverAccounts'
+import * as walletDiscoverAccounts from '@cfxjs/wallet_discover-accounts'
 import * as walletCreateAccount from '@cfxjs/wallet_create-account'
+import * as walletCreateAddress from '@cfxjs/wallet_create-address'
+import * as walletUpdateAccount from '@cfxjs/wallet_update-account'
+import * as walletUpdateAccountGroup from '@cfxjs/wallet_update-account-group'
+import * as walletIsLocked from '@cfxjs/wallet_is-locked'
+import * as walletGetAccountGroup from '@cfxjs/wallet_get-account-group'
+import * as walletValidateMnemonic from '@cfxjs/wallet_validate-mnemonic'
+import * as walletValidatePrivateKey from '@cfxjs/wallet_validate-private-key'
+import * as walletExportAccount from '@cfxjs/wallet_export-account'
+import * as walletExportAccountGroup from '@cfxjs/wallet_export-account-group'
+import * as walletExportAll from '@cfxjs/wallet_export-all'
+import * as walletImportAll from '@cfxjs/wallet_import-all'
+import * as walletDeleteAccountGroup from '@cfxjs/wallet_delete-account-group'
+import * as cfxGetStatus from '@cfxjs/cfx_get-status'
+import * as ethChainId from '@cfxjs/eth_chain-id'
+import * as netVersion from '@cfxjs/net_version'
+import * as cfxChainId from '@cfxjs/cfx_chain-id'
+import * as cfxNetVersion from '@cfxjs/cfx_net-version'
+import * as walletAddHdPath from '@cfxjs/wallet_add-hd-path'
+import * as walletAddNetwork from '@cfxjs/wallet_add-network'
+import * as walletDeleteNetwork from '@cfxjs/wallet_delete-network'
+import * as walletDetectNetworkType from '@cfxjs/wallet_detect-network-type'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
   methods: [
+    walletIsLocked,
+
     // init
     walletGeneratePrivateKey,
     walletGenerateMnemonic,
@@ -38,11 +61,26 @@ export const rpcEngineOpts = {
     walletLock,
     walletUnlock,
 
+    walletValidatePrivateKey,
+    walletValidateMnemonic,
     walletImportMnemonic,
     walletImportPrivateKey,
     walletImportAddress,
     walletDiscoverAccounts,
+    walletCreateAddress,
     walletCreateAccount,
+    walletUpdateAccount,
+    walletUpdateAccountGroup,
+    walletGetAccountGroup,
+    walletExportAccount,
+    walletExportAccountGroup,
+    walletExportAll,
+    walletImportAll,
+    walletDeleteAccountGroup,
+    walletAddHdPath,
+    walletAddNetwork,
+    walletDeleteNetwork,
+    walletDetectNetworkType,
 
     walletGetNextNonce,
     walletGetBalance,
@@ -53,10 +91,15 @@ export const rpcEngineOpts = {
     cfxGetCode,
     cfxGetNextNonce,
     cfxGetBalance,
+    cfxGetStatus,
+    cfxNetVersion,
+    cfxChainId,
 
     // eth
     ethGetCode,
     ethGetTransactionCount,
     ethGetBalance,
+    ethChainId,
+    netVersion,
   ],
 }

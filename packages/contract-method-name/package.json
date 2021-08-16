@@ -1,0 +1,12 @@
+{
+  "name": "@cfxjs/contract-method-name",
+  "type": "module",
+  "version": "0.0.1",
+  "main": "index.js",
+  "dependencies": {
+    "eth-method-registry": "2.0.0",
+    "ethjs": "0.4.0",
+    "js-conflux-sdk": "1.6.9",
+    "node-fetch": "2.6.1"
+  }
+}

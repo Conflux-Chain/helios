@@ -27,29 +27,34 @@ export const schemas = {
 }
 
 export const permissions = {
-  unlocked: true,
   db: [
     'getNetwork',
     'getPassword',
-    'getById',
-    'getOneAccount',
+    'getAccountGroupById',
+    'getOneAccountByGroupAndIndex',
     't',
-    'getAccount',
   ],
+  external: ['popup'],
 }
 
 export const main = async ({
-  db: {getById, getPassword, getNetwork, getOneAccount, t, getAccount},
+  db: {
+    getPassword,
+    getNetwork,
+    getOneAccountByGroupAndIndex,
+    t,
+    getAccountGroupById,
+  },
   params: {accountGroupId, nickname},
   Err,
 }) => {
-  const group = getById(accountGroupId)
+  const group = getAccountGroupById(accountGroupId)
   if (!group) throw Err.InvalidParams('Invalid account group id')
   const {vault} = group
   if (vault.type !== 'hd')
     throw Err.InvalidParams("Can't add account into none hd vault")
 
-  const existAccounts = getAccount({accountGroup: accountGroupId})
+  const existAccounts = group.account || []
   const nextAccountIdx = existAccounts.length
   const hasDuplicateNicknameInSameAccountGroup = existAccounts.reduce(
     (acc, account) => acc || account.nickname === nickname,
@@ -66,24 +71,30 @@ export const main = async ({
 
   return (
     await Promise.all(
-      networks.map(async ({eid, hdPath, netId, type}) => {
-        const {address, index, privateKey} = await getNthAccountOfHDKey({
+      networks.map(async ({eid, hdPath, netId, type}) => ({
+        eid,
+        netId,
+        type,
+        addr: await getNthAccountOfHDKey({
           mnemonic: decrypted,
           hdPath: hdPath.value,
           nth: nextAccountIdx,
           only0x1Prefixed: vault.cfxOnly,
-        })
-
+        }),
+      })),
+    ).then(params =>
+      params.map(({eid, netId, type, addr: {address, index, privateKey}}) => {
         let accountId =
-          getOneAccount({index: nextAccountIdx, accountGroup: accountGroupId})
-            ?.eid || 'accountId'
+          getOneAccountByGroupAndIndex({
+            index: nextAccountIdx,
+            groupId: accountGroupId,
+          })?.eid || 'accountId'
 
         const {tempids} = t([
           {
             eid: -1,
             address: {
               vault: vault.eid,
-              network: eid,
               index,
               hex: address,
               pk: privateKey,
@@ -96,16 +107,17 @@ export const main = async ({
               base32: encode(toAccountAddress(address), netId, true),
             },
           },
+          {eid, network: {address: -1}},
           {
             eid: accountId,
             account: {
               index: nextAccountIdx,
               nickname: nickname ?? `Account ${nextAccountIdx + 1}`,
               address: -1,
-              accountGroup: accountGroupId,
               hidden: false,
             },
           },
+          {eid: accountGroupId, accountGroup: {account: accountId}},
         ])
 
         accountId = tempids.accountId ?? accountId

@@ -24,35 +24,26 @@ export const schemas = {
 }
 
 export const permissions = {
-  internal: true,
-  unlocked: true,
+  external: ['popup'],
   methods: ['wallet_getBalance', 'wallet_getNextNonce', 'wallet_createAccount'],
-  db: [
-    't',
-    'getById',
-    'getNetwork',
-    'getPassword',
-    'getOneAccount',
-    'getAccount',
-  ],
+  db: ['getAccountGroupById', 'getNetwork', 'getPassword'],
 }
 
 export const main = async ({
   rpcs: {wallet_getBalance, wallet_getNextNonce, wallet_createAccount},
-  db: {getById, getNetwork, getPassword, getAccount},
+  db: {getAccountGroupById, getNetwork, getPassword},
   params: {accountGroupId, limit = 10, waitTillFinish},
   Err: {InvalidParams},
 }) => {
-  const accountGroup = getById(accountGroupId)
+  const accountGroup = getAccountGroupById(accountGroupId)
   if (!accountGroup)
     throw InvalidParams('Invalid accountGroupId, account group not found')
-  const oldAccountsCount =
-    getAccount({accountGroup: accountGroupId})?.length ?? 0
+  const oldAccountsCount = accountGroup.account?.length ?? 0
 
-  const vault = getById(accountGroup.vault.eid)
+  const {vault} = accountGroup
   if (vault.type !== 'hd') return // no need to discover accounts for none hd vault
 
-  const mnemonic = await decrypt(getPassword(), vault.data)
+  const mnemonic = vault.ddata || (await decrypt(getPassword(), vault.data))
 
   const networks = getNetwork()
 

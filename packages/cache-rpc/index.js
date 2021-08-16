@@ -2,7 +2,7 @@ import {isArray, isFunction, isNumber, isObject, isString} from '@cfxjs/checks'
 import {TLRUCache, LRUCache} from '@thi.ng/cache'
 import EpochRefConf from '@cfxjs/rpc-epoch-ref'
 
-const CACHE = {}
+let CACHE = {}
 
 export const getCacheStore = (
   {networkName, network, params, method},
@@ -24,7 +24,7 @@ export const getCacheStore = (
       throw new Error(
         'Invalid cache option, no epoch/block ref pos in @cfxjs/rpc-epoch-ref',
       )
-    let epoch = params[epochPos]
+    let epoch = params[epochPos] ?? 'default'
 
     // epoch is latest...
     if (!epoch.startsWith('0x')) {
@@ -49,17 +49,29 @@ export const getCacheKey = (key, req) => {
 }
 
 export const getCache = ({req, conf}) => {
+  if (isFunction(conf?.beforeGet) && !conf.beforeGet(req)) return
+
   if (!conf || !conf.type || !conf.key) return
   const {key} = conf
 
   const Cache = getCacheStore(req, conf)
-  if (!Cache) return
+  if (!Cache) {
+    if (isFunction(conf?.afterGet)) return conf.afterGet(req)
+    return
+  }
 
   const k = getCacheKey(key, req)
-  return Cache.get(k)
+
+  let c = Cache.get(k)
+
+  if (isFunction(conf?.afterGet)) c = conf.afterGet(req, c)
+
+  return c
 }
 
 export const setCache = ({req, res, conf}) => {
+  if (isFunction(conf?.beforeSet) && !conf.beforeSet(req, res)) return
+
   if (!conf || !conf.type || !conf.key || !res || !res.result) return
   const {ttl, key} = conf
 
@@ -68,10 +80,13 @@ export const setCache = ({req, res, conf}) => {
 
   const k = getCacheKey(key, req)
   Cache.set(k, res.result, ttl)
+
+  if (isFunction(conf?.afterSet)) conf.afterSet(setCache, req, res)
 }
 
 export const init = () =>
   // config = {}
   {
+    CACHE = {}
     return {get: getCache, set: setCache}
   }

@@ -2,7 +2,7 @@
   "name": "@cfxjs/rpc-engine",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.7",
+  "version": "0.0.12",
   "dependencies": {
     "@cfxjs/associative": "workspace:packages/associative",
     "@cfxjs/cache-rpc": "workspace:packages/cache-rpc",
@@ -18,9 +18,9 @@
     "@cfxjs/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref",
     "@cfxjs/spec": "workspace:packages/spec",
     "@cfxjs/transducers": "workspace:packages/transducers",
-    "@thi.ng/atom": "4.1.35",
-    "@thi.ng/rstream": "6.0.8",
-    "@thi.ng/rstream-graph": "3.2.68",
+    "@thi.ng/atom": "4.1.37",
+    "@thi.ng/rstream": "6.0.10",
+    "@thi.ng/rstream-graph": "3.2.70",
     "ramda": "^0.27.1"
   }
 }

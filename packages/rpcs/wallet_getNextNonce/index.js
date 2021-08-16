@@ -8,7 +8,9 @@ export const schemas = {
 }
 
 export const permissions = {
+  locked: true,
   methods: ['cfx_getNextNonce', 'eth_getTransactionCount'],
+  external: ['popup', 'inpage'],
 }
 
 export const main = async ({

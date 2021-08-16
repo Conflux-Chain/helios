@@ -3,9 +3,9 @@
   "private": true,
   "main": "index.js",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "dependencies": {
-    "@thi.ng/rstream": "6.0.8",
+    "@thi.ng/rstream": "6.0.10",
     "webextension-polyfill": "0.8.0"
   }
 }

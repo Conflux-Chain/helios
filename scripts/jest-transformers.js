@@ -13,6 +13,12 @@ module.exports = {
     let [src /* path, jestConfig */] = args
     if (src.includes("import ky from 'ky'"))
       src = src.replace("import ky from 'ky'", "import ky from 'ky-universal'")
+
+    // if (
+    //   /import\((@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*\)/.test(src)
+    // ) {
+    //   src = swcJest.process(...args)
+    // }
     // const [, , transformOptions = {}] =
     //   (jestConfig.transform || []).find(
     //     ([, transformerPath]) => transformerPath === __filename,

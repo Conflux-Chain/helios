@@ -7,6 +7,8 @@ export const schemas = {
 }
 
 export const permissions = {
+  locked: true,
+  external: ['popup'],
   methods: ['wallet_validatePassword'],
   db: ['setPassword'],
 }

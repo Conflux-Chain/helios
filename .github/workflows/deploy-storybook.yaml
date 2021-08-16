@@ -8,21 +8,25 @@
 # Context and expression syntax for GitHub Actions
 # https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
 
-name: NodeJS PR CI
+# push only, not merge
+name: Deploy Storybook
 
-on: [pull_request]
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - dev
 
 jobs:
-  version-check:
-    if: ${{ github.head_ref != '__release-pkg' }}
+  build-storybook:
+    if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [15]
+        node-version: [16.5]
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # https://yarnpkg.com/features/release-workflow/#commit-history
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -40,4 +44,12 @@ jobs:
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
-      - run: yarn version check
+      - run: yarn install --immutable
+      - run: yarn build-storybook
+      - name: Deploy Dev Branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+          external_repository: Conflux-Chain/fluent-wallet-storybook
+          publish_branch: main
+          publish_dir: ./storybook-static

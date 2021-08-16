@@ -27,3 +27,10 @@
   '`[:find [~'?e ...]
      :where
      (~'or ~@(map #(conj ['?e %]) all-attr-keys))])
+
+(defmacro def-get-by-id-query [attrk]
+  '`[:find [~'?e ...]
+     :in ~'$ ~'?eid
+     :where
+     ~['?e attrk]
+     [~'(= ?e ?eid)]])

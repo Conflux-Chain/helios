@@ -7,7 +7,11 @@ export const schemas = {
   input: [or, [cat, ethHexAddress], [cat, base32UserAddress]],
 }
 
-export const permissions = {methods: ['cfx_getBalance', 'eth_getBalance']}
+export const permissions = {
+  locked: true,
+  methods: ['cfx_getBalance', 'eth_getBalance'],
+  external: ['popup', 'inpage'],
+}
 
 export const main = async ({
   rpcs: {cfx_getBalance, eth_getBalance},

@@ -11,8 +11,9 @@
 
  :dependencies
  [[metosin/malli "0.5.1"]
-  [binaryage/oops "0.7.0"]
-  [datascript "1.0.7"]]
+  [binaryage/oops "0.7.1"]
+  [datascript "1.0.7"]
+  [hashp "0.2.1"]]
 
  :builds
  {:spec {:target :esm
@@ -20,6 +21,7 @@
          :js-options {:js-package-dirs ["packages/spec/node_modules"]}
          :compiler-options {:cross-chunk-method-motion false
                             :infer-externs :auto}
+         :devtools {:preloads [hashp.core]}
          :modules {:shared {}
                    :spec {:exports { ;; default cfxjs.spec.core/exports
 
@@ -58,6 +60,7 @@
                                     mapp cfxjs.spec.core/export-mapp
                                     objp cfxjs.spec.core/export-objp
                                     vectorp cfxjs.spec.core/export-vectorp
+                                    arrp cfxjs.spec.core/export-vectorp
                                     list cfxjs.spec.core/export-list
                                     seq cfxjs.spec.core/export-seq
                                     char cfxjs.spec.core/export-char
@@ -144,7 +147,9 @@
                                     epochRef cfxjs.spec.core/export-epoch-ref
                                     blockTag cfxjs.spec.core/export-block-tag
                                     blockRef cfxjs.spec.core/export-block-ref
-                                    undefine cfxjs.spec.core/export-js-undefined}
+                                    undefine cfxjs.spec.core/export-js-undefined
+                                    url cfxjs.spec.core/export-url
+                                    dbid cfxjs.spec.core/export-dbid}
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}
                          :depends-on #{:shared}}
@@ -154,6 +159,7 @@
                          :depends-on #{:shared}}}}
   :db {:target :esm
        :output-dir "packages/db/src"
+       :devtools {:preloads [hashp.core]}
        :js-options {:js-package-dirs ["packages/db/node_modules"]}
        :compiler-options {:cross-chunk-method-motion false
                           :infer-externs :auto

@@ -1,6 +1,6 @@
 {
   "name": "@cfxjs/doc-rpc-parameter",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "type": "module",
   "main": "index.js",
   "peerDependencies": {
@@ -11,6 +11,6 @@
     "@cfxjs/doc-use-rpc": "workspace:packages/doc-ui/useRPC",
     "@cfxjs/doc-use-spec": "workspace:packages/doc-ui/useSpec",
     "prop-types": "^15.7.2",
-    "zustand": "^3.5.2"
+    "zustand": "^3.5.5"
   }
 }

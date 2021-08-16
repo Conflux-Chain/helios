@@ -17,10 +17,10 @@ describe('content-script', function () {
     expect(window.addEventListener.mock.calls[1][0]).toBe('DOMContentLoaded')
     expect(typeof window.addEventListener.mock.calls[1][1]).toBe('function')
 
-    browser.extension.getURL = jest.fn(() => 'http://foo/bar.js')
+    browser.runtime.getURL = jest.fn(() => 'http://foo/bar.js')
     expect(document.head.childNodes.length).toBe(0)
     window.addEventListener.mock.calls[1][1]()
-    expect(browser.extension.getURL).toHaveBeenCalledWith('inpage.js')
+    expect(browser.runtime.getURL).toHaveBeenCalledWith('inpage.js')
     expect(document.head.childNodes.length).toBe(1)
     expect(document.head.childNodes[0].src).toBe(`http://foo/bar.js`)
     expect(document.head.childNodes[0].async).toBe(false)

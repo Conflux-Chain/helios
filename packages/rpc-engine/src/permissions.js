@@ -6,6 +6,9 @@ import {mergeDeepObj} from '@cfxjs/associative'
 
 export const defaultPermissions = {
   methods: [],
+  locked: false,
+  db: [],
+  external: [],
 }
 
 export const format = (rpcPermissions = {}) =>

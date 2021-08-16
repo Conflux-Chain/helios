@@ -11,6 +11,11 @@ export const cache = {
   key: ({params}) => `${NAME}${params[0]}`,
 }
 
+export const permissions = {
+  locked: true,
+  external: ['popup', 'inpage'],
+}
+
 export const main = async ({f, params}) => {
   // TODO: validate address with target network id
   return await f(params)

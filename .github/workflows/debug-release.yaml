@@ -1,0 +1,109 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+# Workflow syntax for GitHub Actions
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+# Context and expression syntax for GitHub Actions
+# https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
+
+name: Publish Debug Release Version
+
+on: [pull_request]
+
+jobs:
+  debug-release:
+    if: ${{ github.head_ref != '__release-pkg' && github.base_ref != 'master'}}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [16.5]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # to trigger next gh action
+          # https://github.community/t/push-from-action-even-with-pat-does-not-trigger-action/17622/6
+          persist-credentials: false
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - uses: actions/cache@v2
+        id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: |
+            ~/.m2/repository
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ./.shadow-cljs
+          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-and-maven-
+
+      - run: yarn install --immutable
+
+      - uses: release-drafter/release-drafter@v5
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: "DEBUG-${{ github.head_ref }}"
+          config-name: release-drafter.yml
+          publish: true
+          prerelease: true
+
+      - name: build and release
+        env:
+          FLUENT_VERSION: "DEBUG-${{ github.head_ref }}"
+        run: yarn prod:release
+
+      - name: Get the right release
+        uses: actions/github-script@v4
+        id: debug-release
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const theRelease = await require('.github/scripts/getDebugRelease.js')({github, context, core});
+            return theRelease
+
+      - uses: shogo82148/actions-upload-release-asset@v1
+        id: upload-assets
+        with:
+          upload_url: ${{ fromJSON(steps.debug-release.outputs.result).upload_url }}
+          asset_path: releases/*
+
+      - name: Get the right release
+        uses: actions/github-script@v4
+        id: debug-release-refresh
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const theRelease = await require('.github/scripts/getDebugRelease.js')({github, context, core});
+            return theRelease
+
+      - name: Comment PR
+        uses: actions/github-script@v4
+        env:
+          DEBUG_RELEASE: ${{steps.debug-release-refresh.outputs.result}}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const commentPRDebugRelease = require('.github/scripts/commentPRDebugRelease.js')
+            await commentPRDebugRelease({
+              github, context,
+              release: JSON.parse(process.env.DEBUG_RELEASE),
+            })
+
+      - name: Delete Old Debug Release And Tag
+        if: ${{ always() }}
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await require('.github/scripts/deleteOldDebugRelease.js')({github, context})

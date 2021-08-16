@@ -1,0 +1,11 @@
+{
+  "name": "@cfxjs/wallet_export-account",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.1",
+  "dependencies": {
+    "@cfxjs/hdkey": "workspace:packages/hdkey",
+    "@cfxjs/spec": "workspace:packages/spec",
+    "browser-passworder": "2.0.3"
+  }
+}

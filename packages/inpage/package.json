@@ -1,7 +1,7 @@
 {
   "name": "helios-inpage",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.js",
   "author": "yqrashawn <namy.19@gmail.com>",
   "private": true,
@@ -9,7 +9,7 @@
   "dependencies": {
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/provider-api": "workspace:packages/ui/provider-api",
-    "@thi.ng/rstream": "6.0.8",
+    "@thi.ng/rstream": "6.0.10",
     "webextension-polyfill": "0.8.0"
   }
 }
