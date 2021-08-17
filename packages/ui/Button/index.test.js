@@ -3,11 +3,11 @@ import testingLibrary from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Button from './index.js'
 const {render, screen, fireEvent} = testingLibrary
-
+let snapshot
 describe('Button', () => {
   describe('normal Button status', () => {
     beforeEach(() => {
-      render(
+      snapshot = render(
         <Button
           className="test-class-name"
           size="small"
@@ -18,7 +18,9 @@ describe('Button', () => {
         </Button>,
       )
     })
-
+    it('test snapshot', () => {
+      expect(snapshot).toMatchSnapshot()
+    })
     it('should render small size', () => {
       expect(screen.getByTestId('button-wrapper')).toHaveClass('text-xs h-8')
     })

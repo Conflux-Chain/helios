@@ -6,6 +6,15 @@ import Dropdown from './index.js'
 const {render, screen, fireEvent, waitFor} = testingLibrary
 
 describe('Dropdown', () => {
+  it('test snapshot', () => {
+    // eslint-disable-next-line testing-library/render-result-naming-convention
+    const snapshot = render(
+      <Dropdown overlay={<div>test menu</div>}>
+        <span>test content</span>
+      </Dropdown>,
+    )
+    expect(snapshot).toMatchSnapshot()
+  })
   it('should render content', () => {
     render(
       <Dropdown overlay={<div>test menu</div>}>

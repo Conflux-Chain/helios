@@ -9,6 +9,16 @@ describe('Message', () => {
   afterEach(() => {
     Message.destroy()
   })
+
+  it('test snapshot', () => {
+    Message.config({
+      TEST_RENDER: node => {
+        // eslint-disable-next-line testing-library/render-result-naming-convention
+        const snapshot = render(node)
+        expect(snapshot).toMatchSnapshot()
+      },
+    })
+  })
   it('shows up', () => {
     Message.config({
       TEST_RENDER: node => {

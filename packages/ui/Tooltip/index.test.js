@@ -7,6 +7,15 @@ const {render, screen, waitFor, fireEvent} = testingLibrary
 
 describe('Tooltip', () => {
   describe('shows and hides itself on hover', () => {
+    it('test snapshot', () => {
+      // eslint-disable-next-line testing-library/render-result-naming-convention
+      const snapshot = render(
+        <Tooltip content={<div data-testid="tooltip-content" />} visible={true}>
+          children
+        </Tooltip>,
+      )
+      expect(snapshot).toMatchSnapshot()
+    })
     it('should show tooltip-content at the beginning', () => {
       render(
         <Tooltip content={<div data-testid="tooltip-content" />} visible={true}>

@@ -5,6 +5,11 @@ import Menu from './index.js'
 const {render, screen, fireEvent} = testingLibrary
 
 describe('Menu', () => {
+  it('test snapshot', () => {
+    // eslint-disable-next-line testing-library/render-result-naming-convention
+    const snapshot = render(<Menu className="test-class">children</Menu>)
+    expect(snapshot).toMatchSnapshot()
+  })
   it('should render incoming class name', () => {
     render(<Menu className="test-class">children</Menu>)
     expect(screen.getByTestId('menu-wrapper')).toHaveClass('test-class')

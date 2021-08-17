@@ -5,6 +5,11 @@ import Checkbox from './index.js'
 const {render, screen, fireEvent} = testingLibrary
 
 describe('Checkbox', () => {
+  it('test snapshot', () => {
+    // eslint-disable-next-line testing-library/render-result-naming-convention
+    const snapshot = render(<Checkbox checked={true}>test children</Checkbox>)
+    expect(snapshot).toMatchSnapshot()
+  })
   it('should render checked SVG', () => {
     render(<Checkbox checked={true}>test children</Checkbox>)
     expect(screen.getByTestId('checked-svg')).toBeInTheDocument()

@@ -5,6 +5,11 @@ import Link from './index.js'
 const {render, screen, fireEvent} = testingLibrary
 
 describe('Link', () => {
+  it('test snapshot', () => {
+    // eslint-disable-next-line testing-library/render-result-naming-convention
+    const snapshot = render(<Link className="test-class">text</Link>)
+    expect(snapshot).toMatchSnapshot()
+  })
   it('should render class name', () => {
     render(<Link className="test-class">text</Link>)
     expect(screen.getByTestId('link-wrapper')).toHaveClass('test-class')

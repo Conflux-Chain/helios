@@ -5,6 +5,15 @@ import MenuItem from './MenuItem'
 const {render, screen, fireEvent} = testingLibrary
 
 describe('MenuItem', () => {
+  it('test snapshot', () => {
+    // eslint-disable-next-line testing-library/render-result-naming-convention
+    const snapshot = render(
+      <MenuItem itemKey="key" selected={true}>
+        content
+      </MenuItem>,
+    )
+    expect(snapshot).toMatchSnapshot()
+  })
   it('test selected when disabled is false', () => {
     render(
       <MenuItem itemKey="key" selected={true}>

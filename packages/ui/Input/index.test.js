@@ -5,6 +5,11 @@ import Input from './index.js'
 const {render, screen, fireEvent} = testingLibrary
 
 describe('Input', () => {
+  it('test snapshot', () => {
+    // eslint-disable-next-line testing-library/render-result-naming-convention
+    const snapshot = render(<Input value="test value" />)
+    expect(snapshot).toMatchSnapshot()
+  })
   it('should render incoming value', () => {
     render(<Input value="test value" />)
     expect(screen.getByTestId('input-text')).toHaveValue('test value')

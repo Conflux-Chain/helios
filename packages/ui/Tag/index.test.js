@@ -5,6 +5,13 @@ import Tag from './index.js'
 const {render, screen, waitFor, fireEvent} = testingLibrary
 
 describe('Tag', () => {
+  it('test snapshot', () => {
+    // eslint-disable-next-line testing-library/render-result-naming-convention
+    const snapshot = render(
+      <Tag className="test-class-name">some children</Tag>,
+    )
+    expect(snapshot).toMatchSnapshot()
+  })
   it('test className', () => {
     render(<Tag className="test-class-name">some children</Tag>)
     expect(screen.getByRole('button')).toHaveClass('test-class-name')

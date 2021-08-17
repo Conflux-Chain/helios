@@ -8,6 +8,11 @@ import Modal from './index.js'
 const {render, screen, fireEvent} = testingLibrary
 
 describe('Modal', () => {
+  it('test snapshot', () => {
+    // eslint-disable-next-line testing-library/render-result-naming-convention
+    const snapshot = render(<Modal content="content" open={true} />)
+    expect(snapshot).toMatchSnapshot()
+  })
   it('should show modal', () => {
     render(<Modal content="content" open={true} />)
     expect(screen.getByTestId('modal-wrapper')).toBeInTheDocument()

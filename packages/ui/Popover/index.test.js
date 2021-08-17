@@ -5,6 +5,17 @@ import Popover from './index.js'
 const {render, screen, waitFor, fireEvent} = testingLibrary
 
 describe('Popover', () => {
+  it('test snapshot', () => {
+    // eslint-disable-next-line testing-library/render-result-naming-convention
+    const snapshot = render(
+      <Popover content={<div data-testid="popover-content" />}>
+        <a href="#test" data-testid="test-children">
+          children
+        </a>
+      </Popover>,
+    )
+    expect(snapshot).toMatchSnapshot()
+  })
   it('should render content', async () => {
     render(
       <Popover content={<div data-testid="popover-content" />}>

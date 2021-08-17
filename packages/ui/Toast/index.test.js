@@ -11,6 +11,11 @@ describe('Tag', () => {
   afterEach(() => {
     jest.useRealTimers()
   })
+  it('test snapshot', () => {
+    // eslint-disable-next-line testing-library/render-result-naming-convention
+    const snapshot = render(<Toast type="block" open={true} />)
+    expect(snapshot).toMatchSnapshot()
+  })
   it('test block type', () => {
     render(<Toast type="block" open={true} />)
     expect(screen.getByTestId('block-toast-wrapper')).toBeInTheDocument()

@@ -3,11 +3,11 @@ import testingLibrary from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Alert from './index.js'
 const {render, screen, fireEvent} = testingLibrary
-
+let snapshot
 describe('Alert', () => {
   describe('Dom structure', () => {
     beforeEach(() => {
-      render(
+      snapshot = render(
         <Alert
           open={true}
           type="warning"
@@ -17,7 +17,9 @@ describe('Alert', () => {
         />,
       )
     })
-
+    it('test snapshot', () => {
+      expect(snapshot).toMatchSnapshot()
+    })
     it('should render expected text content', () => {
       expect(screen.getByText('testValue')).toBeInTheDocument()
     })
