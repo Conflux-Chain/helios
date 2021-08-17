@@ -1,4 +1,5 @@
 {
+  "version": "0.0.0",
   "name": "@cfxjs/button",
   "type": "module",
   "main": "index.js"
