@@ -6,53 +6,45 @@
 @layer base {
   @font-face {
     font-family: 'Circular Std';
-    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Book.ttf)
-      format('truetype');
+    src: url(./fonts/Circular-Std-Book.ttf) format('truetype');
     font-weight: 400;
   }
   @font-face {
     font-family: 'Circular Std';
-    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Book-Italic.ttf)
-      format('truetype');
+    src: url(./fonts/Circular-Std-Book-Italic.ttf) format('truetype');
     font-style: italic;
     font-weight: 400;
   }
   @font-face {
     font-family: 'Circular Std';
-    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Medium.ttf)
-      format('truetype');
+    src: url(./fonts/Circular-Std-Medium.ttf) format('truetype');
     font-weight: 500;
   }
   @font-face {
     font-family: 'Circular Std';
-    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Medium-Italic.ttf)
-      format('truetype');
+    src: url(./fonts/Circular-Std-Medium-Italic.ttf) format('truetype');
     font-style: italic;
     font-weight: 500;
   }
   @font-face {
     font-family: 'Circular Std';
-    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Bold.ttf)
-      format('truetype');
+    src: url(./fonts/Circular-Std-Bold.ttf) format('truetype');
     font-weight: 700;
   }
   @font-face {
     font-family: 'Circular Std';
-    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Bold-Italic.ttf)
-      format('truetype');
+    src: url(./fonts/Circular-Std-Bold-Italic.ttf) format('truetype');
     font-style: italic;
     font-weight: 700;
   }
   @font-face {
     font-family: 'Circular Std';
-    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Black.ttf)
-      format('truetype');
+    src: url(./fonts/Circular-Std-Black.ttf) format('truetype');
     font-weight: 800;
   }
   @font-face {
     font-family: 'Circular Std';
-    src: url(https://conflux-static.oss-cn-beijing.aliyuncs.com/fonts/Circular-Std-Black-Italic.ttf)
-      format('truetype');
+    src: url(./fonts/Circular-Std-Black-Italic.ttf) format('truetype');
     font-style: italic;
     font-weight: 800;
   }
