@@ -2189,12 +2189,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.11.1, @babel/runtime@npm:^7.9.2":
-  version: 7.14.8
-  resolution: "@babel/runtime@npm:7.14.8"
+"@babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.11.1":
+  version: 7.15.3
+  resolution: "@babel/runtime@npm:7.15.3"
   dependencies:
     regenerator-runtime: ^0.13.4
-  checksum: ebadb3e013a26e0f62abea0da6f6f5d83c9566f0d900e65069885f93088066c64586076d15dcbe6e093c536f66cffc9e2e136ad5d8b3e66235af62f0051afa42
+  checksum: dfb5ba324d36b141f3ed5a6af8a4c03b6b5c94cc2453b265dbdd56ae3b5c28c1a44640b31fa9d7462d8278c7c8af967be8004024a87c795175c724cd77c5cce1
   languageName: node
   linkType: hard
 
@@ -2204,6 +2204,15 @@ __metadata:
   dependencies:
     regenerator-runtime: ^0.13.4
   checksum: 423fb0079353db2faa0dad0cbdf0a90fbc5b511d1f77e5645d1aa0b144a144e24502bb023c12a31d7dca63b6e16ae36afa59992f0404e92e21de211051c361e3
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.9.2":
+  version: 7.14.8
+  resolution: "@babel/runtime@npm:7.14.8"
+  dependencies:
+    regenerator-runtime: ^0.13.4
+  checksum: ebadb3e013a26e0f62abea0da6f6f5d83c9566f0d900e65069885f93088066c64586076d15dcbe6e093c536f66cffc9e2e136ad5d8b3e66235af62f0051afa42
   languageName: node
   linkType: hard
 
@@ -2415,6 +2424,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/alert@workspace:packages/ui/Alert":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/alert@workspace:packages/ui/Alert"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/associative@workspace:packages/associative":
   version: 0.0.0-use.local
   resolution: "@cfxjs/associative@workspace:packages/associative"
@@ -2439,6 +2454,12 @@ __metadata:
   dependencies:
     bigi: ^1.4.2
     bn.js: ^5.2.0
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/button@workspace:packages/ui/Button":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/button@workspace:packages/ui/Button"
   languageName: unknown
   linkType: soft
 
@@ -2527,6 +2548,12 @@ __metadata:
   resolution: "@cfxjs/cfx_net-version@workspace:packages/rpcs/cfx_netVersion"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/checkbox@workspace:packages/ui/Checkbox":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/checkbox@workspace:packages/ui/Checkbox"
   languageName: unknown
   linkType: soft
 
@@ -2638,6 +2665,14 @@ __metadata:
 "@cfxjs/docusaurus-plugin@workspace:packages/docusaurus-plugin":
   version: 0.0.0-use.local
   resolution: "@cfxjs/docusaurus-plugin@workspace:packages/docusaurus-plugin"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/dropdown@workspace:packages/ui/Dropdown":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/dropdown@workspace:packages/ui/Dropdown"
+  dependencies:
+    rc-dropdown: 3.2.0
   languageName: unknown
   linkType: soft
 
@@ -2772,6 +2807,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/input@workspace:packages/ui/Input":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/input@workspace:packages/ui/Input"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/iterators@workspace:packages/iterators":
   version: 0.0.0-use.local
   resolution: "@cfxjs/iterators@workspace:packages/iterators"
@@ -2800,6 +2841,42 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/link@workspace:packages/ui/Link":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/link@workspace:packages/ui/Link"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/loading@workspace:packages/ui/Loading":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/loading@workspace:packages/ui/Loading"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/menu@workspace:packages/ui/Menu":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/menu@workspace:packages/ui/Menu"
+  dependencies:
+    rc-notification: 4.5.7
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/message@workspace:packages/ui/Message":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/message@workspace:packages/ui/Message"
+  dependencies:
+    rc-notification: 4.5.7
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/modal@workspace:packages/ui/Modal":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/modal@workspace:packages/ui/Modal"
+  dependencies:
+    react-use: 17.2.4
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/nat@workspace:packages/nat":
   version: 0.0.0-use.local
   resolution: "@cfxjs/nat@workspace:packages/nat"
@@ -2814,6 +2891,18 @@ __metadata:
   resolution: "@cfxjs/net_version@workspace:packages/rpcs/net_version"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/notification@workspace:packages/ui/Notification":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/notification@workspace:packages/ui/Notification"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/popover@workspace:packages/ui/Popover":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/popover@workspace:packages/ui/Popover"
   languageName: unknown
   linkType: soft
 
@@ -2883,6 +2972,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/tag@workspace:packages/ui/Tag":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/tag@workspace:packages/ui/Tag"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/test-helpers@workspace:packages/test-helpers":
   version: 0.0.0-use.local
   resolution: "@cfxjs/test-helpers@workspace:packages/test-helpers"
@@ -2893,22 +2988,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/toast@workspace:packages/ui/Toast":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/toast@workspace:packages/ui/Toast"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/tooltip@workspace:packages/ui/Tooltip":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/tooltip@workspace:packages/ui/Tooltip"
+  dependencies:
+    rc-tooltip: 5.1.1
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/transducers@workspace:packages/transducers":
   version: 0.0.0-use.local
   resolution: "@cfxjs/transducers@workspace:packages/transducers"
   dependencies:
     "@thi.ng/transducers": ^7.7.4
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/ui-components@workspace:packages/ui-components":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/ui-components@workspace:packages/ui-components"
-  dependencies:
-    rc-dropdown: 3.2.0
-    rc-notification: 4.5.7
-    rc-tooltip: 5.1.1
-    react-use: 17.2.4
   languageName: unknown
   linkType: soft
 
@@ -3202,6 +3300,12 @@ __metadata:
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
     "@cfxjs/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/wrap-icon@workspace:packages/ui/WrapIcon":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/wrap-icon@workspace:packages/ui/WrapIcon"
   languageName: unknown
   linkType: soft
 
@@ -24410,18 +24514,19 @@ fsevents@~2.3.1:
   linkType: hard
 
 "rc-align@npm:^4.0.0":
-  version: 4.0.9
-  resolution: "rc-align@npm:4.0.9"
+  version: 4.0.11
+  resolution: "rc-align@npm:4.0.11"
   dependencies:
     "@babel/runtime": ^7.10.1
     classnames: 2.x
     dom-align: ^1.7.0
+    lodash: ^4.17.21
     rc-util: ^5.3.0
     resize-observer-polyfill: ^1.5.1
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 28c74fd133bc4ffb877564d93eb88ed7df2be1fce8f70ca4dd859d0d9384556b95a60a935c3e064e785232d13cd0edb32a07f1d6b08be7bd49e6e7a0575a7e88
+  checksum: 9b16cd10190a6893b48666cbf6cd49e5f548928b04a518fb0844ebf1f3fc9041834172855282ef63ee79cf1a2ae91d0cf1791e98db8c2f4b9cb7da423c491d1a
   languageName: node
   linkType: hard
 
@@ -24482,8 +24587,8 @@ fsevents@~2.3.1:
   linkType: hard
 
 "rc-trigger@npm:^5.0.0, rc-trigger@npm:^5.0.4":
-  version: 5.2.9
-  resolution: "rc-trigger@npm:5.2.9"
+  version: 5.2.10
+  resolution: "rc-trigger@npm:5.2.10"
   dependencies:
     "@babel/runtime": ^7.11.2
     classnames: ^2.2.6
@@ -24493,7 +24598,7 @@ fsevents@~2.3.1:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 7283c184e33e9b55e4f96731ef2daf1462acf41d726da839101d13a74ac524d8662b19cb3ef4f2a4cb16e37c1c963d1d3b29b84ba0a7094f766179230ef52614
+  checksum: 3c182db00eab801501420e1c4ac4f520fe03289b65b9718b9fc4b20837b6b14c65f98be72531bc56af5f2d06058346d874c1b66ed58d2bc9b2895bf158c8e1e6
   languageName: node
   linkType: hard
 

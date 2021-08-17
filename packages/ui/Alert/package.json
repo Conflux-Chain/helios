@@ -1,0 +1,5 @@
+{
+  "name": "@cfxjs/alert",
+  "type": "module",
+  "main": "index.js"
+}

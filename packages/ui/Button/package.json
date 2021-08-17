@@ -1,0 +1,5 @@
+{
+  "name": "@cfxjs/button",
+  "type": "module",
+  "main": "index.js"
+}

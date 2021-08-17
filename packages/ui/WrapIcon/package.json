@@ -1,0 +1,5 @@
+{
+  "name": "@cfxjs/wrap-icon",
+  "type": "module",
+  "main": "index.js"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "@cfxjs/link",
+  "type": "module",
+  "main": "index.js"
+}

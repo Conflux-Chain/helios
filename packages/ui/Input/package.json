@@ -1,0 +1,5 @@
+{
+  "name": "@cfxjs/input",
+  "type": "module",
+  "main": "index.js"
+}

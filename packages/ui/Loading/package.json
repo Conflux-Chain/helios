@@ -1,0 +1,5 @@
+{
+  "name": "@cfxjs/loading",
+  "type": "module",
+  "main": "index.js"
+}

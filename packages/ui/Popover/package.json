@@ -1,0 +1,8 @@
+{
+  "name": "@cfxjs/popover",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@cfxjs/tooltip": "workspace:packages/ui/Tooltip"
+  }
+}

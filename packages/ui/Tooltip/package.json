@@ -1,0 +1,8 @@
+{
+  "name": "@cfxjs/tooltip",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "rc-tooltip": "5.1.1"
+  }
+}

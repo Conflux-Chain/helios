@@ -1,0 +1,5 @@
+{
+  "name": "@cfxjs/checkbox",
+  "type": "module",
+  "main": "index.js"
+}
