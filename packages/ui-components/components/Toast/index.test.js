@@ -3,6 +3,7 @@ import testingLibrary from '@testing-library/react'
 import {describe, expect, jest, beforeEach, afterEach} from '@jest/globals'
 import Toast from './index.js'
 const {render, screen} = testingLibrary
+
 describe('Tag', () => {
   beforeEach(() => {
     jest.useFakeTimers()

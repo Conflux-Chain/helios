@@ -3,6 +3,7 @@ import testingLibrary from '@testing-library/react'
 import {describe, expect} from '@jest/globals'
 import Popover from './index.js'
 const {render, screen, waitFor, fireEvent} = testingLibrary
+
 describe('Popover', () => {
   it('should render content', async () => {
     render(

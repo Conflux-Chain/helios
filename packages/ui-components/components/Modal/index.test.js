@@ -6,6 +6,7 @@ import testingLibrary from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Modal from './index.js'
 const {render, screen, fireEvent} = testingLibrary
+
 describe('Modal', () => {
   it('should show modal', () => {
     render(<Modal content="content" open={true} />)

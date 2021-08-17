@@ -3,6 +3,7 @@ import testingLibrary from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Tag from './index.js'
 const {render, screen, waitFor, fireEvent} = testingLibrary
+
 describe('Tag', () => {
   it('test className', () => {
     render(<Tag className="test-class-name">some children</Tag>)

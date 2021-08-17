@@ -3,6 +3,7 @@ import testingLibrary from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import WrapIcon from './index.js'
 const {render, screen, fireEvent} = testingLibrary
+
 describe('WrapIcon', () => {
   it('test circle type', () => {
     render(<WrapIcon type="circle">children</WrapIcon>)

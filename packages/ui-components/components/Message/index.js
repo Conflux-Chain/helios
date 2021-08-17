@@ -7,11 +7,9 @@ import {
   WarningFilled,
   InfoFilled,
 } from '../../assets/svg'
-
 const Notification = ReactNotification.default
 
 const IconTypes = ['info', 'success', 'error', 'warning', 'loading']
-
 let messageInstance
 let defaultDuration = 3
 let defaultTop = 20

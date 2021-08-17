@@ -3,6 +3,7 @@ import testingLibrary from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Button from './index.js'
 const {render, screen, fireEvent} = testingLibrary
+
 describe('Button', () => {
   describe('normal Button status', () => {
     beforeEach(() => {

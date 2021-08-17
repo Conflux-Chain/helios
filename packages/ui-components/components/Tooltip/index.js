@@ -6,8 +6,8 @@ import classNames from 'classnames'
 import getPlacements from './Placements'
 import './index.css'
 const useMergedState = useMState.default
-
 const RcTooltip = ReactTooltip.default
+
 const splitObject = (obj, keys) => {
   const picked = {}
   const omitted = {...obj}

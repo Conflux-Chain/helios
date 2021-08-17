@@ -3,6 +3,7 @@ import testingLibrary from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Alert from './index.js'
 const {render, screen, fireEvent} = testingLibrary
+
 describe('Alert', () => {
   describe('Dom structure', () => {
     beforeEach(() => {

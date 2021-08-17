@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {useClickAway} from 'react-use'
 import {Close} from '../../assets/svg'
 const {useRef} = React
+
 function Modal({
   className = '',
   width,
