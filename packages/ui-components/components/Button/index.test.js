@@ -38,9 +38,6 @@ describe('Button', () => {
     it('should render a enable button', () => {
       expect(screen.getByTestId('button-wrapper')).toBeEnabled()
     })
-    it('should render default size of button', () => {
-      expect(screen.getByTestId('button-wrapper')).toHaveClass('px-4')
-    })
   })
   describe('disable Button status', () => {
     beforeEach(() => {
