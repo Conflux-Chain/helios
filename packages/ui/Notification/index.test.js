@@ -9,16 +9,6 @@ describe('Notification', () => {
     afterEach(() => {
       Notification.destroy()
     })
-    it('test snapshot', () => {
-      Notification.config({
-        TEST_RENDER: node => {
-          // eslint-disable-next-line testing-library/render-result-naming-convention
-          const snapshot = render(node)
-          expect(snapshot).toMatchSnapshot()
-        },
-      })
-      Notification.success({content: 'test value', duration: 0})
-    })
     it('shows up', () => {
       Notification.config({
         TEST_RENDER: node => {
