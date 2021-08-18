@@ -64,7 +64,7 @@ function Link({
       aria-hidden="true"
       onClick={e => onClick && !disabled && onClick(e)}
       className={`
-      flex justify-center items-center focus:outline-none rounded ${disabledStyle} ${colorStyle} ${sizeStyle} ${className}`}
+      flex justify-center items-center focus:outline-none rounded cursor-pointer ${disabledStyle} ${colorStyle} ${sizeStyle} ${className}`}
       {...props}
     >
       {startIconComp}
