@@ -1,8 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-import App from './App'
+// import App from './App'
+import App from './AppDemo'
 
+import './utils/i18n.js'
 // import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
