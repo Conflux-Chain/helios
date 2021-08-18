@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "rc-notification": "4.5.7",
-    "@cfxjs/loading": "workspace:packages/ui/Loading"
+    "@cfxjs/loading": "workspace:packages/ui/Loading",
+    "rc-notification": "4.5.7"
   }
 }

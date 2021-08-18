@@ -2865,6 +2865,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cfxjs/message@workspace:packages/ui/Message"
   dependencies:
+    "@cfxjs/loading": "workspace:packages/ui/Loading"
     rc-notification: 4.5.7
   languageName: unknown
   linkType: soft
@@ -2903,6 +2904,8 @@ __metadata:
 "@cfxjs/popover@workspace:packages/ui/Popover":
   version: 0.0.0-use.local
   resolution: "@cfxjs/popover@workspace:packages/ui/Popover"
+  dependencies:
+    "@cfxjs/tooltip": "workspace:packages/ui/Tooltip"
   languageName: unknown
   linkType: soft
 
