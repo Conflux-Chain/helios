@@ -1,1 +1,1 @@
-# @cfxjs/notification
+# @cfxjs/component-notification

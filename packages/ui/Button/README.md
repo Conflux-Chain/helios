@@ -1,1 +1,1 @@
-# @cfxjs/button
+# @cfxjs/component-button

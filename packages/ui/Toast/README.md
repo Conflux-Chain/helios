@@ -1,1 +1,1 @@
-# @cfxjs/toast
+# @cfxjs/component-toast

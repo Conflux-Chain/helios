@@ -1,1 +1,1 @@
-# @cfxjs/link
+# @cfxjs/component-link

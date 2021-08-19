@@ -1,6 +1,7 @@
 {
+  "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/toast",
+  "name": "@cfxjs/component-toast",
   "type": "module",
   "main": "index.js"
 }

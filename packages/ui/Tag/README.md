@@ -1,1 +1,1 @@
-# @cfxjs/tag
+# @cfxjs/component-tag

@@ -1,6 +1,7 @@
 {
+  "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/alert",
+  "name": "@cfxjs/component-alert",
   "type": "module",
   "main": "index.js"
 }

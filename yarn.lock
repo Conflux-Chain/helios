@@ -2424,12 +2424,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/alert@workspace:packages/ui/Alert":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/alert@workspace:packages/ui/Alert"
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/associative@workspace:packages/associative":
   version: 0.0.0-use.local
   resolution: "@cfxjs/associative@workspace:packages/associative"
@@ -2454,12 +2448,6 @@ __metadata:
   dependencies:
     bigi: ^1.4.2
     bn.js: ^5.2.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/button@workspace:packages/ui/Button":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/button@workspace:packages/ui/Button"
   languageName: unknown
   linkType: soft
 
@@ -2551,15 +2539,118 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/checkbox@workspace:packages/ui/Checkbox":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/checkbox@workspace:packages/ui/Checkbox"
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/checks@workspace:packages/checks":
   version: 0.0.0-use.local
   resolution: "@cfxjs/checks@workspace:packages/checks"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-alert@workspace:packages/ui/Alert":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-alert@workspace:packages/ui/Alert"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-button@workspace:packages/ui/Button":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-button@workspace:packages/ui/Button"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-checkbox@workspace:packages/ui/Checkbox":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-checkbox@workspace:packages/ui/Checkbox"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-dropdown@workspace:packages/ui/Dropdown":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-dropdown@workspace:packages/ui/Dropdown"
+  dependencies:
+    rc-dropdown: 3.2.0
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-input@workspace:packages/ui/Input":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-input@workspace:packages/ui/Input"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-link@workspace:packages/ui/Link":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-link@workspace:packages/ui/Link"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-loading@workspace:packages/ui/Loading":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-loading@workspace:packages/ui/Loading"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-menu@workspace:packages/ui/Menu":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-menu@workspace:packages/ui/Menu"
+  dependencies:
+    rc-notification: 4.5.7
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-message@workspace:packages/ui/Message":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-message@workspace:packages/ui/Message"
+  dependencies:
+    "@cfxjs/component-loading": "workspace:packages/ui/Loading"
+    rc-notification: 4.5.7
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-modal@workspace:packages/ui/Modal":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-modal@workspace:packages/ui/Modal"
+  dependencies:
+    react-use: 17.2.4
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-notification@workspace:packages/ui/Notification":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-notification@workspace:packages/ui/Notification"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-popover@workspace:packages/ui/Popover":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-popover@workspace:packages/ui/Popover"
+  dependencies:
+    "@cfxjs/component-tooltip": "workspace:packages/ui/Tooltip"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-tag@workspace:packages/ui/Tag":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-tag@workspace:packages/ui/Tag"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-toast@workspace:packages/ui/Toast":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-toast@workspace:packages/ui/Toast"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-tooltip@workspace:packages/ui/Tooltip":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-tooltip@workspace:packages/ui/Tooltip"
+  dependencies:
+    rc-tooltip: 5.1.1
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/component-wrap-icon@workspace:packages/ui/WrapIcon":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-wrap-icon@workspace:packages/ui/WrapIcon"
   languageName: unknown
   linkType: soft
 
@@ -2665,14 +2756,6 @@ __metadata:
 "@cfxjs/docusaurus-plugin@workspace:packages/docusaurus-plugin":
   version: 0.0.0-use.local
   resolution: "@cfxjs/docusaurus-plugin@workspace:packages/docusaurus-plugin"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/dropdown@workspace:packages/ui/Dropdown":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/dropdown@workspace:packages/ui/Dropdown"
-  dependencies:
-    rc-dropdown: 3.2.0
   languageName: unknown
   linkType: soft
 
@@ -2807,12 +2890,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/input@workspace:packages/ui/Input":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/input@workspace:packages/ui/Input"
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/iterators@workspace:packages/iterators":
   version: 0.0.0-use.local
   resolution: "@cfxjs/iterators@workspace:packages/iterators"
@@ -2841,43 +2918,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/link@workspace:packages/ui/Link":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/link@workspace:packages/ui/Link"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/loading@workspace:packages/ui/Loading":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/loading@workspace:packages/ui/Loading"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/menu@workspace:packages/ui/Menu":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/menu@workspace:packages/ui/Menu"
-  dependencies:
-    rc-notification: 4.5.7
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/message@workspace:packages/ui/Message":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/message@workspace:packages/ui/Message"
-  dependencies:
-    "@cfxjs/loading": "workspace:packages/ui/Loading"
-    rc-notification: 4.5.7
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/modal@workspace:packages/ui/Modal":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/modal@workspace:packages/ui/Modal"
-  dependencies:
-    react-use: 17.2.4
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/nat@workspace:packages/nat":
   version: 0.0.0-use.local
   resolution: "@cfxjs/nat@workspace:packages/nat"
@@ -2892,20 +2932,6 @@ __metadata:
   resolution: "@cfxjs/net_version@workspace:packages/rpcs/net_version"
   dependencies:
     "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/notification@workspace:packages/ui/Notification":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/notification@workspace:packages/ui/Notification"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/popover@workspace:packages/ui/Popover":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/popover@workspace:packages/ui/Popover"
-  dependencies:
-    "@cfxjs/tooltip": "workspace:packages/ui/Tooltip"
   languageName: unknown
   linkType: soft
 
@@ -2975,12 +3001,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/tag@workspace:packages/ui/Tag":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/tag@workspace:packages/ui/Tag"
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/test-helpers@workspace:packages/test-helpers":
   version: 0.0.0-use.local
   resolution: "@cfxjs/test-helpers@workspace:packages/test-helpers"
@@ -2988,20 +3008,6 @@ __metadata:
     "@cfxjs/fullnode": 1.8.0
     ethers: 5.4.1
     ganache-core: 2.13.2
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/toast@workspace:packages/ui/Toast":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/toast@workspace:packages/ui/Toast"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/tooltip@workspace:packages/ui/Tooltip":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/tooltip@workspace:packages/ui/Tooltip"
-  dependencies:
-    rc-tooltip: 5.1.1
   languageName: unknown
   linkType: soft
 
@@ -3303,12 +3309,6 @@ __metadata:
   dependencies:
     "@cfxjs/account": "workspace:packages/account"
     "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wrap-icon@workspace:packages/ui/WrapIcon":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wrap-icon@workspace:packages/ui/WrapIcon"
   languageName: unknown
   linkType: soft
 

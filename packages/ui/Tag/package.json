@@ -1,6 +1,7 @@
 {
+  "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/tag",
+  "name": "@cfxjs/component-tag",
   "type": "module",
   "main": "index.js"
 }

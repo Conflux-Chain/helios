@@ -1,1 +1,1 @@
-# @cfxjs/message
+# @cfxjs/component-message

@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactNotification from 'rc-notification'
-import Loading from '@cfxjs/loading'
+import Loading from '@cfxjs/component-loading'
 import ErrorFilled from './assets/ErrorFilled'
 import SuccessFilled from './assets/SuccessFilled'
 import WarningFilled from './assets/WarningFilled'

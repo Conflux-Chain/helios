@@ -1,1 +1,1 @@
-# @cfxjs/input
+# @cfxjs/component-input

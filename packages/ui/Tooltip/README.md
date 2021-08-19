@@ -1,1 +1,1 @@
-# @cfxjs/tooltip
+# @cfxjs/component-tooltip
