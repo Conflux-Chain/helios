@@ -6,8 +6,7 @@ import {useTranslation} from 'react-i18next'
 const A = () => {
   const {t, i18n} = useTranslation()
   const onClick = () => {
-    console.log(11)
-    i18n.changeLanguage('zh-CN')
+    i18n.changeLanguage(i18n.language === 'en' ? 'zh-CN' : 'en')
   }
   return <div onClick={onClick}>{t('waiting')}</div>
 }
