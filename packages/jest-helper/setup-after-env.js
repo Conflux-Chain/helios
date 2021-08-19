@@ -1,3 +1,4 @@
 import '@testing-library/jest-dom'
-const crypto = require('crypto')
+import crypto from 'crypto'
+window.nodejsCrypto = crypto
 window.crypto = crypto.webcrypto

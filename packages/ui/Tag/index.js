@@ -1,7 +1,6 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import Close from './assets/Close'
-const {useMemo} = React
 
 function Tag({
   onClose,

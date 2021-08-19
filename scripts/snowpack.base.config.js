@@ -22,6 +22,7 @@ getWorkspacePackages({
     'workspace-tools',
     'doc',
     'ext-reload',
+    '@cfxjs/jest-helper',
     '@cfxjs/content-script',
   ],
 }).forEach(({location, name}) => {

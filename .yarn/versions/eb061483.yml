@@ -1,4 +1,6 @@
 declined:
+  - "@cfxjs/jest-helper"
+  - "@cfxjs/json-rpc-error"
   - helios-popup
   - "@cfxjs/component-alert"
   - "@cfxjs/component-button"
