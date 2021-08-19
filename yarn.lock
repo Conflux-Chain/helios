@@ -2564,9 +2564,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/data-format@workspace:packages/data-format":
+"@cfxjs/data-format@workspace:packages/ui/data-format":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/data-format@workspace:packages/data-format"
+  resolution: "@cfxjs/data-format@workspace:packages/ui/data-format"
   dependencies:
     big.js: ^6.1.1
   languageName: unknown
@@ -2858,6 +2858,16 @@ __metadata:
 "@cfxjs/rpc-epoch-ref@workspace:packages/rpc-epoch-ref":
   version: 0.0.0-use.local
   resolution: "@cfxjs/rpc-epoch-ref@workspace:packages/rpc-epoch-ref"
+  languageName: unknown
+  linkType: soft
+
+"@cfxjs/shorten-address@workspace:packages/ui/shorten-address":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/shorten-address@workspace:packages/ui/shorten-address"
+  dependencies:
+    "@cfxjs/account": "workspace:packages/account"
+    "@cfxjs/base32-address": "workspace:packages/base32-address"
+    "@cfxjs/checks": "workspace:packages/checks"
   languageName: unknown
   linkType: soft
 
