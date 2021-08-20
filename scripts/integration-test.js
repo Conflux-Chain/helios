@@ -28,5 +28,5 @@ process.argv.push('--forceExit')
     // , eth.start()
   ])
 
-  require('jest-cli/bin/jest.js')
+  require('jest-cli/bin/jest')
 })()

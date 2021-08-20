@@ -1,8 +1,7 @@
-import React from 'react'
+import React, {useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useClickAway} from 'react-use'
 import Close from './assets/Close'
-const {useRef} = React
 
 function Modal({
   className = '',

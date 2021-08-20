@@ -1,9 +1,14 @@
 {
+  "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/modal",
+  "name": "@cfxjs/component-modal",
   "type": "module",
   "main": "index.js",
   "dependencies": {
     "react-use": "17.2.4"
+  },
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
   }
 }

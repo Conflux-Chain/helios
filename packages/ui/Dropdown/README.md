@@ -1,1 +1,1 @@
-# @cfxjs/dropdown
+# @cfxjs/component-dropdown

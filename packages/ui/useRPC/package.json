@@ -11,6 +11,7 @@
     "webextension-polyfill": "0.8.0"
   },
   "peerDependencies": {
-    "react": "*"
+    "react": "^17",
+    "react-dom": "^17"
   }
 }

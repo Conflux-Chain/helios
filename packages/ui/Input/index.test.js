@@ -1,8 +1,6 @@
-import React from 'react'
-import testingLibrary from '@testing-library/react'
+import {render, screen, fireEvent} from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Input from './index.js'
-const {render, screen, fireEvent} = testingLibrary
 
 describe('Input', () => {
   it('test snapshot', () => {
@@ -34,6 +32,10 @@ describe('Input', () => {
   it('test incoming width class name', () => {
     render(<Input width="test-width" />)
     expect(screen.getByTestId('input-wrapper')).toHaveClass('test-width')
+  })
+  it('test incoming small size', () => {
+    render(<Input size="small" />)
+    expect(screen.getByTestId('input-container')).toHaveClass('h-8')
   })
 
   it('test incoming medium size', () => {

@@ -1,1 +1,1 @@
-# @cfxjs/menu
+# @cfxjs/component-menu

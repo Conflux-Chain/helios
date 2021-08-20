@@ -1,8 +1,6 @@
-import React from 'react'
-import testingLibrary from '@testing-library/react'
+import {render, screen} from '@testing-library/react'
 import Loading from './index.js'
 import {describe, expect} from '@jest/globals'
-const {render, screen} = testingLibrary
 
 describe('Loading', () => {
   it('test snapshot', () => {

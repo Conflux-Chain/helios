@@ -1,8 +1,7 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import SuccessFilled from './assets/SuccessFilled'
 import Disabled from './assets/Disabled'
-const {useMemo} = React
 
 function MenuItem({
   children,

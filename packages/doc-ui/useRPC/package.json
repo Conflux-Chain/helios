@@ -4,8 +4,7 @@
   "main": "index.js",
   "version": "0.0.4",
   "peerDependencies": {
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "react": "^17"
   },
   "dependencies": {
     "param-case": "3.0.4",

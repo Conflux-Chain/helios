@@ -1,11 +1,9 @@
 /* eslint-disable testing-library/await-async-utils */
 // eslint-disable-next-line no-unused-vars
 
-import React from 'react'
-import testingLibrary from '@testing-library/react'
+import {render, screen, fireEvent} from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Modal from './index.js'
-const {render, screen, fireEvent} = testingLibrary
 
 describe('Modal', () => {
   it('test snapshot', () => {

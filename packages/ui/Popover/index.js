@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Tooltip from '@cfxjs/tooltip'
+import Tooltip from '@cfxjs/component-tooltip'
 import './index.css'
 
 const Popover = React.forwardRef(

@@ -1,9 +1,7 @@
 /* eslint-disable testing-library/no-node-access */
-import React from 'react'
-import testingLibrary from '@testing-library/react'
+import {render, screen, waitFor, fireEvent} from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Tooltip from './index.js'
-const {render, screen, waitFor, fireEvent} = testingLibrary
 
 describe('Tooltip', () => {
   describe('shows and hides itself on hover', () => {

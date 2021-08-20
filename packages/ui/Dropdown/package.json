@@ -1,9 +1,14 @@
 {
+  "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/dropdown",
+  "name": "@cfxjs/component-dropdown",
   "type": "module",
   "main": "index.js",
   "dependencies": {
     "rc-dropdown": "3.2.0"
+  },
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
   }
 }

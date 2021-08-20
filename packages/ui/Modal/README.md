@@ -1,1 +1,1 @@
-# @cfxjs/modal
+# @cfxjs/component-modal

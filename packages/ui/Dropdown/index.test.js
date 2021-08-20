@@ -1,9 +1,7 @@
 /* eslint-disable testing-library/await-async-utils */
-import React from 'react'
-import testingLibrary from '@testing-library/react'
+import {render, screen, fireEvent, waitFor} from '@testing-library/react'
 import {describe, expect} from '@jest/globals'
 import Dropdown from './index.js'
-const {render, screen, fireEvent, waitFor} = testingLibrary
 
 describe('Dropdown', () => {
   it('test snapshot', () => {

@@ -1,1 +1,1 @@
-# @cfxjs/checkbox
+# @cfxjs/component-checkbox

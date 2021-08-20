@@ -1,1 +1,1 @@
-# @cfxjs/popover
+# @cfxjs/component-popover

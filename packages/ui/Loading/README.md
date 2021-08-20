@@ -1,1 +1,1 @@
-# @cfxjs/loading
+# @cfxjs/component-loading

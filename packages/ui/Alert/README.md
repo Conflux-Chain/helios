@@ -1,1 +1,1 @@
-# @cfxjs/alert
+# @cfxjs/component-alert

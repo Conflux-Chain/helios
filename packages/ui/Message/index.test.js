@@ -1,9 +1,8 @@
 /* eslint-disable testing-library/await-async-utils */
 // eslint-disable-next-line no-unused-vars
-import testingLibrary from '@testing-library/react'
+import {render, screen, waitFor, fireEvent} from '@testing-library/react'
 import {describe, expect, jest, afterEach} from '@jest/globals'
 import Message from './index.js'
-const {render, screen, waitFor, fireEvent} = testingLibrary
 
 describe('Message', () => {
   afterEach(() => {
