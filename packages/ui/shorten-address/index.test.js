@@ -13,7 +13,10 @@ describe('@cfxjs/shorten-address', function () {
   it('shortenCfxAddress', async function () {
     expect(
       shortenCfxAddress('cfx:aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg'),
-    ).toBe('cfx:aar...h4xg')
+    ).toBe('cfx:aar...ybjgh4xg')
+    expect(
+      shortenCfxAddress('cfxtest:aame5p2tdzfsc3zsmbg1urwkg5ax22epg27cnu1rwm'),
+    ).toBe('cfxtest:aam...1rwm')
     expect(() =>
       shortenCfxAddress(
         'CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG',

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import {isNegative, isString} from '@cfxjs/checks'
-import {validateBase32Address} from '@cfxjs/base32-address'
+import {validateBase32Address, decode} from '@cfxjs/base32-address'
 import {isHexAddress} from '@cfxjs/account'
 
 export const getEllipsStr = (str, frontNum, endNum) => {
@@ -24,7 +24,8 @@ export const shortenCfxAddress = address => {
   if (arr.length !== 2) {
     throw new Error('Only shorten the conflux address not containing type')
   }
-  const secondStr = getEllipsStr(arr[1], 3, 4)
+  const {netId} = decode(address)
+  const secondStr = getEllipsStr(arr[1], 3, netId === 1029 ? 8 : 4)
 
   return `${arr[0]}:${secondStr}`
 }
