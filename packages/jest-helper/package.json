@@ -1,0 +1,10 @@
+{
+  "name": "@cfxjs/jest-helper",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "5.14.1"
+  }
+}
