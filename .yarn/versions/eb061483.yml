@@ -1,4 +1,6 @@
 declined:
+  - "@cfxjs/doc-rpc-parameter"
+  - "@cfxjs/doc-use-rpc"
   - "@cfxjs/jest-helper"
   - "@cfxjs/json-rpc-error"
   - helios-popup
@@ -18,3 +20,5 @@ declined:
   - "@cfxjs/component-toast"
   - "@cfxjs/component-tooltip"
   - "@cfxjs/component-wrap-icon"
+  - "@cfxjs/provider-api"
+  - "@cfxjs/use-rpc"

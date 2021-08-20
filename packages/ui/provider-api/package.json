@@ -5,5 +5,9 @@
   "version": "0.0.2",
   "dependencies": {
     "@cfxjs/random-id": "workspace:packages/random-id"
+  },
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
   }
 }
