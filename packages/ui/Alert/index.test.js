@@ -1,8 +1,6 @@
-import React from 'react'
-import testingLibrary from '@testing-library/react'
+import {render, screen, fireEvent} from '@testing-library/react'
 import {describe, expect, jest} from '@jest/globals'
 import Alert from './index.js'
-const {render, screen, fireEvent} = testingLibrary
 let snapshot
 describe('Alert', () => {
   describe('Dom structure', () => {

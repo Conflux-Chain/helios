@@ -14,7 +14,7 @@ Object {
           data-testid="input-container"
         >
           <input
-            class="w-full h-full px-3 text-sm text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none "
+            class="w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none text-sm "
             data-testid="input-text"
             value="test value"
           />
@@ -33,7 +33,7 @@ Object {
         data-testid="input-container"
       >
         <input
-          class="w-full h-full px-3 text-sm text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none "
+          class="w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none text-sm "
           data-testid="input-text"
           value="test value"
         />

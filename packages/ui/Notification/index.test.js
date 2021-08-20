@@ -1,8 +1,7 @@
 /* eslint-disable testing-library/await-async-utils */
-import testingLibrary from '@testing-library/react'
+import {render, screen, waitFor, fireEvent} from '@testing-library/react'
 import {describe, expect, jest, afterEach} from '@jest/globals'
 import Notification from './index.js'
-const {render, screen, waitFor, fireEvent} = testingLibrary
 
 describe('Notification', () => {
   describe('single Notification', () => {

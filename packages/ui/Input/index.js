@@ -23,8 +23,34 @@ function Input({
   }, [disabled])
 
   const sizeStyle = useMemo(() => {
+    if (size === 'small') return 'h-8'
     if (size === 'medium') return 'h-10'
     if (size === 'large') return 'h-12'
+  }, [size])
+
+  const inputStyle = useMemo(() => {
+    if (size === 'small') return 'text-xs'
+    if (size === 'medium') return 'text-sm'
+    if (size === 'large') return 'text-base'
+  }, [size])
+
+  const iconSize = useMemo(() => {
+    if (size === 'small') return 'w-3 h-3'
+    if (size === 'medium') return 'w-4 h-4'
+    if (size === 'large') return 'w-5 h-5'
+  }, [size])
+
+  // eslint-disable-next-line no-unused-vars
+  const prefixStyle = useMemo(() => {
+    if (size === 'small') return '-mr-2'
+    if (size === 'medium') return '-mr-1.5'
+    if (size === 'large') return '-mr-1'
+  }, [size])
+
+  const suffixStyle = useMemo(() => {
+    if (size === 'small') return '-ml-2'
+    if (size === 'medium') return '-ml-1.5'
+    if (size === 'large') return '-ml-1'
   }, [size])
 
   const borderStyle = useMemo(() => {
@@ -43,9 +69,9 @@ function Input({
           <div
             aria-hidden="true"
             onClick={() => setFocused(true)}
-            className="pl-3 -mr-2"
+            className="pl-3 ${prefixStyle}"
           >
-            <div className="text-gray-40 w-4 h-4">{prefix}</div>
+            <div className="text-gray-40 ${prefixStyle}">{prefix}</div>
           </div>
         )}
         <input
@@ -57,16 +83,16 @@ function Input({
             onBlur && onBlur()
           }}
           onChange={e => onChange && onChange(e)}
-          className={`w-full h-full px-3 text-sm text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${className}`}
+          className={`w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`}
           {...props}
         />
         {suffix && (
           <div
             aria-hidden="true"
             onClick={() => setFocused(true)}
-            className="pr-3 -ml-2"
+            className={`pr-3 ${suffixStyle}`}
           >
-            <div className="text-gray-40 w-4 h-4">{suffix}</div>
+            <div className={`text-gray-40 ${iconSize}`}>{suffix}</div>
           </div>
         )}
       </div>
@@ -83,7 +109,7 @@ Input.propTypes = {
   containerClassName: PropTypes.string,
   onChange: PropTypes.func,
   width: PropTypes.string,
-  size: PropTypes.oneOf(['medium', 'large']),
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
   errorMessage: PropTypes.string,
   prefix: PropTypes.node,
   suffix: PropTypes.node,

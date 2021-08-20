@@ -1,8 +1,6 @@
-import React from 'react'
-import testingLibrary from '@testing-library/react'
+import {render, screen, waitFor, fireEvent} from '@testing-library/react'
 import {describe, expect} from '@jest/globals'
 import Popover from './index.js'
-const {render, screen, waitFor, fireEvent} = testingLibrary
 
 describe('Popover', () => {
   it('test snapshot', () => {
