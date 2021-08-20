@@ -1,21 +1,33 @@
-import React from 'react'
-import './App.css'
+import React, {Suspense} from 'react'
 import './index.css'
 import {useRPC} from '@cfxjs/use-rpc'
+import HomePage from './pages/Home'
+import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
+
 function App() {
   const a = useRPC('wallet_generateMnemonic')
   const b = useRPC('wallet_generatePrivateKey')
 
   console.log('data = ', a, b)
   return (
-    <div className="App">
-      <header className="App-header">
-        <button onClick={() => open(location.href)}>open</button>
-        <p className="p-9">
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-      </header>
-    </div>
+    <Suspense
+      fallback={
+        <div className="w-full h-full flex items-center justify-center">
+          loading...
+        </div>
+      }
+    >
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <HomePage />
+          </Route>
+          <Route path="*">
+            <Redirect to="/" />
+          </Route>
+        </Switch>
+      </Router>
+    </Suspense>
   )
 }
 

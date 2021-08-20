@@ -2418,7 +2418,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.11.1, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6":
+"@babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.11.1, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.14.5":
   version: 7.15.3
   resolution: "@babel/runtime@npm:7.15.3"
   dependencies:
@@ -17192,7 +17192,6 @@ fsevents@~2.3.1:
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC"
     i18next: 20.4.0
-    i18next-browser-languagedetector: 6.1.2
     i18next-http-backend: 1.3.0
     react-i18next: 11.11.4
     react-router-dom: 5.2.0
@@ -17669,15 +17668,6 @@ fsevents@~2.3.1:
   version: 1.0.4
   resolution: "hyphenate-style-name@npm:1.0.4"
   checksum: 4cfeb47e98eab9c25e6dece20da772cc914a9f8e5ee794cf8db105b0649dd64a61d8ee8ff32acf23ae0ac181db8fcbe4a6abb2f7de48ae52b42a85bbf1aacb86
-  languageName: node
-  linkType: hard
-
-"i18next-browser-languagedetector@npm:6.1.2":
-  version: 6.1.2
-  resolution: "i18next-browser-languagedetector@npm:6.1.2"
-  dependencies:
-    "@babel/runtime": ^7.14.6
-  checksum: b5e8b79040e92cf767aa98375b45e9534feb32f7794ef3c572659abafde571f51c77115a1db7fa9a0707601d393a52bffd686e0b0df1c84332f90525ee7a30d6
   languageName: node
   linkType: hard
 
