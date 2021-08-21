@@ -12,6 +12,13 @@ const typeToIcon = {
   error: <ErrorFilled className="w-4 h-4 mr-2" />,
   warning: <WarningFilled className="w-4 h-4 mr-2" />,
 }
+
+const contentStyleObj = {
+  info: 'text-info-dark',
+  warning: 'text-warning-dark',
+  error: 'text-error-dark',
+  success: 'text-success-dark',
+}
 function Alert({
   type = 'success',
   icon,
@@ -43,12 +50,7 @@ function Alert({
       }`
   }, [bordered, type])
 
-  const contentStyle = useMemo(() => {
-    if (type === 'info') return 'text-info-dark'
-    if (type === 'warning') return 'text-warning-dark'
-    if (type === 'error') return 'text-error-dark'
-    if (type === 'success') return 'text-success-dark'
-  }, [type])
+  const contentStyle = contentStyleObj[type]
 
   const onCloseClick = e => {
     e.stopPropagation()
