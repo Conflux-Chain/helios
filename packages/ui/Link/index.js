@@ -36,13 +36,12 @@ function Link({
   }, [disabled])
 
   const sizeStyle = sizeStyleObj[size] || ''
+  const iconSize = iconSizeObj[size] || ''
 
   const iconColor = useMemo(() => {
     if (disabled) return 'text-gray-40'
     return 'text-primary hover:text-primary-dark'
   }, [disabled])
-
-  const iconSize = iconSizeObj[size]
 
   const startIconComp = startIcon
     ? React.cloneElement(startIcon, {
