@@ -12352,15 +12352,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:3.1.4, cross-fetch@npm:^3.0.4":
-  version: 3.1.4
-  resolution: "cross-fetch@npm:3.1.4"
-  dependencies:
-    node-fetch: 2.6.1
-  checksum: 47b33bc773d53f19805eeac914e7d76e022a1aee3b7a55277fae3d3d1a0cff354b92c4ec6c5d99aeef3e5757c2719e94c37879ba846c33de892e68a655758b61
-  languageName: node
-  linkType: hard
-
 "cross-fetch@npm:^2.1.0, cross-fetch@npm:^2.1.1":
   version: 2.2.3
   resolution: "cross-fetch@npm:2.2.3"
@@ -12368,6 +12359,15 @@ __metadata:
     node-fetch: 2.1.2
     whatwg-fetch: 2.0.4
   checksum: 9b6e13b98217c19382bed35d5c61b75266dda8139946d0522e9da5fa73936314fc68c1acd72953f6e0cded7babc4e4209caeb73ad19a95da6ecfdd02d4e95949
+  languageName: node
+  linkType: hard
+
+"cross-fetch@npm:^3.0.4":
+  version: 3.1.4
+  resolution: "cross-fetch@npm:3.1.4"
+  dependencies:
+    node-fetch: 2.6.1
+  checksum: 47b33bc773d53f19805eeac914e7d76e022a1aee3b7a55277fae3d3d1a0cff354b92c4ec6c5d99aeef3e5757c2719e94c37879ba846c33de892e68a655758b61
   languageName: node
   linkType: hard
 
@@ -17196,7 +17196,6 @@ fsevents@~2.3.1:
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC"
     i18next: 20.4.0
-    i18next-http-backend: 1.3.0
     react-i18next: 11.11.4
     react-router-dom: 5.2.0
     react-use: 17.2.4
@@ -17672,15 +17671,6 @@ fsevents@~2.3.1:
   version: 1.0.4
   resolution: "hyphenate-style-name@npm:1.0.4"
   checksum: 4cfeb47e98eab9c25e6dece20da772cc914a9f8e5ee794cf8db105b0649dd64a61d8ee8ff32acf23ae0ac181db8fcbe4a6abb2f7de48ae52b42a85bbf1aacb86
-  languageName: node
-  linkType: hard
-
-"i18next-http-backend@npm:1.3.0":
-  version: 1.3.0
-  resolution: "i18next-http-backend@npm:1.3.0"
-  dependencies:
-    cross-fetch: 3.1.4
-  checksum: 3863d575cfc132d15c0741d1f1b9dc3ec88f5b64eb1d8135dd89092d27a900c0d8756d3253bf60fdb6e2cf2876a0365c4acaefe06da153c1bfebeae52c453849
   languageName: node
   linkType: hard
 
