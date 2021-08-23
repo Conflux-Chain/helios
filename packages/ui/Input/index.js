@@ -72,9 +72,9 @@ function Input({
           <div
             aria-hidden="true"
             onClick={() => setFocused(true)}
-            className="pl-3 ${prefixStyle}"
+            className="{`pl-3 ${prefixStyle}`}"
           >
-            <div className="text-gray-40 ${prefixStyle}">{prefix}</div>
+            <div className={`text-gray-40 ${iconSize}`}>{prefix}</div>
           </div>
         )}
         <input
