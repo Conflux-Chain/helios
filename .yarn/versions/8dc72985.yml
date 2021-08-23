@@ -1,2 +1,3 @@
 declined:
   - helios-popup
+  - "@cfxjs/component-input"
