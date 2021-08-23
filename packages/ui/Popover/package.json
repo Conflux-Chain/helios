@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "@cfxjs/component-popover",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@cfxjs/component-tooltip": "workspace:packages/ui/Tooltip"
+  },
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
+  }
+}

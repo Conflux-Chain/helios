@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "@cfxjs/component-message",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@cfxjs/component-loading": "workspace:packages/ui/Loading",
+    "rc-notification": "4.5.7"
+  },
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
+  }
+}
