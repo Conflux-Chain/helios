@@ -2934,6 +2934,9 @@ __metadata:
 "@cfxjs/component-tag@workspace:packages/ui/Tag":
   version: 0.0.0-use.local
   resolution: "@cfxjs/component-tag@workspace:packages/ui/Tag"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
   languageName: unknown
   linkType: soft
 
