@@ -7,17 +7,6 @@ import ArrowDownOutlined from './assets/ArrowDownOutlined'
 
 const RcDropdown = ReactDropdown.default
 function Dropdown({overlay, trigger, disabled, placement, children, ...props}) {
-  // TODO: custom animation name
-  // const getTransitionName = () => {
-  //   if (transitionName !== undefined) {
-  //     return transitionName
-  //   }
-  //   if (placement && placement.indexOf('top') >= 0) {
-  //     return 'slide-down'
-  //   }
-  //   return 'slide-up'
-  // }
-
   const renderOverlay = () => {
     // rc-dropdown already can process the function of overlay, but we have check logic here.
     // So we need render the element to check and pass back to rc-dropdown.
@@ -62,13 +51,6 @@ function Dropdown({overlay, trigger, disabled, placement, children, ...props}) {
     return fixedModeOverlay
   }
 
-  const getPlacement = () => {
-    if (placement !== undefined) {
-      return placement
-    }
-    return 'bottomLeft'
-  }
-
   const child = React.Children.only(children)
 
   const dropdownTrigger = React.cloneElement(child, {
@@ -89,7 +71,7 @@ function Dropdown({overlay, trigger, disabled, placement, children, ...props}) {
         animation="slide-up"
         trigger={triggerActions}
         overlay={() => renderOverlay()}
-        placement={getPlacement()}
+        placement={placement}
         {...props}
       >
         {dropdownTrigger}
@@ -115,5 +97,7 @@ Dropdown.propTypes = {
     'bottomRight',
   ]),
 }
-
+Dropdown.defaultProps = {
+  placement: 'bottomLeft',
+}
 export default Dropdown

@@ -1,6 +1,18 @@
 import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
 
+const sizeStyleObj = {
+  small: 'text-xs h-8',
+  medium: 'text-sm h-10',
+  large: 'text-base h-12',
+}
+
+const iconSizeObj = {
+  small: 'w-3 h-3',
+  medium: 'w-4 h-4',
+  large: 'w-5 h-5',
+}
+
 function Button({
   onClick,
   className = '',
@@ -43,24 +55,14 @@ function Button({
     return ''
   }, [disabled, variant, color, danger])
 
-  const sizeStyle = useMemo(() => {
-    if (size === 'large') return 'text-base h-12'
-    if (size === 'medium') return 'text-sm h-10'
-    if (size === 'small') return 'text-xs h-8'
-    return ''
-  }, [size])
+  const sizeStyle = sizeStyleObj[size] || ''
+  const iconSize = iconSizeObj[size] || ''
 
   const iconColor = useMemo(() => {
     if (disabled) return 'text-gray-40'
     if (variant === 'contained') return 'text-white'
     return 'text-primary hover:text-primary-dark'
   }, [disabled, variant])
-
-  const iconSize = useMemo(() => {
-    if (size === 'large') return 'w-5 h-5'
-    if (size === 'medium') return 'w-4 h-4'
-    if (size === 'small') return 'w-3 h-3'
-  }, [size])
 
   const startIconComp = startIcon
     ? React.cloneElement(startIcon, {

@@ -1,6 +1,33 @@
 import {useState, useMemo} from 'react'
 import PropTypes from 'prop-types'
 
+const sizeStyleObj = {
+  small: 'h-8',
+  medium: 'h-10',
+  large: 'h-12',
+}
+
+const inputStyleObj = {
+  small: 'text-xs',
+  medium: 'text-sm',
+  large: 'text-base',
+}
+
+const iconSizeObj = {
+  small: 'w-3 h-3',
+  medium: 'w-4 h-4',
+  large: 'w-5 h-5',
+}
+const prefixStyleObj = {
+  small: '-mr-2',
+  medium: '-mr-1.5',
+  large: '-mr-1',
+}
+const suffixStyleObj = {
+  small: '-ml-2',
+  medium: '-ml-1.5',
+  large: '-ml-1',
+}
 function Input({
   prefix,
   suffix,
@@ -22,36 +49,12 @@ function Input({
     return 'bg-gray-0'
   }, [disabled])
 
-  const sizeStyle = useMemo(() => {
-    if (size === 'small') return 'h-8'
-    if (size === 'medium') return 'h-10'
-    if (size === 'large') return 'h-12'
-  }, [size])
-
-  const inputStyle = useMemo(() => {
-    if (size === 'small') return 'text-xs'
-    if (size === 'medium') return 'text-sm'
-    if (size === 'large') return 'text-base'
-  }, [size])
-
-  const iconSize = useMemo(() => {
-    if (size === 'small') return 'w-3 h-3'
-    if (size === 'medium') return 'w-4 h-4'
-    if (size === 'large') return 'w-5 h-5'
-  }, [size])
-
+  const sizeStyle = sizeStyleObj[size] || ''
+  const inputStyle = inputStyleObj[size] || ''
+  const iconSize = iconSizeObj[size] || ''
   // eslint-disable-next-line no-unused-vars
-  const prefixStyle = useMemo(() => {
-    if (size === 'small') return '-mr-2'
-    if (size === 'medium') return '-mr-1.5'
-    if (size === 'large') return '-mr-1'
-  }, [size])
-
-  const suffixStyle = useMemo(() => {
-    if (size === 'small') return '-ml-2'
-    if (size === 'medium') return '-ml-1.5'
-    if (size === 'large') return '-ml-1'
-  }, [size])
+  const prefixStyle = prefixStyleObj[size] || ''
+  const suffixStyle = suffixStyleObj[size] || ''
 
   const borderStyle = useMemo(() => {
     if (!bordered) return 'border-0'

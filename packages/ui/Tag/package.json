@@ -3,5 +3,9 @@
   "version": "0.0.0",
   "name": "@cfxjs/component-tag",
   "type": "module",
-  "main": "index.js"
+  "main": "index.js",
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
+  }
 }
