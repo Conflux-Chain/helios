@@ -50,7 +50,7 @@ function Alert({
       }`
   }, [bordered, type])
 
-  const contentStyle = contentStyleObj[type]
+  const contentStyle = contentStyleObj[type] || ''
 
   const onCloseClick = e => {
     e.stopPropagation()

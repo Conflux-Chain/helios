@@ -42,14 +42,13 @@ function Tag({
   }, [disabled, color])
 
   const sizeStyle = sizeStyleObj[size] || ''
+  const iconSize = iconSizeObj[size] || ''
 
   const iconColor = useMemo(() => {
     if (disabled) return 'text-gray-40'
     if (color === 'primary') return 'text-primary'
     if (color === 'error') return 'text-error'
   }, [disabled, color])
-
-  const iconSize = iconSizeObj[size]
 
   const onCloseClick = e => {
     e.stopPropagation()

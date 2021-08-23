@@ -73,16 +73,3 @@ export const formatAmount = numOrStr => {
     return toThousands(bNum.div(1e12).round().toString(10)) + ' T'
   }
 }
-
-// only shorten the conflux address not containing networkid to have cfx:/cfxtest: + 4 characters at start and end
-export const shortenAddress = address => {
-  if (!address || typeof address !== 'string') return address
-  const arr = address.split(':')
-  if (arr.length !== 2) return address
-  const length = arr[1].length
-  if (length !== 42) return address
-
-  return `${arr[0]}:${arr[1].substring(0, 4)}...${arr[1].substring(length - 4)}`
-}
-
-export default Big
