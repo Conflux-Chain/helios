@@ -30,10 +30,7 @@ module.exports = {
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: [
-    ...[
-      path.resolve(__dirname, './scripts/jest-setup-each-test.js'),
-      'jest-webextension-mock',
-    ],
+    ...['@cfxjs/jest-helper/setup-after-env.js', 'jest-webextension-mock'],
   ],
 
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
@@ -46,7 +43,9 @@ module.exports = {
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
-    '/node_modules/',
+    // also transform react and react-native
+    // 'node_modules/(?!(react|react-native)/)',
+    'node_modules/(?!(randombytes|brorand|react-use)/)',
     // "\\.pnp\\.[^\\/]+$"
   ],
 
@@ -94,6 +93,9 @@ module.exports = {
     '.*.test.jsx?', // eslint-disable-line no-useless-escape
     '.*.integration.test.jsx?', // eslint-disable-line no-useless-escape
     '/packages/contract-method-name/constance.js',
+    '/packages/ui/*/assets/*',
+    '/packages/ui/Tooltip/Placements.js',
+    '/packages/jest-helper/',
   ],
 
   // The directory where Jest should output its coverage files
@@ -102,5 +104,8 @@ module.exports = {
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: ['packages/**/*.js'],
 
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+  },
   // globalSetup: path.resolve(__dirname, './scripts/jest-global-setup.js')
 }

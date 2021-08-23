@@ -1,0 +1,1 @@
+# @cfxjs/component-wrap-icon
