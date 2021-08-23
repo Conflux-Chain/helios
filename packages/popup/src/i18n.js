@@ -3,18 +3,14 @@
 import i18next from 'i18next'
 import {initReactI18next} from 'react-i18next'
 import Backend from 'i18next-http-backend'
-import '../locales/en.json'
+import resources from './locales/index'
+
 const zhLanguages = ['zh', 'zh-CN', 'zh-TW', 'zh-HK']
 i18next
   .use(Backend)
   .use(initReactI18next)
   .init({
-    backend: {
-      loadPath:
-        import.meta.env.NODE_ENV === 'development'
-          ? 'http://localhost:18001/dist/locales/{{lng}}.json'
-          : '../popup/dist/locales/{{lng}}.json',
-    },
+    resources,
     react: {
       useSuspense: true,
     },
