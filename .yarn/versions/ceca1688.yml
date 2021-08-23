@@ -1,3 +1,11 @@
 releases:
-  "@cfxjs/data-format": patch
   "@cfxjs/shorten-address": patch
+
+declined:
+  - "@cfxjs/data-format"
+
+undecided:
+  - "@cfxjs/component-alert"
+  - "@cfxjs/component-input"
+  - "@cfxjs/component-link"
+  - "@cfxjs/component-tag"
