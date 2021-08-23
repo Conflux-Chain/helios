@@ -1,3 +1,6 @@
 {
-  "waiting": "loading..."
+  "locales": {
+    "en": "English",
+    "zh": "简体中文"
+  }
 }

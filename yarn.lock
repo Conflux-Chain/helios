@@ -17192,6 +17192,7 @@ fsevents@~2.3.1:
   version: 0.0.0-use.local
   resolution: "helios-popup@workspace:packages/popup"
   dependencies:
+    "@cfxjs/component-dropdown": "workspace:packages/ui/Dropdown"
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC"
     i18next: 20.4.0
