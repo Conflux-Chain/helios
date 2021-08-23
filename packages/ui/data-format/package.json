@@ -2,7 +2,7 @@
   "name": "@cfxjs/data-format",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "dependencies": {
     "big.js": "^6.1.1"
   }
