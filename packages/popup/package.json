@@ -8,6 +8,11 @@
   "dependencies": {
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC",
-    "webextension-polyfill": "^0.8.0"
+    "i18next": "20.4.0",
+    "react-i18next": "11.11.4",
+    "react-router-dom": "5.2.0",
+    "react-use": "17.2.4",
+    "webextension-polyfill": "^0.8.0",
+    "zustand": "3.5.9"
   }
 }

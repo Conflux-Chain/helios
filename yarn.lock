@@ -2418,7 +2418,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.11.1":
+"@babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.11.1, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.14.5":
   version: 7.15.3
   resolution: "@babel/runtime@npm:7.15.3"
   dependencies:
@@ -17204,7 +17204,12 @@ fsevents@~2.3.1:
   dependencies:
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC"
+    i18next: 20.4.0
+    react-i18next: 11.11.4
+    react-router-dom: 5.2.0
+    react-use: 17.2.4
     webextension-polyfill: ^0.8.0
+    zustand: 3.5.9
   languageName: unknown
   linkType: soft
 
@@ -17452,6 +17457,15 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
+"html-parse-stringify@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "html-parse-stringify@npm:3.0.1"
+  dependencies:
+    void-elements: 3.1.0
+  checksum: 26de837d271ef79e8c54fc50c17ab1f870b539202d2a593905d3933484bd5b9c30afe57d23a7e0468ef370573e6c0e83b8d8e81bd803858a27ff5acbaa1d9032
+  languageName: node
+  linkType: hard
+
 "html-tags@npm:^3.1.0":
   version: 3.1.0
   resolution: "html-tags@npm:3.1.0"
@@ -17666,6 +17680,15 @@ fsevents@~2.3.1:
   version: 1.0.4
   resolution: "hyphenate-style-name@npm:1.0.4"
   checksum: 4cfeb47e98eab9c25e6dece20da772cc914a9f8e5ee794cf8db105b0649dd64a61d8ee8ff32acf23ae0ac181db8fcbe4a6abb2f7de48ae52b42a85bbf1aacb86
+  languageName: node
+  linkType: hard
+
+"i18next@npm:20.4.0":
+  version: 20.4.0
+  resolution: "i18next@npm:20.4.0"
+  dependencies:
+    "@babel/runtime": ^7.12.0
+  checksum: b9224ff031a23332648d5bf39bfe05b6bbbfdf0f3739ad9094cceb3cd6cb8b0067216f1b8444c1ef533c1bac188b97fb561d233167393873fd575c788b2905bc
   languageName: node
   linkType: hard
 
@@ -25197,6 +25220,19 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
+"react-i18next@npm:11.11.4":
+  version: 11.11.4
+  resolution: "react-i18next@npm:11.11.4"
+  dependencies:
+    "@babel/runtime": ^7.14.5
+    html-parse-stringify: ^3.0.1
+  peerDependencies:
+    i18next: ">= 19.0.0"
+    react: ">= 16.8.0"
+  checksum: 7aec632aa71c42fdcfbe3b6d93dde7d876decf090d0c97188aa392e1d3b688a65645e1f65ae6c8dd5ecfbcbd96c6265f1eceb720a81dbba6a09d260f22c561f9
+  languageName: node
+  linkType: hard
+
 "react-inspector@npm:^5.1.0":
   version: 5.1.0
   resolution: "react-inspector@npm:5.1.0"
@@ -25329,7 +25365,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^5.2.0":
+"react-router-dom@npm:5.2.0, react-router-dom@npm:^5.2.0":
   version: 5.2.0
   resolution: "react-router-dom@npm:5.2.0"
   dependencies:
@@ -30005,6 +30041,13 @@ resolve@~1.17.0:
   languageName: node
   linkType: hard
 
+"void-elements@npm:3.1.0":
+  version: 3.1.0
+  resolution: "void-elements@npm:3.1.0"
+  checksum: ed0f78f1434f4a5588078861815b3ebdbb0913e5129c3f1b37a3408a9f7c772d28702846316734e758ba40cad4e85371e50160d92d7968b86f12bf7227a1c6c9
+  languageName: node
+  linkType: hard
+
 "w3c-hr-time@npm:^1.0.2":
   version: 1.0.2
   resolution: "w3c-hr-time@npm:1.0.2"
@@ -31188,6 +31231,18 @@ resolve@~1.17.0:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 096c3b40beb2804659539be1605a35c58eb0c85285f94b77b3e924f42ee265c1a40bf9f4153770039517146b469a964d51742395f35ca8135fc9f7e4982b785d
+  languageName: node
+  linkType: hard
+
+"zustand@npm:3.5.9":
+  version: 3.5.9
+  resolution: "zustand@npm:3.5.9"
+  peerDependencies:
+    react: ">=16.8"
+  peerDependenciesMeta:
+    react:
+      optional: true
+  checksum: 7247391b60eb9d08c1e40375601f7e09703997b02ea51aa72d894a62429b076b4e534698a2462012bb0674d6dedf8a36890e3f9a1a762d851efb088ecd689594
   languageName: node
   linkType: hard
 
