@@ -1,3 +1,10 @@
+releases:
+  "@cfxjs/component-alert": patch
+  "@cfxjs/component-input": patch
+  "@cfxjs/component-link": patch
+  "@cfxjs/component-tag": patch
+  "@cfxjs/data-format": minor
+  "@cfxjs/shorten-address": minor
+
 declined:
   - helios-popup
-  - "@cfxjs/component-input"
