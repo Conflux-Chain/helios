@@ -95,6 +95,7 @@ module.exports = {
     '/packages/contract-method-name/constance.js',
     '/packages/ui/*/assets/*',
     '/packages/ui/Tooltip/Placements.js',
+    '/packages/ui/Svg/*',
     '/packages/jest-helper/',
   ],
 
