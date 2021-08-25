@@ -34,7 +34,6 @@ module.exports = {
   },
   rules: {
     'react/react-in-jsx-scope': 'off',
-    'click-events-have-key-events': 'off',
     'jest/no-done-callback': 0, // https://github.com/jest-community/eslint-plugin-jest/blob/main/docs/rules/no-done-callback.md
   },
 }

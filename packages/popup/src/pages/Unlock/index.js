@@ -5,13 +5,17 @@ import {LanguageNav, HomeTitle} from '../../components'
 import {useTranslation} from 'react-i18next'
 import {passwordRegExp} from '../../constants'
 import {useRPC} from '@cfxjs/use-rpc'
+import {EyeClose, EyeOpen} from '@cfxjs/component-icons'
 
-// import {EyeClose, EyeOpen} from 'assets/svg/index'
 const UnlockPage = () => {
   const {t} = useTranslation()
   const [errorMessage, setErrorMessage] = useState('')
   const [loginMethod, setLoginMethod] = useState(null)
   const [password, setPassword] = useState('')
+  const [eyeStatus, setEyeStatus] = useState('close')
+  const onSuffixClick = () => {
+    setEyeStatus(eyeStatus === 'close' ? 'open' : 'close')
+  }
 
   const onInputChange = e => {
     // TODO: Replace err msg
@@ -39,10 +43,12 @@ const UnlockPage = () => {
         <Input
           onChange={onInputChange}
           onFocus={onInputChange}
-          type="password"
+          type={eyeStatus === 'close' ? 'password' : 'text'}
           width="w-full"
           bordered={true}
           errorMessage={errorMessage}
+          suffix={eyeStatus === 'close' ? <EyeClose /> : <EyeOpen />}
+          onSuffixClick={onSuffixClick}
         ></Input>
       </main>
       <Button fullWidth disabled={!!errorMessage} onClick={login}>

@@ -7,6 +7,11 @@ const en = {
     welcomeBack: 'Welcome Back!',
     password: 'password',
     unlock: 'Unlock',
+    setPWD: 'Set the password',
+    enterPWD: 'Enter the password',
+    enterPWDAgain: 'Enter the password again',
+    rememberPWD: 'This password cannot be retrieved, please remember.',
+    goBack: 'Back',
   },
 }
 

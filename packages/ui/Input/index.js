@@ -41,6 +41,7 @@ function Input({
   width = 'w-60',
   errorMessage = '',
   onBlur,
+  onSuffixClick,
   ...props
 }) {
   const [focused, setFocused] = useState(false)
@@ -92,7 +93,10 @@ function Input({
         {suffix && (
           <div
             aria-hidden="true"
-            onClick={() => setFocused(true)}
+            onClick={() => {
+              setFocused(true)
+              onSuffixClick && onSuffixClick()
+            }}
             className={`pr-3 ${suffixStyle}`}
           >
             <div className={`text-gray-40 ${iconSize}`}>{suffix}</div>
@@ -116,6 +120,7 @@ Input.propTypes = {
   errorMessage: PropTypes.string,
   prefix: PropTypes.node,
   suffix: PropTypes.node,
+  onSuffixClick: PropTypes.func,
   disabled: PropTypes.bool,
   bordered: PropTypes.bool,
   onBlur: PropTypes.func,

@@ -1,2 +1,2 @@
-export {default as LanguageNav} from './languageNav'
-export {default as HomeTitle} from './homeTitle'
+export {default as LanguageNav} from './LanguageNav'
+export {default as HomeTitle} from './HomeTitle'

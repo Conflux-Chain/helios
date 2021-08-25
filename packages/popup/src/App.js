@@ -3,6 +3,7 @@ import './index.css'
 // import {useRPC} from '@cfxjs/use-rpc'
 import HomePage from './pages/Home'
 import Unlock from './pages/Unlock'
+import Welcome from './pages/Welcome'
 
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 
@@ -27,6 +28,9 @@ function App() {
             </Route>
             <Route exact path="/unlock">
               <Unlock />
+            </Route>
+            <Route exact path="/welcome">
+              <Welcome />
             </Route>
             <Route path="*">
               <Redirect to="/" />
