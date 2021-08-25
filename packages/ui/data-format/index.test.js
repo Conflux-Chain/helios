@@ -1,12 +1,10 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it} from '@jest/globals' // prettier-ignore
+import {expect, describe, it} from '@jest/globals' // prettier-ignore
 import {
   convertDecimal,
   formatDigit,
   toThousands,
   trimZero,
   formatAmount,
-  shortenAddress,
   CFX_DECIMAL,
 } from './'
 
@@ -70,16 +68,5 @@ describe('@cfxjs/data-format', function () {
     expect(formatAmount('19999999999999999.000000')).toBe('19,999 T')
     expect(formatAmount('1.123450')).toBe('1.12345')
     expect(formatAmount('1260999.999999')).toBe('1.26 M')
-  })
-
-  it('shortenAddress', async function () {
-    expect(
-      shortenAddress('cfx:aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg'),
-    ).toBe('cfx:aarc...h4xg')
-    expect(
-      shortenAddress(
-        'CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG',
-      ),
-    ).toBe('CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG')
   })
 })

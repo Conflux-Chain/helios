@@ -25,11 +25,11 @@ const LanguageNav = () => {
     }
   }
   return (
-    <header className="text-right">
+    <nav className="text-right">
       <Dropdown overlay={Overlay(changeLanguage)} trigger={['click']}>
         <span>{language}</span>
       </Dropdown>
-    </header>
+    </nav>
   )
 }
 

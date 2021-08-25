@@ -1,6 +1,12 @@
 const zh = {
   translation: {
-    waiting: '等待中',
+    hello: 'Hello',
+    welcome: 'Welcome to Conflux network',
+    create: 'create',
+    migration: 'One-Click Migration',
+    welcomeBack: 'Welcome Back!',
+    password: 'password',
+    unlock: 'Unlock',
   },
 }
 

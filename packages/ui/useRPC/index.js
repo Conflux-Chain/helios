@@ -3,6 +3,7 @@ import {setupProvider} from './setup-provider.js'
 import {useAsyncRetry} from 'react-use'
 import {useEffect} from 'react'
 
+// TODO：Add error decorator
 export const useRPC = (deps = [], params, opts) => {
   const {
     value: provider,
@@ -10,16 +11,15 @@ export const useRPC = (deps = [], params, opts) => {
     error,
     retry,
   } = useAsyncRetry(setupProvider, [])
-  if (typeof deps === 'string') deps = [deps]
+  if (!Array.isArray(deps)) deps = [deps]
   const [method] = deps
 
   useEffect(() => {
     if (loading) return
     if (error) retry()
   }, [loading, error, retry])
-
   const {data} = useSWR(
-    !loading && provider && !error ? deps : null,
+    !loading && provider && !error && deps ? deps : null,
     () =>
       provider
         ?.request({method, params})
