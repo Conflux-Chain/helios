@@ -1,14 +1,15 @@
 import React, {Suspense} from 'react'
 import './index.css'
 import {useRPC} from '@cfxjs/use-rpc'
-import HomePage from './pages/Home'
-import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
-
+import routes from './route.js'
+import {HashRouter as Router, Switch} from 'react-router-dom'
+import {RouteWithSubRoutes} from './components'
 function App() {
   const a = useRPC('wallet_generateMnemonic')
   const b = useRPC('wallet_generatePrivateKey')
 
   console.log('data = ', a, b)
+
   return (
     <Suspense
       fallback={
@@ -19,12 +20,9 @@ function App() {
     >
       <Router>
         <Switch>
-          <Route exact path="/">
-            <HomePage />
-          </Route>
-          <Route path="*">
-            <Redirect to="/" />
-          </Route>
+          {routes.map((route, i) => (
+            <RouteWithSubRoutes key={i} {...route} />
+          ))}
         </Switch>
       </Router>
     </Suspense>
