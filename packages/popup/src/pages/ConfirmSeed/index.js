@@ -1,3 +1,3 @@
-const confirmSeed = () => <div>confirmSeed</div>
+const ConfirmSeed = () => <div>ConfirmSeed</div>
 
-export default confirmSeed
+export default ConfirmSeed
