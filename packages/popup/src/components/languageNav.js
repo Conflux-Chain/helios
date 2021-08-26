@@ -29,12 +29,19 @@ const LanguageNav = ({hasGoBack = false}) => {
   }
 
   return (
-    <nav className="text-right">
+    <nav className="flex justify-between">
       {hasGoBack ? (
-        <div aria-hidden="true" onClick={history.goBack()}>
+        <div
+          aria-hidden="true"
+          onClick={() => {
+            history.goBack()
+          }}
+        >
           {t('back')}
         </div>
-      ) : null}
+      ) : (
+        <div />
+      )}
       <Dropdown overlay={Overlay(changeLanguage)} trigger={['click']}>
         <span>{language}</span>
       </Dropdown>

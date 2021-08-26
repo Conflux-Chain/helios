@@ -1,30 +1,27 @@
 import {useState} from 'react'
 import Button from '@cfxjs/component-button'
-import Input from '@cfxjs/component-input'
-import {LanguageNav, HomeTitle} from '../../components'
+import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {passwordRegExp} from '../../constants'
 import {useRPC} from '@cfxjs/use-rpc'
-import {EyeClose, EyeOpen} from '@cfxjs/component-icons'
+import {passwordRegExp} from '../../constants'
 
+const validate = value => {
+  return passwordRegExp.test(value)
+}
 const UnlockPage = () => {
   const {t} = useTranslation()
-  const [errorMessage, setErrorMessage] = useState('')
   const [loginMethod, setLoginMethod] = useState(null)
   const [password, setPassword] = useState('')
-  const [eyeStatus, setEyeStatus] = useState('close')
-  const onSuffixClick = () => {
-    setEyeStatus(eyeStatus === 'close' ? 'open' : 'close')
-  }
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const onInputChange = e => {
+  const handleSubmit = event => {
+    event.preventDefault()
+    setInputErrorMessage(password)
+  }
+  const setInputErrorMessage = value => {
     // TODO: Replace err msg
-    setErrorMessage(
-      passwordRegExp.test(e.target.value) ? '' : 'something wrong',
-    )
-    setPassword(e.target.value)
+    setErrorMessage(validate(value) ? '' : 'something wrong')
   }
-
   const login = () => {
     if (password) {
       setLoginMethod('wallet_unlock')
@@ -33,27 +30,25 @@ const UnlockPage = () => {
 
   const loginResult = useRPC(loginMethod, {password})
   console.log('loginResult', loginResult)
+
   return (
     <>
       <LanguageNav />
       <img src="assets/images/logo.png" alt="logo" />
       <HomeTitle title={t('welcomeBack')} subTitle={t('welcome')} />
       <main>
-        <div>{t('password')}</div>
-        <Input
-          onChange={onInputChange}
-          onFocus={onInputChange}
-          type={eyeStatus === 'close' ? 'password' : 'text'}
-          width="w-full"
-          bordered={true}
-          errorMessage={errorMessage}
-          suffix={eyeStatus === 'close' ? <EyeClose /> : <EyeOpen />}
-          onSuffixClick={onSuffixClick}
-        ></Input>
+        <form action="" onSubmit={handleSubmit}>
+          <div>{t('password')}</div>
+          <PasswordInput
+            setInputErrorMessage={setInputErrorMessage}
+            setInputValue={setPassword}
+            errorMessage={errorMessage}
+          />
+          <Button fullWidth disabled={!!errorMessage} onClick={login}>
+            {t('unlock')}
+          </Button>
+        </form>
       </main>
-      <Button fullWidth disabled={!!errorMessage} onClick={login}>
-        {t('unlock')}
-      </Button>
     </>
   )
 }
