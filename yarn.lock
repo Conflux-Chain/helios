@@ -2850,6 +2850,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cfxjs/component-icons@workspace:packages/ui/Svg":
+  version: 0.0.0-use.local
+  resolution: "@cfxjs/component-icons@workspace:packages/ui/Svg"
+  languageName: unknown
+  linkType: soft
+
 "@cfxjs/component-input@workspace:packages/ui/Input":
   version: 0.0.0-use.local
   resolution: "@cfxjs/component-input@workspace:packages/ui/Input"
