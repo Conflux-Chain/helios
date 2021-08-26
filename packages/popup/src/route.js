@@ -1,8 +1,10 @@
-import HomePage from './pages/Home'
-import ConfirmSeed from './pages/ConfirmSeed'
-import CreateAccount from './pages/CreateAccount'
-import NewSeed from './pages/NewSeed'
-import WithCurrentSeed from './pages/WithCurrentSeed'
+import {lazy} from 'react'
+
+const HomePage = lazy(() => import('./pages/Home'))
+const ConfirmSeed = lazy(() => import('./pages/ConfirmSeed'))
+const CreateAccount = lazy(() => import('./pages/CreateAccount'))
+const NewSeed = lazy(() => import('./pages/NewSeed'))
+const WithCurrentSeed = lazy(() => import('./pages/WithCurrentSeed'))
 
 const routes = [
   {
@@ -16,7 +18,7 @@ const routes = [
     component: CreateAccount,
   },
   {
-    path: '/create-account/import-with-current-seed',
+    path: '/create-account/import-seed-phase',
     component: WithCurrentSeed,
     exact: true,
   },

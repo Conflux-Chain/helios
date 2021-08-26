@@ -11,21 +11,23 @@ function App() {
   console.log('data = ', a, b)
 
   return (
-    <Suspense
-      fallback={
-        <div className="w-full h-full flex items-center justify-center">
-          loading...
-        </div>
-      }
-    >
-      <Router>
-        <Switch>
-          {routes.map((route, i) => (
-            <RouteWithSubRoutes key={i} {...route} />
-          ))}
-        </Switch>
-      </Router>
-    </Suspense>
+    <div className="h-160 w-95 m-auto">
+      <Suspense
+        fallback={
+          <div className="w-full h-full flex items-center justify-center">
+            loading...
+          </div>
+        }
+      >
+        <Router>
+          <Switch>
+            {routes.map((route, i) => (
+              <RouteWithSubRoutes key={i} {...route} />
+            ))}
+          </Switch>
+        </Router>
+      </Suspense>
+    </div>
   )
 }
 
