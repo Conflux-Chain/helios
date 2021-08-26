@@ -17210,6 +17210,7 @@ fsevents@~2.3.1:
   dependencies:
     "@cfxjs/component-button": "workspace:packages/ui/Button"
     "@cfxjs/component-dropdown": "workspace:packages/ui/Dropdown"
+    "@cfxjs/component-icons": "workspace:packages/ui/Svg"
     "@cfxjs/component-input": "workspace:packages/ui/Input"
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC"

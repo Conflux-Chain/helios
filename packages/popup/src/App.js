@@ -10,6 +10,7 @@ const CreateAccount = lazy(() => import('./pages/CreateAccount'))
 const NewSeed = lazy(() => import('./pages/NewSeed'))
 const WithCurrentSeed = lazy(() => import('./pages/WithCurrentSeed'))
 const Unlock = lazy(() => import('./pages/Unlock'))
+const Welcome = lazy(() => import('./pages/Welcome'))
 
 function App() {
   // const a = useRPC('wallet_generateMnemonic')
@@ -20,9 +21,7 @@ function App() {
     <div className="h-160 w-95 m-auto">
       <Suspense
         fallback={
-          <div className="w-full h-full flex items-center justify-center">
-            loading...
-          </div>
+          <div className="w-full h-full flex items-center justify-center"></div>
         }
       >
         <Router>
@@ -44,6 +43,9 @@ function App() {
             </Route>
             <Route exact path="/unlock">
               <Unlock />
+            </Route>
+            <Route exact path="/welcome">
+              <Welcome />
             </Route>
             {/* TODO: Replace with 404 page */}
             <Route path="*">

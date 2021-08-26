@@ -19,7 +19,7 @@ export const useRPC = (deps = [], params, opts) => {
     if (error) retry()
   }, [loading, error, retry])
   const {data} = useSWR(
-    !loading && provider && !error && deps ? deps : null,
+    !loading && provider && !error && method ? deps : null,
     () =>
       provider
         ?.request({method, params})
