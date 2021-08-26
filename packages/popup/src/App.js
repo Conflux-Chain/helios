@@ -1,5 +1,5 @@
 import React, {Suspense} from 'react'
-import {useRPC} from '@cfxjs/use-rpc'
+// import {useRPC} from '@cfxjs/use-rpc'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {lazy} from 'react'
 import './index.css'
@@ -9,13 +9,13 @@ const ConfirmSeed = lazy(() => import('./pages/ConfirmSeed'))
 const CreateAccount = lazy(() => import('./pages/CreateAccount'))
 const NewSeed = lazy(() => import('./pages/NewSeed'))
 const WithCurrentSeed = lazy(() => import('./pages/WithCurrentSeed'))
+const Unlock = lazy(() => import('./pages/Unlock'))
 
 function App() {
-  const a = useRPC('wallet_generateMnemonic')
-  const b = useRPC('wallet_generatePrivateKey')
+  // const a = useRPC('wallet_generateMnemonic')
+  // const b = useRPC('wallet_generatePrivateKey')
 
-  console.log('data = ', a, b)
-
+  // console.log('data = ', a, b)
   return (
     <div className="h-160 w-95 m-auto">
       <Suspense
@@ -41,6 +41,9 @@ function App() {
             </Route>
             <Route exact path="/create-account-confirm-seed-phrase">
               <ConfirmSeed />
+            </Route>
+            <Route exact path="/unlock">
+              <Unlock />
             </Route>
             {/* TODO: Replace with 404 page */}
             <Route path="*">

@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import PropTypes from 'prop-types'
-import ReactDropdown from 'rc-dropdown'
+import RcDropdown from 'rc-dropdown'
 import 'rc-dropdown/assets/index.css'
 import ArrowDownOutlined from './assets/ArrowDownOutlined'
 
-const RcDropdown = ReactDropdown.default
+// const RcDropdown = ReactDropdown.default
 function Dropdown({overlay, trigger, disabled, placement, children, ...props}) {
   const renderOverlay = () => {
     // rc-dropdown already can process the function of overlay, but we have check logic here.
