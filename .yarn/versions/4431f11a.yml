@@ -1,0 +1,5 @@
+releases:
+  "@cfxjs/use-rpc": major
+
+declined:
+  - helios-popup

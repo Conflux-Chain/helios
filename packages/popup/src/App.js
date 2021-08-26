@@ -11,10 +11,10 @@ const NewSeed = lazy(() => import('./pages/NewSeed'))
 const WithCurrentSeed = lazy(() => import('./pages/WithCurrentSeed'))
 
 function App() {
-  const a = useRPC('wallet_generateMnemonic')
-  const b = useRPC('wallet_generatePrivateKey')
+  const {data: mnemonic} = useRPC('wallet_generateMnemonic')
+  const {data: pk} = useRPC('wallet_generatePrivateKey')
 
-  console.log('data = ', a, b)
+  console.log('data = ', mnemonic, pk)
 
   return (
     <div className="h-160 w-95 m-auto">
