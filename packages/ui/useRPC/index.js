@@ -10,7 +10,8 @@ export const useRPC = (deps = [], params, opts) => {
     error,
     retry,
   } = useAsyncRetry(setupProvider, [])
-  if (typeof deps === 'string') deps = [deps]
+
+  if (!Array.isArray(deps)) deps = [deps]
   const [method] = deps
 
   useEffect(() => {
@@ -18,14 +19,13 @@ export const useRPC = (deps = [], params, opts) => {
     if (error) retry()
   }, [loading, error, retry])
 
-  const {data} = useSWR(
-    !loading && provider && !error ? deps : null,
+  const providerLoaded = Boolean(!loading && provider && !error)
+  return useSWR(
+    providerLoaded && method ? deps : null,
     () =>
       provider
         ?.request({method, params})
         .then(({result, error}) => result || error),
     opts,
   )
-
-  return data
 }
