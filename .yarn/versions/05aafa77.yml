@@ -1,4 +1,6 @@
 releases:
   "@cfxjs/component-icons": minor
-  browser-extension: patch
-  helios-popup: patch
+
+declined:
+  - helios-popup
+  - browser-extension
