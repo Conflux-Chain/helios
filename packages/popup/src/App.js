@@ -48,7 +48,7 @@ function App() {
             <Route exact path="/welcome">
               <Welcome />
             </Route>
-            <Route exact path="/setPassword">
+            <Route exact path="/set-password">
               <SetPassword />
             </Route>
             {/* TODO: Replace with 404 page */}
