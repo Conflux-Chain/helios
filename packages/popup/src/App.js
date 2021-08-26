@@ -1,9 +1,15 @@
 import React, {Suspense} from 'react'
-import './index.css'
 import {useRPC} from '@cfxjs/use-rpc'
-import routes from './route.js'
-import {HashRouter as Router, Switch} from 'react-router-dom'
-import {RouteWithSubRoutes} from './components'
+import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
+import {lazy} from 'react'
+import './index.css'
+
+const HomePage = lazy(() => import('./pages/Home'))
+const ConfirmSeed = lazy(() => import('./pages/ConfirmSeed'))
+const CreateAccount = lazy(() => import('./pages/CreateAccount'))
+const NewSeed = lazy(() => import('./pages/NewSeed'))
+const WithCurrentSeed = lazy(() => import('./pages/WithCurrentSeed'))
+
 function App() {
   const a = useRPC('wallet_generateMnemonic')
   const b = useRPC('wallet_generatePrivateKey')
@@ -21,9 +27,25 @@ function App() {
       >
         <Router>
           <Switch>
-            {routes.map((route, i) => (
-              <RouteWithSubRoutes key={i} {...route} />
-            ))}
+            <Route exact path="/">
+              <HomePage />
+            </Route>
+            <Route exact path="/create-account-default">
+              <CreateAccount />
+            </Route>
+            <Route exact path="/create-account-with-current-seed">
+              <WithCurrentSeed />
+            </Route>
+            <Route exact path="/create-account-new-seed-phrase">
+              <NewSeed />
+            </Route>
+            <Route exact path="/create-account-confirm-seed-phrase">
+              <ConfirmSeed />
+            </Route>
+            {/* TODO: Replace with 404 page */}
+            <Route path="*">
+              <Redirect to="/" />
+            </Route>
           </Switch>
         </Router>
       </Suspense>
