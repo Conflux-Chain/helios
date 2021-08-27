@@ -1,2 +1,6 @@
-export {default as EyeClose} from './eyeClose'
-export {default as EyeOpen} from './eyeOpen'
+export {default as EyeClose} from './EyeClose'
+export {default as EyeOpen} from './EyeOpen'
+export {default as Add} from './Add'
+export {default as Search} from './Search'
+export {default as Article} from './Article'
+export {default as Folder} from './Folder'

@@ -1,14 +1,18 @@
 import {useTranslation} from 'react-i18next'
 import {LanguageNav, HomeTitle} from '../../components'
-import SetPasswordForm from './components/SetPasswordForm'
+import PasswordForm from './components/PasswordForm.js'
 const SetPassword = () => {
   const {t} = useTranslation()
 
   return (
     <>
       <LanguageNav hasGoBack={true} />
-      <HomeTitle title={t('hello')} subTitle={t('welcome')} />
-      <SetPasswordForm />
+      <header>
+        <HomeTitle title={t('hello')} subTitle={t('welcome')} />
+      </header>
+      <main>
+        <PasswordForm />
+      </main>
     </>
   )
 }

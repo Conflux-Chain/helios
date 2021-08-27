@@ -34,8 +34,10 @@ const UnlockPage = () => {
   return (
     <>
       <LanguageNav />
-      <img src="assets/images/logo.png" alt="logo" />
-      <HomeTitle title={t('welcomeBack')} subTitle={t('welcome')} />
+      <header>
+        <img src="assets/images/logo.png" alt="logo" />
+        <HomeTitle title={t('welcomeBack')} subTitle={t('welcome')} />
+      </header>
       <main>
         <form action="" onSubmit={handleSubmit}>
           <div>{t('password')}</div>

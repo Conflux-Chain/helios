@@ -9,7 +9,10 @@ const Welcome = () => {
   return (
     <>
       <LanguageNav hasGoBack={false} />
-      <HomeTitle title={t('hello')} subTitle={t('welcome')} />
+      <header>
+        <HomeTitle title={t('hello')} subTitle={t('welcome')} />
+      </header>
+
       <main>
         <Button
           fullWidth

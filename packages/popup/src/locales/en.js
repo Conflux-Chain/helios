@@ -19,6 +19,13 @@ const en = {
     createAccount: 'Create a new account',
     UseExistingSeed: 'Use existing Seed Phrase',
     UseExistingSeedDes: 'No need to backup again, use HD Wallet.',
+    newSeedPhrase: 'New Seed Phrase',
+    newSeedPhraseDes: 'Create a new Seed Phrase and Backup.',
+    importExistingAccount: 'Import existing account',
+    seedPhrase: 'Seed Phrase',
+    seedPhraseDes: 'The Seed Phrase consists of words separated by spaces.',
+    pKey: 'Private Key',
+    pKeysDes: 'Enter the plaintext private key.',
   },
 }
 
