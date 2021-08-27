@@ -1,6 +1,7 @@
 import {useTranslation} from 'react-i18next'
 import {LanguageNav, HomeTitle} from '../../components'
-import PasswordForm from './components/PasswordForm.js'
+import SetPasswordForm from './components/SetPasswordForm'
+
 const SetPassword = () => {
   const {t} = useTranslation()
 
@@ -11,7 +12,7 @@ const SetPassword = () => {
         <HomeTitle title={t('hello')} subTitle={t('welcome')} />
       </header>
       <main>
-        <PasswordForm />
+        <SetPasswordForm />
       </main>
     </>
   )
