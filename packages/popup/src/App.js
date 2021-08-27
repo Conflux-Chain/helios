@@ -11,7 +11,8 @@ const NewSeed = lazy(() => import('./pages/NewSeed'))
 const WithCurrentSeed = lazy(() => import('./pages/WithCurrentSeed'))
 const Unlock = lazy(() => import('./pages/Unlock'))
 const Welcome = lazy(() => import('./pages/Welcome'))
-const SetPassword = lazy(() => import('./pages/setPassword'))
+const SetPassword = lazy(() => import('./pages/SetPassword'))
+const SelectCreateType = lazy(() => import('./pages/SelectCreateType'))
 
 function App() {
   // const a = useRPC('wallet_generateMnemonic')
@@ -50,6 +51,9 @@ function App() {
             </Route>
             <Route exact path="/set-password">
               <SetPassword />
+            </Route>
+            <Route exact path="/select-create-type">
+              <SelectCreateType />
             </Route>
             {/* TODO: Replace with 404 page */}
             <Route path="*">

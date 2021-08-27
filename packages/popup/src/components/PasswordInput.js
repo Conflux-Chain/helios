@@ -24,6 +24,8 @@ const PasswordInput = ({setInputErrorMessage, setInputValue, errorMessage}) => {
       errorMessage={errorMessage}
       suffix={eyeStatus === 'close' ? <EyeClose /> : <EyeOpen />}
       onSuffixClick={onSuffixClick}
+      onCopy={e => e.preventDefault()}
+      onCut={e => e.preventDefault()}
     ></Input>
   )
 }
