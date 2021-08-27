@@ -1,7 +1,6 @@
-import React, {Suspense} from 'react'
+import React, {Suspense, lazy} from 'react'
 // import {useRPC} from '@cfxjs/use-rpc'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
-import {lazy} from 'react'
 import './index.css'
 
 const HomePage = lazy(() => import('./pages/Home'))
@@ -13,6 +12,7 @@ const Unlock = lazy(() => import('./pages/Unlock'))
 const Welcome = lazy(() => import('./pages/Welcome'))
 const SetPassword = lazy(() => import('./pages/SetPassword'))
 const SelectCreateType = lazy(() => import('./pages/SelectCreateType'))
+const ImportAccount = lazy(() => import('./pages/ImportAccount'))
 
 function App() {
   // const a = useRPC('wallet_generateMnemonic')
@@ -54,6 +54,9 @@ function App() {
             </Route>
             <Route exact path="/select-create-type">
               <SelectCreateType />
+            </Route>
+            <Route exact path="/import-account/:pattern">
+              <ImportAccount />
             </Route>
             {/* TODO: Replace with 404 page */}
             <Route path="*">

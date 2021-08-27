@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types'
 
-function TypeItem({title, subTitle, Icon, Tag, onclick}) {
+function TypeItem({title, subTitle, Icon, Tag, onClick}) {
   return (
     <div
-      className="flex h-15 my-3"
+      className="flex h-15 my-3 cursor-pointer"
       aria-hidden="true"
-      onClick={onclick && onclick()}
+      onClick={() => {
+        onClick && onClick()
+      }}
     >
       {Icon}
       <div className="ml-2">
@@ -19,7 +21,7 @@ function TypeItem({title, subTitle, Icon, Tag, onclick}) {
   )
 }
 TypeItem.propTypes = {
-  onclick: PropTypes.func,
+  onClick: PropTypes.func,
   title: PropTypes.string.isRequired,
   subTitle: PropTypes.string.isRequired,
   Icon: PropTypes.node.isRequired,

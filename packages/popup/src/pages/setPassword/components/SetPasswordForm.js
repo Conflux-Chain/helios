@@ -48,7 +48,7 @@ const SetPasswordForm = () => {
   }
   return (
     <form onSubmit={handleSubmit}>
-      <div>{t('setPWD')}</div>
+      <h3>{t('setPWD')}</h3>
       <PasswordInput
         setInputErrorMessage={setInputErrorMessage}
         setInputValue={setPassword}
@@ -59,7 +59,7 @@ const SetPasswordForm = () => {
         setInputValue={setConfirmPassword}
         errorMessage={confirmErrorMessage}
       />
-      <div className="text-center">{t('rememberPWD')}</div>
+      <h3 className="text-center">{t('rememberPWD')}</h3>
       <Button
         fullWidth
         disabled={!!errorMessage || !!confirmErrorMessage}

@@ -26,6 +26,16 @@ const en = {
     seedPhraseDes: 'The Seed Phrase consists of words separated by spaces.',
     pKey: 'Private Key',
     pKeysDes: 'Enter the plaintext private key.',
+    // Import account with seed phrase
+    seedImport: 'Import Seed Phrase',
+    seedGroupName: 'Seed Phrase Group Name',
+    seedImportPlaceholder:
+      'The Seed Phrase consists of words separated by spaces. Separate each word entered by a space.',
+    // Import account with pk
+    pKeyImport: 'Import Private Key',
+    pKeyGroupName: 'Account name',
+    pKeyPlaceholder: 'Type your Private Key here.',
+    import: 'Import',
   },
 }
 
