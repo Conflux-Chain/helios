@@ -80,7 +80,7 @@ const createUseRPCHook =
       data: newData,
       error: newError,
       isValidating: newIsValidating,
-      mutate,
+      mutate: newMutate,
     }
   }
 

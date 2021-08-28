@@ -31,10 +31,10 @@ export const RPC_CONFIG = [
     // get/set is the fn from zustand store
     //
     // deps/params/opts is the params to be called by swr
-    /// deps by default will be the rpc method ("wallet_getAccountGroup" here)
+    /// deps by default (calling useStore with deps omited)
+    /// will be the rpc method ("wallet_getAccountGroup" here)
     /// deps will be null when calling useStore with deps: null
     /// deps will be a array when calling deps with any other arguments
-    /// deps is undefined by default
     //
     // params is the rpc method params, undefined by default
     //
