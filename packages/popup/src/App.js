@@ -1,7 +1,7 @@
-import React, {Suspense} from 'react'
+import React, {Suspense, lazy} from 'react'
 import {useRPC} from '@cfxjs/use-rpc'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
-import {lazy} from 'react'
+import {useAccountGroup} from './hooks/useApi'
 import './index.css'
 
 const HomePage = lazy(() => import('./pages/Home'))
@@ -12,6 +12,7 @@ const BackupSeed = lazy(() => import('./pages/BackupSeed'))
 const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 
 function App() {
+  useAccountGroup(true)
   const {data: mnemonic} = useRPC('wallet_generateMnemonic')
   const {data: pk} = useRPC('wallet_generatePrivateKey')
 

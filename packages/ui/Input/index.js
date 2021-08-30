@@ -66,7 +66,7 @@ function Input({
     <div className={`${width}`} data-testid="input-wrapper">
       <div
         data-testid="input-container"
-        className={`flex justify-between items-center rounded ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}
+        className={`flex justify-between items-center rounded border-solid ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}
       >
         {prefix && (
           <div

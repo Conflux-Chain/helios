@@ -3,52 +3,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer base {
-  @font-face {
-    font-family: 'Circular Std';
-    src: url(./fonts/Circular-Std-Book.ttf) format('truetype');
-    font-weight: 400;
-  }
-  @font-face {
-    font-family: 'Circular Std';
-    src: url(./fonts/Circular-Std-Book-Italic.ttf) format('truetype');
-    font-style: italic;
-    font-weight: 400;
-  }
-  @font-face {
-    font-family: 'Circular Std';
-    src: url(./fonts/Circular-Std-Medium.ttf) format('truetype');
-    font-weight: 500;
-  }
-  @font-face {
-    font-family: 'Circular Std';
-    src: url(./fonts/Circular-Std-Medium-Italic.ttf) format('truetype');
-    font-style: italic;
-    font-weight: 500;
-  }
-  @font-face {
-    font-family: 'Circular Std';
-    src: url(./fonts/Circular-Std-Bold.ttf) format('truetype');
-    font-weight: 700;
-  }
-  @font-face {
-    font-family: 'Circular Std';
-    src: url(./fonts/Circular-Std-Bold-Italic.ttf) format('truetype');
-    font-style: italic;
-    font-weight: 700;
-  }
-  @font-face {
-    font-family: 'Circular Std';
-    src: url(./fonts/Circular-Std-Black.ttf) format('truetype');
-    font-weight: 800;
-  }
-  @font-face {
-    font-family: 'Circular Std';
-    src: url(./fonts/Circular-Std-Black-Italic.ttf) format('truetype');
-    font-style: italic;
-    font-weight: 800;
-  }
-}
 
 body {
   margin: 0;
@@ -72,20 +26,34 @@ strong {
 #root,
 body,
 html {
-  /* height: 100%; */
+  --color-bg: #f4f5f7;
+  --color-white: #fff;
+  --color-black: #000;
+  --color-primary: #7789d3;
+  --color-error: #e96170;
+  --color-success: #6fc5b1;
+  --color-warning: #f0955f;
+  --color-info: #7084ed;
+  --color-primary-dark: #4258b3;
+  --color-error-dark: #cd4957;
+  --color-success-dark: #3aa58d;
+  --color-warning-dark: #df6e2e;
+  --color-info-dark: #4059d9;
 }
 
 .light {
-  --color-primary-10: #f0fcfa;
-  --color-primary-90: #1e2a28;
-  --color-error-10: #fdf2f1;
+  --color-primary-4: #f8f9fe;
+  --color-primary-10: #f0f3ff;
+  --color-primary-90: #262933;
+  --color-primary-96: #262933;
+  --color-error-10: #fff2f4;
   --color-error-90: #2b2021;
-  --color-success-10: #edf9ec;
-  --color-success-90: #252e25;
-  --color-warning-10: #fff7ed;
-  --color-warning-90: #2b2820;
-  --color-info-10: #f4f7ff;
-  --color-info-90: #0d1032;
+  --color-success-10: #f1fdfa;
+  --color-success-90: #18211e;
+  --color-warning-10: #fcf1e8;
+  --color-warning-90: #25211f;
+  --color-info-10: #f2f6ff;
+  --color-info-90: #232539;
   --color-gray-0: #fff;
   --color-gray-10: #f7f8fa;
   --color-gray-20: #eaecef;
@@ -97,16 +65,18 @@ html {
 }
 
 .dark {
-  --color-primary-10: #1e2a28;
-  --color-primary-90: #f0fcfa;
+  --color-primary-4: #262933;
+  --color-primary-10: #262933;
+  --color-primary-90: #f0f3ff;
+  --color-primary-96: #f8f9fe;
   --color-error-10: #2b2021;
-  --color-error-90: #fdf2f1;
-  --color-success-10: #252e25;
-  --color-success-90: #edf9ec;
-  --color-warning-10: #2b2820;
-  --color-warning-90: #fff7ed;
-  --color-info-10: #0d1032;
-  --color-info-90: #f4f7ff;
+  --color-error-90: #fff2f4;
+  --color-success-10: #18211e;
+  --color-success-90: #f1fdfa;
+  --color-warning-10: #25211f;
+  --color-warning-90: #fcf1e8;
+  --color-info-10: #232539;
+  --color-info-90: #f2f6ff;
   --color-gray-0: #1b1b1c;
   --color-gray-10: #2a2c33;
   --color-gray-20: #3d3f4c;
