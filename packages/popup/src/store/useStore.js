@@ -67,14 +67,18 @@ const createUseRPCHook =
       })
     }, [newData, newError, newIsValidating, newMutate, mutate])
 
-    afterSet &&
-      afterSet({
-        data: newData,
-        error: newError,
-        isValidating: newIsValidating,
-        set,
-        get,
-      })
+    // afterSet is side effect only fn, protect the main fn from it
+    try {
+      afterSet &&
+        afterSet({
+          data: newData,
+          error: newError,
+          isValidating: newIsValidating,
+          set,
+          get,
+        })
+      // eslint-disable-next-line no-empty
+    } catch (err) {}
 
     return {
       data: newData,
