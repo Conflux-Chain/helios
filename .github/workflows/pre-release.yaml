@@ -60,6 +60,7 @@ jobs:
         env:
           FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
         run: yarn prod:release
+
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}

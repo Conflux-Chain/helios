@@ -6,12 +6,15 @@
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@cfxjs/checks": "workspace:packages/checks",
+    "@cfxjs/compose": "workspace:packages/compose",
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC",
     "i18next": "20.4.0",
     "react-i18next": "11.11.4",
     "react-router-dom": "5.2.0",
     "react-use": "17.2.4",
+    "swr": "1.0.0",
     "webextension-polyfill": "^0.8.0",
     "zustand": "3.5.9"
   }
