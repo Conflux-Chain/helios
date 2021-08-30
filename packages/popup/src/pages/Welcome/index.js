@@ -7,7 +7,7 @@ const Welcome = () => {
   const {t} = useTranslation()
   const history = useHistory()
   return (
-    <>
+    <div className="bg-blue-700 h-full">
       <LanguageNav hasGoBack={false} />
       <header>
         <HomeTitle title={t('hello')} subTitle={t('welcome')} />
@@ -23,7 +23,7 @@ const Welcome = () => {
           {t('create')}
         </Button>
       </main>
-    </>
+    </div>
   )
 }
 

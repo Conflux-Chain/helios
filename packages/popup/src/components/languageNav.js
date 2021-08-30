@@ -36,7 +36,7 @@ const LanguageNav = ({hasGoBack = false}) => {
   }
 
   return (
-    <nav className="flex justify-between h-13 items-center bg-blue-700 text-white px-4">
+    <nav className="flex justify-between h-13 items-center text-white px-4">
       {hasGoBack ? (
         <div
           className="flex items-center cursor-pointer"
