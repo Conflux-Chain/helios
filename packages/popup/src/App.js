@@ -1,7 +1,6 @@
-import React, {Suspense, lazy} from 'react'
+import React, {lazy, Suspense} from 'react'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {useStore} from './store'
-
 import './index.css'
 
 const HomePage = lazy(() => import('./pages/Home'))
@@ -19,17 +18,16 @@ function App() {
     generatePrivateKey,
   } = useStore()
   console.log(
-    'lockedIsValidating = ',
-    lockedIsValidating,
     'lockedData = ',
     lockedData,
     'groupData =',
     groupData,
-    'getLocked = ',
-    getLocked,
+    'lockedIsValidating =',
+    lockedIsValidating,
   )
+
   const {data} = getLocked()
-  console.log('the same with lockedData', data)
+  console.log('data = ', data)
 
   return (
     <div className="h-160 w-95 m-auto">
