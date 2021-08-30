@@ -30,13 +30,7 @@ module.exports = mergeConfig(baseConfig, {
   routes: [...baseConfig.routes],
   plugins: [
     ...baseConfig.plugins,
-    [
-      path.resolve(
-        baseConfig.workspaceRoot,
-        './scripts/snowpack.postcss.plugin.js',
-      ),
-      {},
-    ],
+    '@snowpack/plugin-postcss',
     [
       path.resolve(
         baseConfig.workspaceRoot,
@@ -51,7 +45,10 @@ module.exports = mergeConfig(baseConfig, {
     port: 18001,
   },
   buildOptions: {
-    cacheDirPath: path.resolve(__dirname, '../../node_modules/.cache/snowpack-popup'),
+    cacheDirPath: path.resolve(
+      __dirname,
+      '../../node_modules/.cache/snowpack-popup',
+    ),
     out: path.resolve(root, '../browser-extension/build/popup'),
     // webModulesUrl: 'popup/m',
   },

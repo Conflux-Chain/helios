@@ -2,12 +2,12 @@
   "name": "@cfxjs/use-rpc",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "dependencies": {
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/provider-api": "workspace:packages/ui/provider-api",
     "react-use": "17.2.4",
-    "swr": "0.5.6",
+    "swr": "1.0.0",
     "webextension-polyfill": "0.8.0"
   },
   "peerDependencies": {
