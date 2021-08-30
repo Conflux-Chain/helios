@@ -22,7 +22,7 @@ module.exports = {
       options: {
         postcssLoaderOptions: {
           implementation: () =>
-            require(resolve(__dirname, '../scripts/postcss.config.js')),
+            require(resolve(__dirname, '../postcss.config.js')),
         },
       },
     },
