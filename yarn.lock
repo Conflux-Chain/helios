@@ -2812,36 +2812,36 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-alert@workspace:packages/ui/Alert":
+"@cfxjs/component-alert@workspace:packages/ui/components/Alert":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-alert@workspace:packages/ui/Alert"
+  resolution: "@cfxjs/component-alert@workspace:packages/ui/components/Alert"
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-button@workspace:packages/ui/Button":
+"@cfxjs/component-button@workspace:packages/ui/components/Button":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-button@workspace:packages/ui/Button"
+  resolution: "@cfxjs/component-button@workspace:packages/ui/components/Button"
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-checkbox@workspace:packages/ui/Checkbox":
+"@cfxjs/component-checkbox@workspace:packages/ui/components/Checkbox":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-checkbox@workspace:packages/ui/Checkbox"
+  resolution: "@cfxjs/component-checkbox@workspace:packages/ui/components/Checkbox"
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-dropdown@workspace:packages/ui/Dropdown":
+"@cfxjs/component-dropdown@workspace:packages/ui/components/Dropdown":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-dropdown@workspace:packages/ui/Dropdown"
+  resolution: "@cfxjs/component-dropdown@workspace:packages/ui/components/Dropdown"
   dependencies:
     rc-dropdown: 3.2.0
   peerDependencies:
@@ -2850,42 +2850,42 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-icons@workspace:packages/ui/Svg":
+"@cfxjs/component-icons@workspace:packages/ui/icons":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-icons@workspace:packages/ui/Svg"
+  resolution: "@cfxjs/component-icons@workspace:packages/ui/icons"
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-input@workspace:packages/ui/Input":
+"@cfxjs/component-input@workspace:packages/ui/components/Input":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-input@workspace:packages/ui/Input"
+  resolution: "@cfxjs/component-input@workspace:packages/ui/components/Input"
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-link@workspace:packages/ui/Link":
+"@cfxjs/component-link@workspace:packages/ui/components/Link":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-link@workspace:packages/ui/Link"
+  resolution: "@cfxjs/component-link@workspace:packages/ui/components/Link"
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-loading@workspace:packages/ui/Loading":
+"@cfxjs/component-loading@workspace:packages/ui/components/Loading":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-loading@workspace:packages/ui/Loading"
+  resolution: "@cfxjs/component-loading@workspace:packages/ui/components/Loading"
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-menu@workspace:packages/ui/Menu":
+"@cfxjs/component-menu@workspace:packages/ui/components/Menu":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-menu@workspace:packages/ui/Menu"
+  resolution: "@cfxjs/component-menu@workspace:packages/ui/components/Menu"
   dependencies:
     rc-notification: 4.5.7
   peerDependencies:
@@ -2894,11 +2894,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-message@workspace:packages/ui/Message":
+"@cfxjs/component-message@workspace:packages/ui/components/Message":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-message@workspace:packages/ui/Message"
+  resolution: "@cfxjs/component-message@workspace:packages/ui/components/Message"
   dependencies:
-    "@cfxjs/component-loading": "workspace:packages/ui/Loading"
+    "@cfxjs/component-loading": "workspace:packages/ui/components/Loading"
     rc-notification: 4.5.7
   peerDependencies:
     react: ^17
@@ -2906,9 +2906,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-modal@workspace:packages/ui/Modal":
+"@cfxjs/component-modal@workspace:packages/ui/components/Modal":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-modal@workspace:packages/ui/Modal"
+  resolution: "@cfxjs/component-modal@workspace:packages/ui/components/Modal"
   dependencies:
     react-use: 17.2.4
   peerDependencies:
@@ -2917,47 +2917,47 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-notification@workspace:packages/ui/Notification":
+"@cfxjs/component-notification@workspace:packages/ui/components/Notification":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-notification@workspace:packages/ui/Notification"
+  resolution: "@cfxjs/component-notification@workspace:packages/ui/components/Notification"
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-popover@workspace:packages/ui/Popover":
+"@cfxjs/component-popover@workspace:packages/ui/components/Popover":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-popover@workspace:packages/ui/Popover"
+  resolution: "@cfxjs/component-popover@workspace:packages/ui/components/Popover"
   dependencies:
-    "@cfxjs/component-tooltip": "workspace:packages/ui/Tooltip"
+    "@cfxjs/component-tooltip": "workspace:packages/ui/components/Tooltip"
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-tag@workspace:packages/ui/Tag":
+"@cfxjs/component-tag@workspace:packages/ui/components/Tag":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-tag@workspace:packages/ui/Tag"
+  resolution: "@cfxjs/component-tag@workspace:packages/ui/components/Tag"
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-toast@workspace:packages/ui/Toast":
+"@cfxjs/component-toast@workspace:packages/ui/components/Toast":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-toast@workspace:packages/ui/Toast"
+  resolution: "@cfxjs/component-toast@workspace:packages/ui/components/Toast"
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-tooltip@workspace:packages/ui/Tooltip":
+"@cfxjs/component-tooltip@workspace:packages/ui/components/Tooltip":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-tooltip@workspace:packages/ui/Tooltip"
+  resolution: "@cfxjs/component-tooltip@workspace:packages/ui/components/Tooltip"
   dependencies:
     rc-tooltip: 5.1.1
   peerDependencies:
@@ -2966,9 +2966,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cfxjs/component-wrap-icon@workspace:packages/ui/WrapIcon":
+"@cfxjs/component-wrap-icon@workspace:packages/ui/components/WrapIcon":
   version: 0.0.0-use.local
-  resolution: "@cfxjs/component-wrap-icon@workspace:packages/ui/WrapIcon"
+  resolution: "@cfxjs/component-wrap-icon@workspace:packages/ui/components/WrapIcon"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -17411,9 +17411,9 @@ fsevents@~2.3.1:
   resolution: "helios-popup@workspace:packages/popup"
   dependencies:
     "@cfxjs/checks": "workspace:packages/checks"
-    "@cfxjs/component-button": "workspace:packages/ui/Button"
-    "@cfxjs/component-icons": "workspace:packages/ui/Svg"
-    "@cfxjs/component-input": "workspace:packages/ui/Input"
+    "@cfxjs/component-button": "workspace:packages/ui/components/Button"
+    "@cfxjs/component-icons": "workspace:packages/ui/icons"
+    "@cfxjs/component-input": "workspace:packages/ui/components/Input"
     "@cfxjs/compose": "workspace:packages/compose"
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC"
