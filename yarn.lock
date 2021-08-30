@@ -17411,6 +17411,9 @@ fsevents@~2.3.1:
   resolution: "helios-popup@workspace:packages/popup"
   dependencies:
     "@cfxjs/checks": "workspace:packages/checks"
+    "@cfxjs/component-button": "workspace:packages/ui/Button"
+    "@cfxjs/component-icons": "workspace:packages/ui/Svg"
+    "@cfxjs/component-input": "workspace:packages/ui/Input"
     "@cfxjs/compose": "workspace:packages/compose"
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC"
