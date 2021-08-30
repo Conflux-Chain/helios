@@ -1,0 +1,8 @@
+releases:
+  "@cfxjs/component-alert": patch
+  "@cfxjs/component-button": patch
+  "@cfxjs/component-input": patch
+  "@cfxjs/component-tag": patch
+
+declined:
+  - helios-popup
