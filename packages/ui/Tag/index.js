@@ -34,9 +34,9 @@ function Tag({
   const colorStyle = useMemo(() => {
     if (disabled) return ''
     if (color === 'primary') {
-      return 'text-primary bg-primary-10 border border-transparent hover:border-primary'
+      return 'text-primary bg-primary-10 hover:border-primary'
     } else if (color === 'error') {
-      return 'text-error bg-error-10 border border-transparent hover:border-error'
+      return 'text-error bg-error-10 hover:border-error'
     }
     return ''
   }, [disabled, color])
@@ -76,7 +76,7 @@ function Tag({
       onClick={e => onClick && onClick(e)}
       disabled={disabled}
       className={`
-      flex justify-center items-center focus:outline-none rounded ${disabledStyle} ${colorStyle} ${sizeStyle} ${className}`}
+      flex justify-center items-center focus:outline-none rounded border border-solid border-transparent ${disabledStyle} ${colorStyle} ${sizeStyle} ${className}`}
       {...props}
     >
       {iconComp}

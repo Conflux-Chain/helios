@@ -39,18 +39,20 @@ function Button({
   const colorStyle = useMemo(() => {
     if (disabled) return ''
     if (variant === 'text') {
-      if (danger) return 'text error bg-transparent hover:bg-error-10'
+      if (danger)
+        return 'border-transparent text-error bg-transparent hover:bg-error-10'
       if (color === 'primary')
-        return 'text-gray-80 bg-transparent hover:bg-gray-10'
+        return 'border-transparent text-gray-80 bg-transparent hover:bg-gray-10'
     } else if (variant === 'outlined') {
       if (danger)
-        return 'border border-error text-error bg-gray-0 hover:border-error-dark hover:text-error-dark'
+        return 'border-error text-error bg-gray-0 hover:border-error-dark hover:text-error-dark'
       if (color === 'primary')
-        return 'border border-primary text-primary bg-gray-0 hover:border-primary-dark hover:text-primary-dark'
+        return 'border-primary text-primary bg-gray-0 hover:border-primary-dark hover:text-primary-dark'
     } else if (variant === 'contained') {
-      if (danger) return 'text-white bg-error hover:bg-error-dark'
+      if (danger)
+        return 'border-transparent text-white bg-error hover:bg-error-dark'
       if (color === 'primary')
-        return 'text-white bg-primary hover:bg-primary-dark'
+        return 'border-transparent text-white bg-primary hover:bg-primary-dark'
     }
     return ''
   }, [disabled, variant, color, danger])
@@ -86,7 +88,7 @@ function Button({
       onClick={e => onClick && onClick(e)}
       disabled={disabled}
       className={`
-      flex justify-center items-center focus:outline-none rounded ${disabledStyle} ${colorStyle} ${sizeStyle} ${
+      flex justify-center items-center focus:outline-none rounded border border-solid ${disabledStyle} ${colorStyle} ${sizeStyle} ${
         fullWidth ? 'w-full' : 'px-4'
       } ${className}`}
       {...props}

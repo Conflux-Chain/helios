@@ -58,7 +58,7 @@ function Input({
 
   const borderStyle = useMemo(() => {
     if (!bordered) return 'border-0'
-    if (errorMessage !== '') return 'border-error border'
+    if (errorMessage !== '') return 'border border-error'
     else return `border ${focused ? 'border-primary' : 'border-gray-20'}`
   }, [bordered, errorMessage, focused])
 

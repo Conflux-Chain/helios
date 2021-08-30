@@ -7,7 +7,7 @@ Object {
     <div>
       <button
         class="
-      flex justify-center items-center focus:outline-none rounded  text-primary bg-primary-10 border border-transparent hover:border-primary text-xs h-6 px-2 test-class-name"
+      flex justify-center items-center focus:outline-none rounded border border-solid border-transparent  text-primary bg-primary-10 hover:border-primary text-xs h-6 px-2 test-class-name"
       >
         some children
       </button>
@@ -16,7 +16,7 @@ Object {
   "container": <div>
     <button
       class="
-      flex justify-center items-center focus:outline-none rounded  text-primary bg-primary-10 border border-transparent hover:border-primary text-xs h-6 px-2 test-class-name"
+      flex justify-center items-center focus:outline-none rounded border border-solid border-transparent  text-primary bg-primary-10 hover:border-primary text-xs h-6 px-2 test-class-name"
     >
       some children
     </button>

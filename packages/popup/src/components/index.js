@@ -1,3 +1,1 @@
-const BackupSeed = () => <div>BackupSeed</div>
-
-export default BackupSeed
+export {default as CompWithLabel} from './CompWithLabel'

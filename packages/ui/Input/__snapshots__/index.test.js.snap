@@ -10,7 +10,7 @@ Object {
         data-testid="input-wrapper"
       >
         <div
-          class="flex justify-between items-center rounded w-60 bg-gray-0 h-10 border border-gray-20 "
+          class="flex justify-between items-center rounded border-solid w-60 bg-gray-0 h-10 border border-gray-20 "
           data-testid="input-container"
         >
           <input
@@ -29,7 +29,7 @@ Object {
       data-testid="input-wrapper"
     >
       <div
-        class="flex justify-between items-center rounded w-60 bg-gray-0 h-10 border border-gray-20 "
+        class="flex justify-between items-center rounded border-solid w-60 bg-gray-0 h-10 border border-gray-20 "
         data-testid="input-container"
       >
         <input

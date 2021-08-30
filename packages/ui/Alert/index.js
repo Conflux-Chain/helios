@@ -35,17 +35,15 @@ function Alert({
 
   const style = useMemo(() => {
     if (type === 'info')
-      return `bg-info-10 border ${bordered ? 'border-info' : 'border-info-10'}`
+      return `bg-info-10 ${bordered ? 'border-info' : 'border-info-10'}`
     if (type === 'warning')
-      return `bg-warning-10 border ${
+      return `bg-warning-10 ${
         bordered ? 'border-warning' : 'border-warning-10'
       }`
     if (type === 'error')
-      return `bg-error-10 border ${
-        bordered ? 'border-error' : 'border-error-10'
-      }`
+      return `bg-error-10 ${bordered ? 'border-error' : 'border-error-10'}`
     if (type === 'success')
-      return `bg-success-10 border ${
+      return `bg-success-10 ${
         bordered ? 'border-success' : 'border-success-10'
       }`
   }, [bordered, type])
@@ -70,7 +68,7 @@ function Alert({
   return (
     <div
       data-testid="alert-wrapper"
-      className={`flex items-center justify-between px-4 py-3 ${style} ${width} ${className}`}
+      className={`flex items-center justify-between px-4 py-3 border border-solid ${style} ${width} ${className}`}
     >
       <div className="flex items-center">
         {icon || IconComponent || null}
