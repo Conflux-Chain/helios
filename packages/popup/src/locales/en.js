@@ -1,5 +1,8 @@
 const en = {
   translation: {
+    en: 'English',
+    'zh-CN': '简体中文',
+    back: 'Back',
     // welcome page
     hello: 'Hello',
     welcome: 'Welcome to Conflux network',
