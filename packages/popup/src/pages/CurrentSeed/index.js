@@ -7,15 +7,15 @@ import {Selected} from '@cfxjs/component-icons'
 import {useStore} from '../../store'
 import {CompWithLabel} from '../../components'
 
-function SeedPhrase({accountGroup, onClick, selected, ...otherProps}) {
+function SeedPhrase({key, accountGroup, onClick, selected = false}) {
   const {t} = useTranslation()
   const {nickname, account} = accountGroup
   return (
     <div
-      role="button"
-      tabIndex={0}
-      {...otherProps}
-      className="h-12 px-3 hover:bg-primary-4 flex items-center cursor:pointer justify-between"
+      role="menuitem"
+      tabIndex="-1"
+      key={key}
+      className="h-12 px-3 hover:bg-primary-4 flex items-center cursor-pointer justify-between"
       onClick={() => onClick && onClick(accountGroup)}
       onKeyDown={() => {}}
     >
@@ -36,6 +36,7 @@ SeedPhrase.propTypes = {
   accountGroup: PropTypes.object.isRequired,
   onClick: PropTypes.func,
   selected: PropTypes.bool,
+  key: PropTypes.number.isRequired,
 }
 
 function CurrentSeed() {
@@ -66,7 +67,10 @@ function CurrentSeed() {
         <span className="text-gray-80 mb-3 inline">
           {t('selectSeedPhrase')}
         </span>
-        <div className="flex flex-col flex-1 overflow-y-auto py-2 bg-gray-0 rounded-sm">
+        <div
+          role="menu"
+          className="flex flex-col flex-1 overflow-y-auto py-2 bg-gray-0 rounded-sm"
+        >
           {accountGroups?.map((accountGroup, index) => (
             <SeedPhrase
               key={index}
