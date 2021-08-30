@@ -6,3 +6,16 @@ releases:
 
 declined:
   - helios-popup
+  - "@cfxjs/component-checkbox"
+  - "@cfxjs/component-dropdown"
+  - "@cfxjs/component-link"
+  - "@cfxjs/component-loading"
+  - "@cfxjs/component-menu"
+  - "@cfxjs/component-message"
+  - "@cfxjs/component-modal"
+  - "@cfxjs/component-notification"
+  - "@cfxjs/component-popover"
+  - "@cfxjs/component-toast"
+  - "@cfxjs/component-tooltip"
+  - "@cfxjs/component-wrap-icon"
+  - "@cfxjs/component-icons"
