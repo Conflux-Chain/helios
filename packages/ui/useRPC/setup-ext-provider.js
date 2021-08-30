@@ -7,13 +7,16 @@ const globalThis = window ?? global
 
 const RUNTIME_NAME = 'popup'
 
+function onDisconnect() {
+  globalThis.___CFXJS_USE_RPC__PRIVIDER = null
+}
+
 export const setupExtProvider = ({name = RUNTIME_NAME} = {}) => {
   if (globalThis.___CFXJS_USE_RPC__PRIVIDER)
     return globalThis.___CFXJS_USE_RPC__PRIVIDER
   const port = browser.runtime.connect({name})
-  port.onDisconnect.addListener(
-    () => (globalThis.___CFXJS_USE_RPC__PRIVIDER = null),
-  )
+  port.onDisconnect.removeListener(onDisconnect)
+  port.onDisconnect.addListener(onDisconnect)
   globalThis.___CFXJS_USE_RPC__PRIVIDER = initProvider(rpcStream(port))
   return globalThis.___CFXJS_USE_RPC__PRIVIDER
 }

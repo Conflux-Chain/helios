@@ -7,7 +7,6 @@
   "license": "MIT",
   "dependencies": {
     "@cfxjs/checks": "workspace:packages/checks",
-    "@cfxjs/compose": "workspace:packages/compose",
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC",
     "i18next": "20.4.0",
