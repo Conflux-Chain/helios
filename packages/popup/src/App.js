@@ -5,10 +5,10 @@ import {useStore} from './store'
 import './index.css'
 
 const HomePage = lazy(() => import('./pages/Home'))
-const ConfirmSeed = lazy(() => import('./pages/ConfirmSeed'))
+const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
 const CreateAccount = lazy(() => import('./pages/CreateAccount'))
-const NewSeed = lazy(() => import('./pages/NewSeed'))
-const BackupSeed = lazy(() => import('./pages/BackupSeed'))
+const NewSeed = lazy(() => import('./pages/CreateSeed/NewSeed'))
+const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
 const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 
 function App() {
