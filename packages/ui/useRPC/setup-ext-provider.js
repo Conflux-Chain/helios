@@ -8,7 +8,8 @@ const globalThis = window ?? global
 const RUNTIME_NAME = 'popup'
 
 export const setupExtProvider = ({name = RUNTIME_NAME} = {}) => {
-  if (globalThis.___CFXJS_USE_RPC__PRIVIDER) return
+  if (globalThis.___CFXJS_USE_RPC__PRIVIDER)
+    return globalThis.___CFXJS_USE_RPC__PRIVIDER
   const port = browser.runtime.connect({name})
   port.onDisconnect.addListener(
     () => (globalThis.___CFXJS_USE_RPC__PRIVIDER = null),

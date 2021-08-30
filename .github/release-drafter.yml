@@ -13,18 +13,23 @@ version-resolver:
     labels:
       - 'patch'
       - 'fix'
+      - 'enhancement'
+      - 'documentation'
+      - 'ci'
+      - 'tests'
   default: patch
 
 categories:
   - title: '🚀 Features'
-    label: 'feature'
+    labels:
+      - 'feature'
   - title: '🐛 Bug Fixes'
     labels:
       - 'fix'
 exclude-labels:
   - 'skip-changelog'
 autolabeler:
-  - label: 'chore'
+  - label: 'enhancement'
     title:
       - '/chore(\(.*\))?:/'
   - label: 'documentation'
@@ -32,12 +37,12 @@ autolabeler:
       - '/doc(\(.*\))?:/'
     files:
       - 'websites/doc/docs/**/*'
-  - label: 'bug'
+  - label: 'fix'
     branch:
       - '/fix\/.+/'
     title:
       - '/fix(\(.*\))?:/'
-  - label: 'enhancement'
+  - label: 'feature'
     title:
       - '/feat(\(.*\))?:/'
     branch:

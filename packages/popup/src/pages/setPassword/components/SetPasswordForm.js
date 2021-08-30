@@ -4,7 +4,7 @@ import {useTranslation} from 'react-i18next'
 import Button from '@cfxjs/component-button'
 import {passwordRegExp} from '../../../constants'
 import {PasswordInput} from '../../../components'
-import useStore from '../../../stores'
+import {useStore} from '../../../store'
 
 const validate = value => {
   return passwordRegExp.test(value)
@@ -12,7 +12,7 @@ const validate = value => {
 const SetPasswordForm = () => {
   const history = useHistory()
   const {t} = useTranslation()
-  const storePassword = useStore(state => state.createNewPassword)
+  const {createNewPassword, newPassword} = useStore()
 
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -42,13 +42,14 @@ const SetPasswordForm = () => {
 
   const create = () => {
     if (!errorMessage && !confirmErrorMessage && password && confirmPassword) {
-      storePassword(confirmPassword)
+      createNewPassword(confirmPassword)
       history.push('/select-create-type')
     }
   }
   return (
     <form onSubmit={handleSubmit}>
       <h3>{t('setPWD')}</h3>
+      <div>{newPassword}</div>
       <PasswordInput
         setInputErrorMessage={setInputErrorMessage}
         setInputValue={setPassword}

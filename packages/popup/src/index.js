@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
 import './i18n.js'
+import {SWRConfig} from 'swr'
+
 // import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <SWRConfig value={{revalidateOnMount: true, refreshInterval: 3000}}>
+      <App />
+    </SWRConfig>
   </React.StrictMode>,
   document.getElementById('root'), // eslint-disable-line testing-library/no-node-access
 )

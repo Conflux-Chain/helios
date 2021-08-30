@@ -17208,16 +17208,19 @@ fsevents@~2.3.1:
   version: 0.0.0-use.local
   resolution: "helios-popup@workspace:packages/popup"
   dependencies:
+    "@cfxjs/checks": "workspace:packages/checks"
     "@cfxjs/component-button": "workspace:packages/ui/Button"
     "@cfxjs/component-dropdown": "workspace:packages/ui/Dropdown"
     "@cfxjs/component-icons": "workspace:packages/ui/Svg"
     "@cfxjs/component-input": "workspace:packages/ui/Input"
+    "@cfxjs/compose": "workspace:packages/compose"
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC"
     i18next: 20.4.0
     react-i18next: 11.11.4
     react-router-dom: 5.2.0
     react-use: 17.2.4
+    swr: 1.0.0
     webextension-polyfill: ^0.8.0
     zustand: 3.5.9
   languageName: unknown
@@ -28418,6 +28421,17 @@ resolve@~1.17.0:
   peerDependencies:
     react: ^16.11.0 || ^17.0.0
   checksum: 3522cc3de9200d4209b97ac333181d7b3c040fba770b03ff41b226a2839551141c7e71080aa700b442ff8a6537d11abdf4182a4272b8e5fe57df6a1e9c2fb7fa
+  languageName: node
+  linkType: hard
+
+"swr@npm:1.0.0":
+  version: 1.0.0
+  resolution: "swr@npm:1.0.0"
+  dependencies:
+    dequal: 2.0.2
+  peerDependencies:
+    react: ^16.11.0 || ^17.0.0
+  checksum: 0a0503b903d4d4decb7523d4e93bfc17eb234ab6378811dbe38055a96077cda3b839244284febe1afcaa7c1fd3175f3a4e55a92c67ffe52ea9e9db230fb7a2e8
   languageName: node
   linkType: hard
 
