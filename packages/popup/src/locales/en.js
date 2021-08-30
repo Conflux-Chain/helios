@@ -17,8 +17,8 @@ const en = {
     // select create type
     newAccount: 'New Account',
     createAccount: 'Create a new account',
-    UseExistingSeed: 'Use existing Seed Phrase',
-    UseExistingSeedDes: 'No need to backup again, use HD Wallet.',
+    useExistingSeed: 'Use existing Seed Phrase',
+    useExistingSeedDes: 'No need to backup again, use HD Wallet.',
     newSeedPhrase: 'New Seed Phrase',
     newSeedPhraseDes: 'Create a new Seed Phrase and Backup.',
     importExistingAccount: 'Import existing account',

@@ -18,8 +18,8 @@ function WithCurrentSeed() {
         <h3>{t('createAccount')}</h3>
         <TypeItem
           Icon={<Article />}
-          title={t('UseExistingSeed')}
-          subTitle={t('UseExistingSeedDes')}
+          title={t('useExistingSeed')}
+          subTitle={t('useExistingSeedDes')}
           Tag={<Tag />}
         />
         <TypeItem

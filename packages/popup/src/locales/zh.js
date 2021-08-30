@@ -17,8 +17,8 @@ const zh = {
     // select create type
     newAccount: 'New Account',
     createAccount: 'Create a new account',
-    UseExistingSeed: 'Use existing Seed Phrase',
-    UseExistingSeedDes: 'No need to backup again, use HD Wallet.',
+    useExistingSeed: 'Use existing Seed Phrase',
+    useExistingSeedDes: 'No need to backup again, use HD Wallet.',
   },
 }
 
