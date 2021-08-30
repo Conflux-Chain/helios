@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import Input from '@cfxjs/component-input'
 import Button from '@cfxjs/component-button'
-import {EyeClose} from '@cfxjs/component-icons'
+import {Selected} from '@cfxjs/component-icons'
 import {useStore} from '../../store'
 import {CompWithLabel} from '../../components'
 
@@ -27,7 +27,7 @@ function SeedPhrase({accountGroup, onClick, selected, ...otherProps}) {
             : t('manyAccount', {accountNum: account.length})}
         </span>
       </div>
-      {selected && <EyeClose className="w-5 h-5" />}
+      {selected && <Selected className="w-5 h-5" />}
     </div>
   )
 }
@@ -41,10 +41,13 @@ SeedPhrase.propTypes = {
 function CurrentSeed() {
   const {t} = useTranslation()
   const [accountName, setAccountName] = useState('')
-  const [selectedAccountGroup, setSelectedAccountGroup] = useState(null)
   const {
     group: {groupData: accountGroups},
   } = useStore()
+  const [selectedAccountGroup, setSelectedAccountGroup] = useState(
+    accountGroups?.[0],
+  )
+
   const onSelectSeed = accountGroup => {
     setSelectedAccountGroup(accountGroup)
   }
@@ -56,7 +59,7 @@ function CurrentSeed() {
         <Input
           width="w-full"
           value={accountName}
-          onClick={e => setAccountName(e.target.name)}
+          onChange={e => setAccountName(e.target.value)}
         />
       </CompWithLabel>
       <div className="mt-6 mb-4 flex flex-1 flex-col w-full">
@@ -74,7 +77,11 @@ function CurrentSeed() {
           ))}
         </div>
       </div>
-      <Button className="w-70" onClick={onCreate}>
+      <Button
+        className="w-70"
+        onClick={onCreate}
+        disabled={!accountName || !selectedAccountGroup}
+      >
         Create
       </Button>
     </div>
