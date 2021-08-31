@@ -3,62 +3,62 @@ tag-template: "v$RESOLVED_VERSION"
 version-resolver:
   major:
     labels:
-      - 'major'
-      - 'breaking-change'
+      - "major"
+      - "breaking-change"
   minor:
     labels:
-      - 'minor'
-      - 'feature'
+      - "minor"
+      - "feature"
   patch:
     labels:
-      - 'patch'
-      - 'fix'
-      - 'enhancement'
-      - 'documentation'
-      - 'ci'
-      - 'tests'
-  default: patch
+      - "patch"
+      - "fix"
+      - "enhancement"
+      - "documentation"
+      - "ci"
+      - "tests"
+  default: "patch"
 
 categories:
-  - title: '🚀 Features'
+  - title: "🚀 Features"
     labels:
-      - 'feature'
-  - title: '🐛 Bug Fixes'
+      - "feature"
+  - title: "🐛 Bug Fixes"
     labels:
-      - 'fix'
+      - "fix"
 exclude-labels:
-  - 'skip-changelog'
+  - "skip-changelog"
 autolabeler:
-  - label: 'enhancement'
+  - label: "enhancement"
     title:
       - '/chore(\(.*\))?:/'
-  - label: 'documentation'
+  - label: "documentation"
     title:
       - '/doc(\(.*\))?:/'
     files:
-      - 'websites/doc/docs/**/*'
-  - label: 'fix'
+      - "websites/doc/docs/**/*"
+  - label: "fix"
     branch:
       - '/fix\/.+/'
     title:
       - '/fix(\(.*\))?:/'
-  - label: 'feature'
+  - label: "feature"
     title:
       - '/feat(\(.*\))?:/'
     branch:
       - '/feature\/.+/'
     body:
       - '/new\sfeature/'
-      - '/implement/'
-  - label: 'ci'
+      - "/implement/"
+  - label: "ci"
     title:
       - '/ci(\(.*\))?:/'
-  - label: 'tests'
+  - label: "tests"
     title:
       - '/test(\(.*\))?:/'
     files:
-      - 'packages/**/*.test.js'
-  - label: 'breaking-change'
+      - "packages/**/*.test.js"
+  - label: "breaking-change"
     title:
       - '/BREAKING\sCHANGE/'
     body:
