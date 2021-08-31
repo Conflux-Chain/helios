@@ -1,0 +1,21 @@
+name: Optimising Pictures
+
+on:
+  push:
+    branches: [__release-pkg]
+
+jobs:
+  cleanup_tasks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cloning the repository
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Crush Images!
+        uses: creyD/crush_action@v1.0
+        with:
+          branch: __release-pkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
