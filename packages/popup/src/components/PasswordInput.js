@@ -22,7 +22,13 @@ const PasswordInput = ({setInputErrorMessage, setInputValue, errorMessage}) => {
       width="w-full"
       bordered={true}
       errorMessage={errorMessage}
-      suffix={eyeStatus === 'close' ? <EyeClose /> : <EyeOpen />}
+      suffix={
+        eyeStatus === 'close' ? (
+          <EyeClose className="w-4 h-4" />
+        ) : (
+          <EyeOpen className="w-4 h-4" />
+        )
+      }
       onSuffixClick={onSuffixClick}
       onCopy={e => e.preventDefault()}
       onCut={e => e.preventDefault()}

@@ -38,7 +38,7 @@ function App() {
 
   // console.log('data = ', a, b)
   return (
-    <div className="h-160 w-95 m-auto">
+    <div className="h-160 w-95 m-auto light">
       {/* <button
         onClick={() =>
           generatePrivateKey().then(res =>

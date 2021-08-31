@@ -7,15 +7,15 @@ const Welcome = () => {
   const {t} = useTranslation()
   const history = useHistory()
   return (
-    <div className="bg-blue-700 h-full">
+    <div className="bg-secondary h-full">
       <LanguageNav hasGoBack={false} />
       <header>
         <HomeTitle title={t('hello')} subTitle={t('welcome')} />
       </header>
-
-      <main>
+      <main className="px-12.5">
         <Button
           fullWidth
+          className="mt-85"
           onClick={() => {
             history.push('/set-password')
           }}

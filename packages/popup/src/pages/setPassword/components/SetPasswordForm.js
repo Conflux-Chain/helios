@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -9,10 +10,10 @@ import {useStore} from '../../../store'
 const validate = value => {
   return passwordRegExp.test(value)
 }
-const SetPasswordForm = () => {
+const SetPasswordForm = ({formStyle, legendStyle, desStyle, buttonStyle}) => {
   const history = useHistory()
   const {t} = useTranslation()
-  const {createNewPassword, newPassword} = useStore()
+  const {createNewPassword} = useStore()
 
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -47,22 +48,23 @@ const SetPasswordForm = () => {
     }
   }
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>{t('setPWD')}</h3>
-      <div>{newPassword}</div>
+    <form onSubmit={handleSubmit} className={formStyle || ''}>
+      <legend className={legendStyle || ''}>{t('setPWD')}</legend>
       <PasswordInput
         setInputErrorMessage={setInputErrorMessage}
         setInputValue={setPassword}
         errorMessage={errorMessage}
       />
+      {errorMessage ? null : <em className="m-0 h-6 block" />}
+
       <PasswordInput
         setInputErrorMessage={setConfirmInputErrorMessage}
         setInputValue={setConfirmPassword}
         errorMessage={confirmErrorMessage}
       />
-      <h3 className="text-center">{t('rememberPWD')}</h3>
+      <em className={desStyle || ''}>{t('rememberPWD')}</em>
       <Button
-        fullWidth
+        className={buttonStyle}
         disabled={!!errorMessage || !!confirmErrorMessage}
         onClick={create}
       >
@@ -70,6 +72,12 @@ const SetPasswordForm = () => {
       </Button>
     </form>
   )
+}
+SetPasswordForm.propTypes = {
+  formStyle: PropTypes.string,
+  legendStyle: PropTypes.string,
+  desStyle: PropTypes.string,
+  buttonStyle: PropTypes.string,
 }
 
 export default SetPasswordForm
