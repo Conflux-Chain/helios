@@ -1,7 +1,6 @@
-import create from 'zustand'
-import {useEffect} from 'react'
 import {useRPC} from '@cfxjs/use-rpc'
-import {identity} from '@cfxjs/compose'
+import {useEffect, useRef} from 'react'
+import create from 'zustand'
 import {INITIAL_STORE} from './init-store.js'
 import {RPC_CONFIG} from './rpc-config.js'
 
@@ -13,17 +12,13 @@ const protectDeps = (method, deps) => {
 }
 
 const createUseRPCHook =
-  ({
-    method,
-    key,
-    init,
-    set,
-    get,
-    before = [identity],
-    afterGet = [identity],
-    afterSet,
-  } = {}) =>
+  ({method, key, init, set, get, before = [], afterGet = [], afterSet} = {}) =>
   (deps, params, opts = {}) => {
+    const stateDepsRef = useRef({
+      data: false,
+      error: false,
+      isValidating: false,
+    })
     deps = protectDeps(method, deps)
 
     opts = {fallbackData: init, ...opts}
@@ -31,61 +26,91 @@ const createUseRPCHook =
       deps: newDeps,
       params: newParams,
       opts: newOpts,
-    } = before.reduce((acc, fn) => fn({...acc, set, get}), {deps, params, opts})
+    } = before.reduce((acc, fn) => fn({...acc, set, get}), {
+      deps,
+      params,
+      opts,
+    }) || {deps, params, opts}
 
-    const {data, error, isValidating, mutate} = useRPC(
-      newDeps,
-      newParams,
-      newOpts,
-    )
-
-    const afterGetRst = afterGet.reduce(
-      (acc, fn) => {
-        if (!acc) return acc
-        return fn({...acc, set, get})
+    const rst = useRPC(newDeps, newParams, newOpts)
+    const getRst = {
+      muate: rst.mutate,
+      get data() {
+        stateDepsRef.current.data = true
+        return rst.data
       },
-      {data, error, isValidating, mutate},
-    )
+      get error() {
+        stateDepsRef.current.error = true
+        return rst.error
+      },
+      get isValidating() {
+        stateDepsRef.current.isValidating = true
+        return rst.isValidating
+      },
+    }
+
+    const afterGetRst = afterGet.length
+      ? afterGet.reduce((acc, fn) => {
+          if (!acc) return acc
+          acc.set = set
+          acc.get = get
+          return fn(acc)
+        }, getRst)
+      : getRst
 
     if (!afterGetRst) return
 
-    const {
-      data: newData,
-      error: newError,
-      isValidating: newIsValidating,
-      mutate: newMutate,
-    } = afterGetRst
+    const newRst = afterGetRst
+
+    const getNewRst = {
+      muate: newRst.mutate,
+      get [`${key}Data`]() {
+        stateDepsRef.current.data = true
+        return newRst.data
+      },
+      get [`${key}Error`]() {
+        stateDepsRef.current.error = true
+        return newRst.error
+      },
+      get [`${key}IsValidating`]() {
+        stateDepsRef.current.isValidating = true
+        return newRst.isValidating
+      },
+    }
 
     useEffect(() => {
       set({
-        [key]: {
-          [`${key}Data`]: newData,
-          [`${key}Error`]: newError,
-          [`${key}IsValidating`]: newIsValidating,
-          [`${key}Mutate`]: newMutate || mutate,
-        },
+        [key]: getNewRst,
       })
-    }, [newData, newError, newIsValidating, newMutate, mutate])
+    }, [
+      stateDepsRef.current.data && newRst.data,
+      stateDepsRef.current.error && newRst.error,
+      stateDepsRef.current.isValidating && newRst.isValidating,
+    ])
+
+    const finalRst = {
+      muate: rst.mutate,
+      get data() {
+        stateDepsRef.current.data = true
+        return getNewRst[`${key}Data`]
+      },
+      get error() {
+        stateDepsRef.current.error = true
+        return getNewRst[`${key}Error`]
+      },
+      get isValidating() {
+        stateDepsRef.current.isValidating = true
+        return getNewRst[`${key}IsValidating`]
+      },
+    }
 
     // afterSet is side effect only fn, protect the main fn from it
     try {
-      afterSet &&
-        afterSet({
-          data: newData,
-          error: newError,
-          isValidating: newIsValidating,
-          set,
-          get,
-        })
+      afterSet && afterSet(finalRst)
       // eslint-disable-next-line no-empty
     } catch (err) {}
 
-    return {
-      data: newData,
-      error: newError,
-      isValidating: newIsValidating,
-      mutate: newMutate,
-    }
+    return finalRst
   }
 
 const useGlobalStore = create((set, get) => {
@@ -96,7 +121,6 @@ const useGlobalStore = create((set, get) => {
         [key]: {
           [`${key}Data`]: init,
           [`${key}Error`]: init,
-          [`${key}IsValidating`]: true,
           [`${key}Mutate`]: init,
         },
         [`get${key[0].toUpperCase()}${key.substr(1, key.length - 1)}`]:
