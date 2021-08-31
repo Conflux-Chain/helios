@@ -1,15 +1,15 @@
-import React, {Suspense} from 'react'
+import React, {Suspense, lazy} from 'react'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
-import {lazy} from 'react'
 import {useStore} from './store'
 
 import './index.css'
 
 const HomePage = lazy(() => import('./pages/Home'))
-const ConfirmSeed = lazy(() => import('./pages/ConfirmSeed'))
+const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
 const CreateAccount = lazy(() => import('./pages/CreateAccount'))
-const NewSeed = lazy(() => import('./pages/NewSeed'))
-const WithCurrentSeed = lazy(() => import('./pages/WithCurrentSeed'))
+const NewSeed = lazy(() => import('./pages/CreateSeed/NewSeed'))
+const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
+const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 
 function App() {
   const {
@@ -57,11 +57,14 @@ function App() {
             <Route exact path="/create-account-default">
               <CreateAccount />
             </Route>
-            <Route exact path="/create-account-with-current-seed">
-              <WithCurrentSeed />
+            <Route exact path="/create-account-current-seed-phrase">
+              <CurrentSeed />
             </Route>
             <Route exact path="/create-account-new-seed-phrase">
               <NewSeed />
+            </Route>
+            <Route exact path="/create-account-backup-seed-phrase">
+              <BackupSeed />
             </Route>
             <Route exact path="/create-account-confirm-seed-phrase">
               <ConfirmSeed />

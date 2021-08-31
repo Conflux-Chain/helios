@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "helios-popup",
   "type": "module",
   "version": "0.0.2",
@@ -7,6 +8,9 @@
   "license": "MIT",
   "dependencies": {
     "@cfxjs/checks": "workspace:packages/checks",
+    "@cfxjs/component-button": "workspace:packages/ui/components/Button",
+    "@cfxjs/component-icons": "workspace:packages/ui/icons",
+    "@cfxjs/component-input": "workspace:packages/ui/components/Input",
     "@cfxjs/compose": "workspace:packages/compose",
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC",
