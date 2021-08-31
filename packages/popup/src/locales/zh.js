@@ -20,8 +20,8 @@ const zh = {
     // select create type
     newAccount: 'New Account',
     createAccount: 'Create a new account',
-    useExistingSeed: 'Use existing Seed Phrase',
-    useExistingSeedDes: 'No need to backup again, use HD Wallet.',
+    UseExistingSeed: 'Use existing Seed Phrase',
+    UseExistingSeedDes: 'No need to backup again, use HD Wallet.',
     newSeedPhrase: 'New Seed Phrase',
     newSeedPhraseDes: 'Create a new Seed Phrase and Backup.',
     importExistingAccount: 'Import existing account',
@@ -39,6 +39,11 @@ const zh = {
     pKeyGroupName: 'Account name',
     pKeyPlaceholder: 'Type your Private Key here.',
     import: 'Import',
+    // use current seed phrase
+    accountName: 'Account name',
+    selectSeedPhrase: 'Select Seed Phrase',
+    oneAccount: '1 Account',
+    manyAccounts: '{{accountNum}} Accounts',
   },
 }
 

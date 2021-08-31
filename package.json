@@ -4,6 +4,7 @@
   "workspaces": [
     "websites/*",
     "packages/doc-ui/*",
+    "packages/ui/components/*",
     "packages/ui/*",
     "packages/rpcs/*",
     "packages/*"
