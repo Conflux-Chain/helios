@@ -5,31 +5,51 @@ import {Add, Search, Article, Folder} from '@cfxjs/component-icons'
 import TypeItem from './components/TypeItem'
 
 function Tag() {
-  return <span className="inline-block leading-4 px-1 ml-4">Faster</span>
+  const {t} = useTranslation()
+  return (
+    <span
+      className="inline-block leading-4 px-1 ml-4 text-white "
+      style={{backgroundColor: '#32E1A9', fontSize: '10px'}}
+    >
+      {t('faster')}
+    </span>
+  )
 }
 function WithCurrentSeed() {
   const {t} = useTranslation()
   const history = useHistory()
-  // TODO: add router click jump
   return (
-    <>
+    <div className="bg-bg  h-full">
       <TextNav hasGoBack={true} title={t('newAccount')} />
-      <main>
-        <h3>{t('createAccount')}</h3>
+      <main className="px-4 pt-3">
+        <em className="not-italic text-xs text-gray-40">
+          {t('createAccount')}
+        </em>
         <TypeItem
-          Icon={<Article />}
+          Icon={Article}
           title={t('useExistingSeed')}
           subTitle={t('useExistingSeedDes')}
-          Tag={<Tag />}
+          Tag={Tag}
+          typeClass="my-3"
+          onClick={() => {
+            history.push('/create-account-current-seed-phrase')
+          }}
         />
         <TypeItem
-          Icon={<Add />}
+          Icon={Add}
           title={t('newSeedPhrase')}
           subTitle={t('newSeedPhraseDes')}
+          typeClass="mb-4"
+          onClick={() => {
+            history.push('/create-account-new-seed-phrase')
+          }}
         />
-        <h3>{t('createAccount')}</h3>
+        <em className="not-italic text-xs text-gray-40">
+          {t('importExistingAccount')}
+        </em>
         <TypeItem
-          Icon={<Folder />}
+          typeClass="my-3"
+          Icon={Folder}
           title={t('seedPhrase')}
           subTitle={t('seedPhraseDes')}
           onClick={() => {
@@ -37,7 +57,7 @@ function WithCurrentSeed() {
           }}
         />
         <TypeItem
-          Icon={<Search />}
+          Icon={Search}
           title={t('pKey')}
           subTitle={t('pKeysDes')}
           onClick={() => {
@@ -45,7 +65,7 @@ function WithCurrentSeed() {
           }}
         />
       </main>
-    </>
+    </div>
   )
 }
 

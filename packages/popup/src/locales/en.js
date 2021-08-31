@@ -1,12 +1,13 @@
 const en = {
   translation: {
+    faster: 'Faster',
     en: 'English',
     'zh-CN': '简体中文',
     back: 'Back',
     // welcome page
     hello: 'Hello',
     welcome: 'Welcome to Conflux network',
-    create: 'create',
+    create: 'Create',
     migration: 'One-Click Migration',
     welcomeBack: 'Welcome Back!',
     password: 'password',
@@ -20,8 +21,8 @@ const en = {
     // select create type
     newAccount: 'New Account',
     createAccount: 'Create a new account',
-    UseExistingSeed: 'Use existing Seed Phrase',
-    UseExistingSeedDes: 'No need to backup again, use HD Wallet.',
+    useExistingSeed: 'Use existing Seed Phrase',
+    useExistingSeedDes: 'No need to backup again, use HD Wallet.',
     newSeedPhrase: 'New Seed Phrase',
     newSeedPhraseDes: 'Create a new Seed Phrase and Backup.',
     importExistingAccount: 'Import existing account',

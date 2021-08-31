@@ -1,24 +1,25 @@
 import {useHistory} from 'react-router-dom'
-import {useTranslation} from 'react-i18next'
 import PropTypes from 'prop-types'
+import {LeftTriangle} from '@cfxjs/component-icons'
 
 function TextNav({hasGoBack = false, title = ''}) {
   const history = useHistory()
-  const {t} = useTranslation()
-
   return (
-    <nav className="flex justify-between">
+    <nav className="flex h-13 items-center px-3 justify-between relative">
       {hasGoBack ? (
         <div
           aria-hidden="true"
+          className="flex items-center cursor-pointer"
           onClick={() => {
             history.goBack()
           }}
         >
-          {t('back')}
+          <LeftTriangle className="w-5 h-5" />
         </div>
       ) : null}
-      <div>{title}</div>
+      <div className="text-sm text-gray-100 absolute left-1/2 -translate-x-1/2">
+        {title}
+      </div>
     </nav>
   )
 }

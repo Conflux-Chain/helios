@@ -11,7 +11,7 @@ const SetPassword = () => {
       <header>
         <HomeTitle title={t('hello')} subTitle={t('welcome')} />
       </header>
-      <main className="px-3 ">
+      <main className="px-3">
         <SetPasswordForm
           formStyle="bg-white mt-4 rounded px-4 pt-8 pb-18 relative h-88"
           legendStyle="text-gray-40 text-sm mb-3"
