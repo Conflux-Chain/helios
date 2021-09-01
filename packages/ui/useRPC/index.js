@@ -34,12 +34,7 @@ export const useRPCRaw = (provider, deps = [], params, opts) => {
   if (!Array.isArray(deps)) deps = [deps]
   const [method] = deps
 
-  const {
-    data: rpcData,
-    error: rpcError,
-    isValidating,
-    mutate,
-  } = useSWR(
+  return useSWR(
     method ? deps : null,
     () =>
       provider?.request({method, params}).then(({result, error}) => {
@@ -48,11 +43,4 @@ export const useRPCRaw = (provider, deps = [], params, opts) => {
       }),
     opts,
   )
-
-  return {
-    data: rpcData,
-    error: rpcError,
-    isValidating,
-    mutate,
-  }
 }

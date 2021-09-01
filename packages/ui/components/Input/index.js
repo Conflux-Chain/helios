@@ -43,7 +43,7 @@ function Input({
   errorMessage = '',
   onBlur,
   onSuffixClick,
-  type = 'input',
+  elementType = 'input',
   ...props
 }) {
   const [focused, setFocused] = useState(false)
@@ -53,7 +53,7 @@ function Input({
   }, [disabled])
 
   const sizeStyle =
-    type === 'input' ? sizeStyleObj[size] || '' : `${textareaSize} pt-3`
+    elementType === 'input' ? sizeStyleObj[size] || '' : `${textareaSize} pt-3`
   const inputStyle = inputStyleObj[size] || ''
   const iconSize = iconSizeObj[size] || ''
 
@@ -66,7 +66,7 @@ function Input({
     else return `border ${focused ? 'border-primary' : 'border-gray-20'}`
   }, [bordered, errorMessage, focused])
 
-  const InputElement = createElement(type, {
+  const InputElement = createElement(elementType, {
     'data-testid': 'input-text',
     value,
     onFocus: () => {
@@ -133,7 +133,7 @@ Input.propTypes = {
   disabled: PropTypes.bool,
   bordered: PropTypes.bool,
   onBlur: PropTypes.func,
-  type: PropTypes.oneOf(['input', 'textarea']),
+  elementType: PropTypes.oneOf(['input', 'textarea']),
 }
 
 export default Input

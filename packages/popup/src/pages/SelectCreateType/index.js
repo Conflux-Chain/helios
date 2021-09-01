@@ -22,7 +22,7 @@ function WithCurrentSeed() {
     <div className="bg-bg  h-full">
       <TextNav hasGoBack={true} title={t('newAccount')} />
       <main className="px-4 pt-3">
-        <em className="not-italic text-xs text-gray-40">
+        <em className="not-italic text-xs text-gray-40 ml-1">
           {t('createAccount')}
         </em>
         <TypeItem
@@ -44,7 +44,7 @@ function WithCurrentSeed() {
             history.push('/create-account-new-seed-phrase')
           }}
         />
-        <em className="not-italic text-xs text-gray-40">
+        <em className="not-italic text-xs text-gray-40 ml-1">
           {t('importExistingAccount')}
         </em>
         <TypeItem

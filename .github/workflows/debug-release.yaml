@@ -57,6 +57,7 @@ jobs:
           config-name: release-drafter.yml
           publish: true
           prerelease: true
+          commitish: ${{ github.sha }}
 
       - name: build and release
         env:

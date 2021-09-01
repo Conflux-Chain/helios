@@ -19,7 +19,7 @@ const PasswordInput = ({setInputErrorMessage, setInputValue, errorMessage}) => {
       onChange={onInputChange}
       onFocus={onInputChange}
       type={eyeStatus === 'close' ? 'password' : 'text'}
-      width="w-full"
+      width="w-full box-border"
       bordered={true}
       errorMessage={errorMessage}
       suffix={

@@ -60,7 +60,7 @@ function ImportAccount() {
           >
             <Input
               errorMessage={keygenErrorMessage}
-              type="textarea"
+              elementType="textarea"
               placeholder={t(`${lanPrefix}ImportPlaceholder`)}
               onChange={changeKeygen}
               width="w-full"

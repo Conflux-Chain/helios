@@ -9,13 +9,13 @@ const Welcome = () => {
   return (
     <div className="bg-secondary h-full">
       <LanguageNav hasGoBack={false} />
-      <header>
+      <header className="mt-8">
         <HomeTitle title={t('hello')} subTitle={t('welcome')} />
       </header>
       <main className="px-12.5">
         <Button
           fullWidth
-          className="mt-85"
+          className="mt-80 cursor-pointer"
           onClick={() => {
             history.push('/set-password')
           }}

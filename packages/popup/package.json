@@ -12,7 +12,6 @@
     "@cfxjs/component-dropdown": "workspace:packages/ui/components/Dropdown",
     "@cfxjs/component-icons": "workspace:packages/ui/icons",
     "@cfxjs/component-input": "workspace:packages/ui/components/Input",
-    "@cfxjs/compose": "workspace:packages/compose",
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
     "@cfxjs/use-rpc": "workspace:packages/ui/useRPC",
     "i18next": "20.4.0",

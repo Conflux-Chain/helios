@@ -1,7 +1,6 @@
-import React, {Suspense, lazy} from 'react'
+import React, {lazy, Suspense} from 'react'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
-// import {useStore} from './store'
-
+import {useStore} from './store'
 import './index.css'
 
 const HomePage = lazy(() => import('./pages/Home'))
@@ -17,34 +16,33 @@ const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
 const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 
 function App() {
-  // const {
-  //   locked: {lockedData, lockedIsValidating},
-  //   group: {groupData},
-  //   getLocked,
-  //   generatePrivateKey,
-  // } = useStore()
+  const {
+    // locked: {lockedData, lockedIsValidating},
+    // group: {groupData},
+    // getLocked,
+    // generatePrivateKey,
+  } = useStore()
   // console.log(
-  //   'lockedIsValidating = ',
-  //   lockedIsValidating,
   //   'lockedData = ',
   //   lockedData,
   //   'groupData =',
   //   groupData,
-  //   'getLocked = ',
-  //   getLocked,
+  //   'lockedIsValidating =',
+  //   lockedIsValidating,
   // )
+
   // const {data} = getLocked()
-  // console.log('the same with lockedData', data)
+  // console.log('data = ', data)
 
   // console.log('data = ', a, b)
   return (
-    <div className="h-160 w-95 m-auto light">
+    <div className="h-150 w-93 m-auto light">
       {/* <button
-        onClick={() =>
+        onClick={() => {
           generatePrivateKey().then(res =>
             console.log("I'm the privateKey", res.result),
           )
-        }
+        }}
       >
         example
       </button> */}
