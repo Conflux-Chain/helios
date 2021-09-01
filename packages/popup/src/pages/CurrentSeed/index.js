@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import Input from '@cfxjs/component-input'
@@ -7,14 +7,13 @@ import {Selected} from '@cfxjs/component-icons'
 import {useStore} from '../../store'
 import {CompWithLabel} from '../../components'
 
-function SeedPhrase({key, accountGroup, onClick, selected = false}) {
+function SeedPhrase({accountGroup, onClick, selected = false}) {
   const {t} = useTranslation()
   const {nickname, account} = accountGroup
   return (
     <div
       role="menuitem"
       tabIndex="-1"
-      key={key}
       className="h-12 px-3 hover:bg-primary-4 flex items-center cursor-pointer justify-between"
       onClick={() => onClick && onClick(accountGroup)}
       onKeyDown={() => {}}
@@ -36,23 +35,36 @@ SeedPhrase.propTypes = {
   accountGroup: PropTypes.object.isRequired,
   onClick: PropTypes.func,
   selected: PropTypes.bool,
-  key: PropTypes.number.isRequired,
 }
 
 function CurrentSeed() {
   const {t} = useTranslation()
   const [accountName, setAccountName] = useState('')
-  const {
-    group: {groupData: accountGroups},
-  } = useStore()
-  const [selectedAccountGroup, setSelectedAccountGroup] = useState(
-    accountGroups?.[0],
-  )
+  const {group} = useStore()
+  console.log(group)
+  const accountGroups = useStore().getHdAccountGroup()
+  console.log(accountGroups)
+  const [selectedAccountGroupId, setSelectedAccountGroupId] = useState(null)
 
   const onSelectSeed = accountGroup => {
-    setSelectedAccountGroup(accountGroup)
+    setSelectedAccountGroupId(accountGroup.eid)
   }
   const onCreate = () => {}
+
+  useEffect(() => {
+    const selectedIndex = accountGroups.findIndex(
+      accountGroup => accountGroup.eid === selectedAccountGroupId,
+    )
+    if (selectedIndex === -1) return
+    const selectedAccountGroup = accountGroups[selectedIndex]
+    const length = selectedAccountGroup.account.length
+    setAccountName(`Create-${selectedIndex + 1}-${length + 1}`)
+  }, [selectedAccountGroupId, accountGroups.length])
+
+  useEffect(() => {
+    if (accountGroups?.length > 0)
+      setSelectedAccountGroupId(accountGroups[0].eid)
+  }, [accountGroups.length])
 
   return (
     <div className="w-full h-full px-4 pb-4 flex flex-col bg-bg items-center">
@@ -76,7 +88,7 @@ function CurrentSeed() {
               key={index}
               accountGroup={accountGroup}
               onClick={onSelectSeed}
-              selected={selectedAccountGroup?.eid === accountGroup.eid}
+              selected={selectedAccountGroupId === accountGroup.eid}
             />
           ))}
         </div>
@@ -84,7 +96,7 @@ function CurrentSeed() {
       <Button
         className="w-70"
         onClick={onCreate}
-        disabled={!accountName || !selectedAccountGroup}
+        disabled={!accountName || !selectedAccountGroupId}
       >
         Create
       </Button>

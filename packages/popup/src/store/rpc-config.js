@@ -40,6 +40,7 @@ export const RPC_CONFIG = [
     //
     // opts is the opts for swr, undefined by default
     before: [skipIfLocked],
+    afterGet: [],
 
     // afterGet are fns[] runs after swr and before writing state to store
     // if afterGet return false, the hook won't write state to store

@@ -13,26 +13,26 @@ const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 
 function App() {
   const {
-    locked: {lockedData, lockedIsValidating},
-    group: {groupData},
-    getLocked,
+    // locked: {lockedData},
+    // group,
+    // getLocked,
     generatePrivateKey,
   } = useStore()
-  console.log(
-    'lockedIsValidating = ',
-    lockedIsValidating,
-    'lockedData = ',
-    lockedData,
-    'groupData =',
-    groupData,
-    'getLocked = ',
-    getLocked,
-  )
-  const {data} = getLocked()
-  console.log('the same with lockedData', data)
+  // console.log(
+  //   'lockedIsValidating = ',
+  //   lockedIsValidating,
+  //   'lockedData = ',
+  //   lockedData,
+  //   'groupData =',
+  //   groupData,
+  //   'getLocked = ',
+  //   getLocked,
+  // )
+  // const {data} = getLocked()
+  // console.log('the same with lockedData', data)
 
   return (
-    <div className="h-160 w-95 m-auto">
+    <div className="h-160 w-95 m-auto light">
       <button
         onClick={() =>
           generatePrivateKey().then(res =>

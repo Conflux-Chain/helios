@@ -10,6 +10,8 @@ export const INITIAL_STORE = (set, get) => ({
   // helper fn for write rpc methods (method that will write to wallet db or to the blockchain)
   generatePrivateKey: () => get().r({method: 'wallet_generatePrivateKey'}),
   generateMnemonic: () => get().r({method: 'wallet_generateMnemonic'}),
+  getHdAccountGroup: () =>
+    get().group?.groupData.filter(group => group.vault.type === 'hd'),
   validateMnemonic: async mnemonic =>
     isString(mnemonic) &&
     (await get().r({method: 'wallet_validateMnemonic', params: {mnemonic}})
