@@ -41,9 +41,9 @@ function CurrentSeed() {
   const {t} = useTranslation()
   const [accountName, setAccountName] = useState('')
   const {group} = useStore()
-  console.log(group)
-  const accountGroups = useStore().getHdAccountGroup()
-  console.log(accountGroups)
+  console.log('group', group)
+  const accountGroups = group.groupHdData || []
+  console.log('hd', accountGroups)
   const [selectedAccountGroupId, setSelectedAccountGroupId] = useState(null)
 
   const onSelectSeed = accountGroup => {

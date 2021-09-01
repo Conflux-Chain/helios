@@ -34,7 +34,7 @@ const createUseRPCHook =
 
     const rst = useRPC(newDeps, newParams, newOpts)
     const getRst = {
-      muate: rst.mutate,
+      mutate: rst.mutate,
       get data() {
         stateDepsRef.current.data = true
         return rst.data
@@ -63,7 +63,7 @@ const createUseRPCHook =
     const newRst = afterGetRst
 
     const getNewRst = {
-      muate: newRst.mutate,
+      mutate: newRst.mutate,
       get [`${key}Data`]() {
         stateDepsRef.current.data = true
         return newRst.data
@@ -89,7 +89,7 @@ const createUseRPCHook =
     ])
 
     const finalRst = {
-      muate: rst.mutate,
+      mutate: rst.mutate,
       get data() {
         stateDepsRef.current.data = true
         return getNewRst[`${key}Data`]
@@ -104,11 +104,17 @@ const createUseRPCHook =
       },
     }
 
-    // afterSet is side effect only fn, protect the main fn from it
-    try {
-      afterSet && afterSet(finalRst)
-      // eslint-disable-next-line no-empty
-    } catch (err) {}
+    useEffect(() => {
+      // afterSet is side effect only fn, protect the main fn from it
+      try {
+        afterSet && afterSet(finalRst, get, set)
+        // eslint-disable-next-line no-empty
+      } catch (err) {}
+    }, [
+      stateDepsRef.current.data && newRst.data,
+      stateDepsRef.current.error && newRst.error,
+      stateDepsRef.current.isValidating && newRst.isValidating,
+    ])
 
     return finalRst
   }

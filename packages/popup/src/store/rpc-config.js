@@ -1,4 +1,5 @@
-import {skipIfLocked} from './befores.js'
+import {skipIfLocked} from './befores'
+import {setHdGroupAccount} from './afterSets'
 
 // used to config get only rpc methods
 export const RPC_CONFIG = [
@@ -40,7 +41,7 @@ export const RPC_CONFIG = [
     //
     // opts is the opts for swr, undefined by default
     before: [skipIfLocked],
-    afterGet: [],
+    afterSet: setHdGroupAccount,
 
     // afterGet are fns[] runs after swr and before writing state to store
     // if afterGet return false, the hook won't write state to store
