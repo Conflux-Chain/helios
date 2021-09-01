@@ -1,4 +1,4 @@
-import {useState, useMemo} from 'react'
+import {useState, useMemo, createElement} from 'react'
 import PropTypes from 'prop-types'
 
 const sizeStyleObj = {
@@ -38,10 +38,12 @@ function Input({
   onChange,
   bordered = true,
   size = 'medium',
+  textareaSize = '',
   width = 'w-60',
   errorMessage = '',
   onBlur,
   onSuffixClick,
+  type = 'input',
   ...props
 }) {
   const [focused, setFocused] = useState(false)
@@ -50,7 +52,8 @@ function Input({
     return 'bg-gray-0'
   }, [disabled])
 
-  const sizeStyle = sizeStyleObj[size] || ''
+  const sizeStyle =
+    type === 'input' ? sizeStyleObj[size] || '' : `${textareaSize} pt-3`
   const inputStyle = inputStyleObj[size] || ''
   const iconSize = iconSizeObj[size] || ''
 
@@ -63,6 +66,22 @@ function Input({
     else return `border ${focused ? 'border-primary' : 'border-gray-20'}`
   }, [bordered, errorMessage, focused])
 
+  const InputElement = createElement(type, {
+    'data-testid': 'input-text',
+    value,
+    onFocus: () => {
+      setFocused(true)
+    },
+    onBlur: () => {
+      setFocused(false)
+      onBlur && onBlur()
+    },
+    onChange: e => {
+      onChange && onChange(e)
+    },
+    className: `resize-none	w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`,
+    ...props,
+  })
   return (
     <div className={`${width}`} data-testid="input-wrapper">
       <div
@@ -78,18 +97,7 @@ function Input({
             <div className={`text-gray-40 ${iconSize}`}>{prefix}</div>
           </div>
         )}
-        <input
-          data-testid="input-text"
-          value={value}
-          onFocus={() => setFocused(true)}
-          onBlur={() => {
-            setFocused(false)
-            onBlur && onBlur()
-          }}
-          onChange={e => onChange && onChange(e)}
-          className={`w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`}
-          {...props}
-        />
+        {InputElement}
         {suffix && (
           <div
             aria-hidden="true"
@@ -117,6 +125,7 @@ Input.propTypes = {
   onChange: PropTypes.func,
   width: PropTypes.string,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
+  textareaSize: PropTypes.string,
   errorMessage: PropTypes.string,
   prefix: PropTypes.node,
   suffix: PropTypes.node,
@@ -124,6 +133,7 @@ Input.propTypes = {
   disabled: PropTypes.bool,
   bordered: PropTypes.bool,
   onBlur: PropTypes.func,
+  type: PropTypes.oneOf(['input', 'textarea']),
 }
 
 export default Input

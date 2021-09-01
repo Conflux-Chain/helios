@@ -38,7 +38,7 @@ const en = {
     // Import account with pk
     pKeyImport: 'Import Private Key',
     pKeyGroupName: 'Account name',
-    pKeyPlaceholder: 'Type your Private Key here.',
+    pKeyImportPlaceholder: 'Type your Private Key here.',
     import: 'Import',
     // use current seed phrase
     accountName: 'Account name',
