@@ -1,7 +1,12 @@
 module.exports = function (/* context, options */) {
   return {
     name: '@cfxjs/docusaurus-plugin',
-    // configureWebpack(config, isServer, utils) {return {}},
+    configureWebpack() {
+      return {
+        module: {rules: [{test: /\.m?js$/, resolve: {fullySpecified: false}}]},
+        resolve: {fallback: {stream: false}},
+      }
+    },
     configurePostCss(postcssOptions) {
       // Appends new PostCSS plugin.
       postcssOptions.plugins.push(

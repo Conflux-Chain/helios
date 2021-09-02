@@ -24,11 +24,8 @@ const createRPC = rpcName =>
 
       window &&
         import(
-          /* webpackPreload: true */
-          /* webpackMode: "lazy-once" */
-          /* webpackInclude: /(cfx|eth|wallet|net|web3)_(\w|-)+\/index\.js$/ */
-          /* webpackExclude: /(\test\.js|\.md)$/ */
-          '@cfxjs/' + rpcPkgName
+          /* webpackIgnore: true */
+          `https://cdn.skypack.dev/@cfxjs/${rpcPkgName}`
         )
           .then(rpc => {
             return set({...rpc, loadingRPC: false})
@@ -58,7 +55,7 @@ export const useRPC = rpcName => {
   // init the rpc store if it's first call
   useEffect(() => {
     if (isNewRpc) s.setRPC()
-  }, [isNewRpc])
+  }, [isNewRpc, s])
 
   return s
 }
