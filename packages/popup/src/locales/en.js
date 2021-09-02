@@ -42,7 +42,6 @@ const en = {
     selectSeedPhrase: 'Select Seed Phrase',
     oneAccount: '1 Account',
     manyAccounts: '{{accountNum}} Accounts',
-    errorDuplicateName: 'Duplicate name',
   },
 }
 
