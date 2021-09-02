@@ -10,7 +10,7 @@ function CompWithLabel({label, children, className = ''}) {
 }
 
 CompWithLabel.propTypes = {
-  label: PropTypes.oneOfType(PropTypes.string, PropTypes.node).isRequired,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,

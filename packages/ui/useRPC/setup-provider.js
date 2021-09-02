@@ -1,4 +1,5 @@
 import {setupInpageProvider} from './setup-inpage-provider.js'
+import {setupExtProvider} from './setup-ext-provider.js'
 
 const globalThis = window ?? global
 
@@ -14,5 +15,5 @@ export async function setupProvider() {
 
   if (globalThis.___CFXJS_USE_RPC__PRIVIDER)
     return globalThis.___CFXJS_USE_RPC__PRIVIDER
-  return await import('./setup-ext-provider.js').then(m => m.setupExtProvider())
+  return setupExtProvider()
 }

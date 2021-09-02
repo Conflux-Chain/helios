@@ -1,70 +1,114 @@
-import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {useTranslation} from 'react-i18next'
 import Input from '@cfxjs/component-input'
 import Button from '@cfxjs/component-button'
 import {Selected} from '@cfxjs/component-icons'
-import {useStore} from '../../store'
 import {CompWithLabel} from '../../components'
+import create from '../../hooks/zustand.js'
 
-function SeedPhrase({accountGroup, onClick, selected = false}) {
-  const {t} = useTranslation()
-  const {nickname, account} = accountGroup
+const useStore = create(
+  (set, get) => ({
+    // value
+    hdGroup: [],
+    creatingAccount: false,
+    accountCreationError: null,
+    accountNameError: null,
+    accountName: '',
+    selectedGroup: null,
+
+    // hook
+    groupAfterSet: ({groupData}) => {
+      const hdGroup = groupData.filter(({vault: {type}}) => type === 'hd')
+      set({hdGroup})
+      if (!get().selectedGroup) set({selectedGroup: hdGroup[0]})
+      if (!get().accountName && hdGroup[0])
+        set({
+          accountName: `Create-1-${hdGroup[0].account.length + 1}`,
+        })
+    },
+
+    // logic
+    setAccountName: accountName => set({accountName}),
+    onCreate: () => {
+      const {
+        r,
+        selectedGroup: {eid},
+        accountName,
+        group: {groupMutate},
+      } = get()
+      set({creatingAccount: true})
+      return r({
+        method: 'wallet_createAccount',
+        params: {accountGroupId: eid, nickname: accountName},
+      }).then(({error}) => {
+        set({creatingAccount: false})
+        if (error) return set({accountCreationError: error.message})
+        groupMutate()
+        // jump to next page?
+      })
+    },
+    getGroupInfo({account: {length}, nickname}) {
+      const {t} = get()
+      return {
+        nickname,
+        accountLength:
+          length === 1
+            ? t('oneAccount')
+            : t('manyAccounts', {accountNum: length}),
+      }
+    },
+    setSelectedGroup: selectedGroup => set({selectedGroup}),
+    setAccountNameError: accountNameError => set({accountNameError}),
+  }),
+  {
+    group: {
+      deps: 'wallet_getAccountGroup',
+      opts: {fallbackData: []},
+    },
+  },
+)
+
+function SeedPhrase({group, idx}) {
+  const {getGroupInfo, setSelectedGroup, selectedGroup, setAccountName} =
+    useStore()
+  const {nickname, accountLength} = getGroupInfo(group)
+
   return (
     <div
       role="menuitem"
       tabIndex="-1"
+      key={group.eid}
       className="h-12 px-3 hover:bg-primary-4 flex items-center cursor-pointer justify-between"
-      onClick={() => onClick && onClick(accountGroup)}
+      onClick={() => {
+        setSelectedGroup(group)
+        setAccountName(`Create-${idx + 1}-${group.account.length + 1}`)
+      }}
       onKeyDown={() => {}}
     >
       <div className="flex items-center">
         <span className="text-gray-80 mr-2">{nickname}</span>
-        <span className="text-gray-40">
-          {account.length === 1
-            ? t('oneAccount')
-            : t('manyAccounts', {accountNum: account.length})}
-        </span>
+        <span className="text-gray-40">{accountLength}</span>
       </div>
-      {selected && <Selected className="w-5 h-5" />}
+      {group.eid === selectedGroup?.eid && <Selected className="w-5 h-5" />}
     </div>
   )
 }
 
 SeedPhrase.propTypes = {
-  accountGroup: PropTypes.object.isRequired,
-  onClick: PropTypes.func,
-  selected: PropTypes.bool,
+  group: PropTypes.object.isRequired,
+  idx: PropTypes.number,
 }
 
 function CurrentSeed() {
-  const {t} = useTranslation()
-  const [accountName, setAccountName] = useState('')
-  const {group} = useStore()
-  console.log('group', group)
-  const accountGroups = group.groupHdData || []
-  console.log('hd', accountGroups)
-  const [selectedAccountGroupId, setSelectedAccountGroupId] = useState(null)
-
-  const onSelectSeed = accountGroup => {
-    setSelectedAccountGroupId(accountGroup.eid)
-  }
-  const onCreate = () => {}
-
-  useEffect(() => {
-    const selectedIndex = accountGroups.findIndex(
-      accountGroup => accountGroup.eid === selectedAccountGroupId,
-    )
-    if (selectedIndex === -1) return
-    const selectedAccountGroup = accountGroups[selectedIndex]
-    const length = selectedAccountGroup.account.length
-    setAccountName(`Create-${selectedIndex + 1}-${length + 1}`)
-  }, [selectedAccountGroupId, accountGroups.length])
-
-  useEffect(() => {
-    if (accountGroups?.length > 0)
-      setSelectedAccountGroupId(accountGroups[0].eid)
-  }, [accountGroups.length])
+  const {
+    t,
+    accountName,
+    setAccountName,
+    setAccountNameError,
+    selectedGroup,
+    hdGroup,
+    accountNameError,
+    onCreate,
+  } = useStore()
 
   return (
     <div className="h-full px-3 flex flex-col bg-bg">
@@ -72,7 +116,14 @@ function CurrentSeed() {
         <Input
           width="w-full"
           value={accountName}
-          onChange={e => setAccountName(e.target.value)}
+          onChange={e => {
+            setAccountName(e.target.value)
+            const accountNames = selectedGroup.account.map(a => a.nickname)
+            if (accountNames.indexOf(e.target.value) !== -1) {
+              setAccountNameError('duplicate name')
+            }
+          }}
+          errorMessage={accountNameError}
         />
       </CompWithLabel>
       <CompWithLabel
@@ -83,21 +134,16 @@ function CurrentSeed() {
           role="menu"
           className="flex flex-col flex-1 overflow-y-auto py-2 bg-gray-0 rounded-sm"
         >
-          {accountGroups?.map((accountGroup, index) => (
-            <SeedPhrase
-              key={index}
-              accountGroup={accountGroup}
-              onClick={onSelectSeed}
-              selected={selectedAccountGroupId === accountGroup.eid}
-            />
-          ))}
+          {hdGroup.map(
+            (g, idx) => g && <SeedPhrase key={g.eid} group={g} idx={idx} />,
+          )}
         </div>
       </CompWithLabel>
       <div className="flex justify-center mb-4">
         <Button
           className="w-70"
           onClick={onCreate}
-          disabled={!accountName || !selectedAccountGroupId}
+          disabled={!(accountName && selectedGroup && !accountNameError)}
         >
           Create
         </Button>
