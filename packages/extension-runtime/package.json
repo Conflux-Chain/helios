@@ -4,7 +4,7 @@
   "main": "index.js",
   "version": "0.0.4",
   "dependencies": {
-    "@thi.ng/rstream": "6.0.10",
+    "@thi.ng/rstream": "6.0.20",
     "webextension-polyfill": "0.8.0"
   }
 }

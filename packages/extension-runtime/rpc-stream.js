@@ -11,16 +11,19 @@ s.subscribe(pb)
 
 export const rpcStream = port => {
   port.onMessage.addListener(s.next.bind(s))
-  return function send(req) {
-    const result = new Promise(resolve => {
-      pb.subscribeTopic(req.id, {
-        next: rst => {
-          pb.unsubscribeTopic(req.id)
-          resolve(rst)
-        },
+  return {
+    stream: s,
+    send(req) {
+      const result = new Promise(resolve => {
+        pb.subscribeTopic(req.id, {
+          next: rst => {
+            pb.unsubscribeTopic(req.id)
+            resolve(rst)
+          },
+        })
       })
-    })
-    port.postMessage(req)
-    return result
+      port.postMessage(req)
+      return result
+    },
   }
 }

@@ -17,6 +17,7 @@ export const setupExtProvider = ({name = RUNTIME_NAME} = {}) => {
   const port = browser.runtime.connect({name})
   port.onDisconnect.removeListener(onDisconnect)
   port.onDisconnect.addListener(onDisconnect)
-  globalThis.___CFXJS_USE_RPC__PRIVIDER = initProvider(rpcStream(port))
+  const {send, stream} = rpcStream(port)
+  globalThis.___CFXJS_USE_RPC__PRIVIDER = initProvider(stream, send)
   return globalThis.___CFXJS_USE_RPC__PRIVIDER
 }

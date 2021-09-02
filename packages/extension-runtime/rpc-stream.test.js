@@ -14,7 +14,7 @@ describe('@cfxjs/extension-runtime/rpc-stream.js', function () {
         postMessage: jest.fn(req => (postReq = req)),
       }
 
-      const send = rpcStream(port)
+      const {send} = rpcStream(port)
 
       expect(typeof send).toBe('function')
       expect(port.onMessage.addListener).toHaveBeenCalled()
