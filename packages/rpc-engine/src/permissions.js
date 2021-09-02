@@ -3,16 +3,35 @@
  * @name permissions.js
  */
 import {mergeDeepObj} from '@cfxjs/associative'
+import {threadLast} from '@cfxjs/compose'
 
 export const defaultPermissions = {
   methods: [],
   locked: false,
   db: [],
   external: [],
+  scope: {wallet_basic: {}},
+}
+
+function injectUIMethods(rpcPermissions) {
+  if (
+    rpcPermissions.external.includes('inpage') &&
+    !rpcPermissions.locked &&
+    !rpcPermissions.methods.includes('wallet_requestUnlockUI')
+  ) {
+    rpcPermissions.methods.push('wallet_requestUnlockUI')
+    if (rpcPermissions.scope)
+      rpcPermissions.methods.push('wallet_validateAppPermissions')
+  }
+  return rpcPermissions
 }
 
 export const format = (rpcPermissions = {}) =>
-  mergeDeepObj(defaultPermissions, rpcPermissions)
+  threadLast(
+    rpcPermissions,
+    [mergeDeepObj, defaultPermissions],
+    [injectUIMethods],
+  )
 
 export const getRpc = (rpcStore, callerMethodName, callingMethodName) => {
   const {permissions} = rpcStore[callerMethodName]

@@ -90,10 +90,35 @@ function validateNetworkSupport({req}) {
   }
 }
 
+function formatRpcSiteAndApp(arg) {
+  const {req, db} = arg
+  const {_origin, _inpage} = req
+  if (!_inpage) return arg
+  if (req.method === 'wallet_registerSiteMetadata') return arg
+  const site = db.getOneSite({origin: _origin})
+  req.site = site
+  const app = db.getOneApp({site: site.eid})
+  if (app) req.app = app
+  return {...arg, req}
+}
+
+// if networkName specified, use the specified network
+// if there's app, use app.currentNetwork
+// v1 use wallet current network
+// v2 specify network is mandatory
 function formatRpcNetwork(arg) {
   const {req, db} = arg
+
+  // req.networkName came from inpage/popup
+  // in later version, we can remove all current network/account logic in bg
+  // popup/inpage can (hopefully) specify target account/network in req
+  if (req.networkName) req.network = db.getOneNetwork({name: req.networkName})
+
   if (!req.networkName) req.networkName = CFX_MAINNET_NAME
-  req.network = db.getOneNetwork({name: req.networkName})
+
+  if (req.app) req.network = req.network || req.app.currentNetwork
+  else req.network = req.network || db.getOneNetwork({selected: true})
+
   if (!req.network) {
     const err = new jsonRpcErr.InvalidParams(
       `Invalid network name ${req.networkName}`,
@@ -140,21 +165,34 @@ export default defMiddleware(({tx: {check, comp, pluck, map, filter}}) => [
     fn: comp(check(validateLockState), pluck('req')),
   },
   {
-    id: 'validateRpcData',
+    id: 'formatRpcSiteAndApp',
     ins: {
       req: {stream: '/validateLockState/node'},
+    },
+    fn: comp(map(formatRpcSiteAndApp), pluck('req')),
+  },
+  {
+    id: 'formatRpcNetwork',
+    ins: {
+      req: {stream: '/formatRpcSiteAndApp/node'},
     },
     fn: comp(
       map(formatRpcNetwork),
       filter(({req}) => Boolean(req)),
-      map(formatEpochRef),
       pluck('req'),
     ),
   },
   {
+    id: 'formatEpochRef',
+    ins: {
+      req: {stream: '/formatRpcNetwork/node'},
+    },
+    fn: comp(map(formatEpochRef), pluck('req')),
+  },
+  {
     id: 'validateNetworkSupport',
     ins: {
-      req: {stream: '/validateRpcData/node'},
+      req: {stream: '/formatEpochRef/node'},
     },
     fn: comp(check(validateNetworkSupport), pluck('req')),
   },

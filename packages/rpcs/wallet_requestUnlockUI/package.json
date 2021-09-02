@@ -1,0 +1,11 @@
+{
+  "name": "@cfxjs/wallet_request-unlock-ui",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/csp": "workspace:packages/csp",
+    "@cfxjs/spec": "workspace:packages/spec",
+    "@cfxjs/webextension": "workspace:packages/webextension"
+  }
+}

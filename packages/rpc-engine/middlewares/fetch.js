@@ -65,7 +65,7 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
     ins: {
       req: {stream: () => s},
     },
-    fn: map(({req, rpcStore, db}) => {
+    fn: map(({req, rpcStore}) => {
       const {resC, jsonrpc, method} = req
       const cache = rpcStore[method].cache
 
@@ -80,7 +80,7 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
         return
       }
 
-      const network = req.network || db.getOneNetwork({name: req.networkName})
+      const network = req.network
       return {...req, network}
     }),
   },

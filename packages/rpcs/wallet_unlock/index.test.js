@@ -15,7 +15,7 @@ describe('wallet_unlock', function () {
   describe('main', function () {
     const input = {
       params: {password: '12345678'},
-      db: {setPassword: jest.fn()},
+      db: {setPassword: jest.fn(), getUnlockReq: jest.fn()},
       rpcs: {wallet_validatePassword: jest.fn(() => true)},
       Err: {InvalidParams: msg => new Error(msg)},
     }

@@ -1,0 +1,9 @@
+{
+  "name": "@cfxjs/wallet_get-permissions",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/spec": "workspace:packages/spec"
+  }
+}
