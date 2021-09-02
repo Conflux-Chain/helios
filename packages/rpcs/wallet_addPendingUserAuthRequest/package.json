@@ -1,0 +1,10 @@
+{
+  "name": "@cfxjs/wallet_add-pending-user-auth-request",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/csp": "workspace:packages/csp",
+    "@cfxjs/spec": "workspace:packages/spec"
+  }
+}

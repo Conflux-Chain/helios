@@ -17,9 +17,41 @@ function formatRes(res, id) {
 export default defMiddleware(
   ({tx: {map, pluck, sideEffect}, stream: {resolve}}) => [
     {
-      id: 'callRpc',
+      id: 'beforeCallRpc',
       ins: {
         req: {stream: '/validateRpcParams/node'},
+      },
+      fn: map(async ({rpcStore, req, db}) => {
+        if (req._inpage && rpcStore[req.method].permissions.scope) {
+          const isValid = await req.rpcs
+            .wallet_validateAppPermissions({
+              permissions: rpcStore[req.method].permissions.scope,
+            })
+            .catch(err => {
+              err.rpcData = req
+              throw err
+            })
+          if (!isValid) throw req.Err.Unauthorized()
+        }
+
+        // some inpage rpc methods needs the wallet in unlocked state
+        if (
+          !rpcStore[req.method].permissions.locked &&
+          rpcStore[req.method].permissions.external.includes('inpage') &&
+          db.getLocked()
+        ) {
+          await req.rpcs.wallet_requestUnlockUI().catch(err => {
+            err.rpcData = req
+            throw err
+          })
+        }
+        return req
+      }),
+    },
+    {
+      id: 'callRpc',
+      ins: {
+        req: {stream: r => r('/beforeCallRpc/node').subscribe(resolve())},
       },
       fn: map(async ({rpcStore, req}) => ({
         req,
@@ -32,9 +64,7 @@ export default defMiddleware(
     {
       id: 'afterCallRpc',
       ins: {
-        ctx: {
-          stream: r => r('/callRpc/node').subscribe(resolve()),
-        },
+        ctx: {stream: r => r('/callRpc/node').subscribe(resolve())},
       },
       fn: map(({ctx: {req, res}}) => ({
         req,

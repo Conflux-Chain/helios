@@ -6,6 +6,8 @@ import {
   base32UserAddress,
   ethHexAddress,
   password,
+  truep,
+  maybe,
 } from '@cfxjs/spec'
 import {encrypt, decrypt} from 'browser-passworder'
 import {compL} from '@cfxjs/compose'
@@ -16,7 +18,25 @@ import {stripHexPrefix} from '@cfxjs/utils'
 export const NAME = 'wallet_addVault'
 
 const baseInputSchema = [map, {closed: true}, ['password', password]]
-const menomicSchema = [...baseInputSchema, ['mnemonic', mnemonic]]
+const menomicSchema = [
+  ...baseInputSchema,
+  ['mnemonic', mnemonic],
+  ['waitTillFinish', {optional: true}, [maybe, truep]],
+  [
+    'cfxOnly',
+    {
+      optional: true,
+      doc: 'only derive conflux compatible address from this mnemonic',
+    },
+    truep,
+  ],
+  [
+    'force',
+    {optional: true, doc: 'set to true to skip duplication check'},
+    truep,
+  ],
+]
+
 const privateKeySchema = [...baseInputSchema, ['privateKey', privateKey]]
 const addressSchema = [
   ...baseInputSchema,
@@ -37,6 +57,8 @@ export const permissions = {
   ],
   db: [
     't',
+    'getOneAccount',
+    'getAccount',
     'getVault',
     'getVaultById',
     'createVault',
@@ -46,16 +68,29 @@ export const permissions = {
   ],
 }
 
+function setDefaultSelectedAccount({db: {getOneAccount, getAccount, t}}) {
+  if (!getOneAccount({selected: true})) {
+    const defaultSelectedAccount = getAccount()[0]
+    if (defaultSelectedAccount)
+      t([{eid: defaultSelectedAccount.eid, account: {selected: true}}])
+  }
+}
+
 export async function newAccounts(arg) {
   const {
     groupId,
+    params: {waitTillFinish},
     rpcs: {wallet_discoverAccounts},
     vault,
     db: {getNetwork, t, getOneAccountByGroupAndIndex},
   } = arg
 
   if (vault.type === 'hd') {
-    await wallet_discoverAccounts({accountGroupId: groupId, limit: 10})
+    await wallet_discoverAccounts({
+      accountGroupId: groupId,
+      limit: 10,
+      waitTillFinish,
+    })
     return
   }
 
@@ -126,8 +161,9 @@ export async function newAccounts(arg) {
   })
 }
 
-export function newAccountGroup(arg) {
+export async function newAccountGroup(arg) {
   const {
+    params: {waitTillFinish},
     db: {getAccountGroup, getVaultById, t},
     vaultId,
   } = arg
@@ -143,7 +179,11 @@ export function newAccountGroup(arg) {
   ])
   const groupId = tempids['-1']
 
-  newAccounts({...arg, vault, groupId})
+  const newAccountsPromise = newAccounts({...arg, vault, groupId}).then(() => {
+    setDefaultSelectedAccount(arg)
+  })
+
+  if (waitTillFinish) await newAccountsPromise
 
   return groupId
 }
@@ -153,7 +193,7 @@ const processAddress = address => {
   if (!isBase32) return {address, cfxOnly: false}
   return {
     cfxOnly: true,
-    address: `0x${decode(address).hexAddress.toString('hex')}`,
+    address: decode(address).hexAddress.toString('hex'),
   }
 }
 
@@ -227,5 +267,7 @@ export const main = async arg => {
   vault.data = await encrypt(password, vault.data)
 
   const vaultId = createVault(vault)
-  return newAccountGroup({...arg, vaultId})
+  const groupId = newAccountGroup({...arg, vaultId})
+
+  return groupId
 }
