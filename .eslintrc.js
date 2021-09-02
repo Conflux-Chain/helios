@@ -15,14 +15,20 @@ module.exports = {
     es6: true,
     jest: true,
     node: true,
+    webextensions: true,
   },
+  parser: '@babel/eslint-parser',
   parserOptions: {
-    ecmaVersion: 12,
+    requireConfigFile: false,
     sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true,
-    },
   },
+  // parserOptions: {
+  //   ecmaVersion: 12,
+  //   sourceType: 'module',
+  //   ecmaFeatures: {
+  //     jsx: true,
+  //   },
+  // },
   plugins: ['prettier'],
   globals: {
     browser: 'readonly',
