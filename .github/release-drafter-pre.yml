@@ -1,5 +1,5 @@
-name-template: "DEBUG-v$RESOLVED_VERSION"
-tag-template: "DEBUG-v$RESOLVED_VERSION"
+name-template: "pre-v$RESOLVED_VERSION"
+tag-template: "pre-v$RESOLVED_VERSION"
 version-resolver:
   major:
     labels:
