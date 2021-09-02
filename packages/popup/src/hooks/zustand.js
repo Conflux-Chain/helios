@@ -15,27 +15,33 @@ const createUseRPCHook =
       isValidating: false,
     })
 
-    const rst = useRPC(deps, params, opts)
+    let rst = useRPC(deps, params, opts)
+    const beforeSetFn = get()[`${key}BeforeSet`]
 
-    const getNewRst = {
-      [`${key}Mutate`]: rst.mutate,
-      get [`${key}Data`]() {
-        stateDepsRef.current.data = true
-        return rst.data
-      },
-      get [`${key}Error`]() {
-        stateDepsRef.current.error = true
-        return rst.error
-      },
-      get [`${key}IsValidating`]() {
-        stateDepsRef.current.isValidating = true
-        return rst.isValidating
-      },
+    if (beforeSetFn) {
+      rst = beforeSetFn(rst)
     }
 
+    const getNewRst = rst
+      ? {
+          [`${key}Mutate`]: rst.mutate,
+          get [`${key}Data`]() {
+            stateDepsRef.current.data = true
+            return rst.data
+          },
+          get [`${key}Error`]() {
+            stateDepsRef.current.error = true
+            return rst.error
+          },
+          get [`${key}IsValidating`]() {
+            stateDepsRef.current.isValidating = true
+            return rst.isValidating
+          },
+        }
+      : rst
+
     useEffect(() => {
-      const beforeSetFn = get()[`${key}BeforeSet`]
-      set({[key]: beforeSetFn ? beforeSetFn(getNewRst) : getNewRst})
+      set({[key]: getNewRst})
       get()[`${key}AfterSet`]?.(get()[key])
     }, [
       // eslint-disable-next-line react-hooks/exhaustive-deps
