@@ -1,58 +1,93 @@
-import {useState} from 'react'
 import PropTypes from 'prop-types'
-import {useTranslation} from 'react-i18next'
 import Input from '@cfxjs/component-input'
 import Button from '@cfxjs/component-button'
 import {Selected} from '@cfxjs/component-icons'
-import {useStore} from '../../store'
 import {CompWithLabel} from '../../components'
+import create from '../../hooks/zustand.js'
 
-function SeedPhrase({key, accountGroup, onClick, selected = false}) {
-  const {t} = useTranslation()
-  const {nickname, account} = accountGroup
+const useStore = create(
+  (set, get) => ({
+    // value
+    hdGroup: [],
+    creatingAccount: false,
+    accountCreatationError: null,
+    accountName: '',
+    selectedGroup: null,
+    // hook
+    groupAfterSet: ({groupData}) => {
+      set({hdGroup: groupData.filter(({vault: {type}}) => type === 'hd')})
+      if (!get().selectedGroup) set({selectedGroup: get().group.groupData[0]})
+    },
+
+    // logic
+    setAccountName: accountName => set({accountName}),
+    onCreate: () => {
+      const {
+        r,
+        selectedGroup: {eid},
+        accountName,
+        group: {groupMutate},
+      } = get()
+      set({creatingAccount: true})
+      return r({
+        method: 'wallet_createAccount',
+        params: {accountGroupId: eid, nickname: accountName},
+      }).then(({error}) => {
+        set({creatingAccount: false})
+        if (error) return set({accountCreatationError: error.message})
+        groupMutate()
+        // jump to next page?
+      })
+    },
+    getGroupInfo({account: {length}, nickname}) {
+      const {t} = get()
+      return {
+        nickname,
+        accountLength:
+          length === 1
+            ? t('oneAccount')
+            : t('manyAccounts', {accountNum: length}),
+      }
+    },
+    setSelectedGroup: selectedGroup => set({selectedGroup}),
+  }),
+  {
+    group: {
+      deps: 'wallet_getAccountGroup',
+      opts: {fallbackData: []},
+    },
+  },
+)
+
+function SeedPhrase({group}) {
+  const {getGroupInfo, setSelectedGroup, selectedGroup} = useStore()
+  const {nickname, accountLength} = getGroupInfo(group)
+
   return (
     <div
       role="menuitem"
       tabIndex="-1"
-      key={key}
+      key={group.eid}
       className="h-12 px-3 hover:bg-primary-4 flex items-center cursor-pointer justify-between"
-      onClick={() => onClick && onClick(accountGroup)}
+      onClick={() => setSelectedGroup(group)}
       onKeyDown={() => {}}
     >
       <div className="flex items-center">
         <span className="text-gray-80 mr-2">{nickname}</span>
-        <span className="text-gray-40">
-          {account.length === 1
-            ? t('oneAccount')
-            : t('manyAccount', {accountNum: account.length})}
-        </span>
+        <span className="text-gray-40">{accountLength}</span>
       </div>
-      {selected && <Selected className="w-5 h-5" />}
+      {group.eid === selectedGroup.eid && <Selected className="w-5 h-5" />}
     </div>
   )
 }
 
 SeedPhrase.propTypes = {
-  accountGroup: PropTypes.object.isRequired,
-  onClick: PropTypes.func,
-  selected: PropTypes.bool,
-  key: PropTypes.number.isRequired,
+  group: PropTypes.object.isRequired,
 }
 
 function CurrentSeed() {
-  const {t} = useTranslation()
-  const [accountName, setAccountName] = useState('')
-  const {
-    group: {groupData: accountGroups},
-  } = useStore()
-  const [selectedAccountGroup, setSelectedAccountGroup] = useState(
-    accountGroups?.[0],
-  )
-
-  const onSelectSeed = accountGroup => {
-    setSelectedAccountGroup(accountGroup)
-  }
-  const onCreate = () => {}
+  const {t, accountName, setAccountName, selectedGroup, hdGroup, onCreate} =
+    useStore()
 
   return (
     <div className="w-full h-full px-4 pb-4 flex flex-col bg-bg items-center">
@@ -71,20 +106,13 @@ function CurrentSeed() {
           role="menu"
           className="flex flex-col flex-1 overflow-y-auto py-2 bg-gray-0 rounded-sm"
         >
-          {accountGroups?.map((accountGroup, index) => (
-            <SeedPhrase
-              key={index}
-              accountGroup={accountGroup}
-              onClick={onSelectSeed}
-              selected={selectedAccountGroup?.eid === accountGroup.eid}
-            />
-          ))}
+          {hdGroup.map(g => g && <SeedPhrase key={g.eid} group={g} />)}
         </div>
       </div>
       <Button
         className="w-70"
         onClick={onCreate}
-        disabled={!accountName || !selectedAccountGroup}
+        disabled={!(accountName && selectedGroup)}
       >
         Create
       </Button>

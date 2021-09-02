@@ -1,6 +1,5 @@
 import React, {lazy, Suspense} from 'react'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
-import {useStore} from './store'
 import {ProtectedRoute} from './components'
 import './index.css'
 
@@ -10,37 +9,52 @@ const CreateAccount = lazy(() => import('./pages/CreateAccount'))
 const NewSeed = lazy(() => import('./pages/CreateSeed/NewSeed'))
 const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
 const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
+import create from './hooks/zustand'
+
+const useStore = create(
+  set => ({
+    isLocked: false,
+    hasAccount: false,
+    groupFetching: true,
+    lockedFetching: true,
+    groupAfterSet: ({groupData, groupError}) => {
+      if (groupError) {
+        set({groupFetching: false})
+      }
+      if (groupData !== Symbol.for('group')) {
+        set({hasAccount: !!groupData.length, groupFetching: false})
+      }
+    },
+    lockedAfterSet: ({lockedData, lockedError}) => {
+      if (lockedError) {
+        set({lockedFetching: false})
+      }
+      if (lockedData !== Symbol.for('locked')) {
+        set({isLocked: lockedData, lockedFetching: false})
+      }
+    },
+  }),
+  {
+    group: {
+      deps: 'wallet_getAccountGroup',
+      opts: {fallbackData: Symbol.for('group')},
+    },
+    locked: {
+      deps: 'wallet_isLocked',
+      opts: {fallbackData: Symbol.for('locked')},
+    },
+  },
+)
 
 function App() {
-  const {
-    locked: {lockedData, lockedIsValidating},
-    group: {groupData},
-    getLocked,
-    generatePrivateKey,
-  } = useStore()
-  console.log(
-    'lockedData = ',
-    lockedData,
-    'groupData =',
-    groupData,
-    'lockedIsValidating =',
-    lockedIsValidating,
-  )
+  const {isLocked, groupFetching, lockedFetching, hasAccount} = useStore()
 
-  const {data} = getLocked()
-  console.log('data = ', data)
+  if (lockedFetching || groupFetching) {
+    return null
+  }
 
   return (
     <div className="h-160 w-95 m-auto">
-      <button
-        onClick={() =>
-          generatePrivateKey().then(res =>
-            console.log("I'm the privateKey", res.result),
-          )
-        }
-      >
-        example
-      </button>
       <Suspense
         fallback={
           <div className="w-full h-full flex items-center justify-center">
@@ -50,7 +64,12 @@ function App() {
       >
         <Router>
           <Switch>
-            <ProtectedRoute exact path="/">
+            <ProtectedRoute
+              exact
+              path="/"
+              isLocked={isLocked}
+              hasAccount={hasAccount}
+            >
               <HomePage />
             </ProtectedRoute>
             <Route exact path="/create-account-default">
