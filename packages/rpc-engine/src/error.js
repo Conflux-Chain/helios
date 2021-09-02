@@ -11,18 +11,28 @@ export const appendRpcStackToErrorMessage = (err, stack) => {
   return err
 }
 
-export const rpcErrorHandlerFactory = (isProd = true) => {
+export const rpcErrorHandlerFactory = ({isProd = true, debugLog} = {}) => {
   return function (err) {
     if (!err || !err.message || !err.rpcData) {
       if (!isProd)
-        console.error('invalid error, missing [message] or [rpcData]\n', err)
-      throw new Error('Invalid error')
+        console.error(
+          '\nin method: ',
+          debugLog.reduce((acc, {method}) => acc || method, null) ||
+            'unknown method',
+          '\nin middleware: ',
+          debugLog[0].mid,
+          '\ninvalid error, missing [message] or [rpcData]\n',
+          err,
+          '\nall debug log:\n',
+          debugLog,
+        )
+      return true
     }
     const req = err.rpcData
     err = appendRpcStackToErrorMessage(err, req._rpcStack || [req.method])
 
     /* istanbul ignore if  */
-    if (!isProd) console.error(err.message, '\n', err.stack)
+    if (!isProd) console.error(err.message, '\n', err.stack || '')
     req._c.write({
       jsonrpc: '2.0',
       error: {

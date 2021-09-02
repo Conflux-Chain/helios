@@ -40,10 +40,15 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
 
         return sendNewRpcRequest({
           params,
+          site: req.site,
+          app: req.app,
+          _origin: req._origin,
+          network: req.network,
           networkName: req.networkName,
           ...overrides,
           method: targetRpcName,
           _rpcStack: req._rpcStack,
+          _internal: true,
         }).then(res => {
           req._rpcStack.pop()
           if (res.error) req._c.write(res)

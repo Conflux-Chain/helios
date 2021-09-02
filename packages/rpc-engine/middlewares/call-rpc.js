@@ -4,7 +4,7 @@ function formatRes(res, id) {
   const template = {id, jsonrpc: '2.0'}
   if (res !== undefined) {
     // already valid res (from fullnode)
-    if (res.jsonrpc && Object.prototype.hasOwnProperty.call(res, 'id'))
+    if (res?.jsonrpc && Object.prototype.hasOwnProperty.call(res, 'id'))
       return res
     // only the res result
     return {...template, result: res}

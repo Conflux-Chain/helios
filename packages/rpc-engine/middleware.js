@@ -30,15 +30,35 @@ export const defMiddleware = f => {
   return conf
 }
 
+function addDebugLog(debugLog, id, payload) {
+  if (debugLog.length === 10) {
+    debugLog.pop()
+  }
+
+  const record = {...payload, mid: id}
+  if (payload.req?.method) record.method = payload.req.method
+
+  debugLog.unshift(record)
+
+  return debugLog
+}
+
 export const addMiddleware = (graph, config = {}, middleware) => {
-  const {processSpec} = config
+  const {processSpec, isProd, debugLog} = config
   if (Array.isArray(middleware))
     // eslint-disable-next-line import/namespace
     return middleware.map(comp.partial(addMiddleware, graph, config))
 
   const {id, ins, fn, outs} = middleware
-  const spec = processSpec({ins, fn, outs})
-  spec.fn = node(fn)
+
+  let newfn = fn
+
+  if (!isProd) {
+    newfn = tx.comp(tx.sideEffect(comp.partial(addDebugLog, debugLog, id)), fn)
+  }
+
+  const spec = processSpec({ins, fn: newfn, outs})
+  spec.fn = node(newfn)
   const n = addNode(graph, null, id, spec)
   n.node.error = config?.errorHandler || n.node.error
 
