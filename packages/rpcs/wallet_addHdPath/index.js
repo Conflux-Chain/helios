@@ -2,7 +2,7 @@ import {map, hdPath, stringp} from '@cfxjs/spec'
 
 export const NAME = 'wallet_addHdPath'
 export const schemas = {
-  inputs: [
+  input: [
     map,
     {closed: true},
     ['hdPath', hdPath],
@@ -11,8 +11,7 @@ export const schemas = {
 }
 
 export const permissions = {
-  external: ['popup', 'inpage'],
-  locked: true,
+  external: ['popup'],
   db: ['getHdPathByName', 'getHdPathByValue', 't'],
 }
 export const main = ({

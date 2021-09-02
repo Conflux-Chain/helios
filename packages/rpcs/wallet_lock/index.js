@@ -1,5 +1,7 @@
 export const NAME = 'wallet_lock'
 
+export const schemas = {}
+
 export const permissions = {
   db: ['setLocked'],
   external: ['popup'],

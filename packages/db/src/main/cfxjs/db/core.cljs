@@ -19,8 +19,6 @@
 
 (declare conn t q p e fdb)
 
-(comment (:db/memOnly (.-rschema @conn)))
-
 (defn ->attrk
   "Say model is :account, attr is :hexAddress, ->attrk returns :account/hexAddress"
   [model attr]
@@ -55,7 +53,7 @@
                                                              (fn [m k v]
                                                                (let [qualified-k (->attrk k)
                                                                      ;; note, we can't use look up-ref as identifier in map-form
-                                                                     processed-v (cond (map? v)    ;; lookup-ref
+                                                                     processed-v (cond (and (map? v) (-> v keys count (= 1)))    ;; lookup-ref
                                                                                        (->lookup-ref v)
                                                                                        (vector? v) ;; db/isComponents
                                                                                        (map #(parse-js-transact-arg % (random-tmp-id)) v)

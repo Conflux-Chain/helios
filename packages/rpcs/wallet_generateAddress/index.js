@@ -1,7 +1,8 @@
 import {or, map, networkId, addressType, truep} from '@cfxjs/spec'
 import {randomBase32Address} from '@cfxjs/base32-address'
-
 import {randomHexAddress, randomCfxHexAddress} from '@cfxjs/account'
+
+export const NAME = 'wallet_generateAddress'
 
 const base = [map, {closed: true}]
 const hex = ['hex', truep]

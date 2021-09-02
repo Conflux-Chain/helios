@@ -1,4 +1,4 @@
-import {dbid, int, map, truep} from '@cfxjs/spec'
+import {dbid, int, map, truep, maybe} from '@cfxjs/spec'
 import {discoverAccounts} from '@cfxjs/discover-accounts'
 import {partial} from '@cfxjs/compose'
 import {decrypt} from 'browser-passworder'
@@ -15,7 +15,7 @@ const authedSchema = [
   map,
   {closed: true},
   ['accountGroupId', dbid],
-  ['waitTillFinish', {optional: true}, truep],
+  ['waitTillFinish', {optional: true}, [maybe, truep]],
   limitSchema,
 ]
 

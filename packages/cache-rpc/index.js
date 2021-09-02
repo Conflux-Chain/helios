@@ -4,13 +4,9 @@ import EpochRefConf from '@cfxjs/rpc-epoch-ref'
 
 let CACHE = {}
 
-export const getCacheStore = (
-  {networkName, network, params, method},
-  {type},
-) => {
-  if (!networkName) networkName = network?.name
-  if (!CACHE[networkName]) CACHE[networkName] = {}
-  const netCache = CACHE[networkName]
+export const getCacheStore = ({network, params, method}, {type}) => {
+  if (!CACHE[network.name]) CACHE[network.name] = {}
+  const netCache = CACHE[network.name]
 
   if (type === 'ttl') {
     if (!netCache.TTL) netCache.TTL = new TLRUCache(null)
@@ -28,7 +24,7 @@ export const getCacheStore = (
 
     // epoch is latest...
     if (!epoch.startsWith('0x')) {
-      epoch = getCacheStore({networkName}, {type: 'ttl'}).get(`EPOCH${epoch}`)
+      epoch = getCacheStore({network}, {type: 'ttl'}).get(`EPOCH${epoch}`)
       if (epoch) params[epochPos] = epoch
     }
 
