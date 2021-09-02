@@ -4,7 +4,7 @@ import {encrypt} from 'browser-passworder'
 export const NAME = 'wallet_exportAll'
 
 export const schemas = {
-  inputs: [
+  input: [
     map,
     {closed: true},
     ['password', password],

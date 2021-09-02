@@ -7,7 +7,7 @@ import {decrypt} from 'browser-passworder'
 export const NAME = 'wallet_createAddress'
 
 export const schemas = {
-  inputs: [map, {closed: true}, ['accountGroupId', dbid], ['networkId', dbid]],
+  input: [map, {closed: true}, ['accountGroupId', dbid], ['networkId', dbid]],
 }
 
 export const permissions = {
@@ -16,17 +16,19 @@ export const permissions = {
 }
 
 export const main = async ({
-  Err: {InvalidParam},
+  Err: {InvalidParams},
   db: {getNetworkById, getAccountGroupById, getPassword, t},
   params: {networkId, accountGroupId},
 }) => {
   const network = getNetworkById(networkId)
-  if (!network) throw InvalidParam(`Invalid network id ${networkId}`)
+  if (!network) throw InvalidParams(`Invalid network id ${networkId}`)
   const group = getAccountGroupById(accountGroupId)
-  if (!group) throw InvalidParam(`Invalid account group id ${accountGroupId}`)
+  if (!group) throw InvalidParams(`Invalid account group id ${accountGroupId}`)
   const {vault} = group
   if (vault.type === 'pub' && vault.cfxOnly && network.type !== 'cfx')
-    throw InvalidParam("Can't create address for cfx only vault in eth network")
+    throw InvalidParams(
+      "Can't create address for cfx only vault in eth network",
+    )
 
   const pwd = getPassword()
 
