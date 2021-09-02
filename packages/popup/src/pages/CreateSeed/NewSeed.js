@@ -1,24 +1,14 @@
-import create from '../../hooks/zustand.js'
+import create from '../../hooks/zustand'
 import Input from '@cfxjs/component-input'
 import {CompWithLabel} from '../../components'
 
 const useStore = create(
-  (set, get) => ({
+  set => ({
     // value
-    groupNameError: null,
     groupName: '',
 
     // logic
-    setGroupName: groupName => {
-      set({groupName})
-      const noDup = get().group.groupData.reduce(
-        (noDup, {nickname}) => noDup && nickname !== groupName,
-        true,
-      )
-      if (noDup) set({groupNameError: null})
-      else set({groupNameError: get().t('errorDuplicateName')})
-    },
-    setGroupNameError: groupNameError => set({groupNameError}),
+    setGroupName: groupName => set({groupName}),
   }),
   {
     group: {
@@ -35,6 +25,7 @@ function NewSeed() {
       <CompWithLabel label={t('seedGroupName')}>
         <Input
           width="w-full"
+          maxLength="20"
           value={groupName}
           onChange={e => setGroupName(e.target.value)}
         />
