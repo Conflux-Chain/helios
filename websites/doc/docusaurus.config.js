@@ -1,3 +1,6 @@
+const lightCodeTheme = require('prism-react-renderer/themes/github')
+const darkCodeTheme = require('prism-react-renderer/themes/dracula')
+
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'My Site',
@@ -18,14 +21,17 @@ module.exports = {
       },
       items: [
         // {
-        //   to: 'docs/intro',
+        //   type: 'doc',
+        //   docId: 'intro',
         //   position: 'left',
-        //   label: 'Intro',
+        //   label: 'Tutorial',
         // },
         {
-          to: 'docs/rpc',
+          type: 'doc',
+          docId: 'rpc',
           position: 'left',
           label: 'Docs',
+          // to: 'docs/rpc',
         },
         // {to: '/blog', label: 'Blog', position: 'left'},
         {
@@ -62,10 +68,6 @@ module.exports = {
               label: 'GitHub',
               href: 'https://github.com/Conflux-Chain',
             },
-            // {
-            //   label: 'Stack Overflow',
-            //   href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            // },
             {
               label: 'Discord',
               href: 'https://discord.gg/DR8MeQTjrx',
@@ -92,13 +94,16 @@ module.exports = {
       ],
       copyright: `© ${new Date().getFullYear()} Conflux. All Rights Reserved.`,
     },
+    prism: {
+      theme: lightCodeTheme,
+      darkTheme: darkCodeTheme,
+    },
   },
   presets: [
     [
       '@docusaurus/preset-classic',
       {
         docs: {
-          path: 'docs',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
