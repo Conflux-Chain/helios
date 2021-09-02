@@ -1,0 +1,10 @@
+{
+  "name": "@cfxjs/wallet_get-account-group-vault-value",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/spec": "workspace:packages/spec",
+    "browser-passworder": "2.0.3"
+  }
+}
