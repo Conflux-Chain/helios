@@ -7,7 +7,7 @@ describe('@cfxjs/provider-api', function () {
     it('should return the provider', async function () {
       let arg
       const post = jest.fn(a => (arg = a))
-      const provider = initProvider(post)
+      const provider = initProvider({subscribe: jest.fn()}, post)
       provider.request({method: 'a'})
       expect(arg.method).toBe('a')
       expect(Number.isInteger(arg.id)).toBe(true)
