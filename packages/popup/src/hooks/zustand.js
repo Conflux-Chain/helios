@@ -62,7 +62,7 @@ const createWithUseRPC = (...args) => {
     Object.keys(rpcConfig).reduce(
       (acc, key) => {
         if (!acc.__hooksToRun) acc.__hooksToRun = []
-        const {deps, params, opts, afterSet} = rpcConfig[key]
+        const {deps, params, opts} = rpcConfig[key]
         acc.__hooksToRun.push(
           createUseRPCHook({
             key,
@@ -71,7 +71,6 @@ const createWithUseRPC = (...args) => {
             opts,
             set,
             get,
-            afterSet,
           }),
         )
 
