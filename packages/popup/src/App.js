@@ -16,7 +16,7 @@ function App() {
     // group: {groupData},
     getLocked,
 
-    generatePrivateKey,
+    // generatePrivateKey,
   } = useStore()
   // console.log(
   //   'lockedData = ',
@@ -31,8 +31,8 @@ function App() {
   console.log('data = ', data)
 
   return (
-    <div className="h-160 w-95 m-auto light">
-      <button
+    <div className="h-150 w-93 m-auto light">
+      {/* <button
         onClick={() =>
           generatePrivateKey().then(res =>
             console.log("I'm the privateKey", res.result),
@@ -40,7 +40,7 @@ function App() {
         }
       >
         example
-      </button>
+      </button> */}
       <Suspense
         fallback={
           <div className="w-full h-full flex items-center justify-center">
