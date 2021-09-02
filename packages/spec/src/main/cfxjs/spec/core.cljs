@@ -160,6 +160,15 @@
 (def AddressType (update-properties [:enum "user" "contract" "builtin" "null"]
                                     :type :address-type :doc "Is string, one of user contract builtin null"))
 
+(def hex-string (update-properties
+                        [:re #"^0(x|X)?[a-fA-F0-9]+$"]
+                        :type :hexString
+                        :gen/fmap #(str "0x"
+                                        (-> js/Number.MAX_SAFE_INTEGER randomInt (.toString 16)))
+                        :error/message "invalid hex string"
+                        :doc "hexadecimal string"))
+(def ChainId (update-properties hex-string [:doc "chainid, 0x-prefixed hexadecimal string"]))
+
 (comment
   (#(re-matches #"^0x[0-9a-fA-F]{40}$" %) "0x0000000000000000000000000000000000000000")
   (m/validate #(re-matches #"^0x[0-9a-fA-F]{40}$" %) "0x0000000000000000000000000000000000000000")
@@ -293,13 +302,8 @@
 (def export-password Password)
 (def export-networkId NetworkId)
 (def export-addressType AddressType)
-(def export-hex-string (update-properties
-                        [:re #"^0(x|X)?[a-fA-F0-9]+$"]
-                        :type :hexString
-                        :gen/fmap #(str "0x"
-                                        (-> js/Number.MAX_SAFE_INTEGER randomInt (.toString 16)))
-                        :error/message "invalid hex string"
-                        :doc "hexadecimal string"))
+(def export-hex-string hex-string)
+(def export-chainId ChainId)
 (def export-js-undefined
   (m/-simple-schema
    {:type :undefined
@@ -356,3 +360,44 @@
    :type :dbid
    :error/message "invalid dbid, must be a positive integer"
    :doc "database id, positive integer"))
+
+(comment
+  (set! (.-jtc js/window) j->c)
+
+
+  :CIP23Domain
+
+  {:types       {:EIP712Domain [{:name "name" :type "string"}
+                                {:name "version" :type "string"}
+                                {:name "chainId" :type "uint256"}
+                                {:name "verifyingContract" :type "address"}]
+                 :Person       [{:name "name" :type "string"}
+                                {:name "mother" :type "Person"}
+                                {:name "father" :type "Person"}]}
+   :domain      {:name              "Family Tree"
+                 :version           "1"
+                 :chainId           1,
+                 :verifyingContract "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC"}
+   :primaryType "Person"
+   :message     {:name   "Jon"
+                 :mother {:name   "Lyanna"
+                          :father {:name "Rickard"}}
+                 :father {:name   "Rhaegar"
+                          :father {:name "Aeris II"}}}}
+
+
+  (def type-value-spec [:map {:closed true} [:name string?] [:type string?]])
+
+  (def type-props-spec [:+ type-value-spec])
+
+  (def types-spec [:and
+                   [:map [:EIP712Domain type-props-spec]]
+                   [:map-of :keyword type-props-spec]])
+
+  (m/validate types-spec {:EIP712Domain [{:name "name" :type "string"}
+                                         {:name "version" :type "string"}
+                                         {:name "chainId" :type "uint256"}
+                                         {:name "verifyingContract" :type "address"}]
+                          :Person       [{:name "name" :type "string"}
+                                         {:name "mother" :type "Person"}
+                                         {:name "father" :type "Person"}]}))
