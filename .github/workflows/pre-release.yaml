@@ -53,7 +53,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          commithash: ${{ github.sha }}
+          commitish: ${{ github.sha }}
           config-name: release-drafter-pre.yml
           publish: true
           prerelease: true
