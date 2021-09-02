@@ -1,3 +1,4 @@
+// # db schema
 /*
   Documentation about db schema
 
@@ -27,6 +28,7 @@
   Doc about component feature https://blog.datomic.com/2013/06/component-entities.html
   */
 const schema = {
+  // ## basic
   hdPath: {
     value: {value: true},
     name: {identity: true},
