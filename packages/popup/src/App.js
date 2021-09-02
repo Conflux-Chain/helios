@@ -1,6 +1,7 @@
 import React, {lazy, Suspense} from 'react'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {useStore} from './store'
+import {ProtectedRoute} from './components'
 import './index.css'
 
 const HomePage = lazy(() => import('./pages/Home'))
@@ -49,9 +50,9 @@ function App() {
       >
         <Router>
           <Switch>
-            <Route exact path="/">
+            <ProtectedRoute exact path="/">
               <HomePage />
-            </Route>
+            </ProtectedRoute>
             <Route exact path="/create-account-default">
               <CreateAccount />
             </Route>
