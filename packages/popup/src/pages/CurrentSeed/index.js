@@ -16,18 +16,36 @@ const useStore = create(
     selectedGroup: null,
 
     // hook
+    groupBeforeSet: ({groupData, ...others}) => ({
+      groupData: groupData.map((g, index) => {
+        g.index = index
+        return g
+      }),
+      ...others,
+    }),
     groupAfterSet: ({groupData}) => {
-      const hdGroup = groupData.filter(({vault: {type}}) => type === 'hd')
+      const hdGroup = groupData.filter(g => g?.vault?.type === 'hd')
       set({hdGroup})
       if (!get().selectedGroup) set({selectedGroup: hdGroup[0]})
-      if (!get().accountName && hdGroup[0])
+      if (!get().accountName && hdGroup[0]) {
+        const index = groupData.filter(g => g.eid === hdGroup[0].eid)[0].index
         set({
-          accountName: `Create-1-${hdGroup[0].account.length + 1}`,
+          accountName: `Account-${index + 1}-${hdGroup[0].account.length + 1}`,
         })
+      }
     },
 
     // logic
-    setAccountName: accountName => set({accountName}),
+    setAccountName: accountName => {
+      set({accountName})
+      const noDup = get().selectedGroup.account.reduce(
+        (noDup, {nickname}) => noDup && nickname !== accountName,
+        true,
+      )
+
+      if (noDup) set({accountNameError: null})
+      else set({accountNameError: get().t('errorDuplicateName')})
+    },
     onCreate: () => {
       const {
         r,
@@ -56,7 +74,15 @@ const useStore = create(
             : t('manyAccounts', {accountNum: length}),
       }
     },
-    setSelectedGroup: selectedGroup => set({selectedGroup}),
+    setSelectedGroup: selectedGroup => {
+      set({selectedGroup})
+      const index = get().group.groupData.filter(
+        g => g.eid === selectedGroup.eid,
+      )[0].index
+      set({
+        accountName: `Account-${index + 1}-${selectedGroup.account.length + 1}`,
+      })
+    },
     setAccountNameError: accountNameError => set({accountNameError}),
   }),
   {
@@ -67,9 +93,8 @@ const useStore = create(
   },
 )
 
-function SeedPhrase({group, idx}) {
-  const {getGroupInfo, setSelectedGroup, selectedGroup, setAccountName} =
-    useStore()
+function SeedPhrase({group}) {
+  const {getGroupInfo, setSelectedGroup, selectedGroup} = useStore()
   const {nickname, accountLength} = getGroupInfo(group)
 
   return (
@@ -78,10 +103,7 @@ function SeedPhrase({group, idx}) {
       tabIndex="-1"
       key={group.eid}
       className="h-12 px-3 hover:bg-primary-4 flex items-center cursor-pointer justify-between"
-      onClick={() => {
-        setSelectedGroup(group)
-        setAccountName(`Create-${idx + 1}-${group.account.length + 1}`)
-      }}
+      onClick={() => setSelectedGroup(group)}
       onKeyDown={() => {}}
     >
       <div className="flex items-center">
@@ -95,7 +117,6 @@ function SeedPhrase({group, idx}) {
 
 SeedPhrase.propTypes = {
   group: PropTypes.object.isRequired,
-  idx: PropTypes.number,
 }
 
 function CurrentSeed() {
@@ -103,7 +124,6 @@ function CurrentSeed() {
     t,
     accountName,
     setAccountName,
-    setAccountNameError,
     selectedGroup,
     hdGroup,
     accountNameError,
@@ -116,15 +136,7 @@ function CurrentSeed() {
         <Input
           width="w-full"
           value={accountName}
-          onChange={e => {
-            setAccountName(e.target.value)
-            const accountNames = selectedGroup.account.map(a => a.nickname)
-            if (accountNames.indexOf(e.target.value) !== -1) {
-              setAccountNameError(t('errorDuplicateName'))
-            } else {
-              setAccountNameError(null)
-            }
-          }}
+          onChange={e => setAccountName(e.target.value)}
           errorMessage={accountNameError}
         />
       </CompWithLabel>
@@ -136,9 +148,7 @@ function CurrentSeed() {
           role="menu"
           className="flex flex-col flex-1 overflow-y-auto py-2 bg-gray-0 rounded-sm"
         >
-          {hdGroup.map(
-            (g, idx) => g && <SeedPhrase key={g.eid} group={g} idx={idx} />,
-          )}
+          {hdGroup.map(g => g && <SeedPhrase key={g.eid} group={g} />)}
         </div>
       </CompWithLabel>
       <div className="flex justify-center mb-4">

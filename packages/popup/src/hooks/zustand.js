@@ -36,7 +36,7 @@ const createUseRPCHook =
     useEffect(() => {
       const beforeSetFn = get()[`${key}BeforeSet`]
       set({[key]: beforeSetFn ? beforeSetFn(getNewRst) : getNewRst})
-      get()[`${key}AfterSet`]?.(get().group)
+      get()[`${key}AfterSet`]?.(get()[key])
     }, [
       // eslint-disable-next-line react-hooks/exhaustive-deps
       stateDepsRef.current.data && rst.data,

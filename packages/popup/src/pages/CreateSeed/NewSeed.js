@@ -13,7 +13,7 @@ function NewSeed() {
   const {groupName, setGroupName} = usePageStore()
   return (
     <div className="h-full px-3 flex flex-col bg-bg">
-      <CompWithLabel label={t('accountName')}>
+      <CompWithLabel label={t('seedGroupName')}>
         <Input
           width="w-full"
           value={groupName}
