@@ -120,7 +120,7 @@ function CurrentSeed() {
             setAccountName(e.target.value)
             const accountNames = selectedGroup.account.map(a => a.nickname)
             if (accountNames.indexOf(e.target.value) !== -1) {
-              setAccountNameError('duplicate name')
+              setAccountNameError(t('errorDuplicateName'))
             }
           }}
           errorMessage={accountNameError}
@@ -145,7 +145,7 @@ function CurrentSeed() {
           onClick={onCreate}
           disabled={!(accountName && selectedGroup && !accountNameError)}
         >
-          Create
+          {t('create')}
         </Button>
       </div>
     </div>

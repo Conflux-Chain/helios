@@ -4,7 +4,7 @@ const en = {
     // welcome page
     hello: 'Hello',
     welcome: 'Welcome to Conflux network',
-    create: 'create',
+    create: 'Create',
     migration: 'One-Click Migration',
     welcomeBack: 'Welcome Back!',
     password: 'password',
@@ -42,6 +42,7 @@ const en = {
     selectSeedPhrase: 'Select Seed Phrase',
     oneAccount: '1 Account',
     manyAccounts: '{{accountNum}} Accounts',
+    errorDuplicateName: 'Duplicate name',
   },
 }
 
