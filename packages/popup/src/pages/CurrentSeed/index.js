@@ -16,23 +16,23 @@ const useStore = create(
     selectedGroup: null,
 
     // hook
-    groupBeforeSet: ({groupData, ...others}) => ({
-      groupData: groupData.map((g, index) => {
+    groupBeforeSet: group => {
+      group.groupData = group.groupData.map((g, index) => {
         g.index = index
         return g
-      }),
-      ...others,
-    }),
+      })
+      return group
+    },
     groupAfterSet: ({groupData}) => {
       const hdGroup = groupData.filter(g => g?.vault?.type === 'hd')
       set({hdGroup})
       if (!get().selectedGroup) set({selectedGroup: hdGroup[0]})
-      if (!get().accountName && hdGroup[0]) {
-        const index = groupData.filter(g => g.eid === hdGroup[0].eid)[0].index
+      if (!get().accountName && hdGroup[0])
         set({
-          accountName: `Account-${index + 1}-${hdGroup[0].account.length + 1}`,
+          accountName: `Account-${hdGroup[0].index + 1}-${
+            hdGroup[0].account.length + 1
+          }`,
         })
-      }
     },
 
     // logic
