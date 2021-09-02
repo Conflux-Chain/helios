@@ -11,7 +11,7 @@ function verify(hexAddress, netId, base32Address) {
 
   const hexBuffer = Buffer.from(hexAddress, 'hex')
   expect(encode(hexBuffer, netId, verbose)).toBe(base32Address)
-  expect(decode(base32Address).hexAddress).toStrictEqual(hexBuffer)
+  expect(decode(base32Address).hexAddress).toStrictEqual(`0x${hexAddress}`)
   expect(decode(base32Address).netId).toBe(netId)
   if (verbose) {
     expect(`type.${decode(base32Address).type}`).toBe(
@@ -112,14 +112,14 @@ describe('@cfxjs/base32-address', function () {
         Buffer.from('106d49f8505410eb4e671d51f7d96d2c87807b09', 'hex'),
         -1,
       ),
-    ).toThrowError('netId should be passed as in range [1, 0xFFFFFFFF]')
+    ).toThrowError('netId should be passed as in range [0, 0xFFFFFFFF]')
 
     expect(() =>
       decode('cfx:Aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg'),
     ).toThrowError(/Mixed-case address /)
 
     expect(() => decode('cfx:aarc9abycue0hhzgyrr53m6cxedgccr')).toThrowError(
-      /Invalid checksum for /,
+      /Invalid checksum/,
     )
     expect(() =>
       decode('cfx:type.null:aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg'),

@@ -4,13 +4,12 @@
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "@cfxjs/bytes": "workspace:packages/bytes",
+    "@cfxjs/compose": "workspace:packages/compose",
     "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",
-    "@cfxjs/keccak": "workspace:packages/keccak",
-    "@cfxjs/nat": "workspace:packages/nat",
-    "@cfxjs/rlp": "workspace:packages/rlp",
     "@cfxjs/utils": "workspace:packages/utils",
-    "buffer": "^6.0.3",
-    "elliptic": "^6.5.4"
+    "@ethersproject/address": "5.4.0",
+    "@ethersproject/transactions": "5.4.0",
+    "@ethersproject/wallet": "5.4.0",
+    "elliptic": "6.5.4"
   }
 }
