@@ -121,6 +121,8 @@ function CurrentSeed() {
             const accountNames = selectedGroup.account.map(a => a.nickname)
             if (accountNames.indexOf(e.target.value) !== -1) {
               setAccountNameError(t('errorDuplicateName'))
+            } else {
+              setAccountNameError(null)
             }
           }}
           errorMessage={accountNameError}
