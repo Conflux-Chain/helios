@@ -2,7 +2,7 @@ import create from 'zustand'
 import {useTranslation} from 'react-i18next'
 import {useRPC} from '@cfxjs/use-rpc'
 import {useRef, useEffect} from 'react'
-import {isFunction} from '@cfxjs/checks'
+import {isFunction, isObject} from '@cfxjs/checks'
 
 const globalThis = window ?? global
 
@@ -15,30 +15,23 @@ const createUseRPCHook =
       isValidating: false,
     })
 
-    let rst = useRPC(deps, params, opts)
-    const beforeSetFn = get()[`${key}BeforeSet`]
+    const rst = useRPC(deps, params, opts)
 
-    if (beforeSetFn) {
-      rst = beforeSetFn(rst)
+    const getNewRst = {
+      [`${key}Mutate`]: rst.mutate,
+      get [`${key}Data`]() {
+        stateDepsRef.current.data = true
+        return rst.data
+      },
+      get [`${key}Error`]() {
+        stateDepsRef.current.error = true
+        return rst.error
+      },
+      get [`${key}IsValidating`]() {
+        stateDepsRef.current.isValidating = true
+        return rst.isValidating
+      },
     }
-
-    const getNewRst = rst
-      ? {
-          [`${key}Mutate`]: rst.mutate,
-          get [`${key}Data`]() {
-            stateDepsRef.current.data = true
-            return rst.data
-          },
-          get [`${key}Error`]() {
-            stateDepsRef.current.error = true
-            return rst.error
-          },
-          get [`${key}IsValidating`]() {
-            stateDepsRef.current.isValidating = true
-            return rst.isValidating
-          },
-        }
-      : rst
 
     useEffect(() => {
       set({[key]: getNewRst})
@@ -64,8 +57,21 @@ const createWithUseRPC = (...args) => {
     rpcConfig = args[1]
   }
 
-  const useStore = create((set, get) =>
-    Object.keys(rpcConfig).reduce(
+  const keys = Object.keys(rpcConfig)
+  const useStore = create((set, get) => {
+    const saferSet = (newState, overwrite = false) => {
+      if (typeof newState === 'function') newState = newState(get())
+      if (!isObject(newState))
+        throw new Error(`Invalid set param ${newState}, must be an object`)
+      const dangerKey = Object.keys(newState).reduce(
+        (acc, k) => acc || (keys.includes(k) && k),
+        false,
+      )
+      if (dangerKey) throw new Error(`Invalid set state key "${dangerKey}"`)
+      return set(newState, overwrite)
+    }
+
+    return keys.reduce(
       (acc, key) => {
         if (!acc.__hooksToRun) acc.__hooksToRun = []
         const {deps, params, opts} = rpcConfig[key]
@@ -87,11 +93,14 @@ const createWithUseRPC = (...args) => {
         return acc
       },
       {
-        ...createStateArg(set, get),
+        ...createStateArg(
+          import.meta.env.NODE_ENV === 'production' ? set : saferSet,
+          get,
+        ),
         r: (...args) => globalThis.___CFXJS_USE_RPC__PRIVIDER?.request(...args),
       },
-    ),
-  )
+    )
+  })
 
   return (...args) => {
     const {t} = useTranslation()
