@@ -10,7 +10,10 @@ import {request} from '../../utils'
 
 function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
   const {t} = useTranslation()
-  const {account, nickname} = group
+  const {
+    account: {length},
+    nickname,
+  } = group
 
   return (
     <div
@@ -24,9 +27,9 @@ function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
       <div className="flex items-center">
         <span className="text-gray-80 mr-2">{nickname}</span>
         <span className="text-gray-40">
-          {account.length === 1
+          {length === 1
             ? t('oneAccount')
-            : t('manyAccounts', {accountNum: account.length})}
+            : t('manyAccounts', {accountNum: length})}
         </span>
       </div>
       {idx === selectedGroupIdx && <Selected className="w-5 h-5" />}
