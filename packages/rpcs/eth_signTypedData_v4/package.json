@@ -2,7 +2,7 @@
   "name": "@cfxjs/eth_sign-typed-data_v4",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "dependencies": {
     "@cfxjs/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
   }
