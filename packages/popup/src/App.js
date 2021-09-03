@@ -11,7 +11,7 @@ const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 
 function App() {
   return (
-    <div className="h-160 w-95 m-auto">
+    <div className="h-150 w-93 m-auto light">
       <Suspense
         fallback={
           <div className="w-full h-full flex items-center justify-center">
