@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "name": "@cfxjs/component-input",
   "type": "module",
   "main": "index.js",
