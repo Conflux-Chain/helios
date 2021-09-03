@@ -4,7 +4,8 @@
   "main": "index.js",
   "version": "0.0.2",
   "dependencies": {
-    "@cfxjs/random-id": "workspace:packages/random-id"
+    "@cfxjs/random-id": "workspace:packages/random-id",
+    "@cfxjs/safe-event-emiter": "workspace:packages/safe-event-emiter"
   },
   "peerDependencies": {
     "react": "^17",

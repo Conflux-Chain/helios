@@ -18,9 +18,9 @@
     "@cfxjs/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref",
     "@cfxjs/spec": "workspace:packages/spec",
     "@cfxjs/transducers": "workspace:packages/transducers",
-    "@thi.ng/atom": "4.1.37",
-    "@thi.ng/rstream": "6.0.10",
-    "@thi.ng/rstream-graph": "3.2.70",
+    "@thi.ng/atom": "4.1.41",
+    "@thi.ng/rstream": "6.0.20",
+    "@thi.ng/rstream-graph": "3.2.80",
     "ramda": "^0.27.1"
   }
 }

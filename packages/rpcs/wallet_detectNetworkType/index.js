@@ -3,7 +3,7 @@ import {url, map} from '@cfxjs/spec'
 export const NAME = 'wallet_detectNetworkType'
 
 export const schemas = {
-  inputs: [map, {closed: true}, ['url', url]],
+  input: [map, {closed: true}, ['url', url]],
 }
 
 export const permissions = {

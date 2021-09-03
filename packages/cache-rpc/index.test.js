@@ -1,17 +1,21 @@
 // eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import { expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach } from '@jest/globals' // prettier-ignore
 // eslint-disable-next-line no-unused-vars
 import waitForExpect from 'wait-for-expect'
 import {init} from './index.js'
 
-let params,get,set
+let params, get, set
 describe('@cfxjs/cache-rpc', function () {
   beforeEach(() => {
     const cacheMethods = init()
     get = cacheMethods.get
     set = cacheMethods.set
     params = {
-      req: {method: 'foo', params: ['bar']},
+      req: {
+        method: 'foo',
+        params: ['bar'],
+        network: {name: 'foonet'},
+      },
       res: {result: '0x1'},
       conf: {
         type: 'ttl',
@@ -94,7 +98,11 @@ describe('@cfxjs/cache-rpc', function () {
     test('errors', () => {
       const {set} = init()
       let params = {
-        req: {method: 'foo', params: ['bar']},
+        req: {
+          method: 'foo',
+          params: ['bar'],
+          network: {name: 'foonet'},
+        },
         res: {result: '0x1'},
         conf: {
           type: 'epoch',

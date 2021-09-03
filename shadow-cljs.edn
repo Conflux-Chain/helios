@@ -141,6 +141,7 @@
 
                                     password cfxjs.spec.core/export-password
                                     networkId cfxjs.spec.core/export-networkId
+                                    chainId cfxjs.spec.core/export-chainId
                                     addressType cfxjs.spec.core/export-addressType
                                     hex cfxjs.spec.core/export-hex-string
                                     epochTag cfxjs.spec.core/export-epoch-tag

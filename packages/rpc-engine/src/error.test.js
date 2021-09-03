@@ -43,7 +43,7 @@ describe('error', function () {
 
       expect(fakeCWrite.mock.calls[1][0].error.message).toContain('-> m0')
 
-      expect(() => rpcErrorHandlerFactory()(null)).toThrowError('Invalid error')
+      expect(rpcErrorHandlerFactory()(null)).toBe(true)
     })
 
     it('should return the response with the same req id', async function () {

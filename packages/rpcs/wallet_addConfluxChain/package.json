@@ -1,0 +1,9 @@
+{
+  "name": "@cfxjs/wallet_add-conflux-chain",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@cfxjs/wallet_add-ethereum-chain": "workspace:packages/rpcs/wallet_addEthereumChain"
+  }
+}

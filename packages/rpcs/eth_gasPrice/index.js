@@ -11,11 +11,6 @@ export const permissions = {
   locked: true,
 }
 
-export const cache = {
-  type: 'block',
-  key: () => NAME,
-}
-
 export const main = async ({f, params}) => {
   return await f(params)
 }
