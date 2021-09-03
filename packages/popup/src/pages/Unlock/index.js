@@ -3,7 +3,7 @@ import Button from '@cfxjs/component-button'
 import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
 import {useTranslation} from 'react-i18next'
 import {passwordRegExp} from '../../constants'
-import {useStore} from '../../store'
+// import {useStore} from '../../store'
 
 const validate = value => {
   return passwordRegExp.test(value)
@@ -13,7 +13,7 @@ const UnlockPage = () => {
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
-  const {unlockWallet} = useStore()
+  // const {unlockWallet} = useStore()
   const handleSubmit = event => {
     event.preventDefault()
     setInputErrorMessage(password)
@@ -23,15 +23,15 @@ const UnlockPage = () => {
     setErrorMessage(validate(value) ? '' : 'something wrong')
   }
   const login = () => {
-    if (password) {
-      unlockWallet()
-        .then(res => {
-          console.log('res', res)
-        })
-        .catch(err => {
-          console.log('err', err)
-        })
-    }
+    // if (password) {
+    //   unlockWallet()
+    //     .then(res => {
+    //       console.log('res', res)
+    //     })
+    //     .catch(err => {
+    //       console.log('err', err)
+    //     })
+    // }
   }
 
   return (

@@ -2,9 +2,9 @@
   "name": "@cfxjs/csp",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@cfxjs/checks": "workspace:packages/checks",
-    "@thi.ng/csp": "^1.1.65"
+    "@thi.ng/csp": "^1.1.73"
   }
 }

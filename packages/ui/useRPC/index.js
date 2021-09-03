@@ -3,6 +3,8 @@ import {setupProvider} from './setup-provider.js'
 import {useAsyncRetry} from 'react-use'
 import {useEffect} from 'react'
 
+const globalThis = window ?? global
+
 export const useRPCProvider = () => {
   const {
     value: provider,
@@ -25,9 +27,16 @@ export const useRPCProvider = () => {
 }
 
 export const useRPC = (deps = [], params, opts) => {
-  const {provider, loading, error} = useRPCProvider()
-  const providerLoaded = Boolean(!loading && provider && !error)
-  return useRPCRaw(provider, providerLoaded ? deps : null, params, opts)
+  const {provider} = useRPCProvider()
+  const providerLoaded = Boolean(
+    globalThis.___CFXJS_USE_RPC__PRIVIDER || provider,
+  )
+  return useRPCRaw(
+    globalThis.___CFXJS_USE_RPC__PRIVIDER || provider,
+    providerLoaded ? deps : null,
+    params,
+    opts,
+  )
 }
 
 export const useRPCRaw = (provider, deps = [], params, opts) => {

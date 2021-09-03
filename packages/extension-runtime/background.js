@@ -21,9 +21,9 @@ function onConnect(port) {
       popupStream.next.call(popupStream, [req, post]),
     )
   } else if (port?.name === 'content-script') {
-    port.onMessage.addListener(req =>
-      inpageStream.next.call(inpageStream, [req, post]),
-    )
+    port.onMessage.addListener(req => {
+      inpageStream.next.call(inpageStream, [req, post])
+    })
   }
 }
 

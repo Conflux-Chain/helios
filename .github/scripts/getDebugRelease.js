@@ -1,3 +1,4 @@
+// github api doc https://octokit.github.io/rest.js/v18#repos-delete-release
 module.exports = async ({github, context}) => {
   const {
     repo: {owner, repo},

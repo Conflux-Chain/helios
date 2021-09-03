@@ -14,6 +14,7 @@ const mount = {}
 const alias = {}
 getWorkspacePackages({
   ignore: [
+    '@cfxjs/contract-method-name',
     'browser-extension',
     'helios',
     'helios-background',
@@ -23,6 +24,7 @@ getWorkspacePackages({
     'doc',
     'ext-reload',
     '@cfxjs/jest-helper',
+    '@cfxjs/test-helpers',
     '@cfxjs/content-script',
   ],
 }).forEach(({location, name}) => {

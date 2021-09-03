@@ -10,8 +10,10 @@ import browser from 'webextension-polyfill'
 import SCHEMA from './db-schema'
 import {listen} from '@cfxjs/extension-runtime/background.js'
 import initDB from './init-db.js'
+import * as bb from '@cfxjs/webextension'
 
 if (!IS_PROD_MODE) window.b = browser
+if (!IS_PROD_MODE) window.bb = bb
 import {rpcEngineOpts} from './rpc-engine-opts'
 
 export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
@@ -38,6 +40,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
       _popup: req._popup,
       _inpage: req._inpage,
       _origin: req._origin,
+      _post: req._post,
     })
 
   const {inpageStream, popupStream} = listen()
@@ -49,15 +52,19 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
         _popup: true,
         _inpage: false,
         _origin: undefined,
+        _post: post,
       }).then(post)
     },
   })
 
   inpageStream.subscribe({
     next([req, post]) {
-      protectedRequest({...(req || {}), _popup: false, _inpage: true}).then(
-        post,
-      )
+      protectedRequest({
+        ...(req || {}),
+        _popup: false,
+        _inpage: true,
+        _post: post,
+      }).then(post)
     },
   })
 

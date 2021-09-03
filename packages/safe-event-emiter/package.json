@@ -1,0 +1,11 @@
+{
+  "name": "@cfxjs/safe-event-emiter",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.1",
+  "dependencies": {
+    "@cfxjs/checks": "workspace:packages/checks",
+    "@cfxjs/transducers": "workspace:packages/transducers",
+    "@thi.ng/rstream": "6.0.20"
+  }
+}

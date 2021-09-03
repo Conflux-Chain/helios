@@ -2,7 +2,7 @@
   "name": "@cfxjs/wallet_import-all",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@cfxjs/spec": "workspace:packages/spec",
     "browser-passworder": "2.0.3",

@@ -18,18 +18,17 @@ export const permissions = {
 }
 
 export const main = async ({
-  Err,
+  Err: {InvalidParams},
   rpcs: {wallet_validatePassword},
   db: {getAccountGroupById, deleteVaultById, deleteAccountGroupById},
   params: {accountGroupId, password},
 }) => {
   if (!(await wallet_validatePassword({password})))
-    throw Err.InvalidParams('Incorrect password')
+    throw InvalidParams('Incorrect password')
 
   const group = getAccountGroupById(accountGroupId)
 
-  if (!group)
-    throw Err.InvalidParams(`Invalid account group id ${accountGroupId}`)
+  if (!group) throw InvalidParams(`Invalid account group id ${accountGroupId}`)
 
   deleteVaultById(group.vault.eid)
   return deleteAccountGroupById(group.eid)

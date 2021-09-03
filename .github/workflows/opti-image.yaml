@@ -1,0 +1,34 @@
+name: Optimising Pictures
+
+on:
+  push:
+    branches: [__release-pkg]
+
+jobs:
+  cleanup_tasks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cloning the repository
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Crush Images!
+        uses: creyD/crush_action@v1.0
+        with:
+          branch: __release-pkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: git add .
+      - run: |
+          git -c user.name='ConfluxBot' \
+              -c user.email='confluxbot@users.noreply.github.com' \
+              commit \
+              --no-verify \
+              --message 'chore(opti-imgs): optimize images' || true
+      - env:
+          GH_TOKEN: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+        run: git push --force --verbose "https://ConfluxBot:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" HEAD:refs/heads/__release-pkg
+      - env:
+          GITHUB_TOKEN: ${{secrets.CONFLUX_BOT_GH_TOKEN}}
+        run: ./scripts/create-pkg-release-pr

@@ -1,10 +1,34 @@
 {
   "name": "@cfxjs/spec",
   "type": "module",
-  "version": "0.0.7",
+  "version": "0.0.13",
   "main": "index.js",
   "scripts": {
     "build": "shadow-cljs release app"
+  },
+  "module": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    },
+    "./gen": {
+      "import": "./src/gen.js"
+    },
+    "./doc": {
+      "import": "./src/doc.js"
+    },
+    "./src/gen": {
+      "import": "./src/gen.js"
+    },
+    "./src/doc": {
+      "import": "./src/doc.js"
+    },
+    "./src/gen.js": {
+      "import": "./src/gen.js"
+    },
+    "./src/doc.js": {
+      "import": "./src/doc.js"
+    }
   },
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
@@ -13,5 +37,15 @@
     "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",
     "@cfxjs/hdkey": "workspace:packages/hdkey",
     "bip39": "^3.0.4"
-  }
+  },
+  "keywords": [
+    "spec",
+    "schema",
+    "blockchain",
+    "crypto"
+  ],
+  "files": [
+    "src/*.js",
+    "README.md"
+  ]
 }

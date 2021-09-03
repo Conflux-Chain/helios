@@ -1,10 +1,10 @@
 import {randomPrivateKey} from '@cfxjs/account'
-import {or, nul, map, string, privateKey} from '@cfxjs/spec'
+import {nul, or, and, empty, arrp, privateKey} from '@cfxjs/spec'
 
 export const NAME = 'wallet_generatePrivateKey'
 
 export const schemas = {
-  input: [or, nul, [map, ['entropy', {optional: true}, string]]],
+  input: [or, nul, [and, arrp, empty]],
   output: privateKey,
 }
 export const permissions = {
@@ -12,6 +12,6 @@ export const permissions = {
   external: ['popup', 'inpage'],
 }
 
-export async function main({params} = {}) {
-  return randomPrivateKey(params?.entropy)
+export async function main() {
+  return randomPrivateKey()
 }

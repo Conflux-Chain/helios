@@ -1,6 +1,6 @@
 import React, {lazy, Suspense} from 'react'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
-import {useStore} from './store'
+import {ProtectedRoute} from './components'
 import './index.css'
 
 const HomePage = lazy(() => import('./pages/Home'))
@@ -14,38 +14,19 @@ const SelectCreateType = lazy(() => import('./pages/SelectCreateType'))
 const ImportAccount = lazy(() => import('./pages/ImportAccount'))
 const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
 const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
+import {useRPC} from '@cfxjs/use-rpc'
 
 function App() {
-  const {
-    // locked: {lockedData, lockedIsValidating},
-    // group: {groupData},
-    // getLocked,
-    // generatePrivateKey,
-  } = useStore()
-  // console.log(
-  //   'lockedData = ',
-  //   lockedData,
-  //   'groupData =',
-  //   groupData,
-  //   'lockedIsValidating =',
-  //   lockedIsValidating,
-  // )
+  const walletData = useRPC(
+    ['wallet_getAccountGroup', 'hd'],
+    {type: 'pub'},
+    {fallbackData: []},
+  )
+  // const lockedData = useRPC('wallet_getAccountGroup')
 
-  // const {data} = getLocked()
-  // console.log('data = ', data)
-
-  // console.log('data = ', a, b)
+  console.log(walletData.data)
   return (
     <div className="h-150 w-93 m-auto light">
-      {/* <button
-        onClick={() => {
-          generatePrivateKey().then(res =>
-            console.log("I'm the privateKey", res.result),
-          )
-        }}
-      >
-        example
-      </button> */}
       <Suspense
         fallback={
           <div className="w-full h-full flex items-center justify-center"></div>
@@ -53,9 +34,9 @@ function App() {
       >
         <Router>
           <Switch>
-            <Route exact path="/">
+            <ProtectedRoute exact path="/">
               <HomePage />
-            </Route>
+            </ProtectedRoute>
             <Route exact path="/create-account-default">
               <CreateAccount />
             </Route>

@@ -1,10 +1,10 @@
 {
   "name": "@cfxjs/fetch-rpc",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.js",
   "dependencies": {
-    "@thi.ng/cache": "1.0.85",
+    "@thi.ng/cache": "1.0.93",
     "ky": "0.28.5"
   },
   "devDependencies": {
