@@ -6,7 +6,7 @@ import Input from '@cfxjs/component-input'
 import Button from '@cfxjs/component-button'
 import {CompWithLabel} from '../../components'
 import {useRPC} from '@cfxjs/use-rpc'
-import useGlobalStore from '../../store'
+import useGlobalStore from '../../stores'
 
 function NewSeed() {
   const {t} = useTranslation()

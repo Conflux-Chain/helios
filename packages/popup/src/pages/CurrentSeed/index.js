@@ -5,7 +5,8 @@ import Input from '@cfxjs/component-input'
 import Button from '@cfxjs/component-button'
 import {Selected} from '@cfxjs/component-icons'
 import {CompWithLabel} from '../../components'
-import {useRPC, useRPCProvider} from '@cfxjs/use-rpc'
+import {useRPC} from '@cfxjs/use-rpc'
+import {request} from '../../utils'
 
 function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
   const {t} = useTranslation()
@@ -25,7 +26,7 @@ function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
         <span className="text-gray-40">
           {account.length === 1
             ? t('oneAccount')
-            : t('manyAccounts', {accountNum: length})}
+            : t('manyAccounts', {accountNum: account.length})}
         </span>
       </div>
       {idx === selectedGroupIdx && <Selected className="w-5 h-5" />}
@@ -47,7 +48,6 @@ function CurrentSeed() {
     {type: 'hd'},
     {fallbackData: []},
   )
-  const {provider} = useRPCProvider()
 
   const [accountName, setAccountName] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
@@ -67,24 +67,22 @@ function CurrentSeed() {
   }
   const onCreate = () => {
     setCreatingAccount(true)
-    return provider
-      ?.request({
-        method: 'wallet_createAccount',
-        params: {
-          accountGroupId: hdGroup[selectedGroupIdx].eid,
-          nickname: accountName || accountNamePlaceholder,
-        },
-      })
-      .then(({error}) => {
-        setCreatingAccount(false)
-        if (error) {
-          setAccountCreationError(error.message)
-          console.log(accountCreationError)
-          return
-        }
-        groupMutate()
-        // jump to next page?
-      })
+    return request({
+      method: 'wallet_createAccount',
+      params: {
+        accountGroupId: hdGroup[selectedGroupIdx].eid,
+        nickname: accountName || accountNamePlaceholder,
+      },
+    }).then(({error}) => {
+      setCreatingAccount(false)
+      if (error) {
+        setAccountCreationError(error.message)
+        console.log(accountCreationError)
+        return
+      }
+      groupMutate()
+      // jump to next page?
+    })
   }
 
   return (
