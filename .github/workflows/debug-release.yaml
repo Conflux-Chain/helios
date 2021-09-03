@@ -53,7 +53,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: "Debug Release for PR #${{ github.event.issue.number }}"
+          name: "Debug Release for PR #${{ github.event.number }}"
+          tag: "debug-pr-${{ github.event.number }}"
           config-name: release-drafter.yml
           publish: true
           prerelease: true
@@ -65,36 +66,38 @@ jobs:
           # FLUENT_VERSION: "DEBUG-${{ steps.create_release.outputs.tag_name }}"
         run: yarn prod:release
 
-      - name: Get the right release
+      - name: Get PR Release
         uses: actions/github-script@v4
-        id: debug-release
+        id: pr-release
         env:
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ github.event.number }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const theRelease = await require('.github/scripts/getDebugRelease.js')({github, context, core});
+            const theRelease = await require('.github/scripts/getPRRelease.js')({github, context, core});
             return theRelease
 
       - uses: shogo82148/actions-upload-release-asset@v1
         id: upload-assets
         with:
-          upload_url: ${{ fromJSON(steps.debug-release.outputs.result).upload_url }}
+          upload_url: ${{ fromJSON(steps.pr-release.outputs.result).upload_url }}
           asset_path: releases/*
 
-      - name: Get the right release
+      - name: Get PR Release
         uses: actions/github-script@v4
-        id: debug-release-refresh
+        id: pr-release-refresh
+        env:
+          PR_NUMBER: ${{ github.event.number }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const theRelease = await require('.github/scripts/getDebugRelease.js')({github, context, core});
+            const theRelease = await require('.github/scripts/getPRRelease.js')({github, context, core});
             return theRelease
 
       - name: Comment PR
         uses: actions/github-script@v4
         env:
-          DEBUG_RELEASE: ${{steps.debug-release-refresh.outputs.result}}
+          DEBUG_RELEASE: ${{steps.pr-release-refresh.outputs.result}}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
