@@ -12,33 +12,40 @@ const useStore = create(
     creatingAccount: false,
     accountCreationError: null,
     accountName: '',
-    selectedGroup: null,
+    accountNamePlaceholder: '',
+    selectedGroupIdx: 0,
 
     // hook
     groupAfterSet: ({groupData}) => {
       const hdGroup = groupData.filter(g => g?.vault?.type === 'hd')
       set({hdGroup})
-      if (!get().selectedGroup) set({selectedGroup: hdGroup[0]})
-      if (!get().accountName && hdGroup[0]) {
+      if (hdGroup[0]) {
         set({
-          accountName: `Account-1-${hdGroup[0].account.length + 1}`,
+          accountNamePlaceholder: `Account-1-${hdGroup[0].account.length + 1}`,
         })
       }
     },
 
     // logic
     setAccountName: accountName => set({accountName}),
+    setAccountNamePlaceholder: accountNamePlaceholder =>
+      set({accountNamePlaceholder}),
     onCreate: () => {
       const {
         r,
-        selectedGroup: {eid},
+        selectedGroupIdx,
         accountName,
+        accountNamePlaceholder,
+        hdGroup,
         group: {groupMutate},
       } = get()
       set({creatingAccount: true})
       return r({
         method: 'wallet_createAccount',
-        params: {accountGroupId: eid, nickname: accountName},
+        params: {
+          accountGroupId: hdGroup[selectedGroupIdx].eid,
+          nickname: accountName || accountNamePlaceholder,
+        },
       }).then(({error}) => {
         set({creatingAccount: false})
         if (error) return set({accountCreationError: error.message})
@@ -56,10 +63,12 @@ const useStore = create(
             : t('manyAccounts', {accountNum: length}),
       }
     },
-    setSelectedGroup: (selectedGroup, index) => {
-      set({selectedGroup})
+    setSelectedGroupIdx: index => {
+      set({selectedGroupIdx: index})
       set({
-        accountName: `Account-${index + 1}-${selectedGroup.account.length + 1}`,
+        accountNamePlaceholder: `Account-${index + 1}-${
+          get().hdGroup[index].account.length + 1
+        }`,
       })
     },
   }),
@@ -72,7 +81,7 @@ const useStore = create(
 )
 
 function SeedPhrase({group, idx}) {
-  const {getGroupInfo, setSelectedGroup, selectedGroup} = useStore()
+  const {getGroupInfo, setSelectedGroupIdx, selectedGroupIdx} = useStore()
   const {nickname, accountLength} = getGroupInfo(group)
 
   return (
@@ -81,14 +90,14 @@ function SeedPhrase({group, idx}) {
       tabIndex="-1"
       key={group.eid}
       className="h-12 px-3 hover:bg-primary-4 flex items-center cursor-pointer justify-between"
-      onClick={() => setSelectedGroup(group, idx)}
+      onClick={() => setSelectedGroupIdx(idx)}
       onKeyDown={() => {}}
     >
       <div className="flex items-center">
         <span className="text-gray-80 mr-2">{nickname}</span>
         <span className="text-gray-40">{accountLength}</span>
       </div>
-      {group.eid === selectedGroup?.eid && <Selected className="w-5 h-5" />}
+      {idx === selectedGroupIdx && <Selected className="w-5 h-5" />}
     </div>
   )
 }
@@ -103,7 +112,8 @@ function CurrentSeed() {
     t,
     accountName,
     setAccountName,
-    selectedGroup,
+    accountNamePlaceholder,
+    selectedGroupIdx,
     hdGroup,
     accountNameError,
     onCreate,
@@ -116,6 +126,7 @@ function CurrentSeed() {
           width="w-full"
           value={accountName}
           maxLength="20"
+          placeholder={accountNamePlaceholder}
           onChange={e => setAccountName(e.target.value)}
           errorMessage={accountNameError}
         />
@@ -137,7 +148,13 @@ function CurrentSeed() {
         <Button
           className="w-70"
           onClick={onCreate}
-          disabled={!(accountName && selectedGroup && !accountNameError)}
+          disabled={
+            !(
+              (accountName || accountNamePlaceholder) &&
+              hdGroup[selectedGroupIdx] &&
+              !accountNameError
+            )
+          }
         >
           {t('create')}
         </Button>
