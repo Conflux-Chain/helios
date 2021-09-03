@@ -1,90 +1,15 @@
+import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import {useTranslation} from 'react-i18next'
 import Input from '@cfxjs/component-input'
 import Button from '@cfxjs/component-button'
 import {Selected} from '@cfxjs/component-icons'
 import {CompWithLabel} from '../../components'
-import create from '../../hooks/zustand'
+import {useRPC, useRPCProvider} from '@cfxjs/use-rpc'
 
-const useStore = create(
-  (set, get) => ({
-    // value
-    hdGroup: [],
-    creatingAccount: false,
-    accountCreationError: null,
-    accountName: '',
-    accountNamePlaceholder: '',
-    selectedGroupIdx: 0,
-
-    // hook
-    groupAfterSet: ({groupData}) => {
-      const hdGroup = groupData.filter(g => g?.vault?.type === 'hd')
-      set({hdGroup})
-      if (hdGroup[get().selectedGroupIdx]) {
-        set({
-          accountNamePlaceholder: `Account-1-${
-            hdGroup[get().selectedGroupIdx].account.length + 1
-          }`,
-        })
-      }
-    },
-
-    // logic
-    setAccountName: accountName => set({accountName}),
-    setAccountNamePlaceholder: accountNamePlaceholder =>
-      set({accountNamePlaceholder}),
-    onCreate: () => {
-      const {
-        r,
-        selectedGroupIdx,
-        accountName,
-        accountNamePlaceholder,
-        hdGroup,
-        group: {groupMutate},
-      } = get()
-      set({creatingAccount: true})
-      return r({
-        method: 'wallet_createAccount',
-        params: {
-          accountGroupId: hdGroup[selectedGroupIdx].eid,
-          nickname: accountName || accountNamePlaceholder,
-        },
-      }).then(({error}) => {
-        set({creatingAccount: false})
-        if (error) return set({accountCreationError: error.message})
-        groupMutate()
-        // jump to next page?
-      })
-    },
-    getGroupInfo({account: {length}, nickname}) {
-      const {t} = get()
-      return {
-        nickname,
-        accountLength:
-          length === 1
-            ? t('oneAccount')
-            : t('manyAccounts', {accountNum: length}),
-      }
-    },
-    setSelectedGroupIdx: index => {
-      set({selectedGroupIdx: index})
-      set({
-        accountNamePlaceholder: `Account-${index + 1}-${
-          get().hdGroup[index].account.length + 1
-        }`,
-      })
-    },
-  }),
-  {
-    group: {
-      deps: 'wallet_getAccountGroup',
-      opts: {fallbackData: []},
-    },
-  },
-)
-
-function SeedPhrase({group, idx}) {
-  const {getGroupInfo, setSelectedGroupIdx, selectedGroupIdx} = useStore()
-  const {nickname, accountLength} = getGroupInfo(group)
+function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
+  const {t} = useTranslation()
+  const {account, nickname} = group
 
   return (
     <div
@@ -92,12 +17,16 @@ function SeedPhrase({group, idx}) {
       tabIndex="-1"
       key={group.eid}
       className="h-12 px-3 hover:bg-primary-4 flex items-center cursor-pointer justify-between"
-      onClick={() => setSelectedGroupIdx(idx)}
+      onClick={() => onClickGroup && onClickGroup(idx)}
       onKeyDown={() => {}}
     >
       <div className="flex items-center">
         <span className="text-gray-80 mr-2">{nickname}</span>
-        <span className="text-gray-40">{accountLength}</span>
+        <span className="text-gray-40">
+          {account.length === 1
+            ? t('oneAccount')
+            : t('manyAccounts', {accountNum: length})}
+        </span>
       </div>
       {idx === selectedGroupIdx && <Selected className="w-5 h-5" />}
     </div>
@@ -107,19 +36,56 @@ function SeedPhrase({group, idx}) {
 SeedPhrase.propTypes = {
   group: PropTypes.object.isRequired,
   idx: PropTypes.number.isRequired,
+  selectedGroupIdx: PropTypes.number.isRequired,
+  onClickGroup: PropTypes.func.isRequired,
 }
 
 function CurrentSeed() {
-  const {
-    t,
-    accountName,
-    setAccountName,
-    accountNamePlaceholder,
-    selectedGroupIdx,
-    hdGroup,
-    accountNameError,
-    onCreate,
-  } = useStore()
+  const {t} = useTranslation()
+  const {data: hdGroup, mutate: groupMutate} = useRPC(
+    ['wallet_getAccountGroup', 'hd'],
+    {type: 'hd'},
+    {fallbackData: []},
+  )
+  const {provider} = useRPCProvider()
+
+  const [accountName, setAccountName] = useState('')
+  const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
+  const [selectedGroupIdx, setSelectedGroupIdx] = useState(0)
+  const [creatingAccount, setCreatingAccount] = useState(false)
+  const [accountCreationError, setAccountCreationError] = useState('')
+  useEffect(() => {
+    setAccountNamePlaceholder(
+      `Account-1-${hdGroup[selectedGroupIdx]?.account?.length + 1}`,
+    )
+  }, [hdGroup, selectedGroupIdx])
+  const onClickGroup = index => {
+    setSelectedGroupIdx(index)
+    setAccountNamePlaceholder(
+      `Account-${index + 1}-${hdGroup[index].account.length + 1}`,
+    )
+  }
+  const onCreate = () => {
+    setCreatingAccount(true)
+    return provider
+      ?.request({
+        method: 'wallet_createAccount',
+        params: {
+          accountGroupId: hdGroup[selectedGroupIdx].eid,
+          nickname: accountName || accountNamePlaceholder,
+        },
+      })
+      .then(({error}) => {
+        setCreatingAccount(false)
+        if (error) {
+          setAccountCreationError(error.message)
+          console.log(accountCreationError)
+          return
+        }
+        groupMutate()
+        // jump to next page?
+      })
+  }
 
   return (
     <div className="h-full px-3 flex flex-col bg-bg">
@@ -130,7 +96,6 @@ function CurrentSeed() {
           maxLength="20"
           placeholder={accountNamePlaceholder}
           onChange={e => setAccountName(e.target.value)}
-          errorMessage={accountNameError}
         />
       </CompWithLabel>
       <CompWithLabel
@@ -142,7 +107,16 @@ function CurrentSeed() {
           className="flex flex-col flex-1 overflow-y-auto py-2 bg-gray-0 rounded-sm"
         >
           {hdGroup.map(
-            (g, idx) => g && <SeedPhrase key={g.eid} group={g} idx={idx} />,
+            (g, idx) =>
+              g && (
+                <SeedPhrase
+                  key={g.eid}
+                  group={g}
+                  onClickGroup={onClickGroup}
+                  selectedGroupIdx={selectedGroupIdx}
+                  idx={idx}
+                />
+              ),
           )}
         </div>
       </CompWithLabel>
@@ -153,9 +127,8 @@ function CurrentSeed() {
           disabled={
             !(
               (accountName || accountNamePlaceholder) &&
-              hdGroup[selectedGroupIdx] &&
-              !accountNameError
-            )
+              hdGroup[selectedGroupIdx]
+            ) || creatingAccount
           }
         >
           {t('create')}
