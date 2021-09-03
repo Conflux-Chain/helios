@@ -14,6 +14,7 @@ const mount = {}
 const alias = {}
 getWorkspacePackages({
   ignore: [
+    '@cfxjs/contract-method-name',
     'browser-extension',
     'helios',
     'helios-background',
