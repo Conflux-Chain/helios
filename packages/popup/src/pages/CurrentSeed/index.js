@@ -19,9 +19,11 @@ const useStore = create(
     groupAfterSet: ({groupData}) => {
       const hdGroup = groupData.filter(g => g?.vault?.type === 'hd')
       set({hdGroup})
-      if (hdGroup[0]) {
+      if (hdGroup[get().selectedGroupIdx]) {
         set({
-          accountNamePlaceholder: `Account-1-${hdGroup[0].account.length + 1}`,
+          accountNamePlaceholder: `Account-1-${
+            hdGroup[get().selectedGroupIdx].account.length + 1
+          }`,
         })
       }
     },
