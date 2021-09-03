@@ -14,7 +14,7 @@ const wrapRpcError =
   (methodName, ErrConstructor) =>
   (errorMessage, rpcData = {}) => {
     const error = new ErrConstructor(
-      `In method ${methodName}\n${errorMessage}`,
+      `In method ${methodName}\n${errorMessage || ''}`,
       rpcData,
     )
     jsonRpcErr.errorStackPop(error)
@@ -28,7 +28,7 @@ const request = (s, req = {}) => {
 }
 
 const defRpcEngineFactory = (db, options = {methods: []}) => {
-  const {methods, isProd = true} = options
+  const {methods, isProd = true, isDev, isTest, isCI} = options
   const rpcStore = new Object() // to store rpc defination
 
   methods.forEach(rpc => {
@@ -41,6 +41,11 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
         InvalidParams: wrapRpcError(rpc.NAME, jsonRpcErr.InvalidParams),
         Internal: wrapRpcError(rpc.NAME, jsonRpcErr.Internal),
         Server: wrapRpcError(rpc.NAME, jsonRpcErr.Server),
+        UserRjected: wrapRpcError(rpc.NAME, jsonRpcErr.UserRejected),
+        Unauthorized: wrapRpcError(rpc.NAME, jsonRpcErr.Unauthorized),
+        UnsupportedMethod: wrapRpcError(rpc.NAME, jsonRpcErr.UnsupportedMethod),
+        Disconnected: wrapRpcError(rpc.NAME, jsonRpcErr.Disconnected),
+        ChainDisconnected: wrapRpcError(rpc.NAME, jsonRpcErr.ChainDisconnected),
       },
       NAME,
       schemas,
@@ -50,12 +55,13 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
     }
   })
 
+  const _debugLog = []
   const s = stream({
     id: 'rpc-engine',
     closeIn: false,
     closeOut: false,
     cache: false,
-    error: rpcErrorHandlerFactory(isProd),
+    error: rpcErrorHandlerFactory({isProd, debugLog: _debugLog}),
   })
 
   const sendNewRpcRequest = partial(request, s)
@@ -77,6 +83,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
   const processSpec = ({ins, fn, outs}) => ({
     ins: {
       ...ins,
+      MODE: {const: {isProd, isDev, isTest, isCI}},
       db: {const: db},
       rpcStore: {const: rpcStore},
       sendNewRpcRequest: {const: () => sendNewRpcRequest},
@@ -86,6 +93,8 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
   })
 
   const addM = partial(addMiddleware, g, {
+    debugLog: _debugLog,
+    isProd,
     processSpec,
     errorHandler: s.error.bind(s),
   })

@@ -1,6 +1,10 @@
 {
   "name": "@cfxjs/db",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "main": "index.js",
-  "type": "module"
+  "type": "module",
+  "files": [
+    "src/*.js",
+    "README.md"
+  ]
 }

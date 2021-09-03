@@ -21,6 +21,14 @@ export const ERROR = {
   INVALID_PARAMS: {code: -32602, name: 'InvalidParams'},
   INTERNAL: {code: -32603, name: 'InternalError'},
   SERVER: {code: -32000, name: 'ServerError'},
+  // provider errors https://eips.ethereum.org/EIPS/eip-1193#errors
+  USER_REJECTED: {code: 4001, name: 'UserRejected'},
+  UNAUTHORIZED: {code: 4100, name: 'Unauthorized'},
+  UNSUPPORTED_METHOD: {code: 4200, name: 'UnsupportedMethod'},
+  // disconnected from all chain
+  DISCONNECTED: {code: 4900, name: 'Disconnected'},
+  // disconnected from requested chain
+  CHAIN_DISCONNECTED: {code: 4901, name: 'Chain Disconnected'},
 }
 
 export const Parse = defRpcError(
@@ -53,6 +61,33 @@ export const Internal = defRpcError(
 
 export const Server = defRpcError(
   () => `JSON-RPC ${ERROR.SERVER.name} ${ERROR.SERVER.code}\n\n`,
+  msg => msg,
+)
+
+export const UserRejected = defRpcError(
+  () => `JSON-RPC ${ERROR.USER_REJECTED.name} ${ERROR.USER_REJECTED.code}\n\n`,
+  msg => msg,
+)
+
+export const Unauthorized = defRpcError(
+  () => `JSON-RPC ${ERROR.UNAUTHORIZED.name} ${ERROR.UNAUTHORIZED.code}\n\n`,
+  msg => msg,
+)
+
+export const UnsupportedMethod = defRpcError(
+  () =>
+    `JSON-RPC ${ERROR.UNSUPPORTED_METHOD.name} ${ERROR.UNSUPPORTED_METHOD.code}\n\n`,
+  msg => msg,
+)
+
+export const Disconnected = defRpcError(
+  () => `JSON-RPC ${ERROR.DISCONNECTED.name} ${ERROR.DISCONNECTED.code}\n\n`,
+  msg => msg,
+)
+
+export const ChainDisconnected = defRpcError(
+  () =>
+    `JSON-RPC ${ERROR.CHAIN_DISCONNECTED.name} ${ERROR.CHAIN_DISCONNECTED.code}\n\n`,
   msg => msg,
 )
 

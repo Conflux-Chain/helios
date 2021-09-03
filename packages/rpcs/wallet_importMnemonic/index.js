@@ -1,4 +1,4 @@
-import {mnemonic, map, password, truep} from '@cfxjs/spec'
+import {mnemonic, map, password, truep, maybe} from '@cfxjs/spec'
 
 export const NAME = 'wallet_importMnemonic'
 
@@ -8,18 +8,19 @@ export const schemas = {
     {closed: true},
     ['mnemonic', mnemonic],
     ['password', password],
+    ['waitTillFinish', {optional: true}, [maybe, truep]],
     [
       'cfxOnly',
       {
         optional: true,
         doc: 'only derive conflux compatible address from this mnemonic',
       },
-      truep,
+      [maybe, truep],
     ],
     [
       'force',
       {optional: true, doc: 'set to true to skip duplication check'},
-      truep,
+      [maybe, truep],
     ],
   ],
 }

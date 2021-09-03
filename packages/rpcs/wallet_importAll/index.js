@@ -4,7 +4,7 @@ import {decrypt} from 'browser-passworder'
 export const NAME = 'wallet_importAll'
 
 export const schemas = {
-  inputs: [
+  input: [
     map,
     {closed: true},
     ['password', password],
@@ -49,7 +49,7 @@ export const main = async ({
     if (window) {
       const browser = (await import('webextension-polyfill')).default
       await browser.storage.local.set({wallet_importAll: decrypted})
-      browser.runtime.reload()
+      browser?.runtime?.reload?.()
     } else {
       throw Internal('Invalid running env, window is not defined')
     }

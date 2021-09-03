@@ -2,10 +2,10 @@
   "name": "@cfxjs/base32-address",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
-    "@cfxjs/base32": "workspace:packages/base32",
-    "@cfxjs/utils": "workspace:packages/utils"
+    "@cfxjs/utils": "workspace:packages/utils",
+    "js-conflux-sdk": "1.7.0"
   }
 }

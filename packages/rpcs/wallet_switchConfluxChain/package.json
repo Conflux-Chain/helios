@@ -1,0 +1,9 @@
+{
+  "name": "@cfxjs/wallet_switch-conflux-chain",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.1",
+  "dependencies": {
+    "@cfxjs/wallet_switch-ethereum-chain": "workspace:packages/rpcs/wallet_switchEthereumChain"
+  }
+}

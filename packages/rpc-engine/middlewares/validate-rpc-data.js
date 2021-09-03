@@ -1,4 +1,4 @@
-import {CFX_MAINNET_NAME, SAFE_INPAGE_DOMAIN} from '@cfxjs/fluent-wallet-consts'
+import {CFX_MAINNET_NAME} from '@cfxjs/fluent-wallet-consts'
 import {defMiddleware} from '../middleware.js'
 import EpochRefConf from '@cfxjs/rpc-epoch-ref'
 import * as jsonRpcErr from '@cfxjs/json-rpc-error'
@@ -12,17 +12,12 @@ function validateRpcMehtod({req, rpcStore}) {
   }
 }
 
-function validateExternalMethod({req, rpcStore}) {
-  const {method, _inpage, _origin, _popup} = req
+function validateExternalMethod({MODE: {isProd}, req, rpcStore}) {
+  const {method, _inpage, _origin, _popup, _rpcStack} = req
   const external = rpcStore[method]?.permissions?.external
 
-  const isSafeInpageOrigin = SAFE_INPAGE_DOMAIN.includes(_origin)
-
-  // fluent wallet's own origin
-  if (isSafeInpageOrigin) return
-
   // internal only
-  if (external.length === 0 && !req._rpcStack) {
+  if (external.length === 0 && !_rpcStack) {
     const err = new jsonRpcErr.MethodNotFound(
       `Method ${method} not found, not allowed to call internal method directly`,
     )
@@ -30,19 +25,38 @@ function validateExternalMethod({req, rpcStore}) {
     throw err
   }
 
-  const methodNotFoundErr = new jsonRpcErr.MethodNotFound()
-  methodNotFoundErr.rpcData = req
-
   const allowInpage = external.includes('inpage')
   const allowPopup = external.includes('popup')
 
-  if (_inpage && (!allowInpage || !_origin)) throw methodNotFoundErr
+  if (_inpage && (!allowInpage || !_origin)) {
+    const err = new jsonRpcErr.MethodNotFound(
+      isProd
+        ? undefined
+        : !allowInpage
+        ? 'Not allowd to call from inpage'
+        : 'Missing _origin',
+    )
+    err.rpcData = req
+    throw err
+  }
 
-  if (_popup && !allowPopup) throw methodNotFoundErr
+  if (_popup && !allowPopup) {
+    const err = new jsonRpcErr.MethodNotFound(
+      isProd ? undefined : 'Not allowd to call from popup',
+    )
+    err.rpcData = req
+    throw err
+  }
 }
 
 function validateLockState({req, rpcStore, db}) {
-  if (!rpcStore[req.method]?.permissions?.locked && db.getLocked()) {
+  if (
+    !rpcStore[req.method].permissions.locked &&
+    // for methods allowed to be called from inpage when unlocked
+    // popup the unlock ui first then call the method if user unlock the wallet
+    !rpcStore[req.method].permissions.external.includes('inpage') &&
+    db.getLocked()
+  ) {
     const err = new jsonRpcErr.MethodNotFound(
       `Method ${req.method} not found, wallet is locked`,
     )
@@ -54,11 +68,16 @@ function validateLockState({req, rpcStore, db}) {
 function validateNetworkSupport({req}) {
   const {method, network} = req
 
+  const bothSupport =
+    method.startsWith('wallet') || method.startsWith('personal')
+  if (bothSupport) return
+
   const cfxRpc = method.startsWith('cfx')
   const startsWithEth = method.startsWith('eth')
   const startsWithNet = method.startsWith('net')
   const startsWithWeb3 = method.startsWith('web3')
   const ethRpc = startsWithEth || startsWithNet || startsWithWeb3
+
   if (
     (network.type === 'cfx' && ethRpc) ||
     (network.type === 'eth' && cfxRpc)
@@ -71,10 +90,35 @@ function validateNetworkSupport({req}) {
   }
 }
 
+function formatRpcSiteAndApp(arg) {
+  const {req, db} = arg
+  const {_origin, _inpage} = req
+  if (!_inpage) return arg
+  if (req.method === 'wallet_registerSiteMetadata') return arg
+  const site = db.getOneSite({origin: _origin})
+  req.site = site
+  const app = db.getOneApp({site: site.eid})
+  if (app) req.app = app
+  return {...arg, req}
+}
+
+// if networkName specified, use the specified network
+// if there's app, use app.currentNetwork
+// v1 use wallet current network
+// v2 specify network is mandatory
 function formatRpcNetwork(arg) {
   const {req, db} = arg
+
+  // req.networkName came from inpage/popup
+  // in later version, we can remove all current network/account logic in bg
+  // popup/inpage can (hopefully) specify target account/network in req
+  if (req.networkName) req.network = db.getOneNetwork({name: req.networkName})
+
   if (!req.networkName) req.networkName = CFX_MAINNET_NAME
-  req.network = db.getOneNetwork({name: req.networkName})
+
+  if (req.app) req.network = req.network || req.app.currentNetwork
+  else req.network = req.network || db.getOneNetwork({selected: true})
+
   if (!req.network) {
     const err = new jsonRpcErr.InvalidParams(
       `Invalid network name ${req.networkName}`,
@@ -86,11 +130,10 @@ function formatRpcNetwork(arg) {
 }
 
 function formatEpochRef(arg) {
-  const {db, req} = arg
-  const {method, params = []} = req
+  const {req} = arg
+  const {method, params = [], network} = req
   const epochRefPos = EpochRefConf[method]
   if (epochRefPos !== undefined && !params[epochRefPos]) {
-    const network = db.getNetworkByName(req.networkName)?.[0]
     req.params[epochRefPos] =
       network?.type === 'cfx' ? 'latest_state' : 'latest'
     if (method === 'cfx_epochNumber') req.params[0] = 'latest_mined'
@@ -122,21 +165,34 @@ export default defMiddleware(({tx: {check, comp, pluck, map, filter}}) => [
     fn: comp(check(validateLockState), pluck('req')),
   },
   {
-    id: 'validateRpcData',
+    id: 'formatRpcSiteAndApp',
     ins: {
       req: {stream: '/validateLockState/node'},
+    },
+    fn: comp(map(formatRpcSiteAndApp), pluck('req')),
+  },
+  {
+    id: 'formatRpcNetwork',
+    ins: {
+      req: {stream: '/formatRpcSiteAndApp/node'},
     },
     fn: comp(
       map(formatRpcNetwork),
       filter(({req}) => Boolean(req)),
-      map(formatEpochRef),
       pluck('req'),
     ),
   },
   {
+    id: 'formatEpochRef',
+    ins: {
+      req: {stream: '/formatRpcNetwork/node'},
+    },
+    fn: comp(map(formatEpochRef), pluck('req')),
+  },
+  {
     id: 'validateNetworkSupport',
     ins: {
-      req: {stream: '/validateRpcData/node'},
+      req: {stream: '/formatEpochRef/node'},
     },
     fn: comp(check(validateNetworkSupport), pluck('req')),
   },

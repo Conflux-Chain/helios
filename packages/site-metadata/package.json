@@ -1,0 +1,6 @@
+{
+  "name": "@cfxjs/site-metadata",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.1"
+}

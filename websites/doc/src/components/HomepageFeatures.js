@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from 'react'
 import clsx from 'clsx'
 import styles from './HomepageFeatures.module.css'
@@ -15,7 +14,7 @@ const FeatureList = [
     ),
   },
   {
-    title: 'Focus on What Matter',
+    title: 'Focus on What Matters',
     Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>

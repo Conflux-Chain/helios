@@ -21,17 +21,17 @@ export const permissions = {
 }
 
 export const main = async ({
-  Err,
+  Err: {InvalidParams},
   db: {getAccountGroupById},
   rpcs: {wallet_validatePassword},
   params: {password, accountGroupId},
 }) => {
   if (!(await wallet_validatePassword({password})))
-    throw Err.InvalidParams('Invalid password')
+    throw InvalidParams('Invalid password')
 
   const group = getAccountGroupById(accountGroupId)
   if (!group?.vault?.data)
-    throw Err.InvalidParams(`Invalid account group id ${accountGroupId}`)
+    throw InvalidParams(`Invalid account group id ${accountGroupId}`)
 
   let decrypted =
     group.vault.ddata || (await decrypt(password, group.vault.data))

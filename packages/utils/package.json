@@ -1,9 +1,10 @@
 {
   "name": "@cfxjs/utils",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "main": "index.js",
   "dependencies": {
+    "bn.js": "5.2.0",
     "is-hex-prefixed": "^1.0.0",
     "randombytes": "^2.1.0",
     "strip-hex-prefix": "^1.0.0"

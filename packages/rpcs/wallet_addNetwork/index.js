@@ -1,4 +1,15 @@
-import {map, url, stringp, enums, or, dbid, hdPath} from '@cfxjs/spec'
+import {
+  map,
+  url,
+  stringp,
+  enums,
+  or,
+  dbid,
+  hdPath,
+  chainId,
+  eq,
+  plus,
+} from '@cfxjs/spec'
 import {
   DEFAULT_CFX_HDPATH,
   DEFAULT_ETH_HDPATH,
@@ -6,29 +17,45 @@ import {
 
 export const NAME = 'wallet_addNetwork'
 
-export const schemas = {
-  input: [
-    map,
-    {closed: true},
-    ['url', url],
-    ['explorerUrl', {optional: true}, url],
-    ['name', [stringp, {min: 3, max: 128}]],
-    ['ticker', [stringp, {min: 2, max: 16}]],
-    [
-      'hdPath',
-      {
-        optional: true,
-        doc: 'the hd path of this netowrk, default to the detected network type (cfx/eth), can be one of hd path dbid, hd path type "cfx"/"eth" or hd path value',
-      },
-      [or, [enums, 'cfx', 'eth'], dbid, hdPath],
-    ],
+const nativeCurrencySchema = [
+  map,
+  {closed: true, doc: 'Config of the native currency of the chain'},
+  ['name', stringp],
+  ['symbol', [stringp, {min: 2, max: 6}]],
+  ['decimals', [eq, 18]],
+]
+
+export const ChainParameterSchema = [
+  map,
+  {
+    closed: true,
+    doc: 'Config of the chain to add, check it at https://docs.metamask.io/guide/rpc-api.html#wallet-addethereumchain',
+  },
+  ['chainId', chainId],
+  ['chainName', stringp],
+  ['nativeCurrency', nativeCurrencySchema],
+  ['rpcUrls', [plus, url]],
+  ['blockExplorerUrls', {optional: true}, [plus, url]],
+  ['iconUrls', {optional: true}, [plus, url]],
+  [
+    'hdPath',
+    {
+      optional: true,
+      doc: 'the hd path of this netowrk, default to the detected network type (cfx/eth), can be one of hd path dbid, hd path type "cfx"/"eth" or hd path value',
+    },
+    [or, [enums, 'cfx', 'eth'], dbid, hdPath],
   ],
+]
+
+export const schemas = {
+  input: ChainParameterSchema,
 }
 
 export const permissions = {
   external: ['popup'],
   db: [
     't',
+    'getNetwork',
     'getHdPathById',
     'getNetworkByName',
     'getNetworkByEndpoint',
@@ -44,7 +71,7 @@ export const permissions = {
 }
 
 export const main = async ({
-  Err: {InvalidParam},
+  Err: {InvalidParams},
   rpcs: {
     wallet_addHdPath,
     wallet_detectNetworkType,
@@ -54,28 +81,49 @@ export const main = async ({
   db: {
     t,
     getHdPathById,
+    getNetwork,
     getNetworkByName,
     getNetworkByEndpoint,
     getOneHdPath,
     filterAccountGroupByNetworkType,
   },
-  params: {url, name, ticker, hdPath, explorerUrl},
+  params: {
+    chainId,
+    chainName: name,
+    nativeCurrency: ticker,
+    rpcUrls,
+    blockExplorerUrls = [],
+    iconUrls = [],
+    hdPath,
+  },
 }) => {
+  const [url] = rpcUrls
+  const [explorerUrl] = blockExplorerUrls
+  const [iconUrl] = iconUrls
   const [dupNameNetwork] = getNetworkByName(name)
-  if (dupNameNetwork) throw InvalidParam('Duplicate network name')
+  if (dupNameNetwork) throw InvalidParams('Duplicate network name')
   const [dupEndpointNetwork] = getNetworkByEndpoint(url)
   if (dupEndpointNetwork)
-    throw InvalidParam(
+    throw InvalidParams(
       `Duplicate network endpoint with network ${dupEndpointNetwork.eid}`,
     )
   if (Number.isInteger(hdPath) && !getHdPathById(hdPath))
-    throw InvalidParam(`Invalid hdPath id ${hdPath}`)
+    throw InvalidParams(`Invalid hdPath id ${hdPath}`)
+  const [dupChainIdBuiltInNetwork] = getNetwork({chainId, builtin: true})
+  if (dupChainIdBuiltInNetwork)
+    throw InvalidParams(`Duplicate chainId ${chainId} with builtin network`)
 
+  // this returns menas the rpcurl is valid
   const {
     type: networkType,
-    chainId,
+    chainId: detectedChainId,
     netId,
   } = await wallet_detectNetworkType({url})
+
+  if (chainId !== detectedChainId)
+    throw InvalidParams(
+      `Invalid chainId ${chainId}, got ${detectedChainId} from remote`,
+    )
 
   hdPath = hdPath || networkType
 
@@ -107,6 +155,7 @@ export const main = async ({
       },
     },
     explorerUrl && {eid: 'networkId', network: {scanUrl: explorerUrl}},
+    iconUrl && {eid: 'networkId', network: {icon: iconUrl}},
   ])
 
   const groups = filterAccountGroupByNetworkType(networkType)
