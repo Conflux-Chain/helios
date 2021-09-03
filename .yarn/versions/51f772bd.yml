@@ -1,5 +1,0 @@
-releases:
-  "@cfxjs/component-input": patch
-
-declined:
-  - helios-popup
