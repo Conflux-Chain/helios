@@ -15,18 +15,18 @@ export const permissions = {
 }
 
 export const main = async ({
-  Err,
+  Err: {InvalidParams},
   db: {getAccountById, getAddressNetwork, getAccountAccountGroup},
   rpcs: {wallet_validatePassword, wallet_exportAccountGroup},
   params: {password, accountId},
 }) => {
   if (!(await wallet_validatePassword({password})))
-    throw Err.InvalidParams('Invalid password')
+    throw InvalidParams('Invalid password')
 
   const account = getAccountById(accountId)
   const accountGroup = getAccountAccountGroup(accountId)
   if (!accountGroup?.vault?.type)
-    throw Err.InvalidParams(`Invalid account id ${accountId}`)
+    throw InvalidParams(`Invalid account id ${accountId}`)
 
   const {vault} = accountGroup
   if (vault.type !== 'hd')

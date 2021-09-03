@@ -17,10 +17,10 @@ export const main = async ({
   params: {password},
   db: {setPassword, retract, getUnlockReq},
   rpcs: {wallet_validatePassword},
-  Err,
+  Err: {InvalidParams},
 }) => {
   if (!(await wallet_validatePassword({password})))
-    throw Err.InvalidParams('Invalid password')
+    throw InvalidParams('Invalid password')
   setPassword(password)
 
   const unlockReq = getUnlockReq() || []

@@ -202,10 +202,10 @@ export const main = async arg => {
     db: {createVault, getVault, getAccountGroup, getVaultById},
     rpcs: {wallet_validatePassword, wallet_deleteAccountGroup},
     params: {password, mnemonic, privateKey, address, cfxOnly, force},
-    Err,
+    Err: {InvalidParams},
   } = arg
   if (!(await wallet_validatePassword({password})))
-    throw Err.InvalidParams('Invalid password')
+    throw InvalidParams('Invalid password')
 
   const vault = {cfxOnly: false}
   vault.data = mnemonic || privateKey || address
@@ -216,7 +216,7 @@ export const main = async arg => {
     vault.type = 'hd'
     if (cfxOnly) vault.cfxOnly = true
   } else if (address) {
-    const validateResult = processAddress(address, Err)
+    const validateResult = processAddress(address)
     vault.type = 'pub'
     vault.data = validateResult.address
     vault.cfxOnly = validateResult.cfxOnly
@@ -241,7 +241,7 @@ export const main = async arg => {
 
     if (force) {
       if (duplicateVault.type !== 'hd')
-        throw Err.InvalidParams("Can't force import none hd vault")
+        throw InvalidParams("Can't force import none hd vault")
       await wallet_deleteAccountGroup({
         accountGroupId: duplicateAccountGroup.eid,
         password,
@@ -249,12 +249,12 @@ export const main = async arg => {
     } else {
       let err
       if (vault.type === 'hd' && duplicateVault.cfxOnly !== vault.cfxOnly) {
-        err = Err.InvalidParams(
+        err = InvalidParams(
           `Duplicate credential(with different cfxOnly setting) with account group ${duplicateAccountGroup.eid}`,
         )
         err.updateCfxOnly = true
       } else {
-        err = Err.InvalidParams(
+        err = InvalidParams(
           `Duplicate credential with account group ${duplicateAccountGroup.eid}`,
         )
       }

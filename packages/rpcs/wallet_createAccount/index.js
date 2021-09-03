@@ -46,13 +46,13 @@ export const main = async ({
     getAccountGroupById,
   },
   params: {accountGroupId, nickname},
-  Err,
+  Err: {InvalidParams},
 }) => {
   const group = getAccountGroupById(accountGroupId)
-  if (!group) throw Err.InvalidParams('Invalid account group id')
+  if (!group) throw InvalidParams('Invalid account group id')
   const {vault} = group
   if (vault.type !== 'hd')
-    throw Err.InvalidParams("Can't add account into none hd vault")
+    throw InvalidParams("Can't add account into none hd vault")
 
   const existAccounts = group.account || []
   const nextAccountIdx = existAccounts.length
@@ -61,7 +61,7 @@ export const main = async ({
     false,
   )
   if (hasDuplicateNicknameInSameAccountGroup)
-    throw Err.InvalidParams(
+    throw InvalidParams(
       `Invalid nickname "${nickname}", duplicate with other account in the same account group`,
     )
 
