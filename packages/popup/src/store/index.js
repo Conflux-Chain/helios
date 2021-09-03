@@ -1,13 +1,22 @@
-import create from '../hooks/zustand'
+import create from 'zustand'
 
-const useGlobalStore = create(set => ({
-  // value
-  createdGroupName: '',
-  createdSeedPhase: '',
+let GlobalStore = null
 
-  // logic
-  setCreatedGroupName: createdGroupName => set({createdGroupName}),
-  setCreatedSeedPhase: createdSeedPhase => set({createdSeedPhase}),
-}))
+const createGlobalStore = () =>
+  create(set => ({
+    // value
+    createdGroupName: '',
+    createdSeedPhase: '',
+
+    // logic
+    setCreatedGroupName: createdGroupName => set({createdGroupName}),
+    setCreatedSeedPhase: createdSeedPhase => set({createdSeedPhase}),
+  }))
+
+const useGlobalStore = () => {
+  if (!GlobalStore) GlobalStore = createGlobalStore()
+
+  return GlobalStore
+}
 
 export default useGlobalStore
