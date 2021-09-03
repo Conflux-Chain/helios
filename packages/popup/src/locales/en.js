@@ -42,6 +42,11 @@ const en = {
     selectSeedPhrase: 'Select Seed Phrase',
     oneAccount: '1 Account',
     manyAccounts: '{{accountNum}} Accounts',
+    // create seed phrase
+    seedCreateTitle: 'Next, the Seed Phrase will be displayed',
+    seedCreateContent:
+      'Obtaining the Seed Phrase is equivalent to owning the assets in the wallet.<br/>Once the Seed Phrase is lost, it cannot be retrieved, please keep it properly',
+    next: 'Next',
   },
 }
 

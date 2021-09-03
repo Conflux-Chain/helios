@@ -1,5 +1,6 @@
 import create from 'zustand'
 import {useTranslation} from 'react-i18next'
+import {useHistory} from 'react-router-dom'
 import {useRPC} from '@cfxjs/use-rpc'
 import {useRef, useEffect} from 'react'
 import {isFunction, isObject} from '@cfxjs/checks'
@@ -104,9 +105,11 @@ const createWithUseRPC = (...args) => {
 
   return (...args) => {
     const {t} = useTranslation()
+    const history = useHistory()
     const s = useStore(...args)
-    s.__hooksToRun.forEach(fn => fn())
+    s.__hooksToRun?.forEach(fn => fn())
     s.t = t
+    s.history = history
     return s
   }
 }
