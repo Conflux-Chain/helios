@@ -2,7 +2,7 @@
   "name": "@cfxjs/base32-address",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
     "@cfxjs/utils": "workspace:packages/utils",

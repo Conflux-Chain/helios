@@ -2,7 +2,7 @@
   "name": "@cfxjs/hdkey",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "dependencies": {
     "@cfxjs/utils": "workspace:packages/utils",
     "@ethersproject/hdnode": "5.4.0",

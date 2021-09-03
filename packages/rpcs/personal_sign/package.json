@@ -2,7 +2,7 @@
   "name": "@cfxjs/personal_sign",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "dependencies": {
     "@cfxjs/base32-address": "workspace:packages/base32-address",
     "@cfxjs/signature": "workspace:packages/signature"
