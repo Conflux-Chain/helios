@@ -1,4 +1,4 @@
-const getAuth = (hasAccount, isLocked) => {
+export const getAuth = (hasAccount, isLocked) => {
   if (typeof hasAccount !== 'boolean' || typeof isLocked !== 'boolean') {
     return null
   }
@@ -12,4 +12,8 @@ const getAuth = (hasAccount, isLocked) => {
   return null
 }
 
-export {getAuth}
+const globalThis = window ?? global
+
+export const request = (...args) => {
+  return globalThis.___CFXJS_USE_RPC__PRIVIDER?.request(...args)
+}

@@ -2,11 +2,11 @@ import {useState} from 'react'
 import Button from '@cfxjs/component-button'
 import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {passwordRegExp} from '../../constants'
+import {PASSWORD_REG_EXP} from '../../constants'
 // import {useStore} from '../../store'
 
 const validate = value => {
-  return passwordRegExp.test(value)
+  return PASSWORD_REG_EXP.test(value)
 }
 const UnlockPage = () => {
   const {t} = useTranslation()

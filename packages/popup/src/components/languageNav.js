@@ -1,7 +1,7 @@
 import {useHistory} from 'react-router-dom'
 import Dropdown from '@cfxjs/component-dropdown'
 import {useTranslation} from 'react-i18next'
-import {Languages} from '../constants'
+import {LANGUAGES} from '../constants'
 import {ArrowDown, LeftArrow} from '@cfxjs/component-icons'
 import PropTypes from 'prop-types'
 
@@ -9,7 +9,7 @@ const Overlay = changeLanguage => {
   const {t} = useTranslation()
   return (
     <>
-      {Languages.map(lang => (
+      {LANGUAGES.map(lang => (
         <div
           className="cursor-pointer"
           aria-hidden="true"

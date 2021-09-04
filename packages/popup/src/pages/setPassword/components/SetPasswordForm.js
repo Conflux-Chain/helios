@@ -3,12 +3,12 @@ import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@cfxjs/component-button'
-import {passwordRegExp} from '../../../constants'
+import {PASSWORD_REG_EXP} from '../../../constants'
 import {PasswordInput} from '../../../components'
 import {useStore} from '../../../store'
 
 const validate = value => {
-  return passwordRegExp.test(value)
+  return PASSWORD_REG_EXP.test(value)
 }
 const SetPasswordForm = ({formStyle, legendStyle, desStyle, buttonStyle}) => {
   const history = useHistory()
