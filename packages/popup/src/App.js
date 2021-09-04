@@ -57,6 +57,13 @@ function App() {
         ) : (
           <Router>
             <Switch>
+              <Route exact path="/unlock">
+                <Unlock />
+              </Route>
+              <Route exact path="/welcome">
+                <Welcome />
+              </Route>
+
               <ProtectedRoute
                 hasAccount={accountAvailability}
                 isLocked={lockStatus}
@@ -80,12 +87,7 @@ function App() {
               <Route exact path="/create-account-confirm-seed-phrase">
                 <ConfirmSeed />
               </Route>
-              <Route exact path="/unlock">
-                <Unlock />
-              </Route>
-              <Route exact path="/welcome">
-                <Welcome />
-              </Route>
+
               <Route exact path="/set-password">
                 <SetPassword />
               </Route>

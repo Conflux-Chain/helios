@@ -1,19 +1,22 @@
 import {useState} from 'react'
+import {useHistory} from 'react-router-dom'
 import Button from '@cfxjs/component-button'
 import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {PASSWORD_REG_EXP} from '../../constants'
-// import {useStore} from '../../store'
+import {PASSWORD_REG_EXP, GET_WALLET_STATUS} from '../../constants'
+import {useSWRConfig} from 'swr'
+import {request} from '../../utils/'
 
 const validate = value => {
   return PASSWORD_REG_EXP.test(value)
 }
 const UnlockPage = () => {
+  const history = useHistory()
   const {t} = useTranslation()
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const {mutate} = useSWRConfig()
 
-  // const {unlockWallet} = useStore()
   const handleSubmit = event => {
     event.preventDefault()
     setInputErrorMessage(password)
@@ -22,16 +25,22 @@ const UnlockPage = () => {
     // TODO: Replace err msg
     setErrorMessage(validate(value) ? '' : 'something wrong')
   }
-  const login = () => {
-    // if (password) {
-    //   unlockWallet()
-    //     .then(res => {
-    //       console.log('res', res)
-    //     })
-    //     .catch(err => {
-    //       console.log('err', err)
-    //     })
-    // }
+  const login = async () => {
+    if (password) {
+      try {
+        const res = await request('wallet_unlock', {password})
+        if (res?.error) {
+          // TODO: Replace err msg
+          return setErrorMessage(res.error.message.split('\n')[0])
+        }
+        if (res.result) {
+          mutate([...GET_WALLET_STATUS])
+          history.push('/')
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
   }
 
   return (
