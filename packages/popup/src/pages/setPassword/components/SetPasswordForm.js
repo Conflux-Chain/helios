@@ -2,18 +2,19 @@ import PropTypes from 'prop-types'
 import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import Button from '@cfxjs/component-button'
 import {PASSWORD_REG_EXP} from '../../../constants'
 import {PasswordInput} from '../../../components'
-import {useStore} from '../../../store'
+import useGlobalStore from '../../../stores'
+import Button from '@cfxjs/component-button'
 
 const validate = value => {
   return PASSWORD_REG_EXP.test(value)
 }
+
 const SetPasswordForm = ({formStyle, legendStyle, desStyle, buttonStyle}) => {
   const history = useHistory()
   const {t} = useTranslation()
-  const {createNewPassword} = useStore()
+  const setCreatedPassword = useGlobalStore(state => state.setCreatedPassword)
 
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -23,16 +24,19 @@ const SetPasswordForm = ({formStyle, legendStyle, desStyle, buttonStyle}) => {
   // TODO: Replace err msg
   const setInputErrorMessage = value => {
     if (validate(value)) {
-      if (value !== confirmPassword) {
-        setConfirmErrorMessage('输入的密码不一致')
-      }
+      setConfirmErrorMessage(
+        value !== confirmPassword ? '输入的密码不一致' : '',
+      )
       return setErrorMessage('')
     }
     setErrorMessage('something wrong')
   }
   // TODO: Replace err msg
   const setConfirmInputErrorMessage = value => {
-    setConfirmErrorMessage(password === value ? '' : '输入的密码不一致')
+    if (password === value) {
+      return setConfirmErrorMessage('')
+    }
+    setConfirmErrorMessage('输入的密码不一致')
   }
 
   const handleSubmit = event => {
@@ -43,7 +47,7 @@ const SetPasswordForm = ({formStyle, legendStyle, desStyle, buttonStyle}) => {
 
   const create = () => {
     if (!errorMessage && !confirmErrorMessage && password && confirmPassword) {
-      createNewPassword(confirmPassword)
+      setCreatedPassword(confirmPassword)
       history.push('/select-create-type')
     }
   }
