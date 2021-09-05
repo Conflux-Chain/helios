@@ -30,8 +30,7 @@ const UnlockPage = () => {
       try {
         const res = await request('wallet_unlock', {password})
         if (res?.error) {
-          // TODO: Replace err msg
-          return setErrorMessage(res.error.message.split('\n')[0])
+          throw res.error
         }
         if (res.result) {
           mutate([...GET_WALLET_STATUS])
@@ -39,6 +38,8 @@ const UnlockPage = () => {
         }
       } catch (err) {
         console.log(err)
+        // TODO: Replace err msg
+        err.message && setErrorMessage(err.message.split('\n')[0])
       }
     }
   }

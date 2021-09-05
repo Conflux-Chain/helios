@@ -1,24 +1,49 @@
-import {useState} from 'react'
-import {useParams} from 'react-router-dom'
+import {useState, useEffect} from 'react'
+import {useParams, useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TextNav} from '../../components/index'
 import Button from '@cfxjs/component-button'
 import Input from '@cfxjs/component-input'
 import {CompWithLabel} from '../../components'
+import {useRPC} from '@cfxjs/use-rpc'
+import {request} from '../../utils'
+import {GET_HD_ACCOUNT_GROUP, GET_ALL_ACCOUNT_GROUP} from '../../constants'
+import useGlobalStore from '../../stores'
+import {useSWRConfig} from 'swr'
 
 function ImportAccount() {
+  const {t} = useTranslation()
+  const {pattern} = useParams()
+  const history = useHistory()
+  const {mutate} = useSWRConfig()
+
   const [name, setName] = useState('')
   const [keygen, setKeygen] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [keygenErrorMessage, setKeygenErrorMessage] = useState('')
+  const [keygenNamePlaceholder, setKeygenNamePlaceholder] = useState('')
+  const [creatingAccount, setCreatingAccount] = useState(false)
+  const createdPassword = useGlobalStore(state => state.createdPassword)
 
-  const {t} = useTranslation()
-  const {pattern} = useParams()
   const lanPrefix = pattern === 'seed-phrase' ? 'seed' : 'pKey'
+  const {data: hdGroup} = useRPC(
+    [...GET_HD_ACCOUNT_GROUP],
+    {type: 'hd'},
+    {fallbackData: []},
+  )
+
+  useEffect(() => {
+    if (!createdPassword) {
+      history.push('/')
+    }
+  }, [createdPassword, history])
+  useEffect(() => {
+    setKeygenNamePlaceholder(`Seed-${hdGroup.length + 1}`)
+  }, [hdGroup])
 
   // TODO: Error msg
   const validateName = name => {
-    setErrorMessage(name === '' ? 'Required!' : '')
+    setErrorMessage(name.length > 20 ? '长度小于20个字符' : '')
   }
   const validateKeygen = keygen => {
     setKeygenErrorMessage(keygen === '' ? 'Required!' : '')
@@ -31,13 +56,50 @@ function ImportAccount() {
     setKeygen(e.target.value)
     validateKeygen(e.target.value)
   }
-  const importAccount = () => {
-    validateName(name)
-    validateKeygen(keygen)
-    if (!errorMessage && !keygenErrorMessage && name && keygen) {
-      console.log('name', name, keygen)
+  const dispatchMutate = () => {
+    mutate([...GET_ALL_ACCOUNT_GROUP])
+    mutate([...GET_HD_ACCOUNT_GROUP])
+  }
+  const importAccount = async () => {
+    if (!creatingAccount && !errorMessage && !keygenErrorMessage && keygen) {
+      setCreatingAccount(true)
+      try {
+        const res = await request('wallet_importMnemonic', {
+          mnemonic: keygen,
+          password: createdPassword,
+        })
+        if (res?.error) {
+          throw res.error
+        }
+        if (res.result) {
+          const updateRes = await request('wallet_updateAccountGroup', {
+            nickname: name || keygenNamePlaceholder,
+            accountGroupId: res.result,
+          })
+
+          if (updateRes?.error) {
+            throw updateRes?.error
+          }
+          setCreatingAccount(false)
+          if (updateRes.result) {
+            dispatchMutate()
+            history.push('/')
+          }
+        }
+      } catch (err) {
+        console.log('err', err)
+        setCreatingAccount(false)
+        err.message && setKeygenErrorMessage(err.message.split('\n')[0])
+      }
     }
   }
+
+  const onCreate = () => {
+    validateName(name)
+    validateKeygen(keygen)
+    importAccount()
+  }
+
   return (
     <div className="bg-bg  h-full relative">
       <TextNav hasGoBack={true} title={t(`${lanPrefix}Import`)} />
@@ -52,6 +114,7 @@ function ImportAccount() {
               onChange={changeName}
               errorMessage={errorMessage}
               width="w-full"
+              placeholder={keygenNamePlaceholder}
             />
           </CompWithLabel>
           <CompWithLabel
@@ -69,7 +132,7 @@ function ImportAccount() {
           </CompWithLabel>
           <Button
             className="absolute w-70 top-136 -translate-x-2/4 left-1/2 cursor-pointer"
-            onClick={importAccount}
+            onClick={onCreate}
           >
             {t('import')}
           </Button>
