@@ -25,13 +25,11 @@ function App() {
   const [accountAvailability, setAccountAvailability] = useState(false)
   const [lockStatus, setLockStatus] = useState(true)
 
-  const {data: accountData, error: accountError} = useRPC(
-    [...GET_ALL_ACCOUNT_GROUP],
-    {
-      type: 'hd',
-    },
-  )
+  const {data: accountData, error: accountError} = useRPC([
+    ...GET_ALL_ACCOUNT_GROUP,
+  ])
   const {data: lockData, error: lockError} = useRPC([...GET_WALLET_STATUS])
+
   useEffect(() => {
     if (accountError || lockError) {
       setLoadingStatus(false)

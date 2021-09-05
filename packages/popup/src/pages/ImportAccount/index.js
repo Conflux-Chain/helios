@@ -60,14 +60,25 @@ function ImportAccount() {
     mutate([...GET_ALL_ACCOUNT_GROUP])
     mutate([...GET_HD_ACCOUNT_GROUP])
   }
+  const importGroup = () => {
+    if (pattern === 'private-key') {
+      return request('wallet_importPrivateKey', {
+        privateKey: keygen,
+        password: createdPassword,
+      })
+    }
+
+    return request('wallet_importMnemonic', {
+      mnemonic: keygen,
+      password: createdPassword,
+    })
+  }
+
   const importAccount = async () => {
     if (!creatingAccount && !errorMessage && !keygenErrorMessage && keygen) {
       setCreatingAccount(true)
       try {
-        const res = await request('wallet_importMnemonic', {
-          mnemonic: keygen,
-          password: createdPassword,
-        })
+        const res = await importGroup()
         if (res?.error) {
           throw res.error
         }
@@ -87,7 +98,6 @@ function ImportAccount() {
           }
         }
       } catch (err) {
-        console.log('err', err)
         setCreatingAccount(false)
         err.message && setKeygenErrorMessage(err.message.split('\n')[0])
       }
