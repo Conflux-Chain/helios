@@ -15,8 +15,10 @@ const createGlobalStore = () =>
 
 const useGlobalStore = () => {
   if (!GlobalStore) GlobalStore = createGlobalStore()
+  const useStore = GlobalStore
+  const s = useStore()
 
-  return GlobalStore
+  return s
 }
 
 export default useGlobalStore
