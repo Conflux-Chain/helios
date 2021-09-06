@@ -73,4 +73,5 @@ releases:
 declined:
   - helios-background
   - "@cfxjs/rpc-engine"
+  - "@cfxjs/use-rpc"
   - workspace-tools

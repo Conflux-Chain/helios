@@ -264,13 +264,13 @@ export const main = async arg => {
         err = InvalidParams(
           `Duplicate credential(with different cfxOnly setting) with account group ${duplicateAccountGroup.eid}`,
         )
-        err.updateCfxOnly = true
+        err.extra.updateCfxOnly = true
       } else {
         err = InvalidParams(
           `Duplicate credential with account group ${duplicateAccountGroup.eid}`,
         )
       }
-      err.duplicateAccountGroupId = duplicateAccountGroup.eid
+      err.extra.duplicateAccountGroupId = duplicateAccountGroup.eid
       throw err
     }
   }

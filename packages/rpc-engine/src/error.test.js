@@ -9,6 +9,7 @@ describe('error', function () {
 
       rpcErrorHandlerFactory()({
         message: 'original error message',
+        extra: {foo: 'bar'},
         rpcData: {
           method: 'm0',
           _rpcStack: ['m1', 'm2'],
@@ -27,9 +28,7 @@ describe('error', function () {
       )
       expect(fakeCWrite.mock.calls[0][0].error.message).toContain('-> m1')
       expect(fakeCWrite.mock.calls[0][0].error.message).toContain('-> m2')
-      expect(fakeCWrite.mock.calls[0][0].error.data.message).toStrictEqual(
-        fakeCWrite.mock.calls[0][0].error.message,
-      )
+      expect(fakeCWrite.mock.calls[0][0].error.data).toStrictEqual({foo: 'bar'})
 
       rpcErrorHandlerFactory()({
         message: 'original error message',
