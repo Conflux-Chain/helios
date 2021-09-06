@@ -71,12 +71,12 @@ const SetPasswordForm = () => {
         />
       </section>
 
-      <section className="h-33">
+      <section className="mb-15">
         <em className="text-xs not-italic text-center  w-fit text-gray-40">
           {t('rememberPWD')}
         </em>
         <Button
-          className="cursor-pointer w-70 mt-4 mx-auto"
+          className="w-70 mt-4 mx-auto"
           disabled={!!errorMessage || !!confirmErrorMessage}
           onClick={create}
         >

@@ -152,7 +152,7 @@ function ImportAccount() {
             </CompWithLabel>
           </section>
           <section className="h-14">
-            <Button className="w-70 cursor-pointer mx-auto" onClick={onCreate}>
+            <Button className="w-70  mx-auto" onClick={onCreate}>
               {t('import')}
             </Button>
           </section>

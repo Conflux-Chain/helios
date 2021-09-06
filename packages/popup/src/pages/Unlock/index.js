@@ -72,12 +72,7 @@ const UnlockPage = () => {
             />
           </section>
           <section className="h-58">
-            <Button
-              className="cursor-pointer"
-              fullWidth
-              disabled={!!errorMessage}
-              onClick={login}
-            >
+            <Button fullWidth disabled={!!errorMessage} onClick={login}>
               {t('unlock')}
             </Button>
           </section>

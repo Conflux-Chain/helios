@@ -12,9 +12,9 @@ const Welcome = () => {
       <header className="mt-8">
         <HomeTitle title={t('hello')} subTitle={t('welcome')} />
       </header>
-      <main className="px-12.5">
+      <main>
         <Button
-          className="mt-80 cursor-pointer w-70"
+          className="mt-80  w-70 mx-auto"
           onClick={() => {
             history.push('/set-password')
           }}
