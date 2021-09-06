@@ -8,6 +8,7 @@ import {
   password,
   truep,
   maybe,
+  nickname,
 } from '@cfxjs/spec'
 import {encrypt, decrypt} from 'browser-passworder'
 import {compL} from '@cfxjs/compose'
@@ -17,7 +18,12 @@ import {stripHexPrefix} from '@cfxjs/utils'
 
 export const NAME = 'wallet_addVault'
 
-const baseInputSchema = [map, {closed: true}, ['password', password]]
+const baseInputSchema = [
+  map,
+  {closed: true},
+  ['password', password],
+  ['nickname', {optional: true}, nickname],
+]
 const menomicSchema = [
   ...baseInputSchema,
   ['mnemonic', mnemonic],
@@ -79,6 +85,7 @@ function setDefaultSelectedAccount({db: {getOneAccount, getAccount, t}}) {
 export async function newAccounts(arg) {
   const {
     groupId,
+    groupName,
     params: {waitTillFinish},
     rpcs: {wallet_discoverAccounts},
     vault,
@@ -122,7 +129,7 @@ export async function newAccounts(arg) {
           account: {
             address: -1,
             index: 0,
-            nickname: 'Account 1',
+            nickname: `${groupName}-1`,
             hidden: false,
           },
         },
@@ -148,7 +155,7 @@ export async function newAccounts(arg) {
         eid: account?.eid ?? -2,
         account: {
           index: 0,
-          nickname: 'Account 1',
+          nickname: `${groupName}-1`,
           address: -1,
           hidden: false,
         },
@@ -163,13 +170,13 @@ export async function newAccounts(arg) {
 
 export async function newAccountGroup(arg) {
   const {
-    params: {waitTillFinish},
+    params: {waitTillFinish, nickname},
     db: {getAccountGroup, getVaultById, t},
     vaultId,
   } = arg
   const groups = getAccountGroup()
   const vault = getVaultById(vaultId)
-  const groupName = `Vault ${groups.length + 1}`
+  const groupName = nickname || `Seed-${groups.length + 1}`
 
   const {tempids} = t([
     {
@@ -179,7 +186,12 @@ export async function newAccountGroup(arg) {
   ])
   const groupId = tempids['-1']
 
-  const newAccountsPromise = newAccounts({...arg, vault, groupId}).then(() => {
+  const newAccountsPromise = newAccounts({
+    ...arg,
+    vault,
+    groupId,
+    groupName,
+  }).then(() => {
     setDefaultSelectedAccount(arg)
   })
 
@@ -252,13 +264,13 @@ export const main = async arg => {
         err = InvalidParams(
           `Duplicate credential(with different cfxOnly setting) with account group ${duplicateAccountGroup.eid}`,
         )
-        err.updateCfxOnly = true
+        err.extra.updateCfxOnly = true
       } else {
         err = InvalidParams(
           `Duplicate credential with account group ${duplicateAccountGroup.eid}`,
         )
       }
-      err.duplicateAccountGroupId = duplicateAccountGroup.eid
+      err.extra.duplicateAccountGroupId = duplicateAccountGroup.eid
       throw err
     }
   }

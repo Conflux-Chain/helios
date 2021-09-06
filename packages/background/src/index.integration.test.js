@@ -488,12 +488,12 @@ describe('integration test', function () {
           method: 'wallet_createAccount',
           params: {
             accountGroupId: db.getAccountGroup()[0].eid,
-            nickname: 'Account 1',
+            nickname: 'Seed-1-1',
           },
         })
 
         expect(res.error.message).toMatch(
-          /Invalid nickname "Account 1", duplicate with other account in the same account group/,
+          /Invalid nickname "Seed-1-1", duplicate with other account in the same account group/,
         )
       })
     })
@@ -524,7 +524,7 @@ describe('integration test', function () {
           params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
         })
 
-        expect(db.getAccountGroup()[0].nickname).toBe('Vault 1')
+        expect(db.getAccountGroup()[0].nickname).toBe('Seed-1')
         expect(db.getAccountGroup()[0].hidden).toBeFalsy()
         await request({
           method: 'wallet_updateAccountGroup',
@@ -545,7 +545,7 @@ describe('integration test', function () {
           params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
         })
 
-        expect(db.getAccount()[0].nickname).toBe('Account 1')
+        expect(db.getAccount()[0].nickname).toBe('Seed-1-1')
         expect(db.getAccount()[0].hidden).toBeFalsy()
         await request({
           method: 'wallet_updateAccount',
@@ -564,17 +564,17 @@ describe('integration test', function () {
           params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
         })
 
-        expect(db.getAccount()[0].nickname).toBe('Account 1')
+        expect(db.getAccount()[0].nickname).toBe('Seed-1-1')
         expect(db.getAccount()[0].hidden).toBeFalsy()
         res = await request({
           method: 'wallet_updateAccount',
           params: {
             accountId: db.getAccount()[0].eid,
-            nickname: 'Account 1',
+            nickname: 'Seed-1-1',
           },
         })
         expect(res.error.message).toMatch(
-          /Invalid nickname Account 1, duplicate with other account in the same account group/,
+          /Invalid nickname Seed-1-1, duplicate with other account in the same account group/,
         )
       })
     })

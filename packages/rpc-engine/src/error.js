@@ -38,7 +38,7 @@ export const rpcErrorHandlerFactory = ({isProd = true, debugLog} = {}) => {
       error: {
         code: errorInstanceToErrorCode(err) || -32000,
         message: err.message,
-        data: err,
+        data: err.extra,
       },
       id: req.id === undefined ? 2 : req.id,
     })

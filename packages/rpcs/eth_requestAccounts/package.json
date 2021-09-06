@@ -2,7 +2,7 @@
   "name": "@cfxjs/eth_request-accounts",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "@cfxjs/spec": "workspace:packages/spec"
   }
