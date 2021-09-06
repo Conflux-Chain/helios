@@ -2,7 +2,7 @@
   "name": "@cfxjs/eth_block-number",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "dependencies": {
     "@cfxjs/spec": "workspace:packages/spec"
   }
