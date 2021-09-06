@@ -19,7 +19,7 @@ function NewSeed() {
     {fallbackData: []},
   )
   useEffect(() => {
-    setGroupNamePlaceholder(`Group-${hdGroup.length + 1}`)
+    setGroupNamePlaceholder(`Seed-${hdGroup.length + 1}`)
   }, [hdGroup])
 
   return (
