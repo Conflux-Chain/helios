@@ -1,4 +1,4 @@
-import {privateKey, map, password} from '@cfxjs/spec'
+import {privateKey, map, password, nickname} from '@cfxjs/spec'
 
 export const NAME = 'wallet_importPrivateKey'
 
@@ -6,6 +6,7 @@ export const schemas = {
   input: [
     map,
     {closed: true},
+    ['nickname', {optional: true}, nickname],
     ['privateKey', privateKey],
     ['password', password],
   ],
