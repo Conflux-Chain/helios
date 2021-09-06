@@ -14,8 +14,7 @@ const Welcome = () => {
       </header>
       <main className="px-12.5">
         <Button
-          fullWidth
-          className="mt-80 cursor-pointer"
+          className="mt-80 cursor-pointer w-70"
           onClick={() => {
             history.push('/set-password')
           }}

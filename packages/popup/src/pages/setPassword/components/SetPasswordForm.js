@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -11,7 +10,7 @@ const validate = value => {
   return PASSWORD_REG_EXP.test(value)
 }
 
-const SetPasswordForm = ({formStyle, legendStyle, desStyle, buttonStyle}) => {
+const SetPasswordForm = () => {
   const history = useHistory()
   const {t} = useTranslation()
   const setCreatedPassword = useGlobalStore(state => state.setCreatedPassword)
@@ -52,36 +51,40 @@ const SetPasswordForm = ({formStyle, legendStyle, desStyle, buttonStyle}) => {
     }
   }
   return (
-    <form onSubmit={handleSubmit} className={formStyle || ''}>
-      <legend className={legendStyle || ''}>{t('setPWD')}</legend>
-      <PasswordInput
-        setInputErrorMessage={setInputErrorMessage}
-        setInputValue={setPassword}
-        errorMessage={errorMessage}
-      />
-      {errorMessage ? null : <em className="m-0 h-6 block" />}
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white rounded px-4 pt-8  h-full box-border mb-4 flex flex-col justify-between"
+    >
+      <section>
+        <legend className="text-gray-40 text-sm mb-3">{t('setPWD')}</legend>
+        <PasswordInput
+          setInputErrorMessage={setInputErrorMessage}
+          setInputValue={setPassword}
+          errorMessage={errorMessage}
+        />
+        {errorMessage ? null : <em className="m-0 h-6 block" />}
 
-      <PasswordInput
-        setInputErrorMessage={setConfirmInputErrorMessage}
-        setInputValue={setConfirmPassword}
-        errorMessage={confirmErrorMessage}
-      />
-      <em className={desStyle || ''}>{t('rememberPWD')}</em>
-      <Button
-        className={buttonStyle}
-        disabled={!!errorMessage || !!confirmErrorMessage}
-        onClick={create}
-      >
-        {t('create')}
-      </Button>
+        <PasswordInput
+          setInputErrorMessage={setConfirmInputErrorMessage}
+          setInputValue={setConfirmPassword}
+          errorMessage={confirmErrorMessage}
+        />
+      </section>
+
+      <section className="h-33">
+        <em className="text-xs not-italic text-center  w-fit text-gray-40">
+          {t('rememberPWD')}
+        </em>
+        <Button
+          className="cursor-pointer w-70 mt-4 mx-auto"
+          disabled={!!errorMessage || !!confirmErrorMessage}
+          onClick={create}
+        >
+          {t('create')}
+        </Button>
+      </section>
     </form>
   )
-}
-SetPasswordForm.propTypes = {
-  formStyle: PropTypes.string,
-  legendStyle: PropTypes.string,
-  desStyle: PropTypes.string,
-  buttonStyle: PropTypes.string,
 }
 
 export default SetPasswordForm

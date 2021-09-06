@@ -4,7 +4,7 @@ const HomeTitle = ({title = '', subTitle = '', containerStyle = ''}) => {
   return (
     <div className={`mx-6 ${containerStyle}`}>
       <div className="text-2xl text-white h-10">{title}</div>
-      <div className="text-sm pt-1 h-4.5 text-gray-40">{subTitle}</div>
+      <div className="text-sm  h-4.5 text-gray-40">{subTitle}</div>
     </div>
   )
 }

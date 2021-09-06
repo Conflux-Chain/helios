@@ -7,7 +7,11 @@ import Input from '@cfxjs/component-input'
 import {CompWithLabel} from '../../components'
 import {useRPC} from '@cfxjs/use-rpc'
 import {request} from '../../utils'
-import {GET_HD_ACCOUNT_GROUP, GET_ALL_ACCOUNT_GROUP} from '../../constants'
+import {
+  GET_HD_ACCOUNT_GROUP,
+  GET_ALL_ACCOUNT_GROUP,
+  GET_PK_ACCOUNT_GROUP,
+} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useSWRConfig} from 'swr'
 
@@ -19,18 +23,28 @@ function ImportAccount() {
 
   const [name, setName] = useState('')
   const [keygen, setKeygen] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
   const [keygenErrorMessage, setKeygenErrorMessage] = useState('')
   const [keygenNamePlaceholder, setKeygenNamePlaceholder] = useState('')
   const [creatingAccount, setCreatingAccount] = useState(false)
   const createdPassword = useGlobalStore(state => state.createdPassword)
 
-  const lanPrefix = pattern === 'seed-phrase' ? 'seed' : 'pKey'
-  const {data: hdGroup} = useRPC(
-    [...GET_HD_ACCOUNT_GROUP],
-    {type: 'hd'},
-    {fallbackData: []},
-  )
+  let lanPrefix = ''
+  let deps = null
+  let groupParams = undefined
+  if (pattern === 'seed-phrase') {
+    lanPrefix = 'seed'
+    deps = [...GET_HD_ACCOUNT_GROUP]
+    groupParams = {
+      type: 'hd',
+    }
+  } else {
+    lanPrefix = 'pKey'
+    deps = [...GET_PK_ACCOUNT_GROUP]
+    groupParams = {
+      type: 'pk',
+    }
+  }
+  const {data: keygenGroup} = useRPC(deps, groupParams, {fallbackData: []})
 
   useEffect(() => {
     if (!createdPassword) {
@@ -38,19 +52,14 @@ function ImportAccount() {
     }
   }, [createdPassword, history])
   useEffect(() => {
-    setKeygenNamePlaceholder(`Seed-${hdGroup.length + 1}`)
-  }, [hdGroup])
+    setKeygenNamePlaceholder(`Seed-${keygenGroup.length + 1}`)
+  }, [keygenGroup])
 
-  // TODO: Error msg
-  const validateName = name => {
-    setErrorMessage(name.length > 20 ? '长度小于20个字符' : '')
-  }
   const validateKeygen = keygen => {
     setKeygenErrorMessage(keygen === '' ? 'Required!' : '')
   }
   const changeName = e => {
     setName(e.target.value)
-    validateName(e.target.value)
   }
   const changeKeygen = e => {
     setKeygen(e.target.value)
@@ -58,7 +67,8 @@ function ImportAccount() {
   }
   const dispatchMutate = () => {
     mutate([...GET_ALL_ACCOUNT_GROUP])
-    mutate([...GET_HD_ACCOUNT_GROUP])
+    pattern === 'seed-phrase' && mutate([...GET_HD_ACCOUNT_GROUP])
+    pattern !== 'seed-phrase' && mutate([...GET_PK_ACCOUNT_GROUP])
   }
   const importGroup = () => {
     let method = ''
@@ -79,7 +89,12 @@ function ImportAccount() {
   }
 
   const importAccount = async () => {
-    if (!creatingAccount && !errorMessage && !keygenErrorMessage && keygen) {
+    if (
+      !creatingAccount &&
+      name.length <= 20 &&
+      !keygenErrorMessage &&
+      keygen
+    ) {
       setCreatingAccount(true)
       try {
         const res = await importGroup()
@@ -99,47 +114,48 @@ function ImportAccount() {
   }
 
   const onCreate = () => {
-    validateName(name)
     validateKeygen(keygen)
     importAccount()
   }
 
   return (
-    <div className="bg-bg  h-full relative">
+    <div className="bg-bg  h-full flex flex-col">
       <TextNav hasGoBack={true} title={t(`${lanPrefix}Import`)} />
-      <main className="px-3">
+      <main className="px-3 flex-1 flex flex-col">
         <form
           onSubmit={e => {
             e.preventDefault()
           }}
+          className="flex flex-col justify-between h-full"
         >
-          <CompWithLabel label={t(`${lanPrefix}GroupName`)}>
-            <Input
-              onChange={changeName}
-              errorMessage={errorMessage}
-              width="w-full"
-              placeholder={keygenNamePlaceholder}
-            />
-          </CompWithLabel>
-          <CompWithLabel
-            label={t(pattern === 'seed-phrase' ? 'seedPhrase' : 'pKey')}
-            labelStyle="mt-4 mb-3"
-          >
-            <Input
-              errorMessage={keygenErrorMessage}
-              elementType="textarea"
-              placeholder={t(`${lanPrefix}ImportPlaceholder`)}
-              onChange={changeKeygen}
-              width="w-full"
-              textareaSize="h-40"
-            ></Input>
-          </CompWithLabel>
-          <Button
-            className="absolute w-70 top-136 -translate-x-2/4 left-1/2 cursor-pointer"
-            onClick={onCreate}
-          >
-            {t('import')}
-          </Button>
+          <section>
+            <CompWithLabel label={t(`${lanPrefix}GroupName`)}>
+              <Input
+                onChange={changeName}
+                width="w-full"
+                placeholder={keygenNamePlaceholder}
+                maxLength="20"
+              />
+            </CompWithLabel>
+            <CompWithLabel
+              label={t(pattern === 'seed-phrase' ? 'seedPhrase' : 'pKey')}
+              labelStyle="mt-4 mb-3"
+            >
+              <Input
+                errorMessage={keygenErrorMessage}
+                elementType="textarea"
+                placeholder={t(`${lanPrefix}ImportPlaceholder`)}
+                onChange={changeKeygen}
+                width="w-full"
+                textareaSize="h-40"
+              ></Input>
+            </CompWithLabel>
+          </section>
+          <section className="h-14">
+            <Button className="w-70 cursor-pointer mx-auto" onClick={onCreate}>
+              {t('import')}
+            </Button>
+          </section>
         </form>
       </main>
     </div>

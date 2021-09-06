@@ -37,7 +37,6 @@ const UnlockPage = () => {
           history.push('/')
         }
       } catch (err) {
-        console.log(err)
         // TODO: Replace err msg
         err.message && setErrorMessage(err.message.split('\n')[0])
       }
@@ -45,19 +44,13 @@ const UnlockPage = () => {
   }
 
   return (
-    <div className="bg-secondary h-full">
+    <div className="bg-secondary h-full flex flex-col">
       <LanguageNav />
       <header className="flex flex-col items-center pb-7">
         <img
           src="assets/images/logo.png"
           alt="logo"
-          className="mx-auto"
-          style={{
-            width: '55px',
-            height: '60px',
-            marginTop: '42px',
-            marginBottom: '20px',
-          }}
+          className="mx-auto w-25 h-25 mt-2"
         />
         <HomeTitle
           title={t('welcomeBack')}
@@ -65,22 +58,29 @@ const UnlockPage = () => {
           containerStyle="text-center"
         />
       </header>
-      <main className="px-6 relative">
-        <form onSubmit={handleSubmit}>
-          <div className="text-sm text-gray-40 mb-2">{t('password')}</div>
-          <PasswordInput
-            setInputErrorMessage={setInputErrorMessage}
-            setInputValue={setPassword}
-            errorMessage={errorMessage}
-          />
-          <Button
-            className="absolute w-81 top-27.5 -translate-x-2/4 left-1/2 cursor-pointer"
-            fullWidth
-            disabled={!!errorMessage}
-            onClick={login}
-          >
-            {t('unlock')}
-          </Button>
+      <main className="px-6  flex-1">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col h-full justify-between"
+        >
+          <section>
+            <div className="text-sm text-gray-40 mb-2">{t('password')}</div>
+            <PasswordInput
+              setInputErrorMessage={setInputErrorMessage}
+              setInputValue={setPassword}
+              errorMessage={errorMessage}
+            />
+          </section>
+          <section className="h-58">
+            <Button
+              className="cursor-pointer"
+              fullWidth
+              disabled={!!errorMessage}
+              onClick={login}
+            >
+              {t('unlock')}
+            </Button>
+          </section>
         </form>
       </main>
     </div>
