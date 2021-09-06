@@ -1,7 +1,6 @@
 import {useState, useEffect} from 'react'
-import {useTranslation} from 'react-i18next'
+import {useTranslation, Trans} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
-import {Trans} from 'react-i18next'
 import Input from '@cfxjs/component-input'
 import Button from '@cfxjs/component-button'
 import {CompWithLabel} from '../../components'
@@ -41,7 +40,7 @@ function NewSeed() {
             {t('seedCreateTitle')}
           </span>
           <span className="text-gray-40 text-xs">
-            <Trans i18nKey="seedCreateContent"></Trans>
+            <Trans i18nKey="seedCreateContent" />
           </span>
         </div>
       </div>
