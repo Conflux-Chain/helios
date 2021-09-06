@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next'
 import Button from '@cfxjs/component-button'
 import useGlobalStore from '../../stores'
 import {SeedWord} from './components'
-import {request, getFreeList} from '../../utils'
+import {request, shuffle} from '../../utils'
 
 function ConfirmSeed() {
   const {t} = useTranslation()
@@ -15,7 +15,7 @@ function ConfirmSeed() {
   const [buttonArray, setButtonArray] = useState([])
   const [importingMnemonic, setImportingMnemonic] = useState(false)
   useEffect(() => {
-    setButtonArray(getFreeList(createdMnemonic.split(' ')))
+    setButtonArray(shuffle(createdMnemonic.split(' ')))
   }, [createdMnemonic])
   const onDeleteMnemonic = index => {
     const mnemonicArray = mnemonic.split(' ')

@@ -11,7 +11,7 @@ export const request = (...args) => {
   return globalThis.___CFXJS_USE_RPC__PRIVIDER?.request(requestObj)
 }
 
-export function getFreeList(arr) {
+export function shuffle(arr) {
   let arrAdd = [...arr]
   for (let i = 1; i < arrAdd.length; i++) {
     const random = Math.floor(Math.random() * (i + 1))
