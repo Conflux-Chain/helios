@@ -79,7 +79,7 @@ function Input({
     onChange: e => {
       onChange && onChange(e)
     },
-    className: `resize-none	w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`,
+    className: `w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`,
     ...props,
   })
   return (

@@ -71,7 +71,7 @@ const UnlockPage = () => {
               errorMessage={errorMessage}
             />
           </section>
-          <section className="h-58">
+          <section className="mb-48">
             <Button fullWidth disabled={!!errorMessage} onClick={login}>
               {t('unlock')}
             </Button>

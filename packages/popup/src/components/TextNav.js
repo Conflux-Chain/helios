@@ -5,7 +5,7 @@ import {LeftTriangle} from '@cfxjs/component-icons'
 function TextNav({hasGoBack = false, title = ''}) {
   const history = useHistory()
   return (
-    <nav className="flex h-13 items-center px-3 justify-between relative">
+    <nav className="flex h-13 items-center px-3 relative">
       {hasGoBack ? (
         <div
           aria-hidden="true"

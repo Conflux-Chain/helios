@@ -147,6 +147,7 @@ function ImportAccount() {
                 placeholder={t(`${lanPrefix}ImportPlaceholder`)}
                 onChange={changeKeygen}
                 width="w-full"
+                className="resize-none"
                 textareaSize="h-40"
               ></Input>
             </CompWithLabel>
