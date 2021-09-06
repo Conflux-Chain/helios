@@ -1,5 +1,5 @@
-name-template: "Pre Release v$RESOLVED_VERSION.alpha"
-tag-template: "v$RESOLVED_VERSION.alpha"
+name-template: "Release v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
 version-resolver:
   major:
     labels:

@@ -1,4 +1,4 @@
-import {map, stringp, boolean, dbid} from '@cfxjs/spec'
+import {map, boolean, dbid, nickname} from '@cfxjs/spec'
 import {isBoolean} from '@cfxjs/checks'
 import {isUndefined} from '@cfxjs/checks'
 
@@ -9,18 +9,7 @@ export const schemas = {
     map,
     {closed: true},
     ['accountId', dbid],
-    [
-      'nickname',
-      {optional: true},
-      [
-        stringp,
-        {
-          min: 1,
-          max: 64,
-          doc: 'Nickname of this account, a string with 1 to 64 characters',
-        },
-      ],
-    ],
+    ['nickname', {optional: true}, nickname],
     ['offline', {optional: true}, boolean],
     ['hidden', {optional: true}, boolean],
   ],

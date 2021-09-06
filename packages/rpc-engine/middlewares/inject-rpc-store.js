@@ -39,6 +39,7 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
         }
 
         return sendNewRpcRequest({
+          id: req.id,
           params,
           site: req.site,
           app: req.app,

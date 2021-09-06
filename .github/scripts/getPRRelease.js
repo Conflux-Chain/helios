@@ -3,18 +3,17 @@ module.exports = async ({github, context}) => {
   const {
     repo: {owner, repo},
   } = context
-  const head = process.env.GITHUB_HEAD_REF
-  const releases = await github.repos.listReleases({owner, repo, per_page: 30})
+  const prnum = process.env.PR_NUMBER
+  const releases = await github.repos.listReleases({owner, repo, per_page: 100})
   if (!releases || !releases.data) throw new Error('Github api is broken')
   const [release] = releases.data.filter(
-    ({tag_name}) => tag_name === `DEBUG-${head}`,
+    ({name}) => name === `Debug Release for PR #${prnum}`,
   )
 
   if (!release) {
     console.log('Debug releases ------------------->')
-    console.log('process.env.GITHUB_HEAD_REF = ', process.env.GITHUB_HEAD_REF)
     console.log('releases.data', releases.data)
-    throw new Error(`Can't find the release of ${head}`)
+    throw new Error(`Can't find the release of ${prnum}`)
   }
 
   // sort assets, lastest created comes first

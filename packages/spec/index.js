@@ -1,3 +1,4 @@
+import {stringp} from './src/spec.js'
 export * from './src/spec.js' // eslint-disable-line import/export
 import {
   INTERNAL_CONTRACTS_HEX_ADDRESS,
@@ -53,3 +54,12 @@ export const [
   base32BuiltinAddress,
   base32NullAddress,
 ] = defBase32AddressSchemaFactory(validateBase32Address, randomBase32Address)
+
+export const nickname = [
+  stringp,
+  {
+    min: 1,
+    max: 64,
+    doc: 'Nickname of this account, a string with 1 to 64 characters',
+  },
+]

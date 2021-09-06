@@ -1,7 +1,7 @@
 {
   "name": "@cfxjs/wallet_validate-password",
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "index.js",
   "dependencies": {
     "@cfxjs/spec": "workspace:packages/spec",

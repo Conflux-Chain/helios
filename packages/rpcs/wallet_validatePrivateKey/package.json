@@ -2,7 +2,7 @@
   "name": "@cfxjs/wallet_validate-private-key",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@cfxjs/account": "workspace:packages/account",
     "@cfxjs/spec": "workspace:packages/spec"

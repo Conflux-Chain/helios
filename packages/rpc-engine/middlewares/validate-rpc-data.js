@@ -1,4 +1,3 @@
-import {CFX_MAINNET_NAME} from '@cfxjs/fluent-wallet-consts'
 import {defMiddleware} from '../middleware.js'
 import EpochRefConf from '@cfxjs/rpc-epoch-ref'
 import * as jsonRpcErr from '@cfxjs/json-rpc-error'
@@ -114,10 +113,14 @@ function formatRpcNetwork(arg) {
   // popup/inpage can (hopefully) specify target account/network in req
   if (req.networkName) req.network = db.getOneNetwork({name: req.networkName})
 
-  if (!req.networkName) req.networkName = CFX_MAINNET_NAME
+  if (!req.networkName) {
+    const currentNetwork = db.getOneNetwork({selected: true})
+    req.networkName = currentNetwork.name
+    req.network = currentNetwork
+  }
 
-  if (req.app) req.network = req.network || req.app.currentNetwork
-  else req.network = req.network || db.getOneNetwork({selected: true})
+  // if (req.app) req.network = req.network || req.app.currentNetwork
+  // else req.network = req.network || db.getOneNetwork({selected: true})
 
   if (!req.network) {
     const err = new jsonRpcErr.InvalidParams(
