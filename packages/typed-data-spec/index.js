@@ -1,6 +1,6 @@
 export default function (type, spec) {
   if (type !== 'cfx' && type !== 'eth') throw new Error('Invalid type ${type}')
-  const {map, mapOf, and, stringp, plus, mapp} = spec
+  const {map, mapOf, and, stringp, plus, mapp,} = spec
   if (!map) throw new Error('Invalid spec instance')
 
   const typeValueSpec = [
