@@ -2,7 +2,7 @@
   "name": "@cfxjs/wallet_add-ethereum-chain",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "@cfxjs/spec": "workspace:packages/spec",
     "@cfxjs/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"

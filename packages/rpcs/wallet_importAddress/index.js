@@ -1,4 +1,11 @@
-import {map, password, or, ethHexAddress, base32UserAddress} from '@cfxjs/spec'
+import {
+  map,
+  password,
+  or,
+  ethHexAddress,
+  base32UserAddress,
+  nickname,
+} from '@cfxjs/spec'
 
 export const NAME = 'wallet_importAddress'
 
@@ -6,6 +13,7 @@ export const schemas = {
   input: [
     map,
     {closed: true},
+    ['nickname', {optional: true}, nickname],
     ['password', password],
     ['address', [or, ethHexAddress, base32UserAddress]],
   ],
@@ -18,6 +26,18 @@ export const permissions = {
 }
 
 export const main = async ({
-  params: {password, address},
+  params: {password, address, nickname},
   rpcs: {wallet_addVault},
-}) => await wallet_addVault({password, address: address.toLowerCase()})
+}) => {
+  if (nickname)
+    return await wallet_addVault({
+      password,
+      address: address.toLowerCase(),
+      nickname,
+    })
+  else
+    return await wallet_addVault({
+      password,
+      address: address.toLowerCase(),
+    })
+}

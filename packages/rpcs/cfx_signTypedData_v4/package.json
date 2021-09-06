@@ -2,7 +2,7 @@
   "name": "@cfxjs/cfx_sign-typed-data_v4",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "@cfxjs/base32-address": "workspace:packages/base32-address",
     "@cfxjs/signature": "workspace:packages/signature",

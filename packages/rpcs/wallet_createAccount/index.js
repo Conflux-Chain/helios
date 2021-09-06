@@ -1,4 +1,4 @@
-import {map, dbid, stringp} from '@cfxjs/spec'
+import {map, dbid, nickname} from '@cfxjs/spec'
 import {decrypt} from 'browser-passworder'
 import {getNthAccountOfHDKey} from '@cfxjs/hdkey'
 import {toAccountAddress} from '@cfxjs/account'
@@ -11,18 +11,7 @@ export const schemas = {
     map,
     {closed: true},
     ['accountGroupId', dbid],
-    [
-      'nickname',
-      {optional: true},
-      [
-        stringp,
-        {
-          min: 1,
-          max: 64,
-          doc: 'Nickname of this account, a string with 1 to 64 characters',
-        },
-      ],
-    ],
+    ['nickname', {optional: true}, nickname],
   ],
 }
 
@@ -112,7 +101,7 @@ export const main = async ({
             eid: accountId,
             account: {
               index: nextAccountIdx,
-              nickname: nickname ?? `Account ${nextAccountIdx + 1}`,
+              nickname: nickname ?? `${group.nickname}-${nextAccountIdx + 1}`,
               address: -1,
               hidden: false,
             },

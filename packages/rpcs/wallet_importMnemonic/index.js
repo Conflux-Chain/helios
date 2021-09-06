@@ -1,4 +1,4 @@
-import {mnemonic, map, password, truep, maybe} from '@cfxjs/spec'
+import {mnemonic, map, password, truep, maybe, nickname} from '@cfxjs/spec'
 
 export const NAME = 'wallet_importMnemonic'
 
@@ -6,6 +6,7 @@ export const schemas = {
   input: [
     map,
     {closed: true},
+    ['nickname', {optional: true}, nickname],
     ['mnemonic', mnemonic],
     ['password', password],
     ['waitTillFinish', {optional: true}, [maybe, truep]],

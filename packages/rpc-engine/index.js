@@ -18,6 +18,7 @@ const wrapRpcError =
       rpcData,
     )
     jsonRpcErr.errorStackPop(error)
+    error.extra = {}
     return error
   }
 
