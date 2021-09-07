@@ -13,7 +13,7 @@ import {useCreatedPasswordGuard} from '../../hooks'
 
 import {useSWRConfig} from 'swr'
 
-function ImportAccount() {
+function ImportPrivateKey() {
   const {t} = useTranslation()
   const history = useHistory()
   const {mutate} = useSWRConfig()
@@ -132,4 +132,4 @@ function ImportAccount() {
   )
 }
 
-export default ImportAccount
+export default ImportPrivateKey
