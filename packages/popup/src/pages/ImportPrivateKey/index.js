@@ -61,7 +61,7 @@ function ImportPrivateKey() {
   }
 
   const onCreate = () => {
-    if (keygen && name) {
+    if (keygen && name && !creatingAccount) {
       setCreatingAccount(true)
       request('wallet_importPrivateKey', {
         password: createdPassword,
@@ -114,11 +114,7 @@ function ImportPrivateKey() {
           <Button
             className="w-70  mx-auto"
             onClick={onCreate}
-            disabled={
-              (!name && !keygenNamePlaceholder) ||
-              !!keygenErrorMessage ||
-              creatingAccount
-            }
+            disabled={(!name && !keygenNamePlaceholder) || !!keygenErrorMessage}
           >
             {t('import')}
           </Button>

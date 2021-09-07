@@ -61,7 +61,7 @@ function ImportSeedPhrase() {
   }
 
   const onCreate = () => {
-    if (name && keygen) {
+    if (name && keygen && !creatingAccount) {
       setCreatingAccount(true)
       request('wallet_importMnemonic', {
         password: createdPassword,
@@ -114,11 +114,7 @@ function ImportSeedPhrase() {
           <Button
             className="w-70  mx-auto"
             onClick={onCreate}
-            disabled={
-              (!name && !keygenNamePlaceholder) ||
-              !!keygenErrorMessage ||
-              creatingAccount
-            }
+            disabled={(!name && !keygenNamePlaceholder) || !!keygenErrorMessage}
           >
             {t('import')}
           </Button>
