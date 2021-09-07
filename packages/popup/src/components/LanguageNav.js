@@ -2,7 +2,7 @@ import {useHistory} from 'react-router-dom'
 import Dropdown from '@cfxjs/component-dropdown'
 import {useTranslation} from 'react-i18next'
 import {LANGUAGES} from '../constants'
-import {ArrowDown, LeftArrow} from '@cfxjs/component-icons'
+import {ArrowDownFilling, DirectionLeft} from '@cfxjs/component-icons'
 import PropTypes from 'prop-types'
 
 const Overlay = changeLanguage => {
@@ -36,7 +36,7 @@ const LanguageNav = ({hasGoBack = false}) => {
   }
 
   return (
-    <nav className="flex justify-between h-13 items-center text-white px-3">
+    <nav className="flex justify-between items-center h-13 text-white px-3">
       {hasGoBack ? (
         <div
           className="flex items-center cursor-pointer"
@@ -45,7 +45,7 @@ const LanguageNav = ({hasGoBack = false}) => {
             history.goBack()
           }}
         >
-          <LeftArrow className="mr-2" />
+          <DirectionLeft className="w-5 h-5 text-white" />
           <span className="text-sm">{t('back')}</span>
         </div>
       ) : (
@@ -54,7 +54,7 @@ const LanguageNav = ({hasGoBack = false}) => {
       <Dropdown overlay={Overlay(changeLanguage)} trigger={['hover']}>
         <div className="flex items-center">
           <span className="text-xs">{t(language)}</span>
-          <ArrowDown className="ml-1" />
+          <ArrowDownFilling className="ml-1" />
         </div>
       </Dropdown>
     </nav>

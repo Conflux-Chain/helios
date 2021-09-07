@@ -10,7 +10,7 @@ const validate = value => {
   return PASSWORD_REG_EXP.test(value)
 }
 
-const SetPasswordForm = () => {
+function SetPasswordForm() {
   const history = useHistory()
   const {t} = useTranslation()
   const setCreatedPassword = useGlobalStore(state => state.setCreatedPassword)

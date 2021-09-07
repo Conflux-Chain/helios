@@ -4,9 +4,10 @@ import {useTranslation} from 'react-i18next'
 import Input from '@cfxjs/component-input'
 import Button from '@cfxjs/component-button'
 import {Selected} from '@cfxjs/component-icons'
-import {CompWithLabel} from '../../components'
+import {CompWithLabel, TitleNav} from '../../components'
 import {useRPC} from '@cfxjs/use-rpc'
 import {request} from '../../utils'
+import {GET_HD_ACCOUNT_GROUP} from '../../constants/rpcDeps'
 
 function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
   const {t} = useTranslation()
@@ -47,7 +48,7 @@ SeedPhrase.propTypes = {
 function CurrentSeed() {
   const {t} = useTranslation()
   const {data: hdGroup, mutate: groupMutate} = useRPC(
-    ['wallet_getAccountGroup', 'hd'],
+    GET_HD_ACCOUNT_GROUP,
     {type: 'hd'},
     {fallbackData: []},
   )
@@ -70,12 +71,9 @@ function CurrentSeed() {
   }
   const onCreate = () => {
     setCreatingAccount(true)
-    return request({
-      method: 'wallet_createAccount',
-      params: {
-        accountGroupId: hdGroup[selectedGroupIdx].eid,
-        nickname: accountName || accountNamePlaceholder,
-      },
+    return request('wallet_createAccount', {
+      accountGroupId: hdGroup[selectedGroupIdx].eid,
+      nickname: accountName || accountNamePlaceholder,
     }).then(({error}) => {
       setCreatingAccount(false)
       if (error) {
@@ -90,6 +88,7 @@ function CurrentSeed() {
 
   return (
     <div className="h-full px-3 flex flex-col bg-bg">
+      <TitleNav title={t('newAccount')} />
       <CompWithLabel label={t('accountName')}>
         <Input
           width="w-full"

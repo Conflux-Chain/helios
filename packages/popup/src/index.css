@@ -23,17 +23,18 @@ strong {
   flex-direction: column;
 }
 html {
-  overflow:hidden
+  overflow: hidden;
 }
-html::-webkit-scrollbar { width: 0 !important }
+html::-webkit-scrollbar {
+  width: 0 !important;
+}
 #root,
 body,
 html {
-  --color-bg: #f4f5f7;
   --color-white: #fff;
   --color-black: #000;
   --color-primary: #7789d3;
-  --color-secondary: #26244B;
+  --color-secondary: #26244b;
   --color-error: #e96170;
   --color-success: #6fc5b1;
   --color-warning: #f0955f;
@@ -46,6 +47,7 @@ html {
 }
 
 .light {
+  --color-bg: #f4f5f7;
   --color-primary-4: #f8f9fe;
   --color-primary-10: #f0f3ff;
   --color-primary-90: #262933;
@@ -69,6 +71,7 @@ html {
 }
 
 .dark {
+  --color-bg: #26282e;
   --color-primary-4: #262933;
   --color-primary-10: #262933;
   --color-primary-90: #f0f3ff;

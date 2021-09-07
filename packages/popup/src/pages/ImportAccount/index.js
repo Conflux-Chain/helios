@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {TextNav} from '../../components/index'
+import {TitleNav} from '../../components/index'
 import Button from '@cfxjs/component-button'
 import Input from '@cfxjs/component-input'
 import {CompWithLabel} from '../../components'
@@ -120,7 +120,7 @@ function ImportAccount() {
 
   return (
     <div className="bg-bg  h-full flex flex-col">
-      <TextNav hasGoBack={true} title={t(`${lanPrefix}Import`)} />
+      <TitleNav title={t(`${lanPrefix}Import`)} />
       <main className="px-3 flex-1 flex flex-col">
         <form
           onSubmit={e => {
@@ -139,7 +139,6 @@ function ImportAccount() {
             </CompWithLabel>
             <CompWithLabel
               label={t(pattern === 'seed-phrase' ? 'seedPhrase' : 'pKey')}
-              labelStyle="mt-4 mb-3"
             >
               <Input
                 errorMessage={keygenErrorMessage}

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-function TypeItem({
+function CreateTypeItem({
   title,
   subTitle,
   Icon,
@@ -28,7 +28,7 @@ function TypeItem({
     </div>
   )
 }
-TypeItem.propTypes = {
+CreateTypeItem.propTypes = {
   onClick: PropTypes.func,
   title: PropTypes.string.isRequired,
   subTitle: PropTypes.string.isRequired,
@@ -37,4 +37,4 @@ TypeItem.propTypes = {
   Tag: PropTypes.elementType,
   typeClass: PropTypes.string,
 }
-export default TypeItem
+export default CreateTypeItem

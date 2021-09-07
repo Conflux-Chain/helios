@@ -11,16 +11,24 @@ export const request = (...args) => {
   return globalThis.___CFXJS_USE_RPC__PRIVIDER?.request(providerParams)
 }
 
-export const getAuth = (hasAccount, isLocked) => {
+export const getRouteWithAuth = (hasAccount, isLocked) => {
   if (typeof hasAccount !== 'boolean' || typeof isLocked !== 'boolean') {
     return null
+  }
+  if (!hasAccount) {
+    return '/welcome'
   }
   if (hasAccount && isLocked) {
     return '/unlock'
   }
-
-  if (!hasAccount) {
-    return '/welcome'
-  }
   return null
+}
+
+export function shuffle(arr) {
+  let arrAdd = [...arr]
+  for (let i = 1; i < arrAdd.length; i++) {
+    const random = Math.floor(Math.random() * (i + 1))
+    ;[arrAdd[i], arrAdd[random]] = [arrAdd[random], arrAdd[i]]
+  }
+  return arrAdd
 }

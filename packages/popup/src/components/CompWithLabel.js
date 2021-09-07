@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types'
 
-function CompWithLabel({label, children, className = '', labelStyle = ''}) {
+function CompWithLabel({label, children, className = ''}) {
   return (
-    <div className={`${className}`}>
-      <span className={`text-gray-80 my-3 inline-block ${labelStyle}`}>
-        {label}
-      </span>
+    <div className={`mt-3 ${className}`}>
+      <span className="text-gray-80 ml-1 mb-2 inline-block">{label}</span>
       {children}
     </div>
   )
@@ -17,7 +15,6 @@ CompWithLabel.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
-  labelStyle: PropTypes.string,
   className: PropTypes.string,
 }
 

@@ -19,7 +19,7 @@ const en = {
     rememberPWD: 'This password cannot be retrieved, please remember.',
     goBack: 'Back',
     // select create type
-    newAccount: 'New Account',
+    newAccount: 'Create Account',
     createAccount: 'Create a new account',
     useExistingSeed: 'Use existing Seed Phrase',
     useExistingSeedDes: 'No need to backup again, use HD Wallet.',
@@ -50,6 +50,15 @@ const en = {
     seedCreateContent:
       'Obtaining the Seed Phrase is equivalent to owning the assets in the wallet.<br/>Once the Seed Phrase is lost, it cannot be retrieved, please keep it properly',
     next: 'Next',
+    // backup seed phrase
+    backupSeedTitle: 'Backup Seed Phrase',
+    backupSeedContent:
+      'Please copy the Seed Phrase in order.<br/>Do not share and store Seed Phrase in a networked environment.',
+    // confirm seed phrase
+    confirmSeedTitle: 'Check Seed Phrase',
+    confirmSeedContent:
+      'Please click the Seed Phase in order to ensure correct backup.',
+    confirmSeedError: 'Mistakes in Seed Phrase.',
   },
 }
 

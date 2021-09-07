@@ -1,8 +1,8 @@
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {TextNav} from '../../components/index'
+import {TitleNav} from '../../components/index'
 import {Add, Search, Article, Folder} from '@cfxjs/component-icons'
-import TypeItem from './components/TypeItem'
+import {CreateTypeItem} from './components'
 
 function Tag() {
   const {t} = useTranslation()
@@ -20,12 +20,12 @@ function WithCurrentSeed() {
   const history = useHistory()
   return (
     <div className="bg-bg  h-full">
-      <TextNav hasGoBack={true} title={t('newAccount')} />
+      <TitleNav title={t('newAccount')} />
       <main className="px-4 pt-3">
         <em className="not-italic text-xs text-gray-40 ml-1">
           {t('createAccount')}
         </em>
-        <TypeItem
+        <CreateTypeItem
           Icon={Article}
           title={t('useExistingSeed')}
           subTitle={t('useExistingSeedDes')}
@@ -35,7 +35,7 @@ function WithCurrentSeed() {
             history.push('/create-account-current-seed-phrase')
           }}
         />
-        <TypeItem
+        <CreateTypeItem
           Icon={Add}
           title={t('newSeedPhrase')}
           subTitle={t('newSeedPhraseDes')}
@@ -47,7 +47,7 @@ function WithCurrentSeed() {
         <em className="not-italic text-xs text-gray-40 ml-1">
           {t('importExistingAccount')}
         </em>
-        <TypeItem
+        <CreateTypeItem
           typeClass="my-3"
           Icon={Folder}
           title={t('seedPhrase')}
@@ -56,7 +56,7 @@ function WithCurrentSeed() {
             history.push('/import-account/seed-phrase')
           }}
         />
-        <TypeItem
+        <CreateTypeItem
           Icon={Search}
           title={t('pKey')}
           subTitle={t('pKeysDes')}
