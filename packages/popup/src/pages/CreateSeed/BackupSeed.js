@@ -19,8 +19,6 @@ function BackupSeed() {
     request('wallet_generateMnemonic').then(({result}) => setMnemonic(result)),
   )
 
-  console.log(mnemonic)
-
   return (
     <div className="h-full flex flex-col bg-gray-0">
       <TitleNav title={t('newAccount')} />
