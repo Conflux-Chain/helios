@@ -1,8 +1,7 @@
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TextNav} from '../../components/index'
-import {Add, Search, Article, Folder} from '@cfxjs/component-icons'
-import TypeItem from './components/TypeItem'
+import CreateTypeItem from './components/CreateTypeItem'
 
 function Tag() {
   const {t} = useTranslation()
@@ -25,8 +24,8 @@ function WithCurrentSeed() {
         <em className="not-italic text-xs text-gray-40 ml-1">
           {t('createAccount')}
         </em>
-        <TypeItem
-          Icon={Article}
+        <CreateTypeItem
+          Icon={<img src="/images/existing-seed-phrase-icon.svg" alt="icon" />}
           title={t('useExistingSeed')}
           subTitle={t('useExistingSeedDes')}
           Tag={Tag}
@@ -35,8 +34,8 @@ function WithCurrentSeed() {
             history.push('/create-account-current-seed-phrase')
           }}
         />
-        <TypeItem
-          Icon={Add}
+        <CreateTypeItem
+          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('newSeedPhrase')}
           subTitle={t('newSeedPhraseDes')}
           typeClass="mb-4"
@@ -47,21 +46,21 @@ function WithCurrentSeed() {
         <em className="not-italic text-xs text-gray-40 ml-1">
           {t('importExistingAccount')}
         </em>
-        <TypeItem
+        <CreateTypeItem
           typeClass="my-3"
-          Icon={Folder}
+          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('seedPhrase')}
           subTitle={t('seedPhraseDes')}
           onClick={() => {
-            history.push('/import-account/seed-phrase')
+            history.push('/import-seed-phrase')
           }}
         />
-        <TypeItem
-          Icon={Search}
+        <CreateTypeItem
+          Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
           title={t('pKey')}
           subTitle={t('pKeysDes')}
           onClick={() => {
-            history.push('/import-account/private-key')
+            history.push('/import-private-key')
           }}
         />
       </main>

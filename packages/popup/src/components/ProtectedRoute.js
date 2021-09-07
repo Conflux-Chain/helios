@@ -1,5 +1,5 @@
 import {Route, Redirect} from 'react-router-dom'
-import {getAuth} from '../utils/index'
+import {getRouteWithAuthInfo} from '../utils/index'
 
 // eslint-disable-next-line react/prop-types
 const ProtectedRoute = ({children, hasAccount, isLocked, ...rest}) => {
@@ -7,7 +7,7 @@ const ProtectedRoute = ({children, hasAccount, isLocked, ...rest}) => {
     <Route
       {...rest}
       render={() => {
-        const to = getAuth(hasAccount, isLocked)
+        const to = getRouteWithAuthInfo(hasAccount, isLocked)
         return !to ? children : <Redirect to={to} />
       }}
     />

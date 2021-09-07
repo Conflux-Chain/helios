@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {useParams, useHistory} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TextNav} from '../../components/index'
 import Button from '@cfxjs/component-button'
@@ -7,17 +7,14 @@ import Input from '@cfxjs/component-input'
 import {CompWithLabel} from '../../components'
 import {useRPC} from '@cfxjs/use-rpc'
 import {request} from '../../utils'
-import {
-  GET_HD_ACCOUNT_GROUP,
-  GET_ALL_ACCOUNT_GROUP,
-  GET_PK_ACCOUNT_GROUP,
-} from '../../constants'
+import {GET_HD_ACCOUNT_GROUP, GET_ALL_ACCOUNT_GROUP} from '../../constants'
 import useGlobalStore from '../../stores'
+import {useCreatedPasswordGuard} from '../../hooks'
+
 import {useSWRConfig} from 'swr'
 
 function ImportAccount() {
   const {t} = useTranslation()
-  const {pattern} = useParams()
   const history = useHistory()
   const {mutate} = useSWRConfig()
 
@@ -28,34 +25,22 @@ function ImportAccount() {
   const [creatingAccount, setCreatingAccount] = useState(false)
   const createdPassword = useGlobalStore(state => state.createdPassword)
 
-  let lanPrefix = ''
-  let deps = null
-  let groupParams = undefined
-  if (pattern === 'seed-phrase') {
-    lanPrefix = 'seed'
-    deps = [...GET_HD_ACCOUNT_GROUP]
-    groupParams = {
+  const {data: keygenGroup} = useRPC(
+    [...GET_HD_ACCOUNT_GROUP],
+    {
       type: 'hd',
-    }
-  } else {
-    lanPrefix = 'pKey'
-    deps = [...GET_PK_ACCOUNT_GROUP]
-    groupParams = {
-      type: 'pk',
-    }
-  }
-  const {data: keygenGroup} = useRPC(deps, groupParams, {fallbackData: []})
+    },
+    {
+      fallbackData: [],
+    },
+  )
 
-  useEffect(() => {
-    if (!createdPassword) {
-      history.push('/')
-    }
-  }, [createdPassword, history])
+  useCreatedPasswordGuard()
   useEffect(() => {
     setKeygenNamePlaceholder(`Seed-${keygenGroup.length + 1}`)
   }, [keygenGroup])
 
-  const validateKeygen = keygen => {
+  const walletValidateSeedPhrase = keygen => {
     setKeygenErrorMessage(keygen === '' ? 'Required!' : '')
   }
   const changeName = e => {
@@ -63,29 +48,11 @@ function ImportAccount() {
   }
   const changeKeygen = e => {
     setKeygen(e.target.value)
-    validateKeygen(e.target.value)
+    walletValidateSeedPhrase(e.target.value)
   }
   const dispatchMutate = () => {
     mutate([...GET_ALL_ACCOUNT_GROUP])
-    pattern === 'seed-phrase' && mutate([...GET_HD_ACCOUNT_GROUP])
-    pattern !== 'seed-phrase' && mutate([...GET_PK_ACCOUNT_GROUP])
-  }
-  const importGroup = () => {
-    let method = ''
-    let keygenType = ''
-    const params = {
-      password: createdPassword,
-      nickname: name || keygenNamePlaceholder,
-    }
-    if (pattern === 'private-key') {
-      method = 'wallet_importPrivateKey'
-      keygenType = 'privateKey'
-    } else {
-      method = 'wallet_importMnemonic'
-      keygenType = 'mnemonic'
-    }
-    params[keygenType] = keygen
-    return request(method, params)
+    mutate([...GET_HD_ACCOUNT_GROUP])
   }
 
   const importAccount = async () => {
@@ -96,31 +63,31 @@ function ImportAccount() {
       keygen
     ) {
       setCreatingAccount(true)
-      try {
-        const res = await importGroup()
-        if (res?.error) {
-          throw res.error
-        }
-        if (res.result) {
-          setCreatingAccount(false)
+      request('wallet_importMnemonic', {
+        password: createdPassword,
+        nickname: name || keygenNamePlaceholder,
+        mnemonic: keygen,
+      }).then(({error, res}) => {
+        setCreatingAccount(false)
+        if (res?.result) {
           dispatchMutate()
           history.push('/')
         }
-      } catch (err) {
-        setCreatingAccount(false)
-        err.message && setKeygenErrorMessage(err.message.split('\n')[0])
-      }
+        if (error?.message) {
+          setKeygenErrorMessage(error.message.split('\n')[0])
+        }
+      })
     }
   }
 
   const onCreate = () => {
-    validateKeygen(keygen)
+    walletValidateSeedPhrase(keygen)
     importAccount()
   }
 
   return (
     <div className="bg-bg  h-full flex flex-col">
-      <TextNav hasGoBack={true} title={t(`${lanPrefix}Import`)} />
+      <TextNav hasGoBack={true} title={t(`seedImport`)} />
       <main className="px-3 flex-1 flex flex-col">
         <form
           onSubmit={e => {
@@ -129,7 +96,7 @@ function ImportAccount() {
           className="flex flex-col justify-between h-full"
         >
           <section>
-            <CompWithLabel label={t(`${lanPrefix}GroupName`)}>
+            <CompWithLabel label={t(`seedGroupName`)}>
               <Input
                 onChange={changeName}
                 width="w-full"
@@ -137,14 +104,11 @@ function ImportAccount() {
                 maxLength="20"
               />
             </CompWithLabel>
-            <CompWithLabel
-              label={t(pattern === 'seed-phrase' ? 'seedPhrase' : 'pKey')}
-              labelStyle="mt-4 mb-3"
-            >
+            <CompWithLabel label={t('seedPhrase')} labelStyle="mt-4 mb-3">
               <Input
                 errorMessage={keygenErrorMessage}
                 elementType="textarea"
-                placeholder={t(`${lanPrefix}ImportPlaceholder`)}
+                placeholder={t(`seedImportPlaceholder`)}
                 onChange={changeKeygen}
                 width="w-full"
                 className="resize-none"
@@ -153,7 +117,13 @@ function ImportAccount() {
             </CompWithLabel>
           </section>
           <section className="h-14">
-            <Button className="w-70  mx-auto" onClick={onCreate}>
+            <Button
+              className="w-70  mx-auto"
+              onClick={onCreate}
+              disabled={
+                (!name && !keygenNamePlaceholder) || !!keygenErrorMessage
+              }
+            >
               {t('import')}
             </Button>
           </section>

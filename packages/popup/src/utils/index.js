@@ -11,7 +11,7 @@ export const request = (...args) => {
   return globalThis.___CFXJS_USE_RPC__PRIVIDER?.request(providerParams)
 }
 
-export const getAuth = (hasAccount, isLocked) => {
+export const getRouteWithAuthInfo = (hasAccount, isLocked) => {
   if (typeof hasAccount !== 'boolean' || typeof isLocked !== 'boolean') {
     return null
   }
