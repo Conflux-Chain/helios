@@ -34,15 +34,15 @@ function ConfirmSeed() {
     return index > -1
   }
   const onCreate = () => {
-    setImportingMnemonic(true)
     if (mnemonic !== createdMnemonic) {
       setMnemonicError(t('confirmSeedError'))
       return
     }
+    setMnemonicError('')
+    setImportingMnemonic(true)
     request('wallet_importMnemonic', {
       mnemonic,
       password: createdPassword,
-      force: true,
     }).then(({error}) => {
       setImportingMnemonic(false)
       if (error) {

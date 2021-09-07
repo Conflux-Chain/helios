@@ -1,23 +1,22 @@
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
+import {useEffectOnce} from 'react-use'
 import {useTranslation, Trans} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Button from '@cfxjs/component-button'
-import {useRPC} from '@cfxjs/use-rpc'
 import useGlobalStore from '../../stores'
 import {SeedWord} from './components'
+import {request} from '../../utils'
 
 function BackupSeed() {
   const {t} = useTranslation()
   const history = useHistory()
   const {setCreatedMnemonic} = useGlobalStore()
-  const [mnemonic, setMnemonic] = useState([])
-  const {data: mnemonicData} = useRPC(['wallet_generateMnemonic'], undefined, {
-    fallbackData: '',
-    refreshInterval: 0,
-  })
-  useEffect(() => {
-    setMnemonic(mnemonicData.split(' '))
-  }, [mnemonicData])
+  const [mnemonic, setMnemonic] = useState('')
+  useEffectOnce(() =>
+    request('wallet_generateMnemonic').then(({result}) => setMnemonic(result)),
+  )
+
+  console.log(mnemonic)
 
   return (
     <div className="h-full px-3 pt-3 flex flex-col bg-gray-0 justify-between">
@@ -29,7 +28,7 @@ function BackupSeed() {
           <Trans i18nKey="backupSeedContent" />
         </span>
         <div className="mt-4 pt-3 px-3 bg-bg rounded-sm flex flex-wrap justify-between">
-          {mnemonic.map((word, index) => (
+          {mnemonic.split(' ').map((word, index) => (
             <SeedWord
               key={index}
               closable={false}
@@ -44,7 +43,7 @@ function BackupSeed() {
           className="w-70"
           onClick={() => {
             history.push('/create-account-confirm-seed-phrase')
-            setCreatedMnemonic(mnemonicData)
+            setCreatedMnemonic(mnemonic)
           }}
         >
           {t('next')}
