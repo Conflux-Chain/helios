@@ -3,13 +3,10 @@ import {useHistory} from 'react-router-dom'
 import Button from '@cfxjs/component-button'
 import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {PASSWORD_REG_EXP, GET_WALLET_STATUS} from '../../constants'
+import {GET_WALLET_STATUS} from '../../constants'
 import {useSWRConfig} from 'swr'
-import {request} from '../../utils/'
+import {request, validatePasswordReg} from '../../utils'
 
-const validate = value => {
-  return PASSWORD_REG_EXP.test(value)
-}
 const UnlockPage = () => {
   const history = useHistory()
   const {t} = useTranslation()
@@ -17,30 +14,28 @@ const UnlockPage = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const {mutate} = useSWRConfig()
 
-  const handleSubmit = event => {
-    event.preventDefault()
-    setInputErrorMessage(password)
-  }
-  const setInputErrorMessage = value => {
+  const validatePassword = value => {
     // TODO: Replace err msg
-    setErrorMessage(validate(value) ? '' : 'something wrong')
+    setErrorMessage(validatePasswordReg(value) ? '' : 'something wrong')
   }
-  const login = async () => {
+  const onUnlock = () => {
     if (password) {
-      try {
-        const res = await request('wallet_unlock', {password})
-        if (res?.error) {
-          throw res.error
-        }
-        if (res.result) {
-          mutate([...GET_WALLET_STATUS])
-          history.push('/')
-        }
-      } catch (err) {
-        // TODO: Replace err msg
-        err.message && setErrorMessage(err.message.split('\n')[0])
-      }
+      request('wallet_unlock', {password})
+        .then(({error, result}) => {
+          if (error) throw error
+          if (result) {
+            mutate([...GET_WALLET_STATUS])
+            history.push('/')
+          }
+        })
+        .catch(err => {
+          throw err
+        })
     }
+  }
+  const onSubmit = event => {
+    event.preventDefault()
+    validatePassword(password)
   }
 
   return (
@@ -60,19 +55,20 @@ const UnlockPage = () => {
       </header>
       <main className="px-6  flex-1">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={onSubmit}
           className="flex flex-col h-full justify-between"
         >
           <section>
             <div className="text-sm text-gray-40 mb-2">{t('password')}</div>
             <PasswordInput
-              setInputErrorMessage={setInputErrorMessage}
+              validateInputValue={validatePassword}
               setInputValue={setPassword}
               errorMessage={errorMessage}
+              value={password}
             />
           </section>
           <section className="mb-48">
-            <Button fullWidth disabled={!!errorMessage} onClick={login}>
+            <Button fullWidth disabled={!!errorMessage} onClick={onUnlock}>
               {t('unlock')}
             </Button>
           </section>
