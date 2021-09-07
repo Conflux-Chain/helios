@@ -3,7 +3,12 @@ import {useState} from 'react'
 import Input from '@cfxjs/component-input'
 import {EyeClose, EyeOpen} from '@cfxjs/component-icons'
 
-const PasswordInput = ({setInputErrorMessage, setInputValue, errorMessage}) => {
+const PasswordInput = ({
+  setInputErrorMessage,
+  setInputValue,
+  errorMessage,
+  value,
+}) => {
   const [eyeStatus, setEyeStatus] = useState('close')
   const onSuffixClick = () => {
     setEyeStatus(eyeStatus === 'close' ? 'open' : 'close')
@@ -22,6 +27,7 @@ const PasswordInput = ({setInputErrorMessage, setInputValue, errorMessage}) => {
       width="w-full box-border"
       bordered={true}
       errorMessage={errorMessage}
+      value={value}
       suffix={
         eyeStatus === 'close' ? (
           <EyeClose className="w-4 h-4" />
@@ -39,5 +45,6 @@ PasswordInput.propTypes = {
   setInputErrorMessage: PropTypes.func,
   setInputValue: PropTypes.func,
   errorMessage: PropTypes.string,
+  value: PropTypes.string.isRequired,
 }
 export default PasswordInput

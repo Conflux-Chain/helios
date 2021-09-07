@@ -69,8 +69,10 @@ function ConfirmSeed() {
             {t('confirmSeedContent')}
           </span>
           <div
-            className={`mt-4 px-3 pt-3 bg-bg rounded-sm flex flex-wrap justify-between ${
-              mnemonicError ? 'border-error border border-solid' : ''
+            className={`relative mt-4 px-3 pt-3 bg-bg rounded-sm flex flex-wrap justify-between ${
+              mnemonicError
+                ? 'after:absolute after:inset-0 after:border-error after:border after:border-solid'
+                : ''
             }`}
           >
             {mnemonic.split(' ').map((word, index) => (

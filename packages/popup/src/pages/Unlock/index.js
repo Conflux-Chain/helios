@@ -69,6 +69,7 @@ const UnlockPage = () => {
               setInputErrorMessage={setInputErrorMessage}
               setInputValue={setPassword}
               errorMessage={errorMessage}
+              value={password}
             />
           </section>
           <section className="mb-48">
