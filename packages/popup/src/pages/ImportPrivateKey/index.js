@@ -43,10 +43,10 @@ function ImportPrivateKey() {
   const walletValidatePrivateKey = keygen => {
     setKeygenErrorMessage(keygen === '' ? 'Required!' : '')
   }
-  const changeName = e => {
+  const onChangeName = e => {
     setName(e.target.value)
   }
-  const changeKeygen = e => {
+  const onChangeKeygen = e => {
     setKeygen(e.target.value)
     walletValidatePrivateKey(e.target.value)
   }
@@ -85,49 +85,47 @@ function ImportPrivateKey() {
   }
 
   return (
-    <div className="bg-bg  h-full flex flex-col">
+    <div className="bg-bg h-full flex flex-col">
       <TitleNav title={t(`pKeyImport`)} />
-      <main className="px-3 flex-1 flex flex-col">
-        <form
-          onSubmit={e => {
-            e.preventDefault()
-          }}
-          className="flex flex-col justify-between h-full"
-        >
-          <section>
-            <CompWithLabel label={t(`pKeyGroupName`)}>
-              <Input
-                onChange={changeName}
-                width="w-full"
-                placeholder={keygenNamePlaceholder}
-                maxLength="20"
-              />
-            </CompWithLabel>
-            <CompWithLabel label={t('pKey')}>
-              <Input
-                errorMessage={keygenErrorMessage}
-                elementType="textarea"
-                placeholder={t(`pKeyImportPlaceholder`)}
-                onChange={changeKeygen}
-                width="w-full"
-                className="resize-none"
-                textareaSize="h-40"
-              ></Input>
-            </CompWithLabel>
-          </section>
-          <section className="h-14">
-            <Button
-              className="w-70  mx-auto"
-              onClick={onCreate}
-              disabled={
-                (!name && !keygenNamePlaceholder) || !!keygenErrorMessage
-              }
-            >
-              {t('import')}
-            </Button>
-          </section>
-        </form>
-      </main>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+        }}
+        className="flex flex-1 px-3 flex-col justify-between"
+      >
+        <section>
+          <CompWithLabel label={t(`pKeyGroupName`)}>
+            <Input
+              onChange={onChangeName}
+              width="w-full"
+              placeholder={keygenNamePlaceholder}
+              maxLength="20"
+              value={name}
+            />
+          </CompWithLabel>
+          <CompWithLabel label={t('pKey')}>
+            <Input
+              errorMessage={keygenErrorMessage}
+              elementType="textarea"
+              placeholder={t(`pKeyImportPlaceholder`)}
+              onChange={onChangeKeygen}
+              width="w-full"
+              className="resize-none"
+              textareaSize="h-40"
+              value={keygen}
+            ></Input>
+          </CompWithLabel>
+        </section>
+        <section className="h-14">
+          <Button
+            className="w-70  mx-auto"
+            onClick={onCreate}
+            disabled={(!name && !keygenNamePlaceholder) || !!keygenErrorMessage}
+          >
+            {t('import')}
+          </Button>
+        </section>
+      </form>
     </div>
   )
 }

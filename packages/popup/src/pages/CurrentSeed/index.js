@@ -87,53 +87,55 @@ function CurrentSeed() {
   }
 
   return (
-    <div className="h-full px-3 flex flex-col bg-bg">
+    <div className="flex flex-col h-full bg-bg">
       <TitleNav title={t('newAccount')} />
-      <CompWithLabel label={t('accountName')}>
-        <Input
-          width="w-full"
-          value={accountName}
-          maxLength="20"
-          placeholder={accountNamePlaceholder}
-          onChange={e => setAccountName(e.target.value)}
-        />
-      </CompWithLabel>
-      <CompWithLabel
-        label={t('selectSeedPhrase')}
-        className="flex flex-1 flex-col mt-1 mb-3"
-      >
-        <div
-          role="menu"
-          className="flex flex-col flex-1 overflow-y-auto py-2 bg-gray-0 rounded-sm"
+      <main className="px-3 flex flex-1 flex-col">
+        <CompWithLabel label={t('accountName')}>
+          <Input
+            width="w-full"
+            value={accountName}
+            maxLength="20"
+            placeholder={accountNamePlaceholder}
+            onChange={e => setAccountName(e.target.value)}
+          />
+        </CompWithLabel>
+        <CompWithLabel
+          label={t('selectSeedPhrase')}
+          className="flex flex-1 flex-col mb-4"
         >
-          {hdGroup.map(
-            (g, idx) =>
-              g && (
-                <SeedPhrase
-                  key={g.eid}
-                  group={g}
-                  onClickGroup={onClickGroup}
-                  selectedGroupIdx={selectedGroupIdx}
-                  idx={idx}
-                />
-              ),
-          )}
+          <div
+            role="menu"
+            className="flex flex-col flex-1 overflow-y-auto py-2 bg-gray-0 rounded-sm"
+          >
+            {hdGroup.map(
+              (g, idx) =>
+                g && (
+                  <SeedPhrase
+                    key={g.eid}
+                    group={g}
+                    onClickGroup={onClickGroup}
+                    selectedGroupIdx={selectedGroupIdx}
+                    idx={idx}
+                  />
+                ),
+            )}
+          </div>
+        </CompWithLabel>
+        <div className="flex justify-center mb-4">
+          <Button
+            className="w-70"
+            onClick={onCreate}
+            disabled={
+              !(
+                (accountName || accountNamePlaceholder) &&
+                hdGroup[selectedGroupIdx]
+              ) || creatingAccount
+            }
+          >
+            {t('create')}
+          </Button>
         </div>
-      </CompWithLabel>
-      <div className="flex justify-center mb-4">
-        <Button
-          className="w-70"
-          onClick={onCreate}
-          disabled={
-            !(
-              (accountName || accountNamePlaceholder) &&
-              hdGroup[selectedGroupIdx]
-            ) || creatingAccount
-          }
-        >
-          {t('create')}
-        </Button>
-      </div>
+      </main>
     </div>
   )
 }

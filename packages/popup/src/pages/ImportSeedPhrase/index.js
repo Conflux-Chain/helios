@@ -43,10 +43,10 @@ function ImportSeedPhrase() {
   const walletValidateSeedPhrase = keygen => {
     setKeygenErrorMessage(keygen === '' ? 'Required!' : '')
   }
-  const changeName = e => {
+  const onChangeName = e => {
     setName(e.target.value)
   }
-  const changeKeygen = e => {
+  const onChangeKeygen = e => {
     setKeygen(e.target.value)
     walletValidateSeedPhrase(e.target.value)
   }
@@ -97,10 +97,11 @@ function ImportSeedPhrase() {
         <section>
           <CompWithLabel label={t(`seedGroupName`)}>
             <Input
-              onChange={changeName}
+              onChange={onChangeName}
               width="w-full"
               placeholder={keygenNamePlaceholder}
               maxLength="20"
+              value={name}
             />
           </CompWithLabel>
           <CompWithLabel label={t('seedPhrase')}>
@@ -108,11 +109,12 @@ function ImportSeedPhrase() {
               errorMessage={keygenErrorMessage}
               elementType="textarea"
               placeholder={t(`seedImportPlaceholder`)}
-              onChange={changeKeygen}
+              onChange={onChangeKeygen}
               width="w-full"
               className="resize-none"
               textareaSize="h-40"
-            ></Input>
+              value={keygen}
+            />
           </CompWithLabel>
         </section>
         <section className="mb-4">

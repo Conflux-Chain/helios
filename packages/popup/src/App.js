@@ -7,7 +7,6 @@ import './index.css'
 
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
-const CreateAccount = lazy(() => import('./pages/CreateAccount'))
 const NewSeed = lazy(() => import('./pages/CreateSeed/NewSeed'))
 const Unlock = lazy(() => import('./pages/Unlock'))
 const Welcome = lazy(() => import('./pages/Welcome'))
@@ -71,19 +70,16 @@ function App() {
               >
                 <HomePage />
               </ProtectedRoute>
-              <Route exact path="/create-account-default">
-                <CreateAccount />
-              </Route>
-              <Route exact path="/create-account-current-seed-phrase">
+              <Route exact path="/current-seed-phrase">
                 <CurrentSeed />
               </Route>
-              <Route exact path="/create-account-new-seed-phrase">
+              <Route exact path="/new-seed-phrase">
                 <NewSeed />
               </Route>
-              <Route exact path="/create-account-backup-seed-phrase">
+              <Route exact path="/backup-seed-phrase">
                 <BackupSeed />
               </Route>
-              <Route exact path="/create-account-confirm-seed-phrase">
+              <Route exact path="/confirm-seed-phrase">
                 <ConfirmSeed />
               </Route>
 
