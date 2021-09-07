@@ -103,7 +103,7 @@ function ImportAccount() {
                 maxLength="20"
               />
             </CompWithLabel>
-            <CompWithLabel label={t('pKey')} labelStyle="mt-4 mb-3">
+            <CompWithLabel label={t('pKey')}>
               <Input
                 errorMessage={keygenErrorMessage}
                 elementType="textarea"

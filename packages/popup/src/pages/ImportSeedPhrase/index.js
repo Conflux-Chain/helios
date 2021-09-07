@@ -104,7 +104,7 @@ function ImportAccount() {
                 maxLength="20"
               />
             </CompWithLabel>
-            <CompWithLabel label={t('seedPhrase')} labelStyle="mt-4 mb-3">
+            <CompWithLabel label={t('seedPhrase')}>
               <Input
                 errorMessage={keygenErrorMessage}
                 elementType="textarea"

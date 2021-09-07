@@ -35,31 +35,13 @@ module.exports = {
         4.5: '1.125rem',
         13: '3.25rem',
         15: '3.75rem',
-        24.5: '6.125rem',
-        26.5: '6.625rem',
-        29.5: '7.375rem',
+        25: '6.25rem',
         50: '12.5rem',
-        63: '15.75rem',
         70: '17.5rem',
-        77: '19rem',
         93: '23.25rem',
         100: '25rem',
-        104: '26rem',
         110: '27.5rem',
-        112: '28rem',
-        116: '29rem',
-        132: '33rem',
-        145: '36.25rem',
         150: '37.5rem',
-        168: '42rem',
-        200: '50rem',
-        236: '59rem',
-        256: '64rem',
-        360: '90rem',
-        fit: 'fit-content',
-      },
-      borderRadius: {
-        '2.5xl': '1.25rem',
       },
       boxShadow: {
         1: '0px 4px 6px rgba(0, 0, 0, 0.12)',
@@ -116,62 +98,8 @@ module.exports = {
           'sans-serif',
         ],
       },
-      keyframes: {
-        'move-left': {
-          '0%': {
-            transform: 'translateX(100%)',
-          },
-          '100%': {
-            transform: 'translateX(0)',
-          },
-        },
-        'move-down': {
-          '0%': {
-            transform: 'translateY(-100%)',
-          },
-          '100%': {
-            transform: 'translateY(0)',
-          },
-        },
-        'move-up': {
-          '0%': {
-            transform: 'translateY(0)',
-          },
-          '100%': {
-            transform: 'translateY(100%)',
-          },
-        },
-        'slice-down': {
-          '0%': {
-            transform: 'scale(1, 0)',
-          },
-          '100%': {
-            transform: 'scale(1, 1)',
-          },
-        },
-        'slice-up': {
-          '0%': {
-            transform: 'scale(1, 1)',
-          },
-          '100%': {
-            transform: 'scale(1, 0)',
-          },
-        },
-      },
-      animation: {
-        'move-left': 'move-left 0.2s ease-in-out 1',
-        'move-down': 'move-down 0.2s ease-in-out 1',
-        'move-up': 'move-up 0.2s ease-in-out 1',
-        'slice-down': 'slice-down 0.3s ease-in 1',
-        'slice-up': 'slice-up 0.3s ease-in 1',
-        'pulse-fast': 'pulse 0.7s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      },
-      transitionProperty: {
-        maxHeight: 'maxHeight',
-      },
       minHeight: {
         8: '2rem',
-        220: '55rem',
       },
       minWidth: {
         8: '2rem',
@@ -181,13 +109,5 @@ module.exports = {
       },
     },
   },
-  variants: {
-    extend: {
-      borderWidth: ['hover'],
-    },
-  },
   plugins: [],
-  corePlugins: {
-    preflight: false,
-  },
 }

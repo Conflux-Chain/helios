@@ -72,7 +72,7 @@ const SetPasswordForm = () => {
       </section>
 
       <section className="mb-15">
-        <em className="text-xs not-italic text-center  w-fit text-gray-40">
+        <em className="text-xs not-italic text-center text-gray-40">
           {t('rememberPWD')}
         </em>
         <Button
