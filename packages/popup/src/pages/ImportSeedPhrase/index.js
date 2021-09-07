@@ -67,9 +67,9 @@ function ImportAccount() {
         password: createdPassword,
         nickname: name || keygenNamePlaceholder,
         mnemonic: keygen,
-      }).then(({error, res}) => {
+      }).then(({error, result}) => {
         setCreatingAccount(false)
-        if (res?.result) {
+        if (result) {
           dispatchMutate()
           history.push('/')
         }
