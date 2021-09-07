@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {TextNav} from '../../components/index'
+import {TitleNav} from '../../components/index'
 import Button from '@cfxjs/component-button'
 import Input from '@cfxjs/component-input'
 import {CompWithLabel} from '../../components'
@@ -13,7 +13,7 @@ import {useCreatedPasswordGuard} from '../../hooks'
 
 import {useSWRConfig} from 'swr'
 
-function ImportAccount() {
+function ImportSeedPhrase() {
   const {t} = useTranslation()
   const history = useHistory()
   const {mutate} = useSWRConfig()
@@ -43,10 +43,10 @@ function ImportAccount() {
   const walletValidateSeedPhrase = keygen => {
     setKeygenErrorMessage(keygen === '' ? 'Required!' : '')
   }
-  const changeName = e => {
+  const onChangeName = e => {
     setName(e.target.value)
   }
-  const changeKeygen = e => {
+  const onChangeKeygen = e => {
     setKeygen(e.target.value)
     walletValidateSeedPhrase(e.target.value)
   }
@@ -86,53 +86,49 @@ function ImportAccount() {
   }
 
   return (
-    <div className="bg-bg  h-full flex flex-col">
-      <TextNav hasGoBack={true} title={t(`seedImport`)} />
-      <main className="px-3 flex-1 flex flex-col">
-        <form
-          onSubmit={e => {
-            e.preventDefault()
-          }}
-          className="flex flex-col justify-between h-full"
-        >
-          <section>
-            <CompWithLabel label={t(`seedGroupName`)}>
-              <Input
-                onChange={changeName}
-                width="w-full"
-                placeholder={keygenNamePlaceholder}
-                maxLength="20"
-                value={name}
-              />
-            </CompWithLabel>
-            <CompWithLabel label={t('seedPhrase')}>
-              <Input
-                errorMessage={keygenErrorMessage}
-                elementType="textarea"
-                placeholder={t(`seedImportPlaceholder`)}
-                onChange={changeKeygen}
-                width="w-full"
-                className="resize-none"
-                textareaSize="h-40"
-                value={keygen}
-              ></Input>
-            </CompWithLabel>
-          </section>
-          <section className="h-14">
-            <Button
-              className="w-70  mx-auto"
-              onClick={onCreate}
-              disabled={
-                (!name && !keygenNamePlaceholder) || !!keygenErrorMessage
-              }
-            >
-              {t('import')}
-            </Button>
-          </section>
-        </form>
-      </main>
+    <div className="bg-bg h-full flex flex-col">
+      <TitleNav title={t('seedImport')} />
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+        }}
+        className="flex flex-1 px-3 flex-col justify-between"
+      >
+        <section>
+          <CompWithLabel label={t(`seedGroupName`)}>
+            <Input
+              onChange={onChangeName}
+              width="w-full"
+              placeholder={keygenNamePlaceholder}
+              maxLength="20"
+              value={name}
+            />
+          </CompWithLabel>
+          <CompWithLabel label={t('seedPhrase')}>
+            <Input
+              errorMessage={keygenErrorMessage}
+              elementType="textarea"
+              placeholder={t(`seedImportPlaceholder`)}
+              onChange={onChangeKeygen}
+              width="w-full"
+              className="resize-none"
+              textareaSize="h-40"
+              value={keygen}
+            />
+          </CompWithLabel>
+        </section>
+        <section className="mb-4">
+          <Button
+            className="w-70  mx-auto"
+            onClick={onCreate}
+            disabled={(!name && !keygenNamePlaceholder) || !!keygenErrorMessage}
+          >
+            {t('import')}
+          </Button>
+        </section>
+      </form>
     </div>
   )
 }
 
-export default ImportAccount
+export default ImportSeedPhrase

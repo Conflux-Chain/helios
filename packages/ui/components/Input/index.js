@@ -119,7 +119,7 @@ function Input({
 }
 
 Input.propTypes = {
-  value: PropTypes.string,
+  value: PropTypes.string.isRequired,
   className: PropTypes.string,
   containerClassName: PropTypes.string,
   onChange: PropTypes.func,

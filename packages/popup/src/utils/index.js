@@ -15,12 +15,11 @@ export const getRouteWithAuthInfo = (hasAccount, isLocked) => {
   if (typeof hasAccount !== 'boolean' || typeof isLocked !== 'boolean') {
     return null
   }
-  if (hasAccount && isLocked) {
-    return '/unlock'
-  }
-
   if (!hasAccount) {
     return '/welcome'
+  }
+  if (hasAccount && isLocked) {
+    return '/unlock'
   }
   return null
 }
