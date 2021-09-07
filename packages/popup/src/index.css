@@ -26,7 +26,6 @@ strong {
 #root,
 body,
 html {
-  --color-bg: #f4f5f7;
   --color-white: #fff;
   --color-black: #000;
   --color-primary: #7789d3;
@@ -42,6 +41,7 @@ html {
 }
 
 .light {
+  --color-bg: #f4f5f7;
   --color-primary-4: #f8f9fe;
   --color-primary-10: #f0f3ff;
   --color-primary-90: #262933;
@@ -65,6 +65,7 @@ html {
 }
 
 .dark {
+  --color-bg: #26282e;
   --color-primary-4: #262933;
   --color-primary-10: #262933;
   --color-primary-90: #f0f3ff;
