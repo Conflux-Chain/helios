@@ -1,7 +1,7 @@
+import PropTypes from 'prop-types'
 import {Route, Redirect} from 'react-router-dom'
-import {getRouteWithAuthInfo} from '../utils/index'
+import {getRouteWithAuthInfo} from '../utils'
 
-// eslint-disable-next-line react/prop-types
 const ProtectedRoute = ({children, hasAccount, isLocked, ...rest}) => {
   return (
     <Route
@@ -12,6 +12,15 @@ const ProtectedRoute = ({children, hasAccount, isLocked, ...rest}) => {
       }}
     />
   )
+}
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+  hasAccount: PropTypes.bool,
+  isLocked: PropTypes.bool,
 }
 
 export default ProtectedRoute

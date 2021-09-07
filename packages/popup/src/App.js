@@ -70,16 +70,16 @@ function App() {
               >
                 <HomePage />
               </ProtectedRoute>
-              <Route exact path="/create-account-current-seed-phrase">
+              <Route exact path="/current-seed-phrase">
                 <CurrentSeed />
               </Route>
-              <Route exact path="/create-account-new-seed-phrase">
+              <Route exact path="/new-seed-phrase">
                 <NewSeed />
               </Route>
-              <Route exact path="/create-account-backup-seed-phrase">
+              <Route exact path="/backup-seed-phrase">
                 <BackupSeed />
               </Route>
-              <Route exact path="/create-account-confirm-seed-phrase">
+              <Route exact path="/confirm-seed-phrase">
                 <ConfirmSeed />
               </Route>
 

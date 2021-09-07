@@ -14,7 +14,7 @@ const Welcome = () => {
       </header>
       <main>
         <Button
-          className="mt-80  w-70 mx-auto"
+          className="mt-80 w-70 mx-auto"
           onClick={() => {
             history.push('/set-password')
           }}

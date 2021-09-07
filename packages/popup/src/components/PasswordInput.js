@@ -38,7 +38,7 @@ const PasswordInput = ({
       onSuffixClick={onSuffixClick}
       onCopy={e => e.preventDefault()}
       onCut={e => e.preventDefault()}
-    ></Input>
+    />
   )
 }
 PasswordInput.propTypes = {

@@ -19,7 +19,7 @@ const en = {
     rememberPWD: 'This password cannot be retrieved, please remember.',
     goBack: 'Back',
     // select create type
-    newAccount: 'New Account',
+    newAccount: 'Create Account',
     createAccount: 'Create a new account',
     useExistingSeed: 'Use existing Seed Phrase',
     useExistingSeedDes: 'No need to backup again, use HD Wallet.',

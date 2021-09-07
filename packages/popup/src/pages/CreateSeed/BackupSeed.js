@@ -5,9 +5,12 @@ import {useHistory} from 'react-router-dom'
 import Button from '@cfxjs/component-button'
 import useGlobalStore from '../../stores'
 import {SeedWord} from './components'
+import {TitleNav} from '../../components'
 import {request} from '../../utils'
+import {useCreatedPasswordGuard} from '../../hooks'
 
 function BackupSeed() {
+  useCreatedPasswordGuard()
   const {t} = useTranslation()
   const history = useHistory()
   const {setCreatedMnemonic} = useGlobalStore()
@@ -16,39 +19,40 @@ function BackupSeed() {
     request('wallet_generateMnemonic').then(({result}) => setMnemonic(result)),
   )
 
-  console.log(mnemonic)
-
   return (
-    <div className="h-full px-3 pt-3 flex flex-col bg-gray-0 justify-between">
-      <div>
-        <span className="inline-block ml-1 mb-1 text-gray-80">
-          {t('backupSeedTitle')}
-        </span>
-        <span className="inline-block ml-1 text-xs text-gray-40">
-          <Trans i18nKey="backupSeedContent" />
-        </span>
-        <div className="mt-4 pt-3 px-3 bg-bg rounded-sm flex flex-wrap justify-between">
-          {mnemonic.split(' ').map((word, index) => (
-            <SeedWord
-              key={index}
-              closable={false}
-              word={word}
-              idx={index + 1}
-            />
-          ))}
+    <div className="h-full flex flex-col bg-gray-0">
+      <TitleNav title={t('newAccount')} />
+      <main className="px-3 flex flex-col flex-1 justify-between pt-3">
+        <div>
+          <span className="inline-block ml-1 mb-1 text-gray-80">
+            {t('backupSeedTitle')}
+          </span>
+          <span className="inline-block ml-1 text-xs text-gray-40">
+            <Trans i18nKey="backupSeedContent" />
+          </span>
+          <div className="mt-4 pt-3 px-3 bg-bg rounded-sm flex flex-wrap justify-between">
+            {mnemonic.split(' ').map((word, index) => (
+              <SeedWord
+                key={index}
+                closable={false}
+                word={word}
+                idx={index + 1}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="flex justify-center mb-4">
-        <Button
-          className="w-70"
-          onClick={() => {
-            history.push('/create-account-confirm-seed-phrase')
-            setCreatedMnemonic(mnemonic)
-          }}
-        >
-          {t('next')}
-        </Button>
-      </div>
+        <div className="flex justify-center mb-4">
+          <Button
+            className="w-70"
+            onClick={() => {
+              history.push('/confirm-seed-phrase')
+              setCreatedMnemonic(mnemonic)
+            }}
+          >
+            {t('next')}
+          </Button>
+        </div>
+      </main>
     </div>
   )
 }
