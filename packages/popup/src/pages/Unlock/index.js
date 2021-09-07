@@ -20,17 +20,13 @@ const UnlockPage = () => {
   }
   const onUnlock = () => {
     if (password) {
-      request('wallet_unlock', {password})
-        .then(({error, result}) => {
-          if (error) throw error
-          if (result) {
-            mutate([...GET_WALLET_STATUS])
-            history.push('/')
-          }
-        })
-        .catch(err => {
-          throw err
-        })
+      request('wallet_unlock', {password}).then(({error, result}) => {
+        if (error) setErrorMessage(error.message.split('\n')[0])
+        if (result) {
+          mutate([...GET_WALLET_STATUS])
+          history.push('/')
+        }
+      })
     }
   }
   const onSubmit = event => {
