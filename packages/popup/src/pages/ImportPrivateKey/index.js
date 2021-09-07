@@ -1,10 +1,9 @@
 import {useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {TitleNav} from '../../components'
+import {TitleNav, CompWithLabel} from '../../components'
 import Button from '@cfxjs/component-button'
 import Input from '@cfxjs/component-input'
-import {CompWithLabel} from '../../components'
 import {useRPC} from '@cfxjs/use-rpc'
 import {request} from '../../utils'
 import {GET_ALL_ACCOUNT_GROUP, GET_PK_ACCOUNT_GROUP} from '../../constants'
@@ -40,7 +39,8 @@ function ImportPrivateKey() {
     setKeygenNamePlaceholder(`Account-${keygenGroup.length + 1}`)
   }, [keygenGroup])
 
-  const walletValidatePrivateKey = keygen => {
+  // TODO should use wallet_validatePrivateKey rpc method here
+  const validatePrivateKey = keygen => {
     setKeygenErrorMessage(keygen === '' ? 'Required!' : '')
   }
   const onChangeName = e => {
@@ -48,19 +48,20 @@ function ImportPrivateKey() {
   }
   const onChangeKeygen = e => {
     setKeygen(e.target.value)
-    walletValidatePrivateKey(e.target.value)
+    validatePrivateKey(e.target.value)
   }
   const dispatchMutate = () => {
     mutate([...GET_ALL_ACCOUNT_GROUP])
     mutate([...GET_PK_ACCOUNT_GROUP])
   }
-  const importAccount = async () => {
-    if (
-      !creatingAccount &&
-      name.length <= 20 &&
-      !keygenErrorMessage &&
-      keygen
-    ) {
+
+  const onSubmit = event => {
+    event.preventDefault()
+    validatePrivateKey(keygen)
+  }
+
+  const onCreate = () => {
+    if (keygen && name && !creatingAccount) {
       setCreatingAccount(true)
       request('wallet_importPrivateKey', {
         password: createdPassword,
@@ -72,25 +73,18 @@ function ImportPrivateKey() {
           dispatchMutate()
           history.push('/')
         }
-        if (error?.message) {
+        if (error) {
           setKeygenErrorMessage(error.message.split('\n')[0])
         }
       })
     }
   }
 
-  const onCreate = () => {
-    walletValidatePrivateKey(keygen)
-    importAccount()
-  }
-
   return (
     <div className="bg-bg h-full flex flex-col">
       <TitleNav title={t(`pKeyImport`)} />
       <form
-        onSubmit={e => {
-          e.preventDefault()
-        }}
+        onSubmit={onSubmit}
         className="flex flex-1 px-3 flex-col justify-between"
       >
         <section>

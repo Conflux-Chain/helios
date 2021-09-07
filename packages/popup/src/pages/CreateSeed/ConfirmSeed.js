@@ -41,6 +41,7 @@ function ConfirmSeed() {
       setMnemonicError(t('confirmSeedError'))
       return
     }
+    if (importingMnemonic) return
     setMnemonicError('')
     setImportingMnemonic(true)
     request('wallet_importMnemonic', {
@@ -108,7 +109,7 @@ function ConfirmSeed() {
           <Button
             className="w-70"
             onClick={onCreate}
-            disabled={!!mnemonicError || importingMnemonic}
+            disabled={!!mnemonicError}
           >
             {t('create')}
           </Button>

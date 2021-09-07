@@ -4,7 +4,7 @@ import Input from '@cfxjs/component-input'
 import {EyeClose, EyeOpen} from '@cfxjs/component-icons'
 
 const PasswordInput = ({
-  setInputErrorMessage,
+  validateInputValue,
   setInputValue,
   errorMessage,
   value,
@@ -15,14 +15,13 @@ const PasswordInput = ({
   }
 
   const onInputChange = e => {
-    setInputErrorMessage && setInputErrorMessage(e.target.value)
+    validateInputValue && validateInputValue(e.target.value)
     setInputValue && setInputValue(e.target.value)
   }
 
   return (
     <Input
       onChange={onInputChange}
-      onFocus={onInputChange}
       type={eyeStatus === 'close' ? 'password' : 'text'}
       width="w-full box-border"
       bordered={true}
@@ -42,7 +41,7 @@ const PasswordInput = ({
   )
 }
 PasswordInput.propTypes = {
-  setInputErrorMessage: PropTypes.func,
+  validateInputValue: PropTypes.func,
   setInputValue: PropTypes.func,
   errorMessage: PropTypes.string,
   value: PropTypes.string.isRequired,
