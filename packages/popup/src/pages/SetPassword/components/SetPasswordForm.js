@@ -61,6 +61,7 @@ const SetPasswordForm = () => {
           setInputErrorMessage={validateWhenInputPassword}
           setInputValue={setPassword}
           errorMessage={errorMessage}
+          value={password}
         />
         {errorMessage ? null : <em className="m-0 h-6 block" />}
 
@@ -68,6 +69,7 @@ const SetPasswordForm = () => {
           setInputErrorMessage={validateWhenInputConfirmPassword}
           setInputValue={setConfirmPassword}
           errorMessage={confirmErrorMessage}
+          value={confirmPassword}
         />
       </section>
 

@@ -102,6 +102,7 @@ function ImportAccount() {
                 width="w-full"
                 placeholder={keygenNamePlaceholder}
                 maxLength="20"
+                value={name}
               />
             </CompWithLabel>
             <CompWithLabel label={t('seedPhrase')}>
@@ -113,6 +114,7 @@ function ImportAccount() {
                 width="w-full"
                 className="resize-none"
                 textareaSize="h-40"
+                value={keygen}
               ></Input>
             </CompWithLabel>
           </section>
