@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types'
 import {Route, Redirect} from 'react-router-dom'
-
-import {getRouteWithAuth} from '../utils'
+import {getRouteWithAuthInfo} from '../utils'
 
 const ProtectedRoute = ({children, hasAccount, isLocked, ...rest}) => {
   return (
     <Route
       {...rest}
       render={() => {
-        const to = getRouteWithAuth(hasAccount, isLocked)
+        const to = getRouteWithAuthInfo(hasAccount, isLocked)
         return !to ? children : <Redirect to={to} />
       }}
     />

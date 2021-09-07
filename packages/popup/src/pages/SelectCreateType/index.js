@@ -1,7 +1,6 @@
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TitleNav} from '../../components/index'
-import {Add, Search, Article, Folder} from '@cfxjs/component-icons'
 import {CreateTypeItem} from './components'
 
 function Tag() {
@@ -26,7 +25,7 @@ function WithCurrentSeed() {
           {t('createAccount')}
         </em>
         <CreateTypeItem
-          Icon={Article}
+          Icon={<img src="/images/existing-seed-phrase-icon.svg" alt="icon" />}
           title={t('useExistingSeed')}
           subTitle={t('useExistingSeedDes')}
           Tag={Tag}
@@ -36,7 +35,7 @@ function WithCurrentSeed() {
           }}
         />
         <CreateTypeItem
-          Icon={Add}
+          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('newSeedPhrase')}
           subTitle={t('newSeedPhraseDes')}
           typeClass="mb-4"
@@ -49,19 +48,19 @@ function WithCurrentSeed() {
         </em>
         <CreateTypeItem
           typeClass="my-3"
-          Icon={Folder}
+          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('seedPhrase')}
           subTitle={t('seedPhraseDes')}
           onClick={() => {
-            history.push('/import-account/seed-phrase')
+            history.push('/import-seed-phrase')
           }}
         />
         <CreateTypeItem
-          Icon={Search}
+          Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
           title={t('pKey')}
           subTitle={t('pKeysDes')}
           onClick={() => {
-            history.push('/import-account/private-key')
+            history.push('/import-private-key')
           }}
         />
       </main>

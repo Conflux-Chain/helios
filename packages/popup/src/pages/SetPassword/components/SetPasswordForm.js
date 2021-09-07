@@ -21,7 +21,7 @@ function SetPasswordForm() {
   const [confirmErrorMessage, setConfirmErrorMessage] = useState('')
 
   // TODO: Replace err msg
-  const setInputErrorMessage = value => {
+  const validateWhenInputPassword = value => {
     if (validate(value)) {
       setConfirmErrorMessage(
         value !== confirmPassword ? '输入的密码不一致' : '',
@@ -31,7 +31,7 @@ function SetPasswordForm() {
     setErrorMessage('something wrong')
   }
   // TODO: Replace err msg
-  const setConfirmInputErrorMessage = value => {
+  const validateWhenInputConfirmPassword = value => {
     if (password === value) {
       return setConfirmErrorMessage('')
     }
@@ -40,8 +40,8 @@ function SetPasswordForm() {
 
   const handleSubmit = event => {
     event.preventDefault()
-    setInputErrorMessage(password)
-    setConfirmInputErrorMessage(confirmPassword)
+    validateWhenInputPassword(password)
+    validateWhenInputConfirmPassword(confirmPassword)
   }
 
   const create = () => {
@@ -58,21 +58,21 @@ function SetPasswordForm() {
       <section>
         <legend className="text-gray-40 text-sm mb-3">{t('setPWD')}</legend>
         <PasswordInput
-          setInputErrorMessage={setInputErrorMessage}
+          setInputErrorMessage={validateWhenInputPassword}
           setInputValue={setPassword}
           errorMessage={errorMessage}
         />
         {errorMessage ? null : <em className="m-0 h-6 block" />}
 
         <PasswordInput
-          setInputErrorMessage={setConfirmInputErrorMessage}
+          setInputErrorMessage={validateWhenInputConfirmPassword}
           setInputValue={setConfirmPassword}
           errorMessage={confirmErrorMessage}
         />
       </section>
 
       <section className="mb-15">
-        <em className="text-xs not-italic text-center  w-fit text-gray-40">
+        <em className="text-xs not-italic text-center text-gray-40">
           {t('rememberPWD')}
         </em>
         <Button

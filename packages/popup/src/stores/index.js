@@ -3,13 +3,15 @@ import create from 'zustand'
 const useGlobalStore = create(set => ({
   // value
   createdGroupName: '',
-  createdMnemonic: '',
+  createdSeedPhase: '',
   createdPassword: '',
+  createdMnemonic: '',
 
   // logic
-  setCreatedGroupName: createdGroupName => set({createdGroupName}),
-  setCreatedMnemonic: createdMnemonic => set({createdMnemonic}),
   setCreatedPassword: createdPassword => set({createdPassword}),
+  setCreatedGroupName: createdGroupName => set({createdGroupName}),
+  setCreatedSeedPhase: createdSeedPhase => set({createdSeedPhase}),
+  setCreatedMnemonic: createdMnemonic => set({createdMnemonic}),
 }))
 
 export default useGlobalStore

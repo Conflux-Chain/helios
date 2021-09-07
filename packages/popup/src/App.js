@@ -13,7 +13,8 @@ const Unlock = lazy(() => import('./pages/Unlock'))
 const Welcome = lazy(() => import('./pages/Welcome'))
 const SetPassword = lazy(() => import('./pages/SetPassword'))
 const SelectCreateType = lazy(() => import('./pages/SelectCreateType'))
-const ImportAccount = lazy(() => import('./pages/ImportAccount'))
+const ImportSeedPhrase = lazy(() => import('./pages/ImportSeedPhrase'))
+const ImportPrivateKey = lazy(() => import('./pages/ImportPrivateKey'))
 const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
 const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 const ErrorPage = lazy(() => import('./pages/Error'))
@@ -92,8 +93,11 @@ function App() {
               <Route exact path="/select-create-type">
                 <SelectCreateType />
               </Route>
-              <Route exact path="/import-account/:pattern">
-                <ImportAccount />
+              <Route exact path="/import-seed-phrase">
+                <ImportSeedPhrase />
+              </Route>
+              <Route exact path="/import-private-key">
+                <ImportPrivateKey />
               </Route>
               <Route exact path="/error">
                 <ErrorPage />
