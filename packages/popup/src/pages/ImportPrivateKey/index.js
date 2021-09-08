@@ -40,21 +40,17 @@ function ImportPrivateKey() {
     setKeygenNamePlaceholder(`Account-${keygenGroup.length + 1}`)
   }, [keygenGroup])
 
-  const walletValidatePrivateKey = keygen => {
-    setKeygenErrorMessage(keygen === '' ? 'Required!' : '')
-  }
   const onChangeName = e => {
     setName(e.target.value)
   }
   const onChangeKeygen = e => {
     setKeygen(e.target.value)
-    walletValidatePrivateKey(e.target.value)
   }
   const dispatchMutate = () => {
     mutate([...GET_ALL_ACCOUNT_GROUP])
     mutate([...GET_PK_ACCOUNT_GROUP])
   }
-  const importAccount = async () => {
+  const onCreate = async () => {
     if (
       !creatingAccount &&
       name.length <= 20 &&
@@ -62,26 +58,31 @@ function ImportPrivateKey() {
       keygen
     ) {
       setCreatingAccount(true)
-      request('wallet_importPrivateKey', {
-        password: createdPassword,
-        nickname: name || keygenNamePlaceholder,
-        privateKey: keygen,
-      }).then(({error, result}) => {
-        setCreatingAccount(false)
-        if (result) {
-          dispatchMutate()
-          history.push('/')
-        }
-        if (error?.message) {
-          setKeygenErrorMessage(error.message.split('\n')[0])
-        }
-      })
+      request('wallet_validatePrivateKey', {privateKey: keygen}).then(
+        ({result}) => {
+          if (result?.valid) {
+            request('wallet_importPrivateKey', {
+              password: createdPassword,
+              nickname: name || keygenNamePlaceholder,
+              privateKey: keygen,
+            }).then(({error, result}) => {
+              setCreatingAccount(false)
+              if (result) {
+                dispatchMutate()
+                history.push('/')
+              }
+              if (error?.message) {
+                setKeygenErrorMessage(error.message.split('\n')[0])
+              }
+            })
+          } else {
+            // TODO: replace error msg
+            setKeygenErrorMessage('输入有误!')
+            setCreatingAccount(false)
+          }
+        },
+      )
     }
-  }
-
-  const onCreate = () => {
-    walletValidatePrivateKey(keygen)
-    importAccount()
   }
 
   return (
@@ -120,7 +121,7 @@ function ImportPrivateKey() {
           <Button
             className="w-70  mx-auto"
             onClick={onCreate}
-            disabled={(!name && !keygenNamePlaceholder) || !!keygenErrorMessage}
+            disabled={!name && !keygenNamePlaceholder}
           >
             {t('import')}
           </Button>
