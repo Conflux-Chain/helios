@@ -40,7 +40,7 @@ import {
   DEFAULT_CFX_HDPATH,
   DEFAULT_ETH_HDPATH,
   DEFAULT_CURRENCY_DECIMALS,
-} from '@cfxjs/fluent-wallet-consts'
+} from '@fluent-wallet/consts'
 
 function initNetwork(d) {
   if (d.getNetwork().length) return

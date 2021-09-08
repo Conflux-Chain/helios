@@ -1,7 +1,7 @@
-import * as spec from '@cfxjs/spec'
-import getTypedDataSpec from '@cfxjs/typed-data-spec'
-import {signTypedData_v4, hashTypedData} from '@cfxjs/signature'
-import {decode} from '@cfxjs/base32-address'
+import * as spec from '@fluent-wallet/spec'
+import getTypedDataSpec from '@fluent-wallet/typed-data-spec'
+import {signTypedData_v4, hashTypedData} from '@fluent-wallet/signature'
+import {decode} from '@fluent-wallet/base32-address'
 
 const {map, dbid, or} = spec
 

@@ -1,4 +1,4 @@
-import * as reqAccounts from '@cfxjs/eth_request-accounts'
+import * as reqAccounts from '@fluent-wallet/eth_request-accounts'
 
 export const NAME = 'eth_accounts'
 

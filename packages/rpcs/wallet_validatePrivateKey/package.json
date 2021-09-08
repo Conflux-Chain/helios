@@ -1,10 +1,10 @@
 {
-  "name": "@cfxjs/wallet_validate-private-key",
+  "name": "@fluent-wallet/wallet_validate-private-key",
   "type": "module",
   "main": "index.js",
   "version": "0.0.3",
   "dependencies": {
-    "@cfxjs/account": "workspace:packages/account",
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/account": "workspace:packages/account",
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

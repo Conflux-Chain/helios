@@ -1,15 +1,15 @@
 {
-  "name": "@cfxjs/account",
+  "name": "@fluent-wallet/account",
   "version": "0.1.0",
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "@cfxjs/compose": "workspace:packages/compose",
-    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",
-    "@cfxjs/utils": "workspace:packages/utils",
     "@ethersproject/address": "5.4.0",
     "@ethersproject/transactions": "5.4.0",
     "@ethersproject/wallet": "5.4.0",
+    "@fluent-wallet/compose": "workspace:packages/compose",
+    "@fluent-wallet/consts": "workspace:packages/consts",
+    "@fluent-wallet/utils": "workspace:packages/utils",
     "elliptic": "6.5.4"
   }
 }

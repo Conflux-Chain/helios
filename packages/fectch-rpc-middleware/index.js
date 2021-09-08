@@ -1,6 +1,6 @@
-import {defMiddleware} from '@cfxjs/rpc-engine/middleware.js'
+import {defMiddleware} from '@fluent-wallet/rpc-engine/middleware.js'
 import {stream} from '@thi.ng/rstream'
-import {initFetcher} from '@cfxjs/fetch-rpc'
+import {initFetcher} from '@fluent-wallet/fetch-rpc'
 
 const fetcher = initFetcher()
 

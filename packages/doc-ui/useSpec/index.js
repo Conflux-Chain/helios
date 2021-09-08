@@ -79,7 +79,7 @@ const createSpec = id =>
       }
 
       window &&
-        import('@cfxjs/spec/src/doc.js')
+        import('@fluent-wallet/spec/src/doc.js')
           .then(spec => {
             SPEC = spec
             set({spec, loadingSpec: false})
@@ -105,7 +105,7 @@ const createSpec = id =>
       if (gen) return
 
       window &&
-        import('@cfxjs/spec/src/gen.js')
+        import('@fluent-wallet/spec/src/gen.js')
           .then(({gen}) => {
             GEN = gen
             set({gen, loadingGen: false})

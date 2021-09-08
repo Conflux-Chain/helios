@@ -1,7 +1,7 @@
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {LanguageNav, HomeTitle} from '../../components'
-import Button from '@cfxjs/component-button'
+import Button from '@fluent-wallet/component-button'
 
 const Welcome = () => {
   const {t} = useTranslation()

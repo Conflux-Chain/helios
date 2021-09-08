@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/eth_gas-price",
+  "name": "@fluent-wallet/eth_gas-price",
   "type": "module",
   "main": "index.js",
   "version": "0.0.3",
   "dependencies": {
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

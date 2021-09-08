@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {useRPC} from '@cfxjs/doc-use-rpc'
-import {useSpec} from '@cfxjs/doc-use-spec'
+import {useRPC} from '@fluent-wallet/doc-use-rpc'
+import {useSpec} from '@fluent-wallet/doc-use-spec'
 
 const Var = 'var'
 

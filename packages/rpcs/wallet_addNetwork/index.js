@@ -9,11 +9,8 @@ import {
   chainId,
   eq,
   plus,
-} from '@cfxjs/spec'
-import {
-  DEFAULT_CFX_HDPATH,
-  DEFAULT_ETH_HDPATH,
-} from '@cfxjs/fluent-wallet-consts'
+} from '@fluent-wallet/spec'
+import {DEFAULT_CFX_HDPATH, DEFAULT_ETH_HDPATH} from '@fluent-wallet/consts'
 
 export const NAME = 'wallet_addNetwork'
 

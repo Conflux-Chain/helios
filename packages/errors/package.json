@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/errors",
+  "name": "@fluent-wallet/errors",
   "version": "0.0.4",
   "type": "module",
   "main": "index.js",

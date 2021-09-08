@@ -1,4 +1,4 @@
-import * as reqAccounts from '@cfxjs/cfx_request-accounts'
+import * as reqAccounts from '@fluent-wallet/cfx_request-accounts'
 
 export const NAME = 'cfx_accounts'
 

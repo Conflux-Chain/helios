@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/component-wrap-icon",
+  "name": "@fluent-wallet/component-wrap-icon",
   "type": "module",
   "main": "index.js",
   "peerDependencies": {

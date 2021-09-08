@@ -1,5 +1,5 @@
-import {dbid, map, mapp, or} from '@cfxjs/spec'
-import {chan} from '@cfxjs/csp'
+import {dbid, map, mapp, or} from '@fluent-wallet/spec'
+import {chan} from '@fluent-wallet/csp'
 
 export const NAME = 'wallet_addPendingUserAuthRequest'
 

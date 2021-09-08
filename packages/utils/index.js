@@ -1,5 +1,5 @@
 import randombytes from 'randombytes'
-import { Buffer } from 'buffer'
+import {Buffer} from 'buffer'
 import BN from 'bn.js'
 
 export const randomHex = function (size) {
@@ -33,7 +33,7 @@ export function padToEven(value) {
 
   if (typeof a !== 'string') {
     throw new Error(
-      `[@cfxjs/utils] while padding to even, value must be string, is currently ${typeof a}, while padToEven.`,
+      `[@fluent-wallet/utils] while padding to even, value must be string, is currently ${typeof a}, while padToEven.`,
     )
   }
 
@@ -170,7 +170,7 @@ export function intToHex(i) {
  * @param right whether to start padding form the left or right
  * @return (Buffer|Array)
  */
-export const setLengthLeft = function(msg, length, right = false) {
+export const setLengthLeft = function (msg, length, right = false) {
   const buf = zeros(length)
   msg = toBuffer(msg)
   if (right) {
@@ -197,6 +197,6 @@ export const setLength = setLengthLeft
  * @param length the number of bytes the output should be
  * @return (Buffer|Array)
  */
-export const setLengthRight = function(msg, length) {
+export const setLengthRight = function (msg, length) {
   return setLength(msg, length, true)
 }

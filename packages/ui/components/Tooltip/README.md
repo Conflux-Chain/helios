@@ -1,1 +1,1 @@
-# @cfxjs/component-tooltip
+# @fluent-wallet/component-tooltip

@@ -1,1 +1,1 @@
-# @cfxjs/errors
+# @fluent-wallet/errors

@@ -2,7 +2,7 @@
 import { expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach } from '@jest/globals' // prettier-ignore
 // eslint-disable-next-line no-unused-vars
 import waitForExpect from 'wait-for-expect'
-import {fromPrivate} from '@cfxjs/account'
+import {fromPrivate} from '@fluent-wallet/account'
 import {
   personalSign,
   signTypedData_v4,

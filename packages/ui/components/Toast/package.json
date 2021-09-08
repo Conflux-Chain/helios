@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/component-toast",
+  "name": "@fluent-wallet/component-toast",
   "type": "module",
   "main": "index.js",
   "peerDependencies": {

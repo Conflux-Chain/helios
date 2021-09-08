@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/wallet_delete-account-group",
+  "name": "@fluent-wallet/wallet_delete-account-group",
   "type": "module",
   "main": "index.js",
   "version": "0.0.2",
   "dependencies": {
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

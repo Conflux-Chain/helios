@@ -1,1 +1,1 @@
-# @cfxjs/eth_gas-price
+# @fluent-wallet/eth_gas-price

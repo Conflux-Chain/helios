@@ -1,4 +1,4 @@
-import {map, mapp} from '@cfxjs/spec'
+import {map, mapp} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_validateAppPermissions'
 

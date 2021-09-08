@@ -1,1 +1,1 @@
-# @cfxjs/eth_get-balance
+# @fluent-wallet/eth_get-balance

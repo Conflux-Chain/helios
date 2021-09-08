@@ -1,1 +1,1 @@
-# @cfxjs/wallet_update-account-group
+# @fluent-wallet/wallet_update-account-group

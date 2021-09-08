@@ -1,1 +1,1 @@
-# @cfxjs/component-message
+# @fluent-wallet/component-message

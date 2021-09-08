@@ -1,1 +1,1 @@
-# @cfxjs/wallet_import-private-key
+# @fluent-wallet/wallet_import-private-key

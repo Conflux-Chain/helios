@@ -1,4 +1,4 @@
-import {and, arrp, empty} from '@cfxjs/spec'
+import {and, arrp, empty} from '@fluent-wallet/spec'
 
 export const NAME = 'eth_blockNumber'
 

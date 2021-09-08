@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/eth_accounts",
+  "name": "@fluent-wallet/eth_accounts",
   "type": "module",
   "main": "index.js",
   "version": "0.0.2",
   "dependencies": {
-    "@cfxjs/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
+    "@fluent-wallet/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
   }
 }

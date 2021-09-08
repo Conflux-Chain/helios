@@ -2,7 +2,7 @@
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {listen} from './background.js'
 
-describe('@cfxjs/extension-runtime/background.js', function () {
+describe('@fluent-wallet/extension-runtime/background.js', function () {
   describe('listen', function () {
     it('should listen for port with name popup/content-script', async function () {
       let p, i, port, onConnect, listener

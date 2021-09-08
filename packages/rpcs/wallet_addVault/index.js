@@ -9,12 +9,16 @@ import {
   truep,
   maybe,
   nickname,
-} from '@cfxjs/spec'
+} from '@fluent-wallet/spec'
 import {encrypt, decrypt} from 'browser-passworder'
-import {compL} from '@cfxjs/compose'
-import {validateBase32Address, decode, encode} from '@cfxjs/base32-address'
-import {fromPrivate, toAccountAddress} from '@cfxjs/account'
-import {stripHexPrefix} from '@cfxjs/utils'
+import {compL} from '@fluent-wallet/compose'
+import {
+  validateBase32Address,
+  decode,
+  encode,
+} from '@fluent-wallet/base32-address'
+import {fromPrivate, toAccountAddress} from '@fluent-wallet/account'
+import {stripHexPrefix} from '@fluent-wallet/utils'
 
 export const NAME = 'wallet_addVault'
 

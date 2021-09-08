@@ -1,4 +1,4 @@
-import {base32ContractAddress, cat, epochRef} from '@cfxjs/spec'
+import {base32ContractAddress, cat, epochRef} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_getCode'
 

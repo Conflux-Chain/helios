@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
-import Button from '@cfxjs/component-button'
+import Button from '@fluent-wallet/component-button'
 import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
 import {useTranslation} from 'react-i18next'
 import {GET_WALLET_STATUS} from '../../constants'

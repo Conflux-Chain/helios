@@ -1,6 +1,6 @@
-import {dbid, int, map, truep, maybe} from '@cfxjs/spec'
-import {discoverAccounts} from '@cfxjs/discover-accounts'
-import {partial} from '@cfxjs/compose'
+import {dbid, int, map, truep, maybe} from '@fluent-wallet/spec'
+import {discoverAccounts} from '@fluent-wallet/discover-accounts'
+import {partial} from '@fluent-wallet/compose'
 import {decrypt} from 'browser-passworder'
 
 export const NAME = 'wallet_discoverAccounts'

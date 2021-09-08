@@ -19,14 +19,14 @@ import {
   ETH_LOCALNET_CURRENCY_SYMBOL,
   ETH_LOCALNET_CURRENCY_NAME,
   DEFAULT_ETH_HDPATH,
-} from '@cfxjs/fluent-wallet-consts'
+} from '@fluent-wallet/consts'
 import {
   MNEMONIC,
   CFX_ACCOUNTS,
   ETH_ACCOUNTS,
   sendCFX,
   sendETH,
-} from '@cfxjs/test-helpers'
+} from '@fluent-wallet/test-helpers'
 
 const password = '12345678'
 let request, db, cfxNetId, ethNetId, res, req

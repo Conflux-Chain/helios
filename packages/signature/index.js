@@ -1,5 +1,5 @@
-import {addHexPrefix, toBuffer} from '@cfxjs/utils'
-import {encode as encodeCfxAddress} from '@cfxjs/base32-address'
+import {addHexPrefix, toBuffer} from '@fluent-wallet/utils'
+import {encode as encodeCfxAddress} from '@fluent-wallet/base32-address'
 import {Buffer} from 'buffer'
 import {hashMessage as ethHashPersonalMessage} from '@ethersproject/hash'
 import {

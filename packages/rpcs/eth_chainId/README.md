@@ -1,1 +1,1 @@
-# @cfxjs/eth_chain-id
+# @fluent-wallet/eth_chain-id

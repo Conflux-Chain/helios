@@ -1,1 +1,1 @@
-# @cfxjs/doc-use-spec
+# @fluent-wallet/doc-use-spec

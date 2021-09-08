@@ -1,1 +1,1 @@
-# @cfxjs/cfx_net-version
+# @fluent-wallet/cfx_net-version

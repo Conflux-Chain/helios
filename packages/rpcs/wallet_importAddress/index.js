@@ -5,7 +5,7 @@ import {
   ethHexAddress,
   base32UserAddress,
   nickname,
-} from '@cfxjs/spec'
+} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_importAddress'
 

@@ -1,6 +1,6 @@
 import {CloseMode, pubsub} from '@thi.ng/rstream'
-import {pluck} from '@cfxjs/transducers'
-import {isFunction, isObject, isString} from '@cfxjs/checks'
+import {pluck} from '@fluent-wallet/transducers'
+import {isFunction, isObject, isString} from '@fluent-wallet/checks'
 
 export default class SafeEventEmitter {
   // #s

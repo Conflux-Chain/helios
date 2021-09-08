@@ -1,1 +1,1 @@
-# @cfxjs/wallet_validate-private-key
+# @fluent-wallet/wallet_validate-private-key

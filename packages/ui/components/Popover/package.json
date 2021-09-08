@@ -1,11 +1,11 @@
 {
   "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/component-popover",
+  "name": "@fluent-wallet/component-popover",
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "@cfxjs/component-tooltip": "workspace:packages/ui/components/Tooltip"
+    "@fluent-wallet/component-tooltip": "workspace:packages/ui/components/Tooltip"
   },
   "peerDependencies": {
     "react": "^17",

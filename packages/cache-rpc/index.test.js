@@ -5,7 +5,7 @@ import waitForExpect from 'wait-for-expect'
 import {init} from './index.js'
 
 let params, get, set
-describe('@cfxjs/cache-rpc', function () {
+describe('@fluent-wallet/cache-rpc', function () {
   beforeEach(() => {
     const cacheMethods = init()
     get = cacheMethods.get
@@ -110,7 +110,7 @@ describe('@cfxjs/cache-rpc', function () {
         },
       }
       expect(() => set(params)).toThrowError(
-        'Invalid cache option, no epoch/block ref pos in @cfxjs/rpc-epoch-ref',
+        'Invalid cache option, no epoch/block ref pos in @fluent-wallet/rpc-epoch-ref',
       )
     })
   })

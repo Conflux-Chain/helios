@@ -1,1 +1,1 @@
-# @cfxjs/cfx_get-balance
+# @fluent-wallet/cfx_get-balance

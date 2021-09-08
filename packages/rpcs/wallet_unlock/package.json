@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/wallet_unlock",
+  "name": "@fluent-wallet/wallet_unlock",
   "type": "module",
   "main": "index.js",
   "version": "0.0.6",
   "dependencies": {
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

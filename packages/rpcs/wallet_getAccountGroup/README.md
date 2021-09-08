@@ -1,1 +1,1 @@
-# @cfxjs/wallet_get-account-group
+# @fluent-wallet/wallet_get-account-group

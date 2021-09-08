@@ -1,1 +1,1 @@
-# @cfxjs/json-rpc
+# @fluent-wallet/json-rpc

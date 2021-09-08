@@ -1,1 +1,1 @@
-# @cfxjs/transducers
+# @fluent-wallet/transducers

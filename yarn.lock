@@ -1754,552 +1754,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cfxjs/account@workspace:packages/account":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/account@workspace:packages/account"
-  dependencies:
-    "@cfxjs/compose": "workspace:packages/compose"
-    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
-    "@cfxjs/utils": "workspace:packages/utils"
-    "@ethersproject/address": 5.4.0
-    "@ethersproject/transactions": 5.4.0
-    "@ethersproject/wallet": 5.4.0
-    elliptic: 6.5.4
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/addr-by-network@workspace:packages/addr-by-network":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/addr-by-network@workspace:packages/addr-by-network"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/associative@workspace:packages/associative":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/associative@workspace:packages/associative"
-  dependencies:
-    "@thi.ng/associative": ^5.2.15
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/base32-address@workspace:packages/base32-address":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/base32-address@workspace:packages/base32-address"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-    "@cfxjs/utils": "workspace:packages/utils"
-    js-conflux-sdk: 1.7.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cache-rpc@workspace:packages/cache-rpc":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cache-rpc@workspace:packages/cache-rpc"
-  dependencies:
-    "@cfxjs/checks": "workspace:packages/checks"
-    "@cfxjs/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref"
-    "@thi.ng/cache": 1.0.93
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_accounts@workspace:packages/rpcs/cfx_accounts":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_accounts@workspace:packages/rpcs/cfx_accounts"
-  dependencies:
-    "@cfxjs/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_chain-id@workspace:packages/rpcs/cfx_chainId":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_chain-id@workspace:packages/rpcs/cfx_chainId"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_gas-price@workspace:packages/rpcs/cfx_gasPrice":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_gas-price@workspace:packages/rpcs/cfx_gasPrice"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_get-account@workspace:packages/rpcs/cfx_getAccount":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_get-account@workspace:packages/rpcs/cfx_getAccount"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_get-balance@workspace:packages/rpcs/cfx_getBalance":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_get-balance@workspace:packages/rpcs/cfx_getBalance"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_get-code@workspace:packages/rpcs/cfx_getCode":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_get-code@workspace:packages/rpcs/cfx_getCode"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_get-next-nonce@workspace:packages/rpcs/cfx_getNextNonce":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_get-next-nonce@workspace:packages/rpcs/cfx_getNextNonce"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_get-status@workspace:packages/rpcs/cfx_getStatus":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_get-status@workspace:packages/rpcs/cfx_getStatus"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_net-version@workspace:packages/rpcs/cfx_netVersion":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_net-version@workspace:packages/rpcs/cfx_netVersion"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_request-accounts@workspace:packages/rpcs/cfx_requestAccounts":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_request-accounts@workspace:packages/rpcs/cfx_requestAccounts"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/cfx_sign-typed-data_v4@workspace:packages/rpcs/cfx_signTypedData_v4":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/cfx_sign-typed-data_v4@workspace:packages/rpcs/cfx_signTypedData_v4"
-  dependencies:
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/signature": "workspace:packages/signature"
-    "@cfxjs/spec": "workspace:packages/spec"
-    "@cfxjs/typed-data-spec": "workspace:packages/typed-data-spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/checks@workspace:packages/checks":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/checks@workspace:packages/checks"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-alert@workspace:packages/ui/components/Alert":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-alert@workspace:packages/ui/components/Alert"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-button@workspace:packages/ui/components/Button":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-button@workspace:packages/ui/components/Button"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-checkbox@workspace:packages/ui/components/Checkbox":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-checkbox@workspace:packages/ui/components/Checkbox"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-dropdown@workspace:packages/ui/components/Dropdown":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-dropdown@workspace:packages/ui/components/Dropdown"
-  dependencies:
-    rc-dropdown: 3.2.0
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-icons@workspace:packages/ui/icons":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-icons@workspace:packages/ui/icons"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-input@workspace:packages/ui/components/Input":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-input@workspace:packages/ui/components/Input"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-link@workspace:packages/ui/components/Link":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-link@workspace:packages/ui/components/Link"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-loading@workspace:packages/ui/components/Loading":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-loading@workspace:packages/ui/components/Loading"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-menu@workspace:packages/ui/components/Menu":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-menu@workspace:packages/ui/components/Menu"
-  dependencies:
-    rc-notification: 4.5.7
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-message@workspace:packages/ui/components/Message":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-message@workspace:packages/ui/components/Message"
-  dependencies:
-    "@cfxjs/component-loading": "workspace:packages/ui/components/Loading"
-    rc-notification: 4.5.7
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-modal@workspace:packages/ui/components/Modal":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-modal@workspace:packages/ui/components/Modal"
-  dependencies:
-    react-use: 17.2.4
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-notification@workspace:packages/ui/components/Notification":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-notification@workspace:packages/ui/components/Notification"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-popover@workspace:packages/ui/components/Popover":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-popover@workspace:packages/ui/components/Popover"
-  dependencies:
-    "@cfxjs/component-tooltip": "workspace:packages/ui/components/Tooltip"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-tag@workspace:packages/ui/components/Tag":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-tag@workspace:packages/ui/components/Tag"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-toast@workspace:packages/ui/components/Toast":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-toast@workspace:packages/ui/components/Toast"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-tooltip@workspace:packages/ui/components/Tooltip":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-tooltip@workspace:packages/ui/components/Tooltip"
-  dependencies:
-    rc-tooltip: 5.1.1
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/component-wrap-icon@workspace:packages/ui/components/WrapIcon":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/component-wrap-icon@workspace:packages/ui/components/WrapIcon"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/compose@workspace:packages/compose":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/compose@workspace:packages/compose"
-  dependencies:
-    "@thi.ng/compose": ^1.4.35
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/content-script@workspace:packages/content-script":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/content-script@workspace:packages/content-script"
-  dependencies:
-    "@cfxjs/site-metadata": "workspace:packages/site-metadata"
-    "@thi.ng/rstream": 6.0.20
-    webextension-polyfill: 0.8.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/contract-method-name@workspace:packages/contract-method-name":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/contract-method-name@workspace:packages/contract-method-name"
-  dependencies:
-    eth-method-registry: 2.0.0
-    ethjs: 0.4.0
-    js-conflux-sdk: 1.7.0
-    node-fetch: 2.6.1
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/csp@workspace:packages/csp":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/csp@workspace:packages/csp"
-  dependencies:
-    "@cfxjs/checks": "workspace:packages/checks"
-    "@thi.ng/csp": ^1.1.73
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/data-format@workspace:packages/ui/data-format":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/data-format@workspace:packages/ui/data-format"
-  dependencies:
-    big.js: ^6.1.1
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/db@workspace:packages/db":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/db@workspace:packages/db"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/discover-accounts@workspace:packages/discover-accounts":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/discover-accounts@workspace:packages/discover-accounts"
-  dependencies:
-    "@cfxjs/checks": "workspace:packages/checks"
-    "@cfxjs/hdkey": "workspace:packages/hdkey"
-    "@cfxjs/utils": "workspace:packages/utils"
-    bn.js: 5.2.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/doc-rpc-parameter@workspace:packages/doc-ui/rpc-parameter":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/doc-rpc-parameter@workspace:packages/doc-ui/rpc-parameter"
-  dependencies:
-    "@cfxjs/doc-use-rpc": "workspace:packages/doc-ui/useRPC"
-    "@cfxjs/doc-use-spec": "workspace:packages/doc-ui/useSpec"
-    prop-types: ^15.7.2
-    zustand: ^3.5.10
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/doc-use-rpc@workspace:packages/doc-ui/useRPC":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/doc-use-rpc@workspace:packages/doc-ui/useRPC"
-  dependencies:
-    param-case: 3.0.4
-    zustand: ^3.5.10
-  peerDependencies:
-    react: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/doc-use-spec@workspace:packages/doc-ui/useSpec":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/doc-use-spec@workspace:packages/doc-ui/useSpec"
-  dependencies:
-    zustand: ^3.5.10
-  peerDependencies:
-    react: ^17.0.0
-    react-dom: ^17.0.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/docusaurus-plugin@workspace:packages/docusaurus-plugin":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/docusaurus-plugin@workspace:packages/docusaurus-plugin"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/errors@workspace:packages/errors":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/errors@workspace:packages/errors"
-  dependencies:
-    "@thi.ng/errors": ^1.3.4
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/eth_accounts@workspace:packages/rpcs/eth_accounts":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/eth_accounts@workspace:packages/rpcs/eth_accounts"
-  dependencies:
-    "@cfxjs/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/eth_block-number@workspace:packages/rpcs/eth_blockNumber":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/eth_block-number@workspace:packages/rpcs/eth_blockNumber"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/eth_chain-id@workspace:packages/rpcs/eth_chainId":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/eth_chain-id@workspace:packages/rpcs/eth_chainId"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/eth_gas-price@workspace:packages/rpcs/eth_gasPrice":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/eth_gas-price@workspace:packages/rpcs/eth_gasPrice"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/eth_get-balance@workspace:packages/rpcs/eth_getBalance":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/eth_get-balance@workspace:packages/rpcs/eth_getBalance"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/eth_get-code@workspace:packages/rpcs/eth_getCode":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/eth_get-code@workspace:packages/rpcs/eth_getCode"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/eth_get-transaction-count@workspace:packages/rpcs/eth_getTransactionCount":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/eth_get-transaction-count@workspace:packages/rpcs/eth_getTransactionCount"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/eth_request-accounts@workspace:packages/rpcs/eth_requestAccounts":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/eth_request-accounts@workspace:packages/rpcs/eth_requestAccounts"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/eth_sign-typed-data_v4@workspace:packages/rpcs/eth_signTypedData_v4":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/eth_sign-typed-data_v4@workspace:packages/rpcs/eth_signTypedData_v4"
-  dependencies:
-    "@cfxjs/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/extension-runtime@workspace:packages/extension-runtime":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/extension-runtime@workspace:packages/extension-runtime"
-  dependencies:
-    "@thi.ng/rstream": 6.0.20
-    webextension-polyfill: 0.8.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/fectch-rpc-middleware@workspace:packages/fectch-rpc-middleware":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/fectch-rpc-middleware@workspace:packages/fectch-rpc-middleware"
-  dependencies:
-    "@cfxjs/fetch-rpc": "workspace:packages/fetch-rpc"
-    "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
-    "@thi.ng/rstream": 6.0.20
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/fetch-rpc@workspace:packages/fetch-rpc":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/fetch-rpc@workspace:packages/fetch-rpc"
-  dependencies:
-    "@thi.ng/cache": 1.0.93
-    ky: 0.28.5
-    ky-universal: 0.9.1
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/fluent-wallet-consts@workspace:packages/consts":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/fluent-wallet-consts@workspace:packages/consts"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/fluent-wallet-inner-utils@workspace:packages/inner-utils":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/fluent-wallet-inner-utils@workspace:packages/inner-utils"
-  languageName: unknown
-  linkType: soft
-
 "@cfxjs/fullnode@npm:1.9.0":
   version: 1.9.0
   resolution: "@cfxjs/fullnode@npm:1.9.0"
@@ -2324,678 +1778,6 @@ __metadata:
   checksum: efa568a474646a5f204016f967492a216313bf063439f5ab07d50ad17ef9a9d5cb84ff1a25cb3f9d001d79fe8688601da656b1f04f5d7073d4cb77cac2068af2
   languageName: node
   linkType: hard
-
-"@cfxjs/hdkey@workspace:packages/hdkey":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/hdkey@workspace:packages/hdkey"
-  dependencies:
-    "@cfxjs/utils": "workspace:packages/utils"
-    "@ethersproject/hdnode": 5.4.0
-    "@ethersproject/random": 5.4.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/iterators@workspace:packages/iterators":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/iterators@workspace:packages/iterators"
-  dependencies:
-    "@thi.ng/iterators": ^5.1.73
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/jest-helper@workspace:packages/jest-helper":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/jest-helper@workspace:packages/jest-helper"
-  dependencies:
-    "@testing-library/jest-dom": 5.14.1
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/json-rpc-error@workspace:packages/json-rpc-error":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/json-rpc-error@workspace:packages/json-rpc-error"
-  dependencies:
-    "@cfxjs/errors": "workspace:packages/errors"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/json-rpc@workspace:packages/json-rpc":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/json-rpc@workspace:packages/json-rpc"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/net_version@workspace:packages/rpcs/net_version":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/net_version@workspace:packages/rpcs/net_version"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/personal_sign@workspace:packages/rpcs/personal_sign":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/personal_sign@workspace:packages/rpcs/personal_sign"
-  dependencies:
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/signature": "workspace:packages/signature"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/provider-api@workspace:packages/ui/provider-api":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/provider-api@workspace:packages/ui/provider-api"
-  dependencies:
-    "@cfxjs/random-id": "workspace:packages/random-id"
-    "@cfxjs/safe-event-emiter": "workspace:packages/safe-event-emiter"
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/random-id@workspace:packages/random-id":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/random-id@workspace:packages/random-id"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/rpc-engine@workspace:packages/rpc-engine":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/rpc-engine@workspace:packages/rpc-engine"
-  dependencies:
-    "@cfxjs/associative": "workspace:packages/associative"
-    "@cfxjs/cache-rpc": "workspace:packages/cache-rpc"
-    "@cfxjs/checks": "workspace:packages/checks"
-    "@cfxjs/compose": "workspace:packages/compose"
-    "@cfxjs/csp": "workspace:packages/csp"
-    "@cfxjs/errors": "workspace:packages/errors"
-    "@cfxjs/fetch-rpc": "workspace:packages/fetch-rpc"
-    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
-    "@cfxjs/json-rpc": "workspace:packages/json-rpc"
-    "@cfxjs/json-rpc-error": "workspace:packages/json-rpc-error"
-    "@cfxjs/random-id": "workspace:packages/random-id"
-    "@cfxjs/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref"
-    "@cfxjs/spec": "workspace:packages/spec"
-    "@cfxjs/transducers": "workspace:packages/transducers"
-    "@thi.ng/atom": 4.1.41
-    "@thi.ng/rstream": 6.0.20
-    "@thi.ng/rstream-graph": 3.2.80
-    ramda: ^0.27.1
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/rpc-epoch-ref@workspace:packages/rpc-epoch-ref":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/rpc-epoch-ref@workspace:packages/rpc-epoch-ref"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/safe-event-emiter@workspace:packages/safe-event-emiter":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/safe-event-emiter@workspace:packages/safe-event-emiter"
-  dependencies:
-    "@cfxjs/checks": "workspace:packages/checks"
-    "@cfxjs/transducers": "workspace:packages/transducers"
-    "@thi.ng/rstream": 6.0.20
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/shorten-address@workspace:packages/ui/shorten-address":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/shorten-address@workspace:packages/ui/shorten-address"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/checks": "workspace:packages/checks"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/signature@workspace:packages/signature":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/signature@workspace:packages/signature"
-  dependencies:
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/utils": "workspace:packages/utils"
-    "@ethersproject/bytes": 5.4.0
-    "@ethersproject/hash": 5.4.0
-    "@ethersproject/signing-key": 5.4.0
-    "@ethersproject/transactions": 5.4.0
-    "@ethersproject/wallet": 5.4.0
-    cip-23: 0.1.2
-    eth-sig-util: 3.0.1
-    js-conflux-sdk: 1.7.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/site-metadata@workspace:packages/site-metadata":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/site-metadata@workspace:packages/site-metadata"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/spec@workspace:packages/spec":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/spec@workspace:packages/spec"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-    "@cfxjs/associative": "workspace:packages/associative"
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
-    "@cfxjs/hdkey": "workspace:packages/hdkey"
-    bip39: ^3.0.4
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/test-helpers@workspace:packages/test-helpers":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/test-helpers@workspace:packages/test-helpers"
-  dependencies:
-    "@cfxjs/fullnode": 1.9.0
-    ethers: 5.4.6
-    ganache-core: 2.13.2
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/transducers@workspace:packages/transducers":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/transducers@workspace:packages/transducers"
-  dependencies:
-    "@thi.ng/transducers": ^7.9.1
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/typed-data-spec@workspace:packages/typed-data-spec":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/typed-data-spec@workspace:packages/typed-data-spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/use-rpc@workspace:packages/ui/useRPC":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/use-rpc@workspace:packages/ui/useRPC"
-  dependencies:
-    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
-    "@cfxjs/provider-api": "workspace:packages/ui/provider-api"
-    react-use: 17.2.4
-    swr: 1.0.0
-    webextension-polyfill: 0.8.0
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/utils@workspace:packages/utils":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/utils@workspace:packages/utils"
-  dependencies:
-    bn.js: 5.2.0
-    is-hex-prefixed: ^1.0.0
-    randombytes: ^2.1.0
-    strip-hex-prefix: ^1.0.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet-permission@workspace:packages/wallet-permission":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet-permission@workspace:packages/wallet-permission"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_add-conflux-chain@workspace:packages/rpcs/wallet_addConfluxChain":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_add-conflux-chain@workspace:packages/rpcs/wallet_addConfluxChain"
-  dependencies:
-    "@cfxjs/wallet_add-ethereum-chain": "workspace:packages/rpcs/wallet_addEthereumChain"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_add-ethereum-chain@workspace:packages/rpcs/wallet_addEthereumChain":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_add-ethereum-chain@workspace:packages/rpcs/wallet_addEthereumChain"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-    "@cfxjs/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_add-hd-path@workspace:packages/rpcs/wallet_addHdPath":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_add-hd-path@workspace:packages/rpcs/wallet_addHdPath"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_add-network@workspace:packages/rpcs/wallet_addNetwork":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_add-network@workspace:packages/rpcs/wallet_addNetwork"
-  dependencies:
-    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_add-pending-user-auth-request@workspace:packages/rpcs/wallet_addPendingUserAuthRequest":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_add-pending-user-auth-request@workspace:packages/rpcs/wallet_addPendingUserAuthRequest"
-  dependencies:
-    "@cfxjs/csp": "workspace:packages/csp"
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_add-vault@workspace:packages/rpcs/wallet_addVault":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_add-vault@workspace:packages/rpcs/wallet_addVault"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
-    "@cfxjs/spec": "workspace:packages/spec"
-    "@cfxjs/utils": "workspace:packages/utils"
-    browser-passworder: ^2.0.3
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_create-account@workspace:packages/rpcs/wallet_createAccount":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_create-account@workspace:packages/rpcs/wallet_createAccount"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/hdkey": "workspace:packages/hdkey"
-    "@cfxjs/spec": "workspace:packages/spec"
-    browser-passworder: ^2.0.3
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_create-address@workspace:packages/rpcs/wallet_createAddress":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_create-address@workspace:packages/rpcs/wallet_createAddress"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/hdkey": "workspace:packages/hdkey"
-    "@cfxjs/spec": "workspace:packages/spec"
-    browser-passworder: 2.0.3
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_delete-account-group@workspace:packages/rpcs/wallet_deleteAccountGroup":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_delete-account-group@workspace:packages/rpcs/wallet_deleteAccountGroup"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_delete-network@workspace:packages/rpcs/wallet_deleteNetwork":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_delete-network@workspace:packages/rpcs/wallet_deleteNetwork"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_detect-network-type@workspace:packages/rpcs/wallet_detectNetworkType":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_detect-network-type@workspace:packages/rpcs/wallet_detectNetworkType"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_discover-accounts@workspace:packages/rpcs/wallet_discoverAccounts":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_discover-accounts@workspace:packages/rpcs/wallet_discoverAccounts"
-  dependencies:
-    "@cfxjs/discover-accounts": "workspace:packages/discover-accounts"
-    "@cfxjs/spec": "workspace:packages/spec"
-    browser-passworder: 2.0.3
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_export-account-group@workspace:packages/rpcs/wallet_exportAccountGroup":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_export-account-group@workspace:packages/rpcs/wallet_exportAccountGroup"
-  dependencies:
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
-    "@cfxjs/spec": "workspace:packages/spec"
-    browser-passworder: 2.0.3
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_export-account@workspace:packages/rpcs/wallet_exportAccount":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_export-account@workspace:packages/rpcs/wallet_exportAccount"
-  dependencies:
-    "@cfxjs/hdkey": "workspace:packages/hdkey"
-    "@cfxjs/spec": "workspace:packages/spec"
-    browser-passworder: 2.0.3
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_export-all@workspace:packages/rpcs/wallet_exportAll":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_export-all@workspace:packages/rpcs/wallet_exportAll"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-    browser-passworder: 2.0.3
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_generate-address@workspace:packages/rpcs/wallet_generateAddress":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_generate-address@workspace:packages/rpcs/wallet_generateAddress"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-    "@cfxjs/base32-address": "workspace:packages/base32-address"
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_generate-mnemonic@workspace:packages/rpcs/wallet_generateMnemonic":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_generate-mnemonic@workspace:packages/rpcs/wallet_generateMnemonic"
-  dependencies:
-    bip39: ^3.0.4
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_generate-private-key@workspace:packages/rpcs/wallet_generatePrivateKey":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_generate-private-key@workspace:packages/rpcs/wallet_generatePrivateKey"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_get-account-group-vault-value@workspace:packages/rpcs/wallet_getAccountGroupVaultValue":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_get-account-group-vault-value@workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-    browser-passworder: 2.0.3
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_get-account-group@workspace:packages/rpcs/wallet_getAccountGroup":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_get-account-group@workspace:packages/rpcs/wallet_getAccountGroup"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_get-address-private-key@workspace:packages/rpcs/wallet_getAddressPrivateKey":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_get-address-private-key@workspace:packages/rpcs/wallet_getAddressPrivateKey"
-  dependencies:
-    "@cfxjs/hdkey": "workspace:packages/hdkey"
-    "@cfxjs/spec": "workspace:packages/spec"
-    "@cfxjs/utils": "workspace:packages/utils"
-    browser-passworder: 2.0.3
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_get-balance@workspace:packages/rpcs/wallet_getBalance":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_get-balance@workspace:packages/rpcs/wallet_getBalance"
-  dependencies:
-    "@cfxjs/addr-by-network": "workspace:packages/addr-by-network"
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_get-current-network@workspace:packages/rpcs/wallet_getCurrentNetwork":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_get-current-network@workspace:packages/rpcs/wallet_getCurrentNetwork"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_get-next-nonce@workspace:packages/rpcs/wallet_getNextNonce":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_get-next-nonce@workspace:packages/rpcs/wallet_getNextNonce"
-  dependencies:
-    "@cfxjs/addr-by-network": "workspace:packages/addr-by-network"
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_get-pending-auth-request@workspace:packages/rpcs/wallet_getPendingAuthRequest":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_get-pending-auth-request@workspace:packages/rpcs/wallet_getPendingAuthRequest"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_get-permissions@workspace:packages/rpcs/wallet_getPermissions":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_get-permissions@workspace:packages/rpcs/wallet_getPermissions"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_import-address@workspace:packages/rpcs/wallet_importAddress":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_import-address@workspace:packages/rpcs/wallet_importAddress"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_import-all@workspace:packages/rpcs/wallet_importAll":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_import-all@workspace:packages/rpcs/wallet_importAll"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-    browser-passworder: 2.0.3
-    webextension-polyfill: 0.8.0
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_import-mnemonic@workspace:packages/rpcs/wallet_importMnemonic":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_import-mnemonic@workspace:packages/rpcs/wallet_importMnemonic"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_import-private-key@workspace:packages/rpcs/wallet_importPrivateKey":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_import-private-key@workspace:packages/rpcs/wallet_importPrivateKey"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_is-locked@workspace:packages/rpcs/wallet_isLocked":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_is-locked@workspace:packages/rpcs/wallet_isLocked"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_lock@workspace:packages/rpcs/wallet_lock":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_lock@workspace:packages/rpcs/wallet_lock"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_register-site-metadata@workspace:packages/rpcs/wallet_registerSiteMetadata":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_register-site-metadata@workspace:packages/rpcs/wallet_registerSiteMetadata"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_request-permissions@workspace:packages/rpcs/wallet_requestPermissions":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_request-permissions@workspace:packages/rpcs/wallet_requestPermissions"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-    "@cfxjs/wallet-permission": "workspace:packages/wallet-permission"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_request-unlock-ui@workspace:packages/rpcs/wallet_requestUnlockUI":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_request-unlock-ui@workspace:packages/rpcs/wallet_requestUnlockUI"
-  dependencies:
-    "@cfxjs/csp": "workspace:packages/csp"
-    "@cfxjs/spec": "workspace:packages/spec"
-    "@cfxjs/webextension": "workspace:packages/webextension"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_set-app-current-account@workspace:packages/rpcs/wallet_setAppCurrentAccount":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_set-app-current-account@workspace:packages/rpcs/wallet_setAppCurrentAccount"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_set-app-current-network@workspace:packages/rpcs/wallet_setAppCurrentNetwork":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_set-app-current-network@workspace:packages/rpcs/wallet_setAppCurrentNetwork"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_set-current-account@workspace:packages/rpcs/wallet_setCurrentAccount":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_set-current-account@workspace:packages/rpcs/wallet_setCurrentAccount"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_set-current-network@workspace:packages/rpcs/wallet_setCurrentNetwork":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_set-current-network@workspace:packages/rpcs/wallet_setCurrentNetwork"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_switch-conflux-chain@workspace:packages/rpcs/wallet_switchConfluxChain":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_switch-conflux-chain@workspace:packages/rpcs/wallet_switchConfluxChain"
-  dependencies:
-    "@cfxjs/wallet_switch-ethereum-chain": "workspace:packages/rpcs/wallet_switchEthereumChain"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_switch-ethereum-chain@workspace:packages/rpcs/wallet_switchEthereumChain":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_switch-ethereum-chain@workspace:packages/rpcs/wallet_switchEthereumChain"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_unlock@workspace:packages/rpcs/wallet_unlock":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_unlock@workspace:packages/rpcs/wallet_unlock"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_update-account-group@workspace:packages/rpcs/wallet_updateAccountGroup":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_update-account-group@workspace:packages/rpcs/wallet_updateAccountGroup"
-  dependencies:
-    "@cfxjs/checks": "workspace:packages/checks"
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_update-account@workspace:packages/rpcs/wallet_updateAccount":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_update-account@workspace:packages/rpcs/wallet_updateAccount"
-  dependencies:
-    "@cfxjs/checks": "workspace:packages/checks"
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_user-approved-auth-request@workspace:packages/rpcs/wallet_userApprovedAuthRequest":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_user-approved-auth-request@workspace:packages/rpcs/wallet_userApprovedAuthRequest"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_user-rejected-auth-request@workspace:packages/rpcs/wallet_userRejectedAuthRequest":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_user-rejected-auth-request@workspace:packages/rpcs/wallet_userRejectedAuthRequest"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_validate-app-permissions@workspace:packages/rpcs/wallet_validateAppPermissions":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_validate-app-permissions@workspace:packages/rpcs/wallet_validateAppPermissions"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_validate-mnemonic@workspace:packages/rpcs/wallet_validateMnemonic":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_validate-mnemonic@workspace:packages/rpcs/wallet_validateMnemonic"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-    bip39: 3.0.4
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword"
-  dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
-    browser-passworder: ^2.0.3
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/wallet_validate-private-key@workspace:packages/rpcs/wallet_validatePrivateKey":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/wallet_validate-private-key@workspace:packages/rpcs/wallet_validatePrivateKey"
-  dependencies:
-    "@cfxjs/account": "workspace:packages/account"
-    "@cfxjs/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
-
-"@cfxjs/webextension@workspace:packages/webextension":
-  version: 0.0.0-use.local
-  resolution: "@cfxjs/webextension@workspace:packages/webextension"
-  dependencies:
-    webextension-polyfill: 0.8.0
-  languageName: unknown
-  linkType: soft
 
 "@cnakazawa/watch@npm:^1.0.3":
   version: 1.0.4
@@ -4052,6 +2834,1224 @@ __metadata:
   checksum: 2ae61476cd4639dad81e41ca7c28e63478dd74aa86c328fc8871442c73864a57e37822da819aca08f9b15656d579891065f48ccc3f09235069049f2d1aa89182
   languageName: node
   linkType: hard
+
+"@fluent-wallet/account@workspace:packages/account":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/account@workspace:packages/account"
+  dependencies:
+    "@ethersproject/address": 5.4.0
+    "@ethersproject/transactions": 5.4.0
+    "@ethersproject/wallet": 5.4.0
+    "@fluent-wallet/compose": "workspace:packages/compose"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/utils": "workspace:packages/utils"
+    elliptic: 6.5.4
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/addr-by-network@workspace:packages/addr-by-network":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/addr-by-network@workspace:packages/addr-by-network"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/associative@workspace:packages/associative":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/associative@workspace:packages/associative"
+  dependencies:
+    "@thi.ng/associative": ^5.2.15
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/base32-address@workspace:packages/base32-address":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/base32-address@workspace:packages/base32-address"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/utils": "workspace:packages/utils"
+    js-conflux-sdk: 1.7.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cache-rpc@workspace:packages/cache-rpc":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cache-rpc@workspace:packages/cache-rpc"
+  dependencies:
+    "@fluent-wallet/checks": "workspace:packages/checks"
+    "@fluent-wallet/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref"
+    "@thi.ng/cache": 1.0.93
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_accounts@workspace:packages/rpcs/cfx_accounts":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_accounts@workspace:packages/rpcs/cfx_accounts"
+  dependencies:
+    "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_chain-id@workspace:packages/rpcs/cfx_chainId":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_chain-id@workspace:packages/rpcs/cfx_chainId"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_gas-price@workspace:packages/rpcs/cfx_gasPrice":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_gas-price@workspace:packages/rpcs/cfx_gasPrice"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-account@workspace:packages/rpcs/cfx_getAccount":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-account@workspace:packages/rpcs/cfx_getAccount"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-balance@workspace:packages/rpcs/cfx_getBalance":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-balance@workspace:packages/rpcs/cfx_getBalance"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-code@workspace:packages/rpcs/cfx_getCode":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-code@workspace:packages/rpcs/cfx_getCode"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-next-nonce@workspace:packages/rpcs/cfx_getNextNonce":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-next-nonce@workspace:packages/rpcs/cfx_getNextNonce"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-status@workspace:packages/rpcs/cfx_getStatus":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-status@workspace:packages/rpcs/cfx_getStatus"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_net-version@workspace:packages/rpcs/cfx_netVersion":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_net-version@workspace:packages/rpcs/cfx_netVersion"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_request-accounts@workspace:packages/rpcs/cfx_requestAccounts":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_request-accounts@workspace:packages/rpcs/cfx_requestAccounts"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_sign-typed-data_v4@workspace:packages/rpcs/cfx_signTypedData_v4":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_sign-typed-data_v4@workspace:packages/rpcs/cfx_signTypedData_v4"
+  dependencies:
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/signature": "workspace:packages/signature"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/typed-data-spec": "workspace:packages/typed-data-spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/checks@workspace:packages/checks":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/checks@workspace:packages/checks"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-alert@workspace:packages/ui/components/Alert":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-alert@workspace:packages/ui/components/Alert"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-button@workspace:packages/ui/components/Button":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-button@workspace:packages/ui/components/Button"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-checkbox@workspace:packages/ui/components/Checkbox":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-checkbox@workspace:packages/ui/components/Checkbox"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-dropdown@workspace:packages/ui/components/Dropdown":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-dropdown@workspace:packages/ui/components/Dropdown"
+  dependencies:
+    rc-dropdown: 3.2.0
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-icons@workspace:packages/ui/icons":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-icons@workspace:packages/ui/icons"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-input@workspace:packages/ui/components/Input":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-input@workspace:packages/ui/components/Input"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-link@workspace:packages/ui/components/Link":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-link@workspace:packages/ui/components/Link"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-loading@workspace:packages/ui/components/Loading":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-loading@workspace:packages/ui/components/Loading"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-menu@workspace:packages/ui/components/Menu":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-menu@workspace:packages/ui/components/Menu"
+  dependencies:
+    rc-notification: 4.5.7
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-message@workspace:packages/ui/components/Message":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-message@workspace:packages/ui/components/Message"
+  dependencies:
+    "@fluent-wallet/component-loading": "workspace:packages/ui/components/Loading"
+    rc-notification: 4.5.7
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-modal@workspace:packages/ui/components/Modal":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-modal@workspace:packages/ui/components/Modal"
+  dependencies:
+    react-use: 17.2.4
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-notification@workspace:packages/ui/components/Notification":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-notification@workspace:packages/ui/components/Notification"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-popover@workspace:packages/ui/components/Popover":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-popover@workspace:packages/ui/components/Popover"
+  dependencies:
+    "@fluent-wallet/component-tooltip": "workspace:packages/ui/components/Tooltip"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-tag@workspace:packages/ui/components/Tag":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-tag@workspace:packages/ui/components/Tag"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-toast@workspace:packages/ui/components/Toast":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-toast@workspace:packages/ui/components/Toast"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-tooltip@workspace:packages/ui/components/Tooltip":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-tooltip@workspace:packages/ui/components/Tooltip"
+  dependencies:
+    rc-tooltip: 5.1.1
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/component-wrap-icon@workspace:packages/ui/components/WrapIcon":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/component-wrap-icon@workspace:packages/ui/components/WrapIcon"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/compose@workspace:packages/compose":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/compose@workspace:packages/compose"
+  dependencies:
+    "@thi.ng/compose": ^1.4.35
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/consts@workspace:packages/consts":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/consts@workspace:packages/consts"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/content-script@workspace:packages/content-script":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/content-script@workspace:packages/content-script"
+  dependencies:
+    "@fluent-wallet/site-metadata": "workspace:packages/site-metadata"
+    "@thi.ng/rstream": 6.0.20
+    webextension-polyfill: 0.8.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/contract-method-name@workspace:packages/contract-method-name":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/contract-method-name@workspace:packages/contract-method-name"
+  dependencies:
+    eth-method-registry: 2.0.0
+    ethjs: 0.4.0
+    js-conflux-sdk: 1.7.0
+    node-fetch: 2.6.1
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/csp@workspace:packages/csp":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/csp@workspace:packages/csp"
+  dependencies:
+    "@fluent-wallet/checks": "workspace:packages/checks"
+    "@thi.ng/csp": ^1.1.73
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/data-format@workspace:packages/ui/data-format":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/data-format@workspace:packages/ui/data-format"
+  dependencies:
+    big.js: ^6.1.1
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/db@workspace:packages/db":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/db@workspace:packages/db"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/discover-accounts@workspace:packages/discover-accounts":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/discover-accounts@workspace:packages/discover-accounts"
+  dependencies:
+    "@fluent-wallet/checks": "workspace:packages/checks"
+    "@fluent-wallet/hdkey": "workspace:packages/hdkey"
+    "@fluent-wallet/utils": "workspace:packages/utils"
+    bn.js: 5.2.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/doc-rpc-parameter@workspace:packages/doc-ui/rpc-parameter":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/doc-rpc-parameter@workspace:packages/doc-ui/rpc-parameter"
+  dependencies:
+    "@fluent-wallet/doc-use-rpc": "workspace:packages/doc-ui/useRPC"
+    "@fluent-wallet/doc-use-spec": "workspace:packages/doc-ui/useSpec"
+    prop-types: ^15.7.2
+    zustand: ^3.5.10
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/doc-use-rpc@workspace:packages/doc-ui/useRPC":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/doc-use-rpc@workspace:packages/doc-ui/useRPC"
+  dependencies:
+    param-case: 3.0.4
+    zustand: ^3.5.10
+  peerDependencies:
+    react: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/doc-use-spec@workspace:packages/doc-ui/useSpec":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/doc-use-spec@workspace:packages/doc-ui/useSpec"
+  dependencies:
+    zustand: ^3.5.10
+  peerDependencies:
+    react: ^17.0.0
+    react-dom: ^17.0.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/docusaurus-plugin@workspace:packages/docusaurus-plugin":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/docusaurus-plugin@workspace:packages/docusaurus-plugin"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/errors@workspace:packages/errors":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/errors@workspace:packages/errors"
+  dependencies:
+    "@thi.ng/errors": ^1.3.4
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_accounts@workspace:packages/rpcs/eth_accounts":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_accounts@workspace:packages/rpcs/eth_accounts"
+  dependencies:
+    "@fluent-wallet/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_block-number@workspace:packages/rpcs/eth_blockNumber":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_block-number@workspace:packages/rpcs/eth_blockNumber"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_chain-id@workspace:packages/rpcs/eth_chainId":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_chain-id@workspace:packages/rpcs/eth_chainId"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_gas-price@workspace:packages/rpcs/eth_gasPrice":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_gas-price@workspace:packages/rpcs/eth_gasPrice"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_get-balance@workspace:packages/rpcs/eth_getBalance":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_get-balance@workspace:packages/rpcs/eth_getBalance"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_get-code@workspace:packages/rpcs/eth_getCode":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_get-code@workspace:packages/rpcs/eth_getCode"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_get-transaction-count@workspace:packages/rpcs/eth_getTransactionCount":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_get-transaction-count@workspace:packages/rpcs/eth_getTransactionCount"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_request-accounts@workspace:packages/rpcs/eth_requestAccounts":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_request-accounts@workspace:packages/rpcs/eth_requestAccounts"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_sign-typed-data_v4@workspace:packages/rpcs/eth_signTypedData_v4":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_sign-typed-data_v4@workspace:packages/rpcs/eth_signTypedData_v4"
+  dependencies:
+    "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/extension-runtime@workspace:packages/extension-runtime":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/extension-runtime@workspace:packages/extension-runtime"
+  dependencies:
+    "@thi.ng/rstream": 6.0.20
+    webextension-polyfill: 0.8.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/fectch-rpc-middleware@workspace:packages/fectch-rpc-middleware":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/fectch-rpc-middleware@workspace:packages/fectch-rpc-middleware"
+  dependencies:
+    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
+    "@fluent-wallet/rpc-engine": "workspace:packages/rpc-engine"
+    "@thi.ng/rstream": 6.0.20
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/fetch-rpc@workspace:packages/fetch-rpc":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/fetch-rpc@workspace:packages/fetch-rpc"
+  dependencies:
+    "@thi.ng/cache": 1.0.93
+    ky: 0.28.5
+    ky-universal: 0.9.1
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/hdkey@workspace:packages/hdkey":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/hdkey@workspace:packages/hdkey"
+  dependencies:
+    "@ethersproject/hdnode": 5.4.0
+    "@ethersproject/random": 5.4.0
+    "@fluent-wallet/utils": "workspace:packages/utils"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/inner-utils@workspace:packages/inner-utils":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/inner-utils@workspace:packages/inner-utils"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/iterators@workspace:packages/iterators":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/iterators@workspace:packages/iterators"
+  dependencies:
+    "@thi.ng/iterators": ^5.1.73
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/jest-helper@workspace:packages/jest-helper":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/jest-helper@workspace:packages/jest-helper"
+  dependencies:
+    "@testing-library/jest-dom": 5.14.1
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/json-rpc-error@workspace:packages/json-rpc-error":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/json-rpc-error@workspace:packages/json-rpc-error"
+  dependencies:
+    "@fluent-wallet/errors": "workspace:packages/errors"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/json-rpc@workspace:packages/json-rpc":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/json-rpc@workspace:packages/json-rpc"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/net_version@workspace:packages/rpcs/net_version":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/net_version@workspace:packages/rpcs/net_version"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/personal_sign@workspace:packages/rpcs/personal_sign":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/personal_sign@workspace:packages/rpcs/personal_sign"
+  dependencies:
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/signature": "workspace:packages/signature"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/provider-api@workspace:packages/ui/provider-api":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/provider-api@workspace:packages/ui/provider-api"
+  dependencies:
+    "@fluent-wallet/random-id": "workspace:packages/random-id"
+    "@fluent-wallet/safe-event-emiter": "workspace:packages/safe-event-emiter"
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/random-id@workspace:packages/random-id":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/random-id@workspace:packages/random-id"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/rpc-engine@workspace:packages/rpc-engine":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/rpc-engine@workspace:packages/rpc-engine"
+  dependencies:
+    "@fluent-wallet/associative": "workspace:packages/associative"
+    "@fluent-wallet/cache-rpc": "workspace:packages/cache-rpc"
+    "@fluent-wallet/checks": "workspace:packages/checks"
+    "@fluent-wallet/compose": "workspace:packages/compose"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/csp": "workspace:packages/csp"
+    "@fluent-wallet/errors": "workspace:packages/errors"
+    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
+    "@fluent-wallet/json-rpc": "workspace:packages/json-rpc"
+    "@fluent-wallet/json-rpc-error": "workspace:packages/json-rpc-error"
+    "@fluent-wallet/random-id": "workspace:packages/random-id"
+    "@fluent-wallet/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/transducers": "workspace:packages/transducers"
+    "@thi.ng/atom": 4.1.41
+    "@thi.ng/rstream": 6.0.20
+    "@thi.ng/rstream-graph": 3.2.80
+    ramda: ^0.27.1
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/rpc-epoch-ref@workspace:packages/rpc-epoch-ref":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/rpc-epoch-ref@workspace:packages/rpc-epoch-ref"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/safe-event-emiter@workspace:packages/safe-event-emiter":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/safe-event-emiter@workspace:packages/safe-event-emiter"
+  dependencies:
+    "@fluent-wallet/checks": "workspace:packages/checks"
+    "@fluent-wallet/transducers": "workspace:packages/transducers"
+    "@thi.ng/rstream": 6.0.20
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/shorten-address@workspace:packages/ui/shorten-address":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/shorten-address@workspace:packages/ui/shorten-address"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/checks": "workspace:packages/checks"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/signature@workspace:packages/signature":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/signature@workspace:packages/signature"
+  dependencies:
+    "@ethersproject/bytes": 5.4.0
+    "@ethersproject/hash": 5.4.0
+    "@ethersproject/signing-key": 5.4.0
+    "@ethersproject/transactions": 5.4.0
+    "@ethersproject/wallet": 5.4.0
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/utils": "workspace:packages/utils"
+    cip-23: 0.1.2
+    eth-sig-util: 3.0.1
+    js-conflux-sdk: 1.7.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/site-metadata@workspace:packages/site-metadata":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/site-metadata@workspace:packages/site-metadata"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/spec@workspace:packages/spec":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/spec@workspace:packages/spec"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/associative": "workspace:packages/associative"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/hdkey": "workspace:packages/hdkey"
+    bip39: ^3.0.4
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/test-helpers@workspace:packages/test-helpers":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/test-helpers@workspace:packages/test-helpers"
+  dependencies:
+    "@cfxjs/fullnode": 1.9.0
+    ethers: 5.4.6
+    ganache-core: 2.13.2
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/transducers@workspace:packages/transducers":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/transducers@workspace:packages/transducers"
+  dependencies:
+    "@thi.ng/transducers": ^7.9.1
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/typed-data-spec@workspace:packages/typed-data-spec":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/typed-data-spec@workspace:packages/typed-data-spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/use-rpc@workspace:packages/ui/useRPC":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/use-rpc@workspace:packages/ui/useRPC"
+  dependencies:
+    "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
+    "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api"
+    react-use: 17.2.4
+    swr: 1.0.0
+    webextension-polyfill: 0.8.0
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/utils@workspace:packages/utils":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/utils@workspace:packages/utils"
+  dependencies:
+    bn.js: 5.2.0
+    is-hex-prefixed: ^1.0.0
+    randombytes: ^2.1.0
+    strip-hex-prefix: ^1.0.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet-permission@workspace:packages/wallet-permission":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet-permission@workspace:packages/wallet-permission"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_add-conflux-chain@workspace:packages/rpcs/wallet_addConfluxChain":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_add-conflux-chain@workspace:packages/rpcs/wallet_addConfluxChain"
+  dependencies:
+    "@fluent-wallet/wallet_add-ethereum-chain": "workspace:packages/rpcs/wallet_addEthereumChain"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_add-ethereum-chain@workspace:packages/rpcs/wallet_addEthereumChain":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_add-ethereum-chain@workspace:packages/rpcs/wallet_addEthereumChain"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_add-hd-path@workspace:packages/rpcs/wallet_addHdPath":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_add-hd-path@workspace:packages/rpcs/wallet_addHdPath"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_add-network@workspace:packages/rpcs/wallet_addNetwork":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_add-network@workspace:packages/rpcs/wallet_addNetwork"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_add-pending-user-auth-request@workspace:packages/rpcs/wallet_addPendingUserAuthRequest":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_add-pending-user-auth-request@workspace:packages/rpcs/wallet_addPendingUserAuthRequest"
+  dependencies:
+    "@fluent-wallet/csp": "workspace:packages/csp"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_add-vault@workspace:packages/rpcs/wallet_addVault":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_add-vault@workspace:packages/rpcs/wallet_addVault"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/utils": "workspace:packages/utils"
+    browser-passworder: ^2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_create-account@workspace:packages/rpcs/wallet_createAccount":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_create-account@workspace:packages/rpcs/wallet_createAccount"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/hdkey": "workspace:packages/hdkey"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    browser-passworder: ^2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_create-address@workspace:packages/rpcs/wallet_createAddress":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_create-address@workspace:packages/rpcs/wallet_createAddress"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/hdkey": "workspace:packages/hdkey"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_delete-account-group@workspace:packages/rpcs/wallet_deleteAccountGroup":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_delete-account-group@workspace:packages/rpcs/wallet_deleteAccountGroup"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_delete-network@workspace:packages/rpcs/wallet_deleteNetwork":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_delete-network@workspace:packages/rpcs/wallet_deleteNetwork"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_detect-network-type@workspace:packages/rpcs/wallet_detectNetworkType":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_detect-network-type@workspace:packages/rpcs/wallet_detectNetworkType"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_discover-accounts@workspace:packages/rpcs/wallet_discoverAccounts":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_discover-accounts@workspace:packages/rpcs/wallet_discoverAccounts"
+  dependencies:
+    "@fluent-wallet/discover-accounts": "workspace:packages/discover-accounts"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_export-account-group@workspace:packages/rpcs/wallet_exportAccountGroup":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_export-account-group@workspace:packages/rpcs/wallet_exportAccountGroup"
+  dependencies:
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_export-account@workspace:packages/rpcs/wallet_exportAccount":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_export-account@workspace:packages/rpcs/wallet_exportAccount"
+  dependencies:
+    "@fluent-wallet/hdkey": "workspace:packages/hdkey"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_export-all@workspace:packages/rpcs/wallet_exportAll":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_export-all@workspace:packages/rpcs/wallet_exportAll"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_generate-address@workspace:packages/rpcs/wallet_generateAddress":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_generate-address@workspace:packages/rpcs/wallet_generateAddress"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_generate-mnemonic@workspace:packages/rpcs/wallet_generateMnemonic":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_generate-mnemonic@workspace:packages/rpcs/wallet_generateMnemonic"
+  dependencies:
+    bip39: ^3.0.4
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_generate-private-key@workspace:packages/rpcs/wallet_generatePrivateKey":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_generate-private-key@workspace:packages/rpcs/wallet_generatePrivateKey"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-account-group-vault-value@workspace:packages/rpcs/wallet_getAccountGroupVaultValue":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-account-group-vault-value@workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-account-group@workspace:packages/rpcs/wallet_getAccountGroup":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-account-group@workspace:packages/rpcs/wallet_getAccountGroup"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-address-private-key@workspace:packages/rpcs/wallet_getAddressPrivateKey":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-address-private-key@workspace:packages/rpcs/wallet_getAddressPrivateKey"
+  dependencies:
+    "@fluent-wallet/hdkey": "workspace:packages/hdkey"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/utils": "workspace:packages/utils"
+    browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-balance@workspace:packages/rpcs/wallet_getBalance":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-balance@workspace:packages/rpcs/wallet_getBalance"
+  dependencies:
+    "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-current-network@workspace:packages/rpcs/wallet_getCurrentNetwork":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-current-network@workspace:packages/rpcs/wallet_getCurrentNetwork"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-next-nonce@workspace:packages/rpcs/wallet_getNextNonce":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-next-nonce@workspace:packages/rpcs/wallet_getNextNonce"
+  dependencies:
+    "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-pending-auth-request@workspace:packages/rpcs/wallet_getPendingAuthRequest":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-pending-auth-request@workspace:packages/rpcs/wallet_getPendingAuthRequest"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-permissions@workspace:packages/rpcs/wallet_getPermissions":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-permissions@workspace:packages/rpcs/wallet_getPermissions"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_import-address@workspace:packages/rpcs/wallet_importAddress":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_import-address@workspace:packages/rpcs/wallet_importAddress"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_import-all@workspace:packages/rpcs/wallet_importAll":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_import-all@workspace:packages/rpcs/wallet_importAll"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    browser-passworder: 2.0.3
+    webextension-polyfill: 0.8.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_import-mnemonic@workspace:packages/rpcs/wallet_importMnemonic":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_import-mnemonic@workspace:packages/rpcs/wallet_importMnemonic"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_import-private-key@workspace:packages/rpcs/wallet_importPrivateKey":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_import-private-key@workspace:packages/rpcs/wallet_importPrivateKey"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_is-locked@workspace:packages/rpcs/wallet_isLocked":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_is-locked@workspace:packages/rpcs/wallet_isLocked"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_lock@workspace:packages/rpcs/wallet_lock":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_lock@workspace:packages/rpcs/wallet_lock"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_register-site-metadata@workspace:packages/rpcs/wallet_registerSiteMetadata":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_register-site-metadata@workspace:packages/rpcs/wallet_registerSiteMetadata"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_request-permissions@workspace:packages/rpcs/wallet_requestPermissions":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_request-permissions@workspace:packages/rpcs/wallet_requestPermissions"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/wallet-permission": "workspace:packages/wallet-permission"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_request-unlock-ui@workspace:packages/rpcs/wallet_requestUnlockUI":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_request-unlock-ui@workspace:packages/rpcs/wallet_requestUnlockUI"
+  dependencies:
+    "@fluent-wallet/csp": "workspace:packages/csp"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/webextension": "workspace:packages/webextension"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_set-app-current-account@workspace:packages/rpcs/wallet_setAppCurrentAccount":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_set-app-current-account@workspace:packages/rpcs/wallet_setAppCurrentAccount"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_set-app-current-network@workspace:packages/rpcs/wallet_setAppCurrentNetwork":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_set-app-current-network@workspace:packages/rpcs/wallet_setAppCurrentNetwork"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_set-current-account@workspace:packages/rpcs/wallet_setCurrentAccount":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_set-current-account@workspace:packages/rpcs/wallet_setCurrentAccount"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_set-current-network@workspace:packages/rpcs/wallet_setCurrentNetwork":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_set-current-network@workspace:packages/rpcs/wallet_setCurrentNetwork"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_switch-conflux-chain@workspace:packages/rpcs/wallet_switchConfluxChain":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_switch-conflux-chain@workspace:packages/rpcs/wallet_switchConfluxChain"
+  dependencies:
+    "@fluent-wallet/wallet_switch-ethereum-chain": "workspace:packages/rpcs/wallet_switchEthereumChain"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_switch-ethereum-chain@workspace:packages/rpcs/wallet_switchEthereumChain":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_switch-ethereum-chain@workspace:packages/rpcs/wallet_switchEthereumChain"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_unlock@workspace:packages/rpcs/wallet_unlock":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_unlock@workspace:packages/rpcs/wallet_unlock"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_update-account-group@workspace:packages/rpcs/wallet_updateAccountGroup":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_update-account-group@workspace:packages/rpcs/wallet_updateAccountGroup"
+  dependencies:
+    "@fluent-wallet/checks": "workspace:packages/checks"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_update-account@workspace:packages/rpcs/wallet_updateAccount":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_update-account@workspace:packages/rpcs/wallet_updateAccount"
+  dependencies:
+    "@fluent-wallet/checks": "workspace:packages/checks"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_user-approved-auth-request@workspace:packages/rpcs/wallet_userApprovedAuthRequest":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_user-approved-auth-request@workspace:packages/rpcs/wallet_userApprovedAuthRequest"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_user-rejected-auth-request@workspace:packages/rpcs/wallet_userRejectedAuthRequest":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_user-rejected-auth-request@workspace:packages/rpcs/wallet_userRejectedAuthRequest"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_validate-app-permissions@workspace:packages/rpcs/wallet_validateAppPermissions":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_validate-app-permissions@workspace:packages/rpcs/wallet_validateAppPermissions"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_validate-mnemonic@workspace:packages/rpcs/wallet_validateMnemonic":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_validate-mnemonic@workspace:packages/rpcs/wallet_validateMnemonic"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    bip39: 3.0.4
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    browser-passworder: ^2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_validate-private-key@workspace:packages/rpcs/wallet_validatePrivateKey":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_validate-private-key@workspace:packages/rpcs/wallet_validatePrivateKey"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/webextension@workspace:packages/webextension":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/webextension@workspace:packages/webextension"
+  dependencies:
+    webextension-polyfill: 0.8.0
+  languageName: unknown
+  linkType: soft
 
 "@gar/promisify@npm:^1.0.1":
   version: 1.1.2
@@ -12729,10 +12729,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "doc@workspace:websites/doc"
   dependencies:
-    "@cfxjs/doc-rpc-parameter": "workspace:packages/doc-ui/rpc-parameter"
-    "@cfxjs/docusaurus-plugin": "workspace:packages/docusaurus-plugin"
     "@docusaurus/core": 2.0.0-beta.4
     "@docusaurus/preset-classic": 2.0.0-beta.4
+    "@fluent-wallet/doc-rpc-parameter": "workspace:packages/doc-ui/rpc-parameter"
+    "@fluent-wallet/docusaurus-plugin": "workspace:packages/docusaurus-plugin"
     "@mdx-js/react": ^1.6.22
     "@svgr/webpack": ^5.5.0
     clsx: ^1.1.1
@@ -14723,7 +14723,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ext-reload@workspace:packages/ext-reload"
   dependencies:
-    "@cfxjs/csp": "workspace:packages/csp"
+    "@fluent-wallet/csp": "workspace:packages/csp"
     webextension-polyfill: 0.8.0
   languageName: unknown
   linkType: soft
@@ -16489,80 +16489,80 @@ fsevents@~2.1.2:
   version: 0.0.0-use.local
   resolution: "helios-background@workspace:packages/background"
   dependencies:
-    "@cfxjs/cfx_accounts": "workspace:packages/rpcs/cfx_accounts"
-    "@cfxjs/cfx_chain-id": "workspace:packages/rpcs/cfx_chainId"
-    "@cfxjs/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber"
-    "@cfxjs/cfx_gas-price": "workspace:packages/rpcs/cfx_gasPrice"
-    "@cfxjs/cfx_get-account": "workspace:packages/rpcs/cfx_getAccount"
-    "@cfxjs/cfx_get-balance": "workspace:packages/rpcs/cfx_getBalance"
-    "@cfxjs/cfx_get-code": "workspace:packages/rpcs/cfx_getCode"
-    "@cfxjs/cfx_get-next-nonce": "workspace:packages/rpcs/cfx_getNextNonce"
-    "@cfxjs/cfx_get-status": "workspace:packages/rpcs/cfx_getStatus"
-    "@cfxjs/cfx_net-version": "workspace:packages/rpcs/cfx_netVersion"
-    "@cfxjs/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
-    "@cfxjs/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
-    "@cfxjs/db": "workspace:packages/db"
-    "@cfxjs/eth_accounts": "workspace:packages/rpcs/eth_accounts"
-    "@cfxjs/eth_block-number": "workspace:packages/rpcs/eth_blockNumber"
-    "@cfxjs/eth_chain-id": "workspace:packages/rpcs/eth_chainId"
-    "@cfxjs/eth_gas-price": "workspace:packages/rpcs/eth_gasPrice"
-    "@cfxjs/eth_get-balance": "workspace:packages/rpcs/eth_getBalance"
-    "@cfxjs/eth_get-code": "workspace:packages/rpcs/eth_getCode"
-    "@cfxjs/eth_get-transaction-count": "workspace:packages/rpcs/eth_getTransactionCount"
-    "@cfxjs/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
-    "@cfxjs/eth_sign-typed-data_v4": "workspace:packages/rpcs/eth_signTypedData_v4"
-    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
-    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts"
-    "@cfxjs/fluent-wallet-inner-utils": "workspace:packages/inner-utils"
-    "@cfxjs/net_version": "workspace:packages/rpcs/net_version"
-    "@cfxjs/personal_sign": "workspace:packages/rpcs/personal_sign"
-    "@cfxjs/rpc-engine": "workspace:packages/rpc-engine"
-    "@cfxjs/test-helpers": "workspace:packages/test-helpers"
-    "@cfxjs/transducers": "workspace:packages/transducers"
-    "@cfxjs/wallet_add-hd-path": "workspace:packages/rpcs/wallet_addHdPath"
-    "@cfxjs/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
-    "@cfxjs/wallet_add-pending-user-auth-request": "workspace:packages/rpcs/wallet_addPendingUserAuthRequest"
-    "@cfxjs/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault"
-    "@cfxjs/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount"
-    "@cfxjs/wallet_create-address": "workspace:packages/rpcs/wallet_createAddress"
-    "@cfxjs/wallet_delete-account-group": "workspace:packages/rpcs/wallet_deleteAccountGroup"
-    "@cfxjs/wallet_delete-network": "workspace:packages/rpcs/wallet_deleteNetwork"
-    "@cfxjs/wallet_detect-network-type": "workspace:packages/rpcs/wallet_detectNetworkType"
-    "@cfxjs/wallet_discover-accounts": "workspace:packages/rpcs/wallet_discoverAccounts"
-    "@cfxjs/wallet_export-account": "workspace:packages/rpcs/wallet_exportAccount"
-    "@cfxjs/wallet_export-account-group": "workspace:packages/rpcs/wallet_exportAccountGroup"
-    "@cfxjs/wallet_export-all": "workspace:packages/rpcs/wallet_exportAll"
-    "@cfxjs/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
-    "@cfxjs/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey"
-    "@cfxjs/wallet_get-account-group": "workspace:packages/rpcs/wallet_getAccountGroup"
-    "@cfxjs/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
-    "@cfxjs/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey"
-    "@cfxjs/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
-    "@cfxjs/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
-    "@cfxjs/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest"
-    "@cfxjs/wallet_get-permissions": "workspace:packages/rpcs/wallet_getPermissions"
-    "@cfxjs/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
-    "@cfxjs/wallet_import-all": "workspace:packages/rpcs/wallet_importAll"
-    "@cfxjs/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
-    "@cfxjs/wallet_is-locked": "workspace:packages/rpcs/wallet_isLocked"
-    "@cfxjs/wallet_lock": "workspace:packages/rpcs/wallet_lock"
-    "@cfxjs/wallet_register-site-metadata": "workspace:packages/rpcs/wallet_registerSiteMetadata"
-    "@cfxjs/wallet_request-permissions": "workspace:packages/rpcs/wallet_requestPermissions"
-    "@cfxjs/wallet_request-unlock-ui": "workspace:packages/rpcs/wallet_requestUnlockUI"
-    "@cfxjs/wallet_set-app-current-account": "workspace:packages/rpcs/wallet_setAppCurrentAccount"
-    "@cfxjs/wallet_set-app-current-network": "workspace:packages/rpcs/wallet_setAppCurrentNetwork"
-    "@cfxjs/wallet_set-current-account": "workspace:packages/rpcs/wallet_setCurrentAccount"
-    "@cfxjs/wallet_set-current-network": "workspace:packages/rpcs/wallet_setCurrentNetwork"
-    "@cfxjs/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
-    "@cfxjs/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount"
-    "@cfxjs/wallet_update-account-group": "workspace:packages/rpcs/wallet_updateAccountGroup"
-    "@cfxjs/wallet_user-approved-auth-request": "workspace:packages/rpcs/wallet_userApprovedAuthRequest"
-    "@cfxjs/wallet_user-rejected-auth-request": "workspace:packages/rpcs/wallet_userRejectedAuthRequest"
-    "@cfxjs/wallet_validate-app-permissions": "workspace:packages/rpcs/wallet_validateAppPermissions"
-    "@cfxjs/wallet_validate-mnemonic": "workspace:packages/rpcs/wallet_validateMnemonic"
-    "@cfxjs/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
-    "@cfxjs/wallet_validate-private-key": "workspace:packages/rpcs/wallet_validatePrivateKey"
-    "@cfxjs/webextension": "workspace:packages/webextension"
+    "@fluent-wallet/cfx_accounts": "workspace:packages/rpcs/cfx_accounts"
+    "@fluent-wallet/cfx_chain-id": "workspace:packages/rpcs/cfx_chainId"
+    "@fluent-wallet/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber"
+    "@fluent-wallet/cfx_gas-price": "workspace:packages/rpcs/cfx_gasPrice"
+    "@fluent-wallet/cfx_get-account": "workspace:packages/rpcs/cfx_getAccount"
+    "@fluent-wallet/cfx_get-balance": "workspace:packages/rpcs/cfx_getBalance"
+    "@fluent-wallet/cfx_get-code": "workspace:packages/rpcs/cfx_getCode"
+    "@fluent-wallet/cfx_get-next-nonce": "workspace:packages/rpcs/cfx_getNextNonce"
+    "@fluent-wallet/cfx_get-status": "workspace:packages/rpcs/cfx_getStatus"
+    "@fluent-wallet/cfx_net-version": "workspace:packages/rpcs/cfx_netVersion"
+    "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
+    "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/db": "workspace:packages/db"
+    "@fluent-wallet/eth_accounts": "workspace:packages/rpcs/eth_accounts"
+    "@fluent-wallet/eth_block-number": "workspace:packages/rpcs/eth_blockNumber"
+    "@fluent-wallet/eth_chain-id": "workspace:packages/rpcs/eth_chainId"
+    "@fluent-wallet/eth_gas-price": "workspace:packages/rpcs/eth_gasPrice"
+    "@fluent-wallet/eth_get-balance": "workspace:packages/rpcs/eth_getBalance"
+    "@fluent-wallet/eth_get-code": "workspace:packages/rpcs/eth_getCode"
+    "@fluent-wallet/eth_get-transaction-count": "workspace:packages/rpcs/eth_getTransactionCount"
+    "@fluent-wallet/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
+    "@fluent-wallet/eth_sign-typed-data_v4": "workspace:packages/rpcs/eth_signTypedData_v4"
+    "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
+    "@fluent-wallet/inner-utils": "workspace:packages/inner-utils"
+    "@fluent-wallet/net_version": "workspace:packages/rpcs/net_version"
+    "@fluent-wallet/personal_sign": "workspace:packages/rpcs/personal_sign"
+    "@fluent-wallet/rpc-engine": "workspace:packages/rpc-engine"
+    "@fluent-wallet/test-helpers": "workspace:packages/test-helpers"
+    "@fluent-wallet/transducers": "workspace:packages/transducers"
+    "@fluent-wallet/wallet_add-hd-path": "workspace:packages/rpcs/wallet_addHdPath"
+    "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
+    "@fluent-wallet/wallet_add-pending-user-auth-request": "workspace:packages/rpcs/wallet_addPendingUserAuthRequest"
+    "@fluent-wallet/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault"
+    "@fluent-wallet/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount"
+    "@fluent-wallet/wallet_create-address": "workspace:packages/rpcs/wallet_createAddress"
+    "@fluent-wallet/wallet_delete-account-group": "workspace:packages/rpcs/wallet_deleteAccountGroup"
+    "@fluent-wallet/wallet_delete-network": "workspace:packages/rpcs/wallet_deleteNetwork"
+    "@fluent-wallet/wallet_detect-network-type": "workspace:packages/rpcs/wallet_detectNetworkType"
+    "@fluent-wallet/wallet_discover-accounts": "workspace:packages/rpcs/wallet_discoverAccounts"
+    "@fluent-wallet/wallet_export-account": "workspace:packages/rpcs/wallet_exportAccount"
+    "@fluent-wallet/wallet_export-account-group": "workspace:packages/rpcs/wallet_exportAccountGroup"
+    "@fluent-wallet/wallet_export-all": "workspace:packages/rpcs/wallet_exportAll"
+    "@fluent-wallet/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
+    "@fluent-wallet/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey"
+    "@fluent-wallet/wallet_get-account-group": "workspace:packages/rpcs/wallet_getAccountGroup"
+    "@fluent-wallet/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
+    "@fluent-wallet/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey"
+    "@fluent-wallet/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
+    "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
+    "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest"
+    "@fluent-wallet/wallet_get-permissions": "workspace:packages/rpcs/wallet_getPermissions"
+    "@fluent-wallet/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
+    "@fluent-wallet/wallet_import-all": "workspace:packages/rpcs/wallet_importAll"
+    "@fluent-wallet/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
+    "@fluent-wallet/wallet_is-locked": "workspace:packages/rpcs/wallet_isLocked"
+    "@fluent-wallet/wallet_lock": "workspace:packages/rpcs/wallet_lock"
+    "@fluent-wallet/wallet_register-site-metadata": "workspace:packages/rpcs/wallet_registerSiteMetadata"
+    "@fluent-wallet/wallet_request-permissions": "workspace:packages/rpcs/wallet_requestPermissions"
+    "@fluent-wallet/wallet_request-unlock-ui": "workspace:packages/rpcs/wallet_requestUnlockUI"
+    "@fluent-wallet/wallet_set-app-current-account": "workspace:packages/rpcs/wallet_setAppCurrentAccount"
+    "@fluent-wallet/wallet_set-app-current-network": "workspace:packages/rpcs/wallet_setAppCurrentNetwork"
+    "@fluent-wallet/wallet_set-current-account": "workspace:packages/rpcs/wallet_setCurrentAccount"
+    "@fluent-wallet/wallet_set-current-network": "workspace:packages/rpcs/wallet_setCurrentNetwork"
+    "@fluent-wallet/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
+    "@fluent-wallet/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount"
+    "@fluent-wallet/wallet_update-account-group": "workspace:packages/rpcs/wallet_updateAccountGroup"
+    "@fluent-wallet/wallet_user-approved-auth-request": "workspace:packages/rpcs/wallet_userApprovedAuthRequest"
+    "@fluent-wallet/wallet_user-rejected-auth-request": "workspace:packages/rpcs/wallet_userRejectedAuthRequest"
+    "@fluent-wallet/wallet_validate-app-permissions": "workspace:packages/rpcs/wallet_validateAppPermissions"
+    "@fluent-wallet/wallet_validate-mnemonic": "workspace:packages/rpcs/wallet_validateMnemonic"
+    "@fluent-wallet/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
+    "@fluent-wallet/wallet_validate-private-key": "workspace:packages/rpcs/wallet_validatePrivateKey"
+    "@fluent-wallet/webextension": "workspace:packages/webextension"
     "@thi.ng/rstream": 6.0.20
     "@thi.ng/rstream-csp": ^2.0.79
     browser-passworder: 2.0.3
@@ -16575,8 +16575,8 @@ fsevents@~2.1.2:
   version: 0.0.0-use.local
   resolution: "helios-inpage@workspace:packages/inpage"
   dependencies:
-    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
-    "@cfxjs/provider-api": "workspace:packages/ui/provider-api"
+    "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
+    "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api"
     "@thi.ng/rstream": 6.0.20
     webextension-polyfill: 0.8.0
   languageName: unknown
@@ -16586,13 +16586,13 @@ fsevents@~2.1.2:
   version: 0.0.0-use.local
   resolution: "helios-popup@workspace:packages/popup"
   dependencies:
-    "@cfxjs/checks": "workspace:packages/checks"
-    "@cfxjs/component-button": "workspace:packages/ui/components/Button"
-    "@cfxjs/component-dropdown": "workspace:packages/ui/components/Dropdown"
-    "@cfxjs/component-icons": "workspace:packages/ui/icons"
-    "@cfxjs/component-input": "workspace:packages/ui/components/Input"
-    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime"
-    "@cfxjs/use-rpc": "workspace:packages/ui/useRPC"
+    "@fluent-wallet/checks": "workspace:packages/checks"
+    "@fluent-wallet/component-button": "workspace:packages/ui/components/Button"
+    "@fluent-wallet/component-dropdown": "workspace:packages/ui/components/Dropdown"
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
+    "@fluent-wallet/component-input": "workspace:packages/ui/components/Input"
+    "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
+    "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
     i18next: 20.4.0
     react-i18next: 11.11.4
     react-router-dom: 5.2.1
@@ -30126,7 +30126,7 @@ resolve@^2.0.0-next.3:
   version: 0.0.0-use.local
   resolution: "workspace-tools@workspace:packages/workspace-tools"
   dependencies:
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec"
     chokidar: 3.5.2
   languageName: unknown
   linkType: soft

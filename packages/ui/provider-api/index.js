@@ -1,5 +1,5 @@
-import rndId from '@cfxjs/random-id'
-import SafeEventEmitter from '@cfxjs/safe-event-emiter'
+import rndId from '@fluent-wallet/random-id'
+import SafeEventEmitter from '@fluent-wallet/safe-event-emiter'
 
 const requestFactory = (sendRequest, req) => {
   req.jsonrpc = '2.0'

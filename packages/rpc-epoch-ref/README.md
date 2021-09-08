@@ -1,1 +1,1 @@
-# @cfxjs/rpc-epoch-ref
+# @fluent-wallet/rpc-epoch-ref

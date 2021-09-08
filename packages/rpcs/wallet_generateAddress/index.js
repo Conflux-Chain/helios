@@ -1,6 +1,6 @@
-import {or, map, networkId, addressType, truep} from '@cfxjs/spec'
-import {randomBase32Address} from '@cfxjs/base32-address'
-import {randomHexAddress, randomCfxHexAddress} from '@cfxjs/account'
+import {or, map, networkId, addressType, truep} from '@fluent-wallet/spec'
+import {randomBase32Address} from '@fluent-wallet/base32-address'
+import {randomHexAddress, randomCfxHexAddress} from '@fluent-wallet/account'
 
 export const NAME = 'wallet_generateAddress'
 

@@ -1,1 +1,1 @@
-# @cfxjs/csp
+# @fluent-wallet/csp

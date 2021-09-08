@@ -1,4 +1,4 @@
-import * as addEthChain from '@cfxjs/wallet_add-ethereum-chain'
+import * as addEthChain from '@fluent-wallet/wallet_add-ethereum-chain'
 
 export const NAME = 'wallet_addConfluxChain'
 

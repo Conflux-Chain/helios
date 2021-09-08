@@ -1,1 +1,1 @@
-# @cfxjs/eth_block-number
+# @fluent-wallet/eth_block-number

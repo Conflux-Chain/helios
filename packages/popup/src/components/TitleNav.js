@@ -1,6 +1,6 @@
 import {useHistory} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {ArrowLeft} from '@cfxjs/component-icons'
+import {ArrowLeft} from '@fluent-wallet/component-icons'
 
 function TitleNav({hasGoBack = true, title = ''}) {
   const history = useHistory()

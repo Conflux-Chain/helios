@@ -1,11 +1,11 @@
 {
-  "name": "@cfxjs/hdkey",
+  "name": "@fluent-wallet/hdkey",
   "type": "module",
   "main": "index.js",
   "version": "0.1.0",
   "dependencies": {
-    "@cfxjs/utils": "workspace:packages/utils",
     "@ethersproject/hdnode": "5.4.0",
-    "@ethersproject/random": "5.4.0"
+    "@ethersproject/random": "5.4.0",
+    "@fluent-wallet/utils": "workspace:packages/utils"
   }
 }

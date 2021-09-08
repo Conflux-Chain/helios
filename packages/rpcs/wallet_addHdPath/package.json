@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/wallet_add-hd-path",
+  "name": "@fluent-wallet/wallet_add-hd-path",
   "type": "module",
   "main": "index.js",
   "version": "0.0.3",
   "dependencies": {
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

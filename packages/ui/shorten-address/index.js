@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import {isNegative, isString} from '@cfxjs/checks'
-import {validateBase32Address, decode} from '@cfxjs/base32-address'
-import {isHexAddress} from '@cfxjs/account'
+import {isNegative, isString} from '@fluent-wallet/checks'
+import {validateBase32Address, decode} from '@fluent-wallet/base32-address'
+import {isHexAddress} from '@fluent-wallet/account'
 
 export const getEllipsStr = (str, frontNum, endNum) => {
   if (!isString(str) || isNegative(frontNum) || isNegative(endNum)) {

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {Close} from '@cfxjs/component-icons'
+import {Close} from '@fluent-wallet/component-icons'
 
 function SeedWord({idx, word, closable = true, onClose, className = ''}) {
   return (

@@ -1,5 +1,5 @@
-import {validatePrivateKey} from '@cfxjs/account'
-import {map, stringp} from '@cfxjs/spec'
+import {validatePrivateKey} from '@fluent-wallet/account'
+import {map, stringp} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_validatePrivateKey'
 

@@ -1,1 +1,1 @@
-# @cfxjs/addr-by-network
+# @fluent-wallet/addr-by-network

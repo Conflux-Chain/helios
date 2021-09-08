@@ -1,6 +1,6 @@
 import {defMiddleware} from '../middleware.js'
-import EpochRefConf from '@cfxjs/rpc-epoch-ref'
-import * as jsonRpcErr from '@cfxjs/json-rpc-error'
+import EpochRefConf from '@fluent-wallet/rpc-epoch-ref'
+import * as jsonRpcErr from '@fluent-wallet/json-rpc-error'
 
 function validateRpcMehtod({req, rpcStore}) {
   const {method} = req

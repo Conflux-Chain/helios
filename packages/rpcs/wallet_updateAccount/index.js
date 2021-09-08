@@ -1,6 +1,6 @@
-import {map, boolean, dbid, nickname} from '@cfxjs/spec'
-import {isBoolean} from '@cfxjs/checks'
-import {isUndefined} from '@cfxjs/checks'
+import {map, boolean, dbid, nickname} from '@fluent-wallet/spec'
+import {isBoolean} from '@fluent-wallet/checks'
+import {isUndefined} from '@fluent-wallet/checks'
 
 export const NAME = 'wallet_updateAccount'
 

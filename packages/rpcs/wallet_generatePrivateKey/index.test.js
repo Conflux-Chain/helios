@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
-import {validate} from '@cfxjs/spec'
+import {validate} from '@fluent-wallet/spec'
 import {schemas, main} from './'
-import {randomPrivateKey, validatePrivateKey} from '@cfxjs/account'
+import {randomPrivateKey, validatePrivateKey} from '@fluent-wallet/account'
 
 describe('wallet_generatePrivateKey', function () {
   describe('schemas', function () {

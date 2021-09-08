@@ -1,1 +1,1 @@
-# @cfxjs/wallet_switch-conflux-chain
+# @fluent-wallet/wallet_switch-conflux-chain

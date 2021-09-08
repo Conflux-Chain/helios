@@ -1,1 +1,1 @@
-# @cfxjs/component-toast
+# @fluent-wallet/component-toast

@@ -1,1 +1,1 @@
-# @cfxjs/base32-address
+# @fluent-wallet/base32-address

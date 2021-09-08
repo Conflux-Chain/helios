@@ -1,4 +1,4 @@
-import {arrp, empty, and} from '@cfxjs/spec'
+import {arrp, empty, and} from '@fluent-wallet/spec'
 
 export const NAME = 'eth_chainId'
 

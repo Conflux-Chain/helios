@@ -1,7 +1,7 @@
 import {defMiddleware} from '../middleware.js'
-import {utils as rpcUtils} from '@cfxjs/json-rpc'
-import rndId from '@cfxjs/random-id'
-import * as jsonRpcErr from '@cfxjs/json-rpc-error'
+import {utils as rpcUtils} from '@fluent-wallet/json-rpc'
+import rndId from '@fluent-wallet/random-id'
+import * as jsonRpcErr from '@fluent-wallet/json-rpc-error'
 
 export default defMiddleware(({tx: {map}}) => {
   return {

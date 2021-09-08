@@ -1,5 +1,5 @@
-import {map, dbid, password} from '@cfxjs/spec'
-import {getNthAccountOfHDKey} from '@cfxjs/hdkey'
+import {map, dbid, password} from '@fluent-wallet/spec'
+import {getNthAccountOfHDKey} from '@fluent-wallet/hdkey'
 import {decrypt} from 'browser-passworder'
 
 export const NAME = 'wallet_exportAccount'

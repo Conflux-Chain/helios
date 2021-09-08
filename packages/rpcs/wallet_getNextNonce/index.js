@@ -1,5 +1,5 @@
-import {cat, ethHexAddress, base32UserAddress, or} from '@cfxjs/spec'
-import addrByNet from '@cfxjs/addr-by-network'
+import {cat, ethHexAddress, base32UserAddress, or} from '@fluent-wallet/spec'
+import addrByNet from '@fluent-wallet/addr-by-network'
 
 export const NAME = 'wallet_getNextNonce'
 

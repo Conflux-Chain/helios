@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/random-id",
+  "name": "@fluent-wallet/random-id",
   "type": "module",
   "main": "index.js",
   "version": "0.0.2"

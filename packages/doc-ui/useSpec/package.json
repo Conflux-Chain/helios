@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/doc-use-spec",
+  "name": "@fluent-wallet/doc-use-spec",
   "type": "module",
   "main": "index.js",
   "version": "0.0.5",

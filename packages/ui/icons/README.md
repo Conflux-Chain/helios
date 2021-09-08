@@ -1,1 +1,1 @@
-# @cfxjs/component-icons
+# @fluent-wallet/component-icons

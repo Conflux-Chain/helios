@@ -1,1 +1,1 @@
-# @cfxjs/db
+# @fluent-wallet/db

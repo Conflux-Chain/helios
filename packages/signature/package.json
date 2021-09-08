@@ -1,16 +1,16 @@
 {
-  "name": "@cfxjs/signature",
+  "name": "@fluent-wallet/signature",
   "type": "module",
   "main": "index.js",
   "version": "0.0.1",
   "dependencies": {
-    "@cfxjs/base32-address": "workspace:packages/base32-address",
-    "@cfxjs/utils": "workspace:packages/utils",
     "@ethersproject/bytes": "5.4.0",
     "@ethersproject/hash": "5.4.0",
     "@ethersproject/signing-key": "5.4.0",
     "@ethersproject/transactions": "5.4.0",
     "@ethersproject/wallet": "5.4.0",
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address",
+    "@fluent-wallet/utils": "workspace:packages/utils",
     "cip-23": "0.1.2",
     "eth-sig-util": "3.0.1",
     "js-conflux-sdk": "1.7.0"

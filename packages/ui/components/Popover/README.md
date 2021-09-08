@@ -1,1 +1,1 @@
-# @cfxjs/component-popover
+# @fluent-wallet/component-popover

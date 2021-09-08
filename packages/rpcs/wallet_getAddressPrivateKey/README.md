@@ -1,1 +1,1 @@
-# @cfxjs/wallet_get-address-private-key
+# @fluent-wallet/wallet_get-address-private-key

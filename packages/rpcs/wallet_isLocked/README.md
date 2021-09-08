@@ -1,1 +1,1 @@
-# @cfxjs/wallet_is-locked
+# @fluent-wallet/wallet_is-locked

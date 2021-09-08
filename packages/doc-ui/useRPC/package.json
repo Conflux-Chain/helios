@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/doc-use-rpc",
+  "name": "@fluent-wallet/doc-use-rpc",
   "type": "module",
   "main": "index.js",
   "version": "0.0.5",
