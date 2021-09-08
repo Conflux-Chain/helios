@@ -1,6 +1,0 @@
-releases:
-  "@cfxjs/component-dropdown": patch
-  "@cfxjs/component-icons": minor
-  "@cfxjs/component-input": patch
-  browser-extension: patch
-  helios-popup: minor
