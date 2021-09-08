@@ -32,6 +32,8 @@ module.exports = {
     extend: {
       spacing: {
         1.25: '0.3125rem',
+        13: '3.25rem',
+        15: '3.75rem',
         25: '6.25rem',
         50: '12.5rem',
         70: '17.5rem',
@@ -50,6 +52,7 @@ module.exports = {
         white: 'var(--color-white)',
         black: 'var(--color-black)',
         primary: 'var(--color-primary)',
+        secondary: 'var(--color-secondary)',
         error: 'var(--color-error)',
         success: 'var(--color-success)',
         warning: 'var(--color-warning)',

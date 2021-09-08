@@ -1,4 +1,4 @@
-import {useState, useMemo} from 'react'
+import {useState, useMemo, createElement} from 'react'
 import PropTypes from 'prop-types'
 
 const sizeStyleObj = {
@@ -38,9 +38,12 @@ function Input({
   onChange,
   bordered = true,
   size = 'medium',
+  textareaSize = '',
   width = 'w-60',
   errorMessage = '',
   onBlur,
+  onSuffixClick,
+  elementType = 'input',
   ...props
 }) {
   const [focused, setFocused] = useState(false)
@@ -49,7 +52,8 @@ function Input({
     return 'bg-gray-0'
   }, [disabled])
 
-  const sizeStyle = sizeStyleObj[size] || ''
+  const sizeStyle =
+    elementType === 'input' ? sizeStyleObj[size] || '' : `${textareaSize} pt-3`
   const inputStyle = inputStyleObj[size] || ''
   const iconSize = iconSizeObj[size] || ''
 
@@ -62,6 +66,22 @@ function Input({
     else return `border ${focused ? 'border-primary' : 'border-gray-20'}`
   }, [bordered, errorMessage, focused])
 
+  const InputElement = createElement(elementType, {
+    'data-testid': 'input-text',
+    value,
+    onFocus: () => {
+      setFocused(true)
+    },
+    onBlur: () => {
+      setFocused(false)
+      onBlur && onBlur()
+    },
+    onChange: e => {
+      onChange && onChange(e)
+    },
+    className: `w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`,
+    ...props,
+  })
   return (
     <div className={`${width}`} data-testid="input-wrapper">
       <div
@@ -77,22 +97,14 @@ function Input({
             <div className={`text-gray-40 ${iconSize}`}>{prefix}</div>
           </div>
         )}
-        <input
-          data-testid="input-text"
-          value={value}
-          onFocus={() => setFocused(true)}
-          onBlur={() => {
-            setFocused(false)
-            onBlur && onBlur()
-          }}
-          onChange={e => onChange && onChange(e)}
-          className={`w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`}
-          {...props}
-        />
+        {InputElement}
         {suffix && (
           <div
             aria-hidden="true"
-            onClick={() => setFocused(true)}
+            onClick={() => {
+              setFocused(true)
+              onSuffixClick && onSuffixClick()
+            }}
             className={`pr-3 ${suffixStyle}`}
           >
             <div className={`text-gray-40 ${iconSize}`}>{suffix}</div>
@@ -107,18 +119,21 @@ function Input({
 }
 
 Input.propTypes = {
-  value: PropTypes.string,
+  value: PropTypes.string.isRequired,
   className: PropTypes.string,
   containerClassName: PropTypes.string,
   onChange: PropTypes.func,
   width: PropTypes.string,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
+  textareaSize: PropTypes.string,
   errorMessage: PropTypes.string,
   prefix: PropTypes.node,
   suffix: PropTypes.node,
+  onSuffixClick: PropTypes.func,
   disabled: PropTypes.bool,
   bordered: PropTypes.bool,
   onBlur: PropTypes.func,
+  elementType: PropTypes.oneOf(['input', 'textarea']),
 }
 
 export default Input

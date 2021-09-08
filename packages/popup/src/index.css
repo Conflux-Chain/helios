@@ -22,13 +22,19 @@ strong {
   display: flex;
   flex-direction: column;
 }
-
+html {
+  overflow: hidden;
+}
+html::-webkit-scrollbar {
+  width: 0 !important;
+}
 #root,
 body,
 html {
   --color-white: #fff;
   --color-black: #000;
   --color-primary: #7789d3;
+  --color-secondary: #26244b;
   --color-error: #e96170;
   --color-success: #6fc5b1;
   --color-warning: #f0955f;

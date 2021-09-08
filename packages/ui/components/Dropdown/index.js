@@ -5,7 +5,7 @@ import ReactDropdown from 'rc-dropdown'
 import 'rc-dropdown/assets/index.css'
 import ArrowDownOutlined from './assets/ArrowDownOutlined'
 
-const RcDropdown = ReactDropdown.default
+const RcDropdown = ReactDropdown?.default || ReactDropdown
 function Dropdown({overlay, trigger, disabled, placement, children, ...props}) {
   const renderOverlay = () => {
     // rc-dropdown already can process the function of overlay, but we have check logic here.
@@ -27,9 +27,8 @@ function Dropdown({overlay, trigger, disabled, placement, children, ...props}) {
 
     const overlayProps = overlayNode.props
 
-    // menu can be selectable and focusable in dropdown defaultly
+    // menu can be selectable and focusable in dropdown by default
     const {selectable = true, focusable = true, expandIcon} = overlayProps
-
     const overlayNodeExpandIcon =
       typeof expandIcon !== 'undefined' && React.isValidElement(expandIcon) ? (
         expandIcon

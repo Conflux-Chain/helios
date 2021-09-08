@@ -1,6 +1,9 @@
 const en = {
   translation: {
-    waiting: 'loading...',
+    faster: 'Faster',
+    en: 'English',
+    'zh-CN': '简体中文',
+    back: 'Back',
     // welcome page
     hello: 'Hello',
     welcome: 'Welcome to Conflux network',
@@ -16,10 +19,10 @@ const en = {
     rememberPWD: 'This password cannot be retrieved, please remember.',
     goBack: 'Back',
     // select create type
-    newAccount: 'New Account',
+    newAccount: 'Create Account',
     createAccount: 'Create a new account',
-    UseExistingSeed: 'Use existing Seed Phrase',
-    UseExistingSeedDes: 'No need to backup again, use HD Wallet.',
+    useExistingSeed: 'Use existing Seed Phrase',
+    useExistingSeedDes: 'No need to backup again, use HD Wallet.',
     newSeedPhrase: 'New Seed Phrase',
     newSeedPhraseDes: 'Create a new Seed Phrase and Backup.',
     importExistingAccount: 'Import existing account',
@@ -35,7 +38,7 @@ const en = {
     // Import account with pk
     pKeyImport: 'Import Private Key',
     pKeyGroupName: 'Account name',
-    pKeyPlaceholder: 'Type your Private Key here.',
+    pKeyImportPlaceholder: 'Type your Private Key here.',
     import: 'Import',
     // use current seed phrase
     accountName: 'Account name',

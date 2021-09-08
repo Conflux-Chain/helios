@@ -9,6 +9,7 @@
   "dependencies": {
     "@cfxjs/checks": "workspace:packages/checks",
     "@cfxjs/component-button": "workspace:packages/ui/components/Button",
+    "@cfxjs/component-dropdown": "workspace:packages/ui/components/Dropdown",
     "@cfxjs/component-icons": "workspace:packages/ui/icons",
     "@cfxjs/component-input": "workspace:packages/ui/components/Input",
     "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
