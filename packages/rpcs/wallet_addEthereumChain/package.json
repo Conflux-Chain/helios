@@ -1,10 +1,10 @@
 {
-  "name": "@cfxjs/wallet_add-ethereum-chain",
+  "name": "@fluent-wallet/wallet_add-ethereum-chain",
   "type": "module",
   "main": "index.js",
   "version": "0.0.2",
   "dependencies": {
-    "@cfxjs/spec": "workspace:packages/spec",
-    "@cfxjs/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
+    "@fluent-wallet/spec": "workspace:packages/spec",
+    "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
   }
 }

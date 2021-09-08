@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/wallet_generate-private-key",
+  "name": "@fluent-wallet/wallet_generate-private-key",
   "version": "0.0.6",
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "@cfxjs/account": "workspace:packages/account"
+    "@fluent-wallet/account": "workspace:packages/account"
   }
 }

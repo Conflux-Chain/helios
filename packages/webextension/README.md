@@ -1,1 +1,1 @@
-# @cfxjs/webextension
+# @fluent-wallet/webextension

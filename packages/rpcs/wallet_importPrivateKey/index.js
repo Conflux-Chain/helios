@@ -1,4 +1,4 @@
-import {privateKey, map, password, nickname} from '@cfxjs/spec'
+import {privateKey, map, password, nickname} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_importPrivateKey'
 

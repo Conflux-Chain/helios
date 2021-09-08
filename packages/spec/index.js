@@ -3,7 +3,7 @@ export * from './src/spec.js' // eslint-disable-line import/export
 import {
   INTERNAL_CONTRACTS_HEX_ADDRESS,
   NULL_HEX_ADDRESS,
-} from '@cfxjs/fluent-wallet-consts'
+} from '@fluent-wallet/consts'
 
 import {defRestSchemas, defBase32AddressSchemaFactory, or} from './src/spec.js'
 
@@ -12,10 +12,13 @@ import {
   randomCfxHexAddress,
   randomPrivateKey,
   validatePrivateKey,
-} from '@cfxjs/account'
+} from '@fluent-wallet/account'
 import {validateMnemonic, generateMnemonic} from 'bip39'
-import {validateBase32Address, randomBase32Address} from '@cfxjs/base32-address'
-import {randomHDPath, validateHDPath} from '@cfxjs/hdkey'
+import {
+  validateBase32Address,
+  randomBase32Address,
+} from '@fluent-wallet/base32-address'
+import {randomHDPath, validateHDPath} from '@fluent-wallet/hdkey'
 
 export const {
   ethHexAddress,

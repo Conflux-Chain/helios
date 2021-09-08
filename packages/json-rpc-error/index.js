@@ -1,4 +1,4 @@
-import {defRpcError} from '@cfxjs/errors'
+import {defRpcError} from '@fluent-wallet/errors'
 
 export const errorStackPop = error => {
   if (error?.stack) {

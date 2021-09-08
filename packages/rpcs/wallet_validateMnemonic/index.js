@@ -1,4 +1,4 @@
-import {map, stringp} from '@cfxjs/spec'
+import {map, stringp} from '@fluent-wallet/spec'
 
 import {wordlists, validateMnemonic} from 'bip39'
 

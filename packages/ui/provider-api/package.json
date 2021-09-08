@@ -1,11 +1,11 @@
 {
-  "name": "@cfxjs/provider-api",
+  "name": "@fluent-wallet/provider-api",
   "type": "module",
   "main": "index.js",
   "version": "0.0.3",
   "dependencies": {
-    "@cfxjs/random-id": "workspace:packages/random-id",
-    "@cfxjs/safe-event-emiter": "workspace:packages/safe-event-emiter"
+    "@fluent-wallet/random-id": "workspace:packages/random-id",
+    "@fluent-wallet/safe-event-emiter": "workspace:packages/safe-event-emiter"
   },
   "peerDependencies": {
     "react": "^17",

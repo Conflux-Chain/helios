@@ -1,4 +1,4 @@
-import {nul} from '@cfxjs/spec'
+import {nul} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_getStatus'
 

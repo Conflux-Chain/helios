@@ -1,1 +1,1 @@
-# @cfxjs/docusaurus-plugin
+# @fluent-wallet/docusaurus-plugin

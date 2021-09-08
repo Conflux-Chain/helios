@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/cfx_get-status",
+  "name": "@fluent-wallet/cfx_get-status",
   "type": "module",
   "main": "index.js",
   "version": "0.0.2",
   "dependencies": {
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

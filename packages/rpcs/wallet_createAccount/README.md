@@ -1,1 +1,1 @@
-# @cfxjs/wallet_create-account
+# @fluent-wallet/wallet_create-account

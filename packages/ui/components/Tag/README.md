@@ -1,1 +1,1 @@
-# @cfxjs/component-tag
+# @fluent-wallet/component-tag

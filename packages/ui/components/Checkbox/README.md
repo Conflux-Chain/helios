@@ -1,1 +1,1 @@
-# @cfxjs/component-checkbox
+# @fluent-wallet/component-checkbox

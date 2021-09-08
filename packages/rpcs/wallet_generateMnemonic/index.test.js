@@ -1,5 +1,5 @@
 import {expect} from '@jest/globals'
-import {validate} from '@cfxjs/spec'
+import {validate} from '@fluent-wallet/spec'
 import {generateMnemonic, validateMnemonic} from 'bip39'
 import {schemas, main} from './'
 

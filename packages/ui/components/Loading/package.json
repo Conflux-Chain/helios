@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/component-loading",
+  "name": "@fluent-wallet/component-loading",
   "type": "module",
   "main": "index.js",
   "peerDependencies": {

@@ -1,1 +1,1 @@
-# @cfxjs/wallet_set-current-account
+# @fluent-wallet/wallet_set-current-account

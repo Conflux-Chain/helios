@@ -1,4 +1,4 @@
-import {dbid, map, password} from '@cfxjs/spec'
+import {dbid, map, password} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_deleteNetwork'
 

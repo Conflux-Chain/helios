@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/wallet_set-current-network",
+  "name": "@fluent-wallet/wallet_set-current-network",
   "type": "module",
   "main": "index.js",
   "version": "0.0.2",
   "dependencies": {
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

@@ -1,1 +1,1 @@
-# @cfxjs/cfx_get-account
+# @fluent-wallet/cfx_get-account

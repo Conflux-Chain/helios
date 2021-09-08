@@ -1,5 +1,5 @@
 import {generateMnemonic} from 'bip39'
-import {mnemonic} from '@cfxjs/spec'
+import {mnemonic} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_generateMnemonic'
 

@@ -1,8 +1,8 @@
-import {map, dbid, nickname} from '@cfxjs/spec'
+import {map, dbid, nickname} from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
-import {getNthAccountOfHDKey} from '@cfxjs/hdkey'
-import {toAccountAddress} from '@cfxjs/account'
-import {encode} from '@cfxjs/base32-address'
+import {getNthAccountOfHDKey} from '@fluent-wallet/hdkey'
+import {toAccountAddress} from '@fluent-wallet/account'
+import {encode} from '@fluent-wallet/base32-address'
 
 export const NAME = 'wallet_createAccount'
 

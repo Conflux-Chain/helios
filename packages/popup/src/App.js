@@ -2,7 +2,7 @@ import React, {lazy, Suspense, useEffect, useState} from 'react'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {ProtectedRoute} from './components'
 import {GET_ALL_ACCOUNT_GROUP, GET_WALLET_STATUS} from './constants'
-import {useRPC} from '@cfxjs/use-rpc'
+import {useRPC} from '@fluent-wallet/use-rpc'
 import './index.css'
 
 const HomePage = lazy(() => import('./pages/Home'))

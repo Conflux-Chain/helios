@@ -8,7 +8,7 @@ import {
   CFX_DECIMAL,
 } from './'
 
-describe('@cfxjs/data-format', function () {
+describe('@fluent-wallet/data-format', function () {
   it('convertDecimal', async function () {
     expect(convertDecimal('1000000000000000000', 'divide', CFX_DECIMAL)).toBe(
       '1',

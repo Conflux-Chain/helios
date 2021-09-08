@@ -1,4 +1,4 @@
-import {cat, base32Address, epochRef} from '@cfxjs/spec'
+import {cat, base32Address, epochRef} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_getBalance'
 

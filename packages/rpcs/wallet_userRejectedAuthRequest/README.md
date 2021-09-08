@@ -1,1 +1,1 @@
-# @cfxjs/wallet_user-rejected-auth-request
+# @fluent-wallet/wallet_user-rejected-auth-request

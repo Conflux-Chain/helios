@@ -1,1 +1,1 @@
-# @cfxjs/doc-use-rpc
+# @fluent-wallet/doc-use-rpc

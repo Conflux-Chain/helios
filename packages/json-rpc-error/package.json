@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/json-rpc-error",
+  "name": "@fluent-wallet/json-rpc-error",
   "type": "module",
   "main": "index.js",
   "version": "0.0.5",
   "dependencies": {
-    "@cfxjs/errors": "workspace:packages/errors"
+    "@fluent-wallet/errors": "workspace:packages/errors"
   }
 }

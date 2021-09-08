@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/component-tooltip",
+  "name": "@fluent-wallet/component-tooltip",
   "type": "module",
   "main": "index.js",
   "dependencies": {

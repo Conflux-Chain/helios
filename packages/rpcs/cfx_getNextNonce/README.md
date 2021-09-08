@@ -1,1 +1,1 @@
-# @cfxjs/cfx_get-next-nonce
+# @fluent-wallet/cfx_get-next-nonce

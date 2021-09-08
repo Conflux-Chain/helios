@@ -1,4 +1,4 @@
-import {dbid, catn} from '@cfxjs/spec'
+import {dbid, catn} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_setCurrentNetwork'
 

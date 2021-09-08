@@ -1,1 +1,1 @@
-# @cfxjs/wallet_delete-account-group
+# @fluent-wallet/wallet_delete-account-group

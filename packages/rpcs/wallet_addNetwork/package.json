@@ -1,10 +1,10 @@
 {
-  "name": "@cfxjs/wallet_add-network",
+  "name": "@fluent-wallet/wallet_add-network",
   "type": "module",
   "main": "index.js",
   "version": "0.0.3",
   "dependencies": {
-    "@cfxjs/fluent-wallet-consts": "workspace:packages/consts",
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/consts": "workspace:packages/consts",
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

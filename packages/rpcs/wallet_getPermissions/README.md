@@ -1,1 +1,1 @@
-# @cfxjs/wallet_get-permissions
+# @fluent-wallet/wallet_get-permissions

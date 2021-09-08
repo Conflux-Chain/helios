@@ -1,6 +1,12 @@
-import {isArray, isFunction, isNumber, isObject, isString} from '@cfxjs/checks'
+import {
+  isArray,
+  isFunction,
+  isNumber,
+  isObject,
+  isString,
+} from '@fluent-wallet/checks'
 import {TLRUCache, LRUCache} from '@thi.ng/cache'
-import EpochRefConf from '@cfxjs/rpc-epoch-ref'
+import EpochRefConf from '@fluent-wallet/rpc-epoch-ref'
 
 let CACHE = {}
 
@@ -18,7 +24,7 @@ export const getCacheStore = ({network, params, method}, {type}) => {
     const epochPos = EpochRefConf[method]
     if (epochPos === undefined)
       throw new Error(
-        'Invalid cache option, no epoch/block ref pos in @cfxjs/rpc-epoch-ref',
+        'Invalid cache option, no epoch/block ref pos in @fluent-wallet/rpc-epoch-ref',
       )
     let epoch = params[epochPos] ?? 'default'
 

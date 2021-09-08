@@ -1,1 +1,1 @@
-# @cfxjs/wallet_import-all
+# @fluent-wallet/wallet_import-all

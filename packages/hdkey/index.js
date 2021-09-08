@@ -1,4 +1,4 @@
-import {randomInt} from '@cfxjs/utils'
+import {randomInt} from '@fluent-wallet/utils'
 import {HDNode, entropyToMnemonic} from '@ethersproject/hdnode'
 import {randomBytes} from '@ethersproject/random'
 

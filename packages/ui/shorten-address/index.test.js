@@ -1,7 +1,7 @@
 import {expect, describe, it} from '@jest/globals' // prettier-ignore
 import {shortenCfxAddress, shortenEthAddress, getEllipsStr} from './'
 
-describe('@cfxjs/shorten-address', function () {
+describe('@fluent-wallet/shorten-address', function () {
   it('getEllipsStr', async function () {
     expect(getEllipsStr('abcde', 1, 1)).toBe('a...e')
     expect(getEllipsStr('abcde', 3, 2)).toBe('abcde')

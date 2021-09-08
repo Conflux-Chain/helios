@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/webextension",
+  "name": "@fluent-wallet/webextension",
   "type": "module",
   "main": "index.js",
   "version": "0.0.1",

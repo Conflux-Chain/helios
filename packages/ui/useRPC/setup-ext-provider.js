@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
-import {rpcStream} from '@cfxjs/extension-runtime/rpc-stream.js'
-import {initProvider} from '@cfxjs/provider-api'
+import {rpcStream} from '@fluent-wallet/extension-runtime/rpc-stream.js'
+import {initProvider} from '@fluent-wallet/provider-api'
 
 const globalThis = window ?? global
 // globalThis.___CFXJS_USE_RPC__PRIVIDER = null

@@ -1,1 +1,1 @@
-# @cfxjs/wallet_detect-network-type
+# @fluent-wallet/wallet_detect-network-type

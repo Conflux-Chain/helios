@@ -1,1 +1,1 @@
-# @cfxjs/component-wrap-icon
+# @fluent-wallet/component-wrap-icon

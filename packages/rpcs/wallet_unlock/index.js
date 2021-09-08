@@ -1,4 +1,4 @@
-import {map, password} from '@cfxjs/spec'
+import {map, password} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_unlock'
 

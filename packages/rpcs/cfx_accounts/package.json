@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/cfx_accounts",
+  "name": "@fluent-wallet/cfx_accounts",
   "type": "module",
   "main": "index.js",
   "version": "0.0.2",
   "dependencies": {
-    "@cfxjs/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
+    "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
   }
 }

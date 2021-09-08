@@ -1,10 +1,10 @@
-import {defMiddleware} from '@cfxjs/rpc-engine/middleware.js'
+import {defMiddleware} from '@fluent-wallet/rpc-engine/middleware.js'
 import {stream} from '@thi.ng/rstream'
-import {initFetcher} from '@cfxjs/fetch-rpc'
-import {chan} from '@cfxjs/csp'
-import {init as initCache} from '@cfxjs/cache-rpc'
-import rndId from '@cfxjs/random-id'
-import {REGENERATE} from '@cfxjs/fluent-wallet-consts'
+import {initFetcher} from '@fluent-wallet/fetch-rpc'
+import {chan} from '@fluent-wallet/csp'
+import {init as initCache} from '@fluent-wallet/cache-rpc'
+import rndId from '@fluent-wallet/random-id'
+import {REGENERATE} from '@fluent-wallet/consts'
 
 const fetcher = initFetcher()
 

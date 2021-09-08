@@ -1,1 +1,1 @@
-# @cfxjs/hdkey
+# @fluent-wallet/hdkey

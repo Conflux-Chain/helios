@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/component-notification",
+  "name": "@fluent-wallet/component-notification",
   "type": "module",
   "main": "index.js",
   "peerDependencies": {

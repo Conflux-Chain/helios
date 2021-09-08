@@ -2,8 +2,8 @@
  * @fileOverview fns to deal with rpc permissions
  * @name permissions.js
  */
-import {mergeDeepObj} from '@cfxjs/associative'
-import {threadLast} from '@cfxjs/compose'
+import {mergeDeepObj} from '@fluent-wallet/associative'
+import {threadLast} from '@fluent-wallet/compose'
 
 export const defaultPermissions = {
   methods: [],

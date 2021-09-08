@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/docusaurus-plugin",
+  "name": "@fluent-wallet/docusaurus-plugin",
   "main": "index.js",
   "version": "0.0.4",
   "private": true

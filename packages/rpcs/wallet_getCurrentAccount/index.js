@@ -1,4 +1,4 @@
-import {nul, or, and, empty, arrp} from '@cfxjs/spec'
+import {nul, or, and, empty, arrp} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_getCurrentAccount'
 

@@ -4,7 +4,7 @@
  */
 
 import {Channel} from '@thi.ng/csp'
-import {isFunction} from '@cfxjs/checks'
+import {isFunction} from '@fluent-wallet/checks'
 
 export * from '@thi.ng/csp'
 

@@ -1,1 +1,1 @@
-# @cfxjs/shorten-address
+# @fluent-wallet/shorten-address

@@ -12,7 +12,7 @@ import {
   base32BuiltinAddress,
   base32ContractAddress,
   base32UserAddress,
-} from '@cfxjs/spec'
+} from '@fluent-wallet/spec'
 
 describe('wallet_generateAddress', function () {
   describe('main', function () {

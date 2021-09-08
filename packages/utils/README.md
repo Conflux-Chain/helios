@@ -1,1 +1,1 @@
-# @cfxjs/utils
+# @fluent-wallet/utils

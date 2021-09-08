@@ -30,7 +30,10 @@ module.exports = {
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: [
-    ...['@cfxjs/jest-helper/setup-after-env.js', 'jest-webextension-mock'],
+    ...[
+      '@fluent-wallet/jest-helper/setup-after-env.js',
+      'jest-webextension-mock',
+    ],
   ],
 
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode

@@ -1,1 +1,1 @@
-# @cfxjs/personal_sign
+# @fluent-wallet/personal_sign

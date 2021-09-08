@@ -1,4 +1,4 @@
-import {map, password, stringp} from '@cfxjs/spec'
+import {map, password, stringp} from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
 
 export const NAME = 'wallet_importAll'

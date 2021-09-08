@@ -1,6 +1,6 @@
 module.exports = function (/* context, options */) {
   return {
-    name: '@cfxjs/docusaurus-plugin',
+    name: '@fluent-wallet/docusaurus-plugin',
     configureWebpack() {
       return {
         module: {rules: [{test: /\.m?js$/, resolve: {fullySpecified: false}}]},

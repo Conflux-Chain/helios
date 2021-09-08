@@ -1,1 +1,1 @@
-# @cfxjs/wallet_import-mnemonic
+# @fluent-wallet/wallet_import-mnemonic

@@ -1,4 +1,4 @@
-import {map, hdPath, stringp} from '@cfxjs/spec'
+import {map, hdPath, stringp} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_addHdPath'
 export const schemas = {

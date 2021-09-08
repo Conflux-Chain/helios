@@ -1,5 +1,5 @@
-import {rpcStream} from '@cfxjs/extension-runtime/rpc-stream.js'
-import {initProvider} from '@cfxjs/provider-api'
+import {rpcStream} from '@fluent-wallet/extension-runtime/rpc-stream.js'
+import {initProvider} from '@fluent-wallet/provider-api'
 
 let PROVIDER = null
 

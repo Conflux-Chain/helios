@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/site-metadata",
+  "name": "@fluent-wallet/site-metadata",
   "type": "module",
   "main": "index.js",
   "version": "0.0.1"

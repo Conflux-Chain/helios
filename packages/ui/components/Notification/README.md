@@ -1,1 +1,1 @@
-# @cfxjs/component-notification
+# @fluent-wallet/component-notification

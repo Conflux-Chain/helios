@@ -1,4 +1,4 @@
-import {or, cat, map, chainId, dbid} from '@cfxjs/spec'
+import {or, cat, map, chainId, dbid} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_switchEthereumChain'
 

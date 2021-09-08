@@ -1,1 +1,1 @@
-# @cfxjs/fectch-rpc-middleware
+# @fluent-wallet/fectch-rpc-middleware

@@ -1,4 +1,4 @@
-import {epochTag, zeroOrOne, or, nul} from '@cfxjs/spec'
+import {epochTag, zeroOrOne, or, nul} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_epochNumber'
 

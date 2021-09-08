@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/compose",
+  "name": "@fluent-wallet/compose",
   "type": "module",
   "version": "0.0.3",
   "main": "index.js",

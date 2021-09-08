@@ -1,1 +1,1 @@
-# @cfxjs/wallet_get-current-network
+# @fluent-wallet/wallet_get-current-network

@@ -1,5 +1,5 @@
 import {defMiddleware} from '../middleware.js'
-import {validate, explain} from '@cfxjs/spec'
+import {validate, explain} from '@fluent-wallet/spec'
 
 export default defMiddleware(({tx: {map}}) => ({
   id: 'validateRpcParams',

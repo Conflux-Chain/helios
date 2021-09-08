@@ -1,10 +1,10 @@
 {
-  "name": "@cfxjs/wallet_update-account",
+  "name": "@fluent-wallet/wallet_update-account",
   "type": "module",
   "main": "index.js",
   "version": "0.0.4",
   "dependencies": {
-    "@cfxjs/checks": "workspace:packages/checks",
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/checks": "workspace:packages/checks",
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

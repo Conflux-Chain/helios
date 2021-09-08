@@ -1,1 +1,1 @@
-# @cfxjs/test-helpers
+# @fluent-wallet/test-helpers

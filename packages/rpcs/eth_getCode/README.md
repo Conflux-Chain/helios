@@ -1,1 +1,1 @@
-# @cfxjs/eth_get-code
+# @fluent-wallet/eth_get-code

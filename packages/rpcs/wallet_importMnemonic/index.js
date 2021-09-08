@@ -1,4 +1,11 @@
-import {mnemonic, map, password, truep, maybe, nickname} from '@cfxjs/spec'
+import {
+  mnemonic,
+  map,
+  password,
+  truep,
+  maybe,
+  nickname,
+} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_importMnemonic'
 

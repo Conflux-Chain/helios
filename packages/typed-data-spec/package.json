@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/typed-data-spec",
+  "name": "@fluent-wallet/typed-data-spec",
   "type": "module",
   "main": "index.js",
   "version": "0.0.1"

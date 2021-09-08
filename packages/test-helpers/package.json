@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/test-helpers",
+  "name": "@fluent-wallet/test-helpers",
   "main": "index.js",
   "version": "0.0.4",
   "dependencies": {

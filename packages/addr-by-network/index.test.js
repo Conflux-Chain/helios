@@ -3,7 +3,7 @@ import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, before
 import addrByNetwork from './index.js'
 
 let address
-describe('@cfxjs/addr-by-network', function () {
+describe('@fluent-wallet/addr-by-network', function () {
   test('eth hex address', () => {
     address = '0x208b86e65753bba8f557ac2a8a79ba6536ab05e2'
     expect(

@@ -1,1 +1,1 @@
-# @cfxjs/component-dropdown
+# @fluent-wallet/component-dropdown

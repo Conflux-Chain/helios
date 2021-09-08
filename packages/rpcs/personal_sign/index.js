@@ -7,9 +7,9 @@ import {
   base32UserAddress,
   dbid,
   validate,
-} from '@cfxjs/spec'
-import {personalSign} from '@cfxjs/signature'
-import {decode} from '@cfxjs/base32-address'
+} from '@fluent-wallet/spec'
+import {personalSign} from '@fluent-wallet/signature'
+import {decode} from '@fluent-wallet/base32-address'
 
 export const NAME = 'personal_sign'
 

@@ -1,1 +1,1 @@
-# @cfxjs/cfx_sign-typed-data
+# @fluent-wallet/cfx_sign-typed-data

@@ -1,5 +1,5 @@
-import {or, cat, base32UserAddress, ethHexAddress} from '@cfxjs/spec'
-import addrByNet from '@cfxjs/addr-by-network'
+import {or, cat, base32UserAddress, ethHexAddress} from '@fluent-wallet/spec'
+import addrByNet from '@fluent-wallet/addr-by-network'
 
 export const NAME = 'wallet_getBalance'
 

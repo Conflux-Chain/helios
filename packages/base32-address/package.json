@@ -1,11 +1,11 @@
 {
-  "name": "@cfxjs/base32-address",
+  "name": "@fluent-wallet/base32-address",
   "type": "module",
   "main": "index.js",
   "version": "0.1.0",
   "dependencies": {
-    "@cfxjs/account": "workspace:packages/account",
-    "@cfxjs/utils": "workspace:packages/utils",
+    "@fluent-wallet/account": "workspace:packages/account",
+    "@fluent-wallet/utils": "workspace:packages/utils",
     "js-conflux-sdk": "1.7.0"
   }
 }

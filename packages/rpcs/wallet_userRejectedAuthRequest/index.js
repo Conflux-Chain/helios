@@ -1,4 +1,4 @@
-import {dbid, map} from '@cfxjs/spec'
+import {dbid, map} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_userRejectedAuthRequest'
 
