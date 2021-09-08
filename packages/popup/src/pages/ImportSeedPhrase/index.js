@@ -1,10 +1,9 @@
 import {useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {TitleNav} from '../../components/index'
+import {TitleNav, CompWithLabel} from '../../components'
 import Button from '@cfxjs/component-button'
 import Input from '@cfxjs/component-input'
-import {CompWithLabel} from '../../components'
 import {useRPC} from '@cfxjs/use-rpc'
 import {request} from '../../utils'
 import {GET_HD_ACCOUNT_GROUP, GET_ALL_ACCOUNT_GROUP} from '../../constants'
@@ -40,58 +39,56 @@ function ImportSeedPhrase() {
     setKeygenNamePlaceholder(`Seed-${keygenGroup.length + 1}`)
   }, [keygenGroup])
 
-  const walletValidateSeedPhrase = keygen => {
-    setKeygenErrorMessage(keygen === '' ? 'Required!' : '')
-  }
   const onChangeName = e => {
     setName(e.target.value)
   }
   const onChangeKeygen = e => {
     setKeygen(e.target.value)
-    walletValidateSeedPhrase(e.target.value)
   }
   const dispatchMutate = () => {
     mutate([...GET_ALL_ACCOUNT_GROUP])
     mutate([...GET_HD_ACCOUNT_GROUP])
   }
 
-  const importAccount = async () => {
-    if (
-      !creatingAccount &&
-      name.length <= 20 &&
-      !keygenErrorMessage &&
-      keygen
-    ) {
+  const onCreate = () => {
+    if (!keygen) {
+      // TODO: replace error msg
+      return setKeygenErrorMessage('Required')
+    }
+
+    if (!creatingAccount) {
       setCreatingAccount(true)
-      request('wallet_importMnemonic', {
-        password: createdPassword,
-        nickname: name || keygenNamePlaceholder,
+      request('wallet_validateMnemonic', {
         mnemonic: keygen,
-      }).then(({error, result}) => {
+      }).then(({result}) => {
+        if (result?.valid) {
+          return request('wallet_importMnemonic', {
+            password: createdPassword,
+            nickname: name || keygenNamePlaceholder,
+            mnemonic: keygen,
+          }).then(({error, result}) => {
+            setCreatingAccount(false)
+            if (result) {
+              dispatchMutate()
+              history.push('/')
+            }
+            if (error) {
+              setKeygenErrorMessage(error.message.split('\n')[0])
+            }
+          })
+        }
+        // TODO: replace error msg
+        setKeygenErrorMessage('Invalid or inner error!')
         setCreatingAccount(false)
-        if (result) {
-          dispatchMutate()
-          history.push('/')
-        }
-        if (error?.message) {
-          setKeygenErrorMessage(error.message.split('\n')[0])
-        }
       })
     }
-  }
-
-  const onCreate = () => {
-    walletValidateSeedPhrase(keygen)
-    importAccount()
   }
 
   return (
     <div className="bg-bg h-full flex flex-col">
       <TitleNav title={t('seedImport')} />
       <form
-        onSubmit={e => {
-          e.preventDefault()
-        }}
+        onSubmit={event => event.preventDefault()}
         className="flex flex-1 px-3 flex-col justify-between"
       >
         <section>
@@ -121,7 +118,7 @@ function ImportSeedPhrase() {
           <Button
             className="w-70  mx-auto"
             onClick={onCreate}
-            disabled={(!name && !keygenNamePlaceholder) || !!keygenErrorMessage}
+            disabled={!name && !keygenNamePlaceholder}
           >
             {t('import')}
           </Button>

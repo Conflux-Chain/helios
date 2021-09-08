@@ -1,10 +1,9 @@
 import {useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {TitleNav} from '../../components'
+import {TitleNav, CompWithLabel} from '../../components'
 import Button from '@cfxjs/component-button'
 import Input from '@cfxjs/component-input'
-import {CompWithLabel} from '../../components'
 import {useRPC} from '@cfxjs/use-rpc'
 import {request} from '../../utils'
 import {GET_ALL_ACCOUNT_GROUP, GET_PK_ACCOUNT_GROUP} from '../../constants'
@@ -51,17 +50,17 @@ function ImportPrivateKey() {
     mutate([...GET_PK_ACCOUNT_GROUP])
   }
   const onCreate = async () => {
-    if (
-      !creatingAccount &&
-      name.length <= 20 &&
-      !keygenErrorMessage &&
-      keygen
-    ) {
+    if (!keygen) {
+      // TODO: replace error msg
+      return setKeygenErrorMessage('Required')
+    }
+
+    if (!creatingAccount) {
       setCreatingAccount(true)
       request('wallet_validatePrivateKey', {privateKey: keygen}).then(
         ({result}) => {
           if (result?.valid) {
-            request('wallet_importPrivateKey', {
+            return request('wallet_importPrivateKey', {
               password: createdPassword,
               nickname: name || keygenNamePlaceholder,
               privateKey: keygen,
@@ -71,15 +70,14 @@ function ImportPrivateKey() {
                 dispatchMutate()
                 history.push('/')
               }
-              if (error?.message) {
+              if (error) {
                 setKeygenErrorMessage(error.message.split('\n')[0])
               }
             })
-          } else {
-            // TODO: replace error msg
-            setKeygenErrorMessage('输入有误!')
-            setCreatingAccount(false)
           }
+          // TODO: replace error msg
+          setKeygenErrorMessage('Invalid or inner error!')
+          setCreatingAccount(false)
         },
       )
     }
@@ -89,9 +87,7 @@ function ImportPrivateKey() {
     <div className="bg-bg h-full flex flex-col">
       <TitleNav title={t(`pKeyImport`)} />
       <form
-        onSubmit={e => {
-          e.preventDefault()
-        }}
+        onSubmit={event => event.preventDefault()}
         className="flex flex-1 px-3 flex-col justify-between"
       >
         <section>

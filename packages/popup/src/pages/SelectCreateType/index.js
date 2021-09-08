@@ -1,6 +1,6 @@
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {TitleNav} from '../../components/index'
+import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
 
 function Tag() {
@@ -14,7 +14,7 @@ function Tag() {
     </span>
   )
 }
-function WithCurrentSeed() {
+function SelectCreateType() {
   const {t} = useTranslation()
   const history = useHistory()
   return (
@@ -65,4 +65,4 @@ function WithCurrentSeed() {
   )
 }
 
-export default WithCurrentSeed
+export default SelectCreateType

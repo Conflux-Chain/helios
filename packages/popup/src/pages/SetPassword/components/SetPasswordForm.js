@@ -1,14 +1,10 @@
 import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {PASSWORD_REG_EXP} from '../../../constants'
 import {PasswordInput} from '../../../components'
 import useGlobalStore from '../../../stores'
 import Button from '@cfxjs/component-button'
-
-const validate = value => {
-  return PASSWORD_REG_EXP.test(value)
-}
+import {validatePasswordReg} from '../../../utils'
 
 function SetPasswordForm() {
   const history = useHistory()
@@ -21,8 +17,8 @@ function SetPasswordForm() {
   const [confirmErrorMessage, setConfirmErrorMessage] = useState('')
 
   // TODO: Replace err msg
-  const validateWhenInputPassword = value => {
-    if (validate(value)) {
+  const validatePassword = value => {
+    if (validatePasswordReg(value)) {
       setConfirmErrorMessage(
         value !== confirmPassword ? '输入的密码不一致' : '',
       )
@@ -31,42 +27,43 @@ function SetPasswordForm() {
     setErrorMessage('something wrong')
   }
   // TODO: Replace err msg
-  const validateWhenInputConfirmPassword = value => {
+  const validateConfirmPassword = value => {
     if (password === value) {
       return setConfirmErrorMessage('')
     }
     setConfirmErrorMessage('输入的密码不一致')
   }
 
-  const handleSubmit = event => {
-    event.preventDefault()
-    validateWhenInputPassword(password)
-    validateWhenInputConfirmPassword(confirmPassword)
-  }
-
-  const create = () => {
-    if (!errorMessage && !confirmErrorMessage && password && confirmPassword) {
+  const onCreate = () => {
+    if (password && confirmPassword) {
       setCreatedPassword(confirmPassword)
       history.push('/select-create-type')
     }
   }
+
+  const onSubmit = event => {
+    event.preventDefault()
+    validatePassword(password)
+    validatePassword(confirmPassword)
+  }
+
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
       className="bg-white rounded px-4 pt-8  h-full box-border mb-4 flex flex-col justify-between"
     >
       <section>
         <legend className="text-gray-40 text-sm mb-3">{t('setPWD')}</legend>
         <PasswordInput
-          setInputErrorMessage={validateWhenInputPassword}
+          validateInputValue={validatePassword}
           setInputValue={setPassword}
           errorMessage={errorMessage}
           value={password}
         />
-        {errorMessage ? null : <em className="m-0 h-6 block" />}
+        {errorMessage ? null : <em className="m-0 h-6 inline-block" />}
 
         <PasswordInput
-          setInputErrorMessage={validateWhenInputConfirmPassword}
+          validateInputValue={validateConfirmPassword}
           setInputValue={setConfirmPassword}
           errorMessage={confirmErrorMessage}
           value={confirmPassword}
@@ -80,7 +77,7 @@ function SetPasswordForm() {
         <Button
           className="w-70 mt-4 mx-auto"
           disabled={!!errorMessage || !!confirmErrorMessage}
-          onClick={create}
+          onClick={onCreate}
         >
           {t('create')}
         </Button>

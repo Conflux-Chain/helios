@@ -1,3 +1,5 @@
+import {PASSWORD_REG_EXP} from '../constants'
+
 const globalThis = window ?? global
 
 export const request = (...args) => {
@@ -31,4 +33,8 @@ export function shuffle(arr) {
     ;[arrAdd[i], arrAdd[random]] = [arrAdd[random], arrAdd[i]]
   }
   return arrAdd
+}
+
+export function validatePasswordReg(value) {
+  return PASSWORD_REG_EXP.test(value)
 }

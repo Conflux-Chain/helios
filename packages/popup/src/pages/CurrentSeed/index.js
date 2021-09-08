@@ -70,6 +70,7 @@ function CurrentSeed() {
     )
   }
   const onCreate = () => {
+    if (creatingAccount) return
     setCreatingAccount(true)
     return request('wallet_createAccount', {
       accountGroupId: hdGroup[selectedGroupIdx].eid,
@@ -129,7 +130,7 @@ function CurrentSeed() {
               !(
                 (accountName || accountNamePlaceholder) &&
                 hdGroup[selectedGroupIdx]
-              ) || creatingAccount
+              )
             }
           >
             {t('create')}
