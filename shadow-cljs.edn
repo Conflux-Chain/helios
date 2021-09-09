@@ -150,7 +150,17 @@
                                     blockRef cfxjs.spec.core/export-block-ref
                                     undefine cfxjs.spec.core/export-js-undefined
                                     url cfxjs.spec.core/export-url
-                                    dbid cfxjs.spec.core/export-dbid}
+                                    dbid cfxjs.spec.core/export-dbid
+
+                                    Byte cfxjs.spec.core/export-byte
+                                    Bytes cfxjs.spec.core/export-bytes
+                                    Bytes32 cfxjs.spec.core/export-bytes32
+                                    Bytes256 cfxjs.spec.core/export-bytes256
+                                    Bytes65 cfxjs.spec.core/export-bytes65
+                                    Uint cfxjs.spec.core/export-uint
+                                    Uint256 cfxjs.spec.core/export-uint256
+                                    Hash32 cfxjs.spec.core/export-hash32
+                                    }
                           :depends-on #{:shared}}
                    :gen {:exports {gen cfxjs.spec.gen/gen}
                          :depends-on #{:shared}}
