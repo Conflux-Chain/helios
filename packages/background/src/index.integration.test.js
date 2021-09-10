@@ -1795,6 +1795,9 @@ describe('integration test', function () {
     describe('wallet_getCurrentViewingApp', function () {
       test.todo('wallet_getCurrentViewingApp')
     })
+    describe('wallet_deleteApp', function () {
+      test.todo('wallet_deleteApp')
+    })
     describe('cfx_gasPrice', function () {
       test('cfx_gasPrice', async () => {
         res = await request({method: 'cfx_gasPrice'})

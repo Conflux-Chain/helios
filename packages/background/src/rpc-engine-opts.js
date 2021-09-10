@@ -3,7 +3,6 @@
  * @name rpc-engine-opts.js
  */
 
-import * as walletGetCurrentViewingApp from '@fluent-wallet/wallet_get-current-viewing-app'
 import * as cfxAccounts from '@fluent-wallet/cfx_accounts'
 import * as cfxChainId from '@fluent-wallet/cfx_chain-id'
 import * as cfxEpochNumber from '@fluent-wallet/cfx_epoch-number'
@@ -26,13 +25,15 @@ import * as ethGetTransactionCount from '@fluent-wallet/eth_get-transaction-coun
 import * as ethRequestAccounts from '@fluent-wallet/eth_request-accounts'
 import * as ethTypedSignV4 from '@fluent-wallet/eth_sign-typed-data_v4'
 import {
-  IS_DEV_MODE,
-  IS_TEST_MODE,
-  IS_PROD_MODE,
   IS_CI,
+  IS_DEV_MODE,
+  IS_PROD_MODE,
+  IS_TEST_MODE,
 } from '@fluent-wallet/inner-utils'
 import * as netVersion from '@fluent-wallet/net_version'
 import * as personalSign from '@fluent-wallet/personal_sign'
+import * as walletAddConfluxChain from '@fluent-wallet/wallet_add-conflux-chain'
+import * as walletAddEthereumChain from '@fluent-wallet/wallet_add-ethereum-chain'
 import * as walletAddHdPath from '@fluent-wallet/wallet_add-hd-path'
 import * as walletAddNetwork from '@fluent-wallet/wallet_add-network'
 import * as walletAddPendingUserAuthRequest from '@fluent-wallet/wallet_add-pending-user-auth-request'
@@ -40,6 +41,7 @@ import * as walletAddVault from '@fluent-wallet/wallet_add-vault'
 import * as walletCreateAccount from '@fluent-wallet/wallet_create-account'
 import * as walletCreateAddress from '@fluent-wallet/wallet_create-address'
 import * as walletDeleteAccountGroup from '@fluent-wallet/wallet_delete-account-group'
+import * as walletDeleteApp from '@fluent-wallet/wallet_delete-app'
 import * as walletDeleteNetwork from '@fluent-wallet/wallet_delete-network'
 import * as walletDetectNetworkType from '@fluent-wallet/wallet_detect-network-type'
 import * as walletDiscoverAccounts from '@fluent-wallet/wallet_discover-accounts'
@@ -52,6 +54,8 @@ import * as walletGetAccountGroup from '@fluent-wallet/wallet_get-account-group'
 import * as walletGetAccountGroupVaultValue from '@fluent-wallet/wallet_get-account-group-vault-value'
 import * as walletGetAddressPrivateKey from '@fluent-wallet/wallet_get-address-private-key'
 import * as walletGetBalance from '@fluent-wallet/wallet_get-balance'
+import * as walletGetCurrentViewingApp from '@fluent-wallet/wallet_get-current-viewing-app'
+import * as walletGetNetwork from '@fluent-wallet/wallet_get-network'
 import * as walletGetNextNonce from '@fluent-wallet/wallet_get-next-nonce'
 import * as walletGetPendingAuthRequest from '@fluent-wallet/wallet_get-pending-auth-request'
 import * as walletGetPermissions from '@fluent-wallet/wallet_get-permissions'
@@ -68,6 +72,8 @@ import * as walletSetAppCurrentAccount from '@fluent-wallet/wallet_set-app-curre
 import * as walletSetAppCurrentNetwork from '@fluent-wallet/wallet_set-app-current-network'
 import * as walletSetCurrentAccount from '@fluent-wallet/wallet_set-current-account'
 import * as walletSetCurrentNetwork from '@fluent-wallet/wallet_set-current-network'
+import * as walletSwitchConfluxChain from '@fluent-wallet/wallet_switch-conflux-chain'
+import * as walletSwitchEthereumChain from '@fluent-wallet/wallet_switch-ethereum-chain'
 import * as walletUnlock from '@fluent-wallet/wallet_unlock'
 import * as walletUpdateAccount from '@fluent-wallet/wallet_update-account'
 import * as walletUpdateAccountGroup from '@fluent-wallet/wallet_update-account-group'
@@ -77,11 +83,6 @@ import * as walletValidateAppPermissions from '@fluent-wallet/wallet_validate-ap
 import * as walletValidateMnemonic from '@fluent-wallet/wallet_validate-mnemonic'
 import * as walletValidatePassword from '@fluent-wallet/wallet_validate-password'
 import * as walletValidatePrivateKey from '@fluent-wallet/wallet_validate-private-key'
-import * as walletAddEthereumChain from '@fluent-wallet/wallet_add-ethereum-chain'
-import * as walletAddConfluxChain from '@fluent-wallet/wallet_add-conflux-chain'
-import * as walletSwitchEthereumChain from '@fluent-wallet/wallet_switch-ethereum-chain'
-import * as walletSwitchConfluxChain from '@fluent-wallet/wallet_switch-conflux-chain'
-import * as walletGetNetwork from '@fluent-wallet/wallet_get-network'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -143,6 +144,7 @@ export const rpcEngineOpts = {
     walletGetPendingAuthRequest,
     walletValidateAppPermissions,
     walletGetPermissions,
+    walletDeleteApp,
 
     // cfx
     cfxEpochNumber,
