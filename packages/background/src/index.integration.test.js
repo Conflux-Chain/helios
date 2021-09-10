@@ -258,6 +258,9 @@ describe('integration test', function () {
         expect(db.getNetwork().length).toBe(3)
       })
     })
+    describe('wallet_getNetwork', function () {
+      test.todo('wallet_getNetwork')
+    })
     describe('wallet_addNetwork', function () {
       test('add cfx network omit hdPath', async () => {
         await request({

@@ -80,6 +80,7 @@ import * as walletAddEthereumChain from '@fluent-wallet/wallet_add-ethereum-chai
 import * as walletAddConfluxChain from '@fluent-wallet/wallet_add-conflux-chain'
 import * as walletSwitchEthereumChain from '@fluent-wallet/wallet_switch-ethereum-chain'
 import * as walletSwitchConfluxChain from '@fluent-wallet/wallet_switch-conflux-chain'
+import * as walletGetNetwork from '@fluent-wallet/wallet_get-network'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -117,6 +118,7 @@ export const rpcEngineOpts = {
     walletDeleteAccountGroup,
     walletAddHdPath,
     walletAddNetwork,
+    walletGetNetwork,
     walletDeleteNetwork,
     walletDetectNetworkType,
     walletGetAddressPrivateKey,

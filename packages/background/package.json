@@ -55,6 +55,7 @@
     "@fluent-wallet/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue",
     "@fluent-wallet/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey",
     "@fluent-wallet/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance",
+    "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork",
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce",
     "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest",
     "@fluent-wallet/wallet_get-permissions": "workspace:packages/rpcs/wallet_getPermissions",
