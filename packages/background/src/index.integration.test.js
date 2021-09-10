@@ -1792,6 +1792,9 @@ describe('integration test', function () {
         expect(db.getApp()[0].currentAccount.eid).toBe(a2.eid)
       })
     })
+    describe('wallet_getCurrentViewingApp', function () {
+      test.todo('wallet_getCurrentViewingApp')
+    })
     describe('cfx_gasPrice', function () {
       test('cfx_gasPrice', async () => {
         res = await request({method: 'cfx_gasPrice'})

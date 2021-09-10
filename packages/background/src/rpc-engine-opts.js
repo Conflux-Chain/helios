@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletGetCurrentViewingApp from '@fluent-wallet/wallet_get-current-viewing-app'
 import * as cfxAccounts from '@fluent-wallet/cfx_accounts'
 import * as cfxChainId from '@fluent-wallet/cfx_chain-id'
 import * as cfxEpochNumber from '@fluent-wallet/cfx_epoch-number'
@@ -127,6 +128,7 @@ export const rpcEngineOpts = {
     walletSetAppCurrentNetwork,
     walletSetCurrentAccount,
     walletSetCurrentNetwork,
+    walletGetCurrentViewingApp,
 
     walletGetNextNonce,
     walletGetBalance,

@@ -1,5 +1,8 @@
 releases:
+  "@fluent-wallet/wallet_get-current-viewing-app": patch
   "@fluent-wallet/wallet_get-network": patch
+  "@fluent-wallet/webextension": patch
 
 declined:
   - helios-background
+  - "@fluent-wallet/wallet_request-unlock-ui"
