@@ -15,7 +15,7 @@ export const schemas = {
     {closed: true},
     ['nickname', {optional: true}, nickname],
     ['mnemonic', mnemonic],
-    ['password', password],
+    ['password', {optional: true}, password],
     ['waitTillFinish', {optional: true}, [maybe, truep]],
     [
       'cfxOnly',
@@ -34,7 +34,6 @@ export const schemas = {
 }
 
 export const permissions = {
-  locked: true,
   methods: ['wallet_addVault'],
   external: ['popup'],
 }
