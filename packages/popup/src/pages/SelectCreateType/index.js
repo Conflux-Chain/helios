@@ -6,10 +6,7 @@ import {CreateTypeItem} from './components'
 function Tag() {
   const {t} = useTranslation()
   return (
-    <span
-      className="px-1 ml-1 h-4 text-white flex items-center rounded-sm"
-      style={{backgroundColor: '#32E1A9', fontSize: '10px'}}
-    >
+    <span className="px-1 ml-1 h-4 text-white flex items-center rounded-sm bg-[#80ac9e] text-2xs">
       {t('faster')}
     </span>
   )
