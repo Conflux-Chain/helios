@@ -25,7 +25,7 @@ function App() {
   const [accountAvailability, setAccountAvailability] = useState(false)
   const [lockStatus, setLockStatus] = useState(true)
 
-  const {data: accountData, error: accountError} = useRPC([
+  const {data: accountGroups, error: accountError} = useRPC([
     ...GET_ALL_ACCOUNT_GROUP,
   ])
   const {data: lockData, error: lockError} = useRPC([...GET_WALLET_STATUS])
@@ -36,12 +36,12 @@ function App() {
       setErrorStatus(true)
       return
     }
-    if (accountData !== undefined && lockData !== undefined) {
-      setAccountAvailability(!!accountData.length)
+    if (accountGroups !== undefined && lockData !== undefined) {
+      setAccountAvailability(!!accountGroups.length)
       setLockStatus(lockData)
       setLoadingStatus(false)
     }
-  }, [accountData, accountError, lockData, lockError])
+  }, [accountGroups, accountError, lockData, lockError])
 
   return (
     <Suspense

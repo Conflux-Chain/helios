@@ -106,6 +106,29 @@ module.exports = {
       maxWidth: {
         60: '15rem',
       },
+      keyframes: {
+        'slide-up': {
+          '0%': {
+            transform: 'translateY(100%)',
+          },
+          '100%': {
+            transform: 'translateY(0%)',
+          },
+        },
+        'slide-down': {
+          '0%': {
+            transform: 'translateY(0%)',
+          },
+          '100%': {
+            transform: 'translateY(100%)',
+            display: 'none',
+          },
+        },
+      },
+      animation: {
+        'slide-up': 'slide-up 0.3s ease',
+        'slide-down': 'slide-down 0.3s linear forwards',
+      },
     },
   },
   plugins: [],

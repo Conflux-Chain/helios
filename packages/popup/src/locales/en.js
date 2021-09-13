@@ -59,6 +59,9 @@ const en = {
     confirmSeedContent:
       'Please click the Seed Phase in order to ensure correct backup.',
     confirmSeedError: 'Mistakes in Seed Phrase.',
+    // set account
+    myAccounts: 'My Accounts',
+    addAccount: 'Add Account',
   },
 }
 
