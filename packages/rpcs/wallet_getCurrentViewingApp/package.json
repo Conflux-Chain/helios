@@ -1,0 +1,11 @@
+{
+  "name": "@fluent-wallet/wallet_get-current-viewing-app",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.0.1",
+  "version": "0.0.2",
+  "dependencies": {
+    "@fluent-wallet/spec": "workspace:packages/spec",
+    "@fluent-wallet/webextension": "workspace:packages/webextension"
+  }
+}

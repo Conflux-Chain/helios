@@ -8,12 +8,11 @@ export const schemas = {
     {closed: true},
     ['nickname', {optional: true}, nickname],
     ['privateKey', privateKey],
-    ['password', password],
+    ['password', {optional: true}, password],
   ],
 }
 
 export const permissions = {
-  locked: true,
   methods: ['wallet_addVault'],
   external: ['popup'],
 }

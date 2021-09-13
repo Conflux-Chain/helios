@@ -59,6 +59,7 @@ export const schemas = {
 
 export const permissions = {
   methods: [
+    'wallet_unlock',
     'wallet_discoverAccounts',
     'wallet_getBalance',
     'wallet_getNextNonce',
@@ -75,6 +76,8 @@ export const permissions = {
     'getAccountGroup',
     'getNetwork',
     'getOneAccountByGroupAndIndex',
+    'getLocked',
+    'getPassword',
   ],
 }
 
@@ -215,11 +218,34 @@ const processAddress = address => {
 
 export const main = async arg => {
   const {
-    db: {createVault, getVault, getAccountGroup, getVaultById},
-    rpcs: {wallet_validatePassword, wallet_deleteAccountGroup},
-    params: {password, mnemonic, privateKey, address, cfxOnly, force},
+    db: {
+      createVault,
+      getVault,
+      getAccountGroup,
+      getVaultById,
+      getPassword,
+      getLocked,
+    },
+    rpcs: {wallet_validatePassword, wallet_deleteAccountGroup, wallet_unlock},
+    params: {
+      password: optionalPassword,
+      mnemonic,
+      privateKey,
+      address,
+      cfxOnly,
+      force,
+    },
     Err: {InvalidParams},
   } = arg
+  const isFirstGroup = !getAccountGroup()?.length
+  const isLocked = getLocked()
+  let password = optionalPassword
+
+  if (isLocked && isFirstGroup && !password)
+    throw InvalidParams('Invalid password')
+
+  if (!isFirstGroup && !password) password = getPassword()
+
   if (!(await wallet_validatePassword({password})))
     throw InvalidParams('Invalid password')
 
@@ -284,6 +310,8 @@ export const main = async arg => {
 
   const vaultId = createVault(vault)
   const groupId = newAccountGroup({...arg, vaultId})
+
+  if (isFirstGroup) await wallet_unlock({password})
 
   return groupId
 }

@@ -258,6 +258,9 @@ describe('integration test', function () {
         expect(db.getNetwork().length).toBe(3)
       })
     })
+    describe('wallet_getNetwork', function () {
+      test.todo('wallet_getNetwork')
+    })
     describe('wallet_addNetwork', function () {
       test('add cfx network omit hdPath', async () => {
         await request({
@@ -1788,6 +1791,12 @@ describe('integration test', function () {
 
         expect(db.getApp()[0].currentAccount.eid).toBe(a2.eid)
       })
+    })
+    describe('wallet_getCurrentViewingApp', function () {
+      test.todo('wallet_getCurrentViewingApp')
+    })
+    describe('wallet_deleteApp', function () {
+      test.todo('wallet_deleteApp')
     })
     describe('cfx_gasPrice', function () {
       test('cfx_gasPrice', async () => {

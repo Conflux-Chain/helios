@@ -3355,16 +3355,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/fectch-rpc-middleware@workspace:packages/fectch-rpc-middleware":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/fectch-rpc-middleware@workspace:packages/fectch-rpc-middleware"
-  dependencies:
-    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
-    "@fluent-wallet/rpc-engine": "workspace:packages/rpc-engine"
-    "@thi.ng/rstream": 6.0.20
-  languageName: unknown
-  linkType: soft
-
 "@fluent-wallet/fetch-rpc@workspace:packages/fetch-rpc":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/fetch-rpc@workspace:packages/fetch-rpc"
@@ -3687,6 +3677,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_delete-app@workspace:packages/rpcs/wallet_deleteApp":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_delete-app@workspace:packages/rpcs/wallet_deleteApp"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_delete-network@workspace:packages/rpcs/wallet_deleteNetwork":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_delete-network@workspace:packages/rpcs/wallet_deleteNetwork"
@@ -3817,6 +3815,23 @@ __metadata:
 "@fluent-wallet/wallet_get-current-network@workspace:packages/rpcs/wallet_getCurrentNetwork":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-current-network@workspace:packages/rpcs/wallet_getCurrentNetwork"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-current-viewing-app@workspace:packages/rpcs/wallet_getCurrentViewingApp":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-current-viewing-app@workspace:packages/rpcs/wallet_getCurrentViewingApp"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/webextension": "workspace:packages/webextension"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-network@workspace:packages/rpcs/wallet_getNetwork":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-network@workspace:packages/rpcs/wallet_getNetwork"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
@@ -16526,6 +16541,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount"
     "@fluent-wallet/wallet_create-address": "workspace:packages/rpcs/wallet_createAddress"
     "@fluent-wallet/wallet_delete-account-group": "workspace:packages/rpcs/wallet_deleteAccountGroup"
+    "@fluent-wallet/wallet_delete-app": "workspace:packages/rpcs/wallet_deleteApp"
     "@fluent-wallet/wallet_delete-network": "workspace:packages/rpcs/wallet_deleteNetwork"
     "@fluent-wallet/wallet_detect-network-type": "workspace:packages/rpcs/wallet_detectNetworkType"
     "@fluent-wallet/wallet_discover-accounts": "workspace:packages/rpcs/wallet_discoverAccounts"
@@ -16538,6 +16554,8 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
     "@fluent-wallet/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey"
     "@fluent-wallet/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
+    "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
+    "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
     "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest"
     "@fluent-wallet/wallet_get-permissions": "workspace:packages/rpcs/wallet_getPermissions"
