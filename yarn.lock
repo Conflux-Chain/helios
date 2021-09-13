@@ -3355,16 +3355,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/fectch-rpc-middleware@workspace:packages/fectch-rpc-middleware":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/fectch-rpc-middleware@workspace:packages/fectch-rpc-middleware"
-  dependencies:
-    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
-    "@fluent-wallet/rpc-engine": "workspace:packages/rpc-engine"
-    "@thi.ng/rstream": 6.0.20
-  languageName: unknown
-  linkType: soft
-
 "@fluent-wallet/fetch-rpc@workspace:packages/fetch-rpc":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/fetch-rpc@workspace:packages/fetch-rpc"

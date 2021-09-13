@@ -1,8 +1,0 @@
-{
-  "name": "@fluent-wallet/fectch-rpc-middleware",
-  "dependencies": {
-    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc",
-    "@fluent-wallet/rpc-engine": "workspace:packages/rpc-engine",
-    "@thi.ng/rstream": "6.0.20"
-  }
-}
