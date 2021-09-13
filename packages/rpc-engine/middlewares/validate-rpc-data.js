@@ -48,9 +48,25 @@ function validateExternalMethod({MODE: {isProd}, req, rpcStore}) {
   }
 }
 
+const ImportMethods = [
+  'wallet_importMnemonic',
+  'wallet_importAddress',
+  'wallet_importPrivateKey',
+  'wallet_addVault',
+]
 function validateLockState({req, rpcStore, db}) {
+  const allowLocked = rpcStore[req.method].permissions.locked
+  // allow import methods when locked only if has 0 account group
   if (
-    !rpcStore[req.method].permissions.locked &&
+    !allowLocked &&
+    db.getLocked() &&
+    ImportMethods.includes(req.method) &&
+    !db.getAccountGroup()?.length
+  )
+    return
+
+  if (
+    !allowLocked &&
     // for methods allowed to be called from inpage when unlocked
     // popup the unlock ui first then call the method if user unlock the wallet
     !rpcStore[req.method].permissions.external.includes('inpage') &&

@@ -1,5 +1,4 @@
 import {nul, or, and, empty, arrp} from '@fluent-wallet/spec'
-import {tab} from '@fluent-wallet/webextension'
 
 export const NAME = 'wallet_getCurrentViewingApp'
 
@@ -16,6 +15,7 @@ export const permissions = {
 export const main = async ({db: {getAppBySite, getSiteByOrigin}}) => {
   let t
   try {
+    const {tab} = await import('@fluent-wallet/webextension')
     await tab.getCurrent()
     if (!t?.url) return null
   } catch (err) {

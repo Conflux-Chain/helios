@@ -14,13 +14,12 @@ export const schemas = {
     map,
     {closed: true},
     ['nickname', {optional: true}, nickname],
-    ['password', password],
+    ['password', {optional: true}, password],
     ['address', [or, ethHexAddress, base32UserAddress]],
   ],
 }
 
 export const permissions = {
-  locked: true,
   methods: ['wallet_addVault'],
   external: ['popup'],
 }
