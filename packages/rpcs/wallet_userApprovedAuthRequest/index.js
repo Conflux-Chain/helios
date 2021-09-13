@@ -1,4 +1,4 @@
-import {anyp, dbid, map} from '@cfxjs/spec'
+import {anyp, dbid, map} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_userApprovedAuthRequest'
 

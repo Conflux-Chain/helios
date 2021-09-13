@@ -121,5 +121,5 @@ module.exports = {
       },
     ],
   ],
-  plugins: ['@cfxjs/docusaurus-plugin'],
+  plugins: ['@fluent-wallet/docusaurus-plugin'],
 }

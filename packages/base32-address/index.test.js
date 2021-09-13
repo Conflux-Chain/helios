@@ -20,7 +20,7 @@ function verify(hexAddress, netId, base32Address) {
   }
 }
 
-describe('@cfxjs/base32-address', function () {
+describe('@fluent-wallet/base32-address', function () {
   it('test examples in different types', async function () {
     expect(encode('106d49f8505410eb4e671d51f7d96d2c87807b09', 1029)).toBe(
       'cfx:aajg4wt2mbmbb44sp6szd783ry0jtad5bea80xdy7p',

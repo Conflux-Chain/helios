@@ -2,7 +2,7 @@
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {main} from './index.js'
 
-describe('@cfxjs/wallet_get-next-nonce', function () {
+describe('@fluent-wallet/wallet_get-next-nonce', function () {
   describe('main', function () {
     test('main fn logic', async () => {
       const input = {

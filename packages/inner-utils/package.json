@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/fluent-wallet-inner-utils",
+  "name": "@fluent-wallet/inner-utils",
   "type": "module",
   "main": "index.js",
   "private": true,

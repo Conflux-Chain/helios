@@ -1,7 +1,7 @@
-import {getNthAccountOfHDKey} from '@cfxjs/hdkey'
-import {stripHexPrefix} from '@cfxjs/utils'
+import {getNthAccountOfHDKey} from '@fluent-wallet/hdkey'
+import {stripHexPrefix} from '@fluent-wallet/utils'
 import BN from 'bn.js'
-import {isFunction} from '@cfxjs/checks'
+import {isFunction} from '@fluent-wallet/checks'
 
 const ZERO = new BN(0, 10)
 

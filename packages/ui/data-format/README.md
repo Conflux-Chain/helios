@@ -1,1 +1,1 @@
-# @cfxjs/data-format
+# @fluent-wallet/data-format

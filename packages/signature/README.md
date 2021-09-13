@@ -1,1 +1,1 @@
-# @cfxjs/signature
+# @fluent-wallet/signature

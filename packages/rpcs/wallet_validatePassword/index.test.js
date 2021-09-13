@@ -2,7 +2,7 @@
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {main, schemas} from './'
 import {encrypt} from 'browser-passworder'
-import {validate} from '@cfxjs/spec'
+import {validate} from '@fluent-wallet/spec'
 
 describe('wallet_validatePassword', function () {
   describe('main', function () {

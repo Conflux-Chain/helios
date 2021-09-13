@@ -1,4 +1,4 @@
-import {dbid, map, truep, maybe, enums} from '@cfxjs/spec'
+import {dbid, map, truep, maybe, enums} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_getAccountGroup'
 

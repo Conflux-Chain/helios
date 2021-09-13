@@ -1,1 +1,1 @@
-# @cfxjs/wallet_validate-password
+# @fluent-wallet/wallet_validate-password

@@ -1,8 +1,8 @@
 import {useHistory} from 'react-router-dom'
-import Dropdown from '@cfxjs/component-dropdown'
+import Dropdown from '@fluent-wallet/component-dropdown'
 import {useTranslation} from 'react-i18next'
 import {LANGUAGES} from '../constants'
-import {ArrowDownFilling, DirectionLeft} from '@cfxjs/component-icons'
+import {ArrowDownFilling, DirectionLeft} from '@fluent-wallet/component-icons'
 import PropTypes from 'prop-types'
 
 const Overlay = changeLanguage => {

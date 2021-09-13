@@ -1,7 +1,7 @@
 {
   "private": true,
-  "version": "0.1.1",
-  "name": "@cfxjs/component-icons",
+  "version": "0.2.0",
+  "name": "@fluent-wallet/component-icons",
   "type": "module",
   "main": "index.js"
 }

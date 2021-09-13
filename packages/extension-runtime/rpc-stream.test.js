@@ -2,7 +2,7 @@
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {rpcStream} from './rpc-stream.js'
 
-describe('@cfxjs/extension-runtime/rpc-stream.js', function () {
+describe('@fluent-wallet/extension-runtime/rpc-stream.js', function () {
   describe('rpcStream', function () {
     it('should return the send fn of the pubsub stream', async function () {
       let pubsubStreamNext, postReq

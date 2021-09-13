@@ -1,1 +1,1 @@
-# @cfxjs/fetch-rpc
+# @fluent-wallet/fetch-rpc

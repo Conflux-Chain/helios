@@ -1,6 +1,6 @@
 const {
   cfx, // , eth
-} = require('@cfxjs/test-helpers')
+} = require('@fluent-wallet/test-helpers')
 const path = require('path')
 const {spawn} = require('child_process')
 

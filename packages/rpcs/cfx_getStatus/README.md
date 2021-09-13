@@ -1,1 +1,1 @@
-# @cfxjs/cfx_get-status
+# @fluent-wallet/cfx_get-status

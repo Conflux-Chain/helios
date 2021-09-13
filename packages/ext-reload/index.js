@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import {chan} from '@cfxjs/csp'
+import {chan} from '@fluent-wallet/csp'
 
 const changedChan = chan()
 const watchingDirRegex = /.*/

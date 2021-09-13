@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/transducers",
+  "name": "@fluent-wallet/transducers",
   "version": "0.0.4",
   "type": "module",
   "main": "index.js",

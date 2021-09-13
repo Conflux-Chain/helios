@@ -1,5 +1,5 @@
-import {randomHexAddress, randomAddressType} from '@cfxjs/account'
-import {addHexPrefix, stripHexPrefix} from '@cfxjs/utils'
+import {randomHexAddress, randomAddressType} from '@fluent-wallet/account'
+import {addHexPrefix, stripHexPrefix} from '@fluent-wallet/utils'
 import {address} from 'js-conflux-sdk'
 
 export const encode = (hexAddress, netId, verbose) =>

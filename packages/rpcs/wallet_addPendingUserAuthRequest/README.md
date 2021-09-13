@@ -1,1 +1,1 @@
-# @cfxjs/wallet_add-pending-user-auth-request
+# @fluent-wallet/wallet_add-pending-user-auth-request

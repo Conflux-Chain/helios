@@ -1,1 +1,1 @@
-# @cfxjs/checks
+# @fluent-wallet/checks

@@ -2,7 +2,7 @@
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {persist} from './persist-db-to-ext-storage.js'
 import browser from 'webextension-polyfill'
-import {EXT_STORAGE} from '@cfxjs/fluent-wallet-consts'
+import {EXT_STORAGE} from '@fluent-wallet/consts'
 
 beforeEach(() => {
   browser.geckoProfiler.start.mockClear()

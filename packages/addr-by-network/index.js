@@ -1,6 +1,10 @@
-import {encode, decode, validateBase32Address} from '@cfxjs/base32-address'
-import {ADDRESS_TYPES} from '@cfxjs/fluent-wallet-consts'
-import {fromPrivate} from '@cfxjs/account'
+import {
+  encode,
+  decode,
+  validateBase32Address,
+} from '@fluent-wallet/base32-address'
+import {ADDRESS_TYPES} from '@fluent-wallet/consts'
+import {fromPrivate} from '@fluent-wallet/account'
 
 const ADDR_TYPE_TO_PREFIX = {
   user: '0x1',

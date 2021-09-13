@@ -19,14 +19,14 @@ import {
   ETH_LOCALNET_CURRENCY_SYMBOL,
   ETH_LOCALNET_CURRENCY_NAME,
   DEFAULT_ETH_HDPATH,
-} from '@cfxjs/fluent-wallet-consts'
+} from '@fluent-wallet/consts'
 import {
   MNEMONIC,
   CFX_ACCOUNTS,
   ETH_ACCOUNTS,
   sendCFX,
   sendETH,
-} from '@cfxjs/test-helpers'
+} from '@fluent-wallet/test-helpers'
 
 const password = '12345678'
 let request, db, cfxNetId, ethNetId, res, req
@@ -257,6 +257,9 @@ describe('integration test', function () {
         ).toMatch(/Not allowed to delete builtin network/)
         expect(db.getNetwork().length).toBe(3)
       })
+    })
+    describe('wallet_getNetwork', function () {
+      test.todo('wallet_getNetwork')
     })
     describe('wallet_addNetwork', function () {
       test('add cfx network omit hdPath', async () => {
@@ -1788,6 +1791,12 @@ describe('integration test', function () {
 
         expect(db.getApp()[0].currentAccount.eid).toBe(a2.eid)
       })
+    })
+    describe('wallet_getCurrentViewingApp', function () {
+      test.todo('wallet_getCurrentViewingApp')
+    })
+    describe('wallet_deleteApp', function () {
+      test.todo('wallet_deleteApp')
     })
     describe('cfx_gasPrice', function () {
       test('cfx_gasPrice', async () => {

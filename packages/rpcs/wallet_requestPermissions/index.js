@@ -1,5 +1,5 @@
-import * as spec from '@cfxjs/spec'
-import {generateSchema as genPermissionSchema} from '@cfxjs/wallet-permission'
+import * as spec from '@fluent-wallet/spec'
+import {generateSchema as genPermissionSchema} from '@fluent-wallet/wallet-permission'
 
 const {catn, cat, map, dbid, or, zeroOrMore} = spec
 

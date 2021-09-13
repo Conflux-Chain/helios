@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/wallet_generate-mnemonic",
+  "name": "@fluent-wallet/wallet_generate-mnemonic",
   "version": "0.0.5",
   "type": "module",
   "main": "index.js",

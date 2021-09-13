@@ -1,11 +1,11 @@
 {
-  "name": "@cfxjs/content-script",
+  "name": "@fluent-wallet/content-script",
   "private": true,
   "main": "index.js",
   "type": "module",
   "version": "0.0.4",
   "dependencies": {
-    "@cfxjs/site-metadata": "workspace:packages/site-metadata",
+    "@fluent-wallet/site-metadata": "workspace:packages/site-metadata",
     "@thi.ng/rstream": "6.0.20",
     "webextension-polyfill": "0.8.0"
   }

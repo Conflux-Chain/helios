@@ -1,4 +1,4 @@
-import {cat, ethHexAddress, blockRef} from '@cfxjs/spec'
+import {cat, ethHexAddress, blockRef} from '@fluent-wallet/spec'
 
 export const NAME = 'eth_getBalance'
 

@@ -1,1 +1,1 @@
-# @cfxjs/doc-rpc-parameter
+# @fluent-wallet/doc-rpc-parameter

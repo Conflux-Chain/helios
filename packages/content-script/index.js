@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 import {stream} from '@thi.ng/rstream'
-import {getSiteMetadata} from '@cfxjs/site-metadata'
+import {getSiteMetadata} from '@fluent-wallet/site-metadata'
 
 let CONNECT_RETRY_COUNT = 0
 let INPAGE_INJECTED = false

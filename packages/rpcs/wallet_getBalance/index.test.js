@@ -2,7 +2,7 @@
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {main} from './index.js'
 
-describe('@cfxjs/wallet_getBalance', function () {
+describe('@fluent-wallet/wallet_getBalance', function () {
   describe('main', function () {
     test('logic', async () => {
       const input = {

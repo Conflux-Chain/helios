@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/data-format",
+  "name": "@fluent-wallet/data-format",
   "type": "module",
   "main": "index.js",
   "version": "0.1.0",

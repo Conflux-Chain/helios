@@ -1,1 +1,1 @@
-# @cfxjs/wallet_switch-ethereum-chain
+# @fluent-wallet/wallet_switch-ethereum-chain

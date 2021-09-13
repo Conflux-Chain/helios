@@ -167,8 +167,39 @@
                                         (-> js/Number.MAX_SAFE_INTEGER randomInt (.toString 16)))
                         :error/message "invalid hex string"
                         :doc "hexadecimal string"))
-(def ChainId (update-properties hex-string [:doc "chainid, 0x-prefixed hexadecimal string"]))
-
+(def Byte
+  (update-properties [:re #"^0x([0-9a-fA-F]?){1,2}$"]
+                     :type :byte
+                     [:doc "hex encoded byte"]))
+(def Bytes
+  (update-properties [:re #"^0x[0-9a-f]*$"]
+                     :type :bytes
+                     [:doc "hex encoded bytes"]))
+(def Bytes32
+  (update-properties [:re #"^0x[0-9a-f]{64}$"]
+                     :type :bytes-32
+                     [:doc "32 hex encoded bytes"]))
+(def Bytes256
+  (update-properties [:re #"^0x[0-9a-f]{512}$"]
+                     :type :bytes-256
+                     [:doc "256 hex encoded bytes"]))
+(def Bytes65
+  (update-properties [:re #"^0x[0-9a-f]{512}$"]
+                     :type :bytes-65
+                     [:doc "65 hex encoded bytes"]))
+(def Uint
+  (update-properties [:re #"^0x[1-9a-f]+[0-9a-f]*$"]
+                     :type :uint
+                     [:doc "hex encoded unsigned integer"]))
+(def Uint256
+  (update-properties [:re #"^0x[0-9a-f]{64}$"]
+                     :type :uint-256
+                     [:doc "hex encoded unsigned integer"]))
+(def Hash32
+  (update-properties [:re #"^0x[0-9a-f]{64}$"]
+                     :type :hash-32
+                     [:doc "32 byte hex value"]))
+(def ChainId (update-properties Uint [:doc "chainid, 0x-prefixed hexadecimal string"]))
 (comment
   (#(re-matches #"^0x[0-9a-fA-F]{40}$" %) "0x0000000000000000000000000000000000000000")
   (m/validate #(re-matches #"^0x[0-9a-fA-F]{40}$" %) "0x0000000000000000000000000000000000000000")
@@ -361,6 +392,14 @@
    :error/message "invalid dbid, must be a positive integer"
    :doc "database id, positive integer"))
 
+(def export-byte Byte)
+(def export-bytes Bytes)
+(def export-bytes32 Bytes32)
+(def export-bytes256 Bytes256)
+(def export-bytes65 Bytes65)
+(def export-uint Uint)
+(def export-uint256 Uint256)
+(def export-hash32 Hash32)
 (comment
   (set! (.-jtc js/window) j->c)
 

@@ -1,4 +1,4 @@
-import {map, stringp, url} from '@cfxjs/spec'
+import {map, stringp, url} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_registerSiteMetadata'
 

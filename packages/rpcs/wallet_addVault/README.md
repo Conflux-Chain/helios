@@ -1,1 +1,1 @@
-# @cfxjs/wallet_add-vault
+# @fluent-wallet/wallet_add-vault

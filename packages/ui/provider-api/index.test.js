@@ -2,7 +2,7 @@
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {initProvider} from './index.js'
 
-describe('@cfxjs/provider-api', function () {
+describe('@fluent-wallet/provider-api', function () {
   describe('initProvider', function () {
     it('should return the provider', async function () {
       let arg

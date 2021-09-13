@@ -1,4 +1,4 @@
-import {dbid, map, password} from '@cfxjs/spec'
+import {dbid, map, password} from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
 
 export const NAME = 'wallet_getAccountGroupVaultValue'

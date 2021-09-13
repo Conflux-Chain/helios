@@ -1,1 +1,1 @@
-# @cfxjs/wallet_generate-address
+# @fluent-wallet/wallet_generate-address

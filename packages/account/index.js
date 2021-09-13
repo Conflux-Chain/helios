@@ -1,13 +1,13 @@
 import {getAddress as toChecksumAddress} from '@ethersproject/address'
 import {computeAddress} from '@ethersproject/transactions'
 import {Wallet} from '@ethersproject/wallet'
-import {randomInt, addHexPrefix} from '@cfxjs/utils'
-import {compL, threadFirst} from '@cfxjs/compose'
+import {randomInt, addHexPrefix} from '@fluent-wallet/utils'
+import {compL, threadFirst} from '@fluent-wallet/compose'
 import {
   NULL_HEX_ADDRESS,
   INTERNAL_CONTRACTS_HEX_ADDRESS,
   ADDRESS_TYPES,
-} from '@cfxjs/fluent-wallet-consts'
+} from '@fluent-wallet/consts'
 
 export const create = ({pk} = {}) => {
   const kp = pk ? new Wallet(pk) : Wallet.createRandom()

@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {PasswordInput} from '../../../components'
 import useGlobalStore from '../../../stores'
-import Button from '@cfxjs/component-button'
+import Button from '@fluent-wallet/component-button'
 import {validatePasswordReg} from '../../../utils'
 
 function SetPasswordForm() {

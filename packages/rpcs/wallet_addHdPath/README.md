@@ -1,1 +1,1 @@
-# @cfxjs/wallet_add-hd-path
+# @fluent-wallet/wallet_add-hd-path

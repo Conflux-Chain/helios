@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/eth_sign-typed-data_v4",
+  "name": "@fluent-wallet/eth_sign-typed-data_v4",
   "type": "module",
   "main": "index.js",
   "version": "0.0.2",
   "dependencies": {
-    "@cfxjs/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
+    "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
   }
 }

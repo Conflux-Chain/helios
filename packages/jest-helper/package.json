@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/jest-helper",
+  "name": "@fluent-wallet/jest-helper",
   "type": "module",
   "main": "index.js",
   "version": "0.0.0",

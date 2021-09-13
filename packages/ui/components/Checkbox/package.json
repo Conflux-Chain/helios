@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/component-checkbox",
+  "name": "@fluent-wallet/component-checkbox",
   "type": "module",
   "main": "index.js",
   "peerDependencies": {

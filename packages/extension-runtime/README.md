@@ -1,1 +1,1 @@
-# @cfxjs/extension-runtime
+# @fluent-wallet/extension-runtime

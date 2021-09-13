@@ -1,1 +1,1 @@
-# @cfxjs/site-metadata
+# @fluent-wallet/site-metadata

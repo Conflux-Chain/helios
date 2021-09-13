@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
 import {schemas, main} from './'
-import {validate} from '@cfxjs/spec'
+import {validate} from '@fluent-wallet/spec'
 
 describe('wallet_importAddress', function () {
   describe('schemas', function () {

@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/contract-method-name",
+  "name": "@fluent-wallet/contract-method-name",
   "type": "module",
   "version": "0.0.2",
   "main": "index.js",

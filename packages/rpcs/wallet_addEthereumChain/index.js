@@ -1,5 +1,5 @@
-import {cat, map, or, dbid} from '@cfxjs/spec'
-import {ChainParameterSchema} from '@cfxjs/wallet_add-network'
+import {cat, map, or, dbid} from '@fluent-wallet/spec'
+import {ChainParameterSchema} from '@fluent-wallet/wallet_add-network'
 
 export const NAME = 'wallet_addEthereumChain'
 

@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/associative",
+  "name": "@fluent-wallet/associative",
   "version": "0.0.3",
   "type": "module",
   "main": "index.js",

@@ -1,7 +1,7 @@
-import {map, dbid, password} from '@cfxjs/spec'
+import {map, dbid, password} from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
-import {encode} from '@cfxjs/base32-address'
-import {CFX_MAINNET_NETID} from '@cfxjs/fluent-wallet-consts'
+import {encode} from '@fluent-wallet/base32-address'
+import {CFX_MAINNET_NETID} from '@fluent-wallet/consts'
 
 export const NAME = 'wallet_exportAccountGroup'
 

@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/wallet_validate-app-permissions",
+  "name": "@fluent-wallet/wallet_validate-app-permissions",
   "type": "module",
   "main": "index.js",
   "version": "0.0.2",
   "dependencies": {
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

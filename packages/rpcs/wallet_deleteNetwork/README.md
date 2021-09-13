@@ -1,1 +1,1 @@
-# @cfxjs/wallet_delete-network
+# @fluent-wallet/wallet_delete-network

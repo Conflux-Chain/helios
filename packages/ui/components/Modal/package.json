@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "0.0.0",
-  "name": "@cfxjs/component-modal",
+  "name": "@fluent-wallet/component-modal",
   "type": "module",
   "main": "index.js",
   "dependencies": {

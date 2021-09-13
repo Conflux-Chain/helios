@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/wallet_detect-network-type",
+  "name": "@fluent-wallet/wallet_detect-network-type",
   "type": "module",
   "main": "index.js",
   "version": "0.0.3",
   "dependencies": {
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

@@ -1,5 +1,5 @@
-import {nul, or, and, empty, arrp} from '@cfxjs/spec'
-import {chan} from '@cfxjs/csp'
+import {nul, or, and, empty, arrp} from '@fluent-wallet/spec'
+import {chan} from '@fluent-wallet/csp'
 
 export const NAME = 'wallet_requestUnlockUI'
 
@@ -20,7 +20,7 @@ async function requestUnlockUI({
   const {
     browser,
     popup: {show},
-  } = await import('@cfxjs/webextension')
+  } = await import('@fluent-wallet/webextension')
   const {id: popupWindowId} = await show({url: 'popup.html#unlock'})
 
   function windowOnRemovedListener(windowId) {

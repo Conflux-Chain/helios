@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
-import Input from '@cfxjs/component-input'
-import {EyeClose, EyeOpen} from '@cfxjs/component-icons'
+import Input from '@fluent-wallet/component-input'
+import {EyeClose, EyeOpen} from '@fluent-wallet/component-icons'
 
 const PasswordInput = ({
   validateInputValue,

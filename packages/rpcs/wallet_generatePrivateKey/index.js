@@ -1,5 +1,5 @@
-import {randomPrivateKey} from '@cfxjs/account'
-import {nul, or, and, empty, arrp, privateKey} from '@cfxjs/spec'
+import {randomPrivateKey} from '@fluent-wallet/account'
+import {nul, or, and, empty, arrp, privateKey} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_generatePrivateKey'
 

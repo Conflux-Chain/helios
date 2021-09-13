@@ -1,9 +1,9 @@
 {
-  "name": "@cfxjs/eth_get-transaction-count",
+  "name": "@fluent-wallet/eth_get-transaction-count",
   "type": "module",
   "main": "index.js",
   "version": "0.0.5",
   "dependencies": {
-    "@cfxjs/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

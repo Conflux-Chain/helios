@@ -1,1 +1,1 @@
-# @cfxjs/eth_accounts
+# @fluent-wallet/eth_accounts

@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/wallet_lock",
+  "name": "@fluent-wallet/wallet_lock",
   "type": "module",
   "main": "index.js",
   "version": "0.0.4"

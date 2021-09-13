@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
-import Button from '@cfxjs/component-button'
+import Button from '@fluent-wallet/component-button'
 import useGlobalStore from '../../stores'
 import {SeedWord} from './components'
 import {TitleNav} from '../../components'

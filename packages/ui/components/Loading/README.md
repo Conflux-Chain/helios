@@ -1,1 +1,1 @@
-# @cfxjs/component-loading
+# @fluent-wallet/component-loading

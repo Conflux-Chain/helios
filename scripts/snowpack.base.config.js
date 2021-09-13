@@ -14,7 +14,7 @@ const mount = {}
 const alias = {}
 getWorkspacePackages({
   ignore: [
-    '@cfxjs/contract-method-name',
+    '@fluent-wallet/contract-method-name',
     'browser-extension',
     'helios',
     'helios-background',
@@ -23,9 +23,9 @@ getWorkspacePackages({
     'workspace-tools',
     'doc',
     'ext-reload',
-    '@cfxjs/jest-helper',
-    '@cfxjs/test-helpers',
-    '@cfxjs/content-script',
+    '@fluent-wallet/jest-helper',
+    '@fluent-wallet/test-helpers',
+    '@fluent-wallet/content-script',
   ],
 }).forEach(({location, name}) => {
   const packageAbsPath = path.resolve(__dirname, '../', location)

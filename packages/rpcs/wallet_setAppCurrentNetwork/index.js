@@ -1,4 +1,4 @@
-import {map, dbid} from '@cfxjs/spec'
+import {map, dbid} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_setAppCurrentNetwork'
 

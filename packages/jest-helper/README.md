@@ -1,1 +1,1 @@
-# @cfxjs/jest-helper
+# @fluent-wallet/jest-helper

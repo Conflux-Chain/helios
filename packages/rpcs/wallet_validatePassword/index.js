@@ -1,4 +1,4 @@
-import {map, password, boolean} from '@cfxjs/spec'
+import {map, password, boolean} from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
 
 export const NAME = 'wallet_validatePassword'

@@ -3,7 +3,7 @@ import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, before
 import {hasBalance, hasTx} from './index.js'
 
 let params
-describe('@cfxjs/discover-accounts', function () {
+describe('@fluent-wallet/discover-accounts', function () {
   describe('hasTx', function () {
     test('logic', async () => {
       params = {getTxCount: jest.fn(() => ({result: '0x1'})), address: 'foo'}

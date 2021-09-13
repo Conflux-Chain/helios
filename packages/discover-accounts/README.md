@@ -1,1 +1,1 @@
-# @cfxjs/discover-accounts
+# @fluent-wallet/discover-accounts

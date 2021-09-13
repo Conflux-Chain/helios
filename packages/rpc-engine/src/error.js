@@ -2,7 +2,7 @@
  * @fileOverview error handler used in rpc engine
  * @name error.js
  */
-import {errorInstanceToErrorCode} from '@cfxjs/json-rpc-error'
+import {errorInstanceToErrorCode} from '@fluent-wallet/json-rpc-error'
 
 export const appendRpcStackToErrorMessage = (err, stack) => {
   const reversedStack = stack.slice().reverse()

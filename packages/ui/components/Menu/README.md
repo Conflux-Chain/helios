@@ -1,1 +1,1 @@
-# @cfxjs/component-menu
+# @fluent-wallet/component-menu

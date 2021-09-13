@@ -1,4 +1,4 @@
-import {url, map} from '@cfxjs/spec'
+import {url, map} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_detectNetworkType'
 

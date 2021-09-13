@@ -1,7 +1,7 @@
-import {dbid, map, password} from '@cfxjs/spec'
+import {dbid, map, password} from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
-import {getNthAccountOfHDKey} from '@cfxjs/hdkey'
-import {addHexPrefix} from '@cfxjs/utils'
+import {getNthAccountOfHDKey} from '@fluent-wallet/hdkey'
+import {addHexPrefix} from '@fluent-wallet/utils'
 
 export const NAME = 'wallet_getAddressPrivateKey'
 

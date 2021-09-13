@@ -1,11 +1,11 @@
 {
-  "name": "@cfxjs/use-rpc",
+  "name": "@fluent-wallet/use-rpc",
   "type": "module",
   "main": "index.js",
   "version": "1.0.5",
   "dependencies": {
-    "@cfxjs/extension-runtime": "workspace:packages/extension-runtime",
-    "@cfxjs/provider-api": "workspace:packages/ui/provider-api",
+    "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
+    "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api",
     "react-use": "17.2.4",
     "swr": "1.0.0",
     "webextension-polyfill": "0.8.0"

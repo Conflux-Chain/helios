@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/db",
+  "name": "@fluent-wallet/db",
   "version": "0.0.8",
   "main": "index.js",
   "type": "module",

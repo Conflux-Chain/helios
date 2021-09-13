@@ -1,1 +1,1 @@
-# @cfxjs/contract-method-name
+# @fluent-wallet/contract-method-name

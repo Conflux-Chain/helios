@@ -1,5 +1,5 @@
-import * as tx from '@cfxjs/transducers'
-import * as comp from '@cfxjs/compose' // eslint-disable-line import/namespace
+import * as tx from '@fluent-wallet/transducers'
+import * as comp from '@fluent-wallet/compose' // eslint-disable-line import/namespace
 import {addNode, node} from '@thi.ng/rstream-graph'
 import * as perms from './src/permissions.js'
 import * as S from '@thi.ng/rstream'

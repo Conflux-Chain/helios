@@ -1,4 +1,4 @@
-import {catn, dbid} from '@cfxjs/spec'
+import {catn, dbid} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_setCurrentAccount'
 

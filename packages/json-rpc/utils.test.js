@@ -3,7 +3,7 @@ import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, before
 
 import {isValidRequest} from './utils.js'
 
-describe('@cfxjs/json-rpc', function () {
+describe('@fluent-wallet/json-rpc', function () {
   describe('utils', function () {
     describe('isValidVersionTwoRequest', function () {
       test('should able to validate rpc requests', () => {

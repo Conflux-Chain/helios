@@ -1,4 +1,4 @@
-import {ethHexAddress, cat, blockTag} from '@cfxjs/spec'
+import {ethHexAddress, cat, blockTag} from '@fluent-wallet/spec'
 
 export const NAME = 'eth_getCode'
 

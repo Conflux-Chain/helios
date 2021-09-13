@@ -1,8 +1,8 @@
 {
-  "name": "@cfxjs/webextension",
+  "name": "@fluent-wallet/webextension",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "webextension-polyfill": "0.8.0"
   }

@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
-import {validate} from '@cfxjs/spec'
+import {validate} from '@fluent-wallet/spec'
 import {main, schemas} from './index.js'
 
-describe('@cfxjs/cfx_epoch-number', function () {
+describe('@fluent-wallet/cfx_epoch-number', function () {
   describe('schemas', function () {
     it('should be able to validate the input', async function () {
       expect(validate(schemas.input)).toBeTruthy()

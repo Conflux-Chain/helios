@@ -1,5 +1,5 @@
 {
-  "name": "@cfxjs/rpc-epoch-ref",
+  "name": "@fluent-wallet/rpc-epoch-ref",
   "type": "module",
   "main": "index.js",
   "version": "0.0.1"

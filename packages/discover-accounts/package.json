@@ -1,12 +1,12 @@
 {
-  "name": "@cfxjs/discover-accounts",
+  "name": "@fluent-wallet/discover-accounts",
   "type": "module",
   "main": "index.js",
   "version": "0.0.3",
   "dependencies": {
-    "@cfxjs/checks": "workspace:packages/checks",
-    "@cfxjs/hdkey": "workspace:packages/hdkey",
-    "@cfxjs/utils": "workspace:packages/utils",
+    "@fluent-wallet/checks": "workspace:packages/checks",
+    "@fluent-wallet/hdkey": "workspace:packages/hdkey",
+    "@fluent-wallet/utils": "workspace:packages/utils",
     "bn.js": "5.2.0"
   }
 }

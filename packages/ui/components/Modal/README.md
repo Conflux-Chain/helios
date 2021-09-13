@@ -1,1 +1,1 @@
-# @cfxjs/component-modal
+# @fluent-wallet/component-modal
