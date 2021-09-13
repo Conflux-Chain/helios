@@ -90,7 +90,7 @@ function ConfirmSeed() {
               {mnemonicError}
             </span>
           )}
-          <div className="mt-4 px-3 pt-3 flex flex-wrap justify-between">
+          <div className="mt-10 px-3 pt-3 flex flex-wrap justify-between">
             {buttonArray.map((word, index) => (
               <Button
                 key={index}

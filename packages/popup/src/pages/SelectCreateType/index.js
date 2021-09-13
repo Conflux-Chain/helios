@@ -25,7 +25,7 @@ function SelectCreateType() {
           {t('createAccount')}
         </em>
         <CreateTypeItem
-          Icon={<img src="/images/existing-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="images/existing-seed-phrase-icon.svg" alt="icon" />}
           title={t('useExistingSeed')}
           subTitle={t('useExistingSeedDes')}
           Tag={Tag}
@@ -34,7 +34,7 @@ function SelectCreateType() {
           }}
         />
         <CreateTypeItem
-          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('newSeedPhrase')}
           subTitle={t('newSeedPhraseDes')}
           onClick={() => {
@@ -45,7 +45,7 @@ function SelectCreateType() {
           {t('importExistingAccount')}
         </em>
         <CreateTypeItem
-          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('seedPhrase')}
           subTitle={t('seedPhraseDes')}
           onClick={() => {
@@ -53,7 +53,7 @@ function SelectCreateType() {
           }}
         />
         <CreateTypeItem
-          Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
+          Icon={<img src="images/private-key-icon.svg" alt="icon" />}
           title={t('pKey')}
           subTitle={t('pKeysDes')}
           onClick={() => {

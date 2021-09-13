@@ -39,7 +39,7 @@ const UnlockPage = () => {
       <LanguageNav />
       <header className="flex flex-col items-center pb-7">
         <img
-          src="assets/images/logo.png"
+          src="images/logo.svg"
           alt="logo"
           className="mx-auto w-25 h-25 mt-2"
         />
