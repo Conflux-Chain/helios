@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types'
-import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
-import {Close} from '@fluent-wallet/component-icons'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {GET_ALL_ACCOUNT_GROUP} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
+import {ActionSheet} from '../../../components/'
 
+// TODO: remove when avatar programme confirmed
 // eslint-disable-next-line react/prop-types
 function TemporaryIcon({className = ''}) {
   return (
@@ -45,38 +45,12 @@ AccountGroup.propTypes = {
 }
 
 function AccountList({close, accountStatus = false}) {
-  const [containerStyle, setContainerStyle] = useState('')
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([...GET_ALL_ACCOUNT_GROUP])
   const history = useHistory()
 
-  const onClose = () => {
-    close()
-    setContainerStyle('animate-slide-down')
-  }
-
-  useEffect(() => {
-    setContainerStyle('hidden')
-  }, [])
-
-  useEffect(() => {
-    accountStatus && setContainerStyle('animate-slide-up block')
-  }, [accountStatus])
-
   return (
-    <div
-      className={`bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${containerStyle} h-[500px] `}
-    >
-      <div className="ml-3 pb-1">
-        <p className="text-base text-gray-80">{t('myAccounts')}</p>
-        <div className="flex items-center text-xs mt-1">
-          <TemporaryIcon className="w-3 h-3" />
-          <div className="text-gray-40 ml-1">current account</div>
-          <div className="mx-2 w-px h-2 bg-gray-40" />
-          <TemporaryIcon className="w-3 h-3" />
-          <div className="text-gray-60 ml-1">current net</div>
-        </div>
-      </div>
+    <ActionSheet close={close} showActionSheet={accountStatus}>
       <div>
         {accountGroups.map(({nickname, account}, index) => (
           <AccountGroup key={index} account={account} nickname={nickname} />
@@ -91,11 +65,7 @@ function AccountList({close, accountStatus = false}) {
       >
         {t('addAccount')}
       </Button>
-      <Close
-        onClick={onClose}
-        className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
-      />
-    </div>
+    </ActionSheet>
   )
 }
 
