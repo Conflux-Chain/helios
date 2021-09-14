@@ -1,10 +1,13 @@
 import {expect, describe, it} from '@jest/globals' // prettier-ignore
 import {
   convertDecimal,
+  fromCfxToDrip,
+  fromDripToCfx,
   formatDigit,
   toThousands,
   trimZero,
   formatAmount,
+  formatBalance,
   CFX_DECIMAL,
 } from './'
 
@@ -19,12 +22,8 @@ describe('@fluent-wallet/data-format', function () {
   })
 
   it('fromCfxToDrip', async function () {
-    expect(convertDecimal('1', 'multiply', CFX_DECIMAL)).toBe(
-      '1000000000000000000',
-    )
-    expect(
-      convertDecimal('0.000000000000000001', 'multiply', CFX_DECIMAL),
-    ).toBe('1')
+    expect(fromCfxToDrip('1')).toBe('1000000000000000000')
+    expect(fromDripToCfx('1000000000000000000')).toBe('1')
   })
 
   it('formatDigit', async function () {
@@ -52,6 +51,13 @@ describe('@fluent-wallet/data-format', function () {
     expect(trimZero('100000.1000')).toBe('100000.1')
     expect(trimZero('0.0000')).toBe('0')
     expect(trimZero('0.00001')).toBe('0.00001')
+  })
+
+  it('formatBalance', async function () {
+    expect(formatBalance('1234567890.123456')).toBe('1,234,567,890.123456')
+    expect(formatBalance('1234567890.1234560')).toBe('1,234,567,890.123456')
+    expect(formatBalance('1234567890.1234567')).toBe('1,234,567,890.123456')
+    expect(formatBalance('1234567890.123450')).toBe('1,234,567,890.12345')
   })
 
   it('formatAmount', async function () {

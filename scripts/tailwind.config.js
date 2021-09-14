@@ -46,6 +46,8 @@ module.exports = {
         1: '0px 4px 6px rgba(0, 0, 0, 0.12)',
         2: '0px 6px 16px rgba(0, 0, 0, 0.08)',
         3: '0px 8px 36px rgba(0, 0, 0, 0.06)',
+        'fluent-1': '0px 2px 8px rgba(75, 100, 233, 0.12)',
+        'fluent-2': '0px 6px 16px rgba(149, 163, 233, 0.08)',
       },
       colors: {
         bg: 'var(--color-bg)',

@@ -6,12 +6,12 @@ Big.NE = -19
 export const CFX_DECIMAL = 18
 export const BTC_DECIMAL = 6
 export const USDT_DECIMAL = 8
-export const COMMOM_DECIMAL = 18
+export const COMMON_DECIMAL = 18
 
 export const convertDecimal = (
   numOrStr,
   action = 'divide',
-  decimal = COMMOM_DECIMAL,
+  decimal = COMMON_DECIMAL,
 ) => {
   if (action === 'divide') {
     return new Big(numOrStr).div(`1e${decimal}`).toString(10)
@@ -22,7 +22,11 @@ export const convertDecimal = (
 }
 
 export const fromCfxToDrip = numOrStr => {
-  return new Big(numOrStr).times(1e18).toString(10)
+  return convertDecimal(numOrStr, 'multiply', CFX_DECIMAL)
+}
+
+export const fromDripToCfx = numOrStr => {
+  return convertDecimal(numOrStr, 'divide', CFX_DECIMAL)
 }
 
 export const trimZero = numOrStr => {
@@ -56,6 +60,11 @@ export const toThousands = (numOrStr, delimiter = ',', prevDelimiter = ',') => {
         return cur.replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g, `$1${delimiter}`)
       }
     }, '')
+}
+
+export const formatBalance = numOrStr => {
+  const bNum = new Big(numOrStr)
+  return toThousands(bNum.round(6).toString(10))
 }
 
 export const formatAmount = numOrStr => {

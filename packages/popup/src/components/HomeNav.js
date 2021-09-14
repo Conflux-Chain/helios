@@ -5,7 +5,7 @@ function HomeNav({onLock}) {
   return (
     <nav className="flex h-13 items-center justify-between px-4 bg-secondary">
       <img className="w-6 h-6" src="images/logo.svg" alt="logo" />
-      <Lock className="w-4 h-4 text-white cursor-pointer" onCLick={onLock} />
+      <Lock className="w-4 h-4 text-white cursor-pointer" onClick={onLock} />
     </nav>
   )
 }

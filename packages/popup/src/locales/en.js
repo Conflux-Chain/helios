@@ -63,6 +63,7 @@ const en = {
     // home page
     send: 'Send',
     history: 'History',
+    assets: 'Assets',
   },
 }
 
