@@ -4,7 +4,6 @@ import {useHistory} from 'react-router-dom'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {GET_ALL_ACCOUNT_GROUP} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
-import {ActionSheet} from '../../../components/'
 
 // TODO: remove when avatar programme confirmed
 // eslint-disable-next-line react/prop-types
@@ -44,13 +43,13 @@ AccountGroup.propTypes = {
   account: PropTypes.array,
 }
 
-function AccountList({close, accountStatus = false}) {
+function AccountList() {
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([...GET_ALL_ACCOUNT_GROUP])
   const history = useHistory()
 
   return (
-    <ActionSheet close={close} showActionSheet={accountStatus}>
+    <>
       <div>
         {accountGroups.map(({nickname, account}, index) => (
           <AccountGroup key={index} account={account} nickname={nickname} />
@@ -65,13 +64,8 @@ function AccountList({close, accountStatus = false}) {
       >
         {t('addAccount')}
       </Button>
-    </ActionSheet>
+    </>
   )
-}
-
-AccountList.propTypes = {
-  close: PropTypes.func.isRequired,
-  accountStatus: PropTypes.bool,
 }
 
 export default AccountList

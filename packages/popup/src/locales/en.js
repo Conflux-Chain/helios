@@ -62,6 +62,11 @@ const en = {
     // set account
     myAccounts: 'My Accounts',
     addAccount: 'Add Account',
+    // change network
+    network: 'Network',
+    mainnet: 'Mainnet',
+    Testnet: 'Testnet',
+    custom: 'Custom',
   },
 }
 
