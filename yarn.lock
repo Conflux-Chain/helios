@@ -3543,6 +3543,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/token-list-schema@workspace:packages/token-list-schema":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/token-list-schema@workspace:packages/token-list-schema"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/transducers@workspace:packages/transducers":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/transducers@workspace:packages/transducers"
@@ -4006,6 +4012,15 @@ __metadata:
   dependencies:
     "@fluent-wallet/checks": "workspace:packages/checks"
     "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_update-token-list@workspace:packages/rpcs/wallet_updateTokenList":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_update-token-list@workspace:packages/rpcs/wallet_updateTokenList"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/token-list-schema": "workspace:packages/token-list-schema"
   languageName: unknown
   linkType: soft
 

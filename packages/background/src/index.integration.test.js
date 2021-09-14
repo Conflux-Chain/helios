@@ -371,6 +371,9 @@ describe('integration test', function () {
         )
       })
     })
+    describe('wallet_updateTokenList', function () {
+      test.todo('wallet_updateTokenList')
+    })
     describe('wallet_importAddress', function () {
       test('wallet_importAddress', async function () {
         expect(db.getVault().length).toBe(0)

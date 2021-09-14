@@ -10,7 +10,7 @@
   https://docs.datomic.com/on-prem/schema/identity.html#unique-identities
 
   - value: true (default to false)
-  Same as identity: true, but will throw a error if try to insert the same attribute
+  Same as identity: true, but will throw an error if try to insert the same attribute
   twice. https://docs.datomic.com/on-prem/schema/identity.html#unique-values
 
   - persist: false (default to true)
@@ -56,6 +56,16 @@ const schema = {
     builtin: {doc: "Indicating builtin network, shouldn't be deleted"},
     scanUrl: {doc: 'Url of block chain explorer'},
     selected: {doc: 'network selected by wallet'},
+    tokenList: {
+      doc: 'token list of this network',
+      ref: true,
+    },
+    token: {
+      doc: 'tokens from token list, dapp, and user of this network',
+      ref: true,
+      many: true,
+      component: true,
+    },
   },
   /*
     vault, container of credential (address/pk/mnemonic)
@@ -89,6 +99,11 @@ const schema = {
     cfxHex: {doc: 'The value of cfx hex address'},
     base32: {doc: 'base32 addr of the right network'},
     pk: {doc: 'the private key of the address', persist: false},
+    token: {
+      doc: 'tokenlist of this address',
+      many: true,
+      ref: true,
+    },
   },
   account: {
     index: {doc: 'index of account in account group'},
@@ -134,6 +149,28 @@ const schema = {
   // ## utils
   unlockReq: {
     req: {persist: false},
+  },
+
+  // ## tokens
+  token: {
+    address: {doc: 'address, hex or base32'},
+    symbol: {doc: 'token symbol'},
+    decimals: {doc: 'token decimal'},
+    logoURI: {doc: 'token logo image'},
+    fromList: {doc: 'true when from token list'},
+    fromApp: {doc: 'true when from app'},
+    fromUser: {doc: 'true when from user'},
+    // ... other values in TokenInfoSchema
+  },
+  tokenList: {
+    url: {doc: 'token list url', value: true},
+    name: {doc: 'token list name'},
+    value: {doc: 'token list value, json data get from token list'},
+    token: {
+      doc: 'token of this token list',
+      many: true,
+      ref: true,
+    },
   },
 }
 
