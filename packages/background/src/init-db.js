@@ -49,6 +49,27 @@ function initNetwork(d) {
     {eid: -1, hdPath: {name: 'cfx-default', value: DEFAULT_CFX_HDPATH}},
     {eid: -2, hdPath: {name: 'eth-default', value: DEFAULT_ETH_HDPATH}},
     {
+      eid: -3,
+      tokenList: {
+        name: 'Fluent Default List',
+        url: 'https://cdn.jsdelivr.net/gh/yqrashawn/tmp-token-list@master/cfx.fluent.json',
+      },
+    },
+    {
+      eid: -4,
+      tokenList: {
+        name: 'Uniswap Default List',
+        url: 'https://cdn.jsdelivr.net/gh/yqrashawn/tmp-token-list@master/eth.uniswap.json',
+      },
+    },
+    {
+      eid: -5,
+      tokenList: {
+        name: 'PancakeSwap Default List',
+        url: 'https://cdn.jsdelivr.net/gh/yqrashawn/tmp-token-list@master/bsc.pancake.json',
+      },
+    },
+    {
       network: {
         name: CFX_MAINNET_NAME,
         endpoint: CFX_MAINNET_RPC_ENDPOINT,
@@ -63,6 +84,7 @@ function initNetwork(d) {
         },
         hdPath: -1,
         builtin: true,
+        tokenList: -3,
       },
     },
     {
@@ -95,6 +117,7 @@ function initNetwork(d) {
         },
         hdPath: -2,
         builtin: true,
+        tokenList: -4,
       },
     },
     {
@@ -127,6 +150,7 @@ function initNetwork(d) {
         },
         hdPath: -2,
         builtin: true,
+        tokenList: -5,
       },
     },
     {

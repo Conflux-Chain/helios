@@ -62,7 +62,7 @@ export const nickname = [
   stringp,
   {
     min: 1,
-    max: 64,
-    doc: 'Nickname of this account, a string with 1 to 64 characters',
+    max: 128,
+    doc: 'Nickname of this account, a string with 1 to 128 characters',
   },
 ]
