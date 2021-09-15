@@ -7,22 +7,20 @@ import {
 } from '@fluent-wallet/shorten-address'
 import {
   GET_CURRENT_ACCOUNT,
-  GET_CURRENT_NETWORK,
-} from '../../../constants/rpcDeps'
+  // GET_CURRENT_NETWORK,
+} from '../../../constants'
 
 function CurrentAccount() {
-  const {data: currentNetwork} = useRPC(GET_CURRENT_NETWORK, undefined, {
+  // const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
+  //   fallbackData: {},
+  // })
+  // const {networkId} = currentNetwork
+  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-  const {networkId} = currentNetwork
-  const {data: currentAccount} = useRPC(
-    GET_CURRENT_ACCOUNT.push(networkId),
-    undefined,
-    {fallbackData: {}},
-  )
   const {nickname = 'Account 3'} = currentAccount
   // const {address} = useRPC(
-  //   GET_ACCOUNT_ADDRESS,
+  //   [GET_ACCOUNT_ADDRESS, accountId, networkId],
   //   {accountId, networkId},
   //   {
   //     fallbackData: {},

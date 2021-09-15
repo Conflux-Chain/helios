@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {GET_WALLET_STATUS} from '../../constants'
+import {GET_WALLET_LOCKED_STATUS} from '../../constants'
 import {useSWRConfig} from 'swr'
 import {request, validatePasswordReg} from '../../utils'
 
@@ -23,7 +23,7 @@ const UnlockPage = () => {
       request('wallet_unlock', {password}).then(({error, result}) => {
         if (error) setErrorMessage(error.message.split('\n')[0])
         if (result) {
-          mutate([...GET_WALLET_STATUS])
+          mutate([GET_WALLET_LOCKED_STATUS])
           history.push('/')
         }
       })

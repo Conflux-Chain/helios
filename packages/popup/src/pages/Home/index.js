@@ -1,7 +1,12 @@
 import Button from '@fluent-wallet/component-button'
 import {useTranslation} from 'react-i18next'
 import {HomeNav} from '../../components'
-import {CurrentAccount, CurrentNetwork, TokenList} from './components'
+import {
+  CurrentAccount,
+  CurrentNetwork,
+  CurrentDapp,
+  TokenList,
+} from './components'
 
 function Home() {
   const {t} = useTranslation()
@@ -33,7 +38,7 @@ function Home() {
         </div>
       </div>
       <TokenList />
-      <div className="flex h-16 rounded-t-xl bg-gray-0"></div>
+      <CurrentDapp />
     </div>
   )
 }

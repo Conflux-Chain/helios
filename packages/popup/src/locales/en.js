@@ -64,6 +64,9 @@ const en = {
     send: 'Send',
     history: 'History',
     assets: 'Assets',
+    noConnectedDapp: 'Not connected to current website',
+    connected: 'Connected',
+    authorizeCurrentAccount: 'Authorize {{currentAccount}}?',
   },
 }
 

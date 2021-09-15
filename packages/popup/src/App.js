@@ -1,7 +1,7 @@
 import React, {lazy, Suspense, useEffect, useState} from 'react'
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {ProtectedRoute} from './components'
-import {GET_ALL_ACCOUNT_GROUP, GET_WALLET_STATUS} from './constants'
+import {GET_ALL_ACCOUNT_GROUP, GET_WALLET_LOCKED_STATUS} from './constants'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import './index.css'
 
@@ -26,9 +26,9 @@ function App() {
   const [lockStatus, setLockStatus] = useState(true)
 
   const {data: accountData, error: accountError} = useRPC([
-    ...GET_ALL_ACCOUNT_GROUP,
+    GET_ALL_ACCOUNT_GROUP,
   ])
-  const {data: lockData, error: lockError} = useRPC([...GET_WALLET_STATUS])
+  const {data: lockData, error: lockError} = useRPC([GET_WALLET_LOCKED_STATUS])
 
   useEffect(() => {
     if (accountError || lockError) {

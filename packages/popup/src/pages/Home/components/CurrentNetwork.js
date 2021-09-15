@@ -1,9 +1,9 @@
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {ArrowRight} from '@fluent-wallet/component-icons'
-import {GET_CURRENT_NETWORK} from '../../../constants/rpcDeps'
+import {GET_CURRENT_NETWORK} from '../../../constants'
 
 function CurrentNetwork() {
-  const {data: currentNetwork} = useRPC(GET_CURRENT_NETWORK, undefined, {
+  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
     fallbackData: {},
   })
   const {nickname = 'Ethereum', icon} = currentNetwork

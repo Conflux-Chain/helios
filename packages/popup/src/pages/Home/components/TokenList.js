@@ -46,14 +46,17 @@ TokenItem.propTypes = {
 function TokenList() {
   const {t} = useTranslation()
   return (
-    <div className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 p-3">
+    <div className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 pt-3 relative">
       <span className="flex items-center justify-between mb-2 text-primary text-xs font-medium">
         {t('assets')}
         <span className="w-5 h-5 bg-white shadow-fluent-1 rounded-full flex items-center justify-center">
           <Add className="w-3.5 h-3.5 text-primary" />
         </span>
       </span>
-      <TokenItem />
+      <div className="flex flex-1 flex-col overflow-y-auto">
+        <TokenItem />
+      </div>
+      <div className="absolute bottom-0 left-0 h-6 bg-token-background w-[356px]" />
     </div>
   )
 }

@@ -6,7 +6,7 @@ import Button from '@fluent-wallet/component-button'
 import {CompWithLabel, TitleNav} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import useGlobalStore from '../../stores'
-import {GET_HD_ACCOUNT_GROUP} from '../../constants/rpcDeps'
+import {GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} from '../../constants'
 import {useCreatedPasswordGuard} from '../../hooks'
 
 function NewSeed() {
@@ -17,8 +17,8 @@ function NewSeed() {
   const [groupName, setGroupName] = useState('')
   const [groupNamePlaceholder, setGroupNamePlaceholder] = useState('')
   const {data: hdGroup} = useRPC(
-    GET_HD_ACCOUNT_GROUP,
-    {type: 'hd'},
+    [GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
+    {type: ACCOUNT_GROUP_TYPE.HD},
     {fallbackData: []},
   )
   useEffect(() => {
