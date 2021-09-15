@@ -1,8 +1,18 @@
 import PropTypes from 'prop-types'
-import {Route, Redirect} from 'react-router-dom'
+import {Redirect, Route} from 'react-router-dom'
+import useGlobalStore from '../stores/index.js'
 import {getRouteWithAuthInfo} from '../utils'
 
 const ProtectedRoute = ({children, hasAccount, isLocked, ...rest}) => {
+  const {FATAL_ERROR} = useGlobalStore()
+
+  if (FATAL_ERROR)
+    return (
+      <Route>
+        <Redirect to="/error" />
+      </Route>
+    )
+
   return (
     <Route
       {...rest}
