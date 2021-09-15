@@ -12,17 +12,19 @@ function TemporaryIcon({className = ''}) {
 }
 
 const ActionSheet = ({close, showActionSheet = false, title, children}) => {
-  const [containerStyle, setContainerStyle] = useState('hidden')
+  const [containerStyle, setContainerStyle] = useState('')
   const {t} = useTranslation()
+
   const onClose = () => {
     close()
     setContainerStyle('animate-slide-down')
   }
-
   useEffect(() => {
     showActionSheet && setContainerStyle('animate-slide-up block')
   }, [showActionSheet])
-
+  if (!containerStyle) {
+    return null
+  }
   return (
     <div
       className={`bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${containerStyle} h-[500px] `}
@@ -52,6 +54,6 @@ ActionSheet.propTypes = {
   title: PropTypes.string.isRequired,
   close: PropTypes.func.isRequired,
   showActionSheet: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.node]).isRequired,
+  children: PropTypes.node.isRequired,
 }
 export default ActionSheet

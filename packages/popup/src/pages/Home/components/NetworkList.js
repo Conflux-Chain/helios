@@ -32,7 +32,7 @@ function NetworkItem({networkName, networkType, networkIcon, closeAction}) {
         {networkName}
       </div>
       <div
-        className={`text-2xs py-2 px-2 absolute right-0 top-0 rounded-bl-lg ${networkTypeColor}`}
+        className={`text-xs py-0.5 w-14 text-center rounded-tr absolute right-0 top-0 rounded-bl-lg ${networkTypeColor}`}
       >
         {networkType}
       </div>
