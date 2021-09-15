@@ -3355,16 +3355,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/fectch-rpc-middleware@workspace:packages/fectch-rpc-middleware":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/fectch-rpc-middleware@workspace:packages/fectch-rpc-middleware"
-  dependencies:
-    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
-    "@fluent-wallet/rpc-engine": "workspace:packages/rpc-engine"
-    "@thi.ng/rstream": 6.0.20
-  languageName: unknown
-  linkType: soft
-
 "@fluent-wallet/fetch-rpc@workspace:packages/fetch-rpc":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/fetch-rpc@workspace:packages/fetch-rpc"
@@ -3550,6 +3540,12 @@ __metadata:
     "@cfxjs/fullnode": 1.9.0
     ethers: 5.4.6
     ganache-core: 2.13.2
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/token-list-schema@workspace:packages/token-list-schema":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/token-list-schema@workspace:packages/token-list-schema"
   languageName: unknown
   linkType: soft
 
@@ -4019,6 +4015,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_update-token-list@workspace:packages/rpcs/wallet_updateTokenList":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_update-token-list@workspace:packages/rpcs/wallet_updateTokenList"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/token-list-schema": "workspace:packages/token-list-schema"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_user-approved-auth-request@workspace:packages/rpcs/wallet_userApprovedAuthRequest":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_user-approved-auth-request@workspace:packages/rpcs/wallet_userApprovedAuthRequest"
@@ -4066,6 +4071,14 @@ __metadata:
   resolution: "@fluent-wallet/wallet_validate-private-key@workspace:packages/rpcs/wallet_validatePrivateKey"
   dependencies:
     "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_zero-account-group@workspace:packages/rpcs/wallet_zeroAccountGroup":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_zero-account-group@workspace:packages/rpcs/wallet_zeroAccountGroup"
+  dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -16564,6 +16577,8 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
     "@fluent-wallet/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey"
     "@fluent-wallet/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
+    "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
+    "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
@@ -16590,6 +16605,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_validate-mnemonic": "workspace:packages/rpcs/wallet_validateMnemonic"
     "@fluent-wallet/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
     "@fluent-wallet/wallet_validate-private-key": "workspace:packages/rpcs/wallet_validatePrivateKey"
+    "@fluent-wallet/wallet_zero-account-group": "workspace:packages/rpcs/wallet_zeroAccountGroup"
     "@fluent-wallet/webextension": "workspace:packages/webextension"
     "@thi.ng/rstream": 6.0.20
     "@thi.ng/rstream-csp": ^2.0.79

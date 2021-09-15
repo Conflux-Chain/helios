@@ -6,6 +6,4 @@ export const permissions = {
   locked: true,
 }
 
-export const main = ({db: {getLocked}}) => {
-  return getLocked()
-}
+export const main = ({db: {getLocked}}) => getLocked()
