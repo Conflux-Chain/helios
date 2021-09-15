@@ -54,6 +54,7 @@ const ImportMethods = [
   'wallet_importPrivateKey',
   'wallet_addVault',
 ]
+
 function validateLockState({req, rpcStore, db}) {
   const allowLocked = rpcStore[req.method].permissions.locked
   // allow import methods when locked only if has 0 account group

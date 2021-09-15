@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/rpc-engine": patch
+  "@fluent-wallet/wallet_zero-account-group": patch
+
+declined:
+  - helios-background
+  - helios-popup
+  - "@fluent-wallet/wallet_is-locked"

@@ -54,6 +54,8 @@ import * as walletGetAccountGroup from '@fluent-wallet/wallet_get-account-group'
 import * as walletGetAccountGroupVaultValue from '@fluent-wallet/wallet_get-account-group-vault-value'
 import * as walletGetAddressPrivateKey from '@fluent-wallet/wallet_get-address-private-key'
 import * as walletGetBalance from '@fluent-wallet/wallet_get-balance'
+import * as walletGetCurrentAccount from '@fluent-wallet/wallet_get-current-account'
+import * as walletGetCurrentNetwork from '@fluent-wallet/wallet_get-current-network'
 import * as walletGetCurrentViewingApp from '@fluent-wallet/wallet_get-current-viewing-app'
 import * as walletGetNetwork from '@fluent-wallet/wallet_get-network'
 import * as walletGetNextNonce from '@fluent-wallet/wallet_get-next-nonce'
@@ -83,6 +85,7 @@ import * as walletValidateAppPermissions from '@fluent-wallet/wallet_validate-ap
 import * as walletValidateMnemonic from '@fluent-wallet/wallet_validate-mnemonic'
 import * as walletValidatePassword from '@fluent-wallet/wallet_validate-password'
 import * as walletValidatePrivateKey from '@fluent-wallet/wallet_validate-private-key'
+import * as walletZeroAccountGroup from '@fluent-wallet/wallet_zero-account-group'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -90,6 +93,7 @@ export const rpcEngineOpts = {
   isTest: IS_TEST_MODE,
   isCI: IS_CI,
   methods: [
+    walletZeroAccountGroup,
     walletIsLocked,
     walletRequestUnlockUI,
 
@@ -130,6 +134,8 @@ export const rpcEngineOpts = {
     walletSetCurrentAccount,
     walletSetCurrentNetwork,
     walletGetCurrentViewingApp,
+    walletGetCurrentNetwork,
+    walletGetCurrentAccount,
 
     walletGetNextNonce,
     walletGetBalance,
