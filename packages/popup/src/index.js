@@ -25,7 +25,7 @@ if (
             opacity: 1;
           }
           100% {
-            opacity: .99;
+            opacity: .99999;
           }
         }
       `)
