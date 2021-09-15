@@ -1,6 +1,8 @@
 import create from 'zustand'
 
 const useGlobalStore = create(set => ({
+  FATAL_ERROR: '',
+  setFatalError: e => set({FATAL_ERROR: e?.message || e}),
   // value
   createdGroupName: '',
   createdSeedPhase: '',

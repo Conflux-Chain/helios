@@ -4075,6 +4075,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_zero-account-group@workspace:packages/rpcs/wallet_zeroAccountGroup":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_zero-account-group@workspace:packages/rpcs/wallet_zeroAccountGroup"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/webextension@workspace:packages/webextension":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/webextension@workspace:packages/webextension"
@@ -16569,6 +16577,8 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
     "@fluent-wallet/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey"
     "@fluent-wallet/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
+    "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
+    "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
@@ -16595,6 +16605,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_validate-mnemonic": "workspace:packages/rpcs/wallet_validateMnemonic"
     "@fluent-wallet/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
     "@fluent-wallet/wallet_validate-private-key": "workspace:packages/rpcs/wallet_validatePrivateKey"
+    "@fluent-wallet/wallet_zero-account-group": "workspace:packages/rpcs/wallet_zeroAccountGroup"
     "@fluent-wallet/webextension": "workspace:packages/webextension"
     "@thi.ng/rstream": 6.0.20
     "@thi.ng/rstream-csp": ^2.0.79

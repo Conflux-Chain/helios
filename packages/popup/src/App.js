@@ -1,9 +1,15 @@
-import React, {lazy, Suspense, useEffect, useState} from 'react'
-import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
-import {ProtectedRoute} from './components'
-import {GET_ALL_ACCOUNT_GROUP, GET_WALLET_STATUS} from './constants'
+import {isUndefined} from '@fluent-wallet/checks'
 import {useRPC} from '@fluent-wallet/use-rpc'
+import React, {lazy, Suspense, useEffect} from 'react'
+import {HashRouter as Router, Redirect, Route, Switch} from 'react-router-dom'
+import {ProtectedRoute} from './components'
+import {
+  GET_ALL_ACCOUNT_GROUP,
+  GET_NO_GROUP,
+  GET_WALLET_STATUS,
+} from './constants'
 import './index.css'
+import useGlobalStore from './stores/index.js'
 
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
@@ -19,29 +25,21 @@ const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 const ErrorPage = lazy(() => import('./pages/Error'))
 
 function App() {
-  const [loadingStatus, setLoadingStatus] = useState(true)
-  const [errorStatus, setErrorStatus] = useState(false)
-
-  const [accountAvailability, setAccountAvailability] = useState(false)
-  const [lockStatus, setLockStatus] = useState(true)
-
-  const {data: accountData, error: accountError} = useRPC([
-    ...GET_ALL_ACCOUNT_GROUP,
-  ])
-  const {data: lockData, error: lockError} = useRPC([...GET_WALLET_STATUS])
+  const {data: lockedData, error: lockedError} = useRPC([...GET_WALLET_STATUS])
+  const {data: zeroGroup, error: zeroGroupError} = useRPC([...GET_NO_GROUP])
+  const {error: getAccountGroupError} = useRPC(
+    lockedData === false ? [...GET_ALL_ACCOUNT_GROUP] : null,
+  )
+  const {setFatalError} = useGlobalStore()
 
   useEffect(() => {
-    if (accountError || lockError) {
-      setLoadingStatus(false)
-      setErrorStatus(true)
-      return
-    }
-    if (accountData !== undefined && lockData !== undefined) {
-      setAccountAvailability(!!accountData.length)
-      setLockStatus(lockData)
-      setLoadingStatus(false)
-    }
-  }, [accountData, accountError, lockData, lockError])
+    if (lockedError) setFatalError(lockedError)
+    if (zeroGroupError) setFatalError(zeroGroupError)
+    if (getAccountGroupError) setFatalError(getAccountGroupError)
+  }, [lockedError || zeroGroupError || getAccountGroupError])
+
+  if (isUndefined(lockedData) || isUndefined(zeroGroup))
+    return <div>loading...</div>
 
   return (
     <Suspense
@@ -50,60 +48,56 @@ function App() {
       }
     >
       <div className="h-150 w-93 m-auto light">
-        {loadingStatus ? null : errorStatus ? (
-          <ErrorPage />
-        ) : (
-          <Router>
-            <Switch>
-              <Route exact path="/unlock">
-                <Unlock />
-              </Route>
-              <Route exact path="/welcome">
-                <Welcome />
-              </Route>
+        <Router>
+          <Switch>
+            <Route exact path="/unlock">
+              <Unlock />
+            </Route>
+            <Route exact path="/welcome">
+              <Welcome />
+            </Route>
 
-              <ProtectedRoute
-                hasAccount={accountAvailability}
-                isLocked={lockStatus}
-                exact
-                path="/"
-              >
-                <HomePage />
-              </ProtectedRoute>
-              <Route exact path="/current-seed-phrase">
-                <CurrentSeed />
-              </Route>
-              <Route exact path="/new-seed-phrase">
-                <NewSeed />
-              </Route>
-              <Route exact path="/backup-seed-phrase">
-                <BackupSeed />
-              </Route>
-              <Route exact path="/confirm-seed-phrase">
-                <ConfirmSeed />
-              </Route>
+            <ProtectedRoute
+              hasAccount={!zeroGroup}
+              isLocked={!zeroGroup || lockedData}
+              exact
+              path="/"
+            >
+              <HomePage />
+            </ProtectedRoute>
+            <Route exact path="/current-seed-phrase">
+              <CurrentSeed />
+            </Route>
+            <Route exact path="/new-seed-phrase">
+              <NewSeed />
+            </Route>
+            <Route exact path="/backup-seed-phrase">
+              <BackupSeed />
+            </Route>
+            <Route exact path="/confirm-seed-phrase">
+              <ConfirmSeed />
+            </Route>
 
-              <Route exact path="/set-password">
-                <SetPassword />
-              </Route>
-              <Route exact path="/select-create-type">
-                <SelectCreateType />
-              </Route>
-              <Route exact path="/import-seed-phrase">
-                <ImportSeedPhrase />
-              </Route>
-              <Route exact path="/import-private-key">
-                <ImportPrivateKey />
-              </Route>
-              <Route exact path="/error">
-                <ErrorPage />
-              </Route>
-              <Route path="*">
-                <Redirect to="/error" />
-              </Route>
-            </Switch>
-          </Router>
-        )}
+            <Route exact path="/set-password">
+              <SetPassword />
+            </Route>
+            <Route exact path="/select-create-type">
+              <SelectCreateType />
+            </Route>
+            <Route exact path="/import-seed-phrase">
+              <ImportSeedPhrase />
+            </Route>
+            <Route exact path="/import-private-key">
+              <ImportPrivateKey />
+            </Route>
+            <Route exact path="/error">
+              <ErrorPage />
+            </Route>
+            <Route path="*">
+              <Redirect to="/error" />
+            </Route>
+          </Switch>
+        </Router>
       </div>
     </Suspense>
   )
