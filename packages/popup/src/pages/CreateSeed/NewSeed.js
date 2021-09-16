@@ -6,8 +6,9 @@ import Button from '@fluent-wallet/component-button'
 import {CompWithLabel, TitleNav} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import useGlobalStore from '../../stores'
-import {GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} from '../../constants'
+import {RPC_METHODS} from '../../constants'
 import {useCreatedPasswordGuard} from '../../hooks'
+const {GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
 function NewSeed() {
   useCreatedPasswordGuard()

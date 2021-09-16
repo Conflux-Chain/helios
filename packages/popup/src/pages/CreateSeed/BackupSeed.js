@@ -8,7 +8,8 @@ import {SeedWord} from './components'
 import {TitleNav} from '../../components'
 import {request} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
-import {GENERATE_MNEMONIC} from '../../constants'
+import {RPC_METHODS} from '../../constants'
+const {GENERATE_MNEMONIC} = RPC_METHODS
 
 function BackupSeed() {
   useCreatedPasswordGuard()

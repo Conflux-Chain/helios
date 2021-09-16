@@ -3,13 +3,11 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import React, {lazy, Suspense, useEffect} from 'react'
 import {HashRouter as Router, Redirect, Route, Switch} from 'react-router-dom'
 import {ProtectedRoute} from './components'
-import {
-  GET_ALL_ACCOUNT_GROUP,
-  GET_NO_GROUP,
-  GET_WALLET_LOCKED_STATUS,
-} from './constants'
+import {RPC_METHODS} from './constants'
 import './index.css'
 import useGlobalStore from './stores/index.js'
+const {GET_ALL_ACCOUNT_GROUP, GET_NO_GROUP, GET_WALLET_LOCKED_STATUS} =
+  RPC_METHODS
 
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
@@ -39,8 +37,6 @@ function App() {
     if (zeroGroupError) setFatalError(zeroGroupError)
     if (getAccountGroupError) setFatalError(getAccountGroupError)
   }, [lockedError || zeroGroupError || getAccountGroupError])
-
-  console.log(zeroGroup)
 
   if (isUndefined(lockedData) || isUndefined(zeroGroup))
     return <div>loading...</div>

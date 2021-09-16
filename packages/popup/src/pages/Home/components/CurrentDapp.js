@@ -1,13 +1,13 @@
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {useTranslation} from 'react-i18next'
-import {GET_CURRENT_DAPP, GET_CURRENT_ACCOUNT} from '../../../constants'
+import {RPC_METHODS} from '../../../constants'
+const {GET_CURRENT_DAPP, GET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function CurrentDapp() {
   const {t} = useTranslation()
   const {data: currentDapp} = useRPC([GET_CURRENT_DAPP], undefined, {
     fallbackData: {},
   })
-  console.log(currentDapp)
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })

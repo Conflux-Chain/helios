@@ -6,7 +6,8 @@ import {SeedWord} from './components'
 import {TitleNav} from '../../components'
 import {request, shuffle} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
-import {IMPORT_MNEMONIC} from '../../constants'
+import {RPC_METHODS} from '../../constants'
+const {IMPORT_MNEMONIC} = RPC_METHODS
 
 function ConfirmSeed() {
   useCreatedPasswordGuard()

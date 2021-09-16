@@ -6,16 +6,16 @@ import Button from '@fluent-wallet/component-button'
 import Input from '@fluent-wallet/component-input'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
-import {
+import {RPC_METHODS} from '../../constants'
+import useGlobalStore from '../../stores'
+import {useCreatedPasswordGuard} from '../../hooks'
+import {useSWRConfig} from 'swr'
+const {
   GET_ALL_ACCOUNT_GROUP,
   ACCOUNT_GROUP_TYPE,
   VALIDATE_PRIVATE_KEY,
   IMPORT_PRIVATE_KEY,
-} from '../../constants'
-import useGlobalStore from '../../stores'
-import {useCreatedPasswordGuard} from '../../hooks'
-
-import {useSWRConfig} from 'swr'
+} = RPC_METHODS
 
 function ImportPrivateKey() {
   const {t} = useTranslation()

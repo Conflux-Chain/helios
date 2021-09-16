@@ -1,4 +1,4 @@
-export * from './rpcMethods'
+export * as RPC_METHODS from './rpcMethods'
 
 const LANGUAGES = ['en', 'zh-CN']
 const PASSWORD_REG_EXP = /^(?=.*\d)(?=.*[a-zA-Z])[\da-zA-Z~!@#$%^&*]{8,16}$/

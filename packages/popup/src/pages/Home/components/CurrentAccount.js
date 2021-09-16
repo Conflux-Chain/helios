@@ -16,10 +16,10 @@ import {
   shortenCfxAddress,
   shortenEthAddress,
 } from '@fluent-wallet/shorten-address'
-import {
-  GET_CURRENT_ACCOUNT,
-  // GET_CURRENT_NETWORK,
-} from '../../../constants'
+import {RPC_METHODS} from '../../../constants'
+const {
+  GET_CURRENT_ACCOUNT, // GET_CURRENT_NETWORK
+} = RPC_METHODS
 
 function CurrentAccount() {
   const [copied, setCopied] = useState(false)
