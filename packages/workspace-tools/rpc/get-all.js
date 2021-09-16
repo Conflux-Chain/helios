@@ -10,7 +10,9 @@ const getAllRpcs = async (rpcdir, filter = () => true) => {
   if (rpcdir instanceof URL) rpcdir = fileURLToPath(rpcdir)
   const dirs = (
     await Promise.all(
-      (await promisify(readdir)(rpcdir)).map(async p => {
+      (
+        await promisify(readdir)(rpcdir)
+      ).map(async p => {
         if (!(await isValidRpcDir(resolve(rpcdir, p)))) return false
         return await parseRpcPackage(resolve(rpcdir, p))
       }),

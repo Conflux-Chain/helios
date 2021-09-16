@@ -5,6 +5,7 @@
   "packageManager": "yarn@3.0.1",
   "version": "0.0.1",
   "dependencies": {
-    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema",
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

@@ -2,5 +2,8 @@
   "name": "@fluent-wallet/checks",
   "version": "0.0.2",
   "type": "module",
-  "main": "index.js"
+  "main": "index.js",
+  "dependencies": {
+    "@thi.ng/checks": "2.9.11"
+  }
 }

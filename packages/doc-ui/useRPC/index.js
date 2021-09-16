@@ -17,10 +17,12 @@ const createRPC = rpcName =>
       const {rpcName} = get()
       if (!rpcName) return
       if (RPCS[rpcName]) return set({...RPCS[rpcName], loadingRPC: false})
-      const rpcPkgName = `${rpcName.slice(
-        0,
-        rpcName.lastIndexOf('_') + 1,
-      )}${paramCase(rpcName.slice(rpcName.lastIndexOf('_') + 1))}`
+      const rpcNameSplit = rpcName.split('_')
+      const [rpcPkgNamePrefix, ...rpcPkgNameRest] = rpcNameSplit
+      const rpcPkgName = rpcPkgNameRest.reduce(
+        (acc, n) => acc + '_' + paramCase(n),
+        rpcPkgNamePrefix,
+      )
 
       window &&
         import(
@@ -31,6 +33,13 @@ const createRPC = rpcName =>
             return set({...rpc, loadingRPC: false})
           })
           .catch(err => {
+            if (
+              /\[Package Error\]/.test(err?.message) &&
+              /skypack\.dev/.test(err?.fileName)
+            ) {
+              console.error(err)
+              return
+            }
             const {_retryCount, setRPC} = get()
             if (_retryCount < 5) {
               set(({_retryCount}) => ({_retryCount: _retryCount + 1}))

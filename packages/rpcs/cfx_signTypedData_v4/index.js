@@ -35,15 +35,15 @@ function validateAndFormatTypedDataString({
   return typedData
 }
 
-const {catn, ethHexAddress, base32UserAddress, stringp} = spec
+const {cat, ethHexAddress, base32UserAddress, stringp} = spec
 const typedDataSpec = getTypedDataSpec('eth', spec)
 
 export const gen = {
   schemas: type => {
     const publicSchema = [
-      catn,
-      ['from', type === 'cfx' ? base32UserAddress : ethHexAddress],
-      ['typedDataString', stringp],
+      cat,
+      type === 'cfx' ? base32UserAddress : ethHexAddress,
+      [stringp, {doc: 'typedDataString'}],
     ]
     const innerSchema = [
       map,

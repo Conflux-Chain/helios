@@ -1,5 +1,5 @@
 import {
-  catn,
+  cat,
   map,
   stringp,
   or,
@@ -14,9 +14,9 @@ import {decode} from '@fluent-wallet/base32-address'
 export const NAME = 'personal_sign'
 
 const innerSchema = [
-  catn,
-  ['message', stringp],
-  ['from', [or, ethHexAddress, base32UserAddress]],
+  cat,
+  [stringp, {doc: 'message string to sign'}],
+  [or, ethHexAddress, base32UserAddress],
 ]
 
 const publicSchema = [
