@@ -184,6 +184,29 @@ describe('integration test', function () {
         ).toBe('1337')
       })
     })
+    describe('cfx_estimateGasAndCollateral', function () {
+      test('cfx_estimateGasAndCollateral', async () => {
+        res = await request({
+          method: 'cfx_estimateGasAndCollateral',
+          params: [{}],
+        })
+        expect(res?.result).toBeDefined()
+        expect(res.result.gasLimit).toBeDefined()
+        expect(res.result.gasUsed).toBeDefined()
+        expect(res.result.storageCollateralized).toBeDefined()
+      })
+    })
+    describe('eth_estimateGas', function () {
+      test('eth_estimateGas', async () => {
+        res = await request({
+          method: 'eth_estimateGas',
+          params: [{}],
+          networkName: ETH_MAINNET_NAME,
+        })
+        expect(res?.result).toBeDefined()
+      })
+    })
+
     describe('wallet_detectNetworkType', function () {
       test('wallet_detectNetworkType', async () => {
         expect(

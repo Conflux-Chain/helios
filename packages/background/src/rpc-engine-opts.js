@@ -30,6 +30,8 @@ import {
   IS_PROD_MODE,
   IS_TEST_MODE,
 } from '@fluent-wallet/inner-utils'
+import * as cfxEstimateGasAndCollateral from '@fluent-wallet/cfx_estimate-gas-and-collateral'
+import * as ethEstimateGas from '@fluent-wallet/eth_estimate-gas'
 import * as netVersion from '@fluent-wallet/net_version'
 import * as personalSign from '@fluent-wallet/personal_sign'
 import * as walletAddConfluxChain from '@fluent-wallet/wallet_add-conflux-chain'
@@ -163,6 +165,7 @@ export const rpcEngineOpts = {
     cfxChainId,
     cfxAccounts,
     cfxGasPrice,
+    cfxEstimateGasAndCollateral,
     walletAddConfluxChain,
     walletSwitchConfluxChain,
 
@@ -174,6 +177,7 @@ export const rpcEngineOpts = {
     netVersion,
     ethAccounts,
     ethGasPrice,
+    ethEstimateGas,
     ethBlockNumber,
     walletAddEthereumChain,
     walletSwitchEthereumChain,

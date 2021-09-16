@@ -1,0 +1,7 @@
+{
+  "name": "@fluent-wallet/eth-transaction-schema",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.0.1",
+  "version": "0.0.0"
+}

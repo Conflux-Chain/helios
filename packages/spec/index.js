@@ -66,3 +66,16 @@ export const nickname = [
     doc: 'Nickname of this account, a string with 1 to 128 characters',
   },
 ]
+
+export const optionalMapKey = s => {
+  if (s.length === 3) {
+    const [k, opt, v] = s
+    return [k, {...opt, optional: true}, v]
+  }
+  if (s.length === 2) {
+    const [k, v] = s
+    return [k, {optional: true}, v]
+  }
+
+  throw new Error('unsupported spec')
+}
