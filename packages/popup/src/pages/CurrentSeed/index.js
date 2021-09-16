@@ -3,11 +3,15 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
-import {Selected} from '@fluent-wallet/component-icons'
+import {SelectedTowTone} from '@fluent-wallet/component-icons'
 import {CompWithLabel, TitleNav} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
-import {GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} from '../../constants'
+import {
+  GET_ALL_ACCOUNT_GROUP,
+  ACCOUNT_GROUP_TYPE,
+  CREATE_ACCOUNT,
+} from '../../constants'
 
 function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
   const {t} = useTranslation()
@@ -33,7 +37,7 @@ function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
             : t('manyAccounts', {accountNum: length})}
         </span>
       </div>
-      {idx === selectedGroupIdx && <Selected className="w-5 h-5" />}
+      {idx === selectedGroupIdx && <SelectedTowTone className="w-5 h-5" />}
     </div>
   )
 }
@@ -47,8 +51,9 @@ SeedPhrase.propTypes = {
 
 function CurrentSeed() {
   const {t} = useTranslation()
+  console.log(ACCOUNT_GROUP_TYPE.HD)
   const {data: hdGroup, mutate: groupMutate} = useRPC(
-    [GET_ALL_ACCOUNT_GROUP.ACCOUNT_GROUP_TYPE.HD],
+    [GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
     {type: ACCOUNT_GROUP_TYPE.HD},
     {fallbackData: []},
   )
@@ -72,7 +77,7 @@ function CurrentSeed() {
   const onCreate = () => {
     if (creatingAccount) return
     setCreatingAccount(true)
-    return request('wallet_createAccount', {
+    return request(CREATE_ACCOUNT, {
       accountGroupId: hdGroup[selectedGroupIdx].eid,
       nickname: accountName || accountNamePlaceholder,
     }).then(({error}) => {

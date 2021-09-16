@@ -67,6 +67,7 @@ const en = {
     noConnectedDapp: 'Not connected to current website',
     connected: 'Connected',
     authorizeCurrentAccount: 'Authorize {{currentAccount}}?',
+    copiedSuccess: 'Copied success',
   },
 }
 

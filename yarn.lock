@@ -2995,6 +2995,8 @@ __metadata:
 "@fluent-wallet/component-alert@workspace:packages/ui/components/Alert":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-alert@workspace:packages/ui/components/Alert"
+  dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -3013,6 +3015,8 @@ __metadata:
 "@fluent-wallet/component-checkbox@workspace:packages/ui/components/Checkbox":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-checkbox@workspace:packages/ui/components/Checkbox"
+  dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -3023,6 +3027,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-dropdown@workspace:packages/ui/components/Dropdown"
   dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     rc-dropdown: 3.2.0
   peerDependencies:
     react: ^17
@@ -3057,6 +3062,8 @@ __metadata:
 "@fluent-wallet/component-loading@workspace:packages/ui/components/Loading":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-loading@workspace:packages/ui/components/Loading"
+  dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -3067,6 +3074,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-menu@workspace:packages/ui/components/Menu"
   dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     rc-notification: 4.5.7
   peerDependencies:
     react: ^17
@@ -3078,6 +3086,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-message@workspace:packages/ui/components/Message"
   dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     "@fluent-wallet/component-loading": "workspace:packages/ui/components/Loading"
     rc-notification: 4.5.7
   peerDependencies:
@@ -3090,6 +3099,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-modal@workspace:packages/ui/components/Modal"
   dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     react-use: 17.2.4
   peerDependencies:
     react: ^17
@@ -3100,6 +3110,8 @@ __metadata:
 "@fluent-wallet/component-notification@workspace:packages/ui/components/Notification":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-notification@workspace:packages/ui/components/Notification"
+  dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -3120,6 +3132,8 @@ __metadata:
 "@fluent-wallet/component-tag@workspace:packages/ui/components/Tag":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-tag@workspace:packages/ui/components/Tag"
+  dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -3140,15 +3154,6 @@ __metadata:
   resolution: "@fluent-wallet/component-tooltip@workspace:packages/ui/components/Tooltip"
   dependencies:
     rc-tooltip: 5.1.1
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@fluent-wallet/component-wrap-icon@workspace:packages/ui/components/WrapIcon":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/component-wrap-icon@workspace:packages/ui/components/WrapIcon"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -16635,6 +16640,8 @@ fsevents@~2.1.2:
     "@fluent-wallet/component-dropdown": "workspace:packages/ui/components/Dropdown"
     "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     "@fluent-wallet/component-input": "workspace:packages/ui/components/Input"
+    "@fluent-wallet/component-modal": "workspace:packages/ui/components/Modal"
+    "@fluent-wallet/component-toast": "workspace:packages/ui/components/Toast"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
     i18next: 20.4.0

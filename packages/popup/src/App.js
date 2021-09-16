@@ -40,6 +40,8 @@ function App() {
     if (getAccountGroupError) setFatalError(getAccountGroupError)
   }, [lockedError || zeroGroupError || getAccountGroupError])
 
+  console.log(zeroGroup)
+
   if (isUndefined(lockedData) || isUndefined(zeroGroup))
     return <div>loading...</div>
 
@@ -61,7 +63,7 @@ function App() {
 
             <ProtectedRoute
               hasAccount={!zeroGroup}
-              isLocked={!zeroGroup || lockedData}
+              isLocked={!zeroGroup && lockedData}
               exact
               path="/"
             >

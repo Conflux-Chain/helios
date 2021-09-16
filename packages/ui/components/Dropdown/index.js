@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ReactDropdown from 'rc-dropdown'
 import 'rc-dropdown/assets/index.css'
-import ArrowDownOutlined from './assets/ArrowDownOutlined'
+import {DownOutlined} from '@fluent-wallet/component-icons'
 
 const RcDropdown = ReactDropdown?.default || ReactDropdown
 function Dropdown({overlay, trigger, disabled, placement, children, ...props}) {
@@ -33,7 +33,7 @@ function Dropdown({overlay, trigger, disabled, placement, children, ...props}) {
       typeof expandIcon !== 'undefined' && React.isValidElement(expandIcon) ? (
         expandIcon
       ) : (
-        <ArrowDownOutlined className="w-4 h-4 text-gry-40" />
+        <DownOutlined className="w-4 h-4 text-gray-40" />
       )
 
     const fixedModeOverlay =

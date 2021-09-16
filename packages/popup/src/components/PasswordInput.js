@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
 import Input from '@fluent-wallet/component-input'
-import {EyeClose, EyeOpen} from '@fluent-wallet/component-icons'
+import {EyeInvisibleOutlined, EyeOutlined} from '@fluent-wallet/component-icons'
 
 const PasswordInput = ({
   validateInputValue,
@@ -29,9 +29,9 @@ const PasswordInput = ({
       value={value}
       suffix={
         eyeStatus === 'close' ? (
-          <EyeClose className="w-4 h-4" />
+          <EyeInvisibleOutlined className="w-4 h-4" />
         ) : (
-          <EyeOpen className="w-4 h-4" />
+          <EyeOutlined className="w-4 h-4" />
         )
       }
       onSuffixClick={onSuffixClick}

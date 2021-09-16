@@ -6,6 +6,7 @@ import {SeedWord} from './components'
 import {TitleNav} from '../../components'
 import {request, shuffle} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
+import {IMPORT_MNEMONIC} from '../../constants'
 
 function ConfirmSeed() {
   useCreatedPasswordGuard()
@@ -44,7 +45,7 @@ function ConfirmSeed() {
     if (importingMnemonic) return
     setMnemonicError('')
     setImportingMnemonic(true)
-    request('wallet_importMnemonic', {
+    request(IMPORT_MNEMONIC, {
       mnemonic,
       password: createdPassword,
     }).then(({error}) => {

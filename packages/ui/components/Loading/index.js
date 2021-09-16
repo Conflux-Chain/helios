@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import LoadingSvg from './assets/Loading'
+import {LoadingOutlined} from '@fluent-wallet/component-icons'
 
 function Loading({className = ''}) {
   return (
-    <LoadingSvg
+    <LoadingOutlined
       data-testid="loading-wrapper"
       className={`animate-spin text-gray-20 w-12 h-12 ${className}`}
     />

@@ -6,7 +6,12 @@ import Button from '@fluent-wallet/component-button'
 import Input from '@fluent-wallet/component-input'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
-import {GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} from '../../constants'
+import {
+  GET_ALL_ACCOUNT_GROUP,
+  ACCOUNT_GROUP_TYPE,
+  VALIDATE_PRIVATE_KEY,
+  IMPORT_PRIVATE_KEY,
+} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
 
@@ -53,29 +58,27 @@ function ImportPrivateKey() {
 
     if (!creatingAccount) {
       setCreatingAccount(true)
-      request('wallet_validatePrivateKey', {privateKey: keygen}).then(
-        ({result}) => {
-          if (result?.valid) {
-            return request('wallet_importPrivateKey', {
-              password: createdPassword,
-              nickname: name || keygenNamePlaceholder,
-              privateKey: keygen,
-            }).then(({error, result}) => {
-              setCreatingAccount(false)
-              if (result) {
-                dispatchMutate()
-                history.push('/')
-              }
-              if (error) {
-                setKeygenErrorMessage(error.message.split('\n')[0])
-              }
-            })
-          }
-          // TODO: replace error msg
-          setKeygenErrorMessage('Invalid or inner error!')
-          setCreatingAccount(false)
-        },
-      )
+      request(VALIDATE_PRIVATE_KEY, {privateKey: keygen}).then(({result}) => {
+        if (result?.valid) {
+          return request(IMPORT_PRIVATE_KEY, {
+            password: createdPassword,
+            nickname: name || keygenNamePlaceholder,
+            privateKey: keygen,
+          }).then(({error, result}) => {
+            setCreatingAccount(false)
+            if (result) {
+              dispatchMutate()
+              history.push('/')
+            }
+            if (error) {
+              setKeygenErrorMessage(error.message.split('\n')[0])
+            }
+          })
+        }
+        // TODO: replace error msg
+        setKeygenErrorMessage('Invalid or inner error!')
+        setCreatingAccount(false)
+      })
     }
   }
 

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {Close} from '@fluent-wallet/component-icons'
+import {CloseOutlined} from '@fluent-wallet/component-icons'
 
 function SeedWord({idx, word, closable = true, onClose, className = ''}) {
   return (
@@ -9,7 +9,7 @@ function SeedWord({idx, word, closable = true, onClose, className = ''}) {
       <span className="absolute left-1.5 text-gray-40 text-2xs">{idx}</span>
       {word && <span className="text-primary">{word}</span>}
       {closable && word && (
-        <Close
+        <CloseOutlined
           onClick={() => onClose && onClose()}
           className="w-3 h-3 text-gray-40"
         />

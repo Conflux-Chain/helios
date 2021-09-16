@@ -1,8 +1,9 @@
 import {useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {Add} from '@fluent-wallet/component-icons'
+import {PlusOutlined} from '@fluent-wallet/component-icons'
 import {formatBalance} from '@fluent-wallet/data-format'
+import {WrapIcon} from '../../../components'
 
 function TokenItem({
   icon,
@@ -13,10 +14,8 @@ function TokenItem({
   useEffect(() => {
     const balanceDom = document.getElementById('balance')
     const contentWidth = balanceDom.offsetWidth
-    console.log(contentWidth)
     if (contentWidth > 176) {
       const fontSize = (176 / contentWidth) * 14
-      console.log(fontSize, parseInt(fontSize * 100) / 100)
       balanceDom.style.fontSize = parseInt(fontSize * 100) / 100 + 'px'
     }
   }, [balance])
@@ -49,9 +48,9 @@ function TokenList() {
     <div className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 pt-3 relative">
       <span className="flex items-center justify-between mb-2 text-primary text-xs font-medium">
         {t('assets')}
-        <span className="w-5 h-5 bg-white shadow-fluent-1 rounded-full flex items-center justify-center">
-          <Add className="w-3.5 h-3.5 text-primary" />
-        </span>
+        <WrapIcon size="w-5 h-5">
+          <PlusOutlined className="w-3 h-3 text-primary" />
+        </WrapIcon>
       </span>
       <div className="flex flex-1 flex-col overflow-y-auto">
         <TokenItem />
