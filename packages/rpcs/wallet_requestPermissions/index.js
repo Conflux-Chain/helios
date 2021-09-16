@@ -1,20 +1,28 @@
 import * as spec from '@fluent-wallet/spec'
 import {generateSchema as genPermissionSchema} from '@fluent-wallet/wallet-permission'
 
-const {catn, cat, map, dbid, or, zeroOrMore} = spec
+const {catn, cat, map, dbid, or, zeroOrMore, oneOrMore} = spec
 
 export const NAME = 'wallet_requestPermissions'
 
 const permissionSchema = genPermissionSchema(spec)
 const publicSchema = [cat, permissionSchema]
 
-const innerSchema = [
+const responseToAppAuthSchema = [
   map,
   {closed: true, doc: 'used to approve/reject the request'},
   ['authReqId', dbid],
   ['permissions', publicSchema],
   ['accounts', [zeroOrMore, [catn, ['accountId', dbid]]]],
 ]
+const authWithinWalletSchema = [
+  map,
+  {closed: true, doc: 'used to grant permissions to app from wallet'},
+  ['siteId', dbid],
+  ['permissions', publicSchema],
+  ['accounts', [oneOrMore, [catn, ['accountId', dbid]]]],
+]
+const innerSchema = [or, responseToAppAuthSchema, authWithinWalletSchema]
 
 export const schemas = {
   input: [or, publicSchema, innerSchema],
@@ -29,6 +37,7 @@ export const permissions = {
   ],
   db: [
     'upsertAppPermissions',
+    'getSiteById',
     'getOneSite',
     'getAuthReqById',
     'getOneAccount',
@@ -52,7 +61,13 @@ const formatPermissions = perms => {
 
 export const main = async ({
   Err: {InvalidRequest, InvalidParams},
-  db: {upsertAppPermissions, getAuthReqById, getAccountById, getOneAccount},
+  db: {
+    upsertAppPermissions,
+    getAuthReqById,
+    getAccountById,
+    getOneAccount,
+    getSiteById,
+  },
   rpcs: {
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
@@ -83,32 +98,47 @@ export const main = async ({
   }
 
   if (_popup) {
-    if (!params.authReqId)
-      throw InvalidParams(`Invalid auth req id ${params.authReqId}`)
+    if (params.siteId && !params.accounts.length)
+      throw InvalidParams('Must have at least 1 accounts')
+
     const {authReqId, permissions} = params
-    const authReq = getAuthReqById(authReqId)
-    if (!authReq) throw InvalidParams(`Invalid auth req id ${params.authReqId}`)
-    if (!params.accounts.length)
-      return await wallet_userRejectedAuthRequest({authReqId})
+
+    let siteId = params.siteId
+
+    if (authReqId) {
+      const authReq = getAuthReqById(authReqId)
+      if (!authReq) throw InvalidParams(`Invalid auth req id ${authReqId}`)
+      if (!params.accounts.length)
+        return await wallet_userRejectedAuthRequest({authReqId})
+
+      siteId = authReq.site.eid
+    }
+
+    if (siteId && !getSiteById(siteId))
+      throw InvalidParams(`Invalid site id ${siteId}`)
 
     const accounts = params.accounts.map(getAccountById)
+
     for (let i = 0; i < accounts.length; i++) {
       if (!accounts[i])
         throw InvalidParams(`Invalid account id ${params.accounts[i]}`)
     }
-    const {site} = authReq
+
     let currentAccount = getOneAccount({selected: true}).eid
     if (!accounts.includes(currentAccount)) currentAccount = accounts[0].eid
 
     const perms = formatPermissions(permissions)
     upsertAppPermissions({
-      siteId: site.eid,
+      siteId,
       accounts: accounts.map(a => a.eid),
       currentAccount,
       currentNetwork: network.eid,
       perms: perms[0],
     })
 
-    return await wallet_userApprovedAuthRequest({authReqId, res: perms})
+    if (authReqId)
+      return await wallet_userApprovedAuthRequest({authReqId, res: perms})
+
+    return null
   }
 }

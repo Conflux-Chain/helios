@@ -993,6 +993,48 @@ describe('integration test', function () {
             parentCapabilities.includes('wallet_accounts'),
         ).toBeTruthy()
       })
+      test('from popup', async () => {
+        await Promise.all(
+          [0, 0, 0].map(() =>
+            request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
+              request({
+                method: 'wallet_importPrivateKey',
+                params: {privateKey: result, password},
+              }),
+            ),
+          ),
+        )
+
+        expect(db.getApp().length).toBe(0)
+
+        const [a1, a2, a3] = db.getAccount()
+
+        res = await request({
+          method: 'wallet_requestPermissions',
+          params: {
+            siteId: db.getSite()[0].eid,
+            permissions: [{eth_accounts: {}}],
+            accounts: [a1.eid, a2.eid],
+          },
+          _popup: true,
+        })
+
+        expect(db.getApp().length).toBe(1)
+        const app = db.getApp()[0]
+        // app is from the right site
+        expect(app.site.eid).toBe(db.getSite()[0].eid)
+        // app has the right permissions
+        expect(app.perms).toStrictEqual({wallet_accounts: {}, wallet_basic: {}})
+        // app has the right authed accounts
+        expect(
+          app.account.map(a => [a1.eid, a2.eid].includes(a.eid)),
+        ).toStrictEqual([true, true])
+        expect(app.account.map(a => a.eid).includes(a3.eid)).toBeFalsy()
+        // app has the right currentAccount
+        expect([a1.eid, a2.eid].includes(app.currentAccount.eid)).toBe(true)
+        expect(app.currentAccount.selected).toBe(true)
+        expect(res.result).toBe(null)
+      })
     })
     describe('wallet_getPendingAuthRequest', function () {
       test('wallet_getPendingAuthRequest', async () => {
