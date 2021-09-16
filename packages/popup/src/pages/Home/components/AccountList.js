@@ -4,6 +4,7 @@ import {useHistory} from 'react-router-dom'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {GET_ALL_ACCOUNT_GROUP} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
+import {request} from '../../../utils'
 
 // TODO: remove when avatar programme confirmed
 // eslint-disable-next-line react/prop-types

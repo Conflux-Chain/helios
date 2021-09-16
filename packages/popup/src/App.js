@@ -60,7 +60,7 @@ function App() {
 
             <ProtectedRoute
               hasAccount={!zeroGroup}
-              isLocked={!zeroGroup || lockedData}
+              isLocked={!zeroGroup && lockedData}
               exact
               path="/"
             >

@@ -1,4 +1,12 @@
 import PropTypes from 'prop-types'
+import {useRPC} from '@fluent-wallet/use-rpc'
+import {
+  GET_NETWORK,
+  SET_CURRENT_NETWORK,
+  GET_CURRENT_NETWORK,
+} from '../../../constants'
+import {request} from '../../../utils'
+import {useSWRConfig} from 'swr'
 
 // TODO: remove when avatar programme confirmed
 // eslint-disable-next-line react/prop-types
@@ -13,17 +21,28 @@ const networkTypeColorObj = {
   custom: 'bg-[#F0FDFC] text-[#83DBC6]',
 }
 
-function NetworkItem({networkName, networkType, networkIcon, closeAction}) {
+function NetworkItem({
+  networkName,
+  networkType,
+  networkIcon,
+  closeAction,
+  networkId,
+}) {
+  const {mutate} = useSWRConfig()
   const networkTypeColor = networkTypeColorObj[networkType] || ''
-  const onClickItem = () => {
-    // TODO: set zustand
-    closeAction && closeAction()
+  const onChangeNetwork = () => {
+    request(SET_CURRENT_NETWORK, [networkId]).then(({result}) => {
+      result && closeAction && closeAction()
+      mutate([GET_CURRENT_NETWORK])
+      // TODO: need deal with error condition
+    })
   }
+
   return (
     <div
       aria-hidden="true"
       className="bg-gray-0 mt-4 h-15 flex items-center pl-3.5 rounded relative cursor-pointer"
-      onClick={onClickItem}
+      onClick={onChangeNetwork}
     >
       <div className="w-8 h-8 border border-solid border-gray-20 rounded-full text-center">
         {networkIcon}
@@ -42,34 +61,40 @@ function NetworkItem({networkName, networkType, networkIcon, closeAction}) {
 NetworkItem.propTypes = {
   networkName: PropTypes.string.isRequired,
   networkType: PropTypes.string.isRequired,
+  networkId: PropTypes.number.isRequired,
   networkIcon: PropTypes.element.isRequired,
   closeAction: PropTypes.func,
 }
 
 function NetworkList({closeAction}) {
-  // TODO: get all network
-  return (
-    <div>
-      <NetworkItem
-        networkName="Conflux Tethys"
-        networkType="mainnet"
-        closeAction={closeAction}
-        networkIcon={<TemporaryIcon className="w-7 h-7 mt-px" />}
-      />
-      <NetworkItem
-        networkName="Conflux Tethys"
-        networkType="testnet"
-        closeAction={closeAction}
-        networkIcon={<TemporaryIcon className="w-7 h-7 mt-px" />}
-      />
-      <NetworkItem
-        networkName="et21231"
-        networkType="custom"
-        closeAction={closeAction}
-        networkIcon={<TemporaryIcon className="w-7 h-7 mt-px" />}
-      />
-    </div>
+  const {data: networkData} = useRPC(
+    [GET_NETWORK],
+    {},
+    {
+      fallbackData: [],
+    },
   )
+  // TODO: replace type and judge custom by builtin not true
+  return networkData.map(network => (
+    <NetworkItem
+      key={network.eid}
+      networkId={network.eid}
+      networkName={network.name}
+      networkType="mainnet"
+      closeAction={closeAction}
+      networkIcon={
+        network.icon ? (
+          <img
+            alt="network-icon"
+            className="w-7 h-7 mt-px"
+            src="network.icon"
+          />
+        ) : (
+          <TemporaryIcon className="w-7 h-7 mt-px" />
+        )
+      }
+    />
+  ))
 }
 
 NetworkList.propTypes = {

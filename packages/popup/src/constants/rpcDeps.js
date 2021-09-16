@@ -6,3 +6,5 @@ export const GET_NO_GROUP = ['wallet_zeroAccountGroup']
 
 export const GET_CURRENT_NETWORK = 'wallet_getCurrentNetwork'
 export const GET_CURRENT_ACCOUNT = 'wallet_getCurrentAccount'
+export const GET_NETWORK = 'wallet_getNetwork'
+export const SET_CURRENT_NETWORK = 'wallet_setCurrentNetwork'
