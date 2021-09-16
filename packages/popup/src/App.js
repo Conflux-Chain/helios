@@ -74,10 +74,8 @@ function App() {
               isLocked={!zeroGroup && lockedData}
               exact
               path={HOME}
-            >
-              <HomePage />
-            </ProtectedRoute>
-
+              component={HomePage}
+            />
             <Route exact path={CURRENT_SEED_PHRASE} component={CurrentSeed} />
             <Route exact path={NEW_SEED_PHRASE} component={NewSeed} />
             <Route exact path={BACKUP_SEED_PHRASE} component={BackupSeed} />
