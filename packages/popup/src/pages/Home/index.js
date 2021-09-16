@@ -1,9 +1,21 @@
 import {useState} from 'react'
 import {AccountList, NetworkList, ActionSheet} from './components'
+import {useQuery} from '../../hooks/'
+import {useEffectOnce} from 'react-use'
+import {useHistory} from 'react-router-dom'
 
 const HomePage = () => {
   const [accountStatus, setAccountStatus] = useState(false)
   const [networkStatus, setNetworkStatus] = useState(false)
+  const query = useQuery()
+  const history = useHistory()
+
+  useEffectOnce(() => {
+    if (query.get('open') === 'account-list') {
+      history.replace('')
+      setAccountStatus(true)
+    }
+  })
 
   return (
     <div className="App h-full relative overflow-hidden">

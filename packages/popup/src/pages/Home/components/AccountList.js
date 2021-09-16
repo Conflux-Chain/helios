@@ -48,6 +48,10 @@ function AccountList() {
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([...GET_ALL_ACCOUNT_GROUP])
   const history = useHistory()
+  const onAddAccount = () => {
+    history.push('?open=account-list')
+    history.push('/select-create-type')
+  }
 
   return (
     <>
@@ -59,9 +63,7 @@ function AccountList() {
       <Button
         color="transparent"
         className="w-full border-dashed border-gray-40 mt-3 text-gray-80"
-        onClick={() => {
-          history.push('/select-create-type')
-        }}
+        onClick={onAddAccount}
       >
         {t('addAccount')}
       </Button>

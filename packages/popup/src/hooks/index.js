@@ -1,6 +1,6 @@
 import {useEffect} from 'react'
 import useGlobalStore from '../stores'
-import {useHistory} from 'react-router-dom'
+import {useHistory, useLocation} from 'react-router-dom'
 
 export const useCreatedPasswordGuard = () => {
   const createdPassword = useGlobalStore(state => state.createdPassword)
@@ -11,4 +11,8 @@ export const useCreatedPasswordGuard = () => {
       history.push('/')
     }
   }, [createdPassword, history])
+}
+
+export const useQuery = () => {
+  return new URLSearchParams(useLocation().search)
 }
