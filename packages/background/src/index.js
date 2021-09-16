@@ -75,8 +75,8 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 // # initialize
 // ## initialize db
 ;(async () => {
-  const {request} = await initBG()
   if (IS_DEV_MODE) {
+    const {request} = await initBG()
     console.log(
       'wallet_unlock',
       await request({

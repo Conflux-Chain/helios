@@ -6,6 +6,6 @@
   "dependencies": {
     "@fluent-wallet/checks": "workspace:packages/checks",
     "@fluent-wallet/transducers": "workspace:packages/transducers",
-    "@thi.ng/rstream": "6.0.20"
+    "@thi.ng/rstream": "6.0.21"
   }
 }
