@@ -2,9 +2,10 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {useRPC} from '@fluent-wallet/use-rpc'
-import {GET_ALL_ACCOUNT_GROUP} from '../../../constants'
+import {GET_ALL_ACCOUNT_GROUP, ROUTES} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../../../utils'
+const {SELECT_CREATE_TYPE} = ROUTES
 
 // TODO: remove when avatar programme confirmed
 // eslint-disable-next-line react/prop-types
@@ -50,7 +51,7 @@ function AccountList() {
   const history = useHistory()
   const onAddAccount = () => {
     history.push('?open=account-list')
-    history.push('/select-create-type')
+    history.push(SELECT_CREATE_TYPE)
   }
 
   return (

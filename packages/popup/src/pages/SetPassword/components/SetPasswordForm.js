@@ -5,7 +5,9 @@ import {PasswordInput} from '../../../components'
 import useGlobalStore from '../../../stores'
 import Button from '@fluent-wallet/component-button'
 import {validatePasswordReg} from '../../../utils'
+import {ROUTES} from '../../../constants'
 
+const {SELECT_CREATE_TYPE} = ROUTES
 function SetPasswordForm() {
   const history = useHistory()
   const {t} = useTranslation()
@@ -37,7 +39,7 @@ function SetPasswordForm() {
   const onCreate = () => {
     if (password && confirmPassword) {
       setCreatedPassword(confirmPassword)
-      history.push('/select-create-type')
+      history.push(SELECT_CREATE_TYPE)
     }
   }
 

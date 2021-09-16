@@ -1,27 +1,21 @@
 import PropTypes from 'prop-types'
 import {Redirect, Route} from 'react-router-dom'
 import useGlobalStore from '../stores/index.js'
-import {getRouteWithAuthInfo} from '../utils'
+import {ROUTES} from '../constants'
+const {ERROR, UNLOCK, WELCOME} = ROUTES
 
-const ProtectedRoute = ({children, hasAccount, isLocked, ...rest}) => {
+const ProtectedRoute = ({hasAccount, isLocked, ...rest}) => {
   const {FATAL_ERROR} = useGlobalStore()
-
-  if (FATAL_ERROR)
-    return (
-      <Route>
-        <Redirect to="/error" />
-      </Route>
-    )
-
-  return (
-    <Route
-      {...rest}
-      render={() => {
-        const to = getRouteWithAuthInfo(hasAccount, isLocked)
-        return !to ? children : <Redirect to={to} />
-      }}
-    />
-  )
+  switch (true) {
+    case FATAL_ERROR:
+      return <Redirect to={{pathname: ERROR}} />
+    case !hasAccount:
+      return <Redirect to={{pathname: WELCOME}} />
+    case isLocked:
+      return <Redirect to={{pathname: UNLOCK}} />
+    default:
+      return <Route {...rest} />
+  }
 }
 
 ProtectedRoute.propTypes = {

@@ -3,10 +3,11 @@ import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {GET_WALLET_STATUS} from '../../constants'
+import {GET_WALLET_STATUS, ROUTES} from '../../constants'
 import {useSWRConfig} from 'swr'
 import {request, validatePasswordReg} from '../../utils'
 
+const {HOME} = ROUTES
 const UnlockPage = () => {
   const history = useHistory()
   const {t} = useTranslation()
@@ -24,7 +25,7 @@ const UnlockPage = () => {
         if (error) setErrorMessage(error.message.split('\n')[0])
         if (result) {
           mutate([...GET_WALLET_STATUS])
-          history.push('/')
+          history.push(HOME)
         }
       })
     }

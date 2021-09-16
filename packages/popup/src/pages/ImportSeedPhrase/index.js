@@ -6,11 +6,15 @@ import Button from '@fluent-wallet/component-button'
 import Input from '@fluent-wallet/component-input'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
-import {GET_HD_ACCOUNT_GROUP, GET_ALL_ACCOUNT_GROUP} from '../../constants'
+import {
+  GET_HD_ACCOUNT_GROUP,
+  GET_ALL_ACCOUNT_GROUP,
+  ROUTES,
+} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
-
 import {useSWRConfig} from 'swr'
+const {HOME} = ROUTES
 
 function ImportSeedPhrase() {
   const {t} = useTranslation()
@@ -70,7 +74,7 @@ function ImportSeedPhrase() {
             setCreatingAccount(false)
             if (result) {
               dispatchMutate()
-              history.push('/')
+              history.push(HOME)
             }
             if (error) {
               setKeygenErrorMessage(error.message.split('\n')[0])

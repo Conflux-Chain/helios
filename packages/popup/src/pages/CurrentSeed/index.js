@@ -7,7 +7,7 @@ import {Selected} from '@fluent-wallet/component-icons'
 import {CompWithLabel, TitleNav} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
-import {GET_HD_ACCOUNT_GROUP} from '../../constants/rpcDeps'
+import {GET_HD_ACCOUNT_GROUP} from '../../constants'
 
 function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
   const {t} = useTranslation()
