@@ -206,7 +206,6 @@ describe('integration test', function () {
         expect(res?.result).toBeDefined()
       })
     })
-
     describe('wallet_detectNetworkType', function () {
       test('wallet_detectNetworkType', async () => {
         expect(
@@ -437,6 +436,30 @@ describe('integration test', function () {
         expect(db.getAccount().length).toBe(1)
         expect(db.getAccount()[0].selected).toBe(true)
         expect(db.getAddress().length).toBe(2)
+      })
+    })
+    describe('wallet_getAccountAddressByNetwork', function () {
+      test('wallet_getAccountAddressByNetwork', async function () {
+        await request({
+          method: 'wallet_generatePrivateKey',
+        }).then(({result}) =>
+          request({
+            method: 'wallet_importPrivateKey',
+            params: {privateKey: result, password},
+          }),
+        )
+
+        const [account] = db.getAccount()
+        res = await request({
+          method: 'wallet_getAccountAddressByNetwork',
+          params: {accountId: account.eid, networkId: cfxNetId},
+        })
+        expect(res.result.base32).toBeDefined()
+        res = await request({
+          method: 'wallet_getAccountAddressByNetwork',
+          params: {accountId: account.eid, networkId: ethNetId},
+        })
+        expect(res.result.base32).toBe(null)
       })
     })
     describe('wallet_importMnemonic', function () {

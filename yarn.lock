@@ -3795,6 +3795,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-account-address-by-network@workspace:packages/rpcs/wallet_getAccountAddressByNetwork":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-account-address-by-network@workspace:packages/rpcs/wallet_getAccountAddressByNetwork"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-account-group-vault-value@workspace:packages/rpcs/wallet_getAccountGroupVaultValue":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-account-group-vault-value@workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
@@ -16597,6 +16605,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_export-all": "workspace:packages/rpcs/wallet_exportAll"
     "@fluent-wallet/wallet_generate-mnemonic": "workspace:packages/rpcs/wallet_generateMnemonic"
     "@fluent-wallet/wallet_generate-private-key": "workspace:packages/rpcs/wallet_generatePrivateKey"
+    "@fluent-wallet/wallet_get-account-address-by-network": "workspace:packages/rpcs/wallet_getAccountAddressByNetwork"
     "@fluent-wallet/wallet_get-account-group": "workspace:packages/rpcs/wallet_getAccountGroup"
     "@fluent-wallet/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
     "@fluent-wallet/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey"

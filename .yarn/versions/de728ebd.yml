@@ -8,6 +8,7 @@ releases:
   "@fluent-wallet/iterators": patch
   "@fluent-wallet/spec": patch
   "@fluent-wallet/transducers": patch
+  "@fluent-wallet/wallet_get-account-address-by-network": patch
 
 declined:
   - "@fluent-wallet/account"
