@@ -2,6 +2,7 @@ releases:
   "@fluent-wallet/addr-by-network": patch
   "@fluent-wallet/cfx_sign-typed-data_v4": patch
   "@fluent-wallet/checks": patch
+  "@fluent-wallet/db": patch
   "@fluent-wallet/doc-rpc-parameter": patch
   "@fluent-wallet/doc-use-rpc": patch
   "@fluent-wallet/eth_estimate-gas": patch

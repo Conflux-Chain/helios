@@ -58,6 +58,7 @@ beforeEach(async () => {
           decimals: DEFAULT_CURRENCY_DECIMALS,
         },
         hdPath: cfxHdPath,
+        isMainnet: true,
       })
       cfxNetId = 3
       d.createNetwork({
@@ -72,6 +73,7 @@ beforeEach(async () => {
           decimals: DEFAULT_CURRENCY_DECIMALS,
         },
         hdPath: ethHdPath,
+        isMainnet: true,
       })
       ethNetId = 4
       d.t([
