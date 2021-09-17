@@ -184,6 +184,28 @@ describe('integration test', function () {
         ).toBe('1337')
       })
     })
+    describe('cfx_estimateGasAndCollateral', function () {
+      test('cfx_estimateGasAndCollateral', async () => {
+        res = await request({
+          method: 'cfx_estimateGasAndCollateral',
+          params: [{}],
+        })
+        expect(res?.result).toBeDefined()
+        expect(res.result.gasLimit).toBeDefined()
+        expect(res.result.gasUsed).toBeDefined()
+        expect(res.result.storageCollateralized).toBeDefined()
+      })
+    })
+    describe('eth_estimateGas', function () {
+      test('eth_estimateGas', async () => {
+        res = await request({
+          method: 'eth_estimateGas',
+          params: [{}],
+          networkName: ETH_MAINNET_NAME,
+        })
+        expect(res?.result).toBeDefined()
+      })
+    })
     describe('wallet_detectNetworkType', function () {
       test('wallet_detectNetworkType', async () => {
         expect(
@@ -414,6 +436,30 @@ describe('integration test', function () {
         expect(db.getAccount().length).toBe(1)
         expect(db.getAccount()[0].selected).toBe(true)
         expect(db.getAddress().length).toBe(2)
+      })
+    })
+    describe('wallet_getAccountAddressByNetwork', function () {
+      test('wallet_getAccountAddressByNetwork', async function () {
+        await request({
+          method: 'wallet_generatePrivateKey',
+        }).then(({result}) =>
+          request({
+            method: 'wallet_importPrivateKey',
+            params: {privateKey: result, password},
+          }),
+        )
+
+        const [account] = db.getAccount()
+        res = await request({
+          method: 'wallet_getAccountAddressByNetwork',
+          params: {accountId: account.eid, networkId: cfxNetId},
+        })
+        expect(res.result.base32).toBeDefined()
+        res = await request({
+          method: 'wallet_getAccountAddressByNetwork',
+          params: {accountId: account.eid, networkId: ethNetId},
+        })
+        expect(res.result.base32).toBe(null)
       })
     })
     describe('wallet_importMnemonic', function () {

@@ -1,5 +1,5 @@
 {
-  "name": "@fluent-wallet/wallet_zero-account-group",
+  "name": "@fluent-wallet/cfx_estimate-gas-and-collateral",
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",

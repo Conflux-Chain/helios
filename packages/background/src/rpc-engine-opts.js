@@ -6,6 +6,7 @@
 import * as cfxAccounts from '@fluent-wallet/cfx_accounts'
 import * as cfxChainId from '@fluent-wallet/cfx_chain-id'
 import * as cfxEpochNumber from '@fluent-wallet/cfx_epoch-number'
+import * as cfxEstimateGasAndCollateral from '@fluent-wallet/cfx_estimate-gas-and-collateral'
 import * as cfxGasPrice from '@fluent-wallet/cfx_gas-price'
 import * as cfxGetAccount from '@fluent-wallet/cfx_get-account'
 import * as cfxGetBalance from '@fluent-wallet/cfx_get-balance'
@@ -18,6 +19,7 @@ import * as cfxTypedSignV4 from '@fluent-wallet/cfx_sign-typed-data_v4'
 import * as ethAccounts from '@fluent-wallet/eth_accounts'
 import * as ethBlockNumber from '@fluent-wallet/eth_block-number'
 import * as ethChainId from '@fluent-wallet/eth_chain-id'
+import * as ethEstimateGas from '@fluent-wallet/eth_estimate-gas'
 import * as ethGasPrice from '@fluent-wallet/eth_gas-price'
 import * as ethGetBalance from '@fluent-wallet/eth_get-balance'
 import * as ethGetCode from '@fluent-wallet/eth_get-code'
@@ -50,6 +52,7 @@ import * as walletExportAccountGroup from '@fluent-wallet/wallet_export-account-
 import * as walletExportAll from '@fluent-wallet/wallet_export-all'
 import * as walletGenerateMnemonic from '@fluent-wallet/wallet_generate-mnemonic'
 import * as walletGeneratePrivateKey from '@fluent-wallet/wallet_generate-private-key'
+import * as walletGetAccountAddressByNetwork from '@fluent-wallet/wallet_get-account-address-by-network'
 import * as walletGetAccountGroup from '@fluent-wallet/wallet_get-account-group'
 import * as walletGetAccountGroupVaultValue from '@fluent-wallet/wallet_get-account-group-vault-value'
 import * as walletGetAddressPrivateKey from '@fluent-wallet/wallet_get-address-private-key'
@@ -151,6 +154,7 @@ export const rpcEngineOpts = {
     walletValidateAppPermissions,
     walletGetPermissions,
     walletDeleteApp,
+    walletGetAccountAddressByNetwork,
 
     // cfx
     cfxEpochNumber,
@@ -163,6 +167,7 @@ export const rpcEngineOpts = {
     cfxChainId,
     cfxAccounts,
     cfxGasPrice,
+    cfxEstimateGasAndCollateral,
     walletAddConfluxChain,
     walletSwitchConfluxChain,
 
@@ -174,6 +179,7 @@ export const rpcEngineOpts = {
     netVersion,
     ethAccounts,
     ethGasPrice,
+    ethEstimateGas,
     ethBlockNumber,
     walletAddEthereumChain,
     walletSwitchEthereumChain,
