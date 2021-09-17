@@ -18,8 +18,7 @@ function CurrentDapp() {
   } = currentDapp || {}
   const {nickname: connectedNickname = 'Account 1', eid: connectedEid} =
     connectedAccount
-  const {nickName: currentNickname = 'Account 3', eid: currentEid} =
-    currentAccount || {}
+  const {nickname: currentNickname, eid: currentEid} = currentAccount
   const isConnected = !!connectedAccount
   const isConnectedCurrentAccount = connectedEid === currentEid
 

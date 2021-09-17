@@ -7,6 +7,7 @@
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/checks": "workspace:packages/checks",
     "@fluent-wallet/component-button": "workspace:packages/ui/components/Button",
     "@fluent-wallet/component-dropdown": "workspace:packages/ui/components/Dropdown",
@@ -17,6 +18,7 @@
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC",
     "i18next": "20.4.0",
+    "js-conflux-sdk": "1.7.0",
     "qrcode.react": "1.0.1",
     "react-copy-to-clipboard": "5.0.4",
     "react-i18next": "11.11.4",

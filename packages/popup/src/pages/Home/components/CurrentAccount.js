@@ -10,40 +10,52 @@ import {
   CopyOutlined,
   QrcodeOutlined,
 } from '@fluent-wallet/component-icons'
-
+import {address as sdkAddress} from 'js-conflux-sdk'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
-import {
-  shortenCfxAddress,
-  shortenEthAddress,
-} from '@fluent-wallet/shorten-address'
-import {RPC_METHODS} from '../../../constants'
+import {shortenAddress} from '@fluent-wallet/shorten-address'
+// import {removeCfxAddressType} from '../../../utils'
+import {RPC_METHODS, NETWORK_TYPE} from '../../../constants'
 const {
-  GET_CURRENT_ACCOUNT, // GET_CURRENT_NETWORK
+  GET_CURRENT_ACCOUNT,
+  GET_CURRENT_NETWORK,
+  GET_ACCOUNT_ADDRESS_BY_NETWORK,
 } = RPC_METHODS
 
 function CurrentAccount() {
   const [copied, setCopied] = useState(false)
   const [qrcodeShow, setQrcodeShow] = useState(false)
   const {t} = useTranslation()
-  // const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
-  //   fallbackData: {},
-  // })
-  // const {networkId} = currentNetwork
+
+  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
+    fallbackData: {},
+  })
+  const {eid: networkId, type} = currentNetwork
+
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-  const {nickname} = currentAccount
-  // const {address} = useRPC(
-  //   [GET_ACCOUNT_ADDRESS, accountId, networkId],
-  //   {accountId, networkId},
-  //   {
-  //     fallbackData: {},
-  //   },
-  // )
-  const address = 'cfxtest:aame5p2tdzfsc3zsmbg1urwkg5ax22epg27cnu1rwm'
-  const shortenAddress = validateBase32Address(address)
-    ? shortenCfxAddress(address)
-    : shortenEthAddress(address)
+  const {nickname, eid: accountId} = currentAccount
+
+  const {data: accountAddress} = useRPC(
+    accountId !== undefined && networkId !== undefined
+      ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, accountId, networkId]
+      : null,
+    {accountId, networkId},
+    {fallbackData: {}},
+  )
+  const {base32, hex} = accountAddress
+
+  const simplifyBase32 = validateBase32Address(base32)
+    ? sdkAddress.simplifyCfxAddress(base32)
+    : ''
+
+  const address =
+    type === NETWORK_TYPE.CFX
+      ? simplifyBase32
+      : type === NETWORK_TYPE.ETH
+      ? hex
+      : ''
+  const displayAddress = address ? shortenAddress(address) : ''
 
   return (
     <div className="flex flex-col">
@@ -52,7 +64,7 @@ function CurrentAccount() {
         <RightOutlined className="w-3 h-3 text-white" />
       </div>
       <div className="flex items-center">
-        <span className="text-white font-medium mr-2">{shortenAddress}</span>
+        <span className="text-white font-medium mr-2">{displayAddress}</span>
         <div className="relative">
           <CopyToClipboard text={address} onCopy={() => setCopied(true)}>
             <CopyOutlined className="cursor-pointer w-4 h-4 mg-2 text-white" />
