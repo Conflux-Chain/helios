@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/personal_sign",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/signature": "workspace:packages/signature",
