@@ -36,7 +36,7 @@ Object {
             </svg>
           </span>
           <div
-            class="text-gray-60 w-full"
+            class="text-gray-60 w-full "
           >
             content
           </div>
@@ -76,7 +76,7 @@ Object {
           </svg>
         </span>
         <div
-          class="text-gray-60 w-full"
+          class="text-gray-60 w-full "
         >
           content
         </div>
