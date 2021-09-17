@@ -160,6 +160,7 @@
   (def s (js->clj (-> js/window .-s .-addressType) :keywordize-keys true))
   (def s (js->clj (.-a js/window) :keywordize-keys true))
   (-schema-doc-generator s {})
+  (clj->js (-schema-doc-generator s {}))
   (->> (m/entries s)
        (map #(-> % last m/properties :optional)))
   (-schema-doc-generator [:map {:closed true} ["hdPath" :string]] {})
