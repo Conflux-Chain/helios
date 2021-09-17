@@ -46,7 +46,7 @@ const addrByNetwork = ({
     if (address.includes(':')) {
       if (addressType && !validateBase32Address(address, addressType))
         throw new Error('Invalid base32 address, address type is invalid')
-      return encode(decode(address).hexAddress, networkId, true)
+      return encode(decode(address).hexAddress, networkId)
     }
 
     if (!addressType) addressType = 'user'
@@ -54,7 +54,6 @@ const addrByNetwork = ({
     return encode(
       address.toLowerCase().replace(/0x./, ADDR_TYPE_TO_PREFIX[addressType]),
       networkId,
-      true,
     )
   }
 

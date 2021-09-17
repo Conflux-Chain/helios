@@ -41,7 +41,7 @@ export const main = async ({
           eid: 'newAddr',
           address: {
             cfxHex: toAccountAddress(decrypted),
-            base32: encode(toAccountAddress(decrypted), network.netId, true),
+            base32: encode(toAccountAddress(decrypted), network.netId),
           },
         },
         {eid: group.account[0].eid, account: {address: 'newAddr'}},
@@ -57,7 +57,7 @@ export const main = async ({
           eid: 'newAddr',
           address: {
             cfxHex: toAccountAddress(hex),
-            base32: encode(toAccountAddress(hex), network.netId, true),
+            base32: encode(toAccountAddress(hex), network.netId),
           },
         },
         {eid: group.account[0].eid, account: {address: 'newAddr'}},
@@ -87,7 +87,7 @@ export const main = async ({
               eid: 'newAddr',
               address: {
                 cfxHex: toAccountAddress(address),
-                base32: encode(toAccountAddress(address), network.netId, true),
+                base32: encode(toAccountAddress(address), network.netId),
               },
             },
             {eid: account.eid, account: {address: 'newAddr'}},

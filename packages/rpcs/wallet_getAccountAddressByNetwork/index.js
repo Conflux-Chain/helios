@@ -1,9 +1,20 @@
-import {dbid, map} from '@fluent-wallet/spec'
+import {or, dbid, map, catn, oneOrMore} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_getAccountAddressByNetwork'
 
+const singleQuerySchema = [
+  map,
+  {closed: true},
+  ['accountId', dbid],
+  ['networkId', dbid],
+]
+
 export const schemas = {
-  input: [map, {closed: true}, ['accountId', dbid], ['networkId', dbid]],
+  input: [
+    or,
+    singleQuerySchema,
+    [oneOrMore, [catn, ['AccountAddressByNetworkQuery', singleQuerySchema]]],
+  ],
 }
 
 export const permissions = {
@@ -14,13 +25,18 @@ export const permissions = {
 export const main = ({
   Err: {InvalidParams},
   db: {getAccountById, getNetworkById, accountAddrByNetwork},
-  params: {accountId, networkId},
+  params,
 }) => {
-  const account = getAccountById(accountId)
-  if (!account) throw InvalidParams(`Invalid account id ${accountId}`)
-  const network = getNetworkById(networkId)
-  if (!network) throw InvalidParams(`Invalid network id ${networkId}`)
-  const addr = accountAddrByNetwork({account: accountId, network: networkId})
+  if (!Array.isArray(params)) params = [params]
 
-  return addr
+  const addrs = params.map(({accountId, networkId}) => {
+    const account = getAccountById(accountId)
+    if (!account) throw InvalidParams(`Invalid account id ${accountId}`)
+    const network = getNetworkById(networkId)
+    if (!network) throw InvalidParams(`Invalid network id ${networkId}`)
+    return accountAddrByNetwork({account: accountId, network: networkId})
+  })
+
+  if (addrs.length === 1) return addrs[0]
+  return addrs
 }

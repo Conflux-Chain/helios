@@ -93,7 +93,7 @@ export const main = async ({
             eid: -1,
             address: {
               cfxHex: toAccountAddress(address),
-              base32: encode(toAccountAddress(address), netId, true),
+              base32: encode(toAccountAddress(address), netId),
             },
           },
           {eid, network: {address: -1}},
