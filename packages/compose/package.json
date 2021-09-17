@@ -1,9 +1,9 @@
 {
   "name": "@fluent-wallet/compose",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "index.js",
   "dependencies": {
-    "@thi.ng/compose": "^1.4.35"
+    "@thi.ng/compose": "^1.4.36"
   }
 }
