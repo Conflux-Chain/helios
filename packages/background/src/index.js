@@ -75,6 +75,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 // # initialize
 // ## initialize db
 ;(async () => {
+  if (IS_PROD_MODE) await initBG()
   if (IS_DEV_MODE) {
     const {request} = await initBG()
     console.log(
