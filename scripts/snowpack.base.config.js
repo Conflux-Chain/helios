@@ -1,5 +1,6 @@
 const path = require('path')
 const getWorkspacePackages = require('./get-workspaces-packages')
+const {isProd} = require('./snowpack.utils.js')
 
 const env = {NODE_ENV: true}
 
@@ -65,16 +66,17 @@ module.exports = {
   buildOptions: {
     clean: true,
     out: path.resolve(__dirname, '../packages/browser-extension/build'),
-    sourcemap: false,
     baseUrl: 'dist',
     metaUrlPath: 'sp_',
   },
-  // optimize: {
-  //   splitting: true,
-  //   minify: true,
-  //   bundle: true,
-  //   treeshake: true,
-  //   sourcemap: false,
-  // },
-  optimize: false,
+  optimize: isProd()
+    ? {
+        souecemap: 'inline',
+        // bundle: true, // TODO: turn this on after https://github.com/snowpackjs/snowpack/issues/3403 is resolved
+        minify: true,
+        target: 'es2020',
+        treeshake: true,
+        splitting: true,
+      }
+    : false,
 }

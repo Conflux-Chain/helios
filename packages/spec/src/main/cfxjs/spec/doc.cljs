@@ -118,15 +118,23 @@
                                                         {:type :re :value rst}))
 (defmethod -schema-doc-generator :map [schema options]
   (let [entries (m/entries schema)
-        value-gen (fn [k s] (let [options (if (-> s m/properties :optional) (assoc options :doc/optional-key true) options)
-                                 options (if (-> s m/properties :doc) (assoc options :doc/pdoc (-> s m/properties :doc)) options)
-                                 rst (-schema-doc-generator s options)
-                                 rst (assoc rst :kv true)
-                                 rst (assoc rst :k k)]
-                              rst))
+        value-gen (fn [[k s]] (let [options (if (-> s m/properties :optional) (assoc options :doc/optional-key true) options)
+                                    options (if (-> s m/properties :doc) (assoc options :doc/pdoc (-> s m/properties :doc)) options)
+                                    rst (-schema-doc-generator s options)
+                                    rst (assoc rst :kv true)
+                                    rst (assoc rst :k k)]
+                                rst))
         gen-req (->> entries
                      ;; (remove #(-> % last m/properties :optional))
-                     (mapv (fn [[k s]] (value-gen k s))))]
+                     (mapv value-gen))]
+    {:type :map :children gen-req}))
+(defmethod -schema-doc-generator :catn [schema options]
+  (let [value-gen (fn [[k o v]]
+                    (let [rst (-schema-doc-generator v o)
+                          rst (assoc rst :catn true)
+                          rst (assoc rst :k k)]
+                      rst))
+        gen-req (mapv value-gen (m/children schema options))]
     {:type :map :children gen-req}))
 
 (defmethod -schema-doc-generator ::m/val [schema options]

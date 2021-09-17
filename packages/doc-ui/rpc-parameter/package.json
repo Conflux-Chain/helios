@@ -1,6 +1,6 @@
 {
   "name": "@fluent-wallet/doc-rpc-parameter",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "type": "module",
   "main": "index.js",
   "peerDependencies": {

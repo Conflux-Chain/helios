@@ -27,7 +27,10 @@ process.on('SIGINT', cleanup)
 process.on('SIGTERM', cleanup)
 process.on('SIGUSR1', cleanup)
 process.on('SIGUSR2', cleanup)
-process.on('uncaughtException', (...args) => console.error(...args))
+process.on('uncaughtException', err => {
+  if (err?.message?.includes('EADDRINUSE')) return
+  throw err
+})
 ;(async () => {
   // await loadConfiguration(undefined, builds[0]).then(config => build({config}))
   // await loadConfiguration(undefined, builds[1]).then(config => build({config}))

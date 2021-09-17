@@ -58,6 +58,7 @@ beforeEach(async () => {
           decimals: DEFAULT_CURRENCY_DECIMALS,
         },
         hdPath: cfxHdPath,
+        isMainnet: true,
       })
       cfxNetId = 3
       d.createNetwork({
@@ -72,6 +73,7 @@ beforeEach(async () => {
           decimals: DEFAULT_CURRENCY_DECIMALS,
         },
         hdPath: ethHdPath,
+        isMainnet: true,
       })
       ethNetId = 4
       d.t([
@@ -358,8 +360,7 @@ describe('integration test', function () {
         await request({
           method: 'wallet_importAddress',
           params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            address: 'net2999:aamwwx800rcw63n42kbehesuukjdjcnuaaca2k0zuc',
             password,
           },
         })
@@ -404,8 +405,7 @@ describe('integration test', function () {
         await request({
           method: 'wallet_importAddress',
           params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            address: 'net2999:aamwwx800rcw63n42kbehesuukjdjcnuaaca2k0zuc',
             password,
           },
         })
@@ -440,26 +440,45 @@ describe('integration test', function () {
     })
     describe('wallet_getAccountAddressByNetwork', function () {
       test('wallet_getAccountAddressByNetwork', async function () {
-        await request({
-          method: 'wallet_generatePrivateKey',
-        }).then(({result}) =>
+        await Promise.all([
           request({
-            method: 'wallet_importPrivateKey',
-            params: {privateKey: result, password},
-          }),
-        )
+            method: 'wallet_generatePrivateKey',
+          }).then(({result}) =>
+            request({
+              method: 'wallet_importPrivateKey',
+              params: {privateKey: result, password},
+            }),
+          ),
+          request({
+            method: 'wallet_generatePrivateKey',
+          }).then(({result}) =>
+            request({
+              method: 'wallet_importPrivateKey',
+              params: {privateKey: result, password},
+            }),
+          ),
+        ])
 
-        const [account] = db.getAccount()
-        res = await request({
+        const [a1, a2] = db.getAccount()
+        const res1 = await request({
           method: 'wallet_getAccountAddressByNetwork',
-          params: {accountId: account.eid, networkId: cfxNetId},
+          params: {accountId: a1.eid, networkId: cfxNetId},
         })
-        expect(res.result.base32).toBeDefined()
-        res = await request({
+        expect(res1.result.base32).toBeDefined()
+        const res2 = await request({
           method: 'wallet_getAccountAddressByNetwork',
-          params: {accountId: account.eid, networkId: ethNetId},
+          params: {accountId: a2.eid, networkId: ethNetId},
         })
-        expect(res.result.base32).toBe(null)
+        expect(res2.result.base32).toBe(null)
+        const res3 = await request({
+          method: 'wallet_getAccountAddressByNetwork',
+          params: [
+            {accountId: a1.eid, networkId: cfxNetId},
+            {accountId: a2.eid, networkId: ethNetId},
+          ],
+        })
+        expect(res3.result[0].base32).toBe(res1.result.base32)
+        expect(res3.result[1].hex).toBe(res2.result.hex)
       })
     })
     describe('wallet_importMnemonic', function () {
@@ -655,8 +674,7 @@ describe('integration test', function () {
         await request({
           method: 'wallet_importAddress',
           params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            address: 'net2999:aamwwx800rcw63n42kbehesuukjdjcnuaaca2k0zuc',
             password,
           },
         })
@@ -668,7 +686,7 @@ describe('integration test', function () {
               params: {password, accountId: db.getAccount()[0].eid},
             })
           ).result,
-        ).toBe('CFX:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAAFA2UCFUW')
+        ).toBe('cfx:aamwwx800rcw63n42kbehesuukjdjcnuaafa2ucfuw')
       })
 
       test('export hd account', async () => {
@@ -688,7 +706,7 @@ describe('integration test', function () {
           '0x1b3d01a14c84181f4df3983ae68118e4bad48407',
         )
         expect(res.result[0].base32).toBe(
-          'NET2999:TYPE.USER:AARX4ARBKWCBUH4R8SPDZ3YBDDWNZZEEA6THG8YTMR',
+          'net2999:aarx4arbkwcbuh4r8spdz3ybddwnzzeea6thg8ytmr',
         )
         expect(res.result[0].privateKey).toBe(
           '0xf581242f2de1111638b9da336c283f177ca1e17cb3d6e3b09434161e26135992',
@@ -780,8 +798,7 @@ describe('integration test', function () {
         await request({
           method: 'wallet_importAddress',
           params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            address: 'net2999:aamwwx800rcw63n42kbehesuukjdjcnuaaca2k0zuc',
             password,
           },
         })
@@ -793,7 +810,7 @@ describe('integration test', function () {
               params: {password, accountGroupId: db.getAccountGroup()[0].eid},
             })
           ).result,
-        ).toBe('CFX:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAAFA2UCFUW')
+        ).toBe('cfx:aamwwx800rcw63n42kbehesuukjdjcnuaafa2ucfuw')
       })
       test('export hd account group', async () => {
         await request({
@@ -992,6 +1009,48 @@ describe('integration test', function () {
           parentCapabilities.includes('wallet_basic') &&
             parentCapabilities.includes('wallet_accounts'),
         ).toBeTruthy()
+      })
+      test('from popup', async () => {
+        await Promise.all(
+          [0, 0, 0].map(() =>
+            request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
+              request({
+                method: 'wallet_importPrivateKey',
+                params: {privateKey: result, password},
+              }),
+            ),
+          ),
+        )
+
+        expect(db.getApp().length).toBe(0)
+
+        const [a1, a2, a3] = db.getAccount()
+
+        res = await request({
+          method: 'wallet_requestPermissions',
+          params: {
+            siteId: db.getSite()[0].eid,
+            permissions: [{eth_accounts: {}}],
+            accounts: [a1.eid, a2.eid],
+          },
+          _popup: true,
+        })
+
+        expect(db.getApp().length).toBe(1)
+        const app = db.getApp()[0]
+        // app is from the right site
+        expect(app.site.eid).toBe(db.getSite()[0].eid)
+        // app has the right permissions
+        expect(app.perms).toStrictEqual({wallet_accounts: {}, wallet_basic: {}})
+        // app has the right authed accounts
+        expect(
+          app.account.map(a => [a1.eid, a2.eid].includes(a.eid)),
+        ).toStrictEqual([true, true])
+        expect(app.account.map(a => a.eid).includes(a3.eid)).toBeFalsy()
+        // app has the right currentAccount
+        expect([a1.eid, a2.eid].includes(app.currentAccount.eid)).toBe(true)
+        expect(app.currentAccount.selected).toBe(true)
+        expect(res.result).toBe(null)
       })
     })
     describe('wallet_getPendingAuthRequest', function () {
@@ -1258,8 +1317,7 @@ describe('integration test', function () {
         await request({
           method: 'wallet_importAddress',
           params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            address: 'net2999:aamwwx800rcw63n42kbehesuukjdjcnuaaca2k0zuc',
             password,
           },
         })

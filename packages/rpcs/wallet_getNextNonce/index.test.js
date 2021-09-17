@@ -17,7 +17,7 @@ describe('@fluent-wallet/wallet_get-next-nonce', function () {
       input.params = ['0x208b86e65753bba8f557ac2a8a79ba6536ab05e2']
       await main(input)
       expect(input.rpcs.cfx_getNextNonce).toHaveBeenCalledWith([
-        'CFX:TYPE.USER:AAJJ1B1GM7K51MHZM80CZCX31KWXRM2F6JXVY30MVK',
+        'cfx:aajj1b1gm7k51mhzm80czcx31kwxrm2f6jxvy30mvk',
       ])
       expect(input.rpcs.eth_getTransactionCount).toHaveBeenCalledTimes(0)
 
