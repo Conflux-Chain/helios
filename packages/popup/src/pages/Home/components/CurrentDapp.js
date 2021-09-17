@@ -11,6 +11,7 @@ function CurrentDapp() {
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
+  // TODO
   const {
     url = 'https://shuttleflow.io',
     icon,
