@@ -440,26 +440,45 @@ describe('integration test', function () {
     })
     describe('wallet_getAccountAddressByNetwork', function () {
       test('wallet_getAccountAddressByNetwork', async function () {
-        await request({
-          method: 'wallet_generatePrivateKey',
-        }).then(({result}) =>
+        await Promise.all([
           request({
-            method: 'wallet_importPrivateKey',
-            params: {privateKey: result, password},
-          }),
-        )
+            method: 'wallet_generatePrivateKey',
+          }).then(({result}) =>
+            request({
+              method: 'wallet_importPrivateKey',
+              params: {privateKey: result, password},
+            }),
+          ),
+          request({
+            method: 'wallet_generatePrivateKey',
+          }).then(({result}) =>
+            request({
+              method: 'wallet_importPrivateKey',
+              params: {privateKey: result, password},
+            }),
+          ),
+        ])
 
-        const [account] = db.getAccount()
-        res = await request({
+        const [a1, a2] = db.getAccount()
+        const res1 = await request({
           method: 'wallet_getAccountAddressByNetwork',
-          params: {accountId: account.eid, networkId: cfxNetId},
+          params: {accountId: a1.eid, networkId: cfxNetId},
         })
-        expect(res.result.base32).toBeDefined()
-        res = await request({
+        expect(res1.result.base32).toBeDefined()
+        const res2 = await request({
           method: 'wallet_getAccountAddressByNetwork',
-          params: {accountId: account.eid, networkId: ethNetId},
+          params: {accountId: a2.eid, networkId: ethNetId},
         })
-        expect(res.result.base32).toBe(null)
+        expect(res2.result.base32).toBe(null)
+        const res3 = await request({
+          method: 'wallet_getAccountAddressByNetwork',
+          params: [
+            {accountId: a1.eid, networkId: cfxNetId},
+            {accountId: a2.eid, networkId: ethNetId},
+          ],
+        })
+        expect(res3.result[0].base32).toBe(res1.result.base32)
+        expect(res3.result[1].hex).toBe(res2.result.hex)
       })
     })
     describe('wallet_importMnemonic', function () {
