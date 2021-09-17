@@ -66,6 +66,9 @@ const schema = {
       many: true,
       component: true,
     },
+    isMainnet: {doc: 'is mainnet network'},
+    isTestnet: {doc: 'is testnet network'},
+    isCustom: {doc: 'is custom network'},
   },
   /*
     vault, container of credential (address/pk/mnemonic)

@@ -2997,6 +2997,8 @@ __metadata:
 "@fluent-wallet/checks@workspace:packages/checks":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/checks@workspace:packages/checks"
+  dependencies:
+    "@thi.ng/checks": 2.9.11
   languageName: unknown
   linkType: soft
 
@@ -3322,6 +3324,7 @@ __metadata:
   resolution: "@fluent-wallet/eth_estimate-gas@workspace:packages/rpcs/eth_estimateGas"
   dependencies:
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
@@ -3452,6 +3455,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/signature": "workspace:packages/signature"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
@@ -3797,6 +3801,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_generate-private-key@workspace:packages/rpcs/wallet_generatePrivateKey"
   dependencies:
     "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
@@ -6730,7 +6735,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/checks@npm:^2.9.11":
+"@thi.ng/checks@npm:2.9.11, @thi.ng/checks@npm:^2.9.11":
   version: 2.9.11
   resolution: "@thi.ng/checks@npm:2.9.11"
   dependencies:

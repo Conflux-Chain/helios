@@ -6,7 +6,7 @@
             [cfxjs.db.datascript.impl.entity :as de]
             [goog.string :as gs]
             [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]])
-  (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query def-get-by-id-query]]))
+  (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query]]))
 
 (defn random-tmp-id []
   (gs/getRandomString))
@@ -97,9 +97,11 @@
 (defn def-get-by-id-fn
   "Given model eg. :vault, attr-keys eg. [:type :data] create the getVaultById function;"
   [{:keys [attr-keys model]}]
-  (let [attrk (->attrk model (first attr-keys))
-        query (def-get-by-id-query attrk)]
-    (fn [eid] (first (q query eid)))))
+  (fn [eid]
+    (when eid
+      (let [first-entity-attr-keys (first (keys (de/touch (e model attr-keys eid))))]
+        (when (and first-entity-attr-keys (= (name model) (namespace first-entity-attr-keys)))
+          eid)))))
 
 (defn def-delete-by-id-fn
   "Given model eg. :vault, attr-keys eg. [:type :data] create the getVaultById function;"

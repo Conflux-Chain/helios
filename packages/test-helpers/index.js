@@ -15,7 +15,7 @@ const CFX_ACCOUNTS = [
       '0xf581242f2de1111638b9da336c283f177ca1e17cb3d6e3b09434161e26135992',
     index: 0,
     cfxHex: '0x1b3d01a14c84181f4df3983ae68118e4bad48407',
-    base32: 'NET2999:TYPE.USER:AARX4ARBKWCBUH4R8SPDZ3YBDDWNZZEEA6THG8YTMR',
+    base32: 'net2999:aarx4arbkwcbuh4r8spdz3ybddwnzzeea6thg8ytmr',
   },
   {
     address: '0xe68539313a4a03211ee03f5f9a6c149751fb4f44',
@@ -23,7 +23,7 @@ const CFX_ACCOUNTS = [
       '0x27060ca3f246dac356b785a4fb98656a7750d5a3fe5c519dd6d2e17cd8ca7906',
     index: 1,
     cfxHex: '0x168539313a4a03211ee03f5f9a6c149751fb4f44',
-    base32: 'NET2999:TYPE.USER:AANJMSKVHKFAGJJ86A9Z9GXPCWNZD84TJU1871CS1P',
+    base32: 'net2999:aanjmskvhkfagjj86a9z9gxpcwnzd84tju1871cs1p',
   },
   {
     address: '0x8bb3720c8323cfb8fefdbdb9229872ed34ef9b57',
@@ -31,7 +31,7 @@ const CFX_ACCOUNTS = [
       '0xe77d4353a349d770b7d2f6d0f1870231f2e7a850b9b0c0a50da6b34f1db46da9',
     index: 2,
     cfxHex: '0x1bb3720c8323cfb8fefdbdb9229872ed34ef9b57',
-    base32: 'NET2999:TYPE.USER:AAR5G6UPUPV69SH89085WJY2SN0XK565M6XY2GMWN0',
+    base32: 'net2999:aar5g6upupv69sh89085wjy2sn0xk565m6xy2gmwn0',
   },
   {
     address: '0xfa7ec9a3befd686393b2105e88fa31484a2f072f',
@@ -39,7 +39,7 @@ const CFX_ACCOUNTS = [
       '0xbe05f6d746489c2d216ba3c3ee40f42b8caf5ca60836faa05eb05d68a1d33942',
     index: 3,
     cfxHex: '0x1a7ec9a3befd686393b2105e88fa31484a2f072f',
-    base32: 'NET2999:TYPE.USER:AARH7WRD1580U26X0JJF7CH4GFEEYN2HF6SE0G551F',
+    base32: 'net2999:aarh7wrd1580u26x0jjf7ch4gfeeyn2hf6se0g551f',
   },
   {
     address: '0xaf6f1a940f67b27514683239889def43d9d5106e',
@@ -47,7 +47,7 @@ const CFX_ACCOUNTS = [
       '0x6c5e7d010fb60e3305d00cf5dccfe9da1dd6cf3ac8793bfdf51c2dd1e36a9226',
     index: 4,
     cfxHex: '0x1f6f1a940f67b27514683239889def43d9d5106e',
-    base32: 'NET2999:TYPE.USER:AAT08GYYB7X5E7JYRA3DXCE777B7XZJUR2FSAWHE3N',
+    base32: 'net2999:aat08gyyb7x5e7jyra3dxce777b7xzjur2fsawhe3n',
   },
   {
     address: '0x22b97cfe15fc16a7da78d0483138adb0a7e521e8',
@@ -55,7 +55,7 @@ const CFX_ACCOUNTS = [
       '0x3771c552fe6c256f1b26d969fdd503ce7bb23d95823adb248e221c95698f515a',
     index: 5,
     cfxHex: '0x12b97cfe15fc16a7da78d0483138adb0a7e521e8',
-    base32: 'NET2999:TYPE.USER:AAKNW9H8C18BRK84TDJEUPK2Z02MT3KB7AAMTXH0CX',
+    base32: 'net2999:aaknw9h8c18brk84tdjeupk2z02mt3kb7aamtxh0cx',
   },
   {
     address: '0xf4148df077c5c0cabdbb637989e93d083f715256',
@@ -63,7 +63,7 @@ const CFX_ACCOUNTS = [
       '0xfc70edae23d39f6009369c692bc5cda0872680a169a531d8d148fd2af09d4276',
     index: 6,
     cfxHex: '0x14148df077c5c0cabdbb637989e93d083f715256',
-    base32: 'NET2999:TYPE.USER:AAMBKDTUS9C6BWZ71RV1XCTKHYED86MWM29XS1HR8D',
+    base32: 'net2999:aambkdtus9c6bwz71rv1xctkhyed86mwm29xs1hr8d',
   },
   {
     address: '0xc222f26a0b7bb5302152673dc40d9eb4436c461d',
@@ -71,7 +71,7 @@ const CFX_ACCOUNTS = [
       '0x284595e3b3b1bf20d1281747ae5c4aef2f4d0270ac327057dcccab08e31f9078',
     index: 7,
     cfxHex: '0x1222f26a0b7bb5302152673dc40d9eb4436c461d',
-    base32: 'NET2999:TYPE.USER:AAKCF6XMBR75MPBBMKXX5VARX44EG5CGDYA9DMXM7W',
+    base32: 'net2999:aakcf6xmbr75mpbbmkxx5varx44eg5cgdya9dmxm7w',
   },
   {
     address: '0x3da6bce29dacc740369b259b29b93cd6425c7108',
@@ -79,7 +79,7 @@ const CFX_ACCOUNTS = [
       '0x080d44ec61d07fe49da897d44c3213606389f8329efcf9a783fa5ae97aa00768',
     index: 8,
     cfxHex: '0x1da6bce29dacc740369b259b29b93cd6425c7108',
-    base32: 'NET2999:TYPE.USER:AAS4RTHCX00PSUB0XPW30MR3HXNEE1DVBAX149CFUW',
+    base32: 'net2999:aas4rthcx00psub0xpw30mr3hxnee1dvbax149cfuw',
   },
   {
     address: '0xd465709d8195fff311333fc454b5e792ddc4ba12',
@@ -87,7 +87,7 @@ const CFX_ACCOUNTS = [
       '0xc13af00b42e30c3e878a20852996078b83011b89a20194fd4db566d1e3a7001e',
     index: 9,
     cfxHex: '0x1465709d8195fff311333fc454b5e792ddc4ba12',
-    base32: 'NET2999:TYPE.USER:AAMGM6E7UGM9962VGP96JZFZ68KR5VF4CJ8JYJ50GN',
+    base32: 'net2999:aamgm6e7ugm9962vgp96jzfz68kr5vf4cj8jyj50gn',
   },
 ]
 const ETH_ACCOUNTS = [

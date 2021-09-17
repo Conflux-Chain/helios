@@ -16,7 +16,10 @@ module.exports = mergeConfig(baseConfig, {
     hmrErrorOverlay: false,
   },
   buildOptions: {
-    cacheDirPath: path.resolve(__dirname, '../../node_modules/.cache/snowpack-background'),
+    cacheDirPath: path.resolve(
+      __dirname,
+      '../../node_modules/.cache/snowpack-background',
+    ),
     out: path.resolve(__dirname, '../browser-extension/build/background'),
   },
   optimize: {
