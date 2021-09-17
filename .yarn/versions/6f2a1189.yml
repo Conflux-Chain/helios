@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/wallet_add-vault": patch
+
+declined:
+  - helios-background
