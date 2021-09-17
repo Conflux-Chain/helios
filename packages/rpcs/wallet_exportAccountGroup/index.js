@@ -37,7 +37,7 @@ export const main = async ({
     group.vault.ddata || (await decrypt(password, group.vault.data))
 
   if (group.vault.type === 'pub' && group.vault.cfxOnly)
-    decrypted = encode(decrypted, CFX_MAINNET_NETID, true)
+    decrypted = encode(decrypted, CFX_MAINNET_NETID)
 
   return decrypted
 }

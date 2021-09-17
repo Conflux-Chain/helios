@@ -358,8 +358,7 @@ describe('integration test', function () {
         await request({
           method: 'wallet_importAddress',
           params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            address: 'net2999:aamwwx800rcw63n42kbehesuukjdjcnuaaca2k0zuc',
             password,
           },
         })
@@ -404,8 +403,7 @@ describe('integration test', function () {
         await request({
           method: 'wallet_importAddress',
           params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            address: 'net2999:aamwwx800rcw63n42kbehesuukjdjcnuaaca2k0zuc',
             password,
           },
         })
@@ -655,8 +653,7 @@ describe('integration test', function () {
         await request({
           method: 'wallet_importAddress',
           params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            address: 'net2999:aamwwx800rcw63n42kbehesuukjdjcnuaaca2k0zuc',
             password,
           },
         })
@@ -668,7 +665,7 @@ describe('integration test', function () {
               params: {password, accountId: db.getAccount()[0].eid},
             })
           ).result,
-        ).toBe('CFX:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAAFA2UCFUW')
+        ).toBe('cfx:aamwwx800rcw63n42kbehesuukjdjcnuaafa2ucfuw')
       })
 
       test('export hd account', async () => {
@@ -688,7 +685,7 @@ describe('integration test', function () {
           '0x1b3d01a14c84181f4df3983ae68118e4bad48407',
         )
         expect(res.result[0].base32).toBe(
-          'NET2999:TYPE.USER:AARX4ARBKWCBUH4R8SPDZ3YBDDWNZZEEA6THG8YTMR',
+          'net2999:aarx4arbkwcbuh4r8spdz3ybddwnzzeea6thg8ytmr',
         )
         expect(res.result[0].privateKey).toBe(
           '0xf581242f2de1111638b9da336c283f177ca1e17cb3d6e3b09434161e26135992',
@@ -780,8 +777,7 @@ describe('integration test', function () {
         await request({
           method: 'wallet_importAddress',
           params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            address: 'net2999:aamwwx800rcw63n42kbehesuukjdjcnuaaca2k0zuc',
             password,
           },
         })
@@ -793,7 +789,7 @@ describe('integration test', function () {
               params: {password, accountGroupId: db.getAccountGroup()[0].eid},
             })
           ).result,
-        ).toBe('CFX:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAAFA2UCFUW')
+        ).toBe('cfx:aamwwx800rcw63n42kbehesuukjdjcnuaafa2ucfuw')
       })
       test('export hd account group', async () => {
         await request({
@@ -1300,8 +1296,7 @@ describe('integration test', function () {
         await request({
           method: 'wallet_importAddress',
           params: {
-            address:
-              'NET2999:TYPE.USER:AAMWWX800RCW63N42KBEHESUUKJDJCNUAACA2K0ZUC',
+            address: 'net2999:aamwwx800rcw63n42kbehesuukjdjcnuaaca2k0zuc',
             password,
           },
         })

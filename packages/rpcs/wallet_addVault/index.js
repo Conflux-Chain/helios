@@ -127,7 +127,7 @@ export async function newAccounts(arg) {
           eid: -1,
           address: {
             cfxHex: toAccountAddress(addr),
-            base32: encode(toAccountAddress(addr), netId, true),
+            base32: encode(toAccountAddress(addr), netId),
           },
         },
         {eid, network: {address: -1}},
@@ -153,7 +153,7 @@ export async function newAccounts(arg) {
       type === 'cfx' && {
         eid: -1,
         address: {
-          base32: encode(toAccountAddress(vault.ddata), netId, true),
+          base32: encode(toAccountAddress(vault.ddata), netId),
           cfxHex: toAccountAddress(vault.ddata),
         },
       },
