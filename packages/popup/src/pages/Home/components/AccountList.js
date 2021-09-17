@@ -7,14 +7,6 @@ import Button from '@fluent-wallet/component-button'
 import {request} from '../../../utils'
 const {SELECT_CREATE_TYPE} = ROUTES
 
-// TODO: remove when avatar programme confirmed
-// eslint-disable-next-line react/prop-types
-function TemporaryIcon({className = ''}) {
-  return (
-    <div className={`inline-block bg-gray-40 rounded-full ${className}`}></div>
-  )
-}
-
 function AccountGroup({nickname, account}) {
   // TODO: 根据account的eid和networkId 查询rpc确认当前账户的地址。获取token balance。根据当前networkId 和 all network rpc 接口。确认当前币种单位。
   return (
@@ -25,7 +17,7 @@ function AccountGroup({nickname, account}) {
           key={index}
           className="flex p-3 rounded hover:bg-primary-4 cursor-pointer"
         >
-          <TemporaryIcon className="w-5 h-5 mr-2" />
+          <img className="w-5 h-5 mr-2" src="" alt="avatar" />
           <div className="flex-1">
             <p className="text-xs text-gray-40">{nickname}</p>
             <p className="text-sm text-gray-80">
@@ -33,7 +25,9 @@ function AccountGroup({nickname, account}) {
               <span>CFX</span>
             </p>
           </div>
-          <TemporaryIcon className="w-6 h-6 mt-1.5" />
+          <div className="w-6 h-6 border-gray-20 border border-solid rounded-full mt-1.5 flex justify-center items-center">
+            <img className="w-4 h-4" src="" alt="favicon" />
+          </div>
         </div>
       ))}
     </div>
@@ -53,7 +47,7 @@ function AccountList() {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
   }
-
+  console.log(accountGroups)
   return (
     <>
       <div>

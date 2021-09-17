@@ -8,13 +8,6 @@ import {
 import {request} from '../../../utils'
 import {useSWRConfig} from 'swr'
 
-// TODO: remove when avatar programme confirmed
-// eslint-disable-next-line react/prop-types
-function TemporaryIcon({className = ''}) {
-  return (
-    <div className={`inline-block bg-gray-40 rounded-full ${className}`}></div>
-  )
-}
 const networkTypeColorObj = {
   mainnet: 'bg-primary-10 text-[#ACB6E0]',
   testnet: 'bg-[#FFF7F4] text-[#F5B797]',
@@ -83,15 +76,11 @@ function NetworkList({closeAction}) {
       networkType="mainnet"
       closeAction={closeAction}
       networkIcon={
-        network.icon ? (
-          <img
-            alt="network-icon"
-            className="w-7 h-7 mt-px"
-            src="network.icon"
-          />
-        ) : (
-          <TemporaryIcon className="w-7 h-7 mt-px" />
-        )
+        <img
+          alt="network-icon"
+          className="w-7 h-7 mt-px"
+          src={network.icon ? network.icon : ''}
+        />
       }
     />
   ))

@@ -19,10 +19,6 @@ const ProtectedRoute = ({hasAccount, isLocked, ...rest}) => {
 }
 
 ProtectedRoute.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]).isRequired,
   hasAccount: PropTypes.bool,
   isLocked: PropTypes.bool,
 }

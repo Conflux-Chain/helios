@@ -5,14 +5,6 @@ import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} from '../../../constants'
 
-// TODO: remove when avatar programme confirmed
-// eslint-disable-next-line react/prop-types
-function TemporaryIcon({className = ''}) {
-  return (
-    <div className={`inline-block bg-gray-40 rounded-full ${className}`}></div>
-  )
-}
-
 const ActionSheet = ({close, showActionSheet = false, title, children}) => {
   const [containerStyle, setContainerStyle] = useState('')
   const [accountName, setAccountName] = useState('')
@@ -51,16 +43,15 @@ const ActionSheet = ({close, showActionSheet = false, title, children}) => {
       <div className="ml-3 pb-1">
         <p className="text-base text-gray-80 font-medium">{t(`${title}`)}</p>
         <div className="flex items-center text-xs mt-1">
-          <TemporaryIcon className="w-3 h-3" />
-          <div className="text-gray-40 ml-1">{accountName}</div>
+          <img className="w-3 h-3 mr-1" src="" alt="avatar" />
+          <div className="text-gray-40">{accountName}</div>
           <div className="mx-2 w-px h-2 bg-gray-40" />
-          {networkIconUrl ? (
-            <img alt="network" src="networkIconUrl" className="w-3 h-3" />
-          ) : (
-            <TemporaryIcon className="w-3 h-3" />
-          )}
-
-          <div className="text-gray-60 ml-1">{networkName}</div>
+          <img
+            alt="network"
+            src={networkIconUrl ? networkIconUrl : ''}
+            className="w-3 h-3 mr-1"
+          />
+          <div className="text-gray-60">{networkName}</div>
         </div>
       </div>
       <Close
