@@ -85,6 +85,7 @@ function initNetwork(d) {
         hdPath: -1,
         builtin: true,
         tokenList: -3,
+        isMainnet: true,
       },
     },
     {
@@ -101,6 +102,7 @@ function initNetwork(d) {
         },
         hdPath: -1,
         builtin: true,
+        isTestnet: true,
       },
     },
     {
@@ -118,6 +120,7 @@ function initNetwork(d) {
         hdPath: -2,
         builtin: true,
         tokenList: -4,
+        isMainnet: true,
       },
     },
     {
@@ -151,6 +154,7 @@ function initNetwork(d) {
         hdPath: -2,
         builtin: true,
         tokenList: -5,
+        isMainnet: true,
       },
     },
     {
@@ -167,6 +171,7 @@ function initNetwork(d) {
         },
         hdPath: -2,
         builtin: true,
+        isTestnet: true,
       },
     },
   ])
