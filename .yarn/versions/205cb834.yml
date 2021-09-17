@@ -1,4 +1,5 @@
 releases:
+  "@fluent-wallet/addr-by-network": patch
   "@fluent-wallet/cfx_sign-typed-data_v4": patch
   "@fluent-wallet/checks": patch
   "@fluent-wallet/doc-rpc-parameter": patch
@@ -6,9 +7,17 @@ releases:
   "@fluent-wallet/eth_estimate-gas": patch
   "@fluent-wallet/personal_sign": patch
   "@fluent-wallet/spec": patch
+  "@fluent-wallet/test-helpers": patch
+  "@fluent-wallet/wallet_add-vault": patch
+  "@fluent-wallet/wallet_create-account": patch
+  "@fluent-wallet/wallet_create-address": patch
+  "@fluent-wallet/wallet_export-account-group": patch
   "@fluent-wallet/wallet_generate-private-key": patch
+  "@fluent-wallet/wallet_get-balance": patch
+  "@fluent-wallet/wallet_get-next-nonce": patch
   "@fluent-wallet/wallet_request-permissions": patch
   "@fluent-wallet/wallet_set-current-account": patch
+  workspace-tools: patch
 
 declined:
   - helios-background
@@ -41,28 +50,22 @@ declined:
   - "@fluent-wallet/wallet_add-hd-path"
   - "@fluent-wallet/wallet_add-network"
   - "@fluent-wallet/wallet_add-pending-user-auth-request"
-  - "@fluent-wallet/wallet_add-vault"
-  - "@fluent-wallet/wallet_create-account"
-  - "@fluent-wallet/wallet_create-address"
   - "@fluent-wallet/wallet_delete-account-group"
   - "@fluent-wallet/wallet_delete-app"
   - "@fluent-wallet/wallet_delete-network"
   - "@fluent-wallet/wallet_detect-network-type"
   - "@fluent-wallet/wallet_discover-accounts"
   - "@fluent-wallet/wallet_export-account"
-  - "@fluent-wallet/wallet_export-account-group"
   - "@fluent-wallet/wallet_export-all"
   - "@fluent-wallet/wallet_generate-address"
   - "@fluent-wallet/wallet_get-account-address-by-network"
   - "@fluent-wallet/wallet_get-account-group"
   - "@fluent-wallet/wallet_get-account-group-vault-value"
   - "@fluent-wallet/wallet_get-address-private-key"
-  - "@fluent-wallet/wallet_get-balance"
   - "@fluent-wallet/wallet_get-current-account"
   - "@fluent-wallet/wallet_get-current-network"
   - "@fluent-wallet/wallet_get-current-viewing-app"
   - "@fluent-wallet/wallet_get-network"
-  - "@fluent-wallet/wallet_get-next-nonce"
   - "@fluent-wallet/wallet_get-pending-auth-request"
   - "@fluent-wallet/wallet_get-permissions"
   - "@fluent-wallet/wallet_import-address"
@@ -88,5 +91,4 @@ declined:
   - "@fluent-wallet/wallet_zero-account-group"
   - "@fluent-wallet/safe-event-emiter"
   - "@fluent-wallet/shorten-address"
-  - workspace-tools
   - doc
