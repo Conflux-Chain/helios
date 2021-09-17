@@ -1,13 +1,18 @@
+import {useState} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {useTranslation} from 'react-i18next'
+import {AuthorizeModal, DisconnectModal} from '../components'
 import {RPC_METHODS} from '../../../constants'
 const {GET_CURRENT_DAPP, GET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function CurrentDapp() {
   const {t} = useTranslation()
+  const [authModalShow, setAuthModalShow] = useState(false)
+  const [disconnectModalShow, setDisconnectModalShow] = useState(false)
   const {data: currentDapp} = useRPC([GET_CURRENT_DAPP], undefined, {
     fallbackData: {},
   })
+  console.log(currentDapp)
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
@@ -43,12 +48,20 @@ function CurrentDapp() {
               </span>
             </div>
             <div className="flex w-full items-center justify-between">
-              <span className="h-5 px-2 bg-primary-4 rounded-full text-success text-xs flex items-center justify-center">
+              <span
+                className="h-5 px-2 bg-primary-4 rounded-full text-success text-xs flex items-center justify-center cursor-pointer"
+                aria-hidden="true"
+                onClick={() => setDisconnectModalShow(true)}
+              >
                 <span className="w-1 h-1 rounded-full bg-success border border-gray-0 box-content mr-1" />
                 {t('connected')}
               </span>
               {!isConnectedCurrentAccount ? (
-                <span className="text-primary text-xs">
+                <span
+                  className="text-primary text-xs cursor-pointer"
+                  onClick={() => setAuthModalShow(true)}
+                  aria-hidden="true"
+                >
                   {t('authorizeCurrentAccount', {
                     currentAccount: currentNickname,
                   })}
@@ -57,8 +70,16 @@ function CurrentDapp() {
                 <span />
               )}
             </div>
+            <AuthorizeModal
+              open={authModalShow}
+              onClose={() => setAuthModalShow(false)}
+              needAuthAccountName={currentNickname}
+            />
+            <DisconnectModal
+              open={disconnectModalShow}
+              onClose={() => setDisconnectModalShow(false)}
+            />
           </div>
-          <div className="flex items-center justify-end flex-col"></div>
         </>
       )}
     </div>

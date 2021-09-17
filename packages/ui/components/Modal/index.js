@@ -15,6 +15,7 @@ function Modal({
   content,
   actions,
   size = 'medium',
+  contentClassName = '',
   ...props
 }) {
   const ref = useRef(null)
@@ -88,9 +89,11 @@ function Modal({
             {title}
           </div>
         )}
-        <div className="text-gray-60 w-full">{content}</div>
+        <div className={`text-gray-60 w-full ${contentClassName}`}>
+          {content}
+        </div>
         {actions && (
-          <div className="flex items-center w-full mt-4">{actions}</div>
+          <div className="flex items-center w-full mt-6">{actions}</div>
         )}
       </div>
     </div>
@@ -101,6 +104,7 @@ export default Modal
 
 Modal.propTypes = {
   className: PropTypes.string,
+  contentClassName: PropTypes.string,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   width: PropTypes.string,
   title: PropTypes.string,

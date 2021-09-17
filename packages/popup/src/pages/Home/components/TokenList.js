@@ -9,13 +9,15 @@ function TokenItem({
   icon,
   name = 'Conflux',
   symbol = 'CFX',
-  balance = '123456789000111222.123456',
+  balance = '1234567890.123456',
 }) {
   useEffect(() => {
     const balanceDom = document.getElementById('balance')
     const contentWidth = balanceDom.offsetWidth
-    if (contentWidth > 176) {
-      const fontSize = (176 / contentWidth) * 14
+    console.log(contentWidth)
+    if (contentWidth > 175) {
+      const fontSize = (175 / contentWidth) * 14
+      console.log(fontSize)
       balanceDom.style.fontSize = parseInt(fontSize * 100) / 100 + 'px'
     }
   }, [balance])
@@ -25,7 +27,7 @@ function TokenItem({
       <div className="flex flex-1 flex-col">
         <div className="flex w-full items-center justify-between">
           <span className="text-gray-80 font-medium">{symbol}</span>
-          <div className="w-44 text-sm text-gray-80 font-mono font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis">
+          <div className="max-w-[175px] text-sm text-gray-80 font-mono font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis">
             <span id="balance">{formatBalance(balance)}</span>
           </div>
         </div>
