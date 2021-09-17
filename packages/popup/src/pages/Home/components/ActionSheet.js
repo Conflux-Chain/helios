@@ -4,9 +4,9 @@ import {useState, useEffect, cloneElement} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} from '../../../constants'
+import {useSlideAnimation} from '../../../hooks'
 
 const ActionSheet = ({close, showActionSheet = false, title, children}) => {
-  const [containerStyle, setContainerStyle] = useState('')
   const [accountName, setAccountName] = useState('')
   const [networkName, setNetworkName] = useState('')
   const [networkIconUrl, setNetworkIconUrl] = useState(null)
@@ -14,15 +14,7 @@ const ActionSheet = ({close, showActionSheet = false, title, children}) => {
   const {t} = useTranslation()
   const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
   const {data: currentAccountData} = useRPC([GET_CURRENT_ACCOUNT])
-
-  const onClose = () => {
-    close()
-    setContainerStyle('animate-slide-down')
-  }
-
-  useEffect(() => {
-    showActionSheet && setContainerStyle('animate-slide-up block')
-  }, [showActionSheet])
+  const animateStyle = useSlideAnimation(showActionSheet)
 
   useEffect(() => {
     setAccountName(currentAccountData?.nickname || '')
@@ -33,12 +25,12 @@ const ActionSheet = ({close, showActionSheet = false, title, children}) => {
     setNetworkName(currentNetworkData?.name || '')
   }, [currentNetworkData])
 
-  if (!containerStyle) {
+  if (!animateStyle) {
     return null
   }
   return (
     <div
-      className={`bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${containerStyle} h-125 `}
+      className={`bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${animateStyle} h-125 `}
     >
       <div className="ml-3 pb-1">
         <p className="text-base text-gray-80 font-medium">{t(`${title}`)}</p>
@@ -55,11 +47,11 @@ const ActionSheet = ({close, showActionSheet = false, title, children}) => {
         </div>
       </div>
       <Close
-        onClick={onClose}
+        onClick={close}
         className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
       />
       {cloneElement(children, {
-        closeAction: onClose,
+        closeAction: close,
       })}
     </div>
   )

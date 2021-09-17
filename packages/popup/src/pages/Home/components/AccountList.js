@@ -2,7 +2,15 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {useRPC} from '@fluent-wallet/use-rpc'
-import {GET_ALL_ACCOUNT_GROUP, ROUTES} from '../../../constants'
+import {isNumber} from '@fluent-wallet/checks'
+import {useEffect} from 'react'
+import {
+  GET_ALL_ACCOUNT_GROUP,
+  GET_CURRENT_NETWORK,
+  GET_ACCOUNT_ADDRESS_BY_NETWORK,
+  ROUTES,
+  GET_BALANCE,
+} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../../../utils'
 const {SELECT_CREATE_TYPE} = ROUTES
@@ -42,12 +50,44 @@ AccountGroup.propTypes = {
 function AccountList() {
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([...GET_ALL_ACCOUNT_GROUP])
+  const {
+    data: {eid: networkId},
+  } = useRPC([GET_CURRENT_NETWORK])
   const history = useHistory()
   const onAddAccount = () => {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
   }
-  console.log(accountGroups)
+
+  useEffect(() => {
+    if (isNumber(networkId) && accountGroups.length) {
+      const accounts = accountGroups.reduce(
+        (acc, cur) => acc.concat(cur.account),
+        [],
+      )
+      // console.log(accounts, networkId)
+      Promise.all(
+        accounts.map(({eid: accountId}) =>
+          request(GET_ACCOUNT_ADDRESS_BY_NETWORK, {
+            networkId: networkId,
+            accountId,
+          }),
+        ),
+      ).then(addresses => {
+        // console.log('addresses', addresses)
+
+        if (addresses.every(addr => addr.result)) {
+          request(
+            GET_BALANCE,
+            [addresses[0].result.base32],
+            // addresses.map(addr => addr.result.base32 || addr.result.hex),
+          ).then(({result, error}) => {
+            // console.log('result', result, error)
+          })
+        }
+      })
+    }
+  }, [networkId, accountGroups])
   return (
     <>
       <div>
