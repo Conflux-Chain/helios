@@ -309,9 +309,8 @@ export const main = async arg => {
   vault.data = await encrypt(password, vault.data)
 
   const vaultId = createVault(vault)
-  const groupId = newAccountGroup({...arg, vaultId})
-
   if (isFirstGroup) await wallet_unlock({password})
+  const groupId = newAccountGroup({...arg, vaultId})
 
   return groupId
 }
