@@ -10,10 +10,7 @@ import {
   CopyOutlined,
   QrcodeOutlined,
 } from '@fluent-wallet/component-icons'
-import {address as sdkAddress} from 'js-conflux-sdk'
-import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-// import {removeCfxAddressType} from '../../../utils'
 import {RPC_METHODS, NETWORK_TYPE} from '../../../constants'
 const {
   GET_CURRENT_ACCOUNT,
@@ -45,16 +42,8 @@ function CurrentAccount() {
   )
   const {base32, hex} = accountAddress
 
-  const simplifyBase32 = validateBase32Address(base32)
-    ? sdkAddress.simplifyCfxAddress(base32)
-    : ''
-
   const address =
-    type === NETWORK_TYPE.CFX
-      ? simplifyBase32
-      : type === NETWORK_TYPE.ETH
-      ? hex
-      : ''
+    type === NETWORK_TYPE.CFX ? base32 : type === NETWORK_TYPE.ETH ? hex : ''
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (
