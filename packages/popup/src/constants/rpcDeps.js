@@ -10,5 +10,5 @@ export const GET_NETWORK = 'wallet_getNetwork'
 export const GET_ACCOUNT_ADDRESS_BY_NETWORK =
   'wallet_getAccountAddressByNetwork'
 export const GET_BALANCE = 'wallet_getBalance'
-export const GET_CURRENTVIEWINGAPP = 'wallet_getCurrentViewingApp'
+export const GET_CURRENT_VIEWING_APP = 'wallet_getCurrentViewingApp'
 export const SET_CURRENT_NETWORK = 'wallet_setCurrentNetwork'

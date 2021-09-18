@@ -137,6 +137,7 @@ function initNetwork(d) {
         },
         hdPath: -2,
         builtin: true,
+        isTestnet: true,
       },
     },
     {

@@ -61,7 +61,6 @@ function AccountList() {
 
   useEffect(() => {
     if (isNumber(networkId) && accountGroups.length) {
-      console.log('eid', networkId)
       const addressParams = accountGroups.reduce(
         (acc, cur) =>
           acc.concat(
@@ -69,9 +68,8 @@ function AccountList() {
           ),
         [],
       )
-      console.log('addressParams', addressParams)
       request(GET_ACCOUNT_ADDRESS_BY_NETWORK, addressParams).then(addresses => {
-        console.log(addresses)
+        console.log('addresses', addresses)
       })
       // console.log(accounts, networkId)
       // Promise.all(
