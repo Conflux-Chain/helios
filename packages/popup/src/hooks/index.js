@@ -14,7 +14,6 @@ export const useCreatedPasswordGuard = () => {
 }
 
 export const useFontSize = (targetRef, hiddenRef, maxWidth, value) => {
-  console.log('maxWidth', maxWidth)
   useEffect(() => {
     const hiddenDom = hiddenRef.current
     const targetDom = targetRef.current
