@@ -53,7 +53,7 @@ function NetworkItem({
 }
 NetworkItem.propTypes = {
   networkName: PropTypes.string.isRequired,
-  networkType: PropTypes.string.isRequired,
+  networkType: PropTypes.oneOf(['mainnet', 'testnet', 'custom']).isRequired,
   networkId: PropTypes.number.isRequired,
   networkIcon: PropTypes.element.isRequired,
   closeAction: PropTypes.func,
@@ -67,23 +67,29 @@ function NetworkList({closeAction}) {
       fallbackData: [],
     },
   )
-  // TODO: replace type and judge custom by builtin not true
-  return networkData.map(network => (
-    <NetworkItem
-      key={network.eid}
-      networkId={network.eid}
-      networkName={network.name}
-      networkType="mainnet"
-      closeAction={closeAction}
-      networkIcon={
-        <img
-          alt="network-icon"
-          className="w-7 h-7 mt-px"
-          src={network.icon ? network.icon : ''}
-        />
-      }
-    />
-  ))
+
+  return networkData.map(
+    ({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
+      <NetworkItem
+        key={eid}
+        networkId={eid}
+        networkName={name}
+        networkType={
+          isCustom
+            ? 'custom'
+            : isMainnet
+            ? 'mainnet'
+            : isTestnet
+            ? 'testnet'
+            : ''
+        }
+        closeAction={closeAction}
+        networkIcon={
+          <img alt="network-icon" className="w-7 h-7 mt-px" src={icon || ''} />
+        }
+      />
+    ),
+  )
 }
 
 NetworkList.propTypes = {
