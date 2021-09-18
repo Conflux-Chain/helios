@@ -13,16 +13,17 @@ export const useCreatedPasswordGuard = () => {
   }, [createdPassword, history])
 }
 
-export const useFontSize = (id, maxWidth, value) => {
+export const useFontSize = (targetRef, hiddenRef, maxWidth, value) => {
   console.log('maxWidth', maxWidth)
   useEffect(() => {
-    const targetDom = document.getElementById(id)
-    const contentWidth = targetDom.offsetWidth
-    console.log('contentWidth:', contentWidth)
+    const hiddenDom = hiddenRef.current
+    const targetDom = targetRef.current
+    const contentWidth = hiddenDom.offsetWidth
     if (contentWidth > maxWidth) {
       const fontSize = (maxWidth / contentWidth) * 14
-      console.log('fontSize:', fontSize)
       targetDom.style.fontSize = parseInt(fontSize * 100) / 100 + 'px'
+    } else {
+      targetDom.style.fontSize = '14px'
     }
-  }, [id, maxWidth, value])
+  }, [targetRef, hiddenRef, maxWidth, value])
 }
