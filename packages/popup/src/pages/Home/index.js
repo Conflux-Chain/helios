@@ -10,11 +10,10 @@ import {
 
 function Home() {
   const {t} = useTranslation()
-  const onLock = () => {}
   return (
     <div className="flex flex-col bg-bg h-full">
       <button onClick={() => open(location.href)}>open</button>
-      <HomeNav onLock={onLock} />
+      <HomeNav />
       <div className="flex flex-col pt-1 px-4 bg-secondary">
         <div className="flex items-start justify-between">
           <CurrentAccount />

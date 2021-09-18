@@ -16673,7 +16673,6 @@ fsevents@~2.1.2:
   version: 0.0.0-use.local
   resolution: "helios-popup@workspace:packages/popup"
   dependencies:
-    "@fluent-wallet/account": "workspace:packages/account"
     "@fluent-wallet/checks": "workspace:packages/checks"
     "@fluent-wallet/component-button": "workspace:packages/ui/components/Button"
     "@fluent-wallet/component-dropdown": "workspace:packages/ui/components/Dropdown"

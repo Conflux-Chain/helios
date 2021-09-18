@@ -7,7 +7,6 @@
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/checks": "workspace:packages/checks",
     "@fluent-wallet/component-button": "workspace:packages/ui/components/Button",
     "@fluent-wallet/component-dropdown": "workspace:packages/ui/components/Dropdown",
