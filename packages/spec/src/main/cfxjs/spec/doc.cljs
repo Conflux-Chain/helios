@@ -131,11 +131,10 @@
 (defmethod -schema-doc-generator :catn [schema options]
   (let [value-gen (fn [[k o v]]
                     (let [rst (-schema-doc-generator v o)
-                          rst (assoc rst :catn true)
-                          rst (assoc rst :k k)]
+                          rst (assoc-in rst [:value :catnk] k)]
                       rst))
-        gen-req (mapv value-gen (m/children schema options))]
-    {:type :map :children gen-req}))
+        rst       (first (mapv value-gen (m/children schema options)))]
+    rst))
 
 (defmethod -schema-doc-generator ::m/val [schema options]
   (-schema-doc-generator (first (m/children schema)) options))
