@@ -9,10 +9,10 @@ function TokenItem({
   icon,
   name = 'Conflux',
   symbol = 'CFX',
-  balance = '123456789000111.123456',
+  balance = '123456789100200.123456',
   index,
 }) {
-  useFontSize(`balance_${index}`, 175)
+  useFontSize(`balance_${index}`, 175, balance)
   return (
     <div className="w-full h-14 flex items-center">
       <img className="w-8 h-8 rounded-full mr-2" src={icon} alt="logo" />
