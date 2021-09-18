@@ -16,16 +16,20 @@ export const main = async ({db: {getAppBySite, getSiteByOrigin}}) => {
   let t
   try {
     const {tab} = await import('@fluent-wallet/webextension')
-    await tab.getCurrent()
+    t = await tab.getCurrent()
+    if (!t?.length) return null
+    t = t[0]
     if (!t?.url) return null
   } catch (err) {
     return null
   }
 
-  const site = getSiteByOrigin(t.url)
+  const urlSplit = t.url.split('/')
+  const origin = urlSplit[2]
+  const [site] = getSiteByOrigin(origin)
   if (!site) return null
 
-  const app = getAppBySite(site.eid)
+  const [app] = getAppBySite(site.eid)
 
   return {site, app}
 }

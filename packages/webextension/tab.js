@@ -1,3 +1,3 @@
 import browser from 'webextension-polyfill'
 
-export const getCurrent = browser.tabs.getCurrent
+export const getCurrent = () => browser.tabs.query({active: true})
