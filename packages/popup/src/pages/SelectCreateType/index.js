@@ -6,10 +6,7 @@ import {CreateTypeItem} from './components'
 function Tag() {
   const {t} = useTranslation()
   return (
-    <span
-      className="px-1 ml-1 h-4 text-white flex items-center rounded-sm"
-      style={{backgroundColor: '#32E1A9', fontSize: '10px'}}
-    >
+    <span className="px-1 ml-1 h-4 text-white flex items-center rounded-sm bg-[#80ac9e] text-2xs">
       {t('faster')}
     </span>
   )
@@ -25,7 +22,7 @@ function SelectCreateType() {
           {t('createAccount')}
         </em>
         <CreateTypeItem
-          Icon={<img src="/images/existing-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="images/existing-seed-phrase-icon.svg" alt="icon" />}
           title={t('useExistingSeed')}
           subTitle={t('useExistingSeedDes')}
           Tag={Tag}
@@ -34,7 +31,7 @@ function SelectCreateType() {
           }}
         />
         <CreateTypeItem
-          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('newSeedPhrase')}
           subTitle={t('newSeedPhraseDes')}
           onClick={() => {
@@ -45,7 +42,7 @@ function SelectCreateType() {
           {t('importExistingAccount')}
         </em>
         <CreateTypeItem
-          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('seedPhrase')}
           subTitle={t('seedPhraseDes')}
           onClick={() => {
@@ -53,7 +50,7 @@ function SelectCreateType() {
           }}
         />
         <CreateTypeItem
-          Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
+          Icon={<img src="images/private-key-icon.svg" alt="icon" />}
           title={t('pKey')}
           subTitle={t('pKeysDes')}
           onClick={() => {

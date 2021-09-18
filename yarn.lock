@@ -3005,6 +3005,8 @@ __metadata:
 "@fluent-wallet/component-alert@workspace:packages/ui/components/Alert":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-alert@workspace:packages/ui/components/Alert"
+  dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -3023,6 +3025,8 @@ __metadata:
 "@fluent-wallet/component-checkbox@workspace:packages/ui/components/Checkbox":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-checkbox@workspace:packages/ui/components/Checkbox"
+  dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -3033,6 +3037,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-dropdown@workspace:packages/ui/components/Dropdown"
   dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     rc-dropdown: 3.2.0
   peerDependencies:
     react: ^17
@@ -3067,6 +3072,8 @@ __metadata:
 "@fluent-wallet/component-loading@workspace:packages/ui/components/Loading":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-loading@workspace:packages/ui/components/Loading"
+  dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -3077,6 +3084,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-menu@workspace:packages/ui/components/Menu"
   dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     rc-notification: 4.5.7
   peerDependencies:
     react: ^17
@@ -3088,6 +3096,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-message@workspace:packages/ui/components/Message"
   dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     "@fluent-wallet/component-loading": "workspace:packages/ui/components/Loading"
     rc-notification: 4.5.7
   peerDependencies:
@@ -3100,6 +3109,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-modal@workspace:packages/ui/components/Modal"
   dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     react-use: 17.2.4
   peerDependencies:
     react: ^17
@@ -3110,6 +3120,8 @@ __metadata:
 "@fluent-wallet/component-notification@workspace:packages/ui/components/Notification":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-notification@workspace:packages/ui/components/Notification"
+  dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -3130,6 +3142,8 @@ __metadata:
 "@fluent-wallet/component-tag@workspace:packages/ui/components/Tag":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-tag@workspace:packages/ui/components/Tag"
+  dependencies:
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -3150,15 +3164,6 @@ __metadata:
   resolution: "@fluent-wallet/component-tooltip@workspace:packages/ui/components/Tooltip"
   dependencies:
     rc-tooltip: 5.1.1
-  peerDependencies:
-    react: ^17
-    react-dom: ^17
-  languageName: unknown
-  linkType: soft
-
-"@fluent-wallet/component-wrap-icon@workspace:packages/ui/components/WrapIcon":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/component-wrap-icon@workspace:packages/ui/components/WrapIcon"
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -11608,7 +11613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-to-clipboard@npm:^3.3.1":
+"copy-to-clipboard@npm:^3, copy-to-clipboard@npm:^3.3.1":
   version: 3.3.1
   resolution: "copy-to-clipboard@npm:3.3.1"
   dependencies:
@@ -16673,9 +16678,13 @@ fsevents@~2.1.2:
     "@fluent-wallet/component-dropdown": "workspace:packages/ui/components/Dropdown"
     "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     "@fluent-wallet/component-input": "workspace:packages/ui/components/Input"
+    "@fluent-wallet/component-modal": "workspace:packages/ui/components/Modal"
+    "@fluent-wallet/component-toast": "workspace:packages/ui/components/Toast"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
     i18next: 20.4.0
+    qrcode.react: 1.0.1
+    react-copy-to-clipboard: 5.0.4
     react-i18next: 11.11.4
     react-router-dom: 5.2.1
     react-use: 17.2.4
@@ -23836,7 +23845,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.0.0, prop-types@npm:^15.5.0, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.0.0, prop-types@npm:^15.5.0, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -24088,6 +24097,26 @@ fsevents@~2.1.2:
   version: 1.5.1
   resolution: "q@npm:1.5.1"
   checksum: 147baa93c805bc1200ed698bdf9c72e9e42c05f96d007e33a558b5fdfd63e5ea130e99313f28efc1783e90e6bdb4e48b67a36fcc026b7b09202437ae88a1fb12
+  languageName: node
+  linkType: hard
+
+"qr.js@npm:0.0.0":
+  version: 0.0.0
+  resolution: "qr.js@npm:0.0.0"
+  checksum: 5ac6c393967bdeaa660e7fd3a501a25eb538c1f6008a4d30ab2b97bbe520e5c236530090773f1578aa0a523cdaa6923c866615e21143f9e7cd22abd41c789b69
+  languageName: node
+  linkType: hard
+
+"qrcode.react@npm:1.0.1":
+  version: 1.0.1
+  resolution: "qrcode.react@npm:1.0.1"
+  dependencies:
+    loose-envify: ^1.4.0
+    prop-types: ^15.6.0
+    qr.js: 0.0.0
+  peerDependencies:
+    react: ^15.5.3 || ^16.0.0 || ^17.0.0
+  checksum: 154a9557d103fa776cd99bc0d2600b862be74872ff965052533bc38ea0606c4d0965b4dd6df93e53f1db86699517a25db2718bbbc08c5d535a90c0d335552e9a
   languageName: node
   linkType: hard
 
@@ -24381,6 +24410,18 @@ fsevents@~2.1.2:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
   checksum: 9f332621da02b37bb85c619861b92d954768514cb357d09f7f5c53e58f39e8799ed055dd503b4a2b48668f802c0b25c700fa30eae12281bdfddd62c1acc51b2f
+  languageName: node
+  linkType: hard
+
+"react-copy-to-clipboard@npm:5.0.4":
+  version: 5.0.4
+  resolution: "react-copy-to-clipboard@npm:5.0.4"
+  dependencies:
+    copy-to-clipboard: ^3
+    prop-types: ^15.5.8
+  peerDependencies:
+    react: ^15.3.0 || ^16.0.0 || ^17.0.0
+  checksum: dae8caae192d4937a151ec3ddad540fe4846d28646aee6d90774abcc6a077761926c99f2bcd9506a76a65524ec2c32b5ec1341e8096fcd3f6335365eaf065137
   languageName: node
   linkType: hard
 

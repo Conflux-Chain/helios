@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import NoChecked from './assets/NoChecked'
-import Checked from './assets/Checked'
+import {
+  CheckSquareOutlined,
+  SquareOutlined,
+} from '@fluent-wallet/component-icons'
 
 function Checkbox({checked, onChange, children, className}) {
   return (
@@ -12,10 +14,13 @@ function Checkbox({checked, onChange, children, className}) {
       className={`flex items-center cursor-pointer ${className}`}
     >
       {checked && (
-        <Checked className="w-4 h-4 mr-2" data-testid="checked-svg" />
+        <CheckSquareOutlined
+          className="w-4 h-4 mr-2"
+          data-testid="checked-svg"
+        />
       )}
       {!checked && (
-        <NoChecked
+        <SquareOutlined
           data-testid="non-checked-svg"
           className="w-4 h-4 mr-2 text-gray-40"
         />

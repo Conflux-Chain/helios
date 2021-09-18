@@ -26,7 +26,7 @@ function Toast({
     return (
       <div
         data-testid="block-toast-wrapper"
-        className={`absolute flex flex-col items-center justify-center rounded-sm bg-black bg-opacity-60 p-3 w-35 max-h-52 shadow-1 z-20 ${className}`}
+        className={`absolute flex flex-col items-center justify-center rounded-sm bg-[#000] bg-opacity-40 p-3 w-35 max-h-52 shadow-1 z-20 ${className}`}
         {...props}
       >
         {iconComp}
@@ -40,11 +40,11 @@ function Toast({
     return (
       <div
         data-testid="line-toast-wrapper"
-        className={`absolute flex items-center justify-center h-10 px-4 max-w-sm rounded-sm bg-black bg-opacity-60 shadow-1 z-20 ${className}`}
+        className={`absolute flex items-center justify-center h-6 px-2 max-w-sm rounded-sm bg-[#000] bg-opacity-40 z-20 ${className}`}
         {...props}
       >
-        {icon && <img src={icon} alt="status" className="mr-2 w-6 h-6" />}
-        <div className="text-xs text-white">{content}</div>
+        {icon && <img src={icon} alt="status" className="mr-0.5 w-3 h-3" />}
+        <div className="text-xs text-white whitespace-nowrap">{content}</div>
       </div>
     )
   }

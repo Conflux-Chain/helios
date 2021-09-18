@@ -1,16 +1,18 @@
 import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
-import ErrorFilled from './assets/ErrorFilled'
-import SuccessFilled from './assets/SuccessFilled'
-import WarningFilled from './assets/WarningFilled'
-import InfoFilled from './assets/InfoFilled'
-import Close from './assets/Close'
+import {
+  CloseOutlined,
+  ErrorTwoTone,
+  InfoTwoTone,
+  SuccessTwoTone,
+  WarningTwoTone,
+} from '@fluent-wallet/component-icons'
 
 const typeToIcon = {
-  success: <SuccessFilled className="w-4 h-4 mr-2" />,
-  info: <InfoFilled className="w-4 h-4 mr-2" />,
-  error: <ErrorFilled className="w-4 h-4 mr-2" />,
-  warning: <WarningFilled className="w-4 h-4 mr-2" />,
+  success: <SuccessTwoTone className="w-4 h-4 mr-2" />,
+  info: <InfoTwoTone className="w-4 h-4 mr-2" />,
+  error: <ErrorTwoTone className="w-4 h-4 mr-2" />,
+  warning: <WarningTwoTone className="w-4 h-4 mr-2" />,
 }
 
 const contentStyleObj = {
@@ -83,7 +85,7 @@ function Alert({
           {closeIcon ? (
             closeIconComp
           ) : (
-            <Close
+            <CloseOutlined
               className="w-4 h-4 text-gray-40"
               onClick={e => onCloseClick(e)}
             />

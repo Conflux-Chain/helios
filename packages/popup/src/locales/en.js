@@ -59,6 +59,24 @@ const en = {
     confirmSeedContent:
       'Please click the Seed Phase in order to ensure correct backup.',
     confirmSeedError: 'Mistakes in Seed Phrase.',
+
+    // home page
+    send: 'Send',
+    history: 'History',
+    assets: 'Assets',
+    noConnectedDapp: 'Not connected to current website',
+    connected: 'Connected',
+    authorizeCurrentAccount: 'Authorize {{currentAccount}}?',
+    copiedSuccess: 'Copied success',
+    needAuthTitle: 'Need authorization',
+    needAuthContent:
+      'This Account has not authorized to this site.<br/>Authorize this site to use {{accountName}} ？',
+    disconnectTitle: 'Disconnect',
+    disconnectContent: 'Disconnect this website?',
+    no: 'No',
+    yes: 'Yes',
+    cancel: 'Cancel',
+    disconnect: 'Disconnect',
   },
 }
 

@@ -6,6 +6,8 @@ import {SeedWord} from './components'
 import {TitleNav} from '../../components'
 import {request, shuffle} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
+import {RPC_METHODS} from '../../constants'
+const {IMPORT_MNEMONIC} = RPC_METHODS
 
 function ConfirmSeed() {
   useCreatedPasswordGuard()
@@ -44,7 +46,7 @@ function ConfirmSeed() {
     if (importingMnemonic) return
     setMnemonicError('')
     setImportingMnemonic(true)
-    request('wallet_importMnemonic', {
+    request(IMPORT_MNEMONIC, {
       mnemonic,
       password: createdPassword,
     }).then(({error}) => {
@@ -90,7 +92,7 @@ function ConfirmSeed() {
               {mnemonicError}
             </span>
           )}
-          <div className="mt-4 px-3 pt-3 flex flex-wrap justify-between">
+          <div className="mt-10 px-3 pt-3 flex flex-wrap justify-between">
             {buttonArray.map((word, index) => (
               <Button
                 key={index}

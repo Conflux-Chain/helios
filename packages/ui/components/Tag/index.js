@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
-import Close from './assets/Close'
+import {CloseOutlined} from '@fluent-wallet/component-icons'
 
 const sizeStyleObj = {
   small: 'text-2xs h-4 px-1',
@@ -91,7 +91,7 @@ function Tag({
           {closeIcon ? (
             closeIconComp
           ) : (
-            <Close
+            <CloseOutlined
               data-testid="close-icon"
               className={`${iconColor} ${iconSize}`}
             />

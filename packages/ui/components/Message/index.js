@@ -1,10 +1,12 @@
 import React from 'react'
 import ReactNotification from 'rc-notification'
-import Loading from '@fluent-wallet/component-loading'
-import ErrorFilled from './assets/ErrorFilled'
-import SuccessFilled from './assets/SuccessFilled'
-import WarningFilled from './assets/WarningFilled'
-import InfoFilled from './assets/InfoFilled'
+import {
+  LoadingOutlined,
+  ErrorTwoTone,
+  InfoTwoTone,
+  SuccessTwoTone,
+  WarningTwoTone,
+} from '@fluent-wallet/component-icons'
 
 const Notification = ReactNotification.default
 const IconTypes = ['info', 'success', 'error', 'warning', 'loading']
@@ -77,10 +79,24 @@ function getRCNotificationInstance(args, callback) {
 }
 
 const typeToIcon = {
-  success: <SuccessFilled className="w-5 h-5 mr-2" />,
-  info: <InfoFilled className="w-5 h-5 mr-2" />,
-  error: <ErrorFilled className="w-5 h-5 mr-2" />,
-  warning: <WarningFilled className="w-5 h-5 mr-2" />,
+  success: (
+    <SuccessTwoTone
+      data-testid="success-filled-wrapper"
+      className="w-5 h-5 mr-2"
+    />
+  ),
+  info: (
+    <InfoTwoTone data-testid="info-filled-wrapper" className="w-5 h-5 mr-2" />
+  ),
+  error: (
+    <ErrorTwoTone data-testid="error-filled-wrapper" className="w-5 h-5 mr-2" />
+  ),
+  warning: (
+    <WarningTwoTone
+      data-testid="warning-filled-wrapper"
+      className="w-5 h-5 mr-2"
+    />
+  ),
 }
 
 function getRCNoticeProps(args) {
@@ -101,7 +117,7 @@ function getRCNoticeProps(args) {
 
   const IconComponent =
     type === 'loading' ? (
-      <Loading className="mr-2 !w-5 !h-5" />
+      <LoadingOutlined className="mr-2 !w-5 !h-5" />
     ) : (
       typeToIcon[type]
     )

@@ -1,7 +1,6 @@
 import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
-import SuccessFilled from './assets/SuccessFilled'
-import Disabled from './assets/Disabled'
+import {StopOutlined, SuccessTwoTone} from '@fluent-wallet/component-icons'
 
 function MenuItem({
   children,
@@ -14,8 +13,8 @@ function MenuItem({
 }) {
   const style = useMemo(() => {
     if (disabled) return 'text-gray-40 cursor-not-allowed'
-    if (selected) return 'bg-gray-0 text-primary cursor-poiniter'
-    return 'bg-gray-0 text-gray-100 cursor-poiniter hover:bg-gray-10 hover:text-primary'
+    if (selected) return 'bg-gray-0 text-primary cursor-pointer'
+    return 'bg-gray-0 text-gray-100 cursor-pointer hover:bg-gray-10 hover:text-primary'
   }, [disabled, selected])
 
   const iconComp = icon
@@ -49,10 +48,13 @@ function MenuItem({
         (selectedIcon ? (
           selectedIconComp
         ) : (
-          <SuccessFilled className="w-4 h-4" />
+          <SuccessTwoTone
+            className="w-4 h-4"
+            data-testid="success-filled-wrapper"
+          />
         ))}
       {disabled && (
-        <Disabled
+        <StopOutlined
           className="text-gray-40 w-4 h-4"
           data-testid="disable-icon-wrapper"
         />

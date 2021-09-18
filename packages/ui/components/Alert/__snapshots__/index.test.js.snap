@@ -14,46 +14,23 @@ Object {
         >
           <svg
             class="w-4 h-4 mr-2"
-            data-testid="warning-filled-wrapper"
             fill="none"
             height="24"
             viewBox="0 0 24 24"
             width="24"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <mask
-              height="24"
-              id="warning-filled_svg__a"
-              maskUnits="userSpaceOnUse"
-              width="24"
-              x="0"
-              y="0"
-            >
-              <path
-                d="M0 0h24v24H0z"
-                fill="#C4C4C4"
-              />
-            </mask>
-            <g
-              mask="url(#warning-filled_svg__a)"
-            >
-              <path
-                clip-rule="evenodd"
-                d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                fill="#FFC438"
-                fill-rule="evenodd"
-              />
-              <path
-                d="M12 7c.427 0 .78.322.828.736l.005.097V14.5a.833.833 0 01-1.66.097l-.007-.097V7.833c0-.46.374-.833.834-.833z"
-                fill="#fff"
-              />
-              <path
-                clip-rule="evenodd"
-                d="M12 17.833a.833.833 0 100-1.666.833.833 0 000 1.666z"
-                fill="#fff"
-                fill-rule="evenodd"
-              />
-            </g>
+            <path
+              d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
+              fill="#F0955F"
+            />
+            <path
+              d="M12 8v4M12 16h-.01"
+              stroke="#fff"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
           </svg>
           <span
             class="text-warning-dark"
@@ -74,46 +51,23 @@ Object {
       >
         <svg
           class="w-4 h-4 mr-2"
-          data-testid="warning-filled-wrapper"
           fill="none"
           height="24"
           viewBox="0 0 24 24"
           width="24"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <mask
-            height="24"
-            id="warning-filled_svg__a"
-            maskUnits="userSpaceOnUse"
-            width="24"
-            x="0"
-            y="0"
-          >
-            <path
-              d="M0 0h24v24H0z"
-              fill="#C4C4C4"
-            />
-          </mask>
-          <g
-            mask="url(#warning-filled_svg__a)"
-          >
-            <path
-              clip-rule="evenodd"
-              d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-              fill="#FFC438"
-              fill-rule="evenodd"
-            />
-            <path
-              d="M12 7c.427 0 .78.322.828.736l.005.097V14.5a.833.833 0 01-1.66.097l-.007-.097V7.833c0-.46.374-.833.834-.833z"
-              fill="#fff"
-            />
-            <path
-              clip-rule="evenodd"
-              d="M12 17.833a.833.833 0 100-1.666.833.833 0 000 1.666z"
-              fill="#fff"
-              fill-rule="evenodd"
-            />
-          </g>
+          <path
+            d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
+            fill="#F0955F"
+          />
+          <path
+            d="M12 8v4M12 16h-.01"
+            stroke="#fff"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
         </svg>
         <span
           class="text-warning-dark"

@@ -6,11 +6,16 @@ import Button from '@fluent-wallet/component-button'
 import Input from '@fluent-wallet/component-input'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
-import {GET_HD_ACCOUNT_GROUP, GET_ALL_ACCOUNT_GROUP} from '../../constants'
+import {RPC_METHODS} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
-
 import {useSWRConfig} from 'swr'
+const {
+  GET_ALL_ACCOUNT_GROUP,
+  ACCOUNT_GROUP_TYPE,
+  VALIDATE_MNEMONIC,
+  IMPORT_MNEMONIC,
+} = RPC_METHODS
 
 function ImportSeedPhrase() {
   const {t} = useTranslation()
@@ -25,13 +30,9 @@ function ImportSeedPhrase() {
   const createdPassword = useGlobalStore(state => state.createdPassword)
 
   const {data: keygenGroup} = useRPC(
-    [...GET_HD_ACCOUNT_GROUP],
-    {
-      type: 'hd',
-    },
-    {
-      fallbackData: [],
-    },
+    [GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
+    {type: ACCOUNT_GROUP_TYPE.HD},
+    {fallbackData: []},
   )
 
   useCreatedPasswordGuard()
@@ -46,8 +47,8 @@ function ImportSeedPhrase() {
     setKeygen(e.target.value)
   }
   const dispatchMutate = () => {
-    mutate([...GET_ALL_ACCOUNT_GROUP])
-    mutate([...GET_HD_ACCOUNT_GROUP])
+    mutate([GET_ALL_ACCOUNT_GROUP])
+    mutate([GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD])
   }
 
   const onCreate = () => {
@@ -58,11 +59,11 @@ function ImportSeedPhrase() {
 
     if (!creatingAccount) {
       setCreatingAccount(true)
-      request('wallet_validateMnemonic', {
+      request(VALIDATE_MNEMONIC, {
         mnemonic: keygen,
       }).then(({result}) => {
         if (result?.valid) {
-          return request('wallet_importMnemonic', {
+          return request(IMPORT_MNEMONIC, {
             password: createdPassword,
             nickname: name || keygenNamePlaceholder,
             mnemonic: keygen,

@@ -1,7 +1,7 @@
 import React, {useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useClickAway} from 'react-use'
-import Close from './assets/Close'
+import {CloseOutlined} from '@fluent-wallet/component-icons'
 
 function Modal({
   className = '',
@@ -14,7 +14,8 @@ function Modal({
   title,
   content,
   actions,
-  size = 'small',
+  size = 'medium',
+  contentClassName = '',
   ...props
 }) {
   const ref = useRef(null)
@@ -38,7 +39,7 @@ function Modal({
 
   const closeIconComp = closeIcon
     ? React.cloneElement(closeIcon, {
-        className: `${size === 'medium' ? 'w-6 h-6' : 'w-4 h-4'} text-gray-40 ${
+        className: `${size === 'large' ? 'w-6 h-6' : 'w-4 h-4'} text-gray-40 ${
           closeIcon.props.className || ''
         }`,
       })
@@ -49,15 +50,17 @@ function Modal({
     <div
       data-testid="modal-wrapper"
       ref={ref}
-      className="fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-black bg-opacity-60 transation flex justify-center items-center z-10"
+      className="fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-[#000] bg-opacity-60 transation flex justify-center items-center z-10"
     >
       <div
         data-testid="modal-content"
         className={`relative overflow-auto flex flex-col items-center z-20 ${
           width
             ? width
-            : size === 'medium'
+            : size === 'large'
             ? 'w-full md:w-110'
+            : size === 'medium'
+            ? 'w-full md:w-80'
             : 'w-full md:w-70'
         } rounded bg-gray-0 shadow-3 p-6 ${className}`}
         {...props}
@@ -72,7 +75,7 @@ function Modal({
             {closeIcon ? (
               closeIconComp
             ) : (
-              <Close
+              <CloseOutlined
                 className={`${
                   size === 'medium' ? 'w-6 h-6' : 'w-4 h-4'
                 } text-gray-40`}
@@ -86,9 +89,11 @@ function Modal({
             {title}
           </div>
         )}
-        <div className="text-gray-60 w-full">{content}</div>
+        <div className={`text-gray-60 w-full ${contentClassName}`}>
+          {content}
+        </div>
         {actions && (
-          <div className="flex items-center w-full mt-4">{actions}</div>
+          <div className="flex items-center w-full mt-6">{actions}</div>
         )}
       </div>
     </div>
@@ -99,7 +104,8 @@ export default Modal
 
 Modal.propTypes = {
   className: PropTypes.string,
-  size: PropTypes.oneOf(['small', 'medium']),
+  contentClassName: PropTypes.string,
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
   width: PropTypes.string,
   title: PropTypes.string,
   open: PropTypes.bool,

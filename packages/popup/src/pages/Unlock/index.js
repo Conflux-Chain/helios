@@ -3,9 +3,10 @@ import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {GET_WALLET_STATUS} from '../../constants'
+import {RPC_METHODS} from '../../constants'
 import {useSWRConfig} from 'swr'
 import {request, validatePasswordReg} from '../../utils'
+const {GET_WALLET_LOCKED_STATUS, UNLOCK} = RPC_METHODS
 
 const UnlockPage = () => {
   const history = useHistory()
@@ -20,10 +21,10 @@ const UnlockPage = () => {
   }
   const onUnlock = () => {
     if (password) {
-      request('wallet_unlock', {password}).then(({error, result}) => {
+      request(UNLOCK, {password}).then(({error, result}) => {
         if (error) setErrorMessage(error.message.split('\n')[0])
         if (result) {
-          mutate([...GET_WALLET_STATUS])
+          mutate([GET_WALLET_LOCKED_STATUS])
           history.push('/')
         }
       })
@@ -39,7 +40,7 @@ const UnlockPage = () => {
       <LanguageNav />
       <header className="flex flex-col items-center pb-7">
         <img
-          src="assets/images/logo.png"
+          src="images/logo.svg"
           alt="logo"
           className="mx-auto w-25 h-25 mt-2"
         />

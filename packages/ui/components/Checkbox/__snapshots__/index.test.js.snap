@@ -20,7 +20,7 @@ Object {
           xmlns="http://www.w3.org/2000/svg"
         >
           <rect
-            fill="#44D7B6"
+            fill="#6FC5B1"
             height="20"
             rx="2"
             width="20"
@@ -55,7 +55,7 @@ Object {
         xmlns="http://www.w3.org/2000/svg"
       >
         <rect
-          fill="#44D7B6"
+          fill="#6FC5B1"
           height="20"
           rx="2"
           width="20"
