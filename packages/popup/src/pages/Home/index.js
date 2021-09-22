@@ -34,8 +34,8 @@ function Home() {
       <HomeNav />
       <div className="flex flex-col pt-1 px-4 bg-secondary">
         <div className="flex items-start justify-between">
-          <CurrentAccount />
-          <CurrentNetwork />
+          <CurrentAccount showAccount={() => setAccountStatus(true)} />
+          <CurrentNetwork showNetwork={() => setNetworkStatus(true)} />
         </div>
         <div className="flex mt-3 mb-4">
           <Button
