@@ -7,6 +7,7 @@ import {useEffect} from 'react'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../../../utils'
+import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 const {SELECT_CREATE_TYPE} = ROUTES
 const {
   GET_ACCOUNT_GROUP,
@@ -16,7 +17,7 @@ const {
   ACCOUNT_GROUP_TYPE,
 } = RPC_METHODS
 
-function AccountGroup({nickname, account}) {
+function AccountGroup({nickname, account, authorizedAccountIdIconObj}) {
   // TODO: 根据account的eid和networkId 查询rpc确认当前账户的地址。获取token balance。根据当前networkId 和 all network rpc 接口。确认当前币种单位。
   return (
     <div className="bg-gray-0 rounded pt-3 mt-3">
@@ -30,13 +31,19 @@ function AccountGroup({nickname, account}) {
           <div className="flex-1">
             <p className="text-xs text-gray-40">{nickname}</p>
             <p className="text-sm text-gray-80">
-              12345
+              {eid}
               <span>CFX</span>
             </p>
           </div>
-          <div className="w-6 h-6 border-gray-20 border border-solid rounded-full mt-1.5 flex justify-center items-center">
-            <img className="w-4 h-4" src="" alt="favicon" />
-          </div>
+          {authorizedAccountIdIconObj[eid] ? (
+            <div className="w-6 h-6 border-gray-20 border border-solid rounded-full mt-1.5 flex justify-center items-center">
+              <img
+                className="w-4 h-4"
+                src={authorizedAccountIdIconObj[eid]}
+                alt="favicon"
+              />
+            </div>
+          ) : null}
         </div>
       ))}
     </div>
@@ -46,6 +53,7 @@ function AccountGroup({nickname, account}) {
 AccountGroup.propTypes = {
   nickname: PropTypes.string,
   account: PropTypes.array,
+  authorizedAccountIdIconObj: PropTypes.object.isRequired,
 }
 
 function AccountList() {
@@ -56,6 +64,7 @@ function AccountList() {
   const {
     data: {eid: networkId},
   } = useRPC([GET_CURRENT_NETWORK])
+  const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()
   const onAddAccount = () => {
     history.push('?open=account-list')
@@ -101,7 +110,12 @@ function AccountList() {
     <>
       <div>
         {accountGroups.map(({nickname, account}, index) => (
-          <AccountGroup key={index} account={account} nickname={nickname} />
+          <AccountGroup
+            key={index}
+            account={account}
+            nickname={nickname}
+            authorizedAccountIdIconObj={authorizedAccountIdIconObj}
+          />
         ))}
       </div>
       <Button

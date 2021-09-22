@@ -34,7 +34,7 @@ function NetworkItem({
       className="bg-gray-0 mt-4 h-15 flex items-center pl-3.5 rounded relative cursor-pointer"
       onClick={onChangeNetwork}
     >
-      <div className="w-8 h-8 border border-solid border-gray-20 rounded-full text-center">
+      <div className="w-8 h-8 border border-solid border-gray-20 rounded-full flex items-center justify-center">
         {networkIcon}
       </div>
       <div className="ml-2.5 text-gray-80 text-sm font-medium">
@@ -81,7 +81,11 @@ function NetworkList({closeAction}) {
         }
         closeAction={closeAction}
         networkIcon={
-          <img alt="network-icon" className="w-7 h-7 mt-px" src={icon || ''} />
+          <img
+            alt="network-icon"
+            className="w-7 h-7"
+            src={icon || 'images/default-network-icon.svg'}
+          />
         }
       />
     ),
