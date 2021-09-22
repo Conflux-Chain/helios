@@ -16,7 +16,7 @@ const useAuthorizedAccountIdIcon = () => {
     fallbackData: {},
   })
   useEffect(() => {
-    if (currentDapp?.app.account) {
+    if (currentDapp?.app?.account) {
       setAuthorizedAccountId(
         getAuthorizedAccountIdIcon(
           currentDapp.app.account,

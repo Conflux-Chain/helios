@@ -25,7 +25,7 @@ const UnlockPage = () => {
       request(UNLOCK, {password}).then(({error, result}) => {
         if (error) setErrorMessage(error.message.split('\n')[0])
         if (result) {
-          mutate([GET_WALLET_LOCKED_STATUS])
+          mutate([GET_WALLET_LOCKED_STATUS], false)
           history.push(HOME)
         }
       })
