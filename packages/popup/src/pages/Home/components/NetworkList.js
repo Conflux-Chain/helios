@@ -64,7 +64,6 @@ function NetworkList({closeAction}) {
       fallbackData: [],
     },
   )
-
   return networkData.map(
     ({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
       <NetworkItem

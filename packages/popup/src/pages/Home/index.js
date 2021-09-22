@@ -29,7 +29,7 @@ function Home() {
     }
   })
   return (
-    <div className="flex flex-col bg-bg h-full">
+    <div className="flex flex-col bg-bg h-full overflow-hidden relative">
       <button onClick={() => open(location.href)}>open</button>
       <HomeNav />
       <div className="flex flex-col pt-1 px-4 bg-secondary">
@@ -58,14 +58,14 @@ function Home() {
       <CurrentDapp />
       <ActionSheet
         title="myAccounts"
-        close={() => setAccountStatus(false)}
+        onClose={() => setAccountStatus(false)}
         showActionSheet={accountStatus}
       >
         <AccountList />
       </ActionSheet>
       <ActionSheet
         title="network"
-        close={() => setNetworkStatus(false)}
+        onClose={() => setNetworkStatus(false)}
         showActionSheet={networkStatus}
       >
         <NetworkList />

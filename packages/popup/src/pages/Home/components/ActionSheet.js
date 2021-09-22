@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types'
+import {useClickAway} from 'react-use'
 import {CloseOutlined} from '@fluent-wallet/component-icons'
-import {useState, useEffect, cloneElement} from 'react'
+import {useState, useEffect, cloneElement, useRef} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../../constants'
 import {useSlideAnimation} from '../../../hooks'
 const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
 
-const ActionSheet = ({close, showActionSheet = false, title, children}) => {
+const ActionSheet = ({onClose, showActionSheet = false, title, children}) => {
   const [accountName, setAccountName] = useState('')
   const [networkName, setNetworkName] = useState('')
   const [networkIconUrl, setNetworkIconUrl] = useState(null)
@@ -16,6 +17,7 @@ const ActionSheet = ({close, showActionSheet = false, title, children}) => {
   const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
   const {data: currentAccountData} = useRPC([GET_CURRENT_ACCOUNT])
   const animateStyle = useSlideAnimation(showActionSheet)
+  const ref = useRef(null)
 
   useEffect(() => {
     setAccountName(currentAccountData?.nickname || '')
@@ -26,12 +28,17 @@ const ActionSheet = ({close, showActionSheet = false, title, children}) => {
     setNetworkName(currentNetworkData?.name || '')
   }, [currentNetworkData])
 
+  useClickAway(ref, e => {
+    onClose && onClose(e)
+  })
+
   if (!animateStyle) {
     return null
   }
   return (
     <div
       className={`bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${animateStyle} h-125 `}
+      ref={ref}
     >
       <div className="ml-3 pb-1">
         <p className="text-base text-gray-80 font-medium">{t(`${title}`)}</p>
@@ -48,11 +55,11 @@ const ActionSheet = ({close, showActionSheet = false, title, children}) => {
         </div>
       </div>
       <CloseOutlined
-        onClick={close}
+        onClick={onClose}
         className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
       />
       {cloneElement(children, {
-        closeAction: close,
+        closeAction: onClose,
       })}
     </div>
   )
@@ -60,7 +67,7 @@ const ActionSheet = ({close, showActionSheet = false, title, children}) => {
 
 ActionSheet.propTypes = {
   title: PropTypes.string.isRequired,
-  close: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   showActionSheet: PropTypes.bool,
   children: PropTypes.node.isRequired,
 }

@@ -50,10 +50,9 @@ AccountGroup.propTypes = {
 
 function AccountList() {
   const {t} = useTranslation()
-  const {data: accountGroups} = useRPC([
-    GET_ACCOUNT_GROUP,
-    ACCOUNT_GROUP_TYPE.HD,
-  ])
+  const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined, {
+    fallbackData: [],
+  })
   const {
     data: {eid: networkId},
   } = useRPC([GET_CURRENT_NETWORK])
@@ -65,15 +64,13 @@ function AccountList() {
 
   useEffect(() => {
     if (isNumber(networkId) && accountGroups.length) {
-      const addressParams = accountGroups.reduce((acc, cur) => {
-        console.log('cur', cur)
-        return (
+      const addressParams = accountGroups.reduce(
+        (acc, cur) =>
           acc.concat(
             cur.account.map(({eid: accountId}) => ({networkId, accountId})),
           ),
-          []
-        )
-      })
+        [],
+      )
       request(GET_ACCOUNT_ADDRESS_BY_NETWORK, addressParams).then(addresses => {
         console.log('addresses', addresses)
       })
