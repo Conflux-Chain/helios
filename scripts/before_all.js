@@ -15,11 +15,9 @@ mustacheRender(
     contentSecurityPolicy: isDev()
       ? `
 "content_security_policy": "
-default-src 'self';
 script-src 'self' 'unsafe-eval' http://localhost:18001 http://localhost:18002 http://localhost:18003;
 connect-src * data: blob: filesystem:;
 style-src 'self' data: chrome-extension-resource: 'unsafe-inline';
-img-src 'self' data: chrome-extension-resource:;
 frame-src 'self' http://localhost:* data: chrome-extension-resource:;
 font-src 'self' data: chrome-extension-resource:;
 media-src * data: blob: filesystem:;",`.replaceAll('\n', ' ')
