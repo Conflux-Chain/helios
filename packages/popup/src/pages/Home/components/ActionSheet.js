@@ -48,7 +48,7 @@ const ActionSheet = ({onClose, showActionSheet = false, title, children}) => {
           <div className="mx-2 w-px h-2 bg-gray-40" />
           <img
             alt="network"
-            src={networkIconUrl || 'images/default-network-icon.svg'}
+            src={networkIconUrl || ''}
             className="w-3 h-3 mr-1"
           />
           <div className="text-gray-60">{networkName}</div>
