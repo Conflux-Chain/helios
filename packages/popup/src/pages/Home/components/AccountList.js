@@ -4,16 +4,17 @@ import {useHistory} from 'react-router-dom'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber} from '@fluent-wallet/checks'
 import {useEffect} from 'react'
-import {
-  GET_ALL_ACCOUNT_GROUP,
-  GET_CURRENT_NETWORK,
-  GET_ACCOUNT_ADDRESS_BY_NETWORK,
-  ROUTES,
-  GET_BALANCE,
-} from '../../../constants'
+import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../../../utils'
 const {SELECT_CREATE_TYPE} = ROUTES
+const {
+  GET_ACCOUNT_GROUP,
+  GET_CURRENT_NETWORK,
+  GET_ACCOUNT_ADDRESS_BY_NETWORK,
+  GET_BALANCE,
+  ACCOUNT_GROUP_TYPE,
+} = RPC_METHODS
 
 function AccountGroup({nickname, account}) {
   // TODO: 根据account的eid和networkId 查询rpc确认当前账户的地址。获取token balance。根据当前networkId 和 all network rpc 接口。确认当前币种单位。
@@ -49,7 +50,10 @@ AccountGroup.propTypes = {
 
 function AccountList() {
   const {t} = useTranslation()
-  const {data: accountGroups} = useRPC([...GET_ALL_ACCOUNT_GROUP])
+  const {data: accountGroups} = useRPC([
+    GET_ACCOUNT_GROUP,
+    ACCOUNT_GROUP_TYPE.HD,
+  ])
   const {
     data: {eid: networkId},
   } = useRPC([GET_CURRENT_NETWORK])

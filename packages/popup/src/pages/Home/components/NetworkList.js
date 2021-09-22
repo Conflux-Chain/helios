@@ -1,12 +1,9 @@
 import PropTypes from 'prop-types'
 import {useRPC} from '@fluent-wallet/use-rpc'
-import {
-  GET_NETWORK,
-  SET_CURRENT_NETWORK,
-  GET_CURRENT_NETWORK,
-} from '../../../constants'
+import {RPC_METHODS} from '../../../constants'
 import {request} from '../../../utils'
 import {useSWRConfig} from 'swr'
+const {GET_NETWORK, SET_CURRENT_NETWORK, GET_CURRENT_NETWORK} = RPC_METHODS
 
 const networkTypeColorObj = {
   mainnet: 'bg-primary-10 text-[#ACB6E0]',

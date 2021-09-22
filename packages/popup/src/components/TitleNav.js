@@ -1,13 +1,13 @@
 import {useHistory} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {ArrowLeft} from '@fluent-wallet/component-icons'
+import {LeftOutlined} from '@fluent-wallet/component-icons'
 
 function TitleNav({hasGoBack = true, title = ''}) {
   const history = useHistory()
   return (
     <nav className="flex h-13 items-center justify-center px-3 relative">
       {hasGoBack ? (
-        <ArrowLeft
+        <LeftOutlined
           onClick={() => {
             history.goBack()
           }}

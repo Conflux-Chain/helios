@@ -1,5 +1,10 @@
-import {expect, describe, it} from '@jest/globals' // prettier-ignore
-import {shortenCfxAddress, shortenEthAddress, getEllipsStr} from './'
+import {expect, describe, it} from '@jest/globals'
+import {
+  shortenCfxAddress,
+  shortenEthAddress,
+  getEllipsStr,
+  shortenAddress,
+} from './'
 
 describe('@fluent-wallet/shorten-address', function () {
   it('getEllipsStr', async function () {
@@ -31,5 +36,22 @@ describe('@fluent-wallet/shorten-address', function () {
     expect(() => shortenEthAddress('asdasdad')).toThrowError(
       'Invalid ethereum address',
     )
+  })
+  it('shortenAddress', async function () {
+    expect(
+      shortenAddress('cfx:aarc9abycue0hhzgyrr53m6cxedgccrmmyybjgh4xg'),
+    ).toBe('cfx:aar...ybjgh4xg')
+    expect(
+      shortenAddress('cfxtest:aame5p2tdzfsc3zsmbg1urwkg5ax22epg27cnu1rwm'),
+    ).toBe('cfxtest:aam...1rwm')
+    expect(() =>
+      shortenAddress(
+        'CFX:TYPE.USER:AARC9ABYCUE0HHZGYRR53M6CXEDGCCRMMYYBJGH4XG',
+      ),
+    ).toThrowError('Only shorten the conflux address not containing type')
+    expect(shortenAddress('0x1036AE28C608e9e7681a1B4886668be0cf934A8a')).toBe(
+      '0x1036...4A8a',
+    )
+    expect(() => shortenAddress('asdasdad')).toThrowError('Invalid address')
   })
 })

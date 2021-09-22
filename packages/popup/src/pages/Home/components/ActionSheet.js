@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types'
-import {Close} from '@fluent-wallet/component-icons'
+import {CloseOutlined} from '@fluent-wallet/component-icons'
 import {useState, useEffect, cloneElement} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
-import {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} from '../../../constants'
+import {RPC_METHODS} from '../../../constants'
 import {useSlideAnimation} from '../../../hooks'
+const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
 
 const ActionSheet = ({close, showActionSheet = false, title, children}) => {
   const [accountName, setAccountName] = useState('')
@@ -46,7 +47,7 @@ const ActionSheet = ({close, showActionSheet = false, title, children}) => {
           <div className="text-gray-60">{networkName}</div>
         </div>
       </div>
-      <Close
+      <CloseOutlined
         onClick={close}
         className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
       />

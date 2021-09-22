@@ -1,10 +1,12 @@
 import React from 'react'
 import ReactNotification from 'rc-notification'
-import Close from './assets/Close'
-import ErrorFilled from './assets/ErrorFilled'
-import SuccessFilled from './assets/SuccessFilled'
-import WarningFilled from './assets/WarningFilled'
-import InfoFilled from './assets/InfoFilled'
+import {
+  CloseOutlined,
+  ErrorTwoTone,
+  InfoTwoTone,
+  SuccessTwoTone,
+  WarningTwoTone,
+} from '@fluent-wallet/component-icons'
 const Notification = ReactNotification.default
 
 export const NotificationPlacement = [
@@ -109,7 +111,7 @@ function getNotificationInstance(args, callback) {
 
   const closeIconToRender = (
     <span className="text-gray-60 flex items-center absolute w-4 h-4 top-6 right-6">
-      {closeIcon || <Close />}
+      {closeIcon || <CloseOutlined />}
     </span>
   )
 
@@ -133,10 +135,24 @@ function getNotificationInstance(args, callback) {
 }
 
 const typeToIcon = {
-  success: <SuccessFilled className="w-6 h-6 mr-4" />,
-  info: <InfoFilled className="w-6 h-6 mr-4" />,
-  error: <ErrorFilled className="w-6 h-6 mr-4" />,
-  warning: <WarningFilled className="w-6 h-6 mr-4" />,
+  success: (
+    <SuccessTwoTone
+      data-testid="success-filled-wrapper"
+      className="w-6 h-6 mr-4"
+    />
+  ),
+  info: (
+    <InfoTwoTone data-testid="info-filled-wrapper" className="w-6 h-6 mr-4" />
+  ),
+  error: (
+    <ErrorTwoTone data-testid="error-filled-wrapper" className="w-6 h-6 mr-4" />
+  ),
+  warning: (
+    <WarningTwoTone
+      data-testid="warning-filled-wrapper"
+      className="w-6 h-6 mr-4"
+    />
+  ),
 }
 
 function getRCNoticeProps(args) {

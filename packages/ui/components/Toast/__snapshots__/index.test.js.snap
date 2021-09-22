@@ -6,7 +6,7 @@ Object {
   "baseElement": <body>
     <div>
       <div
-        class="absolute flex flex-col items-center justify-center rounded-sm bg-black bg-opacity-60 p-3 w-35 max-h-52 shadow-1 z-20 "
+        class="absolute flex flex-col items-center justify-center rounded-sm bg-[#000] bg-opacity-40 p-3 w-35 max-h-52 shadow-1 z-20 "
         data-testid="block-toast-wrapper"
       >
         <div
@@ -17,7 +17,7 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="absolute flex flex-col items-center justify-center rounded-sm bg-black bg-opacity-60 p-3 w-35 max-h-52 shadow-1 z-20 "
+      class="absolute flex flex-col items-center justify-center rounded-sm bg-[#000] bg-opacity-40 p-3 w-35 max-h-52 shadow-1 z-20 "
       data-testid="block-toast-wrapper"
     >
       <div

@@ -23,7 +23,7 @@ Object {
         />
         <path
           d="M26 50c13.255 0 24-10.745 24-24S39.255 2 26 2"
-          stroke="#44D7B6"
+          stroke="#6FC5B1"
           stroke-width="3"
         />
       </svg>
@@ -48,7 +48,7 @@ Object {
       />
       <path
         d="M26 50c13.255 0 24-10.745 24-24S39.255 2 26 2"
-        stroke="#44D7B6"
+        stroke="#6FC5B1"
         stroke-width="3"
       />
     </svg>

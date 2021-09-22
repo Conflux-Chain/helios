@@ -29,6 +29,10 @@ describe('Modal', () => {
   })
   it('should render medium size', () => {
     render(<Modal content="content" open={true} size="medium" />)
+    expect(screen.getByTestId('modal-content')).toHaveClass('w-full md:w-80')
+  })
+  it('should render large size', () => {
+    render(<Modal content="content" open={true} size="large" />)
     expect(screen.getByTestId('modal-content')).toHaveClass('w-full md:w-110')
   })
   it('should render incoming width', () => {

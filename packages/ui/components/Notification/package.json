@@ -1,11 +1,14 @@
 {
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "name": "@fluent-wallet/component-notification",
   "type": "module",
   "main": "index.js",
   "peerDependencies": {
     "react": "^17",
     "react-dom": "^17"
+  },
+  "dependencies": {
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
   }
 }

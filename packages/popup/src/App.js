@@ -3,14 +3,10 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import React, {lazy, Suspense, useEffect} from 'react'
 import {HashRouter as Router, Redirect, Route, Switch} from 'react-router-dom'
 import {ProtectedRoute} from './components'
-import {
-  GET_ALL_ACCOUNT_GROUP,
-  GET_NO_GROUP,
-  GET_WALLET_STATUS,
-  ROUTES,
-} from './constants'
+import {RPC_METHODS, ROUTES} from './constants'
 import './index.css'
 import useGlobalStore from './stores/index.js'
+const {GET_ACCOUNT_GROUP, GET_NO_GROUP, GET_WALLET_LOCKED_STATUS} = RPC_METHODS
 
 const {
   HOME,
@@ -40,10 +36,12 @@ const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 const ErrorPage = lazy(() => import('./pages/Error'))
 
 function App() {
-  const {data: lockedData, error: lockedError} = useRPC([...GET_WALLET_STATUS])
-  const {data: zeroGroup, error: zeroGroupError} = useRPC([...GET_NO_GROUP])
+  const {data: lockedData, error: lockedError} = useRPC([
+    GET_WALLET_LOCKED_STATUS,
+  ])
+  const {data: zeroGroup, error: zeroGroupError} = useRPC([GET_NO_GROUP])
   const {error: getAccountGroupError} = useRPC(
-    lockedData === false ? [...GET_ALL_ACCOUNT_GROUP] : null,
+    lockedData === false ? [GET_ACCOUNT_GROUP] : null,
   )
   const {setFatalError} = useGlobalStore()
 

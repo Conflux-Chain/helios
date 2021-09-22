@@ -36,3 +36,9 @@ export const shortenEthAddress = address => {
   }
   return getEllipsStr(address, 6, 4)
 }
+
+export const shortenAddress = address => {
+  if (validateBase32Address(address)) return shortenCfxAddress(address)
+  if (isHexAddress(address)) return shortenEthAddress(address)
+  throw new Error('Invalid address')
+}
