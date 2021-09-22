@@ -9,22 +9,19 @@ function CurrentDapp() {
   const {t} = useTranslation()
   const [authModalShow, setAuthModalShow] = useState(false)
   const [disconnectModalShow, setDisconnectModalShow] = useState(false)
-  const {data: currentDapp} = useRPC([GET_CURRENT_DAPP], undefined, {
+  const {data} = useRPC([GET_CURRENT_DAPP], undefined, {
     fallbackData: {},
   })
+  const currentDapp = data?.app || {}
+  const {site, currentAccount: dappCurrentAccount} = currentDapp
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-  // TODO
-  const {
-    url = 'https://shuttleflow.io',
-    icon,
-    connectedAccount = {},
-  } = currentDapp || {}
-  const {nickname: connectedNickname = 'Account 1', eid: connectedEid} =
-    connectedAccount
+  const {origin, icon} = site || {}
+  const {nickname: connectedNickname, eid: connectedEid} =
+    dappCurrentAccount || {}
   const {nickname: currentNickname, eid: currentEid} = currentAccount
-  const isConnected = !!connectedAccount
+  const isConnected = !!data?.app
   const isConnectedCurrentAccount = connectedEid === currentEid
 
   return (
@@ -40,7 +37,7 @@ function CurrentDapp() {
           <div className="flex flex-col flex-1 items-center">
             <div className="flex w-full items-center justify-between mb-0.5">
               <span className="text-gray-80 font-medium inline-block">
-                {url}
+                {origin}
               </span>
               <span className="text-gray-60 text-xs inline-block mb-1">
                 {connectedNickname}
