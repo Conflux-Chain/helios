@@ -12,8 +12,8 @@ import {
   TokenList,
   AccountList,
   NetworkList,
+  CurrentInfo,
 } from './components'
-
 function Home() {
   const {t} = useTranslation()
   const [accountStatus, setAccountStatus] = useState(false)
@@ -59,12 +59,14 @@ function Home() {
         title="myAccounts"
         onClose={() => setAccountStatus(false)}
         showActionSheet={accountStatus}
+        HeadContent={CurrentInfo}
       />
 
       <NetworkList
         title="network"
         onClose={() => setNetworkStatus(false)}
         showActionSheet={networkStatus}
+        HeadContent={CurrentInfo}
       />
     </div>
   )

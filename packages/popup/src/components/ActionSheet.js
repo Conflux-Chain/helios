@@ -1,41 +1,22 @@
 import PropTypes from 'prop-types'
 import {useClickAway} from 'react-use'
 import {CloseOutlined} from '@fluent-wallet/component-icons'
-import {useState, useEffect, useRef} from 'react'
+import {useRef} from 'react'
 import {useTranslation} from 'react-i18next'
-import {useRPC} from '@fluent-wallet/use-rpc'
-import {RPC_METHODS} from '../constants'
 import {useSlideAnimation} from '../hooks'
-const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
 
 const ActionSheet = ({
   onClose,
   showActionSheet = false,
   title,
-  children,
+  children = null,
+  HeadContent = null,
   wrapperWidth = '93',
   wrapperHeight = '125',
 }) => {
-  const [accountName, setAccountName] = useState('')
-  const [networkName, setNetworkName] = useState('')
-  const [networkIconUrl, setNetworkIconUrl] = useState(null)
-
   const {t} = useTranslation()
-  const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
-  const {data: currentAccountData} = useRPC([GET_CURRENT_ACCOUNT])
   const animateStyle = useSlideAnimation(showActionSheet)
   const ref = useRef(null)
-
-  useEffect(() => {
-    setAccountName(currentAccountData?.nickname || '')
-  }, [currentAccountData])
-
-  useEffect(() => {
-    setNetworkIconUrl(
-      currentNetworkData?.icon || 'images/default-network-icon.svg',
-    )
-    setNetworkName(currentNetworkData?.name || '')
-  }, [currentNetworkData])
 
   useClickAway(ref, e => {
     onClose && onClose(e)
@@ -52,17 +33,7 @@ const ActionSheet = ({
       >
         <div className="ml-3 pb-1">
           <p className="text-base text-gray-80 font-medium">{t(`${title}`)}</p>
-          <div className="flex items-center text-xs mt-1">
-            <img className="w-3 h-3 mr-1" src="" alt="avatar" />
-            <div className="text-gray-40">{accountName}</div>
-            <div className="mx-2 w-px h-2 bg-gray-40" />
-            <img
-              alt="network"
-              src={networkIconUrl || ''}
-              className="w-3 h-3 mr-1"
-            />
-            <div className="text-gray-60">{networkName}</div>
-          </div>
+          <HeadContent />
         </div>
         <CloseOutlined
           onClick={onClose}
@@ -82,7 +53,8 @@ ActionSheet.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
-  ]).isRequired,
+  ]),
+  HeadContent: PropTypes.elementType,
   wrapperWidth: PropTypes.string,
   wrapperHeight: PropTypes.string,
 }
