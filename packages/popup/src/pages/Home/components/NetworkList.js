@@ -3,6 +3,7 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../../constants'
 import {request} from '../../../utils'
 import {useSWRConfig} from 'swr'
+import {ActionSheet} from '../../../components'
 const {GET_NETWORK, SET_CURRENT_NETWORK, GET_CURRENT_NETWORK} = RPC_METHODS
 
 const networkTypeColorObj = {
@@ -56,7 +57,7 @@ NetworkItem.propTypes = {
   closeAction: PropTypes.func,
 }
 
-function NetworkList({closeAction}) {
+function NetworkList({title, onClose, showActionSheet}) {
   const {data: networkData} = useRPC(
     [GET_NETWORK],
     {},
@@ -64,36 +65,44 @@ function NetworkList({closeAction}) {
       fallbackData: [],
     },
   )
-  return networkData.map(
-    ({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
-      <NetworkItem
-        key={eid}
-        networkId={eid}
-        networkName={name}
-        networkType={
-          isCustom
-            ? 'custom'
-            : isMainnet
-            ? 'mainnet'
-            : isTestnet
-            ? 'testnet'
-            : ''
-        }
-        closeAction={closeAction}
-        networkIcon={
-          <img
-            alt="network-icon"
-            className="w-7 h-7"
-            src={icon || 'images/default-network-icon.svg'}
-          />
-        }
-      />
-    ),
+  return (
+    <ActionSheet
+      title={title}
+      onClose={onClose}
+      showActionSheet={showActionSheet}
+    >
+      {networkData.map(({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
+        <NetworkItem
+          key={eid}
+          networkId={eid}
+          networkName={name}
+          networkType={
+            isCustom
+              ? 'custom'
+              : isMainnet
+              ? 'mainnet'
+              : isTestnet
+              ? 'testnet'
+              : ''
+          }
+          closeAction={onClose}
+          networkIcon={
+            <img
+              alt="network-icon"
+              className="w-7 h-7"
+              src={icon || 'images/default-network-icon.svg'}
+            />
+          }
+        />
+      ))}
+    </ActionSheet>
   )
 }
 
 NetworkList.propTypes = {
-  closeAction: PropTypes.func,
+  title: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  showActionSheet: PropTypes.bool,
 }
 
 export default NetworkList

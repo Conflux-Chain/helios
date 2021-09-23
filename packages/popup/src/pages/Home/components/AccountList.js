@@ -9,6 +9,7 @@ import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
+import {ActionSheet} from '../../../components'
 const {SELECT_CREATE_TYPE} = ROUTES
 const {
   GET_ACCOUNT_GROUP,
@@ -74,14 +75,14 @@ AccountItem.propTypes = {
   tokeName: PropTypes.string,
 }
 
-function AccountList({closeAction}) {
+function AccountList({title, onClose, showActionSheet}) {
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined, {
     fallbackData: [],
   })
-  const {
-    data: {eid: networkId, ticker},
-  } = useRPC([GET_CURRENT_NETWORK])
+  const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
+  const ticker = currentNetworkData?.ticker
+  const networkId = currentNetworkData?.eid
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()
   const onAddAccount = () => {
@@ -124,14 +125,18 @@ function AccountList({closeAction}) {
     }
   }, [networkId, accountGroups])
   return (
-    <>
+    <ActionSheet
+      title={title}
+      onClose={onClose}
+      showActionSheet={showActionSheet}
+    >
       <div>
         {accountGroups.map(({nickname, account}, index) => (
           <AccountItem
             key={index}
             account={account}
             nickname={nickname}
-            closeAction={closeAction}
+            closeAction={onClose}
             authorizedAccountIdIconObj={authorizedAccountIdIconObj}
             tokeName={ticker?.name || ''}
           />
@@ -144,12 +149,14 @@ function AccountList({closeAction}) {
       >
         {t('addAccount')}
       </Button>
-    </>
+    </ActionSheet>
   )
 }
 
 AccountList.propTypes = {
-  closeAction: PropTypes.func,
+  title: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  showActionSheet: PropTypes.bool,
 }
 
 export default AccountList

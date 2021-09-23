@@ -1,5 +1,4 @@
 export {default as AccountList} from './AccountList'
-export {default as ActionSheet} from './ActionSheet'
 export {default as NetworkList} from './NetworkList'
 export {default as CurrentAccount} from './CurrentAccount'
 export {default as CurrentNetwork} from './CurrentNetwork'

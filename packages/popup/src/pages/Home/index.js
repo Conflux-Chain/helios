@@ -12,7 +12,6 @@ import {
   TokenList,
   AccountList,
   NetworkList,
-  ActionSheet,
 } from './components'
 
 function Home() {
@@ -56,20 +55,17 @@ function Home() {
       </div>
       <TokenList />
       <CurrentDapp />
-      <ActionSheet
+      <AccountList
         title="myAccounts"
         onClose={() => setAccountStatus(false)}
         showActionSheet={accountStatus}
-      >
-        <AccountList />
-      </ActionSheet>
-      <ActionSheet
+      />
+
+      <NetworkList
         title="network"
         onClose={() => setNetworkStatus(false)}
         showActionSheet={networkStatus}
-      >
-        <NetworkList />
-      </ActionSheet>
+      />
     </div>
   )
 }
