@@ -17,6 +17,7 @@ function CurrentDapp() {
     fallbackData: {},
   })
   const currentDapp = data?.app || {}
+  console.log(data)
   const {site, currentAccount: dappCurrentAccount, eid: appId} = currentDapp
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},

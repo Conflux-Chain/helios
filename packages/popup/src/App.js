@@ -27,9 +27,10 @@ function App() {
     GET_WALLET_LOCKED_STATUS,
   ])
   const {data: zeroGroup, error: zeroGroupError} = useRPC([GET_NO_GROUP])
-  const {error: getAccountGroupError} = useRPC(
+  const {error: getAccountGroupError, data} = useRPC(
     lockedData === false ? [GET_ALL_ACCOUNT_GROUP] : null,
   )
+  console.log(data)
   const {setFatalError} = useGlobalStore()
 
   useEffect(() => {
