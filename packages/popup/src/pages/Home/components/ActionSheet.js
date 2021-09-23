@@ -24,7 +24,9 @@ const ActionSheet = ({onClose, showActionSheet = false, title, children}) => {
   }, [currentAccountData])
 
   useEffect(() => {
-    setNetworkIconUrl(currentNetworkData?.icon)
+    setNetworkIconUrl(
+      currentNetworkData?.icon || 'images/default-network-icon.svg',
+    )
     setNetworkName(currentNetworkData?.name || '')
   }, [currentNetworkData])
 
