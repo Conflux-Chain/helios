@@ -45,29 +45,32 @@ const ActionSheet = ({
     return null
   }
   return (
-    <div
-      className={`bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-${wrapperWidth} bottom-0 overflow-y-auto no-scroll ${animateStyle} h-${wrapperHeight}`}
-      ref={ref}
-    >
-      <div className="ml-3 pb-1">
-        <p className="text-base text-gray-80 font-medium">{t(`${title}`)}</p>
-        <div className="flex items-center text-xs mt-1">
-          <img className="w-3 h-3 mr-1" src="" alt="avatar" />
-          <div className="text-gray-40">{accountName}</div>
-          <div className="mx-2 w-px h-2 bg-gray-40" />
-          <img
-            alt="network"
-            src={networkIconUrl || ''}
-            className="w-3 h-3 mr-1"
-          />
-          <div className="text-gray-60">{networkName}</div>
+    <div>
+      <div
+        className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-${wrapperWidth} bottom-0 overflow-y-auto no-scroll ${animateStyle} h-${wrapperHeight}`}
+        ref={ref}
+      >
+        <div className="ml-3 pb-1">
+          <p className="text-base text-gray-80 font-medium">{t(`${title}`)}</p>
+          <div className="flex items-center text-xs mt-1">
+            <img className="w-3 h-3 mr-1" src="" alt="avatar" />
+            <div className="text-gray-40">{accountName}</div>
+            <div className="mx-2 w-px h-2 bg-gray-40" />
+            <img
+              alt="network"
+              src={networkIconUrl || ''}
+              className="w-3 h-3 mr-1"
+            />
+            <div className="text-gray-60">{networkName}</div>
+          </div>
         </div>
+        <CloseOutlined
+          onClick={onClose}
+          className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
+        />
+        {children}
       </div>
-      <CloseOutlined
-        onClick={onClose}
-        className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
-      />
-      {children}
+      <div className="absolute inset-0 z-10" />
     </div>
   )
 }
