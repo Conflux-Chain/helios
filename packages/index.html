@@ -11,12 +11,14 @@
   </head>
   <body>
     <script type="module">
-     import * as s from 'http://localhost:18003/dist/@cfxjs/spec/index.js'
-     import * as g from 'http://localhost:18003/dist/@cfxjs/spec/src/gen.js'
-     import * as d from 'http://localhost:18003/dist/@cfxjs/spec/src/doc.js'
+     import * as s from 'http://localhost:18003/dist/@fluent-wallet/spec/index.js'
+     import * as rpc from 'http://localhost:18003/dist/@fluent-wallet/wallet_set-current-network/index.js'
+     import * as g from 'http://localhost:18003/dist/@fluent-wallet/spec/src/gen.js'
+     import * as d from 'http://localhost:18003/dist/@fluent-wallet/spec/src/doc.js'
      import schema from './background/src/db-schema.js'
      import {createdb} from './db/index.js'
 
+     window.rpc = rpc
      window.schema = schema
      window.db = createdb(schema)
      db.t([ {eid: -1, vault: {type: 'a', data: '2',addresses: [{ address: {vault: -1, hex: 'foo'}  }]}}, ])

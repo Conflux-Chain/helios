@@ -142,7 +142,7 @@ const ElementToHideValidation = ['select']
 const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
   const pathId = (k || parentK || '') + '-' + path.join('-')
   const entryId = `${rpcName}-${pathId}-entry`
-  const name = <Var>{k || path[path.length - 1]}</Var>
+  const name = <Var>{value?.catnk || k || path[path.length - 1]}</Var>
   const {setData, data, valid, error, gen} = useSpec(entryId, {
     schema: value?.schema,
   })

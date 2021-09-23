@@ -135,18 +135,18 @@ export const useSpec = (id, {schema, data} = {}) => {
 
   useEffect(() => {
     if (schema) s.setSchema(schema)
-  }, [schema, s])
+  }, [Boolean(schema), id])
 
   useEffect(() => {
     if (data) s.setData(data)
-  }, [data, s])
+  }, [Boolean(data), id])
 
   useEffect(() => {
     if (isNewSpec) {
       s.setSpec()
       s.setGen()
     }
-  }, [isNewSpec, s])
+  }, [isNewSpec, id])
 
   return s
 }
