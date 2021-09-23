@@ -1,9 +1,9 @@
-import {nul, or, and, empty, arrp} from '@fluent-wallet/spec'
+import {optParam} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_zeroAccountGroup'
 
 export const schemas = {
-  input: [or, nul, [and, arrp, empty]],
+  input: optParam,
 }
 
 export const permissions = {
