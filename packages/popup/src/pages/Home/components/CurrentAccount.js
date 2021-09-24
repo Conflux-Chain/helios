@@ -48,8 +48,12 @@ function CurrentAccount({showAccount}) {
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (
-    <div className="flex flex-col" onClick={showAccount} aria-hidden="true">
-      <div className="flex items-center cursor-pointer">
+    <div className="flex flex-col">
+      <div
+        className="flex items-center cursor-pointer"
+        onClick={showAccount}
+        aria-hidden="true"
+      >
         <span className="text-xs text-gray-40 mr-2">{nickname}</span>
         <RightOutlined className="w-3 h-3 text-white" />
       </div>
