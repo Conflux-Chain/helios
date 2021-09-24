@@ -2,30 +2,50 @@ import {useState} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {useTranslation} from 'react-i18next'
 import {AuthorizeModal, DisconnectModal} from '../components'
+import {request} from '../../../utils'
+import useGlobalStore from '../../../stores/index.js'
 import {RPC_METHODS} from '../../../constants'
-const {GET_CURRENT_DAPP, GET_CURRENT_ACCOUNT} = RPC_METHODS
+const {GET_CURRENT_DAPP, GET_CURRENT_ACCOUNT, REQUEST_PERMISSIONS, DELETE_APP} =
+  RPC_METHODS
 
 function CurrentDapp() {
   const {t} = useTranslation()
+  const {setFatalError} = useGlobalStore()
   const [authModalShow, setAuthModalShow] = useState(false)
   const [disconnectModalShow, setDisconnectModalShow] = useState(false)
-  const {data: currentDapp} = useRPC([GET_CURRENT_DAPP], undefined, {
+  const {data} = useRPC([GET_CURRENT_DAPP], undefined, {
     fallbackData: {},
   })
+  const site = data?.site || {}
+  const currentDapp = data?.app || {}
+  const {currentAccount: dappCurrentAccount, eid: appId} = currentDapp
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-  // TODO
-  const {
-    url = 'https://shuttleflow.io',
-    icon,
-    connectedAccount = {},
-  } = currentDapp || {}
-  const {nickname: connectedNickname = 'Account 1', eid: connectedEid} =
-    connectedAccount
+  const {origin, icon, eid: siteId} = site
+  const {nickname: connectedNickname, eid: connectedEid} =
+    dappCurrentAccount || {}
   const {nickname: currentNickname, eid: currentEid} = currentAccount
-  const isConnected = !!connectedAccount
+  const isConnected = !!data?.app
   const isConnectedCurrentAccount = connectedEid === currentEid
+
+  const onAuth = () => {
+    request(REQUEST_PERMISSIONS, {
+      siteId,
+      permissions: [{wallet_accounts: {}}],
+      accounts: [currentEid],
+    }).then(({error}) => {
+      if (error) setFatalError(error)
+      else setAuthModalShow(false)
+    })
+  }
+
+  const onDisconnect = () => {
+    request(DELETE_APP, {appId}).then(({error}) => {
+      if (error) setFatalError(error)
+      else setDisconnectModalShow(false)
+    })
+  }
 
   return (
     <div className="flex items-center h-16 rounded-t-xl bg-gray-0 px-3">
@@ -34,13 +54,13 @@ function CurrentDapp() {
       )}
       {isConnected && (
         <>
-          <div className="flex items-center justify-center border border-gray-20 rounded-full mr-2">
-            <img className="w-8 h-8" src={icon} alt="logo" />
+          <div className="flex items-center justify-center border border-gray-20 w-8 h-8 rounded-full mr-2">
+            <img className="w-6 h-6" src={icon} alt="logo" />
           </div>
           <div className="flex flex-col flex-1 items-center">
             <div className="flex w-full items-center justify-between mb-0.5">
               <span className="text-gray-80 font-medium inline-block">
-                {url}
+                {origin}
               </span>
               <span className="text-gray-60 text-xs inline-block mb-1">
                 {connectedNickname}
@@ -73,10 +93,12 @@ function CurrentDapp() {
               open={authModalShow}
               onClose={() => setAuthModalShow(false)}
               needAuthAccountName={currentNickname}
+              onAuth={onAuth}
             />
             <DisconnectModal
               open={disconnectModalShow}
               onClose={() => setDisconnectModalShow(false)}
+              onDisconnect={onDisconnect}
             />
           </div>
         </>
