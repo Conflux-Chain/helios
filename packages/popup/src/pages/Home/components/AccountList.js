@@ -91,11 +91,14 @@ function AccountList({title, onClose, showActionSheet, HeadContent}) {
   }
   // TODO:refactor code and add get balance
   useEffect(() => {
+    console.log('accountGroups', accountGroups)
     if (isNumber(networkId) && accountGroups.length) {
       const addressParams = accountGroups.reduce(
         (acc, cur) =>
           acc.concat(
-            cur.account.map(({eid: accountId}) => ({networkId, accountId})),
+            cur.account
+              ? cur.account.map(({eid: accountId}) => ({networkId, accountId}))
+              : [],
           ),
         [],
       )
