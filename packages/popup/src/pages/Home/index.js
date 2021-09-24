@@ -11,10 +11,13 @@ import {
 function Home() {
   const {t} = useTranslation()
   return (
-    <div className="flex flex-col bg-bg h-full">
-      <button onClick={() => open(location.href)}>open</button>
+    <div className="flex flex-col bg-bg h-full relative">
+      <button onClick={() => open(location.href)} className="z-10 text-white">
+        open
+      </button>
+      <img src="images/home-bg.svg" alt="home" className="absolute top-0 z-0" />
       <HomeNav />
-      <div className="flex flex-col pt-1 px-4 bg-secondary">
+      <div className="flex flex-col pt-1 px-4 z-10">
         <div className="flex items-start justify-between">
           <CurrentAccount />
           <CurrentNetwork />
