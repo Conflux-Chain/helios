@@ -2,7 +2,6 @@ import PropTypes from 'prop-types'
 import {useClickAway} from 'react-use'
 import {CloseOutlined} from '@fluent-wallet/component-icons'
 import {useRef} from 'react'
-import {useTranslation} from 'react-i18next'
 import {useSlideAnimation} from '../hooks'
 
 const ActionSheet = ({
@@ -12,7 +11,6 @@ const ActionSheet = ({
   children = null,
   HeadContent = null,
 }) => {
-  const {t} = useTranslation()
   const animateStyle = useSlideAnimation(showActionSheet)
   const ref = useRef(null)
 
@@ -30,7 +28,7 @@ const ActionSheet = ({
         ref={ref}
       >
         <div className="ml-3 pb-1">
-          <p className="text-base text-gray-80 font-medium">{t(`${title}`)}</p>
+          <p className="text-base text-gray-80 font-medium">{title}</p>
           <HeadContent />
         </div>
         <CloseOutlined

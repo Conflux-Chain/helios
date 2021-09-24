@@ -56,14 +56,14 @@ function Home() {
       <TokenList />
       <CurrentDapp />
       <AccountList
-        title="myAccounts"
+        title={t('myAccounts')}
         onClose={() => setAccountStatus(false)}
         showActionSheet={accountStatus}
         HeadContent={CurrentInfo}
       />
 
       <NetworkList
-        title="network"
+        title={t('network')}
         onClose={() => setNetworkStatus(false)}
         showActionSheet={networkStatus}
         HeadContent={CurrentInfo}

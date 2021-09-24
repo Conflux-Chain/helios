@@ -100,7 +100,7 @@ function AccountList({title, onClose, showActionSheet, HeadContent}) {
         [],
       )
       request(GET_ACCOUNT_ADDRESS_BY_NETWORK, addressParams).then(addresses => {
-        // console.log('addresses', addresses)
+        console.log('addresses', addresses)
       })
     }
   }, [networkId, accountGroups])
