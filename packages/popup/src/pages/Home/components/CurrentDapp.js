@@ -22,7 +22,7 @@ function CurrentDapp() {
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-  const {origin, icon, eid: siteId} = site || {}
+  const {origin, icon, eid: siteId} = site
   const {nickname: connectedNickname, eid: connectedEid} =
     dappCurrentAccount || {}
   const {nickname: currentNickname, eid: currentEid} = currentAccount
