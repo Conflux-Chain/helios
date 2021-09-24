@@ -89,6 +89,7 @@ function AccountList({title, onClose, showActionSheet, HeadContent}) {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
   }
+  // TODO:refactor code and add get balance
   useEffect(() => {
     if (isNumber(networkId) && accountGroups.length) {
       const addressParams = accountGroups.reduce(
@@ -99,29 +100,8 @@ function AccountList({title, onClose, showActionSheet, HeadContent}) {
         [],
       )
       request(GET_ACCOUNT_ADDRESS_BY_NETWORK, addressParams).then(addresses => {
-        console.log('addresses', addresses)
+        // console.log('addresses', addresses)
       })
-      // console.log(accounts, networkId)
-      // Promise.all(
-      //   accounts.map(({eid: accountId}) =>
-      //     request(GET_ACCOUNT_ADDRESS_BY_NETWORK, {
-      //       networkId: networkId,
-      //       accountId,
-      //     }),
-      //   ),
-      // ).then(addresses => {
-      //   console.log('addresses', addresses)
-
-      //   if (addresses.every(addr => addr.result)) {
-      //     request(
-      //       GET_BALANCE,
-      //       [addresses[0].result.base32],
-      //       // addresses.map(addr => addr.result.base32 || addr.result.hex),
-      //     ).then(({result, error}) => {
-      //       // console.log('result', result, error)
-      //     })
-      //   }
-      // })
     }
   }, [networkId, accountGroups])
   return (

@@ -11,8 +11,6 @@ const ActionSheet = ({
   title,
   children = null,
   HeadContent = null,
-  wrapperWidth = '93',
-  wrapperHeight = '125',
 }) => {
   const {t} = useTranslation()
   const animateStyle = useSlideAnimation(showActionSheet)
@@ -28,7 +26,7 @@ const ActionSheet = ({
   return (
     <div>
       <div
-        className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-${wrapperWidth} bottom-0 overflow-y-auto no-scroll ${animateStyle} h-${wrapperHeight}`}
+        className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${animateStyle} h-125`}
         ref={ref}
       >
         <div className="ml-3 pb-1">
@@ -55,7 +53,5 @@ ActionSheet.propTypes = {
     PropTypes.node,
   ]),
   HeadContent: PropTypes.elementType,
-  wrapperWidth: PropTypes.string,
-  wrapperHeight: PropTypes.string,
 }
 export default ActionSheet
