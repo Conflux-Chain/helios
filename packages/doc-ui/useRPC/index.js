@@ -26,8 +26,11 @@ const createRPC = rpcName =>
 
       window &&
         import(
-          /* webpackIgnore: true */
-          `https://cdn.skypack.dev/@fluent-wallet/${rpcPkgName}`
+          /* webpackPreload: true */
+          /* webpackMode: "lazy-once" */
+          /* webpackInclude: /(cfx|eth|wallet|net|web3|personal)_(\w|-)+\/index\.js$/ */
+          /* webpackExclude: /(\test\.js|\.md)$/ */
+          '@fluent-wallet/' + rpcPkgName
         )
           .then(rpc => {
             return set({...rpc, loadingRPC: false})
