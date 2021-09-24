@@ -16,7 +16,6 @@ const {
   GET_CURRENT_NETWORK,
   GET_CURRENT_ACCOUNT,
   GET_ACCOUNT_ADDRESS_BY_NETWORK,
-  GET_BALANCE,
   SET_CURRENT_ACCOUNT,
 } = RPC_METHODS
 
@@ -30,7 +29,7 @@ function AccountItem({
   // TODO: 根据account的eid和networkId 查询rpc确认当前账户的地址。获取token balance。根据当前networkId 和 all network rpc 接口。确认当前币种单位。
   const {mutate} = useSWRConfig()
   const onChangeAccount = accountId => {
-    request(SET_CURRENT_ACCOUNT, [accountId]).then(({result, error}) => {
+    request(SET_CURRENT_ACCOUNT, [accountId]).then(({result}) => {
       result && closeAction && closeAction()
       mutate([GET_CURRENT_ACCOUNT])
       // TODO: need deal with error condition
