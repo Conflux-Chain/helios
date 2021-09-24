@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
 import {ActionSheet} from '../../../components'
 import Input from '@fluent-wallet/component-input'
 import {SearchOutlined} from '@fluent-wallet/component-icons'
@@ -21,6 +21,8 @@ function AddToken({title, onClose, showActionSheet}) {
         value={searchContent}
         placeholder={t('searchToken')}
         onChange={e => setSearchContent(e.target.value)}
+        className="!pl-px"
+        prefixClassName="!mr-1.5"
       />
       <div></div>
     </ActionSheet>

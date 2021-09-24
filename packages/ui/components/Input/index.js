@@ -35,6 +35,7 @@ function Input({
   disabled,
   className = '',
   containerClassName = '',
+  prefixClassName = '',
   onChange,
   bordered = true,
   size = 'medium',
@@ -92,7 +93,7 @@ function Input({
           <div
             aria-hidden="true"
             onClick={() => setFocused(true)}
-            className={`pl-3 ${prefixStyle}`}
+            className={`pl-3 ${prefixStyle} ${prefixClassName}`}
           >
             <div className={`text-gray-40 ${iconSize}`}>{prefix}</div>
           </div>
@@ -121,6 +122,7 @@ function Input({
 Input.propTypes = {
   value: PropTypes.string.isRequired,
   className: PropTypes.string,
+  prefixClassName: PropTypes.string,
   containerClassName: PropTypes.string,
   onChange: PropTypes.func,
   width: PropTypes.string,
