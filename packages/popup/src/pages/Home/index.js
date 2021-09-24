@@ -13,11 +13,13 @@ import {
   AccountList,
   NetworkList,
   CurrentInfo,
+  AddToken,
 } from './components'
 function Home() {
   const {t} = useTranslation()
   const [accountStatus, setAccountStatus] = useState(false)
   const [networkStatus, setNetworkStatus] = useState(false)
+  const [addTokenStatus, setAddTokenStatus] = useState(false)
   const query = useQuery()
   const history = useHistory()
 
@@ -53,20 +55,24 @@ function Home() {
           </Button>
         </div>
       </div>
-      <TokenList />
+      <TokenList showAddToken={() => setAddTokenStatus(true)} />
       <CurrentDapp />
       <AccountList
-        title="myAccounts"
+        title={t('myAccounts')}
         onClose={() => setAccountStatus(false)}
         showActionSheet={accountStatus}
         HeadContent={CurrentInfo}
       />
-
       <NetworkList
-        title="network"
+        title={t('network')}
         onClose={() => setNetworkStatus(false)}
         showActionSheet={networkStatus}
         HeadContent={CurrentInfo}
+      />
+      <AddToken
+        title={t('addToken')}
+        onClose={() => setAddTokenStatus(false)}
+        showActionSheet={addTokenStatus}
       />
     </div>
   )

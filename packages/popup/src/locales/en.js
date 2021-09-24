@@ -67,6 +67,11 @@ const en = {
     mainnet: 'Mainnet',
     Testnet: 'Testnet',
     custom: 'Custom',
+    // add token
+    addToken: 'Add Token',
+    searchToken: 'Search token name or contract address',
+    searchResults: 'Search Results',
+    noResult: 'No result',
     // home page
     send: 'Send',
     history: 'History',

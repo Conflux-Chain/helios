@@ -41,13 +41,13 @@ TokenItem.propTypes = {
   balance: PropTypes.string,
 }
 
-function TokenList() {
+function TokenList({showAddToken}) {
   const {t} = useTranslation()
   return (
     <div className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 pt-3 relative">
       <span className="flex items-center justify-between mb-2 text-primary text-xs font-medium">
         {t('assets')}
-        <WrapIcon size="w-5 h-5">
+        <WrapIcon size="w-5 h-5" onClick={showAddToken}>
           <PlusOutlined className="w-3 h-3 text-primary" />
         </WrapIcon>
       </span>
@@ -57,6 +57,9 @@ function TokenList() {
       <div className="absolute bottom-0 left-0 h-6 bg-token-background w-[356px]" />
     </div>
   )
+}
+TokenList.propTypes = {
+  showAddToken: PropTypes.func.isRequired,
 }
 
 export default TokenList

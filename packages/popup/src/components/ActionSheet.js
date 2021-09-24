@@ -2,7 +2,6 @@ import PropTypes from 'prop-types'
 import {useClickAway} from 'react-use'
 import {CloseOutlined} from '@fluent-wallet/component-icons'
 import {useRef} from 'react'
-import {useTranslation} from 'react-i18next'
 import {useSlideAnimation} from '../hooks'
 
 const ActionSheet = ({
@@ -10,11 +9,8 @@ const ActionSheet = ({
   showActionSheet = false,
   title,
   children = null,
-  HeadContent = null,
-  wrapperWidth = '93',
-  wrapperHeight = '125',
+  HeadContent,
 }) => {
-  const {t} = useTranslation()
   const animateStyle = useSlideAnimation(showActionSheet)
   const ref = useRef(null)
 
@@ -28,12 +24,12 @@ const ActionSheet = ({
   return (
     <div>
       <div
-        className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-${wrapperWidth} bottom-0 overflow-y-auto no-scroll ${animateStyle} h-${wrapperHeight}`}
+        className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${animateStyle} h-125`}
         ref={ref}
       >
         <div className="ml-3 pb-1">
-          <p className="text-base text-gray-80 font-medium">{t(`${title}`)}</p>
-          <HeadContent />
+          <p className="text-base text-gray-80 font-medium">{title}</p>
+          {HeadContent ? <HeadContent /> : null}
         </div>
         <CloseOutlined
           onClick={onClose}
@@ -55,7 +51,5 @@ ActionSheet.propTypes = {
     PropTypes.node,
   ]),
   HeadContent: PropTypes.elementType,
-  wrapperWidth: PropTypes.string,
-  wrapperHeight: PropTypes.string,
 }
 export default ActionSheet
