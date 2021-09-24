@@ -91,7 +91,6 @@ function AccountList({title, onClose, showActionSheet, HeadContent}) {
   }
   // TODO:refactor code and add get balance
   useEffect(() => {
-    console.log('accountGroups', accountGroups)
     if (isNumber(networkId) && accountGroups.length) {
       const addressParams = accountGroups.reduce(
         (acc, cur) =>
@@ -118,7 +117,7 @@ function AccountList({title, onClose, showActionSheet, HeadContent}) {
         {accountGroups.map(({nickname, account}, index) => (
           <AccountItem
             key={index}
-            account={account}
+            account={account || []}
             nickname={nickname}
             closeAction={onClose}
             authorizedAccountIdIconObj={authorizedAccountIdIconObj}
