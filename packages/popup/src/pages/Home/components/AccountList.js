@@ -9,7 +9,7 @@ import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
-import {ActionSheet} from '../../../components'
+import {SlideCard} from '../../../components'
 const {SELECT_CREATE_TYPE} = ROUTES
 const {
   GET_ACCOUNT_GROUP,
@@ -26,7 +26,6 @@ function AccountItem({
   closeAction,
   tokeName,
 }) {
-  // TODO: 根据account的eid和networkId 查询rpc确认当前账户的地址。获取token balance。根据当前networkId 和 all network rpc 接口。确认当前币种单位。
   const {mutate} = useSWRConfig()
   const onChangeAccount = accountId => {
     request(SET_CURRENT_ACCOUNT, [accountId]).then(({result}) => {
@@ -74,7 +73,7 @@ AccountItem.propTypes = {
   tokeName: PropTypes.string,
 }
 
-function AccountList({title, onClose, showActionSheet, HeadContent}) {
+function AccountList({cardTitle, onClose, showSlideCard, CardDescription}) {
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined, {
     fallbackData: [],
@@ -106,40 +105,43 @@ function AccountList({title, onClose, showActionSheet, HeadContent}) {
     }
   }, [networkId, accountGroups])
   return (
-    <ActionSheet
-      title={title}
+    <SlideCard
+      cardTitle={cardTitle}
       onClose={onClose}
-      showActionSheet={showActionSheet}
-      HeadContent={HeadContent}
-    >
-      <div>
-        {accountGroups.map(({nickname, account}, index) => (
-          <AccountItem
-            key={index}
-            account={account || []}
-            nickname={nickname}
-            closeAction={onClose}
-            authorizedAccountIdIconObj={authorizedAccountIdIconObj}
-            tokeName={ticker?.name || ''}
-          />
-        ))}
-      </div>
-      <Button
-        color="transparent"
-        className="w-full border-dashed border-gray-40 mt-3 text-gray-80"
-        onClick={onAddAccount}
-      >
-        {t('addAccount')}
-      </Button>
-    </ActionSheet>
+      showSlideCard={showSlideCard}
+      CardDescription={CardDescription}
+      cardContent={
+        <div>
+          {accountGroups.map(({nickname, account}, index) => (
+            <AccountItem
+              key={index}
+              account={account || []}
+              nickname={nickname}
+              closeAction={onClose}
+              authorizedAccountIdIconObj={authorizedAccountIdIconObj}
+              tokeName={ticker?.name || ''}
+            />
+          ))}
+        </div>
+      }
+      cardFooter={
+        <Button
+          color="transparent"
+          className="w-full border-dashed border-gray-40 mt-3 text-gray-80"
+          onClick={onAddAccount}
+        >
+          {t('addAccount')}
+        </Button>
+      }
+    />
   )
 }
 
 AccountList.propTypes = {
-  title: PropTypes.string.isRequired,
+  cardTitle: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  showActionSheet: PropTypes.bool,
-  HeadContent: PropTypes.elementType,
+  showSlideCard: PropTypes.bool,
+  CardDescription: PropTypes.elementType,
 }
 
 export default AccountList

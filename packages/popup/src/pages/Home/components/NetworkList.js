@@ -3,7 +3,7 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../../constants'
 import {request} from '../../../utils'
 import {useSWRConfig} from 'swr'
-import {ActionSheet} from '../../../components'
+import {SlideCard} from '../../../components'
 const {GET_NETWORK, SET_CURRENT_NETWORK, GET_CURRENT_NETWORK} = RPC_METHODS
 
 const networkTypeColorObj = {
@@ -57,7 +57,7 @@ NetworkItem.propTypes = {
   closeAction: PropTypes.func,
 }
 
-function NetworkList({title, onClose, showActionSheet, HeadContent}) {
+function NetworkList({cardTitle, onClose, showSlideCard, CardDescription}) {
   const {data: networkData} = useRPC(
     [GET_NETWORK],
     {},
@@ -66,45 +66,46 @@ function NetworkList({title, onClose, showActionSheet, HeadContent}) {
     },
   )
   return (
-    <ActionSheet
-      title={title}
+    <SlideCard
+      cardTitle={cardTitle}
       onClose={onClose}
-      showActionSheet={showActionSheet}
-      HeadContent={HeadContent}
-    >
-      {networkData.map(({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
-        <NetworkItem
-          key={eid}
-          networkId={eid}
-          networkName={name}
-          networkType={
-            isCustom
-              ? 'custom'
-              : isMainnet
-              ? 'mainnet'
-              : isTestnet
-              ? 'testnet'
-              : ''
-          }
-          closeAction={onClose}
-          networkIcon={
-            <img
-              alt="network-icon"
-              className="w-7 h-7"
-              src={icon || 'images/default-network-icon.svg'}
-            />
-          }
-        />
-      ))}
-    </ActionSheet>
+      showSlideCard={showSlideCard}
+      CardDescription={CardDescription}
+      cardContent={networkData.map(
+        ({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
+          <NetworkItem
+            key={eid}
+            networkId={eid}
+            networkName={name}
+            networkType={
+              isCustom
+                ? 'custom'
+                : isMainnet
+                ? 'mainnet'
+                : isTestnet
+                ? 'testnet'
+                : ''
+            }
+            closeAction={onClose}
+            networkIcon={
+              <img
+                alt="network-icon"
+                className="w-7 h-7"
+                src={icon || 'images/default-network-icon.svg'}
+              />
+            }
+          />
+        ),
+      )}
+    />
   )
 }
 
 NetworkList.propTypes = {
-  title: PropTypes.string.isRequired,
+  cardTitle: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  showActionSheet: PropTypes.bool,
-  HeadContent: PropTypes.elementType,
+  showSlideCard: PropTypes.bool,
+  CardDescription: PropTypes.elementType,
 }
 
 export default NetworkList

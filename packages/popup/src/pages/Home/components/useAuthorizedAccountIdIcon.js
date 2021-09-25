@@ -12,9 +12,7 @@ const getAuthorizedAccountIdIcon = (accounts, icon) => {
 }
 const useAuthorizedAccountIdIcon = () => {
   const [authorizedAccountIdObj, setAuthorizedAccountId] = useState({})
-  const {data: currentDapp} = useRPC([GET_CURRENT_DAPP], undefined, {
-    fallbackData: {},
-  })
+  const {data: currentDapp} = useRPC([GET_CURRENT_DAPP])
   useEffect(() => {
     if (currentDapp?.app?.account) {
       setAuthorizedAccountId(
@@ -24,7 +22,8 @@ const useAuthorizedAccountIdIcon = () => {
         ),
       )
     }
-  }, [currentDapp])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Boolean(currentDapp)])
   return authorizedAccountIdObj
 }
 

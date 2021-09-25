@@ -12,7 +12,7 @@ import {
   TokenList,
   AccountList,
   NetworkList,
-  CurrentInfo,
+  CurrentAccountNetworkLabel,
 } from './components'
 function Home() {
   const {t} = useTranslation()
@@ -56,17 +56,17 @@ function Home() {
       <TokenList />
       <CurrentDapp />
       <AccountList
-        title={t('myAccounts')}
+        cardTitle={t('myAccounts')}
         onClose={() => setAccountStatus(false)}
-        showActionSheet={accountStatus}
-        HeadContent={CurrentInfo}
+        showSlideCard={accountStatus}
+        CardDescription={CurrentAccountNetworkLabel}
       />
 
       <NetworkList
-        title={t('network')}
+        cardTitle={t('network')}
         onClose={() => setNetworkStatus(false)}
-        showActionSheet={networkStatus}
-        HeadContent={CurrentInfo}
+        showSlideCard={networkStatus}
+        CardDescription={CurrentAccountNetworkLabel}
       />
     </div>
   )
