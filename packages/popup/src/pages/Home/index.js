@@ -12,7 +12,6 @@ import {
   TokenList,
   AccountList,
   NetworkList,
-  CurrentAccountNetworkLabel,
 } from './components'
 function Home() {
   const {t} = useTranslation()
@@ -62,14 +61,12 @@ function Home() {
         cardTitle={t('myAccounts')}
         onClose={() => setAccountStatus(false)}
         showSlideCard={accountStatus}
-        cardDescription={<CurrentAccountNetworkLabel />}
       />
 
       <NetworkList
         cardTitle={t('network')}
         onClose={() => setNetworkStatus(false)}
         showSlideCard={networkStatus}
-        cardDescription={<CurrentAccountNetworkLabel />}
       />
     </div>
   )

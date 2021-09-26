@@ -1,6 +1,5 @@
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../../constants'
-
 const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function CurrentAccountNetworkLabel() {

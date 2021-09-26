@@ -4,6 +4,7 @@ import {RPC_METHODS} from '../../../constants'
 import {request} from '../../../utils'
 import {useSWRConfig} from 'swr'
 import {SlideCard} from '../../../components'
+import {CurrentAccountNetworkLabel} from './index'
 const {GET_NETWORK, SET_CURRENT_NETWORK, GET_CURRENT_NETWORK} = RPC_METHODS
 
 const networkTypeColorObj = {
@@ -57,7 +58,7 @@ NetworkItem.propTypes = {
   closeAction: PropTypes.func,
 }
 
-function NetworkList({cardTitle, onClose, showSlideCard, cardDescription}) {
+function NetworkList({cardTitle, onClose, showSlideCard}) {
   const {data: networkData} = useRPC(
     [GET_NETWORK],
     {},
@@ -70,7 +71,7 @@ function NetworkList({cardTitle, onClose, showSlideCard, cardDescription}) {
       cardTitle={cardTitle}
       onClose={onClose}
       showSlideCard={showSlideCard}
-      cardDescription={cardDescription}
+      cardDescription={<CurrentAccountNetworkLabel />}
       cardContent={networkData.map(
         ({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
           <NetworkItem
@@ -105,7 +106,6 @@ NetworkList.propTypes = {
   cardTitle: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   showSlideCard: PropTypes.bool,
-  cardDescription: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 }
 
 export default NetworkList

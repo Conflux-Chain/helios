@@ -7,6 +7,7 @@ import {isNumber} from '@fluent-wallet/checks'
 import {useEffect} from 'react'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
+import {CurrentAccountNetworkLabel} from './index'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard} from '../../../components'
@@ -73,7 +74,7 @@ AccountItem.propTypes = {
   tokeName: PropTypes.string,
 }
 
-function AccountList({cardTitle, onClose, showSlideCard, cardDescription}) {
+function AccountList({cardTitle, onClose, showSlideCard}) {
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined, {
     fallbackData: [],
@@ -109,7 +110,7 @@ function AccountList({cardTitle, onClose, showSlideCard, cardDescription}) {
       cardTitle={cardTitle}
       onClose={onClose}
       showSlideCard={showSlideCard}
-      cardDescription={cardDescription}
+      cardDescription={<CurrentAccountNetworkLabel />}
       cardContent={
         <div>
           {accountGroups.map(({nickname, account}, index) => (
@@ -141,7 +142,6 @@ AccountList.propTypes = {
   cardTitle: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   showSlideCard: PropTypes.bool,
-  cardDescription: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 }
 
 export default AccountList
