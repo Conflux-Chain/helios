@@ -62,14 +62,14 @@ function Home() {
         cardTitle={t('myAccounts')}
         onClose={() => setAccountStatus(false)}
         showSlideCard={accountStatus}
-        CardDescription={CurrentAccountNetworkLabel}
+        cardDescription={<CurrentAccountNetworkLabel />}
       />
 
       <NetworkList
         cardTitle={t('network')}
         onClose={() => setNetworkStatus(false)}
         showSlideCard={networkStatus}
-        CardDescription={CurrentAccountNetworkLabel}
+        cardDescription={<CurrentAccountNetworkLabel />}
       />
     </div>
   )

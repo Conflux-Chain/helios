@@ -73,7 +73,7 @@ AccountItem.propTypes = {
   tokeName: PropTypes.string,
 }
 
-function AccountList({cardTitle, onClose, showSlideCard, CardDescription}) {
+function AccountList({cardTitle, onClose, showSlideCard, cardDescription}) {
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined, {
     fallbackData: [],
@@ -109,7 +109,7 @@ function AccountList({cardTitle, onClose, showSlideCard, CardDescription}) {
       cardTitle={cardTitle}
       onClose={onClose}
       showSlideCard={showSlideCard}
-      CardDescription={CardDescription}
+      cardDescription={cardDescription}
       cardContent={
         <div>
           {accountGroups.map(({nickname, account}, index) => (
@@ -141,7 +141,7 @@ AccountList.propTypes = {
   cardTitle: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   showSlideCard: PropTypes.bool,
-  CardDescription: PropTypes.elementType,
+  cardDescription: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 }
 
 export default AccountList

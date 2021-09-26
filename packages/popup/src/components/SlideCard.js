@@ -9,7 +9,7 @@ const SlideCard = ({
   showSlideCard = false,
   cardTitle,
   cardContent,
-  CardDescription,
+  cardDescription,
   cardFooter = null,
 }) => {
   const animateStyle = useSlideAnimation(showSlideCard)
@@ -30,7 +30,7 @@ const SlideCard = ({
       >
         <div className="ml-3 pb-1">
           <p className="text-base text-gray-80 font-medium">{cardTitle}</p>
-          {CardDescription ? <CardDescription /> : null}
+          {cardDescription}
         </div>
         <CloseOutlined
           onClick={onClose}
@@ -48,7 +48,7 @@ SlideCard.propTypes = {
   onClose: PropTypes.func.isRequired,
   showSlideCard: PropTypes.bool,
   cardTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-  CardDescription: PropTypes.elementType,
+  cardDescription: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   cardContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node])
     .isRequired,
   cardFooter: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),

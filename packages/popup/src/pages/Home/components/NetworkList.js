@@ -57,7 +57,7 @@ NetworkItem.propTypes = {
   closeAction: PropTypes.func,
 }
 
-function NetworkList({cardTitle, onClose, showSlideCard, CardDescription}) {
+function NetworkList({cardTitle, onClose, showSlideCard, cardDescription}) {
   const {data: networkData} = useRPC(
     [GET_NETWORK],
     {},
@@ -70,7 +70,7 @@ function NetworkList({cardTitle, onClose, showSlideCard, CardDescription}) {
       cardTitle={cardTitle}
       onClose={onClose}
       showSlideCard={showSlideCard}
-      CardDescription={CardDescription}
+      cardDescription={cardDescription}
       cardContent={networkData.map(
         ({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
           <NetworkItem
@@ -105,7 +105,7 @@ NetworkList.propTypes = {
   cardTitle: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   showSlideCard: PropTypes.bool,
-  CardDescription: PropTypes.elementType,
+  cardDescription: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 }
 
 export default NetworkList
