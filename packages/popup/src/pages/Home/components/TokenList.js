@@ -1,46 +1,8 @@
-import {useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {PlusOutlined} from '@fluent-wallet/component-icons'
-import {formatBalance} from '@fluent-wallet/data-format'
 import {WrapIcon} from '../../../components'
-import {useFontSize} from '../../../hooks'
-
-function TokenItem({
-  icon,
-  name = 'Conflux',
-  symbol = 'CFX',
-  balance = '123456789100200300400.123456',
-}) {
-  const balanceRef = useRef()
-  const hiddenRef = useRef()
-  useFontSize(balanceRef, hiddenRef, 175, balance)
-  return (
-    <div className="w-full h-14 flex items-center">
-      <img className="w-8 h-8 rounded-full mr-2" src={icon} alt="logo" />
-      <div className="flex flex-1 flex-col">
-        <div className="flex w-full items-center justify-between">
-          <span className="text-gray-80 font-medium">{symbol}</span>
-          <div className="max-w-[175px] text-sm text-gray-80 font-mono font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis">
-            <span ref={balanceRef}>{formatBalance(balance)}</span>
-            <span ref={hiddenRef} className="invisible">
-              {formatBalance(balance)}
-            </span>
-          </div>
-        </div>
-        <span className="text-gray-40 text-xs">{name}</span>
-      </div>
-    </div>
-  )
-}
-
-TokenItem.propTypes = {
-  icon: PropTypes.string,
-  name: PropTypes.string,
-  symbol: PropTypes.string,
-  balance: PropTypes.string,
-}
-
+import {TokenItem} from './'
 function TokenList({showAddToken}) {
   const {t} = useTranslation()
   return (

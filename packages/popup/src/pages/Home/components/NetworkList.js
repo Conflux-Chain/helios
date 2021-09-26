@@ -5,7 +5,7 @@ import {RPC_METHODS} from '../../../constants'
 import {request} from '../../../utils'
 import {useSWRConfig} from 'swr'
 import {SlideCard} from '../../../components'
-import {CurrentAccountNetworkLabel} from './index'
+import {CurrentAccountNetworkLabel} from './'
 const {GET_NETWORK, SET_CURRENT_NETWORK, GET_CURRENT_NETWORK} = RPC_METHODS
 
 const networkTypeColorObj = {
