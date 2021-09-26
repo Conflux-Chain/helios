@@ -1,36 +1,36 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
-import {ActionSheet} from '../../../components'
+import {SlideCard} from '../../../components'
 import Input from '@fluent-wallet/component-input'
 import {SearchOutlined} from '@fluent-wallet/component-icons'
 import {useTranslation} from 'react-i18next'
 
-function AddToken({title, onClose, showActionSheet}) {
+function AddToken({onClose, showSlideCard}) {
   const {t} = useTranslation()
   const [searchContent, setSearchContent] = useState('')
-
   return (
-    <ActionSheet
-      title={title}
+    <SlideCard
+      cardTitle={t('addToken')}
       onClose={onClose}
-      showActionSheet={showActionSheet}
-    >
-      <Input
-        prefix={<SearchOutlined className="w-4 h-4" />}
-        width="w-full"
-        value={searchContent}
-        placeholder={t('searchToken')}
-        onChange={e => setSearchContent(e.target.value)}
-        className="!pl-px"
-        prefixClassName="!mr-1.5"
-      />
-      <div></div>
-    </ActionSheet>
+      showSlideCard={showSlideCard}
+      cardContent={
+        <Input
+          prefix={<SearchOutlined className="w-4 h-4" />}
+          width="w-full"
+          value={searchContent}
+          placeholder={t('searchToken')}
+          onChange={e => setSearchContent(e.target.value)}
+          className="!pl-px"
+          prefixClassName="!mr-1.5"
+        />
+      }
+    />
   )
 }
+
 AddToken.propTypes = {
-  title: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  showActionSheet: PropTypes.bool,
+  showSlideCard: PropTypes.bool,
 }
+
 export default AddToken

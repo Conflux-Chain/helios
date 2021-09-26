@@ -1,10 +1,10 @@
 import {randomPrivateKey} from '@fluent-wallet/account'
-import {nul, or, and, empty, arrp, privateKey} from '@fluent-wallet/spec'
+import {optParam, privateKey} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_generatePrivateKey'
 
 export const schemas = {
-  input: [or, nul, [and, arrp, empty]],
+  input: optParam,
   output: privateKey,
 }
 export const permissions = {

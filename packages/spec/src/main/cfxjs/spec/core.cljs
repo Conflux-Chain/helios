@@ -161,12 +161,12 @@
                                     :type :address-type :doc "Is string, one of user contract builtin null"))
 
 (def hex-string (update-properties
-                        [:re #"^0(x|X)?[a-fA-F0-9]+$"]
-                        :type :hexString
-                        :gen/fmap #(str "0x"
-                                        (-> js/Number.MAX_SAFE_INTEGER randomInt (.toString 16)))
-                        :error/message "invalid hex string"
-                        :doc "hexadecimal string"))
+                 [:re #"^0(x|X)?[a-fA-F0-9]+$"]
+                 :type :hexString
+                 :gen/fmap #(str "0x"
+                                 (-> js/Number.MAX_SAFE_INTEGER randomInt (.toString 16)))
+                 :error/message "invalid hex string"
+                 :doc "hexadecimal string"))
 (def Byte
   (update-properties [:re #"^0x([0-9a-fA-F]?){1,2}$"]
                      :type :byte
@@ -385,6 +385,12 @@
    :error/message "invalid http/https url"
    :doc "http/https url"))
 
+(def nil-or-empty-vec
+  (update-properties
+   [:or export-js-undefined export-nil [:and vector? empty?]]
+   :type :optional-param
+   :doc "undefined, null or empty array"))
+
 (def export-dbid
   (update-properties
    pos-int?
@@ -402,7 +408,6 @@
 (def export-hash32 Hash32)
 (comment
   (set! (.-jtc js/window) j->c)
-
 
   :CIP23Domain
 
@@ -423,7 +428,6 @@
                           :father {:name "Rickard"}}
                  :father {:name   "Rhaegar"
                           :father {:name "Aeris II"}}}}
-
 
   (def type-value-spec [:map {:closed true} [:name string?] [:type string?]])
 

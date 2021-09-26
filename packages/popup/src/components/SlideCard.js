@@ -4,14 +4,15 @@ import {CloseOutlined} from '@fluent-wallet/component-icons'
 import {useRef} from 'react'
 import {useSlideAnimation} from '../hooks'
 
-const ActionSheet = ({
+const SlideCard = ({
   onClose,
-  showActionSheet = false,
-  title,
-  children = null,
-  HeadContent,
+  showSlideCard = false,
+  cardTitle,
+  cardContent,
+  cardDescription,
+  cardFooter = null,
 }) => {
-  const animateStyle = useSlideAnimation(showActionSheet)
+  const animateStyle = useSlideAnimation(showSlideCard)
   const ref = useRef(null)
 
   useClickAway(ref, e => {
@@ -28,28 +29,28 @@ const ActionSheet = ({
         ref={ref}
       >
         <div className="ml-3 pb-1">
-          <p className="text-base text-gray-80 font-medium">{title}</p>
-          {HeadContent ? <HeadContent /> : null}
+          <p className="text-base text-gray-80 font-medium">{cardTitle}</p>
+          {cardDescription}
         </div>
         <CloseOutlined
           onClick={onClose}
           className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
         />
-        {children}
+        {cardContent}
+        {cardFooter}
       </div>
       <div className="absolute inset-0 z-10" />
     </div>
   )
 }
 
-ActionSheet.propTypes = {
-  title: PropTypes.string.isRequired,
+SlideCard.propTypes = {
   onClose: PropTypes.func.isRequired,
-  showActionSheet: PropTypes.bool,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
-  HeadContent: PropTypes.elementType,
+  showSlideCard: PropTypes.bool,
+  cardTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
+  cardDescription: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  cardContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node])
+    .isRequired,
+  cardFooter: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 }
-export default ActionSheet
+export default SlideCard

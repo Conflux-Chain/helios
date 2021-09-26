@@ -7,16 +7,16 @@ import {isNumber} from '@fluent-wallet/checks'
 import {useEffect} from 'react'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
+import {CurrentAccountNetworkLabel} from './index'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
-import {ActionSheet} from '../../../components'
+import {SlideCard} from '../../../components'
 const {SELECT_CREATE_TYPE} = ROUTES
 const {
   GET_ACCOUNT_GROUP,
   GET_CURRENT_NETWORK,
   GET_CURRENT_ACCOUNT,
   GET_ACCOUNT_ADDRESS_BY_NETWORK,
-  GET_BALANCE,
   SET_CURRENT_ACCOUNT,
 } = RPC_METHODS
 
@@ -27,10 +27,9 @@ function AccountItem({
   closeAction,
   tokeName,
 }) {
-  // TODO: 根据account的eid和networkId 查询rpc确认当前账户的地址。获取token balance。根据当前networkId 和 all network rpc 接口。确认当前币种单位。
   const {mutate} = useSWRConfig()
   const onChangeAccount = accountId => {
-    request(SET_CURRENT_ACCOUNT, [accountId]).then(({result, error}) => {
+    request(SET_CURRENT_ACCOUNT, [accountId]).then(({result}) => {
       result && closeAction && closeAction()
       mutate([GET_CURRENT_ACCOUNT])
       // TODO: need deal with error condition
@@ -75,7 +74,7 @@ AccountItem.propTypes = {
   tokeName: PropTypes.string,
 }
 
-function AccountList({title, onClose, showActionSheet, HeadContent}) {
+function AccountList({onClose, showSlideCard}) {
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined, {
     fallbackData: [],
@@ -89,76 +88,59 @@ function AccountList({title, onClose, showActionSheet, HeadContent}) {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
   }
+  // TODO:refactor code and add get balance
   useEffect(() => {
     if (isNumber(networkId) && accountGroups.length) {
       const addressParams = accountGroups.reduce(
         (acc, cur) =>
           acc.concat(
-            cur.account.map(({eid: accountId}) => ({networkId, accountId})),
+            cur.account
+              ? cur.account.map(({eid: accountId}) => ({networkId, accountId}))
+              : [],
           ),
         [],
       )
       request(GET_ACCOUNT_ADDRESS_BY_NETWORK, addressParams).then(addresses => {
         console.log('addresses', addresses)
       })
-      // console.log(accounts, networkId)
-      // Promise.all(
-      //   accounts.map(({eid: accountId}) =>
-      //     request(GET_ACCOUNT_ADDRESS_BY_NETWORK, {
-      //       networkId: networkId,
-      //       accountId,
-      //     }),
-      //   ),
-      // ).then(addresses => {
-      //   console.log('addresses', addresses)
-
-      //   if (addresses.every(addr => addr.result)) {
-      //     request(
-      //       GET_BALANCE,
-      //       [addresses[0].result.base32],
-      //       // addresses.map(addr => addr.result.base32 || addr.result.hex),
-      //     ).then(({result, error}) => {
-      //       // console.log('result', result, error)
-      //     })
-      //   }
-      // })
     }
   }, [networkId, accountGroups])
   return (
-    <ActionSheet
-      title={title}
+    <SlideCard
+      cardTitle={t('myAccounts')}
       onClose={onClose}
-      showActionSheet={showActionSheet}
-      HeadContent={HeadContent}
-    >
-      <div>
-        {accountGroups.map(({nickname, account}, index) => (
-          <AccountItem
-            key={index}
-            account={account}
-            nickname={nickname}
-            closeAction={onClose}
-            authorizedAccountIdIconObj={authorizedAccountIdIconObj}
-            tokeName={ticker?.name || ''}
-          />
-        ))}
-      </div>
-      <Button
-        color="transparent"
-        className="w-full border-dashed border-gray-40 mt-3 text-gray-80"
-        onClick={onAddAccount}
-      >
-        {t('addAccount')}
-      </Button>
-    </ActionSheet>
+      showSlideCard={showSlideCard}
+      cardDescription={<CurrentAccountNetworkLabel />}
+      cardContent={
+        <div>
+          {accountGroups.map(({nickname, account}, index) => (
+            <AccountItem
+              key={index}
+              account={account || []}
+              nickname={nickname}
+              closeAction={onClose}
+              authorizedAccountIdIconObj={authorizedAccountIdIconObj}
+              tokeName={ticker?.name || ''}
+            />
+          ))}
+        </div>
+      }
+      cardFooter={
+        <Button
+          color="transparent"
+          className="w-full border-dashed border-gray-40 mt-3 text-gray-80"
+          onClick={onAddAccount}
+        >
+          {t('addAccount')}
+        </Button>
+      }
+    />
   )
 }
 
 AccountList.propTypes = {
-  title: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  showActionSheet: PropTypes.bool,
-  HeadContent: PropTypes.elementType,
+  showSlideCard: PropTypes.bool,
 }
 
 export default AccountList

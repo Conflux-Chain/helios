@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types'
+import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../../constants'
 import {request} from '../../../utils'
 import {useSWRConfig} from 'swr'
-import {ActionSheet} from '../../../components'
+import {SlideCard} from '../../../components'
+import {CurrentAccountNetworkLabel} from './index'
 const {GET_NETWORK, SET_CURRENT_NETWORK, GET_CURRENT_NETWORK} = RPC_METHODS
 
 const networkTypeColorObj = {
@@ -57,7 +59,8 @@ NetworkItem.propTypes = {
   closeAction: PropTypes.func,
 }
 
-function NetworkList({title, onClose, showActionSheet, HeadContent}) {
+function NetworkList({onClose, showSlideCard}) {
+  const {t} = useTranslation()
   const {data: networkData} = useRPC(
     [GET_NETWORK],
     {},
@@ -66,45 +69,44 @@ function NetworkList({title, onClose, showActionSheet, HeadContent}) {
     },
   )
   return (
-    <ActionSheet
-      title={title}
+    <SlideCard
+      cardTitle={t('network')}
       onClose={onClose}
-      showActionSheet={showActionSheet}
-      HeadContent={HeadContent}
-    >
-      {networkData.map(({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
-        <NetworkItem
-          key={eid}
-          networkId={eid}
-          networkName={name}
-          networkType={
-            isCustom
-              ? 'custom'
-              : isMainnet
-              ? 'mainnet'
-              : isTestnet
-              ? 'testnet'
-              : ''
-          }
-          closeAction={onClose}
-          networkIcon={
-            <img
-              alt="network-icon"
-              className="w-7 h-7"
-              src={icon || 'images/default-network-icon.svg'}
-            />
-          }
-        />
-      ))}
-    </ActionSheet>
+      showSlideCard={showSlideCard}
+      cardDescription={<CurrentAccountNetworkLabel />}
+      cardContent={networkData.map(
+        ({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
+          <NetworkItem
+            key={eid}
+            networkId={eid}
+            networkName={name}
+            networkType={
+              isCustom
+                ? 'custom'
+                : isMainnet
+                ? 'mainnet'
+                : isTestnet
+                ? 'testnet'
+                : ''
+            }
+            closeAction={onClose}
+            networkIcon={
+              <img
+                alt="network-icon"
+                className="w-7 h-7"
+                src={icon || 'images/default-network-icon.svg'}
+              />
+            }
+          />
+        ),
+      )}
+    />
   )
 }
 
 NetworkList.propTypes = {
-  title: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  showActionSheet: PropTypes.bool,
-  HeadContent: PropTypes.elementType,
+  showSlideCard: PropTypes.bool,
 }
 
 export default NetworkList
