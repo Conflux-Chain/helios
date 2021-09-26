@@ -74,7 +74,7 @@ AccountItem.propTypes = {
   tokeName: PropTypes.string,
 }
 
-function AccountList({cardTitle, onClose, showSlideCard}) {
+function AccountList({onClose, showSlideCard}) {
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined, {
     fallbackData: [],
@@ -107,7 +107,7 @@ function AccountList({cardTitle, onClose, showSlideCard}) {
   }, [networkId, accountGroups])
   return (
     <SlideCard
-      cardTitle={cardTitle}
+      cardTitle={t('myAccounts')}
       onClose={onClose}
       showSlideCard={showSlideCard}
       cardDescription={<CurrentAccountNetworkLabel />}
@@ -139,7 +139,6 @@ function AccountList({cardTitle, onClose, showSlideCard}) {
 }
 
 AccountList.propTypes = {
-  cardTitle: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   showSlideCard: PropTypes.bool,
 }

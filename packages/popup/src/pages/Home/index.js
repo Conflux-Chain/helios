@@ -58,13 +58,11 @@ function Home() {
       <TokenList />
       <CurrentDapp />
       <AccountList
-        cardTitle={t('myAccounts')}
         onClose={() => setAccountStatus(false)}
         showSlideCard={accountStatus}
       />
 
       <NetworkList
-        cardTitle={t('network')}
         onClose={() => setNetworkStatus(false)}
         showSlideCard={networkStatus}
       />

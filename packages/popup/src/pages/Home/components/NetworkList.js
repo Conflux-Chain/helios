@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../../constants'
 import {request} from '../../../utils'
@@ -58,7 +59,8 @@ NetworkItem.propTypes = {
   closeAction: PropTypes.func,
 }
 
-function NetworkList({cardTitle, onClose, showSlideCard}) {
+function NetworkList({onClose, showSlideCard}) {
+  const {t} = useTranslation()
   const {data: networkData} = useRPC(
     [GET_NETWORK],
     {},
@@ -68,7 +70,7 @@ function NetworkList({cardTitle, onClose, showSlideCard}) {
   )
   return (
     <SlideCard
-      cardTitle={cardTitle}
+      cardTitle={t('network')}
       onClose={onClose}
       showSlideCard={showSlideCard}
       cardDescription={<CurrentAccountNetworkLabel />}
@@ -103,7 +105,6 @@ function NetworkList({cardTitle, onClose, showSlideCard}) {
 }
 
 NetworkList.propTypes = {
-  cardTitle: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   showSlideCard: PropTypes.bool,
 }
