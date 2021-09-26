@@ -1,12 +1,13 @@
 const zh = {
   translation: {
+    faster: 'Faster',
     en: 'English',
     'zh-CN': '简体中文',
     back: 'Back',
     // welcome page
     hello: 'Hello',
     welcome: 'Welcome to Conflux network',
-    create: 'create',
+    create: 'Create',
     migration: 'One-Click Migration',
     welcomeBack: 'Welcome Back!',
     password: 'password',
@@ -18,10 +19,10 @@ const zh = {
     rememberPWD: 'This password cannot be retrieved, please remember.',
     goBack: 'Back',
     // select create type
-    newAccount: 'New Account',
+    newAccount: 'Create Account',
     createAccount: 'Create a new account',
-    UseExistingSeed: 'Use existing Seed Phrase',
-    UseExistingSeedDes: 'No need to backup again, use HD Wallet.',
+    useExistingSeed: 'Use existing Seed Phrase',
+    useExistingSeedDes: 'No need to backup again, use HD Wallet.',
     newSeedPhrase: 'New Seed Phrase',
     newSeedPhraseDes: 'Create a new Seed Phrase and Backup.',
     importExistingAccount: 'Import existing account',
@@ -37,13 +38,52 @@ const zh = {
     // Import account with pk
     pKeyImport: 'Import Private Key',
     pKeyGroupName: 'Account name',
-    pKeyPlaceholder: 'Type your Private Key here.',
+    pKeyImportPlaceholder: 'Type your Private Key here.',
     import: 'Import',
     // use current seed phrase
     accountName: 'Account name',
     selectSeedPhrase: 'Select Seed Phrase',
     oneAccount: '1 Account',
     manyAccounts: '{{accountNum}} Accounts',
+    // create seed phrase
+    seedCreateTitle: 'Next, the Seed Phrase will be displayed',
+    seedCreateContent:
+      'Obtaining the Seed Phrase is equivalent to owning the assets in the wallet.<br/>Once the Seed Phrase is lost, it cannot be retrieved, please keep it properly',
+    next: 'Next',
+    // backup seed phrase
+    backupSeedTitle: 'Backup Seed Phrase',
+    backupSeedContent:
+      'Please copy the Seed Phrase in order.<br/>Do not share and store Seed Phrase in a networked environment.',
+    // confirm seed phrase
+    confirmSeedTitle: 'Check Seed Phrase',
+    confirmSeedContent:
+      'Please click the Seed Phase in order to ensure correct backup.',
+    confirmSeedError: 'Mistakes in Seed Phrase.',
+    // set account
+    myAccounts: 'My Accounts',
+    addAccount: 'Add Account',
+    // change network
+    network: 'Network',
+    mainnet: 'Mainnet',
+    Testnet: 'Testnet',
+    custom: 'Custom',
+    // home page
+    send: 'Send',
+    history: 'History',
+    assets: 'Assets',
+    noConnectedDapp: 'Not connected to current website',
+    connected: 'Connected',
+    authorizeCurrentAccount: 'Authorize {{currentAccount}}?',
+    copiedSuccess: 'Copied success',
+    needAuthTitle: 'Need authorization',
+    needAuthContent:
+      'This Account has not authorized to this site.<br/>Authorize this site to use {{accountName}} ？',
+    disconnectTitle: 'Disconnect',
+    disconnectContent: 'Disconnect this website?',
+    no: 'No',
+    yes: 'Yes',
+    cancel: 'Cancel',
+    disconnect: 'Disconnect',
   },
 }
 

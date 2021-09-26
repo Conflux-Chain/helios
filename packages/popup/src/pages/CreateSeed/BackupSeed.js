@@ -8,7 +8,8 @@ import {SeedWord} from './components'
 import {TitleNav} from '../../components'
 import {request} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
-import {RPC_METHODS} from '../../constants'
+import {RPC_METHODS, ROUTES} from '../../constants'
+const {CONFIRM_SEED_PHRASE} = ROUTES
 const {GENERATE_MNEMONIC} = RPC_METHODS
 
 function BackupSeed() {
@@ -47,7 +48,7 @@ function BackupSeed() {
           <Button
             className="w-70"
             onClick={() => {
-              history.push('/confirm-seed-phrase')
+              history.push(CONFIRM_SEED_PHRASE)
               setCreatedMnemonic(mnemonic)
             }}
           >

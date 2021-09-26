@@ -3,11 +3,12 @@ import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {RPC_METHODS} from '../../constants'
+import {RPC_METHODS, ROUTES} from '../../constants'
 import {useSWRConfig} from 'swr'
 import {request, validatePasswordReg} from '../../utils'
 const {GET_WALLET_LOCKED_STATUS, UNLOCK} = RPC_METHODS
 
+const {HOME} = ROUTES
 const UnlockPage = () => {
   const history = useHistory()
   const {t} = useTranslation()
@@ -24,8 +25,8 @@ const UnlockPage = () => {
       request(UNLOCK, {password}).then(({error, result}) => {
         if (error) setErrorMessage(error.message.split('\n')[0])
         if (result) {
-          mutate([GET_WALLET_LOCKED_STATUS])
-          history.push('/')
+          mutate([GET_WALLET_LOCKED_STATUS], false)
+          history.push(HOME)
         }
       })
     }

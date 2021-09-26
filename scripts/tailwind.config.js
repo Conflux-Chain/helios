@@ -40,6 +40,7 @@ module.exports = {
         93: '23.25rem',
         100: '25rem',
         110: '27.5rem',
+        125: '31.25rem',
         150: '37.5rem',
       },
       boxShadow: {
@@ -107,6 +108,29 @@ module.exports = {
       },
       maxWidth: {
         60: '15rem',
+      },
+      keyframes: {
+        'slide-up': {
+          '0%': {
+            transform: 'translateY(100%)',
+          },
+          '100%': {
+            transform: 'translateY(0%)',
+          },
+        },
+        'slide-down': {
+          '0%': {
+            transform: 'translateY(0%)',
+          },
+          '100%': {
+            transform: 'translateY(100%)',
+            display: 'none',
+          },
+        },
+      },
+      animation: {
+        'slide-up': 'slide-up 0.3s ease',
+        'slide-down': 'slide-down 0.3s linear forwards',
       },
       backgroundImage: {
         'token-background':

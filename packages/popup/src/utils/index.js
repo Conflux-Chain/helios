@@ -13,19 +13,6 @@ export const request = (...args) => {
   return globalThis.___CFXJS_USE_RPC__PRIVIDER?.request(requestObj)
 }
 
-export const getRouteWithAuthInfo = (hasAccount, isLocked) => {
-  if (typeof hasAccount !== 'boolean' || typeof isLocked !== 'boolean') {
-    return null
-  }
-  if (!hasAccount) {
-    return '/welcome'
-  }
-  if (hasAccount && isLocked) {
-    return '/unlock'
-  }
-  return null
-}
-
 export function shuffle(arr) {
   let arrAdd = [...arr]
   for (let i = 1; i < arrAdd.length; i++) {

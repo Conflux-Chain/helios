@@ -1,4 +1,4 @@
-export const GET_ALL_ACCOUNT_GROUP = 'wallet_getAccountGroup'
+export const GET_ACCOUNT_GROUP = 'wallet_getAccountGroup'
 export const ACCOUNT_GROUP_TYPE = {
   HD: 'hd',
   PK: 'pk',
@@ -18,5 +18,9 @@ export const VALIDATE_PRIVATE_KEY = 'wallet_validatePrivateKey'
 export const CREATE_ACCOUNT = 'wallet_createAccount'
 export const UNLOCK = 'wallet_unlock'
 export const LOCK = 'wallet_lock'
+export const GET_NETWORK = 'wallet_getNetwork'
+export const GET_BALANCE = 'wallet_getBalance'
+export const SET_CURRENT_NETWORK = 'wallet_setCurrentNetwork'
+export const SET_CURRENT_ACCOUNT = 'wallet_setCurrentAccount'
 export const REQUEST_PERMISSIONS = 'wallet_requestPermissions'
 export const DELETE_APP = 'wallet_deleteApp'

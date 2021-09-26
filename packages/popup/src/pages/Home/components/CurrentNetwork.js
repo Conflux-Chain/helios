@@ -1,16 +1,21 @@
+import PropTypes from 'prop-types'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {RPC_METHODS} from '../../../constants'
 const {GET_CURRENT_NETWORK} = RPC_METHODS
 
-function CurrentNetwork() {
+function CurrentNetwork({showNetwork}) {
   const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
     fallbackData: {},
   })
   const {name, icon} = currentNetwork
 
   return (
-    <div className="flex bg-[#f0f3ff] bg-opacity-20 rounded h-6 px-2 cursor-pointer items-center">
+    <div
+      className="flex bg-[#f0f3ff] bg-opacity-20 rounded h-6 px-2 cursor-pointer items-center"
+      onClick={showNetwork}
+      aria-hidden="true"
+    >
       <img
         className="w-2.5 h-2.5 mr-1"
         src={icon || 'images/default-network-icon.svg'}
@@ -21,5 +26,7 @@ function CurrentNetwork() {
     </div>
   )
 }
-
+CurrentNetwork.propTypes = {
+  showNetwork: PropTypes.func.isRequired,
+}
 export default CurrentNetwork

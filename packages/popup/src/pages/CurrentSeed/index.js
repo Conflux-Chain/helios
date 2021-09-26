@@ -8,7 +8,7 @@ import {CompWithLabel, TitleNav} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
 import {RPC_METHODS} from '../../constants'
-const {GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE, CREATE_ACCOUNT} = RPC_METHODS
+const {GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE, CREATE_ACCOUNT} = RPC_METHODS
 
 function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
   const {t} = useTranslation()
@@ -49,7 +49,7 @@ SeedPhrase.propTypes = {
 function CurrentSeed() {
   const {t} = useTranslation()
   const {data: hdGroup, mutate: groupMutate} = useRPC(
-    [GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
+    [GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
     {type: ACCOUNT_GROUP_TYPE.HD},
     {fallbackData: []},
   )

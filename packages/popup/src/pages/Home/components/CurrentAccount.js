@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import {useState} from 'react'
 import {useTranslation} from 'react-i18next'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
@@ -18,7 +19,7 @@ const {
   GET_ACCOUNT_ADDRESS_BY_NETWORK,
 } = RPC_METHODS
 
-function CurrentAccount() {
+function CurrentAccount({showAccount}) {
   const [copied, setCopied] = useState(false)
   const [qrcodeShow, setQrcodeShow] = useState(false)
   const {t} = useTranslation()
@@ -48,7 +49,11 @@ function CurrentAccount() {
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center cursor-pointer">
+      <div
+        className="flex items-center cursor-pointer"
+        onClick={showAccount}
+        aria-hidden="true"
+      >
         <span className="text-xs text-gray-40 mr-2">{nickname}</span>
         <RightOutlined className="w-3 h-3 text-white" />
       </div>
@@ -87,5 +92,7 @@ function CurrentAccount() {
     </div>
   )
 }
-
+CurrentAccount.propTypes = {
+  showAccount: PropTypes.func.isRequired,
+}
 export default CurrentAccount

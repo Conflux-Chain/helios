@@ -6,16 +6,17 @@ import Button from '@fluent-wallet/component-button'
 import Input from '@fluent-wallet/component-input'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
-import {RPC_METHODS} from '../../constants'
+import {RPC_METHODS, ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {useSWRConfig} from 'swr'
 const {
-  GET_ALL_ACCOUNT_GROUP,
+  GET_ACCOUNT_GROUP,
   ACCOUNT_GROUP_TYPE,
   VALIDATE_PRIVATE_KEY,
   IMPORT_PRIVATE_KEY,
 } = RPC_METHODS
+const {HOME} = ROUTES
 
 function ImportPrivateKey() {
   const {t} = useTranslation()
@@ -30,7 +31,7 @@ function ImportPrivateKey() {
   const createdPassword = useGlobalStore(state => state.createdPassword)
 
   const {data: keygenGroup} = useRPC(
-    [GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK],
+    [GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK],
     {type: ACCOUNT_GROUP_TYPE.PK},
     {fallbackData: []},
   )
@@ -47,8 +48,8 @@ function ImportPrivateKey() {
     setKeygen(e.target.value)
   }
   const dispatchMutate = () => {
-    mutate([GET_ALL_ACCOUNT_GROUP])
-    mutate([GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK])
+    mutate([GET_ACCOUNT_GROUP])
+    mutate([GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK])
   }
   const onCreate = async () => {
     if (!keygen) {
@@ -68,7 +69,7 @@ function ImportPrivateKey() {
             setCreatingAccount(false)
             if (result) {
               dispatchMutate()
-              history.push('/')
+              history.push(HOME)
             }
             if (error) {
               setKeygenErrorMessage(error.message.split('\n')[0])

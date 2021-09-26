@@ -2,7 +2,14 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
+import {ROUTES} from '../../constants'
 
+const {
+  CURRENT_SEED_PHRASE,
+  NEW_SEED_PHRASE,
+  IMPORT_SEED_PHRASE,
+  IMPORT_PRIVATE_KEY,
+} = ROUTES
 function Tag() {
   const {t} = useTranslation()
   return (
@@ -27,7 +34,7 @@ function SelectCreateType() {
           subTitle={t('useExistingSeedDes')}
           Tag={Tag}
           onClick={() => {
-            history.push('/current-seed-phrase')
+            history.push(CURRENT_SEED_PHRASE)
           }}
         />
         <CreateTypeItem
@@ -35,7 +42,7 @@ function SelectCreateType() {
           title={t('newSeedPhrase')}
           subTitle={t('newSeedPhraseDes')}
           onClick={() => {
-            history.push('/new-seed-phrase')
+            history.push(NEW_SEED_PHRASE)
           }}
         />
         <em className="not-italic text-xs text-gray-40 ml-1 mb-2 inline-block">
@@ -46,7 +53,7 @@ function SelectCreateType() {
           title={t('seedPhrase')}
           subTitle={t('seedPhraseDes')}
           onClick={() => {
-            history.push('/import-seed-phrase')
+            history.push(IMPORT_SEED_PHRASE)
           }}
         />
         <CreateTypeItem
@@ -54,7 +61,7 @@ function SelectCreateType() {
           title={t('pKey')}
           subTitle={t('pKeysDes')}
           onClick={() => {
-            history.push('/import-private-key')
+            history.push(IMPORT_PRIVATE_KEY)
           }}
         />
       </main>

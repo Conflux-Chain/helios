@@ -6,10 +6,11 @@ import Button from '@fluent-wallet/component-button'
 import {CompWithLabel, TitleNav} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import useGlobalStore from '../../stores'
-import {RPC_METHODS} from '../../constants'
+import {RPC_METHODS, ROUTES} from '../../constants'
 import {useCreatedPasswordGuard} from '../../hooks'
-const {GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
+const {GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
+const {BACKUP_SEED_PHRASE} = ROUTES
 function NewSeed() {
   useCreatedPasswordGuard()
   const {t} = useTranslation()
@@ -18,7 +19,7 @@ function NewSeed() {
   const [groupName, setGroupName] = useState('')
   const [groupNamePlaceholder, setGroupNamePlaceholder] = useState('')
   const {data: hdGroup} = useRPC(
-    [GET_ALL_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
+    [GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
     {type: ACCOUNT_GROUP_TYPE.HD},
     {fallbackData: []},
   )
@@ -54,7 +55,7 @@ function NewSeed() {
           <Button
             className="w-70"
             onClick={() => {
-              history.push('/backup-seed-phrase')
+              history.push(BACKUP_SEED_PHRASE)
               setCreatedGroupName(groupName || groupNamePlaceholder)
             }}
             disabled={!(groupName || groupNamePlaceholder)}
