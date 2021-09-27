@@ -22,13 +22,8 @@ function TokenItem({
 }) {
   const balanceRef = useRef()
   const hiddenRef = useRef()
-  const maxBalanceWidthStyle = maxBalanceWidthStyleObj[maxBalanceSize] || ''
-  useFontSize(
-    balanceRef,
-    hiddenRef,
-    maxBalanceWidth[maxBalanceSize] || 175,
-    balance,
-  )
+  const maxBalanceWidthStyle = maxBalanceWidthStyleObj[maxBalanceSize]
+  useFontSize(balanceRef, hiddenRef, maxBalanceWidth[maxBalanceSize], balance)
 
   return (
     <div className="w-full h-14 flex items-center">

@@ -2,11 +2,15 @@ import PropTypes from 'prop-types'
 import {useState} from 'react'
 import {SlideCard} from '../../../components'
 import Input from '@fluent-wallet/component-input'
-import {SearchOutlined} from '@fluent-wallet/component-icons'
 import {useTranslation} from 'react-i18next'
 import {TokenItem} from './'
 import {WrapIcon} from '../../../components'
-import {SelectedOutlined, PlusOutlined} from '@fluent-wallet/component-icons'
+import {
+  SelectedOutlined,
+  PlusOutlined,
+  CloseCircleFilled,
+  SearchOutlined,
+} from '@fluent-wallet/component-icons'
 
 function AddToken({onClose, showSlideCard}) {
   const {t} = useTranslation()
@@ -20,17 +24,23 @@ function AddToken({onClose, showSlideCard}) {
       onClose={onClose}
       showSlideCard={showSlideCard}
       cardContent={
-        searchResults.length ? (
-          <div className="mt-4">
-            <Input
-              prefix={<SearchOutlined className="w-4 h-4" />}
-              width="w-full"
-              value={searchContent}
-              placeholder={t('searchToken')}
-              onChange={e => setSearchContent(e.target.value)}
-              className="!pl-px"
-              prefixClassName="!mr-1.5"
-            />
+        <div className="mt-4">
+          <Input
+            prefix={<SearchOutlined className="w-4 h-4" />}
+            width="w-full"
+            value={searchContent}
+            placeholder={t('searchToken')}
+            onChange={e => setSearchContent(e.target.value)}
+            className="!pl-px"
+            prefixClassName="!mr-1.5"
+            suffix={
+              searchContent ? (
+                <CloseCircleFilled className="w-4 h-4 cursor-pointer text-gray-40" />
+              ) : null
+            }
+            onSuffixClick={() => setSearchContent('')}
+          />
+          {searchResults.length ? (
             <div className="px-3 pt-3 mt-3 bg-gray-0 rounded">
               <p className="ml-1 mb-1 text-gray-40">{t('searchResults')}</p>
               <TokenItem
@@ -50,13 +60,18 @@ function AddToken({onClose, showSlideCard}) {
                 }
               />
             </div>
-          </div>
-        ) : (
-          <div className="flex  items-center flex-col">
-            <img src="" alt="no result" className="w-24 h-24 mt-13 mb-4" />
-            <p>{t('noResult')}</p>
-          </div>
-        )
+          ) : (
+            <div className="flex  items-center flex-col">
+              <img
+                src=""
+                alt="no result"
+                className="w-24 h-24 mt-13 mb-4"
+                data-clear-btn="true"
+              />
+              <p>{t('noResult')}</p>
+            </div>
+          )}
+        </div>
       }
     />
   )
