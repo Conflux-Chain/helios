@@ -1,0 +1,6 @@
+releases:
+  "@fluent-wallet/component-icons": minor
+  "@fluent-wallet/component-input": patch
+
+declined:
+  - helios-popup
