@@ -35,7 +35,6 @@ function Input({
   disabled,
   className = '',
   containerClassName = '',
-  prefixClassName = '',
   onChange,
   bordered = true,
   size = 'medium',
@@ -80,7 +79,7 @@ function Input({
     onChange: e => {
       onChange && onChange(e)
     },
-    className: `w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`,
+    className: `bg-transparent w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`,
     ...props,
   })
   return (
@@ -93,7 +92,7 @@ function Input({
           <div
             aria-hidden="true"
             onClick={() => setFocused(true)}
-            className={`pl-3 ${prefixStyle} ${prefixClassName}`}
+            className={`pl-3 ${prefixStyle}`}
           >
             <div className={`text-gray-40 ${iconSize}`}>{prefix}</div>
           </div>
@@ -122,7 +121,6 @@ function Input({
 Input.propTypes = {
   value: PropTypes.string.isRequired,
   className: PropTypes.string,
-  prefixClassName: PropTypes.string,
   containerClassName: PropTypes.string,
   onChange: PropTypes.func,
   width: PropTypes.string,

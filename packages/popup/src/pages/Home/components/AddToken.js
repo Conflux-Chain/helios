@@ -26,13 +26,11 @@ function AddToken({onClose, showSlideCard}) {
       cardContent={
         <div className="mt-4">
           <Input
-            prefix={<SearchOutlined className="w-4 h-4" />}
+            prefix={<SearchOutlined className="w-4 h-4 text-gray-40" />}
             width="w-full"
             value={searchContent}
             placeholder={t('searchToken')}
             onChange={e => setSearchContent(e.target.value)}
-            className="!pl-px"
-            prefixClassName="!mr-1.5"
             suffix={
               searchContent ? (
                 <CloseCircleFilled className="w-4 h-4 cursor-pointer text-gray-40" />
