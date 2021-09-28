@@ -4,7 +4,7 @@ import {RightOutlined} from '@fluent-wallet/component-icons'
 import {RPC_METHODS} from '../../../constants'
 const {GET_CURRENT_NETWORK} = RPC_METHODS
 
-function CurrentNetwork({onOpen}) {
+function CurrentNetwork({onOpenNetwork}) {
   const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
     fallbackData: {},
   })
@@ -13,7 +13,7 @@ function CurrentNetwork({onOpen}) {
   return (
     <div
       className="flex bg-[#f0f3ff] bg-opacity-20 rounded h-6 px-2 cursor-pointer items-center"
-      onClick={onOpen}
+      onClick={onOpenNetwork}
       aria-hidden="true"
     >
       <img
@@ -27,6 +27,6 @@ function CurrentNetwork({onOpen}) {
   )
 }
 CurrentNetwork.propTypes = {
-  onOpen: PropTypes.func.isRequired,
+  onOpenNetwork: PropTypes.func.isRequired,
 }
 export default CurrentNetwork
