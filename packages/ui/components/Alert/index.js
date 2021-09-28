@@ -2,17 +2,17 @@ import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {
   CloseOutlined,
-  ErrorTwoTone,
-  InfoTwoTone,
-  SuccessTwoTone,
-  WarningTwoTone,
+  CloseCircleFilled,
+  InfoCircleFilled,
+  CheckCircleFilled,
+  ExclamationCircleFilled,
 } from '@fluent-wallet/component-icons'
 
 const typeToIcon = {
-  success: <SuccessTwoTone className="w-4 h-4 mr-2" />,
-  info: <InfoTwoTone className="w-4 h-4 mr-2" />,
-  error: <ErrorTwoTone className="w-4 h-4 mr-2" />,
-  warning: <WarningTwoTone className="w-4 h-4 mr-2" />,
+  success: <CheckCircleFilled className="w-4 h-4 mr-2 text-success" />,
+  info: <InfoCircleFilled className="w-4 h-4 mr-2 text-info" />,
+  error: <CloseCircleFilled className="w-4 h-4 mr-2 text-error" />,
+  warning: <ExclamationCircleFilled className="w-4 h-4 mr-2 text-warning" />,
 }
 
 const contentStyleObj = {

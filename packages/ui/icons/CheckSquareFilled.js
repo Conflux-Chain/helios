@@ -1,4 +1,6 @@
-function ErrorTwoTone(props) {
+import React from 'react'
+
+function CheckSquareFilled(props) {
   return (
     <svg
       width={24}
@@ -8,14 +10,9 @@ function ErrorTwoTone(props) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
+      <rect x={2} y={2} width={20} height={20} rx={2} fill="currentColor" />
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-        fill="#E96170"
-      />
-      <path
-        d="M15.5 8.5l-7 7M8.5 8.5l7 7"
+        d="M15.5 9.5L11.432 15 9 13.125"
         stroke="#fff"
         strokeWidth={2}
         strokeLinecap="round"
@@ -25,4 +22,4 @@ function ErrorTwoTone(props) {
   )
 }
 
-export default ErrorTwoTone
+export default CheckSquareFilled
