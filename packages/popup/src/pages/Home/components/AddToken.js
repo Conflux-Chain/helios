@@ -12,7 +12,7 @@ import {
   SearchOutlined,
 } from '@fluent-wallet/component-icons'
 
-function AddToken({onClose, showSlideCard}) {
+function AddToken({onClose, onOpen}) {
   const {t} = useTranslation()
   const [searchContent, setSearchContent] = useState('')
   const onAddToken = () => {}
@@ -22,7 +22,7 @@ function AddToken({onClose, showSlideCard}) {
     <SlideCard
       cardTitle={t('addToken')}
       onClose={onClose}
-      showSlideCard={showSlideCard}
+      onOpen={onOpen}
       cardContent={
         <div className="mt-4">
           <Input
@@ -77,7 +77,7 @@ function AddToken({onClose, showSlideCard}) {
 
 AddToken.propTypes = {
   onClose: PropTypes.func.isRequired,
-  showSlideCard: PropTypes.bool,
+  onOpen: PropTypes.bool,
 }
 
 export default AddToken

@@ -37,8 +37,8 @@ function Home() {
       <HomeNav />
       <div className="flex flex-col pt-1 px-4 z-10">
         <div className="flex items-start justify-between">
-          <CurrentAccount showAccount={() => setAccountStatus(true)} />
-          <CurrentNetwork showNetwork={() => setNetworkStatus(true)} />
+          <CurrentAccount onOpen={() => setAccountStatus(true)} />
+          <CurrentNetwork onOpen={() => setNetworkStatus(true)} />
         </div>
         <div className="flex mt-3 mb-4">
           <Button
@@ -57,19 +57,19 @@ function Home() {
           </Button>
         </div>
       </div>
-      <TokenList showAddToken={() => setAddTokenStatus(true)} />
+      <TokenList onOpen={() => setAddTokenStatus(true)} />
       <CurrentDapp />
       <AccountList
         onClose={() => setAccountStatus(false)}
-        showSlideCard={accountStatus}
+        onOpen={accountStatus}
       />
       <NetworkList
         onClose={() => setNetworkStatus(false)}
-        showSlideCard={networkStatus}
+        onOpen={networkStatus}
       />
       <AddToken
         onClose={() => setAddTokenStatus(false)}
-        showSlideCard={addTokenStatus}
+        onOpen={addTokenStatus}
       />
     </div>
   )
