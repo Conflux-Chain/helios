@@ -1,0 +1,10 @@
+releases:
+  "@fluent-wallet/component-alert": patch
+  "@fluent-wallet/component-checkbox": patch
+  "@fluent-wallet/component-icons": minor
+  "@fluent-wallet/component-menu": patch
+  "@fluent-wallet/component-message": patch
+  "@fluent-wallet/component-notification": patch
+
+declined:
+  - helios-popup
