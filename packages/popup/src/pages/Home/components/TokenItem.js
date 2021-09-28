@@ -31,13 +31,16 @@ function TokenItem({
       <div className="flex flex-1 flex-col">
         <div className="flex w-full items-center justify-between">
           <span className="text-gray-80 font-medium">{symbol}</span>
-          <div
-            className={`${maxBalanceWidthStyle} text-sm text-gray-80 font-mono font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis`}
-          >
-            <span ref={balanceRef}>{formatBalance(balance)}</span>
-            <span ref={hiddenRef} className="invisible">
-              {formatBalance(balance)}
-            </span>
+          <div className="flex items-center flex-1">
+            <div
+              className={`${maxBalanceWidthStyle} text-sm text-gray-80 font-mono font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis`}
+            >
+              <span ref={balanceRef}>{formatBalance(balance)}</span>
+              <span ref={hiddenRef} className="invisible">
+                {formatBalance(balance)}
+              </span>
+            </div>
+            {rightIcon && <span className="ml-5">{rightIcon}</span>}
           </div>
         </div>
         <span className="text-gray-40 text-xs">{name}</span>
