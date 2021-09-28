@@ -31,7 +31,7 @@ function TokenItem({
       <div className="flex flex-1 flex-col">
         <div className="flex w-full items-center justify-between">
           <span className="text-gray-80 font-medium">{symbol}</span>
-          <div className="flex items-center flex-1">
+          <div className="flex items-center flex-1 justify-end">
             <div
               className={`${maxBalanceWidthStyle} text-sm text-gray-80 font-mono font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis`}
             >
