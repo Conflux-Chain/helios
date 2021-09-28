@@ -7,7 +7,7 @@ import {isNumber} from '@fluent-wallet/checks'
 import {useEffect} from 'react'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
-import {CurrentAccountNetworkLabel} from './index'
+import {CurrentAccountNetworkLabel} from './'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard} from '../../../components'
@@ -74,7 +74,7 @@ AccountItem.propTypes = {
   tokeName: PropTypes.string,
 }
 
-function AccountList({onClose, showSlideCard}) {
+function AccountList({onClose, onOpen}) {
   const {t} = useTranslation()
   const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined, {
     fallbackData: [],
@@ -109,7 +109,7 @@ function AccountList({onClose, showSlideCard}) {
     <SlideCard
       cardTitle={t('myAccounts')}
       onClose={onClose}
-      showSlideCard={showSlideCard}
+      onOpen={onOpen}
       cardDescription={<CurrentAccountNetworkLabel />}
       cardContent={
         <div>
@@ -140,7 +140,7 @@ function AccountList({onClose, showSlideCard}) {
 
 AccountList.propTypes = {
   onClose: PropTypes.func.isRequired,
-  showSlideCard: PropTypes.bool,
+  onOpen: PropTypes.bool,
 }
 
 export default AccountList

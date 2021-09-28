@@ -19,7 +19,7 @@ const {
   GET_ACCOUNT_ADDRESS_BY_NETWORK,
 } = RPC_METHODS
 
-function CurrentAccount({showAccount}) {
+function CurrentAccount({onOpenAccount}) {
   const [copied, setCopied] = useState(false)
   const [qrcodeShow, setQrcodeShow] = useState(false)
   const {t} = useTranslation()
@@ -51,7 +51,7 @@ function CurrentAccount({showAccount}) {
     <div className="flex flex-col">
       <div
         className="flex items-center cursor-pointer"
-        onClick={showAccount}
+        onClick={onOpenAccount}
         aria-hidden="true"
       >
         <span className="text-xs text-gray-40 mr-2">{nickname}</span>
@@ -93,6 +93,6 @@ function CurrentAccount({showAccount}) {
   )
 }
 CurrentAccount.propTypes = {
-  showAccount: PropTypes.func.isRequired,
+  onOpenAccount: PropTypes.func.isRequired,
 }
 export default CurrentAccount
