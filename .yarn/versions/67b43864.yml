@@ -8,3 +8,7 @@ releases:
 
 declined:
   - helios-popup
+  - "@fluent-wallet/component-dropdown"
+  - "@fluent-wallet/component-loading"
+  - "@fluent-wallet/component-modal"
+  - "@fluent-wallet/component-tag"
