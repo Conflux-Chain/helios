@@ -72,13 +72,8 @@ const getAddressParams = (accountGroups, networkId) => {
 }
 
 export const useAccountGroupAddress = networkId => {
-  const [addressParams, setAddressParams] = useState([])
   const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined)
-
-  useEffect(() => {
-    setAddressParams(getAddressParams(accountGroups, networkId))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(accountGroups), networkId])
+  const addressParams = getAddressParams(accountGroups, networkId)
 
   // TODO: should mutate when add network
   const {data: addressData} = useRPC(
@@ -86,17 +81,11 @@ export const useAccountGroupAddress = networkId => {
       ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId]
       : null,
     addressParams,
+    {fallbackData: []},
   )
 
-  useEffect(() => {
-    if (addressData?.length && accountGroups?.length) {
-      accountGroups.forEach(group => {
-        group.account.forEach(account => {
-          account.currentAddressData = addressData.shift()
-        })
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(addressData), Boolean(accountGroups)])
-  return accountGroups
+  return {
+    accountGroups: accountGroups || [],
+    addressData: addressData,
+  }
 }

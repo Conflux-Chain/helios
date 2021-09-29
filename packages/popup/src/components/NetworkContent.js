@@ -16,7 +16,7 @@ const itemWrapperPaddingStyleObj = {
 function NetworkItem({
   networkName,
   networkType,
-  networkIcon,
+  icon,
   onClickNetworkItem,
   networkId,
   networkItemSize = 'medium',
@@ -29,10 +29,14 @@ function NetworkItem({
     <div
       aria-hidden="true"
       className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative cursor-pointer ${itemWrapperPaddingStyle}`}
-      onClick={() => onClickNetworkItem(networkId)}
+      onClick={() => onClickNetworkItem({networkId, networkName, icon})}
     >
       <div className="w-8 h-8 border border-solid border-gray-20 rounded-full flex items-center justify-center">
-        {networkIcon}
+        <img
+          alt="network-icon"
+          className="w-7 h-7"
+          src={icon || 'images/default-network-icon.svg'}
+        />
       </div>
       <div className="ml-2.5 text-gray-80 text-sm font-medium">
         {networkName}
@@ -50,7 +54,7 @@ NetworkItem.propTypes = {
   networkType: PropTypes.oneOf(['mainnet', 'testnet', 'custom']).isRequired,
   networkItemSize: PropTypes.oneOf(['small', 'medium']),
   networkId: PropTypes.number.isRequired,
-  networkIcon: PropTypes.element.isRequired,
+  icon: PropTypes.string,
   onClickNetworkItem: PropTypes.func.isRequired,
 }
 
@@ -81,13 +85,7 @@ function NetworkContent({onClickNetworkItem, networkItemSize}) {
               : ''
           }
           onClickNetworkItem={onClickNetworkItem}
-          networkIcon={
-            <img
-              alt="network-icon"
-              className="w-7 h-7"
-              src={icon || 'images/default-network-icon.svg'}
-            />
-          }
+          icon={icon}
         />
       ))}
     </>

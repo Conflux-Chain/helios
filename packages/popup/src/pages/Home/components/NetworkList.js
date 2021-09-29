@@ -12,7 +12,7 @@ function NetworkList({onClose, onOpen}) {
   const {t} = useTranslation()
   const {mutate} = useSWRConfig()
 
-  const onClickNetworkItem = networkId => {
+  const onClickNetworkItem = ({networkId}) => {
     request(SET_CURRENT_NETWORK, [networkId]).then(({result}) => {
       result && onClose()
       mutate([GET_CURRENT_NETWORK])

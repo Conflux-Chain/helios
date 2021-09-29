@@ -75,7 +75,7 @@ function AccountList({onClose, onOpen}) {
   const ticker = currentNetworkData?.ticker
   const networkId = currentNetworkData?.eid
   // TODO:refactor code and add get balance
-  const accountGroupAddressData = useAccountGroupAddress(networkId)
+  const {accountGroups} = useAccountGroupAddress(networkId)
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()
 
@@ -92,7 +92,7 @@ function AccountList({onClose, onOpen}) {
       cardDescription={<CurrentAccountNetworkLabel />}
       cardContent={
         <div>
-          {accountGroupAddressData.map(({nickname, account}, index) => (
+          {accountGroups.map(({nickname, account}, index) => (
             <AccountItem
               key={index}
               account={account || []}
