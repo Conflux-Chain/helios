@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {StopOutlined, SuccessTwoTone} from '@fluent-wallet/component-icons'
+import {StopOutlined, CheckCircleFilled} from '@fluent-wallet/component-icons'
 
 function MenuItem({
   children,
@@ -48,8 +48,8 @@ function MenuItem({
         (selectedIcon ? (
           selectedIconComp
         ) : (
-          <SuccessTwoTone
-            className="w-4 h-4"
+          <CheckCircleFilled
+            className="w-4 h-4 text-success"
             data-testid="success-filled-wrapper"
           />
         ))}
