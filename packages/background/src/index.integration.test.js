@@ -27,6 +27,10 @@ import {
   sendCFX,
   sendETH,
 } from '@fluent-wallet/test-helpers'
+import {
+  deployCRC20,
+  deployERC20,
+} from '@fluent-wallet/test-helpers/deploy-contracts'
 
 const password = '12345678'
 let request, db, cfxNetId, ethNetId, res, req
@@ -1961,6 +1965,188 @@ describe('integration test', function () {
         expect(res.result.startsWith('0x')).toBeTruthy()
       })
     })
+    describe('wallet_getBalance', function () {
+      test('cfx network', async () => {
+        await deployCRC20()
+
+        expect(
+          (
+            await request({
+              method: 'wallet_getBalance',
+              params: [CFX_ACCOUNTS[0].base32],
+              networkName: CFX_MAINNET_NAME,
+            })
+          ).result,
+        ).toBe('0x0')
+        let b
+        res = await request({
+          method: 'wallet_getBalance',
+          params: {
+            users: [CFX_ACCOUNTS[0].base32, CFX_ACCOUNTS[1].base32],
+            tokens: [
+              '0x0',
+              'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w',
+              'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt',
+            ],
+          },
+          networkName: CFX_MAINNET_NAME,
+        })
+        b = res.result
+        expect(b[CFX_ACCOUNTS[0].base32]['0x0']).toBe('0x0')
+        expect(b[CFX_ACCOUNTS[1].base32]['0x0']).toBe('0x0')
+        expect(
+          b[CFX_ACCOUNTS[0].base32][
+            'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w'
+          ],
+        ).toBe('0x8ac7230489e80000')
+        expect(
+          b[CFX_ACCOUNTS[1].base32][
+            'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w'
+          ],
+        ).toBe('0x8ac7230489e80000')
+        expect(
+          b[CFX_ACCOUNTS[0].base32][
+            'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt'
+          ],
+        ).toBe('0x56bc75e2d63100000')
+        expect(
+          b[CFX_ACCOUNTS[1].base32][
+            'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt'
+          ],
+        ).toBe('0x56bc75e2d63100000')
+
+        db.retractAttr({
+          eid: db.getNetworkByName(CFX_MAINNET_NAME)[0].eid,
+          attr: 'network/balanceChecker',
+        })
+
+        res = await request({
+          method: 'wallet_getBalance',
+          params: {
+            users: [CFX_ACCOUNTS[0].base32, CFX_ACCOUNTS[1].base32],
+            tokens: [
+              '0x0',
+              'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w',
+              'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt',
+            ],
+          },
+        })
+        b = res.result
+        expect(b[CFX_ACCOUNTS[0].base32]['0x0']).toBe('0x0')
+        expect(b[CFX_ACCOUNTS[1].base32]['0x0']).toBe('0x0')
+        expect(
+          b[CFX_ACCOUNTS[0].base32][
+            'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w'
+          ],
+        ).toBe('0x8ac7230489e80000')
+        expect(
+          b[CFX_ACCOUNTS[1].base32][
+            'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w'
+          ],
+        ).toBe('0x8ac7230489e80000')
+        expect(
+          b[CFX_ACCOUNTS[0].base32][
+            'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt'
+          ],
+        ).toBe('0x56bc75e2d63100000')
+        expect(
+          b[CFX_ACCOUNTS[1].base32][
+            'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt'
+          ],
+        ).toBe('0x56bc75e2d63100000')
+      })
+
+      test('eth network', async () => {
+        expect(
+          (
+            await request({
+              method: 'wallet_getBalance',
+              params: [ETH_ACCOUNTS[0].address],
+              networkName: ETH_MAINNET_NAME,
+            })
+          ).result,
+        ).toBe('0x0')
+
+        await deployERC20()
+        let b
+        res = await request({
+          method: 'wallet_getBalance',
+          params: {
+            users: [ETH_ACCOUNTS[0].address, ETH_ACCOUNTS[1].address],
+            tokens: [
+              '0x0',
+              '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341',
+              '0x2f154def814f04aa5ae2446681264bf3428956b4',
+            ],
+          },
+          networkName: ETH_MAINNET_NAME,
+        })
+        b = res.result
+        expect(b[ETH_ACCOUNTS[0].address]['0x0']).toBe('0x0')
+        expect(b[ETH_ACCOUNTS[1].address]['0x0']).toBe('0x0')
+        expect(
+          b[ETH_ACCOUNTS[0].address][
+            '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341'
+          ],
+        ).toBe('0x8ac7230489e80000')
+        expect(
+          b[ETH_ACCOUNTS[1].address][
+            '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341'
+          ],
+        ).toBe('0x8ac7230489e80000')
+        expect(
+          b[ETH_ACCOUNTS[0].address][
+            '0x2f154def814f04aa5ae2446681264bf3428956b4'
+          ],
+        ).toBe('0x56bc75e2d63100000')
+        expect(
+          b[ETH_ACCOUNTS[1].address][
+            '0x2f154def814f04aa5ae2446681264bf3428956b4'
+          ],
+        ).toBe('0x56bc75e2d63100000')
+
+        db.retractAttr({
+          eid: db.getNetworkByName(ETH_MAINNET_NAME)[0].eid,
+          attr: 'network/balanceChecker',
+        })
+
+        res = await request({
+          method: 'wallet_getBalance',
+          params: {
+            users: [ETH_ACCOUNTS[0].address, ETH_ACCOUNTS[1].address],
+            tokens: [
+              '0x0',
+              '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341',
+              '0x2f154def814f04aa5ae2446681264bf3428956b4',
+            ],
+          },
+          networkName: ETH_MAINNET_NAME,
+        })
+        b = res.result
+        expect(b[ETH_ACCOUNTS[0].address]['0x0']).toBe('0x0')
+        expect(b[ETH_ACCOUNTS[1].address]['0x0']).toBe('0x0')
+        expect(
+          b[ETH_ACCOUNTS[0].address][
+            '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341'
+          ],
+        ).toBe('0x8ac7230489e80000')
+        expect(
+          b[ETH_ACCOUNTS[1].address][
+            '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341'
+          ],
+        ).toBe('0x8ac7230489e80000')
+        expect(
+          b[ETH_ACCOUNTS[0].address][
+            '0x2f154def814f04aa5ae2446681264bf3428956b4'
+          ],
+        ).toBe('0x56bc75e2d63100000')
+        expect(
+          b[ETH_ACCOUNTS[1].address][
+            '0x2f154def814f04aa5ae2446681264bf3428956b4'
+          ],
+        ).toBe('0x56bc75e2d63100000')
+      })
+    })
     describe('wallet_switchEthereumChain', function () {
       test('wallet_switchEthereumChain', async () => {
         await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
@@ -2109,10 +2295,8 @@ describe('integration test', function () {
       test('wallet_discoverAccount', async function () {
         await sendCFX({to: CFX_ACCOUNTS[0].address, balance: 1})
         await sendCFX({to: CFX_ACCOUNTS[1].address, balance: 1})
-        await sendCFX({to: CFX_ACCOUNTS[2].address, balance: 1})
         await sendETH({to: ETH_ACCOUNTS[0].address, balance: 1})
         await sendETH({to: ETH_ACCOUNTS[1].address, balance: 1})
-        await sendETH({to: ETH_ACCOUNTS[2].address, balance: 1})
 
         expect(db.getVault().length).toBe(0)
 
@@ -2127,32 +2311,8 @@ describe('integration test', function () {
         const groups = db.getAccountGroup()
         expect(groups.length).toBe(1)
 
-        await waitForExpect(() => expect(db.getAccount().length).toBe(3))
-        await waitForExpect(() => expect(db.getAddress().length).toBe(6))
-
-        await sendETH({to: ETH_ACCOUNTS[3].address, balance: 1})
-        await sendETH({to: ETH_ACCOUNTS[4].address, balance: 1})
-        await sendETH({to: ETH_ACCOUNTS[5].address, balance: 1})
-
-        // await request({
-        //   method: 'wallet_discoverAccounts',
-        //   params: {
-        //     accountGroupId: groups[0].eid,
-        //     waitTillFinish: true,
-        //     limit: 1,
-        //   },
-        // })
-
-        // await waitForExpect(() => expect(db.getAccount().length).toBe(4))
-        // await waitForExpect(() => expect(db.getAddress().length).toBe(8))
-
-        // await request({
-        //   method: 'wallet_discoverAccounts',
-        //   params: {accountGroupId: groups[0].eid, waitTillFinish: true},
-        // })
-
-        // await waitForExpect(() => expect(db.getAccount().length).toBe(6))
-        // await waitForExpect(() => expect(db.getAddress().length).toBe(12))
+        await waitForExpect(() => expect(db.getAccount().length).toBe(2))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(4))
       })
     })
   })

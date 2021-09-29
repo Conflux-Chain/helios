@@ -3887,7 +3887,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-balance@workspace:packages/rpcs/wallet_getBalance"
   dependencies:
+    "@ethersproject/bytes": 5.4.0
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
+    "@fluent-wallet/single-call-balance-tracker": "workspace:packages/single-call-balance-tracker"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
