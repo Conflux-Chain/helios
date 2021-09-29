@@ -1,0 +1,6 @@
+[submodule "contracts/oz"]
+	path = contracts/oz
+	url = git@github.com:OpenZeppelin/openzeppelin-contracts.git
+[submodule "contracts/cfx"]
+	path = contracts/cfx
+	url = git@github.com:conflux-fans/conflux-contracts.git
