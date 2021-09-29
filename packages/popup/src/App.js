@@ -21,6 +21,7 @@ const {
   IMPORT_SEED_PHRASE,
   IMPORT_PRIVATE_KEY,
   ERROR,
+  CONNECT_SITE,
 } = ROUTES
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
@@ -34,6 +35,7 @@ const ImportPrivateKey = lazy(() => import('./pages/ImportPrivateKey'))
 const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
 const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 const ErrorPage = lazy(() => import('./pages/Error'))
+const ConnectSite = lazy(() => import('./pages/ConnectSite'))
 
 function App() {
   const {data: lockedData, error: lockedError} = useRPC([
@@ -95,6 +97,7 @@ function App() {
               component={ImportPrivateKey}
             />
             <Route exact path={ERROR} component={ErrorPage} />
+            <Route exact path={CONNECT_SITE} component={ConnectSite} />
             <Route path="*" render={() => <Redirect to={ERROR} />} />
           </Switch>
         </Router>

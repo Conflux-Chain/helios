@@ -37,6 +37,7 @@ function Input({
   containerClassName = '',
   onChange,
   bordered = true,
+  readOnly = false,
   size = 'medium',
   textareaSize = '',
   width = 'w-60',
@@ -63,7 +64,10 @@ function Input({
   const borderStyle = useMemo(() => {
     if (!bordered) return 'border-0'
     if (errorMessage) return 'border border-error'
-    else return `border ${focused ? 'border-primary' : 'border-gray-20'}`
+    else
+      return `border ${
+        focused && !readOnly ? 'border-primary' : 'border-gray-20'
+      }`
   }, [bordered, errorMessage, focused])
 
   const InputElement = createElement(elementType, {
@@ -132,6 +136,7 @@ Input.propTypes = {
   onSuffixClick: PropTypes.func,
   disabled: PropTypes.bool,
   bordered: PropTypes.bool,
+  readOnly: PropTypes.bool,
   onBlur: PropTypes.func,
   elementType: PropTypes.oneOf(['input', 'textarea']),
 }
