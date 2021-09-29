@@ -3207,6 +3207,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/contract-abis@workspace:packages/contract-abis":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/contract-abis@workspace:packages/contract-abis"
+  dependencies:
+    "@ethersproject/abi": 5.4.1
+    "@fluent-wallet/compose": "workspace:packages/compose"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/contract-method-name@workspace:packages/contract-method-name":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/contract-method-name@workspace:packages/contract-method-name"
@@ -3564,6 +3573,17 @@ __metadata:
     cip-23: 0.1.2
     eth-sig-util: 3.0.1
     js-conflux-sdk: 1.7.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/single-call-balance-tracker@workspace:packages/single-call-balance-tracker":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/single-call-balance-tracker@workspace:packages/single-call-balance-tracker"
+  dependencies:
+    "@ethersproject/abi": 5.4.1
+    "@ethersproject/bytes": 5.4.0
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/compose": "workspace:packages/compose"
   languageName: unknown
   linkType: soft
 
