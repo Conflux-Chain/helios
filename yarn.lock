@@ -2876,6 +2876,8 @@ __metadata:
   dependencies:
     "@fluent-wallet/account": "workspace:packages/account"
     "@fluent-wallet/utils": "workspace:packages/utils"
+    "@thi.ng/cache": 1.0.94
+    "@thi.ng/memoize": 2.1.21
     js-conflux-sdk: 1.7.0
   languageName: unknown
   linkType: soft
@@ -6859,6 +6861,15 @@ __metadata:
   dependencies:
     "@thi.ng/api": ^7.2.0
   checksum: 5e9f44b5c779ce1e64766624fdbfec11e90c866c745bd1fb8ec6cf1c63eb130889094bd079d808e623f2ae52aac92e6fcc555d18657c216ddd38ab793111f031
+  languageName: node
+  linkType: hard
+
+"@thi.ng/memoize@npm:2.1.21":
+  version: 2.1.21
+  resolution: "@thi.ng/memoize@npm:2.1.21"
+  dependencies:
+    "@thi.ng/api": ^7.2.0
+  checksum: daf567c0f7abad7bd43ae1f31aff6e71a67b7d5467147d259a9665ae2d4b85cc4038fa786eaae8d7da7f03d0b23e9c8c338697d8e58843ce8e9bb6868497225c
   languageName: node
   linkType: hard
 
