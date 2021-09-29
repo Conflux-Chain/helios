@@ -1,12 +1,7 @@
 import PropTypes from 'prop-types'
-import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
-import {RPC_METHODS} from '../../../constants'
-import {request} from '@fluent-wallet/utils'
-import {useSWRConfig} from 'swr'
-import {SlideCard} from '../../../components'
-import {CurrentAccountNetworkLabel} from '.'
-const {GET_NETWORK, SET_CURRENT_NETWORK, GET_CURRENT_NETWORK} = RPC_METHODS
+import {RPC_METHODS} from '../constants'
+const {GET_NETWORK} = RPC_METHODS
 
 const networkTypeColorObj = {
   mainnet: 'bg-primary-10 text-[#ACB6E0]',
@@ -14,28 +9,27 @@ const networkTypeColorObj = {
   custom: 'bg-[#F0FDFC] text-[#83DBC6]',
 }
 
+const itemWrapperPaddingStyleObj = {
+  small: 'pl-3',
+  medium: 'pl-3.5',
+}
 function NetworkItem({
   networkName,
   networkType,
   networkIcon,
-  closeAction,
+  onClickNetworkItem,
   networkId,
+  networkItemSize = 'medium',
 }) {
-  const {mutate} = useSWRConfig()
   const networkTypeColor = networkTypeColorObj[networkType] || ''
-  const onChangeNetwork = () => {
-    request(SET_CURRENT_NETWORK, [networkId]).then(({result}) => {
-      result && closeAction && closeAction()
-      mutate([GET_CURRENT_NETWORK])
-      // TODO: need deal with error condition
-    })
-  }
+  const itemWrapperPaddingStyle =
+    itemWrapperPaddingStyleObj[networkItemSize] || ''
 
   return (
     <div
       aria-hidden="true"
-      className="bg-gray-0 mt-4 h-15 flex items-center pl-3.5 rounded relative cursor-pointer"
-      onClick={onChangeNetwork}
+      className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative cursor-pointer ${itemWrapperPaddingStyle}`}
+      onClick={() => onClickNetworkItem(networkId)}
     >
       <div className="w-8 h-8 border border-solid border-gray-20 rounded-full flex items-center justify-center">
         {networkIcon}
@@ -54,13 +48,13 @@ function NetworkItem({
 NetworkItem.propTypes = {
   networkName: PropTypes.string.isRequired,
   networkType: PropTypes.oneOf(['mainnet', 'testnet', 'custom']).isRequired,
+  networkItemSize: PropTypes.oneOf(['small', 'medium']),
   networkId: PropTypes.number.isRequired,
   networkIcon: PropTypes.element.isRequired,
-  closeAction: PropTypes.func,
+  onClickNetworkItem: PropTypes.func.isRequired,
 }
 
-function NetworkList({onClose, onOpen}) {
-  const {t} = useTranslation()
+function NetworkContent({onClickNetworkItem, networkItemSize}) {
   const {data: networkData} = useRPC(
     [GET_NETWORK],
     {},
@@ -68,45 +62,41 @@ function NetworkList({onClose, onOpen}) {
       fallbackData: [],
     },
   )
+
   return (
-    <SlideCard
-      cardTitle={t('network')}
-      onClose={onClose}
-      onOpen={onOpen}
-      cardDescription={<CurrentAccountNetworkLabel />}
-      cardContent={networkData.map(
-        ({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
-          <NetworkItem
-            key={eid}
-            networkId={eid}
-            networkName={name}
-            networkType={
-              isCustom
-                ? 'custom'
-                : isMainnet
-                ? 'mainnet'
-                : isTestnet
-                ? 'testnet'
-                : ''
-            }
-            closeAction={onClose}
-            networkIcon={
-              <img
-                alt="network-icon"
-                className="w-7 h-7"
-                src={icon || 'images/default-network-icon.svg'}
-              />
-            }
-          />
-        ),
-      )}
-    />
+    <>
+      {networkData.map(({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
+        <NetworkItem
+          key={eid}
+          networkId={eid}
+          networkName={name}
+          networkItemSize={networkItemSize}
+          networkType={
+            isCustom
+              ? 'custom'
+              : isMainnet
+              ? 'mainnet'
+              : isTestnet
+              ? 'testnet'
+              : ''
+          }
+          onClickNetworkItem={onClickNetworkItem}
+          networkIcon={
+            <img
+              alt="network-icon"
+              className="w-7 h-7"
+              src={icon || 'images/default-network-icon.svg'}
+            />
+          }
+        />
+      ))}
+    </>
   )
 }
 
-NetworkList.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
+NetworkContent.propTypes = {
+  onClickNetworkItem: PropTypes.func.isRequired,
+  networkItemSize: PropTypes.oneOf(['small', 'medium']),
 }
 
-export default NetworkList
+export default NetworkContent
