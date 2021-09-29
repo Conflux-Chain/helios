@@ -45,7 +45,6 @@ function TokenItem({
         </div>
         <span className="text-gray-40 text-xs">{name}</span>
       </div>
-      {rightIcon && <span className="ml-5">{rightIcon}</span>}
     </div>
   )
 }
