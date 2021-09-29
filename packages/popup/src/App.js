@@ -97,7 +97,13 @@ function App() {
               component={ImportPrivateKey}
             />
             <Route exact path={ERROR} component={ErrorPage} />
-            <Route exact path={CONNECT_SITE} component={ConnectSite} />
+            <ProtectedRoute
+              hasAccount={!zeroGroup}
+              isLocked={!zeroGroup && lockedData}
+              exact
+              path={CONNECT_SITE}
+              component={ConnectSite}
+            />
             <Route path="*" render={() => <Redirect to={ERROR} />} />
           </Switch>
         </Router>

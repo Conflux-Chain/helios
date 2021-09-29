@@ -3,22 +3,17 @@ import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {useRPC} from '@fluent-wallet/use-rpc'
-import {isNumber} from '@fluent-wallet/checks'
-import {useEffect} from 'react'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import {CurrentAccountNetworkLabel} from './'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard} from '../../../components'
+import {useAccountGroupAddress} from '../../../hooks'
+
 const {SELECT_CREATE_TYPE} = ROUTES
-const {
-  GET_ACCOUNT_GROUP,
-  GET_CURRENT_NETWORK,
-  GET_CURRENT_ACCOUNT,
-  GET_ACCOUNT_ADDRESS_BY_NETWORK,
-  SET_CURRENT_ACCOUNT,
-} = RPC_METHODS
+const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT, SET_CURRENT_ACCOUNT} =
+  RPC_METHODS
 
 function AccountItem({
   nickname,
@@ -76,35 +71,19 @@ AccountItem.propTypes = {
 
 function AccountList({onClose, onOpen}) {
   const {t} = useTranslation()
-  const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined, {
-    fallbackData: [],
-  })
   const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
   const ticker = currentNetworkData?.ticker
   const networkId = currentNetworkData?.eid
+  // TODO:refactor code and add get balance
+  const accountGroupAddressData = useAccountGroupAddress(networkId)
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()
+
   const onAddAccount = () => {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
   }
-  // TODO:refactor code and add get balance
-  useEffect(() => {
-    if (isNumber(networkId) && accountGroups.length) {
-      const addressParams = accountGroups.reduce(
-        (acc, cur) =>
-          acc.concat(
-            cur.account
-              ? cur.account.map(({eid: accountId}) => ({networkId, accountId}))
-              : [],
-          ),
-        [],
-      )
-      request(GET_ACCOUNT_ADDRESS_BY_NETWORK, addressParams).then(addresses => {
-        console.log('addresses', addresses)
-      })
-    }
-  }, [networkId, accountGroups])
+
   return (
     <SlideCard
       cardTitle={t('myAccounts')}
@@ -113,7 +92,7 @@ function AccountList({onClose, onOpen}) {
       cardDescription={<CurrentAccountNetworkLabel />}
       cardContent={
         <div>
-          {accountGroups.map(({nickname, account}, index) => (
+          {accountGroupAddressData.map(({nickname, account}, index) => (
             <AccountItem
               key={index}
               account={account || []}

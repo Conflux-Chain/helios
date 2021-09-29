@@ -92,7 +92,7 @@ const en = {
     // dapp connect site
     connectSite: 'Connect to this Website?',
     selectNetwork: 'Which network want to use?',
-    selectAuthorizedAccounts: 'Which accounts will be authorized？',
+    selectAuthorizedAccounts: 'Which accounts will be authorized?',
     selectAll: 'All',
     connect: 'Connect',
     chooseNetwork: 'Choose Network',
