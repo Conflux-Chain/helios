@@ -57,6 +57,7 @@ beforeEach(async () => {
           symbol: CFX_LOCALNET_CURRENCY_SYMBOL,
           decimals: DEFAULT_CURRENCY_DECIMALS,
         },
+        balanceChecker: 'net2999:ach8cpret14pg9huwjtpva62w2pa1z1d0ub91hshds',
         hdPath: cfxHdPath,
         isMainnet: true,
       })
@@ -72,6 +73,7 @@ beforeEach(async () => {
           symbol: ETH_LOCALNET_CURRENCY_SYMBOL,
           decimals: DEFAULT_CURRENCY_DECIMALS,
         },
+        balanceChecker: '0x33845d47195725a6b0a08eeda1e60ce9f2dcc80b',
         hdPath: ethHdPath,
         isMainnet: true,
       })
