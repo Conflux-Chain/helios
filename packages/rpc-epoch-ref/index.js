@@ -30,7 +30,7 @@ const RPC_EPOCH_TAG_CONFIG = {
   eth_getBlockTransactionCountByNumber: 0,
   eth_getUncleCountByBlockNumber: 0,
   eth_getCode: 1,
-  eth_call: 2,
+  eth_call: 1,
   eth_getBlockByNumber: 0,
   eth_getTransactionByBlockNumberAndIndex: 0,
   eth_getUncleByBlockNumberAndIndex: 0,

@@ -2898,6 +2898,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_call@workspace:packages/rpcs/cfx_call":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_call@workspace:packages/rpcs/cfx_call"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_chain-id@workspace:packages/rpcs/cfx_chainId":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_chain-id@workspace:packages/rpcs/cfx_chainId"
@@ -3310,6 +3318,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_block-number@workspace:packages/rpcs/eth_blockNumber"
   dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_call@workspace:packages/rpcs/eth_call":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_call@workspace:packages/rpcs/eth_call"
+  dependencies:
+    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -16559,6 +16576,7 @@ fsevents@~2.1.2:
   resolution: "helios-background@workspace:packages/background"
   dependencies:
     "@fluent-wallet/cfx_accounts": "workspace:packages/rpcs/cfx_accounts"
+    "@fluent-wallet/cfx_call": "workspace:packages/rpcs/cfx_call"
     "@fluent-wallet/cfx_chain-id": "workspace:packages/rpcs/cfx_chainId"
     "@fluent-wallet/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber"
     "@fluent-wallet/cfx_estimate-gas-and-collateral": "workspace:packages/rpcs/cfx_estimateGasAndCollateral"
@@ -16575,6 +16593,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/db": "workspace:packages/db"
     "@fluent-wallet/eth_accounts": "workspace:packages/rpcs/eth_accounts"
     "@fluent-wallet/eth_block-number": "workspace:packages/rpcs/eth_blockNumber"
+    "@fluent-wallet/eth_call": "workspace:packages/rpcs/eth_call"
     "@fluent-wallet/eth_chain-id": "workspace:packages/rpcs/eth_chainId"
     "@fluent-wallet/eth_estimate-gas": "workspace:packages/rpcs/eth_estimateGas"
     "@fluent-wallet/eth_gas-price": "workspace:packages/rpcs/eth_gasPrice"

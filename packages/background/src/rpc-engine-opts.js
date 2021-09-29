@@ -89,6 +89,8 @@ import * as walletValidateMnemonic from '@fluent-wallet/wallet_validate-mnemonic
 import * as walletValidatePassword from '@fluent-wallet/wallet_validate-password'
 import * as walletValidatePrivateKey from '@fluent-wallet/wallet_validate-private-key'
 import * as walletZeroAccountGroup from '@fluent-wallet/wallet_zero-account-group'
+import * as cfxCall from '@fluent-wallet/cfx_call'
+import * as ethCall from '@fluent-wallet/eth_call'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -162,6 +164,7 @@ export const rpcEngineOpts = {
     cfxGetCode,
     cfxGetNextNonce,
     cfxGetBalance,
+    cfxCall,
     cfxGetStatus,
     cfxNetVersion,
     cfxChainId,
@@ -175,6 +178,7 @@ export const rpcEngineOpts = {
     ethGetCode,
     ethGetTransactionCount,
     ethGetBalance,
+    ethCall,
     ethChainId,
     netVersion,
     ethAccounts,
