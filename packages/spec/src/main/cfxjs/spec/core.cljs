@@ -347,7 +347,7 @@
    [:enum "latest_mined" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil]
    :type :epoch-tag
    :error/message "must be one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null"
-   :doc "one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null"))
+   :doc "one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null, default to latest_state"))
 
 (def export-epoch-ref
   (update-properties
@@ -358,17 +358,17 @@
 
 (def export-block-tag
   (update-properties
-   [:enum "latest" "earliest" "pending"]
+   [:enum "latest" "earliest" "pending" nil]
    :type :epoch-tag
    :error/message "invalid block tag, must be one of latest pending or earliest"
-   :doc "one of latest pending or earliest"))
+   :doc "one of latest pending or earliest, default to latest"))
 
 (def export-block-ref
   (update-properties
    [:or export-block-tag export-hex-string]
    :type :epoch-ref
-   :error/message "invalid block ref, must be one of latest, pwnding, earliest, block number or null"
-   :doc "one of latest, pwnding, earliest, block number or null"))
+   :error/message "invalid block ref, must be one of latest, pending, earliest, block number or null"
+   :doc "one of latest, pending, earliest, block number or null"))
 
 (def export-address-type
   (update-properties

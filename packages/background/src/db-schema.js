@@ -60,6 +60,7 @@ const schema = {
       doc: 'token list of this network',
       ref: true,
     },
+    balanceChecker: {doc: 'balance checker contract address'},
     token: {
       doc: 'tokens from token list, dapp, and user of this network',
       ref: true,
