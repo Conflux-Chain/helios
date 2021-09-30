@@ -72,7 +72,7 @@ const getAddressParams = (accountGroups, networkId) => {
   return addressParams
 }
 
-const getBatchAddress = ({
+const getBalanceAddress = ({
   groupIndex,
   accountIndex,
   accountGroups,
@@ -102,7 +102,7 @@ const getBatchBalanceData = ({
     accountGroups.forEach(({nickname, account}, groupIndex) => {
       ret.push({nickname, account: []})
       account.forEach(({nickname, eid}, accountIndex) => {
-        const address = getBatchAddress({
+        const address = getBalanceAddress({
           groupIndex,
           accountIndex,
           accountGroups,

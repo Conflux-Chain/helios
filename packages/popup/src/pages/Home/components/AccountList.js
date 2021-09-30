@@ -30,7 +30,7 @@ function AccountItem({
       // TODO: need deal with error condition
     })
   }
-  console.log('account', account)
+
   return (
     <div className="bg-gray-0 rounded pt-3 mt-3">
       <p className="text-gray-40 ml-4 mb-1 text-xs">{nickname}</p>
