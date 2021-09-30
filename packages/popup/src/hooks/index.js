@@ -87,7 +87,12 @@ const getBatchAddress = ({
   return addressData[index].base32 || addressData[index].hex
 }
 
-const getBatchBalanceData = ({accountGroups, balanceData, addressData}) => {
+const getBatchBalanceData = ({
+  accountGroups,
+  balanceData,
+  addressData,
+  token = '0x0',
+}) => {
   let ret = []
   if (
     accountGroups.length &&
@@ -106,7 +111,7 @@ const getBatchBalanceData = ({accountGroups, balanceData, addressData}) => {
         ret[groupIndex]['account'].push({
           nickname,
           eid,
-          balance: window.BigInt(balanceData[address]['0x0']).toString(),
+          balance: window.BigInt(balanceData[address][token]).toString(),
         })
       })
     })
