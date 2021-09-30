@@ -4,6 +4,7 @@ import {useState, useEffect} from 'react'
 import Input from '@fluent-wallet/component-input'
 import Checkbox from '@fluent-wallet/component-checkbox'
 import {useRPC} from '@fluent-wallet/use-rpc'
+import {getBatchIndex} from '../../utils'
 import {
   CaretDownFilled,
   QuestionCircleOutlined,
@@ -12,29 +13,54 @@ import Modal from '@fluent-wallet/component-modal'
 import {RPC_METHODS} from '../../constants'
 import {NetworkContent} from '../../components'
 import {useAccountGroupAddress} from '../../hooks'
-const {GET_CURRENT_NETWORK} = RPC_METHODS
-
-const getAddress = ({groupIndex, accountIndex, accountGroups, addressData}) => {
-  if (groupIndex == 0) {
-    return addressData[accountIndex]?.base32 || addressData[accountIndex]?.hex
-  }
-  return (
-    addressData[accountGroups[groupIndex - 1].account.length + accountIndex - 1]
-      ?.base32 ||
-    addressData[accountGroups[groupIndex - 1].account.length + accountIndex - 1]
-      ?.hex
-  )
-}
+const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
 function ConnectSitesList({networkId}) {
   const {t} = useTranslation()
+  const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
+  const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
   const {accountGroups, addressData} = useAccountGroupAddress(networkId)
-  console.log(accountGroups, addressData)
-  return (
+  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
+    fallbackData: {},
+  })
+
+  const onSelectSingleAccount = (index, accountId) => {
+    console.log('accountId', accountId)
+    setCheckboxStatusObj({
+      ...checkboxStatusObj,
+      ...{[index]: !checkboxStatusObj[index]},
+    })
+  }
+
+  useEffect(() => {
+    if (addressData.length) {
+      const ret = addressData.reduce((...args) => {
+        console.log(...args)
+        args[0][args[2]] = false
+        return args[0]
+      }, {})
+      setCheckboxStatusObj({...ret})
+    }
+  }, [addressData])
+
+  useEffect(() => {
+    const ret = addressData.reduce((...args) => {
+      args[0][args[2]] = allCheckboxStatus
+      return args[0]
+    }, {})
+    setCheckboxStatusObj({...ret})
+  }, [addressData, allCheckboxStatus])
+
+  return addressData.length ? (
     <>
       <div>
         <div>{t('selectAuthorizedAccounts')}</div>
         <QuestionCircleOutlined onClick={() => window && window.open('')} />
-        <Checkbox>{t('selectAll')}</Checkbox>
+        <Checkbox
+          checked={allCheckboxStatus}
+          onChange={() => setAllCheckboxStatus(!allCheckboxStatus)}
+        >
+          {t('selectAll')}
+        </Checkbox>
       </div>
       <div>
         {accountGroups.map(({nickname, account}, groupIndex) => (
@@ -47,17 +73,50 @@ function ConnectSitesList({networkId}) {
                 key={accountIndex}
                 className="flex p-3 rounded cursor-pointer"
               >
-                {/* <img className="w-5 h-5 mr-2" src="" alt="avatar" /> */}
+                <img className="w-5 h-5 mr-2" src="" alt="avatar" />
                 <div className="flex-1">
                   <p className="text-xs text-gray-40">{nickname}</p>
                   <p>
-                    {getAddress({
-                      groupIndex,
-                      accountIndex,
-                      accountGroups,
-                      addressData,
-                    })}
+                    {addressData[
+                      getBatchIndex({
+                        groupIndex,
+                        accountIndex,
+                        accountGroups,
+                      })
+                    ]?.base32 ||
+                      addressData[
+                        getBatchIndex({
+                          groupIndex,
+                          accountIndex,
+                          accountGroups,
+                        })
+                      ]?.hex}
                   </p>
+                </div>
+                <div>
+                  {currentAccount.eid && currentAccount.eid === eid ? (
+                    <img src="images/location.svg" alt="current address" />
+                  ) : null}
+                  <Checkbox
+                    onChange={() =>
+                      onSelectSingleAccount(
+                        getBatchIndex({
+                          groupIndex,
+                          accountIndex,
+                          accountGroups,
+                        }),
+                      )
+                    }
+                    checked={
+                      checkboxStatusObj[
+                        getBatchIndex({
+                          groupIndex,
+                          accountIndex,
+                          accountGroups,
+                        })
+                      ]
+                    }
+                  />
                 </div>
               </div>
             ))}
@@ -65,7 +124,7 @@ function ConnectSitesList({networkId}) {
         ))}
       </div>
     </>
-  )
+  ) : null
 }
 ConnectSitesList.propTypes = {
   networkId: PropTypes.number,
@@ -90,6 +149,7 @@ function ConnectSite() {
     setSearchIcon(currentNetworkData?.icon || '')
     setSearchContent(currentNetworkData?.name || '')
     setNetworkId(currentNetworkData?.eid || null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Boolean(currentNetworkData)])
 
   return currentNetworkData ? (
