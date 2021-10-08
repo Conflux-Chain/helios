@@ -25,7 +25,7 @@ const SlideCard = ({
   return (
     <div>
       <div
-        className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${animateStyle} h-125`}
+        className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${animateStyle} h-125 bg-gray-circles bg-no-repeat bg-contain`}
         ref={ref}
       >
         <div className="ml-3 pb-1">

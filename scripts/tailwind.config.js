@@ -135,6 +135,7 @@ module.exports = {
       backgroundImage: {
         'token-background':
           'linear-gradient(19.03deg, #FFFFFF 20.24%, rgba(255, 255, 255, 0) 86.89%)',
+        'gray-circles': "url('/images/gray-circles-bg.svg')",
       },
     },
   },
