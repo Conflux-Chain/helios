@@ -2,10 +2,10 @@ import React from 'react'
 import ReactNotification from 'rc-notification'
 import {
   LoadingOutlined,
-  ErrorTwoTone,
-  InfoTwoTone,
-  SuccessTwoTone,
-  WarningTwoTone,
+  CloseCircleFilled,
+  InfoCircleFilled,
+  CheckCircleFilled,
+  ExclamationCircleFilled,
 } from '@fluent-wallet/component-icons'
 
 const Notification = ReactNotification.default
@@ -80,21 +80,27 @@ function getRCNotificationInstance(args, callback) {
 
 const typeToIcon = {
   success: (
-    <SuccessTwoTone
+    <CheckCircleFilled
       data-testid="success-filled-wrapper"
-      className="w-5 h-5 mr-2"
+      className="w-5 h-5 mr-2 text-success"
     />
   ),
   info: (
-    <InfoTwoTone data-testid="info-filled-wrapper" className="w-5 h-5 mr-2" />
+    <InfoCircleFilled
+      data-testid="info-filled-wrapper"
+      className="w-5 h-5 mr-2 text-info"
+    />
   ),
   error: (
-    <ErrorTwoTone data-testid="error-filled-wrapper" className="w-5 h-5 mr-2" />
+    <CloseCircleFilled
+      data-testid="error-filled-wrapper"
+      className="w-5 h-5 mr-2 text-error"
+    />
   ),
   warning: (
-    <WarningTwoTone
+    <ExclamationCircleFilled
       data-testid="warning-filled-wrapper"
-      className="w-5 h-5 mr-2"
+      className="w-5 h-5 mr-2 text-warning"
     />
   ),
 }

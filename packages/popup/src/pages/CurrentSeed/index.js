@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
-import {SelectedTowTone} from '@fluent-wallet/component-icons'
+import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {CompWithLabel, TitleNav} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
@@ -34,7 +34,9 @@ function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
             : t('manyAccounts', {accountNum: length})}
         </span>
       </div>
-      {idx === selectedGroupIdx && <SelectedTowTone className="w-5 h-5" />}
+      {idx === selectedGroupIdx && (
+        <CheckCircleFilled className="w-5 h-5 text-success" />
+      )}
     </div>
   )
 }

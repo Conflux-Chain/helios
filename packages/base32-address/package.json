@@ -2,10 +2,12 @@
   "name": "@fluent-wallet/base32-address",
   "type": "module",
   "main": "index.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "dependencies": {
     "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/utils": "workspace:packages/utils",
+    "@thi.ng/cache": "1.0.94",
+    "@thi.ng/memoize": "2.1.21",
     "js-conflux-sdk": "1.7.0"
   }
 }

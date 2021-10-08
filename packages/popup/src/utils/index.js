@@ -25,10 +25,3 @@ export function shuffle(arr) {
 export function validatePasswordReg(value) {
   return PASSWORD_REG_EXP.test(value)
 }
-
-export function getBatchIndex({groupIndex, accountIndex, accountGroups}) {
-  if (groupIndex == 0) {
-    return accountIndex
-  }
-  return accountGroups[groupIndex - 1].account.length + accountIndex
-}

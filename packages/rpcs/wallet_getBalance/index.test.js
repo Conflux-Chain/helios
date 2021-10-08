@@ -10,6 +10,7 @@ describe('@fluent-wallet/wallet_getBalance', function () {
           cfx_getBalance: jest.fn(a => a),
           eth_getBalance: jest.fn(a => a),
         },
+        Err: {InvalidParams: new Error()},
         params: [],
         network: {type: 'cfx', netId: 1029},
       }

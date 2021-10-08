@@ -5,7 +5,8 @@ import {ROUTES, ANIMATE_DURING_TIME, RPC_METHODS} from '../constants'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber} from '@fluent-wallet/checks'
 
-const {GET_ACCOUNT_GROUP, GET_ACCOUNT_ADDRESS_BY_NETWORK} = RPC_METHODS
+const {GET_ACCOUNT_GROUP, GET_ACCOUNT_ADDRESS_BY_NETWORK, GET_BALANCE} =
+  RPC_METHODS
 const {HOME} = ROUTES
 
 export const useCreatedPasswordGuard = () => {
@@ -71,7 +72,51 @@ const getAddressParams = (accountGroups, networkId) => {
   return addressParams
 }
 
-export const useAccountGroupAddress = networkId => {
+const getAddressDataWithEid = (addressParams, addressData) => {
+  if (addressData.length && addressParams.length) {
+    return addressParams.reduce((acc, cur, idx) => {
+      acc[cur['accountId']] = addressData[idx]
+      return acc
+    }, {})
+  }
+
+  return null
+}
+
+const formatAccountGroupData = ({
+  accountGroups,
+  balanceData,
+  addressDataWithEid,
+  token = '0x0',
+  returnBalance = true,
+}) => {
+  let ret = []
+  if (
+    accountGroups.length &&
+    addressDataWithEid &&
+    ((returnBalance && Object.keys(balanceData).length) || !returnBalance)
+  ) {
+    accountGroups.forEach(({nickname, account}, groupIndex) => {
+      ret.push({nickname, account: []})
+      account.forEach(({nickname, eid}) => {
+        const address =
+          addressDataWithEid[eid]?.base32 || addressDataWithEid[eid]?.hex || ''
+        const accountData = {nickname, eid, address}
+        if (returnBalance) {
+          accountData['balance'] = window
+            .BigInt(balanceData[address][token])
+            .toString()
+        }
+        ret[groupIndex]['account'].push({
+          ...accountData,
+        })
+      })
+    })
+  }
+  return ret
+}
+
+export const useAccountGroupBatchBalance = networkId => {
   const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined)
   const addressParams = getAddressParams(accountGroups, networkId)
 
@@ -84,8 +129,44 @@ export const useAccountGroupAddress = networkId => {
     {fallbackData: []},
   )
 
+  const {data: balanceData} = useRPC(
+    addressData.length ? [GET_BALANCE, networkId] : null,
+    {
+      users: addressData.map(data => data.base32 || data.hex),
+      tokens: ['0x0'],
+    },
+    {fallbackData: {}},
+  )
+
+  const addressDataWithEid = getAddressDataWithEid(addressParams, addressData)
+
+  return formatAccountGroupData({
+    accountGroups,
+    balanceData,
+    addressDataWithEid,
+  })
+}
+
+export const useAccountGroupAddress = networkId => {
+  const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined)
+  const addressParams = getAddressParams(accountGroups, networkId)
+
+  const {data: addressData} = useRPC(
+    addressParams.length && isNumber(networkId)
+      ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId]
+      : null,
+    addressParams,
+    {fallbackData: []},
+  )
+
+  const addressDataWithEid = getAddressDataWithEid(addressParams, addressData)
+
   return {
-    accountGroups: accountGroups || [],
-    addressData: addressData,
+    addressData: addressDataWithEid,
+    accountData: formatAccountGroupData({
+      accountGroups,
+      addressDataWithEid,
+      returnBalance: false,
+    }),
   }
 }

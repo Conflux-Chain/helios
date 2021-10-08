@@ -2876,6 +2876,8 @@ __metadata:
   dependencies:
     "@fluent-wallet/account": "workspace:packages/account"
     "@fluent-wallet/utils": "workspace:packages/utils"
+    "@thi.ng/cache": 1.0.94
+    "@thi.ng/memoize": 2.1.21
     js-conflux-sdk: 1.7.0
   languageName: unknown
   linkType: soft
@@ -2895,6 +2897,14 @@ __metadata:
   resolution: "@fluent-wallet/cfx_accounts@workspace:packages/rpcs/cfx_accounts"
   dependencies:
     "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_call@workspace:packages/rpcs/cfx_call":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_call@workspace:packages/rpcs/cfx_call"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
@@ -3197,6 +3207,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/contract-abis@workspace:packages/contract-abis":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/contract-abis@workspace:packages/contract-abis"
+  dependencies:
+    "@ethersproject/abi": 5.4.1
+    "@fluent-wallet/compose": "workspace:packages/compose"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/contract-method-name@workspace:packages/contract-method-name":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/contract-method-name@workspace:packages/contract-method-name"
@@ -3310,6 +3329,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_block-number@workspace:packages/rpcs/eth_blockNumber"
   dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_call@workspace:packages/rpcs/eth_call":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_call@workspace:packages/rpcs/eth_call"
+  dependencies:
+    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -3545,6 +3573,17 @@ __metadata:
     cip-23: 0.1.2
     eth-sig-util: 3.0.1
     js-conflux-sdk: 1.7.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/single-call-balance-tracker@workspace:packages/single-call-balance-tracker":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/single-call-balance-tracker@workspace:packages/single-call-balance-tracker"
+  dependencies:
+    "@ethersproject/abi": 5.4.1
+    "@ethersproject/bytes": 5.4.0
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/compose": "workspace:packages/compose"
   languageName: unknown
   linkType: soft
 
@@ -3848,7 +3887,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-balance@workspace:packages/rpcs/wallet_getBalance"
   dependencies:
+    "@ethersproject/bytes": 5.4.0
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
+    "@fluent-wallet/single-call-balance-tracker": "workspace:packages/single-call-balance-tracker"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -4986,6 +5029,15 @@ __metadata:
     webpack: ^5.34.0
     webpack-manifest-plugin: ^3.1.1
   checksum: 7bb3fc0f05abffed6645f99f96e750974602ffaefac822cc5955867aecc310e57db5268c06b1666ccb7da3cce3b676a5e5958beacfe4ea591eb5a144f0637985
+  languageName: node
+  linkType: hard
+
+"@solidity-parser/parser@npm:^0.13.2":
+  version: 0.13.2
+  resolution: "@solidity-parser/parser@npm:0.13.2"
+  dependencies:
+    antlr4ts: ^0.5.0-alpha.4
+  checksum: bfdd8ec7f7b88f3cc75e333e03202cde5e5dacbec7f00612f22dec5e22b0995713637872ce202064d182bae56a274fcb2ca8715ad5482af5e8b38728a0216cf7
   languageName: node
   linkType: hard
 
@@ -6836,6 +6888,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/memoize@npm:2.1.21":
+  version: 2.1.21
+  resolution: "@thi.ng/memoize@npm:2.1.21"
+  dependencies:
+    "@thi.ng/api": ^7.2.0
+  checksum: daf567c0f7abad7bd43ae1f31aff6e71a67b7d5467147d259a9665ae2d4b85cc4038fa786eaae8d7da7f03d0b23e9c8c338697d8e58843ce8e9bb6868497225c
+  languageName: node
+  linkType: hard
+
 "@thi.ng/paths@npm:^4.2.14":
   version: 4.2.14
   resolution: "@thi.ng/paths@npm:4.2.14"
@@ -7436,6 +7497,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: d5af52623dd863e5a9f64eb72979f19c21e03012e25ee93adc93f664ed7976e81b654128dc653b225ad5ba2aaae24e0febe37face272bb051d6289e23ed7177d
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^17.0.0":
+  version: 17.0.27
+  resolution: "@types/react@npm:17.0.27"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 3a1147d963c16dc9bbea5afb20c4be94f2389cf4eca4c5fbe9b02f3406bd9957602c0459ea017c95f8c3d523221f572e8bd842f94654835776d4c2923357f9dc
   languageName: node
   linkType: hard
 
@@ -8457,6 +8529,15 @@ __metadata:
   bin:
     ansi-to-html: bin/ansi-to-html
   checksum: c899362a29b92c8ae075b72168b826f7c233875b475719304942f80695e0ce4a6812845021192da5fb0ac80b10209b4fae5aede42620a1b1b3d3b30f3ef77a86
+  languageName: node
+  linkType: hard
+
+"antlr4ts@npm:^0.5.0-alpha.4":
+  version: 0.5.0-dev
+  resolution: "antlr4ts@npm:0.5.0-dev"
+  dependencies:
+    source-map-support: ^0.5.16
+  checksum: 640dae2229124372b0329315e9614ae983bb80b1af237d8c0b3e90a2d85fb534e851c51d65d1897c92b36d27851d041ad8d95aab44af19cf7355b3ad11a3ddbf
   languageName: node
   linkType: hard
 
@@ -12625,7 +12706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dequal@npm:2.0.2":
+"dequal@npm:2.0.2, dequal@npm:^2.0.2":
   version: 2.0.2
   resolution: "dequal@npm:2.0.2"
   checksum: 86c7a2c59f7b0797ed397c74b5fcdb744e48fc19440b70ad6ac59f57550a96b0faef3f1cfd5760ec5e6d3f7cb101f634f1f80db4e727b1dc8389bf62d977c0a0
@@ -13193,7 +13274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emoji-regex@npm:^9.0.0":
+"emoji-regex@npm:^9.0.0, emoji-regex@npm:^9.2.2":
   version: 9.2.2
   resolution: "emoji-regex@npm:9.2.2"
   checksum: 8487182da74aabd810ac6d6f1994111dfc0e331b01271ae01ec1eb0ad7b5ecc2bbbbd2f053c05cb55a1ac30449527d819bbfbf0e3de1023db308cbcb47f86601
@@ -14221,18 +14302,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-account@npm:^2.0.3":
-  version: 2.0.5
-  resolution: "ethereumjs-account@npm:2.0.5"
-  dependencies:
-    ethereumjs-util: ^5.0.0
-    rlp: ^2.0.0
-    safe-buffer: ^5.1.1
-  checksum: 2e4546b8b0213168eebd3a5296da904b6f55470e39b4c742d252748927d2b268f8d6374b0178c1d5b7188646f97dae74a7ac1c7485fe96ea557c152b52223f18
-  languageName: node
-  linkType: hard
-
-"ethereumjs-block@npm:2.2.2, ethereumjs-block@npm:^2.2.2, ethereumjs-block@npm:~2.2.0, ethereumjs-block@npm:~2.2.2":
+"ethereumjs-block@npm:2.2.2, ethereumjs-block@npm:^2.2.2, ethereumjs-block@npm:~2.2.2":
   version: 2.2.2
   resolution: "ethereumjs-block@npm:2.2.2"
   dependencies:
@@ -14283,7 +14353,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-common@npm:^1.1.0, ethereumjs-common@npm:^1.3.2, ethereumjs-common@npm:^1.5.0":
+"ethereumjs-common@npm:^1.3.2, ethereumjs-common@npm:^1.5.0":
   version: 1.5.2
   resolution: "ethereumjs-common@npm:1.5.2"
   checksum: 3fc64faced268e0c61da50c5db76d18cfd44325d5706792f32ac8c85c0e800d52db284f042c3bd0623daf59b946176ef7dbea476d1b0252492137fa4549a3349
@@ -14387,25 +14457,6 @@ __metadata:
     safe-buffer: ^5.1.1
     util.promisify: ^1.0.0
   checksum: ca73c406d55baefacafbdd8cefce80740098e5834096042e93285dc386ee670b4fed2f7846b78e3078fdf41231d04b3f1c40e435e639d072e0529ccb560b797b
-  languageName: node
-  linkType: hard
-
-"ethereumjs-vm@npm:^2.1.0, ethereumjs-vm@npm:^2.3.4, ethereumjs-vm@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "ethereumjs-vm@npm:2.6.0"
-  dependencies:
-    async: ^2.1.2
-    async-eventemitter: ^0.2.2
-    ethereumjs-account: ^2.0.3
-    ethereumjs-block: ~2.2.0
-    ethereumjs-common: ^1.1.0
-    ethereumjs-util: ^6.0.0
-    fake-merkle-patricia-tree: ^1.0.1
-    functional-red-black-tree: ^1.0.1
-    merkle-patricia-tree: ^2.3.2
-    rustbn.js: ~0.2.0
-    safe-buffer: ^5.1.1
-  checksum: 3b3098b2ac3d5335797e4d73fceb76d1b776e453abb5fa4d1cd94f6391f493e95e3c89a8ee602558bc2a3b36b89977e66473de73faa87c8540b1954aa7b8c3fd
   languageName: node
   linkType: hard
 
@@ -16571,6 +16622,7 @@ fsevents@~2.1.2:
   resolution: "helios-background@workspace:packages/background"
   dependencies:
     "@fluent-wallet/cfx_accounts": "workspace:packages/rpcs/cfx_accounts"
+    "@fluent-wallet/cfx_call": "workspace:packages/rpcs/cfx_call"
     "@fluent-wallet/cfx_chain-id": "workspace:packages/rpcs/cfx_chainId"
     "@fluent-wallet/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber"
     "@fluent-wallet/cfx_estimate-gas-and-collateral": "workspace:packages/rpcs/cfx_estimateGasAndCollateral"
@@ -16587,6 +16639,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/db": "workspace:packages/db"
     "@fluent-wallet/eth_accounts": "workspace:packages/rpcs/eth_accounts"
     "@fluent-wallet/eth_block-number": "workspace:packages/rpcs/eth_blockNumber"
+    "@fluent-wallet/eth_call": "workspace:packages/rpcs/eth_call"
     "@fluent-wallet/eth_chain-id": "workspace:packages/rpcs/eth_chainId"
     "@fluent-wallet/eth_estimate-gas": "workspace:packages/rpcs/eth_estimateGas"
     "@fluent-wallet/eth_gas-price": "workspace:packages/rpcs/eth_gasPrice"
@@ -16692,6 +16745,7 @@ fsevents@~2.1.2:
     react-router-dom: 5.2.1
     react-use: 17.2.4
     swr: 1.0.0
+    use-deep-compare-effect: 1.8.0
     webextension-polyfill: ^0.8.0
     zustand: ^3.5.10
   languageName: unknown
@@ -16752,6 +16806,7 @@ fsevents@~2.1.2:
     npm-run-all: ^4.1.5
     postcss: ^8.3.6
     prettier: ^2.3.2
+    prettier-plugin-solidity: 1.0.0-beta.18
     ramda: ^0.27.1
     react: ^16.13.0
     react-dom: ^16.13.0
@@ -23638,6 +23693,22 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"prettier-plugin-solidity@npm:1.0.0-beta.18":
+  version: 1.0.0-beta.18
+  resolution: "prettier-plugin-solidity@npm:1.0.0-beta.18"
+  dependencies:
+    "@solidity-parser/parser": ^0.13.2
+    emoji-regex: ^9.2.2
+    escape-string-regexp: ^4.0.0
+    semver: ^7.3.5
+    solidity-comments-extractor: ^0.0.7
+    string-width: ^4.2.2
+  peerDependencies:
+    prettier: ^2.3.0
+  checksum: 9082f949275b5b4b8e78cb70b384e759b29f6b7ffaf35ec42db400ed0b4ce93c1453cffcb98c8d071dd8578a3aed2420000674c8aedaf8bb486b3bbc9d7d9457
+  languageName: node
+  linkType: hard
+
 "prettier@npm:^2.3.2":
   version: 2.3.2
   resolution: "prettier@npm:2.3.2"
@@ -26732,6 +26803,13 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
+"solidity-comments-extractor@npm:^0.0.7":
+  version: 0.0.7
+  resolution: "solidity-comments-extractor@npm:0.0.7"
+  checksum: a5cedf2310709969bc1783a6c336171478536f2f0ea96ad88437e0ef1e8844c0b37dd75591b0a824ec9c30640ea7e31b5f03128e871e6235bef3426617ce96c4
+  languageName: node
+  linkType: hard
+
 "sort-css-media-queries@npm:1.5.4":
   version: 1.5.4
   resolution: "sort-css-media-queries@npm:1.5.4"
@@ -29071,6 +29149,19 @@ resolve@^2.0.0-next.3:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0
   checksum: b438c1577eafb26dd8aff8d7ffbeae10b544172fc4c4f38733343f70c04da6f14a748a274cb76b70b829604e1382be56fb37a96f3c62b5aeec50657e23e61097
+  languageName: node
+  linkType: hard
+
+"use-deep-compare-effect@npm:1.8.0":
+  version: 1.8.0
+  resolution: "use-deep-compare-effect@npm:1.8.0"
+  dependencies:
+    "@babel/runtime": ^7.12.5
+    "@types/react": ^17.0.0
+    dequal: ^2.0.2
+  peerDependencies:
+    react: ">=16.13"
+  checksum: 35e2079f879e4ff09ca0c1a1001faca27ea19d0d48795012676dd231e1f48a4352869f032e7e06ee6df2feca5dc9b12e0c2f39fa7d29080a3a15b3d46d3a5c06
   languageName: node
   linkType: hard
 

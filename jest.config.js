@@ -17,7 +17,7 @@ module.exports = {
 
   testEnvironment: './scripts/jest-test-jsdom-env.js',
   // The glob patterns Jest uses to detect test files
-  testMatch: ['**/*.test.[jt]s?(x)'],
+  testMatch: ['<rootDir>/packages/**/*.test.[jt]s?(x)'],
 
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
@@ -60,6 +60,7 @@ module.exports = {
     '/packages/db/.shadow-cljs/',
     '/packages/spec/src/spec.js',
     '/packages/spec/.shadow-cljs/',
+    '/contracts/',
   ],
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -100,6 +101,7 @@ module.exports = {
     '/packages/ui/components/Tooltip/Placements.js',
     '/packages/ui/icons/*',
     '/packages/jest-helper/',
+    '/contracts/',
   ],
 
   // The directory where Jest should output its coverage files

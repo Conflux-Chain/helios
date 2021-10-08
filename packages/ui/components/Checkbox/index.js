@@ -1,9 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  CheckSquareOutlined,
-  SquareOutlined,
-} from '@fluent-wallet/component-icons'
+import {CheckSquareFilled, SquareOutlined} from '@fluent-wallet/component-icons'
 
 function Checkbox({checked, onChange, children, className}) {
   return (
@@ -14,8 +11,8 @@ function Checkbox({checked, onChange, children, className}) {
       className={`flex items-center cursor-pointer ${className}`}
     >
       {checked && (
-        <CheckSquareOutlined
-          className="w-4 h-4 mr-2"
+        <CheckSquareFilled
+          className="w-4 h-4 mr-2 text-primary"
           data-testid="checked-svg"
         />
       )}

@@ -1,4 +1,4 @@
-function SuccessTwoTone(props) {
+function CheckCircleFilled(props) {
   return (
     <svg
       width={24}
@@ -8,7 +8,7 @@ function SuccessTwoTone(props) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <circle cx={12} cy={12} r={10} fill="#6FC5B1" />
+      <circle cx={12} cy={12} r={10} fill="currentColor" />
       <path
         d="M15.5 8.5L11.432 14 9 12.125"
         stroke="#fff"
@@ -20,4 +20,4 @@ function SuccessTwoTone(props) {
   )
 }
 
-export default SuccessTwoTone
+export default CheckCircleFilled

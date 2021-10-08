@@ -1,10 +1,16 @@
 import {randomHexAddress, randomAddressType} from '@fluent-wallet/account'
 import {addHexPrefix, stripHexPrefix} from '@fluent-wallet/utils'
 import {address} from 'js-conflux-sdk'
+import {memoize, memoize1} from '@thi.ng/memoize'
+import {LRUCache} from '@thi.ng/cache'
 
-export const encode = (hexAddress, netId, verbose) =>
-  address.encodeCfxAddress(addHexPrefix(hexAddress), netId, verbose)
-export const decode = a => {
+export const encode = memoize(
+  (hexAddress, netId, verbose) =>
+    address.encodeCfxAddress(addHexPrefix(hexAddress), netId, verbose),
+  new LRUCache(null, {maxlen: 200}),
+)
+
+const decodeRaw = a => {
   try {
     const rst = address.decodeCfxAddress(a)
     rst.hexAddress = addHexPrefix(rst.hexAddress.toString('hex'))
@@ -19,6 +25,8 @@ export const decode = a => {
     throw err
   }
 }
+
+export const decode = memoize1(decodeRaw, new LRUCache(null, {maxlen: 200}))
 
 export function validateBase32Address(address, ...args) {
   let netId, type, decoded

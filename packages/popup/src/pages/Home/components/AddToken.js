@@ -45,7 +45,7 @@ function AddToken({onClose, onOpen}) {
                 maxBalanceSize="small"
                 rightIcon={
                   <WrapIcon size="w-5 h-5">
-                    <SelectedOutlined className="w-3 h-3 text-primary" />
+                    <SelectedOutlined className="w-3 h-3 text-gray-40" />
                   </WrapIcon>
                 }
               />

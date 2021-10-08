@@ -11,6 +11,24 @@ const DEFAULT_PORT = 12537
 let cfx
 
 const sendCFX = async ({to, balance} = {}, url) => {
+  const txParams = {
+    from: GENESIS_ACCOUNT.address,
+    value: balance || 0,
+    to: format.address(to.replace(/^0x./, '0x1'), NETWORK_ID),
+    chainId: parseInt(CHAINID, 16),
+  }
+
+  return await sendTx({tx: txParams, url})
+}
+
+const cfxCall = async opt => sendTx({...opt, cfx_call: true})
+
+const sendTx = async ({
+  tx = {},
+  url = `http://localhost:${DEFAULT_PORT}`,
+  pk = GENESIS_PRI_KEY,
+  cfx_call,
+} = {}) => {
   cfx =
     cfx ||
     new Conflux({
@@ -20,24 +38,21 @@ const sendCFX = async ({to, balance} = {}, url) => {
     })
   GENESIS_ACCOUNT = GENESIS_ACCOUNT || cfx.wallet.addPrivateKey(GENESIS_PRI_KEY)
 
-  const txParams = {
-    from: GENESIS_ACCOUNT.address,
-    value: balance || 0,
-    to: format.address(to.replace(/^0x./, '0x1'), NETWORK_ID),
-    chainId: parseInt(CHAINID, 16),
+  if (!tx.from && pk === GENESIS_PRI_KEY) tx.from = GENESIS_ACCOUNT.address
+
+  if (cfx_call) {
+    return await cfx.call(tx)
   }
 
   const transactionResult = await cfx
-    .sendTransaction(txParams)
+    .sendTransaction(tx)
     .confirmed({delta: 100})
-    .catch(err => {
-      throw err
-    })
-
   return transactionResult
 }
 
 module.exports = {
+  cfxCall,
+  sendTx,
   sendCFX,
   CFXNODE,
   GENESIS_PRI_KEY,

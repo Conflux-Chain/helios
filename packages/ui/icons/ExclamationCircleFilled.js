@@ -1,4 +1,4 @@
-function InfoTwoTone(props) {
+function ExclamationCircleFilled(props) {
   return (
     <svg
       width={24}
@@ -8,9 +8,12 @@ function InfoTwoTone(props) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <circle cx={12} cy={12} r={10} fill="#5F78FB" />
       <path
-        d="M12 15.333V12M12 8.666h.008"
+        d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
+        fill="currentColor"
+      />
+      <path
+        d="M12 8v4M12 16h-.01"
         stroke="#fff"
         strokeWidth={2}
         strokeLinecap="round"
@@ -20,4 +23,4 @@ function InfoTwoTone(props) {
   )
 }
 
-export default InfoTwoTone
+export default ExclamationCircleFilled
