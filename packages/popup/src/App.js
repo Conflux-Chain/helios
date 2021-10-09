@@ -22,6 +22,7 @@ const {
   IMPORT_PRIVATE_KEY,
   ERROR,
   CONNECT_SITE,
+  CONFIRM_ADD_SUGGESTED_TOKEN,
 } = ROUTES
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
@@ -36,6 +37,9 @@ const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
 const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 const ErrorPage = lazy(() => import('./pages/Error'))
 const ConnectSite = lazy(() => import('./pages/ConnectSite'))
+const ConfirmAddSuggestedToken = lazy(() =>
+  import('./pages/ConfirmAddSuggestedToken'),
+)
 
 function App() {
   const {data: lockedData, error: lockedError} = useRPC([
@@ -103,6 +107,11 @@ function App() {
               exact
               path={CONNECT_SITE}
               component={ConnectSite}
+            />
+            <Route
+              exact
+              path={CONFIRM_ADD_SUGGESTED_TOKEN}
+              component={ConfirmAddSuggestedToken}
             />
             <Route path="*" render={() => <Redirect to={ERROR} />} />
           </Switch>

@@ -14,14 +14,9 @@ import Modal from '@fluent-wallet/component-modal'
 import {RPC_METHODS} from '../../constants'
 import {NetworkContent} from '../../components'
 import {useAccountGroupAddress} from '../../hooks'
+import {formatIntoShortAddress} from '../../utils'
 const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
 
-const formatAddress = address => {
-  if (typeof address !== 'string' || address.length <= 11) {
-    return address
-  }
-  return `${address.substr(0, 7)}...${address.substring(address.length - 4)}`
-}
 function ConnectSitesList({networkId}) {
   const {t} = useTranslation()
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
@@ -93,7 +88,7 @@ function ConnectSitesList({networkId}) {
                   <div className="flex-1">
                     <p className="text-xs text-gray-40">{nickname}</p>
                     <p className="text-sm text-gray-80">
-                      {formatAddress(address)}
+                      {formatIntoShortAddress(address)}
                     </p>
                   </div>
                   <div className="flex">
@@ -147,13 +142,8 @@ function ConnectSite() {
   return currentNetworkData ? (
     <div className="flex flex-col h-full justify-between">
       <div>
-        <header>
-          <img
-            src="images/blue-circles-bg.svg"
-            alt="dapp-bg"
-            className="absolute top-0 z-0 h-32 w-full left-0"
-          />
-          <div className="z-10 relative">
+        <header className="bg-blue-circles bg-no-repeat">
+          <div>
             <p className="text-sm text-gray-100 text-center h-13 flex justify-center items-center">
               {t('connectSite')}
             </p>

@@ -25,3 +25,10 @@ export function shuffle(arr) {
 export function validatePasswordReg(value) {
   return PASSWORD_REG_EXP.test(value)
 }
+
+export function formatIntoShortAddress(address) {
+  if (typeof address !== 'string' || address.length <= 11) {
+    return address
+  }
+  return `${address.substr(0, 7)}...${address.substring(address.length - 4)}`
+}

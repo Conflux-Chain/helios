@@ -96,6 +96,9 @@ const en = {
     selectAll: 'All',
     connect: 'Connect',
     chooseNetwork: 'Choose Network',
+    // confirm add suggested token
+    addSuggestedToken: 'Add suggested token',
+    confirmAddSuggestedToken: 'Would you like to add this token?',
   },
 }
 
