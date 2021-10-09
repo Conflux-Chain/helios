@@ -87,39 +87,41 @@ export const permissions = {
   external: ['popup', 'inpage'],
 }
 
-async function fallbackBalanceTracker(
+const fallbackBalanceTracker = async (
   callMethod,
   {
     rpcs: {cfx_getBalance, eth_getBalance},
     params: {users, tokens},
     network: {type},
   },
-) {
+) => {
   const getBalanceMethod = type === 'cfx' ? cfx_getBalance : eth_getBalance
   const rst = {}
-  const promises = tokens.reduce((promises, t) => {
-    const call =
-      t === '0x0'
-        ? addr => getBalanceMethod([addr])
-        : tokenContract.balanceOf(d => callMethod([d]), t)
-    return promises.concat(
-      users.map(u => {
-        return call(type === 'cfx' && t !== '0x0' ? decode(u).hexAddress : u)
-          .then(res => {
-            if (Array.isArray(res)) res = res[0]
-            if (!rst[u]) rst[u] = {}
-            rst[u][t] = hexValue(res?.toHexString?.() || res)
-          })
-          .catch(() => {
-            if (!rst[u]) rst[u] = {}
-            rst[u][t] = '0x0'
-          })
+  const promises = users.reduce((acc, u) => {
+    if (!rst[u]) rst[u] = {}
+    return acc.concat(
+      tokens.map(async t => {
+        let res = '0x0'
+
+        const call =
+          t === '0x0'
+            ? addr => getBalanceMethod([addr])
+            : tokenContract.balanceOf(d => callMethod([d]), t)
+
+        try {
+          res = await call(
+            type === 'cfx' && t !== '0x0' ? decode(u).hexAddress : u,
+          )
+          if (Array.isArray(res)) res = res[0]
+          res = hexValue(res?.toHexString?.() || res)
+        } catch (err) {} // eslint-disable-line no-empty
+        rst[u][t] = res
+        return res
       }),
     )
   }, [])
 
   await Promise.all(promises)
-
   return rst
 }
 
@@ -155,14 +157,18 @@ export const main = async arg => {
   )
     throw InvalidParams('Invalid address format for current network')
 
+  let rst
+
   if (!balanceChecker) {
-    return await fallbackBalanceTracker(callMethod, arg)
+    rst = await fallbackBalanceTracker(callMethod, arg)
+    return rst
   }
 
-  let rst
   try {
     rst = await balances(d => callMethod([d]), balanceChecker, users, tokens)
-  } catch (err) {
+  } catch (err) {} // eslint-disable-line no-empty
+
+  if (rst === undefined) {
     rst = await fallbackBalanceTracker(callMethod, arg)
   }
 

@@ -6,20 +6,26 @@ let params
 describe('@fluent-wallet/discover-accounts', function () {
   describe('hasTx', function () {
     test('logic', async () => {
-      params = {getTxCount: jest.fn(() => ({result: '0x1'})), address: 'foo'}
+      params = {getTxCount: jest.fn(() => '0x1'), address: 'foo'}
       expect(await hasTx(params)).toBe(true)
 
-      params = {getTxCount: jest.fn(() => ({result: '0x0'})), address: 'foo'}
+      params = {getTxCount: jest.fn(() => '0x0'), address: 'foo'}
       expect(await hasTx(params)).toBe(false)
     })
   })
 
   describe('hasBalance', function () {
     test('logic', async () => {
-      params = {getBalance: jest.fn(() => ({result: '0x1'})), address: 'foo'}
+      params = {
+        getBalance: jest.fn(() => ({foo: {'0x0': '0x1'}})),
+        address: 'foo',
+      }
       expect(await hasBalance(params)).toBe(true)
 
-      params = {getBalance: jest.fn(() => ({result: '0x0'})), address: 'foo'}
+      params = {
+        getBalance: jest.fn(() => ({foo: {'0x0': '0x0'}})),
+        address: 'foo',
+      }
       expect(await hasBalance(params)).toBe(false)
     })
   })

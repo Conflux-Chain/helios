@@ -52,21 +52,21 @@ function initNetwork(d) {
       eid: -3,
       tokenList: {
         name: 'Fluent Default List',
-        url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list@master/cfx.fluent.json',
+        url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list/cfx.fluent.json',
       },
     },
     {
       eid: -4,
       tokenList: {
         name: 'Uniswap Default List',
-        url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list@master/eth.uniswap.json',
+        url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list/eth.uniswap.json',
       },
     },
     {
       eid: -5,
       tokenList: {
         name: 'PancakeSwap Default List',
-        url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list@master/bsc.pancake.json',
+        url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list/bsc.pancake.json',
       },
     },
     {

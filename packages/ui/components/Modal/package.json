@@ -6,7 +6,7 @@
   "main": "index.js",
   "dependencies": {
     "@fluent-wallet/component-icons": "workspace:packages/ui/icons",
-    "react-use": "17.2.4"
+    "react-use": "17.3.1"
   },
   "peerDependencies": {
     "react": "^17",

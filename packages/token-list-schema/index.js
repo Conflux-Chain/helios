@@ -7,16 +7,14 @@ export default function ({
   boolean,
   int,
   nil,
-  chainId,
   ethHexAddress,
   base32ContractAddress,
   posInt,
-  uri,
+  url,
   repeat,
   mapOf,
-  sequential,
-  inst,
-  set,
+  jsinst,
+  jssetp,
   integer,
 }) {
   const VersionSchema = [
@@ -55,7 +53,7 @@ export default function ({
   const TokenInfoSchema = [
     map,
     {closed: true},
-    ['chainId', chainId],
+    ['chainId', int],
     ['address', [or, ethHexAddress, base32ContractAddress]],
     ['decimals', [posInt, {max: 255}]],
     [
@@ -68,13 +66,9 @@ export default function ({
     ],
     [
       'symbol',
-      [
-        and,
-        [regexp, '^[a-zA-Z0-9+\\-%\\/\\$]+$'],
-        [stringp, {min: 1, max: 20}],
-      ],
+      [and, [regexp, /^[a-zA-Z0-9+\-%/$]+$/], [stringp, {min: 1, max: 20}]],
     ],
-    ['logoURI', {optional: true}, uri],
+    ['logoURI', {optional: true}, url],
     [
       'tags',
       {optional: true},
@@ -84,9 +78,10 @@ export default function ({
       'extensions',
       {optional: true},
       [
-        and,
-        [mapOf, ExtensionIdentifierSchema, ExtensionValueSchema],
-        [sequential, {min: 0, max: 20}],
+        mapOf,
+        {min: 0, max: 20},
+        ExtensionIdentifierSchema,
+        ExtensionValueSchema,
       ],
     ],
   ]
@@ -94,7 +89,7 @@ export default function ({
     map,
     {closed: true},
     ['name', [and, [stringp, {min: 1, max: 20}], [regexp, '^[ \\w]+$']]],
-    ['timestamp', inst],
+    ['timestamp', jsinst],
     ['version', VersionSchema],
     ['tokens', [repeat, {min: 1, max: 10000}, TokenInfoSchema]],
     [
@@ -107,19 +102,15 @@ export default function ({
           {min: 1, max: 20},
           [and, [stringp, {min: 1, max: 20}], [regexp, '^[ \\w]+$']],
         ],
-        set,
+        jssetp,
       ],
     ],
     [
       'tags',
       {optional: true},
-      [
-        and,
-        [mapOf, TagIdentifierSchema, TagDefinitionSchema],
-        [sequential, {min: 1, max: 20}],
-      ],
+      [mapOf, {min: 1, max: 20}, TagIdentifierSchema, TagDefinitionSchema],
     ],
-    ['logoURI', {optional: true}, uri],
+    ['logoURI', {optional: true}, url],
   ]
 
   return TokenListSchema

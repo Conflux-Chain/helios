@@ -16,13 +16,17 @@ describe('wallet_unlock', function () {
     const input = {
       params: {password: '12345678'},
       db: {setPassword: jest.fn(), getUnlockReq: jest.fn()},
-      rpcs: {wallet_validatePassword: jest.fn(() => true)},
+      rpcs: {
+        wallet_validatePassword: jest.fn(() => true),
+        wallet_refetchTokenList: jest.fn(),
+      },
       Err: {InvalidParams: msg => new Error(msg)},
     }
 
     it('should set the password in db', async function () {
       await main(input)
       expect(input.db.setPassword).toHaveBeenCalledWith(input.params.password)
+      expect(input.rpcs.wallet_refetchTokenList).toHaveBeenCalled()
     })
 
     it('should throw invalid password error if the password is invalid', async function () {

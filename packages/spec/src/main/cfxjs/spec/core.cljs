@@ -39,7 +39,9 @@
   ([schema data opt]
    (let [opt (j->c opt)
          s ((memoize pre-process-schema) schema opt)
-         rst (humanize (m/explain s (js->clj data) opt))]
+         exp (m/explain s (js->clj data) opt)
+         rst (humanize exp)]
+     ;; (when goog.DEBUG #p exp)
      (clj->js rst))))
 
 (defn update-properties [schema & forms]
@@ -237,6 +239,14 @@
 (def export-uuidp uuid?)
 (def export-uri uri?)
 (def export-inst inst?)
+(def export-js-inst (m/-simple-schema
+                     {:type            :js-date
+                      :pred            (fn [d] (try
+                                                 (or (inst? d) (inst? (js/Date. d)))
+                                                 (catch js/Error err false)))
+                      :type-properties {:error/message "should be a valid date string"
+                                        :doc           "valid js date string"
+                                        :gen/fmap      (fn [& args] (.toISOString (js/Date.)))}}))
 (def export-seqable seqable?)
 (def export-indexed indexed?)
 (def export-mapp map?)
@@ -246,6 +256,12 @@
 (def export-seq seq?)
 (def export-char char?)
 (def export-setp set?)
+(def export-js-setp (m/-simple-schema
+                     {:type            :js-set
+                      :pred (fn [d] (and (vector? d) (= (count (into #{} d)) (count d))))
+                      :type-properties {:error/message "should be a array without duplicate item"
+                                        :doc           "array without duplicate item"
+                                        :gen/fmap      (fn [& args] #{"a" 3 :abc false})}}))
 (def export-nil (m/-simple-schema
                  {:type :nil
                   :pred nil?

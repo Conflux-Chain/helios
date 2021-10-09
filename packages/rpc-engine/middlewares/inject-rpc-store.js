@@ -52,8 +52,10 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
           _internal: true,
         }).then(res => {
           req._rpcStack.pop()
-          if (res.error) req._c.write(res)
-          else return res.result
+          if (res.error) {
+            if (overrides.errorFallThrough) throw res.error
+            req._c.write(res)
+          } else return res.result
         })
       }
     },
