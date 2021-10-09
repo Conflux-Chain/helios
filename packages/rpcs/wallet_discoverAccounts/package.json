@@ -4,6 +4,7 @@
   "type": "module",
   "version": "0.0.8",
   "dependencies": {
+    "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network",
     "@fluent-wallet/discover-accounts": "workspace:packages/discover-accounts",
     "@fluent-wallet/spec": "workspace:packages/spec",
     "browser-passworder": "2.0.3"

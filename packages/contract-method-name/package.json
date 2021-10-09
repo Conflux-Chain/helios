@@ -7,6 +7,6 @@
     "eth-method-registry": "2.0.0",
     "ethjs": "0.4.0",
     "js-conflux-sdk": "1.7.0",
-    "node-fetch": "2.6.1"
+    "node-fetch": "2.6.5"
   }
 }
