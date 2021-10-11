@@ -4186,6 +4186,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_watch-assets@workspace:packages/rpcs/wallet_watchAssets":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_watch-assets@workspace:packages/rpcs/wallet_watchAssets"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_zero-account-group@workspace:packages/rpcs/wallet_zeroAccountGroup":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_zero-account-group@workspace:packages/rpcs/wallet_zeroAccountGroup"
@@ -29947,14 +29955,6 @@ resolve@^2.0.0-next.3:
   checksum: 4038fcf92f6ab0288267ad05008aec9e089a759f1bd32e1ea45cc2eb498eb12095ec43cf8ca2bf23a465f4580a0d33b25b89f450ba521dd27083cbc695ee6bf5
   languageName: node
   linkType: hard
-
-"wallet_watchAssets@workspace:packages/rpcs/wallet_watchAssets":
-  version: 0.0.0-use.local
-  resolution: "wallet_watchAssets@workspace:packages/rpcs/wallet_watchAssets"
-  dependencies:
-    "@fluent-wallet/spec": "workspace:packages/spec"
-  languageName: unknown
-  linkType: soft
 
 "warning@npm:^4.0.2, warning@npm:^4.0.3":
   version: 4.0.3

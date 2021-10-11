@@ -164,16 +164,95 @@
     (t (concat add-perms add-accounts add-currentNetowrk add-currentAccount))
     (e :app app)))
 
+(defn addr-acc-network [{:keys [accountId addressId networkId]}]
+  (cond addressId
+        (let [{:keys [accountId networkId]}
+              (q '[:find [?net ?acc]
+                   :keys accountId networkId
+                   :in $ ?addr
+                   :where
+                   [?net :network/address ?addr]
+                   [?acc :account/address ?addr]] addressId)]
+          {:accountId accountId
+           :networkId networkId
+           :addressId addressId})
+        (and accountId networkId (not addressId))
+        {:accountId accountId
+         :networkId networkId
+         :addressId (first (q '[:find [?addr ...]
+                                :in $ ?acc ?net
+                                :where
+                                [?acc :account/address ?addr]
+                                [?net :network/address ?addr]]
+                              accountId networkId))}))
+
 (defn account-addr-by-network
   [{:keys [account network]}]
-  (->> (q '[:find [?addr ...]
-            :in $ ?acc ?net
-            :where
-            [?acc :account/address ?addr]
-            [?net :network/address ?addr]]
-          account network)
-       first
+  (->> {:accountId account :networkId network}
+       addr-acc-network
+       :addressId
        (e :address)))
+
+(defn get-current-addr []
+  (-> (q '[:find [?addr]
+           :where
+           [?net :network/selected true]
+           [?acc :account/selected true]
+           [?acc :account/address ?addr]
+           [?net :network/address ?addr]])
+      first))
+
+(defn dbadd
+  "add document to db with modal keyword
+  eg. with params [1, :token,  {address: '0x0'} ]
+  generate tx {:db/id 1 :token/address '0x0'}"
+  [eid model document-map]
+  (reduce
+   (fn [acc [k v]]
+     (assoc acc (keyword (str model "/" (name k))) v))
+   {:db/id eid} document-map))
+
+(defn add-token-to-addr [{:keys [address targetAddressId fromApp fromUser fromList checkOnly]}]
+  (let [{:keys [addressId networkId]} (addr-acc-network {:addressId targetAddressId})
+        token-in-net?                 (-> (q '[:find [?t ...]
+                                               :in $ ?taddr ?net
+                                               :where
+                                               [?t :token/address ?taddr]
+                                               [?net :network/token ?t]]
+                                             address networkId)
+                                          not-empty
+                                          first)
+        token-in-addr?                (and token-in-net?
+                                           (-> (q '[:find [?t ...]
+                                                    :in $ ?taddr ?addr
+                                                    :where
+                                                    [?t :token/address ?taddr]
+                                                    [?addr :address/token ?t]]
+                                                  address addressId)
+                                               not-empty
+                                               first))
+        token-id                      (or token-in-addr? token-in-net? -1)
+        add-token-tx                  [:db/id token-id]
+        add-token-tx                  (if fromApp (into add-token-tx [:token/fromApp true]) add-token-tx)
+        add-token-tx                  (if fromUser (into add-token-tx [:token/fromUser true]) add-token-tx)
+        add-token-tx                  (if fromList (into add-token-tx [:token/fromList true]) add-token-tx)
+        tx                            [add-token-tx]
+        tx                            (if token-in-addr? tx (conj tx [:db/id addressId :address/token token-id]))
+        tx                            (if token-in-net? tx (conj tx [:db/id networkId :network/token token-id]))
+        tx-rst                        (and (not checkOnly) (t tx))
+        token-id                      (if (and (not checkOnly) (= token-id -1)) (get-in tx-rst [:tempids -1]) token-id)]
+    {:tokenId       token-id
+     :alreadyInNet  (boolean token-in-net?)
+     :alreadyInAddr (boolean token-in-addr?)}))
+
+(defn get-network-token-by-token-addr [{:keys [networkId tokenAddress]}]
+  (-> (q '[:find [?tokenId]
+           :in $ ?net ?addr
+           :where
+           [?net :network/token ?tokenId]
+           [?tokenId :token/address ?addr]]
+         networkId tokenAddress)
+      first))
 
 (defn retract [id] (t [[:db.fn/retractEntity id]]))
 (defn retract-attr [{:keys [eid attr]}] (t [[:db.fn/retractAttribute eid (keyword attr)]]))
@@ -197,7 +276,10 @@
               :upsertAppPermissions            upsert-app-permissions
               :accountAddrByNetwork            account-addr-by-network
               :retract                         retract
-              :retractAttr                     retract-attr})
+              :retractAttr                     retract-attr
+              :getNetworkTokenByTokenAddr      get-network-token-by-token-addr
+              :getCurrentAddr                  (comp #(e :address) get-current-addr)
+              :addTokenToAddr                  add-token-to-addr})
 
 (defn apply-queries [conn qfn entity tfn ffn]
   (def q qfn)
