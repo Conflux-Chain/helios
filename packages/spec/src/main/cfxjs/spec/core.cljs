@@ -414,6 +414,12 @@
    :error/message "invalid dbid, must be a positive integer"
    :doc "database id, positive integer"))
 
+(def export-token-symbol
+  (update-properties
+   [:and [:re #"^[a-zA-Z0-9+\-%/$]+$"] [:string {:min 1 :max 20}]]
+   :error/message "invalid token symbol"
+   :doc "token symbol"))
+
 (def export-byte Byte)
 (def export-bytes Bytes)
 (def export-bytes32 Bytes32)
