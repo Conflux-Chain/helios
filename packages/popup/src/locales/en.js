@@ -99,6 +99,13 @@ const en = {
     // confirm add suggested token
     addSuggestedToken: 'Add suggested token',
     confirmAddSuggestedToken: 'Would you like to add this token?',
+    //request signature
+    signTypeMessage: 'Sign Type Message',
+    signThisMessage: 'Sign this message?',
+    message: 'Message',
+    holder: 'Holder',
+    spender: 'Spender',
+    sign: 'Sign',
   },
 }
 
