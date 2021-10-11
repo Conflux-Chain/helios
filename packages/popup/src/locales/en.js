@@ -106,6 +106,18 @@ const en = {
     holder: 'Holder',
     spender: 'Spender',
     sign: 'Sign',
+    // Dapp add network
+    addNetwork: 'Add Network',
+    allowAddNetwork: 'Allow this site to add a network?',
+    warningAddNetwork:
+      'Do you trust this site? Fluent Wallet does not verify custom networks.',
+    learnMore: 'Learn More',
+    networkName: 'Network Name',
+    NetworkUrl: 'Network URL',
+    chainId: 'Chain ID',
+    currencySymbol: 'Currency Symbol',
+    optional: 'optional',
+    blockExplorerUrl: 'Block Explorer URL',
   },
 }
 

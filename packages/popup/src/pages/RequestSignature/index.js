@@ -20,12 +20,12 @@ function RequestSignature() {
           }
         />
         <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
-          <p className="ml-1">
+          <div className="ml-1">
             <div className="text-sm text-gray-80 font-medium">
               {t('signThisMessage')}
             </div>
             <div className="text-xs text-gray-40 mt-1">Dai Stablecoin</div>
-          </p>
+          </div>
           <div className="mt-3">
             <p className="ml-1 text-sm text-gray-80 font-medium">
               {t('message')}

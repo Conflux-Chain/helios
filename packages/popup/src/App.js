@@ -24,6 +24,7 @@ const {
   CONNECT_SITE,
   CONFIRM_ADD_SUGGESTED_TOKEN,
   REQUEST_SIGNATURE,
+  DAPP_ADD_NETWORK,
 } = ROUTES
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
@@ -39,6 +40,7 @@ const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 const ErrorPage = lazy(() => import('./pages/Error'))
 const ConnectSite = lazy(() => import('./pages/ConnectSite'))
 const RequestSignature = lazy(() => import('./pages/RequestSignature'))
+const DappAddNetwork = lazy(() => import('./pages/DappAddNetwork'))
 const ConfirmAddSuggestedToken = lazy(() =>
   import('./pages/ConfirmAddSuggestedToken'),
 )
@@ -120,6 +122,7 @@ function App() {
               path={REQUEST_SIGNATURE}
               component={RequestSignature}
             />
+            <Route exact path={DAPP_ADD_NETWORK} component={DappAddNetwork} />
             <Route path="*" render={() => <Redirect to={ERROR} />} />
           </Switch>
         </Router>
