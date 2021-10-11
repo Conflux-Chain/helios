@@ -12,7 +12,7 @@ import {
 } from '@fluent-wallet/component-icons'
 import Modal from '@fluent-wallet/component-modal'
 import {RPC_METHODS} from '../../constants'
-import {NetworkContent} from '../../components'
+import {NetworkContent, DappConnectWalletHeader} from '../../components'
 import {useAccountGroupAddress} from '../../hooks'
 import {formatIntoShortAddress} from '../../utils'
 const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
@@ -144,26 +144,10 @@ function ConnectSite() {
       <div>
         <header className="bg-blue-circles bg-no-repeat">
           <div>
-            <p className="text-sm text-gray-100 text-center h-13 flex justify-center items-center">
+            <p className="text-sm text-gray-100 text-center h-13 flex justify-center items-center mb-1">
               {t('connectSite')}
             </p>
-            <div className="flex justify-center items-center mt-1">
-              <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center">
-                <img src="" alt="favicon" className="w-8 h-8" />
-              </div>
-              <div className="w-2 h-2 border-solid border-primary border-2 rounded-full ml-2" />
-              <div className="border border-gray-40 border-dashed w-[42px] mx-1" />
-              <img
-                src="images/paperclip.svg"
-                alt="connecting"
-                className="w-4 h-4"
-              />
-              <div className="border border-gray-40 border-dashed w-[42px] mx-1" />
-              <div className="w-2 h-2 border-solid border-primary border-2 rounded-full mr-2" />
-              <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center">
-                <img className="w-8 h-8" src="images/logo.svg" alt="logo" />
-              </div>
-            </div>
+            <DappConnectWalletHeader />
             <p className="text-base text-gray-80 text-center mt-2 font-medium">
               dapp name
             </p>
