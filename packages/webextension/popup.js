@@ -38,13 +38,15 @@ const focus = async wid => {
   }
 }
 
-const newPopup = async ({url, alwaysOnTop}) => {
+const newPopup = async ({url, alwaysOnTop, mode}) => {
   const lastFocused = await browser.windows
     .getLastFocused({windowTypes: ['normal']})
     .catch(() => {})
 
+  const isProd = !mode || mode.isProd
+
   const w = await browser.windows.create({
-    type: 'popup',
+    type: isProd ? 'popup' : 'normal',
     focused: true,
     url,
     width: POPUP_WIDTH,
@@ -58,14 +60,18 @@ const newPopup = async ({url, alwaysOnTop}) => {
   return w
 }
 
-export const show = async ({url = 'popup.html', alwaysOnTop = false} = {}) => {
+export const show = async ({
+  url = 'popup.html',
+  alwaysOnTop = false,
+  mode,
+} = {}) => {
   let popup = (await browser.windows.getAll()).filter(
     w => w.type === 'popup',
   )?.[0]
   if (popup) {
     await browser.windows.update(popup.id, {focused: true})
   } else {
-    popup = await newPopup({url, alwaysOnTop})
+    popup = await newPopup({url, alwaysOnTop, mode})
   }
   return popup
 }

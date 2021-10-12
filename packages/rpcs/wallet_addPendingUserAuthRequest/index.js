@@ -20,6 +20,7 @@ export const main = async ({
   Err: {InvalidParams},
   db: {t, getSiteById, getAppById},
   rpcs: {wallet_userRejectedAuthRequest},
+  MODE,
   params: {
     req: {method, params},
     siteId,
@@ -47,7 +48,7 @@ export const main = async ({
 
   const {popup} = await import('@fluent-wallet/webextension')
 
-  const w = await popup.show({alwaysOnTop: true})
+  const w = await popup.show({alwaysOnTop: true, mode: MODE})
   popup.onFocusChanged(w.id, popup.remove)
   popup.onRemoved(w.id, () => wallet_userRejectedAuthRequest({authReqId}))
   const rst = await c.read()

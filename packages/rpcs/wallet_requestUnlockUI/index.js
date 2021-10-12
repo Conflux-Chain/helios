@@ -15,12 +15,14 @@ export const permissions = {
 async function requestUnlockUI({
   Err: {Internal},
   db: {getLocked, getUnlockReq, retract},
+  MODE,
 }) {
   if (!window) throw Internal('Invalid running env, window is not defined')
   const {browser, popup} = await import('@fluent-wallet/webextension')
   const {id: popupWindowId} = await popup.show({
     url: 'popup.html#/unlock',
     alwaysOnTop: true,
+    mdoe: MODE,
   })
 
   popup.onFocusChanged(popupWindowId, popup.remove)
