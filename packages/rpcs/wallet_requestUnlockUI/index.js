@@ -19,13 +19,13 @@ async function requestUnlockUI({
 }) {
   if (!window) throw Internal('Invalid running env, window is not defined')
   const {browser, popup} = await import('@fluent-wallet/webextension')
-  const {id: popupWindowId} = await popup.show({
+  const w = await popup.show({
     url: 'popup.html#/unlock',
     alwaysOnTop: MODE.isProd ? true : false,
     mdoe: MODE,
   })
 
-  if (MODE.isProd) popup.onFocusChanged(popupWindowId, popup.remove)
+  if (MODE.isProd) popup.onFocusChanged(w?.id, popup.remove)
   function windowOnRemovedListener() {
     browser.windows.onRemoved.removeListener(windowOnRemovedListener)
     if (!getLocked()) return
@@ -35,7 +35,7 @@ async function requestUnlockUI({
     )
   }
 
-  popup.onRemoved(popupWindowId, windowOnRemovedListener)
+  popup.onRemoved(w?.id, windowOnRemovedListener)
 }
 
 export const main = async args => {

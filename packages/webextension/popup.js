@@ -59,6 +59,7 @@ const newPopup = async ({url, alwaysOnTop}) => {
 }
 
 export const show = async ({url = 'popup.html', alwaysOnTop = false} = {}) => {
+  if (!browser?.windows?.getAll) return
   let popup = (await browser.windows.getAll()).filter(
     w => w.type === 'popup',
   )?.[0]
@@ -71,6 +72,7 @@ export const show = async ({url = 'popup.html', alwaysOnTop = false} = {}) => {
 }
 
 export const removePopup = async () => {
+  if (!browser?.windows?.getAll) return
   try {
     const popup = (await browser.windows.getAll()).filter(
       w => w.type === 'popup',
@@ -87,28 +89,29 @@ export const removePopup = async () => {
 let ON_FOCUS_CHANGED = []
 let ON_REMOVED = []
 
-browser.windows.onFocusChanged.addListener(id => {
-  ON_FOCUS_CHANGED = ON_FOCUS_CHANGED.reduce((acc, f) => {
-    try {
-      const dontRemoveListener = f(id)
-      if (dontRemoveListener) return acc.concat(f)
-    } catch (err) {} // eslint-disable-line no-empty
+if (browser?.windows?.onFocusChanged) {
+  browser.windows.onFocusChanged.addListener(id => {
+    ON_FOCUS_CHANGED = ON_FOCUS_CHANGED.reduce((acc, f) => {
+      try {
+        const dontRemoveListener = f(id)
+        if (dontRemoveListener) return acc.concat(f)
+      } catch (err) {} // eslint-disable-line no-empty
 
-    return acc
-  }, [])
-})
+      return acc
+    }, [])
+  })
 
-browser.windows.onRemoved.addListener(id => {
-  ON_REMOVED = ON_REMOVED.reduce((acc, f) => {
-    try {
-      const dontRemoveListener = f(id)
-      if (dontRemoveListener === true) return acc.concat(f)
-    } catch (err) {} // eslint-disable-line no-empty
+  browser.windows.onRemoved.addListener(id => {
+    ON_REMOVED = ON_REMOVED.reduce((acc, f) => {
+      try {
+        const dontRemoveListener = f(id)
+        if (dontRemoveListener === true) return acc.concat(f)
+      } catch (err) {} // eslint-disable-line no-empty
 
-    return acc
-  }, [])
-})
-
+      return acc
+    }, [])
+  })
+}
 export const onFocusChanged = (windowId, f) => {
   if (!isFunction(f)) throw new Error('Invalid callback, must be a function')
   ON_FOCUS_CHANGED.push(id => {
@@ -129,4 +132,4 @@ export const onRemoved = (windowId, f) => {
   })
 }
 
-export const remove = browser.windows.remove
+export const remove = browser.windows?.remove

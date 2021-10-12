@@ -54,7 +54,7 @@ export const main = async ({
   })
   if (MODE.isProd) popup.onFocusChanged(w.id, popup.remove)
   popup.onRemoved(
-    w.id,
+    w?.id,
     () =>
       getAuthReqById(authReqId) &&
       wallet_userRejectedAuthRequest({errorFallThrough: true}, {authReqId}),
