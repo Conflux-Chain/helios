@@ -48,7 +48,10 @@ function CurrentDapp() {
   }
 
   return (
-    <div className="flex items-center h-16 rounded-t-xl bg-gray-0 px-3">
+    <div
+      className="flex items-center h-16 rounded-t-xl bg-gray-0 px-3"
+      id="currentDappContainer"
+    >
       {!isConnected && (
         <span className="text-gray-40">{t('noConnectedDapp')}</span>
       )}
@@ -68,6 +71,7 @@ function CurrentDapp() {
             </div>
             <div className="flex w-full items-center justify-between">
               <span
+                id="setDisconnectModalShowBtn"
                 className="h-5 px-2 bg-primary-4 rounded-full text-success text-xs flex items-center justify-center cursor-pointer"
                 aria-hidden="true"
                 onClick={() => setDisconnectModalShow(true)}
@@ -77,6 +81,7 @@ function CurrentDapp() {
               </span>
               {!isConnectedCurrentAccount ? (
                 <span
+                  id="setAuthModalShowBtn"
                   className="text-primary text-xs cursor-pointer"
                   onClick={() => setAuthModalShow(true)}
                   aria-hidden="true"

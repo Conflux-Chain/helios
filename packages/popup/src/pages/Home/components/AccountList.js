@@ -106,6 +106,7 @@ function AccountList({onClose, onOpen}) {
       }
       cardFooter={
         <Button
+          id="addAccountBtn"
           color="transparent"
           className="w-full border-dashed border-gray-40 mt-3 text-gray-80"
           onClick={onAddAccount}

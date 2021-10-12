@@ -5,7 +5,10 @@ function RequestSignature() {
   const {t} = useTranslation()
 
   return (
-    <div className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat">
+    <div
+      id="requestSignatureContainer"
+      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat"
+    >
       <div>
         <DappTransactionHeader
           title={t('signTypeMessage')}

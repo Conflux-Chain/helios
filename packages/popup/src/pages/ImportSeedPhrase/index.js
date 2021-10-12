@@ -87,7 +87,7 @@ function ImportSeedPhrase() {
   }
 
   return (
-    <div className="bg-bg h-full flex flex-col">
+    <div className="bg-bg h-full flex flex-col" id="importSeedPhraseContainer">
       <TitleNav title={t('seedImport')} />
       <form
         onSubmit={event => event.preventDefault()}
@@ -118,6 +118,7 @@ function ImportSeedPhrase() {
         </section>
         <section className="mb-4">
           <Button
+            id="importSeedPhraseBtn"
             className="w-70  mx-auto"
             onClick={onCreate}
             disabled={!name && !keygenNamePlaceholder}

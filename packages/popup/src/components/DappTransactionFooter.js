@@ -5,6 +5,7 @@ function DappTransactionFooter({cancelText, confirmText, onCancel, onConfirm}) {
   return (
     <footer className="flex px-4">
       <Button
+        id="cancelBtn"
         className="flex-1"
         variant="outlined"
         key="cancel"
@@ -13,7 +14,11 @@ function DappTransactionFooter({cancelText, confirmText, onCancel, onConfirm}) {
         {cancelText}
       </Button>
       <div className="w-3" />
-      <Button className="flex-1" onClick={onConfirm && onConfirm()}>
+      <Button
+        id="confirmBtn"
+        className="flex-1"
+        onClick={onConfirm && onConfirm()}
+      >
         {confirmText}
       </Button>
     </footer>

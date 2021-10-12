@@ -20,6 +20,7 @@ function NetworkItem({
   onClickNetworkItem,
   networkId,
   networkItemSize = 'medium',
+  ...props
 }) {
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
@@ -27,6 +28,7 @@ function NetworkItem({
 
   return (
     <div
+      {...props}
       aria-hidden="true"
       className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative cursor-pointer ${itemWrapperPaddingStyle}`}
       onClick={() => onClickNetworkItem({networkId, networkName, icon})}
@@ -86,6 +88,7 @@ function NetworkContent({onClickNetworkItem, networkItemSize}) {
           }
           onClickNetworkItem={onClickNetworkItem}
           icon={icon}
+          id={`item-${eid}`}
         />
       ))}
     </>

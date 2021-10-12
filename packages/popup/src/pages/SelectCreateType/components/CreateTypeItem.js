@@ -1,10 +1,19 @@
 import PropTypes from 'prop-types'
 
-function CreateTypeItem({title, subTitle, Icon, Tag, onClick, typeClass = ''}) {
+function CreateTypeItem({
+  title,
+  subTitle,
+  Icon,
+  Tag,
+  onClick,
+  typeClass = '',
+  ...props
+}) {
   return (
     <div
       className={`flex h-15 bg-white cursor-pointer box-border p-3 mb-3 ${typeClass}`}
       aria-hidden="true"
+      {...props}
       onClick={() => {
         onClick && onClick()
       }}

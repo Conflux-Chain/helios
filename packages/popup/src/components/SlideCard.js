@@ -23,7 +23,7 @@ const SlideCard = ({
     return null
   }
   return (
-    <div>
+    <div id="slideCardContainer">
       <div
         className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${animateStyle} h-125 bg-gray-circles bg-no-repeat bg-contain`}
         ref={ref}

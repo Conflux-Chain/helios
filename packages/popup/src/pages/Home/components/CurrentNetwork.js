@@ -13,6 +13,7 @@ function CurrentNetwork({onOpenNetwork}) {
   return (
     <div
       className="flex bg-[#f0f3ff] bg-opacity-20 rounded h-6 px-2 cursor-pointer items-center"
+      id="openNetworkBtn"
       onClick={onOpenNetwork}
       aria-hidden="true"
     >

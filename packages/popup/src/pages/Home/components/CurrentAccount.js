@@ -52,6 +52,7 @@ function CurrentAccount({onOpenAccount}) {
       <div
         className="flex items-center cursor-pointer"
         onClick={onOpenAccount}
+        id="openAccountBtn"
         aria-hidden="true"
       >
         <span className="text-xs text-gray-40 mr-2">{nickname}</span>
@@ -72,6 +73,7 @@ function CurrentAccount({onOpenAccount}) {
           />
         </div>
         <QrcodeOutlined
+          id="qrBtn"
           onClick={() => setQrcodeShow(true)}
           className="cursor-pointer w-4 h-4 text-white"
         />

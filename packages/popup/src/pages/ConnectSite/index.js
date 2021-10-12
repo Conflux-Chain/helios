@@ -143,7 +143,10 @@ function ConnectSite() {
   }, [Boolean(currentNetworkData)])
 
   return currentNetworkData ? (
-    <div className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat">
+    <div
+      id="connectSiteContainer"
+      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat"
+    >
       <div>
         <header>
           <div>
@@ -161,7 +164,8 @@ function ConnectSite() {
             {t('selectNetwork')}
           </p>
           <div
-            aria-hidden
+            id="setNetworkShow"
+            aria-hidden="true"
             onClick={() => setNetworkShow(true)}
             className="cursor-pointer"
           >
@@ -182,6 +186,7 @@ function ConnectSite() {
           </div>
           <ConnectSitesList networkId={networkId} />
           <Modal
+            id="networkModal"
             open={networkShow}
             size="medium"
             title={t('chooseNetwork')}

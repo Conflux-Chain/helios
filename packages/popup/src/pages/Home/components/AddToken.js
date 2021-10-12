@@ -41,6 +41,7 @@ function AddToken({onClose, onOpen}) {
           {searchResults.length ? (
             <div className="px-3 pt-3 mt-3 bg-gray-0 rounded">
               <p className="ml-1 mb-1 text-gray-40">{t('searchResults')}</p>
+              {/* TODO: add id for automation testing  */}
               <TokenItem
                 maxBalanceSize="small"
                 rightIcon={

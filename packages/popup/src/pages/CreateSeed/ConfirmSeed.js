@@ -61,7 +61,7 @@ function ConfirmSeed() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-gray-0">
+    <div className="h-full flex flex-col bg-gray-0" id="confirmSeedContainer">
       <TitleNav title={t('newAccount')} />
       <main className="px-3 pt-3 flex flex-col flex-1 justify-between">
         <div>
@@ -99,6 +99,7 @@ function ConfirmSeed() {
                 variant="outlined"
                 className="w-25 mb-3"
                 size="small"
+                id={`onAddMnemonicBtn-${index}`}
                 onClick={() => onAddMnemonic(word)}
                 disabled={getDisabled(word)}
               >
@@ -111,6 +112,7 @@ function ConfirmSeed() {
           <Button
             className="w-70"
             onClick={onCreate}
+            id="onCreateMnemonicBtn"
             disabled={!!mnemonicError}
           >
             {t('create')}

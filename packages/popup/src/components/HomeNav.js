@@ -14,6 +14,7 @@ function HomeNav() {
       <img className="w-6 h-6" src="images/logo.svg" alt="logo" />
       <LockOutLined
         className="w-4 h-4 text-white cursor-pointer"
+        id="lockBtn"
         onClick={onLock}
       />
     </nav>

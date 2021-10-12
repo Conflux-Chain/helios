@@ -13,7 +13,10 @@ function ConfirmAddSuggestedToken() {
   useFontSize(balanceRef, hiddenRef, 156, balance)
 
   return (
-    <div className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat">
+    <div
+      id="confirmAddSuggestedTokenContainer"
+      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat"
+    >
       <div>
         <DappTransactionHeader
           title={t('addSuggestedToken')}

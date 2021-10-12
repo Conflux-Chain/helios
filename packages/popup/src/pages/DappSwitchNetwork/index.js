@@ -5,7 +5,10 @@ function DappSwitchNetwork() {
   const {t} = useTranslation()
 
   return (
-    <div className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat">
+    <div
+      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat"
+      id="dappSwitchNetworkContainer"
+    >
       <div>
         <header>
           <div>

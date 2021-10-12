@@ -5,7 +5,10 @@ function DappAddNetwork() {
   const {t} = useTranslation()
 
   return (
-    <div className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat">
+    <div
+      id="dappAddNetworkContainer"
+      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat"
+    >
       <div>
         <header>
           <div className="text-sm text-gray-100 h-13 flex items-center justify-center">
