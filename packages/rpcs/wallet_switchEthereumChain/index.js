@@ -42,8 +42,11 @@ export const generateMain =
     app,
     _popup,
     _inpage,
+    network: currentNetwork,
   }) => {
     const {chainId} = Array.isArray(params) ? params[0] : params.chainConfig[0]
+    if (currentNetwork.type === type && currentNetwork.chainId === chainId)
+      return '__null__'
     const [network] = getNetwork({chainId, type: type}) || []
     if (!network)
       throw InvalidParams(
