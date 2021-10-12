@@ -3,7 +3,6 @@ import {useTranslation} from 'react-i18next'
 import {useState, useEffect} from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 import Input from '@fluent-wallet/component-input'
-import Button from '@fluent-wallet/component-button'
 import Checkbox from '@fluent-wallet/component-checkbox'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {
@@ -12,7 +11,11 @@ import {
 } from '@fluent-wallet/component-icons'
 import Modal from '@fluent-wallet/component-modal'
 import {RPC_METHODS} from '../../constants'
-import {NetworkContent, DappConnectWalletHeader} from '../../components'
+import {
+  NetworkContent,
+  DappConnectWalletHeader,
+  DappTransactionFooter,
+} from '../../components'
 import {useAccountGroupAddress} from '../../hooks'
 import {formatIntoShortAddress} from '../../utils'
 const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
@@ -140,9 +143,9 @@ function ConnectSite() {
   }, [Boolean(currentNetworkData)])
 
   return currentNetworkData ? (
-    <div className="flex flex-col h-full justify-between">
+    <div className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat">
       <div>
-        <header className="bg-blue-circles bg-no-repeat">
+        <header>
           <div>
             <p className="text-sm text-gray-100 text-center h-13 flex justify-center items-center mb-1">
               {t('connectSite')}
@@ -188,14 +191,10 @@ function ConnectSite() {
           />
         </main>
       </div>
-
-      <footer className="flex px-4">
-        <Button className="flex-1" variant="outlined" key="cancel">
-          {t('cancel')}
-        </Button>
-        <div className="w-3" />
-        <Button className="flex-1">{t('connect')}</Button>
-      </footer>
+      <DappTransactionFooter
+        cancelText={t('cancel')}
+        confirmText={t('connect')}
+      />
     </div>
   ) : null
 }

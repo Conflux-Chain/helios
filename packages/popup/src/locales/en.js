@@ -118,6 +118,13 @@ const en = {
     currencySymbol: 'Currency Symbol',
     optional: 'optional',
     blockExplorerUrl: 'Block Explorer URL',
+    // Dapp switch network
+    switchNetwork: 'Switch Network',
+    allowSwitchNetwork: 'Allow this site to switch the network?',
+    warningSwitchNetwork:
+      'This will switch the selected network within Fluent to a previously added network',
+    testnet: 'testnet',
+    switch: 'Switch',
   },
 }
 

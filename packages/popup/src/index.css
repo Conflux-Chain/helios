@@ -56,6 +56,7 @@ html {
   --color-info-10: #f2f6ff;
   --color-info-90: #232539;
   --color-gray-0: #fff;
+  --color-gray-4: #fafbfd;
   --color-gray-10: #f7f8fa;
   --color-gray-20: #eaecef;
   --color-gray-40: #a9abb2;
@@ -80,6 +81,7 @@ html {
   --color-info-10: #232539;
   --color-info-90: #f2f6ff;
   --color-gray-0: #1b1b1c;
+  --color-gray-4: #2a2c33;
   --color-gray-10: #2a2c33;
   --color-gray-20: #3d3f4c;
   --color-gray-40: #898d9a;
@@ -93,5 +95,4 @@ html {
 }
 .no-scroll::-webkit-scrollbar {
   width: 0 !important;
-  
 }
