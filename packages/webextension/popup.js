@@ -38,15 +38,13 @@ const focus = async wid => {
   }
 }
 
-const newPopup = async ({url, alwaysOnTop, mode}) => {
+const newPopup = async ({url, alwaysOnTop}) => {
   const lastFocused = await browser.windows
     .getLastFocused({windowTypes: ['normal']})
     .catch(() => {})
 
-  const isProd = !mode || mode.isProd
-
   const w = await browser.windows.create({
-    type: isProd ? 'popup' : 'normal',
+    type: 'popup',
     focused: true,
     url,
     width: POPUP_WIDTH,
@@ -60,20 +58,30 @@ const newPopup = async ({url, alwaysOnTop, mode}) => {
   return w
 }
 
-export const show = async ({
-  url = 'popup.html',
-  alwaysOnTop = false,
-  mode,
-} = {}) => {
+export const show = async ({url = 'popup.html', alwaysOnTop = false} = {}) => {
   let popup = (await browser.windows.getAll()).filter(
     w => w.type === 'popup',
   )?.[0]
   if (popup) {
     await browser.windows.update(popup.id, {focused: true})
   } else {
-    popup = await newPopup({url, alwaysOnTop, mode})
+    popup = await newPopup({url, alwaysOnTop})
   }
   return popup
+}
+
+export const removePopup = async () => {
+  try {
+    const popup = (await browser.windows.getAll()).filter(
+      w => w.type === 'popup',
+    )?.[0]
+
+    if (popup) {
+      await remove(popup.id)
+    }
+    return true
+  } catch (err) {} // eslint-disable-line no-empty
+  return false
 }
 
 let ON_FOCUS_CHANGED = []

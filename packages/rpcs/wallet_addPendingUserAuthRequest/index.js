@@ -48,9 +48,14 @@ export const main = async ({
 
   const {popup} = await import('@fluent-wallet/webextension')
 
-  const w = await popup.show({alwaysOnTop: true, mode: MODE})
-  popup.onFocusChanged(w.id, popup.remove)
-  popup.onRemoved(w.id, () => wallet_userRejectedAuthRequest({authReqId}))
+  const w = await popup.show({
+    alwaysOnTop: MODE.isProd ? true : false,
+    mode: MODE,
+  })
+  if (MODE.isProd) popup.onFocusChanged(w.id, popup.remove)
+  popup.onRemoved(w.id, () =>
+    wallet_userRejectedAuthRequest({errorFallThrough: true}, {authReqId}),
+  )
   const rst = await c.read()
   if (rst instanceof Error) throw rst
   return rst

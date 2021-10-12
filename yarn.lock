@@ -4136,6 +4136,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_user-approved-auth-request@workspace:packages/rpcs/wallet_userApprovedAuthRequest"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/webextension": "workspace:packages/webextension"
   languageName: unknown
   linkType: soft
 
@@ -4144,6 +4145,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_user-rejected-auth-request@workspace:packages/rpcs/wallet_userRejectedAuthRequest"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/webextension": "workspace:packages/webextension"
   languageName: unknown
   linkType: soft
 

@@ -21,11 +21,11 @@ async function requestUnlockUI({
   const {browser, popup} = await import('@fluent-wallet/webextension')
   const {id: popupWindowId} = await popup.show({
     url: 'popup.html#/unlock',
-    alwaysOnTop: true,
+    alwaysOnTop: MODE.isProd ? true : false,
     mdoe: MODE,
   })
 
-  popup.onFocusChanged(popupWindowId, popup.remove)
+  if (MODE.isProd) popup.onFocusChanged(popupWindowId, popup.remove)
   function windowOnRemovedListener() {
     browser.windows.onRemoved.removeListener(windowOnRemovedListener)
     if (!getLocked()) return
