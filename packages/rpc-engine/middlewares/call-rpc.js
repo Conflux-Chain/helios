@@ -14,6 +14,12 @@ function formatRes(res, id) {
   return {...template, result: '0x1'}
 }
 
+const RequestLockMethods = [
+  'wallet_requestPermissions',
+  'cfx_requestAccounts',
+  'eth_requestAccounts',
+]
+
 export default defMiddleware(
   ({tx: {map, pluck, sideEffect}, stream: {resolve}}) => [
     {
@@ -37,7 +43,7 @@ export default defMiddleware(
         // some inpage rpc methods needs the wallet in unlocked state
         if (
           !rpcStore[req.method].permissions.locked &&
-          rpcStore[req.method].permissions.external.includes('inpage') &&
+          RequestLockMethods.includes(req.method) &&
           db.getLocked()
         ) {
           await req.rpcs.wallet_requestUnlockUI().catch(err => {

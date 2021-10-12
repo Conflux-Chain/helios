@@ -44,10 +44,8 @@ const setupProvider = () => {
   })
 
   PROVIDER = initProvider(stream, sendToBg)
-
-  PROVIDER.on('connect', a => console.log('connected', a))
   window.cfx = PROVIDER
-  return window.cfx
+  return PROVIDER
 }
 
 setupProvider()

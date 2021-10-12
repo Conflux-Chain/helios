@@ -12,13 +12,14 @@ export const schemas = {
 }
 
 export const permissions = {
-  methods: [],
+  methods: ['wallet_userRejectedAuthRequest'],
   db: ['t', 'getSiteById', 'getAppById'],
 }
 
 export const main = async ({
   Err: {InvalidParams},
   db: {t, getSiteById, getAppById},
+  rpcs: {wallet_userRejectedAuthRequest},
   params: {
     req: {method, params},
     siteId,
@@ -31,11 +32,24 @@ export const main = async ({
   if (appId && !app) throw InvalidParams(`Invalid app id ${appId}`)
 
   const c = chan(1)
-  t([
-    site && {authReq: {site: site.eid, req: {method, params}, c}},
-    app && {authReq: {app: app.eid, req: {method, params}, c}},
+  const {
+    tempids: {authReqId},
+  } = t([
+    site && {
+      eid: 'authReqId',
+      authReq: {site: site.eid, req: {method, params}, c},
+    },
+    app && {
+      eid: 'authReqId',
+      authReq: {app: app.eid, req: {method, params}, c},
+    },
   ])
 
+  const {popup} = await import('@fluent-wallet/webextension')
+
+  const w = await popup.show({alwaysOnTop: true})
+  popup.onFocusChanged(w.id, popup.remove)
+  popup.onRemoved(w.id, () => wallet_userRejectedAuthRequest({authReqId}))
   const rst = await c.read()
   if (rst instanceof Error) throw rst
   return rst

@@ -5,6 +5,7 @@
   "version": "0.0.3",
   "dependencies": {
     "@fluent-wallet/csp": "workspace:packages/csp",
-    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "workspace:packages/spec",
+    "@fluent-wallet/webextension": "workspace:packages/webextension"
   }
 }

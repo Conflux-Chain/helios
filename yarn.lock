@@ -3719,6 +3719,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/csp": "workspace:packages/csp"
     "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/webextension": "workspace:packages/webextension"
   languageName: unknown
   linkType: soft
 
@@ -4193,6 +4194,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/webextension@workspace:packages/webextension"
   dependencies:
+    "@fluent-wallet/checks": "workspace:packages/checks"
     webextension-polyfill: 0.8.0
   languageName: unknown
   linkType: soft
