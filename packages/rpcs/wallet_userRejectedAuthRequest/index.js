@@ -9,7 +9,7 @@ export const schemas = {
 export const permissions = {db: ['getAuthReqById', 'retract']}
 
 export const main = ({
-  Err: {InvalidParams, UserRjected},
+  Err: {InvalidParams, UserRejected},
   db: {retract, getAuthReqById},
   params: {authReqId},
 }) => {
@@ -17,7 +17,7 @@ export const main = ({
   if (!authReq) throw InvalidParams(`Invalid auth request id ${authReqId}`)
 
   if (authReq.c) {
-    const error = UserRjected()
+    const error = UserRejected()
     error.rpcData = authReq.req
     authReq.c.write(error)
   }

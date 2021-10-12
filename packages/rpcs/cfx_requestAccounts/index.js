@@ -21,7 +21,7 @@ export const main = async ({
 }) => {
   const permsRes = await wallet_requestPermissions([{cfx_accounts: {}}])
 
-  if (!permsRes?.error) {
+  if (permsRes && !permsRes.error) {
     const app = getOneApp({site: site.eid})
     const {currentAccount, currentNetwork} = app
     const addr = accountAddrByNetwork({

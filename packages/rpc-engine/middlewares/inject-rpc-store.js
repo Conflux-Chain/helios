@@ -29,7 +29,8 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
         )
 
       return (...args) => {
-        let params, overrides
+        let overrides = {}
+        let params
         if (args.length === 1) {
           params = args[0]
           overrides = {}
