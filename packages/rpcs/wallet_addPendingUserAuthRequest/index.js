@@ -13,12 +13,12 @@ export const schemas = {
 
 export const permissions = {
   methods: ['wallet_userRejectedAuthRequest'],
-  db: ['t', 'getSiteById', 'getAppById'],
+  db: ['t', 'getSiteById', 'getAppById', 'getAuthReqById'],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {t, getSiteById, getAppById},
+  db: {t, getSiteById, getAppById, getAuthReqById},
   rpcs: {wallet_userRejectedAuthRequest},
   MODE,
   params: {
@@ -53,8 +53,11 @@ export const main = async ({
     mode: MODE,
   })
   if (MODE.isProd) popup.onFocusChanged(w.id, popup.remove)
-  popup.onRemoved(w.id, () =>
-    wallet_userRejectedAuthRequest({errorFallThrough: true}, {authReqId}),
+  popup.onRemoved(
+    w.id,
+    () =>
+      getAuthReqById(authReqId) &&
+      wallet_userRejectedAuthRequest({errorFallThrough: true}, {authReqId}),
   )
   const rst = await c.read()
   if (rst instanceof Error) throw rst
