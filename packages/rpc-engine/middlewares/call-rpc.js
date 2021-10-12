@@ -28,7 +28,12 @@ export default defMiddleware(
         req: {stream: '/validateRpcParams/node'},
       },
       fn: map(async ({rpcStore, req, db}) => {
-        if (req._inpage && rpcStore[req.method].permissions.scope) {
+        const method = rpcStore[req.method]
+        if (
+          req._inpage &&
+          method.permissions.scope &&
+          !method.permissions.locked
+        ) {
           const isValid = await req.rpcs
             .wallet_validateAppPermissions({
               permissions: rpcStore[req.method].permissions.scope,
