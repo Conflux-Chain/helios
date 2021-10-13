@@ -90,7 +90,7 @@ const en = {
     cancel: 'Cancel',
     disconnect: 'Disconnect',
     //send transaction
-    sendTransaction: 'Send transaction',
+    sendTransaction: 'Send Transaction',
   },
 }
 
