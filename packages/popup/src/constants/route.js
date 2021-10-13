@@ -1,5 +1,6 @@
 export const HOME = '/'
 export const UNLOCK = '/unlock'
+export const PENDING_AUTH_REQ = '/pending-auth-req'
 export const WELCOME = '/welcome'
 export const CURRENT_SEED_PHRASE = '/current-seed-phrase'
 export const NEW_SEED_PHRASE = '/new-seed-phrase'

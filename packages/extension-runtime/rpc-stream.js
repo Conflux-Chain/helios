@@ -18,6 +18,7 @@ export const rpcStream = port => {
         pb.subscribeTopic(req.id, {
           next: rst => {
             pb.unsubscribeTopic(req.id)
+            if (rst?.result === '__null__') rst.result = null
             resolve(rst)
           },
         })

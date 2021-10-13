@@ -1,6 +1,6 @@
 {
   "name": "helios-background",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "main": "src/index.js",
   "private": true,
@@ -73,6 +73,7 @@
     "@fluent-wallet/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey",
     "@fluent-wallet/wallet_is-locked": "workspace:packages/rpcs/wallet_isLocked",
     "@fluent-wallet/wallet_lock": "workspace:packages/rpcs/wallet_lock",
+    "@fluent-wallet/wallet_refetch-token-list": "workspace:packages/rpcs/wallet_refetchTokenList",
     "@fluent-wallet/wallet_register-site-metadata": "workspace:packages/rpcs/wallet_registerSiteMetadata",
     "@fluent-wallet/wallet_request-permissions": "workspace:packages/rpcs/wallet_requestPermissions",
     "@fluent-wallet/wallet_request-unlock-ui": "workspace:packages/rpcs/wallet_requestUnlockUI",
@@ -83,6 +84,7 @@
     "@fluent-wallet/wallet_unlock": "workspace:packages/rpcs/wallet_unlock",
     "@fluent-wallet/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount",
     "@fluent-wallet/wallet_update-account-group": "workspace:packages/rpcs/wallet_updateAccountGroup",
+    "@fluent-wallet/wallet_update-token-list": "workspace:packages/rpcs/wallet_updateTokenList",
     "@fluent-wallet/wallet_user-approved-auth-request": "workspace:packages/rpcs/wallet_userApprovedAuthRequest",
     "@fluent-wallet/wallet_user-rejected-auth-request": "workspace:packages/rpcs/wallet_userRejectedAuthRequest",
     "@fluent-wallet/wallet_validate-app-permissions": "workspace:packages/rpcs/wallet_validateAppPermissions",

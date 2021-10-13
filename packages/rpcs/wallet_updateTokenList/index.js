@@ -24,27 +24,31 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   methods: [],
-  db: ['t', 'getNetworkById'],
+  db: ['t', 'getNetworkById', 'retract'],
 }
 
 export const validateAndFormatTokenList = ({tokenList, InvalidParams}) => {
   if (!validate(TokenListSchema, tokenList)) {
     throw InvalidParams(
-      `Invalid token list format.\n${explain(TokenListSchema, tokenList)}`,
+      `Invalid token list format.\n${JSON.stringify(
+        explain(TokenListSchema, tokenList),
+        null,
+        4,
+      )}`,
     )
   }
 
   const {logoURI, tokens} = tokenList
 
-  const protocolTest = /^https?:/i.test
+  const protocolRegex = new RegExp(/^https?:/, 'i')
 
-  const anyUnsupportedProtocol = tokens.reduce((acc, {logoURI}) => {
-    if (!acc) return
+  const allUrlHasValidProtocol = tokens.reduce((acc, {logoURI}) => {
+    if (!acc) return false
     if (!logoURI) return acc
-    return protocolTest(logoURI)
-  }, protocolTest(logoURI))
+    return protocolRegex.test(logoURI)
+  }, protocolRegex.test(logoURI))
 
-  if (anyUnsupportedProtocol)
+  if (!allUrlHasValidProtocol)
     throw InvalidParams(
       'Unsupported logoURI protocol found in token list, only support http/https for now.',
     )
@@ -52,9 +56,12 @@ export const validateAndFormatTokenList = ({tokenList, InvalidParams}) => {
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {getNetworkById, t},
+  db: {getNetworkById, t, retract},
   // rpcs: {},
-  params: {url, name, networkId},
+  params: {
+    tokenList: {url, name},
+    networkId,
+  },
 }) => {
   const network = getNetworkById(networkId)
   if (!network) throw InvalidParams(`Invalid network id ${networkId}`)
@@ -66,10 +73,10 @@ export const main = async ({
     throw InvalidParams(`Invalid token list ${url}`)
   }
 
-  validateAndFormatTokenList(tokenList)
+  validateAndFormatTokenList({tokenList, InvalidParams})
   name = name || tokenList.name
 
-  const [existTokensIdx, existTokensAddr] = network.token.reduce(
+  const [existTokensIdx, existTokensAddr] = (network.token || []).reduce(
     (acc, {address}, idx) => [
       [...acc[0], idx],
       [...acc[1], address],
@@ -77,12 +84,23 @@ export const main = async ({
     [[], []],
   )
 
+  const oldTokenList = network.tokenList
+  const oldTokens =
+    oldTokenList?.token?.reduce(
+      (acc, {eid, fromApp, fromUser}) =>
+        !fromApp && !fromUser ? acc.concat([eid]) : acc,
+      [],
+    ) || []
+
+  if (oldTokenList) retract(oldTokenList.eid)
+  oldTokens.forEach(retract)
+
   const addTokenTxs = tokenList.tokens.reduce(
     (acc, t, idx) => {
       let eid = -idx - 10000
       const dupIdx = existTokensAddr.indexOf(t.address)
       if (dupIdx !== -1) {
-        eid = network.token[existTokensIdx[dupIdx]]
+        eid = network.token[existTokensIdx[dupIdx]].eid
       }
 
       t.fromList = true

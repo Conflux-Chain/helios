@@ -1,0 +1,29 @@
+releases:
+  "@fluent-wallet/cfx_request-accounts": patch
+  "@fluent-wallet/cfx_sign-typed-data_v4": patch
+  "@fluent-wallet/eth_request-accounts": patch
+  "@fluent-wallet/eth_sign-typed-data_v4": patch
+  "@fluent-wallet/extension-runtime": patch
+  "@fluent-wallet/personal_sign": patch
+  "@fluent-wallet/rpc-engine": patch
+  "@fluent-wallet/typed-data-spec": patch
+  "@fluent-wallet/wallet_add-conflux-chain": patch
+  "@fluent-wallet/wallet_add-ethereum-chain": patch
+  "@fluent-wallet/wallet_add-pending-user-auth-request": patch
+  "@fluent-wallet/wallet_request-permissions": patch
+  "@fluent-wallet/wallet_request-unlock-ui": patch
+  "@fluent-wallet/wallet_switch-conflux-chain": patch
+  "@fluent-wallet/wallet_switch-ethereum-chain": patch
+  "@fluent-wallet/wallet_user-approved-auth-request": patch
+  "@fluent-wallet/wallet_user-rejected-auth-request": patch
+  "@fluent-wallet/webextension": patch
+  helios-background: patch
+  helios-inpage: patch
+
+declined:
+  - browser-extension
+  - helios-popup
+  - "@fluent-wallet/cfx_accounts"
+  - "@fluent-wallet/eth_accounts"
+  - "@fluent-wallet/wallet_get-current-viewing-app"
+  - "@fluent-wallet/use-rpc"

@@ -65,6 +65,7 @@ export const permissions = {
     'wallet_getNextNonce',
     'wallet_validatePassword',
     'wallet_deleteAccountGroup',
+    'wallet_refetchTokenList',
   ],
   db: [
     't',
@@ -226,7 +227,12 @@ export const main = async arg => {
       getPassword,
       getLocked,
     },
-    rpcs: {wallet_validatePassword, wallet_deleteAccountGroup, wallet_unlock},
+    rpcs: {
+      wallet_validatePassword,
+      wallet_deleteAccountGroup,
+      wallet_unlock,
+      wallet_refetchTokenList,
+    },
     params: {
       password: optionalPassword,
       mnemonic,
@@ -309,7 +315,8 @@ export const main = async arg => {
   vault.data = await encrypt(password, vault.data)
 
   const vaultId = createVault(vault)
-  if (isFirstGroup) await wallet_unlock({password})
+  if (isFirstGroup) await wallet_unlock({password, waitSideEffects: true})
+  else await wallet_refetchTokenList()
   const groupId = newAccountGroup({...arg, vaultId})
 
   return groupId

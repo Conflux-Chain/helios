@@ -57,6 +57,7 @@
                               uuidp                         cfxjs.spec.core/export-uuidp
                               uri                           cfxjs.spec.core/export-uri
                               inst                          cfxjs.spec.core/export-inst
+                              jsinst                        cfxjs.spec.core/export-js-inst
                               seqable                       cfxjs.spec.core/export-seqable
                               indexed                       cfxjs.spec.core/export-indexed
                               mapp                          cfxjs.spec.core/export-mapp
@@ -67,6 +68,7 @@
                               seq                           cfxjs.spec.core/export-seq
                               char                          cfxjs.spec.core/export-char
                               setp                          cfxjs.spec.core/export-setp
+                              jssetp                        cfxjs.spec.core/export-js-setp
                               nul                           cfxjs.spec.core/export-nil
                               falsep                        cfxjs.spec.core/export-falsep
                               truep                         cfxjs.spec.core/export-truep

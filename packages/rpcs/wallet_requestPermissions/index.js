@@ -1,12 +1,12 @@
 import * as spec from '@fluent-wallet/spec'
 import {generateSchema as genPermissionSchema} from '@fluent-wallet/wallet-permission'
 
-const {catn, cat, map, dbid, or, zeroOrMore, oneOrMore} = spec
+const {catn, map, dbid, or, zeroOrMore, oneOrMore} = spec
 
 export const NAME = 'wallet_requestPermissions'
 
 const permissionSchema = genPermissionSchema(spec)
-const publicSchema = [cat, permissionSchema]
+const publicSchema = [zeroOrMore, [catn, ['permission', permissionSchema]]]
 
 const responseToAppAuthSchema = [
   map,
@@ -30,6 +30,7 @@ export const schemas = {
 
 export const permissions = {
   external: ['inpage', 'popup'],
+  locked: true,
   methods: [
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',

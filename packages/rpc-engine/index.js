@@ -42,7 +42,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
         InvalidParams: wrapRpcError(rpc.NAME, jsonRpcErr.InvalidParams),
         Internal: wrapRpcError(rpc.NAME, jsonRpcErr.Internal),
         Server: wrapRpcError(rpc.NAME, jsonRpcErr.Server),
-        UserRjected: wrapRpcError(rpc.NAME, jsonRpcErr.UserRejected),
+        UserRejected: wrapRpcError(rpc.NAME, jsonRpcErr.UserRejected),
         Unauthorized: wrapRpcError(rpc.NAME, jsonRpcErr.Unauthorized),
         UnsupportedMethod: wrapRpcError(rpc.NAME, jsonRpcErr.UnsupportedMethod),
         Disconnected: wrapRpcError(rpc.NAME, jsonRpcErr.Disconnected),

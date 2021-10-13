@@ -20,12 +20,12 @@
     "i18next": "20.4.0",
     "qrcode.react": "1.0.1",
     "react-copy-to-clipboard": "5.0.4",
-    "react-i18next": "11.11.4",
+    "react-i18next": "11.12.0",
     "react-router-dom": "5.2.1",
     "react-use": "17.2.4",
     "swr": "1.0.0",
     "use-deep-compare-effect": "1.8.0",
     "webextension-polyfill": "^0.8.0",
-    "zustand": "^3.5.10"
+    "zustand": "^3.5.13"
   }
 }

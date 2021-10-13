@@ -9,7 +9,7 @@ export const hasTx = async ({getTxCount, address}) => {
   let rst = false
   try {
     const res = await getTxCount([address])
-    if (new BN(stripHexPrefix(res?.result ?? res), 16).gt(ZERO)) rst = true
+    if (new BN(stripHexPrefix(res), 16).gt(ZERO)) rst = true
   } catch (err) {} // eslint-disable-line no-empty
 
   return rst
@@ -18,8 +18,12 @@ export const hasTx = async ({getTxCount, address}) => {
 export const hasBalance = async ({getBalance, address}) => {
   let rst = false
   try {
-    const res = await getBalance([address])
-    if (new BN(stripHexPrefix(res?.result ?? res), 16).gt(ZERO)) rst = true
+    let res = await getBalance(address)
+    res = Object.values(res)[0]
+    rst = Object.values(res).reduce((acc, m) => {
+      if (acc) return true
+      return acc || new BN(stripHexPrefix(m), 16).gt(ZERO)
+    }, rst)
   } catch (err) {} // eslint-disable-line no-empty
 
   return rst
