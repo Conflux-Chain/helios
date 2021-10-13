@@ -4,7 +4,7 @@ import useGlobalStore from '../stores/index.js'
 import {ROUTES} from '../constants'
 const {ERROR, UNLOCK, WELCOME} = ROUTES
 
-const ProtectedRoute = ({hasAccount, isLocked, ...rest}) => {
+function ProtectedRoute({hasAccount, isLocked, ...rest}) {
   const {FATAL_ERROR} = useGlobalStore()
   switch (true) {
     case FATAL_ERROR:

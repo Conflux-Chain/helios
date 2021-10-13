@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-const HomeTitle = ({title = '', subTitle = '', containerStyle = ''}) => {
+function HomeTitle({title = '', subTitle = '', containerStyle = ''}) {
   return (
     <div className={`mx-6 ${containerStyle}`}>
       <div className="text-2xl text-white">{title}</div>

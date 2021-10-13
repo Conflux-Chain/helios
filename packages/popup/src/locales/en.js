@@ -89,6 +89,8 @@ const en = {
     yes: 'Yes',
     cancel: 'Cancel',
     disconnect: 'Disconnect',
+    //send transaction
+    sendTransaction: 'Send transaction',
   },
 }
 

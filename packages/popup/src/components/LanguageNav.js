@@ -26,7 +26,7 @@ const Overlay = changeLanguage => {
   )
 }
 
-const LanguageNav = ({hasGoBack = false}) => {
+function LanguageNav({hasGoBack = false}) {
   const history = useHistory()
   const {i18n, t} = useTranslation()
   const {language} = i18n

@@ -11,11 +11,11 @@ const getAuthorizedAccountIdIcon = (accounts, icon) => {
   return accountIcons
 }
 const useAuthorizedAccountIdIcon = () => {
-  const [authorizedAccountIdObj, setAuthorizedAccountId] = useState({})
+  const [authorizedAccountIdObj, setAuthorizedAccountIdObj] = useState({})
   const {data: currentDapp} = useRPC([GET_CURRENT_DAPP])
   useEffect(() => {
     if (currentDapp?.app?.account) {
-      setAuthorizedAccountId(
+      setAuthorizedAccountIdObj(
         getAuthorizedAccountIdIcon(
           currentDapp.app.account,
           currentDapp.site.icon,
