@@ -64,7 +64,7 @@ function App() {
   const {error: getAccountGroupError} = useRPC(
     lockedData === false ? [GET_ACCOUNT_GROUP] : null,
   )
-  const {data: pendingAuthReq} = useRPC(
+  const {data: pendingAuthReq, error: pendingReqError} = useRPC(
     lockedData === false ? [GET_PENDING_AUTH_REQ] : null,
   )
   const {setFatalError} = useGlobalStore()
@@ -73,11 +73,13 @@ function App() {
     if (lockedError) setFatalError(lockedError)
     if (zeroGroupError) setFatalError(zeroGroupError)
     if (getAccountGroupError) setFatalError(getAccountGroupError)
+    if (pendingReqError) setFatalError(pendingReqError)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lockedError || zeroGroupError || getAccountGroupError])
+  }, [lockedError || zeroGroupError || getAccountGroupError || pendingReqError])
 
-  if (isUndefined(lockedData) || isUndefined(zeroGroup))
+  if (isUndefined(lockedData) || isUndefined(zeroGroup)) {
     return <div>loading...</div>
+  }
 
   return (
     <Suspense
@@ -97,7 +99,7 @@ function App() {
             <Route exact path={WELCOME} component={Welcome} />
 
             <ProtectedRoute
-              hasPendingAuthReq={pendingAuthReq?.length > 0}
+              pendingAuthReq={pendingAuthReq}
               hasAccount={!zeroGroup}
               isLocked={!zeroGroup && lockedData}
               exact
@@ -124,14 +126,7 @@ function App() {
               path={IMPORT_PRIVATE_KEY}
               component={ImportPrivateKey}
             />
-            <Route exact path={ERROR} component={ErrorPage} />
-            <ProtectedRoute
-              hasAccount={!zeroGroup}
-              isLocked={!zeroGroup && lockedData}
-              exact
-              path={CONNECT_SITE}
-              component={ConnectSite}
-            />
+            <Route exact path={CONNECT_SITE} component={ConnectSite} />
             <Route
               exact
               path={CONFIRM_ADD_SUGGESTED_TOKEN}
@@ -148,6 +143,7 @@ function App() {
               component={DappSwitchNetwork}
             />
             <Route exact path={DAPP_ADD_NETWORK} component={DappAddNetwork} />
+            <Route exact path={ERROR} component={ErrorPage} />
             <Route path="*" render={() => <Redirect to={ERROR} />} />
           </Switch>
         </Router>
