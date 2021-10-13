@@ -1,10 +1,11 @@
-import {CloseMode, pubsub} from '@thi.ng/rstream'
+import {CloseMode, pubsub, stream} from '@thi.ng/rstream'
 import {pluck} from '@fluent-wallet/transducers'
 import {isFunction, isObject, isString} from '@fluent-wallet/checks'
 
 export default class SafeEventEmitter {
   // #s
   #pb
+  #streams = {}
   #allowedEventType = []
   #listeners = new Map()
   constructor(opts = {}) {
@@ -13,13 +14,25 @@ export default class SafeEventEmitter {
     this.#pb = pubsub({topic: ({topic} = {}) => topic})
     this.#pb.closeIn = CloseMode.NEVER
     this.#pb.closeOut = CloseMode.NEVER
-    this.#pb.cache = true
     this.#pb.error = err => {
       this.onError.call(this, err)
       // https://github.com/thi-ng/umbrella/blob/fb6b5b76d16a75d157499f7ccf46c777a063131e/packages/rstream/src/api.ts#L114
       // so that stream won't go into ERROR state
       return true
     }
+    this.#streams = allowedEventType.reduce((acc, eventType) => {
+      const s = stream({
+        closeIn: CloseMode.NEVER,
+        closeOut: CloseMode.NEVER,
+        cache: true,
+        id: `topic-${eventType}`,
+      })
+      this.#pb.subscribeTopic(eventType, s, {xform: pluck('data')})
+      return {
+        ...acc,
+        [eventType]: s,
+      }
+    }, {})
   }
 
   onError(error) {
@@ -47,7 +60,7 @@ export default class SafeEventEmitter {
     if (this.#listeners.has(listener)) return
     const sub = {next: listener}
     this.#listeners.set(listener, sub)
-    this.#pb.subscribeTopic(eventType, sub, {xform: pluck('data')})
+    this.#streams[eventType].subscribe(sub)
   }
 
   once() {
@@ -57,7 +70,7 @@ export default class SafeEventEmitter {
   off(eventType, listener) {
     this.#checkBeforeSub({eventType, listener})
     if (!this.#listeners.has(listener)) return
-    this.#pb.unsubscribeTopic(eventType, this.#listeners.get(listener))
+    this.#streams[eventType].unsubscribe(this.#listeners.get(listener))
     this.#listeners.delete(listener)
   }
 
