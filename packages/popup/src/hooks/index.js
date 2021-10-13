@@ -4,6 +4,7 @@ import {useHistory, useLocation} from 'react-router-dom'
 import {ROUTES, ANIMATE_DURING_TIME, RPC_METHODS} from '../constants'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber} from '@fluent-wallet/checks'
+import {BigNumber} from 'bignumber.js'
 
 const {GET_ACCOUNT_GROUP, GET_ACCOUNT_ADDRESS_BY_NETWORK, GET_BALANCE} =
   RPC_METHODS
@@ -103,9 +104,9 @@ const formatAccountGroupData = ({
           addressDataWithEid[eid]?.base32 || addressDataWithEid[eid]?.hex || ''
         const accountData = {nickname, eid, address}
         if (returnBalance) {
-          accountData['balance'] = window
-            .BigInt(balanceData[address][token])
-            .toString()
+          accountData['balance'] = new BigNumber(
+            balanceData[address][token],
+          ).toString()
         }
         ret[groupIndex]['account'].push({
           ...accountData,

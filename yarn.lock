@@ -9981,7 +9981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^9.0.0":
+"bignumber.js@npm:9.0.1, bignumber.js@npm:^9.0.0":
   version: 9.0.1
   resolution: "bignumber.js@npm:9.0.1"
   checksum: 6e72f6069d9db32fc8d27561164de9f811b15f9144be61f323d8b36150a239eea50c92e20ba38af2ba5e717af10b8ef12db8f9948fe2ff02bf17ede5239d15d3
@@ -16738,6 +16738,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/component-toast": "workspace:packages/ui/components/Toast"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
+    bignumber.js: 9.0.1
     i18next: 20.4.0
     qrcode.react: 1.0.1
     react-copy-to-clipboard: 5.0.4

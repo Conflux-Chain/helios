@@ -8,9 +8,9 @@ function ConfirmAddSuggestedToken() {
   const {t} = useTranslation()
   const balanceRef = useRef()
   const hiddenRef = useRef()
-  const maxBalanceWidthStyle = 'max-w-[156px]'
+  const maxBalanceWidthStyle = 'max-w-[184px]'
   const balance = '12311231212312222222222123321'
-  useFontSize(balanceRef, hiddenRef, 156, balance)
+  useFontSize(balanceRef, hiddenRef, 184, balance)
 
   return (
     <div
@@ -29,7 +29,7 @@ function ConfirmAddSuggestedToken() {
             {t('confirmAddSuggestedToken')}
           </p>
           <div className="bg-bg rounded flex items-center h-14 px-3">
-            <div className="flex flex-1">
+            <div className="flex">
               <img src="" alt="coin" className="h-8 w-8 mr-2" />
               <div>
                 <div className="font-medium text-sm text-gray-80">ZRX</div>

@@ -49,7 +49,7 @@ function DappSwitchNetwork() {
               <div className="text-base text-primary font-medium">
                 Binance Smart Chain
               </div>
-              <div className="text-center text-xs text-[#F5B797] bg-[#FFF7F4] w-14 h-5 absolute top-px right-px">
+              <div className="text-center text-xs text-[#F5B797] bg-[#FFF7F4] w-14 h-5 absolute top-px right-px rounded-tr rounded-bl-2 rounded-bl-lg">
                 testnet
               </div>
             </div>
