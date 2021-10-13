@@ -18,6 +18,7 @@ function validateAndFormatTypedDataString({
     throw InvalidParams("Invalid typed data, can't parse with JSON.parse")
   }
 
+  const typedDataSpec = getTypedDataSpec(type, spec)
   if (!spec.validate(typedDataSpec, typedData)) {
     throw InvalidParams(
       `Invalid typed data\n${JSON.stringify(
@@ -36,7 +37,6 @@ function validateAndFormatTypedDataString({
 }
 
 const {cat, ethHexAddress, base32UserAddress, stringp} = spec
-const typedDataSpec = getTypedDataSpec('eth', spec)
 
 export const gen = {
   schemas: type => {
@@ -80,7 +80,7 @@ export const gen = {
           network: app.currentNetwork.eid,
         })
 
-        if (type === 'cfx' && from.toLowerCase() !== addr.cfxHex.toLowerCase())
+        if (type === 'cfx' && from.toLowerCase() !== addr.base32.toLowerCase())
           throw Unauthorized()
         if (type === 'eth' && from.toLowerCase() !== addr.hex.toLowerCase())
           throw Unauthorized()

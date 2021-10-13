@@ -80,6 +80,6 @@ export const main = async ({
     if (!authReq) throw InvalidParams(`Invalid auth req id ${authReqId}`)
     const rst = await wallet_addNetwork(chainConf)
     if (rst?.error) return await wallet_userRejectedAuthRequest({authReqId})
-    return await wallet_userApprovedAuthRequest({authReqId, res: null})
+    return await wallet_userApprovedAuthRequest({authReqId, res: '__null__'})
   }
 }
