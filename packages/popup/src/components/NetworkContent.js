@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../constants'
-const {GET_NETWORK} = RPC_METHODS
+import {request} from '../utils'
+import {useSWRConfig} from 'swr'
 
+const {GET_NETWORK, SET_CURRENT_NETWORK, GET_CURRENT_NETWORK} = RPC_METHODS
 const networkTypeColorObj = {
   mainnet: 'bg-primary-10 text-[#ACB6E0]',
   testnet: 'bg-[#FFF7F4] text-[#F5B797]',
   custom: 'bg-[#F0FDFC] text-[#83DBC6]',
 }
-
 const itemWrapperPaddingStyleObj = {
   small: 'pl-3',
   medium: 'pl-3.5',
@@ -22,16 +23,26 @@ function NetworkItem({
   networkItemSize = 'medium',
   ...props
 }) {
+  const {mutate} = useSWRConfig()
+
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
     itemWrapperPaddingStyleObj[networkItemSize] || ''
+
+  const onChangeNetwork = () => {
+    request(SET_CURRENT_NETWORK, [networkId]).then(({result}) => {
+      mutate([GET_CURRENT_NETWORK])
+      onClickNetworkItem(result, {networkId, networkName, icon})
+      // TODO: need deal with error condition
+    })
+  }
 
   return (
     <div
       {...props}
       aria-hidden="true"
       className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative cursor-pointer ${itemWrapperPaddingStyle}`}
-      onClick={() => onClickNetworkItem({networkId, networkName, icon})}
+      onClick={onChangeNetwork}
     >
       <div className="w-8 h-8 border border-solid border-gray-20 rounded-full flex items-center justify-center">
         <img

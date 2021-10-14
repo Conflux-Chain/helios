@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 import Input from '@fluent-wallet/component-input'
 import Checkbox from '@fluent-wallet/component-checkbox'
@@ -20,43 +20,17 @@ import {useAccountGroupAddress} from '../../hooks'
 import {formatIntoShortAddress} from '../../utils'
 const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
 
-function ConnectSitesList({networkId}) {
+function ConnectSitesList({
+  accountData,
+  allCheckboxStatus,
+  onSelectAllAccount,
+  currentAccount,
+  onSelectSingleAccount,
+  checkboxStatusObj,
+}) {
   const {t} = useTranslation()
-  const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
-  const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
-  const {addressData, accountData} = useAccountGroupAddress(networkId)
 
-  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
-    fallbackData: {},
-  })
-
-  const onSelectSingleAccount = accountId => {
-    setCheckboxStatusObj({
-      ...checkboxStatusObj,
-      [accountId]: !checkboxStatusObj[accountId],
-    })
-  }
-
-  useDeepCompareEffect(() => {
-    if (addressData) {
-      const ret = {}
-      Object.keys(addressData).forEach(k => (ret[k] = false))
-      setCheckboxStatusObj({...ret})
-      setAllCheckboxStatus(false)
-    }
-  }, [addressData || {}])
-
-  useDeepCompareEffect(() => {
-    if (addressData) {
-      const ret = {}
-      Object.keys(addressData).forEach(k => (ret[k] = allCheckboxStatus))
-      setCheckboxStatusObj({...ret})
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressData || {}, allCheckboxStatus])
-
-  return accountData.length ? (
+  return accountData?.length ? (
     <>
       <div className="flex justify-between px-1 mt-3 mb-2">
         <div className="flex items-center">
@@ -68,10 +42,7 @@ function ConnectSitesList({networkId}) {
             className="w-4 h-4 text-gray-40 ml-2"
           />
         </div>
-        <Checkbox
-          checked={allCheckboxStatus}
-          onChange={() => setAllCheckboxStatus(!allCheckboxStatus)}
-        >
+        <Checkbox checked={allCheckboxStatus} onChange={onSelectAllAccount}>
           {t('selectAll')}
         </Checkbox>
       </div>
@@ -95,7 +66,7 @@ function ConnectSitesList({networkId}) {
                     </p>
                   </div>
                   <div className="flex">
-                    {currentAccount.eid && currentAccount.eid === eid ? (
+                    {currentAccount?.eid === eid ? (
                       <img
                         src="images/location.svg"
                         alt="current address"
@@ -117,35 +88,88 @@ function ConnectSitesList({networkId}) {
   ) : null
 }
 ConnectSitesList.propTypes = {
-  networkId: PropTypes.number,
+  accountData: PropTypes.array.isRequired,
+  allCheckboxStatus: PropTypes.bool.isRequired,
+  checkboxStatusObj: PropTypes.object.isRequired,
+  currentAccount: PropTypes.object.isRequired,
+  onSelectAllAccount: PropTypes.func.isRequired,
+  onSelectSingleAccount: PropTypes.func.isRequired,
 }
 
 function ConnectSite() {
+  const {t} = useTranslation()
+  const [confirmAccounts, setConfirmAccounts] = useState([])
   const [searchContent, setSearchContent] = useState('')
   const [networkShow, setNetworkShow] = useState(false)
   const [networkId, setNetworkId] = useState(null)
   const [searchIcon, setSearchIcon] = useState('')
-  const {t} = useTranslation()
-  const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
+  const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
+  const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
 
-  const onClickNetworkItem = ({networkId, networkName, icon}) => {
+  const {addressData, accountData} = useAccountGroupAddress(networkId)
+  const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
+  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
+    fallbackData: {},
+  })
+
+  // console.log('pendingAuthReq = ', pendingAuthReq)
+
+  useDeepCompareEffect(() => {
+    setSearchIcon(currentNetworkData?.icon || '')
+    setSearchContent(currentNetworkData?.name || '')
+    setNetworkId(currentNetworkData?.eid || null)
+  }, [currentNetworkData || {}])
+
+  useDeepCompareEffect(() => {
+    if (
+      addressData &&
+      !Object.keys(checkboxStatusObj).length &&
+      currentAccount.eid
+    ) {
+      const ret = {}
+      Object.keys(addressData).forEach(
+        id => (ret[id] = Number(id) === currentAccount.eid),
+      )
+      setCheckboxStatusObj({...ret})
+    }
+  }, [addressData || {}, currentAccount])
+
+  useDeepCompareEffect(() => {
+    setAllCheckboxStatus(
+      Object.keys(checkboxStatusObj).every(id => checkboxStatusObj[id]),
+    )
+    setConfirmAccounts(
+      Object.keys(checkboxStatusObj)
+        .filter(id => checkboxStatusObj[id])
+        .map(Number),
+    )
+  }, [checkboxStatusObj])
+
+  const onClickNetworkItem = (result, {networkId, networkName, icon}) => {
     setNetworkId(networkId)
     setSearchContent(networkName)
     setSearchIcon(icon || '')
     setNetworkShow(false)
   }
 
-  useEffect(() => {
-    setSearchIcon(currentNetworkData?.icon || '')
-    setSearchContent(currentNetworkData?.name || '')
-    setNetworkId(currentNetworkData?.eid || null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(currentNetworkData)])
+  const onSelectAllAccount = () => {
+    const ret = {}
+    Object.keys(checkboxStatusObj).forEach(k => (ret[k] = !allCheckboxStatus))
+    setCheckboxStatusObj({...ret})
+    setAllCheckboxStatus(!allCheckboxStatus)
+  }
+
+  const onSelectSingleAccount = accountId => {
+    setCheckboxStatusObj({
+      ...checkboxStatusObj,
+      [accountId]: !checkboxStatusObj[accountId],
+    })
+  }
 
   return currentNetworkData ? (
     <div
       id="connectSiteContainer"
-      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat"
+      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
     >
       <div>
         <header>
@@ -184,7 +208,14 @@ function ConnectSite() {
               }
             />
           </div>
-          <ConnectSitesList networkId={networkId} />
+          <ConnectSitesList
+            accountData={accountData}
+            allCheckboxStatus={allCheckboxStatus}
+            currentAccount={currentAccount}
+            onSelectSingleAccount={onSelectSingleAccount}
+            onSelectAllAccount={onSelectAllAccount}
+            checkboxStatusObj={checkboxStatusObj}
+          />
           <Modal
             id="networkModal"
             open={networkShow}
@@ -199,6 +230,10 @@ function ConnectSite() {
       <DappTransactionFooter
         cancelText={t('cancel')}
         confirmText={t('connect')}
+        confirmDisabled={!confirmAccounts.length}
+        confirmParams={{
+          accounts: [...confirmAccounts],
+        }}
       />
     </div>
   ) : null

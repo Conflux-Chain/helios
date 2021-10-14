@@ -10,7 +10,7 @@ export default function PendingAuthReqExample() {
   const {data: groups} = useRPC([GET_ACCOUNT_GROUP])
   console.log('groups = ', groups)
   if (!(pendingAuthReq?.length > 0)) return <div></div>
-  console.log('pendingAuthReq = ', pendingAuthReq)
+  console.log('pendingAuthReq = ', JSON.stringify(pendingAuthReq))
   const [
     {
       req, // app, site,

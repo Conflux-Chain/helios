@@ -85,6 +85,7 @@ module.exports = {
         'gray-60': 'var(--color-gray-60)',
         'gray-80': 'var(--color-gray-80)',
         'gray-90': 'var(--color-gray-90)',
+        'gray-96': 'var(--color-gray-96)',
         'gray-100': 'var(--color-gray-100)',
       },
       fontFamily: {

@@ -74,6 +74,9 @@ const getAddressParams = (accountGroups, networkId) => {
 }
 
 const getAddressDataWithEid = (addressParams, addressData) => {
+  if (Object.prototype.toString.call(addressData) === '[Object Object]') {
+    addressData = [addressData]
+  }
   if (addressData.length && addressParams.length) {
     return addressParams.reduce((acc, cur, idx) => {
       acc[cur['accountId']] = addressData[idx]
@@ -105,7 +108,7 @@ const formatAccountGroupData = ({
         const accountData = {nickname, eid, address}
         if (returnBalance) {
           accountData['balance'] = new BigNumber(
-            balanceData[address][token],
+            balanceData[address][token] || '0',
           ).toString()
         }
         ret[groupIndex]['account'].push({
@@ -133,12 +136,11 @@ export const useAccountGroupBatchBalance = networkId => {
   const {data: balanceData} = useRPC(
     addressData.length ? [GET_BALANCE, networkId] : null,
     {
-      users: addressData.map(data => data.base32 || data.hex),
+      users: addressData.map(data => data?.base32 || data?.hex).filter(Boolean),
       tokens: ['0x0'],
     },
     {fallbackData: {}},
   )
-
   const addressDataWithEid = getAddressDataWithEid(addressParams, addressData)
 
   return formatAccountGroupData({

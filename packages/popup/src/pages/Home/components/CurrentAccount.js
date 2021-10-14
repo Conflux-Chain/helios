@@ -41,8 +41,7 @@ function CurrentAccount({onOpenAccount}) {
     {accountId, networkId},
     {fallbackData: {}},
   )
-  const {base32, hex} = accountAddress
-
+  const {base32, hex} = accountAddress || {}
   const address =
     type === NETWORK_TYPE.CFX ? base32 : type === NETWORK_TYPE.ETH ? hex : ''
   const displayAddress = address ? shortenAddress(address) : ''
