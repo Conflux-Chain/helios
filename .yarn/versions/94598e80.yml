@@ -1,0 +1,14 @@
+releases:
+  "@fluent-wallet/cfx_sign-typed-data_v4": patch
+  "@fluent-wallet/contract-method-name": patch
+  "@fluent-wallet/personal_sign": patch
+  "@fluent-wallet/provider-api": patch
+  "@fluent-wallet/safe-event-emiter": patch
+  "@fluent-wallet/signature": patch
+
+declined:
+  - helios-background
+  - helios-inpage
+  - helios-popup
+  - "@fluent-wallet/eth_sign-typed-data_v4"
+  - "@fluent-wallet/use-rpc"

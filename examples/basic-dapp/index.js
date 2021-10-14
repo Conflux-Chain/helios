@@ -35,7 +35,7 @@ function walletInitialized({chainId, networkId}) {
         getElement('address').innerHTML = res.result
         console.log('result', res.result)
         personalSignButton.disabled = false
-        // typedSignButton.disabled = false
+        typedSignButton.disabled = false
         addNetworkButton.disabled = false
         switchNetworkButton.disabled = false
       })

@@ -62,6 +62,8 @@ module.exports = {
     source: 'local',
     env,
     polyfillNode: true,
+    packageLookupFields: ['browser'],
+    packageExportLookupFields: ['exports'],
   },
   buildOptions: {
     clean: true,

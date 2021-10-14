@@ -21,7 +21,7 @@ mustacheRender(
 
 const root = __dirname
 
-module.exports = mergeConfig(baseConfig, {
+const mergedConfig = mergeConfig(baseConfig, {
   root,
   mount: {
     [path.resolve(root, './public')]: {url: '/', static: true},
@@ -40,7 +40,6 @@ module.exports = mergeConfig(baseConfig, {
     ],
     '@snowpack/plugin-react-refresh',
   ],
-  packageOptions: {},
   devOptions: {
     port: 18001,
   },
@@ -52,7 +51,26 @@ module.exports = mergeConfig(baseConfig, {
     out: path.resolve(root, '../browser-extension/build/popup'),
     // webModulesUrl: 'popup/m',
   },
+  packageOptions: {
+    ...baseConfig.packageOptions,
+    cache: '.snowpack-popup',
+  },
   optimize: {
     entrypoints: ['dist/index.js'],
   },
 })
+
+const shouldExcludeInPopup = path => {
+  return /packages\/(rpcs|db|spec)/.test(path)
+}
+
+mergedConfig.mount = Object.entries(mergedConfig.mount).reduce(
+  (acc, [k, v]) => {
+    if (shouldExcludeInPopup(k)) return acc
+    acc[k] = v
+    return acc
+  },
+  {},
+)
+
+module.exports = mergedConfig
