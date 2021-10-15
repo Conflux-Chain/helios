@@ -41,7 +41,7 @@ function DappAddNetwork() {
               </div>
             </div>
             <div className="mt-3">
-              <div className="text-xs text-gray-40">{t('NetworkUrl')}</div>
+              <div className="text-xs text-gray-40">{t('networkUrl')}</div>
               <div className="text-sm text-gray-80 font-medium mt-0.5">
                 21312
               </div>

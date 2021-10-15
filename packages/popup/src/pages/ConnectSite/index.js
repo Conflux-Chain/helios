@@ -112,8 +112,6 @@ function ConnectSite() {
     fallbackData: {},
   })
 
-  // console.log('pendingAuthReq = ', pendingAuthReq)
-
   useDeepCompareEffect(() => {
     setSearchIcon(currentNetworkData?.icon || '')
     setSearchContent(currentNetworkData?.name || '')
@@ -172,17 +170,7 @@ function ConnectSite() {
       className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
     >
       <div>
-        <header>
-          <div>
-            <p className="text-sm text-gray-100 text-center h-13 flex justify-center items-center mb-1">
-              {t('connectSite')}
-            </p>
-            <DappConnectWalletHeader />
-            <p className="text-base text-gray-80 text-center mt-2 font-medium">
-              dapp name
-            </p>
-          </div>
-        </header>
+        <DappConnectWalletHeader title={t('connectSite')} />
         <main className="px-3">
           <p className="text-sm text-gray-40 mt-3 mb-2 ml-1">
             {t('selectNetwork')}

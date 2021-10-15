@@ -5,8 +5,12 @@ import {request} from '../utils'
 import {RPC_METHODS, ROUTES} from '../constants'
 import {useHistory} from 'react-router-dom'
 
-const {GET_PENDING_AUTH_REQ, REJECT_PENDING_AUTH_REQ, REQUEST_PERMISSIONS} =
-  RPC_METHODS
+const {
+  GET_PENDING_AUTH_REQ,
+  REJECT_PENDING_AUTH_REQ,
+  REQUEST_PERMISSIONS,
+  WALLET_SWITCH_CONFLUX_CHAIN,
+} = RPC_METHODS
 const {HOME} = ROUTES
 function DappTransactionFooter({
   cancelText,
@@ -18,6 +22,7 @@ function DappTransactionFooter({
   const {data: pendingAuthReq} = useRPC([GET_PENDING_AUTH_REQ], undefined, {
     fallbackData: [{eid: null}],
   })
+  // console.log('pendingAuthReq', pendingAuthReq)
   const [{req, eid}] = pendingAuthReq.length ? pendingAuthReq : [{}]
 
   const onCancel = () => {
@@ -28,12 +33,20 @@ function DappTransactionFooter({
   }
 
   const onConfirm = () => {
+    if (!req?.method) {
+      return
+    }
+
     const params = {...confirmParams}
-    switch (req?.method) {
+    switch (req.method) {
       case REQUEST_PERMISSIONS:
         params.permissions = req.params
         break
+      case WALLET_SWITCH_CONFLUX_CHAIN:
+        params.chainConfig = req.params
+        break
     }
+
     request(req.method, {authReqId: eid, ...params}).then(({result}) => {
       result && history.push(HOME)
       // TODO: error message

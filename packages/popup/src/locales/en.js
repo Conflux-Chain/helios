@@ -113,7 +113,7 @@ const en = {
       'Do you trust this site? Fluent Wallet does not verify custom networks.',
     learnMore: 'Learn More',
     networkName: 'Network Name',
-    NetworkUrl: 'Network URL',
+    networkUrl: 'Network URL',
     chainId: 'Chain ID',
     currencySymbol: 'Currency Symbol',
     optional: 'optional',

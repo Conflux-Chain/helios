@@ -1,26 +1,29 @@
 import {useTranslation} from 'react-i18next'
 import {DappTransactionFooter, DappConnectWalletHeader} from '../../components'
+import {useRPC} from '@fluent-wallet/use-rpc'
+import {RPC_METHODS} from '../../constants'
+
+const {GET_PENDING_AUTH_REQ, GET_NETWORK} = RPC_METHODS
 
 function DappSwitchNetwork() {
   const {t} = useTranslation()
+  const {data: pendingAuthReq} = useRPC([GET_PENDING_AUTH_REQ], undefined, {
+    fallbackData: [{req: null}],
+  })
+  const [{req}] = pendingAuthReq.length ? pendingAuthReq : [{}]
+
+  // const {data: networkData, error} = useRPC(
+  //   req?.params[0]?.chainId ? [GET_NETWORK, req.params[0].chainId] : null,
+  //   {chainId: req.params[0].chainId},
+  // )
 
   return (
     <div
-      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat"
+      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
       id="dappSwitchNetworkContainer"
     >
       <div>
-        <header>
-          <div>
-            <p className="text-sm text-gray-100 text-center h-13 flex justify-center items-center mb-1">
-              {t('switchNetwork')}
-            </p>
-            <DappConnectWalletHeader />
-            <p className="text-base text-gray-80 text-center mt-2 font-medium">
-              dapp name
-            </p>
-          </div>
-        </header>
+        <DappConnectWalletHeader title={t('switchNetwork')} />
         <main className="mt-3 px-3">
           <div className="ml-1">
             <div>
@@ -56,15 +59,15 @@ function DappSwitchNetwork() {
           </div>
           <div className="px-3 py-4 bg-gray-4">
             <div>
-              <div className="text-xs text-gray-40">{t('NetworkUrl')}</div>
+              <div className="text-xs text-gray-40">{t('networkUrl')}</div>
               <div className="text-sm text-gray-80 font-medium mt-0.5">
                 mock url
               </div>
             </div>
             <div>
-              <div className="text-xs text-gray-40">{t('NetworkUrl')}</div>
+              <div className="text-xs text-gray-40">{t('chainId')}</div>
               <div className="text-sm text-gray-80 font-medium mt-0.5">
-                mock id
+                {req?.params[0]?.chainId || ''}
               </div>
             </div>
           </div>
