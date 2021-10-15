@@ -159,7 +159,7 @@ export const useAccountGroupBatchBalance = networkId => {
   })
 }
 
-export const useAddress = () => {
+export const useCurrentAccount = () => {
   const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
     fallbackData: {},
   })
@@ -168,6 +168,7 @@ export const useAddress = () => {
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
+  console.log(currentAccount)
   const {eid: accountId} = currentAccount
 
   const {data: accountAddress} = useRPC(
@@ -183,5 +184,8 @@ export const useAddress = () => {
   const address =
     type === NETWORK_TYPE.CFX ? base32 : type === NETWORK_TYPE.ETH ? hex : ''
 
-  return address
+  return {
+    ...currentAccount,
+    address,
+  }
 }

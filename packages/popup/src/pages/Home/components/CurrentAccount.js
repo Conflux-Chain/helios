@@ -5,28 +5,20 @@ import {CopyToClipboard} from 'react-copy-to-clipboard'
 import QRCode from 'qrcode.react'
 import Toast from '@fluent-wallet/component-toast'
 import Modal from '@fluent-wallet/component-modal'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {
   RightOutlined,
   CopyOutlined,
   QrcodeOutlined,
 } from '@fluent-wallet/component-icons'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {useAddress} from '../../../hooks'
-import {RPC_METHODS} from '../../../constants'
-const {GET_CURRENT_ACCOUNT} = RPC_METHODS
+import {useCurrentAccount} from '../../../hooks'
 
 function CurrentAccount({onOpenAccount}) {
   const [copied, setCopied] = useState(false)
   const [qrcodeShow, setQrcodeShow] = useState(false)
   const {t} = useTranslation()
 
-  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
-    fallbackData: {},
-  })
-  const {nickname} = currentAccount
-
-  const address = useAddress()
+  const {nickname, address} = useCurrentAccount()
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (

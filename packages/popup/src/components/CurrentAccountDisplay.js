@@ -1,16 +1,8 @@
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {useAddress} from '../hooks'
-import {RPC_METHODS} from '../constants'
-const {GET_CURRENT_ACCOUNT} = RPC_METHODS
+import {useCurrentAccount} from '../hooks'
 
 function CurrentAccountDisplay() {
-  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
-    fallbackData: {},
-  })
-  const {nickname, icon} = currentAccount
-
-  const address = useAddress()
+  const {nickname, icon, address} = useCurrentAccount()
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (
