@@ -73,7 +73,7 @@ const getAddressParams = (accountGroups, networkId) => {
   return addressParams
 }
 
-const getAddressDataWithEid = (addressParams, addressData) => {
+const getAddressDataWithAccountId = (addressParams, addressData) => {
   if (Object.prototype.toString.call(addressData) === '[Object Object]') {
     addressData = [addressData]
   }
@@ -90,21 +90,23 @@ const getAddressDataWithEid = (addressParams, addressData) => {
 const formatAccountGroupData = ({
   accountGroups,
   balanceData,
-  addressDataWithEid,
+  addressDataWithAccountId,
   token = '0x0',
   returnBalance = true,
 }) => {
   let ret = []
   if (
     accountGroups.length &&
-    addressDataWithEid &&
+    addressDataWithAccountId &&
     ((returnBalance && Object.keys(balanceData).length) || !returnBalance)
   ) {
     accountGroups.forEach(({nickname, account}, groupIndex) => {
       ret.push({nickname, account: []})
       account.forEach(({nickname, eid}) => {
         const address =
-          addressDataWithEid[eid]?.base32 || addressDataWithEid[eid]?.hex || ''
+          addressDataWithAccountId[eid]?.base32 ||
+          addressDataWithAccountId[eid]?.hex ||
+          ''
         const accountData = {nickname, eid, address}
         if (returnBalance) {
           accountData['balance'] = new BigNumber(
@@ -141,12 +143,15 @@ export const useAccountGroupBatchBalance = networkId => {
     },
     {fallbackData: {}},
   )
-  const addressDataWithEid = getAddressDataWithEid(addressParams, addressData)
+  const addressDataWithAccountId = getAddressDataWithAccountId(
+    addressParams,
+    addressData,
+  )
 
   return formatAccountGroupData({
     accountGroups,
     balanceData,
-    addressDataWithEid,
+    addressDataWithAccountId,
   })
 }
 
@@ -162,13 +167,16 @@ export const useAccountGroupAddress = networkId => {
     {fallbackData: []},
   )
 
-  const addressDataWithEid = getAddressDataWithEid(addressParams, addressData)
+  const addressDataWithAccountId = getAddressDataWithAccountId(
+    addressParams,
+    addressData,
+  )
 
   return {
-    addressData: addressDataWithEid,
+    addressDataWithAccountId: addressDataWithAccountId,
     accountData: formatAccountGroupData({
       accountGroups,
-      addressDataWithEid,
+      addressDataWithAccountId,
       returnBalance: false,
     }),
   }

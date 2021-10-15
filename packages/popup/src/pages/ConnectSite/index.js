@@ -15,6 +15,7 @@ import {
   NetworkContent,
   DappConnectWalletHeader,
   DappTransactionFooter,
+  CompWithLabel,
 } from '../../components'
 import {useAccountGroupAddress} from '../../hooks'
 import {formatIntoShortAddress} from '../../utils'
@@ -32,58 +33,63 @@ function ConnectSitesList({
 
   return accountData?.length ? (
     <>
-      <div className="flex justify-between px-1 mt-3 mb-2">
-        <div className="flex items-center">
-          <div className="text-sm text-gray-40">
-            {t('selectAuthorizedAccounts')}
+      <CompWithLabel
+        label={
+          <div className="flex justify-between">
+            <div className="flex items-center">
+              <div className="text-sm text-gray-40">
+                {t('selectAuthorizedAccounts')}
+              </div>
+              <QuestionCircleOutlined
+                onClick={() => window && window.open('')}
+                className="w-4 h-4 text-gray-40 ml-2 cursor-pointer"
+              />
+            </div>
+            <Checkbox checked={allCheckboxStatus} onChange={onSelectAllAccount}>
+              {t('selectAll')}
+            </Checkbox>
           </div>
-          <QuestionCircleOutlined
-            onClick={() => window && window.open('')}
-            className="w-4 h-4 text-gray-40 ml-2"
-          />
-        </div>
-        <Checkbox checked={allCheckboxStatus} onChange={onSelectAllAccount}>
-          {t('selectAll')}
-        </Checkbox>
-      </div>
-      <div className="max-h-[282px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll">
-        {accountData.map(({nickname, account}, groupIndex) => (
-          <div key={groupIndex}>
-            <p className="text-gray-40 ml-4 mb-1 mt-1 text-xs">{nickname}</p>
-            {account.map(({nickname, eid, address}, accountIndex) => (
-              <div
-                aria-hidden="true"
-                onClick={() => () => {}}
-                key={accountIndex}
-                className="flex px-3 items-center h-15"
-              >
-                <div className="flex w-full">
-                  <img className="w-5 h-5 mr-2" src="" alt="avatar" />
-                  <div className="flex-1">
-                    <p className="text-xs text-gray-40">{nickname}</p>
-                    <p className="text-sm text-gray-80">
-                      {formatIntoShortAddress(address)}
-                    </p>
-                  </div>
-                  <div className="flex">
-                    {currentAccount?.eid === eid ? (
-                      <img
-                        src="images/location.svg"
-                        alt="current address"
-                        className="mr-3"
+        }
+      >
+        <div className="max-h-[282px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll">
+          {accountData.map(({nickname, account}, groupIndex) => (
+            <div key={groupIndex}>
+              <p className="text-gray-40 ml-4 mb-1 mt-1 text-xs">{nickname}</p>
+              {account.map(({nickname, eid, address}, accountIndex) => (
+                <div
+                  aria-hidden="true"
+                  onClick={() => () => {}}
+                  key={accountIndex}
+                  className="flex px-3 items-center h-15"
+                >
+                  <div className="flex w-full">
+                    <img className="w-5 h-5 mr-2" src="" alt="avatar" />
+                    <div className="flex-1">
+                      <p className="text-xs text-gray-40">{nickname}</p>
+                      <p className="text-sm text-gray-80">
+                        {formatIntoShortAddress(address)}
+                      </p>
+                    </div>
+                    <div className="flex">
+                      {currentAccount?.eid === eid ? (
+                        <img
+                          src="images/location.svg"
+                          alt="current address"
+                          className="mr-3"
+                        />
+                      ) : null}
+                      <Checkbox
+                        onChange={() => onSelectSingleAccount(eid)}
+                        checked={checkboxStatusObj[eid]}
                       />
-                    ) : null}
-                    <Checkbox
-                      onChange={() => onSelectSingleAccount(eid)}
-                      checked={checkboxStatusObj[eid]}
-                    />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </CompWithLabel>
     </>
   ) : null
 }
@@ -106,7 +112,8 @@ function ConnectSite() {
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
   const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
 
-  const {addressData, accountData} = useAccountGroupAddress(networkId)
+  const {addressDataWithAccountId, accountData} =
+    useAccountGroupAddress(networkId)
   const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
@@ -120,17 +127,17 @@ function ConnectSite() {
 
   useDeepCompareEffect(() => {
     if (
-      addressData &&
+      addressDataWithAccountId &&
       !Object.keys(checkboxStatusObj).length &&
       currentAccount.eid
     ) {
       const ret = {}
-      Object.keys(addressData).forEach(
+      Object.keys(addressDataWithAccountId).forEach(
         id => (ret[id] = Number(id) === currentAccount.eid),
       )
       setCheckboxStatusObj({...ret})
     }
-  }, [addressData || {}, currentAccount])
+  }, [addressDataWithAccountId || {}, currentAccount])
 
   useDeepCompareEffect(() => {
     setAllCheckboxStatus(
@@ -172,30 +179,32 @@ function ConnectSite() {
       <div>
         <DappConnectWalletHeader title={t('connectSite')} />
         <main className="px-3">
-          <p className="text-sm text-gray-40 mt-3 mb-2 ml-1">
-            {t('selectNetwork')}
-          </p>
-          <div
-            id="setNetworkShow"
-            aria-hidden="true"
-            onClick={() => setNetworkShow(true)}
-            className="cursor-pointer"
+          <CompWithLabel
+            label={<p className="text-sm text-gray-40">{t('selectNetwork')}</p>}
           >
-            <Input
-              value={searchContent}
-              width="w-full box-border"
-              readOnly={true}
-              className="pointer-events-none"
-              suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
-              prefix={
-                <img
-                  src={searchIcon || 'images/default-network-icon.svg'}
-                  alt="network icon"
-                  className="w-4 h-4"
-                />
-              }
-            />
-          </div>
+            <div
+              id="setNetworkShow"
+              aria-hidden="true"
+              onClick={() => setNetworkShow(true)}
+              className="cursor-pointer"
+            >
+              <Input
+                value={searchContent}
+                width="w-full box-border"
+                readOnly={true}
+                className="pointer-events-none"
+                suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
+                prefix={
+                  <img
+                    src={searchIcon || 'images/default-network-icon.svg'}
+                    alt="network icon"
+                    className="w-4 h-4"
+                  />
+                }
+              />
+            </div>
+          </CompWithLabel>
+
           <ConnectSitesList
             accountData={accountData}
             allCheckboxStatus={allCheckboxStatus}

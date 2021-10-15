@@ -1,5 +1,9 @@
 import {useTranslation} from 'react-i18next'
-import {DappTransactionHeader, DappTransactionFooter} from '../../components'
+import {
+  DappTransactionHeader,
+  DappTransactionFooter,
+  CompWithLabel,
+} from '../../components'
 
 function RequestSignature() {
   const {t} = useTranslation()
@@ -29,11 +33,8 @@ function RequestSignature() {
             </div>
             <div className="text-xs text-gray-40 mt-1">Dai Stablecoin</div>
           </div>
-          <div className="mt-3">
-            <p className="ml-1 text-sm text-gray-80 font-medium">
-              {t('message')}
-            </p>
-            <div className="mt-2 px-3 py-4 rounded bg-gray-4">
+          <CompWithLabel label={<p className="font-medium">{t('message')}</p>}>
+            <div className="px-3 py-4 rounded bg-gray-4">
               <div className="text-xs text-gray-40">{t('holder')}</div>
               <div className="break-words text-gray-80 mt-0.5">
                 0xE592427A0AEce92De3Edee1F18E0157C058615641231231231312
@@ -43,7 +44,8 @@ function RequestSignature() {
                 0xE592427A0AEce92De3Edee1F18E0157C058615641231231231312
               </div>
             </div>
-          </div>
+          </CompWithLabel>
+          <div className="mt-3"></div>
         </main>
         <DappTransactionFooter
           cancelText={t('cancel')}
