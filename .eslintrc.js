@@ -28,7 +28,7 @@ module.exports = {
   //     jsx: true,
   //   },
   // },
-  plugins: ['prettier'],
+  plugins: ['testing-library', 'prettier'],
   globals: {
     browser: 'readonly',
   },

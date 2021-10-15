@@ -8,6 +8,7 @@ releases:
 
 declined:
   - helios-background
+  - "@fluent-wallet/fetch-rpc"
   - helios-inpage
   - helios-popup
   - "@fluent-wallet/eth_sign-typed-data_v4"
