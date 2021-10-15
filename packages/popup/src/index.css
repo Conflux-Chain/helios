@@ -56,6 +56,7 @@ html {
   --color-info-10: #f2f6ff;
   --color-info-90: #232539;
   --color-gray-0: #fff;
+  --color-gray-4: #fafbfd;
   --color-gray-10: #f7f8fa;
   --color-gray-20: #eaecef;
   --color-gray-40: #a9abb2;
@@ -93,5 +94,4 @@ html {
 }
 .no-scroll::-webkit-scrollbar {
   width: 0 !important;
-  
 }

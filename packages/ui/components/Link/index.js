@@ -32,7 +32,7 @@ function Link({
 
   const colorStyle = useMemo(() => {
     if (disabled) return ''
-    return 'text-primary bg-transparent hover:text-primary-dark hover:underline'
+    return 'text-primary bg-transparent hover:text-primary-dark'
   }, [disabled])
 
   const sizeStyle = sizeStyleObj[size] || ''

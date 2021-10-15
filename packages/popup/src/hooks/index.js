@@ -1,12 +1,22 @@
 import {useEffect, useState} from 'react'
 import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
-import {ROUTES, ANIMATE_DURING_TIME, RPC_METHODS} from '../constants'
+import {
+  ROUTES,
+  ANIMATE_DURING_TIME,
+  RPC_METHODS,
+  NETWORK_TYPE,
+} from '../constants'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber} from '@fluent-wallet/checks'
 
-const {GET_ACCOUNT_GROUP, GET_ACCOUNT_ADDRESS_BY_NETWORK, GET_BALANCE} =
-  RPC_METHODS
+const {
+  GET_ACCOUNT_GROUP,
+  GET_ACCOUNT_ADDRESS_BY_NETWORK,
+  GET_BALANCE,
+  GET_CURRENT_NETWORK,
+  GET_CURRENT_ACCOUNT,
+} = RPC_METHODS
 const {HOME} = ROUTES
 
 export const useCreatedPasswordGuard = () => {
@@ -56,6 +66,7 @@ export const useFontSize = (targetRef, hiddenRef, maxWidth, value) => {
   }, [targetRef, hiddenRef, maxWidth, value])
 }
 
+// TODO: refactor batch balance
 const getAddressParams = (accountGroups, networkId) => {
   let addressParams = []
   if (isNumber(networkId) && accountGroups?.length) {
@@ -146,4 +157,35 @@ export const useAccountGroupBatchBalance = networkId => {
     balanceData,
     addressData,
   })
+}
+
+export const useCurrentAccount = () => {
+  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
+    fallbackData: {},
+  })
+  const {eid: networkId, type} = currentNetwork
+
+  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
+    fallbackData: {},
+  })
+  console.log(currentAccount)
+  const {eid: accountId} = currentAccount
+
+  const {data: accountAddress} = useRPC(
+    accountId !== undefined && networkId !== undefined
+      ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, accountId, networkId]
+      : null,
+    {accountId, networkId},
+    {fallbackData: {}},
+  )
+
+  const {base32, hex} = accountAddress
+
+  const address =
+    type === NETWORK_TYPE.CFX ? base32 : type === NETWORK_TYPE.ETH ? hex : ''
+
+  return {
+    ...currentAccount,
+    address,
+  }
 }

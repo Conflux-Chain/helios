@@ -3,8 +3,7 @@ import {useState} from 'react'
 import {SlideCard} from '../../../components'
 import Input from '@fluent-wallet/component-input'
 import {useTranslation} from 'react-i18next'
-import {TokenItem} from './'
-import {WrapIcon} from '../../../components'
+import {WrapIcon, SearchToken, TokenItem} from '../../../components'
 import {
   SelectedOutlined,
   PlusOutlined,
@@ -18,6 +17,11 @@ function AddToken({onClose, onOpen}) {
   const onAddToken = () => {}
   const searchResults = []
 
+  const onChangeValue = value => {
+    // TODO: search logic
+    setSearchContent(value)
+  }
+
   return (
     <SlideCard
       cardTitle={t('addToken')}
@@ -25,6 +29,7 @@ function AddToken({onClose, onOpen}) {
       onOpen={onOpen}
       cardContent={
         <div className="mt-4">
+          <SearchToken value={searchContent} onChange={onChangeValue} />
           <Input
             prefix={<SearchOutlined className="w-4 h-4 text-gray-40" />}
             width="w-full"
@@ -42,7 +47,8 @@ function AddToken({onClose, onOpen}) {
             <div className="px-3 pt-3 mt-3 bg-gray-0 rounded">
               <p className="ml-1 mb-1 text-gray-40">{t('searchResults')}</p>
               <TokenItem
-                maxBalanceSize="small"
+                maxWidth={135}
+                maxWidthStyle="max-w-[135px]"
                 rightIcon={
                   <WrapIcon size="w-5 h-5">
                     <SelectedOutlined className="w-3 h-3 text-gray-40" />
@@ -50,7 +56,8 @@ function AddToken({onClose, onOpen}) {
                 }
               />
               <TokenItem
-                maxBalanceSize="small"
+                maxWidth={135}
+                maxWidthStyle="max-w-[135px]"
                 rightIcon={
                   <WrapIcon size="w-5 h-5" onClick={onAddToken}>
                     <PlusOutlined className="w-3 h-3 text-primary" />
