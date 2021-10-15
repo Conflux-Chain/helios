@@ -8,7 +8,7 @@ Object {
       <a
         aria-hidden="true"
         class="
-      flex justify-center items-center focus:outline-none rounded cursor-pointer  text-primary bg-transparent hover:text-primary-dark hover:underline text-sm test-class"
+      flex justify-center items-center focus:outline-none rounded cursor-pointer  text-primary bg-transparent hover:text-primary-dark text-sm test-class"
         data-testid="link-wrapper"
       >
         text
@@ -19,7 +19,7 @@ Object {
     <a
       aria-hidden="true"
       class="
-      flex justify-center items-center focus:outline-none rounded cursor-pointer  text-primary bg-transparent hover:text-primary-dark hover:underline text-sm test-class"
+      flex justify-center items-center focus:outline-none rounded cursor-pointer  text-primary bg-transparent hover:text-primary-dark text-sm test-class"
       data-testid="link-wrapper"
     >
       text
