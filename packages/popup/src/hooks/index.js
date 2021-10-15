@@ -66,6 +66,7 @@ export const useFontSize = (targetRef, hiddenRef, maxWidth, value) => {
   }, [targetRef, hiddenRef, maxWidth, value])
 }
 
+// TODO: refactor batch balance
 const getAddressParams = (accountGroups, networkId) => {
   let addressParams = []
   if (isNumber(networkId) && accountGroups?.length) {
