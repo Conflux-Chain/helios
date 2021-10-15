@@ -64,7 +64,7 @@ function DappSwitchNetwork() {
                 mock url
               </div>
             </div>
-            <div>
+            <div className="mt-3">
               <div className="text-xs text-gray-40">{t('chainId')}</div>
               <div className="text-sm text-gray-80 font-medium mt-0.5">
                 {req?.params[0]?.chainId || ''}

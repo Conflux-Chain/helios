@@ -1,5 +1,24 @@
 import {DappTransactionFooter} from '../../components'
 import {useTranslation} from 'react-i18next'
+import PropTypes from 'prop-types'
+
+function NetworkItem({labelText, contentText, containerClass = ''}) {
+  return (
+    <div className={containerClass}>
+      <div className="text-xs text-gray-40">{labelText}</div>
+      <div className="text-sm text-gray-80 font-medium mt-0.5 whitespace-nowrap overflow-hidden overflow-ellipsis">
+        {contentText}
+      </div>
+    </div>
+  )
+}
+
+NetworkItem.propTypes = {
+  labelText: PropTypes.string.isRequired,
+  contentText: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
+  containerClass: PropTypes.string,
+}
 
 function DappAddNetwork() {
   const {t} = useTranslation()
@@ -7,7 +26,7 @@ function DappAddNetwork() {
   return (
     <div
       id="dappAddNetworkContainer"
-      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat"
+      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
     >
       <div>
         <header>
@@ -33,41 +52,28 @@ function DappAddNetwork() {
               {t('learnMore')}
             </p>
           </div>
-          <div className="bg-primary-4 mt-3 px-3 py-4 break-words">
-            <div>
-              <div className="text-xs text-gray-40">{t('networkName')}</div>
-              <div className="text-sm text-gray-80 font-medium mt-0.5">
-                21312
-              </div>
-            </div>
-            <div className="mt-3">
-              <div className="text-xs text-gray-40">{t('networkUrl')}</div>
-              <div className="text-sm text-gray-80 font-medium mt-0.5">
-                21312
-              </div>
-            </div>
-            <div className="mt-3">
-              <div className="text-xs text-gray-40">{t('chainId')}</div>
-              <div className="text-sm text-gray-80 font-medium mt-0.5">
-                21312
-              </div>
-            </div>
-            <div className="mt-3">
-              <div className="text-xs text-gray-40">
-                {t('currencySymbol')} ({t('optional')})
-              </div>
-              <div className="text-sm text-gray-80 font-medium mt-0.5">
-                21312213122131221312213122131221312213122131221312
-              </div>
-            </div>
-            <div className="mt-3">
-              <div className="text-xs text-gray-40">
-                {t('blockExplorerUrl')} ({t('optional')})
-              </div>
-              <div className="text-sm text-gray-80 font-medium mt-0.5">
-                21312
-              </div>
-            </div>
+          <div className="bg-gray-4 mt-3 px-3 py-4">
+            <NetworkItem labelText={t('networkName')} contentText="12313" />
+            <NetworkItem
+              labelText={t('networkUrl')}
+              contentText="12313"
+              containerClass="mt-3"
+            />
+            <NetworkItem
+              labelText={t('chainId')}
+              contentText="12313"
+              containerClass="mt-3"
+            />
+            <NetworkItem
+              labelText={`${t('currencySymbol')} (${t('optional')})`}
+              contentText="12313"
+              containerClass="mt-3"
+            />
+            <NetworkItem
+              labelText={`${t('blockExplorerUrl')} (${t('optional')})`}
+              contentText="12313123131231312313123131231312313123131231312313"
+              containerClass="mt-3"
+            />
           </div>
         </main>
       </div>

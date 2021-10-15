@@ -15,16 +15,16 @@ function ConfirmAddSuggestedToken() {
   return (
     <div
       id="confirmAddSuggestedTokenContainer"
-      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat"
+      className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg"
     >
-      <div>
-        <DappTransactionHeader
-          title={t('addSuggestedToken')}
-          avatar={<img src="" alt="avatar" className="h-8 w-8" />}
-          nickName="Mock Account"
-          address="iammockaddressiammockaddressiammockaddress"
-        />
-        <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
+      <DappTransactionHeader
+        title={t('addSuggestedToken')}
+        avatar={<img src="" alt="avatar" className="h-8 w-8" />}
+        nickName="Mock Account"
+        address="iammockaddressiammockaddressiammockaddress"
+      />
+      <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
+        <main className=" pt-4 px-3 ">
           <p className="text-sm text-gray-80 font-medium pb-2 ml-1">
             {t('confirmAddSuggestedToken')}
           </p>
@@ -48,11 +48,11 @@ function ConfirmAddSuggestedToken() {
             </div>
           </div>
         </main>
+        <DappTransactionFooter
+          cancelText={t('cancel')}
+          confirmText={t('addToken')}
+        />
       </div>
-      <DappTransactionFooter
-        cancelText={t('cancel')}
-        confirmText={t('addToken')}
-      />
     </div>
   )
 }

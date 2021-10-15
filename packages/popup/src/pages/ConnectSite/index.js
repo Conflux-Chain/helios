@@ -46,7 +46,7 @@ function ConnectSitesList({
           {t('selectAll')}
         </Checkbox>
       </div>
-      <div className="h-[282px] rounded border border-solid border-gray-10 pt-2 overflow-auto no-scroll">
+      <div className="max-h-[282px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll">
         {accountData.map(({nickname, account}, groupIndex) => (
           <div key={groupIndex}>
             <p className="text-gray-40 ml-4 mb-1 mt-1 text-xs">{nickname}</p>
