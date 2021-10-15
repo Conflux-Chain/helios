@@ -16,7 +16,6 @@ function CurrentAccountDisplay() {
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-  console.log(currentAccount)
   const {nickname, eid: accountId, icon} = currentAccount
 
   const {data: accountAddress} = useRPC(

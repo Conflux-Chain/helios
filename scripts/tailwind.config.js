@@ -78,6 +78,7 @@ module.exports = {
         'info-10': 'var(--color-info-10)',
         'info-90': 'var(--color-info-90)',
         'gray-0': 'var(--color-gray-0)',
+        'gray-4': 'var(--color-gray-4)',
         'gray-10': 'var(--color-gray-10)',
         'gray-20': 'var(--color-gray-20)',
         'gray-40': 'var(--color-gray-40)',
@@ -135,6 +136,7 @@ module.exports = {
       backgroundImage: {
         'token-background':
           'linear-gradient(19.03deg, #FFFFFF 20.24%, rgba(255, 255, 255, 0) 86.89%)',
+        'choose-token-modal': "url('images/choose-token-bg.svg')",
       },
     },
   },

@@ -9,7 +9,7 @@ import {
   CurrentAccount,
   CurrentNetwork,
   CurrentDapp,
-  TokenList,
+  HomeTokenList,
   AccountList,
   NetworkList,
   AddToken,
@@ -45,6 +45,9 @@ function Home() {
             size="small"
             variant="outlined"
             className="!border-white !text-white !bg-transparent !hover:none mr-2"
+            onClick={() => {
+              history.push('/send-transaction')
+            }}
           >
             {t('send')}
           </Button>
@@ -57,7 +60,7 @@ function Home() {
           </Button>
         </div>
       </div>
-      <TokenList onOpenAddToken={() => setAddTokenStatus(true)} />
+      <HomeTokenList onOpenAddToken={() => setAddTokenStatus(true)} />
       <CurrentDapp />
       <AccountList
         onClose={() => setAccountStatus(false)}
