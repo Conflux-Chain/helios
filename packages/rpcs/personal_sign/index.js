@@ -13,17 +13,17 @@ import {decode} from '@fluent-wallet/base32-address'
 
 export const NAME = 'personal_sign'
 
-const innerSchema = [
+const publicSchema = [
   cat,
   [stringp, {doc: 'message string to sign'}],
   [or, ethHexAddress, base32UserAddress],
 ]
 
-const publicSchema = [
+const innerSchema = [
   map,
   {closed: true},
   ['authReqId', dbid],
-  ['data', innerSchema],
+  ['data', publicSchema],
 ]
 
 export const schemas = {

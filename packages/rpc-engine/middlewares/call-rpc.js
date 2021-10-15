@@ -14,6 +14,12 @@ function formatRes(res, id) {
   return {...template, result: '0x1'}
 }
 
+const RequestLockMethods = [
+  'wallet_requestPermissions',
+  'cfx_requestAccounts',
+  'eth_requestAccounts',
+]
+
 export default defMiddleware(
   ({tx: {map, pluck, sideEffect}, stream: {resolve}}) => [
     {
@@ -22,7 +28,12 @@ export default defMiddleware(
         req: {stream: '/validateRpcParams/node'},
       },
       fn: map(async ({rpcStore, req, db}) => {
-        if (req._inpage && rpcStore[req.method].permissions.scope) {
+        const method = rpcStore[req.method]
+        if (
+          req._inpage &&
+          method.permissions.scope &&
+          !method.permissions.locked
+        ) {
           const isValid = await req.rpcs
             .wallet_validateAppPermissions({
               permissions: rpcStore[req.method].permissions.scope,
@@ -37,7 +48,7 @@ export default defMiddleware(
         // some inpage rpc methods needs the wallet in unlocked state
         if (
           !rpcStore[req.method].permissions.locked &&
-          rpcStore[req.method].permissions.external.includes('inpage') &&
+          RequestLockMethods.includes(req.method) &&
           db.getLocked()
         ) {
           await req.rpcs.wallet_requestUnlockUI().catch(err => {

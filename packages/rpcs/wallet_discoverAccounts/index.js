@@ -1,4 +1,5 @@
 import {dbid, int, map, truep, maybe} from '@fluent-wallet/spec'
+import addrByNet from '@fluent-wallet/addr-by-network'
 import {discoverAccounts} from '@fluent-wallet/discover-accounts'
 import {partial} from '@fluent-wallet/compose'
 import {decrypt} from 'browser-passworder'
@@ -49,9 +50,24 @@ export const main = async ({
 
   const promises = Promise.all(
     networks.map(
-      async ({name, hdPath}) =>
+      async ({name, hdPath, token, type, netId}) =>
         await discoverAccounts({
-          getBalance: partial(wallet_getBalance, {networkName: name}),
+          getBalance: async addr => {
+            return await wallet_getBalance(
+              {networkName: name, errorFallThrough: true},
+              {
+                users: [
+                  addrByNet({
+                    address: addr,
+                    networkType: type,
+                    networkId: netId,
+                    addressType: 'user',
+                  }),
+                ],
+                tokens: ['0x0'].concat((token || []).map(t => t.address)),
+              },
+            )
+          },
           getTxCount: partial(wallet_getNextNonce, {networkName: name}),
           mnemonic,
           hdPath: hdPath.value,

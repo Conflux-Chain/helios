@@ -6,11 +6,17 @@ import {ProtectedRoute} from './components'
 import {RPC_METHODS, ROUTES} from './constants'
 import './index.css'
 import useGlobalStore from './stores/index.js'
-const {GET_ACCOUNT_GROUP, GET_NO_GROUP, GET_WALLET_LOCKED_STATUS} = RPC_METHODS
+const {
+  GET_ACCOUNT_GROUP,
+  GET_NO_GROUP,
+  GET_WALLET_LOCKED_STATUS,
+  GET_PENDING_AUTH_REQ,
+} = RPC_METHODS
 
 const {
   HOME,
   UNLOCK,
+  PENDING_AUTH_REQ,
   WELCOME,
   CURRENT_SEED_PHRASE,
   NEW_SEED_PHRASE,
@@ -27,6 +33,9 @@ const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
 const NewSeed = lazy(() => import('./pages/CreateSeed/NewSeed'))
 const Unlock = lazy(() => import('./pages/Unlock'))
+const PendingAuthReqExample = lazy(() =>
+  import('./pages/PendingAuthReqExample'),
+)
 const Welcome = lazy(() => import('./pages/Welcome'))
 const SetPassword = lazy(() => import('./pages/SetPassword'))
 const SelectCreateType = lazy(() => import('./pages/SelectCreateType'))
@@ -44,6 +53,9 @@ function App() {
   const {data: zeroGroup, error: zeroGroupError} = useRPC([GET_NO_GROUP])
   const {error: getAccountGroupError} = useRPC(
     lockedData === false ? [GET_ACCOUNT_GROUP] : null,
+  )
+  const {data: pendingAuthReq} = useRPC(
+    lockedData === false ? [GET_PENDING_AUTH_REQ] : null,
   )
   const {setFatalError} = useGlobalStore()
 
@@ -67,9 +79,15 @@ function App() {
         <Router>
           <Switch>
             <Route exact path={UNLOCK} component={Unlock} />
+            <Route
+              exact
+              path={PENDING_AUTH_REQ}
+              component={PendingAuthReqExample}
+            />
             <Route exact path={WELCOME} component={Welcome} />
 
             <ProtectedRoute
+              hasPendingAuthReq={pendingAuthReq?.length > 0}
               hasAccount={!zeroGroup}
               isLocked={!zeroGroup && lockedData}
               exact

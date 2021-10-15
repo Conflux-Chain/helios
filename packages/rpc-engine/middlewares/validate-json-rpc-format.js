@@ -7,7 +7,7 @@ export default defMiddleware(({tx: {map}}) => {
   return {
     id: 'validateAndFormatJsonRpc',
     ins: {req: {stream: '/START/node'}},
-    fn: map(({req}) => {
+    fn: map(({req, MODE}) => {
       req.jsonrpc = req.jsonrpc || '2.0'
       req.id = req.id ?? rndId()
 
@@ -25,6 +25,7 @@ export default defMiddleware(({tx: {map}}) => {
         throw err
       }
 
+      req.MODE = MODE
       return req
     }),
   }

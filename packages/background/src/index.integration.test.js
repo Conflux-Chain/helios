@@ -2200,7 +2200,7 @@ describe('integration test', function () {
           },
         })
 
-        expect((await res).result).toBeNull()
+        expect((await res).result).toBe('__null__')
         expect(db.getNetwork({selected: true})[0].type).toBe('eth')
       })
     })
@@ -2284,7 +2284,7 @@ describe('integration test', function () {
           },
         })
 
-        expect((await res).result).toBeNull()
+        expect((await res).result).toBe('__null__')
         expect(db.getNetwork().length).toBe(2)
         const [, n2] = db.getNetwork()
         expect(n2.name).toBe(ETH_MAINNET_NAME)

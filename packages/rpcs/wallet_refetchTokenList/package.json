@@ -1,8 +1,9 @@
 {
-  "name": "@fluent-wallet/eth_request-accounts",
+  "name": "@fluent-wallet/wallet_refetch-token-list",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.5",
+  "packageManager": "yarn@3.0.1",
+  "version": "0.0.1",
   "dependencies": {
     "@fluent-wallet/spec": "workspace:packages/spec"
   }

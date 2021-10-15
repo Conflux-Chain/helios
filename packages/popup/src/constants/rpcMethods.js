@@ -1,4 +1,7 @@
 export const GET_ACCOUNT_GROUP = 'wallet_getAccountGroup'
+export const GET_PENDING_AUTH_REQ = 'wallet_getPendingAuthRequest'
+export const REJECT_PENDING_AUTH_REQ = 'wallet_userRejectedAuthRequest'
+export const APPROVE_PENDING_AUTH_REQ = 'wallet_userApprovedAuthRequest'
 export const ACCOUNT_GROUP_TYPE = {
   HD: 'hd',
   PK: 'pk',
