@@ -3939,6 +3939,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-network@workspace:packages/rpcs/wallet_getNetwork"
   dependencies:
+    "@fluent-wallet/checks": "workspace:packages/checks"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
