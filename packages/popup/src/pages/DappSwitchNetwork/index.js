@@ -13,7 +13,7 @@ function DappSwitchNetwork() {
   const [{req}] = pendingAuthReq.length ? pendingAuthReq : [{}]
   const {data: networkData} = useRPC(
     req?.params[0]?.chainId ? [GET_NETWORK, req.params[0].chainId] : null,
-    {chainId: req.params[0].chainId, type: 'cfx'},
+    {chainId: req?.params[0]?.chainId, type: 'cfx'},
     {fallbackData: [{}]},
   )
   const [{isTestnet, name, endpoint, icon}] = networkData

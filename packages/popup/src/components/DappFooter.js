@@ -11,6 +11,8 @@ const {
   REQUEST_PERMISSIONS,
   WALLET_SWITCH_CONFLUX_CHAIN,
   WALLET_SWITCH_ETHEREUM_CHAIN,
+  CFX_SIGN_TYPED_DATA_V4,
+  ETH_SIGN_TYPED_DATA_V4,
 } = RPC_METHODS
 const {HOME} = ROUTES
 function DappFooter({
@@ -23,7 +25,7 @@ function DappFooter({
   const {data: pendingAuthReq} = useRPC([GET_PENDING_AUTH_REQ], undefined, {
     fallbackData: [{eid: null}],
   })
-  // console.log('pendingAuthReq', pendingAuthReq)
+  console.log('pendingAuthReq', pendingAuthReq)
   const [{req, eid}] = pendingAuthReq.length ? pendingAuthReq : [{}]
 
   const onCancel = () => {
@@ -37,7 +39,6 @@ function DappFooter({
     if (!req?.method) {
       return
     }
-
     const params = {...confirmParams}
     switch (req.method) {
       case REQUEST_PERMISSIONS:
@@ -48,6 +49,12 @@ function DappFooter({
         break
       case WALLET_SWITCH_ETHEREUM_CHAIN:
         params.chainConfig = req.params
+        break
+      case CFX_SIGN_TYPED_DATA_V4:
+        params.data = req.params
+        break
+      case ETH_SIGN_TYPED_DATA_V4:
+        params.data = req.params
         break
     }
 

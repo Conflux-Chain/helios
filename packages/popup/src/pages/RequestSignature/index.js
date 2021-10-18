@@ -1,6 +1,6 @@
 import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
-import {BigNumber} from 'bignumber.js'
+import {formatHexBalance} from '../../utils'
 import {
   DappFooter,
   CompWithLabel,
@@ -35,9 +35,7 @@ function RequestSignature() {
           <CurrentAccountDisplay />
           <div className="flex items-center justify-between">
             <DisplayBalance
-              balance={new BigNumber(
-                balanceData?.[address]?.['0x0'] || '0',
-              ).toString()}
+              balance={formatHexBalance(balanceData?.[address]?.['0x0'])}
               maxWidthStyle="max-w-[148px]"
               maxWidth={148}
             />

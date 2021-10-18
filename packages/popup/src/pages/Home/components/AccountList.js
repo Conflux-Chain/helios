@@ -8,7 +8,7 @@ import Button from '@fluent-wallet/component-button'
 import {CurrentAccountNetworkLabel} from './'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
-import {SlideCard} from '../../../components'
+import {SlideCard, DisplayBalance} from '../../../components'
 import {useAccountGroupBatchBalance} from '../../../hooks'
 
 const {SELECT_CREATE_TYPE} = ROUTES
@@ -43,10 +43,15 @@ function AccountItem({
         >
           <img className="w-5 h-5 mr-2" src="" alt="avatar" />
           <div className="flex-1">
-            <p className="text-xs text-gray-40">{nickname}</p>
-            <p className="text-sm text-gray-80">
-              {balance} {tokeName}
-            </p>
+            <p className="text-xs text-gray-40 ">{nickname}</p>
+            <div className="flex w-full">
+              <DisplayBalance
+                balance={balance}
+                maxWidthStyle="max-w-[270px]"
+                maxWidth={270}
+              />
+              <pre className="text-sm text-gray-80"> {tokeName}</pre>
+            </div>
           </div>
           {authorizedAccountIdIconObj[eid] ? (
             <div className="w-6 h-6 border-gray-20 border border-solid rounded-full mt-1.5 flex justify-center items-center">

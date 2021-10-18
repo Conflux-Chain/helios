@@ -19,7 +19,10 @@ export const NETWORK_TYPE = {
 
 export const DAPP_REQUEST_ROUTES = {
   wallet_requestPermissions: CONNECT_SITE,
-  personal_sign: '',
   cfx_signTypedData_v4: REQUEST_SIGNATURE,
+  eth_signTypedData_v4: REQUEST_SIGNATURE,
   wallet_switchConfluxChain: DAPP_SWITCH_NETWORK,
+  wallet_switchEthereumChain: DAPP_SWITCH_NETWORK,
+  wallet_addEthereumChain: DAPP_ADD_NETWORK,
+  wallet_addConfluxChain: DAPP_ADD_NETWORK,
 }

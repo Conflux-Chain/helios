@@ -9,7 +9,7 @@ import {
 } from '../constants'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber} from '@fluent-wallet/checks'
-import {BigNumber} from 'bignumber.js'
+import {formatHexBalance} from '../utils'
 
 const {
   GET_ACCOUNT_GROUP,
@@ -120,9 +120,9 @@ const formatAccountGroupData = ({
           ''
         const accountData = {nickname, eid, address}
         if (returnBalance) {
-          accountData['balance'] = new BigNumber(
-            balanceData?.[address]?.[token] || '0',
-          ).toString()
+          accountData['balance'] = formatHexBalance(
+            balanceData?.[address]?.[token],
+          )
         }
         ret[groupIndex]['account'].push({
           ...accountData,
