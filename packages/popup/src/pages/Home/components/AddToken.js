@@ -1,15 +1,9 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
 import {SlideCard} from '../../../components'
-import Input from '@fluent-wallet/component-input'
 import {useTranslation} from 'react-i18next'
 import {WrapIcon, SearchToken, TokenItem} from '../../../components'
-import {
-  SelectedOutlined,
-  PlusOutlined,
-  CloseCircleFilled,
-  SearchOutlined,
-} from '@fluent-wallet/component-icons'
+import {SelectedOutlined, PlusOutlined} from '@fluent-wallet/component-icons'
 
 function AddToken({onClose, onOpen}) {
   const {t} = useTranslation()
@@ -30,19 +24,6 @@ function AddToken({onClose, onOpen}) {
       cardContent={
         <div className="mt-4">
           <SearchToken value={searchContent} onChange={onChangeValue} />
-          <Input
-            prefix={<SearchOutlined className="w-4 h-4 text-gray-40" />}
-            width="w-full"
-            value={searchContent}
-            placeholder={t('searchToken')}
-            onChange={e => setSearchContent(e.target.value)}
-            suffix={
-              searchContent ? (
-                <CloseCircleFilled className="w-4 h-4 cursor-pointer text-gray-40" />
-              ) : null
-            }
-            onSuffixClick={() => setSearchContent('')}
-          />
           {searchResults.length ? (
             <div className="px-3 pt-3 mt-3 bg-gray-0 rounded">
               <p className="ml-1 mb-1 text-gray-40">{t('searchResults')}</p>

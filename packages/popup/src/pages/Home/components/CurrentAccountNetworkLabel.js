@@ -13,7 +13,7 @@ function CurrentAccountNetworkLabel() {
       <div className="mx-2 w-px h-2 bg-gray-40" />
       <img
         alt="network"
-        src={currentNetworkData?.icon || ' '}
+        src={currentNetworkData?.icon || '/images/default-network-icon.svg'}
         className="w-3 h-3 mr-1"
       />
       <div className="text-gray-60">{currentNetworkData?.name || ''}</div>

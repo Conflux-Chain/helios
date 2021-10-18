@@ -121,7 +121,7 @@ const formatAccountGroupData = ({
         const accountData = {nickname, eid, address}
         if (returnBalance) {
           accountData['balance'] = new BigNumber(
-            balanceData[address][token] || '0',
+            balanceData?.[address]?.[token] || '0',
           ).toString()
         }
         ret[groupIndex]['account'].push({
@@ -198,13 +198,10 @@ export const useCurrentAccount = () => {
     fallbackData: {},
   })
   const {eid: networkId, type} = currentNetwork
-
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-  console.log(currentAccount)
   const {eid: accountId} = currentAccount
-
   const {data: accountAddress} = useRPC(
     accountId !== undefined && networkId !== undefined
       ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, accountId, networkId]
@@ -212,12 +209,9 @@ export const useCurrentAccount = () => {
     {accountId, networkId},
     {fallbackData: {}},
   )
-
-  const {base32, hex} = accountAddress
-
+  const {base32, hex} = accountAddress || {}
   const address =
     type === NETWORK_TYPE.CFX ? base32 : type === NETWORK_TYPE.ETH ? hex : ''
-
   return {
     ...currentAccount,
     address,
