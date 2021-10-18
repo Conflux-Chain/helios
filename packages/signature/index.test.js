@@ -30,7 +30,79 @@ describe('cfx', function () {
   })
 
   describe('v4', function () {
-    test.todo('signTypedData_v4')
+    test('signTypedData_v4', async () => {
+      const typedData = {
+        types: {
+          CIP23Domain: [
+            {name: 'name', type: 'string'},
+            {name: 'version', type: 'string'},
+            {name: 'chainId', type: 'uint256'},
+            {name: 'verifyingContract', type: 'address'},
+          ],
+          Person: [
+            {name: 'name', type: 'string'},
+            {name: 'wallets', type: 'address[]'},
+          ],
+          Mail: [
+            {name: 'from', type: 'Person'},
+            {name: 'to', type: 'Person[]'},
+            {name: 'contents', type: 'string'},
+          ],
+          Group: [
+            {name: 'name', type: 'string'},
+            {name: 'members', type: 'Person[]'},
+          ],
+        },
+        domain: {
+          name: 'Ether Mail',
+          version: '1',
+          chainId: 1,
+          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        },
+        primaryType: 'Mail',
+        message: {
+          from: {
+            name: 'Cow',
+            wallets: [
+              '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+              '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+            ],
+          },
+          to: [
+            {
+              name: 'Bob',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+          ],
+          contents: 'Hello, Bob!',
+        },
+      }
+
+      const pk =
+        '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+      const address = 'cfxtest:aasm4c231py7j34fghntcfkdt2nm9xv1tu6jd3r1s7'
+      const netid = 1
+
+      const sig = await signTypedData_v4('cfx', pk, typedData)
+      expect(sig).toEqual(
+        '0x3404e089c443cbe853e35d53670ae074860731930fa4ac87f2f6e10d7f2337270ac970680c7d609b5bb2f05b50398aee323ddac925e9e9ead5accc3fd2fb849001',
+      )
+
+      expect(
+        recoverTypedSignature_v4(
+          'cfx',
+          '0x3404e089c443cbe853e35d53670ae074860731930fa4ac87f2f6e10d7f2337270ac970680c7d609b5bb2f05b50398aee323ddac925e9e9ead5accc3fd2fb849001',
+          typedData,
+          netid,
+        ),
+      ).toBe(address)
+    })
+
+    test.todo('signTypedData_v4 with recursive types')
   })
 })
 

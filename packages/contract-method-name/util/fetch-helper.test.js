@@ -1,8 +1,7 @@
 import {expect, describe, afterEach} from '@jest/globals'
-
 import nock from 'nock'
-
 import fetchHelper from './fetch-helper'
+
 describe('Fetch Helper', () => {
   afterEach(() => {
     nock.cleanAll()

@@ -19,6 +19,7 @@ import {
 import {computeAddress as ethComputeAddress} from '@ethersproject/transactions'
 import {getMessage as cip23GetMessage} from 'cip-23'
 import {TypedDataUtils} from 'eth-sig-util'
+import {keccak256} from '@ethersproject/keccak256'
 
 export const hashPersonalMessage = (type, message) =>
   type === 'cfx'
@@ -42,18 +43,30 @@ export function recoverPersonalSignature(type, signature, message, netId) {
 }
 
 export async function hashTypedData(type, typedData) {
-  return cip23GetMessage(
-    typedData,
-    true,
-    type === 'cfx' ? 'CIP23Domain' : 'EIP712Domain',
+  return keccak256(
+    cip23GetMessage(
+      typedData,
+      false,
+      type === 'cfx' ? 'CIP23Domain' : 'EIP712Domain',
+    ),
   )
 }
 
 // v4
 export async function signTypedData_v4(type, privateKey, typedData) {
   if (type === 'cfx') {
-    const hashedMessage = cip23GetMessage(typedData, true).toString('hex')
-    return cfxSDKSign.ecdsaSign(hashedMessage, toBuffer(privateKey))
+    const hashedMessage = keccak256(
+      cip23GetMessage(
+        typedData,
+        false,
+        type === 'cfx' ? 'CIP23Domain' : 'EIP712Domain',
+      ),
+    )
+    const signature = CfxMessage.sign(
+      toBuffer(privateKey),
+      toBuffer(hashedMessage),
+    )
+    return signature
   }
 
   const digest = TypedDataUtils.sign(typedData)
@@ -61,10 +74,21 @@ export async function signTypedData_v4(type, privateKey, typedData) {
   return joinSignature(signature)
 }
 
-export function recoverTypedSignature_v4(type, signature, typedData) {
+export function recoverTypedSignature_v4(type, signature, typedData, netId) {
   if (type === 'cfx') {
-    const hashedMessage = cip23GetMessage(typedData, true).toString('hex')
-    return CfxMessage.recover(signature, hashedMessage)
+    const hashedMessage = keccak256(
+      cip23GetMessage(
+        typedData,
+        false,
+        type === 'cfx' ? 'CIP23Domain' : 'EIP712Domain',
+      ),
+    )
+    return encodeCfxAddress(
+      cfxSDKSign.publicKeyToAddress(
+        toBuffer(CfxMessage.recover(signature, hashedMessage)),
+      ),
+      netId,
+    )
   }
 
   const digest = TypedDataUtils.sign(typedData)
@@ -75,7 +99,7 @@ export function recoverTypedSignature_v4(type, signature, typedData) {
 export const ethEcdsaSign = (hash, pk) =>
   new SigningKey(addHexPrefix(pk)).sign(addHexPrefix(hash))
 export const cfxEcdsaSign = (hash, pk) =>
-  cfxSDKSign.ecdsaSign(toBuffer(hash), toBuffer(pk))
+  CfxMessage.sign(toBuffer(pk), toBuffer(hash))
 
 export const ecdsaSign = (type, hash, privateKey) =>
   type === 'cfx'
@@ -84,8 +108,15 @@ export const ecdsaSign = (type, hash, privateKey) =>
 
 export const ethEcdsaRecover = (hash, signature) =>
   ethRecoverPublicKey(addHexPrefix(hash), signature)
-export const cfxEcdsaRecover = (hash, signature) =>
-  cfxSDKSign.ecdsaRecover(toBuffer(hash), signature)
+export const cfxEcdsaRecover = (hash, signature, netId) =>
+  encodeCfxAddress(
+    cfxSDKSign.publicKeyToAddress(
+      toBuffer(CfxMessage.recover(hash, signature)),
+    ),
+    netId,
+  )
 
-export const ecdsaRecover = (type, hash, sig) =>
-  type === 'cfx' ? cfxEcdsaRecover(hash, sig) : ethEcdsaRecover(hash, sig)
+export const ecdsaRecover = (type, hash, sig, netId) =>
+  type === 'cfx'
+    ? cfxEcdsaRecover(hash, sig, netId)
+    : ethEcdsaRecover(hash, sig)

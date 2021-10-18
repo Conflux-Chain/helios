@@ -22,7 +22,7 @@ function walletInitialized({chainId, networkId}) {
   const connectButton = getElement('connect')
   const personalSignButton = getElement('personal_sign')
   const typedSignButton = getElement('typed_sign')
-  // const addNetworkButton = getElement('add_network')
+  const addNetworkButton = getElement('add_network')
   const switchNetworkButton = getElement('switch_network')
   connectButton.disabled = false
   connectButton.onclick = () => {
@@ -35,8 +35,8 @@ function walletInitialized({chainId, networkId}) {
         getElement('address').innerHTML = res.result
         console.log('result', res.result)
         personalSignButton.disabled = false
-        // typedSignButton.disabled = false
-        // addNetworkButton.disabled = false
+        typedSignButton.disabled = false
+        addNetworkButton.disabled = false
         switchNetworkButton.disabled = false
       })
   }
@@ -121,6 +121,31 @@ function walletInitialized({chainId, networkId}) {
         console.log('result', res.result)
       })
   }
+
+  addNetworkButton.onclick = () => {
+    provider
+      .request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: '0xa4b1',
+            chainName: 'Arbitrum One',
+            nativeCurrency: {
+              name: 'Arbitrum Ether',
+              symbol: 'AETH',
+              decimals: 18,
+            },
+            rpcUrls: ['https://arb1.arbitrum.io/rpc'],
+            blockExplorerUrls: ['https://arbiscan.io'],
+          },
+        ],
+      })
+      .then(res => {
+        if (res.error) return console.error(res.error.message || res.error)
+        console.log('result', res.result)
+      })
+  }
+
   switchNetworkButton.onclick = () => {
     provider
       .request({

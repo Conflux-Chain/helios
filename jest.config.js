@@ -11,7 +11,7 @@ module.exports = {
   transform: {
     '^.+\\.(t|j)sx?$': path.resolve(
       __dirname,
-      './scripts/jest-transformers.js',
+      './scripts/jest-transformers.mjs',
     ),
   },
 
@@ -48,7 +48,7 @@ module.exports = {
   transformIgnorePatterns: [
     // also transform react and react-native
     // 'node_modules/(?!(react|react-native)/)',
-    'node_modules/(?!(randombytes|brorand|react-use)/)',
+    'node_modules/(?!(tslib|randombytes|brorand|react-use)/)',
     // "\\.pnp\\.[^\\/]+$"
   ],
 
@@ -112,6 +112,8 @@ module.exports = {
 
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    tslib: 'tslib/tslib.es6.js',
+    'react-use': 'react-use/esm/index.js',
   },
   // globalSetup: path.resolve(__dirname, './scripts/jest-global-setup.js')
 }
