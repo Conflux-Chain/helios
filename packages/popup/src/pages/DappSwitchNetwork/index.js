@@ -1,5 +1,5 @@
 import {useTranslation} from 'react-i18next'
-import {DappTransactionFooter, DappConnectWalletHeader} from '../../components'
+import {DappFooter, DappConnectWalletHeader} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../constants'
 
@@ -11,11 +11,12 @@ function DappSwitchNetwork() {
     fallbackData: [{req: null}],
   })
   const [{req}] = pendingAuthReq.length ? pendingAuthReq : [{}]
-
-  // const {data: networkData, error} = useRPC(
-  //   req?.params[0]?.chainId ? [GET_NETWORK, req.params[0].chainId] : null,
-  //   {chainId: req.params[0].chainId},
-  // )
+  const {data: networkData} = useRPC(
+    req?.params[0]?.chainId ? [GET_NETWORK, req.params[0].chainId] : null,
+    {chainId: req.params[0].chainId, type: 'cfx'},
+    {fallbackData: [{}]},
+  )
+  const [{isTestnet, name, endpoint, icon}] = networkData
 
   return (
     <div
@@ -44,39 +45,36 @@ function DappSwitchNetwork() {
             <div className="z-10 relative w-full h-full items-center justify-center flex">
               <div className="mr-2 h-8 w-8 border border-solid rounded-full border-gray-20 flex items-center justify-center">
                 <img
-                  src="/images/default-network-icon.svg"
+                  src={icon || '/images/default-network-icon.svg'}
                   alt="favicon"
                   className="h-6 w-6"
                 />
               </div>
-              <div className="text-base text-primary font-medium">
-                Binance Smart Chain
-              </div>
-              <div className="text-center text-xs text-[#F5B797] bg-[#FFF7F4] w-14 h-5 absolute top-px right-px rounded-tr rounded-bl-2 rounded-bl-lg">
-                testnet
-              </div>
+              <div className="text-base text-primary font-medium">{name}</div>
+              {isTestnet ? (
+                <div className="text-center text-xs text-[#F5B797] bg-[#FFF7F4] w-14 h-5 absolute top-px right-px rounded-tr rounded-bl-2 rounded-bl-lg">
+                  testnet
+                </div>
+              ) : null}
             </div>
           </div>
           <div className="px-3 py-4 bg-gray-4">
             <div>
               <div className="text-xs text-gray-40">{t('networkUrl')}</div>
-              <div className="text-sm text-gray-80 font-medium mt-0.5">
-                mock url
+              <div className="text-sm text-gray-80 font-medium mt-0.5 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                {endpoint}
               </div>
             </div>
             <div className="mt-3">
               <div className="text-xs text-gray-40">{t('chainId')}</div>
               <div className="text-sm text-gray-80 font-medium mt-0.5">
-                {req?.params[0]?.chainId || ''}
+                {req?.params?.[0]?.chainId || ''}
               </div>
             </div>
           </div>
         </main>
       </div>
-      <DappTransactionFooter
-        cancelText={t('cancel')}
-        confirmText={t('switch')}
-      />
+      <DappFooter cancelText={t('cancel')} confirmText={t('switch')} />
     </div>
   )
 }

@@ -14,7 +14,7 @@ import {RPC_METHODS} from '../../constants'
 import {
   NetworkContent,
   DappConnectWalletHeader,
-  DappTransactionFooter,
+  DappFooter,
   CompWithLabel,
 } from '../../components'
 import {useAccountGroupAddress} from '../../hooks'
@@ -224,7 +224,7 @@ function ConnectSite() {
           />
         </main>
       </div>
-      <DappTransactionFooter
+      <DappFooter
         cancelText={t('cancel')}
         confirmText={t('connect')}
         confirmDisabled={!confirmAccounts.length}

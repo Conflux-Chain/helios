@@ -10,9 +10,10 @@ const {
   REJECT_PENDING_AUTH_REQ,
   REQUEST_PERMISSIONS,
   WALLET_SWITCH_CONFLUX_CHAIN,
+  WALLET_SWITCH_ETHEREUM_CHAIN,
 } = RPC_METHODS
 const {HOME} = ROUTES
-function DappTransactionFooter({
+function DappFooter({
   cancelText,
   confirmText,
   confirmDisabled = false,
@@ -43,6 +44,9 @@ function DappTransactionFooter({
         params.permissions = req.params
         break
       case WALLET_SWITCH_CONFLUX_CHAIN:
+        params.chainConfig = req.params
+        break
+      case WALLET_SWITCH_ETHEREUM_CHAIN:
         params.chainConfig = req.params
         break
     }
@@ -76,11 +80,11 @@ function DappTransactionFooter({
   )
 }
 
-DappTransactionFooter.propTypes = {
+DappFooter.propTypes = {
   cancelText: PropTypes.string.isRequired,
   confirmText: PropTypes.string.isRequired,
   confirmParams: PropTypes.object,
   confirmDisabled: PropTypes.bool,
 }
 
-export default DappTransactionFooter
+export default DappFooter

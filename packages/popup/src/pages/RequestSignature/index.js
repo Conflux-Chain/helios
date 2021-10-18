@@ -2,7 +2,7 @@ import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {BigNumber} from 'bignumber.js'
 import {
-  DappTransactionFooter,
+  DappFooter,
   CompWithLabel,
   TitleNav,
   CurrentAccountDisplay,
@@ -69,10 +69,7 @@ function RequestSignature() {
           </CompWithLabel>
           <div className="mt-3"></div>
         </main>
-        <DappTransactionFooter
-          cancelText={t('cancel')}
-          confirmText={t('sign')}
-        />
+        <DappFooter cancelText={t('cancel')} confirmText={t('sign')} />
       </div>
     </div>
   )

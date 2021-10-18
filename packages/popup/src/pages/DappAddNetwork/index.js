@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {DappTransactionFooter, TitleNav} from '../../components'
+import {DappFooter, TitleNav} from '../../components'
 import {useTranslation} from 'react-i18next'
 
 function NetworkItem({labelText, contentText, containerClass = ''}) {
@@ -75,10 +75,7 @@ function DappAddNetwork() {
           </div>
         </main>
       </div>
-      <DappTransactionFooter
-        cancelText={t('cancel')}
-        confirmText={t('addToken')}
-      />
+      <DappFooter cancelText={t('cancel')} confirmText={t('addToken')} />
     </div>
   )
 }

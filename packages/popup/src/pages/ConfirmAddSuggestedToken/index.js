@@ -2,11 +2,7 @@ import {useRef} from 'react'
 import {useTranslation} from 'react-i18next'
 import {formatBalance} from '@fluent-wallet/data-format'
 import {useFontSize} from '../../hooks'
-import {
-  TitleNav,
-  CurrentAccountDisplay,
-  DappTransactionFooter,
-} from '../../components'
+import {TitleNav, CurrentAccountDisplay, DappFooter} from '../../components'
 
 function ConfirmAddSuggestedToken() {
   const {t} = useTranslation()
@@ -52,10 +48,7 @@ function ConfirmAddSuggestedToken() {
             </div>
           </div>
         </main>
-        <DappTransactionFooter
-          cancelText={t('cancel')}
-          confirmText={t('addToken')}
-        />
+        <DappFooter cancelText={t('cancel')} confirmText={t('addToken')} />
       </div>
     </div>
   )
