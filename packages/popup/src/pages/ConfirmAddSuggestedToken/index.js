@@ -2,7 +2,11 @@ import {useRef} from 'react'
 import {useTranslation} from 'react-i18next'
 import {formatBalance} from '@fluent-wallet/data-format'
 import {useFontSize} from '../../hooks'
-import {DappTransactionHeader, DappTransactionFooter} from '../../components'
+import {
+  TitleNav,
+  CurrentAccountDisplay,
+  DappTransactionFooter,
+} from '../../components'
 
 function ConfirmAddSuggestedToken() {
   const {t} = useTranslation()
@@ -17,12 +21,12 @@ function ConfirmAddSuggestedToken() {
       id="confirmAddSuggestedTokenContainer"
       className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg"
     >
-      <DappTransactionHeader
-        title={t('addSuggestedToken')}
-        avatar={<img src="" alt="avatar" className="h-8 w-8" />}
-        nickName="Mock Account"
-        address="iammockaddressiammockaddressiammockaddress"
-      />
+      <header>
+        <TitleNav title={t('addSuggestedToken')} hasGoBack={false} />
+        <div className="mt-1 px-4 pb-3">
+          <CurrentAccountDisplay />
+        </div>
+      </header>
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
         <main className=" pt-4 px-3 ">
           <p className="text-sm text-gray-80 font-medium pb-2 ml-1">

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../constants'
+import {TitleNav} from '../components'
 const {GET_PENDING_AUTH_REQ} = RPC_METHODS
 
 function DappConnectWalletHeader({title}) {
@@ -11,10 +12,8 @@ function DappConnectWalletHeader({title}) {
   return (
     <header>
       <div>
-        <p className="text-sm text-gray-100 text-center h-13 flex justify-center items-center mb-1">
-          {title}
-        </p>
-        <div className="flex justify-center items-center">
+        <TitleNav title={title} hasGoBack={false} />
+        <div className="flex justify-center items-center mt-1">
           <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center">
             <img
               src={app?.site?.icon || '/images/default-fav.svg'}

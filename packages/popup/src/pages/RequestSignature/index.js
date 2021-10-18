@@ -1,30 +1,52 @@
 import {useTranslation} from 'react-i18next'
+import {useRPC} from '@fluent-wallet/use-rpc'
+import {BigNumber} from 'bignumber.js'
 import {
-  DappTransactionHeader,
   DappTransactionFooter,
   CompWithLabel,
+  TitleNav,
+  CurrentAccountDisplay,
+  DisplayBalance,
 } from '../../components'
+import {useCurrentAccount} from '../../hooks'
+import {RPC_METHODS} from '../../constants'
+const {GET_BALANCE} = RPC_METHODS
 
 function RequestSignature() {
   const {t} = useTranslation()
+  const {address, ticker, networkId} = useCurrentAccount()
+  const {data: balanceData} = useRPC(
+    address && networkId ? [GET_BALANCE, address, networkId] : null,
+    {
+      users: [address],
+      tokens: ['0x0'],
+    },
+    {fallbackData: {}},
+  )
 
   return (
     <div
       id="requestSignatureContainer"
       className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg"
     >
-      <DappTransactionHeader
-        title={t('signTypeMessage')}
-        avatar={<img src="" alt="avatar" className="h-8 w-8" />}
-        nickName="Mock Account"
-        address="iammockaddressiammockaddressiammockaddress"
-        rightContent={
-          <div className="text-xs">
-            <span className="text-gray-80">123</span>
-            <span className="text-gray-60"> CFX</span>
+      <header>
+        <TitleNav title={t('signTypeMessage')} hasGoBack={false} />
+        <div className="flex mt-1 px-4 pb-3 items-center justify-between">
+          <CurrentAccountDisplay />
+          <div className="flex items-center justify-between">
+            <DisplayBalance
+              balance={new BigNumber(
+                balanceData?.[address]?.['0x0'] || '0',
+              ).toString()}
+              maxWidthStyle="max-w-[148px]"
+              maxWidth={148}
+            />
+            <span className="text-gray-60 text-xs ml-0.5">
+              {ticker?.name || ''}
+            </span>
           </div>
-        }
-      />
+        </div>
+      </header>
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
         <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
           <div className="ml-1">

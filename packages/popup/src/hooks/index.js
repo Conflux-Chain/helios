@@ -197,7 +197,7 @@ export const useCurrentAccount = () => {
   const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
     fallbackData: {},
   })
-  const {eid: networkId, type} = currentNetwork
+  const {eid: networkId, type, ticker} = currentNetwork
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
@@ -215,5 +215,7 @@ export const useCurrentAccount = () => {
   return {
     ...currentAccount,
     address,
+    ticker,
+    networkId,
   }
 }

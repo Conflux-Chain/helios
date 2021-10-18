@@ -18,7 +18,7 @@ import {
   CompWithLabel,
 } from '../../components'
 import {useAccountGroupAddress} from '../../hooks'
-import {formatIntoShortAddress} from '../../utils'
+import {shortenAddress} from '@fluent-wallet/shorten-address'
 const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function ConnectSitesList({
@@ -67,7 +67,7 @@ function ConnectSitesList({
                     <div className="flex-1">
                       <p className="text-xs text-gray-40">{nickname}</p>
                       <p className="text-sm text-gray-80">
-                        {formatIntoShortAddress(address)}
+                        {address ? shortenAddress(address) : ''}
                       </p>
                     </div>
                     <div className="flex">

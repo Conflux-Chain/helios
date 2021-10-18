@@ -1,6 +1,6 @@
-import {DappTransactionFooter} from '../../components'
-import {useTranslation} from 'react-i18next'
 import PropTypes from 'prop-types'
+import {DappTransactionFooter, TitleNav} from '../../components'
+import {useTranslation} from 'react-i18next'
 
 function NetworkItem({labelText, contentText, containerClass = ''}) {
   return (
@@ -30,9 +30,7 @@ function DappAddNetwork() {
     >
       <div>
         <header>
-          <div className="text-sm text-gray-100 h-13 flex items-center justify-center">
-            {t('addNetwork')}
-          </div>
+          <TitleNav title={t('addNetwork')} hasGoBack={false} />
         </header>
         <main className="mt-3 px-3">
           <div className="ml-1">
