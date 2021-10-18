@@ -50,7 +50,7 @@ function Modal({
     <div
       data-testid="modal-wrapper"
       ref={ref}
-      className="fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-[#000] bg-opacity-60 transation flex justify-center items-center z-10"
+      className="fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-[#000] bg-opacity-60 transition flex justify-center items-center z-50"
     >
       <div
         data-testid="modal-content"

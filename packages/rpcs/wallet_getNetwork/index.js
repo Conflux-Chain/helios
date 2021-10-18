@@ -1,4 +1,12 @@
-import {map, enums, truep, dbid} from '@fluent-wallet/spec'
+import {
+  map,
+  enums,
+  dbid,
+  networkId,
+  chainId,
+  boolean,
+} from '@fluent-wallet/spec'
+import {isUndefined} from '@fluent-wallet/checks'
 
 export const NAME = 'wallet_getNetwork'
 
@@ -7,8 +15,10 @@ export const schemas = {
     map,
     {closed: true},
     ['type', {optional: true}, [enums, 'cfx', 'eth']],
-    ['builtin', {optional: true}, truep],
-    ['networkId', {optional: true}, dbid],
+    ['builtin', {optional: true}, boolean],
+    ['chainId', {optional: true}, chainId],
+    ['networkId', {optional: true}, networkId],
+    ['networkDbId', {optional: true}, dbid],
   ],
 }
 
@@ -21,17 +31,24 @@ export const permissions = {
 export const main = ({
   Err: {InvalidParams},
   db: {getNetwork, getNetworkById},
-  params: {type, builtin, networkId},
+  params: {type, builtin, networkId, networkDbId, chainId},
 }) => {
-  const hasNetworkId = Number.isInteger(networkId)
-  if ((type && hasNetworkId) || (builtin && hasNetworkId))
+  const networkDbIdDefined = !isUndefined(networkDbId)
+  const builtinDefined = !isUndefined(builtin)
+  const networkIdDefined = !isUndefined(networkId)
+  if (
+    (type || chainId || networkIdDefined || builtinDefined) &&
+    networkDbIdDefined
+  )
     throw InvalidParams(
-      "Can't query type/builtin with networkId at the same type",
+      "Can't query type/builtin/chainId/networkId with networkDbId at the same time",
     )
-  if (hasNetworkId) return getNetworkById(networkId)
+  if (networkDbIdDefined) return getNetworkById(networkDbId)
 
   const query = {}
   if (type) query.type = type
-  if (builtin) query.builtin = builtin
+  if (builtinDefined) query.builtin = builtin
+  if (networkIdDefined) query.networkId = networkId
+  if (chainId) query.chainId = chainId
   return getNetwork(query)
 }

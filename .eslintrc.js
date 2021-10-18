@@ -6,7 +6,6 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:react-hooks/recommended',
     'plugin:jest/recommended',
-    'plugin:testing-library/react',
     'prettier',
   ],
   env: {
@@ -29,7 +28,7 @@ module.exports = {
   //     jsx: true,
   //   },
   // },
-  plugins: ['prettier'],
+  plugins: ['testing-library', 'prettier'],
   globals: {
     browser: 'readonly',
   },

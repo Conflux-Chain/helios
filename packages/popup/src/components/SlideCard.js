@@ -4,14 +4,14 @@ import {CloseOutlined} from '@fluent-wallet/component-icons'
 import {useRef} from 'react'
 import {useSlideAnimation} from '../hooks'
 
-const SlideCard = ({
+function SlideCard({
   onClose,
   onOpen = false,
   cardTitle,
   cardContent,
   cardDescription,
   cardFooter = null,
-}) => {
+}) {
   const animateStyle = useSlideAnimation(onOpen)
   const ref = useRef(null)
 

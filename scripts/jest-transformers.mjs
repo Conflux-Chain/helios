@@ -1,6 +1,6 @@
-require('./setup-dotenv')
-const {transformSync} = require('@swc/core')
-const {mergeDeepObj} = require('@thi.ng/associative')
+import './setup-dotenv.mjs'
+import {transformSync} from '@swc/core'
+import {mergeDeepObj} from '@thi.ng/associative'
 
 const hasjsx = src => /React/.test(src) || /\/>/.test(src) || /<\//.test(src)
 
@@ -45,7 +45,7 @@ const snowpackImportMetaEnv = code =>
     ? code.replaceAll('import.meta.env', 'process.env')
     : code
 
-module.exports = {
+const rst = {
   process: (...args) => {
     let [src, path, jestConfig] = args // eslint-disable-line no-unused-vars
     src = snowpackImportMetaEnv(...args)
@@ -53,10 +53,6 @@ module.exports = {
     if (/require\(("|')crypto("|')\)/.test(src)) {
       src = src.replaceAll('require("crypto")', 'window.nodejsCrypto')
       src = src.replaceAll("require('crypto')", 'window.nodejsCrypto')
-    }
-
-    if (/import .* from 'react-use'/.test(src)) {
-      src = src.replaceAll("from 'react-use'", "from 'react-use/esm/index.js'")
     }
 
     const [, , transformOptions = {}] =
@@ -67,7 +63,10 @@ module.exports = {
     let jopts = mergeDeepObj(transformOptions, jestOpt)
     let compileWithSwc = false
 
-    if (path.includes('node_modules/react-use/')) {
+    if (
+      path.includes('node_modules/react-use/') ||
+      path.includes('node_modules/tslib/')
+    ) {
       jopts = mergeDeepObj(jopts, {module: {type: 'commonjs'}})
       compileWithSwc = true
     }
@@ -85,3 +84,5 @@ module.exports = {
     return src
   },
 }
+
+export default rst

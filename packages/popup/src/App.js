@@ -32,6 +32,7 @@ const {
   REQUEST_SIGNATURE,
   DAPP_ADD_NETWORK,
   DAPP_SWITCH_NETWORK,
+  SEND_TRANSACTION,
 } = ROUTES
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
@@ -55,6 +56,7 @@ const DappSwitchNetwork = lazy(() => import('./pages/DappSwitchNetwork'))
 const ConfirmAddSuggestedToken = lazy(() =>
   import('./pages/ConfirmAddSuggestedToken'),
 )
+const SendTransaction = lazy(() => import('./pages/SendTransaction'))
 
 function App() {
   const {data: lockedData, error: lockedError} = useRPC([
@@ -143,6 +145,7 @@ function App() {
               component={DappSwitchNetwork}
             />
             <Route exact path={DAPP_ADD_NETWORK} component={DappAddNetwork} />
+            <Route exact path={SEND_TRANSACTION} component={SendTransaction} />
             <Route exact path={ERROR} component={ErrorPage} />
             <Route path="*" render={() => <Redirect to={ERROR} />} />
           </Switch>

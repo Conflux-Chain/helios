@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 
 function CompWithLabel({label, children, className = ''}) {
   return (
-    <div className={`mt-3 ${className}`}>
+    <div className={`mt-3 w-full ${className}`}>
       <span className="text-gray-80 ml-1 mb-2 inline-block w-full">
         {label}
       </span>

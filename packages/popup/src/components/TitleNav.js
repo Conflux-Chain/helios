@@ -11,7 +11,7 @@ function TitleNav({hasGoBack = true, title = ''}) {
           onClick={() => {
             history.goBack()
           }}
-          className="w-5 h-5 text-gray-60 absolute left-3 top-4"
+          className="w-5 h-5 text-gray-60 absolute left-3 top-4 cursor-pointer"
         />
       ) : null}
       <div className="text-sm text-gray-100">{title}</div>

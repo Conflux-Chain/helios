@@ -3,12 +3,12 @@ import {useState} from 'react'
 import Input from '@fluent-wallet/component-input'
 import {EyeInvisibleOutlined, EyeOutlined} from '@fluent-wallet/component-icons'
 
-const PasswordInput = ({
+function PasswordInput({
   validateInputValue,
   setInputValue,
   errorMessage,
   value,
-}) => {
+}) {
   const [eyeStatus, setEyeStatus] = useState('close')
   const onSuffixClick = () => {
     setEyeStatus(eyeStatus === 'close' ? 'open' : 'close')

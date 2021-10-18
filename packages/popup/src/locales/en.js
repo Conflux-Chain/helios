@@ -125,6 +125,19 @@ const en = {
       'This will switch the selected network within Fluent to a previously added network',
     testnet: 'testnet',
     switch: 'Switch',
+    //send transaction
+    sendTransaction: 'Send Transaction',
+    toAddressLabel: 'Send to Address',
+    toAddressPlaceholder: 'Please enter the address',
+    tokenAndAmount: 'Token & Amount',
+    available: 'Available: ',
+    max: 'MAX',
+    gasFee: 'Gas fee',
+    edit: 'Edit',
+    sponsored: 'Sponsored',
+    // choose token
+    chooseToken: 'Choose Token',
+    tokenList: 'Token list',
   },
 }
 

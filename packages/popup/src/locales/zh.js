@@ -67,6 +67,11 @@ const zh = {
     mainnet: 'Mainnet',
     Testnet: 'Testnet',
     custom: 'Custom',
+    // add token
+    addToken: 'Add Token',
+    searchToken: 'Search token name or contract address',
+    searchResults: 'Search Results',
+    noResult: 'No result',
     // home page
     send: 'Send',
     history: 'History',
@@ -84,6 +89,55 @@ const zh = {
     yes: 'Yes',
     cancel: 'Cancel',
     disconnect: 'Disconnect',
+    // dapp connect site
+    connectSite: 'Connect to this Website?',
+    selectNetwork: 'Which network want to use?',
+    selectAuthorizedAccounts: 'Which accounts will be authorized?',
+    selectAll: 'All',
+    connect: 'Connect',
+    chooseNetwork: 'Choose Network',
+    // confirm add suggested token
+    addSuggestedToken: 'Add suggested token',
+    confirmAddSuggestedToken: 'Would you like to add this token?',
+    //request signature
+    signTypeMessage: 'Sign Type Message',
+    signThisMessage: 'Sign this message?',
+    message: 'Message',
+    holder: 'Holder',
+    spender: 'Spender',
+    sign: 'Sign',
+    // Dapp add network
+    addNetwork: 'Add Network',
+    allowAddNetwork: 'Allow this site to add a network?',
+    warningAddNetwork:
+      'Do you trust this site? Fluent Wallet does not verify custom networks.',
+    learnMore: 'Learn More',
+    networkName: 'Network Name',
+    networkUrl: 'Network URL',
+    chainId: 'Chain ID',
+    currencySymbol: 'Currency Symbol',
+    optional: 'optional',
+    blockExplorerUrl: 'Block Explorer URL',
+    // Dapp switch network
+    switchNetwork: 'Switch Network',
+    allowSwitchNetwork: 'Allow this site to switch the network?',
+    warningSwitchNetwork:
+      'This will switch the selected network within Fluent to a previously added network',
+    testnet: 'testnet',
+    switch: 'Switch',
+    //send transaction
+    sendTransaction: 'Send Transaction',
+    toAddressLabel: 'Send to Address',
+    toAddressPlaceholder: 'Please enter the address',
+    tokenAndAmount: 'Token & Amount',
+    available: 'Available: ',
+    max: 'MAX',
+    gasFee: 'Gas fee',
+    edit: 'Edit',
+    sponsored: 'Sponsored',
+    // choose token
+    chooseToken: 'Choose Token',
+    tokenList: 'Token list',
   },
 }
 
