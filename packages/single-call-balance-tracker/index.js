@@ -45,8 +45,10 @@ export const balances = async (...args) => {
   const rst = {}
 
   users.forEach((u, uidx) => {
+    u = u.toLowerCase()
     rst[u] = {}
     tokens.forEach((t, tidx) => {
+      t = t.toLowerCase()
       rst[u][t] = hexValue(decoded[uidx * tl + tidx].toHexString())
     })
   })

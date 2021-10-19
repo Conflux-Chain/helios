@@ -3,7 +3,7 @@
    [cfxjs.db.datascript.core :as d]
    [cfxjs.db.schema :refer [model->attr-keys]]))
 
-(declare q e t fdb)
+(declare q p e t fdb)
 
 (defn j->c [a]
   (js->clj a :keywordize-keys true))
@@ -254,6 +254,92 @@
          networkId tokenAddress)
       first))
 
+(defn addr-network-id-to-addr-id [addr netId]
+  (-> (q '[:find [?addr-id ...]
+           :in $ ?addr ?net
+           :where
+           (or [?addr-id :address/base32 ?addr]
+               [?addr-id :address/hex ?addr])
+           [?net :network/address ?addr-id]]
+         addr netId)
+      first))
+(defn addr-network-id-to-token-id [addr netId]
+  (-> (q '[:find [?token-id ...]
+           :in $ ?addr ?net
+           :where
+           [?token-id :token/address ?addr]
+           [?net :network/token ?token-id]]
+         addr netId)
+      first))
+
+(defn get-single-call-balance-params [{:keys [type]}]
+  (let [discover?            (= type "discover")
+        refresh?             (= type "refresh")
+        all?                 (= type "all")
+        native-balance-binds (q '[:find ?net ?addr ?token
+                                  :where
+                                  [?net :network/address ?addr-id]
+                                  [?addr-id :address/hex ?addr-hex]
+                                  [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]
+                                  [(and true "0x0") ?token]])
+        has-balance-binds    (if (or refresh? all?)
+                               (q '[:find ?net ?addr ?token
+                                    :where
+                                    [?balance :balance/address ?addr-id]
+                                    [?balance :balance/token  ?token-id]
+                                    [?token-id :token/address ?token]
+                                    [?net :network/token   ?token-id]
+                                    [?addr-id :address/hex ?addr-hex]
+                                    [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]])
+                               #{})
+        no-balance-binds     (if (or all? discover?)
+                               (q '[:find ?net ?addr ?token
+                                    :where
+                                    [?net :network/address ?addr-id]
+                                    [?net :network/token ?token-id]
+                                    (not [?addr-id :address/token ?token-id])
+                                    [?token-id :token/address ?token]
+                                    [?addr-id :address/hex ?addr-hex]
+                                    [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]])
+                               #{})
+        format-balance-binds (fn [acc [network-id uaddr taddr]]
+                               (let [[u t net] (get acc network-id [#{} #{} (e :network network-id)])]
+                                 (assoc acc network-id [(conj u uaddr) (conj t taddr) net])))
+        params               (reduce format-balance-binds {} native-balance-binds)
+        params               (reduce format-balance-binds params has-balance-binds)
+        params               (reduce format-balance-binds params no-balance-binds)]
+    (into [] params)))
+
+(defn upsert-balances [{:keys [networkId data]}]
+  (let [formated-data
+        (reduce
+         (fn [acc [uaddr tokens-map]]
+           (into acc
+                 (reduce
+                  (fn [acc [taddr balance]]
+                    (if (= balance "0x0")
+                      acc
+                      (conj acc [(addr-network-id-to-addr-id (name uaddr) networkId) (addr-network-id-to-token-id (name taddr) networkId) balance])))
+                  []
+                  tokens-map)))
+         [] data)
+
+        ;; [
+        ;;   [uid tid balance]
+        ;; ]
+
+        txs
+        (mapv
+         (fn [[uid tid value]]
+           (let [balance (e :balance [:balance/address+token [uid tid]])]
+             (cond
+               balance              [:db/add (:db/id balance) :balance/value value]
+               (and uid (nil? tid)) [:db/add uid :address/balance value]
+               (and uid tid)        {:db/id (str "newbalance-" uid "-" tid) :balance/token tid :balance/address uid :balance/value value})))
+         formated-data)]
+    (t txs)
+    true))
+
 (defn retract [id] (t [[:db.fn/retractEntity id]]))
 (defn retract-attr [{:keys [eid attr]}] (t [[:db.fn/retractAttribute eid (keyword attr)]]))
 
@@ -279,10 +365,13 @@
               :retractAttr                     retract-attr
               :getNetworkTokenByTokenAddr      get-network-token-by-token-addr
               :getCurrentAddr                  (comp #(e :address) get-current-addr)
-              :addTokenToAddr                  add-token-to-addr})
+              :addTokenToAddr                  add-token-to-addr
+              :getSingleCallBalanceParams      get-single-call-balance-params
+              :upsertBalances                  upsert-balances})
 
-(defn apply-queries [conn qfn entity tfn ffn]
+(defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)
+  (def p pfn)
   (def e (fn [model eid] (entity model (model->attr-keys model) eid)))
   (def t tfn)
   (def fdb ffn)
