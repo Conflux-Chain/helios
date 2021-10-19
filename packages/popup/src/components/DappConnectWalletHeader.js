@@ -1,14 +1,10 @@
 import PropTypes from 'prop-types'
-import {useRPC} from '@fluent-wallet/use-rpc'
-import {RPC_METHODS} from '../constants'
 import {TitleNav} from '../components'
-const {GET_PENDING_AUTH_REQ} = RPC_METHODS
-
+import {usePendingAuthReq} from '../hooks'
 function DappConnectWalletHeader({title}) {
-  const {data: pendingAuthReq} = useRPC([GET_PENDING_AUTH_REQ], undefined, {
-    fallbackData: [{app: null, site: null}],
-  })
-  const [{app, site}] = pendingAuthReq.length ? pendingAuthReq : [{}]
+  const {data: pendingAuthReq} = usePendingAuthReq()
+  const [{app, site}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+
   return (
     <header>
       <div>

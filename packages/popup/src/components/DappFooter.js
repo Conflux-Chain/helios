@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../utils'
 import {RPC_METHODS, ROUTES} from '../constants'
+import {usePendingAuthReq} from '../hooks'
 import {useHistory} from 'react-router-dom'
 
 const {
-  GET_PENDING_AUTH_REQ,
   REJECT_PENDING_AUTH_REQ,
   REQUEST_PERMISSIONS,
   WALLET_SWITCH_CONFLUX_CHAIN,
@@ -24,11 +23,9 @@ function DappFooter({
   confirmParams = {},
 }) {
   const history = useHistory()
-  const {data: pendingAuthReq} = useRPC([GET_PENDING_AUTH_REQ], undefined, {
-    fallbackData: [{eid: null}],
-  })
+  const {pendingAuthReq} = usePendingAuthReq()
   console.log('pendingAuthReq', pendingAuthReq)
-  const [{req, eid}] = pendingAuthReq.length ? pendingAuthReq : [{}]
+  const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
 
   const onCancel = () => {
     request(REJECT_PENDING_AUTH_REQ, {authReqId: eid}).then(({result}) => {

@@ -2,16 +2,14 @@ import {useTranslation} from 'react-i18next'
 import {DappFooter, DappConnectWalletHeader} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../constants'
+import {usePendingAuthReq} from '../../hooks'
 
-const {GET_PENDING_AUTH_REQ, GET_NETWORK, WALLET_SWITCH_CONFLUX_CHAIN} =
-  RPC_METHODS
+const {GET_NETWORK, WALLET_SWITCH_CONFLUX_CHAIN} = RPC_METHODS
 
 function DappSwitchNetwork() {
   const {t} = useTranslation()
-  const {data: pendingAuthReq} = useRPC([GET_PENDING_AUTH_REQ], undefined, {
-    fallbackData: [{req: null}],
-  })
-  const [{req}] = pendingAuthReq.length ? pendingAuthReq : [{}]
+  const {pendingAuthReq} = usePendingAuthReq()
+  const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const {data: networkData} = useRPC(
     req?.params[0]?.chainId ? [GET_NETWORK, req.params[0].chainId] : null,
     {

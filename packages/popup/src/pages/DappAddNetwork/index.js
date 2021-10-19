@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types'
 import {DappFooter, TitleNav} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {RPC_METHODS} from '../../constants'
-import {useRPC} from '@fluent-wallet/use-rpc'
-
-const {GET_PENDING_AUTH_REQ} = RPC_METHODS
+import {usePendingAuthReq} from '../../hooks'
 function NetworkContentItem({labelText, contentText, containerClass = ''}) {
   return (
     <div className={containerClass}>
@@ -24,10 +21,8 @@ NetworkContentItem.propTypes = {
 
 function DappAddNetwork() {
   const {t} = useTranslation()
-  const {data: pendingAuthReq} = useRPC([GET_PENDING_AUTH_REQ], undefined, {
-    fallbackData: [{req: null}],
-  })
-  const [{req}] = pendingAuthReq.length ? pendingAuthReq : [{}]
+  const {pendingAuthReq} = usePendingAuthReq()
+  const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
 
   return (
     <div

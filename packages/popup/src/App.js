@@ -4,14 +4,10 @@ import React, {lazy, Suspense, useEffect} from 'react'
 import {HashRouter as Router, Redirect, Route, Switch} from 'react-router-dom'
 import {ProtectedRoute} from './components'
 import {RPC_METHODS, ROUTES} from './constants'
+import {usePendingAuthReq} from './hooks'
 import './index.css'
 import useGlobalStore from './stores/index.js'
-const {
-  GET_ACCOUNT_GROUP,
-  GET_NO_GROUP,
-  GET_WALLET_LOCKED_STATUS,
-  GET_PENDING_AUTH_REQ,
-} = RPC_METHODS
+const {GET_ACCOUNT_GROUP, GET_NO_GROUP, GET_WALLET_LOCKED_STATUS} = RPC_METHODS
 
 const {
   HOME,
@@ -66,11 +62,10 @@ function App() {
   const {error: getAccountGroupError} = useRPC(
     lockedData === false ? [GET_ACCOUNT_GROUP] : null,
   )
-  const {data: pendingAuthReq, error: pendingReqError} = useRPC(
-    lockedData === false ? [GET_PENDING_AUTH_REQ] : null,
+  const {pendingAuthReq, pendingReqError} = usePendingAuthReq(
+    lockedData === false,
   )
   const {setFatalError} = useGlobalStore()
-
   useEffect(() => {
     if (lockedError) setFatalError(lockedError)
     if (zeroGroupError) setFatalError(zeroGroupError)
@@ -79,7 +74,11 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lockedError || zeroGroupError || getAccountGroupError || pendingReqError])
 
-  if (isUndefined(lockedData) || isUndefined(zeroGroup)) {
+  if (
+    isUndefined(lockedData) ||
+    isUndefined(zeroGroup) ||
+    isUndefined(pendingAuthReq)
+  ) {
     return <div>loading...</div>
   }
 

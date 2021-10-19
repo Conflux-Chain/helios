@@ -17,6 +17,7 @@ const {
   GET_BALANCE,
   GET_CURRENT_NETWORK,
   GET_CURRENT_ACCOUNT,
+  GET_PENDING_AUTH_REQ,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -218,4 +219,11 @@ export const useCurrentAccount = () => {
     ticker,
     networkId,
   }
+}
+
+export const usePendingAuthReq = (canSendReq = true) => {
+  const {data: pendingAuthReq, error: pendingReqError} = useRPC(
+    canSendReq ? [GET_PENDING_AUTH_REQ] : null,
+  )
+  return {pendingAuthReq, pendingReqError}
 }
