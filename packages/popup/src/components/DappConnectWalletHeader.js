@@ -18,7 +18,7 @@ function DappConnectWalletHeader({title}) {
             <img
               src={app?.site?.icon || '/images/default-fav.svg'}
               alt="favicon"
-              className="w-9 h-9"
+              className="w-8 h-8"
             />
           </div>
           <div className="w-2 h-2 border-solid border-primary border-2 rounded-full ml-2" />

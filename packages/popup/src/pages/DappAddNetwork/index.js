@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types'
 import {DappFooter, TitleNav} from '../../components'
 import {useTranslation} from 'react-i18next'
+import {RPC_METHODS} from '../../constants'
+import {useRPC} from '@fluent-wallet/use-rpc'
 
-function NetworkItem({labelText, contentText, containerClass = ''}) {
+const {GET_PENDING_AUTH_REQ} = RPC_METHODS
+function NetworkContentItem({labelText, contentText, containerClass = ''}) {
   return (
     <div className={containerClass}>
       <div className="text-xs text-gray-40">{labelText}</div>
@@ -13,15 +16,18 @@ function NetworkItem({labelText, contentText, containerClass = ''}) {
   )
 }
 
-NetworkItem.propTypes = {
+NetworkContentItem.propTypes = {
   labelText: PropTypes.string.isRequired,
-  contentText: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-    .isRequired,
+  contentText: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   containerClass: PropTypes.string,
 }
 
 function DappAddNetwork() {
   const {t} = useTranslation()
+  const {data: pendingAuthReq} = useRPC([GET_PENDING_AUTH_REQ], undefined, {
+    fallbackData: [{req: null}],
+  })
+  const [{req}] = pendingAuthReq.length ? pendingAuthReq : [{}]
 
   return (
     <div
@@ -51,25 +57,28 @@ function DappAddNetwork() {
             </p>
           </div>
           <div className="bg-gray-4 mt-3 px-3 py-4">
-            <NetworkItem labelText={t('networkName')} contentText="12313" />
-            <NetworkItem
+            <NetworkContentItem
+              labelText={t('networkName')}
+              contentText={req?.params?.[0]?.chainName || ''}
+            />
+            <NetworkContentItem
               labelText={t('networkUrl')}
-              contentText="12313"
+              contentText={req?.params?.[0]?.rpcUrls?.[0] || ''}
               containerClass="mt-3"
             />
-            <NetworkItem
+            <NetworkContentItem
               labelText={t('chainId')}
-              contentText="12313"
+              contentText={req?.params?.[0]?.chainId || ''}
               containerClass="mt-3"
             />
-            <NetworkItem
+            <NetworkContentItem
               labelText={`${t('currencySymbol')} (${t('optional')})`}
-              contentText="12313"
+              contentText={req?.params?.[0]?.nativeCurrency?.symbol || ''}
               containerClass="mt-3"
             />
-            <NetworkItem
+            <NetworkContentItem
               labelText={`${t('blockExplorerUrl')} (${t('optional')})`}
-              contentText="12313123131231312313123131231312313123131231312313"
+              contentText={req?.params?.[0]?.blockExplorerUrls?.[0] || ''}
               containerClass="mt-3"
             />
           </div>

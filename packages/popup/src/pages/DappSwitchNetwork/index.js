@@ -3,7 +3,8 @@ import {DappFooter, DappConnectWalletHeader} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../constants'
 
-const {GET_PENDING_AUTH_REQ, GET_NETWORK} = RPC_METHODS
+const {GET_PENDING_AUTH_REQ, GET_NETWORK, WALLET_SWITCH_CONFLUX_CHAIN} =
+  RPC_METHODS
 
 function DappSwitchNetwork() {
   const {t} = useTranslation()
@@ -13,7 +14,10 @@ function DappSwitchNetwork() {
   const [{req}] = pendingAuthReq.length ? pendingAuthReq : [{}]
   const {data: networkData} = useRPC(
     req?.params[0]?.chainId ? [GET_NETWORK, req.params[0].chainId] : null,
-    {chainId: req?.params[0]?.chainId, type: 'cfx'},
+    {
+      chainId: req?.params[0]?.chainId,
+      type: req?.method === WALLET_SWITCH_CONFLUX_CHAIN ? 'cfx' : 'eth',
+    },
     {fallbackData: [{}]},
   )
   const [{isTestnet, name, endpoint, icon}] = networkData

@@ -13,6 +13,8 @@ const {
   WALLET_SWITCH_ETHEREUM_CHAIN,
   CFX_SIGN_TYPED_DATA_V4,
   ETH_SIGN_TYPED_DATA_V4,
+  WALLET_ADD_ETHEREUM_CHAIN,
+  WALLET_ADD_CONFLUX_CHAIN,
 } = RPC_METHODS
 const {HOME} = ROUTES
 function DappFooter({
@@ -55,6 +57,12 @@ function DappFooter({
         break
       case ETH_SIGN_TYPED_DATA_V4:
         params.data = req.params
+        break
+      case WALLET_ADD_ETHEREUM_CHAIN:
+        params.newChainConfig = req.params
+        break
+      case WALLET_ADD_CONFLUX_CHAIN:
+        params.newChainConfig = req.params
         break
     }
 
