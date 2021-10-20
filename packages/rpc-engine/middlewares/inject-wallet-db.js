@@ -5,8 +5,13 @@ export default defMiddleware(({tx: {map}, perms: {getWalletDB}}) => ({
   ins: {
     req: {stream: '/injectRpcStore/node'},
   },
-  fn: map(({req, rpcStore, db}) => ({
-    ...req,
-    db: getWalletDB(rpcStore, db, req.method),
-  })),
+  fn: map(({req, rpcStore, db}) => {
+    return {
+      ...req,
+      db:
+        req.method === 'wallet_dbQuery'
+          ? db
+          : getWalletDB(rpcStore, db, req.method),
+    }
+  }),
 }))

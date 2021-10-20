@@ -28,6 +28,7 @@ import * as ethRequestAccounts from '@fluent-wallet/eth_request-accounts'
 import * as ethTypedSignV4 from '@fluent-wallet/eth_sign-typed-data_v4'
 import * as walletRefetchTokenList from '@fluent-wallet/wallet_refetch-token-list'
 import * as walletUpdateTokenList from '@fluent-wallet/wallet_update-token-list'
+import * as walletDbQuery from '@fluent-wallet/wallet_db-query'
 
 import {
   IS_CI,
@@ -102,6 +103,8 @@ export const rpcEngineOpts = {
   isTest: IS_TEST_MODE,
   isCI: IS_CI,
   methods: [
+    walletDbQuery,
+
     walletZeroAccountGroup,
     walletIsLocked,
     walletRequestUnlockUI,

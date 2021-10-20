@@ -2,6 +2,19 @@ import {defMiddleware} from '../middleware.js'
 import EpochRefConf from '@fluent-wallet/rpc-epoch-ref'
 import * as jsonRpcErr from '@fluent-wallet/json-rpc-error'
 
+function transformFakeDbRpcMethods(arg) {
+  const {req} = arg
+  if (req.method.startsWith('walletdb_')) {
+    const params = {
+      params: {...req.params},
+      method: req.method.replace(/^walletdb_/, 'query'),
+    }
+    req.method = 'wallet_dbQuery'
+    req.params = params
+  }
+  return {...arg, req}
+}
+
 function validateRpcMehtod({req, rpcStore}) {
   const {method} = req
   if (!method || !rpcStore[method]) {
@@ -164,9 +177,16 @@ function formatEpochRef(arg) {
 
 export default defMiddleware(({tx: {check, comp, pluck, map, filter}}) => [
   {
-    id: 'validateRpcMethod',
+    id: 'transformFakeDbRpcMethods',
     ins: {
       req: {stream: '/validateAndFormatJsonRpc/node'},
+    },
+    fn: comp(map(transformFakeDbRpcMethods), pluck('req')),
+  },
+  {
+    id: 'validateRpcMethod',
+    ins: {
+      req: {stream: '/transformFakeDbRpcMethods/node'},
     },
     fn: comp(check(validateRpcMehtod), pluck('req')),
   },

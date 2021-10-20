@@ -201,6 +201,11 @@
            [?acc :account/address ?addr]
            [?net :network/address ?addr]])
       first))
+(defn get-current-network []
+  (-> (q '[:find [?net]
+           :where
+           [?net :network/selected true]])
+      first))
 
 (defn dbadd
   "add document to db with modal keyword
@@ -343,6 +348,33 @@
 (defn retract [id] (t [[:db.fn/retractEntity id]]))
 (defn retract-attr [{:keys [eid attr]}] (t [[:db.fn/retractAttribute eid (keyword attr)]]))
 
+(comment
+  (-> (e :network (get-current-network))
+      :network/ticker)
+  (get (e :address (get-current-addr)) :address/balance "0x0"))
+;;; UI QUERIES
+(defn home-page-assets []
+  (let [cur-addr          (e :address (get-current-addr))
+        cur-net           (e :network (get-current-network))
+        native-token-info (get cur-net :network/ticker {:name "CFX", :symbol "CFX", :decimals 18})
+        native-token-ui   (assoc native-token-info :balance (get cur-addr :address/balance "0x0") :native true)
+        other-tokens-info (q '[:find ?token-id ?tbalance
+                               :in $ ?cur-addr
+                               :where
+                               [?cur-addr :address/token ?token-id]
+                               [?b :balance/address ?cur-addr]
+                               [?b :balance/token ?token-id]
+                               [?b :balance/value ?tbalance]]
+                             (:db/id cur-addr))
+        all-tokens        (reduce
+                           (fn [acc [token-id balance]]
+                             (let [t (.touch (e :token token-id))]
+                               (conj acc (assoc t :balance balance))))
+                           [native-token-ui] other-tokens-info)]
+    {:currentAddress cur-addr
+     :currentNetwork cur-net
+     :tokens all-tokens}))
+
 (def queries {:batchTx
               (fn [txs]
                 (let [txs (-> txs js/window.JSON.parse j->c)
@@ -367,7 +399,8 @@
               :getCurrentAddr                  (comp #(e :address) get-current-addr)
               :addTokenToAddr                  add-token-to-addr
               :getSingleCallBalanceParams      get-single-call-balance-params
-              :upsertBalances                  upsert-balances})
+              :upsertBalances                  upsert-balances
+              :queryhomePageAssets             home-page-assets})
 
 (defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)

@@ -46,6 +46,7 @@
     "@fluent-wallet/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault",
     "@fluent-wallet/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount",
     "@fluent-wallet/wallet_create-address": "workspace:packages/rpcs/wallet_createAddress",
+    "@fluent-wallet/wallet_db-query": "workspace:packages/rpcs/wallet_dbQuery",
     "@fluent-wallet/wallet_delete-account-group": "workspace:packages/rpcs/wallet_deleteAccountGroup",
     "@fluent-wallet/wallet_delete-app": "workspace:packages/rpcs/wallet_deleteApp",
     "@fluent-wallet/wallet_delete-network": "workspace:packages/rpcs/wallet_deleteNetwork",
