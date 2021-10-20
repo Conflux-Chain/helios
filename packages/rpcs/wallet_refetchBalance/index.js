@@ -1,6 +1,6 @@
 import {or, optParam, truep, map} from '@fluent-wallet/spec'
 
-export const NAME = 'wallet_refreshBalance'
+export const NAME = 'wallet_refetchBalance'
 
 export const schemas = {
   input: [
@@ -30,12 +30,12 @@ export const main = async ({
   params,
   rpcs: {wallet_getBalance},
 }) => {
-  const refreshBalanceParams = getSingleCallBalanceParams({
+  const refetchBalanceParams = getSingleCallBalanceParams({
     type: params?.allToken ? 'all' : 'refresh',
   })
 
   // eslint-disable-next-line no-unused-vars
-  const promises = refreshBalanceParams.map(([_, [users, tokens, network]]) =>
+  const promises = refetchBalanceParams.map(([_, [users, tokens, network]]) =>
     wallet_getBalance(
       {network, networkName: network.name},
       {users, tokens},
