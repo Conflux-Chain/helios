@@ -54,17 +54,18 @@ function TokenAndAmount({
   const [tokenListShow, setTokenListShow] = useState(false)
   const {symbol, icon} = selectedToken
   const label = (
-    <span className="flex items-center justify-between w-full">
+    <span className="flex items-center justify-between text-gray-60 w-full">
       {t('tokenAndAmount')}
-      <span className="flex items-center">
+      <span className="flex items-center text-xs">
         {t('available')}
         <DisplayBalance
           maxWidth={140}
           maxWidthStyle="max-w-[140px]"
           balance="10000"
-          className="mx-1"
+          className="mx-1 text-xs"
+          initialFontSize={12}
         />
-        {' CFX'}
+        {'CFX'}
       </span>
     </span>
   )
@@ -77,7 +78,11 @@ function TokenAndAmount({
           onClick={() => setTokenListShow(true)}
           aria-hidden="true"
         >
-          <img className="w-5 h-5 mr-1" src={icon} alt="logo" />
+          <img
+            className="w-5 h-5 mr-1"
+            src={icon || 'images/default-token-icon.svg'}
+            alt="logo"
+          />
           <span className="text-gray-80 mr-2">{symbol}</span>
           <CaretDownFilled className="w-4 h-4 text-gray-60" />
         </div>

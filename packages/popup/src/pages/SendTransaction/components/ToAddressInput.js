@@ -6,6 +6,7 @@ import {isHexAddress} from '@fluent-wallet/account'
 import {useTranslation} from 'react-i18next'
 import {CompWithLabel} from '../../../components'
 import Input from '@fluent-wallet/component-input'
+import {useIsCfx, useIsEth} from '../../../hooks'
 import {RPC_METHODS} from '../../../constants'
 const {GET_CURRENT_NETWORK} = RPC_METHODS
 
@@ -17,14 +18,11 @@ function ToAddressInput({address, onChangeAddress}) {
   const [errorMessage, setErrorMessage] = useState('')
   const onChange = value => {
     onChangeAddress && onChangeAddress(value)
-    if (
-      currentNetwork?.type === 'cfx' &&
-      !validateBase32Address(value, currentNetwork?.netId)
-    ) {
+    if (useIsCfx && !validateBase32Address(value, currentNetwork?.netId)) {
       // TODO i18n
       setErrorMessage('Please enter validate cfx address')
     }
-    if (currentNetwork?.type === 'eth' && !isHexAddress(value)) {
+    if (useIsEth && !isHexAddress(value)) {
       // TODO i18n
       setErrorMessage('Please enter validate hex address')
     }

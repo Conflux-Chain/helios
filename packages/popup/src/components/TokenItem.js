@@ -17,7 +17,11 @@ function TokenItem({
       onClick={() => onSelect && onSelect(token)}
       aria-hidden="true"
     >
-      <img className="w-8 h-8 rounded-full mr-2" src={icon} alt="logo" />
+      <img
+        className="w-8 h-8 rounded-full mr-2"
+        src={icon || 'images/default-token-icon.svg'}
+        alt="logo"
+      />
       <div className="flex flex-1 flex-col">
         <div className="flex w-full items-center">
           <span className="text-gray-80 font-medium">{symbol}</span>
