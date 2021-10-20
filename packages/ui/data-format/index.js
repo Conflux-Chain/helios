@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
-import Big from 'big.js'
-Big.RM = 0
-Big.NE = -19
+import {default as OriginBig} from 'big.js'
+OriginBig.RM = 0
+OriginBig.NE = -19
 
+export const Big = OriginBig
 export const CFX_DECIMAL = 18
 export const BTC_DECIMAL = 6
 export const USDT_DECIMAL = 8
