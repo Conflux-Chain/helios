@@ -103,8 +103,6 @@ const en = {
     signTypeMessage: 'Sign Type Message',
     signThisMessage: 'Sign this message?',
     message: 'Message',
-    holder: 'Holder',
-    spender: 'Spender',
     sign: 'Sign',
     // Dapp add network
     addNetwork: 'Add Network',

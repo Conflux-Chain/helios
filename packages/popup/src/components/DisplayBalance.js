@@ -9,7 +9,9 @@ function DisplayBalance({
   maxWidthStyle = 'max-w-[175px]',
   className = '',
 }) {
-  const displayBalance = formatBalance(balance)
+  const displayBalance = isNaN(Number(balance))
+    ? balance
+    : formatBalance(balance)
   const balanceRef = useRef()
   const hiddenRef = useRef()
   useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance)

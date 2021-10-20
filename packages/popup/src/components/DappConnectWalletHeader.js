@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {TitleNav} from '../components'
 import {usePendingAuthReq} from '../hooks'
 function DappConnectWalletHeader({title}) {
-  const {data: pendingAuthReq} = usePendingAuthReq()
+  const {pendingAuthReq} = usePendingAuthReq()
   const [{app, site}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
 
   return (

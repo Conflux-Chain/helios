@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {formatHexBalance} from '../../utils'
@@ -8,13 +9,42 @@ import {
   CurrentAccountDisplay,
   DisplayBalance,
 } from '../../components'
-import {useCurrentAccount} from '../../hooks'
+import {useCurrentAccount, usePendingAuthReq} from '../../hooks'
 import {RPC_METHODS} from '../../constants'
 const {GET_BALANCE} = RPC_METHODS
+
+function PlaintextMessage({message}) {
+  return (
+    <div>
+      {Object.entries(message).map(([label, value], i) => (
+        <div
+          className={
+            typeof value !== 'object' || value === null
+              ? 'pl-2 flex mt-1'
+              : 'pl-2 mt-1'
+          }
+          key={i}
+        >
+          <span className="text-xs text-gray-40">{label}: </span>
+          {typeof value === 'object' && value !== null ? (
+            <PlaintextMessage message={value} />
+          ) : (
+            <span className="text-sm text-gray-80 ml-1 whitespace-pre-line break-words overflow-hidden font-medium">{`${value}`}</span>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+PlaintextMessage.propTypes = {
+  message: PropTypes.object.isRequired,
+}
 
 function RequestSignature() {
   const {t} = useTranslation()
   const {address, ticker, networkId} = useCurrentAccount()
+  const {pendingAuthReq} = usePendingAuthReq()
+  const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const {data: balanceData} = useRPC(
     address && networkId ? [GET_BALANCE, address, networkId] : null,
     {
@@ -23,6 +53,7 @@ function RequestSignature() {
     },
     {fallbackData: {}},
   )
+  const plaintextData = req?.params?.[1] ? JSON.parse(req.params[1]) : {}
 
   return (
     <div
@@ -51,18 +82,13 @@ function RequestSignature() {
             <div className="text-sm text-gray-80 font-medium">
               {t('signThisMessage')}
             </div>
-            <div className="text-xs text-gray-40 mt-1">Dai Stablecoin</div>
+            <div className="text-xs text-gray-40 mt-1">
+              {plaintextData?.domain?.name}
+            </div>
           </div>
           <CompWithLabel label={<p className="font-medium">{t('message')}</p>}>
-            <div className="px-3 py-4 rounded bg-gray-4">
-              <div className="text-xs text-gray-40">{t('holder')}</div>
-              <div className="break-words text-gray-80 mt-0.5">
-                0xE592427A0AEce92De3Edee1F18E0157C058615641231231231312
-              </div>
-              <div className="text-xs text-gray-40 mt-3">{t('spender')}</div>
-              <div className="break-words text-gray-80 mt-0.5">
-                0xE592427A0AEce92De3Edee1F18E0157C058615641231231231312
-              </div>
+            <div className="pl-1 pr-3 pt-3 pb-4 rounded bg-gray-4">
+              <PlaintextMessage message={plaintextData?.message || {}} />
             </div>
           </CompWithLabel>
           <div className="mt-3"></div>
