@@ -168,7 +168,7 @@ function walletInitialized({chainId, networkId}) {
   addTokenButton.onclick = () => {
     provider
       .request({
-        method: 'wallet_watchAssets',
+        method: 'wallet_watchAsset',
         params: {
           type: 'ERC20',
           options: {

@@ -10,7 +10,7 @@ import {
   url,
 } from '@fluent-wallet/spec'
 
-export const NAME = 'wallet_watchAssets'
+export const NAME = 'wallet_watchAsset'
 
 const publicSchema = [
   map,

@@ -36,7 +36,7 @@ export default function PendingAuthReqExample() {
       confirmReq.chainConfig = req.params
     } else if (req.method === 'wallet_addEthereumChain') {
       confirmReq.newChainConfig = req.params
-    } else if (req.method === 'wallet_watchAssets') {
+    } else if (req.method === 'wallet_watchAsset') {
       confirmReq.asset = req.params
     }
 
