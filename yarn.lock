@@ -16975,6 +16975,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_validate-mnemonic": "workspace:packages/rpcs/wallet_validateMnemonic"
     "@fluent-wallet/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
     "@fluent-wallet/wallet_validate-private-key": "workspace:packages/rpcs/wallet_validatePrivateKey"
+    "@fluent-wallet/wallet_watch-assets": "workspace:packages/rpcs/wallet_watchAssets"
     "@fluent-wallet/wallet_zero-account-group": "workspace:packages/rpcs/wallet_zeroAccountGroup"
     "@fluent-wallet/webextension": "workspace:packages/webextension"
     "@thi.ng/rstream": 6.0.21

@@ -47,7 +47,6 @@ export const permissions = {
     'wallet_userApprovedAuthRequest',
   ],
   db: [
-    'getAppById',
     'getAuthReqById',
     'accountAddrByNetwork',
     'getCurrentAddr',
@@ -57,13 +56,7 @@ export const permissions = {
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {
-    getAppById,
-    getAuthReqById,
-    accountAddrByNetwork,
-    addTokenToAddr,
-    getCurrentAddr,
-  },
+  db: {getAuthReqById, accountAddrByNetwork, addTokenToAddr, getCurrentAddr},
   rpcs: {wallet_addPendingUserAuthRequest, wallet_userApprovedAuthRequest},
   app,
   params,
@@ -87,7 +80,7 @@ export const main = async ({
       account: app.currentAccount.eid,
     })
     const {alreadyInAddr} = addTokenToAddr({
-      ...params,
+      ...params.options,
       targetAddressId: curAddr.eid,
       checkOnly: true,
     })
@@ -107,7 +100,7 @@ export const main = async ({
   if (params.authReqId) {
     const authReq = getAuthReqById(params.authReqId)
     if (!authReq) throw InvalidParams(`Invalid auth req id ${params.authReqId}`)
-    const authedApp = getAppById(authReq.app)
+    const authedApp = authReq.app
     const addr = accountAddrByNetwork({
       network: authedApp.currentNetwork.eid,
       account: authedApp.currentAccount.eid,

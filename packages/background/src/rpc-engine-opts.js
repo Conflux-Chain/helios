@@ -96,6 +96,7 @@ import * as walletValidatePrivateKey from '@fluent-wallet/wallet_validate-privat
 import * as walletZeroAccountGroup from '@fluent-wallet/wallet_zero-account-group'
 import * as cfxCall from '@fluent-wallet/cfx_call'
 import * as ethCall from '@fluent-wallet/eth_call'
+import * as walletWatchAssets from '@fluent-wallet/wallet_watch-assets'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -167,6 +168,8 @@ export const rpcEngineOpts = {
     walletGetAccountAddressByNetwork,
     walletRefetchTokenList,
     walletUpdateTokenList,
+
+    walletWatchAssets,
 
     // cfx
     cfxEpochNumber,

@@ -217,7 +217,7 @@
      (assoc acc (keyword (str model "/" (name k))) v))
    {:db/id eid} document-map))
 
-(defn add-token-to-addr [{:keys [address targetAddressId fromApp fromUser fromList checkOnly]}]
+(defn add-token-to-addr [{:keys [address decimals image symbol targetAddressId fromApp fromUser fromList checkOnly] :as token}]
   (let [{:keys [addressId networkId]} (addr-acc-network {:addressId targetAddressId})
         token-in-net?                 (-> (q '[:find [?t ...]
                                                :in $ ?taddr ?net
@@ -237,13 +237,13 @@
                                                not-empty
                                                first))
         token-id                      (or token-in-addr? token-in-net? -1)
-        add-token-tx                  [:db/id token-id]
-        add-token-tx                  (if fromApp (into add-token-tx [:token/fromApp true]) add-token-tx)
-        add-token-tx                  (if fromUser (into add-token-tx [:token/fromUser true]) add-token-tx)
-        add-token-tx                  (if fromList (into add-token-tx [:token/fromList true]) add-token-tx)
+        add-token-tx                  {:db/id token-id :token/address address :token/decimals decimals :token/logoURI image}
+        add-token-tx                  (if fromApp (assoc add-token-tx :token/fromApp true) add-token-tx)
+        add-token-tx                  (if fromUser (assoc add-token-tx :token/fromUser true) add-token-tx)
+        add-token-tx                  (if fromList (assoc add-token-tx :token/fromList true) add-token-tx)
         tx                            [add-token-tx]
-        tx                            (if token-in-addr? tx (conj tx [:db/id addressId :address/token token-id]))
-        tx                            (if token-in-net? tx (conj tx [:db/id networkId :network/token token-id]))
+        tx                            (if token-in-addr? tx (conj tx {:db/id addressId :address/token token-id}))
+        tx                            (if token-in-net? tx (conj tx {:db/id networkId :network/token token-id}))
         tx-rst                        (and (not checkOnly) (t tx))
         token-id                      (if (and (not checkOnly) (= token-id -1)) (get-in tx-rst [:tempids -1]) token-id)]
     {:tokenId       token-id
