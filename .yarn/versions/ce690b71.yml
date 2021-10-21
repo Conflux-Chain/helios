@@ -1,0 +1,6 @@
+releases:
+  "@fluent-wallet/data-format": patch
+
+declined:
+  - browser-extension
+  - helios-popup
