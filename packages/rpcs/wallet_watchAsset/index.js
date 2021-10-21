@@ -15,7 +15,7 @@ export const NAME = 'wallet_watchAsset'
 const publicSchema = [
   map,
   {closed: true},
-  ['type', [enums, 'ERC20']],
+  ['type', [enums, 'ERC20', 'CRC20']],
   [
     'options',
     [
