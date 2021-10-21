@@ -106,7 +106,38 @@ const request = (...args) => {
   })
 }
 
-export default new Proxy(iface, {
+export async function validateTokenInfo(...args) {
+  const [callMethod, {symbol, name, decimals, address, userAddress}] = args
+  if (args.length === 1) return partial(validateTokenInfo, args[0])
+  let rst = {valid: true}
+  try {
+    const calls = [
+      contractInterface.symbol(callMethod, address),
+      contractInterface.name(callMethod, address),
+      contractInterface.decimals(callMethod, address),
+    ]
+    if (userAddress)
+      calls.push(contractInterface.balanceOf(callMethod, address, userAddress))
+    const [[symbolRst], [nameRst], [decimalsRst], balance] = await Promise.all(
+      calls,
+    )
+
+    rst.symbol = symbolRst
+    if (symbol && symbolRst !== symbol) rst.valid = false
+    rst.name = nameRst
+    if (name && nameRst !== name) rst.valid = false
+    rst.decimals = decimalsRst
+    if (decimals !== undefined && parseInt(decimalsRst) !== parseInt(decimals))
+      rst.valid = false
+    if (balance) rst.balance = balance?.[0]?.toHexString?.()
+  } catch (err) {
+    rst.valid = false
+  }
+
+  return rst
+}
+
+const contractInterface = new Proxy(iface, {
   get() {
     const [, methodName] = arguments
     const f = iface.getFunction(methodName)
@@ -114,3 +145,5 @@ export default new Proxy(iface, {
     return partial(request, methodName)
   },
 })
+
+export default contractInterface

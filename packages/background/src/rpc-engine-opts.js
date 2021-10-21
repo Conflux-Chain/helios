@@ -29,6 +29,7 @@ import * as ethTypedSignV4 from '@fluent-wallet/eth_sign-typed-data_v4'
 import * as walletRefetchTokenList from '@fluent-wallet/wallet_refetch-token-list'
 import * as walletUpdateTokenList from '@fluent-wallet/wallet_update-token-list'
 import * as walletDbQuery from '@fluent-wallet/wallet_db-query'
+import * as walletValidate20Token from '@fluent-wallet/wallet_validate20token'
 
 import {
   IS_CI,
@@ -96,7 +97,7 @@ import * as walletValidatePrivateKey from '@fluent-wallet/wallet_validate-privat
 import * as walletZeroAccountGroup from '@fluent-wallet/wallet_zero-account-group'
 import * as cfxCall from '@fluent-wallet/cfx_call'
 import * as ethCall from '@fluent-wallet/eth_call'
-import * as walletWatchAssets from '@fluent-wallet/wallet_watch-assets'
+import * as walletWatchAsset from '@fluent-wallet/wallet_watch-asset'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -105,6 +106,7 @@ export const rpcEngineOpts = {
   isCI: IS_CI,
   methods: [
     walletDbQuery,
+    walletValidate20Token,
 
     walletZeroAccountGroup,
     walletIsLocked,
@@ -169,7 +171,7 @@ export const rpcEngineOpts = {
     walletRefetchTokenList,
     walletUpdateTokenList,
 
-    walletWatchAssets,
+    walletWatchAsset,
 
     // cfx
     cfxEpochNumber,
