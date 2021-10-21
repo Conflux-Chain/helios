@@ -30,7 +30,7 @@ function DisplayBalance({
 
 DisplayBalance.propTypes = {
   maxWidth: PropTypes.number.isRequired,
-  balance: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  balance: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   maxWidthStyle: PropTypes.string,
   className: PropTypes.string,
   initialFontSize: PropTypes.number,

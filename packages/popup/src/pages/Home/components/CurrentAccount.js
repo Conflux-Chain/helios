@@ -1,22 +1,17 @@
 import PropTypes from 'prop-types'
-import {useState} from 'react'
-import {useTranslation} from 'react-i18next'
-import {CopyToClipboard} from 'react-copy-to-clipboard'
-import QRCode from 'qrcode.react'
-import Toast from '@fluent-wallet/component-toast'
-import Modal from '@fluent-wallet/component-modal'
+// import {useState} from 'react'
+// import QRCode from 'qrcode.react'
+// import Modal from '@fluent-wallet/component-modal'
 import {
   RightOutlined,
-  CopyOutlined,
-  QrcodeOutlined,
+  // QrcodeOutlined,
 } from '@fluent-wallet/component-icons'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {useCurrentAccount} from '../../../hooks'
+import {CopyButton, QRCodeButton} from '../../../components'
 
 function CurrentAccount({onOpenAccount}) {
-  const [copied, setCopied] = useState(false)
-  const [qrcodeShow, setQrcodeShow] = useState(false)
-  const {t} = useTranslation()
+  // const [qrcodeShow, setQrcodeShow] = useState(false)
 
   const {nickname, address} = useCurrentAccount()
   const displayAddress = address ? shortenAddress(address) : ''
@@ -33,24 +28,10 @@ function CurrentAccount({onOpenAccount}) {
       </div>
       <div className="flex items-center">
         <span className="text-white font-medium mr-2">{displayAddress}</span>
-        <div className="relative">
-          <CopyToClipboard text={address} onCopy={() => setCopied(true)}>
-            <CopyOutlined className="cursor-pointer w-4 h-4 mg-2 text-white" />
-          </CopyToClipboard>
-          <Toast
-            content={t('copiedSuccess')}
-            open={copied}
-            type="line"
-            onClose={() => setCopied(false)}
-            className="-top-9 left-0"
-          />
-        </div>
-        <QrcodeOutlined
-          onClick={() => setQrcodeShow(true)}
-          className="cursor-pointer w-4 h-4 text-white"
-        />
+        <CopyButton text={address} />
+        <QRCodeButton title={nickname} qrcodeValue={address} />
       </div>
-      <Modal
+      {/* <Modal
         open={qrcodeShow}
         onClose={() => setQrcodeShow(false)}
         content={
@@ -62,7 +43,7 @@ function CurrentAccount({onOpenAccount}) {
             </span>
           </div>
         }
-      />
+      /> */}
     </div>
   )
 }

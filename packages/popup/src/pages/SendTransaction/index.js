@@ -23,6 +23,9 @@ function SendTransaction() {
   })
   // TODO: get from scan
   const hasNoTxn = true
+  const onChangeToken = token => {
+    console.log(token)
+  }
   useEffect(() => {
     console.log('network: ', currentNetwork)
     const {ticker} = currentNetwork
@@ -43,7 +46,11 @@ function SendTransaction() {
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">
         <div className="flex flex-col">
           <ToAddressInput address={address} onChangeAddress={setAddress} />
-          <TokenAndAmount selectedToken={selectedToken} amount="12345" />
+          <TokenAndAmount
+            selectedToken={selectedToken}
+            amount="12345"
+            onChangeToken={onChangeToken}
+          />
           <GasFee />
         </div>
         <div className="flex flex-col">

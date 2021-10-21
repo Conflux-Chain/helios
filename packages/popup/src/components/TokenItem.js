@@ -3,14 +3,12 @@ import {DisplayBalance} from './index'
 
 function TokenItem({
   token = {},
-  balance = '123456789100200300400.123456',
   maxWidthStyle = 'max-w-[175px]',
   maxWidth = 175,
   rightIcon = null,
   onSelect,
 }) {
-  const {icon, name = 'Conflux', symbol = 'CFX'} = token
-
+  const {logoURI, name, symbol, balance} = token
   return (
     <div
       className="w-full h-14 flex items-center"
@@ -19,7 +17,7 @@ function TokenItem({
     >
       <img
         className="w-8 h-8 rounded-full mr-2"
-        src={icon || 'images/default-token-icon.svg'}
+        src={logoURI || 'images/default-token-icon.svg'}
         alt="logo"
       />
       <div className="flex flex-1 flex-col">
@@ -41,8 +39,7 @@ function TokenItem({
 }
 
 TokenItem.propTypes = {
-  token: PropTypes.object.isRequired,
-  balance: PropTypes.string,
+  token: PropTypes.object,
   maxWidthStyle: PropTypes.string,
   maxWidth: PropTypes.number,
   rightIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),

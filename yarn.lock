@@ -3251,7 +3251,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/data-format@workspace:packages/ui/data-format"
   dependencies:
+    "@fluent-wallet/utils": "workspace:packages/utils"
     big.js: ^6.1.1
+    bn.js: 5.2.0
   languageName: unknown
   linkType: soft
 
