@@ -35,3 +35,19 @@ export function formatHexBalance(balance) {
   }
   return fromDripToCfx(new BN(stripHexPrefix(balance), 16).toString())
 }
+
+export function removeAllChild(dom) {
+  let child = dom.lastElementChild
+  while (child) {
+    dom.removeChild(child)
+    child = dom.lastElementChild
+  }
+}
+export function jsNumberForAddress(address) {
+  if (!address) {
+    return address
+  }
+  const addr = address.slice(2, 10)
+  const seed = parseInt(addr, 16)
+  return seed
+}

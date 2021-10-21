@@ -16,6 +16,7 @@ import {
   DappConnectWalletHeader,
   DappFooter,
   CompWithLabel,
+  Avatar,
 } from '../../components'
 import {useAccountGroupAddress} from '../../hooks'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
@@ -63,7 +64,11 @@ function ConnectSitesList({
                   className="flex px-3 items-center h-15"
                 >
                   <div className="flex w-full">
-                    <img className="w-5 h-5 mr-2" src="" alt="avatar" />
+                    <Avatar
+                      className="w-5 h-5 mr-2"
+                      diameter={20}
+                      accountId={currentAccount?.eid}
+                    />
                     <div className="flex-1">
                       <p className="text-xs text-gray-40">{nickname}</p>
                       <p className="text-sm text-gray-80">

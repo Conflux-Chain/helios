@@ -12,7 +12,7 @@ function DappConnectWalletHeader({title}) {
         <div className="flex justify-center items-center mt-1">
           <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center">
             <img
-              src={app?.site?.icon || '/images/default-fav.svg'}
+              src={app?.site?.icon || '/images/default-dapp-icon.svg'}
               alt="favicon"
               className="w-8 h-8"
             />
@@ -25,7 +25,7 @@ function DappConnectWalletHeader({title}) {
             className="w-4 h-4"
           />
           <div className="border border-gray-40 border-dashed w-[42px] mx-1" />
-          <div className="w-2 h-2 border-solid border-primary border-2 rounded-full mr-2" />
+          <div className="w-2 h-2 border-solid border-warning border-2 rounded-full mr-2" />
           <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center">
             <img className="w-8 h-8" src="images/logo.svg" alt="logo" />
           </div>

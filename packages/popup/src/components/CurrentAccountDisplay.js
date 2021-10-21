@@ -1,13 +1,18 @@
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {useCurrentAccount} from '../hooks'
+import {Avatar} from './index'
 
 function CurrentAccountDisplay() {
-  const {nickname, icon, address} = useCurrentAccount()
+  const {nickname, address, eid: accountId} = useCurrentAccount()
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (
     <div className="flex items-center">
-      <img src={icon} alt="avatar" className="w-8 h-8" />
+      <Avatar
+        className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2"
+        diameter={30}
+        accountId={accountId}
+      />
       <div className="flex flex-col">
         <span className="text-xs text-gray-40">{nickname}</span>
         <span className="text-gray-80 font-medium">{displayAddress}</span>

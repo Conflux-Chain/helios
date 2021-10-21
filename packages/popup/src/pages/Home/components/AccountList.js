@@ -8,7 +8,7 @@ import Button from '@fluent-wallet/component-button'
 import {CurrentAccountNetworkLabel} from './'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
-import {SlideCard, DisplayBalance} from '../../../components'
+import {SlideCard, DisplayBalance, Avatar} from '../../../components'
 import {useAccountGroupBatchBalance} from '../../../hooks'
 
 const {SELECT_CREATE_TYPE} = ROUTES
@@ -41,7 +41,7 @@ function AccountItem({
           key={index}
           className="flex p-3 rounded hover:bg-primary-4 cursor-pointer"
         >
-          <img className="w-5 h-5 mr-2" src="" alt="avatar" />
+          <Avatar className="w-5 h-5 mr-2" diameter={20} accountId={eid} />
           <div className="flex-1">
             <p className="text-xs text-gray-40 ">{nickname}</p>
             <div className="flex w-full">
@@ -89,6 +89,7 @@ function AccountList({onClose, onOpen}) {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
   }
+
   return (
     <SlideCard
       cardTitle={t('myAccounts')}

@@ -146,7 +146,6 @@ export const useAccountGroupBatchBalance = networkId => {
     addressParams,
     {fallbackData: []},
   )
-
   const {data: balanceData} = useRPC(
     addressData.length ? [GET_BALANCE, networkId] : null,
     {
@@ -198,7 +197,13 @@ export const useCurrentAccount = () => {
   const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
     fallbackData: {},
   })
-  const {eid: networkId, type, ticker} = currentNetwork
+  const {
+    eid: networkId,
+    type,
+    ticker,
+    icon: networkIcon,
+    name: networkName,
+  } = currentNetwork
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
@@ -218,6 +223,8 @@ export const useCurrentAccount = () => {
     address,
     ticker,
     networkId,
+    networkIcon,
+    networkName,
   }
 }
 
