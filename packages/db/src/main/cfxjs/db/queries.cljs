@@ -376,17 +376,13 @@
     (t [[:db/retract addressId :address/token tokenId]])
     "tokenNotBelongToAddress"))
 
-(comment
-  (-> (e :network (get-current-network))
-      :network/ticker)
-  (get (e :address (get-current-addr)) :address/balance "0x0"))
 ;;; UI QUERIES
-(defn home-page-assets []
+(defn home-page-assets [{:keys [include-other-tokens]}]
   (let [cur-addr          (e :address (get-current-addr))
         cur-net           (e :network (get-current-network))
         native-token-info (get cur-net :network/ticker {:name "CFX", :symbol "CFX", :decimals 18})
-        native-token-ui   (assoc native-token-info :balance (get cur-addr :address/balance "0x0") :native true)
-        other-tokens-info (q '[:find ?token-id ?tbalance
+        native-token-ui   (assoc native-token-info :balance (get cur-addr :address/balance "0x0") :native true :added true)
+        addr-tokens-info  (q '[:find ?token-id ?tbalance
                                :in $ ?cur-addr
                                :where
                                [?cur-addr :address/token ?token-id]
@@ -394,14 +390,33 @@
                                [?b :balance/token ?token-id]
                                [?b :balance/value ?tbalance]]
                              (:db/id cur-addr))
-        all-tokens        (reduce
+        addr-tokens-info  (reduce
                            (fn [acc [token-id balance]]
                              (let [t (.touch (e :token token-id))]
-                               (conj acc (assoc t :balance balance))))
-                           [native-token-ui] other-tokens-info)]
-    {:currentAddress cur-addr
-     :currentNetwork cur-net
-     :tokens all-tokens}))
+                               (conj acc (assoc t :balance balance :added true))))
+                           [] addr-tokens-info)
+        other-tokens-info (if include-other-tokens
+                            (q '[:find ?token-id ?tbalance
+                                 :in $ ?cur-addr ?cur-net
+                                 :where
+                                 [?cur-net :address/token ?token-id]
+                                 (not [?cur-addr :address/token ?token-id])
+                                 [(and true "0x0") ?tbalance]]
+                               (:db/id cur-addr) (:db/id cur-net))
+                            #{})
+        other-tokens-info (reduce
+                           (fn [acc [token-id balance]]
+                             (let [t (.touch (e :token token-id))]
+                               (conj acc (assoc t :balance balance :added false))))
+                           [] other-tokens-info)
+        rst               {:currentAddress cur-addr
+                           :currentNetwork cur-net
+                           :native         native-token-ui
+                           :added          addr-tokens-info}
+        rst (if include-other-tokens (assoc rst :others other-tokens-info) rst)]
+    rst))
+
+(defn get-add-token-list [] (home-page-assets {:include-other-tokens true}))
 
 (def queries {:batchTx
               (fn [txs]
@@ -428,8 +443,9 @@
               :addTokenToAddr                  add-token-to-addr
               :getSingleCallBalanceParams      get-single-call-balance-params
               :upsertBalances                  upsert-balances
+              :retractAddressToken             retract-address-token
               :queryhomePageAssets             home-page-assets
-              :retractAddressToken retract-address-token})
+              :queryAddTokenList               get-add-token-list})
 
 (defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)
