@@ -1,6 +1,6 @@
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {useCurrentAccount} from '../hooks'
-import {Avatar} from './index'
+import {Avatar} from './'
 
 function CurrentAccountDisplay() {
   const {nickname, address, eid: accountId} = useCurrentAccount()

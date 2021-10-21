@@ -13,7 +13,7 @@ import Modal from '@fluent-wallet/component-modal'
 import {RPC_METHODS} from '../../constants'
 import {
   NetworkContent,
-  DappConnectWalletHeader,
+  DappProgressHeader,
   DappFooter,
   CompWithLabel,
   Avatar,
@@ -67,7 +67,7 @@ function ConnectSitesList({
                     <Avatar
                       className="w-5 h-5 mr-2"
                       diameter={20}
-                      accountId={currentAccount?.eid}
+                      accountId={eid}
                     />
                     <div className="flex-1">
                       <p className="text-xs text-gray-40">{nickname}</p>
@@ -182,7 +182,7 @@ function ConnectSite() {
       className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
     >
       <div>
-        <DappConnectWalletHeader title={t('connectSite')} />
+        <DappProgressHeader title={t('connectSite')} />
         <main className="px-3">
           <CompWithLabel
             label={<p className="text-sm text-gray-40">{t('selectNetwork')}</p>}

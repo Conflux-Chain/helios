@@ -1,5 +1,5 @@
 import {useTranslation} from 'react-i18next'
-import {DappFooter, DappConnectWalletHeader} from '../../components'
+import {DappFooter, DappProgressHeader} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../constants'
 import {usePendingAuthReq} from '../../hooks'
@@ -26,7 +26,7 @@ function DappSwitchNetwork() {
       id="dappSwitchNetworkContainer"
     >
       <div>
-        <DappConnectWalletHeader title={t('switchNetwork')} />
+        <DappProgressHeader title={t('switchNetwork')} />
         <main className="mt-3 px-3">
           <div className="ml-1">
             <div>

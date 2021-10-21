@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
-import {TitleNav} from '../components'
+import {TitleNav, ProgressIcon} from '.'
 import {usePendingAuthReq} from '../hooks'
-function DappConnectWalletHeader({title}) {
+function DappProgressHeader({title}) {
   const {pendingAuthReq} = usePendingAuthReq()
   const [{app, site}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
 
@@ -10,23 +10,24 @@ function DappConnectWalletHeader({title}) {
       <div>
         <TitleNav title={title} hasGoBack={false} />
         <div className="flex justify-center items-center mt-1">
-          <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center mr-2">
             <img
               src={app?.site?.icon || '/images/default-dapp-icon.svg'}
               alt="favicon"
               className="w-8 h-8"
             />
           </div>
-          <div className="w-2 h-2 border-solid border-primary border-2 rounded-full ml-2" />
-          <div className="border border-gray-40 border-dashed w-[42px] mx-1" />
-          <img
-            src="images/paperclip.svg"
-            alt="connecting"
-            className="w-4 h-4"
+          <ProgressIcon
+            dashLengthStyle="w-[42px]"
+            middleIcon={
+              <img
+                src="images/paperclip.svg"
+                alt="connecting"
+                className="w-4 h-4 mx-1"
+              />
+            }
           />
-          <div className="border border-gray-40 border-dashed w-[42px] mx-1" />
-          <div className="w-2 h-2 border-solid border-warning border-2 rounded-full mr-2" />
-          <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center ml-2">
             <img className="w-8 h-8" src="images/logo.svg" alt="logo" />
           </div>
         </div>
@@ -38,7 +39,7 @@ function DappConnectWalletHeader({title}) {
   )
 }
 
-DappConnectWalletHeader.propTypes = {
+DappProgressHeader.propTypes = {
   title: PropTypes.string.isRequired,
 }
-export default DappConnectWalletHeader
+export default DappProgressHeader

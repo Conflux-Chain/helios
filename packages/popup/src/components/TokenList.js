@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {TokenItem} from './index'
+import {TokenItem} from './'
 
 function TokenList({tokenList, onSelectToken}) {
   console.log(tokenList)
