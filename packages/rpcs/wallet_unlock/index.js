@@ -31,6 +31,6 @@ export const main = async ({
   const unlockReq = getUnlockReq() || []
   unlockReq.forEach(({req, eid}) => req.write(true).then(() => retract(eid)))
 
-  const refetchPromise = wallet_refetchTokenList()
-  if (waitSideEffects) await refetchPromise
+  let promise = wallet_refetchTokenList()
+  if (waitSideEffects) await promise
 }
