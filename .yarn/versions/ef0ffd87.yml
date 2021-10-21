@@ -9,6 +9,7 @@ releases:
   "@fluent-wallet/wallet_refetch-token-list": patch
   "@fluent-wallet/wallet_refresh-balance": patch
   "@fluent-wallet/wallet_unlock": patch
+  "@fluent-wallet/wallet_unwatch-asset": patch
   "@fluent-wallet/wallet_watch-assets": patch
 
 declined:

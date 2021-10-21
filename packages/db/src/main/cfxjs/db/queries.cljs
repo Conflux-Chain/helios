@@ -445,7 +445,7 @@
               :upsertBalances                  upsert-balances
               :retractAddressToken             retract-address-token
               :queryhomePageAssets             home-page-assets
-              :queryAddTokenList               get-add-token-list})
+              :queryaddTokenList               get-add-token-list})
 
 (defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)
