@@ -4,6 +4,7 @@ import {request} from '../utils'
 import {RPC_METHODS, ROUTES} from '../constants'
 import {usePendingAuthReq} from '../hooks'
 import {useHistory} from 'react-router-dom'
+import {useState} from 'react'
 
 const {
   REJECT_PENDING_AUTH_REQ,
@@ -14,6 +15,7 @@ const {
   ETH_SIGN_TYPED_DATA_V4,
   WALLET_ADD_ETHEREUM_CHAIN,
   WALLET_ADD_CONFLUX_CHAIN,
+  WALLET_WATCH_ASSET,
 } = RPC_METHODS
 const {HOME} = ROUTES
 function DappFooter({
@@ -24,8 +26,8 @@ function DappFooter({
 }) {
   const history = useHistory()
   const {pendingAuthReq} = usePendingAuthReq()
-  console.log('pendingAuthReq', pendingAuthReq)
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
 
   const onCancel = () => {
     request(REJECT_PENDING_AUTH_REQ, {authReqId: eid}).then(({result}) => {
@@ -35,9 +37,10 @@ function DappFooter({
   }
 
   const onConfirm = () => {
-    if (!req?.method) {
+    if (!req?.method || sendingRequestStatus) {
       return
     }
+    setSendingRequestStatus(true)
     const params = {...confirmParams}
     switch (req.method) {
       case REQUEST_PERMISSIONS:
@@ -61,9 +64,13 @@ function DappFooter({
       case WALLET_ADD_CONFLUX_CHAIN:
         params.newChainConfig = req.params
         break
+      case WALLET_WATCH_ASSET:
+        params.asset = req.params
+        break
     }
 
     request(req.method, {authReqId: eid, ...params}).then(({result}) => {
+      setSendingRequestStatus(false)
       result && history.push(HOME)
       // TODO: error message
     })

@@ -1,16 +1,21 @@
-import {useRef} from 'react'
 import {useTranslation} from 'react-i18next'
-import {formatBalance} from '@fluent-wallet/data-format'
-import {useFontSize} from '../../hooks'
-import {TitleNav, CurrentAccountDisplay, DappFooter} from '../../components'
+import {formatHexBalance} from '../../utils'
+import {usePendingAuthReq, useDappAuthorizedAccountBalance} from '../../hooks'
+import {TitleNav, AccountDisplay, DappFooter, TokenItem} from '../../components'
 
 function ConfirmAddSuggestedToken() {
   const {t} = useTranslation()
-  const balanceRef = useRef()
-  const hiddenRef = useRef()
-  const maxBalanceWidthStyle = 'max-w-[184px]'
-  const balance = '12311231212312222222222123321'
-  useFontSize(balanceRef, hiddenRef, 184, balance)
+  const {pendingAuthReq} = usePendingAuthReq()
+  const [{req, app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  const dappAccountId = app?.currentAccount?.eid
+  const dappNetworkId = app?.currentNetwork?.eid
+  const {data: balanceData} = useDappAuthorizedAccountBalance(
+    dappAccountId,
+    dappNetworkId,
+    req?.params?.options?.address,
+  )
+  const address = Object.keys(balanceData)[0]
+  console.log('pendingAuthReq', balanceData)
 
   return (
     <div
@@ -20,7 +25,11 @@ function ConfirmAddSuggestedToken() {
       <header>
         <TitleNav title={t('addSuggestedToken')} hasGoBack={false} />
         <div className="mt-1 px-4 pb-3">
-          <CurrentAccountDisplay />
+          <AccountDisplay
+            address={address}
+            accountId={dappAccountId}
+            nickname={app?.currentAccount?.nickname}
+          />
         </div>
       </header>
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
@@ -28,24 +37,20 @@ function ConfirmAddSuggestedToken() {
           <p className="text-sm text-gray-80 font-medium pb-2 ml-1">
             {t('confirmAddSuggestedToken')}
           </p>
-          <div className="bg-bg rounded flex items-center h-14 px-3">
-            <div className="flex">
-              <img src="" alt="coin" className="h-8 w-8 mr-2" />
-              <div>
-                <div className="font-medium text-sm text-gray-80">ZRX</div>
-                <div className="text-xs text-gray-40">0x Protocol</div>
-              </div>
-            </div>
-            <div className="flex items-center flex-1 justify-end">
-              <div
-                className={`${maxBalanceWidthStyle} text-gray-80 font-semibold text-sm whitespace-nowrap overflow-hidden overflow-ellipsis`}
-              >
-                <span ref={balanceRef}>{formatBalance(balance)}</span>
-                <span ref={hiddenRef} className="invisible">
-                  {formatBalance(balance)}
-                </span>
-              </div>
-            </div>
+          <div className="px-3 bg-bg rounded">
+            <TokenItem
+              token={{
+                icon:
+                  req?.params?.options?.image || '/images/default-token-icon',
+                symbol: req?.params?.options?.symbol || '',
+                name: req?.params?.options?.symbol || '',
+              }}
+              maxWidthStyle="max-w-[184px]"
+              maxWidth={184}
+              balance={formatHexBalance(
+                balanceData?.[address]?.[req?.params?.options?.address],
+              )}
+            />
           </div>
         </main>
         <DappFooter cancelText={t('cancel')} confirmText={t('addToken')} />

@@ -79,7 +79,7 @@ function DappAddNetwork() {
           </div>
         </main>
       </div>
-      <DappFooter cancelText={t('cancel')} confirmText={t('addToken')} />
+      <DappFooter cancelText={t('cancel')} confirmText={t('addNetwork')} />
     </div>
   )
 }

@@ -1,9 +1,8 @@
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {useCurrentAccount} from '../hooks'
-import {Avatar} from './'
+import {Avatar} from '.'
+import PropTypes from 'prop-types'
 
-function CurrentAccountDisplay() {
-  const {nickname, address, eid: accountId} = useCurrentAccount()
+function AccountDisplay({address, accountId, nickname}) {
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (
@@ -20,4 +19,9 @@ function CurrentAccountDisplay() {
     </div>
   )
 }
-export default CurrentAccountDisplay
+AccountDisplay.propTypes = {
+  address: PropTypes.string,
+  accountId: PropTypes.number,
+  nickname: PropTypes.string,
+}
+export default AccountDisplay

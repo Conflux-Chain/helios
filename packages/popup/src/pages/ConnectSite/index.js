@@ -123,7 +123,6 @@ function ConnectSite() {
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-
   useDeepCompareEffect(() => {
     setSearchIcon(currentNetworkData?.icon || '')
     setSearchContent(currentNetworkData?.name || '')

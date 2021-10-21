@@ -1,18 +1,14 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {formatHexBalance} from '../../utils'
 import {
   DappFooter,
   CompWithLabel,
   TitleNav,
-  CurrentAccountDisplay,
+  AccountDisplay,
   DisplayBalance,
 } from '../../components'
-import {useCurrentAccount, usePendingAuthReq} from '../../hooks'
-import {RPC_METHODS} from '../../constants'
-const {GET_BALANCE} = RPC_METHODS
-
+import {useDappAuthorizedAccountBalance, usePendingAuthReq} from '../../hooks'
 function PlaintextMessage({message}) {
   return (
     <div>
@@ -42,17 +38,15 @@ PlaintextMessage.propTypes = {
 
 function RequestSignature() {
   const {t} = useTranslation()
-  const {address, ticker, networkId} = useCurrentAccount()
   const {pendingAuthReq} = usePendingAuthReq()
-  const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
-  const {data: balanceData} = useRPC(
-    address && networkId ? [GET_BALANCE, address, networkId] : null,
-    {
-      users: [address],
-      tokens: ['0x0'],
-    },
-    {fallbackData: {}},
+  const [{req, app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  const dappAccountId = app?.currentAccount?.eid
+  const dappNetworkId = app?.currentNetwork?.eid
+  const {data: balanceData} = useDappAuthorizedAccountBalance(
+    dappAccountId,
+    dappNetworkId,
   )
+  const address = Object.keys(balanceData)[0]
   const plaintextData = req?.params?.[1] ? JSON.parse(req.params[1]) : {}
 
   return (
@@ -63,7 +57,11 @@ function RequestSignature() {
       <header>
         <TitleNav title={t('signTypeMessage')} hasGoBack={false} />
         <div className="flex mt-1 px-4 pb-3 items-center justify-between">
-          <CurrentAccountDisplay />
+          <AccountDisplay
+            address={address}
+            accountId={dappAccountId}
+            nickname={app?.currentAccount?.nickname}
+          />
           <div className="flex items-center justify-between">
             <DisplayBalance
               balance={formatHexBalance(balanceData?.[address]?.['0x0'])}
@@ -71,7 +69,7 @@ function RequestSignature() {
               maxWidth={148}
             />
             <span className="text-gray-60 text-xs ml-0.5">
-              {ticker?.name || ''}
+              {app?.currentNetwork?.ticker?.name || ''}
             </span>
           </div>
         </div>
