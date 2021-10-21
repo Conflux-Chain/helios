@@ -277,35 +277,53 @@
          addr netId)
       first))
 
-(defn get-single-call-balance-params [{:keys [type]}]
+(defn get-single-call-balance-params [{:keys [type allNetwork]}]
   (let [discover?            (= type "discover")
         refresh?             (= type "refresh")
         all?                 (= type "all")
         native-balance-binds (q '[:find ?net ?addr ?token
+                                  :in $ ?allnet
                                   :where
                                   [?net :network/address ?addr-id]
+                                  (or
+                                   [(true? ?allnet)]
+                                   (and
+                                    [(not ?allnet)]
+                                    [?net :network/selected true]))
                                   [?addr-id :address/hex ?addr-hex]
                                   [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]
-                                  [(and true "0x0") ?token]])
+                                  [(and true "0x0") ?token]] allNetwork)
         has-balance-binds    (if (or refresh? all?)
                                (q '[:find ?net ?addr ?token
+                                    :in $ ?allnet
                                     :where
+                                    [?net :network/token ?token-id]
+                                    (or
+                                     [(true? ?allnet)]
+                                     (and
+                                      [(not ?allnet)]
+                                      [?net :network/selected true]))
                                     [?balance :balance/address ?addr-id]
                                     [?balance :balance/token  ?token-id]
                                     [?token-id :token/address ?token]
-                                    [?net :network/token   ?token-id]
                                     [?addr-id :address/hex ?addr-hex]
-                                    [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]])
+                                    [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]] allNetwork)
                                #{})
         no-balance-binds     (if (or all? discover?)
                                (q '[:find ?net ?addr ?token
+                                    :in $ ?allnet
                                     :where
                                     [?net :network/address ?addr-id]
                                     [?net :network/token ?token-id]
+                                    (or
+                                     [(true? ?allnet)]
+                                     (and
+                                      [(not ?allnet)]
+                                      [?net :network/selected true]))
                                     (not [?addr-id :address/token ?token-id])
                                     [?token-id :token/address ?token]
                                     [?addr-id :address/hex ?addr-hex]
-                                    [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]])
+                                    [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]] allNetwork)
                                #{})
         format-balance-binds (fn [acc [network-id uaddr taddr]]
                                (let [[u t net] (get acc network-id [#{} #{} (e :network network-id)])]

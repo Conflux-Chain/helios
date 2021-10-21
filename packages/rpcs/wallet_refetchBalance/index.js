@@ -1,4 +1,4 @@
-import {or, optParam, truep, map} from '@fluent-wallet/spec'
+import {or, optParam, enums, map, truep} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_refetchBalance'
 
@@ -10,8 +10,16 @@ export const schemas = {
       map,
       {closed: true},
       [
-        'allToken',
-        {doc: 'check balance of all tokens (in wallet) of all account'},
+        'type',
+        {
+          optional: true,
+          doc: 'all for fetch balance of all tokens rather than tokens under each address',
+        },
+        [enums, 'all'],
+      ],
+      [
+        'allNetwork',
+        {optional: true, doc: 'true to refetch balance of all network'},
         truep,
       ],
     ],
@@ -31,7 +39,8 @@ export const main = async ({
   rpcs: {wallet_getBalance},
 }) => {
   const refetchBalanceParams = getSingleCallBalanceParams({
-    type: params?.allToken ? 'all' : 'refresh',
+    type: params?.type || 'refresh',
+    allNetwork: Boolean(params?.allNetwork),
   })
 
   // eslint-disable-next-line no-unused-vars
