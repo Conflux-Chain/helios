@@ -4122,6 +4122,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_unwatch-asset@workspace:packages/rpcs/wallet_unwatchAsset":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_unwatch-asset@workspace:packages/rpcs/wallet_unwatchAsset"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_update-account-group@workspace:packages/rpcs/wallet_updateAccountGroup":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_update-account-group@workspace:packages/rpcs/wallet_updateAccountGroup"

@@ -366,6 +366,16 @@
 (defn retract [id] (t [[:db.fn/retractEntity id]]))
 (defn retract-attr [{:keys [eid attr]}] (t [[:db.fn/retractAttribute eid (keyword attr)]]))
 
+(defn retract-address-token [{:keys [tokenId addressId]}]
+  (if (-> (q '[:find [?token ...]
+               :in $ ?token ?addr
+               :where
+               [?addr :address/token ?token]]
+             tokenId addressId)
+          first)
+    (t [[:db/retract addressId :address/token tokenId]])
+    "tokenNotBelongToAddress"))
+
 (comment
   (-> (e :network (get-current-network))
       :network/ticker)
@@ -418,7 +428,8 @@
               :addTokenToAddr                  add-token-to-addr
               :getSingleCallBalanceParams      get-single-call-balance-params
               :upsertBalances                  upsert-balances
-              :queryhomePageAssets             home-page-assets})
+              :queryhomePageAssets             home-page-assets
+              :retractAddressToken retract-address-token})
 
 (defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)
