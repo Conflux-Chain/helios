@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/cfx_sign-typed-data_v4",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/signature": "workspace:packages/signature",
