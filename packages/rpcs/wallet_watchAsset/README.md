@@ -1,1 +1,1 @@
-# @fluent-wallet/wallet_watch-assets
+# @fluent-wallet/wallet_watch-asset

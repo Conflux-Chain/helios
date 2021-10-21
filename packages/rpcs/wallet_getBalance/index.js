@@ -3,7 +3,6 @@ import tokenContract from '@fluent-wallet/contract-abis/777.js'
 import {balances} from '@fluent-wallet/single-call-balance-tracker'
 import {decode} from '@fluent-wallet/base32-address'
 import {hexValue} from '@ethersproject/bytes'
-
 import {
   base32ContractAddress,
   base32UserAddress,

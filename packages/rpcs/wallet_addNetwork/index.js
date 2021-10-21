@@ -9,6 +9,7 @@ import {
   chainId,
   eq,
   plus,
+  tokenSymbol,
 } from '@fluent-wallet/spec'
 import {DEFAULT_CFX_HDPATH, DEFAULT_ETH_HDPATH} from '@fluent-wallet/consts'
 
@@ -18,7 +19,7 @@ const nativeCurrencySchema = [
   map,
   {closed: true, doc: 'Config of the native currency of the chain'},
   ['name', stringp],
-  ['symbol', [stringp, {min: 2, max: 6}]],
+  ['symbol', tokenSymbol],
   ['decimals', [eq, 18]],
 ]
 

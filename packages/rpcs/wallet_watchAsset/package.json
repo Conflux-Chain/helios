@@ -1,5 +1,5 @@
 {
-  "name": "@fluent-wallet/wallet_watch-assets",
+  "name": "@fluent-wallet/wallet_watch-asset",
   "type": "module",
   "main": "index.js",
   "version": "0.0.1",
