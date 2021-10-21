@@ -57,7 +57,6 @@ export const validateAndFormatTokenList = ({tokenList, InvalidParams}) => {
 export const main = async ({
   Err: {InvalidParams},
   db: {getNetworkById, t, retract},
-  // rpcs: {},
   params: {
     tokenList: {url, name},
     networkId,

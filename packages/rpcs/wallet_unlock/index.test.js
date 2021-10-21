@@ -18,7 +18,8 @@ describe('wallet_unlock', function () {
       db: {setPassword: jest.fn(), getUnlockReq: jest.fn()},
       rpcs: {
         wallet_validatePassword: jest.fn(() => true),
-        wallet_refetchTokenList: jest.fn(),
+        wallet_refetchBalance: jest.fn(),
+        wallet_refetchTokenList: jest.fn(() => Promise.resolve(true)),
       },
       Err: {InvalidParams: msg => new Error(msg)},
     }

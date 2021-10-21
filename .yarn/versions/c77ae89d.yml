@@ -1,0 +1,10 @@
+releases:
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/wallet_refetch-balance": patch
+  "@fluent-wallet/wallet_unlock": patch
+  "@fluent-wallet/wallet_validate20token": patch
+  "@fluent-wallet/wallet_watch-asset": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/wallet_update-token-list"
