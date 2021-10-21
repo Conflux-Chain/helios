@@ -157,6 +157,7 @@
                               url         cfxjs.spec.core/export-url
                               dbid        cfxjs.spec.core/export-dbid
 
+                              tokenSymbol cfxjs.spec.core/export-token-symbol
                               Byte     cfxjs.spec.core/export-byte
                               Bytes    cfxjs.spec.core/export-bytes
                               Bytes32  cfxjs.spec.core/export-bytes32

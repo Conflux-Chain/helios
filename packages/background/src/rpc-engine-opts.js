@@ -28,6 +28,7 @@ import * as ethRequestAccounts from '@fluent-wallet/eth_request-accounts'
 import * as ethTypedSignV4 from '@fluent-wallet/eth_sign-typed-data_v4'
 import * as walletRefetchTokenList from '@fluent-wallet/wallet_refetch-token-list'
 import * as walletUpdateTokenList from '@fluent-wallet/wallet_update-token-list'
+import * as walletDbQuery from '@fluent-wallet/wallet_db-query'
 
 import {
   IS_CI,
@@ -60,6 +61,7 @@ import * as walletGetAccountGroup from '@fluent-wallet/wallet_get-account-group'
 import * as walletGetAccountGroupVaultValue from '@fluent-wallet/wallet_get-account-group-vault-value'
 import * as walletGetAddressPrivateKey from '@fluent-wallet/wallet_get-address-private-key'
 import * as walletGetBalance from '@fluent-wallet/wallet_get-balance'
+import * as walletRefreshBalance from '@fluent-wallet/wallet_refresh-balance'
 import * as walletGetCurrentAccount from '@fluent-wallet/wallet_get-current-account'
 import * as walletGetCurrentNetwork from '@fluent-wallet/wallet_get-current-network'
 import * as walletGetCurrentViewingApp from '@fluent-wallet/wallet_get-current-viewing-app'
@@ -94,6 +96,7 @@ import * as walletValidatePrivateKey from '@fluent-wallet/wallet_validate-privat
 import * as walletZeroAccountGroup from '@fluent-wallet/wallet_zero-account-group'
 import * as cfxCall from '@fluent-wallet/cfx_call'
 import * as ethCall from '@fluent-wallet/eth_call'
+import * as walletWatchAssets from '@fluent-wallet/wallet_watch-assets'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -101,6 +104,8 @@ export const rpcEngineOpts = {
   isTest: IS_TEST_MODE,
   isCI: IS_CI,
   methods: [
+    walletDbQuery,
+
     walletZeroAccountGroup,
     walletIsLocked,
     walletRequestUnlockUI,
@@ -147,6 +152,7 @@ export const rpcEngineOpts = {
 
     walletGetNextNonce,
     walletGetBalance,
+    walletRefreshBalance,
 
     cfxRequestAccounts,
     ethRequestAccounts,
@@ -162,6 +168,8 @@ export const rpcEngineOpts = {
     walletGetAccountAddressByNetwork,
     walletRefetchTokenList,
     walletUpdateTokenList,
+
+    walletWatchAssets,
 
     // cfx
     cfxEpochNumber,

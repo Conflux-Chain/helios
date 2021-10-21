@@ -3,7 +3,7 @@
    [cfxjs.db.datascript.core :as d]
    [cfxjs.db.schema :refer [model->attr-keys]]))
 
-(declare q e t fdb)
+(declare q p e t fdb)
 
 (defn j->c [a]
   (js->clj a :keywordize-keys true))
@@ -164,19 +164,259 @@
     (t (concat add-perms add-accounts add-currentNetowrk add-currentAccount))
     (e :app app)))
 
+(defn addr-acc-network [{:keys [accountId addressId networkId]}]
+  (cond addressId
+        (let [{:keys [accountId networkId]}
+              (q '[:find [?net ?acc]
+                   :keys accountId networkId
+                   :in $ ?addr
+                   :where
+                   [?net :network/address ?addr]
+                   [?acc :account/address ?addr]] addressId)]
+          {:accountId accountId
+           :networkId networkId
+           :addressId addressId})
+        (and accountId networkId (not addressId))
+        {:accountId accountId
+         :networkId networkId
+         :addressId (first (q '[:find [?addr ...]
+                                :in $ ?acc ?net
+                                :where
+                                [?acc :account/address ?addr]
+                                [?net :network/address ?addr]]
+                              accountId networkId))}))
+
 (defn account-addr-by-network
   [{:keys [account network]}]
-  (->> (q '[:find [?addr ...]
-            :in $ ?acc ?net
-            :where
-            [?acc :account/address ?addr]
-            [?net :network/address ?addr]]
-          account network)
-       first
+  (->> {:accountId account :networkId network}
+       addr-acc-network
+       :addressId
        (e :address)))
+
+(defn get-current-addr []
+  (-> (q '[:find [?addr]
+           :where
+           [?net :network/selected true]
+           [?acc :account/selected true]
+           [?acc :account/address ?addr]
+           [?net :network/address ?addr]])
+      first))
+(defn get-current-network []
+  (-> (q '[:find [?net]
+           :where
+           [?net :network/selected true]])
+      first))
+
+(defn dbadd
+  "add document to db with modal keyword
+  eg. with params [1, :token,  {address: '0x0'} ]
+  generate tx {:db/id 1 :token/address '0x0'}"
+  [eid model document-map]
+  (reduce
+   (fn [acc [k v]]
+     (assoc acc (keyword (str model "/" (name k))) v))
+   {:db/id eid} document-map))
+
+(defn add-token-to-addr [{:keys [address decimals image symbol targetAddressId fromApp fromUser fromList checkOnly] :as token}]
+  (let [{:keys [addressId networkId]} (addr-acc-network {:addressId targetAddressId})
+        token-in-net?                 (-> (q '[:find [?t ...]
+                                               :in $ ?taddr ?net
+                                               :where
+                                               [?t :token/address ?taddr]
+                                               [?net :network/token ?t]]
+                                             address networkId)
+                                          not-empty
+                                          first)
+        token-in-addr?                (and token-in-net?
+                                           (-> (q '[:find [?t ...]
+                                                    :in $ ?taddr ?addr
+                                                    :where
+                                                    [?t :token/address ?taddr]
+                                                    [?addr :address/token ?t]]
+                                                  address addressId)
+                                               not-empty
+                                               first))
+        token-id                      (or token-in-addr? token-in-net? -1)
+        add-token-tx                  {:db/id token-id :token/address address :token/decimals decimals :token/logoURI image}
+        add-token-tx                  (if fromApp (assoc add-token-tx :token/fromApp true) add-token-tx)
+        add-token-tx                  (if fromUser (assoc add-token-tx :token/fromUser true) add-token-tx)
+        add-token-tx                  (if fromList (assoc add-token-tx :token/fromList true) add-token-tx)
+        tx                            [add-token-tx]
+        tx                            (if token-in-addr? tx (conj tx {:db/id addressId :address/token token-id}))
+        tx                            (if token-in-net? tx (conj tx {:db/id networkId :network/token token-id}))
+        tx-rst                        (and (not checkOnly) (t tx))
+        token-id                      (if (and (not checkOnly) (= token-id -1)) (get-in tx-rst [:tempids -1]) token-id)]
+    {:tokenId       token-id
+     :alreadyInNet  (boolean token-in-net?)
+     :alreadyInAddr (boolean token-in-addr?)}))
+
+(defn get-network-token-by-token-addr [{:keys [networkId tokenAddress]}]
+  (-> (q '[:find [?tokenId]
+           :in $ ?net ?addr
+           :where
+           [?net :network/token ?tokenId]
+           [?tokenId :token/address ?addr]]
+         networkId tokenAddress)
+      first))
+
+(defn addr-network-id-to-addr-id [addr netId]
+  (-> (q '[:find [?addr-id ...]
+           :in $ ?addr ?net
+           :where
+           (or [?addr-id :address/base32 ?addr]
+               [?addr-id :address/hex ?addr])
+           [?net :network/address ?addr-id]]
+         addr netId)
+      first))
+(defn addr-network-id-to-token-id [addr netId]
+  (-> (q '[:find [?token-id ...]
+           :in $ ?addr ?net
+           :where
+           [?token-id :token/address ?addr]
+           [?net :network/token ?token-id]]
+         addr netId)
+      first))
+
+(defn get-single-call-balance-params [{:keys [type allNetwork]}]
+  (let [discover?            (= type "discover")
+        refresh?             (= type "refresh")
+        all?                 (= type "all")
+        native-balance-binds (q '[:find ?net ?addr ?token
+                                  :in $ ?allnet
+                                  :where
+                                  [?net :network/address ?addr-id]
+                                  (or
+                                   [(true? ?allnet)]
+                                   (and
+                                    [(not ?allnet)]
+                                    [?net :network/selected true]))
+                                  [?addr-id :address/hex ?addr-hex]
+                                  [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]
+                                  [(and true "0x0") ?token]] allNetwork)
+        has-balance-binds    (if (or refresh? all?)
+                               (q '[:find ?net ?addr ?token
+                                    :in $ ?allnet
+                                    :where
+                                    [?net :network/token ?token-id]
+                                    (or
+                                     [(true? ?allnet)]
+                                     (and
+                                      [(not ?allnet)]
+                                      [?net :network/selected true]))
+                                    [?balance :balance/address ?addr-id]
+                                    [?balance :balance/token  ?token-id]
+                                    [?token-id :token/address ?token]
+                                    [?addr-id :address/hex ?addr-hex]
+                                    [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]] allNetwork)
+                               #{})
+        no-balance-binds     (if (or all? discover?)
+                               (q '[:find ?net ?addr ?token
+                                    :in $ ?allnet
+                                    :where
+                                    [?net :network/address ?addr-id]
+                                    [?net :network/token ?token-id]
+                                    (or
+                                     [(true? ?allnet)]
+                                     (and
+                                      [(not ?allnet)]
+                                      [?net :network/selected true]))
+                                    (not [?addr-id :address/token ?token-id])
+                                    [?token-id :token/address ?token]
+                                    [?addr-id :address/hex ?addr-hex]
+                                    [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]] allNetwork)
+                               #{})
+        format-balance-binds (fn [acc [network-id uaddr taddr]]
+                               (let [[u t net] (get acc network-id [#{} #{} (e :network network-id)])]
+                                 (assoc acc network-id [(conj u uaddr) (conj t taddr) net])))
+        params               (reduce format-balance-binds {} native-balance-binds)
+        params               (reduce format-balance-binds params has-balance-binds)
+        params               (reduce format-balance-binds params no-balance-binds)]
+    (into [] params)))
+
+(defn upsert-balances [{:keys [networkId data]}]
+  (let [formated-data
+        (reduce
+         (fn [acc [uaddr tokens-map]]
+           (into acc
+                 (reduce
+                  (fn [acc [taddr balance]]
+                    (if (= balance "0x0")
+                      acc
+                      (conj acc [(addr-network-id-to-addr-id (name uaddr) networkId) (addr-network-id-to-token-id (name taddr) networkId) balance])))
+                  []
+                  tokens-map)))
+         [] data)
+
+        ;; [
+        ;;   [uid tid balance]
+        ;; ]
+
+        txs
+        (mapv
+         (fn [[uid tid value]]
+           (let [balance (e :balance [:balance/address+token [uid tid]])]
+             (cond
+               balance              [:db/add (:db/id balance) :balance/value value]
+               (and uid (nil? tid)) [:db/add uid :address/balance value]
+               (and uid tid)        {:db/id (str "newbalance-" uid "-" tid) :balance/token tid :balance/address uid :balance/value value})))
+         formated-data)]
+    (t txs)
+    true))
 
 (defn retract [id] (t [[:db.fn/retractEntity id]]))
 (defn retract-attr [{:keys [eid attr]}] (t [[:db.fn/retractAttribute eid (keyword attr)]]))
+
+(defn retract-address-token [{:keys [tokenId addressId]}]
+  (if (-> (q '[:find [?token ...]
+               :in $ ?token ?addr
+               :where
+               [?addr :address/token ?token]]
+             tokenId addressId)
+          first)
+    (t [[:db/retract addressId :address/token tokenId]])
+    "tokenNotBelongToAddress"))
+
+;;; UI QUERIES
+(defn home-page-assets [{:keys [include-other-tokens]}]
+  (let [cur-addr          (e :address (get-current-addr))
+        cur-net           (e :network (get-current-network))
+        native-token-info (get cur-net :network/ticker {:name "CFX", :symbol "CFX", :decimals 18})
+        native-token-ui   (assoc native-token-info :balance (get cur-addr :address/balance "0x0") :native true :added true)
+        addr-tokens-info  (q '[:find ?token-id ?tbalance
+                               :in $ ?cur-addr
+                               :where
+                               [?cur-addr :address/token ?token-id]
+                               [?b :balance/address ?cur-addr]
+                               [?b :balance/token ?token-id]
+                               [?b :balance/value ?tbalance]]
+                             (:db/id cur-addr))
+        addr-tokens-info  (reduce
+                           (fn [acc [token-id balance]]
+                             (let [t (.touch (e :token token-id))]
+                               (conj acc (assoc t :balance balance :added true))))
+                           [] addr-tokens-info)
+        other-tokens-info (if include-other-tokens
+                            (q '[:find ?token-id ?tbalance
+                                 :in $ ?cur-addr ?cur-net
+                                 :where
+                                 [?cur-net :address/token ?token-id]
+                                 (not [?cur-addr :address/token ?token-id])
+                                 [(and true "0x0") ?tbalance]]
+                               (:db/id cur-addr) (:db/id cur-net))
+                            #{})
+        other-tokens-info (reduce
+                           (fn [acc [token-id balance]]
+                             (let [t (.touch (e :token token-id))]
+                               (conj acc (assoc t :balance balance :added false))))
+                           [] other-tokens-info)
+        rst               {:currentAddress cur-addr
+                           :currentNetwork cur-net
+                           :native         native-token-ui
+                           :added          addr-tokens-info}
+        rst (if include-other-tokens (assoc rst :others other-tokens-info) rst)]
+    rst))
+
+(defn get-add-token-list [] (home-page-assets {:include-other-tokens true}))
 
 (def queries {:batchTx
               (fn [txs]
@@ -197,10 +437,19 @@
               :upsertAppPermissions            upsert-app-permissions
               :accountAddrByNetwork            account-addr-by-network
               :retract                         retract
-              :retractAttr                     retract-attr})
+              :retractAttr                     retract-attr
+              :getNetworkTokenByTokenAddr      get-network-token-by-token-addr
+              :getCurrentAddr                  (comp #(e :address) get-current-addr)
+              :addTokenToAddr                  add-token-to-addr
+              :getSingleCallBalanceParams      get-single-call-balance-params
+              :upsertBalances                  upsert-balances
+              :retractAddressToken             retract-address-token
+              :queryhomePageAssets             home-page-assets
+              :queryaddTokenList               get-add-token-list})
 
-(defn apply-queries [conn qfn entity tfn ffn]
+(defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)
+  (def p pfn)
   (def e (fn [model eid] (entity model (model->attr-keys model) eid)))
   (def t tfn)
   (def fdb ffn)

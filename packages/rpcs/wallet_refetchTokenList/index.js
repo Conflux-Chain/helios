@@ -29,5 +29,5 @@ export const main = async ({
     [],
   )
 
-  return Promise.all(promises)
+  return await Promise.all(promises)
 }

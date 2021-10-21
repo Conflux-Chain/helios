@@ -14,6 +14,7 @@ export default function ({
   repeat,
   mapOf,
   jsinst,
+  tokenSymbol,
   jssetp,
   integer,
 }) {
@@ -64,10 +65,7 @@ export default function ({
         [stringp, {min: 1, max: 40}],
       ],
     ],
-    [
-      'symbol',
-      [and, [regexp, /^[a-zA-Z0-9+\-%/$]+$/], [stringp, {min: 1, max: 20}]],
-    ],
+    ['symbol', tokenSymbol],
     ['logoURI', {optional: true}, url],
     [
       'tags',

@@ -275,7 +275,7 @@
          ;; rst           (assoc rst :deleteById delete-by-id)
          ;; rst           (assoc rst :updateById update-by-id)
          rst           (assoc rst :tmpid random-tmp-id)
-         rst           (apply-queries rst qfn efn tfn ffn)]
+         rst           (apply-queries rst qfn pfn efn tfn ffn)]
      (def conn db)
      (def t tfn)
      (def q qfn)
