@@ -1,7 +1,0 @@
-releases:
-  "@fluent-wallet/component-link": patch
-  "@fluent-wallet/component-modal": patch
-
-declined:
-  - browser-extension
-  - helios-popup

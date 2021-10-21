@@ -1,12 +1,12 @@
 {
   "name": "@fluent-wallet/contract-method-name",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.js",
   "dependencies": {
     "eth-method-registry": "2.0.0",
     "ethjs": "0.4.0",
     "js-conflux-sdk": "1.7.0",
-    "node-fetch": "2.6.5"
+    "node-fetch": "3.0.0"
   }
 }

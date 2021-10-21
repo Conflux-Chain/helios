@@ -98,6 +98,7 @@ const schema = {
   },
   address: {
     vault: {ref: true},
+    balance: {doc: 'balance of this address'},
     index: {doc: 'Address index in hd path, starts from 0'},
     hex: {doc: 'The value of the address, not cfx hex address'},
     cfxHex: {doc: 'The value of cfx hex address'},
@@ -148,6 +149,15 @@ const schema = {
     site: {ref: true, persist: false},
     app: {ref: true, persist: false},
     c: {doc: 'csp channel of the req listener', persist: false},
+  },
+  balance: {
+    value: {doc: 'balance value in hex'},
+    'address+token': {
+      tuples: ['balance/address', 'balance/token'],
+      identity: true,
+    },
+    address: {ref: true},
+    token: {ref: true},
   },
 
   // ## utils

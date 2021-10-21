@@ -98,10 +98,12 @@ const fallbackBalanceTracker = async (
   const getBalanceMethod = type === 'cfx' ? cfx_getBalance : eth_getBalance
   const rst = {}
   const promises = users.reduce((acc, u) => {
+    u = u.toLowerCase()
     if (!rst[u]) rst[u] = {}
     return acc.concat(
       tokens.map(async t => {
         let res = '0x0'
+        t = t.toLowerCase()
 
         const call =
           t === '0x0'
@@ -165,7 +167,12 @@ export const main = async arg => {
   }
 
   try {
-    rst = await balances(d => callMethod([d]), balanceChecker, users, tokens)
+    rst = await balances(
+      d => callMethod({errorFallThrough: true}, [d]),
+      balanceChecker,
+      users,
+      tokens,
+    )
   } catch (err) {} // eslint-disable-line no-empty
 
   if (rst === undefined) {

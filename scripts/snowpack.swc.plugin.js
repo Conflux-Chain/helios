@@ -19,6 +19,11 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
           'assert_1.default.assert(',
         )
 
+      // fix readable-stream error with snowpack
+      // https://github.com/nodejs/readable-stream/issues/456
+      if (id.endsWith('/cip-23/lib/es/utils/buffer.js'))
+        return 'export * from "@fluent-wallet/signature/cip-23-utils-buffer.js"'
+
       if (ignores.reduce((acc, test) => acc || id.includes(test), false))
         return contents
       return swc.transformSync(contents, {
