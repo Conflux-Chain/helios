@@ -2147,6 +2147,26 @@ describe('integration test', function () {
         ).toBe('0x56bc75e2d63100000')
       })
     })
+    describe('wallet_validate20Token', function () {
+      test('cfx', async () => {
+        await deployCRC20()
+        res = await request({
+          method: 'wallet_validate20Token',
+          params: {
+            tokenAddress: 'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w',
+            userAddress: 'net2999:aarx4arbkwcbuh4r8spdz3ybddwnzzeea6thg8ytmr',
+          },
+        })
+        expect(res.result).toStrictEqual({
+          balance: '0x8ac7230489e80000',
+          decimals: 18,
+          name: 'Test Token 1',
+          symbol: 'test1',
+          valid: true,
+        })
+      })
+    })
+
     describe('wallet_switchEthereumChain', function () {
       test('wallet_switchEthereumChain', async () => {
         await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>

@@ -45,6 +45,7 @@ export const permissions = {
   methods: [
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
+    'wallet_validate20Token',
   ],
   db: [
     'getAuthReqById',
@@ -57,12 +58,25 @@ export const permissions = {
 export const main = async ({
   Err: {InvalidParams},
   db: {getAuthReqById, accountAddrByNetwork, addTokenToAddr, getCurrentAddr},
-  rpcs: {wallet_addPendingUserAuthRequest, wallet_userApprovedAuthRequest},
+  rpcs: {
+    wallet_addPendingUserAuthRequest,
+    wallet_userApprovedAuthRequest,
+    wallet_validate20Token,
+  },
   app,
   params,
   _popup,
 }) => {
   if (params?.type) {
+    const {name, symbol, address, decimals} = params.options
+    const {valid} = await wallet_validate20Token({
+      name,
+      symbol,
+      tokenAddress: address,
+      decimals,
+    })
+    if (!valid) throw InvalidParams('Invalid token')
+
     if (_popup) {
       const curAddr = getCurrentAddr()
       addTokenToAddr({
@@ -90,11 +104,6 @@ export const main = async ({
       appId: app.eid,
       req: {method: NAME, params},
     })
-
-    // TODO: validate token params
-    // can access image
-    // symbol/decimals/address is right
-    // token is erc20
   }
 
   if (params.authReqId) {

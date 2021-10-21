@@ -4212,9 +4212,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/wallet_watch-assets@workspace:packages/rpcs/wallet_watchAsset":
+"@fluent-wallet/wallet_validate20token@workspace:packages/rpcs/wallet_validate20Token":
   version: 0.0.0-use.local
-  resolution: "@fluent-wallet/wallet_watch-assets@workspace:packages/rpcs/wallet_watchAsset"
+  resolution: "@fluent-wallet/wallet_validate20token@workspace:packages/rpcs/wallet_validate20Token"
+  dependencies:
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_watch-asset@workspace:packages/rpcs/wallet_watchAsset":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_watch-asset@workspace:packages/rpcs/wallet_watchAsset"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
@@ -16985,7 +16995,8 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_validate-mnemonic": "workspace:packages/rpcs/wallet_validateMnemonic"
     "@fluent-wallet/wallet_validate-password": "workspace:packages/rpcs/wallet_validatePassword"
     "@fluent-wallet/wallet_validate-private-key": "workspace:packages/rpcs/wallet_validatePrivateKey"
-    "@fluent-wallet/wallet_watch-assets": "workspace:packages/rpcs/wallet_watchAsset"
+    "@fluent-wallet/wallet_validate20token": "workspace:packages/rpcs/wallet_validate20Token"
+    "@fluent-wallet/wallet_watch-asset": "workspace:packages/rpcs/wallet_watchAsset"
     "@fluent-wallet/wallet_zero-account-group": "workspace:packages/rpcs/wallet_zeroAccountGroup"
     "@fluent-wallet/webextension": "workspace:packages/webextension"
     "@thi.ng/rstream": 6.0.21
