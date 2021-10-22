@@ -1,8 +1,0 @@
-releases:
-  "@fluent-wallet/component-checkbox": patch
-  "@fluent-wallet/component-input": patch
-
-declined:
-  - browser-extension
-  - helios-popup
-  - "@fluent-wallet/wallet_get-balance"
