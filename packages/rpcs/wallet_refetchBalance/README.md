@@ -1,1 +1,1 @@
-# @fluent-wallet/wallet_refresh-balance
+# @fluent-wallet/wallet_refetch-balance

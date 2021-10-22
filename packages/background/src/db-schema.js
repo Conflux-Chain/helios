@@ -153,11 +153,9 @@ const schema = {
   balance: {
     value: {doc: 'balance value in hex'},
     'address+token': {
-      tuples: ['balance/address', 'balance/token'],
       identity: true,
+      tuples: ['db/id', 'db/id'],
     },
-    address: {ref: true},
-    token: {ref: true},
   },
 
   // ## utils
