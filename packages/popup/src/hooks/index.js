@@ -52,18 +52,24 @@ export const useSlideAnimation = show => {
   return wrapperAnimateStyle
 }
 
-export const useFontSize = (targetRef, hiddenRef, maxWidth, value) => {
+export const useFontSize = (
+  targetRef,
+  hiddenRef,
+  maxWidth,
+  value,
+  initialFontSize = 14,
+) => {
   useEffect(() => {
     const hiddenDom = hiddenRef.current
     const targetDom = targetRef.current
     const contentWidth = hiddenDom.offsetWidth
     if (contentWidth > maxWidth) {
-      const fontSize = (maxWidth / contentWidth) * 14
+      const fontSize = (maxWidth / contentWidth) * initialFontSize
       targetDom.style.fontSize = parseInt(fontSize * 100) / 100 + 'px'
     } else {
-      targetDom.style.fontSize = '14px'
+      targetDom.style.fontSize = `${initialFontSize}px`
     }
-  }, [targetRef, hiddenRef, maxWidth, value])
+  }, [targetRef, hiddenRef, maxWidth, value, initialFontSize])
 }
 
 // TODO: refactor batch balance
@@ -168,7 +174,6 @@ export const useCurrentAccount = () => {
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-  console.log(currentAccount)
   const {eid: accountId} = currentAccount
 
   const {data: accountAddress} = useRPC(
@@ -188,4 +193,18 @@ export const useCurrentAccount = () => {
     ...currentAccount,
     address,
   }
+}
+
+export const useIsCfx = () => {
+  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
+    fallbackData: {},
+  })
+  return currentNetwork?.type === 'cfx'
+}
+
+export const useIsEth = () => {
+  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
+    fallbackData: {},
+  })
+  return currentNetwork?.type === 'eth'
 }

@@ -9,6 +9,13 @@ const useGlobalStore = create(set => ({
   createdPassword: '',
   createdMnemonic: '',
 
+  toAddress: '',
+  amount: '0',
+  gasPrice: '1',
+  gasLimit: '21000',
+  nonce: '0',
+  token: {symbol: 'CFX', icon: ''},
+
   // logic
   setCreatedPassword: createdPassword => set({createdPassword}),
   setCreatedGroupName: createdGroupName => set({createdGroupName}),
