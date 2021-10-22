@@ -119,7 +119,7 @@ function walletInitialized({chainId, networkId}) {
         params: [getElement('address').innerHTML, JSON.stringify(typedData)],
       })
       .then(res => {
-        if (res.error) return console.error(res, res.error.message || res.error)
+        if (res.error) return console.error(res.error.message || res.error)
         getElement('typed_sign_result').innerHTML = res.result
         console.log('result', res.result)
       })

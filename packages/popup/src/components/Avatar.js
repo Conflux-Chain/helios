@@ -4,8 +4,8 @@ import {useRef, useEffect} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {removeAllChild, jsNumberForAddress} from '../utils'
 import {RPC_METHODS} from '../constants'
-import {isNumber} from '@fluent-wallet/checks'
-const {GET_NETWORK, GET_ACCOUNT_ADDRESS_BY_NETWORK} = RPC_METHODS
+import {useSingleAddressByNetworkId} from '../hooks'
+const {GET_NETWORK} = RPC_METHODS
 
 const useCfxMainnetAddress = accountId => {
   const {data: networkData} = useRPC(
@@ -20,14 +20,7 @@ const useCfxMainnetAddress = accountId => {
   if (cfxMainnetArr.length) {
     networkId = cfxMainnetArr[0].eid
   }
-
-  const {data: addressData} = useRPC(
-    isNumber(networkId) && isNumber(accountId)
-      ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId, accountId]
-      : null,
-    [{networkId, accountId}],
-    {fallbackData: {}},
-  )
+  const {data: addressData} = useSingleAddressByNetworkId(accountId, networkId)
   return jsNumberForAddress(addressData?.cfxHex || addressData?.hex)
 }
 

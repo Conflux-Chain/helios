@@ -253,7 +253,7 @@ export const usePendingAuthReq = (canSendReq = true) => {
   return {pendingAuthReq, pendingReqError}
 }
 
-export const useDappAuthorizedAccountBalance = (
+export const useBalance = (
   accountId,
   networkId,
   tokenContractAddress = '0x0',

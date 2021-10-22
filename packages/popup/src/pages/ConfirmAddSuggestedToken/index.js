@@ -1,6 +1,6 @@
 import {useTranslation} from 'react-i18next'
 import {formatHexBalance} from '../../utils'
-import {usePendingAuthReq, useDappAuthorizedAccountBalance} from '../../hooks'
+import {usePendingAuthReq, useBalance} from '../../hooks'
 import {TitleNav, AccountDisplay, DappFooter, TokenItem} from '../../components'
 
 function ConfirmAddSuggestedToken() {
@@ -9,13 +9,12 @@ function ConfirmAddSuggestedToken() {
   const [{req, app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
-  const {data: balanceData} = useDappAuthorizedAccountBalance(
+  const {data: balanceData} = useBalance(
     dappAccountId,
     dappNetworkId,
     req?.params?.options?.address,
   )
   const address = Object.keys(balanceData)[0]
-  console.log('pendingAuthReq', balanceData)
 
   return (
     <div

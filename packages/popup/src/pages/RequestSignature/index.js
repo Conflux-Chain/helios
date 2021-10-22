@@ -8,7 +8,7 @@ import {
   AccountDisplay,
   DisplayBalance,
 } from '../../components'
-import {useDappAuthorizedAccountBalance, usePendingAuthReq} from '../../hooks'
+import {useBalance, usePendingAuthReq} from '../../hooks'
 function PlaintextMessage({message}) {
   return (
     <div>
@@ -42,10 +42,7 @@ function RequestSignature() {
   const [{req, app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
-  const {data: balanceData} = useDappAuthorizedAccountBalance(
-    dappAccountId,
-    dappNetworkId,
-  )
+  const {data: balanceData} = useBalance(dappAccountId, dappNetworkId)
   const address = Object.keys(balanceData)[0]
   const plaintextData = req?.params?.[1] ? JSON.parse(req.params[1]) : {}
 
