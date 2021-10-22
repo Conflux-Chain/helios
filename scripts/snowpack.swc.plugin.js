@@ -26,11 +26,12 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
 
       if (ignores.reduce((acc, test) => acc || id.includes(test), false))
         return contents
+
       return swc.transformSync(contents, {
         cwd: root,
         root,
         filename: id,
-        sourceMaps: false,
+        sourceMaps: isProd(),
       }).code
     },
     optimize(/* {buildDirectory, log} */) {
