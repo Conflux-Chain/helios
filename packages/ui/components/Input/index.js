@@ -37,7 +37,7 @@ function Input({
   containerClassName = '',
   onChange,
   bordered = true,
-  readOnly = false,
+  readonly = false,
   size = 'medium',
   textareaSize = '',
   width = 'w-60',
@@ -66,9 +66,9 @@ function Input({
     if (errorMessage) return 'border border-error'
     else
       return `border ${
-        focused && !readOnly ? 'border-primary' : 'border-gray-20'
+        focused && !readonly ? 'border-primary' : 'border-gray-20'
       }`
-  }, [bordered, errorMessage, focused])
+  }, [bordered, errorMessage, focused, readonly])
 
   const InputElement = createElement(elementType, {
     'data-testid': 'input-text',
@@ -136,7 +136,7 @@ Input.propTypes = {
   onSuffixClick: PropTypes.func,
   disabled: PropTypes.bool,
   bordered: PropTypes.bool,
-  readOnly: PropTypes.bool,
+  readonly: PropTypes.bool,
   onBlur: PropTypes.func,
   elementType: PropTypes.oneOf(['input', 'textarea']),
 }
