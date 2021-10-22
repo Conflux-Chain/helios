@@ -77,7 +77,7 @@ function NetworkContent({onClickNetworkItem, networkItemSize}) {
       fallbackData: [],
     },
   )
-  console.log('networkData', networkData)
+
   return (
     <>
       {networkData.map(({eid, name, isCustom, isMainnet, isTestnet, icon}) => (

@@ -17062,8 +17062,8 @@ fsevents@~2.1.2:
     react-copy-to-clipboard: 5.0.4
     react-i18next: 11.12.0
     react-router-dom: 5.2.1
-    react-use: 17.2.4
-    swr: 1.0.0
+    react-use: 17.3.1
+    swr: 1.0.1
     use-deep-compare-effect: 1.8.0
     webextension-polyfill: ^0.8.0
     zustand: ^3.5.13
@@ -25383,31 +25383,6 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"react-use@npm:17.2.4":
-  version: 17.2.4
-  resolution: "react-use@npm:17.2.4"
-  dependencies:
-    "@types/js-cookie": ^2.2.6
-    "@xobotyi/scrollbar-width": ^1.9.5
-    copy-to-clipboard: ^3.3.1
-    fast-deep-equal: ^3.1.3
-    fast-shallow-equal: ^1.0.0
-    js-cookie: ^2.2.1
-    nano-css: ^5.3.1
-    react-universal-interface: ^0.6.2
-    resize-observer-polyfill: ^1.5.1
-    screenfull: ^5.1.0
-    set-harmonic-interval: ^1.0.1
-    throttle-debounce: ^3.0.1
-    ts-easing: ^0.2.0
-    tslib: ^2.1.0
-  peerDependencies:
-    react: ^16.8.0  || ^17.0.0
-    react-dom: ^16.8.0  || ^17.0.0
-  checksum: 3c885c3798bb07581f78f8445c0a9545c1bb8876ea5bdbe0236ebf3f923dc3572a0f71324f02ecddb8515b0625d7f3e2560da751bdf51f5a2fdb47290a689292
-  languageName: node
-  linkType: hard
-
 "react-use@npm:17.3.1":
   version: 17.3.1
   resolution: "react-use@npm:17.3.1"
@@ -28400,17 +28375,6 @@ resolve@^2.0.0-next.3:
     tar: ^4.0.2
     xhr-request: ^1.0.1
   checksum: 1de56e0cb02c1c80e041efb2bd2cc7250c5451c3016967266c16d5c1e8c74fe5c3aae45dc46065b1f4d77667a8453b967961ec58b3975469522f566aa840a914
-  languageName: node
-  linkType: hard
-
-"swr@npm:1.0.0":
-  version: 1.0.0
-  resolution: "swr@npm:1.0.0"
-  dependencies:
-    dequal: 2.0.2
-  peerDependencies:
-    react: ^16.11.0 || ^17.0.0
-  checksum: 8ffb767ca5c2f0d5e2280d31a6f497fac2739cf7c3518b0266b8d5c619ea9a74b1953b82e13b47463f6dd4f122885f941ce785b2fbf4d45e4b2e1d88f62b9c74
   languageName: node
   linkType: hard
 

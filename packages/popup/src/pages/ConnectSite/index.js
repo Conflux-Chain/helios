@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useState} from 'react'
-import useDeepCompareEffect from 'use-deep-compare-effect'
+import {useState, useEffect} from 'react'
 import Input from '@fluent-wallet/component-input'
 import Checkbox from '@fluent-wallet/component-checkbox'
 import {useRPC} from '@fluent-wallet/use-rpc'
@@ -123,13 +122,13 @@ function ConnectSite() {
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     setSearchIcon(currentNetworkData?.icon || '')
     setSearchContent(currentNetworkData?.name || '')
     setNetworkId(currentNetworkData?.eid || null)
-  }, [currentNetworkData || {}])
+  }, [currentNetworkData])
 
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     if (
       addressDataWithAccountId &&
       !Object.keys(checkboxStatusObj).length &&
@@ -141,9 +140,10 @@ function ConnectSite() {
       )
       setCheckboxStatusObj({...ret})
     }
-  }, [addressDataWithAccountId || {}, currentAccount])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addressDataWithAccountId, currentAccount])
 
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     setAllCheckboxStatus(
       Object.keys(checkboxStatusObj).every(id => checkboxStatusObj[id]),
     )
