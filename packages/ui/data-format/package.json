@@ -4,6 +4,8 @@
   "main": "index.js",
   "version": "0.1.1",
   "dependencies": {
-    "big.js": "^6.1.1"
+    "@fluent-wallet/utils": "workspace:packages/utils",
+    "big.js": "^6.1.1",
+    "bn.js": "5.2.0"
   }
 }

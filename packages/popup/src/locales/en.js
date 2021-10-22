@@ -136,6 +136,8 @@ const en = {
     // choose token
     chooseToken: 'Choose Token',
     tokenList: 'Token list',
+    noTxnWarning:
+      'This address DOES NOT have any historical transactions, please double check',
   },
 }
 

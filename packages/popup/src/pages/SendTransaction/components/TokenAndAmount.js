@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
+import {useRPC} from '@fluent-wallet/use-rpc'
 import {CaretDownFilled} from '@fluent-wallet/component-icons'
 import Input from '@fluent-wallet/component-input'
 import Link from '@fluent-wallet/component-link'
@@ -11,29 +12,37 @@ import {
   SearchToken,
   TokenList,
 } from '../../../components'
+import {RPC_METHODS} from '../../../constants'
+const {GET_HOME_TOKEN_LIST, REFETCH_BALANCE} = RPC_METHODS
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
+  const {
+    data: {added, native},
+  } = useRPC([GET_HOME_TOKEN_LIST], undefined, {fallbackData: {}})
+  useRPC([REFETCH_BALANCE])
+  const homeTokenList = [native].concat(added)
   const [searchValue, setSearchValue] = useState('')
   const onChangeValue = value => {
     setSearchValue(value)
   }
   const content = (
-    <div className="flex flex-col">
+    <div className="flex flex-col flex-1">
       <SearchToken value={searchValue} onChange={onChangeValue} />
       <span className="inline-block mt-3 mb-1 text-gray-40 text-xs">
         {t('tokenList')}
       </span>
-      <TokenList onSelectToken={onSelectToken} />
+      <TokenList tokenList={homeTokenList} onSelectToken={onSelectToken} />
     </div>
   )
   return (
     <Modal
-      className="!bg-choose-token-modal bg-no-repeat w-80"
+      className="!bg-choose-token-modal bg-no-repeat w-80 h-[552px]"
       open={open}
       title={t('chooseToken')}
       content={content}
       onClose={onClose}
+      contentClassName="flex-1 flex"
     />
   )
 }
@@ -54,17 +63,18 @@ function TokenAndAmount({
   const [tokenListShow, setTokenListShow] = useState(false)
   const {symbol, icon} = selectedToken
   const label = (
-    <span className="flex items-center justify-between w-full">
+    <span className="flex items-center justify-between text-gray-60 w-full">
       {t('tokenAndAmount')}
-      <span className="flex items-center">
+      <span className="flex items-center text-xs">
         {t('available')}
         <DisplayBalance
           maxWidth={140}
           maxWidthStyle="max-w-[140px]"
           balance="10000"
-          className="mx-1"
+          className="mx-1 text-xs"
+          initialFontSize={12}
         />
-        {' CFX'}
+        {'CFX'}
       </span>
     </span>
   )
@@ -77,7 +87,11 @@ function TokenAndAmount({
           onClick={() => setTokenListShow(true)}
           aria-hidden="true"
         >
-          <img className="w-5 h-5 mr-1" src={icon} alt="logo" />
+          <img
+            className="w-5 h-5 mr-1"
+            src={icon || 'images/default-token-icon.svg'}
+            alt="logo"
+          />
           <span className="text-gray-80 mr-2">{symbol}</span>
           <CaretDownFilled className="w-4 h-4 text-gray-60" />
         </div>
