@@ -80,7 +80,6 @@ module.exports = {
         'gray-0': 'var(--color-gray-0)',
         'gray-4': 'var(--color-gray-4)',
         'gray-10': 'var(--color-gray-10)',
-        'gray-4': 'var(--color-gray-4)',
         'gray-20': 'var(--color-gray-20)',
         'gray-40': 'var(--color-gray-40)',
         'gray-60': 'var(--color-gray-60)',
