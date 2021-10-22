@@ -1,0 +1,9 @@
+{
+  "name": "@fluent-wallet/jazz-icon",
+  "type": "module",
+  "main": "index.js",
+  "license": "ISC",
+  "dependencies": {
+    "mersenne-twister": "1.1.0"
+  }
+}

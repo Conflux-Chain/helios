@@ -28,7 +28,7 @@ function NewSeed() {
   }, [hdGroup])
 
   return (
-    <div className="flex flex-col h-full bg-bg">
+    <div className="flex flex-col h-full bg-bg" id="newSeedContainer">
       <TitleNav title={t('newAccount')} />
       <main className="px-3 flex flex-1 flex-col justify-between">
         <div>
@@ -54,6 +54,7 @@ function NewSeed() {
         <div className="flex justify-center mb-4">
           <Button
             className="w-70"
+            id="newSeedBtn"
             onClick={() => {
               history.push(BACKUP_SEED_PHRASE)
               setCreatedGroupName(groupName || groupNamePlaceholder)

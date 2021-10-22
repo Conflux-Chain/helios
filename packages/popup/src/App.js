@@ -4,14 +4,10 @@ import React, {lazy, Suspense, useEffect} from 'react'
 import {HashRouter as Router, Redirect, Route, Switch} from 'react-router-dom'
 import {ProtectedRoute} from './components'
 import {RPC_METHODS, ROUTES} from './constants'
+import {usePendingAuthReq} from './hooks'
 import './index.css'
 import useGlobalStore from './stores/index.js'
-const {
-  GET_ACCOUNT_GROUP,
-  GET_NO_GROUP,
-  GET_WALLET_LOCKED_STATUS,
-  GET_PENDING_AUTH_REQ,
-} = RPC_METHODS
+const {GET_ACCOUNT_GROUP, GET_NO_GROUP, GET_WALLET_LOCKED_STATUS} = RPC_METHODS
 
 const {
   HOME,
@@ -27,6 +23,11 @@ const {
   IMPORT_SEED_PHRASE,
   IMPORT_PRIVATE_KEY,
   ERROR,
+  CONNECT_SITE,
+  CONFIRM_ADD_SUGGESTED_TOKEN,
+  REQUEST_SIGNATURE,
+  DAPP_ADD_NETWORK,
+  DAPP_SWITCH_NETWORK,
   SEND_TRANSACTION,
 } = ROUTES
 const HomePage = lazy(() => import('./pages/Home'))
@@ -44,6 +45,13 @@ const ImportPrivateKey = lazy(() => import('./pages/ImportPrivateKey'))
 const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
 const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
 const ErrorPage = lazy(() => import('./pages/Error'))
+const ConnectSite = lazy(() => import('./pages/ConnectSite'))
+const RequestSignature = lazy(() => import('./pages/RequestSignature'))
+const DappAddNetwork = lazy(() => import('./pages/DappAddNetwork'))
+const DappSwitchNetwork = lazy(() => import('./pages/DappSwitchNetwork'))
+const ConfirmAddSuggestedToken = lazy(() =>
+  import('./pages/ConfirmAddSuggestedToken'),
+)
 const SendTransaction = lazy(() => import('./pages/SendTransaction'))
 
 function App() {
@@ -54,20 +62,25 @@ function App() {
   const {error: getAccountGroupError} = useRPC(
     lockedData === false ? [GET_ACCOUNT_GROUP] : null,
   )
-  const {data: pendingAuthReq} = useRPC(
-    lockedData === false ? [GET_PENDING_AUTH_REQ] : null,
+  const {pendingAuthReq, pendingReqError} = usePendingAuthReq(
+    lockedData === false,
   )
   const {setFatalError} = useGlobalStore()
-
   useEffect(() => {
     if (lockedError) setFatalError(lockedError)
     if (zeroGroupError) setFatalError(zeroGroupError)
     if (getAccountGroupError) setFatalError(getAccountGroupError)
+    if (pendingReqError) setFatalError(pendingReqError)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lockedError || zeroGroupError || getAccountGroupError])
+  }, [lockedError || zeroGroupError || getAccountGroupError || pendingReqError])
 
-  if (isUndefined(lockedData) || isUndefined(zeroGroup))
+  if (
+    isUndefined(lockedData) ||
+    isUndefined(zeroGroup) ||
+    isUndefined(pendingAuthReq)
+  ) {
     return <div>loading...</div>
+  }
 
   return (
     <Suspense
@@ -87,7 +100,7 @@ function App() {
             <Route exact path={WELCOME} component={Welcome} />
 
             <ProtectedRoute
-              hasPendingAuthReq={pendingAuthReq?.length > 0}
+              pendingAuthReq={pendingAuthReq}
               hasAccount={!zeroGroup}
               isLocked={!zeroGroup && lockedData}
               exact
@@ -114,6 +127,23 @@ function App() {
               path={IMPORT_PRIVATE_KEY}
               component={ImportPrivateKey}
             />
+            <Route exact path={CONNECT_SITE} component={ConnectSite} />
+            <Route
+              exact
+              path={CONFIRM_ADD_SUGGESTED_TOKEN}
+              component={ConfirmAddSuggestedToken}
+            />
+            <Route
+              exact
+              path={REQUEST_SIGNATURE}
+              component={RequestSignature}
+            />
+            <Route
+              exact
+              path={DAPP_SWITCH_NETWORK}
+              component={DappSwitchNetwork}
+            />
+            <Route exact path={DAPP_ADD_NETWORK} component={DappAddNetwork} />
             <Route exact path={SEND_TRANSACTION} component={SendTransaction} />
             <Route exact path={ERROR} component={ErrorPage} />
             <Route path="*" render={() => <Redirect to={ERROR} />} />

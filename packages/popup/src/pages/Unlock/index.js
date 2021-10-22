@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
-import {LanguageNav, HomeTitle, PasswordInput} from '../../components'
+import {HomeTitle, PasswordInput, LanguageNav} from '../../components'
 import {useTranslation} from 'react-i18next'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import {useSWRConfig} from 'swr'
@@ -37,7 +37,7 @@ const UnlockPage = () => {
   }
 
   return (
-    <div className="bg-secondary h-full flex flex-col">
+    <div className="bg-secondary h-full flex flex-col" id="unlockContainer">
       <LanguageNav />
       <header className="flex flex-col items-center pb-7">
         <img
@@ -66,7 +66,12 @@ const UnlockPage = () => {
             />
           </section>
           <section className="mb-48">
-            <Button fullWidth disabled={!!errorMessage} onClick={onUnlock}>
+            <Button
+              fullWidth
+              disabled={!!errorMessage}
+              onClick={onUnlock}
+              id="unlockBtn"
+            >
               {t('unlock')}
             </Button>
           </section>

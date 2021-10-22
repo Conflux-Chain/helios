@@ -11,10 +11,11 @@ i18next.use(initReactI18next).init({
     useSuspense: true,
   },
   debug: import.meta.env.NODE_ENV === 'development' ? true : false,
-  lng:
-    navigator?.language && zhLanguages.includes(navigator.language)
-      ? 'zh'
-      : 'en',
+  lng: 'en',
+  // lng:
+  //   navigator?.language && zhLanguages.includes(navigator.language)
+  //     ? 'zh'
+  //     : 'en',
   fallbackLng: 'en',
   preload: ['en'],
 })

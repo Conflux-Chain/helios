@@ -84,7 +84,7 @@ function ImportPrivateKey() {
   }
 
   return (
-    <div className="bg-bg h-full flex flex-col">
+    <div className="bg-bg h-full flex flex-col" id="importPrivateKeyContainer">
       <TitleNav title={t(`pKeyImport`)} />
       <form
         onSubmit={event => event.preventDefault()}
@@ -115,6 +115,7 @@ function ImportPrivateKey() {
         </section>
         <section className="h-14">
           <Button
+            id="importPrivateKeyBtn"
             className="w-70  mx-auto"
             onClick={onCreate}
             disabled={!name && !keygenNamePlaceholder}

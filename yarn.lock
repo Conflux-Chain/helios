@@ -3463,6 +3463,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/jazz-icon@workspace:packages/jazz-icon":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/jazz-icon@workspace:packages/jazz-icon"
+  dependencies:
+    mersenne-twister: 1.1.0
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/jest-helper@workspace:packages/jest-helper":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/jest-helper@workspace:packages/jest-helper"
@@ -17034,8 +17042,10 @@ fsevents@~2.1.2:
     "@fluent-wallet/component-toast": "workspace:packages/ui/components/Toast"
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
+    "@fluent-wallet/jazz-icon": "workspace:packages/jazz-icon"
     "@fluent-wallet/shorten-address": "workspace:packages/ui/shorten-address"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
+    "@fluent-wallet/utils": "workspace:packages/utils"
     i18next: 21.3.1
     qrcode.react: 1.0.1
     react-copy-to-clipboard: 5.0.4
@@ -21214,6 +21224,13 @@ fsevents@~2.1.2:
     rlp: ^2.0.0
     semaphore: ">=1.0.1"
   checksum: f6066a16e08190b9e8d3aa28d8e861a3e884ee0be8109c4f5e879965fdfb8181cfc04bae3aaf97c7fb6d07446d94b4f3e1cce502dde4a5699a03acf6df518b12
+  languageName: node
+  linkType: hard
+
+"mersenne-twister@npm:1.1.0":
+  version: 1.1.0
+  resolution: "mersenne-twister@npm:1.1.0"
+  checksum: 7de1940ded117f2aad9320ae4d21d647b0ecf0667abbadcfe6a2835c669feb674ef46cb7a72da7af69a56d8b19e50e95e2fb7ef6d780efab7a6acd4d87f4cb2d
   languageName: node
   linkType: hard
 

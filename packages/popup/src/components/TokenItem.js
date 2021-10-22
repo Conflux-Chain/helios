@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {DisplayBalance} from './index'
+import {DisplayBalance} from './'
 
 function TokenItem({
   token = {},

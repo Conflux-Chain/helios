@@ -6,7 +6,10 @@ const SetPassword = () => {
   const {t} = useTranslation()
 
   return (
-    <div className="bg-secondary h-full flex flex-col">
+    <div
+      className="bg-secondary h-full flex flex-col"
+      id="setPasswordContainer"
+    >
       <LanguageNav hasGoBack={true} />
       <header className="mt-8 mb-4">
         <HomeTitle title={t('hello')} subTitle={t('welcome')} />

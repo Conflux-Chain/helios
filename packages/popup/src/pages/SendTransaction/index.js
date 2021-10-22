@@ -3,13 +3,12 @@ import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
+import {TitleNav, CurrentNetworkDisplay, GasFee} from '../../components'
 import {
-  TitleNav,
+  ToAddressInput,
+  TokenAndAmount,
   CurrentAccountDisplay,
-  CurrentNetworkDisplay,
-  GasFee,
-} from '../../components'
-import {ToAddressInput, TokenAndAmount} from './components'
+} from './components'
 import {RPC_METHODS, ROUTES} from '../../constants'
 const {GET_CURRENT_NETWORK} = RPC_METHODS
 const {HOME} = ROUTES

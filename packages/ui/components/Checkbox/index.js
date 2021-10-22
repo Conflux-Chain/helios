@@ -34,7 +34,7 @@ Checkbox.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
-  ]).isRequired,
+  ]),
   className: PropTypes.string,
   onChange: PropTypes.func,
 }

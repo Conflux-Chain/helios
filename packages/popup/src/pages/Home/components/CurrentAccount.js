@@ -21,6 +21,7 @@ function CurrentAccount({onOpenAccount}) {
       <div
         className="flex items-center cursor-pointer"
         onClick={onOpenAccount}
+        id="openAccountBtn"
         aria-hidden="true"
       >
         <span className="text-xs text-gray-40 mr-2">{nickname}</span>

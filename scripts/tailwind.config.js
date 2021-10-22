@@ -85,6 +85,7 @@ module.exports = {
         'gray-60': 'var(--color-gray-60)',
         'gray-80': 'var(--color-gray-80)',
         'gray-90': 'var(--color-gray-90)',
+        'gray-96': 'var(--color-gray-96)',
         'gray-100': 'var(--color-gray-100)',
       },
       fontFamily: {
@@ -136,6 +137,8 @@ module.exports = {
       backgroundImage: {
         'token-background':
           'linear-gradient(19.03deg, #FFFFFF 20.24%, rgba(255, 255, 255, 0) 86.89%)',
+        'gray-circles': "url('/images/gray-circles-bg.svg')",
+        'blue-circles': "url('/images/blue-circles-bg.svg')",
         'choose-token-modal': "url('images/choose-token-bg.svg')",
       },
     },

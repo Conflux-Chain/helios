@@ -8,7 +8,8 @@ import {
   NETWORK_TYPE,
 } from '../constants'
 import {useRPC} from '@fluent-wallet/use-rpc'
-import {isNumber} from '@fluent-wallet/checks'
+import {isNumber, isString} from '@fluent-wallet/checks'
+import {formatBalance} from '@fluent-wallet/data-format'
 
 const {
   GET_ACCOUNT_GROUP,
@@ -16,6 +17,7 @@ const {
   GET_BALANCE,
   GET_CURRENT_NETWORK,
   GET_CURRENT_ACCOUNT,
+  GET_PENDING_AUTH_REQ,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -89,51 +91,83 @@ const getAddressParams = (accountGroups, networkId) => {
   return addressParams
 }
 
-const getBalanceAddress = ({
-  groupIndex,
-  accountIndex,
-  accountGroups,
-  addressData,
-}) => {
-  let index
-  if (groupIndex == 0) {
-    index = accountIndex
-  } else {
-    index = accountGroups[groupIndex - 1].account.length + accountIndex
+const getAddressDataWithAccountId = (addressParams, addressData) => {
+  if (Object.prototype.toString.call(addressData) === '[Object Object]') {
+    addressData = [addressData]
   }
-  return addressData[index].base32 || addressData[index].hex
+  if (addressData.length && addressParams.length) {
+    return addressParams.reduce((acc, cur, idx) => {
+      acc[cur['accountId']] = addressData[idx]
+      return acc
+    }, {})
+  }
+
+  return null
 }
 
-const getBatchBalanceData = ({
+const formatAccountGroupData = ({
   accountGroups,
   balanceData,
-  addressData,
+  addressDataWithAccountId,
   token = '0x0',
+  returnBalance = true,
 }) => {
   let ret = []
   if (
     accountGroups.length &&
-    addressData.length &&
-    Object.keys(balanceData).length
+    addressDataWithAccountId &&
+    ((returnBalance && Object.keys(balanceData).length) || !returnBalance)
   ) {
     accountGroups.forEach(({nickname, account}, groupIndex) => {
       ret.push({nickname, account: []})
-      account.forEach(({nickname, eid}, accountIndex) => {
-        const address = getBalanceAddress({
-          groupIndex,
-          accountIndex,
-          accountGroups,
-          addressData,
+      if (account) {
+        account.forEach(({nickname, eid}) => {
+          const address =
+            addressDataWithAccountId[eid]?.base32 ||
+            addressDataWithAccountId[eid]?.hex ||
+            ''
+          const accountData = {nickname, eid, address}
+          if (returnBalance) {
+            accountData['balance'] = formatBalance(
+              balanceData?.[address]?.[token],
+            )
+          }
+          ret[groupIndex]['account'].push({
+            ...accountData,
+          })
         })
-        ret[groupIndex]['account'].push({
-          nickname,
-          eid,
-          balance: window.BigInt(balanceData[address][token]).toString(),
-        })
-      })
+      }
     })
   }
   return ret
+}
+
+export const useSingleAddressByNetworkId = (accountId, networkId) => {
+  const {data, error} = useRPC(
+    isNumber(accountId) && isNumber(networkId)
+      ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, accountId, networkId]
+      : null,
+    {accountId, networkId},
+    {fallbackData: {}},
+  )
+  return {data: data || {}, error}
+}
+
+export const useMultipleAddressByNetworkId = (params, networkId) => {
+  const {data, error} = useRPC(
+    params.length && isNumber(networkId)
+      ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId]
+      : null,
+    params,
+    {fallbackData: []},
+  )
+  return {
+    data:
+      Object.prototype.toString.call(data) === '[object Object]'
+        ? [{...data}]
+        : data || [],
+    error,
+  }
 }
 
 export const useAccountGroupBatchBalance = networkId => {
@@ -141,58 +175,110 @@ export const useAccountGroupBatchBalance = networkId => {
   const addressParams = getAddressParams(accountGroups, networkId)
 
   // TODO: should mutate when add network
-  const {data: addressData} = useRPC(
-    addressParams.length && isNumber(networkId)
-      ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId]
-      : null,
+  const {data: addressData} = useMultipleAddressByNetworkId(
     addressParams,
-    {fallbackData: []},
+    networkId,
   )
-
   const {data: balanceData} = useRPC(
     addressData.length ? [GET_BALANCE, networkId] : null,
     {
-      users: addressData.map(data => data.base32 || data.hex),
+      users: addressData.map(data => data?.base32 || data?.hex).filter(Boolean),
       tokens: ['0x0'],
     },
     {fallbackData: {}},
   )
+  const addressDataWithAccountId = getAddressDataWithAccountId(
+    addressParams,
+    addressData,
+  )
 
-  return getBatchBalanceData({
+  return formatAccountGroupData({
     accountGroups,
     balanceData,
-    addressData,
+    addressDataWithAccountId,
   })
+}
+
+export const useAccountGroupAddress = networkId => {
+  const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined)
+  const addressParams = getAddressParams(accountGroups, networkId)
+  const {data: addressData} = useMultipleAddressByNetworkId(
+    addressParams,
+    networkId,
+  )
+  const addressDataWithAccountId = getAddressDataWithAccountId(
+    addressParams,
+    addressData,
+  )
+  return {
+    addressDataWithAccountId: addressDataWithAccountId,
+    accountData: formatAccountGroupData({
+      accountGroups,
+      addressDataWithAccountId,
+      returnBalance: false,
+    }),
+  }
 }
 
 export const useCurrentAccount = () => {
   const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
     fallbackData: {},
   })
-  const {eid: networkId, type} = currentNetwork
-
+  const {
+    eid: networkId,
+    type,
+    ticker,
+    icon: networkIcon,
+    name: networkName,
+  } = currentNetwork
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
   const {eid: accountId} = currentAccount
-
-  const {data: accountAddress} = useRPC(
-    accountId !== undefined && networkId !== undefined
-      ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, accountId, networkId]
-      : null,
-    {accountId, networkId},
-    {fallbackData: {}},
+  const {data: accountAddress} = useSingleAddressByNetworkId(
+    accountId,
+    networkId,
   )
-
   const {base32, hex} = accountAddress
-
   const address =
     type === NETWORK_TYPE.CFX ? base32 : type === NETWORK_TYPE.ETH ? hex : ''
-
   return {
     ...currentAccount,
     address,
+    ticker,
+    networkId,
+    networkIcon,
+    networkName,
   }
+}
+
+export const usePendingAuthReq = (canSendReq = true) => {
+  const {data: pendingAuthReq, error: pendingReqError} = useRPC(
+    canSendReq ? [GET_PENDING_AUTH_REQ] : null,
+  )
+  return {pendingAuthReq, pendingReqError}
+}
+
+export const useBalance = (
+  accountId,
+  networkId,
+  tokenContractAddress = '0x0',
+) => {
+  const {
+    data: {base32, hex},
+  } = useSingleAddressByNetworkId(accountId, networkId)
+  const address = base32 || hex
+  const {data, error} = useRPC(
+    address && isNumber(networkId) && isString(tokenContractAddress)
+      ? [GET_BALANCE, address, networkId]
+      : null,
+    {
+      users: [address],
+      tokens: [tokenContractAddress],
+    },
+    {fallbackData: {}},
+  )
+  return {data, error}
 }
 
 export const useIsCfx = () => {

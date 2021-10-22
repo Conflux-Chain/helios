@@ -23,7 +23,7 @@ function BackupSeed() {
   )
 
   return (
-    <div className="h-full flex flex-col bg-gray-0">
+    <div className="h-full flex flex-col bg-gray-0" id="backupSeedContainer">
       <TitleNav title={t('newAccount')} />
       <main className="px-3 flex flex-col flex-1 justify-between pt-3">
         <div>
@@ -47,6 +47,7 @@ function BackupSeed() {
         <div className="flex justify-center mb-4">
           <Button
             className="w-70"
+            id="backupSeedBtn"
             onClick={() => {
               history.push(CONFIRM_SEED_PHRASE)
               setCreatedMnemonic(mnemonic)

@@ -63,6 +63,7 @@ html {
   --color-gray-60: #898d9a;
   --color-gray-80: #3d3f4c;
   --color-gray-90: #2a2c33;
+  --color-gray-96: #2a2c33;
   --color-gray-100: #1b1b1c;
 }
 
@@ -81,12 +82,14 @@ html {
   --color-info-10: #232539;
   --color-info-90: #f2f6ff;
   --color-gray-0: #1b1b1c;
+  --color-gray-4: #2a2c33;
   --color-gray-10: #2a2c33;
   --color-gray-20: #3d3f4c;
   --color-gray-40: #898d9a;
   --color-gray-60: #a9abb2;
   --color-gray-80: #eaecef;
   --color-gray-90: #f7f8fa;
+  --color-gray-96: #fafbfd;
   --color-gray-100: #fff;
 }
 .no-scroll {

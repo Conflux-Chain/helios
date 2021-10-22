@@ -1,8 +1,7 @@
 import {PASSWORD_REG_EXP} from '../constants'
-
 const globalThis = window ?? global
 
-export const request = (...args) => {
+export function request(...args) {
   const [method, params] = args
   const requestObj = {
     method,
@@ -24,4 +23,20 @@ export function shuffle(arr) {
 
 export function validatePasswordReg(value) {
   return PASSWORD_REG_EXP.test(value)
+}
+
+export function removeAllChild(dom) {
+  let child = dom.lastElementChild
+  while (child) {
+    dom.removeChild(child)
+    child = dom.lastElementChild
+  }
+}
+export function jsNumberForAddress(address) {
+  if (!address) {
+    return address
+  }
+  const addr = address.slice(2, 10)
+  const seed = parseInt(addr, 16)
+  return seed
 }
