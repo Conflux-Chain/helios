@@ -14,14 +14,22 @@ export const schemas = {
 export const permissions = {
   locked: true,
   external: ['popup'],
-  methods: ['wallet_validatePassword', 'wallet_refetchTokenList'],
+  methods: [
+    'wallet_validatePassword',
+    'wallet_refetchTokenList',
+    'wallet_refetchBalance',
+  ],
   db: ['setPassword', 'getUnlockReq', 'retract'],
 }
 
 export const main = async ({
   params: {password, waitSideEffects},
   db: {setPassword, retract, getUnlockReq},
-  rpcs: {wallet_validatePassword, wallet_refetchTokenList},
+  rpcs: {
+    wallet_validatePassword,
+    wallet_refetchTokenList,
+    wallet_refetchBalance,
+  },
   Err: {InvalidParams},
 }) => {
   if (!(await wallet_validatePassword({password})))
@@ -31,6 +39,8 @@ export const main = async ({
   const unlockReq = getUnlockReq() || []
   unlockReq.forEach(({req, eid}) => req.write(true).then(() => retract(eid)))
 
-  let promise = wallet_refetchTokenList()
+  let promise = wallet_refetchTokenList().then(() =>
+    wallet_refetchBalance({type: 'all', allNetwork: true}),
+  )
   if (waitSideEffects) await promise
 }

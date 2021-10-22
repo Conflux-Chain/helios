@@ -354,9 +354,9 @@
         txs
         (mapv
          (fn [[uid tid value]]
-           (let [balance (e :balance [:balance/address+token [uid tid]])]
+           (let [balance (and uid tid (e :balance [:balance/address+token [uid tid]]))]
              (cond
-               balance              [:db/add (:db/id balance) :balance/value value]
+               balance              {:db/id (:db/id balance) :balance/value value}
                (and uid (nil? tid)) [:db/add uid :address/balance value]
                (and uid tid)        {:db/id (str "newbalance-" uid "-" tid) :balance/token tid :balance/address uid :balance/value value})))
          formated-data)]

@@ -1,5 +1,5 @@
 {
-  "name": "@fluent-wallet/wallet_refresh-balance",
+  "name": "@fluent-wallet/wallet_refetch-balance",
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",
