@@ -30,7 +30,6 @@
     "react-router-dom": "5.2.1",
     "react-use": "17.3.1",
     "swr": "1.0.1",
-    "use-deep-compare-effect": "1.8.0",
     "webextension-polyfill": "^0.8.0",
     "zustand": "^3.5.13"
   }
