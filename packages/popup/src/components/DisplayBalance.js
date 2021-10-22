@@ -11,9 +11,7 @@ function DisplayBalance({
   initialFontSize = 14,
   symbol,
 }) {
-  const displayBalance = isNaN(Number(balance))
-    ? balance
-    : formatBalance(balance)
+  const displayBalance = formatBalance(balance)
   const balanceRef = useRef()
   const hiddenRef = useRef()
   useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance, initialFontSize)

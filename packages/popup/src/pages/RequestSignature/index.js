@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {formatHexBalance} from '../../utils'
+import {formatBalance} from '@fluent-wallet/data-format'
 import {
   DappFooter,
   CompWithLabel,
@@ -61,7 +61,7 @@ function RequestSignature() {
           />
           <div className="flex items-center justify-between">
             <DisplayBalance
-              balance={formatHexBalance(balanceData?.[address]?.['0x0'])}
+              balance={formatBalance(balanceData?.[address]?.['0x0'])}
               maxWidthStyle="max-w-[148px]"
               maxWidth={148}
             />

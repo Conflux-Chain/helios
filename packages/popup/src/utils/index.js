@@ -1,8 +1,4 @@
 import {PASSWORD_REG_EXP} from '../constants'
-import {stripHexPrefix, isHexPrefixed} from '@fluent-wallet/utils'
-import {fromDripToCfx} from '@fluent-wallet/data-format'
-import BN from 'bn.js'
-
 const globalThis = window ?? global
 
 export function request(...args) {
@@ -27,13 +23,6 @@ export function shuffle(arr) {
 
 export function validatePasswordReg(value) {
   return PASSWORD_REG_EXP.test(value)
-}
-
-export function formatHexBalance(balance) {
-  if (typeof balance !== 'string' || !isHexPrefixed(balance)) {
-    return '--'
-  }
-  return fromDripToCfx(new BN(stripHexPrefix(balance), 16).toString())
 }
 
 export function removeAllChild(dom) {

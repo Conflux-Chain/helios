@@ -1,9 +1,13 @@
 import {useTranslation} from 'react-i18next'
-import {formatHexBalance} from '../../utils'
+import {formatBalance} from '@fluent-wallet/data-format'
 import {usePendingAuthReq, useBalance} from '../../hooks'
 import {TitleNav, AccountDisplay, DappFooter, TokenItem} from '../../components'
+import {RPC_METHODS} from '../../constants'
+import {useSWRConfig} from 'swr'
+const {GET_HOME_TOKEN_LIST, REFETCH_BALANCE} = RPC_METHODS
 
 function ConfirmAddSuggestedToken() {
+  const {mutate} = useSWRConfig()
   const {t} = useTranslation()
   const {pendingAuthReq} = usePendingAuthReq()
   const [{req, app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
@@ -14,6 +18,12 @@ function ConfirmAddSuggestedToken() {
     dappNetworkId,
     req?.params?.options?.address,
   )
+
+  const onClickConfirm = () => {
+    mutate([GET_HOME_TOKEN_LIST])
+    mutate([REFETCH_BALANCE])
+  }
+
   const address = Object.keys(balanceData)[0]
 
   return (
@@ -39,20 +49,24 @@ function ConfirmAddSuggestedToken() {
           <div className="px-3 bg-bg rounded">
             <TokenItem
               token={{
-                icon:
+                logoURI:
                   req?.params?.options?.image || '/images/default-token-icon',
                 symbol: req?.params?.options?.symbol || '',
-                name: req?.params?.options?.symbol || '',
+                name: req?.params?.options?.name || '',
+                balance: formatBalance(
+                  balanceData?.[address]?.[req?.params?.options?.address],
+                ),
               }}
               maxWidthStyle="max-w-[184px]"
               maxWidth={184}
-              balance={formatHexBalance(
-                balanceData?.[address]?.[req?.params?.options?.address],
-              )}
             />
           </div>
         </main>
-        <DappFooter cancelText={t('cancel')} confirmText={t('addToken')} />
+        <DappFooter
+          cancelText={t('cancel')}
+          confirmText={t('addToken')}
+          onClickConfirm={onClickConfirm}
+        />
       </div>
     </div>
   )

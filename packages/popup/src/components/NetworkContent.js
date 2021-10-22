@@ -3,6 +3,7 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../constants'
 import {request} from '../utils'
 import {useSWRConfig} from 'swr'
+import {CustomTag} from './'
 
 const {GET_NETWORK, SET_CURRENT_NETWORK, GET_CURRENT_NETWORK} = RPC_METHODS
 const networkTypeColorObj = {
@@ -24,7 +25,6 @@ function NetworkItem({
   ...props
 }) {
   const {mutate} = useSWRConfig()
-
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
     itemWrapperPaddingStyleObj[networkItemSize] || ''
@@ -54,11 +54,9 @@ function NetworkItem({
       <div className="ml-2.5 text-gray-80 text-sm font-medium">
         {networkName}
       </div>
-      <div
-        className={`text-xs py-0.5 w-14 text-center rounded-tr absolute right-0 top-0 rounded-bl-lg ${networkTypeColor}`}
-      >
+      <CustomTag className={`absolute right-0 top-0 ${networkTypeColor}`}>
         {networkType}
-      </div>
+      </CustomTag>
     </div>
   )
 }
@@ -79,7 +77,7 @@ function NetworkContent({onClickNetworkItem, networkItemSize}) {
       fallbackData: [],
     },
   )
-
+  console.log('networkData', networkData)
   return (
     <>
       {networkData.map(({eid, name, isCustom, isMainnet, isTestnet, icon}) => (

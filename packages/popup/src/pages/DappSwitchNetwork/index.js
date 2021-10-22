@@ -1,9 +1,8 @@
 import {useTranslation} from 'react-i18next'
-import {DappFooter, DappProgressHeader} from '../../components'
+import {DappFooter, DappProgressHeader, CustomTag} from '../../components'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../constants'
 import {usePendingAuthReq} from '../../hooks'
-
 const {GET_NETWORK, WALLET_SWITCH_CONFLUX_CHAIN} = RPC_METHODS
 
 function DappSwitchNetwork() {
@@ -54,9 +53,12 @@ function DappSwitchNetwork() {
               </div>
               <div className="text-base text-primary font-medium">{name}</div>
               {isTestnet ? (
-                <div className="text-center text-xs text-[#F5B797] bg-[#FFF7F4] w-14 h-5 absolute top-px right-px rounded-tr rounded-bl-2 rounded-bl-lg">
+                <CustomTag
+                  backgroundColor="bg-[#FFF7F4]"
+                  className="absolute top-px right-px text-[#F5B797]"
+                >
                   testnet
-                </div>
+                </CustomTag>
               ) : null}
             </div>
           </div>

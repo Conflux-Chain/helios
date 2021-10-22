@@ -9,7 +9,7 @@ import {
 } from '../constants'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber, isString} from '@fluent-wallet/checks'
-import {formatHexBalance} from '../utils'
+import {formatBalance} from '@fluent-wallet/data-format'
 
 const {
   GET_ACCOUNT_GROUP,
@@ -128,7 +128,7 @@ const formatAccountGroupData = ({
             ''
           const accountData = {nickname, eid, address}
           if (returnBalance) {
-            accountData['balance'] = formatHexBalance(
+            accountData['balance'] = formatBalance(
               balanceData?.[address]?.[token],
             )
           }

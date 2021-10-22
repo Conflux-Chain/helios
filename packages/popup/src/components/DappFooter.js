@@ -23,6 +23,8 @@ function DappFooter({
   confirmText,
   confirmDisabled = false,
   confirmParams = {},
+  onClickCancel,
+  onClickConfirm,
 }) {
   const history = useHistory()
   const {pendingAuthReq} = usePendingAuthReq()
@@ -32,6 +34,7 @@ function DappFooter({
   const onCancel = () => {
     request(REJECT_PENDING_AUTH_REQ, {authReqId: eid}).then(({result}) => {
       result && history.push(HOME)
+      result && onClickCancel && onClickCancel()
       // TODO: error message
     })
   }
@@ -71,6 +74,7 @@ function DappFooter({
 
     request(req.method, {authReqId: eid, ...params}).then(({result}) => {
       setSendingRequestStatus(false)
+      result && onClickConfirm && onClickConfirm()
       result && history.push(HOME)
       // TODO: error message
     })
@@ -104,6 +108,8 @@ DappFooter.propTypes = {
   confirmText: PropTypes.string.isRequired,
   confirmParams: PropTypes.object,
   confirmDisabled: PropTypes.bool,
+  onClickConfirm: PropTypes.func,
+  onClickCancel: PropTypes.func,
 }
 
 export default DappFooter
