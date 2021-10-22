@@ -18,7 +18,6 @@ export const NAME = 'wallet_validate20Token'
 export const schemas = {
   input: [
     map,
-    {closed: true},
     ['tokenAddress', [or, base32ContractAddress, ethHexAddress]],
     ['name', {optional: true}, stringp],
     ['symbol', {optional: true}, tokenSymbol],

@@ -20,7 +20,6 @@ const publicSchema = [
     'options',
     [
       map,
-      {closed: true},
       ['address', [or, base32ContractAddress, ethHexAddress]],
       ['symbol', tokenSymbol],
       ['decimals', [posInt, {max: 255}]],
@@ -68,12 +67,10 @@ export const main = async ({
   _popup,
 }) => {
   if (params?.type) {
-    const {name, symbol, address, decimals} = params.options
-    const {valid} = await wallet_validate20Token({
-      name,
-      symbol,
+    const {address} = params.options
+    const {name, symbol, decimals, valid} = await wallet_validate20Token({
+      ...params.options,
       tokenAddress: address,
-      decimals,
     })
     if (!valid) throw InvalidParams('Invalid token')
 
@@ -81,6 +78,10 @@ export const main = async ({
       const curAddr = getCurrentAddr()
       addTokenToAddr({
         ...params.options,
+        name,
+        symbol,
+        address,
+        decimals,
         targetAddressId: curAddr.eid,
         fromUser: true,
       })
@@ -102,7 +103,13 @@ export const main = async ({
 
     return await wallet_addPendingUserAuthRequest({
       appId: app.eid,
-      req: {method: NAME, params},
+      req: {
+        method: NAME,
+        params: {
+          ...params,
+          options: {...params.options, name, symbol, decimals},
+        },
+      },
     })
   }
 
