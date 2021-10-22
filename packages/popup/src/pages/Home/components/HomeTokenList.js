@@ -12,7 +12,6 @@ function HomeTokenList({onOpenAddToken}) {
   } = useRPC([GET_HOME_TOKEN_LIST], undefined, {fallbackData: {}})
   useRPC([REFETCH_BALANCE])
   const homeTokenList = [native].concat(added)
-  console.log(homeTokenList)
   const {t} = useTranslation()
   return (
     <div className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 pt-3 z-0">
