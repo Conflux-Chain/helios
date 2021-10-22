@@ -62,7 +62,9 @@ module.exports = {
     source: 'local',
     env,
     polyfillNode: true,
-    packageLookupFields: ['browser'],
+    // remove browser, since most packages' browser field leads to umd file
+    // packageLookupFields: ['browser', 'module'],
+    packageLookupFields: ['module'],
     packageExportLookupFields: ['exports'],
   },
   buildOptions: {
