@@ -1,21 +1,50 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
-import {SlideCard} from '../../../components'
 import {useTranslation} from 'react-i18next'
-import {WrapIcon, SearchToken, TokenItem} from '../../../components'
+import {useRPC} from '@fluent-wallet/use-rpc'
 import {SelectedOutlined, PlusOutlined} from '@fluent-wallet/component-icons'
+import {validateBase32Address} from '@fluent-wallet/base32-address'
+import {isHexAddress} from '@fluent-wallet/account'
+import {SlideCard} from '../../../components'
+import {WrapIcon, SearchToken, TokenItem} from '../../../components'
+import {RPC_METHODS} from '../../../constants'
+import {request} from '../../../utils'
+import {useCurrentAccount, useIsCfx, useIsEth} from '../../../hooks'
+const {GET_ADD_TOKEN_LIST, REFETCH_BALANCE, WALLET_VALIDATE_20TOKEN} =
+  RPC_METHODS
 
 function AddToken({onClose, onOpen}) {
   const {t} = useTranslation()
   const [searchContent, setSearchContent] = useState('')
+  const {address} = useCurrentAccount()
+  const isCfxChain = useIsCfx()
+  const isEthChain = useIsEth()
   const onAddToken = () => {}
   const searchResults = []
+  useRPC([REFETCH_BALANCE], {type: 'all'})
+  const {data} = useRPC([GET_ADD_TOKEN_LIST])
 
+  const getOther20Token = value => {
+    request(WALLET_VALIDATE_20TOKEN, {
+      tokenAddress: value,
+      userAddress: address,
+    }).then(({result, error}) => {
+      console.log(result, error)
+    })
+  }
   const onChangeValue = value => {
     // TODO: search logic
     setSearchContent(value)
+    if (
+      (isCfxChain && validateBase32Address(searchContent)) ||
+      (isEthChain && isHexAddress(searchContent))
+    ) {
+      getOther20Token(value)
+    }
   }
-
+  if (!address) {
+    return null
+  }
   return (
     <SlideCard
       cardTitle={t('addToken')}
