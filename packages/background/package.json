@@ -50,6 +50,7 @@
     "@fluent-wallet/wallet_delete-account-group": "workspace:packages/rpcs/wallet_deleteAccountGroup",
     "@fluent-wallet/wallet_delete-app": "workspace:packages/rpcs/wallet_deleteApp",
     "@fluent-wallet/wallet_delete-network": "workspace:packages/rpcs/wallet_deleteNetwork",
+    "@fluent-wallet/wallet_detect-address-type": "workspace:packages/rpcs/wallet_detectAddressType",
     "@fluent-wallet/wallet_detect-network-type": "workspace:packages/rpcs/wallet_detectNetworkType",
     "@fluent-wallet/wallet_discover-accounts": "workspace:packages/rpcs/wallet_discoverAccounts",
     "@fluent-wallet/wallet_export-account": "workspace:packages/rpcs/wallet_exportAccount",
