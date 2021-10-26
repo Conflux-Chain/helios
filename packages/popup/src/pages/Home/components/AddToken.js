@@ -29,19 +29,21 @@ function AddToken({onClose, onOpen}) {
       tokenAddress: value,
       userAddress: address,
     }).then(({result, error}) => {
-      console.log(result, error)
+      console.log(result, error, value)
     })
   }
+
   const onChangeValue = value => {
     // TODO: search logic
     setSearchContent(value)
     if (
-      (isCfxChain && validateBase32Address(searchContent)) ||
-      (isEthChain && isHexAddress(searchContent))
+      (isCfxChain && validateBase32Address(value)) ||
+      (isEthChain && isHexAddress(value))
     ) {
       getOther20Token(value)
     }
   }
+
   if (!address) {
     return null
   }
