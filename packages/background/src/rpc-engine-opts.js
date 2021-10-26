@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as cfxSendTransaction from '@fluent-wallet/cfx_send-transaction'
 import * as cfxSendRawTransaction from '@fluent-wallet/cfx_send-raw-transaction'
 import * as cfxSignTransaction from '@fluent-wallet/cfx_sign-transaction'
 import * as walletDetectAddressType from '@fluent-wallet/wallet_detect-address-type'
@@ -194,6 +195,7 @@ export const rpcEngineOpts = {
     walletSwitchConfluxChain,
     cfxSendRawTransaction,
     cfxSignTransaction,
+    cfxSendTransaction,
 
     // eth
     ethGetCode,
