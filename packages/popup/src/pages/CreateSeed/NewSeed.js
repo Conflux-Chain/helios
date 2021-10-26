@@ -42,7 +42,7 @@ function NewSeed() {
             />
           </CompWithLabel>
           <div className="mt-4 px-4 py-6 bg-gray-0 flex flex-col items-center">
-            <img alt="bg" src="images/create-seed-bg.svg" />
+            <img alt="bg" src="/images/create-seed-bg.svg" />
             <span className="text-gray-80 inline-block mt-3 mb-2">
               {t('seedCreateTitle')}
             </span>

@@ -77,7 +77,7 @@ function ConnectSitesList({
                     <div className="flex">
                       {currentAccount?.eid === eid ? (
                         <img
-                          src="images/location.svg"
+                          src="/images/location.svg"
                           alt="current address"
                           className="mr-3"
                         />
@@ -200,7 +200,7 @@ function ConnectSite() {
                 suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
                 prefix={
                   <img
-                    src={searchIcon || 'images/default-network-icon.svg'}
+                    src={searchIcon || '/images/default-network-icon.svg'}
                     alt="network icon"
                     className="w-4 h-4"
                   />
