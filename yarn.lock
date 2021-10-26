@@ -3007,6 +3007,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_send-raw-transaction@workspace:packages/rpcs/cfx_sendRawTransaction":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_send-raw-transaction@workspace:packages/rpcs/cfx_sendRawTransaction"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_sign-transaction@workspace:packages/rpcs/cfx_signTransaction":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_sign-transaction@workspace:packages/rpcs/cfx_signTransaction"
@@ -16946,6 +16954,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/cfx_get-status": "workspace:packages/rpcs/cfx_getStatus"
     "@fluent-wallet/cfx_net-version": "workspace:packages/rpcs/cfx_netVersion"
     "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
+    "@fluent-wallet/cfx_sign-transaction": "workspace:packages/rpcs/cfx_signTransaction"
     "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/db": "workspace:packages/db"

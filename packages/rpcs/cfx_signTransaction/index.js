@@ -35,6 +35,7 @@ export const schemas = {
 }
 
 export const permissions = {
+  external: [],
   methods: [
     'wallet_getAddressPrivateKey',
     'cfx_getNextNonce',
