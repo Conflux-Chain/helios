@@ -7,6 +7,7 @@ import {
   recoverPublicKey as ethRecoverPublicKey,
 } from '@ethersproject/signing-key'
 import {
+  Transaction as CfxTransaction,
   PersonalMessage as CfxPersonalMessage,
   Message as CfxMessage,
   sign as cfxSDKSign,
@@ -120,3 +121,8 @@ export const ecdsaRecover = (type, hash, sig, netId) =>
   type === 'cfx'
     ? cfxEcdsaRecover(hash, sig, netId)
     : ethEcdsaRecover(hash, sig)
+
+export const cfxSignTransaction = (tx, pk, netId) => {
+  const transaction = new CfxTransaction(tx)
+  return transaction.sign(pk, netId).serialize()
+}

@@ -389,6 +389,23 @@
     (t [[:db/retract addressId :address/token tokenId]])
     "tokenNotBelongToAddress"))
 
+(defn get-from-address [{:keys [networkId address]}]
+  (->> (q '[:find [?addr-id ...]
+            :in $ ?netId ?addr
+            :where
+            [?netId :network/type ?net-type]
+            [?netId :network/address ?addr-id]
+            (or (and [?addr-id :address/base32 ?addr]
+                     [(= ?net-type "cfx")])
+                (and [?addr-id :address/hex ?addr]
+                     [(= ?net-type "eth")]))
+            [?addr-id :address/vault ?vault]
+            [?vault :vault/type ?vault-type]
+            [(not= ?vault-type pub)]]
+          networkId address)
+       first
+       (e :address)))
+
 ;;; UI QUERIES
 (defn home-page-assets [& {:keys [include-other-tokens]}]
   (let [cur-addr          (e :address (get-current-addr))
@@ -458,7 +475,8 @@
               :upsertBalances                  upsert-balances
               :retractAddressToken             retract-address-token
               :queryhomePageAssets             home-page-assets
-              :queryaddTokenList               get-add-token-list})
+              :queryaddTokenList               get-add-token-list
+              :getFromAddress                  get-from-address})
 
 (defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)
