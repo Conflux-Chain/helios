@@ -1,4 +1,5 @@
 import {useState, useEffect, useMemo} from 'react'
+import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
@@ -8,12 +9,13 @@ import {TitleNav} from '../../components'
 import {request, shuffle} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {RPC_METHODS, ROUTES} from '../../constants'
-const {IMPORT_MNEMONIC} = RPC_METHODS
+const {IMPORT_MNEMONIC, GET_NO_GROUP} = RPC_METHODS
 const {HOME} = ROUTES
 
 function ConfirmSeed() {
   useCreatedPasswordGuard()
   const {t} = useTranslation()
+  const {mutate} = useSWRConfig()
   const history = useHistory()
   const {createdMnemonic, createdPassword, setCreatedMnemonic} =
     useGlobalStore()
@@ -75,6 +77,7 @@ function ConfirmSeed() {
         setMnemonicError(error.message)
         return
       }
+      mutate([GET_NO_GROUP], false)
       history.push(HOME)
       setCreatedMnemonic('')
       console.log('success')
