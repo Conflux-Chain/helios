@@ -68,15 +68,17 @@
                         :else attr))
        (toString [this include-persist?]
                  (js/JSON.stringify (.toJSON this include-persist?)))
+       (toMap [this include-persist?]
+              (let [json (reduce (fn [acc k]
+                                   (let [attr (keyword model k)]
+                                     (if (and (not include-persist?) (db/mem-only? db attr))
+                                       acc
+                                       (assoc acc k (.get this (keyword model k))))))
+                                 {} attr-keys)
+                    json (assoc json :eid eid)]
+                json))
        (toJSON [this include-persist?]
-               (let [json (reduce (fn [acc k]
-                                    (let [attr (keyword model k)]
-                                      (if (and (not include-persist?) (db/mem-only? db attr))
-                                        acc
-                                        (assoc acc k (.get this (keyword model k))))))
-                                  {} attr-keys)
-                     json (assoc json :eid eid)]
-                 (clj->js json)))
+               (clj->js (.toMap this include-persist?)))
        (equiv [this other]
               (equiv-entity this other))
 

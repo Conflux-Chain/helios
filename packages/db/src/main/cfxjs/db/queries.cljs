@@ -194,13 +194,13 @@
        (e :address)))
 
 (defn get-current-addr []
-  (-> (q '[:find [?addr]
-           :where
-           [?net :network/selected true]
-           [?acc :account/selected true]
-           [?acc :account/address ?addr]
-           [?net :network/address ?addr]])
-      first))
+  (q '[:find ?addr .
+       :where
+       [?net :network/selected true]
+       [?acc :account/selected true]
+       [?acc :account/address ?addr]
+       [?net :network/address ?addr]]))
+
 (defn get-current-network []
   (-> (q '[:find [?net]
            :where
@@ -269,13 +269,12 @@
          addr netId)
       first))
 (defn addr-network-id-to-token-id [addr netId]
-  (-> (q '[:find [?token-id ...]
-           :in $ ?addr ?net
-           :where
-           [?token-id :token/address ?addr]
-           [?net :network/token ?token-id]]
-         addr netId)
-      first))
+  (q '[:find ?token-id .
+       :in $ ?addr ?net
+       :where
+       [?token-id :token/address ?addr]
+       [?net :network/token ?token-id]]
+     addr netId))
 
 (defn get-single-call-balance-params [{:keys [type allNetwork]}]
   (let [discover?            (= type "discover")
@@ -347,18 +346,32 @@
                   tokens-map)))
          [] data)
 
+        formated-data (q '[:find ?u ?t ?balance ?b
+                           :in $ [[?u ?t ?balance]]
+                           :where
+                           (or
+                            (and
+                             [?u :address/balance ?b]
+                             [?t :token/balance ?b])
+                            [(and true false) ?b])]
+                         formated-data)
+
         ;; [
-        ;;   [uid tid balance]
+        ;;   [uid tid balance balance-id]
         ;; ]
 
         txs
-        (mapv
-         (fn [[uid tid value]]
-           (let [balance (and uid tid (e :balance [:balance/address+token [uid tid]]))]
-             (cond
-               balance              {:db/id (:db/id balance) :balance/value value}
-               (and uid (nil? tid)) [:db/add uid :address/balance value]
-               (and uid tid)        {:db/id (str "newbalance-" uid "-" tid) :balance/token tid :balance/address uid :balance/value value})))
+        (reduce
+         (fn [acc [uid tid value balance-id]]
+           (let [tmpid (str "newbalance-" uid "-" tid)]
+             (into acc
+                   (cond
+                     balance-id           [{:db/id balance-id :balance/value value}]
+                     (and uid (nil? tid)) [{:db/id uid :address/nativeBalance value}]
+                     (and uid tid)        [{:db/id tmpid :balance/value value}
+                                           {:db/id uid :address/balance tmpid :address/token tid}
+                                           {:db/id tid :token/balance tmpid}]))))
+         []
          formated-data)]
     (t txs)
     true))
@@ -377,7 +390,7 @@
     "tokenNotBelongToAddress"))
 
 ;;; UI QUERIES
-(defn home-page-assets [{:keys [include-other-tokens]}]
+(defn home-page-assets [& {:keys [include-other-tokens]}]
   (let [cur-addr          (e :address (get-current-addr))
         cur-net           (e :network (get-current-network))
         native-token-info (get cur-net :network/ticker {:name "CFX", :symbol "CFX", :decimals 18})
@@ -386,37 +399,37 @@
                                :in $ ?cur-addr
                                :where
                                [?cur-addr :address/token ?token-id]
-                               [?b :balance/address ?cur-addr]
-                               [?b :balance/token ?token-id]
+                               [?cur-addr :address/balance ?b]
+                               [?token-id :token/balance ?b]
                                [?b :balance/value ?tbalance]]
                              (:db/id cur-addr))
         addr-tokens-info  (reduce
                            (fn [acc [token-id balance]]
-                             (let [t (.touch (e :token token-id))]
+                             (let [t (.toMap (e :token token-id))]
                                (conj acc (assoc t :balance balance :added true))))
                            [] addr-tokens-info)
-        other-tokens-info (if include-other-tokens
+        other-tokens-info (if  include-other-tokens
                             (q '[:find ?token-id ?tbalance
                                  :in $ ?cur-addr ?cur-net
                                  :where
-                                 [?cur-net :address/token ?token-id]
+                                 [?cur-net :network/token ?token-id]
                                  (not [?cur-addr :address/token ?token-id])
                                  [(and true "0x0") ?tbalance]]
                                (:db/id cur-addr) (:db/id cur-net))
                             #{})
         other-tokens-info (reduce
                            (fn [acc [token-id balance]]
-                             (let [t (.touch (e :token token-id))]
-                               (conj acc (assoc t :balance balance :added false))))
+                             (let [t (.toMap (e :token token-id))]
+                               (conj acc t (assoc t :balance balance :added false))))
                            [] other-tokens-info)
         rst               {:currentAddress cur-addr
                            :currentNetwork cur-net
                            :native         native-token-ui
                            :added          addr-tokens-info}
-        rst (if include-other-tokens (assoc rst :others other-tokens-info) rst)]
+        rst               (if include-other-tokens (assoc rst :others other-tokens-info) rst)]
     rst))
 
-(defn get-add-token-list [] (home-page-assets {:include-other-tokens true}))
+(defn get-add-token-list [] (home-page-assets :include-other-tokens true))
 
 (def queries {:batchTx
               (fn [txs]
@@ -439,7 +452,7 @@
               :retract                         retract
               :retractAttr                     retract-attr
               :getNetworkTokenByTokenAddr      get-network-token-by-token-addr
-              :getCurrentAddr                  (comp #(e :address) get-current-addr)
+              :getCurrentAddr                  #(e :address (get-current-addr))
               :addTokenToAddr                  add-token-to-addr
               :getSingleCallBalanceParams      get-single-call-balance-params
               :upsertBalances                  upsert-balances
