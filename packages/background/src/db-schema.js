@@ -98,12 +98,18 @@ const schema = {
   },
   address: {
     vault: {ref: true},
-    balance: {doc: 'balance of this address'},
+    nativeBalance: {doc: 'balance of this address'},
     index: {doc: 'Address index in hd path, starts from 0'},
     hex: {doc: 'The value of the address, not cfx hex address'},
     cfxHex: {doc: 'The value of cfx hex address'},
     base32: {doc: 'base32 addr of the right network'},
     pk: {doc: 'the private key of the address', persist: false},
+    balance: {
+      doc: 'token balances of this address',
+      many: true,
+      ref: true,
+      component: true,
+    },
     token: {
       doc: 'tokenlist of this address',
       many: true,
@@ -151,11 +157,7 @@ const schema = {
     c: {doc: 'csp channel of the req listener', persist: false},
   },
   balance: {
-    value: {doc: 'balance value in hex'},
-    'address+token': {
-      identity: true,
-      tuples: ['db/id', 'db/id'],
-    },
+    value: {doc: 'balance value of one address/token tuple in hex'},
   },
 
   // ## utils
@@ -172,6 +174,12 @@ const schema = {
     fromList: {doc: 'true when from token list'},
     fromApp: {doc: 'true when from app'},
     fromUser: {doc: 'true when from user'},
+    balance: {
+      doc: 'balances of this token',
+      ref: true,
+      many: true,
+      component: true,
+    },
     // ... other values in TokenInfoSchema
   },
   tokenList: {
