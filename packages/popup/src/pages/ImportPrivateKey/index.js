@@ -15,6 +15,7 @@ const {
   ACCOUNT_GROUP_TYPE,
   VALIDATE_PRIVATE_KEY,
   IMPORT_PRIVATE_KEY,
+  GET_NO_GROUP,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -48,6 +49,7 @@ function ImportPrivateKey() {
     setKeygen(e.target.value)
   }
   const dispatchMutate = () => {
+    mutate([GET_NO_GROUP], false)
     mutate([GET_ACCOUNT_GROUP])
     mutate([GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK])
   }

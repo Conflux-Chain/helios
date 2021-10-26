@@ -1,7 +1,4 @@
 import PropTypes from 'prop-types'
-// import {useState} from 'react'
-// import QRCode from 'qrcode.react'
-// import Modal from '@fluent-wallet/component-modal'
 import {
   RightOutlined,
   // QrcodeOutlined,
@@ -11,8 +8,6 @@ import {useCurrentAccount} from '../../../hooks'
 import {CopyButton, QRCodeButton} from '../../../components'
 
 function CurrentAccount({onOpenAccount}) {
-  // const [qrcodeShow, setQrcodeShow] = useState(false)
-
   const {nickname, address} = useCurrentAccount()
   const displayAddress = address ? shortenAddress(address) : ''
 
@@ -32,19 +27,6 @@ function CurrentAccount({onOpenAccount}) {
         <CopyButton text={address} />
         <QRCodeButton title={nickname} qrcodeValue={address} />
       </div>
-      {/* <Modal
-        open={qrcodeShow}
-        onClose={() => setQrcodeShow(false)}
-        content={
-          <div className="flex flex-col items-center">
-            <span className="text-gray-40 text-xs mb-1">{nickname}</span>
-            <QRCode value={address} size={272} />
-            <span className="inline-block w-full mt-2 bg-bg rounded p-2 text-gray-80 break-all">
-              {address}
-            </span>
-          </div>
-        }
-      /> */}
     </div>
   )
 }

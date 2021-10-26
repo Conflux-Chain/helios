@@ -234,7 +234,7 @@ export const useCurrentAccount = () => {
   const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
     fallbackData: {},
   })
-  const {eid: accountId} = currentAccount
+  const {eid: accountId} = currentAccount || {}
   const {data: accountAddress} = useSingleAddressByNetworkId(
     accountId,
     networkId,
