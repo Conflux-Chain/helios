@@ -32,3 +32,4 @@ datascript.impl.entity.Entity.prototype.attrToKey = function () {}
 datascript.impl.entity.Entity.prototype.modelName = function () {}
 datascript.impl.entity.Entity.prototype.equiv = function () {}
 datascript.impl.entity.Entity.prototype.touch = function () {}
+datascript.impl.entity.Entity.prototype.toMap = function () {}
