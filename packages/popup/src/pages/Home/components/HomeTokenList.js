@@ -17,7 +17,7 @@ function HomeTokenList({onOpenAddToken}) {
     <div className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 pt-3 z-0">
       <span className="flex items-center justify-between mb-2 text-primary text-xs font-medium">
         {t('assets')}
-        <WrapIcon size="w-5 h-5" onClick={onOpenAddToken}>
+        <WrapIcon size="w-5 h-5" onClick={onOpenAddToken} id="openAddTokenBtn">
           <PlusOutlined className="w-3 h-3 text-primary" />
         </WrapIcon>
       </span>

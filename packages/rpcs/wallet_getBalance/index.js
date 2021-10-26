@@ -42,7 +42,7 @@ const SingleCallGetBalanceSchema = [
             'token-address',
             [
               or,
-              {doc: 'toekn address, 0x0 represents native token'},
+              {doc: 'token address, 0x0 represents native token'},
               [eq, '0x0'],
               base32ContractAddress,
             ],
@@ -65,7 +65,7 @@ const SingleCallGetBalanceSchema = [
             'token-address',
             [
               or,
-              {doc: 'toekn address, 0x0 represents native token'},
+              {doc: 'token address, 0x0 represents native token'},
               [eq, '0x0'],
               ethHexAddress,
             ],

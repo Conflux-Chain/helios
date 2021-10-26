@@ -91,7 +91,7 @@ function CurrentSeed() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-bg">
+    <div className="flex flex-col h-full bg-bg" id="currentSeedContainer">
       <TitleNav title={t('newAccount')} />
       <main className="px-3 flex flex-1 flex-col">
         <CompWithLabel label={t('accountName')}>
@@ -129,6 +129,7 @@ function CurrentSeed() {
           <Button
             className="w-70"
             onClick={onCreate}
+            id="onCreateBtn"
             disabled={
               !(
                 (accountName || accountNamePlaceholder) &&

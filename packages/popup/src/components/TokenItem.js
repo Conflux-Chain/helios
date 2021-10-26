@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {DisplayBalance} from './index'
+import {DisplayBalance} from './'
 
 function TokenItem({
   token = {},
@@ -17,7 +17,7 @@ function TokenItem({
     >
       <img
         className="w-8 h-8 rounded-full mr-2"
-        src={logoURI || 'images/default-token-icon.svg'}
+        src={logoURI || '/images/default-token-icon.svg'}
         alt="logo"
       />
       <div className="flex flex-1 flex-col">

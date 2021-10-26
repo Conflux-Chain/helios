@@ -89,7 +89,7 @@ function TokenAndAmount({
         >
           <img
             className="w-5 h-5 mr-1"
-            src={icon || 'images/default-token-icon.svg'}
+            src={icon || '/images/default-token-icon.svg'}
             alt="logo"
           />
           <span className="text-gray-80 mr-2">{symbol}</span>

@@ -48,14 +48,21 @@ function CurrentDapp() {
   }
 
   return (
-    <div className="flex items-center h-16 rounded-t-xl bg-gray-0 px-3">
+    <div
+      className="flex items-center h-16 rounded-t-xl bg-gray-0 px-3"
+      id="currentDappContainer"
+    >
       {!isConnected && (
         <span className="text-gray-40">{t('noConnectedDapp')}</span>
       )}
       {isConnected && (
         <>
           <div className="flex items-center justify-center border border-gray-20 w-8 h-8 rounded-full mr-2">
-            <img className="w-6 h-6" src={icon} alt="logo" />
+            <img
+              className="w-6 h-6"
+              src={icon || '/images/default-dapp-icon.svg'}
+              alt="logo"
+            />
           </div>
           <div className="flex flex-col flex-1 items-center">
             <div className="flex w-full items-center justify-between mb-0.5">
@@ -68,6 +75,7 @@ function CurrentDapp() {
             </div>
             <div className="flex w-full items-center justify-between">
               <span
+                id="setDisconnectModalShowBtn"
                 className="h-5 px-2 bg-primary-4 rounded-full text-success text-xs flex items-center justify-center cursor-pointer"
                 aria-hidden="true"
                 onClick={() => setDisconnectModalShow(true)}
@@ -77,6 +85,7 @@ function CurrentDapp() {
               </span>
               {!isConnectedCurrentAccount ? (
                 <span
+                  id="setAuthModalShowBtn"
                   className="text-primary text-xs cursor-pointer"
                   onClick={() => setAuthModalShow(true)}
                   aria-hidden="true"

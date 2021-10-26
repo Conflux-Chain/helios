@@ -17,7 +17,6 @@ function CustomTag({
 
 CustomTag.propTypes = {
   backgroundColor: PropTypes.string,
-  textColor: PropTypes.string,
   width: PropTypes.string,
   className: PropTypes.string,
   children: PropTypes.oneOfType([

@@ -52,6 +52,7 @@ function SetPasswordForm() {
   return (
     <form
       onSubmit={onSubmit}
+      id="setPasswordFormContainer"
       className="bg-white rounded px-4 pt-8  h-full box-border mb-4 flex flex-col justify-between"
     >
       <section>
@@ -77,6 +78,7 @@ function SetPasswordForm() {
           {t('rememberPWD')}
         </em>
         <Button
+          id="setPasswordFormBtn"
           className="w-70 mt-4 mx-auto"
           disabled={!!errorMessage || !!confirmErrorMessage}
           onClick={onCreate}

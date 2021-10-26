@@ -5,7 +5,7 @@ function Error() {
   const {FATAL_ERROR} = useGlobalStore()
 
   return (
-    <div>
+    <div id="errorContainer">
       <h3>hoops.something goes wrong...</h3>
       <p>{FATAL_ERROR}</p>
     </div>
