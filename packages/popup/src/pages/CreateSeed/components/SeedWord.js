@@ -11,7 +11,7 @@ function SeedWord({idx, word, closable = true, onClose, className = ''}) {
       {closable && word && (
         <CloseOutlined
           onClick={() => onClose && onClose()}
-          className="w-3 h-3 text-gray-40"
+          className="w-3 h-3 text-gray-40 cursor-pointer"
         />
       )}
     </div>
