@@ -33,7 +33,7 @@ function SendTransaction() {
   return (
     <div className="flex flex-col h-full relative bg-bg">
       <img
-        src="images/send-transaction-bg.svg"
+        src="/images/send-transaction-bg.svg"
         alt="top"
         className="absolute top-0"
       />

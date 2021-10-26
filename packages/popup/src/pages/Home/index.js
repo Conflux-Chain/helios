@@ -36,7 +36,11 @@ function Home() {
       <button onClick={() => open(location.href)} className="z-10 text-white">
         open
       </button>
-      <img src="images/home-bg.svg" alt="home" className="absolute top-0 z-0" />
+      <img
+        src="/images/home-bg.svg"
+        alt="home"
+        className="absolute top-0 z-0"
+      />
       <HomeNav />
       <div className="flex flex-col pt-1 px-4 z-10">
         <div className="flex items-start justify-between">

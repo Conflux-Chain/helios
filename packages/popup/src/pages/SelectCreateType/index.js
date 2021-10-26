@@ -30,7 +30,7 @@ function SelectCreateType() {
         </em>
         <CreateTypeItem
           id="useExistingSeed"
-          Icon={<img src="images/existing-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="/images/existing-seed-phrase-icon.svg" alt="icon" />}
           title={t('useExistingSeed')}
           subTitle={t('useExistingSeedDes')}
           Tag={Tag}
@@ -40,7 +40,7 @@ function SelectCreateType() {
         />
         <CreateTypeItem
           id="newSeedPhrase"
-          Icon={<img src="images/new-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('newSeedPhrase')}
           subTitle={t('newSeedPhraseDes')}
           onClick={() => {
@@ -52,7 +52,7 @@ function SelectCreateType() {
         </em>
         <CreateTypeItem
           id="seedPhrase"
-          Icon={<img src="images/new-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('seedPhrase')}
           subTitle={t('seedPhraseDes')}
           onClick={() => {
@@ -61,7 +61,7 @@ function SelectCreateType() {
         />
         <CreateTypeItem
           id="pKey"
-          Icon={<img src="images/private-key-icon.svg" alt="icon" />}
+          Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
           title={t('pKey')}
           subTitle={t('pKeysDes')}
           onClick={() => {
