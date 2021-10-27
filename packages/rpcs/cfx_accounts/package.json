@@ -4,6 +4,6 @@
   "main": "index.js",
   "version": "0.0.4",
   "dependencies": {
-    "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

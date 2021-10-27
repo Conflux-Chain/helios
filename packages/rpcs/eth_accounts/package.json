@@ -4,6 +4,6 @@
   "main": "index.js",
   "version": "0.0.4",
   "dependencies": {
-    "@fluent-wallet/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }
