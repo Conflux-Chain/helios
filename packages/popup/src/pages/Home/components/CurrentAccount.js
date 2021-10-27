@@ -29,8 +29,8 @@ function CurrentAccount({onOpenAccount}) {
       </div>
       <div className="flex items-center">
         <span className="text-white font-medium mr-2">{displayAddress}</span>
-        <CopyButton text={address} />
-        <QRCodeButton title={nickname} qrcodeValue={address} />
+        <CopyButton text={address || ''} />
+        <QRCodeButton title={nickname || ''} qrcodeValue={address || ''} />
       </div>
       {/* <Modal
         open={qrcodeShow}

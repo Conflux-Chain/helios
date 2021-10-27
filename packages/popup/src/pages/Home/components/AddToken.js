@@ -24,6 +24,7 @@ function AddToken({onClose, onOpen}) {
   useRPC([REFETCH_BALANCE], {type: 'all'})
   const {data} = useRPC([GET_ADD_TOKEN_LIST])
 
+  console.log('data', data)
   const getOther20Token = value => {
     request(WALLET_VALIDATE_20TOKEN, {
       tokenAddress: value,
