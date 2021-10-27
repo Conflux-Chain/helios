@@ -92,9 +92,11 @@ html {
   --color-gray-96: #fafbfd;
   --color-gray-100: #fff;
 }
+
 .no-scroll {
   scrollbar-width: none;
 }
+
 .no-scroll::-webkit-scrollbar {
   width: 0 !important;
 }

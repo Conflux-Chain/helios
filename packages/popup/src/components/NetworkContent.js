@@ -48,7 +48,7 @@ function NetworkItem({
         <img
           alt="network-icon"
           className="w-7 h-7"
-          src={icon || 'images/default-network-icon.svg'}
+          src={icon || '/images/default-network-icon.svg'}
         />
       </div>
       <div className="ml-2.5 text-gray-80 text-sm font-medium">

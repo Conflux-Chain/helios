@@ -11,7 +11,7 @@ function HomeNav() {
   }
   return (
     <nav className="flex h-13 items-center justify-between px-4 bg-secondary z-10">
-      <img className="w-6 h-6" src="images/logo.svg" alt="logo" />
+      <img className="w-6 h-6" src="/images/logo.svg" alt="logo" />
       <LockOutLined
         className="w-4 h-4 text-white cursor-pointer"
         id="lockBtn"

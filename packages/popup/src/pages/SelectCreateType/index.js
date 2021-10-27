@@ -1,8 +1,10 @@
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
+import {useRPC} from '@fluent-wallet/use-rpc'
 import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
-import {ROUTES} from '../../constants'
+import {ROUTES, RPC_METHODS} from '../../constants'
+const {GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
 const {
   CURRENT_SEED_PHRASE,
@@ -21,6 +23,12 @@ function Tag() {
 function SelectCreateType() {
   const {t} = useTranslation()
   const history = useHistory()
+  const {data: hdGroup} = useRPC(
+    [GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
+    {type: ACCOUNT_GROUP_TYPE.HD},
+    {fallbackData: []},
+  )
+
   return (
     <div className="bg-bg  h-full" id="selectCreateTypeContainer">
       <TitleNav title={t('newAccount')} />
@@ -28,19 +36,23 @@ function SelectCreateType() {
         <em className="not-italic text-xs text-gray-40 ml-1 mt-3 mb-2 inline-block">
           {t('createAccount')}
         </em>
-        <CreateTypeItem
-          id="useExistingSeed"
-          Icon={<img src="images/existing-seed-phrase-icon.svg" alt="icon" />}
-          title={t('useExistingSeed')}
-          subTitle={t('useExistingSeedDes')}
-          Tag={Tag}
-          onClick={() => {
-            history.push(CURRENT_SEED_PHRASE)
-          }}
-        />
+        {hdGroup?.length ? (
+          <CreateTypeItem
+            id="useExistingSeed"
+            Icon={
+              <img src="/images/existing-seed-phrase-icon.svg" alt="icon" />
+            }
+            title={t('useExistingSeed')}
+            subTitle={t('useExistingSeedDes')}
+            Tag={Tag}
+            onClick={() => {
+              history.push(CURRENT_SEED_PHRASE)
+            }}
+          />
+        ) : null}
         <CreateTypeItem
           id="newSeedPhrase"
-          Icon={<img src="images/new-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('newSeedPhrase')}
           subTitle={t('newSeedPhraseDes')}
           onClick={() => {
@@ -52,7 +64,7 @@ function SelectCreateType() {
         </em>
         <CreateTypeItem
           id="seedPhrase"
-          Icon={<img src="images/new-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
           title={t('seedPhrase')}
           subTitle={t('seedPhraseDes')}
           onClick={() => {
@@ -61,7 +73,7 @@ function SelectCreateType() {
         />
         <CreateTypeItem
           id="pKey"
-          Icon={<img src="images/private-key-icon.svg" alt="icon" />}
+          Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
           title={t('pKey')}
           subTitle={t('pKeysDes')}
           onClick={() => {

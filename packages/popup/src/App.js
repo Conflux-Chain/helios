@@ -77,7 +77,7 @@ function App() {
   if (
     isUndefined(lockedData) ||
     isUndefined(zeroGroup) ||
-    isUndefined(pendingAuthReq)
+    (!lockedData && isUndefined(pendingAuthReq))
   ) {
     return <div>loading...</div>
   }
