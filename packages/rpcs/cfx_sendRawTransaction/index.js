@@ -1,9 +1,9 @@
-import {Bytes32, cat} from '@fluent-wallet/spec'
+import {Bytes, cat} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_sendRawTransaction'
 
 export const schemas = {
-  input: [cat, Bytes32],
+  input: [cat, Bytes],
 }
 
 export const permissions = {

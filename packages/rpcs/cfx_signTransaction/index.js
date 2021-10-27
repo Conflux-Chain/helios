@@ -59,7 +59,7 @@ export const main = async ({
   params: [tx, epoch],
   network,
 }) => {
-  const newTx = {...tx}
+  let newTx = {...tx}
   let {
     from,
     data,
@@ -77,7 +77,7 @@ export const main = async ({
 
   const fromAddr = getFromAddress({networkId: network.eid, address: from})
   // from address is not belong to wallet
-  if (fromAddr) throw InvalidParams(`Invalid from address ${from}`)
+  if (!fromAddr) throw InvalidParams(`Invalid from address ${from}`)
 
   // tx without to must have data (deploy contract)
   if (!to && !data)
@@ -112,5 +112,17 @@ export const main = async ({
 
   const pk = await wallet_getAddressPrivateKey({addressId: fromAddr.eid})
 
+  newTx = {
+    from,
+    data,
+    to,
+    gas,
+    gasPrice,
+    nonce,
+    value,
+    chainId,
+    storageLimit,
+    epochHeight,
+  }
   return cfxSignTransaction(newTx, pk, network.netId)
 }

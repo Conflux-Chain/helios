@@ -6,8 +6,8 @@ export const NAME = 'cfx_sendTransaction'
 export const schemas = {
   input: [
     or,
-    txSchema,
-    [map, {closed: true}, ['authReqId', dbid], ['tx', txSchema]],
+    txSchema.input,
+    [map, {closed: true}, ['authReqId', dbid], ['tx', txSchema.input]],
   ],
 }
 
@@ -39,7 +39,7 @@ export const main = async ({
   if (_inpage) {
     if (params.authReqId) throw InvalidParams('Invalid tx data')
 
-    const {from} = params
+    const [{from}] = params
 
     // check that from address is authed to the app
     if (

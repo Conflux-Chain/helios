@@ -387,14 +387,13 @@
             :where
             [?netId :network/type ?net-type]
             [?netId :network/address ?addr-id]
+            [?acc :account/address ?addr-id]
             (or (and [?addr-id :address/base32 ?addr]
                      [(= ?net-type "cfx")])
                 (and [?addr-id :address/hex ?addr]
                      [(= ?net-type "eth")]))
-            (or (and [(pos-int? appId)]
-                     [?app-id :app/account ?app-accs]
-                     [?app-accs :account/address ?addr-id])
-                [(not appId)])
+            (or [?app-id :app/account ?acc]
+                [(not ?app-id)])
             [?addr-id :address/vault ?vault]
             [?vault :vault/type ?vault-type]
             [(not= ?vault-type pub)]]
