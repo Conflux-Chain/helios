@@ -2166,7 +2166,6 @@ describe('integration test', function () {
         })
       })
     })
-
     describe('wallet_switchEthereumChain', function () {
       test('wallet_switchEthereumChain', async () => {
         await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
@@ -2333,6 +2332,92 @@ describe('integration test', function () {
 
         await waitForExpect(() => expect(db.getAccount().length).toBe(2))
         await waitForExpect(() => expect(db.getAddress().length).toBe(4))
+      })
+    })
+    describe('cfx_sendTransaction', function () {
+      test('popup', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+
+        await waitForExpect(() =>
+          expect(db.getAddress().length).toBeGreaterThan(0),
+        )
+
+        res = await request({
+          method: 'cfx_sendTransaction',
+          params: [
+            {
+              from: CFX_ACCOUNTS[0].base32,
+              to: CFX_ACCOUNTS[1].base32,
+              value: '0x1',
+            },
+          ],
+        })
+        expect(res.result.startsWith('0x')).toBe(true)
+      })
+      test('inpage', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+
+        await waitForExpect(() =>
+          expect(db.getAddress().length).toBeGreaterThan(0),
+        )
+
+        res = request({
+          method: 'cfx_requestAccounts',
+          _inpage: true,
+          _origin: 'foo.site',
+          networkName: CFX_MAINNET_NAME,
+        })
+        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
+        await request({
+          method: 'wallet_requestPermissions',
+          params: {
+            permissions: [{cfx_accounts: {}}],
+            accounts: [db.getAccount()[0].eid],
+            authReqId: db.getAuthReq()[0].eid,
+          },
+          networkName: CFX_MAINNET_NAME,
+          _popup: true,
+        })
+        await res
+
+        res = request({
+          _origin: 'foo.site',
+          _inpage: true,
+          method: 'cfx_sendTransaction',
+          params: [
+            {
+              from: CFX_ACCOUNTS[0].base32,
+              to: CFX_ACCOUNTS[1].base32,
+              value: '0x1',
+            },
+          ],
+        })
+
+        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
+
+        await request({
+          networkName: CFX_MAINNET_NAME,
+          _popup: true,
+          method: 'cfx_sendTransaction',
+          params: {
+            authReqId: db.getAuthReq()[0].eid,
+            tx: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                value: '0x1',
+              },
+            ],
+          },
+        })
+        res = await res
+        expect(res.result.startsWith('0x')).toBe(true)
       })
     })
   })
