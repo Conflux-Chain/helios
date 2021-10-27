@@ -1,0 +1,13 @@
+releases:
+  "@fluent-wallet/cfx_estimate-gas-and-collateral": patch
+  "@fluent-wallet/cfx_send-raw-transaction": patch
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/cfx_sign-transaction": patch
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/signature": patch
+  "@fluent-wallet/wallet_detect-address-type": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/cfx_sign-typed-data_v4"
+  - "@fluent-wallet/personal_sign"
