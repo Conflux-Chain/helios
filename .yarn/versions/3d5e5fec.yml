@@ -1,8 +1,0 @@
-releases:
-  "@fluent-wallet/cfx_accounts": major
-  "@fluent-wallet/cfx_request-accounts": major
-  "@fluent-wallet/eth_accounts": major
-  "@fluent-wallet/eth_request-accounts": major
-
-declined:
-  - helios-background
