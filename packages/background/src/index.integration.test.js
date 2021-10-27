@@ -1229,7 +1229,7 @@ describe('integration test', function () {
         const [app] = db.getApp()
         expect(app.currentAccount.eid).toBe(a2.eid)
         const [addr] = app.currentAccount.address.filter(a => a.base32)
-        expect((await res).result).toStrictEqual(addr.base32)
+        expect((await res).result).toStrictEqual([addr.base32])
       })
     })
     describe('wallet_getAddressPrivateKey', function () {
