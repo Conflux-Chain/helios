@@ -11,51 +11,51 @@
 (defn get-one-account-by-group-and-nickname
   [{:keys [groupId nickname]}]
   (e :account
-     (first (q '[:find [?e ...]
-                 :in $ ?gid ?eqnick
-                 :where
-                 [?g :accountGroup/account]
-                 [(= ?gid ?g)]
-                 [?g :accountGroup/account ?e]
-                 [?e :account/nickname ?nick]
-                 [(?eqnick ?nick)]]
-               groupId #(or (not nickname) (= % nickname))))))
+     (q '[:find ?e .
+          :in $ ?gid ?eqnick
+          :where
+          [?g :accountGroup/account]
+          [(= ?gid ?g)]
+          [?g :accountGroup/account ?e]
+          [?e :account/nickname ?nick]
+          [(?eqnick ?nick)]]
+        groupId #(or (not nickname) (= % nickname)))))
 
 (defn get-one-account-by-group-and-index
   [{:keys [groupId index]}]
   (e :account
-     (first (q '[:find [?e ...]
-                 :in $ ?gid ?idx
-                 :where
-                 [?g :accountGroup/account]
-                 [(= ?g ?gid)]
-                 [?g :accountGroup/account ?e]
-                 [?e :account/index ?idx]] groupId index))))
+     (q '[:find ?e .
+          :in $ ?gid ?idx
+          :where
+          [?g :accountGroup/account]
+          [(= ?g ?gid)]
+          [?g :accountGroup/account ?e]
+          [?e :account/index ?idx]] groupId index)))
 
 (defn get-address-network
   "get which network address from"
   [addr-id]
-  (e :network (first (q '[:find [?n ...]
-                          :in $ ?aid
-                          :where
-                          [?n :network/address ?aid]] addr-id))))
+  (e :network (q '[:find ?n .
+                   :in $ ?aid
+                   :where
+                   [?n :network/address ?aid]] addr-id)))
 
 (defn get-account-account-group
   [account-id]
-  (e :accountGroup (first (q '[:find [?g ...]
-                               :in $ ?aid
-                               :where
-                               [?g :accountGroup/account ?aid]] account-id))))
+  (e :accountGroup (q '[:find ?g .
+                        :in $ ?aid
+                        :where
+                        [?g :accountGroup/account ?aid]] account-id)))
 
 (defn any-dup-nick-account
   [{:keys [accountId nickname]}]
-  (boolean (first (q '[:find [?as ...]
-                       :in $ ?aid ?to-check-nick
-                       :where
-                       [?g :accountGroup/account ?aid]
-                       [?g :accountGroup/account ?as]
-                       [?as :account/nickname ?to-check-nick]]
-                     accountId nickname))))
+  (boolean (q '[:find ?as .
+                :in $ ?aid ?to-check-nick
+                :where
+                [?g :accountGroup/account ?aid]
+                [?g :accountGroup/account ?as]
+                [?as :account/nickname ?to-check-nick]]
+              accountId nickname)))
 
 (defn filter-account-group-by-network-type
   [network-type]
@@ -98,9 +98,9 @@
    - TODO: v2
    don't track app's selected account"
   [acc]
-  (let [selected-account     (first (q '[:find [?a ...]
-                                         :where
-                                         [?a :account/selected true]]))
+  (let [selected-account     (q '[:find ?a .
+                                  :where
+                                  [?a :account/selected true]])
         ;; set all accounts unselected
         acc-unselect         [[:db.fn/retractAttribute selected-account :account/selected]]
         ;; select account
@@ -121,9 +121,9 @@
 (defn set-current-network
   "set wallet current network, change all apps' currentNetwork"
   [net]
-  (let [selected-net  (first (q '[:find [?net ...]
-                                  :where
-                                  [?net :network/selected true]]))
+  (let [selected-net  (q '[:find ?net .
+                           :where
+                           [?net :network/selected true]])
         ;; unselect selected net
         net-unselect  [[:db.fn/retractAttribute selected-net :network/selected]]
         ;; select unselected net
@@ -145,10 +145,10 @@
                 currentNetwork
                 currentAccount]}
         opt
-        exist-app          (first (q '[:find [?app ...]
-                                       :in $ ?site
-                                       :where
-                                       [?app :app/site ?site]] siteId))
+        exist-app          (q '[:find ?app .
+                                :in $ ?site
+                                :where
+                                [?app :app/site ?site]] siteId)
         _                  (when exist-app (t [[:db.fn/retractAttribute exist-app :app/account]
                                                [:db.fn/retractAttribute exist-app :app/currentAccount]
                                                [:db.fn/retractAttribute exist-app :app/currentNetowrk]
@@ -179,12 +179,12 @@
         (and accountId networkId (not addressId))
         {:accountId accountId
          :networkId networkId
-         :addressId (first (q '[:find [?addr ...]
-                                :in $ ?acc ?net
-                                :where
-                                [?acc :account/address ?addr]
-                                [?net :network/address ?addr]]
-                              accountId networkId))}))
+         :addressId (q '[:find ?addr .
+                         :in $ ?acc ?net
+                         :where
+                         [?acc :account/address ?addr]
+                         [?net :network/address ?addr]]
+                       accountId networkId)}))
 
 (defn account-addr-by-network
   [{:keys [account network]}]
@@ -202,10 +202,9 @@
        [?net :network/address ?addr]]))
 
 (defn get-current-network []
-  (-> (q '[:find [?net]
-           :where
-           [?net :network/selected true]])
-      first))
+  (q '[:find ?net .
+       :where
+       [?net :network/selected true]]))
 
 (defn dbadd
   "add document to db with modal keyword
@@ -219,23 +218,19 @@
 
 (defn add-token-to-addr [{:keys [address decimals image symbol targetAddressId fromApp fromUser fromList checkOnly] :as token}]
   (let [{:keys [addressId networkId]} (addr-acc-network {:addressId targetAddressId})
-        token-in-net?                 (-> (q '[:find [?t ...]
-                                               :in $ ?taddr ?net
-                                               :where
-                                               [?t :token/address ?taddr]
-                                               [?net :network/token ?t]]
-                                             address networkId)
-                                          not-empty
-                                          first)
+        token-in-net?                 (q '[:find ?t .
+                                           :in $ ?taddr ?net
+                                           :where
+                                           [?t :token/address ?taddr]
+                                           [?net :network/token ?t]]
+                                         address networkId)
         token-in-addr?                (and token-in-net?
-                                           (-> (q '[:find [?t ...]
-                                                    :in $ ?taddr ?addr
-                                                    :where
-                                                    [?t :token/address ?taddr]
-                                                    [?addr :address/token ?t]]
-                                                  address addressId)
-                                               not-empty
-                                               first))
+                                           (q '[:find ?t .
+                                                :in $ ?taddr ?addr
+                                                :where
+                                                [?t :token/address ?taddr]
+                                                [?addr :address/token ?t]]
+                                              address addressId))
         token-id                      (or token-in-addr? token-in-net? -1)
         add-token-tx                  {:db/id token-id :token/address address :token/decimals decimals :token/logoURI image}
         add-token-tx                  (if fromApp (assoc add-token-tx :token/fromApp true) add-token-tx)
@@ -251,23 +246,21 @@
      :alreadyInAddr (boolean token-in-addr?)}))
 
 (defn get-network-token-by-token-addr [{:keys [networkId tokenAddress]}]
-  (-> (q '[:find [?tokenId]
-           :in $ ?net ?addr
-           :where
-           [?net :network/token ?tokenId]
-           [?tokenId :token/address ?addr]]
-         networkId tokenAddress)
-      first))
+  (q '[:find ?tokenId .
+       :in $ ?net ?addr
+       :where
+       [?net :network/token ?tokenId]
+       [?tokenId :token/address ?addr]]
+     networkId tokenAddress))
 
 (defn addr-network-id-to-addr-id [addr netId]
-  (-> (q '[:find [?addr-id ...]
-           :in $ ?addr ?net
-           :where
-           (or [?addr-id :address/base32 ?addr]
-               [?addr-id :address/hex ?addr])
-           [?net :network/address ?addr-id]]
-         addr netId)
-      first))
+  (q '[:find ?addr-id .
+       :in $ ?addr ?net
+       :where
+       (or [?addr-id :address/base32 ?addr]
+           [?addr-id :address/hex ?addr])
+       [?net :network/address ?addr-id]]
+     addr netId))
 (defn addr-network-id-to-token-id [addr netId]
   (q '[:find ?token-id .
        :in $ ?addr ?net
@@ -380,14 +373,32 @@
 (defn retract-attr [{:keys [eid attr]}] (t [[:db.fn/retractAttribute eid (keyword attr)]]))
 
 (defn retract-address-token [{:keys [tokenId addressId]}]
-  (if (-> (q '[:find [?token ...]
-               :in $ ?token ?addr
-               :where
-               [?addr :address/token ?token]]
-             tokenId addressId)
-          first)
+  (if (q '[:find ?token .
+           :in $ ?token ?addr
+           :where
+           [?addr :address/token ?token]]
+         tokenId addressId)
     (t [[:db/retract addressId :address/token tokenId]])
     "tokenNotBelongToAddress"))
+
+(defn get-from-address [{:keys [networkId address appId]}]
+  (->> (q '[:find ?addr-id .
+            :in $ ?netId ?addr ?app-id
+            :where
+            [?netId :network/type ?net-type]
+            [?netId :network/address ?addr-id]
+            [?acc :account/address ?addr-id]
+            (or (and [?addr-id :address/base32 ?addr]
+                     [(= ?net-type "cfx")])
+                (and [?addr-id :address/hex ?addr]
+                     [(= ?net-type "eth")]))
+            (or [?app-id :app/account ?acc]
+                [(not ?app-id)])
+            [?addr-id :address/vault ?vault]
+            [?vault :vault/type ?vault-type]
+            [(not= ?vault-type pub)]]
+          networkId address appId)
+       (e :address)))
 
 ;;; UI QUERIES
 (defn home-page-assets [& {:keys [include-other-tokens]}]
@@ -458,7 +469,8 @@
               :upsertBalances                  upsert-balances
               :retractAddressToken             retract-address-token
               :queryhomePageAssets             home-page-assets
-              :queryaddTokenList               get-add-token-list})
+              :queryaddTokenList               get-add-token-list
+              :getFromAddress                  get-from-address})
 
 (defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)

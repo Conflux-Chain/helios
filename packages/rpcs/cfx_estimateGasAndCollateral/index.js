@@ -32,6 +32,8 @@ export const schemas = {
       ['value', {optional: true, doc: 'default to 0x0'}, Uint],
       ['data', {optional: true, doc: 'default to 0x'}, Bytes],
       ['nonce', {optional: true, doc: 'default to 0x0'}, Uint],
+      ['storageLimit', {optional: true}, Uint],
+      ['epochHeight', {optional: true}, Uint],
     ],
     [zeroOrOne, {doc: 'default to latest_state'}, epochRef],
   ],
