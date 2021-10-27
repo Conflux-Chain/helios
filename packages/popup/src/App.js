@@ -29,6 +29,7 @@ const {
   DAPP_ADD_NETWORK,
   DAPP_SWITCH_NETWORK,
   SEND_TRANSACTION,
+  EDIT_GAS_FEE,
 } = ROUTES
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
@@ -53,6 +54,7 @@ const ConfirmAddSuggestedToken = lazy(() =>
   import('./pages/ConfirmAddSuggestedToken'),
 )
 const SendTransaction = lazy(() => import('./pages/SendTransaction'))
+const EditGasFee = lazy(() => import('./pages/EditGasFee'))
 
 function App() {
   const {data: lockedData, error: lockedError} = useRPC([
@@ -145,6 +147,7 @@ function App() {
             />
             <Route exact path={DAPP_ADD_NETWORK} component={DappAddNetwork} />
             <Route exact path={SEND_TRANSACTION} component={SendTransaction} />
+            <Route exact path={EDIT_GAS_FEE} component={EditGasFee} />
             <Route exact path={ERROR} component={ErrorPage} />
             <Route path="*" render={() => <Redirect to={ERROR} />} />
           </Switch>

@@ -30,7 +30,7 @@ function AddToken({onClose, onOpen}) {
       tokenAddress: value,
       userAddress: address,
     }).then(({result, error}) => {
-      console.log(result, error, value)
+      console.log('result', result, error, value)
     })
   }
 

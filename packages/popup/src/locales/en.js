@@ -138,6 +138,17 @@ const en = {
     tokenList: 'Token list',
     noTxnWarning:
       'This address DOES NOT have any historical transactions, please double check',
+    // edit gas fee
+    editGasFeeControl: 'Edit fee control',
+    gasPrice: 'Gas Price',
+    drip: 'Drip',
+    gWei: 'GWei',
+    gasLimit: 'Gas Limit',
+    storageFee: 'Storage Fee',
+    storageLimit: 'Storage Limit',
+    totalFee: 'Total Fee',
+    customNonce: 'Custom Nonce',
+    save: 'Save',
   },
 }
 
