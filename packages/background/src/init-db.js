@@ -70,6 +70,13 @@ function initNetwork(d) {
       },
     },
     {
+      eid: -6,
+      tokenList: {
+        name: 'Fluent Default Conflux Testnet List',
+        url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list/cfx.test.fluent.json',
+      },
+    },
+    {
       network: {
         name: CFX_MAINNET_NAME,
         endpoint: CFX_MAINNET_RPC_ENDPOINT,
@@ -104,6 +111,7 @@ function initNetwork(d) {
         hdPath: -1,
         balanceChecker: 'cfxtest:achxne2gfh8snrstkxn0f32ua2cf19zwkyw9tpbc6k',
         builtin: true,
+        tokenList: -6,
         isTestnet: true,
       },
     },
