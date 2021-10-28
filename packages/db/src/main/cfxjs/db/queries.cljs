@@ -442,6 +442,28 @@
 
 (defn get-add-token-list [] (home-page-assets :include-other-tokens true))
 
+(defn account-list-assets []
+  (let [cur-addr (e :address (get-current-addr))
+        cur-net  (e :network (get-current-network))
+        data     (q '[:find ?group ?acc ?addr
+                      :in $ ?cur-net
+                      :where
+                      [?group :accountGroup/account ?acc]
+                      [?acc :account/address ?addr]
+                      [?cur-net :network/address ?addr]]
+                    (:db/id cur-net))
+        data     (reduce
+                  (fn [acc [g account addr]]
+                    (let [group          (get acc g (assoc (.toMap (e :accountGroup g)) :account {}))
+                          touchedAccount (get-in group [:account account] (assoc (.toMap (e :account account)) :currentAddress (e :address addr)))
+                          group          (assoc-in group [:account account] touchedAccount)]
+                      (assoc acc g group)))
+                  {} data)]
+
+    {:currentAddress cur-addr
+     :currentNetwork cur-net
+     :accountGroups  data}))
+
 (def queries {:batchTx
               (fn [txs]
                 (let [txs (-> txs js/window.JSON.parse j->c)
@@ -468,9 +490,10 @@
               :getSingleCallBalanceParams      get-single-call-balance-params
               :upsertBalances                  upsert-balances
               :retractAddressToken             retract-address-token
+              :getFromAddress                  get-from-address
               :queryhomePageAssets             home-page-assets
               :queryaddTokenList               get-add-token-list
-              :getFromAddress                  get-from-address})
+              :queryaccountListAssets          account-list-assets})
 
 (defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)
