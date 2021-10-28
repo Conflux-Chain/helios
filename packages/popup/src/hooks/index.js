@@ -18,18 +18,22 @@ const {
   GET_CURRENT_NETWORK,
   GET_CURRENT_ACCOUNT,
   GET_PENDING_AUTH_REQ,
+  GET_NO_GROUP,
+  GET_WALLET_LOCKED_STATUS,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
 export const useCreatedPasswordGuard = () => {
   const createdPassword = useGlobalStore(state => state.createdPassword)
   const history = useHistory()
+  const {data: zeroGroup} = useRPC([GET_NO_GROUP])
+  const {data: lockedData} = useRPC([GET_WALLET_LOCKED_STATUS])
 
   useEffect(() => {
-    if (!createdPassword) {
+    if ((zeroGroup && !createdPassword) || (!zeroGroup && lockedData)) {
       history.push(HOME)
     }
-  }, [createdPassword, history])
+  }, [createdPassword, history, zeroGroup, lockedData])
 }
 
 export const useQuery = () => {

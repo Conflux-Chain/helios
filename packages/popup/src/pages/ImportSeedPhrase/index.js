@@ -66,11 +66,14 @@ function ImportSeedPhrase() {
         mnemonic: keygen,
       }).then(({result}) => {
         if (result?.valid) {
-          return request(IMPORT_MNEMONIC, {
-            password: createdPassword,
+          let params = {
             nickname: name || keygenNamePlaceholder,
             mnemonic: keygen,
-          }).then(({error, result}) => {
+          }
+          if (createdPassword) {
+            params['password'] = createdPassword
+          }
+          return request(IMPORT_MNEMONIC, params).then(({error, result}) => {
             setCreatingAccount(false)
             if (result) {
               dispatchMutate()
