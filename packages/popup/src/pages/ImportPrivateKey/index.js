@@ -63,11 +63,14 @@ function ImportPrivateKey() {
       setCreatingAccount(true)
       request(VALIDATE_PRIVATE_KEY, {privateKey: keygen}).then(({result}) => {
         if (result?.valid) {
-          return request(IMPORT_PRIVATE_KEY, {
-            password: createdPassword,
+          let params = {
             nickname: name || keygenNamePlaceholder,
             privateKey: keygen,
-          }).then(({error, result}) => {
+          }
+          if (createdPassword) {
+            params['password'] = createdPassword
+          }
+          return request(IMPORT_PRIVATE_KEY, params).then(({error, result}) => {
             setCreatingAccount(false)
             if (result) {
               dispatchMutate()
