@@ -66,7 +66,11 @@ export const toThousands = (numOrStr, delimiter = ',', prevDelimiter = ',') => {
 }
 
 export const formatBalance = (numOrStr, decimal) => {
-  if (isNaN(Number(numOrStr))) return numOrStr
+  if (
+    (typeof numOrStr !== 'number' && typeof numOrStr !== 'string') ||
+    isNaN(Number(numOrStr))
+  )
+    return numOrStr
   let balance = numOrStr
   if (isHexPrefixed(balance)) {
     balance = new BN(stripHexPrefix(balance), 16).toString()
