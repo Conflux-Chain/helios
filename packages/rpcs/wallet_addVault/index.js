@@ -25,7 +25,7 @@ export const NAME = 'wallet_addVault'
 const baseInputSchema = [
   map,
   {closed: true},
-  ['password', password],
+  ['password', {optional: true}, password],
   ['nickname', {optional: true}, nickname],
 ]
 const menomicSchema = [
