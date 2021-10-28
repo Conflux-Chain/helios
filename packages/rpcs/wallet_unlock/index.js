@@ -18,14 +18,16 @@ export const permissions = {
     'wallet_validatePassword',
     'wallet_refetchTokenList',
     'wallet_refetchBalance',
+    'wallet_discoverAccounts',
   ],
-  db: ['setPassword', 'getUnlockReq', 'retract'],
+  db: ['setPassword', 'getUnlockReq', 'retract', 'getAccountGroup'],
 }
 
 export const main = async ({
   params: {password, waitSideEffects},
-  db: {setPassword, retract, getUnlockReq},
+  db: {setPassword, retract, getUnlockReq, getAccountGroup},
   rpcs: {
+    wallet_discoverAccounts,
     wallet_validatePassword,
     wallet_refetchTokenList,
     wallet_refetchBalance,
@@ -39,8 +41,14 @@ export const main = async ({
   const unlockReq = getUnlockReq() || []
   unlockReq.forEach(({req, eid}) => req.write(true).then(() => retract(eid)))
 
-  let promise = wallet_refetchTokenList().then(() =>
-    wallet_refetchBalance({type: 'all', allNetwork: true}),
-  )
+  let promise = wallet_refetchTokenList()
+    .then(() =>
+      Promise.all(
+        getAccountGroup().map(({eid}) =>
+          wallet_discoverAccounts({accountGroupId: eid, waitTillFinish: true}),
+        ),
+      ),
+    )
+    .then(() => wallet_refetchBalance({type: 'all', allNetwork: true}))
   if (waitSideEffects) await promise
 }

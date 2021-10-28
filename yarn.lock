@@ -3709,6 +3709,7 @@ __metadata:
   resolution: "@fluent-wallet/discover-accounts@workspace:packages/discover-accounts"
   dependencies:
     "@fluent-wallet/checks": "workspace:packages/checks"
+    "@fluent-wallet/csp": "workspace:packages/csp"
     "@fluent-wallet/hdkey": "workspace:packages/hdkey"
     "@fluent-wallet/utils": "workspace:packages/utils"
     bn.js: 5.2.0
@@ -4266,6 +4267,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_discover-accounts@workspace:packages/rpcs/wallet_discoverAccounts"
   dependencies:
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network"
+    "@fluent-wallet/csp": "workspace:packages/csp"
     "@fluent-wallet/discover-accounts": "workspace:packages/discover-accounts"
     "@fluent-wallet/spec": "workspace:packages/spec"
     browser-passworder: 2.0.3
