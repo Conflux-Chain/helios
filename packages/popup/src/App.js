@@ -98,50 +98,16 @@ function App() {
               path={HOME}
               component={HomePage}
             />
-            <ProtectedRoute
-              pendingAuthReq={pendingAuthReq}
-              hasAccount={!zeroGroup}
-              isLocked={!zeroGroup && lockedData}
-              exact
-              path={CURRENT_SEED_PHRASE}
-              component={CurrentSeed}
-            />
-            <ProtectedRoute
-              pendingAuthReq={pendingAuthReq}
-              hasAccount={!zeroGroup}
-              isLocked={!zeroGroup && lockedData}
-              exact
-              path={NEW_SEED_PHRASE}
-              component={NewSeed}
-            />
-            <ProtectedRoute
-              pendingAuthReq={pendingAuthReq}
-              hasAccount={!zeroGroup}
-              isLocked={!zeroGroup && lockedData}
-              exact
-              path={BACKUP_SEED_PHRASE}
-              component={BackupSeed}
-            />
-            <ProtectedRoute
-              pendingAuthReq={pendingAuthReq}
-              hasAccount={!zeroGroup}
-              isLocked={!zeroGroup && lockedData}
-              exact
-              path={CONFIRM_SEED_PHRASE}
-              component={ConfirmSeed}
-            />
-            <ProtectedRoute
-              pendingAuthReq={pendingAuthReq}
-              hasAccount={!zeroGroup}
-              isLocked={!zeroGroup && lockedData}
+            <Route exact path={CURRENT_SEED_PHRASE} component={CurrentSeed} />
+            <Route exact path={NEW_SEED_PHRASE} component={NewSeed} />
+            <Route exact path={BACKUP_SEED_PHRASE} component={BackupSeed} />
+            <Route exact path={CONFIRM_SEED_PHRASE} component={ConfirmSeed} />
+            <Route
               exact
               path={IMPORT_SEED_PHRASE}
               component={ImportSeedPhrase}
             />
-            <ProtectedRoute
-              pendingAuthReq={pendingAuthReq}
-              hasAccount={!zeroGroup}
-              isLocked={!zeroGroup && lockedData}
+            <Route
               exact
               path={IMPORT_PRIVATE_KEY}
               component={ImportPrivateKey}
