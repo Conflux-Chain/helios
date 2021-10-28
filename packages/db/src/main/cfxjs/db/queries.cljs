@@ -405,7 +405,7 @@
   (let [cur-addr          (e :address (get-current-addr))
         cur-net           (e :network (get-current-network))
         native-token-info (get cur-net :network/ticker {:name "CFX", :symbol "CFX", :decimals 18})
-        native-token-ui   (assoc native-token-info :balance (get cur-addr :address/balance "0x0") :native true :added true)
+        native-token-ui   (assoc native-token-info :balance (get cur-addr :address/nativeBalance "0x0") :native true :added true)
         addr-tokens-info  (q '[:find ?token-id ?tbalance
                                :in $ ?cur-addr
                                :where
