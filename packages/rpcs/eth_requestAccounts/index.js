@@ -20,21 +20,23 @@ export const main = async ({
   app,
 }) => {
   if (app?.currentAccount) {
-    return accountAddrByNetwork({
-      account: app.currentAccount.eid,
-      network: app.currentNetwork.eid,
-    }).hex
+    return [
+      accountAddrByNetwork({
+        account: app.currentAccount.eid,
+        network: app.currentNetwork.eid,
+      }).hex,
+    ]
   }
   const permsRes = await wallet_requestPermissions([{eth_accounts: {}}])
 
-  if (!permsRes?.error) {
+  if (permsRes && !permsRes.error) {
     const app = getOneApp({site: site.eid})
     const {currentAccount, currentNetwork} = app
     const addr = accountAddrByNetwork({
       account: currentAccount.eid,
       network: currentNetwork.eid,
     })
-    return addr.hex
+    return [addr.hex]
   }
 
   return permsRes

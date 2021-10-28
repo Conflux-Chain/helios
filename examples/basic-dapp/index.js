@@ -20,6 +20,7 @@ function walletInitialized({chainId, networkId}) {
 
   // connect
   const connectButton = getElement('connect')
+  const sendNativeTokenButton = getElement('send_native_token')
   const personalSignButton = getElement('personal_sign')
   const typedSignButton = getElement('typed_sign')
   const addNetworkButton = getElement('add_network')
@@ -36,11 +37,35 @@ function walletInitialized({chainId, networkId}) {
           return console.error('error', res.error.message || res.error)
         getElement('address').innerHTML = res.result
         console.log('result', res.result)
+        sendNativeTokenButton.disabled = false
         personalSignButton.disabled = false
         typedSignButton.disabled = false
         addNetworkButton.disabled = false
         switchNetworkButton.disabled = false
         addTokenButton.disabled = false
+      })
+  }
+
+  // send 1 native token to the connected address
+  sendNativeTokenButton.onclick = async () => {
+    const {
+      result: [connectedAddress],
+    } = await provider.request({method: 'cfx_accounts'})
+    const tx = {
+      from: connectedAddress,
+      value: '0xde0b6b3a7640000',
+      to: connectedAddress,
+    }
+
+    provider
+      .request({method: 'cfx_sendTransaction', params: [tx]})
+      .then(res => {
+        if (res.error)
+          return console.error('error', res.error.message || res.error)
+        console.log('result', res.result)
+        getElement(
+          'send_native_token_result',
+        ).innerHTML = `txhash: ${res.result}`
       })
   }
 
@@ -125,6 +150,7 @@ function walletInitialized({chainId, networkId}) {
       })
   }
 
+  // request to add network
   addNetworkButton.onclick = () => {
     provider
       .request({
@@ -149,6 +175,7 @@ function walletInitialized({chainId, networkId}) {
       })
   }
 
+  // request to switch network
   switchNetworkButton.onclick = () => {
     provider
       .request({
@@ -166,6 +193,8 @@ function walletInitialized({chainId, networkId}) {
         console.log('result', res.result)
       })
   }
+
+  // request to add token
   addTokenButton.onclick = () => {
     provider
       .request({

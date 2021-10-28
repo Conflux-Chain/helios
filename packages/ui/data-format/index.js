@@ -65,12 +65,16 @@ export const toThousands = (numOrStr, delimiter = ',', prevDelimiter = ',') => {
     }, '')
 }
 
-export const formatBalance = numOrStr => {
+export const formatBalance = (numOrStr, decimal) => {
   if (isNaN(Number(numOrStr))) return numOrStr
-  if (isHexPrefixed(numOrStr)) {
-    numOrStr = new BN(stripHexPrefix(numOrStr), 16).toString()
+  let balance = numOrStr
+  if (isHexPrefixed(balance)) {
+    balance = new BN(stripHexPrefix(balance), 16).toString()
   }
-  const bNum = new Big(numOrStr)
+  if (decimal) {
+    balance = convertDecimal(balance, 'divide', decimal)
+  }
+  const bNum = new Big(balance)
   return toThousands(bNum.round(6).toString(10))
 }
 

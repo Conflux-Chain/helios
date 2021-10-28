@@ -1,7 +1,7 @@
 import {useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useFontSize} from '../hooks'
-import {formatBalance} from '@fluent-wallet/data-format'
+import {formatBalance, CFX_DECIMAL} from '@fluent-wallet/data-format'
 
 function DisplayBalance({
   maxWidth = 175,
@@ -10,8 +10,9 @@ function DisplayBalance({
   className = '',
   initialFontSize = 14,
   symbol,
+  decimal = CFX_DECIMAL,
 }) {
-  const displayBalance = formatBalance(balance)
+  const displayBalance = formatBalance(balance, decimal)
   const balanceRef = useRef()
   const hiddenRef = useRef()
   useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance, initialFontSize)
@@ -35,6 +36,7 @@ DisplayBalance.propTypes = {
   className: PropTypes.string,
   initialFontSize: PropTypes.number,
   symbol: PropTypes.string,
+  decimal: PropTypes.number,
 }
 
 export default DisplayBalance

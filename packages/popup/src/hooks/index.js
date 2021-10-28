@@ -18,18 +18,19 @@ const {
   GET_CURRENT_NETWORK,
   GET_CURRENT_ACCOUNT,
   GET_PENDING_AUTH_REQ,
+  GET_NO_GROUP,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
 export const useCreatedPasswordGuard = () => {
   const createdPassword = useGlobalStore(state => state.createdPassword)
   const history = useHistory()
-
+  const {data: zeroGroup} = useRPC([GET_NO_GROUP])
   useEffect(() => {
-    if (!createdPassword) {
+    if (zeroGroup && !createdPassword) {
       history.push(HOME)
     }
-  }, [createdPassword, history])
+  }, [createdPassword, history, zeroGroup])
 }
 
 export const useQuery = () => {
