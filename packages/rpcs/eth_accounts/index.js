@@ -1,9 +1,18 @@
-import * as reqAccounts from '@fluent-wallet/eth_request-accounts'
+import {optParam} from '@fluent-wallet/spec'
 
 export const NAME = 'eth_accounts'
 
-export const schemas = reqAccounts.schemas
+export const schemas = {
+  input: optParam,
+}
 
-export const permissions = reqAccounts.permissions
+export const permissions = {
+  external: ['popup', 'inpage'],
+  methods: ['eth_requestAccounts'],
+  db: [],
+}
 
-export const main = reqAccounts.main
+export const main = async ({rpcs: {eth_requestAccounts}, app}) => {
+  if (!app) return []
+  return await eth_requestAccounts()
+}

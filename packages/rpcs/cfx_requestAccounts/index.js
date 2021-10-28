@@ -21,10 +21,12 @@ export const main = async ({
   app,
 }) => {
   if (app?.currentAccount) {
-    return accountAddrByNetwork({
-      account: app.currentAccount.eid,
-      network: app.currentNetwork.eid,
-    }).base32
+    return [
+      accountAddrByNetwork({
+        account: app.currentAccount.eid,
+        network: app.currentNetwork.eid,
+      }).base32,
+    ]
   }
   const permsRes = await wallet_requestPermissions([{cfx_accounts: {}}])
 
@@ -35,8 +37,8 @@ export const main = async ({
       account: currentAccount.eid,
       network: currentNetwork.eid,
     })
-    return addr.base32
+    return [addr.base32]
   }
 
-  return permsRes
+  return []
 }

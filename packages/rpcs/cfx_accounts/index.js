@@ -1,9 +1,18 @@
-import * as reqAccounts from '@fluent-wallet/cfx_request-accounts'
+import {optParam} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_accounts'
 
-export const schemas = reqAccounts.schemas
+export const schemas = {
+  input: optParam,
+}
 
-export const permissions = reqAccounts.permissions
+export const permissions = {
+  external: ['popup', 'inpage'],
+  methods: ['cfx_requestAccounts'],
+  db: [],
+}
 
-export const main = reqAccounts.main
+export const main = async ({rpcs: {cfx_requestAccounts}, app}) => {
+  if (!app) return []
+  return await cfx_requestAccounts()
+}
