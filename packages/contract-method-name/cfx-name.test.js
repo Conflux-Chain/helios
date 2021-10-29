@@ -1,17 +1,17 @@
 import {expect, describe, afterEach} from '@jest/globals'
 import nock from 'nock'
-
 import {CFX_SCAN_TESTNET_DOMAIN, CFX_SCAN_MAINNET_DOMAIN} from './constance'
 import {getCFXScanDomain, getCFXContractMethodSignature} from './cfx-name'
+import {Conflux} from 'js-conflux-sdk'
 
 describe('CFX Name', () => {
   describe('getCFXScanDomain', () => {
     it('should return testnet url', () => {
-      expect(getCFXScanDomain('testnet')).toEqual(CFX_SCAN_TESTNET_DOMAIN)
+      expect(getCFXScanDomain('CFX_TESTNET')).toEqual(CFX_SCAN_TESTNET_DOMAIN)
     })
 
     it('should return mainnet url', () => {
-      expect(getCFXScanDomain('mainnet')).toEqual(CFX_SCAN_MAINNET_DOMAIN)
+      expect(getCFXScanDomain('CFX_MAINNET')).toEqual(CFX_SCAN_MAINNET_DOMAIN)
     })
   })
 
@@ -19,7 +19,7 @@ describe('CFX Name', () => {
     afterEach(() => {
       nock.cleanAll()
     })
-    it('should return CFX method name', async () => {
+    it('should return name of store function', async () => {
       nock('https://testnet.confluxscan.io/v1/contract')
         .get('/cfxtest:acgd1ex04h88ybdyxxdg45wjj0mrcwx1fak1snk3db?fields=abi')
         .reply(200, {
@@ -48,6 +48,40 @@ describe('CFX Name', () => {
       )
       expect(res).toHaveProperty('fullName', 'store(uint256 num)')
     })
+    it('should return name of transfer function', async () => {
+      const abi = [
+        {
+          constant: false,
+          inputs: [
+            {internalType: 'address', name: 'recipient', type: 'address'},
+            {internalType: 'uint256', name: 'amount', type: 'uint256'},
+          ],
+          name: 'transfer',
+          outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+          payable: false,
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ]
+      const contract = new Conflux().Contract({abi})
+      const transferData = contract.transfer(
+        'cfx:aamysddjren1zfp36agsek5fxt2w0st8feps3297ek',
+        111,
+      )
+      const res = await getCFXContractMethodSignature(
+        'cfxtest:acgd1ex04h88ybdyxxdg45wjj0mrcwx1fak1snk3db',
+        transferData.data,
+        'CFX_TESTNET',
+      )
+      expect(res).toHaveProperty(
+        'fullName',
+        'transfer(address recipient, uint256 amount)',
+      )
+      expect(res).toHaveProperty('object', {
+        recipient: '0x15470c6869177a9599e00ce227659bf12b39fe29',
+        amount: 111n,
+      })
+    })
     it('should return empty object', async () => {
       nock('https://testnet.confluxscan.io/v1/contract')
         .get('/some-wrong-address?fields=abi')
@@ -55,7 +89,7 @@ describe('CFX Name', () => {
       const res = await getCFXContractMethodSignature(
         'some-wrong-address',
         '0x6057361d0000000000000000000000000000000000000000000000000000000000000064',
-        'testnet',
+        'CFX_TESTNET',
       )
       expect(res).toEqual({})
     })
