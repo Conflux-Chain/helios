@@ -1,7 +1,6 @@
 import {RPC_METHODS, NETWORK_TYPE} from '../constants'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber, isString} from '@fluent-wallet/checks'
-import {request} from '../utils'
 
 const {
   WALLET_GET_ACCOUNT_GROUP,
@@ -14,12 +13,13 @@ const {
   WALLET_IS_LOCKED,
   ACCOUNT_GROUP_TYPE,
   WALLET_DETECT_ADDRESS_TYPE,
-  WALLET_VALIDATE_20TOKEN,
 } = RPC_METHODS
 
 export const useCurrentAccount = () => {
   const currentNetwork = useCurrentNetwork()
-  const {eid: networkId, type: networkType} = currentNetwork
+  const {eid: networkId} = currentNetwork
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const networkTypeIsEth = useNetworkTypeIsEth()
   const {data: currentAccount} = useRPC(
     [WALLET_GET_CURRENT_ACCOUNT],
     undefined,
@@ -30,12 +30,7 @@ export const useCurrentAccount = () => {
   const {eid: accountId} = currentAccount || {}
   const {data: accountAddress} = useAddressByNetworkId(accountId, networkId)
   const {base32, hex} = accountAddress
-  const address =
-    networkType === NETWORK_TYPE.CFX
-      ? base32
-      : networkType === NETWORK_TYPE.ETH
-      ? hex
-      : ''
+  const address = networkTypeIsCfx ? base32 : networkTypeIsEth ? hex : ''
   return {
     ...currentAccount,
     address,
@@ -121,14 +116,14 @@ export const useBalance = (
   return {data, error}
 }
 
-export const useIsCfx = () => {
+export const useNetworkTypeIsCfx = () => {
   const currentNetwork = useCurrentNetwork()
-  return currentNetwork?.type === 'cfx'
+  return currentNetwork?.type === NETWORK_TYPE.CFX
 }
 
-export const useIsEth = () => {
+export const useNetworkTypeIsEth = () => {
   const currentNetwork = useCurrentNetwork()
-  return currentNetwork?.type === 'eth'
+  return currentNetwork?.type === NETWORK_TYPE.ETH
 }
 
 export const useCurrentNativeToken = () => {
@@ -145,12 +140,4 @@ export const useAddressType = address => {
     {fallbackData: {}},
   )
   return type
-}
-
-export const get20Token = value => {
-  request(WALLET_VALIDATE_20TOKEN, {
-    tokenAddress: value,
-  }).then(({result}) => {
-    return result
-  })
 }

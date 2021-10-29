@@ -2,11 +2,8 @@ import {useState} from 'react'
 import PropTypes from 'prop-types'
 import useGlobalStore from '../../../stores'
 import {useQuery} from '../../../hooks'
-import {
-  useCurrentNativeToken,
-  useAddressType,
-  get20Token,
-} from '../../../hooks/useApi'
+import {useCurrentNativeToken, useAddressType} from '../../../hooks/useApi'
+import {get20Token} from '../../../utils/api'
 
 function AddressCard() {
   const query = useQuery()
