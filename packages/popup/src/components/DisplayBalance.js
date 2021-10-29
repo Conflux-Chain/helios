@@ -10,9 +10,9 @@ function DisplayBalance({
   className = '',
   initialFontSize = 14,
   symbol,
-  decimal = CFX_DECIMAL,
+  decimals = CFX_DECIMAL,
 }) {
-  const displayBalance = formatBalance(balance, decimal)
+  const displayBalance = formatBalance(balance, decimals)
   const balanceRef = useRef()
   const hiddenRef = useRef()
   useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance, initialFontSize)
@@ -36,7 +36,7 @@ DisplayBalance.propTypes = {
   className: PropTypes.string,
   initialFontSize: PropTypes.number,
   symbol: PropTypes.string,
-  decimal: PropTypes.number,
+  decimals: PropTypes.number,
 }
 
 export default DisplayBalance

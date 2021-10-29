@@ -4,7 +4,7 @@ import {
   // QrcodeOutlined,
 } from '@fluent-wallet/component-icons'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {useCurrentAccount} from '../../../hooks'
+import {useCurrentAccount} from '../../../hooks/useApi'
 import {CopyButton, QRCodeButton} from '../../../components'
 
 function CurrentAccount({onOpenAccount}) {

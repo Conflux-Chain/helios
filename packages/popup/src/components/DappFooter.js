@@ -7,8 +7,8 @@ import {useHistory} from 'react-router-dom'
 import {useState} from 'react'
 
 const {
-  REJECT_PENDING_AUTH_REQ,
-  REQUEST_PERMISSIONS,
+  WALLET_REJECT_PENDING_AUTH_REQUSET,
+  WALLET_REQUEST_PERMISSIONS,
   WALLET_SWITCH_CONFLUX_CHAIN,
   WALLET_SWITCH_ETHEREUM_CHAIN,
   CFX_SIGN_TYPED_DATA_V4,
@@ -32,11 +32,13 @@ function DappFooter({
   const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
 
   const onCancel = () => {
-    request(REJECT_PENDING_AUTH_REQ, {authReqId: eid}).then(({result}) => {
-      result && history.push(HOME)
-      result && onClickCancel && onClickCancel()
-      // TODO: error message
-    })
+    request(WALLET_REJECT_PENDING_AUTH_REQUSET, {authReqId: eid}).then(
+      ({result}) => {
+        result && history.push(HOME)
+        result && onClickCancel && onClickCancel()
+        // TODO: error message
+      },
+    )
   }
 
   const onConfirm = () => {
@@ -46,7 +48,7 @@ function DappFooter({
     setSendingRequestStatus(true)
     const params = {...confirmParams}
     switch (req.method) {
-      case REQUEST_PERMISSIONS:
+      case WALLET_REQUEST_PERMISSIONS:
         params.permissions = req.params
         break
       case WALLET_SWITCH_CONFLUX_CHAIN:

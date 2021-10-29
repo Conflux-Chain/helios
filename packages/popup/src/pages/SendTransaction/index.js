@@ -1,6 +1,4 @@
-import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
 import {TitleNav, CurrentNetworkDisplay, GasFee} from '../../components'
@@ -9,27 +7,33 @@ import {
   TokenAndAmount,
   CurrentAccountDisplay,
 } from './components'
-import {RPC_METHODS, ROUTES} from '../../constants'
-const {GET_CURRENT_NETWORK} = RPC_METHODS
+import useGlobalStore from '../../stores/index.js'
+import {useCurrentNativeToken} from '../../hooks/useApi'
+import {ROUTES} from '../../constants'
 const {HOME} = ROUTES
 
 function SendTransaction() {
   const {t} = useTranslation()
-  const [address, setAddress] = useState('')
-  const [selectedToken, seSelectedToken] = useState({})
-  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
-    fallbackData: {},
-  })
+  const {
+    toAddress,
+    sendAmount,
+    sendToken,
+    setToAddress,
+    setSendAmount,
+    setSendToken,
+  } = useGlobalStore
+  const nativeToken = useCurrentNativeToken()
   // TODO: get from scan
   const hasNoTxn = true
   const onChangeToken = token => {
     console.log(token)
+    setSendToken(token)
   }
-  useEffect(() => {
-    console.log('network: ', currentNetwork)
-    const {ticker} = currentNetwork
-    if (ticker) seSelectedToken(ticker)
-  }, [Boolean(currentNetwork)])
+  const onChangeAmount = amount => {
+    console.log(amount)
+    setSendAmount(amount)
+  }
+  if (nativeToken) setSendToken(nativeToken)
   return (
     <div className="flex flex-col h-full relative bg-bg">
       <img
@@ -44,10 +48,11 @@ function SendTransaction() {
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">
         <div className="flex flex-col">
-          <ToAddressInput address={address} onChangeAddress={setAddress} />
+          <ToAddressInput address={toAddress} onChangeAddress={setToAddress} />
           <TokenAndAmount
-            selectedToken={selectedToken}
-            amount="12345"
+            selectedToken={sendToken}
+            amount={sendAmount}
+            onChangeAmount={onChangeAmount}
             onChangeToken={onChangeToken}
           />
           <GasFee />

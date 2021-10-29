@@ -19,7 +19,7 @@ import {
 } from '../../components'
 import {useAccountGroupAddress} from '../../hooks'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
+const {WALLET_GET_CURRENT_NETWORK, WALLET_GET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function ConnectSitesList({
   accountData,
@@ -118,10 +118,14 @@ function ConnectSite() {
 
   const {addressDataWithAccountId, accountData} =
     useAccountGroupAddress(networkId)
-  const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
-  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
-    fallbackData: {},
-  })
+  const {data: currentNetworkData} = useRPC([WALLET_GET_CURRENT_NETWORK])
+  const {data: currentAccount} = useRPC(
+    [WALLET_GET_CURRENT_ACCOUNT],
+    undefined,
+    {
+      fallbackData: {},
+    },
+  )
   useEffect(() => {
     setSearchIcon(currentNetworkData?.icon || '')
     setSearchContent(currentNetworkData?.name || '')

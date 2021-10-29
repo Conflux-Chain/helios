@@ -1,4 +1,4 @@
-import {useCurrentAccount} from '../../../hooks'
+import {useCurrentAccount} from '../../../hooks/useApi'
 import {AccountDisplay} from '../../../components'
 
 function CurrentAccountDisplay() {

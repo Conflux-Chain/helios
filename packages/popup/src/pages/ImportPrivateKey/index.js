@@ -11,11 +11,11 @@ import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {useSWRConfig} from 'swr'
 const {
-  GET_ACCOUNT_GROUP,
+  WALLET_GET_ACCOUNT_GROUP,
   ACCOUNT_GROUP_TYPE,
-  VALIDATE_PRIVATE_KEY,
-  IMPORT_PRIVATE_KEY,
-  GET_NO_GROUP,
+  WALLET_VALIDATE_PRIVATE_KEY,
+  WALLET_IMPORT_PRIVATE_KEY,
+  WALLET_ZERO_ACCOUNT_GROUP,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -32,7 +32,7 @@ function ImportPrivateKey() {
   const createdPassword = useGlobalStore(state => state.createdPassword)
 
   const {data: keygenGroup} = useRPC(
-    [GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK],
+    [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK],
     {type: ACCOUNT_GROUP_TYPE.PK},
     {fallbackData: []},
   )
@@ -49,9 +49,9 @@ function ImportPrivateKey() {
     setKeygen(e.target.value)
   }
   const dispatchMutate = () => {
-    mutate([GET_NO_GROUP], false)
-    mutate([GET_ACCOUNT_GROUP])
-    mutate([GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK])
+    mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+    mutate([WALLET_GET_ACCOUNT_GROUP])
+    mutate([WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK])
   }
   const onCreate = async () => {
     if (!keygen) {
@@ -61,30 +61,34 @@ function ImportPrivateKey() {
 
     if (!creatingAccount) {
       setCreatingAccount(true)
-      request(VALIDATE_PRIVATE_KEY, {privateKey: keygen}).then(({result}) => {
-        if (result?.valid) {
-          let params = {
-            nickname: name || keygenNamePlaceholder,
-            privateKey: keygen,
-          }
-          if (createdPassword) {
-            params['password'] = createdPassword
-          }
-          return request(IMPORT_PRIVATE_KEY, params).then(({error, result}) => {
-            setCreatingAccount(false)
-            if (result) {
-              dispatchMutate()
-              history.push(HOME)
+      request(WALLET_VALIDATE_PRIVATE_KEY, {privateKey: keygen}).then(
+        ({result}) => {
+          if (result?.valid) {
+            let params = {
+              nickname: name || keygenNamePlaceholder,
+              privateKey: keygen,
             }
-            if (error) {
-              setKeygenErrorMessage(error.message.split('\n')[0])
+            if (createdPassword) {
+              params['password'] = createdPassword
             }
-          })
-        }
-        // TODO: replace error msg
-        setKeygenErrorMessage('Invalid or inner error!')
-        setCreatingAccount(false)
-      })
+            return request(WALLET_IMPORT_PRIVATE_KEY, params).then(
+              ({error, result}) => {
+                setCreatingAccount(false)
+                if (result) {
+                  dispatchMutate()
+                  history.push(HOME)
+                }
+                if (error) {
+                  setKeygenErrorMessage(error.message.split('\n')[0])
+                }
+              },
+            )
+          }
+          // TODO: replace error msg
+          setKeygenErrorMessage('Invalid or inner error!')
+          setCreatingAccount(false)
+        },
+      )
     }
   }
 

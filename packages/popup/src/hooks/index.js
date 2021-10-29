@@ -12,22 +12,22 @@ import {isNumber, isString} from '@fluent-wallet/checks'
 import {formatBalance} from '@fluent-wallet/data-format'
 
 const {
-  GET_ACCOUNT_GROUP,
-  GET_ACCOUNT_ADDRESS_BY_NETWORK,
-  GET_BALANCE,
-  GET_CURRENT_NETWORK,
-  GET_CURRENT_ACCOUNT,
-  GET_PENDING_AUTH_REQ,
-  GET_NO_GROUP,
-  GET_WALLET_LOCKED_STATUS,
+  WALLET_GET_ACCOUNT_GROUP,
+  WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK,
+  WALLET_GET_BALANCE,
+  WALLET_GET_CURRENT_NETWORK,
+  WALLET_GET_CURRENT_ACCOUNT,
+  WALLET_GET_PENDING_AUTH_REQUEST,
+  WALLET_ZERO_ACCOUNT_GROUP,
+  WALLET_IS_LOCKED,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
 export const useCreatedPasswordGuard = () => {
   const createdPassword = useGlobalStore(state => state.createdPassword)
   const history = useHistory()
-  const {data: zeroGroup} = useRPC([GET_NO_GROUP])
-  const {data: lockedData} = useRPC([GET_WALLET_LOCKED_STATUS])
+  const {data: zeroGroup} = useRPC([WALLET_ZERO_ACCOUNT_GROUP])
+  const {data: lockedData} = useRPC([WALLET_IS_LOCKED])
 
   useEffect(() => {
     if ((zeroGroup && !createdPassword) || (!zeroGroup && lockedData)) {
@@ -149,7 +149,7 @@ const formatAccountGroupData = ({
 export const useSingleAddressByNetworkId = (accountId, networkId) => {
   const {data, error} = useRPC(
     isNumber(accountId) && isNumber(networkId)
-      ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, accountId, networkId]
+      ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, accountId, networkId]
       : null,
     {accountId, networkId},
     {fallbackData: {}},
@@ -160,7 +160,7 @@ export const useSingleAddressByNetworkId = (accountId, networkId) => {
 export const useMultipleAddressByNetworkId = (params, networkId) => {
   const {data, error} = useRPC(
     params.length && isNumber(networkId)
-      ? [GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId]
+      ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId]
       : null,
     params,
     {fallbackData: []},
@@ -175,7 +175,7 @@ export const useMultipleAddressByNetworkId = (params, networkId) => {
 }
 
 export const useAccountGroupBatchBalance = networkId => {
-  const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined)
+  const {data: accountGroups} = useRPC([WALLET_GET_ACCOUNT_GROUP])
   const addressParams = getAddressParams(accountGroups, networkId)
 
   // TODO: should mutate when add network
@@ -184,7 +184,7 @@ export const useAccountGroupBatchBalance = networkId => {
     networkId,
   )
   const {data: balanceData} = useRPC(
-    addressData.length ? [GET_BALANCE, networkId] : null,
+    addressData.length ? [WALLET_GET_BALANCE, networkId] : null,
     {
       users: addressData.map(data => data?.base32 || data?.hex).filter(Boolean),
       tokens: ['0x0'],
@@ -203,8 +203,9 @@ export const useAccountGroupBatchBalance = networkId => {
   })
 }
 
+// TODO refactor end
 export const useAccountGroupAddress = networkId => {
-  const {data: accountGroups} = useRPC([GET_ACCOUNT_GROUP], undefined)
+  const {data: accountGroups} = useRPC([WALLET_GET_ACCOUNT_GROUP], undefined)
   const addressParams = getAddressParams(accountGroups, networkId)
   const {data: addressData} = useMultipleAddressByNetworkId(
     addressParams,
@@ -224,41 +225,55 @@ export const useAccountGroupAddress = networkId => {
   }
 }
 
-export const useCurrentAccount = () => {
-  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
-    fallbackData: {},
-  })
+export const useCurrentInfo = () => {
+  const {data: currentNetwork} = useRPC(
+    [WALLET_GET_CURRENT_NETWORK],
+    undefined,
+    {
+      fallbackData: {},
+    },
+  )
   const {
     eid: networkId,
-    type,
+    type: networkType,
     ticker,
     icon: networkIcon,
     name: networkName,
   } = currentNetwork
-  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
-    fallbackData: {},
-  })
-  const {eid: accountId} = currentAccount || {}
+  const {data: currentAccount} = useRPC(
+    [WALLET_GET_CURRENT_ACCOUNT],
+    undefined,
+    {
+      fallbackData: {},
+    },
+  )
+  const {eid: accountId, nickname} = currentAccount || {}
   const {data: accountAddress} = useSingleAddressByNetworkId(
     accountId,
     networkId,
   )
   const {base32, hex} = accountAddress
   const address =
-    type === NETWORK_TYPE.CFX ? base32 : type === NETWORK_TYPE.ETH ? hex : ''
+    networkType === NETWORK_TYPE.CFX
+      ? base32
+      : networkType === NETWORK_TYPE.ETH
+      ? hex
+      : ''
   return {
-    ...currentAccount,
+    nickname,
     address,
     ticker,
+    accountId,
     networkId,
     networkIcon,
     networkName,
+    networkType,
   }
 }
 
 export const usePendingAuthReq = (canSendReq = true) => {
   const {data: pendingAuthReq, error: pendingReqError} = useRPC(
-    canSendReq ? [GET_PENDING_AUTH_REQ] : null,
+    canSendReq ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
   )
   return {pendingAuthReq, pendingReqError}
 }
@@ -274,7 +289,7 @@ export const useBalance = (
   const address = base32 || hex
   const {data, error} = useRPC(
     address && isNumber(networkId) && isString(tokenContractAddress)
-      ? [GET_BALANCE, address, networkId]
+      ? [WALLET_GET_BALANCE, address, networkId]
       : null,
     {
       users: [address],
@@ -286,15 +301,23 @@ export const useBalance = (
 }
 
 export const useIsCfx = () => {
-  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
-    fallbackData: {},
-  })
+  const {data: currentNetwork} = useRPC(
+    [WALLET_GET_CURRENT_NETWORK],
+    undefined,
+    {
+      fallbackData: {},
+    },
+  )
   return currentNetwork?.type === 'cfx'
 }
 
 export const useIsEth = () => {
-  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
-    fallbackData: {},
-  })
+  const {data: currentNetwork} = useRPC(
+    [WALLET_GET_CURRENT_NETWORK],
+    undefined,
+    {
+      fallbackData: {},
+    },
+  )
   return currentNetwork?.type === 'eth'
 }

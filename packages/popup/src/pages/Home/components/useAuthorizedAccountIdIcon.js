@@ -1,7 +1,7 @@
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../../constants'
 import {useEffect, useState} from 'react'
-const {GET_CURRENT_DAPP} = RPC_METHODS
+const {WALLET_GET_CURRENT_DAPP} = RPC_METHODS
 
 const getAuthorizedAccountIdIcon = (accounts, icon) => {
   const accountIcons = {}
@@ -12,7 +12,7 @@ const getAuthorizedAccountIdIcon = (accounts, icon) => {
 }
 const useAuthorizedAccountIdIcon = () => {
   const [authorizedAccountIdObj, setAuthorizedAccountIdObj] = useState({})
-  const {data: currentDapp} = useRPC([GET_CURRENT_DAPP])
+  const {data: currentDapp} = useRPC([WALLET_GET_CURRENT_DAPP])
   useEffect(() => {
     if (currentDapp?.app?.account) {
       setAuthorizedAccountIdObj(

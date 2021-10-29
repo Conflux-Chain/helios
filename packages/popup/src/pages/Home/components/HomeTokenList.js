@@ -4,13 +4,13 @@ import {PlusOutlined} from '@fluent-wallet/component-icons'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {WrapIcon, TokenList} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
-const {GET_HOME_TOKEN_LIST, REFETCH_BALANCE} = RPC_METHODS
+const {WALLETDB_HOME_PAGE_ASSETS, WALLETDB_REFETCH_BALANCE} = RPC_METHODS
 
 function HomeTokenList({onOpenAddToken}) {
   const {
     data: {added, native},
-  } = useRPC([GET_HOME_TOKEN_LIST], undefined, {fallbackData: {}})
-  useRPC([REFETCH_BALANCE])
+  } = useRPC([WALLETDB_HOME_PAGE_ASSETS], undefined, {fallbackData: {}})
+  useRPC([WALLETDB_REFETCH_BALANCE])
   const homeTokenList = [native].concat(added)
   const {t} = useTranslation()
   return (

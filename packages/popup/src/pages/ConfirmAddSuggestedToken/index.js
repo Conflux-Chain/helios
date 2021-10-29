@@ -4,7 +4,7 @@ import {usePendingAuthReq, useBalance} from '../../hooks'
 import {TitleNav, AccountDisplay, DappFooter, TokenItem} from '../../components'
 import {RPC_METHODS} from '../../constants'
 import {useSWRConfig} from 'swr'
-const {GET_HOME_TOKEN_LIST, REFETCH_BALANCE} = RPC_METHODS
+const {WALLETDB_HOME_PAGE_ASSETS, WALLETDB_REFETCH_BALANCE} = RPC_METHODS
 
 function ConfirmAddSuggestedToken() {
   const {mutate} = useSWRConfig()
@@ -20,8 +20,8 @@ function ConfirmAddSuggestedToken() {
   )
 
   const onClickConfirm = () => {
-    mutate([GET_HOME_TOKEN_LIST])
-    mutate([REFETCH_BALANCE])
+    mutate([WALLETDB_HOME_PAGE_ASSETS])
+    mutate([WALLETDB_REFETCH_BALANCE])
   }
 
   const address = Object.keys(balanceData)[0]

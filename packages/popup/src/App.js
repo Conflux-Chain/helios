@@ -7,11 +7,12 @@ import {RPC_METHODS, ROUTES} from './constants'
 import {usePendingAuthReq} from './hooks'
 import './index.css'
 import useGlobalStore from './stores/index.js'
-const {GET_ACCOUNT_GROUP, GET_NO_GROUP, GET_WALLET_LOCKED_STATUS} = RPC_METHODS
+const {WALLET_GET_ACCOUNT_GROUP, WALLET_ZERO_ACCOUNT_GROUP, WALLET_IS_LOCKED} =
+  RPC_METHODS
 
 const {
   HOME,
-  UNLOCK,
+  WALLET_UNLOCK,
   WELCOME,
   CURRENT_SEED_PHRASE,
   NEW_SEED_PHRASE,
@@ -20,7 +21,7 @@ const {
   SET_PASSWORD,
   SELECT_CREATE_TYPE,
   IMPORT_SEED_PHRASE,
-  IMPORT_PRIVATE_KEY,
+  WALLET_IMPORT_PRIVATE_KEY,
   ERROR,
   CONNECT_SITE,
   CONFIRM_ADD_SUGGESTED_TOKEN,
@@ -51,12 +52,12 @@ const ConfirmAddSuggestedToken = lazy(() =>
 const SendTransaction = lazy(() => import('./pages/SendTransaction'))
 
 function App() {
-  const {data: lockedData, error: lockedError} = useRPC([
-    GET_WALLET_LOCKED_STATUS,
+  const {data: lockedData, error: lockedError} = useRPC([WALLET_IS_LOCKED])
+  const {data: zeroGroup, error: zeroGroupError} = useRPC([
+    WALLET_ZERO_ACCOUNT_GROUP,
   ])
-  const {data: zeroGroup, error: zeroGroupError} = useRPC([GET_NO_GROUP])
   const {error: getAccountGroupError} = useRPC(
-    lockedData === false ? [GET_ACCOUNT_GROUP] : null,
+    lockedData === false ? [WALLET_GET_ACCOUNT_GROUP] : null,
   )
   const {pendingAuthReq, pendingReqError} = usePendingAuthReq(
     lockedData === false,
@@ -86,7 +87,7 @@ function App() {
       <div className="h-150 w-93 m-auto light">
         <Router>
           <Switch>
-            <Route exact path={UNLOCK} component={Unlock} />
+            <Route exact path={WALLET_UNLOCK} component={Unlock} />
             <Route exact path={WELCOME} component={Welcome} />
             <ProtectedRoute
               pendingAuthReq={pendingAuthReq}
@@ -107,7 +108,7 @@ function App() {
             />
             <Route
               exact
-              path={IMPORT_PRIVATE_KEY}
+              path={WALLET_IMPORT_PRIVATE_KEY}
               component={ImportPrivateKey}
             />
             <ProtectedRoute

@@ -1,13 +1,9 @@
-import {useCurrentAccount} from '../../../hooks'
+import {useCurrentAccount, useCurrentNetwork} from '../../../hooks/useApi'
 import {Avatar} from '../../../components'
 
 function CurrentAccountNetworkLabel() {
-  const {
-    networkIcon,
-    networkName,
-    nickname,
-    eid: accountId,
-  } = useCurrentAccount()
+  const {icon: networkIcon, name: networkName} = useCurrentNetwork()
+  const {nickname, eid: accountId} = useCurrentAccount()
   return (
     <div className="flex items-center text-xs mt-1">
       <Avatar className="w-3 h-3 mr-1" accountId={accountId} diameter={12} />

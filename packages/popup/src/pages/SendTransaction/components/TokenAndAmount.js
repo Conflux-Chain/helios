@@ -13,14 +13,14 @@ import {
   TokenList,
 } from '../../../components'
 import {RPC_METHODS} from '../../../constants'
-const {GET_HOME_TOKEN_LIST, REFETCH_BALANCE} = RPC_METHODS
+const {WALLETDB_HOME_PAGE_ASSETS, WALLETDB_REFETCH_BALANCE} = RPC_METHODS
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
   const {
     data: {added, native},
-  } = useRPC([GET_HOME_TOKEN_LIST], undefined, {fallbackData: {}})
-  useRPC([REFETCH_BALANCE])
+  } = useRPC([WALLETDB_HOME_PAGE_ASSETS], undefined, {fallbackData: {}})
+  useRPC([WALLETDB_REFETCH_BALANCE])
   const homeTokenList = [native].concat(added)
   const [searchValue, setSearchValue] = useState('')
   const onChangeValue = value => {

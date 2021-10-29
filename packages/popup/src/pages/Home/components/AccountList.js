@@ -12,8 +12,11 @@ import {SlideCard, DisplayBalance, Avatar} from '../../../components'
 import {useAccountGroupBatchBalance} from '../../../hooks'
 
 const {SELECT_CREATE_TYPE} = ROUTES
-const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT, SET_CURRENT_ACCOUNT} =
-  RPC_METHODS
+const {
+  WALLET_GET_CURRENT_NETWORK,
+  WALLET_GET_CURRENT_ACCOUNT,
+  WALLET_SET_CURRENT_ACCOUNT,
+} = RPC_METHODS
 
 function AccountItem({
   nickname,
@@ -24,9 +27,9 @@ function AccountItem({
 }) {
   const {mutate} = useSWRConfig()
   const onChangeAccount = accountId => {
-    request(SET_CURRENT_ACCOUNT, [accountId]).then(({result}) => {
+    request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(({result}) => {
       result && closeAction && closeAction()
-      mutate([GET_CURRENT_ACCOUNT])
+      mutate([WALLET_GET_CURRENT_ACCOUNT])
       // TODO: need deal with error condition
     })
   }
@@ -78,7 +81,7 @@ AccountItem.propTypes = {
 
 function AccountList({onClose, onOpen}) {
   const {t} = useTranslation()
-  const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
+  const {data: currentNetworkData} = useRPC([WALLET_GET_CURRENT_NETWORK])
   const ticker = currentNetworkData?.ticker
   const networkId = currentNetworkData?.eid
   const groupBalanceData = useAccountGroupBatchBalance(networkId)

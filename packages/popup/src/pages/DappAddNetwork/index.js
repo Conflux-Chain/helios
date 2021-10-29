@@ -4,7 +4,7 @@ import {DappFooter, TitleNav} from '../../components'
 import {useTranslation} from 'react-i18next'
 import {usePendingAuthReq} from '../../hooks'
 import {RPC_METHODS} from '../../constants'
-const {GET_NETWORK} = RPC_METHODS
+const {WALLET_GET_NETWORK} = RPC_METHODS
 
 function NetworkContentItem({labelText, contentText, containerClass = ''}) {
   return (
@@ -88,7 +88,7 @@ function DappAddNetwork() {
         cancelText={t('cancel')}
         confirmText={t('addNetwork')}
         onClickConfirm={() => {
-          mutate([GET_NETWORK])
+          mutate([WALLET_GET_NETWORK])
         }}
       />
     </div>

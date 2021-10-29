@@ -5,7 +5,11 @@ import {request} from '../utils'
 import {useSWRConfig} from 'swr'
 import {CustomTag} from './'
 
-const {GET_NETWORK, SET_CURRENT_NETWORK, GET_CURRENT_NETWORK} = RPC_METHODS
+const {
+  WALLET_GET_NETWORK,
+  WALLET_SET_CURRENT_NETWORK,
+  WALLET_GET_CURRENT_NETWORK,
+} = RPC_METHODS
 const networkTypeColorObj = {
   mainnet: 'bg-primary-10 text-[#ACB6E0]',
   testnet: 'bg-[#FFF7F4] text-[#F5B797]',
@@ -30,8 +34,8 @@ function NetworkItem({
     itemWrapperPaddingStyleObj[networkItemSize] || ''
 
   const onChangeNetwork = () => {
-    request(SET_CURRENT_NETWORK, [networkId]).then(({result}) => {
-      mutate([GET_CURRENT_NETWORK])
+    request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(({result}) => {
+      mutate([WALLET_GET_CURRENT_NETWORK])
       onClickNetworkItem(result, {networkId, networkName, icon})
       // TODO: need deal with error condition
     })
@@ -71,7 +75,7 @@ NetworkItem.propTypes = {
 
 function NetworkContent({onClickNetworkItem, networkItemSize}) {
   const {data: networkData} = useRPC(
-    [GET_NETWORK],
+    [WALLET_GET_NETWORK],
     {},
     {
       fallbackData: [],

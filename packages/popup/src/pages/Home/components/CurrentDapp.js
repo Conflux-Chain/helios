@@ -5,23 +5,31 @@ import {AuthorizeModal, DisconnectModal} from '../components'
 import {request} from '../../../utils'
 import useGlobalStore from '../../../stores/index.js'
 import {RPC_METHODS} from '../../../constants'
-const {GET_CURRENT_DAPP, GET_CURRENT_ACCOUNT, REQUEST_PERMISSIONS, DELETE_APP} =
-  RPC_METHODS
+const {
+  WALLET_GET_CURRENT_DAPP,
+  WALLET_GET_CURRENT_ACCOUNT,
+  WALLET_REQUEST_PERMISSIONS,
+  WALLET_DELETE_APP,
+} = RPC_METHODS
 
 function CurrentDapp() {
   const {t} = useTranslation()
   const {setFatalError} = useGlobalStore()
   const [authModalShow, setAuthModalShow] = useState(false)
   const [disconnectModalShow, setDisconnectModalShow] = useState(false)
-  const {data} = useRPC([GET_CURRENT_DAPP], undefined, {
+  const {data} = useRPC([WALLET_GET_CURRENT_DAPP], undefined, {
     fallbackData: {},
   })
   const site = data?.site || {}
   const currentDapp = data?.app || {}
   const {currentAccount: dappCurrentAccount, eid: appId} = currentDapp
-  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
-    fallbackData: {},
-  })
+  const {data: currentAccount} = useRPC(
+    [WALLET_GET_CURRENT_ACCOUNT],
+    undefined,
+    {
+      fallbackData: {},
+    },
+  )
   const {origin, icon, eid: siteId} = site
   const {nickname: connectedNickname, eid: connectedEid} =
     dappCurrentAccount || {}
@@ -30,7 +38,7 @@ function CurrentDapp() {
   const isConnectedCurrentAccount = connectedEid === currentEid
 
   const onAuth = () => {
-    request(REQUEST_PERMISSIONS, {
+    request(WALLET_REQUEST_PERMISSIONS, {
       siteId,
       permissions: [{wallet_accounts: {}}],
       accounts: [currentEid],
@@ -41,7 +49,7 @@ function CurrentDapp() {
   }
 
   const onDisconnect = () => {
-    request(DELETE_APP, {appId}).then(({error}) => {
+    request(WALLET_DELETE_APP, {appId}).then(({error}) => {
       if (error) setFatalError(error)
       else setDisconnectModalShow(false)
     })

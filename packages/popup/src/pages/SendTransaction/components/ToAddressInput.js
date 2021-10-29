@@ -8,13 +8,17 @@ import {CompWithLabel} from '../../../components'
 import Input from '@fluent-wallet/component-input'
 import {useIsCfx, useIsEth} from '../../../hooks'
 import {RPC_METHODS} from '../../../constants'
-const {GET_CURRENT_NETWORK} = RPC_METHODS
+const {WALLET_GET_CURRENT_NETWORK} = RPC_METHODS
 
 function ToAddressInput({address, onChangeAddress}) {
   const {t} = useTranslation()
-  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
-    fallbackData: {},
-  })
+  const {data: currentNetwork} = useRPC(
+    [WALLET_GET_CURRENT_NETWORK],
+    undefined,
+    {
+      fallbackData: {},
+    },
+  )
   const [errorMessage, setErrorMessage] = useState('')
   const onChange = value => {
     onChangeAddress && onChangeAddress(value)

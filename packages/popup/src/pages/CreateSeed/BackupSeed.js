@@ -10,7 +10,7 @@ import {request} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {RPC_METHODS, ROUTES} from '../../constants'
 const {CONFIRM_SEED_PHRASE} = ROUTES
-const {GENERATE_MNEMONIC} = RPC_METHODS
+const {WALLET_GENERATE_MNEMONIC} = RPC_METHODS
 
 function BackupSeed() {
   useCreatedPasswordGuard()
@@ -19,7 +19,7 @@ function BackupSeed() {
   const {setCreatedMnemonic} = useGlobalStore()
   const [mnemonic, setMnemonic] = useState('')
   useEffectOnce(() =>
-    request(GENERATE_MNEMONIC).then(({result}) => setMnemonic(result)),
+    request(WALLET_GENERATE_MNEMONIC).then(({result}) => setMnemonic(result)),
   )
 
   return (

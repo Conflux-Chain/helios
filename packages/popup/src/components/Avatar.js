@@ -5,11 +5,11 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import {removeAllChild, jsNumberForAddress} from '../utils'
 import {RPC_METHODS} from '../constants'
 import {useSingleAddressByNetworkId} from '../hooks'
-const {GET_NETWORK} = RPC_METHODS
+const {WALLET_GET_NETWORK} = RPC_METHODS
 
 const useCfxMainnetAddress = accountId => {
   const {data: networkData} = useRPC(
-    [GET_NETWORK, accountId],
+    [WALLET_GET_NETWORK, accountId],
     {
       type: 'cfx',
     },

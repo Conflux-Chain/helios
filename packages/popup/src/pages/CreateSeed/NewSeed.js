@@ -8,7 +8,7 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import useGlobalStore from '../../stores'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import {useCreatedPasswordGuard} from '../../hooks'
-const {GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
+const {WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
 const {BACKUP_SEED_PHRASE} = ROUTES
 function NewSeed() {
@@ -19,7 +19,7 @@ function NewSeed() {
   const [groupName, setGroupName] = useState('')
   const [groupNamePlaceholder, setGroupNamePlaceholder] = useState('')
   const {data: hdGroup} = useRPC(
-    [GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
+    [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
     {type: ACCOUNT_GROUP_TYPE.HD},
     {fallbackData: []},
   )

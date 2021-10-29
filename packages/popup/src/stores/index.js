@@ -10,17 +10,24 @@ const useGlobalStore = create(set => ({
   createdMnemonic: '',
 
   toAddress: '',
-  amount: '0',
+  sendAmount: '0',
   gasPrice: '1',
   gasLimit: '21000',
   nonce: '0',
-  token: {symbol: 'CFX', icon: ''},
+  sendToken: {symbol: 'CFX', icon: ''},
 
   // logic
   setCreatedPassword: createdPassword => set({createdPassword}),
   setCreatedGroupName: createdGroupName => set({createdGroupName}),
   setCreatedSeedPhase: createdSeedPhase => set({createdSeedPhase}),
   setCreatedMnemonic: createdMnemonic => set({createdMnemonic}),
+
+  setToAddress: toAddress => set({toAddress}),
+  setSendAmount: sendAmount => set({sendAmount}),
+  setGasPrice: gasPrice => set({gasPrice}),
+  setGasLimit: gasLimit => set({gasLimit}),
+  setNonce: nonce => set({nonce}),
+  setSendToken: sendToken => set({sendToken}),
 }))
 
 export default useGlobalStore
