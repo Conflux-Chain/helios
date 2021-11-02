@@ -10,7 +10,7 @@ const useGlobalStore = create(set => ({
   createdMnemonic: '',
 
   toAddress: '',
-  sendAmount: '0',
+  sendAmount: '',
   gasPrice: '1',
   gasLimit: '21000',
   nonce: '0',

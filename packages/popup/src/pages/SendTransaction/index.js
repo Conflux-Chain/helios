@@ -110,7 +110,13 @@ function SendTransaction() {
               {t('cancel')}
             </Button>
             <Button
-              disabled={!!addressError || !!balanceError || !!gasError}
+              disabled={
+                !!addressError ||
+                !!balanceError ||
+                !!gasError ||
+                !toAddress ||
+                !sendAmount
+              }
               className="flex-1"
             >
               {t('next')}
