@@ -1,5 +1,5 @@
 import addrByNet from '@fluent-wallet/addr-by-network'
-import tokenContract from '@fluent-wallet/contract-abis/777.js'
+import {ethContractInterface as tokenContract} from '@fluent-wallet/contract-abis/777.js'
 import {balances} from '@fluent-wallet/single-call-balance-tracker'
 import {decode} from '@fluent-wallet/base32-address'
 import {hexValue} from '@ethersproject/bytes'

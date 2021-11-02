@@ -3665,6 +3665,7 @@ __metadata:
   dependencies:
     "@ethersproject/abi": 5.5.0
     "@fluent-wallet/compose": "workspace:packages/compose"
+    js-conflux-sdk: 1.7.1
   languageName: unknown
   linkType: soft
 

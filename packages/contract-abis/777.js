@@ -1,5 +1,6 @@
 import {Interface} from '@ethersproject/abi'
 import {partial} from '@fluent-wallet/compose'
+import {Conflux} from 'js-conflux-sdk'
 
 export const ABI = [
   {
@@ -112,12 +113,14 @@ export async function validateTokenInfo(...args) {
   let rst = {valid: true}
   try {
     const calls = [
-      contractInterface.symbol(callMethod, address),
-      contractInterface.name(callMethod, address),
-      contractInterface.decimals(callMethod, address),
+      ethContractInterface.symbol(callMethod, address),
+      ethContractInterface.name(callMethod, address),
+      ethContractInterface.decimals(callMethod, address),
     ]
     if (userAddress)
-      calls.push(contractInterface.balanceOf(callMethod, address, userAddress))
+      calls.push(
+        ethContractInterface.balanceOf(callMethod, address, userAddress),
+      )
     const [[symbolRst], [nameRst], [decimalsRst], balance] = await Promise.all(
       calls,
     )
@@ -137,7 +140,7 @@ export async function validateTokenInfo(...args) {
   return rst
 }
 
-const contractInterface = new Proxy(iface, {
+export const ethContractInterface = new Proxy(iface, {
   get() {
     const [, methodName] = arguments
     const f = iface.getFunction(methodName)
@@ -146,4 +149,4 @@ const contractInterface = new Proxy(iface, {
   },
 })
 
-export default contractInterface
+export const cfxContractInterface = new Conflux().Contract({abi: ABI})

@@ -1,7 +1,7 @@
 import {Conflux} from 'js-conflux-sdk'
 import {CFX_SCAN_DOMAINS} from './constance'
 import fetchHelper from './util/fetch-helper'
-import {ABI} from '@fluent-wallet/contract-abis/777.js'
+import {cfxContractInterface} from '@fluent-wallet/contract-abis/777.js'
 
 export const eip777AbiSignatures = [
   '0x70a08231',
@@ -36,15 +36,11 @@ export const getCFXContractMethodSignature = async (
   try {
     let abi = []
     if (eip777AbiSignatures.includes(transactionData.substr(0, 10))) {
-      abi = [...ABI]
-    } else {
-      const response = await getCFXAbi(address, network)
-      abi = JSON.parse(response.abi)
+      return cfxContractInterface.abi.decodeData(transactionData)
     }
-
-    return new Conflux()
-      .Contract({abi, address})
-      .abi.decodeData(transactionData)
+    const response = await getCFXAbi(address, network)
+    abi = JSON.parse(response.abi)
+    return new Conflux().Contract({abi}).abi.decodeData(transactionData)
   } catch (e) {
     return {}
   }

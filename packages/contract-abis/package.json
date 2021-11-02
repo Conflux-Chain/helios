@@ -5,6 +5,7 @@
   "version": "0.0.2",
   "dependencies": {
     "@ethersproject/abi": "5.5.0",
-    "@fluent-wallet/compose": "workspace:packages/compose"
+    "@fluent-wallet/compose": "workspace:packages/compose",
+    "js-conflux-sdk": "1.7.1"
   }
 }

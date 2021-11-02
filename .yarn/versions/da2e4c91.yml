@@ -3,3 +3,4 @@ releases:
 
 declined:
   - "@fluent-wallet/contract-abis"
+  - "@fluent-wallet/wallet_get-balance"
