@@ -10,6 +10,7 @@ export const CFX_DECIMAL = 18
 export const BTC_DECIMAL = 6
 export const USDT_DECIMAL = 8
 export const COMMON_DECIMAL = 18
+export const GWEI_DECIMALS = 9
 
 export const convertDecimal = (
   numOrStr,

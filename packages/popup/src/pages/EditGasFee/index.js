@@ -4,8 +4,7 @@ import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance} from '../../components'
 import {useIsCfx, useIsEth} from '../../hooks'
 import {WrapperWithLabel, GasInput} from './components'
-import Big from 'big.js'
-import {fromCfxToDrip} from '@fluent-wallet/data-format'
+import {fromCfxToDrip, GWEI_DECIMALS, Big} from '@fluent-wallet/data-format'
 
 /* eslint-disable react/prop-types */
 function EditGasFee({
@@ -52,8 +51,18 @@ function EditGasFee({
   }, [nonce, t])
 
   useEffect(() => {
-    setGasFee(new Big(gasLimit).times(gasPrice).toString(10))
-  }, [gasLimit, gasPrice])
+    if (isCfx) {
+      setGasFee(new Big(gasLimit).times(gasPrice).toString(10))
+    }
+    if (isEth) {
+      setGasFee(
+        new Big(gasLimit)
+          .times(gasPrice)
+          .times(`1e${GWEI_DECIMALS}`)
+          .toString(10),
+      )
+    }
+  }, [gasLimit, gasPrice, isCfx, isEth])
 
   useEffect(() => {
     if (isCfx) {
@@ -87,7 +96,7 @@ function EditGasFee({
             }
           />
           <WrapperWithLabel
-            containerClass={`${gasPriceErr ? 'mb-4' : 'mb-3'} relative`}
+            containerClass={`${gasPriceErr ? 'mb-9' : 'mb-3'} relative`}
             leftContent={`${t('gasPrice')} (${
               isCfx ? t('drip') : isEth ? t('gWei') : ''
             })`}
@@ -98,20 +107,20 @@ function EditGasFee({
                 width="w-32"
                 value={gasPrice}
                 errorMessage={gasPriceErr}
-                errorClassName="absolute left-0 -bottom-4"
+                errorClassName="absolute right-0 -bottom-6"
                 onGasInputChange={setGasPrice}
               />
             }
           />
           <WrapperWithLabel
             leftContent={t('gasLimit')}
-            containerClass={`${gasLimitErr ? 'mb-4' : 'mb-3'} relative`}
+            containerClass={`${gasLimitErr ? 'mb-9' : 'mb-3'} relative`}
             rightContent={
               <GasInput
                 type="number"
                 size="small"
                 width="w-32"
-                errorClassName="absolute left-0 -bottom-4"
+                errorClassName="absolute right-0 -bottom-6"
                 value={gasLimit}
                 errorMessage={gasLimitErr}
                 onGasInputChange={setGasLimit}
@@ -162,7 +171,7 @@ function EditGasFee({
                 width="w-32"
                 value={nonce}
                 errorMessage={nonceErr}
-                errorClassName="absolute left-0 -bottom-4"
+                errorClassName="absolute right-0 -bottom-6"
                 onGasInputChange={setNonce}
               />
             }
@@ -171,7 +180,7 @@ function EditGasFee({
       </div>
       <footer>
         <Button
-          className="w-70  mx-auto mb-4"
+          className="w-70  mx-auto mb-9"
           id="saveGasFeeBtn"
           disabled={!!gasPriceErr || !!nonceErr || !!gasLimitErr}
         >
