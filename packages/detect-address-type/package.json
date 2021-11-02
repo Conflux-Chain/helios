@@ -1,0 +1,11 @@
+{
+  "name": "@fluent-wallet/detect-address-type",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.0.1",
+  "version": "0.0.0",
+  "dependencies": {
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address",
+    "@fluent-wallet/checks": "workspace:packages/checks"
+  }
+}
