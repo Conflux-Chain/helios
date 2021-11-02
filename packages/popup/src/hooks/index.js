@@ -10,6 +10,7 @@ import {
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber, isString} from '@fluent-wallet/checks'
 import {formatBalance} from '@fluent-wallet/data-format'
+import {useIsLocked, useIsZeroGroup} from './useApi'
 
 const {
   WALLET_GET_ACCOUNT_GROUP,
@@ -18,16 +19,14 @@ const {
   WALLET_GET_CURRENT_NETWORK,
   WALLET_GET_CURRENT_ACCOUNT,
   WALLET_GET_PENDING_AUTH_REQUEST,
-  WALLET_ZERO_ACCOUNT_GROUP,
-  WALLET_IS_LOCKED,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
 export const useCreatedPasswordGuard = () => {
   const createdPassword = useGlobalStore(state => state.createdPassword)
   const history = useHistory()
-  const {data: zeroGroup} = useRPC([WALLET_ZERO_ACCOUNT_GROUP])
-  const {data: lockedData} = useRPC([WALLET_IS_LOCKED])
+  const zeroGroup = useIsZeroGroup()
+  const lockedData = useIsLocked()
 
   useEffect(() => {
     if ((zeroGroup && !createdPassword) || (!zeroGroup && lockedData)) {
@@ -118,7 +117,7 @@ const formatAccountGroupData = ({
 }) => {
   let ret = []
   if (
-    accountGroups.length &&
+    accountGroups?.length &&
     addressDataWithAccountId &&
     ((returnBalance && Object.keys(balanceData).length) || !returnBalance)
   ) {
@@ -184,7 +183,7 @@ export const useAccountGroupBatchBalance = networkId => {
     networkId,
   )
   const {data: balanceData} = useRPC(
-    addressData.length ? [WALLET_GET_BALANCE, networkId] : null,
+    addressData?.length ? [WALLET_GET_BALANCE, networkId] : null,
     {
       users: addressData.map(data => data?.base32 || data?.hex).filter(Boolean),
       tokens: ['0x0'],

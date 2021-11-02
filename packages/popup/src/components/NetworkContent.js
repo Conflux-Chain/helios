@@ -1,15 +1,11 @@
 import PropTypes from 'prop-types'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../constants'
 import {request} from '../utils'
 import {useSWRConfig} from 'swr'
+import {useNetwork} from '../hooks/useApi'
 import {CustomTag} from './'
 
-const {
-  WALLET_GET_NETWORK,
-  WALLET_SET_CURRENT_NETWORK,
-  WALLET_GET_CURRENT_NETWORK,
-} = RPC_METHODS
+const {WALLET_SET_CURRENT_NETWORK, WALLET_GET_CURRENT_NETWORK} = RPC_METHODS
 const networkTypeColorObj = {
   mainnet: 'bg-primary-10 text-[#ACB6E0]',
   testnet: 'bg-[#FFF7F4] text-[#F5B797]',
@@ -74,13 +70,7 @@ NetworkItem.propTypes = {
 }
 
 function NetworkContent({onClickNetworkItem, networkItemSize}) {
-  const {data: networkData} = useRPC(
-    [WALLET_GET_NETWORK],
-    {},
-    {
-      fallbackData: [],
-    },
-  )
+  const networkData = useNetwork()
 
   return (
     <>

@@ -1,16 +1,12 @@
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../../constants'
 import {request} from '../../utils'
+import {usePendingAuthReq, useAllGroup} from '../../hooks/useApi'
 
-const {
-  WALLET_GET_ACCOUNT_GROUP,
-  WALLET_GET_PENDING_AUTH_REQUEST,
-  WALLET_REJECT_PENDING_AUTH_REQUSET,
-} = RPC_METHODS
+const {WALLET_REJECT_PENDING_AUTH_REQUSET} = RPC_METHODS
 
 export default function PendingAuthReqExample() {
-  const {data: pendingAuthReq} = useRPC([WALLET_GET_PENDING_AUTH_REQUEST])
-  const {data: groups} = useRPC([WALLET_GET_ACCOUNT_GROUP])
+  const pendingAuthReq = usePendingAuthReq()
+  const groups = useAllGroup()
   console.log('groups = ', groups)
   if (!(pendingAuthReq?.length > 0)) return <div></div>
   console.log('pendingAuthReq = ', JSON.stringify(pendingAuthReq))

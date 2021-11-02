@@ -4,11 +4,11 @@ import {useTranslation} from 'react-i18next'
 import {TitleNav, CompWithLabel} from '../../components'
 import Button from '@fluent-wallet/component-button'
 import Input from '@fluent-wallet/component-input'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
+import {usePkAccountGroup} from '../../hooks/useApi'
 import {useSWRConfig} from 'swr'
 const {
   WALLET_GET_ACCOUNT_GROUP,
@@ -31,11 +31,7 @@ function ImportPrivateKey() {
   const [creatingAccount, setCreatingAccount] = useState(false)
   const createdPassword = useGlobalStore(state => state.createdPassword)
 
-  const {data: keygenGroup} = useRPC(
-    [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK],
-    {type: ACCOUNT_GROUP_TYPE.PK},
-    {fallbackData: []},
-  )
+  const keygenGroup = usePkAccountGroup()
 
   useCreatedPasswordGuard()
   useEffect(() => {

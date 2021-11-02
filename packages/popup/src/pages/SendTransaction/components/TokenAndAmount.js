@@ -1,7 +1,6 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {CaretDownFilled} from '@fluent-wallet/component-icons'
 import Input from '@fluent-wallet/component-input'
 import Link from '@fluent-wallet/component-link'
@@ -12,15 +11,11 @@ import {
   SearchToken,
   TokenList,
 } from '../../../components'
-import {RPC_METHODS} from '../../../constants'
-const {WALLETDB_HOME_PAGE_ASSETS, WALLETDB_REFETCH_BALANCE} = RPC_METHODS
+import {useDbHomeAssets} from '../../../hooks/useApi'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
-  const {
-    data: {added, native},
-  } = useRPC([WALLETDB_HOME_PAGE_ASSETS], undefined, {fallbackData: {}})
-  useRPC([WALLETDB_REFETCH_BALANCE])
+  const {added, native} = useDbHomeAssets()
   const homeTokenList = [native].concat(added)
   const [searchValue, setSearchValue] = useState('')
   const onChangeValue = value => {

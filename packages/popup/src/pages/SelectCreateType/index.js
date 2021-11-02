@@ -1,10 +1,9 @@
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
-import {ROUTES, RPC_METHODS} from '../../constants'
-const {WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
+import {useHdAccountGroup} from '../../hooks/useApi'
+import {ROUTES} from '../../constants'
 
 const {
   CURRENT_SEED_PHRASE,
@@ -23,11 +22,7 @@ function Tag() {
 function SelectCreateType() {
   const {t} = useTranslation()
   const history = useHistory()
-  const {data: hdGroup} = useRPC(
-    [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
-    {type: ACCOUNT_GROUP_TYPE.HD},
-    {fallbackData: []},
-  )
+  const hdGroup = useHdAccountGroup()
 
   return (
     <div className="bg-bg  h-full" id="selectCreateTypeContainer">

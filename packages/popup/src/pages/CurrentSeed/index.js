@@ -6,15 +6,10 @@ import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {CompWithLabel, TitleNav} from '../../components'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
 import {RPC_METHODS, ROUTES} from '../../constants'
-const {
-  WALLET_GET_ACCOUNT_GROUP,
-  ACCOUNT_GROUP_TYPE,
-  WALLET_CREATE_ACCOUNT,
-  WALLET_ZERO_ACCOUNT_GROUP,
-} = RPC_METHODS
+import {useHdAccountGroup} from '../../hooks/useApi'
+const {WALLET_CREATE_ACCOUNT, WALLET_ZERO_ACCOUNT_GROUP} = RPC_METHODS
 const {HOME} = ROUTES
 
 function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
@@ -58,11 +53,7 @@ SeedPhrase.propTypes = {
 function CurrentSeed() {
   const {t} = useTranslation()
   const {mutate} = useSWRConfig()
-  const {data: hdGroup} = useRPC(
-    [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
-    {type: ACCOUNT_GROUP_TYPE.HD},
-    {fallbackData: []},
-  )
+  const hdGroup = useHdAccountGroup()
 
   const [accountName, setAccountName] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')

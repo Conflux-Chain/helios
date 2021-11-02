@@ -11,9 +11,12 @@ const {
   WALLET_GET_CURRENT_DAPP,
   WALLET_GET_PENDING_AUTH_REQUEST,
   WALLET_ZERO_ACCOUNT_GROUP,
+  WALLET_GET_NETWORK,
   WALLET_IS_LOCKED,
   ACCOUNT_GROUP_TYPE,
   WALLET_DETECT_ADDRESS_TYPE,
+  WALLETDB_HOME_PAGE_ASSETS,
+  WALLETDB_REFETCH_BALANCE,
 } = RPC_METHODS
 
 export const useCurrentAccount = () => {
@@ -62,13 +65,70 @@ export const useAccountGroup = () => {
   return accountGroup
 }
 
+export const useNetwork = () => {
+  const {data: networkData} = useRPC([WALLET_GET_NETWORK], undefined, {
+    fallbackData: [{}],
+  })
+  return networkData
+}
+
+export const useCfxNetwork = () => {
+  const {data: cfxNetWork} = useRPC(
+    [WALLET_GET_NETWORK],
+    {
+      type: 'cfx',
+    },
+    {fallbackData: [{}]},
+  )
+  return cfxNetWork
+}
+
+export const useEthNetwork = () => {
+  const {data: ethNetWork} = useRPC(
+    [WALLET_GET_NETWORK],
+    {
+      type: 'eth',
+    },
+    {fallbackData: [{}]},
+  )
+  return ethNetWork
+}
+
+export const useNetworkByChainId = (chainId, type) => {
+  const {data: network} = useRPC(
+    chainId ? [WALLET_GET_NETWORK, chainId] : null,
+    {
+      chainId,
+      type,
+    },
+    {fallbackData: [{}]},
+  )
+  return network
+}
+
 export const useHdAccountGroup = () => {
   const {data: hdGroup} = useRPC(
     [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
     {type: ACCOUNT_GROUP_TYPE.HD},
-    {fallbackData: []},
+    {fallbackData: [{}]},
   )
   return hdGroup
+}
+
+export const usePkAccountGroup = () => {
+  const {data: pkGroup} = useRPC(
+    [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK],
+    {type: ACCOUNT_GROUP_TYPE.PK},
+    {fallbackData: [{}]},
+  )
+  return pkGroup
+}
+
+export const useAllGroup = () => {
+  const {data: group} = useRPC([WALLET_GET_ACCOUNT_GROUP], undefined, {
+    fallbackData: [{}],
+  })
+  return group
 }
 
 export const useIsLocked = () => {
@@ -82,23 +142,26 @@ export const useIsZeroGroup = () => {
 }
 
 export const usePendingAuthReq = (canSendReq = true) => {
-  const {data} = useRPC(canSendReq ? [WALLET_GET_PENDING_AUTH_REQUEST] : null)
-  return data
+  const {data: pendingAuthReq} = useRPC(
+    canSendReq ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
+  )
+  return pendingAuthReq
 }
 
 export const useAddressByNetworkId = (accountIds = [], networkId) => {
   if (isNumber(accountIds)) accountIds = [accountIds]
-  const params = accountIds.map(accountId => {
-    accountId, networkId
-  })
-  const {data} = useRPC(
+  const params = accountIds.map(accountId => ({
+    accountId,
+    networkId,
+  }))
+  const {data: address} = useRPC(
     params.length && isNumber(networkId)
       ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId, ...accountIds]
       : null,
     params,
-    {fallbackData: isNumber(accountIds) ? {} : []},
+    {fallbackData: isNumber(accountIds) ? {} : [{}]},
   )
-  return data
+  return address
 }
 
 export const useBalance = (
@@ -106,7 +169,7 @@ export const useBalance = (
   networkId,
   tokenContractAddress = '0x0',
 ) => {
-  const {data} = useRPC(
+  const {data: balance} = useRPC(
     address && isNumber(networkId) && isString(tokenContractAddress)
       ? [WALLET_GET_BALANCE, address, networkId]
       : null,
@@ -116,7 +179,7 @@ export const useBalance = (
     },
     {fallbackData: {}},
   )
-  return data
+  return balance
 }
 
 export const useNetworkTypeIsCfx = () => {
@@ -130,8 +193,8 @@ export const useNetworkTypeIsEth = () => {
 }
 
 export const useCurrentNativeToken = () => {
-  const {ticker} = useCurrentNetwork()
-  return ticker
+  const {ticker: currentNativeToken} = useCurrentNetwork()
+  return currentNativeToken
 }
 
 export const useAddressType = address => {
@@ -143,4 +206,16 @@ export const useAddressType = address => {
     {fallbackData: {}},
   )
   return type
+}
+
+export const useDbHomeAssets = () => {
+  const {data: homeAssets} = useRPC([WALLETDB_HOME_PAGE_ASSETS], undefined, {
+    fallbackData: {},
+  })
+  useDbRefetchBalance()
+  return homeAssets
+}
+
+export const useDbRefetchBalance = () => {
+  useRPC([WALLETDB_REFETCH_BALANCE])
 }

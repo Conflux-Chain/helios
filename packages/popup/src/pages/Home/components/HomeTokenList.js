@@ -1,16 +1,11 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {PlusOutlined} from '@fluent-wallet/component-icons'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {WrapIcon, TokenList} from '../../../components'
-import {RPC_METHODS} from '../../../constants'
-const {WALLETDB_HOME_PAGE_ASSETS, WALLETDB_REFETCH_BALANCE} = RPC_METHODS
+import {useDbHomeAssets} from '../../../hooks/useApi'
 
 function HomeTokenList({onOpenAddToken}) {
-  const {
-    data: {added, native},
-  } = useRPC([WALLETDB_HOME_PAGE_ASSETS], undefined, {fallbackData: {}})
-  useRPC([WALLETDB_REFETCH_BALANCE])
+  const {added, native} = useDbHomeAssets()
   const homeTokenList = [native].concat(added)
   const {t} = useTranslation()
   return (

@@ -6,15 +6,16 @@ OriginBig.RM = 0
 OriginBig.NE = -19
 
 export const Big = OriginBig
-export const CFX_DECIMAL = 18
-export const BTC_DECIMAL = 6
-export const USDT_DECIMAL = 8
-export const COMMON_DECIMAL = 18
+export const CFX_DECIMALS = 18
+export const BTC_DECIMALS = 6
+export const USDT_DECIMALS = 8
+export const COMMON_DECIMALS = 18
+export const GWEI_DECIMALS = 9
 
 export const convertDecimal = (
   numOrStr,
   action = 'divide',
-  decimals = COMMON_DECIMAL,
+  decimals = COMMON_DECIMALS,
 ) => {
   if (action === 'divide') {
     return new Big(numOrStr).div(`1e${decimals}`).toString(10)
@@ -25,11 +26,11 @@ export const convertDecimal = (
 }
 
 export const fromCfxToDrip = numOrStr => {
-  return convertDecimal(numOrStr, 'multiply', CFX_DECIMAL)
+  return convertDecimal(numOrStr, 'multiply', CFX_DECIMALS)
 }
 
 export const fromDripToCfx = numOrStr => {
-  return convertDecimal(numOrStr, 'divide', CFX_DECIMAL)
+  return convertDecimal(numOrStr, 'divide', CFX_DECIMALS)
 }
 
 export const trimZero = numOrStr => {
