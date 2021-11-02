@@ -1,7 +1,7 @@
 import {Interface} from '@ethersproject/abi'
 import {partial} from '@fluent-wallet/compose'
 
-const ABI = [
+export const ABI = [
   {
     inputs: [{internalType: 'address', name: 'tokenHolder', type: 'address'}],
     name: 'balanceOf',

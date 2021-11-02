@@ -4,6 +4,7 @@
   "version": "0.0.3",
   "main": "index.js",
   "dependencies": {
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
     "eth-method-registry": "2.0.0",
     "ethjs": "0.4.0",
     "js-conflux-sdk": "1.7.1",

@@ -1,20 +1,35 @@
 import {expect, describe, afterEach} from '@jest/globals'
 import nock from 'nock'
-import {CFX_SCAN_TESTNET_DOMAIN, CFX_SCAN_MAINNET_DOMAIN} from './constance'
-import {getCFXScanDomain, getCFXContractMethodSignature} from './cfx-name'
+import {
+  getCFXScanDomain,
+  getCFXContractMethodSignature,
+  eip777AbiSignatures,
+} from './cfx-name'
 import {Conflux} from 'js-conflux-sdk'
+import {ABI as abi} from '@fluent-wallet/contract-abis/777.js'
 
 describe('CFX Name', () => {
   describe('getCFXScanDomain', () => {
     it('should return testnet url', () => {
-      expect(getCFXScanDomain('CFX_TESTNET')).toEqual(CFX_SCAN_TESTNET_DOMAIN)
+      expect(getCFXScanDomain('CFX_TESTNET')).toEqual(
+        'https://testnet.confluxscan.io',
+      )
     })
 
     it('should return mainnet url', () => {
-      expect(getCFXScanDomain('CFX_MAINNET')).toEqual(CFX_SCAN_MAINNET_DOMAIN)
+      expect(getCFXScanDomain('CFX_MAINNET')).toEqual('https://confluxscan.io')
     })
   })
-
+  describe('eip777AbiSignatures', () => {
+    it('test eip777AbiSignatures', () => {
+      const contract = new Conflux().Contract({abi})
+      const signatures = []
+      abi.forEach(item => {
+        signatures.push(contract[item.name].signature)
+      })
+      expect(eip777AbiSignatures).toEqual(signatures)
+    })
+  })
   describe('getCFXContractMethodSignature', () => {
     afterEach(() => {
       nock.cleanAll()
@@ -44,25 +59,11 @@ describe('CFX Name', () => {
       const res = await getCFXContractMethodSignature(
         'cfxtest:acgd1ex04h88ybdyxxdg45wjj0mrcwx1fak1snk3db',
         '0x6057361d0000000000000000000000000000000000000000000000000000000000000064',
-        'testnet',
+        'CFX_TESTNET',
       )
       expect(res).toHaveProperty('fullName', 'store(uint256 num)')
     })
     it('should return name of transfer function', async () => {
-      const abi = [
-        {
-          constant: false,
-          inputs: [
-            {internalType: 'address', name: 'recipient', type: 'address'},
-            {internalType: 'uint256', name: 'amount', type: 'uint256'},
-          ],
-          name: 'transfer',
-          outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-          payable: false,
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-      ]
       const contract = new Conflux().Contract({abi})
       const transferData = contract.transfer(
         'cfx:aamysddjren1zfp36agsek5fxt2w0st8feps3297ek',

@@ -3672,6 +3672,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/contract-method-name@workspace:packages/contract-method-name"
   dependencies:
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     eth-method-registry: 2.0.0
     ethjs: 0.4.0
     js-conflux-sdk: 1.7.1

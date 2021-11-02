@@ -1,104 +1,27 @@
 import {Conflux} from 'js-conflux-sdk'
-import {CFX_SCAN_TESTNET_DOMAIN, CFX_SCAN_MAINNET_DOMAIN} from './constance'
+import {CFX_SCAN_DOMAINS} from './constance'
 import fetchHelper from './util/fetch-helper'
+import {ABI} from '@fluent-wallet/contract-abis/777.js'
 
-const abiWithSignatureObj = {
-  '0x70a08231': {
-    inputs: [{internalType: 'address', name: 'tokenHolder', type: 'address'}],
-    name: 'balanceOf',
-    outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  '0x313ce567': {
-    inputs: [],
-    name: 'decimals',
-    outputs: [{internalType: 'uint8', name: '', type: 'uint8'}],
-    stateMutability: 'pure',
-    type: 'function',
-  },
-  '0x06fdde03': {
-    inputs: [],
-    name: 'name',
-    outputs: [{internalType: 'string', name: '', type: 'string'}],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  '0x95d89b41': {
-    inputs: [],
-    name: 'symbol',
-    outputs: [{internalType: 'string', name: '', type: 'string'}],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  '0xa9059cbb': {
-    inputs: [
-      {internalType: 'address', name: 'recipient', type: 'address'},
-      {internalType: 'uint256', name: 'amount', type: 'uint256'},
-    ],
-    name: 'transfer',
-    outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  '0xdd62ed3e': {
-    inputs: [
-      {internalType: 'address', name: 'holder', type: 'address'},
-      {internalType: 'address', name: 'spender', type: 'address'},
-    ],
-    name: 'allowance',
-    outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  '0x095ea7b3': {
-    inputs: [
-      {internalType: 'address', name: 'spender', type: 'address'},
-      {internalType: 'uint256', name: 'value', type: 'uint256'},
-    ],
-    name: 'approve',
-    outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  '0x556f0dc7': {
-    inputs: [],
-    name: 'granularity',
-    outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  '0x9bd9bbc6': {
-    inputs: [
-      {internalType: 'address', name: 'recipient', type: 'address'},
-      {internalType: 'uint256', name: 'amount', type: 'uint256'},
-      {internalType: 'bytes', name: 'data', type: 'bytes'},
-    ],
-    name: 'send',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  '0x23b872dd': {
-    inputs: [
-      {internalType: 'address', name: 'holder', type: 'address'},
-      {internalType: 'address', name: 'recipient', type: 'address'},
-      {internalType: 'uint256', name: 'amount', type: 'uint256'},
-    ],
-    name: 'transferFrom',
-    outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
+export const eip777AbiSignatures = [
+  '0x70a08231',
+  '0x313ce567',
+  '0x06fdde03',
+  '0x95d89b41',
+  '0xa9059cbb',
+  '0xdd62ed3e',
+  '0x095ea7b3',
+  '0x556f0dc7',
+  '0x9bd9bbc6',
+  '0x23b872dd',
+]
+
+export const getCFXScanDomain = network => {
+  return CFX_SCAN_DOMAINS[network]
 }
-// return conflux scan domain. Param networkType can be mainnet or testnet
-export const getCFXScanDomain = networkType => {
-  return networkType === 'CFX_MAINNET'
-    ? CFX_SCAN_MAINNET_DOMAIN
-    : CFX_SCAN_TESTNET_DOMAIN
-}
-export const getCFXAbi = async (address, networkType) => {
-  const scanDomain = getCFXScanDomain(networkType)
+
+export const getCFXAbi = async (address, network) => {
+  const scanDomain = getCFXScanDomain(network)
   return await fetchHelper(
     `${scanDomain}/v1/contract/${address}?fields=abi`,
     'GET',
@@ -108,14 +31,14 @@ export const getCFXAbi = async (address, networkType) => {
 export const getCFXContractMethodSignature = async (
   address,
   transactionData,
-  networkType,
+  network,
 ) => {
   try {
     let abi = []
-    if (abiWithSignatureObj[transactionData.substr(0, 10)]) {
-      abi = [abiWithSignatureObj[transactionData.substr(0, 10)]]
+    if (eip777AbiSignatures.includes(transactionData.substr(0, 10))) {
+      abi = [...ABI]
     } else {
-      const response = await getCFXAbi(address, networkType)
+      const response = await getCFXAbi(address, network)
       abi = JSON.parse(response.abi)
     }
 
