@@ -37,7 +37,7 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   )
   return (
     <Modal
-      className="!bg-choose-token-modal bg-no-repeat w-80 h-[552px]"
+      className="!bg-gray-circles bg-no-repeat w-80 h-[552px]"
       open={open}
       title={t('chooseToken')}
       content={content}

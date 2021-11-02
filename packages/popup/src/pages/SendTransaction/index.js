@@ -1,11 +1,12 @@
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
-import {TitleNav, CurrentNetworkDisplay, GasFee} from '../../components'
+import {TitleNav, GasFee} from '../../components'
 import {
   ToAddressInput,
   TokenAndAmount,
   CurrentAccountDisplay,
+  CurrentNetworkDisplay,
 } from './components'
 import useGlobalStore from '../../stores/index.js'
 import {useCurrentNativeToken} from '../../hooks/useApi'
@@ -35,12 +36,7 @@ function SendTransaction() {
   }
   if (nativeToken) setSendToken(nativeToken)
   return (
-    <div className="flex flex-col h-full relative bg-bg">
-      <img
-        src="/images/send-transaction-bg.svg"
-        alt="top"
-        className="absolute top-0"
-      />
+    <div className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg">
       <TitleNav title={t('sendTransaction')} />
       <div className="flex mt-1 mb-3 mx-4 justify-between items-center z-20">
         <CurrentAccountDisplay />

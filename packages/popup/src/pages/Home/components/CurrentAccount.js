@@ -24,7 +24,7 @@ function CurrentAccount({onOpenAccount}) {
       </div>
       <div className="flex items-center">
         <span className="text-white font-medium mr-2">{displayAddress}</span>
-        <CopyButton text={address} />
+        <CopyButton text={address} className="mx-2 text-white" />
         <QRCodeButton title={nickname} qrcodeValue={address} />
       </div>
     </div>

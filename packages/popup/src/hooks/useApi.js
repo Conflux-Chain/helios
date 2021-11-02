@@ -8,6 +8,7 @@ const {
   WALLET_GET_BALANCE,
   WALLET_GET_CURRENT_NETWORK,
   WALLET_GET_CURRENT_ACCOUNT,
+  WALLET_GET_CURRENT_DAPP,
   WALLET_GET_PENDING_AUTH_REQUEST,
   WALLET_ZERO_ACCOUNT_GROUP,
   WALLET_IS_LOCKED,
@@ -29,7 +30,7 @@ export const useCurrentAccount = () => {
   )
   const {eid: accountId} = currentAccount || {}
   const {data: accountAddress} = useAddressByNetworkId(accountId, networkId)
-  const {base32, hex} = accountAddress
+  const {base32, hex} = accountAddress || {}
   const address = networkTypeIsCfx ? base32 : networkTypeIsEth ? hex : ''
   return {
     ...currentAccount,
@@ -46,6 +47,14 @@ export const useCurrentNetwork = () => {
     },
   )
   return currentNetwork
+}
+
+export const useCurrentDapp = () => {
+  const {data: currentDapp} = useRPC([WALLET_GET_CURRENT_DAPP], undefined, {
+    fallbackData: {},
+  })
+
+  return currentDapp
 }
 
 export const useAccountGroup = () => {
@@ -73,14 +82,12 @@ export const useIsZeroGroup = () => {
 }
 
 export const usePendingAuthReq = (canSendReq = true) => {
-  const {data: pendingAuthReq, error: pendingReqError} = useRPC(
-    canSendReq ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
-  )
-  return {pendingAuthReq, pendingReqError}
+  const {data} = useRPC(canSendReq ? [WALLET_GET_PENDING_AUTH_REQUEST] : null)
+  return data
 }
 
 export const useAddressByNetworkId = (accountIds = [], networkId) => {
-  if (!Array.isArray(accountIds)) accountIds = [accountIds]
+  if (isNumber(accountIds)) accountIds = [accountIds]
   const params = accountIds.map(accountId => {
     accountId, networkId
   })
@@ -89,21 +96,17 @@ export const useAddressByNetworkId = (accountIds = [], networkId) => {
       ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId, ...accountIds]
       : null,
     params,
-    {fallbackData: []},
+    {fallbackData: isNumber(accountIds) ? {} : []},
   )
   return data
 }
 
 export const useBalance = (
-  accountId,
+  address,
   networkId,
   tokenContractAddress = '0x0',
 ) => {
-  const {
-    data: {base32, hex},
-  } = useAddressByNetworkId(accountId, networkId)
-  const address = base32 || hex
-  const {data, error} = useRPC(
+  const {data} = useRPC(
     address && isNumber(networkId) && isString(tokenContractAddress)
       ? [WALLET_GET_BALANCE, address, networkId]
       : null,
@@ -113,7 +116,7 @@ export const useBalance = (
     },
     {fallbackData: {}},
   )
-  return {data, error}
+  return data
 }
 
 export const useNetworkTypeIsCfx = () => {

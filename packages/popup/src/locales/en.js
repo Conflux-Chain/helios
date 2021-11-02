@@ -138,6 +138,17 @@ const en = {
     tokenList: 'Token list',
     noTxnWarning:
       'This address DOES NOT have any historical transactions, please double check',
+    // confirm transaction
+    sendToken: 'Send Token',
+    approveToken: 'Token Approve',
+    signTransaction: 'Sign Transaction',
+    toAddress: 'To Address',
+    approveTo: 'Approve To',
+    contract: 'Contract',
+    allowLimit: 'Allow Limit',
+    protocol: 'Protocol',
+    action: 'Action',
+    viewData: 'View Data',
   },
 }
 
