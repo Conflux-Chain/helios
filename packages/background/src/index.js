@@ -84,34 +84,34 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 
     if (IS_DEV_MODE) {
       if (db.getAccountGroup()?.length) {
-        // console.log(
-        //   'wallet_unlock',
-        //   await request({
-        //     method: 'wallet_unlock',
-        //     params: {password: '1111aaaa'},
-        //   }),
-        // )
+        console.log(
+          'wallet_unlock',
+          await request({
+            method: 'wallet_unlock',
+            params: {password: '1111aaaa'},
+          }),
+        )
       }
 
-      // console.log(
-      //   'wallet_importMnemonic',
-      //   await request({
-      //     method: 'wallet_importMnemonic',
-      //     params: {
-      //       mnemonic:
-      //         'error mom brown point sun magnet armor fish urge business until plastic',
-      //       password: '1111aaaa',
-      //     },
-      //   }),
-      // )
+      console.log(
+        'wallet_importMnemonic',
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {
+            mnemonic:
+              'error mom brown point sun magnet armor fish urge business until plastic',
+            password: '1111aaaa',
+          },
+        }),
+      )
 
-      // await request({
-      //   method: 'wallet_importAddress',
-      //   params: {
-      //     address: 'cfx:aamysddjren1zfp36agsek5fxt2w0st8feps3297ek',
-      //     password: '1111aaaa',
-      //   },
-      // })
+      await request({
+        method: 'wallet_importAddress',
+        params: {
+          address: 'cfx:aamysddjren1zfp36agsek5fxt2w0st8feps3297ek',
+          password: '1111aaaa',
+        },
+      })
     }
   }
 })()

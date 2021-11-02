@@ -149,6 +149,9 @@ const en = {
     totalFee: 'Total Fee',
     customNonce: 'Custom Nonce',
     save: 'Save',
+    gasPriceErrMSg: 'Gas Price must be greater than 0 {{unit}}',
+    gasLimitErrMsg: 'Gas limit must be at least {{gasUsed}}',
+    nonceErr: 'Nonce can not be 0',
   },
 }
 

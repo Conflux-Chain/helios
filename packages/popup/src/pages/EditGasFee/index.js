@@ -1,72 +1,182 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
-import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
-import {TitleNav} from '../../components'
+import {TitleNav, DisplayBalance} from '../../components'
 import {useIsCfx, useIsEth} from '../../hooks'
+import {WrapperWithLabel, GasInput} from './components'
+import Big from 'big.js'
+import {fromCfxToDrip} from '@fluent-wallet/data-format'
 
-function EditGasFee() {
+/* eslint-disable react/prop-types */
+function EditGasFee({
+  gasUsed = '21000',
+  storageLimit = '128',
+  _gasPrice = '6',
+}) {
   const {t} = useTranslation()
-  const [gasPrice, setGasPrice] = useState('')
-  const [gasLimit, setGasLimit] = useState('')
-  const [nonce, setNonce] = useState('')
+  const [gasPrice, setGasPrice] = useState(_gasPrice)
+  const [gasLimit, setGasLimit] = useState(gasUsed)
+  const [nonce, setNonce] = useState('0')
+  const [gasPriceErr, setGasPriceErr] = useState('')
+  const [gasLimitErr, setGasLimitErr] = useState('')
+  const [nonceErr, setNonceErr] = useState('')
+  const [gasFee, setGasFee] = useState('0')
+  const [totalFee, setTotalFee] = useState('0')
   const isCfx = useIsCfx()
   const isEth = useIsEth()
-  const tickerName = isCfx ? 'CFX' : isEth ? 'ETH' : ''
+  const symbol = isCfx ? 'CFX' : isEth ? 'ETH' : ''
+  // TODO: wait for hook reaching gas used and storage limit and gas price and nonce
+
+  useEffect(() => {
+    setGasPriceErr(
+      new Big(gasPrice).gt(0)
+        ? ''
+        : t('gasPriceErrMSg', {
+            unit: isCfx ? t('drip') : isEth ? t('gWei') : '',
+          }),
+    )
+  }, [gasPrice, isCfx, isEth, t])
+
+  useEffect(() => {
+    setGasLimitErr(
+      new Big(gasLimit).gte(gasUsed)
+        ? ''
+        : t('gasLimitErrMsg', {
+            gasUsed,
+          }),
+    )
+  }, [gasLimit, gasUsed, t])
+
+  useEffect(() => {
+    setNonceErr(new Big(nonce).gt(0) ? '' : t('nonceErr'))
+  }, [nonce, t])
+
+  useEffect(() => {
+    setGasFee(new Big(gasLimit).times(gasPrice).toString(10))
+  }, [gasLimit, gasPrice])
+
+  useEffect(() => {
+    if (isCfx) {
+      setTotalFee(
+        new Big(gasFee)
+          .add(fromCfxToDrip(new Big(storageLimit).div(1024)))
+          .toString(10),
+      )
+    }
+  }, [storageLimit, gasFee, isCfx])
 
   return (
     <div
       id="editGasFeeContainer"
-      className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg"
+      className="h-full flex flex-col bg-blue-circles bg-no-repeat bg-bg"
     >
-      <div>
+      <div className="flex-1">
         <TitleNav title={t('editGasFeeControl')} />
-        <main>
-          <div>
-            <span>{t('gasFee')}</span>
-            <span>0.015 {tickerName}</span>
-          </div>
-          <Input
-            prefix={`${t('gasPrice')} (${
+        <main className="mt-3">
+          <WrapperWithLabel
+            leftContent={t('gasFee')}
+            containerClass="mb-3"
+            rightClass="text-gray-80"
+            rightContent={
+              <DisplayBalance
+                maxWidth={218}
+                maxWidthStyle="max-w-[218px]"
+                symbol={symbol}
+                balance={gasFee}
+              />
+            }
+          />
+          <WrapperWithLabel
+            containerClass={`${gasPriceErr ? 'mb-4' : 'mb-3'} relative`}
+            leftContent={`${t('gasPrice')} (${
               isCfx ? t('drip') : isEth ? t('gWei') : ''
             })`}
-            type="number"
-            value={gasPrice}
-            onChange={e => setGasPrice(e.target.value)}
+            rightContent={
+              <GasInput
+                type="number"
+                size="small"
+                width="w-32"
+                value={gasPrice}
+                errorMessage={gasPriceErr}
+                errorClassName="absolute left-0 -bottom-4"
+                onGasInputChange={setGasPrice}
+              />
+            }
           />
-          <Input
-            type="number"
-            prefix={t('gasLimit')}
-            value={gasLimit}
-            onChange={e => setGasLimit(e.target.value)}
+          <WrapperWithLabel
+            leftContent={t('gasLimit')}
+            containerClass={`${gasLimitErr ? 'mb-4' : 'mb-3'} relative`}
+            rightContent={
+              <GasInput
+                type="number"
+                size="small"
+                width="w-32"
+                errorClassName="absolute left-0 -bottom-4"
+                value={gasLimit}
+                errorMessage={gasLimitErr}
+                onGasInputChange={setGasLimit}
+              />
+            }
           />
           {isCfx ? (
             <div>
-              <span>{t('storageFee')}</span>
-              <span>0.0005 {tickerName}</span>
+              <WrapperWithLabel
+                leftContent={t('storageFee')}
+                containerClass="mb-3"
+                rightClass="text-gray-80"
+                rightContent={`0.015 ${symbol}`}
+              />
+              <WrapperWithLabel
+                leftContent={t('storageLimit')}
+                rightClass="text-gray-80"
+                rightContent={storageLimit}
+              />
             </div>
           ) : null}
+          <div className="bg-gray-20 h-px mx-3 my-4" />
           {isCfx ? (
-            <div>
-              <span>{t('storageLimit')}</span>
-              <span>128</span>
-            </div>
+            <WrapperWithLabel
+              leftContent={t('totalFee')}
+              containerClass="mb-10"
+              leftClass="text-gray-80"
+              rightClass="text-gray-80 text-base"
+              rightContent={
+                <DisplayBalance
+                  maxWidth={218}
+                  maxWidthStyle="max-w-[218px]"
+                  symbol={symbol}
+                  initialFontSize={16}
+                  balance={totalFee}
+                />
+              }
+            />
           ) : null}
-          <div />
-          <div>
-            <span>{t('totalFee')}</span>
-            <span>0.02{tickerName}</span>
-          </div>
-          <Input
-            type="number"
-            prefix={t('customNonce')}
-            value={nonce}
-            onChange={e => setNonce(e.target.value)}
+
+          <WrapperWithLabel
+            leftContent={t('customNonce')}
+            containerClass="relative"
+            rightContent={
+              <GasInput
+                type="number"
+                size="small"
+                width="w-32"
+                value={nonce}
+                errorMessage={nonceErr}
+                errorClassName="absolute left-0 -bottom-4"
+                onGasInputChange={setNonce}
+              />
+            }
           />
         </main>
       </div>
       <footer>
-        <Button className="flex-1">{t('save')}</Button>
+        <Button
+          className="w-70  mx-auto mb-4"
+          id="saveGasFeeBtn"
+          disabled={!!gasPriceErr || !!nonceErr || !!gasLimitErr}
+        >
+          {t('save')}
+        </Button>
       </footer>
     </div>
   )

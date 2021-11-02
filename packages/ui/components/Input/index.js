@@ -42,6 +42,7 @@ function Input({
   textareaSize = '',
   width = 'w-60',
   errorMessage = '',
+  errorClassName = '',
   onBlur,
   onSuffixClick,
   elementType = 'input',
@@ -116,7 +117,9 @@ function Input({
         )}
       </div>
       {errorMessage && (
-        <div className="text-xs text-error mt-2">{errorMessage}</div>
+        <div className={`text-xs text-error mt-2 ${errorClassName}`}>
+          {errorMessage}
+        </div>
       )}
     </div>
   )
@@ -131,6 +134,7 @@ Input.propTypes = {
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   textareaSize: PropTypes.string,
   errorMessage: PropTypes.string,
+  errorClassName: PropTypes.string,
   prefix: PropTypes.node,
   suffix: PropTypes.node,
   onSuffixClick: PropTypes.func,
