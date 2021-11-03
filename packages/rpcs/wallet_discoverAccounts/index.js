@@ -3,6 +3,7 @@ import addrByNet from '@fluent-wallet/addr-by-network'
 import {discoverAccounts} from '@fluent-wallet/discover-accounts'
 import {partial} from '@fluent-wallet/compose'
 import {decrypt} from 'browser-passworder'
+import {chan} from '@fluent-wallet/csp'
 
 export const NAME = 'wallet_discoverAccounts'
 
@@ -33,7 +34,7 @@ export const permissions = {
 export const main = async ({
   rpcs: {wallet_getBalance, wallet_getNextNonce, wallet_createAccount},
   db: {getAccountGroupById, getNetwork, getPassword},
-  params: {accountGroupId, limit = 10, waitTillFinish},
+  params: {accountGroupId, limit = 1000, waitTillFinish},
   Err: {InvalidParams},
 }) => {
   const accountGroup = getAccountGroupById(accountGroupId)
@@ -48,49 +49,64 @@ export const main = async ({
 
   const networks = getNetwork()
 
-  const promises = Promise.all(
-    networks.map(
-      async ({name, hdPath, token, type, netId}) =>
-        await discoverAccounts({
-          getBalance: async addr => {
-            return await wallet_getBalance(
-              {networkName: name, errorFallThrough: true},
-              {
-                users: [
-                  addrByNet({
-                    address: addr,
-                    networkType: type,
-                    networkId: netId,
-                    addressType: 'user',
-                  }),
-                ],
-                tokens: ['0x0'].concat((token || []).map(t => t.address)),
-              },
-            )
+  const channels = networks.map(({name, hdPath, token, type, netId}) =>
+    discoverAccounts({
+      getBalance: addr =>
+        wallet_getBalance(
+          {networkName: name, errorFallThrough: true},
+          {
+            users: [
+              addrByNet({
+                address: addr,
+                networkType: type,
+                networkId: netId,
+                addressType: 'user',
+              }),
+            ],
+            tokens: ['0x0'].concat((token || []).map(t => t.address)),
           },
-          getTxCount: partial(wallet_getNextNonce, {networkName: name}),
-          mnemonic,
-          hdPath: hdPath.value,
-          return0: oldAccountsCount === 0,
-          startFrom: oldAccountsCount,
-          max: limit,
-        }),
-    ),
-  ).then(async found => {
-    // find the one that discovered most accounts
-    const accountNumToCreate = found.reduce(
-      (acc, net) => Math.max(acc, net.length),
-      0,
-    )
+        ),
+      getTxCount: partial(wallet_getNextNonce, {networkName: name}),
+      mnemonic,
+      hdPath: hdPath.value,
+      return0: oldAccountsCount === 0,
+      startFrom: oldAccountsCount,
+      max: limit,
+    }),
+  )
 
-    const accountIds = []
-    for (let i = 0; i < accountNumToCreate; i++) {
-      accountIds.push(await wallet_createAccount({accountGroupId}))
+  const discoveredNewAddressOnEachNet = networks.map(() => 0)
+
+  const accountIds = []
+  const firstAccountCreatedChan = chan(1)
+  const promises = channels.map(async (c, idx) => {
+    while (!c.isClosed()) {
+      const found = await c.read()
+      if (!found) {
+        !firstAccountCreatedChan.isClosed() &&
+          firstAccountCreatedChan.write(true)
+        return
+      }
+      discoveredNewAddressOnEachNet[idx] += 1
+      if (greatThanOthers(idx, discoveredNewAddressOnEachNet)) {
+        accountIds.push(await wallet_createAccount({accountGroupId}))
+        !firstAccountCreatedChan.isClosed() &&
+          firstAccountCreatedChan.write(true)
+      }
     }
-    return accountIds
   })
 
   if (waitTillFinish) {
-    return await promises
+    return await Promise.all(promises)
   }
+
+  return await firstAccountCreatedChan.read()
+}
+
+function greatThanOthers(idx, arr) {
+  const base = arr[idx]
+  return arr.reduce(
+    (acc, item, innerIdx) => acc && (innerIdx === idx || base > item),
+    true,
+  )
 }

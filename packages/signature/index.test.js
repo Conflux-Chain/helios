@@ -102,7 +102,54 @@ describe('cfx', function () {
       ).toBe(address)
     })
 
-    test.todo('signTypedData_v4 with recursive types')
+    test('signTypedData_v4 with recursive types', async () => {
+      const typedData = {
+        types: {
+          CIP23Domain: [
+            {name: 'name', type: 'string'},
+            {name: 'version', type: 'string'},
+            {name: 'chainId', type: 'uint256'},
+            {name: 'verifyingContract', type: 'address'},
+          ],
+          Person: [
+            {name: 'name', type: 'string'},
+            {name: 'mother', type: 'Person'},
+            {name: 'father', type: 'Person'},
+          ],
+        },
+        domain: {
+          name: 'Family Tree',
+          version: '1',
+          chainId: 1,
+          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        },
+        primaryType: 'Person',
+        message: {
+          name: 'Jon',
+          mother: {name: 'Lyanna', father: {name: 'Rickard'}},
+          father: {name: 'Rhaegar', father: {name: 'Aeris II'}},
+        },
+      }
+
+      const pk =
+        '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+      const address = 'cfxtest:aasm4c231py7j34fghntcfkdt2nm9xv1tu6jd3r1s7'
+      const netid = 1
+
+      const sig = await signTypedData_v4('cfx', pk, typedData)
+      expect(sig).toEqual(
+        '0xa5d4de96227cb8d7b6e3d44c8ca3f66f6361d81530e7c386c4fbaa55a8fa3df0229807250407e0c500803f1efd095d2a24554b520be9e88ee1e79a13efc4379101',
+      )
+
+      expect(
+        recoverTypedSignature_v4(
+          'cfx',
+          '0xa5d4de96227cb8d7b6e3d44c8ca3f66f6361d81530e7c386c4fbaa55a8fa3df0229807250407e0c500803f1efd095d2a24554b520be9e88ee1e79a13efc4379101',
+          typedData,
+          netid,
+        ),
+      ).toBe(address)
+    })
   })
 })
 

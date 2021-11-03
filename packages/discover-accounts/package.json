@@ -2,9 +2,10 @@
   "name": "@fluent-wallet/discover-accounts",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "dependencies": {
     "@fluent-wallet/checks": "workspace:packages/checks",
+    "@fluent-wallet/csp": "workspace:packages/csp",
     "@fluent-wallet/hdkey": "workspace:packages/hdkey",
     "@fluent-wallet/utils": "workspace:packages/utils",
     "bn.js": "5.2.0"

@@ -167,6 +167,7 @@ const schema = {
 
   // ## tokens
   token: {
+    name: {doc: 'token name'},
     address: {doc: 'address, hex or base32'},
     symbol: {doc: 'token symbol'},
     decimals: {doc: 'token decimal'},

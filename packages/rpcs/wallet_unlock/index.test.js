@@ -15,8 +15,13 @@ describe('wallet_unlock', function () {
   describe('main', function () {
     const input = {
       params: {password: '12345678'},
-      db: {setPassword: jest.fn(), getUnlockReq: jest.fn()},
+      db: {
+        setPassword: jest.fn(),
+        getUnlockReq: jest.fn(),
+        getAccountGroup: jest.fn(() => []),
+      },
       rpcs: {
+        wallet_discoverAccounts: jest.fn(() => Promise.resolve(true)),
         wallet_validatePassword: jest.fn(() => true),
         wallet_refetchBalance: jest.fn(),
         wallet_refetchTokenList: jest.fn(() => Promise.resolve(true)),
