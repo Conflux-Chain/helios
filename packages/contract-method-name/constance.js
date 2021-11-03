@@ -10,6 +10,6 @@ export const ETH_ENDPOINT = {
 }
 
 export const CFX_SCAN_DOMAINS = {
-  CFX_MAINNET: 'https://confluxscan.io',
-  CFX_TESTNET: 'https://testnet.confluxscan.io',
+  1029: 'https://confluxscan.io',
+  1: 'https://testnet.confluxscan.io',
 }

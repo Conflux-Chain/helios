@@ -1,6 +1,6 @@
 import {Interface} from '@ethersproject/abi'
 import {partial} from '@fluent-wallet/compose'
-
+export {Interface} from '@ethersproject/abi'
 export const ABI = [
   {
     inputs: [{internalType: 'address', name: 'tokenHolder', type: 'address'}],
@@ -92,7 +92,6 @@ export const ABI = [
 ]
 
 export const iface = new Interface(ABI)
-
 const request = (...args) => {
   const [methodName, r, to, ...rest] = args
   if (args.length === 2) return partial(request, methodName, r)

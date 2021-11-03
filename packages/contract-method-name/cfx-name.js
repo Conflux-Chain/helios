@@ -1,9 +1,11 @@
-import {Conflux} from 'js-conflux-sdk'
 import {CFX_SCAN_DOMAINS} from './constance'
 import fetchHelper from './util/fetch-helper'
-import {ABI} from '@fluent-wallet/contract-abis/777.js'
+import {iface} from '@fluent-wallet/contract-abis/777.js'
+import {Interface} from '@ethersproject/abi'
+import {encode} from '@fluent-wallet/base32-address'
+import {isHexAddress} from '@fluent-wallet/account'
 
-export const eip777AbiSignatures = [
+const eip777AbiSignatures = [
   '0x70a08231',
   '0x313ce567',
   '0x06fdde03',
@@ -16,12 +18,12 @@ export const eip777AbiSignatures = [
   '0x23b872dd',
 ]
 
-export const getCFXScanDomain = network => {
-  return CFX_SCAN_DOMAINS[network]
+export const getCFXScanDomain = netId => {
+  return CFX_SCAN_DOMAINS[`${netId}`]
 }
 
-export const getCFXAbi = async (address, network) => {
-  const scanDomain = getCFXScanDomain(network)
+export const getCFXAbi = async (address, netId) => {
+  const scanDomain = getCFXScanDomain(netId)
   return await fetchHelper(
     `${scanDomain}/v1/contract/${address}?fields=abi`,
     'GET',
@@ -31,20 +33,24 @@ export const getCFXAbi = async (address, network) => {
 export const getCFXContractMethodSignature = async (
   address,
   transactionData,
-  network,
+  netId,
 ) => {
   try {
-    let abi = []
+    let abiInterface
     if (eip777AbiSignatures.includes(transactionData.substr(0, 10))) {
-      abi = [...ABI]
+      abiInterface = iface
     } else {
-      const response = await getCFXAbi(address, network)
-      abi = JSON.parse(response.abi)
+      const response = await getCFXAbi(address, netId)
+      abiInterface = new Interface(JSON.parse(response.abi))
     }
 
-    return new Conflux()
-      .Contract({abi, address})
-      .abi.decodeData(transactionData)
+    const ret = abiInterface.parseTransaction({data: transactionData})
+    if (ret.args) {
+      ret.args = ret.args.map(arg =>
+        isHexAddress(arg) ? encode(arg.substr(2), netId) : arg,
+      )
+    }
+    return ret
   } catch (e) {
     return {}
   }
