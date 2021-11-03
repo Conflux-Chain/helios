@@ -3786,6 +3786,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/estimate-tx@workspace:packages/estimate-tx":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/estimate-tx@workspace:packages/estimate-tx"
+  dependencies:
+    "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type"
+    bn.js: 5.2.0
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/eth-transaction-schema@workspace:packages/eth-transaction-schema":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth-transaction-schema@workspace:packages/eth-transaction-schema"

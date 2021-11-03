@@ -1,0 +1,11 @@
+{
+  "name": "@fluent-wallet/estimate-tx",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.0.1",
+  "version": "0.0.0",
+  "dependencies": {
+    "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type",
+    "bn.js": "5.2.0"
+  }
+}
