@@ -32,7 +32,7 @@ export const useCurrentAccount = () => {
     },
   )
   const {eid: accountId} = currentAccount || {}
-  const {data: accountAddress} = useAddressByNetworkId(accountId, networkId)
+  const accountAddress = useAddressByNetworkId(accountId, networkId)
   const {base32, hex} = accountAddress || {}
   const address = networkTypeIsCfx ? base32 : networkTypeIsEth ? hex : ''
   return {

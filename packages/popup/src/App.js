@@ -27,6 +27,7 @@ const {
   DAPP_ADD_NETWORK,
   DAPP_SWITCH_NETWORK,
   SEND_TRANSACTION,
+  CONFIRM_TRANSACTION,
 } = ROUTES
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
@@ -48,6 +49,7 @@ const ConfirmAddSuggestedToken = lazy(() =>
   import('./pages/ConfirmAddSuggestedToken'),
 )
 const SendTransaction = lazy(() => import('./pages/SendTransaction'))
+const ConfirmTransaction = lazy(() => import('./pages/ConfirmTransaction'))
 
 function App() {
   const lockedData = useIsLocked()
@@ -101,13 +103,15 @@ function App() {
                 path={WALLET_IMPORT_PRIVATE_KEY}
                 component={ImportPrivateKey}
               />
-              <ProtectedRoute
-                pendingAuthReq={pendingAuthReq}
-                hasAccount={!zeroGroup}
-                isLocked={!zeroGroup && lockedData}
+              <Route
                 exact
                 path={SEND_TRANSACTION}
                 component={SendTransaction}
+              />
+              <Route
+                exact
+                path={CONFIRM_TRANSACTION}
+                component={ConfirmTransaction}
               />
               <Route exact path={SET_PASSWORD} component={SetPassword} />
               <Route

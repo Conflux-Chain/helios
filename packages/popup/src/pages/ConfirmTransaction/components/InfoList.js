@@ -4,8 +4,7 @@ import {EditOutlined} from '@fluent-wallet/component-icons'
 import {useCurrentDapp, useCurrentNetwork} from '../../../hooks/useApi'
 import {DisplayBalance, GasFee} from '../../../components'
 
-const CurrentNetworkDisplay = () => {
-  const currentNetwork = useCurrentNetwork()
+const CurrentNetworkDisplay = ({currentNetwork}) => {
   const {name, icon} = currentNetwork
 
   return (
@@ -20,14 +19,31 @@ const CurrentNetworkDisplay = () => {
   )
 }
 
-function InfoList({isDapp, isApproveToken, isSign, token, allowance, method}) {
+CurrentNetworkDisplay.propTypes = {
+  currentNetwork: PropTypes.object,
+}
+
+function InfoList({
+  isDapp,
+  isApproveToken,
+  isSign,
+  token,
+  allowance,
+  method,
+  pendingAuthReq,
+}) {
   const {t} = useTranslation()
   const data = useCurrentDapp()
+  const network = useCurrentNetwork()
+  const [{app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  //TODO app data confirm
+  const currentDapp = isDapp ? app?.app : data?.app
+  const currentNetwork = isDapp ? app?.currentNetwork : network
   return (
     <div className="flex flex-col">
       <div className="flex justify-between mb-4">
         <span className="text-gray-40">{t('network')}</span>
-        <CurrentNetworkDisplay />
+        <CurrentNetworkDisplay currentNetwork={currentNetwork} />
       </div>
       {isApproveToken && (
         <div className="flex justify-between mb-4">
@@ -55,11 +71,11 @@ function InfoList({isDapp, isApproveToken, isSign, token, allowance, method}) {
           <span className="text-gray-40">{t('protocol')}</span>
           <span className="text-gray-80">
             <img
-              src={data?.app?.site?.icon || '/default-dapp-icon.svg'}
+              src={currentDapp?.site?.icon || '/default-dapp-icon.svg'}
               alt="icon"
               className="w-4 h-4 mr-1"
             />
-            {data?.app?.site?.origin}
+            {currentDapp?.site?.origin}
           </span>
         </div>
       )}
@@ -75,6 +91,7 @@ InfoList.propTypes = {
   isDapp: PropTypes.bool,
   allowance: PropTypes.string,
   method: PropTypes.string,
+  pendingAuthReq: PropTypes.array,
 }
 
 export default InfoList

@@ -9,7 +9,6 @@ function ToAddressInput({address, onChangeAddress, errorMessage}) {
     <CompWithLabel label={t('toAddressLabel')} className="!mt-0">
       <Input
         width="w-full"
-        maxLength="20"
         value={address}
         placeholder={t('toAddressPlaceholder')}
         onChange={e => onChangeAddress && onChangeAddress(e.target.value)}

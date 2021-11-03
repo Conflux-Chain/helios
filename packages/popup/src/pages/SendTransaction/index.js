@@ -21,7 +21,7 @@ import {
   useCurrentNetwork,
 } from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
-const {HOME} = ROUTES
+const {HOME, CONFIRM_TRANSACTION} = ROUTES
 
 function SendTransaction() {
   const {t} = useTranslation()
@@ -52,6 +52,7 @@ function SendTransaction() {
     setSendAmount(amount)
   }
   const onChangeAddress = address => {
+    console.log(address)
     setToAddress(address)
     if (
       networkTypeIsCfx &&
@@ -59,10 +60,7 @@ function SendTransaction() {
     ) {
       // TODO i18n
       setAddressError('Please enter validate cfx address')
-    } else {
-      setAddressError('')
-    }
-    if (networkTypeIsEth && !isHexAddress(address)) {
+    } else if (networkTypeIsEth && !isHexAddress(address)) {
       // TODO i18n
       setAddressError('Please enter validate hex address')
     } else {
@@ -117,6 +115,7 @@ function SendTransaction() {
                 !toAddress ||
                 !sendAmount
               }
+              onClick={() => history.push(CONFIRM_TRANSACTION)}
               className="flex-1"
             >
               {t('next')}

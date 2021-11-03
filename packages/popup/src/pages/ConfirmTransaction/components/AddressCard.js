@@ -18,21 +18,28 @@ const AddressDetail = ({
 }) => {
   const {eid: networkId} = useCurrentNetwork()
   const nativeToken = useCurrentNativeToken()
-  const balance = useBalance(fromAddress, networkId)
+  const balanceMap = useBalance(fromAddress, networkId)
+  const balance = balanceMap?.[fromAddress]?.['0x0']
+
   return (
-    <div className="flex items-start">
-      <ProgressIcon
-        direction="vertical"
-        middleIcon={
-          <div className="w-2.5 h-2.5 bg-gray-0 rounded-full flex items-center justify-center">
-            <DownOutlined className="w-2 h-2 text-primary" />
-          </div>
-        }
-      />
-      <div className="ml-3 flex flex-col">
+    <div className="flex items-start w-full">
+      <div className="pt-1">
+        <ProgressIcon
+          dashLengthStyle="h-[14px]"
+          direction="vertical"
+          middleIcon={
+            <div className="w-2.5 h-2.5 bg-gray-0 rounded-full flex items-center justify-center shadow-1 my-1">
+              <DownOutlined className="w-2 h-2 text-primary" />
+            </div>
+          }
+        />
+      </div>
+      <div className="ml-3 flex flex-col flex-1">
         <span className="text-xs text-gray-40">{currentAccountName}</span>
         <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2">
-          <span className="text-gray-80">{shortenAddress(fromAddress)}</span>
+          <span className="text-gray-80">
+            {fromAddress && shortenAddress(fromAddress)}
+          </span>
           <DisplayBalance
             balance={balance}
             maxWidth={120}
@@ -43,8 +50,8 @@ const AddressDetail = ({
           />
         </div>
         <span className="text-xs text-gray-40">{toAddressLabel}</span>
-        <span className="text-gray-80">
-          {shortenAddress(toAddress)}
+        <span className="text-gray-80 flex items-center">
+          {toAddress && shortenAddress(toAddress)}
           <CopyButton text={toAddress} className="ml-2  text-gray-60" />
         </span>
       </div>
@@ -59,13 +66,22 @@ AddressDetail.propTypes = {
   toAddressLabel: PropTypes.string,
 }
 
-function AddressCard({token, toAddress, value, isSendToken, isApproveToken}) {
+function AddressCard({
+  token,
+  toAddress,
+  value,
+  isSendToken,
+  isApproveToken,
+  isDapp,
+}) {
   const {t} = useTranslation()
-  const {address: userAddress, name: currentAccountName} = useCurrentAccount()
+  const {address: userAddress, nickname: currentAccountName} =
+    useCurrentAccount()
+  console.log(value)
 
   return (
     <div className="w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat mt-1 mb-4">
-      <span className="text-primary">
+      <span className="text-primary flex items-center">
         <img
           alt="icon"
           className="w-3 h-3 mr-1"
@@ -93,7 +109,7 @@ function AddressCard({token, toAddress, value, isSendToken, isApproveToken}) {
             maxWidthStyle="max-w-[256px]"
             className="text-2xl"
             initialFontSize={32}
-            decimals={token?.decimals}
+            decimals={isDapp ? token?.decimals : 0}
           />
           <span className="text-xs text-gray-60 mx-1">{token?.symbol}</span>
           <img
@@ -121,6 +137,7 @@ AddressCard.propTypes = {
   toAddress: PropTypes.string,
   isSendToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,
+  isDapp: PropTypes.bool,
 }
 
 export default AddressCard

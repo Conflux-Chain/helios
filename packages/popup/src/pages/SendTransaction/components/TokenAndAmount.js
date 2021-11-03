@@ -78,7 +78,7 @@ function TokenAndAmount({
     <CompWithLabel label={label}>
       <div className="flex px-3 h-13 items-center justify-between bg-gray-4 border border-gray-10 rounded">
         <div
-          className="flex items-center pr-3 border-r-gray-20 cursor-pointer"
+          className="flex items-center pr-3 border-r-gray-20 cursor-pointer border-r border-text-20 h-6"
           onClick={() => setTokenListShow(true)}
           aria-hidden="true"
         >
@@ -95,7 +95,7 @@ function TokenAndAmount({
             width="w-full bg-transparent"
             bordered={false}
             value={amount}
-            onChange={onChangeAmount}
+            onChange={e => onChangeAmount && onChangeAmount(e.target.value)}
           />
         </div>
         <Link onClick={onClickMax}>{t('max')}</Link>
