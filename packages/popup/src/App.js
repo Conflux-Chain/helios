@@ -54,7 +54,7 @@ const ConfirmTransaction = lazy(() => import('./pages/ConfirmTransaction'))
 function App() {
   const lockedData = useIsLocked()
   const zeroGroup = useIsZeroGroup()
-  const pendingAuthReq = usePendingAuthReq(lockedData === false)
+  const pendingAuthReq = usePendingAuthReq(!zeroGroup && !lockedData)
   const {setFatalError} = useGlobalStore()
 
   if (
@@ -103,12 +103,18 @@ function App() {
                 path={WALLET_IMPORT_PRIVATE_KEY}
                 component={ImportPrivateKey}
               />
-              <Route
+              <ProtectedRoute
+                pendingAuthReq={pendingAuthReq}
+                hasAccount={!zeroGroup}
+                isLocked={!zeroGroup && lockedData}
                 exact
                 path={SEND_TRANSACTION}
                 component={SendTransaction}
               />
-              <Route
+              <ProtectedRoute
+                pendingAuthReq={pendingAuthReq}
+                hasAccount={!zeroGroup}
+                isLocked={!zeroGroup && lockedData}
                 exact
                 path={CONFIRM_TRANSACTION}
                 component={ConfirmTransaction}

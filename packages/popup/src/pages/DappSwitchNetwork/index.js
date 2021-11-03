@@ -8,7 +8,7 @@ function DappSwitchNetwork() {
   const {t} = useTranslation()
   const pendingAuthReq = usePendingAuthReq()
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
-  const {data: networkData} = useNetworkByChainId(
+  const networkData = useNetworkByChainId(
     req?.params[0]?.chainId,
     req?.method === WALLET_SWITCH_CONFLUX_CHAIN ? 'cfx' : 'eth',
   )

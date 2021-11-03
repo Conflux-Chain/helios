@@ -23,7 +23,8 @@ function ConfirmTransition() {
     displayValue = '0x0',
     displayToAddress = '',
     method = 'Unknown'
-  const {toAddress, sendToken, sendAmount} = useGlobalStore()
+  const {toAddress, sendToken, sendAmount, clearSendTransactionParams} =
+    useGlobalStore()
   const nativeToken = useCurrentNativeToken()
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const isDapp = pendingAuthReq?.length > 0
@@ -101,7 +102,10 @@ function ConfirmTransition() {
             <Button
               variant="outlined"
               className="flex-1 mr-3"
-              onClick={() => history.push(HOME)}
+              onClick={() => {
+                clearSendTransactionParams()
+                history.push(HOME)
+              }}
             >
               {t('cancel')}
             </Button>

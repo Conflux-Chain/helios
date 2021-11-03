@@ -1,5 +1,14 @@
 import create from 'zustand'
 
+const defaultSendTransactionParams = {
+  toAddress: '',
+  sendAmount: '',
+  gasPrice: '1',
+  gasLimit: '21000',
+  nonce: '0',
+  sendToken: {symbol: 'CFX', icon: ''},
+}
+
 const useGlobalStore = create(set => ({
   FATAL_ERROR: '',
   setFatalError: e => set({FATAL_ERROR: e?.message || e}),
@@ -9,12 +18,7 @@ const useGlobalStore = create(set => ({
   createdPassword: '',
   createdMnemonic: '',
 
-  toAddress: '',
-  sendAmount: '',
-  gasPrice: '1',
-  gasLimit: '21000',
-  nonce: '0',
-  sendToken: {symbol: 'CFX', icon: ''},
+  ...defaultSendTransactionParams,
 
   // logic
   setCreatedPassword: createdPassword => set({createdPassword}),
@@ -28,6 +32,7 @@ const useGlobalStore = create(set => ({
   setGasLimit: gasLimit => set({gasLimit}),
   setNonce: nonce => set({nonce}),
   setSendToken: sendToken => set({sendToken}),
+  clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
 }))
 
 export default useGlobalStore

@@ -31,7 +31,6 @@ const ProtectedRoute = ({pendingAuthReq, hasAccount, isLocked, ...rest}) => {
 }
 
 ProtectedRoute.propTypes = {
-  hasPendingAuthReq: PropTypes.bool,
   hasAccount: PropTypes.bool,
   isLocked: PropTypes.bool,
   pendingAuthReq: PropTypes.array,

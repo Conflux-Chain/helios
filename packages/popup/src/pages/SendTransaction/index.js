@@ -33,6 +33,7 @@ function SendTransaction() {
     setToAddress,
     setSendAmount,
     setSendToken,
+    clearSendTransactionParams,
   } = useGlobalStore()
   const currentNetwork = useCurrentNetwork()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
@@ -74,7 +75,10 @@ function SendTransaction() {
 
   return (
     <div className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg">
-      <TitleNav title={t('sendTransaction')} />
+      <TitleNav
+        title={t('sendTransaction')}
+        onGoBack={() => clearSendTransactionParams()}
+      />
       <div className="flex mt-1 mb-3 mx-4 justify-between items-center z-20">
         <CurrentAccountDisplay />
         <CurrentNetworkDisplay />
@@ -103,7 +107,10 @@ function SendTransaction() {
             <Button
               variant="outlined"
               className="flex-1 mr-3"
-              onClick={() => history.push(HOME)}
+              onClick={() => {
+                clearSendTransactionParams()
+                history.push(HOME)
+              }}
             >
               {t('cancel')}
             </Button>
