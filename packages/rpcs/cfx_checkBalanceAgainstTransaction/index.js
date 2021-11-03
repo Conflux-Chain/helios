@@ -14,9 +14,9 @@ export const schemas = {
     cat,
     base32UserAddress,
     base32ContractAddress,
-    Uint,
-    Uint,
-    Uint,
+    Uint, // gas
+    Uint, // gasPrice
+    Uint, // storageLimit
     [zeroOrOne, epochRef],
   ],
 }

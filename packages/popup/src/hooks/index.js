@@ -7,9 +7,11 @@ import {
   RPC_METHODS,
   NETWORK_TYPE,
 } from '../constants'
-import {useRPC} from '@fluent-wallet/use-rpc'
+import {useRPC, useRPCProvider} from '@fluent-wallet/use-rpc'
 import {isNumber, isString} from '@fluent-wallet/checks'
 import {formatBalance} from '@fluent-wallet/data-format'
+import {estimate} from '@fluent-wallet/estimate-tx'
+import {useAsync} from 'react-use'
 
 const {
   GET_ACCOUNT_GROUP,
@@ -297,4 +299,37 @@ export const useIsEth = () => {
     fallbackData: {},
   })
   return currentNetwork?.type === 'eth'
+}
+
+export const useEstimateTx = (tx = {}) => {
+  const {provider} = useRPCProvider()
+  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
+    fallbackData: {type: 'cfx'},
+  })
+  const {type} = currentNetwork
+  const {from, to, value, data, nonce} = tx
+  const {
+    value: rst,
+    loading,
+    error,
+  } = useAsync(async () => {
+    if (!provider || !currentNetwork?.netId) return
+    return await estimate(tx, {
+      type,
+      request: provider.request.bind(provider),
+      isFluentRequest: true,
+      networkId: currentNetwork.netId,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [from, to, value, data, nonce, currentNetwork.netId])
+
+  if (loading) {
+    return {loading}
+  }
+
+  if (error) {
+    return {error}
+  }
+
+  return rst
 }
