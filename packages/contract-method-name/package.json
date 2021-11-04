@@ -1,12 +1,15 @@
 {
   "name": "@fluent-wallet/contract-method-name",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "index.js",
   "dependencies": {
+    "@ethersproject/abi": "5.5.0",
+    "@fluent-wallet/account": "workspace:packages/account",
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address",
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
     "eth-method-registry": "2.0.0",
     "ethjs": "0.4.0",
-    "js-conflux-sdk": "1.7.1",
     "node-fetch": "3.0.0"
   }
 }
