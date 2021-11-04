@@ -1,15 +1,29 @@
-import {Conflux} from 'js-conflux-sdk'
-import {CFX_SCAN_TESTNET_DOMAIN, CFX_SCAN_MAINNET_DOMAIN} from './constance'
+import {CFX_SCAN_DOMAINS} from './constance'
 import fetchHelper from './util/fetch-helper'
+import {iface} from '@fluent-wallet/contract-abis/777.js'
+import {Interface} from '@ethersproject/abi'
+import {encode} from '@fluent-wallet/base32-address'
+import {isHexAddress} from '@fluent-wallet/account'
 
-// return conflux scan domain. Param networkType can be mainnet or testnet
-export const getCFXScanDomain = networkType => {
-  return networkType === 'mainnet'
-    ? CFX_SCAN_MAINNET_DOMAIN
-    : CFX_SCAN_TESTNET_DOMAIN
+const eip777AbiSignatures = [
+  '0x70a08231',
+  '0x313ce567',
+  '0x06fdde03',
+  '0x95d89b41',
+  '0xa9059cbb',
+  '0xdd62ed3e',
+  '0x095ea7b3',
+  '0x556f0dc7',
+  '0x9bd9bbc6',
+  '0x23b872dd',
+]
+
+export const getCFXScanDomain = netId => {
+  return CFX_SCAN_DOMAINS[`${netId}`]
 }
-export const getCFXAbi = async (address, networkType) => {
-  const scanDomain = getCFXScanDomain(networkType)
+
+export const getCFXAbi = async (address, netId) => {
+  const scanDomain = getCFXScanDomain(netId)
   return await fetchHelper(
     `${scanDomain}/v1/contract/${address}?fields=abi`,
     'GET',
@@ -19,16 +33,25 @@ export const getCFXAbi = async (address, networkType) => {
 export const getCFXContractMethodSignature = async (
   address,
   transactionData,
-  networkType,
+  netId,
 ) => {
   try {
-    const response = await getCFXAbi(address, networkType)
-    const abi = JSON.parse(response.abi)
-    return new Conflux()
-      .Contract({abi, address})
-      .abi.decodeData(transactionData)
+    let abiInterface
+    if (eip777AbiSignatures.includes(transactionData.substr(0, 10))) {
+      abiInterface = iface
+    } else {
+      const response = await getCFXAbi(address, netId)
+      abiInterface = new Interface(JSON.parse(response.abi))
+    }
+
+    const ret = abiInterface.parseTransaction({data: transactionData})
+    if (ret.args) {
+      ret.args = ret.args.map(arg =>
+        isHexAddress(arg) ? encode(arg.substr(2), netId) : arg,
+      )
+    }
+    return ret
   } catch (e) {
-    // console.log('error message', e)
     return {}
   }
 }

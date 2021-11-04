@@ -173,5 +173,8 @@
       "declaration-block-trailing-semicolon": null,
       "no-descending-specificity": null
     }
+  },
+  "dependencies": {
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
   }
 }

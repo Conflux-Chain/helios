@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/contract-method-name": patch
+
+declined:
+  - "@fluent-wallet/contract-abis"
