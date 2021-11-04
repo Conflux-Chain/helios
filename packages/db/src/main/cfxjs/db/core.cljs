@@ -36,9 +36,9 @@
   ([arg] (parse-js-transact-arg arg (random-tmp-id)))
   ([arg tmp-id]
    (let [arg      (cond
-                    (or (int? (get arg :eid)) (string? (get arg :eid)))
+                    (or (int? (:eid arg)) (string? (:eid arg)))
                     (assoc arg :db/id (:eid arg))
-                    (get arg :eid) (throw (js/Error. "Invalid eid, must be a string or integer"))
+                    (:eid arg) (throw (js/Error. "Invalid eid, must be a string or integer"))
                     :else          (assoc arg :db/id tmp-id))
          arg      (dissoc arg :eid)
          all-keys (keys arg)
@@ -72,11 +72,11 @@
   (let [f (fn [attr-map]
             (let [attr-map (and attr-map (j->c attr-map))
                   attr-map (if (empty? attr-map) nil attr-map)]
-              (if (or (not attr-map) (get attr-map :eid))
+              (if (or (not attr-map) (:eid attr-map))
                 (let [all-attr-keys (map (partial ->attrk model) attr-keys)
                       query         (def-get-all-query all-attr-keys)
                       eids          (q query)
-                      eids          (if-let [eid (get attr-map :eid)] (filter #(= eid %) eids) eids)]
+                      eids          (if-let [eid (:eid attr-map)] (filter #(= eid %) eids) eids)]
                   eids)
                 (let [data         (filter vector? (mapv (fn [attr] (if (not (contains? attr-map attr))
                                                                       nil
@@ -88,7 +88,7 @@
                                                          attr-keys))
                       symbols      (mapv first data)
                       query-attr-k (mapv second data)
-                      or?          (true? (get attr-map :$or))
+                      or?          (true? (:$or attr-map))
                       query        (if or? (def-get-query-or query-attr-k symbols)
                                        (def-get-query-and query-attr-k symbols))]
                   (q query (mapv #(get % 2) data))))))]
@@ -157,7 +157,7 @@
   [{:keys [model] :as arg}]
   (fn [attr-map updates]
     (when-let [updates (dissoc (j->c updates) :id)]
-      (if-not (> (count (keys updates)) 0) nil)
+      (if-not (pos? (count (keys updates))) nil)
       (let [->attrk (partial ->attrk model)
             updates (reduce-kv (fn [m k v] (assoc m (->attrk k) v)) {} updates)
             eids    ((def-get-fn arg) attr-map)
@@ -169,7 +169,7 @@
   [{:keys [model] :as arg}]
   (fn [attr-map updates]
     (when-let [updates (dissoc (j->c updates) :id)]
-      (if-not (> (count (keys updates)) 0) nil)
+      (if-not (pos? (count (keys updates))) nil)
       (let [->attrk (partial ->attrk model)
             updates (reduce-kv (fn [m k v] (assoc m (->attrk k) v)) {} updates)
             eid     ((def-get-one-fn arg) attr-map)
