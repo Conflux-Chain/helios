@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {useSWRConfig} from 'swr'
 import {DappFooter, TitleNav} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {usePendingAuthReq} from '../../hooks'
+import {usePendingAuthReq} from '../../hooks/useApi'
 import {RPC_METHODS} from '../../constants'
 const {WALLET_GET_NETWORK} = RPC_METHODS
 
@@ -26,7 +26,7 @@ NetworkContentItem.propTypes = {
 function DappAddNetwork() {
   const {mutate} = useSWRConfig()
   const {t} = useTranslation()
-  const {pendingAuthReq} = usePendingAuthReq()
+  const pendingAuthReq = usePendingAuthReq()
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
 
   return (

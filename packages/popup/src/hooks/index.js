@@ -7,18 +7,17 @@ import {
   RPC_METHODS,
   NETWORK_TYPE,
 } from '../constants'
-import {useRPC} from '@fluent-wallet/use-rpc'
-import {isNumber, isString} from '@fluent-wallet/checks'
+import {useRPC, useRPCProvider} from '@fluent-wallet/use-rpc'
+import {isNumber} from '@fluent-wallet/checks'
 import {formatBalance} from '@fluent-wallet/data-format'
-import {useIsLocked, useIsZeroGroup} from './useApi'
+import {estimate} from '@fluent-wallet/estimate-tx'
+import {useIsLocked, useIsZeroGroup, useCurrentNetwork} from './useApi'
+import {useAsync} from 'react-use'
 
 const {
   WALLET_GET_ACCOUNT_GROUP,
   WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK,
   WALLET_GET_BALANCE,
-  WALLET_GET_CURRENT_NETWORK,
-  WALLET_GET_CURRENT_ACCOUNT,
-  WALLET_GET_PENDING_AUTH_REQUEST,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -224,99 +223,33 @@ export const useAccountGroupAddress = networkId => {
   }
 }
 
-export const useCurrentInfo = () => {
-  const {data: currentNetwork} = useRPC(
-    [WALLET_GET_CURRENT_NETWORK],
-    undefined,
-    {
-      fallbackData: {},
-    },
-  )
+export const useEstimateTx = (tx = {}) => {
+  const {provider} = useRPCProvider()
+  const currentNetwork = useCurrentNetwork() || {type: NETWORK_TYPE.CFX}
+  const {type} = currentNetwork
+  const {from, to, value, data, nonce} = tx
   const {
-    eid: networkId,
-    type: networkType,
-    ticker,
-    icon: networkIcon,
-    name: networkName,
-  } = currentNetwork
-  const {data: currentAccount} = useRPC(
-    [WALLET_GET_CURRENT_ACCOUNT],
-    undefined,
-    {
-      fallbackData: {},
-    },
-  )
-  const {eid: accountId, nickname} = currentAccount || {}
-  const {data: accountAddress} = useSingleAddressByNetworkId(
-    accountId,
-    networkId,
-  )
-  const {base32, hex} = accountAddress
-  const address =
-    networkType === NETWORK_TYPE.CFX
-      ? base32
-      : networkType === NETWORK_TYPE.ETH
-      ? hex
-      : ''
-  return {
-    nickname,
-    address,
-    ticker,
-    accountId,
-    networkId,
-    networkIcon,
-    networkName,
-    networkType,
+    value: rst,
+    loading,
+    error,
+  } = useAsync(async () => {
+    if (!provider || !currentNetwork?.netId) return
+    return await estimate(tx, {
+      type,
+      request: provider.request.bind(provider),
+      isFluentRequest: true,
+      networkId: currentNetwork.netId,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [from, to, value, data, nonce, currentNetwork.netId])
+
+  if (loading) {
+    return {loading}
   }
-}
 
-export const usePendingAuthReq = (canSendReq = true) => {
-  const {data: pendingAuthReq, error: pendingReqError} = useRPC(
-    canSendReq ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
-  )
-  return {pendingAuthReq, pendingReqError}
-}
+  if (error) {
+    return {error}
+  }
 
-export const useBalance = (
-  accountId,
-  networkId,
-  tokenContractAddress = '0x0',
-) => {
-  const {
-    data: {base32, hex},
-  } = useSingleAddressByNetworkId(accountId, networkId)
-  const address = base32 || hex
-  const {data, error} = useRPC(
-    address && isNumber(networkId) && isString(tokenContractAddress)
-      ? [WALLET_GET_BALANCE, address, networkId]
-      : null,
-    {
-      users: [address],
-      tokens: [tokenContractAddress],
-    },
-    {fallbackData: {}},
-  )
-  return {data, error}
-}
-
-export const useIsCfx = () => {
-  const {data: currentNetwork} = useRPC(
-    [WALLET_GET_CURRENT_NETWORK],
-    undefined,
-    {
-      fallbackData: {},
-    },
-  )
-  return currentNetwork?.type === 'cfx'
-}
-
-export const useIsEth = () => {
-  const {data: currentNetwork} = useRPC(
-    [WALLET_GET_CURRENT_NETWORK],
-    undefined,
-    {
-      fallbackData: {},
-    },
-  )
-  return currentNetwork?.type === 'eth'
+  return rst
 }

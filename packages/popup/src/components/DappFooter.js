@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../utils'
 import {RPC_METHODS, ROUTES} from '../constants'
-import {usePendingAuthReq} from '../hooks'
+import {usePendingAuthReq} from '../hooks/useApi'
 import {useHistory} from 'react-router-dom'
 import {useState} from 'react'
 
@@ -27,7 +27,7 @@ function DappFooter({
   onClickConfirm,
 }) {
   const history = useHistory()
-  const {pendingAuthReq} = usePendingAuthReq()
+  const pendingAuthReq = usePendingAuthReq()
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
 

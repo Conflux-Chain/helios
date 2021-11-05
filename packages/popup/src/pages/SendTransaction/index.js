@@ -7,6 +7,7 @@ import {isHexAddress} from '@fluent-wallet/account'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
 import {TitleNav, GasFee} from '../../components'
+import {useEstimateTx} from '../../hooks'
 import {
   ToAddressInput,
   TokenAndAmount,
@@ -42,6 +43,11 @@ function SendTransaction() {
   const [balanceError, setBalanceError] = useState('')
   const [gasError, setGasError] = useState('')
   const nativeToken = useCurrentNativeToken()
+  const estimateRst = useEstimateTx({
+    from: 'cfx:aamgvyzht7h1zxdghb9ee9w26wrz8rd3gj837392dp',
+    to: 'cfx:aasw0spp7pee3mpex5zk4arhfx20vwssfaamw12zsw',
+  })
+  console.log('estimateRst = ', estimateRst)
   // TODO: get from scan
   const hasNoTxn = true
   const onChangeToken = token => {

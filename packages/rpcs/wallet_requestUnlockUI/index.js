@@ -20,7 +20,6 @@ async function requestUnlockUI({
   if (!window) throw Internal('Invalid running env, window is not defined')
   const {browser, popup} = await import('@fluent-wallet/webextension')
   const w = await popup.show({
-    url: 'popup.html#/unlock',
     alwaysOnTop: MODE.isProd ? true : false,
     mdoe: MODE,
   })
