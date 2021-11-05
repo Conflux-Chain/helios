@@ -90,3 +90,22 @@ export const ETH_LOCALNET_CHAINID = '0x539'
 export const ETH_LOCALNET_NETID = 1337
 export const ETH_LOCALNET_CURRENCY_SYMBOL = 'ETH'
 export const ETH_LOCALNET_CURRENCY_NAME = 'Ether'
+
+// ETH endpoints
+export const ETH_ENDPOINT = {
+  [ETH_MAINNET_NETID]: ETH_MAINNET_RPC_ENDPOINT,
+  [ETH_ROPSTEN_NETID]: ETH_ROPSTEN_RPC_ENDPOINT,
+  // Rinkeby: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  // Kovan: 'https://kovan.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  // Goerli: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+}
+
+export const CFX_SCAN_DOMAINS = {
+  [CFX_MAINNET_NETID]: 'https://confluxscan.io',
+  [CFX_TESTNET_NETID]: 'https://testnet.confluxscan.io',
+}
+
+export const ETH_SCAN_DOMAINS = {
+  [ETH_MAINNET_NETID]: 'https://etherscan.io/',
+  [CFX_TESTNET_NETID]: 'https://ropsten.etherscan.io/',
+}

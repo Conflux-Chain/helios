@@ -1,16 +1,19 @@
+import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
 import {RightOutlined} from '@fluent-wallet/component-icons'
+import {getCFXContractMethodSignature} from '@fluent-wallet/contract-method-name'
 import useGlobalStore from '../../stores'
 import {
   useCurrentNativeToken,
+  useCurrentNetwork,
   useAddressType,
   usePendingAuthReq,
 } from '../../hooks/useApi'
 import {get20Token} from '../../utils/api'
-import {AddressCard, InfoList} from './components'
+import {AddressCard, InfoList, TransactionResult} from './components'
 import {TitleNav} from '../../components'
 import {ROUTES} from '../../constants'
 const {VIEW_DATA, HOME} = ROUTES
@@ -18,6 +21,8 @@ const {VIEW_DATA, HOME} = ROUTES
 function ConfirmTransition() {
   const {t} = useTranslation()
   const history = useHistory()
+  const [showResult, setShowResult] = useState(false)
+  const [decodeData, setDecodeData] = useState(null)
   const pendingAuthReq = usePendingAuthReq()
   let displayToken = {},
     displayValue = '0x0',
@@ -26,10 +31,12 @@ function ConfirmTransition() {
   const {toAddress, sendToken, sendAmount, clearSendTransactionParams} =
     useGlobalStore()
   const nativeToken = useCurrentNativeToken()
+  const {netId} = useCurrentNetwork()
+
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const isDapp = pendingAuthReq?.length > 0
   // TODO get from pending rpc
-  const {value, to, data} = req?.params?.[1] || {}
+  const {value, to, data} = req?.params || {}
 
   const type = useAddressType(to)
   const isContract = type === 'contract'
@@ -42,6 +49,15 @@ function ConfirmTransition() {
   const isApproveToken = isDapp && method === 'approve' && token?.symbol
   const isSign = !isSendToken && !isApproveToken
 
+  useEffect(() => {
+    if (isDapp && data && isContract) {
+      getCFXContractMethodSignature(to, data, netId).then(result =>
+        setDecodeData(result),
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDapp, Boolean(data), isContract, to, netId])
+
   if (!isDapp) {
     displayToken = sendToken
     displayToAddress = toAddress
@@ -52,9 +68,7 @@ function ConfirmTransition() {
       displayToAddress = to
       displayValue = value
     }
-    if (data && isContract) {
-      // TODO get from contract decode package
-      const decodeData = {}
+    if (data && isContract && decodeData) {
       const {name, object: methodArgs} = decodeData
       if (name) method = name
       if (token?.symbol) displayToken = token
@@ -69,9 +83,13 @@ function ConfirmTransition() {
       }
     }
   }
+  const onSend = () => {
+    // TODO send transaction
+    setShowResult(true)
+  }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
       <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
       <div className="flex flex-1 flex-col justify-between mt-1 px-3 pb-4">
         <div className="flex flex-col">
@@ -109,10 +127,13 @@ function ConfirmTransition() {
             >
               {t('cancel')}
             </Button>
-            <Button className="flex-1">{t('next')}</Button>
+            <Button className="flex-1" onClick={onSend}>
+              {t('confirm')}
+            </Button>
           </div>
         </div>
       </div>
+      {showResult && <TransactionResult netId={netId} />}
     </div>
   )
 }

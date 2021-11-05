@@ -149,6 +149,11 @@ const en = {
     protocol: 'Protocol',
     action: 'Action',
     viewData: 'View Data',
+    confirm: 'Confirm',
+    // transaction result
+    transactionSubmit: 'Transaction Submitted/Signed',
+    viewOnScan: 'View on Scan',
+    ok: 'OK',
   },
 }
 
