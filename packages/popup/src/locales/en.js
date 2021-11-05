@@ -152,6 +152,16 @@ const en = {
     gasPriceErrMSg: 'Gas Price must be greater than 0 {{unit}}',
     gasLimitErrMsg: 'Gas limit must be at least {{gasUsed}}',
     nonceErr: 'Nonce can not be 0',
+    // edit approve limit permissions
+    editPermission: 'Edit Permission',
+    spendLimitPermission: 'Spend limit permission',
+    allowSpendDes:
+      'Allow {{dapp}} to withdraw and spend up to the following amount:',
+    proposedApprovalLimit: 'Proposed approval limit',
+    proposedApprovalLimitDes:
+      'Spend limit request by {{dapp}} {{amount}} {{symbol}}',
+    customSpendLimit: 'Custom spend limit',
+    customSpendLimitDes: 'Enter a max spend limit',
   },
 }
 

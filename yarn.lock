@@ -3548,6 +3548,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/radio@workspace:packages/ui/components/Radio":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/radio@workspace:packages/ui/components/Radio"
+  dependencies:
+    rc-checkbox: 2.3.2
+  peerDependencies:
+    react: ^17
+    react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/random-id@workspace:packages/random-id":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/random-id@workspace:packages/random-id"
@@ -17080,6 +17091,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
     "@fluent-wallet/jazz-icon": "workspace:packages/jazz-icon"
+    "@fluent-wallet/radio": "workspace:packages/ui/components/Radio"
     "@fluent-wallet/shorten-address": "workspace:packages/ui/shorten-address"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
     "@fluent-wallet/utils": "workspace:packages/utils"
@@ -24880,6 +24892,19 @@ fsevents@~2.1.2:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: e929f21d24b41314739221ed6527d006137d2f68b11c21c59759b3f98382f7b6cad7f8100732b84ac92934b0a427d69836ee8434fd73b09c4020b193ac3fdea0
+  languageName: node
+  linkType: hard
+
+"rc-checkbox@npm:2.3.2":
+  version: 2.3.2
+  resolution: "rc-checkbox@npm:2.3.2"
+  dependencies:
+    "@babel/runtime": ^7.10.1
+    classnames: ^2.2.1
+  peerDependencies:
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 023e479d2f95ab64e963f8437da4da2f8b0d750c10d601fd3407ef4f1ac0f8fcba1148b305f9a51dee052770f927ff00440bbcce09f6b0b585e38ba2c49a7ac6
   languageName: node
   linkType: hard
 

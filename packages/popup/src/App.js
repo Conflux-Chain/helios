@@ -29,6 +29,7 @@ const {
   DAPP_SWITCH_NETWORK,
   SEND_TRANSACTION,
   EDIT_GAS_FEE,
+  EDIT_PERMISSION,
 } = ROUTES
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
@@ -51,6 +52,7 @@ const ConfirmAddSuggestedToken = lazy(() =>
 )
 const SendTransaction = lazy(() => import('./pages/SendTransaction'))
 const EditGasFee = lazy(() => import('./pages/EditGasFee'))
+const EditPermission = lazy(() => import('./pages/EditPermission'))
 
 function App() {
   const {data: lockedData, error: lockedError} = useRPC([
@@ -127,6 +129,14 @@ function App() {
               exact
               path={EDIT_GAS_FEE}
               component={EditGasFee}
+            />
+            <ProtectedRoute
+              pendingAuthReq={pendingAuthReq}
+              hasAccount={!zeroGroup}
+              isLocked={!zeroGroup && lockedData}
+              exact
+              path={EDIT_PERMISSION}
+              component={EditPermission}
             />
             <Route exact path={SET_PASSWORD} component={SetPassword} />
             <Route

@@ -76,6 +76,7 @@ function AddToken({onClose, onOpen}) {
     }
   }
   const onAddToken = ({decimals, symbol, address, logoURI}) => {
+    console.log(123)
     request(WALLET_WATCH_ASSET, {
       type: isCfxChain ? 'CRC20' : isEthChain ? 'ERC20' : '',
       options: {
@@ -86,6 +87,7 @@ function AddToken({onClose, onOpen}) {
       },
     }).then(({result, error}) => {
       // TODO:error
+      console.log(error, result)
       if (result) {
         mutate([REFETCH_BALANCE])
         mutate([GET_ADD_TOKEN_LIST])

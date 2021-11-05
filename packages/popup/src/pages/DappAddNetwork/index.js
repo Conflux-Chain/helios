@@ -48,13 +48,13 @@ function DappAddNetwork() {
                 {t('warningAddNetwork')}
               </div>
             </div>
-            <p
+            <a
               className="cursor-pointer text-xs text-primary mt-1"
-              aria-hidden="true"
-              onClick={() => window && window.open('')}
+              href="/"
+              target="_blank"
             >
               {t('learnMore')}
-            </p>
+            </a>
           </div>
           <div className="bg-gray-4 mt-3 px-3 py-4">
             <NetworkContentItem
