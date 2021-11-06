@@ -4,7 +4,15 @@ import PropTypes from 'prop-types'
 import RcCheckbox from 'rc-checkbox'
 import './radio.css'
 
-const Radio = ({children, value, onChange, name, ...props}) => {
+const Radio = ({
+  children,
+  value,
+  onChange,
+  name,
+  wrapperClassName = '',
+  radioClassName = '',
+  ...props
+}) => {
   const ref = createRef(null)
   const context = useContext(RadioGroupContext)
   const onRadioChange = e => {
@@ -17,17 +25,18 @@ const Radio = ({children, value, onChange, name, ...props}) => {
   }
 
   return (
-    <label className={`flex cursor-pointer`}>
+    <label className={`flex cursor-pointer ${wrapperClassName}`}>
       <RcCheckbox
         type="radio"
         value={value}
         onChange={onRadioChange}
         name={context?.name || name}
         prefixCls={`radio-customize-prefix-cls`}
+        className={radioClassName}
         {...props}
         ref={ref}
       />
-      {children ? <span> children</span> : null}
+      {children ? <div className="flex-1"> {children}</div> : null}
     </label>
   )
 }
@@ -41,5 +50,7 @@ Radio.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   name: PropTypes.string,
+  wrapperClassName: PropTypes.string,
+  radioClassName: PropTypes.string,
 }
 export default Radio

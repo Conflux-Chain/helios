@@ -158,10 +158,11 @@ const en = {
     allowSpendDes:
       'Allow {{dapp}} to withdraw and spend up to the following amount:',
     proposedApprovalLimit: 'Proposed approval limit',
-    proposedApprovalLimitDes:
-      'Spend limit request by {{dapp}} {{amount}} {{symbol}}',
+    proposedApprovalLimitDes: 'Spend limit request by {{dapp}}',
     customSpendLimit: 'Custom spend limit',
     customSpendLimitDes: 'Enter a max spend limit',
+    set: 'Set',
+    customLimitErr: 'Limit must be greater than 0 {{unit}}',
   },
 }
 

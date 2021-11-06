@@ -1,27 +1,23 @@
 import PropTypes from 'prop-types'
 import {RadioGroupContextProvider} from './context'
 
-function RadioGroup({ onRadioChange, value, name, children }) {
-  
-  const renderGroup = children => {
-    return <div>{children}</div>
-  }
-
+function RadioGroup({onChange, value, name, children}) {
   return (
     <RadioGroupContextProvider
       value={{
-        onChange: onRadioChange,
+        onChange,
         value,
         name,
       }}
-      {...renderGroup(children)}
-    ></RadioGroupContextProvider>
+    >
+      {children}
+    </RadioGroupContextProvider>
   )
 }
 
 RadioGroup.propTypes = {
   value: PropTypes.string.isRequired,
-  onRadioChange: PropTypes.func,
+  onChange: PropTypes.func,
   name: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),

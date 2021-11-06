@@ -1,9 +1,9 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
-import {TitleNav, DisplayBalance} from '../../components'
+import {TitleNav, DisplayBalance, NumberInput} from '../../components'
 import {useIsCfx, useIsEth} from '../../hooks'
-import {WrapperWithLabel, GasInput} from './components'
+import {WrapperWithLabel} from './components'
 import {fromCfxToDrip, GWEI_DECIMALS, Big} from '@fluent-wallet/data-format'
 
 /* eslint-disable react/prop-types */
@@ -101,14 +101,13 @@ function EditGasFee({
               isCfx ? t('drip') : isEth ? t('gWei') : ''
             })`}
             rightContent={
-              <GasInput
-                type="number"
+              <NumberInput
                 size="small"
                 width="w-32"
                 value={gasPrice}
                 errorMessage={gasPriceErr}
                 errorClassName="absolute right-0 -bottom-6"
-                onGasInputChange={setGasPrice}
+                onInputChange={setGasPrice}
               />
             }
           />
@@ -116,14 +115,13 @@ function EditGasFee({
             leftContent={t('gasLimit')}
             containerClass={`${gasLimitErr ? 'mb-9' : 'mb-3'} relative`}
             rightContent={
-              <GasInput
-                type="number"
+              <NumberInput
                 size="small"
                 width="w-32"
                 errorClassName="absolute right-0 -bottom-6"
                 value={gasLimit}
                 errorMessage={gasLimitErr}
-                onGasInputChange={setGasLimit}
+                onInputChange={setGasLimit}
               />
             }
           />
@@ -165,14 +163,13 @@ function EditGasFee({
             leftContent={t('customNonce')}
             containerClass="relative"
             rightContent={
-              <GasInput
-                type="number"
+              <NumberInput
                 size="small"
                 width="w-32"
                 value={nonce}
                 errorMessage={nonceErr}
                 errorClassName="absolute right-0 -bottom-6"
-                onGasInputChange={setNonce}
+                onInputChange={setNonce}
               />
             }
           />
