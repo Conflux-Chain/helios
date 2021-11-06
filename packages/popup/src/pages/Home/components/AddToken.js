@@ -12,7 +12,7 @@ import {RPC_METHODS} from '../../../constants'
 import {request} from '../../../utils'
 import {useCurrentAccount, useIsCfx, useIsEth} from '../../../hooks'
 const {
-  GET_ADD_TOKEN_LIST,
+  WALLETDB_ADD_TOKEN_LIST,
   REFETCH_BALANCE,
   WALLET_VALIDATE_20TOKEN,
   WALLET_WATCH_ASSET,
@@ -31,7 +31,7 @@ function AddToken({onClose, onOpen}) {
   useRPC([REFETCH_BALANCE], {type: 'all'})
   const {
     data: {added, others},
-  } = useRPC([GET_ADD_TOKEN_LIST], undefined, {
+  } = useRPC([WALLETDB_ADD_TOKEN_LIST], undefined, {
     fallbackData: {added: [], others: []},
   })
   const addTokenList = added.concat(others)
@@ -90,7 +90,7 @@ function AddToken({onClose, onOpen}) {
       console.log(error, result)
       if (result) {
         mutate([REFETCH_BALANCE])
-        mutate([GET_ADD_TOKEN_LIST])
+        mutate([WALLETDB_ADD_TOKEN_LIST])
       }
     })
   }

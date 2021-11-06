@@ -53,7 +53,7 @@ function EditPermission({
               {t('learnMore')}
             </a>
           </div>
-          <div className="px-3">
+          <div className="px-3 mt-3">
             <Group
               value={permissionChoice}
               onChange={e => setPermissionChoice(e.target.value)}
@@ -61,7 +61,7 @@ function EditPermission({
             >
               <Radio
                 value="recommend"
-                wrapperClassName="w-full bg-gray-4 rounded border border-solid	border-gray-10 pl-3 items-center py-4"
+                wrapperClassName="w-full bg-gray-4 rounded border border-solid	border-gray-10 pl-3 items-center py-4 mb-3"
               >
                 <div className="pl-3">
                   <div className="text-gray-80 text-sm font-medium">
@@ -80,7 +80,6 @@ function EditPermission({
                   </div>
                 </div>
               </Radio>
-              <div className="h-3" />
               <Radio
                 value="custom"
                 wrapperClassName="w-full bg-gray-4 rounded border border-solid	border-gray-10 pl-3 py-4"
