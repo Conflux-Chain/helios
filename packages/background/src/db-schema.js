@@ -38,7 +38,7 @@ const schema = {
       identity: true,
       doc: "Name of a network, used as id of network, builtin network name can't be changed, reload(reinit) the extension if network name changed",
     },
-    icon: {many: true, doc: 'icon urls of this network'},
+    icons: {doc: 'Array of icon urls of this network'},
     endpoint: {
       value: true,
       doc: "RPC endpoint of a network, can't be duplicate",
