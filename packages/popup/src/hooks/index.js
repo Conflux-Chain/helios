@@ -233,7 +233,7 @@ export const useEstimateTx = (tx = {}) => {
     loading,
     error,
   } = useAsync(async () => {
-    if (!provider || !currentNetwork?.netId) return
+    if (!provider || !currentNetwork?.netId || (!to && !data)) return
     return await estimate(tx, {
       type,
       request: provider.request.bind(provider),

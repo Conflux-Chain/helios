@@ -1,8 +1,11 @@
 /* eslint-disable no-unused-vars */
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
+import BN from 'bn.js'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
+import {addHexPrefix} from '@fluent-wallet/utils'
+import {CFX_DECIMALS, ETH_DECIMALS} from '@fluent-wallet/data-format'
 import {isHexAddress} from '@fluent-wallet/account'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
@@ -17,9 +20,9 @@ import {
 import useGlobalStore from '../../stores/index.js'
 import {
   useCurrentNativeToken,
-  useNetworkTypeIsEth,
   useNetworkTypeIsCfx,
   useCurrentNetwork,
+  useCurrentAccount,
 } from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
 const {HOME, CONFIRM_TRANSACTION} = ROUTES
@@ -31,22 +34,45 @@ function SendTransaction() {
     toAddress,
     sendAmount,
     sendToken,
+    gasPrice,
     setToAddress,
     setSendAmount,
     setSendToken,
     clearSendTransactionParams,
   } = useGlobalStore()
   const currentNetwork = useCurrentNetwork()
+  const currentAccount = useCurrentAccount()
+  const {address} = currentAccount
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const networkTypeIsEth = useNetworkTypeIsEth()
   const [addressError, setAddressError] = useState('')
   const [balanceError, setBalanceError] = useState('')
   const [gasError, setGasError] = useState('')
-  const nativeToken = useCurrentNativeToken()
-  const estimateRst = useEstimateTx({
-    from: 'cfx:aamgvyzht7h1zxdghb9ee9w26wrz8rd3gj837392dp',
-    to: 'cfx:aasw0spp7pee3mpex5zk4arhfx20vwssfaamw12zsw',
-  })
+  const nativeToken = currentNetwork?.ticker
+  console.log(nativeToken)
+
+  let to,
+    decimals = CFX_DECIMALS
+  if (sendToken?.symbol === nativeToken?.symbol) {
+    to = toAddress
+    decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
+  } else if (sendToken?.address) {
+    to.current = sendToken?.address
+    decimals = sendToken?.decimals
+  }
+
+  console.log(to)
+  const params = {
+    from: address,
+    to,
+    gasPrice: addHexPrefix(new BN(gasPrice, 10).toString(16)),
+    value: addHexPrefix(
+      new BN(sendAmount || '0', 10)
+        .mul(new BN('10', 10).pow(new BN(decimals, 10)))
+        .toString(16),
+    ),
+  }
+  console.log(params)
+  const estimateRst = useEstimateTx(params)
   console.log('estimateRst = ', estimateRst)
   // TODO: get from scan
   const hasNoTxn = true
@@ -67,7 +93,7 @@ function SendTransaction() {
     ) {
       // TODO i18n
       setAddressError('Please enter validate cfx address')
-    } else if (networkTypeIsEth && !isHexAddress(address)) {
+    } else if (!networkTypeIsCfx && !isHexAddress(address)) {
       // TODO i18n
       setAddressError('Please enter validate hex address')
     } else {
@@ -86,8 +112,8 @@ function SendTransaction() {
         onGoBack={() => clearSendTransactionParams()}
       />
       <div className="flex mt-1 mb-3 mx-4 justify-between items-center z-20">
-        <CurrentAccountDisplay />
-        <CurrentNetworkDisplay />
+        <CurrentAccountDisplay currentAccount={currentAccount} />
+        <CurrentNetworkDisplay currentNetwork={currentNetwork} />
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">
         <div className="flex flex-col">

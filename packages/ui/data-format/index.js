@@ -7,6 +7,7 @@ OriginBig.NE = -19
 
 export const Big = OriginBig
 export const CFX_DECIMALS = 18
+export const ETH_DECIMALS = 18
 export const BTC_DECIMALS = 6
 export const USDT_DECIMALS = 8
 export const COMMON_DECIMALS = 18

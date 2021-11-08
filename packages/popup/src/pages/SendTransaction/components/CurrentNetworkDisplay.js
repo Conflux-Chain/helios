@@ -1,7 +1,6 @@
-import {useCurrentNetwork} from '../../../hooks/useApi'
+import PropTypes from 'prop-types'
 
-function CurrentNetworkDisplay() {
-  const currentNetwork = useCurrentNetwork()
+function CurrentNetworkDisplay({currentNetwork}) {
   const {name, icon} = currentNetwork
 
   return (
@@ -14,6 +13,10 @@ function CurrentNetworkDisplay() {
       <span className="text-2xs text-white mr-1">{name}</span>
     </div>
   )
+}
+
+CurrentNetworkDisplay.propTypes = {
+  currentNetwork: PropTypes.object,
 }
 
 export default CurrentNetworkDisplay

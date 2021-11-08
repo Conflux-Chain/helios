@@ -1,8 +1,8 @@
-import {useCurrentAccount} from '../../../hooks/useApi'
+import PropTypes from 'prop-types'
 import {AccountDisplay} from '../../../components'
 
-function CurrentAccountDisplay() {
-  const {nickname, address, eid: accountId} = useCurrentAccount()
+function CurrentAccountDisplay({currentAccount}) {
+  const {nickname, address, eid: accountId} = currentAccount
 
   return (
     <AccountDisplay
@@ -12,4 +12,9 @@ function CurrentAccountDisplay() {
     />
   )
 }
+
+CurrentAccountDisplay.propTypes = {
+  currentAccount: PropTypes.object,
+}
+
 export default CurrentAccountDisplay
