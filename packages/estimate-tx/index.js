@@ -1,6 +1,7 @@
 import BN from 'bn.js'
+import {stripHexPrefix} from '@fluent-wallet/utils'
 
-const bn16 = x => new BN(x, 16)
+const bn16 = x => new BN(stripHexPrefix(x), 16)
 const pre0x = x => `0x${x}`
 
 export const ethEstimate = () => {

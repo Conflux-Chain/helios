@@ -3801,6 +3801,7 @@ __metadata:
   resolution: "@fluent-wallet/estimate-tx@workspace:packages/estimate-tx"
   dependencies:
     "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type"
+    "@fluent-wallet/utils": "workspace:packages/utils"
     bn.js: 5.2.0
   languageName: unknown
   linkType: soft

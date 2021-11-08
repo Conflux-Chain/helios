@@ -6,6 +6,7 @@
   "version": "0.0.2",
   "dependencies": {
     "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type",
+    "@fluent-wallet/utils": "workspace:packages/utils",
     "bn.js": "5.2.0"
   }
 }
