@@ -1,0 +1,18 @@
+releases:
+  "@fluent-wallet/built-in-network-icons": patch
+  "@fluent-wallet/consts": patch
+  "@fluent-wallet/estimate-tx": patch
+  "@fluent-wallet/wallet_add-network": patch
+  "@fluent-wallet/wallet_export-account": patch
+  "@fluent-wallet/wallet_get-account-group": patch
+
+declined:
+  - "@fluent-wallet/account"
+  - "@fluent-wallet/addr-by-network"
+  - helios-background
+  - "@fluent-wallet/rpc-engine"
+  - "@fluent-wallet/wallet_add-ethereum-chain"
+  - "@fluent-wallet/wallet_add-vault"
+  - "@fluent-wallet/wallet_export-account-group"
+  - "@fluent-wallet/spec"
+  - "@fluent-wallet/data-format"

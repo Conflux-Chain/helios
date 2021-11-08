@@ -31,14 +31,14 @@ export const CFX_MAINNET_NAME = 'CFX_MAINNET'
 export const CFX_MAINNET_CHAINID = '0x405'
 export const CFX_MAINNET_NETID = 1029
 export const CFX_MAINNET_CURRENCY_SYMBOL = 'CFX'
-export const CFX_MAINNET_CURRENCY_NAME = 'CFX'
+export const CFX_MAINNET_CURRENCY_NAME = 'Conflux'
 
 export const CFX_TESTNET_RPC_ENDPOINT = 'https://portal-test.confluxrpc.com'
 export const CFX_TESTNET_NAME = 'CFX_TESTNET'
 export const CFX_TESTNET_CHAINID = '0x1'
 export const CFX_TESTNET_NETID = 1
 export const CFX_TESTNET_CURRENCY_SYMBOL = 'CFX'
-export const CFX_TESTNET_CURRENCY_NAME = 'CFX'
+export const CFX_TESTNET_CURRENCY_NAME = 'Conflux'
 
 // TODO: setup ci to use own infura
 export const ETH_MAINNET_RPC_ENDPOINT =
@@ -62,7 +62,7 @@ export const BSC_MAINNET_NAME = 'BSC_MAINNET'
 export const BSC_MAINNET_CHAINID = '0x38'
 export const BSC_MAINNET_NETID = 56
 export const BSC_MAINNET_CURRENCY_SYMBOL = 'BNB'
-export const BSC_MAINNET_CURRENCY_NAME = 'BNB'
+export const BSC_MAINNET_CURRENCY_NAME = 'Binance Coin'
 
 export const BSC_TESTNET_RPC_ENDPOINT =
   'https://data-seed-prebsc-1-s1.binance.org:8545/'
@@ -70,7 +70,7 @@ export const BSC_TESTNET_NAME = 'BSC_TESTNET'
 export const BSC_TESTNET_CHAINID = '0x61'
 export const BSC_TESTNET_NETID = 97
 export const BSC_TESTNET_CURRENCY_SYMBOL = 'BNB'
-export const BSC_TESTNET_CURRENCY_NAME = 'BNB'
+export const BSC_TESTNET_CURRENCY_NAME = 'Binance Coin'
 
 export const DEFAULT_CFX_HDPATH = `m/44'/503'/0'/0`
 export const DEFAULT_ETH_HDPATH = `m/44'/60'/0'/0`

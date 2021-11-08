@@ -38,7 +38,7 @@ const schema = {
       identity: true,
       doc: "Name of a network, used as id of network, builtin network name can't be changed, reload(reinit) the extension if network name changed",
     },
-    icon: {many: true, doc: 'icon urls of this network'},
+    icons: {doc: 'Array of icon urls of this network'},
     endpoint: {
       value: true,
       doc: "RPC endpoint of a network, can't be duplicate",
@@ -50,7 +50,7 @@ const schema = {
     chainId: {doc: 'Network chain id, hexadecimal'},
     netId: {doc: 'Network id, decimal'},
     ticker: {
-      doc: 'A object with info of the currency, eg. {name: "Ethereum", symbol: "CFX", decimals: 18}',
+      doc: 'A object with info of the currency, eg. {name: "Ethereum", symbol: "CFX", decimals: 18, iconUrls: [...svg]}',
     },
     address: {ref: true, many: true, component: true},
     builtin: {doc: "Indicating builtin network, shouldn't be deleted"},

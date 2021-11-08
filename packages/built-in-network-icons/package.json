@@ -1,0 +1,7 @@
+{
+  "name": "@fluent-wallet/built-in-network-icons",
+  "type": "module",
+  "private": true,
+  "packageManager": "yarn@3.0.1",
+  "version": "0.0.0"
+}

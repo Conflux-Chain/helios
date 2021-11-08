@@ -21,6 +21,7 @@ const nativeCurrencySchema = [
   ['name', stringp],
   ['symbol', tokenSymbol],
   ['decimals', [eq, 18]],
+  ['iconUrls', {optional: true}, [plus, url]],
 ]
 
 export const ChainParameterSchema = [
