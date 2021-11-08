@@ -132,12 +132,12 @@ function AddToken({onClose, onOpen}) {
           ) : noTokenStatus ? (
             <div className="flex  items-center flex-col">
               <img
-                src=""
+                src="images/no-available-token.svg"
                 alt="no result"
-                className="w-24 h-24 mt-13 mb-4"
+                className="w-33 h-24 mt-13 mb-4"
                 data-clear-btn="true"
               />
-              <p>{t('noResult')}</p>
+              <p className="text-sm text-gray-40">{t('noResult')}</p>
             </div>
           ) : null}
         </div>

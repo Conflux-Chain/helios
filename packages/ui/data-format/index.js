@@ -65,6 +65,11 @@ export const toThousands = (numOrStr, delimiter = ',', prevDelimiter = ',') => {
       }
     }, '')
 }
+export const formatHexToDecimal = numOrStr => {
+  return isHexPrefixed(numOrStr)
+    ? new BN(stripHexPrefix(numOrStr), 16).toString()
+    : numOrStr
+}
 
 export const formatBalance = (numOrStr, decimal) => {
   if (
@@ -72,10 +77,7 @@ export const formatBalance = (numOrStr, decimal) => {
     isNaN(Number(numOrStr))
   )
     return numOrStr
-  let balance = numOrStr
-  if (isHexPrefixed(balance)) {
-    balance = new BN(stripHexPrefix(balance), 16).toString()
-  }
+  let balance = formatHexToDecimal(numOrStr)
   if (decimal) {
     balance = convertDecimal(balance, 'divide', decimal)
   }

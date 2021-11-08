@@ -145,7 +145,7 @@ const en = {
     gWei: 'GWei',
     gasLimit: 'Gas Limit',
     storageFee: 'Storage Fee',
-    storageLimit: 'Storage Limit',
+    storageCollateralized: 'Storage Limit',
     totalFee: 'Total Fee',
     customNonce: 'Custom Nonce',
     save: 'Save',
