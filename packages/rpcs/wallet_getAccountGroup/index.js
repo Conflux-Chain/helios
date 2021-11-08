@@ -1,6 +1,17 @@
-import {dbid, map, truep, maybe, enums} from '@fluent-wallet/spec'
+import {
+  dbid,
+  map,
+  truep,
+  maybe,
+  enums,
+  or,
+  set,
+  oneOrMore,
+} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_getAccountGroup'
+
+const AccountGroupTypeSchema = [enums, 'hd', 'pk', 'pub']
 
 export const schemas = {
   input: [
@@ -10,7 +21,15 @@ export const schemas = {
       {closed: true},
       ['accountGroupId', {optional: true}, dbid],
       ['includeHidden', {optional: true}, truep],
-      ['type', {optional: true}, [enums, 'hd', 'pk', 'pub']],
+      [
+        'type',
+        {optional: true},
+        [
+          or,
+          AccountGroupTypeSchema,
+          [set, [oneOrMore, AccountGroupTypeSchema]],
+        ],
+      ],
     ],
   ],
 }
@@ -22,13 +41,19 @@ export const permissions = {
 
 export const main = ({params = {}, db: {getAccountGroup}}) => {
   const {accountGroupId, includeHidden, type} = params
+  let types = type
+  if (typeof types === 'string') types = [types]
   const query = {}
   if (accountGroupId) query.eid = accountGroupId
   if (includeHidden) query.hidden = true
 
   const accoungGroup = getAccountGroup(query) || []
 
-  if (type) return accoungGroup.filter(g => g.vault.type === type)
+  if (type && type.length)
+    return accoungGroup.reduce(
+      (acc, g) => (type.includes(g.type) ? acc.concat(g) : acc),
+      [],
+    )
 
   return accoungGroup
 }
