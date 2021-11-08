@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import {TitleNav, ProgressIcon} from '.'
-import {usePendingAuthReq} from '../hooks'
+import {usePendingAuthReq} from '../hooks/useApi'
 function DappProgressHeader({title}) {
-  const {pendingAuthReq} = usePendingAuthReq()
+  const pendingAuthReq = usePendingAuthReq()
   const [{app, site}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
 
   return (

@@ -3,7 +3,9 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
-import {useIsCfx, useIsEth, useEstimateTx} from '../../hooks'
+import {useEstimateTx} from '../../hooks'
+import {useNetworkTypeIsCfx, useNetworkTypeIsEth} from '../../hooks/useApi'
+
 import {WrapperWithLabel} from './components'
 import {
   GWEI_DECIMALS,
@@ -29,14 +31,16 @@ function EditGasFee() {
   const [inputNonce, setInputNonce] = useState('0')
   const {toAddress, setGasPrice, setGasLimit, setNonce} = useGlobalStore()
 
-  const isCfx = useIsCfx()
-  const isEth = useIsEth()
+  const isCfx = useNetworkTypeIsCfx()
+  const isEth = useNetworkTypeIsEth()
   const symbol = isCfx ? 'CFX' : isEth ? 'ETH' : ''
   const estimateRst = useEstimateTx({
-    from: 'cfx:aamgvyzht7h1zxdghb9ee9w26wrz8rd3gj837392dp',
-    to: 'cfx:aasw0spp7pee3mpex5zk4arhfx20vwssfaamw12zsw',
+    from: 'cfx:aamysddjren1zfp36agsek5fxt2w0st8feps3297ek',
+    gasPrice: '0x1',
+    to: 'cfx:aar6gezvnnjyp2z9mjv06whavnadw1kurugxrgpdv7',
+    value: '0x1bc16d674ec80000',
   })
-
+  console.log('estimateRst', estimateRst)
   const {
     loading,
     gasPrice: initGasPrice,

@@ -1,13 +1,9 @@
 import PropTypes from 'prop-types'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {RightOutlined} from '@fluent-wallet/component-icons'
-import {RPC_METHODS} from '../../../constants'
-const {GET_CURRENT_NETWORK} = RPC_METHODS
+import {useCurrentNetwork} from '../../../hooks/useApi'
 
 function CurrentNetwork({onOpenNetwork}) {
-  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
-    fallbackData: {},
-  })
+  const currentNetwork = useCurrentNetwork()
   const {name, icon} = currentNetwork
 
   return (

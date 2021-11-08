@@ -1,7 +1,6 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {CaretDownFilled} from '@fluent-wallet/component-icons'
 import Input from '@fluent-wallet/component-input'
 import Link from '@fluent-wallet/component-link'
@@ -12,15 +11,11 @@ import {
   SearchToken,
   TokenList,
 } from '../../../components'
-import {RPC_METHODS} from '../../../constants'
-const {GET_HOME_TOKEN_LIST, REFETCH_BALANCE} = RPC_METHODS
+import {useDbHomeAssets} from '../../../hooks/useApi'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
-  const {
-    data: {added, native},
-  } = useRPC([GET_HOME_TOKEN_LIST], undefined, {fallbackData: {}})
-  useRPC([REFETCH_BALANCE])
+  const {added, native} = useDbHomeAssets()
   const homeTokenList = [native].concat(added)
   const [searchValue, setSearchValue] = useState('')
   const onChangeValue = value => {
@@ -37,7 +32,7 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   )
   return (
     <Modal
-      className="!bg-choose-token-modal bg-no-repeat w-80 h-[552px]"
+      className="!bg-gray-circles bg-no-repeat w-80 h-[552px]"
       open={open}
       title={t('chooseToken')}
       content={content}
@@ -83,7 +78,7 @@ function TokenAndAmount({
     <CompWithLabel label={label}>
       <div className="flex px-3 h-13 items-center justify-between bg-gray-4 border border-gray-10 rounded">
         <div
-          className="flex items-center pr-3 border-r-gray-20 cursor-pointer"
+          className="flex items-center pr-3 border-r-gray-20 cursor-pointer border-r border-text-20 h-6"
           onClick={() => setTokenListShow(true)}
           aria-hidden="true"
         >
@@ -100,7 +95,7 @@ function TokenAndAmount({
             width="w-full bg-transparent"
             bordered={false}
             value={amount}
-            onChange={onChangeAmount}
+            onChange={e => onChangeAmount && onChangeAmount(e.target.value)}
           />
         </div>
         <Link onClick={onClickMax}>{t('max')}</Link>

@@ -163,6 +163,22 @@ const en = {
     customSpendLimitDes: 'Enter a max spend limit',
     set: 'Set',
     customLimitErr: 'Limit must be greater than 0 {{unit}}',
+    // confirm transaction
+    sendToken: 'Send Token',
+    approveToken: 'Token Approve',
+    signTransaction: 'Sign Transaction',
+    toAddress: 'To Address',
+    approveTo: 'Approve To',
+    contract: 'Contract',
+    allowLimit: 'Allow Limit',
+    protocol: 'Protocol',
+    action: 'Action',
+    viewData: 'View Data',
+    confirm: 'Confirm',
+    // transaction result
+    transactionSubmit: 'Transaction Submitted/Signed',
+    viewOnScan: 'View on Scan',
+    ok: 'OK',
   },
 }
 

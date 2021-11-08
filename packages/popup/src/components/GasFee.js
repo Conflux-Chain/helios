@@ -5,7 +5,7 @@ import Link from '@fluent-wallet/component-link'
 import {Big, fromDripToCfx} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {CompWithLabel, DisplayBalance, CustomTag} from '../components'
-import {useIsCfx, useIsEth} from '../hooks'
+import {useNetworkTypeIsCfx, useNetworkTypeIsEth} from '../hooks/useApi'
 import {ROUTES} from '../constants'
 const {EDIT_GAS_FEE} = ROUTES
 
@@ -18,8 +18,8 @@ function GasFee({
 }) {
   const {t} = useTranslation()
   const history = useHistory()
-  const isCfxChain = useIsCfx()
-  const isEthChain = useIsEth()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const networkTypeIsEth = useNetworkTypeIsEth()
   const isBePayed = !payCollateral || !payTxFee
   const isBeAllPayed = !payCollateral && !payTxFee
   const gasFee = new Big(fromDripToCfx(gasLimit.toString(10))).times(gasPrice)
@@ -57,7 +57,7 @@ function GasFee({
           symbol="CFX"
         />
         <span className="text-xs text-gray-60">{`${gasPrice} ${
-          isCfxChain ? 'Drip' : isEthChain ? 'Gwei' : ''
+          networkTypeIsCfx ? 'Drip' : networkTypeIsEth ? 'Gwei' : ''
         }`}</span>
         {isBePayed && (
           <CustomTag

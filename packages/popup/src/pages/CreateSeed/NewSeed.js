@@ -4,13 +4,13 @@ import {useHistory} from 'react-router-dom'
 import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
 import {CompWithLabel, TitleNav} from '../../components'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import useGlobalStore from '../../stores'
-import {RPC_METHODS, ROUTES} from '../../constants'
+import {ROUTES} from '../../constants'
 import {useCreatedPasswordGuard} from '../../hooks'
-const {GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
+import {useHdAccountGroup} from '../../hooks/useApi'
 
 const {BACKUP_SEED_PHRASE} = ROUTES
+
 function NewSeed() {
   useCreatedPasswordGuard()
   const {t} = useTranslation()
@@ -18,11 +18,7 @@ function NewSeed() {
   const {setCreatedGroupName} = useGlobalStore()
   const [groupName, setGroupName] = useState('')
   const [groupNamePlaceholder, setGroupNamePlaceholder] = useState('')
-  const {data: hdGroup} = useRPC(
-    [GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
-    {type: ACCOUNT_GROUP_TYPE.HD},
-    {fallbackData: []},
-  )
+  const hdGroup = useHdAccountGroup()
   useEffect(() => {
     setGroupNamePlaceholder(`Seed-${hdGroup.length + 1}`)
   }, [hdGroup])

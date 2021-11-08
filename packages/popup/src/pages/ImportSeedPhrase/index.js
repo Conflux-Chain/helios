@@ -4,18 +4,18 @@ import {useTranslation} from 'react-i18next'
 import {TitleNav, CompWithLabel} from '../../components'
 import Button from '@fluent-wallet/component-button'
 import Input from '@fluent-wallet/component-input'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
+import {usePkAccountGroup} from '../../hooks/useApi'
 import {useSWRConfig} from 'swr'
 const {
-  GET_ACCOUNT_GROUP,
+  WALLET_GET_ACCOUNT_GROUP,
   ACCOUNT_GROUP_TYPE,
-  VALIDATE_MNEMONIC,
-  IMPORT_MNEMONIC,
-  GET_NO_GROUP,
+  WALLET_VALIDATE_MNEMONIC,
+  WALLET_IMPORT_MNEMONIC,
+  WALLET_ZERO_ACCOUNT_GROUP,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -31,11 +31,7 @@ function ImportSeedPhrase() {
   const [creatingAccount, setCreatingAccount] = useState(false)
   const createdPassword = useGlobalStore(state => state.createdPassword)
 
-  const {data: keygenGroup} = useRPC(
-    [GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
-    {type: ACCOUNT_GROUP_TYPE.HD},
-    {fallbackData: []},
-  )
+  const keygenGroup = usePkAccountGroup()
 
   useCreatedPasswordGuard()
   useEffect(() => {
@@ -49,9 +45,9 @@ function ImportSeedPhrase() {
     setKeygen(e.target.value)
   }
   const dispatchMutate = () => {
-    mutate([GET_NO_GROUP], false)
-    mutate([GET_ACCOUNT_GROUP])
-    mutate([GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD])
+    mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+    mutate([WALLET_GET_ACCOUNT_GROUP])
+    mutate([WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD])
   }
 
   const onCreate = () => {
@@ -62,7 +58,7 @@ function ImportSeedPhrase() {
 
     if (!creatingAccount) {
       setCreatingAccount(true)
-      request(VALIDATE_MNEMONIC, {
+      request(WALLET_VALIDATE_MNEMONIC, {
         mnemonic: keygen,
       }).then(({result}) => {
         if (result?.valid) {
@@ -73,16 +69,18 @@ function ImportSeedPhrase() {
           if (createdPassword) {
             params['password'] = createdPassword
           }
-          return request(IMPORT_MNEMONIC, params).then(({error, result}) => {
-            setCreatingAccount(false)
-            if (result) {
-              dispatchMutate()
-              history.push(HOME)
-            }
-            if (error) {
-              setKeygenErrorMessage(error.message.split('\n')[0])
-            }
-          })
+          return request(WALLET_IMPORT_MNEMONIC, params).then(
+            ({error, result}) => {
+              setCreatingAccount(false)
+              if (result) {
+                dispatchMutate()
+                history.push(HOME)
+              }
+              if (error) {
+                setKeygenErrorMessage(error.message.split('\n')[0])
+              }
+            },
+          )
         }
         // TODO: replace error msg
         setKeygenErrorMessage('Invalid or inner error!')

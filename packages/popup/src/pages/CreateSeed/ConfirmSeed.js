@@ -9,7 +9,7 @@ import {TitleNav} from '../../components'
 import {request, shuffle} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {RPC_METHODS, ROUTES} from '../../constants'
-const {IMPORT_MNEMONIC, GET_NO_GROUP} = RPC_METHODS
+const {WALLET_IMPORT_MNEMONIC, WALLET_ZERO_ACCOUNT_GROUP} = RPC_METHODS
 const {HOME} = ROUTES
 
 function ConfirmSeed() {
@@ -68,7 +68,7 @@ function ConfirmSeed() {
     setMnemonicError('')
     if (importingMnemonic) return
     setImportingMnemonic(true)
-    request(IMPORT_MNEMONIC, {
+    request(WALLET_IMPORT_MNEMONIC, {
       mnemonic,
       password: createdPassword,
     }).then(({error}) => {
@@ -77,10 +77,9 @@ function ConfirmSeed() {
         setMnemonicError(error.message)
         return
       }
-      mutate([GET_NO_GROUP], false)
+      mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
       history.push(HOME)
       setCreatedMnemonic('')
-      console.log('success')
     })
   }
 

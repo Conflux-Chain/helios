@@ -1,14 +1,16 @@
 import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {CompWithLabel, TitleNav} from '../../components'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {request} from '../../utils'
-import {RPC_METHODS} from '../../constants'
-const {GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE, CREATE_ACCOUNT} = RPC_METHODS
+import {RPC_METHODS, ROUTES} from '../../constants'
+import {useHdAccountGroup} from '../../hooks/useApi'
+const {WALLET_CREATE_ACCOUNT, WALLET_ZERO_ACCOUNT_GROUP} = RPC_METHODS
+const {HOME} = ROUTES
 
 function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
   const {t} = useTranslation()
@@ -50,11 +52,8 @@ SeedPhrase.propTypes = {
 
 function CurrentSeed() {
   const {t} = useTranslation()
-  const {data: hdGroup, mutate: groupMutate} = useRPC(
-    [GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
-    {type: ACCOUNT_GROUP_TYPE.HD},
-    {fallbackData: []},
-  )
+  const {mutate} = useSWRConfig()
+  const hdGroup = useHdAccountGroup()
 
   const [accountName, setAccountName] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
@@ -75,7 +74,7 @@ function CurrentSeed() {
   const onCreate = () => {
     if (creatingAccount) return
     setCreatingAccount(true)
-    return request(CREATE_ACCOUNT, {
+    return request(WALLET_CREATE_ACCOUNT, {
       accountGroupId: hdGroup[selectedGroupIdx].eid,
       nickname: accountName || accountNamePlaceholder,
     }).then(({error}) => {
@@ -85,8 +84,8 @@ function CurrentSeed() {
         console.log(accountCreationError)
         return
       }
-      groupMutate()
-      // jump to next page?
+      mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+      history.push(HOME)
     })
   }
 

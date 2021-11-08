@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {DisplayBalance} from './'
-import {CFX_DECIMAL} from '@fluent-wallet/data-format'
+import {CFX_DECIMALS} from '@fluent-wallet/data-format'
 
 function TokenItem({
   token = {},
@@ -32,7 +32,7 @@ function TokenItem({
               balance={balance}
               maxWidthStyle={maxWidthStyle}
               maxWidth={maxWidth}
-              decimal={decimal || CFX_DECIMAL}
+              decimal={decimal || CFX_DECIMALS}
             />
             {rightIcon && <span className="ml-5">{rightIcon}</span>}
           </div>

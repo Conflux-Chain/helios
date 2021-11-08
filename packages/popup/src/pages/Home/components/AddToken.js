@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import {useState, useRef} from 'react'
 import {useTranslation} from 'react-i18next'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {useSWRConfig} from 'swr'
 import {SelectedOutlined, PlusOutlined} from '@fluent-wallet/component-icons'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
@@ -10,12 +9,19 @@ import {SlideCard} from '../../../components'
 import {WrapIcon, SearchToken, TokenItem} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 import {request} from '../../../utils'
-import {useCurrentAccount, useIsCfx, useIsEth} from '../../../hooks'
+import {
+  useNetworkTypeIsCfx,
+  useNetworkTypeIsEth,
+  useCurrentAccount,
+  useDbRefetchBalance,
+  useDbAddTokenList,
+} from '../../../hooks/useApi'
+
 const {
   WALLETDB_ADD_TOKEN_LIST,
-  REFETCH_BALANCE,
   WALLET_VALIDATE_20TOKEN,
   WALLET_WATCH_ASSET,
+  WALLETDB_REFETCH_BALANCE,
 } = RPC_METHODS
 
 function AddToken({onClose, onOpen}) {
@@ -26,14 +32,10 @@ function AddToken({onClose, onOpen}) {
   const [noTokenStatus, setNoTokenStatus] = useState(false)
   const inputValueRef = useRef()
   const {address} = useCurrentAccount()
-  const isCfxChain = useIsCfx()
-  const isEthChain = useIsEth()
-  useRPC([REFETCH_BALANCE], {type: 'all'})
-  const {
-    data: {added, others},
-  } = useRPC([WALLETDB_ADD_TOKEN_LIST], undefined, {
-    fallbackData: {added: [], others: []},
-  })
+  const isCfxChain = useNetworkTypeIsCfx()
+  const isEthChain = useNetworkTypeIsEth()
+  useDbRefetchBalance({type: 'all'})
+  const {added, others} = useDbAddTokenList() || {}
   const addTokenList = added.concat(others)
 
   const getOther20Token = value => {
@@ -43,6 +45,7 @@ function AddToken({onClose, onOpen}) {
     }).then(({result}) => {
       if (inputValueRef.current === value && result) {
         if (result?.valid) {
+          console.log('result', result)
           setTokenList([{...result, address: value}])
         }
         setNoTokenStatus(true)
@@ -87,7 +90,7 @@ function AddToken({onClose, onOpen}) {
     }).then(({result}) => {
       // TODO:error
       if (result) {
-        mutate([REFETCH_BALANCE])
+        mutate([WALLETDB_REFETCH_BALANCE])
         mutate([WALLETDB_ADD_TOKEN_LIST])
       }
     })

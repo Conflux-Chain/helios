@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {Redirect, Route} from 'react-router-dom'
 import useGlobalStore from '../stores/index.js'
 import {ROUTES, DAPP_REQUEST_ROUTES} from '../constants'
-const {ERROR, UNLOCK, WELCOME} = ROUTES
+const {ERROR, WALLET_UNLOCK, WELCOME} = ROUTES
 
 const ProtectedRoute = ({pendingAuthReq, hasAccount, isLocked, ...rest}) => {
   const {FATAL_ERROR} = useGlobalStore()
@@ -14,7 +14,7 @@ const ProtectedRoute = ({pendingAuthReq, hasAccount, isLocked, ...rest}) => {
     case !hasAccount:
       return <Redirect to={{pathname: WELCOME}} />
     case isLocked:
-      return <Redirect to={{pathname: UNLOCK}} />
+      return <Redirect to={{pathname: WALLET_UNLOCK}} />
     case hasPendingAuthReq:
       return (
         <Redirect
@@ -31,7 +31,6 @@ const ProtectedRoute = ({pendingAuthReq, hasAccount, isLocked, ...rest}) => {
 }
 
 ProtectedRoute.propTypes = {
-  hasPendingAuthReq: PropTypes.bool,
   hasAccount: PropTypes.bool,
   isLocked: PropTypes.bool,
   pendingAuthReq: PropTypes.array,

@@ -2,7 +2,6 @@ import PropTypes from 'prop-types'
 import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import {CurrentAccountNetworkLabel} from './'
@@ -10,10 +9,10 @@ import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard, DisplayBalance, Avatar} from '../../../components'
 import {useAccountGroupBatchBalance} from '../../../hooks'
+import {useCurrentNetwork} from '../../../hooks/useApi'
 
 const {SELECT_CREATE_TYPE} = ROUTES
-const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT, SET_CURRENT_ACCOUNT} =
-  RPC_METHODS
+const {WALLET_GET_CURRENT_ACCOUNT, WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function AccountItem({
   nickname,
@@ -24,9 +23,9 @@ function AccountItem({
 }) {
   const {mutate} = useSWRConfig()
   const onChangeAccount = accountId => {
-    request(SET_CURRENT_ACCOUNT, [accountId]).then(({result}) => {
+    request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(({result}) => {
       result && closeAction && closeAction()
-      mutate([GET_CURRENT_ACCOUNT])
+      mutate([WALLET_GET_CURRENT_ACCOUNT])
       // TODO: need deal with error condition
     })
   }
@@ -78,9 +77,9 @@ AccountItem.propTypes = {
 
 function AccountList({onClose, onOpen}) {
   const {t} = useTranslation()
-  const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
-  const ticker = currentNetworkData?.ticker
-  const networkId = currentNetworkData?.eid
+  const currentNetwork = useCurrentNetwork()
+  const ticker = currentNetwork?.ticker
+  const networkId = currentNetwork?.eid
   const groupBalanceData = useAccountGroupBatchBalance(networkId)
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()

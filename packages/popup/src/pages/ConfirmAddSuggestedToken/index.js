@@ -1,30 +1,33 @@
 import {useTranslation} from 'react-i18next'
 import {formatBalance} from '@fluent-wallet/data-format'
-import {usePendingAuthReq, useBalance} from '../../hooks'
+import {
+  usePendingAuthReq,
+  useBalance,
+  useAddressByNetworkId,
+} from '../../hooks/useApi'
 import {TitleNav, AccountDisplay, DappFooter, TokenItem} from '../../components'
 import {RPC_METHODS} from '../../constants'
 import {useSWRConfig} from 'swr'
-const {GET_HOME_TOKEN_LIST, REFETCH_BALANCE} = RPC_METHODS
+const {WALLETDB_HOME_PAGE_ASSETS, WALLETDB_REFETCH_BALANCE} = RPC_METHODS
 
 function ConfirmAddSuggestedToken() {
   const {mutate} = useSWRConfig()
   const {t} = useTranslation()
-  const {pendingAuthReq} = usePendingAuthReq()
+  const pendingAuthReq = usePendingAuthReq()
   const [{req, app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
-  const {data: balanceData} = useBalance(
-    dappAccountId,
+  const address = useAddressByNetworkId(dappAccountId, dappNetworkId)
+  const balanceData = useBalance(
+    address,
     dappNetworkId,
     req?.params?.options?.address,
   )
 
   const onClickConfirm = () => {
-    mutate([GET_HOME_TOKEN_LIST])
-    mutate([REFETCH_BALANCE])
+    mutate([WALLETDB_HOME_PAGE_ASSETS])
+    mutate([WALLETDB_REFETCH_BALANCE])
   }
-
-  const address = Object.keys(balanceData)[0]
 
   return (
     <div

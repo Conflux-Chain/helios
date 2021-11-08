@@ -1,26 +1,17 @@
 import jazzIcon from '@fluent-wallet/jazz-icon'
 import PropTypes from 'prop-types'
 import {useRef, useEffect} from 'react'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {removeAllChild, jsNumberForAddress} from '../utils'
-import {RPC_METHODS} from '../constants'
-import {useSingleAddressByNetworkId} from '../hooks'
-const {GET_NETWORK} = RPC_METHODS
+import {useCfxNetwork, useAddressByNetworkId} from '../hooks/useApi'
 
 const useCfxMainnetAddress = accountId => {
-  const {data: networkData} = useRPC(
-    [GET_NETWORK, accountId],
-    {
-      type: 'cfx',
-    },
-    {fallbackData: [{}]},
-  )
+  const cfxNetwork = useCfxNetwork()
   let networkId
-  const cfxMainnetArr = networkData.filter(({name}) => name === 'CFX_MAINNET')
+  const cfxMainnetArr = cfxNetwork.filter(({name}) => name === 'CFX_MAINNET')
   if (cfxMainnetArr.length) {
     networkId = cfxMainnetArr[0].eid
   }
-  const {data: addressData} = useSingleAddressByNetworkId(accountId, networkId)
+  const addressData = useAddressByNetworkId(accountId, networkId)
   return jsNumberForAddress(addressData?.cfxHex || addressData?.hex)
 }
 
@@ -36,7 +27,7 @@ function Avatar({diameter, accountId, ...props}) {
 }
 
 Avatar.propTypes = {
-  accountId: PropTypes.number.isRequired,
+  accountId: PropTypes.number,
   diameter: PropTypes.number.isRequired,
   containerClassName: PropTypes.string,
 }
