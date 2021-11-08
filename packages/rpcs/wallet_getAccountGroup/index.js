@@ -5,7 +5,7 @@ import {
   maybe,
   enums,
   or,
-  set,
+  cat,
   oneOrMore,
 } from '@fluent-wallet/spec'
 
@@ -27,7 +27,7 @@ export const schemas = {
         [
           or,
           AccountGroupTypeSchema,
-          [set, [oneOrMore, AccountGroupTypeSchema]],
+          [cat, [oneOrMore, AccountGroupTypeSchema]],
         ],
       ],
     ],
@@ -39,21 +39,32 @@ export const permissions = {
   external: ['popup'],
 }
 
-export const main = ({params = {}, db: {getAccountGroup}}) => {
+export const main = ({
+  Err: {InvalidParams},
+  params = {},
+  db: {getAccountGroup},
+}) => {
   const {accountGroupId, includeHidden, type} = params
-  let types = type
-  if (typeof types === 'string') types = [types]
+  const types = new Set()
+  if (Array.isArray(type)) {
+    if (type.length > 3) throw InvalidParams(`Invalid type: ${type}`)
+    type.forEach(t => types.add(t))
+    if (types.size !== type.length)
+      throw InvalidParams(`Invalid type: ${type}, duplicate value`)
+  } else if (type) {
+    types.add(type)
+  }
   const query = {}
   if (accountGroupId) query.eid = accountGroupId
-  if (includeHidden) query.hidden = true
 
   const accoungGroup = getAccountGroup(query) || []
 
-  if (type && type.length)
-    return accoungGroup.reduce(
-      (acc, g) => (type.includes(g.type) ? acc.concat(g) : acc),
-      [],
-    )
-
-  return accoungGroup
+  const notype = !types.size
+  return accoungGroup.reduce((acc, g) => {
+    if (notype || types.has(g.vault.type)) {
+      if (includeHidden) return acc.concat(g)
+      return g.hidden ? acc : acc.concat(g)
+    }
+    return acc
+  }, [])
 }
