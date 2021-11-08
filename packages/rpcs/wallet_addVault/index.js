@@ -25,7 +25,7 @@ export const NAME = 'wallet_addVault'
 const baseInputSchema = [
   map,
   {closed: true},
-  ['password', password],
+  ['password', {optional: true}, password],
   ['nickname', {optional: true}, nickname],
 ]
 const menomicSchema = [
@@ -95,6 +95,7 @@ export async function newAccounts(arg) {
     groupId,
     groupName,
     rpcs: {wallet_discoverAccounts},
+    params: {waitTillFinish},
     vault,
     db: {getNetwork, t, getOneAccountByGroupAndIndex},
   } = arg
@@ -102,8 +103,7 @@ export async function newAccounts(arg) {
   if (vault.type === 'hd') {
     await wallet_discoverAccounts({
       accountGroupId: groupId,
-      limit: 10,
-      waitTillFinish: true,
+      waitTillFinish,
     })
     return
   }

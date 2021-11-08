@@ -1,4 +1,5 @@
 import {getNthAccountOfHDKey} from '@fluent-wallet/hdkey'
+import {chan} from '@fluent-wallet/csp'
 import {stripHexPrefix} from '@fluent-wallet/utils'
 import BN from 'bn.js'
 import {isFunction} from '@fluent-wallet/checks'
@@ -29,18 +30,20 @@ export const hasBalance = async ({getBalance, address}) => {
   return rst
 }
 
-export const discoverAccounts = async ({
+const _discoverAccounts = async ({
   getBalance,
   getTxCount,
   mnemonic,
   hdPath,
   startFrom = 0,
-  max = 10,
+  max = 1000,
   only0x1Prefixed = false,
   return0 = false,
   onFindOne,
-} = {}) => {
+  c,
+}) => {
   const found = []
+
   for (let i = startFrom; i < startFrom + max; i++) {
     const rst = await getNthAccountOfHDKey({
       mnemonic,
@@ -59,10 +62,18 @@ export const discoverAccounts = async ({
     if ((return0 && i === 0) || txOk || balanceOk) {
       if (isFunction(onFindOne)) await onFindOne({...rst, nth: i})
       found.push({...rst, nth: i})
+      c.write({...rst, nth: i})
     } else {
+      c.close()
       return found
     }
   }
 
   return found
+}
+
+export const discoverAccounts = (args = {}) => {
+  const c = chan()
+  _discoverAccounts({...args, c})
+  return c
 }

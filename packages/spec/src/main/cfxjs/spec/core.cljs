@@ -190,7 +190,7 @@
                      :type :bytes-65
                      [:doc "65 hex encoded bytes"]))
 (def Uint
-  (update-properties [:re #"^0x[1-9a-f]+[0-9a-f]*$"]
+  (update-properties [:re #"^0x[0-9a-f]+[0-9a-f]*$"]
                      :type :uint
                      [:doc "hex encoded unsigned integer"]))
 (def Uint256

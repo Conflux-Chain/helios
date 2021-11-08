@@ -1,8 +1,9 @@
 {
-  "name": "@fluent-wallet/wallet_unlock",
+  "name": "@fluent-wallet/cfx_check-balance-against-transaction",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.11",
+  "packageManager": "yarn@3.0.1",
+  "version": "0.0.1",
   "dependencies": {
     "@fluent-wallet/spec": "workspace:packages/spec"
   }

@@ -1,0 +1,25 @@
+name: Deploy Dapp Demo
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - dev
+
+jobs:
+  doploy-dapp-demo:
+    if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [16.5]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy to dapp-demo.fluentwallet.dev
+        uses: dswistowski/surge-sh-action@v1
+        with:
+          domain: "dapp-demo.fluentwallet.dev"
+          project: "./examples/basic-dapp/"
+          login: ${{ secrets.CONFLUX_ECO_SURGE_LOGIN}}
+          token: ${{ secrets.CONFLUX_ECO_SURGE_TOKEN}}
