@@ -58,7 +58,7 @@ export const cfxEstimate = async (
         params: {address: to},
       }).then(r => {
         if (r.error) throw r.error
-        toAddressType = r.type
+        toAddressType = r.result.type
       }),
     )
   }
