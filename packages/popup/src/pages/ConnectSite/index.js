@@ -3,13 +3,11 @@ import {useTranslation} from 'react-i18next'
 import {useState, useEffect} from 'react'
 import Input from '@fluent-wallet/component-input'
 import Checkbox from '@fluent-wallet/component-checkbox'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {
   CaretDownFilled,
   QuestionCircleOutlined,
 } from '@fluent-wallet/component-icons'
 import Modal from '@fluent-wallet/component-modal'
-import {RPC_METHODS} from '../../constants'
 import {
   NetworkContent,
   DappProgressHeader,
@@ -18,8 +16,8 @@ import {
   Avatar,
 } from '../../components'
 import {useAccountGroupAddress} from '../../hooks'
+import {useCurrentAccount, useCurrentNetwork} from '../../hooks/useApi'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-const {GET_CURRENT_NETWORK, GET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function ConnectSitesList({
   accountData,
@@ -118,15 +116,14 @@ function ConnectSite() {
 
   const {addressDataWithAccountId, accountData} =
     useAccountGroupAddress(networkId)
-  const {data: currentNetworkData} = useRPC([GET_CURRENT_NETWORK])
-  const {data: currentAccount} = useRPC([GET_CURRENT_ACCOUNT], undefined, {
-    fallbackData: {},
-  })
+  const currentNetwork = useCurrentNetwork()
+  const currentAccount = useCurrentAccount()
   useEffect(() => {
-    setSearchIcon(currentNetworkData?.icon || '')
-    setSearchContent(currentNetworkData?.name || '')
-    setNetworkId(currentNetworkData?.eid || null)
-  }, [currentNetworkData])
+    setSearchIcon(currentNetwork?.icon || '')
+    setSearchContent(currentNetwork?.name || '')
+    setNetworkId(currentNetwork?.eid || null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Boolean(currentNetwork)])
 
   useEffect(() => {
     if (
@@ -175,7 +172,7 @@ function ConnectSite() {
     })
   }
 
-  return currentNetworkData ? (
+  return currentNetwork ? (
     <div
       id="connectSiteContainer"
       className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"

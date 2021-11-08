@@ -6,30 +6,31 @@ OriginBig.RM = 0
 OriginBig.NE = -19
 
 export const Big = OriginBig
-export const CFX_DECIMAL = 18
-export const BTC_DECIMAL = 6
-export const USDT_DECIMAL = 8
-export const COMMON_DECIMAL = 18
+export const CFX_DECIMALS = 18
+export const BTC_DECIMALS = 6
+export const USDT_DECIMALS = 8
+export const COMMON_DECIMALS = 18
+export const GWEI_DECIMALS = 9
 
 export const convertDecimal = (
   numOrStr,
   action = 'divide',
-  decimal = COMMON_DECIMAL,
+  decimals = COMMON_DECIMALS,
 ) => {
   if (action === 'divide') {
-    return new Big(numOrStr).div(`1e${decimal}`).toString(10)
+    return new Big(numOrStr).div(`1e${decimals}`).toString(10)
   } else if (action === 'multiply') {
-    return new Big(numOrStr).times(`1e${decimal}`).toString(10)
+    return new Big(numOrStr).times(`1e${decimals}`).toString(10)
   }
   return numOrStr
 }
 
 export const fromCfxToDrip = numOrStr => {
-  return convertDecimal(numOrStr, 'multiply', CFX_DECIMAL)
+  return convertDecimal(numOrStr, 'multiply', CFX_DECIMALS)
 }
 
 export const fromDripToCfx = numOrStr => {
-  return convertDecimal(numOrStr, 'divide', CFX_DECIMAL)
+  return convertDecimal(numOrStr, 'divide', CFX_DECIMALS)
 }
 
 export const trimZero = numOrStr => {
@@ -41,13 +42,13 @@ export const formatDigit = (numOrStr, digit) => {
   const strArr = str.split('.')
   // no digit
   if (!digit) return numOrStr
-  // no decimal or digit < integer length
+  // no decimals or digit < integer length
   else if (!strArr[1] || strArr[0].length >= digit)
     return toThousands(strArr[0])
   else if (strArr[0].length + strArr[1].length <= digit) return toThousands(str)
   else {
-    const decimal = strArr[1].substring(0, digit - strArr[0].length)
-    return toThousands(trimZero([strArr[0], decimal].join('.')))
+    const decimals = strArr[1].substring(0, digit - strArr[0].length)
+    return toThousands(trimZero([strArr[0], decimals].join('.')))
   }
 }
 
@@ -65,14 +66,14 @@ export const toThousands = (numOrStr, delimiter = ',', prevDelimiter = ',') => {
     }, '')
 }
 
-export const formatBalance = (numOrStr, decimal) => {
+export const formatBalance = (numOrStr, decimals) => {
   if (isNaN(Number(numOrStr))) return numOrStr
   let balance = numOrStr
   if (isHexPrefixed(balance)) {
     balance = new BN(stripHexPrefix(balance), 16).toString()
   }
-  if (decimal) {
-    balance = convertDecimal(balance, 'divide', decimal)
+  if (decimals) {
+    balance = convertDecimal(balance, 'divide', decimals)
   }
   const bNum = new Big(balance)
   return toThousands(bNum.round(6).toString(10))

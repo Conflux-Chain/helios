@@ -2,9 +2,9 @@ import PropTypes from 'prop-types'
 import {useSWRConfig} from 'swr'
 import {DappFooter, TitleNav} from '../../components'
 import {useTranslation} from 'react-i18next'
-import {usePendingAuthReq} from '../../hooks'
+import {usePendingAuthReq} from '../../hooks/useApi'
 import {RPC_METHODS} from '../../constants'
-const {GET_NETWORK} = RPC_METHODS
+const {WALLET_GET_NETWORK} = RPC_METHODS
 
 function NetworkContentItem({labelText, contentText, containerClass = ''}) {
   return (
@@ -26,7 +26,7 @@ NetworkContentItem.propTypes = {
 function DappAddNetwork() {
   const {mutate} = useSWRConfig()
   const {t} = useTranslation()
-  const {pendingAuthReq} = usePendingAuthReq()
+  const pendingAuthReq = usePendingAuthReq()
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
 
   return (
@@ -88,7 +88,7 @@ function DappAddNetwork() {
         cancelText={t('cancel')}
         confirmText={t('addNetwork')}
         onClickConfirm={() => {
-          mutate([GET_NETWORK])
+          mutate([WALLET_GET_NETWORK])
         }}
       />
     </div>

@@ -6,7 +6,7 @@ import {useTranslation} from 'react-i18next'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import {useSWRConfig} from 'swr'
 import {request, validatePasswordReg} from '../../utils'
-const {GET_WALLET_LOCKED_STATUS, UNLOCK} = RPC_METHODS
+const {WALLET_IS_LOCKED, WALLET_UNLOCK} = RPC_METHODS
 
 const {HOME} = ROUTES
 const UnlockPage = () => {
@@ -22,10 +22,10 @@ const UnlockPage = () => {
   }
   const onUnlock = () => {
     if (password) {
-      request(UNLOCK, {password}).then(({error, result}) => {
+      request(WALLET_UNLOCK, {password}).then(({error, result}) => {
         if (error) setErrorMessage(error.message.split('\n')[0])
         if (result) {
-          mutate([GET_WALLET_LOCKED_STATUS], false)
+          mutate([WALLET_IS_LOCKED], false)
           history.push(HOME)
         }
       })

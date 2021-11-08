@@ -8,15 +8,15 @@ import {
   trimZero,
   formatAmount,
   formatBalance,
-  CFX_DECIMAL,
+  CFX_DECIMALS,
 } from './'
 
 describe('@fluent-wallet/data-format', function () {
   it('convertDecimal', async function () {
-    expect(convertDecimal('1000000000000000000', 'divide', CFX_DECIMAL)).toBe(
+    expect(convertDecimal('1000000000000000000', 'divide', CFX_DECIMALS)).toBe(
       '1',
     )
-    expect(convertDecimal('1', 'divide', CFX_DECIMAL)).toBe(
+    expect(convertDecimal('1', 'divide', CFX_DECIMALS)).toBe(
       '0.000000000000000001',
     )
   })

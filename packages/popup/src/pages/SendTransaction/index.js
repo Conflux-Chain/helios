@@ -1,26 +1,48 @@
+/* eslint-disable no-unused-vars */
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
-import {useRPC} from '@fluent-wallet/use-rpc'
+import {useHistory} from 'react-router-dom'
+import {validateBase32Address} from '@fluent-wallet/base32-address'
+import {isHexAddress} from '@fluent-wallet/account'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
-import {TitleNav, CurrentNetworkDisplay, GasFee} from '../../components'
+import {TitleNav, GasFee} from '../../components'
 import {useEstimateTx} from '../../hooks'
 import {
   ToAddressInput,
   TokenAndAmount,
   CurrentAccountDisplay,
+  CurrentNetworkDisplay,
 } from './components'
-import {RPC_METHODS, ROUTES} from '../../constants'
-const {GET_CURRENT_NETWORK} = RPC_METHODS
-const {HOME} = ROUTES
+import useGlobalStore from '../../stores/index.js'
+import {
+  useCurrentNativeToken,
+  useNetworkTypeIsEth,
+  useNetworkTypeIsCfx,
+  useCurrentNetwork,
+} from '../../hooks/useApi'
+import {ROUTES} from '../../constants'
+const {HOME, CONFIRM_TRANSACTION} = ROUTES
 
 function SendTransaction() {
   const {t} = useTranslation()
-  const [address, setAddress] = useState('')
-  const [selectedToken, seSelectedToken] = useState({})
-  const {data: currentNetwork} = useRPC([GET_CURRENT_NETWORK], undefined, {
-    fallbackData: {},
-  })
+  const history = useHistory()
+  const {
+    toAddress,
+    sendAmount,
+    sendToken,
+    setToAddress,
+    setSendAmount,
+    setSendToken,
+    clearSendTransactionParams,
+  } = useGlobalStore()
+  const currentNetwork = useCurrentNetwork()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const networkTypeIsEth = useNetworkTypeIsEth()
+  const [addressError, setAddressError] = useState('')
+  const [balanceError, setBalanceError] = useState('')
+  const [gasError, setGasError] = useState('')
+  const nativeToken = useCurrentNativeToken()
   const estimateRst = useEstimateTx({
     from: 'cfx:aamgvyzht7h1zxdghb9ee9w26wrz8rd3gj837392dp',
     to: 'cfx:aasw0spp7pee3mpex5zk4arhfx20vwssfaamw12zsw',
@@ -30,33 +52,60 @@ function SendTransaction() {
   const hasNoTxn = true
   const onChangeToken = token => {
     console.log(token)
+    setSendToken(token)
+  }
+  const onChangeAmount = amount => {
+    console.log(amount)
+    setSendAmount(amount)
+  }
+  const onChangeAddress = address => {
+    console.log(address)
+    setToAddress(address)
+    if (
+      networkTypeIsCfx &&
+      !validateBase32Address(address, currentNetwork?.netId)
+    ) {
+      // TODO i18n
+      setAddressError('Please enter validate cfx address')
+    } else if (networkTypeIsEth && !isHexAddress(address)) {
+      // TODO i18n
+      setAddressError('Please enter validate hex address')
+    } else {
+      setAddressError('')
+    }
   }
   useEffect(() => {
-    console.log('network: ', currentNetwork)
-    const {ticker} = currentNetwork
-    if (ticker) seSelectedToken(ticker)
-  }, [Boolean(currentNetwork)])
+    if (nativeToken) setSendToken(nativeToken)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Boolean(nativeToken)])
+
   return (
-    <div className="flex flex-col h-full relative bg-bg">
-      <img
-        src="/images/send-transaction-bg.svg"
-        alt="top"
-        className="absolute top-0"
+    <div className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg">
+      <TitleNav
+        title={t('sendTransaction')}
+        onGoBack={() => clearSendTransactionParams()}
       />
-      <TitleNav title={t('sendTransaction')} />
       <div className="flex mt-1 mb-3 mx-4 justify-between items-center z-20">
         <CurrentAccountDisplay />
         <CurrentNetworkDisplay />
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">
         <div className="flex flex-col">
-          <ToAddressInput address={address} onChangeAddress={setAddress} />
+          <ToAddressInput
+            address={toAddress}
+            onChangeAddress={onChangeAddress}
+            errorMessage={addressError}
+          />
           <TokenAndAmount
-            selectedToken={selectedToken}
-            amount="12345"
+            selectedToken={sendToken}
+            amount={sendAmount}
+            onChangeAmount={onChangeAmount}
             onChangeToken={onChangeToken}
           />
           <GasFee />
+          <span className="text-error text-xs inline-block mt-2">
+            {balanceError || gasError}
+          </span>
         </div>
         <div className="flex flex-col">
           {hasNoTxn && <Alert type="warning" content={t('noTxnWarning')} />}
@@ -64,11 +113,26 @@ function SendTransaction() {
             <Button
               variant="outlined"
               className="flex-1 mr-3"
-              onClick={() => history.push(HOME)}
+              onClick={() => {
+                clearSendTransactionParams()
+                history.push(HOME)
+              }}
             >
               {t('cancel')}
             </Button>
-            <Button className="flex-1">{t('next')}</Button>
+            <Button
+              disabled={
+                !!addressError ||
+                !!balanceError ||
+                !!gasError ||
+                !toAddress ||
+                !sendAmount
+              }
+              onClick={() => history.push(CONFIRM_TRANSACTION)}
+              className="flex-1"
+            >
+              {t('next')}
+            </Button>
           </div>
         </div>
       </div>

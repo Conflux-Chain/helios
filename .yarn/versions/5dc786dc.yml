@@ -1,0 +1,25 @@
+releases:
+  "@fluent-wallet/component-icons": patch
+  "@fluent-wallet/consts": patch
+  "@fluent-wallet/data-format": patch
+
+declined:
+  - "@fluent-wallet/account"
+  - "@fluent-wallet/addr-by-network"
+  - helios-background
+  - browser-extension
+  - helios-popup
+  - "@fluent-wallet/rpc-engine"
+  - "@fluent-wallet/wallet_add-network"
+  - "@fluent-wallet/wallet_add-vault"
+  - "@fluent-wallet/wallet_export-account-group"
+  - "@fluent-wallet/spec"
+  - "@fluent-wallet/component-alert"
+  - "@fluent-wallet/component-checkbox"
+  - "@fluent-wallet/component-dropdown"
+  - "@fluent-wallet/component-loading"
+  - "@fluent-wallet/component-menu"
+  - "@fluent-wallet/component-message"
+  - "@fluent-wallet/component-modal"
+  - "@fluent-wallet/component-notification"
+  - "@fluent-wallet/component-tag"
