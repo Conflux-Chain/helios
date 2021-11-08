@@ -50,7 +50,7 @@ const schema = {
     chainId: {doc: 'Network chain id, hexadecimal'},
     netId: {doc: 'Network id, decimal'},
     ticker: {
-      doc: 'A object with info of the currency, eg. {name: "Ethereum", symbol: "CFX", decimals: 18}',
+      doc: 'A object with info of the currency, eg. {name: "Ethereum", symbol: "CFX", decimals: 18, iconUrls: [...svg]}',
     },
     address: {ref: true, many: true, component: true},
     builtin: {doc: "Indicating builtin network, shouldn't be deleted"},

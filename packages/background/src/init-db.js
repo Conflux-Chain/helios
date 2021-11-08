@@ -91,6 +91,9 @@ function initNetwork(d) {
           name: CFX_MAINNET_CURRENCY_NAME,
           symbol: CFX_MAINNET_CURRENCY_SYMBOL,
           decimals: DEFAULT_CURRENCY_DECIMALS,
+          iconUrls: [
+            'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios/packages/built-in-network-icons/cfx.svg',
+          ],
         },
         hdPath: -1,
         builtin: true,
@@ -113,6 +116,9 @@ function initNetwork(d) {
           name: CFX_TESTNET_CURRENCY_NAME,
           symbol: CFX_TESTNET_CURRENCY_SYMBOL,
           decimals: DEFAULT_CURRENCY_DECIMALS,
+          iconUrls: [
+            'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios/packages/built-in-network-icons/cfx.svg',
+          ],
         },
         hdPath: -1,
         balanceChecker: 'cfxtest:achxne2gfh8snrstkxn0f32ua2cf19zwkyw9tpbc6k',
@@ -135,6 +141,9 @@ function initNetwork(d) {
           name: ETH_MAINNET_CURRENCY_NAME,
           symbol: ETH_MAINNET_CURRENCY_SYMBOL,
           decimals: DEFAULT_CURRENCY_DECIMALS,
+          iconUrls: [
+            'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios/packages/built-in-network-icons/eth.svg',
+          ],
         },
         hdPath: -2,
         builtin: true,
@@ -157,6 +166,9 @@ function initNetwork(d) {
           name: ETH_ROPSTEN_CURRENCY_NAME,
           symbol: ETH_ROPSTEN_CURRENCY_SYMBOL,
           decimals: DEFAULT_CURRENCY_DECIMALS,
+          iconUrls: [
+            'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios/packages/built-in-network-icons/eth.svg',
+          ],
         },
         hdPath: -2,
         builtin: true,
@@ -178,6 +190,9 @@ function initNetwork(d) {
           name: BSC_MAINNET_CURRENCY_NAME,
           symbol: BSC_MAINNET_CURRENCY_SYMBOL,
           decimals: DEFAULT_CURRENCY_DECIMALS,
+          iconUrls: [
+            'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios/packages/built-in-network-icons/bnb.svg',
+          ],
         },
         hdPath: -2,
         builtin: true,
@@ -200,6 +215,9 @@ function initNetwork(d) {
           name: BSC_TESTNET_CURRENCY_NAME,
           symbol: BSC_TESTNET_CURRENCY_SYMBOL,
           decimals: DEFAULT_CURRENCY_DECIMALS,
+          iconUrls: [
+            'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios/packages/built-in-network-icons/bnb.svg',
+          ],
         },
         hdPath: -2,
         builtin: true,
