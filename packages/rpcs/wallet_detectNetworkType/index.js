@@ -16,6 +16,7 @@ export const main = async ({f, Err: {InvalidParams}, params: {url}}) => {
 
   try {
     rst = await f(
+      {errorFallThrough: true},
       {
         networkName: url,
         network: {endpoint: url, name: url},
@@ -37,6 +38,7 @@ export const main = async ({f, Err: {InvalidParams}, params: {url}}) => {
 
   try {
     rst = await f(
+      {errorFallThrough: true},
       {
         networkName: url,
         network: {endpoint: url, name: url},
