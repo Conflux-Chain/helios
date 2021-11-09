@@ -13,15 +13,18 @@
  [[metosin/malli "0.5.1"]
   [binaryage/oops "0.7.1"]
   [datascript "1.0.7"]
-  [hashp "0.2.1"]]
+  ;; [philoskim/debux-stubs "0.8.1"]
+  [philoskim/debux "0.8.1"]]
 
  :builds
  {:spec {:target           :esm
          :output-dir       "packages/spec/src"
          :js-options       {:js-package-dirs ["packages/spec/node_modules"]}
+         :dev              {:closure-defines {shadow.cljs.devtools.client.env/devtools-url "http://localhost:9630"}}
          :compiler-options {:cross-chunk-method-motion false
                             :infer-externs             :auto}
-         :devtools         {:preloads [hashp.core]}
+         :devtools         {:preloads []
+                            :devtools-url "http://localhost:9630"}
          :modules          {:shared {}
                             :spec
                             {:exports
@@ -158,14 +161,14 @@
                               dbid        cfxjs.spec.core/export-dbid
 
                               tokenSymbol cfxjs.spec.core/export-token-symbol
-                              Byte     cfxjs.spec.core/export-byte
-                              Bytes    cfxjs.spec.core/export-bytes
-                              Bytes32  cfxjs.spec.core/export-bytes32
-                              Bytes256 cfxjs.spec.core/export-bytes256
-                              Bytes65  cfxjs.spec.core/export-bytes65
-                              Uint     cfxjs.spec.core/export-uint
-                              Uint256  cfxjs.spec.core/export-uint256
-                              Hash32   cfxjs.spec.core/export-hash32}
+                              Byte        cfxjs.spec.core/export-byte
+                              Bytes       cfxjs.spec.core/export-bytes
+                              Bytes32     cfxjs.spec.core/export-bytes32
+                              Bytes256    cfxjs.spec.core/export-bytes256
+                              Bytes65     cfxjs.spec.core/export-bytes65
+                              Uint        cfxjs.spec.core/export-uint
+                              Uint256     cfxjs.spec.core/export-uint256
+                              Hash32      cfxjs.spec.core/export-hash32}
                              :depends-on #{:shared}}
                             :gen {:exports    {gen cfxjs.spec.gen/gen}
                                   :depends-on #{:shared}}
@@ -175,7 +178,8 @@
                                   :depends-on #{:shared}}}}
   :db {:target           :esm
        :output-dir       "packages/db/src"
-       :devtools         {:preloads [hashp.core]}
+       :devtools         {:preloads []
+                          :devtools-url "http://localhost:9630"}
        :js-options       {:js-package-dirs ["packages/db/node_modules"]}
        :compiler-options {:cross-chunk-method-motion false
                           :infer-externs             :auto
