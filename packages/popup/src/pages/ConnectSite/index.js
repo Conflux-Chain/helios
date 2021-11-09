@@ -56,9 +56,9 @@ function ConnectSitesList({
               {account.map(({nickname, eid, address}, accountIndex) => (
                 <div
                   aria-hidden="true"
-                  onClick={() => () => {}}
+                  onClick={() => onSelectSingleAccount(eid)}
                   key={accountIndex}
-                  className="flex px-3 items-center h-15"
+                  className="flex px-3 items-center h-15 cursor-pointer"
                 >
                   <div className="flex w-full">
                     <Avatar
@@ -80,10 +80,7 @@ function ConnectSitesList({
                           className="mr-3"
                         />
                       ) : null}
-                      <Checkbox
-                        onChange={() => onSelectSingleAccount(eid)}
-                        checked={checkboxStatusObj[eid]}
-                      />
+                      <Checkbox checked={checkboxStatusObj[eid]} />
                     </div>
                   </div>
                 </div>
@@ -123,7 +120,7 @@ function ConnectSite() {
     setSearchContent(currentNetwork?.name || '')
     setNetworkId(currentNetwork?.eid || null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(currentNetwork)])
+  }, [currentNetwork.eid])
 
   useEffect(() => {
     if (
@@ -171,7 +168,6 @@ function ConnectSite() {
       [accountId]: !checkboxStatusObj[accountId],
     })
   }
-
   return currentNetwork ? (
     <div
       id="connectSiteContainer"

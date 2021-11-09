@@ -42,6 +42,8 @@ function Input({
   textareaSize = '',
   width = 'w-60',
   errorMessage = '',
+  errorClassName = '',
+  suffixWrapperClassName = '',
   onBlur,
   onSuffixClick,
   elementType = 'input',
@@ -76,9 +78,9 @@ function Input({
     onFocus: () => {
       setFocused(true)
     },
-    onBlur: () => {
+    onBlur: e => {
       setFocused(false)
-      onBlur && onBlur()
+      onBlur && onBlur(e)
     },
     onChange: e => {
       onChange && onChange(e)
@@ -111,12 +113,18 @@ function Input({
             }}
             className={`pr-3 ${suffixStyle}`}
           >
-            <div className={`text-gray-40 ${iconSize}`}>{suffix}</div>
+            <div
+              className={`text-gray-40 ${iconSize} ${suffixWrapperClassName}`}
+            >
+              {suffix}
+            </div>
           </div>
         )}
       </div>
       {errorMessage && (
-        <div className="text-xs text-error mt-2">{errorMessage}</div>
+        <div className={`text-xs text-error mt-2 ${errorClassName}`}>
+          {errorMessage}
+        </div>
       )}
     </div>
   )
@@ -131,6 +139,8 @@ Input.propTypes = {
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   textareaSize: PropTypes.string,
   errorMessage: PropTypes.string,
+  errorClassName: PropTypes.string,
+  suffixWrapperClassName: PropTypes.string,
   prefix: PropTypes.node,
   suffix: PropTypes.node,
   onSuffixClick: PropTypes.func,

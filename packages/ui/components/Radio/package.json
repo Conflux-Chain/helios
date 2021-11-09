@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "name": "@fluent-wallet/radio",
+  "type": "module",
+  "main": "index.js",
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
+  },
+  "dependencies": {
+    "rc-checkbox": "2.3.2"
+  }
+}
