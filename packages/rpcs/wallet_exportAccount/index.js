@@ -35,7 +35,7 @@ export const main = async ({
       accountGroupId: accountGroup.eid,
     })
 
-  const decrypted = vault.ddata || decrypt(password, vault.data)
+  const decrypted = vault.ddata || (await decrypt(password, vault.data))
 
   const rst = account.address.map(
     async ({index, hex, cfxHex, base32, pk, eid}) => {

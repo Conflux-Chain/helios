@@ -3309,6 +3309,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/built-in-network-icons@workspace:packages/built-in-network-icons":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/built-in-network-icons@workspace:packages/built-in-network-icons"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cache-rpc@workspace:packages/cache-rpc":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cache-rpc@workspace:packages/cache-rpc"
@@ -3795,6 +3801,7 @@ __metadata:
   resolution: "@fluent-wallet/estimate-tx@workspace:packages/estimate-tx"
   dependencies:
     "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type"
+    "@fluent-wallet/utils": "workspace:packages/utils"
     bn.js: 5.2.0
   languageName: unknown
   linkType: soft

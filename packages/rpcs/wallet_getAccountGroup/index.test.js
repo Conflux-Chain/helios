@@ -5,7 +5,11 @@ import {main} from './'
 let input
 describe('wallet_getAccountGroup', function () {
   beforeEach(() => {
-    input = {params: {}, db: {getAccountGroup: jest.fn(() => [1])}}
+    input = {
+      params: {},
+      db: {getAccountGroup: jest.fn(() => [1])},
+      Err: {InvalidParams: s => new Error(s)},
+    }
   })
   describe('main', function () {
     test('logic', () => {
@@ -20,7 +24,6 @@ describe('wallet_getAccountGroup', function () {
       expect(main(input)).toEqual([1])
       expect(input.db.getAccountGroup).toHaveBeenLastCalledWith({
         eid: 1,
-        hidden: true,
       })
     })
   })

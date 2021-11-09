@@ -1,6 +1,7 @@
 import BN from 'bn.js'
+import {stripHexPrefix} from '@fluent-wallet/utils'
 
-const bn16 = x => new BN(x, 16)
+const bn16 = x => new BN(stripHexPrefix(x), 16)
 const pre0x = x => `0x${x}`
 
 export const ethEstimate = () => {
@@ -58,7 +59,7 @@ export const cfxEstimate = async (
         params: {address: to},
       }).then(r => {
         if (r.error) throw r.error
-        toAddressType = r.type
+        toAddressType = r.result.type
       }),
     )
   }
