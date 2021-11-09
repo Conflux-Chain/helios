@@ -72,6 +72,7 @@ export const formatHexToDecimal = numOrStr => {
 
 export const formatBalance = (numOrStr, decimals) => {
   if (
+    !numOrStr ||
     (typeof numOrStr !== 'number' && typeof numOrStr !== 'string') ||
     isNaN(Number(numOrStr))
   )
