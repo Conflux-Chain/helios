@@ -221,17 +221,18 @@ export const useDbHomeAssets = () => {
   return homeAssets
 }
 
+export const useDbRefetchBalance = param => {
+  useRPC([WALLETDB_REFETCH_BALANCE], param ? {...param} : undefined)
+}
+
 export const useDbAddTokenList = () => {
   const {data: addTokenListData} = useRPC(
     [WALLETDB_ADD_TOKEN_LIST],
-    undefined,
+    {type: 'all'},
     {
       fallbackData: {added: [], others: []},
     },
   )
+  useDbRefetchBalance({type: 'all'})
   return addTokenListData
-}
-
-export const useDbRefetchBalance = param => {
-  useRPC([WALLETDB_REFETCH_BALANCE], param ? {...param} : undefined)
 }

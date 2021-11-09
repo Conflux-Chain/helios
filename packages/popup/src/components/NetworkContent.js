@@ -71,7 +71,6 @@ NetworkItem.propTypes = {
 
 function NetworkContent({onClickNetworkItem, networkItemSize}) {
   const networkData = useNetwork()
-
   return (
     <>
       {networkData.map(({eid, name, isCustom, isMainnet, isTestnet, icon}) => (

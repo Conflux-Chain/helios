@@ -11,9 +11,7 @@ import {RPC_METHODS} from '../../../constants'
 import {request} from '../../../utils'
 import {
   useNetworkTypeIsCfx,
-  useNetworkTypeIsEth,
   useCurrentAccount,
-  useDbRefetchBalance,
   useDbAddTokenList,
 } from '../../../hooks/useApi'
 
@@ -33,8 +31,6 @@ function AddToken({onClose, onOpen}) {
   const inputValueRef = useRef()
   const {address} = useCurrentAccount()
   const isCfxChain = useNetworkTypeIsCfx()
-  const isEthChain = useNetworkTypeIsEth()
-  useDbRefetchBalance({type: 'all'})
   const {added, others} = useDbAddTokenList() || {}
   const addTokenList = added.concat(others)
 
@@ -63,9 +59,10 @@ function AddToken({onClose, onOpen}) {
     }
 
     if (!validateBase32Address(value) && !isHexAddress(value)) {
-      // TODO add filter by name
       const ret = addTokenList.filter(
-        token => token.symbol.toUpperCase().indexOf(value.toUpperCase()) !== -1,
+        token =>
+          token.symbol.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+          token.name.toUpperCase().indexOf(value.toUpperCase()) !== -1,
       )
       !ret.length && setNoTokenStatus(true)
       return setTokenList([...ret])
@@ -73,14 +70,14 @@ function AddToken({onClose, onOpen}) {
 
     if (
       (isCfxChain && validateBase32Address(value)) ||
-      (isEthChain && isHexAddress(value))
+      (!isCfxChain && isHexAddress(value))
     ) {
       getOther20Token(value)
     }
   }
   const onAddToken = ({decimals, symbol, address, logoURI}) => {
     request(WALLET_WATCH_ASSET, {
-      type: isCfxChain ? 'CRC20' : isEthChain ? 'ERC20' : '',
+      type: isCfxChain ? 'CRC20' : 'ERC20',
       options: {
         address,
         symbol,
