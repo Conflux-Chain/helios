@@ -3,7 +3,8 @@
             [malli.util :as mu]
             [malli.error :refer [humanize]]
             [clojure.walk :refer [postwalk]]
-            [goog.math :refer [randomInt]]))
+            [goog.math :refer [randomInt]]
+            [debux.cs.core :refer-macros [clog clogn break clog_ clogn_ break_]]))
 
 (defn j->c [a] (js->clj a :keywordize-keys true))
 
@@ -354,7 +355,7 @@
 (def export-js-undefined
   (m/-simple-schema
    {:type :undefined
-    :pred #(= js/undefined)
+    :pred #(= js/undefined %)
     :type-properties {:error/message "should be undefined"
                       :doc "javascript undefined"
                       :gen/fmap (fn [& args] js/undefined)}}))
