@@ -204,18 +204,15 @@ export const useAccountGroupBatchBalance = networkId => {
 // TODO refactor end
 export const useAccountGroupAddress = networkId => {
   const {data: accountGroups} = useRPC([WALLET_GET_ACCOUNT_GROUP], undefined)
-
   const addressParams = getAddressParams(accountGroups, networkId)
   const {data: addressData} = useMultipleAddressByNetworkId(
     addressParams,
     networkId,
   )
-
   const addressDataWithAccountId = getAddressDataWithAccountId(
     addressParams,
     addressData,
   )
-
   return {
     addressDataWithAccountId: addressDataWithAccountId,
     accountData: formatAccountGroupData({

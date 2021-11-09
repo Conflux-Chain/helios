@@ -23,6 +23,7 @@ function EditPermission({symbol = 'cUSDT', decimals = 4}) {
 
   const data = useCurrentDapp()
   const site = data?.site || {}
+  // TODO: should jump home page when recommendPermissionLimit value is empty
 
   useEffect(() => {
     if (customPermissionLimit && customPermissionLimit !== '0') {
