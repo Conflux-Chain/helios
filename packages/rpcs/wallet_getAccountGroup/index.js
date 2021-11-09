@@ -1,6 +1,17 @@
-import {dbid, map, truep, maybe, enums} from '@fluent-wallet/spec'
+import {
+  dbid,
+  map,
+  truep,
+  maybe,
+  enums,
+  or,
+  cat,
+  oneOrMore,
+} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_getAccountGroup'
+
+const AccountGroupTypeSchema = [enums, 'hd', 'pk', 'pub']
 
 export const schemas = {
   input: [
@@ -10,7 +21,15 @@ export const schemas = {
       {closed: true},
       ['accountGroupId', {optional: true}, dbid],
       ['includeHidden', {optional: true}, truep],
-      ['type', {optional: true}, [enums, 'hd', 'pk', 'pub']],
+      [
+        'type',
+        {optional: true},
+        [
+          or,
+          AccountGroupTypeSchema,
+          [cat, [oneOrMore, AccountGroupTypeSchema]],
+        ],
+      ],
     ],
   ],
 }
@@ -20,15 +39,32 @@ export const permissions = {
   external: ['popup'],
 }
 
-export const main = ({params = {}, db: {getAccountGroup}}) => {
+export const main = ({
+  Err: {InvalidParams},
+  params = {},
+  db: {getAccountGroup},
+}) => {
   const {accountGroupId, includeHidden, type} = params
+  const types = new Set()
+  if (Array.isArray(type)) {
+    if (type.length > 3) throw InvalidParams(`Invalid type: ${type}`)
+    type.forEach(t => types.add(t))
+    if (types.size !== type.length)
+      throw InvalidParams(`Invalid type: ${type}, duplicate value`)
+  } else if (type) {
+    types.add(type)
+  }
   const query = {}
   if (accountGroupId) query.eid = accountGroupId
-  if (includeHidden) query.hidden = true
 
   const accoungGroup = getAccountGroup(query) || []
 
-  if (type) return accoungGroup.filter(g => g.vault.type === type)
-
-  return accoungGroup
+  const notype = !types.size
+  return accoungGroup.reduce((acc, g) => {
+    if (notype || types.has(g.vault.type)) {
+      if (includeHidden) return acc.concat(g)
+      return g.hidden ? acc : acc.concat(g)
+    }
+    return acc
+  }, [])
 }
