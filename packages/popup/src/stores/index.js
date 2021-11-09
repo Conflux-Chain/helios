@@ -19,6 +19,7 @@ const useGlobalStore = create(set => ({
   createdMnemonic: '',
   recommendPermissionLimit: '10000000000000000',
   customPermissionLimit: '0',
+  ...defaultSendTransactionParams,
 
   // logic
   setCreatedPassword: createdPassword => set({createdPassword}),
