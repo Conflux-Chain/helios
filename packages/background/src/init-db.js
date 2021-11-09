@@ -84,9 +84,8 @@ function initNetwork(d) {
         chainId: CFX_MAINNET_CHAINID,
         netId: CFX_MAINNET_NETID,
         selected: true,
-        icons: [
-          'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
-        ],
+        icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
+
         ticker: {
           name: CFX_MAINNET_CURRENCY_NAME,
           symbol: CFX_MAINNET_CURRENCY_SYMBOL,
@@ -109,9 +108,8 @@ function initNetwork(d) {
         type: 'cfx',
         chainId: CFX_TESTNET_CHAINID,
         netId: CFX_TESTNET_NETID,
-        icons: [
-          'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
-        ],
+        icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
+
         ticker: {
           name: CFX_TESTNET_CURRENCY_NAME,
           symbol: CFX_TESTNET_CURRENCY_SYMBOL,
@@ -134,9 +132,8 @@ function initNetwork(d) {
         type: 'eth',
         chainId: ETH_MAINNET_CHAINID,
         netId: ETH_MAINNET_NETID,
-        icons: [
-          'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg',
-        ],
+        icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg',
+
         ticker: {
           name: ETH_MAINNET_CURRENCY_NAME,
           symbol: ETH_MAINNET_CURRENCY_SYMBOL,
@@ -159,9 +156,8 @@ function initNetwork(d) {
         type: 'eth',
         chainId: ETH_ROPSTEN_CHAINID,
         netId: ETH_ROPSTEN_NETID,
-        icons: [
-          'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg',
-        ],
+        icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg',
+
         ticker: {
           name: ETH_ROPSTEN_CURRENCY_NAME,
           symbol: ETH_ROPSTEN_CURRENCY_SYMBOL,
@@ -183,9 +179,8 @@ function initNetwork(d) {
         type: 'eth',
         chainId: BSC_MAINNET_CHAINID,
         netId: BSC_MAINNET_NETID,
-        icons: [
-          'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/BSC.svg',
-        ],
+        icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/BSC.svg',
+
         ticker: {
           name: BSC_MAINNET_CURRENCY_NAME,
           symbol: BSC_MAINNET_CURRENCY_SYMBOL,
@@ -208,9 +203,8 @@ function initNetwork(d) {
         type: 'eth',
         chainId: BSC_TESTNET_CHAINID,
         netId: BSC_TESTNET_NETID,
-        icons: [
-          'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/BSC.svg',
-        ],
+        icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/BSC.svg',
+
         ticker: {
           name: BSC_TESTNET_CURRENCY_NAME,
           symbol: BSC_TESTNET_CURRENCY_SYMBOL,

@@ -5,8 +5,11 @@
             ;; [cfxjs.db.datascript.db :as ddb]
             [cfxjs.db.datascript.impl.entity :as de]
             [goog.string :as gs]
-            [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]])
+            [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]]
+            [debux.cs.core :as debux :refer-macros  [clog clogn  break clog_ clogn_  break_]])
   (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query]]))
+
+(debux/set-debug-mode! js/goog.DEBUG)
 
 (defn random-tmp-id []
   (gs/getRandomString))

@@ -1,0 +1,8 @@
+declined:
+  - helios-background
+  - "@fluent-wallet/db"
+  - "@fluent-wallet/doc-rpc-parameter"
+  - "@fluent-wallet/doc-use-rpc"
+  - "@fluent-wallet/doc-use-spec"
+  - "@fluent-wallet/fetch-rpc"
+  - helios-popup
