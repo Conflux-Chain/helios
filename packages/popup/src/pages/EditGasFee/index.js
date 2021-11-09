@@ -127,9 +127,7 @@ function EditGasFee() {
           />
           <WrapperWithLabel
             containerClass={`${gasPriceErr ? 'mb-9' : 'mb-3'} relative`}
-            leftContent={`${t('inputGasPrice')} (${
-              isCfx ? t('drip') : t('gWei')
-            })`}
+            leftContent={`${t('gasPrice')} (${isCfx ? t('drip') : t('gWei')})`}
             rightContent={
               <NumberInput
                 size="small"
@@ -142,7 +140,7 @@ function EditGasFee() {
             }
           />
           <WrapperWithLabel
-            leftContent={t('inputGasLimit')}
+            leftContent={t('gasLimit')}
             containerClass={`${gasLimitErr ? 'mb-9' : 'mb-3'} relative`}
             rightContent={
               <NumberInput

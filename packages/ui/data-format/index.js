@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import {default as OriginBig} from 'big.js'
 import BN from 'bn.js'
-import {stripHexPrefix} from '@fluent-wallet/utils'
+import {stripHexPrefix, isHexPrefixed} from '@fluent-wallet/utils'
 OriginBig.RM = 0
 OriginBig.NE = -19
 
@@ -65,7 +65,9 @@ export const toThousands = (numOrStr, delimiter = ',', prevDelimiter = ',') => {
     }, '')
 }
 export const formatHexToDecimal = numOrStr => {
-  return new BN(stripHexPrefix(numOrStr), 16).toString()
+  return isHexPrefixed(numOrStr)
+    ? new BN(stripHexPrefix(numOrStr), 16).toString()
+    : numOrStr
 }
 
 export const formatBalance = (numOrStr, decimals) => {

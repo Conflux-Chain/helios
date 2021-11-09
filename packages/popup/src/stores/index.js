@@ -17,8 +17,8 @@ const useGlobalStore = create(set => ({
   createdSeedPhase: '',
   createdPassword: '',
   createdMnemonic: '',
-
-  ...defaultSendTransactionParams,
+  recommendPermissionLimit: '10000000000000000',
+  customPermissionLimit: '0',
 
   // logic
   setCreatedPassword: createdPassword => set({createdPassword}),
@@ -33,6 +33,10 @@ const useGlobalStore = create(set => ({
   setNonce: nonce => set({nonce}),
   setSendToken: sendToken => set({sendToken}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
+  setRecommendPermissionLimit: recommendPermissionLimit =>
+    set({recommendPermissionLimit}),
+  setCustomPermissionLimit: customPermissionLimit =>
+    set({customPermissionLimit}),
 }))
 
 export default useGlobalStore
