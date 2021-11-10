@@ -63,8 +63,7 @@ function SetPasswordForm() {
           errorMessage={errorMessage}
           value={password}
         />
-        {errorMessage ? null : <em className="m-0 h-8 inline-block" />}
-
+        {errorMessage ? null : <div className="m-0 h-6" />}
         <PasswordInput
           validateInputValue={validateConfirmPassword}
           setInputValue={setConfirmPassword}
