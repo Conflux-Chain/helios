@@ -37,7 +37,6 @@ function LanguageNav({hasGoBack = false}) {
       i18n.changeLanguage('en')
     }
   }
-
   return (
     <nav className="flex justify-between items-center h-13 text-white px-3">
       {hasGoBack ? (
@@ -57,7 +56,9 @@ function LanguageNav({hasGoBack = false}) {
       <Dropdown overlay={Overlay(changeLanguage)} trigger={['hover']}>
         <div className="flex items-center">
           <span className="text-xs">{t(language)}</span>
-          <CaretDownFilled className="ml-1 w-3 h-3" />
+          {LANGUAGES.length ? (
+            <CaretDownFilled className="ml-1 w-3 h-3" />
+          ) : null}
         </div>
       </Dropdown>
     </nav>

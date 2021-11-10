@@ -1,5 +1,6 @@
 import {useTranslation} from 'react-i18next'
-import {formatBalance} from '@fluent-wallet/data-format'
+import {formatBalance, CFX_DECIMALS} from '@fluent-wallet/data-format'
+
 import {
   usePendingAuthReq,
   useBalance,
@@ -23,7 +24,6 @@ function ConfirmAddSuggestedToken() {
     dappNetworkId,
     req?.params?.options?.address,
   )
-
   const onClickConfirm = () => {
     mutate([WALLETDB_HOME_PAGE_ASSETS])
     mutate([WALLETDB_REFETCH_BALANCE])
@@ -58,6 +58,7 @@ function ConfirmAddSuggestedToken() {
                 name: req?.params?.options?.name || '',
                 balance: formatBalance(
                   balanceData?.[address]?.[req?.params?.options?.address],
+                  req?.params?.options?.decimals || CFX_DECIMALS,
                 ),
               }}
               maxWidthStyle="max-w-[184px]"

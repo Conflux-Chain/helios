@@ -89,7 +89,6 @@ function AccountList({onClose, onOpen}) {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
   }
-
   return (
     <SlideCard
       cardTitle={t('myAccounts')}
@@ -105,7 +104,7 @@ function AccountList({onClose, onOpen}) {
               nickname={nickname}
               closeAction={onClose}
               authorizedAccountIdIconObj={authorizedAccountIdIconObj}
-              tokeName={ticker?.name || ''}
+              tokeName={ticker?.symbol || ''}
             />
           ))}
         </div>
