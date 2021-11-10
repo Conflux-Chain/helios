@@ -232,6 +232,14 @@ describe('integration test', function () {
             })
           ).result,
         ).toStrictEqual({chainId: '0x539', netId: '1337', type: 'eth'})
+        expect(
+          (
+            await request({
+              method: 'wallet_detectNetworkType',
+              params: {url: 'https://example.com'},
+            })
+          ).error.message,
+        ).toMatch(/Invalid rpc endpoint/)
       })
     })
     describe('wallet_deleteNetwork', function () {

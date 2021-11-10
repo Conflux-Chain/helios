@@ -17,8 +17,9 @@ const s = stream({
 
 const {get: getCache, set: setCache} = initCache()
 
-function fetch({id, method, params, jsonrpc, network: {endpoint}}) {
+function fetch({id, method, params, jsonrpc, timeout, network: {endpoint}}) {
   return fetcher.post(endpoint, {
+    timeout,
     searchParams: {m: method},
     json: {id, method, params, jsonrpc},
   })
@@ -94,7 +95,14 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
       map(({req}) =>
         fetch(req)
           .then(res => res.json())
-          .then(res => ({req, res})),
+          .then(res => ({req, res}))
+          .catch(err => {
+            if (req.errorFallThrough) {
+              req.resC.onerror(err)
+              return {req}
+            }
+            throw err
+          }),
       ),
     ),
   },
@@ -114,6 +122,7 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
       },
     },
     fn: map(({ctx: {res, req}, rpcStore}) => {
+      if (!res) return
       setCache({req, res, conf: rpcStore[req.method].cache})
       req.resC.write(res)
     }),
