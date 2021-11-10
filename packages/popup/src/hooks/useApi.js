@@ -18,6 +18,7 @@ const {
   WALLETDB_HOME_PAGE_ASSETS,
   WALLETDB_REFETCH_BALANCE,
   WALLETDB_ADD_TOKEN_LIST,
+  WALLETDB_ACCOUNT_LIST_ASSETS,
 } = RPC_METHODS
 
 export const useCurrentAccount = () => {
@@ -235,4 +236,16 @@ export const useDbAddTokenList = () => {
   )
   useDbRefetchBalance({type: 'all'})
   return addTokenListData
+}
+
+export const useDbAccountListAssets = () => {
+  const {data: accountListAssets} = useRPC(
+    [WALLETDB_ACCOUNT_LIST_ASSETS],
+    {type: 'all'},
+    {
+      fallbackData: {added: [], others: []},
+    },
+  )
+  useDbRefetchBalance()
+  return accountListAssets
 }

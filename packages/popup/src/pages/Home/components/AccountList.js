@@ -9,7 +9,7 @@ import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard, DisplayBalance, Avatar} from '../../../components'
 import {useAccountGroupBatchBalance} from '../../../hooks'
-import {useCurrentNetwork} from '../../../hooks/useApi'
+import {useCurrentNetwork, useDbAccountListAssets} from '../../../hooks/useApi'
 
 const {SELECT_CREATE_TYPE} = ROUTES
 const {WALLET_GET_CURRENT_ACCOUNT, WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
@@ -83,7 +83,8 @@ function AccountList({onClose, onOpen}) {
   const groupBalanceData = useAccountGroupBatchBalance(networkId)
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()
-
+  const data = useDbAccountListAssets()
+  console.log('data', data)
   const onAddAccount = () => {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
