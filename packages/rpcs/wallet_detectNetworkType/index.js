@@ -16,8 +16,9 @@ export const main = async ({f, Err: {InvalidParams}, params: {url}}) => {
 
   try {
     rst = await f(
-      {errorFallThrough: true},
       {
+        errorFallThrough: true,
+        timeout: 1000,
         networkName: url,
         network: {endpoint: url, name: url},
         method: 'cfx_getStatus',
@@ -38,8 +39,9 @@ export const main = async ({f, Err: {InvalidParams}, params: {url}}) => {
 
   try {
     rst = await f(
-      {errorFallThrough: true},
       {
+        errorFallThrough: true,
+        timeout: 1000,
         networkName: url,
         network: {endpoint: url, name: url},
         method: 'eth_chainId',
