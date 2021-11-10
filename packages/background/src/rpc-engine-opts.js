@@ -101,6 +101,7 @@ import * as walletValidatePassword from '@fluent-wallet/wallet_validate-password
 import * as walletValidatePrivateKey from '@fluent-wallet/wallet_validate-private-key'
 import * as walletValidate20Token from '@fluent-wallet/wallet_validate20token'
 import * as walletWatchAsset from '@fluent-wallet/wallet_watch-asset'
+import * as unwalletWatchAsset from '@fluent-wallet/wallet_unwatch-asset'
 import * as walletZeroAccountGroup from '@fluent-wallet/wallet_zero-account-group'
 
 export const rpcEngineOpts = {
@@ -177,6 +178,7 @@ export const rpcEngineOpts = {
     walletUpdateTokenList,
 
     walletWatchAsset,
+    unwalletWatchAsset,
 
     // cfx
     cfxEpochNumber,

@@ -17738,6 +17738,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_set-current-account": "workspace:packages/rpcs/wallet_setCurrentAccount"
     "@fluent-wallet/wallet_set-current-network": "workspace:packages/rpcs/wallet_setCurrentNetwork"
     "@fluent-wallet/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
+    "@fluent-wallet/wallet_unwatch-asset": "workspace:packages/rpcs/wallet_unwatchAsset"
     "@fluent-wallet/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount"
     "@fluent-wallet/wallet_update-account-group": "workspace:packages/rpcs/wallet_updateAccountGroup"
     "@fluent-wallet/wallet_update-token-list": "workspace:packages/rpcs/wallet_updateTokenList"

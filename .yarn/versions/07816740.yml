@@ -3,6 +3,7 @@ releases:
   "@fluent-wallet/cfx_chain-id": patch
   "@fluent-wallet/cfx_net-version": patch
   "@fluent-wallet/cfx_request-accounts": patch
+  "@fluent-wallet/db": patch
   "@fluent-wallet/eth_accounts": patch
   "@fluent-wallet/eth_request-accounts": patch
   "@fluent-wallet/spec": patch
@@ -16,6 +17,8 @@ releases:
   "@fluent-wallet/wallet_refetch-balance": patch
   "@fluent-wallet/wallet_refetch-token-list": patch
   "@fluent-wallet/wallet_request-unlock-ui": patch
+  "@fluent-wallet/wallet_unwatch-asset": patch
+  "@fluent-wallet/wallet_watch-asset": patch
   "@fluent-wallet/wallet_zero-account-group": patch
 
 declined:
@@ -80,7 +83,6 @@ declined:
   - "@fluent-wallet/wallet_set-current-network"
   - "@fluent-wallet/wallet_switch-ethereum-chain"
   - "@fluent-wallet/wallet_unlock"
-  - "@fluent-wallet/wallet_unwatch-asset"
   - "@fluent-wallet/wallet_update-account"
   - "@fluent-wallet/wallet_update-account-group"
   - "@fluent-wallet/wallet_update-token-list"
@@ -91,5 +93,4 @@ declined:
   - "@fluent-wallet/wallet_validate-mnemonic"
   - "@fluent-wallet/wallet_validate-password"
   - "@fluent-wallet/wallet_validate-private-key"
-  - "@fluent-wallet/wallet_watch-asset"
   - workspace-tools

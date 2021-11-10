@@ -217,31 +217,35 @@
      (assoc acc (keyword (str model "/" (name k))) v))
    {:db/id eid} document-map))
 
-(defn add-token-to-addr [{:keys [address decimals image symbol targetAddressId fromApp fromUser fromList checkOnly] :as token}]
-  (let [{:keys [addressId networkId]} (addr-acc-network {:addressId targetAddressId})
-        token-in-net?                 (q '[:find ?t .
-                                           :in $ ?taddr ?net
-                                           :where
-                                           [?t :token/address ?taddr]
-                                           [?net :network/token ?t]]
-                                         address networkId)
-        token-in-addr?                (and token-in-net?
-                                           (q '[:find ?t .
-                                                :in $ ?taddr ?addr
-                                                :where
-                                                [?t :token/address ?taddr]
-                                                [?addr :address/token ?t]]
-                                              address addressId))
-        token-id                      (or token-in-addr? token-in-net? -1)
-        add-token-tx                  {:db/id token-id :token/address address :token/decimals decimals :token/logoURI image}
-        add-token-tx                  (if fromApp (assoc add-token-tx :token/fromApp true) add-token-tx)
-        add-token-tx                  (if fromUser (assoc add-token-tx :token/fromUser true) add-token-tx)
-        add-token-tx                  (if fromList (assoc add-token-tx :token/fromList true) add-token-tx)
-        tx                            [add-token-tx]
-        tx                            (if token-in-addr? tx (conj tx {:db/id addressId :address/token token-id}))
-        tx                            (if token-in-net? tx (conj tx {:db/id networkId :network/token token-id}))
-        tx-rst                        (and (not checkOnly) (t tx))
-        token-id                      (if (and (not checkOnly) (= token-id -1)) (get-in tx-rst [:tempids -1]) token-id)]
+(defn add-token-to-addr [{:keys [address decimals image name symbol targetAddressId fromApp fromUser fromList checkOnly network]}]
+  (let [addressId      targetAddressId
+        networkId      network
+        token-in-net?  (q '[:find ?t .
+                            :in $ ?taddr ?net
+                            :where
+                            [?t :token/address ?taddr]
+                            [?net :network/token ?t]]
+                          address networkId)
+        token-in-addr? (and token-in-net?
+                            (q '[:find ?t .
+                                 :in $ ?taddr ?addr
+                                 :where
+                                 [?t :token/address ?taddr]
+                                 [?addr :address/token ?t]]
+                               address addressId))
+        token-id       (or token-in-addr? token-in-net? -1)
+        add-token-tx   {:db/id token-id :token/name name :token/symbol symbol :token/address address :token/decimals decimals :token/logoURI image}
+        add-token-tx   (if fromApp (assoc add-token-tx :token/fromApp true) add-token-tx)
+        add-token-tx   (if fromUser (assoc add-token-tx :token/fromUser true) add-token-tx)
+        add-token-tx   (if fromList (assoc add-token-tx :token/fromList true) add-token-tx)
+        tx             [add-token-tx]
+        tx             (if token-in-addr? tx (conj tx {:db/id addressId :address/token token-id}
+                                                   {:db/id "new-balance" :balance/value "0x0"}
+                                                   {:db/id addressId :address/balance "new-balance"}
+                                                   {:db/id token-id :token/balance "new-balance"}))
+        tx             (if token-in-net? tx (conj tx {:db/id networkId :network/token token-id}))
+        tx-rst         (and (not checkOnly) (t tx))
+        token-id       (if (and (not checkOnly) (= token-id -1)) (get-in tx-rst [:tempids -1]) token-id)]
     {:tokenId       token-id
      :alreadyInNet  (boolean token-in-net?)
      :alreadyInAddr (boolean token-in-addr?)}))
@@ -374,13 +378,35 @@
 (defn retract-attr [{:keys [eid attr]}] (t [[:db.fn/retractAttribute eid (keyword attr)]]))
 
 (defn retract-address-token [{:keys [tokenId addressId]}]
-  (if (q '[:find ?token .
-           :in $ ?token ?addr
-           :where
-           [?addr :address/token ?token]]
-         tokenId addressId)
-    (t [[:db/retract addressId :address/token tokenId]])
-    "tokenNotBelongToAddress"))
+  (let [has-token?            (q '[:find ?token .
+                                   :in $ ?token ?addr
+                                   :where
+                                   [?addr :address/token ?token]]
+                                 tokenId addressId)
+        has-balance?          (and has-token? (q '[:find ?b .
+                                                   :in $ ?token ?addr
+                                                   :where
+                                                   [?addr :address/balance ?b]
+                                                   [?token :token/balance ?b]]
+                                                 tokenId addressId))
+        token                 (and has-token? (e :token tokenId))
+        ;; token not from toke list get deleted when link to zero addr
+        not-from-list?        (and has-token? (not (:token/fromList token)))
+        no-other-linked-addr? (and not-from-list? (-> (q '[:find [?addr ...]
+                                                           :in $ ?token
+                                                           :where
+                                                           [?addr :address/token ?token]]
+                                                         tokenId)
+                                                      count
+                                                      (= 1)))
+        tx                    (if has-token? [[:db/retract addressId :address/token tokenId]
+                                              [:db.fn/retractAttribute tokenId :token/fromUser]]
+                                  [])
+        tx                    (if no-other-linked-addr? (conj tx [:db.fn/retractEntity tokenId]) tx)
+        ;; retract token will retract its balance automatically
+        ;; so there's no need to retract balance if no-other-linked-addr? is true
+        tx                    (if (and (not no-other-linked-addr?) has-balance?) (conj tx [:db.fn/retractEntity has-balance?]) tx)]
+    (if has-token? (t tx) false)))
 
 (defn get-from-address [{:keys [networkId address appId]}]
   (->> (q '[:find ?addr-id .
@@ -433,8 +459,8 @@
         other-tokens-info (reduce
                            (fn [acc [token-id balance]]
                              (let [t (.toMap (e :token token-id))]
-                               (conj acc t (assoc t :balance balance :added false))))
-                           [] other-tokens-info)
+                               (conj acc (assoc t :balance balance :added false))))
+                           []  other-tokens-info)
         rst               {:currentAddress cur-addr
                            :currentNetwork cur-net
                            :native         native-token-ui

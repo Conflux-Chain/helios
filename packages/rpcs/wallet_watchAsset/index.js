@@ -65,6 +65,7 @@ export const main = async ({
   app,
   params,
   _popup,
+  network,
 }) => {
   if (params?.type) {
     const {address} = params.options
@@ -82,6 +83,7 @@ export const main = async ({
         symbol,
         address,
         decimals,
+        network: network.eid,
         targetAddressId: curAddr.eid,
         fromUser: true,
       })
@@ -96,6 +98,7 @@ export const main = async ({
     })
     const {alreadyInAddr} = addTokenToAddr({
       ...params.options,
+      network: app.currentNetwork.eid,
       targetAddressId: curAddr.eid,
       checkOnly: true,
     })
@@ -123,6 +126,7 @@ export const main = async ({
     })
     addTokenToAddr({
       ...authReq.req.params.options,
+      network: authedApp.currentNetwork.eid,
       targetAddressId: addr.eid,
       fromApp: true,
     })

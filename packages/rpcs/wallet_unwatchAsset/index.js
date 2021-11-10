@@ -3,7 +3,7 @@ import {dbid, map} from '@fluent-wallet/spec'
 export const NAME = 'wallet_unwatchAsset'
 
 export const schemas = {
-  input: [map, {closed: true}, ['tokenId', dbid]],
+  input: [map, {closed: true}, ['tokenId', dbid], ['addressId', dbid]],
 }
 
 export const permissions = {
