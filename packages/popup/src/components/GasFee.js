@@ -2,7 +2,12 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
-import {Big, fromDripToCfx} from '@fluent-wallet/data-format'
+import {
+  Big,
+  fromDripToCfx,
+  convertDecimal,
+  GWEI_DECIMALS,
+} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {CompWithLabel, DisplayBalance, CustomTag} from '../components'
 import {useNetworkTypeIsCfx} from '../hooks/useApi'
@@ -18,13 +23,17 @@ function GasFee({storageFee, willPayCollateral, willPayTxFee}) {
   const isBePayed = (!willPayCollateral || !willPayTxFee) && storageFee
   const isBeAllPayed = !willPayCollateral && !willPayTxFee
   console.log(gasPrice, gasLimit, storageFee)
-  const gasFee = new Big(fromDripToCfx(gasPrice)).times(gasLimit).toString()
+  const gasFee = networkTypeIsCfx
+    ? new Big(fromDripToCfx(gasPrice)).times(gasLimit).toString(10)
+    : new Big(convertDecimal(gasPrice, 'divide', GWEI_DECIMALS))
+        .times(gasLimit)
+        .toString(10)
   const realPayedFee = isBeAllPayed
     ? '0'
     : !willPayCollateral
     ? gasFee
     : storageFee
-  const txFee = new Big(gasFee).plus(storageFee || 0).toString()
+  const txFee = new Big(gasFee).plus(storageFee || 0).toString(10)
   console.log(gasFee, storageFee, txFee, realPayedFee)
 
   const label = (
@@ -46,7 +55,7 @@ function GasFee({storageFee, willPayCollateral, willPayTxFee}) {
           maxWidth={234}
           maxWidthStyle="max-w-[234px]"
           className="text-base mb-0.5"
-          symbol="CFX"
+          symbol={networkTypeIsCfx ? 'CFX' : 'ETH'}
           initialFontSize={16}
         />
         <DisplayBalance
@@ -54,7 +63,7 @@ function GasFee({storageFee, willPayCollateral, willPayTxFee}) {
           maxWidth={300}
           maxWidthStyle="max-w-[300px]"
           className="!text-gray-40 line-through !font-normal mb-0.5"
-          symbol="CFX"
+          symbol={networkTypeIsCfx ? 'CFX' : 'ETH'}
         />
         <span className="text-xs text-gray-60">{`${gasPrice} ${
           networkTypeIsCfx ? 'Drip' : 'Gwei'

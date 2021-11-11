@@ -141,8 +141,6 @@ const en = {
     // edit gas fee
     editGasFeeControl: 'Edit fee control',
     gasPrice: 'Gas Price',
-    drip: 'Drip',
-    gWei: 'GWei',
     gasLimit: 'Gas Limit',
     storageFee: 'Storage Fee',
     storageCollateralized: 'Storage Limit',

@@ -2,7 +2,6 @@ import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {CaretDownFilled} from '@fluent-wallet/component-icons'
-import Input from '@fluent-wallet/component-input'
 import Link from '@fluent-wallet/component-link'
 import Modal from '@fluent-wallet/component-modal'
 import {
@@ -10,6 +9,7 @@ import {
   DisplayBalance,
   SearchToken,
   TokenList,
+  NumberInput,
 } from '../../../components'
 import {
   useDbHomeAssets,
@@ -65,7 +65,7 @@ function TokenAndAmount({
   const [tokenListShow, setTokenListShow] = useState(false)
   const {eid: networkId} = useCurrentNetwork()
   const {address} = useCurrentAccount()
-  const {symbol, icon, balance} = selectedToken
+  const {symbol, icon, balance, decimals} = selectedToken
   const nativeBalance = useBalance(address, networkId)['0x0'] || '0x0'
   const label = (
     <span className="flex items-center justify-between text-gray-60 w-full">
@@ -108,10 +108,11 @@ function TokenAndAmount({
           <CaretDownFilled className="w-4 h-4 text-gray-60" />
         </div>
         <div className="flex flex-1">
-          <Input
+          <NumberInput
             width="w-full bg-transparent"
             bordered={false}
             value={amount}
+            decimals={decimals}
             onChange={e => onChangeAmount && onChangeAmount(e.target.value)}
           />
         </div>

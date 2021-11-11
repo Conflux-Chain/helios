@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
-import {convertDataToValue, formatBalance} from '@fluent-wallet/data-format'
+import {formatHexToDecimal, formatBalance} from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
 import {TitleNav, AccountDisplay} from '../../components'
@@ -53,9 +53,9 @@ function SendTransaction() {
   console.log('estimateRst = ', estimateRst)
   const {gasPrice, gasLimit, nonce, nativeMaxDrip} = estimateRst
   useEffect(() => {
-    setGasPrice(convertDataToValue(gasPrice, 0))
-    setGasLimit(convertDataToValue(gasLimit, 0))
-    setNonce(convertDataToValue(nonce, 0))
+    setGasPrice(formatHexToDecimal(gasPrice))
+    setGasLimit(formatHexToDecimal(gasLimit))
+    setNonce(formatHexToDecimal(nonce))
   }, [gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce])
   console.log('nativeMaxDrip', nativeMaxDrip)
   const errorMessage = useCheckBalanceAndGas(estimateRst)

@@ -50,11 +50,11 @@ function EditPermission({symbol = 'cUSDT', decimals = 4}) {
     )
   }, [customLimitValue, t, symbol, permissionChoice])
 
-  const onChangeCustomInput = value => {
+  const onChangeCustomInput = e => {
     if (permissionChoice === 'recommend') {
       return
     }
-    setCustomLimitValue(value)
+    setCustomLimitValue(e.target.value)
   }
 
   const onSavePermissionLimit = () => {
@@ -132,7 +132,7 @@ function EditPermission({symbol = 'cUSDT', decimals = 4}) {
                     readonly={permissionChoice === 'recommend'}
                     value={customLimitValue}
                     errorMessage={customLimitErr}
-                    onInputChange={onChangeCustomInput}
+                    onChange={onChangeCustomInput}
                     suffix={<div>{symbol}</div>}
                     suffixWrapperClassName="w-auto"
                     decimals={decimals}

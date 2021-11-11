@@ -18,10 +18,12 @@ function DisplayBalance({
   decimals = COMMON_DECIMALS,
 }) {
   let displayBalance
-  if (isHexPrefixed(balance)) {
-    displayBalance = formatBalance(balance, decimals)
-  } else {
-    displayBalance = roundBalance(balance)
+  if (balance) {
+    if (isHexPrefixed(balance)) {
+      displayBalance = formatBalance(balance, decimals)
+    } else {
+      displayBalance = roundBalance(balance)
+    }
   }
   console.log('displayBalance', displayBalance)
   const balanceRef = useRef()

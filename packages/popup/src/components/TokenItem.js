@@ -10,7 +10,7 @@ function TokenItem({
   onSelect,
   ...props
 }) {
-  const {logoURI, name, symbol, balance, decimal} = token
+  const {logoURI, name, symbol, balance, decimals} = token
 
   return (
     <div
@@ -34,7 +34,7 @@ function TokenItem({
               balance={balance}
               maxWidthStyle={maxWidthStyle}
               maxWidth={maxWidth}
-              decimal={decimal || CFX_DECIMALS}
+              decimals={decimals || CFX_DECIMALS}
             />
             {rightIcon && <span className="ml-5">{rightIcon}</span>}
           </div>

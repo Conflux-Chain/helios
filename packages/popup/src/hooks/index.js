@@ -1,6 +1,5 @@
 import {useEffect, useState, useMemo} from 'react'
 import useGlobalStore from '../stores'
-import BN from 'bn.js'
 import {useHistory, useLocation} from 'react-router-dom'
 import {
   ROUTES,
@@ -18,7 +17,6 @@ import {
 import {estimate} from '@fluent-wallet/estimate-tx'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {decode} from '@fluent-wallet/base32-address'
-import {addHexPrefix} from '@fluent-wallet/utils'
 import {
   useIsLocked,
   useIsZeroGroup,
@@ -289,12 +287,8 @@ export const useTxParams = () => {
     decimals = COMMON_DECIMALS,
     data
   console.log(sendAmount, decimals)
-  const sendValue = addHexPrefix(
-    new BN(sendAmount || '0', 10)
-      .mul(new BN('10', 10).pow(new BN(decimals, 10)))
-      .toString(16),
-  )
-  console.log(sendValue)
+  const sendData = convertValueToData(sendAmount, tokenDecimals)
+  console.log(sendData)
   const isNativeToken = !tokenAddress
   const isValid = validateAddress(toAddress, networkTypeIsCfx, netId)
   if (isNativeToken && isValid) {
@@ -304,14 +298,14 @@ export const useTxParams = () => {
     decimals = tokenDecimals
     data = iface.encodeFunctionData('transfer', [
       decode(to).hexAddress,
-      sendValue,
+      sendData,
     ])
   }
   const params = {
     from: address,
     to,
   }
-  if (isNativeToken) params['value'] = sendValue
+  if (isNativeToken) params['value'] = sendData
   if (data) params['data'] = data
   console.log(params)
   return params

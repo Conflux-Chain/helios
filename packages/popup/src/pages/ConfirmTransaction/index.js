@@ -7,7 +7,7 @@ import {RightOutlined} from '@fluent-wallet/component-icons'
 import {getCFXContractMethodSignature} from '@fluent-wallet/contract-method-name'
 import {
   convertDataToValue,
-  convertValueToData,
+  formatDecimalToHex,
   COMMON_DECIMALS,
 } from '@fluent-wallet/data-format'
 import useGlobalStore from '../../stores'
@@ -17,14 +17,15 @@ import {
   useCurrentNetwork,
   useAddressType,
   usePendingAuthReq,
+  useNetworkTypeIsCfx,
 } from '../../hooks/useApi'
 import {get20Token} from '../../utils/api'
 import {request} from '../../utils'
 import {AddressCard, InfoList, TransactionResult} from './components'
-import {TitleNav, GasFee} from '../../components'
+import {TitleNav, GasFee, DappFooter} from '../../components'
 import {ROUTES, RPC_METHODS} from '../../constants'
 const {VIEW_DATA, HOME} = ROUTES
-const {SEND_TRANSACTION} = RPC_METHODS
+const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION} = RPC_METHODS
 
 function ConfirmTransition() {
   const {t} = useTranslation()
@@ -35,6 +36,10 @@ function ConfirmTransition() {
   const [balanceError, setBalanceError] = useState('')
   const [hash, setHash] = useState('')
   const pendingAuthReq = usePendingAuthReq()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const SEND_TRANSACTION = networkTypeIsCfx
+    ? CFX_SEND_TRANSACTION
+    : ETH_SEND_TRANSACTION
   let displayToken = {},
     displayValue = '0x0',
     displayToAddress = '',
@@ -51,9 +56,9 @@ function ConfirmTransition() {
   console.log(gasPrice, gasLimit)
   const params = {
     ...useTxParams(),
-    gasPrice: convertValueToData(gasPrice, 0),
-    gasLimit: convertValueToData(gasLimit, 0),
-    nonce: convertValueToData(nonce, 0),
+    gasPrice: formatDecimalToHex(gasPrice),
+    gasLimit: formatDecimalToHex(gasLimit),
+    nonce: formatDecimalToHex(nonce),
   }
   console.log('params', params)
   const estimateRst = useEstimateTx(params) || {}
@@ -168,21 +173,34 @@ function ConfirmTransition() {
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
             </Link>
           )}
-          <div className="w-full flex px-1 mt-6">
-            <Button
-              variant="outlined"
-              className="flex-1 mr-3"
-              onClick={() => {
-                clearSendTransactionParams()
-                history.push(HOME)
-              }}
-            >
-              {t('cancel')}
-            </Button>
-            <Button className="flex-1" onClick={onSend}>
-              {t('confirm')}
-            </Button>
-          </div>
+          {!isDapp && (
+            <div className="w-full flex px-1 mt-6">
+              <Button
+                variant="outlined"
+                className="flex-1 mr-3"
+                onClick={() => {
+                  clearSendTransactionParams()
+                  history.push(HOME)
+                }}
+              >
+                {t('cancel')}
+              </Button>
+              <Button
+                className="flex-1"
+                onClick={onSend}
+                disabled={!!balanceError}
+              >
+                {t('confirm')}
+              </Button>
+            </div>
+          )}
+          {isDapp && (
+            <DappFooter
+              confirmText={t('confirm')}
+              cancelText={t('cancel')}
+              confirmDisabled={!!balanceError}
+            />
+          )}
         </div>
       </div>
       {showResult && <TransactionResult netId={netId} transactionHash={hash} />}

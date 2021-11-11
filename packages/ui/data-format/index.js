@@ -106,7 +106,7 @@ export const convertValueToData = (numOrStr, decimals) => {
   if (decimals) {
     data = convertDecimal(numOrStr, 'multiply', decimals)
   }
-  data = formatDecimalToHex(data, decimals)
+  data = formatDecimalToHex(data)
   return data
 }
 
