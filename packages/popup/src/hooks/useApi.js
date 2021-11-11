@@ -231,7 +231,7 @@ export const useDbAddTokenList = () => {
     [WALLETDB_ADD_TOKEN_LIST],
     {type: 'all'},
     {
-      fallbackData: {added: [], others: []},
+      fallbackData: {},
     },
   )
   useDbRefetchBalance({type: 'all'})
@@ -241,9 +241,9 @@ export const useDbAddTokenList = () => {
 export const useDbAccountListAssets = () => {
   const {data: accountListAssets} = useRPC(
     [WALLETDB_ACCOUNT_LIST_ASSETS],
-    {type: 'all'},
+    undefined,
     {
-      fallbackData: {added: [], others: []},
+      fallbackData: {},
     },
   )
   useDbRefetchBalance()
