@@ -31,7 +31,7 @@ function AddToken({onClose, onOpen}) {
   const inputValueRef = useRef()
   const {address} = useCurrentAccount()
   const isCfxChain = useNetworkTypeIsCfx()
-  const {added, others} = useDbAddTokenList() || {}
+  const {added = [], others = []} = useDbAddTokenList()
   const addTokenList = added.concat(others)
 
   const getOther20Token = value => {

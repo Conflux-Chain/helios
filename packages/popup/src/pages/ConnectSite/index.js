@@ -3,11 +3,13 @@ import {useTranslation} from 'react-i18next'
 import {useState, useEffect} from 'react'
 import Input from '@fluent-wallet/component-input'
 import Checkbox from '@fluent-wallet/component-checkbox'
+import {shortenAddress} from '@fluent-wallet/shorten-address'
+import {useSWRConfig} from 'swr'
+import Modal from '@fluent-wallet/component-modal'
 import {
   CaretDownFilled,
   QuestionCircleOutlined,
 } from '@fluent-wallet/component-icons'
-import Modal from '@fluent-wallet/component-modal'
 import {
   NetworkContent,
   DappProgressHeader,
@@ -15,21 +17,21 @@ import {
   CompWithLabel,
   Avatar,
 } from '../../components'
-import {useAccountGroupAddress} from '../../hooks'
-import {useCurrentAccount, useCurrentNetwork} from '../../hooks/useApi'
-import {shortenAddress} from '@fluent-wallet/shorten-address'
+import {useDbAccountListAssets} from '../../hooks/useApi'
+import {RPC_METHODS} from '../../constants'
+const {WALLETDB_ACCOUNT_LIST_ASSETS} = RPC_METHODS
 
 function ConnectSitesList({
   accountData,
   allCheckboxStatus,
   onSelectAllAccount,
-  currentAccount,
+  currentAddress,
   onSelectSingleAccount,
   checkboxStatusObj,
 }) {
   const {t} = useTranslation()
 
-  return accountData?.length ? (
+  return accountData.length ? (
     <>
       <CompWithLabel
         label={
@@ -50,37 +52,39 @@ function ConnectSitesList({
         }
       >
         <div className="max-h-[282px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll">
-          {accountData.map(({nickname, account}, groupIndex) => (
-            <div key={groupIndex}>
+          {accountData.map(({nickname, account, eid}) => (
+            <div key={eid}>
               <p className="text-gray-40 ml-4 mb-1 mt-1 text-xs">{nickname}</p>
-              {account.map(({nickname, eid, address}, accountIndex) => (
+              {Object.values(account).map(accountItem => (
                 <div
                   aria-hidden="true"
-                  onClick={() => onSelectSingleAccount(eid)}
-                  key={accountIndex}
+                  onClick={() => onSelectSingleAccount(accountItem.eid)}
+                  key={accountItem.eid}
                   className="flex px-3 items-center h-15 cursor-pointer"
                 >
                   <div className="flex w-full">
                     <Avatar
                       className="w-5 h-5 mr-2"
                       diameter={20}
-                      accountId={eid}
+                      accountId={accountItem.eid}
                     />
                     <div className="flex-1">
                       <p className="text-xs text-gray-40">{nickname}</p>
                       <p className="text-sm text-gray-80">
-                        {address ? shortenAddress(address) : ''}
+                        {shortenAddress(
+                          currentAddress?.base32 || currentAddress.hex,
+                        )}
                       </p>
                     </div>
                     <div className="flex">
-                      {currentAccount?.eid === eid ? (
+                      {currentAddress.eid === accountItem.currentAddress.eid ? (
                         <img
                           src="/images/location.svg"
                           alt="current address"
                           className="mr-3"
                         />
                       ) : null}
-                      <Checkbox checked={checkboxStatusObj[eid]} />
+                      <Checkbox checked={checkboxStatusObj[accountItem.eid]} />
                     </div>
                   </div>
                 </div>
@@ -96,46 +100,48 @@ ConnectSitesList.propTypes = {
   accountData: PropTypes.array.isRequired,
   allCheckboxStatus: PropTypes.bool.isRequired,
   checkboxStatusObj: PropTypes.object.isRequired,
-  currentAccount: PropTypes.object.isRequired,
+  currentAddress: PropTypes.object.isRequired,
   onSelectAllAccount: PropTypes.func.isRequired,
   onSelectSingleAccount: PropTypes.func.isRequired,
 }
 
 function ConnectSite() {
   const {t} = useTranslation()
+  const {mutate} = useSWRConfig()
   const [confirmAccounts, setConfirmAccounts] = useState([])
   const [searchContent, setSearchContent] = useState('')
   const [networkShow, setNetworkShow] = useState(false)
-  const [networkId, setNetworkId] = useState(null)
   const [searchIcon, setSearchIcon] = useState('')
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
   const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
 
-  const {addressDataWithAccountId, accountData} =
-    useAccountGroupAddress(networkId)
-  const currentNetwork = useCurrentNetwork()
-  const currentAccount = useCurrentAccount()
+  const {accountGroups, currentNetwork, currentAddress} =
+    useDbAccountListAssets()
+  const accountData = Object.values(accountGroups || {})
+
   useEffect(() => {
     setSearchIcon(currentNetwork?.icon || '')
     setSearchContent(currentNetwork?.name || '')
-    setNetworkId(currentNetwork?.eid || null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentNetwork.eid])
+  }, [currentNetwork?.eid])
 
   useEffect(() => {
     if (
-      addressDataWithAccountId &&
+      accountData.length &&
       !Object.keys(checkboxStatusObj).length &&
-      currentAccount.eid
+      currentAddress?.eid
     ) {
       const ret = {}
-      Object.keys(addressDataWithAccountId).forEach(
-        id => (ret[id] = Number(id) === currentAccount.eid),
+      accountData.forEach(({account}) =>
+        Object.values(account).forEach(accountItem => {
+          ret[accountItem.eid] =
+            accountItem.currentAddress.eid === currentAddress.eid
+        }),
       )
       setCheckboxStatusObj({...ret})
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressDataWithAccountId, currentAccount])
+  }, [currentAddress?.eid, accountData.length])
 
   useEffect(() => {
     setAllCheckboxStatus(
@@ -148,8 +154,8 @@ function ConnectSite() {
     )
   }, [checkboxStatusObj])
 
-  const onClickNetworkItem = (result, {networkId, networkName, icon}) => {
-    setNetworkId(networkId)
+  const onClickNetworkItem = (result, {networkName, icon}) => {
+    mutate([WALLETDB_ACCOUNT_LIST_ASSETS])
     setSearchContent(networkName)
     setSearchIcon(icon || '')
     setNetworkShow(false)
@@ -168,7 +174,8 @@ function ConnectSite() {
       [accountId]: !checkboxStatusObj[accountId],
     })
   }
-  return currentNetwork ? (
+
+  return accountGroups && currentNetwork && currentAddress ? (
     <div
       id="connectSiteContainer"
       className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
@@ -205,7 +212,7 @@ function ConnectSite() {
           <ConnectSitesList
             accountData={accountData}
             allCheckboxStatus={allCheckboxStatus}
-            currentAccount={currentAccount}
+            currentAddress={currentAddress}
             onSelectSingleAccount={onSelectSingleAccount}
             onSelectAllAccount={onSelectAllAccount}
             checkboxStatusObj={checkboxStatusObj}
