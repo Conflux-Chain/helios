@@ -8,8 +8,7 @@ import {CurrentAccountNetworkLabel} from './'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard, DisplayBalance, Avatar} from '../../../components'
-import {useAccountGroupBatchBalance} from '../../../hooks'
-import {useCurrentNetwork} from '../../../hooks/useApi'
+import {useDbAccountListAssets} from '../../../hooks/useApi'
 
 const {SELECT_CREATE_TYPE} = ROUTES
 const {WALLET_GET_CURRENT_ACCOUNT, WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
@@ -19,7 +18,9 @@ function AccountItem({
   account,
   authorizedAccountIdIconObj,
   closeAction,
-  tokeName,
+  tokeName = '',
+  groupType = '',
+  decimals,
 }) {
   const {mutate} = useSWRConfig()
   const onChangeAccount = accountId => {
@@ -31,9 +32,11 @@ function AccountItem({
   }
 
   return (
-    <div className="bg-gray-0 rounded pt-3 mt-3">
-      <p className="text-gray-40 ml-4 mb-1 text-xs">{nickname}</p>
-      {account.map(({nickname, eid, balance}, index) => (
+    <div className="bg-gray-0 rounded mt-3">
+      {groupType === 'pk' ? null : (
+        <p className="text-gray-40 ml-4 mb-1 text-xs pt-3">{nickname}</p>
+      )}
+      {account.map(({nickname, eid, currentAddress}, index) => (
         <div
           aria-hidden="true"
           onClick={() => onChangeAccount(eid)}
@@ -45,11 +48,12 @@ function AccountItem({
             <p className="text-xs text-gray-40 ">{nickname}</p>
             <div className="flex w-full">
               <DisplayBalance
-                balance={balance}
+                balance={currentAddress?.nativeBalance || '0'}
                 maxWidthStyle="max-w-[270px]"
                 maxWidth={270}
+                decimals={decimals}
               />
-              <pre className="text-sm text-gray-80"> {tokeName}</pre>
+              <pre className="text-sm text-gray-80">{tokeName}</pre>
             </div>
           </div>
           {authorizedAccountIdIconObj[eid] ? (
@@ -73,22 +77,22 @@ AccountItem.propTypes = {
   authorizedAccountIdIconObj: PropTypes.object.isRequired,
   closeAction: PropTypes.func,
   tokeName: PropTypes.string,
+  groupType: PropTypes.string,
+  decimals: PropTypes.number,
 }
 
 function AccountList({onClose, onOpen}) {
   const {t} = useTranslation()
-  const currentNetwork = useCurrentNetwork()
-  const ticker = currentNetwork?.ticker
-  const networkId = currentNetwork?.eid
-  const groupBalanceData = useAccountGroupBatchBalance(networkId)
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()
-
+  const {accountGroups, currentNetwork} = useDbAccountListAssets()
+  const ticker = currentNetwork?.ticker
   const onAddAccount = () => {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
   }
-  return (
+
+  return accountGroups && currentNetwork ? (
     <SlideCard
       cardTitle={t('myAccounts')}
       onClose={onClose}
@@ -96,16 +100,20 @@ function AccountList({onClose, onOpen}) {
       cardDescription={<CurrentAccountNetworkLabel />}
       cardContent={
         <div>
-          {groupBalanceData.map(({nickname, account}, index) => (
-            <AccountItem
-              key={index}
-              account={account || []}
-              nickname={nickname}
-              closeAction={onClose}
-              authorizedAccountIdIconObj={authorizedAccountIdIconObj}
-              tokeName={ticker?.symbol || ''}
-            />
-          ))}
+          {Object.values(accountGroups || {}).map(
+            ({nickname, account, vault}, index) => (
+              <AccountItem
+                key={index}
+                account={Object.values(account)}
+                nickname={nickname}
+                closeAction={onClose}
+                authorizedAccountIdIconObj={authorizedAccountIdIconObj}
+                tokeName={ticker?.symbol}
+                groupType={vault?.type}
+                decimals={ticker?.ticker}
+              />
+            ),
+          )}
         </div>
       }
       cardFooter={
@@ -119,7 +127,7 @@ function AccountList({onClose, onOpen}) {
         </Button>
       }
     />
-  )
+  ) : null
 }
 
 AccountList.propTypes = {
