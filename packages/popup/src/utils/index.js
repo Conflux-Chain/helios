@@ -1,3 +1,7 @@
+import BN from 'bn.js'
+import {stripHexPrefix} from '@fluent-wallet/utils'
+import {validateBase32Address} from '@fluent-wallet/base32-address'
+import {isHexAddress} from '@fluent-wallet/account'
 import {PASSWORD_REG_EXP} from '../constants'
 const globalThis = window ?? global
 
@@ -40,3 +44,14 @@ export function jsNumberForAddress(address) {
   const seed = parseInt(addr, 16)
   return seed
 }
+
+export const validateAddress = (address, networkTypeIsCfx, netId) => {
+  if (networkTypeIsCfx && !validateBase32Address(address, netId)) {
+    return false
+  } else if (!networkTypeIsCfx && !isHexAddress(address)) {
+    return false
+  }
+  return true
+}
+
+export const bn16 = x => new BN(stripHexPrefix(x), 16)

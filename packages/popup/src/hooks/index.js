@@ -1,5 +1,6 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useMemo} from 'react'
 import useGlobalStore from '../stores'
+import BN from 'bn.js'
 import {useHistory, useLocation} from 'react-router-dom'
 import {
   ROUTES,
@@ -9,9 +10,23 @@ import {
 } from '../constants'
 import {useRPC, useRPCProvider} from '@fluent-wallet/use-rpc'
 import {isNumber} from '@fluent-wallet/checks'
-import {formatBalance} from '@fluent-wallet/data-format'
+import {
+  formatBalance,
+  convertValueToData,
+  COMMON_DECIMALS,
+} from '@fluent-wallet/data-format'
 import {estimate} from '@fluent-wallet/estimate-tx'
-import {useIsLocked, useIsZeroGroup, useCurrentNetwork} from './useApi'
+import {iface} from '@fluent-wallet/contract-abis/777.js'
+import {decode} from '@fluent-wallet/base32-address'
+import {addHexPrefix} from '@fluent-wallet/utils'
+import {
+  useIsLocked,
+  useIsZeroGroup,
+  useCurrentNetwork,
+  useCurrentAccount,
+  useNetworkTypeIsCfx,
+} from './useApi'
+import {validateAddress, bn16} from '../utils'
 import {useAsync} from 'react-use'
 
 const {
@@ -227,7 +242,7 @@ export const useEstimateTx = (tx = {}) => {
   const {provider} = useRPCProvider()
   const currentNetwork = useCurrentNetwork() || {type: NETWORK_TYPE.CFX}
   const {type} = currentNetwork
-  const {from, to, value, data, nonce} = tx
+  const {from, to, value, data, nonce, gasPrice, gasLimit} = tx
   const {
     value: rst,
     loading,
@@ -240,8 +255,18 @@ export const useEstimateTx = (tx = {}) => {
       isFluentRequest: true,
       networkId: currentNetwork.netId,
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [from, to, value, data, nonce, currentNetwork.netId])
+  }, [
+    from,
+    to,
+    value,
+    data,
+    nonce,
+    gasPrice,
+    gasLimit,
+    currentNetwork.netId,
+    Boolean(provider),
+    type,
+  ])
 
   if (loading) {
     return {loading}
@@ -252,4 +277,90 @@ export const useEstimateTx = (tx = {}) => {
   }
 
   return rst
+}
+
+export const useTxParams = () => {
+  const {toAddress, sendAmount, sendToken} = useGlobalStore()
+  const {decimals: tokenDecimals, address: tokenAddress} = sendToken
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const {address} = useCurrentAccount()
+  const {netId} = useCurrentNetwork()
+  let to,
+    decimals = COMMON_DECIMALS,
+    data
+  console.log(sendAmount, decimals)
+  const sendValue = addHexPrefix(
+    new BN(sendAmount || '0', 10)
+      .mul(new BN('10', 10).pow(new BN(decimals, 10)))
+      .toString(16),
+  )
+  console.log(sendValue)
+  const isNativeToken = !tokenAddress
+  const isValid = validateAddress(toAddress, networkTypeIsCfx, netId)
+  if (isNativeToken && isValid) {
+    to = toAddress
+  } else if (tokenAddress) {
+    to = tokenAddress
+    decimals = tokenDecimals
+    data = iface.encodeFunctionData('transfer', [
+      decode(to).hexAddress,
+      sendValue,
+    ])
+  }
+  const params = {
+    from: address,
+    to,
+  }
+  if (isNativeToken) params['value'] = sendValue
+  if (data) params['data'] = data
+  console.log(params)
+  return params
+}
+
+export const useCheckBalanceAndGas = estimateRst => {
+  const {sendAmount, sendToken} = useGlobalStore()
+  const {address: tokenAddress, balance: tokenBalance} = sendToken
+  const {
+    isBalanceEnough,
+    isBalanceEnoughForValueAndFee,
+    storageFeeDrip,
+    error,
+  } = estimateRst
+  const isNativeToken = !tokenAddress
+  return useMemo(() => {
+    if (storageFeeDrip) {
+      if (isNativeToken && !isBalanceEnoughForValueAndFee) {
+        if (!isBalanceEnoughForValueAndFee) {
+          return 'balance is not enough'
+        } else {
+          return ''
+        }
+      }
+      if (!isNativeToken) {
+        if (bn16(convertValueToData(sendAmount)).gt(bn16(tokenBalance))) {
+          return 'balance is not enough'
+        } else if (!isBalanceEnough) {
+          return 'gas fee is not enough'
+        } else {
+          return ''
+        }
+      }
+    } else if (error?.message) {
+      if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
+        return 'balance is not enough'
+      } else {
+        return 'contract error'
+      }
+    } else {
+      return ''
+    }
+  }, [
+    isNativeToken,
+    isBalanceEnough,
+    tokenBalance,
+    isBalanceEnoughForValueAndFee,
+    sendAmount,
+    storageFeeDrip,
+    error,
+  ])
 }

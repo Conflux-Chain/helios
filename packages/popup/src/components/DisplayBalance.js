@@ -1,7 +1,12 @@
 import {useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useFontSize} from '../hooks'
-import {formatBalance, CFX_DECIMALS} from '@fluent-wallet/data-format'
+import {
+  formatBalance,
+  roundBalance,
+  COMMON_DECIMALS,
+} from '@fluent-wallet/data-format'
+import {isHexPrefixed} from '@fluent-wallet/utils'
 
 function DisplayBalance({
   maxWidth = 175,
@@ -10,9 +15,15 @@ function DisplayBalance({
   className = '',
   initialFontSize = 14,
   symbol,
-  decimals = CFX_DECIMALS,
+  decimals = COMMON_DECIMALS,
 }) {
-  const displayBalance = formatBalance(balance, decimals)
+  let displayBalance
+  if (isHexPrefixed(balance)) {
+    displayBalance = formatBalance(balance, decimals)
+  } else {
+    displayBalance = roundBalance(balance)
+  }
+  console.log('displayBalance', displayBalance)
   const balanceRef = useRef()
   const hiddenRef = useRef()
   useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance, initialFontSize)

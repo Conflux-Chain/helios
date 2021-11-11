@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import {default as OriginBig} from 'big.js'
 import BN from 'bn.js'
-import {stripHexPrefix, isHexPrefixed} from '@fluent-wallet/utils'
+import {stripHexPrefix, isHexPrefixed, addHexPrefix} from '@fluent-wallet/utils'
 OriginBig.RM = 0
 OriginBig.NE = -19
 
@@ -67,17 +67,60 @@ export const toThousands = (numOrStr, delimiter = ',', prevDelimiter = ',') => {
     }, '')
 }
 
-export const formatBalance = (numOrStr, decimals) => {
-  if (isNaN(Number(numOrStr))) return numOrStr
-  let balance = numOrStr
-  if (isHexPrefixed(balance)) {
-    balance = new BN(stripHexPrefix(balance), 16).toString()
+export const isValidNumber = numOrStr => {
+  if (
+    !numOrStr ||
+    (typeof numOrStr !== 'number' && typeof numOrStr !== 'string') ||
+    isNaN(Number(numOrStr))
+  ) {
+    return false
   }
+  return true
+}
+
+export const formatHexToDecimal = numOrStr => {
+  if (!isValidNumber(numOrStr)) return numOrStr
+  return isHexPrefixed(numOrStr)
+    ? new BN(stripHexPrefix(numOrStr), 16).toString()
+    : numOrStr
+}
+
+export const formatDecimalToHex = numOrStr => {
+  if (!isValidNumber(numOrStr)) return numOrStr
+  return addHexPrefix(new BN(numOrStr, 10).toString(16))
+}
+
+// convert api 0x data to value
+export const convertDataToValue = (numOrStr, decimals) => {
+  if (!isValidNumber(numOrStr)) return numOrStr
+  let value = formatHexToDecimal(numOrStr)
   if (decimals) {
-    balance = convertDecimal(balance, 'divide', decimals)
+    value = convertDecimal(value, 'divide', decimals)
   }
+  return value
+}
+
+// convert input value to 0x data
+export const convertValueToData = (numOrStr, decimals) => {
+  if (!isValidNumber(numOrStr)) return numOrStr
+  let data = numOrStr
+  if (decimals) {
+    data = convertDecimal(numOrStr, 'multiply', decimals)
+  }
+  data = formatDecimalToHex(data, decimals)
+  return data
+}
+
+export const roundBalance = (balance, digit = 6) => {
+  if (!isValidNumber(balance)) return balance
   const bNum = new Big(balance)
-  return toThousands(bNum.round(6).toString(10))
+  return toThousands(bNum.round(digit).toString(10))
+}
+
+export const formatBalance = (numOrStr, decimals) => {
+  if (!isValidNumber(numOrStr)) return numOrStr
+  const balance = convertDataToValue(numOrStr, decimals)
+  return roundBalance(balance)
 }
 
 export const formatAmount = numOrStr => {

@@ -5,7 +5,13 @@ import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {getCFXContractMethodSignature} from '@fluent-wallet/contract-method-name'
+import {
+  convertDataToValue,
+  convertValueToData,
+  COMMON_DECIMALS,
+} from '@fluent-wallet/data-format'
 import useGlobalStore from '../../stores'
+import {useTxParams, useEstimateTx, useCheckBalanceAndGas} from '../../hooks'
 import {
   useCurrentNativeToken,
   useCurrentNetwork,
@@ -13,23 +19,50 @@ import {
   usePendingAuthReq,
 } from '../../hooks/useApi'
 import {get20Token} from '../../utils/api'
+import {request} from '../../utils'
 import {AddressCard, InfoList, TransactionResult} from './components'
-import {TitleNav} from '../../components'
-import {ROUTES} from '../../constants'
+import {TitleNav, GasFee} from '../../components'
+import {ROUTES, RPC_METHODS} from '../../constants'
 const {VIEW_DATA, HOME} = ROUTES
+const {SEND_TRANSACTION} = RPC_METHODS
 
 function ConfirmTransition() {
   const {t} = useTranslation()
   const history = useHistory()
   const [showResult, setShowResult] = useState(false)
+  const [sendingTransaction, setSendingTransaction] = useState(false)
   const [decodeData, setDecodeData] = useState(null)
+  const [balanceError, setBalanceError] = useState('')
+  const [hash, setHash] = useState('')
   const pendingAuthReq = usePendingAuthReq()
   let displayToken = {},
     displayValue = '0x0',
     displayToAddress = '',
     method = 'Unknown'
-  const {toAddress, sendToken, sendAmount, clearSendTransactionParams} =
-    useGlobalStore()
+  const {
+    toAddress,
+    sendToken,
+    sendAmount,
+    gasPrice,
+    gasLimit,
+    nonce,
+    clearSendTransactionParams,
+  } = useGlobalStore()
+  console.log(gasPrice, gasLimit)
+  const params = {
+    ...useTxParams(),
+    gasPrice: convertValueToData(gasPrice, 0),
+    gasLimit: convertValueToData(gasLimit, 0),
+    nonce: convertValueToData(nonce, 0),
+  }
+  console.log('params', params)
+  const estimateRst = useEstimateTx(params) || {}
+  console.log('estimateRst = ', estimateRst)
+  const {willPayCollateral, willPayTxFee, storageFeeDrip} = estimateRst
+  const errorMessage = useCheckBalanceAndGas(estimateRst)
+  useEffect(() => {
+    setBalanceError(errorMessage)
+  }, [errorMessage])
   const nativeToken = useCurrentNativeToken()
   const {netId} = useCurrentNetwork()
 
@@ -84,8 +117,17 @@ function ConfirmTransition() {
     }
   }
   const onSend = () => {
-    // TODO send transaction
-    setShowResult(true)
+    if (sendingTransaction) return
+    setSendingTransaction(true)
+    request(SEND_TRANSACTION, [params]).then(({error, result}) => {
+      setSendingTransaction(false)
+      if (error) {
+        return console.error('error', error.message || error)
+      }
+      console.log('result=', result)
+      setHash(result)
+      setShowResult(true)
+    })
   }
 
   return (
@@ -110,12 +152,22 @@ function ConfirmTransition() {
             allowance={displayValue}
             pendingAuthReq={pendingAuthReq}
           />
+          <GasFee
+            willPayCollateral={willPayCollateral}
+            willPayTxFee={willPayTxFee}
+            storageFee={convertDataToValue(storageFeeDrip, COMMON_DECIMALS)}
+          />
+          <span className="text-error text-xs inline-block mt-2">
+            {balanceError}
+          </span>
         </div>
         <div className="flex flex-col items-center">
-          <Link onClick={() => history.push(VIEW_DATA)}>
-            {t('viewData')}
-            <RightOutlined className="w-3 h-3 text-primary ml-1" />
-          </Link>
+          {isDapp && (
+            <Link onClick={() => history.push(VIEW_DATA)}>
+              {t('viewData')}
+              <RightOutlined className="w-3 h-3 text-primary ml-1" />
+            </Link>
+          )}
           <div className="w-full flex px-1 mt-6">
             <Button
               variant="outlined"
@@ -133,7 +185,7 @@ function ConfirmTransition() {
           </div>
         </div>
       </div>
-      {showResult && <TransactionResult netId={netId} />}
+      {showResult && <TransactionResult netId={netId} transactionHash={hash} />}
     </div>
   )
 }

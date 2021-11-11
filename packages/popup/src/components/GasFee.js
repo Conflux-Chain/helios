@@ -6,25 +6,26 @@ import {Big, fromDripToCfx} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {CompWithLabel, DisplayBalance, CustomTag} from '../components'
 import {useNetworkTypeIsCfx} from '../hooks/useApi'
+import useGlobalStore from '../stores'
 import {ROUTES} from '../constants'
 const {EDIT_GAS_FEE} = ROUTES
 
-function GasFee({
-  gasLimit = new Big(1000000000000),
-  gasPrice = '1',
-  storageCollateralized = new Big(1000000000000),
-  payCollateral = false,
-  payTxFee = true,
-}) {
+function GasFee({storageFee, willPayCollateral, willPayTxFee}) {
   const {t} = useTranslation()
   const history = useHistory()
+  const {gasLimit, gasPrice} = useGlobalStore()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const isBePayed = !payCollateral || !payTxFee
-  const isBeAllPayed = !payCollateral && !payTxFee
-  const gasFee = new Big(fromDripToCfx(gasLimit.toString(10))).times(gasPrice)
-  const storageFee = new Big(storageCollateralized).div(1024)
-  const realPayedFee = isBeAllPayed ? '0' : !payCollateral ? gasFee : storageFee
-  const allFee = new Big(gasFee).plus(storageFee)
+  const isBePayed = (!willPayCollateral || !willPayTxFee) && storageFee
+  const isBeAllPayed = !willPayCollateral && !willPayTxFee
+  console.log(gasPrice, gasLimit, storageFee)
+  const gasFee = new Big(fromDripToCfx(gasPrice)).times(gasLimit).toString()
+  const realPayedFee = isBeAllPayed
+    ? '0'
+    : !willPayCollateral
+    ? gasFee
+    : storageFee
+  const txFee = new Big(gasFee).plus(storageFee || 0).toString()
+  console.log(gasFee, storageFee, txFee, realPayedFee)
 
   const label = (
     <span className="flex items-center justify-between w-full">
@@ -41,7 +42,7 @@ function GasFee({
     <CompWithLabel label={label}>
       <div className="flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative">
         <DisplayBalance
-          balance={realPayedFee.toString()}
+          balance={realPayedFee}
           maxWidth={234}
           maxWidthStyle="max-w-[234px]"
           className="text-base mb-0.5"
@@ -49,7 +50,7 @@ function GasFee({
           initialFontSize={16}
         />
         <DisplayBalance
-          balance={allFee.toString()}
+          balance={txFee}
           maxWidth={300}
           maxWidthStyle="max-w-[300px]"
           className="!text-gray-40 line-through !font-normal mb-0.5"
@@ -74,11 +75,9 @@ function GasFee({
 }
 
 GasFee.propTypes = {
-  gasPrice: PropTypes.string,
-  gasLimit: PropTypes.object,
-  storageCollateralized: PropTypes.object,
-  payCollateral: PropTypes.bool,
-  payTxFee: PropTypes.bool,
+  storageFee: PropTypes.string,
+  willPayCollateral: PropTypes.bool,
+  willPayTxFee: PropTypes.bool,
 }
 
 export default GasFee

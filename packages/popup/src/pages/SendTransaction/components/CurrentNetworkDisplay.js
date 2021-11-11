@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types'
 
-function CurrentNetworkDisplay({currentNetwork}) {
-  const {name, icon} = currentNetwork
-
+function CurrentNetworkDisplay({name, icon}) {
   return (
     <div className="flex bg-primary rounded h-6 px-2 items-center">
       <img
@@ -16,7 +14,8 @@ function CurrentNetworkDisplay({currentNetwork}) {
 }
 
 CurrentNetworkDisplay.propTypes = {
-  currentNetwork: PropTypes.object,
+  name: PropTypes.string,
+  icon: PropTypes.string,
 }
 
 export default CurrentNetworkDisplay

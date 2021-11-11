@@ -11,7 +11,12 @@ import {
   SearchToken,
   TokenList,
 } from '../../../components'
-import {useDbHomeAssets} from '../../../hooks/useApi'
+import {
+  useDbHomeAssets,
+  useBalance,
+  useCurrentNetwork,
+  useCurrentAccount,
+} from '../../../hooks/useApi'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
@@ -53,10 +58,15 @@ function TokenAndAmount({
   onChangeToken,
   amount,
   onChangeAmount,
+  isNativeToken,
+  nativeMax,
 }) {
   const {t} = useTranslation()
   const [tokenListShow, setTokenListShow] = useState(false)
-  const {symbol, icon} = selectedToken
+  const {eid: networkId} = useCurrentNetwork()
+  const {address} = useCurrentAccount()
+  const {symbol, icon, balance} = selectedToken
+  const nativeBalance = useBalance(address, networkId)['0x0'] || '0x0'
   const label = (
     <span className="flex items-center justify-between text-gray-60 w-full">
       {t('tokenAndAmount')}
@@ -65,15 +75,22 @@ function TokenAndAmount({
         <DisplayBalance
           maxWidth={140}
           maxWidthStyle="max-w-[140px]"
-          balance="10000"
+          balance={isNativeToken ? nativeBalance : balance}
           className="mx-1 text-xs"
           initialFontSize={12}
+          symbol={symbol}
         />
-        {'CFX'}
       </span>
     </span>
   )
-  const onClickMax = () => {}
+  const onClickMax = () => {
+    if (isNativeToken) onChangeAmount(nativeMax)
+    else onChangeAmount(balance)
+  }
+  const onSelectToken = token => {
+    setTokenListShow(false)
+    onChangeToken(token)
+  }
   return (
     <CompWithLabel label={label}>
       <div className="flex px-3 h-13 items-center justify-between bg-gray-4 border border-gray-10 rounded">
@@ -103,7 +120,7 @@ function TokenAndAmount({
       <ChooseTokenList
         open={tokenListShow}
         onClose={() => setTokenListShow(false)}
-        onSelectToken={onChangeToken}
+        onSelectToken={onSelectToken}
       />
     </CompWithLabel>
   )
@@ -114,6 +131,8 @@ TokenAndAmount.propTypes = {
   onChangeToken: PropTypes.func,
   amount: PropTypes.string,
   onChangeAmount: PropTypes.func,
+  isNativeToken: PropTypes.bool,
+  nativeMax: PropTypes.string,
 }
 
 export default TokenAndAmount

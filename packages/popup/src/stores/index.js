@@ -3,10 +3,12 @@ import create from 'zustand'
 const defaultSendTransactionParams = {
   toAddress: '',
   sendAmount: '',
-  gasPrice: '1',
-  gasLimit: '21000',
-  nonce: '0',
-  sendToken: {symbol: 'CFX', icon: ''},
+  gasPrice: '',
+  gasLimit: '',
+  nonce: '',
+  sendToken: {symbol: 'CFX', icon: '', decimals: 18},
+  allowance: '',
+  customAllowance: '',
 }
 
 const useGlobalStore = create(set => ({
@@ -30,6 +32,8 @@ const useGlobalStore = create(set => ({
   setSendAmount: sendAmount => set({sendAmount}),
   setGasPrice: gasPrice => set({gasPrice}),
   setGasLimit: gasLimit => set({gasLimit}),
+  setAllowance: allowance => set({allowance}),
+  setCustomAllowance: customAllowance => set({customAllowance}),
   setNonce: nonce => set({nonce}),
   setSendToken: sendToken => set({sendToken}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),

@@ -11,7 +11,9 @@ function TokenItem({
   const {logoURI, name, symbol, balance} = token
   return (
     <div
-      className="w-full h-14 flex items-center"
+      className={`w-full h-14 flex items-center ${
+        onSelect ? 'cursor-pointer' : ''
+      }`}
       onClick={() => onSelect && onSelect(token)}
       aria-hidden="true"
     >

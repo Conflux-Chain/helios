@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {EditOutlined} from '@fluent-wallet/component-icons'
 import {useCurrentDapp, useCurrentNetwork} from '../../../hooks/useApi'
-import {DisplayBalance, GasFee} from '../../../components'
+import {DisplayBalance} from '../../../components'
 
 const CurrentNetworkDisplay = ({currentNetwork}) => {
   const {name, icon} = currentNetwork
@@ -79,7 +79,6 @@ function InfoList({
           </span>
         </div>
       )}
-      <GasFee />
     </div>
   )
 }
