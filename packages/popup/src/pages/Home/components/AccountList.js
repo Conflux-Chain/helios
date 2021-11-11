@@ -104,7 +104,7 @@ function AccountList({onClose, onOpen}) {
             ({nickname, account, vault}, index) => (
               <AccountItem
                 key={index}
-                account={Object.values(account || {})}
+                account={Object.values(account)}
                 nickname={nickname}
                 closeAction={onClose}
                 authorizedAccountIdIconObj={authorizedAccountIdIconObj}

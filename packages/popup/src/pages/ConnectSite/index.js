@@ -129,7 +129,7 @@ function ConnectSite() {
     if (
       accountData.length &&
       !Object.keys(checkboxStatusObj).length &&
-      currentAddress.eid
+      currentAddress?.eid
     ) {
       const ret = {}
       accountData.forEach(({account}) =>
