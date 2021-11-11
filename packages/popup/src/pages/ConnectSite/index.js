@@ -17,7 +17,7 @@ import {
   CompWithLabel,
   Avatar,
 } from '../../components'
-import {useCurrentAccount, useDbAccountListAssets} from '../../hooks/useApi'
+import {useDbAccountListAssets} from '../../hooks/useApi'
 import {RPC_METHODS} from '../../constants'
 const {WALLETDB_ACCOUNT_LIST_ASSETS} = RPC_METHODS
 
@@ -25,13 +25,13 @@ function ConnectSitesList({
   accountData,
   allCheckboxStatus,
   onSelectAllAccount,
-  currentAccount,
+  currentAddress,
   onSelectSingleAccount,
   checkboxStatusObj,
 }) {
   const {t} = useTranslation()
 
-  return accountData?.length ? (
+  return accountData.length ? (
     <>
       <CompWithLabel
         label={
@@ -52,45 +52,43 @@ function ConnectSitesList({
         }
       >
         <div className="max-h-[282px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll">
-          {accountData.map(({nickname, account}, groupIndex) => (
-            <div key={groupIndex}>
+          {accountData.map(({nickname, account, eid}) => (
+            <div key={eid}>
               <p className="text-gray-40 ml-4 mb-1 mt-1 text-xs">{nickname}</p>
-              {Object.values(account || {}).map(
-                ({nickname, eid, currentAddress}, accountIndex) => (
-                  <div
-                    aria-hidden="true"
-                    onClick={() => onSelectSingleAccount(eid)}
-                    key={accountIndex}
-                    className="flex px-3 items-center h-15 cursor-pointer"
-                  >
-                    <div className="flex w-full">
-                      <Avatar
-                        className="w-5 h-5 mr-2"
-                        diameter={20}
-                        accountId={eid}
-                      />
-                      <div className="flex-1">
-                        <p className="text-xs text-gray-40">{nickname}</p>
-                        <p className="text-sm text-gray-80">
-                          {shortenAddress(
-                            currentAddress?.base32 || currentAddress.hex,
-                          )}
-                        </p>
-                      </div>
-                      <div className="flex">
-                        {currentAccount?.eid === eid ? (
-                          <img
-                            src="/images/location.svg"
-                            alt="current address"
-                            className="mr-3"
-                          />
-                        ) : null}
-                        <Checkbox checked={checkboxStatusObj[eid]} />
-                      </div>
+              {Object.values(account).map(accountItem => (
+                <div
+                  aria-hidden="true"
+                  onClick={() => onSelectSingleAccount(accountItem.eid)}
+                  key={accountItem.eid}
+                  className="flex px-3 items-center h-15 cursor-pointer"
+                >
+                  <div className="flex w-full">
+                    <Avatar
+                      className="w-5 h-5 mr-2"
+                      diameter={20}
+                      accountId={accountItem.eid}
+                    />
+                    <div className="flex-1">
+                      <p className="text-xs text-gray-40">{nickname}</p>
+                      <p className="text-sm text-gray-80">
+                        {shortenAddress(
+                          currentAddress?.base32 || currentAddress.hex,
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex">
+                      {currentAddress.eid === accountItem.currentAddress.eid ? (
+                        <img
+                          src="/images/location.svg"
+                          alt="current address"
+                          className="mr-3"
+                        />
+                      ) : null}
+                      <Checkbox checked={checkboxStatusObj[accountItem.eid]} />
                     </div>
                   </div>
-                ),
-              )}
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -102,7 +100,7 @@ ConnectSitesList.propTypes = {
   accountData: PropTypes.array.isRequired,
   allCheckboxStatus: PropTypes.bool.isRequired,
   checkboxStatusObj: PropTypes.object.isRequired,
-  currentAccount: PropTypes.object.isRequired,
+  currentAddress: PropTypes.object.isRequired,
   onSelectAllAccount: PropTypes.func.isRequired,
   onSelectSingleAccount: PropTypes.func.isRequired,
 }
@@ -117,10 +115,10 @@ function ConnectSite() {
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
   const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
 
-  const currentAccount = useCurrentAccount()
   const {accountGroups, currentNetwork, currentAddress} =
     useDbAccountListAssets()
   const accountData = Object.values(accountGroups || {})
+
   useEffect(() => {
     setSearchIcon(currentNetwork?.icon || '')
     setSearchContent(currentNetwork?.name || '')
@@ -131,18 +129,19 @@ function ConnectSite() {
     if (
       accountData.length &&
       !Object.keys(checkboxStatusObj).length &&
-      currentAccount.eid
+      currentAddress.eid
     ) {
       const ret = {}
-      accountData.forEach(({account = {}}) =>
-        Object.values(account).forEach(({eid}) => {
-          ret[eid] = Number(eid) === currentAccount.eid
+      accountData.forEach(({account}) =>
+        Object.values(account).forEach(accountItem => {
+          ret[accountItem.eid] =
+            accountItem.currentAddress.eid === currentAddress.eid
         }),
       )
       setCheckboxStatusObj({...ret})
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentAccount?.eid, accountData.length])
+  }, [currentAddress?.eid, accountData.length])
 
   useEffect(() => {
     setAllCheckboxStatus(
@@ -175,6 +174,7 @@ function ConnectSite() {
       [accountId]: !checkboxStatusObj[accountId],
     })
   }
+
   return accountGroups && currentNetwork && currentAddress ? (
     <div
       id="connectSiteContainer"
@@ -212,7 +212,7 @@ function ConnectSite() {
           <ConnectSitesList
             accountData={accountData}
             allCheckboxStatus={allCheckboxStatus}
-            currentAccount={currentAccount}
+            currentAddress={currentAddress}
             onSelectSingleAccount={onSelectSingleAccount}
             onSelectAllAccount={onSelectAllAccount}
             checkboxStatusObj={checkboxStatusObj}
