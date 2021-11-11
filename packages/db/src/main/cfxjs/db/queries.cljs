@@ -1,7 +1,8 @@
 (ns cfxjs.db.queries
   (:require
-   [cfxjs.db.datascript.core :as d]
-   [cfxjs.db.schema :refer [model->attr-keys]]))
+   [cfxjs.db.datascript.core :as db]
+   [cfxjs.db.schema :refer [model->attr-keys]]
+   [debux.cs.core :as d :refer-macros [clog clogn break clog_ clogn_  break_]]))
 
 (declare q p e t fdb)
 
@@ -77,7 +78,7 @@
 (defn get-export-all-data
   []
   (let [to-export                #{"hdPath" "network" "vault" "accountGroup" "account" "address"}
-        datoms                   (d/datoms
+        datoms                   (db/datoms
                                   (fdb (fn [db datom]
                                          (contains? to-export (namespace (.-a datom))))) :eavt)
         is-builtin-network-datom #(= :network/builtin (.-a %))
@@ -428,6 +429,7 @@
                                  [(and true "0x0") ?tbalance]]
                                (:db/id cur-addr) (:db/id cur-net))
                             #{})
+
         other-tokens-info (reduce
                            (fn [acc [token-id balance]]
                              (let [t (.toMap (e :token token-id))]

@@ -16,6 +16,7 @@ const {
   WALLET_VALIDATE_PRIVATE_KEY,
   WALLET_IMPORT_PRIVATE_KEY,
   WALLET_ZERO_ACCOUNT_GROUP,
+  WALLET_IS_LOCKED,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -46,6 +47,7 @@ function ImportPrivateKey() {
   }
   const dispatchMutate = () => {
     mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+    mutate([WALLET_IS_LOCKED], false)
     mutate([WALLET_GET_ACCOUNT_GROUP])
     mutate([WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK])
   }

@@ -12,7 +12,9 @@ function DappSwitchNetwork() {
     req?.params[0]?.chainId,
     req?.method === WALLET_SWITCH_CONFLUX_CHAIN ? 'cfx' : 'eth',
   )
-  const [{isTestnet, name, endpoint, icon}] = networkData
+  const [{isTestnet, name, endpoint, icon}] = networkData.length
+    ? networkData
+    : [{}]
 
   return (
     <div

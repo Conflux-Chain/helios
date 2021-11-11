@@ -27,6 +27,8 @@ const {
   DAPP_ADD_NETWORK,
   DAPP_SWITCH_NETWORK,
   SEND_TRANSACTION,
+  EDIT_GAS_FEE,
+  EDIT_PERMISSION,
   CONFIRM_TRANSACTION,
 } = ROUTES
 const HomePage = lazy(() => import('./pages/Home'))
@@ -49,6 +51,8 @@ const ConfirmAddSuggestedToken = lazy(() =>
   import('./pages/ConfirmAddSuggestedToken'),
 )
 const SendTransaction = lazy(() => import('./pages/SendTransaction'))
+const EditGasFee = lazy(() => import('./pages/EditGasFee'))
+const EditPermission = lazy(() => import('./pages/EditPermission'))
 const ConfirmTransaction = lazy(() => import('./pages/ConfirmTransaction'))
 
 function App() {
@@ -119,6 +123,8 @@ function App() {
                 path={CONFIRM_TRANSACTION}
                 component={ConfirmTransaction}
               />
+              <Route exact path={EDIT_GAS_FEE} component={EditGasFee} />
+              <Route exact path={EDIT_PERMISSION} component={EditPermission} />
               <Route exact path={SET_PASSWORD} component={SetPassword} />
               <Route
                 exact

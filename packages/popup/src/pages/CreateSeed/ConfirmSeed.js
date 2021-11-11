@@ -68,10 +68,13 @@ function ConfirmSeed() {
     setMnemonicError('')
     if (importingMnemonic) return
     setImportingMnemonic(true)
-    request(WALLET_IMPORT_MNEMONIC, {
+    let params = {
       mnemonic,
-      password: createdPassword,
-    }).then(({error}) => {
+    }
+    if (createdPassword) {
+      params['password'] = createdPassword
+    }
+    request(WALLET_IMPORT_MNEMONIC, params).then(({error}) => {
       setImportingMnemonic(false)
       if (error) {
         setMnemonicError(error.message)

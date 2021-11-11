@@ -12,7 +12,6 @@ export const BTC_DECIMALS = 6
 export const USDT_DECIMALS = 8
 export const COMMON_DECIMALS = 18
 export const GWEI_DECIMALS = 9
-
 export const convertDecimal = (
   numOrStr,
   action = 'divide',

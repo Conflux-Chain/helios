@@ -28,9 +28,9 @@ function PasswordInput({
       value={value}
       suffix={
         eyeStatus === 'close' ? (
-          <EyeInvisibleOutlined className="w-4 h-4" />
+          <EyeInvisibleOutlined className="w-4 h-4 cursor-pointer" />
         ) : (
-          <EyeOutlined className="w-4 h-4" />
+          <EyeOutlined className="w-4 h-4 cursor-pointer" />
         )
       }
       onSuffixClick={onSuffixClick}

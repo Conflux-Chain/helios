@@ -138,6 +138,31 @@ const en = {
     tokenList: 'Token list',
     noTxnWarning:
       'This address DOES NOT have any historical transactions, please double check',
+    // edit gas fee
+    editGasFeeControl: 'Edit fee control',
+    gasPrice: 'Gas Price',
+    drip: 'Drip',
+    gWei: 'GWei',
+    gasLimit: 'Gas Limit',
+    storageFee: 'Storage Fee',
+    storageCollateralized: 'Storage Limit',
+    totalFee: 'Total Fee',
+    customNonce: 'Custom Nonce',
+    save: 'Save',
+    gasPriceErrMSg: 'Gas Price must be greater than 0 {{unit}}',
+    gasLimitErrMsg: 'Gas limit must be at least {{gasUsed}}',
+    nonceErr: 'Nonce can not be 0',
+    // edit approve limit permissions
+    editPermission: 'Edit Permission',
+    spendLimitPermission: 'Spend limit permission',
+    allowSpendDes:
+      'Allow {{dapp}} to withdraw and spend up to the following amount:',
+    proposedApprovalLimit: 'Proposed approval limit',
+    proposedApprovalLimitDes: 'Spend limit request by {{dapp}}',
+    customSpendLimit: 'Custom spend limit',
+    customSpendLimitDes: 'Enter a max spend limit',
+    set: 'Set',
+    customLimitErr: 'Limit must be greater than 0 {{unit}}',
     // confirm transaction
     sendToken: 'Send Token',
     approveToken: 'Token Approve',

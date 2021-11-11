@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import {DisplayBalance} from './'
+import {CFX_DECIMALS} from '@fluent-wallet/data-format'
 
 function TokenItem({
   token = {},
@@ -7,8 +8,10 @@ function TokenItem({
   maxWidth = 175,
   rightIcon = null,
   onSelect,
+  ...props
 }) {
-  const {logoURI, name, symbol, balance} = token
+  const {logoURI, name, symbol, balance, decimal} = token
+
   return (
     <div
       className={`w-full h-14 flex items-center ${
@@ -16,6 +19,7 @@ function TokenItem({
       }`}
       onClick={() => onSelect && onSelect(token)}
       aria-hidden="true"
+      {...props}
     >
       <img
         className="w-8 h-8 rounded-full mr-2"
@@ -30,6 +34,7 @@ function TokenItem({
               balance={balance}
               maxWidthStyle={maxWidthStyle}
               maxWidth={maxWidth}
+              decimal={decimal || CFX_DECIMALS}
             />
             {rightIcon && <span className="ml-5">{rightIcon}</span>}
           </div>

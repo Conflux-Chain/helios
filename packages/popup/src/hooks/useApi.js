@@ -17,6 +17,7 @@ const {
   WALLET_DETECT_ADDRESS_TYPE,
   WALLETDB_HOME_PAGE_ASSETS,
   WALLETDB_REFETCH_BALANCE,
+  WALLETDB_ADD_TOKEN_LIST,
 } = RPC_METHODS
 
 export const useCurrentAccount = () => {
@@ -78,7 +79,7 @@ export const useCfxNetwork = () => {
     {
       type: 'cfx',
     },
-    {fallbackData: [{}]},
+    {fallbackData: []},
   )
   return cfxNetWork
 }
@@ -89,7 +90,7 @@ export const useEthNetwork = () => {
     {
       type: 'eth',
     },
-    {fallbackData: [{}]},
+    {fallbackData: []},
   )
   return ethNetWork
 }
@@ -101,7 +102,7 @@ export const useNetworkByChainId = (chainId, type) => {
       chainId,
       type,
     },
-    {fallbackData: [{}]},
+    {fallbackData: []},
   )
   return network
 }
@@ -110,7 +111,7 @@ export const useHdAccountGroup = () => {
   const {data: hdGroup} = useRPC(
     [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
     {type: ACCOUNT_GROUP_TYPE.HD},
-    {fallbackData: [{}]},
+    {fallbackData: []},
   )
   return hdGroup
 }
@@ -119,14 +120,14 @@ export const usePkAccountGroup = () => {
   const {data: pkGroup} = useRPC(
     [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK],
     {type: ACCOUNT_GROUP_TYPE.PK},
-    {fallbackData: [{}]},
+    {fallbackData: []},
   )
   return pkGroup
 }
 
 export const useAllGroup = () => {
   const {data: group} = useRPC([WALLET_GET_ACCOUNT_GROUP], undefined, {
-    fallbackData: [{}],
+    fallbackData: [],
   })
   return group
 }
@@ -160,7 +161,7 @@ export const useAddressByNetworkId = (accountIds = [], networkId) => {
       ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId, ...accountIds]
       : null,
     params,
-    {fallbackData: isNumber(accountIds) ? {} : [{}]},
+    {fallbackData: isNumber(accountIds) ? {} : []},
   )
   const {base32, hex} = accountAddress || {}
   const address = networkTypeIsCfx ? base32 : hex
@@ -214,6 +215,18 @@ export const useDbHomeAssets = () => {
   return homeAssets
 }
 
-export const useDbRefetchBalance = () => {
-  useRPC([WALLETDB_REFETCH_BALANCE])
+export const useDbRefetchBalance = param => {
+  useRPC([WALLETDB_REFETCH_BALANCE], param ? {...param} : undefined)
+}
+
+export const useDbAddTokenList = () => {
+  const {data: addTokenListData} = useRPC(
+    [WALLETDB_ADD_TOKEN_LIST],
+    {type: 'all'},
+    {
+      fallbackData: {added: [], others: []},
+    },
+  )
+  useDbRefetchBalance({type: 'all'})
+  return addTokenListData
 }
