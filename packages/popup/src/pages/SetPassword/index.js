@@ -1,6 +1,6 @@
 import {useTranslation} from 'react-i18next'
 import {LanguageNav, HomeTitle} from '../../components'
-import {SetPasswordForm} from './components'
+import SetPasswordForm from './components/SetPasswordForm'
 
 const SetPassword = () => {
   const {t} = useTranslation()
