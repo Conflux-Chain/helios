@@ -1,7 +1,10 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
-import {formatHexToDecimal, formatBalance} from '@fluent-wallet/data-format'
+import {
+  formatHexToDecimal,
+  convertDataToValue,
+} from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
 import {TitleNav, AccountDisplay} from '../../components'
@@ -38,7 +41,7 @@ function SendTransaction() {
   } = useGlobalStore()
   const {name, icon, ticker, netId} = useCurrentNetwork()
   const {address, eid: accountId, nickname} = useCurrentAccount()
-  const {address: tokenAddress} = sendToken
+  const {address: tokenAddress, decimals} = sendToken
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const [addressError, setAddressError] = useState('')
   const [balanceError, setBalanceError] = useState('')
@@ -120,7 +123,9 @@ function SendTransaction() {
             onChangeToken={onChangeToken}
             isNativeToken={isNativeToken}
             nativeMax={
-              bn16(nativeMaxDrip).lten(0) ? '0' : formatBalance(nativeMaxDrip)
+              bn16(nativeMaxDrip).lten(0)
+                ? '0'
+                : convertDataToValue(nativeMaxDrip, decimals)
             }
           />
           <span className="text-error text-xs inline-block mt-2">

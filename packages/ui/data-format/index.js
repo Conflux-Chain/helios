@@ -4,6 +4,7 @@ import BN from 'bn.js'
 import {stripHexPrefix, isHexPrefixed, addHexPrefix} from '@fluent-wallet/utils'
 OriginBig.RM = 0
 OriginBig.NE = -19
+OriginBig.PE = 30
 
 export const Big = OriginBig
 export const CFX_DECIMALS = 18

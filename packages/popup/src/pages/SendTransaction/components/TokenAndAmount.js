@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
+import {convertDataToValue} from '@fluent-wallet/data-format'
 import {CaretDownFilled} from '@fluent-wallet/component-icons'
 import Link from '@fluent-wallet/component-link'
 import Modal from '@fluent-wallet/component-modal'
@@ -65,8 +66,12 @@ function TokenAndAmount({
   const [tokenListShow, setTokenListShow] = useState(false)
   const {eid: networkId} = useCurrentNetwork()
   const {address} = useCurrentAccount()
-  const {symbol, icon, balance, decimals} = selectedToken
-  const nativeBalance = useBalance(address, networkId)['0x0'] || '0x0'
+  const {symbol, icon, decimals, address: selectedTokenAddress} = selectedToken
+  console.log('select', decimals)
+  const tokenAddress = isNativeToken ? '0x0' : selectedTokenAddress
+  const balance =
+    useBalance(address, networkId, tokenAddress)?.[address]?.[tokenAddress] ||
+    '0x0'
   const label = (
     <span className="flex items-center justify-between text-gray-60 w-full">
       {t('tokenAndAmount')}
@@ -75,7 +80,7 @@ function TokenAndAmount({
         <DisplayBalance
           maxWidth={140}
           maxWidthStyle="max-w-[140px]"
-          balance={isNativeToken ? nativeBalance : balance}
+          balance={balance}
           className="mx-1 text-xs"
           initialFontSize={12}
           symbol={symbol}
@@ -85,7 +90,7 @@ function TokenAndAmount({
   )
   const onClickMax = () => {
     if (isNativeToken) onChangeAmount(nativeMax)
-    else onChangeAmount(balance)
+    else onChangeAmount(convertDataToValue(balance, decimals))
   }
   const onSelectToken = token => {
     setTokenListShow(false)
