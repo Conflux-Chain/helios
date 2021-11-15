@@ -12642,9 +12642,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:^6.3.0":
-  version: 6.3.0
-  resolution: "concurrently@npm:6.3.0"
+"concurrently@npm:^6.4.0":
+  version: 6.4.0
+  resolution: "concurrently@npm:6.4.0"
   dependencies:
     chalk: ^4.1.0
     date-fns: ^2.16.1
@@ -12656,7 +12656,7 @@ __metadata:
     yargs: ^16.2.0
   bin:
     concurrently: bin/concurrently.js
-  checksum: fb68236899259a3b0c05d27db608ee9150f11fc785552c14937e5e1421c9448d03704cdc2acb5f842a91c465d50005b4229f348eb9594d84cbef54e5a93ffde7
+  checksum: 902864cc853176cac406246fa367a1b24ebfcbea9ba43c164f9cb4e2c9c1a5f9d8be05ce98fe7ef13329ffd5cc340a052007a9c870863e2068425d95b3bf89d7
   languageName: node
   linkType: hard
 
@@ -18029,7 +18029,7 @@ fsevents@~2.1.2:
     autoprefixer: ^10.4.0
     babel-loader: 8.2.3
     browserslist: ^4.17.6
-    concurrently: ^6.3.0
+    concurrently: ^6.4.0
     cross-env: ^7.0.3
     cssnano: 5.0.10
     dot-env: ^0.0.1
@@ -18062,7 +18062,7 @@ fsevents@~2.1.2:
     react-highlight.js: 1.0.7
     regenerator-runtime: ^0.13.9
     rimraf: ^3.0.2
-    shadow-cljs: ^2.16.0
+    shadow-cljs: ^2.16.4
     snowpack: 3.8.8
     storybook: 6.3.12
     storybook-addon-outline: 1.4.1
@@ -27769,9 +27769,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"shadow-cljs@npm:^2.16.0":
-  version: 2.16.0
-  resolution: "shadow-cljs@npm:2.16.0"
+"shadow-cljs@npm:^2.16.4":
+  version: 2.16.4
+  resolution: "shadow-cljs@npm:2.16.4"
   dependencies:
     node-libs-browser: ^2.2.1
     readline-sync: ^1.4.7
@@ -27781,7 +27781,7 @@ resolve@^2.0.0-next.3:
     ws: ^7.4.6
   bin:
     shadow-cljs: cli/runner.js
-  checksum: f22a0263a9d60ad92b59969de7779bee0423725587ef8cdebbd6e5cd7f2e9777dcd2546ea98de1cd433726e6756204fa11dd59c952a91928a9d3eaac66819fdf
+  checksum: 561f9f50da6e6fe3a3dcd63e86163a6d772f1503df872a620e7d6395caa02b8d005e7228a19119ee888f5c7675612b351fce46a735884ae28f576a3b1290d750
   languageName: node
   linkType: hard
 
