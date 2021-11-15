@@ -191,7 +191,7 @@
                      :type :bytes-65
                      [:doc "65 hex encoded bytes"]))
 (def Uint
-  (update-properties [:re #"^0x[0-9a-f]+[0-9a-f]*$"]
+  (update-properties [:re #"^0x([1-9a-f]+[0-9a-f]*|0)$"]
                      :type :uint
                      [:doc "hex encoded unsigned integer"]))
 (def Uint256
@@ -366,10 +366,24 @@
    :error/message "must be one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null"
    :doc "one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null, default to latest_state"))
 
+(def export-epoch-tag-no-mined
+  (update-properties
+   [:enum "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil]
+   :type :epoch-tag-no-mined
+   :error/message "must be one of latest_confirmed, latest_state, latest_checkpoint, earliest or null"
+   :doc "one of latest_confirmed, latest_state, latest_checkpoint, earliest or null, default to latest_state"))
+
 (def export-epoch-ref
   (update-properties
-   [:or export-epoch-tag export-hex-string]
+   [:or export-epoch-tag Uint]
    :type :epoch-ref
+   :error/message "invalid epoch ref, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"
+   :doc "epoch number tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"))
+
+(def export-epoch-ref-no-mined
+  (update-properties
+   [:or export-epoch-tag-no-mined Uint]
+   :type :epoch-ref-no-mined
    :error/message "invalid epoch ref, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"
    :doc "epoch number tag, check the doc at https://developer.conflux-chain.org/conflux-doc/docs/json_rpc#the-epoch-number-parameter"))
 
@@ -382,7 +396,7 @@
 
 (def export-block-ref
   (update-properties
-   [:or export-block-tag export-hex-string]
+   [:or export-block-tag Uint]
    :type :epoch-ref
    :error/message "invalid block ref, must be one of latest, pending, earliest, block number or null"
    :doc "one of latest, pending, earliest, block number or null"))
