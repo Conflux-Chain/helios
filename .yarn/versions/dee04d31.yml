@@ -1,6 +1,0 @@
-releases:
-  "@fluent-wallet/token-list-schema": patch
-  "@fluent-wallet/wallet_update-token-list": patch
-
-declined:
-  - helios-background
