@@ -61,14 +61,13 @@ function CurrentSeed() {
   const [creatingAccount, setCreatingAccount] = useState(false)
   const [accountCreationError, setAccountCreationError] = useState('')
   useEffect(() => {
-    setAccountNamePlaceholder(
-      `Account-1-${hdGroup[selectedGroupIdx]?.account?.length + 1}`,
-    )
-  }, [hdGroup, selectedGroupIdx])
+    setAccountNamePlaceholder(`Seed-1-${hdGroup[0]?.account?.length + 1}`)
+  }, [hdGroup])
   const onClickGroup = index => {
+    console.log(index)
     setSelectedGroupIdx(index)
     setAccountNamePlaceholder(
-      `Account-${index + 1}-${hdGroup[index].account.length + 1}`,
+      `Seed-${index + 1}-${hdGroup[index].account.length + 1}`,
     )
   }
   const onCreate = () => {
@@ -116,7 +115,7 @@ function CurrentSeed() {
                   <SeedPhrase
                     key={g.eid}
                     group={g}
-                    onClickGroup={onClickGroup}
+                    onClickGroup={() => onClickGroup(idx)}
                     selectedGroupIdx={selectedGroupIdx}
                     idx={idx}
                   />

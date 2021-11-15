@@ -124,6 +124,9 @@ function ConfirmTransition() {
   const onSend = () => {
     if (sendingTransaction) return
     setSendingTransaction(true)
+    params.gas = params.gasLimit
+    delete params.gasLimit
+    console.log('params', params)
     request(SEND_TRANSACTION, [params]).then(({error, result}) => {
       setSendingTransaction(false)
       if (error) {

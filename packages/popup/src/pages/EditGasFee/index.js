@@ -27,10 +27,11 @@ function EditGasFee() {
   const [nonceErr, setNonceErr] = useState('')
   const [inputGasPrice, setInputGasPrice] = useState('0')
   const [inputGasLimit, setInputGasLimit] = useState('0')
-  const [inputNonce, setInputNonce] = useState('0')
+  const [inputNonce, setInputNonce] = useState('')
   const {gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce} =
     useGlobalStore()
 
+  console.log(gasPrice, gasLimit, nonce)
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
 
@@ -38,8 +39,8 @@ function EditGasFee() {
     ...useTxParams(),
     gasPrice: formatDecimalToHex(gasPrice),
     gasLimit: formatDecimalToHex(gasLimit),
-    nonce: formatDecimalToHex(nonce),
   }
+  if (nonce) params.nonce = formatDecimalToHex(nonce)
   console.log('params', params)
   const estimateRst = useEstimateTx(params) || {}
   console.log('estimateRst = ', estimateRst)
@@ -51,10 +52,10 @@ function EditGasFee() {
   // }
 
   useEffectOnce(() => {
-    setInputGasLimit(gasUsed)
+    setInputGasLimit(gasLimit)
     setInputGasPrice(gasPrice)
     setInputNonce(nonce)
-  }, [gasUsed, gasPrice, nonce])
+  }, [gasLimit, gasPrice, nonce])
 
   const gasFee = networkTypeIsCfx
     ? new Big(fromDripToCfx(gasPrice)).times(gasLimit).toString(10)
@@ -62,8 +63,8 @@ function EditGasFee() {
         .times(gasLimit)
         .toString(10)
 
-  const storageFee = convertDataToValue(storageFeeDrip, CFX_DECIMALS)
-  const txFee = new Big(gasFee).plus(storageFee || 0).toString(10)
+  const storageFee = convertDataToValue(storageFeeDrip || '0', CFX_DECIMALS)
+  const txFee = new Big(gasFee).plus(storageFee).toString(10)
 
   useEffect(() => {
     setGasPriceErr(
@@ -77,16 +78,16 @@ function EditGasFee() {
 
   useEffect(() => {
     setGasLimitErr(
-      new Big(inputGasLimit).gte(formatHexToDecimal(gasUsed))
+      new Big(inputGasLimit).gte(formatHexToDecimal(gasUsed || '0'))
         ? ''
         : t('gasLimitErrMsg', {
-            gasUsed: formatHexToDecimal(gasUsed),
+            gasUsed: formatHexToDecimal(gasUsed || '0'),
           }),
     )
   }, [inputGasLimit, gasUsed, t])
 
   useEffect(() => {
-    setNonceErr(new Big(inputNonce).gt(0) ? '' : t('nonceErr'))
+    setNonceErr(!inputNonce || new Big(inputNonce).gt(0) ? '' : t('nonceErr'))
   }, [inputNonce, t])
 
   const saveGasData = () => {
