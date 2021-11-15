@@ -1,4 +1,4 @@
-import {base32ContractAddress, cat, epochRef} from '@fluent-wallet/spec'
+import {base32ContractAddress, cat, epochRefNoMined} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_getCode'
 
@@ -9,7 +9,7 @@ export const cache = {
 }
 
 export const schemas = {
-  input: [cat, base32ContractAddress, epochRef],
+  input: [cat, base32ContractAddress, epochRefNoMined],
 }
 
 export const permissions = {

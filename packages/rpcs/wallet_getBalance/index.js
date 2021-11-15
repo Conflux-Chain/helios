@@ -9,13 +9,13 @@ import {
   blockRef,
   cat,
   catn,
-  epochRef,
+  zeroOrOne,
+  epochRefNoMined,
   eq,
   ethHexAddress,
   map,
   oneOrMore,
   or,
-  zeroOrOne,
 } from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_getBalance'
@@ -23,7 +23,7 @@ export const NAME = 'wallet_getBalance'
 const GetBalanceSchema = [
   or,
   [cat, ethHexAddress, [zeroOrOne, blockRef]],
-  [cat, base32UserAddress, [zeroOrOne, epochRef]],
+  [cat, base32UserAddress, [zeroOrOne, epochRefNoMined]],
 ]
 
 const SingleCallGetBalanceSchema = [

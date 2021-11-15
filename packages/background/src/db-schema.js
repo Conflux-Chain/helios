@@ -83,7 +83,7 @@ const schema = {
     },
   },
   accountGroup: {
-    nickname: {value: true},
+    nickname: {doc: 'account group nickname'},
     vault: {ref: true, doc: 'Entity ID of vault', identity: true},
     // customHdPath: {
     //   ref: 'hdPath',

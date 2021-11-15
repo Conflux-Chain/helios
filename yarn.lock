@@ -3357,6 +3357,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_client-version@workspace:packages/rpcs/cfx_clientVersion":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_client-version@workspace:packages/rpcs/cfx_clientVersion"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber"
@@ -3389,9 +3397,73 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_get-accumulate-interest-rate@workspace:packages/rpcs/cfx_getAccumulateInterestRate":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-accumulate-interest-rate@workspace:packages/rpcs/cfx_getAccumulateInterestRate"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-admin@workspace:packages/rpcs/cfx_getAdmin":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-admin@workspace:packages/rpcs/cfx_getAdmin"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_get-balance@workspace:packages/rpcs/cfx_getBalance":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-balance@workspace:packages/rpcs/cfx_getBalance"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-best-block-hash@workspace:packages/rpcs/cfx_getBestBlockHash":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-best-block-hash@workspace:packages/rpcs/cfx_getBestBlockHash"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-block-by-epoch-number@workspace:packages/rpcs/cfx_getBlockByEpochNumber":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-block-by-epoch-number@workspace:packages/rpcs/cfx_getBlockByEpochNumber"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-block-by-hash-with-pivot-assumption@workspace:packages/rpcs/cfx_getBlockByHashWithPivotAssumption":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-block-by-hash-with-pivot-assumption@workspace:packages/rpcs/cfx_getBlockByHashWithPivotAssumption"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-block-by-hash@workspace:packages/rpcs/cfx_getBlockByHash":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-block-by-hash@workspace:packages/rpcs/cfx_getBlockByHash"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-block-reward-info@workspace:packages/rpcs/cfx_getBlockRewardInfo":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-block-reward-info@workspace:packages/rpcs/cfx_getBlockRewardInfo"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-blocks-by-epoch@workspace:packages/rpcs/cfx_getBlocksByEpoch":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-blocks-by-epoch@workspace:packages/rpcs/cfx_getBlocksByEpoch"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
@@ -3405,6 +3477,46 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_get-collateral-for-storage@workspace:packages/rpcs/cfx_getCollateralForStorage":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-collateral-for-storage@workspace:packages/rpcs/cfx_getCollateralForStorage"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-confirmation-risk-by-hash@workspace:packages/rpcs/cfx_getConfirmationRiskByHash":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-confirmation-risk-by-hash@workspace:packages/rpcs/cfx_getConfirmationRiskByHash"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-deposit-list@workspace:packages/rpcs/cfx_getDepositList":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-deposit-list@workspace:packages/rpcs/cfx_getDepositList"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-interest-rate@workspace:packages/rpcs/cfx_getInterestRate":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-interest-rate@workspace:packages/rpcs/cfx_getInterestRate"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-logs@workspace:packages/rpcs/cfx_getLogs":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-logs@workspace:packages/rpcs/cfx_getLogs"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_get-next-nonce@workspace:packages/rpcs/cfx_getNextNonce":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-next-nonce@workspace:packages/rpcs/cfx_getNextNonce"
@@ -3413,9 +3525,73 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_get-skipped-blocks-by-epoch@workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-skipped-blocks-by-epoch@workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-sponsor-info@workspace:packages/rpcs/cfx_getSponsorInfo":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-sponsor-info@workspace:packages/rpcs/cfx_getSponsorInfo"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-staking-balance@workspace:packages/rpcs/cfx_getStakingBalance":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-staking-balance@workspace:packages/rpcs/cfx_getStakingBalance"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_get-status@workspace:packages/rpcs/cfx_getStatus":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-status@workspace:packages/rpcs/cfx_getStatus"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-storage-at@workspace:packages/rpcs/cfx_getStorageAt":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-storage-at@workspace:packages/rpcs/cfx_getStorageAt"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-storage-root@workspace:packages/rpcs/cfx_getStorageRoot":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-storage-root@workspace:packages/rpcs/cfx_getStorageRoot"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-transaction-by-hash@workspace:packages/rpcs/cfx_getTransactionByHash":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-transaction-by-hash@workspace:packages/rpcs/cfx_getTransactionByHash"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-transaction-receipt@workspace:packages/rpcs/cfx_getTransactionReceipt":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-transaction-receipt@workspace:packages/rpcs/cfx_getTransactionReceipt"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-vote-list@workspace:packages/rpcs/cfx_getVoteList":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-vote-list@workspace:packages/rpcs/cfx_getVoteList"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
@@ -12466,9 +12642,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:^6.3.0":
-  version: 6.3.0
-  resolution: "concurrently@npm:6.3.0"
+"concurrently@npm:^6.4.0":
+  version: 6.4.0
+  resolution: "concurrently@npm:6.4.0"
   dependencies:
     chalk: ^4.1.0
     date-fns: ^2.16.1
@@ -12480,7 +12656,7 @@ __metadata:
     yargs: ^16.2.0
   bin:
     concurrently: bin/concurrently.js
-  checksum: fb68236899259a3b0c05d27db608ee9150f11fc785552c14937e5e1421c9448d03704cdc2acb5f842a91c465d50005b4229f348eb9594d84cbef54e5a93ffde7
+  checksum: 902864cc853176cac406246fa367a1b24ebfcbea9ba43c164f9cb4e2c9c1a5f9d8be05ce98fe7ef13329ffd5cc340a052007a9c870863e2068425d95b3bf89d7
   languageName: node
   linkType: hard
 
@@ -17660,14 +17836,33 @@ fsevents@~2.1.2:
     "@fluent-wallet/cfx_call": "workspace:packages/rpcs/cfx_call"
     "@fluent-wallet/cfx_chain-id": "workspace:packages/rpcs/cfx_chainId"
     "@fluent-wallet/cfx_check-balance-against-transaction": "workspace:packages/rpcs/cfx_checkBalanceAgainstTransaction"
+    "@fluent-wallet/cfx_client-version": "workspace:packages/rpcs/cfx_clientVersion"
     "@fluent-wallet/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber"
     "@fluent-wallet/cfx_estimate-gas-and-collateral": "workspace:packages/rpcs/cfx_estimateGasAndCollateral"
     "@fluent-wallet/cfx_gas-price": "workspace:packages/rpcs/cfx_gasPrice"
     "@fluent-wallet/cfx_get-account": "workspace:packages/rpcs/cfx_getAccount"
+    "@fluent-wallet/cfx_get-accumulate-interest-rate": "workspace:packages/rpcs/cfx_getAccumulateInterestRate"
+    "@fluent-wallet/cfx_get-admin": "workspace:packages/rpcs/cfx_getAdmin"
     "@fluent-wallet/cfx_get-balance": "workspace:packages/rpcs/cfx_getBalance"
+    "@fluent-wallet/cfx_get-best-block-hash": "workspace:packages/rpcs/cfx_getBestBlockHash"
+    "@fluent-wallet/cfx_get-block-by-hash": "workspace:packages/rpcs/cfx_getBlockByHash"
+    "@fluent-wallet/cfx_get-block-by-hash-with-pivot-assumption": "workspace:packages/rpcs/cfx_getBlockByHashWithPivotAssumption"
+    "@fluent-wallet/cfx_get-block-reward-info": "workspace:packages/rpcs/cfx_getBlockRewardInfo"
+    "@fluent-wallet/cfx_get-blocks-by-epoch": "workspace:packages/rpcs/cfx_getBlocksByEpoch"
     "@fluent-wallet/cfx_get-code": "workspace:packages/rpcs/cfx_getCode"
+    "@fluent-wallet/cfx_get-collateral-for-storage": "workspace:packages/rpcs/cfx_getCollateralForStorage"
+    "@fluent-wallet/cfx_get-confirmation-risk-by-hash": "workspace:packages/rpcs/cfx_getConfirmationRiskByHash"
+    "@fluent-wallet/cfx_get-interest-rate": "workspace:packages/rpcs/cfx_getInterestRate"
+    "@fluent-wallet/cfx_get-logs": "workspace:packages/rpcs/cfx_getLogs"
     "@fluent-wallet/cfx_get-next-nonce": "workspace:packages/rpcs/cfx_getNextNonce"
+    "@fluent-wallet/cfx_get-skipped-blocks-by-epoch": "workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch"
+    "@fluent-wallet/cfx_get-staking-balance": "workspace:packages/rpcs/cfx_getStakingBalance"
     "@fluent-wallet/cfx_get-status": "workspace:packages/rpcs/cfx_getStatus"
+    "@fluent-wallet/cfx_get-storage-at": "workspace:packages/rpcs/cfx_getStorageAt"
+    "@fluent-wallet/cfx_get-storage-root": "workspace:packages/rpcs/cfx_getStorageRoot"
+    "@fluent-wallet/cfx_get-transaction-by-hash": "workspace:packages/rpcs/cfx_getTransactionByHash"
+    "@fluent-wallet/cfx_get-transaction-receipt": "workspace:packages/rpcs/cfx_getTransactionReceipt"
+    "@fluent-wallet/cfx_get-vote-list": "workspace:packages/rpcs/cfx_getVoteList"
     "@fluent-wallet/cfx_net-version": "workspace:packages/rpcs/cfx_netVersion"
     "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
     "@fluent-wallet/cfx_send-transaction": "workspace:packages/rpcs/cfx_sendTransaction"
@@ -17834,7 +18029,7 @@ fsevents@~2.1.2:
     autoprefixer: ^10.4.0
     babel-loader: 8.2.3
     browserslist: ^4.17.6
-    concurrently: ^6.3.0
+    concurrently: ^6.4.0
     cross-env: ^7.0.3
     cssnano: 5.0.10
     dot-env: ^0.0.1
@@ -17867,7 +18062,7 @@ fsevents@~2.1.2:
     react-highlight.js: 1.0.7
     regenerator-runtime: ^0.13.9
     rimraf: ^3.0.2
-    shadow-cljs: ^2.16.0
+    shadow-cljs: ^2.16.4
     snowpack: 3.8.8
     storybook: 6.3.12
     storybook-addon-outline: 1.4.1
@@ -27574,9 +27769,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"shadow-cljs@npm:^2.16.0":
-  version: 2.16.0
-  resolution: "shadow-cljs@npm:2.16.0"
+"shadow-cljs@npm:^2.16.4":
+  version: 2.16.4
+  resolution: "shadow-cljs@npm:2.16.4"
   dependencies:
     node-libs-browser: ^2.2.1
     readline-sync: ^1.4.7
@@ -27586,7 +27781,7 @@ resolve@^2.0.0-next.3:
     ws: ^7.4.6
   bin:
     shadow-cljs: cli/runner.js
-  checksum: f22a0263a9d60ad92b59969de7779bee0423725587ef8cdebbd6e5cd7f2e9777dcd2546ea98de1cd433726e6756204fa11dd59c952a91928a9d3eaac66819fdf
+  checksum: 561f9f50da6e6fe3a3dcd63e86163a6d772f1503df872a620e7d6395caa02b8d005e7228a19119ee888f5c7675612b351fce46a735884ae28f576a3b1290d750
   languageName: node
   linkType: hard
 

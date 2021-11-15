@@ -68,6 +68,7 @@ export const permissions = {
     'wallet_refetchTokenList',
   ],
   db: [
+    'getAccountGroupByVaultType',
     't',
     'getOneAccount',
     'getAccount',
@@ -88,6 +89,12 @@ function setDefaultSelectedAccount({db: {getOneAccount, getAccount, t}}) {
     if (defaultSelectedAccount)
       t([{eid: defaultSelectedAccount.eid, account: {selected: true}}])
   }
+}
+
+const DefaultGroupNamePrefix = {
+  hd: 'Seed-',
+  pub: 'Follow-',
+  pk: 'Account-',
 }
 
 export async function newAccounts(arg) {
@@ -136,7 +143,7 @@ export async function newAccounts(arg) {
           account: {
             address: -1,
             index: 0,
-            nickname: `${groupName}-1`,
+            nickname: groupName,
             hidden: false,
           },
         },
@@ -147,6 +154,8 @@ export async function newAccounts(arg) {
     }
 
     if (vault.cfxOnly && type !== 'cfx') return
+
+    // vault.type is 'pub'
 
     t([
       {eid: -1, address: {hex: vault.ddata, vault: vault.eid}},
@@ -162,7 +171,7 @@ export async function newAccounts(arg) {
         eid: account?.eid ?? -2,
         account: {
           index: 0,
-          nickname: `${groupName}-1`,
+          nickname: groupName,
           address: -1,
           hidden: false,
         },
@@ -178,12 +187,13 @@ export async function newAccounts(arg) {
 export async function newAccountGroup(arg) {
   const {
     params: {waitTillFinish, nickname},
-    db: {getAccountGroup, getVaultById, t},
+    db: {getAccountGroupByVaultType, getVaultById, t},
     vaultId,
   } = arg
-  const groups = getAccountGroup()
   const vault = getVaultById(vaultId)
-  const groupName = nickname || `Seed-${groups.length + 1}`
+  const groups = getAccountGroupByVaultType(vault.type)
+  const groupName =
+    nickname || `${DefaultGroupNamePrefix[vault.type]}${groups.length + 1}`
 
   const {tempids} = t([
     {
