@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/rpc-engine",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "dependencies": {
     "@fluent-wallet/associative": "workspace:packages/associative",
     "@fluent-wallet/cache-rpc": "workspace:packages/cache-rpc",
