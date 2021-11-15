@@ -17,8 +17,12 @@ function ConfirmSeed() {
   const {t} = useTranslation()
   const {mutate} = useSWRConfig()
   const history = useHistory()
-  const {createdMnemonic, createdPassword, setCreatedMnemonic} =
-    useGlobalStore()
+  const {
+    createdMnemonic,
+    createdPassword,
+    createdGroupName,
+    setCreatedMnemonic,
+  } = useGlobalStore()
   const initData = new Array(12).fill(null)
   // record the index of buttonArray
   const [mnemonicIndex, setMnemonicIndex] = useState(initData.join(' '))
@@ -69,6 +73,7 @@ function ConfirmSeed() {
     if (importingMnemonic) return
     setImportingMnemonic(true)
     let params = {
+      nickname: createdGroupName,
       mnemonic,
     }
     if (createdPassword) {
