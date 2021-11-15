@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/wallet_discover-accounts",
   "main": "index.js",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network",
     "@fluent-wallet/csp": "workspace:packages/csp",
