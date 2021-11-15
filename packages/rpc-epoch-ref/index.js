@@ -1,4 +1,5 @@
 const RPC_EPOCH_TAG_CONFIG = {
+  // cfx
   cfx_getBlockByEpochNumber: 0,
   cfx_epochNumber: 0,
   cfx_getBlocksByEpoch: 0,

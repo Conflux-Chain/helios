@@ -4,9 +4,8 @@ import {
   base32UserAddress,
   base32Address,
   Uint,
-  epochRef,
-  zeroOrOne,
   Bytes,
+  epochRefNoMined,
 } from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_estimateGasAndCollateral'
@@ -35,7 +34,7 @@ export const schemas = {
       ['storageLimit', {optional: true}, Uint],
       ['epochHeight', {optional: true}, Uint],
     ],
-    [zeroOrOne, {doc: 'default to latest_state'}, epochRef],
+    epochRefNoMined,
   ],
 }
 

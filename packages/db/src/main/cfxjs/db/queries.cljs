@@ -274,6 +274,15 @@
        [?net :network/token ?token-id]]
      addr netId))
 
+(defn get-account-group-by-vault-type [type]
+  (->> (q '[:find [?g ...]
+            :in $ ?type
+            :where
+            [?g :accountGroup/vault ?v]
+            [?v :vault/type ?type]]
+          type)
+       (mapv #(e :accountGroup %))))
+
 (defn get-single-call-balance-params [{:keys [type allNetwork]}]
   (let [discover?            (= type "discover")
         refresh?             (= type "refresh")
@@ -523,7 +532,8 @@
               :getFromAddress                  get-from-address
               :queryhomePageAssets             home-page-assets
               :queryaddTokenList               get-add-token-list
-              :queryaccountListAssets          account-list-assets})
+              :queryaccountListAssets          account-list-assets
+              :getAccountGroupByVaultType      get-account-group-by-vault-type})
 
 (defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)

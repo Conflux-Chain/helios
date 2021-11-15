@@ -3,8 +3,7 @@ import {
   base32UserAddress,
   base32ContractAddress,
   Uint,
-  epochRef,
-  zeroOrOne,
+  epochRefNoMined,
 } from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_checkBalanceAgainstTransaction'
@@ -17,7 +16,7 @@ export const schemas = {
     Uint, // gas
     Uint, // gasPrice
     Uint, // storageLimit
-    [zeroOrOne, epochRef],
+    epochRefNoMined,
   ],
 }
 
