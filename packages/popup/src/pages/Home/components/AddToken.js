@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {useState, useRef} from 'react'
+import {useState, useRef, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useSWRConfig} from 'swr'
 import {SelectedOutlined, PlusOutlined} from '@fluent-wallet/component-icons'
@@ -22,6 +22,13 @@ const {
   WALLETDB_REFETCH_BALANCE,
 } = RPC_METHODS
 
+const isAddress = (value, isCfxChain) => {
+  return (
+    (isCfxChain && validateBase32Address(value)) ||
+    (!isCfxChain && isHexAddress(value))
+  )
+}
+
 function AddToken({onClose, onOpen}) {
   const {mutate} = useSWRConfig()
   const {t} = useTranslation()
@@ -31,8 +38,30 @@ function AddToken({onClose, onOpen}) {
   const inputValueRef = useRef()
   const {address} = useCurrentAccount()
   const isCfxChain = useNetworkTypeIsCfx()
-  const {added = [], others = []} = useDbAddTokenList()
-  const addTokenList = added.concat(others)
+  const dbData = useDbAddTokenList()
+
+  useEffect(() => {
+    if (dbData.added && dbData.others) {
+      const {added, others} = dbData
+      const addTokenList = added.concat(others)
+      if (searchContent === '') {
+        setNoTokenStatus(false)
+        return setTokenList([])
+      }
+
+      if (!isAddress(searchContent, isCfxChain)) {
+        const ret = addTokenList.filter(
+          token =>
+            token.symbol.toUpperCase().indexOf(searchContent.toUpperCase()) !==
+              -1 ||
+            token.name.toUpperCase().indexOf(searchContent.toUpperCase()) !==
+              -1,
+        )
+        setNoTokenStatus(!ret.length)
+        setTokenList([...ret])
+      }
+    }
+  }, [dbData, searchContent, isCfxChain])
 
   const getOther20Token = value => {
     request(WALLET_VALIDATE_20TOKEN, {
@@ -41,8 +70,8 @@ function AddToken({onClose, onOpen}) {
     }).then(({result}) => {
       if (inputValueRef.current === value && result) {
         if (result?.valid) {
-          console.log('result', result)
-          setTokenList([{...result, address: value}])
+          setNoTokenStatus(false)
+          return setTokenList([{...result, address: value}])
         }
         setNoTokenStatus(true)
       }
@@ -53,28 +82,11 @@ function AddToken({onClose, onOpen}) {
   const onChangeValue = value => {
     setSearchContent(value)
     inputValueRef.current = value
-    if (value === '') {
-      setNoTokenStatus(false)
-      return setTokenList([])
-    }
-
-    if (!validateBase32Address(value) && !isHexAddress(value)) {
-      const ret = addTokenList.filter(
-        token =>
-          token.symbol.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
-          token.name.toUpperCase().indexOf(value.toUpperCase()) !== -1,
-      )
-      !ret.length && setNoTokenStatus(true)
-      return setTokenList([...ret])
-    }
-
-    if (
-      (isCfxChain && validateBase32Address(value)) ||
-      (!isCfxChain && isHexAddress(value))
-    ) {
+    if (isAddress(value, isCfxChain)) {
       getOther20Token(value)
     }
   }
+
   const onAddToken = ({decimals, symbol, address, logoURI}) => {
     request(WALLET_WATCH_ASSET, {
       type: isCfxChain ? 'CRC20' : 'ERC20',
@@ -89,6 +101,9 @@ function AddToken({onClose, onOpen}) {
       if (result) {
         mutate([WALLETDB_REFETCH_BALANCE])
         mutate([WALLETDB_ADD_TOKEN_LIST])
+        if (address === searchContent && tokenList.length === 1) {
+          setTokenList([...tokenList.map(token => ({...token, added: true}))])
+        }
       }
     })
   }

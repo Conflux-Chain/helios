@@ -1,5 +1,7 @@
-import {PASSWORD_REG_EXP} from '../constants'
+import {PASSWORD_REG_EXP, RPC_METHODS} from '../constants'
 const globalThis = window ?? global
+const {WALLET_ZERO_ACCOUNT_GROUP, WALLET_IS_LOCKED, WALLET_GET_ACCOUNT_GROUP} =
+  RPC_METHODS
 
 export function request(...args) {
   const [method, params] = args
@@ -39,4 +41,13 @@ export function jsNumberForAddress(address) {
   const addr = address.slice(2, 10)
   const seed = parseInt(addr, 16)
   return seed
+}
+
+export function updateAddedNewAccount(mutate, noAccountBefore, groupType) {
+  if (noAccountBefore) {
+    mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+    mutate([WALLET_IS_LOCKED], false)
+  }
+  mutate([WALLET_GET_ACCOUNT_GROUP])
+  mutate([WALLET_GET_ACCOUNT_GROUP, groupType])
 }
