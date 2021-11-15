@@ -99,8 +99,9 @@ function AddToken({onClose, onOpen}) {
     }).then(({result}) => {
       // TODO:error
       if (result) {
-        mutate([WALLETDB_REFETCH_BALANCE])
-        mutate([WALLETDB_ADD_TOKEN_LIST])
+        mutate([WALLETDB_REFETCH_BALANCE]).then(() => {
+          mutate([WALLETDB_ADD_TOKEN_LIST])
+        })
         if (address === searchContent && tokenList.length === 1) {
           setTokenList([...tokenList.map(token => ({...token, added: true}))])
         }
