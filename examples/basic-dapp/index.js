@@ -3,6 +3,8 @@
 // https://github.com/Conflux-Chain/js-conflux-sdk#readme
 // eslint-disable-next-line import/no-unresolved
 // import {Conflux} from 'https://cdn.skypack.dev/js-conflux-sdk'
+import {iface} from '../../packages/browser-extension/build/popup/dist/@fluent-wallet/contract-abis/777.js'
+import {decode} from '../../packages/browser-extension/build/popup/dist/@fluent-wallet/base32-address/index.js'
 
 function getElement(id) {
   return document.getElementById(id)
@@ -21,6 +23,11 @@ function walletInitialized({chainId, networkId}) {
   // connect
   const connectButton = getElement('connect')
   const sendNativeTokenButton = getElement('send_native_token')
+  const approveButton = getElement('approve')
+  const transferFromButton = getElement('transfer_from')
+  const approveAccountInput = getElement('approve-account')
+  const transferFromAccountInput = getElement('from-account')
+
   const personalSignButton = getElement('personal_sign')
   const typedSignButton = getElement('typed_sign')
   const addNetworkButton = getElement('add_network')
@@ -38,6 +45,8 @@ function walletInitialized({chainId, networkId}) {
         getElement('address').innerHTML = res.result
         console.log('result', res.result)
         sendNativeTokenButton.disabled = false
+        approveButton.disabled = false
+        transferFromButton.disabled = false
         personalSignButton.disabled = false
         typedSignButton.disabled = false
         addNetworkButton.disabled = false
@@ -68,7 +77,66 @@ function walletInitialized({chainId, networkId}) {
         ).innerHTML = `txhash: ${res.result}`
       })
   }
-
+  // approve spender
+  approveButton.onclick = async () => {
+    try {
+      const {hexAddress} = decode(approveAccountInput.value)
+      const {
+        result: [connectedAddress],
+      } = await provider.request({method: 'cfx_accounts'})
+      const tx = {
+        from: connectedAddress,
+        // fc
+        to: 'cfxtest:achkx35n7vngfxgrm7akemk3ftzy47t61yk5nn270s',
+        gas: '0x5208',
+        gasPrice: '0x1',
+        data: iface.encodeFunctionData('approve', [
+          hexAddress,
+          '0x16345785d8a0000', // 1e18
+        ]),
+      }
+      provider
+        .request({method: 'cfx_sendTransaction', params: [tx]})
+        .then(res => {
+          if (res.error)
+            return console.error('error', res.error.message || res.error)
+          console.log('result', res.result)
+        })
+    } catch (err) {
+      console.log('err', err)
+    }
+  }
+  //transfer from
+  transferFromButton.onclick = async () => {
+    try {
+      const {
+        result: [connectedAddress],
+      } = await provider.request({method: 'cfx_accounts'})
+      const fromHexAddress = decode(transferFromAccountInput.value).hexAddress
+      const toHexAddress = decode(
+        'cfxtest:aak4wphw0a9pdcg704xj2ab17n6j9puwuj3d9yz0jx',
+      ).hexAddress
+      const tx = {
+        from: connectedAddress,
+        // fc
+        to: 'cfxtest:achkx35n7vngfxgrm7akemk3ftzy47t61yk5nn270s',
+        data: iface.encodeFunctionData('transferFrom', [
+          fromHexAddress,
+          toHexAddress,
+          '0xf4240', // 1000000
+        ]),
+      }
+      provider
+        .request({method: 'cfx_sendTransaction', params: [tx]})
+        .then(res => {
+          if (res.error)
+            return console.error('error', res.error.message || res.error)
+          console.log('result', res.result)
+        })
+    } catch (err) {
+      console.log('err', err)
+    }
+  }
   // personal sign
   personalSignButton.onclick = () => {
     provider
