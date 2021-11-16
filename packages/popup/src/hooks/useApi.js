@@ -228,7 +228,7 @@ export const useDbAddTokenList = () => {
       fallbackData: {},
     },
   )
-  useDbRefetchBalance({type: 'all'})
+  useDbRefetchBalance()
   return addTokenListData
 }
 
