@@ -58,6 +58,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
         _origin: undefined,
         _post: post,
       }).then(post)
+      //.then(res => (console.log(req, res), post(res)))
     },
   })
 
@@ -69,6 +70,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
         _inpage: true,
         _post: post,
       }).then(post)
+      // .then(res => (console.log(req, res), post(res)))
     },
   })
 
