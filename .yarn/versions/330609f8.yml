@@ -1,0 +1,38 @@
+releases:
+  "@fluent-wallet/cache-rpc": patch
+  "@fluent-wallet/cfx_call": patch
+  "@fluent-wallet/cfx_chain-id": patch
+  "@fluent-wallet/cfx_check-balance-against-transaction": patch
+  "@fluent-wallet/cfx_epoch-number": patch
+  "@fluent-wallet/cfx_gas-price": patch
+  "@fluent-wallet/cfx_get-accumulate-interest-rate": patch
+  "@fluent-wallet/cfx_get-admin": patch
+  "@fluent-wallet/cfx_get-balance": patch
+  "@fluent-wallet/cfx_get-best-block-hash": patch
+  "@fluent-wallet/cfx_get-block-by-epoch-number": patch
+  "@fluent-wallet/cfx_get-block-by-hash": patch
+  "@fluent-wallet/cfx_get-blocks-by-epoch": patch
+  "@fluent-wallet/cfx_get-collateral-for-storage": patch
+  "@fluent-wallet/cfx_get-next-nonce": patch
+  "@fluent-wallet/cfx_get-staking-balance": patch
+  "@fluent-wallet/cfx_get-status": patch
+  "@fluent-wallet/cfx_net-version": patch
+  "@fluent-wallet/eth_block-number": patch
+  "@fluent-wallet/eth_call": patch
+  "@fluent-wallet/eth_get-balance": patch
+  "@fluent-wallet/eth_get-code": patch
+  "@fluent-wallet/eth_get-transaction-count": patch
+  "@fluent-wallet/rpc-engine": patch
+  "@fluent-wallet/test-helpers": patch
+  "@fluent-wallet/wallet_add-vault": patch
+  "@fluent-wallet/wallet_update-token-list": patch
+  helios-background: patch
+
+declined:
+  - browser-extension
+  - "@fluent-wallet/doc-rpc-parameter"
+  - "@fluent-wallet/doc-use-rpc"
+  - "@fluent-wallet/doc-use-spec"
+  - "@fluent-wallet/jest-helper"
+  - helios-popup
+  - doc
