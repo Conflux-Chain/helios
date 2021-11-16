@@ -11,6 +11,6 @@
 }
 
 .radio-customize-prefix-cls-checked .radio-customize-prefix-cls-inner {
-  @apply border-primary
+  @apply border-primary;
   @apply after:opacity-100;
 }

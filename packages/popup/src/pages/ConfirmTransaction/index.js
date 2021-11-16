@@ -53,7 +53,6 @@ function ConfirmTransition() {
     nonce,
     clearSendTransactionParams,
   } = useGlobalStore()
-  console.log(gasPrice, gasLimit)
   const params = {
     ...useTxParams(),
     gasPrice: formatDecimalToHex(gasPrice),
@@ -126,7 +125,7 @@ function ConfirmTransition() {
     setSendingTransaction(true)
     params.gas = params.gasLimit
     delete params.gasLimit
-    console.log('params', params)
+    console.log('sendParams', params)
     request(SEND_TRANSACTION, [params]).then(({error, result}) => {
       setSendingTransaction(false)
       if (error) {

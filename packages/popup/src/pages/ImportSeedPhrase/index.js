@@ -8,7 +8,7 @@ import {request} from '../../utils'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
-import {usePkAccountGroup} from '../../hooks/useApi'
+import {useHdAccountGroup} from '../../hooks/useApi'
 import {useSWRConfig} from 'swr'
 const {
   WALLET_GET_ACCOUNT_GROUP,
@@ -26,24 +26,24 @@ function ImportSeedPhrase() {
   const {mutate} = useSWRConfig()
 
   const [name, setName] = useState('')
-  const [keygen, setKeygen] = useState('')
-  const [keygenErrorMessage, setKeygenErrorMessage] = useState('')
-  const [keygenNamePlaceholder, setKeygenNamePlaceholder] = useState('')
+  const [mnemonic, setMnemonic] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
   const [creatingAccount, setCreatingAccount] = useState(false)
   const createdPassword = useGlobalStore(state => state.createdPassword)
 
-  const keygenGroup = usePkAccountGroup()
+  const hdGroup = useHdAccountGroup()
 
   useCreatedPasswordGuard()
   useEffect(() => {
-    setKeygenNamePlaceholder(`Seed-${keygenGroup.length + 1}`)
-  }, [keygenGroup])
+    setAccountNamePlaceholder(`Seed-${hdGroup.length + 1}`)
+  }, [hdGroup])
 
   const onChangeName = e => {
     setName(e.target.value)
   }
   const onChangeKeygen = e => {
-    setKeygen(e.target.value)
+    setMnemonic(e.target.value)
   }
   const dispatchMutate = () => {
     mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
@@ -53,20 +53,20 @@ function ImportSeedPhrase() {
   }
 
   const onCreate = () => {
-    if (!keygen) {
+    if (!mnemonic) {
       // TODO: replace error msg
-      return setKeygenErrorMessage('Required')
+      return setErrorMessage('Required')
     }
 
     if (!creatingAccount) {
       setCreatingAccount(true)
       request(WALLET_VALIDATE_MNEMONIC, {
-        mnemonic: keygen,
+        mnemonic,
       }).then(({result}) => {
         if (result?.valid) {
           let params = {
-            nickname: name || keygenNamePlaceholder,
-            mnemonic: keygen,
+            nickname: name || accountNamePlaceholder,
+            mnemonic,
           }
           if (createdPassword) {
             params['password'] = createdPassword
@@ -79,13 +79,13 @@ function ImportSeedPhrase() {
                 history.push(HOME)
               }
               if (error) {
-                setKeygenErrorMessage(error.message.split('\n')[0])
+                setErrorMessage(error.message.split('\n')[0])
               }
             },
           )
         }
         // TODO: replace error msg
-        setKeygenErrorMessage('Invalid or inner error!')
+        setErrorMessage('Invalid or inner error!')
         setCreatingAccount(false)
       })
     }
@@ -103,21 +103,21 @@ function ImportSeedPhrase() {
             <Input
               onChange={onChangeName}
               width="w-full"
-              placeholder={keygenNamePlaceholder}
+              placeholder={accountNamePlaceholder}
               maxLength="20"
               value={name}
             />
           </CompWithLabel>
           <CompWithLabel label={t('seedPhrase')}>
             <Input
-              errorMessage={keygenErrorMessage}
+              errorMessage={errorMessage}
               elementType="textarea"
               placeholder={t(`seedImportPlaceholder`)}
               onChange={onChangeKeygen}
               width="w-full"
               className="resize-none"
               textareaSize="h-40"
-              value={keygen}
+              value={mnemonic}
             />
           </CompWithLabel>
         </section>
@@ -126,7 +126,7 @@ function ImportSeedPhrase() {
             id="importSeedPhraseBtn"
             className="w-70  mx-auto"
             onClick={onCreate}
-            disabled={!name && !keygenNamePlaceholder}
+            disabled={!name && !accountNamePlaceholder}
           >
             {t('import')}
           </Button>
