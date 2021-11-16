@@ -8,7 +8,7 @@ import {request, updateAddedNewAccount} from '../../utils'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
-import {usePkAccountGroup} from '../../hooks/useApi'
+import {useHdAccountGroup} from '../../hooks/useApi'
 import {useSWRConfig} from 'swr'
 const {ACCOUNT_GROUP_TYPE, WALLET_VALIDATE_MNEMONIC, WALLET_IMPORT_MNEMONIC} =
   RPC_METHODS
@@ -26,7 +26,7 @@ function ImportSeedPhrase() {
   const [creatingAccount, setCreatingAccount] = useState(false)
   const {createdPassword, setCreatedPassword} = useGlobalStore()
 
-  const keygenGroup = usePkAccountGroup()
+  const keygenGroup = useHdAccountGroup()
 
   useCreatedPasswordGuard()
   useEffect(() => {
@@ -69,6 +69,9 @@ function ImportSeedPhrase() {
                 )
                 createdPassword && setCreatedPassword('')
                 history.push(HOME)
+              }
+              if (typeof error?.data?.duplicateAccountGroupId === 'number') {
+                return setKeygenErrorMessage(t('duplicateSeedError'))
               }
               if (error) {
                 setKeygenErrorMessage(error.message.split('\n')[0])
