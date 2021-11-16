@@ -2,10 +2,100 @@
 // more info about js-conflux-sdk
 // https://github.com/Conflux-Chain/js-conflux-sdk#readme
 // eslint-disable-next-line import/no-unresolved
-// import {Conflux} from 'https://cdn.skypack.dev/js-conflux-sdk'
-import {iface} from '../../packages/browser-extension/build/popup/dist/@fluent-wallet/contract-abis/777.js'
-import {decode} from '../../packages/browser-extension/build/popup/dist/@fluent-wallet/base32-address/index.js'
+import {Conflux} from 'https://cdn.skypack.dev/js-conflux-sdk'
+const exampleContract = new Conflux().Contract({
+  abi: [
+    {
+      inputs: [{internalType: 'address', name: 'tokenHolder', type: 'address'}],
+      name: 'balanceOf',
+      outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'decimals',
+      outputs: [{internalType: 'uint8', name: '', type: 'uint8'}],
+      stateMutability: 'pure',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'name',
+      outputs: [{internalType: 'string', name: '', type: 'string'}],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'symbol',
+      outputs: [{internalType: 'string', name: '', type: 'string'}],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {internalType: 'address', name: 'recipient', type: 'address'},
+        {internalType: 'uint256', name: 'amount', type: 'uint256'},
+      ],
+      name: 'transfer',
+      outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {internalType: 'address', name: 'holder', type: 'address'},
+        {internalType: 'address', name: 'spender', type: 'address'},
+      ],
+      name: 'allowance',
+      outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {internalType: 'address', name: 'spender', type: 'address'},
+        {internalType: 'uint256', name: 'value', type: 'uint256'},
+      ],
+      name: 'approve',
+      outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'granularity',
+      outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {internalType: 'address', name: 'recipient', type: 'address'},
+        {internalType: 'uint256', name: 'amount', type: 'uint256'},
+        {internalType: 'bytes', name: 'data', type: 'bytes'},
+      ],
+      name: 'send',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {internalType: 'address', name: 'holder', type: 'address'},
+        {internalType: 'address', name: 'recipient', type: 'address'},
+        {internalType: 'uint256', name: 'amount', type: 'uint256'},
+      ],
+      name: 'transferFrom',
+      outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ],
+})
 
+const fcAddress = 'cfxtest:achkx35n7vngfxgrm7akemk3ftzy47t61yk5nn270s'
 function getElement(id) {
   return document.getElementById(id)
 }
@@ -80,21 +170,18 @@ function walletInitialized({chainId, networkId}) {
   // approve spender
   approveButton.onclick = async () => {
     try {
-      const {hexAddress} = decode(approveAccountInput.value)
       const {
         result: [connectedAddress],
       } = await provider.request({method: 'cfx_accounts'})
       const tx = {
         from: connectedAddress,
-        // fc
-        to: 'cfxtest:achkx35n7vngfxgrm7akemk3ftzy47t61yk5nn270s',
-        gas: '0x5208',
-        gasPrice: '0x1',
-        data: iface.encodeFunctionData('approve', [
-          hexAddress,
-          '0x16345785d8a0000', // 1e18
-        ]),
+        to: fcAddress,
+        data: exampleContract.approve(
+          approveAccountInput.value,
+          100000000000000000,
+        ).data,
       }
+
       provider
         .request({method: 'cfx_sendTransaction', params: [tx]})
         .then(res => {
@@ -112,19 +199,14 @@ function walletInitialized({chainId, networkId}) {
       const {
         result: [connectedAddress],
       } = await provider.request({method: 'cfx_accounts'})
-      const fromHexAddress = decode(transferFromAccountInput.value).hexAddress
-      const toHexAddress = decode(
-        'cfxtest:aak4wphw0a9pdcg704xj2ab17n6j9puwuj3d9yz0jx',
-      ).hexAddress
       const tx = {
         from: connectedAddress,
-        // fc
-        to: 'cfxtest:achkx35n7vngfxgrm7akemk3ftzy47t61yk5nn270s',
-        data: iface.encodeFunctionData('transferFrom', [
-          fromHexAddress,
-          toHexAddress,
-          '0xf4240', // 1000000
-        ]),
+        to: fcAddress,
+        data: exampleContract.transferFrom(
+          transferFromAccountInput.value,
+          'cfxtest:aak4wphw0a9pdcg704xj2ab17n6j9puwuj3d9yz0jx',
+          1000000,
+        ).data,
       }
       provider
         .request({method: 'cfx_sendTransaction', params: [tx]})
