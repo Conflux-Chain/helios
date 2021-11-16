@@ -1,0 +1,6 @@
+releases:
+  "@fluent-wallet/data-format": patch
+  "@fluent-wallet/estimate-tx": patch
+
+declined:
+  - helios-popup
