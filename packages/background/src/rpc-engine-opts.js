@@ -3,6 +3,26 @@
  * @name rpc-engine-opts.js
  */
 
+import * as cfxGetVoteList from '@fluent-wallet/cfx_get-vote-list'
+import * as cfxGetTransactionReceipt from '@fluent-wallet/cfx_get-transaction-receipt'
+import * as cfxGetTransactionByHash from '@fluent-wallet/cfx_get-transaction-by-hash'
+import * as cfxGetStorageAt from '@fluent-wallet/cfx_get-storage-at'
+import * as cfxGetStorageRoot from '@fluent-wallet/cfx_get-storage-root'
+import * as cfxGetStakingBalance from '@fluent-wallet/cfx_get-staking-balance'
+import * as cfxGetSponsorInfo from '@fluent-wallet/cfx_get-sponsor-info'
+import * as cfxGetSkippedBlocksByEpoch from '@fluent-wallet/cfx_get-skipped-blocks-by-epoch'
+import * as cfxGetLogs from '@fluent-wallet/cfx_get-logs'
+import * as cfxGetInterestRate from '@fluent-wallet/cfx_get-interest-rate'
+import * as cfxGetConfirmationRiskByHash from '@fluent-wallet/cfx_get-confirmation-risk-by-hash'
+import * as cfxGetCollateralForStorage from '@fluent-wallet/cfx_get-collateral-for-storage'
+import * as cfxGetBlocksByEpoch from '@fluent-wallet/cfx_get-blocks-by-epoch'
+import * as cfxGetBlockRewardInfo from '@fluent-wallet/cfx_get-block-reward-info'
+import * as cfxGetBlockByHashWithPivotAssumption from '@fluent-wallet/cfx_get-block-by-hash-with-pivot-assumption'
+import * as cfxGetBlockByHash from '@fluent-wallet/cfx_get-block-by-hash'
+import * as cfxGetBestBlockHash from '@fluent-wallet/cfx_get-best-block-hash'
+import * as cfxGetAdmin from '@fluent-wallet/cfx_get-admin'
+import * as cfxGetAccumulateInterestRate from '@fluent-wallet/cfx_get-accumulate-interest-rate'
+import * as cfxClientVersion from '@fluent-wallet/cfx_client-version'
 import * as cfxAccounts from '@fluent-wallet/cfx_accounts'
 import * as cfxCall from '@fluent-wallet/cfx_call'
 import * as cfxChainId from '@fluent-wallet/cfx_chain-id'
@@ -181,6 +201,26 @@ export const rpcEngineOpts = {
     unwalletWatchAsset,
 
     // cfx
+    cfxClientVersion,
+    cfxGetAccumulateInterestRate,
+    cfxGetBestBlockHash,
+    cfxGetBlockByHash,
+    cfxGetBlockByHashWithPivotAssumption,
+    cfxGetBlockRewardInfo,
+    cfxGetBlocksByEpoch,
+    cfxGetCollateralForStorage,
+    cfxGetConfirmationRiskByHash,
+    cfxGetInterestRate,
+    cfxGetLogs,
+    cfxGetSkippedBlocksByEpoch,
+    cfxGetSponsorInfo,
+    cfxGetStakingBalance,
+    cfxGetStorageAt,
+    cfxGetTransactionByHash,
+    cfxGetTransactionReceipt,
+    cfxGetVoteList,
+    cfxGetStorageRoot,
+    cfxGetAdmin,
     cfxEpochNumber,
     cfxGetAccount,
     cfxGetCode,

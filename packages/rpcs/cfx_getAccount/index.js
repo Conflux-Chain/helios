@@ -1,9 +1,9 @@
-import {cat, zeroOrOne, epochRef, base32Address} from '@fluent-wallet/spec'
+import {cat, base32Address, epochRefNoMined} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_getAccount'
 
 export const schemas = {
-  input: [cat, base32Address, [zeroOrOne, epochRef]],
+  input: [cat, base32Address, epochRefNoMined],
 }
 
 export const cache = {

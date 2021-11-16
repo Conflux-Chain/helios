@@ -4,10 +4,10 @@ import {
   Bytes,
   cat,
   chainId,
+  zeroOrOne,
   epochRef,
   map,
   Uint,
-  zeroOrOne,
 } from '@fluent-wallet/spec'
 import {cfxSignTransaction} from '@fluent-wallet/signature'
 

@@ -45,7 +45,7 @@ export default function ({
   const TagDefinitionSchema = [
     map,
     {closed: true},
-    ['name', [and, [stringp, {min: 1, max: 20}], [regexp, '^[ \\w]+$']]],
+    ['name', [and, [stringp, {min: 1, max: 40}], [regexp, '^[ \\w]+$']]],
     [
       'description',
       [and, [stringp, {min: 1, max: 200}], [regexp, '^[ \\w\\.,]+$']],

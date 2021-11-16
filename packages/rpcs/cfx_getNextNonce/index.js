@@ -1,9 +1,9 @@
-import {base32UserAddress, cat, epochRef} from '@fluent-wallet/spec'
+import {base32UserAddress, cat, epochRefNoMined} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_getNextNonce'
 
 export const schemas = {
-  input: [cat, base32UserAddress, epochRef],
+  input: [cat, base32UserAddress, epochRefNoMined],
 }
 
 export const permissions = {
