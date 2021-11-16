@@ -72,6 +72,9 @@ function ImportPrivateKey() {
                   createdPassword && setCreatedPassword('')
                   history.push(HOME)
                 }
+                if (typeof error?.data?.duplicateAccountGroupId === 'number') {
+                  return setKeygenErrorMessage(t('duplicatePkError'))
+                }
                 if (error) {
                   setKeygenErrorMessage(error.message.split('\n')[0])
                 }

@@ -7,8 +7,9 @@ import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
 import {SlideCard} from '../../../components'
 import {WrapIcon, SearchToken, TokenItem} from '../../../components'
-import {RPC_METHODS} from '../../../constants'
+import {RPC_METHODS, DEFAULT_TOKEN_URL} from '../../../constants'
 import {request} from '../../../utils'
+
 import {
   useNetworkTypeIsCfx,
   useCurrentAccount,
@@ -94,7 +95,7 @@ function AddToken({onClose, onOpen}) {
         address,
         symbol,
         decimals,
-        image: logoURI,
+        image: logoURI || DEFAULT_TOKEN_URL,
       },
     }).then(({result}) => {
       // TODO:error
