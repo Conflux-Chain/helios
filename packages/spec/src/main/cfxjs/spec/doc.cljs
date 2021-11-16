@@ -139,16 +139,24 @@
 (defmethod -schema-doc-generator ::m/val [schema options]
   (-schema-doc-generator (first (m/children schema)) options))
 
-(defn gen [js-schema options]
-  (let [schema (js->clj js-schema :keywordize-keys true)
-        options (js->clj options :keywordize-keys true)
-        options (assoc options :doc/gen-no-schema (get options :noSchema))
-        options (dissoc options :noSchema)
-        rst (clj->js (-schema-doc-generator schema options))
-        rst (if (get options :doc/gen-no-schema)
-              rst
-              (oset! rst "!value.!schema" js-schema))]
-    rst))
+(defn gen
+  ([js-schema] (gen js-schema #js {} "unknown-name"))
+  ([js-schema options] (gen js-schema (or options #js {}) "unknown-name"))
+  ([js-schema options gen-name]
+   (try
+     (let [schema  (js->clj js-schema :keywordize-keys true)
+           options (js->clj options :keywordize-keys true)
+           options (assoc options :doc/gen-no-schema (get options :noSchema))
+           options (dissoc options :noSchema)
+           rst     (clj->js (-schema-doc-generator schema options))
+           rst     (if (get options :doc/gen-no-schema)
+                     rst
+                     (oset! rst "!value.!schema" js-schema))]
+       rst)
+     (catch js/Error err
+       (when (.-message err)
+         (oset! err "message" (str "Error generating doc with spec in [" gen-name "]\n" (.-message err))))
+       (throw err)))))
 
 (def export-explain explain)
 (def export-validate validate)

@@ -64,7 +64,6 @@ function CurrentSeed() {
     setAccountNamePlaceholder(`Seed-1-${hdGroup[0]?.account?.length + 1}`)
   }, [hdGroup])
   const onClickGroup = index => {
-    console.log(index)
     setSelectedGroupIdx(index)
     setAccountNamePlaceholder(
       `Seed-${index + 1}-${hdGroup[index].account.length + 1}`,

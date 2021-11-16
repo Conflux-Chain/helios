@@ -37,8 +37,8 @@ function EditGasFee() {
 
   const params = {
     ...useTxParams(),
-    gasPrice: formatDecimalToHex(gasPrice),
-    gasLimit: formatDecimalToHex(gasLimit),
+    gasPrice: formatDecimalToHex(inputGasPrice),
+    gasLimit: formatDecimalToHex(inputGasLimit),
   }
   if (nonce) params.nonce = formatDecimalToHex(nonce)
   console.log('params', params)
@@ -57,18 +57,22 @@ function EditGasFee() {
     setInputNonce(nonce)
   }, [gasLimit, gasPrice, nonce])
 
+  console.log(inputGasPrice, inputGasLimit, inputNonce)
   const gasFee = networkTypeIsCfx
-    ? new Big(fromDripToCfx(gasPrice)).times(gasLimit).toString(10)
-    : new Big(convertDecimal(gasPrice, 'divide', GWEI_DECIMALS))
-        .times(gasLimit)
+    ? new Big(fromDripToCfx(inputGasPrice || '0'))
+        .times(inputGasLimit || '0')
         .toString(10)
+    : new Big(convertDecimal(inputGasPrice || '0', 'divide', GWEI_DECIMALS))
+        .times(inputGasLimit || '0')
+        .toString(10)
+  console.log(gasFee)
 
   const storageFee = convertDataToValue(storageFeeDrip || '0', CFX_DECIMALS)
   const txFee = new Big(gasFee).plus(storageFee).toString(10)
 
   useEffect(() => {
     setGasPriceErr(
-      new Big(inputGasPrice).gt(0)
+      new Big(inputGasPrice || '0').gt(0)
         ? ''
         : t('gasPriceErrMSg', {
             unit: networkTypeIsCfx ? t('drip') : t('gWei'),
@@ -78,7 +82,7 @@ function EditGasFee() {
 
   useEffect(() => {
     setGasLimitErr(
-      new Big(inputGasLimit).gte(formatHexToDecimal(gasUsed || '0'))
+      new Big(inputGasLimit || '0').gte(formatHexToDecimal(gasUsed || '1'))
         ? ''
         : t('gasLimitErrMsg', {
             gasUsed: formatHexToDecimal(gasUsed || '0'),
@@ -127,7 +131,7 @@ function EditGasFee() {
               <NumberInput
                 size="small"
                 width="w-32"
-                value={gasPrice}
+                value={inputGasPrice}
                 errorMessage={gasPriceErr}
                 errorClassName="absolute right-0 -bottom-6"
                 onChange={e => setInputGasPrice(e.target.value)}

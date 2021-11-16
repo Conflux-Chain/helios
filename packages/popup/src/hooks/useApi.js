@@ -176,7 +176,7 @@ export const useBalance = (
 ) => {
   const {data: balance} = useRPC(
     address && isNumber(networkId) && isString(tokenContractAddress)
-      ? [WALLET_GET_BALANCE, address, networkId]
+      ? [WALLET_GET_BALANCE, address, networkId.toString, tokenContractAddress]
       : null,
     {
       users: [address],
@@ -212,7 +212,7 @@ export const useDbHomeAssets = () => {
   const {data: homeAssets} = useRPC([WALLETDB_HOME_PAGE_ASSETS], undefined, {
     fallbackData: {},
   })
-  useDbRefetchBalance()
+  useDbRefetchBalance({type: 'all'})
   return homeAssets
 }
 

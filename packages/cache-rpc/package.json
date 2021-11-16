@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/cache-rpc",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "dependencies": {
     "@fluent-wallet/checks": "workspace:packages/checks",
     "@fluent-wallet/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref",

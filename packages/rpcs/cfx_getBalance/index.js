@@ -1,9 +1,9 @@
-import {cat, base32Address, epochRef} from '@fluent-wallet/spec'
+import {cat, base32Address, epochRefNoMined} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_getBalance'
 
 export const schemas = {
-  input: [cat, base32Address, epochRef],
+  input: [cat, base32Address, epochRefNoMined],
 }
 
 export const permissions = {

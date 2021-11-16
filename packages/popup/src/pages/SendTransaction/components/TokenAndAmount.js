@@ -69,6 +69,8 @@ function TokenAndAmount({
   const {symbol, icon, decimals, address: selectedTokenAddress} = selectedToken
   console.log('select', decimals)
   const tokenAddress = isNativeToken ? '0x0' : selectedTokenAddress
+  console.log(address, networkId, tokenAddress)
+  console.log('balanceData', useBalance(address, networkId, tokenAddress))
   const balance =
     useBalance(address, networkId, tokenAddress)?.[address]?.[tokenAddress] ||
     '0x0'

@@ -47,20 +47,14 @@ function SendTransaction() {
   const [balanceError, setBalanceError] = useState('')
   const nativeToken = ticker || {}
   const isNativeToken = !tokenAddress
-  console.log('ticker', ticker)
-  console.log('nativeToken', nativeToken)
-  console.log('sendToken', sendToken)
-  console.log('toAddress', toAddress)
   const params = useTxParams()
   const estimateRst = useEstimateTx(params) || {}
-  console.log('estimateRst = ', estimateRst)
   const {gasPrice, gasLimit, nonce, nativeMaxDrip} = estimateRst
   useEffect(() => {
     setGasPrice(formatHexToDecimal(gasPrice))
     setGasLimit(formatHexToDecimal(gasLimit))
     setNonce(formatHexToDecimal(nonce))
   }, [gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce])
-  console.log('nativeMaxDrip', nativeMaxDrip)
   const errorMessage = useCheckBalanceAndGas(estimateRst)
   useEffect(() => {
     setBalanceError(errorMessage)
@@ -69,15 +63,12 @@ function SendTransaction() {
   // TODO: get from scan
   const hasNoTxn = true
   const onChangeToken = token => {
-    console.log(token)
     setSendToken(token)
   }
   const onChangeAmount = amount => {
-    console.log(amount)
     setSendAmount(amount)
   }
   const onChangeAddress = address => {
-    console.log('address', address)
     setToAddress(address)
     if (!validateAddress(address, networkTypeIsCfx, netId)) {
       if (networkTypeIsCfx) {

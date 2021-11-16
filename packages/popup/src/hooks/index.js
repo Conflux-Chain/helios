@@ -122,22 +122,21 @@ export const useTxParams = () => {
   const {address} = useCurrentAccount()
   const {netId} = useCurrentNetwork()
   let to, data
-  console.log('sendAmout', sendAmount)
 
   const isNativeToken = !tokenAddress
   const decimals = isNativeToken ? COMMON_DECIMALS : tokenDecimals
-  const sendData = convertValueToData(sendAmount, decimals)
-  console.log('sendData', sendData)
-  console.log('decimals', decimals)
+  const sendData = convertValueToData(sendAmount, decimals) || '0x0'
   const isValid = validateAddress(toAddress, networkTypeIsCfx, netId)
   if (isNativeToken && isValid) {
     to = toAddress
   } else if (tokenAddress) {
-    to = tokenAddress
-    data = iface.encodeFunctionData('transfer', [
-      decode(to).hexAddress,
-      sendData,
-    ])
+    to = toAddress ? tokenAddress : ''
+    data = toAddress
+      ? iface.encodeFunctionData('transfer', [
+          decode(toAddress).hexAddress,
+          sendData,
+        ])
+      : ''
   }
   const params = {
     from: address,
@@ -145,7 +144,6 @@ export const useTxParams = () => {
   }
   if (isNativeToken) params['value'] = sendData
   if (data) params['data'] = data
-  console.log('params', params)
   return params
 }
 
