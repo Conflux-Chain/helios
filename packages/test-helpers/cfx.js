@@ -11,6 +11,15 @@ const DEFAULT_PORT = 12537
 let cfx
 
 const sendCFX = async ({to, balance} = {}, url) => {
+  cfx =
+    cfx ||
+    new Conflux({
+      url: url || `http://localhost:${DEFAULT_PORT}`,
+      chainId: CHAINID,
+      networkId: NETWORK_ID,
+    })
+  GENESIS_ACCOUNT = GENESIS_ACCOUNT || cfx.wallet.addPrivateKey(GENESIS_PRI_KEY)
+
   const txParams = {
     from: GENESIS_ACCOUNT.address,
     value: balance || 0,

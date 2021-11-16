@@ -11,6 +11,11 @@ export const permissions = {
   external: ['popup', 'inpage'],
 }
 
+export const cache = {
+  type: 'block',
+  key: ({params}) => `${NAME}${params[0]}`,
+}
+
 export const main = async ({f, params}) => {
   return await f(params)
 }

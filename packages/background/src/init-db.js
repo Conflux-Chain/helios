@@ -84,8 +84,8 @@ function initNetwork(d) {
         chainId: CFX_MAINNET_CHAINID,
         netId: CFX_MAINNET_NETID,
         selected: true,
+        cacheTime: 500,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
-
         ticker: {
           name: CFX_MAINNET_CURRENCY_NAME,
           symbol: CFX_MAINNET_CURRENCY_SYMBOL,
@@ -109,7 +109,7 @@ function initNetwork(d) {
         chainId: CFX_TESTNET_CHAINID,
         netId: CFX_TESTNET_NETID,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
-
+        cacheTime: 500,
         ticker: {
           name: CFX_TESTNET_CURRENCY_NAME,
           symbol: CFX_TESTNET_CURRENCY_SYMBOL,
@@ -133,7 +133,7 @@ function initNetwork(d) {
         chainId: ETH_MAINNET_CHAINID,
         netId: ETH_MAINNET_NETID,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg',
-
+        cacheTime: 7500,
         ticker: {
           name: ETH_MAINNET_CURRENCY_NAME,
           symbol: ETH_MAINNET_CURRENCY_SYMBOL,
@@ -157,6 +157,7 @@ function initNetwork(d) {
         chainId: ETH_ROPSTEN_CHAINID,
         netId: ETH_ROPSTEN_NETID,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg',
+        cacheTime: 7500,
 
         ticker: {
           name: ETH_ROPSTEN_CURRENCY_NAME,
@@ -180,6 +181,7 @@ function initNetwork(d) {
         chainId: BSC_MAINNET_CHAINID,
         netId: BSC_MAINNET_NETID,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/BSC.svg',
+        cacheTime: 2500,
 
         ticker: {
           name: BSC_MAINNET_CURRENCY_NAME,
@@ -204,6 +206,7 @@ function initNetwork(d) {
         chainId: BSC_TESTNET_CHAINID,
         netId: BSC_TESTNET_NETID,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/BSC.svg',
+        cacheTime: 2500,
 
         ticker: {
           name: BSC_TESTNET_CURRENCY_NAME,
