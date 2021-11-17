@@ -6,6 +6,7 @@ import {
   Uint,
   Bytes,
   epochRefNoMined,
+  chainId,
 } from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_estimateGasAndCollateral'
@@ -26,6 +27,7 @@ export const schemas = {
         {optional: true, doc: 'default to null for contract crateion'},
         base32Address,
       ],
+      ['chainId', {optional: true}, chainId],
       ['gas', {optional: true, doc: 'default to 0x1dcd6500(500000000)'}, Uint],
       ['gasPrice', {optional: true, doc: 'default to 0x0'}, Uint],
       ['value', {optional: true, doc: 'default to 0x0'}, Uint],

@@ -1,2 +1,9 @@
+releases:
+  "@fluent-wallet/cfx_estimate-gas-and-collateral": patch
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/cfx_sign-transaction": patch
+
 declined:
+  - helios-background
   - "@fluent-wallet/jazz-icon"
+  - "@fluent-wallet/rpc-engine"
