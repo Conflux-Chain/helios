@@ -9,17 +9,39 @@ import {
   GWEI_DECIMALS,
 } from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
+import {
+  formatHexToDecimal,
+  convertDataToValue,
+  COMMON_DECIMALS,
+} from '@fluent-wallet/data-format'
 import {CompWithLabel, DisplayBalance, CustomTag} from '../components'
-import {useNetworkTypeIsCfx} from '../hooks/useApi'
+import {useNetworkTypeIsCfx, usePendingAuthReq} from '../hooks/useApi'
 import useGlobalStore from '../stores'
 import {ROUTES} from '../constants'
 const {EDIT_GAS_FEE} = ROUTES
 
-function GasFee({storageFee, willPayCollateral, willPayTxFee}) {
+function GasFee({isDapp, estimateRst}) {
+  console.log('estimateRst', estimateRst)
+  const {gasPrice: inputGasPrice, gasLimit: inputGasLimit} = useGlobalStore()
   const {t} = useTranslation()
   const history = useHistory()
-  const {gasLimit, gasPrice} = useGlobalStore()
+  const pendingAuthReq = usePendingAuthReq()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const {
+    willPayCollateral,
+    willPayTxFee,
+    gasLimit: estimateGasLimit,
+    gasPrice: estimateGasPrice,
+    storageFeeDrip,
+  } = estimateRst
+  const sendParams = pendingAuthReq?.[0]?.req?.params[0]
+  const gasPrice = !isDapp
+    ? inputGasPrice
+    : formatHexToDecimal(sendParams?.gasPrice || estimateGasPrice) || '1'
+  const gasLimit = !isDapp
+    ? inputGasLimit
+    : formatHexToDecimal(sendParams?.gas || estimateGasLimit) || '21000'
+  const storageFee = convertDataToValue(storageFeeDrip || '0', COMMON_DECIMALS)
   const isBePayed = (!willPayCollateral || !willPayTxFee) && storageFee
   const isBeAllPayed = !willPayCollateral && !willPayTxFee
   console.log(gasPrice, gasLimit, storageFee)
@@ -84,8 +106,8 @@ function GasFee({storageFee, willPayCollateral, willPayTxFee}) {
 }
 
 GasFee.propTypes = {
-  storageFee: PropTypes.string,
-  willPayCollateral: PropTypes.bool,
+  estimateRst: PropTypes.obj,
+  isDapp: PropTypes.bool,
   willPayTxFee: PropTypes.bool,
 }
 

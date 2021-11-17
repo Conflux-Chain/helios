@@ -19,6 +19,7 @@ const {
   WALLETDB_REFETCH_BALANCE,
   WALLETDB_ADD_TOKEN_LIST,
   WALLETDB_ACCOUNT_LIST_ASSETS,
+  WALLET_VALIDATE_20TOKEN,
 } = RPC_METHODS
 
 export const useCurrentAccount = () => {
@@ -198,6 +199,7 @@ export const useCurrentNativeToken = () => {
 }
 
 export const useAddressType = address => {
+  console.log('address', address)
   const {
     data: {type},
   } = useRPC(
@@ -242,4 +244,15 @@ export const useDbAccountListAssets = () => {
   )
   useDbRefetchBalance()
   return accountListAssets
+}
+
+export const useValid20Token = address => {
+  const {data: token} = useRPC(
+    [WALLET_VALIDATE_20TOKEN, address],
+    {tokenAddress: address},
+    {
+      fallbackData: {},
+    },
+  )
+  return token
 }

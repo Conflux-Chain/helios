@@ -25,6 +25,7 @@ import {ROUTES} from '../../constants'
 const {HOME, CONFIRM_TRANSACTION} = ROUTES
 
 function SendTransaction() {
+  console.log('render')
   const {t} = useTranslation()
   const history = useHistory()
   const {
@@ -55,7 +56,13 @@ function SendTransaction() {
     setGasLimit(formatHexToDecimal(gasLimit))
     setNonce(formatHexToDecimal(nonce))
   }, [gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce])
-  const errorMessage = useCheckBalanceAndGas(estimateRst)
+  const errorMessage = useCheckBalanceAndGas(
+    estimateRst,
+    sendAmount,
+    sendToken,
+    true,
+    address,
+  )
   useEffect(() => {
     setBalanceError(errorMessage)
   }, [errorMessage])

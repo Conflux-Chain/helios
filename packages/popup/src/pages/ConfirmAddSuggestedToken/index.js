@@ -45,7 +45,7 @@ function ConfirmAddSuggestedToken() {
         </div>
       </header>
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
-        <main className=" pt-4 px-3 ">
+        <main className="pt-4 px-3">
           <p className="text-sm text-gray-80 font-medium pb-2 ml-1">
             {t('confirmAddSuggestedToken')}
           </p>

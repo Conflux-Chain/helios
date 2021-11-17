@@ -74,7 +74,11 @@ function DappFooter({
         break
     }
 
-    request(req.method, {authReqId: eid, ...params}).then(({result}) => {
+    console.log(req.method, eid, params)
+
+    request(req.method, {authReqId: eid, ...params}).then(({result, error}) => {
+      console.log('result', result)
+      console.log('error', error)
       setSendingRequestStatus(false)
       result && onClickConfirm && onClickConfirm()
       result && history.push(HOME)
@@ -83,7 +87,7 @@ function DappFooter({
   }
 
   return (
-    <footer className="flex px-4">
+    <footer className="flex w-full px-4">
       <Button
         id="cancelBtn"
         className="flex-1"

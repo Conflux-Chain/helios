@@ -14,6 +14,7 @@ import {
   useCurrentNetwork,
   useCurrentAccount,
   useNetworkTypeIsCfx,
+  useBalance,
 } from './useApi'
 import {validateAddress, bn16} from '../utils'
 
@@ -78,7 +79,7 @@ export const useEstimateTx = (tx = {}) => {
   const {provider} = useRPCProvider()
   const currentNetwork = useCurrentNetwork() || {type: NETWORK_TYPE.CFX}
   const {type} = currentNetwork
-  const {from, to, value, data, nonce, gasPrice, gasLimit} = tx
+  const {from, to, value, data, nonce, gasPrice, gas} = tx
   const {
     value: rst,
     loading,
@@ -98,7 +99,7 @@ export const useEstimateTx = (tx = {}) => {
     data,
     nonce,
     gasPrice,
-    gasLimit,
+    gas,
     currentNetwork.netId,
     Boolean(provider),
     type,
@@ -147,9 +148,16 @@ export const useTxParams = () => {
   return params
 }
 
-export const useCheckBalanceAndGas = estimateRst => {
-  const {sendAmount, sendToken} = useGlobalStore()
-  const {address: tokenAddress, balance: tokenBalance} = sendToken
+export const useCheckBalanceAndGas = (
+  estimateRst,
+  sendAmount,
+  sendToken,
+  isCheckBalance = true,
+  fromAddress,
+) => {
+  const {eid: networkId} = useCurrentNetwork()
+  const {address: currentAddress} = useCurrentAccount()
+  const {address: tokenAddress, decimals} = sendToken
   const {
     isBalanceEnough,
     isBalanceEnoughForValueAndFee,
@@ -157,6 +165,17 @@ export const useCheckBalanceAndGas = estimateRst => {
     error,
   } = estimateRst
   const isNativeToken = !tokenAddress
+  const address = fromAddress || currentAddress
+  const balanceData = useBalance(address, networkId, tokenAddress || '0x0')?.[
+    address
+  ]?.[tokenAddress || '0x0']
+  console.log(address, tokenAddress, balanceData)
+  const tokenBalance =
+    useBalance(address, networkId, tokenAddress || '0x0')?.[address]?.[
+      tokenAddress || '0x0'
+    ] || '0x0'
+  console.log('tokenBalance', tokenBalance)
+  console.log('sendAmount', sendAmount)
   return useMemo(() => {
     if (storageFeeDrip) {
       if (isNativeToken && !isBalanceEnoughForValueAndFee) {
@@ -167,7 +186,10 @@ export const useCheckBalanceAndGas = estimateRst => {
         }
       }
       if (!isNativeToken) {
-        if (bn16(convertValueToData(sendAmount)).gt(bn16(tokenBalance))) {
+        if (
+          isCheckBalance &&
+          bn16(convertValueToData(sendAmount, decimals)).gt(bn16(tokenBalance))
+        ) {
           return 'balance is not enough'
         } else if (!isBalanceEnough) {
           return 'gas fee is not enough'
@@ -177,7 +199,7 @@ export const useCheckBalanceAndGas = estimateRst => {
       }
     } else if (error?.message) {
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
-        return 'balance is not enough'
+        return 'transfer amount exceeds allowance'
       } else {
         return 'contract error'
       }
@@ -186,11 +208,13 @@ export const useCheckBalanceAndGas = estimateRst => {
     }
   }, [
     isNativeToken,
+    isCheckBalance,
     isBalanceEnough,
     tokenBalance,
     isBalanceEnoughForValueAndFee,
     sendAmount,
     storageFeeDrip,
     error,
+    decimals,
   ])
 }

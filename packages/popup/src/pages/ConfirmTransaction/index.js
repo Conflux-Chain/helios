@@ -5,11 +5,7 @@ import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {getCFXContractMethodSignature} from '@fluent-wallet/contract-method-name'
-import {
-  convertDataToValue,
-  formatDecimalToHex,
-  COMMON_DECIMALS,
-} from '@fluent-wallet/data-format'
+import {formatDecimalToHex, convertDecimal} from '@fluent-wallet/data-format'
 import useGlobalStore from '../../stores'
 import {useTxParams, useEstimateTx, useCheckBalanceAndGas} from '../../hooks'
 import {
@@ -18,8 +14,8 @@ import {
   useAddressType,
   usePendingAuthReq,
   useNetworkTypeIsCfx,
+  useValid20Token,
 } from '../../hooks/useApi'
-import {get20Token} from '../../utils/api'
 import {request} from '../../utils'
 import {AddressCard, InfoList, TransactionResult} from './components'
 import {TitleNav, GasFee, DappFooter} from '../../components'
@@ -32,7 +28,7 @@ function ConfirmTransition() {
   const history = useHistory()
   const [showResult, setShowResult] = useState(false)
   const [sendingTransaction, setSendingTransaction] = useState(false)
-  const [decodeData, setDecodeData] = useState(null)
+  const [decodeData, setDecodeData] = useState({})
   const [balanceError, setBalanceError] = useState('')
   const [hash, setHash] = useState('')
   const pendingAuthReq = usePendingAuthReq()
@@ -43,7 +39,7 @@ function ConfirmTransition() {
   let displayToken = {},
     displayValue = '0x0',
     displayToAddress = '',
-    method = 'Unknown'
+    displayFromAddress = ''
   const {
     toAddress,
     sendToken,
@@ -53,43 +49,44 @@ function ConfirmTransition() {
     nonce,
     clearSendTransactionParams,
   } = useGlobalStore()
-  const params = {
-    ...useTxParams(),
-    gasPrice: formatDecimalToHex(gasPrice),
-    gasLimit: formatDecimalToHex(gasLimit),
-    nonce: formatDecimalToHex(nonce),
-  }
-  console.log('params', params)
-  const estimateRst = useEstimateTx(params) || {}
-  console.log('estimateRst = ', estimateRst)
-  const {willPayCollateral, willPayTxFee, storageFeeDrip} = estimateRst
-  const errorMessage = useCheckBalanceAndGas(estimateRst)
-  useEffect(() => {
-    setBalanceError(errorMessage)
-  }, [errorMessage])
+
   const nativeToken = useCurrentNativeToken()
   const {netId} = useCurrentNetwork()
 
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  console.log('req', req)
   const isDapp = pendingAuthReq?.length > 0
-  // TODO get from pending rpc
-  const {value, to, data} = req?.params || {}
+  const {value, from, to, data, gas, storageLimit} = req?.params[0] || {}
+  console.log(value, from, to, data, gas, storageLimit)
+
+  const txPrams = useTxParams()
+  const params = !isDapp
+    ? {
+        ...txPrams,
+        gasPrice: formatDecimalToHex(gasPrice),
+        gas: formatDecimalToHex(gasLimit),
+        nonce: formatDecimalToHex(nonce),
+      }
+    : req?.params[0]
+  console.log('params', params)
+  const estimateRst = useEstimateTx(params) || {}
+  console.log('estimateRst = ', estimateRst)
 
   const type = useAddressType(to)
+  console.log('type', type)
   const isContract = type === 'contract'
-  let token
-  if (isContract) {
-    token = get20Token(to)
-  }
+  const token = {...useValid20Token(to), address: to}
+  console.log(token)
   const isSendToken =
-    !isDapp || (isDapp && method === 'transfer' && token?.symbol)
-  const isApproveToken = isDapp && method === 'approve' && token?.symbol
+    !isDapp || (isDapp && decodeData?.name === 'transferFrom' && token?.symbol)
+  const isApproveToken =
+    isDapp && decodeData?.name === 'approve' && token?.symbol
   const isSign = !isSendToken && !isApproveToken
 
   useEffect(() => {
     if (isDapp && data && isContract) {
-      getCFXContractMethodSignature(to, data, netId).then(result =>
-        setDecodeData(result),
+      getCFXContractMethodSignature(to, data, netId).then(
+        result => setDecodeData(result) && console.log('decodeData', result),
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,25 +103,41 @@ function ConfirmTransition() {
       displayValue = value
     }
     if (data && isContract && decodeData) {
-      const {name, object: methodArgs} = decodeData
-      if (name) method = name
+      console.log('decodeData', decodeData)
       if (token?.symbol) displayToken = token
       if (isSendToken) {
-        const {to: transferToAddress, value: transferValue} = methodArgs
-        displayToAddress = transferToAddress
-        displayValue = transferValue
+        displayFromAddress = decodeData?.args?.[0]
+        displayToAddress = decodeData?.args?.[1]
+        displayValue = convertDecimal(
+          decodeData?.args[2].toString(10),
+          'divide',
+          token?.decimals,
+        )
       } else if (isApproveToken) {
-        const {to: approveToAddress, value: allowance} = methodArgs
-        displayToAddress = approveToAddress
-        displayValue = allowance
+        displayToAddress = decodeData?.args?.[0]
+        displayValue = convertDecimal(
+          decodeData?.args[1].toString(10),
+          'divide',
+          token?.decimals,
+        )
       }
     }
   }
+  const errorMessage = useCheckBalanceAndGas(
+    estimateRst,
+    displayValue,
+    displayToken,
+    isSendToken,
+    displayFromAddress,
+  )
+  useEffect(() => {
+    setBalanceError(errorMessage)
+  }, [errorMessage])
+
   const onSend = () => {
     if (sendingTransaction) return
     setSendingTransaction(true)
-    params.gas = params.gasLimit
-    delete params.gasLimit
+    params.storageLimit = '0x80'
     console.log('sendParams', params)
     request(SEND_TRANSACTION, [params]).then(({error, result}) => {
       setSendingTransaction(false)
@@ -140,10 +153,11 @@ function ConfirmTransition() {
   return (
     <div className="flex flex-col h-full relative">
       <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
-      <div className="flex flex-1 flex-col justify-between mt-1 px-3 pb-4">
-        <div className="flex flex-col">
+      <div className="flex flex-1 flex-col justify-between mt-1 pb-4">
+        <div className="flex flex-col px-3">
           <AddressCard
             token={displayToken}
+            fromAddress={displayFromAddress}
             toAddress={displayToAddress}
             value={displayValue}
             isSendToken={isSendToken}
@@ -155,28 +169,24 @@ function ConfirmTransition() {
             isApproveToken={isApproveToken}
             isDapp={isDapp}
             isSign={isSign}
-            method={method}
+            method={decodeData.name || 'Unknown'}
             allowance={displayValue}
             pendingAuthReq={pendingAuthReq}
           />
-          <GasFee
-            willPayCollateral={willPayCollateral}
-            willPayTxFee={willPayTxFee}
-            storageFee={convertDataToValue(storageFeeDrip, COMMON_DECIMALS)}
-          />
+          <GasFee estimateRst={estimateRst} isDapp={isDapp} />
           <span className="text-error text-xs inline-block mt-2">
             {balanceError}
           </span>
         </div>
         <div className="flex flex-col items-center">
           {isDapp && (
-            <Link onClick={() => history.push(VIEW_DATA)}>
+            <Link onClick={() => history.push(VIEW_DATA)} className="mb-6">
               {t('viewData')}
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
             </Link>
           )}
           {!isDapp && (
-            <div className="w-full flex px-1 mt-6">
+            <div className="w-full flex px-4">
               <Button
                 variant="outlined"
                 className="flex-1 mr-3"

@@ -68,6 +68,7 @@ AddressDetail.propTypes = {
 
 function AddressCard({
   token,
+  fromAddress,
   toAddress,
   value,
   isSendToken,
@@ -120,7 +121,7 @@ function AddressCard({
         </div>
       )}
       <AddressDetail
-        fromAddress={userAddress}
+        fromAddress={fromAddress || userAddress}
         toAddress={toAddress}
         currentAccountName={currentAccountName}
         toAddressLabel={t(
@@ -135,6 +136,7 @@ AddressCard.propTypes = {
   token: PropTypes.object,
   value: PropTypes.string,
   toAddress: PropTypes.string,
+  fromAddress: PropTypes.string,
   isSendToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,
   isDapp: PropTypes.bool,

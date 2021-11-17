@@ -176,6 +176,8 @@ function walletInitialized({chainId, networkId}) {
       const tx = {
         from: connectedAddress,
         to: fcAddress,
+        gas: '0x5a98',
+        storageLimit: '0x80',
         data: exampleContract.approve(
           approveAccountInput.value,
           100000000000000000,
@@ -205,7 +207,7 @@ function walletInitialized({chainId, networkId}) {
         data: exampleContract.transferFrom(
           transferFromAccountInput.value,
           'cfxtest:aak4wphw0a9pdcg704xj2ab17n6j9puwuj3d9yz0jx',
-          1000000,
+          10000000000000000,
         ).data,
       }
       provider

@@ -38,7 +38,7 @@ function EditGasFee() {
   const params = {
     ...useTxParams(),
     gasPrice: formatDecimalToHex(inputGasPrice),
-    gasLimit: formatDecimalToHex(inputGasLimit),
+    gas: formatDecimalToHex(inputGasLimit),
   }
   if (nonce) params.nonce = formatDecimalToHex(nonce)
   console.log('params', params)
