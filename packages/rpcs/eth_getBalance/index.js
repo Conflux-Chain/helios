@@ -6,6 +6,11 @@ export const schemas = {
   input: [cat, ethHexAddress, blockRef],
 }
 
+export const cache = {
+  type: 'block',
+  key: ({params}) => `${NAME}${params[0]}`,
+}
+
 export const permissions = {
   locked: true,
   external: ['popup', 'inpage'],

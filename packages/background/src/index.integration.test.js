@@ -56,6 +56,7 @@ beforeEach(async () => {
         selected: true,
         chainId: CFX_LOCALNET_CHAINID,
         netId: CFX_LOCALNET_NETID,
+        cacheTime: 500,
         ticker: {
           name: CFX_LOCALNET_CURRENCY_NAME,
           symbol: CFX_LOCALNET_CURRENCY_SYMBOL,
@@ -72,6 +73,7 @@ beforeEach(async () => {
         type: 'eth',
         chainId: ETH_LOCALNET_CHAINID,
         netId: ETH_LOCALNET_NETID,
+        cacheTime: 200,
         ticker: {
           name: ETH_LOCALNET_CURRENCY_NAME,
           symbol: ETH_LOCALNET_CURRENCY_SYMBOL,
@@ -2331,7 +2333,6 @@ describe('integration test', function () {
           method: 'wallet_importMnemonic',
           params: {mnemonic: MNEMONIC, password},
         })
-
         expect(db.getVault().length).toBe(1)
         expect(db.getVaultByType('hd').length).toBe(1)
 
@@ -2353,6 +2354,7 @@ describe('integration test', function () {
           expect(db.getAddress().length).toBeGreaterThan(0),
         )
 
+        await new Promise(resolve => setTimeout(resolve, 500))
         res = await request({
           method: 'cfx_sendTransaction',
           params: [
@@ -2406,6 +2408,7 @@ describe('integration test', function () {
             },
           ],
         })
+        await new Promise(resolve => setTimeout(resolve, 500))
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
 

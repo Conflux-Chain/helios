@@ -8,7 +8,6 @@ export const schemas = {
 
 export const cache = {
   type: 'block',
-  ttl: 3600,
   key: ({params}) => `${NAME}${params[0]}`,
 }
 export const permissions = {

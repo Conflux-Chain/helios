@@ -11,6 +11,11 @@ export const permissions = {
   locked: true,
 }
 
+export const cache = {
+  type: 'epoch',
+  key: () => NAME,
+}
+
 export const main = ({f, params}) => {
   return f(params)
 }

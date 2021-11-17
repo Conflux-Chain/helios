@@ -17,13 +17,14 @@ export const cache = {
   ttl: 24 * 60 * 60 * 1000,
   key: () => NAME,
   afterGet(_, c) {
-    if (!c) return 'nocache'
+    return c ?? 'nocache'
   },
 }
 
 export const main = async ({f, rpcs: {cfx_getStatus}}) => {
   const rst = await f()
-  if (rst?.result === 'nocache')
+  console.log('rst = ', rst)
+  if (!rst?.result || rst?.result === 'nocache')
     return parseInt((await cfx_getStatus())?.networkId, 16).toString()
-  else return parseInt(rst.result, 16).toString()
+  else return rst.result
 }
