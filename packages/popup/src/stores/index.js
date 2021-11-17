@@ -19,6 +19,8 @@ const useGlobalStore = create(set => ({
   createdMnemonic: '',
   recommendPermissionLimit: '10000000000000000',
   customPermissionLimit: '0',
+  contractMethod: '',
+  contractData: '',
   ...defaultSendTransactionParams,
 
   // logic
@@ -38,6 +40,8 @@ const useGlobalStore = create(set => ({
     set({recommendPermissionLimit}),
   setCustomPermissionLimit: customPermissionLimit =>
     set({customPermissionLimit}),
+  setContractMethod: contractMethod => set({contractMethod}),
+  setContractData: contractData => set({contractData}),
 }))
 
 export default useGlobalStore

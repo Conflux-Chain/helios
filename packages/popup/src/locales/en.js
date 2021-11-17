@@ -181,6 +181,10 @@ const en = {
     transactionSubmit: 'Transaction Submitted/Signed',
     viewOnScan: 'View on Scan',
     ok: 'OK',
+    // view data
+    transactionDetails: 'Transaction Details',
+    functionName: 'Function',
+    hexData: 'Hex Data',
   },
 }
 
