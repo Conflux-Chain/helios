@@ -33,7 +33,7 @@ function RequestSignature() {
       id="requestSignatureContainer"
       className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg"
     >
-      <header>
+      <header id="header">
         <TitleNav
           title={isPersonalSign ? t('signText') : t('signTypeMessage')}
           hasGoBack={false}
@@ -59,7 +59,7 @@ function RequestSignature() {
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
         <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
           {!isPersonalSign ? (
-            <div className="ml-1">
+            <div className="ml-1" id="signTypeMsgDes">
               <div className="text-sm text-gray-80 font-medium">
                 {t('signThisMessage')}
               </div>
@@ -69,9 +69,14 @@ function RequestSignature() {
             </div>
           ) : null}
           <CompWithLabel
-            label={<p className="font-medium">{t('signThisText')}</p>}
+            label={
+              <p id="labelDes" className="font-medium">
+                {isPersonalSign ? t('signThisText') : t('message')}
+              </p>
+            }
           >
             <div
+              id="plaintext"
               className={`${
                 isPersonalSign ? 'pl-3 max-h-[376px]' : 'pl-1 max-h-[338px]'
               } pr-3 pt-3 pb-4 rounded bg-gray-4 overflow-auto`}

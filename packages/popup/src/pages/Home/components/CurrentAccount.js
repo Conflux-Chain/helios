@@ -12,7 +12,7 @@ function CurrentAccount({onOpenAccount}) {
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" id="currentAccount">
       <div
         className="flex items-center cursor-pointer"
         onClick={onOpenAccount}
@@ -24,8 +24,6 @@ function CurrentAccount({onOpenAccount}) {
       </div>
       <div className="flex items-center">
         <span className="text-white font-medium mr-2">{displayAddress}</span>
-        <CopyButton text={address} />
-        <QRCodeButton title={nickname || ''} qrcodeValue={address} />
         <CopyButton text={address} className="mx-2 text-white" />
         <QRCodeButton title={nickname} qrcodeValue={address} />
       </div>

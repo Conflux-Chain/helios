@@ -62,6 +62,7 @@ function SetPasswordForm() {
           setInputValue={setPassword}
           errorMessage={errorMessage}
           value={password}
+          id="password"
         />
         {errorMessage ? null : <div className="m-0 h-6" />}
         <PasswordInput
@@ -69,6 +70,7 @@ function SetPasswordForm() {
           setInputValue={setConfirmPassword}
           errorMessage={confirmErrorMessage}
           value={confirmPassword}
+          id="confirmPassword"
         />
       </section>
 

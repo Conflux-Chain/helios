@@ -100,6 +100,7 @@ function CurrentSeed() {
             maxLength="20"
             placeholder={accountNamePlaceholder}
             onChange={e => setAccountName(e.target.value)}
+            id="newAccountName"
           />
         </CompWithLabel>
         <CompWithLabel
@@ -108,6 +109,7 @@ function CurrentSeed() {
         >
           <div
             role="menu"
+            id="menu"
             className="flex flex-col flex-1 overflow-y-auto py-2 bg-gray-0 rounded-sm"
           >
             {hdGroup.map(

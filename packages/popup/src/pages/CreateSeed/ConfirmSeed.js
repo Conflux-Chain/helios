@@ -102,6 +102,7 @@ function ConfirmSeed() {
             {t('confirmSeedContent')}
           </span>
           <div
+            id="mnemonicContainer"
             className={`relative mt-4 px-3 pt-3 bg-bg rounded-sm flex flex-wrap justify-between ${
               mnemonicError
                 ? 'after:absolute after:inset-0 after:border-error after:border after:border-solid after:z-[-1]'
@@ -123,6 +124,7 @@ function ConfirmSeed() {
             </span>
           )}
           <div
+            id="buttonArrayContainer"
             className={`${
               mnemonicError ? 'mt-4' : 'mt-10'
             } px-3 pt-3 flex flex-wrap justify-between`}

@@ -3,7 +3,10 @@ import {TokenItem} from './'
 
 function TokenList({tokenList, onSelectToken}) {
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto relative">
+    <div
+      className="flex flex-1 flex-col overflow-y-auto relative"
+      id="tokenList"
+    >
       {tokenList.map((token, index) => (
         <TokenItem onSelect={onSelectToken} token={token} key={index} />
       ))}

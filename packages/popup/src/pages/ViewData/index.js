@@ -12,7 +12,7 @@ function ViewData() {
       className="h-full flex flex-col bg-blue-circles bg-no-repeat"
     >
       <TitleNav title={t('transactionDetails')} />
-      <div className="mx-3 mt-3 px-3 py-4 bg-gray-4">
+      <div className="mx-3 mt-3 px-3 py-4 bg-gray-4" id="content">
         <div>
           <p className="text-xs text-gray-40 mb-0.5">{t('functionName')}</p>
           <div className="text-sm text-gray-80 mb-3">{contractMethod}</div>

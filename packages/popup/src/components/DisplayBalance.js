@@ -18,6 +18,7 @@ function DisplayBalance({
   useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance, initialFontSize)
   return (
     <div
+      id="displayBalance"
       className={`text-gray-80 font-mono font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis relative ${maxWidthStyle} ${className}`}
     >
       <span ref={balanceRef}>{displayBalance}</span>
