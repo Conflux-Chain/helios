@@ -135,7 +135,7 @@ export const cfxEstimate = async (
 
   // estimate
   delete newTx.gas
-  delete newTx.gasPrice
+  delete newTx.gasLimit
   delete newTx.storageLimit
   newTx.gasPrice = gasPrice
   newTx.nonce = nonce
