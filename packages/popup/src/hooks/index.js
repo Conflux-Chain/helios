@@ -78,7 +78,7 @@ export const useEstimateTx = (tx = {}) => {
   const {provider} = useRPCProvider()
   const currentNetwork = useCurrentNetwork() || {type: NETWORK_TYPE.CFX}
   const {type} = currentNetwork
-  const {from, to, value, data, nonce, gasPrice, gasLimit} = tx
+  const {from, to, value, data, nonce, gasPrice, gas, storageLimit} = tx
   const {
     value: rst,
     loading,
@@ -89,7 +89,7 @@ export const useEstimateTx = (tx = {}) => {
       type,
       request: provider.request.bind(provider),
       isFluentRequest: true,
-      networkId: currentNetwork.netId,
+      // networkId: currentNetwork.netId,
     })
   }, [
     from,
@@ -98,8 +98,9 @@ export const useEstimateTx = (tx = {}) => {
     data,
     nonce,
     gasPrice,
-    gasLimit,
-    currentNetwork.netId,
+    gas,
+    storageLimit,
+    // currentNetwork.netId,
     Boolean(provider),
     type,
   ])
@@ -150,17 +151,12 @@ export const useTxParams = () => {
 export const useCheckBalanceAndGas = estimateRst => {
   const {sendAmount, sendToken} = useGlobalStore()
   const {address: tokenAddress, balance: tokenBalance} = sendToken
-  const {
-    isBalanceEnough,
-    isBalanceEnoughForValueAndFee,
-    storageFeeDrip,
-    error,
-  } = estimateRst
+  const {isBalanceEnough, storageFeeDrip, error} = estimateRst
   const isNativeToken = !tokenAddress
   return useMemo(() => {
     if (storageFeeDrip) {
-      if (isNativeToken && !isBalanceEnoughForValueAndFee) {
-        if (!isBalanceEnoughForValueAndFee) {
+      if (isNativeToken && !isBalanceEnough) {
+        if (!isBalanceEnough) {
           return 'balance is not enough'
         } else {
           return ''
@@ -188,7 +184,6 @@ export const useCheckBalanceAndGas = estimateRst => {
     isNativeToken,
     isBalanceEnough,
     tokenBalance,
-    isBalanceEnoughForValueAndFee,
     sendAmount,
     storageFeeDrip,
     error,
