@@ -1,9 +1,9 @@
-import {nul} from '@fluent-wallet/spec'
+import {optParam} from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_getStatus'
 
 export const schemas = {
-  input: [nul],
+  input: optParam,
 }
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
@@ -11,11 +11,14 @@ const chainIdCacheConf = {type: 'ttl', ttl: ONE_DAY_MS, key: 'cfx_chainId'}
 const networkIdCacheConf = {type: 'ttl', ttl: ONE_DAY_MS, key: 'cfx_netVersion'}
 export const cache = {
   type: 'ttl',
-  ttl: 500,
   key: () => `${NAME}`,
   afterSet(setCache, req, res) {
-    setCache({req, res: {result: res.result.chainId}, chainIdCacheConf})
-    setCache({req, res: {result: res.result.networkId}, networkIdCacheConf})
+    setCache({req, res: {result: res.result.chainId}, conf: chainIdCacheConf})
+    setCache({
+      req,
+      res: {result: parseInt(res.result.networkId, 16).toString(10)},
+      conf: networkIdCacheConf,
+    })
   },
 }
 

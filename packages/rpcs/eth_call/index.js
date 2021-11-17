@@ -30,6 +30,14 @@ export const permissions = {
   db: [],
 }
 
+export const cache = {
+  type: 'block',
+  key: ({params}) => {
+    const req = params[0]
+    return `${NAME}${JSON.stringify(req)}`
+  },
+}
+
 export const main = async ({f, params}) => {
   return await f(params)
 }
