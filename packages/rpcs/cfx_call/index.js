@@ -10,6 +10,14 @@ import {
 
 export const NAME = 'cfx_call'
 
+export const cache = {
+  type: 'epoch',
+  key: ({params}) => {
+    const req = params[0]
+    return `${NAME}${JSON.stringify(req)}`
+  },
+}
+
 export const schemas = {
   input: [
     cat,
@@ -18,6 +26,7 @@ export const schemas = {
       {closed: true},
       ['from', {optional: true}, base32UserAddress],
       ['to', base32ContractAddress],
+      ['storageLimit', {optional: true}, Uint],
       ['gasPrice', {optional: true}, Uint],
       ['gas', {optional: true}, Uint],
       ['value', {optional: true}, Uint],

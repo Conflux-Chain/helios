@@ -11,6 +11,11 @@ export const permissions = {
   locked: true,
 }
 
+export const cache = {
+  type: 'epoch',
+  key: ({params}) => `${NAME}${params[0]}`,
+}
+
 export const main = async ({f, params}) => {
   return await f(params)
 }

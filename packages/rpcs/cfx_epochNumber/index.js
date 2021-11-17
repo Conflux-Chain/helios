@@ -13,7 +13,6 @@ export const permissions = {
 
 export const cache = {
   type: 'ttl',
-  ttl: 500,
   key: ({params}) => `EPOCH${params[0]}`,
 }
 

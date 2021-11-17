@@ -256,14 +256,17 @@ export const main = async arg => {
   const isLocked = getLocked()
   let password = optionalPassword
 
+  // need password on first import
   if (isLocked && isFirstGroup && !password)
     throw InvalidParams('Invalid password')
 
+  // need wallet to be unlocked on rest import
   if (!isFirstGroup && !password) password = getPassword()
 
   if (!(await wallet_validatePassword({password})))
     throw InvalidParams('Invalid password')
 
+  // create vault to be added
   const vault = {cfxOnly: false}
   vault.data = mnemonic || privateKey || address
   if (privateKey) {
@@ -279,7 +282,9 @@ export const main = async arg => {
     vault.cfxOnly = validateResult.cfxOnly
   }
 
-  const vaults = getVault()
+  const vaults = getVault({type: vault.type}) || []
+
+  // check duplicate vaults
   const anyDuplicateVaults = (
     await Promise.all(
       vaults.map(

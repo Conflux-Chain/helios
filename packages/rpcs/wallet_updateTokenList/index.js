@@ -54,6 +54,17 @@ export const validateAndFormatTokenList = ({tokenList, InvalidParams}) => {
     )
 }
 
+const isNewVersionTokenList = (
+  {major: omajor, minor: ominor, patch: opatch},
+  {major, minor, patch},
+) => {
+  if (major > omajor) return true
+  if (major === omajor && minor > ominor) return true
+  if (major === omajor && minor === ominor && patch > opatch) return true
+
+  return false
+}
+
 export const main = async ({
   Err: {InvalidParams},
   db: {getNetworkById, t, retract},
@@ -75,15 +86,13 @@ export const main = async ({
   validateAndFormatTokenList({tokenList, InvalidParams})
   name = name || tokenList.name
 
-  const [existTokensIdx, existTokensAddr] = (network.token || []).reduce(
-    (acc, {address}, idx) => [
-      [...acc[0], idx],
-      [...acc[1], address],
-    ],
-    [[], []],
-  )
-
   const oldTokenList = network.tokenList
+  const oldTokenListVersion = network.tokenList?.value?.version
+  const isNewVersion =
+    !oldTokenListVersion ||
+    isNewVersionTokenList(oldTokenListVersion, tokenList.version)
+  if (!isNewVersion) return
+
   const oldTokens =
     oldTokenList?.token?.reduce(
       (acc, {eid, fromApp, fromUser}) =>
@@ -93,6 +102,16 @@ export const main = async ({
 
   if (oldTokenList) retract(oldTokenList.eid)
   oldTokens.forEach(retract)
+
+  const [existTokensIdx, existTokensAddr] = (
+    getNetworkById(networkId).token || []
+  ).reduce(
+    (acc, {address}, idx) => [
+      [...acc[0], idx],
+      [...acc[1], address],
+    ],
+    [[], []],
+  )
 
   const addTokenTxs = tokenList.tokens.reduce(
     (acc, t, idx) => {

@@ -4,13 +4,14 @@ import {
   isNumber,
   isObject,
   isString,
+  isUndefined,
 } from '@fluent-wallet/checks'
 import {TLRUCache, LRUCache} from '@thi.ng/cache'
 import EpochRefConf from '@fluent-wallet/rpc-epoch-ref'
 
 let CACHE = {}
 
-export const getCacheStore = ({network, params, method}, {type}) => {
+export const getCacheStore = ({network, params, method}, {type, cacheTime}) => {
   if (!CACHE[network.name]) CACHE[network.name] = {}
   const netCache = CACHE[network.name]
 
@@ -20,23 +21,21 @@ export const getCacheStore = ({network, params, method}, {type}) => {
   }
 
   if (type === 'epoch' || type === 'block') {
-    if (!netCache.EPOCH) netCache.EPOCH = new LRUCache(null, {maxsize: 20})
+    if (!netCache.EPOCH) netCache.EPOCH = new LRUCache(null, {maxlen: 20})
     const epochPos = EpochRefConf[method]
     if (epochPos === undefined)
       throw new Error(
         'Invalid cache option, no epoch/block ref pos in @fluent-wallet/rpc-epoch-ref',
       )
-    let epoch = params[epochPos] ?? 'default'
 
-    // epoch is latest...
-    if (!epoch.startsWith('0x')) {
-      epoch = getCacheStore({network}, {type: 'ttl'}).get(`EPOCH${epoch}`)
-      if (epoch) params[epochPos] = epoch
-    }
+    const epoch = params[epochPos] ?? 'default'
 
     let store = netCache.EPOCH.get(epoch)
-    if (!store) store = new TLRUCache()
-    netCache.EPOCH.set(epoch, store)
+    if (!store) {
+      const ttl = cacheTime ?? network.cacheTime ?? undefined
+      store = new TLRUCache(null, isUndefined(ttl) ? ttl : {ttl})
+      netCache.EPOCH.set(epoch, store)
+    }
 
     return store
   }
@@ -81,7 +80,7 @@ export const setCache = ({req, res, conf}) => {
   if (!Cache) return
 
   const k = getCacheKey(key, req)
-  Cache.set(k, res.result, ttl)
+  Cache.set(k, res.result, ttl ?? req.network.cacheTime ?? undefined)
 
   if (isFunction(conf?.afterSet)) conf.afterSet(setCache, req, res)
 }

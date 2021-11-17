@@ -35,11 +35,13 @@ const en = {
     seedGroupName: 'Seed Phrase Group Name',
     seedImportPlaceholder:
       'The Seed Phrase consists of words separated by spaces. Separate each word entered by a space.',
+    duplicateSeedError: 'This seed phrase already in your wallet.',
     // Import account with pk
     pKeyImport: 'Import Private Key',
     pKeyGroupName: 'Account name',
     pKeyImportPlaceholder: 'Type your Private Key here.',
     import: 'Import',
+    duplicatePkError: 'This private key already in your wallet.',
     // use current seed phrase
     accountName: 'Account name',
     selectSeedPhrase: 'Select Seed Phrase',

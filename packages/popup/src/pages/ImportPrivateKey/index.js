@@ -4,19 +4,16 @@ import {useTranslation} from 'react-i18next'
 import {TitleNav, CompWithLabel} from '../../components'
 import Button from '@fluent-wallet/component-button'
 import Input from '@fluent-wallet/component-input'
-import {request} from '../../utils'
+import {request, updateAddedNewAccount} from '../../utils'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {usePkAccountGroup} from '../../hooks/useApi'
 import {useSWRConfig} from 'swr'
 const {
-  WALLET_GET_ACCOUNT_GROUP,
   ACCOUNT_GROUP_TYPE,
   WALLET_VALIDATE_PRIVATE_KEY,
   WALLET_IMPORT_PRIVATE_KEY,
-  WALLET_ZERO_ACCOUNT_GROUP,
-  WALLET_IS_LOCKED,
 } = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -30,7 +27,7 @@ function ImportPrivateKey() {
   const [keygenErrorMessage, setKeygenErrorMessage] = useState('')
   const [keygenNamePlaceholder, setKeygenNamePlaceholder] = useState('')
   const [creatingAccount, setCreatingAccount] = useState(false)
-  const createdPassword = useGlobalStore(state => state.createdPassword)
+  const {createdPassword, setCreatedPassword} = useGlobalStore()
 
   const keygenGroup = usePkAccountGroup()
 
@@ -44,12 +41,6 @@ function ImportPrivateKey() {
   }
   const onChangeKeygen = e => {
     setKeygen(e.target.value)
-  }
-  const dispatchMutate = () => {
-    mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
-    mutate([WALLET_IS_LOCKED], false)
-    mutate([WALLET_GET_ACCOUNT_GROUP])
-    mutate([WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK])
   }
   const onCreate = async () => {
     if (!keygen) {
@@ -73,8 +64,16 @@ function ImportPrivateKey() {
               ({error, result}) => {
                 setCreatingAccount(false)
                 if (result) {
-                  dispatchMutate()
+                  updateAddedNewAccount(
+                    mutate,
+                    !!createdPassword,
+                    ACCOUNT_GROUP_TYPE.PK,
+                  )
+                  createdPassword && setCreatedPassword('')
                   history.push(HOME)
+                }
+                if (typeof error?.data?.duplicateAccountGroupId === 'number') {
+                  return setKeygenErrorMessage(t('duplicatePkError'))
                 }
                 if (error) {
                   setKeygenErrorMessage(error.message.split('\n')[0])

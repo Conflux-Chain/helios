@@ -56,6 +56,7 @@ const schema = {
     builtin: {doc: "Indicating builtin network, shouldn't be deleted"},
     scanUrl: {doc: 'Url of block chain explorer'},
     selected: {doc: 'network selected by wallet'},
+    cacheTime: {doc: 'epoch/block time of this network'},
     tokenList: {
       doc: 'token list of this network',
       ref: true,
