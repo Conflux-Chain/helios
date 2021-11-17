@@ -41,3 +41,6 @@ export const DAPP_REQUEST_ROUTES = {
   [CFX_SEND_TRANSACTION]: SEND_TRANSACTION,
   [ETH_SEND_TRANSACTION]: SEND_TRANSACTION,
 }
+
+export const DEFAULT_TOKEN_URL =
+  'https://conflux-static.oss-cn-beijing.aliyuncs.com/fluent/icons/default-token-icon.svg'

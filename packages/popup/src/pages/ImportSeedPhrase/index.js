@@ -4,20 +4,14 @@ import {useTranslation} from 'react-i18next'
 import {TitleNav, CompWithLabel} from '../../components'
 import Button from '@fluent-wallet/component-button'
 import Input from '@fluent-wallet/component-input'
-import {request} from '../../utils'
+import {request, updateAddedNewAccount} from '../../utils'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
-import {usePkAccountGroup} from '../../hooks/useApi'
+import {useHdAccountGroup} from '../../hooks/useApi'
 import {useSWRConfig} from 'swr'
-const {
-  WALLET_GET_ACCOUNT_GROUP,
-  ACCOUNT_GROUP_TYPE,
-  WALLET_VALIDATE_MNEMONIC,
-  WALLET_IMPORT_MNEMONIC,
-  WALLET_ZERO_ACCOUNT_GROUP,
-  WALLET_IS_LOCKED,
-} = RPC_METHODS
+const {ACCOUNT_GROUP_TYPE, WALLET_VALIDATE_MNEMONIC, WALLET_IMPORT_MNEMONIC} =
+  RPC_METHODS
 const {HOME} = ROUTES
 
 function ImportSeedPhrase() {
@@ -30,9 +24,9 @@ function ImportSeedPhrase() {
   const [keygenErrorMessage, setKeygenErrorMessage] = useState('')
   const [keygenNamePlaceholder, setKeygenNamePlaceholder] = useState('')
   const [creatingAccount, setCreatingAccount] = useState(false)
-  const createdPassword = useGlobalStore(state => state.createdPassword)
+  const {createdPassword, setCreatedPassword} = useGlobalStore()
 
-  const keygenGroup = usePkAccountGroup()
+  const keygenGroup = useHdAccountGroup()
 
   useCreatedPasswordGuard()
   useEffect(() => {
@@ -45,13 +39,6 @@ function ImportSeedPhrase() {
   const onChangeKeygen = e => {
     setKeygen(e.target.value)
   }
-  const dispatchMutate = () => {
-    mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
-    mutate([WALLET_IS_LOCKED], false)
-    mutate([WALLET_GET_ACCOUNT_GROUP])
-    mutate([WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD])
-  }
-
   const onCreate = () => {
     if (!keygen) {
       // TODO: replace error msg
@@ -75,8 +62,16 @@ function ImportSeedPhrase() {
             ({error, result}) => {
               setCreatingAccount(false)
               if (result) {
-                dispatchMutate()
+                updateAddedNewAccount(
+                  mutate,
+                  !!createdPassword,
+                  ACCOUNT_GROUP_TYPE.HD,
+                )
+                createdPassword && setCreatedPassword('')
                 history.push(HOME)
+              }
+              if (typeof error?.data?.duplicateAccountGroupId === 'number') {
+                return setKeygenErrorMessage(t('duplicateSeedError'))
               }
               if (error) {
                 setKeygenErrorMessage(error.message.split('\n')[0])
