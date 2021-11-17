@@ -101,7 +101,9 @@ const en = {
     confirmAddSuggestedToken: 'Would you like to add this token?',
     //request signature
     signTypeMessage: 'Sign Type Message',
+    signText: 'Sign Text',
     signThisMessage: 'Sign this message?',
+    signThisText: 'Sign this text?',
     message: 'Message',
     sign: 'Sign',
     // Dapp add network
