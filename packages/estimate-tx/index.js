@@ -33,7 +33,16 @@ export const cfxEstimate = async (
     throw new Error(`usage without fluent-wallet provider is not supported yet`)
 
   let newTx = {...tx}
-  let {from, to, gasPrice, gasLimit, nonce, data, value} = newTx
+  let {
+    from,
+    to,
+    gasPrice: inputGasPrice,
+    gas: inputGasLimit,
+    nonce: inputNonce,
+    data,
+    value,
+  } = newTx
+  let gasPrice, nonce
 
   if (!from) throw new Error(`Invalid from ${from}`)
   if (networkId !== undefined && !Number.isInteger(networkId))
@@ -74,27 +83,19 @@ export const cfxEstimate = async (
     }),
   )
 
-  if (!gasPrice) {
-    promises.push(
-      request({method: 'cfx_gasPrice'}).then(r => {
-        if (r.error) throw r.error
-        gasPrice = r.result
-      }),
-    )
-  }
-
-  // await request({method: 'cfx_gasPrice'}).then(r => {
-  //   if (r.error) throw r.error
-  //   gasPrice = r.result
-  // })
+  await request({method: 'cfx_gasPrice'}).then(r => {
+    if (r.error) throw r.error
+    gasPrice = r.result
+  })
 
   // simple send tx
   if (to && (!data || data === '0x')) {
-    if (!gasLimit) gasLimit = '0x5208' /* 21000 */
+    const clcGasLimit = inputGasLimit || '0x5208' /* 21000 */
+    const clcGasPrice = inputGasPrice || gasPrice
     await Promise.all(promises)
     const fromBalance = balances['0x0']
     const storageFeeDripStr = '0x0'
-    const gasFeeDrip = bn16(gasLimit).mul(bn16(gasPrice))
+    const gasFeeDrip = bn16(clcGasLimit).mul(bn16(clcGasPrice))
     const gasFeeDripStr = pre0x(gasFeeDrip.toString(16))
     const balanceDrip = bn16(fromBalance)
     const nativeMaxDrip = balanceDrip.sub(gasFeeDrip)
@@ -102,12 +103,14 @@ export const cfxEstimate = async (
       return {
         gasPrice,
         gasUsed: '0x5208',
-        gasLimit,
+        gasLimit: '0x5208',
+        inputGasPrice,
+        inputGasLimit,
+        storageCollateralized: '0x0',
         storageFeeDrip: storageFeeDripStr,
         gasFeeDrip: gasFeeDripStr,
         txFeeDrip: gasFeeDripStr,
         nativeMaxDrip: pre0x(nativeMaxDrip.toString(16)),
-        storageCollateralized: '0x0',
         balanceDrip: fromBalance,
         isBalanceEnough: balanceDrip.gte(gasFeeDrip),
         isBalanceEnoughForValueAndFee: balanceDrip.gte(
@@ -118,29 +121,28 @@ export const cfxEstimate = async (
       }
   }
 
-  if (!nonce) {
-    promises.push(
-      request({
-        method: 'cfx_getNextNonce',
-        params: [from, 'latest_state'],
-      }).then(r => {
-        if (r.error) throw r.error
-        nonce = r.result
-      }),
-    )
-  }
+  promises.push(
+    request({
+      method: 'cfx_getNextNonce',
+      params: [from, 'latest_state'],
+    }).then(r => {
+      if (r.error) throw r.error
+      nonce = r.result
+    }),
+  )
 
   await Promise.all(promises)
 
   // estimate
+  delete newTx.gas
   delete newTx.gasPrice
-  delete newTx.gasLimit
   delete newTx.storageLimit
   newTx.gasPrice = gasPrice
   newTx.nonce = nonce
   let rst = await cfxEstimateGasAndCollateralAdvance(request, newTx)
-  const {gasLimit: estimateGasLimit, storageCollateralized} = rst
-  if (!gasLimit) gasLimit = estimateGasLimit
+  const {gasLimit, storageCollateralized} = rst
+  const clcGasPrice = inputGasPrice || gasPrice
+  const clcGasLimit = inputGasLimit || gasLimit
 
   const fromBalance = balances['0x0']
 
@@ -148,7 +150,7 @@ export const cfxEstimate = async (
   const storageFeeDrip = bn16(storageCollateralized)
     .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
     .divn(1024)
-  const gasFeeDrip = bn16(gasLimit).mul(bn16(gasPrice))
+  const gasFeeDrip = bn16(clcGasLimit).mul(bn16(clcGasPrice))
   const txFeeDrip = storageFeeDrip.add(gasFeeDrip)
 
   const tokensInfo = Object.entries(balances).reduce((acc, [addr, balance]) => {
@@ -206,7 +208,10 @@ export const cfxEstimate = async (
   }
 
   rst.gasPrice = gasPrice
-  rst.nonce = newTx.nonce
+  rst.nonce = nonce
+  rst.inputNonce = inputNonce
+  rst.inputGasPrice = inputGasPrice
+  rst.inputGasLimit = inputGasLimit
 
   return rst
 }
