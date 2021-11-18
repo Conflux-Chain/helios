@@ -250,3 +250,4 @@ $RECYCLE.BIN/
 .vscode/*
 /releases/
 cljs-runtime
+/packages/content-script/index.js

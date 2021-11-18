@@ -6,7 +6,7 @@ require('./before_all.js')
 require('./setup-dotenv.js')
 const {resolve} = require('path')
 const buildContentScript = require('./build-content-script.js')
-const buildInpage = require('./build-inpage.js')
+// const buildInpage = require('./build-inpage.js')
 
 const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
 setEnvBasedOnArgv()
@@ -42,7 +42,7 @@ process.on('uncaughtException', err => {
       loadConfiguration(undefined, b).then(config => build({config})),
     ),
     buildContentScript(),
-    buildInpage(),
+    // buildInpage(),
   ])
   await require('./after_prod.js')()
   process.exit(0)

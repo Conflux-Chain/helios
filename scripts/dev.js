@@ -7,7 +7,7 @@ require('./setup-dotenv.js')
 const {resolve} = require('path')
 const buildContentScript = require('./build-content-script.js')
 const buildExtReload = require('./build-reload.js')
-const buildInpage = require('./build-inpage.js')
+// const buildInpage = require('./build-inpage.js')
 
 const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
 setEnvBasedOnArgv()
@@ -45,7 +45,7 @@ process.on('uncaughtException', (...args) => console.error(...args))
       )
     }),
     buildExtReload(),
+    // buildInpage(),
     buildContentScript(),
-    buildInpage(),
   ])
 })()
