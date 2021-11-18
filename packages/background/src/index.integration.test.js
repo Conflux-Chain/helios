@@ -56,6 +56,7 @@ beforeEach(async () => {
         selected: true,
         chainId: CFX_LOCALNET_CHAINID,
         netId: CFX_LOCALNET_NETID,
+        cacheTime: 500,
         ticker: {
           name: CFX_LOCALNET_CURRENCY_NAME,
           symbol: CFX_LOCALNET_CURRENCY_SYMBOL,
@@ -72,6 +73,7 @@ beforeEach(async () => {
         type: 'eth',
         chainId: ETH_LOCALNET_CHAINID,
         netId: ETH_LOCALNET_NETID,
+        cacheTime: 200,
         ticker: {
           name: ETH_LOCALNET_CURRENCY_NAME,
           symbol: ETH_LOCALNET_CURRENCY_SYMBOL,
@@ -2331,7 +2333,6 @@ describe('integration test', function () {
           method: 'wallet_importMnemonic',
           params: {mnemonic: MNEMONIC, password},
         })
-
         expect(db.getVault().length).toBe(1)
         expect(db.getVaultByType('hd').length).toBe(1)
 
@@ -2343,28 +2344,58 @@ describe('integration test', function () {
       })
     })
     describe('cfx_sendTransaction', function () {
-      test('popup', async () => {
-        await request({
-          method: 'wallet_importMnemonic',
-          params: {mnemonic: MNEMONIC, password},
-        })
+      describe('popup', function () {
+        test('basic', async () => {
+          await request({
+            method: 'wallet_importMnemonic',
+            params: {mnemonic: MNEMONIC, password},
+          })
 
-        await waitForExpect(() =>
-          expect(db.getAddress().length).toBeGreaterThan(0),
-        )
+          await waitForExpect(() =>
+            expect(db.getAddress().length).toBeGreaterThan(0),
+          )
 
-        res = await request({
-          method: 'cfx_sendTransaction',
-          params: [
-            {
-              from: CFX_ACCOUNTS[0].base32,
-              to: CFX_ACCOUNTS[1].base32,
-              value: '0x1',
-            },
-          ],
+          await new Promise(resolve => setTimeout(resolve, 500))
+          res = await request({
+            method: 'cfx_sendTransaction',
+            params: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                value: '0x1',
+              },
+            ],
+          })
+          expect(res.result).toBeDefined()
+          expect(res.result.startsWith('0x')).toBe(true)
         })
-        expect(res.result.startsWith('0x')).toBe(true)
+        test('with data', async () => {
+          await request({
+            method: 'wallet_importMnemonic',
+            params: {mnemonic: MNEMONIC, password},
+          })
+
+          await waitForExpect(() =>
+            expect(db.getAddress().length).toBeGreaterThan(0),
+          )
+
+          await new Promise(resolve => setTimeout(resolve, 500))
+          res = await request({
+            method: 'cfx_sendTransaction',
+            params: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                data: '0x10',
+                value: '0x1',
+              },
+            ],
+          })
+          expect(res.result).toBeDefined()
+          expect(res.result.startsWith('0x')).toBe(true)
+        })
       })
+
       test('inpage', async () => {
         await request({
           method: 'wallet_importMnemonic',
@@ -2406,6 +2437,7 @@ describe('integration test', function () {
             },
           ],
         })
+        await new Promise(resolve => setTimeout(resolve, 500))
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
 

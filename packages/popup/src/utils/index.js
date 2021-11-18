@@ -2,8 +2,10 @@ import BN from 'bn.js'
 import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
-import {PASSWORD_REG_EXP} from '../constants'
+import {PASSWORD_REG_EXP, RPC_METHODS} from '../constants'
 const globalThis = window ?? global
+const {WALLET_ZERO_ACCOUNT_GROUP, WALLET_IS_LOCKED, WALLET_GET_ACCOUNT_GROUP} =
+  RPC_METHODS
 
 export function request(...args) {
   const [method, params] = args
@@ -55,3 +57,12 @@ export const validateAddress = (address, networkTypeIsCfx, netId) => {
 }
 
 export const bn16 = x => new BN(stripHexPrefix(x), 16)
+
+export function updateAddedNewAccount(mutate, noAccountBefore, groupType) {
+  if (noAccountBefore) {
+    mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+    mutate([WALLET_IS_LOCKED], false)
+  }
+  mutate([WALLET_GET_ACCOUNT_GROUP])
+  mutate([WALLET_GET_ACCOUNT_GROUP, groupType])
+}

@@ -20,6 +20,12 @@ export const schemas = {
   ],
 }
 
+export const cache = {
+  type: 'epoch',
+  key: ({params}) =>
+    `${NAME}${params[0]}${params[1]}${params[2]}${params[3]}${params[4]}`,
+}
+
 export const permissions = {
   external: ['popup', 'inpage'],
   locked: true,

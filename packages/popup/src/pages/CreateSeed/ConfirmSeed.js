@@ -6,10 +6,10 @@ import Button from '@fluent-wallet/component-button'
 import useGlobalStore from '../../stores'
 import {SeedWord} from './components'
 import {TitleNav} from '../../components'
-import {request, shuffle} from '../../utils'
+import {request, shuffle, updateAddedNewAccount} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {RPC_METHODS, ROUTES} from '../../constants'
-const {WALLET_IMPORT_MNEMONIC, WALLET_ZERO_ACCOUNT_GROUP} = RPC_METHODS
+const {WALLET_IMPORT_MNEMONIC, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 const {HOME} = ROUTES
 
 function ConfirmSeed() {
@@ -21,6 +21,7 @@ function ConfirmSeed() {
     createdMnemonic,
     createdPassword,
     createdGroupName,
+    setCreatedPassword,
     setCreatedMnemonic,
   } = useGlobalStore()
   const initData = new Array(12).fill(null)
@@ -82,10 +83,10 @@ function ConfirmSeed() {
     request(WALLET_IMPORT_MNEMONIC, params).then(({error}) => {
       setImportingMnemonic(false)
       if (error) {
-        setMnemonicError(error.message)
-        return
+        return setMnemonicError(error.message)
       }
-      mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+      updateAddedNewAccount(mutate, !!createdPassword, ACCOUNT_GROUP_TYPE.HD)
+      createdPassword && setCreatedPassword('')
       history.push(HOME)
       setCreatedMnemonic('')
     })

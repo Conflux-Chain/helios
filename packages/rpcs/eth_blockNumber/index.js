@@ -13,7 +13,7 @@ export const permissions = {
 
 export const cache = {
   type: 'ttl',
-  ttl: 10000, // TODO: block time of each eth-type network is different
+  key: ({params}) => `EPOCH${params[0]}`,
 }
 
 export const main = async ({f, params}) => {
