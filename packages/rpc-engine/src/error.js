@@ -16,7 +16,7 @@ export const rpcErrorHandlerFactory = ({isProd = true, debugLog} = {}) => {
     if (!err || !err.message || !err.rpcData) {
       if (!isProd)
         console.error(
-          '\nin method: ',
+          'DEV_ONLY_ERROR in method: ',
           debugLog.reduce((acc, {method}) => acc || method, null) ||
             'unknown method',
           '\nin middleware: ',
@@ -32,7 +32,12 @@ export const rpcErrorHandlerFactory = ({isProd = true, debugLog} = {}) => {
     err = appendRpcStackToErrorMessage(err, req._rpcStack || [req.method])
 
     /* istanbul ignore if  */
-    if (!isProd) console.error(err.message, '\n', err.stack || '')
+    if (!isProd)
+      console.error(
+        'DEV_ONLY_ERROR' + (err.message || ''),
+        '\n',
+        err.stack || '',
+      )
     req._c.write({
       jsonrpc: '2.0',
       error: {
