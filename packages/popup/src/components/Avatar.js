@@ -11,8 +11,8 @@ const useCfxMainnetAddress = accountId => {
   if (cfxMainnetArr.length) {
     networkId = cfxMainnetArr[0].eid
   }
-  const addressData = useAddressByNetworkId(accountId, networkId)
-  return jsNumberForAddress(addressData?.cfxHex || addressData?.hex)
+  const {cfxHex, hex} = useAddressByNetworkId(accountId, networkId)
+  return jsNumberForAddress(cfxHex || hex)
 }
 
 function Avatar({diameter, accountId, ...props}) {
