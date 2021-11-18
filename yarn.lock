@@ -9187,6 +9187,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/js-string-escape@npm:^1":
+  version: 1.0.1
+  resolution: "@types/js-string-escape@npm:1.0.1"
+  checksum: 83bd086031842e859e333fdac8ae89387acb121a4fd5f7783b4bce472e5e75bc2adf7ccf6a7535602c3257413f0a84e183a76df4931cd97e7c6d492150f702d8
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:*, @types/json-schema@npm:^7.0.4, @types/json-schema@npm:^7.0.5, @types/json-schema@npm:^7.0.7, @types/json-schema@npm:^7.0.8":
   version: 7.0.9
   resolution: "@types/json-schema@npm:7.0.9"
@@ -19212,6 +19219,7 @@ fsevents@~2.1.2:
     "@swc/helpers": 0.2.14
     "@testing-library/jest-dom": 5.15.0
     "@testing-library/react": 12.1.2
+    "@types/js-string-escape": ^1
     autoprefixer: ^10.4.0
     babel-loader: 8.2.3
     browserslist: ^4.18.1
@@ -19235,6 +19243,7 @@ fsevents@~2.1.2:
     identity-obj-proxy: 3.0.0
     jest: ^27.3.1
     jest-webextension-mock: ^3.7.19
+    js-string-escape: 1.0.1
     lint-staged: ^12.0.2
     mustache: ^4.2.0
     nock: 13.2.0
@@ -21651,7 +21660,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"js-string-escape@npm:^1.0.1":
+"js-string-escape@npm:1.0.1, js-string-escape@npm:^1.0.1":
   version: 1.0.1
   resolution: "js-string-escape@npm:1.0.1"
   checksum: f11e0991bf57e0c183b55c547acec85bd2445f043efc9ea5aa68b41bd2a3e7d3ce94636cb233ae0d84064ba4c1a505d32e969813c5b13f81e7d4be12c59256fe
