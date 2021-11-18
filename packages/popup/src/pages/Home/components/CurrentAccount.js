@@ -12,7 +12,7 @@ function CurrentAccount({onOpenAccount}) {
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" id="currentAccount">
       <div
         className="flex items-center cursor-pointer"
         onClick={onOpenAccount}

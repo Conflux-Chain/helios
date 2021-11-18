@@ -8,6 +8,7 @@ function PasswordInput({
   setInputValue,
   errorMessage,
   value,
+  ...props
 }) {
   const [eyeStatus, setEyeStatus] = useState('close')
   const onSuffixClick = () => {
@@ -36,6 +37,7 @@ function PasswordInput({
       onSuffixClick={onSuffixClick}
       onCopy={e => e.preventDefault()}
       onCut={e => e.preventDefault()}
+      {...props}
     />
   )
 }

@@ -101,6 +101,7 @@ function ImportSeedPhrase() {
               placeholder={accountNamePlaceholder}
               maxLength="20"
               value={name}
+              id="seedGroupName"
             />
           </CompWithLabel>
           <CompWithLabel label={t('seedPhrase')}>
@@ -113,6 +114,7 @@ function ImportSeedPhrase() {
               className="resize-none"
               textareaSize="h-40"
               value={mnemonic}
+              id="seedPhrase"
             />
           </CompWithLabel>
         </section>

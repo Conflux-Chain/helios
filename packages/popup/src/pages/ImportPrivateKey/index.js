@@ -104,6 +104,7 @@ function ImportPrivateKey() {
               placeholder={accountNamePlaceholder}
               maxLength="20"
               value={name}
+              id="pKeyGroupName"
             />
           </CompWithLabel>
           <CompWithLabel label={t('pKey')}>
@@ -116,6 +117,7 @@ function ImportPrivateKey() {
               className="resize-none"
               textareaSize="h-40"
               value={keygen}
+              id="pk"
             ></Input>
           </CompWithLabel>
         </section>

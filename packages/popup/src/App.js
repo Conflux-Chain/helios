@@ -30,6 +30,7 @@ const {
   EDIT_GAS_FEE,
   EDIT_PERMISSION,
   CONFIRM_TRANSACTION,
+  VIEW_DATA,
 } = ROUTES
 const HomePage = lazy(() => import('./pages/Home'))
 const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
@@ -54,6 +55,7 @@ const SendTransaction = lazy(() => import('./pages/SendTransaction'))
 const EditGasFee = lazy(() => import('./pages/EditGasFee'))
 const EditPermission = lazy(() => import('./pages/EditPermission'))
 const ConfirmTransaction = lazy(() => import('./pages/ConfirmTransaction'))
+const ViewData = lazy(() => import('./pages/ViewData'))
 
 function App() {
   const lockedData = useIsLocked()
@@ -125,6 +127,7 @@ function App() {
                 path={SELECT_CREATE_TYPE}
                 component={SelectCreateType}
               />
+              <Route exact path={VIEW_DATA} component={ViewData} />
               <Route exact path={CONNECT_SITE} component={ConnectSite} />
               <Route
                 exact

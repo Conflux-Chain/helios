@@ -11,12 +11,13 @@ function QRCodeButton({title, qrcodeValue, className = ''}) {
       <QrcodeOutlined
         onClick={() => setQrcodeShow(true)}
         className={`cursor-pointer w-4 h-4 text-white ${className}`}
+        id="qrCodeOutlined"
       />
       <Modal
         open={qrcodeShow}
         onClose={() => setQrcodeShow(false)}
         content={
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center" id="qrContent">
             <span className="text-gray-40 text-xs mb-1">{title}</span>
             <QRCode value={qrcodeValue} size={272} />
             <span className="inline-block w-full mt-2 bg-bg rounded p-2 text-gray-80 break-all">

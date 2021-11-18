@@ -35,9 +35,13 @@ function NewSeed() {
               value={groupName}
               placeholder={groupNamePlaceholder}
               onChange={e => setGroupName(e.target.value)}
+              id="newSeedInput"
             />
           </CompWithLabel>
-          <div className="mt-4 px-4 py-6 bg-gray-0 flex flex-col items-center">
+          <div
+            className="mt-4 px-4 py-6 bg-gray-0 flex flex-col items-center"
+            id="newSeedContent"
+          >
             <img alt="bg" src="/images/create-seed-bg.svg" />
             <span className="text-gray-80 inline-block mt-3 mb-2">
               {t('seedCreateTitle')}

@@ -7,7 +7,7 @@ function DappProgressHeader({title}) {
 
   return (
     <header>
-      <div>
+      <div id="dappProgressHeader">
         <TitleNav title={title} hasGoBack={false} />
         <div className="flex justify-center items-center mt-1">
           <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center mr-2">
@@ -31,7 +31,10 @@ function DappProgressHeader({title}) {
             <img className="w-8 h-8" src="/images/logo.svg" alt="logo" />
           </div>
         </div>
-        <p className="text-base text-gray-80 text-center mt-2 font-medium px-3 whitespace-nowrap overflow-hidden overflow-ellipsis">
+        <p
+          id="site"
+          className="text-base text-gray-80 text-center mt-2 font-medium px-3 whitespace-nowrap overflow-hidden overflow-ellipsis"
+        >
           {app?.site?.origin || site?.origin || ''}
         </p>
       </div>

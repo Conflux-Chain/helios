@@ -34,10 +34,6 @@ const useGlobalStore = create(set => ({
   setNonce: nonce => set({nonce}),
   setSendToken: sendToken => set({sendToken}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
-  setRecommendPermissionLimit: recommendPermissionLimit =>
-    set({recommendPermissionLimit}),
-  setCustomPermissionLimit: customPermissionLimit =>
-    set({customPermissionLimit}),
 }))
 
 export default useGlobalStore
