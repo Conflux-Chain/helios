@@ -34,7 +34,7 @@ function ConfirmAddSuggestedToken() {
       id="confirmAddSuggestedTokenContainer"
       className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg"
     >
-      <header>
+      <header id="header">
         <TitleNav title={t('addSuggestedToken')} hasGoBack={false} />
         <div className="mt-1 px-4 pb-3">
           <AccountDisplay
@@ -49,7 +49,7 @@ function ConfirmAddSuggestedToken() {
           <p className="text-sm text-gray-80 font-medium pb-2 ml-1">
             {t('confirmAddSuggestedToken')}
           </p>
-          <div className="px-3 bg-bg rounded">
+          <div className="px-3 bg-bg rounded" id="tokens">
             <TokenItem
               token={{
                 logoURI:

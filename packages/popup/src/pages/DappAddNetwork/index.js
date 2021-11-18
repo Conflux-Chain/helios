@@ -38,9 +38,9 @@ function DappAddNetwork() {
         <header>
           <TitleNav title={t('addNetwork')} hasGoBack={false} />
         </header>
-        <main className="mt-3 px-3">
+        <main className="mt-3 px-3" id="desContainer">
           <div className="ml-1">
-            <div>
+            <div id="des">
               <div className="text-sm text-gray-80 font-medium">
                 {t('allowAddNetwork')}
               </div>
@@ -52,11 +52,15 @@ function DappAddNetwork() {
               className="cursor-pointer text-xs text-primary mt-1"
               href="/"
               target="_blank"
+              id="learnMore"
             >
               {t('learnMore')}
             </a>
           </div>
-          <div className="bg-gray-4 mt-3 px-3 py-4">
+          <div
+            className="bg-gray-4 mt-3 px-3 py-4"
+            id="NetworkContentItemWrapper"
+          >
             <NetworkContentItem
               labelText={t('networkName')}
               contentText={req?.params?.[0]?.chainName || ''}

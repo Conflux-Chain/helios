@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {formatBalance} from '@fluent-wallet/data-format'
 import {
@@ -13,50 +12,32 @@ import {
   useBalance,
   useAddressByNetworkId,
 } from '../../hooks/useApi'
-function PlaintextMessage({message}) {
-  return (
-    <div>
-      {Object.entries(message).map(([label, value], i) => (
-        <div
-          className={
-            typeof value !== 'object' || value === null
-              ? 'pl-2 flex mt-1'
-              : 'pl-2 mt-1'
-          }
-          key={i}
-        >
-          <span className="text-xs text-gray-40">{label}: </span>
-          {typeof value === 'object' && value !== null ? (
-            <PlaintextMessage message={value} />
-          ) : (
-            <span className="text-sm text-gray-80 ml-1 whitespace-pre-line break-words overflow-hidden font-medium">{`${value}`}</span>
-          )}
-        </div>
-      ))}
-    </div>
-  )
-}
-PlaintextMessage.propTypes = {
-  message: PropTypes.object.isRequired,
-}
+import PlaintextMessage from './components/PlaintextMessage'
+import {RPC_METHODS} from '../../constants'
+const {PERSONAL_SIGN} = RPC_METHODS
 
 function RequestSignature() {
   const {t} = useTranslation()
   const pendingAuthReq = usePendingAuthReq()
   const [{req, app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  const isPersonalSign = req?.method === PERSONAL_SIGN
   const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
   const address = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const balanceData = useBalance(address, dappNetworkId)
-  const plaintextData = req?.params?.[1] ? JSON.parse(req.params[1]) : {}
+  const plaintextData =
+    !isPersonalSign && req?.params?.[1] ? JSON.parse(req.params[1]) : {}
 
   return (
     <div
       id="requestSignatureContainer"
       className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg"
     >
-      <header>
-        <TitleNav title={t('signTypeMessage')} hasGoBack={false} />
+      <header id="header">
+        <TitleNav
+          title={isPersonalSign ? t('signText') : t('signTypeMessage')}
+          hasGoBack={false}
+        />
         <div className="flex mt-1 px-4 pb-3 items-center justify-between">
           <AccountDisplay
             address={address}
@@ -77,17 +58,34 @@ function RequestSignature() {
       </header>
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
         <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
-          <div className="ml-1">
-            <div className="text-sm text-gray-80 font-medium">
-              {t('signThisMessage')}
+          {!isPersonalSign ? (
+            <div className="ml-1" id="signTypeMsgDes">
+              <div className="text-sm text-gray-80 font-medium">
+                {t('signThisMessage')}
+              </div>
+              <div className="text-xs text-gray-40 mt-1">
+                {plaintextData?.domain?.name}
+              </div>
             </div>
-            <div className="text-xs text-gray-40 mt-1">
-              {plaintextData?.domain?.name}
-            </div>
-          </div>
-          <CompWithLabel label={<p className="font-medium">{t('message')}</p>}>
-            <div className="pl-1 pr-3 pt-3 pb-4 rounded bg-gray-4">
-              <PlaintextMessage message={plaintextData?.message || {}} />
+          ) : null}
+          <CompWithLabel
+            label={
+              <p id="labelDes" className="font-medium">
+                {isPersonalSign ? t('signThisText') : t('message')}
+              </p>
+            }
+          >
+            <div
+              id="plaintext"
+              className={`${
+                isPersonalSign ? 'pl-3 max-h-[376px]' : 'pl-1 max-h-[338px]'
+              } pr-3 pt-3 pb-4 rounded bg-gray-4 overflow-auto`}
+            >
+              {isPersonalSign ? (
+                req?.params?.[0] ?? ''
+              ) : (
+                <PlaintextMessage message={plaintextData?.message ?? {}} />
+              )}
             </div>
           </CompWithLabel>
           <div className="mt-3"></div>

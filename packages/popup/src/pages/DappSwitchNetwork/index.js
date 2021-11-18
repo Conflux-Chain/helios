@@ -24,7 +24,7 @@ function DappSwitchNetwork() {
       <div>
         <DappProgressHeader title={t('switchNetwork')} />
         <main className="mt-3 px-3">
-          <div className="ml-1">
+          <div className="ml-1" id="des">
             <div>
               <div className="text-sm text-gray-80 font-medium">
                 {t('allowAddNetwork')}
@@ -34,7 +34,7 @@ function DappSwitchNetwork() {
               </div>
             </div>
           </div>
-          <div className="mt-4 relative h-15 ">
+          <div className="mt-4 relative h-15">
             <img
               src="/images/switch-network-bg.svg"
               alt="bg"
@@ -59,14 +59,14 @@ function DappSwitchNetwork() {
               ) : null}
             </div>
           </div>
-          <div className="px-3 py-4 bg-gray-4">
-            <div>
+          <div className="px-3 py-4 bg-gray-4" id="networkContent">
+            <div id="networkUrl">
               <div className="text-xs text-gray-40">{t('networkUrl')}</div>
               <div className="text-sm text-gray-80 font-medium mt-0.5 whitespace-nowrap overflow-hidden overflow-ellipsis">
                 {endpoint}
               </div>
             </div>
-            <div className="mt-3">
+            <div className="mt-3" id="chainId">
               <div className="text-xs text-gray-40">{t('chainId')}</div>
               <div className="text-sm text-gray-80 font-medium mt-0.5">
                 {req?.params?.[0]?.chainId || ''}

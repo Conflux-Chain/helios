@@ -33,7 +33,10 @@ function BackupSeed() {
           <span className="inline-block ml-1 text-xs text-gray-40">
             <Trans i18nKey="backupSeedContent" />
           </span>
-          <div className="mt-4 pt-3 px-3 bg-bg rounded-sm flex flex-wrap justify-between">
+          <div
+            className="mt-4 pt-3 px-3 bg-bg rounded-sm flex flex-wrap justify-between"
+            id="mnemonicContainer"
+          >
             {mnemonic.split(' ').map((word, index) => (
               <SeedWord
                 key={index}

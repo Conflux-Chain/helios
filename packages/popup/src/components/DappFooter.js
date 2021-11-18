@@ -16,6 +16,7 @@ const {
   WALLET_ADD_ETHEREUM_CHAIN,
   WALLET_ADD_CONFLUX_CHAIN,
   WALLET_WATCH_ASSET,
+  PERSONAL_SIGN,
 } = RPC_METHODS
 const {HOME} = ROUTES
 function DappFooter({
@@ -51,21 +52,16 @@ function DappFooter({
       case WALLET_REQUEST_PERMISSIONS:
         params.permissions = req.params
         break
+      case WALLET_SWITCH_ETHEREUM_CHAIN:
       case WALLET_SWITCH_CONFLUX_CHAIN:
         params.chainConfig = req.params
         break
-      case WALLET_SWITCH_ETHEREUM_CHAIN:
-        params.chainConfig = req.params
-        break
-      case CFX_SIGN_TYPED_DATA_V4:
-        params.data = req.params
-        break
       case ETH_SIGN_TYPED_DATA_V4:
+      case CFX_SIGN_TYPED_DATA_V4:
+      case PERSONAL_SIGN:
         params.data = req.params
         break
       case WALLET_ADD_ETHEREUM_CHAIN:
-        params.newChainConfig = req.params
-        break
       case WALLET_ADD_CONFLUX_CHAIN:
         params.newChainConfig = req.params
         break

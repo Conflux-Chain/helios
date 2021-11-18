@@ -43,6 +43,7 @@ function LanguageNav({hasGoBack = false}) {
         <div
           className="flex items-center cursor-pointer"
           aria-hidden="true"
+          id="goBack"
           onClick={() => {
             history.goBack()
           }}
@@ -53,7 +54,11 @@ function LanguageNav({hasGoBack = false}) {
       ) : (
         <div />
       )}
-      <Dropdown overlay={Overlay(changeLanguage)} trigger={['hover']}>
+      <Dropdown
+        overlay={Overlay(changeLanguage)}
+        trigger={['hover']}
+        id="languageDropdown"
+      >
         <div className="flex items-center">
           <span className="text-xs">{t(language)}</span>
           {LANGUAGES.length ? (

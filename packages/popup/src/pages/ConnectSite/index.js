@@ -35,7 +35,7 @@ function ConnectSitesList({
     <>
       <CompWithLabel
         label={
-          <div className="flex justify-between">
+          <div className="flex justify-between" id="label">
             <div className="flex items-center">
               <div className="text-sm text-gray-40">
                 {t('selectAuthorizedAccounts')}
@@ -43,23 +43,32 @@ function ConnectSitesList({
               <QuestionCircleOutlined
                 onClick={() => window && window.open('')}
                 className="w-4 h-4 text-gray-40 ml-2 cursor-pointer"
+                id="questionCircleOutlined"
               />
             </div>
-            <Checkbox checked={allCheckboxStatus} onChange={onSelectAllAccount}>
+            <Checkbox
+              checked={allCheckboxStatus}
+              onChange={onSelectAllAccount}
+              id="selectAll"
+            >
               {t('selectAll')}
             </Checkbox>
           </div>
         }
       >
-        <div className="max-h-[282px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll">
+        <div
+          id="accountWrapper"
+          className="max-h-[282px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll"
+        >
           {accountData.map(({nickname, account, eid}) => (
             <div key={eid}>
               <p className="text-gray-40 ml-4 mb-1 mt-1 text-xs">{nickname}</p>
-              {Object.values(account).map(accountItem => (
+              {Object.values(account).map((accountItem, index) => (
                 <div
                   aria-hidden="true"
                   onClick={() => onSelectSingleAccount(accountItem.eid)}
                   key={accountItem.eid}
+                  id={`item-${index}`}
                   className="flex px-3 items-center h-15 cursor-pointer"
                 >
                   <div className="flex w-full">
@@ -82,9 +91,13 @@ function ConnectSitesList({
                           src="/images/location.svg"
                           alt="current address"
                           className="mr-3"
+                          id="location"
                         />
                       ) : null}
-                      <Checkbox checked={checkboxStatusObj[accountItem.eid]} />
+                      <Checkbox
+                        checked={checkboxStatusObj[accountItem.eid]}
+                        id={`check-${index}`}
+                      />
                     </div>
                   </div>
                 </div>
@@ -180,7 +193,7 @@ function ConnectSite() {
       id="connectSiteContainer"
       className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
     >
-      <div>
+      <div id="content">
         <DappProgressHeader title={t('connectSite')} />
         <main className="px-3">
           <CompWithLabel
@@ -198,6 +211,7 @@ function ConnectSite() {
                 readonly
                 className="pointer-events-none"
                 suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
+                id="searchContent"
                 prefix={
                   <img
                     src={searchIcon || '/images/default-network-icon.svg'}

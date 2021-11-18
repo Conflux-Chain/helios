@@ -8,6 +8,7 @@ function CustomTag({
 }) {
   return (
     <div
+      id="customTag"
       className={`flex h-5 rounded-tr rounded-bl-lg items-center justify-center text-xs ${width} ${backgroundColor} ${className}`}
     >
       {children}
