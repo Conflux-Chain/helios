@@ -6,4 +6,5 @@ releases:
 declined:
   - helios-background
   - "@fluent-wallet/jazz-icon"
+  - helios-popup
   - "@fluent-wallet/rpc-engine"

@@ -8429,107 +8429,107 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/core-android-arm64@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-android-arm64@npm:1.2.108"
+"@swc/core-android-arm64@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-android-arm64@npm:1.2.110"
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-arm64@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-darwin-arm64@npm:1.2.108"
+"@swc/core-darwin-arm64@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-darwin-arm64@npm:1.2.110"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-x64@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-darwin-x64@npm:1.2.108"
+"@swc/core-darwin-x64@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-darwin-x64@npm:1.2.110"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-freebsd-x64@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-freebsd-x64@npm:1.2.108"
+"@swc/core-freebsd-x64@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-freebsd-x64@npm:1.2.110"
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm-gnueabihf@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.2.108"
+"@swc/core-linux-arm-gnueabihf@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.2.110"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-gnu@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-linux-arm64-gnu@npm:1.2.108"
+"@swc/core-linux-arm64-gnu@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-linux-arm64-gnu@npm:1.2.110"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-musl@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-linux-arm64-musl@npm:1.2.108"
+"@swc/core-linux-arm64-musl@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-linux-arm64-musl@npm:1.2.110"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-gnu@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-linux-x64-gnu@npm:1.2.108"
+"@swc/core-linux-x64-gnu@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-linux-x64-gnu@npm:1.2.110"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-musl@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-linux-x64-musl@npm:1.2.108"
+"@swc/core-linux-x64-musl@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-linux-x64-musl@npm:1.2.110"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-win32-arm64-msvc@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-win32-arm64-msvc@npm:1.2.108"
+"@swc/core-win32-arm64-msvc@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-win32-arm64-msvc@npm:1.2.110"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-win32-ia32-msvc@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-win32-ia32-msvc@npm:1.2.108"
+"@swc/core-win32-ia32-msvc@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-win32-ia32-msvc@npm:1.2.110"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@swc/core-win32-x64-msvc@npm:^1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core-win32-x64-msvc@npm:1.2.108"
+"@swc/core-win32-x64-msvc@npm:^1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core-win32-x64-msvc@npm:1.2.110"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core@npm:1.2.108":
-  version: 1.2.108
-  resolution: "@swc/core@npm:1.2.108"
+"@swc/core@npm:1.2.110":
+  version: 1.2.110
+  resolution: "@swc/core@npm:1.2.110"
   dependencies:
     "@node-rs/helper": ^1.0.0
-    "@swc/core-android-arm64": ^1.2.108
-    "@swc/core-darwin-arm64": ^1.2.108
-    "@swc/core-darwin-x64": ^1.2.108
-    "@swc/core-freebsd-x64": ^1.2.108
-    "@swc/core-linux-arm-gnueabihf": ^1.2.108
-    "@swc/core-linux-arm64-gnu": ^1.2.108
-    "@swc/core-linux-arm64-musl": ^1.2.108
-    "@swc/core-linux-x64-gnu": ^1.2.108
-    "@swc/core-linux-x64-musl": ^1.2.108
-    "@swc/core-win32-arm64-msvc": ^1.2.108
-    "@swc/core-win32-ia32-msvc": ^1.2.108
-    "@swc/core-win32-x64-msvc": ^1.2.108
+    "@swc/core-android-arm64": ^1.2.110
+    "@swc/core-darwin-arm64": ^1.2.110
+    "@swc/core-darwin-x64": ^1.2.110
+    "@swc/core-freebsd-x64": ^1.2.110
+    "@swc/core-linux-arm-gnueabihf": ^1.2.110
+    "@swc/core-linux-arm64-gnu": ^1.2.110
+    "@swc/core-linux-arm64-musl": ^1.2.110
+    "@swc/core-linux-x64-gnu": ^1.2.110
+    "@swc/core-linux-x64-musl": ^1.2.110
+    "@swc/core-win32-arm64-msvc": ^1.2.110
+    "@swc/core-win32-ia32-msvc": ^1.2.110
+    "@swc/core-win32-x64-msvc": ^1.2.110
   dependenciesMeta:
     "@swc/core-android-arm64":
       optional: true
@@ -8555,7 +8555,7 @@ __metadata:
       optional: true
     "@swc/core-win32-x64-msvc":
       optional: true
-  checksum: ff9b371b56e3e9bc9b3c7ed9e4c9b1e7086fcd03f3ad5b1328c0ad403e182d600e174e7dab4c11cf53f322691226468b06d19fcd0f6976ec3a2965f3c434c6e2
+  checksum: 347656273c9e09533f8122a6afd505723b0a7d18ee36ab6c0107216f67b5d1d1faf31bf60d8fe2c1b0019968e4bd9aeb0999b0b8e3e02fa223ccd43fd6308d0f
   languageName: node
   linkType: hard
 
@@ -14526,6 +14526,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cssnano-preset-default@npm:^5.1.7":
+  version: 5.1.7
+  resolution: "cssnano-preset-default@npm:5.1.7"
+  dependencies:
+    css-declaration-sorter: ^6.0.3
+    cssnano-utils: ^2.0.1
+    postcss-calc: ^8.0.0
+    postcss-colormin: ^5.2.1
+    postcss-convert-values: ^5.0.2
+    postcss-discard-comments: ^5.0.1
+    postcss-discard-duplicates: ^5.0.1
+    postcss-discard-empty: ^5.0.1
+    postcss-discard-overridden: ^5.0.1
+    postcss-merge-longhand: ^5.0.4
+    postcss-merge-rules: ^5.0.3
+    postcss-minify-font-values: ^5.0.1
+    postcss-minify-gradients: ^5.0.3
+    postcss-minify-params: ^5.0.2
+    postcss-minify-selectors: ^5.1.0
+    postcss-normalize-charset: ^5.0.1
+    postcss-normalize-display-values: ^5.0.1
+    postcss-normalize-positions: ^5.0.1
+    postcss-normalize-repeat-style: ^5.0.1
+    postcss-normalize-string: ^5.0.1
+    postcss-normalize-timing-functions: ^5.0.1
+    postcss-normalize-unicode: ^5.0.1
+    postcss-normalize-url: ^5.0.3
+    postcss-normalize-whitespace: ^5.0.1
+    postcss-ordered-values: ^5.0.2
+    postcss-reduce-initial: ^5.0.1
+    postcss-reduce-transforms: ^5.0.1
+    postcss-svgo: ^5.0.3
+    postcss-unique-selectors: ^5.0.2
+  peerDependencies:
+    postcss: ^8.2.15
+  checksum: 179b9a113d5e7fc887eb5ce4841ec83834e95afc85a28c767b34a8736fe0fe098a5963c225b18a1b553d566c7a74908951a0ceed97f2fbf5cdfafcce10db37ff
+  languageName: node
+  linkType: hard
+
 "cssnano-utils@npm:^2.0.1":
   version: 2.0.1
   resolution: "cssnano-utils@npm:2.0.1"
@@ -14535,17 +14574,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cssnano@npm:5.0.10, cssnano@npm:^5.0.8":
-  version: 5.0.10
-  resolution: "cssnano@npm:5.0.10"
+"cssnano@npm:5.0.11":
+  version: 5.0.11
+  resolution: "cssnano@npm:5.0.11"
   dependencies:
-    cssnano-preset-default: ^5.1.6
+    cssnano-preset-default: ^5.1.7
     is-resolvable: ^1.1.0
     lilconfig: ^2.0.3
     yaml: ^1.10.2
   peerDependencies:
     postcss: ^8.2.15
-  checksum: 65fa38069925b9ac5b97b05e04c1ad4c9ede580f402e58bef4a15eae14d8cdb8c834b76091b6d4319c1986025221f29ce57b89ae32f63a13f66625df44e12db9
+  checksum: 9b7d6a4a796175e73a019ec94e112dbf1fb66173716e099116fa8b33568fb1875d7cc1bf728033f4c2861c65d92b66be15618127182dd1f9872387d2d55fddcd
   languageName: node
   linkType: hard
 
@@ -14560,6 +14599,20 @@ __metadata:
   peerDependencies:
     postcss: ^8.2.15
   checksum: 18d6496accecf8aa428ed8ef27fbc41cd1c2cad26e64b335711fafd23b2d03d5854023d3fbfda7da9718e416ae94d6b38357df20a6289e1db1c422421d819684
+  languageName: node
+  linkType: hard
+
+"cssnano@npm:^5.0.8":
+  version: 5.0.10
+  resolution: "cssnano@npm:5.0.10"
+  dependencies:
+    cssnano-preset-default: ^5.1.6
+    is-resolvable: ^1.1.0
+    lilconfig: ^2.0.3
+    yaml: ^1.10.2
+  peerDependencies:
+    postcss: ^8.2.15
+  checksum: 65fa38069925b9ac5b97b05e04c1ad4c9ede580f402e58bef4a15eae14d8cdb8c834b76091b6d4319c1986025221f29ce57b89ae32f63a13f66625df44e12db9
   languageName: node
   linkType: hard
 
@@ -19118,7 +19171,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/shorten-address": "workspace:packages/ui/shorten-address"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
     "@fluent-wallet/utils": "workspace:packages/utils"
-    i18next: 21.5.0
+    i18next: 21.5.2
     qrcode.react: 1.0.1
     react-copy-to-clipboard: 5.0.4
     react-i18next: 11.14.2
@@ -19153,7 +19206,7 @@ fsevents@~2.1.2:
     "@storybook/addon-viewport": 6.3.12
     "@storybook/react": 6.3.12
     "@swc/cli": 0.1.51
-    "@swc/core": 1.2.108
+    "@swc/core": 1.2.110
     "@swc/helpers": 0.2.14
     "@testing-library/jest-dom": 5.15.0
     "@testing-library/react": 12.1.2
@@ -19162,7 +19215,7 @@ fsevents@~2.1.2:
     browserslist: ^4.18.1
     concurrently: ^6.4.0
     cross-env: ^7.0.3
-    cssnano: 5.0.10
+    cssnano: 5.0.11
     dot-env: ^0.0.1
     dotenv-expand: ^5.1.0
     eslint: ^7.32.0
@@ -19194,7 +19247,7 @@ fsevents@~2.1.2:
     regenerator-runtime: ^0.13.9
     rimraf: ^3.0.2
     shadow-cljs: ^2.16.4
-    snowpack: 3.8.8
+    snowpack: 3.8.6
     storybook: 6.3.12
     storybook-addon-outline: 1.4.1
     storybook-addon-pseudo-states: 1.0.0
@@ -19657,12 +19710,12 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"i18next@npm:21.5.0":
-  version: 21.5.0
-  resolution: "i18next@npm:21.5.0"
+"i18next@npm:21.5.2":
+  version: 21.5.2
+  resolution: "i18next@npm:21.5.2"
   dependencies:
     "@babel/runtime": ^7.12.0
-  checksum: 3c2edce641d4c8ac314aa1d599dc39c958f5c98386aa0ca30f43a167f80c96fbaaa5c65c9386db5b163b9e7c9e121df0ac27563172fc5bc5a91d36a232327983
+  checksum: 1968c334acee1167a7efb80304c273d425bdd6d5bb0018949e93f8f2af86d0712362f4486e825fd94ccc5a947a2839d2970ade99c56e772683708486bf1f3a07
   languageName: node
   linkType: hard
 
@@ -25684,6 +25737,18 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"postcss-merge-longhand@npm:^5.0.4":
+  version: 5.0.4
+  resolution: "postcss-merge-longhand@npm:5.0.4"
+  dependencies:
+    postcss-value-parser: ^4.1.0
+    stylehacks: ^5.0.1
+  peerDependencies:
+    postcss: ^8.2.15
+  checksum: 6c5ff2ae0e9def05a59cbb432b5cbbdb968816b83c4e38fdf14fa596ef21e36442f61b53984d56dca6165d91e74eadc720270b2887a4a1ef5e25ee171b7d7ea0
+  languageName: node
+  linkType: hard
+
 "postcss-merge-rules@npm:^5.0.2":
   version: 5.0.2
   resolution: "postcss-merge-rules@npm:5.0.2"
@@ -25696,6 +25761,20 @@ fsevents@~2.1.2:
   peerDependencies:
     postcss: ^8.2.15
   checksum: 04b2be8e9def9822182aeb1362d25ef1bee9d4a5be6715fc9bec7aa4c7e885fb1b22d2d8a4438d58952952d2d3957e423ef8adcd7d5339d8bd046c9bae8c1639
+  languageName: node
+  linkType: hard
+
+"postcss-merge-rules@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "postcss-merge-rules@npm:5.0.3"
+  dependencies:
+    browserslist: ^4.16.6
+    caniuse-api: ^3.0.0
+    cssnano-utils: ^2.0.1
+    postcss-selector-parser: ^6.0.5
+  peerDependencies:
+    postcss: ^8.2.15
+  checksum: 2e701693c6086cc88ac9e4d30a64471bd8da2e33b7e788b7bcbb4e91ecf87bbddc73529a1308a77953e0a2969f57f22714028547b8469db364b3d0d26b39eae2
   languageName: node
   linkType: hard
 
@@ -25748,6 +25827,20 @@ fsevents@~2.1.2:
   peerDependencies:
     postcss: ^8.2.15
   checksum: 52f210c5240c17d21bf4d1fec6477c929e74b047d084d5bf0f8e388534cc4b821cd4f2880d1aca0a0e0c13fcf133dc566897645d9f1f7e056bd443ef27c9a6c7
+  languageName: node
+  linkType: hard
+
+"postcss-minify-params@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "postcss-minify-params@npm:5.0.2"
+  dependencies:
+    alphanum-sort: ^1.0.2
+    browserslist: ^4.16.6
+    cssnano-utils: ^2.0.1
+    postcss-value-parser: ^4.1.0
+  peerDependencies:
+    postcss: ^8.2.15
+  checksum: 234e833e0d187106dd949a8973662168ba27e2a036ae4af979921375328ee77673ba5def616426ab9554f9224af8e3c73822193af5cbbdf98aadc0e39775724b
   languageName: node
   linkType: hard
 
@@ -25969,6 +26062,19 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"postcss-normalize-url@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "postcss-normalize-url@npm:5.0.3"
+  dependencies:
+    is-absolute-url: ^3.0.3
+    normalize-url: ^6.0.1
+    postcss-value-parser: ^4.1.0
+  peerDependencies:
+    postcss: ^8.2.15
+  checksum: 34dfc8d1d71f0cf073d3f3edfc94a5381d659275103240c15bb3d4f424e70ceec431dc663c7403e1b813d98f45fb5174f7f0c3fe9fb6b00cdbd62f3ac2f0032c
+  languageName: node
+  linkType: hard
+
 "postcss-normalize-whitespace@npm:^5.0.1":
   version: 5.0.1
   resolution: "postcss-normalize-whitespace@npm:5.0.1"
@@ -26098,6 +26204,18 @@ fsevents@~2.1.2:
   peerDependencies:
     postcss: ^8.2.15
   checksum: 4346c4715b3f5facfd4b52fc8553085241c98b533b8965b1d3c1e370f277092d02c72bde519d70a82102467464e6cde9581e0d0592d07108c67e7ad20e67a23a
+  languageName: node
+  linkType: hard
+
+"postcss-unique-selectors@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "postcss-unique-selectors@npm:5.0.2"
+  dependencies:
+    alphanum-sort: ^1.0.2
+    postcss-selector-parser: ^6.0.5
+  peerDependencies:
+    postcss: ^8.2.15
+  checksum: ad0f7a8a4f1ed958544c1ede62a1c4b0978e01627a6ef0642f7b044d0f9fdb331318a91f8312f418a773b0f2df06c50896cfaf7e5dd3d0142bd1e5ba75dc9eb7
   languageName: node
   linkType: hard
 
@@ -29297,9 +29415,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"snowpack@npm:3.8.8":
-  version: 3.8.8
-  resolution: "snowpack@npm:3.8.8"
+"snowpack@npm:3.8.6":
+  version: 3.8.6
+  resolution: "snowpack@npm:3.8.6"
   dependencies:
     "@npmcli/arborist": ^2.6.4
     bufferutil: ^4.0.2
@@ -29329,7 +29447,6 @@ resolve@^2.0.0-next.3:
     isbinaryfile: ^4.0.6
     jsonschema: ~1.2.5
     kleur: ^4.1.1
-    magic-string: ^0.25.7
     meriyah: ^3.1.6
     mime-types: ^2.1.26
     mkdirp: ^1.0.3
@@ -29359,7 +29476,7 @@ resolve@^2.0.0-next.3:
   bin:
     snowpack: index.bin.js
     sp: index.bin.js
-  checksum: ee159e79eee0dab58f1f193ca778dcc06a88231efe66f8dcfefa1b2bfb4c8eaf6c048f52a8fc25238455ac8a53e7cddd240526c1fd5f85c9f4f868659fc1d661
+  checksum: 19c5f111101354f7fd29db66ff516f879bd4aa3a255c92cb55c0167a2c7ba9b177300719e604bc28ad4b299c35f59fa93b1c03bb52bcaf79f9c219095122e6d5
   languageName: node
   linkType: hard
 
