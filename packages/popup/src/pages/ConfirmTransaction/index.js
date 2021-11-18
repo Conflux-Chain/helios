@@ -96,7 +96,6 @@ function ConfirmTransition() {
   const onSend = () => {
     if (sendingTransaction) return
     setSendingTransaction(true)
-    params.storageLimit = '0x80'
     params.data = viewData
     request(SEND_TRANSACTION, [params]).then(({error, result}) => {
       setSendingTransaction(false)
