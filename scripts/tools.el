@@ -120,3 +120,6 @@
             (insert main)))))))
 
 (add-hook! js2-mode 'helios-setup-rpc-indexjs)
+
+(after! lsp-mode
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]browser-extension"))
