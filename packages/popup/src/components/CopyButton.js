@@ -9,7 +9,7 @@ function CopyButton({text, className = ''}) {
   const {t} = useTranslation()
   const [copied, setCopied] = useState(false)
   return (
-    <div className="relative">
+    <div className="relative" id="copyButton">
       <CopyToClipboard text={text} onCopy={() => setCopied(true)}>
         <CopyOutlined className={`cursor-pointer w-4 h-4 ${className}`} />
       </CopyToClipboard>

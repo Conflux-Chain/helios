@@ -44,6 +44,7 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
       content={content}
       onClose={onClose}
       contentClassName="flex-1 flex"
+      id="tokenListModal"
     />
   )
 }
@@ -67,10 +68,7 @@ function TokenAndAmount({
   const {eid: networkId} = useCurrentNetwork()
   const {address} = useCurrentAccount()
   const {symbol, icon, decimals, address: selectedTokenAddress} = selectedToken
-  console.log('select', decimals)
   const tokenAddress = isNativeToken ? '0x0' : selectedTokenAddress
-  console.log(address, networkId, tokenAddress)
-  console.log('balanceData', useBalance(address, networkId, tokenAddress))
   const balance =
     useBalance(address, networkId, tokenAddress)?.[address]?.[tokenAddress] ||
     '0x0'
@@ -86,6 +84,7 @@ function TokenAndAmount({
           className="mx-1 text-xs"
           initialFontSize={12}
           symbol={symbol}
+          id="balance"
         />
       </span>
     </span>
@@ -104,12 +103,14 @@ function TokenAndAmount({
         <div
           className="flex items-center pr-3 border-r-gray-20 cursor-pointer border-r border-text-20 h-6"
           onClick={() => setTokenListShow(true)}
+          id="changeToken"
           aria-hidden="true"
         >
           <img
             className="w-5 h-5 mr-1"
             src={icon || '/images/default-token-icon.svg'}
             alt="logo"
+            id="tokenIcon"
           />
           <span className="text-gray-80 mr-2">{symbol}</span>
           <CaretDownFilled className="w-4 h-4 text-gray-60" />
@@ -121,9 +122,12 @@ function TokenAndAmount({
             value={amount}
             decimals={decimals}
             onChange={e => onChangeAmount && onChangeAmount(e.target.value)}
+            id="amount"
           />
         </div>
-        <Link onClick={onClickMax}>{t('max')}</Link>
+        <Link onClick={onClickMax} id="max">
+          {t('max')}
+        </Link>
       </div>
       <ChooseTokenList
         open={tokenListShow}

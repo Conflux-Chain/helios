@@ -74,12 +74,9 @@ function DappFooter({
         break
     }
 
-    console.log(req.method, eid, params)
-
     request(req.method, {authReqId: eid, ...params}).then(({result, error}) => {
-      console.log('result', result)
-      console.log('error', error)
       setSendingRequestStatus(false)
+      error && console.log(error)
       result && onClickConfirm && onClickConfirm()
       result && history.push(HOME)
       // TODO: error message

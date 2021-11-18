@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react'
-import {useEffectOnce} from 'react-use'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
@@ -8,12 +7,9 @@ import {useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useTxParams, useEstimateTx} from '../../hooks'
 import {WrapperWithLabel} from './components'
 import {
-  GWEI_DECIMALS,
   Big,
   formatDecimalToHex,
   formatHexToDecimal,
-  fromDripToCfx,
-  convertDecimal,
   CFX_DECIMALS,
   convertDataToValue,
 } from '@fluent-wallet/data-format'
@@ -31,7 +27,6 @@ function EditGasFee() {
   const {gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce} =
     useGlobalStore()
 
-  console.log(gasPrice, gasLimit, nonce)
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
 
@@ -41,34 +36,25 @@ function EditGasFee() {
     gas: formatDecimalToHex(inputGasLimit),
   }
   if (nonce) params.nonce = formatDecimalToHex(nonce)
-  console.log('params', params)
   const estimateRst = useEstimateTx(params) || {}
-  console.log('estimateRst = ', estimateRst)
-  const {gasUsed, storageFeeDrip, storageCollateralized} = estimateRst
+  const {gasUsed, storageCollateralized} = estimateRst
+  const {storageFeeDrip, gasFeeDrip, txFeeDrip} = estimateRst?.customData || {}
 
   //TODO:  if not pass transition params  jump to home
   // if () {
   //   history.push(HOME)
   // }
 
-  useEffectOnce(() => {
+  useEffect(() => {
     setInputGasLimit(gasLimit)
     setInputGasPrice(gasPrice)
     setInputNonce(nonce)
   }, [gasLimit, gasPrice, nonce])
 
-  console.log(inputGasPrice, inputGasLimit, inputNonce)
-  const gasFee = networkTypeIsCfx
-    ? new Big(fromDripToCfx(inputGasPrice || '0'))
-        .times(inputGasLimit || '0')
-        .toString(10)
-    : new Big(convertDecimal(inputGasPrice || '0', 'divide', GWEI_DECIMALS))
-        .times(inputGasLimit || '0')
-        .toString(10)
-  console.log(gasFee)
+  const gasFee = convertDataToValue(gasFeeDrip || '0', CFX_DECIMALS)
 
   const storageFee = convertDataToValue(storageFeeDrip || '0', CFX_DECIMALS)
-  const txFee = new Big(gasFee).plus(storageFee).toString(10)
+  const txFee = convertDataToValue(txFeeDrip || '0', CFX_DECIMALS)
 
   useEffect(() => {
     setGasPriceErr(
@@ -115,6 +101,7 @@ function EditGasFee() {
             rightClass="text-gray-80"
             rightContent={
               <DisplayBalance
+                id="gasFee"
                 maxWidth={218}
                 maxWidthStyle="max-w-[218px]"
                 symbol={symbol}
@@ -132,6 +119,7 @@ function EditGasFee() {
                 size="small"
                 width="w-32"
                 value={inputGasPrice}
+                id="gasPrice"
                 errorMessage={gasPriceErr}
                 errorClassName="absolute right-0 -bottom-6"
                 onChange={e => setInputGasPrice(e.target.value)}
@@ -145,6 +133,7 @@ function EditGasFee() {
               <NumberInput
                 size="small"
                 width="w-32"
+                id="gasLimit"
                 errorClassName="absolute right-0 -bottom-6"
                 value={inputGasLimit}
                 errorMessage={gasLimitErr}
@@ -160,6 +149,7 @@ function EditGasFee() {
                 rightClass="text-gray-80"
                 rightContent={
                   <DisplayBalance
+                    id="storageFee"
                     maxWidth={218}
                     maxWidthStyle="max-w-[218px]"
                     symbol={symbol}
@@ -170,7 +160,11 @@ function EditGasFee() {
               <WrapperWithLabel
                 leftContent={t('storageCollateralized')}
                 rightClass="text-gray-80"
-                rightContent={formatHexToDecimal(storageCollateralized)}
+                rightContent={
+                  <span id="storageLimit">
+                    {formatHexToDecimal(storageCollateralized)}
+                  </span>
+                }
               />
             </div>
           ) : null}
@@ -183,6 +177,7 @@ function EditGasFee() {
               rightClass="text-gray-80 text-base"
               rightContent={
                 <DisplayBalance
+                  id="txFee"
                   maxWidth={218}
                   maxWidthStyle="max-w-[218px]"
                   symbol={symbol}
@@ -198,6 +193,7 @@ function EditGasFee() {
             containerClass="relative"
             rightContent={
               <NumberInput
+                id="nonce"
                 size="small"
                 width="w-32"
                 value={inputNonce}

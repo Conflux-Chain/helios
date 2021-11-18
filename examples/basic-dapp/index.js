@@ -95,7 +95,16 @@ const exampleContract = new Conflux().Contract({
   ],
 })
 
-const fcAddress = 'cfxtest:achkx35n7vngfxgrm7akemk3ftzy47t61yk5nn270s'
+const cusdtAddress = 'cfxtest:acepe88unk7fvs18436178up33hb4zkuf62a9dk1gv'
+async function cfxEstimateGasAndCollateralAdvance(tx) {
+  console.log('tx', tx)
+  const estimateRst = await window.cfx.request({
+    method: 'cfx_estimateGasAndCollateral',
+    params: [tx, 'latest_state'],
+  })
+  console.log('result', estimateRst)
+  return estimateRst.result
+}
 function getElement(id) {
   return document.getElementById(id)
 }
@@ -117,6 +126,7 @@ function walletInitialized({chainId, networkId}) {
   const transferFromButton = getElement('transfer_from')
   const approveAccountInput = getElement('approve-account')
   const transferFromAccountInput = getElement('from-account')
+  const transferToAccountInput = getElement('to-account')
 
   const personalSignButton = getElement('personal_sign')
   const typedSignButton = getElement('typed_sign')
@@ -175,17 +185,23 @@ function walletInitialized({chainId, networkId}) {
       } = await provider.request({method: 'cfx_accounts'})
       const tx = {
         from: connectedAddress,
-        to: fcAddress,
-        gas: '0x5a98',
-        storageLimit: '0x80',
+        to: cusdtAddress,
         data: exampleContract.approve(
           approveAccountInput.value,
-          100000000000000000,
+          100000000000000000000,
         ).data,
+      }
+      const {storageCollateralized, gasLimit} =
+        await cfxEstimateGasAndCollateralAdvance(tx)
+      console.log(storageCollateralized, gasLimit)
+      const estimateTx = {
+        ...tx,
+        gas: gasLimit,
+        storageLimit: storageCollateralized,
       }
 
       provider
-        .request({method: 'cfx_sendTransaction', params: [tx]})
+        .request({method: 'cfx_sendTransaction', params: [estimateTx]})
         .then(res => {
           if (res.error)
             return console.error('error', res.error.message || res.error)
@@ -203,15 +219,23 @@ function walletInitialized({chainId, networkId}) {
       } = await provider.request({method: 'cfx_accounts'})
       const tx = {
         from: connectedAddress,
-        to: fcAddress,
+        to: cusdtAddress,
         data: exampleContract.transferFrom(
           transferFromAccountInput.value,
-          'cfxtest:aak4wphw0a9pdcg704xj2ab17n6j9puwuj3d9yz0jx',
-          10000000000000000,
+          transferToAccountInput.value,
+          10000000000000000000,
         ).data,
       }
+      const {storageCollateralized, gasLimit} =
+        await cfxEstimateGasAndCollateralAdvance(tx)
+      console.log(storageCollateralized, gasLimit)
+      const estimateTx = {
+        ...tx,
+        gas: gasLimit,
+        storageLimit: storageCollateralized,
+      }
       provider
-        .request({method: 'cfx_sendTransaction', params: [tx]})
+        .request({method: 'cfx_sendTransaction', params: [estimateTx]})
         .then(res => {
           if (res.error)
             return console.error('error', res.error.message || res.error)

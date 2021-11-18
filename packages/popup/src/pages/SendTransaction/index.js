@@ -4,6 +4,7 @@ import {useHistory} from 'react-router-dom'
 import {
   formatHexToDecimal,
   convertDataToValue,
+  convertValueToData,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
@@ -15,7 +16,7 @@ import {
   CurrentNetworkDisplay,
 } from './components'
 import useGlobalStore from '../../stores'
-import {bn16, validateAddress} from '../../utils'
+import {validateAddress} from '../../utils'
 import {
   useNetworkTypeIsCfx,
   useCurrentNetwork,
@@ -25,7 +26,6 @@ import {ROUTES} from '../../constants'
 const {HOME, CONFIRM_TRANSACTION} = ROUTES
 
 function SendTransaction() {
-  console.log('render')
   const {t} = useTranslation()
   const history = useHistory()
   const {
@@ -49,20 +49,20 @@ function SendTransaction() {
   const nativeToken = ticker || {}
   const isNativeToken = !tokenAddress
   const params = useTxParams()
-  const estimateRst = useEstimateTx(params) || {}
+  const estimateRst =
+    useEstimateTx(
+      params,
+      !isNativeToken
+        ? {[tokenAddress]: convertValueToData(sendAmount, decimals)}
+        : {},
+    ) || {}
   const {gasPrice, gasLimit, nonce, nativeMaxDrip} = estimateRst
   useEffect(() => {
     setGasPrice(formatHexToDecimal(gasPrice))
     setGasLimit(formatHexToDecimal(gasLimit))
     setNonce(formatHexToDecimal(nonce))
   }, [gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce])
-  const errorMessage = useCheckBalanceAndGas(
-    estimateRst,
-    sendAmount,
-    sendToken,
-    true,
-    address,
-  )
+  const errorMessage = useCheckBalanceAndGas(estimateRst, sendAmount)
   useEffect(() => {
     setBalanceError(errorMessage)
   }, [errorMessage])
@@ -120,11 +120,7 @@ function SendTransaction() {
             onChangeAmount={onChangeAmount}
             onChangeToken={onChangeToken}
             isNativeToken={isNativeToken}
-            nativeMax={
-              bn16(nativeMaxDrip).lten(0)
-                ? '0'
-                : convertDataToValue(nativeMaxDrip, decimals)
-            }
+            nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
           />
           <span className="text-error text-xs inline-block mt-2">
             {balanceError}

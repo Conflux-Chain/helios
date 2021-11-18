@@ -3,17 +3,11 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import {
-  Big,
-  fromDripToCfx,
-  convertDecimal,
-  GWEI_DECIMALS,
-} from '@fluent-wallet/data-format'
-import {RightOutlined} from '@fluent-wallet/component-icons'
-import {
   formatHexToDecimal,
   convertDataToValue,
-  COMMON_DECIMALS,
+  CFX_DECIMALS,
 } from '@fluent-wallet/data-format'
+import {RightOutlined} from '@fluent-wallet/component-icons'
 import {CompWithLabel, DisplayBalance, CustomTag} from '../components'
 import {useNetworkTypeIsCfx, usePendingAuthReq} from '../hooks/useApi'
 import useGlobalStore from '../stores'
@@ -21,8 +15,7 @@ import {ROUTES} from '../constants'
 const {EDIT_GAS_FEE} = ROUTES
 
 function GasFee({isDapp, estimateRst}) {
-  console.log('estimateRst', estimateRst)
-  const {gasPrice: inputGasPrice, gasLimit: inputGasLimit} = useGlobalStore()
+  const {gasPrice: inputGasPrice} = useGlobalStore()
   const {t} = useTranslation()
   const history = useHistory()
   const pendingAuthReq = usePendingAuthReq()
@@ -30,33 +23,23 @@ function GasFee({isDapp, estimateRst}) {
   const {
     willPayCollateral,
     willPayTxFee,
-    gasLimit: estimateGasLimit,
     gasPrice: estimateGasPrice,
-    storageFeeDrip,
   } = estimateRst
+  const {storageFeeDrip, gasFeeDrip, txFeeDrip} = estimateRst?.customData || {}
   const sendParams = pendingAuthReq?.[0]?.req?.params[0]
   const gasPrice = !isDapp
     ? inputGasPrice
     : formatHexToDecimal(sendParams?.gasPrice || estimateGasPrice) || '1'
-  const gasLimit = !isDapp
-    ? inputGasLimit
-    : formatHexToDecimal(sendParams?.gas || estimateGasLimit) || '21000'
-  const storageFee = convertDataToValue(storageFeeDrip || '0', COMMON_DECIMALS)
+  const storageFee = convertDataToValue(storageFeeDrip || '0', CFX_DECIMALS)
+  const gasFee = convertDataToValue(gasFeeDrip || '0', CFX_DECIMALS)
+  const txFee = convertDataToValue(txFeeDrip || '0', CFX_DECIMALS)
   const isBePayed = (!willPayCollateral || !willPayTxFee) && storageFee
-  const isBeAllPayed = !willPayCollateral && !willPayTxFee
-  console.log(gasPrice, gasLimit, storageFee)
-  const gasFee = networkTypeIsCfx
-    ? new Big(fromDripToCfx(gasPrice)).times(gasLimit).toString(10)
-    : new Big(convertDecimal(gasPrice, 'divide', GWEI_DECIMALS))
-        .times(gasLimit)
-        .toString(10)
+  const isBeAllPayed = !willPayCollateral && !willPayTxFee && storageFee
   const realPayedFee = isBeAllPayed
     ? '0'
     : !willPayCollateral
     ? gasFee
     : storageFee
-  const txFee = new Big(gasFee).plus(storageFee || 0).toString(10)
-  console.log(gasFee, storageFee, txFee, realPayedFee)
 
   const label = (
     <span className="flex items-center justify-between w-full">
@@ -71,8 +54,12 @@ function GasFee({isDapp, estimateRst}) {
   )
   return (
     <CompWithLabel label={label}>
-      <div className="flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative">
+      <div
+        className="flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative"
+        id="gasFeeContainer"
+      >
         <DisplayBalance
+          id="realPayedFee"
           balance={realPayedFee}
           maxWidth={234}
           maxWidthStyle="max-w-[234px]"
@@ -81,6 +68,7 @@ function GasFee({isDapp, estimateRst}) {
           initialFontSize={16}
         />
         <DisplayBalance
+          id="txFee"
           balance={txFee}
           maxWidth={300}
           maxWidthStyle="max-w-[300px]"

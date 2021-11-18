@@ -7,7 +7,6 @@ const defaultSendTransactionParams = {
   gasLimit: '',
   nonce: '',
   sendToken: {symbol: 'CFX', icon: '', decimals: 18},
-  allowance: '',
   customAllowance: '',
 }
 
@@ -19,8 +18,6 @@ const useGlobalStore = create(set => ({
   createdSeedPhase: '',
   createdPassword: '',
   createdMnemonic: '',
-  recommendPermissionLimit: '10000000000000000',
-  customPermissionLimit: '0',
   ...defaultSendTransactionParams,
 
   // logic
@@ -33,7 +30,6 @@ const useGlobalStore = create(set => ({
   setSendAmount: sendAmount => set({sendAmount}),
   setGasPrice: gasPrice => set({gasPrice}),
   setGasLimit: gasLimit => set({gasLimit}),
-  setAllowance: allowance => set({allowance}),
   setCustomAllowance: customAllowance => set({customAllowance}),
   setNonce: nonce => set({nonce}),
   setSendToken: sendToken => set({sendToken}),

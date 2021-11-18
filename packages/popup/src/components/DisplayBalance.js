@@ -16,6 +16,7 @@ function DisplayBalance({
   initialFontSize = 14,
   symbol,
   decimals = COMMON_DECIMALS,
+  id,
 }) {
   let displayBalance
   if (balance) {
@@ -25,12 +26,12 @@ function DisplayBalance({
       displayBalance = roundBalance(balance)
     }
   }
-  console.log('displayBalance', displayBalance)
   const balanceRef = useRef()
   const hiddenRef = useRef()
   useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance, initialFontSize)
   return (
     <div
+      id={id}
       className={`text-gray-80 font-mono font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis relative ${maxWidthStyle} ${className}`}
     >
       <span ref={balanceRef}>{displayBalance}</span>
@@ -50,6 +51,7 @@ DisplayBalance.propTypes = {
   initialFontSize: PropTypes.number,
   symbol: PropTypes.string,
   decimals: PropTypes.number,
+  id: PropTypes.string,
 }
 
 export default DisplayBalance

@@ -22,7 +22,7 @@ const AddressDetail = ({
   const balance = balanceMap?.[fromAddress]?.['0x0']
 
   return (
-    <div className="flex items-start w-full">
+    <div className="flex items-start w-full" id="addressDetailContainer">
       <div className="pt-1">
         <ProgressIcon
           dashLengthStyle="h-[14px]"
@@ -35,9 +35,11 @@ const AddressDetail = ({
         />
       </div>
       <div className="ml-3 flex flex-col flex-1">
-        <span className="text-xs text-gray-40">{currentAccountName}</span>
+        <span className="text-xs text-gray-40" id="currentAccountName">
+          {currentAccountName}
+        </span>
         <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2">
-          <span className="text-gray-80">
+          <span className="text-gray-80" id="fromAddress">
             {fromAddress && shortenAddress(fromAddress)}
           </span>
           <DisplayBalance
@@ -47,10 +49,11 @@ const AddressDetail = ({
             className="text-xs !text-gray-60"
             initialFontSize={12}
             decimals={nativeToken?.decimals}
+            id="fromAddressCfxBalance"
           />
         </div>
         <span className="text-xs text-gray-40">{toAddressLabel}</span>
-        <span className="text-gray-80 flex items-center">
+        <span className="text-gray-80 flex items-center" id="toAddress">
           {toAddress && shortenAddress(toAddress)}
           <CopyButton text={toAddress} className="ml-2  text-gray-60" />
         </span>
@@ -68,7 +71,6 @@ AddressDetail.propTypes = {
 
 function AddressCard({
   token,
-  fromAddress,
   toAddress,
   value,
   isSendToken,
@@ -78,11 +80,13 @@ function AddressCard({
   const {t} = useTranslation()
   const {address: userAddress, nickname: currentAccountName} =
     useCurrentAccount()
-  console.log(value)
 
   return (
-    <div className="w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat mt-1 mb-4">
-      <span className="text-primary flex items-center">
+    <div
+      id="addressCardContainer"
+      className="w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat mt-1 mb-4"
+    >
+      <span className="text-primary flex items-center" id="addressCardTitle">
         <img
           alt="icon"
           className="w-3 h-3 mr-1"
@@ -103,8 +107,9 @@ function AddressCard({
         )}
       </span>
       {isSendToken && (
-        <div className="h-10 mt-1 mb-3 flex items-center">
+        <div className="h-10 mt-1 mb-3 flex items-center" id="sendToken">
           <DisplayBalance
+            id="sendAmount"
             balance={value}
             maxWidth={256}
             maxWidthStyle="max-w-[256px]"
@@ -112,16 +117,19 @@ function AddressCard({
             initialFontSize={32}
             decimals={isDapp ? token?.decimals : 0}
           />
-          <span className="text-xs text-gray-60 mx-1">{token?.symbol}</span>
+          <span className="text-xs text-gray-60 mx-1" id="sendTokenSymbol">
+            {token?.symbol}
+          </span>
           <img
             src={token?.iconUrl || '/images/default-token-icon.svg'}
             alt="icon"
             className="w-4 h-4"
+            id="sendTokenIcon"
           />
         </div>
       )}
       <AddressDetail
-        fromAddress={fromAddress || userAddress}
+        fromAddress={userAddress}
         toAddress={toAddress}
         currentAccountName={currentAccountName}
         toAddressLabel={t(
@@ -136,7 +144,6 @@ AddressCard.propTypes = {
   token: PropTypes.object,
   value: PropTypes.string,
   toAddress: PropTypes.string,
-  fromAddress: PropTypes.string,
   isSendToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,
   isDapp: PropTypes.bool,

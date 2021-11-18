@@ -6,7 +6,7 @@ function AccountDisplay({address, accountId, nickname}) {
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center" id="accountContainer">
       <Avatar
         className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2"
         diameter={30}

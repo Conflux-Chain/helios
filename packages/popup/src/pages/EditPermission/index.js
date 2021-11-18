@@ -4,62 +4,53 @@ import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
 import {Radio, Group} from '@fluent-wallet/radio'
-import {Big} from '@fluent-wallet/data-format'
+import {Big, convertDecimal} from '@fluent-wallet/data-format'
 import useGlobalStore from '../../stores'
 import {useCurrentDapp} from '../../hooks/useApi'
+import {useDappParams, useDecodeData} from '../../hooks'
 
 /* eslint-disable react/prop-types */
-function EditPermission({symbol = 'cUSDT', decimals = 4}) {
+function EditPermission() {
   const {t} = useTranslation()
   const history = useHistory()
-  const [permissionChoice, setPermissionChoice] = useState('')
-  const [customLimitValue, setCustomLimitValue] = useState('0')
+  const tx = useDappParams()
+  const {decodeData, token} = useDecodeData(tx)
+  const [permissionChoice, setPermissionChoice] = useState('recommend')
+  const [customLimitValue, setCustomLimitValue] = useState('')
   const [customLimitErr, setCustomLimitErr] = useState('')
-  const {
-    recommendPermissionLimit,
-    customPermissionLimit,
-    setCustomPermissionLimit,
-  } = useGlobalStore()
+  const {customAllowance, setCustomAllowance} = useGlobalStore()
+
+  const {symbol, decimals} = token
+  const decodeAllowance = convertDecimal(
+    decodeData?.args?.[1].toString(10) || '0',
+    'divide',
+    decimals,
+  )
 
   const data = useCurrentDapp()
   const site = data?.site || {}
-  // TODO: should jump home page when recommendPermissionLimit value is empty
 
   useEffect(() => {
-    if (customPermissionLimit && customPermissionLimit !== '0') {
+    if (customAllowance) {
       setPermissionChoice('custom')
+      setCustomLimitValue(customAllowance)
     } else {
       setPermissionChoice('recommend')
     }
-  }, [customPermissionLimit])
-
-  useEffect(() => {
-    if (permissionChoice === 'recommend') {
-      setCustomLimitValue('0')
-    }
-  }, [permissionChoice])
-
-  useEffect(() => {
-    if (permissionChoice === 'recommend') {
-      return setCustomLimitErr('')
-    }
-    setCustomLimitErr(
-      new Big(customLimitValue).gt(0)
-        ? ''
-        : t('customLimitErr', {unit: symbol}),
-    )
-  }, [customLimitValue, t, symbol, permissionChoice])
+  }, [customAllowance])
 
   const onChangeCustomInput = e => {
-    if (permissionChoice === 'recommend') {
-      return
-    }
-    setCustomLimitValue(e.target.value)
+    const value = e.target.value
+    setCustomLimitErr(
+      value && new Big(value).gt(0) ? '' : t('customLimitErr', {unit: symbol}),
+    )
+
+    setCustomLimitValue(value)
   }
 
   const onSavePermissionLimit = () => {
-    if (customLimitValue && customLimitValue !== '0') {
-      setCustomPermissionLimit(customLimitValue)
+    if (customLimitValue) {
+      setCustomAllowance(customLimitValue)
     }
     history.goBack()
   }
@@ -76,13 +67,14 @@ function EditPermission({symbol = 'cUSDT', decimals = 4}) {
             <div className="text-gray-80 text-sm font-medium">
               {t('spendLimitPermission')}{' '}
             </div>
-            <div className="text-xs text-gray-40 my-1">
+            <div className="text-xs text-gray-40 my-1" id="dappOrigin">
               {t('allowSpendDes', {dapp: site?.origin || ''})}
             </div>
             <a
               className="cursor-pointer text-xs text-primary mt-1"
               href="/"
               target="_blank"
+              id="learnMore"
             >
               {t('learnMore')}
             </a>
@@ -90,11 +82,17 @@ function EditPermission({symbol = 'cUSDT', decimals = 4}) {
           <div className="px-3 mt-3">
             <Group
               value={permissionChoice}
-              onChange={e => setPermissionChoice(e.target.value)}
+              onChange={e => {
+                setPermissionChoice(e.target.value)
+                if (e.target.value === 'recommend') {
+                  setCustomLimitValue('')
+                }
+              }}
               name="choice"
             >
               <Radio
                 value="recommend"
+                id="recommend"
                 wrapperClassName="w-full bg-gray-4 rounded border border-solid	border-gray-4 pl-3 items-center py-4 mb-3"
               >
                 <div className="pl-3">
@@ -106,7 +104,7 @@ function EditPermission({symbol = 'cUSDT', decimals = 4}) {
                   </div>
                   <div className="flex">
                     <DisplayBalance
-                      balance={recommendPermissionLimit}
+                      balance={decodeAllowance}
                       decimals={decimals}
                       maxWidth={252}
                       maxWidthStyle="max-w-[252px]"
@@ -117,6 +115,7 @@ function EditPermission({symbol = 'cUSDT', decimals = 4}) {
               </Radio>
               <Radio
                 value="custom"
+                id="custom"
                 wrapperClassName="w-full bg-gray-4 rounded border border-solid	border-gray-4 pl-3 py-4"
                 radioClassName="pt-3"
               >
@@ -128,6 +127,7 @@ function EditPermission({symbol = 'cUSDT', decimals = 4}) {
                     {t('customSpendLimitDes')}
                   </div>
                   <NumberInput
+                    id="customAllowance"
                     size="medium"
                     readonly={permissionChoice === 'recommend'}
                     value={customLimitValue}

@@ -199,7 +199,6 @@ export const useCurrentNativeToken = () => {
 }
 
 export const useAddressType = address => {
-  console.log('address', address)
   const {
     data: {type},
   } = useRPC(

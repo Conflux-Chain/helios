@@ -1,10 +1,15 @@
-import {useEffect, useState, useMemo} from 'react'
+import {useEffect, useState, useMemo, useRef} from 'react'
 import {useAsync} from 'react-use'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {estimate} from '@fluent-wallet/estimate-tx'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {decode} from '@fluent-wallet/base32-address'
-import {COMMON_DECIMALS, convertValueToData} from '@fluent-wallet/data-format'
+import {
+  COMMON_DECIMALS,
+  convertValueToData,
+  convertDecimal,
+} from '@fluent-wallet/data-format'
+import {getCFXContractMethodSignature} from '@fluent-wallet/contract-method-name'
 import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
@@ -14,9 +19,11 @@ import {
   useCurrentNetwork,
   useCurrentAccount,
   useNetworkTypeIsCfx,
-  useBalance,
+  useAddressType,
+  useValid20Token,
+  usePendingAuthReq,
 } from './useApi'
-import {validateAddress, bn16} from '../utils'
+import {validateAddress} from '../utils'
 
 const {HOME} = ROUTES
 
@@ -75,11 +82,11 @@ export const useFontSize = (
   }, [targetRef, hiddenRef, maxWidth, value, initialFontSize])
 }
 
-export const useEstimateTx = (tx = {}) => {
+export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   const {provider} = useRPCProvider()
   const currentNetwork = useCurrentNetwork() || {type: NETWORK_TYPE.CFX}
   const {type} = currentNetwork
-  const {from, to, value, data, nonce, gasPrice, gas} = tx
+  const {from, to, value, data, nonce, gasPrice, gas, storageLimit} = tx
   const {
     value: rst,
     loading,
@@ -89,8 +96,9 @@ export const useEstimateTx = (tx = {}) => {
     return await estimate(tx, {
       type,
       request: provider.request.bind(provider),
+      tokensAmount,
       isFluentRequest: true,
-      networkId: currentNetwork.netId,
+      // networkId: currentNetwork.netId,
     })
   }, [
     from,
@@ -100,7 +108,8 @@ export const useEstimateTx = (tx = {}) => {
     nonce,
     gasPrice,
     gas,
-    currentNetwork.netId,
+    storageLimit,
+    // currentNetwork.netId,
     Boolean(provider),
     type,
   ])
@@ -128,8 +137,8 @@ export const useTxParams = () => {
   const decimals = isNativeToken ? COMMON_DECIMALS : tokenDecimals
   const sendData = convertValueToData(sendAmount, decimals) || '0x0'
   const isValid = validateAddress(toAddress, networkTypeIsCfx, netId)
-  if (isNativeToken && isValid) {
-    to = toAddress
+  if (isNativeToken && (isValid || !toAddress)) {
+    to = toAddress || address
   } else if (tokenAddress) {
     to = toAddress ? tokenAddress : ''
     data = toAddress
@@ -150,46 +159,26 @@ export const useTxParams = () => {
 
 export const useCheckBalanceAndGas = (
   estimateRst,
-  sendAmount,
   sendToken,
-  isCheckBalance = true,
-  fromAddress,
+  isSendToken = true,
 ) => {
-  const {eid: networkId} = useCurrentNetwork()
-  const {address: currentAddress} = useCurrentAccount()
-  const {address: tokenAddress, decimals} = sendToken
-  const {
-    isBalanceEnough,
-    isBalanceEnoughForValueAndFee,
-    storageFeeDrip,
-    error,
-  } = estimateRst
+  const {address: tokenAddress} = sendToken || {}
+  const {error} = estimateRst
+  const {isBalanceEnough, storageFeeDrip, tokens} =
+    estimateRst?.customData || {}
+  const isTokenBalanceEnough = tokens?.[tokenAddress]?.isTokenBalanceEnough
   const isNativeToken = !tokenAddress
-  const address = fromAddress || currentAddress
-  const balanceData = useBalance(address, networkId, tokenAddress || '0x0')?.[
-    address
-  ]?.[tokenAddress || '0x0']
-  console.log(address, tokenAddress, balanceData)
-  const tokenBalance =
-    useBalance(address, networkId, tokenAddress || '0x0')?.[address]?.[
-      tokenAddress || '0x0'
-    ] || '0x0'
-  console.log('tokenBalance', tokenBalance)
-  console.log('sendAmount', sendAmount)
   return useMemo(() => {
     if (storageFeeDrip) {
-      if (isNativeToken && !isBalanceEnoughForValueAndFee) {
-        if (!isBalanceEnoughForValueAndFee) {
+      if (isNativeToken) {
+        if (!isBalanceEnough) {
           return 'balance is not enough'
         } else {
           return ''
         }
       }
       if (!isNativeToken) {
-        if (
-          isCheckBalance &&
-          bn16(convertValueToData(sendAmount, decimals)).gt(bn16(tokenBalance))
-        ) {
+        if (isSendToken && !isTokenBalanceEnough) {
           return 'balance is not enough'
         } else if (!isBalanceEnough) {
           return 'gas fee is not enough'
@@ -208,13 +197,115 @@ export const useCheckBalanceAndGas = (
     }
   }, [
     isNativeToken,
-    isCheckBalance,
+    isSendToken,
     isBalanceEnough,
-    tokenBalance,
-    isBalanceEnoughForValueAndFee,
-    sendAmount,
     storageFeeDrip,
     error,
-    decimals,
+    isTokenBalanceEnough,
   ])
+}
+
+export const useDappParams = () => {
+  const pendingAuthReq = usePendingAuthReq()
+  const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  return req?.params[0]
+}
+
+export const useDecodeData = ({to, data}) => {
+  const type = useAddressType(to)
+  const {netId} = useCurrentNetwork()
+  const isContract = type === 'contract'
+  const crc20Token = useValid20Token(to)
+  const token = {...crc20Token, address: to}
+  let decodeData = useRef({})
+  useEffect(() => {
+    if (data && isContract) {
+      getCFXContractMethodSignature(to, data, netId).then(result => {
+        decodeData.current = result
+      })
+    } else {
+      decodeData.current = {}
+    }
+  }, [data, isContract, to, netId])
+  return {isContract, token, decodeData: decodeData.current}
+}
+
+export const useDecodeDisplay = ({
+  isDapp,
+  isContract,
+  nativeToken,
+  tx = {},
+}) => {
+  let displayToken = {},
+    displayValue = '0x0',
+    displayToAddress
+  const {address} = useCurrentAccount()
+  const {toAddress, sendToken, sendAmount} = useGlobalStore()
+  const {to, data, value} = tx
+  const {token, decodeData} = useDecodeData(tx)
+  const isApproveToken = isDapp && decodeData?.name === 'approve'
+  const isSendToken =
+    !isDapp ||
+    (isDapp &&
+      decodeData?.name === 'transferFrom' &&
+      decodeData?.args?.[0] === address)
+
+  if (!isDapp) {
+    displayToken = sendToken
+    displayToAddress = toAddress
+    displayValue = sendAmount
+  } else {
+    if (!isContract || (isContract && !data)) {
+      displayToken = nativeToken
+      displayToAddress = to
+      displayValue = value
+    }
+    if (data && isContract && decodeData) {
+      if (token?.symbol) displayToken = token
+      if (isSendToken) {
+        displayToAddress = decodeData?.args?.[1]
+        displayValue = convertDecimal(
+          decodeData?.args[2].toString(10),
+          'divide',
+          token?.decimals,
+        )
+      } else if (isApproveToken) {
+        displayToAddress = decodeData?.args?.[0]
+        displayValue = convertDecimal(
+          decodeData?.args[1].toString(10),
+          'divide',
+          token?.decimals,
+        )
+        // setApproveToken(token)
+      } else {
+        displayToAddress = to
+      }
+    }
+  }
+  return {
+    isApproveToken,
+    isSendToken,
+    displayToAddress,
+    displayValue,
+    displayToken,
+  }
+}
+
+export const useViewData = ({data, to}) => {
+  const {decodeData, token} = useDecodeData({data, to})
+  const {customAllowance} = useGlobalStore()
+  const allowance =
+    convertValueToData(customAllowance, token?.decimals) || '0x0'
+  const spender = decodeData?.args?.[0]
+    ? decode(decodeData?.args?.[0]).hexAddress
+    : ''
+  useMemo(() => {
+    if (customAllowance) {
+      return spender
+        ? iface.encodeFunctionData('approve', [spender, allowance])
+        : data
+    } else {
+      return data
+    }
+  }, [customAllowance, data, allowance, spender])
 }
