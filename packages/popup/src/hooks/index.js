@@ -165,29 +165,11 @@ export const useCheckBalanceAndGas = (
 ) => {
   const {address: tokenAddress} = sendToken || {}
   const {error} = estimateRst
-  const {isBalanceEnough, storageFeeDrip, tokens} =
-    estimateRst?.customData || {}
+  const {isBalanceEnough, tokens} = estimateRst?.customData || {}
   const isTokenBalanceEnough = tokens?.[tokenAddress]?.isTokenBalanceEnough
   const isNativeToken = !tokenAddress
   return useMemo(() => {
-    if (storageFeeDrip) {
-      if (isNativeToken) {
-        if (!isBalanceEnough) {
-          return 'balance is not enough'
-        } else {
-          return ''
-        }
-      }
-      if (!isNativeToken) {
-        if (isSendToken && !isTokenBalanceEnough) {
-          return 'balance is not enough'
-        } else if (!isBalanceEnough) {
-          return 'gas fee is not enough'
-        } else {
-          return ''
-        }
-      }
-    } else if (error?.message) {
+    if (error?.message) {
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
         return 'transfer amount exceeds allowance'
       } else if (error?.message?.indexOf('transfer amount exceeds balance')) {
@@ -196,16 +178,27 @@ export const useCheckBalanceAndGas = (
         return 'contract error'
       }
     } else {
-      return ''
+      if (isNativeToken) {
+        if (!isBalanceEnough && isBalanceEnough !== undefined) {
+          return 'balance is not enough'
+        } else {
+          return ''
+        }
+      } else {
+        if (
+          isSendToken &&
+          !isTokenBalanceEnough &&
+          isTokenBalanceEnough !== undefined
+        ) {
+          return 'balance is not enough'
+        } else if (!isBalanceEnough && isBalanceEnough !== undefined) {
+          return 'gas fee is not enough'
+        } else {
+          return ''
+        }
+      }
     }
-  }, [
-    isNativeToken,
-    isSendToken,
-    isBalanceEnough,
-    storageFeeDrip,
-    error,
-    isTokenBalanceEnough,
-  ])
+  }, [isNativeToken, isSendToken, isBalanceEnough, error, isTokenBalanceEnough])
 }
 
 export const useDappParams = () => {
