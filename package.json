@@ -56,7 +56,7 @@
     "@storybook/addon-viewport": "6.3.12",
     "@storybook/react": "6.3.12",
     "@swc/cli": "0.1.51",
-    "@swc/core": "1.2.108",
+    "@swc/core": "1.2.110",
     "@swc/helpers": "0.2.14",
     "@testing-library/jest-dom": "5.15.0",
     "@testing-library/react": "12.1.2",
@@ -65,7 +65,7 @@
     "browserslist": "^4.18.1",
     "concurrently": "^6.4.0",
     "cross-env": "^7.0.3",
-    "cssnano": "5.0.10",
+    "cssnano": "5.0.11",
     "dot-env": "^0.0.1",
     "dotenv-expand": "^5.1.0",
     "eslint": "^7.32.0",
@@ -97,7 +97,7 @@
     "regenerator-runtime": "^0.13.9",
     "rimraf": "^3.0.2",
     "shadow-cljs": "^2.16.4",
-    "snowpack": "3.8.8",
+    "snowpack": "3.8.6",
     "storybook": "6.3.12",
     "storybook-addon-outline": "1.4.1",
     "storybook-addon-pseudo-states": "1.0.0",
@@ -176,5 +176,6 @@
   },
   "dependencies": {
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
-  }
+  },
+  "packageManager": "yarn@3.1.0"
 }
