@@ -8,7 +8,7 @@ function TokenItem({
   maxWidth = 175,
   rightIcon = null,
   onSelect,
-  key,
+  index,
   ...props
 }) {
   const {logoURI, name, symbol, balance, decimals} = token
@@ -18,7 +18,7 @@ function TokenItem({
       className={`w-full h-14 flex items-center ${
         onSelect ? 'cursor-pointer' : ''
       }`}
-      id={`tokenItem${key}`}
+      id={`tokenItem${index}`}
       onClick={() => onSelect && onSelect(token)}
       aria-hidden="true"
       {...props}
@@ -53,7 +53,7 @@ TokenItem.propTypes = {
   maxWidth: PropTypes.number,
   rightIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   onSelect: PropTypes.func,
-  key: PropTypes.number,
+  index: PropTypes.number,
 }
 
 export default TokenItem

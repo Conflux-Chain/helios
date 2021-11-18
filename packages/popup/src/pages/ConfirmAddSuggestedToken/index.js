@@ -51,6 +51,7 @@ function ConfirmAddSuggestedToken() {
           </p>
           <div className="px-3 bg-bg rounded">
             <TokenItem
+              index={1}
               token={{
                 logoURI:
                   req?.params?.options?.image || '/images/default-token-icon',

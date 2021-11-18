@@ -111,6 +111,7 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     storageLimit,
     // currentNetwork.netId,
     Boolean(provider),
+    Object.keys(tokensAmount)?.[0],
     type,
   ])
 
@@ -119,9 +120,9 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   }
 
   if (error) {
+    console.log('error', error)
     return {error}
   }
-
   return rst
 }
 
@@ -189,6 +190,8 @@ export const useCheckBalanceAndGas = (
     } else if (error?.message) {
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
         return 'transfer amount exceeds allowance'
+      } else if (error?.message?.indexOf('transfer amount exceeds balance')) {
+        return 'balance is not enough'
       } else {
         return 'contract error'
       }
