@@ -60,69 +60,59 @@ export const main = async ({
   network,
 }) => {
   let newTx = {...tx}
-  let {
-    from,
-    data,
-    to,
-    gas,
-    gasPrice,
-    nonce,
-    value,
-    chainId,
-    storageLimit,
-    epochHeight,
-  } = newTx
-  if (chainId && chainId !== network.chainId)
+  if (newTx.chainId && newTx.chainId !== network.chainId)
     throw InvalidParams(`Invalid chainId ${chainId}`)
 
-  const fromAddr = getFromAddress({networkId: network.eid, address: from})
+  const fromAddr = getFromAddress({networkId: network.eid, address: newTx.from})
   // from address is not belong to wallet
-  if (!fromAddr) throw InvalidParams(`Invalid from address ${from}`)
+  if (!fromAddr) throw InvalidParams(`Invalid from address ${newTx.from}`)
 
   // tx without to must have data (deploy contract)
-  if (!to && !data)
+  if (!newTx.to && !newTx.data)
     throw InvalidParams(
       `Invalid tx, [to] and [data] can't be omit at the same time`,
     )
 
-  if (!chainId) chainId = network.chainId
-  if (data === '0x') data = undefined
-  if (!gasPrice) gasPrice = '0x1'
+  if (!newTx.chainId) newTx.chainId = network.chainId
+  if (newTx.data === '0x') newTx.data = undefined
+  if (!newTx.gasPrice) newTx.gasPrice = '0x1'
 
-  if (!value) value = '0x0'
+  if (!newTx.value) newTx.value = '0x0'
 
-  if (!epochHeight) epochHeight = await cfx_epochNumber(['latest_state'])
+  if (!newTx.epochHeight)
+    newTx.epochHeight = await cfx_epochNumber({errorFallThrough: true}, [
+      'latest_state',
+    ])
 
-  if (!nonce) {
-    nonce = await cfx_getNextNonce([from, epoch])
+  if (!newTx.nonce) {
+    newTx.nonce = await cfx_getNextNonce({errorFallThrough: true}, [
+      newTx.from,
+      epoch,
+    ])
   }
 
-  if (to && (!gas || !storageLimit)) {
-    const {type} = await wallet_detectAddressType({address: to})
-    if (type !== 'contract' && !data) {
-      if (!gas) gas = '0x5280'
-      if (!storageLimit) storageLimit = '0x0'
+  if (newTx.to && (!newTx.gas || !newTx.storageLimit)) {
+    const {type} = await wallet_detectAddressType(
+      {errorFallThrough: true},
+      {address: newTx.to},
+    )
+    if (type !== 'contract' && !newTx.data) {
+      if (!newTx.gas) newTx.gas = '0x5280'
+      if (!newTx.storageLimit) newTx.storageLimit = '0x0'
     }
-  } else if (!gas || !storageLimit) {
+  }
+
+  if (!newTx.gas || !newTx.storageLimit) {
     const {gasLimit, storageCollateralized} =
-      await cfx_estimateGasAndCollateral([newTx, epoch])
-    if (!gas) gas = gasLimit
-    if (!storageLimit) storageLimit = storageCollateralized
+      await cfx_estimateGasAndCollateral({errorFallThrough: true}, [
+        newTx,
+        epoch,
+      ])
+    if (!newTx.gas) newTx.gas = gasLimit
+    if (!newTx.storageLimit) newTx.storageLimit = storageCollateralized
   }
 
   const pk = await wallet_getAddressPrivateKey({addressId: fromAddr.eid})
 
-  newTx = {
-    from,
-    data,
-    to,
-    gas,
-    gasPrice,
-    nonce,
-    value,
-    chainId,
-    storageLimit,
-    epochHeight,
-  }
   return cfxSignTransaction(newTx, pk, network.netId)
 }
