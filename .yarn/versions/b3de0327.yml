@@ -1,6 +1,8 @@
 releases:
+  "@fluent-wallet/component-input": patch
   "@fluent-wallet/data-format": patch
   "@fluent-wallet/estimate-tx": patch
 
 declined:
   - helios-popup
+  - "@fluent-wallet/webextension"
