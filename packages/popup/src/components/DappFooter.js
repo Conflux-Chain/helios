@@ -13,6 +13,8 @@ const {
   WALLET_SWITCH_ETHEREUM_CHAIN,
   CFX_SIGN_TYPED_DATA_V4,
   ETH_SIGN_TYPED_DATA_V4,
+  CFX_SEND_TRANSACTION,
+  ETH_SEND_TRANSACTION,
   WALLET_ADD_ETHEREUM_CHAIN,
   WALLET_ADD_CONFLUX_CHAIN,
   WALLET_WATCH_ASSET,
@@ -55,6 +57,10 @@ function DappFooter({
       case WALLET_SWITCH_ETHEREUM_CHAIN:
       case WALLET_SWITCH_CONFLUX_CHAIN:
         params.chainConfig = req.params
+        break
+      case CFX_SEND_TRANSACTION:
+      case ETH_SEND_TRANSACTION:
+        params.tx = req.params
         break
       case ETH_SIGN_TYPED_DATA_V4:
       case CFX_SIGN_TYPED_DATA_V4:

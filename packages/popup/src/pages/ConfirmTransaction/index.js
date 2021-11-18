@@ -49,7 +49,7 @@ function ConfirmTransition() {
   const tx = useDappParams()
   const isDapp = pendingAuthReq?.length > 0
   const {to, data} = tx || {}
-  const viewData = useViewData(tx)
+  const viewData = useViewData(tx || {})
 
   // get to type and to token
   const {isContract, decodeData} = useDecodeData({to, data})

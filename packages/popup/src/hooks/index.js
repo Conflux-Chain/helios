@@ -251,7 +251,8 @@ export const useDecodeDisplay = ({
     !isDapp ||
     (isDapp &&
       decodeData?.name === 'transferFrom' &&
-      decodeData?.args?.[0] === address)
+      decodeData?.args?.[0] === address) ||
+    (isDapp && !isContract)
 
   if (!isDapp) {
     displayToken = sendToken
