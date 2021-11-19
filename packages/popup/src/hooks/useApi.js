@@ -32,7 +32,7 @@ export const useCurrentAccount = () => {
     },
   )
   const {eid: accountId} = currentAccount || {}
-  const {address} = useAddressByNetworkId(accountId, networkId)
+  const address = useAddressByNetworkId(accountId, networkId)
   return {
     ...currentAccount,
     address,
@@ -164,9 +164,9 @@ export const useAddressByNetworkId = (accountIds = [], networkId) => {
     params,
     {fallbackData: isNumber(accountIds) ? {} : []},
   )
-  const {base32, hex, cfxHex} = accountAddress || {}
+  const {base32, hex} = accountAddress || {}
   const address = networkTypeIsCfx ? base32 : hex
-  return {address, hex, cfxHex}
+  return address
 }
 
 export const useBalance = (

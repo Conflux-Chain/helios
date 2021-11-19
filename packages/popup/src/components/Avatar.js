@@ -1,9 +1,13 @@
 import jazzIcon from '@fluent-wallet/jazz-icon'
 import PropTypes from 'prop-types'
 import {useRef, useEffect} from 'react'
+import {useRPC} from '@fluent-wallet/use-rpc'
+import {isNumber} from '@fluent-wallet/checks'
 import {removeAllChild, jsNumberForAddress} from '../utils'
-import {useCfxNetwork, useAddressByNetworkId} from '../hooks/useApi'
+import {useCfxNetwork} from '../hooks/useApi'
+import {RPC_METHODS} from '../constants'
 
+const {WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK} = RPC_METHODS
 const useCfxMainnetAddress = accountId => {
   const cfxNetwork = useCfxNetwork()
   let networkId
@@ -11,7 +15,14 @@ const useCfxMainnetAddress = accountId => {
   if (cfxMainnetArr.length) {
     networkId = cfxMainnetArr[0].eid
   }
-  const {cfxHex, hex} = useAddressByNetworkId(accountId, networkId)
+  const {data: accountAddress} = useRPC(
+    isNumber(accountId) && isNumber(networkId)
+      ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId, accountId]
+      : null,
+    {accountId, networkId},
+    {fallbackData: {}},
+  )
+  const {cfxHex, hex} = accountAddress || {}
   return jsNumberForAddress(cfxHex || hex)
 }
 
