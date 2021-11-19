@@ -7,9 +7,6 @@ const {ERROR, WALLET_UNLOCK, WELCOME} = ROUTES
 const ProtectedRoute = ({pendingAuthReq, hasAccount, isLocked, ...rest}) => {
   const {FATAL_ERROR} = useGlobalStore()
   const hasPendingAuthReq = pendingAuthReq?.length > 0
-  console.log(hasPendingAuthReq)
-  console.log('pendingAuthReq', pendingAuthReq)
-  console.log(DAPP_REQUEST_ROUTES[pendingAuthReq[0]?.req?.method])
   switch (true) {
     case FATAL_ERROR:
       return <Redirect to={{pathname: ERROR}} />

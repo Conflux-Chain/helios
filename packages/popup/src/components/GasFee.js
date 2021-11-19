@@ -35,11 +35,8 @@ function GasFee({isDapp, estimateRst}) {
   const txFee = convertDataToValue(txFeeDrip || '0', CFX_DECIMALS)
   const isBePayed = (!willPayCollateral || !willPayTxFee) && storageFee
   const isBeAllPayed = !willPayCollateral && !willPayTxFee && storageFee
-  const realPayedFee = isBeAllPayed
-    ? '0'
-    : !willPayCollateral
-    ? gasFee
-    : storageFee
+  const partPayedFee = !willPayCollateral ? gasFee : storageFee
+  const realPayedFee = isBeAllPayed ? '0' : isBePayed ? partPayedFee : txFee
 
   const label = (
     <span className="flex items-center justify-between w-full">
