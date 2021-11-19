@@ -4,7 +4,8 @@ import './index.css'
 import App from './App'
 import './i18n.js'
 import {SWRConfig} from 'swr'
-
+import {ROUTES} from './constants'
+const {ERROR} = ROUTES
 // import reportWebVitals from './reportWebVitals'
 
 // Fix chrome extension render problem in external screen
@@ -44,7 +45,19 @@ if (
 
 ReactDOM.render(
   <React.StrictMode>
-    <SWRConfig value={{revalidateOnMount: true, refreshInterval: 3000}}>
+    <SWRConfig
+      value={{
+        revalidateOnMount: true,
+        refreshInterval: 3000,
+        onError: error => {
+          if (error && location) {
+            location.href = `${location.origin}${
+              location.pathname
+            }#${ERROR}?errorMsg=${encodeURIComponent(error.message) || ''}`
+          }
+        },
+      }}
+    >
       <App />
     </SWRConfig>
   </React.StrictMode>,

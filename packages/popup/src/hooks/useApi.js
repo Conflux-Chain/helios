@@ -157,7 +157,6 @@ export const useAddressByNetworkId = (accountIds = [], networkId) => {
     networkId,
   }))
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const networkTypeIsEth = useNetworkTypeIsEth()
   const {data: accountAddress} = useRPC(
     params.length && isNumber(networkId)
       ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId, ...accountIds]
@@ -166,7 +165,7 @@ export const useAddressByNetworkId = (accountIds = [], networkId) => {
     {fallbackData: isNumber(accountIds) ? {} : []},
   )
   const {base32, hex} = accountAddress || {}
-  const address = networkTypeIsCfx ? base32 : networkTypeIsEth ? hex : ''
+  const address = networkTypeIsCfx ? base32 : hex
   return address
 }
 
