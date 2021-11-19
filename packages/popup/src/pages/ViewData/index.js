@@ -1,10 +1,13 @@
 import {useTranslation} from 'react-i18next'
-import useGlobalStore from '../../stores'
 import {TitleNav} from '../../components'
+import {useDappParams, useDecodeData} from '../../hooks'
 
 function ViewData() {
   const {t} = useTranslation()
-  const {contractMethod, contractData} = useGlobalStore()
+  const tx = useDappParams()
+  const {decodeData} = useDecodeData(tx)
+  const {data: contractData} = tx
+  const contractMethod = decodeData?.name
 
   return contractData ? (
     <div

@@ -2,30 +2,41 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
-import {Big, fromDripToCfx} from '@fluent-wallet/data-format'
+import {
+  formatHexToDecimal,
+  convertDataToValue,
+  CFX_DECIMALS,
+} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {CompWithLabel, DisplayBalance, CustomTag} from '../components'
-import {useNetworkTypeIsCfx, useNetworkTypeIsEth} from '../hooks/useApi'
+import {useNetworkTypeIsCfx, usePendingAuthReq} from '../hooks/useApi'
+import useGlobalStore from '../stores'
 import {ROUTES} from '../constants'
 const {EDIT_GAS_FEE} = ROUTES
 
-function GasFee({
-  gasLimit = new Big(1000000000000),
-  gasPrice = '1',
-  storageCollateralized = new Big(1000000000000),
-  payCollateral = false,
-  payTxFee = true,
-}) {
+function GasFee({isDapp, estimateRst}) {
+  const {gasPrice: inputGasPrice} = useGlobalStore()
   const {t} = useTranslation()
   const history = useHistory()
+  const pendingAuthReq = usePendingAuthReq()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const networkTypeIsEth = useNetworkTypeIsEth()
-  const isBePayed = !payCollateral || !payTxFee
-  const isBeAllPayed = !payCollateral && !payTxFee
-  const gasFee = new Big(fromDripToCfx(gasLimit.toString(10))).times(gasPrice)
-  const storageFee = new Big(storageCollateralized).div(1024)
-  const realPayedFee = isBeAllPayed ? '0' : !payCollateral ? gasFee : storageFee
-  const allFee = new Big(gasFee).plus(storageFee)
+  const {
+    willPayCollateral,
+    willPayTxFee,
+    gasPrice: estimateGasPrice,
+  } = estimateRst
+  const {storageFeeDrip, gasFeeDrip, txFeeDrip} = estimateRst?.customData || {}
+  const sendParams = pendingAuthReq?.[0]?.req?.params[0]
+  const gasPrice = !isDapp
+    ? inputGasPrice
+    : formatHexToDecimal(sendParams?.gasPrice || estimateGasPrice) || '1'
+  const storageFee = convertDataToValue(storageFeeDrip || '0', CFX_DECIMALS)
+  const gasFee = convertDataToValue(gasFeeDrip || '0', CFX_DECIMALS)
+  const txFee = convertDataToValue(txFeeDrip || '0', CFX_DECIMALS)
+  const isBePayed = (!willPayCollateral || !willPayTxFee) && storageFee
+  const isBeAllPayed = !willPayCollateral && !willPayTxFee && storageFee
+  const partPayedFee = !willPayCollateral ? gasFee : storageFee
+  const realPayedFee = isBeAllPayed ? '0' : isBePayed ? partPayedFee : txFee
 
   const label = (
     <span className="flex items-center justify-between w-full">
@@ -40,24 +51,29 @@ function GasFee({
   )
   return (
     <CompWithLabel label={label}>
-      <div className="flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative">
+      <div
+        className="flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative"
+        id="gasFeeContainer"
+      >
         <DisplayBalance
-          balance={realPayedFee.toString()}
+          id="realPayedFee"
+          balance={realPayedFee}
           maxWidth={234}
           maxWidthStyle="max-w-[234px]"
           className="text-base mb-0.5"
-          symbol="CFX"
+          symbol={networkTypeIsCfx ? 'CFX' : 'ETH'}
           initialFontSize={16}
         />
         <DisplayBalance
-          balance={allFee.toString()}
+          id="txFee"
+          balance={txFee}
           maxWidth={300}
           maxWidthStyle="max-w-[300px]"
           className="!text-gray-40 line-through !font-normal mb-0.5"
-          symbol="CFX"
+          symbol={networkTypeIsCfx ? 'CFX' : 'ETH'}
         />
         <span className="text-xs text-gray-60">{`${gasPrice} ${
-          networkTypeIsCfx ? 'Drip' : networkTypeIsEth ? 'Gwei' : ''
+          networkTypeIsCfx ? 'Drip' : 'Gwei'
         }`}</span>
         {isBePayed && (
           <CustomTag
@@ -75,11 +91,9 @@ function GasFee({
 }
 
 GasFee.propTypes = {
-  gasPrice: PropTypes.string,
-  gasLimit: PropTypes.object,
-  storageCollateralized: PropTypes.object,
-  payCollateral: PropTypes.bool,
-  payTxFee: PropTypes.bool,
+  estimateRst: PropTypes.obj,
+  isDapp: PropTypes.bool,
+  willPayTxFee: PropTypes.bool,
 }
 
 export default GasFee

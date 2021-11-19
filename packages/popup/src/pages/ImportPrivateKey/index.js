@@ -24,8 +24,8 @@ function ImportPrivateKey() {
 
   const [name, setName] = useState('')
   const [keygen, setKeygen] = useState('')
-  const [keygenErrorMessage, setKeygenErrorMessage] = useState('')
-  const [keygenNamePlaceholder, setKeygenNamePlaceholder] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
   const [creatingAccount, setCreatingAccount] = useState(false)
   const {createdPassword, setCreatedPassword} = useGlobalStore()
 
@@ -33,7 +33,7 @@ function ImportPrivateKey() {
 
   useCreatedPasswordGuard()
   useEffect(() => {
-    setKeygenNamePlaceholder(`Account-${keygenGroup.length + 1}`)
+    setAccountNamePlaceholder(`Account-${keygenGroup.length + 1}`)
   }, [keygenGroup])
 
   const onChangeName = e => {
@@ -45,7 +45,7 @@ function ImportPrivateKey() {
   const onCreate = async () => {
     if (!keygen) {
       // TODO: replace error msg
-      return setKeygenErrorMessage('Required')
+      return setErrorMessage('Required')
     }
 
     if (!creatingAccount) {
@@ -54,7 +54,7 @@ function ImportPrivateKey() {
         ({result}) => {
           if (result?.valid) {
             let params = {
-              nickname: name || keygenNamePlaceholder,
+              nickname: name || accountNamePlaceholder,
               privateKey: keygen,
             }
             if (createdPassword) {
@@ -73,16 +73,16 @@ function ImportPrivateKey() {
                   history.push(HOME)
                 }
                 if (typeof error?.data?.duplicateAccountGroupId === 'number') {
-                  return setKeygenErrorMessage(t('duplicatePkError'))
+                  return setErrorMessage(t('duplicatePkError'))
                 }
                 if (error) {
-                  setKeygenErrorMessage(error.message.split('\n')[0])
+                  setErrorMessage(error.message.split('\n')[0])
                 }
               },
             )
           }
           // TODO: replace error msg
-          setKeygenErrorMessage('Invalid or inner error!')
+          setErrorMessage('Invalid or inner error!')
           setCreatingAccount(false)
         },
       )
@@ -101,7 +101,7 @@ function ImportPrivateKey() {
             <Input
               onChange={onChangeName}
               width="w-full"
-              placeholder={keygenNamePlaceholder}
+              placeholder={accountNamePlaceholder}
               maxLength="20"
               value={name}
               id="pKeyGroupName"
@@ -109,7 +109,7 @@ function ImportPrivateKey() {
           </CompWithLabel>
           <CompWithLabel label={t('pKey')}>
             <Input
-              errorMessage={keygenErrorMessage}
+              errorMessage={errorMessage}
               elementType="textarea"
               placeholder={t(`pKeyImportPlaceholder`)}
               onChange={onChangeKeygen}
@@ -126,7 +126,7 @@ function ImportPrivateKey() {
             id="importPrivateKeyBtn"
             className="w-70  mx-auto"
             onClick={onCreate}
-            disabled={!name && !keygenNamePlaceholder}
+            disabled={!name && !accountNamePlaceholder}
           >
             {t('import')}
           </Button>

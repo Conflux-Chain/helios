@@ -8,13 +8,17 @@ function TokenItem({
   maxWidth = 175,
   rightIcon = null,
   onSelect,
+  index,
   ...props
 }) {
-  const {logoURI, name, symbol, balance, decimal} = token
+  const {logoURI, name, symbol, balance, decimals} = token
 
   return (
     <div
-      className="w-full h-14 flex items-center"
+      className={`w-full h-14 flex items-center ${
+        onSelect ? 'cursor-pointer' : ''
+      }`}
+      id={`tokenItem${index}`}
       onClick={() => onSelect && onSelect(token)}
       aria-hidden="true"
       {...props}
@@ -32,7 +36,7 @@ function TokenItem({
               balance={balance}
               maxWidthStyle={maxWidthStyle}
               maxWidth={maxWidth}
-              decimal={decimal || CFX_DECIMALS}
+              decimals={decimals || CFX_DECIMALS}
             />
             {rightIcon && <span className="ml-5">{rightIcon}</span>}
           </div>
@@ -49,6 +53,7 @@ TokenItem.propTypes = {
   maxWidth: PropTypes.number,
   rightIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   onSelect: PropTypes.func,
+  index: PropTypes.number,
 }
 
 export default TokenItem

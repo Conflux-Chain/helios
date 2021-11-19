@@ -1,25 +1,26 @@
-/* eslint-disable no-unused-vars */
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
-import {validateBase32Address} from '@fluent-wallet/base32-address'
-import {isHexAddress} from '@fluent-wallet/account'
+import {
+  formatHexToDecimal,
+  convertDataToValue,
+  convertValueToData,
+} from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
-import {TitleNav, GasFee} from '../../components'
-import {useEstimateTx} from '../../hooks'
+import {TitleNav, AccountDisplay} from '../../components'
+import {useTxParams, useEstimateTx, useCheckBalanceAndGas} from '../../hooks'
 import {
   ToAddressInput,
   TokenAndAmount,
-  CurrentAccountDisplay,
   CurrentNetworkDisplay,
 } from './components'
-import useGlobalStore from '../../stores/index.js'
+import useGlobalStore from '../../stores'
+import {validateAddress} from '../../utils'
 import {
-  useCurrentNativeToken,
-  useNetworkTypeIsEth,
   useNetworkTypeIsCfx,
   useCurrentNetwork,
+  useCurrentAccount,
 } from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
 const {HOME, CONFIRM_TRANSACTION} = ROUTES
@@ -34,48 +35,61 @@ function SendTransaction() {
     setToAddress,
     setSendAmount,
     setSendToken,
+    setGasPrice,
+    setGasLimit,
+    setNonce,
     clearSendTransactionParams,
   } = useGlobalStore()
-  const currentNetwork = useCurrentNetwork()
+  const {name, icon, ticker, netId} = useCurrentNetwork()
+  const {address, eid: accountId, nickname} = useCurrentAccount()
+  const {address: tokenAddress, decimals} = sendToken
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const networkTypeIsEth = useNetworkTypeIsEth()
   const [addressError, setAddressError] = useState('')
   const [balanceError, setBalanceError] = useState('')
-  const [gasError, setGasError] = useState('')
-  const nativeToken = useCurrentNativeToken()
-  const estimateRst = useEstimateTx({
-    from: 'cfx:aamgvyzht7h1zxdghb9ee9w26wrz8rd3gj837392dp',
-    to: 'cfx:aasw0spp7pee3mpex5zk4arhfx20vwssfaamw12zsw',
-  })
-  console.log('estimateRst = ', estimateRst)
+  const nativeToken = ticker || {}
+  const isNativeToken = !tokenAddress
+  const params = useTxParams()
+  const estimateRst =
+    useEstimateTx(
+      params,
+      !isNativeToken
+        ? {[tokenAddress]: convertValueToData(sendAmount, decimals)}
+        : {},
+    ) || {}
+  const {gasPrice, gasLimit, nonce, nativeMaxDrip} = estimateRst
+  useEffect(() => {
+    setGasPrice(formatHexToDecimal(gasPrice))
+    setGasLimit(formatHexToDecimal(gasLimit))
+    setNonce(formatHexToDecimal(nonce))
+  }, [gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce])
+  const errorMessage = useCheckBalanceAndGas(estimateRst, sendAmount)
+  useEffect(() => {
+    setBalanceError(errorMessage)
+  }, [errorMessage])
+
   // TODO: get from scan
   const hasNoTxn = true
   const onChangeToken = token => {
-    console.log(token)
     setSendToken(token)
   }
   const onChangeAmount = amount => {
-    console.log(amount)
     setSendAmount(amount)
   }
   const onChangeAddress = address => {
-    console.log(address)
     setToAddress(address)
-    if (
-      networkTypeIsCfx &&
-      !validateBase32Address(address, currentNetwork?.netId)
-    ) {
-      // TODO i18n
-      setAddressError('Please enter validate cfx address')
-    } else if (networkTypeIsEth && !isHexAddress(address)) {
-      // TODO i18n
-      setAddressError('Please enter validate hex address')
+    if (!validateAddress(address, networkTypeIsCfx, netId)) {
+      if (networkTypeIsCfx) {
+        // TODO i18n
+        setAddressError('Please enter validate cfx address')
+      } else {
+        setAddressError('Please enter validate hex address')
+      }
     } else {
       setAddressError('')
     }
   }
   useEffect(() => {
-    if (nativeToken) setSendToken(nativeToken)
+    if (nativeToken.symbol && !tokenAddress) setSendToken(nativeToken)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Boolean(nativeToken)])
 
@@ -86,8 +100,12 @@ function SendTransaction() {
         onGoBack={() => clearSendTransactionParams()}
       />
       <div className="flex mt-1 mb-3 mx-4 justify-between items-center z-20">
-        <CurrentAccountDisplay />
-        <CurrentNetworkDisplay />
+        <AccountDisplay
+          accountId={accountId}
+          nickname={nickname}
+          address={address}
+        />
+        <CurrentNetworkDisplay name={name} icon={icon} />
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">
         <div className="flex flex-col">
@@ -101,10 +119,11 @@ function SendTransaction() {
             amount={sendAmount}
             onChangeAmount={onChangeAmount}
             onChangeToken={onChangeToken}
+            isNativeToken={isNativeToken}
+            nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
           />
-          <GasFee />
           <span className="text-error text-xs inline-block mt-2">
-            {balanceError || gasError}
+            {balanceError}
           </span>
         </div>
         <div className="flex flex-col">
@@ -122,11 +141,7 @@ function SendTransaction() {
             </Button>
             <Button
               disabled={
-                !!addressError ||
-                !!balanceError ||
-                !!gasError ||
-                !toAddress ||
-                !sendAmount
+                !!addressError || !!balanceError || !toAddress || !sendAmount
               }
               onClick={() => history.push(CONFIRM_TRANSACTION)}
               className="flex-1"

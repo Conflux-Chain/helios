@@ -3,10 +3,11 @@ import create from 'zustand'
 const defaultSendTransactionParams = {
   toAddress: '',
   sendAmount: '',
-  gasPrice: '1',
-  gasLimit: '21000',
-  nonce: '0',
-  sendToken: {symbol: 'CFX', icon: ''},
+  gasPrice: '',
+  gasLimit: '',
+  nonce: '',
+  sendToken: {symbol: 'CFX', icon: '', decimals: 18},
+  customAllowance: '',
 }
 
 const useGlobalStore = create(set => ({
@@ -17,10 +18,6 @@ const useGlobalStore = create(set => ({
   createdSeedPhase: '',
   createdPassword: '',
   createdMnemonic: '',
-  recommendPermissionLimit: '10000000000000000',
-  customPermissionLimit: '0',
-  contractMethod: '',
-  contractData: '',
   ...defaultSendTransactionParams,
 
   // logic
@@ -33,15 +30,10 @@ const useGlobalStore = create(set => ({
   setSendAmount: sendAmount => set({sendAmount}),
   setGasPrice: gasPrice => set({gasPrice}),
   setGasLimit: gasLimit => set({gasLimit}),
+  setCustomAllowance: customAllowance => set({customAllowance}),
   setNonce: nonce => set({nonce}),
   setSendToken: sendToken => set({sendToken}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
-  setRecommendPermissionLimit: recommendPermissionLimit =>
-    set({recommendPermissionLimit}),
-  setCustomPermissionLimit: customPermissionLimit =>
-    set({customPermissionLimit}),
-  setContractMethod: contractMethod => set({contractMethod}),
-  setContractData: contractData => set({contractData}),
 }))
 
 export default useGlobalStore

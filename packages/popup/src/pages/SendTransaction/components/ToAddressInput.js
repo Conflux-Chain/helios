@@ -13,6 +13,7 @@ function ToAddressInput({address, onChangeAddress, errorMessage}) {
         placeholder={t('toAddressPlaceholder')}
         onChange={e => onChangeAddress && onChangeAddress(e.target.value)}
         errorMessage={errorMessage}
+        id="toAddressInput"
       />
     </CompWithLabel>
   )

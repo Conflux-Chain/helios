@@ -4,16 +4,16 @@ import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
 import {useNetworkTypeIsCfx} from '../../hooks/useApi'
-
+import {useTxParams, useEstimateTx} from '../../hooks'
 import {WrapperWithLabel} from './components'
 import {
-  GWEI_DECIMALS,
   Big,
+  formatDecimalToHex,
   formatHexToDecimal,
+  CFX_DECIMALS,
+  convertDataToValue,
 } from '@fluent-wallet/data-format'
 import useGlobalStore from '../../stores'
-
-const getDecimalData = data => (data ? formatHexToDecimal(data) : '0')
 
 function EditGasFee() {
   const {t} = useTranslation()
@@ -21,81 +21,70 @@ function EditGasFee() {
   const [gasPriceErr, setGasPriceErr] = useState('')
   const [gasLimitErr, setGasLimitErr] = useState('')
   const [nonceErr, setNonceErr] = useState('')
-  const [gasFee, setGasFee] = useState('0')
-  const [totalFee, setTotalFee] = useState('0')
   const [inputGasPrice, setInputGasPrice] = useState('0')
   const [inputGasLimit, setInputGasLimit] = useState('0')
-  const [inputNonce, setInputNonce] = useState('0')
-  const {setGasPrice, setGasLimit, setNonce} = useGlobalStore()
+  const [inputNonce, setInputNonce] = useState('')
+  const {gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce} =
+    useGlobalStore()
 
-  const isCfx = useNetworkTypeIsCfx()
-  const symbol = isCfx ? 'CFX' : 'ETH'
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
 
-  //TODO: get transition params from useGlobal store
-  const {
-    initGasPrice,
-    gasUsed,
-    initNonce,
-    storageCollateralized,
-    storageFeeDrip,
-  } = {}
-
-  //TODO:  if not pass transition params  jump to home
-  // if () {
-  //   history.push(HOME)
-  // }
+  const params = {
+    ...useTxParams(),
+    gasPrice: formatDecimalToHex(inputGasPrice),
+    gas: formatDecimalToHex(inputGasLimit),
+  }
+  if (nonce) params.nonce = formatDecimalToHex(nonce)
+  const estimateRst = useEstimateTx(params) || {}
+  const {gasUsed, storageCollateralized} = estimateRst
+  const {storageFeeDrip, gasFeeDrip, txFeeDrip} = estimateRst?.customData || {}
 
   useEffect(() => {
-    setInputGasLimit(getDecimalData(gasUsed))
-    setInputGasPrice(getDecimalData(initGasPrice))
-    setInputNonce(getDecimalData(initNonce))
-  }, [gasUsed, initGasPrice, initNonce])
+    setInputGasLimit(gasLimit)
+    setInputGasPrice(gasPrice)
+    setInputNonce(nonce)
+  }, [gasLimit, gasPrice, nonce])
 
-  useEffect(() => {
-    if (isCfx) {
-      return setGasFee(new Big(inputGasLimit).times(inputGasPrice).toString(10))
-    }
-    setGasFee(
-      new Big(inputGasLimit)
-        .times(inputGasPrice)
-        .times(`1e${GWEI_DECIMALS}`)
-        .toString(10),
-    )
-  }, [inputGasLimit, inputGasPrice, isCfx])
+  const gasFee = convertDataToValue(gasFeeDrip || '0', CFX_DECIMALS)
 
-  useEffect(() => {
-    setGasPriceErr(
-      new Big(inputGasPrice).gt(0)
-        ? ''
-        : t('gasPriceErrMSg', {
-            unit: isCfx ? t('drip') : t('gWei'),
-          }),
-    )
-  }, [inputGasPrice, isCfx, t])
+  const storageFee = convertDataToValue(storageFeeDrip || '0', CFX_DECIMALS)
+  const txFee = convertDataToValue(txFeeDrip || '0', CFX_DECIMALS)
 
-  useEffect(() => {
-    setGasLimitErr(
-      new Big(inputGasLimit).gte(getDecimalData(gasUsed))
-        ? ''
-        : t('gasLimitErrMsg', {
-            gasUsed: getDecimalData(gasUsed),
-          }),
-    )
-  }, [inputGasLimit, gasUsed, t])
-
-  useEffect(() => {
-    setNonceErr(new Big(inputNonce).gt(0) ? '' : t('nonceErr'))
-  }, [inputNonce, t])
-
-  useEffect(() => {
-    if (isCfx) {
-      setTotalFee(
-        new Big(gasFee)
-          .add(new Big(getDecimalData(storageFeeDrip)))
-          .toString(10),
+  const onChangeGasPrice = gasPrice => {
+    setInputGasPrice(gasPrice)
+    if (new Big(inputGasPrice || '0').gt(0)) {
+      setGasPriceErr('')
+    } else {
+      setGasPriceErr(
+        t('gasPriceErrMSg', {
+          unit: networkTypeIsCfx ? t('drip') : t('gWei'),
+        }),
       )
     }
-  }, [storageFeeDrip, gasFee, isCfx])
+  }
+
+  const onChangeGasLimit = gasLimit => {
+    setInputGasLimit(gasLimit)
+    if (new Big(inputGasLimit || '0').gte(formatHexToDecimal(gasUsed || '1'))) {
+      setGasLimitErr('')
+    } else {
+      setGasLimitErr(
+        t('gasLimitErrMsg', {
+          gasUsed: formatHexToDecimal(gasUsed || '0'),
+        }),
+      )
+    }
+  }
+
+  const onChangeNonce = nonce => {
+    setInputNonce(nonce)
+    if (!inputNonce || new Big(inputNonce).gt(0)) {
+      setNonceErr('')
+    } else {
+      setNonceErr(t('nonceErr'))
+    }
+  }
 
   const saveGasData = () => {
     setGasPrice(inputGasPrice)
@@ -118,6 +107,7 @@ function EditGasFee() {
             rightClass="text-gray-80"
             rightContent={
               <DisplayBalance
+                id="gasFee"
                 maxWidth={218}
                 maxWidthStyle="max-w-[218px]"
                 symbol={symbol}
@@ -127,15 +117,18 @@ function EditGasFee() {
           />
           <WrapperWithLabel
             containerClass={`${gasPriceErr ? 'mb-9' : 'mb-3'} relative`}
-            leftContent={`${t('gasPrice')} (${isCfx ? t('drip') : t('gWei')})`}
+            leftContent={`${t('gasPrice')} (${
+              networkTypeIsCfx ? '(Drip)' : '(GWei)'
+            })`}
             rightContent={
               <NumberInput
                 size="small"
                 width="w-32"
                 value={inputGasPrice}
+                id="gasPrice"
                 errorMessage={gasPriceErr}
                 errorClassName="absolute right-0 -bottom-6"
-                onInputChange={setInputGasPrice}
+                onChange={e => onChangeGasPrice(e.target.value)}
               />
             }
           />
@@ -146,14 +139,15 @@ function EditGasFee() {
               <NumberInput
                 size="small"
                 width="w-32"
+                id="gasLimit"
                 errorClassName="absolute right-0 -bottom-6"
                 value={inputGasLimit}
                 errorMessage={gasLimitErr}
-                onInputChange={setInputGasLimit}
+                onChange={e => onChangeGasLimit(e.target.value)}
               />
             }
           />
-          {isCfx ? (
+          {networkTypeIsCfx ? (
             <div>
               <WrapperWithLabel
                 leftContent={t('storageFee')}
@@ -161,22 +155,27 @@ function EditGasFee() {
                 rightClass="text-gray-80"
                 rightContent={
                   <DisplayBalance
+                    id="storageFee"
                     maxWidth={218}
                     maxWidthStyle="max-w-[218px]"
                     symbol={symbol}
-                    balance={getDecimalData(storageFeeDrip)}
+                    balance={storageFee}
                   />
                 }
               />
               <WrapperWithLabel
                 leftContent={t('storageCollateralized')}
                 rightClass="text-gray-80"
-                rightContent={getDecimalData(storageCollateralized)}
+                rightContent={
+                  <span id="storageLimit">
+                    {formatHexToDecimal(storageCollateralized)}
+                  </span>
+                }
               />
             </div>
           ) : null}
           <div className="bg-gray-20 h-px mx-3 my-4" />
-          {isCfx ? (
+          {networkTypeIsCfx ? (
             <WrapperWithLabel
               leftContent={t('totalFee')}
               containerClass="mb-10"
@@ -184,11 +183,12 @@ function EditGasFee() {
               rightClass="text-gray-80 text-base"
               rightContent={
                 <DisplayBalance
+                  id="txFee"
                   maxWidth={218}
                   maxWidthStyle="max-w-[218px]"
                   symbol={symbol}
                   initialFontSize={16}
-                  balance={totalFee}
+                  balance={txFee}
                 />
               }
             />
@@ -199,12 +199,13 @@ function EditGasFee() {
             containerClass="relative"
             rightContent={
               <NumberInput
+                id="nonce"
                 size="small"
                 width="w-32"
                 value={inputNonce}
                 errorMessage={nonceErr}
                 errorClassName="absolute right-0 -bottom-6"
-                onInputChange={setInputNonce}
+                onChange={e => onChangeNonce(e.target.value)}
               />
             }
           />

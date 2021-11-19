@@ -20,6 +20,7 @@ function ConfirmSeed() {
   const {
     createdMnemonic,
     createdPassword,
+    createdGroupName,
     setCreatedPassword,
     setCreatedMnemonic,
   } = useGlobalStore()
@@ -73,6 +74,7 @@ function ConfirmSeed() {
     if (importingMnemonic) return
     setImportingMnemonic(true)
     let params = {
+      nickname: createdGroupName,
       mnemonic,
     }
     if (createdPassword) {

@@ -1,8 +1,8 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
+import {convertDataToValue} from '@fluent-wallet/data-format'
 import {CaretDownFilled} from '@fluent-wallet/component-icons'
-import Input from '@fluent-wallet/component-input'
 import Link from '@fluent-wallet/component-link'
 import Modal from '@fluent-wallet/component-modal'
 import {
@@ -10,8 +10,14 @@ import {
   DisplayBalance,
   SearchToken,
   TokenList,
+  NumberInput,
 } from '../../../components'
-import {useDbHomeAssets} from '../../../hooks/useApi'
+import {
+  useDbHomeAssets,
+  useBalance,
+  useCurrentNetwork,
+  useCurrentAccount,
+} from '../../../hooks/useApi'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
@@ -38,6 +44,7 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
       content={content}
       onClose={onClose}
       contentClassName="flex-1 flex"
+      id="tokenListModal"
     />
   )
 }
@@ -53,10 +60,18 @@ function TokenAndAmount({
   onChangeToken,
   amount,
   onChangeAmount,
+  isNativeToken,
+  nativeMax,
 }) {
   const {t} = useTranslation()
   const [tokenListShow, setTokenListShow] = useState(false)
-  const {symbol, icon} = selectedToken
+  const {eid: networkId} = useCurrentNetwork()
+  const {address} = useCurrentAccount()
+  const {symbol, icon, decimals, address: selectedTokenAddress} = selectedToken
+  const tokenAddress = isNativeToken ? '0x0' : selectedTokenAddress
+  const balance =
+    useBalance(address, networkId, tokenAddress)?.[address]?.[tokenAddress] ||
+    '0x0'
   const label = (
     <span className="flex items-center justify-between text-gray-60 w-full">
       {t('tokenAndAmount')}
@@ -65,45 +80,59 @@ function TokenAndAmount({
         <DisplayBalance
           maxWidth={140}
           maxWidthStyle="max-w-[140px]"
-          balance="10000"
+          balance={balance}
           className="mx-1 text-xs"
           initialFontSize={12}
+          symbol={symbol}
+          id="balance"
         />
-        {'CFX'}
       </span>
     </span>
   )
-  const onClickMax = () => {}
+  const onClickMax = () => {
+    if (isNativeToken) onChangeAmount(nativeMax)
+    else onChangeAmount(convertDataToValue(balance, decimals))
+  }
+  const onSelectToken = token => {
+    setTokenListShow(false)
+    onChangeToken(token)
+  }
   return (
     <CompWithLabel label={label}>
       <div className="flex px-3 h-13 items-center justify-between bg-gray-4 border border-gray-10 rounded">
         <div
           className="flex items-center pr-3 border-r-gray-20 cursor-pointer border-r border-text-20 h-6"
           onClick={() => setTokenListShow(true)}
+          id="changeToken"
           aria-hidden="true"
         >
           <img
             className="w-5 h-5 mr-1"
             src={icon || '/images/default-token-icon.svg'}
             alt="logo"
+            id="tokenIcon"
           />
           <span className="text-gray-80 mr-2">{symbol}</span>
           <CaretDownFilled className="w-4 h-4 text-gray-60" />
         </div>
         <div className="flex flex-1">
-          <Input
+          <NumberInput
             width="w-full bg-transparent"
             bordered={false}
             value={amount}
+            decimals={decimals}
             onChange={e => onChangeAmount && onChangeAmount(e.target.value)}
+            id="amount"
           />
         </div>
-        <Link onClick={onClickMax}>{t('max')}</Link>
+        <Link onClick={onClickMax} id="max">
+          {t('max')}
+        </Link>
       </div>
       <ChooseTokenList
         open={tokenListShow}
         onClose={() => setTokenListShow(false)}
-        onSelectToken={onChangeToken}
+        onSelectToken={onSelectToken}
       />
     </CompWithLabel>
   )
@@ -114,6 +143,8 @@ TokenAndAmount.propTypes = {
   onChangeToken: PropTypes.func,
   amount: PropTypes.string,
   onChangeAmount: PropTypes.func,
+  isNativeToken: PropTypes.bool,
+  nativeMax: PropTypes.string,
 }
 
 export default TokenAndAmount

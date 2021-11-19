@@ -109,18 +109,12 @@ function App() {
                 path={WALLET_IMPORT_PRIVATE_KEY}
                 component={ImportPrivateKey}
               />
-              <ProtectedRoute
-                pendingAuthReq={pendingAuthReq}
-                hasAccount={!zeroGroup}
-                isLocked={!zeroGroup && lockedData}
+              <Route
                 exact
                 path={SEND_TRANSACTION}
                 component={SendTransaction}
               />
-              <ProtectedRoute
-                pendingAuthReq={pendingAuthReq}
-                hasAccount={!zeroGroup}
-                isLocked={!zeroGroup && lockedData}
+              <Route
                 exact
                 path={CONFIRM_TRANSACTION}
                 component={ConfirmTransaction}

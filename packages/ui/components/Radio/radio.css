@@ -1,16 +1,16 @@
-/* stylelint-disable  at-rule-no-unknown */
 .radio-customize-prefix-cls {
-  @apply relative cursor-pointer inline-block
+  @apply relative cursor-pointer inline-block;
 }
+
 .radio-customize-prefix-cls-input {
-  @apply absolute inset-0 z-10 opacity-0 cursor-pointer
+  @apply absolute inset-0 z-10 opacity-0 cursor-pointer;
 }
-.radio-customize-prefix-cls-inner{
-  @apply relative inset-0 w-4 h-4 bg-white border-gray-40 border-solid border rounded-full block after:absolute after:top-[3px] after:left-[3px] after:w-2 after:h-2 after:rounded-lg after:bg-primary after:opacity-0
+
+.radio-customize-prefix-cls-inner {
+  @apply relative inset-0 w-4 h-4 bg-white border-gray-40 border-solid border rounded-full block after:absolute after:top-[3px] after:left-[3px] after:w-2 after:h-2 after:rounded-lg after:bg-primary after:opacity-0;
 }
-.radio-customize-prefix-cls-checked  .radio-customize-prefix-cls-inner {
-  @apply border-primary
-}
-.radio-customize-prefix-cls-checked  .radio-customize-prefix-cls-inner {
-  @apply after:opacity-100
+
+.radio-customize-prefix-cls-checked .radio-customize-prefix-cls-inner {
+  @apply border-primary;
+  @apply after:opacity-100;
 }

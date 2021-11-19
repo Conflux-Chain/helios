@@ -7,6 +7,7 @@ function SearchToken({value, onChange}) {
   const {t} = useTranslation()
   return (
     <Input
+      id="searchText"
       prefix={<SearchOutlined className="w-4 h-4 text-gray-40" />}
       width="w-full"
       value={value}

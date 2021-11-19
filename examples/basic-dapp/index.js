@@ -2,8 +2,109 @@
 // more info about js-conflux-sdk
 // https://github.com/Conflux-Chain/js-conflux-sdk#readme
 // eslint-disable-next-line import/no-unresolved
-// import {Conflux} from 'https://cdn.skypack.dev/js-conflux-sdk'
+import {Conflux} from 'https://cdn.skypack.dev/js-conflux-sdk'
+const exampleContract = new Conflux().Contract({
+  abi: [
+    {
+      inputs: [{internalType: 'address', name: 'tokenHolder', type: 'address'}],
+      name: 'balanceOf',
+      outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'decimals',
+      outputs: [{internalType: 'uint8', name: '', type: 'uint8'}],
+      stateMutability: 'pure',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'name',
+      outputs: [{internalType: 'string', name: '', type: 'string'}],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'symbol',
+      outputs: [{internalType: 'string', name: '', type: 'string'}],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {internalType: 'address', name: 'recipient', type: 'address'},
+        {internalType: 'uint256', name: 'amount', type: 'uint256'},
+      ],
+      name: 'transfer',
+      outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {internalType: 'address', name: 'holder', type: 'address'},
+        {internalType: 'address', name: 'spender', type: 'address'},
+      ],
+      name: 'allowance',
+      outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {internalType: 'address', name: 'spender', type: 'address'},
+        {internalType: 'uint256', name: 'value', type: 'uint256'},
+      ],
+      name: 'approve',
+      outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'granularity',
+      outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {internalType: 'address', name: 'recipient', type: 'address'},
+        {internalType: 'uint256', name: 'amount', type: 'uint256'},
+        {internalType: 'bytes', name: 'data', type: 'bytes'},
+      ],
+      name: 'send',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {internalType: 'address', name: 'holder', type: 'address'},
+        {internalType: 'address', name: 'recipient', type: 'address'},
+        {internalType: 'uint256', name: 'amount', type: 'uint256'},
+      ],
+      name: 'transferFrom',
+      outputs: [{internalType: 'bool', name: '', type: 'bool'}],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ],
+})
 
+const cusdtAddress = 'cfxtest:acepe88unk7fvs18436178up33hb4zkuf62a9dk1gv'
+// async function cfxEstimateGasAndCollateralAdvance(tx) {
+//   console.log('tx', tx)
+//   const estimateRst = await window.cfx.request({
+//     method: 'cfx_estimateGasAndCollateral',
+//     params: [tx, 'latest_state'],
+//   })
+//   console.log('result', estimateRst)
+//   return estimateRst.result
+// }
 function getElement(id) {
   return document.getElementById(id)
 }
@@ -21,6 +122,12 @@ function walletInitialized({chainId, networkId}) {
   // connect
   const connectButton = getElement('connect')
   const sendNativeTokenButton = getElement('send_native_token')
+  const approveButton = getElement('approve')
+  const transferFromButton = getElement('transfer_from')
+  const approveAccountInput = getElement('approve-account')
+  const transferFromAccountInput = getElement('from-account')
+  const transferToAccountInput = getElement('to-account')
+
   const personalSignButton = getElement('personal_sign')
   const typedSignButton = getElement('typed_sign')
   const addNetworkButton = getElement('add_network')
@@ -38,6 +145,8 @@ function walletInitialized({chainId, networkId}) {
         getElement('address').innerHTML = res.result
         console.log('result', res.result)
         sendNativeTokenButton.disabled = false
+        approveButton.disabled = false
+        transferFromButton.disabled = false
         personalSignButton.disabled = false
         typedSignButton.disabled = false
         addNetworkButton.disabled = false
@@ -68,7 +177,74 @@ function walletInitialized({chainId, networkId}) {
         ).innerHTML = `txhash: ${res.result}`
       })
   }
+  // approve spender
+  approveButton.onclick = async () => {
+    try {
+      const {
+        result: [connectedAddress],
+      } = await provider.request({method: 'cfx_accounts'})
+      const tx = {
+        from: connectedAddress,
+        to: cusdtAddress,
+        data: exampleContract.approve(
+          approveAccountInput.value,
+          100000000000000000000,
+        ).data,
+      }
+      // const {storageCollateralized, gasLimit} =
+      //   await cfxEstimateGasAndCollateralAdvance(tx)
+      // console.log(storageCollateralized, gasLimit)
+      // const estimateTx = {
+      //   ...tx,
+      //   gas: gasLimit,
+      //   storageLimit: storageCollateralized,
+      // }
 
+      provider
+        .request({method: 'cfx_sendTransaction', params: [tx]})
+        .then(res => {
+          if (res.error)
+            return console.error('error', res.error.message || res.error)
+          console.log('result', res.result)
+        })
+    } catch (err) {
+      console.log('err', err)
+    }
+  }
+  //transfer from
+  transferFromButton.onclick = async () => {
+    try {
+      const {
+        result: [connectedAddress],
+      } = await provider.request({method: 'cfx_accounts'})
+      const tx = {
+        from: connectedAddress,
+        to: cusdtAddress,
+        data: exampleContract.transferFrom(
+          transferFromAccountInput.value,
+          transferToAccountInput.value,
+          10000000000000000000,
+        ).data,
+      }
+      // const {storageCollateralized, gasLimit} =
+      //   await cfxEstimateGasAndCollateralAdvance(tx)
+      // console.log(storageCollateralized, gasLimit)
+      // const estimateTx = {
+      //   ...tx,
+      //   gas: gasLimit,
+      //   storageLimit: storageCollateralized,
+      // }
+      provider
+        .request({method: 'cfx_sendTransaction', params: [tx]})
+        .then(res => {
+          if (res.error)
+            return console.error('error', res.error.message || res.error)
+          console.log('result', res.result)
+        })
+    } catch (err) {
+      console.log('err', err)
+    }
+  }
   // personal sign
   personalSignButton.onclick = () => {
     provider

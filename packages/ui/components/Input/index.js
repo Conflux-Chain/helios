@@ -72,7 +72,7 @@ function Input({
       }`
   }, [bordered, errorMessage, focused, readonly])
 
-  const InputElement = createElement(elementType, {
+  const inputProps = {
     'data-testid': 'input-text',
     value,
     onFocus: () => {
@@ -87,7 +87,12 @@ function Input({
     },
     className: `bg-transparent w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`,
     ...props,
-  })
+  }
+  if (readonly) {
+    inputProps['readonly'] = 'true'
+  }
+
+  const InputElement = createElement(elementType, inputProps)
   return (
     <div className={`${width}`} data-testid="input-wrapper">
       <div

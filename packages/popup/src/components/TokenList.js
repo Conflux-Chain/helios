@@ -8,7 +8,12 @@ function TokenList({tokenList, onSelectToken}) {
       id="tokenList"
     >
       {tokenList.map((token, index) => (
-        <TokenItem onSelect={onSelectToken} token={token} key={index} />
+        <TokenItem
+          onSelect={onSelectToken}
+          token={token}
+          key={index}
+          index={index}
+        />
       ))}
       <div className="absolute bottom-0 left-0 h-6 bg-token-background w-full" />
     </div>

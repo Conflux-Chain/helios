@@ -25,33 +25,102 @@ async function cfxEstimateGasAndCollateralAdvance(request, tx) {
   return estimateRst.result
 }
 
-export const cfxEstimate = async (
-  tx,
-  {request, toAddressType, networkId, tokens = {}, isFluentRequest} = {},
+export const cfxGetFeeData = (
+  {
+    gas = '0x5208',
+    gasPrice = '0x1',
+    storageLimit = '0x0',
+    value = '0x0',
+    tokensAmount = {},
+  } = {},
+  {balance = '0x0', tokensBalance = {}} = {},
 ) => {
+  const gasFeeDrip = bn16(gas).mul(bn16(gasPrice))
+  const storageFeeDrip = bn16(storageLimit)
+    .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
+    .divn(1024)
+  const txFeeDrip = gasFeeDrip.add(storageFeeDrip)
+  const valueDrip = bn16(value)
+  const wholeTxDrip = txFeeDrip.add(valueDrip)
+  const balanceDrip = bn16(balance)
+  let nativeMaxDrip = balanceDrip.sub(txFeeDrip)
+  let restNativeBalanceDrip = nativeMaxDrip.sub(valueDrip)
+  const isBalanceEnough = restNativeBalanceDrip.gten(0)
+  nativeMaxDrip = nativeMaxDrip.gten(0) ? nativeMaxDrip : new BN(0)
+  restNativeBalanceDrip = restNativeBalanceDrip.gten(0)
+    ? restNativeBalanceDrip
+    : new BN(0)
+
+  const tokensInfo = Object.entries(tokensAmount).reduce(
+    (acc, [addr, amount]) => {
+      const tokenBalanceStr = tokensBalance[addr] || '0x0'
+      const tokenBalance = bn16(tokenBalanceStr)
+      const restTokenBalance = tokenBalance.sub(bn16(amount || '0x0'))
+      acc[addr] = {
+        tokenBalance: tokenBalanceStr,
+        restTokenBalance: pre0x(restTokenBalance.toString(16)),
+        isTokenBalanceEnough: restTokenBalance.gten(0),
+      }
+      return acc
+    },
+    {},
+  )
+
+  return {
+    balanceDrip: balance,
+    gasFeeDrip: pre0x(gasFeeDrip.toString(16)),
+    storageFeeDrip: pre0x(storageFeeDrip.toString(16)),
+    txFeeDrip: pre0x(txFeeDrip.toString(16)),
+    wholeTxDrip: pre0x(wholeTxDrip.toString(16)),
+    nativeMaxDrip: pre0x(nativeMaxDrip.toString(16)),
+    isBalanceEnough,
+    restNativeBalanceDrip: pre0x(restNativeBalanceDrip.toString(16)),
+    tokens: tokensInfo,
+  }
+}
+
+export const cfxEstimate = async (
+  tx = {},
+  {
+    request,
+    toAddressType, // networkId,
+    tokensAmount = {},
+    isFluentRequest,
+  } = {},
+) => {
+  // we use non-standard rpcs from fluent wallet like
+  // cfx_netVersion
+  // wallet_getBalance
   if (!isFluentRequest)
     throw new Error(`usage without fluent-wallet provider is not supported yet`)
 
   let newTx = {...tx}
   let {from, to, gasPrice, nonce, data, value} = newTx
+  const {
+    gas: customGas,
+    gasPrice: customGasPrice,
+    storageLimit: customStorageLimit,
+  } = tx
 
   if (!from) throw new Error(`Invalid from ${from}`)
-  if (networkId !== undefined && !Number.isInteger(networkId))
-    throw new Error(`Invalid networkId, must be an integer`)
+  // if (networkId !== undefined && !Number.isInteger(networkId))
+  //   throw new Error(`Invalid networkId, must be an integer`)
   if (!to && !data)
     throw new Error(`Invalid tx, to and data are both undefined`)
 
   const promises = []
-  if (networkId === undefined) {
-    promises.push(
-      request({method: 'cfx_netVersion'}).then(r => {
-        if (r.error) throw r.error
-        networkId = parseInt(r.result, 10)
-      }),
-    )
-  }
+  // we don't need networkId here, since we don't use js-conflux-sdk for now
+  // if (networkId === undefined) {
+  //   promises.push(
+  //     request({method: 'cfx_netVersion'}).then(r => {
+  //       if (r.error) throw r.error
+  //       networkId = parseInt(r.result, 10)
+  //     }),
+  //   )
+  // }
   value = value || '0x0'
 
+  // check if to is a contract address if to exits and its type is not provided
   if (to && !toAddressType) {
     promises.push(
       request({
@@ -63,51 +132,58 @@ export const cfxEstimate = async (
       }),
     )
   }
+
+  // get native and token balances
   let balances = []
   promises.push(
     request({
       method: 'wallet_getBalance',
-      params: {users: [from], tokens: ['0x0'].concat(Object.keys(tokens))},
+      params: {
+        users: [from],
+        tokens: ['0x0'].concat(Object.keys(tokensAmount)),
+      },
     }).then(r => {
       if (r.error) throw r.error
       balances = r.result[from]
     }),
   )
 
+  // get gasPrice
   await request({method: 'cfx_gasPrice'}).then(r => {
     if (r.error) throw r.error
     gasPrice = r.result
   })
 
-  // simple send tx
+  // simple send tx, gas is 21000, storageLimit is 0
   if (to && (!data || data === '0x')) {
     await Promise.all(promises)
-    const fromBalance = balances['0x0']
-    const storageFeeDripStr = '0x0'
-    const gasFeeDrip = bn16('0x5208' /* 21000 */).mul(bn16(gasPrice))
-    const gasFeeDripStr = pre0x(gasFeeDrip.toString(16))
-    const balanceDrip = bn16(fromBalance)
-    const nativeMaxDrip = balanceDrip.sub(gasFeeDrip)
+    const cfxFeeData = cfxGetFeeData(
+      {gasPrice, value},
+      {balance: balances['0x0']},
+    )
+    const customCfxFeeData = cfxGetFeeData(
+      {
+        gasPrice: customGasPrice || gasPrice,
+        gas: customGas,
+        storageLimit: customStorageLimit,
+        value,
+      },
+      {balance: balances['0x0']},
+    )
     if (toAddressType === 'user')
       return {
+        ...cfxFeeData,
+        customData: customCfxFeeData,
         gasPrice,
         gasUsed: '0x5208',
         gasLimit: '0x5208',
-        storageFeeDrip: storageFeeDripStr,
-        gasFeeDrip: gasFeeDripStr,
-        txFeeDrip: gasFeeDripStr,
-        nativeMaxDrip: pre0x(nativeMaxDrip.toString(16)),
         storageCollateralized: '0x0',
-        balanceDrip: fromBalance,
-        isBalanceEnough: balanceDrip.gte(gasFeeDrip),
-        isBalanceEnoughForValueAndFee: bn16(fromBalance).gte(
-          bn16('0x5208').add(bn16(value)),
-        ),
         willPayCollateral: true,
         willPayTxFee: true,
       }
   }
 
+  // get nonce, since it may affect estimateGasAndCollateral result
   if (!nonce) {
     promises.push(
       request({
@@ -120,53 +196,26 @@ export const cfxEstimate = async (
     )
   }
 
+  // wait for all thoes values
   await Promise.all(promises)
 
-  // estimate
+  // delete passed in gas/storage data, since they may affect
+  // estimateGasAndCollateral result
   delete newTx.gas
-  delete newTx.gasLimit
   delete newTx.storageLimit
-  newTx.gasPrice = gasPrice
+  delete newTx.gasPrice
   newTx.nonce = nonce
+
+  // run estimate
   let rst = await cfxEstimateGasAndCollateralAdvance(request, newTx)
   const {gasLimit, storageCollateralized} = rst
 
-  const fromBalance = balances['0x0']
-
-  const balanceDrip = bn16(fromBalance)
-  const storageFeeDrip = bn16(storageCollateralized)
-    .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
-    .divn(1024)
-  const gasFeeDrip = bn16(gasLimit).mul(bn16(gasPrice))
-  const txFeeDrip = storageFeeDrip.add(gasFeeDrip)
-
-  const tokensInfo = Object.entries(balances).reduce((acc, [addr, balance]) => {
-    if (addr === '0x0') return acc
-    const amount = bn16(tokens[addr])
-    const balancebn = bn16(balance)
-    const maxDrip = balancebn.sub(amount)
-    const isBalanceEnough = maxDrip.gten(0)
-    return {
-      ...acc,
-      addr: {
-        balanceDrip: balance,
-        isBalanceEnough,
-        maxDrip: isBalanceEnough ? pre0x(maxDrip.toString(16)) : undefined,
-      },
-    }
-  }, {})
-
   rst = {
     ...rst,
-    tokens: tokensInfo,
-    storageFeeDrip: pre0x(storageFeeDrip.toString(16)),
-    gasFeeDrip: pre0x(gasFeeDrip.toString(16)),
-    txFeeDrip: pre0x(txFeeDrip.toString(16)),
-    balanceDrip: fromBalance,
-    nativeMaxDrip: pre0x(balanceDrip.sub(txFeeDrip).toString(16)),
   }
 
   if (toAddressType === 'contract') {
+    // check sponsor info if is contract interaction
     const sponsorInfo = await request({
       method: 'cfx_checkBalanceAgainstTransaction',
       params: [
@@ -178,13 +227,39 @@ export const cfxEstimate = async (
         'latest_state',
       ],
     })
+    const cfxFeeData = cfxGetFeeData(
+      {
+        gasPrice,
+        gas: gasLimit,
+        storageLimit: storageCollateralized,
+        value,
+        tokensAmount,
+      },
+      {balance: balances['0x0'], tokensBalance: balances},
+    )
     if (sponsorInfo.error) throw sponsorInfo.error
-    const {isBalanceEnough, willPayCollateral, willPayTxFee} = sponsorInfo
-    rst = {...rst, isBalanceEnough, willPayCollateral, willPayTxFee}
-  } else {
+    const {isBalanceEnough, willPayCollateral, willPayTxFee} =
+      sponsorInfo.result
     rst = {
       ...rst,
-      isBalanceEnough: balanceDrip.gte(txFeeDrip),
+      ...cfxFeeData,
+      isBalanceEnough,
+      willPayCollateral,
+      willPayTxFee,
+    }
+  } else {
+    const cfxFeeData = cfxGetFeeData(
+      {
+        gasPrice,
+        gas: gasLimit,
+        storageLimit: storageCollateralized,
+        value,
+      },
+      {balance: balances['0x0']},
+    )
+    rst = {
+      ...rst,
+      ...cfxFeeData,
       willPayCollateral: true,
       willPayTxFee: true,
     }
@@ -192,6 +267,16 @@ export const cfxEstimate = async (
 
   rst.gasPrice = gasPrice
   rst.nonce = newTx.nonce
+
+  rst.customData = cfxGetFeeData(
+    {
+      gasPrice: customGasPrice || gasPrice,
+      gas: customGas || gasLimit,
+      storageLimit: customStorageLimit || storageCollateralized,
+      value,
+    },
+    {balance: balances['0x0']},
+  )
 
   return rst
 }

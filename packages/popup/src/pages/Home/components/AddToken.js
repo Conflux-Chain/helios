@@ -128,6 +128,7 @@ function AddToken({onClose, onOpen}) {
               {tokenList.map((token, index) => (
                 <TokenItem
                   key={index}
+                  index={index}
                   token={{
                     ...token,
                   }}

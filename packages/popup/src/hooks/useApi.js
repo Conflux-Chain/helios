@@ -19,6 +19,7 @@ const {
   WALLETDB_REFETCH_BALANCE,
   WALLETDB_ADD_TOKEN_LIST,
   WALLETDB_ACCOUNT_LIST_ASSETS,
+  WALLET_VALIDATE_20TOKEN,
 } = RPC_METHODS
 
 export const useCurrentAccount = () => {
@@ -176,7 +177,7 @@ export const useBalance = (
 ) => {
   const {data: balance} = useRPC(
     address && isNumber(networkId) && isString(tokenContractAddress)
-      ? [WALLET_GET_BALANCE, address, networkId]
+      ? [WALLET_GET_BALANCE, address, networkId, tokenContractAddress]
       : null,
     {
       users: [address],
@@ -192,14 +193,9 @@ export const useNetworkTypeIsCfx = () => {
   return currentNetwork?.type === NETWORK_TYPE.CFX
 }
 
-export const useNetworkTypeIsEth = () => {
-  const currentNetwork = useCurrentNetwork()
-  return currentNetwork?.type === NETWORK_TYPE.ETH
-}
-
 export const useCurrentNativeToken = () => {
   const {ticker: currentNativeToken} = useCurrentNetwork()
-  return currentNativeToken
+  return currentNativeToken || {}
 }
 
 export const useAddressType = address => {
@@ -217,7 +213,7 @@ export const useDbHomeAssets = () => {
   const {data: homeAssets} = useRPC([WALLETDB_HOME_PAGE_ASSETS], undefined, {
     fallbackData: {},
   })
-  useDbRefetchBalance()
+  useDbRefetchBalance({type: 'all'})
   return homeAssets
 }
 
@@ -233,7 +229,7 @@ export const useDbAddTokenList = () => {
       fallbackData: {},
     },
   )
-  useDbRefetchBalance({type: 'all'})
+  useDbRefetchBalance()
   return addTokenListData
 }
 
@@ -247,4 +243,15 @@ export const useDbAccountListAssets = () => {
   )
   useDbRefetchBalance()
   return accountListAssets
+}
+
+export const useValid20Token = address => {
+  const {data: token} = useRPC(
+    [WALLET_VALIDATE_20TOKEN, address],
+    {tokenAddress: address},
+    {
+      fallbackData: {},
+    },
+  )
+  return token
 }
