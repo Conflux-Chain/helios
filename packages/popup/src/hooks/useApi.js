@@ -177,7 +177,7 @@ export const useBalance = (
 ) => {
   const {data: balance} = useRPC(
     address && isNumber(networkId) && isString(tokenContractAddress)
-      ? [WALLET_GET_BALANCE, address, networkId.toString, tokenContractAddress]
+      ? [WALLET_GET_BALANCE, address, networkId, tokenContractAddress]
       : null,
     {
       users: [address],
