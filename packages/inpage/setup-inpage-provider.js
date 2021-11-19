@@ -46,6 +46,8 @@ function setupProvider() {
 
   PROVIDER = initProvider(stream, sendToBg)
   window.cfx = PROVIDER
+  window.conflux = PROVIDER
+  window.confluxJS = PROVIDER.confluxJS
   takeOver(PROVIDER)
   return PROVIDER
 }

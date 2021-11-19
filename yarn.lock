@@ -2977,6 +2977,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@conflux-dev/conflux-address-js@npm:1.1.7":
+  version: 1.1.7
+  resolution: "@conflux-dev/conflux-address-js@npm:1.1.7"
+  dependencies:
+    jsbi: ^3.1.4
+  checksum: beaba5919e58ed865857df151b9688e0bfd464de7dbd91cfc93a850e628fba5b4713bf79d127ed5536d691663595839d9ba3aee106f1ae46f8f380dbbd982920
+  languageName: node
+  linkType: hard
+
 "@conflux-dev/conflux-address-js@npm:^1.0.0, @conflux-dev/conflux-address-js@npm:^1.2.1":
   version: 1.2.1
   resolution: "@conflux-dev/conflux-address-js@npm:1.2.1"
@@ -5154,6 +5163,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/random-id": "workspace:packages/random-id"
     "@fluent-wallet/safe-event-emiter": "workspace:packages/safe-event-emiter"
+    js-conflux-sdk: 1.7.2
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -21629,6 +21639,25 @@ fsevents@~2.1.2:
   bin:
     cfxjs: bin/cfxjs.js
   checksum: e85460bdedc7568edf032df7659ccee043e3a394cb3099c568912ddf26248847a1758d2c620a1ce297ac43f3a39add23145033592a00ca004d055a567045fcfe
+  languageName: node
+  linkType: hard
+
+"js-conflux-sdk@npm:1.7.2":
+  version: 1.7.2
+  resolution: "js-conflux-sdk@npm:1.7.2"
+  dependencies:
+    "@conflux-dev/conflux-address-js": 1.1.7
+    big.js: ^5.2.2
+    commander: ^8.0.0
+    keccak: ^2.0.0
+    lodash: ^4.17.19
+    scrypt-js: ^3.0.1
+    secp256k1: ^3.7.1
+    superagent: ^6.1.0
+    websocket: ^1.0.31
+  bin:
+    cfxjs: bin/cfxjs.js
+  checksum: 9647b5c049ed1f46c2208789e898b3123ef71125c90914e2e30749b2a7cff1f90c01cad30baf65347775cad8f8dada0dca9b679bc742df2b84ad00fe74031b6d
   languageName: node
   linkType: hard
 
