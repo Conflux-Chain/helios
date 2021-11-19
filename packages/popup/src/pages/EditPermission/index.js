@@ -9,7 +9,6 @@ import useGlobalStore from '../../stores'
 import {useCurrentDapp} from '../../hooks/useApi'
 import {useDappParams, useDecodeData} from '../../hooks'
 
-/* eslint-disable react/prop-types */
 function EditPermission() {
   const {t} = useTranslation()
   const history = useHistory()

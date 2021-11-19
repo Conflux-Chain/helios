@@ -40,11 +40,6 @@ function EditGasFee() {
   const {gasUsed, storageCollateralized} = estimateRst
   const {storageFeeDrip, gasFeeDrip, txFeeDrip} = estimateRst?.customData || {}
 
-  //TODO:  if not pass transition params  jump to home
-  // if () {
-  //   history.push(HOME)
-  // }
-
   useEffect(() => {
     setInputGasLimit(gasLimit)
     setInputGasPrice(gasPrice)
