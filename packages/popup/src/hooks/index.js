@@ -209,7 +209,7 @@ export const useDappParams = () => {
   return req?.params[0]
 }
 
-export const useDecodeData = ({to, data}) => {
+export const useDecodeData = ({to, data} = {}) => {
   const type = useAddressType(to)
   const {netId} = useCurrentNetwork()
   const isContract = type === 'contract'
@@ -290,7 +290,7 @@ export const useDecodeDisplay = ({
   }
 }
 
-export const useViewData = ({data, to}) => {
+export const useViewData = ({data, to} = {}) => {
   const {decodeData, token} = useDecodeData({data, to})
   const {customAllowance} = useGlobalStore()
   const allowance =

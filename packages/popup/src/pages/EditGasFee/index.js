@@ -51,29 +51,40 @@ function EditGasFee() {
   const storageFee = convertDataToValue(storageFeeDrip || '0', CFX_DECIMALS)
   const txFee = convertDataToValue(txFeeDrip || '0', CFX_DECIMALS)
 
-  useEffect(() => {
-    setGasPriceErr(
-      new Big(inputGasPrice || '0').gt(0)
-        ? ''
-        : t('gasPriceErrMSg', {
-            unit: networkTypeIsCfx ? t('drip') : t('gWei'),
-          }),
-    )
-  }, [inputGasPrice, networkTypeIsCfx, t])
+  const onChangeGasPrice = gasPrice => {
+    setInputGasPrice(gasPrice)
+    if (new Big(inputGasPrice || '0').gt(0)) {
+      setGasPriceErr('')
+    } else {
+      setGasPriceErr(
+        t('gasPriceErrMSg', {
+          unit: networkTypeIsCfx ? t('drip') : t('gWei'),
+        }),
+      )
+    }
+  }
 
-  useEffect(() => {
-    setGasLimitErr(
-      new Big(inputGasLimit || '0').gte(formatHexToDecimal(gasUsed || '1'))
-        ? ''
-        : t('gasLimitErrMsg', {
-            gasUsed: formatHexToDecimal(gasUsed || '0'),
-          }),
-    )
-  }, [inputGasLimit, gasUsed, t])
+  const onChangeGasLimit = gasLimit => {
+    setInputGasLimit(gasLimit)
+    if (new Big(inputGasLimit || '0').gte(formatHexToDecimal(gasUsed || '1'))) {
+      setGasLimitErr('')
+    } else {
+      setGasLimitErr(
+        t('gasLimitErrMsg', {
+          gasUsed: formatHexToDecimal(gasUsed || '0'),
+        }),
+      )
+    }
+  }
 
-  useEffect(() => {
-    setNonceErr(!inputNonce || new Big(inputNonce).gt(0) ? '' : t('nonceErr'))
-  }, [inputNonce, t])
+  const onChangeNonce = nonce => {
+    setInputNonce(nonce)
+    if (!inputNonce || new Big(inputNonce).gt(0)) {
+      setNonceErr('')
+    } else {
+      setNonceErr(t('nonceErr'))
+    }
+  }
 
   const saveGasData = () => {
     setGasPrice(inputGasPrice)
@@ -117,7 +128,7 @@ function EditGasFee() {
                 id="gasPrice"
                 errorMessage={gasPriceErr}
                 errorClassName="absolute right-0 -bottom-6"
-                onChange={e => setInputGasPrice(e.target.value)}
+                onChange={e => onChangeGasPrice(e.target.value)}
               />
             }
           />
@@ -132,7 +143,7 @@ function EditGasFee() {
                 errorClassName="absolute right-0 -bottom-6"
                 value={inputGasLimit}
                 errorMessage={gasLimitErr}
-                onChange={e => setInputGasLimit(e.target.value)}
+                onChange={e => onChangeGasLimit(e.target.value)}
               />
             }
           />
@@ -194,7 +205,7 @@ function EditGasFee() {
                 value={inputNonce}
                 errorMessage={nonceErr}
                 errorClassName="absolute right-0 -bottom-6"
-                onChange={e => setInputNonce(e.target.value)}
+                onChange={e => onChangeNonce(e.target.value)}
               />
             }
           />

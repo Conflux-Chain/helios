@@ -48,11 +48,9 @@ function ConfirmTransition() {
   const nativeToken = useCurrentNativeToken()
   const tx = useDappParams()
   const isDapp = pendingAuthReq?.length > 0
-  const {to, data} = tx || {}
-  const viewData = useViewData(tx || {})
-
+  const viewData = useViewData(tx)
   // get to type and to token
-  const {isContract, decodeData} = useDecodeData({to, data})
+  const {isContract, decodeData} = useDecodeData(tx)
   const {
     isApproveToken,
     isSendToken,

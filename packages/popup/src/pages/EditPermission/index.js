@@ -147,7 +147,10 @@ function EditPermission() {
         <Button
           className="w-70  mx-auto mb-9"
           id="savePermission"
-          disabled={permissionChoice === 'custom' && !!customLimitErr}
+          disabled={
+            permissionChoice === 'custom' &&
+            (!!customLimitErr || !customLimitValue)
+          }
           onClick={onSavePermissionLimit}
         >
           {t('set')}
