@@ -37,6 +37,12 @@ export const main = async ({
       account: currentAccount.eid,
       network: currentNetwork.eid,
     })
+
+    newapp.site?.post?.({
+      event: 'accountsChanged',
+      params: [addr.base32],
+    })
+
     return [addr.base32]
   }
 
