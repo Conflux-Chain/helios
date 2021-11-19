@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/data-format",
   "type": "module",
   "main": "index.js",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "dependencies": {
     "@fluent-wallet/component-loading": "workspace:packages/ui/components/Loading",
     "@fluent-wallet/consts": "workspace:packages/consts",
