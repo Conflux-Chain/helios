@@ -49,6 +49,7 @@ jobs:
             ${{ runner.os }}-yarn-and-maven-
       - run: yarn install --immutable
       - run: yarn version apply --all || true
+      - run: rm -rf .yarn/versions || true
       - env:
           YARN_NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         run: yarn workspaces foreach --topological --no-private --verbose --parallel --interlaced npm publish --tolerate-republish || true
