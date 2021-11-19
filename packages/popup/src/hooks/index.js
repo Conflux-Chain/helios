@@ -180,18 +180,14 @@ export const useCheckBalanceAndGas = (
         return 'contract error'
       }
     } else {
-      if (isNativeToken) {
-        if (!isBalanceEnough && isBalanceEnough !== undefined) {
+      if (isNativeToken && isBalanceEnough !== undefined) {
+        if (!isBalanceEnough) {
           return 'balance is not enough'
         } else {
           return ''
         }
-      } else {
-        if (
-          isSendToken &&
-          !isTokenBalanceEnough &&
-          isTokenBalanceEnough !== undefined
-        ) {
+      } else if (!isNativeToken && isTokenBalanceEnough !== undefined) {
+        if (isSendToken && !isTokenBalanceEnough) {
           return 'balance is not enough'
         } else if (!isBalanceEnough && isBalanceEnough !== undefined) {
           return 'gas fee is not enough'
