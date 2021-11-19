@@ -8,6 +8,30 @@ import {ROUTES} from './constants'
 import './index.css'
 import useGlobalStore from './stores/index.js'
 
+import ErrorPage from './pages/Error'
+const HomePage = lazy(() => import('./pages/Home'))
+const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
+const NewSeed = lazy(() => import('./pages/CreateSeed/NewSeed'))
+const Unlock = lazy(() => import('./pages/Unlock'))
+const Welcome = lazy(() => import('./pages/Welcome'))
+const SetPassword = lazy(() => import('./pages/SetPassword'))
+const SelectCreateType = lazy(() => import('./pages/SelectCreateType'))
+const ImportSeedPhrase = lazy(() => import('./pages/ImportSeedPhrase'))
+const ImportPrivateKey = lazy(() => import('./pages/ImportPrivateKey'))
+const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
+const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
+const ConnectSite = lazy(() => import('./pages/ConnectSite'))
+const RequestSignature = lazy(() => import('./pages/RequestSignature'))
+const DappAddNetwork = lazy(() => import('./pages/DappAddNetwork'))
+const DappSwitchNetwork = lazy(() => import('./pages/DappSwitchNetwork'))
+const ConfirmAddSuggestedToken = lazy(() =>
+  import('./pages/ConfirmAddSuggestedToken'),
+)
+const SendTransaction = lazy(() => import('./pages/SendTransaction'))
+const EditGasFee = lazy(() => import('./pages/EditGasFee'))
+const EditPermission = lazy(() => import('./pages/EditPermission'))
+const ConfirmTransaction = lazy(() => import('./pages/ConfirmTransaction'))
+const ViewData = lazy(() => import('./pages/ViewData'))
 const {
   HOME,
   WALLET_UNLOCK,
@@ -32,30 +56,6 @@ const {
   CONFIRM_TRANSACTION,
   VIEW_DATA,
 } = ROUTES
-const HomePage = lazy(() => import('./pages/Home'))
-const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
-const NewSeed = lazy(() => import('./pages/CreateSeed/NewSeed'))
-const Unlock = lazy(() => import('./pages/Unlock'))
-const Welcome = lazy(() => import('./pages/Welcome'))
-const SetPassword = lazy(() => import('./pages/SetPassword'))
-const SelectCreateType = lazy(() => import('./pages/SelectCreateType'))
-const ImportSeedPhrase = lazy(() => import('./pages/ImportSeedPhrase'))
-const ImportPrivateKey = lazy(() => import('./pages/ImportPrivateKey'))
-const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
-const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
-const ErrorPage = lazy(() => import('./pages/Error'))
-const ConnectSite = lazy(() => import('./pages/ConnectSite'))
-const RequestSignature = lazy(() => import('./pages/RequestSignature'))
-const DappAddNetwork = lazy(() => import('./pages/DappAddNetwork'))
-const DappSwitchNetwork = lazy(() => import('./pages/DappSwitchNetwork'))
-const ConfirmAddSuggestedToken = lazy(() =>
-  import('./pages/ConfirmAddSuggestedToken'),
-)
-const SendTransaction = lazy(() => import('./pages/SendTransaction'))
-const EditGasFee = lazy(() => import('./pages/EditGasFee'))
-const EditPermission = lazy(() => import('./pages/EditPermission'))
-const ConfirmTransaction = lazy(() => import('./pages/ConfirmTransaction'))
-const ViewData = lazy(() => import('./pages/ViewData'))
 
 function App() {
   const lockedData = useIsLocked()
