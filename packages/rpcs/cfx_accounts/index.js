@@ -8,11 +8,22 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup', 'inpage'],
-  methods: ['cfx_requestAccounts'],
-  db: [],
+  locked: true,
+  db: ['getLocked', 'accountAddrByNetwork'],
 }
 
-export const main = async ({rpcs: {cfx_requestAccounts}, app}) => {
+export const main = async ({
+  db: {getLocked, accountAddrByNetwork},
+  app,
+  network,
+}) => {
+  if (getLocked()) return []
   if (!app) return []
-  return await cfx_requestAccounts()
+
+  const addr = accountAddrByNetwork({
+    network: network.eid,
+    account: app.currentAccount.eid,
+  })
+  if (network.type === 'cfx') return [addr.base32]
+  return [addr.hex]
 }

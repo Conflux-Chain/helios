@@ -68,6 +68,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
       - run: yarn install --immutable
+      - run: node scripts/build-content-script.js
       - run: yarn test:unit --coverage
       - uses: codecov/codecov-action@v1
         with:

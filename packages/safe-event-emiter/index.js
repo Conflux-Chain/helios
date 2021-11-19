@@ -64,7 +64,7 @@ export default class SafeEventEmitter {
   }
 
   once() {
-    throw new Error('method once not supported')
+    throw new Error('method once is not supported')
   }
 
   off(eventType, listener) {

@@ -1,9 +1,10 @@
 import {rpcStream} from '@fluent-wallet/extension-runtime/rpc-stream.js'
 import {initProvider} from '@fluent-wallet/provider-api'
+import {takeOver} from './take-over-portal'
 
 let PROVIDER = null
 
-const validateMessage = e => {
+function validateMessage(e) {
   if (e.origin !== location.origin) return
   if (e.source !== window) return
   if (!e.data) return
@@ -18,7 +19,7 @@ const validateMessage = e => {
   return true
 }
 
-const setupProvider = () => {
+function setupProvider() {
   if (PROVIDER) return
   let sameOriginListener = () => {}
   window.addEventListener('message', e => {
@@ -45,6 +46,9 @@ const setupProvider = () => {
 
   PROVIDER = initProvider(stream, sendToBg)
   window.cfx = PROVIDER
+  window.conflux = PROVIDER
+  window.confluxJS = PROVIDER.confluxJS
+  takeOver(PROVIDER)
   return PROVIDER
 }
 
