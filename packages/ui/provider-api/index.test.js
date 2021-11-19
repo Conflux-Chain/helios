@@ -6,7 +6,7 @@ describe('@fluent-wallet/provider-api', function () {
   describe('initProvider', function () {
     it('should return the provider', async function () {
       let arg
-      const post = jest.fn(a => (arg = a))
+      const post = jest.fn(async a => (arg = a))
       const provider = initProvider({subscribe: jest.fn()}, post)
       provider.request({method: 'a'})
       expect(arg.method).toBe('a')
