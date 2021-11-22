@@ -17,7 +17,8 @@
     "ethereumjs-vm": "4.2.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "babel-plugin-dynamic-import-node": "2.3.0"
+    "babel-plugin-dynamic-import-node": "2.3.3",
+    "esinstall/rollup-plugin-polyfill-node": "0.7.0"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",
