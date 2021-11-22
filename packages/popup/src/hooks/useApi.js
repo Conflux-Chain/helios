@@ -110,8 +110,11 @@ export const useNetworkByChainId = (chainId, type) => {
 }
 
 export const useHdAccountGroup = () => {
+  const zeroGroup = useIsZeroGroup()
   const {data: hdGroup} = useRPC(
-    [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD],
+    zeroGroup === false
+      ? [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD]
+      : null,
     {type: ACCOUNT_GROUP_TYPE.HD},
     {fallbackData: []},
   )
@@ -119,8 +122,11 @@ export const useHdAccountGroup = () => {
 }
 
 export const usePkAccountGroup = () => {
+  const zeroGroup = useIsZeroGroup()
   const {data: pkGroup} = useRPC(
-    [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK],
+    zeroGroup === false
+      ? [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK]
+      : null,
     {type: ACCOUNT_GROUP_TYPE.PK},
     {fallbackData: []},
   )
@@ -128,9 +134,14 @@ export const usePkAccountGroup = () => {
 }
 
 export const useAllGroup = () => {
-  const {data: group} = useRPC([WALLET_GET_ACCOUNT_GROUP], undefined, {
-    fallbackData: [],
-  })
+  const zeroGroup = useIsZeroGroup()
+  const {data: group} = useRPC(
+    zeroGroup === false ? [WALLET_GET_ACCOUNT_GROUP] : null,
+    undefined,
+    {
+      fallbackData: [],
+    },
+  )
   return group
 }
 

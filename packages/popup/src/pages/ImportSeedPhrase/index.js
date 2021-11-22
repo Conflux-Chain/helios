@@ -38,10 +38,11 @@ function ImportSeedPhrase() {
   }
   const onChangeKeygen = e => {
     setMnemonic(e.target.value)
+    // TODO: replace error msg
+    setErrorMessage(e.target.value ? '' : 'Required')
   }
   const onCreate = () => {
     if (!mnemonic) {
-      // TODO: replace error msg
       return setErrorMessage('Required')
     }
 
@@ -49,40 +50,38 @@ function ImportSeedPhrase() {
       setCreatingAccount(true)
       request(WALLET_VALIDATE_MNEMONIC, {
         mnemonic,
-      }).then(({result}) => {
-        if (result?.valid) {
-          let params = {
-            nickname: name || accountNamePlaceholder,
-            mnemonic,
-          }
-          if (createdPassword) {
-            params['password'] = createdPassword
-          }
-          return request(WALLET_IMPORT_MNEMONIC, params).then(
-            ({error, result}) => {
-              setCreatingAccount(false)
-              if (result) {
-                updateAddedNewAccount(
-                  mutate,
-                  !!createdPassword,
-                  ACCOUNT_GROUP_TYPE.HD,
-                )
-                createdPassword && setCreatedPassword('')
-                history.push(HOME)
-              }
-              if (typeof error?.data?.duplicateAccountGroupId === 'number') {
-                return setErrorMessage(t('duplicateSeedError'))
-              }
-              if (error) {
-                setErrorMessage(error.message.split('\n')[0])
-              }
-            },
-          )
-        }
-        // TODO: replace error msg
-        setErrorMessage('Invalid or inner error!')
-        setCreatingAccount(false)
       })
+        .then(result => {
+          if (result?.valid) {
+            let params = {
+              nickname: name || accountNamePlaceholder,
+              mnemonic,
+            }
+            if (createdPassword) {
+              params['password'] = createdPassword
+            }
+            return request(WALLET_IMPORT_MNEMONIC, params).then(() => {
+              setCreatingAccount(false)
+              updateAddedNewAccount(
+                mutate,
+                !!createdPassword,
+                ACCOUNT_GROUP_TYPE.HD,
+              )
+              createdPassword && setCreatedPassword('')
+              history.push(HOME)
+            })
+          }
+          // TODO: replace error msg
+          setErrorMessage('Invalid or inner error!')
+          setCreatingAccount(false)
+        })
+        .catch(error => {
+          setCreatingAccount(false)
+          if (typeof error?.data?.duplicateAccountGroupId === 'number') {
+            return setErrorMessage(t('duplicateSeedError'))
+          }
+          setErrorMessage(error?.message.split('\n')[0] ?? error)
+        })
     }
   }
 
@@ -123,7 +122,7 @@ function ImportSeedPhrase() {
             id="importSeedPhraseBtn"
             className="w-70  mx-auto"
             onClick={onCreate}
-            disabled={!name && !accountNamePlaceholder}
+            disabled={(!name && !accountNamePlaceholder) || !!errorMessage}
           >
             {t('import')}
           </Button>

@@ -35,13 +35,20 @@ function DappFooter({
   const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
 
   const onCancel = () => {
-    request(WALLET_REJECT_PENDING_AUTH_REQUSET, {authReqId: eid}).then(
-      ({result}) => {
-        result && history.push(HOME)
-        result && onClickCancel && onClickCancel()
+    if (sendingRequestStatus) {
+      return
+    }
+    setSendingRequestStatus(true)
+    request(WALLET_REJECT_PENDING_AUTH_REQUSET, {authReqId: eid})
+      .then(() => {
+        setSendingRequestStatus(false)
+        history.push(HOME)
+        onClickCancel && onClickCancel()
+      })
+      .catch(() => {
         // TODO: error message
-      },
-    )
+        setSendingRequestStatus(false)
+      })
   }
 
   const onConfirm = () => {
@@ -76,13 +83,16 @@ function DappFooter({
         break
     }
 
-    request(req.method, {authReqId: eid, ...params}).then(({result, error}) => {
-      setSendingRequestStatus(false)
-      error && console.log(error)
-      result && onClickConfirm && onClickConfirm()
-      result && history.push(HOME)
-      // TODO: error message
-    })
+    request(req.method, {authReqId: eid, ...params})
+      .then(() => {
+        setSendingRequestStatus(false)
+        onClickConfirm && onClickConfirm()
+        history.push(HOME)
+      })
+      .catch(() => {
+        setSendingRequestStatus(false)
+        // TODO: error message
+      })
   }
 
   return (

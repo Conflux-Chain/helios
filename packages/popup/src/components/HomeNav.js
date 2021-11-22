@@ -7,7 +7,7 @@ const {LOCK} = RPC_METHODS
 function HomeNav() {
   const {setFatalError} = useGlobalStore()
   const onLock = () => {
-    request(LOCK).then(({error}) => setFatalError(error))
+    request(LOCK).catch(error => setFatalError(error))
   }
   return (
     <nav className="flex h-13 items-center justify-between px-4 bg-secondary z-10">

@@ -29,17 +29,15 @@ function CurrentDapp() {
       siteId,
       permissions: [{wallet_accounts: {}}],
       accounts: [currentEid],
-    }).then(({error}) => {
-      if (error) setFatalError(error)
-      else setAuthModalShow(false)
     })
+      .then(() => setAuthModalShow(false))
+      .catch(error => setFatalError(error))
   }
 
   const onDisconnect = () => {
-    request(WALLET_DELETE_APP, {appId}).then(({error}) => {
-      if (error) setFatalError(error)
-      else setDisconnectModalShow(false)
-    })
+    request(WALLET_DELETE_APP, {appId})
+      .then(() => setDisconnectModalShow(false))
+      .catch(error => setFatalError(error))
   }
 
   return (

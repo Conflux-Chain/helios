@@ -68,8 +68,8 @@ function AddToken({onClose, onOpen}) {
     request(WALLET_VALIDATE_20TOKEN, {
       tokenAddress: value,
       userAddress: address,
-    }).then(({result}) => {
-      if (inputValueRef.current === value && result) {
+    }).then(result => {
+      if (inputValueRef.current === value) {
         if (result?.valid) {
           setNoTokenStatus(false)
           return setTokenList([{...result, address: value}])
@@ -89,7 +89,7 @@ function AddToken({onClose, onOpen}) {
   }
 
   const onAddToken = ({decimals, symbol, address, logoURI}) => {
-    request(WALLET_WATCH_ASSET, {
+    const params = {
       type: isCfxChain ? 'CRC20' : 'ERC20',
       options: {
         address,
@@ -97,16 +97,15 @@ function AddToken({onClose, onOpen}) {
         decimals,
         image: logoURI || DEFAULT_TOKEN_URL,
       },
-    }).then(({result}) => {
+    }
+    request(WALLET_WATCH_ASSET, params).then(() => {
       // TODO:error
-      if (result) {
-        mutate([WALLETDB_REFETCH_BALANCE]).then(() => {
-          mutate([WALLETDB_ADD_TOKEN_LIST])
-        })
-        if (address === searchContent && tokenList.length === 1) {
-          setTokenList([...tokenList.map(token => ({...token, added: true}))])
-        }
+      if (address === searchContent && tokenList.length === 1) {
+        setTokenList([...tokenList.map(token => ({...token, added: true}))])
       }
+      mutate([WALLETDB_REFETCH_BALANCE]).then(() => {
+        mutate([WALLETDB_ADD_TOKEN_LIST])
+      })
     })
   }
 

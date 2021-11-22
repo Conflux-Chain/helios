@@ -75,16 +75,18 @@ function CurrentSeed() {
     return request(WALLET_CREATE_ACCOUNT, {
       accountGroupId: hdGroup[selectedGroupIdx].eid,
       nickname: accountName || accountNamePlaceholder,
-    }).then(({error}) => {
-      setCreatingAccount(false)
-      if (error) {
-        setAccountCreationError(error.message)
-        console.log(accountCreationError)
-        return
-      }
-      mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
-      history.push(HOME)
     })
+      .then(() => {
+        setCreatingAccount(false)
+        mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+        history.push(HOME)
+      })
+      .catch(error => {
+        // TODO: handle error message
+        setCreatingAccount(false)
+        setAccountCreationError(error.message ?? error)
+        console.log(accountCreationError)
+      })
   }
 
   return (
