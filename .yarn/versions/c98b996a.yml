@@ -1,5 +1,0 @@
-releases:
-  "@fluent-wallet/use-rpc": patch
-
-declined:
-  - helios-popup
