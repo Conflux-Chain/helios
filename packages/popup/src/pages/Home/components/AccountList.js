@@ -24,10 +24,10 @@ function AccountItem({
 }) {
   const {mutate} = useSWRConfig()
   const onChangeAccount = accountId => {
-    request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(({result}) => {
-      result && closeAction && closeAction()
+    request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(() => {
+      closeAction && closeAction()
       mutate([WALLET_GET_CURRENT_ACCOUNT])
-      // TODO: need deal with error condition
+      // TODO: deal with error condition
     })
   }
 

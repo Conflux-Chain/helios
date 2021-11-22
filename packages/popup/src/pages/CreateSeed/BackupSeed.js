@@ -19,7 +19,7 @@ function BackupSeed() {
   const {setCreatedMnemonic} = useGlobalStore()
   const [mnemonic, setMnemonic] = useState('')
   useEffectOnce(() =>
-    request(WALLET_GENERATE_MNEMONIC).then(({result}) => setMnemonic(result)),
+    request(WALLET_GENERATE_MNEMONIC).then(result => setMnemonic(result)),
   )
 
   return (

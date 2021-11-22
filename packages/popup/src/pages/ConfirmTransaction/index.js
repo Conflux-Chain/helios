@@ -97,14 +97,16 @@ function ConfirmTransition() {
   const onSend = () => {
     if (sendingTransaction) return
     setSendingTransaction(true)
-    request(SEND_TRANSACTION, [params]).then(({error, result}) => {
-      setSendingTransaction(false)
-      if (error) {
-        return console.error('error', error.message || error)
-      }
-      setHash(result)
-      setShowResult(true)
-    })
+    request(SEND_TRANSACTION, [params])
+      .then(result => {
+        setSendingTransaction(false)
+        setHash(result)
+        setShowResult(true)
+      })
+      .catch(error => {
+        setSendingTransaction(false)
+        console.error('error', error?.message ?? error)
+      })
   }
 
   return (

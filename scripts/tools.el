@@ -70,12 +70,12 @@
   (when (helios-pkg-p)
     (save-excursion
       (goto-char (point-min))
-      (let* ((rpcpkgp (re-search-forward "\"name\":\s\"\\(wallet\\|cfx\\|eth\\|net\\|web3\\|personal\\)_" nil t))
+      (let* ((rpcpkgp (re-search-forward "\"name\":\s\"\\(txpool\\|wallet\\|cfx\\|eth\\|net\\|web3\\|personal\\)_" nil t))
              (name-start (and rpcpkgp (goto-char (point-min)) (re-search-forward "\"name\":\s\"")))
              (name (thing-at-point 'sexp t))
              (new-name (and name (helios->new-pkg-name name))))
         (when (and rpcpkgp name new-name)
-          (re-search-forward "\\(wallet\\|cfx\\|eth\\|net\\|web3\\|personal\\)_\\w+" nil t)
+          (re-search-forward "\\(txpool\\|wallet\\|cfx\\|eth\\|net\\|web3\\|personal\\)_\\w+" nil t)
           (replace-match new-name)
           (helios-change-pkg-readme name new-name))))))
 
@@ -93,11 +93,11 @@
 (defun helios-setup-rpc-indexjs ()
   (interactive)
   (let ((path (buffer-file-name)))
-    (when (and path (string-match-p "packages/rpcs/\\(wallet\\|cfx\\|eth\\|net\\|web3\\|personal\\)_\\w+/index.js" path))
+    (when (and path (string-match-p "packages/rpcs/\\(txpool\\|wallet\\|cfx\\|eth\\|net\\|web3\\|personal\\)_\\w+/index.js" path))
       (let* ((rpc-name (with-temp-buffer
                          (insert path)
                          (goto-char (point-max))
-                         (let* ((start (re-search-backward "\\(wallet\\|cfx\\|eth\\|net\\|web3\\|personal\\)_\\w+"))
+                         (let* ((start (re-search-backward "\\(txpool\\|wallet\\|cfx\\|eth\\|net\\|web3\\|personal\\)_\\w+"))
                                 (end (- (search-forward "/" (buffer-file-name)) 1)))
                            (buffer-substring start end))))
              (imspec (concat "import {map} from '@fluent-wallet/spec'\n\n"))

@@ -360,17 +360,17 @@
                       :gen/fmap (fn [& args] js/undefined)}}))
 (def export-epoch-tag
   (update-properties
-   [:enum "latest_mined" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil]
+   [:enum "latest_mined" "latest_finalized" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil]
    :type :epoch-tag
-   :error/message "must be one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null"
-   :doc "one of latest_mined, latest_confirmed, latest_state, latest_checkpoint, earliest or null, default to latest_state"))
+   :error/message "must be one of latest_mined, latest_finalized, latest_confirmed, latest_state, latest_checkpoint, earliest or null"
+   :doc "one of latest_mined, latest_finalized, latest_confirmed, latest_state, latest_checkpoint, earliest or null, default to latest_state"))
 
 (def export-epoch-tag-no-mined
   (update-properties
-   [:enum "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil]
+   [:enum "latest_finalized" "latest_confirmed" "latest_state" "latest_checkpoint" "earliest" nil]
    :type :epoch-tag-no-mined
-   :error/message "must be one of latest_confirmed, latest_state, latest_checkpoint, earliest or null"
-   :doc "one of latest_confirmed, latest_state, latest_checkpoint, earliest or null, default to latest_state"))
+   :error/message "must be one of latest_finalized, latest_confirmed, latest_state, latest_checkpoint, earliest or null"
+   :doc "one of latest_finalized, latest_confirmed, latest_state, latest_checkpoint, earliest or null, default to latest_state"))
 
 (def export-epoch-ref
   (update-properties
