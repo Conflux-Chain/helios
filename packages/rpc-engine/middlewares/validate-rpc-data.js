@@ -101,7 +101,7 @@ function validateNetworkSupport({req}) {
     method.startsWith('wallet') || method.startsWith('personal')
   if (bothSupport) return
 
-  const cfxRpc = method.startsWith('cfx')
+  const cfxRpc = method.startsWith('cfx') || method.startsWith('txpool')
   const startsWithEth = method.startsWith('eth')
   const startsWithNet = method.startsWith('net')
   const startsWithWeb3 = method.startsWith('web3')
