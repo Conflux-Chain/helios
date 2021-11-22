@@ -45,11 +45,7 @@ export const useRPCRaw = (provider, deps = [], params, opts) => {
 
   return useSWR(
     method ? deps : null,
-    () =>
-      provider?.request({method, params}).then(({result, error}) => {
-        if (error) throw error
-        return result
-      }),
+    () => provider?.request({method, params}),
     opts,
   )
 }
