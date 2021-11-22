@@ -80,16 +80,18 @@ function ConfirmSeed() {
     if (createdPassword) {
       params['password'] = createdPassword
     }
-    request(WALLET_IMPORT_MNEMONIC, params).then(({error}) => {
-      setImportingMnemonic(false)
-      if (error) {
-        return setMnemonicError(error.message)
-      }
-      updateAddedNewAccount(mutate, !!createdPassword, ACCOUNT_GROUP_TYPE.HD)
-      createdPassword && setCreatedPassword('')
-      history.push(HOME)
-      setCreatedMnemonic('')
-    })
+    request(WALLET_IMPORT_MNEMONIC, params)
+      .then(() => {
+        setImportingMnemonic(false)
+        updateAddedNewAccount(mutate, !!createdPassword, ACCOUNT_GROUP_TYPE.HD)
+        createdPassword && setCreatedPassword('')
+        history.push(HOME)
+        setCreatedMnemonic('')
+      })
+      .catch(error => {
+        setImportingMnemonic(false)
+        setMnemonicError(error?.message ?? error)
+      })
   }
 
   return (

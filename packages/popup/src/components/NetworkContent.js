@@ -30,7 +30,7 @@ function NetworkItem({
     itemWrapperPaddingStyleObj[networkItemSize] || ''
 
   const onChangeNetwork = () => {
-    request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(({result}) => {
+    request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(result => {
       mutate([WALLET_GET_CURRENT_NETWORK])
       onClickNetworkItem(result, {networkId, networkName, icon})
       // TODO: need deal with error condition

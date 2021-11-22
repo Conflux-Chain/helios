@@ -139,11 +139,9 @@ function walletInitialized({chainId, networkId}) {
       .request({
         method: 'cfx_requestAccounts',
       })
-      .then(res => {
-        if (res.error)
-          return console.error('error', res.error.message || res.error)
-        getElement('address').innerHTML = res.result
-        console.log('result', res.result)
+      .then(result => {
+        getElement('address').innerHTML = result
+        console.log('result', result)
         sendNativeTokenButton.disabled = false
         approveButton.disabled = false
         transferFromButton.disabled = false
@@ -153,13 +151,12 @@ function walletInitialized({chainId, networkId}) {
         switchNetworkButton.disabled = false
         addTokenButton.disabled = false
       })
+      .catch(error => console.error('error', error.message || error))
   }
 
   // send 1 native token to the connected address
   sendNativeTokenButton.onclick = async () => {
-    const {
-      result: [connectedAddress],
-    } = await provider.request({method: 'cfx_accounts'})
+    const [connectedAddress] = await provider.request({method: 'cfx_accounts'})
     const tx = {
       from: connectedAddress,
       value: '0xde0b6b3a7640000',
@@ -168,21 +165,17 @@ function walletInitialized({chainId, networkId}) {
 
     provider
       .request({method: 'cfx_sendTransaction', params: [tx]})
-      .then(res => {
-        if (res.error)
-          return console.error('error', res.error.message || res.error)
-        console.log('result', res.result)
-        getElement(
-          'send_native_token_result',
-        ).innerHTML = `txhash: ${res.result}`
+      .then(result => {
+        getElement('send_native_token_result').innerHTML = `txhash: ${result}`
       })
+      .catch(error => console.error('error', error.message || error))
   }
   // approve spender
   approveButton.onclick = async () => {
     try {
-      const {
-        result: [connectedAddress],
-      } = await provider.request({method: 'cfx_accounts'})
+      const [connectedAddress] = await provider.request({
+        method: 'cfx_accounts',
+      })
       const tx = {
         from: connectedAddress,
         to: cusdtAddress,
@@ -191,21 +184,10 @@ function walletInitialized({chainId, networkId}) {
           100000000000000000000,
         ).data,
       }
-      // const {storageCollateralized, gasLimit} =
-      //   await cfxEstimateGasAndCollateralAdvance(tx)
-      // console.log(storageCollateralized, gasLimit)
-      // const estimateTx = {
-      //   ...tx,
-      //   gas: gasLimit,
-      //   storageLimit: storageCollateralized,
-      // }
-
       provider
         .request({method: 'cfx_sendTransaction', params: [tx]})
-        .then(res => {
-          if (res.error)
-            return console.error('error', res.error.message || res.error)
-          console.log('result', res.result)
+        .then(result => {
+          console.log('result', result)
         })
     } catch (err) {
       console.log('err', err)
@@ -214,9 +196,9 @@ function walletInitialized({chainId, networkId}) {
   //transfer from
   transferFromButton.onclick = async () => {
     try {
-      const {
-        result: [connectedAddress],
-      } = await provider.request({method: 'cfx_accounts'})
+      const [connectedAddress] = await provider.request({
+        method: 'cfx_accounts',
+      })
       const tx = {
         from: connectedAddress,
         to: cusdtAddress,
@@ -226,20 +208,10 @@ function walletInitialized({chainId, networkId}) {
           10000000000000000000,
         ).data,
       }
-      // const {storageCollateralized, gasLimit} =
-      //   await cfxEstimateGasAndCollateralAdvance(tx)
-      // console.log(storageCollateralized, gasLimit)
-      // const estimateTx = {
-      //   ...tx,
-      //   gas: gasLimit,
-      //   storageLimit: storageCollateralized,
-      // }
       provider
         .request({method: 'cfx_sendTransaction', params: [tx]})
-        .then(res => {
-          if (res.error)
-            return console.error('error', res.error.message || res.error)
-          console.log('result', res.result)
+        .then(result => {
+          console.log('result', result)
         })
     } catch (err) {
       console.log('err', err)
@@ -255,11 +227,11 @@ function walletInitialized({chainId, networkId}) {
           getElement('address').innerHTML,
         ],
       })
-      .then(res => {
-        if (res.error) return console.error(res.error.message || res.error)
-        getElement('personal_sign_result').innerHTML = res.result
-        console.log('result', res.result)
+      .then(result => {
+        getElement('personal_sign_result').innerHTML = result
+        console.log('result', result)
       })
+      .catch(console.log)
   }
 
   // typed sign
@@ -319,11 +291,11 @@ function walletInitialized({chainId, networkId}) {
         method: 'cfx_signTypedData_v4',
         params: [getElement('address').innerHTML, JSON.stringify(typedData)],
       })
-      .then(res => {
-        if (res.error) return console.error(res.error.message || res.error)
-        getElement('typed_sign_result').innerHTML = res.result
-        console.log('result', res.result)
+      .then(result => {
+        getElement('typed_sign_result').innerHTML = result
+        console.log('result', result)
       })
+      .catch(console.log)
   }
 
   // request to add network
@@ -345,10 +317,8 @@ function walletInitialized({chainId, networkId}) {
           },
         ],
       })
-      .then(res => {
-        if (res.error) return console.error(res.error.message || res.error)
-        console.log('result', res.result)
-      })
+      .then(console.log)
+      .catch(console.log)
   }
 
   // request to switch network
@@ -358,16 +328,15 @@ function walletInitialized({chainId, networkId}) {
         method: 'wallet_switchConfluxChain',
         params: [{chainId: '0x1'}],
       })
-      .then(res => {
-        if (res.error) return console.error(res.error.message || res.error)
+      .then(() => {
         provider
           .request({method: 'cfx_chainId'})
-          .then(res => (getElement('chainId').innerHTML = res.result))
+          .then(idResult => (getElement('chainId').innerHTML = idResult))
         provider
           .request({method: 'cfx_netVersion'})
-          .then(res => (getElement('networkId').innerHTML = res.result))
-        console.log('result', res.result)
+          .then(netResult => (getElement('networkId').innerHTML = netResult))
       })
+      .catch(console.log)
   }
 
   // request to add token
@@ -386,10 +355,8 @@ function walletInitialized({chainId, networkId}) {
           },
         },
       })
-      .then(res => {
-        if (res.error) return console.error(res.error.message || res.error)
-        console.log('result', res.result)
-      })
+      .then(console.log)
+      .catch(console.log)
   }
 }
 

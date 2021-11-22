@@ -22,13 +22,14 @@ const UnlockPage = () => {
   }
   const onUnlock = () => {
     if (password) {
-      request(WALLET_UNLOCK, {password}).then(({error, result}) => {
-        if (error) setErrorMessage(error.message.split('\n')[0])
-        if (result) {
+      request(WALLET_UNLOCK, {password})
+        .then(() => {
           mutate([WALLET_IS_LOCKED], false)
           history.push(HOME)
-        }
-      })
+        })
+        .catch(
+          error => setErrorMessage(error?.message?.split('\n')[0]) ?? error,
+        )
     }
   }
   const onSubmit = event => {

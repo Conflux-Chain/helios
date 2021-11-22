@@ -41,6 +41,8 @@ function ImportPrivateKey() {
   }
   const onChangeKeygen = e => {
     setKeygen(e.target.value)
+    // TODO: replace error msg
+    setErrorMessage(e.target.value ? '' : 'Required')
   }
   const onCreate = async () => {
     if (!keygen) {
@@ -50,8 +52,8 @@ function ImportPrivateKey() {
 
     if (!creatingAccount) {
       setCreatingAccount(true)
-      request(WALLET_VALIDATE_PRIVATE_KEY, {privateKey: keygen}).then(
-        ({result}) => {
+      request(WALLET_VALIDATE_PRIVATE_KEY, {privateKey: keygen})
+        .then(result => {
           if (result?.valid) {
             let params = {
               nickname: name || accountNamePlaceholder,
@@ -60,32 +62,28 @@ function ImportPrivateKey() {
             if (createdPassword) {
               params['password'] = createdPassword
             }
-            return request(WALLET_IMPORT_PRIVATE_KEY, params).then(
-              ({error, result}) => {
-                setCreatingAccount(false)
-                if (result) {
-                  updateAddedNewAccount(
-                    mutate,
-                    !!createdPassword,
-                    ACCOUNT_GROUP_TYPE.PK,
-                  )
-                  createdPassword && setCreatedPassword('')
-                  history.push(HOME)
-                }
-                if (typeof error?.data?.duplicateAccountGroupId === 'number') {
-                  return setErrorMessage(t('duplicatePkError'))
-                }
-                if (error) {
-                  setErrorMessage(error.message.split('\n')[0])
-                }
-              },
-            )
+            return request(WALLET_IMPORT_PRIVATE_KEY, params).then(() => {
+              setCreatingAccount(false)
+              updateAddedNewAccount(
+                mutate,
+                !!createdPassword,
+                ACCOUNT_GROUP_TYPE.PK,
+              )
+              createdPassword && setCreatedPassword('')
+              history.push(HOME)
+            })
           }
+          setCreatingAccount(false)
           // TODO: replace error msg
           setErrorMessage('Invalid or inner error!')
+        })
+        .catch(error => {
           setCreatingAccount(false)
-        },
-      )
+          if (typeof error?.data?.duplicateAccountGroupId === 'number') {
+            return setErrorMessage(t('duplicatePkError'))
+          }
+          setErrorMessage(error?.message?.split('\n')[0] ?? error)
+        })
     }
   }
 
@@ -126,7 +124,7 @@ function ImportPrivateKey() {
             id="importPrivateKeyBtn"
             className="w-70  mx-auto"
             onClick={onCreate}
-            disabled={!name && !accountNamePlaceholder}
+            disabled={(!name && !accountNamePlaceholder) || !!errorMessage}
           >
             {t('import')}
           </Button>
