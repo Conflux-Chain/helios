@@ -11324,12 +11324,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-dynamic-import-node@npm:2.3.0":
-  version: 2.3.0
-  resolution: "babel-plugin-dynamic-import-node@npm:2.3.0"
+"babel-plugin-dynamic-import-node@npm:2.3.3":
+  version: 2.3.3
+  resolution: "babel-plugin-dynamic-import-node@npm:2.3.3"
   dependencies:
     object.assign: ^4.1.0
-  checksum: 8a8a631bb5257f1ea7efc64533640aaabadea891c4ec1bcb4a6d10f88f76f326bce88013131a24ef1716ad1046e9919ddf06b6293a863af1178d45466452809d
+  checksum: c9d24415bcc608d0db7d4c8540d8002ac2f94e2573d2eadced137a29d9eab7e25d2cbb4bc6b9db65cf6ee7430f7dd011d19c911a9a778f0533b4a05ce8292c9b
   languageName: node
   linkType: hard
 
@@ -28581,12 +28581,12 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"rollup-plugin-polyfill-node@npm:^0.6.2":
-  version: 0.6.2
-  resolution: "rollup-plugin-polyfill-node@npm:0.6.2"
+"rollup-plugin-polyfill-node@npm:0.7.0":
+  version: 0.7.0
+  resolution: "rollup-plugin-polyfill-node@npm:0.7.0"
   dependencies:
     "@rollup/plugin-inject": ^4.0.0
-  checksum: ab54c237be140b814ac178bafe4f6e9518e893d52f8ed8399ade979f335e0d41d6aebf23b16e39aa24ecc6e7146e476903518c234f038d8e07920ed9e2c6dcb7
+  checksum: 579029a104cd5a8e2593db720cb15023e3e6d0f90c969db68baca54174a99aee297b46639f69b44cc6833ceedb95047ba146e3eec3a8b832b77e226e86d18a8f
   languageName: node
   linkType: hard
 
