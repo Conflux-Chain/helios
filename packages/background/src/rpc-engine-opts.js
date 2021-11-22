@@ -3,6 +3,12 @@
  * @name rpc-engine-opts.js
  */
 
+import * as cfxGetAccountPendingInfo from '@fluent-wallet/cfx_get-account-pending-info'
+import * as cfxGetAccountPendingTransactions from '@fluent-wallet/cfx_get-account-pending-transactions'
+import * as cfxGetPoSEconomics from '@fluent-wallet/cfx_get-pos-economics'
+import * as cfxGetSupplyInfo from '@fluent-wallet/cfx_get-supply-info'
+import * as cfxOpenedMethodGroups from '@fluent-wallet/cfx_opened-method-groups'
+import * as txpoolNextNonce from '@fluent-wallet/txpool_next-nonce'
 import * as cfxGetVoteList from '@fluent-wallet/cfx_get-vote-list'
 import * as cfxGetTransactionReceipt from '@fluent-wallet/cfx_get-transaction-receipt'
 import * as cfxGetTransactionByHash from '@fluent-wallet/cfx_get-transaction-by-hash'
@@ -219,6 +225,12 @@ export const rpcEngineOpts = {
     cfxGetTransactionByHash,
     cfxGetTransactionReceipt,
     cfxGetVoteList,
+    cfxGetAccountPendingInfo,
+    cfxGetAccountPendingTransactions,
+    cfxGetPoSEconomics,
+    cfxGetSupplyInfo,
+    cfxOpenedMethodGroups,
+    txpoolNextNonce,
     cfxGetStorageRoot,
     cfxGetAdmin,
     cfxEpochNumber,

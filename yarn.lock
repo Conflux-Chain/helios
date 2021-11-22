@@ -4378,6 +4378,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_get-account-pending-info@workspace:*, @fluent-wallet/cfx_get-account-pending-info@workspace:packages/rpcs/cfx_getAccountPendingInfo":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-account-pending-info@workspace:packages/rpcs/cfx_getAccountPendingInfo"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_get-account-pending-transactions@workspace:*, @fluent-wallet/cfx_get-account-pending-transactions@workspace:packages/rpcs/cfx_getAccountPendingTransactions":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-account-pending-transactions@workspace:packages/rpcs/cfx_getAccountPendingTransactions"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_get-account@workspace:packages/rpcs/cfx_getAccount":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-account@workspace:packages/rpcs/cfx_getAccount"
@@ -4514,6 +4530,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_get-pos-economics@workspace:*, @fluent-wallet/cfx_get-pos-economics@workspace:packages/rpcs/cfx_getPoSEconomics":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-pos-economics@workspace:packages/rpcs/cfx_getPoSEconomics"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_get-skipped-blocks-by-epoch@workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-skipped-blocks-by-epoch@workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch"
@@ -4562,6 +4586,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_get-supply-info@workspace:*, @fluent-wallet/cfx_get-supply-info@workspace:packages/rpcs/cfx_getSupplyInfo":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-supply-info@workspace:packages/rpcs/cfx_getSupplyInfo"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_get-transaction-by-hash@workspace:packages/rpcs/cfx_getTransactionByHash":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-transaction-by-hash@workspace:packages/rpcs/cfx_getTransactionByHash"
@@ -4591,6 +4623,14 @@ __metadata:
   resolution: "@fluent-wallet/cfx_net-version@workspace:packages/rpcs/cfx_netVersion"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_opened-method-groups@workspace:*, @fluent-wallet/cfx_opened-method-groups@workspace:packages/rpcs/cfx_openedMethodGroups":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_opened-method-groups@workspace:packages/rpcs/cfx_openedMethodGroups"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5273,7 +5313,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/spec@workspace:packages/spec":
+"@fluent-wallet/spec@workspace:*, @fluent-wallet/spec@workspace:packages/spec":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/spec@workspace:packages/spec"
   dependencies:
@@ -5307,6 +5347,14 @@ __metadata:
   resolution: "@fluent-wallet/transducers@workspace:packages/transducers"
   dependencies:
     "@thi.ng/transducers": ^7.9.2
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/txpool_next-nonce@workspace:*, @fluent-wallet/txpool_next-nonce@workspace:packages/rpcs/txpool_nextNonce":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/txpool_next-nonce@workspace:packages/rpcs/txpool_nextNonce"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -19041,6 +19089,8 @@ fsevents@~2.1.2:
     "@fluent-wallet/cfx_estimate-gas-and-collateral": "workspace:packages/rpcs/cfx_estimateGasAndCollateral"
     "@fluent-wallet/cfx_gas-price": "workspace:packages/rpcs/cfx_gasPrice"
     "@fluent-wallet/cfx_get-account": "workspace:packages/rpcs/cfx_getAccount"
+    "@fluent-wallet/cfx_get-account-pending-info": "workspace:*"
+    "@fluent-wallet/cfx_get-account-pending-transactions": "workspace:*"
     "@fluent-wallet/cfx_get-accumulate-interest-rate": "workspace:packages/rpcs/cfx_getAccumulateInterestRate"
     "@fluent-wallet/cfx_get-admin": "workspace:packages/rpcs/cfx_getAdmin"
     "@fluent-wallet/cfx_get-balance": "workspace:packages/rpcs/cfx_getBalance"
@@ -19055,15 +19105,18 @@ fsevents@~2.1.2:
     "@fluent-wallet/cfx_get-interest-rate": "workspace:packages/rpcs/cfx_getInterestRate"
     "@fluent-wallet/cfx_get-logs": "workspace:packages/rpcs/cfx_getLogs"
     "@fluent-wallet/cfx_get-next-nonce": "workspace:packages/rpcs/cfx_getNextNonce"
+    "@fluent-wallet/cfx_get-pos-economics": "workspace:*"
     "@fluent-wallet/cfx_get-skipped-blocks-by-epoch": "workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch"
     "@fluent-wallet/cfx_get-staking-balance": "workspace:packages/rpcs/cfx_getStakingBalance"
     "@fluent-wallet/cfx_get-status": "workspace:packages/rpcs/cfx_getStatus"
     "@fluent-wallet/cfx_get-storage-at": "workspace:packages/rpcs/cfx_getStorageAt"
     "@fluent-wallet/cfx_get-storage-root": "workspace:packages/rpcs/cfx_getStorageRoot"
+    "@fluent-wallet/cfx_get-supply-info": "workspace:*"
     "@fluent-wallet/cfx_get-transaction-by-hash": "workspace:packages/rpcs/cfx_getTransactionByHash"
     "@fluent-wallet/cfx_get-transaction-receipt": "workspace:packages/rpcs/cfx_getTransactionReceipt"
     "@fluent-wallet/cfx_get-vote-list": "workspace:packages/rpcs/cfx_getVoteList"
     "@fluent-wallet/cfx_net-version": "workspace:packages/rpcs/cfx_netVersion"
+    "@fluent-wallet/cfx_opened-method-groups": "workspace:*"
     "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
     "@fluent-wallet/cfx_send-transaction": "workspace:packages/rpcs/cfx_sendTransaction"
     "@fluent-wallet/cfx_sign-transaction": "workspace:packages/rpcs/cfx_signTransaction"
@@ -19088,6 +19141,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/rpc-engine": "workspace:packages/rpc-engine"
     "@fluent-wallet/test-helpers": "workspace:packages/test-helpers"
     "@fluent-wallet/transducers": "workspace:packages/transducers"
+    "@fluent-wallet/txpool_next-nonce": "workspace:*"
     "@fluent-wallet/wallet_add-hd-path": "workspace:packages/rpcs/wallet_addHdPath"
     "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
     "@fluent-wallet/wallet_add-pending-user-auth-request": "workspace:packages/rpcs/wallet_addPendingUserAuthRequest"
