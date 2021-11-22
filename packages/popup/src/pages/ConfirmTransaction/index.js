@@ -69,6 +69,9 @@ function ConfirmTransition() {
         nonce: formatDecimalToHex(nonce),
       }
     : tx
+  params.data = viewData
+  const sendParams = []
+  sendParams.push(params)
   const isNativeToken = !displayToken?.address
   const estimateRst =
     useEstimateTx(
@@ -94,7 +97,6 @@ function ConfirmTransition() {
   const onSend = () => {
     if (sendingTransaction) return
     setSendingTransaction(true)
-    params.data = viewData
     request(SEND_TRANSACTION, [params]).then(({error, result}) => {
       setSendingTransaction(false)
       if (error) {
@@ -166,6 +168,7 @@ function ConfirmTransition() {
               cancelText={t('cancel')}
               confirmDisabled={!!balanceError}
               onClickConfirm={() => setShowResult(true)}
+              confirmParams={{tx: sendParams}}
             />
           )}
         </div>
