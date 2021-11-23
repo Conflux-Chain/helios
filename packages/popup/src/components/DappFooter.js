@@ -56,7 +56,7 @@ function DappFooter({
       return
     }
     setSendingRequestStatus(true)
-    const params = {...confirmParams}
+    let params = {}
     switch (req.method) {
       case WALLET_REQUEST_PERMISSIONS:
         params.permissions = req.params
@@ -82,6 +82,7 @@ function DappFooter({
         params.asset = req.params
         break
     }
+    params = {...params, ...confirmParams}
 
     request(req.method, {authReqId: eid, ...params})
       .then(() => {

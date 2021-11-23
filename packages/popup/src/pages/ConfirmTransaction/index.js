@@ -42,13 +42,19 @@ function ConfirmTransition() {
   const SEND_TRANSACTION = networkTypeIsCfx
     ? CFX_SEND_TRANSACTION
     : ETH_SEND_TRANSACTION
-  const {gasPrice, gasLimit, nonce, clearSendTransactionParams} =
-    useGlobalStore()
+  const {
+    gasPrice,
+    gasLimit,
+    nonce,
+    setGasPrice,
+    setGasLimit,
+    setNonce,
+    clearSendTransactionParams,
+  } = useGlobalStore()
 
   const nativeToken = useCurrentNativeToken()
   const tx = useDappParams()
   const isDapp = pendingAuthReq?.length > 0
-  const viewData = useViewData(tx)
   // get to type and to token
   const {isContract, decodeData} = useDecodeData(tx)
   const {
@@ -59,16 +65,18 @@ function ConfirmTransition() {
     displayToAddress,
   } = useDecodeDisplay({isDapp, isContract, nativeToken, tx})
   const isSign = !isSendToken && !isApproveToken
-
-  const txPrams = useTxParams()
-  const params = !isDapp
-    ? {
-        ...txPrams,
-        gasPrice: formatDecimalToHex(gasPrice),
-        gas: formatDecimalToHex(gasLimit),
-        nonce: formatDecimalToHex(nonce),
-      }
-    : tx
+  const txParams = useTxParams()
+  const originParams = !isDapp ? {...txParams} : {...tx}
+  const params = {
+    ...originParams,
+    gasPrice: formatDecimalToHex(gasPrice),
+    gas: formatDecimalToHex(gasLimit),
+    nonce: formatDecimalToHex(nonce),
+  }
+  const viewData = useViewData(params)
+  params.data = viewData
+  const sendParams = []
+  sendParams.push(params)
   const isNativeToken = !displayToken?.address
   const estimateRst =
     useEstimateTx(
@@ -82,6 +90,7 @@ function ConfirmTransition() {
           }
         : {},
     ) || {}
+
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
     displayValue,
@@ -91,10 +100,25 @@ function ConfirmTransition() {
     setBalanceError(errorMessage)
   }, [errorMessage])
 
+  useEffect(() => {
+    if (isDapp) {
+      tx.gas && setGasLimit(tx.gas)
+      tx.gasPrice && setGasPrice(tx.gasPrice)
+      tx.nonce && setNonce(tx.nonce)
+    }
+  }, [
+    isDapp,
+    tx.gas,
+    tx.nonce,
+    tx.gasPrice,
+    setGasPrice,
+    setNonce,
+    setGasLimit,
+  ])
+
   const onSend = () => {
     if (sendingTransaction) return
     setSendingTransaction(true)
-    params.data = viewData
     request(SEND_TRANSACTION, [params])
       .then(result => {
         setSendingTransaction(false)
@@ -168,6 +192,7 @@ function ConfirmTransition() {
               cancelText={t('cancel')}
               confirmDisabled={!!balanceError}
               onClickConfirm={() => setShowResult(true)}
+              confirmParams={{tx: sendParams}}
             />
           )}
         </div>
