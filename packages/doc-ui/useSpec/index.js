@@ -57,7 +57,13 @@ const createSpec = id =>
     setDoc: () => {
       const s = get()
       if (!s.spec?.generateDocumentation || !s.schema) return
-      const doc = s.spec.generateDocumentation(s.schema)
+      let doc
+      try {
+        doc = s.spec.generateDocumentation(s.schema)
+      } catch (err) {
+        console.log(`error gen doc for method ${s._id}`)
+        throw err
+      }
       set({doc})
       return doc
     },

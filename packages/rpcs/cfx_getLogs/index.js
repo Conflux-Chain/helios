@@ -4,9 +4,9 @@ import {
   cat,
   epochRefNoMined,
   Bytes32,
-  catn,
   base32ContractAddress,
   or,
+  repeat,
   nul,
 } from '@fluent-wallet/spec'
 
@@ -16,7 +16,7 @@ const topicUnitSchema = [or, nul, Bytes32]
 const topicSchema = [
   or,
   topicUnitSchema,
-  [catn, {min: 1, max: 3}, ['topic unit', topicUnitSchema]],
+  [repeat, {min: 1, max: 3}, topicUnitSchema],
 ]
 
 export const schemas = {
@@ -27,21 +27,9 @@ export const schemas = {
       {closed: true},
       ['fromEpoch', {optional: true}, epochRefNoMined],
       ['toEpoch', {optional: true}, epochRefNoMined],
-      [
-        'blockHashes',
-        {optional: true},
-        [catn, {min: 1, max: 128}, ['blockHash', Bytes32]],
-      ],
-      [
-        'address',
-        {optional: true},
-        [catn, ['contract address to search', base32ContractAddress]],
-      ],
-      [
-        'topics',
-        {optional: true},
-        [catn, {min: 1, max: 4}, ['topic', topicSchema]],
-      ],
+      ['blockHashes', {optional: true}, [repeat, {min: 1, max: 128}, Bytes32]],
+      ['address', {optional: true}, [repeat, base32ContractAddress]],
+      ['topics', {optional: true}, [repeat, {min: 1, max: 4}, topicSchema]],
       ['limit', {optional: true}, Uint],
     ],
   ],

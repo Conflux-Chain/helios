@@ -8,7 +8,6 @@ import {
   base32UserAddress,
   blockRef,
   cat,
-  catn,
   zeroOrOne,
   epochRefNoMined,
   eq,
@@ -31,22 +30,16 @@ const SingleCallGetBalanceSchema = [
   [
     map,
     {closed: true},
-    ['users', [oneOrMore, [catn, ['user-address', base32UserAddress]]]],
+    ['users', [oneOrMore, base32UserAddress]],
     [
       'tokens',
       [
         oneOrMore,
         [
-          catn,
-          [
-            'token-address',
-            [
-              or,
-              {doc: 'token address, 0x0 represents native token'},
-              [eq, '0x0'],
-              base32ContractAddress,
-            ],
-          ],
+          or,
+          {doc: 'token address, 0x0 represents native token'},
+          [eq, '0x0'],
+          base32ContractAddress,
         ],
       ],
     ],
@@ -54,22 +47,16 @@ const SingleCallGetBalanceSchema = [
   [
     map,
     {closed: true},
-    ['users', [oneOrMore, [catn, ['user-address', ethHexAddress]]]],
+    ['users', [oneOrMore, ethHexAddress]],
     [
       'tokens',
       [
         oneOrMore,
         [
-          catn,
-          [
-            'token-address',
-            [
-              or,
-              {doc: 'token address, 0x0 represents native token'},
-              [eq, '0x0'],
-              ethHexAddress,
-            ],
-          ],
+          or,
+          {doc: 'token address, 0x0 represents native token'},
+          [eq, '0x0'],
+          ethHexAddress,
         ],
       ],
     ],
