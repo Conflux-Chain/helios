@@ -29,7 +29,7 @@
     "prod-all": "node scripts/prod.js",
     "prod:shadow": "shadow-cljs release spec db",
     "prod": "cross-env NODE_ENV=production run-s prod-all compile:inpage",
-    "prod:zip": "bash ./scripts/create-zip",
+    "prod:zip": "node ./scripts/create-zip.cjs",
     "prod:release": "yarn prod && yarn prod:zip",
     "lint": "eslint  --ignore-path .gitignore packages",
     "lint:fix": "yarn run lint --fix",
@@ -108,7 +108,8 @@
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-standard": "^24.0.0",
     "tailwindcss": "^2.2.19",
-    "wait-for-expect": "3.0.2"
+    "wait-for-expect": "3.0.2",
+    "zip-a-folder": "1.1.0"
   },
   "nohoist": [
     "*/@docusaurus/*",
