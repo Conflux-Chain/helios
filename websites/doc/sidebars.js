@@ -16,7 +16,10 @@ module.exports = {
     {
       type: 'category',
       label: 'Reference',
-      items: [{type: 'doc', id: 'rpc'}],
+      items: [
+        {type: 'doc', id: 'provider-rpc'},
+        {type: 'doc', id: 'standard-rpc'},
+      ],
     },
   ],
 

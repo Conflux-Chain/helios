@@ -4433,6 +4433,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_get-block-by-block-number@workspace:packages/rpcs/cfx_getBlockByBlockNumber":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-block-by-block-number@workspace:packages/rpcs/cfx_getBlockByBlockNumber"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_get-block-by-epoch-number@workspace:packages/rpcs/cfx_getBlockByEpochNumber":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-block-by-epoch-number@workspace:packages/rpcs/cfx_getBlockByEpochNumber"

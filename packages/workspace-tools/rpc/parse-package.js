@@ -33,8 +33,9 @@ export default async function parseRpcPackage(dir, withSchema) {
     )
   }
 
-  if (await isFileExists(resolve(dir, '../doc.js')))
-    rpc.doc.en = await import(resolve(dir, '../doc.js'))
+  if (await isFileExists(resolve(dir, './doc.js'))) {
+    rpc.doc = (await import(resolve(dir, './doc.js'))).default
+  }
 
   return rpc
 }
