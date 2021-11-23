@@ -9,20 +9,21 @@ export const ethEstimate = () => {
 }
 
 async function cfxEstimateGasAndCollateralAdvance(request, tx) {
-  const estimateRst = await request({
-    method: 'cfx_estimateGasAndCollateral',
-    params: [tx, 'latest_state'],
-  })
+  try {
+    const estimateRst = await request({
+      method: 'cfx_estimateGasAndCollateral',
+      params: [tx, 'latest_state'],
+    })
 
-  if (estimateRst?.error?.message) {
-    if (estimateRst.error.message.includes('nonce is too old')) {
+    return estimateRst
+  } catch (err) {
+    if (err.message?.includes?.('nonce is too old')) {
       tx.nonce = pre0x(bn16(tx.nonce).addn(1).toString(16))
       return await cfxEstimateGasAndCollateralAdvance(request, tx)
     } else {
-      throw estimateRst.error
+      throw err
     }
   }
-  return estimateRst.result
 }
 
 export const cfxGetFeeData = (
@@ -113,8 +114,7 @@ export const cfxEstimate = async (
   // if (networkId === undefined) {
   //   promises.push(
   //     request({method: 'cfx_netVersion'}).then(r => {
-  //       if (r.error) throw r.error
-  //       networkId = parseInt(r.result, 10)
+  //       networkId = parseInt(r, 10)
   //     }),
   //   )
   // }
@@ -127,8 +127,7 @@ export const cfxEstimate = async (
         method: 'wallet_detectAddressType',
         params: {address: to},
       }).then(r => {
-        if (r.error) throw r.error
-        toAddressType = r.result.type
+        toAddressType = r.type
       }),
     )
   }
@@ -143,15 +142,13 @@ export const cfxEstimate = async (
         tokens: ['0x0'].concat(Object.keys(tokensAmount)),
       },
     }).then(r => {
-      if (r.error) throw r.error
-      balances = r.result[from]
+      balances = r[from]
     }),
   )
 
   // get gasPrice
   await request({method: 'cfx_gasPrice'}).then(r => {
-    if (r.error) throw r.error
-    gasPrice = r.result
+    gasPrice = r
   })
 
   // simple send tx, gas is 21000, storageLimit is 0
@@ -190,8 +187,7 @@ export const cfxEstimate = async (
         method: 'cfx_getNextNonce',
         params: [from, 'latest_state'],
       }).then(r => {
-        if (r.error) throw r.error
-        nonce = r.result
+        nonce = r
       }),
     )
   }
@@ -216,7 +212,7 @@ export const cfxEstimate = async (
 
   if (toAddressType === 'contract') {
     // check sponsor info if is contract interaction
-    const sponsorInfo = await request({
+    const {isBalanceEnough, willPayCollateral, willPayTxFee} = await request({
       method: 'cfx_checkBalanceAgainstTransaction',
       params: [
         from,
@@ -237,9 +233,6 @@ export const cfxEstimate = async (
       },
       {balance: balances['0x0'], tokensBalance: balances},
     )
-    if (sponsorInfo.error) throw sponsorInfo.error
-    const {isBalanceEnough, willPayCollateral, willPayTxFee} =
-      sponsorInfo.result
     rst = {
       ...rst,
       ...cfxFeeData,
