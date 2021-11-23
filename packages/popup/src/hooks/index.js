@@ -294,7 +294,6 @@ export const useViewData = ({data, to} = {}) => {
   const spender = decodeData?.args?.[0]
     ? decode(decodeData?.args?.[0]).hexAddress
     : ''
-  console.log('data', data)
   const viewData = useMemo(() => {
     if (customAllowance) {
       return spender
@@ -304,6 +303,5 @@ export const useViewData = ({data, to} = {}) => {
       return data
     }
   }, [customAllowance, data, allowance, spender])
-  console.log('viewData', viewData)
   return viewData
 }
