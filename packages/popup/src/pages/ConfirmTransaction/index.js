@@ -48,7 +48,6 @@ function ConfirmTransition() {
   const nativeToken = useCurrentNativeToken()
   const tx = useDappParams()
   const isDapp = pendingAuthReq?.length > 0
-  const viewData = useViewData(tx)
   // get to type and to token
   const {isContract, decodeData} = useDecodeData(tx)
   const {
@@ -60,15 +59,16 @@ function ConfirmTransition() {
   } = useDecodeDisplay({isDapp, isContract, nativeToken, tx})
   const isSign = !isSendToken && !isApproveToken
 
-  const txPrams = useTxParams()
+  const txParams = useTxParams()
   const params = !isDapp
     ? {
-        ...txPrams,
+        ...txParams,
         gasPrice: formatDecimalToHex(gasPrice),
         gas: formatDecimalToHex(gasLimit),
         nonce: formatDecimalToHex(nonce),
       }
     : {...tx}
+  const viewData = useViewData(params)
   params.data = viewData
   const sendParams = []
   sendParams.push(params)
@@ -85,6 +85,7 @@ function ConfirmTransition() {
           }
         : {},
     ) || {}
+  console.log('estimateRst', estimateRst)
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
     displayValue,
