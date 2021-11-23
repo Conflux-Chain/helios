@@ -42,8 +42,15 @@ function ConfirmTransition() {
   const SEND_TRANSACTION = networkTypeIsCfx
     ? CFX_SEND_TRANSACTION
     : ETH_SEND_TRANSACTION
-  const {gasPrice, gasLimit, nonce, clearSendTransactionParams} =
-    useGlobalStore()
+  const {
+    gasPrice,
+    gasLimit,
+    nonce,
+    setGasPrice,
+    setGasLimit,
+    setNonce,
+    clearSendTransactionParams,
+  } = useGlobalStore()
 
   const nativeToken = useCurrentNativeToken()
   const tx = useDappParams()
@@ -58,16 +65,14 @@ function ConfirmTransition() {
     displayToAddress,
   } = useDecodeDisplay({isDapp, isContract, nativeToken, tx})
   const isSign = !isSendToken && !isApproveToken
-
   const txParams = useTxParams()
-  const params = !isDapp
-    ? {
-        ...txParams,
-        gasPrice: formatDecimalToHex(gasPrice),
-        gas: formatDecimalToHex(gasLimit),
-        nonce: formatDecimalToHex(nonce),
-      }
-    : {...tx}
+  const originParams = !isDapp ? {...txParams} : {...tx}
+  const params = {
+    ...originParams,
+    gasPrice: formatDecimalToHex(gasPrice),
+    gas: formatDecimalToHex(gasLimit),
+    nonce: formatDecimalToHex(nonce),
+  }
   const viewData = useViewData(params)
   params.data = viewData
   const sendParams = []
@@ -85,7 +90,7 @@ function ConfirmTransition() {
           }
         : {},
     ) || {}
-  console.log('estimateRst', estimateRst)
+
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
     displayValue,
@@ -94,6 +99,22 @@ function ConfirmTransition() {
   useEffect(() => {
     setBalanceError(errorMessage)
   }, [errorMessage])
+
+  useEffect(() => {
+    if (isDapp) {
+      tx.gas && setGasLimit(tx.gas)
+      tx.gasPrice && setGasPrice(tx.gasPrice)
+      tx.nonce && setNonce(tx.nonce)
+    }
+  }, [
+    isDapp,
+    tx.gas,
+    tx.nonce,
+    tx.gasPrice,
+    setGasPrice,
+    setNonce,
+    setGasLimit,
+  ])
 
   const onSend = () => {
     if (sendingTransaction) return

@@ -202,7 +202,7 @@ export const useCheckBalanceAndGas = (
 export const useDappParams = () => {
   const pendingAuthReq = usePendingAuthReq()
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
-  return req?.params[0]
+  return req?.params[0] || {}
 }
 
 export const useDecodeData = ({to, data} = {}) => {
