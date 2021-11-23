@@ -91,7 +91,7 @@ function GasFee({isDapp, estimateRst}) {
 }
 
 GasFee.propTypes = {
-  estimateRst: PropTypes.obj,
+  estimateRst: PropTypes.object,
   isDapp: PropTypes.bool,
   willPayTxFee: PropTypes.bool,
 }
