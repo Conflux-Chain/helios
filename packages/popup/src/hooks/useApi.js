@@ -213,7 +213,7 @@ export const useAddressType = address => {
   const {
     data: {type},
   } = useRPC(
-    address ? [WALLET_DETECT_ADDRESS_TYPE] : null,
+    address ? [WALLET_DETECT_ADDRESS_TYPE, address] : null,
     {address},
     {fallbackData: {}},
   )
@@ -258,7 +258,7 @@ export const useDbAccountListAssets = () => {
 
 export const useValid20Token = address => {
   const {data: token} = useRPC(
-    [WALLET_VALIDATE_20TOKEN, address],
+    address ? [WALLET_VALIDATE_20TOKEN, address] : null,
     {tokenAddress: address},
     {
       fallbackData: {},

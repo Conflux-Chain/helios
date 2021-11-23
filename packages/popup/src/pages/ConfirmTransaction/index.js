@@ -68,7 +68,7 @@ function ConfirmTransition() {
         gas: formatDecimalToHex(gasLimit),
         nonce: formatDecimalToHex(nonce),
       }
-    : tx
+    : {...tx}
   params.data = viewData
   const sendParams = []
   sendParams.push(params)

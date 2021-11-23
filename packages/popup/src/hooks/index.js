@@ -209,7 +209,7 @@ export const useDecodeData = ({to, data} = {}) => {
   const type = useAddressType(to)
   const {netId} = useCurrentNetwork()
   const isContract = type === 'contract'
-  const crc20Token = useValid20Token(to)
+  const crc20Token = useValid20Token(isContract ? to : '')
   const token = {...crc20Token, address: to}
   let decodeData = useRef({})
   useEffect(() => {
@@ -294,7 +294,7 @@ export const useViewData = ({data, to} = {}) => {
   const spender = decodeData?.args?.[0]
     ? decode(decodeData?.args?.[0]).hexAddress
     : ''
-  useMemo(() => {
+  return useMemo(() => {
     if (customAllowance) {
       return spender
         ? iface.encodeFunctionData('approve', [spender, allowance])
