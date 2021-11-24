@@ -65,18 +65,30 @@ function ConfirmTransition() {
     displayToAddress,
   } = useDecodeDisplay({isDapp, isContract, nativeToken, tx})
   const isSign = !isSendToken && !isApproveToken
+
+  // params in wallet send or dapp send
   const txParams = useTxParams()
   const originParams = !isDapp ? {...txParams} : {...tx}
+  // user can edit nonce, gasPrice and gas
   const params = {
     ...originParams,
     gasPrice: formatDecimalToHex(gasPrice),
     gas: formatDecimalToHex(gasLimit),
     nonce: formatDecimalToHex(nonce),
   }
+  // user can edit the approve limit
   const viewData = useViewData(params)
   params.data = viewData
-  const sendParams = []
-  sendParams.push(params)
+
+  // dapp send params, need to delete '' or undefined params,
+  // otherwise cfx_sendTransaction will return params error
+  const sendParamsObj = {...params}
+  if (!sendParamsObj.gasPrice) delete sendParamsObj.gasPrice
+  if (!sendParamsObj.nonce) delete sendParamsObj.nonce
+  if (!sendParamsObj.gas) delete sendParamsObj.gas
+  if (!sendParamsObj.data) delete sendParamsObj.data
+  const sendParams = [sendParamsObj]
+
   const isNativeToken = !displayToken?.address
   const estimateRst =
     useEstimateTx(
@@ -99,7 +111,7 @@ function ConfirmTransition() {
   useEffect(() => {
     setBalanceError(errorMessage)
   }, [errorMessage])
-
+  // when dapp send, init the gas edit global store
   useEffect(() => {
     if (isDapp) {
       tx.gas && setGasLimit(tx.gas)
