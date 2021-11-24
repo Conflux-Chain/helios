@@ -8,7 +8,9 @@ import {
   signTypedData_v4,
   recoverTypedSignature_v4,
   recoverPersonalSignature,
+  getTxHashFromRawTx,
 } from './'
+import txhash1820 from './1820-txhash'
 
 describe('cfx', function () {
   describe('personal sign', function () {
@@ -293,5 +295,13 @@ describe('eth', function () {
         ),
       ).toBe('0x065a687103C9F6467380beE800ecD70B17f6b72F')
     })
+  })
+})
+
+describe('getTxHashFromRawTx', function () {
+  test('getTxHashFromRawTx', async () => {
+    expect(getTxHashFromRawTx(txhash1820)).toBe(
+      '0xfefb2da535e927b85fe68eb81cb2e4a5827c905f78381a01ef2322aa9b0aee8e',
+    )
   })
 })

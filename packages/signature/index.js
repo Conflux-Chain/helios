@@ -126,3 +126,7 @@ export const cfxSignTransaction = (tx, pk, netId) => {
   const transaction = new CfxTransaction(tx)
   return transaction.sign(pk, netId).serialize()
 }
+
+export const getTxHashFromRawTx = txhash => {
+  return keccak256(txhash)
+}
