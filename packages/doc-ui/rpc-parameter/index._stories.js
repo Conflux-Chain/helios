@@ -115,8 +115,7 @@ wallet_addVault.args = {
               {
                 type: 're',
                 value: {
-                  doc:
-                    '0x-prefixed address, confrom to regex /^0x[0-9a-fA-F]{40}$/',
+                  doc: '0x-prefixed address, confrom to regex /^0x[0-9a-fA-F]{40}$/',
                   type: 're',
                   htmlElement: {
                     el: 'input',
@@ -126,8 +125,7 @@ wallet_addVault.args = {
               {
                 type: 'base32Address-1029-user',
                 value: {
-                  doc:
-                    "Conflux base32 address with 'user' type and networkId is 1029",
+                  doc: "Conflux base32 address with 'user' type and networkId is 1029",
                   type: 'base32Address-1029-user',
                   htmlElement: {
                     el: 'input',
@@ -137,8 +135,7 @@ wallet_addVault.args = {
               {
                 type: 'base32Address-1-user',
                 value: {
-                  doc:
-                    "Conflux base32 address with 'user' type and networkId is 1",
+                  doc: "Conflux base32 address with 'user' type and networkId is 1",
                   type: 'base32Address-1-user',
                   htmlElement: {
                     el: 'input',
@@ -177,8 +174,7 @@ wallet_createAccount.args = {
       {
         type: 'true?',
         value: {
-          doc:
-            'only create 0x1-prefixed account(both in conflux and ethereum-like chains) if specify true',
+          doc: 'only create 0x1-prefixed account(both in conflux and ethereum-like chains) if specify true',
           optional: true,
           type: 'true?',
           htmlElement: {
@@ -192,8 +188,7 @@ wallet_createAccount.args = {
       {
         type: 'string',
         value: {
-          doc:
-            'hd wallet derivation path without the last address_index, check https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#abstract for detail',
+          doc: 'hd wallet derivation path without the last address_index, check https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#abstract for detail',
           optional: true,
           type: 'string',
           htmlElement: {

@@ -1,12 +1,13 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable no-empty */
+/* global conflux */
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {useInterval, useBoolean} from 'react-use'
 import {useRPC} from '@fluent-wallet/doc-use-rpc'
 import {useSpec} from '@fluent-wallet/doc-use-spec'
-import JSONInput from 'https://cdn.skypack.dev/react-json-editor-ajrm'
-import locale from 'https://cdn.skypack.dev/react-json-editor-ajrm/locale/en'
+import JSONInput from 'react-json-editor-ajrm/es'
+import locale from 'react-json-editor-ajrm/es/locale/en'
 
 export function UI() {
   const [rpcName, setRpcName] = useState(null)
@@ -36,7 +37,7 @@ export function UI() {
 
 function request(payload) {
   return new Promise(resolve => {
-    window?.conflux
+    conflux
       ?.request(payload)
       .then(r => {
         resolve({result: r})

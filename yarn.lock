@@ -2841,7 +2841,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.15.4":
+"@babel/runtime@npm:^7.0.0-rc.0, @babel/runtime@npm:^7.15.4":
   version: 7.16.3
   resolution: "@babel/runtime@npm:7.16.3"
   dependencies:
@@ -4979,6 +4979,7 @@ __metadata:
     "@fluent-wallet/doc-use-rpc": "workspace:packages/doc-ui/useRPC"
     "@fluent-wallet/doc-use-spec": "workspace:packages/doc-ui/useSpec"
     prop-types: ^15.7.2
+    react-json-editor-ajrm: 2.5.13
     react-use: 17.3.1
     zustand: ^3.6.5
   peerDependencies:
@@ -27682,6 +27683,18 @@ fsevents@~2.1.2:
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 9d6d111d8990dc98bc5402c1266a808b0459b5d54830bbea24c12d908b536df7883f268a7868cfaedde3dd9d4e0d574db456f84d2e6df9c4526f99bb4b5344d8
+  languageName: node
+  linkType: hard
+
+"react-json-editor-ajrm@npm:2.5.13":
+  version: 2.5.13
+  resolution: "react-json-editor-ajrm@npm:2.5.13"
+  dependencies:
+    "@babel/runtime": ^7.0.0-rc.0
+  peerDependencies:
+    react: ">=16.2.0"
+    react-dom: ">=16.2.0"
+  checksum: 44fa7557a5b35b96cebfa639083817c9a4fa775e58347daf8a331bf83b15ba64ee5634ea07fdef889b007bd6df9aa878ec007d1e1a1dad8249299abdee302ca5
   languageName: node
   linkType: hard
 
