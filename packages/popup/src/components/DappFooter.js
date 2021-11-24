@@ -45,7 +45,8 @@ function DappFooter({
         history.push(HOME)
         onClickCancel && onClickCancel()
       })
-      .catch(() => {
+      .catch(e => {
+        console.log('error', e)
         // TODO: error message
         setSendingRequestStatus(false)
       })
@@ -90,7 +91,8 @@ function DappFooter({
         onClickConfirm && onClickConfirm()
         history.push(HOME)
       })
-      .catch(() => {
+      .catch(e => {
+        console.log('error', e)
         setSendingRequestStatus(false)
         // TODO: error message
       })
