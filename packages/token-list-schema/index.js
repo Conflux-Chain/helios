@@ -106,7 +106,7 @@ export default function ({
     [
       'tags',
       {optional: true},
-      [mapOf, {min: 1, max: 20}, TagIdentifierSchema, TagDefinitionSchema],
+      [mapOf, {min: 0, max: 20}, TagIdentifierSchema, TagDefinitionSchema],
     ],
     ['logoURI', {optional: true}, url],
   ]
