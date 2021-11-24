@@ -1,7 +1,11 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/accessible-emoji */
+/* eslint-disable jsx-a11y/interactive-supports-focus */
 import React from 'react'
 import PropTypes from 'prop-types'
 import {useRPC} from '@fluent-wallet/doc-use-rpc'
 import {useSpec} from '@fluent-wallet/doc-use-spec'
+import {useToggle} from 'react-use'
 
 const Var = 'var'
 
@@ -34,6 +38,37 @@ const renderParams = (rpcName, {children, ...params}, path = [0]) => {
   )
 }
 
+const Toggle = ({title, children}) => {
+  const [visible, toggle] = useToggle(false)
+  return (
+    <div style={{border: '1px solid gray', padding: '8px'}}>
+      <div
+        role="button"
+        onClick={toggle}
+        style={{cursor: 'pointer', display: 'flex', flexDirection: 'row'}}
+      >
+        <div
+          style={{
+            transform: visible ? 'rotate(0deg)' : 'rotate(270deg)',
+            marginRight: '0.5rem',
+          }}
+        >
+          🔽{' '}
+        </div>
+        <div>{title}</div>
+      </div>
+      <div
+        style={{
+          display: visible ? 'block' : 'none',
+          margin: '1rem',
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
 export const Parameters = ({parameters, rpcName}) => {
   let params = parameters
   const {schemas} = useRPC(rpcName)
@@ -43,15 +78,7 @@ export const Parameters = ({parameters, rpcName}) => {
   return (
     <section className="parameters">
       <h4>Parameters</h4>
-      <form id={`rpc-form-${rpcName}`}>
-        <table>
-          <caption>
-            {`Parameters of RPC method `}
-            <Var>{rpcName}</Var>
-          </caption>
-          <tbody>{renderParams(rpcName, params)}</tbody>
-        </table>
-      </form>
+      {renderParams(rpcName, params)}
     </section>
   )
 }
@@ -113,133 +140,131 @@ const ParamWithChildren = ({type, children, rpcName, k, kv, path, value}) => {
     </label>
   )
 
+  let toggleTitle = ''
+  if (kv) {
+    toggleTitle = (
+      <>
+        {mapKey} {`: `} {legendOpts[type]}
+      </>
+    )
+  } else if (legendOpts[type]) {
+    toggleTitle = legendOpts[type]
+  }
+
+  if (value?.optional) toggleTitle += ' (optional)'
+
   return (
-    <tr className="paramwithchildren">
-      {path.length > 1 && <td>{k || path[path.length - 1]}</td>}
-      <td>
-        <fieldset>
-          <legend>
-            {kv && (
-              <>
-                {mapKey} {`: `} {legendOpts[type]}
-              </>
-            )}
-            {!kv && legendOpts[type]} {value?.optional && ' (optional)'}
-          </legend>
-          <table>
-            {/* <caption>caption</caption> */}
-            <tbody>{children}</tbody>
-          </table>
-        </fieldset>
-      </td>
-    </tr>
+    <Toggle
+      title={toggleTitle}
+      className="paramwithchildren"
+      level={path?.length || 1}
+    >
+      {/* {path.length > 1 && (k || path[path.length - 1])} */}
+      {children}
+    </Toggle>
   )
 }
 
-const TypeToHideValidation = ['checkbox', 'radio']
-const ElementToHideValidation = ['select']
+// const TypeToHideValidation = ['checkbox', 'radio']
+// const ElementToHideValidation = ['select']
 
-const ChildParam = ({kv, parentK, value, rpcName, k, path}) => {
-  const pathId = (k || parentK || '') + '-' + path.join('-')
-  const entryId = `${rpcName}-${pathId}-entry`
-  const name = <Var>{value?.catnk || k || path[path.length - 1]}</Var>
-  const {setData, data, valid, error, gen} = useSpec(entryId, {
-    schema: value?.schema,
-  })
-  const hideValidation =
-    TypeToHideValidation.includes(value?.htmlElement?.type) ||
-    ElementToHideValidation.includes(value?.htmlElement?.el)
+const ChildParam = ({
+  kv,
+  value,
+  k, // parentK, rpcName, path
+}) => {
+  // const pathId = (k || parentK || '') + '-' + path.join('-')
+  // const entryId = `${rpcName}-${pathId}-entry`
+  // const name = <Var>{value?.catnk || k || path[path.length - 1]}</Var>
+  // const {setData, data, valid, error, gen} = useSpec(entryId, {
+  //   schema: value?.schema,
+  // })
+  // const hideValidation =
+  //   TypeToHideValidation.includes(value?.htmlElement?.type) ||
+  //   ElementToHideValidation.includes(value?.htmlElement?.el)
 
   return (
-    <tr className="childparam">
-      <td>
-        {kv && <Var>{k}</Var>}
-        {!kv && <Var>{path[path.length - 1]}</Var>}
-      </td>
-      <td>
-        <fieldset>
-          <legend>
-            <label htmlFor={entryId}>{name}</label>
-          </legend>
-          <table>
-            {/* <caption>caption</caption> */}
-            <tbody>
-              <tr key="type">
-                <td>Type</td>
-                <td>
-                  <Type {...value} />
-                </td>
-              </tr>
-              <tr key="doc">
-                <td>Doc</td>
-                <td>
-                  <Doc {...value} />
-                </td>
-              </tr>
-              {value?.optional && (
-                <tr key="optional">
-                  <td>Optional</td>
-                  <td>true</td>
-                </tr>
-              )}
-              <tr key="data-entry">
-                <td>Entry</td>
-                <td>
-                  <DataEntry
-                    onChange={e => {
-                      if (e.target.type === 'checkbox')
-                        setData(e.target.checked)
-                      else setData(e.target.value)
-                    }}
-                    value={data === null ? '' : data}
-                    rpcName={rpcName}
-                    id={entryId}
-                    {...value}
-                  />
-                </td>
-              </tr>
-              {!hideValidation && (
-                <tr key="validator">
-                  <td>Validation</td>
-                  <td>
-                    <Validator
-                      empty={data === null || data === ''}
-                      valid={valid ?? true}
-                      error={error ?? []}
-                      {...value}
-                    />
-                  </td>
-                </tr>
-              )}
-              {!hideValidation && (
-                <tr key="generator">
-                  <td>Random data</td>
-                  <td>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!gen || !value?.schema) return
-                        let generated = gen(value?.schema)
-                        if (
-                          Array.isArray(generated) ||
-                          typeof generated === 'object'
-                        )
-                          try {
-                            generated = JSON.stringify(generated)
-                          } catch (err) {} // eslint-disable-line no-empty
-                        setData(generated)
-                      }}
-                    >
-                      Random
-                    </button>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </fieldset>
-      </td>
-    </tr>
+    <div className="childparam">
+      {kv && <Var>{k}</Var>}
+      {/* {!kv && <Var>{path[path.length - 1]}</Var>} */}
+      {/*   <label htmlFor={entryId}>{name}</label> */}
+      <table>
+        {/* <caption>caption</caption> */}
+        <tbody>
+          <tr key="type">
+            <td>Type</td>
+            <td>
+              <Type {...value} />
+            </td>
+          </tr>
+          <tr key="doc">
+            <td>Doc</td>
+            <td>
+              <Doc {...value} />
+            </td>
+          </tr>
+          {value?.optional && (
+            <tr key="optional">
+              <td>Optional</td>
+              <td>true</td>
+            </tr>
+          )}
+          {/* <tr key="data-entry"> */}
+          {/*   <td>Entry</td> */}
+          {/*   <td> */}
+          {/*     <DataEntry */}
+          {/*       onChange={e => { */}
+          {/*         if (e.target.type === 'checkbox') */}
+          {/*           setData(e.target.checked) */}
+          {/*         else setData(e.target.value) */}
+          {/*       }} */}
+          {/*       value={data === null ? '' : data} */}
+          {/*       rpcName={rpcName} */}
+          {/*       id={entryId} */}
+          {/*       {...value} */}
+          {/*     /> */}
+          {/*   </td> */}
+          {/* </tr> */}
+          {/* {!hideValidation && ( */}
+          {/*   <tr key="validator"> */}
+          {/*     <td>Validation</td> */}
+          {/*     <td> */}
+          {/*       <Validator */}
+          {/*         empty={data === null || data === ''} */}
+          {/*         valid={valid ?? true} */}
+          {/*         error={error ?? []} */}
+          {/*         {...value} */}
+          {/*       /> */}
+          {/*     </td> */}
+          {/*   </tr> */}
+          {/* )} */}
+          {/* {!hideValidation && ( */}
+          {/*   <tr key="generator"> */}
+          {/*     <td>Random data</td> */}
+          {/*     <td> */}
+          {/*       <button */}
+          {/*         type="button" */}
+          {/*         onClick={() => { */}
+          {/*           if (!gen || !value?.schema) return */}
+          {/*           let generated = gen(value?.schema) */}
+          {/*           if ( */}
+          {/*             Array.isArray(generated) || */}
+          {/*             typeof generated === 'object' */}
+          {/*           ) */}
+          {/*             try { */}
+          {/*               generated = JSON.stringify(generated) */}
+          {/*             } catch (err) {} // eslint-disable-line no-empty */}
+          {/*           setData(generated) */}
+          {/*         }} */}
+          {/*       > */}
+          {/*         Random */}
+          {/*       </button> */}
+          {/*     </td> */}
+          {/*   </tr> */}
+          {/* )} */}
+        </tbody>
+      </table>
+    </div>
   )
 }
 
@@ -325,4 +350,11 @@ Validator.propTypes = {
   valid: PropTypes.bool.isRequired,
   error: PropTypes.array.isRequired,
   empty: PropTypes.bool.isRequired,
+}
+Toggle.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
 }

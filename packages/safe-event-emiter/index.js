@@ -74,6 +74,10 @@ export default class SafeEventEmitter {
     this.#listeners.delete(listener)
   }
 
+  removeLitener(...args) {
+    return this.off(...args)
+  }
+
   emit(eventType, data) {
     this.#checkEventType(eventType)
     this.#pb.next({topic: eventType, data})
