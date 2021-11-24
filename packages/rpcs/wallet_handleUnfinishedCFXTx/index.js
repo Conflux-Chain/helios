@@ -6,6 +6,7 @@ import {
   keep,
   multiplexObj,
   comp,
+  keepTruthy,
 } from '@fluent-wallet/transducers'
 import {processError} from '@fluent-wallet/conflux-tx-error'
 import {BigNumber} from '@ethersproject/bignumber'
@@ -132,7 +133,7 @@ export const main = ({
             }).transform(
               multiplexObj({
                 failed: comp(
-                  keep(x => x || null),
+                  keepTruthy(),
                   sideEffect(
                     ({err}) => typeof failedCb === 'function' && failedCb(err),
                   ),
@@ -152,7 +153,7 @@ export const main = ({
                 ),
 
                 isDuplicateTx: comp(
-                  keep(x => x || null),
+                  keepTruthy(),
                   sideEffect(() => {
                     setTxPending({hash})
                     typeof okCb === 'function' && okCb(hash)
@@ -347,9 +348,9 @@ export const main = ({
             return true
           }
           keepTrack()
-          return null
+          return false
         }),
-        keep(), // filter non-null tx
+        keepTruthy(), // filter non-null tx
         map(() => wallet_getExplorerUrl({transaction: [hash]})),
       )
       .subscribe(resolve({fail: identity}))

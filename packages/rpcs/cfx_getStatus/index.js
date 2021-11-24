@@ -13,6 +13,7 @@ export const cache = {
   type: 'ttl',
   key: () => `${NAME}`,
   afterSet(setCache, req, res) {
+    if (!res?.result) return
     setCache({req, res: {result: res.result.chainId}, conf: chainIdCacheConf})
     setCache({
       req,
