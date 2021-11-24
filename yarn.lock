@@ -4662,6 +4662,7 @@ __metadata:
   resolution: "@fluent-wallet/cfx_send-transaction@workspace:packages/rpcs/cfx_sendTransaction"
   dependencies:
     "@fluent-wallet/cfx_sign-transaction": "workspace:packages/rpcs/cfx_signTransaction"
+    "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -5302,7 +5303,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/signature@workspace:packages/signature":
+"@fluent-wallet/signature@workspace:*, @fluent-wallet/signature@workspace:packages/signature":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/signature@workspace:packages/signature"
   dependencies:

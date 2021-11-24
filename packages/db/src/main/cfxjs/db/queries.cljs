@@ -436,6 +436,29 @@
           networkId address appId)
        (e :address)))
 
+(defn get-addr-from-network-and-address [{:keys [networkId address]}]
+  (->> (q '[:find ?addr .
+            :in $ ?net ?address
+            :where
+            [?net :network/address ?addr]
+            [?net :network/type ?net-type]
+            (or
+             (and [?addr :address/base32 ?address]
+                  [(= ?net-type "cfx")])
+             (and [?addr :address/hex ?address]
+                  [(= ?net-type "eth")]))]
+          networkId address)
+       (e :address)))
+
+(defn get-addr-tx-by-hash [{:keys [addressId txhash]}]
+  (->> (q '[:find ?tx .
+            :in $ ?addr ?hash
+            :where
+            [?tx :tx/hash ?hash]
+            [?addr :address/tx ?tx]]
+          addressId txhash)
+       (e :tx)))
+
 ;;; UI QUERIES
 (defn home-page-assets
   ([] (home-page-assets {}))
@@ -530,10 +553,13 @@
               :upsertBalances                  upsert-balances
               :retractAddressToken             retract-address-token
               :getFromAddress                  get-from-address
-              :queryhomePageAssets             home-page-assets
-              :queryaddTokenList               get-add-token-list
-              :queryaccountListAssets          account-list-assets
-              :getAccountGroupByVaultType      get-account-group-by-vault-type})
+              :getAddrFromNetworkAndAddress    get-addr-from-network-and-address
+              :getAddrTxByHash                 get-addr-tx-by-hash
+
+              :queryhomePageAssets        home-page-assets
+              :queryaddTokenList          get-add-token-list
+              :queryaccountListAssets     account-list-assets
+              :getAccountGroupByVaultType get-account-group-by-vault-type})
 
 (defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)

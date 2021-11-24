@@ -82,8 +82,18 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 // ## initialize db
 ;(async () => {
   if (!IS_TEST_MODE) {
-    await initBG()
+    const {request, db} = await initBG()
     if (IS_DEV_MODE) {
+      if (import.meta.env?.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
+        try {
+          const localDevModule = await import(
+            import.meta.env?.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH
+          )
+          await localDevModule.run({request, db})
+        } catch (err) {
+          console.log('local dev error', err)
+        }
+      }
       // if (db.getAccountGroup()?.length) {
       //   // console.log(
       //   //   'wallet_unlock',
