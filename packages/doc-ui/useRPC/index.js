@@ -19,16 +19,18 @@ const createRPC = rpcName =>
       if (RPCS[rpcName]) return set({...RPCS[rpcName], loadingRPC: false})
       const rpcNameSplit = rpcName.split('_')
       const [rpcPkgNamePrefix, ...rpcPkgNameRest] = rpcNameSplit
-      const rpcPkgName = rpcPkgNameRest.reduce(
+      let rpcPkgName = rpcPkgNameRest.reduce(
         (acc, n) => acc + '_' + paramCase(n),
         rpcPkgNamePrefix,
       )
+      rpcPkgName = rpcPkgName.replace('-po-s-', '-pos-')
+      rpcPkgName = rpcPkgName.replace('validate20-token', 'validate20token')
 
       window &&
         import(
           /* webpackPreload: true */
           /* webpackMode: "lazy-once" */
-          /* webpackInclude: /(cfx|eth|wallet|net|web3|personal)_(\w|-)+\/index\.js$/ */
+          /* webpackInclude: /(txpool|cfx|eth|wallet|net|web3|personal)_(\w|-)+\/index\.js$/ */
           /* webpackExclude: /(\test\.js|\.md)$/ */
           '@fluent-wallet/' + rpcPkgName
         )

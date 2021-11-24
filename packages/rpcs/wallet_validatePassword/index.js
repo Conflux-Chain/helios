@@ -17,9 +17,16 @@ export async function main({
   db: {getVault, getLocked, getPassword},
   params: {password},
 }) {
+  // validate with in-mem password if not locked
   if (!getLocked()) return password === getPassword()
+
+  // validate with vault if locked
   const vaults = getVault()
+
+  // return true if zero vault
   if (!vaults.length) return true
+
+  // validate
   let valid = false
   try {
     await decrypt(password, vaults[0].data)

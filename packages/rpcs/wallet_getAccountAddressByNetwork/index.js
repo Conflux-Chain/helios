@@ -1,4 +1,4 @@
-import {or, dbid, map, catn, oneOrMore} from '@fluent-wallet/spec'
+import {or, dbid, map, oneOrMore} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_getAccountAddressByNetwork'
 
@@ -10,11 +10,7 @@ const singleQuerySchema = [
 ]
 
 export const schemas = {
-  input: [
-    or,
-    singleQuerySchema,
-    [oneOrMore, [catn, ['AccountAddressByNetworkQuery', singleQuerySchema]]],
-  ],
+  input: [or, singleQuerySchema, [oneOrMore, singleQuerySchema]],
 }
 
 export const permissions = {

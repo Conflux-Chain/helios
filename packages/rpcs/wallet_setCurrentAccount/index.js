@@ -1,9 +1,9 @@
-import {catn, dbid, oneOrMore} from '@fluent-wallet/spec'
+import {dbid, oneOrMore} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_setCurrentAccount'
 
 export const schemas = {
-  input: [oneOrMore, [catn, ['accountId', dbid]]],
+  input: [oneOrMore, dbid],
 }
 
 export const permissions = {

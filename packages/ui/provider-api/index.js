@@ -37,45 +37,47 @@ class Provider extends SafeEventEmitter {
     this.#send = send
     this.#s.subscribe({next: this.#streamEventListener.bind(this)})
 
-    this.on('connect', () => (this.#isConnected = true))
+    this.on('connect', () => {
+      this.#isConnected = true
 
-    // DEPRECATED
-    {
-      this.confluxJS = new ConfluxJS.Conflux()
-      this.confluxJS.provider = {
-        call(method, params) {
-          return this.request({method, params})
-        },
-        close() {},
-        on() {},
-      }
-      this.request({method: 'cfx_chainId'}).then(result => {
-        this._chainId = result
-        const networkId = parseInt(result, 16)
-        this._networkVersion = networkId.toString(10)
-        this.confluxJS.networkId = networkId
-        this.confluxJS.wallet.networkId = networkId
-        this.emit('networkChanged', this._networkVersion)
-        this.emit('chainChanged', this._chainId)
-      })
-      this.request({method: 'cfx_accounts'})
-        .then(result => {
-          if (result) this._selectedAddress = []
-          else this._selectedAddress = result
-          this.emit('accountsChanged', this._selectedAddress)
+      // DEPRECATED
+      {
+        this.confluxJS = new ConfluxJS.Conflux()
+        this.confluxJS.provider = {
+          call(method, params) {
+            return this.request({method, params})
+          },
+          close() {},
+          on() {},
+        }
+        this.request({method: 'cfx_chainId'}).then(result => {
+          this._chainId = result
+          const networkId = parseInt(result, 16)
+          this._networkVersion = networkId.toString(10)
+          this.confluxJS.networkId = networkId
+          this.confluxJS.wallet.networkId = networkId
+          this.emit('networkChanged', this._networkVersion)
+          this.emit('chainChanged', this._chainId)
         })
-        .catch(() => (this._selectedAddress = []))
-      this.on('chainChanged', chainId => {
-        this._chainId = chainId
-        const networkId = parseInt(chainId, 16)
-        this._networkVersion = networkId.toString(10)
-        this.confluxJS.networkId = networkId
-        this.confluxJS.wallet.networkId = networkId
-      })
-      this.on('accountsChanged', accounts => {
-        this._selectedAddress = accounts
-      })
-    }
+        this.request({method: 'cfx_accounts'})
+          .then(result => {
+            if (result) this._selectedAddress = []
+            else this._selectedAddress = result
+            this.emit('accountsChanged', this._selectedAddress)
+          })
+          .catch(() => (this._selectedAddress = []))
+        this.on('chainChanged', chainId => {
+          this._chainId = chainId
+          const networkId = parseInt(chainId, 16)
+          this._networkVersion = networkId.toString(10)
+          this.confluxJS.networkId = networkId
+          this.confluxJS.wallet.networkId = networkId
+        })
+        this.on('accountsChanged', accounts => {
+          this._selectedAddress = accounts
+        })
+      }
+    })
   }
 
   // DEPRECATED
