@@ -2,5 +2,8 @@ export default {
   metadata: {
     provider: true,
   },
-  en: 'No doc avaiable',
+  en: `Request user to sign a transaction and broadcast it.
+
+Return the result of \`cfx_sendRawTransaction\`.
+`,
 }

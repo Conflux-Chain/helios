@@ -113,8 +113,12 @@ const createSpec = id =>
       window &&
         import('@fluent-wallet/spec/src/gen.js')
           .then(({gen}) => {
-            GEN = gen
-            set({gen, loadingGen: false})
+            GEN = (...args) => {
+              const data = gen(...args)
+              if (data === null || data === undefined) return []
+              return data
+            }
+            set({gen: GEN, loadingGen: false})
           })
           .catch(err => {
             const {_genRetryCount, setGen} = get()

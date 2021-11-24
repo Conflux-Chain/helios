@@ -62,6 +62,12 @@ module.exports = async function ({onlyRerenderRpcName} = {}) {
       getAllRpcs || (await import('workspace-tools/rpc/get-all.js')).default
     const rpcs = await getAllRpcs()
     rpcs.forEach(rpc => {
+      if (
+        rpc?.module?.NAME?.startsWith?.('eth_') ||
+        rpc?.module?.NAME?.includes?.('Ethereum') ||
+        rpc?.module?.NAME?.includes?.('wallet_getNextNonce')
+      )
+        return
       // eslint-disable-next-line testing-library/render-result-naming-convention
       const oneRpcContent = renderOneRpc(rpcInfoToRenderParam(rpc))
       cache[rpc.name] = {content: oneRpcContent, doc: rpc.doc}
@@ -71,9 +77,9 @@ module.exports = async function ({onlyRerenderRpcName} = {}) {
   const [providerRpcContent, standardRpcContent, innerRpcContent] =
     Object.values(cache).reduce(
       ([p, s, i], {content, doc}) => {
-        if (doc.metadata?.standard) s += content + '\n\n'
-        else if (doc.metadata?.provider) p += content + '\n\n'
-        else if (doc.metadata?.inner) i += content + '\n\n'
+        if (doc?.metadata?.standard) s += content + '\n\n'
+        else if (doc?.metadata?.provider) p += content + '\n\n'
+        else if (doc?.metadata?.inner) i += content + '\n\n'
         return [p, s, i]
       },
       ['', '', ''],

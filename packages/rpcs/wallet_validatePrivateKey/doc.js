@@ -2,5 +2,5 @@ export default {
   metadata: {
     provider: true,
   },
-  en: 'No doc avaiable',
+  en: `Helper method to validate if a string is a pk.`,
 }

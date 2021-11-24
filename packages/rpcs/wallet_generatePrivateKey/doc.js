@@ -2,5 +2,7 @@ export default {
   metadata: {
     provider: true,
   },
-  en: 'No doc avaiable',
+  en: `Helper method to generate a random private key.
+
+Return the randomly generated pk.`,
 }

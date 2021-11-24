@@ -2,5 +2,7 @@ export default {
   metadata: {
     provider: true,
   },
-  en: 'No doc avaiable',
+  en: `Helper method to generate a random mnemonic.
+
+Return the randomly generated mnemonic.`,
 }
