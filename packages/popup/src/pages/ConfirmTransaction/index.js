@@ -6,6 +6,7 @@ import Button from '@fluent-wallet/component-button'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
   formatDecimalToHex,
+  formatHexToDecimal,
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import useGlobalStore from '../../stores'
@@ -80,14 +81,13 @@ function ConfirmTransition() {
   const viewData = useViewData(params)
   params.data = viewData
 
-  // dapp send params, need to delete '' or undefined params,
+  // send params, need to delete '' or undefined params,
   // otherwise cfx_sendTransaction will return params error
-  const sendParamsObj = {...params}
-  if (!sendParamsObj.gasPrice) delete sendParamsObj.gasPrice
-  if (!sendParamsObj.nonce) delete sendParamsObj.nonce
-  if (!sendParamsObj.gas) delete sendParamsObj.gas
-  if (!sendParamsObj.data) delete sendParamsObj.data
-  const sendParams = [sendParamsObj]
+  if (!params.gasPrice) delete params.gasPrice
+  if (!params.nonce) delete params.nonce
+  if (!params.gas) delete params.gas
+  if (!params.data) delete params.data
+  const sendParams = [params]
 
   const isNativeToken = !displayToken?.address
   const estimateRst =
@@ -103,6 +103,16 @@ function ConfirmTransition() {
         : {},
     ) || {}
 
+  // only need to estimate gas not need to get whether balance is enough
+  // so do not pass the gas info params
+  // if params include gasPrice/gasLimit/nonce will cause loop
+  const originEstimateRst = useEstimateTx(originParams) || {}
+  const {
+    gasPrice: estimateGasPrice,
+    gasLimit: estimateGasLimit,
+    nonce: rpcNonce,
+  } = originEstimateRst || {}
+
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
     displayValue,
@@ -114,9 +124,10 @@ function ConfirmTransition() {
   // when dapp send, init the gas edit global store
   useEffect(() => {
     if (isDapp) {
-      tx.gas && setGasLimit(tx.gas)
-      tx.gasPrice && setGasPrice(tx.gasPrice)
-      tx.nonce && setNonce(tx.nonce)
+      // store decimal number
+      setGasLimit(formatHexToDecimal(tx.gas || estimateGasLimit || ''))
+      setGasPrice(formatHexToDecimal(tx.gasPrice || estimateGasPrice || ''))
+      setNonce(formatHexToDecimal(tx.nonce || rpcNonce || ''))
     }
   }, [
     isDapp,
@@ -126,6 +137,9 @@ function ConfirmTransition() {
     setGasPrice,
     setNonce,
     setGasLimit,
+    estimateGasPrice,
+    estimateGasLimit,
+    rpcNonce,
   ])
 
   const onSend = () => {
@@ -171,7 +185,7 @@ function ConfirmTransition() {
           </span>
         </div>
         <div className="flex flex-col items-center">
-          {isDapp && (
+          {isDapp && params.data && (
             <Link onClick={() => history.push(VIEW_DATA)} className="mb-6">
               {t('viewData')}
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
