@@ -35,7 +35,6 @@ describe('CFX Name', () => {
         'store',
         ['0x1'],
       )
-      console.log('transactionData', transactionData)
       nock('https://testnet.confluxscan.io/v1/contract')
         .get(`/${contractAddress}?fields=abi`)
         .reply(200, {
@@ -70,14 +69,22 @@ describe('CFX Name', () => {
       expect(res.args).toContain(userBase32Address)
     })
 
-    it('should return empty object when error happens', async () => {
+    it('should return empty object when input wrong address', async () => {
       nock('https://testnet.confluxscan.io/v1/contract')
         .get('/some-wrong-address?fields=abi')
         .reply(500)
       const res = await getCFXContractMethodSignature(
         'some-wrong-address',
-        '0x6057361d0000000000000000000000000000000000000000000000000000000000000064',
-        'CFX_TESTNET',
+        erc20TransferData,
+        1,
+      )
+      expect(res).toEqual({})
+    })
+    it('should return empty object when input wrong transaction data', async () => {
+      const res = await getCFXContractMethodSignature(
+        contractAddress,
+        'some-wrong-data',
+        1,
       )
       expect(res).toEqual({})
     })

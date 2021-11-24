@@ -2,7 +2,7 @@ import {CFX_SCAN_DOMAINS} from './constance'
 import fetchHelper from './util/fetch-helper'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {Interface} from '@ethersproject/abi'
-import {encode} from '@fluent-wallet/base32-address'
+import {encode, validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
 
 const eip777AbiSignatures = [
@@ -36,6 +36,9 @@ export const getCFXContractMethodSignature = async (
   netId,
 ) => {
   try {
+    if (!validateBase32Address(address)) {
+      return {}
+    }
     let abiInterface
     if (eip777AbiSignatures.includes(transactionData.substr(0, 10))) {
       abiInterface = iface
