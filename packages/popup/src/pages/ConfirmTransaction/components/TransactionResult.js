@@ -50,7 +50,6 @@ function TransactionResult({transactionHash}) {
 
 TransactionResult.propTypes = {
   transactionHash: PropTypes.string.isRequired,
-  netId: PropTypes.number.isRequired,
 }
 
 export default TransactionResult

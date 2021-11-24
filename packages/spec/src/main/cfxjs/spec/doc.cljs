@@ -145,6 +145,7 @@
   ([js-schema options gen-name]
    (try
      (let [schema  (js->clj js-schema :keywordize-keys true)
+           ;; _ (js/console.log js-schema gen-name)
            options (js->clj options :keywordize-keys true)
            options (assoc options :doc/gen-no-schema (get options :noSchema))
            options (dissoc options :noSchema)

@@ -1,6 +1,6 @@
 {
   "name": "@fluent-wallet/doc-rpc-parameter",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "type": "module",
   "main": "index.js",
   "peerDependencies": {
@@ -11,6 +11,7 @@
     "@fluent-wallet/doc-use-rpc": "workspace:packages/doc-ui/useRPC",
     "@fluent-wallet/doc-use-spec": "workspace:packages/doc-ui/useSpec",
     "prop-types": "^15.7.2",
+    "react-use": "17.3.1",
     "zustand": "^3.6.5"
   }
 }

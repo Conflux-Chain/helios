@@ -180,18 +180,14 @@ export const useCheckBalanceAndGas = (
         return 'contract error'
       }
     } else {
-      if (isNativeToken) {
-        if (!isBalanceEnough && isBalanceEnough !== undefined) {
+      if (isNativeToken && isBalanceEnough !== undefined) {
+        if (!isBalanceEnough) {
           return 'balance is not enough'
         } else {
           return ''
         }
-      } else {
-        if (
-          isSendToken &&
-          !isTokenBalanceEnough &&
-          isTokenBalanceEnough !== undefined
-        ) {
+      } else if (!isNativeToken && isTokenBalanceEnough !== undefined) {
+        if (isSendToken && !isTokenBalanceEnough) {
           return 'balance is not enough'
         } else if (!isBalanceEnough && isBalanceEnough !== undefined) {
           return 'gas fee is not enough'
@@ -206,14 +202,14 @@ export const useCheckBalanceAndGas = (
 export const useDappParams = () => {
   const pendingAuthReq = usePendingAuthReq()
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
-  return req?.params[0]
+  return req?.params[0] || {}
 }
 
 export const useDecodeData = ({to, data} = {}) => {
   const type = useAddressType(to)
   const {netId} = useCurrentNetwork()
   const isContract = type === 'contract'
-  const crc20Token = useValid20Token(to)
+  const crc20Token = useValid20Token(isContract ? to : '')
   const token = {...crc20Token, address: to}
   let decodeData = useRef({})
   useEffect(() => {
@@ -298,7 +294,7 @@ export const useViewData = ({data, to} = {}) => {
   const spender = decodeData?.args?.[0]
     ? decode(decodeData?.args?.[0]).hexAddress
     : ''
-  useMemo(() => {
+  const viewData = useMemo(() => {
     if (customAllowance) {
       return spender
         ? iface.encodeFunctionData('approve', [spender, allowance])
@@ -307,4 +303,5 @@ export const useViewData = ({data, to} = {}) => {
       return data
     }
   }, [customAllowance, data, allowance, spender])
+  return viewData
 }

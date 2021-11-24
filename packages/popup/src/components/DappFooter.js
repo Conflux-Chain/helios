@@ -45,7 +45,8 @@ function DappFooter({
         history.push(HOME)
         onClickCancel && onClickCancel()
       })
-      .catch(() => {
+      .catch(e => {
+        console.log('error', e)
         // TODO: error message
         setSendingRequestStatus(false)
       })
@@ -56,7 +57,7 @@ function DappFooter({
       return
     }
     setSendingRequestStatus(true)
-    const params = {...confirmParams}
+    let params = {}
     switch (req.method) {
       case WALLET_REQUEST_PERMISSIONS:
         params.permissions = req.params
@@ -82,6 +83,7 @@ function DappFooter({
         params.asset = req.params
         break
     }
+    params = {...params, ...confirmParams}
 
     request(req.method, {authReqId: eid, ...params})
       .then(() => {
@@ -89,7 +91,8 @@ function DappFooter({
         onClickConfirm && onClickConfirm()
         history.push(HOME)
       })
-      .catch(() => {
+      .catch(e => {
+        console.log('error', e)
         setSendingRequestStatus(false)
         // TODO: error message
       })

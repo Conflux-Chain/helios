@@ -4,8 +4,12 @@ import {Big} from '@fluent-wallet/data-format'
 
 const formatInputValue = (targetValue, decimals) => {
   if (targetValue === '' || isNaN(targetValue)) return ''
-  const ret = new Big(targetValue).round(decimals, 0)
-  return ret.gte(0) ? ret.toString() : '0'
+  const ret = new Big(targetValue).times(`1e${decimals}`)
+  return ret.eq(0)
+    ? targetValue
+    : ret.gte(1)
+    ? ret.div(`1e${decimals}`).round(decimals, 0).toString()
+    : '0'
 }
 
 function NumberInput({onChange, value, decimals = 0, ...props}) {

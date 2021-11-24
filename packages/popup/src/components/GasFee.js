@@ -33,9 +33,9 @@ function GasFee({isDapp, estimateRst}) {
   const storageFee = convertDataToValue(storageFeeDrip || '0', CFX_DECIMALS)
   const gasFee = convertDataToValue(gasFeeDrip || '0', CFX_DECIMALS)
   const txFee = convertDataToValue(txFeeDrip || '0', CFX_DECIMALS)
-  const isBePayed = (!willPayCollateral || !willPayTxFee) && storageFee
-  const isBeAllPayed = !willPayCollateral && !willPayTxFee && storageFee
-  const partPayedFee = !willPayCollateral ? gasFee : storageFee
+  const isBePayed = willPayCollateral === false || willPayTxFee === false
+  const isBeAllPayed = willPayCollateral === false && willPayTxFee === false
+  const partPayedFee = willPayCollateral === false ? gasFee : storageFee
   const realPayedFee = isBeAllPayed ? '0' : isBePayed ? partPayedFee : txFee
 
   const label = (
@@ -91,7 +91,7 @@ function GasFee({isDapp, estimateRst}) {
 }
 
 GasFee.propTypes = {
-  estimateRst: PropTypes.obj,
+  estimateRst: PropTypes.object,
   isDapp: PropTypes.bool,
   willPayTxFee: PropTypes.bool,
 }

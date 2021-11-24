@@ -6,6 +6,7 @@ import Button from '@fluent-wallet/component-button'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
   formatDecimalToHex,
+  formatHexToDecimal,
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import useGlobalStore from '../../stores'
@@ -42,13 +43,19 @@ function ConfirmTransition() {
   const SEND_TRANSACTION = networkTypeIsCfx
     ? CFX_SEND_TRANSACTION
     : ETH_SEND_TRANSACTION
-  const {gasPrice, gasLimit, nonce, clearSendTransactionParams} =
-    useGlobalStore()
+  const {
+    gasPrice,
+    gasLimit,
+    nonce,
+    setGasPrice,
+    setGasLimit,
+    setNonce,
+    clearSendTransactionParams,
+  } = useGlobalStore()
 
   const nativeToken = useCurrentNativeToken()
   const tx = useDappParams()
   const isDapp = pendingAuthReq?.length > 0
-  const viewData = useViewData(tx)
   // get to type and to token
   const {isContract, decodeData} = useDecodeData(tx)
   const {
@@ -60,15 +67,28 @@ function ConfirmTransition() {
   } = useDecodeDisplay({isDapp, isContract, nativeToken, tx})
   const isSign = !isSendToken && !isApproveToken
 
-  const txPrams = useTxParams()
-  const params = !isDapp
-    ? {
-        ...txPrams,
-        gasPrice: formatDecimalToHex(gasPrice),
-        gas: formatDecimalToHex(gasLimit),
-        nonce: formatDecimalToHex(nonce),
-      }
-    : tx
+  // params in wallet send or dapp send
+  const txParams = useTxParams()
+  const originParams = !isDapp ? {...txParams} : {...tx}
+  // user can edit nonce, gasPrice and gas
+  const params = {
+    ...originParams,
+    gasPrice: formatDecimalToHex(gasPrice),
+    gas: formatDecimalToHex(gasLimit),
+    nonce: formatDecimalToHex(nonce),
+  }
+  // user can edit the approve limit
+  const viewData = useViewData(params)
+  params.data = viewData
+
+  // send params, need to delete '' or undefined params,
+  // otherwise cfx_sendTransaction will return params error
+  if (!params.gasPrice) delete params.gasPrice
+  if (!params.nonce) delete params.nonce
+  if (!params.gas) delete params.gas
+  if (!params.data) delete params.data
+  const sendParams = [params]
+
   const isNativeToken = !displayToken?.address
   const estimateRst =
     useEstimateTx(
@@ -82,6 +102,17 @@ function ConfirmTransition() {
           }
         : {},
     ) || {}
+
+  // only need to estimate gas not need to get whether balance is enough
+  // so do not pass the gas info params
+  // if params include gasPrice/gasLimit/nonce will cause loop
+  const originEstimateRst = useEstimateTx(originParams) || {}
+  const {
+    gasPrice: estimateGasPrice,
+    gasLimit: estimateGasLimit,
+    nonce: rpcNonce,
+  } = originEstimateRst || {}
+
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
     displayValue,
@@ -90,11 +121,30 @@ function ConfirmTransition() {
   useEffect(() => {
     setBalanceError(errorMessage)
   }, [errorMessage])
+  // when dapp send, init the gas edit global store
+  useEffect(() => {
+    if (isDapp) {
+      // store decimal number
+      setGasLimit(formatHexToDecimal(tx.gas || estimateGasLimit || ''))
+      setGasPrice(formatHexToDecimal(tx.gasPrice || estimateGasPrice || ''))
+      setNonce(formatHexToDecimal(tx.nonce || rpcNonce || ''))
+    }
+  }, [
+    isDapp,
+    tx.gas,
+    tx.nonce,
+    tx.gasPrice,
+    setGasPrice,
+    setNonce,
+    setGasLimit,
+    estimateGasPrice,
+    estimateGasLimit,
+    rpcNonce,
+  ])
 
   const onSend = () => {
     if (sendingTransaction) return
     setSendingTransaction(true)
-    params.data = viewData
     request(SEND_TRANSACTION, [params])
       .then(result => {
         setSendingTransaction(false)
@@ -135,7 +185,7 @@ function ConfirmTransition() {
           </span>
         </div>
         <div className="flex flex-col items-center">
-          {isDapp && (
+          {isDapp && params.data && (
             <Link onClick={() => history.push(VIEW_DATA)} className="mb-6">
               {t('viewData')}
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
@@ -168,6 +218,7 @@ function ConfirmTransition() {
               cancelText={t('cancel')}
               confirmDisabled={!!balanceError}
               onClickConfirm={() => setShowResult(true)}
+              confirmParams={{tx: sendParams}}
             />
           )}
         </div>
