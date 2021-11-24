@@ -47,11 +47,11 @@ function RequestSignature() {
           <div className="flex items-center justify-between">
             <DisplayBalance
               balance={formatBalance(balanceData?.[address]?.['0x0'])}
-              maxWidthStyle="max-w-[148px]"
-              maxWidth={148}
+              maxWidthStyle="max-w-[140px]"
+              maxWidth={140}
             />
             <span className="text-gray-60 text-xs ml-0.5">
-              {app?.currentNetwork?.ticker?.name || ''}
+              {app?.currentNetwork?.ticker?.symbol || ''}
             </span>
           </div>
         </div>
