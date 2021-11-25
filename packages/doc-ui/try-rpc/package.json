@@ -1,0 +1,19 @@
+{
+  "name": "@fluent-wallet/doc-try-rpc",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.1.0",
+  "version": "0.0.0",
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
+  },
+  "dependencies": {
+    "@fluent-wallet/doc-use-rpc": "workspace:packages/doc-ui/useRPC",
+    "@fluent-wallet/doc-use-spec": "workspace:packages/doc-ui/useSpec",
+    "prop-types": "^15.7.2",
+    "react-json-editor-ajrm": "2.5.13",
+    "react-use": "17.3.1",
+    "zustand": "^3.6.5"
+  }
+}

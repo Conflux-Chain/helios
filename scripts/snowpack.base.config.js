@@ -24,6 +24,8 @@ getWorkspacePackages({
     'workspace-tools',
     'doc',
     'ext-reload',
+    '@fluent-wallet/doc-try-rpc',
+    '@fluent-wallet/doc-rpc-parameter',
     '@fluent-wallet/jest-helper',
     '@fluent-wallet/test-helpers',
     '@fluent-wallet/content-script',

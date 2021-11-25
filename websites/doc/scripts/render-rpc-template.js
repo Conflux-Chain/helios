@@ -1,8 +1,16 @@
 const {resolve} = require('path')
 const {render} = require('mustache')
-const {readFileSync, writeFileSync} = require('fs')
+const {readFileSync, promises} = require('fs')
 
-const rpcTemplate = resolve(__dirname, '../docs/rpc.mdx.mustache')
+const providerRpcTemplate = resolve(
+  __dirname,
+  '../docs/provider-rpc.mdx.mustache',
+)
+const standardRpcTemplate = resolve(
+  __dirname,
+  '../docs/standard-rpc.mdx.mustache',
+)
+const innerRpcTemplate = resolve(__dirname, '../docs/inner-rpc.mdx.mustache')
 const oneRpcTemplate = resolve(__dirname, '../docs/one-rpc.mdx.mustache')
 
 let getAllRpcs, parseRpcPackage, rpcNameToDir
@@ -54,18 +62,47 @@ module.exports = async function ({onlyRerenderRpcName} = {}) {
       getAllRpcs || (await import('workspace-tools/rpc/get-all.js')).default
     const rpcs = await getAllRpcs()
     rpcs.forEach(rpc => {
+      if (
+        rpc?.module?.NAME?.startsWith?.('eth_') ||
+        rpc?.module?.NAME?.includes?.('Ethereum') ||
+        rpc?.module?.NAME?.includes?.('wallet_getNextNonce')
+      )
+        return
       // eslint-disable-next-line testing-library/render-result-naming-convention
       const oneRpcContent = renderOneRpc(rpcInfoToRenderParam(rpc))
-      cache[rpc.name] = oneRpcContent
+      cache[rpc.name] = {content: oneRpcContent, doc: rpc.doc}
     })
   }
 
-  const content = Object.values(cache).join('\n\n')
+  const [providerRpcContent, standardRpcContent, innerRpcContent] =
+    Object.values(cache).reduce(
+      ([p, s, i], {content, doc}) => {
+        if (doc?.metadata?.standard) s += content + '\n\n'
+        else if (doc?.metadata?.provider) p += content + '\n\n'
+        else if (doc?.metadata?.inner) i += content + '\n\n'
+        return [p, s, i]
+      },
+      ['', '', ''],
+    )
 
-  writeFileSync(
-    resolve(__dirname, '../docs/rpc.mdx'),
-    render(readFileSync(rpcTemplate, {encoding: 'utf-8'}), {
-      content: content + '\n\n',
-    }),
-  )
+  await Promise.all([
+    promises.writeFile(
+      resolve(__dirname, '../docs/provider-rpc.mdx'),
+      render(readFileSync(providerRpcTemplate, {encoding: 'utf-8'}), {
+        content: providerRpcContent + '\n\n',
+      }),
+    ),
+    promises.writeFile(
+      resolve(__dirname, '../docs/standard-rpc.mdx'),
+      render(readFileSync(standardRpcTemplate, {encoding: 'utf-8'}), {
+        content: standardRpcContent + '\n\n',
+      }),
+    ),
+    promises.writeFile(
+      resolve(__dirname, '../docs/inner-rpc.mdx'),
+      render(readFileSync(innerRpcTemplate, {encoding: 'utf-8'}), {
+        content: innerRpcContent + '\n\n',
+      }),
+    ),
+  ])
 }
