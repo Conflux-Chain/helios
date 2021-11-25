@@ -34,11 +34,12 @@ function GasFee({isDapp, estimateRst}) {
     : formatHexToDecimal(sendParams?.gasPrice || estimateGasPrice) || '1'
   const isBePayed = willPayCollateral === false || willPayTxFee === false
   const isBeAllPayed = willPayCollateral === false && willPayTxFee === false
-  const partPayedFee = willPayCollateral === false ? gasFeeDrip : storageFeeDrip
+  const partPayedFeeDrip =
+    willPayCollateral === false ? gasFeeDrip : storageFeeDrip
   const realPayedFeeDrip = isBeAllPayed
-    ? '0'
+    ? '0x0'
     : isBePayed
-    ? partPayedFee
+    ? partPayedFeeDrip
     : txFeeDrip
 
   const label = (
