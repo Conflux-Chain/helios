@@ -145,7 +145,12 @@ function ConfirmTransition() {
 
   // check balance when click send button
   const checkBalance = async () => {
-    const {from, gasPrice, gas, value} = params
+    const {from, gasPrice, gas, value, storageLimit} = params
+    const storageFeeDrip = bn16(storageLimit)
+      .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
+      .divn(1024)
+    const gasFeeDrip = bn16(gas).mul(bn16(gasPrice))
+    const txFeeDrip = gasFeeDrip.add(storageFeeDrip)
     const {address: tokenAddress, decimals} = displayToken
     try {
       const balanceData = await request(WALLET_GET_BALANCE, {
@@ -155,30 +160,28 @@ function ConfirmTransition() {
       const balance = balanceData?.[from]
 
       if (isNativeToken) {
-        if (
-          bn16(balance['0x0']).gte(
-            bn16(value).add(bn16(gasPrice).mul(bn16(gas))),
-          )
-        ) {
-          return true
+        if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
+          return 'balance is not enough'
         } else {
-          return false
+          return ''
         }
       } else {
         if (
-          bn16(balance[tokenAddress]).gte(
+          bn16(balance[tokenAddress]).lt(
             bn16(convertValueToData(displayValue, decimals)),
           ) ||
-          bn16(balance['0x0']).gte(bn16(gasPrice).mul(bn16(gas)))
+          bn16(balance['0x0']).gte(txFeeDrip)
         ) {
-          return true
+          return 'balance is not enough'
+        } else if (bn16(balance['0x0']).lt(txFeeDrip)) {
+          return 'gas fee is not enough'
         } else {
-          return false
+          return ''
         }
       }
     } catch (err) {
       console.error(err)
-      return true
+      return ''
     }
   }
 
@@ -186,10 +189,10 @@ function ConfirmTransition() {
     if (sendingTransaction) return
     setSendingTransaction(true)
     if (isSendToken) {
-      const balanceIsEnough = await checkBalance()
-      if (!balanceIsEnough) {
+      const error = await checkBalance()
+      if (error) {
         setSendingTransaction(false)
-        setBalanceError('balance is not enough')
+        setBalanceError(error)
         return
       }
     }
