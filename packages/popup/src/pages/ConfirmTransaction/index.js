@@ -147,41 +147,52 @@ function ConfirmTransition() {
   const checkBalance = async () => {
     const {from, gasPrice, gas, value} = params
     const {address: tokenAddress, decimals} = displayToken
-    const balanceData = await request(WALLET_GET_BALANCE, {
-      users: [from],
-      tokens: isNativeToken ? ['0x0'] : ['0x0'].concat(tokenAddress),
-    })
-    const balance = balanceData?.[from]
+    try {
+      const balanceData = await request(WALLET_GET_BALANCE, {
+        users: [from],
+        tokens: isNativeToken ? ['0x0'] : ['0x0'].concat(tokenAddress),
+      })
+      const balance = balanceData?.[from]
 
-    if (isNativeToken) {
-      if (
-        bn16(balance['0x0']).gte(bn16(value).add(bn16(gasPrice).mul(bn16(gas))))
-      ) {
-        return true
+      if (isNativeToken) {
+        if (
+          bn16(balance['0x0']).gte(
+            bn16(value).add(bn16(gasPrice).mul(bn16(gas))),
+          )
+        ) {
+          return true
+        } else {
+          return false
+        }
       } else {
-        return false
+        if (
+          bn16(balance[tokenAddress]).gte(
+            bn16(convertValueToData(displayValue, decimals)),
+          ) ||
+          bn16(balance['0x0']).gte(bn16(gasPrice).mul(bn16(gas)))
+        ) {
+          return true
+        } else {
+          return false
+        }
       }
-    } else {
-      if (
-        bn16(balance[tokenAddress]).gte(
-          bn16(convertValueToData(displayValue, decimals)),
-        ) ||
-        bn16(balance['0x0']).gte(bn16(gasPrice).mul(bn16(gas)))
-      ) {
-        return false
-      } else {
-        return true
-      }
+    } catch (err) {
+      console.error(err)
+      return true
     }
   }
 
   const onSend = async () => {
     if (sendingTransaction) return
+    setSendingTransaction(true)
     if (isSendToken) {
       const balanceIsEnough = await checkBalance()
-      if (!balanceIsEnough) return setBalanceError('balance is not enough')
+      if (!balanceIsEnough) {
+        setSendingTransaction(false)
+        setBalanceError('balance is not enough')
+        return
+      }
     }
-    setSendingTransaction(true)
     request(SEND_TRANSACTION, [params])
       .then(result => {
         setSendingTransaction(false)
