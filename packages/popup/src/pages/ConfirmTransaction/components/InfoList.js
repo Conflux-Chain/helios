@@ -59,7 +59,6 @@ function InfoList({
               balance={customAllowance || allowance}
               maxWidth={256}
               maxWidthStyle="max-w-[256px]"
-              decimals={token?.decimals}
               symbol={token?.symbol}
             />
             <EditOutlined

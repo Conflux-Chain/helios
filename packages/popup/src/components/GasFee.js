@@ -4,8 +4,8 @@ import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import {
   formatHexToDecimal,
-  convertDataToValue,
   CFX_DECIMALS,
+  ETH_DECIMALS,
 } from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {CompWithLabel, DisplayBalance, CustomTag} from '../components'
@@ -20,6 +20,8 @@ function GasFee({isDapp, estimateRst}) {
   const history = useHistory()
   const pendingAuthReq = usePendingAuthReq()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
+  const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
   const {
     willPayCollateral,
     willPayTxFee,
@@ -30,13 +32,15 @@ function GasFee({isDapp, estimateRst}) {
   const gasPrice = !isDapp
     ? inputGasPrice
     : formatHexToDecimal(sendParams?.gasPrice || estimateGasPrice) || '1'
-  const storageFee = convertDataToValue(storageFeeDrip || '0', CFX_DECIMALS)
-  const gasFee = convertDataToValue(gasFeeDrip || '0', CFX_DECIMALS)
-  const txFee = convertDataToValue(txFeeDrip || '0', CFX_DECIMALS)
   const isBePayed = willPayCollateral === false || willPayTxFee === false
   const isBeAllPayed = willPayCollateral === false && willPayTxFee === false
-  const partPayedFee = willPayCollateral === false ? gasFee : storageFee
-  const realPayedFee = isBeAllPayed ? '0' : isBePayed ? partPayedFee : txFee
+  const partPayedFeeDrip =
+    willPayCollateral === false ? gasFeeDrip : storageFeeDrip
+  const realPayedFeeDrip = isBeAllPayed
+    ? '0x0'
+    : isBePayed
+    ? partPayedFeeDrip
+    : txFeeDrip
 
   const label = (
     <span className="flex items-center justify-between w-full">
@@ -57,20 +61,22 @@ function GasFee({isDapp, estimateRst}) {
       >
         <DisplayBalance
           id="realPayedFee"
-          balance={realPayedFee}
+          balance={realPayedFeeDrip || '0x0'}
           maxWidth={234}
           maxWidthStyle="max-w-[234px]"
           className="text-base mb-0.5"
-          symbol={networkTypeIsCfx ? 'CFX' : 'ETH'}
+          symbol={symbol}
+          decimals={decimals}
           initialFontSize={16}
         />
         <DisplayBalance
           id="txFee"
-          balance={txFee}
+          balance={txFeeDrip || '0x0'}
           maxWidth={300}
           maxWidthStyle="max-w-[300px]"
           className="!text-gray-40 line-through !font-normal mb-0.5"
-          symbol={networkTypeIsCfx ? 'CFX' : 'ETH'}
+          symbol={symbol}
+          decimals={decimals}
         />
         <span className="text-xs text-gray-60">{`${gasPrice} ${
           networkTypeIsCfx ? 'Drip' : 'Gwei'

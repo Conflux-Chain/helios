@@ -11,7 +11,7 @@ import {
   formatDecimalToHex,
   formatHexToDecimal,
   CFX_DECIMALS,
-  convertDataToValue,
+  ETH_DECIMALS,
 } from '@fluent-wallet/data-format'
 import useGlobalStore from '../../stores'
 
@@ -29,6 +29,7 @@ function EditGasFee() {
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
+  const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
 
   const params = {
     ...useTxParams(),
@@ -45,11 +46,6 @@ function EditGasFee() {
     setInputGasPrice(gasPrice)
     setInputNonce(nonce)
   }, [gasLimit, gasPrice, nonce])
-
-  const gasFee = convertDataToValue(gasFeeDrip || '0', CFX_DECIMALS)
-
-  const storageFee = convertDataToValue(storageFeeDrip || '0', CFX_DECIMALS)
-  const txFee = convertDataToValue(txFeeDrip || '0', CFX_DECIMALS)
 
   const onChangeGasPrice = gasPrice => {
     setInputGasPrice(gasPrice)
@@ -111,7 +107,8 @@ function EditGasFee() {
                 maxWidth={218}
                 maxWidthStyle="max-w-[218px]"
                 symbol={symbol}
-                balance={gasFee}
+                balance={gasFeeDrip || '0x0'}
+                decimals={decimals}
               />
             }
           />
@@ -159,7 +156,8 @@ function EditGasFee() {
                     maxWidth={218}
                     maxWidthStyle="max-w-[218px]"
                     symbol={symbol}
-                    balance={storageFee}
+                    balance={storageFeeDrip || '0x0'}
+                    decimals={decimals}
                   />
                 }
               />
@@ -188,7 +186,8 @@ function EditGasFee() {
                   maxWidthStyle="max-w-[218px]"
                   symbol={symbol}
                   initialFontSize={16}
-                  balance={txFee}
+                  balance={txFeeDrip || '0x0'}
+                  decimals={decimals}
                 />
               }
             />

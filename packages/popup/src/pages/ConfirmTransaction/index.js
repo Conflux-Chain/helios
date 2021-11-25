@@ -24,12 +24,13 @@ import {
   usePendingAuthReq,
   useNetworkTypeIsCfx,
 } from '../../hooks/useApi'
-import {request} from '../../utils'
+import {request, bn16} from '../../utils'
 import {AddressCard, InfoList, TransactionResult} from './components'
 import {TitleNav, GasFee, DappFooter} from '../../components'
 import {ROUTES, RPC_METHODS} from '../../constants'
 const {VIEW_DATA, HOME} = ROUTES
-const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION} = RPC_METHODS
+const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
+  RPC_METHODS
 
 function ConfirmTransition() {
   const {t} = useTranslation()
@@ -46,9 +47,11 @@ function ConfirmTransition() {
   const {
     gasPrice,
     gasLimit,
+    storageLimit,
     nonce,
     setGasPrice,
     setGasLimit,
+    setStorageLimit,
     setNonce,
     clearSendTransactionParams,
   } = useGlobalStore()
@@ -76,6 +79,7 @@ function ConfirmTransition() {
     gasPrice: formatDecimalToHex(gasPrice),
     gas: formatDecimalToHex(gasLimit),
     nonce: formatDecimalToHex(nonce),
+    storageLimit: formatDecimalToHex(storageLimit),
   }
   // user can edit the approve limit
   const viewData = useViewData(params)
@@ -86,6 +90,7 @@ function ConfirmTransition() {
   if (!params.gasPrice) delete params.gasPrice
   if (!params.nonce) delete params.nonce
   if (!params.gas) delete params.gas
+  if (!params.storageLimit) delete params.storageLimit
   if (!params.data) delete params.data
   const sendParams = [params]
 
@@ -111,6 +116,7 @@ function ConfirmTransition() {
     gasPrice: estimateGasPrice,
     gasLimit: estimateGasLimit,
     nonce: rpcNonce,
+    storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
 
   const errorMessage = useCheckBalanceAndGas(
@@ -126,6 +132,9 @@ function ConfirmTransition() {
     if (isDapp) {
       // store decimal number
       setGasLimit(formatHexToDecimal(tx.gas || estimateGasLimit || ''))
+      setStorageLimit(
+        formatHexToDecimal(tx.storageLimit || estimateStorageLimit || ''),
+      )
       setGasPrice(formatHexToDecimal(tx.gasPrice || estimateGasPrice || ''))
       setNonce(formatHexToDecimal(tx.nonce || rpcNonce || ''))
     }
@@ -134,17 +143,69 @@ function ConfirmTransition() {
     tx.gas,
     tx.nonce,
     tx.gasPrice,
+    tx.storageLimit,
     setGasPrice,
     setNonce,
     setGasLimit,
+    setStorageLimit,
     estimateGasPrice,
     estimateGasLimit,
+    estimateStorageLimit,
     rpcNonce,
   ])
 
-  const onSend = () => {
+  // check balance when click send button
+  const checkBalance = async () => {
+    const {from, gasPrice, gas, value, storageLimit} = params
+    const storageFeeDrip = bn16(storageLimit)
+      .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
+      .divn(1024)
+    const gasFeeDrip = bn16(gas).mul(bn16(gasPrice))
+    const txFeeDrip = gasFeeDrip.add(storageFeeDrip)
+    const {address: tokenAddress, decimals} = displayToken
+    try {
+      const balanceData = await request(WALLET_GET_BALANCE, {
+        users: [from],
+        tokens: isNativeToken ? ['0x0'] : ['0x0'].concat(tokenAddress),
+      })
+      const balance = balanceData?.[from]
+
+      if (isNativeToken) {
+        if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
+          return 'balance is not enough'
+        } else {
+          return ''
+        }
+      } else {
+        if (
+          bn16(balance[tokenAddress]).lt(
+            bn16(convertValueToData(displayValue, decimals)),
+          )
+        ) {
+          return 'balance is not enough'
+        } else if (bn16(balance['0x0']).lt(txFeeDrip)) {
+          return 'gas fee is not enough'
+        } else {
+          return ''
+        }
+      }
+    } catch (err) {
+      console.error(err)
+      return ''
+    }
+  }
+
+  const onSend = async () => {
     if (sendingTransaction) return
     setSendingTransaction(true)
+    if (isSendToken) {
+      const error = await checkBalance()
+      if (error) {
+        setSendingTransaction(false)
+        setBalanceError(error)
+        return
+      }
+    }
     request(SEND_TRANSACTION, [params])
       .then(result => {
         setSendingTransaction(false)

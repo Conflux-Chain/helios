@@ -38,6 +38,7 @@ function SendTransaction() {
     setGasPrice,
     setGasLimit,
     setNonce,
+    setStorageLimit,
     clearSendTransactionParams,
   } = useGlobalStore()
   const {name, icon, ticker, netId} = useCurrentNetwork()
@@ -56,12 +57,23 @@ function SendTransaction() {
         ? {[tokenAddress]: convertValueToData(sendAmount, decimals)}
         : {},
     ) || {}
-  const {gasPrice, gasLimit, nonce, nativeMaxDrip} = estimateRst
+  const {gasPrice, gasLimit, storageCollateralized, nonce, nativeMaxDrip} =
+    estimateRst
   useEffect(() => {
     setGasPrice(formatHexToDecimal(gasPrice))
     setGasLimit(formatHexToDecimal(gasLimit))
     setNonce(formatHexToDecimal(nonce))
-  }, [gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce])
+    setStorageLimit(formatHexToDecimal(storageCollateralized))
+  }, [
+    gasPrice,
+    gasLimit,
+    nonce,
+    storageCollateralized,
+    setGasPrice,
+    setGasLimit,
+    setNonce,
+    setStorageLimit,
+  ])
   const errorMessage = useCheckBalanceAndGas(estimateRst, sendAmount)
   useEffect(() => {
     setBalanceError(errorMessage)

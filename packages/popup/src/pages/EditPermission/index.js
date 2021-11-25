@@ -41,7 +41,7 @@ function EditPermission() {
   const onChangeCustomInput = e => {
     const value = e.target.value
     setCustomLimitErr(
-      value && new Big(value).gt(0) ? '' : t('customLimitErr', {unit: symbol}),
+      value && new Big(value).gte(0) ? '' : t('customLimitErr', {unit: symbol}),
     )
 
     setCustomLimitValue(value)
@@ -104,7 +104,6 @@ function EditPermission() {
                   <div className="flex">
                     <DisplayBalance
                       balance={decodeAllowance}
-                      decimals={decimals}
                       maxWidth={252}
                       maxWidthStyle="max-w-[252px]"
                     />
