@@ -24,12 +24,13 @@ import {
   usePendingAuthReq,
   useNetworkTypeIsCfx,
 } from '../../hooks/useApi'
-import {request} from '../../utils'
+import {request, bn16} from '../../utils'
 import {AddressCard, InfoList, TransactionResult} from './components'
 import {TitleNav, GasFee, DappFooter} from '../../components'
 import {ROUTES, RPC_METHODS} from '../../constants'
 const {VIEW_DATA, HOME} = ROUTES
-const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION} = RPC_METHODS
+const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
+  RPC_METHODS
 
 function ConfirmTransition() {
   const {t} = useTranslation()
@@ -142,8 +143,44 @@ function ConfirmTransition() {
     rpcNonce,
   ])
 
-  const onSend = () => {
+  // check balance when click send button
+  const checkBalance = async () => {
+    const {from, gasPrice, gas, value} = params
+    const {address: tokenAddress, decimals} = displayToken
+    const balanceData = await request(WALLET_GET_BALANCE, {
+      users: [from],
+      tokens: isNativeToken ? ['0x0'] : ['0x0'].concat(tokenAddress),
+    })
+    const balance = balanceData?.[from]
+
+    if (isNativeToken) {
+      if (
+        bn16(balance['0x0']).gte(bn16(value).add(bn16(gasPrice).mul(bn16(gas))))
+      ) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      if (
+        bn16(balance[tokenAddress]).gte(
+          bn16(convertValueToData(displayValue, decimals)),
+        ) ||
+        bn16(balance['0x0']).gte(bn16(gasPrice).mul(bn16(gas)))
+      ) {
+        return false
+      } else {
+        return true
+      }
+    }
+  }
+
+  const onSend = async () => {
     if (sendingTransaction) return
+    if (isSendToken) {
+      const balanceIsEnough = await checkBalance()
+      if (!balanceIsEnough) return setBalanceError('balance is not enough')
+    }
     setSendingTransaction(true)
     request(SEND_TRANSACTION, [params])
       .then(result => {
