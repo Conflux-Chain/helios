@@ -1,5 +1,5 @@
 import {useTranslation} from 'react-i18next'
-import {formatBalance} from '@fluent-wallet/data-format'
+import {CFX_DECIMALS} from '@fluent-wallet/data-format'
 import {
   DappFooter,
   CompWithLabel,
@@ -46,9 +46,10 @@ function RequestSignature() {
           />
           <div className="flex items-center justify-between">
             <DisplayBalance
-              balance={formatBalance(balanceData?.[address]?.['0x0'])}
+              balance={balanceData?.[address]?.['0x0'] || '0x0'}
               maxWidthStyle="max-w-[148px]"
               maxWidth={148}
+              decimals={CFX_DECIMALS}
             />
             <span className="text-gray-60 text-xs ml-0.5">
               {app?.currentNetwork?.ticker?.name || ''}

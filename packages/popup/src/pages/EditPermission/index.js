@@ -104,7 +104,6 @@ function EditPermission() {
                   <div className="flex">
                     <DisplayBalance
                       balance={decodeAllowance}
-                      decimals={decimals}
                       maxWidth={252}
                       maxWidthStyle="max-w-[252px]"
                     />

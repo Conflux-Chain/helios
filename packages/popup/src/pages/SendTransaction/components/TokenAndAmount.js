@@ -81,6 +81,7 @@ function TokenAndAmount({
           maxWidth={140}
           maxWidthStyle="max-w-[140px]"
           balance={balance}
+          decimals={decimals}
           className="mx-1 text-xs"
           initialFontSize={12}
           symbol={symbol}

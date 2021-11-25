@@ -48,7 +48,7 @@ function AccountItem({
             <p className="text-xs text-gray-40 ">{nickname}</p>
             <div className="flex w-full">
               <DisplayBalance
-                balance={currentAddress?.nativeBalance || '0'}
+                balance={currentAddress?.nativeBalance || '0x0'}
                 maxWidthStyle="max-w-[270px]"
                 maxWidth={270}
                 decimals={decimals}
