@@ -47,9 +47,11 @@ function ConfirmTransition() {
   const {
     gasPrice,
     gasLimit,
+    storageLimit,
     nonce,
     setGasPrice,
     setGasLimit,
+    setStorageLimit,
     setNonce,
     clearSendTransactionParams,
   } = useGlobalStore()
@@ -77,6 +79,7 @@ function ConfirmTransition() {
     gasPrice: formatDecimalToHex(gasPrice),
     gas: formatDecimalToHex(gasLimit),
     nonce: formatDecimalToHex(nonce),
+    storageLimit: formatDecimalToHex(storageLimit),
   }
   // user can edit the approve limit
   const viewData = useViewData(params)
@@ -87,6 +90,7 @@ function ConfirmTransition() {
   if (!params.gasPrice) delete params.gasPrice
   if (!params.nonce) delete params.nonce
   if (!params.gas) delete params.gas
+  if (!params.storageLimit) delete params.storageLimit
   if (!params.data) delete params.data
   const sendParams = [params]
 
@@ -112,6 +116,7 @@ function ConfirmTransition() {
     gasPrice: estimateGasPrice,
     gasLimit: estimateGasLimit,
     nonce: rpcNonce,
+    storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
 
   const errorMessage = useCheckBalanceAndGas(
@@ -127,6 +132,9 @@ function ConfirmTransition() {
     if (isDapp) {
       // store decimal number
       setGasLimit(formatHexToDecimal(tx.gas || estimateGasLimit || ''))
+      setStorageLimit(
+        formatHexToDecimal(tx.storageLimit || estimateStorageLimit || ''),
+      )
       setGasPrice(formatHexToDecimal(tx.gasPrice || estimateGasPrice || ''))
       setNonce(formatHexToDecimal(tx.nonce || rpcNonce || ''))
     }
@@ -135,11 +143,14 @@ function ConfirmTransition() {
     tx.gas,
     tx.nonce,
     tx.gasPrice,
+    tx.storageLimit,
     setGasPrice,
     setNonce,
     setGasLimit,
+    setStorageLimit,
     estimateGasPrice,
     estimateGasLimit,
+    estimateStorageLimit,
     rpcNonce,
   ])
 
@@ -169,8 +180,7 @@ function ConfirmTransition() {
         if (
           bn16(balance[tokenAddress]).lt(
             bn16(convertValueToData(displayValue, decimals)),
-          ) ||
-          bn16(balance['0x0']).gte(txFeeDrip)
+          )
         ) {
           return 'balance is not enough'
         } else if (bn16(balance['0x0']).lt(txFeeDrip)) {
