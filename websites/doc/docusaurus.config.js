@@ -28,7 +28,7 @@ module.exports = {
         // },
         {
           type: 'doc',
-          docId: 'rpc',
+          docId: 'provider-rpc',
           position: 'left',
           label: 'Docs',
           // to: 'docs/rpc',
@@ -53,7 +53,7 @@ module.exports = {
             },
             {
               label: 'RPC',
-              to: '/docs/rpc',
+              to: '/docs/provider-rpc',
             },
           ],
         },

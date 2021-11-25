@@ -48,11 +48,11 @@ function RequestSignature() {
             <DisplayBalance
               balance={balanceData?.[address]?.['0x0'] || '0x0'}
               maxWidthStyle="max-w-[148px]"
-              maxWidth={148}
+              maxWidth={140}
               decimals={CFX_DECIMALS}
             />
             <span className="text-gray-60 text-xs ml-0.5">
-              {app?.currentNetwork?.ticker?.name || ''}
+              {app?.currentNetwork?.ticker?.symbol || ''}
             </span>
           </div>
         </div>

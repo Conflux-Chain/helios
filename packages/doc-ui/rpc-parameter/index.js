@@ -1,11 +1,13 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/accessible-emoji */
 /* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable import/no-unresolved */
 import React from 'react'
 import PropTypes from 'prop-types'
 import {useRPC} from '@fluent-wallet/doc-use-rpc'
 import {useSpec} from '@fluent-wallet/doc-use-spec'
 import {useToggle} from 'react-use'
+import useBaseUrl from '@docusaurus/useBaseUrl'
 
 const Var = 'var'
 
@@ -73,11 +75,17 @@ export const Parameters = ({parameters, rpcName}) => {
   let params = parameters
   const {schemas} = useRPC(rpcName)
   const {doc} = useSpec(rpcName, {schema: schemas?.input})
+  const tryUrl = useBaseUrl(`/docs/try-rpc#${rpcName}`)
   params = doc || params
 
   return (
     <section className="parameters">
-      <h4>Parameters</h4>
+      <div style={{display: 'flex', flexDirection: 'row'}}>
+        <h4>Parameters</h4>
+        <a href={tryUrl} target="_blank" rel="noreferrer">
+          💥Try
+        </a>
+      </div>
       {renderParams(rpcName, params)}
     </section>
   )

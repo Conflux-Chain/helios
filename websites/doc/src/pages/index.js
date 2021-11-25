@@ -5,6 +5,7 @@ import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import styles from './index.module.css'
 import HomepageFeatures from '../components/HomepageFeatures'
+import useBaseUrl from '@docusaurus/useBaseUrl'
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext()
@@ -27,6 +28,8 @@ function HomepageHeader() {
 }
 
 export default function Home() {
+  const docUrl = useBaseUrl('/docs/provider-rpc')
+  if (typeof window !== 'undefined') docUrl && location?.replace?.(docUrl)
   const {siteConfig} = useDocusaurusContext()
   return (
     <Layout
