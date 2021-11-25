@@ -24,7 +24,7 @@ function PlaintextMessage({message}) {
   )
 }
 PlaintextMessage.propTypes = {
-  message: PropTypes.object.isRequired,
+  message: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 }
 
 export default PlaintextMessage
