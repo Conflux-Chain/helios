@@ -1,5 +1,5 @@
-import {map, dbid, or} from '@fluent-wallet/spec'
-import {schemas as txSchema} from '@fluent-wallet/cfx_sign-transaction'
+import {map, dbid, or, cat} from '@fluent-wallet/spec'
+import {txSchema} from '@fluent-wallet/cfx_sign-transaction'
 import {getTxHashFromRawTx} from '@fluent-wallet/signature'
 
 export const NAME = 'cfx_sendTransaction'
@@ -7,8 +7,8 @@ export const NAME = 'cfx_sendTransaction'
 export const schemas = {
   input: [
     or,
-    txSchema.input,
-    [map, {closed: true}, ['authReqId', dbid], ['tx', txSchema.input]],
+    [cat, txSchema],
+    [map, {closed: true}, ['authReqId', dbid], ['tx', [cat, txSchema]]],
   ],
 }
 
@@ -16,9 +16,9 @@ export const permissions = {
   external: ['popup', 'inpage'],
   methods: [
     'cfx_signTransaction',
-    'cfx_sendRawTransaction',
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
+    'wallet_handleUnfinishedCFXTx',
   ],
   db: [
     'getAuthReqById',
@@ -40,9 +40,9 @@ export const main = async ({
   },
   rpcs: {
     cfx_signTransaction,
-    cfx_sendRawTransaction,
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
+    wallet_handleUnfinishedCFXTx,
   },
   params,
   _inpage,
@@ -60,6 +60,7 @@ export const main = async ({
     )
       throw InvalidParams(`Invalid from address in tx ${from}`)
 
+    delete params[0].nonce
     // try sign tx
     await cfx_signTransaction(params)
 
@@ -82,32 +83,52 @@ export const main = async ({
     address: tx[0].from,
   })
   if (!addr) throw InvalidParams(`Invalid from address ${tx[0].from}`)
-  const rawtx = await cfx_signTransaction(tx)
+  const signed = await cfx_signTransaction(
+    tx.concat({
+      returnTxMeta: true,
+    }),
+  )
 
-  if (!rawtx) throw Server(`Server error while signning tx`)
+  if (!signed) throw Server(`Server error while signning tx`)
+  const {raw: rawtx, txMeta} = signed
 
   const txhash = getTxHashFromRawTx(rawtx)
   const duptx = getAddrTxByHash({addressId: addr.eid, txhash})
 
   if (duptx) throw InvalidParams('duplicate tx')
 
-  t([
-    {eid: -1, tx: {payload: tx[0], hash: txhash, raw: rawtx, status: 0}},
-    {eid: addr.eid, address: {tx: -1}},
-    authReq && {eid: authReq.app.eid, app: {tx: -1}},
+  const {
+    tempids: {newTxId},
+  } = t([
+    {
+      eid: 'newTxId',
+      tx: {payload: txMeta, hash: txhash, raw: rawtx, status: 0},
+    },
+    {eid: addr.eid, address: {tx: 'newTxId'}},
+    authReq && {eid: authReq.app.eid, app: {tx: 'newTxId'}},
   ])
 
-  const rst = await cfx_sendRawTransaction([rawtx])
-
-  if (rst) t([{eid: {tx: {hash: txhash}}, tx: {status: 1}}])
-  debugger
-
-  if (params.authReqId) {
-    return await wallet_userApprovedAuthRequest({
-      authReqId: params.authReqId,
-      res: rst,
+  return await new Promise(resolve => {
+    wallet_handleUnfinishedCFXTx({
+      tx: newTxId,
+      address: addr.eid,
+      okCb: rst => {
+        if (params.authReqId) {
+          return wallet_userApprovedAuthRequest({
+            authReqId: params.authReqId,
+            res: rst,
+          }).then(resolve)
+        }
+        resolve(rst)
+      },
+      failedCb: err => {
+        if (params.authReqId) {
+          return wallet_userApprovedAuthRequest({
+            authReqId: params.authReqId,
+            res: err,
+          }).then(resolve)
+        }
+      },
     })
-  }
-
-  return rst
+  })
 }

@@ -98,6 +98,8 @@
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce",
     "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest",
     "@fluent-wallet/wallet_get-permissions": "workspace:packages/rpcs/wallet_getPermissions",
+    "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*",
+    "@fluent-wallet/wallet_handle-unfinished-txs": "workspace:*",
     "@fluent-wallet/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress",
     "@fluent-wallet/wallet_import-all": "workspace:packages/rpcs/wallet_importAll",
     "@fluent-wallet/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey",

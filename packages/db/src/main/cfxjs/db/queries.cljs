@@ -459,6 +459,46 @@
           addressId txhash)
        (e :tx)))
 
+(defn get-unfinished-tx
+  "Get tx that is not failed or confirmed"
+  []
+  (->> (q '[:find ?tx ?addr ?net
+            :where
+            [?tx :tx/status ?status]
+            [(>= ?status 0)]
+            [(< ?status 5)]
+            [?addr :address/tx ?tx]
+            [?net :network/address ?addr]])
+       (mapv (fn [[tx-id addr-id net-id]]
+               ;; {:tx      (e :tx tx-id)
+               ;;  :address (e :address addr-id)}
+               {:tx      tx-id
+                :network (e :network net-id)
+                :address (e :address addr-id)}))))
+
+(defn set-tx-skipped [{:keys [hash]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status -2}]))
+(defn set-tx-failed [{:keys [hash error]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}]))
+(defn set-tx-unsent [{:keys [hash]}]
+  (t [{:db/id [:tx/hash hash] :tx/status 0}]))
+(defn set-tx-sending [{:keys [hash]}]
+  (t [{:db/id [:tx/hash hash] :tx/status 1}]))
+(defn set-tx-pending [{:keys [hash]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status 2}]))
+(defn set-tx-packaged [{:keys [hash]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status 3}]))
+(defn set-tx-executed [{:keys [hash receipt]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}]))
+(defn set-tx-confirmed [{:keys [hash]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status 5}]))
+
 ;;; UI QUERIES
 (defn home-page-assets
   ([] (home-page-assets {}))
@@ -555,6 +595,15 @@
               :getFromAddress                  get-from-address
               :getAddrFromNetworkAndAddress    get-addr-from-network-and-address
               :getAddrTxByHash                 get-addr-tx-by-hash
+              :getUnfinishedTx                 get-unfinished-tx
+              :setTxSkipped                    set-tx-skipped
+              :setTxFailed                     set-tx-failed
+              :setTxSending                    set-tx-sending
+              :setTxPending                    set-tx-pending
+              :setTxPackaged                   set-tx-packaged
+              :setTxExecuted                   set-tx-executed
+              :setTxConfirmed                  set-tx-confirmed
+              :setTxUnsent                     set-tx-unsent
 
               :queryhomePageAssets        home-page-assets
               :queryaddTokenList          get-add-token-list
@@ -577,3 +626,11 @@
               (comp clj->js v j->c))))
    conn
    queries))
+
+(comment
+  (tap> (->> (q '[:find [?tx ...]
+                  :where
+                  [?tx :tx/payload _]])
+             first
+             (e :tx)
+             .toMap)))

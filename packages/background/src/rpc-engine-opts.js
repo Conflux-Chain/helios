@@ -3,6 +3,8 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletHandleUnfinishedTxs from '@fluent-wallet/wallet_handle-unfinished-txs'
+import * as walletHandleUnfinishedCFXTx from '@fluent-wallet/wallet_handle-unfinished-cfx-tx'
 import * as cfxGetBlockByBlockNumber from '@fluent-wallet/cfx_get-block-by-block-number'
 import * as cfxGetAccountPendingInfo from '@fluent-wallet/cfx_get-account-pending-info'
 import * as cfxGetAccountPendingTransactions from '@fluent-wallet/cfx_get-account-pending-transactions'
@@ -272,5 +274,8 @@ export const rpcEngineOpts = {
     personalSign,
     ethTypedSignV4,
     cfxTypedSignV4,
+
+    walletHandleUnfinishedCFXTx,
+    walletHandleUnfinishedTxs,
   ],
 }

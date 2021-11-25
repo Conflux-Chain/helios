@@ -76,7 +76,7 @@ export default defMiddleware(({tx: {map, filter, comp}, stream: {resolve}}) => [
       const c = getCache({req, conf: cache})
 
       // cache found
-      if (c) {
+      if (c !== undefined) {
         resC.write({result: c, id: req.id, jsonrpc})
         return
       }

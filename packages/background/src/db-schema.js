@@ -134,15 +134,17 @@ const schema = {
 
   // ## tx
   tx: {
-    payload: {doc: 'tx payload as a object'},
+    payload: {doc: 'tx payload as an object'},
     raw: {doc: 'raw tx hash'},
     hash: {
       doc: 'tx hash',
       identity: true,
     },
     status: {
-      doc: 'int, tx status, -1 failed, 0 unsent, 1 sending, 2 pending, 3 executed, 4 confirmed',
+      doc: 'int, tx status, -2 skipped, -1 failed, 0 unsent, 1 sending, 2 pending, 3 packaged, 4 executed, 5 confirmed',
     },
+    receipt: {doc: 'receipt as an object'},
+    err: {doc: 'basic error type/info'},
   },
 
   // ## dapp interaction

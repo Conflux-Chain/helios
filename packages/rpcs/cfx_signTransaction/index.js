@@ -4,8 +4,9 @@ import {
   Bytes,
   cat,
   chainId,
-  zeroOrOne,
+  boolean,
   epochRef,
+  zeroOrOne,
   map,
   Uint,
 } from '@fluent-wallet/spec'
@@ -13,24 +14,34 @@ import {cfxSignTransaction} from '@fluent-wallet/signature'
 
 export const NAME = 'cfx_signTransaction'
 
+export const txSchema = [
+  map,
+  {closed: true},
+  ['from', base32UserAddress],
+  ['to', {optional: true}, base32Address],
+  ['value', {optional: true}, Uint],
+  ['nonce', {optional: true}, Uint],
+  ['data', {optional: true}, Bytes],
+  ['gas', {optional: true}, Uint],
+  ['gasPrice', {optional: true}, Uint],
+  ['storageLimit', {optional: true}, Uint],
+  ['chainId', {optional: true}, chainId],
+  ['epochHeight', {optional: true}, Uint],
+]
+
 export const schemas = {
   input: [
     cat,
+    txSchema,
     [
-      map,
-      {closed: true},
-      ['from', base32UserAddress],
-      ['to', {optional: true}, base32Address],
-      ['value', {optional: true}, Uint],
-      ['nonce', {optional: true}, Uint],
-      ['data', {optional: true}, Bytes],
-      ['gas', {optional: true}, Uint],
-      ['gasPrice', {optional: true}, Uint],
-      ['storageLimit', {optional: true}, Uint],
-      ['chainId', {optional: true}, chainId],
-      ['epochHeight', {optional: true}, Uint],
+      zeroOrOne,
+      [
+        map,
+        {closed: true},
+        ['epoch', {optional: true}, epochRef],
+        ['returnTxMeta', {optional: true}, boolean],
+      ],
     ],
-    [zeroOrOne, epochRef],
   ],
 }
 
@@ -56,9 +67,10 @@ export const main = async ({
     cfx_getNextNonce,
     wallet_detectAddressType,
   },
-  params: [tx, epoch],
+  params: [tx, opts = {}],
   network,
 }) => {
+  const {epoch, returnTxMeta} = opts
   let newTx = {...tx}
   if (newTx.chainId && newTx.chainId !== network.chainId)
     throw InvalidParams(`Invalid chainId ${chainId}`)
@@ -114,5 +126,11 @@ export const main = async ({
 
   const pk = await wallet_getAddressPrivateKey({addressId: fromAddr.eid})
 
-  return cfxSignTransaction(newTx, pk, network.netId)
+  const raw = cfxSignTransaction(newTx, pk, network.netId)
+
+  if (returnTxMeta) {
+    return {txMeta: newTx, raw}
+  }
+
+  return raw
 }
