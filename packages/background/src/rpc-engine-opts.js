@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as cfxGetBlockByBlockNumber from '@fluent-wallet/cfx_get-block-by-block-number'
 import * as cfxGetAccountPendingInfo from '@fluent-wallet/cfx_get-account-pending-info'
 import * as cfxGetAccountPendingTransactions from '@fluent-wallet/cfx_get-account-pending-transactions'
 import * as cfxGetPoSEconomics from '@fluent-wallet/cfx_get-pos-economics'
@@ -225,6 +226,7 @@ export const rpcEngineOpts = {
     cfxGetTransactionByHash,
     cfxGetTransactionReceipt,
     cfxGetVoteList,
+    cfxGetBlockByBlockNumber,
     cfxGetAccountPendingInfo,
     cfxGetAccountPendingTransactions,
     cfxGetPoSEconomics,

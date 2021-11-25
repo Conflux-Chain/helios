@@ -93,6 +93,7 @@ module.exports = {
     '/packages/workspace-tools',
     '/packages/docusaurus-plugin',
     '/packages/doc-ui',
+    '/packages/rpcs/*/doc.js',
     '/packages/ext-reload',
     '/packages/test-helpers',
     '.*.test.jsx?', // eslint-disable-line no-useless-escape
