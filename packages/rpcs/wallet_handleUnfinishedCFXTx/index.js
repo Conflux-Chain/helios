@@ -1,8 +1,9 @@
 import {mapp} from '@fluent-wallet/spec'
 import {stream, resolve, CloseMode} from '@thi.ng/rstream'
-import {sideEffect, map} from '@fluent-wallet/transducers'
+import {sideEffect, map, keep} from '@fluent-wallet/transducers'
 import {processError} from '@fluent-wallet/conflux-tx-error'
 import {BigNumber} from '@ethersproject/bignumber'
+import {identity} from '@fluent-wallet/compose'
 
 export const NAME = 'wallet_handleUnfinishedCFXTx'
 
@@ -17,6 +18,8 @@ function defstream(id, src) {
   return s
 }
 
+let Ext
+
 export const schemas = {
   input: [mapp],
 }
@@ -29,6 +32,7 @@ export const permissions = {
     'cfx_getTransactionByHash',
     'cfx_getTransactionReceipt',
     'wallet_handleUnfinishedCFXTx',
+    'wallet_getExplorerUrl',
     'cfx_getNextNonce',
   ],
   db: [
@@ -52,6 +56,7 @@ export const main = ({
     cfx_getTransactionByHash,
     cfx_getTransactionReceipt,
     cfx_getNextNonce,
+    wallet_getExplorerUrl,
     wallet_handleUnfinishedCFXTx,
   },
   db: {
@@ -210,16 +215,37 @@ export const main = ({
     s.map(() => cfx_epochNumber(['latest_confirmed']))
       .subscribe(resolve({fail: keepTrack}))
       .transform(
-        sideEffect(n => {
+        map(n => {
           if (
             n &&
             BigNumber.from(n).gte(BigNumber.from(tx.receipt.epochNumber))
           ) {
             setTxConfirmed({hash})
-            return sdone()
+            return true
           }
           keepTrack()
+          return null
         }),
+        keep(),
+        map(() => wallet_getExplorerUrl({transaction: [hash]})),
+      )
+      .subscribe(resolve({fail: identity}))
+      .transform(
+        sideEffect(async ({transaction: [txUrl]}) => {
+          const ext = await (Ext
+            ? Promise.resolve(Ext)
+            : import('@fluent-wallet/webextension'))
+          if (!Ext) Ext = ext
+          Ext.notification.create({
+            id: txUrl,
+            title: 'Confirmed transaction',
+            message: `Transaction ${parseInt(
+              tx.payload.nonce,
+              16,
+            )} confirmed! ${txUrl?.length ? 'View on Explorer' : ''}`,
+          })
+        }),
+        sideEffect(sdone),
       )
     return
   }

@@ -5759,6 +5759,7 @@ __metadata:
     "@fluent-wallet/conflux-tx-error": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
     "@fluent-wallet/transducers": "workspace:*"
+    "@fluent-wallet/webextension": "workspace:*"
     "@thi.ng/rstream": 6.0.21
   languageName: unknown
   linkType: soft
@@ -6030,7 +6031,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/webextension@workspace:packages/webextension":
+"@fluent-wallet/webextension@workspace:*, @fluent-wallet/webextension@workspace:packages/webextension":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/webextension@workspace:packages/webextension"
   dependencies:
@@ -19391,6 +19392,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
+    "@fluent-wallet/wallet_get-explorer-url": "workspace:*"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
     "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest"

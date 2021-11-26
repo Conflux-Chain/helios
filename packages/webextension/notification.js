@@ -1,15 +1,27 @@
 import browser from 'webextension-polyfill'
 
-export const create = (options = {}) => {
+function notificationOnClicked(notificationId) {
+  if (notificationId.startsWith('https://')) {
+    browser.tabs.create({url: notificationId})
+  }
+}
+
+function subscribeToNotificationClicked() {
+  if (!browser.notifications.onClicked.hasListener(notificationOnClicked)) {
+    browser.notifications.onClicked.addListener(notificationOnClicked)
+  }
+}
+
+export function create(options = {}) {
   const {
-    id = '__FLUENT_NOTIFICATION__',
+    id,
     type = 'basic',
     message = '',
     title = 'Fluent wallet',
     iconUrl = 'images/icon-64.png',
   } = options
-  return browser.notifications.create(id, {
-    ...options,
+  subscribeToNotificationClicked()
+  return browser.notifications.create(id ?? undefined, {
     type,
     message,
     title,

@@ -39,7 +39,7 @@ export const permissions = {
 }
 
 export const main = ({
-  params: {address, contract, token, transaction},
+  params: {address = [], contract = [], token = [], transaction = []},
   network,
 }) => {
   const {scanUrl} = network

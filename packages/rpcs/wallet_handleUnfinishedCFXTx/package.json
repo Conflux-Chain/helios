@@ -10,6 +10,7 @@
     "@fluent-wallet/conflux-tx-error": "workspace:*",
     "@fluent-wallet/spec": "workspace:*",
     "@fluent-wallet/transducers": "workspace:*",
+    "@fluent-wallet/webextension": "workspace:*",
     "@thi.ng/rstream": "6.0.21"
   }
 }
