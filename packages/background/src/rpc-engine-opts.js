@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletGetExplorerUrl from '@fluent-wallet/wallet_get-explorer-url'
 import * as cfxGetNextUsableNonce from '@fluent-wallet/cfx_get-next-usable-nonce'
 import * as walletHandleUnfinishedTxs from '@fluent-wallet/wallet_handle-unfinished-txs'
 import * as walletHandleUnfinishedCFXTx from '@fluent-wallet/wallet_handle-unfinished-cfx-tx'
@@ -206,6 +207,7 @@ export const rpcEngineOpts = {
     walletGetAccountAddressByNetwork,
     walletRefetchTokenList,
     walletUpdateTokenList,
+    walletGetExplorerUrl,
 
     walletWatchAsset,
     unwalletWatchAsset,
