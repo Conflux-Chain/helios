@@ -2,9 +2,10 @@
 import {default as OriginBig} from 'big.js'
 import BN from 'bn.js'
 import {stripHexPrefix, isHexPrefixed, addHexPrefix} from '@fluent-wallet/utils'
+OriginBig.DP = 50
 OriginBig.RM = 0
-OriginBig.NE = -19
-OriginBig.PE = 40
+OriginBig.NE = -50
+OriginBig.PE = 1000
 
 export const Big = OriginBig
 export const CFX_DECIMALS = 18
