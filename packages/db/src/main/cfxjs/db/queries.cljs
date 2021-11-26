@@ -459,22 +459,31 @@
           addressId txhash)
        (e :tx)))
 
-(defn get-unfinished-tx
+(defn get-unfinished-tx-raw
   "Get tx that is not failed or confirmed"
   []
-  (->> (q '[:find ?tx ?addr ?net
-            :where
-            [?tx :tx/status ?status]
-            [(>= ?status 0)]
-            [(< ?status 5)]
-            [?addr :address/tx ?tx]
-            [?net :network/address ?addr]])
+  (q '[:find ?tx ?addr ?net
+       :where
+       [?tx :tx/status ?status]
+       [(>= ?status 0)]
+       [(< ?status 5)]
+       [?addr :address/tx ?tx]
+       [?net :network/address ?addr]]))
+
+(defn get-unfinished-tx []
+  (->> (get-unfinished-tx-raw)
        (mapv (fn [[tx-id addr-id net-id]]
                ;; {:tx      (e :tx tx-id)
                ;;  :address (e :address addr-id)}
                {:tx      tx-id
                 :network (e :network net-id)
                 :address (e :address addr-id)}))))
+
+(defn get-unfinished-tx-count
+  "Get count of txs that is not failed or confirmed"
+  []
+  (->> (get-unfinished-tx-raw)
+       count))
 
 (defn set-tx-skipped [{:keys [hash]}]
   (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
@@ -596,6 +605,7 @@
               :getAddrFromNetworkAndAddress    get-addr-from-network-and-address
               :getAddrTxByHash                 get-addr-tx-by-hash
               :getUnfinishedTx                 get-unfinished-tx
+              :getUnfinishedTxCount            get-unfinished-tx-count
               :setTxSkipped                    set-tx-skipped
               :setTxFailed                     set-tx-failed
               :setTxSending                    set-tx-sending

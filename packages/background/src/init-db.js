@@ -84,7 +84,7 @@ function initNetwork(d) {
         chainId: CFX_MAINNET_CHAINID,
         netId: CFX_MAINNET_NETID,
         selected: true,
-        cacheTime: 500,
+        cacheTime: 1000,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
         ticker: {
           name: CFX_MAINNET_CURRENCY_NAME,
@@ -110,7 +110,7 @@ function initNetwork(d) {
         chainId: CFX_TESTNET_CHAINID,
         netId: CFX_TESTNET_NETID,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
-        cacheTime: 500,
+        cacheTime: 1000,
         ticker: {
           name: CFX_TESTNET_CURRENCY_NAME,
           symbol: CFX_TESTNET_CURRENCY_SYMBOL,

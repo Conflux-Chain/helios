@@ -21,7 +21,8 @@ export const main = ({
     wallet_handleUnfinishedCFXTx, // wallet_handleUnfinishedETHTx
   },
 }) => {
-  getUnfinishedTx().forEach(({tx, address, network}) => {
+  const txs = getUnfinishedTx()
+  txs.forEach(({tx, address, network}) => {
     if (network.type === 'cfx') {
       try {
         wallet_handleUnfinishedCFXTx({network}, {tx, address: address.eid})

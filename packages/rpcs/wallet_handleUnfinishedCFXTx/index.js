@@ -1,20 +1,26 @@
 import {mapp} from '@fluent-wallet/spec'
 import {stream, resolve, CloseMode} from '@thi.ng/rstream'
-import {sideEffect, map, keep} from '@fluent-wallet/transducers'
+import {
+  sideEffect,
+  map,
+  keep,
+  multiplexObj,
+  comp,
+} from '@fluent-wallet/transducers'
 import {processError} from '@fluent-wallet/conflux-tx-error'
 import {BigNumber} from '@ethersproject/bignumber'
 import {identity} from '@fluent-wallet/compose'
 
 export const NAME = 'wallet_handleUnfinishedCFXTx'
 
-function defstream(id, src) {
+function defs(...args) {
   const s = stream({
-    id,
+    id: args.length === 2 ? args[0] : undefined,
     closeIn: CloseMode.FIRST,
     closeOut: false,
     cache: true,
   })
-  s.next(src)
+  s.next(args.length === 2 ? args[1] : args[0])
   return s
 }
 
@@ -27,6 +33,12 @@ function getExt() {
         Ext = ext
         return ext
       })
+}
+
+function updateBadge(count) {
+  return getExt().then(ext =>
+    count > 0 ? ext.badge.set({text: count}) : ext.badge.clear(),
+  )
 }
 
 export const schemas = {
@@ -45,6 +57,7 @@ export const permissions = {
     'cfx_getNextNonce',
   ],
   db: [
+    'getUnfinishedTxCount',
     'getAddressById',
     'getTxById',
     'setTxSkipped',
@@ -69,6 +82,7 @@ export const main = ({
     wallet_handleUnfinishedCFXTx,
   },
   db: {
+    getUnfinishedTxCount,
     getAddressById,
     getTxById,
     setTxSkipped,
@@ -85,7 +99,7 @@ export const main = ({
   tx = getTxById(tx)
   address = getAddressById(address)
   const {status, hash, raw} = tx
-  const s = defstream(hash, {tx, address})
+  const s = defs(hash, {tx, address})
   const sdone = () => s.done()
   const keepTrack = () => {
     sdone()
@@ -95,9 +109,8 @@ export const main = ({
   // unsent
   if (status === 0) {
     s.transform(
-      sideEffect(() => {
-        setTxSending({hash})
-      }),
+      sideEffect(() => setTxSending({hash})),
+      sideEffect(() => updateBadge(getUnfinishedTxCount())),
     )
       .map(() => {
         return cfx_sendRawTransaction({errorFallThrough: true}, [raw])
@@ -105,40 +118,58 @@ export const main = ({
       .subscribe(
         resolve({
           fail: err => {
+            // failed to send
             setTxUnsent({hash})
-            const processedErr = processError(err)
-            if (processedErr.shouldDiscard) {
-              delete processedErr.shouldDiscard
-              const [errorType] = Object.keys(processedErr)
-              setTxFailed({hash, error: errorType})
-              getExt().then(ext =>
-                ext.notifications.create(hash, {
-                  title: 'Failed transaction',
-                  message: `Transaction ${parseInt(
-                    tx.payload.nonce,
-                    16,
-                  )} failed! ${err?.message || ''}`,
-                }),
-              )
-              if (typeof failedCb === 'function') failedCb(err)
-            }
 
-            if (processedErr.duplicateTx) {
-              setTxPending({hash})
-              keepTrack()
-              return hash
-            }
+            const {errorType, shouldDiscard} = processError(err)
+            const isDuplicateTx = !errorType !== 'duplicateTx'
+            const failed = shouldDiscard && isDuplicateTx
 
-            keepTrack()
-            // retry in next run
+            defs({
+              failed: failed && {errorType, err},
+              isDuplicateTx,
+              keepTrack: !failed,
+            }).transform(
+              multiplexObj({
+                failed: comp(
+                  keep(x => x || null),
+                  sideEffect(
+                    ({err}) => typeof failedCb === 'function' && failedCb(err),
+                  ),
+                  sideEffect(({errorType}) => {
+                    setTxFailed({hash, error: errorType})
+                    getExt().then(ext =>
+                      ext.notifications.create(hash, {
+                        title: 'Failed transaction',
+                        message: `Transaction ${parseInt(
+                          tx.payload.nonce,
+                          16,
+                        )} failed! ${err?.message || ''}`,
+                      }),
+                    )
+                  }),
+                  sideEffect(() => updateBadge(getUnfinishedTxCount())),
+                ),
+
+                isDuplicateTx: comp(
+                  keep(x => x || null),
+                  sideEffect(() => {
+                    setTxPending({hash})
+                    typeof okCb === 'function' && okCb(hash)
+                    keepTrack()
+                  }),
+                ),
+
+                keepTrack: map(x => x && keepTrack), // retry in next run
+              }),
+            )
           },
         }),
       )
       .transform(
+        // successfully sent
         sideEffect(() => setTxPending({hash})),
-        sideEffect(() => {
-          typeof okCb === 'function' && okCb(hash)
-        }),
+        sideEffect(() => typeof okCb === 'function' && okCb(hash)),
         sideEffect(keepTrack),
       )
     return
@@ -169,6 +200,7 @@ export const main = ({
                   err = receipt.txExecErrorMsg
                   setTxFailed({hash, err})
                 }
+                updateBadge(getUnfinishedTxCount())
                 getExt().then(ext =>
                   ext.notifications.create(hash, {
                     title: 'Failed transaction',
@@ -194,6 +226,7 @@ export const main = ({
           }
           if (status === '0x2') {
             setTxSkipped({hash})
+            updateBadge(getUnfinishedTxCount())
             wallet_getExplorerUrl({transaction: [hash]}).then(
               ({transaction: [txUrl]}) => {
                 getExt().then(ext =>
@@ -209,19 +242,22 @@ export const main = ({
             )
             return
           }
-          keepTrack()
         }),
         map(rst => {
-          if (rst) return Promise.resolve(false)
+          if (rst) {
+            keepTrack()
+            return Promise.resolve(null)
+          }
           return cfx_getNextNonce([address.base32])
         }),
       )
       .subscribe(resolve({fail: keepTrack}))
       .transform(
+        keep(),
         sideEffect(nonce => {
-          if (!nonce) return
           if (nonce > tx.payload.nonce) {
             setTxSkipped({hash})
+            updateBadge(getUnfinishedTxCount())
             getExt().then(ext =>
               ext.notifications.create(hash, {
                 title: 'Skipped transaction',
@@ -231,7 +267,7 @@ export const main = ({
                 )}  skipped!`,
               }),
             )
-            sdone()
+            return sdone()
           }
           keepTrack()
         }),
@@ -278,6 +314,7 @@ export const main = ({
             keepTrack()
           } else {
             setTxFailed({hash, err: txExecErrorMsg})
+            updateBadge(getUnfinishedTxCount())
             getExt().then(ext =>
               ext.notifications.create(hash, {
                 title: 'Failed transaction',
@@ -306,6 +343,7 @@ export const main = ({
             BigNumber.from(n).gte(BigNumber.from(tx.receipt.epochNumber))
           ) {
             setTxConfirmed({hash})
+            updateBadge(getUnfinishedTxCount())
             return true
           }
           keepTrack()
@@ -316,14 +354,15 @@ export const main = ({
       )
       .subscribe(resolve({fail: identity}))
       .transform(
-        sideEffect(async ({transaction: [txUrl]}) => {
-          await getExt()
-          Ext.notifications.create(txUrl, {
-            title: 'Confirmed transaction',
-            message: `Transaction ${parseInt(
-              tx.payload.nonce,
-              16,
-            )} confirmed! ${txUrl?.length ? 'View on Explorer.' : ''}`,
+        sideEffect(({transaction: [txUrl]}) => {
+          getExt().then(ext => {
+            ext.notifications.create(txUrl, {
+              title: 'Confirmed transaction',
+              message: `Transaction ${parseInt(
+                tx.payload.nonce,
+                16,
+              )} confirmed! ${txUrl?.length ? 'View on Explorer.' : ''}`,
+            })
           })
         }),
         sideEffect(sdone),
