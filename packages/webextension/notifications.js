@@ -12,9 +12,8 @@ function subscribeToNotificationClicked() {
   }
 }
 
-export function create(options = {}) {
+export function create(id, options = {}) {
   const {
-    id,
     type = 'basic',
     message = '',
     title = 'Fluent wallet',
@@ -22,6 +21,7 @@ export function create(options = {}) {
   } = options
   subscribeToNotificationClicked()
   return browser.notifications.create(id ?? undefined, {
+    ...options,
     type,
     message,
     title,

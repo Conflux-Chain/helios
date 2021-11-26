@@ -20,6 +20,15 @@ function defstream(id, src) {
 
 let Ext
 
+function getExt() {
+  return Ext
+    ? Promise.resolve(Ext)
+    : import('@fluent-wallet/webextension').then(ext => {
+        Ext = ext
+        return ext
+      })
+}
+
 export const schemas = {
   input: [mapp],
 }
@@ -102,6 +111,15 @@ export const main = ({
               delete processedErr.shouldDiscard
               const [errorType] = Object.keys(processedErr)
               setTxFailed({hash, error: errorType})
+              getExt().then(ext =>
+                ext.notifications.create(hash, {
+                  title: 'Failed transaction',
+                  message: `Transaction ${parseInt(
+                    tx.payload.nonce,
+                    16,
+                  )} failed! ${err?.message || ''}`,
+                }),
+              )
               if (typeof failedCb === 'function') failedCb(err)
             }
 
@@ -140,8 +158,57 @@ export const main = ({
           if (!rst) return
           setTxPackaged({hash})
           const {status} = rst
-          if (status === '0x1') return setTxFailed({hash})
-          if (status === '0x2') return setTxSkipped({hash})
+          if (status === '0x1') {
+            let err = 'Transaction reverted'
+            setTxFailed({hash, err})
+
+            // get the error message in receipt
+            cfx_getTransactionReceipt({errorFallThrough: true}, [hash])
+              .then(receipt => {
+                if (receipt?.txExecErrorMsg) {
+                  err = receipt.txExecErrorMsg
+                  setTxFailed({hash, err})
+                }
+                getExt().then(ext =>
+                  ext.notifications.create(hash, {
+                    title: 'Failed transaction',
+                    message: `Transaction ${parseInt(
+                      tx.payload.nonce,
+                      16,
+                    )} failed! ${err}`,
+                  }),
+                )
+              })
+              .catch(identity)
+
+            getExt().then(ext =>
+              ext.notifications.create(hash, {
+                title: 'Failed transaction',
+                message: `Transaction ${parseInt(
+                  tx.payload.nonce,
+                  16,
+                )} failed! ${err?.message || ''}`,
+              }),
+            )
+            return
+          }
+          if (status === '0x2') {
+            setTxSkipped({hash})
+            wallet_getExplorerUrl({transaction: [hash]}).then(
+              ({transaction: [txUrl]}) => {
+                getExt().then(ext =>
+                  ext.notifications.create(txUrl, {
+                    title: 'Skipped transaction',
+                    message: `Transaction ${parseInt(
+                      tx.payload.nonce,
+                      16,
+                    )}  skipped! ${txUrl?.length ? 'View on explorer.' : ''}`,
+                  }),
+                )
+              },
+            )
+            return
+          }
           keepTrack()
         }),
         map(rst => {
@@ -155,6 +222,15 @@ export const main = ({
           if (!nonce) return
           if (nonce > tx.payload.nonce) {
             setTxSkipped({hash})
+            getExt().then(ext =>
+              ext.notifications.create(hash, {
+                title: 'Skipped transaction',
+                message: `Transaction ${parseInt(
+                  tx.payload.nonce,
+                  16,
+                )}  skipped!`,
+              }),
+            )
             sdone()
           }
           keepTrack()
@@ -172,8 +248,8 @@ export const main = ({
         sideEffect(rst => {
           !rst && keepTrack()
         }),
+        keep(),
         sideEffect(rst => {
-          if (!rst) return
           const {
             outcomeStatus,
             blockHash,
@@ -202,6 +278,15 @@ export const main = ({
             keepTrack()
           } else {
             setTxFailed({hash, err: txExecErrorMsg})
+            getExt().then(ext =>
+              ext.notifications.create(hash, {
+                title: 'Failed transaction',
+                message: `Transaction ${parseInt(
+                  tx.payload.nonce,
+                  16,
+                )} failed! ${txExecErrorMsg}`,
+              }),
+            )
           }
         }),
         sideEffect(sdone),
@@ -226,23 +311,19 @@ export const main = ({
           keepTrack()
           return null
         }),
-        keep(),
+        keep(), // filter non-null tx
         map(() => wallet_getExplorerUrl({transaction: [hash]})),
       )
       .subscribe(resolve({fail: identity}))
       .transform(
         sideEffect(async ({transaction: [txUrl]}) => {
-          const ext = await (Ext
-            ? Promise.resolve(Ext)
-            : import('@fluent-wallet/webextension'))
-          if (!Ext) Ext = ext
-          Ext.notification.create({
-            id: txUrl,
+          await getExt()
+          Ext.notifications.create(txUrl, {
             title: 'Confirmed transaction',
             message: `Transaction ${parseInt(
               tx.payload.nonce,
               16,
-            )} confirmed! ${txUrl?.length ? 'View on Explorer' : ''}`,
+            )} confirmed! ${txUrl?.length ? 'View on Explorer.' : ''}`,
           })
         }),
         sideEffect(sdone),
