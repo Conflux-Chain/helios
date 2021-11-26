@@ -2,9 +2,14 @@
 import {default as OriginBig} from 'big.js'
 import BN from 'bn.js'
 import {stripHexPrefix, isHexPrefixed, addHexPrefix} from '@fluent-wallet/utils'
+// The maximum number of decimal places
+OriginBig.DP = 50
+// round down
 OriginBig.RM = 0
-OriginBig.NE = -19
-OriginBig.PE = 40
+// The negative exponent value at and below which toString returns exponential notation.
+OriginBig.NE = -50
+// The positive exponent value at and above which toString returns exponential notation.
+OriginBig.PE = 1000
 
 export const Big = OriginBig
 export const CFX_DECIMALS = 18
@@ -87,6 +92,7 @@ export const formatHexToDecimal = numOrStr => {
 
 export const formatDecimalToHex = numOrStr => {
   if (!isValidNumber(numOrStr)) return numOrStr
+  if (numOrStr?.indexOf('e') > -1) return numOrStr
   return addHexPrefix(new BN(numOrStr, 10).toString(16))
 }
 
