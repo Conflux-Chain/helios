@@ -49,7 +49,7 @@ export const permissions = {
   external: [],
   methods: [
     'wallet_getAddressPrivateKey',
-    'cfx_getNextNonce',
+    'cfx_getNextUsableNonce',
     'cfx_epochNumber',
     'cfx_estimateGasAndCollateral',
     'wallet_detectAddressType',
@@ -64,7 +64,7 @@ export const main = async ({
     wallet_getAddressPrivateKey,
     cfx_epochNumber,
     cfx_estimateGasAndCollateral,
-    cfx_getNextNonce,
+    cfx_getNextUsableNonce,
     wallet_detectAddressType,
   },
   params: [tx, opts = {}],
@@ -97,9 +97,8 @@ export const main = async ({
     ])
 
   if (!newTx.nonce) {
-    newTx.nonce = await cfx_getNextNonce({errorFallThrough: true}, [
+    newTx.nonce = await cfx_getNextUsableNonce({errorFallThrough: true}, [
       newTx.from,
-      epoch,
     ])
   }
 

@@ -4537,6 +4537,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_get-next-usable-nonce@workspace:*, @fluent-wallet/cfx_get-next-usable-nonce@workspace:packages/rpcs/cfx_getNextUsableNonce":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-next-usable-nonce@workspace:packages/rpcs/cfx_getNextUsableNonce"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_get-pos-economics@workspace:*, @fluent-wallet/cfx_get-pos-economics@workspace:packages/rpcs/cfx_getPoSEconomics":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-pos-economics@workspace:packages/rpcs/cfx_getPoSEconomics"
@@ -19311,6 +19319,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/cfx_get-interest-rate": "workspace:packages/rpcs/cfx_getInterestRate"
     "@fluent-wallet/cfx_get-logs": "workspace:packages/rpcs/cfx_getLogs"
     "@fluent-wallet/cfx_get-next-nonce": "workspace:packages/rpcs/cfx_getNextNonce"
+    "@fluent-wallet/cfx_get-next-usable-nonce": "workspace:*"
     "@fluent-wallet/cfx_get-pos-economics": "workspace:*"
     "@fluent-wallet/cfx_get-skipped-blocks-by-epoch": "workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch"
     "@fluent-wallet/cfx_get-staking-balance": "workspace:packages/rpcs/cfx_getStakingBalance"

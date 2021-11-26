@@ -32,6 +32,7 @@
     "@fluent-wallet/cfx_get-interest-rate": "workspace:packages/rpcs/cfx_getInterestRate",
     "@fluent-wallet/cfx_get-logs": "workspace:packages/rpcs/cfx_getLogs",
     "@fluent-wallet/cfx_get-next-nonce": "workspace:packages/rpcs/cfx_getNextNonce",
+    "@fluent-wallet/cfx_get-next-usable-nonce": "workspace:*",
     "@fluent-wallet/cfx_get-pos-economics": "workspace:*",
     "@fluent-wallet/cfx_get-skipped-blocks-by-epoch": "workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch",
     "@fluent-wallet/cfx_get-staking-balance": "workspace:packages/rpcs/cfx_getStakingBalance",

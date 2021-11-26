@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as cfxGetNextUsableNonce from '@fluent-wallet/cfx_get-next-usable-nonce'
 import * as walletHandleUnfinishedTxs from '@fluent-wallet/wallet_handle-unfinished-txs'
 import * as walletHandleUnfinishedCFXTx from '@fluent-wallet/wallet_handle-unfinished-cfx-tx'
 import * as cfxGetBlockByBlockNumber from '@fluent-wallet/cfx_get-block-by-block-number'
@@ -241,6 +242,7 @@ export const rpcEngineOpts = {
     cfxGetAccount,
     cfxGetCode,
     cfxGetNextNonce,
+    cfxGetNextUsableNonce,
     cfxGetBalance,
     cfxCall,
     cfxGetStatus,
