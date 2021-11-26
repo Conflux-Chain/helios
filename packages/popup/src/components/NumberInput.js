@@ -35,7 +35,7 @@ function NumberInput({
 }
 
 NumberInput.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   onChange: PropTypes.func,
   decimals: PropTypes.number,
   maxLength: PropTypes.string,
