@@ -77,7 +77,7 @@ export const useNetwork = () => {
 
 export const useCfxNetwork = () => {
   const {data: cfxNetWork} = useRPC(
-    [WALLET_GET_NETWORK],
+    [WALLET_GET_NETWORK, 'type=cfx'],
     {
       type: 'cfx',
     },
@@ -88,7 +88,7 @@ export const useCfxNetwork = () => {
 
 export const useEthNetwork = () => {
   const {data: ethNetWork} = useRPC(
-    [WALLET_GET_NETWORK],
+    [WALLET_GET_NETWORK, 'type=eth'],
     {
       type: 'eth',
     },
@@ -99,7 +99,7 @@ export const useEthNetwork = () => {
 
 export const useNetworkByChainId = (chainId, type) => {
   const {data: network} = useRPC(
-    chainId ? [WALLET_GET_NETWORK, chainId] : null,
+    chainId ? [WALLET_GET_NETWORK, `type=${type}`, chainId] : null,
     {
       chainId,
       type,
