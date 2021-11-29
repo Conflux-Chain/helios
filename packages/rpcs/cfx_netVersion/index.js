@@ -23,7 +23,6 @@ export const cache = {
 
 export const main = async ({f, rpcs: {cfx_getStatus}}) => {
   const rst = await f()
-  console.log('rst = ', rst)
   if (!rst?.result || rst?.result === 'nocache')
     return parseInt((await cfx_getStatus())?.networkId, 16).toString()
   else return rst.result

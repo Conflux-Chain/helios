@@ -45,6 +45,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
       _inpage: req._inpage,
       _origin: req._origin,
       _post: req._post,
+      _rpcStack: req._rpcStack,
     })
 
   const {inpageStream, popupStream} = listen()
@@ -69,6 +70,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
         _popup: false,
         _inpage: true,
         _post: post,
+        _rpcStack: undefined,
       }).then(post)
       // .then(res => (console.log(req, res), post(res)))
     },
@@ -81,9 +83,27 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 // # initialize
 // ## initialize db
 ;(async () => {
+  // ## initialize db
+  const {request, db} = await initBG()
+  setInterval(
+    () =>
+      request({method: 'wallet_handleUnfinishedTxs', _rpcStack: ['frombg']}),
+    10000,
+  )
+
+  // ## Dev/Test
   if (!IS_TEST_MODE) {
-    await initBG()
     if (IS_DEV_MODE) {
+      if (import.meta.env?.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
+        try {
+          const localDevModule = await import(
+            import.meta.env?.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH
+          )
+          await localDevModule.run({request, db})
+        } catch (err) {
+          console.log('local dev error', err)
+        }
+      }
       // if (db.getAccountGroup()?.length) {
       //   // console.log(
       //   //   'wallet_unlock',

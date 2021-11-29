@@ -6,6 +6,7 @@
   "version": "0.0.4",
   "dependencies": {
     "@fluent-wallet/cfx_sign-transaction": "workspace:packages/rpcs/cfx_signTransaction",
+    "@fluent-wallet/signature": "workspace:*",
     "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+set -u
+set -o pipefail
+
+touch fullnode_error_messages_check.txt
+rg --json 'tx already exist' ./conflux-rust | jq '.data.path.text' >> fullnode_error_messages_check.txt
+rg --json 'nonce is too old' ./conflux-rust | jq '.data.path.text' >> fullnode_error_messages_check.txt
+rg --json 'EpochHeightOutOfBound' ./conflux-rust | jq '.data.path.text' >> fullnode_error_messages_check.txt
+rg --json 'exceeds the maximum value' ./conflux-rust | jq '.data.path.text' >> fullnode_error_messages_check.txt
+rg --json 'too stale nonce' ./conflux-rust | jq '.data.path.text' >> fullnode_error_messages_check.txt
