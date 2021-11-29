@@ -254,3 +254,4 @@ cljs-runtime
 /websites/doc/docs/standard-rpc.mdx
 /websites/doc/docs/provider-rpc.mdx
 /websites/doc/docs/inner-rpc.mdx
+/packages/background/src/local-dev.js

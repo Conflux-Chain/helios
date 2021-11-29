@@ -116,6 +116,12 @@ const schema = {
       many: true,
       ref: true,
     },
+    tx: {
+      doc: 'transactions of this address',
+      many: true,
+      component: true,
+      ref: true,
+    },
   },
   account: {
     index: {doc: 'index of account in account group'},
@@ -124,6 +130,21 @@ const schema = {
     hidden: {doc: 'If hide this account in ui'},
     offline: {doc: 'Offline account'},
     selected: {doc: 'selected by wallet'},
+  },
+
+  // ## tx
+  tx: {
+    payload: {doc: 'tx payload as an object'},
+    raw: {doc: 'raw tx hash'},
+    hash: {
+      doc: 'tx hash',
+      identity: true,
+    },
+    status: {
+      doc: 'int, tx status, -2 skipped, -1 failed, 0 unsent, 1 sending, 2 pending, 3 packaged, 4 executed, 5 confirmed',
+    },
+    receipt: {doc: 'receipt as an object'},
+    err: {doc: 'basic error type/info'},
   },
 
   // ## dapp interaction
@@ -150,6 +171,7 @@ const schema = {
     currentAccount: {ref: 'account'},
     network: {doc: 'authed network', ref: true, many: true},
     currentNetwork: {ref: 'network'},
+    tx: {many: true, ref: true, doc: 'tx initiated by this app'},
   },
   authReq: {
     req: {doc: 'the req body of the auth req', persist: false},

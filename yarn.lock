@@ -4537,6 +4537,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_get-next-usable-nonce@workspace:*, @fluent-wallet/cfx_get-next-usable-nonce@workspace:packages/rpcs/cfx_getNextUsableNonce":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-next-usable-nonce@workspace:packages/rpcs/cfx_getNextUsableNonce"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_get-pos-economics@workspace:*, @fluent-wallet/cfx_get-pos-economics@workspace:packages/rpcs/cfx_getPoSEconomics":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-pos-economics@workspace:packages/rpcs/cfx_getPoSEconomics"
@@ -4662,6 +4670,7 @@ __metadata:
   resolution: "@fluent-wallet/cfx_send-transaction@workspace:packages/rpcs/cfx_sendTransaction"
   dependencies:
     "@fluent-wallet/cfx_sign-transaction": "workspace:packages/rpcs/cfx_signTransaction"
+    "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -4861,11 +4870,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/compose@workspace:packages/compose":
+"@fluent-wallet/compose@workspace:*, @fluent-wallet/compose@workspace:packages/compose":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/compose@workspace:packages/compose"
   dependencies:
     "@thi.ng/compose": ^1.4.36
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/conflux-tx-error@workspace:*, @fluent-wallet/conflux-tx-error@workspace:packages/conflux-tx-error":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/conflux-tx-error@workspace:packages/conflux-tx-error"
   languageName: unknown
   linkType: soft
 
@@ -5302,7 +5317,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/signature@workspace:packages/signature":
+"@fluent-wallet/signature@workspace:*, @fluent-wallet/signature@workspace:packages/signature":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/signature@workspace:packages/signature"
   dependencies:
@@ -5366,7 +5381,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/transducers@workspace:packages/transducers":
+"@fluent-wallet/transducers@workspace:*, @fluent-wallet/transducers@workspace:packages/transducers":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/transducers@workspace:packages/transducers"
   dependencies:
@@ -5693,6 +5708,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-explorer-url@workspace:*, @fluent-wallet/wallet_get-explorer-url@workspace:packages/rpcs/wallet_getExplorerUrl":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-explorer-url@workspace:packages/rpcs/wallet_getExplorerUrl"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-network@workspace:packages/rpcs/wallet_getNetwork":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-network@workspace:packages/rpcs/wallet_getNetwork"
@@ -5724,6 +5747,28 @@ __metadata:
   resolution: "@fluent-wallet/wallet_get-permissions@workspace:packages/rpcs/wallet_getPermissions"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:*, @fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:packages/rpcs/wallet_handleUnfinishedCFXTx":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:packages/rpcs/wallet_handleUnfinishedCFXTx"
+  dependencies:
+    "@ethersproject/bignumber": 5.5.0
+    "@fluent-wallet/compose": "workspace:*"
+    "@fluent-wallet/conflux-tx-error": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+    "@fluent-wallet/transducers": "workspace:*"
+    "@fluent-wallet/webextension": "workspace:*"
+    "@thi.ng/rstream": 6.0.21
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_handle-unfinished-txs@workspace:*, @fluent-wallet/wallet_handle-unfinished-txs@workspace:packages/rpcs/wallet_handleUnfinishedTxs":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_handle-unfinished-txs@workspace:packages/rpcs/wallet_handleUnfinishedTxs"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5986,7 +6031,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/webextension@workspace:packages/webextension":
+"@fluent-wallet/webextension@workspace:*, @fluent-wallet/webextension@workspace:packages/webextension":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/webextension@workspace:packages/webextension"
   dependencies:
@@ -19283,6 +19328,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/cfx_get-interest-rate": "workspace:packages/rpcs/cfx_getInterestRate"
     "@fluent-wallet/cfx_get-logs": "workspace:packages/rpcs/cfx_getLogs"
     "@fluent-wallet/cfx_get-next-nonce": "workspace:packages/rpcs/cfx_getNextNonce"
+    "@fluent-wallet/cfx_get-next-usable-nonce": "workspace:*"
     "@fluent-wallet/cfx_get-pos-economics": "workspace:*"
     "@fluent-wallet/cfx_get-skipped-blocks-by-epoch": "workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch"
     "@fluent-wallet/cfx_get-staking-balance": "workspace:packages/rpcs/cfx_getStakingBalance"
@@ -19346,10 +19392,13 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
+    "@fluent-wallet/wallet_get-explorer-url": "workspace:*"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
     "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest"
     "@fluent-wallet/wallet_get-permissions": "workspace:packages/rpcs/wallet_getPermissions"
+    "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*"
+    "@fluent-wallet/wallet_handle-unfinished-txs": "workspace:*"
     "@fluent-wallet/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
     "@fluent-wallet/wallet_import-all": "workspace:packages/rpcs/wallet_importAll"
     "@fluent-wallet/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"

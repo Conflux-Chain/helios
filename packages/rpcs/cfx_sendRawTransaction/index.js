@@ -7,6 +7,7 @@ export const schemas = {
 }
 
 export const permissions = {
+  locked: true,
   external: [],
   methods: [],
   db: [],

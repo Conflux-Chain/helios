@@ -1,0 +1,22 @@
+name: Check Conflux Fullnode Error Message
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"
+
+jobs:
+  check-error-message:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [17]
+    steps:
+      - run: sudo apt-get install ripgrep -y
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v2
+      - run: git clone --depth 1 https://github.com/Conflux-Chain/conflux-rust.git
+      - run: .github/scripts/check-conflux-rust-error-messages
+      - run: node .github/scripts/assert-fullnode-error-message-check.mjs

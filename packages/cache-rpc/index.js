@@ -28,7 +28,9 @@ export const getCacheStore = ({network, params, method}, {type, cacheTime}) => {
         'Invalid cache option, no epoch/block ref pos in @fluent-wallet/rpc-epoch-ref',
       )
 
-    const epoch = params[epochPos] ?? 'default'
+    const epoch = Number.isInteger(epochPos)
+      ? params[epochPos] ?? 'default'
+      : epochPos
 
     let store = netCache.EPOCH.get(epoch)
     if (!store) {
@@ -73,7 +75,13 @@ export const getCache = ({req, conf}) => {
 export const setCache = ({req, res, conf}) => {
   if (isFunction(conf?.beforeSet) && !conf.beforeSet(req, res)) return
 
-  if (!conf || !conf.type || !conf.key || !res || !res.result) return
+  if (
+    !conf ||
+    !conf.type ||
+    !conf.key ||
+    !res // || !res.result
+  )
+    return
   const {ttl, key} = conf
 
   const Cache = getCacheStore(req, conf)
