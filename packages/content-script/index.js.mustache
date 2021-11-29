@@ -54,7 +54,6 @@ function setup() {
   s.subscribe(sub)
 
   const listenToInpageMessage = e => {
-    CONNECT_RETRY_COUNT = 0
     if (e.origin !== location.origin) return
     if (e.source !== window) return
     if (
@@ -68,6 +67,7 @@ function setup() {
     if (e.data.msg.jsonrpc !== '2.0') return
     if (!Number.isInteger(e.data.msg.id)) return
     if (e.data.msg.method === 'wallet_registerSiteMetadata') return
+    CONNECT_RETRY_COUNT = 0
     s.next.call(s, {...e.data.msg, _origin: location.host})
   }
 
@@ -87,14 +87,23 @@ function setup() {
     window.removeEventListener('message', listenToInpageMessage)
     s.unsubscribe(sub)
     s = null
+    let retryTimeout = 100
     if (CONNECT_RETRY_COUNT >= 10) {
+      retryTimeout = 1000
+    } else if (CONNECT_RETRY_COUNT >= 60) {
+      retryTimeout = 30000
+    } else if (CONNECT_RETRY_COUNT >= 120) {
+      console.error(
+        `[Fluent] Failed to connect background with 120 retry. Give up`,
+      )
       return
     }
-    console.info(
-      `Failed to connect background, retry: ${++CONNECT_RETRY_COUNT}`,
+
+    console.warn(
+      `[Fluent] Failed to connect background, retry: ${++CONNECT_RETRY_COUNT}`,
     )
-    setup()
-  })
+    setTimeout(setup, retryTimeout)
+})
 
   port.onMessage.addListener(e => {
     window.postMessage(
