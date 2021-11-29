@@ -247,7 +247,7 @@ export const useDbAddTokenList = () => {
 export const useDbAccountListAssets = () => {
   const {data: accountListAssets} = useRPC(
     [WALLETDB_ACCOUNT_LIST_ASSETS],
-    undefined,
+    {type: 'all'},
     {
       fallbackData: {},
     },
