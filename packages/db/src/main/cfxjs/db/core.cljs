@@ -35,14 +35,28 @@
                (reduce-kv (fn [_ k2 v2] [(keyword (str (name k1) "/" (name k2))) v2]) nil v1))
              nil arg))
 
+(comment
+  (q '[:find ?s
+       :where [243 :tx/status ?s]]))
+
 (defn- parse-js-transact-arg
   ([arg] (parse-js-transact-arg arg (random-tmp-id)))
   ([arg tmp-id]
-   (let [arg      (cond
-                    (or (int? (:eid arg)) (string? (:eid arg)))
-                    (assoc arg :db/id (:eid arg))
+   (let [eid-arg  (:eid arg)
+         arg      (cond
+                    (or (int? eid-arg) (string? eid-arg))
+                    (assoc arg :db/id eid-arg)
+                    (and (map? eid-arg)
+                         (= (count (keys eid-arg)) 1)
+                         (map? (second (first eid-arg)))
+                         (= (count (second (first eid-arg))) 1))
+                    (let [model       (-> eid-arg first first)
+                          attr        (-> eid-arg first second first first)
+                          v           (-> eid-arg first second first second)
+                          model-attrk (->attrk model attr)]
+                      (assoc arg :db/id [model-attrk v]))
                     (:eid arg) (throw (js/Error. "Invalid eid, must be a string or integer"))
-                    :else          (assoc arg :db/id tmp-id))
+                    :else      (assoc arg :db/id tmp-id))
          arg      (dissoc arg :eid)
          all-keys (keys arg)
          _        (when-not (or (= (count all-keys) 1)
@@ -56,11 +70,11 @@
                                                              (fn [m k v]
                                                                (let [qualified-k (->attrk k)
                                                                      ;; note, we can't use look up-ref as identifier in map-form
-                                                                     processed-v (cond (and (map? v) (-> v keys count (= 1)))    ;; lookup-ref
+                                                                     processed-v (cond (and (map? v) (-> v keys count (= 1))) ;; lookup-ref
                                                                                        (->lookup-ref v)
-                                                                                       (vector? v) ;; db/isComponents
+                                                                                       (vector? v)                            ;; db/isComponents
                                                                                        (map #(parse-js-transact-arg % (random-tmp-id)) v)
-                                                                                       :else       v)]
+                                                                                       :else                                  v)]
                                                                  (assoc m qualified-k processed-v)))
                                                              {} v)
                                                (= k :db/id) (assoc m k v)

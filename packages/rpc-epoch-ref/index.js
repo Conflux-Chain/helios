@@ -24,6 +24,10 @@ const RPC_EPOCH_TAG_CONFIG = {
   cfx_getVoteList: 1,
   // cfx_getLogs: [{fromEpoch: true, toEpoch: true}],
 
+  ////
+  cfx_getTransactionByHash: 'latest_mined',
+  cfx_getTransactionReceipt: 'latest_executed',
+
   // eth
   eth_getBalance: 1,
   eth_getStorageAt: 2,

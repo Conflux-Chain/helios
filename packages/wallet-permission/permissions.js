@@ -1,5 +1,5 @@
 export default {
-  // basic rpc methods like cfx_epochNumbeer, eth_blockNumber
+  // basic rpc methods like cfx_epochNumber, eth_blockNumber
   wallet_basic: {},
   // methods
   // to get user addresses like eth_accounts, cfx_accounts

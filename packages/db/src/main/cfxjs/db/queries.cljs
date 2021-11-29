@@ -436,6 +436,78 @@
           networkId address appId)
        (e :address)))
 
+(defn get-addr-from-network-and-address [{:keys [networkId address]}]
+  (->> (q '[:find ?addr .
+            :in $ ?net ?address
+            :where
+            [?net :network/address ?addr]
+            [?net :network/type ?net-type]
+            (or
+             (and [?addr :address/base32 ?address]
+                  [(= ?net-type "cfx")])
+             (and [?addr :address/hex ?address]
+                  [(= ?net-type "eth")]))]
+          networkId address)
+       (e :address)))
+
+(defn get-addr-tx-by-hash [{:keys [addressId txhash]}]
+  (->> (q '[:find ?tx .
+            :in $ ?addr ?hash
+            :where
+            [?tx :tx/hash ?hash]
+            [?addr :address/tx ?tx]]
+          addressId txhash)
+       (e :tx)))
+
+(defn get-unfinished-tx-raw
+  "Get tx that is not failed or confirmed"
+  []
+  (q '[:find ?tx ?addr ?net
+       :where
+       [?tx :tx/status ?status]
+       [(>= ?status 0)]
+       [(< ?status 5)]
+       [?addr :address/tx ?tx]
+       [?net :network/address ?addr]]))
+
+(defn get-unfinished-tx []
+  (->> (get-unfinished-tx-raw)
+       (mapv (fn [[tx-id addr-id net-id]]
+               ;; {:tx      (e :tx tx-id)
+               ;;  :address (e :address addr-id)}
+               {:tx      tx-id
+                :network (e :network net-id)
+                :address (e :address addr-id)}))))
+
+(defn get-unfinished-tx-count
+  "Get count of txs that is not failed or confirmed"
+  []
+  (->> (get-unfinished-tx-raw)
+       count))
+
+(defn set-tx-skipped [{:keys [hash]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status -2}]))
+(defn set-tx-failed [{:keys [hash error]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}]))
+(defn set-tx-unsent [{:keys [hash]}]
+  (t [{:db/id [:tx/hash hash] :tx/status 0}]))
+(defn set-tx-sending [{:keys [hash]}]
+  (t [{:db/id [:tx/hash hash] :tx/status 1}]))
+(defn set-tx-pending [{:keys [hash]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status 2}]))
+(defn set-tx-packaged [{:keys [hash]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status 3}]))
+(defn set-tx-executed [{:keys [hash receipt]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}]))
+(defn set-tx-confirmed [{:keys [hash]}]
+  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status 5}]))
+
 ;;; UI QUERIES
 (defn home-page-assets
   ([] (home-page-assets {}))
@@ -530,10 +602,23 @@
               :upsertBalances                  upsert-balances
               :retractAddressToken             retract-address-token
               :getFromAddress                  get-from-address
-              :queryhomePageAssets             home-page-assets
-              :queryaddTokenList               get-add-token-list
-              :queryaccountListAssets          account-list-assets
-              :getAccountGroupByVaultType      get-account-group-by-vault-type})
+              :getAddrFromNetworkAndAddress    get-addr-from-network-and-address
+              :getAddrTxByHash                 get-addr-tx-by-hash
+              :getUnfinishedTx                 get-unfinished-tx
+              :getUnfinishedTxCount            get-unfinished-tx-count
+              :setTxSkipped                    set-tx-skipped
+              :setTxFailed                     set-tx-failed
+              :setTxSending                    set-tx-sending
+              :setTxPending                    set-tx-pending
+              :setTxPackaged                   set-tx-packaged
+              :setTxExecuted                   set-tx-executed
+              :setTxConfirmed                  set-tx-confirmed
+              :setTxUnsent                     set-tx-unsent
+
+              :queryhomePageAssets        home-page-assets
+              :queryaddTokenList          get-add-token-list
+              :queryaccountListAssets     account-list-assets
+              :getAccountGroupByVaultType get-account-group-by-vault-type})
 
 (defn apply-queries [conn qfn pfn entity tfn ffn]
   (def q qfn)
@@ -551,3 +636,11 @@
               (comp clj->js v j->c))))
    conn
    queries))
+
+(comment
+  (tap> (->> (q '[:find [?tx ...]
+                  :where
+                  [?tx :tx/payload _]])
+             first
+             (e :tx)
+             .toMap)))

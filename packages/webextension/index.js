@@ -1,5 +1,5 @@
 export * as popup from './popup.js'
-export * as notification from './notification.js'
+export * as notifications from './notifications.js'
 export * as badge from './badge.js'
 export * as idle from './idle.js'
 export * as tab from './tab.js'
