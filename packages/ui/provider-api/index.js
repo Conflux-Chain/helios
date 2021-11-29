@@ -37,14 +37,20 @@ class Provider extends SafeEventEmitter {
     this.#send = send
     this.#s.subscribe({next: this.#streamEventListener.bind(this)})
 
+    // DEPRECATED
+    this.confluxJS = new ConfluxJS.Conflux()
+
     this.on('connect', () => {
       this.#isConnected = true
 
       // DEPRECATED
       {
-        this.confluxJS = new ConfluxJS.Conflux()
         this.confluxJS.provider = {
-          call(method, params) {
+          call: (method, ...params) => {
+            params = params.reduce((acc, p) => {
+              if (p === undefined) return acc
+              return acc.concat([p])
+            }, [])
             return this.request({method, params})
           },
           close() {},
@@ -61,11 +67,11 @@ class Provider extends SafeEventEmitter {
         })
         this.request({method: 'cfx_accounts'})
           .then(result => {
-            if (result) this._selectedAddress = []
-            else this._selectedAddress = result
-            this.emit('accountsChanged', this._selectedAddress)
+            if (!result) this._selectedAddress = undefined
+            else this._selectedAddress = result[0]
+            this.emit('accountsChanged', result)
           })
-          .catch(() => (this._selectedAddress = []))
+          .catch(() => (this._selectedAddress = undefined))
         this.on('chainChanged', chainId => {
           this._chainId = chainId
           const networkId = parseInt(chainId, 16)
@@ -74,12 +80,11 @@ class Provider extends SafeEventEmitter {
           this.confluxJS.wallet.networkId = networkId
         })
         this.on('accountsChanged', accounts => {
-          this._selectedAddress = accounts
+          this._selectedAddress = accounts[0]
         })
       }
     })
   }
-
   // DEPRECATED
   get chainId() {
     deprecated(
@@ -104,7 +109,7 @@ class Provider extends SafeEventEmitter {
       'PROPERTY',
       '"conflux.networkVersion" is deprecated, please use "conflux.request({method: "cfx_netVersion"})" instead',
     )
-    return this._selectedAddress || []
+    return this._selectedAddress || undefined
   }
 
   request(req) {
@@ -161,7 +166,9 @@ class Provider extends SafeEventEmitter {
     )
     if (typeof callback !== 'function')
       throw new Error('Invalid callback, not a function')
-    this.request(payload).catch(callback)
+    this.request(payload)
+      .then(res => callback(null, res))
+      .catch(callback)
   }
 
   // DEPRECATED

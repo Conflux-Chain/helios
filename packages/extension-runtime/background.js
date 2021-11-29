@@ -15,7 +15,12 @@ const inpageStream = stream({
 })
 
 function onConnect(port) {
-  const post = port.postMessage.bind(port)
+  const post = msg => {
+    if (msg?.result === null) msg.result = '__null__'
+    try {
+      port.postMessage(msg)
+    } catch (err) {} // eslint-disable-line no-empty
+  }
   if (port?.name === 'popup') {
     port.onMessage.addListener(req =>
       popupStream.next.call(popupStream, [req, post]),
