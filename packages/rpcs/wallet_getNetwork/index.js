@@ -5,6 +5,8 @@ import {
   networkId,
   chainId,
   boolean,
+  or,
+  optParam,
 } from '@fluent-wallet/spec'
 import {isUndefined} from '@fluent-wallet/checks'
 
@@ -12,13 +14,17 @@ export const NAME = 'wallet_getNetwork'
 
 export const schemas = {
   input: [
-    map,
-    {closed: true},
-    ['type', {optional: true}, [enums, 'cfx', 'eth']],
-    ['builtin', {optional: true}, boolean],
-    ['chainId', {optional: true}, chainId],
-    ['networkId', {optional: true}, networkId],
-    ['networkDbId', {optional: true}, dbid],
+    or,
+    [
+      map,
+      {closed: true},
+      ['type', {optional: true}, [enums, 'cfx', 'eth']],
+      ['builtin', {optional: true}, boolean],
+      ['chainId', {optional: true}, chainId],
+      ['networkId', {optional: true}, networkId],
+      ['networkDbId', {optional: true}, dbid],
+    ],
+    optParam,
   ],
 }
 
@@ -31,7 +37,7 @@ export const permissions = {
 export const main = ({
   Err: {InvalidParams},
   db: {getNetwork, getNetworkById},
-  params: {type, builtin, networkId, networkDbId, chainId},
+  params: {type, builtin, networkId, networkDbId, chainId} = {},
 }) => {
   const networkDbIdDefined = !isUndefined(networkDbId)
   const builtinDefined = !isUndefined(builtin)

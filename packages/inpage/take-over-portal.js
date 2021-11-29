@@ -7,6 +7,7 @@ function _takeOver(PROVIDER, resolve) {
   if (!window.conflux) return
   portalGlobalProvider = window.conflux
   window.conflux = PROVIDER
+  window.confluxJS = PROVIDER.confluxJS
   clearInterval(TakeOverInterval)
   resolve(true)
 }

@@ -166,7 +166,11 @@ function formatEpochRef(arg) {
   const {req} = arg
   const {method, params = [], network} = req
   const epochRefPos = EpochRefConf[method]
-  if (epochRefPos !== undefined && !params[epochRefPos]) {
+  if (
+    epochRefPos !== undefined &&
+    !epochRefPos?.startsWith?.('latest') &&
+    !params[epochRefPos]
+  ) {
     req.params[epochRefPos] =
       network?.type === 'cfx' ? 'latest_state' : 'latest'
     if (method === 'cfx_epochNumber') req.params[0] = 'latest_mined'
