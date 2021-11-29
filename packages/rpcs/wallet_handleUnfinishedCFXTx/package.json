@@ -1,0 +1,16 @@
+{
+  "name": "@fluent-wallet/wallet_handle-unfinished-cfx-tx",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.1.0",
+  "version": "0.0.0",
+  "dependencies": {
+    "@ethersproject/bignumber": "5.5.0",
+    "@fluent-wallet/compose": "workspace:*",
+    "@fluent-wallet/conflux-tx-error": "workspace:*",
+    "@fluent-wallet/spec": "workspace:*",
+    "@fluent-wallet/transducers": "workspace:*",
+    "@fluent-wallet/webextension": "workspace:*",
+    "@thi.ng/rstream": "6.0.21"
+  }
+}
