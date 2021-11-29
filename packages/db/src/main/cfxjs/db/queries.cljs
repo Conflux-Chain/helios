@@ -103,7 +103,7 @@
                                   :where
                                   [?a :account/selected true]])
         ;; set all accounts unselected
-        acc-unselect         [[:db.fn/retractAttribute selected-account :account/selected]]
+        acc-unselect         (if selected-account [[:db.fn/retractAttribute selected-account :account/selected]] [])
         ;; select account
         acc-select           [[:db/add acc :account/selected true]]
         ;; query app authed by to-be-selected account
