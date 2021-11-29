@@ -538,16 +538,19 @@
 
 (defn get-add-token-list [] (home-page-assets {:include-other-tokens true}))
 
-(defn account-list-assets []
-  (let [cur-addr (e :address (get-current-addr))
+(defn account-list-assets [{:keys [accountGroupTypes]}]
+  (let [accountGroupTypes (if (vector? accountGroupTypes) accountGroupTypes ["hd" "pk" "hw" "pub"])
+        cur-addr (e :address (get-current-addr))
         cur-net  (e :network (get-current-network))
         data     (q '[:find ?group ?acc ?addr
-                      :in $ ?cur-net
+                      :in $ ?cur-net [?accountGroupTypes ...]
                       :where
+                      [?vault :vault/type ?accountGroupTypes]
+                      [?group :accountGroup/vault ?vault]
                       [?group :accountGroup/account ?acc]
                       [?acc :account/address ?addr]
                       [?cur-net :network/address ?addr]]
-                    (:db/id cur-net))
+                    (:db/id cur-net) accountGroupTypes)
         data     (reduce
                   (fn [acc [g account addr]]
                     (let [group          (get acc g (assoc (.toMap (e :accountGroup g)) :account {}))
