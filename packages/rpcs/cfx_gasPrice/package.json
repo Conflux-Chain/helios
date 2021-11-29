@@ -4,6 +4,8 @@
   "main": "index.js",
   "version": "0.0.7",
   "dependencies": {
-    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/consts": "workspace:*",
+    "@fluent-wallet/spec": "workspace:packages/spec",
+    "@thi.ng/cache": "2.1.2"
   }
 }
