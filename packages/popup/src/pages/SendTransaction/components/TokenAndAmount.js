@@ -17,15 +17,38 @@ import {
   useBalance,
   useCurrentNetwork,
   useCurrentAccount,
+  useNetworkTypeIsCfx,
 } from '../../../hooks/useApi'
+import {validateAddress} from '../../../utils'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
   const {added, native} = useDbHomeAssets()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const {netId} = useCurrentNetwork()
   const homeTokenList = [native].concat(added)
   const [searchValue, setSearchValue] = useState('')
+  const [tokenList, setTokenList] = useState([...homeTokenList])
   const onChangeValue = value => {
     setSearchValue(value)
+    const isValid = validateAddress(value, networkTypeIsCfx, netId)
+    if (value === '') setTokenList([...homeTokenList])
+    if (isValid) {
+      const filterToken = homeTokenList.filter(token => token.address === value)
+      setTokenList([...filterToken])
+    } else {
+      const filterToken = homeTokenList.filter(
+        token =>
+          token.symbol.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+          token.name.toUpperCase().indexOf(value?.toUpperCase()) !== -1,
+      )
+      setTokenList([...filterToken])
+    }
+  }
+  const onCloseTokenList = () => {
+    onClose && onClose()
+    setSearchValue('')
+    setTokenList([...homeTokenList])
   }
   const content = (
     <div className="flex flex-col flex-1">
@@ -33,7 +56,7 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
       <span className="inline-block mt-3 mb-1 text-gray-40 text-xs">
         {t('tokenList')}
       </span>
-      <TokenList tokenList={homeTokenList} onSelectToken={onSelectToken} />
+      <TokenList tokenList={tokenList} onSelectToken={onSelectToken} />
     </div>
   )
   return (
@@ -42,7 +65,7 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
       open={open}
       title={t('chooseToken')}
       content={content}
-      onClose={onClose}
+      onClose={onCloseTokenList}
       contentClassName="flex-1 flex"
       id="tokenListModal"
     />
