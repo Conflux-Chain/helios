@@ -45,5 +45,5 @@ const asserts = [
 ]
 
 lines.forEach((l, idx) => {
-  strictEqual(l, asserts(idx))
+  strictEqual(l, asserts[idx])
 })

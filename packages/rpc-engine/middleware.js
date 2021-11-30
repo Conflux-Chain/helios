@@ -44,7 +44,7 @@ function addDebugLog(debugLog, id, payload) {
 }
 
 export const addMiddleware = (graph, config = {}, middleware) => {
-  const {processSpec, isProd, debugLog} = config
+  const {processSpec, isProd, isTest, debugLog} = config
   if (Array.isArray(middleware))
     // eslint-disable-next-line import/namespace
     return middleware.map(comp.partial(addMiddleware, graph, config))
@@ -53,7 +53,7 @@ export const addMiddleware = (graph, config = {}, middleware) => {
 
   let newfn = fn
 
-  if (!isProd) {
+  if (!isProd && !isTest) {
     newfn = tx.comp(tx.sideEffect(comp.partial(addDebugLog, debugLog, id)), fn)
   }
 

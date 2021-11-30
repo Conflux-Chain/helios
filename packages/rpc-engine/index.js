@@ -96,6 +96,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
   const addM = partial(addMiddleware, g, {
     debugLog: _debugLog,
     isProd,
+    isTest,
     processSpec,
     errorHandler: s.error.bind(s),
   })

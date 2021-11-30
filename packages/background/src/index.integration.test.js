@@ -997,7 +997,6 @@ describe('integration test', function () {
         expect(app.account.map(a => a.eid).includes(a3.eid)).toBeFalsy()
         // app has the right currentAccount
         expect([a1.eid, a2.eid].includes(app.currentAccount.eid)).toBe(true)
-        expect(app.currentAccount.selected).toBe(true)
 
         expect(res2.result).toBe('0x1')
 
@@ -1065,7 +1064,6 @@ describe('integration test', function () {
         expect(app.account.map(a => a.eid).includes(a3.eid)).toBeFalsy()
         // app has the right currentAccount
         expect([a1.eid, a2.eid].includes(app.currentAccount.eid)).toBe(true)
-        expect(app.currentAccount.selected).toBe(true)
         expect(res.result).toBe(null)
       })
     })

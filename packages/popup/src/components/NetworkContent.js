@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {RPC_METHODS} from '../constants'
 import {request} from '../utils'
 import {useSWRConfig} from 'swr'
-import {useNetwork} from '../hooks/useApi'
+import {useCfxNetwork} from '../hooks/useApi'
 import {CustomTag} from './'
 
 const {WALLET_SET_CURRENT_NETWORK, WALLET_GET_CURRENT_NETWORK} = RPC_METHODS
@@ -70,7 +70,7 @@ NetworkItem.propTypes = {
 }
 
 function NetworkContent({onClickNetworkItem, networkItemSize}) {
-  const networkData = useNetwork()
+  const networkData = useCfxNetwork()
 
   return (
     <>

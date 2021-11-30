@@ -3,9 +3,10 @@
             [malli.util :as mu]
             [malli.error :refer [humanize]]
             [clojure.walk :refer [postwalk]]
+            [cfxjs.spec.cljs]
             [goog.math :refer [randomInt]]))
 
-(defn j->c [a] (js->clj a :keywordize-keys true))
+(defn j->c [a] (cfxjs.spec.cljs/js->clj a :keywordize-keys true))
 
 (declare base32-address)
 (declare base32-user-address)
@@ -31,7 +32,7 @@
   ([schema data opt]
    (let [opt (j->c opt)
          s ((memoize pre-process-schema) schema opt)
-         d (js->clj data)]
+         d (cfxjs.spec.cljs/js->clj data)]
      (m/validate s d opt))))
 
 (defn explain
@@ -39,7 +40,7 @@
   ([schema data opt]
    (let [opt (j->c opt)
          s ((memoize pre-process-schema) schema opt)
-         exp (m/explain s (js->clj data) opt)
+         exp (m/explain s (cfxjs.spec.cljs/js->clj data) opt)
          rst (humanize exp)]
      ;; (when goog.DEBUG #p exp)
      (clj->js rst))))
@@ -56,7 +57,7 @@
 
 (defn def-rest-schemas [opts]
   (let [{:keys [INTERNAL_CONTRACTS_HEX_ADDRESS randomHexAddress randomPrivateKey validateMnemonic generateMnemonic validatePrivateKey validateHDPath randomHDPath]} (j->c opts)
-        INTERNAL_CONTRACTS_HEX_ADDRESS (js->clj INTERNAL_CONTRACTS_HEX_ADDRESS)]
+        INTERNAL_CONTRACTS_HEX_ADDRESS (cfxjs.spec.cljs/js->clj INTERNAL_CONTRACTS_HEX_ADDRESS)]
     #js
      {:hdPath (m/-simple-schema
                {:type :hd-path

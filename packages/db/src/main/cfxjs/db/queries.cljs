@@ -103,7 +103,7 @@
                                   :where
                                   [?a :account/selected true]])
         ;; set all accounts unselected
-        acc-unselect         [[:db.fn/retractAttribute selected-account :account/selected]]
+        acc-unselect         (if selected-account [[:db.fn/retractAttribute selected-account :account/selected]] [])
         ;; select account
         acc-select           [[:db/add acc :account/selected true]]
         ;; query app authed by to-be-selected account
@@ -284,9 +284,7 @@
        (mapv #(e :accountGroup %))))
 
 (defn get-single-call-balance-params [{:keys [type allNetwork]}]
-  (let [discover?            (= type "discover")
-        refresh?             (= type "refresh")
-        all?                 (= type "all")
+  (let [all?                 (= type "all")
         native-balance-binds (q '[:find ?net ?addr ?token
                                   :in $ ?allnet
                                   :where
@@ -299,44 +297,32 @@
                                   [?addr-id :address/hex ?addr-hex]
                                   [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]
                                   [(and true "0x0") ?token]] allNetwork)
-        has-balance-binds    (if (or refresh? all?)
-                               (q '[:find ?net ?addr ?token
-                                    :in $ ?allnet
-                                    :where
-                                    [?net :network/token ?token-id]
-                                    (or
-                                     [(true? ?allnet)]
-                                     (and
-                                      [(not ?allnet)]
-                                      [?net :network/selected true]))
-                                    [?balance :balance/address ?addr-id]
-                                    [?balance :balance/token  ?token-id]
-                                    [?token-id :token/address ?token]
-                                    [?addr-id :address/hex ?addr-hex]
-                                    [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]] allNetwork)
-                               #{})
-        no-balance-binds     (if (or all? discover?)
-                               (q '[:find ?net ?addr ?token
-                                    :in $ ?allnet
-                                    :where
-                                    [?net :network/address ?addr-id]
-                                    [?net :network/token ?token-id]
-                                    (or
-                                     [(true? ?allnet)]
-                                     (and
-                                      [(not ?allnet)]
-                                      [?net :network/selected true]))
-                                    (not [?addr-id :address/token ?token-id])
-                                    [?token-id :token/address ?token]
-                                    [?addr-id :address/hex ?addr-hex]
-                                    [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]] allNetwork)
-                               #{})
+        token-binds          (q '[:find ?net ?addr ?token
+                                  :in $ ?allnet ?alladdr
+                                  :where
+                                  (or
+                                   (and [(true? ?allnet)]
+                                        [?net :network/name _])
+                                   (and
+                                    [(not ?allnet)]
+                                    [?net :network/selected true]))
+                                  [?net :network/address ?addr-id]
+                                  [?acc :account/address ?addr-id]
+                                  (or
+                                   [(true? ?alladdr)]
+                                   (and
+                                    [(not ?alladdr)]
+                                    [?acc :account/selected true]))
+                                  [?net :network/token ?token-id]
+                                  [?token-id :token/address ?token]
+                                  [?addr-id :address/hex ?addr-hex]
+                                  [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]]
+                                allNetwork all?)
         format-balance-binds (fn [acc [network-id uaddr taddr]]
                                (let [[u t net] (get acc network-id [#{} #{} (e :network network-id)])]
                                  (assoc acc network-id [(conj u uaddr) (conj t taddr) net])))
         params               (reduce format-balance-binds {} native-balance-binds)
-        params               (reduce format-balance-binds params has-balance-binds)
-        params               (reduce format-balance-binds params no-balance-binds)]
+        params               (reduce format-balance-binds {} token-binds)]
     (into [] params)))
 
 (defn upsert-balances [{:keys [networkId data]}]
@@ -352,7 +338,6 @@
                   []
                   tokens-map)))
          [] data)
-
         formated-data (q '[:find ?u ?t ?balance ?b
                            :in $ [[?u ?t ?balance]]
                            :where
@@ -553,16 +538,19 @@
 
 (defn get-add-token-list [] (home-page-assets {:include-other-tokens true}))
 
-(defn account-list-assets []
-  (let [cur-addr (e :address (get-current-addr))
+(defn account-list-assets [{:keys [accountGroupTypes]}]
+  (let [accountGroupTypes (if (vector? accountGroupTypes) accountGroupTypes ["hd" "pk" "hw" "pub"])
+        cur-addr (e :address (get-current-addr))
         cur-net  (e :network (get-current-network))
         data     (q '[:find ?group ?acc ?addr
-                      :in $ ?cur-net
+                      :in $ ?cur-net [?accountGroupTypes ...]
                       :where
+                      [?vault :vault/type ?accountGroupTypes]
+                      [?group :accountGroup/vault ?vault]
                       [?group :accountGroup/account ?acc]
                       [?acc :account/address ?addr]
                       [?cur-net :network/address ?addr]]
-                    (:db/id cur-net))
+                    (:db/id cur-net) accountGroupTypes)
         data     (reduce
                   (fn [acc [g account addr]]
                     (let [group          (get acc g (assoc (.toMap (e :accountGroup g)) :account {}))
