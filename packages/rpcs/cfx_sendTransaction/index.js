@@ -102,7 +102,13 @@ export const main = async ({
   } = t([
     {
       eid: 'newTxId',
-      tx: {payload: txMeta, hash: txhash, raw: rawtx, status: 0},
+      tx: {
+        payload: txMeta,
+        hash: txhash,
+        raw: rawtx,
+        status: 0,
+        created: new Date().getTime(),
+      },
     },
     {eid: addr.eid, address: {tx: 'newTxId'}},
     authReq && {eid: authReq.app.eid, app: {tx: 'newTxId'}},
