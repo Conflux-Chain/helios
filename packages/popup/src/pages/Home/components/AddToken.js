@@ -109,6 +109,11 @@ function AddToken({onClose, onOpen}) {
     })
   }
 
+  const onCloseAddToken = () => {
+    onClose()
+    setSearchContent('')
+  }
+
   if (!address) {
     return null
   }
@@ -116,7 +121,7 @@ function AddToken({onClose, onOpen}) {
   return (
     <SlideCard
       cardTitle={t('addToken')}
-      onClose={onClose}
+      onClose={onCloseAddToken}
       onOpen={onOpen}
       cardContent={
         <div className="mt-4">
