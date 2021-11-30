@@ -5,6 +5,7 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {HomeNav} from '../../components'
+import {PendingQueue} from './components'
 import {
   CurrentAccount,
   CurrentNetwork,
@@ -59,14 +60,17 @@ function Home() {
           >
             {t('send')}
           </Button>
-          <Button
-            id="historyBtn"
-            size="small"
-            variant="outlined"
-            className="!border-white !text-white !bg-transparent !hover:none"
-          >
-            {t('history')}
-          </Button>
+          <div className="relative">
+            <Button
+              id="historyBtn"
+              size="small"
+              variant="outlined"
+              className="!border-white !text-white !bg-transparent !hover:none"
+            >
+              {t('history')}
+            </Button>
+            <PendingQueue count={3} />
+          </div>
         </div>
       </div>
       <HomeTokenList onOpenAddToken={() => setAddTokenStatus(true)} />
