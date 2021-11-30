@@ -4,8 +4,6 @@ import {useState, useRef, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useSWRConfig} from 'swr'
 import {SelectedOutlined, PlusOutlined} from '@fluent-wallet/component-icons'
-import {validateBase32Address} from '@fluent-wallet/base32-address'
-import {isHexAddress} from '@fluent-wallet/account'
 import {SlideCard} from '../../../components'
 import {WrapIcon, SearchToken, TokenItem} from '../../../components'
 import {RPC_METHODS, DEFAULT_TOKEN_URL} from '../../../constants'
@@ -25,13 +23,6 @@ const {
   WALLETDB_REFETCH_BALANCE,
 } = RPC_METHODS
 
-const isAddress = (value, isCfxChain) => {
-  return (
-    (isCfxChain && validateBase32Address(value)) ||
-    (!isCfxChain && isHexAddress(value))
-  )
-}
-
 function AddToken({onClose, onOpen}) {
   const {mutate} = useSWRConfig()
   const {t} = useTranslation()
@@ -46,13 +37,15 @@ function AddToken({onClose, onOpen}) {
 
   useEffect(() => {
     if (dbData?.added && dbData?.others && !isUndefined(netId)) {
-      const {added, others} = dbData
-      const addTokenList = added.concat(others)
       if (searchContent === '') {
         setNoTokenStatus(false)
         return setTokenList([])
       }
-      if (!validateAddress(searchContent, isCfxChain, netId)) {
+      if (validateAddress(searchContent, isCfxChain, netId)) {
+        getOther20Token(searchContent)
+      } else {
+        const {added, others} = dbData
+        const addTokenList = added.concat(others)
         const ret = addTokenList.filter(
           token =>
             token.symbol.toUpperCase().indexOf(searchContent.toUpperCase()) !==
@@ -86,9 +79,6 @@ function AddToken({onClose, onOpen}) {
   const onChangeValue = value => {
     setSearchContent(value)
     inputValueRef.current = value
-    if (isAddress(value, isCfxChain)) {
-      getOther20Token(value)
-    }
   }
 
   const onAddToken = ({decimals, symbol, address, logoURI}) => {
