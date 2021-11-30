@@ -45,5 +45,12 @@ const asserts = [
 ]
 
 lines.forEach((l, idx) => {
-  strictEqual(l, asserts[idx])
+  console.log(`expect line ${idx + 1} to be ${asserts[idx]}`)
+  strictEqual(
+    l,
+    asserts[idx],
+    `expect line ${idx + 1} to be ${asserts[idx]}, found line ${
+      idx + 1
+    } is\n${l}`,
+  )
 })
