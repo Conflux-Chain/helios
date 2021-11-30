@@ -111,7 +111,7 @@ function AddToken({onClose, onOpen}) {
   }
 
   const onCloseAddToken = () => {
-    onClose()
+    onClose && onClose()
     setSearchContent('')
   }
 
