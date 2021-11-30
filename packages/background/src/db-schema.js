@@ -199,6 +199,7 @@ const schema = {
     fromList: {doc: 'true when from token list'},
     fromApp: {doc: 'true when from app'},
     fromUser: {doc: 'true when from user'},
+    tx: {doc: 'token txs', ref: true},
     balance: {
       doc: 'balances of this token',
       ref: true,

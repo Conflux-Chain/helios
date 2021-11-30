@@ -250,6 +250,14 @@
      :alreadyInNet  (boolean token-in-net?)
      :alreadyInAddr (boolean token-in-addr?)}))
 
+(defn token-in-addr? [{:keys [addressId tokenId]}]
+  (-> (q '[:find ?x .
+           :in $ ?addr ?token
+           :where
+           [?addr :address/token ?token]
+           [(and true true) ?x]] addressId tokenId)
+      boolean))
+
 (defn get-network-token-by-token-addr [{:keys [networkId tokenAddress]}]
   (q '[:find ?tokenId .
        :in $ ?net ?addr
@@ -470,6 +478,14 @@
   (->> (get-unfinished-tx-raw)
        count))
 
+(defn get-token-by-addr-and-net [{:keys [address networkId]}]
+  (->> (q '[:find ?token .
+            :in $ ?addr ?net
+            :where
+            [?token :token/addreess ?addr]
+            [?net :network/token ?token]] address networkId)
+       (e :token)))
+
 (defn set-tx-skipped [{:keys [hash]}]
   (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
       {:db/id [:tx/hash hash] :tx/status -2}]))
@@ -590,8 +606,10 @@
               :upsertBalances                  upsert-balances
               :retractAddressToken             retract-address-token
               :getFromAddress                  get-from-address
+              :getTokenByAddrAndNet            get-token-by-addr-and-net
               :getAddrFromNetworkAndAddress    get-addr-from-network-and-address
               :getAddrTxByHash                 get-addr-tx-by-hash
+              :isTokenInAddr                   token-in-addr?
               :getUnfinishedTx                 get-unfinished-tx
               :getUnfinishedTxCount            get-unfinished-tx-count
               :setTxSkipped                    set-tx-skipped
