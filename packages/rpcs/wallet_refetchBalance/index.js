@@ -13,7 +13,7 @@ export const schemas = {
         'type',
         {
           optional: true,
-          doc: 'all for fetch balance of all tokens rather than tokens under each address',
+          doc: 'all for fetch balance all accounts rather than selected account',
         },
         [enums, 'all'],
       ],
@@ -39,7 +39,7 @@ export const main = async ({
   rpcs: {wallet_getBalance},
 }) => {
   const refetchBalanceParams = getSingleCallBalanceParams({
-    type: params?.type || 'refresh',
+    type: params?.type,
     allNetwork: Boolean(params?.allNetwork),
   })
 

@@ -66,8 +66,10 @@ export const permissions = {
     'wallet_validatePassword',
     'wallet_deleteAccountGroup',
     'wallet_refetchTokenList',
+    'wallet_setCurrentAccount',
   ],
   db: [
+    'getAccountGroupById',
     'getAccountGroupByVaultType',
     't',
     'getOneAccount',
@@ -83,11 +85,14 @@ export const permissions = {
   ],
 }
 
-function setDefaultSelectedAccount({db: {getOneAccount, getAccount, t}}) {
-  if (!getOneAccount({selected: true})) {
-    const defaultSelectedAccount = getAccount()[0]
-    if (defaultSelectedAccount)
-      t([{eid: defaultSelectedAccount.eid, account: {selected: true}}])
+async function selectNewlyCreatedAccountGroupFirstAccount({
+  rpcs: {wallet_setCurrentAccount},
+  db: {getAccountGroupById},
+  groupId,
+}) {
+  const group = getAccountGroupById(groupId)
+  if (group?.account?.[0]) {
+    return await wallet_setCurrentAccount([group.account[0].eid])
   }
 }
 
@@ -209,7 +214,7 @@ export async function newAccountGroup(arg) {
     groupId,
     groupName,
   }).then(() => {
-    setDefaultSelectedAccount(arg)
+    selectNewlyCreatedAccountGroupFirstAccount({...arg, groupId})
   })
 
   if (waitTillFinish) await newAccountsPromise
