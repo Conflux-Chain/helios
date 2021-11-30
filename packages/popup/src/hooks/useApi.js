@@ -233,13 +233,9 @@ export const useDbRefetchBalance = param => {
 }
 
 export const useDbAddTokenList = () => {
-  const {data: addTokenListData} = useRPC(
-    [WALLETDB_ADD_TOKEN_LIST],
-    {type: 'all'},
-    {
-      fallbackData: {},
-    },
-  )
+  const {data: addTokenListData} = useRPC([WALLETDB_ADD_TOKEN_LIST], {
+    type: 'all',
+  })
   useDbRefetchBalance()
   return addTokenListData
 }

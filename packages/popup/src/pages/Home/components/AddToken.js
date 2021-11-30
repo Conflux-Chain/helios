@@ -42,7 +42,7 @@ function AddToken({onClose, onOpen}) {
   const dbData = useDbAddTokenList()
 
   useEffect(() => {
-    if (dbData.added && dbData.others) {
+    if (dbData?.added && dbData?.others) {
       const {added, others} = dbData
       const addTokenList = added.concat(others)
       if (searchContent === '') {
@@ -62,7 +62,8 @@ function AddToken({onClose, onOpen}) {
         setTokenList([...ret])
       }
     }
-  }, [dbData, searchContent, isCfxChain])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Boolean(dbData), searchContent, isCfxChain])
 
   const getOther20Token = value => {
     request(WALLET_VALIDATE_20TOKEN, {
