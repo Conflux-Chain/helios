@@ -66,3 +66,6 @@ export function updateAddedNewAccount(mutate, noAccountBefore, groupType) {
   mutate([WALLET_GET_ACCOUNT_GROUP])
   mutate([WALLET_GET_ACCOUNT_GROUP, groupType])
 }
+
+export const transformToTitleCase = str =>
+  str.replace(/^\S/, s => s.toUpperCase())

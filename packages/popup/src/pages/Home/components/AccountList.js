@@ -53,7 +53,7 @@ function AccountItem({
                 maxWidth={270}
                 decimals={decimals}
               />
-              <pre className="text-sm text-gray-80">{tokeName}</pre>
+              <pre className="text-sm text-gray-80"> {tokeName}</pre>
             </div>
           </div>
           {authorizedAccountIdIconObj[eid] ? (

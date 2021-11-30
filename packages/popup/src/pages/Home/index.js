@@ -6,6 +6,9 @@ import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {HomeNav} from '../../components'
 import {PendingQueue} from './components'
+import {ROUTES} from '../../constants'
+
+const {HISTORY} = ROUTES
 import {
   CurrentAccount,
   CurrentNetwork,
@@ -66,6 +69,9 @@ function Home() {
               size="small"
               variant="outlined"
               className="!border-white !text-white !bg-transparent !hover:none"
+              onClick={() => {
+                history.push(HISTORY)
+              }}
             >
               {t('history')}
             </Button>
