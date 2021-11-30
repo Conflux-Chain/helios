@@ -69,7 +69,7 @@ function Home() {
             >
               {t('history')}
             </Button>
-            <PendingQueue count={3} />
+            <PendingQueue count={9} />
           </div>
         </div>
       </div>

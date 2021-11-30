@@ -185,6 +185,7 @@ const en = {
     transactionDetails: 'Transaction Details',
     functionName: 'Function',
     hexData: 'Hex Data',
+    activity: 'Activity',
   },
 }
 
