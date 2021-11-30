@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import {isUndefined} from '@fluent-wallet/checks'
 import {useState, useRef, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useSWRConfig} from 'swr'
@@ -8,12 +9,13 @@ import {isHexAddress} from '@fluent-wallet/account'
 import {SlideCard} from '../../../components'
 import {WrapIcon, SearchToken, TokenItem} from '../../../components'
 import {RPC_METHODS, DEFAULT_TOKEN_URL} from '../../../constants'
-import {request} from '../../../utils'
+import {request, validateAddress} from '../../../utils'
 
 import {
   useNetworkTypeIsCfx,
   useCurrentAccount,
   useDbAddTokenList,
+  useCurrentNetwork,
 } from '../../../hooks/useApi'
 
 const {
@@ -39,18 +41,18 @@ function AddToken({onClose, onOpen}) {
   const inputValueRef = useRef()
   const {address} = useCurrentAccount()
   const isCfxChain = useNetworkTypeIsCfx()
+  const {netId} = useCurrentNetwork()
   const dbData = useDbAddTokenList()
 
   useEffect(() => {
-    if (dbData?.added && dbData?.others) {
+    if (dbData?.added && dbData?.others && !isUndefined(netId)) {
       const {added, others} = dbData
       const addTokenList = added.concat(others)
       if (searchContent === '') {
         setNoTokenStatus(false)
         return setTokenList([])
       }
-
-      if (!isAddress(searchContent, isCfxChain)) {
+      if (!validateAddress(searchContent, isCfxChain, netId)) {
         const ret = addTokenList.filter(
           token =>
             token.symbol.toUpperCase().indexOf(searchContent.toUpperCase()) !==
@@ -63,7 +65,7 @@ function AddToken({onClose, onOpen}) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(dbData), searchContent, isCfxChain])
+  }, [Boolean(dbData), searchContent, isCfxChain, netId])
 
   const getOther20Token = value => {
     request(WALLET_VALIDATE_20TOKEN, {
