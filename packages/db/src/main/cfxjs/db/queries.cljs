@@ -330,7 +330,7 @@
                                (let [[u t net] (get acc network-id [#{} #{} (e :network network-id)])]
                                  (assoc acc network-id [(conj u uaddr) (conj t taddr) net])))
         params               (reduce format-balance-binds {} native-balance-binds)
-        params               (reduce format-balance-binds {} token-binds)]
+        params               (reduce format-balance-binds params token-binds)]
     (into [] params)))
 
 (defn upsert-balances [{:keys [networkId data]}]
