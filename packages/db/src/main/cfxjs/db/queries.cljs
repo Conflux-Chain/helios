@@ -628,6 +628,43 @@
      :currentNetwork cur-net
      :accountGroups  data}))
 
+(defn- sort-nonce [[_ noncea] [_ nonceb]] (> noncea nonceb))
+
+(defn query-tx-list [{:keys [offset limit addressId tokenId extraType]}]
+  (let [offset (or offset 0)
+        limit     (min 100 (or limit 10))
+        extraType (if extraType (keyword "txExtra" extraType) extraType)
+        query-initial
+        (cond-> '{:find  [?tx ?nonce]
+                  :in    [$]
+                  :where [[?tx :tx/payload ?payload]
+                          [?payload :txPayload/nonce ?nonce]]
+                  :args []}
+          addressId
+          (-> (update :args conj addressId)
+              (update :in conj '?addr)
+              (update :where conj '[?addr :address/tx ?tx]))
+          tokenId
+          (-> (update :args conj tokenId)
+              (update :in conj '?token)
+              (update :where conj '[?token :address/tx ?tx]))
+          extraType
+          (-> (update :args conj extraType)
+              (update :in conj '?extraType)
+              (update :where into '[[?tx :tx/extra ?extra]
+                                    [?extra ?extraType true]]))
+          true identity)
+        query     (concat [:find] (:find query-initial)
+                          [:in] (:in query-initial)
+                          [:where] (:where query-initial))]
+
+    (->> (apply q query (:args query-initial))
+         (sort sort-nonce)
+         (map first)
+         (drop offset)
+         (take limit)
+         (mapv #(e :tx %)))))
+
 (def queries {:batchTx
               (fn [txs]
                 (let [txs (-> txs js/window.JSON.parse j->c)
@@ -672,6 +709,7 @@
               :getCfxTxsToEnrich               get-cfx-txs-to-enrich
 
               :queryhomePageAssets        home-page-assets
+              :querytxList                query-tx-list
               :queryaddTokenList          get-add-token-list
               :queryaccountListAssets     account-list-assets
               :getAccountGroupByVaultType get-account-group-by-vault-type})
