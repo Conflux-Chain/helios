@@ -558,6 +558,18 @@
          rst     (if txhash (first rst) rst)]
      rst)))
 
+(defn cleanup-tx []
+  (let [tx (q '[:find [?tx ...]
+                :where [?tx :tx/hash]])
+        to-del-count (- (count tx) 2)]
+    (if (> to-del-count 0)
+      (do (->> (sort tx)
+               (take to-del-count)
+               (mapv (fn [id] [:db.fn/retractEntity id]))
+               t)
+          true)
+      false)))
+
 ;;; UI QUERIES
 (defn home-page-assets
   ([] (home-page-assets {}))
@@ -707,6 +719,7 @@
               :setTxConfirmed                  set-tx-confirmed
               :setTxUnsent                     set-tx-unsent
               :getCfxTxsToEnrich               get-cfx-txs-to-enrich
+              :cleanupTx                       cleanup-tx
 
               :queryhomePageAssets        home-page-assets
               :querytxList                query-tx-list

@@ -73,6 +73,7 @@
     "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork",
     "@fluent-wallet/wallet_add-pending-user-auth-request": "workspace:packages/rpcs/wallet_addPendingUserAuthRequest",
     "@fluent-wallet/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault",
+    "@fluent-wallet/wallet_cleanup-tx": "workspace:*",
     "@fluent-wallet/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount",
     "@fluent-wallet/wallet_create-address": "workspace:packages/rpcs/wallet_createAddress",
     "@fluent-wallet/wallet_db-query": "workspace:packages/rpcs/wallet_dbQuery",

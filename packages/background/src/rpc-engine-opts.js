@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletCleanupTx from '@fluent-wallet/wallet_cleanup-tx'
 import * as walletEnrichConfluxTx from '@fluent-wallet/wallet_enrich-conflux-tx'
 import * as walletEnrichConfluxTxs from '@fluent-wallet/wallet_enrich-conflux-txs'
 import * as walletGetExplorerUrl from '@fluent-wallet/wallet_get-explorer-url'
@@ -285,5 +286,6 @@ export const rpcEngineOpts = {
 
     walletHandleUnfinishedCFXTx,
     walletHandleUnfinishedTxs,
+    walletCleanupTx,
   ],
 }

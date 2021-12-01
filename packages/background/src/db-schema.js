@@ -134,7 +134,11 @@ const schema = {
 
   // ## tx
   tx: {
-    payload: {doc: 'tx payload as an object', ref: 'txPayload'},
+    payload: {
+      doc: 'tx payload as an object',
+      ref: 'txPayload',
+      component: true,
+    },
     raw: {doc: 'raw tx hash'},
     hash: {
       doc: 'tx hash',
@@ -146,7 +150,7 @@ const schema = {
     receipt: {doc: 'receipt as an object'},
     created: {doc: 'created timestamp get with new Date().getTime()'},
     err: {doc: 'basic error type/info'},
-    extra: {doc: 'enriched tx info', ref: 'txExtra'},
+    extra: {doc: 'enriched tx info', ref: 'txExtra', component: true},
     fromFluent: {doc: 'tx sumitted from fluent'},
   },
   txPayload: {

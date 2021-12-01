@@ -91,6 +91,10 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
     ),
     10000,
   )
+  setInterval(
+    () => request({method: 'wallet_cleanupTx', _rpcStack: ['frombg']}),
+    1000 * 60 * 60,
+  )
 
   // ## Dev/Test
   if (!IS_TEST_MODE) {
