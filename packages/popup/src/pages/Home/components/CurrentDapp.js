@@ -42,7 +42,7 @@ function CurrentDapp() {
 
   return (
     <div
-      className="flex items-center h-16 rounded-t-xl bg-gray-0 px-3"
+      className="flex items-center h-16 rounded-t-xl bg-gray-0 px-3 flex-shrink-0"
       id="currentDappContainer"
     >
       {!isConnected && (
