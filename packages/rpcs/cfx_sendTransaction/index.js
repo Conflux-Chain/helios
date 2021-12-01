@@ -19,6 +19,7 @@ export const permissions = {
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
     'wallet_handleUnfinishedCFXTx',
+    'wallet_enrichConfluxTx',
   ],
   db: [
     'getAuthReqById',
@@ -39,6 +40,7 @@ export const main = async ({
     t,
   },
   rpcs: {
+    wallet_enrichConfluxTx,
     cfx_signTransaction,
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
@@ -83,6 +85,7 @@ export const main = async ({
     address: tx[0].from,
   })
   if (!addr) throw InvalidParams(`Invalid from address ${tx[0].from}`)
+
   const signed = await cfx_signTransaction(
     tx.concat({
       returnTxMeta: true,
@@ -97,16 +100,32 @@ export const main = async ({
 
   if (duptx) throw InvalidParams('duplicate tx')
 
-  const {
-    tempids: {newTxId},
-  } = t([
+  const dbtxs = [
+    {eid: 'newTxPayload', txPayload: txMeta},
+    {eid: 'newTxExtra', txExtra: {ok: false}},
     {
       eid: 'newTxId',
-      tx: {payload: txMeta, hash: txhash, raw: rawtx, status: 0},
+      tx: {
+        fromFluent: true,
+        payload: 'newTxPayload',
+        hash: txhash,
+        raw: rawtx,
+        status: 0,
+        created: new Date().getTime(),
+        extra: 'newTxExtra',
+      },
     },
     {eid: addr.eid, address: {tx: 'newTxId'}},
     authReq && {eid: authReq.app.eid, app: {tx: 'newTxId'}},
-  ])
+  ]
+
+  const {
+    tempids: {newTxId},
+  } = t(dbtxs)
+
+  try {
+    wallet_enrichConfluxTx({errorFallThrough: true}, {txhash})
+  } catch (err) {} // eslint-disable-line no-empty
 
   return await new Promise(resolve => {
     wallet_handleUnfinishedCFXTx({

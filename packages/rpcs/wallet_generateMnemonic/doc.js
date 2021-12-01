@@ -1,6 +1,6 @@
 export default {
   metadata: {
-    provider: true,
+    inner: true,
   },
   en: `Helper method to generate a random mnemonic.
 

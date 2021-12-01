@@ -4,9 +4,10 @@ import {
   sideEffect,
   map,
   keep,
-  multiplexObj,
-  comp,
+  // comp,
   keepTruthy,
+  // trace,
+  branchObj,
 } from '@fluent-wallet/transducers'
 import {processError} from '@fluent-wallet/conflux-tx-error'
 import {BigNumber} from '@ethersproject/bignumber'
@@ -96,15 +97,21 @@ export const main = ({
     setTxUnsent,
   },
   params: {tx, address, okCb, failedCb},
+  network,
 }) => {
   tx = getTxById(tx)
   address = getAddressById(address)
+  const cacheTime = network.cacheTime || 1000
   const {status, hash, raw} = tx
   const s = defs(hash, {tx, address})
   const sdone = () => s.done()
-  const keepTrack = () => {
+  const keepTrack = (delay = cacheTime) => {
+    if (!Number.isInteger(delay)) delay = cacheTime
     sdone()
-    return wallet_handleUnfinishedCFXTx({tx: tx.eid, address: address.eid})
+    setTimeout(
+      () => wallet_handleUnfinishedCFXTx({tx: tx.eid, address: address.eid}),
+      delay,
+    )
   }
 
   // unsent
@@ -131,8 +138,8 @@ export const main = ({
               isDuplicateTx,
               keepTrack: !failed,
             }).transform(
-              multiplexObj({
-                failed: comp(
+              branchObj({
+                failed: [
                   keepTruthy(),
                   sideEffect(
                     ({err}) => typeof failedCb === 'function' && failedCb(err),
@@ -150,16 +157,15 @@ export const main = ({
                     )
                   }),
                   sideEffect(() => updateBadge(getUnfinishedTxCount())),
-                ),
-
-                isDuplicateTx: comp(
+                ],
+                isDuplicateTx: [
                   keepTruthy(),
                   sideEffect(() => {
                     setTxPending({hash})
                     typeof okCb === 'function' && okCb(hash)
                     keepTrack()
                   }),
-                ),
+                ],
 
                 keepTrack: map(x => x && keepTrack), // retry in next run
               }),
@@ -171,7 +177,7 @@ export const main = ({
         // successfully sent
         sideEffect(() => setTxPending({hash})),
         sideEffect(() => typeof okCb === 'function' && okCb(hash)),
-        sideEffect(keepTrack),
+        sideEffect(() => keepTrack),
       )
     return
   }
@@ -246,7 +252,7 @@ export const main = ({
         }),
         map(rst => {
           if (rst) {
-            keepTrack()
+            keepTrack(5 * cacheTime)
             return Promise.resolve(null)
           }
           return cfx_getNextNonce([address.base32])
@@ -312,7 +318,7 @@ export const main = ({
 
           if (outcomeStatus === '0x0') {
             setTxExecuted({hash, receipt})
-            keepTrack()
+            keepTrack(50 * cacheTime)
           } else {
             setTxFailed({hash, err: txExecErrorMsg})
             updateBadge(getUnfinishedTxCount())
@@ -347,7 +353,7 @@ export const main = ({
             updateBadge(getUnfinishedTxCount())
             return true
           }
-          keepTrack()
+          keepTrack(50 * cacheTime)
           return false
         }),
         keepTruthy(), // filter non-null tx

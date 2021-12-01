@@ -73,7 +73,7 @@ export const main = async ({
     networkId,
   },
 }) => {
-  const network = getNetworkById(networkId)
+  let network = getNetworkById(networkId)
   if (!network) throw InvalidParams(`Invalid network id ${networkId}`)
 
   let tokenList
@@ -103,13 +103,9 @@ export const main = async ({
   if (oldTokenList) retract(oldTokenList.eid)
   oldTokens.forEach(retract)
 
-  const [existTokensIdx, existTokensAddr] = (
-    getNetworkById(networkId).token || []
-  ).reduce(
-    (acc, {address}, idx) => [
-      [...acc[0], idx],
-      [...acc[1], address],
-    ],
+  network = getNetworkById(networkId)
+  const [existTokensIdx, existTokensAddr] = (network.token || []).reduce(
+    (acc, {address}, idx) => [acc[0].concat([idx]), acc[1].concat([address])],
     [[], []],
   )
 
