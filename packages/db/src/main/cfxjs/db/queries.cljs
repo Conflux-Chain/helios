@@ -1,5 +1,6 @@
 (ns cfxjs.db.queries
   (:require
+   [cfxjs.spec.cljs]
    [cfxjs.db.datascript.core :as db]
    [cfxjs.db.schema :refer [model->attr-keys]]
    [debux.cs.core :as d :refer-macros [clog clogn break clog_ clogn_  break_]]))
@@ -7,7 +8,7 @@
 (declare q p e t fdb)
 
 (defn j->c [a]
-  (js->clj a :keywordize-keys true))
+  (cfxjs.spec.cljs/js->clj a :keywordize-keys true))
 
 (defn get-one-account-by-group-and-nickname
   [{:keys [groupId nickname]}]
@@ -250,6 +251,14 @@
      :alreadyInNet  (boolean token-in-net?)
      :alreadyInAddr (boolean token-in-addr?)}))
 
+(defn token-in-addr? [{:keys [addressId tokenId]}]
+  (-> (q '[:find ?x .
+           :in $ ?addr ?token
+           :where
+           [?addr :address/token ?token]
+           [(and true true) ?x]] addressId tokenId)
+      boolean))
+
 (defn get-network-token-by-token-addr [{:keys [networkId tokenAddress]}]
   (q '[:find ?tokenId .
        :in $ ?net ?addr
@@ -283,29 +292,31 @@
           type)
        (mapv #(e :accountGroup %))))
 
-(defn get-single-call-balance-params [{:keys [type allNetwork]}]
+(defn get-single-call-balance-params [{:keys [type allNetwork networkId]}]
   (let [all?                 (= type "all")
         native-balance-binds (q '[:find ?net ?addr ?token
-                                  :in $ ?allnet
+                                  :in $ ?allnet ?network
                                   :where
-                                  [?net :network/address ?addr-id]
                                   (or
-                                   [(true? ?allnet)]
+                                   (and
+                                    [(true? ?allnet)]
+                                    [?net :network/name _])
                                    (and
                                     [(not ?allnet)]
-                                    [?net :network/selected true]))
+                                    [(and true ?network) ?net]))
+                                  [?net :network/address ?addr-id]
                                   [?addr-id :address/hex ?addr-hex]
                                   [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]
-                                  [(and true "0x0") ?token]] allNetwork)
+                                  [(and true "0x0") ?token]] allNetwork networkId)
         token-binds          (q '[:find ?net ?addr ?token
-                                  :in $ ?allnet ?alladdr
+                                  :in $ ?allnet ?alladdr ?network
                                   :where
                                   (or
                                    (and [(true? ?allnet)]
                                         [?net :network/name _])
                                    (and
                                     [(not ?allnet)]
-                                    [?net :network/selected true]))
+                                    [(and true ?network) ?net]))
                                   [?net :network/address ?addr-id]
                                   [?acc :account/address ?addr-id]
                                   (or
@@ -317,12 +328,12 @@
                                   [?token-id :token/address ?token]
                                   [?addr-id :address/hex ?addr-hex]
                                   [(get-else $ ?addr-id :address/base32 ?addr-hex) ?addr]]
-                                allNetwork all?)
+                                allNetwork all? networkId)
         format-balance-binds (fn [acc [network-id uaddr taddr]]
                                (let [[u t net] (get acc network-id [#{} #{} (e :network network-id)])]
                                  (assoc acc network-id [(conj u uaddr) (conj t taddr) net])))
         params               (reduce format-balance-binds {} native-balance-binds)
-        params               (reduce format-balance-binds {} token-binds)]
+        params               (reduce format-balance-binds params token-binds)]
     (into [] params)))
 
 (defn upsert-balances [{:keys [networkId data]}]
@@ -470,6 +481,14 @@
   (->> (get-unfinished-tx-raw)
        count))
 
+(defn get-token-by-addr-and-net [{:keys [address networkId]}]
+  (->> (q '[:find ?token .
+            :in $ ?addr ?net
+            :where
+            [?token :token/addreess ?addr]
+            [?net :network/token ?token]] address networkId)
+       (e :token)))
+
 (defn set-tx-skipped [{:keys [hash]}]
   (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
       {:db/id [:tx/hash hash] :tx/status -2}]))
@@ -492,6 +511,64 @@
 (defn set-tx-confirmed [{:keys [hash]}]
   (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
       {:db/id [:tx/hash hash] :tx/status 5}]))
+
+(defn get-cfx-txs-to-enrich
+  ([] (get-cfx-txs-to-enrich {}))
+  ([{:keys [txhash]}]
+   (let [txs (q '[:find ?tx ?addr ?net ?token ?app
+                  :in $ ?txhash
+                  :where
+                  (or (and [(and true ?txhash)]
+                           [?tx :tx/hash ?txhash])
+                      (and [(not ?txhash)]
+                           [?tx :tx/hash]))
+
+                  [?tx :tx/extra ?extra]
+                  [?extra :txExtra/ok ?txextra-ok]
+                  [(not ?txextra-ok)]
+                  [?tx :tx/payload ?payload]
+                  [(get-else $ ?payload :txPayload/to false) ?to]
+
+                  [?addr :address/tx ?tx]
+                  [?net :network/address ?addr]
+                  [?net :network/type "cfx"]
+
+                  (or
+                   [?token :token/tx ?tx]
+                   (and [?token :token/address ?to]
+                        [?net :network/token ?token])
+                   [(and true false) ?token])
+                  (or
+                   [?app :app/tx ?tx]
+                   [(and true false) ?app])]
+                txhash)
+         process (if txhash (fn [[tx addr net token app]]
+                              {:tx      (e :tx tx)
+                               :address (e :address addr)
+                               :network (e :network net)
+                               :token   (and token (e :token token))
+                               :app     (and token (e :app app))})
+                     (fn [[tx addr net token app]]
+                       {:tx      (e :tx tx)
+                        :address addr
+                        :network net
+                        :token   token
+                        :app     app}))
+         rst     (mapv process txs)
+         rst     (if txhash (first rst) rst)]
+     rst)))
+
+(defn cleanup-tx []
+  (let [tx (q '[:find [?tx ...]
+                :where [?tx :tx/hash]])
+        to-del-count (- (count tx) 2)]
+    (if (> to-del-count 0)
+      (do (->> (sort tx)
+               (take to-del-count)
+               (mapv (fn [id] [:db.fn/retractEntity id]))
+               t)
+          true)
+      false)))
 
 ;;; UI QUERIES
 (defn home-page-assets
@@ -563,6 +640,43 @@
      :currentNetwork cur-net
      :accountGroups  data}))
 
+(defn- sort-nonce [[_ noncea] [_ nonceb]] (> noncea nonceb))
+
+(defn query-tx-list [{:keys [offset limit addressId tokenId extraType]}]
+  (let [offset (or offset 0)
+        limit     (min 100 (or limit 10))
+        extraType (if extraType (keyword "txExtra" extraType) extraType)
+        query-initial
+        (cond-> '{:find  [?tx ?nonce]
+                  :in    [$]
+                  :where [[?tx :tx/payload ?payload]
+                          [?payload :txPayload/nonce ?nonce]]
+                  :args []}
+          addressId
+          (-> (update :args conj addressId)
+              (update :in conj '?addr)
+              (update :where conj '[?addr :address/tx ?tx]))
+          tokenId
+          (-> (update :args conj tokenId)
+              (update :in conj '?token)
+              (update :where conj '[?token :address/tx ?tx]))
+          extraType
+          (-> (update :args conj extraType)
+              (update :in conj '?extraType)
+              (update :where into '[[?tx :tx/extra ?extra]
+                                    [?extra ?extraType true]]))
+          true identity)
+        query     (concat [:find] (:find query-initial)
+                          [:in] (:in query-initial)
+                          [:where] (:where query-initial))]
+
+    (->> (apply q query (:args query-initial))
+         (sort sort-nonce)
+         (map first)
+         (drop offset)
+         (take limit)
+         (mapv #(e :tx %)))))
+
 (def queries {:batchTx
               (fn [txs]
                 (let [txs (-> txs js/window.JSON.parse j->c)
@@ -590,8 +704,10 @@
               :upsertBalances                  upsert-balances
               :retractAddressToken             retract-address-token
               :getFromAddress                  get-from-address
+              :getTokenByAddrAndNet            get-token-by-addr-and-net
               :getAddrFromNetworkAndAddress    get-addr-from-network-and-address
               :getAddrTxByHash                 get-addr-tx-by-hash
+              :isTokenInAddr                   token-in-addr?
               :getUnfinishedTx                 get-unfinished-tx
               :getUnfinishedTxCount            get-unfinished-tx-count
               :setTxSkipped                    set-tx-skipped
@@ -602,8 +718,11 @@
               :setTxExecuted                   set-tx-executed
               :setTxConfirmed                  set-tx-confirmed
               :setTxUnsent                     set-tx-unsent
+              :getCfxTxsToEnrich               get-cfx-txs-to-enrich
+              :cleanupTx                       cleanup-tx
 
               :queryhomePageAssets        home-page-assets
+              :querytxList                query-tx-list
               :queryaddTokenList          get-add-token-list
               :queryaccountListAssets     account-list-assets
               :getAccountGroupByVaultType get-account-group-by-vault-type})

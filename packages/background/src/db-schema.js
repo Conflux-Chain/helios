@@ -134,7 +134,11 @@ const schema = {
 
   // ## tx
   tx: {
-    payload: {doc: 'tx payload as an object'},
+    payload: {
+      doc: 'tx payload as an object',
+      ref: 'txPayload',
+      component: true,
+    },
     raw: {doc: 'raw tx hash'},
     hash: {
       doc: 'tx hash',
@@ -144,7 +148,34 @@ const schema = {
       doc: 'int, tx status, -2 skipped, -1 failed, 0 unsent, 1 sending, 2 pending, 3 packaged, 4 executed, 5 confirmed',
     },
     receipt: {doc: 'receipt as an object'},
+    created: {doc: 'created timestamp get with new Date().getTime()'},
     err: {doc: 'basic error type/info'},
+    extra: {doc: 'enriched tx info', ref: 'txExtra', component: true},
+    fromFluent: {doc: 'tx sumitted from fluent'},
+  },
+  txPayload: {
+    type: {doc: 'tx type'},
+    accessList: {doc: 'accessList'},
+    maxFeePerGas: {doc: 'maxFeePerGas'},
+    maxPriorityFeePerGas: {doc: 'maxPriorityFeePerGas'},
+    from: {doc: 'from addr'},
+    to: {doc: 'to addr'},
+    gasPrice: {doc: 'gasPrice'},
+    gas: {doc: 'gas'},
+    storageLimit: {doc: 'storageLimit'},
+    data: {doc: 'data'},
+    value: {doc: 'value'},
+    nonce: {doc: 'nonce'},
+    chainId: {doc: 'chainId'},
+    epochHeight: {doc: 'epochHeight'},
+  },
+  txExtra: {
+    ok: {doc: 'extra data is finished'},
+    contractCreation: {doc: 'contract creation tx'},
+    simple: {doc: 'simple tx'},
+    contractInteraction: {doc: 'contract interaction tx'},
+    token20: {doc: '20 contract'},
+    tokenNFT: {doc: 'nft contract'},
   },
 
   // ## dapp interaction
@@ -198,6 +229,7 @@ const schema = {
     fromList: {doc: 'true when from token list'},
     fromApp: {doc: 'true when from app'},
     fromUser: {doc: 'true when from user'},
+    tx: {doc: 'token txs', ref: true},
     balance: {
       doc: 'balances of this token',
       ref: true,

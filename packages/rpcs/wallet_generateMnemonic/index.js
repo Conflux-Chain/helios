@@ -8,7 +8,7 @@ export const schemas = {
 }
 export const permissions = {
   locked: true,
-  external: ['popup', 'inpage'],
+  external: ['popup'],
 }
 
 export const main = () => {

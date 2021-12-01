@@ -183,7 +183,7 @@ class Provider extends SafeEventEmitter {
 
     if (!a2 && typeof a1 === 'object') {
       if (a1.method === 'cfx_accounts') {
-        return this.selectedAddress
+        return [this.selectedAddress]
       }
       if (a1.method === 'cfx_netVersion' || a1.method === 'net_version') {
         return this.networkVersion

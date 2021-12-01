@@ -1,0 +1,23 @@
+releases:
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/provider-api": patch
+  "@fluent-wallet/rpc-engine": patch
+  "@fluent-wallet/transducers": patch
+  "@fluent-wallet/wallet_cleanup-tx": patch
+  "@fluent-wallet/wallet_enrich-conflux-tx": patch
+  "@fluent-wallet/wallet_enrich-conflux-txs": patch
+  "@fluent-wallet/wallet_generate-address": patch
+  "@fluent-wallet/wallet_generate-mnemonic": patch
+  "@fluent-wallet/wallet_generate-private-key": patch
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
+  "@fluent-wallet/wallet_handle-unfinished-txs": patch
+  "@fluent-wallet/wallet_refetch-balance": patch
+  "@fluent-wallet/wallet_update-token-list": patch
+  helios-inpage: patch
+
+declined:
+  - helios-background
+  - browser-extension
+  - "@fluent-wallet/safe-event-emiter"
+  - "@fluent-wallet/use-rpc"
