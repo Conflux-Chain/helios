@@ -19,11 +19,10 @@ export const permissions = {
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
     'wallet_handleUnfinishedCFXTx',
+    'wallet_enrichConfluxTx',
   ],
   db: [
-    'isTokenInAddr',
     'getAuthReqById',
-    'getTokenByAddrAndNet',
     'getFromAddress',
     'getAddrFromNetworkAndAddress',
     'getAddrTxByHash',
@@ -34,15 +33,14 @@ export const permissions = {
 export const main = async ({
   Err: {InvalidParams, Server},
   db: {
-    isTokenInAddr,
     getAuthReqById,
-    getTokenByAddrAndNet,
     getFromAddress,
     getAddrFromNetworkAndAddress,
     getAddrTxByHash,
     t,
   },
   rpcs: {
+    wallet_enrichConfluxTx,
     cfx_signTransaction,
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
@@ -103,39 +101,31 @@ export const main = async ({
   if (duptx) throw InvalidParams('duplicate tx')
 
   const dbtxs = [
+    {eid: 'newTxPayload', txPayload: txMeta},
+    {eid: 'newTxExtra', txExtra: {ok: false}},
     {
       eid: 'newTxId',
       tx: {
-        payload: txMeta,
+        fromFluent: true,
+        payload: 'newTxPayload',
         hash: txhash,
         raw: rawtx,
         status: 0,
         created: new Date().getTime(),
+        extra: 'newTxExtra',
       },
     },
     {eid: addr.eid, address: {tx: 'newTxId'}},
     authReq && {eid: authReq.app.eid, app: {tx: 'newTxId'}},
   ]
 
-  let token
-  if (tx[0].to)
-    token = getTokenByAddrAndNet({
-      address: tx[0].to,
-      networkId: network.eid,
-    })
-
-  if (token) {
-    dbtxs.push({eid: token.eid, token: {tx: 'newTxId'}})
-    if (!isTokenInAddr({tokenId: token.eid, addressId: addr.eid})) {
-      if (authReq) dbtxs.push({eid: token.eid, token: {fromApp: true}})
-      else dbtxs.push({eid: token.eid, token: {fromUser: true}})
-      dbtxs.push({eid: addr.eid, address: {token: token.eid}})
-    }
-  }
-
   const {
     tempids: {newTxId},
   } = t(dbtxs)
+
+  try {
+    wallet_enrichConfluxTx({errorFallThrough: true}, {txhash})
+  } catch (err) {} // eslint-disable-line no-empty
 
   return await new Promise(resolve => {
     wallet_handleUnfinishedCFXTx({

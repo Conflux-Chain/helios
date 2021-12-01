@@ -37,10 +37,12 @@ export const main = async ({
   db: {getSingleCallBalanceParams, upsertBalances},
   params,
   rpcs: {wallet_getBalance},
+  network,
 }) => {
   const refetchBalanceParams = getSingleCallBalanceParams({
     type: params?.type,
     allNetwork: Boolean(params?.allNetwork),
+    networkId: network.eid,
   })
 
   // eslint-disable-next-line no-unused-vars

@@ -3,7 +3,6 @@ import 'regenerator-runtime/runtime'
 import {defRpcEngine} from '@fluent-wallet/rpc-engine'
 import {persist} from './persist-db-to-ext-storage'
 import {createdb} from '@fluent-wallet/db'
-
 import {EXT_STORAGE} from '@fluent-wallet/consts'
 import {
   IS_PROD_MODE,
@@ -86,8 +85,10 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
   // ## initialize db
   const {request, db} = await initBG()
   setInterval(
-    () =>
+    () => (
       request({method: 'wallet_handleUnfinishedTxs', _rpcStack: ['frombg']}),
+      request({method: 'wallet_enrichConfluxTxs', _rpcStack: ['frombg']})
+    ),
     10000,
   )
 
