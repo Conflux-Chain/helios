@@ -3,7 +3,14 @@
  * @name index.js
  */
 
-import {map, keep, comp, sideEffect} from '@thi.ng/transducers'
+import {
+  map,
+  keep,
+  comp,
+  sideEffect,
+  pluck,
+  multiplexObj,
+} from '@thi.ng/transducers'
 
 export * from '@thi.ng/transducers'
 
@@ -15,3 +22,20 @@ export const keepTruthy = fn =>
     }),
     keep(x => x || null),
   )
+
+export function branchObj(obj) {
+  const multiplexObjTx = Object.entries(obj).reduce((acc, [k, vs]) => {
+    vs = Array.isArray(vs) ? vs : [vs]
+    acc[k] = comp(pluck(k), ...vs)
+    return acc
+  }, {})
+  return comp(
+    multiplexObj(multiplexObjTx),
+    map(d => {
+      Object.entries(d).reduce((acc, [k, v]) => {
+        if (v) acc[k] = v
+        return acc
+      }, {})
+    }),
+  )
+}

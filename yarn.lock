@@ -4285,7 +4285,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/base32-address@workspace:packages/base32-address":
+"@fluent-wallet/base32-address@workspace:*, @fluent-wallet/base32-address@workspace:packages/base32-address":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/base32-address@workspace:packages/base32-address"
   dependencies:
@@ -5494,6 +5494,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_cleanup-tx@workspace:*, @fluent-wallet/wallet_cleanup-tx@workspace:packages/rpcs/wallet_cleanupTx":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_cleanup-tx@workspace:packages/rpcs/wallet_cleanupTx"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_create-account@workspace:packages/rpcs/wallet_createAccount":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_create-account@workspace:packages/rpcs/wallet_createAccount"
@@ -5576,6 +5584,23 @@ __metadata:
     "@fluent-wallet/discover-accounts": "workspace:packages/discover-accounts"
     "@fluent-wallet/spec": "workspace:packages/spec"
     browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_enrich-conflux-tx@workspace:*, @fluent-wallet/wallet_enrich-conflux-tx@workspace:packages/rpcs/wallet_enrichConfluxTx":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_enrich-conflux-tx@workspace:packages/rpcs/wallet_enrichConfluxTx"
+  dependencies:
+    "@fluent-wallet/base32-address": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_enrich-conflux-txs@workspace:*, @fluent-wallet/wallet_enrich-conflux-txs@workspace:packages/rpcs/wallet_enrichConfluxTxs":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_enrich-conflux-txs@workspace:packages/rpcs/wallet_enrichConfluxTxs"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -19505,6 +19530,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
     "@fluent-wallet/wallet_add-pending-user-auth-request": "workspace:packages/rpcs/wallet_addPendingUserAuthRequest"
     "@fluent-wallet/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault"
+    "@fluent-wallet/wallet_cleanup-tx": "workspace:*"
     "@fluent-wallet/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount"
     "@fluent-wallet/wallet_create-address": "workspace:packages/rpcs/wallet_createAddress"
     "@fluent-wallet/wallet_db-query": "workspace:packages/rpcs/wallet_dbQuery"
@@ -19514,6 +19540,8 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_detect-address-type": "workspace:packages/rpcs/wallet_detectAddressType"
     "@fluent-wallet/wallet_detect-network-type": "workspace:packages/rpcs/wallet_detectNetworkType"
     "@fluent-wallet/wallet_discover-accounts": "workspace:packages/rpcs/wallet_discoverAccounts"
+    "@fluent-wallet/wallet_enrich-conflux-tx": "workspace:*"
+    "@fluent-wallet/wallet_enrich-conflux-txs": "workspace:*"
     "@fluent-wallet/wallet_export-account": "workspace:packages/rpcs/wallet_exportAccount"
     "@fluent-wallet/wallet_export-account-group": "workspace:packages/rpcs/wallet_exportAccountGroup"
     "@fluent-wallet/wallet_export-all": "workspace:packages/rpcs/wallet_exportAll"

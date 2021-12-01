@@ -1,12 +1,14 @@
 (ns cfxjs.db.core
-  (:require [cfxjs.db.datascript.core :as d]
-            [cfxjs.db.queries :refer [apply-queries]]
-            [cljs.reader]
-            ;; [cfxjs.db.datascript.db :as ddb]
-            [cfxjs.db.datascript.impl.entity :as de]
-            [goog.string :as gs]
-            [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]]
-            [debux.cs.core :as debux :refer-macros  [clog clogn  break clog_ clogn_  break_]])
+  (:require
+   [cfxjs.spec.cljs]
+   [cfxjs.db.datascript.core :as d]
+   [cfxjs.db.queries :refer [apply-queries]]
+   [cljs.reader]
+   ;; [cfxjs.db.datascript.db :as ddb]
+   [cfxjs.db.datascript.impl.entity :as de]
+   [goog.string :as gs]
+   [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]]
+   [debux.cs.core :as debux :refer-macros  [clog clogn  break clog_ clogn_  break_]])
   (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query]]))
 
 (debux/set-debug-mode! js/goog.DEBUG)
@@ -15,7 +17,7 @@
   (gs/getRandomString))
 
 (defn j->c [v]
-  (js->clj v :keywordize-keys true))
+  (cfxjs.spec.cljs/js->clj v :keywordize-keys true))
 
 ;; debug
 (set! (.-jtc js/window) j->c)
@@ -328,7 +330,7 @@
        (clj->js rst)))))
 
 ;; for debug
-(def jtc #(js->clj % :keywordize-keys true))
+(def jtc #(cfxjs.spec.cljs/js->clj % :keywordize-keys true))
 (def ppp prn)
 (def tppp tap>)
 

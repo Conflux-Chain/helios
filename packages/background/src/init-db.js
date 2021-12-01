@@ -135,7 +135,7 @@ function initNetwork(d) {
         chainId: ETH_MAINNET_CHAINID,
         netId: ETH_MAINNET_NETID,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg',
-        cacheTime: 7500,
+        cacheTime: 15000,
         ticker: {
           name: ETH_MAINNET_CURRENCY_NAME,
           symbol: ETH_MAINNET_CURRENCY_SYMBOL,
@@ -160,7 +160,7 @@ function initNetwork(d) {
         chainId: ETH_ROPSTEN_CHAINID,
         netId: ETH_ROPSTEN_NETID,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg',
-        cacheTime: 7500,
+        cacheTime: 15000,
 
         ticker: {
           name: ETH_ROPSTEN_CURRENCY_NAME,
