@@ -653,11 +653,10 @@
             (repeat 4 nil))
         extraType (if extraType (keyword "txExtra" extraType) extraType)
         query-initial
-        (cond-> '{:find  [?nonce ?tx ?app]
+        (cond-> '{:find  [?nonce ?tx (pull ?tx [:app/_tx [:db/id]]) (pull ?tx [:token/_tx [:db/id]])]
                   :in    [$]
                   :where [[?tx :tx/payload ?payload]
-                          [?payload :txPayload/nonce ?nonce]
-                          [?app :app/tx ?tx]]
+                          [?payload :txPayload/nonce ?nonce]]
                   :args []}
           addressId
           (-> (update :args conj addressId)
@@ -665,8 +664,8 @@
               (update :where conj '[?addr :address/tx ?tx]))
           tokenId
           (-> (update :args conj tokenId)
-              (update :in conj '?token)
-              (update :where conj '[?token :token/tx ?tx]))
+              (update :in conj '?target-token)
+              (update :where conj '[?target-token :token/tx ?tx]))
           appId
           (-> (update :args conj appId)
               (update :in conj '?target-app)
@@ -720,7 +719,14 @@
                                        (take limit)))]
     (if countOnly total
         {:total total
-         :data  (mapv (fn [[tx app]] (assoc (.toMap (e :tx tx)) :app (e :app app))) txs)})))
+         :data  (mapv (fn [[tx app token]]
+                        (prn app token)
+                        (let [app (-> app :app/_tx first :db/id)
+                              token (-> token :token/_tx first :db/id)]
+                          (-> (.toMap (e :tx tx))
+                              (assoc :app (and app (e :app app)))
+                              (assoc :token (and token (e :token token))))))
+                      txs)})))
 
 (def queries {:batchTx
               (fn [txs]
