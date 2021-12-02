@@ -642,7 +642,7 @@
 
 (defn- sort-nonce [[noncea _ _] [nonceb _ _]] (> noncea nonceb))
 
-(defn query-tx-list [{:keys [offset limit addressId tokenId appId extraType status]}]
+(defn query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
   (let [offset    (or offset 0)
         limit     (min 100 (or limit 10))
         [status> status>= status< status<=]
@@ -711,17 +711,16 @@
                           [:in] (:in query-initial)
                           [:where] (:where query-initial))
 
-        txs (->> (apply q query (:args query-initial))
-                 (sort sort-nonce)
-                 (map rest)
-                 (drop offset)
-                 (take limit))
+        txs   (->> (apply q query (:args query-initial))
+                   (sort sort-nonce)
+                   (map rest))
         total (count txs)
-        txs (->> txs
-                 (drop offset)
-                 (take limit))]
-    {:total total
-     :data  (mapv (fn [[tx app]] (assoc (.toMap (e :tx tx)) :app (e :app app))) txs)}))
+        txs   (when-not countOnly (->> txs
+                                       (drop offset)
+                                       (take limit)))]
+    (if countOnly total
+        {:total total
+         :data  (mapv (fn [[tx app]] (assoc (.toMap (e :tx tx)) :app (e :app app))) txs)})))
 
 (def queries {:batchTx
               (fn [txs]
