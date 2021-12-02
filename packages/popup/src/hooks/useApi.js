@@ -65,19 +65,15 @@ export const useAccountGroup = () => {
 }
 
 export const useNetwork = () => {
-  const {data: networkData} = useRPC(
-    [WALLET_GET_NETWORK],
-    {},
-    {
-      fallbackData: [],
-    },
-  )
+  const {data: networkData} = useRPC([WALLET_GET_NETWORK], undefined, {
+    fallbackData: [],
+  })
   return networkData
 }
 
 export const useCfxNetwork = () => {
   const {data: cfxNetWork} = useRPC(
-    [WALLET_GET_NETWORK, 'type=cfx'],
+    [WALLET_GET_NETWORK, 'cfx'],
     {
       type: 'cfx',
     },
@@ -88,7 +84,7 @@ export const useCfxNetwork = () => {
 
 export const useEthNetwork = () => {
   const {data: ethNetWork} = useRPC(
-    [WALLET_GET_NETWORK, 'type=eth'],
+    [WALLET_GET_NETWORK, 'eth'],
     {
       type: 'eth',
     },
@@ -99,7 +95,7 @@ export const useEthNetwork = () => {
 
 export const useNetworkByChainId = (chainId, type) => {
   const {data: network} = useRPC(
-    chainId ? [WALLET_GET_NETWORK, `type=${type}`, chainId] : null,
+    chainId ? [WALLET_GET_NETWORK, type, chainId] : null,
     {
       chainId,
       type,
@@ -233,7 +229,7 @@ export const useDbRefetchBalance = param => {
 }
 
 export const useDbAddTokenList = () => {
-  const {data: addTokenListData} = useRPC([WALLETDB_ADD_TOKEN_LIST], {
+  const {data: addTokenListData} = useRPC([WALLETDB_ADD_TOKEN_LIST, 'all'], {
     type: 'all',
   })
   useDbRefetchBalance()
@@ -242,7 +238,7 @@ export const useDbAddTokenList = () => {
 
 export const useDbAccountListAssets = () => {
   const {data: accountListAssets} = useRPC(
-    [WALLETDB_ACCOUNT_LIST_ASSETS],
+    [WALLETDB_ACCOUNT_LIST_ASSETS, 'all'],
     {type: 'all'},
     {
       fallbackData: {},

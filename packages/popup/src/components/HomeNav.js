@@ -10,7 +10,7 @@ function HomeNav() {
     request(LOCK).catch(error => setFatalError(error))
   }
   return (
-    <nav className="flex h-13 items-center justify-between px-4 bg-secondary z-10">
+    <nav className="flex h-13 items-center justify-between px-4 bg-secondary z-10 flex-shrink-0">
       <img className="w-6 h-6" src="/images/logo.svg" alt="logo" />
       <LockOutLined
         className="w-4 h-4 text-white cursor-pointer"

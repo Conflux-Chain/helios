@@ -15,7 +15,7 @@ function TokenItem({
 
   return (
     <div
-      className={`w-full h-14 flex items-center ${
+      className={`w-full h-14 flex items-center flex-shrink-0 ${
         onSelect ? 'cursor-pointer' : ''
       }`}
       id={`tokenItem${index}`}
