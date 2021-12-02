@@ -22,7 +22,7 @@ frame-src 'self' http://localhost:* data: chrome-extension-resource:;
 font-src 'self' data: chrome-extension-resource:;
 media-src * data: blob: filesystem:;",`.replaceAll('\n', ' ')
       : '',
-    name: isDev() ? 'AHelios' : 'Helios',
+    name: isDev() ? 'AFluent' : 'Fluent',
     backgroundScripts: isDev()
       ? '"reload.js","background.dev.js"'
       : '"background/dist/index.prod.js"',

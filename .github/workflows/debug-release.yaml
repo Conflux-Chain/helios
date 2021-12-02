@@ -53,7 +53,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: "Debug Release for PR #${{ github.event.number }}"
+          name: "Debug Release for PR"
           tag: "debug-pr-${{ github.event.number }}"
           config-name: release-drafter.yml
           publish: true
