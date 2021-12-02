@@ -60,6 +60,7 @@ const schema = {
     tokenList: {
       doc: 'token list of this network',
       ref: true,
+      component: true,
     },
     balanceChecker: {doc: 'balance checker contract address'},
     token: {
@@ -239,7 +240,7 @@ const schema = {
     // ... other values in TokenInfoSchema
   },
   tokenList: {
-    url: {doc: 'token list url', value: true},
+    url: {doc: 'token list url', identity: true},
     name: {doc: 'token list name'},
     value: {doc: 'token list value, json data get from token list'},
     token: {

@@ -640,14 +640,20 @@
      :currentNetwork cur-net
      :accountGroups  data}))
 
-(defn- sort-nonce [[_ noncea] [_ nonceb]] (> noncea nonceb))
+(defn- sort-nonce [[noncea _ _] [nonceb _ _]] (> noncea nonceb))
 
-(defn query-tx-list [{:keys [offset limit addressId tokenId extraType]}]
-  (let [offset (or offset 0)
+(defn query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
+  (let [offset    (or offset 0)
         limit     (min 100 (or limit 10))
+        [status> status>= status< status<=]
+        (if (map? status) [(:gt status)
+                           (:gte status)
+                           (:lt status)
+                           (:lte status)]
+            (repeat 4 nil))
         extraType (if extraType (keyword "txExtra" extraType) extraType)
         query-initial
-        (cond-> '{:find  [?tx ?nonce]
+        (cond-> '{:find  [?nonce ?tx (pull ?tx [:app/_tx [:db/id]]) (pull ?tx [:token/_tx [:db/id]])]
                   :in    [$]
                   :where [[?tx :tx/payload ?payload]
                           [?payload :txPayload/nonce ?nonce]]
@@ -658,24 +664,69 @@
               (update :where conj '[?addr :address/tx ?tx]))
           tokenId
           (-> (update :args conj tokenId)
-              (update :in conj '?token)
-              (update :where conj '[?token :address/tx ?tx]))
+              (update :in conj '?target-token)
+              (update :where conj '[?target-token :token/tx ?tx]))
+          appId
+          (-> (update :args conj appId)
+              (update :in conj '?target-app)
+              (update :where conj '[?target-app :app/tx ?tx]))
           extraType
           (-> (update :args conj extraType)
               (update :in conj '?extraType)
               (update :where into '[[?tx :tx/extra ?extra]
                                     [?extra ?extraType true]]))
+          (int? status)
+          (-> (update :args conj status)
+              (update :in conj '?target-status)
+              (update :where into '[[?tx :tx/status ?status]
+                                    [(= ?status ?target-status)]]))
+          (vector? status)
+          (-> (update :args conj status)
+              (update :in conj '[?target-status])
+              (update :where into '[[?tx :tx/status ?status]
+                                    [(= ?status ?target-status)]]))
+          status>
+          (-> (update :args conj status>)
+              (update :in conj '?status>)
+              (update :where into '[[?tx :tx/status ?status]
+                                    [(> ?status ?status>)]]))
+          status>=
+          (-> (update :args conj status>=)
+              (update :in conj '?status>=)
+              (update :where into '[[?tx :tx/status ?status]
+                                    [(>= ?status ?status>=)]]))
+          status<
+          (-> (update :args conj status<)
+              (update :in conj '?status<)
+              (update :where into '[[?tx :tx/status ?status]
+                                    [(< ?status ?status<)]]))
+          status<=
+          (-> (update :args conj status<=)
+              (update :in conj '?status<=)
+              (update :where into '[[?tx :tx/status ?status]
+                                    [(<= ?status ?status<=)]]))
           true identity)
         query     (concat [:find] (:find query-initial)
                           [:in] (:in query-initial)
-                          [:where] (:where query-initial))]
+                          [:where] (:where query-initial))
 
-    (->> (apply q query (:args query-initial))
-         (sort sort-nonce)
-         (map first)
-         (drop offset)
-         (take limit)
-         (mapv #(e :tx %)))))
+        txs   (->> (apply q query (:args query-initial))
+                   (sort sort-nonce)
+                   (map rest))
+        total (count txs)
+        txs   (when-not countOnly (->> txs
+                                       (drop offset)
+                                       (take limit)))]
+    (if countOnly total
+        {:total total
+         :data  (mapv (fn [[tx app token]]
+                        (prn app token)
+                        (let [app (-> app :app/_tx first :db/id)
+                              token (-> token :token/_tx first :db/id)]
+                          (-> (.toMap (e :tx tx))
+                              (assoc :app (and app (e :app app)))
+                              (assoc :token (and token (e :token token))))))
+                      txs)})))
 
 (def queries {:batchTx
               (fn [txs]

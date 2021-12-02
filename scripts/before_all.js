@@ -15,6 +15,7 @@ mustacheRender(
     contentSecurityPolicy: isDev()
       ? `
 "content_security_policy": "
+object-src 'self' 'unsafe-eval' http://localhost:18001 http://localhost:18002 http://localhost:18003;
 script-src 'self' 'unsafe-eval' http://localhost:18001 http://localhost:18002 http://localhost:18003;
 connect-src * data: blob: filesystem:;
 style-src 'self' data: chrome-extension-resource: 'unsafe-inline';
@@ -22,7 +23,7 @@ frame-src 'self' http://localhost:* data: chrome-extension-resource:;
 font-src 'self' data: chrome-extension-resource:;
 media-src * data: blob: filesystem:;",`.replaceAll('\n', ' ')
       : '',
-    name: isDev() ? 'AHelios' : 'Helios',
+    name: isDev() ? 'AFluent' : 'Fluent',
     backgroundScripts: isDev()
       ? '"reload.js","background.dev.js"'
       : '"background/dist/index.prod.js"',
