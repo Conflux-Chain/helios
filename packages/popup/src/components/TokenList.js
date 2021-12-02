@@ -4,7 +4,7 @@ import {TokenItem} from './'
 function TokenList({tokenList, onSelectToken}) {
   return (
     <div
-      className="flex flex-1 flex-col overflow-y-auto relative"
+      className="flex flex-1 flex-col overflow-y-auto no-scroll"
       id="tokenList"
     >
       {tokenList.map((token, index) => (
@@ -15,7 +15,6 @@ function TokenList({tokenList, onSelectToken}) {
           index={index}
         />
       ))}
-      <div className="absolute bottom-0 left-0 h-6 bg-token-background w-full" />
     </div>
   )
 }

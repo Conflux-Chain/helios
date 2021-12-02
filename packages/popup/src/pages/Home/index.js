@@ -42,7 +42,7 @@ function Home() {
         className="absolute top-0 z-0"
       />
       <HomeNav />
-      <div className="flex flex-col pt-1 px-4 z-10">
+      <div className="flex flex-col pt-1 px-4 z-10 flex-shrink-0">
         <div className="flex items-start justify-between">
           <CurrentAccount onOpenAccount={() => setAccountStatus(true)} />
           <CurrentNetwork onOpenNetwork={() => setNetworkStatus(true)} />

@@ -10,7 +10,7 @@ function HomeTokenList({onOpenAddToken}) {
   const {t} = useTranslation()
   return (
     <div
-      className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 pt-3 z-0"
+      className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 pt-3 z-0 overflow-auto"
       id="homeTokenListWrapper"
     >
       <span
@@ -23,6 +23,7 @@ function HomeTokenList({onOpenAddToken}) {
         </WrapIcon>
       </span>
       <TokenList tokenList={homeTokenList} />
+      <div className="absolute bottom-[76px] left-0 rounded-xl h-6 bg-token-background mx-2 w-[calc(100%-1rem)]" />
     </div>
   )
 }
