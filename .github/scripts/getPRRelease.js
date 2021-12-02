@@ -7,7 +7,7 @@ module.exports = async ({github, context}) => {
   const releases = await github.repos.listReleases({owner, repo, per_page: 100})
   if (!releases || !releases.data) throw new Error('Github api is broken')
   const [release] = releases.data.filter(
-    ({name}) => name === `Debug Release for PR #${prnum}`,
+    ({name}) => name === `Debug Release for PR`,
   )
 
   if (!release) {
