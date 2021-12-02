@@ -1,6 +1,0 @@
-releases:
-  "@fluent-wallet/db": patch
-
-declined:
-  - helios-background
-  - browser-extension
