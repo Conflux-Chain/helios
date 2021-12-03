@@ -20,6 +20,7 @@ const {
   WALLETDB_ADD_TOKEN_LIST,
   WALLETDB_ACCOUNT_LIST_ASSETS,
   WALLET_VALIDATE_20TOKEN,
+  WALLETDB_TXLIST,
 } = RPC_METHODS
 
 export const useCurrentAccount = () => {
@@ -257,4 +258,15 @@ export const useValid20Token = address => {
     },
   )
   return token
+}
+
+export const useTxList = params => {
+  const {data: listData} = useRPC(
+    [WALLETDB_TXLIST, params?.limit ?? ''],
+    {...params},
+    {
+      fallbackData: {},
+    },
+  )
+  return listData
 }

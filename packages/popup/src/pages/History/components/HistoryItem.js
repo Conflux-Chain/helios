@@ -1,11 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types'
+import {useState, useEffect} from 'react'
+import {useTranslation} from 'react-i18next'
+import {CFX_SCAN_DOMAINS, ETH_SCAN_DOMAINS} from '@fluent-wallet/consts'
+import {
+  CFX_DECIMALS,
+  convertDataToValue,
+  formatHexToDecimal,
+} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {
   CloseCircleFilled,
   ReloadOutlined,
   SendOutlined,
 } from '@fluent-wallet/component-icons'
-import {transformToTitleCase} from '../../../utils'
+import {transformToTitleCase, formatStatus} from '../../../utils'
+import {useNetworkTypeIsCfx, useCurrentNetwork} from '../../../hooks/useApi'
+import {useDecodeData} from '../../../hooks'
 import {
   WrapIcon,
   CopyButton,
@@ -17,6 +28,7 @@ const tagColorStyle = {
   failed: 'bg-error-10 text-error',
   executed: 'bg-[#F0FDFC] text-[#83DBC6]',
   pending: 'bg-warning-10 text-warning',
+  sending: 'bg-warning-10 text-warning',
 }
 
 function WrapperWithCircle({children, className}) {
@@ -35,50 +47,118 @@ WrapperWithCircle.propTypes = {
 }
 
 function HistoryItem({itemData}) {
-  const {
-    status,
-    toAddress,
-    dappIcon,
-    methodName,
-    protocol,
-    dappUrl,
-    amount,
-    symbol,
-    isDapp,
-    nonce,
-    time,
-  } = itemData
-  const tagColor = tagColorStyle[status] ?? ''
+  const [actionName, setActionName] = useState('')
+  const [contractName, setContractName] = useState('')
+  const [amount, setAmount] = useState('')
+  const [symbol, setSymbol] = useState('')
+  const [toAddress, setToAddress] = useState('')
+  const {t} = useTranslation()
+  const {netId} = useCurrentNetwork()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+
+  const {status, created, extra, payload, app, token, hash} = itemData
+  const txStatus = formatStatus(status)
+  const tagColor = tagColorStyle[txStatus] ?? ''
+  const {contractCreation, simple, contractInteraction, token20} = extra
+  // TODO: should throw error in decode data
+  const {decodeData} = useDecodeData({
+    to: token?.address,
+    data: payload?.data,
+  })
+
+  useEffect(() => {
+    setActionName(
+      simple
+        ? t('send')
+        : transformToTitleCase(decodeData?.functionFragment?.name) ||
+            t('unknown'),
+    )
+  }, [simple, Object.keys(decodeData).length])
+
+  useEffect(() => {
+    if (simple) {
+      setContractName('CFX')
+    } else if (contractCreation) {
+      setContractName(t('contractCreation'))
+    } else if (contractInteraction) {
+      if (token20 && token?.name) {
+        setContractName(token.name)
+      } else {
+        setContractName(t('contractInteraction'))
+      }
+    }
+  }, [simple, token20, token, t, contractCreation, contractInteraction])
+
+  useEffect(() => {
+    if (simple) {
+      setSymbol('CFX')
+      setToAddress(payload?.to ?? '')
+      setAmount(convertDataToValue(payload?.value, CFX_DECIMALS) ?? '')
+      return
+    }
+    if (token20 && token) {
+      const decimals = token?.decimals
+      setSymbol(token?.symbol ?? '')
+      if (actionName === 'Transfer' || actionName === 'Approve') {
+        setToAddress(decodeData?.args?.[0] ?? '')
+        setAmount(
+          convertDataToValue(decodeData?.args?.[1]?._hex, decimals) ?? '',
+        )
+        return
+      }
+      if (actionName === 'TransferFrom') {
+        setToAddress(decodeData?.args?.[1] ?? '')
+        setAmount(
+          convertDataToValue(decodeData?.args?.[2]?._hex, decimals) ?? '',
+        )
+        return
+      }
+    }
+    setToAddress('')
+    setAmount('')
+  }, [
+    token,
+    simple,
+    token20,
+    contractInteraction,
+    actionName,
+    Object.keys(payload).length,
+    Object.keys(decodeData).length,
+  ])
+
+  // console.log('decodeTxData', decodeData)
+  // console.log('actionName', actionName)
+  // console.log('itemData', itemData)
 
   return (
     <div className="px-3 pb-3 pt-2 relative bg-white mx-3 mt-3 rounded">
-      {isDapp ? (
+      {txStatus !== 'confirmed' ? (
         <CustomTag
           className={`${tagColor} absolute flex items-center h-6 px-2.5 left-0 top-0`}
           width="w-auto"
           roundedStyle="rounded-tl rounded-br-lg"
         >
-          {status === 'failed' ? (
+          {txStatus === 'failed' ? (
             <CloseCircleFilled className="w-3 h-3 mr-1" />
-          ) : status === 'executed' ? (
+          ) : txStatus === 'executed' ? (
             <WrapperWithCircle className="bg-[#83DBC6]">
               <ReloadOutlined className="w-2 h-2 text-white" />
             </WrapperWithCircle>
-          ) : status === 'pending' ? (
+          ) : txStatus === 'pending' || txStatus === 'sending' ? (
             <WrapperWithCircle className="bg-[#F0955F]">
               <ReloadOutlined className="w-2 h-2 text-white" />
             </WrapperWithCircle>
           ) : null}
-          <span className="text-sm">{transformToTitleCase(status)}</span>
+          <span className="text-sm">{transformToTitleCase(txStatus)}</span>
         </CustomTag>
       ) : null}
 
       <div className="flex justify-between">
         <div>
-          {status === 'completed' ? (
+          {txStatus === 'confirmed' ? (
             <div className="text-gray-60 text-xs">
-              <span>#{nonce}</span>
-              <span className="ml-2">{time}</span>
+              <span>#{formatHexToDecimal(payload.nonce)}</span>
+              <span className="ml-2">{created}</span>
             </div>
           ) : null}
         </div>
@@ -89,8 +169,18 @@ function HistoryItem({itemData}) {
             CopyWrapper={WrapIcon}
             wrapperClassName="!w-5 !h-5"
           />
-          {/* TODO: jump scan */}
-          <WrapIcon size="w-5 h-5 ml-2" id="openScanUrl" onClick={() => {}}>
+          <WrapIcon
+            size="w-5 h-5 ml-2"
+            id="openScanUrl"
+            onClick={() =>
+              (CFX_SCAN_DOMAINS[netId] || CFX_SCAN_DOMAINS[netId]) &&
+              window.open(
+                networkTypeIsCfx
+                  ? `${CFX_SCAN_DOMAINS[netId]}/transaction/${hash}`
+                  : `${ETH_SCAN_DOMAINS[netId]}/tx/${hash}`,
+              )
+            }
+          >
             <SendOutlined className="w-3 h-3 text-primary" />
           </WrapIcon>
         </div>
@@ -98,12 +188,12 @@ function HistoryItem({itemData}) {
       <div className="mt-3 flex items-center">
         <div
           className={`${
-            !isDapp ? 'bg-success-10 border-success-10' : 'border-gray-20'
+            !app ? 'bg-success-10 border-success-10' : 'border-gray-20'
           } w-8 h-8 rounded-full border-solid border flex items-center justify-center mr-2`}
         >
-          {isDapp ? (
+          {app ? (
             <img
-              src={dappIcon || '/images/default-dapp-icon.svg'}
+              src={app?.site?.icon || '/images/default-dapp-icon.svg'}
               alt="favicon"
               className="w-4 h-4"
             />
@@ -114,10 +204,11 @@ function HistoryItem({itemData}) {
         <div className="flex-1">
           <div className="flex items-center justify-between">
             <div className="w-[120px] text-gray-80 text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
-              {methodName}
+              {actionName}
             </div>
             {amount ? (
               <div className="flex">
+                <span>-</span>
                 <DisplayBalance
                   balance={amount}
                   maxWidth={114}
@@ -130,8 +221,8 @@ function HistoryItem({itemData}) {
             )}
           </div>
           <div className="flex mt-0.5 items-center justify-between text-gray-40 text-xs">
-            <div>{isDapp ? protocol || dappUrl : symbol}</div>
-            <div>{shortenAddress(toAddress)}</div>
+            <div>{contractName}</div>
+            <div>{toAddress ? shortenAddress(toAddress) : ''}</div>
           </div>
         </div>
       </div>
