@@ -10,7 +10,7 @@ function History() {
   const [txList, setTxList] = useState([])
   const [limit, setLimit] = useState(historyPageLimit)
   const [total, setTotal] = useState(0)
-  const listData = useTxList({limit})
+  const historyListData = useTxList({limit})
 
   // TODO:loading
   const onScroll = () => {
@@ -24,14 +24,14 @@ function History() {
     }
   }
   useEffect(() => {
-    if (listData?.total !== total) {
-      setTotal(listData.total)
+    if (historyListData?.total !== total) {
+      setTotal(historyListData.total)
     }
-    if (listData?.data) {
-      setTxList([...listData.data])
+    if (historyListData?.data) {
+      setTxList([...historyListData.data])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Object.keys(listData).length])
+  }, [historyListData?.data])
 
   return (
     <div
@@ -42,9 +42,19 @@ function History() {
     >
       <TitleNav title={t('activity')} />
       <main>
-        {txList.map(data => (
-          <HistoryItem key={data.eid} txData={data} />
-        ))}
+        {txList.length ? (
+          txList.map(data => <HistoryItem key={data.eid} txData={data} />)
+        ) : (
+          <div className="flex  items-center flex-col">
+            <img
+              src="images/no-available-token.svg"
+              alt="no result"
+              className="w-33 h-24 mt-13 mb-4"
+              data-clear-btn="true"
+            />
+            <p className="text-sm text-gray-40">{t('noResult')}</p>
+          </div>
+        )}
       </main>
     </div>
   )

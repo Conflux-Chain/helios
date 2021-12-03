@@ -1,5 +1,6 @@
 import {useState} from 'react'
 import {useQuery} from '../../hooks'
+import {useTxList} from '../../hooks/useApi'
 import {useEffectOnce} from 'react-use'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -25,6 +26,7 @@ function Home() {
   const [addTokenStatus, setAddTokenStatus] = useState(false)
   const query = useQuery()
   const history = useHistory()
+  const pendingCount = useTxList({status: 2, countOnly: true})
 
   useEffectOnce(() => {
     if (query.get('open') === 'account-list') {
@@ -75,7 +77,7 @@ function Home() {
             >
               {t('history')}
             </Button>
-            <PendingQueue count={9} />
+            {pendingCount ? <PendingQueue count={pendingCount} /> : null}
           </div>
         </div>
       </div>

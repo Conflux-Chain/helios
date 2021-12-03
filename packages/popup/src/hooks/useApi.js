@@ -262,10 +262,10 @@ export const useValid20Token = address => {
 
 export const useTxList = params => {
   const {data: listData} = useRPC(
-    [WALLETDB_TXLIST, params?.limit ?? ''],
+    [WALLETDB_TXLIST, ...Object.values(params)],
     {...params},
     {
-      fallbackData: {},
+      fallbackData: params?.countOnly ? 0 : {},
     },
   )
   return listData
