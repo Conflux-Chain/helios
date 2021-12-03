@@ -3,6 +3,4 @@ releases:
 
 declined:
   - browser-extension
-
-undecided:
   - "@fluent-wallet/component-icons"
