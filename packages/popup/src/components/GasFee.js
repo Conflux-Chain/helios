@@ -4,7 +4,7 @@ import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import {CFX_DECIMALS, ETH_DECIMALS} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
-import {CompWithLabel, DisplayBalance, CustomTag} from '../components'
+import {DisplayBalance, CustomTag} from '../components'
 import {useNetworkTypeIsCfx} from '../hooks/useApi'
 import useGlobalStore from '../stores'
 import {ROUTES} from '../constants'
@@ -30,19 +30,17 @@ function GasFee({estimateRst}) {
     ? partPayedFeeDrip
     : txFeeDrip
 
-  const label = (
-    <span className="flex items-center justify-between w-full">
-      {t('gasFee')}
-      <span className="flex items-center">
-        <Link onClick={() => history.push(EDIT_GAS_FEE)}>
-          {t('edit')}
-          <RightOutlined className="w-3 h-3 text-primary ml-1" />
-        </Link>
-      </span>
-    </span>
-  )
   return (
-    <CompWithLabel label={label}>
+    <div className="flex flex-col">
+      <span className="flex items-center justify-between w-full text-gray-40 mb-2">
+        {t('gasFee')}
+        <span className="flex items-center">
+          <Link onClick={() => history.push(EDIT_GAS_FEE)}>
+            {t('edit')}
+            <RightOutlined className="w-3 h-3 text-primary ml-1" />
+          </Link>
+        </span>
+      </span>
       <div
         className="flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative"
         id="gasFeeContainer"
@@ -80,7 +78,7 @@ function GasFee({estimateRst}) {
           </CustomTag>
         )}
       </div>
-    </CompWithLabel>
+    </div>
   )
 }
 
