@@ -1,0 +1,8 @@
+releases:
+  helios-popup: patch
+
+declined:
+  - browser-extension
+
+undecided:
+  - "@fluent-wallet/component-icons"

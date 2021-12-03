@@ -1,25 +1,38 @@
 import {useTranslation} from 'react-i18next'
+import {useState, useRef, useEffect} from 'react'
 import {TitleNav} from '../../components'
 import HistoryItem from './components/HistoryItem'
-import {useState, useEffect, useRef} from 'react'
-
+import {useTxList} from '../../hooks/useApi'
+import {historyPageLimit} from '../../constants'
 function History() {
   const {t} = useTranslation()
   const historyRef = useRef(null)
-  // mock
   const [txList, setTxList] = useState([])
-  useEffect(() => {
-    setTxList(new Array(6).fill(''))
-  }, [])
+  const [limit, setLimit] = useState(historyPageLimit)
+  const [total, setTotal] = useState(0)
+  const listData = useTxList({limit})
 
+  // TODO:loading
   const onScroll = () => {
     if (
       historyRef.current.scrollHeight - historyRef.current.clientHeight <=
       historyRef.current.scrollTop
     ) {
-      setTxList([...txList.concat(new Array(6).fill(''))])
+      if (txList.length < total && limit < total) {
+        setLimit(limit + historyPageLimit)
+      }
     }
   }
+  useEffect(() => {
+    if (listData?.total !== total) {
+      setTotal(listData.total)
+    }
+    if (listData?.data) {
+      setTxList([...listData.data])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Object.keys(listData).length])
+
   return (
     <div
       id="historyContainer"
@@ -29,49 +42,9 @@ function History() {
     >
       <TitleNav title={t('activity')} />
       <main>
-        {txList.map((item, index) => (
-          <HistoryItem
-            key={index}
-            itemData={{
-              status: 'pending',
-              isDapp: true,
-              protocol: 'uniswap v2',
-              dappUrl: 'xxxx',
-              dappIcon: '',
-              scanUrl: 'https://testnet.confluxscan.io/',
-              methodName: 'transferFrom',
-              toAddress: 'cfxtest:aapg6k55852jv1z2rkmk8wtd2amn2tnw3amfnmyx9b',
-              amount: '-1000',
-              symbol: 'cfx',
-            }}
-          />
+        {txList.map(data => (
+          <HistoryItem key={data.eid} txData={data} />
         ))}
-        {/* <HistoryItem
-          itemData={{
-            status: 'pending',
-            isDapp: true,
-            protocol: 'uniswap v2',
-            dappUrl: 'xxxx',
-            dappIcon: '',
-            scanUrl: 'https://testnet.confluxscan.io/',
-            methodName: 'transferFrom',
-            toAddress: 'cfxtest:aapg6k55852jv1z2rkmk8wtd2amn2tnw3amfnmyx9b',
-            amount: '-1000',
-            symbol: 'cfx',
-          }}
-        />
-        <HistoryItem
-          itemData={{
-            status: 'completed',
-            isDapp: false,
-            scanUrl: 'https://testnet.confluxscan.io/',
-            toAddress: 'cfxtest:aapg6k55852jv1z2rkmk8wtd2amn2tnw3amfnmyx9b',
-            methodName: 'send',
-            nonce: '123231',
-            time: '2021/11/21',
-            symbol: 'CFX',
-          }}
-        /> */}
       </main>
     </div>
   )

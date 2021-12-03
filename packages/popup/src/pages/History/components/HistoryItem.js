@@ -2,6 +2,7 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
+import dayjs from 'dayjs'
 import {CFX_SCAN_DOMAINS, ETH_SCAN_DOMAINS} from '@fluent-wallet/consts'
 import {
   CFX_DECIMALS,
@@ -46,7 +47,7 @@ WrapperWithCircle.propTypes = {
   className: PropTypes.string,
 }
 
-function HistoryItem({itemData}) {
+function HistoryItem({txData}) {
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
   const [amount, setAmount] = useState('')
@@ -56,10 +57,12 @@ function HistoryItem({itemData}) {
   const {netId} = useCurrentNetwork()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
-  const {status, created, extra, payload, app, token, hash} = itemData
+  const {status, created, extra, payload, app, token, hash} = txData
   const txStatus = formatStatus(status)
   const tagColor = tagColorStyle[txStatus] ?? ''
+  const createdTime = dayjs(created).format('YYYY/MM/DD hh:mm:ss')
   const {contractCreation, simple, contractInteraction, token20} = extra
+
   // TODO: should throw error in decode data
   const {decodeData} = useDecodeData({
     to: token?.address,
@@ -77,7 +80,7 @@ function HistoryItem({itemData}) {
 
   useEffect(() => {
     if (simple) {
-      setContractName('CFX')
+      setContractName(networkTypeIsCfx ? 'CFX' : 'ETH')
     } else if (contractCreation) {
       setContractName(t('contractCreation'))
     } else if (contractInteraction) {
@@ -87,11 +90,19 @@ function HistoryItem({itemData}) {
         setContractName(t('contractInteraction'))
       }
     }
-  }, [simple, token20, token, t, contractCreation, contractInteraction])
+  }, [
+    simple,
+    token20,
+    token,
+    t,
+    contractCreation,
+    contractInteraction,
+    networkTypeIsCfx,
+  ])
 
   useEffect(() => {
     if (simple) {
-      setSymbol('CFX')
+      setSymbol(networkTypeIsCfx ? 'CFX' : 'ETH')
       setToAddress(payload?.to ?? '')
       setAmount(convertDataToValue(payload?.value, CFX_DECIMALS) ?? '')
       return
@@ -122,13 +133,10 @@ function HistoryItem({itemData}) {
     token20,
     contractInteraction,
     actionName,
+    networkTypeIsCfx,
     Object.keys(payload).length,
     Object.keys(decodeData).length,
   ])
-
-  // console.log('decodeTxData', decodeData)
-  // console.log('actionName', actionName)
-  // console.log('itemData', itemData)
 
   return (
     <div className="px-3 pb-3 pt-2 relative bg-white mx-3 mt-3 rounded">
@@ -158,7 +166,7 @@ function HistoryItem({itemData}) {
           {txStatus === 'confirmed' ? (
             <div className="text-gray-60 text-xs">
               <span>#{formatHexToDecimal(payload.nonce)}</span>
-              <span className="ml-2">{created}</span>
+              <span className="ml-2">{createdTime}</span>
             </div>
           ) : null}
         </div>
@@ -208,7 +216,7 @@ function HistoryItem({itemData}) {
             </div>
             {amount ? (
               <div className="flex">
-                <span>-</span>
+                {amount != 0 ? <span>-</span> : null}
                 <DisplayBalance
                   balance={amount}
                   maxWidth={114}
@@ -231,6 +239,6 @@ function HistoryItem({itemData}) {
 }
 
 HistoryItem.propTypes = {
-  itemData: PropTypes.object.isRequired,
+  txData: PropTypes.object.isRequired,
 }
 export default HistoryItem
