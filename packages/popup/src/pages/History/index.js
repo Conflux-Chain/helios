@@ -43,7 +43,20 @@ function History() {
       <TitleNav title={t('activity')} />
       <main>
         {txList.length ? (
-          txList.map(data => <HistoryItem key={data.eid} txData={data} />)
+          txList.map(
+            ({status, created, extra, payload, app, token, hash, eid}) => (
+              <HistoryItem
+                key={eid}
+                status={status}
+                created={created}
+                extra={extra}
+                payload={payload}
+                app={app}
+                token={token}
+                hash={hash}
+              />
+            ),
+          )
         ) : (
           <div className="flex  items-center flex-col">
             <img

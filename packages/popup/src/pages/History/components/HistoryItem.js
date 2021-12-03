@@ -47,7 +47,7 @@ WrapperWithCircle.propTypes = {
   className: PropTypes.string,
 }
 
-function HistoryItem({txData}) {
+function HistoryItem({status, created, extra, payload, app, token, hash}) {
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
   const [amount, setAmount] = useState('')
@@ -57,7 +57,6 @@ function HistoryItem({txData}) {
   const {netId} = useCurrentNetwork()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
-  const {status, created, extra, payload, app, token, hash} = txData
   const txStatus = formatStatus(status)
   const tagColor = tagColorStyle[txStatus] ?? ''
   const createdTime = dayjs(created).format('YYYY/MM/DD hh:mm:ss')
@@ -67,6 +66,7 @@ function HistoryItem({txData}) {
   const {decodeData} = useDecodeData({
     to: token?.address,
     data: payload?.data,
+    nonce: formatHexToDecimal(payload?.nonce),
   })
 
   useEffect(() => {
@@ -94,7 +94,7 @@ function HistoryItem({txData}) {
   }, [
     simple,
     token20,
-    token,
+    Boolean(token),
     t,
     contractCreation,
     contractInteraction,
@@ -129,7 +129,7 @@ function HistoryItem({txData}) {
     setToAddress('')
     setAmount('')
   }, [
-    token,
+    Boolean(token),
     simple,
     token20,
     contractInteraction,
@@ -240,6 +240,12 @@ function HistoryItem({txData}) {
 }
 
 HistoryItem.propTypes = {
-  txData: PropTypes.object.isRequired,
+  status: PropTypes.number.isRequired,
+  created: PropTypes.number.isRequired,
+  extra: PropTypes.object.isRequired,
+  payload: PropTypes.object.isRequired,
+  hash: PropTypes.string.isRequired,
+  app: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
+  token: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
 }
 export default HistoryItem
