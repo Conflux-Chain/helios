@@ -16,11 +16,11 @@ function History() {
   const onScroll = () => {
     if (
       historyRef.current.scrollHeight - historyRef.current.clientHeight <=
-      historyRef.current.scrollTop
+        historyRef.current.scrollTop &&
+      txList.length < total &&
+      limit < total
     ) {
-      if (txList.length < total && limit < total) {
-        setLimit(limit + historyPageLimit)
-      }
+      setLimit(limit + historyPageLimit)
     }
   }
   useEffect(() => {

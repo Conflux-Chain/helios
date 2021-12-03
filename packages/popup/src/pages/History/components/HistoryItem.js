@@ -80,15 +80,16 @@ function HistoryItem({txData}) {
 
   useEffect(() => {
     if (simple) {
-      setContractName(networkTypeIsCfx ? 'CFX' : 'ETH')
-    } else if (contractCreation) {
-      setContractName(t('contractCreation'))
-    } else if (contractInteraction) {
+      return setContractName(networkTypeIsCfx ? 'CFX' : 'Ether')
+    }
+    if (contractCreation) {
+      return setContractName(t('contractCreation'))
+    }
+    if (contractInteraction) {
       if (token20 && token?.name) {
-        setContractName(token.name)
-      } else {
-        setContractName(t('contractInteraction'))
+        return setContractName(token.name)
       }
+      setContractName(t('contractInteraction'))
     }
   }, [
     simple,
