@@ -2,36 +2,24 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
-import {
-  formatHexToDecimal,
-  CFX_DECIMALS,
-  ETH_DECIMALS,
-} from '@fluent-wallet/data-format'
+import {CFX_DECIMALS, ETH_DECIMALS} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {CompWithLabel, DisplayBalance, CustomTag} from '../components'
-import {useNetworkTypeIsCfx, usePendingAuthReq} from '../hooks/useApi'
+import {useNetworkTypeIsCfx} from '../hooks/useApi'
 import useGlobalStore from '../stores'
 import {ROUTES} from '../constants'
 const {EDIT_GAS_FEE} = ROUTES
 
-function GasFee({isDapp, estimateRst}) {
+function GasFee({estimateRst}) {
   const {gasPrice: inputGasPrice} = useGlobalStore()
   const {t} = useTranslation()
   const history = useHistory()
-  const pendingAuthReq = usePendingAuthReq()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
   const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
-  const {
-    willPayCollateral,
-    willPayTxFee,
-    gasPrice: estimateGasPrice,
-  } = estimateRst
+  const {willPayCollateral, willPayTxFee} = estimateRst
   const {storageFeeDrip, gasFeeDrip, txFeeDrip} = estimateRst?.customData || {}
-  const sendParams = pendingAuthReq?.[0]?.req?.params[0]
-  const gasPrice = !isDapp
-    ? inputGasPrice
-    : formatHexToDecimal(sendParams?.gasPrice || estimateGasPrice) || '1'
+  const gasPrice = inputGasPrice
   const isBePayed = willPayCollateral === false || willPayTxFee === false
   const isBeAllPayed = willPayCollateral === false && willPayTxFee === false
   const partPayedFeeDrip =

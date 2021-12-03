@@ -55,6 +55,7 @@ function ConfirmTransition() {
     setNonce,
     clearSendTransactionParams,
   } = useGlobalStore()
+  console.log('gasPrice', gasPrice)
 
   const nativeToken = useCurrentNativeToken()
   const tx = useDappParams()
@@ -74,6 +75,13 @@ function ConfirmTransition() {
   const txParams = useTxParams()
   const originParams = !isDapp ? {...txParams} : {...tx}
   // user can edit nonce, gasPrice and gas
+  const {
+    gasPrice: initGasPrice,
+    gas: initGasLimit,
+    nonce: initNonce,
+    storageLimit: initStorageLimit,
+  } = tx
+
   const params = {
     ...originParams,
     gasPrice: formatDecimalToHex(gasPrice),
@@ -130,20 +138,24 @@ function ConfirmTransition() {
   // when dapp send, init the gas edit global store
   useEffect(() => {
     if (isDapp) {
-      // store decimal number
-      setGasLimit(formatHexToDecimal(tx.gas || estimateGasLimit || ''))
-      setStorageLimit(
-        formatHexToDecimal(tx.storageLimit || estimateStorageLimit || ''),
-      )
-      setGasPrice(formatHexToDecimal(tx.gasPrice || estimateGasPrice || ''))
-      setNonce(formatHexToDecimal(tx.nonce || rpcNonce || ''))
+      // store decimal number for dapp tx params
+      !gasLimit &&
+        setGasLimit(formatHexToDecimal(initGasLimit || estimateGasLimit || ''))
+      !storageLimit &&
+        setStorageLimit(
+          formatHexToDecimal(initStorageLimit || estimateStorageLimit || ''),
+        )
+      !gasPrice &&
+        setGasPrice(formatHexToDecimal(initGasPrice || estimateGasPrice || ''))
+      !nonce && setNonce(formatHexToDecimal(initNonce || rpcNonce || ''))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isDapp,
-    tx.gas,
-    tx.nonce,
-    tx.gasPrice,
-    tx.storageLimit,
+    initGasLimit,
+    initNonce,
+    initGasPrice,
+    initStorageLimit,
     setGasPrice,
     setNonce,
     setGasLimit,
@@ -152,6 +164,10 @@ function ConfirmTransition() {
     estimateGasLimit,
     estimateStorageLimit,
     rpcNonce,
+    gasLimit,
+    storageLimit,
+    gasPrice,
+    nonce,
   ])
 
   // check balance when click send button
@@ -240,7 +256,7 @@ function ConfirmTransition() {
             allowance={displayValue}
             pendingAuthReq={pendingAuthReq}
           />
-          <GasFee estimateRst={estimateRst} isDapp={isDapp} />
+          <GasFee estimateRst={estimateRst} />
           <span className="text-error text-xs inline-block mt-2">
             {balanceError}
           </span>
