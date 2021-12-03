@@ -55,7 +55,6 @@ function ConfirmTransition() {
     setNonce,
     clearSendTransactionParams,
   } = useGlobalStore()
-  console.log('gasPrice', gasPrice)
 
   const nativeToken = useCurrentNativeToken()
   const tx = useDappParams()
