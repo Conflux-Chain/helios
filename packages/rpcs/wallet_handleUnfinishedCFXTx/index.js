@@ -59,6 +59,7 @@ export const permissions = {
     'cfx_getNextNonce',
   ],
   db: [
+    'retractAttr',
     'getUnfinishedTxCount',
     'getAddressById',
     'getTxById',
@@ -70,6 +71,7 @@ export const permissions = {
     'setTxExecuted',
     'setTxConfirmed',
     'setTxUnsent',
+    'setTxChainSwitched',
   ],
 }
 
@@ -84,6 +86,7 @@ export const main = ({
     wallet_handleUnfinishedCFXTx,
   },
   db: {
+    retractAttr,
     getUnfinishedTxCount,
     getAddressById,
     getTxById,
@@ -95,6 +98,7 @@ export const main = ({
     setTxExecuted,
     setTxConfirmed,
     setTxUnsent,
+    setTxChainSwitched,
   },
   params: {tx, address, okCb, failedCb},
   network,
@@ -104,7 +108,9 @@ export const main = ({
   const cacheTime = network.cacheTime || 1000
   const {status, hash, raw} = tx
   const s = defs(hash, {tx, address})
+  const ss = defs(hash, {tx, address})
   const sdone = () => s.done()
+  const ssdone = () => ss.done()
   const keepTrack = (delay = cacheTime) => {
     if (!Number.isInteger(delay)) delay = cacheTime
     sdone()
@@ -113,9 +119,76 @@ export const main = ({
       delay,
     )
   }
+  const skeepTrack = (delay = cacheTime) => {
+    if (!Number.isInteger(delay)) delay = cacheTime
+    ssdone()
+    setTimeout(
+      () => wallet_handleUnfinishedCFXTx({tx: tx.eid, address: address.eid}),
+      delay,
+    )
+  }
 
-  // unsent
+  // # detect pivot chain switch
   if (status === 0) {
+    // ## unsent
+  } else if (status === 1) {
+    // ## sending
+  } else if (status === 2) {
+    // ## pending
+  } else if (status === 3) {
+    // ## packaged
+    ss.map(() => cfx_getTransactionByHash({errorFallThrough: true}, [hash]))
+      .subscribe(resolve({fail: identity}))
+      .transform(
+        sideEffect(rst => {
+          if (!rst) {
+            if (tx.blockHash) retractAttr({eid: tx.eid, attr: 'tx/blockHash'})
+            setTxPending({hash})
+            setTxChainSwitched({hash})
+            skeepTrack()
+          }
+        }),
+        keepTruthy(),
+        sideEffect(rst => {
+          if (rst.blockHash !== tx.blockHash) {
+            setTxPackaged({hash, blockHash: rst.blockHash})
+            setTxChainSwitched({hash})
+          }
+          skeepTrack()
+        }),
+      )
+  } else if (status === 4) {
+    // ## executed
+    ss.map(() => cfx_getTransactionReceipt({errorFallThrough: true}, [hash]))
+      .subscribe(resolve({fail: identity}))
+      .transform(
+        sideEffect(rst => {
+          if (!rst) {
+            if (tx.receipt) retractAttr({eid: tx.eid, attr: 'tx/receipt'})
+            setTxPackaged({hash, blockHash: tx.blockHash})
+            setTxChainSwitched({hash})
+            ssdone()
+          }
+        }),
+        keepTruthy(),
+        sideEffect(rst => {
+          if (
+            rst.blockHash !== tx.receipt.blockHash ||
+            rst.index !== tx.receipt.index ||
+            rst.epochNumber !== tx.receipt.epochNumber
+          ) {
+            if (tx.receipt) retractAttr({eid: tx.eid, attr: 'tx/receipt'})
+            setTxPackaged({hash, blockHash: rst.blockHash})
+            setTxChainSwitched({hash})
+            skeepTrack()
+          }
+        }),
+      )
+  }
+
+  // # process tx
+  if (status === 0) {
+    // ## unsent
     s.transform(
       sideEffect(() => setTxSending({hash})),
       sideEffect(() => updateBadge(getUnfinishedTxCount())),
@@ -179,22 +252,41 @@ export const main = ({
         sideEffect(() => typeof okCb === 'function' && okCb(hash)),
         sideEffect(() => keepTrack),
       )
-    return
-  }
-
-  // sending
-  if (status === 1) {
-    return
-  }
-
-  // pending
-  if (status === 2) {
+  } else if (status === 1) {
+    // ## sending
+  } else if (status === 2) {
+    // ## pending
     s.map(() => cfx_getTransactionByHash({errorFallThrough: true}, [hash]))
       .subscribe(resolve({fail: keepTrack}))
       .transform(
         sideEffect(rst => {
-          if (!rst) return
-          setTxPackaged({hash})
+          if (rst) return
+          cfx_epochNumber({errorFallThrough: true}, ['latest_state'])
+            .then(n => {
+              if (
+                BigNumber.form(n)
+                  .sub(BigNumber.from(tx.payload.epochHeight))
+                  .gte(40)
+              ) {
+                setTxUnsent({hash})
+              }
+            })
+            .catch(identity)
+          return keepTrack()
+        }),
+        keepTruthy(),
+      )
+      .transform(
+        map(rst => {
+          if (!rst.blockHash) {
+            keepTrack()
+            return false
+          }
+          return rst
+        }),
+        keepTruthy(),
+        sideEffect(rst => {
+          setTxPackaged({hash, blockHash: rst.blockHash})
           const {status} = rst
           if (status === '0x1') {
             let err = 'Transaction reverted'
@@ -279,12 +371,8 @@ export const main = ({
           keepTrack()
         }),
       )
-
-    return
-  }
-
-  // packaged
-  if (status === 3) {
+  } else if (status === 3) {
+    // ## packaged
     s.map(() => cfx_getTransactionReceipt({errorFallThrough: true}, [hash]))
       .subscribe(resolve({fail: keepTrack}))
       .transform(
@@ -296,6 +384,7 @@ export const main = ({
           const {
             outcomeStatus,
             blockHash,
+            index,
             epochNumber,
             txExecErrorMsg,
             contractCreated,
@@ -307,6 +396,7 @@ export const main = ({
           } = rst
           const receipt = {
             blockHash,
+            index,
             epochNumber,
             gasUsed,
             gasFee,
@@ -335,12 +425,8 @@ export const main = ({
         }),
         sideEffect(sdone),
       )
-
-    return
-  }
-
-  // executed
-  if (status === 4) {
+  } else if (status === 4) {
+    // ## executed
     s.map(() => cfx_epochNumber(['latest_confirmed']))
       .subscribe(resolve({fail: keepTrack}))
       .transform(
@@ -374,6 +460,5 @@ export const main = ({
         }),
         sideEffect(sdone),
       )
-    return
   }
 }
