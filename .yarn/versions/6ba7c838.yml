@@ -1,0 +1,6 @@
+releases:
+  "@fluent-wallet/cfx_sign-typed-data_v4": patch
+  "@fluent-wallet/eth_sign-typed-data_v4": patch
+
+declined:
+  - helios-background
