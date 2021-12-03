@@ -34,7 +34,7 @@ export const rpcErrorHandlerFactory = ({isProd = true, debugLog} = {}) => {
     /* istanbul ignore if  */
     if (!isProd)
       console.error(
-        'DEV_ONLY_ERROR' + (err.message || ''),
+        'DEV_ONLY_ERROR: ' + (err.message || ''),
         '\n',
         err.stack || '',
       )
