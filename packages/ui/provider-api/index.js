@@ -55,6 +55,9 @@ class Provider extends SafeEventEmitter {
           },
           close() {},
           on() {},
+          send: this.send.bind(this),
+          sendAsync: this.sendAsync.bind(this),
+          request: this.request.bind(this),
         }
         this.request({method: 'cfx_chainId'}).then(result => {
           this._chainId = result
