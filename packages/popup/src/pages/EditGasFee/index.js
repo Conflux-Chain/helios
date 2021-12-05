@@ -49,7 +49,7 @@ function EditGasFee() {
 
   const onChangeGasPrice = gasPrice => {
     setInputGasPrice(gasPrice)
-    if (new Big(inputGasPrice || '0').gt(0)) {
+    if (new Big(gasPrice || '0').gt(0)) {
       setGasPriceErr('')
     } else {
       setGasPriceErr(
@@ -62,12 +62,12 @@ function EditGasFee() {
 
   const onChangeGasLimit = gasLimit => {
     setInputGasLimit(gasLimit)
-    if (new Big(inputGasLimit || '0').gte(formatHexToDecimal(gasUsed || '1'))) {
+    if (new Big(gasLimit || '0').gte(formatHexToDecimal(gasUsed || '21000'))) {
       setGasLimitErr('')
     } else {
       setGasLimitErr(
         t('gasLimitErrMsg', {
-          gasUsed: formatHexToDecimal(gasUsed || '0'),
+          gasUsed: formatHexToDecimal(gasUsed || '21000'),
         }),
       )
     }
@@ -115,7 +115,7 @@ function EditGasFee() {
           <WrapperWithLabel
             containerClass={`${gasPriceErr ? 'mb-9' : 'mb-3'} relative`}
             leftContent={`${t('gasPrice')} (${
-              networkTypeIsCfx ? '(Drip)' : '(GWei)'
+              networkTypeIsCfx ? 'Drip' : 'GWei'
             })`}
             rightContent={
               <NumberInput
