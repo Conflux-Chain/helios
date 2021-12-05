@@ -22,8 +22,8 @@ const useCfxMainnetAddress = accountId => {
     {accountId, networkId},
     {fallbackData: {}},
   )
-  const {cfxHex, hex} = accountAddress || {}
-  return jsNumberForAddress(cfxHex || hex)
+  const {hex} = accountAddress || {}
+  return jsNumberForAddress(hex.replace(/^0x\d/, '0x1'))
 }
 
 function Avatar({diameter, accountId, ...props}) {

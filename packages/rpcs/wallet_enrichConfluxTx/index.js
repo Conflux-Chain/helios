@@ -23,9 +23,9 @@ export const main = async ({
   if (!txData) return
 
   const {tx, address, network, token, app} = txData
-  const txExtraEid = tx.extra.eid
+  const txExtraEid = tx.txExtra.eid
   const txs = []
-  const {to, data, receipt} = tx.payload
+  const {to, data, receipt} = tx.txPayload
 
   let noError = true
 
@@ -72,11 +72,11 @@ export const main = async ({
               symbol,
               decimals,
               tx: tx.eid,
+              network: network.eid,
               address: contractAddress,
             },
           },
           {eid: address.eid, address: {token: 'newtoken'}},
-          {eid: network.eid, network: {token: 'newtoken'}},
         )
         if (app) txs.push({eid: 'newtoken', token: {fromApp: true}})
         else txs.push({eid: 'newtoken', token: {fromUser: true}})

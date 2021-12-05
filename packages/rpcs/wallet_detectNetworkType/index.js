@@ -41,7 +41,7 @@ export const main = async ({f, Err: {InvalidParams}, params: {url}}) => {
     rst = await f(
       {
         errorFallThrough: true,
-        timeout: 1000,
+        timeout: 5000,
         networkName: url,
         network: {endpoint: url, name: url},
         method: 'eth_chainId',

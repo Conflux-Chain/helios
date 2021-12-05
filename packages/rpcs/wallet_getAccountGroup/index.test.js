@@ -7,23 +7,26 @@ describe('wallet_getAccountGroup', function () {
   beforeEach(() => {
     input = {
       params: {},
-      db: {getAccountGroup: jest.fn(() => [1])},
+      db: {findGroup: jest.fn(() => [1])},
       Err: {InvalidParams: s => new Error(s)},
     }
   })
   describe('main', function () {
     test('logic', () => {
       expect(main(input)).toEqual([1])
-      expect(input.db.getAccountGroup).toHaveBeenCalledWith({})
+      expect(input.db.findGroup).toHaveBeenCalledWith({hidden: false})
 
       input.params.accountGroupId = 1
       expect(main(input)).toEqual([1])
-      expect(input.db.getAccountGroup).toHaveBeenLastCalledWith({eid: 1})
+      expect(input.db.findGroup).toHaveBeenLastCalledWith({
+        groupId: 1,
+        hidden: false,
+      })
 
       input.params.includeHidden = true
       expect(main(input)).toEqual([1])
-      expect(input.db.getAccountGroup).toHaveBeenLastCalledWith({
-        eid: 1,
+      expect(input.db.findGroup).toHaveBeenLastCalledWith({
+        groupId: 1,
       })
     })
   })

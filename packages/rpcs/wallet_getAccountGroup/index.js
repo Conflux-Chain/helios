@@ -1,4 +1,5 @@
 import {
+  mapp,
   dbid,
   map,
   truep,
@@ -30,24 +31,21 @@ export const schemas = {
           [cat, [oneOrMore, AccountGroupTypeSchema]],
         ],
       ],
+      ['g', {optional: true}, mapp],
     ],
   ],
 }
 
 export const permissions = {
-  db: ['getAccountGroup'],
+  db: ['findGroup'],
   external: ['popup'],
 }
 
-export const main = ({
-  Err: {InvalidParams},
-  params = {},
-  db: {getAccountGroup},
-}) => {
-  const {accountGroupId, includeHidden, type} = params
+export const main = ({Err: {InvalidParams}, params = {}, db: {findGroup}}) => {
+  const {accountGroupId, includeHidden, type, g} = params
   const types = new Set()
   if (Array.isArray(type)) {
-    if (type.length > 3) throw InvalidParams(`Invalid type: ${type}`)
+    if (type.length > 4) throw InvalidParams(`Invalid type: ${type}`)
     type.forEach(t => types.add(t))
     if (types.size !== type.length)
       throw InvalidParams(`Invalid type: ${type}, duplicate value`)
@@ -55,16 +53,12 @@ export const main = ({
     types.add(type)
   }
   const query = {}
-  if (accountGroupId) query.eid = accountGroupId
+  if (types.size) query.types = Array.from(types)
+  if (accountGroupId) query.groupId = accountGroupId
+  if (!includeHidden) query.hidden = false
+  if (g) query.g = g
 
-  const accoungGroup = getAccountGroup(query) || []
+  const accoungGroup = findGroup(query) || []
 
-  const notype = !types.size
-  return accoungGroup.reduce((acc, g) => {
-    if (notype || types.has(g.vault.type)) {
-      if (includeHidden) return acc.concat(g)
-      return g.hidden ? acc : acc.concat(g)
-    }
-    return acc
-  }, [])
+  return accoungGroup
 }
