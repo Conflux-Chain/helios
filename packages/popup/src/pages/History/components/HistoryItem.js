@@ -66,7 +66,6 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
   const {decodeData} = useDecodeData({
     to: token?.address,
     data: payload?.data,
-    nonce: formatHexToDecimal(payload?.nonce),
   })
 
   useEffect(() => {
