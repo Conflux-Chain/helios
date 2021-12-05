@@ -17,27 +17,31 @@ export const schemas = {
 
 export const permissions = {
   db: [
+    'findGroup',
+    'findAccount',
     'getNetwork',
     'getPassword',
-    'getAccountGroupById',
-    'getOneAccountByGroupAndIndex',
     't',
+    'newAddressTx',
   ],
   external: ['popup'],
 }
 
 export const main = async ({
-  db: {
-    getPassword,
-    getNetwork,
-    getOneAccountByGroupAndIndex,
-    t,
-    getAccountGroupById,
-  },
+  db: {findGroup, getPassword, getNetwork, t, findAccount, newAddressTx},
   params: {accountGroupId, nickname},
   Err: {InvalidParams},
 }) => {
-  const group = getAccountGroupById(accountGroupId)
+  const group = findGroup({
+    groupId: accountGroupId,
+    g: {
+      accountGroup: {
+        vault: {type: 1, ddata: 1, data: 1, cfxOnly: 1, eid: 1},
+        nickname: 1,
+      },
+      account: {_accountGroup: {nickname: 1}},
+    },
+  })
   if (!group) throw InvalidParams('Invalid account group id')
   const {vault} = group
   if (vault.type !== 'hd')
@@ -72,41 +76,44 @@ export const main = async ({
         }),
       })),
     ).then(params =>
-      params.map(({eid, netId, type, addr: {address, index, privateKey}}) => {
-        let accountId =
-          getOneAccountByGroupAndIndex({
+      params.map(({eid, netId, type, addr: {address, privateKey}}, idx) => {
+        let accountId
+        try {
+          accountId = findAccount({
             index: nextAccountIdx,
             groupId: accountGroupId,
-          })?.eid || 'accountId'
+          })
+        } catch (err) {
+          accountId = 'accountId'
+        }
+
+        const addrTx = newAddressTx({
+          eid: -1,
+          network: eid,
+          value:
+            type === 'cfx' ? encode(toAccountAddress(address), netId) : address,
+          hex: address,
+          pk: privateKey,
+        })
 
         const {tempids} = t([
-          {
-            eid: -1,
-            address: {
-              vault: vault.eid,
-              index,
-              hex: address,
-              pk: privateKey,
-            },
-          },
-          type === 'cfx' && {
-            eid: -1,
-            address: {
-              cfxHex: toAccountAddress(address),
-              base32: encode(toAccountAddress(address), netId),
-            },
-          },
-          {eid, network: {address: -1}},
-          {
+          addrTx,
+          !idx && {
             eid: accountId,
             account: {
               index: nextAccountIdx,
+              accountGroup: accountGroupId,
               nickname: nickname ?? `${group.nickname}-${nextAccountIdx + 1}`,
-              address: -1,
+              address: addrTx.eid,
               hidden: false,
             },
           },
-          {eid: accountGroupId, accountGroup: {account: accountId}},
+          idx && {
+            eid: {account: {id: [accountGroupId, nextAccountIdx]}},
+            account: {
+              address: addrTx.eid,
+            },
+          },
         ])
 
         accountId = tempids.accountId ?? accountId

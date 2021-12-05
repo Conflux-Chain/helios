@@ -9,21 +9,22 @@ export const schemas = {
 export const permissions = {
   external: ['popup', 'inpage'],
   locked: true,
-  db: ['getLocked', 'accountAddrByNetwork'],
+  db: ['getLocked', 'findAddress'],
 }
 
 export const main = async ({
-  db: {getLocked, accountAddrByNetwork},
+  db: {getLocked, findAddress},
   app,
   network,
+  _inpage,
 }) => {
   if (getLocked()) return []
-  if (!app) return []
+  if (_inpage && !app) return []
 
-  const addr = accountAddrByNetwork({
-    network: network.eid,
-    account: app.currentAccount.eid,
-  })
-  if (network.type === 'cfx') return [addr.base32]
-  return [addr.hex]
+  const addrs = findAddress({
+    appId: app?.eid,
+    networkId: app ? null : network.eid,
+    g: {address: {value: 1}},
+  }).map(({value}) => value)
+  return addrs
 }

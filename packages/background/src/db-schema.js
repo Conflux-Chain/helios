@@ -52,7 +52,6 @@ const schema = {
     ticker: {
       doc: 'A object with info of the currency, eg. {name: "Ethereum", symbol: "CFX", decimals: 18, iconUrls: [...svg]}',
     },
-    address: {ref: true, many: true, component: true},
     builtin: {doc: "Indicating builtin network, shouldn't be deleted"},
     scanUrl: {doc: 'Url of block chain explorer'},
     selected: {doc: 'network selected by wallet'},
@@ -63,12 +62,6 @@ const schema = {
       component: true,
     },
     balanceChecker: {doc: 'balance checker contract address'},
-    token: {
-      doc: 'tokens from token list, dapp, and user of this network',
-      ref: true,
-      many: true,
-      component: true,
-    },
     isMainnet: {doc: 'is mainnet network'},
     isTestnet: {doc: 'is testnet network'},
     isCustom: {doc: 'is custom network'},
@@ -86,8 +79,13 @@ const schema = {
   },
   accountGroup: {
     nickname: {doc: 'account group nickname'},
-    vault: {ref: true, doc: 'Entity ID of vault', identity: true},
-    // customHdPath: {
+    vault: {
+      ref: true,
+      doc: 'Entity ID of vault',
+      identity: true,
+      component: true,
+    },
+    // hdPath: {
     //   ref: 'hdPath',
     //   doc: 'Entity ID of hd path, when set, will use this custom hd path for whatever network',
     // },
@@ -96,15 +94,14 @@ const schema = {
     //   ref: true,
     // },
     hidden: {doc: 'If hide this accountGroup in ui'},
-    account: {ref: true, many: true, component: true},
+    // account: {ref: true, many: true, component: true},
   },
   address: {
-    vault: {ref: true},
-    nativeBalance: {doc: 'balance of this address'},
-    index: {doc: 'Address index in hd path, starts from 0'},
+    id: {tuples: ['address/network', 'address/value'], identity: true},
+    network: {ref: true},
+    value: {doc: 'address string, hex or base32 based on network'},
     hex: {doc: 'The value of the address, not cfx hex address'},
-    cfxHex: {doc: 'The value of cfx hex address'},
-    base32: {doc: 'base32 addr of the right network'},
+    nativeBalance: {doc: 'balance of this address'},
     pk: {doc: 'the private key of the address', persist: false},
     balance: {
       doc: 'token balances of this address',
@@ -125,7 +122,9 @@ const schema = {
     },
   },
   account: {
+    id: {tuples: ['account/accountGroup', 'account/index'], identity: true},
     index: {doc: 'index of account in account group'},
+    accountGroup: {ref: true},
     nickname: {doc: 'account nickname'},
     address: {many: true, component: true, ref: true},
     hidden: {doc: 'If hide this account in ui'},
@@ -135,9 +134,9 @@ const schema = {
 
   // ## tx
   tx: {
-    payload: {
+    txPayload: {
       doc: 'tx payload as an object',
-      ref: 'txPayload',
+      ref: true,
       component: true,
     },
     raw: {doc: 'raw tx hash'},
@@ -153,7 +152,7 @@ const schema = {
     chainSwitched: {doc: 'chain switched'},
     created: {doc: 'created timestamp get with new Date().getTime()'},
     err: {doc: 'basic error type/info'},
-    extra: {doc: 'enriched tx info', ref: 'txExtra', component: true},
+    txExtra: {doc: 'enriched tx info', ref: true, component: true},
     fromFluent: {doc: 'tx sumitted from fluent'},
   },
   txPayload: {
@@ -224,6 +223,8 @@ const schema = {
 
   // ## tokens
   token: {
+    id: {tuples: ['token/network', 'token/address'], identity: true},
+    network: {ref: true},
     name: {doc: 'token name'},
     address: {doc: 'address, hex or base32'},
     symbol: {doc: 'token symbol'},

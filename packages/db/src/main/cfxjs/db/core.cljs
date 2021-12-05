@@ -285,7 +285,7 @@
          db            (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn (js-schema->schema js-schema)))
          tfn           (fn [txs] (d/transact! db txs))
          qfn           (fn [query & args] (apply d/q query (d/db db) args))
-         pfn           (partial d/pull (d/db db))
+         pfn           (partial d/pull @db)
          efn           (fn [model attr-keys & args] (apply de/entity (d/db db) model attr-keys args))
          ffn           (fn [f] (d/filter (d/db db) f))
          rst           (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
@@ -294,7 +294,7 @@
          ;; rst           (assoc rst :deleteById delete-by-id)
          ;; rst           (assoc rst :updateById update-by-id)
          rst           (assoc rst :tmpid random-tmp-id)
-         rst           (apply-queries rst qfn pfn efn tfn ffn)]
+         rst           (apply-queries rst db qfn efn tfn ffn)]
      (def conn db)
      (def t tfn)
      (def q qfn)
@@ -402,25 +402,12 @@
        [?acc :account/address ?addr]
        [?addr :address/hex ?addr-hex]
        [?addr :address/index ?addr-idx]])
-
-  (tap> (map first (->> (count (q '[:find ?g ?n ?v ?acc ?addr ?addr-idx ?addr-hex ?addr-cfx-hex ?addr-base32
-                                    :keys accountGroupId networkId vaultId accountId addressId addressIndex addressHex addressCfxHex addressBase32
-                                    :where
-                                    [?g :accountGroup/vault ?v]
-                                    [?g :accountGroup/account ?acc]
-                                    [?g :accountGroup/network ?n]
-                                    [?acc :account/address ?addr]
-                                    [?addr :address/index ?addr-idx]
-                                    [?addr :address/hex ?addr-hex]
-                                    [?addr :address/cfxHex ?addr-cfx-hex]
-                                    [?addr :address/base32 ?addr-base32]]))
-                        (group-by :accountId)
-                        vals)))
-
   (q '[:find ?vault
        :keys vault
        :where
        [?vault :vault/type]])
+  (d/pull @conn '[:network/name] 7)
+  (d/pull @conn '[*] 9)
   (d/datoms
    (fdb (fn [db datom] (not= "vault" (namespace (:a datom)))))
    :eavt))

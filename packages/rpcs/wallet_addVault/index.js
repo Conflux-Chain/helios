@@ -19,6 +19,7 @@ import {
 } from '@fluent-wallet/base32-address'
 import {fromPrivate, toAccountAddress} from '@fluent-wallet/account'
 import {stripHexPrefix} from '@fluent-wallet/utils'
+import {chan} from '@fluent-wallet/csp'
 
 export const NAME = 'wallet_addVault'
 
@@ -65,10 +66,11 @@ export const permissions = {
     'wallet_getNextNonce',
     'wallet_validatePassword',
     'wallet_deleteAccountGroup',
-    'wallet_refetchTokenList',
     'wallet_setCurrentAccount',
   ],
   db: [
+    'newAddressTx',
+    'getGroupFirstAccountId',
     'getAccountGroupById',
     'getAccountGroupByVaultType',
     't',
@@ -79,7 +81,6 @@ export const permissions = {
     'createVault',
     'getAccountGroup',
     'getNetwork',
-    'getOneAccountByGroupAndIndex',
     'getLocked',
     'getPassword',
   ],
@@ -87,13 +88,10 @@ export const permissions = {
 
 async function selectNewlyCreatedAccountGroupFirstAccount({
   rpcs: {wallet_setCurrentAccount},
-  db: {getAccountGroupById},
+  db: {getGroupFirstAccountId},
   groupId,
 }) {
-  const group = getAccountGroupById(groupId)
-  if (group?.account?.[0]) {
-    return await wallet_setCurrentAccount([group.account[0].eid])
-  }
+  return await wallet_setCurrentAccount([getGroupFirstAccountId({groupId})])
 }
 
 const DefaultGroupNamePrefix = {
@@ -104,12 +102,14 @@ const DefaultGroupNamePrefix = {
 
 export async function newAccounts(arg) {
   const {
+    allAccountCreatedChan,
+    firstAccountCreatedChan,
     groupId,
     groupName,
     rpcs: {wallet_discoverAccounts},
     params: {waitTillFinish},
     vault,
-    db: {getNetwork, t, getOneAccountByGroupAndIndex},
+    db: {getNetwork, t, newAddressTx},
   } = arg
 
   if (vault.type === 'hd') {
@@ -117,43 +117,45 @@ export async function newAccounts(arg) {
       accountGroupId: groupId,
       waitTillFinish,
     })
+    if (waitTillFinish) allAccountCreatedChan.write(true)
+    firstAccountCreatedChan.write(true)
     return
   }
 
   const networks = getNetwork()
 
-  networks.forEach(({eid, netId, type}) => {
-    const account = getOneAccountByGroupAndIndex({index: 0, groupId})
+  // create ONE account and address for pk/pub group
+  networks.forEach(({eid, netId, type}, idx) => {
     if (vault.type === 'pk') {
       const addr = fromPrivate(vault.ddata).address
+      const addrTx = newAddressTx({
+        eid: -1,
+        value: type === 'cfx' ? encode(toAccountAddress(addr), netId) : addr,
+        hex: addr,
+        pk: vault.ddata,
+        network: eid,
+      })
       t([
-        {
-          eid: -1,
-          address: {
-            hex: addr,
-            pk: vault.ddata,
-            vault: vault.eid,
-          },
-        },
-        type === 'cfx' && {
-          eid: -1,
-          address: {
-            cfxHex: toAccountAddress(addr),
-            base32: encode(toAccountAddress(addr), netId),
-          },
-        },
-        {eid, network: {address: -1}},
-        {
-          eid: account?.eid ?? -2,
+        addrTx,
+        // only create account on first network
+        !idx && {
+          eid: -2,
           account: {
-            address: -1,
+            accountGroup: groupId,
+            address: addrTx.eid,
             index: 0,
             nickname: groupName,
             hidden: false,
           },
         },
-        {eid: groupId, accountGroup: {account: account?.eid ?? -2}},
+        idx && {
+          eid: {account: {id: [groupId, 0]}},
+          account: {
+            address: addrTx.eid,
+          },
+        },
       ])
+      firstAccountCreatedChan.write(true)
 
       return
     }
@@ -162,43 +164,43 @@ export async function newAccounts(arg) {
 
     // vault.type is 'pub'
 
+    const addrTx = newAddressTx({
+      eid: -1,
+      hex: vault.ddata,
+      network: eid,
+      value:
+        type === 'cfx'
+          ? encode(toAccountAddress(vault.ddata), netId)
+          : vault.ddata,
+    })
     t([
-      {eid: -1, address: {hex: vault.ddata, vault: vault.eid}},
-      type === 'cfx' && {
-        eid: -1,
-        address: {
-          base32: encode(toAccountAddress(vault.ddata), netId),
-          cfxHex: toAccountAddress(vault.ddata),
-        },
-      },
-      {eid, network: {address: -1}},
+      addrTx,
       {
-        eid: account?.eid ?? -2,
+        eid: -2,
         account: {
+          accountGroup: groupId,
           index: 0,
           nickname: groupName,
-          address: -1,
+          address: addrTx.eid,
           hidden: false,
         },
       },
-      {
-        eid: groupId,
-        accountGroup: {account: account?.eid ?? -2},
-      },
     ])
+    firstAccountCreatedChan.write(true)
   })
 }
 
 export async function newAccountGroup(arg) {
   const {
-    params: {waitTillFinish, nickname},
+    selectedAccountSetChan,
+    params: {nickname},
     db: {getAccountGroupByVaultType, getVaultById, t},
     vaultId,
   } = arg
   const vault = getVaultById(vaultId)
-  const groups = getAccountGroupByVaultType(vault.type)
+  const groupIds = getAccountGroupByVaultType(vault.type)
   const groupName =
-    nickname || `${DefaultGroupNamePrefix[vault.type]}${groups.length + 1}`
+    nickname || `${DefaultGroupNamePrefix[vault.type]}${groupIds.length + 1}`
 
   const {tempids} = t([
     {
@@ -214,10 +216,12 @@ export async function newAccountGroup(arg) {
     groupId,
     groupName,
   }).then(() => {
-    selectNewlyCreatedAccountGroupFirstAccount({...arg, groupId})
+    selectNewlyCreatedAccountGroupFirstAccount({...arg, groupId}).then(
+      selectedAccountSetChan.write(true),
+    )
   })
 
-  if (waitTillFinish) await newAccountsPromise
+  await newAccountsPromise
 
   return groupId
 }
@@ -241,12 +245,7 @@ export const main = async arg => {
       getPassword,
       getLocked,
     },
-    rpcs: {
-      wallet_validatePassword,
-      wallet_deleteAccountGroup,
-      wallet_unlock,
-      wallet_refetchTokenList,
-    },
+    rpcs: {wallet_validatePassword, wallet_deleteAccountGroup, wallet_unlock},
     params: {
       password: optionalPassword,
       mnemonic,
@@ -335,8 +334,22 @@ export const main = async arg => {
 
   const vaultId = createVault(vault)
   if (isFirstGroup) await wallet_unlock({password, waitSideEffects: true})
-  else await wallet_refetchTokenList()
-  const groupId = newAccountGroup({...arg, vaultId})
+  const selectedAccountSetChan = chan(1)
+  const firstAccountCreatedChan = chan(1)
+  const allAccountCreatedChan = chan(1)
+  const groupId = newAccountGroup({
+    ...arg,
+    vaultId,
+    allAccountCreatedChan,
+    selectedAccountSetChan,
+    firstAccountCreatedChan,
+  })
 
-  return groupId
+  const promises = [
+    selectedAccountSetChan.read(),
+    firstAccountCreatedChan.read(),
+  ]
+  if (arg.params.waitTillFinish) promises.push(allAccountCreatedChan.read())
+
+  return await Promise.all(promises).then(() => groupId)
 }

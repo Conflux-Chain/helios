@@ -55,7 +55,7 @@ export const permissions = {
     'cfx_getTransactionByHash',
     'cfx_getTransactionReceipt',
     'wallet_handleUnfinishedCFXTx',
-    'wallet_getExplorerUrl',
+    'wallet_getBlockChainExplorerUrl',
     'cfx_getNextNonce',
   ],
   db: [
@@ -82,7 +82,7 @@ export const main = ({
     cfx_getTransactionByHash,
     cfx_getTransactionReceipt,
     cfx_getNextNonce,
-    wallet_getExplorerUrl,
+    wallet_getBlockChainExplorerUrl,
     wallet_handleUnfinishedCFXTx,
   },
   db: {
@@ -223,7 +223,7 @@ export const main = ({
                       ext.notifications.create(hash, {
                         title: 'Failed transaction',
                         message: `Transaction ${parseInt(
-                          tx.payload.nonce,
+                          tx.txPayload.nonce,
                           16,
                         )} failed! ${err?.message || ''}`,
                       }),
@@ -265,7 +265,7 @@ export const main = ({
             .then(n => {
               if (
                 BigNumber.form(n)
-                  .sub(BigNumber.from(tx.payload.epochHeight))
+                  .sub(BigNumber.from(tx.txPayload.epochHeight))
                   .gte(40)
               ) {
                 setTxUnsent({hash})
@@ -304,7 +304,7 @@ export const main = ({
                   ext.notifications.create(hash, {
                     title: 'Failed transaction',
                     message: `Transaction ${parseInt(
-                      tx.payload.nonce,
+                      tx.txPayload.nonce,
                       16,
                     )} failed! ${err}`,
                   }),
@@ -316,7 +316,7 @@ export const main = ({
               ext.notifications.create(hash, {
                 title: 'Failed transaction',
                 message: `Transaction ${parseInt(
-                  tx.payload.nonce,
+                  tx.txPayload.nonce,
                   16,
                 )} failed! ${err?.message || ''}`,
               }),
@@ -326,13 +326,13 @@ export const main = ({
           if (status === '0x2') {
             setTxSkipped({hash})
             updateBadge(getUnfinishedTxCount())
-            wallet_getExplorerUrl({transaction: [hash]}).then(
+            wallet_getBlockChainExplorerUrl({transaction: [hash]}).then(
               ({transaction: [txUrl]}) => {
                 getExt().then(ext =>
                   ext.notifications.create(txUrl, {
                     title: 'Skipped transaction',
                     message: `Transaction ${parseInt(
-                      tx.payload.nonce,
+                      tx.txPayload.nonce,
                       16,
                     )}  skipped! ${txUrl?.length ? 'View on explorer.' : ''}`,
                   }),
@@ -347,21 +347,21 @@ export const main = ({
             keepTrack(5 * cacheTime)
             return Promise.resolve(null)
           }
-          return cfx_getNextNonce([address.base32])
+          return cfx_getNextNonce([address.value])
         }),
       )
       .subscribe(resolve({fail: keepTrack}))
       .transform(
         keep(),
         sideEffect(nonce => {
-          if (nonce > tx.payload.nonce) {
+          if (nonce > tx.txPayload.nonce) {
             setTxSkipped({hash})
             updateBadge(getUnfinishedTxCount())
             getExt().then(ext =>
               ext.notifications.create(hash, {
                 title: 'Skipped transaction',
                 message: `Transaction ${parseInt(
-                  tx.payload.nonce,
+                  tx.txPayload.nonce,
                   16,
                 )}  skipped!`,
               }),
@@ -416,7 +416,7 @@ export const main = ({
               ext.notifications.create(hash, {
                 title: 'Failed transaction',
                 message: `Transaction ${parseInt(
-                  tx.payload.nonce,
+                  tx.txPayload.nonce,
                   16,
                 )} failed! ${txExecErrorMsg}`,
               }),
@@ -443,7 +443,7 @@ export const main = ({
           return false
         }),
         keepTruthy(), // filter non-null tx
-        map(() => wallet_getExplorerUrl({transaction: [hash]})),
+        map(() => wallet_getBlockChainExplorerUrl({transaction: [hash]})),
       )
       .subscribe(resolve({fail: identity}))
       .transform(
@@ -452,7 +452,7 @@ export const main = ({
             ext.notifications.create(txUrl, {
               title: 'Confirmed transaction',
               message: `Transaction ${parseInt(
-                tx.payload.nonce,
+                tx.txPayload.nonce,
                 16,
               )} confirmed! ${txUrl?.length ? 'View on Explorer.' : ''}`,
             })
