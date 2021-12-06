@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useSWRConfig} from 'swr'
+import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
@@ -52,6 +53,7 @@ SeedPhrase.propTypes = {
 
 function CurrentSeed() {
   const {t} = useTranslation()
+  const history = useHistory()
   const {mutate} = useSWRConfig()
   const hdGroup = useHdAccountGroup()
 
