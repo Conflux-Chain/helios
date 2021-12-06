@@ -5,13 +5,24 @@ import {CopyToClipboard} from 'react-copy-to-clipboard'
 import {CopyOutlined} from '@fluent-wallet/component-icons'
 import Toast from '@fluent-wallet/component-toast'
 
-function CopyButton({text, className = ''}) {
+function CopyButton({
+  text,
+  className = '',
+  CopyWrapper,
+  wrapperClassName = '',
+}) {
   const {t} = useTranslation()
   const [copied, setCopied] = useState(false)
   return (
     <div className="relative" id="copyBtn">
       <CopyToClipboard text={text} onCopy={() => setCopied(true)}>
-        <CopyOutlined className={`cursor-pointer w-4 h-4 ${className}`} />
+        {CopyWrapper ? (
+          <CopyWrapper className={wrapperClassName}>
+            <CopyOutlined className={`cursor-pointer w-4 h-4 ${className}`} />
+          </CopyWrapper>
+        ) : (
+          <CopyOutlined className={`cursor-pointer w-4 h-4 ${className}`} />
+        )}
       </CopyToClipboard>
       <Toast
         content={t('copiedSuccess')}
@@ -27,6 +38,8 @@ function CopyButton({text, className = ''}) {
 CopyButton.propTypes = {
   text: PropTypes.string,
   className: PropTypes.string,
+  wrapperClassName: PropTypes.string,
+  CopyWrapper: PropTypes.elementType,
 }
 
 export default CopyButton
