@@ -5,11 +5,12 @@ function CustomTag({
   width = 'w-14',
   className = '',
   children,
+  roundedStyle = 'rounded-tr rounded-bl-lg',
 }) {
   return (
     <div
       id="customTag"
-      className={`flex h-5 rounded-tr rounded-bl-lg items-center justify-center text-xs ${width} ${backgroundColor} ${className}`}
+      className={`flex h-5 items-center justify-center text-xs ${width} ${backgroundColor} ${className} ${roundedStyle}`}
     >
       {children}
     </div>
@@ -19,6 +20,7 @@ function CustomTag({
 CustomTag.propTypes = {
   backgroundColor: PropTypes.string,
   width: PropTypes.string,
+  roundedStyle: PropTypes.string,
   className: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
