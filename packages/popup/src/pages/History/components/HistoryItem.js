@@ -125,8 +125,6 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
         return
       }
     }
-    setToAddress('')
-    setAmount('')
   }, [
     Boolean(token),
     simple,
