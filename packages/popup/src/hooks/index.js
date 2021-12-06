@@ -1,4 +1,4 @@
-import {useEffect, useState, useMemo, useRef} from 'react'
+import {useEffect, useState, useMemo} from 'react'
 import {useAsync} from 'react-use'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {estimate} from '@fluent-wallet/estimate-tx'
@@ -206,22 +206,24 @@ export const useDappParams = () => {
 }
 
 export const useDecodeData = ({to, data} = {}) => {
+  const [decodeData, setDecodeData] = useState({})
   const type = useAddressType(to)
   const {netId} = useCurrentNetwork()
   const isContract = type === 'contract'
   const crc20Token = useValid20Token(isContract ? to : '')
   const token = {...crc20Token, address: to}
-  let decodeData = useRef({})
+
   useEffect(() => {
     if (data && isContract) {
       getCFXContractMethodSignature(to, data, netId).then(result => {
-        decodeData.current = result
+        setDecodeData({...result})
       })
     } else {
-      decodeData.current = {}
+      setDecodeData({})
     }
   }, [data, isContract, to, netId])
-  return {isContract, token, decodeData: decodeData.current}
+
+  return {isContract, token, decodeData}
 }
 
 export const useDecodeDisplay = ({

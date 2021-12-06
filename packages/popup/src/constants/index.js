@@ -45,3 +45,5 @@ export const DAPP_REQUEST_ROUTES = {
 
 export const DEFAULT_TOKEN_URL =
   'https://conflux-static.oss-cn-beijing.aliyuncs.com/fluent/icons/default-token-icon.svg'
+
+export const historyPageLimit = 10
