@@ -3,8 +3,8 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
-import {useNetworkTypeIsCfx} from '../../hooks/useApi'
-import {useTxParams, useEstimateTx} from '../../hooks'
+import {useNetworkTypeIsCfx, usePendingAuthReq} from '../../hooks/useApi'
+import {useTxParams, useEstimateTx, useDappParams} from '../../hooks'
 import {WrapperWithLabel} from './components'
 import {
   Big,
@@ -31,8 +31,14 @@ function EditGasFee() {
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
   const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
 
+  const pendingAuthReq = usePendingAuthReq()
+  const isDapp = pendingAuthReq?.length > 0
+  const tx = useDappParams()
+  const txParams = useTxParams()
+  const originParams = !isDapp ? {...txParams} : {...tx}
+
   const params = {
-    ...useTxParams(),
+    ...originParams,
     gasPrice: formatDecimalToHex(inputGasPrice),
     gas: formatDecimalToHex(inputGasLimit),
   }

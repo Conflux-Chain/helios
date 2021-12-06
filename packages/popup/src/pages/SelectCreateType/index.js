@@ -14,7 +14,7 @@ const {
 function Tag() {
   const {t} = useTranslation()
   return (
-    <span className="px-1 ml-1 h-4 text-white flex items-center rounded-sm bg-[#80ac9e] text-2xs">
+    <span className="px-1 ml-1 h-4 text-white flex items-center rounded-sm bg-[#32e1a9] text-2xs">
       {t('faster')}
     </span>
   )
