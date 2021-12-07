@@ -500,17 +500,19 @@
 (defn set-tx-sending [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/status 1}]))
 (defn set-tx-pending [{:keys [hash]}]
-  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+  (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
       {:db/id [:tx/hash hash] :tx/status 2}]))
-(defn set-tx-packaged [{:keys [hash]}]
-  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status 3}]))
+(defn set-tx-packaged [{:keys [hash blockHash]}]
+  (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+      {:db/id [:tx/hash hash] :tx/status 3 :tx/blockHash blockHash}]))
 (defn set-tx-executed [{:keys [hash receipt]}]
-  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+  (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
       {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}]))
 (defn set-tx-confirmed [{:keys [hash]}]
   (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
       {:db/id [:tx/hash hash] :tx/status 5}]))
+(defn set-tx-chain-switched [{:keys [hash]}]
+  (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
 
 (defn get-cfx-txs-to-enrich
   ([] (get-cfx-txs-to-enrich {}))
@@ -768,6 +770,7 @@
               :setTxPackaged                   set-tx-packaged
               :setTxExecuted                   set-tx-executed
               :setTxConfirmed                  set-tx-confirmed
+              :setTxChainSwitched              set-tx-chain-switched
               :setTxUnsent                     set-tx-unsent
               :getCfxTxsToEnrich               get-cfx-txs-to-enrich
               :cleanupTx                       cleanup-tx
