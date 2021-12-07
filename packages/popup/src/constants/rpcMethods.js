@@ -7,6 +7,7 @@ export const WALLET_APPROVE_PENDING_AUTH_REQUEST =
 export const ACCOUNT_GROUP_TYPE = {
   HD: 'hd',
   PK: 'pk',
+  HW: 'hw',
 }
 export const WALLET_IS_LOCKED = 'wallet_isLocked'
 export const WALLET_GET_CURRENT_NETWORK = 'wallet_getCurrentNetwork'
