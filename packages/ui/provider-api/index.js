@@ -55,6 +55,9 @@ class Provider extends SafeEventEmitter {
           },
           close() {},
           on() {},
+          send: this.send.bind(this),
+          sendAsync: this.sendAsync.bind(this),
+          request: this.request.bind(this),
         }
         this.request({method: 'cfx_chainId'}).then(result => {
           this._chainId = result
@@ -62,8 +65,6 @@ class Provider extends SafeEventEmitter {
           this._networkVersion = networkId.toString(10)
           this.confluxJS.networkId = networkId
           this.confluxJS.wallet.networkId = networkId
-          this.emit('networkChanged', this._networkVersion)
-          this.emit('chainChanged', this._chainId)
         })
         this.request({method: 'cfx_accounts'})
           .then(result => {
@@ -183,10 +184,10 @@ class Provider extends SafeEventEmitter {
 
     if (!a2 && typeof a1 === 'object') {
       if (a1.method === 'cfx_accounts') {
-        return [this.selectedAddress]
+        return Promise.resolve([this.selectedAddress])
       }
       if (a1.method === 'cfx_netVersion' || a1.method === 'net_version') {
-        return this.networkVersion
+        return Promise.resolve(this.networkVersion)
       }
     }
   }

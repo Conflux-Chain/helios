@@ -43,7 +43,7 @@ export function recoverPersonalSignature(type, signature, message, netId) {
   return verifyEthPersonalSign(message, signature)
 }
 
-export async function hashTypedData(type, typedData) {
+export function hashTypedData(type, typedData) {
   return keccak256(
     cip23GetMessage(
       typedData,

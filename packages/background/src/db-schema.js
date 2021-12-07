@@ -149,6 +149,8 @@ const schema = {
       doc: 'int, tx status, -2 skipped, -1 failed, 0 unsent, 1 sending, 2 pending, 3 packaged, 4 executed, 5 confirmed',
     },
     receipt: {doc: 'receipt as an object'},
+    blockHash: {doc: 'block this tx packaged in'},
+    chainSwitched: {doc: 'chain switched'},
     created: {doc: 'created timestamp get with new Date().getTime()'},
     err: {doc: 'basic error type/info'},
     extra: {doc: 'enriched tx info', ref: 'txExtra', component: true},
