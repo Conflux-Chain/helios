@@ -23,7 +23,7 @@ const useCfxMainnetAddress = accountId => {
     {fallbackData: {}},
   )
   const {hex} = accountAddress || {}
-  return jsNumberForAddress(hex.replace(/^0x\d/, '0x1'))
+  return jsNumberForAddress(hex)
 }
 
 function Avatar({diameter, accountId, ...props}) {
