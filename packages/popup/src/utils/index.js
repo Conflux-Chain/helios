@@ -66,3 +66,32 @@ export function updateAddedNewAccount(mutate, noAccountBefore, groupType) {
   mutate([WALLET_GET_ACCOUNT_GROUP])
   mutate([WALLET_GET_ACCOUNT_GROUP, groupType])
 }
+
+export const transformToTitleCase = str => {
+  if (typeof str !== 'string') return ''
+  return str.replace(/^\S/, s => s.toUpperCase())
+}
+
+export const formatStatus = status => {
+  let ret = ''
+  switch (status) {
+    case -2:
+    case -1:
+      ret = 'failed'
+      break
+    case 0:
+    case 1:
+      ret = 'sending'
+      break
+    case 2:
+    case 3:
+      ret = 'pending'
+      break
+    case 4:
+      ret = 'executed'
+      break
+    case 5:
+      ret = 'confirmed'
+  }
+  return ret
+}

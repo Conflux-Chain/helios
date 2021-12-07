@@ -185,6 +185,15 @@ const en = {
     transactionDetails: 'Transaction Details',
     functionName: 'Function',
     hexData: 'Hex Data',
+    // history
+    activity: 'Activity',
+    failed: 'Failed',
+    executed: 'Executed',
+    pending: 'Pending',
+    sending: 'Sending',
+    contractCreation: 'Contract Deployment',
+    contractInteraction: 'Contract Interaction',
+    unknown: 'Unknown',
   },
 }
 

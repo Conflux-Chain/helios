@@ -15142,6 +15142,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dayjs@npm:1.10.7":
+  version: 1.10.7
+  resolution: "dayjs@npm:1.10.7"
+  checksum: a0a4ca95abaa03d0702161dc2c35d16121188e342f5052b9c61cdf784dab68af766f477c04f87f71c6af666fd4d13db9b9853b87265850d6093b7b04e1bb1cd7
+  languageName: node
+  linkType: hard
+
 "debug@npm:2.6.9, debug@npm:^2.2.0, debug@npm:^2.3.3, debug@npm:^2.6.0, debug@npm:^2.6.8, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
@@ -19633,6 +19640,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
     "@fluent-wallet/utils": "workspace:packages/utils"
     bn.js: 5.2.0
+    dayjs: 1.10.7
     i18next: 21.5.2
     qrcode.react: 1.0.1
     react-copy-to-clipboard: 5.0.4

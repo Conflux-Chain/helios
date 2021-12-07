@@ -46,7 +46,9 @@ function CurrentDapp() {
       id="currentDappContainer"
     >
       {!isConnected && (
-        <span className="text-gray-40">{t('noConnectedDapp')}</span>
+        <span className="text-gray-40 flex w-full justify-center">
+          {t('noConnectedDapp')}
+        </span>
       )}
       {isConnected && (
         <>

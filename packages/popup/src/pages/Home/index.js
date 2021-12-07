@@ -1,10 +1,15 @@
 import {useState} from 'react'
 import {useQuery} from '../../hooks'
+import {useTxList} from '../../hooks/useApi'
 import {useEffectOnce} from 'react-use'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {HomeNav} from '../../components'
+import {PendingQueue} from './components'
+import {ROUTES} from '../../constants'
+
+const {HISTORY} = ROUTES
 import {
   CurrentAccount,
   CurrentNetwork,
@@ -21,6 +26,7 @@ function Home() {
   const [addTokenStatus, setAddTokenStatus] = useState(false)
   const query = useQuery()
   const history = useHistory()
+  const pendingCount = useTxList({status: 2, countOnly: true})
 
   useEffectOnce(() => {
     if (query.get('open') === 'account-list') {
@@ -59,14 +65,20 @@ function Home() {
           >
             {t('send')}
           </Button>
-          <Button
-            id="historyBtn"
-            size="small"
-            variant="outlined"
-            className="!border-white !text-white !bg-transparent !hover:none"
-          >
-            {t('history')}
-          </Button>
+          <div className="relative">
+            <Button
+              id="historyBtn"
+              size="small"
+              variant="outlined"
+              className="!border-white !text-white !bg-transparent !hover:none"
+              onClick={() => {
+                history.push(HISTORY)
+              }}
+            >
+              {t('history')}
+            </Button>
+            {pendingCount ? <PendingQueue count={pendingCount} /> : null}
+          </div>
         </div>
       </div>
       <HomeTokenList onOpenAddToken={() => setAddTokenStatus(true)} />

@@ -31,6 +31,7 @@ const SendTransaction = lazy(() => import('./pages/SendTransaction'))
 const EditGasFee = lazy(() => import('./pages/EditGasFee'))
 const EditPermission = lazy(() => import('./pages/EditPermission'))
 const ConfirmTransaction = lazy(() => import('./pages/ConfirmTransaction'))
+const History = lazy(() => import('./pages/History'))
 const ViewData = lazy(() => import('./pages/ViewData'))
 const {
   HOME,
@@ -55,6 +56,7 @@ const {
   EDIT_PERMISSION,
   CONFIRM_TRANSACTION,
   VIEW_DATA,
+  HISTORY,
 } = ROUTES
 
 function App() {
@@ -145,6 +147,7 @@ function App() {
                 component={DappSwitchNetwork}
               />
               <Route exact path={DAPP_ADD_NETWORK} component={DappAddNetwork} />
+              <Route exact path={HISTORY} component={History} />
               <Route exact path={ERROR} component={ErrorPage} />
               <Route path="*" render={() => <Redirect to={ERROR} />} />
             </Switch>

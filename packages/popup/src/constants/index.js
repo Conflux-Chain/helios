@@ -23,8 +23,7 @@ export * as RPC_METHODS from './rpcMethods'
 export * as ROUTES from './route'
 export const LANGUAGES = []
 export const ANIMATE_DURING_TIME = 300
-export const PASSWORD_REG_EXP =
-  /^(?=.*\d)(?=.*[a-zA-Z])[\da-zA-Z~!@#$%^&*]{8,16}$/
+export const PASSWORD_REG_EXP = /^(?=.*\d)(?=.*[a-zA-Z]).{8,16}$/
 export const NETWORK_TYPE = {
   CFX: 'cfx',
   ETH: 'eth',
@@ -46,3 +45,5 @@ export const DAPP_REQUEST_ROUTES = {
 
 export const DEFAULT_TOKEN_URL =
   'https://conflux-static.oss-cn-beijing.aliyuncs.com/fluent/icons/default-token-icon.svg'
+
+export const historyPageLimit = 10
