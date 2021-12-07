@@ -18,12 +18,14 @@ import {
   AccountList,
   NetworkList,
   AddToken,
+  Settings,
 } from './components'
 function Home() {
   const {t} = useTranslation()
   const [accountStatus, setAccountStatus] = useState(false)
   const [networkStatus, setNetworkStatus] = useState(false)
   const [addTokenStatus, setAddTokenStatus] = useState(false)
+  const [settingsStatus, setSettingStatus] = useState(false)
   const query = useQuery()
   const history = useHistory()
   const pendingCount = useTxList({status: 2, countOnly: true})
@@ -47,7 +49,11 @@ function Home() {
         alt="home"
         className="absolute top-0 z-0"
       />
-      <HomeNav />
+      <HomeNav
+        onClickMenu={() => {
+          setSettingStatus(true)
+        }}
+      />
       <div className="flex flex-col pt-1 px-4 z-10 flex-shrink-0">
         <div className="flex items-start justify-between">
           <CurrentAccount onOpenAccount={() => setAccountStatus(true)} />
@@ -94,6 +100,10 @@ function Home() {
       <AddToken
         onClose={() => setAddTokenStatus(false)}
         onOpen={addTokenStatus}
+      />
+      <Settings
+        onClose={() => setSettingStatus(false)}
+        onOpen={settingsStatus}
       />
     </div>
   )

@@ -113,6 +113,7 @@ function AddToken({onClose, onOpen}) {
 
   return (
     <SlideCard
+      id="add-token"
       cardTitle={
         <div className="ml-3 pb-1">
           <p className="text-base text-gray-80 font-medium">{t('addToken')}</p>
@@ -167,7 +168,7 @@ function AddToken({onClose, onOpen}) {
 
 AddToken.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
+  onOpen: PropTypes.bool.isRequired,
 }
 
 export default AddToken

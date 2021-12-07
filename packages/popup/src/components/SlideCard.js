@@ -11,8 +11,14 @@ function SlideCard({
   cardTitle,
   cardContent,
   cardFooter = null,
+  id = '',
+  containerClassName = '',
+  width = 'w-93',
+  height = 'h-125',
+  backgroundColor = 'bg-bg',
+  direction = 'vertical',
 }) {
-  const animateStyle = useSlideAnimation(onOpen)
+  const animateStyle = useSlideAnimation(onOpen, direction)
   const ref = useRef(null)
 
   useClickAway(ref, e => {
@@ -23,9 +29,9 @@ function SlideCard({
     return null
   }
   return (
-    <div id="slideCardContainer">
+    <div id={id}>
       <div
-        className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${animateStyle} h-125 bg-gray-circles bg-no-repeat bg-contain`}
+        className={`z-20 rounded-t-xl px-3 pt-4 pb-7 absolute bottom-0 overflow-y-auto no-scroll bg-gray-circles bg-no-repeat bg-contain ${animateStyle} ${containerClassName} ${width} ${height} ${backgroundColor}`}
         ref={ref}
       >
         {cardTitle}
@@ -46,9 +52,15 @@ function SlideCard({
 SlideCard.propTypes = {
   showClose: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
+  onOpen: PropTypes.bool.isRequired,
   cardTitle: PropTypes.node,
   cardContent: PropTypes.node,
   cardFooter: PropTypes.node,
+  id: PropTypes.string,
+  containerClassName: PropTypes.string,
+  width: PropTypes.string,
+  height: PropTypes.string,
+  backgroundColor: PropTypes.string,
+  direction: PropTypes.string,
 }
 export default SlideCard

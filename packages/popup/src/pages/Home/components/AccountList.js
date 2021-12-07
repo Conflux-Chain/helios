@@ -94,6 +94,7 @@ function AccountList({onClose, onOpen}) {
 
   return accountGroups && currentNetwork ? (
     <SlideCard
+      id="account-list"
       cardTitle={
         <div className="ml-3 pb-1">
           <p className="text-base text-gray-80 font-medium">
@@ -138,7 +139,7 @@ function AccountList({onClose, onOpen}) {
 
 AccountList.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
+  onOpen: PropTypes.bool.isRequired,
 }
 
 export default AccountList
