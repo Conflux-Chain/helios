@@ -7,9 +7,9 @@ import {useSlideAnimation} from '../hooks'
 function SlideCard({
   onClose,
   onOpen = false,
+  showClose = true,
   cardTitle,
   cardContent,
-  cardDescription,
   cardFooter = null,
 }) {
   const animateStyle = useSlideAnimation(onOpen)
@@ -28,14 +28,13 @@ function SlideCard({
         className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${animateStyle} h-125 bg-gray-circles bg-no-repeat bg-contain`}
         ref={ref}
       >
-        <div className="ml-3 pb-1">
-          <p className="text-base text-gray-80 font-medium">{cardTitle}</p>
-          {cardDescription}
-        </div>
-        <CloseOutlined
-          onClick={onClose}
-          className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
-        />
+        {cardTitle}
+        {showClose ? (
+          <CloseOutlined
+            onClick={onClose}
+            className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
+          />
+        ) : null}
         {cardContent}
         {cardFooter}
       </div>
@@ -45,12 +44,11 @@ function SlideCard({
 }
 
 SlideCard.propTypes = {
+  showClose: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onOpen: PropTypes.bool,
-  cardTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-  cardDescription: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  cardContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node])
-    .isRequired,
-  cardFooter: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  cardTitle: PropTypes.node,
+  cardContent: PropTypes.node,
+  cardFooter: PropTypes.node,
 }
 export default SlideCard

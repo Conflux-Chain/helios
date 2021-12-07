@@ -94,10 +94,16 @@ function AccountList({onClose, onOpen}) {
 
   return accountGroups && currentNetwork ? (
     <SlideCard
-      cardTitle={t('myAccounts')}
+      cardTitle={
+        <div className="ml-3 pb-1">
+          <p className="text-base text-gray-80 font-medium">
+            {t('myAccounts')}
+          </p>
+          {<CurrentAccountNetworkLabel />}
+        </div>
+      }
       onClose={onClose}
       onOpen={onOpen}
-      cardDescription={<CurrentAccountNetworkLabel />}
       cardContent={
         <div>
           {Object.values(accountGroups || {}).map(

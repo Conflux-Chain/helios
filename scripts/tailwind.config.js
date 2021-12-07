@@ -129,10 +129,29 @@ module.exports = {
             display: 'none',
           },
         },
+        'slide-left-in': {
+          '0%': {
+            transform: 'translateX(100%)',
+          },
+          '100%': {
+            transform: 'translateX(0%)',
+          },
+        },
+        'slide-left-out': {
+          '0%': {
+            transform: 'translateX(0%)',
+          },
+          '100%': {
+            transform: 'translateX(100%)',
+            display: 'none',
+          },
+        },
       },
       animation: {
         'slide-up': 'slide-up 0.3s ease',
         'slide-down': 'slide-down 0.3s linear forwards',
+        'slide-left-in': 'slide-left-in 0.3s linear forwards',
+        'slide-left-out': 'slide-left-out 0.3s linear forwards',
       },
       backgroundImage: {
         'token-background':

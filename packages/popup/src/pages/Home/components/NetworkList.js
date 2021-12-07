@@ -12,10 +12,14 @@ function NetworkList({onClose, onOpen}) {
   }
   return (
     <SlideCard
-      cardTitle={t('network')}
+      cardTitle={
+        <div className="ml-3 pb-1">
+          <p className="text-base text-gray-80 font-medium">{t('network')}</p>
+          {<CurrentAccountNetworkLabel />}
+        </div>
+      }
       onClose={onClose}
       onOpen={onOpen}
-      cardDescription={<CurrentAccountNetworkLabel />}
       cardContent={<NetworkContent onClickNetworkItem={onClickNetworkItem} />}
     />
   )

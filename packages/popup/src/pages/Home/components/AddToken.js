@@ -113,7 +113,11 @@ function AddToken({onClose, onOpen}) {
 
   return (
     <SlideCard
-      cardTitle={t('addToken')}
+      cardTitle={
+        <div className="ml-3 pb-1">
+          <p className="text-base text-gray-80 font-medium">{t('addToken')}</p>
+        </div>
+      }
       onClose={onCloseAddToken}
       onOpen={onOpen}
       cardContent={
