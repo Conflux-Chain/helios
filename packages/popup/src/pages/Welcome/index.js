@@ -10,7 +10,7 @@ const Welcome = () => {
   const history = useHistory()
   return (
     <div className="bg-secondary h-full" id="welcomeContainer">
-      <LanguageNav hasGoBack={false} />
+      <LanguageNav />
       <div className="h-13" />
       <header className="mt-8">
         <HomeTitle title={t('hello')} subTitle={t('welcome')} />

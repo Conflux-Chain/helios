@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
-import {SlideCard} from '../../../components'
-
+import {SlideCard, LanguageNav} from '../../../components'
 function Settings({onClose, onOpen}) {
   return (
     <SlideCard
@@ -8,8 +7,16 @@ function Settings({onClose, onOpen}) {
       onClose={onClose}
       onOpen={onOpen}
       showClose={false}
-      cardContent={<div id="settings">123</div>}
+      cardTitle={
+        <LanguageNav hasGoBack={true} showLan={false} color="text-black" />
+      }
+      cardContent={<div>123</div>}
       direction="horizontal"
+      width="w-85"
+      height="h-full"
+      cardClassName="!rounded-t-none !p-0"
+      containerClassName="pl-8"
+      backgroundColor="bg-gray-0"
     />
   )
 }
