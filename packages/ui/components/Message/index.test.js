@@ -5,6 +5,7 @@ import {render, screen, waitFor, fireEvent} from '@testing-library/react'
 import {describe, expect, jest, afterEach} from '@jest/globals'
 import Message from './index.js'
 
+// TODO resolve test error
 describe('Message', () => {
   afterEach(() => {
     Message.destroy()
