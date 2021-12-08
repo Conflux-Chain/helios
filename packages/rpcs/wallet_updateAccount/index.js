@@ -30,13 +30,13 @@ export const main = async ({
     g: {_accountGroup: {eid: 1}},
   })
   if (!account) throw InvalidParams(`Invalid account id ${accountId}`)
-  if (
-    nickname &&
-    findAccount({groupId: account.accountGroup.eid, nickname})?.length
-  )
-    throw InvalidParams(
-      `Invalid nickname ${nickname}, duplicate with other account in the same account group`,
-    )
+  // if (
+  //   nickname &&
+  //   findAccount({groupId: account.accountGroup.eid, nickname})?.length
+  // )
+  //   throw InvalidParams(
+  //     `Invalid nickname ${nickname}, duplicate with other account in the same account group`,
+  //   )
 
   t([
     nickname && {eid: accountId, account: {nickname}},

@@ -47,14 +47,14 @@ export const main = async ({
 
   const existAccounts = group.account || []
   const nextAccountIdx = existAccounts.length
-  const hasDuplicateNicknameInSameAccountGroup = existAccounts.reduce(
-    (acc, account) => acc || account.nickname === nickname,
-    false,
-  )
-  if (hasDuplicateNicknameInSameAccountGroup)
-    throw InvalidParams(
-      `Invalid nickname "${nickname}", duplicate with other account in the same account group`,
-    )
+  // const hasDuplicateNicknameInSameAccountGroup = existAccounts.reduce(
+  //   (acc, account) => acc || account.nickname === nickname,
+  //   false,
+  // )
+  // if (hasDuplicateNicknameInSameAccountGroup)
+  //   throw InvalidParams(
+  //     `Invalid nickname "${nickname}", duplicate with other account in the same account group`,
+  //   )
 
   const password = getPassword()
   const decrypted = vault.ddata ?? (await decrypt(password, vault.data))
