@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {isUndefined} from '@fluent-wallet/checks'
-import {useState, useRef, useEffect} from 'react'
+import {useState, useRef, useEffect, useCallback} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useSWRConfig} from 'swr'
 import {SelectedOutlined, PlusOutlined} from '@fluent-wallet/component-icons'
@@ -35,6 +35,25 @@ function AddToken({onClose, onOpen}) {
   const {netId} = useCurrentNetwork()
   const dbData = useDbAddTokenList()
 
+  const getOther20Token = useCallback(
+    value => {
+      request(WALLET_VALIDATE_20TOKEN, {
+        tokenAddress: value,
+        userAddress: address,
+      }).then(result => {
+        if (inputValueRef.current === value) {
+          if (result?.valid) {
+            setNoTokenStatus(false)
+            return setTokenList([{...result, address: value}])
+          }
+          setNoTokenStatus(true)
+        }
+        // TODO:handle error
+      })
+    },
+    [address],
+  )
+
   useEffect(() => {
     if (dbData?.added && dbData?.others && !isUndefined(netId)) {
       if (searchContent === '') {
@@ -58,23 +77,14 @@ function AddToken({onClose, onOpen}) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(dbData), searchContent, isCfxChain, netId])
-
-  const getOther20Token = value => {
-    request(WALLET_VALIDATE_20TOKEN, {
-      tokenAddress: value,
-      userAddress: address,
-    }).then(result => {
-      if (inputValueRef.current === value) {
-        if (result?.valid) {
-          setNoTokenStatus(false)
-          return setTokenList([{...result, address: value}])
-        }
-        setNoTokenStatus(true)
-      }
-      // TODO:handle error
-    })
-  }
+  }, [
+    dbData?.others,
+    dbData?.added,
+    searchContent,
+    isCfxChain,
+    netId,
+    getOther20Token,
+  ])
 
   const onChangeValue = value => {
     setSearchContent(value)
