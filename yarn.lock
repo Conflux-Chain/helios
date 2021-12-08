@@ -4695,7 +4695,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/checks@workspace:packages/checks":
+"@fluent-wallet/checks@workspace:*, @fluent-wallet/checks@workspace:packages/checks":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/checks@workspace:packages/checks"
   dependencies:
@@ -5545,6 +5545,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_delete-app@workspace:packages/rpcs/wallet_deleteApp"
   dependencies:
+    "@fluent-wallet/checks": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
