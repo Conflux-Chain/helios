@@ -4,6 +4,7 @@ releases:
   "@fluent-wallet/cfx_send-transaction": patch
   "@fluent-wallet/cfx_sign-transaction": patch
   "@fluent-wallet/cfx_sign-typed-data_v4": patch
+  "@fluent-wallet/conflux-tx-error": patch
   "@fluent-wallet/db": major
   "@fluent-wallet/eth_accounts": major
   "@fluent-wallet/eth_request-accounts": major
@@ -14,13 +15,13 @@ releases:
   "@fluent-wallet/wallet_create-account": major
   "@fluent-wallet/wallet_create-address": major
   "@fluent-wallet/wallet_delete-account-group": patch
+  "@fluent-wallet/wallet_delete-app": patch
   "@fluent-wallet/wallet_delete-network": patch
   "@fluent-wallet/wallet_detect-network-type": patch
   "@fluent-wallet/wallet_discover-accounts": patch
   "@fluent-wallet/wallet_enrich-conflux-tx": patch
   "@fluent-wallet/wallet_export-account": patch
   "@fluent-wallet/wallet_export-account-group": patch
-  "@fluent-wallet/wallet_get-account-group": major
   "@fluent-wallet/wallet_get-account-group-vault-value": patch
   "@fluent-wallet/wallet_get-address-private-key": patch
   "@fluent-wallet/wallet_get-blockchain-explorer-url": patch

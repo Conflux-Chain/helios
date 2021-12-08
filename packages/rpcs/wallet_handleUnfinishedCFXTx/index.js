@@ -203,8 +203,8 @@ export const main = ({
             setTxUnsent({hash})
 
             const {errorType, shouldDiscard} = processError(err)
-            const isDuplicateTx = !errorType !== 'duplicateTx'
-            const failed = shouldDiscard && isDuplicateTx
+            const isDuplicateTx = errorType === 'duplicateTx'
+            const failed = shouldDiscard && !isDuplicateTx
 
             defs({
               failed: failed && {errorType, err},
