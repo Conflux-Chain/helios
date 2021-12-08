@@ -24,7 +24,7 @@ export const main = async ({
   const addrs = findAddress({
     appId: app?.eid,
     networkId: app ? null : network.eid,
-    g: {address: {value: 1}},
+    g: {value: 1},
   }).map(({value}) => value)
   return addrs
 }

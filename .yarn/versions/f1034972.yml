@@ -21,12 +21,14 @@ releases:
   "@fluent-wallet/wallet_export-account": patch
   "@fluent-wallet/wallet_export-account-group": patch
   "@fluent-wallet/wallet_get-account-group": major
+  "@fluent-wallet/wallet_get-account-group-vault-value": patch
   "@fluent-wallet/wallet_get-address-private-key": patch
   "@fluent-wallet/wallet_get-blockchain-explorer-url": patch
   "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
   "@fluent-wallet/wallet_set-app-current-account": patch
   "@fluent-wallet/wallet_set-current-account": patch
   "@fluent-wallet/wallet_update-account": patch
+  "@fluent-wallet/wallet_update-account-group": patch
   "@fluent-wallet/wallet_update-token-list": major
   "@fluent-wallet/wallet_watch-asset": patch
 

@@ -21,9 +21,7 @@ export const main = async ({
   app,
 }) => {
   if (app) {
-    return findAddress({appId: app.eid, g: {address: {value: 1}}}).map(
-      ({value}) => value,
-    )
+    return findAddress({appId: app.eid, g: {value: 1}}).map(({value}) => value)
   }
   const permsRes = await wallet_requestPermissions([{cfx_accounts: {}}])
 
@@ -31,7 +29,7 @@ export const main = async ({
     const newapp = getOneApp({site: site.eid})
     const addrs = findAddress({
       appId: newapp.eid,
-      g: {address: {value: 1}},
+      g: {value: 1},
     }).map(({value}) => value)
 
     newapp.site?.post?.({

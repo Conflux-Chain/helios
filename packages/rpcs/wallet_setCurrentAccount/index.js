@@ -9,30 +9,27 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   methods: [],
-  db: ['setCurrentAccount', 'accountAddrByNetwork', 'findAccount'],
+  db: ['setCurrentAccount', 'findAddress', 'findAccount'],
 }
 
 export const main = ({
   Err: {InvalidParams},
-  db: {setCurrentAccount, accountAddrByNetwork, findAccount},
+  db: {setCurrentAccount, findAddress, findAccount},
   params: accounts,
 }) => {
-  const [account] = accounts.map(accountId =>
-    findAccount({accountId, g: {account: {eid: 1}}}),
-  )
+  const [account] = accounts.map(accountId => findAccount({accountId}))
   if (!account) throw InvalidParams(`Invalid accountId ${accounts[0]}`)
 
-  const apps = setCurrentAccount(account.id)
+  const apps = setCurrentAccount(account)
 
-  apps.forEach(({currentAccount, currentNetwork, site: {post}}) => {
+  apps.forEach(({eid, site: {post}}) => {
     if (!post) return
-    const addr = accountAddrByNetwork({
-      account: currentAccount.eid,
-      network: currentNetwork.eid,
+    const addr = findAddress({
+      appId: eid,
     })
     post({
       event: 'accountsChanged',
-      params: [addr.value],
+      params: addr.map(a => a.value),
     })
   })
 }

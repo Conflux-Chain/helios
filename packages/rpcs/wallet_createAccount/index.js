@@ -35,11 +35,9 @@ export const main = async ({
   const group = findGroup({
     groupId: accountGroupId,
     g: {
-      accountGroup: {
-        vault: {type: 1, ddata: 1, data: 1, cfxOnly: 1, eid: 1},
-        nickname: 1,
-      },
-      account: {_accountGroup: {nickname: 1}},
+      account: {nickname: 1},
+      vault: {type: 1, ddata: 1, data: 1, cfxOnly: 1},
+      nickname: 1,
     },
   })
   if (!group) throw InvalidParams('Invalid account group id')
@@ -76,16 +74,12 @@ export const main = async ({
         }),
       })),
     ).then(params =>
-      params.map(({eid, netId, type, addr: {address, privateKey}}, idx) => {
-        let accountId
-        try {
-          accountId = findAccount({
-            index: nextAccountIdx,
+      params.map(({eid, netId, type, addr: {address, privateKey}}) => {
+        const accountId =
+          findAccount({
             groupId: accountGroupId,
-          })
-        } catch (err) {
-          accountId = 'accountId'
-        }
+            index: nextAccountIdx,
+          })[0] || 'accountId'
 
         const addrTx = newAddressTx({
           eid: -1,
@@ -98,26 +92,19 @@ export const main = async ({
 
         const {tempids} = t([
           addrTx,
-          !idx && {
+          {
             eid: accountId,
             account: {
               index: nextAccountIdx,
-              accountGroup: accountGroupId,
               nickname: nickname ?? `${group.nickname}-${nextAccountIdx + 1}`,
               address: addrTx.eid,
               hidden: false,
             },
           },
-          idx && {
-            eid: {account: {id: [accountGroupId, nextAccountIdx]}},
-            account: {
-              address: addrTx.eid,
-            },
-          },
+          {eid: accountGroupId, accountGroup: {account: accountId}},
         ])
 
-        accountId = tempids.accountId ?? accountId
-        return accountId
+        return tempids.accountId ?? accountId
       }),
     )
   )[0]

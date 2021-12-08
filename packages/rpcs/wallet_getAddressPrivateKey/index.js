@@ -43,16 +43,12 @@ export const main = async ({
     value: address,
     networkId: network.eid,
     g: {
-      account: {
-        _address: {
-          accountGroup: {vault: {type: 1, ddata: 1, data: 1}},
-          index: 1,
-        },
+      _account: {
+        _accountGroup: {vault: {type: 1, ddata: 1, data: 1}},
+        index: 1,
       },
-      address: {
-        pk: 1,
-        network: {hdPath: {value: 1}},
-      },
+      pk: 1,
+      network: {hdPath: {value: 1}},
     },
   })
   if (!addr) throw InvalidParams(`Invalid address ${address}`)

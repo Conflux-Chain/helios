@@ -25,10 +25,8 @@ export const main = async ({
   const group = findGroup({
     groupId: accountGroupId,
     g: {
-      account: {_accountGroup: {eid: 1, index: 1}},
-      accountGroup: {
-        vault: {type: 1, cfxOnly: 1, eid: 1, ddata: 1, data: 1},
-      },
+      account: {eid: 1, index: 1},
+      vault: {type: 1, cfxOnly: 1, ddata: 1, data: 1},
     },
   })
   if (!group) throw InvalidParams(`Invalid account group id ${accountGroupId}`)
@@ -52,7 +50,7 @@ export const main = async ({
           : decrypted,
     })
     return [
-      t([addrTx, {eid: group.account[0].id, account: {address: addrTx.eid}}])
+      t([addrTx, {eid: group.account[0].eid, account: {address: addrTx.eid}}])
         .tempids.newAddr || addrTx.eid,
     ]
   } else if (vault.type === 'pk') {
@@ -67,7 +65,7 @@ export const main = async ({
           : hex.toLowerCase(),
     })
     return [
-      t([addrTx, {eid: group.account[0].id, account: {address: addrTx.eid}}])
+      t([addrTx, {eid: group.account[0].eid, account: {address: addrTx.eid}}])
         .tempids.newAddr || addrTx.eid,
     ]
   } else {
@@ -94,8 +92,8 @@ export const main = async ({
               : address.toLowerCase(),
         })
         return (
-          t([addrTx, {eid: account.id, account: {address: addrTx.eid}}]).tempids
-            .newAddr || addrTx.eid
+          t([addrTx, {eid: account.eid, account: {address: addrTx.eid}}])
+            .tempids.newAddr || addrTx.eid
         )
       }),
     )

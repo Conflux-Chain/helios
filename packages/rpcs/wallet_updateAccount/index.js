@@ -16,16 +16,19 @@ export const schemas = {
 }
 
 export const permissions = {
-  db: ['t', 'getAccountById', 'getAccountGroup', 'findAccount'],
+  db: ['t', 'getAccountGroup', 'findAccount'],
   external: ['popup'],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {getAccountById, t, findAccount},
+  db: {t, findAccount},
   params: {nickname, hidden, accountId, offline},
 }) => {
-  const account = getAccountById(accountId)
+  const account = findAccount({
+    accountId,
+    g: {_accountGroup: {eid: 1}},
+  })
   if (!account) throw InvalidParams(`Invalid account id ${accountId}`)
   if (
     nickname &&

@@ -69,9 +69,9 @@ export const permissions = {
     'wallet_setCurrentAccount',
   ],
   db: [
+    'findAccount',
     'newAddressTx',
     'getGroupFirstAccountId',
-    'getAccountGroupById',
     'getAccountGroupByVaultType',
     't',
     'getOneAccount',
@@ -79,7 +79,7 @@ export const permissions = {
     'getVault',
     'getVaultById',
     'createVault',
-    'getAccountGroup',
+    'findGroup',
     'getNetwork',
     'getLocked',
     'getPassword',
@@ -109,7 +109,7 @@ export async function newAccounts(arg) {
     rpcs: {wallet_discoverAccounts},
     params: {waitTillFinish},
     vault,
-    db: {getNetwork, t, newAddressTx},
+    db: {getNetwork, t, newAddressTx, findAccount},
   } = arg
 
   if (vault.type === 'hd') {
@@ -125,8 +125,9 @@ export async function newAccounts(arg) {
   const networks = getNetwork()
 
   // create ONE account and address for pk/pub group
-  networks.forEach(({eid, netId, type}, idx) => {
+  networks.forEach(({eid, netId, type}) => {
     if (vault.type === 'pk') {
+      const [account] = findAccount({groupId, index: 0})
       const addr = fromPrivate(vault.ddata).address
       const addrTx = newAddressTx({
         eid: -1,
@@ -137,23 +138,16 @@ export async function newAccounts(arg) {
       })
       t([
         addrTx,
-        // only create account on first network
-        !idx && {
-          eid: -2,
+        {
+          eid: account ?? -2,
           account: {
-            accountGroup: groupId,
             address: addrTx.eid,
             index: 0,
             nickname: groupName,
             hidden: false,
           },
         },
-        idx && {
-          eid: {account: {id: [groupId, 0]}},
-          account: {
-            address: addrTx.eid,
-          },
-        },
+        {eid: groupId, accountGroup: {account: account ?? -2}},
       ])
       firstAccountCreatedChan.write(true)
 
@@ -178,12 +172,15 @@ export async function newAccounts(arg) {
       {
         eid: -2,
         account: {
-          accountGroup: groupId,
           index: 0,
           nickname: groupName,
           address: addrTx.eid,
           hidden: false,
         },
+      },
+      {
+        eid: groupId,
+        accountGroup: {account: -2},
       },
     ])
     firstAccountCreatedChan.write(true)
@@ -240,7 +237,7 @@ export const main = async arg => {
     db: {
       createVault,
       getVault,
-      getAccountGroup,
+      findGroup,
       getVaultById,
       getPassword,
       getLocked,
@@ -256,7 +253,7 @@ export const main = async arg => {
     },
     Err: {InvalidParams},
   } = arg
-  const isFirstGroup = !getAccountGroup()?.length
+  const isFirstGroup = !findGroup()?.length
   const isLocked = getLocked()
   let password = optionalPassword
 
@@ -302,29 +299,29 @@ export const main = async arg => {
 
   if (anyDuplicateVaults.length) {
     const [duplicateVaultId] = anyDuplicateVaults
-    const [duplicateAccountGroup] = getAccountGroup({vault: duplicateVaultId})
+    const [duplicateAccountGroupId] = findGroup({vault: duplicateVaultId})
     const duplicateVault = getVaultById(duplicateVaultId)
 
     if (force) {
       if (duplicateVault.type !== 'hd')
         throw InvalidParams("Can't force import none hd vault")
       await wallet_deleteAccountGroup({
-        accountGroupId: duplicateAccountGroup.eid,
+        accountGroupId: duplicateAccountGroupId,
         password,
       })
     } else {
       let err
       if (vault.type === 'hd' && duplicateVault.cfxOnly !== vault.cfxOnly) {
         err = InvalidParams(
-          `Duplicate credential(with different cfxOnly setting) with account group ${duplicateAccountGroup.eid}`,
+          `Duplicate credential(with different cfxOnly setting) with account group ${duplicateAccountGroupId}`,
         )
         err.extra.updateCfxOnly = true
       } else {
         err = InvalidParams(
-          `Duplicate credential with account group ${duplicateAccountGroup.eid}`,
+          `Duplicate credential with account group ${duplicateAccountGroupId}`,
         )
       }
-      err.extra.duplicateAccountGroupId = duplicateAccountGroup.eid
+      err.extra.duplicateAccountGroupId = duplicateAccountGroupId
       throw err
     }
   }
