@@ -559,26 +559,26 @@ describe('integration test', function () {
         expect(db.getAddress().length).toBe(4)
         expect(db.getAccount({nickname: 'foo'}).length).toBe(1)
       })
-      test('wallet_createAccount with duplicate nickname', async function () {
-        expect(db.getVault().length).toBe(0)
+      // test('wallet_createAccount with duplicate nickname', async function () {
+      //   expect(db.getVault().length).toBe(0)
 
-        await request({
-          method: 'wallet_importMnemonic',
-          params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
-        })
+      //   await request({
+      //     method: 'wallet_importMnemonic',
+      //     params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
+      //   })
 
-        res = await request({
-          method: 'wallet_createAccount',
-          params: {
-            accountGroupId: db.getAccountGroup()[0].eid,
-            nickname: 'Seed-1-1',
-          },
-        })
+      //   res = await request({
+      //     method: 'wallet_createAccount',
+      //     params: {
+      //       accountGroupId: db.getAccountGroup()[0].eid,
+      //       nickname: 'Seed-1-1',
+      //     },
+      //   })
 
-        expect(res.error.message).toMatch(
-          /Invalid nickname "Seed-1-1", duplicate with other account in the same account group/,
-        )
-      })
+      //   expect(res.error.message).toMatch(
+      //     /Invalid nickname "Seed-1-1", duplicate with other account in the same account group/,
+      //   )
+      // })
     })
     describe('wallet_getAccountGroup', function () {
       test('wallet_getAccountGroup', async function () {
@@ -641,25 +641,25 @@ describe('integration test', function () {
         expect(db.getAccount()[0].nickname).toBe('foo')
         expect(db.getAccount()[0].hidden).toBe(true)
       })
-      test('wallet_updateAccount with duplicate nickname', async function () {
-        await request({
-          method: 'wallet_importMnemonic',
-          params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
-        })
+      // test('wallet_updateAccount with duplicate nickname', async function () {
+      //   await request({
+      //     method: 'wallet_importMnemonic',
+      //     params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
+      //   })
 
-        expect(db.getAccount()[0].nickname).toBe('Seed-1-1')
-        expect(db.getAccount()[0].hidden).toBeFalsy()
-        res = await request({
-          method: 'wallet_updateAccount',
-          params: {
-            accountId: db.getAccount()[0].eid,
-            nickname: 'Seed-1-1',
-          },
-        })
-        expect(res.error.message).toMatch(
-          /Invalid nickname Seed-1-1, duplicate with other account in the same account group/,
-        )
-      })
+      //   expect(db.getAccount()[0].nickname).toBe('Seed-1-1')
+      //   expect(db.getAccount()[0].hidden).toBeFalsy()
+      //   res = await request({
+      //     method: 'wallet_updateAccount',
+      //     params: {
+      //       accountId: db.getAccount()[0].eid,
+      //       nickname: 'Seed-1-1',
+      //     },
+      //   })
+      //   expect(res.error.message).toMatch(
+      //     /Invalid nickname Seed-1-1, duplicate with other account in the same account group/,
+      //   )
+      // })
     })
     describe('wallet_exportAccount', function () {
       test('export private key account', async function () {
