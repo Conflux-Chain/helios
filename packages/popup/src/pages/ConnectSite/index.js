@@ -168,7 +168,7 @@ function ConnectSite() {
     )
   }, [checkboxStatusObj])
 
-  const onClickNetworkItem = (result, {networkName, icon}) => {
+  const onClickNetworkItem = ({networkName, icon}) => {
     mutate([WALLETDB_ACCOUNT_LIST_ASSETS])
     setSearchContent(networkName)
     setSearchIcon(icon || '')

@@ -25,7 +25,7 @@ import {
   useNetworkTypeIsCfx,
 } from '../../hooks/useApi'
 import {request, bn16} from '../../utils'
-import {AddressCard, InfoList, TransactionResult} from './components'
+import {AddressCard, InfoList} from './components'
 import {TitleNav, GasFee, DappFooter} from '../../components'
 import {ROUTES, RPC_METHODS} from '../../constants'
 const {VIEW_DATA, HOME} = ROUTES
@@ -35,10 +35,8 @@ const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
 function ConfirmTransition() {
   const {t} = useTranslation()
   const history = useHistory()
-  const [showResult, setShowResult] = useState(false)
   const [sendingTransaction, setSendingTransaction] = useState(false)
   const [balanceError, setBalanceError] = useState('')
-  const [hash, setHash] = useState('')
   const pendingAuthReq = usePendingAuthReq()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const SEND_TRANSACTION = networkTypeIsCfx
@@ -222,10 +220,9 @@ function ConfirmTransition() {
       }
     }
     request(SEND_TRANSACTION, [params])
-      .then(result => {
+      .then(() => {
         setSendingTransaction(false)
-        setHash(result)
-        setShowResult(true)
+        history.push(HOME)
       })
       .catch(error => {
         setSendingTransaction(false)
@@ -293,13 +290,11 @@ function ConfirmTransition() {
               confirmText={t('confirm')}
               cancelText={t('cancel')}
               confirmDisabled={!!balanceError}
-              onClickConfirm={() => setShowResult(true)}
               confirmParams={{tx: sendParams}}
             />
           )}
         </div>
       </div>
-      {showResult && <TransactionResult transactionHash={hash} />}
     </div>
   )
 }

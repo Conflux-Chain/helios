@@ -151,6 +151,21 @@ export const cfxEstimate = async (
     gasPrice = r
   })
 
+  // get nonce, since it may affect estimateGasAndCollateral result
+  if (!nonce) {
+    promises.push(
+      request({
+        method: 'cfx_getNextUsableNonce',
+        params: [from],
+      }).then(r => {
+        nonce = r
+      }),
+    )
+  }
+
+  // wait for all those values
+  await Promise.all(promises)
+
   // simple send tx, gas is 21000, storageLimit is 0
   if (to && (!data || data === '0x')) {
     await Promise.all(promises)
@@ -175,25 +190,11 @@ export const cfxEstimate = async (
         gasUsed: '0x5208',
         gasLimit: '0x5208',
         storageCollateralized: '0x0',
+        nonce,
         willPayCollateral: true,
         willPayTxFee: true,
       }
   }
-
-  // get nonce, since it may affect estimateGasAndCollateral result
-  if (!nonce) {
-    promises.push(
-      request({
-        method: 'cfx_getNextNonce',
-        params: [from, 'latest_state'],
-      }).then(r => {
-        nonce = r
-      }),
-    )
-  }
-
-  // wait for all thoes values
-  await Promise.all(promises)
 
   // delete passed in gas/storage data, since they may affect
   // estimateGasAndCollateral result

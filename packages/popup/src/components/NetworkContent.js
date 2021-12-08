@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types'
+import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS} from '../constants'
 import {request} from '../utils'
 import {useSWRConfig} from 'swr'
-import {useCfxNetwork} from '../hooks/useApi'
+import {useCfxNetwork, useCurrentNetwork} from '../hooks/useApi'
 import {CustomTag} from './'
 
 const {WALLET_SET_CURRENT_NETWORK, WALLET_GET_CURRENT_NETWORK} = RPC_METHODS
@@ -22,19 +23,31 @@ function NetworkItem({
   onClickNetworkItem,
   networkId,
   networkItemSize = 'medium',
+  onClose,
   ...props
 }) {
   const {mutate} = useSWRConfig()
+  const {eid} = useCurrentNetwork()
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
     itemWrapperPaddingStyleObj[networkItemSize] || ''
 
   const onChangeNetwork = () => {
-    request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(result => {
-      mutate([WALLET_GET_CURRENT_NETWORK])
-      onClickNetworkItem(result, {networkId, networkName, icon})
-      // TODO: need deal with error condition
-    })
+    onClose && onClose()
+    if (eid !== networkId) {
+      request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(result => {
+        console.log(result)
+        mutate([WALLET_GET_CURRENT_NETWORK])
+        // TODO: i18n
+        Message.warning({
+          content: 'Address has been changed',
+          top: '110px',
+          duration: 1,
+        })
+        onClickNetworkItem && onClickNetworkItem({networkId, networkName, icon})
+        // TODO: need deal with error condition
+      })
+    }
   }
 
   return (
@@ -66,10 +79,11 @@ NetworkItem.propTypes = {
   networkItemSize: PropTypes.oneOf(['small', 'medium']),
   networkId: PropTypes.number.isRequired,
   icon: PropTypes.string,
-  onClickNetworkItem: PropTypes.func.isRequired,
+  onClickNetworkItem: PropTypes.func,
+  onClose: PropTypes.func,
 }
 
-function NetworkContent({onClickNetworkItem, networkItemSize}) {
+function NetworkContent({onClickNetworkItem, networkItemSize, onClose}) {
   const networkData = useCfxNetwork()
 
   return (
@@ -90,6 +104,7 @@ function NetworkContent({onClickNetworkItem, networkItemSize}) {
               : ''
           }
           onClickNetworkItem={onClickNetworkItem}
+          onClose={onClose}
           icon={icon}
           id={`item-${eid}`}
         />
@@ -99,7 +114,8 @@ function NetworkContent({onClickNetworkItem, networkItemSize}) {
 }
 
 NetworkContent.propTypes = {
-  onClickNetworkItem: PropTypes.func.isRequired,
+  onClickNetworkItem: PropTypes.func,
+  onClose: PropTypes.func,
   networkItemSize: PropTypes.oneOf(['small', 'medium']),
 }
 

@@ -23,7 +23,7 @@ const {
   WALLETDB_REFETCH_BALANCE,
 } = RPC_METHODS
 
-function AddToken({onClose, onOpen}) {
+function AddToken({onClose, open}) {
   const {mutate} = useSWRConfig()
   const {t} = useTranslation()
   const [searchContent, setSearchContent] = useState('')
@@ -115,7 +115,7 @@ function AddToken({onClose, onOpen}) {
     <SlideCard
       cardTitle={t('addToken')}
       onClose={onCloseAddToken}
-      onOpen={onOpen}
+      open={open}
       cardContent={
         <div className="mt-4">
           <SearchToken value={searchContent} onChange={onChangeValue} />
@@ -162,8 +162,8 @@ function AddToken({onClose, onOpen}) {
 }
 
 AddToken.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  open: PropTypes.bool,
 }
 
 export default AddToken

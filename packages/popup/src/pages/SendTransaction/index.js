@@ -76,8 +76,8 @@ function SendTransaction() {
   ])
   const errorMessage = useCheckBalanceAndGas(estimateRst, sendAmount)
   useEffect(() => {
-    setBalanceError(errorMessage)
-  }, [errorMessage])
+    sendAmount && setBalanceError(errorMessage)
+  }, [errorMessage, sendAmount])
 
   // TODO: get from scan
   const hasNoTxn = true

@@ -37,6 +37,31 @@ html {
   --color-success-dark: #3aa58d;
   --color-warning-dark: #df6e2e;
   --color-info-dark: #4059d9;
+
+  /* TODO global compnent class name default use light theme, need to use better method */
+  --color-bg: #f4f5f7;
+  --color-primary-4: #f8f9fe;
+  --color-primary-10: #f0f3ff;
+  --color-primary-90: #262933;
+  --color-primary-96: #262933;
+  --color-error-10: #fff2f4;
+  --color-error-90: #2b2021;
+  --color-success-10: #f1fdfa;
+  --color-success-90: #18211e;
+  --color-warning-10: #fcf1e8;
+  --color-warning-90: #25211f;
+  --color-info-10: #f2f6ff;
+  --color-info-90: #232539;
+  --color-gray-0: #fff;
+  --color-gray-4: #fafbfd;
+  --color-gray-10: #f7f8fa;
+  --color-gray-20: #eaecef;
+  --color-gray-40: #a9abb2;
+  --color-gray-60: #898d9a;
+  --color-gray-80: #3d3f4c;
+  --color-gray-90: #2a2c33;
+  --color-gray-96: #2a2c33;
+  --color-gray-100: #1b1b1c;
 }
 
 .light {
