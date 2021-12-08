@@ -79,7 +79,7 @@ export const main = async ({
     const addr = findAddress({
       networkId: app.currentNetwork.eid,
       value: from,
-      g: {account: {_address: {accountGroup: {vault: {type: 1}}}}},
+      g: {_account: {_accountGroup: {vault: {type: 1}}}},
     })
 
     if (addr.account.accountGroup.vault.type === 'pub') throw UserRejected()
@@ -111,8 +111,8 @@ export const main = async ({
       networkId: authReq.app.currentNetwork.eid,
       value: from,
       g: {
-        address: {pk: 1},
-        account: {_address: {accountGroup: {vault: {type: 1}}}},
+        pk: 1,
+        _account: {_accountGroup: {vault: {type: 1}}},
       },
     })
 

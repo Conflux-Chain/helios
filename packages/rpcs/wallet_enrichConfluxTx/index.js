@@ -11,11 +11,11 @@ export const permissions = {
   external: [],
   locked: true,
   methods: ['wallet_validate20Token', 'wallet_refetchBalance'],
-  db: ['getCfxTxsToEnrich', 't', 'isTokenInAddr'],
+  db: ['getCfxTxsToEnrich', 't', 'isTokenInAddr', 'newtokenTx'],
 }
 
 export const main = async ({
-  db: {getCfxTxsToEnrich, t, isTokenInAddr},
+  db: {getCfxTxsToEnrich, t, isTokenInAddr, newtokenTx},
   rpcs: {wallet_validate20Token, wallet_refetchBalance},
   params: {txhash},
 }) => {
@@ -63,23 +63,21 @@ export const main = async ({
         {tokenAddress: contractAddress},
       )
       if (valid) {
-        txs.push(
-          {eid: txExtraEid, txExtra: {token20: true}},
-          {
-            eid: 'newtoken',
-            token: {
-              name,
-              symbol,
-              decimals,
-              tx: tx.eid,
-              network: network.eid,
-              address: contractAddress,
-            },
-          },
-          {eid: address.eid, address: {token: 'newtoken'}},
-        )
-        if (app) txs.push({eid: 'newtoken', token: {fromApp: true}})
-        else txs.push({eid: 'newtoken', token: {fromUser: true}})
+        const tokenTx = newtokenTx({
+          eid: 'newtoken',
+          name,
+          symbol,
+          decimals,
+          tx: tx.eid,
+          network: network.eid,
+          address: contractAddress,
+        })
+        txs.push({eid: txExtraEid, txExtra: {token20: true}}, tokenTx, {
+          eid: address.eid,
+          address: {token: tokenTx.eid},
+        })
+        if (app) txs.push({eid: tokenTx.eid, token: {fromApp: true}})
+        else txs.push({eid: tokenTx.eid, token: {fromUser: true}})
 
         wallet_refetchBalance(
           {

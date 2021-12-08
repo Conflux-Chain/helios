@@ -31,7 +31,7 @@ export const main = async ({
 
   const group = findGroup({
     groupId: accountGroupId,
-    g: {accountGroup: {vault: {data: 1, ddata: 1, type: 1, cfxOnly: 1}}},
+    g: {vault: {data: 1, ddata: 1, type: 1, cfxOnly: 1}},
   })
   if (!group?.vault?.data)
     throw InvalidParams(`Invalid account group id ${accountGroupId}`)

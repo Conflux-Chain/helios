@@ -26,16 +26,13 @@ export const main = async ({
   const account = findAccount({
     accountId,
     g: {
-      account: {
-        index: 1,
-        address: {
-          hex: 1,
-          value: 1,
-          pk: 1,
-          id: 1,
-          network: {hdPath: {value: 1}, name: 1},
-        },
-        accountGroup: {vault: {type: 1, cfxOnly: 1, data: 1, ddata: 1}, eid: 1},
+      _accountGroup: {vault: {type: 1, cfxOnly: 1, data: 1, ddata: 1}, eid: 1},
+      index: 1,
+      address: {
+        hex: 1,
+        value: 1,
+        pk: 1,
+        network: {hdPath: {value: 1}, name: 1},
       },
     },
   })
@@ -46,7 +43,7 @@ export const main = async ({
   if (vault.type !== 'hd')
     return await wallet_exportAccountGroup({
       password,
-      accountGroupId: account.accountGroup.id,
+      accountGroupId: account.accountGroup.eid,
     })
 
   const decrypted = vault.ddata || (await decrypt(password, vault.data))

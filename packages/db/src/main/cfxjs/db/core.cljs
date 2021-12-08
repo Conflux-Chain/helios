@@ -357,51 +357,7 @@
   (q '[:find [?e ...]
        :where
        [?e :accountGroup/nickname "a"]])
-  (t [{:db/id -6 :address/hex "a" :address/vault 4 :address/network 2 :address/index 0}
-      {:db/id -7 :address/hex "b" :address/vault 4 :address/network 3 :address/index 0}
-      {:db/id -8 :account/index 0 :account/nickname "a" :account/accountGroup [:accountGroup/vault 4] :account/address [-6 -7]}])
 
-  (t
-   [{:db/id                -8
-     :account/index        0
-     :account/nickname     "a"
-     :account/accountGroup [:accountGroup/vault 4]
-     :account/address      [{:db/id           -6
-                             :address/hex     "a"
-                             :address/vault   4
-                             :address/network 2
-                             :address/index   0}
-                            {:db/id           -7
-                             :address/hex     "b"
-                             :address/vault   4
-                             :address/network 3
-                             :address/index   0}]}])
-  (q '[:find [?e ...]
-       :where
-       [?e :address/hex "a"]])
-  (q '[:find [?a ...]
-       :where
-       [?e :account/index 0]
-       [?e :account/nickname "a"]
-       [?e :account/address ?a]])
-
-  (q '[:find [?a ...]
-       :where
-       [?a :address/index]])
-
-  (q '[:find ?g ?n ?v ?acc ?addr ?addr-idx ?addr-hex
-       :keys accountGroupId networkId vaultId accountId addressId addressIndex addressHex
-       :where
-       [?v :vault/cfxOnly ?cfxOnly]
-       [?v :vault/type ?vtype]
-       [(and (not= ?cfxOnly true)
-             (not= ?vtype "pub"))]
-       [?g :accountGroup/vault ?v]
-       [?g :accountGroup/account ?acc]
-       [?g :accountGroup/network ?n]
-       [?acc :account/address ?addr]
-       [?addr :address/hex ?addr-hex]
-       [?addr :address/index ?addr-idx]])
   (q '[:find ?vault
        :keys vault
        :where

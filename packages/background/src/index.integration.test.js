@@ -361,9 +361,7 @@ describe('integration test', function () {
         const addrs = db.getAddress()
         expect(addrs.length).toBe(3)
         expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
-        expect(db.findAddress({networkId, g: {address: {eid: 1}}})[0].id).toBe(
-          addrs[addrs.length - 1].eid,
-        )
+        expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
       })
       test('add eth network, with cfxOnly: true, type: pub vault', async () => {
         await request({
@@ -510,14 +508,14 @@ describe('integration test', function () {
 
         const cfxAddr = db.findAddress({
           networkId: cfxNetId,
-          g: {address: {hex: 1, value: 1, pk: 1}},
+          g: {hex: 1, value: 1, pk: 1},
         })[0]
         expect(cfxAddr.hex).toBe(CFX_ACCOUNTS[0].address)
         expect(cfxAddr.value).toBe(CFX_ACCOUNTS[0].base32)
         expect(cfxAddr.pk).toBe(CFX_ACCOUNTS[0].privateKey)
         const ethAddr = db.findAddress({
           networkId: ethNetId,
-          g: {address: {hex: 1, value: 1, pk: 1}},
+          g: {hex: 1, value: 1, pk: 1},
         })[0]
         expect(ethAddr.hex).toBe(ETH_ACCOUNTS[0].address)
         expect(ethAddr.pk).toBe(ETH_ACCOUNTS[0].privateKey)
@@ -1279,10 +1277,8 @@ describe('integration test', function () {
 
         db.retractAttr({
           eid: db.findAddress({
-            g: {
-              account: {_address: {accountGroup: {vault: {eid: 1}}}},
-            },
-          })[0].account.accountGroup.vault.id,
+            g: {_account: {_accountGroup: {vault: {eid: 1}}}},
+          })[0].account.accountGroup.vault.eid,
           attr: 'vault/ddata',
         })
       })
@@ -1327,9 +1323,9 @@ describe('integration test', function () {
           eid: db.findAddress({
             addressId: a1.eid,
             g: {
-              account: {_address: {accountGroup: {vault: {eid: 1}}}},
+              _account: {_accountGroup: {vault: {eid: 1}}},
             },
-          }).account.accountGroup.vault.id,
+          }).account.accountGroup.vault.eid,
           attr: 'vault/ddata',
         })
         expect(

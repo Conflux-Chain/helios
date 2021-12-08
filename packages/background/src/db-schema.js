@@ -94,7 +94,7 @@ const schema = {
     //   ref: true,
     // },
     hidden: {doc: 'If hide this accountGroup in ui'},
-    // account: {ref: true, many: true, component: true},
+    account: {ref: true, many: true, component: true},
   },
   address: {
     id: {tuples: ['address/network', 'address/value'], identity: true},
@@ -122,9 +122,7 @@ const schema = {
     },
   },
   account: {
-    id: {tuples: ['account/accountGroup', 'account/index'], identity: true},
     index: {doc: 'index of account in account group'},
-    accountGroup: {ref: true},
     nickname: {doc: 'account nickname'},
     address: {many: true, component: true, ref: true},
     hidden: {doc: 'If hide this account in ui'},
