@@ -50,8 +50,7 @@ function EditGasFee() {
   useEffect(() => {
     setInputGasLimit(gasLimit)
     setInputGasPrice(gasPrice)
-    setInputNonce(nonce)
-  }, [gasLimit, gasPrice, nonce])
+  }, [gasLimit, gasPrice])
 
   const onChangeGasPrice = gasPrice => {
     setInputGasPrice(gasPrice)
@@ -91,7 +90,7 @@ function EditGasFee() {
   const saveGasData = () => {
     setGasPrice(inputGasPrice)
     setGasLimit(inputGasLimit)
-    setNonce(inputNonce)
+    inputNonce && setNonce(inputNonce)
     history.goBack()
   }
 
@@ -205,6 +204,7 @@ function EditGasFee() {
             rightContent={
               <NumberInput
                 id="nonce"
+                placeholder={nonce}
                 size="small"
                 width="w-32"
                 value={inputNonce}
