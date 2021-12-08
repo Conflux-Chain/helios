@@ -1,6 +1,7 @@
 import {RPC_METHODS, NETWORK_TYPE} from '../constants'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber, isString} from '@fluent-wallet/checks'
+import {validateAddress} from '../utils'
 
 const {
   WALLET_GET_ACCOUNT_GROUP,
@@ -206,10 +207,13 @@ export const useCurrentNativeToken = () => {
 }
 
 export const useAddressType = address => {
+  const {netId} = useCurrentNetwork()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const isValidAddress = validateAddress(address, networkTypeIsCfx, netId)
   const {
     data: {type},
   } = useRPC(
-    address ? [WALLET_DETECT_ADDRESS_TYPE, address] : null,
+    isValidAddress ? [WALLET_DETECT_ADDRESS_TYPE, address] : null,
     {address},
     {fallbackData: {}},
   )
