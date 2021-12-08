@@ -10,3 +10,4 @@ export {default as CurrentAccountNetworkLabel} from './CurrentAccountNetworkLabe
 export {default as AddToken} from './AddToken'
 export {default as PendingQueue} from './PendingQueue'
 export {default as Setting} from './Setting'
+export {default as ConfirmPassword} from './ConfirmPassword'

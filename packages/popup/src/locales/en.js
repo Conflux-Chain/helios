@@ -197,6 +197,7 @@ const en = {
     // account management
     accountManagement: 'Account Management',
     lock: 'Lock',
+    enterPassword: 'Enter your Fluent password to continue',
   },
 }
 
