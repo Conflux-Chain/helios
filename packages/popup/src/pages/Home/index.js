@@ -18,7 +18,7 @@ import {
   AccountList,
   NetworkList,
   AddToken,
-  Settings,
+  Setting,
 } from './components'
 function Home() {
   const {t} = useTranslation()
@@ -101,7 +101,7 @@ function Home() {
         onClose={() => setAddTokenStatus(false)}
         onOpen={addTokenStatus}
       />
-      <Settings
+      <Setting
         onClose={() => setSettingStatus(false)}
         onOpen={settingsStatus}
       />

@@ -194,6 +194,9 @@ const en = {
     contractCreation: 'Contract Deployment',
     contractInteraction: 'Contract Interaction',
     unknown: 'Unknown',
+    // account management
+    accountManagement: 'Account Management',
+    lock: 'Lock',
   },
 }
 

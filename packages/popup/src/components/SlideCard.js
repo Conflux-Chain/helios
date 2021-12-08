@@ -45,7 +45,7 @@ function SlideCard({
           />
         ) : null}
       </div>
-      <div className="absolute inset-0 z-10" />
+      <div className="absolute inset-0 z-10 opacity-60 bg-black" />
     </div>
   )
 }
