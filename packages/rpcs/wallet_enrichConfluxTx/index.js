@@ -1,5 +1,5 @@
 import {map, Bytes32} from '@fluent-wallet/spec'
-import {decode} from '@fluent-wallet/base32-address'
+import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
 
 export const NAME = 'wallet_enrichConfluxTx'
 
@@ -55,7 +55,7 @@ export const main = async ({
       txs.push({eid: txExtraEid, txExtra: {contractCreation: true, ok: true}})
   }
 
-  if (to && data) {
+  if (to && data && validateBase32Address(to, 'contract')) {
     const contractAddress = to
     try {
       const {valid, symbol, name, decimals} = await wallet_validate20Token(
