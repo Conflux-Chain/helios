@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/component-menu": patch
+  "@fluent-wallet/component-message": patch
+  "@fluent-wallet/component-notification": patch
+  "@fluent-wallet/estimate-tx": patch
+
+declined:
+  - helios-popup
