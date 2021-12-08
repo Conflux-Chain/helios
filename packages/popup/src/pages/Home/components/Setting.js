@@ -10,9 +10,11 @@ const {LOCK} = RPC_METHODS
 
 function SettingItem({icon, content}) {
   return (
-    <div className="flex mt-2 pl-6 py-4 items-center">
-      {icon}
-      <span className="ml-4 text-sm text-gray-80">{content}</span>
+    <div className="group mt-2 py-2.5 cursor-pointer text-gray-80 hover:bg-primary-4 hover:text-primary">
+      <div className="flex items-center border-solid border-transparent border-l-4 group-hover:border-primary pl-6 h-8">
+        {icon}
+        <span className="ml-4 text-sm">{content}</span>
+      </div>
     </div>
   )
 }

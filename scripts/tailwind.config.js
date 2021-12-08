@@ -151,7 +151,7 @@ module.exports = {
       animation: {
         'slide-up': 'slide-up 0.3s ease',
         'slide-down': 'slide-down 0.3s linear forwards',
-        'slide-left-in': 'slide-left-in 0.2s linear ease',
+        'slide-left-in': 'slide-left-in 0.2s ease',
         'slide-left-out': 'slide-left-out 0.2s linear forwards',
       },
       backgroundImage: {
