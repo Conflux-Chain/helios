@@ -177,6 +177,7 @@ const schema = {
     contractInteraction: {doc: 'contract interaction tx'},
     token20: {doc: '20 contract'},
     tokenNFT: {doc: 'nft contract'},
+    moreInfo: {doc: 'more info about above action'},
   },
 
   // ## dapp interaction
