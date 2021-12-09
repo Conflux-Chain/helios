@@ -9,7 +9,6 @@ import {
   validate,
 } from '@fluent-wallet/spec'
 import {personalSign} from '@fluent-wallet/signature'
-import {decode} from '@fluent-wallet/base32-address'
 
 export const NAME = 'personal_sign'
 
@@ -38,13 +37,13 @@ export const permissions = {
     'wallet_userRejectedAuthRequest',
     'wallet_getAddressPrivateKey',
   ],
-  db: ['getAuthReqById', 'accountAddrByNetwork'],
+  db: ['getAuthReqById', 'findAddress', 'validateAddrInApp'],
   scope: {wallet_accounts: {}},
 }
 
 export const main = async ({
   Err: {InvalidParams, Unauthorized, UserRejected},
-  db: {getAuthReqById, accountAddrByNetwork},
+  db: {getAuthReqById, findAddress, validateAddrInApp},
   rpcs: {
     wallet_getAddressPrivateKey,
     wallet_userApprovedAuthRequest,
@@ -67,15 +66,23 @@ export const main = async ({
         `Invalid from ${from} for the target network ${app.currentNetwork.name}`,
       )
 
-    const addr = accountAddrByNetwork({
-      account: app.currentAccount.eid,
-      network: app.currentNetwork.eid,
+    if (
+      !validateAddrInApp({
+        appId: app.eid,
+        networkId: app.currentNetwork.eid,
+        addr: from,
+      })
+    ) {
+      throw Unauthorized()
+    }
+
+    const addr = findAddress({
+      networkId: app.currentNetwork.eid,
+      value: from,
+      g: {_account: {_accountGroup: {vault: {type: 1}}}},
     })
 
-    if (type === 'cfx' && decode(from).hexAddress !== addr.cfxHex.toLowerCase())
-      throw Unauthorized()
-    if (type === 'eth' && from !== addr.hex) throw Unauthorized()
-    if (addr.vault.type === 'pub') throw UserRejected()
+    if (addr.account.accountGroup.vault.type === 'pub') throw UserRejected()
 
     const req = {method: NAME, params}
     return await wallet_addPendingUserAuthRequest({appId: app.eid, req})
@@ -91,32 +98,33 @@ export const main = async ({
     if (!authReq) throw InvalidParams(`Invalid auth req id ${authReqId}`)
 
     const type = authReq.app.currentNetwork.type
-    const addr = accountAddrByNetwork({
-      account: authReq.app.currentAccount.eid,
-      network: authReq.app.currentNetwork.eid,
+    if (
+      !validateAddrInApp({
+        appId: authReq.app.eid,
+        networkId: authReq.app.currentNetwork.eid,
+        addr: from,
+      })
+    ) {
+      return wallet_userRejectedAuthRequest({authReqId})
+    }
+    const addr = findAddress({
+      networkId: authReq.app.currentNetwork.eid,
+      value: from,
+      g: {
+        pk: 1,
+        _account: {_accountGroup: {vault: {type: 1}}},
+      },
     })
 
-    if (
-      type === 'cfx' &&
-      !validate(base32UserAddress, from, {
-        netId: authReq.app.currentNetwork.netId,
-      })
-    )
-      throw InvalidParams(
-        `Invalid from ${from} for the target network ${authReq.app.currentNetwork.name}`,
-      )
-
-    if (addr.vault.type === 'pub')
-      return wallet_userRejectedAuthRequest({authReqId})
-
-    if (type === 'cfx' && decode(from).hexAddress !== addr.cfxHex.toLowerCase())
-      return wallet_userRejectedAuthRequest({authReqId})
-
-    if (type === 'eth' && from.toLowerCase() !== addr.hex.toLowerCase())
+    if (addr.account.accountGroup.vault.type === 'pub')
       return wallet_userRejectedAuthRequest({authReqId})
 
     const pk =
-      addr.pk || (await wallet_getAddressPrivateKey({addressId: addr.eid}))
+      addr.pk ||
+      (await wallet_getAddressPrivateKey(
+        {network: authReq.app.currentNetwork},
+        {address: from},
+      ))
     const sig = await personalSign(type, pk, message)
 
     return await wallet_userApprovedAuthRequest({authReqId, res: sig})

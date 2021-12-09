@@ -8,13 +8,13 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup'],
-  db: ['deleteNetworkById', 'getNetworkById'],
+  db: ['retractNetwork', 'getNetworkById'],
   methods: ['wallet_validatePassword'],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {deleteNetworkById, getNetworkById},
+  db: {getNetworkById, retractNetwork},
   rpcs: {wallet_validatePassword},
   params: {password, networkId},
 }) => {
@@ -26,5 +26,6 @@ export const main = async ({
   if (network.builtin)
     throw InvalidParams(`Not allowed to delete builtin network`)
 
-  return deleteNetworkById(networkId)
+  retractNetwork({networkId})
+  return true
 }

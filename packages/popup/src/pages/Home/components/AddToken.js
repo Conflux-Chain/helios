@@ -143,7 +143,10 @@ function AddToken({onClose, onOpen}) {
                   maxWidthStyle="max-w-[135px]"
                   id={`tokenItem-${token.eid}`}
                   rightIcon={
-                    <WrapIcon size="w-5 h-5" onClick={() => onAddToken(token)}>
+                    <WrapIcon
+                      size="w-5 h-5"
+                      onClick={() => !token?.added && onAddToken(token)}
+                    >
                       {token?.added ? (
                         <SelectedOutlined className="w-3 h-3 text-gray-40" />
                       ) : (

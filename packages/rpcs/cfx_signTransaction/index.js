@@ -54,12 +54,12 @@ export const permissions = {
     'cfx_estimateGasAndCollateral',
     'wallet_detectAddressType',
   ],
-  db: ['getFromAddress'],
+  db: ['findAddress'],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {getFromAddress},
+  db: {findAddress},
   rpcs: {
     wallet_getAddressPrivateKey,
     cfx_epochNumber,
@@ -75,7 +75,7 @@ export const main = async ({
   if (newTx.chainId && newTx.chainId !== network.chainId)
     throw InvalidParams(`Invalid chainId ${chainId}`)
 
-  const fromAddr = getFromAddress({networkId: network.eid, address: newTx.from})
+  const fromAddr = findAddress({networkId: network.eid, value: newTx.from})
   // from address is not belong to wallet
   if (!fromAddr) throw InvalidParams(`Invalid from address ${newTx.from}`)
 
@@ -123,7 +123,7 @@ export const main = async ({
     if (!newTx.storageLimit) newTx.storageLimit = storageCollateralized
   }
 
-  const pk = await wallet_getAddressPrivateKey({addressId: fromAddr.eid})
+  const pk = await wallet_getAddressPrivateKey({address: newTx.from})
 
   const raw = cfxSignTransaction(newTx, pk, network.netId)
 

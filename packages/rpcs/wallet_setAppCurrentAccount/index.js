@@ -40,7 +40,7 @@ export const main = ({
 
     post({
       event: 'accountsChanged',
-      params: [currentNetwork.type === 'cfx' ? addr.base32 : addr.hex],
+      params: addr.value,
     })
   }
 

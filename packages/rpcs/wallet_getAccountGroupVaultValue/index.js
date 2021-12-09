@@ -17,7 +17,7 @@ export const schemas = {
 }
 
 export const permissions = {
-  external: ['popup', 'inpage'],
+  external: ['popup'],
   db: ['getPassword', 'getAccountGroupById'],
 }
 
