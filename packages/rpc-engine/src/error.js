@@ -20,7 +20,7 @@ export const rpcErrorHandlerFactory = ({isProd = true, debugLog} = {}) => {
           debugLog.reduce((acc, {method}) => acc || method, null) ||
             'unknown method',
           '\nin middleware: ',
-          debugLog[0].mid,
+          debugLog[0]?.mid,
           '\ninvalid error, missing [message] or [rpcData]\n',
           err,
           '\nall debug log:\n',

@@ -285,7 +285,7 @@
          db            (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn (js-schema->schema js-schema)))
          tfn           (fn [txs] (d/transact! db txs))
          qfn           (fn [query & args] (apply d/q query (d/db db) args))
-         pfn           (partial d/pull (d/db db))
+         pfn           (partial d/pull @db)
          efn           (fn [model attr-keys & args] (apply de/entity (d/db db) model attr-keys args))
          ffn           (fn [f] (d/filter (d/db db) f))
          rst           (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
@@ -294,7 +294,7 @@
          ;; rst           (assoc rst :deleteById delete-by-id)
          ;; rst           (assoc rst :updateById update-by-id)
          rst           (assoc rst :tmpid random-tmp-id)
-         rst           (apply-queries rst qfn pfn efn tfn ffn)]
+         rst           (apply-queries rst db qfn efn tfn ffn)]
      (def conn db)
      (def t tfn)
      (def q qfn)
@@ -357,70 +357,13 @@
   (q '[:find [?e ...]
        :where
        [?e :accountGroup/nickname "a"]])
-  (t [{:db/id -6 :address/hex "a" :address/vault 4 :address/network 2 :address/index 0}
-      {:db/id -7 :address/hex "b" :address/vault 4 :address/network 3 :address/index 0}
-      {:db/id -8 :account/index 0 :account/nickname "a" :account/accountGroup [:accountGroup/vault 4] :account/address [-6 -7]}])
-
-  (t
-   [{:db/id                -8
-     :account/index        0
-     :account/nickname     "a"
-     :account/accountGroup [:accountGroup/vault 4]
-     :account/address      [{:db/id           -6
-                             :address/hex     "a"
-                             :address/vault   4
-                             :address/network 2
-                             :address/index   0}
-                            {:db/id           -7
-                             :address/hex     "b"
-                             :address/vault   4
-                             :address/network 3
-                             :address/index   0}]}])
-  (q '[:find [?e ...]
-       :where
-       [?e :address/hex "a"]])
-  (q '[:find [?a ...]
-       :where
-       [?e :account/index 0]
-       [?e :account/nickname "a"]
-       [?e :account/address ?a]])
-
-  (q '[:find [?a ...]
-       :where
-       [?a :address/index]])
-
-  (q '[:find ?g ?n ?v ?acc ?addr ?addr-idx ?addr-hex
-       :keys accountGroupId networkId vaultId accountId addressId addressIndex addressHex
-       :where
-       [?v :vault/cfxOnly ?cfxOnly]
-       [?v :vault/type ?vtype]
-       [(and (not= ?cfxOnly true)
-             (not= ?vtype "pub"))]
-       [?g :accountGroup/vault ?v]
-       [?g :accountGroup/account ?acc]
-       [?g :accountGroup/network ?n]
-       [?acc :account/address ?addr]
-       [?addr :address/hex ?addr-hex]
-       [?addr :address/index ?addr-idx]])
-
-  (tap> (map first (->> (count (q '[:find ?g ?n ?v ?acc ?addr ?addr-idx ?addr-hex ?addr-cfx-hex ?addr-base32
-                                    :keys accountGroupId networkId vaultId accountId addressId addressIndex addressHex addressCfxHex addressBase32
-                                    :where
-                                    [?g :accountGroup/vault ?v]
-                                    [?g :accountGroup/account ?acc]
-                                    [?g :accountGroup/network ?n]
-                                    [?acc :account/address ?addr]
-                                    [?addr :address/index ?addr-idx]
-                                    [?addr :address/hex ?addr-hex]
-                                    [?addr :address/cfxHex ?addr-cfx-hex]
-                                    [?addr :address/base32 ?addr-base32]]))
-                        (group-by :accountId)
-                        vals)))
 
   (q '[:find ?vault
        :keys vault
        :where
        [?vault :vault/type]])
+  (d/pull @conn '[:network/name] 7)
+  (d/pull @conn '[*] 9)
   (d/datoms
    (fdb (fn [db datom] (not= "vault" (namespace (:a datom)))))
    :eavt))

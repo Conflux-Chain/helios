@@ -44,13 +44,13 @@ function History() {
       <main>
         {txList.length ? (
           txList.map(
-            ({status, created, extra, payload, app, token, hash, eid}) => (
+            ({status, created, txExtra, txPayload, app, token, hash, eid}) => (
               <HistoryItem
                 key={eid}
                 status={status}
                 created={created}
-                extra={extra}
-                payload={payload}
+                extra={txExtra}
+                payload={txPayload}
                 app={app}
                 token={token}
                 hash={hash}
