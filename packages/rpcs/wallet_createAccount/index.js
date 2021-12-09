@@ -24,13 +24,16 @@ export const permissions = {
     't',
     'newAddressTx',
   ],
+  methods: ['wallet_setCurrentAccount'],
   external: ['popup'],
 }
 
 export const main = async ({
+  rpcs: {wallet_setCurrentAccount},
   db: {findGroup, getPassword, getNetwork, t, findAccount, newAddressTx},
   params: {accountGroupId, nickname},
   Err: {InvalidParams},
+  _popup,
 }) => {
   const group = findGroup({
     groupId: accountGroupId,
@@ -60,7 +63,7 @@ export const main = async ({
   const decrypted = vault.ddata ?? (await decrypt(password, vault.data))
   const networks = getNetwork()
 
-  return (
+  const accountId = (
     await Promise.all(
       networks.map(async ({eid, hdPath, netId, type}) => ({
         eid,
@@ -108,4 +111,9 @@ export const main = async ({
       }),
     )
   )[0]
+
+  if (_popup) {
+    await wallet_setCurrentAccount([accountId])
+  }
+  return accountId
 }
