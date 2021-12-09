@@ -207,6 +207,7 @@ const schema = {
   },
   authReq: {
     req: {doc: 'the req body of the auth req', persist: false},
+    processed: {doc: 'if user reacted to this'},
     site: {ref: true, persist: false},
     app: {ref: true, persist: false},
     c: {doc: 'csp channel of the req listener', persist: false},

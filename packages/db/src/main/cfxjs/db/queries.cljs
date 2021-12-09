@@ -724,6 +724,14 @@
   (->> (get-unfinished-tx-raw)
        count))
 
+(defn get-pending-auth-req []
+  (->> (q '[:find [?a ...]
+            :where
+            (or [?a :authReq/app _]
+                [?a :authReq/site _])
+            (not [?a :authReq/processed true])])
+       (mapv #(e :authReq %))))
+
 (defn set-tx-skipped [{:keys [hash]}]
   (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
       {:db/id [:tx/hash hash] :tx/status -2}]))
@@ -973,6 +981,7 @@
                       rst (t txs)]
                   (clj->js rst)))
 
+              :getPendingAuthReq               get-pending-auth-req
               :newAddressTx                    new-address-tx
               :newtokenTx                      new-token-tx
               :getGroupFirstAccountId          get-group-first-account-id
