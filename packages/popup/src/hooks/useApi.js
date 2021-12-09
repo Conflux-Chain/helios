@@ -34,10 +34,11 @@ export const useCurrentAccount = () => {
     },
   )
   const {eid: accountId} = currentAccount || {}
-  const address = useAddressByNetworkId(accountId, networkId)
+  const {address, addressEid} = useAddressByNetworkId(accountId, networkId)
   return {
     ...currentAccount,
     address,
+    addressEid,
   }
 }
 
@@ -173,9 +174,9 @@ export const useAddressByNetworkId = (accountIds = [], networkId) => {
     params,
     {fallbackData: isNumber(accountIds) ? {} : []},
   )
-  const {base32, hex} = accountAddress || {}
+  const {base32, hex, eid} = accountAddress || {}
   const address = networkTypeIsCfx ? base32 : hex
-  return address
+  return {address, addressEid: eid}
 }
 
 export const useBalance = (
@@ -268,9 +269,10 @@ export const useValid20Token = address => {
 }
 
 export const useTxList = params => {
+  const {addressEid} = useCurrentAccount()
   const {data: listData} = useRPC(
-    [WALLETDB_TXLIST, ...Object.values(params)],
-    {...params},
+    addressEid ? [WALLETDB_TXLIST, ...Object.values(params), addressEid] : null,
+    {...params, addressId: addressEid},
     {
       fallbackData: params?.countOnly ? 0 : {},
     },
