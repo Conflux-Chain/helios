@@ -152,6 +152,7 @@ const schema = {
     err: {doc: 'basic error type/info'},
     txExtra: {doc: 'enriched tx info', ref: true, component: true},
     fromFluent: {doc: 'tx sumitted from fluent'},
+    resendAt: {doc: 'epoch/block where wallet resend tx'},
   },
   txPayload: {
     type: {doc: 'tx type'},

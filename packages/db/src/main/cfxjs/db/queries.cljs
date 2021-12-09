@@ -730,8 +730,10 @@
 (defn set-tx-failed [{:keys [hash error]}]
   (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
       {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}]))
-(defn set-tx-unsent [{:keys [hash]}]
-  (t [{:db/id [:tx/hash hash] :tx/status 0}]))
+(defn set-tx-unsent [{:keys [hash resendAt]}]
+  (let [tx {:db/id [:tx/hash hash] :tx/status 0}
+        tx (if resendAt (assoc tx :tx/resendAt resendAt) tx)]
+    (t [tx])))
 (defn set-tx-sending [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/status 1}]))
 (defn set-tx-pending [{:keys [hash]}]

@@ -8,6 +8,12 @@ export function processError(err) {
       return {errorType: 'gasExceedsLimit', shouldDiscard: true}
     if (err.data?.includes?.('too stale nonce'))
       return {errorType: 'tooStaleNonce', shouldDiscard: true}
+    if (
+      err.data?.includes?.match(
+        /Tx with same nonce already inserted.*replace.*gas price/,
+      )
+    )
+      return {errorType: 'replacedWithHigherGasPriceTx', shouldDiscard: true}
   }
 
   return {shouldDiscard: false}
