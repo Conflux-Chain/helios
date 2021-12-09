@@ -19,7 +19,9 @@ function CurrentAccount({onOpenAccount}) {
         id="openAccountBtn"
         aria-hidden="true"
       >
-        <span className="text-xs text-gray-40 mr-2">{nickname}</span>
+        <span className="text-xs text-gray-40 mr-2 inline-block max-w-[188px] text-ellipsis">
+          {nickname}
+        </span>
         <RightOutlined className="w-3 h-3 text-white" />
       </div>
       <div className="flex items-center">

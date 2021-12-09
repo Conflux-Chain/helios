@@ -124,6 +124,12 @@ html {
   width: 0 !important;
 }
 
+.text-ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 /* stylelint-disable property-no-vendor-prefix */
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {

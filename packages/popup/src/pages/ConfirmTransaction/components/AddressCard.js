@@ -7,6 +7,7 @@ import {
   useCurrentAccount,
   useCurrentNetwork,
   useBalance,
+  useNetworkTypeIsCfx,
 } from '../../../hooks/useApi'
 import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
 
@@ -20,6 +21,8 @@ const AddressDetail = ({
   const nativeToken = useCurrentNativeToken()
   const balanceMap = useBalance(fromAddress, networkId)
   const balance = balanceMap?.[fromAddress]?.['0x0']
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
 
   return (
     <div className="flex items-start w-full" id="addressDetailContainer">
@@ -46,9 +49,10 @@ const AddressDetail = ({
             balance={balance}
             maxWidth={120}
             maxWidthStyle="max-w-[120px]"
-            className="text-xs !text-gray-60"
+            className="text-xs !text-gray-60 !font-normal"
             initialFontSize={12}
             decimals={nativeToken?.decimals}
+            symbol={symbol}
             id="fromAddressCfxBalance"
           />
         </div>

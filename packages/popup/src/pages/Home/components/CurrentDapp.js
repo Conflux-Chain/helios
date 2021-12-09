@@ -64,7 +64,7 @@ function CurrentDapp() {
               <span className="text-gray-80 font-medium inline-block">
                 {origin}
               </span>
-              <span className="text-gray-60 text-xs inline-block mb-1">
+              <span className="text-gray-60 text-xs inline-block mb-1 max-w-[188px] text-ellipsis">
                 {connectedNickname}
               </span>
             </div>

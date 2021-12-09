@@ -33,22 +33,23 @@ function DappFooter({
   const pendingAuthReq = usePendingAuthReq()
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
+  const [cancelingRequestStatus, setCancelingRequestStatus] = useState(false)
 
   const onCancel = () => {
-    if (sendingRequestStatus) {
+    if (cancelingRequestStatus) {
       return
     }
-    setSendingRequestStatus(true)
+    setCancelingRequestStatus(true)
     request(WALLET_REJECT_PENDING_AUTH_REQUSET, {authReqId: eid})
       .then(() => {
-        setSendingRequestStatus(false)
+        setCancelingRequestStatus(false)
         history.push(HOME)
         onClickCancel && onClickCancel()
       })
       .catch(e => {
         console.log('error', e)
         // TODO: error message
-        setSendingRequestStatus(false)
+        setCancelingRequestStatus(false)
       })
   }
 
