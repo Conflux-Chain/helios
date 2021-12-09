@@ -218,9 +218,10 @@ export const cfxEstimate = async (
       params: [
         from,
         to,
-        gasLimit,
-        gasPrice,
-        storageCollateralized,
+        // prioritiz custom value so that user can adjust them for sponsorship
+        customGas || gasLimit,
+        customGasPrice || gasPrice,
+        customStorageLimit || storageCollateralized,
         'latest_state',
       ],
     })
