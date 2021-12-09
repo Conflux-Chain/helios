@@ -8,13 +8,15 @@ import Toast from '@fluent-wallet/component-toast'
 function CopyButton({
   text,
   className = '',
-  CopyWrapper,
   wrapperClassName = '',
+  containerClassName = 'relative',
+  CopyWrapper,
+  toastClassName = '-top-9 left-0',
 }) {
   const {t} = useTranslation()
   const [copied, setCopied] = useState(false)
   return (
-    <div className="relative" id="copyBtn">
+    <div className={containerClassName} id="copyBtn">
       <CopyToClipboard text={text} onCopy={() => setCopied(true)}>
         {CopyWrapper ? (
           <CopyWrapper className={wrapperClassName}>
@@ -29,7 +31,7 @@ function CopyButton({
         open={copied}
         type="line"
         onClose={() => setCopied(false)}
-        className="-top-9 left-0"
+        className={toastClassName}
       />
     </div>
   )
@@ -39,7 +41,9 @@ CopyButton.propTypes = {
   text: PropTypes.string,
   className: PropTypes.string,
   wrapperClassName: PropTypes.string,
+  toastClassName: PropTypes.string,
   CopyWrapper: PropTypes.elementType,
+  containerClassName: PropTypes.string,
 }
 
 export default CopyButton

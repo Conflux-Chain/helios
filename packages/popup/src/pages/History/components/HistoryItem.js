@@ -59,7 +59,7 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
 
   const txStatus = formatStatus(status)
   const tagColor = tagColorStyle[txStatus] ?? ''
-  const createdTime = dayjs(created).format('YYYY/MM/DD hh:mm:ss')
+  const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
   const {contractCreation, simple, contractInteraction, token20} = extra
 
   // TODO: should throw error in decode data
@@ -137,36 +137,34 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
   ])
 
   return (
-    <div className="px-3 pb-3 pt-2 relative bg-white mx-3 mt-3 rounded">
-      {txStatus !== 'confirmed' ? (
-        <CustomTag
-          className={`${tagColor} absolute flex items-center h-6 px-2.5 left-0 top-0`}
-          width="w-auto"
-          roundedStyle="rounded-tl rounded-br-lg"
-        >
-          {txStatus === 'failed' ? (
-            <CloseCircleFilled className="w-3 h-3 mr-1" />
-          ) : txStatus === 'executed' ? (
-            <WrapperWithCircle className="bg-[#83DBC6]">
-              <ReloadOutlined className="w-2 h-2 text-white" />
-            </WrapperWithCircle>
-          ) : txStatus === 'pending' || txStatus === 'sending' ? (
-            <WrapperWithCircle className="bg-[#F0955F]">
-              <ReloadOutlined className="w-2 h-2 text-white" />
-            </WrapperWithCircle>
-          ) : null}
-          <span className="text-sm">{transformToTitleCase(txStatus)}</span>
-        </CustomTag>
-      ) : null}
-
+    <div className="px-3 pb-3 pt-2 bg-white mx-3 mt-3 rounded">
       <div className="flex justify-between">
-        <div>
+        <div className="relative">
           {txStatus === 'confirmed' ? (
             <div className="text-gray-60 text-xs">
               <span>#{formatHexToDecimal(payload.nonce)}</span>
               <span className="ml-2">{createdTime}</span>
             </div>
-          ) : null}
+          ) : (
+            <CustomTag
+              className={`${tagColor} absolute flex items-center h-6 px-2.5 -left-3 -top-2`}
+              width="w-auto"
+              roundedStyle="rounded-tl rounded-br-lg"
+            >
+              {txStatus === 'failed' ? (
+                <CloseCircleFilled className="w-3 h-3 mr-1" />
+              ) : txStatus === 'executed' ? (
+                <WrapperWithCircle className="bg-[#83DBC6]">
+                  <ReloadOutlined className="w-2 h-2 text-white" />
+                </WrapperWithCircle>
+              ) : txStatus === 'pending' || txStatus === 'sending' ? (
+                <WrapperWithCircle className="bg-[#F0955F]">
+                  <ReloadOutlined className="w-2 h-2 text-white" />
+                </WrapperWithCircle>
+              ) : null}
+              <span className="text-sm">{transformToTitleCase(txStatus)}</span>
+            </CustomTag>
+          )}
         </div>
         <div className="flex">
           <CopyButton
@@ -174,6 +172,8 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
             className="w-3 h-3 text-primary"
             CopyWrapper={WrapIcon}
             wrapperClassName="!w-5 !h-5"
+            containerClassName=""
+            toastClassName="top-4 right-0"
           />
           <WrapIcon
             size="w-5 h-5 ml-2"
