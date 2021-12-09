@@ -21,7 +21,7 @@ async function requestUnlockUI({
   const {browser, popup} = await import('@fluent-wallet/webextension')
   const w = await popup.show({
     alwaysOnTop: MODE.isProd ? true : false,
-    mdoe: MODE,
+    mode: MODE,
   })
 
   if (MODE.isProd) popup.onFocusChanged(w?.id, popup.remove)
