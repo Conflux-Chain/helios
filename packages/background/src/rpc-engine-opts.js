@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletGetFluentMetadata from '@fluent-wallet/wallet_get-fluent-metadata'
 import * as walletCleanupTx from '@fluent-wallet/wallet_cleanup-tx'
 import * as walletEnrichConfluxTx from '@fluent-wallet/wallet_enrich-conflux-tx'
 import * as walletEnrichConfluxTxs from '@fluent-wallet/wallet_enrich-conflux-txs'
@@ -287,5 +288,6 @@ export const rpcEngineOpts = {
     walletHandleUnfinishedCFXTx,
     walletHandleUnfinishedTxs,
     walletCleanupTx,
+    walletGetFluentMetadata,
   ],
 }

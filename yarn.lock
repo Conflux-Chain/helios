@@ -5743,6 +5743,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-fluent-metadata@workspace:*, @fluent-wallet/wallet_get-fluent-metadata@workspace:packages/rpcs/wallet_getFluentMetadata":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-fluent-metadata@workspace:packages/rpcs/wallet_getFluentMetadata"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-network@workspace:packages/rpcs/wallet_getNetwork":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-network@workspace:packages/rpcs/wallet_getNetwork"
@@ -19563,6 +19571,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
+    "@fluent-wallet/wallet_get-fluent-metadata": "workspace:*"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
     "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest"

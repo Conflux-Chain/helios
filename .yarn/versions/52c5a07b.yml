@@ -25,6 +25,7 @@ releases:
   "@fluent-wallet/wallet_get-account-group-vault-value": patch
   "@fluent-wallet/wallet_get-address-private-key": patch
   "@fluent-wallet/wallet_get-blockchain-explorer-url": patch
+  "@fluent-wallet/wallet_get-fluent-metadata": patch
   "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
   "@fluent-wallet/wallet_set-app-current-account": patch
   "@fluent-wallet/wallet_set-current-account": patch
