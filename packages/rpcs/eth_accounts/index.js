@@ -8,11 +8,23 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup', 'inpage'],
-  methods: ['eth_requestAccounts'],
-  db: [],
+  locked: true,
+  db: ['getLocked', 'findAddress'],
 }
 
-export const main = async ({rpcs: {eth_requestAccounts}, app}) => {
-  if (!app) return []
-  return await eth_requestAccounts()
+export const main = async ({
+  db: {getLocked, findAddress},
+  app,
+  network,
+  _inpage,
+}) => {
+  if (getLocked()) return []
+  if (_inpage && !app) return []
+
+  const addrs = findAddress({
+    appId: app?.eid,
+    networkId: app ? null : network.eid,
+    g: {value: 1},
+  }).map(({value}) => value)
+  return addrs
 }

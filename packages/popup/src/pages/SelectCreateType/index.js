@@ -59,7 +59,7 @@ function SelectCreateType() {
         </em>
         <CreateTypeItem
           id="seedPhrase"
-          Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
+          Icon={<img src="/images/seed-phrase-icon.svg" alt="icon" />}
           title={t('seedPhrase')}
           subTitle={t('seedPhraseDes')}
           onClick={() => {

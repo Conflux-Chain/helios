@@ -137,19 +137,23 @@ function formatRpcSiteAndApp(arg) {
 // v2 specify network is mandatory
 function formatRpcNetwork(arg) {
   const {req, db} = arg
+  const {_inpage, app} = req
 
+  if (_inpage && app) {
+    req.network = app.currentNetwork
+  }
   // req.networkName came from inpage/popup
   // in later version, we can remove all current network/account logic in bg
   // popup/inpage can (hopefully) specify target account/network in req
-  if (req.networkName) req.network = db.getOneNetwork({name: req.networkName})
-
-  if (!req.networkName) {
+  else if (req.networkName)
+    req.network = db.getOneNetwork({name: req.networkName})
+  else if (!req.networkName) {
     const currentNetwork = db.getOneNetwork({selected: true})
     req.networkName = currentNetwork.name
     req.network = currentNetwork
   }
 
-  // if (req.app) req.network = req.network || req.app.currentNetwork
+  // if (app) req.network = req.network || app.currentNetwork
   // else req.network = req.network || db.getOneNetwork({selected: true})
 
   if (!req.network) {

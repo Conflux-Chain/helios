@@ -4696,14 +4696,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_sign-typed-data_v4@workspace:packages/rpcs/cfx_signTypedData_v4"
   dependencies:
-    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/signature": "workspace:packages/signature"
     "@fluent-wallet/spec": "workspace:packages/spec"
     "@fluent-wallet/typed-data-spec": "workspace:packages/typed-data-spec"
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/checks@workspace:packages/checks":
+"@fluent-wallet/checks@workspace:*, @fluent-wallet/checks@workspace:packages/checks":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/checks@workspace:packages/checks"
   dependencies:
@@ -4932,7 +4931,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/csp@workspace:packages/csp":
+"@fluent-wallet/csp@workspace:*, @fluent-wallet/csp@workspace:packages/csp":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/csp@workspace:packages/csp"
   dependencies:
@@ -5239,7 +5238,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/personal_sign@workspace:packages/rpcs/personal_sign"
   dependencies:
-    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/signature": "workspace:packages/signature"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
@@ -5495,6 +5493,7 @@ __metadata:
     "@fluent-wallet/account": "workspace:packages/account"
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/csp": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
     "@fluent-wallet/utils": "workspace:packages/utils"
     browser-passworder: ^2.0.3
@@ -5553,6 +5552,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_delete-app@workspace:packages/rpcs/wallet_deleteApp"
   dependencies:
+    "@fluent-wallet/checks": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -5717,6 +5717,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-blockchain-explorer-url@workspace:*, @fluent-wallet/wallet_get-blockchain-explorer-url@workspace:packages/rpcs/wallet_getBlockchainExplorerUrl":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-blockchain-explorer-url@workspace:packages/rpcs/wallet_getBlockchainExplorerUrl"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount"
@@ -5742,9 +5750,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/wallet_get-explorer-url@workspace:*, @fluent-wallet/wallet_get-explorer-url@workspace:packages/rpcs/wallet_getExplorerUrl":
+"@fluent-wallet/wallet_get-fluent-metadata@workspace:*, @fluent-wallet/wallet_get-fluent-metadata@workspace:packages/rpcs/wallet_getFluentMetadata":
   version: 0.0.0-use.local
-  resolution: "@fluent-wallet/wallet_get-explorer-url@workspace:packages/rpcs/wallet_getExplorerUrl"
+  resolution: "@fluent-wallet/wallet_get-fluent-metadata@workspace:packages/rpcs/wallet_getFluentMetadata"
   dependencies:
     "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
@@ -19575,10 +19583,11 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
     "@fluent-wallet/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey"
     "@fluent-wallet/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
+    "@fluent-wallet/wallet_get-blockchain-explorer-url": "workspace:*"
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
-    "@fluent-wallet/wallet_get-explorer-url": "workspace:*"
+    "@fluent-wallet/wallet_get-fluent-metadata": "workspace:*"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
     "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest"
