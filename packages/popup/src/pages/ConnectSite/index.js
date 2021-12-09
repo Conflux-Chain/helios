@@ -30,7 +30,6 @@ function ConnectSitesList({
   checkboxStatusObj,
 }) {
   const {t} = useTranslation()
-
   return accountData.length ? (
     <>
       <CompWithLabel
@@ -78,7 +77,9 @@ function ConnectSitesList({
                       accountId={accountItem.eid}
                     />
                     <div className="flex-1">
-                      <p className="text-xs text-gray-40">{nickname}</p>
+                      <p className="text-xs text-gray-40">
+                        {accountItem.nickname}
+                      </p>
                       <p className="text-sm text-gray-80">
                         {shortenAddress(
                           accountItem.currentAddress?.base32 ||
