@@ -72,6 +72,10 @@ export const main = async ({
   if (authReqId) authReq = getAuthReqById(authReqId)
   if (authReqId && !authReq)
     throw InvalidParams(`Invalid authReqId ${authReqId}`)
+  if (authReqId && authReq.processed)
+    throw InvalidParams(`Already processing auth req ${authReqId}`)
+
+  t({eid: authReqId, authReq: {processed: true}})
 
   // tx array [tx]
   const tx = params.authReqId ? params.tx : params
