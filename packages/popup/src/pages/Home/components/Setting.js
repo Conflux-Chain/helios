@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types'
-import {useState} from 'react'
 import {useTranslation} from 'react-i18next'
+import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import {SlideCard, LanguageNav} from '../../../components'
-import {ConfirmPassword} from './'
 import {LockOutLined} from '@fluent-wallet/component-icons'
-import {RPC_METHODS} from '../../../constants'
+import {RPC_METHODS, ROUTES} from '../../../constants'
 import {request} from '../../../utils'
 
 const {LOCK} = RPC_METHODS
+const {ACCOUNT_MANAGEMENT} = ROUTES
 
 function SettingItem({icon, content, onClick}) {
   return (
@@ -35,15 +35,13 @@ SettingItem.propTypes = {
 
 function Setting({onClose, onOpen}) {
   const {t} = useTranslation()
-  const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
+  const history = useHistory()
 
   const onLock = () => {
     // TODO:deal with error
     request(LOCK)
   }
-  const onConfirmPassword = () => {
-    setOpenPasswordStatus(false)
-  }
+
   return (
     <div>
       <SlideCard
@@ -63,7 +61,7 @@ function Setting({onClose, onOpen}) {
         cardContent={
           <div className="pt-1 pb-4 flex-1">
             <SettingItem
-              onClick={() => setOpenPasswordStatus(true)}
+              onClick={() => history.push(ACCOUNT_MANAGEMENT)}
               icon={
                 <img src="/images/account.svg" alt="icon" className="w-5 h-5" />
               }
@@ -93,11 +91,6 @@ function Setting({onClose, onOpen}) {
         cardClassName="!rounded-t-none !p-0 flex flex-col"
         containerClassName="pl-8"
         backgroundColor="bg-gray-0"
-      />
-      <ConfirmPassword
-        open={openPasswordStatus}
-        onCancel={() => setOpenPasswordStatus(false)}
-        onConfirm={onConfirmPassword}
       />
     </div>
   )

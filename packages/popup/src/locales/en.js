@@ -198,6 +198,7 @@ const en = {
     accountManagement: 'Account Management',
     lock: 'Lock',
     enterPassword: 'Enter your Fluent password to continue',
+    viewSeed: 'Reveal Secret Recovery Phrase',
   },
 }
 

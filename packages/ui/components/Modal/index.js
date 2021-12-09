@@ -78,7 +78,7 @@ function Modal({
               <CloseOutlined
                 className={`${
                   size === 'medium' ? 'w-6 h-6' : 'w-4 h-4'
-                } text-gray-40`}
+                } text-gray-40 cursor-pointer`}
               />
             )}
           </span>
