@@ -36,7 +36,7 @@ function History() {
   return (
     <div
       id="historyContainer"
-      className="bg-bg h-full overflow-auto"
+      className="bg-bg h-full overflow-auto relative"
       onScroll={onScroll}
       ref={historyRef}
     >
