@@ -44,8 +44,13 @@ function EditGasFee() {
   }
   if (nonce) params.nonce = formatDecimalToHex(nonce)
   const estimateRst = useEstimateTx(params) || {}
-  const {gasUsed, storageCollateralized} = estimateRst
-  const {storageFeeDrip, gasFeeDrip, txFeeDrip} = estimateRst?.customData || {}
+  const {
+    gasUsed,
+    storageCollateralized,
+    storageFeeDrip,
+    gasFeeDrip,
+    txFeeDrip,
+  } = estimateRst
 
   useEffect(() => {
     setInputGasLimit(gasLimit)
