@@ -199,6 +199,13 @@ const en = {
     lock: 'Lock',
     enterPassword: 'Enter your Fluent password to continue',
     viewSeed: 'Reveal Secret Recovery Phrase',
+    // backup seed
+    backupIdentity: 'Backup Identity',
+    backupSeedDes:
+      'Please back up the Seed phrase in the correct order. Don’t share and store in networked environment.',
+    backupPk: 'Backup Account',
+    backupPkDes:
+      'This is your private key. Acquiring means owning all assets. Please keep it safe. Once lost, it cannot be retrieved.',
   },
 }
 

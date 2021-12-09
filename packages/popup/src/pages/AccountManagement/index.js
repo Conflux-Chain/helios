@@ -1,15 +1,16 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
-import {isNumber} from '@fluent-wallet/checks'
+import {isNumber, isArray} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
+import useGlobalStore from '../../stores'
 import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../constants'
 import {request, validatePasswordReg} from '../../utils'
 import {Avatar, TitleNav, WrapIcon, ConfirmPassword} from '../../components'
-import {useDbAccountListAssets} from '../../hooks/useApi'
+import {useDbAccountListAssets, useCurrentNetwork} from '../../hooks/useApi'
 import {t} from 'i18next'
 
-// const {SELECT_CREATE_TYPE} = ROUTES
+const {EXPORT_SEED, EXPORT_PRIVATEKEY} = ROUTES
 const {WALLET_EXPORT_ACCOUNT, WALLET_EXPORT_ACCOUNT_GROUP} = RPC_METHODS
 
 function AccountManagementItem({
@@ -70,14 +71,17 @@ AccountManagementItem.propTypes = {
 
 function AccountManagement() {
   const {t} = useTranslation()
-  const {accountGroups} = useDbAccountListAssets()
+  const history = useHistory()
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
   const [exportMethod, setExportMethod] = useState('')
   const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
   const [dbId, setDbId] = useState('')
+  const {setExportPrivateKey, setExportSeedPhrase} = useGlobalStore()
 
+  const currentNetwork = useCurrentNetwork()
+  const {accountGroups} = useDbAccountListAssets()
   const validatePassword = value => {
     // TODO: Replace err msg
     const isValid = validatePasswordReg(value)
@@ -94,20 +98,24 @@ function AccountManagement() {
     ) {
       return
     }
-
     setSendingRequestStatus(true)
-    let params = {password}
-    if (exportMethod === WALLET_EXPORT_ACCOUNT_GROUP) {
-      params.accountGroupId = dbId
-    } else {
-      params.accountId = dbId
-    }
+    const params =
+      exportMethod === WALLET_EXPORT_ACCOUNT_GROUP
+        ? {password, accountGroupId: dbId}
+        : {password, accountId: dbId}
 
     request(exportMethod, {...params})
       .then(res => {
         setOpenPasswordStatus(false)
         setSendingRequestStatus(false)
-        console.log('res', res)
+        if (exportMethod === WALLET_EXPORT_ACCOUNT_GROUP) {
+          setExportPrivateKey(res)
+          return history.push(EXPORT_SEED)
+        }
+        setExportSeedPhrase(
+          res.filter(item => item.network.name === currentNetwork.name)[0],
+        )
+        history.push(EXPORT_PRIVATEKEY)
       })
       .catch(e => {
         // TODO: handle error
@@ -124,6 +132,9 @@ function AccountManagement() {
   }
 
   const onOpenConfirmPassword = (method, eid) => {
+    if (!currentNetwork?.name) {
+      return
+    }
     setPasswordErrorMessage('')
     setOpenPasswordStatus(true)
     setExportMethod(method)
