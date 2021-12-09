@@ -24,7 +24,7 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   methods: [],
-  db: ['t', 'getNetworkById', 'retract'],
+  db: ['getNetworkById', 'upsertTokenList', 't'],
 }
 
 export const validateAndFormatTokenList = ({tokenList, InvalidParams}) => {
@@ -67,7 +67,7 @@ const isNewVersionTokenList = (
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {getNetworkById, t, retract},
+  db: {getNetworkById, upsertTokenList, t},
   params: {
     tokenList: {url, name},
     networkId,
@@ -86,55 +86,19 @@ export const main = async ({
   validateAndFormatTokenList({tokenList, InvalidParams})
   name = name || tokenList.name
 
-  const oldTokenList = network.tokenList
   const oldTokenListVersion = network.tokenList?.value?.version
+
+  // if there's no old version or new version exist
   const isNewVersion =
     !oldTokenListVersion ||
     isNewVersionTokenList(oldTokenListVersion, tokenList.version)
   if (!isNewVersion) return
 
-  const oldTokens =
-    oldTokenList?.token?.reduce(
-      (acc, {eid, fromApp, fromUser}) =>
-        !fromApp && !fromUser ? acc.concat([eid]) : acc,
-      [],
-    ) || []
-
-  if (oldTokenList) retract(oldTokenList.eid)
-  oldTokens.forEach(retract)
-
-  network = getNetworkById(networkId)
-  const [existTokensIdx, existTokensAddr] = (network.token || []).reduce(
-    (acc, {address}, idx) => [acc[0].concat([idx]), acc[1].concat([address])],
-    [[], []],
-  )
-
-  const addTokenTxs = tokenList.tokens.reduce(
-    (acc, t, idx) => {
-      let eid = -idx - 10000
-      const dupIdx = existTokensAddr.indexOf(t.address)
-      if (dupIdx !== -1) {
-        eid = network.token[existTokensIdx[dupIdx]].eid
-      }
-
-      t.fromList = true
-
-      // create token
-      const addTokenTx = {eid, token: t}
-      // add token to network
-      const tokenIntoNetworkTx = {eid: networkId, network: {token: eid}}
-      // add token to tokenList
-      const tokenIntoTokenListTx = {eid: -1, tokenList: {token: eid}}
-
-      return [...acc, addTokenTx, tokenIntoNetworkTx, tokenIntoTokenListTx]
-    },
-    [
-      // create tokenList
-      {eid: -1, tokenList: {url, name, value: tokenList}},
-      // add tokenList to network
-      {eid: networkId, network: {tokenList: -1}},
-    ],
-  )
-
-  t(addTokenTxs)
+  upsertTokenList({newList: tokenList.tokens, networkId})
+  t([
+    // create tokenList
+    {eid: -1, tokenList: {url, name, value: tokenList}},
+    // add tokenList to network
+    {eid: networkId, network: {tokenList: -1}},
+  ])
 }

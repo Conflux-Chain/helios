@@ -330,10 +330,8 @@ describe('integration test', function () {
         const addrs = db.getAddress()
         expect(addrs.length).toBe(3)
         expect(addrs[addrs.length - 1].hex).toBe(CFX_ACCOUNTS[0].address)
-        expect(addrs[addrs.length - 1].cfxHex).toBe(CFX_ACCOUNTS[0].cfxHex)
-        expect(db.getNetworkById(networkId).address[0].eid).toBe(
-          addrs[addrs.length - 1].eid,
-        )
+        expect(addrs[addrs.length - 1].value).toBe(CFX_ACCOUNTS[0].base32)
+        expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
       })
       test('add eth network omit hdPath', async () => {
         await request({
@@ -363,10 +361,7 @@ describe('integration test', function () {
         const addrs = db.getAddress()
         expect(addrs.length).toBe(3)
         expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
-        expect(addrs[addrs.length - 1].cfxHex).toBe(null)
-        expect(db.getNetworkById(networkId).address[0].eid).toBe(
-          addrs[addrs.length - 1].eid,
-        )
+        expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
       })
       test('add eth network, with cfxOnly: true, type: pub vault', async () => {
         await request({
@@ -404,8 +399,7 @@ describe('integration test', function () {
 
         const addrs = db.getAddress()
         expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
-        expect(addrs[addrs.length - 1].cfxHex).toBe(null)
-        expect(db.getNetworkById(networkEid).address[0].eid).toBe(
+        expect(db.findAddress({networkId: networkEid})[0]).toBe(
           addrs[addrs.length - 1].eid,
         )
       })
@@ -480,12 +474,12 @@ describe('integration test', function () {
           method: 'wallet_getAccountAddressByNetwork',
           params: {accountId: a1.eid, networkId: cfxNetId},
         })
-        expect(res1.result.base32).toBeDefined()
+        expect(res1.result.value).toBeDefined()
         const res2 = await request({
           method: 'wallet_getAccountAddressByNetwork',
           params: {accountId: a2.eid, networkId: ethNetId},
         })
-        expect(res2.result.base32).toBe(null)
+        expect(res2.result.value).toBe(res2.result.hex)
         const res3 = await request({
           method: 'wallet_getAccountAddressByNetwork',
           params: [
@@ -493,7 +487,7 @@ describe('integration test', function () {
             {accountId: a2.eid, networkId: ethNetId},
           ],
         })
-        expect(res3.result[0].base32).toBe(res1.result.base32)
+        expect(res3.result[0].value).toBe(res1.result.value)
         expect(res3.result[1].hex).toBe(res2.result.hex)
       })
     })
@@ -512,18 +506,20 @@ describe('integration test', function () {
         expect(db.getAccount().length).toBe(1)
         expect(db.getAddress().length).toBe(2)
 
-        const cfxAddr = db.getNetworkById(cfxNetId).address[0]
+        const cfxAddr = db.findAddress({
+          networkId: cfxNetId,
+          g: {hex: 1, value: 1, pk: 1},
+        })[0]
         expect(cfxAddr.hex).toBe(CFX_ACCOUNTS[0].address)
-        expect(cfxAddr.cfxHex).toBe(CFX_ACCOUNTS[0].cfxHex)
+        expect(cfxAddr.value).toBe(CFX_ACCOUNTS[0].base32)
         expect(cfxAddr.pk).toBe(CFX_ACCOUNTS[0].privateKey)
-        expect(cfxAddr.index).toBe(CFX_ACCOUNTS[0].index)
-        expect(cfxAddr.base32).toBe(CFX_ACCOUNTS[0].base32)
-        const ethAddr = db.getNetworkById(ethNetId).address[0]
+        const ethAddr = db.findAddress({
+          networkId: ethNetId,
+          g: {hex: 1, value: 1, pk: 1},
+        })[0]
         expect(ethAddr.hex).toBe(ETH_ACCOUNTS[0].address)
         expect(ethAddr.pk).toBe(ETH_ACCOUNTS[0].privateKey)
-        expect(ethAddr.index).toBe(ETH_ACCOUNTS[0].index)
-        expect(ethAddr.cfxHex).toBeNull()
-        expect(ethAddr.base32).toBeNull()
+        expect(ethAddr.value).toBe(ETH_ACCOUNTS[0].address)
       })
     })
     describe('wallet_createAccount', function () {
@@ -563,26 +559,26 @@ describe('integration test', function () {
         expect(db.getAddress().length).toBe(4)
         expect(db.getAccount({nickname: 'foo'}).length).toBe(1)
       })
-      test('wallet_createAccount with duplicate nickname', async function () {
-        expect(db.getVault().length).toBe(0)
+      // test('wallet_createAccount with duplicate nickname', async function () {
+      //   expect(db.getVault().length).toBe(0)
 
-        await request({
-          method: 'wallet_importMnemonic',
-          params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
-        })
+      //   await request({
+      //     method: 'wallet_importMnemonic',
+      //     params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
+      //   })
 
-        res = await request({
-          method: 'wallet_createAccount',
-          params: {
-            accountGroupId: db.getAccountGroup()[0].eid,
-            nickname: 'Seed-1-1',
-          },
-        })
+      //   res = await request({
+      //     method: 'wallet_createAccount',
+      //     params: {
+      //       accountGroupId: db.getAccountGroup()[0].eid,
+      //       nickname: 'Seed-1-1',
+      //     },
+      //   })
 
-        expect(res.error.message).toMatch(
-          /Invalid nickname "Seed-1-1", duplicate with other account in the same account group/,
-        )
-      })
+      //   expect(res.error.message).toMatch(
+      //     /Invalid nickname "Seed-1-1", duplicate with other account in the same account group/,
+      //   )
+      // })
     })
     describe('wallet_getAccountGroup', function () {
       test('wallet_getAccountGroup', async function () {
@@ -645,25 +641,25 @@ describe('integration test', function () {
         expect(db.getAccount()[0].nickname).toBe('foo')
         expect(db.getAccount()[0].hidden).toBe(true)
       })
-      test('wallet_updateAccount with duplicate nickname', async function () {
-        await request({
-          method: 'wallet_importMnemonic',
-          params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
-        })
+      // test('wallet_updateAccount with duplicate nickname', async function () {
+      //   await request({
+      //     method: 'wallet_importMnemonic',
+      //     params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
+      //   })
 
-        expect(db.getAccount()[0].nickname).toBe('Seed-1-1')
-        expect(db.getAccount()[0].hidden).toBeFalsy()
-        res = await request({
-          method: 'wallet_updateAccount',
-          params: {
-            accountId: db.getAccount()[0].eid,
-            nickname: 'Seed-1-1',
-          },
-        })
-        expect(res.error.message).toMatch(
-          /Invalid nickname Seed-1-1, duplicate with other account in the same account group/,
-        )
-      })
+      //   expect(db.getAccount()[0].nickname).toBe('Seed-1-1')
+      //   expect(db.getAccount()[0].hidden).toBeFalsy()
+      //   res = await request({
+      //     method: 'wallet_updateAccount',
+      //     params: {
+      //       accountId: db.getAccount()[0].eid,
+      //       nickname: 'Seed-1-1',
+      //     },
+      //   })
+      //   expect(res.error.message).toMatch(
+      //     /Invalid nickname Seed-1-1, duplicate with other account in the same account group/,
+      //   )
+      // })
     })
     describe('wallet_exportAccount', function () {
       test('export private key account', async function () {
@@ -718,10 +714,7 @@ describe('integration test', function () {
         expect(res.result[0].hex).toBe(
           '0x7b3d01a14c84181f4df3983ae68118e4bad48407',
         )
-        expect(res.result[0].cfxHex).toBe(
-          '0x1b3d01a14c84181f4df3983ae68118e4bad48407',
-        )
-        expect(res.result[0].base32).toBe(
+        expect(res.result[0].value).toBe(
           'net2999:aarx4arbkwcbuh4r8spdz3ybddwnzzeea6thg8ytmr',
         )
         expect(res.result[0].privateKey).toBe(
@@ -731,8 +724,7 @@ describe('integration test', function () {
         expect(res.result[1].hex).toBe(
           '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
         )
-        expect(res.result[1].cfxHex).toBe(null)
-        expect(res.result[1].base32).toBe(null)
+        expect(res.result[1].value).toEqual(res.result[1].hex)
         expect(res.result[1].privateKey).toBe(
           '0x6a94c1f02edc1caff0849d46a068ff2819c0a338774fb99674e3d286a3351552',
         )
@@ -1165,12 +1157,15 @@ describe('integration test', function () {
             accounts: [a2.eid, a3.eid],
             authReqId: db.getAuthReq()[0].eid,
           },
+          networkName: ETH_MAINNET_NAME,
           _popup: true,
         })
 
         const [app] = db.getApp()
         expect(app.currentAccount.eid).toBe(a2.eid)
-        const [addr] = app.currentAccount.address.filter(a => !a.base32)
+        const [addr] = app.currentAccount.address.filter(
+          a => a.network.type === 'eth',
+        )
         expect((await res).result).toStrictEqual([addr.hex])
       })
     })
@@ -1236,8 +1231,8 @@ describe('integration test', function () {
 
         const [app] = db.getApp()
         expect(app.currentAccount.eid).toBe(a2.eid)
-        const [addr] = app.currentAccount.address.filter(a => a.base32)
-        expect((await res).result).toStrictEqual([addr.base32])
+        const [addr] = app.currentAccount.address.filter(a => a.value)
+        expect((await res).result).toStrictEqual([addr.value])
       })
     })
     describe('wallet_getAddressPrivateKey', function () {
@@ -1255,7 +1250,7 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, addressId: db.getAddress()[0].eid},
+              params: {password, address: db.getAddress()[0].value},
             })
           ).result,
         ).toBe(pk)
@@ -1263,7 +1258,8 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, addressId: db.getAddress()[1].eid},
+              params: {password, address: db.getAddress()[1].value},
+              networkName: ETH_MAINNET_NAME,
             })
           ).result,
         ).toBe(pk)
@@ -1274,12 +1270,17 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, addressId: db.getAddress()[0].eid},
+              params: {password, address: db.getAddress()[0].value},
             })
           ).result,
         ).toBe(pk)
 
-        db.retractAttr({eid: db.getAddress()[0].vault.eid, attr: 'vault/ddata'})
+        db.retractAttr({
+          eid: db.findAddress({
+            g: {_account: {_accountGroup: {vault: {eid: 1}}}},
+          })[0].account.accountGroup.vault.eid,
+          attr: 'vault/ddata',
+        })
       })
       test('hd vault', async () => {
         await request({
@@ -1294,7 +1295,7 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, addressId: a1.eid},
+              params: {password, address: a1.value},
             })
           ).result,
         ).toBe(CFX_ACCOUNTS[0].privateKey)
@@ -1302,7 +1303,8 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, addressId: a2.eid},
+              params: {password, address: a2.value},
+              networkName: ETH_MAINNET_NAME,
             })
           ).result,
         ).toBe(ETH_ACCOUNTS[0].privateKey)
@@ -1312,17 +1314,25 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, addressId: a1.eid},
+              params: {password, address: a1.value},
             })
           ).result,
         ).toBe(CFX_ACCOUNTS[0].privateKey)
 
-        db.retractAttr({eid: a1.vault.eid, attr: 'vault/ddata'})
+        db.retractAttr({
+          eid: db.findAddress({
+            addressId: a1.eid,
+            g: {
+              _account: {_accountGroup: {vault: {eid: 1}}},
+            },
+          }).account.accountGroup.vault.eid,
+          attr: 'vault/ddata',
+        })
         expect(
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, addressId: a1.eid},
+              params: {password, address: a1.value},
             })
           ).result,
         ).toBe(CFX_ACCOUNTS[0].privateKey)
@@ -1341,7 +1351,7 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {addressId: addr.eid},
+              params: {address: addr.value},
               _internal: true,
             })
           ).error.message,
@@ -1359,7 +1369,9 @@ describe('integration test', function () {
           },
         })
 
-        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() =>
+          expect(db.getAccount({selected: true}).length).toBe(1),
+        )
 
         res = request({
           method: 'cfx_requestAccounts',
@@ -1721,13 +1733,15 @@ describe('integration test', function () {
     describe('wallet_setCurrentAccount', function () {
       test('without app', async () => {
         await Promise.all(
-          [0, 0, 0].map(() =>
-            request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
-              request({
-                method: 'wallet_importPrivateKey',
-                params: {privateKey: result, password},
-              }),
-            ),
+          [
+            CFX_ACCOUNTS[0].privateKey,
+            CFX_ACCOUNTS[1].privateKey,
+            CFX_ACCOUNTS[2].privateKey,
+          ].map(privateKey =>
+            request({
+              method: 'wallet_importPrivateKey',
+              params: {privateKey, password},
+            }),
           ),
         )
 

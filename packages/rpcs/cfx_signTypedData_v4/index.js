@@ -1,7 +1,6 @@
 import * as spec from '@fluent-wallet/spec'
 import getTypedDataSpec from '@fluent-wallet/typed-data-spec'
 import {signTypedData_v4, hashTypedData} from '@fluent-wallet/signature'
-import {decode} from '@fluent-wallet/base32-address'
 
 const {map, dbid, or} = spec
 
@@ -62,7 +61,7 @@ export const gen = {
     type =>
     async ({
       Err: {InvalidParams, Unauthorized, UserRejected},
-      db: {getAuthReqById, accountAddrByNetwork},
+      db: {getAuthReqById, findAddress, validateAddrInApp},
       rpcs: {
         wallet_getAddressPrivateKey,
         wallet_addPendingUserAuthRequest,
@@ -77,15 +76,23 @@ export const gen = {
       if (_inpage) {
         const [from, typedDataString] = params
 
-        const addr = accountAddrByNetwork({
-          account: app.currentAccount.eid,
-          network: app.currentNetwork.eid,
-        })
+        if (
+          !validateAddrInApp({
+            appId: app.eid,
+            networkId: app.currentNetwork.eid,
+            addr: from,
+          })
+        ) {
+          throw Unauthorized()
+        }
 
-        if (type === 'cfx' && from.toLowerCase() !== addr.base32.toLowerCase())
-          throw Unauthorized()
-        if (type === 'eth' && from.toLowerCase() !== addr.hex.toLowerCase())
-          throw Unauthorized()
+        const addr = findAddress({
+          networkId: app.currentNetwork.eid,
+          value: from,
+          g: {
+            _account: {_accountGroup: {vault: {type: 1}}},
+          },
+        })
 
         validateAndFormatTypedDataString({
           type,
@@ -94,7 +101,7 @@ export const gen = {
           InvalidParams,
         })
 
-        if (addr.vault.type === 'pub') throw UserRejected()
+        if (addr.account.accountGroup.vault.type === 'pub') throw UserRejected()
 
         const req = {method: NAME, params}
         return wallet_addPendingUserAuthRequest({appId: app.eid, req})
@@ -109,20 +116,26 @@ export const gen = {
         const authReq = getAuthReqById(authReqId)
         if (!authReq) throw InvalidParams(`Invalid auth req id ${authReqId}`)
 
-        const addr = accountAddrByNetwork({
-          account: authReq.app.currentAccount.eid,
-          network: authReq.app.currentNetwork.eid,
+        if (
+          !validateAddrInApp({
+            appId: authReq.app.eid,
+            networkId: authReq.app.currentNetwork.eid,
+            addr: from,
+          })
+        ) {
+          return wallet_userRejectedAuthRequest({authReqId})
+        }
+
+        const addr = findAddress({
+          networkId: authReq.app.currentNetwork.eid,
+          value: from,
+          g: {
+            pk: 1,
+            _account: {_accountGroup: {vault: {type: 1}}},
+          },
         })
 
-        if (addr.vault.type === 'pub')
-          return wallet_userRejectedAuthRequest({authReqId})
-
-        if (
-          type === 'cfx' &&
-          decode(from).hexAddress !== addr.cfxHex.toLowerCase()
-        )
-          return wallet_userRejectedAuthRequest({authReqId})
-        if (type === 'eth' && from.toLowerCase() !== addr.hex.toLowerCase())
+        if (addr.account.accountGroup.vault.type === 'pub')
           return wallet_userRejectedAuthRequest({authReqId})
 
         const typedData = validateAndFormatTypedDataString({
@@ -133,7 +146,7 @@ export const gen = {
         })
 
         const pk =
-          addr.pk || (await wallet_getAddressPrivateKey({addressId: addr.eid}))
+          addr.pk || (await wallet_getAddressPrivateKey({address: from}))
 
         const sig = await signTypedData_v4(type, pk, typedData)
 
@@ -148,7 +161,7 @@ export const schemas = gen.schemas('cfx')
 
 export const permissions = {
   external: ['inpage', 'popup'],
-  db: ['getAuthReqById', 'accountAddrByNetwork'],
+  db: ['getAuthReqById', 'findAddress', 'validateAddrInApp'],
   methods: [
     'wallet_getAddressPrivateKey',
     'wallet_addPendingUserAuthRequest',

@@ -1,5 +1,5 @@
 import {map, Bytes32} from '@fluent-wallet/spec'
-import {decode} from '@fluent-wallet/base32-address'
+import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
 
 export const NAME = 'wallet_enrichConfluxTx'
 
@@ -11,11 +11,11 @@ export const permissions = {
   external: [],
   locked: true,
   methods: ['wallet_validate20Token', 'wallet_refetchBalance'],
-  db: ['getCfxTxsToEnrich', 't', 'isTokenInAddr'],
+  db: ['getCfxTxsToEnrich', 't', 'isTokenInAddr', 'newtokenTx'],
 }
 
 export const main = async ({
-  db: {getCfxTxsToEnrich, t, isTokenInAddr},
+  db: {getCfxTxsToEnrich, t, isTokenInAddr, newtokenTx},
   rpcs: {wallet_validate20Token, wallet_refetchBalance},
   params: {txhash},
 }) => {
@@ -23,9 +23,9 @@ export const main = async ({
   if (!txData) return
 
   const {tx, address, network, token, app} = txData
-  const txExtraEid = tx.extra.eid
+  const txExtraEid = tx.txExtra.eid
   const txs = []
-  const {to, data, receipt} = tx.payload
+  const {to, data, receipt} = tx.txPayload
 
   let noError = true
 
@@ -55,7 +55,7 @@ export const main = async ({
       txs.push({eid: txExtraEid, txExtra: {contractCreation: true, ok: true}})
   }
 
-  if (to && data) {
+  if (to && data && validateBase32Address(to, 'contract')) {
     const contractAddress = to
     try {
       const {valid, symbol, name, decimals} = await wallet_validate20Token(
@@ -63,23 +63,21 @@ export const main = async ({
         {tokenAddress: contractAddress},
       )
       if (valid) {
-        txs.push(
-          {eid: txExtraEid, txExtra: {token20: true}},
-          {
-            eid: 'newtoken',
-            token: {
-              name,
-              symbol,
-              decimals,
-              tx: tx.eid,
-              address: contractAddress,
-            },
-          },
-          {eid: address.eid, address: {token: 'newtoken'}},
-          {eid: network.eid, network: {token: 'newtoken'}},
-        )
-        if (app) txs.push({eid: 'newtoken', token: {fromApp: true}})
-        else txs.push({eid: 'newtoken', token: {fromUser: true}})
+        const tokenTx = newtokenTx({
+          eid: 'newtoken',
+          name,
+          symbol,
+          decimals,
+          tx: tx.eid,
+          network: network.eid,
+          address: contractAddress,
+        })
+        txs.push({eid: txExtraEid, txExtra: {token20: true}}, tokenTx, {
+          eid: address.eid,
+          address: {token: tokenTx.eid},
+        })
+        if (app) txs.push({eid: tokenTx.eid, token: {fromApp: true}})
+        else txs.push({eid: tokenTx.eid, token: {fromUser: true}})
 
         wallet_refetchBalance(
           {

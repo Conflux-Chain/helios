@@ -81,7 +81,7 @@ function ConnectSitesList({
                       <p className="text-xs text-gray-40">{nickname}</p>
                       <p className="text-sm text-gray-80">
                         {shortenAddress(
-                          accountItem.currentAddress?.base32 ||
+                          accountItem.currentAddress?.value ||
                             accountItem.currentAddress?.hex,
                         )}
                       </p>
