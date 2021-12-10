@@ -139,8 +139,17 @@ function SendTransaction() {
           </span>
         </div>
         <div className="flex flex-col">
-          {hasNoTxn && <Alert type="warning" content={t('noTxnWarning')} />}
-          <div className="w-full flex px-1">
+          {hasNoTxn && (
+            <Alert
+              open={hasNoTxn}
+              closable={false}
+              width="w-full"
+              type="warning"
+              content={t('noTxnWarning')}
+              className="flex-shrink-0"
+            />
+          )}
+          <div className="w-full flex px-1 mt-6">
             <Button
               variant="outlined"
               className="flex-1 mr-3"
