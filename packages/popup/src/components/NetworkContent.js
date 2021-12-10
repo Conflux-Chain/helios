@@ -35,8 +35,7 @@ function NetworkItem({
   const onChangeNetwork = () => {
     onClose && onClose()
     if (eid !== networkId) {
-      request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(result => {
-        console.log(result)
+      request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(() => {
         mutate([WALLET_GET_CURRENT_NETWORK])
         // TODO: i18n
         Message.warning({

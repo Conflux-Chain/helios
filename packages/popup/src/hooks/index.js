@@ -239,21 +239,20 @@ export const useDecodeDisplay = ({
   const {to, data, value} = tx
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
-  const isDappSendNativeToken =
-    !isContract || (isContract && (!data || data === '0x'))
+  const isSendNativeToken = !isContract || !data || data === '0x'
   const isSendToken =
     !isDapp ||
     (isDapp &&
       decodeData?.name === 'transferFrom' &&
       decodeData?.args?.[0] === address) ||
-    (isDapp && isDappSendNativeToken)
+    (isDapp && isSendNativeToken)
 
   if (!isDapp) {
     displayToken = sendToken
     displayToAddress = toAddress
     displayValue = sendAmount
   } else {
-    if (!isContract || isDappSendNativeToken) {
+    if (isSendNativeToken) {
       displayToken = nativeToken
       displayToAddress = to
       displayValue = value
