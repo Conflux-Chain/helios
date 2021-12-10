@@ -22,7 +22,7 @@ function AccountManagementItem({
 }) {
   // TODO： should deal with hm type
   return (
-    <div className="bg-gray-0 rounded mt-3">
+    <div className="bg-gray-0 rounded mt-3 mx-3">
       {groupType === 'pk' ? null : (
         <p className="text-gray-40 ml-4 mb-1 text-xs pt-3">{nickname}</p>
       )}
@@ -30,24 +30,25 @@ function AccountManagementItem({
         <div
           aria-hidden="true"
           key={index}
-          className="flex p-3 rounded hover:bg-primary-4"
+          className="flex px-3 py-3.5 rounded hover:bg-primary-4"
         >
           <Avatar className="w-5 h-5 mr-2" diameter={20} accountId={eid} />
           <div className="flex-1">{nickname}</div>
           <WrapIcon
-            size="w-5 h-5 ml-2"
-            id="openScanUrl"
+            size="w-5 h-5"
+            id="open-scan-url"
             onClick={() => {
               onOpenConfirmPassword &&
                 onOpenConfirmPassword(WALLET_EXPORT_ACCOUNT, eid)
             }}
           >
-            <img className="" alt="viw_pk" src="/images/key.svg" />
+            <img className="w-3 h-3" alt="view_pk" src="/images/key.svg" />
           </WrapIcon>
         </div>
       ))}
       {groupType === 'hd' ? (
         <div
+          className="mx-3 py-4 text-gray-60 text-xs border-t cursor-pointer"
           onClick={() =>
             onOpenConfirmPassword &&
             onOpenConfirmPassword(WALLET_EXPORT_ACCOUNT_GROUP, accountGroupEid)
@@ -112,7 +113,6 @@ function AccountManagement() {
           setExportSeedPhrase(res)
           return history.push(EXPORT_SEED)
         }
-
         setExportPrivateKey(
           isArray(res)
             ? res
@@ -147,7 +147,7 @@ function AccountManagement() {
   }
 
   return accountGroups ? (
-    <div id="account-management">
+    <div id="account-management" className="bg-bg pb-8 h-full">
       <TitleNav title={t('accountManagement')} />
       {Object.values(accountGroups || {}).map(
         ({nickname, account, vault, eid}) => (
