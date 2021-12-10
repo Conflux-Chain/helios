@@ -24,6 +24,7 @@
     "@fluent-wallet/jazz-icon": "workspace:packages/jazz-icon",
     "@fluent-wallet/radio": "workspace:packages/ui/components/Radio",
     "@fluent-wallet/shorten-address": "workspace:packages/ui/shorten-address",
+    "@fluent-wallet/tx-history-checker": "workspace:*",
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC",
     "@fluent-wallet/utils": "workspace:packages/utils",
     "bn.js": "5.2.0",

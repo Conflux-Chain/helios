@@ -25,8 +25,7 @@ const {
 } = RPC_METHODS
 
 export const useCurrentAccount = () => {
-  const currentNetwork = useCurrentNetwork()
-  const {eid: networkId} = currentNetwork
+  const {eid: networkId} = useCurrentNetwork()
   const {data: currentAccount} = useRPC(
     [WALLET_GET_CURRENT_ACCOUNT],
     undefined,
@@ -223,9 +222,15 @@ export const useAddressType = address => {
 }
 
 export const useDbHomeAssets = () => {
-  const {data: homeAssets} = useRPC([WALLETDB_HOME_PAGE_ASSETS], undefined, {
-    fallbackData: {},
-  })
+  const {eid: accountId} = useCurrentAccount()
+  const {eid: networkId} = useCurrentNetwork()
+  const {data: homeAssets} = useRPC(
+    [WALLETDB_HOME_PAGE_ASSETS, accountId, networkId],
+    undefined,
+    {
+      fallbackData: {},
+    },
+  )
   useDbRefetchBalance({type: 'all'})
   return homeAssets
 }

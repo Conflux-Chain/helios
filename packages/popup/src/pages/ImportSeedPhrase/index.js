@@ -61,6 +61,7 @@ function ImportSeedPhrase() {
               params['password'] = createdPassword
             }
             return request(WALLET_IMPORT_MNEMONIC, params).then(() => {
+              history.push(HOME)
               updateAddedNewAccount(
                 mutate,
                 !!createdPassword,
@@ -68,7 +69,6 @@ function ImportSeedPhrase() {
               )
               createdPassword && setCreatedPassword('')
               setCreatingAccount(false)
-              history.push(HOME)
             })
           }
           // TODO: replace error msg
