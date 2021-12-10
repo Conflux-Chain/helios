@@ -23,7 +23,7 @@ function RequestSignature() {
   const isPersonalSign = req?.method === PERSONAL_SIGN
   const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
-  const address = useAddressByNetworkId(dappAccountId, dappNetworkId)
+  const {address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const balanceData = useBalance(address, dappNetworkId)
   const plaintextData =
     !isPersonalSign && req?.params?.[1] ? JSON.parse(req.params[1]) : {}

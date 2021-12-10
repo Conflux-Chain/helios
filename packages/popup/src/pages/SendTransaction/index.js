@@ -8,6 +8,7 @@ import {
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
+import txHistoryChecker from '@fluent-wallet/tx-history-checker'
 import {TitleNav, AccountDisplay} from '../../components'
 import {useTxParams, useEstimateTx, useCheckBalanceAndGas} from '../../hooks'
 import {
@@ -41,12 +42,13 @@ function SendTransaction() {
     setStorageLimit,
     clearSendTransactionParams,
   } = useGlobalStore()
-  const {name, icon, ticker, netId} = useCurrentNetwork()
+  const {name, icon, ticker, netId, type} = useCurrentNetwork()
   const {address, eid: accountId, nickname} = useCurrentAccount()
   const {address: tokenAddress, decimals} = sendToken
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const [addressError, setAddressError] = useState('')
   const [balanceError, setBalanceError] = useState('')
+  const [hasNoTxn, setHasNoTxn] = useState(false)
   const nativeToken = ticker || {}
   const isNativeToken = !tokenAddress
   const params = useTxParams()
@@ -79,8 +81,21 @@ function SendTransaction() {
     setBalanceError(errorMessage)
   }, [errorMessage])
 
-  // TODO: get from scan
-  const hasNoTxn = true
+  useEffect(() => {
+    txHistoryChecker({
+      address: toAddress,
+      type: type,
+      chainId: netId,
+    })
+      .then(data => {
+        setHasNoTxn(!data)
+      })
+      .catch(e => {
+        console.log('tx history checker error: ', e)
+        setHasNoTxn(false)
+      })
+  }, [netId, toAddress, type])
+
   const onChangeToken = token => {
     setSendToken(token)
   }
@@ -139,7 +154,16 @@ function SendTransaction() {
           </span>
         </div>
         <div className="flex flex-col">
-          {hasNoTxn && <Alert type="warning" content={t('noTxnWarning')} />}
+          {hasNoTxn && (
+            <Alert
+              type="warning"
+              content={t('noTxnWarning')}
+              open={hasNoTxn}
+              width="w-full"
+              closable={false}
+              className="mb-6"
+            />
+          )}
           <div className="w-full flex px-1">
             <Button
               variant="outlined"
