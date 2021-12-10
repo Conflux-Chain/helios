@@ -176,7 +176,6 @@ export const cfxEstimate = async (
     const clcGasPrice = customGasPrice || gasPrice
     const clcGasLimit = customGasLimit || '0x5208' /* 21000 */
     const clcStorageLimit = customStorageLimit || '0x0'
-    await Promise.all(promises)
     const cfxFeeData = cfxGetFeeData(
       {
         gasPrice: clcGasPrice,
