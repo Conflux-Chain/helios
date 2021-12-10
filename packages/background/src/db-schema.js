@@ -152,6 +152,7 @@ const schema = {
     err: {doc: 'basic error type/info'},
     txExtra: {doc: 'enriched tx info', ref: true, component: true},
     fromFluent: {doc: 'tx sumitted from fluent'},
+    resendAt: {doc: 'epoch/block where wallet resend tx'},
   },
   txPayload: {
     type: {doc: 'tx type'},
@@ -176,6 +177,7 @@ const schema = {
     contractInteraction: {doc: 'contract interaction tx'},
     token20: {doc: '20 contract'},
     tokenNFT: {doc: 'nft contract'},
+    moreInfo: {doc: 'more info about above action'},
   },
 
   // ## dapp interaction
@@ -206,6 +208,7 @@ const schema = {
   },
   authReq: {
     req: {doc: 'the req body of the auth req', persist: false},
+    processed: {doc: 'if user reacted to this'},
     site: {ref: true, persist: false},
     app: {ref: true, persist: false},
     c: {doc: 'csp channel of the req listener', persist: false},

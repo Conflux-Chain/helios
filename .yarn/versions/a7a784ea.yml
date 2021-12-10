@@ -1,0 +1,14 @@
+releases:
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/conflux-tx-error": patch
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/wallet_add-conflux-chain": patch
+  "@fluent-wallet/wallet_add-ethereum-chain": patch
+  "@fluent-wallet/wallet_enrich-conflux-tx": patch
+  "@fluent-wallet/wallet_get-pending-auth-request": minor
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
+  "@fluent-wallet/wallet_watch-asset": patch
+
+declined:
+  - helios-background
+  - helios-popup

@@ -84,13 +84,8 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 ;(async () => {
   // ## initialize db
   const {request, db} = await initBG()
-  setInterval(
-    () => (
-      request({method: 'wallet_handleUnfinishedTxs', _rpcStack: ['frombg']}),
-      request({method: 'wallet_enrichConfluxTxs', _rpcStack: ['frombg']})
-    ),
-    10000,
-  )
+  request({method: 'wallet_handleUnfinishedTxs', _rpcStack: ['frombg']})
+  request({method: 'wallet_enrichConfluxTxs', _rpcStack: ['frombg']})
   setInterval(
     () => request({method: 'wallet_cleanupTx', _rpcStack: ['frombg']}),
     1000 * 60 * 60,
