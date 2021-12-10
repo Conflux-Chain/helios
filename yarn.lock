@@ -297,6 +297,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ant-design/css-animation@npm:^1.7.2":
+  version: 1.7.3
+  resolution: "@ant-design/css-animation@npm:1.7.3"
+  checksum: 75a62af5d12839eb5fff1af1e446431553cb0bd1538b89b88d1a0e4cd31978c878b622194f688bd732d4d95f778df9818735fdb31939bc615ace50ab6a506fdc
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:7.10.4":
   version: 7.10.4
   resolution: "@babel/code-frame@npm:7.10.4"
@@ -4786,20 +4793,19 @@ __metadata:
   resolution: "@fluent-wallet/component-menu@workspace:packages/ui/components/Menu"
   dependencies:
     "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
-    rc-notification: 4.5.7
   peerDependencies:
     react: ^17
     react-dom: ^17
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/component-message@workspace:packages/ui/components/Message":
+"@fluent-wallet/component-message@workspace:*, @fluent-wallet/component-message@workspace:packages/ui/components/Message":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-message@workspace:packages/ui/components/Message"
   dependencies:
     "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     "@fluent-wallet/component-loading": "workspace:packages/ui/components/Loading"
-    rc-notification: 4.5.7
+    rc-notification: 4.4.0
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -4823,6 +4829,7 @@ __metadata:
   resolution: "@fluent-wallet/component-notification@workspace:packages/ui/components/Notification"
   dependencies:
     "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
+    rc-notification: 4.4.0
   peerDependencies:
     react: ^17
     react-dom: ^17
@@ -10555,6 +10562,15 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 0a8fd264349285aa36194b26a5a9d70c3641e78ad459ec44b9a9a5738e0ce6d86ec120ca2c0f04477165cee912fdeb158f62d6582697185c82278bdbf71187f8
+  languageName: node
+  linkType: hard
+
+"add-dom-event-listener@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "add-dom-event-listener@npm:1.1.0"
+  dependencies:
+    object-assign: 4.x
+  checksum: 7685d32c4a9d78ad7a36641774168d80e195ef0710ae801e7211d849100c0e4499657cf3838bdae5ee9134b5aa9d7f50d68dec73b03e7d0082302804efff6ea6
   languageName: node
   linkType: hard
 
@@ -19646,6 +19662,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/component-dropdown": "workspace:packages/ui/components/Dropdown"
     "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     "@fluent-wallet/component-input": "workspace:packages/ui/components/Input"
+    "@fluent-wallet/component-message": "workspace:*"
     "@fluent-wallet/component-modal": "workspace:packages/ui/components/Modal"
     "@fluent-wallet/component-toast": "workspace:packages/ui/components/Toast"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
@@ -25032,7 +25049,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"object-assign@npm:^4, object-assign@npm:^4.0.0, object-assign@npm:^4.1.0, object-assign@npm:^4.1.1":
+"object-assign@npm:4.x, object-assign@npm:^4, object-assign@npm:^4.0.0, object-assign@npm:^4.1.0, object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
   checksum: fcc6e4ea8c7fe48abfbb552578b1c53e0d194086e2e6bbbf59e0a536381a292f39943c6e9628af05b5528aa5e3318bb30d6b2e53cadaf5b8fe9e12c4b69af23f
@@ -27091,7 +27108,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.0.0, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.0.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -27442,6 +27459,15 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"raf@npm:^3.4.0":
+  version: 3.4.1
+  resolution: "raf@npm:3.4.1"
+  dependencies:
+    performance-now: ^2.1.0
+  checksum: 50ba284e481c8185dbcf45fc4618ba3aec580bb50c9121385d5698cb6012fe516d2015b1df6dd407a7b7c58d44be8086108236affbce1861edd6b44637c8cd52
+  languageName: node
+  linkType: hard
+
 "ramda@npm:^0.21.0":
   version: 0.21.0
   resolution: "ramda@npm:0.21.0"
@@ -27530,6 +27556,18 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"rc-animate@npm:3.x":
+  version: 3.1.1
+  resolution: "rc-animate@npm:3.1.1"
+  dependencies:
+    "@ant-design/css-animation": ^1.7.2
+    classnames: ^2.2.6
+    raf: ^3.4.0
+    rc-util: ^4.15.3
+  checksum: ff1b49a16522f88bf1db1e27732570ac1c8af923b2df188ec42570e3a02c846057359dae1a6ee6efba5436d7fa45fbbb8a90418e16da413dedfd779473032a00
+  languageName: node
+  linkType: hard
+
 "rc-checkbox@npm:2.3.2":
   version: 2.3.2
   resolution: "rc-checkbox@npm:2.3.2"
@@ -27557,7 +27595,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"rc-motion@npm:^2.0.0, rc-motion@npm:^2.2.0":
+"rc-motion@npm:^2.0.0":
   version: 2.4.4
   resolution: "rc-motion@npm:2.4.4"
   dependencies:
@@ -27571,18 +27609,18 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"rc-notification@npm:4.5.7":
-  version: 4.5.7
-  resolution: "rc-notification@npm:4.5.7"
+"rc-notification@npm:4.4.0":
+  version: 4.4.0
+  resolution: "rc-notification@npm:4.4.0"
   dependencies:
     "@babel/runtime": ^7.10.1
     classnames: 2.x
-    rc-motion: ^2.2.0
+    rc-animate: 3.x
     rc-util: ^5.0.1
   peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 7e62e00a86d5d4e2afcdc945c3de1edc75da5e88bb88434d13ea1b1d1df93bd5da4473aa60bb0bb3c290fe0ad82a4ff223acb35915522eb9191806895551993e
+    react: "*"
+    react-dom: "*"
+  checksum: 87d3802ff058f51b296107276d57de18db70b8b41673f22a7b00e8882ff7b4a5edd4d27877a827da18742aa86c2584d1d4c2bbae8ac4178704627399df0fa708
   languageName: node
   linkType: hard
 
@@ -27612,6 +27650,19 @@ fsevents@~2.1.2:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: 0c71935467bfb3dd86b52c85c106e671c2933409ba4568152f386498b807d5ab680cb2de2f6fc370289368d2b65507afd0e6fc2269965b67e4016c2f61e9bbb1
+  languageName: node
+  linkType: hard
+
+"rc-util@npm:^4.15.3":
+  version: 4.21.1
+  resolution: "rc-util@npm:4.21.1"
+  dependencies:
+    add-dom-event-listener: ^1.1.0
+    prop-types: ^15.5.10
+    react-is: ^16.12.0
+    react-lifecycles-compat: ^3.0.4
+    shallowequal: ^1.1.0
+  checksum: f87d321ad2088171eef990f179fe8b34db648cd5ad37439de381093891189e429ad8c791077205c56de9e26e37749fb3f4ecfceba8c35f983f540650c7ed4fb0
   languageName: node
   linkType: hard
 

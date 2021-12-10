@@ -4,26 +4,26 @@ import {SlideCard} from '../../../components'
 import {CurrentAccountNetworkLabel} from './'
 import {NetworkContent} from '../../../components'
 
-function NetworkList({onClose, onOpen}) {
+function NetworkList({onClose, open}) {
   const {t} = useTranslation()
 
-  const onClickNetworkItem = result => {
-    result && onClose()
+  const onCloseNetwork = () => {
+    onClose && onClose()
   }
   return (
     <SlideCard
       cardTitle={t('network')}
       onClose={onClose}
-      onOpen={onOpen}
+      open={open}
       cardDescription={<CurrentAccountNetworkLabel />}
-      cardContent={<NetworkContent onClickNetworkItem={onClickNetworkItem} />}
+      cardContent={<NetworkContent onClose={onCloseNetwork} />}
     />
   )
 }
 
 NetworkList.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
+  open: PropTypes.bool,
 }
 
 export default NetworkList

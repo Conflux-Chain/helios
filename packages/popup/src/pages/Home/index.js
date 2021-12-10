@@ -85,15 +85,15 @@ function Home() {
       <CurrentDapp />
       <AccountList
         onClose={() => setAccountStatus(false)}
-        onOpen={accountStatus}
+        open={accountStatus}
       />
       <NetworkList
         onClose={() => setNetworkStatus(false)}
-        onOpen={networkStatus}
+        open={networkStatus}
       />
       <AddToken
         onClose={() => setAddTokenStatus(false)}
-        onOpen={addTokenStatus}
+        open={addTokenStatus}
       />
     </div>
   )

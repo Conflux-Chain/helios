@@ -61,14 +61,14 @@ function ImportSeedPhrase() {
               params['password'] = createdPassword
             }
             return request(WALLET_IMPORT_MNEMONIC, params).then(() => {
+              createdPassword && setCreatedPassword('')
               setCreatingAccount(false)
+              history.push(HOME)
               updateAddedNewAccount(
                 mutate,
                 !!createdPassword,
                 ACCOUNT_GROUP_TYPE.HD,
               )
-              createdPassword && setCreatedPassword('')
-              history.push(HOME)
             })
           }
           // TODO: replace error msg
@@ -76,11 +76,11 @@ function ImportSeedPhrase() {
           setCreatingAccount(false)
         })
         .catch(error => {
-          setCreatingAccount(false)
           if (typeof error?.data?.duplicateAccountGroupId === 'number') {
             return setErrorMessage(t('duplicateSeedError'))
           }
           setErrorMessage(error?.message.split('\n')[0] ?? error)
+          setCreatingAccount(false)
         })
     }
   }

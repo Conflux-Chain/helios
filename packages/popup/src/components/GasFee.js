@@ -17,8 +17,13 @@ function GasFee({estimateRst}) {
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
   const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
-  const {willPayCollateral, willPayTxFee} = estimateRst
-  const {storageFeeDrip, gasFeeDrip, txFeeDrip} = estimateRst?.customData || {}
+  const {
+    willPayCollateral,
+    willPayTxFee,
+    storageFeeDrip,
+    gasFeeDrip,
+    txFeeDrip,
+  } = estimateRst
   const gasPrice = inputGasPrice
   const isBePayed = willPayCollateral === false || willPayTxFee === false
   const isBeAllPayed = willPayCollateral === false && willPayTxFee === false

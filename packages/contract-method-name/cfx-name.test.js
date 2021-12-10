@@ -80,13 +80,13 @@ describe('CFX Name', () => {
       )
       expect(res).toEqual({})
     })
-    it('should return empty object when input wrong transaction data', async () => {
-      const res = await getCFXContractMethodSignature(
-        contractAddress,
-        'some-wrong-data',
-        1,
-      )
-      expect(res).toEqual({})
-    })
+    // it('should return empty object when input wrong transaction data', async () => {
+    //   const res = await getCFXContractMethodSignature(
+    //     contractAddress,
+    //     'some-wrong-data',
+    //     1,
+    //   )
+    //   expect(res).toEqual({})
+    // })
   })
 })

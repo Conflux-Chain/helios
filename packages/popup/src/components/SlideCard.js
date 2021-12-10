@@ -6,13 +6,13 @@ import {useSlideAnimation} from '../hooks'
 
 function SlideCard({
   onClose,
-  onOpen = false,
+  open = false,
   cardTitle,
   cardContent,
   cardDescription,
   cardFooter = null,
 }) {
-  const animateStyle = useSlideAnimation(onOpen)
+  const animateStyle = useSlideAnimation(open)
   const ref = useRef(null)
 
   useClickAway(ref, e => {
@@ -33,7 +33,7 @@ function SlideCard({
           {cardDescription}
         </div>
         <CloseOutlined
-          onClick={onClose}
+          onClick={() => onClose && onClose()}
           className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
         />
         {cardContent}
@@ -45,8 +45,8 @@ function SlideCard({
 }
 
 SlideCard.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  open: PropTypes.bool,
   cardTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   cardDescription: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   cardContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node])

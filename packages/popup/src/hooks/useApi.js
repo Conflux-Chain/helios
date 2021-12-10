@@ -1,6 +1,7 @@
 import {RPC_METHODS, NETWORK_TYPE} from '../constants'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber, isString} from '@fluent-wallet/checks'
+import {validateAddress} from '../utils'
 
 const {
   WALLET_GET_ACCOUNT_GROUP,
@@ -24,8 +25,7 @@ const {
 } = RPC_METHODS
 
 export const useCurrentAccount = () => {
-  const currentNetwork = useCurrentNetwork()
-  const {eid: networkId} = currentNetwork
+  const {eid: networkId} = useCurrentNetwork()
   const {data: currentAccount} = useRPC(
     [WALLET_GET_CURRENT_ACCOUNT],
     undefined,
@@ -34,11 +34,14 @@ export const useCurrentAccount = () => {
     },
   )
   const {eid: accountId} = currentAccount || {}
-  const {address, addressEid} = useAddressByNetworkId(accountId, networkId)
+  const {value: address, eid: addressId} = useAddressByNetworkId(
+    accountId,
+    networkId,
+  )
   return {
     ...currentAccount,
     address,
-    addressEid,
+    addressId,
   }
 }
 
@@ -173,8 +176,7 @@ export const useAddressByNetworkId = (accountIds = [], networkId) => {
     params,
     {fallbackData: isNumber(accountIds) ? {} : []},
   )
-  const {value, eid} = accountAddress || {}
-  return {address: value, addressEid: eid}
+  return accountAddress || {}
 }
 
 export const useBalance = (
@@ -206,10 +208,13 @@ export const useCurrentNativeToken = () => {
 }
 
 export const useAddressType = address => {
+  const {netId} = useCurrentNetwork()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const isValidAddress = validateAddress(address, networkTypeIsCfx, netId)
   const {
     data: {type},
   } = useRPC(
-    address ? [WALLET_DETECT_ADDRESS_TYPE, address] : null,
+    isValidAddress ? [WALLET_DETECT_ADDRESS_TYPE, address] : null,
     {address},
     {fallbackData: {}},
   )
@@ -217,9 +222,15 @@ export const useAddressType = address => {
 }
 
 export const useDbHomeAssets = () => {
-  const {data: homeAssets} = useRPC([WALLETDB_HOME_PAGE_ASSETS], undefined, {
-    fallbackData: {},
-  })
+  const {eid: accountId} = useCurrentAccount()
+  const {eid: networkId} = useCurrentNetwork()
+  const {data: homeAssets} = useRPC(
+    [WALLETDB_HOME_PAGE_ASSETS, accountId, networkId],
+    undefined,
+    {
+      fallbackData: {},
+    },
+  )
   useDbRefetchBalance({type: 'all'})
   return homeAssets
 }
@@ -267,10 +278,10 @@ export const useValid20Token = address => {
 }
 
 export const useTxList = params => {
-  const {addressEid} = useCurrentAccount()
+  const {addressId} = useCurrentAccount()
   const {data: listData} = useRPC(
-    addressEid ? [WALLETDB_TXLIST, ...Object.values(params), addressEid] : null,
-    {...params, addressId: addressEid},
+    addressId ? [WALLETDB_TXLIST, ...Object.values(params), addressId] : null,
+    {...params, addressId},
     {
       fallbackData: params?.countOnly ? 0 : {},
     },
