@@ -197,7 +197,7 @@ const en = {
     // account management
     accountManagement: 'Account Management',
     lock: 'Lock',
-    enterPassword: 'Enter your Fluent password to continue',
+    enterPassword: 'Enter your password to continue',
     viewSeed: 'Reveal Secret Recovery Phrase',
     // backup seed
     backupIdentity: 'Backup Identity',

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
-import {WrapIcon, CopyButton} from './index'
+import {WrapIcon, CopyButton} from './'
 import {EyeInvisibleOutlined, EyeOutlined} from '@fluent-wallet/component-icons'
 
 function IdentityPanel({content, title}) {

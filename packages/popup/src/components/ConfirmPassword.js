@@ -27,6 +27,7 @@ function ConfirmPassword({
           setInputValue={setPassword}
           errorMessage={passwordErrorMessage}
           value={password}
+          containerClassName="mt-1"
           id="confirmPassword"
         />
       }
@@ -43,6 +44,7 @@ function ConfirmPassword({
         <Button
           className="flex flex-1"
           onClick={onConfirm}
+          disabled={!!passwordErrorMessage}
           key="confirm"
           id="confirm-btn"
         >
