@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
-import {isNumber, isArray} from '@fluent-wallet/checks'
+import {isNumber} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import useGlobalStore from '../../stores'
 import {useHistory} from 'react-router-dom'
