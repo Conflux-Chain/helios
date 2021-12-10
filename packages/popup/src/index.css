@@ -38,7 +38,7 @@ html {
   --color-warning-dark: #df6e2e;
   --color-info-dark: #4059d9;
 
-  /* TODO global compnent class name default use light theme, need to use better method */
+  /* TODO global component class name default use light theme, need to use better method */
   --color-bg: #f4f5f7;
   --color-primary-4: #f8f9fe;
   --color-primary-10: #f0f3ff;
