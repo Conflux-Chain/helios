@@ -36,7 +36,7 @@ function ConfirmPassword({
           onClick={onCancel}
           variant="outlined"
           key="cancel"
-          id="cancelBtn"
+          id="cancel-btn"
         >
           {t('cancel')}
         </Button>,
@@ -44,7 +44,7 @@ function ConfirmPassword({
           className="flex flex-1"
           onClick={onConfirm}
           key="confirm"
-          id="confirmBtn"
+          id="confirm-btn"
         >
           {t('confirm')}
         </Button>,

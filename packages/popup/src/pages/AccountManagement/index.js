@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
-import {isNumber} from '@fluent-wallet/checks'
+import {isNumber, isArray} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import useGlobalStore from '../../stores'
 import {useHistory} from 'react-router-dom'
@@ -109,11 +109,16 @@ function AccountManagement() {
         setOpenPasswordStatus(false)
         setSendingRequestStatus(false)
         if (exportMethod === WALLET_EXPORT_ACCOUNT_GROUP) {
-          setExportPrivateKey(res)
+          setExportSeedPhrase(res)
           return history.push(EXPORT_SEED)
         }
-        setExportSeedPhrase(
-          res.filter(item => item.network.name === currentNetwork.name)[0],
+
+        setExportPrivateKey(
+          isArray(res)
+            ? res
+                .filter(item => item.network.name === currentNetwork.name)[0]
+                .privateKey.replace('0x', '')
+            : res,
         )
         history.push(EXPORT_PRIVATEKEY)
       })
@@ -142,7 +147,7 @@ function AccountManagement() {
   }
 
   return accountGroups ? (
-    <div id="accountManagement">
+    <div id="account-management">
       <TitleNav title={t('accountManagement')} />
       {Object.values(accountGroups || {}).map(
         ({nickname, account, vault, eid}) => (
