@@ -6,3 +6,6 @@ releases:
 
 declined:
   - helios-popup
+
+undecided:
+  - "@fluent-wallet/component-alert"
