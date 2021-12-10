@@ -111,6 +111,8 @@ export const main = async ({
   if (params.authReqId) {
     const authReq = getAuthReqById(params.authReqId)
     if (!authReq) throw InvalidParams(`Invalid auth req id ${params.authReqId}`)
+    if (authReq.processed)
+      throw InvalidParams(`Already processing auth req ${params.authReqId}`)
     const authedApp = authReq.app
     const [addr] = findAddress({appId: authedApp.eid})
     addTokenToAddr({

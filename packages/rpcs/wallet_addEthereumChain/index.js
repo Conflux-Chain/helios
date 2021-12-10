@@ -78,6 +78,8 @@ export const main = async ({
     if (!authReqId) throw InvalidParams(`Invalid auth req id ${authReqId}`)
     const authReq = getAuthReqById(authReqId)
     if (!authReq) throw InvalidParams(`Invalid auth req id ${authReqId}`)
+    if (authReq.processed)
+      throw InvalidParams(`Already processing auth req ${authReqId}`)
     const rst = await wallet_addNetwork(chainConf)
     if (rst?.error) return await wallet_userRejectedAuthRequest({authReqId})
     return await wallet_userApprovedAuthRequest({authReqId, res: '__null__'})
