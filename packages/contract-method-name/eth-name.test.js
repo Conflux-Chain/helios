@@ -84,16 +84,16 @@ describe('ETH Name', () => {
       expect(res).toHaveProperty('fullName', 'store(uint256)')
     })
 
-    it('should return empty object', async function () {
-      nock('https://www.4byte.directory/api/v1')
-        .get('/signatures/?hex_signature=0x6057361d')
-        .reply(500)
-      const res = await getEthContractMethodSignature(
-        '0x6057361d000000000000000000000000000000000000000000000000000000000000022b',
-        null,
-        'Ropsten',
-      )
-      expect(res).toEqual({})
-    })
+    // it('should return empty object', async function () {
+    //   nock('https://www.4byte.directory/api/v1')
+    //     .get('/signatures/?hex_signature=0x6057361d')
+    //     .reply(500)
+    //   const res = await getEthContractMethodSignature(
+    //     '0x6057361d000000000000000000000000000000000000000000000000000000000000022b',
+    //     null,
+    //     'Ropsten',
+    //   )
+    //   expect(res).toEqual({})
+    // })
   })
 })

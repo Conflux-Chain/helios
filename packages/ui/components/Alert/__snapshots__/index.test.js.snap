@@ -10,7 +10,7 @@ Object {
         data-testid="alert-wrapper"
       >
         <div
-          class="flex items-center"
+          class="flex items-start"
         >
           <svg
             class="w-4 h-4 mr-2 text-warning"
@@ -47,7 +47,7 @@ Object {
       data-testid="alert-wrapper"
     >
       <div
-        class="flex items-center"
+        class="flex items-start"
       >
         <svg
           class="w-4 h-4 mr-2 text-warning"
