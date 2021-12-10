@@ -51,7 +51,7 @@ export const schemas = {
 }
 
 export const permissions = {
-  external: ['popup'],
+  external: [],
   db: [
     't',
     'getNetwork',

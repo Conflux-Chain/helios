@@ -323,6 +323,8 @@ describe('integration test', function () {
               },
               rpcUrls: [CFX_LOCALNET_RPC_ENDPOINT + '/'],
             },
+            _rpcStack: ['frombg'],
+            _internal: true,
           })
         ).result
 
@@ -354,6 +356,8 @@ describe('integration test', function () {
               },
               rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT + '/'],
             },
+            _rpcStack: ['frombg'],
+            _internal: true,
           })
         ).result
 
@@ -391,6 +395,8 @@ describe('integration test', function () {
               },
               rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT + '/'],
             },
+            _rpcStack: ['frombg'],
+            _internal: true,
           })
         ).result
 
