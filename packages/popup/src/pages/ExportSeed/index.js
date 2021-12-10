@@ -15,21 +15,26 @@ function ExportSeed() {
     if (!exportSeedPhrase) {
       history.push(HOME)
     }
-    return () => setExportSeedPhrase('')
+    return () => {
+      setExportSeedPhrase('')
+    }
   }, [setExportSeedPhrase, exportSeedPhrase, history])
 
   return (
-    <div id="export-seed">
-      <TitleNav title={t('backupIdentity')} />
-      <div>
-        <IdentityPanel title={t('seedPhrase')} content={exportSeedPhrase} />
+    <div id="export-seed" className="h-full pb-6 bg-bg flex flex-col">
+      <div className="flex-1">
+        <TitleNav title={t('backupIdentity')} />
+        <div className="px-3 pt-3">
+          <IdentityPanel title={t('seedPhrase')} content={exportSeedPhrase} />
+        </div>
+      </div>
+      <div className="px-3">
         <Alert
           type="warning"
           content={t('backupSeedDes')}
           open={true}
           width="w-full"
           closable={false}
-          className="mb-6"
         />
       </div>
     </div>

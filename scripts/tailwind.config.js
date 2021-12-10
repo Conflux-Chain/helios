@@ -160,7 +160,7 @@ module.exports = {
         'gray-circles': "url('/images/gray-circles-bg.svg')",
         'blue-circles': "url('/images/blue-circles-bg.svg')",
         'blue-card-linear': "url('/images/blue-card-linear-bg.svg')",
-        'identity-panel-bg': "url('/images/identity-panel-bg.svg')",
+        'identity-panel': "url('/images/identity-panel-bg.svg')",
       },
     },
   },

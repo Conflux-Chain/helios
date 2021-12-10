@@ -11,26 +11,30 @@ function ExportPrivateKey() {
   const {exportPrivateKey, setExportPrivateKey} = useGlobalStore()
   const history = useHistory()
 
-  console.log('exportPrivateKey', exportPrivateKey)
   useEffect(() => {
     if (!exportPrivateKey) {
       history.push(HOME)
     }
-    return () => setExportPrivateKey('')
+    return () => {
+      setExportPrivateKey('')
+    }
   }, [setExportPrivateKey, exportPrivateKey, history])
 
   return (
-    <div id="export-private-key">
-      <TitleNav title={t('backupPk')} />
-      <div>
-        <IdentityPanel title={t('pKey')} content={exportPrivateKey} />
+    <div id="export-private-key" className="h-full pb-6 bg-bg flex flex-col">
+      <div className="flex-1">
+        <TitleNav title={t('backupPk')} />
+        <div className="px-3 pt-3">
+          <IdentityPanel title={t('pKey')} content={exportPrivateKey} />
+        </div>
+      </div>
+      <div className="px-3">
         <Alert
           type="warning"
           content={t('backupPkDes')}
           open={true}
           width="w-full"
           closable={false}
-          className="mb-6"
         />
       </div>
     </div>

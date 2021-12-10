@@ -13,32 +13,32 @@ function IdentityPanel({content, title}) {
   }, [eyeStatus, content])
 
   return (
-    <div>
-      <div>
-        <div>{title}</div>
-        <div>
-          <CopyButton
-            text={content}
-            className="w-3 h-3 text-primary"
-            CopyWrapper={WrapIcon}
-            wrapperClassName="!w-5 !h-5"
-          />
+    <div className="bg-identity-panel rounded px-3 pt-3 pb-8 bg-gray-0">
+      <div className="flex justify-between items-center">
+        <div className="text-gray-80 text-sm font-medium">{title}</div>
+        <div className="flex items-center">
           <WrapIcon
-            size="w-5 h-5 ml-2"
+            size="w-6 h-6 mr-3 rounded-lg"
             id="openScanUrl"
             onClick={() =>
               setEyeStatus(eyeStatus === 'close' ? 'open' : 'close')
             }
           >
             {eyeStatus === 'close' ? (
-              <EyeInvisibleOutlined className="w-4 h-4 cursor-pointer" />
+              <EyeInvisibleOutlined className="w-4 h-4 cursor-pointer text-primary" />
             ) : (
-              <EyeOutlined className="w-4 h-4 cursor-pointer" />
+              <EyeOutlined className="w-4 h-4 cursor-pointer text-primary" />
             )}
           </WrapIcon>
+          <CopyButton
+            text={content}
+            className="w-4 h-4 text-primary"
+            CopyWrapper={WrapIcon}
+            wrapperClassName="!w-6 !h-6 rounded-lg"
+          />
         </div>
       </div>
-      <div>{showContent}</div>
+      <div className="break-words text-gray-80 text-sm pt-6">{showContent}</div>
     </div>
   )
 }
