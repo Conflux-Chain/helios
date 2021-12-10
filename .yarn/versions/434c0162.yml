@@ -1,0 +1,4 @@
+declined:
+  - helios-popup
+  - "@fluent-wallet/tx-history-checker"
+  - "@fluent-wallet/component-alert"
