@@ -5389,6 +5389,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/tx-history-checker@workspace:*, @fluent-wallet/tx-history-checker@workspace:packages/tx-history-checker":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/tx-history-checker@workspace:packages/tx-history-checker"
+  dependencies:
+    "@fluent-wallet/base32-address": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/txpool_next-nonce@workspace:*, @fluent-wallet/txpool_next-nonce@workspace:packages/rpcs/txpool_nextNonce":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/txpool_next-nonce@workspace:packages/rpcs/txpool_nextNonce"
@@ -19646,6 +19654,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/jazz-icon": "workspace:packages/jazz-icon"
     "@fluent-wallet/radio": "workspace:packages/ui/components/Radio"
     "@fluent-wallet/shorten-address": "workspace:packages/ui/shorten-address"
+    "@fluent-wallet/tx-history-checker": "workspace:*"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
     "@fluent-wallet/utils": "workspace:packages/utils"
     bn.js: 5.2.0
