@@ -22,7 +22,6 @@ function CurrentDapp() {
     dappCurrentAccount || {}
   const {nickname: currentNickname, eid: currentEid} = currentAccount
   const isConnected = !!data?.app
-  console.log('dapp', data)
   const isConnectedCurrentAccount = connectedEid === currentEid
 
   const onAuth = () => {

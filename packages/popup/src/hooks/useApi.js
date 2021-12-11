@@ -4,6 +4,9 @@ import {isNumber, isString} from '@fluent-wallet/checks'
 import {validateAddress} from '../utils'
 
 const {
+  QUERY_BALANCE,
+  QUERY_ADDRESS,
+  QUERY_TOKEN,
   WALLET_GET_ACCOUNT_GROUP,
   WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK,
   WALLET_GET_BALANCE,
@@ -220,6 +223,35 @@ export const useAddressType = address => {
     {fallbackData: {}},
   )
   return type
+}
+
+export const useToken = (...args) => {
+  const [a1, a2] = args
+  const params = a2 || a1
+  const swrk = (a2 && a1) || JSON.stringify(params)
+  const {data} = useRPC(swrk ? [QUERY_TOKEN, swrk] : null, params)
+  return data
+}
+
+export const useCurrentAddress = (...args) => {
+  const [a1, a2] = args
+  const g = a2 || a1
+  const swrk = (a2 && a1) || JSON.stringify(g)
+  return useRPC(swrk ? [QUERY_ADDRESS, swrk] : null, {selected: true, g})
+}
+
+export const useTokenBalanceOfCurrentAddress = tokenId => {
+  const {data} = useCurrentAddress()
+  return useRPC(
+    data ? [QUERY_BALANCE, 'useTokenBalanceOfCurrentAddress', tokenId] : null,
+    {
+      tokenId,
+      addressId: data,
+      g: {
+        value: 1,
+      },
+    },
+  ).data?.[0]?.value
 }
 
 export const useDbHomeAssets = () => {
