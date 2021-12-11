@@ -4,6 +4,7 @@
    [cfxjs.db.datascript.core :as d]
    [cfxjs.db.queries :refer [apply-queries]]
    [cljs.reader]
+   [cfxjs.db.migrate]
    ;; [cfxjs.db.datascript.db :as ddb]
    [cfxjs.db.datascript.impl.entity :as de]
    [goog.string :as gs]
@@ -282,20 +283,22 @@
   ([js-schema persistfn data-to-restore]
    (let [js-schema     (j->c js-schema)
          db-to-restore (when data-to-restore (cljs.reader/read-string data-to-restore))
-         db            (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn (js-schema->schema js-schema)))
-         tfn           (fn [txs] (d/transact! db txs))
-         qfn           (fn [query & args] (apply d/q query (d/db db) args))
-         pfn           (partial d/pull @db)
-         efn           (fn [model attr-keys & args] (apply de/entity (d/db db) model attr-keys args))
-         ffn           (fn [f] (d/filter (d/db db) f))
+         schema-rst    (js-schema->schema js-schema)
+         db-conn       (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn schema-rst))
+         db-conn       (cfxjs.db.migrate/run db-conn)
+         tfn           (fn [txs] (d/transact! db-conn txs))
+         qfn           (fn [query & args] (apply d/q query (d/db db-conn) args))
+         pfn           (partial d/pull (d/db db-conn))
+         efn           (fn [model attr-keys & args] (apply de/entity (d/db db-conn) model attr-keys args))
+         ffn           (fn [f] (d/filter (d/db db-conn) f))
          rst           (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
-         rst           (assoc rst :_db db)
+         rst           (assoc rst :_db db-conn)
          ;; rst           (assoc rst :getById (comp clj->js get-by-id))
          ;; rst           (assoc rst :deleteById delete-by-id)
          ;; rst           (assoc rst :updateById update-by-id)
          rst           (assoc rst :tmpid random-tmp-id)
-         rst           (apply-queries rst db qfn efn tfn ffn)]
-     (def conn db)
+         rst           (apply-queries rst db-conn qfn efn tfn ffn)]
+     (def conn db-conn)
      (def t tfn)
      (def q qfn)
      (def p pfn)
@@ -366,4 +369,14 @@
   (d/pull @conn '[*] 9)
   (d/datoms
    (fdb (fn [db datom] (not= "vault" (namespace (:a datom)))))
-   :eavt))
+   :eavt)
+  (d/db? @conn)
+  (d/db conn)
+  (d/schema @conn)
+  (prn (-> @conn
+           d/schema
+           :address/value))
+  (d/datoms (d/db conn) :eavt)
+  (q '[:find ?v .
+       :where [?v :dbmeta/version]])
+  (t [{:db/id :dbmeta :dbmeta/version 1}]))
