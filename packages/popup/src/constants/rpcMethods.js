@@ -49,3 +49,5 @@ export const WALLETDB_TXLIST = 'walletdb_txList'
 export const PERSONAL_SIGN = 'personal_sign'
 export const WALLET_EXPORT_ACCOUNT = 'wallet_exportAccount'
 export const WALLET_EXPORT_ACCOUNT_GROUP = 'wallet_exportAccountGroup'
+export const WALLET_GET_BLOCKCHAIN_EXPLORER_URL =
+  'wallet_getBlockchainExplorerUrl'

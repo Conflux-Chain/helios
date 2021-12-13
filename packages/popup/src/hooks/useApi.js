@@ -22,6 +22,7 @@ const {
   WALLETDB_ACCOUNT_LIST_ASSETS,
   WALLET_VALIDATE_20TOKEN,
   WALLETDB_TXLIST,
+  WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
 } = RPC_METHODS
 
 export const useCurrentAccount = () => {
@@ -287,4 +288,11 @@ export const useTxList = params => {
     },
   )
   return listData
+}
+
+export const useBlockchainExplorerUrl = params => {
+  const {data: urlData} = useRPC([WALLET_GET_BLOCKCHAIN_EXPLORER_URL], {
+    ...params,
+  })
+  return urlData
 }
