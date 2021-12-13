@@ -11,9 +11,8 @@ import {request, validateAddress} from '../../../utils'
 
 import {
   useNetworkTypeIsCfx,
-  useCurrentAccount,
+  useCurrentAddress,
   useDbAddTokenList,
-  useCurrentNetwork,
 } from '../../../hooks/useApi'
 
 const {
@@ -30,9 +29,10 @@ function AddToken({onClose, open}) {
   const [tokenList, setTokenList] = useState([])
   const [noTokenStatus, setNoTokenStatus] = useState(false)
   const inputValueRef = useRef()
-  const {address} = useCurrentAccount()
+  const {data: curAddr} = useCurrentAddress()
+  const address = curAddr.value
+  const netId = curAddr.network?.netId
   const isCfxChain = useNetworkTypeIsCfx()
-  const {netId} = useCurrentNetwork()
   const dbData = useDbAddTokenList()
 
   const getOther20Token = useCallback(

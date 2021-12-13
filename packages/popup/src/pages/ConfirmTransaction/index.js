@@ -20,7 +20,7 @@ import {
   useViewData,
 } from '../../hooks'
 import {
-  useCurrentNativeToken,
+  useCurrentAddress,
   usePendingAuthReq,
   useNetworkTypeIsCfx,
 } from '../../hooks/useApi'
@@ -54,7 +54,7 @@ function ConfirmTransition() {
     clearSendTransactionParams,
   } = useGlobalStore()
 
-  const nativeToken = useCurrentNativeToken()
+  const nativeToken = useCurrentAddress().data?.network?.ticker || {}
   const tx = useDappParams()
   const isDapp = pendingAuthReq?.length > 0
   // get to type and to token

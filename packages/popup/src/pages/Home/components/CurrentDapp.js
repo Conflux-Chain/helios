@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {AuthorizeModal, DisconnectModal} from '../components'
 import {request} from '../../../utils'
 import useGlobalStore from '../../../stores/index.js'
-import {useCurrentAccount, useCurrentDapp} from '../../../hooks/useApi'
+import {useCurrentDapp, useCurrentAddress} from '../../../hooks/useApi'
 import {RPC_METHODS} from '../../../constants'
 const {WALLET_REQUEST_PERMISSIONS, WALLET_DELETE_APP} = RPC_METHODS
 
@@ -16,11 +16,12 @@ function CurrentDapp() {
   const site = data?.site || {}
   const currentDapp = data?.app || {}
   const {currentAccount: dappCurrentAccount, eid: appId} = currentDapp
-  const currentAccount = useCurrentAccount()
   const {origin, icon, eid: siteId} = site
   const {nickname: connectedNickname, eid: connectedEid} =
     dappCurrentAccount || {}
-  const {nickname: currentNickname, eid: currentEid} = currentAccount
+  const {data: curAddr} = useCurrentAddress()
+  const currentNickname = curAddr.account?.nickname
+  const currentEid = curAddr.account?.eid
   const isConnected = !!data?.app
   const isConnectedCurrentAccount = connectedEid === currentEid
 

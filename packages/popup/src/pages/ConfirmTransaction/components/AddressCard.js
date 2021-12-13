@@ -2,13 +2,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {DownOutlined} from '@fluent-wallet/component-icons'
-import {
-  useCurrentNativeToken,
-  useCurrentAccount,
-  useCurrentNetwork,
-  useBalance,
-  useNetworkTypeIsCfx,
-} from '../../../hooks/useApi'
+import {useCurrentAddress} from '../../../hooks/useApi'
 import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
 
 const AddressDetail = ({
@@ -17,12 +11,7 @@ const AddressDetail = ({
   currentAccountName,
   toAddressLabel,
 }) => {
-  const {eid: networkId} = useCurrentNetwork()
-  const nativeToken = useCurrentNativeToken()
-  const balanceMap = useBalance(fromAddress, networkId)
-  const balance = balanceMap?.[fromAddress]?.['0x0']
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
+  const {data: curAddr} = useCurrentAddress()
 
   return (
     <div className="flex items-start w-full" id="addressDetailContainer">
@@ -46,13 +35,13 @@ const AddressDetail = ({
             {fromAddress && shortenAddress(fromAddress)}
           </span>
           <DisplayBalance
-            balance={balance}
+            balance={curAddr.nativeBalance}
             maxWidth={120}
             maxWidthStyle="max-w-[120px]"
             className="text-xs !text-gray-60 !font-normal"
             initialFontSize={12}
-            decimals={nativeToken?.decimals}
-            symbol={symbol}
+            decimals={curAddr.network?.ticker?.decimals}
+            symbol={curAddr.network?.ticker?.symbol}
             id="fromAddressCfxBalance"
           />
         </div>
@@ -82,8 +71,7 @@ function AddressCard({
   isDapp,
 }) {
   const {t} = useTranslation()
-  const {address: userAddress, nickname: currentAccountName} =
-    useCurrentAccount()
+  const {data: curAddr} = useCurrentAddress()
 
   return (
     <div
@@ -133,9 +121,9 @@ function AddressCard({
         </div>
       )}
       <AddressDetail
-        fromAddress={userAddress}
+        fromAddress={curAddr.value}
         toAddress={toAddress}
-        currentAccountName={currentAccountName}
+        currentAccountName={curAddr?.account?.nickname}
         toAddressLabel={t(
           isSendToken ? 'toAddress' : isApproveToken ? 'approveTo' : 'contract',
         )}

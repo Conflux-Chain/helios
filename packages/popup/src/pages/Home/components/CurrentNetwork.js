@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types'
 import {RightOutlined} from '@fluent-wallet/component-icons'
-import {useCurrentNetwork} from '../../../hooks/useApi'
+import {useCurrentAddress} from '../../../hooks/useApi'
 
 function CurrentNetwork({onOpenNetwork}) {
-  const currentNetwork = useCurrentNetwork()
-  const {name, icon} = currentNetwork
+  const {data: curAddr} = useCurrentAddress()
 
   return (
     <div
@@ -15,10 +14,10 @@ function CurrentNetwork({onOpenNetwork}) {
     >
       <img
         className="w-2.5 h-2.5 mr-1"
-        src={icon || '/images/default-network-icon.svg'}
+        src={curAddr.network?.icon || '/images/default-network-icon.svg'}
         alt="logo"
       />
-      <span className="text-2xs text-white mr-1">{name}</span>
+      <span className="text-2xs text-white mr-1">{curAddr.network?.name}</span>
       <RightOutlined className="w-2 h-2 text-white" />
     </div>
   )

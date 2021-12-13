@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../../constants'
@@ -9,27 +8,26 @@ import {CurrentAccountNetworkLabel} from './'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard, DisplayBalance, Avatar} from '../../../components'
-import {useDbAccountListAssets, useCurrentAccount} from '../../../hooks/useApi'
+import {useDbAccountListAssets, useCurrentAddress} from '../../../hooks/useApi'
 
 const {SELECT_CREATE_TYPE} = ROUTES
-const {WALLET_GET_CURRENT_ACCOUNT, WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
+const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function AccountItem({
   nickname,
-  account,
+  account, // TODO: use accountId
   authorizedAccountIdIconObj,
   onClose,
   tokeName = '',
   groupType = '',
   decimals,
 }) {
-  const {mutate} = useSWRConfig()
-  const {eid} = useCurrentAccount()
+  const {data: curAddr, mutate} = useCurrentAddress()
   const onChangeAccount = accountId => {
     onClose && onClose()
-    if (eid !== accountId) {
+    if (curAddr.account?.eid !== accountId) {
       request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(() => {
-        mutate([WALLET_GET_CURRENT_ACCOUNT])
+        mutate()
         // TODO: i18n
         Message.warning({
           content: 'Address has been changed',

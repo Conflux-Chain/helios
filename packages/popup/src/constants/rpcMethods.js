@@ -10,8 +10,6 @@ export const ACCOUNT_GROUP_TYPE = {
   HW: 'hw',
 }
 export const WALLET_IS_LOCKED = 'wallet_isLocked'
-export const WALLET_GET_CURRENT_NETWORK = 'wallet_getCurrentNetwork'
-export const WALLET_GET_CURRENT_ACCOUNT = 'wallet_getCurrentAccount'
 export const WALLET_GET_CURRENT_DAPP = 'wallet_getCurrentViewingApp'
 export const WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK =
   'wallet_getAccountAddressByNetwork'

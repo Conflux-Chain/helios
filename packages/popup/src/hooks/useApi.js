@@ -10,8 +10,6 @@ const {
   WALLET_GET_ACCOUNT_GROUP,
   WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK,
   WALLET_GET_BALANCE,
-  WALLET_GET_CURRENT_NETWORK,
-  WALLET_GET_CURRENT_ACCOUNT,
   WALLET_GET_CURRENT_DAPP,
   WALLET_GET_PENDING_AUTH_REQUEST,
   WALLET_ZERO_ACCOUNT_GROUP,
@@ -28,36 +26,46 @@ const {
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
 } = RPC_METHODS
 
-export const useCurrentAccount = () => {
-  const {eid: networkId} = useCurrentNetwork()
-  const {data: currentAccount} = useRPC(
-    [WALLET_GET_CURRENT_ACCOUNT],
-    undefined,
+export const useCurrentAddress = () => {
+  const {data, mutate} = useRPC(
+    [QUERY_ADDRESS, 'useCurrnetwork'],
     {
-      fallbackData: {},
+      selected: true,
+      g: {
+        value: 1,
+        hex: 1,
+        eid: 1,
+        nativeBalance: 1,
+        _account: {nickname: 1, eid: 1},
+        network: {
+          eid: 1,
+          ticker: 1,
+          netId: 1,
+          chainId: 1,
+          name: 1,
+          icon: 1,
+          scanUrl: 1,
+          type: 1,
+        },
+      },
     },
+    {fallbackData: {}},
   )
-  const {eid: accountId} = currentAccount || {}
-  const {value: address, eid: addressId} = useAddressByNetworkId(
-    accountId,
-    networkId,
-  )
-  return {
-    ...currentAccount,
-    address,
-    addressId,
-  }
+  return {data, mutate}
 }
 
-export const useCurrentNetwork = () => {
-  const {data: currentNetwork} = useRPC(
-    [WALLET_GET_CURRENT_NETWORK],
-    undefined,
+export const useTokenBalanceOfCurrentAddress = tokenId => {
+  const {data} = useCurrentAddress()
+  return useRPC(
+    data ? [QUERY_BALANCE, 'useTokenBalanceOfCurrentAddress', tokenId] : null,
     {
-      fallbackData: {},
+      tokenId,
+      addressId: data,
+      g: {
+        value: 1,
+      },
     },
-  )
-  return currentNetwork
+  ).data?.[0]?.value
 }
 
 export const useCurrentDapp = () => {
@@ -202,17 +210,11 @@ export const useBalance = (
 }
 
 export const useNetworkTypeIsCfx = () => {
-  const currentNetwork = useCurrentNetwork()
-  return currentNetwork?.type === NETWORK_TYPE.CFX
-}
-
-export const useCurrentNativeToken = () => {
-  const {ticker: currentNativeToken} = useCurrentNetwork()
-  return currentNativeToken || {}
+  return useCurrentAddress().data?.network?.type === NETWORK_TYPE.CFX
 }
 
 export const useAddressType = address => {
-  const {netId} = useCurrentNetwork()
+  const netId = useCurrentAddress().data?.network?.netId
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const isValidAddress = validateAddress(address, networkTypeIsCfx, netId)
   const {
@@ -233,30 +235,13 @@ export const useToken = (...args) => {
   return data
 }
 
-export const useCurrentAddress = (...args) => {
-  const [a1, a2] = args
-  const g = a2 || a1
-  const swrk = (a2 && a1) || JSON.stringify(g)
-  return useRPC(swrk ? [QUERY_ADDRESS, swrk] : null, {selected: true, g})
-}
-
-export const useTokenBalanceOfCurrentAddress = tokenId => {
-  const {data} = useCurrentAddress()
-  return useRPC(
-    data ? [QUERY_BALANCE, 'useTokenBalanceOfCurrentAddress', tokenId] : null,
-    {
-      tokenId,
-      addressId: data,
-      g: {
-        value: 1,
-      },
-    },
-  ).data?.[0]?.value
-}
+export const useCurrentAddressTokens = () => {}
 
 export const useDbHomeAssets = () => {
-  const {eid: accountId} = useCurrentAccount()
-  const {eid: networkId} = useCurrentNetwork()
+  const {data: curAddr} = useCurrentAddress()
+  const accountId = curAddr.account?.eid
+  const networkId = curAddr.network?.eid
+
   const {data: homeAssets} = useRPC(
     [WALLETDB_HOME_PAGE_ASSETS, accountId, networkId],
     undefined,
@@ -311,7 +296,8 @@ export const useValid20Token = address => {
 }
 
 export const useTxList = params => {
-  const {addressId} = useCurrentAccount()
+  const {data: curAddr} = useCurrentAddress()
+  const addressId = curAddr.eid
   const {data: listData} = useRPC(
     addressId ? [WALLETDB_TXLIST, ...Object.values(params), addressId] : null,
     {...params, addressId},

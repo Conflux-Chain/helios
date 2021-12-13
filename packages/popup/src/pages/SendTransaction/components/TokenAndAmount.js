@@ -15,17 +15,17 @@ import {
 import {
   useDbHomeAssets,
   useBalance,
-  useCurrentNetwork,
-  useCurrentAccount,
+  useCurrentAddress,
   useNetworkTypeIsCfx,
 } from '../../../hooks/useApi'
 import {validateAddress} from '../../../utils'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
+  const {data: curAddr} = useCurrentAddress()
+  const netId = curAddr.network?.eid
   const {added, native} = useDbHomeAssets()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const {netId} = useCurrentNetwork()
   const homeTokenList = [native].concat(added)
   const [searchValue, setSearchValue] = useState('')
   const [tokenList, setTokenList] = useState([...homeTokenList])
@@ -79,7 +79,7 @@ ChooseTokenList.propTypes = {
 }
 
 function TokenAndAmount({
-  selectedToken,
+  selectedToken, // TODO: use token id
   onChangeToken,
   amount,
   onChangeAmount,
@@ -88,8 +88,9 @@ function TokenAndAmount({
 }) {
   const {t} = useTranslation()
   const [tokenListShow, setTokenListShow] = useState(false)
-  const {eid: networkId} = useCurrentNetwork()
-  const {address} = useCurrentAccount()
+  const {data: curAddr} = useCurrentAddress()
+  const networkId = curAddr.network?.eid
+  const address = curAddr.value
   const {symbol, icon, decimals, address: selectedTokenAddress} = selectedToken
   const tokenAddress = isNativeToken ? '0x0' : selectedTokenAddress
   const balance =

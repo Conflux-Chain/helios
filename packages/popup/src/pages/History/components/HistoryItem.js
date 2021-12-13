@@ -16,7 +16,7 @@ import {
   SendOutlined,
 } from '@fluent-wallet/component-icons'
 import {transformToTitleCase, formatStatus} from '../../../utils'
-import {useNetworkTypeIsCfx, useCurrentNetwork} from '../../../hooks/useApi'
+import {useNetworkTypeIsCfx, useCurrentAddress} from '../../../hooks/useApi'
 import {useDecodeData} from '../../../hooks'
 import {
   WrapIcon,
@@ -54,7 +54,8 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
-  const {netId} = useCurrentNetwork()
+  const {data: curAddr} = useCurrentAddress()
+  const netId = curAddr.network?.netId
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
   const txStatus = formatStatus(status)

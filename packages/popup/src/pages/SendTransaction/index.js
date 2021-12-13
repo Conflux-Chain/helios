@@ -18,11 +18,7 @@ import {
 } from './components'
 import useGlobalStore from '../../stores'
 import {validateAddress} from '../../utils'
-import {
-  useNetworkTypeIsCfx,
-  useCurrentNetwork,
-  useCurrentAccount,
-} from '../../hooks/useApi'
+import {useNetworkTypeIsCfx, useCurrentAddress} from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
 const {HOME, CONFIRM_TRANSACTION} = ROUTES
 
@@ -42,14 +38,18 @@ function SendTransaction() {
     setStorageLimit,
     clearSendTransactionParams,
   } = useGlobalStore()
-  const {name, icon, ticker, netId, type} = useCurrentNetwork()
-  const {address, eid: accountId, nickname} = useCurrentAccount()
+  const {data: curAddr} = useCurrentAddress()
+  const type = curAddr.network?.type
+  const netId = curAddr.network?.netId
+  const accountId = curAddr.account?.eid
+  const nickname = curAddr.account?.nickname
+  const address = curAddr.value
   const {address: tokenAddress, decimals} = sendToken
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const [addressError, setAddressError] = useState('')
   const [balanceError, setBalanceError] = useState('')
   const [hasNoTxn, setHasNoTxn] = useState(false)
-  const nativeToken = ticker || {}
+  const nativeToken = curAddr.network?.ticker || {}
   const isNativeToken = !tokenAddress
   const params = useTxParams()
   const estimateRst =
@@ -132,7 +132,10 @@ function SendTransaction() {
           nickname={nickname}
           address={address}
         />
-        <CurrentNetworkDisplay name={name} icon={icon} />
+        <CurrentNetworkDisplay
+          name={curAddr.network?.name}
+          icon={curAddr.network?.icon}
+        />
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">
         <div className="flex flex-col">
