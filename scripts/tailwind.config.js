@@ -37,6 +37,7 @@ module.exports = {
         25: '6.25rem',
         50: '12.5rem',
         70: '17.5rem',
+        85: '21.25rem',
         93: '23.25rem',
         100: '25rem',
         110: '27.5rem',
@@ -129,10 +130,29 @@ module.exports = {
             display: 'none',
           },
         },
+        'slide-left-in': {
+          '0%': {
+            transform: 'translateX(100%)',
+          },
+          '100%': {
+            transform: 'translateX(0%)',
+          },
+        },
+        'slide-left-out': {
+          '0%': {
+            transform: 'translateX(0%)',
+          },
+          '100%': {
+            transform: 'translateX(100%)',
+            display: 'none',
+          },
+        },
       },
       animation: {
         'slide-up': 'slide-up 0.3s ease',
         'slide-down': 'slide-down 0.3s linear forwards',
+        'slide-left-in': 'slide-left-in 0.2s ease',
+        'slide-left-out': 'slide-left-out 0.2s linear forwards',
       },
       backgroundImage: {
         'token-background':
@@ -140,6 +160,7 @@ module.exports = {
         'gray-circles': "url('/images/gray-circles-bg.svg')",
         'blue-circles': "url('/images/blue-circles-bg.svg')",
         'blue-card-linear': "url('/images/blue-card-linear-bg.svg')",
+        'identity-panel': "url('/images/identity-panel-bg.svg')",
       },
     },
   },

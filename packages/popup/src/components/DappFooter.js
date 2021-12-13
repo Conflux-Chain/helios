@@ -5,8 +5,10 @@ import {RPC_METHODS, ROUTES} from '../constants'
 import {usePendingAuthReq} from '../hooks/useApi'
 import {useHistory} from 'react-router-dom'
 import {useState} from 'react'
+import {useSWRConfig} from 'swr'
 
 const {
+  WALLET_GET_PENDING_AUTH_REQUEST,
   WALLET_REJECT_PENDING_AUTH_REQUSET,
   WALLET_REQUEST_PERMISSIONS,
   WALLET_SWITCH_CONFLUX_CHAIN,
@@ -30,6 +32,7 @@ function DappFooter({
   onClickConfirm,
 }) {
   const history = useHistory()
+  const {mutate} = useSWRConfig()
   const pendingAuthReq = usePendingAuthReq()
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
@@ -90,6 +93,7 @@ function DappFooter({
       .then(() => {
         setSendingRequestStatus(false)
         onClickConfirm && onClickConfirm()
+        mutate([WALLET_GET_PENDING_AUTH_REQUEST], pendingAuthReq.slice(1))
         history.push(HOME)
       })
       .catch(e => {

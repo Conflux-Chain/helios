@@ -12,10 +12,15 @@ function NetworkList({onClose, open}) {
   }
   return (
     <SlideCard
-      cardTitle={t('network')}
+      id="network-list"
+      cardTitle={
+        <div className="ml-3 pb-1">
+          <p className="text-base text-gray-80 font-medium">{t('network')}</p>
+          {<CurrentAccountNetworkLabel />}
+        </div>
+      }
       onClose={onClose}
       open={open}
-      cardDescription={<CurrentAccountNetworkLabel />}
       cardContent={<NetworkContent onClose={onCloseNetwork} />}
     />
   )
@@ -23,7 +28,7 @@ function NetworkList({onClose, open}) {
 
 NetworkList.propTypes = {
   onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool,
+  open: PropTypes.bool.isRequired,
 }
 
 export default NetworkList

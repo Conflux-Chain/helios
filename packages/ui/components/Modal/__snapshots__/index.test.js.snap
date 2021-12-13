@@ -19,7 +19,7 @@ Object {
             data-testid="modal-close-wrapper"
           >
             <svg
-              class="w-6 h-6 text-gray-40"
+              class="w-6 h-6 text-gray-40 cursor-pointer"
               fill="none"
               height="24"
               viewBox="0 0 24 24"
@@ -59,7 +59,7 @@ Object {
           data-testid="modal-close-wrapper"
         >
           <svg
-            class="w-6 h-6 text-gray-40"
+            class="w-6 h-6 text-gray-40 cursor-pointer"
             fill="none"
             height="24"
             viewBox="0 0 24 24"

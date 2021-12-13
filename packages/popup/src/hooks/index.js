@@ -44,21 +44,28 @@ export const useQuery = () => {
   return new URLSearchParams(useLocation().search)
 }
 
-export const useSlideAnimation = show => {
+export const useSlideAnimation = (show, direction = 'vertical') => {
   const [wrapperAnimateStyle, setWrapperAnimateStyle] = useState('')
   useEffect(() => {
     if (show) {
-      return setWrapperAnimateStyle('animate-slide-up block')
+      return setWrapperAnimateStyle(
+        direction == 'vertical'
+          ? 'animate-slide-up block'
+          : 'animate-slide-left-in block',
+      )
     }
     if (wrapperAnimateStyle && !show) {
-      setWrapperAnimateStyle('animate-slide-down')
-
+      setWrapperAnimateStyle(
+        direction == 'vertical'
+          ? 'animate-slide-down'
+          : 'animate-slide-left-out',
+      )
       const timer = setTimeout(() => {
         setWrapperAnimateStyle('')
         clearTimeout(timer)
       }, ANIMATE_DURING_TIME)
     }
-  }, [show, wrapperAnimateStyle])
+  }, [show, wrapperAnimateStyle, direction])
   return wrapperAnimateStyle
 }
 

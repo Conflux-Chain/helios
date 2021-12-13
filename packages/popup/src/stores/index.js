@@ -19,6 +19,8 @@ const useGlobalStore = create(set => ({
   createdSeedPhase: '',
   createdPassword: '',
   createdMnemonic: '',
+  exportPrivateKey: '',
+  exportSeedPhrase: '',
   ...defaultSendTransactionParams,
 
   // logic
@@ -35,6 +37,8 @@ const useGlobalStore = create(set => ({
   setCustomAllowance: customAllowance => set({customAllowance}),
   setNonce: nonce => set({nonce}),
   setSendToken: sendToken => set({sendToken}),
+  setExportPrivateKey: exportPrivateKey => set({exportPrivateKey}),
+  setExportSeedPhrase: exportSeedPhrase => set({exportSeedPhrase}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
 }))
 

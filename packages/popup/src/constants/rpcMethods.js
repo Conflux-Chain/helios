@@ -47,3 +47,7 @@ export const WALLETDB_ADD_TOKEN_LIST = 'walletdb_addTokenList'
 export const WALLETDB_ACCOUNT_LIST_ASSETS = 'walletdb_accountListAssets'
 export const WALLETDB_TXLIST = 'walletdb_txList'
 export const PERSONAL_SIGN = 'personal_sign'
+export const WALLET_EXPORT_ACCOUNT = 'wallet_exportAccount'
+export const WALLET_EXPORT_ACCOUNT_GROUP = 'wallet_exportAccountGroup'
+export const WALLET_GET_BLOCKCHAIN_EXPLORER_URL =
+  'wallet_getBlockchainExplorerUrl'

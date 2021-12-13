@@ -1,0 +1,5 @@
+declined:
+  - browser-extension
+  - helios-popup
+  - "@fluent-wallet/component-modal"
+  - "@fluent-wallet/component-icons"

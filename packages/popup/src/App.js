@@ -33,6 +33,10 @@ const EditPermission = lazy(() => import('./pages/EditPermission'))
 const ConfirmTransaction = lazy(() => import('./pages/ConfirmTransaction'))
 const History = lazy(() => import('./pages/History'))
 const ViewData = lazy(() => import('./pages/ViewData'))
+const AccountManagement = lazy(() => import('./pages/AccountManagement'))
+const ExportSeed = lazy(() => import('./pages/ExportSeed'))
+const ExportPrivateKey = lazy(() => import('./pages/ExportPrivateKey'))
+
 const {
   HOME,
   WALLET_UNLOCK,
@@ -57,6 +61,9 @@ const {
   CONFIRM_TRANSACTION,
   VIEW_DATA,
   HISTORY,
+  ACCOUNT_MANAGEMENT,
+  EXPORT_SEED,
+  EXPORT_PRIVATEKEY,
 } = ROUTES
 
 function App() {
@@ -148,6 +155,17 @@ function App() {
               />
               <Route exact path={DAPP_ADD_NETWORK} component={DappAddNetwork} />
               <Route exact path={HISTORY} component={History} />
+              <Route
+                exact
+                path={ACCOUNT_MANAGEMENT}
+                component={AccountManagement}
+              />
+              <Route exact path={EXPORT_SEED} component={ExportSeed} />
+              <Route
+                exact
+                path={EXPORT_PRIVATEKEY}
+                component={ExportPrivateKey}
+              />
               <Route exact path={ERROR} component={ErrorPage} />
               <Route path="*" render={() => <Redirect to={ERROR} />} />
             </Switch>
