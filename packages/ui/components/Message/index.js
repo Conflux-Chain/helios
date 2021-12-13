@@ -1,5 +1,7 @@
 import React from 'react'
-import ReactNotification from 'rc-notification'
+// !!! don't update the version, must be 0.4.4
+//https://github.com/react-component/notification/issues/148
+import Notification from 'rc-notification'
 import {
   LoadingOutlined,
   CloseCircleFilled,
@@ -8,7 +10,6 @@ import {
   ExclamationCircleFilled,
 } from '@fluent-wallet/component-icons'
 
-const Notification = ReactNotification.default
 const IconTypes = ['info', 'success', 'error', 'warning', 'loading']
 let messageInstance
 let defaultDuration = 3
@@ -49,6 +50,7 @@ function getRCNotificationInstance(args, callback) {
   const {
     getContainer = defaultGetContainer,
     transitionName = defaultTransitionName,
+    top,
     maxCount = defaultMaxCount,
   } = args
   const prefixCls = 'message'
@@ -61,7 +63,7 @@ function getRCNotificationInstance(args, callback) {
   const instanceConfig = {
     prefixCls,
     transitionName,
-    style: {top: defaultTop},
+    style: {top: top || defaultTop},
     getContainer,
     maxCount,
     className: 'absolute w-full flex justify-center',
@@ -133,15 +135,15 @@ function getRCNoticeProps(args) {
     key,
     duration,
     style,
-    className: `${className} px-4 py-3 text-gray-80 bg-gray-0 shadow-1 relative mb-4 animate-move-down`,
+    className: `${className} px-4 py-3 text-gray-80 bg-gray-0 shadow-1 relative mb-4 animate-move-down z-50 rounded`,
     content: (
       <div className="flex items-center">
         {icon || IconComponent || null}
         <span>{content}</span>
       </div>
     ),
-    onClose: onClose,
-    onClick: onClick,
+    onClose,
+    onClick,
   }
 }
 

@@ -4,11 +4,12 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
+import Message from '@fluent-wallet/component-message'
 import {CurrentAccountNetworkLabel} from './'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard, DisplayBalance, Avatar} from '../../../components'
-import {useDbAccountListAssets} from '../../../hooks/useApi'
+import {useDbAccountListAssets, useCurrentAccount} from '../../../hooks/useApi'
 
 const {SELECT_CREATE_TYPE} = ROUTES
 const {WALLET_GET_CURRENT_ACCOUNT, WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
@@ -17,18 +18,27 @@ function AccountItem({
   nickname,
   account,
   authorizedAccountIdIconObj,
-  closeAction,
+  onClose,
   tokeName = '',
   groupType = '',
   decimals,
 }) {
   const {mutate} = useSWRConfig()
+  const {eid} = useCurrentAccount()
   const onChangeAccount = accountId => {
-    request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(() => {
-      closeAction && closeAction()
-      mutate([WALLET_GET_CURRENT_ACCOUNT])
-      // TODO: deal with error condition
-    })
+    onClose && onClose()
+    if (eid !== accountId) {
+      request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(() => {
+        mutate([WALLET_GET_CURRENT_ACCOUNT])
+        // TODO: i18n
+        Message.warning({
+          content: 'Address has been changed',
+          top: '110px',
+          duration: 1,
+        })
+        // TODO: deal with error condition
+      })
+    }
   }
 
   return (
@@ -75,13 +85,13 @@ AccountItem.propTypes = {
   nickname: PropTypes.string,
   account: PropTypes.array,
   authorizedAccountIdIconObj: PropTypes.object.isRequired,
-  closeAction: PropTypes.func,
+  onClose: PropTypes.func,
   tokeName: PropTypes.string,
   groupType: PropTypes.string,
   decimals: PropTypes.number,
 }
 
-function AccountList({onClose, onOpen}) {
+function AccountList({onClose, open}) {
   const {t} = useTranslation()
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()
@@ -104,7 +114,7 @@ function AccountList({onClose, onOpen}) {
         </div>
       }
       onClose={onClose}
-      onOpen={onOpen}
+      open={open}
       cardContent={
         <div>
           {Object.values(accountGroups || {}).map(
@@ -113,7 +123,7 @@ function AccountList({onClose, onOpen}) {
                 key={index}
                 account={Object.values(account)}
                 nickname={nickname}
-                closeAction={onClose}
+                onClose={onClose}
                 authorizedAccountIdIconObj={authorizedAccountIdIconObj}
                 tokeName={ticker?.symbol}
                 groupType={vault?.type}
@@ -139,7 +149,7 @@ function AccountList({onClose, onOpen}) {
 
 AccountList.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool.isRequired,
+  open: PropTypes.bool.isRequired,
 }
 
 export default AccountList

@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
+import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
 import {SlideCard, LanguageNav} from '../../../components'
 import {LockOutLined} from '@fluent-wallet/component-icons'
 import {RPC_METHODS, ROUTES} from '../../../constants'
 import {request} from '../../../utils'
+import useGlobalStore from '../../../stores/index.js'
 
-const {LOCK} = RPC_METHODS
+const {LOCK, WALLET_IS_LOCKED} = RPC_METHODS
 const {ACCOUNT_MANAGEMENT} = ROUTES
 
 function SettingItem({icon, content, onClick}) {
@@ -33,13 +35,15 @@ SettingItem.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-function Setting({onClose, onOpen}) {
+function Setting({onClose, open}) {
   const {t} = useTranslation()
   const history = useHistory()
-
+  const {setFatalError} = useGlobalStore()
+  const {mutate} = useSWRConfig()
   const onLock = () => {
-    // TODO:deal with error
     request(LOCK)
+      .then(() => mutate([WALLET_IS_LOCKED], true, true))
+      .catch(error => setFatalError(error))
   }
 
   return (
@@ -47,7 +51,7 @@ function Setting({onClose, onOpen}) {
       <SlideCard
         id="setting"
         onClose={onClose}
-        onOpen={onOpen}
+        open={open}
         showClose={false}
         maskClosable={false}
         cardTitle={
@@ -98,7 +102,7 @@ function Setting({onClose, onOpen}) {
 
 Setting.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool.isRequired,
+  open: PropTypes.bool.isRequired,
 }
 
 export default Setting

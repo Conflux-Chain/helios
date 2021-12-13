@@ -22,6 +22,7 @@ function CurrentDapp() {
     dappCurrentAccount || {}
   const {nickname: currentNickname, eid: currentEid} = currentAccount
   const isConnected = !!data?.app
+  console.log('dapp', data)
   const isConnectedCurrentAccount = connectedEid === currentEid
 
   const onAuth = () => {
@@ -64,7 +65,7 @@ function CurrentDapp() {
               <span className="text-gray-80 font-medium inline-block">
                 {origin}
               </span>
-              <span className="text-gray-60 text-xs inline-block mb-1">
+              <span className="text-gray-60 text-xs inline-block mb-1 max-w-[188px] text-ellipsis">
                 {connectedNickname}
               </span>
             </div>
@@ -81,7 +82,7 @@ function CurrentDapp() {
               {!isConnectedCurrentAccount ? (
                 <span
                   id="setAuthModalShowBtn"
-                  className="text-primary text-xs cursor-pointer"
+                  className="text-primary text-xs cursor-pointer inline-block max-w-[188px] text-ellipsis"
                   onClick={() => setAuthModalShow(true)}
                   aria-hidden="true"
                 >

@@ -18,7 +18,7 @@ function ConfirmAddSuggestedToken() {
   const [{req, app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
-  const {address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
+  const {value: address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const balanceData = useBalance(
     address,
     dappNetworkId,

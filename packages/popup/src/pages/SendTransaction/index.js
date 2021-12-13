@@ -78,8 +78,8 @@ function SendTransaction() {
   ])
   const errorMessage = useCheckBalanceAndGas(estimateRst, sendAmount)
   useEffect(() => {
-    setBalanceError(errorMessage)
-  }, [errorMessage])
+    sendAmount && setBalanceError(errorMessage)
+  }, [errorMessage, sendAmount])
 
   useEffect(() => {
     txHistoryChecker({
@@ -156,15 +156,15 @@ function SendTransaction() {
         <div className="flex flex-col">
           {hasNoTxn && (
             <Alert
+              open={hasNoTxn}
+              closable={false}
+              width="w-full"
               type="warning"
               content={t('noTxnWarning')}
-              open={hasNoTxn}
-              width="w-full"
-              closable={false}
-              className="mb-6"
+              className="flex-shrink-0"
             />
           )}
-          <div className="w-full flex px-1">
+          <div className="w-full flex px-1 mt-6">
             <Button
               variant="outlined"
               className="flex-1 mr-3"

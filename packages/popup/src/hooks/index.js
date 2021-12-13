@@ -171,8 +171,7 @@ export const useCheckBalanceAndGas = (
   isSendToken = true,
 ) => {
   const {address: tokenAddress} = sendToken || {}
-  const {error} = estimateRst
-  const {isBalanceEnough, tokens} = estimateRst?.customData || {}
+  const {error, isBalanceEnough, tokens} = estimateRst
   const isTokenBalanceEnough = tokens?.[tokenAddress]?.isTokenBalanceEnough
   const isNativeToken = !tokenAddress
   return useMemo(() => {
@@ -247,19 +246,20 @@ export const useDecodeDisplay = ({
   const {to, data, value} = tx
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
+  const isSendNativeToken = !isContract || !data || data === '0x'
   const isSendToken =
     !isDapp ||
     (isDapp &&
       decodeData?.name === 'transferFrom' &&
       decodeData?.args?.[0] === address) ||
-    (isDapp && !isContract)
+    (isDapp && isSendNativeToken)
 
   if (!isDapp) {
     displayToken = sendToken
     displayToAddress = toAddress
     displayValue = sendAmount
   } else {
-    if (!isContract || (isContract && !data)) {
+    if (isSendNativeToken) {
       displayToken = nativeToken
       displayToAddress = to
       displayValue = value

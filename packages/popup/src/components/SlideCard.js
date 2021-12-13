@@ -6,7 +6,7 @@ import {useSlideAnimation} from '../hooks'
 
 function SlideCard({
   onClose,
-  onOpen = false,
+  open = false,
   maskClosable = true,
   showClose = true,
   cardTitle,
@@ -20,7 +20,7 @@ function SlideCard({
   backgroundColor = 'bg-bg',
   direction = 'vertical',
 }) {
-  const animateStyle = useSlideAnimation(onOpen, direction)
+  const animateStyle = useSlideAnimation(open, direction)
   const ref = useRef(null)
 
   useClickAway(ref, e => {
@@ -54,7 +54,7 @@ function SlideCard({
 SlideCard.propTypes = {
   showClose: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool.isRequired,
+  open: PropTypes.bool.isRequired,
   cardTitle: PropTypes.node,
   cardContent: PropTypes.node,
   cardFooter: PropTypes.node,

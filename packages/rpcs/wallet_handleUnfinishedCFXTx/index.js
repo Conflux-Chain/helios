@@ -240,7 +240,7 @@ export const main = ({
                   }),
                 ],
 
-                keepTrack: map(x => x && keepTrack), // retry in next run
+                keepTrack: map(x => x && keepTrack()), // retry in next run
               }),
             )
           },
@@ -250,7 +250,7 @@ export const main = ({
         // successfully sent
         sideEffect(() => setTxPending({hash})),
         sideEffect(() => typeof okCb === 'function' && okCb(hash)),
-        sideEffect(() => keepTrack),
+        sideEffect(keepTrack),
       )
   } else if (status === 1) {
     // ## sending
@@ -261,14 +261,15 @@ export const main = ({
       .transform(
         sideEffect(rst => {
           if (rst) return
+          // getTransactionByHash return null
           cfx_epochNumber({errorFallThrough: true}, ['latest_state'])
             .then(n => {
               if (
-                BigNumber.form(n)
-                  .sub(BigNumber.from(tx.txPayload.epochHeight))
+                BigNumber.from(n)
+                  .sub(BigNumber.from(tx.resendAt || tx.txPayload.epochHeight))
                   .gte(40)
               ) {
-                setTxUnsent({hash})
+                setTxUnsent({hash, resendAt: n})
               }
             })
             .catch(identity)
@@ -278,6 +279,7 @@ export const main = ({
       )
       .transform(
         map(rst => {
+          // no blockhash in  getTransactionByHash result
           if (!rst.blockHash) {
             keepTrack()
             return false
@@ -286,6 +288,7 @@ export const main = ({
         }),
         keepTruthy(),
         sideEffect(rst => {
+          // getTransactionByHash result has block hash
           setTxPackaged({hash, blockHash: rst.blockHash})
           const {status} = rst
           if (status === '0x1') {
