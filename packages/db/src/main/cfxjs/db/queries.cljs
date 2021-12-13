@@ -163,10 +163,13 @@
              accs          (apply q query (:args query-initial))]
          (map post-process (if (seq accs) (pm (jsp->p g) accs) [])))))))
 
-(defn get-token [{:keys [addressId networkId address tokenId g]}]
+(defn get-token [{:keys [addressId networkId address tokenId g fuzzy]}]
   (let [g (and g {:token g})
         post-process (if (seq g) identity #(get % :db/id))
-        addr (and (string? address) (.toLowerCase address))]
+        addr (and (string? address) (.toLowerCase address))
+        fuzzy (if (string? fuzzy)
+                (re-pattern (str "(?i)" (.replaceAll (.trim fuzzy) " " ".*")))
+                fuzzy)]
     (prst->js
      (cond
        tokenId
@@ -190,6 +193,18 @@
                              (-> (update :args conj (if (vector? addressId) addressId [addressId]))
                                  (update :in conj '[?addr-id ...])
                                  (update :where conj '[?addr-id :address/token ?token]))
+                             fuzzy
+                             (-> (update :args conj fuzzy)
+                                 (update :in conj '?fuzzy)
+                                 (update :where conj
+                                         '[?token :token/name ?tname]
+                                         '[?token :token/symbol ?tsym]
+                                         ;; '[?token :token/address ?taddr]
+                                         '(or [(re-find ?fuzzy ?tname)]
+                                              [(re-find ?fuzzy ?tsym)]
+                                              ;; [(re-find ?fuzzy ?taddr)]
+                                              )))
+
                              true identity)
              query         (concat [:find] (:find query-initial)
                                    [:in] (:in query-initial)
