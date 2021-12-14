@@ -540,6 +540,33 @@
            rst           (apply q query (:args query-initial))]
        (map post-process (if (seq rst) (pm (jsp->p g) rst) []))))))
 
+(defn get-network [{:keys [addressId networkId tokenId selected type g]}]
+  (let [g (and g {:address g})
+        post-process (if (seq g) identity #(get % :db/id))]
+    (prst->js
+     (cond
+       networkId
+       (post-process (p (jsp->p g) networkId))
+       :else
+       (let [query-initial (cond-> '{:find  [[?net ...]]
+                                     :in    [$]
+                                     :where [[?net :network/name _]]
+                                     :args []}
+                             addressId
+                             (-> (update :args conj (if (vector? addressId) addressId [addressId]))
+                                 (update :in conj '[?addr ...])
+                                 (update :where conj '[?addr :address/network ?net]))
+                             tokenId
+                             (-> (update :args conj (if (vector? tokenId) tokenId [tokenId]))
+                                 (update :in conj '[?token ...])
+                                 (update :where conj '[?token :token/network ?net]))
+                             true identity)
+             query         (concat [:find] (:find query-initial)
+                                   [:in] (:in query-initial)
+                                   [:where] (:where query-initial))
+             rst           (apply q query (:args query-initial))]
+         (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
+
 (defn- cleanup-token-list-after-delete-address []
   (let [tokens (q '[:find [?t ...]
                     :where
@@ -1052,6 +1079,7 @@
               :getCfxTxsToEnrich               get-cfx-txs-to-enrich
               :cleanupTx                       cleanup-tx
               :findAddress                     get-address
+              :findNetwork                     get-network
               :findAccount                     get-account
               :findToken                       get-token
               :findGroup                       get-group
@@ -1061,6 +1089,7 @@
               :retractGroup                    retract-group
 
               :queryqueryAddress          get-address
+              :queryqueryNetwork          get-network
               :queryqueryAccount          get-account
               :queryqueryToken            get-token
               :queryqueryGroup            get-group
