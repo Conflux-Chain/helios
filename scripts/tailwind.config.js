@@ -155,6 +155,8 @@ module.exports = {
         'slide-left-out': 'slide-left-out 0.2s linear forwards',
       },
       backgroundImage: {
+        'hardware-background':
+          'linear-gradient(180deg, #F8F8FE 0.11%, rgba(248, 249, 254, 0) 44.61%);',
         'token-background':
           'linear-gradient(19.03deg, #FFFFFF 20.24%, rgba(255, 255, 255, 0) 86.89%)',
         'gray-circles': "url('/images/gray-circles-bg.svg')",

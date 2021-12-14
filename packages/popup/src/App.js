@@ -36,6 +36,7 @@ const ViewData = lazy(() => import('./pages/ViewData'))
 const AccountManagement = lazy(() => import('./pages/AccountManagement'))
 const ExportSeed = lazy(() => import('./pages/ExportSeed'))
 const ExportPrivateKey = lazy(() => import('./pages/ExportPrivateKey'))
+const HardwareGuard = lazy(() => import('./pages/HardwareGuard'))
 
 const {
   HOME,
@@ -64,6 +65,7 @@ const {
   ACCOUNT_MANAGEMENT,
   EXPORT_SEED,
   EXPORT_PRIVATEKEY,
+  HARDWARE_GUARD,
 } = ROUTES
 
 function App() {
@@ -167,6 +169,7 @@ function App() {
                 component={ExportPrivateKey}
               />
               <Route exact path={ERROR} component={ErrorPage} />
+              <Route exact path={HARDWARE_GUARD} component={HardwareGuard} />
               <Route path="*" render={() => <Redirect to={ERROR} />} />
             </Switch>
           </Router>

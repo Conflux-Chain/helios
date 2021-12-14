@@ -206,6 +206,18 @@ const en = {
     backupPk: 'Backup Account',
     backupPkDes:
       'This is your private key. Acquiring means owning all assets. Please keep it safe. Once lost, it cannot be retrieved.',
+    // connect hardware wallet
+    connectHardwareWallet: 'Connect Hardware Wallet',
+    supportLedger: 'Ledger is now supported.',
+    ledgerGuardDes: 'How to create a Conflux Wallet in Ledger?',
+    followConnectLedgerSteps:
+      'Please follow the below steps to connect Ledger.',
+    steps: 'Steps {{number}}',
+    pluginHardwareWallet:
+      'Plug your hardware wallet into your computer using the USB port.',
+    enterPinCode: 'Enter your PIN code.',
+    openConfluxApp: 'Select and Open Conflux App.',
+    ready: 'Ready',
   },
 }
 
