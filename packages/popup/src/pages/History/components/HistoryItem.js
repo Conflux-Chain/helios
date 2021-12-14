@@ -54,8 +54,11 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
-  const {data: curAddr} = useCurrentAddress()
-  const netId = curAddr.network?.netId
+  const {
+    data: {
+      network: {netId},
+    },
+  } = useCurrentAddress()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
   const txStatus = formatStatus(status)

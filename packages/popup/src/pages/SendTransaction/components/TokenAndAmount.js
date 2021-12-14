@@ -13,50 +13,33 @@ import {
   NumberInput,
 } from '../../../components'
 import {
-  useDbHomeAssets,
+  useCurrentNetworkTokens,
   useBalance,
   useCurrentAddress,
-  useNetworkTypeIsCfx,
 } from '../../../hooks/useApi'
-import {validateAddress} from '../../../utils'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
-  const {data: curAddr} = useCurrentAddress()
-  const netId = curAddr.network?.eid
-  const {added, native} = useDbHomeAssets()
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const homeTokenList = [native].concat(added)
+  const {
+    data: {eid: addressId},
+  } = useCurrentAddress()
   const [searchValue, setSearchValue] = useState('')
-  const [tokenList, setTokenList] = useState([...homeTokenList])
-  const onChangeValue = value => {
-    setSearchValue(value)
-    const isValid = validateAddress(value, networkTypeIsCfx, netId)
-    if (value === '') setTokenList([...homeTokenList])
-    if (isValid) {
-      const filterToken = homeTokenList.filter(token => token.address === value)
-      setTokenList([...filterToken])
-    } else {
-      const filterToken = homeTokenList.filter(
-        token =>
-          token.symbol.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
-          token.name.toUpperCase().indexOf(value?.toUpperCase()) !== -1,
-      )
-      setTokenList([...filterToken])
-    }
-  }
+  const {data: tokens} = useCurrentNetworkTokens({
+    addressId,
+    fuzzy: searchValue || null,
+  })
+  const homeTokenList = ['native'].concat(tokens)
   const onCloseTokenList = () => {
     onClose && onClose()
     setSearchValue('')
-    setTokenList([...homeTokenList])
   }
   const content = (
     <div className="flex flex-col flex-1">
-      <SearchToken value={searchValue} onChange={onChangeValue} />
+      <SearchToken value={searchValue} onChange={setSearchValue} />
       <span className="inline-block mt-3 mb-1 text-gray-40 text-xs">
         {t('tokenList')}
       </span>
-      <TokenList tokenList={tokenList} onSelectToken={onSelectToken} />
+      <TokenList tokenList={homeTokenList} onSelectToken={onSelectToken} />
     </div>
   )
   return (
@@ -88,9 +71,12 @@ function TokenAndAmount({
 }) {
   const {t} = useTranslation()
   const [tokenListShow, setTokenListShow] = useState(false)
-  const {data: curAddr} = useCurrentAddress()
-  const networkId = curAddr.network?.eid
-  const address = curAddr.value
+  const {
+    data: {
+      value: address,
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
   const {symbol, icon, decimals, address: selectedTokenAddress} = selectedToken
   const tokenAddress = isNativeToken ? '0x0' : selectedTokenAddress
   const balance =

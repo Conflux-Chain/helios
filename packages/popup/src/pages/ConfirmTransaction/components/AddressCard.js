@@ -11,7 +11,14 @@ const AddressDetail = ({
   currentAccountName,
   toAddressLabel,
 }) => {
-  const {data: curAddr} = useCurrentAddress()
+  const {
+    data: {
+      nativeBalance,
+      network: {
+        ticker: {decimals, symbol},
+      },
+    },
+  } = useCurrentAddress()
 
   return (
     <div className="flex items-start w-full" id="addressDetailContainer">
@@ -35,13 +42,13 @@ const AddressDetail = ({
             {fromAddress && shortenAddress(fromAddress)}
           </span>
           <DisplayBalance
-            balance={curAddr.nativeBalance}
+            balance={nativeBalance}
             maxWidth={120}
             maxWidthStyle="max-w-[120px]"
             className="text-xs !text-gray-60 !font-normal"
             initialFontSize={12}
-            decimals={curAddr.network?.ticker?.decimals}
-            symbol={curAddr.network?.ticker?.symbol}
+            decimals={decimals}
+            symbol={symbol}
             id="fromAddressCfxBalance"
           />
         </div>
@@ -71,7 +78,12 @@ function AddressCard({
   isDapp,
 }) {
   const {t} = useTranslation()
-  const {data: curAddr} = useCurrentAddress()
+  const {
+    data: {
+      value: address,
+      account: {nickname},
+    },
+  } = useCurrentAddress()
 
   return (
     <div
@@ -121,9 +133,9 @@ function AddressCard({
         </div>
       )}
       <AddressDetail
-        fromAddress={curAddr.value}
+        fromAddress={address}
         toAddress={toAddress}
-        currentAccountName={curAddr?.account?.nickname}
+        currentAccountName={nickname}
         toAddressLabel={t(
           isSendToken ? 'toAddress' : isApproveToken ? 'approveTo' : 'contract',
         )}

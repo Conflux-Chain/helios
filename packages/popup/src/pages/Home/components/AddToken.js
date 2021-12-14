@@ -1,90 +1,74 @@
+import {PlusOutlined, SelectedOutlined} from '@fluent-wallet/component-icons'
 import PropTypes from 'prop-types'
-import {isUndefined} from '@fluent-wallet/checks'
-import {useState, useRef, useEffect, useCallback} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useSWRConfig} from 'swr'
-import {SelectedOutlined, PlusOutlined} from '@fluent-wallet/component-icons'
-import {SlideCard} from '../../../components'
-import {WrapIcon, SearchToken, TokenItem} from '../../../components'
-import {RPC_METHODS, DEFAULT_TOKEN_URL} from '../../../constants'
+
+import {SearchToken, SlideCard, TokenItem, WrapIcon} from '../../../components'
+import {DEFAULT_TOKEN_URL, RPC_METHODS} from '../../../constants'
+import {
+  useCurrentAddress,
+  useCurrentAddressTokens,
+  useCurrentNetworkTokens,
+  useNetworkTypeIsCfx,
+} from '../../../hooks/useApi'
 import {request, validateAddress} from '../../../utils'
 
-import {
-  useNetworkTypeIsCfx,
-  useCurrentAddress,
-  useDbAddTokenList,
-} from '../../../hooks/useApi'
-
-const {
-  WALLETDB_ADD_TOKEN_LIST,
-  WALLET_VALIDATE_20TOKEN,
-  WALLET_WATCH_ASSET,
-  WALLETDB_REFETCH_BALANCE,
-} = RPC_METHODS
+const {WALLET_VALIDATE_20TOKEN, WALLET_WATCH_ASSET, WALLETDB_REFETCH_BALANCE} =
+  RPC_METHODS
 
 function AddToken({onClose, open}) {
   const {mutate} = useSWRConfig()
   const {t} = useTranslation()
   const [searchContent, setSearchContent] = useState('')
-  const [tokenList, setTokenList] = useState([])
   const [noTokenStatus, setNoTokenStatus] = useState(false)
   const inputValueRef = useRef()
-  const {data: curAddr} = useCurrentAddress()
-  const address = curAddr.value
-  const netId = curAddr.network?.netId
-  const isCfxChain = useNetworkTypeIsCfx()
-  const dbData = useDbAddTokenList()
-
-  const getOther20Token = useCallback(
-    value => {
-      request(WALLET_VALIDATE_20TOKEN, {
-        tokenAddress: value,
-        userAddress: address,
-      }).then(result => {
-        if (inputValueRef.current === value) {
-          if (result?.valid) {
-            setNoTokenStatus(false)
-            return setTokenList([{...result, address: value}])
-          }
-          setNoTokenStatus(true)
-        }
-        // TODO:handle error
-      })
+  const {
+    data: {
+      eid: addressId,
+      value: address,
+      network: {netId},
     },
-    [address],
-  )
+  } = useCurrentAddress()
+  const isCfxChain = useNetworkTypeIsCfx()
+  const {data: networkTokens, mutateNetworkTokens} = useCurrentNetworkTokens({
+    fuzzy: searchContent || null,
+  })
+  const [tokenList, setTokenList] = useState(networkTokens)
+  const {data: addressTokens, mutateAddressTokens} = useCurrentAddressTokens()
+
+  const getOther20Token = useCallback((userAddress, tokenAddress) => {
+    request(WALLET_VALIDATE_20TOKEN, {
+      tokenAddress,
+      userAddress,
+    }).then(result => {
+      if (inputValueRef.current === tokenAddress) {
+        if (result?.valid) {
+          setNoTokenStatus(false)
+          return setTokenList([[{...result}, false]])
+        }
+        setNoTokenStatus(true)
+      }
+      // TODO:handle error
+    })
+  }, [])
 
   useEffect(() => {
-    if (dbData?.added && dbData?.others && !isUndefined(netId)) {
-      if (searchContent === '') {
-        setNoTokenStatus(false)
-        return setTokenList([])
-      }
-      if (validateAddress(searchContent, isCfxChain, netId)) {
-        getOther20Token(searchContent)
-      } else {
-        const {added, others} = dbData
-        const addTokenList = added.concat(others)
-        const ret = addTokenList.filter(
-          token =>
-            token.symbol.toUpperCase().indexOf(searchContent.toUpperCase()) !==
-              -1 ||
-            token.name.toUpperCase().indexOf(searchContent.toUpperCase()) !==
-              -1,
-        )
-        setNoTokenStatus(!ret.length)
-        setTokenList([...ret])
-      }
+    if (!addressId) return
+    if (!networkTokens.length) setNoTokenStatus(true)
+    else setNoTokenStatus(false)
+
+    if (
+      !networkTokens.length &&
+      searchContent &&
+      validateAddress(searchContent, isCfxChain, netId)
+    ) {
+      getOther20Token(address, searchContent)
+      return
     }
+    setTokenList(networkTokens.map(t => [t, addressTokens.includes(t)]))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    dbData?.others,
-    dbData?.added,
-    searchContent,
-    isCfxChain,
-    netId,
-    getOther20Token,
-  ])
+  }, [addressId, searchContent, networkTokens, addressTokens])
 
   const onChangeValue = value => {
     setSearchContent(value)
@@ -103,12 +87,9 @@ function AddToken({onClose, open}) {
     }
     request(WALLET_WATCH_ASSET, params).then(() => {
       // TODO:error
-      if (address === searchContent && tokenList.length === 1) {
-        setTokenList([...tokenList.map(token => ({...token, added: true}))])
-      }
-      mutate([WALLETDB_REFETCH_BALANCE]).then(() => {
-        mutate([WALLETDB_ADD_TOKEN_LIST])
-      })
+      mutateAddressTokens()
+      mutateNetworkTokens()
+      mutate([WALLETDB_REFETCH_BALANCE])
     })
   }
 
@@ -137,22 +118,20 @@ function AddToken({onClose, open}) {
           {tokenList.length ? (
             <div className="px-3 pt-3 mt-3 bg-gray-0 rounded">
               <p className="ml-1 mb-1 text-gray-40">{t('searchResults')}</p>
-              {tokenList.map((token, index) => (
+              {tokenList.map(([token, added], index) => (
                 <TokenItem
                   key={index}
                   index={index}
-                  token={{
-                    ...token,
-                  }}
+                  token={token}
                   maxWidth={135}
                   maxWidthStyle="max-w-[135px]"
-                  id={`tokenItem-${token.eid}`}
+                  id={`tokenItem-${token}`}
                   rightIcon={
                     <WrapIcon
                       size="w-5 h-5"
-                      onClick={() => !token?.added && onAddToken(token)}
+                      onClick={() => !added && onAddToken(token)}
                     >
-                      {token?.added ? (
+                      {added ? (
                         <SelectedOutlined className="w-3 h-3 text-gray-40" />
                       ) : (
                         <PlusOutlined className="w-3 h-3 text-primary" />

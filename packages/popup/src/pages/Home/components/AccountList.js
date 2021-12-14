@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../../constants'
@@ -22,10 +23,15 @@ function AccountItem({
   groupType = '',
   decimals,
 }) {
-  const {data: curAddr, mutate} = useCurrentAddress()
+  const {
+    data: {
+      account: {eid: currentAccountId},
+    },
+    mutate,
+  } = useCurrentAddress()
   const onChangeAccount = accountId => {
     onClose && onClose()
-    if (curAddr.account?.eid !== accountId) {
+    if (currentAccountId !== accountId) {
       request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(() => {
         mutate()
         // TODO: i18n

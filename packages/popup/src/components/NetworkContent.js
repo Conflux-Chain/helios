@@ -25,8 +25,12 @@ function NetworkItem({
   onClose,
   ...props
 }) {
-  const {data: curAddr, mutate} = useCurrentAddress()
-  const eid = curAddr.network?.eid
+  const {
+    data: {
+      network: {eid},
+    },
+    mutate,
+  } = useCurrentAddress()
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
     itemWrapperPaddingStyleObj[networkItemSize] || ''

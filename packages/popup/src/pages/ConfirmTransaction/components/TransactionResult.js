@@ -12,9 +12,12 @@ const {HOME} = ROUTES
 
 function TransactionResult({transactionHash}) {
   const {t} = useTranslation()
-  const {data: curAddr} = useCurrentAddress()
+  const {
+    data: {
+      network: {netId},
+    },
+  } = useCurrentAddress()
 
-  const netId = curAddr.network?.netId
   const history = useHistory()
   const {clearSendTransactionParams} = useGlobalStore()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
