@@ -40,8 +40,9 @@ function InfoList({
   const {t} = useTranslation()
   const history = useHistory()
   const data = useCurrentDapp()
-  const {data: curAddr} = useCurrentAddress()
-  const network = curAddr.network || {}
+  const {
+    data: {network},
+  } = useCurrentAddress()
   const {customAllowance} = useGlobalStore()
   const [{app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const currentDapp = isDapp ? app : data?.app

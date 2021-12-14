@@ -7,7 +7,7 @@ import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../constants'
 import {request, validatePasswordReg} from '../../utils'
 import {Avatar, TitleNav, WrapIcon, ConfirmPassword} from '../../components'
-import {useDbAccountListAssets, useCurrentNetwork} from '../../hooks/useApi'
+import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
 import {t} from 'i18next'
 
 const {EXPORT_SEED, EXPORT_PRIVATEKEY} = ROUTES
@@ -81,7 +81,12 @@ function AccountManagement() {
   const [dbId, setDbId] = useState('')
   const {setExportPrivateKey, setExportSeedPhrase} = useGlobalStore()
 
-  const currentNetwork = useCurrentNetwork()
+  const {
+    data: {
+      network: {name: networkName},
+    },
+  } = useCurrentAddress()
+
   const {accountGroups} = useDbAccountListAssets()
   const validatePassword = value => {
     // TODO: Replace err msg
@@ -116,7 +121,7 @@ function AccountManagement() {
         setExportPrivateKey(
           isArray(res)
             ? res
-                .filter(item => item.network.name === currentNetwork.name)[0]
+                .filter(item => item.network.name === networkName)[0]
                 .privateKey.replace('0x', '')
             : res,
         )
@@ -137,7 +142,7 @@ function AccountManagement() {
   }
 
   const onOpenConfirmPassword = (method, eid) => {
-    if (!currentNetwork?.name) {
+    if (!networkName) {
       return
     }
     setPasswordErrorMessage('')

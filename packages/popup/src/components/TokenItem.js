@@ -1,6 +1,25 @@
-import PropTypes from 'prop-types'
-import {DisplayBalance} from './'
 import {CFX_DECIMALS} from '@fluent-wallet/data-format'
+import PropTypes from 'prop-types'
+
+import {
+  useSingleAddressTokenBalanceWithNativeTokenSupport,
+  useSingleTokenInfoWithNativeTokenSupport,
+} from '../hooks/useApi'
+import {DisplayBalance} from './'
+
+const getTokenItem = t => {
+  if (t?.name) {
+    return [{...t}, t?.balance]
+  }
+  return [
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useSingleTokenInfoWithNativeTokenSupport(t),
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useSingleAddressTokenBalanceWithNativeTokenSupport({
+      tokenId: t,
+    }),
+  ]
+}
 
 function TokenItem({
   token = {},
@@ -11,7 +30,7 @@ function TokenItem({
   index,
   ...props
 }) {
-  const {logoURI, name, symbol, balance, decimals} = token
+  const [{logoURI, name, symbol, decimals}, balance] = getTokenItem(token)
 
   return (
     <div
@@ -48,7 +67,14 @@ function TokenItem({
 }
 
 TokenItem.propTypes = {
-  token: PropTypes.object,
+  token: PropTypes.oneOfType([
+    // add token list
+    PropTypes.shape({eid: PropTypes.number, added: PropTypes.bool}),
+    // token id
+    PropTypes.number,
+    // "native"
+    PropTypes.string,
+  ]),
   maxWidthStyle: PropTypes.string,
   maxWidth: PropTypes.number,
   rightIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),

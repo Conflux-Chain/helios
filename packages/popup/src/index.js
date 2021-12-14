@@ -43,12 +43,26 @@ if (
   })
 }
 
+const swrPostProcessDataMiddleware = useSWRNext => (key, fetcher, config) => {
+  if (typeof config?.postprocessSuccessData === 'function') {
+    const newFetcher = (...args) => {
+      const data = fetcher(...args)
+      if (typeof data?.then === 'function')
+        return data.then(config?.postprocessSuccessData)
+      return config?.postprocessSuccessData(data)
+    }
+    return useSWRNext(key, newFetcher, config)
+  }
+  return useSWRNext(key, fetcher, config)
+}
+
 ReactDOM.render(
   <React.StrictMode>
     <SWRConfig
       value={{
         revalidateOnMount: true,
         refreshInterval: 3000,
+        use: [swrPostProcessDataMiddleware],
         onError: error => {
           if (error && location) {
             location.href = `${location.origin}${

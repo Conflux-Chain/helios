@@ -38,18 +38,24 @@ function SendTransaction() {
     setStorageLimit,
     clearSendTransactionParams,
   } = useGlobalStore()
-  const {data: curAddr} = useCurrentAddress()
-  const type = curAddr.network?.type
-  const netId = curAddr.network?.netId
-  const accountId = curAddr.account?.eid
-  const nickname = curAddr.account?.nickname
-  const address = curAddr.value
+  const {
+    data: {
+      value: address,
+      network: {
+        type,
+        netId,
+        ticker: nativeToken,
+        name: networkName,
+        icon: networkIcon,
+      },
+      account: {eid: accountId, nickname},
+    },
+  } = useCurrentAddress()
   const {address: tokenAddress, decimals} = sendToken
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const [addressError, setAddressError] = useState('')
   const [balanceError, setBalanceError] = useState('')
   const [hasNoTxn, setHasNoTxn] = useState(false)
-  const nativeToken = curAddr.network?.ticker || {}
   const isNativeToken = !tokenAddress
   const params = useTxParams()
   const estimateRst =
@@ -132,10 +138,7 @@ function SendTransaction() {
           nickname={nickname}
           address={address}
         />
-        <CurrentNetworkDisplay
-          name={curAddr.network?.name}
-          icon={curAddr.network?.icon}
-        />
+        <CurrentNetworkDisplay name={networkName} icon={networkIcon} />
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">
         <div className="flex flex-col">

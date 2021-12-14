@@ -19,9 +19,11 @@ function CurrentDapp() {
   const {origin, icon, eid: siteId} = site
   const {nickname: connectedNickname, eid: connectedEid} =
     dappCurrentAccount || {}
-  const {data: curAddr} = useCurrentAddress()
-  const currentNickname = curAddr.account?.nickname
-  const currentEid = curAddr.account?.eid
+  const {
+    data: {
+      account: {nickname: currentNickname, eid: currentEid},
+    },
+  } = useCurrentAddress()
   const isConnected = !!data?.app
   const isConnectedCurrentAccount = connectedEid === currentEid
 

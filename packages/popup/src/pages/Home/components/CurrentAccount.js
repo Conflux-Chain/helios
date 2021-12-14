@@ -8,9 +8,12 @@ import {useCurrentAddress} from '../../../hooks/useApi'
 import {CopyButton, QRCodeButton} from '../../../components'
 
 function CurrentAccount({onOpenAccount}) {
-  const {data: curAddr} = useCurrentAddress()
-  const nickname = curAddr.account?.nickname
-  const address = curAddr.value
+  const {
+    data: {
+      value: address,
+      account: {nickname},
+    },
+  } = useCurrentAddress()
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (

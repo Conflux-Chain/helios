@@ -199,11 +199,10 @@
                                  (update :where conj
                                          '[?token :token/name ?tname]
                                          '[?token :token/symbol ?tsym]
-                                         ;; '[?token :token/address ?taddr]
+                                         '[?token :token/address ?taddr]
                                          '(or [(re-find ?fuzzy ?tname)]
                                               [(re-find ?fuzzy ?tsym)]
-                                              ;; [(re-find ?fuzzy ?taddr)]
-                                              )))
+                                              [(re-find ?fuzzy ?taddr)])))
 
                              true identity)
              query         (concat [:find] (:find query-initial)
@@ -901,50 +900,6 @@
       false)))
 
 ;;; UI QUERIES
-(defn home-page-assets
-  ([] (home-page-assets {}))
-  ([{:keys [include-other-tokens]}]
-   (let [cur-addr          (e :address (get-current-addr))
-         cur-net           (e :network (get-current-network))
-         native-token-info (get cur-net :network/ticker {:name "CFX", :symbol "CFX", :decimals 18})
-         native-token-ui   (assoc native-token-info :balance (get cur-addr :address/nativeBalance "0x0") :native true :added true)
-         addr-tokens-info  (q '[:find ?token-id ?tbalance
-                                :in $ ?cur-addr
-                                :where
-                                [?cur-addr :address/token ?token-id]
-                                [?cur-addr :address/balance ?b]
-                                [?token-id :token/balance ?b]
-                                [?b :balance/value ?tbalance]]
-                              (:db/id cur-addr))
-         addr-tokens-info  (reduce
-                            (fn [acc [token-id balance]]
-                              (let [t (.toMap (e :token token-id))]
-                                (conj acc (assoc t :balance balance :added true))))
-                            [] addr-tokens-info)
-         other-tokens-info (if  include-other-tokens
-                             (q '[:find ?token-id ?tbalance
-                                  :in $ ?cur-addr ?cur-net
-                                  :where
-                                  [?token-id :token/network ?cur-net]
-                                  (not [?cur-addr :address/token ?token-id])
-                                  [(and true "0x0") ?tbalance]]
-                                (:db/id cur-addr) (:db/id cur-net))
-                             #{})
-
-         other-tokens-info (reduce
-                            (fn [acc [token-id balance]]
-                              (let [t (.toMap (e :token token-id))]
-                                (conj acc (assoc t :balance balance :added false))))
-                            []  other-tokens-info)
-         rst               {:currentAddress cur-addr
-                            :currentNetwork cur-net
-                            :native         native-token-ui
-                            :added          addr-tokens-info}
-         rst               (if include-other-tokens (assoc rst :others other-tokens-info) rst)]
-     rst)))
-
-(defn get-add-token-list [] (home-page-assets {:include-other-tokens true}))
-
 (defn account-list-assets [{:keys [accountGroupTypes]}]
   (let [accountGroupTypes (if (vector? accountGroupTypes) accountGroupTypes ["hd" "pk" "hw" "pub"])
         cur-addr (e :address (get-current-addr))
@@ -1110,9 +1065,7 @@
               :queryqueryToken            get-token
               :queryqueryGroup            get-group
               :queryqueryBalance          get-balance
-              :queryhomePageAssets        home-page-assets
               :querytxList                query-tx-list
-              :queryaddTokenList          get-add-token-list
               :queryaccountListAssets     account-list-assets
               :getAccountGroupByVaultType get-account-group-by-vault-type})
 
