@@ -11,7 +11,7 @@ import {
 
 export const NAME = 'wallet_getAccountGroup'
 
-const AccountGroupTypeSchema = [enums, 'hd', 'pk', 'pub']
+const AccountGroupTypeSchema = [enums, 'hd', 'pk', 'pub', 'hw']
 
 export const schemas = {
   input: [

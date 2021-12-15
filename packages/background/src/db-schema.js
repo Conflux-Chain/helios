@@ -74,7 +74,7 @@ const schema = {
     data: {doc: 'Encrypted vault data'},
     ddata: {doc: 'Decrypted vault data only in memory', persist: false},
     cfxOnly: {
-      doc: 'If type is pub, means this vault is only for cfx type network, if type is hd, means only generate 0x1 prefix account',
+      doc: 'If type is pub/hw, means this vault is only for cfx type network, if type is hd, means only generate 0x1 prefix account',
     },
   },
   accountGroup: {
