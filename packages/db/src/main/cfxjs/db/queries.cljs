@@ -134,7 +134,9 @@
     (prst->js
      (cond
        accountId
-       (post-process (p (jsp->p g) accountId))
+       (when (q '[:find ?acc .
+                  :where [?acc :account/index]])
+         (post-process (p (jsp->p g) accountId)))
        :else
        (let [query-initial (cond-> '{:find  [[?acc ...]]
                                      :in    [$]
@@ -173,7 +175,9 @@
     (prst->js
      (cond
        tokenId
-       (post-process (p (jsp->p g) tokenId))
+       (when (q '[:find ?token .
+                  :where [?token :token/address]])
+         (post-process (p (jsp->p g) tokenId)))
        (and networkId addr)
        (post-process (p (jsp->p g) [:token/id [networkId addr]]))
        :else
@@ -217,7 +221,9 @@
     (prst->js
      (cond
        groupId
-       (post-process (p (jsp->p g) groupId))
+       (when (q '[:find ?g .
+                  :where [?g :accountGroup/nickname]])
+         (post-process (p (jsp->p g) groupId)))
        :else
        (let [query-initial (cond-> '{:find  [[?g ...]]
                                      :in    [$]
@@ -452,7 +458,9 @@
     (prst->js
      (cond
        addressId
-       (post-process (p (jsp->p g) addressId))
+       (when (q '[:find ?addr .
+                  :where [?addr :address/id]])
+         (post-process (p (jsp->p g) addressId)))
        (and networkId addr)
        (post-process (p (jsp->p g) [:address/id [networkId addr]]))
        :else
@@ -546,7 +554,9 @@
     (prst->js
      (cond
        networkId
-       (post-process (p (jsp->p g) networkId))
+       (when (q '[:find ?net .
+                  :where [?net :network/name]])
+         (post-process (p (jsp->p g) networkId)))
        :else
        (let [query-initial (cond-> '{:find  [[?net ...]]
                                      :in    [$]
