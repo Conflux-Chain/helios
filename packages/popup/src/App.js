@@ -37,6 +37,9 @@ const AccountManagement = lazy(() => import('./pages/AccountManagement'))
 const ExportSeed = lazy(() => import('./pages/ExportSeed'))
 const ExportPrivateKey = lazy(() => import('./pages/ExportPrivateKey'))
 const HardwareGuard = lazy(() => import('./pages/HardwareGuard'))
+const ConnectHardwareWallet = lazy(() =>
+  import('./pages/ConnectHardwareWallet'),
+)
 
 const {
   HOME,
@@ -66,6 +69,7 @@ const {
   EXPORT_SEED,
   EXPORT_PRIVATEKEY,
   HARDWARE_GUARD,
+  CONNECT_HARDWARE_WALLET,
 } = ROUTES
 
 function App() {
@@ -161,6 +165,11 @@ function App() {
               exact
               path={EXPORT_PRIVATEKEY}
               component={ExportPrivateKey}
+            />
+            <Route
+              exact
+              path={CONNECT_HARDWARE_WALLET}
+              component={ConnectHardwareWallet}
             />
             <Route exact path={ERROR} component={ErrorPage} />
             <Route exact path={HARDWARE_GUARD} component={HardwareGuard} />

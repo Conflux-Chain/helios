@@ -2,7 +2,9 @@ import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
 import {useTranslation} from 'react-i18next'
 import {TitleNav, DiscSerialNumber} from '../../components/'
+import {ROUTES} from '../../constants'
 
+const {CONNECT_HARDWARE_WALLET} = ROUTES
 function StepItem({serialNumber, des, isLast = false}) {
   const {t} = useTranslation()
 
@@ -33,6 +35,13 @@ StepItem.propTypes = {
 function HardwareGuard() {
   const {t} = useTranslation()
 
+  const onClick = () => {
+    window &&
+      location &&
+      window.open(
+        `${location.origin}/${location.pathname}#${CONNECT_HARDWARE_WALLET}`,
+      )
+  }
   return (
     <div
       id="hardware-guard"
@@ -59,11 +68,15 @@ function HardwareGuard() {
         <div className="px-2">
           <StepItem serialNumber="1" des={t('pluginHardwareWallet')} />
           <StepItem serialNumber="2" des={t('enterPinCode')} />
-          <StepItem serialNumber="3" des={t('openConfluxApp')} isLast={true} />
+          <StepItem
+            serialNumber="3"
+            des={t('selectConfluxApp')}
+            isLast={true}
+          />
         </div>
       </div>
       <div className="w-70 mx-auto">
-        <Button id="cancelBtn" fullWidth>
+        <Button id="ready" fullWidth onClick={onClick}>
           {t('ready')}
         </Button>
       </div>

@@ -30,6 +30,10 @@ module.exports = {
       '2xl': ['32px', '40px'],
     },
     extend: {
+      flex: {
+        2: '2 2 0%',
+        3: '2 2 0%',
+      },
       spacing: {
         1.25: '0.3125rem',
         13: '3.25rem',
