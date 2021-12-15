@@ -9,7 +9,7 @@ const Welcome = () => {
   const {t} = useTranslation()
   const history = useHistory()
   return (
-    <div className="bg-secondary h-full" id="welcomeContainer">
+    <div className="bg-secondary h-150 w-93 m-auto light" id="welcomeContainer">
       <LanguageNav />
       <div className="h-13" />
       <header className="mt-8">

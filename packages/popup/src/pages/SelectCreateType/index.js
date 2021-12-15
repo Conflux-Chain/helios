@@ -26,7 +26,10 @@ function SelectCreateType() {
   const hdGroup = useHdAccountGroup()
 
   return (
-    <div className="bg-bg  h-full" id="selectCreateTypeContainer">
+    <div
+      className="bg-bg h-150 w-93 m-auto light"
+      id="selectCreateTypeContainer"
+    >
       <TitleNav title={t('newAccount')} />
       <main className="px-3">
         <em className="not-italic text-xs text-gray-40 ml-1 mt-3 mb-2 inline-block">

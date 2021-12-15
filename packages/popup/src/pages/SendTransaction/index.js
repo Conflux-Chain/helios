@@ -121,7 +121,7 @@ function SendTransaction() {
   }, [Boolean(nativeToken)])
 
   return (
-    <div className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg">
+    <div className="flex flex-col h-150 w-93 m-auto light bg-blue-circles bg-no-repeat bg-bg">
       <TitleNav
         title={t('sendTransaction')}
         onGoBack={() => clearSendTransactionParams()}

@@ -147,7 +147,7 @@ function AccountManagement() {
   }
 
   return accountGroups ? (
-    <div id="account-management" className="bg-bg pb-8 h-full">
+    <div id="account-management" className="bg-bg pb-8 h-150 w-93 m-auto light">
       <TitleNav title={t('accountManagement')} />
       {Object.values(accountGroups || {}).map(
         ({nickname, account, vault, eid}) => (

@@ -231,7 +231,7 @@ function ConfirmTransition() {
   }
 
   return (
-    <div className="flex flex-col h-full relative">
+    <div className="flex flex-col h-150 w-93 m-auto light relative">
       <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
       <div className="flex flex-1 flex-col justify-between mt-1 pb-4">
         <div className="flex flex-col px-3">

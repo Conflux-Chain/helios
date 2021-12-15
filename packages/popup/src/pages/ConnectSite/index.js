@@ -193,7 +193,7 @@ function ConnectSite() {
   return accountGroups && currentNetwork && currentAddress ? (
     <div
       id="connectSiteContainer"
-      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
+      className="flex flex-col h-150 w-93 m-auto light justify-between bg-blue-circles bg-no-repeat pb-4"
     >
       <div id="content">
         <DappProgressHeader title={t('connectSite')} />

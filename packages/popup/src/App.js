@@ -73,7 +73,6 @@ function App() {
   const zeroGroup = useIsZeroGroup()
   const pendingAuthReq = usePendingAuthReq(!zeroGroup && !lockedData)
   const {setFatalError} = useGlobalStore()
-
   if (
     isUndefined(lockedData) ||
     isUndefined(zeroGroup) ||
@@ -93,87 +92,81 @@ function App() {
           </div>
         }
       >
-        <div className="h-150 w-93 m-auto light">
-          <Router>
-            <Switch>
-              <Route exact path={WALLET_UNLOCK} component={Unlock} />
-              <Route exact path={WELCOME} component={Welcome} />
-              <ProtectedRoute
-                pendingAuthReq={pendingAuthReq}
-                hasAccount={!zeroGroup}
-                isLocked={!zeroGroup && lockedData}
-                exact
-                path={HOME}
-                component={HomePage}
-              />
-              <Route exact path={CURRENT_SEED_PHRASE} component={CurrentSeed} />
-              <Route exact path={NEW_SEED_PHRASE} component={NewSeed} />
-              <Route exact path={BACKUP_SEED_PHRASE} component={BackupSeed} />
-              <Route exact path={CONFIRM_SEED_PHRASE} component={ConfirmSeed} />
-              <Route
-                exact
-                path={IMPORT_SEED_PHRASE}
-                component={ImportSeedPhrase}
-              />
-              <Route
-                exact
-                path={WALLET_IMPORT_PRIVATE_KEY}
-                component={ImportPrivateKey}
-              />
-              <Route
-                exact
-                path={SEND_TRANSACTION}
-                component={SendTransaction}
-              />
-              <Route
-                exact
-                path={CONFIRM_TRANSACTION}
-                component={ConfirmTransaction}
-              />
-              <Route exact path={EDIT_GAS_FEE} component={EditGasFee} />
-              <Route exact path={EDIT_PERMISSION} component={EditPermission} />
-              <Route exact path={SET_PASSWORD} component={SetPassword} />
-              <Route
-                exact
-                path={SELECT_CREATE_TYPE}
-                component={SelectCreateType}
-              />
-              <Route exact path={VIEW_DATA} component={ViewData} />
-              <Route exact path={CONNECT_SITE} component={ConnectSite} />
-              <Route
-                exact
-                path={CONFIRM_ADD_SUGGESTED_TOKEN}
-                component={ConfirmAddSuggestedToken}
-              />
-              <Route
-                exact
-                path={REQUEST_SIGNATURE}
-                component={RequestSignature}
-              />
-              <Route
-                exact
-                path={DAPP_SWITCH_NETWORK}
-                component={DappSwitchNetwork}
-              />
-              <Route exact path={DAPP_ADD_NETWORK} component={DappAddNetwork} />
-              <Route exact path={HISTORY} component={History} />
-              <Route
-                exact
-                path={ACCOUNT_MANAGEMENT}
-                component={AccountManagement}
-              />
-              <Route exact path={EXPORT_SEED} component={ExportSeed} />
-              <Route
-                exact
-                path={EXPORT_PRIVATEKEY}
-                component={ExportPrivateKey}
-              />
-              <Route exact path={ERROR} component={ErrorPage} />
-              <Route exact path={HARDWARE_GUARD} component={HardwareGuard} />
-              <Route path="*" render={() => <Redirect to={ERROR} />} />
-            </Switch>
-          </Router>
-        </div>
+        <Router>
+          <Switch>
+            <Route exact path={WALLET_UNLOCK} component={Unlock} />
+            <Route exact path={WELCOME} component={Welcome} />
+            <ProtectedRoute
+              pendingAuthReq={pendingAuthReq}
+              hasAccount={!zeroGroup}
+              isLocked={!zeroGroup && lockedData}
+              exact
+              path={HOME}
+              component={HomePage}
+            />
+            <Route exact path={CURRENT_SEED_PHRASE} component={CurrentSeed} />
+            <Route exact path={NEW_SEED_PHRASE} component={NewSeed} />
+            <Route exact path={BACKUP_SEED_PHRASE} component={BackupSeed} />
+            <Route exact path={CONFIRM_SEED_PHRASE} component={ConfirmSeed} />
+            <Route
+              exact
+              path={IMPORT_SEED_PHRASE}
+              component={ImportSeedPhrase}
+            />
+            <Route
+              exact
+              path={WALLET_IMPORT_PRIVATE_KEY}
+              component={ImportPrivateKey}
+            />
+            <Route exact path={SEND_TRANSACTION} component={SendTransaction} />
+            <Route
+              exact
+              path={CONFIRM_TRANSACTION}
+              component={ConfirmTransaction}
+            />
+            <Route exact path={EDIT_GAS_FEE} component={EditGasFee} />
+            <Route exact path={EDIT_PERMISSION} component={EditPermission} />
+            <Route exact path={SET_PASSWORD} component={SetPassword} />
+            <Route
+              exact
+              path={SELECT_CREATE_TYPE}
+              component={SelectCreateType}
+            />
+            <Route exact path={VIEW_DATA} component={ViewData} />
+            <Route exact path={CONNECT_SITE} component={ConnectSite} />
+            <Route
+              exact
+              path={CONFIRM_ADD_SUGGESTED_TOKEN}
+              component={ConfirmAddSuggestedToken}
+            />
+            <Route
+              exact
+              path={REQUEST_SIGNATURE}
+              component={RequestSignature}
+            />
+            <Route
+              exact
+              path={DAPP_SWITCH_NETWORK}
+              component={DappSwitchNetwork}
+            />
+            <Route exact path={DAPP_ADD_NETWORK} component={DappAddNetwork} />
+            <Route exact path={HISTORY} component={History} />
+            <Route
+              exact
+              path={ACCOUNT_MANAGEMENT}
+              component={AccountManagement}
+            />
+            <Route exact path={EXPORT_SEED} component={ExportSeed} />
+            <Route
+              exact
+              path={EXPORT_PRIVATEKEY}
+              component={ExportPrivateKey}
+            />
+            <Route exact path={ERROR} component={ErrorPage} />
+            <Route exact path={HARDWARE_GUARD} component={HardwareGuard} />
+            <Route path="*" render={() => <Redirect to={ERROR} />} />
+          </Switch>
+        </Router>
       </Suspense>
     </ErrorBoundary>
   )

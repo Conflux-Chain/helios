@@ -21,7 +21,10 @@ function ExportPrivateKey() {
   }, [setExportPrivateKey, exportPrivateKey, history])
 
   return (
-    <div id="export-private-key" className="h-full pb-6 bg-bg flex flex-col">
+    <div
+      id="export-private-key"
+      className="h-150 w-93 m-auto light pb-6 bg-bg flex flex-col"
+    >
       <div className="flex-1">
         <TitleNav title={t('backupPk')} />
         <div className="px-3 pt-3">
