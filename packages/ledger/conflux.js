@@ -92,4 +92,8 @@ export default class Conflux {
       return false
     }
   }
+
+  async requestAuth() {
+    return TransportWebUSB?.request()
+  }
 }
