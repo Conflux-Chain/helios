@@ -1,6 +1,6 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 import AppCfx from '@fluent-wallet/hw-app-conflux'
-import {LEDGER_APP_NAME, LEDGER_CLA, INS} from './const'
+import {LEDGER_APP_NAME, LEDGER_CLA, INS, HDPATH} from './const'
 
 /**
  * Connecting Ledger Conflux App API for fluent
@@ -95,5 +95,24 @@ export default class Conflux {
 
   async requestAuth() {
     return TransportWebUSB?.request()
+  }
+
+  async getAddressList(indexArray) {
+    if (!Array.isArray(indexArray)) return []
+    const isNumber = indexArray.every(function (item) {
+      return typeof item === 'number'
+    })
+    if (!isNumber) return []
+    const addressArr = []
+    try {
+      for (const index of indexArray) {
+        const hdPath = `${HDPATH}${index}`
+        const {address} = await this.getAddress(hdPath)
+        addressArr.push(address)
+      }
+    } catch (error) {
+      console.warn(error)
+    }
+    return addressArr
   }
 }

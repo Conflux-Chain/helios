@@ -13,3 +13,6 @@ export const LEDGER_CLA = 0xe0
 export const INS = {
   OPEN_APP: 0xd8,
 }
+export const HDPATH = {
+  CONFLUX: "44'/503'/0'/0/",
+}
