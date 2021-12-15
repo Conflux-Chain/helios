@@ -5,16 +5,17 @@ function PluginWallet() {
   const {t} = useTranslation()
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <img src="/images/connect-hm-wallet.svg" alt="connect" />
-      <div>
-        <p>{t('connectLedger')}</p>
-        <p>{t('connectLedgerDes')}</p>
+      <div className="w-110 text-center">
+        <p className="text-gray-80 text-lg font-medium mb-2">
+          {t('connectLedger')}
+        </p>
+        <p className="text-gray-60 text-sm">{t('connectLedgerDes')}</p>
       </div>
-      <Button id="hm-btn" size="large" className="w-70">
+      <Button id="hm-btn" size="large" className="w-70 mt-9">
         {t('connect')}
       </Button>
-      ,
     </div>
   )
 }

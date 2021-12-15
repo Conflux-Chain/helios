@@ -14,10 +14,10 @@ function ConnectHardwareWallet() {
     >
       <div className="flex-2" />
       {/* <Authorizing /> */}
-      {/* <OpenApp /> */}
+      <OpenApp />
       {/* <PluginWallet /> */}
       {/* <ReConnectWallet /> */}
-      <SearchingWallet />
+      {/* <SearchingWallet /> */}
       <div className="flex-3" />
     </div>
   )
