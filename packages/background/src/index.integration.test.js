@@ -66,7 +66,7 @@ beforeEach(async () => {
         hdPath: cfxHdPath,
         isMainnet: true,
       })
-      cfxNetId = 3
+      cfxNetId = 4
       d.createNetwork({
         name: ETH_MAINNET_NAME,
         endpoint: ETH_LOCALNET_RPC_ENDPOINT,
@@ -83,7 +83,7 @@ beforeEach(async () => {
         hdPath: ethHdPath,
         isMainnet: true,
       })
-      ethNetId = 4
+      ethNetId = 5
       d.t([
         {
           eid: 'site',
@@ -323,6 +323,8 @@ describe('integration test', function () {
               },
               rpcUrls: [CFX_LOCALNET_RPC_ENDPOINT + '/'],
             },
+            _rpcStack: ['frombg'],
+            _internal: true,
           })
         ).result
 
@@ -354,6 +356,8 @@ describe('integration test', function () {
               },
               rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT + '/'],
             },
+            _rpcStack: ['frombg'],
+            _internal: true,
           })
         ).result
 
@@ -391,6 +395,8 @@ describe('integration test', function () {
               },
               rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT + '/'],
             },
+            _rpcStack: ['frombg'],
+            _internal: true,
           })
         ).result
 

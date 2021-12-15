@@ -1,14 +1,18 @@
-import {RPC_METHODS, NETWORK_TYPE} from '../constants'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber, isString} from '@fluent-wallet/checks'
+import {useRPC} from '@fluent-wallet/use-rpc'
+
+import {NETWORK_TYPE, RPC_METHODS} from '../constants'
 import {validateAddress} from '../utils'
 
 const {
+  QUERY_GROUP,
+  QUERY_BALANCE,
+  QUERY_ADDRESS,
+  QUERY_ACCOUNT,
+  QUERY_TOKEN,
   WALLET_GET_ACCOUNT_GROUP,
   WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK,
   WALLET_GET_BALANCE,
-  WALLET_GET_CURRENT_NETWORK,
-  WALLET_GET_CURRENT_ACCOUNT,
   WALLET_GET_CURRENT_DAPP,
   WALLET_GET_PENDING_AUTH_REQUEST,
   WALLET_ZERO_ACCOUNT_GROUP,
@@ -16,45 +20,39 @@ const {
   WALLET_IS_LOCKED,
   ACCOUNT_GROUP_TYPE,
   WALLET_DETECT_ADDRESS_TYPE,
-  WALLETDB_HOME_PAGE_ASSETS,
   WALLETDB_REFETCH_BALANCE,
-  WALLETDB_ADD_TOKEN_LIST,
   WALLETDB_ACCOUNT_LIST_ASSETS,
   WALLET_VALIDATE_20TOKEN,
   WALLETDB_TXLIST,
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
 } = RPC_METHODS
 
-export const useCurrentAccount = () => {
-  const {eid: networkId} = useCurrentNetwork()
-  const {data: currentAccount} = useRPC(
-    [WALLET_GET_CURRENT_ACCOUNT],
-    undefined,
+export const useCurrentAddress = () => {
+  const {data, mutate} = useRPC(
+    [QUERY_ADDRESS, 'useCurrentAddress'],
     {
-      fallbackData: {},
+      selected: true,
+      g: {
+        value: 1,
+        hex: 1,
+        eid: 1,
+        nativeBalance: 1,
+        _account: {nickname: 1, eid: 1},
+        network: {
+          eid: 1,
+          ticker: 1,
+          netId: 1,
+          chainId: 1,
+          name: 1,
+          icon: 1,
+          scanUrl: 1,
+          type: 1,
+        },
+      },
     },
+    {fallbackData: {network: {ticker: {}}, account: {}}},
   )
-  const {eid: accountId} = currentAccount || {}
-  const {value: address, eid: addressId} = useAddressByNetworkId(
-    accountId,
-    networkId,
-  )
-  return {
-    ...currentAccount,
-    address,
-    addressId,
-  }
-}
-
-export const useCurrentNetwork = () => {
-  const {data: currentNetwork} = useRPC(
-    [WALLET_GET_CURRENT_NETWORK],
-    undefined,
-    {
-      fallbackData: {},
-    },
-  )
-  return currentNetwork
+  return {data, mutate}
 }
 
 export const useCurrentDapp = () => {
@@ -199,17 +197,11 @@ export const useBalance = (
 }
 
 export const useNetworkTypeIsCfx = () => {
-  const currentNetwork = useCurrentNetwork()
-  return currentNetwork?.type === NETWORK_TYPE.CFX
-}
-
-export const useCurrentNativeToken = () => {
-  const {ticker: currentNativeToken} = useCurrentNetwork()
-  return currentNativeToken || {}
+  return useCurrentAddress().data?.network?.type === NETWORK_TYPE.CFX
 }
 
 export const useAddressType = address => {
-  const {netId} = useCurrentNetwork()
+  const netId = useCurrentAddress().data.network.netId
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const isValidAddress = validateAddress(address, networkTypeIsCfx, netId)
   const {
@@ -222,30 +214,130 @@ export const useAddressType = address => {
   return type
 }
 
-export const useDbHomeAssets = () => {
-  const {eid: accountId} = useCurrentAccount()
-  const {eid: networkId} = useCurrentNetwork()
-  const {data: homeAssets} = useRPC(
-    [WALLETDB_HOME_PAGE_ASSETS, accountId, networkId],
-    undefined,
-    {
-      fallbackData: {},
-    },
-  )
-  useDbRefetchBalance({type: 'all'})
-  return homeAssets
-}
-
 export const useDbRefetchBalance = param => {
   useRPC([WALLETDB_REFETCH_BALANCE], param ? {...param} : undefined)
+  useRPC(
+    [WALLETDB_REFETCH_BALANCE, 'REFETCH_ALL'],
+    {type: 'all', allNetwork: true},
+    {refreshInterval: 180000},
+  )
 }
 
-export const useDbAddTokenList = () => {
-  const {data: addTokenListData} = useRPC([WALLETDB_ADD_TOKEN_LIST, 'all'], {
-    type: 'all',
-  })
+export const useCurrentNetworkTokens = ({fuzzy, addressId}) => {
+  useDbRefetchBalance({type: 'all'})
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+
+  return useRPC(
+    networkId
+      ? [
+          QUERY_TOKEN,
+          'useCurrentNetworkTokens',
+          networkId,
+          addressId,
+          fuzzy || '',
+        ]
+      : null,
+    {fuzzy, addressId, networkId},
+    {fallbackData: []},
+  )
+}
+export const useCurrentAddressTokens = () => {
+  const {
+    data: {eid: addressId},
+  } = useCurrentAddress()
   useDbRefetchBalance()
-  return addTokenListData
+  return useRPC(
+    addressId ? [QUERY_ADDRESS, 'useCurrentAddressTokens', addressId] : null,
+    {
+      addressId,
+      g: {token: 1},
+    },
+    {
+      fallbackData: [],
+      postprocessSuccessData: d => (d?.token || []).map(t => t.eid),
+    },
+  )
+}
+export const useSingleTokenInfoWithNativeTokenSupport = tokenId => {
+  if (tokenId === 'native' || tokenId === '0x0') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const {ticker} = useCurrentAddress().data.network
+    ticker.logoURI = ticker.iconUrls?.[0]
+    ticker.decimals = 18
+    return ticker
+  }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useRPC(
+    tokenId ? [QUERY_TOKEN, 'useSingleTokenInfo', tokenId] : null,
+    {
+      tokenId,
+      g: {name: 1, address: 1, symbol: 1, decimals: 1, logoURI: 1},
+    },
+    {fallbackData: {}},
+  ).data
+}
+
+export const useSingleAddressTokenBalanceWithNativeTokenSupport = ({
+  addressId,
+  tokenId,
+}) => {
+  if (!addressId) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    addressId = useCurrentAddress().data.eid
+  }
+  if (tokenId === '0x0' || tokenId === 'native') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useRPC(
+      addressId
+        ? [QUERY_ADDRESS, 'useAddressTokenBalanceSupportNativeToken', addressId]
+        : null,
+      {addressId, g: {nativeBalance: 1}},
+      {
+        fallbackData: '0x0',
+        postprocessSuccessData: d => d?.nativeBalance || '0x0',
+      },
+    ).data
+  }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useRPC(
+    addressId && tokenId
+      ? [QUERY_BALANCE, 'useAddressTokenBalance', addressId, tokenId]
+      : null,
+    {addressId, tokenId, g: {value: 1}},
+    {fallbackData: '0x0', postprocessSuccessData: d => d?.[0]?.value || '0x0'},
+  ).data
+}
+export const useSingleAccountInfo = accountId => {
+  return useRPC(
+    accountId ? [QUERY_ACCOUNT, 'useSingleAccountInfo', accountId] : null,
+    {accountId, g: {nickname: 1}},
+    {fallbackData: []},
+  ).data
+}
+export const useGroupAccountList = () => {
+  return useRPC(
+    [QUERY_GROUP, 'useGroupAccountList'],
+    {
+      types: [
+        ACCOUNT_GROUP_TYPE.HD,
+        ACCOUNT_GROUP_TYPE.PK,
+        ACCOUNT_GROUP_TYPE.HW,
+      ],
+      g: {
+        eid: 1,
+        nickname: 1,
+        vault: {type: 1},
+        account: {selected: 1, eid: 1},
+      },
+    },
+    {
+      fallbackData: [],
+    },
+  )
 }
 
 export const useDbAccountListAssets = () => {
@@ -279,7 +371,9 @@ export const useValid20Token = address => {
 }
 
 export const useTxList = params => {
-  const {addressId} = useCurrentAccount()
+  const {
+    data: {eid: addressId},
+  } = useCurrentAddress()
   const {data: listData} = useRPC(
     addressId ? [WALLETDB_TXLIST, ...Object.values(params), addressId] : null,
     {...params, addressId},

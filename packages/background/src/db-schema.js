@@ -253,6 +253,7 @@ const schema = {
       ref: true,
     },
   },
+  dbmeta: {version: {doc: 'db version'}},
 }
 
 export default schema

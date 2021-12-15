@@ -128,62 +128,7 @@
         token (if oldtoken? (dissoc token :network :address) token)]
     {:eid eid :token token}))
 
-(defn get-address [{:keys [addressId networkId value accountId groupId index tokenId appId g]}]
-  (let [g (and g {:address g})
-        post-process (if (seq g) identity #(get % :db/id))
-        addr (and (string? value) (.toLowerCase value))]
-    (prst->js
-     (cond
-       addressId
-       (post-process (p (jsp->p g) addressId))
-       (and networkId addr)
-       (post-process (p (jsp->p g) [:address/id [networkId addr]]))
-       :else
-       (let [query-initial (cond-> '{:find  [[?addr ...]]
-                                     :in    [$]
-                                     :where [[?addr :address/id _]]
-                                     :args []}
-                             networkId
-                             (-> (update :args conj (if (vector? networkId) networkId [networkId]))
-                                 (update :in conj '[?net ...])
-                                 (update :where conj '[?addr :address/network ?net]))
-                             addr
-                             (-> (update :args conj (if (vector? addr) addr [addr]))
-                                 (update :in conj '[?addrv ...])
-                                 (update :where conj '[?addr :address/value ?addrv]))
-                             groupId
-                             (-> (update :args conj (if (vector? groupId) groupId [groupId]))
-                                 (update :in conj '[?gid ...])
-                                 (update :where conj '[?gid :accountGroup/account ?acc] '[?acc :account/address ?addr]))
-                             accountId
-                             (-> (update :args conj (if (vector? accountId) accountId [accountId]))
-                                 (update :in conj '[?acc ...])
-                                 (update :where conj '[?acc :account/address ?addr]))
-                             appId
-                             (-> (update :args conj (if (vector? appId) appId [appId]))
-                                 (update :in conj '[?appId ...])
-                                 ;; TODO: v2, dapp auth to multiple accounts/networks
-                                 (update :where conj
-                                         '[?appId :app/currentAccount ?appacc]
-                                         '[?appacc :account/address ?addr]
-                                         '[?appId :app/currentNetwork ?appnet]
-                                         '[?addr :address/network ?appnet]))
-                             tokenId
-                             (-> (update :args conj (if (vector? tokenId) tokenId [tokenId]))
-                                 (update :in conj '[?token ...])
-                                 (update :where conj '[?addr :address/token ?token]))
-                             index
-                             (-> (update :args conj (if (vector? index) index [index]))
-                                 (update :in conj '[?idx ...])
-                                 (update :where conj '[?addr :address/index ?idx]))
-                             true identity)
-             query         (concat [:find] (:find query-initial)
-                                   [:in] (:in query-initial)
-                                   [:where] (:where query-initial))
-             rst           (apply q query (:args query-initial))]
-         (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
-
-(defn get-account [{:keys [accountId groupId index g nickname]}]
+(defn get-account [{:keys [accountId groupId index g nickname selected]}]
   (let [g (and g {:account g})
         post-process (if (seq g) identity #(get % :db/id))]
     (prst->js
@@ -195,6 +140,10 @@
                                      :in    [$]
                                      :where [[?acc :account/index _]]
                                      :args []}
+                             (true? selected)
+                             (-> (update :where conj '[?acc :account/selected true]))
+                             (false? selected)
+                             (-> (update :where conj (not '[?acc :account/selected true])))
                              groupId
                              (-> (update :args conj groupId)
                                  (update :in conj '?gid)
@@ -214,13 +163,53 @@
              accs          (apply q query (:args query-initial))]
          (map post-process (if (seq accs) (pm (jsp->p g) accs) [])))))))
 
-(defn get-token [{:keys [networkId addr g]}]
-  (let [addr (and (string? addr) (.toLowerCase addr))
-        g (and g {:token g})
-        rst (p (jsp->p g) [:token/id [networkId addr]])]
-    (if (seq g)
-      rst
-      (:db/id rst))))
+(defn get-token [{:keys [addressId networkId address tokenId g fuzzy]}]
+  (let [g (and g {:token g})
+        post-process (if (seq g) identity #(get % :db/id))
+        addr (and (string? address) (.toLowerCase address))
+        fuzzy (if (string? fuzzy)
+                (re-pattern (str "(?i)" (.replaceAll (.trim fuzzy) " " ".*")))
+                fuzzy)]
+    (prst->js
+     (cond
+       tokenId
+       (post-process (p (jsp->p g) tokenId))
+       (and networkId addr)
+       (post-process (p (jsp->p g) [:token/id [networkId addr]]))
+       :else
+       (let [query-initial (cond-> '{:find  [[?token ...]]
+                                     :in    [$]
+                                     :where [[?token :token/id _]]
+                                     :args []}
+                             networkId
+                             (-> (update :args conj (if (vector? networkId) networkId [networkId]))
+                                 (update :in conj '[?net ...])
+                                 (update :where conj '[?token :token/network ?net]))
+                             addr
+                             (-> (update :args conj (if (vector? addr) addr [addr]))
+                                 (update :in conj '[?tokenv ...])
+                                 (update :where conj '[?token :token/address ?tokenv]))
+                             addressId
+                             (-> (update :args conj (if (vector? addressId) addressId [addressId]))
+                                 (update :in conj '[?addr-id ...])
+                                 (update :where conj '[?addr-id :address/token ?token]))
+                             fuzzy
+                             (-> (update :args conj fuzzy)
+                                 (update :in conj '?fuzzy)
+                                 (update :where conj
+                                         '[?token :token/name ?tname]
+                                         '[?token :token/symbol ?tsym]
+                                         '[?token :token/address ?taddr]
+                                         '(or [(re-find ?fuzzy ?tname)]
+                                              [(re-find ?fuzzy ?tsym)]
+                                              [(re-find ?fuzzy ?taddr)])))
+
+                             true identity)
+             query         (concat [:find] (:find query-initial)
+                                   [:in] (:in query-initial)
+                                   [:where] (:where query-initial))
+             rst           (apply q query (:args query-initial))]
+         (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
 (defn get-group [{:keys [groupId vaultId g nickname types hidden]}]
   (let [g (and g {:accountGroup g})
@@ -455,6 +444,102 @@
        :where
        [?net :network/selected true]]))
 
+(defn get-address [{:keys [addressId networkId value accountId groupId index tokenId appId selected g]}]
+  (let [g (and g {:address g})
+        post-process (if (seq g) identity #(get % :db/id))
+        addr (and (string? value) (.toLowerCase value))
+        addressId (if selected (get-current-addr) addressId)]
+    (prst->js
+     (cond
+       addressId
+       (post-process (p (jsp->p g) addressId))
+       (and networkId addr)
+       (post-process (p (jsp->p g) [:address/id [networkId addr]]))
+       :else
+       (let [query-initial (cond-> '{:find  [[?addr ...]]
+                                     :in    [$]
+                                     :where [[?addr :address/id _]]
+                                     :args []}
+                             networkId
+                             (-> (update :args conj (if (vector? networkId) networkId [networkId]))
+                                 (update :in conj '[?net ...])
+                                 (update :where conj '[?addr :address/network ?net]))
+                             addr
+                             (-> (update :args conj (if (vector? addr) addr [addr]))
+                                 (update :in conj '[?addrv ...])
+                                 (update :where conj '[?addr :address/value ?addrv]))
+                             groupId
+                             (-> (update :args conj (if (vector? groupId) groupId [groupId]))
+                                 (update :in conj '[?gid ...])
+                                 (update :where conj '[?gid :accountGroup/account ?acc] '[?acc :account/address ?addr]))
+                             accountId
+                             (-> (update :args conj (if (vector? accountId) accountId [accountId]))
+                                 (update :in conj '[?acc ...])
+                                 (update :where conj '[?acc :account/address ?addr]))
+                             appId
+                             (-> (update :args conj (if (vector? appId) appId [appId]))
+                                 (update :in conj '[?appId ...])
+                                 ;; TODO: v2, dapp auth to multiple accounts/networks
+                                 (update :where conj
+                                         '[?appId :app/currentAccount ?appacc]
+                                         '[?appacc :account/address ?addr]
+                                         '[?appId :app/currentNetwork ?appnet]
+                                         '[?addr :address/network ?appnet]))
+                             tokenId
+                             (-> (update :args conj (if (vector? tokenId) tokenId [tokenId]))
+                                 (update :in conj '[?token ...])
+                                 (update :where conj '[?addr :address/token ?token]))
+                             index
+                             (-> (update :args conj (if (vector? index) index [index]))
+                                 (update :in conj '[?idx ...])
+                                 (update :where conj '[?addr :address/index ?idx]))
+                             true identity)
+             query         (concat [:find] (:find query-initial)
+                                   [:in] (:in query-initial)
+                                   [:where] (:where query-initial))
+             rst           (apply q query (:args query-initial))]
+         (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
+
+(defn get-balance [{:keys [addressId tokenId userAddress tokenAddress networkId g]}]
+  (let [g (and g {:balance g})
+        post-process (if (seq g) identity #(get % :db/id))
+        userAddress (and (string? userAddress) (.toLowerCase userAddress))
+        tokenAddress (and (string? tokenAddress) (.toLowerCase tokenAddress))
+        networkId (if (and (or tokenAddress userAddress) (not networkId)) (get-current-network) networkId)
+        userAddress (and userAddress (if (vector? userAddress) (map #(conj [networkId] %) userAddress) [networkId userAddress]))
+        tokenAddress (and tokenAddress (if (vector? tokenAddress) (map #(conj [networkId] %) tokenAddress) [networkId tokenAddress]))]
+    (prst->js
+     (let [query-initial (cond-> '{:find  [[?balance ...]]
+                                   :in    [$]
+                                   :where [[?balance :balance/value _]]
+                                   :args []}
+                           addressId
+                           (-> (update :args conj (if (vector? addressId) addressId [addressId]))
+                               (update :in conj '[?addr-id ...])
+                               (update :where conj '[?addr-id :address/balance ?balance]))
+                           tokenId
+                           (-> (update :args conj (if (vector? tokenId) tokenId [tokenId]))
+                               (update :in conj '[?token-id ...])
+                               (update :where conj '[?token-id :token/balance ?balance]))
+                           userAddress
+                           (-> (update :args conj userAddress)
+                               (update :in conj '[?uaddrid ...])
+                               (update :where conj
+                                       '[?addr-id :address/id ?uaddrid]
+                                       '[?addr-id :address/balance ?balance]))
+                           tokenAddress
+                           (-> (update :args conj tokenAddress)
+                               (update :in conj '[?taddrid ...])
+                               (update :where conj
+                                       '[?token-id :token/id ?taddrid]
+                                       '[?token-id :token/balance ?balance]))
+                           true identity)
+           query         (concat [:find] (:find query-initial)
+                                 [:in] (:in query-initial)
+                                 [:where] (:where query-initial))
+           rst           (apply q query (:args query-initial))]
+       (map post-process (if (seq rst) (pm (jsp->p g) rst) []))))))
+
 (defn- cleanup-token-list-after-delete-address []
   (let [tokens (q '[:find [?t ...]
                     :where
@@ -613,45 +698,42 @@
     (into [] params)))
 
 (defn upsert-balances [{:keys [networkId data]}]
-  (let [formated-data
+  (let [txs
         (reduce
-         (fn [acc [uaddr tokens-map]]
-           (into acc
-                 (reduce
-                  (fn [acc [taddr balance]]
-                    (if (= balance "0x0")
-                      acc
-                      (conj acc [(addr-network-id-to-addr-id (name uaddr) networkId) (addr-network-id-to-token-id (name taddr) networkId) balance])))
-                  []
-                  tokens-map)))
-         [] data)
-        formated-data (q '[:find ?u ?t ?balance ?b
-                           :in $ [[?u ?t ?balance]]
-                           :where
-                           (or
-                            (and
-                             [?u :address/balance ?b]
-                             [?t :token/balance ?b])
-                            [(and true false) ?b])]
-                         formated-data)
-
-        ;; [
-        ;;   [uid tid balance balance-id]
-        ;; ]
-
-        txs
-        (reduce
-         (fn [acc [uid tid value balance-id]]
-           (let [tmpid (str "newbalance-" uid "-" tid)]
-             (into acc
-                   (cond
-                     balance-id           [{:db/id balance-id :balance/value value}]
-                     (and uid (nil? tid)) [{:db/id uid :address/nativeBalance value}]
-                     (and uid tid)        [{:db/id tmpid :balance/value value}
-                                           {:db/id uid :address/balance tmpid :address/token tid}
-                                           {:db/id tid :token/balance tmpid}]))))
+         (fn [acc [uaddr d]]
+           (let [uaddr (name uaddr)]
+             (reduce
+              (fn [acc [taddr balance]]
+                (let [taddr (name taddr)]
+                  (if (= taddr "0x0")
+                    (conj acc {:db/id                 [:address/id [networkId uaddr]]
+                               :address/nativeBalance balance})
+                    (if (pos-int? (js/parseInt balance 16))
+                      (let [balance-eid    (q '[:find ?b .
+                                                :in $ ?uaddr ?taddr
+                                                :where
+                                                [?u :address/id ?uaddr]
+                                                [?t :token/id ?taddr]
+                                                [?u :address/balance ?b]
+                                                [?t :token/balance ?b]]
+                                              [networkId uaddr] [networkId taddr])
+                            tmp-balance-id (str networkId uaddr taddr)
+                            acc            (conj acc {:db/id         (or
+                                                                      balance-eid
+                                                                      tmp-balance-id)
+                                                      :balance/value balance}
+                                                 {:db/id         [:address/id [networkId uaddr]]
+                                                  :address/token [:token/id [networkId taddr]]})
+                            acc            (if balance-eid acc
+                                               (conj acc {:db/id           [:address/id [networkId uaddr]]
+                                                          :address/balance (str networkId uaddr taddr)}
+                                                     {:db/id         [:token/id [networkId taddr]]
+                                                      :token/balance (str networkId uaddr taddr)}))]
+                        acc)
+                      acc))))
+              acc d)))
          []
-         formated-data)]
+         data)]
     (t txs)
     true))
 
@@ -818,50 +900,6 @@
       false)))
 
 ;;; UI QUERIES
-(defn home-page-assets
-  ([] (home-page-assets {}))
-  ([{:keys [include-other-tokens]}]
-   (let [cur-addr          (e :address (get-current-addr))
-         cur-net           (e :network (get-current-network))
-         native-token-info (get cur-net :network/ticker {:name "CFX", :symbol "CFX", :decimals 18})
-         native-token-ui   (assoc native-token-info :balance (get cur-addr :address/nativeBalance "0x0") :native true :added true)
-         addr-tokens-info  (q '[:find ?token-id ?tbalance
-                                :in $ ?cur-addr
-                                :where
-                                [?cur-addr :address/token ?token-id]
-                                [?cur-addr :address/balance ?b]
-                                [?token-id :token/balance ?b]
-                                [?b :balance/value ?tbalance]]
-                              (:db/id cur-addr))
-         addr-tokens-info  (reduce
-                            (fn [acc [token-id balance]]
-                              (let [t (.toMap (e :token token-id))]
-                                (conj acc (assoc t :balance balance :added true))))
-                            [] addr-tokens-info)
-         other-tokens-info (if  include-other-tokens
-                             (q '[:find ?token-id ?tbalance
-                                  :in $ ?cur-addr ?cur-net
-                                  :where
-                                  [?token-id :token/network ?cur-net]
-                                  (not [?cur-addr :address/token ?token-id])
-                                  [(and true "0x0") ?tbalance]]
-                                (:db/id cur-addr) (:db/id cur-net))
-                             #{})
-
-         other-tokens-info (reduce
-                            (fn [acc [token-id balance]]
-                              (let [t (.toMap (e :token token-id))]
-                                (conj acc (assoc t :balance balance :added false))))
-                            []  other-tokens-info)
-         rst               {:currentAddress cur-addr
-                            :currentNetwork cur-net
-                            :native         native-token-ui
-                            :added          addr-tokens-info}
-         rst               (if include-other-tokens (assoc rst :others other-tokens-info) rst)]
-     rst)))
-
-(defn get-add-token-list [] (home-page-assets {:include-other-tokens true}))
-
 (defn account-list-assets [{:keys [accountGroupTypes]}]
   (let [accountGroupTypes (if (vector? accountGroupTypes) accountGroupTypes ["hd" "pk" "hw" "pub"])
         cur-addr (e :address (get-current-addr))
@@ -1026,9 +1064,8 @@
               :queryqueryAccount          get-account
               :queryqueryToken            get-token
               :queryqueryGroup            get-group
-              :queryhomePageAssets        home-page-assets
+              :queryqueryBalance          get-balance
               :querytxList                query-tx-list
-              :queryaddTokenList          get-add-token-list
               :queryaccountListAssets     account-list-assets
               :getAccountGroupByVaultType get-account-group-by-vault-type})
 

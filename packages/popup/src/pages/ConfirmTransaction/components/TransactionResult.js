@@ -5,14 +5,19 @@ import {CheckCircleOutlined} from '@fluent-wallet/component-icons'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
 import {CFX_SCAN_DOMAINS, ETH_SCAN_DOMAINS} from '@fluent-wallet/consts'
-import {useNetworkTypeIsCfx, useCurrentNetwork} from '../../../hooks/useApi'
+import {useNetworkTypeIsCfx, useCurrentAddress} from '../../../hooks/useApi'
 import useGlobalStore from '../../../stores'
 import {ROUTES} from '../../../constants'
 const {HOME} = ROUTES
 
 function TransactionResult({transactionHash}) {
   const {t} = useTranslation()
-  const {netId} = useCurrentNetwork()
+  const {
+    data: {
+      network: {netId},
+    },
+  } = useCurrentAddress()
+
   const history = useHistory()
   const {clearSendTransactionParams} = useGlobalStore()
   const networkTypeIsCfx = useNetworkTypeIsCfx()

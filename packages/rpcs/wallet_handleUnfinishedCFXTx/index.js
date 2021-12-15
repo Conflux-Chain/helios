@@ -55,7 +55,7 @@ export const permissions = {
     'cfx_getTransactionByHash',
     'cfx_getTransactionReceipt',
     'wallet_handleUnfinishedCFXTx',
-    'wallet_getBlockChainExplorerUrl',
+    'wallet_getBlockchainExplorerUrl',
     'cfx_getNextNonce',
   ],
   db: [
@@ -82,7 +82,7 @@ export const main = ({
     cfx_getTransactionByHash,
     cfx_getTransactionReceipt,
     cfx_getNextNonce,
-    wallet_getBlockChainExplorerUrl,
+    wallet_getBlockchainExplorerUrl,
     wallet_handleUnfinishedCFXTx,
   },
   db: {
@@ -329,7 +329,7 @@ export const main = ({
           if (status === '0x2') {
             setTxSkipped({hash})
             updateBadge(getUnfinishedTxCount())
-            wallet_getBlockChainExplorerUrl({transaction: [hash]}).then(
+            wallet_getBlockchainExplorerUrl({transaction: [hash]}).then(
               ({transaction: [txUrl]}) => {
                 getExt().then(ext =>
                   ext.notifications.create(txUrl, {
@@ -446,7 +446,7 @@ export const main = ({
           return false
         }),
         keepTruthy(), // filter non-null tx
-        map(() => wallet_getBlockChainExplorerUrl({transaction: [hash]})),
+        map(() => wallet_getBlockchainExplorerUrl({transaction: [hash]})),
       )
       .subscribe(resolve({fail: identity}))
       .transform(

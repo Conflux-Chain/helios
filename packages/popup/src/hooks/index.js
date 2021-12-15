@@ -16,8 +16,7 @@ import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
   useIsLocked,
   useIsZeroGroup,
-  useCurrentNetwork,
-  useCurrentAccount,
+  useCurrentAddress,
   useNetworkTypeIsCfx,
   useAddressType,
   useValid20Token,
@@ -91,7 +90,10 @@ export const useFontSize = (
 
 export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   const {provider} = useRPCProvider()
-  const currentNetwork = useCurrentNetwork() || {type: NETWORK_TYPE.CFX}
+  const {
+    data: {network},
+  } = useCurrentAddress()
+  const currentNetwork = network || {type: NETWORK_TYPE.CFX}
   const {type} = currentNetwork
   const {from, to, value, data, nonce, gasPrice, gas, storageLimit} = tx
   const {
@@ -137,8 +139,12 @@ export const useTxParams = () => {
   const {toAddress, sendAmount, sendToken} = useGlobalStore()
   const {decimals: tokenDecimals, address: tokenAddress} = sendToken
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const {address} = useCurrentAccount()
-  const {netId} = useCurrentNetwork()
+  const {
+    data: {
+      value: address,
+      network: {netId},
+    },
+  } = useCurrentAddress()
   let to, data
 
   const isNativeToken = !tokenAddress
@@ -214,7 +220,12 @@ export const useDappParams = () => {
 export const useDecodeData = ({to, data} = {}) => {
   const [decodeData, setDecodeData] = useState({})
   const type = useAddressType(to)
-  const {netId} = useCurrentNetwork()
+  const {
+    data: {
+      network: {netId},
+    },
+  } = useCurrentAddress()
+
   const isContract = type === 'contract'
   const crc20Token = useValid20Token(isContract ? to : '')
   const token = {...crc20Token, address: to}
@@ -241,7 +252,9 @@ export const useDecodeDisplay = ({
   let displayToken = {},
     displayValue = '0x0',
     displayToAddress
-  const {address} = useCurrentAccount()
+  const {
+    data: {value: address},
+  } = useCurrentAddress()
   const {toAddress, sendToken, sendAmount} = useGlobalStore()
   const {to, data, value} = tx
   const {token, decodeData} = useDecodeData(tx)

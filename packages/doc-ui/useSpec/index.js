@@ -145,10 +145,12 @@ export const useSpec = (id, {schema, data} = {}) => {
 
   useEffect(() => {
     if (schema) s.setSchema(schema)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Boolean(schema), id])
 
   useEffect(() => {
     if (data) s.setData(data)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Boolean(data), id])
 
   useEffect(() => {
@@ -156,6 +158,7 @@ export const useSpec = (id, {schema, data} = {}) => {
       s.setSpec()
       s.setGen()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isNewSpec, id])
 
   return s
