@@ -10,6 +10,7 @@ const {
   NEW_SEED_PHRASE,
   IMPORT_SEED_PHRASE,
   WALLET_IMPORT_PRIVATE_KEY,
+  HARDWARE_GUARD,
 } = ROUTES
 function Tag() {
   const {t} = useTranslation()
@@ -73,6 +74,14 @@ function SelectCreateType() {
           subTitle={t('pKeysDes')}
           onClick={() => {
             history.push(WALLET_IMPORT_PRIVATE_KEY)
+          }}
+        />
+        <CreateTypeItem
+          id="hm"
+          Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
+          title={t('hardwareWallet')}
+          onClick={() => {
+            history.push(HARDWARE_GUARD)
           }}
         />
       </main>

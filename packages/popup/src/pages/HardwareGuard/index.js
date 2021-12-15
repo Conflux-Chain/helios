@@ -40,7 +40,7 @@ function HardwareGuard() {
     >
       <div className="flex-1 px-4">
         <TitleNav title={t('connectHardwareWallet')} />
-        <div className="mt-3 rounded-xl px-4 pt-4 pb-8">
+        <div className="mt-3 rounded-xl px-4 pt-4 pb-8 bg-guard-banner">
           <p className="text-sm text-gray-80 mb-2 font-medium">
             {t('supportLedger')}
           </p>

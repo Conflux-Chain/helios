@@ -30,6 +30,7 @@ const en = {
     seedPhraseDes: 'The Seed Phrase consists of words separated by spaces.',
     pKey: 'Private Key',
     pKeysDes: 'Enter the plaintext private key.',
+    hardwareWallet: 'Hardware Wallet',
     // Import account with seed phrase
     seedImport: 'Import Seed Phrase',
     seedGroupName: 'Seed Phrase Group Name',
