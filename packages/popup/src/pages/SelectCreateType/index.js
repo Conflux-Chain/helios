@@ -2,7 +2,7 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
-import {useHdAccountGroup} from '../../hooks/useApi'
+import {useHdAccountGroup, useIsZeroGroup} from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
 
 const {
@@ -24,6 +24,7 @@ function SelectCreateType() {
   const {t} = useTranslation()
   const history = useHistory()
   const hdGroup = useHdAccountGroup()
+  const zeroGroup = useIsZeroGroup()
 
   return (
     <div
@@ -79,14 +80,17 @@ function SelectCreateType() {
             history.push(WALLET_IMPORT_PRIVATE_KEY)
           }}
         />
-        <CreateTypeItem
-          id="hm"
-          Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
-          title={t('hardwareWallet')}
-          onClick={() => {
-            history.push(HARDWARE_GUARD)
-          }}
-        />
+        {zeroGroup === false ? (
+          <CreateTypeItem
+            id="hm"
+            Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
+            title={t('hardwareWallet')}
+            typeClass="mt-9"
+            onClick={() => {
+              history.push(HARDWARE_GUARD)
+            }}
+          />
+        ) : null}
       </main>
     </div>
   )

@@ -230,6 +230,11 @@ const en = {
     retry: 'Retry',
     openConfluxApp: 'Open the Conflux App',
     openConfluxAppDes: 'Select and Open Conflux App in your Ledger device.',
+    chooseAddress: 'Choose Address',
+    hdPath: 'HD Path',
+    chooseHmAddress: 'Choose the address you want to import.',
+    capNext: 'NEXT',
+    capPrev: 'PREV',
   },
 }
 
