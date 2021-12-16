@@ -1,6 +1,7 @@
 import {map, dbid, or, cat} from '@fluent-wallet/spec'
 import {txSchema} from '@fluent-wallet/cfx_sign-transaction'
 import {getTxHashFromRawTx} from '@fluent-wallet/signature'
+import {ERROR} from '@fluent-wallet/json-rpc-error'
 
 export const NAME = 'cfx_sendTransaction'
 
@@ -58,6 +59,7 @@ export const main = async ({
       // try sign tx
       await cfx_signTransaction({errorFallThrough: true}, params)
     } catch (err) {
+      if (err?.code === ERROR.USER_REJECTED.code) throw err
       throw InvalidParams(`Invalid transaction ${JSON.stringify(params)}`)
     }
 
