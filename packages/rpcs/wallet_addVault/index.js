@@ -28,6 +28,7 @@ export const NAME = 'wallet_addVault'
 const baseInputSchema = [
   map,
   {closed: true},
+  ['device', {optional: true}, stringp],
   ['password', {optional: true}, password],
   ['nickname', {optional: true}, nickname],
 ]
@@ -300,6 +301,7 @@ export const main = async arg => {
     },
     rpcs: {wallet_validatePassword, wallet_deleteAccountGroup, wallet_unlock},
     params: {
+      device = 'FluentWebExt',
       password: optionalPassword,
       accountGroupData,
       mnemonic,
@@ -325,7 +327,7 @@ export const main = async arg => {
     throw InvalidParams('Invalid password')
 
   // create vault to be added
-  const vault = {cfxOnly: false}
+  const vault = {cfxOnly: false, device}
   vault.data = mnemonic || privateKey || address || accountGroupData
   if (privateKey) {
     vault.type = 'pk'

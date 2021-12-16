@@ -70,8 +70,9 @@ const schema = {
     vault, container of credential (address/pk/mnemonic)
     */
   vault: {
-    type: {doc: 'Type of vault: pub, pk, hd'},
+    type: {doc: 'Type of vault: pub, pk, hd, hw'},
     data: {doc: 'Encrypted vault data'},
+    device: {doc: 'vault device, default is FluentWebExt'},
     ddata: {doc: 'Decrypted vault data only in memory', persist: false},
     cfxOnly: {
       doc: 'If type is pub/hw, means this vault is only for cfx type network, if type is hd, means only generate 0x1 prefix account',
