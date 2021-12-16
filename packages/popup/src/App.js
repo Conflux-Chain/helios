@@ -40,6 +40,7 @@ const HardwareGuard = lazy(() => import('./pages/HardwareGuard'))
 const ConnectHardwareWallet = lazy(() =>
   import('./pages/ConnectHardwareWallet'),
 )
+const ImportHmAccount = lazy(() => import('./pages/ImportHmAccount'))
 
 const {
   HOME,
@@ -70,6 +71,7 @@ const {
   EXPORT_PRIVATEKEY,
   HARDWARE_GUARD,
   CONNECT_HARDWARE_WALLET,
+  IMPORT_HM_ACCOUNT,
 } = ROUTES
 
 function App() {
@@ -171,8 +173,9 @@ function App() {
               path={CONNECT_HARDWARE_WALLET}
               component={ConnectHardwareWallet}
             />
-            <Route exact path={ERROR} component={ErrorPage} />
             <Route exact path={HARDWARE_GUARD} component={HardwareGuard} />
+            <Route exact path={IMPORT_HM_ACCOUNT} component={ImportHmAccount} />
+            <Route exact path={ERROR} component={ErrorPage} />
             <Route path="*" render={() => <Redirect to={ERROR} />} />
           </Switch>
         </Router>

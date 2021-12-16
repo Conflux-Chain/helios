@@ -13,7 +13,7 @@ function OpenApp() {
         </p>
         <p className="text-gray-60 text-sm">{t('openConfluxAppDes')}</p>
       </div>
-      <Button id="hm-btn" size="large" className="w-70 mt-9" disabled>
+      <Button id="hm-btn" size="large" className="w-70 mt-9">
         {t('next')}
       </Button>
     </div>

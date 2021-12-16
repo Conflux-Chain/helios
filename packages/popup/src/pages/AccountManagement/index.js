@@ -32,7 +32,11 @@ function AccountManagementItem({
           key={index}
           className="flex px-3 py-3.5 rounded hover:bg-primary-4"
         >
-          <Avatar className="w-5 h-5 mr-2" diameter={20} accountId={eid} />
+          <Avatar
+            className="w-5 h-5 mr-2"
+            diameter={20}
+            accountIdentity={eid}
+          />
           <div className="flex-1">{nickname}</div>
           <WrapIcon
             size="w-5 h-5"
