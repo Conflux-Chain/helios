@@ -4,11 +4,16 @@ import {
   // QrcodeOutlined,
 } from '@fluent-wallet/component-icons'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {useCurrentAccount} from '../../../hooks/useApi'
+import {useCurrentAddress} from '../../../hooks/useApi'
 import {CopyButton, QRCodeButton} from '../../../components'
 
 function CurrentAccount({onOpenAccount}) {
-  const {nickname, address} = useCurrentAccount()
+  const {
+    data: {
+      value: address,
+      account: {nickname},
+    },
+  } = useCurrentAddress()
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (

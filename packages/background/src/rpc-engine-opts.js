@@ -3,11 +3,13 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletGetImportHardwareWalletInfo from '@fluent-wallet/wallet_get-import-hardware-wallet-info'
+import * as walletImportHardwareWalletAccountGroupOrAccount from '@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account'
 import * as walletGetFluentMetadata from '@fluent-wallet/wallet_get-fluent-metadata'
 import * as walletCleanupTx from '@fluent-wallet/wallet_cleanup-tx'
 import * as walletEnrichConfluxTx from '@fluent-wallet/wallet_enrich-conflux-tx'
 import * as walletEnrichConfluxTxs from '@fluent-wallet/wallet_enrich-conflux-txs'
-import * as walletGetBlockChainExplorerUrl from '@fluent-wallet/wallet_get-blockchain-explorer-url'
+import * as walletGetBlockchainExplorerUrl from '@fluent-wallet/wallet_get-blockchain-explorer-url'
 import * as cfxGetNextUsableNonce from '@fluent-wallet/cfx_get-next-usable-nonce'
 import * as walletHandleUnfinishedTxs from '@fluent-wallet/wallet_handle-unfinished-txs'
 import * as walletHandleUnfinishedCFXTx from '@fluent-wallet/wallet_handle-unfinished-cfx-tx'
@@ -163,6 +165,7 @@ export const rpcEngineOpts = {
 
     walletValidatePrivateKey,
     walletValidateMnemonic,
+    walletImportHardwareWalletAccountGroupOrAccount,
     walletImportMnemonic,
     walletImportPrivateKey,
     walletImportAddress,
@@ -172,6 +175,7 @@ export const rpcEngineOpts = {
     walletUpdateAccount,
     walletUpdateAccountGroup,
     walletGetAccountGroup,
+    walletGetImportHardwareWalletInfo,
     walletExportAccount,
     walletExportAccountGroup,
     walletExportAll,
@@ -211,7 +215,7 @@ export const rpcEngineOpts = {
     walletGetAccountAddressByNetwork,
     walletRefetchTokenList,
     walletUpdateTokenList,
-    walletGetBlockChainExplorerUrl,
+    walletGetBlockchainExplorerUrl,
     walletEnrichConfluxTx,
     walletEnrichConfluxTxs,
 

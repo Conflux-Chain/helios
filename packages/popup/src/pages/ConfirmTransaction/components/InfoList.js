@@ -2,12 +2,13 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
-import {useCurrentDapp, useCurrentNetwork} from '../../../hooks/useApi'
+import {useCurrentDapp, useCurrentAddress} from '../../../hooks/useApi'
 import {DisplayBalance} from '../../../components'
 import useGlobalStore from '../../../stores'
 import {ROUTES} from '../../../constants'
 const {EDIT_PERMISSION} = ROUTES
 
+// TODO: use network id
 const CurrentNetworkDisplay = ({currentNetwork}) => {
   const {name, icon} = currentNetwork
 
@@ -39,7 +40,9 @@ function InfoList({
   const {t} = useTranslation()
   const history = useHistory()
   const data = useCurrentDapp()
-  const network = useCurrentNetwork()
+  const {
+    data: {network},
+  } = useCurrentAddress()
   const {customAllowance} = useGlobalStore()
   const [{app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const currentDapp = isDapp ? app : data?.app

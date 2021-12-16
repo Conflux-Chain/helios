@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types'
 import {RightOutlined} from '@fluent-wallet/component-icons'
-import {useCurrentNetwork} from '../../../hooks/useApi'
+import {useCurrentAddress} from '../../../hooks/useApi'
 
 function CurrentNetwork({onOpenNetwork}) {
-  const currentNetwork = useCurrentNetwork()
-  const {name, icon} = currentNetwork
+  const {
+    data: {
+      network: {icon, name},
+    },
+  } = useCurrentAddress()
 
   return (
     <div

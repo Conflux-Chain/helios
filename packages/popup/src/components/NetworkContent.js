@@ -2,11 +2,10 @@ import PropTypes from 'prop-types'
 import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS} from '../constants'
 import {request} from '../utils'
-import {useSWRConfig} from 'swr'
-import {useCfxNetwork, useCurrentNetwork} from '../hooks/useApi'
+import {useCfxNetwork, useCurrentAddress} from '../hooks/useApi'
 import {CustomTag} from './'
 
-const {WALLET_SET_CURRENT_NETWORK, WALLET_GET_CURRENT_NETWORK} = RPC_METHODS
+const {WALLET_SET_CURRENT_NETWORK} = RPC_METHODS
 const networkTypeColorObj = {
   mainnet: 'bg-primary-10 text-[#ACB6E0]',
   testnet: 'bg-[#FFF7F4] text-[#F5B797]',
@@ -26,8 +25,12 @@ function NetworkItem({
   onClose,
   ...props
 }) {
-  const {mutate} = useSWRConfig()
-  const {eid} = useCurrentNetwork()
+  const {
+    data: {
+      network: {eid},
+    },
+    mutate,
+  } = useCurrentAddress()
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
     itemWrapperPaddingStyleObj[networkItemSize] || ''
@@ -36,7 +39,7 @@ function NetworkItem({
     onClose && onClose()
     if (eid !== networkId) {
       request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(() => {
-        mutate([WALLET_GET_CURRENT_NETWORK])
+        mutate()
         // TODO: i18n
         Message.warning({
           content: 'Address has been changed',

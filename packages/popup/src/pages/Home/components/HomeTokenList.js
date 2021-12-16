@@ -2,15 +2,15 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {PlusOutlined} from '@fluent-wallet/component-icons'
 import {WrapIcon, TokenList} from '../../../components'
-import {useDbHomeAssets} from '../../../hooks/useApi'
+import {useCurrentAddressTokens} from '../../../hooks/useApi'
 
 function HomeTokenList({onOpenAddToken}) {
-  const {added, native} = useDbHomeAssets()
-  const homeTokenList = [native].concat(added)
+  const {data: tokens} = useCurrentAddressTokens()
+  const homeTokenList = ['native'].concat(tokens)
   const {t} = useTranslation()
   return (
     <div
-      className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 pt-3 z-0 overflow-auto"
+      className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 py-3 z-0 overflow-auto"
       id="homeTokenListWrapper"
     >
       <span

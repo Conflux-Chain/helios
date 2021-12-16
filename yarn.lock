@@ -5766,6 +5766,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-import-hardware-wallet-info@workspace:*, @fluent-wallet/wallet_get-import-hardware-wallet-info@workspace:packages/rpcs/wallet_getImportHardwareWalletInfo":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-import-hardware-wallet-info@workspace:packages/rpcs/wallet_getImportHardwareWalletInfo"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+    browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-network@workspace:packages/rpcs/wallet_getNetwork":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-network@workspace:packages/rpcs/wallet_getNetwork"
@@ -5837,6 +5846,16 @@ __metadata:
     "@fluent-wallet/spec": "workspace:packages/spec"
     browser-passworder: 2.0.3
     webextension-polyfill: 0.8.0
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account@workspace:*, @fluent-wallet/wallet_import-hardware-wallet-account-group-or-account@workspace:packages/rpcs/wallet_importHardwareWalletAccountGroupOrAccount":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account@workspace:packages/rpcs/wallet_importHardwareWalletAccountGroupOrAccount"
+  dependencies:
+    "@fluent-wallet/base32-address": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+    browser-passworder: 2.0.3
   languageName: unknown
   linkType: soft
 
@@ -19596,6 +19615,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
     "@fluent-wallet/wallet_get-fluent-metadata": "workspace:*"
+    "@fluent-wallet/wallet_get-import-hardware-wallet-info": "workspace:*"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
     "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest"
@@ -19604,6 +19624,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/wallet_handle-unfinished-txs": "workspace:*"
     "@fluent-wallet/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
     "@fluent-wallet/wallet_import-all": "workspace:packages/rpcs/wallet_importAll"
+    "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account": "workspace:*"
     "@fluent-wallet/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
     "@fluent-wallet/wallet_is-locked": "workspace:packages/rpcs/wallet_isLocked"
     "@fluent-wallet/wallet_lock": "workspace:packages/rpcs/wallet_lock"

@@ -48,8 +48,9 @@ describe('db', function () {
     it('should create the data and return the right entity id', async function () {
       const conn = db.createdb(schema)
       const txReport = conn.createVault({type: 'a', data: 'b'})
-      // the first entity in db has the entity id 1
-      expect(txReport).toBe(1)
+      // the first entity in the dbmeta/version
+      // the second entity in db has the entity id 2
+      expect(txReport).toBe(2)
     })
   })
 
@@ -145,14 +146,14 @@ describe('db', function () {
       vault = rst[0]
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
-      expect(vault.eid).toBe(1)
+      expect(vault.eid).toBe(2)
 
       rst = conn.getVaultByData('b')
       expect(Array.isArray(rst)).toBe(true)
       vault = rst[0]
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
-      expect(vault.eid).toBe(1)
+      expect(vault.eid).toBe(2)
     })
 
     it('should return a empty array if found no data', async function () {
@@ -172,7 +173,7 @@ describe('db', function () {
       conn.createVault({type: 'a', data: 'c'})
 
       let rst, vault
-      rst = conn.getVault({eid: 1})
+      rst = conn.getVault({eid: 2})
       expect(Array.isArray(rst)).toBe(true)
       expect(rst.length).toBe(1)
       expect(rst[0].data).toBe('b')
@@ -185,12 +186,12 @@ describe('db', function () {
       vault = rst[0]
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
-      expect(vault.eid).toBe(1)
+      expect(vault.eid).toBe(2)
 
       vault = rst[1]
       expect(vault.data).toBe('c')
       expect(vault.type).toBe('a')
-      expect(vault.eid).toBe(2)
+      expect(vault.eid).toBe(3)
 
       // default to $and logic
       rst = conn.getVault({type: 'a', data: 'b'})
@@ -213,7 +214,7 @@ describe('db', function () {
       vault = conn.getOneVault({type: 'a'})
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
-      expect(vault.eid).toBe(1)
+      expect(vault.eid).toBe(2)
     })
   })
 
@@ -244,7 +245,7 @@ describe('db', function () {
       vault = conn.getOneVault({type: 'a'})
       expect(vault.data).toBe('c')
       expect(vault.type).toBe('a')
-      expect(vault.eid).toBe(2)
+      expect(vault.eid).toBe(3)
     })
   })
 
@@ -278,7 +279,7 @@ describe('db', function () {
     it('should remove the right data', async function () {
       const conn = db.createdb(schema)
       const vaultId = conn.createVault({type: 'a', data: 'b'})
-      const accountId = conn.createAccount({hexAddress: 'a', vault: 1})
+      const accountId = conn.createAccount({hexAddress: 'a', vault: 2})
       expect(conn.getVaultById(vaultId)).toBeDefined()
       expect(conn.getAccountById(accountId)).toBeDefined()
       expect(conn.deleteVaultById(vaultId)).toBe(true)
@@ -344,11 +345,11 @@ describe('db', function () {
     it('should have the right instance method', async function () {
       const conn = db.createdb(schema)
       conn.createVault({type: 'a', data: 'b'})
-      conn.createAccount({hexAddress: 'c', vault: 1})
+      conn.createAccount({hexAddress: 'c', vault: 2})
 
       const vault = conn.getOneVault({data: 'b'})
 
-      expect(vault.eid).toBe(1)
+      expect(vault.eid).toBe(2)
       expect(vault.data).toBe('b')
       expect(vault.type).toBe('a')
       expect(vault.get('data')).toBe('b')
