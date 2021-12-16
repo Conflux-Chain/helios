@@ -32,6 +32,7 @@ const BasicSchema = [
 
 const NewAccountGroupSchema = [
   ['type', [enums, 'cfx', 'eth']],
+  ['device', [enums, 'LedgerNanoS', 'LedgerNanoX']],
   ['accountGroupNickname', stringp],
 ]
 const OldAccountGroupSchema = [['accountGroupId', dbid]]
@@ -63,6 +64,7 @@ export const main = async ({
   db: {getPassword, findGroup, t, findNetwork, newAddressTx, findAccount},
   params: {
     password,
+    device,
     type,
     address,
     accountGroupData,
@@ -76,6 +78,7 @@ export const main = async ({
       accountGroupData,
       nickname: accountGroupNickname,
       password,
+      device,
       accounts: address,
     }
 

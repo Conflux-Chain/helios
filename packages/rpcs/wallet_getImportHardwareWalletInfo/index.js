@@ -29,7 +29,7 @@ export const main = async ({db: {findGroup, getPassword}}) => {
           network: {name: 1, type: 1, hdPath: {name: 1, value: 1}},
         },
       },
-      vault: {data: 1, cfxOnly: 1},
+      vault: {data: 1, cfxOnly: 1, device: 1},
     },
   })
 

@@ -3,8 +3,7 @@
    [clojure.walk :refer [postwalk walk]]
    [cfxjs.spec.cljs]
    [cfxjs.db.datascript.core :as db]
-   [cfxjs.db.schema :refer [model->attr-keys]]
-   [debux.cs.core :as d :refer-macros [clog clogn break clog_ clogn_  break_]]))
+   [cfxjs.db.schema :refer [model->attr-keys]]))
 
 (declare q p pm e t fdb)
 

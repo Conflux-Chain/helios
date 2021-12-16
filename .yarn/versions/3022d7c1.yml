@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/wallet_add-vault": patch
+  "@fluent-wallet/wallet_get-import-hardware-wallet-info": patch
+  "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account": major
+
+declined:
+  - helios-background

@@ -11,7 +11,7 @@
         db    (d/db old-db-conn)
         db    (if v
                 (if-let [to-run-migrations (seq (drop v migrations))]
-                  (reduce (fn [acc migration] ((:run migration) acc))
+                  (reduce (fn [acc migration] ((:up migration) acc))
                           db to-run-migrations)
                   db)
                 (d/db-with db [{:db/id          -1
