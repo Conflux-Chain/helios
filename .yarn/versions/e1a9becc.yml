@@ -1,5 +1,5 @@
-declined:
-  - "@fluent-wallet/ledger"
+releases:
+  "@fluent-wallet/ledger": patch
 
 undecided:
   - helios-popup
