@@ -279,7 +279,7 @@ function ConfirmTransition() {
               <Button
                 className="flex-1"
                 onClick={onSend}
-                disabled={!!balanceError}
+                disabled={!!balanceError || estimateRst.loading}
               >
                 {t('confirm')}
               </Button>
@@ -289,7 +289,7 @@ function ConfirmTransition() {
             <DappFooter
               confirmText={t('confirm')}
               cancelText={t('cancel')}
-              confirmDisabled={!!balanceError}
+              confirmDisabled={!!balanceError || estimateRst.loading}
               confirmParams={{tx: sendParams}}
             />
           )}
