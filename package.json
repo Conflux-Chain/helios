@@ -13,6 +13,7 @@
     "node": ">=15"
   },
   "resolutions": {
+    "bn.js": "5.2.0",
     "tslib": "^2.3.1",
     "ethereumjs-vm": "4.2.0",
     "react": "17.0.2",
@@ -99,7 +100,7 @@
     "react-highlight.js": "1.0.7",
     "regenerator-runtime": "^0.13.9",
     "rimraf": "^3.0.2",
-    "shadow-cljs": "^2.16.6",
+    "shadow-cljs": "^2.16.8",
     "snowpack": "3.8.6",
     "storybook": "6.3.12",
     "storybook-addon-outline": "1.4.1",

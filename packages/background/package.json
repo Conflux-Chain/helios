@@ -48,6 +48,7 @@
     "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts",
     "@fluent-wallet/cfx_send-transaction": "workspace:packages/rpcs/cfx_sendTransaction",
     "@fluent-wallet/cfx_sign-transaction": "workspace:packages/rpcs/cfx_signTransaction",
+    "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": "workspace:*",
     "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4",
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/db": "workspace:packages/db",

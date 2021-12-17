@@ -3,9 +3,10 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "dependencies": {
     "@fluent-wallet/cfx_sign-transaction": "workspace:packages/rpcs/cfx_signTransaction",
+    "@fluent-wallet/json-rpc-error": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
     "@fluent-wallet/spec": "workspace:packages/spec"
   }
