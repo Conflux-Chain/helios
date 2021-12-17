@@ -60,7 +60,7 @@ export default class Conflux {
    * @returns
    */
   async getAppConfiguration() {
-    await this.setApp()
+    // await this.setApp()
     return this.app?.getAppConfiguration()
   }
 
