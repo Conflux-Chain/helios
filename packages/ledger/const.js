@@ -1,12 +1,19 @@
 export const LEDGER_APP_NAME = {
   CONFLUX: 'Conflux',
 }
-export const LEDGER_NANOS = 'NANOS'
-export const LEDGER_NANOX = 'NANOX'
+export const LEDGER_NANOS_ID = 4113
+export const LEDGER_NANOX_ID = 16401
+export const LEDGER_VERDOR_ID = '0x2c97' //11415
 export const LEDGER_DEVICE = {
-  [LEDGER_NANOS]: {
+  [LEDGER_NANOS_ID]: {
+    NAME: 'LedgerNanoS',
     PRODUCT_NAME: 'Nano S',
-    VERDOR_ID: '0x2c97', //11415
+    VERDOR_ID: LEDGER_VERDOR_ID,
+  },
+  [LEDGER_NANOX_ID]: {
+    NAME: 'LedgerNanoX',
+    PRODUCT_NAME: 'Nano X',
+    VERDOR_ID: LEDGER_VERDOR_ID,
   },
 }
 export const LEDGER_CLA = 0xe0
