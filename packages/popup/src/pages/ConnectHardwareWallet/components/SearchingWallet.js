@@ -8,7 +8,7 @@ function SearchingWallet() {
       <img src="/images/searching-hm-wallet.gif" alt="searching" />
       <div className="w-110 text-center">
         <p className="text-gray-80 text-lg font-medium mb-2">
-          {t('searchHmWallet')}
+          {t('searchHwWallet')}
         </p>
         <p className="text-gray-60 text-sm">{t('connectLedgerTips')}</p>
       </div>

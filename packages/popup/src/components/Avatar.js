@@ -20,7 +20,7 @@ const useCfxMainnetAddress = accountIdentity => {
     isNumber(accountIdentity) && isNumber(networkId)
       ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId, accountIdentity]
       : null,
-    {accountIdentity, networkId},
+    {accountId: accountIdentity, networkId},
     {fallbackData: {}},
   )
   const hex = isHexAddress(accountIdentity)

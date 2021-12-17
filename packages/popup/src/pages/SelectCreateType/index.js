@@ -82,7 +82,7 @@ function SelectCreateType() {
         />
         {zeroGroup === false ? (
           <CreateTypeItem
-            id="hm"
+            id="hw"
             Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
             title={t('hardwareWallet')}
             typeClass="mt-9"

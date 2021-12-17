@@ -220,7 +220,7 @@ const en = {
     selectConfluxApp: 'Select and Open Conflux App.',
     ready: 'Ready',
     // connect hardware wallet
-    searchHmWallet: 'Searching for wallet',
+    searchHwWallet: 'Searching for wallet',
     connectLedgerTips:
       'Connect your Ledger, make sure it is unlocked, and that you have approved permissions in your browser.',
     connectLedger: 'Connect your Ledger',
@@ -232,13 +232,13 @@ const en = {
     openConfluxAppDes: 'Select and Open Conflux App in your Ledger device.',
     chooseAddress: 'Choose Address',
     hdPath: 'HD Path',
-    chooseHmAddress: 'Choose the address you want to import.',
+    chooseHwAddress: 'Choose the address you want to import.',
     capNext: 'NEXT',
     capPrev: 'PREV',
     adding: 'Adding',
-    keepHmConnected: 'Please keep your ledger connected.',
+    keepHwConnected: 'Please keep your ledger connected.',
     accountAdded: 'Account Added',
-    importedHmAccount:
+    importedHwAccount:
       'You can now access your Ledger wallet from within Fluent.Please return to the extension.',
     done: 'Done',
   },

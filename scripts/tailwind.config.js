@@ -171,7 +171,7 @@ module.exports = {
         'blue-card-linear': "url('/images/blue-card-linear-bg.svg')",
         'guard-banner': "url('/images/guard-banner.svg')",
         'identity-panel': "url('/images/identity-panel-bg.svg')",
-        'add-hm-account': "url('/images/adding-hm-account.svg')",
+        'add-hw-account': "url('/images/adding-hw-account.svg')",
       },
     },
   },

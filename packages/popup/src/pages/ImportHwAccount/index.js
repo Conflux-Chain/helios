@@ -41,7 +41,7 @@ function ImportingResults({importStatus}) {
     >
       <div className="flex-2" />
       <div className="flex flex-col items-center">
-        <div className="bg-add-hm-account w-120 h-45 relative">
+        <div className="bg-add-hw-account w-120 h-45 relative">
           {importStatus === 'loading' ? (
             <Loading className="absolute right-[110px] top-[54px] w-7 h-7" />
           ) : (
@@ -54,8 +54,8 @@ function ImportingResults({importStatus}) {
           </p>
           <p className="text-gray-60 text-sm">
             {importStatus === 'loading'
-              ? t('keepHmConnected')
-              : t('importedHmAccount')}
+              ? t('keepHwConnected')
+              : t('importedHwAccount')}
           </p>
         </div>
       </div>
@@ -73,7 +73,7 @@ ImportingResults.propTypes = {
   importStatus: PropTypes.string.isRequired,
 }
 
-function ImportHmAccount() {
+function ImportHwAccount() {
   const {t} = useTranslation()
   const {
     data: {
@@ -141,7 +141,7 @@ function ImportHmAccount() {
 
   return base32Address && Object.keys(balances).length ? (
     <div
-      id="import-hm-account"
+      id="import-hw-account"
       className="m-auto light flex flex-col h-full min-h-screen"
     >
       <div className="w-120 rounded-2xl shadow-fluent-3 px-8 pb-6">
@@ -167,7 +167,7 @@ function ImportHmAccount() {
             <div className="flex justify-between" id="label">
               <div className="flex items-center">
                 <div className="text-sm text-gray-40">
-                  {t('chooseHmAddress')}
+                  {t('chooseHwAddress')}
                 </div>
               </div>
               <Checkbox
@@ -209,7 +209,7 @@ function ImportHmAccount() {
                       className="!text-gray-80 !font-normal"
                       decimals={CFX_DECIMALS}
                       symbol="CFX"
-                      id="hmAddressCfxBalance"
+                      id="hwAddressCfxBalance"
                     />
                   </div>
                   <div className="flex">
@@ -250,4 +250,4 @@ function ImportHmAccount() {
     </div>
   ) : null
 }
-export default ImportHmAccount
+export default ImportHwAccount
