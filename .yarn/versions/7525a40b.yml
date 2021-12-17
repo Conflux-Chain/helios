@@ -3,6 +3,8 @@ releases:
   "@fluent-wallet/test-helpers": patch
   "@fluent-wallet/use-rpc": patch
   "@fluent-wallet/wallet_get-import-hardware-wallet-info": patch
+  "@fluent-wallet/wallet_user-approved-auth-request": patch
+  "@fluent-wallet/wallet_user-rejected-auth-request": patch
   "@fluent-wallet/wallet_watch-asset": patch
   "@fluent-wallet/wallet_zero-account-group": patch
 

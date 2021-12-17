@@ -7,13 +7,13 @@ export const schemas = {
 }
 
 export const permissions = {
-  db: ['getAuthReqById', 'retract', 'getAuthReq'],
+  db: ['getAuthReqById', 'retract'],
   external: ['popup'],
 }
 
 export const main = async ({
   Err: {InvalidParams, UserRejected},
-  db: {retract, getAuthReqById, getAuthReq},
+  db: {retract, getAuthReqById},
   params: {authReqId},
 }) => {
   const authReq = getAuthReqById(authReqId)
@@ -26,11 +26,6 @@ export const main = async ({
   }
 
   retract(authReqId)
-
-  if (!getAuthReq()?.length) {
-    const {popup} = await import('@fluent-wallet/webextension')
-    popup.removePopup()
-  }
 
   return
 }
