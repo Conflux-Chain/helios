@@ -4777,7 +4777,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/component-loading@workspace:packages/ui/components/Loading":
+"@fluent-wallet/component-loading@workspace:*, @fluent-wallet/component-loading@workspace:packages/ui/components/Loading":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/component-loading@workspace:packages/ui/components/Loading"
   dependencies:
@@ -19683,6 +19683,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/component-dropdown": "workspace:packages/ui/components/Dropdown"
     "@fluent-wallet/component-icons": "workspace:packages/ui/icons"
     "@fluent-wallet/component-input": "workspace:packages/ui/components/Input"
+    "@fluent-wallet/component-loading": "workspace:*"
     "@fluent-wallet/component-message": "workspace:*"
     "@fluent-wallet/component-modal": "workspace:packages/ui/components/Modal"
     "@fluent-wallet/component-toast": "workspace:packages/ui/components/Toast"
