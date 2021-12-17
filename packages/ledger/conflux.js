@@ -93,8 +93,17 @@ export default class Conflux {
     }
   }
 
+  /**
+   *
+   * @returns boolean, means that whether user has already authed this hardware
+   */
   async requestAuth() {
-    return TransportWebUSB?.request()
+    try {
+      await TransportWebUSB?.request()
+      return true
+    } catch (error) {
+      return false
+    }
   }
 
   async getAddressList(indexArray) {
