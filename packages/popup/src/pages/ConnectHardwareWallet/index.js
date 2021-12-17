@@ -38,14 +38,16 @@ function WalletInner() {
 
   const onConnectHwWallet = async () => {
     setConnecting(true)
-    const ret = await cfx.requestAuth()
+    const authRet = await cfx.requestAuth()
+    const openRet = await cfx.isAppOpen()
     setConnecting(false)
-    if (ret) {
+    if (authRet) {
       // TODO: deal with query
-      history.push(IMPORT_HW_ACCOUNT)
-    } else {
-      setShowReconnectStatus(true)
+      setIsAppOpen(openRet)
+      openRet && history.push(IMPORT_HW_ACCOUNT)
+      return
     }
+    setShowReconnectStatus(true)
   }
 
   console.log('loading', loading)

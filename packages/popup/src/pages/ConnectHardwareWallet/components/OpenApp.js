@@ -20,10 +20,8 @@ function OpenApp() {
     }
     const ret = await cfx.isAppOpen()
     setLoadingStatus(false)
-    if (ret) {
-      // TODO: deal with query
-      history.push(IMPORT_HW_ACCOUNT)
-    }
+    // TODO: deal with query
+    ret && history.push(IMPORT_HW_ACCOUNT)
   }
 
   return (
