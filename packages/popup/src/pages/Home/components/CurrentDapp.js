@@ -12,7 +12,7 @@ function CurrentDapp() {
   const {setFatalError} = useGlobalStore()
   const [authModalShow, setAuthModalShow] = useState(false)
   const [disconnectModalShow, setDisconnectModalShow] = useState(false)
-  const data = useCurrentDapp()
+  const {data, mutate} = useCurrentDapp()
   const site = data?.site || {}
   const currentDapp = data?.app || {}
   const {currentAccount: dappCurrentAccount, eid: appId} = currentDapp
@@ -27,7 +27,7 @@ function CurrentDapp() {
   const isConnected = !!data?.app
   const isConnectedCurrentAccount = connectedEid === currentEid
   const connectedAccounts =
-    currentDapp?.account.map(account => account?.eid) || []
+    currentDapp?.account?.map(account => account?.eid) || []
 
   const onAuth = () => {
     request(WALLET_REQUEST_PERMISSIONS, {
@@ -35,7 +35,10 @@ function CurrentDapp() {
       permissions: [{wallet_accounts: {}}],
       accounts: connectedAccounts.concat([currentEid]),
     })
-      .then(() => setAuthModalShow(false))
+      .then(() => {
+        setAuthModalShow(false)
+        mutate()
+      })
       .catch(error => setFatalError(error))
   }
 

@@ -64,7 +64,7 @@ export const useCurrentDapp = () => {
   const {
     data: {eid: addressId},
   } = useCurrentAddress()
-  const {data: currentDapp} = useRPC(
+  const {data, mutate} = useRPC(
     [WALLET_GET_CURRENT_DAPP, addressId],
     undefined,
     {
@@ -72,7 +72,7 @@ export const useCurrentDapp = () => {
     },
   )
 
-  return currentDapp
+  return {data, mutate}
 }
 
 export const useAccountGroup = () => {
