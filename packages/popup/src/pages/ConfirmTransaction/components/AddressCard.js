@@ -61,7 +61,9 @@ const AddressDetail = ({
           {isContract && <FileOutlined className="w-4 h-4 mr-1 text-primary" />}
           {toAddress && shortenAddress(toAddress)}
           {isCreateContract && t('createContract')}
-          <CopyButton text={toAddress} className="ml-2  text-gray-60" />
+          {toAddress && (
+            <CopyButton text={toAddress} className="ml-2  text-gray-60" />
+          )}
         </span>
       </div>
     </div>
