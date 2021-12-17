@@ -34,7 +34,7 @@ function AddToken({onClose, open}) {
   const {data: networkTokens, mutateNetworkTokens} = useCurrentNetworkTokens({
     fuzzy: searchContent || null,
   })
-  const [tokenList, setTokenList] = useState(networkTokens)
+  const [tokenList, setTokenList] = useState([])
   const {data: addressTokens, mutateAddressTokens} = useCurrentAddressTokens()
 
   const getOther20Token = useCallback((userAddress, tokenAddress) => {

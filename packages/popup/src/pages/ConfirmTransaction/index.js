@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
+import Loading from '@fluent-wallet/component-loading'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
   formatDecimalToHex,
@@ -211,6 +212,7 @@ function ConfirmTransition() {
   const onSend = async () => {
     if (sendingTransaction) return
     setSendingTransaction(true)
+    clearSendTransactionParams()
     if (isSendToken) {
       const error = await checkBalance()
       if (error) {
@@ -292,6 +294,11 @@ function ConfirmTransition() {
               confirmDisabled={!!balanceError || estimateRst.loading}
               confirmParams={{tx: sendParams}}
             />
+          )}
+          {!isDapp && sendingTransaction && (
+            <div className="fixed top-0 left-0 flex w-screen h-screen bg-[rgba(0,0,0,0.4)] items-center justify-center">
+              <Loading />
+            </div>
           )}
         </div>
       </div>
