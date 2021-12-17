@@ -26,12 +26,14 @@ function CurrentDapp() {
   } = useCurrentAddress()
   const isConnected = !!data?.app
   const isConnectedCurrentAccount = connectedEid === currentEid
+  const connectedAccounts =
+    currentDapp?.account.map(account => account?.eid) || []
 
   const onAuth = () => {
     request(WALLET_REQUEST_PERMISSIONS, {
       siteId,
       permissions: [{wallet_accounts: {}}],
-      accounts: [currentEid],
+      accounts: connectedAccounts.concat([currentEid]),
     })
       .then(() => setAuthModalShow(false))
       .catch(error => setFatalError(error))

@@ -56,9 +56,16 @@ export const useCurrentAddress = () => {
 }
 
 export const useCurrentDapp = () => {
-  const {data: currentDapp} = useRPC([WALLET_GET_CURRENT_DAPP], undefined, {
-    fallbackData: {},
-  })
+  const {
+    data: {eid: addressId},
+  } = useCurrentAddress()
+  const {data: currentDapp} = useRPC(
+    [WALLET_GET_CURRENT_DAPP, addressId],
+    undefined,
+    {
+      fallbackData: {},
+    },
+  )
 
   return currentDapp
 }
