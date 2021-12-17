@@ -1,12 +1,18 @@
+import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {isUndefined} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
+import Loading from '@fluent-wallet/component-loading'
 import {CFX_DECIMALS} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Checkbox from '@fluent-wallet/component-checkbox'
 import Button from '@fluent-wallet/component-button'
-import {LeftOutlined, RightOutlined} from '@fluent-wallet/component-icons'
+import {
+  LeftOutlined,
+  RightOutlined,
+  CheckCircleFilled,
+} from '@fluent-wallet/component-icons'
 import {
   DEFAULT_CFX_HDPATH,
   CFX_MAINNET_NETID,
@@ -25,6 +31,48 @@ const mockAddress = [
   '0x83a930f2b03ec188ddb6a68c0037eaf88fb21282',
 ]
 
+function ImportingResults({importStatus}) {
+  const {t} = useTranslation()
+
+  return (
+    <div
+      id="importing-results"
+      className="m-auto light flex flex-col h-full min-h-screen"
+    >
+      <div className="flex-2" />
+      <div className="flex flex-col items-center">
+        <div className="bg-add-hm-account w-120 h-45 relative">
+          {importStatus === 'loading' ? (
+            <Loading className="absolute right-[110px] top-[54px] w-7 h-7" />
+          ) : (
+            <CheckCircleFilled className="absolute right-[110px] top-[54px] w-7 h-7 text-success" />
+          )}
+        </div>
+        <div className="w-100 text-center mt-4">
+          <p className="text-lg font-medium text-gray-80 mb-2">
+            {importStatus === 'loading' ? t('adding') : t('accountAdded')}
+          </p>
+          <p className="text-gray-60 text-sm">
+            {importStatus === 'loading'
+              ? t('keepHmConnected')
+              : t('importedHmAccount')}
+          </p>
+        </div>
+      </div>
+      {importStatus === 'success' ? (
+        <Button className="w-70 mx-auto mt-9" size="large">
+          {t('done')}
+        </Button>
+      ) : null}
+
+      <div className="flex-3" />
+    </div>
+  )
+}
+ImportingResults.propTypes = {
+  importStatus: PropTypes.string.isRequired,
+}
+
 function ImportHmAccount() {
   const {t} = useTranslation()
   const {
@@ -34,6 +82,8 @@ function ImportHmAccount() {
   } = useCurrentAddress()
   const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
+  //  "" loading  success
+  const [importStatus, setImportStatus] = useState('')
 
   // TODO: 上一页下一页的时候需要重置。同时过滤已导入的地址
   useEffect(() => {
@@ -85,14 +135,23 @@ function ImportHmAccount() {
 
   const balances = useBalance(base32Address, networkId)
 
+  if (importStatus) {
+    return <ImportingResults importStatus={importStatus} />
+  }
+
   return base32Address && Object.keys(balances).length ? (
     <div
       id="import-hm-account"
       className="m-auto light flex flex-col h-full min-h-screen"
     >
-      <div className="w-120">
-        <TitleNav title={t('chooseAddress')} hasGoBack={false} />
+      <div className="w-120 rounded-2xl shadow-fluent-3 px-8 pb-6">
+        <TitleNav
+          title={t('chooseAddress')}
+          hasGoBack={false}
+          className="text-lg text-gray-80 font-medium"
+        />
         <CompWithLabel
+          className="mt-5"
           label={<p className="text-sm text-gray-40">{t('hdPath')}</p>}
         >
           <Input
@@ -123,7 +182,7 @@ function ImportHmAccount() {
         >
           <div
             id="accountWrapper"
-            className="max-h-[282px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll"
+            className="rounded border border-solid border-gray-10 pt-3 overflow-auto bg-gray-4 no-scroll"
           >
             {mockAddress.map((hexAddress, index) => (
               <div
@@ -162,21 +221,21 @@ function ImportHmAccount() {
                 </div>
               </div>
             ))}
-            <div className="flex">
+            <div className="flex justify-center items-center my-3">
               <Button
-                className="flex flex-1 mr-3"
+                className="mr-20 w-25"
                 onClick={() => {}}
                 variant="text"
                 id="prev-btn"
-                startIcon={<LeftOutlined />}
+                startIcon={<LeftOutlined className="!text-gray-80" />}
               >
                 {t('capPrev')}
               </Button>
               <Button
-                className="flex flex-1 mr-3"
+                className="w-25"
                 onClick={() => {}}
                 variant="text"
-                endIcon={<RightOutlined />}
+                endIcon={<RightOutlined className="!text-gray-80" />}
                 id="next-btn"
               >
                 {t('capNext')}
@@ -184,7 +243,7 @@ function ImportHmAccount() {
             </div>
           </div>
         </CompWithLabel>
-        <Button size="large" className="w-70 mx-auto">
+        <Button size="large" className="w-70 mx-auto mt-6">
           {t('next')}
         </Button>
       </div>

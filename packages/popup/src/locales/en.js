@@ -235,6 +235,12 @@ const en = {
     chooseHmAddress: 'Choose the address you want to import.',
     capNext: 'NEXT',
     capPrev: 'PREV',
+    adding: 'Adding',
+    keepHmConnected: 'Please keep your ledger connected.',
+    accountAdded: 'Account Added',
+    importedHmAccount:
+      'You can now access your Ledger wallet from within Fluent.Please return to the extension.',
+    done: 'Done',
   },
 }
 

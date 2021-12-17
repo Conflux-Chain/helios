@@ -39,6 +39,7 @@ module.exports = {
         13: '3.25rem',
         15: '3.75rem',
         25: '6.25rem',
+        45: '11.25rem',
         50: '12.5rem',
         70: '17.5rem',
         85: '21.25rem',
@@ -55,6 +56,7 @@ module.exports = {
         3: '0px 8px 36px rgba(0, 0, 0, 0.06)',
         'fluent-1': '0px 2px 8px rgba(75, 100, 233, 0.12)',
         'fluent-2': '0px 6px 16px rgba(149, 163, 233, 0.08)',
+        'fluent-3': '0px 8px 16px rgba(149, 163, 233, 0.08)',
       },
       colors: {
         bg: 'var(--color-bg)',
@@ -169,6 +171,7 @@ module.exports = {
         'blue-card-linear': "url('/images/blue-card-linear-bg.svg')",
         'guard-banner': "url('/images/guard-banner.svg')",
         'identity-panel': "url('/images/identity-panel-bg.svg')",
+        'add-hm-account': "url('/images/adding-hm-account.svg')",
       },
     },
   },
