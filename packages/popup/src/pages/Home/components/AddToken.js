@@ -75,15 +75,21 @@ function AddToken({onClose, open}) {
     inputValueRef.current = value
   }
 
-  const onAddToken = ({decimals, symbol, address, logoURI}) => {
-    const params = {
-      type: isCfxChain ? 'CRC20' : 'ERC20',
-      options: {
-        address,
-        symbol,
-        decimals,
-        image: logoURI || DEFAULT_TOKEN_URL,
-      },
+  const onAddToken = token => {
+    let params
+    if (Number.isInteger(token)) {
+      params = {tokenId: token}
+    } else {
+      const {decimals, symbol, address, logoURI} = token
+      params = {
+        type: isCfxChain ? 'CRC20' : 'ERC20',
+        options: {
+          address,
+          symbol,
+          decimals,
+          image: logoURI || DEFAULT_TOKEN_URL,
+        },
+      }
     }
     request(WALLET_WATCH_ASSET, params).then(() => {
       // TODO:error

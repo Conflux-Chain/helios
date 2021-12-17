@@ -8,6 +8,6 @@
   },
   "dependencies": {
     "param-case": "3.0.4",
-    "zustand": "^3.6.5"
+    "zustand": "^3.6.7"
   }
 }

@@ -48,6 +48,7 @@ export const schemas = {
 export const permissions = {
   external: [],
   methods: [
+    'cfx_signTxWithLedgerNanoS',
     'wallet_getAddressPrivateKey',
     'cfx_getNextUsableNonce',
     'cfx_epochNumber',
@@ -57,25 +58,30 @@ export const permissions = {
   db: ['findAddress'],
 }
 
-export const main = async ({
-  Err: {InvalidParams},
-  db: {findAddress},
-  rpcs: {
-    wallet_getAddressPrivateKey,
-    cfx_epochNumber,
-    cfx_estimateGasAndCollateral,
-    cfx_getNextUsableNonce,
-    wallet_detectAddressType,
-  },
-  params: [tx, opts = {}],
-  network,
-}) => {
+export const main = async args => {
+  const {
+    Err: {InvalidParams},
+    db: {findAddress},
+    rpcs: {
+      wallet_getAddressPrivateKey,
+      cfx_epochNumber,
+      cfx_estimateGasAndCollateral,
+      cfx_getNextUsableNonce,
+      wallet_detectAddressType,
+    },
+    params: [tx, opts = {}],
+    network,
+  } = args
   const {epoch, returnTxMeta} = opts
   let newTx = {...tx}
   if (newTx.chainId && newTx.chainId !== network.chainId)
     throw InvalidParams(`Invalid chainId ${chainId}`)
 
-  const fromAddr = findAddress({networkId: network.eid, value: newTx.from})
+  const fromAddr = findAddress({
+    networkId: network.eid,
+    value: newTx.from,
+    g: {eid: 1, _account: {_accountGroup: {vault: {type: 1, device: 1}}}},
+  })
   // from address is not belong to wallet
   if (!fromAddr) throw InvalidParams(`Invalid from address ${newTx.from}`)
 
@@ -123,13 +129,36 @@ export const main = async ({
     if (!newTx.storageLimit) newTx.storageLimit = storageCollateralized
   }
 
-  const pk = await wallet_getAddressPrivateKey({address: newTx.from})
+  let raw
+  if (fromAddr.account.accountGroup.vault.type === 'hw') {
+    raw = await signWithHardwareWallet({
+      args,
+      tx: newTx,
+      addressId: fromAddr.eid,
+      device: fromAddr.account.accountGroup.vault.device,
+    })
+  } else {
+    const pk = await wallet_getAddressPrivateKey({address: newTx.from})
 
-  const raw = cfxSignTransaction(newTx, pk, network.netId)
+    raw = cfxSignTransaction(newTx, pk, network.netId)
+  }
 
   if (returnTxMeta) {
     return {txMeta: newTx, raw}
   }
 
   return raw
+}
+
+async function signWithHardwareWallet({
+  args: {
+    rpcs: {cfx_signTxWithLedgerNanoS},
+  },
+  tx,
+  addressId,
+  device,
+}) {
+  const hwSignMap = {LedgerNanoS: cfx_signTxWithLedgerNanoS}
+  const signMethod = hwSignMap[device]
+  return await signMethod({tx, addressId})
 }

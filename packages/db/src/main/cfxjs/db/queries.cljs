@@ -3,8 +3,7 @@
    [clojure.walk :refer [postwalk walk]]
    [cfxjs.spec.cljs]
    [cfxjs.db.datascript.core :as db]
-   [cfxjs.db.schema :refer [model->attr-keys]]
-   [debux.cs.core :as d :refer-macros [clog clogn break clog_ clogn_  break_]]))
+   [cfxjs.db.schema :refer [model->attr-keys]]))
 
 (declare q p pm e t fdb)
 
@@ -215,7 +214,7 @@
              rst           (apply q query (:args query-initial))]
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
-(defn get-group [{:keys [groupId vaultId g nickname types hidden]}]
+(defn get-group [{:keys [groupId vaultId g nickname types hidden devices]}]
   (let [g (and g {:accountGroup g})
         post-process (if (seq g) identity #(get % :db/id))]
     (prst->js
@@ -248,6 +247,10 @@
                              (-> (update :args conj types)
                                  (update :in conj '[?vtypes ...])
                                  (update :where conj '[?g :accountGroup/vault ?vault] '[?vault :vault/type ?vtypes]))
+                             (and devices (not vaultId))
+                             (-> (update :args conj devices)
+                                 (update :in conj '[?vdevices ...])
+                                 (update :where conj '[?g :accountGroup/vault ?vault] '[?vault :vault/device ?vdevices]))
                              true identity)
              query         (concat [:find] (:find query-initial)
                                    [:in] (:in query-initial)
@@ -450,19 +453,24 @@
        :where
        [?net :network/selected true]]))
 
-(defn get-address [{:keys [addressId networkId value accountId groupId index tokenId appId selected g]}]
-  (let [g (and g {:address g})
+(defn get-address [{:keys [addressId networkId hex value accountId groupId index tokenId appId selected g]}]
+  (let [g            (and g {:address g})
         post-process (if (seq g) identity #(get % :db/id))
-        addr (and (string? value) (.toLowerCase value))
-        addressId (if selected (get-current-addr) addressId)]
+        addr         (if (string? value) [value] value)
+        addr         (if (vector? addr) (map #(.toLowerCase %) addr) addr)
+        hex          (if (string? hex) [hex] hex)
+        hex          (if (vector? hex) (map #(.toLowerCase %) hex) hex)
+        addressId    (if selected (get-current-addr) addressId)]
     (prst->js
      (cond
-       addressId
+       (vector? addressId)
+       (pm (jsp->p g) addressId)
+       (and addressId (not (vector? addressId)))
        (when (q '[:find ?addr .
                   :where [?addr :address/id]])
          (post-process (p (jsp->p g) addressId)))
-       (and networkId addr)
-       (post-process (p (jsp->p g) [:address/id [networkId addr]]))
+       (and networkId (= (count addr) 1))
+       (post-process (p (jsp->p g) [:address/id [networkId (first addr)]]))
        :else
        (let [query-initial (cond-> '{:find  [[?addr ...]]
                                      :in    [$]
@@ -473,9 +481,13 @@
                                  (update :in conj '[?net ...])
                                  (update :where conj '[?addr :address/network ?net]))
                              addr
-                             (-> (update :args conj (if (vector? addr) addr [addr]))
+                             (-> (update :args conj addr)
                                  (update :in conj '[?addrv ...])
                                  (update :where conj '[?addr :address/value ?addrv]))
+                             hex
+                             (-> (update :args conj hex)
+                                 (update :in conj '[?hex ...])
+                                 (update :where conj '[?addr :address/hex ?hex]))
                              groupId
                              (-> (update :args conj (if (vector? groupId) groupId [groupId]))
                                  (update :in conj '[?gid ...])

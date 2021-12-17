@@ -127,6 +127,16 @@ export const cfxSignTransaction = (tx, pk, netId) => {
   return transaction.sign(pk, netId).serialize()
 }
 
+export const cfxEncodeTx = tx => {
+  const transaction = new CfxTransaction(tx)
+  return `0x${transaction.encode(false).toString('hex')}`
+}
+
+export const cfxJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
+  const transaction = new CfxTransaction({...tx, r, s, v})
+  return transaction.serialize()
+}
+
 export const getTxHashFromRawTx = txhash => {
   return keccak256(txhash)
 }

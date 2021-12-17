@@ -1,11 +1,12 @@
 {
-  "name": "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account",
+  "name": "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s",
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "dependencies": {
-    "@fluent-wallet/base32-address": "workspace:*",
+    "@fluent-wallet/ledger": "workspace:*",
+    "@fluent-wallet/signature": "workspace:*",
     "@fluent-wallet/spec": "workspace:*",
     "browser-passworder": "2.0.3"
   }

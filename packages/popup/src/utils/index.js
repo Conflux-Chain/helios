@@ -59,12 +59,14 @@ export const validateAddress = (address, networkTypeIsCfx, netId) => {
 export const bn16 = x => new BN(stripHexPrefix(x), 16)
 
 export function updateAddedNewAccount(mutate, noAccountBefore, groupType) {
+  const promises = []
   if (noAccountBefore) {
-    mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
-    mutate([WALLET_IS_LOCKED], false)
+    promises.push(mutate([WALLET_ZERO_ACCOUNT_GROUP], false))
+    promises.push(mutate([WALLET_IS_LOCKED], false))
   }
-  mutate([WALLET_GET_ACCOUNT_GROUP])
-  mutate([WALLET_GET_ACCOUNT_GROUP, groupType])
+  promises.push(mutate([WALLET_GET_ACCOUNT_GROUP]))
+  promises.push(mutate([WALLET_GET_ACCOUNT_GROUP, groupType]))
+  return Promise.all(promises)
 }
 
 export const transformToTitleCase = str => {

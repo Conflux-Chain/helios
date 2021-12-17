@@ -23,6 +23,7 @@
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format",
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
     "@fluent-wallet/jazz-icon": "workspace:packages/jazz-icon",
+    "@fluent-wallet/ledger": "workspace:packages/ledger",
     "@fluent-wallet/radio": "workspace:packages/ui/components/Radio",
     "@fluent-wallet/shorten-address": "workspace:packages/ui/shorten-address",
     "@fluent-wallet/tx-history-checker": "workspace:*",
@@ -37,8 +38,8 @@
     "react-i18next": "11.14.3",
     "react-router-dom": "5.3.0",
     "react-use": "17.3.1",
-    "swr": "1.0.1",
+    "swr": "1.1.1",
     "webextension-polyfill": "^0.8.0",
-    "zustand": "^3.6.5"
+    "zustand": "^3.6.7"
   }
 }

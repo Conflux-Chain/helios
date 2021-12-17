@@ -1,10 +1,15 @@
 import {isNumber, isString} from '@fluent-wallet/checks'
+import {useMemo} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 
 import {NETWORK_TYPE, RPC_METHODS} from '../constants'
 import {validateAddress} from '../utils'
+import {encode} from '@fluent-wallet/base32-address'
+import {request} from '../utils/'
 
 const {
+  WALLET_GET_IMPORT_HARDWARE_WALLET_INFO,
+  WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT,
   QUERY_GROUP,
   QUERY_BALANCE,
   QUERY_ADDRESS,
@@ -396,4 +401,57 @@ export const useBlockchainExplorerUrl = params => {
     ...params,
   })
   return urlData
+}
+
+// data should be {[hex]: hdPath}
+export const useImportHW = ({data = {}, device = 'LedgerNanoS'}) => {
+  const params = {}
+  const hex = Object.keys(data)
+  const {
+    data: {
+      network: {eid: networkId, type: netType, netId},
+    },
+  } = useCurrentAddress()
+
+  const {
+    data: [group],
+  } = useRPC(
+    networkId
+      ? [WALLET_GET_IMPORT_HARDWARE_WALLET_INFO, 'useImportHW', device]
+      : null,
+    {
+      devices: [device],
+    },
+    {fallbackData: []},
+  )
+
+  let nextAccountIndex = 1
+  if (!group) {
+    params.accountGroupNickname = device
+    params.device = device
+    ;(params.type = netType), (params.accountGroupData = {...data})
+  } else {
+    params.accountGroupId = group.eid
+    params.accountGroupData = {...data, ...group.vault.ddata}
+    nextAccountIndex = group.account.length + 1
+  }
+
+  const base32Addrs = useMemo(() => {
+    if (!netId) return []
+    return hex.map((x, idx) => ({
+      address: encode(x, netId),
+      nickname: `${device}-${nextAccountIndex + idx}`,
+    }))
+  }, [...hex, netId, nextAccountIndex])
+
+  params.address = base32Addrs
+
+  return useMemo(() => {
+    if (!networkId) return async () => {}
+    return request(
+      WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT,
+      params,
+      [...hex, networkId, device],
+    )
+  })
 }

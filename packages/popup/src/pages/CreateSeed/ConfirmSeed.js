@@ -84,9 +84,12 @@ function ConfirmSeed() {
     request(WALLET_IMPORT_MNEMONIC, params)
       .then(() => {
         setImportingMnemonic(false)
-        updateAddedNewAccount(mutate, !!createdPassword, ACCOUNT_GROUP_TYPE.HD)
+        updateAddedNewAccount(
+          mutate,
+          !!createdPassword,
+          ACCOUNT_GROUP_TYPE.HD,
+        ).then(() => history.push(HOME))
         createdPassword && setCreatedPassword('')
-        history.push(HOME)
         setCreatedMnemonic('')
       })
       .catch(error => {
