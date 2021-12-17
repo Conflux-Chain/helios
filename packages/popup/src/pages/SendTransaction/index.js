@@ -65,8 +65,14 @@ function SendTransaction() {
         ? {[tokenAddress]: convertValueToData(sendAmount, decimals)}
         : {},
     ) || {}
-  const {gasPrice, gasLimit, storageCollateralized, nonce, nativeMaxDrip} =
-    estimateRst
+  const {
+    gasPrice,
+    gasLimit,
+    storageCollateralized,
+    nonce,
+    nativeMaxDrip,
+    loading,
+  } = estimateRst
   useEffect(() => {
     setGasPrice(formatHexToDecimal(gasPrice))
     setGasLimit(formatHexToDecimal(gasLimit))
@@ -183,7 +189,11 @@ function SendTransaction() {
             </Button>
             <Button
               disabled={
-                !!addressError || !!balanceError || !toAddress || !sendAmount
+                !!addressError ||
+                !!balanceError ||
+                !toAddress ||
+                !sendAmount ||
+                loading
               }
               onClick={() => history.push(CONFIRM_TRANSACTION)}
               className="flex-1"

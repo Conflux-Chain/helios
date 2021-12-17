@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
+import Loading from '@fluent-wallet/component-loading'
 import {request} from '../utils'
-import {RPC_METHODS, ROUTES} from '../constants'
+import {RPC_METHODS} from '../constants'
 import {usePendingAuthReq} from '../hooks/useApi'
-import {useHistory} from 'react-router-dom'
 import {useState} from 'react'
-import {useSWRConfig} from 'swr'
 
 const {
-  WALLET_GET_PENDING_AUTH_REQUEST,
   WALLET_REJECT_PENDING_AUTH_REQUSET,
   WALLET_REQUEST_PERMISSIONS,
   WALLET_SWITCH_CONFLUX_CHAIN,
@@ -22,7 +20,6 @@ const {
   WALLET_WATCH_ASSET,
   PERSONAL_SIGN,
 } = RPC_METHODS
-const {HOME} = ROUTES
 function DappFooter({
   cancelText,
   confirmText,
@@ -31,8 +28,6 @@ function DappFooter({
   onClickCancel,
   onClickConfirm,
 }) {
-  const history = useHistory()
-  const {mutate} = useSWRConfig()
   const pendingAuthReq = usePendingAuthReq()
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
@@ -46,8 +41,8 @@ function DappFooter({
     request(WALLET_REJECT_PENDING_AUTH_REQUSET, {authReqId: eid})
       .then(() => {
         setCancelingRequestStatus(false)
-        history.push(HOME)
         onClickCancel && onClickCancel()
+        window.close()
       })
       .catch(e => {
         console.log('error', e)
@@ -93,8 +88,8 @@ function DappFooter({
       .then(() => {
         setSendingRequestStatus(false)
         onClickConfirm && onClickConfirm()
-        mutate([WALLET_GET_PENDING_AUTH_REQUEST], pendingAuthReq.slice(1))
-        history.push(HOME)
+        // mutate([WALLET_GET_PENDING_AUTH_REQUEST], pendingAuthReq.slice(1))
+        window.close()
       })
       .catch(e => {
         console.log('error', e)
@@ -122,6 +117,11 @@ function DappFooter({
       >
         {confirmText}
       </Button>
+      {sendingRequestStatus && (
+        <div className="fixed top-0 left-0 flex w-screen h-screen bg-[rgba(0,0,0,0.4)] items-center justify-center">
+          <Loading />
+        </div>
+      )}
     </footer>
   )
 }

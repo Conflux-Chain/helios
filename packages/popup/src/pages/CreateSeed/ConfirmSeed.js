@@ -45,8 +45,10 @@ function ConfirmSeed() {
   useEffect(() => {
     if (mnemonic === createdMnemonic) {
       setMnemonicError('')
+    } else if (mnemonic.split(' ').indexOf('') === -1) {
+      setMnemonicError(t('confirmSeedError'))
     }
-  }, [mnemonic, createdMnemonic])
+  }, [mnemonic, createdMnemonic, t])
   const onDeleteMnemonic = index => {
     const mnemonicIndexArray = mnemonicIndex.split(' ')
     mnemonicIndexArray.splice(index, 1, null)
@@ -66,8 +68,7 @@ function ConfirmSeed() {
     return findIndex > -1
   }
   const onCreate = () => {
-    if (mnemonic !== createdMnemonic) {
-      setMnemonicError(t('confirmSeedError'))
+    if (mnemonicError) {
       return
     }
     setMnemonicError('')

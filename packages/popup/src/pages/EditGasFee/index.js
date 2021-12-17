@@ -85,7 +85,7 @@ function EditGasFee() {
 
   const onChangeNonce = nonce => {
     setInputNonce(nonce)
-    if (!inputNonce || new Big(inputNonce).gt(0)) {
+    if (!nonce || new Big(nonce).gt(0)) {
       setNonceErr('')
     } else {
       setNonceErr(t('nonceErr'))
