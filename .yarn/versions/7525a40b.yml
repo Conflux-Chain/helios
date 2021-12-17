@@ -1,7 +1,15 @@
 releases:
   "@fluent-wallet/db": patch
+  "@fluent-wallet/test-helpers": patch
+  "@fluent-wallet/use-rpc": patch
   "@fluent-wallet/wallet_get-import-hardware-wallet-info": patch
+  "@fluent-wallet/wallet_watch-asset": patch
+  "@fluent-wallet/wallet_zero-account-group": patch
 
 declined:
   - helios-background
+  - "@fluent-wallet/doc-rpc-parameter"
+  - "@fluent-wallet/doc-try-rpc"
+  - "@fluent-wallet/doc-use-rpc"
+  - "@fluent-wallet/doc-use-spec"
   - helios-popup
