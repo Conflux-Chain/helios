@@ -1,0 +1,7 @@
+releases:
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/wallet_get-import-hardware-wallet-info": patch
+
+declined:
+  - helios-background
+  - helios-popup
