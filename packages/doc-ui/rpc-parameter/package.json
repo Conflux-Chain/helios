@@ -12,6 +12,6 @@
     "@fluent-wallet/doc-use-spec": "workspace:packages/doc-ui/useSpec",
     "prop-types": "^15.7.2",
     "react-use": "17.3.1",
-    "zustand": "^3.6.5"
+    "zustand": "^3.6.7"
   }
 }
