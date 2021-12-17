@@ -32,7 +32,7 @@ const BasicSchema = [
 
 const NewAccountGroupSchema = [
   ['type', [enums, 'cfx', 'eth']],
-  ['device', [enums, 'LedgerNanoS', 'LedgerNanoX']],
+  ['device', [enums, 'LedgerNanoS']],
   ['accountGroupNickname', stringp],
 ]
 const OldAccountGroupSchema = [['accountGroupId', dbid]]

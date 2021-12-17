@@ -1,0 +1,11 @@
+releases:
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/cfx_sign-transaction": patch
+  "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": patch
+  "@fluent-wallet/signature": patch
+  "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account": major
+
+declined:
+  - helios-background
+  - "@fluent-wallet/cfx_sign-typed-data_v4"
+  - "@fluent-wallet/personal_sign"

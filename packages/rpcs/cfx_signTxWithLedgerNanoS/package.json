@@ -1,0 +1,13 @@
+{
+  "name": "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.1.0",
+  "version": "0.0.0",
+  "dependencies": {
+    "@fluent-wallet/ledger": "workspace:*",
+    "@fluent-wallet/signature": "workspace:*",
+    "@fluent-wallet/spec": "workspace:*",
+    "browser-passworder": "2.0.3"
+  }
+}

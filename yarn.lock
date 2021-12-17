@@ -4688,6 +4688,7 @@ __metadata:
   resolution: "@fluent-wallet/cfx_send-transaction@workspace:packages/rpcs/cfx_sendTransaction"
   dependencies:
     "@fluent-wallet/cfx_sign-transaction": "workspace:packages/rpcs/cfx_signTransaction"
+    "@fluent-wallet/json-rpc-error": "workspace:*"
     "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
@@ -4698,6 +4699,17 @@ __metadata:
   resolution: "@fluent-wallet/cfx_sign-transaction@workspace:packages/rpcs/cfx_signTransaction"
   dependencies:
     "@fluent-wallet/signature": "workspace:packages/signature"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/cfx_sign-tx-with-ledger-nano-s@workspace:*, @fluent-wallet/cfx_sign-tx-with-ledger-nano-s@workspace:packages/rpcs/cfx_signTxWithLedgerNanoS":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s@workspace:packages/rpcs/cfx_signTxWithLedgerNanoS"
+  dependencies:
+    "@fluent-wallet/ledger": "workspace:*"
+    "@fluent-wallet/signature": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+    browser-passworder: 2.0.3
   languageName: unknown
   linkType: soft
 
@@ -5236,7 +5248,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/json-rpc-error@workspace:packages/json-rpc-error":
+"@fluent-wallet/json-rpc-error@workspace:*, @fluent-wallet/json-rpc-error@workspace:packages/json-rpc-error":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/json-rpc-error@workspace:packages/json-rpc-error"
   dependencies:
@@ -5250,7 +5262,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/ledger@workspace:packages/ledger":
+"@fluent-wallet/ledger@workspace:*, @fluent-wallet/ledger@workspace:packages/ledger":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/ledger@workspace:packages/ledger"
   dependencies:
@@ -19674,6 +19686,7 @@ fsevents@~2.1.2:
     "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"
     "@fluent-wallet/cfx_send-transaction": "workspace:packages/rpcs/cfx_sendTransaction"
     "@fluent-wallet/cfx_sign-transaction": "workspace:packages/rpcs/cfx_signTransaction"
+    "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": "workspace:*"
     "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/db": "workspace:packages/db"
