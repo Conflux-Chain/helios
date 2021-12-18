@@ -60,7 +60,7 @@ export default class Conflux {
    * @returns
    */
   async getAppConfiguration() {
-    // await this.setApp()
+    await this.setApp()
     return this.app?.getAppConfiguration()
   }
 
@@ -71,6 +71,8 @@ export default class Conflux {
 
   async isAppOpen() {
     try {
+      const isAuthed = await this.isDeviceAuthed()
+      if (!isAuthed) return false
       const {name} = await this.getAppConfiguration()
       return name === LEDGER_APP_NAME.CONFLUX
     } catch (error) {

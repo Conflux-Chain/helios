@@ -43,6 +43,7 @@ function WalletInner() {
     setConnecting(false)
     if (authRet) {
       // TODO: deal with query
+      setIsAuthed(true)
       setIsAppOpen(openRet)
       openRet && history.push(IMPORT_HW_ACCOUNT)
       return

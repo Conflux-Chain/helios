@@ -24,6 +24,8 @@ import {toAccountAddress} from '@fluent-wallet/account'
 import {encode} from '@fluent-wallet/base32-address'
 import {TitleNav, CompWithLabel, Avatar, DisplayBalance} from '../../components'
 import {useCurrentAddress, useBalance} from '../../hooks/useApi'
+import {Conflux} from '@fluent-wallet/ledger'
+const cfx = new Conflux()
 
 const mockAddress = [
   '0xb2f4dea18a2ce5b67015d5cb0c87b94f6483dcc1',
@@ -83,7 +85,19 @@ function ImportHwAccount() {
   const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
   //  "" loading  success
-  const [importStatus, setImportStatus] = useState('')
+  const [importStatus] = useState('')
+
+  //TODO: delete the test code
+  useEffect(() => {
+    cfx
+      ?.getAddressList([0, 1, 2, 3, 4])
+      .then(res => {
+        console.info('addressList', res)
+      })
+      .catch(error => {
+        console.info('error', error)
+      })
+  }, [])
 
   // TODO: 上一页下一页的时候需要重置。同时过滤已导入的地址
   useEffect(() => {
