@@ -68,9 +68,8 @@ function ImportPrivateKey() {
                 mutate,
                 !!createdPassword,
                 ACCOUNT_GROUP_TYPE.PK,
-              )
+              ).then(() => history.push(HOME))
               createdPassword && setCreatedPassword('')
-              history.push(HOME)
             })
           }
           setCreatingAccount(false)

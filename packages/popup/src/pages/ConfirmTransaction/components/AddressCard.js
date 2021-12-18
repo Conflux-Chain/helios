@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {DownOutlined} from '@fluent-wallet/component-icons'
-import {useCurrentAddress} from '../../../hooks/useApi'
+import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
+import {useCurrentAddress, useAddressType} from '../../../hooks/useApi'
 import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
 
 const AddressDetail = ({
@@ -10,7 +10,9 @@ const AddressDetail = ({
   toAddress,
   currentAccountName,
   toAddressLabel,
+  isCreateContract,
 }) => {
+  const {t} = useTranslation()
   const {
     data: {
       nativeBalance,
@@ -19,6 +21,8 @@ const AddressDetail = ({
       },
     },
   } = useCurrentAddress()
+  const type = useAddressType(toAddress)
+  const isContract = type === 'contract'
 
   return (
     <div className="flex items-start w-full" id="addressDetailContainer">
@@ -54,8 +58,12 @@ const AddressDetail = ({
         </div>
         <span className="text-xs text-gray-40">{toAddressLabel}</span>
         <span className="text-gray-80 flex items-center" id="toAddress">
+          {isContract && <FileOutlined className="w-4 h-4 mr-1 text-primary" />}
           {toAddress && shortenAddress(toAddress)}
-          <CopyButton text={toAddress} className="ml-2  text-gray-60" />
+          {isCreateContract && t('createContract')}
+          {toAddress && (
+            <CopyButton text={toAddress} className="ml-2  text-gray-60" />
+          )}
         </span>
       </div>
     </div>
@@ -67,6 +75,7 @@ AddressDetail.propTypes = {
   toAddress: PropTypes.string,
   currentAccountName: PropTypes.string,
   toAddressLabel: PropTypes.string,
+  isCreateContract: PropTypes.bool,
 }
 
 function AddressCard({
@@ -139,6 +148,7 @@ function AddressCard({
         toAddressLabel={t(
           isSendToken ? 'toAddress' : isApproveToken ? 'approveTo' : 'contract',
         )}
+        isCreateContract={!isSendToken && !isApproveToken && !toAddress}
       />
     </div>
   )

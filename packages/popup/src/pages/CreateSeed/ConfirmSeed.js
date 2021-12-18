@@ -45,8 +45,10 @@ function ConfirmSeed() {
   useEffect(() => {
     if (mnemonic === createdMnemonic) {
       setMnemonicError('')
+    } else if (mnemonic.split(' ').indexOf('') === -1) {
+      setMnemonicError(t('confirmSeedError'))
     }
-  }, [mnemonic, createdMnemonic])
+  }, [mnemonic, createdMnemonic, t])
   const onDeleteMnemonic = index => {
     const mnemonicIndexArray = mnemonicIndex.split(' ')
     mnemonicIndexArray.splice(index, 1, null)
@@ -66,8 +68,7 @@ function ConfirmSeed() {
     return findIndex > -1
   }
   const onCreate = () => {
-    if (mnemonic !== createdMnemonic) {
-      setMnemonicError(t('confirmSeedError'))
+    if (mnemonicError) {
       return
     }
     setMnemonicError('')
@@ -83,9 +84,12 @@ function ConfirmSeed() {
     request(WALLET_IMPORT_MNEMONIC, params)
       .then(() => {
         setImportingMnemonic(false)
-        updateAddedNewAccount(mutate, !!createdPassword, ACCOUNT_GROUP_TYPE.HD)
+        updateAddedNewAccount(
+          mutate,
+          !!createdPassword,
+          ACCOUNT_GROUP_TYPE.HD,
+        ).then(() => history.push(HOME))
         createdPassword && setCreatedPassword('')
-        history.push(HOME)
         setCreatedMnemonic('')
       })
       .catch(error => {

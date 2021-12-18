@@ -50,5 +50,9 @@ export const QUERY_BALANCE = 'walletdb_queryBalance'
 export const QUERY_GROUP = 'walletdb_queryGroup'
 export const WALLET_EXPORT_ACCOUNT = 'wallet_exportAccount'
 export const WALLET_EXPORT_ACCOUNT_GROUP = 'wallet_exportAccountGroup'
+export const WALLET_GET_IMPORT_HARDWARE_WALLET_INFO =
+  'wallet_getImportHardwareWalletInfo'
 export const WALLET_GET_BLOCKCHAIN_EXPLORER_URL =
   'wallet_getBlockchainExplorerUrl'
+export const WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT =
+  'wallet_importHardwareWalletAccountGroupOrAccount'
