@@ -6,11 +6,11 @@ export const schemas = {
   input: [map, {closed: true}, ['authReqId', dbid], ['res', anyp]],
 }
 
-export const permissions = {db: ['getAuthReqById', 'retract', 'getAuthReq']}
+export const permissions = {db: ['getAuthReqById', 'retract']}
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {retract, getAuthReqById, getAuthReq},
+  db: {retract, getAuthReqById},
   params: {authReqId, res},
 }) => {
   const authReq = getAuthReqById(authReqId)
@@ -18,9 +18,5 @@ export const main = async ({
   if (authReq.c) authReq.c.write(res)
   retract(authReqId)
 
-  if (!getAuthReq()?.length) {
-    const {popup} = await import('@fluent-wallet/webextension')
-    popup.removePopup()
-  }
   return
 }

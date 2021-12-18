@@ -178,6 +178,7 @@ const en = {
     action: 'Action',
     viewData: 'View Data',
     confirm: 'Confirm',
+    createContract: 'Deploy contract',
     // transaction result
     transactionSubmit: 'Transaction Submitted/Signed',
     viewOnScan: 'View on Scan',

@@ -63,12 +63,11 @@ function ImportSeedPhrase() {
             return request(WALLET_IMPORT_MNEMONIC, params).then(() => {
               createdPassword && setCreatedPassword('')
               setCreatingAccount(false)
-              history.push(HOME)
               updateAddedNewAccount(
                 mutate,
                 !!createdPassword,
                 ACCOUNT_GROUP_TYPE.HD,
-              )
+              ).then(() => history.push(HOME))
             })
           }
           // TODO: replace error msg
