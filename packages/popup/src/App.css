@@ -1,0 +1,121 @@
+.router {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  contain: strict style;
+}
+
+.router-forward-enter,
+.router-back-appear {
+  opacity: 0;
+  transform: translate3d(100%, 0, 0);
+}
+
+.router-forward-enter-active,
+.router-back-appear-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.35s ease-in-out, opacity 0.35s ease;
+}
+
+.router-forward-exit {
+  opacity: 1;
+  transform: translate3d(0);
+}
+
+.router-forward-exit-active {
+  opacity: 0;
+  transform: translate3d(-100%, 0, 0);
+  transition: transform 0.38s ease-in-out, opacity 0.38s ease;
+}
+
+.router-back-enter {
+  opacity: 0;
+  transform: translate3d(-100%, 0, 0);
+}
+
+.router-back-enter-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.38s ease-in-out, opacity 0.38s ease;
+}
+
+.router-back-exit {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.router-back-exit-active {
+  opacity: 0;
+  transform: translate3d(100%, 0, 0);
+  transition: transform 0.38s ease-in-out, opacity 0.38s ease;
+}
+
+/* 从圆心扩散展开 */
+.router-full-switch-enter,
+.router-full-switch-appear {
+  opacity: 0.3;
+  clip-path: circle(0% at 50% 50%);
+}
+
+.router-full-switch-enter-active,
+.router-full-switch-appear-active {
+  opacity: 1;
+  clip-path: circle(100% at 50% 50%);
+  transition: all 0.62s ease;
+}
+
+.router-full-switch-exit {
+  opacity: 1;
+  clip-path: circle(100% at 50% 50%);
+}
+
+.router-full-switch-exit-active {
+  opacity: 0;
+  clip-path: circle(0% at 50% 50%);
+  transition: all 0.62s ease;
+}
+
+/* 模糊到清晰
+.router-full-switch-enter, .router-full-switch-appear {
+  filter: blur(6px);
+}
+
+.router-full-switch-enter-active, .router-full-switch-appear-active {
+  filter: blur(0);
+  transition: all .5s ease;
+}
+
+.router-full-switch-exit {
+  filter: blur(0);
+}
+
+.router-full-switch-exit-active {
+  filter: blur(6px);
+  transition: all .5s ease;
+} */
+
+/* 像推门一样的door展开
+.router-full-switch-enter, .router-full-switch-appear {
+  opacity: 0.3;
+  transform: scale3d(0, 1, 1);
+}
+
+.router-full-switch-enter-active, .router-full-switch-appear-active {
+  opacity: 1;
+  transform: scale3d(1, 1, 1);
+  transition: all 0.38s ease;
+}
+
+.router-full-switch-exit {
+  opacity: 1;
+  transform: scale3d(1, 1, 1);
+}
+
+.router-full-switch-exit-active {
+  opacity: 0;
+  transform: scale3d(0, 1, 0.1);
+  transition: all 0.38s ease;
+} */
