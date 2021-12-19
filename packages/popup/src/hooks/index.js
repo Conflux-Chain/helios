@@ -315,22 +315,23 @@ export const useDecodeDisplay = ({
   }
 }
 
-export const useViewData = ({data, to} = {}) => {
+export const useViewData = ({data, to} = {}, isApproveToken) => {
   const {decodeData, token} = useDecodeData({data, to})
   const {customAllowance} = useGlobalStore()
   const allowance =
     convertValueToData(customAllowance, token?.decimals) || '0x0'
-  const spender = decodeData?.args?.[0]
-    ? decode(decodeData?.args?.[0]).hexAddress
-    : ''
+  const spender =
+    isApproveToken && decodeData?.args?.[0]
+      ? decode(decodeData?.args?.[0]).hexAddress
+      : ''
   const viewData = useMemo(() => {
-    if (customAllowance) {
+    if (customAllowance && isApproveToken) {
       return spender
         ? iface.encodeFunctionData('approve', [spender, allowance])
         : data
     } else {
       return data
     }
-  }, [customAllowance, data, allowance, spender])
+  }, [customAllowance, data, allowance, spender, isApproveToken])
   return viewData
 }

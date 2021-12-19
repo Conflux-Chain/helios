@@ -102,7 +102,7 @@ function ConfirmTransition() {
     storageLimit: formatDecimalToHex(storageLimit),
   }
   // user can edit the approve limit
-  const viewData = useViewData(params)
+  const viewData = useViewData(params, isApproveToken)
   params.data = viewData
 
   // send params, need to delete '' or undefined params,
