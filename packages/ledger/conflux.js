@@ -1,6 +1,13 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 import AppCfx from '@fluent-wallet/hw-app-conflux'
-import {LEDGER_APP_NAME, LEDGER_CLA, INS, HDPATH, LEDGER_DEVICE} from './const'
+import {
+  LEDGER_APP_NAME,
+  LEDGER_CLA,
+  INS,
+  HDPATH,
+  LEDGER_DEVICE,
+  ERROR,
+} from './const'
 
 /**
  * Connecting Ledger Conflux App API for fluent
@@ -51,7 +58,7 @@ export default class Conflux {
     try {
       return this.app?.signTransaction(hdPath, txHex)
     } catch (error) {
-      return Promise.reject(error)
+      return Promise.reject(this.handleTheError(error))
     }
   }
 
@@ -125,7 +132,7 @@ export default class Conflux {
         })
       }
     } catch (error) {
-      console.warn(error)
+      return Promise.reject(this.handleTheError(error))
     }
     return addressArr
   }
@@ -141,5 +148,12 @@ export default class Conflux {
       }
     }
     return {}
+  }
+
+  handleTheError(error) {
+    if (error?.id === ERROR.INVALID_CHANNEL.ID) {
+      error.appCode = ERROR.INVALID_CHANNEL.CODE
+    }
+    return error
   }
 }
