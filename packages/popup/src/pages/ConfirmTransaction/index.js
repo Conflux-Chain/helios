@@ -46,6 +46,7 @@ function ConfirmTransition() {
   const {
     gasPrice,
     gasLimit,
+    sendTokenId,
     storageLimit,
     nonce,
     setGasPrice,
@@ -127,7 +128,7 @@ function ConfirmTransition() {
 
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
-    displayValue,
+    sendTokenId,
     isSendToken,
   )
   useEffect(() => {

@@ -16,6 +16,7 @@ import {
   useCurrentNetworkTokens,
   useBalance,
   useCurrentAddress,
+  useSingleTokenInfoWithNativeTokenSupport,
 } from '../../../hooks/useApi'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
@@ -62,7 +63,7 @@ ChooseTokenList.propTypes = {
 }
 
 function TokenAndAmount({
-  selectedToken, // TODO: use token id
+  selectedTokenId,
   onChangeToken,
   amount,
   onChangeAmount,
@@ -77,8 +78,13 @@ function TokenAndAmount({
       network: {eid: networkId},
     },
   } = useCurrentAddress()
-  const {symbol, icon, decimals, address: selectedTokenAddress} = selectedToken
-  const tokenAddress = isNativeToken ? '0x0' : selectedTokenAddress
+  const {
+    symbol,
+    logoURI,
+    decimals,
+    address: selectedTokenIdAddress,
+  } = useSingleTokenInfoWithNativeTokenSupport(selectedTokenId)
+  const tokenAddress = isNativeToken ? '0x0' : selectedTokenIdAddress
   const balance =
     useBalance(address, networkId, tokenAddress)?.[address]?.[tokenAddress] ||
     '0x0'
@@ -119,7 +125,7 @@ function TokenAndAmount({
         >
           <img
             className="w-5 h-5 mr-1"
-            src={icon || '/images/default-token-icon.svg'}
+            src={logoURI || '/images/default-token-icon.svg'}
             alt="logo"
             id="tokenIcon"
           />
@@ -151,7 +157,7 @@ function TokenAndAmount({
 }
 
 TokenAndAmount.propTypes = {
-  selectedToken: PropTypes.object.isRequired,
+  selectedTokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChangeToken: PropTypes.func,
   amount: PropTypes.string,
   onChangeAmount: PropTypes.func,

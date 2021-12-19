@@ -279,7 +279,6 @@ export const useSingleTokenInfoWithNativeTokenSupport = tokenId => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const {ticker} = useCurrentAddress().data.network
     ticker.logoURI = ticker.iconUrls?.[0]
-    ticker.decimals = 18
     return ticker
   }
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -442,6 +441,7 @@ export const useImportHW = ({data = {}, device = 'LedgerNanoS'}) => {
       address: encode(x, netId),
       nickname: `${device}-${nextAccountIndex + idx}`,
     }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...hex, netId, nextAccountIndex])
 
   params.address = base32Addrs
@@ -453,5 +453,6 @@ export const useImportHW = ({data = {}, device = 'LedgerNanoS'}) => {
       params,
       [...hex, networkId, device],
     )
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [networkId])
 }
