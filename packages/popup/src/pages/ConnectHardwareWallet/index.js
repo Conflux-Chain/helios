@@ -27,27 +27,28 @@ function WalletInner() {
       cfx.isAppOpen(),
     ])
     return {isAuthenticated, isAppOpen}
-  })
+  }, [])
 
   useEffect(() => {
     if (value) {
       setIsAuthed(value.isAuthenticated)
       setIsAppOpen(value.isAppOpen)
     }
-  }, [value])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Boolean(value)])
 
   const onConnectHwWallet = async () => {
     setConnecting(true)
     const authRet = await cfx.requestAuth()
     const openRet = await cfx.isAppOpen()
     setConnecting(false)
-    if (authRet) {
+    setIsAppOpen(openRet)
+    setIsAuthed(authRet)
+    !authRet && setShowReconnectStatus(true)
+    if (openRet && authRet) {
       // TODO: deal with query
-      setIsAppOpen(openRet)
-      openRet && history.push(IMPORT_HW_ACCOUNT)
-      return
+      return history.push(IMPORT_HW_ACCOUNT)
     }
-    setShowReconnectStatus(true)
   }
 
   console.log('loading', loading)

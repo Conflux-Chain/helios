@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useMemo} from 'react'
+import {useAsync} from 'react-use'
 import {isUndefined} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
@@ -13,24 +14,19 @@ import {
   RightOutlined,
   CheckCircleFilled,
 } from '@fluent-wallet/component-icons'
-import {
-  DEFAULT_CFX_HDPATH,
-  CFX_MAINNET_NETID,
-  CFX_TESTNET_NETID,
-  CFX_TESTNET_CHAINID,
-  CFX_MAINNET_CHAINID,
-} from '@fluent-wallet/consts'
-import {toAccountAddress} from '@fluent-wallet/account'
+import {DEFAULT_CFX_HDPATH} from '@fluent-wallet/consts'
+import Toast from '@fluent-wallet/component-toast'
 import {encode} from '@fluent-wallet/base32-address'
+import {Conflux} from '@fluent-wallet/ledger'
 import {TitleNav, CompWithLabel, Avatar, DisplayBalance} from '../../components'
+import {RPC_METHODS} from '../../constants'
 import {useCurrentAddress, useBalance} from '../../hooks/useApi'
+import useImportHWParams from './useImportHWParams'
+import {request} from '../../utils'
 
-const mockAddress = [
-  '0xb2f4dea18a2ce5b67015d5cb0c87b94f6483dcc1',
-  '0x186e277bf6f088deb86a549f49e3c014bc3d72c8',
-  '0x83a930f2b03ec188ddb6a68c0037eaf88fb21282',
-]
-
+const {WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT} = RPC_METHODS
+const cfx = new Conflux()
+const limit = 5
 function ImportingResults({importStatus}) {
   const {t} = useTranslation()
 
@@ -77,25 +73,50 @@ function ImportHwAccount() {
   const {t} = useTranslation()
   const {
     data: {
-      network: {eid: networkId, chainId},
+      network: {eid: networkId, netId},
     },
   } = useCurrentAddress()
   const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
+  const [offset, setOffset] = useState(0)
+  const [errMsg, setErrMsg] = useState('')
   //  "" loading  success
   const [importStatus, setImportStatus] = useState('')
 
-  // TODO: 上一页下一页的时候需要重置。同时过滤已导入的地址
+  const {value: addressList, loading} = useAsync(async () => {
+    const addresses = await cfx.getAddressList(
+      new Array(limit).fill('').map((_item, index) => index + offset),
+    )
+    return addresses
+  }, [offset])
+
+  const {value: deviceInfo} = useAsync(async () => {
+    const info = await cfx.getDeviceInfo()
+    return info
+  }, [])
+
+  const {params: hwParams, nextAccountIndex} = useImportHWParams(
+    deviceInfo?.name,
+  )
+
+  const base32Address = useMemo(() => {
+    if (isUndefined(netId) || isUndefined(addressList)) {
+      return []
+    }
+    // TODO： take care when add multiple chain
+    return addressList.map(hex => encode(hex, netId))
+  }, [addressList, netId])
+
   useEffect(() => {
-    if (mockAddress.length && !Object.keys(checkboxStatusObj).length) {
+    if (addressList?.length) {
       const ret = {}
-      mockAddress.forEach(address => {
+      addressList.forEach(address => {
         ret[address] = false
       })
       setCheckboxStatusObj({...ret})
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mockAddress])
+  }, [addressList])
 
   useEffect(() => {
     setAllCheckboxStatus(
@@ -116,30 +137,62 @@ function ImportHwAccount() {
       [address]: !checkboxStatusObj[address],
     })
   }
-  let base32Address = null
-
-  if (!isUndefined(chainId)) {
-    // TODO： should add eth net id when add multiple chain
-    let netId =
-      chainId === CFX_TESTNET_CHAINID
-        ? CFX_TESTNET_NETID
-        : chainId === CFX_MAINNET_CHAINID
-        ? CFX_MAINNET_NETID
-        : null
-    if (netId) {
-      base32Address = mockAddress.map(addr =>
-        encode(toAccountAddress(addr), netId),
-      )
+  const onPageUp = () => {
+    if (!loading) {
+      setOffset(offset - limit)
     }
   }
 
-  const balances = useBalance(base32Address, networkId)
+  const onPageDown = () => {
+    if (!loading) {
+      setOffset(offset + limit)
+    }
+  }
+  const balances = useBalance(
+    base32Address?.length ? base32Address : null,
+    networkId,
+  )
+  const onImportAccount = () => {
+    let chosenBase32Address = []
+    let accountGroupData = {}
+    addressList.forEach((hex, index) => {
+      if (checkboxStatusObj?.[hex]) {
+        accountGroupData[hex] = DEFAULT_CFX_HDPATH
+        chosenBase32Address.push({
+          address: base32Address[index],
+          nickname: `${deviceInfo.name}-${
+            nextAccountIndex + chosenBase32Address.length
+          }`,
+        })
+      }
+    })
 
+    if ('accountGroupData' in hwParams) {
+      accountGroupData = {accountGroupData, ...hwParams.accountGroupData}
+    }
+    let params = {...hwParams, accountGroupData, address: chosenBase32Address}
+    console.log('params', params)
+    setImportStatus('loading')
+    request(WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT, params)
+      .then(res => {
+        setImportStatus('success')
+        console.log('res', res)
+      })
+      .catch(err => {
+        // TODO: error msg
+        setImportStatus('')
+        console.log(err, err)
+        setErrMsg(err?.message || 'something wrong')
+      })
+  }
+
+  if (!deviceInfo?.name) {
+    return null
+  }
   if (importStatus) {
     return <ImportingResults importStatus={importStatus} />
   }
-
-  return base32Address && Object.keys(balances).length ? (
+  return (
     <div
       id="import-hw-account"
       className="m-auto light flex flex-col h-full min-h-screen"
@@ -170,13 +223,15 @@ function ImportHwAccount() {
                   {t('chooseHwAddress')}
                 </div>
               </div>
-              <Checkbox
-                checked={allCheckboxStatus}
-                onChange={onSelectAllAccount}
-                id="selectAll"
-              >
-                {t('selectAll')}
-              </Checkbox>
+              {addressList?.length ? (
+                <Checkbox
+                  checked={allCheckboxStatus}
+                  onChange={onSelectAllAccount}
+                  id="selectAll"
+                >
+                  {t('selectAll')}
+                </Checkbox>
+              ) : null}
             </div>
           }
         >
@@ -184,70 +239,101 @@ function ImportHwAccount() {
             id="accountWrapper"
             className="rounded border border-solid border-gray-10 pt-3 overflow-auto bg-gray-4 no-scroll"
           >
-            {mockAddress.map((hexAddress, index) => (
-              <div
-                aria-hidden="true"
-                onClick={() => onSelectSingleAccount(hexAddress)}
-                key={hexAddress}
-                id={`item-${index}`}
-                className="flex px-3 items-center h-15 cursor-pointer"
-              >
-                <div className="flex w-full">
-                  <Avatar
-                    className="w-5 h-5 mr-2"
-                    diameter={20}
-                    accountIdentity={hexAddress}
-                  />
-                  <div className="flex-1">
-                    <p className="text-xs text-gray-40">
-                      {shortenAddress(base32Address[index])}
-                    </p>
-                    <DisplayBalance
-                      balance={balances[base32Address[index]]['0x0']}
-                      maxWidth={264}
-                      maxWidthStyle="max-w-[264px]"
-                      className="!text-gray-80 !font-normal"
-                      decimals={CFX_DECIMALS}
-                      symbol="CFX"
-                      id="hwAddressCfxBalance"
+            {addressList?.length ? (
+              addressList.map((hexAddress, index) => (
+                <div
+                  aria-hidden="true"
+                  onClick={() => onSelectSingleAccount(hexAddress)}
+                  key={hexAddress}
+                  id={`item-${index}`}
+                  className="flex px-3 items-center h-15 cursor-pointer"
+                >
+                  <div className="flex w-full">
+                    <Avatar
+                      className="w-5 h-5 mr-2"
+                      diameter={20}
+                      accountIdentity={hexAddress}
                     />
-                  </div>
-                  <div className="flex">
-                    <Checkbox
-                      checked={checkboxStatusObj[hexAddress]}
-                      id={`check-${index}`}
-                    />
+                    <div className="flex-1">
+                      <p className="text-xs text-gray-40">
+                        {base32Address?.[index]
+                          ? shortenAddress(base32Address[index])
+                          : ''}
+                      </p>
+                      <DisplayBalance
+                        balance={
+                          balances?.[base32Address?.[index]]?.['0x0'] || '0'
+                        }
+                        maxWidth={264}
+                        maxWidthStyle="max-w-[264px]"
+                        className="!text-gray-80 !font-normal"
+                        decimals={CFX_DECIMALS}
+                        symbol="CFX"
+                        id="hwAddressCfxBalance"
+                      />
+                    </div>
+                    <div className="flex">
+                      <Checkbox
+                        checked={checkboxStatusObj[hexAddress]}
+                        id={`check-${index}`}
+                      />
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="h-[300px]" />
+            )}
+            {addressList?.length ? (
+              <div className="flex justify-center items-center my-3 h-10">
+                <Button
+                  className="mr-20 w-25"
+                  disabled={offset <= 0}
+                  onClick={onPageUp}
+                  variant="text"
+                  id="prev-btn"
+                  startIcon={<LeftOutlined className="!text-gray-80" />}
+                >
+                  {t('capPrev')}
+                </Button>
+                <Button
+                  className="w-25"
+                  disabled={offset >= 200}
+                  onClick={onPageDown}
+                  variant="text"
+                  endIcon={<RightOutlined className="!text-gray-80" />}
+                  id="next-btn"
+                >
+                  {t('capNext')}
+                </Button>
               </div>
-            ))}
-            <div className="flex justify-center items-center my-3">
-              <Button
-                className="mr-20 w-25"
-                onClick={() => {}}
-                variant="text"
-                id="prev-btn"
-                startIcon={<LeftOutlined className="!text-gray-80" />}
-              >
-                {t('capPrev')}
-              </Button>
-              <Button
-                className="w-25"
-                onClick={() => {}}
-                variant="text"
-                endIcon={<RightOutlined className="!text-gray-80" />}
-                id="next-btn"
-              >
-                {t('capNext')}
-              </Button>
-            </div>
+            ) : (
+              <div className="h-16" />
+            )}
           </div>
         </CompWithLabel>
-        <Button size="large" className="w-70 mx-auto mt-6">
+        <Button
+          size="large"
+          className="w-70 mx-auto mt-6"
+          onClick={onImportAccount}
+          disabled={
+            !base32Address?.length ||
+            loading ||
+            !Object.keys(hwParams).length ||
+            Object.values(checkboxStatusObj).filter(Boolean).length === 0
+          }
+        >
           {t('next')}
         </Button>
       </div>
+      {/* TODO: error toast style */}
+      <Toast
+        content={errMsg}
+        open={!!errMsg}
+        type="line"
+        onClose={() => setErrMsg('')}
+      />
     </div>
-  ) : null
+  )
 }
 export default ImportHwAccount
