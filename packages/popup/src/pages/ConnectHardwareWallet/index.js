@@ -59,23 +59,21 @@ function WalletInner() {
     history.push(IMPORT_HW_ACCOUNT)
   }
 
-  if (loading) {
-    return <SearchingWallet />
-  }
-  if (connecting) {
-    return <Authorizing />
-  }
-  if (showReconnectStatus) {
-    return <ReConnectWallet onConnectHwWallet={onConnectHwWallet} />
-  }
-  if (isFalse(loading) && isFalse(isAuthenticated)) {
-    return <ConnectWallet onConnectHwWallet={onConnectHwWallet} />
-  }
-  if (isFalse(loading) && isAuthenticated && isFalse(isAppOpen)) {
-    return <OpenApp />
-  }
-
-  return null
+  return (
+    <div>
+      {loading ? (
+        <SearchingWallet />
+      ) : connecting ? (
+        <Authorizing />
+      ) : showReconnectStatus ? (
+        <ReConnectWallet onConnectHwWallet={onConnectHwWallet} />
+      ) : isFalse(loading) && isFalse(isAuthenticated) ? (
+        <ConnectWallet onConnectHwWallet={onConnectHwWallet} />
+      ) : isFalse(loading) && isAuthenticated && isFalse(isAppOpen) ? (
+        <OpenApp />
+      ) : null}
+    </div>
+  )
 }
 
 function ConnectHardwareWallet() {

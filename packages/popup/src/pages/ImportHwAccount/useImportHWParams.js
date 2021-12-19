@@ -42,7 +42,6 @@ const useImportHWParams = device => {
       nextAccountIndex = addToGroupData.account.length + 1
     }
   }
-  console.log('params12', params)
   return {params, nextAccountIndex}
 }
 
