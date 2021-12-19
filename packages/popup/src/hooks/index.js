@@ -14,6 +14,7 @@ import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
+  useSingleTokenInfoWithNativeTokenSupport,
   useIsLocked,
   useIsZeroGroup,
   useCurrentAddress,
@@ -136,8 +137,9 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
 }
 
 export const useTxParams = () => {
-  const {toAddress, sendAmount, sendToken} = useGlobalStore()
-  const {decimals: tokenDecimals, address: tokenAddress} = sendToken
+  const {toAddress, sendAmount, sendTokenId} = useGlobalStore()
+  const {decimals: tokenDecimals, address: tokenAddress} =
+    useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const {
     data: {
@@ -254,7 +256,7 @@ export const useDecodeDisplay = ({
   const {
     data: {value: address},
   } = useCurrentAddress()
-  const {toAddress, sendToken, sendAmount} = useGlobalStore()
+  const {toAddress, sendTokenId, sendAmount} = useGlobalStore()
   const {from, to, data, value} = tx
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
@@ -267,7 +269,8 @@ export const useDecodeDisplay = ({
     (isDapp && isSendNativeToken)
 
   if (!isDapp) {
-    displayToken = sendToken
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    displayToken = useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
     displayFromAddress = address
     displayToAddress = toAddress
     displayValue = sendAmount

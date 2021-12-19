@@ -80,19 +80,19 @@ function App() {
     return <div>loading...</div>
   }
   return (
-    <ErrorBoundary
-      FallbackComponent={ErrorPage}
-      onError={error => setFatalError(error)}
-    >
-      <Suspense
-        fallback={
-          <div className="w-full h-full flex items-center justify-center">
-            loading
-          </div>
-        }
+    <Router>
+      <ErrorBoundary
+        FallbackComponent={ErrorPage}
+        onError={error => setFatalError(error)}
       >
-        <div className="h-150 w-93 m-auto light">
-          <Router>
+        <Suspense
+          fallback={
+            <div className="w-full h-full flex items-center justify-center">
+              loading
+            </div>
+          }
+        >
+          <div className="h-150 w-93 m-auto light">
             <Switch>
               <Route exact path={WALLET_UNLOCK} component={Unlock} />
               <Route exact path={WELCOME} component={Welcome} />
@@ -169,10 +169,10 @@ function App() {
               <Route exact path={ERROR} component={ErrorPage} />
               <Route path="*" render={() => <Redirect to={ERROR} />} />
             </Switch>
-          </Router>
-        </div>
-      </Suspense>
-    </ErrorBoundary>
+          </div>
+        </Suspense>
+      </ErrorBoundary>
+    </Router>
   )
 }
 
