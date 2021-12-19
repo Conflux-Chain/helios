@@ -117,9 +117,12 @@ export default class Conflux {
     const addressArr = []
     try {
       for (const index of indexArray) {
-        const hdPath = `${HDPATH}${index}`
+        const hdPath = `${HDPATH.CONFLUX}${index}`
         const {address} = await this.getAddress(hdPath)
-        addressArr.push(address)
+        addressArr.push({
+          address,
+          hdPath,
+        })
       }
     } catch (error) {
       console.warn(error)
