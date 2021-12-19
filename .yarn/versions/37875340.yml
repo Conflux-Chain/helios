@@ -1,5 +1,0 @@
-releases:
-  "@fluent-wallet/component-alert": patch
-
-declined:
-  - helios-popup
