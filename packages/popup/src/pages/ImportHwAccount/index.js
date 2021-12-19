@@ -80,7 +80,6 @@ function ImportHwAccount() {
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
   const [offset, setOffset] = useState(0)
   const [errMsg, setErrMsg] = useState('')
-  //  "" loading  success
   const [importStatus, setImportStatus] = useState('')
 
   const {value: addressList, loading} = useAsync(async () => {
@@ -104,13 +103,13 @@ function ImportHwAccount() {
       return []
     }
     // TODO： take care when add multiple chain
-    return addressList.map(hex => encode(hex, netId))
+    return addressList.map(({address}) => encode(address, netId))
   }, [addressList, netId])
 
   useEffect(() => {
     if (addressList?.length) {
       const ret = {}
-      addressList.forEach(address => {
+      addressList.forEach(({address}) => {
         ret[address] = false
       })
       setCheckboxStatusObj({...ret})
@@ -155,9 +154,9 @@ function ImportHwAccount() {
   const onImportAccount = () => {
     let chosenBase32Address = []
     let accountGroupData = {}
-    addressList.forEach((hex, index) => {
-      if (checkboxStatusObj?.[hex]) {
-        accountGroupData[hex] = DEFAULT_CFX_HDPATH
+    addressList.forEach(({address, hdPath}, index) => {
+      if (checkboxStatusObj?.[address]) {
+        accountGroupData[address] = hdPath
         chosenBase32Address.push({
           address: base32Address[index],
           nickname: `${deviceInfo.name}-${
@@ -240,7 +239,7 @@ function ImportHwAccount() {
             className="rounded border border-solid border-gray-10 pt-3 overflow-auto bg-gray-4 no-scroll"
           >
             {addressList?.length ? (
-              addressList.map((hexAddress, index) => (
+              addressList.map(({address: hexAddress}, index) => (
                 <div
                   aria-hidden="true"
                   onClick={() => onSelectSingleAccount(hexAddress)}

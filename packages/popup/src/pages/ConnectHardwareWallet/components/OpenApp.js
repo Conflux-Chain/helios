@@ -22,6 +22,7 @@ function OpenApp() {
     setLoadingStatus(false)
     // TODO: deal with query
     ret && history.push(IMPORT_HW_ACCOUNT)
+    ret && history.go(0) // sometimes, when you open the conflux app in ledger, we should refresh the page
   }
 
   return (
