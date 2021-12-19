@@ -107,11 +107,16 @@ function ImportHwAccount() {
 
   const {data: importedAddressData} = useQueryImportedAddress(networkId)
 
-  console.log('data2', importedAddressData)
   const {value: addressList, loading} = useAsync(async () => {
-    const addresses = await cfx.getAddressList(
-      new Array(limit).fill('').map((_item, index) => index + offset),
-    )
+    let addresses = []
+    try {
+      addresses = await cfx.getAddressList(
+        new Array(limit).fill('').map((_item, index) => index + offset),
+      )
+    } catch (e) {
+      // TODO: error message
+      setErrMsg(e?.code === 5031 ? t('refreshLater') : 'some thing goes wrong')
+    }
     return addresses
   }, [offset])
 
@@ -160,7 +165,6 @@ function ImportHwAccount() {
           ? !!importedAddressData?.[k]
           : !allCheckboxStatus),
     )
-    console.log('ret', ret, !allCheckboxStatus)
     setCheckboxStatusObj({...ret})
     setAllCheckboxStatus(!allCheckboxStatus)
   }
@@ -208,16 +212,13 @@ function ImportHwAccount() {
       accountGroupData = {accountGroupData, ...hwParams.accountGroupData}
     }
     let params = {...hwParams, accountGroupData, address: chosenBase32Address}
-    console.log('params', params)
     setImportStatus('loading')
     request(WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT, params)
-      .then(res => {
+      .then(() => {
         setImportStatus('success')
-        console.log('res', res)
       })
       .catch(err => {
         setImportStatus('')
-        console.log(err, err)
         // TODO: error msg
         setErrMsg(err?.message || 'something wrong')
       })

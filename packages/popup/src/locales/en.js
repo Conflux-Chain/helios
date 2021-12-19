@@ -242,6 +242,7 @@ const en = {
     importedHwAccount:
       'You can now access your Ledger wallet from within Fluent.Please return to the extension.',
     done: 'Done',
+    refreshLater: 'Please try again later',
   },
 }
 
