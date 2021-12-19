@@ -4,6 +4,8 @@ import {useState} from 'react'
 import Button from '@fluent-wallet/component-button'
 import {Conflux} from '@fluent-wallet/ledger'
 import {ROUTES} from '../../../constants'
+import {useQuery} from '../../../hooks'
+
 const cfx = new Conflux()
 const {IMPORT_HW_ACCOUNT} = ROUTES
 
@@ -12,6 +14,7 @@ function OpenApp() {
   const [loadingStatus, setLoadingStatus] = useState(false)
   const {t} = useTranslation()
   const history = useHistory()
+  const query = useQuery()
 
   const onClick = async () => {
     setLoadingStatus(true)
@@ -20,9 +23,15 @@ function OpenApp() {
     }
     const ret = await cfx.isAppOpen()
     setLoadingStatus(false)
-    // TODO: deal with query
-    ret && history.push(IMPORT_HW_ACCOUNT)
-    ret && history.go(0) // sometimes, when you open the conflux app in ledger, we should refresh the page
+    if (ret) {
+      if (query.get('action') === 'close') {
+        window.open('about:blank', '_self')
+        window.close()
+        return
+      }
+      history.push(IMPORT_HW_ACCOUNT)
+      history.go(0) // sometimes, when you open the conflux app in ledger, we should refresh the page
+    }
   }
 
   return (

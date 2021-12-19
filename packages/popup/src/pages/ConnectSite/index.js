@@ -210,7 +210,7 @@ function ConnectSite() {
               <Input
                 value={searchContent}
                 width="w-full box-border"
-                readonly
+                readOnly
                 className="pointer-events-none"
                 suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
                 id="searchContent"

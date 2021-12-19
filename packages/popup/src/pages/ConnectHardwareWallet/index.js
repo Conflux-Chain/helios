@@ -10,16 +10,19 @@ import {
   SearchingWallet,
 } from './components'
 import {ROUTES} from '../../constants'
+import {useQuery} from '../../hooks'
+
 import {Conflux} from '@fluent-wallet/ledger'
 const cfx = new Conflux()
 const {IMPORT_HW_ACCOUNT} = ROUTES
 
 function WalletInner() {
-  const [isAuthenticated, setIsAuthed] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isAppOpen, setIsAppOpen] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [showReconnectStatus, setShowReconnectStatus] = useState(false)
   const history = useHistory()
+  const query = useQuery()
 
   const {loading, value} = useAsync(async () => {
     const [isAuthenticated, isAppOpen] = await Promise.all([
@@ -31,7 +34,7 @@ function WalletInner() {
 
   useEffect(() => {
     if (value) {
-      setIsAuthed(value.isAuthenticated)
+      setIsAuthenticated(value.isAuthenticated)
       setIsAppOpen(value.isAppOpen)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -43,16 +46,16 @@ function WalletInner() {
     const openRet = await cfx.isAppOpen()
     setConnecting(false)
     setIsAppOpen(openRet)
-    setIsAuthed(authRet)
+    setIsAuthenticated(authRet)
     !authRet && setShowReconnectStatus(true)
-    if (openRet && authRet) {
-      // TODO: deal with query
-      return history.push(IMPORT_HW_ACCOUNT)
-    }
   }
 
   if (isAuthenticated && isAppOpen) {
-    // TODO: deal with query
+    if (query.get('action') === 'close') {
+      window.open('about:blank', '_self')
+      window.close()
+      return
+    }
     history.push(IMPORT_HW_ACCOUNT)
   }
 

@@ -1,5 +1,6 @@
 import {useCurrentAddress} from '../../hooks/useApi'
 import {useRPC} from '@fluent-wallet/use-rpc'
+import {isUndefined} from '@fluent-wallet/checks'
 import {RPC_METHODS} from '../../constants'
 
 const {WALLET_GET_IMPORT_HARDWARE_WALLET_INFO} = RPC_METHODS
@@ -20,17 +21,28 @@ const useImportHWParams = device => {
     },
   )
   let nextAccountIndex = 1
-  if (hmInfoData) {
-    if (!hmInfoData?.group) {
+  if (!isUndefined(hmInfoData)) {
+    let addToGroupData = null
+    if (hmInfoData.length) {
+      for (let i = 0; i < hmInfoData.length; i++) {
+        if (hmInfoData[i].vault.device === device) {
+          addToGroupData = hmInfoData[i]
+          break
+        }
+      }
+    }
+
+    if (!addToGroupData) {
       params.accountGroupNickname = device
       params.device = device
       params.type = netType
     } else {
-      params.accountGroupId = hmInfoData.group.eid
-      params.accountGroupData = {...hmInfoData.group.vault.ddata}
-      nextAccountIndex = hmInfoData.group.account.length + 1
+      params.accountGroupId = addToGroupData.eid
+      params.accountGroupData = {...addToGroupData.vault.ddata}
+      nextAccountIndex = addToGroupData.account.length + 1
     }
   }
+  console.log('params12', params)
   return {params, nextAccountIndex}
 }
 

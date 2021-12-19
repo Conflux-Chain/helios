@@ -197,7 +197,7 @@ function ImportHwAccount() {
     let chosenBase32Address = []
     let accountGroupData = {}
     addressList.forEach(({address, hdPath}, index) => {
-      if (checkboxStatusObj?.[address] && !importedAddressData?.[address]) {
+      if (checkboxStatusObj?.[address]) {
         accountGroupData[address] = hdPath
         chosenBase32Address.push({
           address: base32Address[index],
@@ -209,9 +209,10 @@ function ImportHwAccount() {
     })
 
     if ('accountGroupData' in hwParams) {
-      accountGroupData = {accountGroupData, ...hwParams.accountGroupData}
+      accountGroupData = {...accountGroupData, ...hwParams.accountGroupData}
     }
     let params = {...hwParams, accountGroupData, address: chosenBase32Address}
+    console.log('params', params)
     setImportStatus('loading')
     request(WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT, params)
       .then(() => {
@@ -220,6 +221,7 @@ function ImportHwAccount() {
       .catch(err => {
         setImportStatus('')
         // TODO: error msg
+        console.log('err', err)
         setErrMsg(err?.message || 'something wrong')
       })
   }
