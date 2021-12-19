@@ -175,14 +175,12 @@ export const useTxParams = () => {
 
 export const useCheckBalanceAndGas = (
   estimateRst,
-  sendTokenId,
+  sendTokenAddress,
   isSendToken = true,
 ) => {
-  const {address: tokenAddress} =
-    useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
   const {error, isBalanceEnough, tokens} = estimateRst
-  const isTokenBalanceEnough = tokens?.[tokenAddress]?.isTokenBalanceEnough
-  const isNativeToken = !tokenAddress
+  const isNativeToken = !sendTokenAddress
+  const isTokenBalanceEnough = tokens?.[sendTokenAddress]?.isTokenBalanceEnough
   return useMemo(() => {
     if (error?.message) {
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
@@ -231,7 +229,6 @@ export const useDecodeData = ({to, data} = {}) => {
 
   const isContract = type === 'contract'
   const crc20Token = useValid20Token(isContract ? to : '')
-  const token = {...crc20Token, address: to}
 
   useEffect(() => {
     if (data && isContract) {
@@ -243,7 +240,7 @@ export const useDecodeData = ({to, data} = {}) => {
     }
   }, [data, isContract, to, netId])
 
-  return {isContract, token, decodeData}
+  return {isContract, token: crc20Token, decodeData}
 }
 
 export const useDecodeDisplay = ({
@@ -254,12 +251,13 @@ export const useDecodeDisplay = ({
 }) => {
   let displayToken = {},
     displayValue = '0x0',
-    displayToAddress
+    displayToAddress,
+    displayFromAddress
   const {
     data: {value: address},
   } = useCurrentAddress()
   const {toAddress, sendTokenId, sendAmount} = useGlobalStore()
-  const {to, data, value} = tx
+  const {from, to, data, value} = tx
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
   const isSendNativeToken = !isContract || !data || data === '0x'
@@ -273,17 +271,20 @@ export const useDecodeDisplay = ({
   if (!isDapp) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     displayToken = useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
+    displayFromAddress = address
     displayToAddress = toAddress
     displayValue = sendAmount
   } else {
     if (isSendNativeToken) {
       displayToken = nativeToken
+      displayFromAddress = from
       displayToAddress = to
       displayValue = value
     }
     if (data && isContract && decodeData) {
       if (token?.symbol) displayToken = token
       if (isSendToken) {
+        displayFromAddress = decodeData?.args?.[0]
         displayToAddress = decodeData?.args?.[1]
         displayValue = convertDecimal(
           decodeData?.args[2].toString(10),
@@ -291,14 +292,15 @@ export const useDecodeDisplay = ({
           token?.decimals,
         )
       } else if (isApproveToken) {
+        displayFromAddress = address
         displayToAddress = decodeData?.args?.[0]
         displayValue = convertDecimal(
           decodeData?.args[1].toString(10),
           'divide',
           token?.decimals,
         )
-        // setApproveToken(token)
       } else {
+        displayFromAddress = address
         displayToAddress = to
       }
     }
@@ -306,28 +308,30 @@ export const useDecodeDisplay = ({
   return {
     isApproveToken,
     isSendToken,
+    displayFromAddress,
     displayToAddress,
     displayValue,
     displayToken,
   }
 }
 
-export const useViewData = ({data, to} = {}) => {
+export const useViewData = ({data, to} = {}, isApproveToken) => {
   const {decodeData, token} = useDecodeData({data, to})
   const {customAllowance} = useGlobalStore()
   const allowance =
     convertValueToData(customAllowance, token?.decimals) || '0x0'
-  const spender = decodeData?.args?.[0]
-    ? decode(decodeData?.args?.[0]).hexAddress
-    : ''
+  const spender =
+    isApproveToken && decodeData?.args?.[0]
+      ? decode(decodeData?.args?.[0]).hexAddress
+      : ''
   const viewData = useMemo(() => {
-    if (customAllowance) {
+    if (customAllowance && isApproveToken) {
       return spender
         ? iface.encodeFunctionData('approve', [spender, allowance])
         : data
     } else {
       return data
     }
-  }, [customAllowance, data, allowance, spender])
+  }, [customAllowance, data, allowance, spender, isApproveToken])
   return viewData
 }
