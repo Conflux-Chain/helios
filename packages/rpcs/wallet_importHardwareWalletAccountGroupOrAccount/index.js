@@ -102,7 +102,7 @@ export const main = async ({
 
   const networks = findNetwork({
     type: group.vault.cfxOnly ? 'cfx' : 'eth',
-    g: {eid: 1, netId: 1},
+    g: 0,
   })
 
   txs = txs.concat(
