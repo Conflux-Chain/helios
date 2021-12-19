@@ -80,6 +80,7 @@ AddressDetail.propTypes = {
 
 function AddressCard({
   token,
+  fromAddress,
   toAddress,
   value,
   isSendToken,
@@ -89,7 +90,6 @@ function AddressCard({
   const {t} = useTranslation()
   const {
     data: {
-      value: address,
       account: {nickname},
     },
   } = useCurrentAddress()
@@ -142,7 +142,7 @@ function AddressCard({
         </div>
       )}
       <AddressDetail
-        fromAddress={address}
+        fromAddress={fromAddress}
         toAddress={toAddress}
         currentAccountName={nickname}
         toAddressLabel={t(
@@ -157,6 +157,7 @@ function AddressCard({
 AddressCard.propTypes = {
   token: PropTypes.object,
   value: PropTypes.string,
+  fromAddress: PropTypes.string,
   toAddress: PropTypes.string,
   isSendToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,

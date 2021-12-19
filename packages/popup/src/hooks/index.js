@@ -251,12 +251,13 @@ export const useDecodeDisplay = ({
 }) => {
   let displayToken = {},
     displayValue = '0x0',
-    displayToAddress
+    displayToAddress,
+    displayFromAddress
   const {
     data: {value: address},
   } = useCurrentAddress()
   const {toAddress, sendToken, sendAmount} = useGlobalStore()
-  const {to, data, value} = tx
+  const {from, to, data, value} = tx
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
   const isSendNativeToken = !isContract || !data || data === '0x'
@@ -269,17 +270,20 @@ export const useDecodeDisplay = ({
 
   if (!isDapp) {
     displayToken = sendToken
+    displayFromAddress = address
     displayToAddress = toAddress
     displayValue = sendAmount
   } else {
     if (isSendNativeToken) {
       displayToken = nativeToken
+      displayFromAddress = from
       displayToAddress = to
       displayValue = value
     }
     if (data && isContract && decodeData) {
       if (token?.symbol) displayToken = token
       if (isSendToken) {
+        displayFromAddress = decodeData?.args?.[0]
         displayToAddress = decodeData?.args?.[1]
         displayValue = convertDecimal(
           decodeData?.args[2].toString(10),
@@ -302,6 +306,7 @@ export const useDecodeDisplay = ({
   return {
     isApproveToken,
     isSendToken,
+    displayFromAddress,
     displayToAddress,
     displayValue,
     displayToken,

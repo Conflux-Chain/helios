@@ -65,6 +65,7 @@ function ConfirmTransition() {
     isSendToken,
     displayToken,
     displayValue,
+    displayFromAddress,
     displayToAddress,
   } = useDecodeDisplay({isDapp, isContract, nativeToken, tx})
   const isSign = !isSendToken && !isApproveToken
@@ -239,6 +240,7 @@ function ConfirmTransition() {
         <div className="flex flex-col px-3">
           <AddressCard
             token={displayToken}
+            fromAddress={displayFromAddress}
             toAddress={displayToAddress}
             value={displayValue}
             isSendToken={isSendToken}
