@@ -18,7 +18,11 @@ import {
 } from './components'
 import useGlobalStore from '../../stores'
 import {validateAddress} from '../../utils'
-import {useNetworkTypeIsCfx, useCurrentAddress} from '../../hooks/useApi'
+import {
+  useNetworkTypeIsCfx,
+  useCurrentAddress,
+  useSingleTokenInfoWithNativeTokenSupport,
+} from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
 const {HOME, CONFIRM_TRANSACTION} = ROUTES
 
@@ -28,10 +32,10 @@ function SendTransaction() {
   const {
     toAddress,
     sendAmount,
-    sendToken,
+    sendTokenId,
     setToAddress,
     setSendAmount,
-    setSendToken,
+    setSendTokenId,
     setGasPrice,
     setGasLimit,
     setNonce,
@@ -42,6 +46,7 @@ function SendTransaction() {
     data: {
       value: address,
       network: {
+        eid: networkId,
         type,
         netId,
         ticker: nativeToken,
@@ -51,7 +56,8 @@ function SendTransaction() {
       account: {eid: accountId, nickname},
     },
   } = useCurrentAddress()
-  const {address: tokenAddress, decimals} = sendToken
+  const {address: tokenAddress, decimals} =
+    useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const [addressError, setAddressError] = useState('')
   const [balanceError, setBalanceError] = useState('')
@@ -88,7 +94,7 @@ function SendTransaction() {
     setNonce,
     setStorageLimit,
   ])
-  const errorMessage = useCheckBalanceAndGas(estimateRst, sendAmount)
+  const errorMessage = useCheckBalanceAndGas(estimateRst, sendTokenId)
   useEffect(() => {
     sendAmount && setBalanceError(errorMessage)
   }, [errorMessage, sendAmount])
@@ -109,7 +115,7 @@ function SendTransaction() {
   }, [netId, toAddress, type])
 
   const onChangeToken = token => {
-    setSendToken(token)
+    setSendTokenId(token)
   }
   const onChangeAmount = amount => {
     setSendAmount(amount)
@@ -128,9 +134,9 @@ function SendTransaction() {
     }
   }
   useEffect(() => {
-    if (nativeToken.symbol && !tokenAddress) setSendToken(nativeToken)
+    if (nativeToken.symbol && !tokenAddress) setSendTokenId('native')
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(nativeToken)])
+  }, [networkId])
 
   return (
     <div className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg">
@@ -154,7 +160,7 @@ function SendTransaction() {
             errorMessage={addressError}
           />
           <TokenAndAmount
-            selectedToken={sendToken}
+            selectedTokenId={sendTokenId}
             amount={sendAmount}
             onChangeAmount={onChangeAmount}
             onChangeToken={onChangeToken}
