@@ -25,9 +25,10 @@ import {
   usePendingAuthReq,
   useNetworkTypeIsCfx,
 } from '../../hooks/useApi'
+import {useConnect} from '../../hooks/useLedger'
 import {request, bn16} from '../../utils'
 import {AddressCard, InfoList} from './components'
-import {TitleNav, GasFee, DappFooter} from '../../components'
+import {TitleNav, GasFee, DappFooter, HwAlert} from '../../components'
 import {ROUTES, RPC_METHODS} from '../../constants'
 const {VIEW_DATA, HOME} = ROUTES
 const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
@@ -36,6 +37,7 @@ const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
 function ConfirmTransition() {
   const {t} = useTranslation()
   const history = useHistory()
+  const {isAppOpen} = useConnect()
   const [sendingTransaction, setSendingTransaction] = useState(false)
   const [balanceError, setBalanceError] = useState('')
   const pendingAuthReq = usePendingAuthReq()
@@ -55,7 +57,18 @@ function ConfirmTransition() {
     clearSendTransactionParams,
   } = useGlobalStore()
 
-  const nativeToken = useCurrentAddress().data?.network?.ticker || {}
+  const {
+    data: {
+      network: {ticker},
+      account: {
+        accountGroup: {
+          vault: {type},
+        },
+      },
+    },
+  } = useCurrentAddress()
+  const isHwError = !isAppOpen && type === 'hw'
+  const nativeToken = ticker || {}
   const tx = useDappParams()
   const isDapp = pendingAuthReq?.length > 0
   // get to type and to token
@@ -101,13 +114,15 @@ function ConfirmTransition() {
   if (!params.data) delete params.data
   const sendParams = [params]
 
-  const isNativeToken = !displayToken?.address
+  const {address: displayTokenAddress} = displayToken || {}
+
+  const isNativeToken = !displayTokenAddress
   const estimateRst =
     useEstimateTx(
       params,
       !isNativeToken && isSendToken
         ? {
-            [displayToken?.address]: convertValueToData(
+            [displayTokenAddress]: convertValueToData(
               displayValue,
               displayToken?.decimals,
             ),
@@ -128,7 +143,7 @@ function ConfirmTransition() {
 
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
-    displayValue,
+    displayTokenAddress,
     isSendToken,
   )
   useEffect(() => {
@@ -233,6 +248,8 @@ function ConfirmTransition() {
       })
   }
 
+  const confirmDisabled = !!balanceError || estimateRst.loading || isHwError
+
   return (
     <div className="flex flex-col h-full relative">
       <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
@@ -257,9 +274,12 @@ function ConfirmTransition() {
             pendingAuthReq={pendingAuthReq}
           />
           <GasFee estimateRst={estimateRst} />
-          <span className="text-error text-xs inline-block mt-2">
-            {balanceError}
-          </span>
+          {balanceError && (
+            <span className="text-error text-xs inline-block mt-2">
+              {balanceError}
+            </span>
+          )}
+          <HwAlert open={isHwError} className="mt-3" />
         </div>
         <div className="flex flex-col items-center">
           {isDapp && params.data && (
@@ -283,7 +303,7 @@ function ConfirmTransition() {
               <Button
                 className="flex-1"
                 onClick={onSend}
-                disabled={!!balanceError || estimateRst.loading}
+                disabled={confirmDisabled}
               >
                 {t('confirm')}
               </Button>
@@ -293,7 +313,7 @@ function ConfirmTransition() {
             <DappFooter
               confirmText={t('confirm')}
               cancelText={t('cancel')}
-              confirmDisabled={!!balanceError || estimateRst.loading}
+              confirmDisabled={confirmDisabled}
               confirmParams={{tx: sendParams}}
             />
           )}

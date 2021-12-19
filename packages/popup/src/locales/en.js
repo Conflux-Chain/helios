@@ -178,6 +178,8 @@ const en = {
     viewData: 'View Data',
     confirm: 'Confirm',
     createContract: 'Deploy contract',
+    ledgerIsNotConnected: 'Leger is not connected',
+    openExpandView: 'Open Fluent Expand View to Connect',
     // transaction result
     transactionSubmit: 'Transaction Submitted/Signed',
     viewOnScan: 'View on Scan',

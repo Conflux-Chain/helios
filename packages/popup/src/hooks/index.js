@@ -173,13 +173,12 @@ export const useTxParams = () => {
 
 export const useCheckBalanceAndGas = (
   estimateRst,
-  sendToken,
+  sendTokenAddress,
   isSendToken = true,
 ) => {
-  const {address: tokenAddress} = sendToken || {}
   const {error, isBalanceEnough, tokens} = estimateRst
-  const isTokenBalanceEnough = tokens?.[tokenAddress]?.isTokenBalanceEnough
-  const isNativeToken = !tokenAddress
+  const isNativeToken = !sendTokenAddress
+  const isTokenBalanceEnough = tokens?.[sendTokenAddress]?.isTokenBalanceEnough
   return useMemo(() => {
     if (error?.message) {
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
@@ -228,7 +227,6 @@ export const useDecodeData = ({to, data} = {}) => {
 
   const isContract = type === 'contract'
   const crc20Token = useValid20Token(isContract ? to : '')
-  const token = {...crc20Token, address: to}
 
   useEffect(() => {
     if (data && isContract) {
@@ -240,7 +238,7 @@ export const useDecodeData = ({to, data} = {}) => {
     }
   }, [data, isContract, to, netId])
 
-  return {isContract, token, decodeData}
+  return {isContract, token: crc20Token, decodeData}
 }
 
 export const useDecodeDisplay = ({
@@ -291,14 +289,15 @@ export const useDecodeDisplay = ({
           token?.decimals,
         )
       } else if (isApproveToken) {
+        displayFromAddress = address
         displayToAddress = decodeData?.args?.[0]
         displayValue = convertDecimal(
           decodeData?.args[1].toString(10),
           'divide',
           token?.decimals,
         )
-        // setApproveToken(token)
       } else {
+        displayFromAddress = address
         displayToAddress = to
       }
     }

@@ -9,7 +9,7 @@ import {
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
-import {TitleNav, AccountDisplay} from '../../components'
+import {TitleNav, AccountDisplay, HwAlert} from '../../components'
 import {useTxParams, useEstimateTx, useCheckBalanceAndGas} from '../../hooks'
 import {
   ToAddressInput,
@@ -19,12 +19,14 @@ import {
 import useGlobalStore from '../../stores'
 import {validateAddress} from '../../utils'
 import {useNetworkTypeIsCfx, useCurrentAddress} from '../../hooks/useApi'
+import {useConnect} from '../../hooks/useLedger'
 import {ROUTES} from '../../constants'
 const {HOME, CONFIRM_TRANSACTION} = ROUTES
 
 function SendTransaction() {
   const {t} = useTranslation()
   const history = useHistory()
+  const {isAppOpen} = useConnect()
   const {
     toAddress,
     sendAmount,
@@ -48,9 +50,16 @@ function SendTransaction() {
         name: networkName,
         icon: networkIcon,
       },
-      account: {eid: accountId, nickname},
+      account: {
+        eid: accountId,
+        nickname,
+        accountGroup: {
+          vault: {type: accountType},
+        },
+      },
     },
   } = useCurrentAddress()
+  const isHwError = !isAppOpen && accountType === 'hw'
   const {address: tokenAddress, decimals} = sendToken
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const [addressError, setAddressError] = useState('')
@@ -88,7 +97,7 @@ function SendTransaction() {
     setNonce,
     setStorageLimit,
   ])
-  const errorMessage = useCheckBalanceAndGas(estimateRst, sendAmount)
+  const errorMessage = useCheckBalanceAndGas(estimateRst, tokenAddress)
   useEffect(() => {
     sendAmount && setBalanceError(errorMessage)
   }, [errorMessage, sendAmount])
@@ -96,14 +105,14 @@ function SendTransaction() {
   useEffect(() => {
     txHistoryChecker({
       address: toAddress,
-      type: type,
+      type,
       chainId: netId,
     })
       .then(data => {
         setHasNoTxn(!data)
       })
-      .catch(e => {
-        console.log('tx history checker error: ', e)
+      .catch(() => {
+        // console.log('tx history checker error: ', e)
         setHasNoTxn(false)
       })
   }, [netId, toAddress, type])
@@ -161,21 +170,21 @@ function SendTransaction() {
             isNativeToken={isNativeToken}
             nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
           />
-          <span className="text-error text-xs inline-block mt-2">
-            {balanceError}
-          </span>
+          {balanceError && (
+            <span className="text-error text-xs inline-block mt-2">
+              {balanceError}
+            </span>
+          )}
         </div>
         <div className="flex flex-col">
-          {hasNoTxn && (
-            <Alert
-              open={hasNoTxn}
-              closable={false}
-              width="w-full"
-              type="warning"
-              content={t('noTxnWarning')}
-              className="flex-shrink-0"
-            />
-          )}
+          <HwAlert open={isHwError} />
+          <Alert
+            open={hasNoTxn && !isHwError}
+            closable={false}
+            width="w-full"
+            type="warning"
+            content={t('noTxnWarning')}
+          />
           <div className="w-full flex px-1 mt-6">
             <Button
               variant="outlined"
@@ -193,7 +202,8 @@ function SendTransaction() {
                 !!balanceError ||
                 !toAddress ||
                 !sendAmount ||
-                loading
+                loading ||
+                isHwError
               }
               onClick={() => history.push(CONFIRM_TRANSACTION)}
               className="flex-1"

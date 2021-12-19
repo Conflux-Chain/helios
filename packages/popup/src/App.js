@@ -1,6 +1,6 @@
 import {ErrorBoundary} from 'react-error-boundary'
 import {isUndefined} from '@fluent-wallet/checks'
-import React, {lazy, Suspense} from 'react'
+import {lazy, Suspense} from 'react'
 import {HashRouter as Router, Redirect, Route, Switch} from 'react-router-dom'
 import {useIsLocked, useIsZeroGroup, usePendingAuthReq} from './hooks/useApi'
 import {ProtectedRoute} from './components'
