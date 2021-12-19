@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import {useState, useEffect, useMemo} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useAsync} from 'react-use'
+import {useSWRConfig} from 'swr'
 import {isUndefined} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
@@ -30,14 +31,24 @@ import useImportHWParams from './useImportHWParams'
 import {request} from '../../utils'
 
 const {HOME} = ROUTES
-const {WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT} = RPC_METHODS
+const {
+  WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT,
+  WALLETDB_REFETCH_BALANCE,
+  WALLETDB_ACCOUNT_LIST_ASSETS,
+} = RPC_METHODS
 const cfx = new Conflux()
 const limit = 5
 
 function ImportingResults({importStatus}) {
   const {t} = useTranslation()
   const history = useHistory()
+  const {mutate} = useSWRConfig()
 
+  const onClickDone = () => {
+    mutate([WALLETDB_REFETCH_BALANCE])
+    mutate([WALLETDB_ACCOUNT_LIST_ASSETS, 'all'])
+    history.push(HOME)
+  }
   return (
     <div
       id="importing-results"
@@ -67,9 +78,7 @@ function ImportingResults({importStatus}) {
         <Button
           className="w-70 mx-auto mt-9"
           size="large"
-          onClick={() => {
-            history.push(HOME)
-          }}
+          onClick={onClickDone}
         >
           {t('done')}
         </Button>
