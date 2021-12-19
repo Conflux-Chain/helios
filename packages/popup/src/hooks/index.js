@@ -327,4 +327,3 @@ export const useViewData = ({data, to} = {}) => {
   }, [customAllowance, data, allowance, spender])
   return viewData
 }
-

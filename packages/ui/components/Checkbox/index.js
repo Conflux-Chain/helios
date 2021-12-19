@@ -2,17 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {CheckSquareFilled, SquareOutlined} from '@fluent-wallet/component-icons'
 
-function Checkbox({checked, onChange, children, className}) {
+function Checkbox({checked, onChange, children, className, disabled = false}) {
   return (
     <div
       data-testid="checkbox-wrapper"
-      onClick={() => onChange && onChange()}
+      onClick={() => !disabled && onChange && onChange()}
       aria-hidden="true"
       className={`flex items-center cursor-pointer ${className}`}
     >
       {checked && (
         <CheckSquareFilled
-          className="w-4 h-4 mr-2 text-primary"
+          className={`w-4 h-4 mr-2 ${
+            disabled ? 'text-gray-40' : 'text-primary'
+          }`}
           data-testid="checked-svg"
         />
       )}
@@ -31,6 +33,7 @@ export default Checkbox
 
 Checkbox.propTypes = {
   checked: PropTypes.bool,
+  disabled: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,

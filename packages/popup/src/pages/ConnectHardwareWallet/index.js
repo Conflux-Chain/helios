@@ -51,9 +51,6 @@ function WalletInner() {
     }
   }
 
-  console.log('loading', loading)
-  console.log('value', value)
-
   if (isAuthenticated && isAppOpen) {
     // TODO: deal with query
     history.push(IMPORT_HW_ACCOUNT)
@@ -86,12 +83,6 @@ function ConnectHardwareWallet() {
     >
       <div className="flex-2" />
       <WalletInner />
-      {/* {loading ? <SearchingWallet /> : value?.isDeviceAuthed ?  <ConnectWallet /> } */}
-      {/* <Authorizing />
-      <OpenApp />
-      <ConnectWallet />
-      <ReConnectWallet />
-      <SearchingWallet /> */}
       <div className="flex-3" />
     </div>
   )

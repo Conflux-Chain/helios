@@ -19,7 +19,6 @@ const useImportHWParams = device => {
       devices: [device],
     },
   )
-
   let nextAccountIndex = 1
   if (hmInfoData) {
     if (!hmInfoData?.group) {

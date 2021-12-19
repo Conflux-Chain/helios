@@ -1,4 +1,4 @@
-import {isNumber, isString} from '@fluent-wallet/checks'
+import {isNumber, isString, isArray} from '@fluent-wallet/checks'
 import {useMemo} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 
@@ -459,4 +459,29 @@ export const useImportHW = ({data = {}, device = 'LedgerNanoS'}) => {
       [...hex, networkId, device],
     )
   })
+}
+
+export const useQueryImportedAddress = networkId => {
+  return useRPC(
+    networkId ? [QUERY_ADDRESS, 'useQueryImportedAddress', networkId] : null,
+    {
+      networkId,
+      g: {
+        hex: 1,
+        value: 1,
+      },
+    },
+    {
+      postprocessSuccessData: d => {
+        if (isArray(d)) {
+          let ret = {}
+          d.forEach(({hex, value}) => {
+            ret[hex] = value
+          })
+          return ret
+        }
+        return d
+      },
+    },
+  )
 }

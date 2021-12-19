@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect, useMemo} from 'react'
+import {useHistory} from 'react-router-dom'
 import {useAsync} from 'react-use'
 import {isUndefined} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
@@ -19,16 +20,23 @@ import Toast from '@fluent-wallet/component-toast'
 import {encode} from '@fluent-wallet/base32-address'
 import {Conflux} from '@fluent-wallet/ledger'
 import {TitleNav, CompWithLabel, Avatar, DisplayBalance} from '../../components'
-import {RPC_METHODS} from '../../constants'
-import {useCurrentAddress, useBalance} from '../../hooks/useApi'
+import {RPC_METHODS, ROUTES} from '../../constants'
+import {
+  useCurrentAddress,
+  useBalance,
+  useQueryImportedAddress,
+} from '../../hooks/useApi'
 import useImportHWParams from './useImportHWParams'
 import {request} from '../../utils'
 
+const {HOME} = ROUTES
 const {WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT} = RPC_METHODS
 const cfx = new Conflux()
 const limit = 5
+
 function ImportingResults({importStatus}) {
   const {t} = useTranslation()
+  const history = useHistory()
 
   return (
     <div
@@ -56,7 +64,13 @@ function ImportingResults({importStatus}) {
         </div>
       </div>
       {importStatus === 'success' ? (
-        <Button className="w-70 mx-auto mt-9" size="large">
+        <Button
+          className="w-70 mx-auto mt-9"
+          size="large"
+          onClick={() => {
+            history.push(HOME)
+          }}
+        >
           {t('done')}
         </Button>
       ) : null}
@@ -71,17 +85,20 @@ ImportingResults.propTypes = {
 
 function ImportHwAccount() {
   const {t} = useTranslation()
-  const {
-    data: {
-      network: {eid: networkId, netId},
-    },
-  } = useCurrentAddress()
   const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
   const [offset, setOffset] = useState(0)
   const [errMsg, setErrMsg] = useState('')
   const [importStatus, setImportStatus] = useState('')
+  const {
+    data: {
+      network: {eid: networkId, netId},
+    },
+  } = useCurrentAddress()
 
+  const {data: importedAddressData} = useQueryImportedAddress(networkId)
+
+  console.log('data2', importedAddressData)
   const {value: addressList, loading} = useAsync(async () => {
     const addresses = await cfx.getAddressList(
       new Array(limit).fill('').map((_item, index) => index + offset),
@@ -110,7 +127,7 @@ function ImportHwAccount() {
     if (addressList?.length) {
       const ret = {}
       addressList.forEach(({address}) => {
-        ret[address] = false
+        ret[address] = !!importedAddressData?.[address] ?? false
       })
       setCheckboxStatusObj({...ret})
     }
@@ -124,13 +141,25 @@ function ImportHwAccount() {
   }, [checkboxStatusObj])
 
   const onSelectAllAccount = () => {
+    if (addressList.every(({address}) => importedAddressData?.[address])) {
+      return
+    }
     const ret = {}
-    Object.keys(checkboxStatusObj).forEach(k => (ret[k] = !allCheckboxStatus))
+    Object.keys(checkboxStatusObj).forEach(
+      k =>
+        (ret[k] = importedAddressData?.[k]
+          ? !!importedAddressData?.[k]
+          : !allCheckboxStatus),
+    )
+    console.log('ret', ret, !allCheckboxStatus)
     setCheckboxStatusObj({...ret})
     setAllCheckboxStatus(!allCheckboxStatus)
   }
 
   const onSelectSingleAccount = address => {
+    if (importedAddressData?.[address]) {
+      return
+    }
     setCheckboxStatusObj({
       ...checkboxStatusObj,
       [address]: !checkboxStatusObj[address],
@@ -155,7 +184,7 @@ function ImportHwAccount() {
     let chosenBase32Address = []
     let accountGroupData = {}
     addressList.forEach(({address, hdPath}, index) => {
-      if (checkboxStatusObj?.[address]) {
+      if (checkboxStatusObj?.[address] && !importedAddressData?.[address]) {
         accountGroupData[address] = hdPath
         chosenBase32Address.push({
           address: base32Address[index],
@@ -178,14 +207,14 @@ function ImportHwAccount() {
         console.log('res', res)
       })
       .catch(err => {
-        // TODO: error msg
         setImportStatus('')
         console.log(err, err)
+        // TODO: error msg
         setErrMsg(err?.message || 'something wrong')
       })
   }
 
-  if (!deviceInfo?.name) {
+  if (!deviceInfo?.name || isUndefined(importedAddressData)) {
     return null
   }
   if (importStatus) {
@@ -226,6 +255,9 @@ function ImportHwAccount() {
                 <Checkbox
                   checked={allCheckboxStatus}
                   onChange={onSelectAllAccount}
+                  disabled={addressList.every(
+                    ({address}) => importedAddressData?.[address],
+                  )}
                   id="selectAll"
                 >
                   {t('selectAll')}
@@ -274,6 +306,7 @@ function ImportHwAccount() {
                     <div className="flex">
                       <Checkbox
                         checked={checkboxStatusObj[hexAddress]}
+                        disabled={!!importedAddressData?.[hexAddress]}
                         id={`check-${index}`}
                       />
                     </div>
