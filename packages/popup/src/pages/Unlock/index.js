@@ -38,7 +38,10 @@ const UnlockPage = () => {
   }
 
   return (
-    <div className="bg-secondary h-full flex flex-col" id="unlockContainer">
+    <div
+      className="bg-secondary h-150 w-93 m-auto light flex flex-col"
+      id="unlockContainer"
+    >
       <LanguageNav />
       <header className="flex flex-col items-center pb-7">
         <img

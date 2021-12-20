@@ -10,7 +10,7 @@ function AccountDisplay({address, accountId, nickname}) {
       <Avatar
         className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2"
         diameter={30}
-        accountId={accountId}
+        accountIdentity={accountId}
       />
       <div className="flex flex-col">
         <span className="text-xs text-gray-40">{nickname}</span>

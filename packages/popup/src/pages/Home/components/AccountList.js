@@ -57,7 +57,11 @@ function AccountItem({
           key={index}
           className="flex p-3 rounded hover:bg-primary-4 cursor-pointer"
         >
-          <Avatar className="w-5 h-5 mr-2" diameter={20} accountId={eid} />
+          <Avatar
+            className="w-5 h-5 mr-2"
+            diameter={20}
+            accountIdentity={eid}
+          />
           <div className="flex-1">
             <p className="text-xs text-gray-40 ">{nickname}</p>
             <div className="flex w-full">

@@ -9,7 +9,7 @@ export function processError(err) {
     if (err.data?.includes?.('too stale nonce'))
       return {errorType: 'tooStaleNonce', shouldDiscard: true}
     if (
-      err.data?.includes?.match(
+      err.data?.match?.(
         /Tx with same nonce already inserted.*replace.*gas price/,
       )
     )
