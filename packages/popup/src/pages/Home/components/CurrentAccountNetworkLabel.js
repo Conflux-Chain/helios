@@ -10,7 +10,7 @@ function CurrentAccountNetworkLabel() {
   } = useCurrentAddress()
   return (
     <div className="flex items-center text-xs mt-1">
-      <Avatar className="w-3 h-3 mr-1" accountId={eid} diameter={12} />
+      <Avatar className="w-3 h-3 mr-1" accountIdentity={eid} diameter={12} />
       <div className="text-gray-40">{nickname || ''}</div>
       <div className="mx-2 w-px h-2 bg-gray-40" />
       <img

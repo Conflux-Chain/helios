@@ -10,6 +10,7 @@ import {
   truep,
   maybe,
   nickname,
+  oneOrMore,
   mapp,
 } from '@fluent-wallet/spec'
 import {encrypt, decrypt} from 'browser-passworder'
@@ -63,10 +64,13 @@ const hwSchema = [
   [
     'accounts',
     [
-      map,
-      {closed: true},
-      ['address', [or, base32UserAddress, ethHexAddress]],
-      ['nickname', stringp],
+      oneOrMore,
+      [
+        map,
+        {closed: true},
+        ['address', [or, base32UserAddress, ethHexAddress]],
+        ['nickname', stringp],
+      ],
     ],
   ],
 ]

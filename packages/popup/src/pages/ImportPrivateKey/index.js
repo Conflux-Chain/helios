@@ -87,7 +87,10 @@ function ImportPrivateKey() {
   }
 
   return (
-    <div className="bg-bg h-full flex flex-col" id="importPrivateKeyContainer">
+    <div
+      className="bg-bg h-150 w-93 m-auto light flex flex-col"
+      id="importPrivateKeyContainer"
+    >
       <TitleNav title={t(`pKeyImport`)} />
       <form
         onSubmit={event => event.preventDefault()}
