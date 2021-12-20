@@ -361,17 +361,19 @@ export const useGroupAccountList = () => {
   )
 }
 
-export const useDbAccountListAssets = () => {
+export const useDbAccountListAssets = (
+  params = {
+    type: 'all',
+    accountGroupTypes: [
+      ACCOUNT_GROUP_TYPE.HD,
+      ACCOUNT_GROUP_TYPE.PK,
+      ACCOUNT_GROUP_TYPE.HW,
+    ],
+  },
+) => {
   const {data: accountListAssets} = useRPC(
-    [WALLETDB_ACCOUNT_LIST_ASSETS, 'all'],
-    {
-      type: 'all',
-      accountGroupTypes: [
-        ACCOUNT_GROUP_TYPE.HD,
-        ACCOUNT_GROUP_TYPE.PK,
-        ACCOUNT_GROUP_TYPE.HW,
-      ],
-    },
+    [WALLETDB_ACCOUNT_LIST_ASSETS, ...params.accountGroupTypes],
+    params,
     {
       fallbackData: {},
     },

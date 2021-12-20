@@ -11,7 +11,8 @@ import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
 import {t} from 'i18next'
 
 const {EXPORT_SEED, EXPORT_PRIVATEKEY} = ROUTES
-const {WALLET_EXPORT_ACCOUNT, WALLET_EXPORT_ACCOUNT_GROUP} = RPC_METHODS
+const {WALLET_EXPORT_ACCOUNT, WALLET_EXPORT_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} =
+  RPC_METHODS
 
 function AccountManagementItem({
   nickname,
@@ -91,7 +92,10 @@ function AccountManagement() {
     },
   } = useCurrentAddress()
 
-  const {accountGroups} = useDbAccountListAssets()
+  const {accountGroups} = useDbAccountListAssets({
+    type: 'all',
+    accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+  })
   const validatePassword = value => {
     // TODO: Replace err msg
     const isValid = validatePasswordReg(value)
