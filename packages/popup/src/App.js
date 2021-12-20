@@ -1,11 +1,10 @@
 import {ErrorBoundary} from 'react-error-boundary'
 import {isUndefined} from '@fluent-wallet/checks'
-import React, {lazy, Suspense} from 'react'
+import {lazy, Suspense} from 'react'
 import {HashRouter as Router, Redirect, Route, Switch} from 'react-router-dom'
 import {useIsLocked, useIsZeroGroup, usePendingAuthReq} from './hooks/useApi'
 import {ProtectedRoute} from './components'
 import {ROUTES} from './constants'
-import './index.css'
 import useGlobalStore from './stores/index.js'
 
 import ErrorPage from './pages/Error'
@@ -87,18 +86,18 @@ function App() {
     return <div>loading...</div>
   }
   return (
-    <ErrorBoundary
-      FallbackComponent={ErrorPage}
-      onError={error => setFatalError(error)}
-    >
-      <Suspense
-        fallback={
-          <div className="w-full h-full flex items-center justify-center">
-            loading
-          </div>
-        }
+    <Router>
+      <ErrorBoundary
+        FallbackComponent={ErrorPage}
+        onError={error => setFatalError(error)}
       >
-        <Router>
+        <Suspense
+          fallback={
+            <div className="w-full h-full flex items-center justify-center">
+              loading
+            </div>
+          }
+        >
           <Switch>
             <Route exact path={WALLET_UNLOCK} component={Unlock} />
             <Route exact path={WELCOME} component={Welcome} />
@@ -178,9 +177,9 @@ function App() {
             <Route exact path={ERROR} component={ErrorPage} />
             <Route path="*" render={() => <Redirect to={ERROR} />} />
           </Switch>
-        </Router>
-      </Suspense>
-    </ErrorBoundary>
+        </Suspense>
+      </ErrorBoundary>
+    </Router>
   )
 }
 

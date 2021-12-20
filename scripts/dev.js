@@ -12,7 +12,11 @@ const buildExtReload = require('./build-reload.js')
 const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
 setEnvBasedOnArgv()
 
-const {loadConfiguration, startServer, clearCache} = require('snowpack')
+const {
+  loadConfiguration,
+  startServer,
+  clearCache,
+} = require('@yqrashawn/snowpack')
 
 const builds = [
   resolve(__dirname, '../packages/background/snowpack.config.cjs'),
