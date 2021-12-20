@@ -9,7 +9,7 @@ import {
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
-import {TitleNav, AccountDisplay, HwAlert} from '../../components'
+import {TitleNav, AccountDisplay} from '../../components'
 import {useTxParams, useEstimateTx, useCheckBalanceAndGas} from '../../hooks'
 import {
   ToAddressInput,
@@ -23,14 +23,12 @@ import {
   useCurrentAddress,
   useSingleTokenInfoWithNativeTokenSupport,
 } from '../../hooks/useApi'
-import {useConnect} from '../../hooks/useLedger'
 import {ROUTES} from '../../constants'
 const {HOME, CONFIRM_TRANSACTION} = ROUTES
 
 function SendTransaction() {
   const {t} = useTranslation()
   const history = useHistory()
-  const {isAppOpen} = useConnect()
   const {
     toAddress,
     sendAmount,
@@ -55,16 +53,9 @@ function SendTransaction() {
         name: networkName,
         icon: networkIcon,
       },
-      account: {
-        eid: accountId,
-        nickname,
-        accountGroup: {
-          vault: {type: accountType},
-        },
-      },
+      account: {eid: accountId, nickname},
     },
   } = useCurrentAddress()
-  const isHwError = !isAppOpen && accountType === 'hw'
   const {address: tokenAddress, decimals} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
   const networkTypeIsCfx = useNetworkTypeIsCfx()
@@ -183,9 +174,8 @@ function SendTransaction() {
           )}
         </div>
         <div className="flex flex-col">
-          <HwAlert open={isHwError} />
           <Alert
-            open={hasNoTxn && !isHwError}
+            open={hasNoTxn}
             closable={false}
             width="w-full"
             type="warning"
@@ -208,8 +198,7 @@ function SendTransaction() {
                 !!balanceError ||
                 !toAddress ||
                 !sendAmount ||
-                loading ||
-                isHwError
+                loading
               }
               onClick={() => history.push(CONFIRM_TRANSACTION)}
               className="flex-1"
