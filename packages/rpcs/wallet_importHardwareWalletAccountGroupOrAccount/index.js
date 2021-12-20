@@ -128,8 +128,11 @@ export const main = async ({
 
   txs = txs.concat(
     networks.reduce(
-      (acc, {eid, netId}, idx) =>
+      (acc, {eid, netId, type}, idx) =>
         address.reduce((acc, {address, nickname}, jdx) => {
+          if (group.vault.cfxOnly && type !== 'cfx') return acc
+          if (!group.vault.cfxOnly && type === 'cfx') return acc
+
           const accountIndex = jdx + group.account.length
           const [account] = findAccount({
             groupId: accountGroupId,
