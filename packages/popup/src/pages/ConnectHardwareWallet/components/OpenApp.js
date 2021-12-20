@@ -25,7 +25,7 @@ function OpenApp() {
     setLoadingStatus(false)
     if (ret) {
       if (query.get('action') === 'close') {
-        window.open('about:blank', '_self')
+        window.open(' ', '_self')
         window.close()
         return
       }
