@@ -104,9 +104,7 @@ function ImportHwAccount() {
       network: {eid: networkId, netId},
     },
   } = useCurrentAddress()
-
   const {data: importedAddressData} = useQueryImportedAddress(networkId)
-
   const {value: addressList, loading} = useAsync(async () => {
     let addresses = []
     try {
@@ -114,7 +112,6 @@ function ImportHwAccount() {
         new Array(limit).fill('').map((_item, index) => index + offset),
       )
     } catch (e) {
-      console.log('e', e)
       // TODO: error message
       setErrMsg(
         e?.appCode == 5031 ? t('refreshLater') : 'some thing goes wrong',
@@ -132,11 +129,11 @@ function ImportHwAccount() {
     deviceInfo?.name,
   )
 
+  // TODO： take care when add multiple chain
   const base32Address = useMemo(() => {
     if (isUndefined(netId) || isUndefined(addressList)) {
       return []
     }
-    // TODO： take care when add multiple chain
     return addressList.map(({address}) => encode(address, netId))
   }, [addressList, netId])
 
@@ -193,6 +190,7 @@ function ImportHwAccount() {
     base32Address?.length ? base32Address : null,
     networkId,
   )
+
   const onImportAccount = () => {
     let chosenBase32Address = []
     let accountGroupData = {}
@@ -225,7 +223,7 @@ function ImportHwAccount() {
       })
   }
 
-  if (!deviceInfo?.name || isUndefined(importedAddressData)) {
+  if (!deviceInfo?.name) {
     return null
   }
   if (importStatus) {
@@ -262,7 +260,7 @@ function ImportHwAccount() {
                   {t('chooseHwAddress')}
                 </div>
               </div>
-              {addressList?.length ? (
+              {addressList?.length && importedAddressData ? (
                 <Checkbox
                   checked={allCheckboxStatus}
                   onChange={onSelectAllAccount}
@@ -277,12 +275,12 @@ function ImportHwAccount() {
             </div>
           }
         >
-          <div
-            id="accountWrapper"
-            className="rounded border border-solid border-gray-10 pt-3 overflow-auto bg-gray-4 no-scroll"
-          >
-            {addressList?.length ? (
-              addressList.map(({address: hexAddress}, index) => (
+          {addressList?.length && importedAddressData ? (
+            <div
+              id="accountWrapper"
+              className="rounded border border-solid border-gray-10 pt-3 overflow-auto bg-gray-4 no-scroll"
+            >
+              {addressList.map(({address: hexAddress}, index) => (
                 <div
                   aria-hidden="true"
                   onClick={() => onSelectSingleAccount(hexAddress)}
@@ -323,11 +321,7 @@ function ImportHwAccount() {
                     </div>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="h-[300px]" />
-            )}
-            {addressList?.length ? (
+              ))}
               <div className="flex justify-center items-center my-3 h-10">
                 <Button
                   className="mr-20 w-25"
@@ -350,10 +344,10 @@ function ImportHwAccount() {
                   {t('capNext')}
                 </Button>
               </div>
-            ) : (
-              <div className="h-16" />
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="rounded border border-solid border-gray-10 pt-3 overflow-auto bg-gray-4 no-scroll h-[376px]"></div>
+          )}
         </CompWithLabel>
         <Button
           size="large"
