@@ -47,3 +47,9 @@ export const DEFAULT_TOKEN_URL =
   'https://conflux-static.oss-cn-beijing.aliyuncs.com/fluent/icons/default-token-icon.svg'
 
 export const historyPageLimit = 10
+
+export const LEDGER_AUTH_STATUS = {
+  LOADING: 'loading',
+  AUTHED: 'authed',
+  UNAUTHED: 'unauthed',
+}
