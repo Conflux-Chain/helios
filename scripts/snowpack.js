@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 'use strict'
-const {cli} = require('snowpack')
+const {cli} = require('@yqrashawn/snowpack')
 const {setEnvBasedOnArgv} = require('./snowpack.utils')
 require('./setup-dotenv')
 

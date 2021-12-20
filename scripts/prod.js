@@ -11,7 +11,7 @@ const buildContentScript = require('./build-content-script.js')
 const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
 setEnvBasedOnArgv()
 
-const {loadConfiguration, build} = require('snowpack')
+const {loadConfiguration, build} = require('@yqrashawn/snowpack')
 
 const builds = [
   resolve(__dirname, '../packages/background/snowpack.config.cjs'),

@@ -5,7 +5,6 @@ import {HashRouter as Router, Redirect, Route, Switch} from 'react-router-dom'
 import {useIsLocked, useIsZeroGroup, usePendingAuthReq} from './hooks/useApi'
 import {ProtectedRoute} from './components'
 import {ROUTES} from './constants'
-import './index.css'
 import useGlobalStore from './stores/index.js'
 
 import ErrorPage from './pages/Error'
