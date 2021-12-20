@@ -158,9 +158,6 @@ function ImportHwAccount() {
   }, [checkboxStatusObj])
 
   const onSelectAllAccount = () => {
-    if (addressList.every(({address}) => importedAddressData?.[address])) {
-      return
-    }
     const ret = {}
     Object.keys(checkboxStatusObj).forEach(
       k =>
@@ -366,7 +363,9 @@ function ImportHwAccount() {
             !base32Address?.length ||
             loading ||
             !Object.keys(hwParams).length ||
-            Object.values(checkboxStatusObj).filter(Boolean).length === 0
+            Object.keys(checkboxStatusObj).filter(
+              addr => checkboxStatusObj[addr] && !importedAddressData[addr],
+            ).length === 0
           }
         >
           {t('next')}
