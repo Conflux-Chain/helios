@@ -78,11 +78,14 @@ module.exports = {
   optimize: isProd()
     ? {
         souecemap: 'inline',
-        // bundle: true, // TODO: turn this on after https://github.com/snowpackjs/snowpack/issues/3403 is resolved
+        // TODO: turn this on after https://github.com/snowpackjs/snowpack/issues/3403 is resolved
+        // this is resolved in @yqrashawn/snowpack
+        bundle: true,
+        // plugins: [stylePlugin()],
         minify: true,
         target: 'es2020',
         treeshake: true,
-        splitting: true,
+        // splitting: true,
       }
     : false,
 }
