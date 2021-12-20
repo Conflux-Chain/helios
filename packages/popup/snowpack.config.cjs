@@ -14,7 +14,8 @@ mustacheRender(
   {
     scripts: isDev()
       ? `<script src="http://localhost:18001/dist/index.dev.js" type="module" charset="utf-8"></script>`
-      : `<script src="dist/index.js" type="module" charset="utf-8"></script>`,
+      : `<link rel="stylesheet" href="dist/index.css" type="text/css" media="screen" />
+<script src="dist/index.js" type="module" charset="utf-8"></script>`,
     body: ``,
   },
 )
