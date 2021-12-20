@@ -29,7 +29,7 @@ import {useConnect} from '../../hooks/useLedger'
 import {request, bn16} from '../../utils'
 import {AddressCard, InfoList} from './components'
 import {TitleNav, GasFee, DappFooter, HwAlert} from '../../components'
-import {ROUTES, RPC_METHODS} from '../../constants'
+import {ROUTES, RPC_METHODS, LEDGER_AUTH_STATUS} from '../../constants'
 const {VIEW_DATA, HOME} = ROUTES
 const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
   RPC_METHODS
@@ -37,7 +37,7 @@ const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
 function ConfirmTransition() {
   const {t} = useTranslation()
   const history = useHistory()
-  const {isAppOpen} = useConnect()
+  const {authStatus} = useConnect()
   const [sendingTransaction, setSendingTransaction] = useState(false)
   const [balanceError, setBalanceError] = useState('')
   const pendingAuthReq = usePendingAuthReq()
@@ -67,7 +67,7 @@ function ConfirmTransition() {
       },
     },
   } = useCurrentAddress()
-  const isHwError = !isAppOpen && type === 'hw'
+  const isHwError = authStatus === LEDGER_AUTH_STATUS.UNAUTHED && type === 'hw'
   const nativeToken = ticker || {}
   const tx = useDappParams()
   const isDapp = pendingAuthReq?.length > 0
