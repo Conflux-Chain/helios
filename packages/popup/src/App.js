@@ -287,12 +287,12 @@ function App() {
   }
 
   return (
-    <ErrorBoundary
-      FallbackComponent={ErrorPage}
-      onError={error => setFatalError(error)}
-    >
-      <Suspense fallback={<PageLoading />}>
-        <Router>
+    <Router>
+      <ErrorBoundary
+        FallbackComponent={ErrorPage}
+        onError={error => setFatalError(error)}
+      >
+        <Suspense fallback={<PageLoading />}>
           <div className="h-150 w-93 m-auto light relative overflow-hidden">
             <MyRoutes
               lockedData={lockedData}
@@ -300,9 +300,9 @@ function App() {
               pendingAuthReq={pendingAuthReq}
             />
           </div>
-        </Router>
-      </Suspense>
-    </ErrorBoundary>
+        </Suspense>
+      </ErrorBoundary>
+    </Router>
   )
 }
 
