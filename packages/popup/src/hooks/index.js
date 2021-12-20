@@ -260,7 +260,7 @@ export const useDecodeDisplay = ({
   const {from, to, data, value} = tx
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
-  const isSendNativeToken = (!isContract && !to) || !data || data === '0x'
+  const isSendNativeToken = (!isContract && !!to) || !data || data === '0x'
   const isSendToken =
     !isDapp ||
     (isDapp &&
