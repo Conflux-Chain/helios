@@ -1,6 +1,13 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 import AppCfx from '@fluent-wallet/hw-app-conflux'
-import {LEDGER_APP_NAME, LEDGER_CLA, INS, HDPATH, LEDGER_DEVICE} from './const'
+import {
+  LEDGER_APP_NAME,
+  LEDGER_CLA,
+  INS,
+  HDPATH,
+  LEDGER_DEVICE,
+  ERROR,
+} from './const'
 
 /**
  * Connecting Ledger Conflux App API for fluent
@@ -51,7 +58,7 @@ export default class Conflux {
     try {
       return this.app?.signTransaction(hdPath, txHex)
     } catch (error) {
-      return Promise.reject(error)
+      return Promise.reject(this.handleTheError(error))
     }
   }
 
@@ -71,6 +78,8 @@ export default class Conflux {
 
   async isAppOpen() {
     try {
+      const isAuthed = await this.isDeviceAuthed()
+      if (!isAuthed) return false
       const {name} = await this.getAppConfiguration()
       return name === LEDGER_APP_NAME.CONFLUX
     } catch (error) {
@@ -93,8 +102,17 @@ export default class Conflux {
     }
   }
 
+  /**
+   *
+   * @returns boolean, means that whether user has already authed this hardware
+   */
   async requestAuth() {
-    return TransportWebUSB?.request()
+    try {
+      await TransportWebUSB?.request()
+      return true
+    } catch (error) {
+      return false
+    }
   }
 
   async getAddressList(indexArray) {
@@ -106,12 +124,15 @@ export default class Conflux {
     const addressArr = []
     try {
       for (const index of indexArray) {
-        const hdPath = `${HDPATH}${index}`
+        const hdPath = `${HDPATH.CONFLUX}${index}`
         const {address} = await this.getAddress(hdPath)
-        addressArr.push(address)
+        addressArr.push({
+          address,
+          hdPath,
+        })
       }
     } catch (error) {
-      console.warn(error)
+      return Promise.reject(this.handleTheError(error))
     }
     return addressArr
   }
@@ -127,5 +148,12 @@ export default class Conflux {
       }
     }
     return {}
+  }
+
+  handleTheError(error) {
+    if (error?.id === ERROR.INVALID_CHANNEL.ID) {
+      error.appCode = ERROR.INVALID_CHANNEL.CODE
+    }
+    return error
   }
 }

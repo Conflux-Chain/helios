@@ -24,7 +24,10 @@ function NewSeed() {
   }, [hdGroup])
 
   return (
-    <div className="flex flex-col h-full bg-bg" id="newSeedContainer">
+    <div
+      className="flex flex-col h-150 w-93 m-auto light bg-bg"
+      id="newSeedContainer"
+    >
       <TitleNav title={t('newAccount')} />
       <main className="px-3 flex flex-1 flex-col justify-between">
         <div>

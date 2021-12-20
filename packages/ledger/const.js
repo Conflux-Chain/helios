@@ -23,3 +23,10 @@ export const INS = {
 export const HDPATH = {
   CONFLUX: "44'/503'/0'/0/",
 }
+
+export const ERROR = {
+  INVALID_CHANNEL: {
+    ID: 'InvalidChannel',
+    CODE: '5031', //means that the channel is busy, user should interact with this func a moment later
+  },
+}

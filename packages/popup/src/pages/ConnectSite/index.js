@@ -74,7 +74,7 @@ function ConnectSitesList({
                     <Avatar
                       className="w-5 h-5 mr-2"
                       diameter={20}
-                      accountId={accountItem.eid}
+                      accountIdentity={accountItem.eid}
                     />
                     <div className="flex-1">
                       <p className="text-xs text-gray-40">
@@ -193,7 +193,7 @@ function ConnectSite() {
   return accountGroups && currentNetwork && currentAddress ? (
     <div
       id="connectSiteContainer"
-      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
+      className="flex flex-col h-150 w-93 m-auto light justify-between bg-blue-circles bg-no-repeat pb-4"
     >
       <div id="content">
         <DappProgressHeader title={t('connectSite')} />
@@ -210,7 +210,7 @@ function ConnectSite() {
               <Input
                 value={searchContent}
                 width="w-full box-border"
-                readonly
+                readOnly
                 className="pointer-events-none"
                 suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
                 id="searchContent"
