@@ -279,13 +279,13 @@ function App() {
         onError={error => setFatalError(error)}
       >
         <Suspense fallback={<PageLoading />}>
-            <div className="h-150 w-93 m-auto light relative overflow-hidden">
-              <MyRoutes
-                lockedData={lockedData}
-                zeroGroup={zeroGroup}
-                pendingAuthReq={pendingAuthReq}
-              />
-            </div>
+          <div className="h-150 w-93 m-auto light relative overflow-hidden">
+            <MyRoutes
+              lockedData={lockedData}
+              zeroGroup={zeroGroup}
+              pendingAuthReq={pendingAuthReq}
+            />
+          </div>
         </Suspense>
       </ErrorBoundary>
     </Router>
