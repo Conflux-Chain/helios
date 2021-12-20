@@ -215,7 +215,7 @@
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
 (defn get-group [{:keys [groupId vaultId g nickname types hidden devices]}]
-  (let [g (and g {:accountGroup g})
+  (let [g            (and g {:accountGroup g})
         post-process (if (seq g) identity #(get % :db/id))]
     (prst->js
      (cond
@@ -259,32 +259,49 @@
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
 (defn upsert-token-list [{:keys [newList networkId]}]
-  (let [chainId (js/parseInt (:network/chainId (p '[:network/chainId] networkId)) 16)
-        [token-ids token-map] (reduce (fn [[coll m] {:keys [address] :as x}]
-                                        (let [address (and (string? address) (.toLowerCase address))
-                                              x (assoc x :address address)]
-                                          ;; only support tokens with current chainid
-                                          (if (not= (js/parseInt (:chainId x) 10) chainId)
-                                            [coll m]
-                                            (let [x (map->nsmap x :token)]
-                                              [(conj coll [[networkId address] (assoc x :token/network networkId :token/fromList true)])
-                                               (assoc m address (dissoc x :token/address))]))))
-                                      [[] {}] newList)
-        txs                   (q '[:find [?t ...]
-                                   :in $ [[?tid ?token] ...]
-                                   :where
-                                   (or [?t :token/id ?tid]
-                                       (and
-                                        (not [?t :token/id ?tid])
-                                        [(and true ?token) ?t]))]
-                                 token-ids)
-        txs                   (map-indexed
-                               (fn [idx x]
-                                 (if (int? x)
-                                   (let [addr (:token/address (p '[:token/address] x))]
-                                     (-> (get token-map addr {})
-                                         (assoc :token/id [networkId addr])))
-                                   (assoc x :db/id (- (- idx) 10000)))) txs)]
+  (let [chainId                         (js/parseInt (:network/chainId (p '[:network/chainId] networkId)) 16)
+        [token-ids token-map addresses] (reduce (fn [[coll m addresses] {:keys [address] :as x}]
+                                                  (let [address (and (string? address) (.toLowerCase address))
+                                                        x       (assoc x :address address)]
+                                                    ;; only support tokens with current chainid
+                                                    (if (not= (js/parseInt (:chainId x) 10) chainId)
+                                                      [coll m addresses]
+                                                      (let [x (map->nsmap x :token)]
+                                                        [(conj coll [[networkId address] (assoc x :token/network networkId :token/fromList true)])
+                                                         (assoc m address (dissoc x :token/address))
+                                                         (conj addresses (:token/address x))]))))
+                                                [[] {} #{}] newList)
+        tokens-might-remove             (q '[:find [(pull ?t [:db/id :token/address]) ...]
+                                             :in $ ?net
+                                             :where
+                                             [?t :token/network ?net]
+                                             (not [?t :token/fromUser true])
+                                             (not [?t :token/fromApp true])
+                                             [?t :token/fromList true]
+                                             [?any-addr :address/network ?net]
+                                             (not [?any-addr :address/token ?t])] networkId)
+        tokens-might-remove             (reduce (fn [acc token]
+                                                  (if (some #{(:token/address token)} addresses)
+                                                    acc
+                                                    (conj acc (:db/id token))))
+                                                [] tokens-might-remove)
+
+        txs (q '[:find [?t ...]
+                 :in $ [[?tid ?token] ...]
+                 :where
+                 (or [?t :token/id ?tid]
+                     (and
+                      (not [?t :token/id ?tid])
+                      [(and true ?token) ?t]))]
+               token-ids)
+        txs (map-indexed
+             (fn [idx x]
+               (if (int? x)
+                 (let [addr (:token/address (p '[:token/address] x))]
+                   (-> (get token-map addr {})
+                       (assoc :token/id [networkId addr])))
+                 (assoc x :db/id (- (- idx) 10000)))) txs)
+        txs (reduce (fn [acc tid] (conj acc [:db.fn/retractEntity tid])) txs tokens-might-remove)]
     (t txs)))
 
 (defn validate-addr-in-app [{:keys [appId networkId addr]}]

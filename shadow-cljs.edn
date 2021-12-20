@@ -13,8 +13,10 @@
  [[metosin/malli "0.6.2"]
   [binaryage/oops "0.7.1"]
   [datascript "1.0.7"]
+  [hashp "0.2.1"]
   ;; [philoskim/debux-stubs "0.8.1"]
-  [philoskim/debux "0.8.1"]]
+  ;; [philoskim/debux "0.8.1"]
+  ]
 
  :builds
  {:spec {:target           :esm
@@ -23,8 +25,7 @@
          :dev              {:closure-defines {shadow.cljs.devtools.client.env/devtools-url "http://localhost:9630"}}
          :compiler-options {:cross-chunk-method-motion false
                             :infer-externs             :auto}
-         :devtools         {:preloads     [;; cfxjs.db.preloads
-                                           ]
+         :devtools         {:preloads     [hashp.core]
                             :devtools-url "http://localhost:9630"}
          :modules          {:shared {}
                             :spec
@@ -181,8 +182,7 @@
                                           :depends-on #{:shared}}}}
   :db {:target           :esm
        :output-dir       "packages/db/src"
-       :devtools         {:preloads     [;; cfxjs.db.preloads
-                                         ]
+       :devtools         {:preloads [hashp.core]
                           :devtools-url "http://localhost:9630"}
        :js-options       {:js-package-dirs ["packages/db/node_modules"]}
        :compiler-options {:cross-chunk-method-motion false
