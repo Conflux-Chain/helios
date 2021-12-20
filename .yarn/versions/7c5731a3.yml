@@ -1,13 +1,19 @@
 releases:
-  "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": patch
-  "@fluent-wallet/conflux-tx-error": patch
+  "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": major
   "@fluent-wallet/signature": patch
-  "@fluent-wallet/wallet_add-vault": patch
+  "@fluent-wallet/wallet_add-vault": minor
 
 declined:
+  - helios-background
   - browser-extension
+  - "@fluent-wallet/conflux-tx-error"
   - "@fluent-wallet/ledger"
   - helios-popup
+  - "@fluent-wallet/cfx_send-transaction"
+  - "@fluent-wallet/cfx_sign-transaction"
+  - "@fluent-wallet/cfx_sign-typed-data_v4"
+  - "@fluent-wallet/personal_sign"
 
 undecided:
+  - "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account"
   - "@fluent-wallet/component-checkbox"
