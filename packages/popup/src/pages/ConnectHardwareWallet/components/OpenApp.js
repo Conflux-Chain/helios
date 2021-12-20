@@ -44,7 +44,7 @@ function OpenApp() {
         <p className="text-gray-60 text-sm">{t('openConfluxAppDes')}</p>
       </div>
       <Button id="hm-btn" size="large" className="w-70 mt-9" onClick={onClick}>
-        {t('next')}
+        {query.get('action') === 'close' ? t('done') : t('next')}
       </Button>
     </div>
   )
