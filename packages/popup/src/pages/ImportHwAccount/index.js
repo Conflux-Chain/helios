@@ -114,9 +114,10 @@ function ImportHwAccount() {
         new Array(limit).fill('').map((_item, index) => index + offset),
       )
     } catch (e) {
+      console.log('e', e)
       // TODO: error message
       setErrMsg(
-        e?.appCode === 5031 ? t('refreshLater') : 'some thing goes wrong',
+        e?.appCode == 5031 ? t('refreshLater') : 'some thing goes wrong',
       )
     }
     return addresses
