@@ -12,7 +12,6 @@ import {TransitionGroup, CSSTransition} from 'react-transition-group'
 import {useIsLocked, useIsZeroGroup, usePendingAuthReq} from './hooks/useApi'
 import {ProtectedRoute} from './components'
 import {ROUTES} from './constants'
-import './index.css'
 import './App.css'
 import useGlobalStore from './stores/index.js'
 
