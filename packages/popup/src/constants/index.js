@@ -53,3 +53,9 @@ export const LEDGER_AUTH_STATUS = {
   AUTHED: 'authed',
   UNAUTHED: 'unauthed',
 }
+
+export const HW_TX_STATUS = {
+  WAITING: 'waiting',
+  SUCCESS: 'success',
+  REJECTED: 'rejected',
+}
