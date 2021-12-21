@@ -476,6 +476,47 @@
        :where
        [?net :network/selected true]]))
 
+(defn get-apps [{:keys [appId siteId ;; currentAddresses currentAddressIds
+                        accountIds currentAccountIds ;; addresses addressIds
+                        g]}]
+  (let [g            (and g {:app g})
+        post-process (if (seq g) identity #(get % :db/id))
+        ;; currentAddresses (if (seq currentAddresses) (mapv #(.toLowerCase %) currentAddresses) nil)
+        ;; addresses (if (seq addresses) (mapv #(.toLowerCase %) addresses) nil)
+        ]
+    (prst->js
+     (cond
+       appId
+       (when (q '[:find ?app .
+                  :in $ ?app
+                  :where [?app :app/site]])
+         (post-process (p (jsp->p g) appId)))
+       siteId
+       (post-process (p (jsp->p g) (q '[:find ?app .
+                                        :in $ ?site
+                                        :where
+                                        [?app :app/site ?site]]
+                                      siteId)))
+       :else
+       (let [query-initial (cond-> '{:find  [[?app ...]]
+                                     :in    [$]
+                                     :where [[?app :app/site _]]
+                                     :args []}
+                             accountIds
+                             (-> (update :args accountIds)
+                                 (update :in conj '[?acc ...])
+                                 (update :where conj '[?app :app/account ?acc]))
+                             currentAccountIds
+                             (-> (update :args currentAccountIds)
+                                 (update :in conj '[?acc ...])
+                                 (update :where conj '[?app :app/currentAccount ?acc]))
+                             true identity)
+             query         (concat [:find] (:find query-initial)
+                                   [:in] (:in query-initial)
+                                   [:where] (:where query-initial))
+             rst           (apply q query (:args query-initial))]
+         (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
+
 (defn get-address [{:keys [addressId networkId hex value accountId groupId index tokenId appId selected g]}]
   (let [g            (and g {:address g})
         post-process (if (seq g) identity #(get % :db/id))
@@ -1127,6 +1168,7 @@
               :setTxUnsent                     set-tx-unsent
               :getCfxTxsToEnrich               get-cfx-txs-to-enrich
               :cleanupTx                       cleanup-tx
+              :findApp                         get-apps
               :findAddress                     get-address
               :findNetwork                     get-network
               :findAccount                     get-account
@@ -1137,6 +1179,7 @@
               :retractNetwork                  retract-network
               :retractGroup                    retract-group
 
+              :queryqueryApp              get-apps
               :queryqueryAddress          get-address
               :queryqueryNetwork          get-network
               :queryqueryAccount          get-account
