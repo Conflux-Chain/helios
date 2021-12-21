@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import dayjs from 'dayjs'
-import {CFX_SCAN_DOMAINS, ETH_SCAN_DOMAINS} from '@fluent-wallet/consts'
 import {
   CFX_DECIMALS,
   convertDataToValue,
@@ -16,7 +15,7 @@ import {
   SendOutlined,
 } from '@fluent-wallet/component-icons'
 import {transformToTitleCase, formatStatus} from '../../../utils'
-import {useNetworkTypeIsCfx, useCurrentAddress} from '../../../hooks/useApi'
+import {useNetworkTypeIsCfx} from '../../../hooks/useApi'
 import {useDecodeData} from '../../../hooks'
 import {
   WrapIcon,
@@ -47,18 +46,21 @@ WrapperWithCircle.propTypes = {
   className: PropTypes.string,
 }
 
-function HistoryItem({status, created, extra, payload, app, token, hash}) {
+function HistoryItem({
+  status,
+  created,
+  extra,
+  payload,
+  app,
+  token,
+  transactionUrl,
+}) {
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
   const [amount, setAmount] = useState('')
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
-  const {
-    data: {
-      network: {netId},
-    },
-  } = useCurrentAddress()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
   const txStatus = formatStatus(status)
@@ -181,20 +183,15 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
               toastClassName="top-4 right-0"
             />
           ) : null}
-          <WrapIcon
-            size="w-5 h-5 ml-2"
-            id="openScanUrl"
-            onClick={() =>
-              (CFX_SCAN_DOMAINS[netId] || CFX_SCAN_DOMAINS[netId]) &&
-              window.open(
-                networkTypeIsCfx
-                  ? `${CFX_SCAN_DOMAINS[netId]}/transaction/${hash}`
-                  : `${ETH_SCAN_DOMAINS[netId]}/tx/${hash}`,
-              )
-            }
-          >
-            <SendOutlined className="w-3 h-3 text-primary" />
-          </WrapIcon>
+          {transactionUrl ? (
+            <WrapIcon
+              size="w-5 h-5 ml-2"
+              id="openScanUrl"
+              onClick={() => window.open(transactionUrl)}
+            >
+              <SendOutlined className="w-3 h-3 text-primary" />
+            </WrapIcon>
+          ) : null}
         </div>
       </div>
       <div className="mt-3 flex items-center">
@@ -247,7 +244,7 @@ HistoryItem.propTypes = {
   created: PropTypes.number.isRequired,
   extra: PropTypes.object.isRequired,
   payload: PropTypes.object.isRequired,
-  hash: PropTypes.string.isRequired,
+  transactionUrl: PropTypes.string,
   app: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   token: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
 }

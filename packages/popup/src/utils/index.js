@@ -97,3 +97,11 @@ export const formatStatus = status => {
   }
   return ret
 }
+
+export const flatArray = arr => {
+  return arr.reduce((pre, value) => {
+    return Array.isArray(value)
+      ? [...pre, ...flatArray(value)]
+      : [...pre, value]
+  }, [])
+}
