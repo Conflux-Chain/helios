@@ -171,14 +171,16 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
           )}
         </div>
         <div className="flex">
-          <CopyButton
-            text={toAddress}
-            className="w-3 h-3 text-primary"
-            CopyWrapper={WrapIcon}
-            wrapperClassName="!w-5 !h-5"
-            containerClassName=""
-            toastClassName="top-4 right-0"
-          />
+          {toAddress ? (
+            <CopyButton
+              text={toAddress}
+              className="w-3 h-3 text-primary"
+              CopyWrapper={WrapIcon}
+              wrapperClassName="!w-5 !h-5"
+              containerClassName=""
+              toastClassName="top-4 right-0"
+            />
+          ) : null}
           <WrapIcon
             size="w-5 h-5 ml-2"
             id="openScanUrl"
