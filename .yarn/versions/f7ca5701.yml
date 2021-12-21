@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/wallet_lock": patch
+  "@fluent-wallet/wallet_set-current-account": patch
+  "@fluent-wallet/wallet_unlock": patch
+
+declined:
+  - helios-background

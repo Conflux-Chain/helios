@@ -16,6 +16,7 @@ describe('wallet_unlock', function () {
     const input = {
       params: {password: '12345678'},
       db: {
+        findApp: jest.fn(() => []),
         setPassword: jest.fn(),
         getUnlockReq: jest.fn(),
         getAccountGroup: jest.fn(() => []),
