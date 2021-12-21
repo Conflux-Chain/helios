@@ -586,7 +586,7 @@
        (map post-process (if (seq rst) (pm (jsp->p g) rst) []))))))
 
 (defn get-network [{:keys [addressId networkId tokenId selected type g]}]
-  (let [g (and g {:address g})
+  (let [g (and g {:network g})
         post-process (if (seq g) identity #(get % :db/id))]
     (prst->js
      (cond
