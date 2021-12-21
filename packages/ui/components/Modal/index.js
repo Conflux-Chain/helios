@@ -93,7 +93,9 @@ function Modal({
           {content}
         </div>
         {actions && (
-          <div className="flex items-center w-full mt-6">{actions}</div>
+          <div className="flex items-center justify-center w-full mt-6">
+            {actions}
+          </div>
         )}
       </div>
     </div>

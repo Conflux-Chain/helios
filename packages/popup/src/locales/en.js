@@ -181,6 +181,11 @@ const en = {
     createContract: 'Deploy contract',
     ledgerIsNotConnected: 'Leger is not connected',
     openExpandView: 'Open Fluent Expand View to Connect',
+    // confirm hw Modal
+    waitingForSign: 'Waiting for Sign',
+    rejected: 'Rejected',
+    waitingContent: 'Please confirm this transaction in your Ledger.',
+    rejectedContent: 'Transaction has been rejected.',
     // transaction result
     transactionSubmit: 'Transaction Submitted/Signed',
     viewOnScan: 'View on Scan',
