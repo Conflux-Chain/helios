@@ -92,10 +92,7 @@ function ImportPrivateKey() {
       id="importPrivateKeyContainer"
     >
       <TitleNav title={t(`pKeyImport`)} />
-      <form
-        onSubmit={event => event.preventDefault()}
-        className="flex flex-1 px-3 flex-col justify-between"
-      >
+      <div className="flex flex-1 px-3 flex-col justify-between">
         <section>
           <CompWithLabel label={t(`pKeyGroupName`)}>
             <Input
@@ -131,7 +128,7 @@ function ImportPrivateKey() {
             {t('import')}
           </Button>
         </section>
-      </form>
+      </div>
     </div>
   )
 }

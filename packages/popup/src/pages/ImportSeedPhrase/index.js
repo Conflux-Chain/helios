@@ -90,10 +90,7 @@ function ImportSeedPhrase() {
       id="importSeedPhraseContainer"
     >
       <TitleNav title={t('seedImport')} />
-      <form
-        onSubmit={event => event.preventDefault()}
-        className="flex flex-1 px-3 flex-col justify-between"
-      >
+      <div className="flex flex-1 px-3 flex-col justify-between">
         <section>
           <CompWithLabel label={t(`seedGroupName`)}>
             <Input
@@ -129,7 +126,7 @@ function ImportSeedPhrase() {
             {t('import')}
           </Button>
         </section>
-      </form>
+      </div>
     </div>
   )
 }

@@ -30,28 +30,25 @@ function SetPasswordForm() {
   }
   // TODO: Replace err msg
   const validateConfirmPassword = value => {
-    if (password === value) {
-      return setConfirmErrorMessage('')
+    if (validatePasswordReg(password)) {
+      if (password === value) {
+        return setConfirmErrorMessage('')
+      }
+      setConfirmErrorMessage('输入的密码不一致')
     }
-    setConfirmErrorMessage('输入的密码不一致')
   }
 
   const onCreate = () => {
+    validatePassword(password)
+    validatePassword(confirmPassword)
     if (password && confirmPassword) {
       setCreatedPassword(confirmPassword)
       history.push(SELECT_CREATE_TYPE)
     }
   }
 
-  const onSubmit = event => {
-    event.preventDefault()
-    validatePassword(password)
-    validatePassword(confirmPassword)
-  }
-
   return (
-    <form
-      onSubmit={onSubmit}
+    <div
       id="setPasswordFormContainer"
       className="bg-white rounded px-4 pt-8  h-full box-border mb-4 flex flex-col justify-between"
     >
@@ -87,7 +84,7 @@ function SetPasswordForm() {
           {t('create')}
         </Button>
       </section>
-    </form>
+    </div>
   )
 }
 
