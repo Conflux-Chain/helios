@@ -40,7 +40,7 @@ function SetPasswordForm() {
 
   const onCreate = () => {
     validatePassword(password)
-    validatePassword(confirmPassword)
+    validateConfirmPassword(confirmPassword)
     if (password && confirmPassword) {
       setCreatedPassword(confirmPassword)
       history.push(SELECT_CREATE_TYPE)
