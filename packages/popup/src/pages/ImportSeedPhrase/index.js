@@ -42,20 +42,20 @@ function ImportSeedPhrase() {
     setErrorMessage(e.target.value ? '' : 'Required')
   }
   const onCreate = () => {
-    if (!mnemonic) {
+    const mnemonicParam = mnemonic.replace(/  +/g, ' ').trim()
+    if (!mnemonicParam) {
       return setErrorMessage('Required')
     }
-
     if (!creatingAccount) {
       setCreatingAccount(true)
       request(WALLET_VALIDATE_MNEMONIC, {
-        mnemonic,
+        mnemonic: mnemonicParam,
       })
         .then(result => {
           if (result?.valid) {
             let params = {
               nickname: name || accountNamePlaceholder,
-              mnemonic,
+              mnemonic: mnemonicParam,
             }
             if (createdPassword) {
               params['password'] = createdPassword
@@ -75,11 +75,12 @@ function ImportSeedPhrase() {
           setCreatingAccount(false)
         })
         .catch(error => {
-          if (typeof error?.data?.duplicateAccountGroupId === 'number') {
-            return setErrorMessage(t('duplicateSeedError'))
-          }
-          setErrorMessage(error?.message.split('\n')[0] ?? error)
           setCreatingAccount(false)
+          setErrorMessage(
+            typeof error?.data?.duplicateAccountGroupId === 'number'
+              ? t('duplicateSeedError')
+              : error?.message.split('\n')[0] ?? error,
+          )
         })
     }
   }
@@ -90,10 +91,7 @@ function ImportSeedPhrase() {
       id="importSeedPhraseContainer"
     >
       <TitleNav title={t('seedImport')} />
-      <form
-        onSubmit={event => event.preventDefault()}
-        className="flex flex-1 px-3 flex-col justify-between"
-      >
+      <div className="flex flex-1 px-3 flex-col justify-between">
         <section>
           <CompWithLabel label={t(`seedGroupName`)}>
             <Input
@@ -129,7 +127,7 @@ function ImportSeedPhrase() {
             {t('import')}
           </Button>
         </section>
-      </form>
+      </div>
     </div>
   )
 }

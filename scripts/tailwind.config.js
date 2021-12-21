@@ -154,12 +154,21 @@ module.exports = {
             display: 'none',
           },
         },
+        'slide-fade-in': {
+          '0%': {
+            opacity: '0',
+          },
+          '100%': {
+            opacity: '0.6',
+          },
+        },
       },
       animation: {
         'slide-up': 'slide-up 0.3s ease',
         'slide-down': 'slide-down 0.3s linear forwards',
-        'slide-left-in': 'slide-left-in 0.2s ease',
-        'slide-left-out': 'slide-left-out 0.2s linear forwards',
+        'slide-left-in': 'slide-left-in 0.3s ease',
+        'slide-left-out': 'slide-left-out 0.3s linear forwards',
+        'slide-fade-in': 'slide-fade-in 0.3s cubic-bezier(.23,1,.32,1)',
       },
       backgroundImage: {
         'hardware-background':

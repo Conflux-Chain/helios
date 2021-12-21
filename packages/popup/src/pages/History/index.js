@@ -2,7 +2,7 @@ import {useTranslation} from 'react-i18next'
 import {useState, useRef, useEffect} from 'react'
 import {TitleNav} from '../../components'
 import HistoryItem from './components/HistoryItem'
-import {useTxList} from '../../hooks/useApi'
+import {useTxList, useBlockchainExplorerUrl} from '../../hooks/useApi'
 import {historyPageLimit} from '../../constants'
 function History() {
   const {t} = useTranslation()
@@ -11,6 +11,11 @@ function History() {
   const [limit, setLimit] = useState(historyPageLimit)
   const [total, setTotal] = useState(0)
   const historyListData = useTxList({limit})
+  const {transaction: transactionUrls} = useBlockchainExplorerUrl(
+    historyListData?.data
+      ? {transaction: historyListData?.data.map(d => d.hash)}
+      : null,
+  )
 
   // TODO:loading
   const onScroll = () => {
@@ -44,7 +49,7 @@ function History() {
       <main>
         {txList.length ? (
           txList.map(
-            ({status, created, txExtra, txPayload, app, token, hash, eid}) => (
+            ({status, created, txExtra, txPayload, app, token, eid}, index) => (
               <HistoryItem
                 key={eid}
                 status={status}
@@ -53,7 +58,7 @@ function History() {
                 payload={txPayload}
                 app={app}
                 token={token}
-                hash={hash}
+                transactionUrl={transactionUrls?.[index]}
               />
             ),
           )

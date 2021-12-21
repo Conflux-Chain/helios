@@ -21,6 +21,7 @@ const UnlockPage = () => {
     setErrorMessage(validatePasswordReg(value) ? '' : 'something wrong')
   }
   const onUnlock = () => {
+    validatePassword(password)
     if (password) {
       request(WALLET_UNLOCK, {password})
         .then(() => {
@@ -31,10 +32,6 @@ const UnlockPage = () => {
           error => setErrorMessage(error?.message?.split('\n')[0]) ?? error,
         )
     }
-  }
-  const onSubmit = event => {
-    event.preventDefault()
-    validatePassword(password)
   }
 
   return (
@@ -56,10 +53,7 @@ const UnlockPage = () => {
         />
       </header>
       <main className="px-6  flex-1">
-        <form
-          onSubmit={onSubmit}
-          className="flex flex-col h-full justify-between"
-        >
+        <div className="flex flex-col h-full justify-between">
           <section>
             <div className="text-sm text-gray-40 mb-2">{t('password')}</div>
             <PasswordInput
@@ -80,7 +74,7 @@ const UnlockPage = () => {
               {t('unlock')}
             </Button>
           </section>
-        </form>
+        </div>
       </main>
     </div>
   )

@@ -3,7 +3,7 @@ import {useMemo} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 
 import {NETWORK_TYPE, RPC_METHODS} from '../constants'
-import {validateAddress} from '../utils'
+import {validateAddress, flatArray} from '../utils'
 import {encode} from '@fluent-wallet/base32-address'
 import {request} from '../utils/'
 
@@ -409,9 +409,18 @@ export const useTxList = params => {
 }
 
 export const useBlockchainExplorerUrl = params => {
-  const {data: urlData} = useRPC([WALLET_GET_BLOCKCHAIN_EXPLORER_URL], {
-    ...params,
-  })
+  const {data: urlData} = useRPC(
+    params
+      ? [
+          WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
+          ...flatArray(Object.values(params)),
+        ]
+      : null,
+    {
+      ...params,
+    },
+    {fallbackData: {address: [], contract: [], token: [], transaction: []}},
+  )
   return urlData
 }
 
