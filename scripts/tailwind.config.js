@@ -30,17 +30,23 @@ module.exports = {
       '2xl': ['32px', '40px'],
     },
     extend: {
+      flex: {
+        2: '2 2 0%',
+        3: '2 2 0%',
+      },
       spacing: {
         1.25: '0.3125rem',
         13: '3.25rem',
         15: '3.75rem',
         25: '6.25rem',
+        45: '11.25rem',
         50: '12.5rem',
         70: '17.5rem',
         85: '21.25rem',
         93: '23.25rem',
         100: '25rem',
         110: '27.5rem',
+        120: '30rem',
         125: '31.25rem',
         150: '37.5rem',
       },
@@ -50,6 +56,7 @@ module.exports = {
         3: '0px 8px 36px rgba(0, 0, 0, 0.06)',
         'fluent-1': '0px 2px 8px rgba(75, 100, 233, 0.12)',
         'fluent-2': '0px 6px 16px rgba(149, 163, 233, 0.08)',
+        'fluent-3': '0px 8px 16px rgba(149, 163, 233, 0.08)',
       },
       colors: {
         bg: 'var(--color-bg)',
@@ -155,12 +162,16 @@ module.exports = {
         'slide-left-out': 'slide-left-out 0.2s linear forwards',
       },
       backgroundImage: {
+        'hardware-background':
+          'linear-gradient(180deg, #F8F8FE 0.11%, rgba(248, 249, 254, 0) 44.61%);',
         'token-background':
           'linear-gradient(19.03deg, #FFFFFF 20.24%, rgba(255, 255, 255, 0) 86.89%)',
         'gray-circles': "url('/images/gray-circles-bg.svg')",
         'blue-circles': "url('/images/blue-circles-bg.svg')",
         'blue-card-linear': "url('/images/blue-card-linear-bg.svg')",
+        'guard-banner': "url('/images/guard-banner.svg')",
         'identity-panel': "url('/images/identity-panel-bg.svg')",
+        'add-hw-account': "url('/images/adding-hw-account.svg')",
       },
     },
   },

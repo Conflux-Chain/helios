@@ -41,34 +41,9 @@ import ViewData from './pages/ViewData'
 import AccountManagement from './pages/AccountManagement'
 import ExportSeed from './pages/ExportSeed'
 import ExportPrivateKey from './pages/ExportPrivateKey'
-
-// const HomePage = lazy(() => import('./pages/Home'))
-// const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
-// const NewSeed = lazy(() => import('./pages/CreateSeed/NewSeed'))
-// const Unlock = lazy(() => import('./pages/Unlock'))
-// const Welcome = lazy(() => import('./pages/Welcome'))
-// const SetPassword = lazy(() => import('./pages/SetPassword'))
-// const SelectCreateType = lazy(() => import('./pages/SelectCreateType'))
-// const ImportSeedPhrase = lazy(() => import('./pages/ImportSeedPhrase'))
-// const ImportPrivateKey = lazy(() => import('./pages/ImportPrivateKey'))
-// const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
-// const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
-// const ConnectSite = lazy(() => import('./pages/ConnectSite'))
-// const RequestSignature = lazy(() => import('./pages/RequestSignature'))
-// const DappAddNetwork = lazy(() => import('./pages/DappAddNetwork'))
-// const DappSwitchNetwork = lazy(() => import('./pages/DappSwitchNetwork'))
-// const ConfirmAddSuggestedToken = lazy(() =>
-//   import('./pages/ConfirmAddSuggestedToken'),
-// )
-// const SendTransaction = lazy(() => import('./pages/SendTransaction'))
-// const EditGasFee = lazy(() => import('./pages/EditGasFee'))
-// const EditPermission = lazy(() => import('./pages/EditPermission'))
-// const ConfirmTransaction = lazy(() => import('./pages/ConfirmTransaction'))
-// const History = lazy(() => import('./pages/History'))
-// const ViewData = lazy(() => import('./pages/ViewData'))
-// const AccountManagement = lazy(() => import('./pages/AccountManagement'))
-// const ExportSeed = lazy(() => import('./pages/ExportSeed'))
-// const ExportPrivateKey = lazy(() => import('./pages/ExportPrivateKey'))
+import HardwareGuard from './pages/HardwareGuard'
+import ConnectHardwareWallet from './pages/ConnectHardwareWallet'
+import ImportHwAccount from './pages/ImportHwAccount'
 
 const {
   HOME,
@@ -97,6 +72,9 @@ const {
   ACCOUNT_MANAGEMENT,
   EXPORT_SEED,
   EXPORT_PRIVATEKEY,
+  HARDWARE_GUARD,
+  CONNECT_HARDWARE_WALLET,
+  IMPORT_HW_ACCOUNT,
 } = ROUTES
 
 const routes = [
@@ -197,6 +175,18 @@ const routes = [
     component: ExportPrivateKey,
   },
   {
+    path: HARDWARE_GUARD,
+    component: HardwareGuard,
+  },
+  {
+    path: CONNECT_HARDWARE_WALLET,
+    component: ConnectHardwareWallet,
+  },
+  {
+    path: IMPORT_HW_ACCOUNT,
+    component: ImportHwAccount,
+  },
+  {
     path: ERROR,
     component: ErrorPage,
   },
@@ -277,7 +267,6 @@ function App() {
   const zeroGroup = useIsZeroGroup()
   const pendingAuthReq = usePendingAuthReq(!zeroGroup && !lockedData)
   const {setFatalError} = useGlobalStore()
-
   if (
     isUndefined(lockedData) ||
     isUndefined(zeroGroup) ||

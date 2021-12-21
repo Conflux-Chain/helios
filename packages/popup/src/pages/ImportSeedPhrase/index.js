@@ -85,7 +85,10 @@ function ImportSeedPhrase() {
   }
 
   return (
-    <div className="bg-bg h-full flex flex-col" id="importSeedPhraseContainer">
+    <div
+      className="bg-bg h-150 w-93 m-auto light flex flex-col"
+      id="importSeedPhraseContainer"
+    >
       <TitleNav title={t('seedImport')} />
       <form
         onSubmit={event => event.preventDefault()}

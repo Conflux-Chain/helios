@@ -52,6 +52,7 @@ export const permissions = {
     'getPassword',
     'findGroup',
     't',
+    'findAddress',
     'newAddressTx',
     'findNetwork',
     'findAccount',
@@ -61,7 +62,15 @@ export const permissions = {
 export const main = async ({
   Err: {InvalidParams},
   rpcs: {wallet_addVault},
-  db: {getPassword, findGroup, t, findNetwork, newAddressTx, findAccount},
+  db: {
+    getPassword,
+    findGroup,
+    t,
+    findNetwork,
+    newAddressTx,
+    findAccount,
+    findAddress,
+  },
   params: {
     password,
     device,
@@ -102,19 +111,34 @@ export const main = async ({
 
   const networks = findNetwork({
     type: group.vault.cfxOnly ? 'cfx' : 'eth',
-    g: {eid: 1, netId: 1},
+    g: 0,
   })
+
+  // check duplicate address
+  networks.forEach(({eid}) =>
+    address.forEach(({address}) => {
+      try {
+        const dupaddr = findAddress({value: address, networkId: eid})
+        if (dupaddr) throw InvalidParams(`Address ${address} already exist`)
+      } catch (err) {
+        if (err.message.includes('already exist')) throw err
+      }
+    }),
+  )
 
   txs = txs.concat(
     networks.reduce(
-      (acc, {eid, netId}, idx) =>
+      (acc, {eid, netId, type}, idx) =>
         address.reduce((acc, {address, nickname}, jdx) => {
-          const accountIndex = idx + group.account.length
+          if (group.vault.cfxOnly && type !== 'cfx') return acc
+          if (!group.vault.cfxOnly && type === 'cfx') return acc
+
+          const accountIndex = jdx + group.account.length
           const [account] = findAccount({
             groupId: accountGroupId,
             index: accountIndex,
           })
-          const accountId = account ?? `newaccount ${idx} ${jdx}`
+          const accountId = account ?? `newaccount ${jdx}`
           const value = group.vault.cfxOnly
             ? encode(decode(address).hexAddress, netId)
             : address

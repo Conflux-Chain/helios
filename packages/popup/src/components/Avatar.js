@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 import {useRef, useEffect} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isNumber} from '@fluent-wallet/checks'
+import {isHexAddress} from '@fluent-wallet/account'
 import {removeAllChild, jsNumberForAddress} from '../utils'
 import {useCfxNetwork} from '../hooks/useApi'
 import {RPC_METHODS} from '../constants'
 
 const {WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK} = RPC_METHODS
-const useCfxMainnetAddress = accountId => {
+const useCfxMainnetAddress = accountIdentity => {
   const cfxNetwork = useCfxNetwork()
   let networkId
   const cfxMainnetArr = cfxNetwork.filter(({name}) => name === 'CFX_MAINNET')
@@ -16,18 +17,20 @@ const useCfxMainnetAddress = accountId => {
     networkId = cfxMainnetArr[0].eid
   }
   const {data: accountAddress} = useRPC(
-    isNumber(accountId) && isNumber(networkId)
-      ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId, accountId]
+    isNumber(accountIdentity) && isNumber(networkId)
+      ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId, accountIdentity]
       : null,
-    {accountId, networkId},
+    {accountId: accountIdentity, networkId},
     {fallbackData: {}},
   )
-  const {hex} = accountAddress || {}
+  const hex = isHexAddress(accountIdentity)
+    ? accountIdentity
+    : accountAddress?.hex
   return jsNumberForAddress(hex)
 }
 
-function Avatar({diameter, accountId, ...props}) {
-  const address = useCfxMainnetAddress(accountId)
+function Avatar({diameter, accountIdentity, ...props}) {
+  const address = useCfxMainnetAddress(accountIdentity)
   const avatarContainerRef = useRef(null)
   useEffect(() => {
     const avatarDom = jazzIcon(diameter, address)
@@ -38,7 +41,8 @@ function Avatar({diameter, accountId, ...props}) {
 }
 
 Avatar.propTypes = {
-  accountId: PropTypes.number,
+  accountIdentity: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
   diameter: PropTypes.number.isRequired,
   containerClassName: PropTypes.string,
 }

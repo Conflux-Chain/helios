@@ -4,7 +4,7 @@
   "main": "index.js",
   "version": "0.0.2",
   "dependencies": {
-    "@fluent-wallet/hw-app-conflux": "0.0.1",
+    "@fluent-wallet/hw-app-conflux": "0.0.3",
     "@ledgerhq/hw-transport-webusb": "6.19.0"
   }
 }

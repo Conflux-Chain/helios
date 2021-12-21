@@ -127,13 +127,20 @@ export const cfxSignTransaction = (tx, pk, netId) => {
   return transaction.sign(pk, netId).serialize()
 }
 
-export const cfxEncodeTx = tx => {
+export const cfxEncodeTx = (tx, shouldStripHexPrefix = false) => {
   const transaction = new CfxTransaction(tx)
-  return `0x${transaction.encode(false).toString('hex')}`
+  const encoded = transaction.encode(false).toString('hex')
+  if (shouldStripHexPrefix) return encoded
+  return `0x${encoded}`
 }
 
 export const cfxJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
-  const transaction = new CfxTransaction({...tx, r, s, v})
+  const transaction = new CfxTransaction({
+    ...tx,
+    r: addHexPrefix(r),
+    s: addHexPrefix(s),
+    v: addHexPrefix(v),
+  })
   return transaction.serialize()
 }
 

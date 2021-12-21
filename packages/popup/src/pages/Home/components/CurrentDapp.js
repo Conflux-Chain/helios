@@ -24,6 +24,7 @@ function CurrentDapp() {
       account: {nickname: currentNickname, eid: currentEid},
     },
   } = useCurrentAddress()
+  console.log('dapp', data)
   const isConnected = !!data?.app
   const isConnectedCurrentAccount = connectedEid === currentEid
   const connectedAccounts =

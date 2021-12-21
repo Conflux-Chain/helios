@@ -1,4 +1,4 @@
-import {isNumber, isString} from '@fluent-wallet/checks'
+import {isNumber, isString, isArray} from '@fluent-wallet/checks'
 import {useMemo} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 
@@ -200,12 +200,17 @@ export const useBalance = (
   networkId,
   tokenContractAddress = '0x0',
 ) => {
+  const userAddress = address
+    ? typeof address === 'string'
+      ? [address]
+      : address
+    : null
   const {data: balance} = useRPC(
-    address && isNumber(networkId) && isString(tokenContractAddress)
-      ? [WALLET_GET_BALANCE, address, networkId, tokenContractAddress]
+    userAddress && isNumber(networkId) && isString(tokenContractAddress)
+      ? [WALLET_GET_BALANCE, networkId, tokenContractAddress, ...userAddress]
       : null,
     {
-      users: [address],
+      users: userAddress,
       tokens: [tokenContractAddress],
     },
     {fallbackData: {}},
@@ -356,17 +361,19 @@ export const useGroupAccountList = () => {
   )
 }
 
-export const useDbAccountListAssets = () => {
+export const useDbAccountListAssets = (
+  params = {
+    type: 'all',
+    accountGroupTypes: [
+      ACCOUNT_GROUP_TYPE.HD,
+      ACCOUNT_GROUP_TYPE.PK,
+      ACCOUNT_GROUP_TYPE.HW,
+    ],
+  },
+) => {
   const {data: accountListAssets} = useRPC(
-    [WALLETDB_ACCOUNT_LIST_ASSETS, 'all'],
-    {
-      type: 'all',
-      accountGroupTypes: [
-        ACCOUNT_GROUP_TYPE.HD,
-        ACCOUNT_GROUP_TYPE.PK,
-        ACCOUNT_GROUP_TYPE.HW,
-      ],
-    },
+    [WALLETDB_ACCOUNT_LIST_ASSETS, ...params.accountGroupTypes],
+    params,
     {
       fallbackData: {},
     },
@@ -461,4 +468,29 @@ export const useImportHW = ({data = {}, device = 'LedgerNanoS'}) => {
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [networkId])
+}
+
+export const useQueryImportedAddress = networkId => {
+  return useRPC(
+    networkId ? [QUERY_ADDRESS, 'useQueryImportedAddress', networkId] : null,
+    {
+      networkId,
+      g: {
+        hex: 1,
+        value: 1,
+      },
+    },
+    {
+      postprocessSuccessData: d => {
+        if (isArray(d)) {
+          let ret = {}
+          d.forEach(({hex, value}) => {
+            ret[hex] = value
+          })
+          return ret
+        }
+        return d
+      },
+    },
+  )
 }

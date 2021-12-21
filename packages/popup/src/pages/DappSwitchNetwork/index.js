@@ -18,7 +18,7 @@ function DappSwitchNetwork() {
 
   return (
     <div
-      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
+      className="flex flex-col h-150 w-93 m-auto light justify-between bg-blue-circles bg-no-repeat pb-4"
       id="dappSwitchNetworkContainer"
     >
       <div>

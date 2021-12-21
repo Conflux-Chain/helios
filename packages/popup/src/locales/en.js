@@ -30,6 +30,7 @@ const en = {
     seedPhraseDes: 'The Seed Phrase consists of words separated by spaces.',
     pKey: 'Private Key',
     pKeysDes: 'Enter the plaintext private key.',
+    hardwareWallet: 'Hardware Wallet',
     // Import account with seed phrase
     seedImport: 'Import Seed Phrase',
     seedGroupName: 'Seed Phrase Group Name',
@@ -209,6 +210,41 @@ const en = {
     backupPk: 'Backup Account',
     backupPkDes:
       'This is your private key. Acquiring means owning all assets. Please keep it safe. Once lost, it cannot be retrieved.',
+    // hardware guard
+    connectHardwareWallet: 'Connect Hardware Wallet',
+    supportLedger: 'Ledger is now supported.',
+    ledgerGuardDes: 'How to create a Conflux Wallet in Ledger?',
+    followConnectLedgerSteps:
+      'Please follow the below steps to connect Ledger.',
+    steps: 'Steps {{number}}',
+    pluginHardwareWallet:
+      'Plug your hardware wallet into your computer using the USB port.',
+    enterPinCode: 'Enter your PIN code.',
+    selectConfluxApp: 'Select and Open Conflux App.',
+    ready: 'Ready',
+    // connect hardware wallet
+    searchHwWallet: 'Searching for wallet',
+    connectLedgerTips:
+      'Connect your Ledger, make sure it is unlocked, and that you have approved permissions in your browser.',
+    connectLedger: 'Connect your Ledger',
+    connectLedgerDes: 'Check the button below to authorize the connection.',
+    waitForPermission: 'Waiting for permission',
+    connectFailed: 'Connection Failed',
+    retry: 'Retry',
+    openConfluxApp: 'Open the Conflux App',
+    openConfluxAppDes: 'Select and Open Conflux App in your Ledger device.',
+    chooseAddress: 'Choose Address',
+    hdPath: 'HD Path',
+    chooseHwAddress: 'Choose the address you want to import.',
+    capNext: 'NEXT',
+    capPrev: 'PREV',
+    adding: 'Adding',
+    keepHwConnected: 'Please keep your ledger connected.',
+    accountAdded: 'Account Added',
+    importedHwAccount:
+      'You can now access your Ledger wallet from within Fluent.Please return to the extension.',
+    done: 'Done',
+    refreshLater: 'Please try again later',
   },
 }
 

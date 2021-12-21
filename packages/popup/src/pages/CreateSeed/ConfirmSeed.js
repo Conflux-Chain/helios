@@ -99,7 +99,10 @@ function ConfirmSeed() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-gray-0" id="confirmSeedContainer">
+    <div
+      className="h-150 w-93 m-auto light flex flex-col bg-gray-0"
+      id="confirmSeedContainer"
+    >
       <TitleNav title={t('newAccount')} />
       <main className="px-3 pt-3 flex flex-col flex-1 justify-between">
         <div>

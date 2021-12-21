@@ -54,9 +54,9 @@ export const main = async ({
   if (!hdPath) throw InvalidParams(`Invalid address id ${addressId}`)
 
   try {
-    const [r, s, v] = await new LedgerConflux().signTransaction(
+    const {r, s, v} = await new LedgerConflux().signTransaction(
       hdPath,
-      cfxEncodeTx(newTx),
+      cfxEncodeTx(newTx, true),
     )
 
     const rawTx = cfxJoinTransactionAndSignature({
@@ -69,7 +69,7 @@ export const main = async ({
     const newError = UserRejected(
       'error while signing transaction with Ledger Nano S',
     )
-    newError.extra.errorFromHardwareWallet = err
+    newError.extra.errorFromHardwareWallet = err.message
     throw newError
   }
 }

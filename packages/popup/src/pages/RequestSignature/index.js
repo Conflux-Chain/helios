@@ -31,7 +31,7 @@ function RequestSignature() {
   return (
     <div
       id="requestSignatureContainer"
-      className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg"
+      className="flex flex-col h-150 w-93 m-auto light bg-blue-circles bg-no-repeat bg-bg"
     >
       <header id="header">
         <TitleNav
