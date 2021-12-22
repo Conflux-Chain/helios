@@ -47,8 +47,10 @@ function SlideCard({
         ) : null}
       </div>
       <div
-        className={`absolute inset-0 z-10 bg-black duration-300 ${
-          open ? `animate-slide-fade-in opacity-60` : `opacity-0`
+        className={`absolute inset-0 z-10 bg-black ${
+          open
+            ? `animate-mask-fade-in opacity-60`
+            : `animate-mask-fade-out opacity-0`
         }`}
       />
     </div>
