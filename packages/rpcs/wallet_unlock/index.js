@@ -58,23 +58,24 @@ export const main = async ({
   const apps = findApp({
     g: {currentNetwork: {eid: 1}, currentAccount: {eid: 1}, site: {post: 1}},
   })
-  apps.forEach(
-    ({
+  apps.forEach(app => {
+    if (!app?.site?.post) return
+    const {
       site: {post},
       currentAccount: {eid: accountId},
       currentNetwork: {eid: networkId},
-    }) => {
-      try {
-        const addr = findAddress({accountId, networkId, g: {value: 1}})[0]
-        if (!addr) return
+    } = app
+    try {
+      const addr = findAddress({accountId, networkId, g: {value: 1}})[0]
+      if (!addr) return
+      post &&
         post({
           event: 'accountsChanged',
           params: [addr.value],
         })
-        // eslint-disable-next-line no-empty
-      } catch (err) {}
-    },
-  )
+      // eslint-disable-next-line no-empty
+    } catch (err) {}
+  })
 
   let promise = wallet_refetchTokenList()
     .then(() =>
