@@ -40,25 +40,27 @@ class Provider extends SafeEventEmitter {
     // DEPRECATED
     this.confluxJS = new ConfluxJS.Conflux()
 
+    // DEPRECATED
+    this.confluxJS.provider = {
+      call: (method, ...params) => {
+        params = params.reduce((acc, p) => {
+          if (p === undefined) return acc
+          return acc.concat([p])
+        }, [])
+        return this.request({method, params})
+      },
+      close() {},
+      on() {},
+      send: this.send.bind(this),
+      sendAsync: this.sendAsync.bind(this),
+      request: this.request.bind(this),
+    }
+
     this.on('connect', () => {
       this.#isConnected = true
 
       // DEPRECATED
       {
-        this.confluxJS.provider = {
-          call: (method, ...params) => {
-            params = params.reduce((acc, p) => {
-              if (p === undefined) return acc
-              return acc.concat([p])
-            }, [])
-            return this.request({method, params})
-          },
-          close() {},
-          on() {},
-          send: this.send.bind(this),
-          sendAsync: this.sendAsync.bind(this),
-          request: this.request.bind(this),
-        }
         this.request({method: 'cfx_chainId'}).then(result => {
           this._chainId = result
           const networkId = parseInt(result, 16)
