@@ -3,12 +3,12 @@ import {useState, useRef, useEffect} from 'react'
 import {TitleNav} from '../../components'
 import HistoryItem from './components/HistoryItem'
 import {useTxList, useBlockchainExplorerUrl} from '../../hooks/useApi'
-import {historyPageLimit} from '../../constants'
+import {HISTORY_PAGE_LIMIT} from '../../constants'
 function History() {
   const {t} = useTranslation()
   const historyRef = useRef(null)
   const [txList, setTxList] = useState([])
-  const [limit, setLimit] = useState(historyPageLimit)
+  const [limit, setLimit] = useState(HISTORY_PAGE_LIMIT)
   const [total, setTotal] = useState(0)
   const historyListData = useTxList({limit})
   const {transaction: transactionUrls} = useBlockchainExplorerUrl(
@@ -25,7 +25,7 @@ function History() {
       txList.length < total &&
       limit < total
     ) {
-      setLimit(limit + historyPageLimit)
+      setLimit(limit + HISTORY_PAGE_LIMIT)
     }
   }
   useEffect(() => {
@@ -41,7 +41,7 @@ function History() {
   return (
     <div
       id="historyContainer"
-      className="bg-bg h-150 w-93 m-auto light overflow-auto relative"
+      className="bg-bg h-full w-full overflow-auto relative"
       onScroll={onScroll}
       ref={historyRef}
     >

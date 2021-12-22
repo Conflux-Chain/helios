@@ -57,7 +57,7 @@ function EditPermission() {
   return (
     <div
       id="editPermissionContainer"
-      className="h-150 w-93 m-auto light flex flex-col bg-blue-circles bg-no-repeat bg-bg"
+      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat bg-bg"
     >
       <div className="flex-1">
         <TitleNav title={t('editPermission')} />

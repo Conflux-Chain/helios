@@ -21,7 +21,7 @@ import Toast from '@fluent-wallet/component-toast'
 import {encode} from '@fluent-wallet/base32-address'
 import {Conflux} from '@fluent-wallet/ledger'
 import {TitleNav, CompWithLabel, Avatar, DisplayBalance} from '../../components'
-import {RPC_METHODS, ROUTES} from '../../constants'
+import {RPC_METHODS, ROUTES, HARDWARE_ACCOUNT_PAGE_LIMIT} from '../../constants'
 import {
   useCurrentAddress,
   useBalance,
@@ -37,7 +37,6 @@ const {
   WALLETDB_ACCOUNT_LIST_ASSETS,
 } = RPC_METHODS
 const cfx = new Conflux()
-const limit = 5
 
 function ImportingResults({importStatus}) {
   const {t} = useTranslation()
@@ -52,7 +51,7 @@ function ImportingResults({importStatus}) {
   return (
     <div
       id="importing-results"
-      className="m-auto light flex flex-col h-full min-h-screen"
+      className="m-auto light flex flex-col h-full w-full"
     >
       <div className="flex-2" />
       <div className="flex flex-col items-center">
@@ -109,7 +108,9 @@ function ImportHwAccount() {
     let addresses = []
     try {
       addresses = await cfx.getAddressList(
-        new Array(limit).fill('').map((_item, index) => index + offset),
+        new Array(HARDWARE_ACCOUNT_PAGE_LIMIT)
+          .fill('')
+          .map((_item, index) => index + offset),
       )
     } catch (e) {
       // TODO: error message
@@ -177,13 +178,13 @@ function ImportHwAccount() {
   }
   const onPageUp = () => {
     if (!loading) {
-      setOffset(offset - limit)
+      setOffset(offset - HARDWARE_ACCOUNT_PAGE_LIMIT)
     }
   }
 
   const onPageDown = () => {
     if (!loading) {
-      setOffset(offset + limit)
+      setOffset(offset + HARDWARE_ACCOUNT_PAGE_LIMIT)
     }
   }
   const balances = useBalance(
@@ -230,10 +231,7 @@ function ImportHwAccount() {
     return <ImportingResults importStatus={importStatus} />
   }
   return (
-    <div
-      id="import-hw-account"
-      className="m-auto light flex flex-col h-full min-h-screen"
-    >
+    <div id="import-hw-account" className="flex flex-col h-full w-full">
       <div className="w-120 rounded-2xl shadow-fluent-3 px-8 pb-6">
         <TitleNav
           title={t('chooseAddress')}

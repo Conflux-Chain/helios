@@ -38,7 +38,7 @@ function Home() {
   })
   return (
     <div
-      className="flex flex-col bg-bg h-150 w-93 m-auto light relative overflow-hidden"
+      className="flex flex-col bg-bg h-full w-full relative overflow-hidden"
       id="homeContainer"
     >
       <button onClick={() => open(location.href)} className="z-10 text-white">

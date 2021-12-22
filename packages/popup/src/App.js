@@ -11,7 +11,7 @@ import {
 import {TransitionGroup, CSSTransition} from 'react-transition-group'
 import {useIsLocked, useIsZeroGroup, usePendingAuthReq} from './hooks/useApi'
 import {ProtectedRoute} from './components'
-import {ROUTES} from './constants'
+import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
 import './App.css'
 import useGlobalStore from './stores/index.js'
 
@@ -41,9 +41,9 @@ import ViewData from './pages/ViewData'
 import AccountManagement from './pages/AccountManagement'
 import ExportSeed from './pages/ExportSeed'
 import ExportPrivateKey from './pages/ExportPrivateKey'
-import HardwareGuard from './pages/HardwareGuard';
-import ConnectHardwareWallet from './pages/ConnectHardwareWallet';
-import ImportHwAccount from './pages/ImportHwAccount';
+import HardwareGuard from './pages/HardwareGuard'
+import ConnectHardwareWallet from './pages/ConnectHardwareWallet'
+import ImportHwAccount from './pages/ImportHwAccount'
 
 const {
   HOME,
@@ -177,16 +177,19 @@ const routes = [
   {
     path: ERROR,
     component: ErrorPage,
-  }, {
+  },
+  {
     path: HARDWARE_GUARD,
     component: HardwareGuard,
-  }, {
+  },
+  {
     path: CONNECT_HARDWARE_WALLET,
     component: ConnectHardwareWallet,
-  }, {
+  },
+  {
     path: IMPORT_HW_ACCOUNT,
     component: ImportHwAccount,
-  }
+  },
 ]
 
 const PageLoading = () => {
@@ -213,48 +216,56 @@ const MyRoutes = withRouter(
       location.pathname === WALLET_UNLOCK || history.length === 1
 
     return (
-      <TransitionGroup
-        className="h-full"
-        childFactory={child =>
-          cloneElement(child, {
-            classNames: `router router-${
-              fullSwitch
-                ? 'full-switch'
-                : history.action === 'PUSH'
-                ? 'forward'
-                : 'back'
-            }`,
-          })
-        }
+      <div
+        className={`m-auto light relative overflow-hidden ${
+          FULL_WINDOW_ROUTES.includes(location.pathname)
+            ? 'min-h-screen'
+            : 'h-150 w-93'
+        }`}
       >
-        <CSSTransition
-          key={location.pathname}
-          timeout={!fullSwitch ? 380 : 620}
-          appear
-          in
+        <TransitionGroup
+          className="h-full"
+          childFactory={child =>
+            cloneElement(child, {
+              classNames: `router router-${
+                fullSwitch
+                  ? 'full-switch'
+                  : history.action === 'PUSH'
+                  ? 'forward'
+                  : 'back'
+              }`,
+            })
+          }
         >
-          <Switch location={location}>
-            <ProtectedRoute
-              key={HOME}
-              pendingAuthReq={pendingAuthReq}
-              hasAccount={!zeroGroup}
-              isLocked={!zeroGroup && lockedData}
-              exact
-              path={HOME}
-              component={HomePage}
-            />
-            {routes.map(route => (
-              <Route
-                key={route.path}
+          <CSSTransition
+            key={location.pathname}
+            timeout={!fullSwitch ? 380 : 620}
+            appear
+            in
+          >
+            <Switch location={location}>
+              <ProtectedRoute
+                key={HOME}
+                pendingAuthReq={pendingAuthReq}
+                hasAccount={!zeroGroup}
+                isLocked={!zeroGroup && lockedData}
                 exact
-                path={route.path}
-                component={route.component}
+                path={HOME}
+                component={HomePage}
               />
-            ))}
-            <Route path="*" render={() => <Redirect to={ERROR} />} />
-          </Switch>
-        </CSSTransition>
-      </TransitionGroup>
+              {routes.map(route => (
+                <Route
+                  key={route.path}
+                  exact
+                  path={route.path}
+                  component={route.component}
+                />
+              ))}
+              <Route path="*" render={() => <Redirect to={ERROR} />} />
+            </Switch>
+          </CSSTransition>
+        </TransitionGroup>
+      </div>
     )
   },
 )
@@ -279,13 +290,11 @@ function App() {
         onError={error => setFatalError(error)}
       >
         <Suspense fallback={<PageLoading />}>
-          <div className="h-150 w-93 m-auto light relative overflow-hidden">
-            <MyRoutes
-              lockedData={lockedData}
-              zeroGroup={zeroGroup}
-              pendingAuthReq={pendingAuthReq}
-            />
-          </div>
+          <MyRoutes
+            lockedData={lockedData}
+            zeroGroup={zeroGroup}
+            pendingAuthReq={pendingAuthReq}
+          />
         </Suspense>
       </ErrorBoundary>
     </Router>

@@ -88,7 +88,7 @@ function ImportPrivateKey() {
 
   return (
     <div
-      className="bg-bg h-150 w-93 m-auto light flex flex-col"
+      className="bg-bg h-full w-full flex flex-col"
       id="importPrivateKeyContainer"
     >
       <TitleNav title={t(`pKeyImport`)} />
