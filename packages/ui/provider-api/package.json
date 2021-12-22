@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/provider-api",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "dependencies": {
     "@fluent-wallet/random-id": "workspace:packages/random-id",
     "@fluent-wallet/safe-event-emiter": "workspace:packages/safe-event-emiter",
