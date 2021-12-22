@@ -1,0 +1,11 @@
+releases:
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/conflux-tx-error": patch
+  "@fluent-wallet/provider-api": patch
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
+  helios-inpage: patch
+
+declined:
+  - helios-background
+  - browser-extension
+  - "@fluent-wallet/use-rpc"
