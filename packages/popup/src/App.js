@@ -219,7 +219,7 @@ const MyRoutes = withRouter(
       <div
         className={`m-auto light relative overflow-hidden ${
           FULL_WINDOW_ROUTES.includes(location.pathname)
-            ? 'min-h-screen'
+            ? 'min-h-screen w-full'
             : 'h-150 w-93'
         }`}
       >

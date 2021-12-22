@@ -232,7 +232,7 @@ function ImportHwAccount() {
   }
   return (
     <div id="import-hw-account" className="flex flex-col h-full w-full">
-      <div className="w-120 rounded-2xl shadow-fluent-3 px-8 pb-6">
+      <div className="w-120 rounded-2xl shadow-fluent-3 px-8 pb-6 m-auto">
         <TitleNav
           title={t('chooseAddress')}
           hasGoBack={false}
