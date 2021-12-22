@@ -59,7 +59,7 @@
   height: 0.125em;
   border-radius: 0.1em;
   background-color: #6fc5b1;
-  animation-name: loding-page-linemove;
+  animation-name: loading-page-linemove;
   animation-duration: 925ms;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
@@ -97,7 +97,7 @@
   }
 }
 
-@keyframes loding-page-linemove {
+@keyframes loading-page-linemove {
   0% {
     transform: translate3d(0, 0, 0) scale3d(0.3, 1, 1);
   }
