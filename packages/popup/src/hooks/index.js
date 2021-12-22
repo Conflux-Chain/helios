@@ -28,7 +28,7 @@ import {validateAddress} from '../utils'
 const {HOME} = ROUTES
 
 export const useCreatedPasswordGuard = () => {
-  const createdPassword = useGlobalStore(state => state.createdPassword)
+  const {createdPassword, setCreatedPassword} = useGlobalStore()
   const history = useHistory()
   const zeroGroup = useIsZeroGroup()
   const lockedData = useIsLocked()
@@ -37,7 +37,10 @@ export const useCreatedPasswordGuard = () => {
     if ((zeroGroup && !createdPassword) || (!zeroGroup && lockedData)) {
       history.push(HOME)
     }
-  }, [createdPassword, history, zeroGroup, lockedData])
+    return () => {
+      createdPassword && setCreatedPassword('')
+    }
+  }, [createdPassword, history, zeroGroup, lockedData, setCreatedPassword])
 }
 
 export const useQuery = () => {

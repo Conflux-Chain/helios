@@ -27,7 +27,7 @@ function ImportPrivateKey() {
   const [errorMessage, setErrorMessage] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
   const [creatingAccount, setCreatingAccount] = useState(false)
-  const {createdPassword, setCreatedPassword} = useGlobalStore()
+  const {createdPassword} = useGlobalStore()
 
   const keygenGroup = usePkAccountGroup()
 
@@ -68,13 +68,12 @@ function ImportPrivateKey() {
                 mutate,
                 !!createdPassword,
                 ACCOUNT_GROUP_TYPE.PK,
-              ).then(() => history.push(HOME))
-              createdPassword && setCreatedPassword('')
+              ).then(() => {
+                setCreatingAccount(false)
+                history.push(HOME)
+              })
             })
           }
-          setCreatingAccount(false)
-          // TODO: replace error msg
-          setErrorMessage('Invalid or inner error!')
         })
         .catch(error => {
           setCreatingAccount(false)

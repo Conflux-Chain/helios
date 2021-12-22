@@ -24,7 +24,7 @@ function ImportSeedPhrase() {
   const [errorMessage, setErrorMessage] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
   const [creatingAccount, setCreatingAccount] = useState(false)
-  const {createdPassword, setCreatedPassword} = useGlobalStore()
+  const {createdPassword} = useGlobalStore()
 
   const hdGroup = useHdAccountGroup()
 
@@ -61,18 +61,16 @@ function ImportSeedPhrase() {
               params['password'] = createdPassword
             }
             return request(WALLET_IMPORT_MNEMONIC, params).then(() => {
-              createdPassword && setCreatedPassword('')
-              setCreatingAccount(false)
               updateAddedNewAccount(
                 mutate,
                 !!createdPassword,
                 ACCOUNT_GROUP_TYPE.HD,
-              ).then(() => history.push(HOME))
+              ).then(() => {
+                setCreatingAccount(false)
+                history.push(HOME)
+              })
             })
           }
-          // TODO: replace error msg
-          setErrorMessage('Invalid or inner error!')
-          setCreatingAccount(false)
         })
         .catch(error => {
           setCreatingAccount(false)

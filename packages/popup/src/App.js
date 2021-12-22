@@ -9,7 +9,7 @@ import {
   withRouter,
 } from 'react-router-dom'
 import {TransitionGroup, CSSTransition} from 'react-transition-group'
-import {useIsLocked, useIsZeroGroup, usePendingAuthReq} from './hooks/useApi'
+import {useIsLocked, useIsZeroGroup} from './hooks/useApi'
 import {ProtectedRoute} from './components'
 import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
 import './App.css'
@@ -208,78 +208,69 @@ const PageLoading = () => {
   )
 }
 
-const MyRoutes = withRouter(
-  ({lockedData, pendingAuthReq, zeroGroup, location, history}) => {
-    // 正常情况下路由的前进后退应用forward / back的左右滑转场。
-    // 完全切换至不相关的内容时: 如点开钱包的首屏；切换到锁定页。这种地方应采用另外的转场动画。
-    const fullSwitch =
-      location.pathname === WALLET_UNLOCK || history.length === 1
+const MyRoutes = withRouter(({lockedData, zeroGroup, location, history}) => {
+  // 正常情况下路由的前进后退应用forward / back的左右滑转场。
+  // 完全切换至不相关的内容时: 如点开钱包的首屏；切换到锁定页。这种地方应采用另外的转场动画。
+  const fullSwitch = location.pathname === WALLET_UNLOCK || history.length === 1
 
-    return (
-      <div
-        className={`m-auto light relative overflow-hidden ${
-          FULL_WINDOW_ROUTES.includes(location.pathname)
-            ? 'min-h-screen w-full'
-            : 'h-150 w-93'
-        }`}
+  return (
+    <div
+      className={`m-auto light relative overflow-hidden ${
+        FULL_WINDOW_ROUTES.includes(location.pathname)
+          ? 'min-h-screen w-full'
+          : 'h-150 w-93'
+      }`}
+    >
+      <TransitionGroup
+        className="h-full"
+        childFactory={child =>
+          cloneElement(child, {
+            classNames: `router router-${
+              fullSwitch
+                ? 'full-switch'
+                : history.action === 'PUSH'
+                ? 'forward'
+                : 'back'
+            }`,
+          })
+        }
       >
-        <TransitionGroup
-          className="h-full"
-          childFactory={child =>
-            cloneElement(child, {
-              classNames: `router router-${
-                fullSwitch
-                  ? 'full-switch'
-                  : history.action === 'PUSH'
-                  ? 'forward'
-                  : 'back'
-              }`,
-            })
-          }
+        <CSSTransition
+          key={location.pathname}
+          timeout={!fullSwitch ? 380 : 620}
+          appear
+          in
         >
-          <CSSTransition
-            key={location.pathname}
-            timeout={!fullSwitch ? 380 : 620}
-            appear
-            in
-          >
-            <Switch location={location}>
-              <ProtectedRoute
-                key={HOME}
-                pendingAuthReq={pendingAuthReq}
-                hasAccount={!zeroGroup}
-                isLocked={!zeroGroup && lockedData}
+          <Switch location={location}>
+            <ProtectedRoute
+              key={HOME}
+              hasAccount={!zeroGroup}
+              isLocked={!zeroGroup && lockedData}
+              exact
+              path={HOME}
+              component={HomePage}
+            />
+            {routes.map(route => (
+              <Route
+                key={route.path}
                 exact
-                path={HOME}
-                component={HomePage}
+                path={route.path}
+                component={route.component}
               />
-              {routes.map(route => (
-                <Route
-                  key={route.path}
-                  exact
-                  path={route.path}
-                  component={route.component}
-                />
-              ))}
-              <Route path="*" render={() => <Redirect to={ERROR} />} />
-            </Switch>
-          </CSSTransition>
-        </TransitionGroup>
-      </div>
-    )
-  },
-)
+            ))}
+            <Route path="*" render={() => <Redirect to={ERROR} />} />
+          </Switch>
+        </CSSTransition>
+      </TransitionGroup>
+    </div>
+  )
+})
 
 function App() {
   const lockedData = useIsLocked()
   const zeroGroup = useIsZeroGroup()
-  const pendingAuthReq = usePendingAuthReq(!zeroGroup && !lockedData)
   const {setFatalError} = useGlobalStore()
-  if (
-    isUndefined(lockedData) ||
-    isUndefined(zeroGroup) ||
-    (!zeroGroup && !lockedData && isUndefined(pendingAuthReq))
-  ) {
+  if (isUndefined(lockedData) || isUndefined(zeroGroup)) {
     return <PageLoading />
   }
 
@@ -290,11 +281,7 @@ function App() {
         onError={error => setFatalError(error)}
       >
         <Suspense fallback={<PageLoading />}>
-          <MyRoutes
-            lockedData={lockedData}
-            zeroGroup={zeroGroup}
-            pendingAuthReq={pendingAuthReq}
-          />
+          <MyRoutes lockedData={lockedData} zeroGroup={zeroGroup} />
         </Suspense>
       </ErrorBoundary>
     </Router>
