@@ -37,12 +37,11 @@ export const permissions = {
     'wallet_userRejectedAuthRequest',
   ],
   db: [
+    'findAccount',
     'upsertAppPermissions',
     'getSiteById',
     'getOneSite',
     'getAuthReqById',
-    'getOneAccount',
-    'getAccountById',
   ],
   scope: null,
 }
@@ -62,13 +61,7 @@ const formatPermissions = perms => {
 
 export const main = async ({
   Err: {InvalidRequest, InvalidParams},
-  db: {
-    upsertAppPermissions,
-    getAuthReqById,
-    getAccountById,
-    getOneAccount,
-    getSiteById,
-  },
+  db: {findAccount, upsertAppPermissions, getAuthReqById, getSiteById},
   rpcs: {
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
@@ -118,20 +111,20 @@ export const main = async ({
     if (siteId && !getSiteById(siteId))
       throw InvalidParams(`Invalid site id ${siteId}`)
 
-    const accounts = params.accounts.map(getAccountById)
+    const accounts = params.accounts.map(accountId => findAccount({accountId}))
 
     for (let i = 0; i < accounts.length; i++) {
       if (!accounts[i])
         throw InvalidParams(`Invalid account id ${params.accounts[i]}`)
     }
 
-    let currentAccount = getOneAccount({selected: true}).eid
-    if (!accounts.includes(currentAccount)) currentAccount = accounts[0].eid
+    let [currentAccount] = findAccount({selected: true})
+    if (!accounts.includes(currentAccount)) currentAccount = accounts[0]
 
     const perms = formatPermissions(permissions)
     upsertAppPermissions({
       siteId,
-      accounts: accounts.map(a => a.eid),
+      accounts,
       currentAccount,
       currentNetwork: network.eid,
       perms: perms[0],

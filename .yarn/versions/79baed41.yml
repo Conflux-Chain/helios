@@ -1,5 +1,6 @@
 releases:
   "@fluent-wallet/wallet_lock": patch
+  "@fluent-wallet/wallet_request-permissions": patch
   "@fluent-wallet/wallet_unlock": patch
 
 declined:
