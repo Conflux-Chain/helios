@@ -9,7 +9,10 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   locked: true,
-  db: ['findGroup'],
+  db: ['findAddress'],
 }
 
-export const main = ({db: {findGroup}}) => !findGroup()?.length
+export const main = ({db: {findAddress}}) => {
+  const hasSelectedAddr = findAddress({selected: true})
+  return !hasSelectedAddr
+}

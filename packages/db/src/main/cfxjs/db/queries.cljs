@@ -531,12 +531,14 @@
      (cond
        (vector? addressId)
        (pm (jsp->p g) addressId)
-       (and addressId (not (vector? addressId)))
+       addressId
        (when (q '[:find ?addr .
                   :in $ ?addr
                   :where [?addr :address/id]]
                 addressId)
          (post-process (p (jsp->p g) addressId)))
+       selected
+       nil
        (and networkId (= (count addr) 1))
        (post-process (p (jsp->p g) [:address/id [networkId (first addr)]]))
        :else

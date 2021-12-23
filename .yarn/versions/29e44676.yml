@@ -3,6 +3,8 @@ releases:
   "@fluent-wallet/provider-api": patch
   "@fluent-wallet/rpc-engine": patch
   "@fluent-wallet/sentry": patch
+  "@fluent-wallet/wallet_import-mnemonic": patch
+  "@fluent-wallet/wallet_zero-account-group": patch
   "@fluent-wallet/webextension": patch
   helios-inpage: patch
 
