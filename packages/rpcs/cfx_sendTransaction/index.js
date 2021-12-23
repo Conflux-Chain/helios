@@ -137,7 +137,7 @@ export const main = async ({
     )
   } catch (err) {} // eslint-disable-line no-empty
 
-  return await new Promise(resolve => {
+  return await new Promise((resolve, reject) => {
     wallet_handleUnfinishedCFXTx(
       {network: authReqId ? authReq.app.currentNetwork : network},
       {
@@ -159,6 +159,7 @@ export const main = async ({
               res: err,
             }).then(resolve)
           }
+          reject(err)
         },
       },
     )

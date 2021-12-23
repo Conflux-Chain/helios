@@ -10,8 +10,12 @@ export const permissions = {
 export const main = async ({db: {setLocked, findApp}}) => {
   setLocked(true)
   const apps = findApp({g: {site: {post: 1}}})
-  apps.forEach(({site: {post}}) => {
+  apps.forEach(app => {
     try {
+      if (!app?.site?.post) return
+      const {
+        site: {post},
+      } = app
       post({event: 'accountsChanged', params: []})
       // eslint-disable-next-line no-empty
     } catch (err) {}

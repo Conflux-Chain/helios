@@ -13,6 +13,35 @@ function deprecated(type, message) {
   console.warn(`%cDEPRECATED ${type}: ${message}`, 'color: red')
 }
 
+// DEPRECATED
+function protectDeprecatedEvent(eventType) {
+  if (eventType === 'chainIdChanged') {
+    eventType = 'chainChanged'
+    deprecated(
+      'EVENT',
+      '"chainIdChanged" event is deprecated, it might be removed anytime without warning. Use "chainChanged" instead',
+    )
+  } else if (eventType === 'networkChanged') {
+    deprecated(
+      'EVENT',
+      '"networkChanged" event is deprecated, it might be removed anytime without warning. Use "chainChanged" instead',
+    )
+  } else if (eventType === 'close') {
+    eventType = 'disconnect'
+    deprecated(
+      'EVENT',
+      '"close" event is deprecated, it might be removed anytime without warning. Use "disconnect" instead',
+    )
+  } else if (eventType === 'notification') {
+    eventType = 'message'
+    deprecated(
+      'EVENT',
+      '"notification" event is deprecated, it might be removed anytime without warning. Use "message" instead',
+    )
+  }
+  return eventType
+}
+
 class Provider extends SafeEventEmitter {
   #s
   #send
@@ -124,32 +153,14 @@ class Provider extends SafeEventEmitter {
 
   // DEPRECATED
   on(eventType, listener) {
-    if (eventType === 'chainIdChanged') {
-      eventType = 'chainChanged'
-      deprecated(
-        'EVENT',
-        '"chainIdChanged" event is deprecated, it might be removed anytime without warning. Use "chainChanged" instead',
-      )
-    } else if (eventType === 'networkChanged') {
-      deprecated(
-        'EVENT',
-        '"networkChanged" event is deprecated, it might be removed anytime without warning. Use "chainChanged" instead',
-      )
-    } else if (eventType === 'close') {
-      eventType = 'disconnect'
-      deprecated(
-        'EVENT',
-        '"close" event is deprecated, it might be removed anytime without warning. Use "disconnect" instead',
-      )
-    } else if (eventType === 'notification') {
-      eventType = 'message'
-      deprecated(
-        'EVENT',
-        '"notification" event is deprecated, it might be removed anytime without warning. Use "message" instead',
-      )
-    }
-
+    eventType = protectDeprecatedEvent(eventType)
     return SafeEventEmitter.prototype.on.call(this, eventType, listener)
+  }
+
+  // DEPRECATED
+  off(eventType, listener) {
+    eventType = protectDeprecatedEvent(eventType)
+    return SafeEventEmitter.prototype.off.call(this, eventType, listener)
   }
 
   // DEPRECATED

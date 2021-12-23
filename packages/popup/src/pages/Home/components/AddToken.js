@@ -31,11 +31,13 @@ function AddToken({onClose, open}) {
     },
   } = useCurrentAddress()
   const isCfxChain = useNetworkTypeIsCfx()
-  const {data: networkTokens, mutateNetworkTokens} = useCurrentNetworkTokens({
-    fuzzy: searchContent || null,
-  })
+  const {data: networkTokens, mutate: mutateNetworkTokens} =
+    useCurrentNetworkTokens({
+      fuzzy: searchContent || null,
+    })
   const [tokenList, setTokenList] = useState([])
-  const {data: addressTokens, mutateAddressTokens} = useCurrentAddressTokens()
+  const {data: addressTokens, mutate: mutateAddressTokens} =
+    useCurrentAddressTokens()
 
   const getOther20Token = useCallback((userAddress, tokenAddress) => {
     request(WALLET_VALIDATE_20TOKEN, {
@@ -45,7 +47,7 @@ function AddToken({onClose, open}) {
       if (inputValueRef.current === tokenAddress) {
         if (result?.valid) {
           setNoTokenStatus(false)
-          return setTokenList([[{...result}, false]])
+          return setTokenList([[{...result, address: tokenAddress}, false]])
         }
         setNoTokenStatus(true)
       }
@@ -93,8 +95,8 @@ function AddToken({onClose, open}) {
     }
     request(WALLET_WATCH_ASSET, params).then(() => {
       // TODO:error
-      mutateAddressTokens()
       mutateNetworkTokens()
+      mutateAddressTokens()
       mutate([WALLETDB_REFETCH_BALANCE])
     })
   }

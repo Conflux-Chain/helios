@@ -1168,7 +1168,7 @@ describe('integration test', function () {
         })
 
         const [app] = db.getApp()
-        expect(app.currentAccount.eid).toBe(a2.eid)
+        expect(app.currentAccount.eid).toBe(a3.eid)
         const [addr] = app.currentAccount.address.filter(
           a => a.network.type === 'eth',
         )
@@ -1236,7 +1236,7 @@ describe('integration test', function () {
         })
 
         const [app] = db.getApp()
-        expect(app.currentAccount.eid).toBe(a2.eid)
+        expect(app.currentAccount.eid).toBe(a3.eid)
         const [addr] = app.currentAccount.address.filter(a => a.value)
         expect((await res).result).toStrictEqual([addr.value])
       })
