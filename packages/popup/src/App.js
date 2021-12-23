@@ -193,12 +193,10 @@ const routes = [
   },
 ]
 
-const AppRoutes = withRouter(
-  ({lockedData, zeroGroup, location, history}) => {
-    // The normal case of routing forward and backward applies a forward/backward sliding field to the left and right.
-    // When switching completely to unrelated content: e.g. tap on the first screen of the wallet; switch to a locked page. Such places should use another transition animation.
-    const fullSwitch =
-      location.pathname === WALLET_UNLOCK || history.length === 1
+const AppRoutes = withRouter(({lockedData, zeroGroup, location, history}) => {
+  // The normal case of routing forward and backward applies a forward/backward sliding field to the left and right.
+  // When switching completely to unrelated content: e.g. tap on the first screen of the wallet; switch to a locked page. Such places should use another transition animation.
+  const fullSwitch = location.pathname === WALLET_UNLOCK || history.length === 1
 
   return (
     <div
@@ -207,6 +205,7 @@ const AppRoutes = withRouter(
           ? 'min-h-screen w-full'
           : 'h-150 w-93'
       }`}
+      id="router"
     >
       <TransitionGroup
         component={null}
@@ -268,15 +267,7 @@ function App() {
         onError={error => setFatalError(error)}
       >
         <Suspense fallback={<PageLoading />}>
-          <div
-            className="h-150 w-93 m-auto light relative overflow-hidden"
-            id="router"
-          >
-            <AppRoutes
-              lockedData={lockedData}
-              zeroGroup={zeroGroup}
-            />
-          </div>
+          <AppRoutes lockedData={lockedData} zeroGroup={zeroGroup} />
         </Suspense>
       </ErrorBoundary>
     </Router>
