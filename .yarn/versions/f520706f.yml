@@ -1,4 +1,5 @@
 releases:
+  "@fluent-wallet/db": patch
   "@fluent-wallet/provider-api": patch
   helios-inpage: patch
 

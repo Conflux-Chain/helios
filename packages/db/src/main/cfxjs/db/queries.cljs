@@ -1,10 +1,12 @@
 (ns cfxjs.db.queries
   (:require
+   goog.math.Long
    [clojure.walk :refer [postwalk walk]]
    [cfxjs.spec.cljs]
    [cfxjs.db.datascript.core :as db]
    [cfxjs.db.schema :refer [model->attr-keys]]))
 
+(defonce LONG_ZERO (goog.math.Long/fromString "0x0" 16))
 (declare q p pm e t fdb)
 
 (defn j->c [a]
@@ -825,7 +827,7 @@
                   (if (= taddr "0x0")
                     (conj acc {:db/id                 [:address/id [networkId uaddr]]
                                :address/nativeBalance balance})
-                    (if (pos-int? (js/parseInt balance 16))
+                    (if (.greaterThan (goog.math.Long/fromString balance 16) LONG_ZERO)
                       (let [balance-eid    (q '[:find ?b .
                                                 :in $ ?uaddr ?taddr
                                                 :where
