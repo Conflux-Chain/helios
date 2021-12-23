@@ -29,6 +29,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 
   const dbConnection = createdb(SCHEMA, persist, data || null)
   if (!IS_PROD_MODE) window.d = dbConnection
+  else window.__FLUENT_DB_CONN = dbConnection
   if (!data) await initDBFn(dbConnection, {importAllTx})
 
   // ## initialize rpc engine
@@ -76,6 +77,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
   })
 
   if (!IS_PROD_MODE) window.r = protectedRequest
+  else window.__FLUENT_REQUEST = protectedRequest
   return {db: dbConnection, request: protectedRequest}
 }
 
