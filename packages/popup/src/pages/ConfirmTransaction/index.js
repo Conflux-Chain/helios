@@ -206,7 +206,6 @@ function ConfirmTransition() {
         tokens: isNativeToken ? ['0x0'] : ['0x0'].concat(tokenAddress),
       })
       const balance = balanceData?.[from]
-      console.log('balance', balance)
 
       if (isNativeToken) {
         if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
