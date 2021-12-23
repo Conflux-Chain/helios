@@ -78,7 +78,7 @@
   transition: all 0.62s ease;
 }
 
-/* 模糊到清晰
+/* blur transition
 .router-full-switch-enter, .router-full-switch-appear {
   filter: blur(6px);
 }
@@ -97,7 +97,7 @@
   transition: all .5s ease;
 } */
 
-/* 像推门一样的door展开
+/* door transition
 .router-full-switch-enter, .router-full-switch-appear {
   opacity: 0.3;
   transform: scale3d(0, 1, 1);

@@ -1,0 +1,68 @@
+.loading-spin {
+  font-size: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 1em;
+  height: 1em;
+  border-radius: 0.1em;
+  background-color: black;
+  opacity: 0;
+  transition: all 450ms ease;
+}
+
+.loading-spin-dot {
+  position: absolute;
+  width: 0.16em;
+  height: 0.16em;
+  border-radius: 50%;
+}
+
+.loading-spin-dot1 {
+  background-color: white;
+  animation-name: loading-spin-animation;
+  animation-duration: 1.83s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+}
+
+.loading-spin-dot2 {
+  background-color: rgb(190 190 190);
+  animation-name: loading-spin-animation;
+  animation-duration: 1.83s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+  animation-delay: -0.61s;
+}
+
+.loading-spin-dot3 {
+  background-color: rgb(116 116 116);
+  animation-name: loading-spin-animation;
+  animation-duration: 1.83s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+  animation-delay: -1.22s;
+}
+
+@keyframes loading-spin-animation {
+  0% {
+    transform: translate3d(0, 0, 0) scale3d(0.72, 0.72, 1);
+    z-index: 0;
+  }
+
+  33% {
+    transform: translate3d(-0.26em, 0, 0) scale3d(1, 1, 1);
+    z-index: 2;
+  }
+
+  66% {
+    transform: translate3d(0.26em, 0, 0) scale3d(1, 1, 1);
+    z-index: 1;
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale3d(0.72, 0.72, 1);
+    z-index: 0;
+  }
+}
