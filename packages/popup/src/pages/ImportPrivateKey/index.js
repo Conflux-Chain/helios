@@ -27,7 +27,7 @@ function ImportPrivateKey() {
   const [errorMessage, setErrorMessage] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
   const [creatingAccount, setCreatingAccount] = useState(false)
-  const {createdPassword} = useGlobalStore()
+  const {createdPassword, setCreatedPassword} = useGlobalStore()
 
   const keygenGroup = usePkAccountGroup()
 
@@ -63,13 +63,13 @@ function ImportPrivateKey() {
               params['password'] = createdPassword
             }
             return request(WALLET_IMPORT_PRIVATE_KEY, params).then(() => {
-              setCreatingAccount(false)
               updateAddedNewAccount(
                 mutate,
                 !!createdPassword,
                 ACCOUNT_GROUP_TYPE.PK,
               ).then(() => {
                 setCreatingAccount(false)
+                createdPassword && setCreatedPassword('')
                 history.push(HOME)
               })
             })

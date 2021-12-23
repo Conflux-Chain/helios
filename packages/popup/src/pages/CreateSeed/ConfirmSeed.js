@@ -20,6 +20,7 @@ function ConfirmSeed() {
   const {
     createdMnemonic,
     createdPassword,
+    setCreatedPassword,
     createdGroupName,
     setCreatedMnemonic,
   } = useGlobalStore()
@@ -89,6 +90,7 @@ function ConfirmSeed() {
         ).then(() => {
           setImportingMnemonic(false)
           setCreatedMnemonic('')
+          createdPassword && setCreatedPassword('')
           history.push(HOME)
         })
       })

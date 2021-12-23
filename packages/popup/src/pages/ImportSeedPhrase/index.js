@@ -24,7 +24,7 @@ function ImportSeedPhrase() {
   const [errorMessage, setErrorMessage] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
   const [creatingAccount, setCreatingAccount] = useState(false)
-  const {createdPassword} = useGlobalStore()
+  const {createdPassword, setCreatedPassword} = useGlobalStore()
 
   const hdGroup = useHdAccountGroup()
 
@@ -67,6 +67,7 @@ function ImportSeedPhrase() {
                 ACCOUNT_GROUP_TYPE.HD,
               ).then(() => {
                 setCreatingAccount(false)
+                createdPassword && setCreatedPassword('')
                 history.push(HOME)
               })
             })
