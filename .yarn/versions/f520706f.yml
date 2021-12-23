@@ -3,5 +3,6 @@ releases:
   helios-inpage: patch
 
 declined:
+  - helios-background
   - browser-extension
   - "@fluent-wallet/use-rpc"
