@@ -8,6 +8,7 @@ import {SeedWord} from './components'
 import {TitleNav} from '../../components'
 import {request, shuffle, updateAddedNewAccount} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
+import useLoading from '../../hooks/useLoading'
 import {RPC_METHODS, ROUTES} from '../../constants'
 const {WALLET_IMPORT_MNEMONIC, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 const {HOME} = ROUTES
@@ -29,7 +30,8 @@ function ConfirmSeed() {
   const [mnemonicIndex, setMnemonicIndex] = useState(initData.join(' '))
   const [mnemonicError, setMnemonicError] = useState('')
   const [buttonArray, setButtonArray] = useState([])
-  const [importingMnemonic, setImportingMnemonic] = useState(false)
+  const {setLoading} = useLoading()
+
   useEffect(() => {
     setButtonArray(shuffle(createdMnemonic.split(' ')))
   }, [createdMnemonic])
@@ -72,8 +74,7 @@ function ConfirmSeed() {
       return
     }
     setMnemonicError('')
-    if (importingMnemonic) return
-    setImportingMnemonic(true)
+    setLoading(true)
     let params = {
       nickname: createdGroupName,
       mnemonic,
@@ -83,19 +84,19 @@ function ConfirmSeed() {
     }
     request(WALLET_IMPORT_MNEMONIC, params)
       .then(() => {
-        updateAddedNewAccount(
-          mutate,
-          !!createdPassword,
-          ACCOUNT_GROUP_TYPE.HD,
-        ).then(() => {
-          setImportingMnemonic(false)
-          setCreatedMnemonic('')
-          createdPassword && setCreatedPassword('')
-          history.push(HOME)
-        })
+        updateAddedNewAccount(mutate, !!createdPassword, ACCOUNT_GROUP_TYPE.HD)
+          .then(() => {
+            setCreatedMnemonic('')
+            createdPassword && setCreatedPassword('')
+            setLoading(false)
+            history.push(HOME)
+          })
+          .catch(() => {
+            setLoading(false)
+          })
       })
       .catch(error => {
-        setImportingMnemonic(false)
+        setLoading(false)
         setMnemonicError(error?.message ?? error)
       })
   }

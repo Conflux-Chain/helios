@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
-import Loading from '@fluent-wallet/component-loading'
 import {request} from '../utils'
 import {RPC_METHODS} from '../constants'
 import {usePendingAuthReq} from '../hooks/useApi'
-import {useState} from 'react'
+import useLoading from '../hooks/useLoading'
 
 const {
   WALLET_REJECT_PENDING_AUTH_REQUSET,
@@ -30,32 +29,28 @@ function DappFooter({
 }) {
   const pendingAuthReq = usePendingAuthReq()
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
-  const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
-  const [cancelingRequestStatus, setCancelingRequestStatus] = useState(false)
+  const {setLoading} = useLoading()
 
   const onCancel = () => {
-    if (cancelingRequestStatus) {
-      return
-    }
-    setCancelingRequestStatus(true)
+    setLoading(true)
     request(WALLET_REJECT_PENDING_AUTH_REQUSET, {authReqId: eid})
       .then(() => {
-        setCancelingRequestStatus(false)
         onClickCancel && onClickCancel()
+        setLoading(false)
         window.close()
       })
       .catch(e => {
         console.log('error', e)
         // TODO: error message
-        setCancelingRequestStatus(false)
+        setLoading(false)
       })
   }
 
   const onConfirm = () => {
-    if (!req?.method || sendingRequestStatus) {
+    if (!req?.method) {
       return
     }
-    setSendingRequestStatus(true)
+    setLoading(true)
     let params = {}
     switch (req.method) {
       case WALLET_REQUEST_PERMISSIONS:
@@ -86,15 +81,15 @@ function DappFooter({
 
     request(req.method, {authReqId: eid, ...params})
       .then(() => {
-        setSendingRequestStatus(false)
         onClickConfirm && onClickConfirm()
         // mutate([WALLET_GET_PENDING_AUTH_REQUEST], pendingAuthReq.slice(1))
+        setLoading(false)
         window.close()
       })
       .catch(e => {
         console.log('error', e)
-        setSendingRequestStatus(false)
         // TODO: error message
+        setLoading(false)
       })
   }
 
@@ -117,11 +112,6 @@ function DappFooter({
       >
         {confirmText}
       </Button>
-      {sendingRequestStatus && (
-        <div className="fixed top-0 left-0 flex w-screen h-screen bg-[rgba(0,0,0,0.4)] items-center justify-center">
-          <Loading />
-        </div>
-      )}
     </footer>
   )
 }
