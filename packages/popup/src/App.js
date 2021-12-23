@@ -1,6 +1,6 @@
 import {ErrorBoundary} from 'react-error-boundary'
 import {isUndefined} from '@fluent-wallet/checks'
-import {Suspense, cloneElement, useState, useEffect} from 'react'
+import React, {Suspense, cloneElement} from 'react'
 import {
   HashRouter as Router,
   Redirect,
@@ -12,6 +12,7 @@ import {TransitionGroup, CSSTransition} from 'react-transition-group'
 import {useIsLocked, useIsZeroGroup} from './hooks/useApi'
 import {ProtectedRoute} from './components'
 import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
+import PageLoading from './hooks/useLoading/PageLoading'
 import './App.css'
 import useGlobalStore from './stores/index.js'
 
@@ -191,22 +192,6 @@ const routes = [
     component: ImportHwAccount,
   },
 ]
-
-const PageLoading = () => {
-  const [inDelay, setInDelay] = useState(true)
-  // 400ms内能结束的loading一闪即逝是不好的交互体验。
-  useEffect(() => {
-    const timer = setTimeout(() => setInDelay(false), 400)
-    return () => clearTimeout(timer)
-  }, [])
-
-  if (inDelay) return null
-  return (
-    <div className="h-150 w-93 m-auto light flex items-center justify-center">
-      loading...
-    </div>
-  )
-}
 
 const MyRoutes = withRouter(({lockedData, zeroGroup, location, history}) => {
   // 正常情况下路由的前进后退应用forward / back的左右滑转场。
