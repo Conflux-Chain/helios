@@ -6,6 +6,14 @@ import './i18n.js'
 import {SWRConfig} from 'swr'
 import {ROUTES} from './constants'
 import {IS_PROD_MODE} from '@fluent-wallet/inner-utils'
+import {
+  init as initSentry,
+  capture as sentryCapture,
+} from '@fluent-wallet/sentry'
+import {getDefaultOptions} from '@fluent-wallet/sentry/computeDefaultOptions'
+
+initSentry(getDefaultOptions())
+
 const {ERROR} = ROUTES
 // import reportWebVitals from './reportWebVitals'
 
@@ -66,6 +74,7 @@ ReactDOM.render(
         use: [swrPostProcessDataMiddleware],
         onError: error => {
           if (error && location) {
+            sentryCapture(error)
             location.href = `${location.origin}${
               location.pathname
             }#${ERROR}?errorMsg=${encodeURIComponent(error.message) || ''}`

@@ -1,6 +1,8 @@
 releases:
   "@fluent-wallet/db": patch
   "@fluent-wallet/provider-api": patch
+  "@fluent-wallet/rpc-engine": patch
+  "@fluent-wallet/sentry": patch
   "@fluent-wallet/webextension": patch
   helios-inpage: patch
 
