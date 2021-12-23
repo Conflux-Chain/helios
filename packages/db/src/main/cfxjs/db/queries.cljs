@@ -1011,7 +1011,7 @@
 (defn cleanup-tx []
   (let [tx (q '[:find [?tx ...]
                 :where [?tx :tx/hash]])
-        to-del-count (- (count tx) 2)]
+        to-del-count (- (count tx) 1000)]
     (if (> to-del-count 0)
       (do (->> (sort tx)
                (take to-del-count)
