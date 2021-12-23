@@ -193,7 +193,7 @@ function ConfirmTransition() {
 
   // check balance when click send button
   const checkBalance = async () => {
-    const {from, gasPrice, gas, value, storageLimit} = params
+    const {from, to, gasPrice, gas, value, storageLimit} = params
     const storageFeeDrip = bn16(storageLimit)
       .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
       .divn(1024)
@@ -214,13 +214,23 @@ function ConfirmTransition() {
           return ''
         }
       } else {
+        const {willPayCollateral, willPayTxFee} = await request(
+          'cfx_checkBalanceAgainstTransaction',
+          [from, to, gas, gasPrice, storageLimit, 'latest_state'],
+        )
         if (
           bn16(balance[tokenAddress]).lt(
             bn16(convertValueToData(displayValue, decimals)),
           )
         ) {
           return 'balance is not enough'
-        } else if (bn16(balance['0x0']).lt(txFeeDrip)) {
+        } else if (
+          (bn16(balance['0x0']).lt(txFeeDrip) &&
+            willPayTxFee &&
+            willPayCollateral) ||
+          (bn16(balance['0x0']).lt(storageFeeDrip) && willPayCollateral) ||
+          (bn16(balance['0x0']).lt(gasFeeDrip) && willPayTxFee)
+        ) {
           return 'gas fee is not enough'
         } else {
           return ''
