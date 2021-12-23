@@ -8,7 +8,7 @@ function Error() {
   const urlErrorMsg = query.get('errorMsg') ?? ''
 
   return (
-    <div id="errorContainer" className="h-150 w-93 m-auto light">
+    <div id="errorContainer" className="h-full w-full">
       <h3>hoops.something goes wrong...</h3>
       <p>{FATAL_ERROR || urlErrorMsg}</p>
     </div>

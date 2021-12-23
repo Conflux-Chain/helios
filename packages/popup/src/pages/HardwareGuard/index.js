@@ -45,7 +45,7 @@ function HardwareGuard() {
   return (
     <div
       id="hardware-guard"
-      className="flex flex-col h-150 w-93 m-auto light bg-hardware-background pb-4"
+      className="flex flex-col h-full w-full bg-hardware-background pb-4"
     >
       <div className="flex-1 px-4">
         <TitleNav title={t('connectHardwareWallet')} />

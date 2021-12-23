@@ -63,18 +63,17 @@ function ImportPrivateKey() {
               params['password'] = createdPassword
             }
             return request(WALLET_IMPORT_PRIVATE_KEY, params).then(() => {
-              setCreatingAccount(false)
               updateAddedNewAccount(
                 mutate,
                 !!createdPassword,
                 ACCOUNT_GROUP_TYPE.PK,
-              ).then(() => history.push(HOME))
-              createdPassword && setCreatedPassword('')
+              ).then(() => {
+                setCreatingAccount(false)
+                createdPassword && setCreatedPassword('')
+                history.push(HOME)
+              })
             })
           }
-          setCreatingAccount(false)
-          // TODO: replace error msg
-          setErrorMessage('Invalid or inner error!')
         })
         .catch(error => {
           setCreatingAccount(false)
@@ -88,7 +87,7 @@ function ImportPrivateKey() {
 
   return (
     <div
-      className="bg-bg h-150 w-93 m-auto light flex flex-col"
+      className="bg-bg h-full w-full flex flex-col"
       id="importPrivateKeyContainer"
     >
       <TitleNav title={t(`pKeyImport`)} />

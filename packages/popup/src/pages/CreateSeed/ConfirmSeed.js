@@ -20,8 +20,8 @@ function ConfirmSeed() {
   const {
     createdMnemonic,
     createdPassword,
-    createdGroupName,
     setCreatedPassword,
+    createdGroupName,
     setCreatedMnemonic,
   } = useGlobalStore()
   const initData = new Array(12).fill(null)
@@ -83,14 +83,16 @@ function ConfirmSeed() {
     }
     request(WALLET_IMPORT_MNEMONIC, params)
       .then(() => {
-        setImportingMnemonic(false)
         updateAddedNewAccount(
           mutate,
           !!createdPassword,
           ACCOUNT_GROUP_TYPE.HD,
-        ).then(() => history.push(HOME))
-        createdPassword && setCreatedPassword('')
-        setCreatedMnemonic('')
+        ).then(() => {
+          setImportingMnemonic(false)
+          setCreatedMnemonic('')
+          createdPassword && setCreatedPassword('')
+          history.push(HOME)
+        })
       })
       .catch(error => {
         setImportingMnemonic(false)
@@ -100,7 +102,7 @@ function ConfirmSeed() {
 
   return (
     <div
-      className="h-150 w-93 m-auto light flex flex-col bg-gray-0"
+      className="h-full w-full flex flex-col bg-gray-0"
       id="confirmSeedContainer"
     >
       <TitleNav title={t('newAccount')} />

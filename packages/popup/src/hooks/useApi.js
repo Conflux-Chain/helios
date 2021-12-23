@@ -172,10 +172,8 @@ export const useIsZeroGroup = () => {
   return zeroGroup
 }
 
-export const usePendingAuthReq = (canSendReq = true) => {
-  const {data: pendingAuthReq} = useRPC(
-    canSendReq ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
-  )
+export const usePendingAuthReq = () => {
+  const {data: pendingAuthReq} = useRPC([WALLET_GET_PENDING_AUTH_REQUEST])
   return pendingAuthReq
 }
 
