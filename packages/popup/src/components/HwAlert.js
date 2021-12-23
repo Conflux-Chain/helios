@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next'
 import Alert from '@fluent-wallet/component-alert'
 import Link from '@fluent-wallet/component-link'
 import {ROUTES} from '../constants'
-const {HOME} = ROUTES
+const {CONNECT_HARDWARE_WALLET} = ROUTES
 
 function HwAlert({open, ...props}) {
   const {t} = useTranslation()
@@ -17,10 +17,13 @@ function HwAlert({open, ...props}) {
       content={
         <div className="flex flex-col">
           {t('ledgerIsNotConnected')}
-          {/* TODO: open check ledger router */}
           <Link
             onClick={() =>
-              window.open(`${location.href.split('#')[0]}#${HOME}`)
+              window.open(
+                `${
+                  location.href.split('#')[0]
+                }#${CONNECT_HARDWARE_WALLET}?action=close`,
+              )
             }
             className="underline mt-1"
           >
