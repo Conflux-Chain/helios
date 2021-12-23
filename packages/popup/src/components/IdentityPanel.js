@@ -35,6 +35,7 @@ function IdentityPanel({content, title}) {
             className="w-4 h-4 text-primary"
             CopyWrapper={WrapIcon}
             wrapperClassName="!w-6 !h-6 rounded-lg"
+            toastClassName="-top-10 -right-3"
           />
         </div>
       </div>

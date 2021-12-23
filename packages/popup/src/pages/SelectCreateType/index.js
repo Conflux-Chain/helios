@@ -27,10 +27,7 @@ function SelectCreateType() {
   const zeroGroup = useIsZeroGroup()
 
   return (
-    <div
-      className="bg-bg h-150 w-93 m-auto light"
-      id="selectCreateTypeContainer"
-    >
+    <div className="bg-bg h-full w-full" id="selectCreateTypeContainer">
       <TitleNav title={t('newAccount')} />
       <main className="px-3">
         <em className="not-italic text-xs text-gray-40 ml-1 mt-3 mb-2 inline-block">

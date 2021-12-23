@@ -23,7 +23,7 @@ function ExportPrivateKey() {
   return (
     <div
       id="export-private-key"
-      className="h-150 w-93 m-auto light pb-6 bg-bg flex flex-col"
+      className="h-full w-full pb-6 bg-bg flex flex-col"
     >
       <div className="flex-1">
         <TitleNav title={t('backupPk')} />

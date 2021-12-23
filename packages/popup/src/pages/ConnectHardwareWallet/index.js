@@ -61,7 +61,6 @@ function WalletInner() {
     setIsAuthenticated(authRet)
     !authRet && setShowReconnectStatus(true)
   }
-
   return (
     <div>
       {loading ? (
@@ -81,10 +80,7 @@ function WalletInner() {
 
 function ConnectHardwareWallet() {
   return (
-    <div
-      id="connect-hardware-wallet"
-      className="m-auto light flex flex-col h-full min-h-screen"
-    >
+    <div id="connect-hardware-wallet" className="flex flex-col h-full w-full">
       <div className="flex-2" />
       <WalletInner />
       <div className="flex-3" />

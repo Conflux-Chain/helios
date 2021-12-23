@@ -61,18 +61,17 @@ function ImportSeedPhrase() {
               params['password'] = createdPassword
             }
             return request(WALLET_IMPORT_MNEMONIC, params).then(() => {
-              createdPassword && setCreatedPassword('')
-              setCreatingAccount(false)
               updateAddedNewAccount(
                 mutate,
                 !!createdPassword,
                 ACCOUNT_GROUP_TYPE.HD,
-              ).then(() => history.push(HOME))
+              ).then(() => {
+                setCreatingAccount(false)
+                createdPassword && setCreatedPassword('')
+                history.push(HOME)
+              })
             })
           }
-          // TODO: replace error msg
-          setErrorMessage('Invalid or inner error!')
-          setCreatingAccount(false)
         })
         .catch(error => {
           setCreatingAccount(false)
@@ -87,7 +86,7 @@ function ImportSeedPhrase() {
 
   return (
     <div
-      className="bg-bg h-150 w-93 m-auto light flex flex-col"
+      className="bg-bg h-full w-full flex flex-col"
       id="importSeedPhraseContainer"
     >
       <TitleNav title={t('seedImport')} />

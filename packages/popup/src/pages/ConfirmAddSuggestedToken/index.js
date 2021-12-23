@@ -32,7 +32,7 @@ function ConfirmAddSuggestedToken() {
   return (
     <div
       id="confirmAddSuggestedTokenContainer"
-      className="flex flex-col h-150 w-93 m-auto light bg-blue-circles bg-no-repeat bg-bg"
+      className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg"
     >
       <header id="header">
         <TitleNav title={t('addSuggestedToken')} hasGoBack={false} />

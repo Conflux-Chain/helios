@@ -154,12 +154,20 @@ module.exports = {
             display: 'none',
           },
         },
-        'slide-fade-in': {
+        'mask-fade-in': {
           '0%': {
             opacity: '0',
           },
           '100%': {
             opacity: '0.6',
+          },
+        },
+        'mask-fade-out': {
+          '0%': {
+            opacity: '0.6',
+          },
+          '100%': {
+            opacity: '0',
           },
         },
       },
@@ -168,7 +176,8 @@ module.exports = {
         'slide-down': 'slide-down 0.3s linear forwards',
         'slide-left-in': 'slide-left-in 0.3s ease',
         'slide-left-out': 'slide-left-out 0.3s linear forwards',
-        'slide-fade-in': 'slide-fade-in 0.3s cubic-bezier(.23,1,.32,1)',
+        'mask-fade-in': 'mask-fade-in 0.3s cubic-bezier(.23,1,.32,1)',
+        'mask-fade-out': 'mask-fade-out 0.3s',
       },
       backgroundImage: {
         'hardware-background':

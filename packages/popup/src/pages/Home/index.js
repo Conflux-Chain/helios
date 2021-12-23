@@ -1,15 +1,15 @@
 import {useState} from 'react'
 import {useQuery} from '../../hooks'
-import {useTxList} from '../../hooks/useApi'
+import {useTxList, usePendingAuthReq} from '../../hooks/useApi'
 import {useEffectOnce} from 'react-use'
-import {useHistory} from 'react-router-dom'
+import {useHistory, Redirect} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {HomeNav} from '../../components'
 import {PendingQueue} from './components'
-import {ROUTES} from '../../constants'
+import {ROUTES, DAPP_REQUEST_ROUTES} from '../../constants'
 
-const {HISTORY} = ROUTES
+const {HISTORY, ERROR} = ROUTES
 import {
   CurrentAccount,
   CurrentNetwork,
@@ -29,6 +29,7 @@ function Home() {
   const query = useQuery()
   const history = useHistory()
   const pendingCount = useTxList({status: 2, countOnly: true})
+  const pendingAuthReq = usePendingAuthReq()
 
   useEffectOnce(() => {
     if (query.get('open') === 'account-list') {
@@ -36,9 +37,20 @@ function Home() {
       setAccountStatus(true)
     }
   })
+  if (pendingAuthReq?.length) {
+    return (
+      <Redirect
+        to={{
+          pathname:
+            DAPP_REQUEST_ROUTES[pendingAuthReq[0]?.req?.method] || ERROR,
+        }}
+      />
+    )
+  }
+
   return (
     <div
-      className="flex flex-col bg-bg h-150 w-93 m-auto light relative overflow-hidden"
+      className="flex flex-col bg-bg h-full w-full relative overflow-hidden"
       id="homeContainer"
     >
       <button onClick={() => open(location.href)} className="z-10 text-white">

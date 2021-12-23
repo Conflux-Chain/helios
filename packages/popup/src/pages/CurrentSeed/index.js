@@ -93,7 +93,7 @@ function CurrentSeed() {
 
   return (
     <div
-      className="flex flex-col h-150 w-93 m-auto light bg-bg"
+      className="flex flex-col h-full w-full bg-bg"
       id="currentSeedContainer"
     >
       <TitleNav title={t('newAccount')} />
