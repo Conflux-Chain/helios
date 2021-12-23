@@ -1,6 +1,6 @@
 import {ErrorBoundary} from 'react-error-boundary'
 import {isUndefined} from '@fluent-wallet/checks'
-import {Suspense, cloneElement, useState, useEffect} from 'react'
+import React, {Suspense, cloneElement} from 'react'
 import {
   HashRouter as Router,
   Redirect,
@@ -12,6 +12,7 @@ import {TransitionGroup, CSSTransition} from 'react-transition-group'
 import {useIsLocked, useIsZeroGroup, usePendingAuthReq} from './hooks/useApi'
 import {ProtectedRoute} from './components'
 import {ROUTES} from './constants'
+import PageLoading from './hooks/useLoading/PageLoading'
 import './App.css'
 import useGlobalStore from './stores/index.js'
 
@@ -41,9 +42,9 @@ import ViewData from './pages/ViewData'
 import AccountManagement from './pages/AccountManagement'
 import ExportSeed from './pages/ExportSeed'
 import ExportPrivateKey from './pages/ExportPrivateKey'
-import HardwareGuard from './pages/HardwareGuard';
-import ConnectHardwareWallet from './pages/ConnectHardwareWallet';
-import ImportHwAccount from './pages/ImportHwAccount';
+import HardwareGuard from './pages/HardwareGuard'
+import ConnectHardwareWallet from './pages/ConnectHardwareWallet'
+import ImportHwAccount from './pages/ImportHwAccount'
 
 const {
   HOME,
@@ -177,33 +178,20 @@ const routes = [
   {
     path: ERROR,
     component: ErrorPage,
-  }, {
+  },
+  {
     path: HARDWARE_GUARD,
     component: HardwareGuard,
-  }, {
+  },
+  {
     path: CONNECT_HARDWARE_WALLET,
     component: ConnectHardwareWallet,
-  }, {
+  },
+  {
     path: IMPORT_HW_ACCOUNT,
     component: ImportHwAccount,
-  }
+  },
 ]
-
-const PageLoading = () => {
-  const [inDelay, setInDelay] = useState(true)
-  // 400ms内能结束的loading一闪即逝是不好的交互体验。
-  useEffect(() => {
-    const timer = setTimeout(() => setInDelay(false), 400)
-    return () => clearTimeout(timer)
-  }, [])
-
-  if (inDelay) return null
-  return (
-    <div className="h-150 w-93 m-auto light flex items-center justify-center">
-      loading...
-    </div>
-  )
-}
 
 const MyRoutes = withRouter(
   ({lockedData, pendingAuthReq, zeroGroup, location, history}) => {
@@ -264,6 +252,7 @@ function App() {
   const zeroGroup = useIsZeroGroup()
   const pendingAuthReq = usePendingAuthReq(!zeroGroup && !lockedData)
   const {setFatalError} = useGlobalStore()
+
   if (
     isUndefined(lockedData) ||
     isUndefined(zeroGroup) ||
@@ -279,7 +268,10 @@ function App() {
         onError={error => setFatalError(error)}
       >
         <Suspense fallback={<PageLoading />}>
-          <div className="h-150 w-93 m-auto light relative overflow-hidden">
+          <div
+            className="h-150 w-93 m-auto light relative overflow-hidden"
+            id="router"
+          >
             <MyRoutes
               lockedData={lockedData}
               zeroGroup={zeroGroup}
