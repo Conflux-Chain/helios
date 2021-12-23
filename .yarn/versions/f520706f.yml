@@ -1,9 +1,17 @@
 releases:
   "@fluent-wallet/db": patch
   "@fluent-wallet/provider-api": patch
+  "@fluent-wallet/webextension": patch
   helios-inpage: patch
 
 declined:
   - helios-background
   - browser-extension
+  - helios-popup
+  - "@fluent-wallet/wallet_add-pending-user-auth-request"
+  - "@fluent-wallet/wallet_get-current-viewing-app"
+  - "@fluent-wallet/wallet_handle-unfinished-cfx-tx"
+  - "@fluent-wallet/wallet_request-unlock-ui"
+  - "@fluent-wallet/wallet_user-approved-auth-request"
+  - "@fluent-wallet/wallet_user-rejected-auth-request"
   - "@fluent-wallet/use-rpc"
