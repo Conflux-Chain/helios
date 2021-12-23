@@ -829,29 +829,30 @@
                   (if (= taddr "0x0")
                     (conj acc {:db/id                 [:address/id [networkId uaddr]]
                                :address/nativeBalance balance})
-                    (if (.greaterThan (goog.math.Long/fromString balance 16) LONG_ZERO)
-                      (let [balance-eid    (q '[:find ?b .
-                                                :in $ ?uaddr ?taddr
-                                                :where
-                                                [?u :address/id ?uaddr]
-                                                [?t :token/id ?taddr]
-                                                [?u :address/balance ?b]
-                                                [?t :token/balance ?b]]
-                                              [networkId uaddr] [networkId taddr])
-                            tmp-balance-id (str networkId uaddr taddr)
-                            acc            (conj acc {:db/id         (or
-                                                                      balance-eid
-                                                                      tmp-balance-id)
-                                                      :balance/value balance}
-                                                 {:db/id         [:address/id [networkId uaddr]]
-                                                  :address/token [:token/id [networkId taddr]]})
-                            acc            (if balance-eid acc
-                                               (conj acc {:db/id           [:address/id [networkId uaddr]]
-                                                          :address/balance (str networkId uaddr taddr)}
-                                                     {:db/id         [:token/id [networkId taddr]]
-                                                      :token/balance (str networkId uaddr taddr)}))]
-                        acc)
-                      acc))))
+                    (let [balance-eid (q '[:find ?b .
+                                           :in $ ?uaddr ?taddr
+                                           :where
+                                           [?u :address/id ?uaddr]
+                                           [?t :token/id ?taddr]
+                                           [?u :address/balance ?b]
+                                           [?t :token/balance ?b]]
+                                         [networkId uaddr] [networkId taddr])
+                          gt0?        (.greaterThan (goog.math.Long/fromString balance 16) LONG_ZERO)]
+                      (if (and (not gt0?) (not balance-eid))
+                        acc
+                        (let [tmp-balance-id (str networkId uaddr taddr)
+                              acc            (conj acc {:db/id         (or
+                                                                        balance-eid
+                                                                        tmp-balance-id)
+                                                        :balance/value balance}
+                                                   {:db/id         [:address/id [networkId uaddr]]
+                                                    :address/token [:token/id [networkId taddr]]})
+                              acc            (if balance-eid acc
+                                                 (conj acc {:db/id           [:address/id [networkId uaddr]]
+                                                            :address/balance (str networkId uaddr taddr)}
+                                                       {:db/id         [:token/id [networkId taddr]]
+                                                        :token/balance (str networkId uaddr taddr)}))]
+                          acc))))))
               acc d)))
          []
          data)]
