@@ -9,6 +9,7 @@ import {RPC_METHODS, ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {usePkAccountGroup} from '../../hooks/useApi'
+import useLoading from '../../hooks/useLoading'
 import {useSWRConfig} from 'swr'
 const {
   ACCOUNT_GROUP_TYPE,
@@ -26,9 +27,8 @@ function ImportPrivateKey() {
   const [keygen, setKeygen] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
-  const [creatingAccount, setCreatingAccount] = useState(false)
   const {createdPassword, setCreatedPassword} = useGlobalStore()
-
+  const {setLoading} = useLoading()
   const keygenGroup = usePkAccountGroup()
 
   useCreatedPasswordGuard()
@@ -50,39 +50,43 @@ function ImportPrivateKey() {
       return setErrorMessage('Required')
     }
 
-    if (!creatingAccount) {
-      setCreatingAccount(true)
-      request(WALLET_VALIDATE_PRIVATE_KEY, {privateKey: keygen})
-        .then(result => {
-          if (result?.valid) {
-            let params = {
-              nickname: name || accountNamePlaceholder,
-              privateKey: keygen,
-            }
-            if (createdPassword) {
-              params['password'] = createdPassword
-            }
-            return request(WALLET_IMPORT_PRIVATE_KEY, params).then(() => {
-              updateAddedNewAccount(
-                mutate,
-                !!createdPassword,
-                ACCOUNT_GROUP_TYPE.PK,
-              ).then(() => {
-                setCreatingAccount(false)
+    setLoading(true)
+    request(WALLET_VALIDATE_PRIVATE_KEY, {privateKey: keygen})
+      .then(result => {
+        if (result?.valid) {
+          let params = {
+            nickname: name || accountNamePlaceholder,
+            privateKey: keygen,
+          }
+          if (createdPassword) {
+            params['password'] = createdPassword
+          }
+          return request(WALLET_IMPORT_PRIVATE_KEY, params).then(() => {
+            updateAddedNewAccount(
+              mutate,
+              !!createdPassword,
+              ACCOUNT_GROUP_TYPE.PK,
+            )
+              .then(() => {
                 createdPassword && setCreatedPassword('')
+                setLoading(false)
                 history.push(HOME)
               })
-            })
-          }
-        })
-        .catch(error => {
-          setCreatingAccount(false)
-          if (typeof error?.data?.duplicateAccountGroupId === 'number') {
-            return setErrorMessage(t('duplicatePkError'))
-          }
-          setErrorMessage(error?.message?.split('\n')[0] ?? error)
-        })
-    }
+              .catch(() => {
+                setLoading(false)
+              })
+          })
+        } else {
+          setLoading(false)
+        }
+      })
+      .catch(error => {
+        setLoading(false)
+        if (typeof error?.data?.duplicateAccountGroupId === 'number') {
+          return setErrorMessage(t('duplicatePkError'))
+        }
+        setErrorMessage(error?.message?.split('\n')[0] ?? error)
+      })
   }
 
   return (
