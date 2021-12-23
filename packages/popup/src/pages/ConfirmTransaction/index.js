@@ -218,8 +218,6 @@ function ConfirmTransition() {
           'cfx_checkBalanceAgainstTransaction',
           [from, to, gas, gasPrice, storageLimit, 'latest_state'],
         )
-        console.log('tokenBalance', balance[tokenAddress])
-        console.log('sendBalance', convertValueToData(displayValue, decimals))
         if (
           bn16(balance[tokenAddress]).lt(
             bn16(convertValueToData(displayValue, decimals)),
