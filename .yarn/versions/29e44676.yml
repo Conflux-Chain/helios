@@ -1,4 +1,6 @@
 releases:
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/cfx_sign-transaction": patch
   "@fluent-wallet/db": patch
   "@fluent-wallet/provider-api": patch
   "@fluent-wallet/rpc-engine": patch

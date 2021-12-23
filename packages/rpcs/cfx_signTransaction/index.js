@@ -40,6 +40,7 @@ export const schemas = {
         {closed: true},
         ['epoch', {optional: true}, epochRef],
         ['returnTxMeta', {optional: true}, boolean],
+        ['dryRun', {optional: true}, boolean],
       ],
     ],
   ],
@@ -72,7 +73,7 @@ export const main = async args => {
     params: [tx, opts = {}],
     network,
   } = args
-  const {epoch, returnTxMeta} = opts
+  const {epoch, returnTxMeta, dryRun} = opts
   let newTx = {...tx}
   if (newTx.chainId && newTx.chainId !== network.chainId)
     throw InvalidParams(`Invalid chainId ${chainId}`)
@@ -131,15 +132,25 @@ export const main = async args => {
 
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {
-    raw = await signWithHardwareWallet({
-      args,
-      tx: newTx,
-      addressId: fromAddr.eid,
-      device: fromAddr.account.accountGroup.vault.device,
-    })
+    if (dryRun) {
+      raw = cfxSignTransaction(
+        newTx,
+        '0x617a260992af90f20fbbe43cd2e2a4edb9a0ec2ded468de133797184be3cd818',
+        network.netId,
+      )
+    } else {
+      raw = await signWithHardwareWallet({
+        args,
+        tx: newTx,
+        addressId: fromAddr.eid,
+        device: fromAddr.account.accountGroup.vault.device,
+      })
+    }
   } else {
-    const pk = await wallet_getAddressPrivateKey({address: newTx.from})
+    let pk = await wallet_getAddressPrivateKey({address: newTx.from})
 
+    if (dryRun)
+      pk = '0x617a260992af90f20fbbe43cd2e2a4edb9a0ec2ded468de133797184be3cd818'
     raw = cfxSignTransaction(newTx, pk, network.netId)
   }
 
