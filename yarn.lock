@@ -5249,7 +5249,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluent-wallet/inner-utils@workspace:packages/inner-utils":
+"@fluent-wallet/inner-utils@workspace:*, @fluent-wallet/inner-utils@workspace:packages/inner-utils":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/inner-utils@workspace:packages/inner-utils"
   languageName: unknown
@@ -20013,6 +20013,7 @@ fsevents@^1.2.7:
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
+    "@fluent-wallet/inner-utils": "workspace:*"
     "@fluent-wallet/jazz-icon": "workspace:packages/jazz-icon"
     "@fluent-wallet/ledger": "workspace:packages/ledger"
     "@fluent-wallet/radio": "workspace:packages/ui/components/Radio"

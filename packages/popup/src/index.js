@@ -5,6 +5,7 @@ import App from './App'
 import './i18n.js'
 import {SWRConfig} from 'swr'
 import {ROUTES} from './constants'
+import {IS_PROD_MODE} from '@fluent-wallet/inner-utils'
 const {ERROR} = ROUTES
 // import reportWebVitals from './reportWebVitals'
 
@@ -82,3 +83,6 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals()
+
+if (!IS_PROD_MODE)
+  console.log(`Fluent Version: ${import.meta.SNOWPACK_PUBLIC_FLUENT_VERSION}`)
