@@ -1,0 +1,25 @@
+.text-transition-blur-enter {
+  @apply blur-sm opacity-0;
+}
+
+.text-transition-blur-enter-active,
+.text-transition-blur-enter-appear,
+.text-transition-blur-enter-done {
+  @apply blur-none opacity-100 transition-all duration-200 ease-in-out;
+}
+
+.text-transition-blur-exit {
+  @apply blur-none opacity-100;
+}
+
+.text-transition-blur-exit-active,
+.text-transition-blur-exit-done {
+  @apply blur-sm opacity-0 transition-all duration-100 ease-in-out;
+}
+
+.text-transition-skeleton-enter,
+.text-transition-skeleton-enter-active,
+.text-transition-skeleton-enter-appear,
+.text-transition-skeleton-enter-done {
+  @apply animate-pulse opacity-100;
+}

@@ -1,6 +1,6 @@
 import {CFX_DECIMALS} from '@fluent-wallet/data-format'
 import PropTypes from 'prop-types'
-
+import Text from './Text'
 import {
   useSingleAddressTokenBalanceWithNativeTokenSupport,
   useSingleTokenInfoWithNativeTokenSupport,
@@ -49,7 +49,11 @@ function TokenItem({
       />
       <div className="flex flex-1 flex-col">
         <div className="flex w-full items-center">
-          <span className="text-gray-80 font-medium">{symbol}</span>
+          <Text
+            className="text-gray-80 font-medium inline-block w-12"
+            text={symbol}
+            skeleton
+          />
           <div className="flex items-center flex-1 justify-end">
             <DisplayBalance
               balance={balance}
@@ -60,7 +64,11 @@ function TokenItem({
             {rightIcon && <span className="ml-5">{rightIcon}</span>}
           </div>
         </div>
-        <span className="text-gray-40 text-xs">{name}</span>
+        <Text
+          className="text-gray-40 text-xs inline-block w-20"
+          text={name}
+          skeleton
+        />
       </div>
     </div>
   )

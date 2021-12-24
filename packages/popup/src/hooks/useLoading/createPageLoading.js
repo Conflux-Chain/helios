@@ -1,6 +1,6 @@
 import './createPageLoading.css'
 
-export function createPageLoading(targetDOM) {
+export function createPageLoading({targetDOM}) {
   const mask = document.createElement('div')
   mask.classList.add('loading-mask')
   targetDOM.classList.add('loading-mask-blur')
@@ -20,24 +20,22 @@ export function createPageLoading(targetDOM) {
   return mask
 }
 
-export function createPageLoadingTransition(targetDOM, loadingEleRef) {
-  const wrapperDOM = loadingEleRef.current.querySelector(
-    '.loading-page-wrapper',
-  )
+export function createPageLoadingTransition({targetDOM, loadingEle}) {
+  const wrapperDOM = loadingEle.querySelector('.loading-page-wrapper')
 
   setTimeout(() => {
-    if (!loadingEleRef.current) return
-    loadingEleRef.current.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'
+    if (!loadingEle) return
+    loadingEle.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'
     if (!wrapperDOM) return
     wrapperDOM.style.opacity = '1'
     wrapperDOM.style.transform = 'scale3d(1, 1, 1)'
   })
 
   return clearLoading => {
-    if (!loadingEleRef.current || !wrapperDOM) return
+    if (!loadingEle || !wrapperDOM) return
     wrapperDOM.style.transition = 'all 125ms ease'
     wrapperDOM.addEventListener('transitionend', clearLoading)
-    loadingEleRef.current.style.backgroundColor = 'rgba(255, 255, 255, 0)'
+    loadingEle.style.backgroundColor = 'rgba(255, 255, 255, 0)'
     wrapperDOM.style.opacity = '0'
     // wrapperDOM.style.transform = 'scale3d(0, 1, .1)'
     targetDOM.classList.remove('loading-mask-blur')

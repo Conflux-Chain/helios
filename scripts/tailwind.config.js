@@ -110,6 +110,9 @@ module.exports = {
           'sans-serif',
         ],
       },
+      width: {
+        30: '7.5rem',
+      },
       minHeight: {
         8: '2rem',
         150: '37.5rem',
@@ -194,6 +197,9 @@ module.exports = {
         'add-hw-account': "url('/images/adding-hw-account.svg')",
         'welcome-background': "url('/images/bg.svg')",
         'homepage-background': "url('/images/bg-homepage.svg')",
+      },
+      backgroundColor: {
+        'z-skeleton': 'rgb(229, 231, 235)',
       },
     },
   },
