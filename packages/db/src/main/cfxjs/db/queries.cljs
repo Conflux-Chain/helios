@@ -1,10 +1,12 @@
 (ns cfxjs.db.queries
   (:require
+   goog.math.Long
    [clojure.walk :refer [postwalk walk]]
    [cfxjs.spec.cljs]
    [cfxjs.db.datascript.core :as db]
    [cfxjs.db.schema :refer [model->attr-keys]]))
 
+(defonce LONG_ZERO (goog.math.Long/fromString "0x0" 16))
 (declare q p pm e t fdb)
 
 (defn j->c [a]
@@ -529,12 +531,14 @@
      (cond
        (vector? addressId)
        (pm (jsp->p g) addressId)
-       (and addressId (not (vector? addressId)))
+       addressId
        (when (q '[:find ?addr .
                   :in $ ?addr
                   :where [?addr :address/id]]
                 addressId)
          (post-process (p (jsp->p g) addressId)))
+       selected
+       nil
        (and networkId (= (count addr) 1))
        (post-process (p (jsp->p g) [:address/id [networkId (first addr)]]))
        :else
@@ -825,29 +829,30 @@
                   (if (= taddr "0x0")
                     (conj acc {:db/id                 [:address/id [networkId uaddr]]
                                :address/nativeBalance balance})
-                    (if (pos-int? (js/parseInt balance 16))
-                      (let [balance-eid    (q '[:find ?b .
-                                                :in $ ?uaddr ?taddr
-                                                :where
-                                                [?u :address/id ?uaddr]
-                                                [?t :token/id ?taddr]
-                                                [?u :address/balance ?b]
-                                                [?t :token/balance ?b]]
-                                              [networkId uaddr] [networkId taddr])
-                            tmp-balance-id (str networkId uaddr taddr)
-                            acc            (conj acc {:db/id         (or
-                                                                      balance-eid
-                                                                      tmp-balance-id)
-                                                      :balance/value balance}
-                                                 {:db/id         [:address/id [networkId uaddr]]
-                                                  :address/token [:token/id [networkId taddr]]})
-                            acc            (if balance-eid acc
-                                               (conj acc {:db/id           [:address/id [networkId uaddr]]
-                                                          :address/balance (str networkId uaddr taddr)}
-                                                     {:db/id         [:token/id [networkId taddr]]
-                                                      :token/balance (str networkId uaddr taddr)}))]
-                        acc)
-                      acc))))
+                    (let [balance-eid (q '[:find ?b .
+                                           :in $ ?uaddr ?taddr
+                                           :where
+                                           [?u :address/id ?uaddr]
+                                           [?t :token/id ?taddr]
+                                           [?u :address/balance ?b]
+                                           [?t :token/balance ?b]]
+                                         [networkId uaddr] [networkId taddr])
+                          gt0?        (.greaterThan (goog.math.Long/fromString balance 16) LONG_ZERO)]
+                      (if (and (not gt0?) (not balance-eid))
+                        acc
+                        (let [tmp-balance-id (str networkId uaddr taddr)
+                              acc            (conj acc {:db/id         (or
+                                                                        balance-eid
+                                                                        tmp-balance-id)
+                                                        :balance/value balance}
+                                                   {:db/id         [:address/id [networkId uaddr]]
+                                                    :address/token [:token/id [networkId taddr]]})
+                              acc            (if balance-eid acc
+                                                 (conj acc {:db/id           [:address/id [networkId uaddr]]
+                                                            :address/balance (str networkId uaddr taddr)}
+                                                       {:db/id         [:token/id [networkId taddr]]
+                                                        :token/balance (str networkId uaddr taddr)}))]
+                          acc))))))
               acc d)))
          []
          data)]
@@ -1007,7 +1012,7 @@
 (defn cleanup-tx []
   (let [tx (q '[:find [?tx ...]
                 :where [?tx :tx/hash]])
-        to-del-count (- (count tx) 2)]
+        to-del-count (- (count tx) 1000)]
     (if (> to-del-count 0)
       (do (->> (sort tx)
                (take to-del-count)

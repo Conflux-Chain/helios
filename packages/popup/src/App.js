@@ -200,6 +200,7 @@ const AppRoutes = withRouter(({lockedData, zeroGroup, location, history}) => {
 
   return (
     <div
+      id="router"
       className={`m-auto light relative overflow-hidden ${
         FULL_WINDOW_ROUTES.includes(location.pathname)
           ? 'min-h-screen w-full'

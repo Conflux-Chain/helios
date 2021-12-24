@@ -10,6 +10,8 @@ import {CompWithLabel, TitleNav} from '../../components'
 import {request} from '../../utils'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import {useHdAccountGroup} from '../../hooks/useApi'
+import useLoading from '../../hooks/useLoading'
+
 const {WALLET_CREATE_ACCOUNT, WALLET_ZERO_ACCOUNT_GROUP} = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -60,8 +62,9 @@ function CurrentSeed() {
   const [accountName, setAccountName] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
   const [selectedGroupIdx, setSelectedGroupIdx] = useState(0)
-  const [creatingAccount, setCreatingAccount] = useState(false)
   const [accountCreationError, setAccountCreationError] = useState('')
+  const {setLoading} = useLoading()
+
   useEffect(() => {
     setAccountNamePlaceholder(`Seed-1-${hdGroup[0]?.account?.length + 1}`)
   }, [hdGroup])
@@ -72,20 +75,19 @@ function CurrentSeed() {
     )
   }
   const onCreate = () => {
-    if (creatingAccount) return
-    setCreatingAccount(true)
+    setLoading(true)
     return request(WALLET_CREATE_ACCOUNT, {
       accountGroupId: hdGroup[selectedGroupIdx].eid,
       nickname: accountName || accountNamePlaceholder,
     })
       .then(() => {
-        setCreatingAccount(false)
         mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+        setLoading(false)
         history.push(HOME)
       })
       .catch(error => {
+        setLoading(false)
         // TODO: handle error message
-        setCreatingAccount(false)
         setAccountCreationError(error.message ?? error)
         console.log(accountCreationError)
       })

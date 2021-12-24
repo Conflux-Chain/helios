@@ -26,6 +26,9 @@ categories:
   - title: "🐛 Bug Fixes"
     labels:
       - "fix"
+  - title: "📝 Docs"
+    labels:
+      - "doc"
 exclude-labels:
   - "skip-changelog"
 autolabeler:
@@ -47,9 +50,6 @@ autolabeler:
       - '/feat(\(.*\))?:/'
     branch:
       - '/feature\/.+/'
-    body:
-      - '/new\sfeature/'
-      - "/implement/"
   - label: "ci"
     title:
       - '/ci(\(.*\))?:/'
@@ -61,8 +61,10 @@ autolabeler:
   - label: "breaking-change"
     title:
       - '/BREAKING\sCHANGE/'
-    body:
-      - '/BREAKING\sCHANGE/'
+
+replacers:
+  - search: '/chore\(release-pkg\): release packages .*\n/'
+    replace: ""
 
 template: |
   ## What’s Changed
