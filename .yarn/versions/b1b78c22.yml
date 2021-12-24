@@ -1,0 +1,5 @@
+declined:
+  - helios-background
+  - browser-extension
+  - helios-popup
+  - "@fluent-wallet/webextension"

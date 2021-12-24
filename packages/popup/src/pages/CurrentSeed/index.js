@@ -66,15 +66,13 @@ function CurrentSeed() {
   const {setLoading} = useLoading()
 
   useEffect(() => {
-    setAccountNamePlaceholder(
-      `${t('seedPrefix')}1-${hdGroup[0]?.account?.length + 1}`,
-    )
+    setAccountNamePlaceholder(`Seed-1-${hdGroup[0]?.account?.length + 1}`)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hdGroup])
   const onClickGroup = index => {
     setSelectedGroupIdx(index)
     setAccountNamePlaceholder(
-      `${t('seedPrefix')}${index + 1}-${hdGroup[index].account.length + 1}`,
+      `Seed-${index + 1}-${hdGroup[index].account.length + 1}`,
     )
   }
   const onCreate = () => {

@@ -14,7 +14,6 @@ const en = {
     no: 'No',
     yes: 'Yes',
     copiedSuccess: 'Copied success',
-    seedPrefix: 'Seed-',
     invalidAddress: 'Please enter valid cfx address',
     invalidhexAddress: 'Please enter valid hex address',
     protocol: 'Protocol',

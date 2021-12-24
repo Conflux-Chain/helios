@@ -31,7 +31,7 @@ function ImportSeedPhrase() {
 
   useCreatedPasswordGuard()
   useEffect(() => {
-    setAccountNamePlaceholder(`${t('seedPrefix')}${hdGroup.length + 1}`)
+    setAccountNamePlaceholder(`Seed-${hdGroup.length + 1}`)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hdGroup])
 
