@@ -41,13 +41,11 @@ function ImportPrivateKey() {
   }
   const onChangeKeygen = e => {
     setKeygen(e.target.value)
-    // TODO: replace error msg
-    setErrorMessage(e.target.value ? '' : 'Required')
+    setErrorMessage(e.target.value ? '' : t('required'))
   }
   const onCreate = async () => {
     if (!keygen) {
-      // TODO: replace error msg
-      return setErrorMessage('Required')
+      return setErrorMessage(t('required'))
     }
 
     setLoading(true)
@@ -99,7 +97,7 @@ function ImportPrivateKey() {
       <TitleNav title={t(`pKeyImport`)} />
       <div className="flex flex-1 px-3 flex-col justify-between">
         <section>
-          <CompWithLabel label={t(`pKeyGroupName`)}>
+          <CompWithLabel label={t(`accountName`)}>
             <Input
               onChange={onChangeName}
               width="w-full"

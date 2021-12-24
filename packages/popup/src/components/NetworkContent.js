@@ -5,6 +5,7 @@ import {request} from '../utils'
 import {useCfxNetwork, useCurrentAddress} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 import {CustomTag} from './'
+import {useTranslation} from 'react-i18next'
 
 const {WALLET_SET_CURRENT_NETWORK} = RPC_METHODS
 const networkTypeColorObj = {
@@ -27,6 +28,7 @@ function NetworkItem({
   ...props
 }) {
   const {setLoading} = useLoading({delay: 0})
+  const {t} = useTranslation()
   const {
     data: {
       network: {eid},
@@ -47,7 +49,7 @@ function NetworkItem({
           mutate()
           // TODO: i18n
           Message.warning({
-            content: 'Address has been changed',
+            content: t('addressHasBeenChanged'),
             top: '110px',
             duration: 1,
           })
@@ -57,7 +59,7 @@ function NetworkItem({
         .catch(error => {
           // TODO: need deal with error condition
           Message.error({
-            content: error?.message || 'something goes wrong',
+            content: error?.message || t('changeNetworkError'),
             top: '110px',
             duration: 1,
           })
