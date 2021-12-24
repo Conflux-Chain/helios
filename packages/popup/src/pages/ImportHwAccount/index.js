@@ -374,7 +374,7 @@ function ImportHwAccount() {
             ).length === 0
           }
         >
-          {t('next')}
+          {t('import')}
         </Button>
       </div>
       <div className="flex-3" />

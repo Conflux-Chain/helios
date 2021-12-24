@@ -99,7 +99,7 @@ function AccountManagement() {
   const validatePassword = value => {
     // TODO: Replace err msg
     const isValid = validatePasswordReg(value)
-    setPasswordErrorMessage(isValid ? '' : 'something wrong')
+    setPasswordErrorMessage(isValid ? '' : 'Invalid password')
     return isValid
   }
 
@@ -138,7 +138,11 @@ function AccountManagement() {
       .catch(e => {
         // TODO: handle error
         setSendingRequestStatus(false)
-        setPasswordErrorMessage(e?.message ?? 'something wrong')
+        setPasswordErrorMessage(
+          e?.message?.indexOf?.('Invalid password') !== -1
+            ? 'Invalid password'
+            : e?.message ?? 'something wrong',
+        )
       })
   }
 
