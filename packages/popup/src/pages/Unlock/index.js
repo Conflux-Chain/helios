@@ -6,6 +6,8 @@ import {useTranslation} from 'react-i18next'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import {useSWRConfig} from 'swr'
 import {request, validatePasswordReg} from '../../utils'
+import useLoading from '../../hooks/useLoading'
+
 const {WALLET_IS_LOCKED, WALLET_UNLOCK} = RPC_METHODS
 
 const {HOME} = ROUTES
@@ -15,6 +17,7 @@ const UnlockPage = () => {
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const {mutate} = useSWRConfig()
+  const {setLoading} = useLoading()
 
   const validatePassword = value => {
     // TODO: Replace err msg
@@ -23,14 +26,17 @@ const UnlockPage = () => {
   const onUnlock = () => {
     validatePassword(password)
     if (password) {
+      setLoading(true)
       request(WALLET_UNLOCK, {password})
         .then(() => {
           mutate([WALLET_IS_LOCKED], false)
+          setLoading(false)
           history.push(HOME)
         })
-        .catch(
-          error => setErrorMessage(error?.message?.split('\n')[0]) ?? error,
-        )
+        .catch(error => {
+          setLoading(false)
+          setErrorMessage(error?.message?.split('\n')[0]) ?? error
+        })
     }
   }
 

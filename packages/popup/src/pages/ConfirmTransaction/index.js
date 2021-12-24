@@ -3,7 +3,6 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
-import Loading from '@fluent-wallet/component-loading'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
   formatDecimalToHex,
@@ -35,6 +34,8 @@ import {
   LEDGER_AUTH_STATUS,
   HW_TX_STATUS,
 } from '../../constants'
+import useLoading from '../../hooks/useLoading'
+
 const {VIEW_DATA, HOME} = ROUTES
 const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
   RPC_METHODS
@@ -43,7 +44,6 @@ function ConfirmTransition() {
   const {t} = useTranslation()
   const history = useHistory()
   const {authStatus} = useConnect()
-  const [sendingTransaction, setSendingTransaction] = useState(false)
   const [sendStatus, setSendStatus] = useState()
   const [balanceError, setBalanceError] = useState('')
   const pendingAuthReq = usePendingAuthReq()
@@ -62,6 +62,7 @@ function ConfirmTransition() {
     setNonce,
     clearSendTransactionParams,
   } = useGlobalStore()
+  const {setLoading} = useLoading()
 
   const {
     data: {
@@ -243,26 +244,25 @@ function ConfirmTransition() {
   }
 
   const onSend = async () => {
-    if (sendingTransaction) return
-    setSendingTransaction(true)
+    setLoading(true)
     setSendStatus(HW_TX_STATUS.WAITING)
     if (isSendToken) {
       const error = await checkBalance()
       if (error) {
-        setSendingTransaction(false)
+        setLoading(false)
         setBalanceError(error)
         return
       }
     }
     request(SEND_TRANSACTION, [params])
       .then(() => {
-        setSendingTransaction(false)
+        setLoading(false)
         setSendStatus(HW_TX_STATUS.SUCCESS)
         clearSendTransactionParams()
         history.push(HOME)
       })
       .catch(error => {
-        setSendingTransaction(false)
+        setLoading(false)
         setSendStatus(HW_TX_STATUS.REJECTED)
         if (!isHwAccount) {
           clearSendTransactionParams()
@@ -341,11 +341,11 @@ function ConfirmTransition() {
               confirmParams={{tx: sendParams}}
             />
           )}
-          {!isDapp && sendingTransaction && !isHwAccount && (
+          {/* {!isDapp && sendingTransaction && !isHwAccount && (
             <div className="fixed top-0 left-0 flex w-screen h-screen bg-[rgba(0,0,0,0.4)] items-center justify-center">
               <Loading />
             </div>
-          )}
+          )} */}
           {isHwAccount && <HwTransactionResult status={sendStatus} />}
         </div>
       </div>
