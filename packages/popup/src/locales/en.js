@@ -118,8 +118,11 @@ const en = {
     searchResults: 'Search Results',
     noResult: 'No result',
 
+    // welcome page
+    welcomeToConflux: 'Welcome to Conflux Network',
+
     // - login page
-    welcomeBack: 'Welcome Back!',
+    welcomeBack: 'Welcome Back',
     welcome: 'Enter the Web3 world',
     password: 'Enter your password',
     unlock: 'Unlock',

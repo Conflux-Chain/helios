@@ -41,23 +41,23 @@ const UnlockPage = () => {
 
   return (
     <div
-      className="bg-secondary h-full w-full flex flex-col"
+      className="bg-secondary h-full w-full flex flex-col bg-welcome-background"
       id="unlockContainer"
     >
       <LanguageNav showLan={false} />
-      <header className="flex flex-col items-center pb-7">
+      <header className="flex flex-col items-center pb-7 mt-7">
         <img
-          src="/images/logo.svg"
+          src="/images/logo-vertical.svg"
           alt="logo"
-          className="mx-auto w-25 h-25 mt-2"
+          className="mx-auto w-50 h-40"
         />
         <HomeTitle
           title={t('welcomeBack')}
-          subTitle={t('welcome')}
-          containerStyle="text-center"
+          // subTitle={t('welcome')}
+          containerStyle="text-center mt-[70px]"
         />
       </header>
-      <main className="px-6  flex-1">
+      <main className="px-6 h-[154px] mb-15 absolute left-0 right-0 bottom-0">
         <div className="flex flex-col h-full justify-between">
           <section>
             <div className="text-sm text-gray-40 mb-2">{t('password')}</div>
@@ -69,7 +69,7 @@ const UnlockPage = () => {
               id="unlockPassword"
             />
           </section>
-          <section className="mb-48">
+          <section>
             <Button
               fullWidth
               disabled={!!errorMessage}
