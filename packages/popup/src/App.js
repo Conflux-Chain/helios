@@ -206,7 +206,6 @@ const AppRoutes = withRouter(({lockedData, zeroGroup, location, history}) => {
           ? 'min-h-screen w-full'
           : 'h-150 w-93'
       }`}
-      id="router"
     >
       <TransitionGroup
         component={null}
