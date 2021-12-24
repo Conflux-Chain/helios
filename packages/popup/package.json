@@ -19,6 +19,7 @@
     "@fluent-wallet/component-message": "workspace:*",
     "@fluent-wallet/component-modal": "workspace:packages/ui/components/Modal",
     "@fluent-wallet/component-toast": "workspace:packages/ui/components/Toast",
+    "@fluent-wallet/component-tooltip": "workspace:*",
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format",
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
