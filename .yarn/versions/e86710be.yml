@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/rpc-engine": patch
+  "@fluent-wallet/sentry": patch
+
+declined:
+  - helios-background
+  - browser-extension
+  - helios-popup
