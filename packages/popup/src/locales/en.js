@@ -174,6 +174,8 @@ const en = {
     contract: 'Contract',
     allowLimit: 'Allow Limit',
     action: 'Action',
+    balance: 'balance',
+    createContract: 'Deploy Contract',
 
     // - Send Transaction / Sign Transaction / 3. token approve - view data
     // 此处展示内容为交易详情，在多种情况是相同的，不止是 token approve 这个场景，详见 common
@@ -245,10 +247,6 @@ const en = {
 
     // - migration
     migration: 'One-Click Migration',
-    createContract: 'Deploy Contract',
-    ledgerIsNotConnected: 'Leger is not connected',
-    openExpandView: 'Open Fluent expand view to connect',
-    balance: 'balance',
 
     // account management
     accountManagement: 'Account Management',
@@ -317,6 +315,11 @@ const en = {
     rejected: 'Rejected',
     waitingContent: 'Please confirm this transaction in your Ledger.',
     rejectedContent: 'Transaction has been rejected.',
+
+    // confirm hw alert
+    ledgerIsNotConnected: 'Leger is not connected',
+    openExpandView: 'Open Fluent expand view to connect',
+    hwOpenApp: 'Before clicking confirm, make sure the Conflux App is open.',
   },
 }
 
