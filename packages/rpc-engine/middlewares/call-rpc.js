@@ -15,7 +15,16 @@ function formatRes(res, id) {
 }
 
 const RequestLockMethods = [
+  'wallet_watchAsset',
   'wallet_requestPermissions',
+  'wallet_switchConfluxChain',
+  'wallet_switchEthereumChain',
+  'wallet_addConfluxChain',
+  'wallet_addEthereumChain',
+  'cfx_sendTransaction',
+  'personal_sign',
+  'cfx_signTypedData_v4',
+  'eth_signTypedData_v4',
   'cfx_requestAccounts',
   'eth_requestAccounts',
 ]

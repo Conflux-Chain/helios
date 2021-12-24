@@ -69,21 +69,7 @@ class Provider extends SafeEventEmitter {
     // DEPRECATED
     this.confluxJS = new ConfluxJS.Conflux()
 
-    // DEPRECATED
-    this.confluxJS.provider = {
-      call: (method, ...params) => {
-        params = params.reduce((acc, p) => {
-          if (p === undefined) return acc
-          return acc.concat([p])
-        }, [])
-        return this.request({method, params})
-      },
-      close() {},
-      on() {},
-      send: this.send.bind(this),
-      sendAsync: this.sendAsync.bind(this),
-      request: this.request.bind(this),
-    }
+    this.confluxJS.provider = this
 
     this.on('connect', () => {
       this.#isConnected = true
@@ -117,6 +103,17 @@ class Provider extends SafeEventEmitter {
       }
     })
   }
+  // DEPRECATED
+  close() {}
+  // DEPRECATED
+  call(method, ...params) {
+    params = params.reduce((acc, p) => {
+      if (p === undefined) return acc
+      return acc.concat([p])
+    }, [])
+    return this.request({method, params})
+  }
+
   // DEPRECATED
   get chainId() {
     deprecated(
@@ -197,7 +194,8 @@ class Provider extends SafeEventEmitter {
 
     if (!a2 && typeof a1 === 'object') {
       if (a1.method === 'cfx_accounts') {
-        return Promise.resolve([this.selectedAddress])
+        if (this.selectedAddress) return Promise.resolve([this.selectedAddress])
+        else return Promise.resolve([])
       }
       if (a1.method === 'cfx_netVersion' || a1.method === 'net_version') {
         return Promise.resolve(this.networkVersion)

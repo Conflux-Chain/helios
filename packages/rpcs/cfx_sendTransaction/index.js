@@ -57,7 +57,10 @@ export const main = async ({
     delete params[0].nonce
     try {
       // try sign tx
-      await cfx_signTransaction({errorFallThrough: true}, params)
+      await cfx_signTransaction({errorFallThrough: true}, [
+        ...params,
+        {dryRun: true},
+      ])
     } catch (err) {
       if (err?.code === ERROR.USER_REJECTED.code) throw err
       throw InvalidParams(`Invalid transaction ${JSON.stringify(params)}`)

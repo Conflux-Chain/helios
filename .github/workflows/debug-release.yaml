@@ -63,6 +63,8 @@ jobs:
       - name: build and release
         env:
           FLUENT_VERSION: "DEBUG-${{ github.head_ref }}"
+          SNOWPACK_PUBLIC_FLUENT_ENV: "debug-release"
+          SNOWPACK_PUBLIC_FLUENT_VERSION: "DEBUG-${{ github.head_ref }}-${{ github.sha }}"
           # FLUENT_VERSION: "DEBUG-${{ steps.create_release.outputs.tag_name }}"
         run: yarn prod:release
 
