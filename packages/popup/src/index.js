@@ -94,4 +94,6 @@ ReactDOM.render(
 // reportWebVitals()
 
 if (!IS_PROD_MODE)
-  console.log(`Fluent Version: ${import.meta.SNOWPACK_PUBLIC_FLUENT_VERSION}`)
+  console.log(
+    `Fluent Version: ${import.meta.env.SNOWPACK_PUBLIC_FLUENT_VERSION}`,
+  )
