@@ -45,7 +45,7 @@ const UnlockPage = () => {
       className="bg-secondary h-full w-full flex flex-col"
       id="unlockContainer"
     >
-      <LanguageNav />
+      <LanguageNav showLan={false} />
       <header className="flex flex-col items-center pb-7">
         <img
           src="/images/logo.svg"
