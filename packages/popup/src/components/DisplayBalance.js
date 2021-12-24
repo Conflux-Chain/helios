@@ -38,7 +38,7 @@ function DisplayBalance({
   return (
     <div
       id={id}
-      className={`text-gray-80 font-mono font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis relative ${maxWidthStyle} ${className}`}
+      className={`text-gray-80 font-mono font-semibold text-ellipsis relative ${maxWidthStyle} ${className}`}
     >
       {showTooltip ? (
         <Tooltip content={`${displayRealBalance} ${symbol}`}>

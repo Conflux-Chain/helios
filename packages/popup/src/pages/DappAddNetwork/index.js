@@ -10,7 +10,7 @@ function NetworkContentItem({labelText, contentText, containerClass = ''}) {
   return (
     <div className={containerClass}>
       <div className="text-xs text-gray-40">{labelText}</div>
-      <div className="text-sm text-gray-80 font-medium mt-0.5 whitespace-nowrap overflow-hidden overflow-ellipsis">
+      <div className="text-sm text-gray-80 font-medium mt-0.5 text-ellipsis">
         {contentText}
       </div>
     </div>

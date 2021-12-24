@@ -33,7 +33,7 @@ function DappProgressHeader({title}) {
         </div>
         <p
           id="site"
-          className="text-base text-gray-80 text-center mt-2 font-medium px-3 whitespace-nowrap overflow-hidden overflow-ellipsis"
+          className="text-base text-gray-80 text-center mt-2 font-medium px-3 text-ellipsis"
         >
           {app?.site?.origin || site?.origin || ''}
         </p>

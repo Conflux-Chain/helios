@@ -62,7 +62,7 @@ function DappSwitchNetwork() {
           <div className="px-3 py-4 bg-gray-4" id="networkContent">
             <div id="networkUrl">
               <div className="text-xs text-gray-40">{t('networkUrl')}</div>
-              <div className="text-sm text-gray-80 font-medium mt-0.5 whitespace-nowrap overflow-hidden overflow-ellipsis">
+              <div className="text-sm text-gray-80 font-medium mt-0.5 text-ellipsis">
                 {endpoint}
               </div>
             </div>
