@@ -83,7 +83,7 @@ export const useFontSize = (
     if (contentWidth > maxWidth) {
       const fontSize = (maxWidth / contentWidth) * initialFontSize
       let intFontSize = parseInt(fontSize * 100) / 100
-      if (intFontSize < 12) intFontSize = 12
+      if (intFontSize < 10) intFontSize = 10
       targetDom.style.fontSize = intFontSize + 'px'
     } else {
       targetDom.style.fontSize = `${initialFontSize}px`

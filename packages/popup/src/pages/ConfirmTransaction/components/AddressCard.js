@@ -41,23 +41,28 @@ const AddressDetail = ({
         />
       </div>
       <div className="ml-3 flex flex-col flex-1">
-        <span className="text-xs text-gray-40" id="currentAccountName">
-          {currentAccountName}
-        </span>
         <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2">
-          <span className="text-gray-80" id="fromAddress">
-            {fromAddress && shortenAddress(fromAddress)}
-          </span>
-          <DisplayBalance
-            balance={nativeBalance}
-            maxWidth={120}
-            maxWidthStyle="max-w-[120px]"
-            className="text-xs !text-gray-60 !font-normal"
-            initialFontSize={12}
-            decimals={decimals}
-            symbol={symbol}
-            id="fromAddressCfxBalance"
-          />
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-40" id="currentAccountName">
+              {currentAccountName}
+            </span>
+            <span className="text-gray-80" id="fromAddress">
+              {fromAddress && shortenAddress(fromAddress)}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-gray-80">{t('balance')}</span>
+            <DisplayBalance
+              balance={nativeBalance}
+              maxWidth={120}
+              maxWidthStyle="max-w-[120px]"
+              className="text-xs !text-gray-60 !font-normal"
+              initialFontSize={12}
+              decimals={decimals}
+              symbol={symbol}
+              id="fromAddressCfxBalance"
+            />
+          </div>
         </div>
         <span className="text-xs text-gray-40">{toAddressLabel}</span>
         <span className="text-gray-80 flex items-center" id="toAddress">

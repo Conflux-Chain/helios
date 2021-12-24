@@ -37,23 +37,22 @@ function DisplayBalance({
   useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance, initialFontSize)
   return (
     <div
-      id={id}
-      className={`text-gray-80 font-mono font-semibold text-ellipsis relative ${maxWidthStyle} ${className}`}
+      className={`flex text-gray-80 font-mono font-semibold items-center ${className}`}
     >
-      {showTooltip ? (
-        <Tooltip content={`${displayRealBalance} ${symbol}`}>
+      <div id={id} className={`text-ellipsis relative ${maxWidthStyle}`}>
+        {showTooltip ? (
+          <Tooltip content={`${displayRealBalance} ${symbol}`}>
+            <span ref={balanceRef}>{displayBalance}</span>
+          </Tooltip>
+        ) : (
           <span ref={balanceRef}>{displayBalance}</span>
-          {symbol && ` ${symbol}`}
-        </Tooltip>
-      ) : (
-        <>
-          <span ref={balanceRef}>{displayBalance}</span>
-          {symbol && ` ${symbol}`}
-        </>
-      )}
-      <span ref={hiddenRef} className="invisible absolute left-0">
-        {displayBalance}
-      </span>
+        )}
+
+        <span ref={hiddenRef} className="invisible absolute left-0">
+          {displayBalance}
+        </span>
+      </div>
+      <span className="inline-block ml-0.5">{symbol && `${symbol}`}</span>
     </div>
   )
 }

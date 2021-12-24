@@ -181,6 +181,7 @@ const en = {
     createContract: 'Deploy contract',
     ledgerIsNotConnected: 'Leger is not connected',
     openExpandView: 'Open Fluent Expand View to Connect',
+    balance: 'balance',
     // confirm hw Modal
     waitingForSign: 'Waiting for Sign',
     rejected: 'Rejected',
