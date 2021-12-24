@@ -1,8 +1,17 @@
 releases:
+  "@fluent-wallet/personal_sign": patch
+  "@fluent-wallet/provider-api": patch
   "@fluent-wallet/rpc-engine": patch
   "@fluent-wallet/sentry": patch
+  "@fluent-wallet/signature": patch
+  helios-inpage: patch
 
 declined:
   - helios-background
   - browser-extension
   - helios-popup
+  - "@fluent-wallet/cfx_send-transaction"
+  - "@fluent-wallet/cfx_sign-transaction"
+  - "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s"
+  - "@fluent-wallet/cfx_sign-typed-data_v4"
+  - "@fluent-wallet/use-rpc"
