@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
+import {useRPC} from '@fluent-wallet/use-rpc'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import {useCurrentAddress, useAddressType} from '../../../hooks/useApi'
 import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
+import {RPC_METHODS} from '../../../constants'
+const {QUERY_ADDRESS} = RPC_METHODS
 
 const AddressDetail = ({
   fromAddress,
@@ -78,6 +81,30 @@ AddressDetail.propTypes = {
   isCreateContract: PropTypes.bool,
 }
 
+const useAccountNameByAddress = address => {
+  const {
+    network: {eid: networkId},
+  } = useCurrentAddress()
+  const {data} = useRPC(
+    [QUERY_ADDRESS, 'useAccountNameByAddress', address, networkId],
+    {
+      value: address,
+      networkId,
+      g: {
+        value: 1,
+        eid: 1,
+        _account: {nickname: 1, eid: 1},
+      },
+    },
+    {
+      fallbackData: {
+        account: {},
+      },
+    },
+  )
+  return data
+}
+
 function AddressCard({
   token,
   fromAddress,
@@ -89,10 +116,8 @@ function AddressCard({
 }) {
   const {t} = useTranslation()
   const {
-    data: {
-      account: {nickname},
-    },
-  } = useCurrentAddress()
+    account: {nickname},
+  } = useAccountNameByAddress(fromAddress)
 
   return (
     <div
