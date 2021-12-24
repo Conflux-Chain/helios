@@ -11,13 +11,13 @@ import {CFX_DECIMALS} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Checkbox from '@fluent-wallet/component-checkbox'
 import Button from '@fluent-wallet/component-button'
+import Message from '@fluent-wallet/component-message'
 import {
   LeftOutlined,
   RightOutlined,
   CheckCircleFilled,
 } from '@fluent-wallet/component-icons'
 import {DEFAULT_CFX_HDPATH} from '@fluent-wallet/consts'
-import Toast from '@fluent-wallet/component-toast'
 import {encode} from '@fluent-wallet/base32-address'
 import {Conflux} from '@fluent-wallet/ledger'
 import {TitleNav, CompWithLabel, Avatar, DisplayBalance} from '../../components'
@@ -27,6 +27,7 @@ import {
   useBalance,
   useQueryImportedAddress,
 } from '../../hooks/useApi'
+import useLoading from '../../hooks/useLoading'
 import useImportHWParams from './useImportHWParams'
 import {request} from '../../utils'
 
@@ -51,7 +52,7 @@ function ImportingResults({importStatus}) {
   return (
     <div
       id="importing-results"
-      className="m-auto light flex flex-col h-full w-full"
+      className="m-auto light flex flex-col h-full w-full overflow-auto"
     >
       <div className="flex-2" />
       <div className="flex flex-col items-center">
@@ -96,8 +97,8 @@ function ImportHwAccount() {
   const [allCheckboxStatus, setAllCheckboxStatus] = useState(false)
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
   const [offset, setOffset] = useState(0)
-  const [errMsg, setErrMsg] = useState('')
   const [importStatus, setImportStatus] = useState('')
+  const {setLoading} = useLoading()
   const {
     data: {
       network: {eid: networkId, netId},
@@ -114,9 +115,14 @@ function ImportHwAccount() {
       )
     } catch (e) {
       // TODO: error message
-      setErrMsg(
-        e?.appCode == 5031 ? t('refreshLater') : 'some thing goes wrong',
-      )
+      Message.error({
+        content:
+          e?.appCode == 5031
+            ? t('refreshLater')
+            : e?.message ?? 'some thing goes wrong',
+        top: '110px',
+        duration: 1,
+      })
     }
     return addresses
   }, [offset])
@@ -137,6 +143,10 @@ function ImportHwAccount() {
     }
     return addressList.map(({address}) => encode(address, netId))
   }, [addressList, netId])
+
+  useEffect(() => {
+    setLoading(loading)
+  }, [loading, setLoading])
 
   useEffect(() => {
     if (addressList?.length) {
@@ -216,11 +226,13 @@ function ImportHwAccount() {
       .then(() => {
         setImportStatus('success')
       })
-      .catch(err => {
+      .catch(e => {
         setImportStatus('')
-        // TODO: error msg
-        console.log('err', err)
-        setErrMsg(err?.message || 'something wrong')
+        Message.error({
+          content: e.message ?? 'some thing goes wrong',
+          top: '110px',
+          duration: 1,
+        })
       })
   }
 
@@ -231,8 +243,12 @@ function ImportHwAccount() {
     return <ImportingResults importStatus={importStatus} />
   }
   return (
-    <div id="import-hw-account" className="flex flex-col h-full w-full">
-      <div className="w-120 rounded-2xl shadow-fluent-3 px-8 pb-6 m-auto">
+    <div
+      id="import-hw-account"
+      className="flex flex-col h-full w-full overflow-auto no-scroll"
+    >
+      <div className="flex-2" />
+      <div className="max-w-120 rounded-2xl shadow-fluent-3 px-8 pb-6 m-auto">
         <TitleNav
           title={t('chooseAddress')}
           hasGoBack={false}
@@ -363,13 +379,7 @@ function ImportHwAccount() {
           {t('next')}
         </Button>
       </div>
-      {/* TODO: error toast style */}
-      <Toast
-        content={errMsg}
-        open={!!errMsg}
-        type="line"
-        onClose={() => setErrMsg('')}
-      />
+      <div className="flex-3" />
     </div>
   )
 }
