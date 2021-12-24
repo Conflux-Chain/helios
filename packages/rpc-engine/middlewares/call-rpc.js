@@ -21,10 +21,10 @@ const RequestLockMethods = [
   'wallet_switchEthereumChain',
   'wallet_addConfluxChain',
   'wallet_addEthereumChain',
-  'cfx_sendTransaction',
-  'personal_sign',
-  'cfx_signTypedData_v4',
-  'eth_signTypedData_v4',
+  // 'cfx_sendTransaction',
+  // 'personal_sign',
+  // 'cfx_signTypedData_v4',
+  // 'eth_signTypedData_v4',
   'cfx_requestAccounts',
   'eth_requestAccounts',
 ]
@@ -51,19 +51,25 @@ export default defMiddleware(
               err.rpcData = req
               throw err
             })
-          if (!isValid) throw req.Err.Unauthorized()
+          if (!isValid) {
+            const err = req.Err.Unauthorized()
+            err.rpcData = req
+            throw err
+          }
         }
 
         // some inpage rpc methods needs the wallet in unlocked state
-        if (
-          !rpcStore[req.method].permissions.locked &&
-          RequestLockMethods.includes(req.method) &&
-          db.getLocked()
-        ) {
-          await req.rpcs.wallet_requestUnlockUI().catch(err => {
+        if (!rpcStore[req.method].permissions.locked && db.getLocked()) {
+          if (RequestLockMethods.includes(req.method)) {
+            await req.rpcs.wallet_requestUnlockUI().catch(err => {
+              err.rpcData = req
+              throw err
+            })
+          } else {
+            const err = req.Err.Unauthorized()
             err.rpcData = req
             throw err
-          })
+          }
         }
         return req
       }),
@@ -71,7 +77,9 @@ export default defMiddleware(
     {
       id: 'callRpc',
       ins: {
-        req: {stream: r => r('/beforeCallRpc/node').subscribe(resolve())},
+        req: {
+          stream: r => r('/beforeCallRpc/node').subscribe(resolve()),
+        },
       },
       fn: map(async ({rpcStore, req}) => ({
         req,

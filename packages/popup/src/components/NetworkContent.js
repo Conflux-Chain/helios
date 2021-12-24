@@ -3,6 +3,7 @@ import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS} from '../constants'
 import {request} from '../utils'
 import {useCfxNetwork, useCurrentAddress} from '../hooks/useApi'
+import useLoading from '../hooks/useLoading'
 import {CustomTag} from './'
 
 const {WALLET_SET_CURRENT_NETWORK} = RPC_METHODS
@@ -25,6 +26,7 @@ function NetworkItem({
   onClose,
   ...props
 }) {
+  const {setLoading} = useLoading({delay: 0})
   const {
     data: {
       network: {eid},
@@ -38,17 +40,29 @@ function NetworkItem({
   const onChangeNetwork = () => {
     onClose && onClose()
     if (eid !== networkId) {
-      request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(() => {
-        mutate()
-        // TODO: i18n
-        Message.warning({
-          content: 'Address has been changed',
-          top: '110px',
-          duration: 1,
+      setLoading(true)
+      request(WALLET_SET_CURRENT_NETWORK, [networkId])
+        .then(() => {
+          setLoading(false)
+          mutate()
+          // TODO: i18n
+          Message.warning({
+            content: 'Address has been changed',
+            top: '110px',
+            duration: 1,
+          })
+          onClickNetworkItem &&
+            onClickNetworkItem({networkId, networkName, icon})
         })
-        onClickNetworkItem && onClickNetworkItem({networkId, networkName, icon})
-        // TODO: need deal with error condition
-      })
+        .catch(error => {
+          // TODO: need deal with error condition
+          Message.error({
+            content: error?.message || 'something goes wrong',
+            top: '110px',
+            duration: 1,
+          })
+          setLoading(false)
+        })
     }
   }
 

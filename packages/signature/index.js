@@ -1,6 +1,5 @@
 import {addHexPrefix, toBuffer} from '@fluent-wallet/utils'
 import {encode as encodeCfxAddress} from '@fluent-wallet/base32-address'
-import {Buffer} from 'buffer'
 import {hashMessage as ethHashPersonalMessage} from '@ethersproject/hash'
 import {
   SigningKey,
@@ -29,13 +28,13 @@ export const hashPersonalMessage = (type, message) =>
 
 export async function personalSign(type, privateKey, message) {
   return type === 'cfx'
-    ? CfxPersonalMessage.sign(addHexPrefix(privateKey), Buffer.from(message))
+    ? CfxPersonalMessage.sign(addHexPrefix(privateKey), message)
     : await new EthWallet(addHexPrefix(privateKey)).signMessage(message)
 }
 
 export function recoverPersonalSignature(type, signature, message, netId) {
   if (type === 'cfx') {
-    const pub = CfxPersonalMessage.recover(signature, Buffer.from(message))
+    const pub = CfxPersonalMessage.recover(signature, message)
     const addr = cfxSDKSign.publicKeyToAddress(toBuffer(pub))
     return encodeCfxAddress(addr, netId)
   }

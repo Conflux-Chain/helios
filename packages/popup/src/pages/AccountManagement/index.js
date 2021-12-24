@@ -99,7 +99,7 @@ function AccountManagement() {
   const validatePassword = value => {
     // TODO: Replace err msg
     const isValid = validatePasswordReg(value)
-    setPasswordErrorMessage(isValid ? '' : 'something wrong')
+    setPasswordErrorMessage(isValid ? '' : 'Invalid password')
     return isValid
   }
 
@@ -138,7 +138,11 @@ function AccountManagement() {
       .catch(e => {
         // TODO: handle error
         setSendingRequestStatus(false)
-        setPasswordErrorMessage(e?.message ?? 'something wrong')
+        setPasswordErrorMessage(
+          e?.message?.indexOf?.('Invalid password') !== -1
+            ? 'Invalid password'
+            : e?.message ?? 'something wrong',
+        )
       })
   }
 
@@ -160,20 +164,26 @@ function AccountManagement() {
   }
 
   return accountGroups ? (
-    <div id="account-management" className="bg-bg pb-8 h-full w-full">
+    <div
+      id="account-management"
+      className="bg-bg pb-8 h-full w-full flex flex-col"
+    >
       <TitleNav title={t('accountManagement')} />
-      {Object.values(accountGroups || {}).map(
-        ({nickname, account, vault, eid}) => (
-          <AccountManagementItem
-            key={eid}
-            accountGroupEid={eid}
-            account={Object.values(account)}
-            nickname={nickname}
-            groupType={vault?.type}
-            onOpenConfirmPassword={onOpenConfirmPassword}
-          />
-        ),
-      )}
+      <div className="flex-1 overflow-y-auto no-scroll">
+        {Object.values(accountGroups || {}).map(
+          ({nickname, account, vault, eid}) => (
+            <AccountManagementItem
+              key={eid}
+              accountGroupEid={eid}
+              account={Object.values(account)}
+              nickname={nickname}
+              groupType={vault?.type}
+              onOpenConfirmPassword={onOpenConfirmPassword}
+            />
+          ),
+        )}
+      </div>
+
       <ConfirmPassword
         open={openPasswordStatus}
         onCancel={onCancelPassword}

@@ -72,11 +72,13 @@ function ImportPrivateKey() {
                 setLoading(false)
                 history.push(HOME)
               })
-              .catch(() => {
+              .catch(error => {
                 setLoading(false)
+                setErrorMessage(error?.message?.split?.('\n')?.[0] ?? error)
               })
           })
         } else {
+          setErrorMessage(t('invalidWord'))
           setLoading(false)
         }
       })
@@ -85,7 +87,7 @@ function ImportPrivateKey() {
         if (typeof error?.data?.duplicateAccountGroupId === 'number') {
           return setErrorMessage(t('duplicatePkError'))
         }
-        setErrorMessage(error?.message?.split('\n')[0] ?? error)
+        setErrorMessage(error?.message?.split?.('\n')?.[0] ?? error)
       })
   }
 

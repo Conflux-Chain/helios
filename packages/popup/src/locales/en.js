@@ -37,6 +37,7 @@ const en = {
     seedImportPlaceholder:
       'The Seed Phrase consists of words separated by spaces. Separate each word entered by a space.',
     duplicateSeedError: 'This seed phrase already in your wallet.',
+    invalidWord: 'Invalid Word',
     // Import account with pk
     pKeyImport: 'Import Private Key',
     pKeyGroupName: 'Account name',
