@@ -1,6 +1,5 @@
 import {optParam} from '@fluent-wallet/spec'
 import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
-import {TLRUCache} from '@thi.ng/cache'
 
 export const NAME = 'cfx_gasPrice'
 
@@ -18,28 +17,36 @@ export const cache = {
   key: () => NAME,
 }
 
-const Cache = new TLRUCache(null, {ttl: 1000 * 60 * 60 * 2})
+async function gasStationFastest(gasPrice) {
+  gasPrice = gasPrice || '0x0'
+  if (typeof window !== undefined && typeof window.fetch === 'function') {
+    const res = await fetch('https://main.confluxrpc.com/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'gasstation_price',
+        params: [],
+      }),
+    }).then(res => res.json())
+    if (res && res.result) {
+      if (res.result.fastest > gasPrice) {
+        gasPrice = res.result.fastest
+      }
+    } else {
+      gasPrice = '0x3b9aca00'
+    }
+  } else {
+    gasPrice = '0x3b9aca00'
+  }
+
+  return gasPrice
+}
 
 export const main = async ({network, f}) => {
   if (network.name === CFX_MAINNET_NAME) {
-    let c = Cache.get('default gas price')
-    if (c) return c
-    if (typeof window !== undefined && typeof window.fetch === 'function') {
-      try {
-        c = await window
-          .fetch(
-            'https://cdn.jsdelivr.net/gh/conflux-fans/fluent-default-config/config.json',
-          )
-          .then(res => res.json())
-          .then(res => res.gasPrice)
-        if (Number.isInteger(c)) c = `0x${c.toString(16)}`
-      } catch (err) {} // eslint-disable-line no-empty
-
-      if (c) {
-        Cache.set('default gas price', c)
-        return c
-      }
-    }
+    return await gasStationFastest()
   }
   return await f()
 }

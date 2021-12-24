@@ -19,6 +19,8 @@ strong {
 #root {
   display: flex;
   flex-direction: column;
+
+  @apply min-h-150 min-w-93;
 }
 
 #root,
