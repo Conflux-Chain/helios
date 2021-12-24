@@ -25,7 +25,7 @@ const AddressDetail = ({
     },
   } = useCurrentAddress()
   const type = useAddressType(toAddress)
-  const isContract = type === 'contract'
+  const isContract = type === 'contract' || type === 'builtin'
 
   return (
     <div className="flex items-start w-full" id="addressDetailContainer">

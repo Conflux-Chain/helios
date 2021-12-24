@@ -229,8 +229,9 @@ export const useDecodeData = ({to, data} = {}) => {
     },
   } = useCurrentAddress()
 
-  const isContract = type === 'contract'
-  const crc20Token = useValid20Token(isContract ? to : '')
+  const isContract = type === 'contract' || type === 'builtin'
+  const isOutContract = type === 'contract'
+  const crc20Token = useValid20Token(isOutContract ? to : '')
 
   useEffect(() => {
     if (data && isContract) {
