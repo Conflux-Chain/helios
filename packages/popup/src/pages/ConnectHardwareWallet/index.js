@@ -59,7 +59,7 @@ function WalletInner() {
     setConnecting(false)
     setIsAppOpen(openRet)
     setIsAuthenticated(authRet)
-    !authRet && setShowReconnectStatus(true)
+    setShowReconnectStatus(!authRet)
   }
   return (
     <div>
