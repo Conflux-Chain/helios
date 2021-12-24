@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
+import Alert from '@fluent-wallet/component-alert'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
   formatDecimalToHex,
@@ -75,7 +76,9 @@ function ConfirmTransition() {
     },
   } = useCurrentAddress()
   const isHwAccount = type === 'hw'
-  const isHwError = authStatus === LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
+  const isHwUnAuth = authStatus === LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
+  const isHwOpenAlert =
+    authStatus !== LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
   const nativeToken = ticker || {}
   const tx = useDappParams()
   const isDapp = pendingAuthReq?.length > 0
@@ -272,7 +275,7 @@ function ConfirmTransition() {
       })
   }
 
-  const confirmDisabled = !!balanceError || estimateRst.loading || isHwError
+  const confirmDisabled = !!balanceError || estimateRst.loading || isHwUnAuth
 
   return (
     <div className="flex flex-col h-full w-full relative">
@@ -303,7 +306,15 @@ function ConfirmTransition() {
               {balanceError}
             </span>
           )}
-          <HwAlert open={isHwError} className="mt-3" />
+          <HwAlert open={isHwUnAuth} className="mt-3" />
+          <Alert
+            open={isHwOpenAlert}
+            className="mt-3"
+            type="warning"
+            closable={false}
+            width="w-full"
+            content={t('hwOpenApp')}
+          />
         </div>
         <div className="flex flex-col items-center">
           {isDapp && params.data && (

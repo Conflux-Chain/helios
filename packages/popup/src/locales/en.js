@@ -182,6 +182,7 @@ const en = {
     ledgerIsNotConnected: 'Leger is not connected',
     openExpandView: 'Open Fluent Expand View to Connect',
     balance: 'balance',
+    hwOpenApp: 'Before clicking confirm, make sure the Conflux App is open.',
     // confirm hw Modal
     waitingForSign: 'Waiting for Sign',
     rejected: 'Rejected',
