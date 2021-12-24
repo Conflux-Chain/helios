@@ -1,0 +1,98 @@
+.loading-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 32px;
+  background-color: rgba(119 137 211 / 20%);
+  opacity: 0.3;
+  transform: scale3d(1, 1, 1);
+  transition: all 450ms ease;
+}
+
+.loading-page-inner {
+  font-size: 64px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 1em;
+  height: 1em;
+  transform: translateX(0.075em);
+}
+
+.loading-page-inner > svg {
+  display: block;
+  width: 0.675em;
+  height: 0.675em;
+  margin-left: 0.1em;
+  animation-name: loading-page-jump;
+  animation-duration: 925ms;
+  animation-iteration-count: infinite;
+}
+
+.loading-page-line {
+  width: 0.3em;
+  height: 0.125em;
+  border-radius: 0.1em;
+  background-color: #6fc5b1;
+  animation-name: loading-page-linemove;
+  animation-duration: 925ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  transform-origin: 0 50%;
+}
+
+@keyframes loading-page-jump {
+  0% {
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: ease-in;
+  }
+
+  20% {
+    transform: translate3d(0, 0.1em, 0);
+    animation-timing-function: ease;
+  }
+
+  40% {
+    transform: translate3d(0, -0.075em, 0);
+    animation-timing-function: ease;
+  }
+
+  60% {
+    transform: translate3d(0, 0.28em, 0);
+    animation-timing-function: ease-out;
+  }
+
+  80% {
+    transform: translate3d(0, -0.1em, 0);
+    animation-timing-function: ease;
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes loading-page-linemove {
+  0% {
+    transform: translate3d(0, 0, 0) scale3d(0.3, 1, 1);
+  }
+
+  15% {
+    transform: translate3d(0.1em, 0, 0) scale3d(0.8, 1, 1);
+  }
+
+  40% {
+    transform: translate3d(0.25em, 0, 0) scale3d(1.15, 1, 1);
+  }
+
+  72% {
+    transform: translate3d(0.7em, 0, 0) scale3d(0.4, 1, 1);
+  }
+
+  100% {
+    transform: translate3d(0.9em, 0, 0) scale3d(0.1, 0.1, 1);
+  }
+}
