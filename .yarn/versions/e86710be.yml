@@ -4,6 +4,7 @@ releases:
   "@fluent-wallet/rpc-engine": patch
   "@fluent-wallet/sentry": patch
   "@fluent-wallet/signature": patch
+  "@fluent-wallet/wallet_add-pending-user-auth-request": patch
   helios-inpage: patch
 
 declined:
