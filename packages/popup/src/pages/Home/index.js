@@ -50,17 +50,12 @@ function Home() {
 
   return (
     <div
-      className="flex flex-col bg-bg h-full w-full relative overflow-hidden"
+      className="flex flex-col bg-bg h-full w-full relative overflow-hidden  bg-homepage-background bg-no-repeat"
       id="homeContainer"
     >
       <button onClick={() => open(location.href)} className="z-10 text-white">
         open
       </button>
-      <img
-        src="/images/home-bg.svg"
-        alt="home"
-        className="absolute top-0 z-0"
-      />
       <HomeNav
         onClickMenu={() => {
           setSettingStatus(true)

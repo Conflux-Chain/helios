@@ -8,23 +8,38 @@ const {SET_PASSWORD} = ROUTES
 const Welcome = () => {
   const {t} = useTranslation()
   const history = useHistory()
+
   return (
-    <div className="bg-secondary h-full w-full" id="welcomeContainer">
+    <div
+      className="bg-secondary h-full w-full flex flex-col bg-welcome-background"
+      id="unlockContainer"
+    >
       <LanguageNav showLan={false} />
-      <div className="h-13" />
-      <header className="mt-8">
-        <HomeTitle title={t('hello')} subTitle={t('welcome')} />
+      <header className="flex flex-col items-center pb-7 mt-7">
+        <img
+          src="/images/logo-vertical.svg"
+          alt="logo"
+          className="mx-auto w-50 h-40"
+        />
+        <HomeTitle
+          title={t('welcomeToConflux')}
+          containerStyle="text-center mt-[70px]"
+        />
       </header>
-      <main>
-        <Button
-          id="welcomeBtn"
-          className="mt-80 w-70 mx-auto"
-          onClick={() => {
-            history.push(SET_PASSWORD)
-          }}
-        >
-          {t('create')}
-        </Button>
+      <main className="px-6 absolute left-0 right-0 bottom-0">
+        <div className="flex flex-col h-full justify-between">
+          <section className="mb-15">
+            <Button
+              id="welcomeBtn"
+              className="mt-80 w-70 mx-auto"
+              onClick={() => {
+                history.push(SET_PASSWORD)
+              }}
+            >
+              {t('create')}
+            </Button>
+          </section>
+        </div>
       </main>
     </div>
   )

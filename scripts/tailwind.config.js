@@ -192,6 +192,8 @@ module.exports = {
         'guard-banner': "url('/images/guard-banner.svg')",
         'identity-panel': "url('/images/identity-panel-bg.svg')",
         'add-hw-account': "url('/images/adding-hw-account.svg')",
+        'welcome-background': "url('/images/bg.svg')",
+        'homepage-background': "url('/images/bg-homepage.svg')",
       },
     },
   },
