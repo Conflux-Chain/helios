@@ -83,7 +83,9 @@ AddressDetail.propTypes = {
 
 const useAccountNameByAddress = address => {
   const {
-    network: {eid: networkId},
+    data: {
+      network: {eid: networkId},
+    },
   } = useCurrentAddress()
   const {data} = useRPC(
     [QUERY_ADDRESS, 'useAccountNameByAddress', address, networkId],

@@ -4,7 +4,7 @@ import {
   formatBalance,
   roundBalance,
   COMMON_DECIMALS,
-  Big,
+  convertDataToValue,
 } from '@fluent-wallet/data-format'
 import {isHexPrefixed} from '@fluent-wallet/utils'
 import Tooltip from '@fluent-wallet/component-tooltip'
@@ -21,20 +21,17 @@ function DisplayBalance({
   id,
 }) {
   let displayBalance
-  let showTooltip
+  let displayRealBalance
   if (balance) {
     if (isHexPrefixed(balance)) {
       displayBalance = formatBalance(balance, decimals)
+      displayRealBalance = convertDataToValue(balance, decimals)
     } else {
-      const bigBalance = new Big(balance)
-      showTooltip = bigBalance.lt(Big(1e-6)) && !bigBalance.eq(0)
-      if (showTooltip) {
-        displayBalance = '0.000000...'
-      } else {
-        displayBalance = roundBalance(balance)
-      }
+      displayBalance = roundBalance(balance)
+      displayRealBalance = balance
     }
   }
+  const showTooltip = displayBalance === '<0.000001'
   const balanceRef = useRef()
   const hiddenRef = useRef()
   useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance, initialFontSize)
@@ -43,10 +40,17 @@ function DisplayBalance({
       id={id}
       className={`text-gray-80 font-mono font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis relative ${maxWidthStyle} ${className}`}
     >
-      <Tooltip content={`${balance} ${symbol}`}>
-        <span ref={balanceRef}>{displayBalance}</span>
-        {symbol && ` ${symbol}`}
-      </Tooltip>
+      {showTooltip ? (
+        <Tooltip content={`${displayRealBalance} ${symbol}`}>
+          <span ref={balanceRef}>{displayBalance}</span>
+          {symbol && ` ${symbol}`}
+        </Tooltip>
+      ) : (
+        <>
+          <span ref={balanceRef}>{displayBalance}</span>
+          {symbol && ` ${symbol}`}
+        </>
+      )}
       <span ref={hiddenRef} className="invisible absolute left-0">
         {displayBalance}
       </span>

@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import PropTypes from 'prop-types'
-import ReactDropdown from 'rc-dropdown'
+import RcDropdown from 'rc-dropdown'
 import 'rc-dropdown/assets/index.css'
 import {DownOutlined} from '@fluent-wallet/component-icons'
-
-const RcDropdown = ReactDropdown?.default || ReactDropdown
 function Dropdown({overlay, trigger, disabled, placement, children, ...props}) {
   const renderOverlay = () => {
     // rc-dropdown already can process the function of overlay, but we have check logic here.

@@ -1,71 +1,32 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ReactTooltip from 'rc-tooltip'
-import useMState from 'rc-util/lib/hooks/useMergedState'
+import RcTooltip from 'rc-tooltip'
+import useMergedState from 'rc-util/lib/hooks/useMergedState'
 import classNames from 'classnames'
 import getPlacements from './Placements'
 import './index.css'
-const useMergedState = useMState.default
-const RcTooltip = ReactTooltip.default
-
-const splitObject = (obj, keys) => {
-  const picked = {}
-  const omitted = {...obj}
-  keys.forEach(key => {
-    if (obj && key in obj) {
-      picked[key] = obj[key]
-      delete omitted[key]
-    }
-  })
-  return {picked, omitted}
-}
 
 // Fix Tooltip won't hide at disabled button
 // mouse events don't trigger at disabled button in Chrome
 // https://github.com/react-component/tooltip/issues/18
-function getDisabledCompatibleChildren(element, prefixCls) {
-  const elementType = element.type
-  if (
-    (elementType.__ANT_BUTTON === true ||
-      elementType.__ANT_SWITCH === true ||
-      elementType.__ANT_CHECKBOX === true ||
-      element.type === 'button') &&
-    element.props.disabled
-  ) {
-    // Pick some layout related style properties up to span
-    // Prevent layout bugs like https://github.com/ant-design/ant-design/issues/5254
-    const {picked, omitted} = splitObject(element.props.style, [
-      'position',
-      'left',
-      'right',
-      'top',
-      'bottom',
-      'float',
-      'display',
-      'zIndex',
-    ])
-    const spanStyle = {
-      display: 'inline-block', // default inline-block is important
-      ...picked,
-      cursor: 'not-allowed',
-      width: element.props.block ? '100%' : null,
-    }
-    const buttonStyle = {
-      ...omitted,
-      pointerEvents: 'none',
-    }
+function getDisabledCompatibleChildren(element) {
+  if (element.type === 'button' && element.props.disabled) {
+    // reserve display style for <Button style={{ display: 'block '}}></Button>
+    // Note:
+    //   If people override ant-btn's style.display by css,
+    //   it will be affected cause we reset it to 'inline-block'
+    const displayStyle =
+      element.props.style && element.props.style.display
+        ? element.props.style.display
+        : 'inline-block'
     const child = React.cloneElement(element, {
-      style: buttonStyle,
-      className: null,
+      style: {
+        ...element.props.style,
+        pointerEvents: 'none',
+      },
     })
     return (
-      <span
-        style={spanStyle}
-        className={classNames(
-          element.props.className,
-          `${prefixCls}-disabled-compatible-wrapper`,
-        )}
-      >
+      <span style={{display: displayStyle, cursor: 'not-allowed'}}>
         {child}
       </span>
     )
@@ -167,8 +128,7 @@ const Tooltip = React.forwardRef((props, ref) => {
   }
 
   const child = getDisabledCompatibleChildren(
-    typeof children !== 'string' ? children : <span>{children}</span>,
-    prefixCls,
+    React.isValidElement(children) ? children : <span>{children}</span>,
   )
   const childProps = child.props
   const childCls = classNames(childProps.className, {
