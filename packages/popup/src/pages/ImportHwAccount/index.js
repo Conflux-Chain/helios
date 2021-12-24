@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect, useMemo} from 'react'
-import {useHistory} from 'react-router-dom'
 import {useAsync} from 'react-use'
 import {useSWRConfig} from 'swr'
 import {isUndefined} from '@fluent-wallet/checks'
@@ -21,7 +20,7 @@ import {DEFAULT_CFX_HDPATH} from '@fluent-wallet/consts'
 import {encode} from '@fluent-wallet/base32-address'
 import {Conflux} from '@fluent-wallet/ledger'
 import {TitleNav, CompWithLabel, Avatar, DisplayBalance} from '../../components'
-import {RPC_METHODS, ROUTES, HARDWARE_ACCOUNT_PAGE_LIMIT} from '../../constants'
+import {RPC_METHODS, HARDWARE_ACCOUNT_PAGE_LIMIT} from '../../constants'
 import {
   useCurrentAddress,
   useBalance,
@@ -31,7 +30,6 @@ import useLoading from '../../hooks/useLoading'
 import useImportHWParams from './useImportHWParams'
 import {request} from '../../utils'
 
-const {HOME} = ROUTES
 const {
   WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT,
   WALLETDB_REFETCH_BALANCE,
@@ -41,13 +39,13 @@ const cfx = new Conflux()
 
 function ImportingResults({importStatus}) {
   const {t} = useTranslation()
-  const history = useHistory()
   const {mutate} = useSWRConfig()
 
   const onClickDone = () => {
     mutate([WALLETDB_REFETCH_BALANCE])
     mutate([WALLETDB_ACCOUNT_LIST_ASSETS, 'all'])
-    history.push(HOME)
+    window.open(' ', '_self')
+    window.close()
   }
   return (
     <div
