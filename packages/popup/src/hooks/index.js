@@ -266,9 +266,10 @@ export const useDecodeDisplay = ({
       decodeData?.args?.[0] === address) ||
     (isDapp && isSendNativeToken)
 
+  displayToken = useSingleTokenInfoWithNativeTokenSupport(
+    isDapp ? null : sendTokenId,
+  )
   if (!isDapp) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    displayToken = useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
     displayFromAddress = address
     displayToAddress = toAddress
     displayValue = sendAmount
