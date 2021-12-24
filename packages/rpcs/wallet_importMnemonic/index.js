@@ -38,5 +38,5 @@ export const permissions = {
   external: ['popup'],
 }
 
-export const main = async ({params, rpcs: {wallet_addVault}}) =>
-  await wallet_addVault(params)
+export const main = ({params, rpcs: {wallet_addVault}}) =>
+  wallet_addVault(params)

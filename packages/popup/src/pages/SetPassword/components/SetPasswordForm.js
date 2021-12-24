@@ -25,8 +25,10 @@ function SetPasswordForm() {
         value !== confirmPassword ? '输入的密码不一致' : '',
       )
       return setErrorMessage('')
+    } else {
+      setConfirmErrorMessage('')
+      setErrorMessage('something wrong')
     }
-    setErrorMessage('something wrong')
   }
   // TODO: Replace err msg
   const validateConfirmPassword = value => {

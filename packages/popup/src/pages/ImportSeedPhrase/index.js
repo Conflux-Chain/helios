@@ -10,6 +10,8 @@ import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {useHdAccountGroup} from '../../hooks/useApi'
 import {useSWRConfig} from 'swr'
+import useLoading from '../../hooks/useLoading'
+
 const {ACCOUNT_GROUP_TYPE, WALLET_VALIDATE_MNEMONIC, WALLET_IMPORT_MNEMONIC} =
   RPC_METHODS
 const {HOME} = ROUTES
@@ -23,9 +25,8 @@ function ImportSeedPhrase() {
   const [mnemonic, setMnemonic] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
-  const [creatingAccount, setCreatingAccount] = useState(false)
   const {createdPassword, setCreatedPassword} = useGlobalStore()
-
+  const {setLoading} = useLoading()
   const hdGroup = useHdAccountGroup()
 
   useCreatedPasswordGuard()
@@ -46,42 +47,46 @@ function ImportSeedPhrase() {
     if (!mnemonicParam) {
       return setErrorMessage('Required')
     }
-    if (!creatingAccount) {
-      setCreatingAccount(true)
-      request(WALLET_VALIDATE_MNEMONIC, {
-        mnemonic: mnemonicParam,
-      })
-        .then(result => {
-          if (result?.valid) {
-            let params = {
-              nickname: name || accountNamePlaceholder,
-              mnemonic: mnemonicParam,
-            }
-            if (createdPassword) {
-              params['password'] = createdPassword
-            }
-            return request(WALLET_IMPORT_MNEMONIC, params).then(() => {
-              updateAddedNewAccount(
-                mutate,
-                !!createdPassword,
-                ACCOUNT_GROUP_TYPE.HD,
-              ).then(() => {
-                setCreatingAccount(false)
+    setLoading(true)
+    request(WALLET_VALIDATE_MNEMONIC, {
+      mnemonic: mnemonicParam,
+    })
+      .then(result => {
+        if (result?.valid) {
+          let params = {
+            nickname: name || accountNamePlaceholder,
+            mnemonic: mnemonicParam,
+          }
+          if (createdPassword) {
+            params['password'] = createdPassword
+          }
+          return request(WALLET_IMPORT_MNEMONIC, params).then(() => {
+            updateAddedNewAccount(
+              mutate,
+              !!createdPassword,
+              ACCOUNT_GROUP_TYPE.HD,
+            )
+              .then(() => {
                 createdPassword && setCreatedPassword('')
+                setLoading(false)
                 history.push(HOME)
               })
-            })
-          }
-        })
-        .catch(error => {
-          setCreatingAccount(false)
-          setErrorMessage(
-            typeof error?.data?.duplicateAccountGroupId === 'number'
-              ? t('duplicateSeedError')
-              : error?.message.split('\n')[0] ?? error,
-          )
-        })
-    }
+              .catch(() => {
+                setLoading(false)
+              })
+          })
+        } else {
+          setLoading(false)
+        }
+      })
+      .catch(error => {
+        setLoading(false)
+        setErrorMessage(
+          typeof error?.data?.duplicateAccountGroupId === 'number'
+            ? t('duplicateSeedError')
+            : error?.message.split('\n')[0] ?? error,
+        )
+      })
   }
 
   return (

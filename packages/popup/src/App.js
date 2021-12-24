@@ -193,13 +193,14 @@ const routes = [
   },
 ]
 
-const MyRoutes = withRouter(({lockedData, zeroGroup, location, history}) => {
-  // 正常情况下路由的前进后退应用forward / back的左右滑转场。
-  // 完全切换至不相关的内容时: 如点开钱包的首屏；切换到锁定页。这种地方应采用另外的转场动画。
+const AppRoutes = withRouter(({lockedData, zeroGroup, location, history}) => {
+  // The normal case of routing forward and backward applies a forward/backward sliding field to the left and right.
+  // When switching completely to unrelated content: e.g. tap on the first screen of the wallet; switch to a locked page. Such places should use another transition animation.
   const fullSwitch = location.pathname === WALLET_UNLOCK || history.length === 1
 
   return (
     <div
+      id="router"
       className={`m-auto light relative overflow-hidden ${
         FULL_WINDOW_ROUTES.includes(location.pathname)
           ? 'min-h-screen w-full'
@@ -207,7 +208,7 @@ const MyRoutes = withRouter(({lockedData, zeroGroup, location, history}) => {
       }`}
     >
       <TransitionGroup
-        className="h-full"
+        component={null}
         childFactory={child =>
           cloneElement(child, {
             classNames: `router router-${
@@ -266,7 +267,7 @@ function App() {
         onError={error => setFatalError(error)}
       >
         <Suspense fallback={<PageLoading />}>
-          <MyRoutes lockedData={lockedData} zeroGroup={zeroGroup} />
+          <AppRoutes lockedData={lockedData} zeroGroup={zeroGroup} />
         </Suspense>
       </ErrorBoundary>
     </Router>
