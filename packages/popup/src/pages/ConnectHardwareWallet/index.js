@@ -31,7 +31,6 @@ function WalletInner() {
     ])
     return {isAuthenticated, isAppOpen}
   }, [])
-
   useEffect(() => {
     if (value) {
       setIsAuthenticated(value.isAuthenticated)
@@ -41,16 +40,16 @@ function WalletInner() {
   }, [Boolean(value)])
 
   useEffect(() => {
-    if (isAuthenticated && isAppOpen) {
+    if (isAuthenticated && isAppOpen && history && query) {
       if (query.get('action') === 'close') {
         window.open(' ', '_self')
         window.close()
         return
       }
-
       history.push(IMPORT_HW_ACCOUNT)
     }
-  }, [isAuthenticated, isAppOpen, query, history])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, isAppOpen])
 
   const onConnectHwWallet = async () => {
     setConnecting(true)
@@ -62,7 +61,7 @@ function WalletInner() {
     setShowReconnectStatus(!authRet)
   }
   return (
-    <div>
+    <div className="overflow-auto">
       {loading ? (
         <SearchingWallet />
       ) : connecting ? (

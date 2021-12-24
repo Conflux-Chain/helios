@@ -71,11 +71,13 @@ function ImportSeedPhrase() {
                 setLoading(false)
                 history.push(HOME)
               })
-              .catch(() => {
+              .catch(error => {
                 setLoading(false)
+                setErrorMessage(error?.message?.split?.('\n')?.[0] ?? error)
               })
           })
         } else {
+          setErrorMessage(t('invalidWord'))
           setLoading(false)
         }
       })
@@ -84,7 +86,7 @@ function ImportSeedPhrase() {
         setErrorMessage(
           typeof error?.data?.duplicateAccountGroupId === 'number'
             ? t('duplicateSeedError')
-            : error?.message.split('\n')[0] ?? error,
+            : error?.message?.split?.('\n')?.[0] ?? error,
         )
       })
   }

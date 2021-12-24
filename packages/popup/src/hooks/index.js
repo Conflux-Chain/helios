@@ -15,7 +15,6 @@ import {useHistory, useLocation} from 'react-router-dom'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
   useSingleTokenInfoWithNativeTokenSupport,
-  useIsLocked,
   useIsZeroGroup,
   useCurrentAddress,
   useNetworkTypeIsCfx,
@@ -31,13 +30,12 @@ export const useCreatedPasswordGuard = () => {
   const {createdPassword} = useGlobalStore()
   const history = useHistory()
   const zeroGroup = useIsZeroGroup()
-  const lockedData = useIsLocked()
 
   useEffect(() => {
-    if ((zeroGroup && !createdPassword) || (!zeroGroup && lockedData)) {
+    if (zeroGroup && !createdPassword) {
       history.push(HOME)
     }
-  }, [createdPassword, history, zeroGroup, lockedData])
+  }, [createdPassword, history, zeroGroup])
 }
 
 export const useQuery = () => {
