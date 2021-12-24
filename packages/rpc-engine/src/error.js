@@ -17,7 +17,7 @@ export const rpcErrorHandlerFactory = ({
   sentryCapture = x => x,
 } = {}) => {
   return function (err) {
-    if (!err || !err.message || !err.rpcData) {
+    if (!err || !err.message || !err.rpcData || !err.rpcData._c) {
       sentryCapture(err)
       if (!isProd)
         console.error(
