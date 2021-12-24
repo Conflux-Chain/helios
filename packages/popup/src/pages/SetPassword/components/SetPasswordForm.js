@@ -18,25 +18,23 @@ function SetPasswordForm() {
   const [errorMessage, setErrorMessage] = useState('')
   const [confirmErrorMessage, setConfirmErrorMessage] = useState('')
 
-  // TODO: Replace err msg
   const validatePassword = value => {
     if (validatePasswordReg(value)) {
       setConfirmErrorMessage(
-        value !== confirmPassword ? '输入的密码不一致' : '',
+        value !== confirmPassword ? t('invalidConfirmPassword') : '',
       )
       return setErrorMessage('')
     } else {
       setConfirmErrorMessage('')
-      setErrorMessage('something wrong')
+      setErrorMessage(t('invalidPassword'))
     }
   }
-  // TODO: Replace err msg
   const validateConfirmPassword = value => {
     if (validatePasswordReg(password)) {
       if (password === value) {
         return setConfirmErrorMessage('')
       }
-      setConfirmErrorMessage('输入的密码不一致')
+      setConfirmErrorMessage(t('invalidConfirmPassword'))
     }
   }
 

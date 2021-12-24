@@ -20,8 +20,7 @@ const UnlockPage = () => {
   const {setLoading} = useLoading()
 
   const validatePassword = value => {
-    // TODO: Replace err msg
-    setErrorMessage(validatePasswordReg(value) ? '' : 'something wrong')
+    setErrorMessage(validatePasswordReg(value) ? '' : t('unlockPasswordError'))
   }
   const onUnlock = () => {
     validatePassword(password)

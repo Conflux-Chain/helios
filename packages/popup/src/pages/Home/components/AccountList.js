@@ -23,6 +23,7 @@ function AccountItem({
   groupType = '',
   decimals,
 }) {
+  const {t} = useTranslation()
   const {
     data: {
       account: {eid: currentAccountId},
@@ -34,9 +35,8 @@ function AccountItem({
     if (currentAccountId !== accountId) {
       request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(() => {
         mutate()
-        // TODO: i18n
         Message.warning({
-          content: 'Address has been changed',
+          content: t('addressHasBeenChanged'),
           top: '110px',
           duration: 1,
         })

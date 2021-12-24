@@ -4,6 +4,7 @@ import {RPC_METHODS} from '../constants'
 import {request} from '../utils'
 import {useCfxNetwork, useCurrentAddress} from '../hooks/useApi'
 import {CustomTag} from './'
+import {useTranslation} from 'react-i18next'
 
 const {WALLET_SET_CURRENT_NETWORK} = RPC_METHODS
 const networkTypeColorObj = {
@@ -25,6 +26,7 @@ function NetworkItem({
   onClose,
   ...props
 }) {
+  const {t} = useTranslation()
   const {
     data: {
       network: {eid},
@@ -40,9 +42,8 @@ function NetworkItem({
     if (eid !== networkId) {
       request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(() => {
         mutate()
-        // TODO: i18n
         Message.warning({
-          content: 'Address has been changed',
+          content: t('addressHasBeenChanged'),
           top: '110px',
           duration: 1,
         })

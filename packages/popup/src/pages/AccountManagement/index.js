@@ -97,9 +97,8 @@ function AccountManagement() {
     accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
   })
   const validatePassword = value => {
-    // TODO: Replace err msg
     const isValid = validatePasswordReg(value)
-    setPasswordErrorMessage(isValid ? '' : 'something wrong')
+    setPasswordErrorMessage(isValid ? '' : t('invalidPassword'))
     return isValid
   }
 
@@ -136,9 +135,8 @@ function AccountManagement() {
         history.push(EXPORT_PRIVATEKEY)
       })
       .catch(e => {
-        // TODO: handle error
         setSendingRequestStatus(false)
-        setPasswordErrorMessage(e?.message ?? 'something wrong')
+        setPasswordErrorMessage(e?.message ? t('invalidPasswordFromRpc') : '')
       })
   }
 

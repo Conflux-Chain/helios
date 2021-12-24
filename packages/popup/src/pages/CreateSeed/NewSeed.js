@@ -20,7 +20,8 @@ function NewSeed() {
   const [groupNamePlaceholder, setGroupNamePlaceholder] = useState('')
   const hdGroup = useHdAccountGroup()
   useEffect(() => {
-    setGroupNamePlaceholder(`Seed-${hdGroup.length + 1}`)
+    setGroupNamePlaceholder(`${t('seedPrefix')}${hdGroup.length + 1}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hdGroup])
 
   return (

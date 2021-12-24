@@ -124,10 +124,9 @@ function SendTransaction() {
     setToAddress(address)
     if (!validateAddress(address, networkTypeIsCfx, netId)) {
       if (networkTypeIsCfx) {
-        // TODO i18n
-        setAddressError('Please enter validate cfx address')
+        setAddressError(t('invalidAddress'))
       } else {
-        setAddressError('Please enter validate hex address')
+        setAddressError(t('invalidhexAddress'))
       }
     } else {
       setAddressError('')
