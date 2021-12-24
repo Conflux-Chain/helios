@@ -53,9 +53,12 @@ function Home() {
       className="flex flex-col bg-bg h-full w-full relative overflow-hidden  bg-homepage-background bg-no-repeat"
       id="homeContainer"
     >
-      <button onClick={() => open(location.href)} className="z-10 text-white">
-        open
-      </button>
+      {/* only for dev env*/}
+      {import.meta.env.NODE_ENV === 'development' ? (
+        <button onClick={() => open(location.href)} className="z-10 text-white">
+          open
+        </button>
+      ) : null}
       <HomeNav
         onClickMenu={() => {
           setSettingStatus(true)
