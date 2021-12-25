@@ -93,7 +93,9 @@ const useAccountNameByAddress = address => {
     },
   } = useCurrentAddress()
   const {data} = useRPC(
-    [QUERY_ADDRESS, 'useAccountNameByAddress', address, networkId],
+    address && networkId
+      ? [QUERY_ADDRESS, 'useAccountNameByAddress', address, networkId]
+      : null,
     {
       value: address,
       networkId,
