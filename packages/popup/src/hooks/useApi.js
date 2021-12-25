@@ -167,8 +167,8 @@ export const useIsLocked = () => {
   return lockedData
 }
 
-export const useIsZeroGroup = () => {
-  const {data: zeroGroup} = useRPC([WALLET_ZERO_ACCOUNT_GROUP])
+export const useIsZeroGroup = (dep = '') => {
+  const {data: zeroGroup} = useRPC([WALLET_ZERO_ACCOUNT_GROUP, dep])
   return zeroGroup
 }
 

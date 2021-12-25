@@ -16,6 +16,7 @@ import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
   useSingleTokenInfoWithNativeTokenSupport,
   useIsZeroGroup,
+  useIsLocked,
   useCurrentAddress,
   useNetworkTypeIsCfx,
   useAddressType,
@@ -342,4 +343,11 @@ export const useViewData = ({data, to} = {}, isApproveToken) => {
     }
   }, [customAllowance, data, allowance, spender, isApproveToken])
   return viewData
+}
+
+export const useAccountStatus = () => {
+  const lockedData = useIsLocked()
+  const zeroGroup = useIsZeroGroup('initStatus')
+
+  return {lockedData, zeroGroup: lockedData === false ? false : zeroGroup}
 }
