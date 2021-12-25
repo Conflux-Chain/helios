@@ -120,6 +120,9 @@ export const convertValueToData = (numOrStr, decimals) => {
 export const roundBalance = (balance, digit = 6) => {
   if (!isValidNumber(balance)) return balance
   const bNum = new Big(balance)
+  if (bNum.lt(Big(1e-6)) && !bNum.eq(0)) {
+    return '<0.000001'
+  }
   return toThousands(bNum.round(digit).toString(10))
 }
 
