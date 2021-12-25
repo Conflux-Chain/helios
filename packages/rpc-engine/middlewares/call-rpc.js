@@ -38,6 +38,7 @@ export default defMiddleware(
       },
       fn: map(async ({rpcStore, req, db}) => {
         const method = rpcStore[req.method]
+        // validate dapp permissions to call this rpc
         if (
           req._inpage &&
           method.permissions.scope &&
@@ -58,19 +59,31 @@ export default defMiddleware(
           }
         }
 
-        // some inpage rpc methods needs the wallet in unlocked state
-        if (!rpcStore[req.method].permissions.locked && db.getLocked()) {
+        // guard inpage methods when wallet locked
+        if (
+          // req is from inpage
+          req._inpage &&
+          // req allowed to be called from inpage
+          rpcStore[req.method].permissions.external.includes('inpage') &&
+          // wallet is locked
+          db.getLocked() &&
+          // method is unlocked only method
+          !rpcStore[req.method].permissions.locked
+        ) {
+          // allow some inpage rpc methods to request the unlock ui
           if (RequestLockMethods.includes(req.method)) {
             await req.rpcs.wallet_requestUnlockUI().catch(err => {
               err.rpcData = req
               throw err
             })
           } else {
+            // reject others
             const err = req.Err.Unauthorized()
             err.rpcData = req
             throw err
           }
         }
+
         return req
       }),
     },
