@@ -9,10 +9,11 @@ const SetPassword = () => {
 
   return (
     <div
-      className="bg-secondary h-full w-full flex flex-col"
+      className="bg-secondary h-full w-full flex flex-col bg-welcome-background"
       id="setPasswordContainer"
     >
       <LanguageNav
+        showLan={false}
         hasGoBack={true}
         onClickBack={() => {
           history.goBack()

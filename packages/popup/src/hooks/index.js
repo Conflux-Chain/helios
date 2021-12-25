@@ -23,6 +23,7 @@ import {
   usePendingAuthReq,
 } from './useApi'
 import {validateAddress} from '../utils'
+import {useTranslation} from 'react-i18next'
 
 const {HOME} = ROUTES
 
@@ -178,38 +179,46 @@ export const useCheckBalanceAndGas = (
   sendTokenAddress,
   isSendToken = true,
 ) => {
+  const {t} = useTranslation()
   const {error, isBalanceEnough, tokens} = estimateRst
   const isNativeToken = !sendTokenAddress
   const isTokenBalanceEnough = tokens?.[sendTokenAddress]?.isTokenBalanceEnough
   return useMemo(() => {
     if (error?.message) {
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
-        return 'transfer amount exceeds allowance'
+        return t('transferAmountExceedsAllowance')
       } else if (
         error?.message?.indexOf('transfer amount exceeds balance') > -1
       ) {
-        return 'balance is not enough'
+        return t('balanceIsNotEnough')
       } else {
-        return 'contract error'
+        return t('contractError')
       }
     } else {
       if (isNativeToken && isBalanceEnough !== undefined) {
         if (!isBalanceEnough) {
-          return 'balance is not enough'
+          return t('balanceIsNotEnough')
         } else {
           return ''
         }
       } else if (!isNativeToken && isTokenBalanceEnough !== undefined) {
         if (isSendToken && !isTokenBalanceEnough) {
-          return 'balance is not enough'
+          return t('balanceIsNotEnough')
         } else if (!isBalanceEnough && isBalanceEnough !== undefined) {
-          return 'gas fee is not enough'
+          return t('gasFeeIsNotEnough')
         } else {
           return ''
         }
       }
     }
-  }, [isNativeToken, isSendToken, isBalanceEnough, error, isTokenBalanceEnough])
+  }, [
+    isNativeToken,
+    isSendToken,
+    isBalanceEnough,
+    error,
+    isTokenBalanceEnough,
+    t,
+  ])
 }
 
 export const useDappParams = () => {

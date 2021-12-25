@@ -32,6 +32,7 @@ function ImportSeedPhrase() {
   useCreatedPasswordGuard()
   useEffect(() => {
     setAccountNamePlaceholder(`Seed-${hdGroup.length + 1}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hdGroup])
 
   const onChangeName = e => {
@@ -39,13 +40,12 @@ function ImportSeedPhrase() {
   }
   const onChangeKeygen = e => {
     setMnemonic(e.target.value)
-    // TODO: replace error msg
-    setErrorMessage(e.target.value ? '' : 'Required')
+    setErrorMessage(e.target.value ? '' : t('required'))
   }
   const onCreate = () => {
     const mnemonicParam = mnemonic.replace(/  +/g, ' ').trim()
     if (!mnemonicParam) {
-      return setErrorMessage('Required')
+      return setErrorMessage(t('required'))
     }
     setLoading(true)
     request(WALLET_VALIDATE_MNEMONIC, {

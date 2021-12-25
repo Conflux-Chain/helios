@@ -213,7 +213,7 @@ function ConfirmTransition() {
 
       if (isNativeToken) {
         if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
-          return 'balance is not enough'
+          return t('balanceIsNotEnough')
         } else {
           return ''
         }
@@ -227,7 +227,7 @@ function ConfirmTransition() {
             bn16(convertValueToData(displayValue, decimals)),
           )
         ) {
-          return 'balance is not enough'
+          return t('balanceIsNotEnough')
         } else if (
           (bn16(balance['0x0']).lt(txFeeDrip) &&
             willPayTxFee &&
@@ -235,7 +235,7 @@ function ConfirmTransition() {
           (bn16(balance['0x0']).lt(storageFeeDrip) && willPayCollateral) ||
           (bn16(balance['0x0']).lt(gasFeeDrip) && willPayTxFee)
         ) {
-          return 'gas fee is not enough'
+          return t('gasFeeIsNotEnough')
         } else {
           return ''
         }

@@ -67,6 +67,7 @@ function CurrentSeed() {
 
   useEffect(() => {
     setAccountNamePlaceholder(`Seed-1-${hdGroup[0]?.account?.length + 1}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hdGroup])
   const onClickGroup = index => {
     setSelectedGroupIdx(index)
