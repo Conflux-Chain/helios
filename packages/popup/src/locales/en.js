@@ -240,7 +240,7 @@ const en = {
     enterPWDAgain: 'Enter the password again',
     rememberPWD: 'This password cannot be retrieved, please remember.',
     invalidPassword: 'Invalid Password',
-    invaildConfirmPassword: 'Invalid confirm password',
+    invalidConfirmPassword: 'Invalid confirm password',
 
     // - welcome page
     hello: 'Hello',
