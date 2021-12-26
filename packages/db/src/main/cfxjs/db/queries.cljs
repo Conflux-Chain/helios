@@ -1047,7 +1047,9 @@
      :currentNetwork cur-net
      :accountGroups  data}))
 
-(defn- sort-nonce [[noncea _ _] [nonceb _ _]] (> noncea nonceb))
+(defn- sort-nonce [[noncea _ _] [nonceb _ _]]
+  (.greaterThan (goog.math.Long/fromString noncea 16)
+                (goog.math.Long/fromString nonceb 16)))
 
 (defn query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
   (let [offset    (or offset 0)
