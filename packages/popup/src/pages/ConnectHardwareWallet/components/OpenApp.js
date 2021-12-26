@@ -17,7 +17,6 @@ function OpenApp() {
   const query = useQuery()
 
   const onClick = async () => {
-    history.go(0)
     setLoadingStatus(true)
     if (loadingStatus) {
       return
