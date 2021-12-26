@@ -71,6 +71,7 @@ const en = {
     seedPhraseDes: 'The Seed Phrase consists of words separated by spaces.',
     pKey: 'Private Key',
     pKeysDes: 'Enter the plaintext private key.',
+    ledgerDes: 'Use your Ledger wallet.',
 
     // homepage / 账户管理 / 创建账户 / 1. use existing seed phrase
     accountName: 'Account Name',
