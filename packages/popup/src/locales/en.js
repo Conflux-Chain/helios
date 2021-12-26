@@ -174,7 +174,7 @@ const en = {
     contract: 'Contract',
     allowLimit: 'Allow Limit',
     action: 'Action',
-    balance: 'balance',
+    balance: 'Balance',
     createContract: 'Deploy Contract',
 
     // - Send Transaction / Sign Transaction / 3. token approve - view data
