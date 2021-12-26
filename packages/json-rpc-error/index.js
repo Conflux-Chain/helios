@@ -98,4 +98,11 @@ export const errorInstanceToErrorCode = instance => {
   if (instance instanceof InvalidParams) return ERROR.INVALID_PARAMS.code
   if (instance instanceof Internal) return ERROR.INTERNAL.code
   if (instance instanceof Server) return ERROR.SERVER.code
+  if (instance instanceof UserRejected) return ERROR.USER_REJECTED.code
+  if (instance instanceof Unauthorized) return ERROR.UNAUTHORIZED.code
+  if (instance instanceof UnsupportedMethod)
+    return ERROR.UNSUPPORTED_METHOD.code
+  if (instance instanceof Disconnected) return ERROR.DISCONNECTED.code
+  if (instance instanceof ChainDisconnected)
+    return ERROR.CHAIN_DISCONNECTED.code
 }
