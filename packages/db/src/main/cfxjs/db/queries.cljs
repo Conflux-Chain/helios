@@ -1,12 +1,11 @@
 (ns cfxjs.db.queries
   (:require
-   goog.math.Long
+   ["@ethersproject/bignumber" :as bn]
    [clojure.walk :refer [postwalk walk]]
    [cfxjs.spec.cljs]
    [cfxjs.db.datascript.core :as db]
    [cfxjs.db.schema :refer [model->attr-keys]]))
 
-(defonce LONG_ZERO (goog.math.Long/fromString "0x0" 16))
 (declare q p pm e t fdb)
 
 (defn j->c [a]
@@ -837,7 +836,7 @@
                                            [?u :address/balance ?b]
                                            [?t :token/balance ?b]]
                                          [networkId uaddr] [networkId taddr])
-                          gt0?        (.greaterThan (goog.math.Long/fromString balance 16) LONG_ZERO)]
+                          gt0?        (.gt (bn/BigNumber.from balance) 0)]
                       (if (and (not gt0?) (not balance-eid))
                         acc
                         (let [tmp-balance-id (str networkId uaddr taddr)
@@ -1048,8 +1047,8 @@
      :accountGroups  data}))
 
 (defn- sort-nonce [[noncea _ _] [nonceb _ _]]
-  (.greaterThan (goog.math.Long/fromString noncea 16)
-                (goog.math.Long/fromString nonceb 16)))
+  (.gt (bn/BigNumber.from noncea)
+       (bn/BigNumber.from nonceb)))
 
 (defn query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
   (let [offset    (or offset 0)
