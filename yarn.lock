@@ -5008,6 +5008,8 @@ __metadata:
 "@fluent-wallet/db@workspace:packages/db":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/db@workspace:packages/db"
+  dependencies:
+    "@ethersproject/bignumber": 5.5.0
   languageName: unknown
   linkType: soft
 
