@@ -14,16 +14,11 @@ const AddressDetail = ({
   currentAccountName,
   toAddressLabel,
   isCreateContract,
+  nativeBalance,
+  decimals,
+  symbol,
 }) => {
   const {t} = useTranslation()
-  const {
-    data: {
-      nativeBalance,
-      network: {
-        ticker: {decimals, symbol},
-      },
-    },
-  } = useCurrentAddress()
   const type = useAddressType(toAddress)
   const isContract = type === 'contract' || type === 'builtin'
 
@@ -84,9 +79,12 @@ AddressDetail.propTypes = {
   currentAccountName: PropTypes.string,
   toAddressLabel: PropTypes.string,
   isCreateContract: PropTypes.bool,
+  nativeBalance: PropTypes.string,
+  decimals: PropTypes.number,
+  symbol: PropTypes.string,
 }
 
-const useAccountNameByAddress = address => {
+const useQueryAddressInAddressCard = address => {
   const {
     data: {
       network: {eid: networkId},
@@ -94,7 +92,7 @@ const useAccountNameByAddress = address => {
   } = useCurrentAddress()
   const {data} = useRPC(
     address && networkId
-      ? [QUERY_ADDRESS, 'useAccountNameByAddress', address, networkId]
+      ? [QUERY_ADDRESS, 'useQueryAddressInAddressCard', address, networkId]
       : null,
     {
       value: address,
@@ -103,11 +101,14 @@ const useAccountNameByAddress = address => {
         value: 1,
         eid: 1,
         _account: {nickname: 1, eid: 1},
+        network: {eid: 1, ticker: 1},
+        nativeBalance: 1,
       },
     },
     {
       fallbackData: {
         account: {},
+        network: {ticker: {}},
       },
     },
   )
@@ -126,7 +127,11 @@ function AddressCard({
   const {t} = useTranslation()
   const {
     account: {nickname},
-  } = useAccountNameByAddress(fromAddress)
+    nativeBalance,
+    network: {
+      ticker: {decimals, symbol},
+    },
+  } = useQueryAddressInAddressCard(fromAddress)
 
   return (
     <div
@@ -179,6 +184,9 @@ function AddressCard({
         fromAddress={fromAddress}
         toAddress={toAddress}
         currentAccountName={nickname}
+        nativeBalance={nativeBalance}
+        decimals={decimals}
+        symbol={symbol}
         toAddressLabel={t(
           isSendToken ? 'toAddress' : isApproveToken ? 'approveTo' : 'contract',
         )}

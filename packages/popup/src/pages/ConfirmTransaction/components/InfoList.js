@@ -60,8 +60,8 @@ function InfoList({
             <DisplayBalance
               id="allowance"
               balance={customAllowance || allowance}
-              maxWidth={240}
-              maxWidthStyle="max-w-[240px]"
+              maxWidth={220}
+              maxWidthStyle="max-w-[220px]"
               symbol={token?.symbol}
             />
             <EditOutlined

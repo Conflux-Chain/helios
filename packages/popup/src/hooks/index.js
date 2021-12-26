@@ -291,8 +291,7 @@ export const useDecodeDisplay = ({
       displayFromAddress = from
       displayToAddress = to
       displayValue = value
-    }
-    if (data && isContract && decodeData) {
+    } else {
       if (token?.symbol) displayToken = token
       if (isSendToken) {
         displayFromAddress = decodeData?.args?.[0]
