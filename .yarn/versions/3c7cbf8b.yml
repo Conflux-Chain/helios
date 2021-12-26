@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
+
+declined:
+  - helios-background
