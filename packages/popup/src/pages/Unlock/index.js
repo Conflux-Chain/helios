@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useRef, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import {HomeTitle, PasswordInput, LanguageNav} from '../../components'
@@ -18,6 +18,7 @@ const UnlockPage = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const {mutate} = useSWRConfig()
   const {setLoading} = useLoading()
+  const inputRef = useRef(null)
 
   const validatePassword = value => {
     setErrorMessage(validatePasswordReg(value) ? '' : t('unlockPasswordError'))
@@ -42,6 +43,21 @@ const UnlockPage = () => {
         })
     }
   }
+
+  const onKeyDown = e => {
+    if (
+      e.key === 'Enter' ||
+      e.code === 'Enter' ||
+      e.keyCode === '13' ||
+      e.which === '13'
+    ) {
+      onUnlock()
+    }
+  }
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [])
 
   return (
     <div
@@ -71,6 +87,8 @@ const UnlockPage = () => {
               errorMessage={errorMessage}
               value={password}
               id="unlockPassword"
+              onKeyDown={onKeyDown}
+              ref={inputRef}
             />
           </section>
           <section>

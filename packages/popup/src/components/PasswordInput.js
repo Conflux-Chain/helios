@@ -1,15 +1,13 @@
 import PropTypes from 'prop-types'
-import {useState} from 'react'
+import {useState, useRef, useImperativeHandle, forwardRef} from 'react'
 import Input from '@fluent-wallet/component-input'
 import {EyeInvisibleOutlined, EyeOutlined} from '@fluent-wallet/component-icons'
 
-function PasswordInput({
-  validateInputValue,
-  setInputValue,
-  errorMessage,
-  value,
-  ...props
-}) {
+const PasswordInput = forwardRef(function PasswordInput(
+  {validateInputValue, setInputValue, errorMessage, value, ...props},
+  ref,
+) {
+  const inputRef = useRef()
   const [eyeStatus, setEyeStatus] = useState('close')
   const onSuffixClick = () => {
     setEyeStatus(eyeStatus === 'close' ? 'open' : 'close')
@@ -19,6 +17,12 @@ function PasswordInput({
     validateInputValue && validateInputValue(e.target.value)
     setInputValue && setInputValue(e.target.value)
   }
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current.focus()
+    },
+  }))
 
   return (
     <Input
@@ -37,10 +41,12 @@ function PasswordInput({
       onSuffixClick={onSuffixClick}
       onCopy={e => e.preventDefault()}
       onCut={e => e.preventDefault()}
+      ref={inputRef}
       {...props}
     />
   )
-}
+})
+
 PasswordInput.propTypes = {
   validateInputValue: PropTypes.func,
   setInputValue: PropTypes.func,

@@ -1,4 +1,11 @@
-import {useState, useMemo, createElement} from 'react'
+import {
+  useState,
+  useMemo,
+  createElement,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from 'react'
 import PropTypes from 'prop-types'
 
 const sizeStyleObj = {
@@ -28,27 +35,31 @@ const suffixStyleObj = {
   medium: '-ml-1.5',
   large: '-ml-1',
 }
-function Input({
-  prefix,
-  suffix,
-  value,
-  disabled,
-  className = '',
-  containerClassName = '',
-  onChange,
-  bordered = true,
-  readonly = false,
-  size = 'medium',
-  textareaSize = '',
-  width = 'w-60',
-  errorMessage = '',
-  errorClassName = '',
-  suffixWrapperClassName = '',
-  onBlur,
-  onSuffixClick,
-  elementType = 'input',
-  ...props
-}) {
+const Input = forwardRef(function Input(
+  {
+    prefix,
+    suffix,
+    value,
+    disabled,
+    className = '',
+    containerClassName = '',
+    onChange,
+    bordered = true,
+    readonly = false,
+    size = 'medium',
+    textareaSize = '',
+    width = 'w-60',
+    errorMessage = '',
+    errorClassName = '',
+    suffixWrapperClassName = '',
+    onBlur,
+    onSuffixClick,
+    elementType = 'input',
+    ...props
+  },
+  ref,
+) {
+  const inputRef = useRef()
   const [focused, setFocused] = useState(false)
   const disabledStyle = useMemo(() => {
     if (disabled) return 'bg-gray-10 cursor-not-allowed'
@@ -86,6 +97,7 @@ function Input({
       onChange && onChange(e)
     },
     className: `bg-transparent w-full h-full px-3 text-gray-80 placeholder-gray-40 border-0 rounded p-0 outline-none ${inputStyle} ${className}`,
+    ref: inputRef,
     ...props,
   }
   if (readonly) {
@@ -93,6 +105,13 @@ function Input({
   }
 
   const InputElement = createElement(elementType, inputProps)
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current.focus()
+    },
+  }))
+
   return (
     <div className={`${width}`} data-testid="input-wrapper">
       <div
@@ -133,7 +152,7 @@ function Input({
       )}
     </div>
   )
-}
+})
 
 Input.propTypes = {
   value: PropTypes.string.isRequired,
