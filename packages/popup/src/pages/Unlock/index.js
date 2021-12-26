@@ -5,7 +5,7 @@ import {HomeTitle, PasswordInput, LanguageNav} from '../../components'
 import {useTranslation} from 'react-i18next'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import {useSWRConfig} from 'swr'
-import {request, validatePasswordReg} from '../../utils'
+import {request, validatePasswordReg, isKeyOf} from '../../utils'
 import useLoading from '../../hooks/useLoading'
 
 const {WALLET_IS_LOCKED, WALLET_UNLOCK} = RPC_METHODS
@@ -45,12 +45,7 @@ const UnlockPage = () => {
   }
 
   const onKeyDown = e => {
-    if (
-      e.key === 'Enter' ||
-      e.code === 'Enter' ||
-      e.keyCode === '13' ||
-      e.which === '13'
-    ) {
+    if (isKeyOf(e, 'enter')) {
       onUnlock()
     }
   }
