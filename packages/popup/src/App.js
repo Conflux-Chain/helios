@@ -9,7 +9,7 @@ import {
   withRouter,
 } from 'react-router-dom'
 import {TransitionGroup, CSSTransition} from 'react-transition-group'
-import {useIsLocked, useIsZeroGroup} from './hooks/useApi'
+import {useAccountStatus} from './hooks'
 import {ProtectedRoute} from './components'
 import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
 import PageLoading from './hooks/useLoading/PageLoading'
@@ -253,9 +253,11 @@ const AppRoutes = withRouter(({lockedData, zeroGroup, location, history}) => {
 })
 
 function App() {
-  const lockedData = useIsLocked()
-  const zeroGroup = useIsZeroGroup()
+  const {lockedData, zeroGroup} = useAccountStatus
   const {setFatalError} = useGlobalStore()
+
+  console.log('lockedData', lockedData)
+  console.log('zeroGroup', zeroGroup)
   if (isUndefined(lockedData) || isUndefined(zeroGroup)) {
     return <PageLoading />
   }
