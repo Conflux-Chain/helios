@@ -73,7 +73,6 @@ function HistoryItem({
     to: token?.address,
     data: payload?.data,
   })
-
   useEffect(() => {
     setActionName(
       simple
@@ -217,7 +216,7 @@ function HistoryItem({
             </div>
             {amount ? (
               <div className="flex">
-                {amount != 0 ? <span>-</span> : null}
+                {amount != 0 && actionName !== 'Approve' ? <span>-</span> : ''}
                 <DisplayBalance
                   balance={amount}
                   maxWidth={114}
