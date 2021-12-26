@@ -150,6 +150,12 @@ export default class Conflux {
     return {}
   }
 
+  cleanUp() {
+    this.app = null
+    if (this.transport) this.transport.close()
+    this.transport = null
+  }
+
   handleTheError(error) {
     if (error?.id === ERROR.INVALID_CHANNEL.ID) {
       error.appCode = ERROR.INVALID_CHANNEL.CODE
