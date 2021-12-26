@@ -1,6 +1,9 @@
 import {useState} from 'react'
+import {isUndefined} from '@fluent-wallet/checks'
 import {useQuery} from '../../hooks'
 import {useTxList, usePendingAuthReq} from '../../hooks/useApi'
+import PageLoading from '../../hooks/useLoading/PageLoading'
+
 import {useEffectOnce} from 'react-use'
 import {useHistory, Redirect} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -37,6 +40,11 @@ function Home() {
       setAccountStatus(true)
     }
   })
+
+  if (isUndefined(pendingAuthReq)) {
+    return <PageLoading />
+  }
+
   if (pendingAuthReq?.length) {
     return (
       <Redirect
