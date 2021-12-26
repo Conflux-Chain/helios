@@ -69,17 +69,17 @@ function CurrentDapp() {
           </div>
           <div className="flex flex-col flex-1 items-center">
             <div className="flex w-full items-center justify-between mb-0.5">
-              <span className="text-gray-80 font-medium inline-block">
+              <span className="text-gray-80 font-medium inline-block max-w-[180px] text-ellipsis">
                 {origin}
               </span>
-              <span className="text-gray-60 text-xs inline-block mb-1 max-w-[188px] text-ellipsis">
+              <span className="text-gray-60 text-xs inline-block mb-1 max-w-[100px] text-ellipsis">
                 {connectedNickname}
               </span>
             </div>
             <div className="flex w-full items-center justify-between">
               <span
                 id="setDisconnectModalShowBtn"
-                className="h-5 px-2 bg-primary-4 rounded-full text-success text-xs flex items-center justify-center cursor-pointer"
+                className="h-5 px-2 bg-primary-4 hover:bg-primary-10 rounded-full text-success text-xs flex items-center justify-center cursor-pointer"
                 aria-hidden="true"
                 onClick={() => setDisconnectModalShow(true)}
               >
@@ -89,7 +89,7 @@ function CurrentDapp() {
               {!isConnectedCurrentAccount ? (
                 <span
                   id="setAuthModalShowBtn"
-                  className="text-primary text-xs cursor-pointer inline-block max-w-[188px] text-ellipsis"
+                  className="text-primary text-xs cursor-pointer inline-block max-w-[140px] text-ellipsis"
                   onClick={() => setAuthModalShow(true)}
                   aria-hidden="true"
                 >

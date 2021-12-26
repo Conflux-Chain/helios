@@ -212,7 +212,7 @@ function HistoryItem({
         </div>
         <div className="flex-1">
           <div className="flex items-center justify-between">
-            <div className="w-[120px] text-gray-80 text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
+            <div className="text-gray-80 text-sm max-w-[120px] text-ellipsis">
               {actionName}
             </div>
             {amount ? (
@@ -230,8 +230,8 @@ function HistoryItem({
             )}
           </div>
           <div className="flex mt-0.5 items-center justify-between text-gray-40 text-xs">
-            <div>{contractName}</div>
-            <div>{toAddress ? shortenAddress(toAddress) : ''}</div>
+            <span>{contractName}</span>
+            <span>{toAddress ? shortenAddress(toAddress) : ''}</span>
           </div>
         </div>
       </div>

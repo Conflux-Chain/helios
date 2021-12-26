@@ -12,7 +12,7 @@ mustacheRender(
     ? path.resolve(extDir, 'manifest.json')
     : path.resolve(extDir, 'build/manifest.json'),
   {
-    version: process.env.SNOWPACK_PUBLIC_FLUENT_VERSION,
+    version: '1.1.0',
     contentSecurityPolicy: isDev()
       ? `
 "content_security_policy": "
