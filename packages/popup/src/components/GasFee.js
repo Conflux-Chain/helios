@@ -76,10 +76,10 @@ function GasFee({estimateRst}) {
         }`}</span>
         {isBePayed && (
           <CustomTag
-            width="w-15"
+            width="w-16"
             textColor="text-white"
             backgroundColor="bg-[#44d7b6]"
-            className="absolute right-0 top-0"
+            className="absolute right-0 top-0 !h-6"
           >
             <span className="text-2xs text-white">{t('sponsored')}</span>
           </CustomTag>
