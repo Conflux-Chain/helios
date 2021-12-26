@@ -32,9 +32,13 @@ const UnlockPage = () => {
           setLoading(false)
           history.push(HOME)
         })
-        .catch(error => {
+        .catch(e => {
           setLoading(false)
-          setErrorMessage(error?.message?.split('\n')[0]) ?? error
+          setErrorMessage(
+            e?.message?.indexOf?.('Invalid password') !== -1
+              ? t('invalidPassword')
+              : e?.message ?? t('invalidPasswordFromRpc'),
+          )
         })
     }
   }

@@ -246,7 +246,7 @@ function ImportHwAccount() {
       className="flex flex-col h-full w-full overflow-auto no-scroll"
     >
       <div className="flex-2" />
-      <div className="max-w-120 rounded-2xl shadow-fluent-3 px-8 pb-6 m-auto">
+      <div className="w-120 rounded-2xl shadow-fluent-3 px-8 pb-6 m-auto">
         <TitleNav
           title={t('chooseAddress')}
           hasGoBack={false}
