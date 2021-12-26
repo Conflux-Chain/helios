@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
+import {useRPC} from '@fluent-wallet/use-rpc'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
@@ -38,8 +39,39 @@ import {
 import useLoading from '../../hooks/useLoading'
 
 const {VIEW_DATA, HOME} = ROUTES
-const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
-  RPC_METHODS
+const {
+  CFX_SEND_TRANSACTION,
+  ETH_SEND_TRANSACTION,
+  WALLET_GET_BALANCE,
+  QUERY_ADDRESS,
+} = RPC_METHODS
+
+const useAddressTypeInConfirmTx = address => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {data} = useRPC(
+    address && networkId
+      ? [QUERY_ADDRESS, 'useAddressTypeInConfirmTx', address, networkId]
+      : null,
+    {
+      value: address,
+      networkId,
+      g: {
+        eid: 1,
+        _account: {eid: 1, _accountGroup: {vault: {type: 1}}},
+      },
+    },
+    {
+      fallbackData: {
+        account: {accountGroup: {vault: {}}},
+      },
+    },
+  )
+  return data
+}
 
 function ConfirmTransition() {
   const {t} = useTranslation()
@@ -68,17 +100,8 @@ function ConfirmTransition() {
   const {
     data: {
       network: {ticker},
-      account: {
-        accountGroup: {
-          vault: {type},
-        },
-      },
     },
   } = useCurrentAddress()
-  const isHwAccount = type === 'hw'
-  const isHwUnAuth = authStatus === LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
-  const isHwOpenAlert =
-    authStatus !== LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
   const nativeToken = ticker || {}
   const tx = useDappParams()
   const isDapp = pendingAuthReq?.length > 0
@@ -93,6 +116,18 @@ function ConfirmTransition() {
     displayToAddress,
   } = useDecodeDisplay({isDapp, isContract, nativeToken, tx})
   const isSign = !isSendToken && !isApproveToken
+
+  const {
+    account: {
+      accountGroup: {
+        vault: {type},
+      },
+    },
+  } = useAddressTypeInConfirmTx(displayFromAddress)
+  const isHwAccount = type === 'hw'
+  const isHwUnAuth = authStatus === LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
+  const isHwOpenAlert =
+    authStatus !== LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
 
   // params in wallet send or dapp send
   const txParams = useTxParams()
