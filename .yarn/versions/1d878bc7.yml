@@ -1,0 +1,3 @@
+declined:
+  - "@fluent-wallet/ledger"
+  - helios-popup

@@ -17,12 +17,14 @@ function OpenApp() {
   const query = useQuery()
 
   const onClick = async () => {
+    history.go(0)
     setLoadingStatus(true)
     if (loadingStatus) {
       return
     }
     const ret = await cfx.isAppOpen()
     setLoadingStatus(false)
+    cfx.cleanUp()
     if (ret) {
       if (query.get('action') === 'close') {
         window.open(' ', '_self')
