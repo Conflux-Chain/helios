@@ -80,8 +80,9 @@ function SelectCreateType() {
         {zeroGroup === false ? (
           <CreateTypeItem
             id="hw"
-            Icon={<img src="/images/private-key-icon.svg" alt="icon" />}
+            Icon={<img src="/images/hardware-wallet-icon.svg" alt="icon" />}
             title={t('hardwareWallet')}
+            subTitle={t('ledgerDes')}
             typeClass="mt-9"
             onClick={() => {
               history.push(HARDWARE_GUARD)
