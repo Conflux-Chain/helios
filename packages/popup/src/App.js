@@ -253,11 +253,9 @@ const AppRoutes = withRouter(({lockedData, zeroGroup, location, history}) => {
 })
 
 function App() {
-  const {lockedData, zeroGroup} = useAccountStatus
+  const {lockedData, zeroGroup} = useAccountStatus()
   const {setFatalError} = useGlobalStore()
 
-  console.log('lockedData', lockedData)
-  console.log('zeroGroup', zeroGroup)
   if (isUndefined(lockedData) || isUndefined(zeroGroup)) {
     return <PageLoading />
   }
