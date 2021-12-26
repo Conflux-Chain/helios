@@ -1,11 +1,11 @@
-import {useState} from 'react'
+import {useState, useRef, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import {HomeTitle, PasswordInput, LanguageNav} from '../../components'
 import {useTranslation} from 'react-i18next'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import {useSWRConfig} from 'swr'
-import {request, validatePasswordReg} from '../../utils'
+import {request, validatePasswordReg, isKeyOf} from '../../utils'
 import useLoading from '../../hooks/useLoading'
 
 const {WALLET_IS_LOCKED, WALLET_UNLOCK} = RPC_METHODS
@@ -18,6 +18,7 @@ const UnlockPage = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const {mutate} = useSWRConfig()
   const {setLoading} = useLoading()
+  const inputRef = useRef(null)
 
   const validatePassword = value => {
     setErrorMessage(validatePasswordReg(value) ? '' : t('unlockPasswordError'))
@@ -42,6 +43,16 @@ const UnlockPage = () => {
         })
     }
   }
+
+  const onKeyDown = e => {
+    if (isKeyOf(e, 'enter')) {
+      onUnlock()
+    }
+  }
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [])
 
   return (
     <div
@@ -71,6 +82,8 @@ const UnlockPage = () => {
               errorMessage={errorMessage}
               value={password}
               id="unlockPassword"
+              onKeyDown={onKeyDown}
+              ref={inputRef}
             />
           </section>
           <section>

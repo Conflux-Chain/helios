@@ -105,3 +105,18 @@ export const flatArray = arr => {
       : [...pre, value]
   }, [])
 }
+
+export const isKeyOf = (ev, name) => {
+  if (ev instanceof Object && name) {
+    if (name === 'enter') {
+      return (
+        ev.key === 'Enter' ||
+        ev.code === 'Enter' ||
+        ev.keyCode === '13' ||
+        ev.which === '13'
+      )
+    }
+    return false
+  }
+  return false
+}
