@@ -38,18 +38,28 @@ function EditPermission() {
     }
   }, [customAllowance])
 
+  useEffect(() => {
+    if (permissionChoice === 'recommend') {
+      setCustomLimitErr('')
+    } else {
+      setCustomLimitErr(
+        customLimitValue && new Big(customLimitValue).gte(0)
+          ? ''
+          : t('customLimitErr', {unit: symbol}),
+      )
+    }
+  }, [permissionChoice, customLimitValue, symbol, t])
+
   const onChangeCustomInput = e => {
     const value = e.target.value
-    setCustomLimitErr(
-      value && new Big(value).gte(0) ? '' : t('customLimitErr', {unit: symbol}),
-    )
-
     setCustomLimitValue(value)
   }
 
   const onSavePermissionLimit = () => {
-    if (customLimitValue) {
+    if (permissionChoice === 'custom') {
       setCustomAllowance(customLimitValue)
+    } else {
+      setCustomAllowance('')
     }
     history.goBack()
   }
