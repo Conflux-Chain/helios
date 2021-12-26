@@ -82,7 +82,9 @@ export const useFontSize = (
     const contentWidth = hiddenDom.offsetWidth
     if (contentWidth > maxWidth) {
       const fontSize = (maxWidth / contentWidth) * initialFontSize
-      targetDom.style.fontSize = parseInt(fontSize * 100) / 100 + 'px'
+      let intFontSize = parseInt(fontSize * 100) / 100
+      if (intFontSize < 10) intFontSize = 10
+      targetDom.style.fontSize = intFontSize + 'px'
     } else {
       targetDom.style.fontSize = `${initialFontSize}px`
     }
@@ -235,8 +237,9 @@ export const useDecodeData = ({to, data} = {}) => {
     },
   } = useCurrentAddress()
 
-  const isContract = type === 'contract'
-  const crc20Token = useValid20Token(isContract ? to : '')
+  const isContract = type === 'contract' || type === 'builtin'
+  const isOutContract = type === 'contract'
+  const crc20Token = useValid20Token(isOutContract ? to : '')
 
   useEffect(() => {
     if (data && isContract) {
@@ -301,7 +304,7 @@ export const useDecodeDisplay = ({
           token?.decimals,
         )
       } else if (isApproveToken) {
-        displayFromAddress = address
+        displayFromAddress = from
         displayToAddress = decodeData?.args?.[0]
         displayValue = convertDecimal(
           decodeData?.args[1].toString(10),
@@ -309,7 +312,7 @@ export const useDecodeDisplay = ({
           token?.decimals,
         )
       } else {
-        displayFromAddress = address
+        displayFromAddress = from
         displayToAddress = to
       }
     }

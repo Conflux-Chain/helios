@@ -60,8 +60,8 @@ function InfoList({
             <DisplayBalance
               id="allowance"
               balance={customAllowance || allowance}
-              maxWidth={256}
-              maxWidthStyle="max-w-[256px]"
+              maxWidth={240}
+              maxWidthStyle="max-w-[240px]"
               symbol={token?.symbol}
             />
             <EditOutlined
@@ -83,11 +83,14 @@ function InfoList({
       {isDapp && (
         <div className="flex justify-between mb-4">
           <span className="text-gray-40">{t('protocol')}</span>
-          <span className="text-gray-80 flex items-center" id="currentDapp">
+          <span
+            className="text-gray-80 flex items-center max-w-[240px] text-ellipsis"
+            id="currentDapp"
+          >
             <img
               src={currentDapp?.site?.icon || '/images/default-dapp-icon.svg'}
               alt="icon"
-              className="w-4 h-4 mr-1"
+              className="w-4 h-4 mr-1 flex-shrink-0"
               id="currentDappIcon"
             />
             {currentDapp?.site?.origin}

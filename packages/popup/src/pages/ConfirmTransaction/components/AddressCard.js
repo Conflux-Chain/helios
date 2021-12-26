@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
+import {useRPC} from '@fluent-wallet/use-rpc'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import {useCurrentAddress, useAddressType} from '../../../hooks/useApi'
 import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
+import {RPC_METHODS} from '../../../constants'
+const {QUERY_ADDRESS} = RPC_METHODS
 
 const AddressDetail = ({
   fromAddress,
@@ -22,7 +25,7 @@ const AddressDetail = ({
     },
   } = useCurrentAddress()
   const type = useAddressType(toAddress)
-  const isContract = type === 'contract'
+  const isContract = type === 'contract' || type === 'builtin'
 
   return (
     <div className="flex items-start w-full" id="addressDetailContainer">
@@ -38,23 +41,28 @@ const AddressDetail = ({
         />
       </div>
       <div className="ml-3 flex flex-col flex-1">
-        <span className="text-xs text-gray-40" id="currentAccountName">
-          {currentAccountName}
-        </span>
         <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2">
-          <span className="text-gray-80" id="fromAddress">
-            {fromAddress && shortenAddress(fromAddress)}
-          </span>
-          <DisplayBalance
-            balance={nativeBalance}
-            maxWidth={120}
-            maxWidthStyle="max-w-[120px]"
-            className="text-xs !text-gray-60 !font-normal"
-            initialFontSize={12}
-            decimals={decimals}
-            symbol={symbol}
-            id="fromAddressCfxBalance"
-          />
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-40" id="currentAccountName">
+              {currentAccountName}
+            </span>
+            <span className="text-gray-80" id="fromAddress">
+              {fromAddress && shortenAddress(fromAddress)}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-gray-80">{t('balance')}</span>
+            <DisplayBalance
+              balance={nativeBalance}
+              maxWidth={120}
+              maxWidthStyle="max-w-[120px]"
+              className="text-xs !text-gray-60 !font-normal"
+              initialFontSize={12}
+              decimals={decimals}
+              symbol={symbol}
+              id="fromAddressCfxBalance"
+            />
+          </div>
         </div>
         <span className="text-xs text-gray-40">{toAddressLabel}</span>
         <span className="text-gray-80 flex items-center" id="toAddress">
@@ -78,6 +86,34 @@ AddressDetail.propTypes = {
   isCreateContract: PropTypes.bool,
 }
 
+const useAccountNameByAddress = address => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {data} = useRPC(
+    address && networkId
+      ? [QUERY_ADDRESS, 'useAccountNameByAddress', address, networkId]
+      : null,
+    {
+      value: address,
+      networkId,
+      g: {
+        value: 1,
+        eid: 1,
+        _account: {nickname: 1, eid: 1},
+      },
+    },
+    {
+      fallbackData: {
+        account: {},
+      },
+    },
+  )
+  return data
+}
+
 function AddressCard({
   token,
   fromAddress,
@@ -89,10 +125,8 @@ function AddressCard({
 }) {
   const {t} = useTranslation()
   const {
-    data: {
-      account: {nickname},
-    },
-  } = useCurrentAddress()
+    account: {nickname},
+  } = useAccountNameByAddress(fromAddress)
 
   return (
     <div
