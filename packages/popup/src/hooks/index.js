@@ -268,7 +268,6 @@ export const useDecodeDisplay = ({
   } = useCurrentAddress()
   const {toAddress, sendTokenId, sendAmount} = useGlobalStore()
   const {from, to, data, value} = tx
-  console.log('tx', tx)
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
   const isSendNativeToken = (!isContract && !!to) || !data || data === '0x'
