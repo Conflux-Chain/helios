@@ -23,7 +23,6 @@ function ConfirmSeed() {
     createdPassword,
     setCreatedPassword,
     createdGroupName,
-    setCreatedMnemonic,
   } = useGlobalStore()
   const initData = new Array(12).fill(null)
   // record the index of buttonArray
@@ -86,7 +85,6 @@ function ConfirmSeed() {
       .then(() => {
         updateAddedNewAccount(mutate, !!createdPassword, ACCOUNT_GROUP_TYPE.HD)
           .then(() => {
-            setCreatedMnemonic('')
             createdPassword && setCreatedPassword('')
             setLoading(false)
             history.push(HOME)
