@@ -37,6 +37,8 @@ export const permissions = {
     'wallet_userRejectedAuthRequest',
   ],
   db: [
+    'findApp',
+    'findAddress',
     'findAccount',
     'upsertAppPermissions',
     'getSiteById',
@@ -61,7 +63,14 @@ const formatPermissions = perms => {
 
 export const main = async ({
   Err: {InvalidRequest, InvalidParams},
-  db: {findAccount, upsertAppPermissions, getAuthReqById, getSiteById},
+  db: {
+    findAccount,
+    upsertAppPermissions,
+    getAuthReqById,
+    getSiteById,
+    findApp,
+    findAddress,
+  },
   rpcs: {
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
@@ -132,6 +141,25 @@ export const main = async ({
 
     if (authReqId)
       return await wallet_userApprovedAuthRequest({authReqId, res: perms})
+    else {
+      app = findApp({
+        siteId,
+        g: {
+          currentAccount: {eid: 1},
+          site: {post: 1},
+          currentNetwork: {eid: 1},
+        },
+      })
+      if (app?.site?.post) {
+        const [addr] = findAddress({
+          networkId: app.currentNetwork.eid,
+          accountId: app.currentAccount.eid,
+          g: {value: 1},
+        })
+        if (addr)
+          app.site.post({event: 'accountsChanged', params: [addr.value]})
+      }
+    }
 
     return null
   }
