@@ -11,7 +11,8 @@ export const permissions = {
   external: [],
 }
 
-export const main = ({params: perms, app}) => {
+export const main = ({Err: {Unauthorized}, params: perms, app}) => {
+  if (!app) throw Unauthorized()
   if (!app) false
   // TODO: validte more detailed permissions once we need more detailed permissions other than {cfx_accounts:{}}
   return Object.keys(perms).reduce((acc, p) => acc || app.perms?.[p], false)
