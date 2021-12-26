@@ -104,8 +104,8 @@ export const main = async ({
 
   if (!group) throw InvalidParams(`Invalid account group id: ${accountGroupId}`)
 
-  const ddata = accountGroupData
-  const data = await encrypt(getPassword(), JSON.stringify(ddata))
+  const ddata = JSON.stringify(accountGroupData)
+  const data = await encrypt(getPassword(), ddata)
 
   let txs = [{eid: group.vault.eid, vault: {data, ddata}}]
 
