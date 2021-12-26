@@ -42,7 +42,7 @@ export const useCurrentAddress = () => {
         hex: 1,
         eid: 1,
         nativeBalance: 1,
-        _account: {nickname: 1, eid: 1, _accountGroup: {vault: {type: 1}}},
+        _account: {nickname: 1, eid: 1},
         network: {
           eid: 1,
           ticker: 1,
@@ -55,12 +55,7 @@ export const useCurrentAddress = () => {
         },
       },
     },
-    {
-      fallbackData: {
-        network: {ticker: {}},
-        account: {accountGroup: {vault: {}}},
-      },
-    },
+    {fallbackData: {network: {ticker: {}}, account: {}}},
   )
   return {data, mutate}
 }
