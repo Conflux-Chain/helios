@@ -103,11 +103,11 @@ function Home() {
             </Button>
             {pendingCount ? (
               <PendingQueue
-                count={
+                count={`${
                   pendingCount >= MAX_PENDING_COUNT
-                    ? MAX_PENDING_COUNT
+                    ? MAX_PENDING_COUNT + '+'
                     : pendingCount
-                }
+                } `}
               />
             ) : null}
           </div>
