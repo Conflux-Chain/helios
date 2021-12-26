@@ -1,10 +1,10 @@
-import {useState} from 'react'
+import {useState, useRef, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {PasswordInput} from '../../../components'
 import useGlobalStore from '../../../stores'
 import Button from '@fluent-wallet/component-button'
-import {validatePasswordReg} from '../../../utils'
+import {validatePasswordReg, isKeyOf} from '../../../utils'
 import {ROUTES} from '../../../constants'
 
 const {SELECT_CREATE_TYPE} = ROUTES
@@ -17,6 +17,12 @@ function SetPasswordForm() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [confirmErrorMessage, setConfirmErrorMessage] = useState('')
+  const inputRef = useRef(null)
+  const confirmInputRef = useRef(null)
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [])
 
   const validatePassword = value => {
     if (validatePasswordReg(value)) {
@@ -47,6 +53,18 @@ function SetPasswordForm() {
     }
   }
 
+  const onKeyDown = e => {
+    if (isKeyOf(e, 'enter') && !errorMessage) {
+      confirmInputRef.current.focus()
+    }
+  }
+
+  const onConfirmInputKeyDown = e => {
+    if (isKeyOf(e, 'enter')) {
+      onCreate()
+    }
+  }
+
   return (
     <div
       id="setPasswordFormContainer"
@@ -60,6 +78,8 @@ function SetPasswordForm() {
           errorMessage={errorMessage}
           value={password}
           id="password"
+          onKeyDown={onKeyDown}
+          ref={inputRef}
         />
         {errorMessage ? null : <div className="m-0 h-6" />}
         <PasswordInput
@@ -68,6 +88,8 @@ function SetPasswordForm() {
           errorMessage={confirmErrorMessage}
           value={confirmPassword}
           id="confirmPassword"
+          onKeyDown={onConfirmInputKeyDown}
+          ref={confirmInputRef}
         />
       </section>
 
