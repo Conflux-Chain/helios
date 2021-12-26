@@ -60,15 +60,17 @@ function GasFee({estimateRst}) {
           decimals={decimals}
           initialFontSize={16}
         />
-        <DisplayBalance
-          id="txFee"
-          balance={txFeeDrip || '0x0'}
-          maxWidth={300}
-          maxWidthStyle="max-w-[300px]"
-          className="!text-gray-40 line-through !font-normal mb-0.5"
-          symbol={symbol}
-          decimals={decimals}
-        />
+        {isBePayed && (
+          <DisplayBalance
+            id="txFee"
+            balance={txFeeDrip || '0x0'}
+            maxWidth={300}
+            maxWidthStyle="max-w-[300px]"
+            className="!text-gray-40 line-through !font-normal mb-0.5"
+            symbol={symbol}
+            decimals={decimals}
+          />
+        )}
         <span className="text-xs text-gray-60">{`${gasPrice} ${
           networkTypeIsCfx ? 'Drip' : 'Gwei'
         }`}</span>
