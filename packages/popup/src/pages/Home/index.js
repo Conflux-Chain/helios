@@ -31,7 +31,7 @@ function Home() {
   const [settingsStatus, setSettingStatus] = useState(false)
   const query = useQuery()
   const history = useHistory()
-  const pendingCount = useTxList({status: 2, countOnly: true})
+  const pendingCount = useTxList({status: {gte: 0, lt: 4}, countOnly: true})
   const pendingAuthReq = usePendingAuthReq()
 
   useEffectOnce(() => {
