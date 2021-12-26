@@ -37,10 +37,12 @@ function getExt() {
       })
 }
 
-function updateBadge(count) {
-  return getExt().then(ext =>
-    count > 0 ? ext.badge.set({text: count}) : ext.badge.clear(),
-  )
+function updateBadge() {
+  // count
+  return
+  // return getExt().then(ext =>
+  //   count > 0 ? ext.badge.set({text: count}) : ext.badge.clear(),
+  // )
 }
 
 export const schemas = {

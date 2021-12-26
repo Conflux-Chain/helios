@@ -10,7 +10,7 @@ import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {HomeNav} from '../../components'
 import {PendingQueue} from './components'
-import {ROUTES, DAPP_REQUEST_ROUTES} from '../../constants'
+import {ROUTES, DAPP_REQUEST_ROUTES, MAX_PENDING_COUNT} from '../../constants'
 
 const {HISTORY, ERROR} = ROUTES
 import {
@@ -101,7 +101,15 @@ function Home() {
             >
               {t('history')}
             </Button>
-            {pendingCount ? <PendingQueue count={pendingCount} /> : null}
+            {pendingCount ? (
+              <PendingQueue
+                count={`${
+                  pendingCount > MAX_PENDING_COUNT
+                    ? MAX_PENDING_COUNT + '+'
+                    : pendingCount
+                } `}
+              />
+            ) : null}
           </div>
         </div>
       </div>
