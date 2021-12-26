@@ -104,7 +104,7 @@ function Home() {
             {pendingCount ? (
               <PendingQueue
                 count={`${
-                  pendingCount >= MAX_PENDING_COUNT
+                  pendingCount > MAX_PENDING_COUNT
                     ? MAX_PENDING_COUNT + '+'
                     : pendingCount
                 } `}
