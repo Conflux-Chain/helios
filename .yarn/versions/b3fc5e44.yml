@@ -1,8 +1,0 @@
-releases:
-  "@fluent-wallet/component-dropdown": patch
-  "@fluent-wallet/component-popover": patch
-  "@fluent-wallet/component-tooltip": patch
-  "@fluent-wallet/data-format": patch
-
-declined:
-  - helios-popup
