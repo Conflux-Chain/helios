@@ -128,8 +128,11 @@
         token (if oldtoken? (dissoc token :network :address) token)]
     {:eid eid :token token}))
 
-(defn get-account [{:keys [accountId groupId index g nickname selected]}]
+(defn get-account [{:keys [accountId groupId index g nickname selected fuzzy]}]
   (let [g (and g {:account g})
+        fuzzy (if (string? fuzzy)
+                (re-pattern (str "(?i)" (.replaceAll (.trim fuzzy) " " ".*")))
+                nil)
         post-process (if (seq g) identity #(get % :db/id))]
     (prst->js
      (cond
@@ -148,6 +151,12 @@
                              (-> (update :where conj '[?acc :account/selected true]))
                              (false? selected)
                              (-> (update :where conj (not '[?acc :account/selected true])))
+                             fuzzy
+                             (-> (update :args conj fuzzy)
+                                 (update :in conj '?fuzzy)
+                                 (update :where conj
+                                         '[?acc :account/nickname ?acc-name]
+                                         '[(re-find ?fuzzy ?acc-name)]))
                              groupId
                              (-> (update :args conj groupId)
                                  (update :in conj '?gid)
@@ -173,7 +182,7 @@
         addr (and (string? address) (.toLowerCase address))
         fuzzy (if (string? fuzzy)
                 (re-pattern (str "(?i)" (.replaceAll (.trim fuzzy) " " ".*")))
-                fuzzy)]
+                nil)]
     (prst->js
      (cond
        tokenId
