@@ -44,6 +44,7 @@ function AccountItem({
       })
     }
   }
+
   return (
     <div className="bg-gray-0 rounded mt-3">
       {groupType === 'pk' ? null : (
@@ -108,6 +109,7 @@ function AccountList({onClose, open}) {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
   }
+
   return accountGroups && currentNetwork ? (
     <SlideCard
       id="account-list"
