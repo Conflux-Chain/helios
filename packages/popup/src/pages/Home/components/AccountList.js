@@ -44,8 +44,7 @@ function AccountItem({
       })
     }
   }
-  console.log('authorizedAccountIdIconObj', authorizedAccountIdIconObj)
-  console.log('account', account)
+
   return (
     <div className="bg-gray-0 rounded mt-3">
       {groupType === 'pk' ? null : (
