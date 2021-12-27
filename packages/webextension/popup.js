@@ -60,7 +60,7 @@ const newPopup = async ({url, alwaysOnTop}) => {
 }
 
 export const show = async ({url, alwaysOnTop = false, mode = {}} = {}) => {
-  url = url || (mode.isProd ? 'popup/index.html' : 'popup.html')
+  url = url || (mode.isProd ? 'popup/notification.html' : 'notification.html')
   if (!browser?.windows?.getAll) return
   let popup = (await browser.windows.getAll()).filter(
     w => w.type === 'popup',

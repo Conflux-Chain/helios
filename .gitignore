@@ -227,10 +227,14 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,vscode,emacs,node
-/packages/popup/index.html
+/packages/popup/popup.html
 /packages/browser-extension/manifest.json
 /packages/browser-extension/popup.html
-/packages/popup/public/index.html
+/packages/browser-extension/page.html
+/packages/browser-extension/notification.html
+/packages/popup/public/popup.html
+/packages/popup/public/notification.html
+/packages/popup/public/page.html
 .env.*.local
 .env.local
 
