@@ -110,9 +110,6 @@ module.exports = {
           'sans-serif',
         ],
       },
-      width: {
-        30: '7.5rem',
-      },
       minHeight: {
         8: '2rem',
         150: '37.5rem',
@@ -199,7 +196,7 @@ module.exports = {
         'homepage-background': "url('/images/bg-homepage.svg')",
       },
       backgroundColor: {
-        'z-skeleton': 'rgb(229, 231, 235)',
+        'z-skeleton': 'rgb(229, 231, 235)', // for cover text skeleton default bg
       },
     },
   },
