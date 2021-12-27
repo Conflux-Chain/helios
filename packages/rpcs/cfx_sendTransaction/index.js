@@ -2,6 +2,8 @@ import {map, dbid, or, cat} from '@fluent-wallet/spec'
 import {txSchema} from '@fluent-wallet/cfx_sign-transaction'
 import {getTxHashFromRawTx} from '@fluent-wallet/signature'
 import {ERROR} from '@fluent-wallet/json-rpc-error'
+import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
+import {BigNumber} from '@ethersproject/bignumber'
 
 export const NAME = 'cfx_sendTransaction'
 
@@ -17,6 +19,7 @@ export const permissions = {
   external: ['popup', 'inpage'],
   methods: [
     'cfx_signTransaction',
+    'cfx_gasPrice',
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
     'wallet_handleUnfinishedCFXTx',
@@ -30,6 +33,7 @@ export const main = async ({
   db: {findAddress, getAuthReqById, getAddrTxByHash, t},
   rpcs: {
     wallet_enrichConfluxTx,
+    cfx_gasPrice,
     cfx_signTransaction,
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
@@ -64,6 +68,19 @@ export const main = async ({
     } catch (err) {
       if (err?.code === ERROR.USER_REJECTED.code) throw err
       throw InvalidParams(`Invalid transaction ${JSON.stringify(params)}`)
+    }
+
+    if (app.currentNetwork.name === CFX_MAINNET_NAME) {
+      try {
+        const gasPrice = await cfx_gasPrice({errorFallThrough: true}, [])
+        if (
+          BigNumber.from(gasPrice).gt(
+            BigNumber.from(params[0].gasPrice || '0x0'),
+          )
+        ) {
+          params[0].gasPrice = gasPrice
+        }
+      } catch (err) {} // eslint-disable-line no-empty
     }
 
     return await wallet_addPendingUserAuthRequest({
