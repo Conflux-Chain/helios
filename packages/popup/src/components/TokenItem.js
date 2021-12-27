@@ -50,9 +50,9 @@ function TokenItem({
       <div className="flex flex-1 flex-col">
         <div className="flex w-full items-center">
           <Text
-            className="text-gray-80 font-medium inline-block w-12"
+            className="text-gray-80 font-medium"
             text={symbol}
-            skeleton
+            skeleton="min-w-[3rem]"
           />
           <div className="flex items-center flex-1 justify-end">
             <DisplayBalance
@@ -65,9 +65,9 @@ function TokenItem({
           </div>
         </div>
         <Text
-          className="text-gray-40 text-xs inline-block w-20"
+          className="text-gray-40 text-xs mt-[.1rem]"
           text={name}
-          skeleton
+          skeleton="min-w-[6rem]"
         />
       </div>
     </div>

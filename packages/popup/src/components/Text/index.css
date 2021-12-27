@@ -23,3 +23,28 @@
 .text-transition-skeleton-enter-done {
   @apply animate-pulse opacity-100;
 }
+
+.text-placeholder-animation {
+  @apply relative;
+
+  text-shadow: 0 0 1px #fff, 0 0 1px #fff;
+}
+
+.text-placeholder-animation::after {
+  @apply absolute left-0 top-0 w-full h-full overflow-hidden;
+
+  content: attr(data-placeholder);
+  color: inherit;
+  mix-blend-mode: difference;
+  animation: text-placeholder-animation 6s linear infinite;
+}
+
+@keyframes text-placeholder-animation {
+  0% {
+    width: 0%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}

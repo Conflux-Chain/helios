@@ -8,6 +8,7 @@ function HomeTokenList({onOpenAddToken}) {
   const {data: tokens} = useCurrentAddressTokens()
   const homeTokenList = ['native'].concat(tokens)
   const {t} = useTranslation()
+
   return (
     <div
       className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 py-3 z-0 overflow-auto"

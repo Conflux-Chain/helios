@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect} from 'react'
+import {useState, useRef, useLayoutEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {PasswordInput} from '../../../components'
@@ -20,7 +20,7 @@ function SetPasswordForm() {
   const inputRef = useRef(null)
   const confirmInputRef = useRef(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     inputRef.current.focus()
   }, [])
 

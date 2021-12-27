@@ -7,6 +7,7 @@ import {
   createSpinLoading,
   createSpinLoadingTransition,
 } from './createSpinLoading'
+import './index.css'
 
 const createLoadingMap = {
   Page: {
@@ -31,8 +32,10 @@ let pageLoadingCount = 0 // A flag used to correctly cancel multiple 'Page' type
  *   delay?: number; // After the delay(ms, default - 0) time is still in the loading state, only then will the animation appear.If the delay value is less than 100, it will be ignored.
  *   targetDOM?: HTMLElement; // Equivalent to the 'ref' in return, one of the two can be chosen('Page' type doesn't have this param), targetDOM priority is higher.
  *   size?: number; // Valid only in Spin Loading.'px' size of box;If not set, will adapt to the targetDOM's width.
+ *   showBlur?: boolean; // default true. Whether to blur other elements.
  * }}
  * @returns {{
+ *   loading: boolean;
  *   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
  *   ref?: React.MutableRefObject<HTMLElement>; // Used to attach to the target DOM. 'Page' type doesn't return ref.
  * }}
@@ -48,10 +51,13 @@ let pageLoadingCount = 0 // A flag used to correctly cancel multiple 'Page' type
  *
  * @example use 'Spin' type loading with targetDOM
  * const { setLoading } = useLoading({ type: 'Spin', targetDOM: domObj });
- *
  */
 const useLoading = (
-  {type = 'Page', targetDOM, delay = 0, size} = {type: 'Page', delay: 0},
+  {type = 'Page', targetDOM, delay = 0, size, showBlur = true} = {
+    type: 'Page',
+    delay: 0,
+    showBlur: true,
+  },
 ) => {
   const [loading, setLoading] = useState(false)
   const loadingStatusRef = useRef(false) // We need a ref to determine if the loading state is still in after a certain time delay.
@@ -87,13 +93,16 @@ const useLoading = (
         if (_targetDOM && loading && createLoadingMap[type]) {
           if (type === 'Page' && pageLoadingCount > 0) {
             pageLoadingCount++
-            loadingEleRef.current = document.querySelector('.loading-page-mask')
-            clearTransitionRef.current =
-              createLoadingMap[type].transition(loadingEleRef)
+            loadingEleRef.current = document.querySelector('.loading-mask')
+            clearTransitionRef.current = createLoadingMap[type].transition({
+              targetDOM: _targetDOM,
+              loadingEle: loadingEleRef.current,
+            })
           } else {
             loadingEleRef.current = createLoadingMap[type].create({
               targetDOM: _targetDOM,
               size,
+              showBlur,
             })
 
             checkTargetDOMPosition(_targetDOM)
@@ -116,9 +125,13 @@ const useLoading = (
           startLoading()
         }, delay)
       }
-    } else {
+    }
+
+    return () => {
+      if (!loadingEleRef.current) return
+
       if (type === 'Page') {
-        pageLoadingCount--
+        pageLoadingCount = Math.max(0, pageLoadingCount - 1)
         if (pageLoadingCount > 0) return
       }
 

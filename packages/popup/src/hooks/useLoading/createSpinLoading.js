@@ -1,9 +1,9 @@
 import './createSpinLoading.css'
 
-export function createSpinLoading({targetDOM, size}) {
+export function createSpinLoading({targetDOM, size, showBlur}) {
   const mask = document.createElement('div')
   mask.classList.add('loading-mask')
-  targetDOM.classList.add('loading-mask-blur')
+  if (showBlur) targetDOM.classList.add('loading-mask-blur')
 
   let _size = parseInt(size)
   if (isNaN(_size)) {

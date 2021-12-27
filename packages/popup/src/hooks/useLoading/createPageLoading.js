@@ -1,9 +1,9 @@
 import './createPageLoading.css'
 
-export function createPageLoading({targetDOM}) {
+export function createPageLoading({targetDOM, showBlur}) {
   const mask = document.createElement('div')
   mask.classList.add('loading-mask')
-  targetDOM.classList.add('loading-mask-blur')
+  if (showBlur) targetDOM.classList.add('loading-mask-blur')
 
   mask.insertAdjacentHTML(
     'afterbegin',

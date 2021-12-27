@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react'
-import './index.css'
 
 // This component is used for the transition before mounting router.
 // It has the same effect as 'page' type in useLoading.
