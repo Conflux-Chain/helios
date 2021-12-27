@@ -31,7 +31,19 @@ module.exports = async function () {
     rm(
       path.resolve(
         __dirname,
-        '../packages/browser-extension/build/background/index.html',
+        '../packages/browser-extension/build/background/notification.html',
+      ),
+    ),
+    rm(
+      path.resolve(
+        __dirname,
+        '../packages/browser-extension/build/background/page.html',
+      ),
+    ),
+    rm(
+      path.resolve(
+        __dirname,
+        '../packages/browser-extension/build/background/popup.html',
       ),
     ),
     // rm(

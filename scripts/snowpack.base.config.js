@@ -46,7 +46,7 @@ module.exports = {
     '**/*.md',
   ],
   mount,
-  routes: [{match: 'routes', src: '.*', dest: '/index.html'}],
+  routes: [{match: 'routes', src: '.*', dest: '/popup.html'}],
   alias,
   plugins: [
     '@snowpack/plugin-dotenv',
