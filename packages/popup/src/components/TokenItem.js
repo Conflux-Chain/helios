@@ -1,3 +1,4 @@
+import {useState, useEffect} from 'react'
 import {CFX_DECIMALS} from '@fluent-wallet/data-format'
 import PropTypes from 'prop-types'
 import Text from './Text'
@@ -30,7 +31,17 @@ function TokenItem({
   index,
   ...props
 }) {
-  const [{logoURI, name, symbol, decimals}, balance] = getTokenItem(token)
+  const [state, balance] = getTokenItem(token)
+
+  // In order for cfx that exist locally to appear with other coins as much as possible
+  const [nextTickState, setNextTickState] = useState(() => {})
+  const {logoURI, name, symbol, decimals} =
+    token === 'native' ? nextTickState ?? {} : state
+  useEffect(() => {
+    if (token === 'native') {
+      setTimeout(() => setNextTickState(state), 50)
+    }
+  }, [token, state])
 
   return (
     <div

@@ -1,15 +1,17 @@
-// import {useState, useEffect} from 'react'
+import {useState, useEffect} from 'react'
+import './index.css'
 
 // This component is used for the transition before mounting router.
 // It has the same effect as 'page' type in useLoading.
 const PageLoading = () => {
-  // const [inDelay, setInDelay] = useState(true)
-  // useEffect(() => {
-  //   const timer = setTimeout(() => setInDelay(false), 0)
-  //   return () => clearTimeout(timer)
-  // }, [])
+  const [inDelay, setInDelay] = useState(true)
+  useEffect(() => {
+    const timer = setTimeout(() => setInDelay(false), 350)
+    return () => clearTimeout(timer)
+  }, [])
 
-  // if (inDelay) return null
+  if (inDelay) return null
+
   return (
     <div className="h-150 w-93 m-auto light flex items-center justify-center">
       <div

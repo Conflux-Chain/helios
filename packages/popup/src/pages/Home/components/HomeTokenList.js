@@ -1,12 +1,25 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {PlusOutlined} from '@fluent-wallet/component-icons'
+import {useState, useEffect} from 'react'
 import {WrapIcon, TokenList} from '../../../components'
 import {useCurrentAddressTokens} from '../../../hooks/useApi'
 
 function HomeTokenList({onOpenAddToken}) {
   const {data: tokens} = useCurrentAddressTokens()
-  const homeTokenList = ['native'].concat(tokens)
+
+  // In order for cfx that exist locally to appear with other coins as much as possible
+  const [homeTokenList, setHomeTokenList] = useState([])
+  useEffect(() => {
+    // We need to wait for other coins to be fetched on first load
+    setHomeTokenList(pre => {
+      if ((!pre?.length && tokens?.length) || pre?.length) {
+        return ['native'].concat(tokens)
+      }
+      return pre
+    })
+  }, [tokens])
+
   const {t} = useTranslation()
 
   return (

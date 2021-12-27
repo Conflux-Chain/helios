@@ -31,8 +31,8 @@ function CurrentAccount({onOpenAccount}) {
         />
         <RightOutlined
           className={classNames(
-            'w-3 h-3 text-white transition-all duration-[520ms] ease-in-out',
-            {['opacity-0 filter blur-sm']: !displayAddress},
+            'w-3 h-3 text-white transition-all duration-100 ease-in-out',
+            {['opacity-0']: !displayAddress},
           )}
         />
       </div>
@@ -44,15 +44,15 @@ function CurrentAccount({onOpenAccount}) {
         <CopyButton
           text={address}
           className={classNames(
-            'mx-2 text-white transform transition-all duration-[520ms] ease-in-out',
-            {['opacity-0 filter blur-sm']: !displayAddress},
+            'mx-2 text-white transform transition-all duration-100 ease-in-out',
+            {['opacity-0']: !displayAddress},
           )}
         />
         <QRCodeButton
           title={nickname}
           qrcodeValue={address}
-          className={classNames('transition-all duration-[520ms] ease-in-out', {
-            ['opacity-0 filter blur-sm']: !displayAddress,
+          className={classNames('transition-all duration-100 ease-in-out', {
+            ['opacity-0']: !displayAddress,
           })}
         />
       </div>

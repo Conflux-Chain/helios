@@ -1,4 +1,4 @@
-import React, {memo, forwardRef} from 'react'
+import React, {useEffect, useState, memo, forwardRef} from 'react'
 import PropTypes from 'prop-types'
 import {CSSTransition, SwitchTransition} from 'react-transition-group'
 import classNames from 'classnames'
@@ -26,6 +26,7 @@ import './index.css'
  *   placeholder?: string(default 'loading'); // Placeholder content displayed when text === ''
  *   placeholderAnimation?: boolean(default true); // Whether the placeholder text shows the fill animation or not
  *   skeleton?: boolean | string; // When set to true, a skeleton will be displayed to cover the placeholder.It can also be set to a string as className.
+ *   delay?: number; // After the delay(ms, default - 0) time is still in the loading state, only then will the animation appear.If the delay value is less than 100, it will be ignored.
  *   ...otherNativeDOMProps
  * }}
  *
@@ -47,16 +48,38 @@ const Text = forwardRef(
       as = 'span',
       text,
       placeholder = 'loading...',
-      placeholderAnimation = true,
+      placeholderAnimation = false,
       skeleton = false,
+      delay = 350,
+      className,
       ...otherProps
     },
     ref,
   ) => {
+    const [inDelay, setInDelay] = useState(() => !text && delay > 100)
+    useEffect(() => {
+      if (!text && delay > 100) setInDelay(true)
+      else setInDelay(false)
+      const timer = setTimeout(() => setInDelay(false), delay)
+      return () => clearTimeout(timer)
+    }, [text, delay])
+
+    if (inDelay)
+      return React.createElement(
+        as,
+        {
+          ref,
+          className: classNames(className, 'opacity-0'),
+          ...otherProps,
+        },
+        placeholder,
+      )
+
     return React.createElement(
       as,
       {
         ref,
+        className,
         ...otherProps,
       },
       <SwitchTransition>
@@ -96,11 +119,12 @@ const Text = forwardRef(
         >
           <span
             className={classNames(
-              !text &&
-                placeholderAnimation &&
-                !skeleton &&
-                'text-placeholder-animation',
-              !!skeleton && !text && 'text-transparent',
+              {
+                'text-placeholder-animation':
+                  !text && placeholderAnimation && !skeleton,
+                'text-transparent': !!skeleton && !text,
+              },
+              'transition-opacity',
             )}
             data-placeholder={placeholder}
           >
@@ -120,6 +144,8 @@ Text.propTypes = {
   placeholderAnimation: PropTypes.bool,
   text: PropTypes.string,
   skeleton: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  delay: PropTypes.number,
+  className: PropTypes.string,
 }
 
 export default memo(Text)
