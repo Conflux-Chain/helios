@@ -44,7 +44,6 @@ function AccountItem({
       })
     }
   }
-
   return (
     <div className="bg-gray-0 rounded mt-3">
       {groupType === 'pk' ? null : (
