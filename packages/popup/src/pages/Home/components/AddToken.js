@@ -1,81 +1,68 @@
 import {PlusOutlined, SelectedOutlined} from '@fluent-wallet/component-icons'
+import {useDebounce} from 'react-use'
 import PropTypes from 'prop-types'
-import {useCallback, useEffect, useRef, useState} from 'react'
+import {useState, useMemo} from 'react'
 import {useTranslation} from 'react-i18next'
-import {useSWRConfig} from 'swr'
-
 import {SearchToken, SlideCard, TokenItem, WrapIcon} from '../../../components'
 import {DEFAULT_TOKEN_URL, RPC_METHODS} from '../../../constants'
 import {
+  useDbRefetchBalance,
   useCurrentAddress,
   useCurrentAddressTokens,
   useCurrentNetworkTokens,
   useNetworkTypeIsCfx,
+  useValidate20Token,
 } from '../../../hooks/useApi'
 import {request, validateAddress} from '../../../utils'
 
-const {WALLET_VALIDATE_20TOKEN, WALLET_WATCH_ASSET, WALLETDB_REFETCH_BALANCE} =
-  RPC_METHODS
+const {WALLET_WATCH_ASSET} = RPC_METHODS
 
 function AddToken({onClose, open}) {
-  const {mutate} = useSWRConfig()
   const {t} = useTranslation()
   const [searchContent, setSearchContent] = useState('')
-  const [noTokenStatus, setNoTokenStatus] = useState(false)
-  const inputValueRef = useRef()
+  const [debouncedSearchContent, setDebouncedSearchContent] =
+    useState(searchContent)
+  const [mutateAddrTokenBalance] = useDbRefetchBalance()
+
+  useDebounce(
+    () => {
+      setDebouncedSearchContent(searchContent)
+    },
+    200,
+    [searchContent],
+  )
+
   const {
     data: {
       eid: addressId,
-      value: address,
       network: {netId},
     },
   } = useCurrentAddress()
-  const isCfxChain = useNetworkTypeIsCfx()
+
   const {data: networkTokens, mutate: mutateNetworkTokens} =
     useCurrentNetworkTokens({
-      fuzzy: searchContent || null,
+      fuzzy: debouncedSearchContent || null,
     })
-  const [tokenList, setTokenList] = useState([])
+
   const {data: addressTokens, mutate: mutateAddressTokens} =
     useCurrentAddressTokens()
 
-  const getOther20Token = useCallback((userAddress, tokenAddress) => {
-    request(WALLET_VALIDATE_20TOKEN, {
-      tokenAddress,
-      userAddress,
-    }).then(result => {
-      if (inputValueRef.current === tokenAddress) {
-        if (result?.valid) {
-          setNoTokenStatus(false)
-          return setTokenList([[{...result, address: tokenAddress}, false]])
-        }
-        setNoTokenStatus(true)
-      }
-      // TODO:handle error
-    })
-  }, [])
+  const isCfxChain = useNetworkTypeIsCfx()
 
-  useEffect(() => {
+  const builtinTokens = useMemo(() => {
     if (!addressId) return
-    if (!networkTokens.length) setNoTokenStatus(true)
-    else setNoTokenStatus(false)
+    if (!networkTokens.length) return
+    return networkTokens.map(t => [t, addressTokens.includes(t)])
+  }, [addressId, networkTokens, addressTokens])
 
-    if (
-      !networkTokens.length &&
-      searchContent &&
-      validateAddress(searchContent, isCfxChain, netId)
-    ) {
-      getOther20Token(address, searchContent)
-      return
-    }
-    setTokenList(networkTokens.map(t => [t, addressTokens.includes(t)]))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressId, searchContent, networkTokens, addressTokens])
+  const {data: other20Token} = useValidate20Token(
+    debouncedSearchContent &&
+      validateAddress(debouncedSearchContent, isCfxChain, netId) &&
+      debouncedSearchContent,
+  )
 
-  const onChangeValue = value => {
-    setSearchContent(value)
-    inputValueRef.current = value
-  }
+  const tokenList =
+    builtinTokens || (other20Token.valid && [[other20Token, false]]) || null
 
   const onAddToken = token => {
     let params
@@ -94,20 +81,17 @@ function AddToken({onClose, open}) {
       }
     }
     request(WALLET_WATCH_ASSET, params).then(() => {
-      // TODO:error
-      mutateNetworkTokens()
-      mutateAddressTokens()
-      mutate([WALLETDB_REFETCH_BALANCE])
+      // TODO: error
+      mutateAddrTokenBalance().then(() => {
+        mutateNetworkTokens()
+        mutateAddressTokens()
+      })
     })
   }
 
   const onCloseAddToken = () => {
     onClose && onClose()
     setSearchContent('')
-  }
-
-  if (!address) {
-    return null
   }
 
   return (
@@ -122,8 +106,8 @@ function AddToken({onClose, open}) {
       open={open}
       cardContent={
         <div className="mt-4">
-          <SearchToken value={searchContent} onChange={onChangeValue} />
-          {tokenList.length ? (
+          <SearchToken value={searchContent} onChange={setSearchContent} />
+          {tokenList && (
             <div className="px-3 pt-3 mt-3 bg-gray-0 rounded">
               <p className="ml-1 mb-1 text-gray-40">{t('searchResults')}</p>
               {tokenList.map(([token, added], index) => (
@@ -149,7 +133,8 @@ function AddToken({onClose, open}) {
                 />
               ))}
             </div>
-          ) : noTokenStatus ? (
+          )}
+          {!tokenList && (
             <div className="flex  items-center flex-col">
               <img
                 src="/images/no-available-token.svg"
@@ -159,7 +144,7 @@ function AddToken({onClose, open}) {
               />
               <p className="text-sm text-gray-40">{t('noResult')}</p>
             </div>
-          ) : null}
+          )}
         </div>
       }
     />
