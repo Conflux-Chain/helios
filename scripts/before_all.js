@@ -30,7 +30,7 @@ media-src * data: blob: filesystem:;",`.replaceAll('\n', ' ')
       : '"background/dist/index.prod.js"',
     contentScripts: '"content-script.js"',
     webResources: '"content-script.js","inpage.js"',
-    popupHTML: isDev() ? 'popup.html' : 'popup/index.html',
+    popupHTML: isDev() ? 'popup.html' : 'popup/popup.html',
     permissions: isDev()
       ? '"http://localhost:18001/",\n "http://localhost:18002/",\n "http://localhost:18003/",\n "tabs",\n'
       : '',

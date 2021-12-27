@@ -4,7 +4,6 @@
   "main": "index.js",
   "version": "0.0.7",
   "dependencies": {
-    "@fluent-wallet/spec": "workspace:packages/spec",
-    "@fluent-wallet/webextension": "workspace:packages/webextension"
+    "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }
