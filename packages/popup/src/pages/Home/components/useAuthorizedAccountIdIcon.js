@@ -10,18 +10,19 @@ const getAuthorizedAccountIdIcon = (accounts, icon) => {
 }
 const useAuthorizedAccountIdIcon = () => {
   const [authorizedAccountIdObj, setAuthorizedAccountIdObj] = useState({})
-  const currentDapp = useCurrentDapp()
+  const {data: currentDappData} = useCurrentDapp()
+
   useEffect(() => {
-    if (currentDapp?.app?.account) {
+    if (currentDappData?.app?.account) {
       setAuthorizedAccountIdObj(
         getAuthorizedAccountIdIcon(
-          currentDapp.app.account,
-          currentDapp.site.icon,
+          currentDappData.app.account,
+          currentDappData.site.icon,
         ),
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentDapp?.app?.account])
+  }, [currentDappData?.app?.account])
   return authorizedAccountIdObj
 }
 
