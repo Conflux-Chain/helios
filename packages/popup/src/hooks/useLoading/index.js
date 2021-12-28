@@ -7,7 +7,7 @@ import {
   createSpinLoading,
   createSpinLoadingTransition,
 } from './createSpinLoading'
-import {createTextLoading} from './createTextLoading'
+import './index.css'
 
 const createLoadingMap = {
   Page: {
@@ -17,9 +17,6 @@ const createLoadingMap = {
   Spin: {
     create: createSpinLoading,
     transition: createSpinLoadingTransition,
-  },
-  Text: {
-    create: createTextLoading,
   },
 }
 
@@ -31,12 +28,14 @@ let pageLoadingCount = 0 // A flag used to correctly cancel multiple 'Page' type
  *
  * // Params are not reactive, they should be determined constant at the time of the call.
  * @param {{
- *   type: 'Page'(default) | 'Spin'(TODO:) | 'Text'(TODO:); // The type of loading.
+ *   type: 'Page'(default) | 'Spin' | 'LocalSpin'(TODO:); // The type of loading.
  *   delay?: number; // After the delay(ms, default - 0) time is still in the loading state, only then will the animation appear.If the delay value is less than 100, it will be ignored.
  *   targetDOM?: HTMLElement; // Equivalent to the 'ref' in return, one of the two can be chosen('Page' type doesn't have this param), targetDOM priority is higher.
  *   size?: number; // Valid only in Spin Loading.'px' size of box;If not set, will adapt to the targetDOM's width.
+ *   showBlur?: boolean; // default true. Whether to blur other elements.
  * }}
  * @returns {{
+ *   loading: boolean;
  *   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
  *   ref?: React.MutableRefObject<HTMLElement>; // Used to attach to the target DOM. 'Page' type doesn't return ref.
  * }}
@@ -46,7 +45,7 @@ let pageLoadingCount = 0 // A flag used to correctly cancel multiple 'Page' type
  * somewhere -> setLoading(true) | setLoading(false);
  *
  * @example use 'Spin' type loading with return ref
- * const { setLoading, ref } = useLoading({ type: 'Spin' });
+ * const { setLoading, ref } = useLoading({ type: 'Spin' }); // useLoading({ type: 'Spin', size: 100 })
  * in render wrapper dom -> <div ref={ref}></div>
  * somewhere -> setLoading(true) | setLoading(false);
  *
@@ -54,7 +53,11 @@ let pageLoadingCount = 0 // A flag used to correctly cancel multiple 'Page' type
  * const { setLoading } = useLoading({ type: 'Spin', targetDOM: domObj });
  */
 const useLoading = (
-  {type = 'Page', targetDOM, delay = 0, size} = {type: 'Page', delay: 0},
+  {type = 'Page', targetDOM, delay = 0, size, showBlur = true} = {
+    type: 'Page',
+    delay: 0,
+    showBlur: true,
+  },
 ) => {
   const [loading, setLoading] = useState(false)
   const loadingStatusRef = useRef(false) // We need a ref to determine if the loading state is still in after a certain time delay.
@@ -90,22 +93,25 @@ const useLoading = (
         if (_targetDOM && loading && createLoadingMap[type]) {
           if (type === 'Page' && pageLoadingCount > 0) {
             pageLoadingCount++
-            loadingEleRef.current = document.querySelector('.loading-page-mask')
-            clearTransitionRef.current =
-              createLoadingMap[type].transition(loadingEleRef)
+            loadingEleRef.current = document.querySelector('.loading-mask')
+            clearTransitionRef.current = createLoadingMap[type].transition({
+              targetDOM: _targetDOM,
+              loadingEle: loadingEleRef.current,
+            })
           } else {
-            loadingEleRef.current = createLoadingMap[type].create(
-              _targetDOM,
+            loadingEleRef.current = createLoadingMap[type].create({
+              targetDOM: _targetDOM,
               size,
-            )
+              showBlur,
+            })
+
             checkTargetDOMPosition(_targetDOM)
             _targetDOM.append(loadingEleRef.current)
-            if (createLoadingMap[type].transition) {
-              clearTransitionRef.current = createLoadingMap[type].transition(
-                _targetDOM,
-                loadingEleRef,
-              )
-            }
+            if (createLoadingMap[type].transition)
+              clearTransitionRef.current = createLoadingMap[type].transition({
+                targetDOM: _targetDOM,
+                loadingEle: loadingEleRef.current,
+              })
 
             if (type === 'Page') pageLoadingCount = 1
           }
@@ -119,9 +125,13 @@ const useLoading = (
           startLoading()
         }, delay)
       }
-    } else {
+    }
+
+    return () => {
+      if (!loadingEleRef.current) return
+
       if (type === 'Page') {
-        pageLoadingCount--
+        pageLoadingCount = Math.max(0, pageLoadingCount - 1)
         if (pageLoadingCount > 0) return
       }
 

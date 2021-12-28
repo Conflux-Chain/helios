@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect} from 'react'
+import {useState, useRef, useLayoutEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import {HomeTitle, PasswordInput, LanguageNav} from '../../components'
@@ -50,7 +50,7 @@ const UnlockPage = () => {
     }
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     inputRef.current.focus()
   }, [])
 

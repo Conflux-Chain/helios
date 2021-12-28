@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import {RightOutlined} from '@fluent-wallet/component-icons'
+import Text from '../../../components/Text'
 import {useCurrentAddress} from '../../../hooks/useApi'
 
 function CurrentNetwork({onOpenNetwork}) {
@@ -21,7 +22,7 @@ function CurrentNetwork({onOpenNetwork}) {
         src={icon || '/images/default-network-icon.svg'}
         alt="logo"
       />
-      <span className="text-2xs text-white mr-1">{name}</span>
+      <Text className="text-2xs text-white mr-1" text={name} />
       <RightOutlined className="w-2 h-2 text-white" />
     </div>
   )
