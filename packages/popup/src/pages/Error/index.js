@@ -1,9 +1,10 @@
 import {useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
-import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
-import {CopyButton} from '../../components'
+import Modal from '@fluent-wallet/component-modal'
+import {useTranslation} from 'react-i18next'
+import {CopyButton, NetworkContent} from '../../components'
 import useGlobalStore from '../../stores/index.js'
 import {useQuery} from '../../hooks'
 import {RPC_METHODS, ROUTES} from '../../constants'
@@ -20,6 +21,7 @@ function Error() {
   // type: route,fullNode,inner
   const [errorType, setErrorType] = useState('')
   const [zendeskTimer, setZendeskTimer] = useState(null)
+  const [networkShow, setNetworkShow] = useState(false)
 
   useEffect(() => {
     if (!FATAL_ERROR && !urlErrorMsg) {
@@ -56,8 +58,8 @@ function Error() {
       <div className="flex-1 text-center">
         <CloseCircleFilled
           className={`text-error w-20 h-20 ${
-            errorType === 'route' ? 'mt-[108px]' : 'mt-4'
-          }mb-6 mx-auto`}
+            errorType === 'inner' ? 'mt-4' : 'mt-[108px]'
+          } mb-6 mx-auto`}
         />
         <p className="text-base font-medium text-black mb-2">
           {t('errorTile')}
@@ -86,6 +88,7 @@ function Error() {
             toastClassName="top-4 right-3"
             CopyInner={
               <div
+                id="feedback"
                 aria-hidden="true"
                 className="text-center text-xs text-primary cursor-pointer"
                 onClick={onClickFeedback}
@@ -95,18 +98,34 @@ function Error() {
             }
           />
         ) : errorType == 'fullNode' ? (
-          <div className="text-center text-xs text-primary cursor-pointer">
+          <div
+            id="show-switch-network-modal"
+            aria-hidden="true"
+            onClick={() => setNetworkShow(true)}
+            className="text-center text-xs text-primary cursor-pointer"
+          >
             {t('switchNetwork')}
           </div>
         ) : null}
         <Button
-          id="setPasswordFormBtn"
+          id="go-home"
           className="w-70 mt-4 mx-auto"
           onClick={() => history.push(HOME)}
         >
           {t('back')}
         </Button>
       </div>
+      <Modal
+        id="networkModal"
+        open={networkShow}
+        size="medium"
+        title={t('chooseNetwork')}
+        onClose={() => setNetworkShow(false)}
+        content={
+          <NetworkContent onClickNetworkItem={() => setNetworkShow(false)} />
+        }
+        className="bg-bg bg-gray-circles bg-no-repeat bg-contain"
+      />
     </div>
   ) : null
 }

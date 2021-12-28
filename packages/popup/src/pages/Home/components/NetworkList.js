@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {SlideCard} from '../../../components'
+import {SlideCard, NetworkContent} from '../../../components'
 import {CurrentAccountNetworkLabel} from './'
-import {NetworkContent} from '../../../components'
 
 function NetworkList({onClose, open}) {
   const {t} = useTranslation()
