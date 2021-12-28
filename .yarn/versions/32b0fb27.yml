@@ -1,0 +1,7 @@
+releases:
+  "@fluent-wallet/wallet_enrich-conflux-tx": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/base32-address"
+  - "@fluent-wallet/rpc-engine"
