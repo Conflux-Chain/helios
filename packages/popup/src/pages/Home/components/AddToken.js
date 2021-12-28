@@ -105,33 +105,36 @@ function AddToken({onClose, open}) {
       onClose={onCloseAddToken}
       open={open}
       cardContent={
-        <div className="mt-4">
+        // 2.75rem = parent paddingBottom + current marginTop = 1.75rem + 1rem
+        <div className="mt-4 flex flex-col flex-grow h-[calc(100%-2.75rem)]">
           <SearchToken value={searchContent} onChange={setSearchContent} />
           {tokenList && (
-            <div className="px-3 pt-3 mt-3 bg-gray-0 rounded">
+            <div className="px-3 pt-3 mt-3 bg-gray-0 rounded flex flex-col flex-grow">
               <p className="ml-1 mb-1 text-gray-40">{t('searchResults')}</p>
-              {tokenList.map(([token, added], index) => (
-                <TokenItem
-                  key={index}
-                  index={index}
-                  token={token}
-                  maxWidth={135}
-                  maxWidthStyle="max-w-[135px]"
-                  id={`tokenItem-${token}`}
-                  rightIcon={
-                    <WrapIcon
-                      size="w-5 h-5"
-                      onClick={() => !added && onAddToken(token)}
-                    >
-                      {added ? (
-                        <SelectedOutlined className="w-3 h-3 text-gray-40" />
-                      ) : (
-                        <PlusOutlined className="w-3 h-3 text-primary" />
-                      )}
-                    </WrapIcon>
-                  }
-                />
-              ))}
+              <div className="flex flex-col flex-auto overflow-auto h-0">
+                {tokenList.map(([token, added], index) => (
+                  <TokenItem
+                    key={index}
+                    index={index}
+                    token={token}
+                    maxWidth={135}
+                    maxWidthStyle="max-w-[135px]"
+                    id={`tokenItem-${token}`}
+                    rightIcon={
+                      <WrapIcon
+                        size="w-5 h-5"
+                        onClick={() => !added && onAddToken(token)}
+                      >
+                        {added ? (
+                          <SelectedOutlined className="w-3 h-3 text-gray-40" />
+                        ) : (
+                          <PlusOutlined className="w-3 h-3 text-primary" />
+                        )}
+                      </WrapIcon>
+                    }
+                  />
+                ))}
+              </div>
             </div>
           )}
           {!tokenList && (
