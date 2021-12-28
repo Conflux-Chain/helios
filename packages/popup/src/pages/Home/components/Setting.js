@@ -53,7 +53,6 @@ function Setting({onClose, open}) {
         onClose={onClose}
         open={open}
         showClose={false}
-        maskClosable={false}
         cardTitle={
           <LanguageNav
             hasGoBack={true}
