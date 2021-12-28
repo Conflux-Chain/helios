@@ -16,7 +16,7 @@ function DisplayBalance({
   maxWidthStyle = 'max-w-[175px]',
   className = '',
   initialFontSize = 14,
-  symbol,
+  symbol = '',
   decimals = COMMON_DECIMALS,
   id,
 }) {
@@ -52,7 +52,7 @@ function DisplayBalance({
           {displayBalance}
         </span>
       </div>
-      <span className="inline-block ml-0.5">{symbol && `${symbol}`}</span>
+      <span className="inline-block ml-0.5">{`${symbol}`}</span>
     </div>
   )
 }

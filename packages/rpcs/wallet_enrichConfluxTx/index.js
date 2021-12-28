@@ -41,9 +41,13 @@ export const main = async ({
 
   if (to) {
     decoded = decode(to)
-    if (decoded.type !== 'contract' || !data)
+    if (
+      decoded.type === 'user' ||
+      decoded.hexAddress === '0x0000000000000000000000000000000000000000' ||
+      !data
+    )
       txs.push({eid: txExtraEid, txExtra: {simple: true, ok: true}})
-    else if (decoded.type === 'contract')
+    else if (decoded.type !== 'user')
       txs.push({
         eid: txExtraEid,
         txExtra: {contractInteraction: true, ok: true},
