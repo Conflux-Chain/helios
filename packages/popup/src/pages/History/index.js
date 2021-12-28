@@ -49,7 +49,10 @@ function History() {
       <main>
         {txList.length ? (
           txList.map(
-            ({status, created, txExtra, txPayload, app, token, eid}, index) => (
+            (
+              {status, created, txExtra, txPayload, app, token, eid, hash},
+              index,
+            ) => (
               <HistoryItem
                 key={eid}
                 status={status}
@@ -58,6 +61,7 @@ function History() {
                 payload={txPayload}
                 app={app}
                 token={token}
+                hash={hash}
                 transactionUrl={transactionUrls?.[index]}
               />
             ),
