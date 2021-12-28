@@ -57,6 +57,7 @@ export const getNthAccountOfHDKey = async ({
     idx = 0
 
   while (count <= nth) {
+    await new Promise(resolve => setTimeout(resolve, 1))
     paths[5] = idx++
     const newNode = k.derivePath(paths.join('/'))
     result.address = newNode.address.toLowerCase()
