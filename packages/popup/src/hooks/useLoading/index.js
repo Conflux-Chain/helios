@@ -32,7 +32,7 @@ let pageLoadingCount = 0 // A flag used to correctly cancel multiple 'Page' type
  *   delay?: number; // After the delay(ms, default - 0) time is still in the loading state, only then will the animation appear.If the delay value is less than 100, it will be ignored.
  *   targetDOM?: HTMLElement; // Equivalent to the 'ref' in return, one of the two can be chosen('Page' type doesn't have this param), targetDOM priority is higher.
  *   size?: number; // Valid only in Spin Loading.'px' size of box;If not set, will adapt to the targetDOM's width.
- *   showBlur?: boolean; // default true. Whether to blur other elements.
+ *   showBlur?: 'low' | 'middle' | 'high' | 'none'; // Blur level of the background element.default 'low'.
  * }}
  * @returns {{
  *   loading: boolean;
@@ -53,10 +53,10 @@ let pageLoadingCount = 0 // A flag used to correctly cancel multiple 'Page' type
  * const { setLoading } = useLoading({ type: 'Spin', targetDOM: domObj });
  */
 const useLoading = (
-  {type = 'Page', targetDOM, delay = 0, size, showBlur = true} = {
+  {type = 'Page', targetDOM, delay = 0, size, showBlur = 'low'} = {
     type: 'Page',
     delay: 0,
-    showBlur: true,
+    showBlur: 'low',
   },
 ) => {
   const [loading, setLoading] = useState(false)
@@ -184,5 +184,7 @@ function isDOMElement(ele) {
     )
   }
 }
+
+export const validBlur = {low: 1, middle: 1, high: 1, none: 1}
 
 export default useLoading

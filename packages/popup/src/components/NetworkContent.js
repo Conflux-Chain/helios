@@ -27,7 +27,7 @@ function NetworkItem({
   onClose,
   ...props
 }) {
-  const {setLoading} = useLoading({delay: 0})
+  const {setLoading} = useLoading()
   const {t} = useTranslation()
   const {
     data: {
