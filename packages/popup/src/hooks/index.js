@@ -45,6 +45,8 @@ export const useQuery = () => {
 
 export const useSlideAnimation = (show, direction = 'vertical') => {
   const [wrapperAnimateStyle, setWrapperAnimateStyle] = useState('')
+  const [slideTimer, setSlideTimer] = useState('')
+
   useEffect(() => {
     if (show) {
       return setWrapperAnimateStyle(
@@ -62,9 +64,18 @@ export const useSlideAnimation = (show, direction = 'vertical') => {
       const timer = setTimeout(() => {
         setWrapperAnimateStyle('')
         clearTimeout(timer)
+        setSlideTimer(null)
       }, ANIMATE_DURING_TIME)
+      setSlideTimer(timer)
     }
   }, [show, wrapperAnimateStyle, direction])
+
+  useEffect(() => {
+    return () => {
+      slideTimer && clearTimeout(slideTimer)
+    }
+  }, [slideTimer])
+
   return wrapperAnimateStyle
 }
 
