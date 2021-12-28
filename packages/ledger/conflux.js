@@ -56,9 +56,12 @@ export default class Conflux {
   async signTransaction(hdPath, txHex) {
     await this.setApp()
     try {
-      return this.app?.signTransaction(hdPath, txHex)
+      const res = await this.app?.signTransaction(hdPath, txHex)
+      return res
     } catch (error) {
       return Promise.reject(this.handleTheError(error))
+    } finally {
+      this.cleanUp()
     }
   }
 
@@ -159,6 +162,11 @@ export default class Conflux {
   handleTheError(error) {
     if (error?.id === ERROR.INVALID_CHANNEL.ID) {
       error.appCode = ERROR.INVALID_CHANNEL.CODE
+    }
+    if (error?.message?.includes('UNKNOWN_ERROR')) {
+      error.message = `Ledger connection error, please make sure the Ledger device is unlocked and open the Conflux App, and reopen this page. ${
+        error?.statusCode ? '(0x' + error?.statusCode?.toString(16) + ')' : ''
+      }`
     }
     return error
   }
