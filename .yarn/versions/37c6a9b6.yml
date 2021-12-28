@@ -1,0 +1,7 @@
+releases:
+  "@fluent-wallet/sentry": patch
+  "@fluent-wallet/wallet_add-vault": patch
+
+declined:
+  - helios-background
+  - helios-popup
