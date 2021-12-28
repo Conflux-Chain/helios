@@ -5,7 +5,6 @@ import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import Message from '@fluent-wallet/component-message'
-import {CurrentAccountNetworkLabel} from './'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard, DisplayBalance, Avatar} from '../../../components'
@@ -55,7 +54,9 @@ function AccountItem({
           aria-hidden="true"
           onClick={() => onChangeAccount(eid)}
           key={index}
-          className="flex p-3 rounded hover:bg-primary-4 cursor-pointer"
+          className={`flex p-3 rounded hover:bg-primary-4 ${
+            currentAccountId === eid ? 'cursor-default' : 'cursor-pointer'
+          }`}
         >
           <Avatar
             className="w-5 h-5 mr-2"
@@ -74,15 +75,24 @@ function AccountItem({
               <pre className="text-sm text-gray-80"> {tokeName}</pre>
             </div>
           </div>
-          {authorizedAccountIdIconObj[eid] ? (
-            <div className="w-6 h-6 border-gray-20 border border-solid rounded-full mt-1.5 flex justify-center items-center">
+          <div className="inline-flex justify-center items-center">
+            {authorizedAccountIdIconObj[eid] ? (
+              <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
+                <img
+                  className="w-4 h-4"
+                  src={authorizedAccountIdIconObj[eid]}
+                  alt="favicon"
+                />
+              </div>
+            ) : null}
+            {currentAccountId === eid && (
               <img
-                className="w-4 h-4"
-                src={authorizedAccountIdIconObj[eid]}
-                alt="favicon"
+                className="w-4 h-4 ml-2.5"
+                src="/images/select.svg"
+                alt="selected"
               />
-            </div>
-          ) : null}
+            )}
+          </div>
         </div>
       ))}
     </div>
@@ -118,7 +128,6 @@ function AccountList({onClose, open}) {
           <p className="text-base text-gray-80 font-medium">
             {t('myAccounts')}
           </p>
-          {<CurrentAccountNetworkLabel />}
         </div>
       }
       onClose={onClose}
