@@ -1,6 +1,6 @@
 import {ErrorBoundary} from 'react-error-boundary'
 import {isUndefined} from '@fluent-wallet/checks'
-import React, {Suspense, cloneElement} from 'react'
+import React, {Suspense, cloneElement, useEffect} from 'react'
 import {
   HashRouter as Router,
   Redirect,
@@ -256,6 +256,12 @@ function App() {
   const lockedData = useIsLocked()
   const zeroGroup = useIsZeroGroup()
   const {setFatalError} = useGlobalStore()
+
+  useEffect(() => {
+    // make up for the rest of height
+    window.resizeBy(0, 600 - window.innerHeight)
+  }, [])
+
   if (isUndefined(lockedData) || isUndefined(zeroGroup)) {
     return <PageLoading />
   }
