@@ -56,3 +56,4 @@ export const WALLET_GET_BLOCKCHAIN_EXPLORER_URL =
   'wallet_getBlockchainExplorerUrl'
 export const WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT =
   'wallet_importHardwareWalletAccountGroupOrAccount'
+export const CFX_GET_STATUS = 'cfx_getStatus'

@@ -11,6 +11,7 @@ function CopyButton({
   wrapperClassName = '',
   containerClassName = 'relative',
   CopyWrapper,
+  CopyInner,
   toastClassName = '-top-9 left-0',
 }) {
   const {t} = useTranslation()
@@ -23,7 +24,9 @@ function CopyButton({
             <CopyOutlined className={`cursor-pointer w-4 h-4 ${className}`} />
           </CopyWrapper>
         ) : (
-          <CopyOutlined className={`cursor-pointer w-4 h-4 ${className}`} />
+          CopyInner || (
+            <CopyOutlined className={`cursor-pointer w-4 h-4 ${className}`} />
+          )
         )}
       </CopyToClipboard>
       <Toast
@@ -43,6 +46,7 @@ CopyButton.propTypes = {
   wrapperClassName: PropTypes.string,
   toastClassName: PropTypes.string,
   CopyWrapper: PropTypes.elementType,
+  CopyInner: PropTypes.node,
   containerClassName: PropTypes.string,
 }
 

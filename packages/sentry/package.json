@@ -3,8 +3,9 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
+    "@ethersproject/keccak256": "5.5.0",
     "@sentry/browser": "6.16.1",
     "@sentry/tracing": "6.16.1"
   }

@@ -22,6 +22,10 @@ function verify(hexAddress, netId, base32Address) {
 
 describe('@fluent-wallet/base32-address', function () {
   it('test examples in different types', async function () {
+    expect(
+      decode('cfx:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0sfbnjm2').hexAddress,
+    ).toBe('0x0000000000000000000000000000000000000000')
+
     expect(encode('106d49f8505410eb4e671d51f7d96d2c87807b09', 1029)).toBe(
       'cfx:aajg4wt2mbmbb44sp6szd783ry0jtad5bea80xdy7p',
     )

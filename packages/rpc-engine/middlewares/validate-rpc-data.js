@@ -125,6 +125,11 @@ function formatRpcSiteAndApp(arg) {
   if (!_inpage) return arg
   if (req.method === 'wallet_registerSiteMetadata') return arg
   const site = db.getOneSite({origin: _origin})
+  if (!site) {
+    const err = new jsonRpcErr.InvalidParams(`Wallet not ready`)
+    err.rpcData = req
+    throw err
+  }
   req.site = site
   const app = db.getOneApp({site: site.eid})
   if (app) req.app = app
