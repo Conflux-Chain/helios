@@ -60,6 +60,7 @@ jobs:
       - name: build and release
         env:
           FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
+          SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
           SNOWPACK_PUBLIC_FLUENT_ENV: "debug-release"
           SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
         run: yarn prod:release

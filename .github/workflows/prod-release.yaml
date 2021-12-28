@@ -59,7 +59,10 @@ jobs:
           prerelease: true
       - name: build and release
         env:
-          FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
+          FLUENT_VERSION: ${{steps.create_release.outputs.tag_name}}
+          SNOWPACK_PUBLIC_FLUENT_ENV: "production"
+          SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
+          SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
         run: yarn prod:release
 
       - uses: shogo82148/actions-upload-release-asset@v1
