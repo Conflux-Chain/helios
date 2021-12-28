@@ -1,9 +1,12 @@
 import './createSpinLoading.css'
+import {validBlur} from './index'
 
 export function createSpinLoading({targetDOM, size, showBlur}) {
   const mask = document.createElement('div')
   mask.classList.add('loading-mask')
-  if (showBlur) targetDOM.classList.add('loading-mask-blur')
+  if (validBlur[showBlur] && showBlur !== 'none') {
+    targetDOM.classList.add(`loading-mask-blur-${showBlur}`)
+  }
 
   let _size = parseInt(size)
   if (isNaN(_size)) {
@@ -40,6 +43,9 @@ export function createSpinLoadingTransition({targetDOM, loadingEle}) {
     wrapperDOM.addEventListener('transitionend', clearLoading)
     loadingEle.style.backgroundColor = 'rgba(255, 255, 255, 0)'
     wrapperDOM.style.opacity = '0'
-    targetDOM.classList.remove('loading-mask-blur')
+    targetDOM.classList.remove(
+      ...Object.keys(validBlur).map(blur => `loading-mask-blur-${blur}`),
+    )
+    delete targetDOM.dataset.blur
   }
 }

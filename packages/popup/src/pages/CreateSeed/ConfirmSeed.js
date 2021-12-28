@@ -29,7 +29,7 @@ function ConfirmSeed() {
   const [mnemonicIndex, setMnemonicIndex] = useState(initData.join(' '))
   const [mnemonicError, setMnemonicError] = useState('')
   const [buttonArray, setButtonArray] = useState([])
-  const {setLoading} = useLoading()
+  const {setLoading} = useLoading({showBlur: 'high'})
 
   useEffect(() => {
     setButtonArray(shuffle(createdMnemonic.split(' ')))
