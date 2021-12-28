@@ -1,0 +1,4 @@
+declined:
+  - browser-extension
+  - "@fluent-wallet/hdkey"
+  - helios-popup
