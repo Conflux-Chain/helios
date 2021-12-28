@@ -19,7 +19,7 @@ export const rpcErrorHandlerFactory = ({
   return function (err) {
     if (!err || !err.message || !err.rpcData || !err.rpcData._c) {
       sentryCapture(err)
-      if (!isProd)
+      if (!isProd) {
         console.error(
           'DEV_ONLY_ERROR in method: ',
           debugLog.reduce((acc, {method}) => acc || method, null) ||
@@ -31,18 +31,20 @@ export const rpcErrorHandlerFactory = ({
           '\nall debug log:\n',
           debugLog,
         )
+      }
       return true
     }
     const req = err.rpcData
     err = appendRpcStackToErrorMessage(err, req._rpcStack || [req.method])
 
     /* istanbul ignore if  */
-    if (!isProd)
+    if (!isProd && !err?.message?.includes('UserRejected')) {
       console.error(
         'DEV_ONLY_ERROR: ' + (err.message || ''),
         '\n',
         err.stack || '',
       )
+    }
     req._c.write({
       jsonrpc: '2.0',
       error: {
