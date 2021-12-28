@@ -54,6 +54,7 @@ function HistoryItem({
   app,
   token,
   transactionUrl,
+  hash,
 }) {
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
@@ -172,9 +173,9 @@ function HistoryItem({
           )}
         </div>
         <div className="flex">
-          {toAddress ? (
+          {hash ? (
             <CopyButton
-              text={toAddress}
+              text={hash}
               className="w-3 h-3 text-primary"
               CopyWrapper={WrapIcon}
               wrapperClassName="!w-5 !h-5"
@@ -244,6 +245,7 @@ HistoryItem.propTypes = {
   extra: PropTypes.object.isRequired,
   payload: PropTypes.object.isRequired,
   transactionUrl: PropTypes.string,
+  hash: PropTypes.string,
   app: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   token: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
 }

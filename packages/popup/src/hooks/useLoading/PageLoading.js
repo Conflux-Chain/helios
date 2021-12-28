@@ -6,11 +6,12 @@ import './index.css'
 const PageLoading = () => {
   const [inDelay, setInDelay] = useState(true)
   useEffect(() => {
-    const timer = setTimeout(() => setInDelay(false), 400)
+    const timer = setTimeout(() => setInDelay(false), 350)
     return () => clearTimeout(timer)
   }, [])
 
   if (inDelay) return null
+
   return (
     <div className="h-150 w-93 m-auto light flex items-center justify-center">
       <div

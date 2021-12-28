@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/browser'
 import {Integrations} from '@sentry/tracing'
+import {keccak256} from '@ethersproject/keccak256'
 
 const defaultOpts = {
   integrations: [new Integrations.BrowserTracing()],
@@ -21,3 +22,17 @@ export function init(opts = {}) {
 export function capture(err) {
   Sentry.captureException(err)
 }
+
+export function captureMessage(message) {
+  if (!message || typeof message !== 'string') return
+  Sentry.captureMessage(message)
+}
+
+export function updateUserId(id) {
+  if (typeof id !== 'string') return
+  Sentry.configureScope(scope => {
+    scope.setUser({id: keccak256(id)})
+  })
+}
+
+export {Sentry}

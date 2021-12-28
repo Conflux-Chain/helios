@@ -229,13 +229,15 @@ export const useAddressType = address => {
   return type
 }
 
-export const useDbRefetchBalance = param => {
-  useRPC([WALLETDB_REFETCH_BALANCE], param ? {...param} : undefined)
-  useRPC(
+export const useDbRefetchBalance = (params = {}) => {
+  const {type, allNetwork} = params
+  const {mutate} = useRPC([WALLETDB_REFETCH_BALANCE, type, allNetwork], params)
+  const {mutate: mutateAll} = useRPC(
     [WALLETDB_REFETCH_BALANCE, 'REFETCH_ALL'],
     {type: 'all', allNetwork: true},
     {refreshInterval: 180000},
   )
+  return [mutate, mutateAll]
 }
 
 export const useCurrentNetworkTokens = ({fuzzy, addressId}) => {
@@ -293,6 +295,26 @@ export const useSingleTokenInfoWithNativeTokenSupport = tokenId => {
     },
     {fallbackData: {}},
   ).data
+}
+
+export const useValidate20Token = address => {
+  const {
+    data: {value: userAddress},
+  } = useCurrentAddress()
+  return useRPC(
+    userAddress && address
+      ? [WALLET_VALIDATE_20TOKEN, address, userAddress]
+      : null,
+    {tokenAddress: address, userAddress},
+    {
+      fallbackData: {valid: false},
+      postprocessSuccessData: d => {
+        if (!d.valid) return d
+        d.address = address
+        return d
+      },
+    },
+  )
 }
 
 export const useSingleAddressTokenBalanceWithNativeTokenSupport = ({

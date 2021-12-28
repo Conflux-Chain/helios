@@ -20,6 +20,7 @@ import SCHEMA from './db-schema'
 import {listen} from '@fluent-wallet/extension-runtime/background.js'
 import initDB from './init-db.js'
 import * as bb from '@fluent-wallet/webextension'
+import {updateUserId} from '@fluent-wallet/sentry'
 
 if (!IS_PROD_MODE) window.b = browser
 if (!IS_PROD_MODE) window.bb = bb
@@ -96,6 +97,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 ;(async () => {
   // ## initialize db
   const {request, db} = await initBG()
+  updateUserId(db.getAddress()?.[0]?.hex)
   request({method: 'wallet_handleUnfinishedTxs', _rpcStack: ['frombg']})
   request({method: 'wallet_enrichConfluxTxs', _rpcStack: ['frombg']})
   setInterval(
