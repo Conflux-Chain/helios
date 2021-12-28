@@ -26,7 +26,7 @@ function ImportSeedPhrase() {
   const [errorMessage, setErrorMessage] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
   const {createdPassword, setCreatedPassword} = useGlobalStore()
-  const {setLoading} = useLoading()
+  const {setLoading} = useLoading({showBlur: 'high'})
   const hdGroup = useHdAccountGroup()
 
   useCreatedPasswordGuard()
