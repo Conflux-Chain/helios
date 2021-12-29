@@ -385,6 +385,7 @@ function ConfirmTransition() {
               cancelText={t('cancel')}
               confirmDisabled={confirmDisabled}
               confirmParams={{tx: sendParams}}
+              setSendStatus={setSendStatus}
             />
           )}
           {/* {!isDapp && sendingTransaction && !isHwAccount && (

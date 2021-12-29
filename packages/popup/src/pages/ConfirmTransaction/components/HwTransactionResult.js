@@ -44,7 +44,7 @@ function HwTransactionResult({status}) {
 }
 
 HwTransactionResult.propTypes = {
-  status: PropTypes.oneOf(Object.keys(HW_TX_STATUS)),
+  status: PropTypes.oneOf(Object.values(HW_TX_STATUS)),
 }
 
 export default HwTransactionResult
