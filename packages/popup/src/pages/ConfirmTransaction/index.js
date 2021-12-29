@@ -36,6 +36,7 @@ import {
   HW_TX_STATUS,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
+import useDebouncedValue from '../../hooks/useDebouncedValue'
 
 const {VIEW_DATA, HOME} = ROUTES
 const {
@@ -289,7 +290,10 @@ function ConfirmTransition() {
       })
   }
 
-  const confirmDisabled = !!balanceError || estimateRst.loading || isHwUnAuth
+  const confirmDisabled = useDebouncedValue(
+    !!balanceError || estimateRst.loading || isHwUnAuth,
+    [!!balanceError, estimateRst.loading, isHwUnAuth],
+  )
 
   return (
     <div className="flex flex-col h-full w-full relative">

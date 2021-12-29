@@ -88,7 +88,7 @@ function Button({
       onClick={e => onClick && onClick(e)}
       disabled={disabled}
       className={`
-      flex justify-center items-center focus:outline-none rounded border border-solid ${disabledStyle} ${colorStyle} ${sizeStyle} ${
+      flex justify-center items-center focus:outline-none rounded border border-solid transition-colors ${disabledStyle} ${colorStyle} ${sizeStyle} ${
         fullWidth ? 'w-full' : 'px-4'
       } ${className}`}
       {...props}

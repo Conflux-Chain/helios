@@ -27,7 +27,7 @@
 .text-placeholder-animation {
   @apply relative;
 
-  text-shadow: 0 0 1px #fff, 0 0 1px #fff;
+  /* text-shadow: 0 0 1px #fff, 0 0 1px #fff; */
 }
 
 .text-placeholder-animation::after {
@@ -35,6 +35,7 @@
 
   content: attr(data-placeholder);
   color: inherit;
+  filter: invert(15%);
   mix-blend-mode: difference;
   animation: text-placeholder-animation 6s linear infinite;
 }
