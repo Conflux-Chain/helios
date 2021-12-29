@@ -521,3 +521,30 @@ export const useQueryImportedAddress = networkId => {
     },
   )
 }
+
+export const useAddressTypeInConfirmTx = address => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {data} = useRPC(
+    address && networkId
+      ? [QUERY_ADDRESS, 'useAddressTypeInConfirmTx', address, networkId]
+      : null,
+    {
+      value: address,
+      networkId,
+      g: {
+        eid: 1,
+        _account: {eid: 1, _accountGroup: {vault: {type: 1}}},
+      },
+    },
+    {
+      fallbackData: {
+        account: {accountGroup: {vault: {}}},
+      },
+    },
+  )
+  return data
+}

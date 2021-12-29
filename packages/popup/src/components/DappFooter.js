@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../utils'
 import {RPC_METHODS, HW_TX_STATUS} from '../constants'
-import {usePendingAuthReq} from '../hooks/useApi'
+import {usePendingAuthReq, useAddressTypeInConfirmTx} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 
 const {
@@ -31,6 +31,14 @@ function DappFooter({
   const pendingAuthReq = usePendingAuthReq()
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const {setLoading} = useLoading()
+  const {
+    account: {
+      accountGroup: {
+        vault: {type},
+      },
+    },
+  } = useAddressTypeInConfirmTx(req.params.from)
+  const isHwAccount = type === 'hw'
 
   const onCancel = () => {
     setLoading(true)
@@ -51,8 +59,8 @@ function DappFooter({
     if (!req?.method) {
       return
     }
-    setLoading(true)
-    setSendStatus(HW_TX_STATUS.WAITING)
+    if (!isHwAccount) setLoading(true)
+    else setSendStatus(HW_TX_STATUS.WAITING)
     let params = {}
     switch (req.method) {
       case WALLET_REQUEST_PERMISSIONS:
@@ -84,15 +92,15 @@ function DappFooter({
     request(req.method, {authReqId: eid, ...params})
       .then(() => {
         onClickConfirm && onClickConfirm()
-        setLoading(false)
-        setSendStatus(HW_TX_STATUS.SUCCESS)
+        if (!isHwAccount) setLoading(false)
+        else setSendStatus(HW_TX_STATUS.SUCCESS)
         window.close()
       })
       .catch(e => {
         console.log('error', e)
         // TODO: error message
-        setLoading(false)
-        setSendStatus(HW_TX_STATUS.REJECTED)
+        if (!isHwAccount) setLoading(false)
+        else setSendStatus(HW_TX_STATUS.REJECTED)
       })
   }
 

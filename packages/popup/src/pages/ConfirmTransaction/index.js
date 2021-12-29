@@ -1,7 +1,6 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
@@ -25,6 +24,7 @@ import {
   useCurrentAddress,
   usePendingAuthReq,
   useNetworkTypeIsCfx,
+  useAddressTypeInConfirmTx,
 } from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
 import {request, bn16, getPageType} from '../../utils'
@@ -39,39 +39,8 @@ import {
 import useLoading from '../../hooks/useLoading'
 
 const {VIEW_DATA, HOME} = ROUTES
-const {
-  CFX_SEND_TRANSACTION,
-  ETH_SEND_TRANSACTION,
-  WALLET_GET_BALANCE,
-  QUERY_ADDRESS,
-} = RPC_METHODS
-
-const useAddressTypeInConfirmTx = address => {
-  const {
-    data: {
-      network: {eid: networkId},
-    },
-  } = useCurrentAddress()
-  const {data} = useRPC(
-    address && networkId
-      ? [QUERY_ADDRESS, 'useAddressTypeInConfirmTx', address, networkId]
-      : null,
-    {
-      value: address,
-      networkId,
-      g: {
-        eid: 1,
-        _account: {eid: 1, _accountGroup: {vault: {type: 1}}},
-      },
-    },
-    {
-      fallbackData: {
-        account: {accountGroup: {vault: {}}},
-      },
-    },
-  )
-  return data
-}
+const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
+  RPC_METHODS
 
 function ConfirmTransition() {
   const {t} = useTranslation()
@@ -282,8 +251,8 @@ function ConfirmTransition() {
   }
 
   const onSend = async () => {
-    setLoading(true)
-    setSendStatus(HW_TX_STATUS.WAITING)
+    if (!isHwAccount) setLoading(true)
+    else setSendStatus(HW_TX_STATUS.WAITING)
     if (isSendToken) {
       const error = await checkBalance()
       if (error) {
@@ -294,19 +263,18 @@ function ConfirmTransition() {
     }
     request(SEND_TRANSACTION, [params])
       .then(() => {
-        setLoading(false)
-        setSendStatus(HW_TX_STATUS.SUCCESS)
+        if (!isHwAccount) setLoading(false)
+        else setSendStatus(HW_TX_STATUS.SUCCESS)
         clearSendTransactionParams()
         history.push(HOME)
       })
       .catch(error => {
-        setLoading(false)
-        setSendStatus(HW_TX_STATUS.REJECTED)
+        console.error('error', error?.message ?? error)
+        clearSendTransactionParams()
         if (!isHwAccount) {
-          clearSendTransactionParams()
-          console.error('error', error?.message ?? error)
+          setLoading(false)
           history.push(HOME)
-        }
+        } else setSendStatus(HW_TX_STATUS.REJECTED)
       })
   }
 
