@@ -22,7 +22,6 @@ import {
 } from '../../hooks'
 import {
   useCurrentAddress,
-  usePendingAuthReq,
   useNetworkTypeIsCfx,
   useAddressTypeInConfirmTx,
 } from '../../hooks/useApi'
@@ -39,8 +38,12 @@ import {
 import useLoading from '../../hooks/useLoading'
 
 const {VIEW_DATA, HOME} = ROUTES
-const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
-  RPC_METHODS
+const {
+  CFX_SEND_TRANSACTION,
+  ETH_SEND_TRANSACTION,
+  WALLET_GET_BALANCE,
+  WALLET_GET_PENDING_AUTH_REQUEST,
+} = RPC_METHODS
 
 function ConfirmTransition() {
   const {t} = useTranslation()
@@ -48,7 +51,16 @@ function ConfirmTransition() {
   const {authStatus} = useConnect()
   const [sendStatus, setSendStatus] = useState()
   const [balanceError, setBalanceError] = useState('')
-  const pendingAuthReq = usePendingAuthReq()
+  const [pendingAuthReq, setPendingAuthReq] = useState()
+  const isDapp = getPageType() === 'notification'
+  console.log('isDapp', isDapp)
+  useEffect(() => {
+    if (isDapp)
+      request(WALLET_GET_PENDING_AUTH_REQUEST).then(result =>
+        setPendingAuthReq(result),
+      )
+  }, [isDapp])
+  console.log('confirm transition', pendingAuthReq)
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const SEND_TRANSACTION = networkTypeIsCfx
     ? CFX_SEND_TRANSACTION
@@ -72,8 +84,8 @@ function ConfirmTransition() {
     },
   } = useCurrentAddress()
   const nativeToken = ticker || {}
-  const tx = useDappParams()
-  const isDapp = getPageType() === 'notification'
+  const tx = useDappParams(pendingAuthReq)
+
   // get to type and to token
   const {isContract, decodeData} = useDecodeData(tx)
   const {
@@ -93,7 +105,8 @@ function ConfirmTransition() {
       },
     },
   } = useAddressTypeInConfirmTx(displayFromAddress)
-  const isHwAccount = type === 'hw'
+  const isHwAccount = type === 'hw' && type !== undefined
+  console.log('isHwAccount', isHwAccount)
   const isHwUnAuth = authStatus === LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
   const isHwOpenAlert =
     authStatus !== LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
@@ -271,10 +284,8 @@ function ConfirmTransition() {
       .catch(error => {
         console.error('error', error?.message ?? error)
         clearSendTransactionParams()
-        if (!isHwAccount) {
-          setLoading(false)
-          history.push(HOME)
-        } else setSendStatus(HW_TX_STATUS.REJECTED)
+        if (!isHwAccount) setLoading(false)
+        setSendStatus(HW_TX_STATUS.REJECTED)
       })
   }
 
@@ -353,7 +364,18 @@ function ConfirmTransition() {
               cancelText={t('cancel')}
               confirmDisabled={confirmDisabled}
               confirmParams={{tx: sendParams}}
+              setLoading={setLoading}
               setSendStatus={setSendStatus}
+              pendingAuthReq={pendingAuthReq}
+              isHwAccount={isHwAccount}
+              onConfirmSuccess={() => {
+                if (!isHwAccount) setLoading(false)
+                else setSendStatus(HW_TX_STATUS.SUCCESS)
+              }}
+              onConfirmError={() => {
+                if (!isHwAccount) setLoading(false)
+                setSendStatus(HW_TX_STATUS.REJECTED)
+              }}
             />
           )}
           {/* {!isDapp && sendingTransaction && !isHwAccount && (
@@ -361,7 +383,9 @@ function ConfirmTransition() {
               <Loading />
             </div>
           )} */}
-          {isHwAccount && <HwTransactionResult status={sendStatus} />}
+          {isHwAccount && (
+            <HwTransactionResult status={sendStatus} isDapp={isDapp} />
+          )}
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import {ErrorBoundary} from 'react-error-boundary'
 import {isUndefined} from '@fluent-wallet/checks'
-import React, {Suspense, cloneElement} from 'react'
+import React, {Suspense, cloneElement, useEffect} from 'react'
 import {
   HashRouter as Router,
   Redirect,
@@ -15,6 +15,7 @@ import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
 import PageLoading from './hooks/useLoading/PageLoading'
 import './App.css'
 import useGlobalStore from './stores/index.js'
+import {getPageType} from './utils'
 
 import ErrorPage from './pages/Error'
 import HomePage from './pages/Home'
@@ -259,7 +260,11 @@ const AppRoutes = withRouter(
 function App() {
   const isLocked = useIsLocked()
   const isZeroGroup = useIsZeroGroup()
-  const pendingAuthReq = usePendingAuthReq()
+  const pendingAuthReq = usePendingAuthReq(3000)
+
+  useEffect(() => {
+    if (getPageType() === 'popup' && pendingAuthReq?.length > 0) window.close()
+  }, [pendingAuthReq?.length])
 
   const {setFatalError} = useGlobalStore()
   if (

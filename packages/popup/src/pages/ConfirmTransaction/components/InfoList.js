@@ -10,7 +10,7 @@ const {EDIT_PERMISSION} = ROUTES
 
 // TODO: use network id
 const CurrentNetworkDisplay = ({currentNetwork}) => {
-  const {name, icon} = currentNetwork
+  const {name, icon} = currentNetwork || {}
 
   return (
     <div className="flex items-center">

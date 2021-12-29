@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../utils'
 import {RPC_METHODS, HW_TX_STATUS} from '../constants'
-import {usePendingAuthReq, useAddressTypeInConfirmTx} from '../hooks/useApi'
+import {usePendingAuthReq} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 
 const {
@@ -27,18 +27,14 @@ function DappFooter({
   onClickCancel,
   onClickConfirm,
   setSendStatus,
+  isHwAccount,
+  pendingAuthReq: customPendingAuthReq,
 }) {
-  const pendingAuthReq = usePendingAuthReq()
+  let pendingAuthReq = usePendingAuthReq()
+  pendingAuthReq = customPendingAuthReq || pendingAuthReq
+
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const {setLoading} = useLoading()
-  const {
-    account: {
-      accountGroup: {
-        vault: {type},
-      },
-    },
-  } = useAddressTypeInConfirmTx(req.params.from)
-  const isHwAccount = type === 'hw'
 
   const onCancel = () => {
     setLoading(true)
@@ -88,6 +84,7 @@ function DappFooter({
         break
     }
     params = {...params, ...confirmParams}
+    console.log('params', params)
 
     request(req.method, {authReqId: eid, ...params})
       .then(() => {
@@ -97,10 +94,11 @@ function DappFooter({
         window.close()
       })
       .catch(e => {
+        // TODO: error message
         console.log('error', e)
         // TODO: error message
         if (!isHwAccount) setLoading(false)
-        else setSendStatus(HW_TX_STATUS.REJECTED)
+        setSendStatus(HW_TX_STATUS.REJECTED)
       })
   }
 
@@ -135,6 +133,8 @@ DappFooter.propTypes = {
   onClickConfirm: PropTypes.func,
   onClickCancel: PropTypes.func,
   setSendStatus: PropTypes.func,
+  pendingAuthReq: PropTypes.array,
+  isHwAccount: PropTypes.bool,
 }
 
 export default DappFooter
