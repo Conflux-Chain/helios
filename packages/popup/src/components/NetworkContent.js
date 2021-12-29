@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import Message from '@fluent-wallet/component-message'
+import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {RPC_METHODS} from '../constants'
 import {request} from '../utils'
 import {useCfxNetwork, useCurrentAddress} from '../hooks/useApi'
@@ -88,7 +89,7 @@ function NetworkItem({
         {networkName}
       </div>
       {eid === networkId && (
-        <img className="w-4 h-4" src="/images/select.svg" alt="selected" />
+        <CheckCircleFilled className="w-4 h-4 text-success" />
       )}
       <CustomTag className={`absolute right-0 top-0 ${networkTypeColor}`}>
         {networkType}
