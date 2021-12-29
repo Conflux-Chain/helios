@@ -1,5 +1,0 @@
-releases:
-  "@fluent-wallet/component-checkbox": patch
-
-declined:
-  - helios-popup
