@@ -1,0 +1,10 @@
+releases:
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
+  "@fluent-wallet/wallet_metadata-for-popup": patch
+  "@fluent-wallet/wallet_set-current-network": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/ledger"
+  - helios-popup
