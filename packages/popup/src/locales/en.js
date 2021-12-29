@@ -321,6 +321,14 @@ const en = {
     ledgerIsNotConnected: 'Leger is not connected',
     openExpandView: 'Open Fluent expand view to connect',
     hwOpenApp: 'Before clicking confirm, make sure the Conflux App is open.',
+
+    // error page
+    errorTile: 'Error',
+    errorDes: 'hoops.something goes wrong...',
+    routeError: 'Sorry! The page you’re looking for cannot be found.',
+    errorCode: 'Error Code',
+    feedBackCode: 'Copy code and feedback',
+    fullNodeError: 'Unable to connect RPC node.',
   },
 }
 

@@ -49,6 +49,7 @@ function ConnectSitesList({
             <Checkbox
               checked={allCheckboxStatus}
               onChange={onSelectAllAccount}
+              className="mr-2"
               id="selectAll"
             >
               {t('selectAll')}
@@ -88,18 +89,19 @@ function ConnectSitesList({
                         )}
                       </p>
                     </div>
-                    <div className="flex">
+                    <div className="flex items-center">
                       {currentAddress.eid === accountItem.currentAddress.eid ? (
                         <img
                           src="/images/location.svg"
                           alt="current address"
-                          className="mr-3"
+                          className="mr-3 w-3 h-3"
                           id="location"
                         />
                       ) : null}
                       <Checkbox
                         checked={checkboxStatusObj[accountItem.eid]}
                         id={`check-${index}`}
+                        iconClassName="mr-0"
                       />
                     </div>
                   </div>

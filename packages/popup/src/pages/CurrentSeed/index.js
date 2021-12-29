@@ -63,7 +63,7 @@ function CurrentSeed() {
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
   const [selectedGroupIdx, setSelectedGroupIdx] = useState(0)
   const [accountCreationError, setAccountCreationError] = useState('')
-  const {setLoading} = useLoading()
+  const {setLoading} = useLoading({showBlur: 'high'})
 
   useEffect(() => {
     setAccountNamePlaceholder(`Seed-1-${hdGroup[0]?.account?.length + 1}`)

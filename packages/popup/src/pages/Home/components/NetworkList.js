@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {SlideCard} from '../../../components'
-import {CurrentAccountNetworkLabel} from './'
-import {NetworkContent} from '../../../components'
+import {SlideCard, NetworkContent} from '../../../components'
 
 function NetworkList({onClose, open}) {
   const {t} = useTranslation()
@@ -16,7 +14,6 @@ function NetworkList({onClose, open}) {
       cardTitle={
         <div className="ml-3 pb-1">
           <p className="text-base text-gray-80 font-medium">{t('network')}</p>
-          {<CurrentAccountNetworkLabel />}
         </div>
       }
       onClose={onClose}

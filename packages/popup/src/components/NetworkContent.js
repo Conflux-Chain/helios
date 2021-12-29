@@ -27,7 +27,7 @@ function NetworkItem({
   onClose,
   ...props
 }) {
-  const {setLoading} = useLoading({delay: 0})
+  const {setLoading} = useLoading()
   const {t} = useTranslation()
   const {
     data: {
@@ -72,7 +72,9 @@ function NetworkItem({
     <div
       {...props}
       aria-hidden="true"
-      className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative cursor-pointer ${itemWrapperPaddingStyle}`}
+      className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative hover:bg-primary-4 ${
+        eid === networkId ? 'cursor-default' : 'cursor-pointer'
+      } ${itemWrapperPaddingStyle} pr-3.5`}
       onClick={onChangeNetwork}
     >
       <div className="w-8 h-8 border border-solid border-gray-20 rounded-full flex items-center justify-center">
@@ -82,9 +84,12 @@ function NetworkItem({
           src={icon || '/images/default-network-icon.svg'}
         />
       </div>
-      <div className="ml-2.5 text-gray-80 text-sm font-medium">
+      <div className="ml-2.5 text-gray-80 text-sm font-medium flex-1">
         {networkName}
       </div>
+      {eid === networkId && (
+        <img className="w-4 h-4" src="/images/select.svg" alt="selected" />
+      )}
       <CustomTag className={`absolute right-0 top-0 ${networkTypeColor}`}>
         {networkType}
       </CustomTag>
