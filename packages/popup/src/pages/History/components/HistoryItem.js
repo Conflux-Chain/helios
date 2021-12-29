@@ -212,7 +212,7 @@ function HistoryItem({
         </div>
         <div className="flex-1">
           <div className="flex items-center justify-between">
-            <div className="text-gray-80 text-sm max-w-[120px] text-ellipsis">
+            <div className="text-gray-80 text-sm max-w-[120px] text-ellipsis font-medium">
               {actionName}
             </div>
             {amount ? (
