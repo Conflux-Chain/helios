@@ -16,7 +16,7 @@
     "transform": {
       "react": {
         "runtime": "automatic",
-        "development": false
+        "development": true
       }
     },
     "target": "es2022",
