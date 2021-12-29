@@ -22,7 +22,7 @@ function HwTransactionResult({status}) {
       open={open}
       closable={false}
       title={title}
-      content={content}
+      content={<div className="flex w-full justify-center">{content}</div>}
       icon={
         isRejected ? <CloseCircleFilled className="text-error" /> : <Loading />
       }

@@ -27,7 +27,7 @@ import {
   useNetworkTypeIsCfx,
 } from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
-import {request, bn16} from '../../utils'
+import {request, bn16, getPageType} from '../../utils'
 import {AddressCard, InfoList, HwTransactionResult} from './components'
 import {TitleNav, GasFee, DappFooter, HwAlert} from '../../components'
 import {
@@ -104,7 +104,7 @@ function ConfirmTransition() {
   } = useCurrentAddress()
   const nativeToken = ticker || {}
   const tx = useDappParams()
-  const isDapp = pendingAuthReq?.length > 0
+  const isDapp = getPageType() === 'notification'
   // get to type and to token
   const {isContract, decodeData} = useDecodeData(tx)
   const {
