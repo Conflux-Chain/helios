@@ -70,6 +70,8 @@ module.exports = {
     packageExportLookupFields: ['exports'],
   },
   buildOptions: {
+    // this brokes sourcemap
+    // sourcemap: isProd() ? false : 'inline',
     clean: true,
     out: path.resolve(__dirname, '../packages/browser-extension/build'),
     baseUrl: 'dist',
