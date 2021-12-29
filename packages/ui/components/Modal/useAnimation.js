@@ -4,32 +4,26 @@ const DURATION = 500
 const useAnimation = open => {
   const [wrapperAnimateStyle, setWrapperAnimateStyle] = useState('')
   const [contentAnimateStyle, setContentAnimateStyle] = useState('')
-  const [animationTimer, setAnimationTimer] = useState(null)
 
   useEffect(() => {
+    let timer = null
     if (open) {
       setWrapperAnimateStyle('!bg-opacity-60')
       setContentAnimateStyle('show-modal-content')
-    }
-
-    if (wrapperAnimateStyle && !open) {
+    } else if (wrapperAnimateStyle) {
       setWrapperAnimateStyle('bg-opacity-0')
       setContentAnimateStyle('hide-modal-content scale-0')
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setWrapperAnimateStyle('')
         setContentAnimateStyle('')
         clearTimeout(timer)
-        setAnimationTimer(null)
       }, DURATION)
-      setAnimationTimer(timer)
+    }
+
+    return () => {
+      timer && clearTimeout(timer)
     }
   }, [open, wrapperAnimateStyle])
-
-  useEffect(() => {
-    return () => {
-      animationTimer && clearTimeout(animationTimer)
-    }
-  }, [animationTimer])
 
   return {wrapperAnimateStyle, contentAnimateStyle}
 }
