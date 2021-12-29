@@ -7,6 +7,7 @@ import {
   forwardRef,
 } from 'react'
 import PropTypes from 'prop-types'
+import './input.css'
 
 const sizeStyleObj = {
   small: 'h-8',
@@ -116,7 +117,7 @@ const Input = forwardRef(function Input(
     <div className={`${width}`} data-testid="input-wrapper">
       <div
         data-testid="input-container"
-        className={`flex justify-between items-center rounded border-solid ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}
+        className={`flex justify-between items-center rounded border-solid border-animation ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}
       >
         {prefix && (
           <div
