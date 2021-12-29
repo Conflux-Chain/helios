@@ -50,7 +50,8 @@ function CurrentDapp() {
 
   return (
     <div
-      className="current-dapp-container flex items-center py-3 rounded-t-xl bg-gray-0 px-3 flex-shrink-0"
+      className={`current-dapp-container flex items-center ${isConnected ? 'h-16' : 'h-10'
+        } py-3 rounded-t-xl bg-gray-0 px-3 flex-shrink-0`}
       id="currentDappContainer"
     >
       {!isConnected && (
