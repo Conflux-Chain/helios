@@ -952,7 +952,8 @@
             :where
             (or [?a :authReq/app _]
                 [?a :authReq/site _])
-            (not [?a :authReq/processed true])])
+            ;; (not [?a :authReq/processed true])
+            ])
        (mapv #(e :authReq %))))
 
 (defn set-tx-skipped [{:keys [hash]}]
