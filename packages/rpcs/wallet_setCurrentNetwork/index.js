@@ -1,4 +1,5 @@
 import {dbid, oneOrMore} from '@fluent-wallet/spec'
+import {Sentry} from '@fluent-wallet/sentry'
 
 export const NAME = 'wallet_setCurrentNetwork'
 
@@ -30,4 +31,5 @@ export const main = ({
         params: currentNetwork.chainId,
       }),
   )
+  Sentry.setTag('current_network', network.name)
 }

@@ -10,6 +10,7 @@ import {
   IS_TEST_MODE,
 } from '@fluent-wallet/inner-utils'
 import {
+  Sentry,
   init as initSentry,
   capture as sentryCapture,
 } from '@fluent-wallet/sentry'
@@ -27,6 +28,7 @@ if (!IS_PROD_MODE) window.bb = bb
 import {rpcEngineOpts} from './rpc-engine-opts'
 
 initSentry(getDefaultOptions())
+Sentry.setTag('custom_location', 'background')
 
 export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
   const importAllTx = (await browser.storage.local.get('wallet_importAll'))

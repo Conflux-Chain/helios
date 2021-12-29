@@ -5907,6 +5907,7 @@ __metadata:
     "@ethersproject/bignumber": 5.5.0
     "@fluent-wallet/compose": "workspace:*"
     "@fluent-wallet/conflux-tx-error": "workspace:*"
+    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
     "@fluent-wallet/transducers": "workspace:*"
     "@fluent-wallet/webextension": "workspace:*"
@@ -6049,6 +6050,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_set-current-network@workspace:packages/rpcs/wallet_setCurrentNetwork"
   dependencies:
+    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
