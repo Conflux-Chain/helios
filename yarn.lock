@@ -5907,6 +5907,7 @@ __metadata:
     "@ethersproject/bignumber": 5.5.0
     "@fluent-wallet/compose": "workspace:*"
     "@fluent-wallet/conflux-tx-error": "workspace:*"
+    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
     "@fluent-wallet/transducers": "workspace:*"
     "@fluent-wallet/webextension": "workspace:*"
@@ -5975,6 +5976,14 @@ __metadata:
 "@fluent-wallet/wallet_lock@workspace:packages/rpcs/wallet_lock":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_lock@workspace:packages/rpcs/wallet_lock"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_metadata-for-popup@workspace:*, @fluent-wallet/wallet_metadata-for-popup@workspace:packages/rpcs/wallet_metadataForPopup":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_metadata-for-popup@workspace:packages/rpcs/wallet_metadataForPopup"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -6049,6 +6058,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_set-current-network@workspace:packages/rpcs/wallet_setCurrentNetwork"
   dependencies:
+    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -20042,6 +20052,7 @@ fsevents@^1.2.7:
     "@fluent-wallet/wallet_import-private-key": "workspace:packages/rpcs/wallet_importPrivateKey"
     "@fluent-wallet/wallet_is-locked": "workspace:packages/rpcs/wallet_isLocked"
     "@fluent-wallet/wallet_lock": "workspace:packages/rpcs/wallet_lock"
+    "@fluent-wallet/wallet_metadata-for-popup": "workspace:*"
     "@fluent-wallet/wallet_refetch-balance": "workspace:packages/rpcs/wallet_refetchBalance"
     "@fluent-wallet/wallet_refetch-token-list": "workspace:packages/rpcs/wallet_refetchTokenList"
     "@fluent-wallet/wallet_register-site-metadata": "workspace:packages/rpcs/wallet_registerSiteMetadata"

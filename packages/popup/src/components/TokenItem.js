@@ -9,10 +9,7 @@ import {
 import {DisplayBalance} from './'
 
 const getTokenItem = t => {
-  if (t?.name) {
-    return [{...t}, t?.balance]
-  }
-  return [
+  const rst = [
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useSingleTokenInfoWithNativeTokenSupport(t),
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -20,6 +17,11 @@ const getTokenItem = t => {
       tokenId: t,
     }),
   ]
+  if (t?.name) {
+    return [{...t}, t?.balance]
+  }
+
+  return rst
 }
 
 function TokenItem({
