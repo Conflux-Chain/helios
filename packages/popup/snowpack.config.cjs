@@ -40,7 +40,6 @@ const mergedConfig = mergeConfig(baseConfig, {
       ),
       {},
     ],
-    '@snowpack/plugin-react-refresh',
   ],
   devOptions: {
     port: 18001,
