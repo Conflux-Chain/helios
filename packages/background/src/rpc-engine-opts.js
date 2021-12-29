@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletMetadataForPopup from '@fluent-wallet/wallet_metadata-for-popup'
 import * as cfxSignTxWithLedgerNanoS from '@fluent-wallet/cfx_sign-tx-with-ledger-nano-s'
 import * as walletGetImportHardwareWalletInfo from '@fluent-wallet/wallet_get-import-hardware-wallet-info'
 import * as walletImportHardwareWalletAccountGroupOrAccount from '@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account'
@@ -148,6 +149,7 @@ export const rpcEngineOpts = {
   isTest: IS_TEST_MODE,
   isCI: IS_CI,
   methods: [
+    walletMetadataForPopup,
     walletDbQuery,
     walletValidate20Token,
 

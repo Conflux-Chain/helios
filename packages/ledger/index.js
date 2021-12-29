@@ -1,1 +1,1 @@
-export {default as Conflux} from './conflux'
+export {default as Conflux} from './conflux.js'

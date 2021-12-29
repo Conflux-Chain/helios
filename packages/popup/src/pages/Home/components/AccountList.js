@@ -5,6 +5,7 @@ import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import Message from '@fluent-wallet/component-message'
+import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard, DisplayBalance, Avatar} from '../../../components'
@@ -86,11 +87,7 @@ function AccountItem({
               </div>
             ) : null}
             {currentAccountId === eid && (
-              <img
-                className="w-4 h-4 ml-2.5"
-                src="/images/select.svg"
-                alt="selected"
-              />
+              <CheckCircleFilled className="w-4 h-4 text-success" />
             )}
           </div>
         </div>

@@ -29,7 +29,7 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
     addressId,
     fuzzy: searchValue || null,
   })
-  const homeTokenList = ['native'].concat(tokens)
+  const homeTokenList = searchValue ? tokens : ['native'].concat(tokens)
   const onCloseTokenList = () => {
     onClose && onClose()
     setSearchValue('')
