@@ -20,9 +20,10 @@ function HwAlert({open, ...props}) {
           <Link
             onClick={() =>
               window.open(
-                `${
-                  location.href.split('#')[0]
-                }#${CONNECT_HARDWARE_WALLET}?action=close`,
+                `${location.origin}${location.pathname.replace(
+                  'popup',
+                  'page',
+                )}#${CONNECT_HARDWARE_WALLET}?action=close`,
               )
             }
             className="underline mt-1"

@@ -168,8 +168,11 @@ export const useIsZeroGroup = () => {
 }
 
 export const usePendingAuthReq = () => {
-  const {data: pendingAuthReq} = useRPC([WALLET_GET_PENDING_AUTH_REQUEST])
-  return pendingAuthReq
+  const isLocked = useIsLocked()
+  const {data: pendingAuthReq} = useRPC(
+    !isLocked ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
+  )
+  return isLocked ? [] : pendingAuthReq
 }
 
 export const useAddressByNetworkId = (accountIds = [], networkId) => {

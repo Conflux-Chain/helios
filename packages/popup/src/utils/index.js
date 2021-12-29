@@ -120,3 +120,10 @@ export const isKeyOf = (ev, name) => {
   }
   return false
 }
+
+export const getPageType = () => {
+  const pageType = document
+    .querySelector("meta[name='popup-type']")
+    .getAttribute('content')
+  return pageType
+}
