@@ -8,6 +8,8 @@ import {
 } from '@fluent-wallet/data-format'
 import {isHexPrefixed} from '@fluent-wallet/utils'
 import Tooltip from '@fluent-wallet/component-tooltip'
+import Text from '../components/Text'
+import classNames from 'classnames'
 import {useFontSize} from '../hooks'
 
 function DisplayBalance({
@@ -31,10 +33,12 @@ function DisplayBalance({
       displayRealBalance = balance
     }
   }
+
   const showTooltip = displayBalance === '<0.000001'
   const balanceRef = useRef()
   const hiddenRef = useRef()
   useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance, initialFontSize)
+
   return (
     <div
       className={`flex text-gray-80 font-mono font-semibold items-center ${className}`}
@@ -42,17 +46,21 @@ function DisplayBalance({
       <div id={id} className={`text-ellipsis relative ${maxWidthStyle}`}>
         {showTooltip ? (
           <Tooltip content={`${displayRealBalance} ${symbol}`}>
-            <span ref={balanceRef}>{displayBalance}</span>
+            <Text ref={balanceRef} text={displayBalance} placeholderAnimation />
           </Tooltip>
         ) : (
-          <span ref={balanceRef}>{displayBalance}</span>
+          <Text ref={balanceRef} text={displayBalance} placeholderAnimation />
         )}
 
         <span ref={hiddenRef} className="invisible absolute left-0">
           {displayBalance}
         </span>
       </div>
-      <span className="inline-block ml-0.5">{`${symbol}`}</span>
+      <span
+        className={classNames('inline-block ml-0.5', {
+          'opacity-0': !displayBalance,
+        })}
+      >{`${symbol}`}</span>
     </div>
   )
 }

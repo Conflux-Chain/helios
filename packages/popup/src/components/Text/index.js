@@ -50,7 +50,7 @@ const Text = forwardRef(
       placeholder = 'loading...',
       placeholderAnimation = false,
       skeleton = false,
-      delay = 350,
+      delay = 700,
       className,
       ...otherProps
     },
