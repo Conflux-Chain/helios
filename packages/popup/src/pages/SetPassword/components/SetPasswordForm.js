@@ -32,7 +32,11 @@ function SetPasswordForm() {
       return setErrorMessage('')
     } else {
       setConfirmErrorMessage('')
-      setErrorMessage(t('invalidPassword'))
+      setErrorMessage(
+        value.length < 8
+          ? t('passwordLengthWarning')
+          : t('passwordCombinationWarning'),
+      )
     }
   }
   const validateConfirmPassword = value => {

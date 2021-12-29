@@ -21,7 +21,7 @@ const UnlockPage = () => {
   const inputRef = useRef(null)
 
   const validatePassword = value => {
-    setErrorMessage(validatePasswordReg(value) ? '' : t('unlockPasswordError'))
+    setErrorMessage(validatePasswordReg(value) ? '' : t('passwordRulesWarning'))
   }
   const onUnlock = () => {
     validatePassword(password)
