@@ -98,7 +98,7 @@ function AccountManagement() {
   })
   const validatePassword = value => {
     const isValid = validatePasswordReg(value)
-    setPasswordErrorMessage(isValid ? '' : t('invalidPassword'))
+    setPasswordErrorMessage(isValid ? '' : t('passwordRulesWarning'))
     return isValid
   }
 
