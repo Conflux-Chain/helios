@@ -27,7 +27,7 @@ function DappSwitchNetwork() {
           <div className="ml-1" id="des">
             <div>
               <div className="text-sm text-gray-80 font-medium">
-                {t('allowAddNetwork')}
+                {t('allowSwitchNetwork')}
               </div>
               <div className="text-xs mt-1 text-gray-40">
                 {t('warningAddNetwork')}

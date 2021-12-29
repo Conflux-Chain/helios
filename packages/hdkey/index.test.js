@@ -8,6 +8,9 @@ import {
 } from './'
 // import {generateMnemonic} from 'bip39'
 
+// there is a promise task in getNthAccountOfHDKey, need to increase timeout to avoid test fail
+jest.setTimeout(20000)
+
 describe('HDKey', function () {
   it('should return a hdkey', async function () {
     const account = await getNthAccountOfHDKey({

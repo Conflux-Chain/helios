@@ -24,7 +24,7 @@ const UnlockPage = () => {
   const isDapp = getPageType() === 'notification'
 
   const validatePassword = value => {
-    setErrorMessage(validatePasswordReg(value) ? '' : t('unlockPasswordError'))
+    setErrorMessage(validatePasswordReg(value) ? '' : t('passwordRulesWarning'))
   }
   const onUnlock = () => {
     validatePassword(password)

@@ -126,7 +126,8 @@ const en = {
     welcome: 'Enter the Web3 world',
     password: 'Enter your password',
     unlock: 'Unlock',
-    unlockPasswordError: 'Password error',
+    passwordRulesWarning:
+      'At least 8 digits, numbers and letters are required.',
     en: 'English',
     'zh-CN': '简体中文',
 
@@ -161,7 +162,7 @@ const en = {
     storageCollateralized: 'Storage Limit',
     totalFee: 'Total Fee',
     customNonce: 'Custom Nonce',
-    gasPriceErrMSg: 'Gas Price must be greater than 0 {{unit}}',
+    gasPriceErrMSg: 'The minimum Gas Price is 1 {{unit}}',
     gasLimitErrMsg: 'Gas Limit must be at least {{gasUsed}}',
     nonceErr: 'Nonce can not be 0',
 
@@ -206,10 +207,10 @@ const en = {
 
     // - request signature - 1. Sign Text
     signText: 'Sign Text',
-    signThisText: 'Sign this text?',
+    signThisText: 'Sign this Text?',
 
     // - request signature - 2. Sign Message
-    signThisMessage: 'Sign this message?',
+    signThisMessage: 'Sign this Message?',
     signTypeMessage: 'Sign Type Message',
     message: 'Message',
 
@@ -240,8 +241,10 @@ const en = {
     enterPWD: 'Enter the password',
     enterPWDAgain: 'Enter the password again',
     rememberPWD: 'This password cannot be retrieved, please remember.',
-    invalidPassword: 'Invalid Password',
-    invalidConfirmPassword: 'Invalid confirm password',
+    invalidPassword: 'Wrong Password.',
+    invalidConfirmPassword: 'Confirm password does not match.',
+    passwordLengthWarning: 'At least 8 characters are required.',
+    passwordCombinationWarning: 'Letters and numbers must be used.',
 
     // - welcome page
     hello: 'Hello',
@@ -269,7 +272,7 @@ const en = {
     contractError: 'Contract error',
     addressHasBeenChanged: 'Address has been changed',
     invalidPasswordFromRpc: 'Invalid password from RPC',
-    required: 'Required',
+    required: 'Please type your seed phrase.',
     changeNetworkError: 'Change network error',
 
     // hardware guard

@@ -260,13 +260,19 @@ const AppRoutes = withRouter(
 function App() {
   const isLocked = useIsLocked()
   const isZeroGroup = useIsZeroGroup()
-  const pendingAuthReq = usePendingAuthReq(3000)
+  const pendingAuthReq = usePendingAuthReq()
 
   useEffect(() => {
     if (getPageType() === 'popup' && pendingAuthReq?.length > 0) window.close()
   }, [pendingAuthReq?.length])
 
   const {setFatalError} = useGlobalStore()
+
+  useEffect(() => {
+    // make up for the rest of height
+    window.resizeBy(0, 600 - window.innerHeight)
+  }, [])
+
   if (
     isUndefined(isLocked) ||
     isUndefined(isZeroGroup) ||
