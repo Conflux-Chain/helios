@@ -321,7 +321,7 @@ const en = {
     rejectedContent: 'Transaction has been rejected.',
 
     // confirm hw alert
-    ledgerIsNotConnected: 'Leger is not connected',
+    ledgerIsNotConnected: 'Ledger is not connected',
     openExpandView: 'Open Fluent expand view to connect',
     hwOpenApp: 'Before clicking confirm, make sure the Conflux App is open.',
 
