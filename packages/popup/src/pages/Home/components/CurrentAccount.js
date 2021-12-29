@@ -26,7 +26,7 @@ function CurrentAccount({onOpenAccount}) {
         aria-hidden="true"
       >
         <Text
-          className="text-xs text-gray-40 mr-2 inline-block max-w-[188px] text-ellipsis"
+          className="text-xs text-white mr-2 inline-block max-w-[188px] text-ellipsis"
           text={nickname}
         />
         <RightOutlined
