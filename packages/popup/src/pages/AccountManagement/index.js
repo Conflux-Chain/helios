@@ -53,7 +53,7 @@ function AccountManagementItem({
       ))}
       {groupType === 'hd' ? (
         <div
-          className="mx-3 py-4 text-gray-60 text-xs border-t cursor-pointer hover:text-primary"
+          className="mx-3 py-4 text-gray-60 text-xs border-t border-gray-10 cursor-pointer hover:text-primary"
           onClick={() =>
             onOpenConfirmPassword &&
             onOpenConfirmPassword(WALLET_EXPORT_ACCOUNT_GROUP, accountGroupEid)
