@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
+import Text from '../../../components/Text'
 import {useCurrentAddress, useAddressType} from '../../../hooks/useApi'
 import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
@@ -38,12 +39,16 @@ const AddressDetail = ({
       <div className="ml-3 flex flex-col flex-1">
         <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2">
           <div className="flex flex-col">
-            <span className="text-xs text-gray-40" id="currentAccountName">
-              {currentAccountName}
-            </span>
-            <span className="text-gray-80" id="fromAddress">
-              {fromAddress && shortenAddress(fromAddress)}
-            </span>
+            <Text
+              className="text-xs text-gray-40"
+              id="currentAccountName"
+              text={currentAccountName}
+            />
+            <Text
+              className="text-gray-80"
+              id="fromAddress"
+              text={fromAddress ? shortenAddress(fromAddress) : ''}
+            />
           </div>
           <div className="flex flex-col">
             <span className="text-gray-80">{t('balance')}</span>
