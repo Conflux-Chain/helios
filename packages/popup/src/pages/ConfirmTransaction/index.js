@@ -359,7 +359,7 @@ function ConfirmTransition() {
             </div>
           )}
 
-          {!isDapp && (
+          {isDapp && (
             <DappFooter
               confirmText={t('confirm')}
               cancelText={t('cancel')}
