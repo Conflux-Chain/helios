@@ -2,7 +2,8 @@ import React, {useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useClickAway} from 'react-use'
 import {CloseOutlined} from '@fluent-wallet/component-icons'
-
+import useAnimation from './useAnimation'
+import './modal.css'
 function Modal({
   className = '',
   width,
@@ -19,6 +20,7 @@ function Modal({
   ...props
 }) {
   const ref = useRef(null)
+  const {wrapperAnimateStyle, contentAnimateStyle} = useAnimation(open)
 
   const onCloseClick = e => {
     e.stopPropagation()
@@ -45,16 +47,18 @@ function Modal({
       })
     : null
 
-  if (!open) return null
+  if (!wrapperAnimateStyle) {
+    return null
+  }
   return (
     <div
       data-testid="modal-wrapper"
       ref={ref}
-      className="fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-[#000] bg-opacity-60 transition flex justify-center items-center z-50"
+      className={`fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-[#000] bg-opacity-0 transition duration-500 ease-in-out flex justify-center items-center z-50 ${wrapperAnimateStyle}`}
     >
       <div
         data-testid="modal-content"
-        className={`relative overflow-auto flex flex-col items-center z-20 ${
+        className={`relative overflow-auto flex flex-col items-center z-20 scale-0 ${
           width
             ? width
             : size === 'large'
@@ -62,7 +66,7 @@ function Modal({
             : size === 'medium'
             ? 'w-full md:w-80'
             : 'w-full md:w-70'
-        } rounded bg-gray-0 shadow-3 p-6 ${className}`}
+        } ${contentAnimateStyle} rounded bg-gray-0 shadow-3 p-6 ${className}`}
         {...props}
       >
         {closable && (

@@ -45,26 +45,32 @@ export const useQuery = () => {
 
 export const useSlideAnimation = (show, direction = 'vertical') => {
   const [wrapperAnimateStyle, setWrapperAnimateStyle] = useState('')
+
   useEffect(() => {
+    let timer = null
     if (show) {
-      return setWrapperAnimateStyle(
+      setWrapperAnimateStyle(
         direction == 'vertical'
           ? 'animate-slide-up block'
           : 'animate-slide-left-in block',
       )
-    }
-    if (wrapperAnimateStyle && !show) {
+    } else if (wrapperAnimateStyle) {
       setWrapperAnimateStyle(
         direction == 'vertical'
           ? 'animate-slide-down'
           : 'animate-slide-left-out',
       )
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setWrapperAnimateStyle('')
         clearTimeout(timer)
       }, ANIMATE_DURING_TIME)
     }
+
+    return () => {
+      timer && clearTimeout(timer)
+    }
   }, [show, wrapperAnimateStyle, direction])
+
   return wrapperAnimateStyle
 }
 
