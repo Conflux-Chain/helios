@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../utils'
-import {RPC_METHODS} from '../constants'
+import {RPC_METHODS, HW_TX_STATUS} from '../constants'
 import {usePendingAuthReq} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 
@@ -26,6 +26,7 @@ function DappFooter({
   confirmParams = {},
   onClickCancel,
   onClickConfirm,
+  setSendStatus,
 }) {
   const pendingAuthReq = usePendingAuthReq()
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
@@ -90,6 +91,7 @@ function DappFooter({
         console.log('error', e)
         // TODO: error message
         setLoading(false)
+        setSendStatus(HW_TX_STATUS.REJECTED)
       })
   }
 
@@ -123,6 +125,7 @@ DappFooter.propTypes = {
   confirmDisabled: PropTypes.bool,
   onClickConfirm: PropTypes.func,
   onClickCancel: PropTypes.func,
+  setSendStatus: PropTypes.func,
 }
 
 export default DappFooter

@@ -1,9 +1,12 @@
 import './createPageLoading.css'
+import {validBlur} from './index'
 
 export function createPageLoading({targetDOM, showBlur}) {
   const mask = document.createElement('div')
   mask.classList.add('loading-mask')
-  if (showBlur) targetDOM.classList.add('loading-mask-blur')
+  if (validBlur[showBlur] && showBlur !== 'none') {
+    targetDOM.classList.add(`loading-mask-blur-${showBlur}`)
+  }
 
   mask.insertAdjacentHTML(
     'afterbegin',
@@ -38,6 +41,9 @@ export function createPageLoadingTransition({targetDOM, loadingEle}) {
     loadingEle.style.backgroundColor = 'rgba(255, 255, 255, 0)'
     wrapperDOM.style.opacity = '0'
     // wrapperDOM.style.transform = 'scale3d(0, 1, .1)'
-    targetDOM.classList.remove('loading-mask-blur')
+    targetDOM.classList.remove(
+      ...Object.keys(validBlur).map(blur => `loading-mask-blur-${blur}`),
+    )
+    delete targetDOM.dataset.blur
   }
 }
