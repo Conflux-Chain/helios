@@ -11,7 +11,7 @@ function CreateTypeItem({
 }) {
   return (
     <div
-      className={`flex bg-white cursor-pointer box-border p-3 mb-3 ${typeClass}`}
+      className={`flex bg-white cursor-pointer box-border p-3 mb-3 rounded ${typeClass}`}
       aria-hidden="true"
       {...props}
       onClick={() => {
