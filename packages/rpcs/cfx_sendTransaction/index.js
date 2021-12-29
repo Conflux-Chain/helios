@@ -91,18 +91,20 @@ export const main = async ({
 
   const authReqId = params?.authReqId
   let authReq
-  if (authReqId) authReq = getAuthReqById(authReqId)
-  if (authReqId && !authReq)
-    throw InvalidParams(`Invalid authReqId ${authReqId}`)
-  if (authReqId && authReq.processed)
-    throw InvalidParams(`Already processing auth req ${authReqId}`)
-
-  t({eid: authReqId, authReq: {processed: true}})
+  if (authReqId) {
+    authReq = getAuthReqById(authReqId)
+    if (!authReq) throw InvalidParams(`Invalid authReqId ${authReqId}`)
+    if (authReq.processed)
+      throw InvalidParams(`Already processing auth req ${authReqId}`)
+    t({eid: authReqId, authReq: {processed: true}})
+  }
 
   // tx array [tx]
   const tx = params.authReqId ? params.tx : params
   let addr = findAddress({
+    // filter by app.currentNetwork and app.currentAccount
     appId: authReq?.app?.eid,
+    // filter by current network
     networkId: !authReqId && network.eid,
     value: tx[0].from,
   })
