@@ -7,11 +7,11 @@ Object {
     <div>
       <div
         aria-hidden="true"
-        class="flex items-center cursor-pointer undefined"
+        class="flex items-center cursor-pointer "
         data-testid="checkbox-wrapper"
       >
         <svg
-          class="w-4 h-4 mr-2 text-primary"
+          class="w-4 h-4 mr-2 text-primary "
           data-testid="checked-svg"
           fill="none"
           height="24"
@@ -42,11 +42,11 @@ Object {
   "container": <div>
     <div
       aria-hidden="true"
-      class="flex items-center cursor-pointer undefined"
+      class="flex items-center cursor-pointer "
       data-testid="checkbox-wrapper"
     >
       <svg
-        class="w-4 h-4 mr-2 text-primary"
+        class="w-4 h-4 mr-2 text-primary "
         data-testid="checked-svg"
         fill="none"
         height="24"
