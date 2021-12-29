@@ -177,12 +177,15 @@
          (map post-process (if (seq accs) (pm (jsp->p g) accs) [])))))))
 
 (defn get-token [{:keys [addressId networkId address tokenId g fuzzy]}]
-  (let [g (and g {:token g})
+  (let [g            (and g {:token g})
         post-process (if (seq g) identity #(get % :db/id))
-        addr (and (string? address) (.toLowerCase address))
-        fuzzy (if (string? fuzzy)
-                (re-pattern (str "(?i)" (.replaceAll (.trim fuzzy) " " ".*")))
-                nil)]
+        addr         (and (string? address) (.toLowerCase address))
+        fuzzy-length (if (string? fuzzy) (count (.trim fuzzy)) nil)
+        fuzzy-has-match-any (if (string? fuzzy) (.includes fuzzy ".*") nil)
+        fuzzy        (if (string? fuzzy)
+                       (try (re-pattern (str "(?i)" (.replaceAll (.trim fuzzy) " " ".*")))
+                            (catch js/Error _ "_"))
+                       nil)]
     (prst->js
      (cond
        tokenId
@@ -210,7 +213,7 @@
                              (-> (update :args conj (if (vector? addressId) addressId [addressId]))
                                  (update :in conj '[?addr-id ...])
                                  (update :where conj '[?addr-id :address/token ?token]))
-                             fuzzy
+                             (and fuzzy (or (> fuzzy-length 3) fuzzy-has-match-any))
                              (-> (update :args conj fuzzy)
                                  (update :in conj '?fuzzy)
                                  (update :where conj
@@ -220,12 +223,20 @@
                                          '(or [(re-find ?fuzzy ?tname)]
                                               [(re-find ?fuzzy ?tsym)]
                                               [(re-find ?fuzzy ?taddr)])))
+                             (and fuzzy (not (or (> fuzzy-length 3) fuzzy-has-match-any)))
+                             (-> (update :args conj fuzzy)
+                                 (update :in conj '?fuzzy)
+                                 (update :where conj
+                                         '[?token :token/name ?tname]
+                                         '[?token :token/symbol ?tsym]
+                                         '(or [(re-find ?fuzzy ?tname)]
+                                              [(re-find ?fuzzy ?tsym)])))
 
                              true identity)
-             query         (concat [:find] (:find query-initial)
-                                   [:in] (:in query-initial)
-                                   [:where] (:where query-initial))
-             rst           (apply q query (:args query-initial))]
+             query (concat [:find] (:find query-initial)
+                           [:in] (:in query-initial)
+                           [:where] (:where query-initial))
+             rst   (apply q query (:args query-initial))]
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
 (defn get-group [{:keys [groupId vaultId g nickname types hidden devices]}]
