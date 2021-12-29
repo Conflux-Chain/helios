@@ -52,9 +52,11 @@ function DisplayBalance({
           <Text ref={balanceRef} text={displayBalance} placeholderAnimation />
         )}
 
-        <span ref={hiddenRef} className="invisible absolute left-0">
-          {displayBalance}
-        </span>
+        <Text
+          ref={hiddenRef}
+          className="invisible absolute left-0"
+          text={displayBalance}
+        />
       </div>
       <span
         className={classNames('inline-block ml-0.5', {
