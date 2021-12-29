@@ -126,7 +126,8 @@ const en = {
     welcome: 'Enter the Web3 world',
     password: 'Enter your password',
     unlock: 'Unlock',
-    unlockPasswordError: 'Password error',
+    passwordRulesWarning:
+      'At least 8 digits, numbers and letters are required.',
     en: 'English',
     'zh-CN': '简体中文',
 
@@ -240,8 +241,10 @@ const en = {
     enterPWD: 'Enter the password',
     enterPWDAgain: 'Enter the password again',
     rememberPWD: 'This password cannot be retrieved, please remember.',
-    invalidPassword: 'Invalid Password',
-    invalidConfirmPassword: 'Invalid confirm password',
+    invalidPassword: 'Wrong Password.',
+    invalidConfirmPassword: 'Confirm password does not match.',
+    passwordLengthWarning: 'At least 8 characters are required.',
+    passwordCombinationWarning: 'Letters and numbers must be used.',
 
     // - welcome page
     hello: 'Hello',
