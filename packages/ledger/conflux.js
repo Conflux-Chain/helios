@@ -7,7 +7,7 @@ import {
   HDPATH,
   LEDGER_DEVICE,
   ERROR,
-} from './const'
+} from './const.js'
 
 /**
  * Connecting Ledger Conflux App API for fluent

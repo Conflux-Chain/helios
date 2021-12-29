@@ -6,4 +6,5 @@ releases:
 
 declined:
   - helios-background
+  - "@fluent-wallet/ledger"
   - helios-popup
