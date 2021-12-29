@@ -52,6 +52,7 @@ function DappFooter({
       return
     }
     setLoading(true)
+    setSendStatus(HW_TX_STATUS.WAITING)
     let params = {}
     switch (req.method) {
       case WALLET_REQUEST_PERMISSIONS:
@@ -83,8 +84,8 @@ function DappFooter({
     request(req.method, {authReqId: eid, ...params})
       .then(() => {
         onClickConfirm && onClickConfirm()
-        // mutate([WALLET_GET_PENDING_AUTH_REQUEST], pendingAuthReq.slice(1))
         setLoading(false)
+        setSendStatus(HW_TX_STATUS.SUCCESS)
         window.close()
       })
       .catch(e => {
