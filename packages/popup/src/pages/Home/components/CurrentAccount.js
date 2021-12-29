@@ -20,7 +20,7 @@ function CurrentAccount({onOpenAccount}) {
   return (
     <div className="flex flex-col" id="currentAccount">
       <div
-        className="flex items-center cursor-pointer"
+        className="flex items-center cursor-pointer mb-1"
         onClick={onOpenAccount}
         id="openAccountBtn"
         aria-hidden="true"
