@@ -96,7 +96,6 @@ function DappFooter({
       .catch(e => {
         // TODO: error message
         console.log('error', e)
-        // TODO: error message
         if (!isHwAccount) setLoading(false)
         setSendStatus(HW_TX_STATUS.REJECTED)
       })

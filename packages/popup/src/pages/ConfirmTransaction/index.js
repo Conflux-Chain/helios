@@ -358,7 +358,8 @@ function ConfirmTransition() {
               </Button>
             </div>
           )}
-          {isDapp && (
+
+          {!isDapp && (
             <DappFooter
               confirmText={t('confirm')}
               cancelText={t('cancel')}
@@ -368,21 +369,8 @@ function ConfirmTransition() {
               setSendStatus={setSendStatus}
               pendingAuthReq={pendingAuthReq}
               isHwAccount={isHwAccount}
-              onConfirmSuccess={() => {
-                if (!isHwAccount) setLoading(false)
-                else setSendStatus(HW_TX_STATUS.SUCCESS)
-              }}
-              onConfirmError={() => {
-                if (!isHwAccount) setLoading(false)
-                setSendStatus(HW_TX_STATUS.REJECTED)
-              }}
             />
           )}
-          {/* {!isDapp && sendingTransaction && !isHwAccount && (
-            <div className="fixed top-0 left-0 flex w-screen h-screen bg-[rgba(0,0,0,0.4)] items-center justify-center">
-              <Loading />
-            </div>
-          )} */}
           {isHwAccount && (
             <HwTransactionResult status={sendStatus} isDapp={isDapp} />
           )}
