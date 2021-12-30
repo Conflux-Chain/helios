@@ -15,7 +15,7 @@ const en = {
     yes: 'Yes',
     copiedSuccess: 'Copied success',
     invalidAddress: 'Please enter valid cfx address',
-    invalidhexAddress: 'Please enter valid hex address',
+    invalidHexAddress: 'Please enter valid hex address',
     protocol: 'Protocol',
     viewData: 'View Data',
     learnMore: 'Learn More',
@@ -266,7 +266,7 @@ const en = {
     transferAmountExceedsAllowance: 'Transfer amount exceeds allowance',
     balanceIsNotEnough: 'Insufficient balance',
     gasFeeIsNotEnough: 'Insufficient gas fee',
-    contractError: 'Contract error',
+    contractError: 'Contract error: ',
     addressHasBeenChanged: 'Address has been changed',
     invalidPasswordFromRpc: 'Invalid password from RPC',
     required: 'Please type your seed phrase.',
@@ -318,7 +318,7 @@ const en = {
     rejectedContent: 'Transaction has been rejected.',
 
     // confirm hw alert
-    ledgerIsNotConnected: 'Leger is not connected',
+    ledgerIsNotConnected: 'Ledger is not connected',
     openExpandView: 'Open Fluent expand view to connect',
     hwOpenApp: 'Before clicking confirm, make sure the Conflux App is open.',
 

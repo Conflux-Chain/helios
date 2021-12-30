@@ -5,13 +5,13 @@ import Link from '@fluent-wallet/component-link'
 import {ROUTES} from '../constants'
 const {CONNECT_HARDWARE_WALLET} = ROUTES
 
-function HwAlert({open, ...props}) {
+function HwAlert({open, isDapp, ...props}) {
   const {t} = useTranslation()
 
   return (
     <Alert
       open={open}
-      type="error"
+      type="warning"
       closable={false}
       width="w-full"
       content={
@@ -20,9 +20,10 @@ function HwAlert({open, ...props}) {
           <Link
             onClick={() =>
               window.open(
-                `${
-                  location.href.split('#')[0]
-                }#${CONNECT_HARDWARE_WALLET}?action=close`,
+                `${location.origin}${location.pathname.replace(
+                  isDapp ? 'notification' : 'popup',
+                  'page',
+                )}#${CONNECT_HARDWARE_WALLET}?action=close`,
               )
             }
             className="underline mt-1"
@@ -38,7 +39,7 @@ function HwAlert({open, ...props}) {
 
 HwAlert.propTypes = {
   open: PropTypes.bool.isRequired,
-  className: PropTypes.string,
+  isDapp: PropTypes.bool,
 }
 
 export default HwAlert

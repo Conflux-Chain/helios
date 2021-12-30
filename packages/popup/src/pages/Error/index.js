@@ -80,7 +80,7 @@ function Error() {
           </div>
         ) : null}
       </div>
-      <div>
+      <div className="mt-6">
         {errorType == 'inner' ? (
           <CopyButton
             text={FATAL_ERROR || urlErrorMsg}

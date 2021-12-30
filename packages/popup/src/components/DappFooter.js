@@ -4,6 +4,9 @@ import {request} from '../utils'
 import {RPC_METHODS, HW_TX_STATUS} from '../constants'
 import {usePendingAuthReq} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
+import {Conflux} from '@fluent-wallet/ledger'
+
+const cfxLedger = new Conflux()
 
 const {
   WALLET_REJECT_PENDING_AUTH_REQUSET,
@@ -27,8 +30,14 @@ function DappFooter({
   onClickCancel,
   onClickConfirm,
   setSendStatus,
+  setAuthStatus,
+  setIsAppOpen,
+  isHwAccount,
+  pendingAuthReq: customPendingAuthReq,
 }) {
-  const pendingAuthReq = usePendingAuthReq()
+  let pendingAuthReq = usePendingAuthReq()
+  pendingAuthReq = customPendingAuthReq || pendingAuthReq
+
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const {setLoading} = useLoading()
 
@@ -47,11 +56,23 @@ function DappFooter({
       })
   }
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     if (!req?.method) {
       return
     }
-    setLoading(true)
+    if (isHwAccount) {
+      const authStatus = await cfxLedger.isDeviceAuthed()
+      const isAppOpen = await cfxLedger.isAppOpen()
+      if (!authStatus) {
+        setAuthStatus(authStatus)
+        return
+      } else if (!isAppOpen) {
+        setIsAppOpen(isAppOpen)
+        return
+      }
+    }
+    if (!isHwAccount) setLoading(true)
+    else setSendStatus(HW_TX_STATUS.WAITING)
     let params = {}
     switch (req.method) {
       case WALLET_REQUEST_PERMISSIONS:
@@ -83,14 +104,14 @@ function DappFooter({
     request(req.method, {authReqId: eid, ...params})
       .then(() => {
         onClickConfirm && onClickConfirm()
-        // mutate([WALLET_GET_PENDING_AUTH_REQUEST], pendingAuthReq.slice(1))
-        setLoading(false)
+        if (!isHwAccount) setLoading(false)
+        else setSendStatus(HW_TX_STATUS.SUCCESS)
         window.close()
       })
       .catch(e => {
-        console.log('error', e)
         // TODO: error message
-        setLoading(false)
+        console.log('error', e)
+        if (!isHwAccount) setLoading(false)
         setSendStatus(HW_TX_STATUS.REJECTED)
       })
   }
@@ -126,6 +147,10 @@ DappFooter.propTypes = {
   onClickConfirm: PropTypes.func,
   onClickCancel: PropTypes.func,
   setSendStatus: PropTypes.func,
+  setIsAppOpen: PropTypes.func,
+  setAuthStatus: PropTypes.func,
+  pendingAuthReq: PropTypes.array,
+  isHwAccount: PropTypes.bool,
 }
 
 export default DappFooter

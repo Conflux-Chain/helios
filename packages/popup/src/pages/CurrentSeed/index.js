@@ -66,13 +66,17 @@ function CurrentSeed() {
   const {setLoading} = useLoading({showBlur: 'high'})
 
   useEffect(() => {
-    setAccountNamePlaceholder(`Seed-1-${hdGroup[0]?.account?.length + 1}`)
+    const hdGroupName = hdGroup[0]?.nickname || 'Seed-1'
+    setAccountNamePlaceholder(
+      `${hdGroupName}-${hdGroup[0]?.account?.length + 1}`,
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hdGroup])
   const onClickGroup = index => {
     setSelectedGroupIdx(index)
+    const hdGroupName = hdGroup[index]?.nickname || `Seed-${index + 1}`
     setAccountNamePlaceholder(
-      `Seed-${index + 1}-${hdGroup[index].account.length + 1}`,
+      `${hdGroupName}-${hdGroup[index].account.length + 1}`,
     )
   }
   const onCreate = () => {

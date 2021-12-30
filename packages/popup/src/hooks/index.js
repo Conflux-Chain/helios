@@ -20,7 +20,6 @@ import {
   useNetworkTypeIsCfx,
   useAddressType,
   useValid20Token,
-  usePendingAuthReq,
 } from './useApi'
 import {validateAddress} from '../utils'
 import {useTranslation} from 'react-i18next'
@@ -198,7 +197,7 @@ export const useCheckBalanceAndGas = (
       ) {
         return t('balanceIsNotEnough')
       } else {
-        return t('contractError')
+        return t('contractError' + error?.message)
       }
     } else {
       if (isNativeToken && isBalanceEnough !== undefined) {
@@ -227,8 +226,7 @@ export const useCheckBalanceAndGas = (
   ])
 }
 
-export const useDappParams = () => {
-  const pendingAuthReq = usePendingAuthReq()
+export const useDappParams = pendingAuthReq => {
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   return req?.params[0] || {}
 }

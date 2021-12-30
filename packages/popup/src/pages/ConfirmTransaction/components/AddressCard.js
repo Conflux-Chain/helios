@@ -177,7 +177,7 @@ function AddressCard({
             {token?.symbol}
           </span>
           <img
-            src={token?.iconUrl || '/images/default-token-icon.svg'}
+            src={token?.logoURI || '/images/default-token-icon.svg'}
             alt="icon"
             className="w-4 h-4"
             id="sendTokenIcon"

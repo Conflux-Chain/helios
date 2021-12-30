@@ -1,7 +1,6 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
-import {useRPC} from '@fluent-wallet/use-rpc'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
@@ -23,11 +22,11 @@ import {
 } from '../../hooks'
 import {
   useCurrentAddress,
-  usePendingAuthReq,
   useNetworkTypeIsCfx,
+  useAddressTypeInConfirmTx,
 } from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
-import {request, bn16} from '../../utils'
+import {request, bn16, getPageType} from '../../utils'
 import {AddressCard, InfoList, HwTransactionResult} from './components'
 import {TitleNav, GasFee, DappFooter, HwAlert} from '../../components'
 import {
@@ -37,50 +36,40 @@ import {
   HW_TX_STATUS,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
-import useDebouncedValue from '../../hooks/useDebouncedValue'
+import {Conflux} from '@fluent-wallet/ledger'
 
+const cfxLedger = new Conflux()
 const {VIEW_DATA, HOME} = ROUTES
 const {
   CFX_SEND_TRANSACTION,
   ETH_SEND_TRANSACTION,
   WALLET_GET_BALANCE,
-  QUERY_ADDRESS,
+  WALLET_GET_PENDING_AUTH_REQUEST,
 } = RPC_METHODS
-
-const useAddressTypeInConfirmTx = address => {
-  const {
-    data: {
-      network: {eid: networkId},
-    },
-  } = useCurrentAddress()
-  const {data} = useRPC(
-    address && networkId
-      ? [QUERY_ADDRESS, 'useAddressTypeInConfirmTx', address, networkId]
-      : null,
-    {
-      value: address,
-      networkId,
-      g: {
-        eid: 1,
-        _account: {eid: 1, _accountGroup: {vault: {type: 1}}},
-      },
-    },
-    {
-      fallbackData: {
-        account: {accountGroup: {vault: {}}},
-      },
-    },
-  )
-  return data
-}
 
 function ConfirmTransition() {
   const {t} = useTranslation()
   const history = useHistory()
-  const {authStatus} = useConnect()
+  const {authStatus: authStatusFromLedger, isAppOpen: isAppOpenFromLedger} =
+    useConnect()
+  const [authStatus, setAuthStatus] = useState(true)
+  const [isAppOpen, setIsAppOpen] = useState(true)
+  useEffect(() => {
+    setAuthStatus(
+      authStatusFromLedger === LEDGER_AUTH_STATUS.UNAUTHED ? false : true,
+    )
+    setIsAppOpen(isAppOpenFromLedger)
+  }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
   const [balanceError, setBalanceError] = useState('')
-  const pendingAuthReq = usePendingAuthReq()
+  const [pendingAuthReq, setPendingAuthReq] = useState()
+  const isDapp = getPageType() === 'notification'
+  useEffect(() => {
+    if (isDapp)
+      request(WALLET_GET_PENDING_AUTH_REQUEST).then(result =>
+        setPendingAuthReq(result),
+      )
+  }, [isDapp])
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const SEND_TRANSACTION = networkTypeIsCfx
     ? CFX_SEND_TRANSACTION
@@ -104,8 +93,8 @@ function ConfirmTransition() {
     },
   } = useCurrentAddress()
   const nativeToken = ticker || {}
-  const tx = useDappParams()
-  const isDapp = pendingAuthReq?.length > 0
+  const tx = useDappParams(pendingAuthReq)
+
   // get to type and to token
   const {isContract, decodeData} = useDecodeData(tx)
   const {
@@ -125,10 +114,9 @@ function ConfirmTransition() {
       },
     },
   } = useAddressTypeInConfirmTx(displayFromAddress)
-  const isHwAccount = type === 'hw'
-  const isHwUnAuth = authStatus === LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
-  const isHwOpenAlert =
-    authStatus !== LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
+  const isHwAccount = type === 'hw' && type !== undefined
+  const isHwUnAuth = !authStatus && isHwAccount
+  const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
 
   // params in wallet send or dapp send
   const txParams = useTxParams()
@@ -193,6 +181,7 @@ function ConfirmTransition() {
     displayTokenAddress,
     isSendToken,
   )
+
   useEffect(() => {
     setBalanceError(errorMessage)
   }, [errorMessage])
@@ -283,8 +272,19 @@ function ConfirmTransition() {
   }
 
   const onSend = async () => {
-    setLoading(true)
-    setSendStatus(HW_TX_STATUS.WAITING)
+    if (isHwAccount) {
+      const authStatus = await cfxLedger.isDeviceAuthed()
+      const isAppOpen = await cfxLedger.isAppOpen()
+      if (!authStatus) {
+        setAuthStatus(authStatus)
+        return
+      } else if (!isAppOpen) {
+        setIsAppOpen(isAppOpen)
+        return
+      }
+    }
+    if (!isHwAccount) setLoading(true)
+    else setSendStatus(HW_TX_STATUS.WAITING)
     if (isSendToken) {
       const error = await checkBalance()
       if (error) {
@@ -295,26 +295,23 @@ function ConfirmTransition() {
     }
     request(SEND_TRANSACTION, [params])
       .then(() => {
-        setLoading(false)
-        setSendStatus(HW_TX_STATUS.SUCCESS)
+        if (!isHwAccount) setLoading(false)
+        else setSendStatus(HW_TX_STATUS.SUCCESS)
         clearSendTransactionParams()
         history.push(HOME)
       })
       .catch(error => {
-        setLoading(false)
+        console.error('error', error?.message ?? error)
+        clearSendTransactionParams()
+        if (!isHwAccount) setLoading(false)
         setSendStatus(HW_TX_STATUS.REJECTED)
-        if (!isHwAccount) {
-          clearSendTransactionParams()
-          console.error('error', error?.message ?? error)
-          history.push(HOME)
-        }
       })
   }
 
-  const confirmDisabled = useDebouncedValue(
-    !!balanceError || estimateRst.loading || isHwUnAuth,
-    [!!balanceError, estimateRst.loading, isHwUnAuth],
-  )
+  const confirmDisabled =
+    !!balanceError ||
+    estimateRst.loading ||
+    Object.keys(estimateRst).length === 0
 
   return (
     <div className="flex flex-col h-full w-full relative">
@@ -345,7 +342,7 @@ function ConfirmTransition() {
               {balanceError}
             </span>
           )}
-          <HwAlert open={isHwUnAuth} className="mt-3" />
+          <HwAlert open={isHwUnAuth} isDapp={isDapp} className="mt-3" />
           <Alert
             open={isHwOpenAlert}
             className="mt-3"
@@ -383,6 +380,7 @@ function ConfirmTransition() {
               </Button>
             </div>
           )}
+
           {isDapp && (
             <DappFooter
               confirmText={t('confirm')}
@@ -390,14 +388,15 @@ function ConfirmTransition() {
               confirmDisabled={confirmDisabled}
               confirmParams={{tx: sendParams}}
               setSendStatus={setSendStatus}
+              pendingAuthReq={pendingAuthReq}
+              isHwAccount={isHwAccount}
+              setAuthStatus={setAuthStatus}
+              setIsAppOpen={setIsAppOpen}
             />
           )}
-          {/* {!isDapp && sendingTransaction && !isHwAccount && (
-            <div className="fixed top-0 left-0 flex w-screen h-screen bg-[rgba(0,0,0,0.4)] items-center justify-center">
-              <Loading />
-            </div>
-          )} */}
-          {isHwAccount && <HwTransactionResult status={sendStatus} />}
+          {isHwAccount && (
+            <HwTransactionResult status={sendStatus} isDapp={isDapp} />
+          )}
         </div>
       </div>
     </div>
