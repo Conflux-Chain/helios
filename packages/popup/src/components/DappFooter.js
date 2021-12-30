@@ -30,6 +30,8 @@ function DappFooter({
   onClickCancel,
   onClickConfirm,
   setSendStatus,
+  setAuthStatus,
+  setIsAppOpen,
   isHwAccount,
   pendingAuthReq: customPendingAuthReq,
 }) {
@@ -55,13 +57,19 @@ function DappFooter({
   }
 
   const onConfirm = async () => {
-    if (isHwAccount) {
-      const isAppOpen = await cfxLedger.isAppOpen()
-      console.info('isAppOpen-click2', isAppOpen)
-      if (!isAppOpen) return
-    }
     if (!req?.method) {
       return
+    }
+    if (isHwAccount) {
+      const authStatus = await cfxLedger.isDeviceAuthed()
+      const isAppOpen = await cfxLedger.isAppOpen()
+      if (!authStatus) {
+        setAuthStatus(authStatus)
+        return
+      } else if (!isAppOpen) {
+        setIsAppOpen(isAppOpen)
+        return
+      }
     }
     if (!isHwAccount) setLoading(true)
     else setSendStatus(HW_TX_STATUS.WAITING)
@@ -92,7 +100,6 @@ function DappFooter({
         break
     }
     params = {...params, ...confirmParams}
-    console.log('params', params)
 
     request(req.method, {authReqId: eid, ...params})
       .then(() => {
@@ -140,6 +147,8 @@ DappFooter.propTypes = {
   onClickConfirm: PropTypes.func,
   onClickCancel: PropTypes.func,
   setSendStatus: PropTypes.func,
+  setIsAppOpen: PropTypes.func,
+  setAuthStatus: PropTypes.func,
   pendingAuthReq: PropTypes.array,
   isHwAccount: PropTypes.bool,
 }

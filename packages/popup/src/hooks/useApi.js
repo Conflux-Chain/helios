@@ -181,7 +181,6 @@ export const useDataForPopup = () => {
     fallbackData: {},
   })
   const {locked, zeroGroup, pendingAuthReq} = data
-  console.log(locked, zeroGroup, pendingAuthReq)
   return {locked, zeroGroup, pendingAuthReq: locked ? [] : pendingAuthReq}
 }
 

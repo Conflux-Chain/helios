@@ -51,19 +51,26 @@ const {
 function ConfirmTransition() {
   const {t} = useTranslation()
   const history = useHistory()
-  const {authStatus, isAppOpen} = useConnect()
+  const {authStatus: authStatusFromLedger, isAppOpen: isAppOpenFromLedger} =
+    useConnect()
+  const [authStatus, setAuthStatus] = useState(true)
+  const [isAppOpen, setIsAppOpen] = useState(true)
+  useEffect(() => {
+    setAuthStatus(
+      authStatusFromLedger === LEDGER_AUTH_STATUS.UNAUTHED ? false : true,
+    )
+    setIsAppOpen(isAppOpenFromLedger)
+  }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
   const [balanceError, setBalanceError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
   const isDapp = getPageType() === 'notification'
-  console.log('isDapp', isDapp)
   useEffect(() => {
     if (isDapp)
       request(WALLET_GET_PENDING_AUTH_REQUEST).then(result =>
         setPendingAuthReq(result),
       )
   }, [isDapp])
-  console.log('confirm transition', pendingAuthReq)
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const SEND_TRANSACTION = networkTypeIsCfx
     ? CFX_SEND_TRANSACTION
@@ -109,10 +116,14 @@ function ConfirmTransition() {
     },
   } = useAddressTypeInConfirmTx(displayFromAddress)
   const isHwAccount = type === 'hw' && type !== undefined
-  console.log('isHwAccount', isHwAccount)
-  const isHwUnAuth = authStatus === LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
-  const isHwOpenAlert =
-    authStatus !== LEDGER_AUTH_STATUS.UNAUTHED && !isAppOpen && isHwAccount
+  const isHwUnAuth = useDebouncedValue(!authStatus && isHwAccount, [
+    authStatus,
+    isHwAccount,
+  ])
+  const isHwOpenAlert = useDebouncedValue(
+    authStatus && isAppOpen === false && isHwAccount,
+    [authStatus, isAppOpen, isHwAccount],
+  )
 
   // params in wallet send or dapp send
   const txParams = useTxParams()
@@ -269,8 +280,15 @@ function ConfirmTransition() {
 
   const onSend = async () => {
     if (isHwAccount) {
+      const authStatus = await cfxLedger.isDeviceAuthed()
       const isAppOpen = await cfxLedger.isAppOpen()
-      if (!isAppOpen) return
+      if (!authStatus) {
+        setAuthStatus(authStatus)
+        return
+      } else if (!isAppOpen) {
+        setIsAppOpen(isAppOpen)
+        return
+      }
     }
     if (!isHwAccount) setLoading(true)
     else setSendStatus(HW_TX_STATUS.WAITING)
@@ -298,8 +316,8 @@ function ConfirmTransition() {
   }
 
   const confirmDisabled = useDebouncedValue(
-    !!balanceError || estimateRst.loading || isHwUnAuth,
-    [!!balanceError, estimateRst.loading, isHwUnAuth],
+    !!balanceError || estimateRst.loading,
+    [!!balanceError, estimateRst.loading],
   )
 
   return (
@@ -376,10 +394,11 @@ function ConfirmTransition() {
               cancelText={t('cancel')}
               confirmDisabled={confirmDisabled}
               confirmParams={{tx: sendParams}}
-              setLoading={setLoading}
               setSendStatus={setSendStatus}
               pendingAuthReq={pendingAuthReq}
               isHwAccount={isHwAccount}
+              setAuthStatus={setAuthStatus}
+              setIsAppOpen={setIsAppOpen}
             />
           )}
           {isHwAccount && (

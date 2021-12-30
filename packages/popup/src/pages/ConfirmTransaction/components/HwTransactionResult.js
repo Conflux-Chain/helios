@@ -12,7 +12,6 @@ const {HOME} = ROUTES
 function HwTransactionResult({status, isDapp}) {
   const {t} = useTranslation()
   const history = useHistory()
-  console.log('status', status)
   const {clearSendTransactionParams} = useGlobalStore()
   const isRejected = status === HW_TX_STATUS.REJECTED
   const open = status && status !== HW_TX_STATUS.SUCCESS

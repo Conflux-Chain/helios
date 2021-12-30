@@ -11,7 +11,7 @@ function HwAlert({open, ...props}) {
   return (
     <Alert
       open={open}
-      type="error"
+      type="warning"
       closable={false}
       width="w-full"
       content={
