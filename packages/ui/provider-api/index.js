@@ -177,11 +177,10 @@ class Provider extends SafeEventEmitter {
     )
     if (typeof callback !== 'function')
       throw new Error('Invalid callback, not a function')
-    requestFactory(this.#send, payload)
-      .then(res => {
-        callback(null, res)
-      })
-      .catch(callback)
+    requestFactory(this.#send, payload).then(res => {
+      if (res.error) callback(res.error)
+      return callback(null, res.result)
+    })
   }
 
   // DEPRECATED
