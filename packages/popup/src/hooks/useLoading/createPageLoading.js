@@ -24,6 +24,7 @@ export function createPageLoading({targetDOM, showBlur}) {
 }
 
 export function createPageLoadingTransition({targetDOM, loadingEle}) {
+  if (!loadingEle) return
   const wrapperDOM = loadingEle.querySelector('.loading-page-wrapper')
 
   setTimeout(() => {
@@ -42,6 +43,7 @@ export function createPageLoadingTransition({targetDOM, loadingEle}) {
     loadingEle.style.backgroundColor = 'rgba(255, 255, 255, 0)'
     wrapperDOM.style.opacity = '0'
     // wrapperDOM.style.transform = 'scale3d(0, 1, .1)'
+    if (!targetDOM) return
     targetDOM.classList.remove(
       ...Object.keys(validBlur).map(blur => `loading-mask-blur-${blur}`),
     )

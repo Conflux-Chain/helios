@@ -29,6 +29,7 @@ export function createSpinLoading({targetDOM, size, showBlur}) {
 }
 
 export function createSpinLoadingTransition({targetDOM, loadingEle}) {
+  if (!loadingEle) return
   const wrapperDOM = loadingEle.querySelector('.loading-spin')
 
   setTimeout(() => {
@@ -44,6 +45,7 @@ export function createSpinLoadingTransition({targetDOM, loadingEle}) {
     setTimeout(clearLoading, 200)
     loadingEle.style.backgroundColor = 'rgba(255, 255, 255, 0)'
     wrapperDOM.style.opacity = '0'
+    if (!targetDOM) return
     targetDOM.classList.remove(
       ...Object.keys(validBlur).map(blur => `loading-mask-blur-${blur}`),
     )
