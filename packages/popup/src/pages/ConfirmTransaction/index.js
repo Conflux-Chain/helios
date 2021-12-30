@@ -29,6 +29,7 @@ import {useConnect} from '../../hooks/useLedger'
 import {request, bn16, getPageType} from '../../utils'
 import {AddressCard, InfoList, HwTransactionResult} from './components'
 import {TitleNav, GasFee, DappFooter, HwAlert} from '../../components'
+import useDebouncedValue from '../../hooks/useDebouncedValue'
 import {
   ROUTES,
   RPC_METHODS,
@@ -115,8 +116,13 @@ function ConfirmTransition() {
     },
   } = useAddressTypeInConfirmTx(displayFromAddress)
   const isHwAccount = type === 'hw' && type !== undefined
-  const isHwUnAuth = !authStatus && isHwAccount
-  const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
+  const isHwUnAuth = useDebouncedValue(!authStatus && isHwAccount, [
+    authStatus.isHwAccount,
+  ])
+  const isHwOpenAlert = useDebouncedValue(
+    authStatus && !isAppOpen && isHwAccount,
+    [authStatus, isAppOpen, isHwAccount],
+  )
 
   // params in wallet send or dapp send
   const txParams = useTxParams()
