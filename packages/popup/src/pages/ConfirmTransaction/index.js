@@ -315,10 +315,10 @@ function ConfirmTransition() {
       })
   }
 
-  const confirmDisabled = useDebouncedValue(
-    !!balanceError || estimateRst.loading,
-    [!!balanceError, estimateRst.loading],
-  )
+  const confirmDisabled =
+    !!balanceError ||
+    estimateRst.loading ||
+    Object.keys(estimateRst).length === 0
 
   return (
     <div className="flex flex-col h-full w-full relative">
