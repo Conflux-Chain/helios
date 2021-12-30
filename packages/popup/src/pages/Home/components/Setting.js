@@ -77,10 +77,12 @@ function Setting({onClose, open}) {
             <Button
               size="medium"
               fullWidth
-              startIcon={<LockOutLined className="!text-gray-40 w-3 h-3" />}
+              startIcon={
+                <LockOutLined className="!text-gray-40 w-3 h-3 group-hover:!text-primary" />
+              }
               variant="text"
               color="primary"
-              className="!bg-bg"
+              className="!bg-bg hover:!bg-primary-10 hover:text-primary group"
               id="lockBtn"
               onClick={onLock}
             >

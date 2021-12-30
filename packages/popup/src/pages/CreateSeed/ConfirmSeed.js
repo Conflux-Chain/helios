@@ -127,6 +127,7 @@ function ConfirmSeed() {
                 word={word}
                 idx={index + 1}
                 onClose={() => onDeleteMnemonic(index)}
+                className="border border-transparent hover:border-primary"
               />
             ))}
           </div>
@@ -145,7 +146,7 @@ function ConfirmSeed() {
               <Button
                 key={index}
                 variant="outlined"
-                className="w-25 mb-3"
+                className="w-25 mb-3 rounded-sm"
                 size="small"
                 id={`onAddMnemonicBtn-${index}`}
                 onClick={() => onAddMnemonic(index)}

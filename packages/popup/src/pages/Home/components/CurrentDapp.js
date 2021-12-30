@@ -90,7 +90,7 @@ function CurrentDapp() {
               {!isConnectedCurrentAccount ? (
                 <span
                   id="setAuthModalShowBtn"
-                  className="text-primary text-xs cursor-pointer inline-block max-w-[140px] text-ellipsis"
+                  className="text-primary text-xs cursor-pointer inline-block max-w-[140px] text-ellipsis hover:text-primary-dark"
                   onClick={() => setAuthModalShow(true)}
                   aria-hidden="true"
                 >

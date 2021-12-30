@@ -49,7 +49,7 @@ function TokenItem({
     <div
       className={`w-full h-14 flex items-center flex-shrink-0 ${
         onSelect ? 'cursor-pointer' : ''
-      }`}
+      } hover:bg-primary-4 px-2`}
       id={`tokenItem${index}`}
       onClick={() => onSelect && onSelect(token)}
       aria-hidden="true"
