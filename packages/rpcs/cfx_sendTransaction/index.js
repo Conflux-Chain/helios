@@ -118,7 +118,10 @@ export const main = async ({
   if (!addr) throw InvalidParams(`Invalid from address ${tx[0].from}`)
 
   const signed = await cfx_signTransaction(
-    {network: authReqId ? authReq.app.currentNetwork : network},
+    {
+      network: authReqId ? authReq.app.currentNetwork : network,
+      errorFallThrough: true,
+    },
     tx.concat({
       returnTxMeta: true,
     }),

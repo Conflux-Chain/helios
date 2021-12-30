@@ -1,10 +1,12 @@
 releases:
+  "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": patch
   "@fluent-wallet/cfx_send-transaction": patch
   "@fluent-wallet/cfx_sign-transaction": patch
   "@fluent-wallet/json-rpc-error": patch
   "@fluent-wallet/provider-api": patch
   "@fluent-wallet/rpc-engine": patch
   "@fluent-wallet/sentry": patch
+  "@fluent-wallet/signature": patch
   "@fluent-wallet/spec": patch
 
 declined:
@@ -55,7 +57,6 @@ declined:
   - "@fluent-wallet/cfx_opened-method-groups"
   - "@fluent-wallet/cfx_request-accounts"
   - "@fluent-wallet/cfx_send-raw-transaction"
-  - "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s"
   - "@fluent-wallet/cfx_sign-typed-data_v4"
   - "@fluent-wallet/eth_accounts"
   - "@fluent-wallet/eth_block-number"
