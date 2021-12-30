@@ -108,7 +108,7 @@ function Error() {
           </div>
         ) : null}
         <Button
-          id="btn"
+          id="error-btn"
           className="w-70 mt-4 mx-auto"
           onClick={() =>
             errorType === 'fullNode' ? runtime.reload() : history.push(HOME)
