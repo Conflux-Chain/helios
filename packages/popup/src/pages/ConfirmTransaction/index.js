@@ -119,7 +119,7 @@ function ConfirmTransition() {
   } = useAddressTypeInConfirmTx(displayFromAddress)
   const isHwAccount = type === 'hw' && type !== undefined
   const isHwUnAuth = !authStatus && isHwAccount
-  const isHwOpenAlert = authStatus && isAppOpen === false && isHwAccount
+  const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
 
   // params in wallet send or dapp send
   const txParams = useTxParams()
