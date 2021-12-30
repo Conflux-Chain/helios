@@ -36,7 +36,9 @@ import {
   HW_TX_STATUS,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
+import {Conflux} from '@fluent-wallet/ledger'
 
+const cfxLedger = new Conflux()
 const {VIEW_DATA, HOME} = ROUTES
 const {
   CFX_SEND_TRANSACTION,
@@ -48,7 +50,7 @@ const {
 function ConfirmTransition() {
   const {t} = useTranslation()
   const history = useHistory()
-  const {authStatus} = useConnect()
+  const {authStatus, isAppOpen} = useConnect()
   const [sendStatus, setSendStatus] = useState()
   const [balanceError, setBalanceError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
@@ -109,7 +111,7 @@ function ConfirmTransition() {
   console.log('isHwAccount', isHwAccount)
   const isHwUnAuth = authStatus === LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
   const isHwOpenAlert =
-    authStatus !== LEDGER_AUTH_STATUS.UNAUTHED && isHwAccount
+    authStatus !== LEDGER_AUTH_STATUS.UNAUTHED && !isAppOpen && isHwAccount
 
   // params in wallet send or dapp send
   const txParams = useTxParams()
@@ -174,6 +176,7 @@ function ConfirmTransition() {
     displayTokenAddress,
     isSendToken,
   )
+
   useEffect(() => {
     setBalanceError(errorMessage)
   }, [errorMessage])
@@ -264,6 +267,10 @@ function ConfirmTransition() {
   }
 
   const onSend = async () => {
+    if (isHwAccount) {
+      const isAppOpen = await cfxLedger.isAppOpen()
+      if (!isAppOpen) return
+    }
     if (!isHwAccount) setLoading(true)
     else setSendStatus(HW_TX_STATUS.WAITING)
     if (isSendToken) {

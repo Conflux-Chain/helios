@@ -23,7 +23,6 @@ function OpenApp() {
     }
     const ret = await cfx.isAppOpen()
     setLoadingStatus(false)
-    cfx.cleanUp()
     if (ret) {
       if (query.get('action') === 'close') {
         window.open(' ', '_self')
