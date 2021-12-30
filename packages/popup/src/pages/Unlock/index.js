@@ -9,7 +9,7 @@ import {usePendingAuthReq} from '../../hooks/useApi'
 import {request, validatePasswordReg, isKeyOf, getPageType} from '../../utils'
 import useLoading from '../../hooks/useLoading'
 
-const {WALLET_IS_LOCKED, WALLET_UNLOCK} = RPC_METHODS
+const {WALLET_IS_LOCKED, WALLET_UNLOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 
 const {HOME} = ROUTES
 const UnlockPage = () => {
@@ -32,13 +32,15 @@ const UnlockPage = () => {
       setLoading(true)
       request(WALLET_UNLOCK, {password})
         .then(() => {
-          mutate([WALLET_IS_LOCKED], false)
-          setLoading(false)
-          if (isDapp && pendingAuthReq?.length === 0) {
-            window.close()
-          } else {
-            history.push(HOME)
-          }
+          mutate([WALLET_METADATA_FOR_POPUP]).then(() => {
+            mutate([WALLET_IS_LOCKED], false)
+            setLoading(false)
+            if (isDapp && pendingAuthReq?.length === 0) {
+              window.close()
+            } else {
+              history.push(HOME)
+            }
+          })
         })
         .catch(e => {
           setLoading(false)

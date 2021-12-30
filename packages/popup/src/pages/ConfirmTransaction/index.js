@@ -33,6 +33,7 @@ import {
   ROUTES,
   RPC_METHODS,
   LEDGER_AUTH_STATUS,
+  LEDGER_OPEN_STATUS,
   HW_TX_STATUS,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
@@ -58,7 +59,9 @@ function ConfirmTransition() {
     setAuthStatus(
       authStatusFromLedger === LEDGER_AUTH_STATUS.UNAUTHED ? false : true,
     )
-    setIsAppOpen(isAppOpenFromLedger)
+    setIsAppOpen(
+      isAppOpenFromLedger === LEDGER_OPEN_STATUS.UNOPEN ? false : true,
+    )
   }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
   const [balanceError, setBalanceError] = useState('')
