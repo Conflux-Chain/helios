@@ -11,7 +11,6 @@ import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
 import {TitleNav, AccountDisplay} from '../../components'
 import {useTxParams, useEstimateTx, useCheckBalanceAndGas} from '../../hooks'
-import useDebouncedValue from '../../hooks/useDebouncedValue'
 import {
   ToAddressInput,
   TokenAndAmount,
@@ -138,10 +137,8 @@ function SendTransaction() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [networkId])
 
-  const sendDisabled = useDebouncedValue(
-    !!addressError || !!balanceError || !toAddress || !sendAmount,
-    [addressError, balanceError, toAddress, sendAmount],
-  )
+  const sendDisabled =
+    !!addressError || !!balanceError || !toAddress || !sendAmount
 
   return (
     <div className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg">

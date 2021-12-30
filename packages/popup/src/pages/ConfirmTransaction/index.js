@@ -29,11 +29,11 @@ import {useConnect} from '../../hooks/useLedger'
 import {request, bn16, getPageType} from '../../utils'
 import {AddressCard, InfoList, HwTransactionResult} from './components'
 import {TitleNav, GasFee, DappFooter, HwAlert} from '../../components'
-import useDebouncedValue from '../../hooks/useDebouncedValue'
 import {
   ROUTES,
   RPC_METHODS,
   LEDGER_AUTH_STATUS,
+  LEDGER_OPEN_STATUS,
   HW_TX_STATUS,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
@@ -59,7 +59,9 @@ function ConfirmTransition() {
     setAuthStatus(
       authStatusFromLedger === LEDGER_AUTH_STATUS.UNAUTHED ? false : true,
     )
-    setIsAppOpen(isAppOpenFromLedger)
+    setIsAppOpen(
+      isAppOpenFromLedger === LEDGER_OPEN_STATUS.UNOPEN ? false : true,
+    )
   }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
   const [balanceError, setBalanceError] = useState('')
@@ -116,13 +118,8 @@ function ConfirmTransition() {
     },
   } = useAddressTypeInConfirmTx(displayFromAddress)
   const isHwAccount = type === 'hw' && type !== undefined
-  const isHwUnAuth = useDebouncedValue(!authStatus && isHwAccount, [
-    authStatus.isHwAccount,
-  ])
-  const isHwOpenAlert = useDebouncedValue(
-    authStatus && !isAppOpen && isHwAccount,
-    [authStatus, isAppOpen, isHwAccount],
-  )
+  const isHwUnAuth = !authStatus && isHwAccount
+  const isHwOpenAlert = authStatus && isAppOpen === false && isHwAccount
 
   // params in wallet send or dapp send
   const txParams = useTxParams()
