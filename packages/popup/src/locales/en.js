@@ -269,7 +269,7 @@ const en = {
     transferAmountExceedsAllowance: 'Transfer amount exceeds allowance',
     balanceIsNotEnough: 'Insufficient balance',
     gasFeeIsNotEnough: 'Insufficient gas fee',
-    contractError: 'Contract error',
+    contractError: 'Contract error: ',
     addressHasBeenChanged: 'Address has been changed',
     invalidPasswordFromRpc: 'Invalid password from RPC',
     required: 'Please type your seed phrase.',

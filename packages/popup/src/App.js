@@ -15,7 +15,7 @@ import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
 import PageLoading from './hooks/useLoading/PageLoading'
 import './App.css'
 import useGlobalStore from './stores/index.js'
-import {getPageType} from './utils'
+// import {getPageType} from './utils'
 
 import ErrorPage from './pages/Error'
 import HomePage from './pages/Home'
@@ -263,13 +263,14 @@ function App() {
     zeroGroup: isZeroGroup,
     pendingAuthReq,
   } = useDataForPopup()
-  // const isLocked = useIsLocked()
-  // const isZeroGroup = useIsZeroGroup()
-  // const pendingAuthReq = usePendingAuthReq()
 
-  useEffect(() => {
-    if (getPageType() === 'popup' && pendingAuthReq?.length > 0) window.close()
-  }, [pendingAuthReq?.length])
+  // TODO add this when make sure pendingAuthReq return right
+  // useEffect(() => {
+  //   if (getPageType() === 'popup' && pendingAuthReq?.length > 0) {
+  //     console.log(pendingAuthReq)
+  //     setTimeout(() => window.close(), 300)
+  //   }
+  // }, [pendingAuthReq?.length])
 
   const {setFatalError} = useGlobalStore()
 

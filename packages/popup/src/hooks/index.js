@@ -197,7 +197,7 @@ export const useCheckBalanceAndGas = (
       ) {
         return t('balanceIsNotEnough')
       } else {
-        return t('contractError')
+        return t('contractError' + error?.message)
       }
     } else {
       if (isNativeToken && isBalanceEnough !== undefined) {
