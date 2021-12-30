@@ -7,7 +7,7 @@ import {
   forwardRef,
 } from 'react'
 import PropTypes from 'prop-types'
-import './input.css'
+import useAnimation from './useAnimation'
 
 const sizeStyleObj = {
   small: 'h-8',
@@ -66,6 +66,7 @@ const Input = forwardRef(function Input(
     if (disabled) return 'bg-gray-10 cursor-not-allowed'
     return 'bg-gray-0'
   }, [disabled])
+  const {errorAnimateStyle, displayErrorMsg} = useAnimation(errorMessage)
 
   const sizeStyle =
     elementType === 'input' ? sizeStyleObj[size] || '' : `${textareaSize} pt-3`
@@ -117,7 +118,7 @@ const Input = forwardRef(function Input(
     <div className={`${width}`} data-testid="input-wrapper">
       <div
         data-testid="input-container"
-        className={`flex justify-between items-center rounded border-solid transition duration-500 ease-in-out ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}
+        className={`flex justify-between items-center rounded border-solid transition duration-300 ease-in-out ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}
       >
         {prefix && (
           <div
@@ -148,11 +149,9 @@ const Input = forwardRef(function Input(
       </div>
 
       <div
-        className={`${errorClassName} transition duration-300 ease-in-out ${
-          !errorMessage ? 'h-0' : 'text-xs text-error pt-2 h-6'
-        }`}
+        className={`${errorClassName} scale-y-0 transition duration-300  ease-in-out ${errorAnimateStyle}`}
       >
-        {errorMessage}
+        {displayErrorMsg}
       </div>
     </div>
   )
