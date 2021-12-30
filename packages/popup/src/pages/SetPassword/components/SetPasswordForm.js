@@ -27,14 +27,16 @@ function SetPasswordForm() {
   const validatePassword = value => {
     if (validatePasswordReg(value)) {
       setConfirmErrorMessage(
-        value !== confirmPassword ? t('invalidConfirmPassword') : '',
+        value && value !== confirmPassword ? t('invalidConfirmPassword') : '',
       )
       return setErrorMessage('')
     } else {
       setConfirmErrorMessage('')
       setErrorMessage(
         value.length < 8
-          ? t('passwordLengthWarning')
+          ? t('passwordMinLengthWarning')
+          : value.length > 16
+          ? t('passwordMaxLengthWarning')
           : t('passwordCombinationWarning'),
       )
     }
@@ -89,7 +91,9 @@ function SetPasswordForm() {
         <PasswordInput
           validateInputValue={validateConfirmPassword}
           setInputValue={setConfirmPassword}
-          errorMessage={confirmErrorMessage}
+          errorMessage={
+            confirmErrorMessage && confirmPassword ? confirmErrorMessage : ''
+          }
           value={confirmPassword}
           id="confirmPassword"
           onKeyDown={onConfirmInputKeyDown}
