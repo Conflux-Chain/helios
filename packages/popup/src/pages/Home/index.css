@@ -1,0 +1,20 @@
+.home-container::before {
+  @apply absolute w-[227%] h-[88%] left-[50%] top-[50%] bg-secondary;
+
+  transform: translate(-51%, -104%);
+  border-radius: 0 0 50% 50%;
+  transition: none;
+  content: '';
+}
+
+.home-container::after {
+  @apply absolute left-0 top-0 bottom-0 right-0 bg-homepage-background bg-no-repeat;
+
+  transition: none;
+  content: '';
+}
+
+.home-container > .home-token-list-wrapper,
+.home-container > .current-dapp-container {
+  z-index: 1;
+}

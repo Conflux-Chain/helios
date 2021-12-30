@@ -9,7 +9,7 @@
 
 .router-forward-enter,
 .router-back-appear {
-  opacity: 0;
+  opacity: 0.7;
   transform: translate3d(100%, 0, 0);
 }
 
@@ -17,7 +17,7 @@
 .router-back-appear-active {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  transition: transform 0.35s ease-in-out, opacity 0.35s ease;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease;
 }
 
 .router-forward-exit {
@@ -26,20 +26,20 @@
 }
 
 .router-forward-exit-active {
-  opacity: 0;
+  opacity: 0.7;
   transform: translate3d(-100%, 0, 0);
-  transition: transform 0.38s ease-in-out, opacity 0.38s ease;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease;
 }
 
 .router-back-enter {
-  opacity: 0;
+  opacity: 0.7;
   transform: translate3d(-100%, 0, 0);
 }
 
 .router-back-enter-active {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  transition: transform 0.38s ease-in-out, opacity 0.38s ease;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease;
 }
 
 .router-back-exit {
@@ -48,9 +48,9 @@
 }
 
 .router-back-exit-active {
-  opacity: 0;
+  opacity: 0.7;
   transform: translate3d(100%, 0, 0);
-  transition: transform 0.38s ease-in-out, opacity 0.38s ease;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease;
 }
 
 .router-full-switch-enter,

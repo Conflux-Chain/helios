@@ -26,7 +26,7 @@ function HomeTokenList({onOpenAddToken}) {
 
   return (
     <div
-      className="flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 py-3 z-0 overflow-auto"
+      className="home-token-list-wrapper flex flex-col flex-1 mx-2 rounded-xl bg-gray-0 mb-3 px-3 py-3 z-0 overflow-auto"
       id="homeTokenListWrapper"
     >
       <span
