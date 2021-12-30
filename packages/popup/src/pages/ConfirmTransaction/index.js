@@ -36,7 +36,6 @@ import {
   HW_TX_STATUS,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
-import useDebouncedValue from '../../hooks/useDebouncedValue'
 import {Conflux} from '@fluent-wallet/ledger'
 
 const cfxLedger = new Conflux()
@@ -116,14 +115,8 @@ function ConfirmTransition() {
     },
   } = useAddressTypeInConfirmTx(displayFromAddress)
   const isHwAccount = type === 'hw' && type !== undefined
-  const isHwUnAuth = useDebouncedValue(!authStatus && isHwAccount, [
-    authStatus,
-    isHwAccount,
-  ])
-  const isHwOpenAlert = useDebouncedValue(
-    authStatus && isAppOpen === false && isHwAccount,
-    [authStatus, isAppOpen, isHwAccount],
-  )
+  const isHwUnAuth = !authStatus && isHwAccount
+  const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
 
   // params in wallet send or dapp send
   const txParams = useTxParams()
