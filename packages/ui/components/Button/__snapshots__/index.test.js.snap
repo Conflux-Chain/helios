@@ -7,7 +7,7 @@ Object {
     <div>
       <button
         class="
-      flex justify-center items-center focus:outline-none rounded border border-solid  border-transparent text-white bg-primary hover:bg-primary-dark text-xs h-8 px-4 test-class-name"
+      flex justify-center items-center focus:outline-none rounded border border-solid transition-colors  border-transparent text-white bg-primary hover:bg-primary-dark text-xs h-8 px-4 test-class-name"
         data-testid="button-wrapper"
       >
         test children
@@ -17,7 +17,7 @@ Object {
   "container": <div>
     <button
       class="
-      flex justify-center items-center focus:outline-none rounded border border-solid  border-transparent text-white bg-primary hover:bg-primary-dark text-xs h-8 px-4 test-class-name"
+      flex justify-center items-center focus:outline-none rounded border border-solid transition-colors  border-transparent text-white bg-primary hover:bg-primary-dark text-xs h-8 px-4 test-class-name"
       data-testid="button-wrapper"
     >
       test children
