@@ -1,4 +1,5 @@
 import {defMiddleware} from '../middleware.js'
+import {parseError} from '@fluent-wallet/json-rpc-error'
 
 function updateReqRpcStack(req) {
   const {method} = req
@@ -39,7 +40,7 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
           params = args[1]
         }
 
-        return sendNewRpcRequest({
+        const newReq = {
           id: req.id,
           params,
           site: req.site,
@@ -51,10 +52,15 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
           method: targetRpcName,
           _rpcStack: req._rpcStack,
           _internal: true,
-        }).then(res => {
+        }
+        return sendNewRpcRequest(newReq).then(res => {
           req._rpcStack.pop()
           if (res.error) {
-            if (overrides.errorFallThrough) throw res.error
+            if (overrides.errorFallThrough) {
+              const error = parseError(res.error, `In RPC ${targetRpcName}\n`)
+              error.rpcData = newReq
+              throw error
+            }
             req._c.write(res)
           } else return res.result
         })
