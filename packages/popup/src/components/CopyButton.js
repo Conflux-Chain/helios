@@ -12,7 +12,7 @@ function CopyButton({
   containerClassName = 'relative',
   CopyWrapper,
   CopyInner,
-  toastClassName = '-top-9 left-0',
+  toastClassName = '-top-8 -right-10',
 }) {
   const {t} = useTranslation()
   const [copied, setCopied] = useState(false)

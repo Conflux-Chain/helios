@@ -84,8 +84,7 @@ function Error() {
         {errorType == 'inner' ? (
           <CopyButton
             text={FATAL_ERROR || urlErrorMsg}
-            containerClassName=""
-            toastClassName="top-4 right-3"
+            toastClassName="left-2/4 transform -translate-x-2/4 -top-8"
             CopyInner={
               <div
                 id="feedback"

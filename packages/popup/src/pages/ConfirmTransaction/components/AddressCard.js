@@ -70,7 +70,7 @@ const AddressDetail = ({
           {toAddress && shortenAddress(toAddress)}
           {isCreateContract && t('createContract')}
           {toAddress && (
-            <CopyButton text={toAddress} className="ml-2  text-gray-60" />
+            <CopyButton text={toAddress} className="mx-2  text-gray-60" />
           )}
         </span>
       </div>

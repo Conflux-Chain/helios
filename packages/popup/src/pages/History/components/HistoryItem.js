@@ -179,8 +179,6 @@ function HistoryItem({
               className="w-3 h-3 text-primary"
               CopyWrapper={WrapIcon}
               wrapperClassName="!w-5 !h-5"
-              containerClassName=""
-              toastClassName="-top-9 -right-3"
             />
           ) : null}
           {transactionUrl ? (
