@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 function CurrentNetworkDisplay({name, icon}) {
   return (
     <div
-      className="flex bg-primary rounded h-6 px-2 items-center"
+      className="flex rounded h-6 pl-2 items-center"
       id="currentNetworkContainer"
     >
       <img
@@ -11,7 +11,7 @@ function CurrentNetworkDisplay({name, icon}) {
         src={icon || '/images/default-network-icon.svg'}
         alt="logo"
       />
-      <span className="text-2xs text-white mr-1">{name}</span>
+      <span className="text-sm text-gray-80">{name}</span>
     </div>
   )
 }
