@@ -61,7 +61,7 @@ export default class Conflux {
     } catch (error) {
       return Promise.reject(this.handleTheError(error))
     } finally {
-      this.cleanUp()
+      await this.cleanUp()
     }
   }
 
@@ -87,6 +87,8 @@ export default class Conflux {
       return name === LEDGER_APP_NAME.CONFLUX
     } catch (error) {
       return false
+    } finally {
+      await this.cleanUp()
     }
   }
 
@@ -153,9 +155,9 @@ export default class Conflux {
     return {}
   }
 
-  cleanUp() {
+  async cleanUp() {
     this.app = null
-    if (this.transport) this.transport.close()
+    if (this.transport) await this.transport.close()
     this.transport = null
   }
 

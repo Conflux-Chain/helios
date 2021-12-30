@@ -4,6 +4,9 @@ import {request} from '../utils'
 import {RPC_METHODS, HW_TX_STATUS} from '../constants'
 import {usePendingAuthReq} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
+import {Conflux} from '@fluent-wallet/ledger'
+
+const cfxLedger = new Conflux()
 
 const {
   WALLET_REJECT_PENDING_AUTH_REQUSET,
@@ -51,7 +54,12 @@ function DappFooter({
       })
   }
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
+    if (isHwAccount) {
+      const isAppOpen = await cfxLedger.isAppOpen()
+      console.info('isAppOpen-click2', isAppOpen)
+      if (!isAppOpen) return
+    }
     if (!req?.method) {
       return
     }
