@@ -9,7 +9,7 @@ import {RPC_METHODS, ROUTES} from '../../../constants'
 import {request} from '../../../utils'
 import useGlobalStore from '../../../stores/index.js'
 
-const {LOCK, WALLET_IS_LOCKED} = RPC_METHODS
+const {LOCK, WALLET_IS_LOCKED, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 const {ACCOUNT_MANAGEMENT} = ROUTES
 
 function SettingItem({icon, content, onClick}) {
@@ -42,7 +42,11 @@ function Setting({onClose, open}) {
   const {mutate} = useSWRConfig()
   const onLock = () => {
     request(LOCK)
-      .then(() => mutate([WALLET_IS_LOCKED], true, true))
+      .then(() => {
+        mutate([WALLET_METADATA_FOR_POPUP]).then(() => {
+          mutate([WALLET_IS_LOCKED], true, true)
+        })
+      })
       .catch(error => setFatalError(error))
   }
 

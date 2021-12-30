@@ -137,6 +137,9 @@ function SendTransaction() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [networkId])
 
+  const sendDisabled =
+    !!addressError || !!balanceError || !toAddress || !sendAmount
+
   return (
     <div className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg">
       <TitleNav
@@ -192,14 +195,11 @@ function SendTransaction() {
               {t('cancel')}
             </Button>
             <Button
-              disabled={
-                !!addressError ||
-                !!balanceError ||
-                !toAddress ||
-                !sendAmount ||
-                loading
-              }
-              onClick={() => history.push(CONFIRM_TRANSACTION)}
+              disabled={sendDisabled}
+              onClick={() => {
+                if (loading) return
+                history.push(CONFIRM_TRANSACTION)
+              }}
               className="flex-1"
             >
               {t('next')}
