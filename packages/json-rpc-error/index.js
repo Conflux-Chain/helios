@@ -105,4 +105,39 @@ export const errorInstanceToErrorCode = instance => {
   if (instance instanceof Disconnected) return ERROR.DISCONNECTED.code
   if (instance instanceof ChainDisconnected)
     return ERROR.CHAIN_DISCONNECTED.code
+  if (!instance?.code) return -32000
+  if (instance.code >= -32099 && instance.code <= -32000) return instance.code
+  return -32000
+}
+
+export const guessErrorType = err => {
+  if (!err?.code) return Internal
+  if (err?.code) {
+    if (err.code >= -32099 && err.code <= -32000)
+      return defRpcError(
+        () => `JSON-RPC ${ERROR.SERVER.name} ${err.code}\n\n`,
+        msg => msg,
+      )
+    if (err.code === ERROR.PARSE.code) return Parse
+    if (err.code === ERROR.INVALID_REQUEST.code) return InvalidRequest
+    if (err.code === ERROR.METHOD_NOT_FOUND.code) return MethodNotFound
+    if (err.code === ERROR.INVALID_PARAMS.code) return InvalidParams
+    if (err.code === ERROR.INTERNAL.code) return Internal
+    if (err.code === ERROR.SERVER.code) return Server
+    if (err.code === ERROR.USER_REJECTED) return UserRejected
+    if (err.code === ERROR.UNAUTHORIZED.code) return Unauthorized
+    if (err.code === ERROR.UNSUPPORTED_METHOD) return UnsupportedMethod
+    if (err.code === ERROR.DISCONNECTED) return Disconnected
+    if (err.code === ERROR.CHAIN_DISCON) return ChainDisconnected
+  }
+
+  return Internal
+}
+
+export const parseError = (err, prefix) => {
+  const C = guessErrorType(err)
+  const error = new C(prefix + err?.message || '')
+  error.code = err?.code || error.code
+  error.data = err?.data || error.data
+  return error
 }

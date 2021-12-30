@@ -135,7 +135,7 @@ export const main = async args => {
     if (dryRun) {
       raw = cfxSignTransaction(
         newTx,
-        '0x617a260992af90f20fbbe43cd2e2a4edb9a0ec2ded468de133797184be3cd818',
+        '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
         network.netId,
       )
     } else {
@@ -150,7 +150,7 @@ export const main = async args => {
     let pk = await wallet_getAddressPrivateKey({address: newTx.from})
 
     if (dryRun)
-      pk = '0x617a260992af90f20fbbe43cd2e2a4edb9a0ec2ded468de133797184be3cd818'
+      pk = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
     raw = cfxSignTransaction(newTx, pk, network.netId)
   }
 

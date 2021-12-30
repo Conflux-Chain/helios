@@ -67,7 +67,16 @@ export const main = async ({
       ])
     } catch (err) {
       if (err?.code === ERROR.USER_REJECTED.code) throw err
-      throw InvalidParams(`Invalid transaction ${JSON.stringify(params)}`)
+      const errmsgPrefix = err?.message?.match(/reverted/i)
+        ? 'Transaction reverted'
+        : 'Invalid transaction'
+      err.message = `${errmsgPrefix}\nparams:\n${JSON.stringify(
+        params,
+        null,
+        2,
+      )}\nerror:\n${err.message}`
+
+      throw err
     }
 
     if (app.currentNetwork.name === CFX_MAINNET_NAME) {
