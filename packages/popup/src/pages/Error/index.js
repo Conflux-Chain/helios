@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
+import {runtime} from '@fluent-wallet/webextension'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
 import Modal from '@fluent-wallet/component-modal'
@@ -22,7 +23,6 @@ function Error() {
   const [errorType, setErrorType] = useState('')
   const [zendeskTimer, setZendeskTimer] = useState(null)
   const [networkShow, setNetworkShow] = useState(false)
-
   useEffect(() => {
     if (!FATAL_ERROR && !urlErrorMsg) {
       return setErrorType('route')
@@ -54,7 +54,7 @@ function Error() {
   }
 
   return errorType ? (
-    <div id="errorContainer" className="h-full w-full flex flex-col p-6">
+    <div id="errorContainer" className="h-150 w-93 flex flex-col p-6">
       <div className="flex-1 text-center">
         <CloseCircleFilled
           className={`text-error w-20 h-20 ${
@@ -108,11 +108,13 @@ function Error() {
           </div>
         ) : null}
         <Button
-          id="go-home"
+          id="error-btn"
           className="w-70 mt-4 mx-auto"
-          onClick={() => history.push(HOME)}
+          onClick={() =>
+            errorType === 'fullNode' ? runtime.reload() : history.push(HOME)
+          }
         >
-          {t('back')}
+          {errorType === 'fullNode' ? t('retry') : t('back')}
         </Button>
       </div>
       <Modal
