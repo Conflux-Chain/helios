@@ -55,6 +55,11 @@ export const LEDGER_AUTH_STATUS = {
   AUTHED: 'authed',
   UNAUTHED: 'unauthed',
 }
+export const LEDGER_OPEN_STATUS = {
+  LOADING: 'loading',
+  OPEN: 'open',
+  UNOPEN: 'unopen',
+}
 
 export const HW_TX_STATUS = {
   WAITING: 'waiting',
