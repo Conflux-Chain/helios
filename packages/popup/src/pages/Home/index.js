@@ -9,6 +9,7 @@ import Button from '@fluent-wallet/component-button'
 import {HomeNav} from '../../components'
 import {PendingQueue} from './components'
 import {ROUTES, MAX_PENDING_COUNT} from '../../constants'
+import './index.css'
 
 const {HISTORY} = ROUTES
 import {
@@ -40,7 +41,7 @@ function Home() {
 
   return (
     <div
-      className="flex flex-col bg-bg h-full w-full relative overflow-hidden  bg-homepage-background bg-no-repeat"
+      className="home-container flex flex-col bg-bg h-full w-full relative overflow-hidden"
       id="homeContainer"
     >
       {/* only for dev env*/}
