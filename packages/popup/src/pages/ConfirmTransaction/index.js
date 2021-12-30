@@ -342,7 +342,7 @@ function ConfirmTransition() {
               {balanceError}
             </span>
           )}
-          <HwAlert open={isHwUnAuth} className="mt-3" />
+          <HwAlert open={isHwUnAuth} isDapp={isDapp} className="mt-3" />
           <Alert
             open={isHwOpenAlert}
             className="mt-3"

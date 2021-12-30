@@ -5,7 +5,7 @@ import Link from '@fluent-wallet/component-link'
 import {ROUTES} from '../constants'
 const {CONNECT_HARDWARE_WALLET} = ROUTES
 
-function HwAlert({open, ...props}) {
+function HwAlert({open, isDapp, ...props}) {
   const {t} = useTranslation()
 
   return (
@@ -21,7 +21,7 @@ function HwAlert({open, ...props}) {
             onClick={() =>
               window.open(
                 `${location.origin}${location.pathname.replace(
-                  'popup',
+                  isDapp ? 'notification' : 'popup',
                   'page',
                 )}#${CONNECT_HARDWARE_WALLET}?action=close`,
               )
@@ -39,7 +39,7 @@ function HwAlert({open, ...props}) {
 
 HwAlert.propTypes = {
   open: PropTypes.bool.isRequired,
-  className: PropTypes.string,
+  isDapp: PropTypes.bool,
 }
 
 export default HwAlert
