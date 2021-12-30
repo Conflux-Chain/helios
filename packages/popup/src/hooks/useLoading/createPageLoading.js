@@ -38,6 +38,7 @@ export function createPageLoadingTransition({targetDOM, loadingEle}) {
     if (!loadingEle || !wrapperDOM) return
     wrapperDOM.style.transition = 'all 125ms ease'
     wrapperDOM.addEventListener('transitionend', clearLoading)
+    setTimeout(clearLoading, 200)
     loadingEle.style.backgroundColor = 'rgba(255, 255, 255, 0)'
     wrapperDOM.style.opacity = '0'
     // wrapperDOM.style.transform = 'scale3d(0, 1, .1)'
