@@ -27,7 +27,7 @@ function SetPasswordForm() {
   const validatePassword = value => {
     if (validatePasswordReg(value)) {
       setConfirmErrorMessage(
-        value && value !== confirmPassword ? t('invalidConfirmPassword') : '',
+        value !== confirmPassword ? t('invalidConfirmPassword') : '',
       )
       return setErrorMessage('')
     } else {
