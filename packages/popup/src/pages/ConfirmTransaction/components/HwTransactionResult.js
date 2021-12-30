@@ -9,7 +9,7 @@ import useGlobalStore from '../../../stores'
 import {ROUTES, HW_TX_STATUS} from '../../../constants'
 const {HOME} = ROUTES
 
-function HwTransactionResult({status}) {
+function HwTransactionResult({status, isDapp}) {
   const {t} = useTranslation()
   const history = useHistory()
   const {clearSendTransactionParams} = useGlobalStore()
@@ -22,7 +22,7 @@ function HwTransactionResult({status}) {
       open={open}
       closable={false}
       title={title}
-      content={content}
+      content={<div className="flex w-full justify-center">{content}</div>}
       icon={
         isRejected ? <CloseCircleFilled className="text-error" /> : <Loading />
       }
@@ -32,7 +32,8 @@ function HwTransactionResult({status}) {
             fullWidth={true}
             onClick={() => {
               clearSendTransactionParams()
-              history.push(HOME)
+              if (!isDapp) history.push(HOME)
+              else window.close()
             }}
           >
             {t('ok')}
@@ -45,6 +46,7 @@ function HwTransactionResult({status}) {
 
 HwTransactionResult.propTypes = {
   status: PropTypes.oneOf(Object.values(HW_TX_STATUS)),
+  isDapp: PropTypes.bool,
 }
 
 export default HwTransactionResult

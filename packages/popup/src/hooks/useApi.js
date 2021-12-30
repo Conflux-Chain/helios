@@ -23,6 +23,7 @@ const {
   WALLET_ZERO_ACCOUNT_GROUP,
   WALLET_GET_NETWORK,
   WALLET_IS_LOCKED,
+  WALLET_METADATA_FOR_POPUP,
   ACCOUNT_GROUP_TYPE,
   WALLET_DETECT_ADDRESS_TYPE,
   WALLETDB_REFETCH_BALANCE,
@@ -168,8 +169,19 @@ export const useIsZeroGroup = () => {
 }
 
 export const usePendingAuthReq = () => {
-  const {data: pendingAuthReq} = useRPC([WALLET_GET_PENDING_AUTH_REQUEST])
-  return pendingAuthReq
+  const isLocked = useIsLocked()
+  const {data: pendingAuthReq} = useRPC(
+    !isLocked ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
+  )
+  return isLocked ? [] : pendingAuthReq
+}
+
+export const useDataForPopup = () => {
+  const {data} = useRPC([WALLET_METADATA_FOR_POPUP], undefined, {
+    fallbackData: {},
+  })
+  const {locked, zeroGroup, pendingAuthReq} = data
+  return {locked, zeroGroup, pendingAuthReq: locked ? [] : pendingAuthReq}
 }
 
 export const useAddressByNetworkId = (accountIds = [], networkId) => {
@@ -517,4 +529,31 @@ export const useQueryImportedAddress = networkId => {
       },
     },
   )
+}
+
+export const useAddressTypeInConfirmTx = address => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {data} = useRPC(
+    address && networkId
+      ? [QUERY_ADDRESS, 'useAddressTypeInConfirmTx', address, networkId]
+      : null,
+    {
+      value: address,
+      networkId,
+      g: {
+        eid: 1,
+        _account: {eid: 1, _accountGroup: {vault: {type: 1}}},
+      },
+    },
+    {
+      fallbackData: {
+        account: {accountGroup: {vault: {}}},
+      },
+    },
+  )
+  return data
 }

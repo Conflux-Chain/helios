@@ -14,6 +14,7 @@ export const WALLET_GET_CURRENT_DAPP = 'wallet_getCurrentViewingApp'
 export const WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK =
   'wallet_getAccountAddressByNetwork'
 export const WALLET_ZERO_ACCOUNT_GROUP = 'wallet_zeroAccountGroup'
+export const WALLET_METADATA_FOR_POPUP = 'wallet_metadataForPopup'
 export const WALLET_GENERATE_MNEMONIC = 'wallet_generateMnemonic'
 export const WALLET_IMPORT_MNEMONIC = 'wallet_importMnemonic'
 export const WALLET_IMPORT_PRIVATE_KEY = 'wallet_importPrivateKey'

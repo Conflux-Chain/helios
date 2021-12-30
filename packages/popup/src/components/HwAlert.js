@@ -11,7 +11,7 @@ function HwAlert({open, ...props}) {
   return (
     <Alert
       open={open}
-      type="error"
+      type="warning"
       closable={false}
       width="w-full"
       content={
@@ -20,9 +20,10 @@ function HwAlert({open, ...props}) {
           <Link
             onClick={() =>
               window.open(
-                `${
-                  location.href.split('#')[0]
-                }#${CONNECT_HARDWARE_WALLET}?action=close`,
+                `${location.origin}${location.pathname.replace(
+                  'popup',
+                  'page',
+                )}#${CONNECT_HARDWARE_WALLET}?action=close`,
               )
             }
             className="underline mt-1"

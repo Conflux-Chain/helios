@@ -126,7 +126,7 @@ function SendTransaction() {
       if (networkTypeIsCfx) {
         setAddressError(t('invalidAddress'))
       } else {
-        setAddressError(t('invalidhexAddress'))
+        setAddressError(t('invalidHexAddress'))
       }
     } else {
       setAddressError('')

@@ -1,11 +1,12 @@
 import {useState, useRef, useLayoutEffect} from 'react'
 import {useHistory} from 'react-router-dom'
+import {useTranslation} from 'react-i18next'
+import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
 import {HomeTitle, PasswordInput, LanguageNav} from '../../components'
-import {useTranslation} from 'react-i18next'
 import {RPC_METHODS, ROUTES} from '../../constants'
-import {useSWRConfig} from 'swr'
-import {request, validatePasswordReg, isKeyOf} from '../../utils'
+import {usePendingAuthReq} from '../../hooks/useApi'
+import {request, validatePasswordReg, isKeyOf, getPageType} from '../../utils'
 import useLoading from '../../hooks/useLoading'
 
 const {WALLET_IS_LOCKED, WALLET_UNLOCK} = RPC_METHODS
@@ -19,6 +20,8 @@ const UnlockPage = () => {
   const {mutate} = useSWRConfig()
   const {setLoading} = useLoading()
   const inputRef = useRef(null)
+  const pendingAuthReq = usePendingAuthReq()
+  const isDapp = getPageType() === 'notification'
 
   const validatePassword = value => {
     setErrorMessage(validatePasswordReg(value) ? '' : t('passwordRulesWarning'))
@@ -31,7 +34,11 @@ const UnlockPage = () => {
         .then(() => {
           mutate([WALLET_IS_LOCKED], false)
           setLoading(false)
-          history.push(HOME)
+          if (isDapp && pendingAuthReq?.length === 0) {
+            window.close()
+          } else {
+            history.push(HOME)
+          }
         })
         .catch(e => {
           setLoading(false)
