@@ -23,6 +23,7 @@ const {
   WALLET_ZERO_ACCOUNT_GROUP,
   WALLET_GET_NETWORK,
   WALLET_IS_LOCKED,
+  WALLET_METADATA_FOR_POPUP,
   ACCOUNT_GROUP_TYPE,
   WALLET_DETECT_ADDRESS_TYPE,
   WALLETDB_REFETCH_BALANCE,
@@ -173,6 +174,15 @@ export const usePendingAuthReq = () => {
     !isLocked ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
   )
   return isLocked ? [] : pendingAuthReq
+}
+
+export const useDataForPopup = () => {
+  const {data} = useRPC([WALLET_METADATA_FOR_POPUP], undefined, {
+    fallbackData: {},
+  })
+  const {locked, zeroGroup, pendingAuthReq} = data
+  console.log(locked, zeroGroup, pendingAuthReq)
+  return {locked, zeroGroup, pendingAuthReq: locked ? [] : pendingAuthReq}
 }
 
 export const useAddressByNetworkId = (accountIds = [], networkId) => {

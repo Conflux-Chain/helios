@@ -4,8 +4,7 @@ import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
 import {PASSWORD_REG_EXP, RPC_METHODS} from '../constants'
 const globalThis = window ?? global
-const {WALLET_ZERO_ACCOUNT_GROUP, WALLET_IS_LOCKED, WALLET_GET_ACCOUNT_GROUP} =
-  RPC_METHODS
+const {WALLET_GET_ACCOUNT_GROUP, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 
 export function request(...args) {
   const [method, params] = args
@@ -61,8 +60,7 @@ export const bn16 = x => new BN(stripHexPrefix(x), 16)
 export function updateAddedNewAccount(mutate, noAccountBefore, groupType) {
   const promises = []
   if (noAccountBefore) {
-    promises.push(mutate([WALLET_ZERO_ACCOUNT_GROUP]))
-    promises.push(mutate([WALLET_IS_LOCKED]))
+    promises.push(mutate([WALLET_METADATA_FOR_POPUP]))
   }
   promises.push(mutate([WALLET_GET_ACCOUNT_GROUP]))
   promises.push(mutate([WALLET_GET_ACCOUNT_GROUP, groupType]))

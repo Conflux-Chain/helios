@@ -9,7 +9,7 @@ import {
   withRouter,
 } from 'react-router-dom'
 import {TransitionGroup, CSSTransition} from 'react-transition-group'
-import {useIsLocked, useIsZeroGroup, usePendingAuthReq} from './hooks/useApi'
+import {useDataForPopup} from './hooks/useApi'
 import {ProtectedRoute} from './components'
 import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
 import PageLoading from './hooks/useLoading/PageLoading'
@@ -235,7 +235,7 @@ const AppRoutes = withRouter(
                 key={HOME}
                 hasAccount={!isZeroGroup}
                 isLocked={isLocked}
-                pendingAuthReq={!isLocked ? pendingAuthReq : []}
+                pendingAuthReq={pendingAuthReq}
                 exact
                 path={HOME}
                 component={HomePage}
@@ -258,9 +258,14 @@ const AppRoutes = withRouter(
 )
 
 function App() {
-  const isLocked = useIsLocked()
-  const isZeroGroup = useIsZeroGroup()
-  const pendingAuthReq = usePendingAuthReq()
+  const {
+    locked: isLocked,
+    zeroGroup: isZeroGroup,
+    pendingAuthReq,
+  } = useDataForPopup()
+  // const isLocked = useIsLocked()
+  // const isZeroGroup = useIsZeroGroup()
+  // const pendingAuthReq = usePendingAuthReq()
 
   useEffect(() => {
     if (getPageType() === 'popup' && pendingAuthReq?.length > 0) window.close()
