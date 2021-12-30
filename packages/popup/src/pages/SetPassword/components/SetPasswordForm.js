@@ -32,11 +32,7 @@ function SetPasswordForm() {
       return setErrorMessage('')
     } else {
       setConfirmErrorMessage('')
-      setErrorMessage(
-        value.length < 8
-          ? t('passwordLengthWarning')
-          : t('passwordCombinationWarning'),
-      )
+      setErrorMessage(t('passwordRulesWarning'))
     }
   }
   const validateConfirmPassword = value => {
@@ -83,13 +79,15 @@ function SetPasswordForm() {
           value={password}
           id="password"
           onKeyDown={onKeyDown}
+          errorClassName="h-6"
           ref={inputRef}
         />
-        {errorMessage ? null : <div className="m-0 h-6" />}
         <PasswordInput
           validateInputValue={validateConfirmPassword}
           setInputValue={setConfirmPassword}
-          errorMessage={confirmErrorMessage}
+          errorMessage={
+            confirmErrorMessage && confirmPassword ? confirmErrorMessage : ''
+          }
           value={confirmPassword}
           id="confirmPassword"
           onKeyDown={onConfirmInputKeyDown}
