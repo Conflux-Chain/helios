@@ -3,10 +3,12 @@ import {useTranslation} from 'react-i18next'
 import {PlusOutlined} from '@fluent-wallet/component-icons'
 import {useState, useEffect, useRef} from 'react'
 import {WrapIcon, TokenList} from '../../../components'
-import {useCurrentAddressTokens} from '../../../hooks/useApi'
+import {useCurrentAddressTokens, useCurrentDapp} from '../../../hooks/useApi'
 
 function HomeTokenList({onOpenAddToken}) {
   const {data: tokens, isValidating} = useCurrentAddressTokens()
+  const {data} = useCurrentDapp()
+  const isConnected = !!data?.app
 
   // In order for cfx that exist locally to appear with other tokens as much as possible
   // We should return 'native' with swr data
@@ -39,7 +41,11 @@ function HomeTokenList({onOpenAddToken}) {
         </WrapIcon>
       </span>
       <TokenList tokenList={homeTokenList} />
-      <div className="absolute bottom-[76px] left-0 rounded-xl h-6 bg-token-background mx-2 w-[calc(100%-1rem)]" />
+      <div
+        className={`absolute ${
+          isConnected ? 'bottom-[76px]' : 'bottom-[52px]'
+        } left-0 rounded-xl h-6 bg-token-background mx-2 w-[calc(100%-1rem)]`}
+      />
     </div>
   )
 }
