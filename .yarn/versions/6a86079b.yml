@@ -1,3 +1,6 @@
+releases:
+  "@fluent-wallet/ledger": patch
+
 declined:
-  - "@fluent-wallet/ledger"
   - helios-popup
+  - "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s"
