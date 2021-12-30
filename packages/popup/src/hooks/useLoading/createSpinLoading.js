@@ -41,6 +41,7 @@ export function createSpinLoadingTransition({targetDOM, loadingEle}) {
   return clearLoading => {
     if (!loadingEle || !wrapperDOM) return
     wrapperDOM.addEventListener('transitionend', clearLoading)
+    setTimeout(clearLoading, 200)
     loadingEle.style.backgroundColor = 'rgba(255, 255, 255, 0)'
     wrapperDOM.style.opacity = '0'
     targetDOM.classList.remove(
