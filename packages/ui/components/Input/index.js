@@ -117,7 +117,7 @@ const Input = forwardRef(function Input(
     <div className={`${width}`} data-testid="input-wrapper">
       <div
         data-testid="input-container"
-        className={`flex justify-between items-center rounded border-solid border-animation ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}
+        className={`flex justify-between items-center rounded border-solid transition duration-500 ease-in-out ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}
       >
         {prefix && (
           <div
@@ -146,11 +146,14 @@ const Input = forwardRef(function Input(
           </div>
         )}
       </div>
-      {errorMessage && (
-        <div className={`text-xs text-error mt-2 ${errorClassName}`}>
-          {errorMessage}
-        </div>
-      )}
+
+      <div
+        className={`${errorClassName} transition duration-300 ease-in-out ${
+          !errorMessage ? 'h-0' : 'text-xs text-error pt-2 h-6'
+        }`}
+      >
+        {errorMessage}
+      </div>
     </div>
   )
 })
