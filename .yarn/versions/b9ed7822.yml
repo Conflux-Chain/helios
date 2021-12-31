@@ -1,7 +1,0 @@
-releases:
-  "@fluent-wallet/cfx_send-transaction": patch
-  "@fluent-wallet/cfx_sign-transaction": patch
-  "@fluent-wallet/wallet_user-rejected-auth-request": patch
-
-declined:
-  - helios-background
