@@ -301,7 +301,7 @@ const en = {
     openConfluxAppDes: 'Select and open Conflux App in your Ledger device.',
     chooseAddress: 'Choose Address',
     hdPath: 'HD Path',
-    chooseHwAddress: 'Choose the address you want to import.',
+    chooseHwAddress: 'Choose the address you want to import:',
     capNext: 'NEXT',
     capPrev: 'PREV',
     adding: 'Adding',

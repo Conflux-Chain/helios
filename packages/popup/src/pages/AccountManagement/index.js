@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {isNumber, isArray} from '@fluent-wallet/checks'
+import {KeyOutlined} from '@fluent-wallet/component-icons'
 import {useTranslation} from 'react-i18next'
 import useGlobalStore from '../../stores'
 import {useHistory} from 'react-router-dom'
@@ -47,7 +48,7 @@ function AccountManagementItem({
                 onOpenConfirmPassword(WALLET_EXPORT_ACCOUNT, eid)
             }}
           >
-            <img className="w-3 h-3" alt="view_pk" src="/images/key.svg" />
+            <KeyOutlined className="w-3 h-3 text-primary" />
           </WrapIcon>
         </div>
       ))}

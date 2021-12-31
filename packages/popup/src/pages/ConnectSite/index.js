@@ -43,7 +43,7 @@ function ConnectSitesList({
               <QuestionCircleOutlined
                 onClick={() => window && window.open('')}
                 className="w-4 h-4 text-gray-40 ml-2 cursor-pointer"
-                id="questionCircleOutlined"
+                id="selectAuthorizedAccounts"
               />
             </div>
             <Checkbox
