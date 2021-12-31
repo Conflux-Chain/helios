@@ -8,27 +8,20 @@ function QRCodeButton({
   title,
   qrcodeValue,
   className = '',
-  CopyWrapper,
+  Wrapper,
   wrapperClassName = '',
 }) {
   const [qrcodeShow, setQrcodeShow] = useState(false)
+  const icon = (
+    <QrcodeOutlined
+      onClick={() => setQrcodeShow(true)}
+      className={`cursor-pointer w-4 h-4 text-white ${className}`}
+      id="qrCodeOutlined"
+    />
+  )
   return (
     <>
-      {CopyWrapper ? (
-        <CopyWrapper className={wrapperClassName}>
-          <QrcodeOutlined
-            onClick={() => setQrcodeShow(true)}
-            className={`cursor-pointer w-4 h-4 text-white ${className}`}
-            id="qrCodeOutlined"
-          />
-        </CopyWrapper>
-      ) : (
-        <QrcodeOutlined
-          onClick={() => setQrcodeShow(true)}
-          className={`cursor-pointer w-4 h-4 text-white ${className}`}
-          id="qrCodeOutlined"
-        />
-      )}
+      {Wrapper ? <Wrapper className={wrapperClassName}>{icon}</Wrapper> : icon}
 
       <Modal
         open={qrcodeShow}
@@ -51,7 +44,7 @@ QRCodeButton.propTypes = {
   title: PropTypes.string,
   qrcodeValue: PropTypes.string,
   className: PropTypes.string,
-  CopyWrapper: PropTypes.elementType,
+  Wrapper: PropTypes.elementType,
   wrapperClassName: PropTypes.string,
 }
 

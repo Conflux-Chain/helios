@@ -67,7 +67,7 @@ function CurrentAccount({onOpenAccount}) {
               ['opacity-0']: !displayAddress,
             },
           )}
-          CopyWrapper={iconWrapper}
+          Wrapper={iconWrapper}
         />
       </div>
     </div>
