@@ -188,7 +188,7 @@ function SendTransaction() {
               variant="outlined"
               className="flex-1 mr-3"
               onClick={() => {
-                clearSendTransactionParams()
+                setTimeout(() => clearSendTransactionParams(), 500)
                 history.push(HOME)
               }}
             >
