@@ -5,7 +5,12 @@ import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import Text from '../../../components/Text'
 import {useCurrentAddress, useAddressType} from '../../../hooks/useApi'
-import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
+import {
+  DisplayBalance,
+  ProgressIcon,
+  CopyButton,
+  WrapIcon,
+} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
 
@@ -70,7 +75,20 @@ const AddressDetail = ({
           {toAddress && shortenAddress(toAddress)}
           {isCreateContract && t('createContract')}
           {toAddress && (
-            <CopyButton text={toAddress} className="mx-2  text-gray-60" />
+            <CopyButton
+              text={toAddress}
+              className="text-gray-60 group-hover:text-primary"
+              CopyWrapper={({children, ...props}) => {
+                return (
+                  <WrapIcon
+                    {...props}
+                    className="mx-1 shadow-none bg-transparent hover:bg-primary-4 group"
+                  >
+                    {children}
+                  </WrapIcon>
+                )
+              }}
+            />
           )}
         </span>
       </div>
