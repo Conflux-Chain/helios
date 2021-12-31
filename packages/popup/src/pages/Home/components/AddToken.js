@@ -135,9 +135,7 @@ function AddToken({onClose, open}) {
                   />
                 ))}
               </div>
-              <div
-                className={`absolute bottom-0 left-0 right-0 h-6 bg-token-background rounded-xl`}
-              />
+              <div className="absolute bottom-0 left-0 right-0 h-6 bg-token-background rounded-xl" />
             </div>
           )}
           {!tokenList && (
