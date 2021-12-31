@@ -15,6 +15,7 @@ import {
   LeftOutlined,
   RightOutlined,
   CheckCircleFilled,
+  QuestionCircleOutlined,
 } from '@fluent-wallet/component-icons'
 import {DEFAULT_CFX_HDPATH} from '@fluent-wallet/consts'
 import {encode} from '@fluent-wallet/base32-address'
@@ -271,6 +272,16 @@ function ImportHwAccount() {
                 <div className="text-sm text-gray-40">
                   {t('chooseHwAddress')}
                 </div>
+                <QuestionCircleOutlined
+                  onClick={() =>
+                    window &&
+                    window.open(
+                      'https://fluent-wallet.zendesk.com/hc/en-001/articles/4414140249115-What-is-HD-wallet',
+                    )
+                  }
+                  className="w-4 h-4 text-gray-40 ml-2 cursor-pointer"
+                  id="questionCircleOutlined"
+                />
               </div>
               {addressList?.length && importedAddressData ? (
                 <Checkbox
