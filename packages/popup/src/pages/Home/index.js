@@ -65,7 +65,7 @@ function Home() {
             id="sendBtn"
             size="small"
             variant="outlined"
-            className="!border-white !text-white !bg-transparent !hover:none mr-2"
+            className="!border-white !text-white !bg-transparent mr-2 hover:!bg-[#3C3A5D]"
             onClick={() => {
               history.push('/send-transaction')
             }}
@@ -77,7 +77,7 @@ function Home() {
               id="historyBtn"
               size="small"
               variant="outlined"
-              className="!border-white !text-white !bg-transparent !hover:none"
+              className="!border-white !text-white !bg-transparent hover:!bg-[#3C3A5D]"
               onClick={() => {
                 history.push(HISTORY)
               }}

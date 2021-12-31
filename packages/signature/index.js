@@ -126,6 +126,22 @@ export const cfxSignTransaction = (tx, pk, netId) => {
   return transaction.sign(pk, netId).serialize()
 }
 
+export const cfxRecoverTransactionToAddress = (tx, {r, s, v}, netId) => {
+  const transaction = new CfxTransaction({
+    ...tx,
+    r: addHexPrefix(r),
+    s: addHexPrefix(s),
+    v: addHexPrefix(v),
+  })
+
+  let pub = transaction.recover()
+
+  return encodeCfxAddress(
+    '0x' + cfxSDKSign.publicKeyToAddress(toBuffer(pub)).toString('hex'),
+    netId,
+  )
+}
+
 export const cfxEncodeTx = (tx, shouldStripHexPrefix = false) => {
   const transaction = new CfxTransaction(tx)
   const encoded = transaction.encode(false).toString('hex')

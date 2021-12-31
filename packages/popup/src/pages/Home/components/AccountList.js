@@ -151,7 +151,7 @@ function AccountList({onClose, open}) {
         <Button
           id="addAccountBtn"
           color="transparent"
-          className="w-full border-dashed border-gray-40 mt-3 text-gray-80"
+          className="w-full border-dashed border-gray-40 mt-3 text-gray-80 hover:border-primary hover:text-primary"
           onClick={onAddAccount}
         >
           {t('addAccount')}

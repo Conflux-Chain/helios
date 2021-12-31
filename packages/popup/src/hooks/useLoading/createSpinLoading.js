@@ -34,7 +34,7 @@ export function createSpinLoadingTransition({targetDOM, loadingEle}) {
 
   setTimeout(() => {
     if (!loadingEle) return
-    loadingEle.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'
+    loadingEle.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'
     if (!wrapperDOM) return
     wrapperDOM.style.opacity = '1'
   })

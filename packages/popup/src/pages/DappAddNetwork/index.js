@@ -49,7 +49,7 @@ function DappAddNetwork() {
               </div>
             </div>
             <a
-              className="cursor-pointer text-xs text-primary mt-1"
+              className="cursor-pointer text-xs text-primary mt-1 hover:text-primary-dark"
               href="/"
               target="_blank"
               id="learnMore"

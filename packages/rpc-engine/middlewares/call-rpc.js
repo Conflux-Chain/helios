@@ -1,4 +1,5 @@
 import {defMiddleware} from '../middleware.js'
+import {addBreadcrumb} from '@fluent-wallet/sentry'
 
 function formatRes(res, id) {
   const template = {id, jsonrpc: '2.0'}
@@ -30,62 +31,65 @@ const RequestLockMethods = [
 ]
 
 export default defMiddleware(
-  ({tx: {map, pluck, sideEffect}, stream: {resolve}}) => [
+  ({tx: {map, pluck, sideEffect, comp}, stream: {resolve}}) => [
     {
       id: 'beforeCallRpc',
       ins: {
         req: {stream: '/validateRpcParams/node'},
       },
-      fn: map(async ({rpcStore, req, db}) => {
-        const method = rpcStore[req.method]
-        // validate dapp permissions to call this rpc
-        if (
-          req._inpage &&
-          method.permissions.scope &&
-          !method.permissions.locked
-        ) {
-          const isValid = await req.rpcs
-            .wallet_validateAppPermissions({
-              permissions: rpcStore[req.method].permissions.scope,
-            })
-            .catch(err => {
+      fn: comp(
+        sideEffect(() => addBreadcrumb({category: 'beforeCallRpc'})),
+        map(async ({rpcStore, req, db}) => {
+          const method = rpcStore[req.method]
+          // validate dapp permissions to call this rpc
+          if (
+            req._inpage &&
+            method.permissions.scope &&
+            !method.permissions.locked
+          ) {
+            const isValid = await req.rpcs
+              .wallet_validateAppPermissions({
+                permissions: rpcStore[req.method].permissions.scope,
+              })
+              .catch(err => {
+                err.rpcData = req
+                throw err
+              })
+            if (!isValid) {
+              const err = req.Err.Unauthorized()
               err.rpcData = req
               throw err
-            })
-          if (!isValid) {
-            const err = req.Err.Unauthorized()
-            err.rpcData = req
-            throw err
+            }
           }
-        }
 
-        // guard inpage methods when wallet locked
-        if (
-          // req is from inpage
-          req._inpage &&
-          // req allowed to be called from inpage
-          rpcStore[req.method].permissions.external.includes('inpage') &&
-          // wallet is locked
-          db.getLocked() &&
-          // method is unlocked only method
-          !rpcStore[req.method].permissions.locked
-        ) {
-          // allow some inpage rpc methods to request the unlock ui
-          if (RequestLockMethods.includes(req.method)) {
-            await req.rpcs.wallet_requestUnlockUI().catch(err => {
+          // guard inpage methods when wallet locked
+          if (
+            // req is from inpage
+            req._inpage &&
+            // req allowed to be called from inpage
+            rpcStore[req.method].permissions.external.includes('inpage') &&
+            // wallet is locked
+            db.getLocked() &&
+            // method is unlocked only method
+            !rpcStore[req.method].permissions.locked
+          ) {
+            // allow some inpage rpc methods to request the unlock ui
+            if (RequestLockMethods.includes(req.method)) {
+              await req.rpcs.wallet_requestUnlockUI().catch(err => {
+                err.rpcData = req
+                throw err
+              })
+            } else {
+              // reject others
+              const err = req.Err.Unauthorized()
               err.rpcData = req
               throw err
-            })
-          } else {
-            // reject others
-            const err = req.Err.Unauthorized()
-            err.rpcData = req
-            throw err
+            }
           }
-        }
 
-        return req
-      }),
+          return req
+        }),
+      ),
     },
     {
       id: 'callRpc',
@@ -94,23 +98,29 @@ export default defMiddleware(
           stream: r => r('/beforeCallRpc/node').subscribe(resolve()),
         },
       },
-      fn: map(async ({rpcStore, req}) => ({
-        req,
-        res: await rpcStore[req.method].main(req).catch(err => {
-          err.rpcData = req
-          throw err
-        }),
-      })),
+      fn: comp(
+        sideEffect(() => addBreadcrumb({category: 'callRpc'})),
+        map(async ({rpcStore, req}) => ({
+          req,
+          res: await rpcStore[req.method].main(req).catch(err => {
+            err.rpcData = req
+            throw err
+          }),
+        })),
+      ),
     },
     {
       id: 'afterCallRpc',
       ins: {
         ctx: {stream: r => r('/callRpc/node').subscribe(resolve())},
       },
-      fn: map(({ctx: {req, res}}) => ({
-        req,
-        res: formatRes(res, req.id),
-      })),
+      fn: comp(
+        sideEffect(() => addBreadcrumb({category: 'afterCallRpc'})),
+        map(({ctx: {req, res}}) => ({
+          req,
+          res: formatRes(res, req.id),
+        })),
+      ),
       outs: {
         req: n => n.subscribe({}, {xform: pluck('req')}),
         res: n => n.subscribe({}, {xform: pluck('res')}),
@@ -122,7 +132,10 @@ export default defMiddleware(
         res: {stream: '/afterCallRpc/outs/res'},
         req: {stream: '/afterCallRpc/outs/req'},
       },
-      fn: sideEffect(({res, req: {_c}}) => _c.write(res)),
+      fn: comp(
+        sideEffect(() => addBreadcrumb({category: 'END'})),
+        sideEffect(({res, req: {_c}}) => _c.write(res)),
+      ),
     },
   ],
 )
