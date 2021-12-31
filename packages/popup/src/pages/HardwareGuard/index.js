@@ -57,10 +57,11 @@ function HardwareGuard() {
             {t('supportLedger')}
           </p>
           <a
-            href="/"
+            href="https://fluent-wallet.zendesk.com/hc/en-001/articles/4414201694235-Set-up-the-Ledger-Nano-S-and-install-the-Conflux-Ledger-App"
             target="_blank"
             id="ledger-guard-link"
             className="text-primary w-56 block text-sm"
+            rel="noreferrer"
           >
             {t('ledgerGuardDes')}
           </a>
