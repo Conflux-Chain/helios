@@ -144,7 +144,7 @@ function SendTransaction() {
     <div className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg">
       <TitleNav
         title={t('sendTransaction')}
-        onGoBack={() => clearSendTransactionParams()}
+        onGoBack={() => setTimeout(() => clearSendTransactionParams(), 500)}
       />
       <div className="flex mt-1 mb-3 mx-4 justify-between items-center z-20">
         <AccountDisplay
