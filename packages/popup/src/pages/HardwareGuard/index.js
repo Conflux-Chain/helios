@@ -40,8 +40,8 @@ function HardwareGuard() {
       location &&
       window.open(
         `${location.origin}${location.pathname.replace(
-          'popup',
-          'page',
+          'popup.html',
+          'page.html',
         )}#${CONNECT_HARDWARE_WALLET}`,
       )
   }
