@@ -280,7 +280,7 @@ function ImportHwAccount() {
                     )
                   }
                   className="w-4 h-4 text-gray-40 ml-2 cursor-pointer"
-                  id="questionCircleOutlined"
+                  id="open-what-is-hd-wallet"
                 />
               </div>
               {addressList?.length && importedAddressData ? (

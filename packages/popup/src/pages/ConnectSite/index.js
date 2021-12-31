@@ -47,7 +47,7 @@ function ConnectSitesList({
                   )
                 }
                 className="w-4 h-4 text-gray-40 ml-2 cursor-pointer"
-                id="questionCircleOutlined"
+                id="open-account-authorization"
               />
             </div>
             <Checkbox
