@@ -18,8 +18,8 @@ on:
       - closed
 
 jobs:
-  pre-release:
-    if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
+  prod-release:
+    if: ${{ github.event.pull_request.merged == true && github.head_ref == 'dev' }}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -69,3 +69,10 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: releases/*
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3.12.0
+        with:
+          token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+          branch: "dev"
+          base: "main"
+          title: "chore: merge main back to dev"
