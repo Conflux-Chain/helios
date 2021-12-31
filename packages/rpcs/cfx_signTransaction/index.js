@@ -171,5 +171,5 @@ async function signWithHardwareWallet({
 }) {
   const hwSignMap = {LedgerNanoS: cfx_signTxWithLedgerNanoS}
   const signMethod = hwSignMap[device]
-  return await signMethod({tx, addressId})
+  return await signMethod({errorFallThrough: true}, {tx, addressId})
 }

@@ -22,6 +22,7 @@ export const permissions = {
     'cfx_gasPrice',
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
+    'wallet_userRejectedAuthRequest',
     'wallet_handleUnfinishedCFXTx',
     'wallet_enrichConfluxTx',
   ],
@@ -32,6 +33,7 @@ export const main = async ({
   Err: {InvalidParams, Server},
   db: {findAddress, getAuthReqById, getAddrTxByHash, t},
   rpcs: {
+    wallet_userRejectedAuthRequest,
     wallet_enrichConfluxTx,
     cfx_gasPrice,
     cfx_signTransaction,
@@ -117,17 +119,26 @@ export const main = async ({
   addr = addr[0] || addr
   if (!addr) throw InvalidParams(`Invalid from address ${tx[0].from}`)
 
-  const signed = await cfx_signTransaction(
-    {
-      network: authReqId ? authReq.app.currentNetwork : network,
-      errorFallThrough: true,
-    },
-    tx.concat({
-      returnTxMeta: true,
-    }),
-  )
+  let signed
+  try {
+    signed = await cfx_signTransaction(
+      {
+        network: authReqId ? authReq.app.currentNetwork : network,
+        errorFallThrough: true,
+      },
+      tx.concat({
+        returnTxMeta: true,
+      }),
+    )
+  } catch (err) {
+    if (authReqId) await wallet_userRejectedAuthRequest({authReqId})
+    throw err
+  }
 
-  if (!signed) throw Server(`Server error while signning tx`)
+  if (!signed) {
+    if (authReqId) await wallet_userRejectedAuthRequest({authReqId})
+    throw Server(`Server error while signning tx`)
+  }
   const {raw: rawtx, txMeta} = signed
 
   const txhash = getTxHashFromRawTx(rawtx)
