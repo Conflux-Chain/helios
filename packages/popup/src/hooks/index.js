@@ -42,10 +42,17 @@ export const useQuery = () => {
   return new URLSearchParams(useLocation().search)
 }
 
-export const useSlideAnimation = (show, direction = 'vertical') => {
+export const useSlideAnimation = (
+  show,
+  direction = 'vertical',
+  needAnimation,
+) => {
   const [wrapperAnimateStyle, setWrapperAnimateStyle] = useState('')
 
   useEffect(() => {
+    if (!needAnimation) {
+      return setWrapperAnimateStyle(show ? 'block' : '')
+    }
     let timer = null
     if (show) {
       setWrapperAnimateStyle(
@@ -68,7 +75,7 @@ export const useSlideAnimation = (show, direction = 'vertical') => {
     return () => {
       timer && clearTimeout(timer)
     }
-  }, [show, wrapperAnimateStyle, direction])
+  }, [show, wrapperAnimateStyle, direction, needAnimation])
 
   return wrapperAnimateStyle
 }
