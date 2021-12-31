@@ -20,6 +20,7 @@ import {
   useNetworkTypeIsCfx,
   useAddressType,
   useValid20Token,
+  usePendingAuthReq,
 } from './useApi'
 import {validateAddress} from '../utils'
 import {useTranslation} from 'react-i18next'
@@ -237,7 +238,9 @@ export const useCheckBalanceAndGas = (
   ])
 }
 
-export const useDappParams = pendingAuthReq => {
+export const useDappParams = customPendingAuthReq => {
+  let pendingAuthReq = usePendingAuthReq()
+  pendingAuthReq = customPendingAuthReq || pendingAuthReq
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   return req?.params[0] || {}
 }

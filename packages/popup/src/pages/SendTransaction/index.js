@@ -24,7 +24,7 @@ import {
   useSingleTokenInfoWithNativeTokenSupport,
 } from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
-const {HOME, CONFIRM_TRANSACTION} = ROUTES
+const {CONFIRM_TRANSACTION} = ROUTES
 
 function SendTransaction() {
   const {t} = useTranslation()
@@ -189,7 +189,7 @@ function SendTransaction() {
               className="flex-1 mr-3"
               onClick={() => {
                 setTimeout(() => clearSendTransactionParams(), 500)
-                history.push(HOME)
+                history.goBack()
               }}
             >
               {t('cancel')}
