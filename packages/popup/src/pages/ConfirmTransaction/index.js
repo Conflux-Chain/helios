@@ -300,12 +300,11 @@ function ConfirmTransition() {
       .then(() => {
         if (!isHwAccount) setLoading(false)
         else setSendStatus(HW_TX_STATUS.SUCCESS)
-        clearSendTransactionParams()
+        setTimeout(() => clearSendTransactionParams(), 500)
         history.push(HOME)
       })
       .catch(error => {
         console.error('error', error?.message ?? error)
-        clearSendTransactionParams()
         if (!isHwAccount) setLoading(false)
         setSendStatus(HW_TX_STATUS.REJECTED)
       })
@@ -397,7 +396,7 @@ function ConfirmTransition() {
               setIsAppOpen={setIsAppOpen}
             />
           )}
-          {isHwAccount && (
+          {(isHwAccount || sendStatus === HW_TX_STATUS.REJECTED) && (
             <HwTransactionResult status={sendStatus} isDapp={isDapp} />
           )}
         </div>
