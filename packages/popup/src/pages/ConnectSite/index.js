@@ -39,11 +39,15 @@ function ConnectSitesList({
               <div className="text-sm text-gray-40">
                 {t('selectAuthorizedAccounts')}
               </div>
-              {/* TODO add open url */}
               <QuestionCircleOutlined
-                onClick={() => window && window.open('')}
+                onClick={() =>
+                  window &&
+                  window.open(
+                    'https://fluent-wallet.zendesk.com/hc/en-001/articles/4414146678555-Account-authorization',
+                  )
+                }
                 className="w-4 h-4 text-gray-40 ml-2 cursor-pointer"
-                id="selectAuthorizedAccounts"
+                id="open-account-authorization"
               />
             </div>
             <Checkbox

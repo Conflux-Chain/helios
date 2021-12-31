@@ -106,7 +106,7 @@ AccountItem.propTypes = {
   decimals: PropTypes.number,
 }
 
-function AccountList({onClose, open}) {
+function AccountList({onClose, open, accountsAnimate = true}) {
   const {t} = useTranslation()
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()
@@ -129,6 +129,7 @@ function AccountList({onClose, open}) {
       }
       onClose={onClose}
       open={open}
+      needAnimation={accountsAnimate}
       cardContent={
         <div>
           {Object.values(accountGroups || {}).map(
@@ -164,6 +165,7 @@ function AccountList({onClose, open}) {
 AccountList.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
+  accountsAnimate: PropTypes.bool.isRequired,
 }
 
 export default AccountList

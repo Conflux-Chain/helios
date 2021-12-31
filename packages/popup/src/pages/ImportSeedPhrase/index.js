@@ -73,7 +73,9 @@ function ImportSeedPhrase() {
               })
               .catch(error => {
                 setLoading(false)
-                setErrorMessage(error?.message?.split?.('\n')?.[0] ?? error)
+                setErrorMessage(
+                  error?.message?.split?.('\n')?.[0] ?? error?.message ?? error,
+                )
               })
           })
         } else {
@@ -86,7 +88,7 @@ function ImportSeedPhrase() {
         setErrorMessage(
           typeof error?.data?.duplicateAccountGroupId === 'number'
             ? t('duplicateSeedError')
-            : error?.message?.split?.('\n')?.[0] ?? error,
+            : error?.message?.split?.('\n')?.[0] ?? error?.message ?? error,
         )
       })
   }

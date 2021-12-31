@@ -28,6 +28,7 @@ function Home() {
   const [networkStatus, setNetworkStatus] = useState(false)
   const [addTokenStatus, setAddTokenStatus] = useState(false)
   const [settingsStatus, setSettingStatus] = useState(false)
+  const [accountsAnimate, setAccountsAnimate] = useState(true)
   const query = useQuery()
   const history = useHistory()
   const pendingCount = useTxList({status: {gte: 0, lt: 4}, countOnly: true})
@@ -35,9 +36,14 @@ function Home() {
   useEffectOnce(() => {
     if (query.get('open') === 'account-list') {
       history.replace('')
+      setAccountsAnimate(false)
       setAccountStatus(true)
     }
   })
+  const onCloseAccountList = () => {
+    !accountsAnimate && setAccountsAnimate(true)
+    setAccountStatus(false)
+  }
 
   return (
     <div
@@ -99,8 +105,9 @@ function Home() {
       <HomeTokenList onOpenAddToken={() => setAddTokenStatus(true)} />
       <CurrentDapp />
       <AccountList
-        onClose={() => setAccountStatus(false)}
+        onClose={onCloseAccountList}
         open={accountStatus}
+        accountsAnimate={accountsAnimate}
       />
       <NetworkList
         onClose={() => setNetworkStatus(false)}
