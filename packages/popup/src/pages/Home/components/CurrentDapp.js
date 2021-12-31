@@ -50,7 +50,8 @@ function CurrentDapp() {
 
   return (
     <div
-      className="current-dapp-container flex items-center py-3 rounded-t-xl bg-gray-0 px-3 flex-shrink-0"
+      className={`current-dapp-container flex items-center ${isConnected ? 'h-16' : 'h-10'
+        } py-3 rounded-t-xl bg-gray-0 px-3 flex-shrink-0`}
       id="currentDappContainer"
     >
       {!isConnected && (
@@ -89,7 +90,7 @@ function CurrentDapp() {
               {!isConnectedCurrentAccount ? (
                 <span
                   id="setAuthModalShowBtn"
-                  className="text-primary text-xs cursor-pointer inline-block max-w-[140px] text-ellipsis"
+                  className="text-primary text-xs cursor-pointer inline-block max-w-[140px] text-ellipsis hover:text-primary-dark"
                   onClick={() => setAuthModalShow(true)}
                   aria-hidden="true"
                 >
