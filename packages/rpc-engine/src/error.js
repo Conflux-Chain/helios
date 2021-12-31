@@ -5,6 +5,7 @@
 import {errorInstanceToErrorCode} from '@fluent-wallet/json-rpc-error'
 
 export const appendRpcStackToErrorMessage = (err, stack) => {
+  if (err?.message?.includes?.('RPC Stack:')) return err
   const reversedStack = stack.slice().reverse()
   const stackMessage = `\nRPC Stack:\n-> ${reversedStack.join('\n-> ')}\n`
   err.message += stackMessage
@@ -39,18 +40,15 @@ export const rpcErrorHandlerFactory = ({
 
     /* istanbul ignore if  */
     if (!isProd && !err?.message?.includes('UserRejected')) {
-      console.error(
-        'DEV_ONLY_ERROR: ' + (err.message || ''),
-        '\n',
-        err.stack || '',
-      )
+      console.error('DEV_ONLY_ERROR:', err.stack || '')
     }
+
     req._c.write({
       jsonrpc: '2.0',
       error: {
-        code: errorInstanceToErrorCode(err) || -32000,
+        code: errorInstanceToErrorCode(err),
         message: err.message,
-        data: err.extra,
+        data: err.extra || err.data,
       },
       id: req.id === undefined ? 2 : req.id,
     })

@@ -35,4 +35,8 @@ export function updateUserId(id) {
   })
 }
 
+export function addBreadcrumb(opts = {}) {
+  Sentry.addBreadcrumb(opts)
+}
+
 export {Sentry}

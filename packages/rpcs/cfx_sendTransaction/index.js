@@ -67,7 +67,13 @@ export const main = async ({
       ])
     } catch (err) {
       if (err?.code === ERROR.USER_REJECTED.code) throw err
-      throw InvalidParams(`Invalid transaction ${JSON.stringify(params)}`)
+      err.message = `Error while processing tx.\nparams:\n${JSON.stringify(
+        params,
+        null,
+        2,
+      )}\nerror:\n${err.message}`
+
+      throw err
     }
 
     if (app.currentNetwork.name === CFX_MAINNET_NAME) {
@@ -112,7 +118,10 @@ export const main = async ({
   if (!addr) throw InvalidParams(`Invalid from address ${tx[0].from}`)
 
   const signed = await cfx_signTransaction(
-    {network: authReqId ? authReq.app.currentNetwork : network},
+    {
+      network: authReqId ? authReq.app.currentNetwork : network,
+      errorFallThrough: true,
+    },
     tx.concat({
       returnTxMeta: true,
     }),

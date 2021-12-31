@@ -3,6 +3,7 @@ import {decrypt} from 'browser-passworder'
 import {Conflux as LedgerConflux} from '@fluent-wallet/ledger'
 import {
   cfxEncodeTx,
+  cfxRecoverTransactionToAddress,
   cfxJoinTransactionAndSignature,
 } from '@fluent-wallet/signature'
 
@@ -33,6 +34,7 @@ export const main = async ({
     g: {
       value: 1,
       hex: 1,
+      network: {netId: 1},
       _account: {
         _accountGroup: {eid: 1, vault: 1},
       },
@@ -58,6 +60,16 @@ export const main = async ({
       hdPath,
       cfxEncodeTx(newTx, true),
     )
+    const recoveredAddr = cfxRecoverTransactionToAddress(
+      tx,
+      {r, s, v},
+      addr.network.netId,
+    )
+
+    if (recoveredAddr !== addr.value)
+      throw InvalidParams(
+        `The address in LedgerNanoS (${recoveredAddr}) doesn't match the address in fluent (${addr.value})`,
+      )
 
     const rawTx = cfxJoinTransactionAndSignature({
       tx: newTx,
