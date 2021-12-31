@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {useSWRConfig} from 'swr'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
+import {QuestionCircleOutlined} from '@fluent-wallet/component-icons'
 import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
@@ -116,7 +117,21 @@ function CurrentSeed() {
           />
         </CompWithLabel>
         <CompWithLabel
-          label={t('selectSeedPhrase')}
+          label={
+            <span className="flex">
+              {t('selectSeedPhrase')}
+              <QuestionCircleOutlined
+                onClick={() =>
+                  window &&
+                  window.open(
+                    'https://fluent-wallet.zendesk.com/hc/en-001/articles/4414146474011-Using-existing-Seed-Phrase',
+                  )
+                }
+                className="w-4 h-4 text-gray-40 ml-2 cursor-pointer"
+                id="selectSeedPhrase"
+              />
+            </span>
+          }
           className="flex flex-1 flex-col mb-4"
         >
           <div

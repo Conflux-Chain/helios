@@ -21,8 +21,8 @@ function HwAlert({open, isDapp, ...props}) {
             onClick={() =>
               window.open(
                 `${location.origin}${location.pathname.replace(
-                  isDapp ? 'notification' : 'popup',
-                  'page',
+                  isDapp ? 'notification.html' : 'popup.html',
+                  'page.html',
                 )}#${CONNECT_HARDWARE_WALLET}?action=close`,
               )
             }

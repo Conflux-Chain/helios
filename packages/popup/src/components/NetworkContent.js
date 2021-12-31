@@ -48,7 +48,6 @@ function NetworkItem({
         .then(() => {
           setLoading(false)
           mutate()
-          // TODO: i18n
           Message.warning({
             content: t('addressHasBeenChanged'),
             top: '110px',
