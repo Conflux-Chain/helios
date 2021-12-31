@@ -6,8 +6,17 @@ import {
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {useCurrentAddress} from '../../../hooks/useApi'
 import Text from '../../../components/Text'
-import {CopyButton, QRCodeButton} from '../../../components'
+import {CopyButton, QRCodeButton, WrapIcon} from '../../../components'
 import classNames from 'classnames'
+
+const iconWrapper = ({children, ...props}) => {
+  return (
+    <WrapIcon {...props} className="bg-transparent hover:bg-[#3C3A5D] group">
+      {children}
+    </WrapIcon>
+  )
+}
+
 function CurrentAccount({onOpenAccount}) {
   const {
     data: {
@@ -44,16 +53,21 @@ function CurrentAccount({onOpenAccount}) {
         <CopyButton
           text={address}
           className={classNames(
-            'mx-2 text-white transform transition-all duration-100 ease-in-out',
+            'text-white transform transition-all duration-100 ease-in-out group-hover:text-primary',
             {['opacity-0']: !displayAddress},
           )}
+          CopyWrapper={iconWrapper}
         />
         <QRCodeButton
           title={nickname}
           qrcodeValue={address}
-          className={classNames('transition-all duration-100 ease-in-out', {
-            ['opacity-0']: !displayAddress,
-          })}
+          className={classNames(
+            'transition-all duration-100 ease-in-out group-hover:text-primary',
+            {
+              ['opacity-0']: !displayAddress,
+            },
+          )}
+          CopyWrapper={iconWrapper}
         />
       </div>
     </div>

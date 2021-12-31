@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
 import {useCurrentDapp, useCurrentAddress} from '../../../hooks/useApi'
-import {DisplayBalance} from '../../../components'
+import {DisplayBalance, WrapIcon} from '../../../components'
 import useGlobalStore from '../../../stores'
 import {ROUTES} from '../../../constants'
 const {EDIT_PERMISSION} = ROUTES
@@ -64,11 +64,13 @@ function InfoList({
               maxWidthStyle="max-w-[220px]"
               symbol={token?.symbol}
             />
-            <EditOutlined
-              className="w-4 h-4 ml-1 cursor-pointer"
-              id="editAllowance"
-              onClick={() => history.push(EDIT_PERMISSION)}
-            />
+            <WrapIcon className="mx-1 shadow-none bg-transparent hover:bg-primary-4 group">
+              <EditOutlined
+                className="w-4 h-4 cursor-pointer group-hover:text-primary"
+                id="editAllowance"
+                onClick={() => history.push(EDIT_PERMISSION)}
+              />
+            </WrapIcon>
           </span>
         </div>
       )}
