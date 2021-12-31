@@ -19,6 +19,7 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
           'assert_1.default.assert(',
         )
 
+      if (id.includes('js-conflux-sdk')) return contents
       // fix readable-stream error with snowpack
       // https://github.com/nodejs/readable-stream/issues/456
       if (id.endsWith('/cip-23/lib/es/utils/buffer.js'))
@@ -31,7 +32,11 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
         cwd: root,
         root,
         filename: id,
-        sourceMaps: isProd(),
+        configFile: path.resolve(
+          __dirname,
+          isProd() ? './prod.swcrc.json' : './dev.swcrc.json',
+        ),
+        sourceMaps: isProd() ? false : 'inline',
       }).code
       return result
     },

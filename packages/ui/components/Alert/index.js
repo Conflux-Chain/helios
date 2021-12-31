@@ -72,8 +72,8 @@ function Alert({
       data-testid="alert-wrapper"
       className={`flex items-center justify-between px-4 py-3 border border-solid ${style} ${width} ${className}`}
     >
-      <div className="flex items-center">
-        {icon || IconComponent || null}
+      <div className="flex items-start">
+        <span className="flex-shrink-0">{icon || IconComponent || null}</span>
         <span className={`${contentStyle}`}>{content}</span>
       </div>
       {closable && (

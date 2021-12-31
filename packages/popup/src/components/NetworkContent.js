@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types'
+import Message from '@fluent-wallet/component-message'
+import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {RPC_METHODS} from '../constants'
 import {request} from '../utils'
-import {useSWRConfig} from 'swr'
-import {useCfxNetwork} from '../hooks/useApi'
+import {useCfxNetwork, useCurrentAddress} from '../hooks/useApi'
+import useLoading from '../hooks/useLoading'
 import {CustomTag} from './'
+import {useTranslation} from 'react-i18next'
 
-const {WALLET_SET_CURRENT_NETWORK, WALLET_GET_CURRENT_NETWORK} = RPC_METHODS
+const {WALLET_SET_CURRENT_NETWORK} = RPC_METHODS
 const networkTypeColorObj = {
   mainnet: 'bg-primary-10 text-[#ACB6E0]',
   testnet: 'bg-[#FFF7F4] text-[#F5B797]',
@@ -22,26 +25,56 @@ function NetworkItem({
   onClickNetworkItem,
   networkId,
   networkItemSize = 'medium',
+  onClose,
   ...props
 }) {
-  const {mutate} = useSWRConfig()
+  const {setLoading} = useLoading()
+  const {t} = useTranslation()
+  const {
+    data: {
+      network: {eid},
+    },
+    mutate,
+  } = useCurrentAddress()
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
     itemWrapperPaddingStyleObj[networkItemSize] || ''
 
   const onChangeNetwork = () => {
-    request(WALLET_SET_CURRENT_NETWORK, [networkId]).then(result => {
-      mutate([WALLET_GET_CURRENT_NETWORK])
-      onClickNetworkItem(result, {networkId, networkName, icon})
-      // TODO: need deal with error condition
-    })
+    onClose && onClose()
+    if (eid !== networkId) {
+      setLoading(true)
+      request(WALLET_SET_CURRENT_NETWORK, [networkId])
+        .then(() => {
+          setLoading(false)
+          mutate()
+          Message.warning({
+            content: t('addressHasBeenChanged'),
+            top: '110px',
+            duration: 1,
+          })
+          onClickNetworkItem &&
+            onClickNetworkItem({networkId, networkName, icon})
+        })
+        .catch(error => {
+          // TODO: need deal with error condition
+          Message.error({
+            content: error?.message || t('changeNetworkError'),
+            top: '110px',
+            duration: 1,
+          })
+          setLoading(false)
+        })
+    }
   }
 
   return (
     <div
       {...props}
       aria-hidden="true"
-      className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative cursor-pointer ${itemWrapperPaddingStyle}`}
+      className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative hover:bg-primary-4 ${
+        eid === networkId ? 'cursor-default' : 'cursor-pointer'
+      } ${itemWrapperPaddingStyle} pr-3.5`}
       onClick={onChangeNetwork}
     >
       <div className="w-8 h-8 border border-solid border-gray-20 rounded-full flex items-center justify-center">
@@ -51,9 +84,12 @@ function NetworkItem({
           src={icon || '/images/default-network-icon.svg'}
         />
       </div>
-      <div className="ml-2.5 text-gray-80 text-sm font-medium">
+      <div className="ml-2.5 text-gray-80 text-sm font-medium flex-1">
         {networkName}
       </div>
+      {eid === networkId && (
+        <CheckCircleFilled className="w-4 h-4 text-success" />
+      )}
       <CustomTag className={`absolute right-0 top-0 ${networkTypeColor}`}>
         {networkType}
       </CustomTag>
@@ -66,10 +102,11 @@ NetworkItem.propTypes = {
   networkItemSize: PropTypes.oneOf(['small', 'medium']),
   networkId: PropTypes.number.isRequired,
   icon: PropTypes.string,
-  onClickNetworkItem: PropTypes.func.isRequired,
+  onClickNetworkItem: PropTypes.func,
+  onClose: PropTypes.func,
 }
 
-function NetworkContent({onClickNetworkItem, networkItemSize}) {
+function NetworkContent({onClickNetworkItem, networkItemSize, onClose}) {
   const networkData = useCfxNetwork()
 
   return (
@@ -90,6 +127,7 @@ function NetworkContent({onClickNetworkItem, networkItemSize}) {
               : ''
           }
           onClickNetworkItem={onClickNetworkItem}
+          onClose={onClose}
           icon={icon}
           id={`item-${eid}`}
         />
@@ -99,7 +137,8 @@ function NetworkContent({onClickNetworkItem, networkItemSize}) {
 }
 
 NetworkContent.propTypes = {
-  onClickNetworkItem: PropTypes.func.isRequired,
+  onClickNetworkItem: PropTypes.func,
+  onClose: PropTypes.func,
   networkItemSize: PropTypes.oneOf(['small', 'medium']),
 }
 

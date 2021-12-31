@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../utils'
-import {RPC_METHODS, ROUTES} from '../constants'
+import {RPC_METHODS, HW_TX_STATUS} from '../constants'
 import {usePendingAuthReq} from '../hooks/useApi'
-import {useHistory} from 'react-router-dom'
-import {useState} from 'react'
+import useLoading from '../hooks/useLoading'
+import {Conflux} from '@fluent-wallet/ledger'
+
+const cfxLedger = new Conflux()
 
 const {
   WALLET_REJECT_PENDING_AUTH_REQUSET,
@@ -20,7 +22,6 @@ const {
   WALLET_WATCH_ASSET,
   PERSONAL_SIGN,
 } = RPC_METHODS
-const {HOME} = ROUTES
 function DappFooter({
   cancelText,
   confirmText,
@@ -28,35 +29,50 @@ function DappFooter({
   confirmParams = {},
   onClickCancel,
   onClickConfirm,
+  setSendStatus,
+  setAuthStatus,
+  setIsAppOpen,
+  isHwAccount,
+  pendingAuthReq: customPendingAuthReq,
 }) {
-  const history = useHistory()
-  const pendingAuthReq = usePendingAuthReq()
+  let pendingAuthReq = usePendingAuthReq()
+  pendingAuthReq = customPendingAuthReq || pendingAuthReq
+
   const [{req, eid}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
-  const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
+  const {setLoading} = useLoading()
 
   const onCancel = () => {
-    if (sendingRequestStatus) {
-      return
-    }
-    setSendingRequestStatus(true)
+    setLoading(true)
     request(WALLET_REJECT_PENDING_AUTH_REQUSET, {authReqId: eid})
       .then(() => {
-        setSendingRequestStatus(false)
-        history.push(HOME)
         onClickCancel && onClickCancel()
+        setLoading(false)
+        window.close()
       })
       .catch(e => {
         console.log('error', e)
         // TODO: error message
-        setSendingRequestStatus(false)
+        setLoading(false)
       })
   }
 
-  const onConfirm = () => {
-    if (!req?.method || sendingRequestStatus) {
+  const onConfirm = async () => {
+    if (!req?.method) {
       return
     }
-    setSendingRequestStatus(true)
+    if (isHwAccount) {
+      const authStatus = await cfxLedger.isDeviceAuthed()
+      const isAppOpen = await cfxLedger.isAppOpen()
+      if (!authStatus) {
+        setAuthStatus(authStatus)
+        return
+      } else if (!isAppOpen) {
+        setIsAppOpen(isAppOpen)
+        return
+      }
+    }
+    if (!isHwAccount) setLoading(true)
+    else setSendStatus(HW_TX_STATUS.WAITING)
     let params = {}
     switch (req.method) {
       case WALLET_REQUEST_PERMISSIONS:
@@ -87,14 +103,16 @@ function DappFooter({
 
     request(req.method, {authReqId: eid, ...params})
       .then(() => {
-        setSendingRequestStatus(false)
         onClickConfirm && onClickConfirm()
-        history.push(HOME)
+        if (!isHwAccount) setLoading(false)
+        else setSendStatus(HW_TX_STATUS.SUCCESS)
+        window.close()
       })
       .catch(e => {
-        console.log('error', e)
-        setSendingRequestStatus(false)
         // TODO: error message
+        console.log('error', e)
+        if (!isHwAccount) setLoading(false)
+        setSendStatus(HW_TX_STATUS.REJECTED)
       })
   }
 
@@ -128,6 +146,11 @@ DappFooter.propTypes = {
   confirmDisabled: PropTypes.bool,
   onClickConfirm: PropTypes.func,
   onClickCancel: PropTypes.func,
+  setSendStatus: PropTypes.func,
+  setIsAppOpen: PropTypes.func,
+  setAuthStatus: PropTypes.func,
+  pendingAuthReq: PropTypes.array,
+  isHwAccount: PropTypes.bool,
 }
 
 export default DappFooter

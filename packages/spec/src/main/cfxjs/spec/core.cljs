@@ -79,18 +79,18 @@
       :ethHexAddress (update-properties
                       [:re #"^0x[0-9a-fA-F]{40}$"]
                       :gen/fmap #(.call randomHexAddress)
-                      :error/message "invalid hex address"
+                      :error/message "invalid hex address, should match regex ^0x[0-9a-fA-F]{40}$"
                       :doc "0x-prefixed address")
       :hexUserAddress (update-properties
                        [:re #"^0x1[0-9a-fA-F]{39}$"]
                        :type :hexUserAddress
                        :gen/fmap #(.call randomHexAddress nil "user")
-                       :error/message "invalid hex user address"
+                       :error/message "invalid hex user address, should match regex #^0x1[0-9a-fA-F]{39}$"
                        :doc "Conflux hex user address")
       :hexContractAddress (update-properties
                            [:re #"^0x8[0-9a-fA-F]{39}$"]
                            :type :hexContractAddress
-                           :error/message "invalid hex contract address"
+                           :error/message "invalid hex contract address, should match regex #^0x8[0-9a-fA-F]{39}$"
                            :doc "Conflux hex user address"
                            :gen/fmap #(.call randomHexAddress nil "contract"))
       :hexBuiltInAddress (update-properties
@@ -168,40 +168,48 @@
                  :type :hexString
                  :gen/fmap #(str "0x"
                                  (-> js/Number.MAX_SAFE_INTEGER randomInt (.toString 16)))
-                 :error/message "invalid hex string"
+                 :error/message "invalid hex string, should match regex ^0(x|X)?[a-fA-F0-9]+$"
                  :doc "hexadecimal string"))
 (def Byte
   (update-properties [:re #"^0x([0-9a-fA-F]?){1,2}$"]
                      :type :byte
-                     [:doc "hex encoded byte"]))
+                     :error/message "should match regex ^0x([0-9a-fA-F]?){1,2}$"
+                     :doc "hex encoded byte"))
 (def Bytes
   (update-properties [:re #"^0x[0-9a-f]*$"]
                      :type :bytes
-                     [:doc "hex encoded bytes"]))
+                     :error/message "should match regex ^0x[0-9a-f]*$"
+                     :doc "hex encoded bytes"))
 (def Bytes32
   (update-properties [:re #"^0x[0-9a-f]{64}$"]
                      :type :bytes-32
-                     [:doc "32 hex encoded bytes"]))
+                     :error/message "should match regex ^0x[0-9a-f]{64}$"
+                     :doc "32 hex encoded bytes"))
 (def Bytes256
   (update-properties [:re #"^0x[0-9a-f]{512}$"]
                      :type :bytes-256
-                     [:doc "256 hex encoded bytes"]))
+                     :error/message "should match regex ^0x[0-9a-f]{512}$"
+                     :doc "256 hex encoded bytes"))
 (def Bytes65
   (update-properties [:re #"^0x[0-9a-f]{512}$"]
                      :type :bytes-65
-                     [:doc "65 hex encoded bytes"]))
+                     :error/message "should match regex ^0x[0-9a-f]{512}$"
+                     :doc "65 hex encoded bytes"))
 (def Uint
   (update-properties [:re #"^0x([1-9a-f]+[0-9a-f]*|0)$"]
                      :type :uint
-                     [:doc "hex encoded unsigned integer"]))
+                     :error/message "should match regex ^0x([1-9a-f]+[0-9a-f]*|0)$"
+                     :doc "hex encoded unsigned integer"))
 (def Uint256
   (update-properties [:re #"^0x[0-9a-f]{64}$"]
                      :type :uint-256
-                     [:doc "hex encoded unsigned integer"]))
+                     :error/message "should match regex ^0x[0-9a-f]{64}$"
+                     :doc "hex encoded unsigned integer"))
 (def Hash32
   (update-properties [:re #"^0x[0-9a-f]{64}$"]
                      :type :hash-32
-                     [:doc "32 byte hex value"]))
+                     :error/message "should match regex ^0x[0-9a-f]{64}$"
+                     :doc "32 byte hex value"))
 (def ChainId (update-properties Uint [:doc "chainid, 0x-prefixed hexadecimal string"]))
 (comment
   (#(re-matches #"^0x[0-9a-fA-F]{40}$" %) "0x0000000000000000000000000000000000000000")
@@ -432,7 +440,7 @@
 (def export-token-symbol
   (update-properties
    [:and [:re #"^[a-zA-Z0-9+\-%/$]+$"] [:string {:min 1 :max 20}]]
-   :error/message "invalid token symbol"
+   :error/message "invalid token symbol, 1. should match regex ^[a-zA-Z0-9+\\-%/$]+$ 2. length should between 1 to 20"
    :doc "token symbol"))
 
 (def export-byte Byte)

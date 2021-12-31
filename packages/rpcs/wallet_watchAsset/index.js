@@ -35,8 +35,10 @@ const internalSchema = [
   ['asset', publicSchema],
 ]
 
+const tokenIdSchema = [map, {closed: true}, ['tokenId', dbid]]
+
 export const schemas = {
-  input: [or, publicSchema, internalSchema],
+  input: [or, publicSchema, internalSchema, tokenIdSchema],
 }
 
 export const permissions = {
@@ -46,12 +48,18 @@ export const permissions = {
     'wallet_userApprovedAuthRequest',
     'wallet_validate20Token',
   ],
-  db: ['getAuthReqById', 'getCurrentAddr', 'addTokenToAddr', 'findAddress'],
+  db: [
+    'getAuthReqById',
+    'getCurrentAddr',
+    'addTokenToAddr',
+    'findAddress',
+    'findToken',
+  ],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {getAuthReqById, addTokenToAddr, getCurrentAddr, findAddress},
+  db: {getAuthReqById, addTokenToAddr, getCurrentAddr, findAddress, findToken},
   rpcs: {
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
@@ -62,6 +70,35 @@ export const main = async ({
   _popup,
   network,
 }) => {
+  if (params?.tokenId && _popup) {
+    const token = findToken({
+      tokenId: params.tokenId,
+      g: {
+        name: 1,
+        symbol: 1,
+        address: 1,
+        decimals: 1,
+        logoURI: 1,
+        network: {eid: 1},
+      },
+    })
+
+    if (!token || token.network.eid !== network.eid)
+      throw InvalidParams(`Invalid token id ${params.tokenId}`)
+
+    const curAddr = getCurrentAddr()
+    addTokenToAddr({
+      name: token.name,
+      symbol: token.symbol,
+      address: token.address,
+      decimals: token.decimals,
+      image: token.logoURI,
+      network: network.eid,
+      targetAddressId: curAddr.eid,
+      fromUser: true,
+    })
+    return true
+  }
   if (params?.type) {
     const {address} = params.options
     const {name, symbol, decimals, valid} = await wallet_validate20Token({
@@ -111,6 +148,8 @@ export const main = async ({
   if (params.authReqId) {
     const authReq = getAuthReqById(params.authReqId)
     if (!authReq) throw InvalidParams(`Invalid auth req id ${params.authReqId}`)
+    if (authReq.processed)
+      throw InvalidParams(`Already processing auth req ${params.authReqId}`)
     const authedApp = authReq.app
     const [addr] = findAddress({appId: authedApp.eid})
     addTokenToAddr({

@@ -1,38 +1,52 @@
 import {ErrorBoundary} from 'react-error-boundary'
 import {isUndefined} from '@fluent-wallet/checks'
-import React, {lazy, Suspense} from 'react'
-import {HashRouter as Router, Redirect, Route, Switch} from 'react-router-dom'
-import {useIsLocked, useIsZeroGroup, usePendingAuthReq} from './hooks/useApi'
+import React, {Suspense, cloneElement, useEffect} from 'react'
+import {
+  HashRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+  withRouter,
+} from 'react-router-dom'
+import {TransitionGroup, CSSTransition} from 'react-transition-group'
+import {useDataForPopup} from './hooks/useApi'
 import {ProtectedRoute} from './components'
-import {ROUTES} from './constants'
-import './index.css'
+import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
+import PageLoading from './hooks/useLoading/PageLoading'
+import './App.css'
 import useGlobalStore from './stores/index.js'
+// import {getPageType} from './utils'
 
 import ErrorPage from './pages/Error'
-const HomePage = lazy(() => import('./pages/Home'))
-const ConfirmSeed = lazy(() => import('./pages/CreateSeed/ConfirmSeed'))
-const NewSeed = lazy(() => import('./pages/CreateSeed/NewSeed'))
-const Unlock = lazy(() => import('./pages/Unlock'))
-const Welcome = lazy(() => import('./pages/Welcome'))
-const SetPassword = lazy(() => import('./pages/SetPassword'))
-const SelectCreateType = lazy(() => import('./pages/SelectCreateType'))
-const ImportSeedPhrase = lazy(() => import('./pages/ImportSeedPhrase'))
-const ImportPrivateKey = lazy(() => import('./pages/ImportPrivateKey'))
-const BackupSeed = lazy(() => import('./pages/CreateSeed/BackupSeed'))
-const CurrentSeed = lazy(() => import('./pages/CurrentSeed'))
-const ConnectSite = lazy(() => import('./pages/ConnectSite'))
-const RequestSignature = lazy(() => import('./pages/RequestSignature'))
-const DappAddNetwork = lazy(() => import('./pages/DappAddNetwork'))
-const DappSwitchNetwork = lazy(() => import('./pages/DappSwitchNetwork'))
-const ConfirmAddSuggestedToken = lazy(() =>
-  import('./pages/ConfirmAddSuggestedToken'),
-)
-const SendTransaction = lazy(() => import('./pages/SendTransaction'))
-const EditGasFee = lazy(() => import('./pages/EditGasFee'))
-const EditPermission = lazy(() => import('./pages/EditPermission'))
-const ConfirmTransaction = lazy(() => import('./pages/ConfirmTransaction'))
-const History = lazy(() => import('./pages/History'))
-const ViewData = lazy(() => import('./pages/ViewData'))
+import HomePage from './pages/Home'
+import ConfirmSeed from './pages/CreateSeed/ConfirmSeed'
+import NewSeed from './pages/CreateSeed/NewSeed'
+import Unlock from './pages/Unlock'
+import Welcome from './pages/Welcome'
+import SetPassword from './pages/SetPassword'
+import SelectCreateType from './pages/SelectCreateType'
+import ImportSeedPhrase from './pages/ImportSeedPhrase'
+import ImportPrivateKey from './pages/ImportPrivateKey'
+import BackupSeed from './pages/CreateSeed/BackupSeed'
+import CurrentSeed from './pages/CurrentSeed'
+import ConnectSite from './pages/ConnectSite'
+import RequestSignature from './pages/RequestSignature'
+import DappAddNetwork from './pages/DappAddNetwork'
+import DappSwitchNetwork from './pages/DappSwitchNetwork'
+import ConfirmAddSuggestedToken from './pages/ConfirmAddSuggestedToken'
+import SendTransaction from './pages/SendTransaction'
+import EditGasFee from './pages/EditGasFee'
+import EditPermission from './pages/EditPermission'
+import ConfirmTransaction from './pages/ConfirmTransaction'
+import History from './pages/History'
+import ViewData from './pages/ViewData'
+import AccountManagement from './pages/AccountManagement'
+import ExportSeed from './pages/ExportSeed'
+import ExportPrivateKey from './pages/ExportPrivateKey'
+import HardwareGuard from './pages/HardwareGuard'
+import ConnectHardwareWallet from './pages/ConnectHardwareWallet'
+import ImportHwAccount from './pages/ImportHwAccount'
+
 const {
   HOME,
   WALLET_UNLOCK,
@@ -57,104 +71,234 @@ const {
   CONFIRM_TRANSACTION,
   VIEW_DATA,
   HISTORY,
+  ACCOUNT_MANAGEMENT,
+  EXPORT_SEED,
+  EXPORT_PRIVATEKEY,
+  HARDWARE_GUARD,
+  CONNECT_HARDWARE_WALLET,
+  IMPORT_HW_ACCOUNT,
 } = ROUTES
 
-function App() {
-  const lockedData = useIsLocked()
-  const zeroGroup = useIsZeroGroup()
-  const pendingAuthReq = usePendingAuthReq(!zeroGroup && !lockedData)
-  const {setFatalError} = useGlobalStore()
+const routes = [
+  {
+    path: WALLET_UNLOCK,
+    component: Unlock,
+  },
+  {
+    path: WELCOME,
+    component: Welcome,
+  },
+  {
+    path: CURRENT_SEED_PHRASE,
+    component: CurrentSeed,
+  },
+  {
+    path: NEW_SEED_PHRASE,
+    component: NewSeed,
+  },
+  {
+    path: BACKUP_SEED_PHRASE,
+    component: BackupSeed,
+  },
+  {
+    path: CONFIRM_SEED_PHRASE,
+    component: ConfirmSeed,
+  },
+  {
+    path: IMPORT_SEED_PHRASE,
+    component: ImportSeedPhrase,
+  },
+  {
+    path: WALLET_IMPORT_PRIVATE_KEY,
+    component: ImportPrivateKey,
+  },
+  {
+    path: SEND_TRANSACTION,
+    component: SendTransaction,
+  },
+  {
+    path: CONFIRM_TRANSACTION,
+    component: ConfirmTransaction,
+  },
+  {
+    path: EDIT_GAS_FEE,
+    component: EditGasFee,
+  },
+  {
+    path: EDIT_PERMISSION,
+    component: EditPermission,
+  },
+  {
+    path: SET_PASSWORD,
+    component: SetPassword,
+  },
+  {
+    path: SELECT_CREATE_TYPE,
+    component: SelectCreateType,
+  },
+  {
+    path: VIEW_DATA,
+    component: ViewData,
+  },
+  {
+    path: CONNECT_SITE,
+    component: ConnectSite,
+  },
+  {
+    path: CONFIRM_ADD_SUGGESTED_TOKEN,
+    component: ConfirmAddSuggestedToken,
+  },
+  {
+    path: REQUEST_SIGNATURE,
+    component: RequestSignature,
+  },
+  {
+    path: DAPP_SWITCH_NETWORK,
+    component: DappSwitchNetwork,
+  },
+  {
+    path: DAPP_ADD_NETWORK,
+    component: DappAddNetwork,
+  },
+  {
+    path: HISTORY,
+    component: History,
+  },
+  {
+    path: ACCOUNT_MANAGEMENT,
+    component: AccountManagement,
+  },
+  {
+    path: EXPORT_SEED,
+    component: ExportSeed,
+  },
+  {
+    path: EXPORT_PRIVATEKEY,
+    component: ExportPrivateKey,
+  },
+  {
+    path: ERROR,
+    component: ErrorPage,
+  },
+  {
+    path: HARDWARE_GUARD,
+    component: HardwareGuard,
+  },
+  {
+    path: CONNECT_HARDWARE_WALLET,
+    component: ConnectHardwareWallet,
+  },
+  {
+    path: IMPORT_HW_ACCOUNT,
+    component: ImportHwAccount,
+  },
+]
 
-  if (
-    isUndefined(lockedData) ||
-    isUndefined(zeroGroup) ||
-    (!zeroGroup && !lockedData && isUndefined(pendingAuthReq))
-  ) {
-    return <div>loading...</div>
-  }
-  return (
-    <ErrorBoundary
-      FallbackComponent={ErrorPage}
-      onError={error => setFatalError(error)}
-    >
-      <Suspense
-        fallback={
-          <div className="w-full h-full flex items-center justify-center">
-            loading
-          </div>
-        }
+const AppRoutes = withRouter(
+  ({isLocked, isZeroGroup, pendingAuthReq, location, history}) => {
+    // The normal case of routing forward and backward applies a forward/backward sliding field to the left and right.
+    // When switching completely to unrelated content: e.g. tap on the first screen of the wallet; switch to a locked page. Such places should use another transition animation.
+    const fullSwitch =
+      location.pathname === WALLET_UNLOCK ||
+      location.pathname === ERROR ||
+      history.length === 1
+
+    return (
+      <div
+        id="router"
+        className={`m-auto light relative overflow-hidden ${
+          FULL_WINDOW_ROUTES.includes(location.pathname)
+            ? 'h-screen w-full'
+            : 'h-150 w-93'
+        }`}
       >
-        <div className="h-150 w-93 m-auto light">
-          <Router>
-            <Switch>
-              <Route exact path={WALLET_UNLOCK} component={Unlock} />
-              <Route exact path={WELCOME} component={Welcome} />
+        <TransitionGroup
+          component={null}
+          childFactory={child =>
+            cloneElement(child, {
+              classNames: `router router-${
+                fullSwitch
+                  ? 'full-switch'
+                  : history.action === 'PUSH'
+                  ? 'forward'
+                  : 'back'
+              }`,
+            })
+          }
+        >
+          <CSSTransition key={location.pathname} timeout={300} in>
+            <Switch location={location}>
               <ProtectedRoute
+                key={HOME}
+                hasAccount={!isZeroGroup}
+                isLocked={isLocked}
                 pendingAuthReq={pendingAuthReq}
-                hasAccount={!zeroGroup}
-                isLocked={!zeroGroup && lockedData}
                 exact
                 path={HOME}
                 component={HomePage}
               />
-              <Route exact path={CURRENT_SEED_PHRASE} component={CurrentSeed} />
-              <Route exact path={NEW_SEED_PHRASE} component={NewSeed} />
-              <Route exact path={BACKUP_SEED_PHRASE} component={BackupSeed} />
-              <Route exact path={CONFIRM_SEED_PHRASE} component={ConfirmSeed} />
-              <Route
-                exact
-                path={IMPORT_SEED_PHRASE}
-                component={ImportSeedPhrase}
-              />
-              <Route
-                exact
-                path={WALLET_IMPORT_PRIVATE_KEY}
-                component={ImportPrivateKey}
-              />
-              <Route
-                exact
-                path={SEND_TRANSACTION}
-                component={SendTransaction}
-              />
-              <Route
-                exact
-                path={CONFIRM_TRANSACTION}
-                component={ConfirmTransaction}
-              />
-              <Route exact path={EDIT_GAS_FEE} component={EditGasFee} />
-              <Route exact path={EDIT_PERMISSION} component={EditPermission} />
-              <Route exact path={SET_PASSWORD} component={SetPassword} />
-              <Route
-                exact
-                path={SELECT_CREATE_TYPE}
-                component={SelectCreateType}
-              />
-              <Route exact path={VIEW_DATA} component={ViewData} />
-              <Route exact path={CONNECT_SITE} component={ConnectSite} />
-              <Route
-                exact
-                path={CONFIRM_ADD_SUGGESTED_TOKEN}
-                component={ConfirmAddSuggestedToken}
-              />
-              <Route
-                exact
-                path={REQUEST_SIGNATURE}
-                component={RequestSignature}
-              />
-              <Route
-                exact
-                path={DAPP_SWITCH_NETWORK}
-                component={DappSwitchNetwork}
-              />
-              <Route exact path={DAPP_ADD_NETWORK} component={DappAddNetwork} />
-              <Route exact path={HISTORY} component={History} />
-              <Route exact path={ERROR} component={ErrorPage} />
+              {routes.map(route => (
+                <Route
+                  key={route.path}
+                  exact
+                  path={route.path}
+                  component={route.component}
+                />
+              ))}
               <Route path="*" render={() => <Redirect to={ERROR} />} />
             </Switch>
-          </Router>
-        </div>
-      </Suspense>
-    </ErrorBoundary>
+          </CSSTransition>
+        </TransitionGroup>
+      </div>
+    )
+  },
+)
+
+function App() {
+  const {
+    locked: isLocked,
+    zeroGroup: isZeroGroup,
+    pendingAuthReq,
+  } = useDataForPopup()
+
+  // TODO add this when make sure pendingAuthReq return right
+  // useEffect(() => {
+  //   if (getPageType() === 'popup' && pendingAuthReq?.length > 0) {
+  //     console.log(pendingAuthReq)
+  //     setTimeout(() => window.close(), 300)
+  //   }
+  // }, [pendingAuthReq?.length])
+
+  const {setFatalError} = useGlobalStore()
+
+  useEffect(() => {
+    // make up for the rest of height
+    window.resizeBy(0, 600 - window.innerHeight)
+  }, [])
+
+  if (
+    isUndefined(isLocked) ||
+    isUndefined(isZeroGroup) ||
+    isUndefined(pendingAuthReq)
+  ) {
+    return <PageLoading />
+  }
+
+  return (
+    <Router>
+      <ErrorBoundary
+        FallbackComponent={ErrorPage}
+        onError={error => setFatalError(error)}
+      >
+        <Suspense fallback={<PageLoading />}>
+          <AppRoutes
+            isLocked={isLocked}
+            isZeroGroup={isZeroGroup}
+            pendingAuthReq={pendingAuthReq}
+          />
+        </Suspense>
+      </ErrorBoundary>
+    </Router>
   )
 }
 

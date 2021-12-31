@@ -4,15 +4,25 @@ import QRCode from 'qrcode.react'
 import Modal from '@fluent-wallet/component-modal'
 import {QrcodeOutlined} from '@fluent-wallet/component-icons'
 
-function QRCodeButton({title, qrcodeValue, className = ''}) {
+function QRCodeButton({
+  title,
+  qrcodeValue,
+  className = '',
+  Wrapper,
+  wrapperClassName = '',
+}) {
   const [qrcodeShow, setQrcodeShow] = useState(false)
+  const icon = (
+    <QrcodeOutlined
+      onClick={() => setQrcodeShow(true)}
+      className={`cursor-pointer w-4 h-4 text-white ${className}`}
+      id="qrCodeOutlined"
+    />
+  )
   return (
     <>
-      <QrcodeOutlined
-        onClick={() => setQrcodeShow(true)}
-        className={`cursor-pointer w-4 h-4 text-white ${className}`}
-        id="qrCodeOutlined"
-      />
+      {Wrapper ? <Wrapper className={wrapperClassName}>{icon}</Wrapper> : icon}
+
       <Modal
         open={qrcodeShow}
         onClose={() => setQrcodeShow(false)}
@@ -34,6 +44,8 @@ QRCodeButton.propTypes = {
   title: PropTypes.string,
   qrcodeValue: PropTypes.string,
   className: PropTypes.string,
+  Wrapper: PropTypes.elementType,
+  wrapperClassName: PropTypes.string,
 }
 
 export default QRCodeButton

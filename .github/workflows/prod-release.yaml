@@ -13,13 +13,13 @@ name: Publish Prod-release Version
 on:
   pull_request:
     branches:
-      - master
+      - main
     types:
       - closed
 
 jobs:
-  pre-release:
-    if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
+  prod-release:
+    if: ${{ github.event.pull_request.merged == true && github.head_ref == 'dev' }}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -56,13 +56,23 @@ jobs:
           commitish: ${{ github.sha }}
           config-name: release-drafter-prod.yml
           publish: true
-          prerelease: true
+          prerelease: false
       - name: build and release
         env:
           FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
+          SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
+          SNOWPACK_PUBLIC_FLUENT_ENV: "production"
+          SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
         run: yarn prod:release
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: releases/*
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3.12.0
+        with:
+          token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
+          branch: "dev"
+          base: "main"
+          title: "chore: merge main back to dev"

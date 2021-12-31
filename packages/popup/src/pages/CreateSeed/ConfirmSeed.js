@@ -8,6 +8,7 @@ import {SeedWord} from './components'
 import {TitleNav} from '../../components'
 import {request, shuffle, updateAddedNewAccount} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
+import useLoading from '../../hooks/useLoading'
 import {RPC_METHODS, ROUTES} from '../../constants'
 const {WALLET_IMPORT_MNEMONIC, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 const {HOME} = ROUTES
@@ -20,16 +21,16 @@ function ConfirmSeed() {
   const {
     createdMnemonic,
     createdPassword,
-    createdGroupName,
     setCreatedPassword,
-    setCreatedMnemonic,
+    createdGroupName,
   } = useGlobalStore()
   const initData = new Array(12).fill(null)
   // record the index of buttonArray
   const [mnemonicIndex, setMnemonicIndex] = useState(initData.join(' '))
   const [mnemonicError, setMnemonicError] = useState('')
   const [buttonArray, setButtonArray] = useState([])
-  const [importingMnemonic, setImportingMnemonic] = useState(false)
+  const {setLoading} = useLoading({showBlur: 'high'})
+
   useEffect(() => {
     setButtonArray(shuffle(createdMnemonic.split(' ')))
   }, [createdMnemonic])
@@ -45,8 +46,10 @@ function ConfirmSeed() {
   useEffect(() => {
     if (mnemonic === createdMnemonic) {
       setMnemonicError('')
+    } else if (mnemonic.split(' ').indexOf('') === -1) {
+      setMnemonicError(t('confirmSeedError'))
     }
-  }, [mnemonic, createdMnemonic])
+  }, [mnemonic, createdMnemonic, t])
   const onDeleteMnemonic = index => {
     const mnemonicIndexArray = mnemonicIndex.split(' ')
     mnemonicIndexArray.splice(index, 1, null)
@@ -66,13 +69,11 @@ function ConfirmSeed() {
     return findIndex > -1
   }
   const onCreate = () => {
-    if (mnemonic !== createdMnemonic) {
-      setMnemonicError(t('confirmSeedError'))
+    if (mnemonicError) {
       return
     }
     setMnemonicError('')
-    if (importingMnemonic) return
-    setImportingMnemonic(true)
+    setLoading(true)
     let params = {
       nickname: createdGroupName,
       mnemonic,
@@ -82,20 +83,27 @@ function ConfirmSeed() {
     }
     request(WALLET_IMPORT_MNEMONIC, params)
       .then(() => {
-        setImportingMnemonic(false)
         updateAddedNewAccount(mutate, !!createdPassword, ACCOUNT_GROUP_TYPE.HD)
-        createdPassword && setCreatedPassword('')
-        history.push(HOME)
-        setCreatedMnemonic('')
+          .then(() => {
+            createdPassword && setCreatedPassword('')
+            setLoading(false)
+            history.push(HOME)
+          })
+          .catch(() => {
+            setLoading(false)
+          })
       })
       .catch(error => {
-        setImportingMnemonic(false)
+        setLoading(false)
         setMnemonicError(error?.message ?? error)
       })
   }
 
   return (
-    <div className="h-full flex flex-col bg-gray-0" id="confirmSeedContainer">
+    <div
+      className="h-full w-full flex flex-col bg-gray-0"
+      id="confirmSeedContainer"
+    >
       <TitleNav title={t('newAccount')} />
       <main className="px-3 pt-3 flex flex-col flex-1 justify-between">
         <div>
@@ -107,7 +115,7 @@ function ConfirmSeed() {
           </span>
           <div
             id="mnemonicContainer"
-            className={`relative mt-4 px-3 pt-3 bg-bg rounded-sm flex flex-wrap justify-between ${
+            className={`relative mt-4 px-3 pt-3 bg-bg rounded-sm flex flex-wrap justify-between z-10 ${
               mnemonicError
                 ? 'after:absolute after:inset-0 after:border-error after:border after:border-solid after:z-[-1]'
                 : ''
@@ -119,6 +127,7 @@ function ConfirmSeed() {
                 word={word}
                 idx={index + 1}
                 onClose={() => onDeleteMnemonic(index)}
+                className="border border-transparent hover:border-primary"
               />
             ))}
           </div>
@@ -137,7 +146,7 @@ function ConfirmSeed() {
               <Button
                 key={index}
                 variant="outlined"
-                className="w-25 mb-3"
+                className="w-25 mb-3 rounded-sm"
                 size="small"
                 id={`onAddMnemonicBtn-${index}`}
                 onClick={() => onAddMnemonic(index)}

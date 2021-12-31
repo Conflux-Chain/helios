@@ -70,11 +70,12 @@ const schema = {
     vault, container of credential (address/pk/mnemonic)
     */
   vault: {
-    type: {doc: 'Type of vault: pub, pk, hd'},
+    type: {doc: 'Type of vault: pub, pk, hd, hw'},
     data: {doc: 'Encrypted vault data'},
+    device: {doc: 'vault device, default is FluentWebExt'},
     ddata: {doc: 'Decrypted vault data only in memory', persist: false},
     cfxOnly: {
-      doc: 'If type is pub, means this vault is only for cfx type network, if type is hd, means only generate 0x1 prefix account',
+      doc: 'If type is pub/hw, means this vault is only for cfx type network, if type is hd, means only generate 0x1 prefix account',
     },
   },
   accountGroup: {
@@ -152,6 +153,7 @@ const schema = {
     err: {doc: 'basic error type/info'},
     txExtra: {doc: 'enriched tx info', ref: true, component: true},
     fromFluent: {doc: 'tx sumitted from fluent'},
+    resendAt: {doc: 'epoch/block where wallet resend tx'},
   },
   txPayload: {
     type: {doc: 'tx type'},
@@ -176,6 +178,7 @@ const schema = {
     contractInteraction: {doc: 'contract interaction tx'},
     token20: {doc: '20 contract'},
     tokenNFT: {doc: 'nft contract'},
+    moreInfo: {doc: 'more info about above action'},
   },
 
   // ## dapp interaction
@@ -206,6 +209,7 @@ const schema = {
   },
   authReq: {
     req: {doc: 'the req body of the auth req', persist: false},
+    processed: {doc: 'if user reacted to this'},
     site: {ref: true, persist: false},
     app: {ref: true, persist: false},
     c: {doc: 'csp channel of the req listener', persist: false},
@@ -231,7 +235,7 @@ const schema = {
     fromList: {doc: 'true when from token list'},
     fromApp: {doc: 'true when from app'},
     fromUser: {doc: 'true when from user'},
-    tx: {doc: 'token txs', ref: true},
+    tx: {doc: 'token txs', ref: true, many: true},
     balance: {
       doc: 'balances of this token',
       ref: true,
@@ -250,6 +254,7 @@ const schema = {
       ref: true,
     },
   },
+  dbmeta: {version: {doc: 'db version'}},
 }
 
 export default schema

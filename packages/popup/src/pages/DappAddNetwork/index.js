@@ -10,7 +10,7 @@ function NetworkContentItem({labelText, contentText, containerClass = ''}) {
   return (
     <div className={containerClass}>
       <div className="text-xs text-gray-40">{labelText}</div>
-      <div className="text-sm text-gray-80 font-medium mt-0.5 whitespace-nowrap overflow-hidden overflow-ellipsis">
+      <div className="text-sm text-gray-80 font-medium mt-0.5 text-ellipsis">
         {contentText}
       </div>
     </div>
@@ -32,7 +32,7 @@ function DappAddNetwork() {
   return (
     <div
       id="dappAddNetworkContainer"
-      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
+      className="flex flex-col h-full w-full justify-between bg-blue-circles bg-no-repeat pb-4"
     >
       <div>
         <header>
@@ -49,7 +49,7 @@ function DappAddNetwork() {
               </div>
             </div>
             <a
-              className="cursor-pointer text-xs text-primary mt-1"
+              className="cursor-pointer text-xs text-primary mt-1 hover:text-primary-dark"
               href="/"
               target="_blank"
               id="learnMore"

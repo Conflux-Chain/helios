@@ -38,18 +38,28 @@ function EditPermission() {
     }
   }, [customAllowance])
 
+  useEffect(() => {
+    if (permissionChoice === 'recommend') {
+      setCustomLimitErr('')
+    } else {
+      setCustomLimitErr(
+        customLimitValue && new Big(customLimitValue).gte(0)
+          ? ''
+          : t('customLimitErr', {unit: symbol}),
+      )
+    }
+  }, [permissionChoice, customLimitValue, symbol, t])
+
   const onChangeCustomInput = e => {
     const value = e.target.value
-    setCustomLimitErr(
-      value && new Big(value).gte(0) ? '' : t('customLimitErr', {unit: symbol}),
-    )
-
     setCustomLimitValue(value)
   }
 
   const onSavePermissionLimit = () => {
-    if (customLimitValue) {
+    if (permissionChoice === 'custom') {
       setCustomAllowance(customLimitValue)
+    } else {
+      setCustomAllowance('')
     }
     history.goBack()
   }
@@ -57,7 +67,7 @@ function EditPermission() {
   return (
     <div
       id="editPermissionContainer"
-      className="h-full flex flex-col bg-blue-circles bg-no-repeat bg-bg"
+      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat bg-bg"
     >
       <div className="flex-1">
         <TitleNav title={t('editPermission')} />
@@ -70,7 +80,7 @@ function EditPermission() {
               {t('allowSpendDes', {dapp: site?.origin || ''})}
             </div>
             <a
-              className="cursor-pointer text-xs text-primary mt-1"
+              className="cursor-pointer text-xs text-primary mt-1 hover:text-primary-dark"
               href="/"
               target="_blank"
               id="learnMore"

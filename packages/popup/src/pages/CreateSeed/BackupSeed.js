@@ -23,7 +23,10 @@ function BackupSeed() {
   )
 
   return (
-    <div className="h-full flex flex-col bg-gray-0" id="backupSeedContainer">
+    <div
+      className="h-full w-full flex flex-col bg-gray-0"
+      id="backupSeedContainer"
+    >
       <TitleNav title={t('newAccount')} />
       <main className="px-3 flex flex-col flex-1 justify-between pt-3">
         <div>

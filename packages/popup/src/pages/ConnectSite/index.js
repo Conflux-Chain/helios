@@ -30,7 +30,6 @@ function ConnectSitesList({
   checkboxStatusObj,
 }) {
   const {t} = useTranslation()
-
   return accountData.length ? (
     <>
       <CompWithLabel
@@ -41,14 +40,20 @@ function ConnectSitesList({
                 {t('selectAuthorizedAccounts')}
               </div>
               <QuestionCircleOutlined
-                onClick={() => window && window.open('')}
+                onClick={() =>
+                  window &&
+                  window.open(
+                    'https://fluent-wallet.zendesk.com/hc/en-001/articles/4414146678555-Account-authorization',
+                  )
+                }
                 className="w-4 h-4 text-gray-40 ml-2 cursor-pointer"
-                id="questionCircleOutlined"
+                id="open-account-authorization"
               />
             </div>
             <Checkbox
               checked={allCheckboxStatus}
               onChange={onSelectAllAccount}
+              className="mr-2"
               id="selectAll"
             >
               {t('selectAll')}
@@ -75,10 +80,12 @@ function ConnectSitesList({
                     <Avatar
                       className="w-5 h-5 mr-2"
                       diameter={20}
-                      accountId={accountItem.eid}
+                      accountIdentity={accountItem.eid}
                     />
                     <div className="flex-1">
-                      <p className="text-xs text-gray-40">{nickname}</p>
+                      <p className="text-xs text-gray-40">
+                        {accountItem.nickname}
+                      </p>
                       <p className="text-sm text-gray-80">
                         {shortenAddress(
                           accountItem.currentAddress?.value ||
@@ -86,18 +93,19 @@ function ConnectSitesList({
                         )}
                       </p>
                     </div>
-                    <div className="flex">
+                    <div className="flex items-center">
                       {currentAddress.eid === accountItem.currentAddress.eid ? (
                         <img
                           src="/images/location.svg"
                           alt="current address"
-                          className="mr-3"
+                          className="mr-3 w-3 h-3"
                           id="location"
                         />
                       ) : null}
                       <Checkbox
                         checked={checkboxStatusObj[accountItem.eid]}
                         id={`check-${index}`}
+                        iconClassName="mr-0"
                       />
                     </div>
                   </div>
@@ -168,7 +176,7 @@ function ConnectSite() {
     )
   }, [checkboxStatusObj])
 
-  const onClickNetworkItem = (result, {networkName, icon}) => {
+  const onClickNetworkItem = ({networkName, icon}) => {
     mutate([WALLETDB_ACCOUNT_LIST_ASSETS])
     setSearchContent(networkName)
     setSearchIcon(icon || '')
@@ -192,7 +200,7 @@ function ConnectSite() {
   return accountGroups && currentNetwork && currentAddress ? (
     <div
       id="connectSiteContainer"
-      className="flex flex-col h-full justify-between bg-blue-circles bg-no-repeat pb-4"
+      className="flex flex-col h-full w-full justify-between bg-blue-circles bg-no-repeat pb-4"
     >
       <div id="content">
         <DappProgressHeader title={t('connectSite')} />
@@ -209,7 +217,7 @@ function ConnectSite() {
               <Input
                 value={searchContent}
                 width="w-full box-border"
-                readonly
+                readOnly
                 className="pointer-events-none"
                 suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
                 id="searchContent"

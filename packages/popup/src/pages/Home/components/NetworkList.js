@@ -1,29 +1,31 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {SlideCard} from '../../../components'
-import {CurrentAccountNetworkLabel} from './'
-import {NetworkContent} from '../../../components'
+import {SlideCard, NetworkContent} from '../../../components'
 
-function NetworkList({onClose, onOpen}) {
+function NetworkList({onClose, open}) {
   const {t} = useTranslation()
 
-  const onClickNetworkItem = result => {
-    result && onClose()
+  const onCloseNetwork = () => {
+    onClose && onClose()
   }
   return (
     <SlideCard
-      cardTitle={t('network')}
+      id="network-list"
+      cardTitle={
+        <div className="ml-3 pb-1">
+          <p className="text-base text-gray-80 font-medium">{t('network')}</p>
+        </div>
+      }
       onClose={onClose}
-      onOpen={onOpen}
-      cardDescription={<CurrentAccountNetworkLabel />}
-      cardContent={<NetworkContent onClickNetworkItem={onClickNetworkItem} />}
+      open={open}
+      cardContent={<NetworkContent onClose={onCloseNetwork} />}
     />
   )
 }
 
 NetworkList.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
+  open: PropTypes.bool.isRequired,
 }
 
 export default NetworkList

@@ -23,7 +23,7 @@ function RequestSignature() {
   const isPersonalSign = req?.method === PERSONAL_SIGN
   const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
-  const address = useAddressByNetworkId(dappAccountId, dappNetworkId)
+  const {value: address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const balanceData = useBalance(address, dappNetworkId)
   const plaintextData =
     !isPersonalSign && req?.params?.[1] ? JSON.parse(req.params[1]) : {}
@@ -31,7 +31,7 @@ function RequestSignature() {
   return (
     <div
       id="requestSignatureContainer"
-      className="flex flex-col h-full bg-blue-circles bg-no-repeat bg-bg"
+      className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg"
     >
       <header id="header">
         <TitleNav

@@ -8,7 +8,7 @@ import {
   zeroOrMore,
 } from '@fluent-wallet/spec'
 
-export const NAME = 'wallet_getBlockChainExplorerUrl'
+export const NAME = 'wallet_getBlockchainExplorerUrl'
 
 export const schemas = {
   input: [

@@ -9,6 +9,7 @@ import {RPC_METHODS, ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {usePkAccountGroup} from '../../hooks/useApi'
+import useLoading from '../../hooks/useLoading'
 import {useSWRConfig} from 'swr'
 const {
   ACCOUNT_GROUP_TYPE,
@@ -26,9 +27,8 @@ function ImportPrivateKey() {
   const [keygen, setKeygen] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
-  const [creatingAccount, setCreatingAccount] = useState(false)
   const {createdPassword, setCreatedPassword} = useGlobalStore()
-
+  const {setLoading} = useLoading({showBlur: 'high'})
   const keygenGroup = usePkAccountGroup()
 
   useCreatedPasswordGuard()
@@ -41,61 +41,67 @@ function ImportPrivateKey() {
   }
   const onChangeKeygen = e => {
     setKeygen(e.target.value)
-    // TODO: replace error msg
-    setErrorMessage(e.target.value ? '' : 'Required')
+    setErrorMessage(e.target.value ? '' : t('required'))
   }
   const onCreate = async () => {
     if (!keygen) {
-      // TODO: replace error msg
-      return setErrorMessage('Required')
+      return setErrorMessage(t('required'))
     }
 
-    if (!creatingAccount) {
-      setCreatingAccount(true)
-      request(WALLET_VALIDATE_PRIVATE_KEY, {privateKey: keygen})
-        .then(result => {
-          if (result?.valid) {
-            let params = {
-              nickname: name || accountNamePlaceholder,
-              privateKey: keygen,
-            }
-            if (createdPassword) {
-              params['password'] = createdPassword
-            }
-            return request(WALLET_IMPORT_PRIVATE_KEY, params).then(() => {
-              setCreatingAccount(false)
-              updateAddedNewAccount(
-                mutate,
-                !!createdPassword,
-                ACCOUNT_GROUP_TYPE.PK,
-              )
-              createdPassword && setCreatedPassword('')
-              history.push(HOME)
-            })
+    setLoading(true)
+    request(WALLET_VALIDATE_PRIVATE_KEY, {privateKey: keygen})
+      .then(result => {
+        if (result?.valid) {
+          let params = {
+            nickname: name || accountNamePlaceholder,
+            privateKey: keygen,
           }
-          setCreatingAccount(false)
-          // TODO: replace error msg
-          setErrorMessage('Invalid or inner error!')
-        })
-        .catch(error => {
-          setCreatingAccount(false)
-          if (typeof error?.data?.duplicateAccountGroupId === 'number') {
-            return setErrorMessage(t('duplicatePkError'))
+          if (createdPassword) {
+            params['password'] = createdPassword
           }
-          setErrorMessage(error?.message?.split('\n')[0] ?? error)
-        })
-    }
+          return request(WALLET_IMPORT_PRIVATE_KEY, params).then(() => {
+            updateAddedNewAccount(
+              mutate,
+              !!createdPassword,
+              ACCOUNT_GROUP_TYPE.PK,
+            )
+              .then(() => {
+                createdPassword && setCreatedPassword('')
+                setLoading(false)
+                history.push(HOME)
+              })
+              .catch(error => {
+                setLoading(false)
+                setErrorMessage(
+                  error?.message?.split?.('\n')?.[0] ?? error?.message ?? error,
+                )
+              })
+          })
+        } else {
+          setErrorMessage(t('invalidWord'))
+          setLoading(false)
+        }
+      })
+      .catch(error => {
+        setLoading(false)
+        if (typeof error?.data?.duplicateAccountGroupId === 'number') {
+          return setErrorMessage(t('duplicatePkError'))
+        }
+        setErrorMessage(
+          error?.message?.split?.('\n')?.[0] ?? error?.message ?? error,
+        )
+      })
   }
 
   return (
-    <div className="bg-bg h-full flex flex-col" id="importPrivateKeyContainer">
+    <div
+      className="bg-bg h-full w-full flex flex-col"
+      id="importPrivateKeyContainer"
+    >
       <TitleNav title={t(`pKeyImport`)} />
-      <form
-        onSubmit={event => event.preventDefault()}
-        className="flex flex-1 px-3 flex-col justify-between"
-      >
+      <div className="flex flex-1 px-3 flex-col justify-between">
         <section>
-          <CompWithLabel label={t(`pKeyGroupName`)}>
+          <CompWithLabel label={t(`accountName`)}>
             <Input
               onChange={onChangeName}
               width="w-full"
@@ -129,7 +135,7 @@ function ImportPrivateKey() {
             {t('import')}
           </Button>
         </section>
-      </form>
+      </div>
     </div>
   )
 }

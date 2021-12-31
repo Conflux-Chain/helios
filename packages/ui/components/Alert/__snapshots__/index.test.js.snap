@@ -10,7 +10,51 @@ Object {
         data-testid="alert-wrapper"
       >
         <div
-          class="flex items-center"
+          class="flex items-start"
+        >
+          <span
+            class="flex-shrink-0"
+          >
+            <svg
+              class="w-4 h-4 mr-2 text-warning"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
+                fill="currentColor"
+              />
+              <path
+                d="M12 8v4M12 16h-.01"
+                stroke="#fff"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </span>
+          <span
+            class="text-warning-dark"
+          >
+            testValue
+          </span>
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="flex items-center justify-between px-4 py-3 border border-solid bg-warning-10 border-warning-10 w-full "
+      data-testid="alert-wrapper"
+    >
+      <div
+        class="flex items-start"
+      >
+        <span
+          class="flex-shrink-0"
         >
           <svg
             class="w-4 h-4 mr-2 text-warning"
@@ -32,43 +76,7 @@ Object {
               stroke-width="2"
             />
           </svg>
-          <span
-            class="text-warning-dark"
-          >
-            testValue
-          </span>
-        </div>
-      </div>
-    </div>
-  </body>,
-  "container": <div>
-    <div
-      class="flex items-center justify-between px-4 py-3 border border-solid bg-warning-10 border-warning-10 w-full "
-      data-testid="alert-wrapper"
-    >
-      <div
-        class="flex items-center"
-      >
-        <svg
-          class="w-4 h-4 mr-2 text-warning"
-          fill="none"
-          height="24"
-          viewBox="0 0 24 24"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
-            fill="currentColor"
-          />
-          <path
-            d="M12 8v4M12 16h-.01"
-            stroke="#fff"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-          />
-        </svg>
+        </span>
         <span
           class="text-warning-dark"
         >

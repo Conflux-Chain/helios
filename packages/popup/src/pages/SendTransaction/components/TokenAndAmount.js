@@ -13,60 +13,45 @@ import {
   NumberInput,
 } from '../../../components'
 import {
-  useDbHomeAssets,
+  useCurrentNetworkTokens,
   useBalance,
-  useCurrentNetwork,
-  useCurrentAccount,
-  useNetworkTypeIsCfx,
+  useCurrentAddress,
+  useSingleTokenInfoWithNativeTokenSupport,
 } from '../../../hooks/useApi'
-import {validateAddress} from '../../../utils'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
-  const {added, native} = useDbHomeAssets()
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const {netId} = useCurrentNetwork()
-  const homeTokenList = [native].concat(added)
+  const {
+    data: {eid: addressId},
+  } = useCurrentAddress()
   const [searchValue, setSearchValue] = useState('')
-  const [tokenList, setTokenList] = useState([...homeTokenList])
-  const onChangeValue = value => {
-    setSearchValue(value)
-    const isValid = validateAddress(value, networkTypeIsCfx, netId)
-    if (value === '') setTokenList([...homeTokenList])
-    if (isValid) {
-      const filterToken = homeTokenList.filter(token => token.address === value)
-      setTokenList([...filterToken])
-    } else {
-      const filterToken = homeTokenList.filter(
-        token =>
-          token.symbol.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
-          token.name.toUpperCase().indexOf(value?.toUpperCase()) !== -1,
-      )
-      setTokenList([...filterToken])
-    }
-  }
+  const {data: tokens} = useCurrentNetworkTokens({
+    addressId,
+    fuzzy: searchValue || null,
+  })
+  const homeTokenList = searchValue ? tokens : ['native'].concat(tokens)
   const onCloseTokenList = () => {
     onClose && onClose()
     setSearchValue('')
-    setTokenList([...homeTokenList])
   }
   const content = (
-    <div className="flex flex-col flex-1">
-      <SearchToken value={searchValue} onChange={onChangeValue} />
+    <div className="relative flex flex-col flex-1">
+      <SearchToken value={searchValue} onChange={setSearchValue} />
       <span className="inline-block mt-3 mb-1 text-gray-40 text-xs">
         {t('tokenList')}
       </span>
-      <TokenList tokenList={tokenList} onSelectToken={onSelectToken} />
+      <TokenList tokenList={homeTokenList} onSelectToken={onSelectToken} />
+      <div className="absolute bottom-0 left-0 right-0 h-6 bg-token-background rounded-xl" />
     </div>
   )
   return (
     <Modal
-      className="!bg-gray-circles bg-no-repeat w-80 h-[552px]"
+      className="!bg-gray-circles bg-no-repeat w-80 h-[552px] pb-3 overflow-y-hidden"
       open={open}
       title={t('chooseToken')}
       content={content}
       onClose={onCloseTokenList}
-      contentClassName="flex-1 flex"
+      contentClassName="flex-1 flex overflow-y-auto"
       id="tokenListModal"
     />
   )
@@ -79,7 +64,7 @@ ChooseTokenList.propTypes = {
 }
 
 function TokenAndAmount({
-  selectedToken,
+  selectedTokenId,
   onChangeToken,
   amount,
   onChangeAmount,
@@ -88,10 +73,19 @@ function TokenAndAmount({
 }) {
   const {t} = useTranslation()
   const [tokenListShow, setTokenListShow] = useState(false)
-  const {eid: networkId} = useCurrentNetwork()
-  const {address} = useCurrentAccount()
-  const {symbol, icon, decimals, address: selectedTokenAddress} = selectedToken
-  const tokenAddress = isNativeToken ? '0x0' : selectedTokenAddress
+  const {
+    data: {
+      value: address,
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {
+    symbol,
+    logoURI,
+    decimals,
+    address: selectedTokenIdAddress,
+  } = useSingleTokenInfoWithNativeTokenSupport(selectedTokenId)
+  const tokenAddress = isNativeToken ? '0x0' : selectedTokenIdAddress
   const balance =
     useBalance(address, networkId, tokenAddress)?.[address]?.[tokenAddress] ||
     '0x0'
@@ -132,7 +126,7 @@ function TokenAndAmount({
         >
           <img
             className="w-5 h-5 mr-1"
-            src={icon || '/images/default-token-icon.svg'}
+            src={logoURI || '/images/default-token-icon.svg'}
             alt="logo"
             id="tokenIcon"
           />
@@ -164,7 +158,7 @@ function TokenAndAmount({
 }
 
 TokenAndAmount.propTypes = {
-  selectedToken: PropTypes.object.isRequired,
+  selectedTokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChangeToken: PropTypes.func,
   amount: PropTypes.string,
   onChangeAmount: PropTypes.func,

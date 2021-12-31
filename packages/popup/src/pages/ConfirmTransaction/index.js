@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
+import Alert from '@fluent-wallet/component-alert'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
   formatDecimalToHex,
@@ -20,26 +21,58 @@ import {
   useViewData,
 } from '../../hooks'
 import {
-  useCurrentNativeToken,
-  usePendingAuthReq,
+  useCurrentAddress,
   useNetworkTypeIsCfx,
+  useAddressTypeInConfirmTx,
 } from '../../hooks/useApi'
-import {request, bn16} from '../../utils'
-import {AddressCard, InfoList, TransactionResult} from './components'
-import {TitleNav, GasFee, DappFooter} from '../../components'
-import {ROUTES, RPC_METHODS} from '../../constants'
+import {useConnect} from '../../hooks/useLedger'
+import {request, bn16, getPageType} from '../../utils'
+import {AddressCard, InfoList, HwTransactionResult} from './components'
+import {TitleNav, GasFee, DappFooter, HwAlert} from '../../components'
+import {
+  ROUTES,
+  RPC_METHODS,
+  LEDGER_AUTH_STATUS,
+  LEDGER_OPEN_STATUS,
+  HW_TX_STATUS,
+} from '../../constants'
+import useLoading from '../../hooks/useLoading'
+import {Conflux} from '@fluent-wallet/ledger'
+
+const cfxLedger = new Conflux()
 const {VIEW_DATA, HOME} = ROUTES
-const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION, WALLET_GET_BALANCE} =
-  RPC_METHODS
+const {
+  CFX_SEND_TRANSACTION,
+  ETH_SEND_TRANSACTION,
+  WALLET_GET_BALANCE,
+  WALLET_GET_PENDING_AUTH_REQUEST,
+} = RPC_METHODS
 
 function ConfirmTransition() {
   const {t} = useTranslation()
   const history = useHistory()
-  const [showResult, setShowResult] = useState(false)
-  const [sendingTransaction, setSendingTransaction] = useState(false)
+  const {authStatus: authStatusFromLedger, isAppOpen: isAppOpenFromLedger} =
+    useConnect()
+  const [authStatus, setAuthStatus] = useState(true)
+  const [isAppOpen, setIsAppOpen] = useState(true)
+  useEffect(() => {
+    setAuthStatus(
+      authStatusFromLedger === LEDGER_AUTH_STATUS.UNAUTHED ? false : true,
+    )
+    setIsAppOpen(
+      isAppOpenFromLedger === LEDGER_OPEN_STATUS.UNOPEN ? false : true,
+    )
+  }, [authStatusFromLedger, isAppOpenFromLedger])
+  const [sendStatus, setSendStatus] = useState()
   const [balanceError, setBalanceError] = useState('')
-  const [hash, setHash] = useState('')
-  const pendingAuthReq = usePendingAuthReq()
+  const [pendingAuthReq, setPendingAuthReq] = useState()
+  const isDapp = getPageType() === 'notification'
+  useEffect(() => {
+    if (isDapp)
+      request(WALLET_GET_PENDING_AUTH_REQUEST).then(result =>
+        setPendingAuthReq(result),
+      )
+  }, [isDapp])
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const SEND_TRANSACTION = networkTypeIsCfx
     ? CFX_SEND_TRANSACTION
@@ -55,10 +88,16 @@ function ConfirmTransition() {
     setNonce,
     clearSendTransactionParams,
   } = useGlobalStore()
+  const {setLoading} = useLoading()
 
-  const nativeToken = useCurrentNativeToken()
-  const tx = useDappParams()
-  const isDapp = pendingAuthReq?.length > 0
+  const {
+    data: {
+      network: {ticker},
+    },
+  } = useCurrentAddress()
+  const nativeToken = ticker || {}
+  const tx = useDappParams(pendingAuthReq)
+
   // get to type and to token
   const {isContract, decodeData} = useDecodeData(tx)
   const {
@@ -66,9 +105,21 @@ function ConfirmTransition() {
     isSendToken,
     displayToken,
     displayValue,
+    displayFromAddress,
     displayToAddress,
   } = useDecodeDisplay({isDapp, isContract, nativeToken, tx})
   const isSign = !isSendToken && !isApproveToken
+
+  const {
+    account: {
+      accountGroup: {
+        vault: {type},
+      },
+    },
+  } = useAddressTypeInConfirmTx(displayFromAddress)
+  const isHwAccount = type === 'hw' && type !== undefined
+  const isHwUnAuth = !authStatus && isHwAccount
+  const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
 
   // params in wallet send or dapp send
   const txParams = useTxParams()
@@ -89,7 +140,7 @@ function ConfirmTransition() {
     storageLimit: formatDecimalToHex(storageLimit),
   }
   // user can edit the approve limit
-  const viewData = useViewData(params)
+  const viewData = useViewData(params, isApproveToken)
   params.data = viewData
 
   // send params, need to delete '' or undefined params,
@@ -101,13 +152,15 @@ function ConfirmTransition() {
   if (!params.data) delete params.data
   const sendParams = [params]
 
-  const isNativeToken = !displayToken?.address
+  const {address: displayTokenAddress} = displayToken || {}
+
+  const isNativeToken = !displayTokenAddress
   const estimateRst =
     useEstimateTx(
       params,
       !isNativeToken && isSendToken
         ? {
-            [displayToken?.address]: convertValueToData(
+            [displayTokenAddress]: convertValueToData(
               displayValue,
               displayToken?.decimals,
             ),
@@ -128,9 +181,10 @@ function ConfirmTransition() {
 
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
-    displayValue,
+    displayTokenAddress,
     isSendToken,
   )
+
   useEffect(() => {
     setBalanceError(errorMessage)
   }, [errorMessage])
@@ -171,7 +225,7 @@ function ConfirmTransition() {
 
   // check balance when click send button
   const checkBalance = async () => {
-    const {from, gasPrice, gas, value, storageLimit} = params
+    const {from, to, gasPrice, gas, value, storageLimit} = params
     const storageFeeDrip = bn16(storageLimit)
       .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
       .divn(1024)
@@ -187,19 +241,29 @@ function ConfirmTransition() {
 
       if (isNativeToken) {
         if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
-          return 'balance is not enough'
+          return t('balanceIsNotEnough')
         } else {
           return ''
         }
       } else {
+        const {willPayCollateral, willPayTxFee} = await request(
+          'cfx_checkBalanceAgainstTransaction',
+          [from, to, gas, gasPrice, storageLimit, 'latest_state'],
+        )
         if (
           bn16(balance[tokenAddress]).lt(
             bn16(convertValueToData(displayValue, decimals)),
           )
         ) {
-          return 'balance is not enough'
-        } else if (bn16(balance['0x0']).lt(txFeeDrip)) {
-          return 'gas fee is not enough'
+          return t('balanceIsNotEnough')
+        } else if (
+          (bn16(balance['0x0']).lt(txFeeDrip) &&
+            willPayTxFee &&
+            willPayCollateral) ||
+          (bn16(balance['0x0']).lt(storageFeeDrip) && willPayCollateral) ||
+          (bn16(balance['0x0']).lt(gasFeeDrip) && willPayTxFee)
+        ) {
+          return t('gasFeeIsNotEnough')
         } else {
           return ''
         }
@@ -211,35 +275,54 @@ function ConfirmTransition() {
   }
 
   const onSend = async () => {
-    if (sendingTransaction) return
-    setSendingTransaction(true)
+    if (isHwAccount) {
+      const authStatus = await cfxLedger.isDeviceAuthed()
+      const isAppOpen = await cfxLedger.isAppOpen()
+      if (!authStatus) {
+        setAuthStatus(authStatus)
+        return
+      } else if (!isAppOpen) {
+        setIsAppOpen(isAppOpen)
+        return
+      }
+    }
+    if (!isHwAccount) setLoading(true)
+    else setSendStatus(HW_TX_STATUS.WAITING)
     if (isSendToken) {
       const error = await checkBalance()
       if (error) {
-        setSendingTransaction(false)
+        setLoading(false)
         setBalanceError(error)
         return
       }
     }
     request(SEND_TRANSACTION, [params])
-      .then(result => {
-        setSendingTransaction(false)
-        setHash(result)
-        setShowResult(true)
+      .then(() => {
+        if (!isHwAccount) setLoading(false)
+        else setSendStatus(HW_TX_STATUS.SUCCESS)
+        setTimeout(() => clearSendTransactionParams(), 500)
+        history.push(HOME)
       })
       .catch(error => {
-        setSendingTransaction(false)
         console.error('error', error?.message ?? error)
+        if (!isHwAccount) setLoading(false)
+        setSendStatus(HW_TX_STATUS.REJECTED)
       })
   }
 
+  const confirmDisabled =
+    !!balanceError ||
+    estimateRst.loading ||
+    Object.keys(estimateRst).length === 0
+
   return (
-    <div className="flex flex-col h-full relative">
+    <div className="flex flex-col h-full w-full relative">
       <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
       <div className="flex flex-1 flex-col justify-between mt-1 pb-4">
         <div className="flex flex-col px-3">
           <AddressCard
             token={displayToken}
+            fromAddress={displayFromAddress}
             toAddress={displayToAddress}
             value={displayValue}
             isSendToken={isSendToken}
@@ -256,9 +339,20 @@ function ConfirmTransition() {
             pendingAuthReq={pendingAuthReq}
           />
           <GasFee estimateRst={estimateRst} />
-          <span className="text-error text-xs inline-block mt-2">
-            {balanceError}
-          </span>
+          {balanceError && (
+            <span className="text-error text-xs inline-block mt-2">
+              {balanceError}
+            </span>
+          )}
+          <HwAlert open={isHwUnAuth} isDapp={isDapp} className="mt-3" />
+          <Alert
+            open={isHwOpenAlert}
+            className="mt-3"
+            type="warning"
+            closable={false}
+            width="w-full"
+            content={t('hwOpenApp')}
+          />
         </div>
         <div className="flex flex-col items-center">
           {isDapp && params.data && (
@@ -282,24 +376,31 @@ function ConfirmTransition() {
               <Button
                 className="flex-1"
                 onClick={onSend}
-                disabled={!!balanceError}
+                disabled={confirmDisabled}
               >
                 {t('confirm')}
               </Button>
             </div>
           )}
+
           {isDapp && (
             <DappFooter
               confirmText={t('confirm')}
               cancelText={t('cancel')}
-              confirmDisabled={!!balanceError}
-              onClickConfirm={() => setShowResult(true)}
+              confirmDisabled={confirmDisabled}
               confirmParams={{tx: sendParams}}
+              setSendStatus={setSendStatus}
+              pendingAuthReq={pendingAuthReq}
+              isHwAccount={isHwAccount}
+              setAuthStatus={setAuthStatus}
+              setIsAppOpen={setIsAppOpen}
             />
+          )}
+          {(isHwAccount || sendStatus === HW_TX_STATUS.REJECTED) && (
+            <HwTransactionResult status={sendStatus} isDapp={isDapp} />
           )}
         </div>
       </div>
-      {showResult && <TransactionResult transactionHash={hash} />}
     </div>
   )
 }

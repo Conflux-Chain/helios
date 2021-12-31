@@ -1,6 +1,5 @@
 import {addHexPrefix, toBuffer} from '@fluent-wallet/utils'
 import {encode as encodeCfxAddress} from '@fluent-wallet/base32-address'
-import {Buffer} from 'buffer'
 import {hashMessage as ethHashPersonalMessage} from '@ethersproject/hash'
 import {
   SigningKey,
@@ -29,13 +28,13 @@ export const hashPersonalMessage = (type, message) =>
 
 export async function personalSign(type, privateKey, message) {
   return type === 'cfx'
-    ? CfxPersonalMessage.sign(addHexPrefix(privateKey), Buffer.from(message))
+    ? CfxPersonalMessage.sign(addHexPrefix(privateKey), message)
     : await new EthWallet(addHexPrefix(privateKey)).signMessage(message)
 }
 
 export function recoverPersonalSignature(type, signature, message, netId) {
   if (type === 'cfx') {
-    const pub = CfxPersonalMessage.recover(signature, Buffer.from(message))
+    const pub = CfxPersonalMessage.recover(signature, message)
     const addr = cfxSDKSign.publicKeyToAddress(toBuffer(pub))
     return encodeCfxAddress(addr, netId)
   }
@@ -125,6 +124,39 @@ export const ecdsaRecover = (type, hash, sig, netId) =>
 export const cfxSignTransaction = (tx, pk, netId) => {
   const transaction = new CfxTransaction(tx)
   return transaction.sign(pk, netId).serialize()
+}
+
+export const cfxRecoverTransactionToAddress = (tx, {r, s, v}, netId) => {
+  const transaction = new CfxTransaction({
+    ...tx,
+    r: addHexPrefix(r),
+    s: addHexPrefix(s),
+    v: addHexPrefix(v),
+  })
+
+  let pub = transaction.recover()
+
+  return encodeCfxAddress(
+    '0x' + cfxSDKSign.publicKeyToAddress(toBuffer(pub)).toString('hex'),
+    netId,
+  )
+}
+
+export const cfxEncodeTx = (tx, shouldStripHexPrefix = false) => {
+  const transaction = new CfxTransaction(tx)
+  const encoded = transaction.encode(false).toString('hex')
+  if (shouldStripHexPrefix) return encoded
+  return `0x${encoded}`
+}
+
+export const cfxJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
+  const transaction = new CfxTransaction({
+    ...tx,
+    r: addHexPrefix(r),
+    s: addHexPrefix(s),
+    v: addHexPrefix(v),
+  })
+  return transaction.serialize()
 }
 
 export const getTxHashFromRawTx = txhash => {

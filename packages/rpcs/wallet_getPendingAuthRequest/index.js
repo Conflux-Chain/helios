@@ -9,9 +9,9 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   methods: [],
-  db: ['getAuthReq'],
+  db: ['getPendingAuthReq'],
 }
 
-export const main = ({db: {getAuthReq}}) => {
-  return getAuthReq()
+export const main = ({db: {getPendingAuthReq}}) => {
+  return getPendingAuthReq()
 }

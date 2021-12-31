@@ -7,7 +7,7 @@ const defaultSendTransactionParams = {
   gasLimit: '',
   storageLimit: '',
   nonce: '',
-  sendToken: {symbol: 'CFX', icon: '', decimals: 18},
+  sendTokenId: 'native',
   customAllowance: '',
 }
 
@@ -19,6 +19,8 @@ const useGlobalStore = create(set => ({
   createdSeedPhase: '',
   createdPassword: '',
   createdMnemonic: '',
+  exportPrivateKey: '',
+  exportSeedPhrase: '',
   ...defaultSendTransactionParams,
 
   // logic
@@ -34,7 +36,9 @@ const useGlobalStore = create(set => ({
   setStorageLimit: storageLimit => set({storageLimit}),
   setCustomAllowance: customAllowance => set({customAllowance}),
   setNonce: nonce => set({nonce}),
-  setSendToken: sendToken => set({sendToken}),
+  setSendTokenId: sendTokenId => set({sendTokenId}),
+  setExportPrivateKey: exportPrivateKey => set({exportPrivateKey}),
+  setExportSeedPhrase: exportSeedPhrase => set({exportSeedPhrase}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
 }))
 

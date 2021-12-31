@@ -12,10 +12,13 @@ function ViewData() {
   return contractData ? (
     <div
       id="editPermissionContainer"
-      className="h-full flex flex-col bg-blue-circles bg-no-repeat"
+      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat"
     >
       <TitleNav title={t('transactionDetails')} />
-      <div className="mx-3 mt-3 px-3 py-4 bg-gray-4" id="content">
+      <div
+        className="mx-3 mt-3 px-3 py-4 bg-gray-4 flex flex-col flex-1 overflow-y-auto no-scroll"
+        id="content"
+      >
         <div>
           <p className="text-xs text-gray-40 mb-0.5">{t('functionName')}</p>
           <div className="text-sm text-gray-80 mb-3">{contractMethod}</div>

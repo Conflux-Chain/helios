@@ -4,24 +4,25 @@ import {useCurrentDapp} from '../../../hooks/useApi'
 const getAuthorizedAccountIdIcon = (accounts, icon) => {
   const accountIcons = {}
   accounts.forEach(({eid}) => {
-    accountIcons[eid] = icon
+    accountIcons[eid] = icon || '/images/default-dapp-icon.svg'
   })
   return accountIcons
 }
 const useAuthorizedAccountIdIcon = () => {
   const [authorizedAccountIdObj, setAuthorizedAccountIdObj] = useState({})
-  const currentDapp = useCurrentDapp()
+  const {data: currentDappData} = useCurrentDapp()
+
   useEffect(() => {
-    if (currentDapp?.app?.account) {
+    if (currentDappData?.app?.account) {
       setAuthorizedAccountIdObj(
         getAuthorizedAccountIdIcon(
-          currentDapp.app.account,
-          currentDapp.site.icon,
+          currentDappData.app.account,
+          currentDappData.site.icon,
         ),
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(currentDapp)])
+  }, [currentDappData?.app?.account])
   return authorizedAccountIdObj
 }
 

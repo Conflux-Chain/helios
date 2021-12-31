@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {AuthorizeModal, DisconnectModal} from '../components'
 import {request} from '../../../utils'
 import useGlobalStore from '../../../stores/index.js'
-import {useCurrentAccount, useCurrentDapp} from '../../../hooks/useApi'
+import {useCurrentDapp, useCurrentAddress} from '../../../hooks/useApi'
 import {RPC_METHODS} from '../../../constants'
 const {WALLET_REQUEST_PERMISSIONS, WALLET_DELETE_APP} = RPC_METHODS
 
@@ -12,25 +12,33 @@ function CurrentDapp() {
   const {setFatalError} = useGlobalStore()
   const [authModalShow, setAuthModalShow] = useState(false)
   const [disconnectModalShow, setDisconnectModalShow] = useState(false)
-  const data = useCurrentDapp()
+  const {data, mutate} = useCurrentDapp()
   const site = data?.site || {}
   const currentDapp = data?.app || {}
   const {currentAccount: dappCurrentAccount, eid: appId} = currentDapp
-  const currentAccount = useCurrentAccount()
   const {origin, icon, eid: siteId} = site
   const {nickname: connectedNickname, eid: connectedEid} =
     dappCurrentAccount || {}
-  const {nickname: currentNickname, eid: currentEid} = currentAccount
+  const {
+    data: {
+      account: {nickname: currentNickname, eid: currentEid},
+    },
+  } = useCurrentAddress()
   const isConnected = !!data?.app
   const isConnectedCurrentAccount = connectedEid === currentEid
+  const connectedAccounts =
+    currentDapp?.account?.map(account => account?.eid) || []
 
   const onAuth = () => {
     request(WALLET_REQUEST_PERMISSIONS, {
       siteId,
       permissions: [{wallet_accounts: {}}],
-      accounts: [currentEid],
+      accounts: connectedAccounts.concat([currentEid]),
     })
-      .then(() => setAuthModalShow(false))
+      .then(() => {
+        setAuthModalShow(false)
+        mutate()
+      })
       .catch(error => setFatalError(error))
   }
 
@@ -42,7 +50,8 @@ function CurrentDapp() {
 
   return (
     <div
-      className="flex items-center h-16 rounded-t-xl bg-gray-0 px-3 flex-shrink-0"
+      className={`current-dapp-container flex items-center ${isConnected ? 'h-16' : 'h-10'
+        } py-3 rounded-t-xl bg-gray-0 px-3 flex-shrink-0`}
       id="currentDappContainer"
     >
       {!isConnected && (
@@ -61,17 +70,17 @@ function CurrentDapp() {
           </div>
           <div className="flex flex-col flex-1 items-center">
             <div className="flex w-full items-center justify-between mb-0.5">
-              <span className="text-gray-80 font-medium inline-block">
+              <span className="text-gray-80 font-medium inline-block max-w-[180px] text-ellipsis">
                 {origin}
               </span>
-              <span className="text-gray-60 text-xs inline-block mb-1">
+              <span className="text-gray-60 text-xs inline-block mb-1 max-w-[100px] text-ellipsis">
                 {connectedNickname}
               </span>
             </div>
             <div className="flex w-full items-center justify-between">
               <span
                 id="setDisconnectModalShowBtn"
-                className="h-5 px-2 bg-primary-4 rounded-full text-success text-xs flex items-center justify-center cursor-pointer"
+                className="h-5 px-2 bg-primary-4 hover:bg-primary-10 rounded-full text-success text-xs flex items-center justify-center cursor-pointer"
                 aria-hidden="true"
                 onClick={() => setDisconnectModalShow(true)}
               >
@@ -81,7 +90,7 @@ function CurrentDapp() {
               {!isConnectedCurrentAccount ? (
                 <span
                   id="setAuthModalShowBtn"
-                  className="text-primary text-xs cursor-pointer"
+                  className="text-primary text-xs cursor-pointer inline-block max-w-[140px] text-ellipsis hover:text-primary-dark"
                   onClick={() => setAuthModalShow(true)}
                   aria-hidden="true"
                 >

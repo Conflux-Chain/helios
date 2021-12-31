@@ -96,12 +96,17 @@ export const cfxEstimate = async (
     throw new Error(`usage without fluent-wallet provider is not supported yet`)
 
   let newTx = {...tx}
-  let {from, to, gasPrice, nonce, data, value} = newTx
-  const {
-    gas: customGas,
+  let {
+    from,
+    to,
     gasPrice: customGasPrice,
+    gas: customGasLimit,
     storageLimit: customStorageLimit,
-  } = tx
+    nonce: customNonce,
+    data,
+    value,
+  } = newTx
+  let gasPrice, nonce
 
   if (!from) throw new Error(`Invalid from ${from}`)
   // if (networkId !== undefined && !Number.isInteger(networkId))
@@ -151,18 +156,31 @@ export const cfxEstimate = async (
     gasPrice = r
   })
 
+  // get nonce, since it may affect estimateGasAndCollateral result
+  if (!nonce) {
+    promises.push(
+      request({
+        method: 'cfx_getNextUsableNonce',
+        params: [from],
+      }).then(r => {
+        nonce = r
+      }),
+    )
+  }
+
+  // wait for all those values
+  await Promise.all(promises)
+
   // simple send tx, gas is 21000, storageLimit is 0
   if (to && (!data || data === '0x')) {
-    await Promise.all(promises)
+    const clcGasPrice = customGasPrice || gasPrice
+    const clcGasLimit = customGasLimit || '0x5208' /* 21000 */
+    const clcStorageLimit = customStorageLimit || '0x0'
     const cfxFeeData = cfxGetFeeData(
-      {gasPrice, value},
-      {balance: balances['0x0']},
-    )
-    const customCfxFeeData = cfxGetFeeData(
       {
-        gasPrice: customGasPrice || gasPrice,
-        gas: customGas,
-        storageLimit: customStorageLimit,
+        gasPrice: clcGasPrice,
+        gas: clcGasLimit,
+        storageLimit: clcStorageLimit,
         value,
       },
       {balance: balances['0x0']},
@@ -170,30 +188,19 @@ export const cfxEstimate = async (
     if (toAddressType === 'user')
       return {
         ...cfxFeeData,
-        customData: customCfxFeeData,
         gasPrice,
         gasUsed: '0x5208',
         gasLimit: '0x5208',
         storageCollateralized: '0x0',
+        nonce,
+        customGasPrice,
+        customGasLimit,
+        customStorageLimit,
+        customNonce,
         willPayCollateral: true,
         willPayTxFee: true,
       }
   }
-
-  // get nonce, since it may affect estimateGasAndCollateral result
-  if (!nonce) {
-    promises.push(
-      request({
-        method: 'cfx_getNextNonce',
-        params: [from, 'latest_state'],
-      }).then(r => {
-        nonce = r
-      }),
-    )
-  }
-
-  // wait for all thoes values
-  await Promise.all(promises)
 
   // delete passed in gas/storage data, since they may affect
   // estimateGasAndCollateral result
@@ -205,6 +212,9 @@ export const cfxEstimate = async (
   // run estimate
   let rst = await cfxEstimateGasAndCollateralAdvance(request, newTx)
   const {gasLimit, storageCollateralized} = rst
+  const clcGasPrice = customGasPrice || gasPrice
+  const clcGasLimit = customGasLimit || gasLimit
+  const clcStorageLimit = customStorageLimit || storageCollateralized
 
   rst = {
     ...rst,
@@ -217,17 +227,18 @@ export const cfxEstimate = async (
       params: [
         from,
         to,
-        gasLimit,
-        gasPrice,
-        storageCollateralized,
+        // prioritiz custom value so that user can adjust them for sponsorship
+        clcGasLimit,
+        clcGasPrice,
+        clcStorageLimit,
         'latest_state',
       ],
     })
     const cfxFeeData = cfxGetFeeData(
       {
-        gasPrice,
-        gas: gasLimit,
-        storageLimit: storageCollateralized,
+        gasPrice: clcGasPrice,
+        gas: clcGasLimit,
+        storageLimit: clcStorageLimit,
         value,
         tokensAmount,
       },
@@ -243,9 +254,9 @@ export const cfxEstimate = async (
   } else {
     const cfxFeeData = cfxGetFeeData(
       {
-        gasPrice,
-        gas: gasLimit,
-        storageLimit: storageCollateralized,
+        gasPrice: clcGasPrice,
+        gas: clcGasLimit,
+        storageLimit: clcStorageLimit,
         value,
       },
       {balance: balances['0x0']},
@@ -260,16 +271,10 @@ export const cfxEstimate = async (
 
   rst.gasPrice = gasPrice
   rst.nonce = newTx.nonce
-
-  rst.customData = cfxGetFeeData(
-    {
-      gasPrice: customGasPrice || gasPrice,
-      gas: customGas || gasLimit,
-      storageLimit: customStorageLimit || storageCollateralized,
-      value,
-    },
-    {balance: balances['0x0']},
-  )
+  rst.customGasPrice = customGasPrice
+  rst.customGasLimit = customGasLimit
+  rst.customStorageLimit = customStorageLimit
+  rst.customNonce = customNonce
 
   return rst
 }

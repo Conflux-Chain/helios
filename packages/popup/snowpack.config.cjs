@@ -5,18 +5,20 @@ const {
   mustacheRender,
 } = require('../../scripts/snowpack.utils.js')
 const path = require('path')
-
-mustacheRender(
-  path.resolve(__dirname, './public/index.html.mustache'),
-  isDev()
-    ? path.resolve(__dirname, '../browser-extension/popup.html')
-    : path.resolve(__dirname, './public/index.html'),
-  {
-    scripts: isDev()
-      ? `<script src="http://localhost:18001/dist/index.dev.js" type="module" charset="utf-8"></script>`
-      : `<script src="dist/index.js" type="module" charset="utf-8"></script>`,
-    body: ``,
-  },
+;['popup', 'notification', 'page'].forEach(templateName =>
+  mustacheRender(
+    path.resolve(__dirname, `./public/${templateName}.html.mustache`),
+    isDev()
+      ? path.resolve(__dirname, `../browser-extension/${templateName}.html`)
+      : path.resolve(__dirname, `./public/${templateName}.html`),
+    {
+      scripts: isDev()
+        ? `<script src="http://localhost:18001/dist/index.dev.js" type="module" charset="utf-8"></script>`
+        : `<link rel="stylesheet" href="dist/index.css" type="text/css" media="screen" />
+<script src="dist/index.js" type="module" charset="utf-8"></script>`,
+      body: ``,
+    },
+  ),
 )
 
 const root = __dirname
@@ -38,7 +40,6 @@ const mergedConfig = mergeConfig(baseConfig, {
       ),
       {},
     ],
-    '@snowpack/plugin-react-refresh',
   ],
   devOptions: {
     port: 18001,

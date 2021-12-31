@@ -13,6 +13,35 @@ function deprecated(type, message) {
   console.warn(`%cDEPRECATED ${type}: ${message}`, 'color: red')
 }
 
+// DEPRECATED
+function protectDeprecatedEvent(eventType) {
+  if (eventType === 'chainIdChanged') {
+    eventType = 'chainChanged'
+    deprecated(
+      'EVENT',
+      '"chainIdChanged" event is deprecated, it might be removed anytime without warning. Use "chainChanged" instead',
+    )
+  } else if (eventType === 'networkChanged') {
+    deprecated(
+      'EVENT',
+      '"networkChanged" event is deprecated, it might be removed anytime without warning. Use "chainChanged" instead',
+    )
+  } else if (eventType === 'close') {
+    eventType = 'disconnect'
+    deprecated(
+      'EVENT',
+      '"close" event is deprecated, it might be removed anytime without warning. Use "disconnect" instead',
+    )
+  } else if (eventType === 'notification') {
+    eventType = 'message'
+    deprecated(
+      'EVENT',
+      '"notification" event is deprecated, it might be removed anytime without warning. Use "message" instead',
+    )
+  }
+  return eventType
+}
+
 class Provider extends SafeEventEmitter {
   #s
   #send
@@ -40,25 +69,13 @@ class Provider extends SafeEventEmitter {
     // DEPRECATED
     this.confluxJS = new ConfluxJS.Conflux()
 
+    this.confluxJS.provider = this
+
     this.on('connect', () => {
       this.#isConnected = true
 
       // DEPRECATED
       {
-        this.confluxJS.provider = {
-          call: (method, ...params) => {
-            params = params.reduce((acc, p) => {
-              if (p === undefined) return acc
-              return acc.concat([p])
-            }, [])
-            return this.request({method, params})
-          },
-          close() {},
-          on() {},
-          send: this.send.bind(this),
-          sendAsync: this.sendAsync.bind(this),
-          request: this.request.bind(this),
-        }
         this.request({method: 'cfx_chainId'}).then(result => {
           this._chainId = result
           const networkId = parseInt(result, 16)
@@ -86,6 +103,17 @@ class Provider extends SafeEventEmitter {
       }
     })
   }
+  // DEPRECATED
+  close() {}
+  // DEPRECATED
+  call(method, ...params) {
+    params = params.reduce((acc, p) => {
+      if (p === undefined) return acc
+      return acc.concat([p])
+    }, [])
+    return this.request({method, params})
+  }
+
   // DEPRECATED
   get chainId() {
     deprecated(
@@ -122,32 +150,14 @@ class Provider extends SafeEventEmitter {
 
   // DEPRECATED
   on(eventType, listener) {
-    if (eventType === 'chainIdChanged') {
-      eventType = 'chainChanged'
-      deprecated(
-        'EVENT',
-        '"chainIdChanged" event is deprecated, it might be removed anytime without warning. Use "chainChanged" instead',
-      )
-    } else if (eventType === 'networkChanged') {
-      deprecated(
-        'EVENT',
-        '"networkChanged" event is deprecated, it might be removed anytime without warning. Use "chainChanged" instead',
-      )
-    } else if (eventType === 'close') {
-      eventType = 'disconnect'
-      deprecated(
-        'EVENT',
-        '"close" event is deprecated, it might be removed anytime without warning. Use "disconnect" instead',
-      )
-    } else if (eventType === 'notification') {
-      eventType = 'message'
-      deprecated(
-        'EVENT',
-        '"notification" event is deprecated, it might be removed anytime without warning. Use "message" instead',
-      )
-    }
-
+    eventType = protectDeprecatedEvent(eventType)
     return SafeEventEmitter.prototype.on.call(this, eventType, listener)
+  }
+
+  // DEPRECATED
+  off(eventType, listener) {
+    eventType = protectDeprecatedEvent(eventType)
+    return SafeEventEmitter.prototype.off.call(this, eventType, listener)
   }
 
   // DEPRECATED
@@ -167,9 +177,10 @@ class Provider extends SafeEventEmitter {
     )
     if (typeof callback !== 'function')
       throw new Error('Invalid callback, not a function')
-    this.request(payload)
-      .then(res => callback(null, res))
-      .catch(callback)
+    requestFactory(this.#send, payload).then(res => {
+      if (res.error) callback(res.error)
+      return callback(null, res.result)
+    })
   }
 
   // DEPRECATED
@@ -184,7 +195,8 @@ class Provider extends SafeEventEmitter {
 
     if (!a2 && typeof a1 === 'object') {
       if (a1.method === 'cfx_accounts') {
-        return Promise.resolve([this.selectedAddress])
+        if (this.selectedAddress) return Promise.resolve([this.selectedAddress])
+        else return Promise.resolve([])
       }
       if (a1.method === 'cfx_netVersion' || a1.method === 'net_version') {
         return Promise.resolve(this.networkVersion)

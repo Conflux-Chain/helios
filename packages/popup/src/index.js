@@ -5,6 +5,15 @@ import App from './App'
 import './i18n.js'
 import {SWRConfig} from 'swr'
 import {ROUTES} from './constants'
+import {IS_PROD_MODE} from '@fluent-wallet/inner-utils'
+import {
+  init as initSentry,
+  capture as sentryCapture,
+} from '@fluent-wallet/sentry'
+import {getDefaultOptions} from '@fluent-wallet/sentry/computeDefaultOptions'
+
+initSentry(getDefaultOptions())
+
 const {ERROR} = ROUTES
 // import reportWebVitals from './reportWebVitals'
 
@@ -43,14 +52,29 @@ if (
   })
 }
 
+const swrPostProcessDataMiddleware = useSWRNext => (key, fetcher, config) => {
+  if (typeof config?.postprocessSuccessData === 'function') {
+    const newFetcher = (...args) => {
+      const data = fetcher(...args)
+      if (typeof data?.then === 'function')
+        return data.then(config?.postprocessSuccessData)
+      return config?.postprocessSuccessData(data)
+    }
+    return useSWRNext(key, newFetcher, config)
+  }
+  return useSWRNext(key, fetcher, config)
+}
+
 ReactDOM.render(
   <React.StrictMode>
     <SWRConfig
       value={{
         revalidateOnMount: true,
         refreshInterval: 3000,
+        use: [swrPostProcessDataMiddleware],
         onError: error => {
           if (error && location) {
+            sentryCapture(error)
             location.href = `${location.origin}${
               location.pathname
             }#${ERROR}?errorMsg=${encodeURIComponent(error.message) || ''}`
@@ -68,3 +92,8 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals()
+
+if (!IS_PROD_MODE)
+  console.log(
+    `Fluent Version: ${import.meta.env.SNOWPACK_PUBLIC_FLUENT_VERSION}`,
+  )

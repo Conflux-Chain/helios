@@ -1,0 +1,22 @@
+.loading-mask {
+  @apply absolute left-0 top-0 right-0 bottom-0 flex justify-center items-center transition-colors;
+
+  background-color: rgba(255 255 255 / 0%);
+  z-index: 1000;
+}
+
+.loading-mask-blur > :not(.loading-mask) {
+  transition: filter 200ms ease;
+}
+
+.loading-mask-blur-low > :not(.loading-mask) {
+  filter: blur(1px);
+}
+
+.loading-mask-blur-middle > :not(.loading-mask) {
+  filter: blur(3px);
+}
+
+.loading-mask-blur-high > :not(.loading-mask) {
+  filter: blur(6px);
+}

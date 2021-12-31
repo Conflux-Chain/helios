@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 
 function CreateTypeItem({
   title,
-  subTitle,
+  subTitle = '',
   Icon,
   Tag,
   onClick,
@@ -11,7 +11,7 @@ function CreateTypeItem({
 }) {
   return (
     <div
-      className={`flex bg-white cursor-pointer box-border p-3 mb-3 ${typeClass}`}
+      className={`flex bg-white cursor-pointer box-border p-3 mb-3 rounded ${typeClass}`}
       aria-hidden="true"
       {...props}
       onClick={() => {
@@ -32,7 +32,7 @@ function CreateTypeItem({
 CreateTypeItem.propTypes = {
   onClick: PropTypes.func,
   title: PropTypes.string.isRequired,
-  subTitle: PropTypes.string.isRequired,
+  subTitle: PropTypes.string,
   Icon: PropTypes.element,
   Tag: PropTypes.elementType,
   typeClass: PropTypes.string,

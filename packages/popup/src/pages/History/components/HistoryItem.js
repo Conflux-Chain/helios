@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import dayjs from 'dayjs'
-import {CFX_SCAN_DOMAINS, ETH_SCAN_DOMAINS} from '@fluent-wallet/consts'
 import {
   CFX_DECIMALS,
   convertDataToValue,
@@ -16,7 +15,7 @@ import {
   SendOutlined,
 } from '@fluent-wallet/component-icons'
 import {transformToTitleCase, formatStatus} from '../../../utils'
-import {useNetworkTypeIsCfx, useCurrentNetwork} from '../../../hooks/useApi'
+import {useNetworkTypeIsCfx} from '../../../hooks/useApi'
 import {useDecodeData} from '../../../hooks'
 import {
   WrapIcon,
@@ -47,19 +46,27 @@ WrapperWithCircle.propTypes = {
   className: PropTypes.string,
 }
 
-function HistoryItem({status, created, extra, payload, app, token, hash}) {
+function HistoryItem({
+  status,
+  created,
+  extra,
+  payload,
+  app,
+  token,
+  transactionUrl,
+  hash,
+}) {
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
   const [amount, setAmount] = useState('')
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
-  const {netId} = useCurrentNetwork()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
   const txStatus = formatStatus(status)
   const tagColor = tagColorStyle[txStatus] ?? ''
-  const createdTime = dayjs(created).format('YYYY/MM/DD hh:mm:ss')
+  const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
   const {contractCreation, simple, contractInteraction, token20} = extra
 
   // TODO: should throw error in decode data
@@ -67,7 +74,6 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
     to: token?.address,
     data: payload?.data,
   })
-
   useEffect(() => {
     setActionName(
       simple
@@ -137,58 +143,53 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
   ])
 
   return (
-    <div className="px-3 pb-3 pt-2 relative bg-white mx-3 mt-3 rounded">
-      {txStatus !== 'confirmed' ? (
-        <CustomTag
-          className={`${tagColor} absolute flex items-center h-6 px-2.5 left-0 top-0`}
-          width="w-auto"
-          roundedStyle="rounded-tl rounded-br-lg"
-        >
-          {txStatus === 'failed' ? (
-            <CloseCircleFilled className="w-3 h-3 mr-1" />
-          ) : txStatus === 'executed' ? (
-            <WrapperWithCircle className="bg-[#83DBC6]">
-              <ReloadOutlined className="w-2 h-2 text-white" />
-            </WrapperWithCircle>
-          ) : txStatus === 'pending' || txStatus === 'sending' ? (
-            <WrapperWithCircle className="bg-[#F0955F]">
-              <ReloadOutlined className="w-2 h-2 text-white" />
-            </WrapperWithCircle>
-          ) : null}
-          <span className="text-sm">{transformToTitleCase(txStatus)}</span>
-        </CustomTag>
-      ) : null}
-
+    <div className="px-3 pb-3 pt-2 bg-white mx-3 mt-3 rounded">
       <div className="flex justify-between">
-        <div>
+        <div className="relative">
           {txStatus === 'confirmed' ? (
             <div className="text-gray-60 text-xs">
               <span>#{formatHexToDecimal(payload.nonce)}</span>
               <span className="ml-2">{createdTime}</span>
             </div>
-          ) : null}
+          ) : (
+            <CustomTag
+              className={`${tagColor} absolute flex items-center h-6 px-2.5 -left-3 -top-2`}
+              width="w-auto"
+              roundedStyle="rounded-tl rounded-br-lg"
+            >
+              {txStatus === 'failed' ? (
+                <CloseCircleFilled className="w-3 h-3 mr-1" />
+              ) : txStatus === 'executed' ? (
+                <WrapperWithCircle className="bg-[#83DBC6]">
+                  <ReloadOutlined className="w-2 h-2 text-white" />
+                </WrapperWithCircle>
+              ) : txStatus === 'pending' || txStatus === 'sending' ? (
+                <WrapperWithCircle className="bg-[#F0955F]">
+                  <ReloadOutlined className="w-2 h-2 text-white" />
+                </WrapperWithCircle>
+              ) : null}
+              <span className="text-sm">{transformToTitleCase(txStatus)}</span>
+            </CustomTag>
+          )}
         </div>
-        <div className="flex">
-          <CopyButton
-            text={toAddress}
-            className="w-3 h-3 text-primary"
-            CopyWrapper={WrapIcon}
-            wrapperClassName="!w-5 !h-5"
-          />
-          <WrapIcon
-            size="w-5 h-5 ml-2"
-            id="openScanUrl"
-            onClick={() =>
-              (CFX_SCAN_DOMAINS[netId] || CFX_SCAN_DOMAINS[netId]) &&
-              window.open(
-                networkTypeIsCfx
-                  ? `${CFX_SCAN_DOMAINS[netId]}/transaction/${hash}`
-                  : `${ETH_SCAN_DOMAINS[netId]}/tx/${hash}`,
-              )
-            }
-          >
-            <SendOutlined className="w-3 h-3 text-primary" />
-          </WrapIcon>
+        <div className="flex relative">
+          {hash ? (
+            <CopyButton
+              text={hash}
+              className="w-3 h-3 text-primary"
+              CopyWrapper={WrapIcon}
+              wrapperClassName="!w-5 !h-5"
+            />
+          ) : null}
+          {transactionUrl ? (
+            <WrapIcon
+              size="w-5 h-5 ml-2"
+              id="openScanUrl"
+              onClick={() => window.open(transactionUrl)}
+            >
+              <SendOutlined className="w-3 h-3 text-primary" />
+            </WrapIcon>
+          ) : null}
         </div>
       </div>
       <div className="mt-3 flex items-center">
@@ -209,12 +210,12 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
         </div>
         <div className="flex-1">
           <div className="flex items-center justify-between">
-            <div className="w-[120px] text-gray-80 text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
+            <div className="text-gray-80 text-sm max-w-[120px] text-ellipsis font-medium">
               {actionName}
             </div>
             {amount ? (
               <div className="flex">
-                {amount != 0 ? <span>-</span> : null}
+                {amount != 0 && actionName !== 'Approve' ? <span>-</span> : ''}
                 <DisplayBalance
                   balance={amount}
                   maxWidth={114}
@@ -227,8 +228,8 @@ function HistoryItem({status, created, extra, payload, app, token, hash}) {
             )}
           </div>
           <div className="flex mt-0.5 items-center justify-between text-gray-40 text-xs">
-            <div>{contractName}</div>
-            <div>{toAddress ? shortenAddress(toAddress) : ''}</div>
+            <span>{contractName}</span>
+            <span>{toAddress ? shortenAddress(toAddress) : ''}</span>
           </div>
         </div>
       </div>
@@ -241,7 +242,8 @@ HistoryItem.propTypes = {
   created: PropTypes.number.isRequired,
   extra: PropTypes.object.isRequired,
   payload: PropTypes.object.isRequired,
-  hash: PropTypes.string.isRequired,
+  transactionUrl: PropTypes.string,
+  hash: PropTypes.string,
   app: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   token: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
 }

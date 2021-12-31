@@ -3,8 +3,9 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
-import {useNetworkTypeIsCfx, usePendingAuthReq} from '../../hooks/useApi'
+import {useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useTxParams, useEstimateTx, useDappParams} from '../../hooks'
+import {getPageType} from '../../utils'
 import {WrapperWithLabel} from './components'
 import {
   Big,
@@ -31,8 +32,7 @@ function EditGasFee() {
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
   const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
 
-  const pendingAuthReq = usePendingAuthReq()
-  const isDapp = pendingAuthReq?.length > 0
+  const isDapp = getPageType() === 'notification'
   const tx = useDappParams()
   const txParams = useTxParams()
   const originParams = !isDapp ? {...txParams} : {...tx}
@@ -44,14 +44,18 @@ function EditGasFee() {
   }
   if (nonce) params.nonce = formatDecimalToHex(nonce)
   const estimateRst = useEstimateTx(params) || {}
-  const {gasUsed, storageCollateralized} = estimateRst
-  const {storageFeeDrip, gasFeeDrip, txFeeDrip} = estimateRst?.customData || {}
+  const {
+    gasUsed,
+    storageCollateralized,
+    storageFeeDrip,
+    gasFeeDrip,
+    txFeeDrip,
+  } = estimateRst
 
   useEffect(() => {
     setInputGasLimit(gasLimit)
     setInputGasPrice(gasPrice)
-    setInputNonce(nonce)
-  }, [gasLimit, gasPrice, nonce])
+  }, [gasLimit, gasPrice])
 
   const onChangeGasPrice = gasPrice => {
     setInputGasPrice(gasPrice)
@@ -81,7 +85,7 @@ function EditGasFee() {
 
   const onChangeNonce = nonce => {
     setInputNonce(nonce)
-    if (!inputNonce || new Big(inputNonce).gt(0)) {
+    if (!nonce || new Big(nonce).gt(0)) {
       setNonceErr('')
     } else {
       setNonceErr(t('nonceErr'))
@@ -91,14 +95,14 @@ function EditGasFee() {
   const saveGasData = () => {
     setGasPrice(inputGasPrice)
     setGasLimit(inputGasLimit)
-    setNonce(inputNonce)
+    inputNonce && setNonce(inputNonce)
     history.goBack()
   }
 
   return (
     <div
       id="editGasFeeContainer"
-      className="h-full flex flex-col bg-blue-circles bg-no-repeat bg-bg"
+      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat bg-bg"
     >
       <div className="flex-1">
         <TitleNav title={t('editGasFeeControl')} />
@@ -205,6 +209,7 @@ function EditGasFee() {
             rightContent={
               <NumberInput
                 id="nonce"
+                placeholder={nonce}
                 size="small"
                 width="w-32"
                 value={inputNonce}

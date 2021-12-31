@@ -4,8 +4,12 @@ import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
 import {PASSWORD_REG_EXP, RPC_METHODS} from '../constants'
 const globalThis = window ?? global
-const {WALLET_ZERO_ACCOUNT_GROUP, WALLET_IS_LOCKED, WALLET_GET_ACCOUNT_GROUP} =
-  RPC_METHODS
+const {
+  WALLET_GET_ACCOUNT_GROUP,
+  WALLET_METADATA_FOR_POPUP,
+  WALLET_IS_LOCKED,
+  WALLET_ZERO_ACCOUNT_GROUP,
+} = RPC_METHODS
 
 export function request(...args) {
   const [method, params] = args
@@ -59,12 +63,15 @@ export const validateAddress = (address, networkTypeIsCfx, netId) => {
 export const bn16 = x => new BN(stripHexPrefix(x), 16)
 
 export function updateAddedNewAccount(mutate, noAccountBefore, groupType) {
+  const promises = []
   if (noAccountBefore) {
-    mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
-    mutate([WALLET_IS_LOCKED], false)
+    promises.push(mutate([WALLET_METADATA_FOR_POPUP]))
+    promises.push(mutate([WALLET_IS_LOCKED]))
+    promises.push(mutate([WALLET_ZERO_ACCOUNT_GROUP]))
   }
-  mutate([WALLET_GET_ACCOUNT_GROUP])
-  mutate([WALLET_GET_ACCOUNT_GROUP, groupType])
+  promises.push(mutate([WALLET_GET_ACCOUNT_GROUP]))
+  promises.push(mutate([WALLET_GET_ACCOUNT_GROUP, groupType]))
+  return Promise.all(promises)
 }
 
 export const transformToTitleCase = str => {
@@ -94,4 +101,34 @@ export const formatStatus = status => {
       ret = 'confirmed'
   }
   return ret
+}
+
+export const flatArray = arr => {
+  return arr.reduce((pre, value) => {
+    return Array.isArray(value)
+      ? [...pre, ...flatArray(value)]
+      : [...pre, value]
+  }, [])
+}
+
+export const isKeyOf = (ev, name) => {
+  if (ev instanceof Object && name) {
+    if (name === 'enter') {
+      return (
+        ev.key === 'Enter' ||
+        ev.code === 'Enter' ||
+        ev.keyCode === '13' ||
+        ev.which === '13'
+      )
+    }
+    return false
+  }
+  return false
+}
+
+export const getPageType = () => {
+  const pageType = document
+    .querySelector("meta[name='popup-type']")
+    .getAttribute('content')
+  return pageType
 }

@@ -2,7 +2,7 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
-import {useHdAccountGroup} from '../../hooks/useApi'
+import {useHdAccountGroup, useIsZeroGroup} from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
 
 const {
@@ -10,6 +10,7 @@ const {
   NEW_SEED_PHRASE,
   IMPORT_SEED_PHRASE,
   WALLET_IMPORT_PRIVATE_KEY,
+  HARDWARE_GUARD,
 } = ROUTES
 function Tag() {
   const {t} = useTranslation()
@@ -23,9 +24,10 @@ function SelectCreateType() {
   const {t} = useTranslation()
   const history = useHistory()
   const hdGroup = useHdAccountGroup()
+  const zeroGroup = useIsZeroGroup()
 
   return (
-    <div className="bg-bg  h-full" id="selectCreateTypeContainer">
+    <div className="bg-bg h-full w-full" id="selectCreateTypeContainer">
       <TitleNav title={t('newAccount')} />
       <main className="px-3">
         <em className="not-italic text-xs text-gray-40 ml-1 mt-3 mb-2 inline-block">
@@ -75,6 +77,18 @@ function SelectCreateType() {
             history.push(WALLET_IMPORT_PRIVATE_KEY)
           }}
         />
+        {zeroGroup === false ? (
+          <CreateTypeItem
+            id="hw"
+            Icon={<img src="/images/hardware-wallet-icon.svg" alt="icon" />}
+            title={t('hardwareWallet')}
+            subTitle={t('ledgerDes')}
+            typeClass="mt-9"
+            onClick={() => {
+              history.push(HARDWARE_GUARD)
+            }}
+          />
+        ) : null}
       </main>
     </div>
   )

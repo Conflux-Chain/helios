@@ -10,6 +10,8 @@ import useGlobalStore from '../../stores'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {useHdAccountGroup} from '../../hooks/useApi'
 import {useSWRConfig} from 'swr'
+import useLoading from '../../hooks/useLoading'
+
 const {ACCOUNT_GROUP_TYPE, WALLET_VALIDATE_MNEMONIC, WALLET_IMPORT_MNEMONIC} =
   RPC_METHODS
 const {HOME} = ROUTES
@@ -23,14 +25,14 @@ function ImportSeedPhrase() {
   const [mnemonic, setMnemonic] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
-  const [creatingAccount, setCreatingAccount] = useState(false)
   const {createdPassword, setCreatedPassword} = useGlobalStore()
-
+  const {setLoading} = useLoading({showBlur: 'high'})
   const hdGroup = useHdAccountGroup()
 
   useCreatedPasswordGuard()
   useEffect(() => {
     setAccountNamePlaceholder(`Seed-${hdGroup.length + 1}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hdGroup])
 
   const onChangeName = e => {
@@ -38,60 +40,66 @@ function ImportSeedPhrase() {
   }
   const onChangeKeygen = e => {
     setMnemonic(e.target.value)
-    // TODO: replace error msg
-    setErrorMessage(e.target.value ? '' : 'Required')
+    setErrorMessage(e.target.value ? '' : t('required'))
   }
   const onCreate = () => {
-    if (!mnemonic) {
-      return setErrorMessage('Required')
+    const mnemonicParam = mnemonic.replace(/  +/g, ' ').trim()
+    if (!mnemonicParam) {
+      return setErrorMessage(t('required'))
     }
-
-    if (!creatingAccount) {
-      setCreatingAccount(true)
-      request(WALLET_VALIDATE_MNEMONIC, {
-        mnemonic,
+    setLoading(true)
+    request(WALLET_VALIDATE_MNEMONIC, {
+      mnemonic: mnemonicParam,
+    })
+      .then(result => {
+        if (result?.valid) {
+          let params = {
+            nickname: name || accountNamePlaceholder,
+            mnemonic: mnemonicParam,
+          }
+          if (createdPassword) {
+            params['password'] = createdPassword
+          }
+          return request(WALLET_IMPORT_MNEMONIC, params).then(() => {
+            updateAddedNewAccount(
+              mutate,
+              !!createdPassword,
+              ACCOUNT_GROUP_TYPE.HD,
+            )
+              .then(() => {
+                createdPassword && setCreatedPassword('')
+                setLoading(false)
+                history.push(HOME)
+              })
+              .catch(error => {
+                setLoading(false)
+                setErrorMessage(
+                  error?.message?.split?.('\n')?.[0] ?? error?.message ?? error,
+                )
+              })
+          })
+        } else {
+          setErrorMessage(t('invalidWord'))
+          setLoading(false)
+        }
       })
-        .then(result => {
-          if (result?.valid) {
-            let params = {
-              nickname: name || accountNamePlaceholder,
-              mnemonic,
-            }
-            if (createdPassword) {
-              params['password'] = createdPassword
-            }
-            return request(WALLET_IMPORT_MNEMONIC, params).then(() => {
-              setCreatingAccount(false)
-              updateAddedNewAccount(
-                mutate,
-                !!createdPassword,
-                ACCOUNT_GROUP_TYPE.HD,
-              )
-              createdPassword && setCreatedPassword('')
-              history.push(HOME)
-            })
-          }
-          // TODO: replace error msg
-          setErrorMessage('Invalid or inner error!')
-          setCreatingAccount(false)
-        })
-        .catch(error => {
-          setCreatingAccount(false)
-          if (typeof error?.data?.duplicateAccountGroupId === 'number') {
-            return setErrorMessage(t('duplicateSeedError'))
-          }
-          setErrorMessage(error?.message.split('\n')[0] ?? error)
-        })
-    }
+      .catch(error => {
+        setLoading(false)
+        setErrorMessage(
+          typeof error?.data?.duplicateAccountGroupId === 'number'
+            ? t('duplicateSeedError')
+            : error?.message?.split?.('\n')?.[0] ?? error?.message ?? error,
+        )
+      })
   }
 
   return (
-    <div className="bg-bg h-full flex flex-col" id="importSeedPhraseContainer">
+    <div
+      className="bg-bg h-full w-full flex flex-col"
+      id="importSeedPhraseContainer"
+    >
       <TitleNav title={t('seedImport')} />
-      <form
-        onSubmit={event => event.preventDefault()}
-        className="flex flex-1 px-3 flex-col justify-between"
-      >
+      <div className="flex flex-1 px-3 flex-col justify-between">
         <section>
           <CompWithLabel label={t(`seedGroupName`)}>
             <Input
@@ -127,7 +135,7 @@ function ImportSeedPhrase() {
             {t('import')}
           </Button>
         </section>
-      </form>
+      </div>
     </div>
   )
 }

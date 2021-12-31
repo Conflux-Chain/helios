@@ -46,7 +46,7 @@ module.exports = {
     '**/*.md',
   ],
   mount,
-  routes: [{match: 'routes', src: '.*', dest: '/index.html'}],
+  routes: [{match: 'routes', src: '.*', dest: '/popup.html'}],
   alias,
   plugins: [
     '@snowpack/plugin-dotenv',
@@ -70,6 +70,8 @@ module.exports = {
     packageExportLookupFields: ['exports'],
   },
   buildOptions: {
+    // this brokes sourcemap
+    // sourcemap: isProd() ? false : 'inline',
     clean: true,
     out: path.resolve(__dirname, '../packages/browser-extension/build'),
     baseUrl: 'dist',
@@ -78,11 +80,14 @@ module.exports = {
   optimize: isProd()
     ? {
         souecemap: 'inline',
-        // bundle: true, // TODO: turn this on after https://github.com/snowpackjs/snowpack/issues/3403 is resolved
+        // TODO: turn this on after https://github.com/snowpackjs/snowpack/issues/3403 is resolved
+        // this is resolved in @yqrashawn/snowpack
+        bundle: true,
+        // plugins: [stylePlugin()],
         minify: true,
         target: 'es2020',
         treeshake: true,
-        splitting: true,
+        // splitting: true,
       }
     : false,
 }

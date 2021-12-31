@@ -1,103 +1,90 @@
+import {PlusOutlined, SelectedOutlined} from '@fluent-wallet/component-icons'
+import {useDebounce} from 'react-use'
 import PropTypes from 'prop-types'
-import {isUndefined} from '@fluent-wallet/checks'
-import {useState, useRef, useEffect} from 'react'
+import {useState, useMemo} from 'react'
 import {useTranslation} from 'react-i18next'
-import {useSWRConfig} from 'swr'
-import {SelectedOutlined, PlusOutlined} from '@fluent-wallet/component-icons'
-import {SlideCard} from '../../../components'
-import {WrapIcon, SearchToken, TokenItem} from '../../../components'
-import {RPC_METHODS, DEFAULT_TOKEN_URL} from '../../../constants'
+import {SearchToken, SlideCard, TokenItem, WrapIcon} from '../../../components'
+import {DEFAULT_TOKEN_URL, RPC_METHODS} from '../../../constants'
+import {
+  useDbRefetchBalance,
+  useCurrentAddress,
+  useCurrentAddressTokens,
+  useCurrentNetworkTokens,
+  useNetworkTypeIsCfx,
+  useValidate20Token,
+} from '../../../hooks/useApi'
 import {request, validateAddress} from '../../../utils'
 
-import {
-  useNetworkTypeIsCfx,
-  useCurrentAccount,
-  useDbAddTokenList,
-  useCurrentNetwork,
-} from '../../../hooks/useApi'
+const {WALLET_WATCH_ASSET} = RPC_METHODS
 
-const {
-  WALLETDB_ADD_TOKEN_LIST,
-  WALLET_VALIDATE_20TOKEN,
-  WALLET_WATCH_ASSET,
-  WALLETDB_REFETCH_BALANCE,
-} = RPC_METHODS
-
-function AddToken({onClose, onOpen}) {
-  const {mutate} = useSWRConfig()
+function AddToken({onClose, open}) {
   const {t} = useTranslation()
   const [searchContent, setSearchContent] = useState('')
-  const [tokenList, setTokenList] = useState([])
-  const [noTokenStatus, setNoTokenStatus] = useState(false)
-  const inputValueRef = useRef()
-  const {address} = useCurrentAccount()
-  const isCfxChain = useNetworkTypeIsCfx()
-  const {netId} = useCurrentNetwork()
-  const dbData = useDbAddTokenList()
+  const [debouncedSearchContent, setDebouncedSearchContent] =
+    useState(searchContent)
+  const [mutateAddrTokenBalance] = useDbRefetchBalance()
 
-  useEffect(() => {
-    if (dbData?.added && dbData?.others && !isUndefined(netId)) {
-      if (searchContent === '') {
-        setNoTokenStatus(false)
-        return setTokenList([])
-      }
-      if (validateAddress(searchContent, isCfxChain, netId)) {
-        getOther20Token(searchContent)
-      } else {
-        const {added, others} = dbData
-        const addTokenList = added.concat(others)
-        const ret = addTokenList.filter(
-          token =>
-            token.symbol.toUpperCase().indexOf(searchContent.toUpperCase()) !==
-              -1 ||
-            token.name.toUpperCase().indexOf(searchContent.toUpperCase()) !==
-              -1,
-        )
-        setNoTokenStatus(!ret.length)
-        setTokenList([...ret])
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(dbData), searchContent, isCfxChain, netId])
+  useDebounce(
+    () => {
+      setDebouncedSearchContent(searchContent)
+    },
+    200,
+    [searchContent],
+  )
 
-  const getOther20Token = value => {
-    request(WALLET_VALIDATE_20TOKEN, {
-      tokenAddress: value,
-      userAddress: address,
-    }).then(result => {
-      if (inputValueRef.current === value) {
-        if (result?.valid) {
-          setNoTokenStatus(false)
-          return setTokenList([{...result, address: value}])
-        }
-        setNoTokenStatus(true)
-      }
-      // TODO:handle error
+  const {
+    data: {
+      eid: addressId,
+      network: {netId},
+    },
+  } = useCurrentAddress()
+
+  const {data: networkTokens, mutate: mutateNetworkTokens} =
+    useCurrentNetworkTokens({
+      fuzzy: debouncedSearchContent || null,
     })
-  }
 
-  const onChangeValue = value => {
-    setSearchContent(value)
-    inputValueRef.current = value
-  }
+  const {data: addressTokens, mutate: mutateAddressTokens} =
+    useCurrentAddressTokens()
 
-  const onAddToken = ({decimals, symbol, address, logoURI}) => {
-    const params = {
-      type: isCfxChain ? 'CRC20' : 'ERC20',
-      options: {
-        address,
-        symbol,
-        decimals,
-        image: logoURI || DEFAULT_TOKEN_URL,
-      },
+  const isCfxChain = useNetworkTypeIsCfx()
+
+  const builtinTokens = useMemo(() => {
+    if (!addressId) return
+    if (!networkTokens.length) return
+    return networkTokens.map(t => [t, addressTokens.includes(t)])
+  }, [addressId, networkTokens, addressTokens])
+
+  const {data: other20Token} = useValidate20Token(
+    debouncedSearchContent &&
+      validateAddress(debouncedSearchContent, isCfxChain, netId) &&
+      debouncedSearchContent,
+  )
+
+  const tokenList =
+    builtinTokens || (other20Token.valid && [[other20Token, false]]) || null
+
+  const onAddToken = token => {
+    let params
+    if (Number.isInteger(token)) {
+      params = {tokenId: token}
+    } else {
+      const {decimals, symbol, address, logoURI} = token
+      params = {
+        type: isCfxChain ? 'CRC20' : 'ERC20',
+        options: {
+          address,
+          symbol,
+          decimals,
+          image: logoURI || DEFAULT_TOKEN_URL,
+        },
+      }
     }
     request(WALLET_WATCH_ASSET, params).then(() => {
-      // TODO:error
-      if (address === searchContent && tokenList.length === 1) {
-        setTokenList([...tokenList.map(token => ({...token, added: true}))])
-      }
-      mutate([WALLETDB_REFETCH_BALANCE]).then(() => {
-        mutate([WALLETDB_ADD_TOKEN_LIST])
+      // TODO: error
+      mutateAddrTokenBalance().then(() => {
+        mutateNetworkTokens()
+        mutateAddressTokens()
       })
     })
   }
@@ -107,44 +94,51 @@ function AddToken({onClose, onOpen}) {
     setSearchContent('')
   }
 
-  if (!address) {
-    return null
-  }
-
   return (
     <SlideCard
-      cardTitle={t('addToken')}
+      id="add-token"
+      cardTitle={
+        <div className="ml-3 pb-1">
+          <p className="text-base text-gray-80 font-medium">{t('addToken')}</p>
+        </div>
+      }
       onClose={onCloseAddToken}
-      onOpen={onOpen}
+      open={open}
       cardContent={
-        <div className="mt-4">
-          <SearchToken value={searchContent} onChange={onChangeValue} />
-          {tokenList.length ? (
-            <div className="px-3 pt-3 mt-3 bg-gray-0 rounded">
+        // 2.75rem = parent paddingBottom + current marginTop = 1.75rem + 1rem
+        <div className="mt-4 flex flex-col flex-grow h-[calc(100%-2.75rem)]">
+          <SearchToken value={searchContent} onChange={setSearchContent} />
+          {tokenList && (
+            <div className="relative p-3 mt-3 bg-gray-0 rounded flex flex-col flex-grow">
               <p className="ml-1 mb-1 text-gray-40">{t('searchResults')}</p>
-              {tokenList.map((token, index) => (
-                <TokenItem
-                  key={index}
-                  index={index}
-                  token={{
-                    ...token,
-                  }}
-                  maxWidth={135}
-                  maxWidthStyle="max-w-[135px]"
-                  id={`tokenItem-${token.eid}`}
-                  rightIcon={
-                    <WrapIcon size="w-5 h-5" onClick={() => onAddToken(token)}>
-                      {token?.added ? (
-                        <SelectedOutlined className="w-3 h-3 text-gray-40" />
-                      ) : (
-                        <PlusOutlined className="w-3 h-3 text-primary" />
-                      )}
-                    </WrapIcon>
-                  }
-                />
-              ))}
+              <div className="flex flex-col flex-auto overflow-auto h-0 no-scroll">
+                {tokenList.map(([token, added], index) => (
+                  <TokenItem
+                    key={index}
+                    index={index}
+                    token={token}
+                    maxWidth={135}
+                    maxWidthStyle="max-w-[135px]"
+                    id={`tokenItem-${token}`}
+                    rightIcon={
+                      <WrapIcon
+                        size="w-5 h-5"
+                        onClick={() => !added && onAddToken(token)}
+                      >
+                        {added ? (
+                          <SelectedOutlined className="w-3 h-3 text-gray-40" />
+                        ) : (
+                          <PlusOutlined className="w-3 h-3 text-primary" />
+                        )}
+                      </WrapIcon>
+                    }
+                  />
+                ))}
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-6 bg-token-background rounded-xl" />
             </div>
-          ) : noTokenStatus ? (
+          )}
+          {!tokenList && (
             <div className="flex  items-center flex-col">
               <img
                 src="/images/no-available-token.svg"
@@ -154,7 +148,7 @@ function AddToken({onClose, onOpen}) {
               />
               <p className="text-sm text-gray-40">{t('noResult')}</p>
             </div>
-          ) : null}
+          )}
         </div>
       }
     />
@@ -163,7 +157,7 @@ function AddToken({onClose, onOpen}) {
 
 AddToken.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
+  open: PropTypes.bool.isRequired,
 }
 
 export default AddToken

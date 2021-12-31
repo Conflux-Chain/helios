@@ -2,14 +2,15 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
-import {useCurrentDapp, useCurrentNetwork} from '../../../hooks/useApi'
-import {DisplayBalance} from '../../../components'
+import {useCurrentDapp, useCurrentAddress} from '../../../hooks/useApi'
+import {DisplayBalance, WrapIcon} from '../../../components'
 import useGlobalStore from '../../../stores'
 import {ROUTES} from '../../../constants'
 const {EDIT_PERMISSION} = ROUTES
 
+// TODO: use network id
 const CurrentNetworkDisplay = ({currentNetwork}) => {
-  const {name, icon} = currentNetwork
+  const {name, icon} = currentNetwork || {}
 
   return (
     <div className="flex items-center">
@@ -39,7 +40,9 @@ function InfoList({
   const {t} = useTranslation()
   const history = useHistory()
   const data = useCurrentDapp()
-  const network = useCurrentNetwork()
+  const {
+    data: {network},
+  } = useCurrentAddress()
   const {customAllowance} = useGlobalStore()
   const [{app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const currentDapp = isDapp ? app : data?.app
@@ -57,15 +60,17 @@ function InfoList({
             <DisplayBalance
               id="allowance"
               balance={customAllowance || allowance}
-              maxWidth={256}
-              maxWidthStyle="max-w-[256px]"
+              maxWidth={220}
+              maxWidthStyle="max-w-[220px]"
               symbol={token?.symbol}
             />
-            <EditOutlined
-              className="w-4 h-4 ml-1 cursor-pointer"
-              id="editAllowance"
-              onClick={() => history.push(EDIT_PERMISSION)}
-            />
+            <WrapIcon className="mx-1 shadow-none bg-transparent hover:bg-primary-4 group">
+              <EditOutlined
+                className="w-4 h-4 cursor-pointer group-hover:text-primary"
+                id="editAllowance"
+                onClick={() => history.push(EDIT_PERMISSION)}
+              />
+            </WrapIcon>
           </span>
         </div>
       )}
@@ -80,11 +85,14 @@ function InfoList({
       {isDapp && (
         <div className="flex justify-between mb-4">
           <span className="text-gray-40">{t('protocol')}</span>
-          <span className="text-gray-80 flex items-center" id="currentDapp">
+          <span
+            className="text-gray-80 flex items-center max-w-[240px] text-ellipsis"
+            id="currentDapp"
+          >
             <img
               src={currentDapp?.site?.icon || '/images/default-dapp-icon.svg'}
               alt="icon"
-              className="w-4 h-4 mr-1"
+              className="w-4 h-4 mr-1 flex-shrink-0"
               id="currentDappIcon"
             />
             {currentDapp?.site?.origin}

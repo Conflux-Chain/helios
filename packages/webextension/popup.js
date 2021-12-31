@@ -1,7 +1,8 @@
 import browser from 'webextension-polyfill'
 import {isFunction} from '@fluent-wallet/checks'
 
-const POPUP_HEIGHT = 622
+// TODO, hardcode is not accurate, need to find more effective way
+const POPUP_HEIGHT = 628
 const POPUP_WIDTH = 372
 let FOCUS_LISTENER = null
 let REMOVED_LISTENER = null
@@ -59,7 +60,7 @@ const newPopup = async ({url, alwaysOnTop}) => {
 }
 
 export const show = async ({url, alwaysOnTop = false, mode = {}} = {}) => {
-  url = url || (mode.isProd ? 'popup/index.html' : 'popup.html')
+  url = url || (mode.isProd ? 'popup/notification.html' : 'notification.html')
   if (!browser?.windows?.getAll) return
   let popup = (await browser.windows.getAll()).filter(
     w => w.type === 'popup',

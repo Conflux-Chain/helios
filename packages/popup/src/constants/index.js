@@ -5,6 +5,8 @@ import {
   DAPP_ADD_NETWORK,
   DAPP_SWITCH_NETWORK,
   CONFIRM_TRANSACTION,
+  CONNECT_HARDWARE_WALLET,
+  IMPORT_HW_ACCOUNT,
 } from './route'
 import {
   WALLET_REQUEST_PERMISSIONS,
@@ -46,4 +48,27 @@ export const DAPP_REQUEST_ROUTES = {
 export const DEFAULT_TOKEN_URL =
   'https://conflux-static.oss-cn-beijing.aliyuncs.com/fluent/icons/default-token-icon.svg'
 
-export const historyPageLimit = 10
+export const HISTORY_PAGE_LIMIT = 10
+
+export const LEDGER_AUTH_STATUS = {
+  LOADING: 'loading',
+  AUTHED: 'authed',
+  UNAUTHED: 'unauthed',
+}
+export const LEDGER_OPEN_STATUS = {
+  LOADING: 'loading',
+  OPEN: 'open',
+  UNOPEN: 'unopen',
+}
+
+export const HW_TX_STATUS = {
+  WAITING: 'waiting',
+  SUCCESS: 'success',
+  REJECTED: 'rejected',
+}
+
+export const HARDWARE_ACCOUNT_PAGE_LIMIT = 5
+
+export const FULL_WINDOW_ROUTES = [CONNECT_HARDWARE_WALLET, IMPORT_HW_ACCOUNT]
+
+export const MAX_PENDING_COUNT = 9

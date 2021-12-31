@@ -1,6 +1,9 @@
 import {map, dbid, or, cat} from '@fluent-wallet/spec'
 import {txSchema} from '@fluent-wallet/cfx_sign-transaction'
 import {getTxHashFromRawTx} from '@fluent-wallet/signature'
+import {ERROR} from '@fluent-wallet/json-rpc-error'
+import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
+import {BigNumber} from '@ethersproject/bignumber'
 
 export const NAME = 'cfx_sendTransaction'
 
@@ -16,8 +19,10 @@ export const permissions = {
   external: ['popup', 'inpage'],
   methods: [
     'cfx_signTransaction',
+    'cfx_gasPrice',
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
+    'wallet_userRejectedAuthRequest',
     'wallet_handleUnfinishedCFXTx',
     'wallet_enrichConfluxTx',
   ],
@@ -28,7 +33,9 @@ export const main = async ({
   Err: {InvalidParams, Server},
   db: {findAddress, getAuthReqById, getAddrTxByHash, t},
   rpcs: {
+    wallet_userRejectedAuthRequest,
     wallet_enrichConfluxTx,
+    cfx_gasPrice,
     cfx_signTransaction,
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
@@ -56,9 +63,32 @@ export const main = async ({
     delete params[0].nonce
     try {
       // try sign tx
-      await cfx_signTransaction({errorFallThrough: true}, params)
+      await cfx_signTransaction({errorFallThrough: true}, [
+        ...params,
+        {dryRun: true},
+      ])
     } catch (err) {
-      throw InvalidParams(`Invalid transaction ${JSON.stringify(params)}`)
+      if (err?.code === ERROR.USER_REJECTED.code) throw err
+      err.message = `Error while processing tx.\nparams:\n${JSON.stringify(
+        params,
+        null,
+        2,
+      )}\nerror:\n${err.message}`
+
+      throw err
+    }
+
+    if (app.currentNetwork.name === CFX_MAINNET_NAME) {
+      try {
+        const gasPrice = await cfx_gasPrice({errorFallThrough: true}, [])
+        if (
+          BigNumber.from(gasPrice).gt(
+            BigNumber.from(params[0].gasPrice || '0x0'),
+          )
+        ) {
+          params[0].gasPrice = gasPrice
+        }
+      } catch (err) {} // eslint-disable-line no-empty
     }
 
     return await wallet_addPendingUserAuthRequest({
@@ -69,28 +99,46 @@ export const main = async ({
 
   const authReqId = params?.authReqId
   let authReq
-  if (authReqId) authReq = getAuthReqById(authReqId)
-  if (authReqId && !authReq)
-    throw InvalidParams(`Invalid authReqId ${authReqId}`)
+  if (authReqId) {
+    authReq = getAuthReqById(authReqId)
+    if (!authReq) throw InvalidParams(`Invalid authReqId ${authReqId}`)
+    if (authReq.processed)
+      throw InvalidParams(`Already processing auth req ${authReqId}`)
+    t({eid: authReqId, authReq: {processed: true}})
+  }
 
   // tx array [tx]
   const tx = params.authReqId ? params.tx : params
   let addr = findAddress({
+    // filter by app.currentNetwork and app.currentAccount
     appId: authReq?.app?.eid,
+    // filter by current network
     networkId: !authReqId && network.eid,
     value: tx[0].from,
   })
   addr = addr[0] || addr
   if (!addr) throw InvalidParams(`Invalid from address ${tx[0].from}`)
 
-  const signed = await cfx_signTransaction(
-    {network: authReqId ? authReq.app.currentNetwork : network},
-    tx.concat({
-      returnTxMeta: true,
-    }),
-  )
+  let signed
+  try {
+    signed = await cfx_signTransaction(
+      {
+        network: authReqId ? authReq.app.currentNetwork : network,
+        errorFallThrough: true,
+      },
+      tx.concat({
+        returnTxMeta: true,
+      }),
+    )
+  } catch (err) {
+    if (authReqId) await wallet_userRejectedAuthRequest({authReqId})
+    throw err
+  }
 
-  if (!signed) throw Server(`Server error while signning tx`)
+  if (!signed) {
+    if (authReqId) await wallet_userRejectedAuthRequest({authReqId})
+    throw Server(`Server error while signning tx`)
+  }
   const {raw: rawtx, txMeta} = signed
 
   const txhash = getTxHashFromRawTx(rawtx)
@@ -131,7 +179,7 @@ export const main = async ({
     )
   } catch (err) {} // eslint-disable-line no-empty
 
-  return await new Promise(resolve => {
+  return await new Promise((resolve, reject) => {
     wallet_handleUnfinishedCFXTx(
       {network: authReqId ? authReq.app.currentNetwork : network},
       {
@@ -153,6 +201,7 @@ export const main = async ({
               res: err,
             }).then(resolve)
           }
+          reject(err)
         },
       },
     )

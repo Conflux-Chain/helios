@@ -1,14 +1,18 @@
 import PropTypes from 'prop-types'
 import {RightOutlined} from '@fluent-wallet/component-icons'
-import {useCurrentNetwork} from '../../../hooks/useApi'
+import Text from '../../../components/Text'
+import {useCurrentAddress} from '../../../hooks/useApi'
 
 function CurrentNetwork({onOpenNetwork}) {
-  const currentNetwork = useCurrentNetwork()
-  const {name, icon} = currentNetwork
+  const {
+    data: {
+      network: {icon, name},
+    },
+  } = useCurrentAddress()
 
   return (
     <div
-      className="flex bg-[#f0f3ff] bg-opacity-20 rounded h-6 px-2 cursor-pointer items-center"
+      className="flex bg-[#f0f3ff] hover:bg-opacity-30 bg-opacity-20 rounded h-6 px-2 cursor-pointer items-center"
       id="openNetworkBtn"
       onClick={onOpenNetwork}
       aria-hidden="true"
@@ -18,7 +22,7 @@ function CurrentNetwork({onOpenNetwork}) {
         src={icon || '/images/default-network-icon.svg'}
         alt="logo"
       />
-      <span className="text-2xs text-white mr-1">{name}</span>
+      <Text className="text-2xs text-white mr-1" text={name} />
       <RightOutlined className="w-2 h-2 text-white" />
     </div>
   )

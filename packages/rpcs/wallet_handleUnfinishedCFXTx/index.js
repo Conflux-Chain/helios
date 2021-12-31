@@ -1,5 +1,6 @@
 import {mapp} from '@fluent-wallet/spec'
 import {stream, resolve, CloseMode} from '@thi.ng/rstream'
+import {capture as sentryCaptureError} from '@fluent-wallet/sentry'
 import {
   sideEffect,
   map,
@@ -37,10 +38,12 @@ function getExt() {
       })
 }
 
-function updateBadge(count) {
-  return getExt().then(ext =>
-    count > 0 ? ext.badge.set({text: count}) : ext.badge.clear(),
-  )
+function updateBadge() {
+  // count
+  return
+  // return getExt().then(ext =>
+  //   count > 0 ? ext.badge.set({text: count}) : ext.badge.clear(),
+  // )
 }
 
 export const schemas = {
@@ -55,7 +58,7 @@ export const permissions = {
     'cfx_getTransactionByHash',
     'cfx_getTransactionReceipt',
     'wallet_handleUnfinishedCFXTx',
-    'wallet_getBlockChainExplorerUrl',
+    'wallet_getBlockchainExplorerUrl',
     'cfx_getNextNonce',
   ],
   db: [
@@ -82,7 +85,7 @@ export const main = ({
     cfx_getTransactionByHash,
     cfx_getTransactionReceipt,
     cfx_getNextNonce,
-    wallet_getBlockChainExplorerUrl,
+    wallet_getBlockchainExplorerUrl,
     wallet_handleUnfinishedCFXTx,
   },
   db: {
@@ -206,6 +209,14 @@ export const main = ({
             const isDuplicateTx = errorType === 'duplicateTx'
             const failed = shouldDiscard && !isDuplicateTx
 
+            if (errorType === 'unknownError')
+              sentryCaptureError(err, {
+                tags: {
+                  custome_type: 'unknown sendTx error',
+                  rpc_network: network.name,
+                },
+              })
+
             defs({
               failed: failed && {errorType, err},
               isDuplicateTx,
@@ -240,7 +251,7 @@ export const main = ({
                   }),
                 ],
 
-                keepTrack: map(x => x && keepTrack), // retry in next run
+                keepTrack: map(x => x && keepTrack()), // retry in next run
               }),
             )
           },
@@ -250,7 +261,7 @@ export const main = ({
         // successfully sent
         sideEffect(() => setTxPending({hash})),
         sideEffect(() => typeof okCb === 'function' && okCb(hash)),
-        sideEffect(() => keepTrack),
+        sideEffect(keepTrack),
       )
   } else if (status === 1) {
     // ## sending
@@ -261,14 +272,15 @@ export const main = ({
       .transform(
         sideEffect(rst => {
           if (rst) return
+          // getTransactionByHash return null
           cfx_epochNumber({errorFallThrough: true}, ['latest_state'])
             .then(n => {
               if (
-                BigNumber.form(n)
-                  .sub(BigNumber.from(tx.txPayload.epochHeight))
+                BigNumber.from(n)
+                  .sub(BigNumber.from(tx.resendAt || tx.txPayload.epochHeight))
                   .gte(40)
               ) {
-                setTxUnsent({hash})
+                setTxUnsent({hash, resendAt: n})
               }
             })
             .catch(identity)
@@ -278,6 +290,7 @@ export const main = ({
       )
       .transform(
         map(rst => {
+          // no blockhash in  getTransactionByHash result
           if (!rst.blockHash) {
             keepTrack()
             return false
@@ -286,6 +299,7 @@ export const main = ({
         }),
         keepTruthy(),
         sideEffect(rst => {
+          // getTransactionByHash result has block hash
           setTxPackaged({hash, blockHash: rst.blockHash})
           const {status} = rst
           if (status === '0x1') {
@@ -326,7 +340,7 @@ export const main = ({
           if (status === '0x2') {
             setTxSkipped({hash})
             updateBadge(getUnfinishedTxCount())
-            wallet_getBlockChainExplorerUrl({transaction: [hash]}).then(
+            wallet_getBlockchainExplorerUrl({transaction: [hash]}).then(
               ({transaction: [txUrl]}) => {
                 getExt().then(ext =>
                   ext.notifications.create(txUrl, {
@@ -443,7 +457,7 @@ export const main = ({
           return false
         }),
         keepTruthy(), // filter non-null tx
-        map(() => wallet_getBlockChainExplorerUrl({transaction: [hash]})),
+        map(() => wallet_getBlockchainExplorerUrl({transaction: [hash]})),
       )
       .subscribe(resolve({fail: identity}))
       .transform(

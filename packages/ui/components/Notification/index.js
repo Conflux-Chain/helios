@@ -1,5 +1,7 @@
 import React from 'react'
-import ReactNotification from 'rc-notification'
+// !!! don't update the version, must be 0.4.4
+//https://github.com/react-component/notification/issues/148
+import Notification from 'rc-notification'
 import {
   CloseOutlined,
   CloseCircleFilled,
@@ -7,7 +9,6 @@ import {
   CheckCircleFilled,
   ExclamationCircleFilled,
 } from '@fluent-wallet/component-icons'
-const Notification = ReactNotification.default
 
 export const NotificationPlacement = [
   'topLeft',
@@ -207,8 +208,8 @@ function getRCNoticeProps(args) {
     onClose,
     onClick,
     key,
-    style: style || {},
-    className: `${className} p-6 shadow-2 rounded w-full md:w-100 mt-4 md:mb-4 md:mr-4 relative animate-move-left bg-gray-0`,
+    style,
+    className: `${className} p-6 shadow-2 rounded w-full md:w-100 mt-4 md:mb-4 md:mr-4 relative animate-move-left bg-gray-0 z-50`,
   }
 }
 

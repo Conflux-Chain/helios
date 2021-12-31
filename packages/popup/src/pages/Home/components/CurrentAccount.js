@@ -4,28 +4,71 @@ import {
   // QrcodeOutlined,
 } from '@fluent-wallet/component-icons'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {useCurrentAccount} from '../../../hooks/useApi'
-import {CopyButton, QRCodeButton} from '../../../components'
+import {useCurrentAddress} from '../../../hooks/useApi'
+import Text from '../../../components/Text'
+import {CopyButton, QRCodeButton, WrapIcon} from '../../../components'
+import classNames from 'classnames'
+
+const iconWrapper = ({children, ...props}) => {
+  return (
+    <WrapIcon {...props} className="bg-transparent hover:bg-[#3C3A5D] group">
+      {children}
+    </WrapIcon>
+  )
+}
 
 function CurrentAccount({onOpenAccount}) {
-  const {nickname, address} = useCurrentAccount()
+  const {
+    data: {
+      value: address,
+      account: {nickname},
+    },
+  } = useCurrentAddress()
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (
     <div className="flex flex-col" id="currentAccount">
       <div
-        className="flex items-center cursor-pointer"
+        className="flex items-center cursor-pointer mb-1"
         onClick={onOpenAccount}
         id="openAccountBtn"
         aria-hidden="true"
       >
-        <span className="text-xs text-gray-40 mr-2">{nickname}</span>
-        <RightOutlined className="w-3 h-3 text-white" />
+        <Text
+          className="text-xs text-white mr-2 inline-block max-w-[188px] text-ellipsis"
+          text={nickname}
+        />
+        <RightOutlined
+          className={classNames(
+            'w-3 h-3 text-white transition-all duration-100 ease-in-out',
+            {['opacity-0']: !displayAddress},
+          )}
+        />
       </div>
       <div className="flex items-center">
-        <span className="text-white font-medium mr-2">{displayAddress}</span>
-        <CopyButton text={address} className="mx-2 text-white" />
-        <QRCodeButton title={nickname} qrcodeValue={address} />
+        <Text
+          className="text-white font-medium mr-2 w-[7.5rem]"
+          text={displayAddress}
+        />
+        <CopyButton
+          text={address}
+          className={classNames(
+            'text-white transform transition-all duration-100 ease-in-out group-hover:text-primary',
+            {['opacity-0']: !displayAddress},
+          )}
+          CopyWrapper={iconWrapper}
+        />
+        <QRCodeButton
+          title={nickname}
+          qrcodeValue={address}
+          className={classNames(
+            'transition-all duration-100 ease-in-out group-hover:text-primary',
+            {
+              ['opacity-0']: !displayAddress,
+            },
+          )}
+          Wrapper={iconWrapper}
+        />
       </div>
     </div>
   )

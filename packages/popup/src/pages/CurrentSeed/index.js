@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {useSWRConfig} from 'swr'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
+import {QuestionCircleOutlined} from '@fluent-wallet/component-icons'
 import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
@@ -10,6 +11,8 @@ import {CompWithLabel, TitleNav} from '../../components'
 import {request} from '../../utils'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import {useHdAccountGroup} from '../../hooks/useApi'
+import useLoading from '../../hooks/useLoading'
+
 const {WALLET_CREATE_ACCOUNT, WALLET_ZERO_ACCOUNT_GROUP} = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -60,39 +63,47 @@ function CurrentSeed() {
   const [accountName, setAccountName] = useState('')
   const [accountNamePlaceholder, setAccountNamePlaceholder] = useState('')
   const [selectedGroupIdx, setSelectedGroupIdx] = useState(0)
-  const [creatingAccount, setCreatingAccount] = useState(false)
   const [accountCreationError, setAccountCreationError] = useState('')
+  const {setLoading} = useLoading({showBlur: 'high'})
+
   useEffect(() => {
-    setAccountNamePlaceholder(`Seed-1-${hdGroup[0]?.account?.length + 1}`)
+    const hdGroupName = hdGroup[0]?.nickname || 'Seed-1'
+    setAccountNamePlaceholder(
+      `${hdGroupName}-${hdGroup[0]?.account?.length + 1}`,
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hdGroup])
   const onClickGroup = index => {
     setSelectedGroupIdx(index)
+    const hdGroupName = hdGroup[index]?.nickname || `Seed-${index + 1}`
     setAccountNamePlaceholder(
-      `Seed-${index + 1}-${hdGroup[index].account.length + 1}`,
+      `${hdGroupName}-${hdGroup[index].account.length + 1}`,
     )
   }
   const onCreate = () => {
-    if (creatingAccount) return
-    setCreatingAccount(true)
+    setLoading(true)
     return request(WALLET_CREATE_ACCOUNT, {
       accountGroupId: hdGroup[selectedGroupIdx].eid,
       nickname: accountName || accountNamePlaceholder,
     })
       .then(() => {
-        setCreatingAccount(false)
         mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+        setLoading(false)
         history.push(HOME)
       })
       .catch(error => {
+        setLoading(false)
         // TODO: handle error message
-        setCreatingAccount(false)
         setAccountCreationError(error.message ?? error)
         console.log(accountCreationError)
       })
   }
 
   return (
-    <div className="flex flex-col h-full bg-bg" id="currentSeedContainer">
+    <div
+      className="flex flex-col h-full w-full bg-bg"
+      id="currentSeedContainer"
+    >
       <TitleNav title={t('newAccount')} />
       <main className="px-3 flex flex-1 flex-col">
         <CompWithLabel label={t('accountName')}>
@@ -106,7 +117,21 @@ function CurrentSeed() {
           />
         </CompWithLabel>
         <CompWithLabel
-          label={t('selectSeedPhrase')}
+          label={
+            <span className="flex">
+              {t('selectSeedPhrase')}
+              <QuestionCircleOutlined
+                onClick={() =>
+                  window &&
+                  window.open(
+                    'https://fluent-wallet.zendesk.com/hc/en-001/articles/4414146474011-Using-existing-Seed-Phrase',
+                  )
+                }
+                className="w-4 h-4 text-gray-40 ml-2 cursor-pointer"
+                id="selectSeedPhrase"
+              />
+            </span>
+          }
           className="flex flex-1 flex-col mb-4"
         >
           <div

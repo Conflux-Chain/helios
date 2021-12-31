@@ -28,12 +28,6 @@ module.exports = async function () {
         '../packages/browser-extension/build/**/*.mustache',
       ),
     ),
-    rm(
-      path.resolve(
-        __dirname,
-        '../packages/browser-extension/build/background/index.html',
-      ),
-    ),
     // rm(
     //   path.resolve(
     //     __dirname,

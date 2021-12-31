@@ -14,51 +14,70 @@ import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
-  useIsLocked,
+  useSingleTokenInfoWithNativeTokenSupport,
   useIsZeroGroup,
-  useCurrentNetwork,
-  useCurrentAccount,
+  useCurrentAddress,
   useNetworkTypeIsCfx,
   useAddressType,
   useValid20Token,
   usePendingAuthReq,
 } from './useApi'
 import {validateAddress} from '../utils'
+import {useTranslation} from 'react-i18next'
 
 const {HOME} = ROUTES
 
 export const useCreatedPasswordGuard = () => {
-  const createdPassword = useGlobalStore(state => state.createdPassword)
+  const {createdPassword} = useGlobalStore()
   const history = useHistory()
   const zeroGroup = useIsZeroGroup()
-  const lockedData = useIsLocked()
 
   useEffect(() => {
-    if ((zeroGroup && !createdPassword) || (!zeroGroup && lockedData)) {
+    if (zeroGroup && !createdPassword) {
       history.push(HOME)
     }
-  }, [createdPassword, history, zeroGroup, lockedData])
+  }, [createdPassword, history, zeroGroup])
 }
 
 export const useQuery = () => {
   return new URLSearchParams(useLocation().search)
 }
 
-export const useSlideAnimation = show => {
+export const useSlideAnimation = (
+  show,
+  direction = 'vertical',
+  needAnimation,
+) => {
   const [wrapperAnimateStyle, setWrapperAnimateStyle] = useState('')
-  useEffect(() => {
-    if (show) {
-      return setWrapperAnimateStyle('animate-slide-up block')
-    }
-    if (wrapperAnimateStyle && !show) {
-      setWrapperAnimateStyle('animate-slide-down')
 
-      const timer = setTimeout(() => {
+  useEffect(() => {
+    if (!needAnimation) {
+      return setWrapperAnimateStyle(show ? 'block' : '')
+    }
+    let timer = null
+    if (show) {
+      setWrapperAnimateStyle(
+        direction == 'vertical'
+          ? 'animate-slide-up block'
+          : 'animate-slide-left-in block',
+      )
+    } else if (wrapperAnimateStyle) {
+      setWrapperAnimateStyle(
+        direction == 'vertical'
+          ? 'animate-slide-down'
+          : 'animate-slide-left-out',
+      )
+      timer = setTimeout(() => {
         setWrapperAnimateStyle('')
         clearTimeout(timer)
       }, ANIMATE_DURING_TIME)
     }
-  }, [show, wrapperAnimateStyle])
+
+    return () => {
+      timer && clearTimeout(timer)
+    }
+  }, [show, wrapperAnimateStyle, direction, needAnimation])
+
   return wrapperAnimateStyle
 }
 
@@ -75,7 +94,9 @@ export const useFontSize = (
     const contentWidth = hiddenDom.offsetWidth
     if (contentWidth > maxWidth) {
       const fontSize = (maxWidth / contentWidth) * initialFontSize
-      targetDom.style.fontSize = parseInt(fontSize * 100) / 100 + 'px'
+      let intFontSize = parseInt(fontSize * 100) / 100
+      if (intFontSize < 10) intFontSize = 10
+      targetDom.style.fontSize = intFontSize + 'px'
     } else {
       targetDom.style.fontSize = `${initialFontSize}px`
     }
@@ -84,7 +105,10 @@ export const useFontSize = (
 
 export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   const {provider} = useRPCProvider()
-  const currentNetwork = useCurrentNetwork() || {type: NETWORK_TYPE.CFX}
+  const {
+    data: {network},
+  } = useCurrentAddress()
+  const currentNetwork = network || {type: NETWORK_TYPE.CFX}
   const {type} = currentNetwork
   const {from, to, value, data, nonce, gasPrice, gas, storageLimit} = tx
   const {
@@ -127,11 +151,16 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
 }
 
 export const useTxParams = () => {
-  const {toAddress, sendAmount, sendToken} = useGlobalStore()
-  const {decimals: tokenDecimals, address: tokenAddress} = sendToken
+  const {toAddress, sendAmount, sendTokenId} = useGlobalStore()
+  const {decimals: tokenDecimals, address: tokenAddress} =
+    useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const {address} = useCurrentAccount()
-  const {netId} = useCurrentNetwork()
+  const {
+    data: {
+      value: address,
+      network: {netId},
+    },
+  } = useCurrentAddress()
   let to, data
 
   const isNativeToken = !tokenAddress
@@ -160,47 +189,58 @@ export const useTxParams = () => {
 
 export const useCheckBalanceAndGas = (
   estimateRst,
-  sendToken,
+  sendTokenAddress,
   isSendToken = true,
 ) => {
-  const {address: tokenAddress} = sendToken || {}
-  const {error} = estimateRst
-  const {isBalanceEnough, tokens} = estimateRst?.customData || {}
-  const isTokenBalanceEnough = tokens?.[tokenAddress]?.isTokenBalanceEnough
-  const isNativeToken = !tokenAddress
+  const {t} = useTranslation()
+  const {error, isBalanceEnough, tokens} = estimateRst
+  const isNativeToken = !sendTokenAddress
+  const isTokenBalanceEnough = tokens?.[sendTokenAddress]?.isTokenBalanceEnough
   return useMemo(() => {
     if (error?.message) {
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
-        return 'transfer amount exceeds allowance'
+        return t('transferAmountExceedsAllowance')
       } else if (
         error?.message?.indexOf('transfer amount exceeds balance') > -1
       ) {
-        return 'balance is not enough'
+        return t('balanceIsNotEnough')
       } else {
-        return 'contract error'
+        return t(
+          'contractError' + error?.message?.split?.('\n')?.[0] ??
+            error?.message ??
+            error,
+        )
       }
     } else {
       if (isNativeToken && isBalanceEnough !== undefined) {
         if (!isBalanceEnough) {
-          return 'balance is not enough'
+          return t('balanceIsNotEnough')
         } else {
           return ''
         }
       } else if (!isNativeToken && isTokenBalanceEnough !== undefined) {
         if (isSendToken && !isTokenBalanceEnough) {
-          return 'balance is not enough'
+          return t('balanceIsNotEnough')
         } else if (!isBalanceEnough && isBalanceEnough !== undefined) {
-          return 'gas fee is not enough'
+          return t('gasFeeIsNotEnough')
         } else {
           return ''
         }
       }
     }
-  }, [isNativeToken, isSendToken, isBalanceEnough, error, isTokenBalanceEnough])
+  }, [
+    isNativeToken,
+    isSendToken,
+    isBalanceEnough,
+    error,
+    isTokenBalanceEnough,
+    t,
+  ])
 }
 
-export const useDappParams = () => {
-  const pendingAuthReq = usePendingAuthReq()
+export const useDappParams = customPendingAuthReq => {
+  let pendingAuthReq = usePendingAuthReq()
+  pendingAuthReq = customPendingAuthReq || pendingAuthReq
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   return req?.params[0] || {}
 }
@@ -208,10 +248,15 @@ export const useDappParams = () => {
 export const useDecodeData = ({to, data} = {}) => {
   const [decodeData, setDecodeData] = useState({})
   const type = useAddressType(to)
-  const {netId} = useCurrentNetwork()
-  const isContract = type === 'contract'
-  const crc20Token = useValid20Token(isContract ? to : '')
-  const token = {...crc20Token, address: to}
+  const {
+    data: {
+      network: {netId},
+    },
+  } = useCurrentAddress()
+
+  const isContract = type === 'contract' || type === 'builtin'
+  const isOutContract = type === 'contract'
+  const crc20Token = useValid20Token(isOutContract ? to : '')
 
   useEffect(() => {
     if (data && isContract) {
@@ -223,7 +268,7 @@ export const useDecodeData = ({to, data} = {}) => {
     }
   }, [data, isContract, to, netId])
 
-  return {isContract, token, decodeData}
+  return {isContract, token: crc20Token, decodeData}
 }
 
 export const useDecodeDisplay = ({
@@ -234,32 +279,40 @@ export const useDecodeDisplay = ({
 }) => {
   let displayToken = {},
     displayValue = '0x0',
-    displayToAddress
-  const {address} = useCurrentAccount()
-  const {toAddress, sendToken, sendAmount} = useGlobalStore()
-  const {to, data, value} = tx
+    displayToAddress,
+    displayFromAddress
+  const {
+    data: {value: address},
+  } = useCurrentAddress()
+  const {toAddress, sendTokenId, sendAmount} = useGlobalStore()
+  const {from, to, data, value} = tx
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
+  const isSendNativeToken = (!isContract && !!to) || !data || data === '0x'
   const isSendToken =
     !isDapp ||
     (isDapp &&
       decodeData?.name === 'transferFrom' &&
       decodeData?.args?.[0] === address) ||
-    (isDapp && !isContract)
+    (isDapp && isSendNativeToken)
 
+  displayToken = useSingleTokenInfoWithNativeTokenSupport(
+    isDapp ? null : sendTokenId,
+  )
   if (!isDapp) {
-    displayToken = sendToken
+    displayFromAddress = address
     displayToAddress = toAddress
     displayValue = sendAmount
   } else {
-    if (!isContract || (isContract && !data)) {
+    if (isSendNativeToken) {
       displayToken = nativeToken
+      displayFromAddress = from
       displayToAddress = to
       displayValue = value
-    }
-    if (data && isContract && decodeData) {
+    } else {
       if (token?.symbol) displayToken = token
       if (isSendToken) {
+        displayFromAddress = decodeData?.args?.[0]
         displayToAddress = decodeData?.args?.[1]
         displayValue = convertDecimal(
           decodeData?.args[2].toString(10),
@@ -267,14 +320,15 @@ export const useDecodeDisplay = ({
           token?.decimals,
         )
       } else if (isApproveToken) {
+        displayFromAddress = from
         displayToAddress = decodeData?.args?.[0]
         displayValue = convertDecimal(
           decodeData?.args[1].toString(10),
           'divide',
           token?.decimals,
         )
-        // setApproveToken(token)
       } else {
+        displayFromAddress = from
         displayToAddress = to
       }
     }
@@ -282,28 +336,30 @@ export const useDecodeDisplay = ({
   return {
     isApproveToken,
     isSendToken,
+    displayFromAddress,
     displayToAddress,
     displayValue,
     displayToken,
   }
 }
 
-export const useViewData = ({data, to} = {}) => {
+export const useViewData = ({data, to} = {}, isApproveToken) => {
   const {decodeData, token} = useDecodeData({data, to})
   const {customAllowance} = useGlobalStore()
   const allowance =
     convertValueToData(customAllowance, token?.decimals) || '0x0'
-  const spender = decodeData?.args?.[0]
-    ? decode(decodeData?.args?.[0]).hexAddress
-    : ''
+  const spender =
+    isApproveToken && decodeData?.args?.[0]
+      ? decode(decodeData?.args?.[0]).hexAddress
+      : ''
   const viewData = useMemo(() => {
-    if (customAllowance) {
+    if (customAllowance && isApproveToken) {
       return spender
         ? iface.encodeFunctionData('approve', [spender, allowance])
         : data
     } else {
       return data
     }
-  }, [customAllowance, data, allowance, spender])
+  }, [customAllowance, data, allowance, spender, isApproveToken])
   return viewData
 }

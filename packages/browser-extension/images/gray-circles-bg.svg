@@ -1,22 +1,22 @@
 <svg width="340" height="96" viewBox="0 0 340 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-<mask id="mask0" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="340" height="96">
-<path d="M0 12C0 5.37258 5.37258 0 12 0H328C334.627 0 340 5.37258 340 12V96H0V12Z" fill="white"/>
+<mask id="mask0_6041_11218" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="340" height="96">
+<path d="M0 0H340V96H0V0Z" fill="white"/>
 </mask>
-<g mask="url(#mask0)">
-<rect width="340" height="96" fill="url(#paint0_linear)"/>
-<circle cx="323.5" cy="3.5" r="78.5" stroke="url(#paint1_linear)" stroke-width="30"/>
-<circle cx="9.5" cy="-4.5" r="61" stroke="url(#paint2_linear)" stroke-opacity="0.6" stroke-width="25"/>
+<g mask="url(#mask0_6041_11218)">
+<rect width="340" height="96" fill="url(#paint0_linear_6041_11218)"/>
+<circle cx="323.5" cy="3.5" r="78.5" stroke="url(#paint1_linear_6041_11218)" stroke-width="30"/>
+<circle cx="9.5" cy="-4.5" r="61" stroke="url(#paint2_linear_6041_11218)" stroke-opacity="0.6" stroke-width="25"/>
 </g>
 <defs>
-<linearGradient id="paint0_linear" x1="170" y1="19.5" x2="170" y2="84" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint0_linear_6041_11218" x1="170" y1="19.5" x2="170" y2="84" gradientUnits="userSpaceOnUse">
 <stop stop-color="#F4F5F7"/>
 <stop offset="1" stop-color="#F4F5F7" stop-opacity="0"/>
 </linearGradient>
-<linearGradient id="paint1_linear" x1="319.237" y1="-57.7056" x2="322.867" y2="97.0149" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint1_linear_6041_11218" x1="319.237" y1="-57.7056" x2="322.867" y2="97.0149" gradientUnits="userSpaceOnUse">
 <stop stop-color="#D9DBE2"/>
 <stop offset="1" stop-color="#EDEFF2" stop-opacity="0.07"/>
 </linearGradient>
-<linearGradient id="paint2_linear" x1="5.46646" y1="25.0793" x2="9.5" y2="69" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint2_linear_6041_11218" x1="5.46646" y1="25.0793" x2="9.5" y2="69" gradientUnits="userSpaceOnUse">
 <stop stop-color="#EAECEF"/>
 <stop offset="1" stop-color="#EAECEF" stop-opacity="0"/>
 </linearGradient>

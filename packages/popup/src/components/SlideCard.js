@@ -6,51 +6,75 @@ import {useSlideAnimation} from '../hooks'
 
 function SlideCard({
   onClose,
-  onOpen = false,
+  open = false,
+  maskClosable = true,
+  showClose = true,
+  needAnimation = true,
   cardTitle,
   cardContent,
-  cardDescription,
   cardFooter = null,
+  id = '',
+  containerClassName = '',
+  cardClassName = '',
+  width = 'w-93',
+  height = 'h-125',
+  backgroundColor = 'bg-bg',
+  direction = 'vertical',
 }) {
-  const animateStyle = useSlideAnimation(onOpen)
+  const animateStyle = useSlideAnimation(open, direction, needAnimation)
   const ref = useRef(null)
 
   useClickAway(ref, e => {
-    onClose && onClose(e)
+    maskClosable && onClose && onClose(e)
   })
 
   if (!animateStyle) {
     return null
   }
   return (
-    <div id="slideCardContainer">
+    <div id={id} className={containerClassName}>
       <div
-        className={`z-20 bg-bg rounded-t-xl px-3 pt-4 pb-7 absolute w-93 bottom-0 overflow-y-auto no-scroll ${animateStyle} h-125 bg-gray-circles bg-no-repeat bg-contain`}
+        className={`z-20 rounded-t-xl px-3 pt-4 pb-7 absolute bottom-0 overflow-y-auto no-scroll bg-gray-circles bg-no-repeat bg-contain ${animateStyle} ${cardClassName} ${width} ${height} ${backgroundColor}`}
         ref={ref}
       >
-        <div className="ml-3 pb-1">
-          <p className="text-base text-gray-80 font-medium">{cardTitle}</p>
-          {cardDescription}
-        </div>
-        <CloseOutlined
-          onClick={onClose}
-          className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
-        />
+        {cardTitle}
         {cardContent}
         {cardFooter}
+        {showClose ? (
+          <CloseOutlined
+            onClick={onClose}
+            className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
+          />
+        ) : null}
       </div>
-      <div className="absolute inset-0 z-10" />
+      <div
+        className={`absolute inset-0 z-10 bg-black ${
+          open && needAnimation
+            ? 'animate-mask-fade-in opacity-60'
+            : !open && needAnimation
+            ? 'animate-mask-fade-out opacity-0'
+            : 'opacity-60'
+        }`}
+      />
     </div>
   )
 }
 
 SlideCard.propTypes = {
+  showClose: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
-  cardTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-  cardDescription: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  cardContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node])
-    .isRequired,
-  cardFooter: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  open: PropTypes.bool.isRequired,
+  cardTitle: PropTypes.node,
+  cardContent: PropTypes.node,
+  cardFooter: PropTypes.node,
+  id: PropTypes.string,
+  containerClassName: PropTypes.string,
+  cardClassName: PropTypes.string,
+  width: PropTypes.string,
+  height: PropTypes.string,
+  backgroundColor: PropTypes.string,
+  direction: PropTypes.string,
+  maskClosable: PropTypes.bool,
+  needAnimation: PropTypes.bool,
 }
 export default SlideCard

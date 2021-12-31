@@ -2,15 +2,20 @@ import {useTranslation} from 'react-i18next'
 import {useState, useRef, useEffect} from 'react'
 import {TitleNav} from '../../components'
 import HistoryItem from './components/HistoryItem'
-import {useTxList} from '../../hooks/useApi'
-import {historyPageLimit} from '../../constants'
+import {useTxList, useBlockchainExplorerUrl} from '../../hooks/useApi'
+import {HISTORY_PAGE_LIMIT} from '../../constants'
 function History() {
   const {t} = useTranslation()
   const historyRef = useRef(null)
   const [txList, setTxList] = useState([])
-  const [limit, setLimit] = useState(historyPageLimit)
+  const [limit, setLimit] = useState(HISTORY_PAGE_LIMIT)
   const [total, setTotal] = useState(0)
   const historyListData = useTxList({limit})
+  const {transaction: transactionUrls} = useBlockchainExplorerUrl(
+    historyListData?.data
+      ? {transaction: historyListData?.data.map(d => d.hash)}
+      : null,
+  )
 
   // TODO:loading
   const onScroll = () => {
@@ -20,7 +25,7 @@ function History() {
       txList.length < total &&
       limit < total
     ) {
-      setLimit(limit + historyPageLimit)
+      setLimit(limit + HISTORY_PAGE_LIMIT)
     }
   }
   useEffect(() => {
@@ -36,7 +41,7 @@ function History() {
   return (
     <div
       id="historyContainer"
-      className="bg-bg h-full overflow-auto"
+      className="bg-bg h-full w-full overflow-auto relative"
       onScroll={onScroll}
       ref={historyRef}
     >
@@ -44,7 +49,10 @@ function History() {
       <main>
         {txList.length ? (
           txList.map(
-            ({status, created, txExtra, txPayload, app, token, hash, eid}) => (
+            (
+              {status, created, txExtra, txPayload, app, token, eid, hash},
+              index,
+            ) => (
               <HistoryItem
                 key={eid}
                 status={status}
@@ -54,6 +62,7 @@ function History() {
                 app={app}
                 token={token}
                 hash={hash}
+                transactionUrl={transactionUrls?.[index]}
               />
             ),
           )

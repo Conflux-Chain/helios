@@ -1,10 +1,10 @@
-import {useState} from 'react'
+import {useState, useRef, useLayoutEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {PasswordInput} from '../../../components'
 import useGlobalStore from '../../../stores'
 import Button from '@fluent-wallet/component-button'
-import {validatePasswordReg} from '../../../utils'
+import {validatePasswordReg, isKeyOf} from '../../../utils'
 import {ROUTES} from '../../../constants'
 
 const {SELECT_CREATE_TYPE} = ROUTES
@@ -17,41 +17,56 @@ function SetPasswordForm() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [confirmErrorMessage, setConfirmErrorMessage] = useState('')
+  const inputRef = useRef(null)
+  const confirmInputRef = useRef(null)
 
-  // TODO: Replace err msg
+  useLayoutEffect(() => {
+    inputRef.current.focus()
+  }, [])
+
   const validatePassword = value => {
     if (validatePasswordReg(value)) {
       setConfirmErrorMessage(
-        value !== confirmPassword ? '输入的密码不一致' : '',
+        value !== confirmPassword ? t('invalidConfirmPassword') : '',
       )
       return setErrorMessage('')
+    } else {
+      setConfirmErrorMessage('')
+      setErrorMessage(t('passwordRulesWarning'))
     }
-    setErrorMessage('something wrong')
   }
-  // TODO: Replace err msg
   const validateConfirmPassword = value => {
-    if (password === value) {
-      return setConfirmErrorMessage('')
+    if (validatePasswordReg(password)) {
+      if (password === value) {
+        return setConfirmErrorMessage('')
+      }
+      setConfirmErrorMessage(t('invalidConfirmPassword'))
     }
-    setConfirmErrorMessage('输入的密码不一致')
   }
 
   const onCreate = () => {
+    validatePassword(password)
+    validateConfirmPassword(confirmPassword)
     if (password && confirmPassword) {
       setCreatedPassword(confirmPassword)
       history.push(SELECT_CREATE_TYPE)
     }
   }
 
-  const onSubmit = event => {
-    event.preventDefault()
-    validatePassword(password)
-    validatePassword(confirmPassword)
+  const onKeyDown = e => {
+    if (isKeyOf(e, 'enter') && !errorMessage) {
+      confirmInputRef.current.focus()
+    }
+  }
+
+  const onConfirmInputKeyDown = e => {
+    if (isKeyOf(e, 'enter')) {
+      onCreate()
+    }
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
+    <div
       id="setPasswordFormContainer"
       className="bg-white rounded px-4 pt-8  h-full box-border mb-4 flex flex-col justify-between"
     >
@@ -63,14 +78,20 @@ function SetPasswordForm() {
           errorMessage={errorMessage}
           value={password}
           id="password"
+          onKeyDown={onKeyDown}
+          errorClassName="h-6"
+          ref={inputRef}
         />
-        {errorMessage ? null : <div className="m-0 h-6" />}
         <PasswordInput
           validateInputValue={validateConfirmPassword}
           setInputValue={setConfirmPassword}
-          errorMessage={confirmErrorMessage}
+          errorMessage={
+            confirmErrorMessage && confirmPassword ? confirmErrorMessage : ''
+          }
           value={confirmPassword}
           id="confirmPassword"
+          onKeyDown={onConfirmInputKeyDown}
+          ref={confirmInputRef}
         />
       </section>
 
@@ -87,7 +108,7 @@ function SetPasswordForm() {
           {t('create')}
         </Button>
       </section>
-    </form>
+    </div>
   )
 }
 

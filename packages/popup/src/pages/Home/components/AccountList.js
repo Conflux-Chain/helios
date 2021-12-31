@@ -1,34 +1,48 @@
 import PropTypes from 'prop-types'
-import {useSWRConfig} from 'swr'
+
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
-import {CurrentAccountNetworkLabel} from './'
+import Message from '@fluent-wallet/component-message'
+import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {request} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard, DisplayBalance, Avatar} from '../../../components'
-import {useDbAccountListAssets} from '../../../hooks/useApi'
+import {useDbAccountListAssets, useCurrentAddress} from '../../../hooks/useApi'
 
 const {SELECT_CREATE_TYPE} = ROUTES
-const {WALLET_GET_CURRENT_ACCOUNT, WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
+const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function AccountItem({
   nickname,
-  account,
+  account, // TODO: use accountId
   authorizedAccountIdIconObj,
-  closeAction,
+  onClose,
   tokeName = '',
   groupType = '',
   decimals,
 }) {
-  const {mutate} = useSWRConfig()
+  const {t} = useTranslation()
+  const {
+    data: {
+      account: {eid: currentAccountId},
+    },
+    mutate,
+  } = useCurrentAddress()
   const onChangeAccount = accountId => {
-    request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(() => {
-      closeAction && closeAction()
-      mutate([WALLET_GET_CURRENT_ACCOUNT])
-      // TODO: deal with error condition
-    })
+    onClose && onClose()
+    if (currentAccountId !== accountId) {
+      request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(() => {
+        mutate()
+        Message.warning({
+          content: t('addressHasBeenChanged'),
+          top: '110px',
+          duration: 1,
+        })
+        // TODO: deal with error condition
+      })
+    }
   }
 
   return (
@@ -41,9 +55,15 @@ function AccountItem({
           aria-hidden="true"
           onClick={() => onChangeAccount(eid)}
           key={index}
-          className="flex p-3 rounded hover:bg-primary-4 cursor-pointer"
+          className={`flex p-3 rounded hover:bg-primary-4 ${
+            currentAccountId === eid ? 'cursor-default' : 'cursor-pointer'
+          }`}
         >
-          <Avatar className="w-5 h-5 mr-2" diameter={20} accountId={eid} />
+          <Avatar
+            className="w-5 h-5 mr-2"
+            diameter={20}
+            accountIdentity={eid}
+          />
           <div className="flex-1">
             <p className="text-xs text-gray-40 ">{nickname}</p>
             <div className="flex w-full">
@@ -56,15 +76,20 @@ function AccountItem({
               <pre className="text-sm text-gray-80"> {tokeName}</pre>
             </div>
           </div>
-          {authorizedAccountIdIconObj[eid] ? (
-            <div className="w-6 h-6 border-gray-20 border border-solid rounded-full mt-1.5 flex justify-center items-center">
-              <img
-                className="w-4 h-4"
-                src={authorizedAccountIdIconObj[eid]}
-                alt="favicon"
-              />
-            </div>
-          ) : null}
+          <div className="inline-flex justify-center items-center">
+            {authorizedAccountIdIconObj[eid] ? (
+              <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
+                <img
+                  className="w-4 h-4"
+                  src={authorizedAccountIdIconObj[eid]}
+                  alt="favicon"
+                />
+              </div>
+            ) : null}
+            {currentAccountId === eid && (
+              <CheckCircleFilled className="w-4 h-4 text-success" />
+            )}
+          </div>
         </div>
       ))}
     </div>
@@ -75,13 +100,13 @@ AccountItem.propTypes = {
   nickname: PropTypes.string,
   account: PropTypes.array,
   authorizedAccountIdIconObj: PropTypes.object.isRequired,
-  closeAction: PropTypes.func,
+  onClose: PropTypes.func,
   tokeName: PropTypes.string,
   groupType: PropTypes.string,
   decimals: PropTypes.number,
 }
 
-function AccountList({onClose, onOpen}) {
+function AccountList({onClose, open, accountsAnimate = true}) {
   const {t} = useTranslation()
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()
@@ -94,10 +119,17 @@ function AccountList({onClose, onOpen}) {
 
   return accountGroups && currentNetwork ? (
     <SlideCard
-      cardTitle={t('myAccounts')}
+      id="account-list"
+      cardTitle={
+        <div className="ml-3 pb-1">
+          <p className="text-base text-gray-80 font-medium">
+            {t('myAccounts')}
+          </p>
+        </div>
+      }
       onClose={onClose}
-      onOpen={onOpen}
-      cardDescription={<CurrentAccountNetworkLabel />}
+      open={open}
+      needAnimation={accountsAnimate}
       cardContent={
         <div>
           {Object.values(accountGroups || {}).map(
@@ -106,7 +138,7 @@ function AccountList({onClose, onOpen}) {
                 key={index}
                 account={Object.values(account)}
                 nickname={nickname}
-                closeAction={onClose}
+                onClose={onClose}
                 authorizedAccountIdIconObj={authorizedAccountIdIconObj}
                 tokeName={ticker?.symbol}
                 groupType={vault?.type}
@@ -120,7 +152,7 @@ function AccountList({onClose, onOpen}) {
         <Button
           id="addAccountBtn"
           color="transparent"
-          className="w-full border-dashed border-gray-40 mt-3 text-gray-80"
+          className="w-full border-dashed border-gray-40 mt-3 text-gray-80 hover:border-primary hover:text-primary"
           onClick={onAddAccount}
         >
           {t('addAccount')}
@@ -132,7 +164,8 @@ function AccountList({onClose, onOpen}) {
 
 AccountList.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onOpen: PropTypes.bool,
+  open: PropTypes.bool.isRequired,
+  accountsAnimate: PropTypes.bool.isRequired,
 }
 
 export default AccountList

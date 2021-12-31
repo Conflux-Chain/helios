@@ -1,4 +1,6 @@
+import {updateUserId, captureMessage} from '@fluent-wallet/sentry'
 import {
+  stringp,
   or,
   map,
   mnemonic,
@@ -9,6 +11,8 @@ import {
   truep,
   maybe,
   nickname,
+  oneOrMore,
+  mapp,
 } from '@fluent-wallet/spec'
 import {encrypt, decrypt} from 'browser-passworder'
 import {compL} from '@fluent-wallet/compose'
@@ -26,6 +30,7 @@ export const NAME = 'wallet_addVault'
 const baseInputSchema = [
   map,
   {closed: true},
+  ['device', {optional: true}, stringp],
   ['password', {optional: true}, password],
   ['nickname', {optional: true}, nickname],
 ]
@@ -53,9 +58,26 @@ const addressSchema = [
   ...baseInputSchema,
   ['address', [or, ethHexAddress, base32UserAddress]],
 ]
+const hwSchema = [
+  ...baseInputSchema,
+  ['accountGroupData', mapp],
+  ['cfxOnly', {optional: true}, truep],
+  [
+    'accounts',
+    [
+      oneOrMore,
+      [
+        map,
+        {closed: true},
+        ['address', [or, base32UserAddress, ethHexAddress]],
+        ['nickname', stringp],
+      ],
+    ],
+  ],
+]
 
 export const schemas = {
-  input: [or, menomicSchema, privateKeySchema, addressSchema],
+  input: [or, menomicSchema, privateKeySchema, addressSchema, hwSchema],
 }
 
 export const permissions = {
@@ -69,6 +91,7 @@ export const permissions = {
     'wallet_setCurrentAccount',
   ],
   db: [
+    'getAddress',
     'findAccount',
     'newAddressTx',
     'getGroupFirstAccountId',
@@ -98,6 +121,7 @@ const DefaultGroupNamePrefix = {
   hd: 'Seed-',
   pub: 'Follow-',
   pk: 'Account-',
+  hw: 'Hardware Wallet-',
 }
 
 export async function newAccounts(arg) {
@@ -107,7 +131,7 @@ export async function newAccounts(arg) {
     groupId,
     groupName,
     rpcs: {wallet_discoverAccounts},
-    params: {waitTillFinish},
+    params: {waitTillFinish, accounts},
     vault,
     db: {getNetwork, t, newAddressTx, findAccount},
   } = arg
@@ -156,34 +180,73 @@ export async function newAccounts(arg) {
 
     if (vault.cfxOnly && type !== 'cfx') return
 
-    // vault.type is 'pub'
+    if (vault.type === 'pub') {
+      // vault.type is 'pub'
 
-    const addrTx = newAddressTx({
-      eid: -1,
-      hex: vault.ddata,
-      network: eid,
-      value:
-        type === 'cfx'
-          ? encode(toAccountAddress(vault.ddata), netId)
-          : vault.ddata,
-    })
-    t([
-      addrTx,
-      {
-        eid: -2,
-        account: {
-          index: 0,
-          nickname: groupName,
-          address: addrTx.eid,
-          hidden: false,
+      const addrTx = newAddressTx({
+        eid: -1,
+        hex: vault.ddata,
+        network: eid,
+        value:
+          type === 'cfx'
+            ? encode(toAccountAddress(vault.ddata), netId)
+            : vault.ddata,
+      })
+      t([
+        addrTx,
+        {
+          eid: -2,
+          account: {
+            index: 0,
+            nickname: groupName,
+            address: addrTx.eid,
+            hidden: false,
+          },
         },
-      },
-      {
-        eid: groupId,
-        accountGroup: {account: -2},
-      },
-    ])
-    firstAccountCreatedChan.write(true)
+        {
+          eid: groupId,
+          accountGroup: {account: -2},
+        },
+      ])
+      firstAccountCreatedChan.write(true)
+      return
+    }
+
+    if (vault.type === 'hw') {
+      if (!vault.cfxOnly && type === 'cfx') return
+      accounts.forEach(({address, nickname}, idx) => {
+        const [account] = findAccount({groupId, index: idx})
+        const hex = type === 'cfx' ? decode(address).hexAddress : address
+        const value =
+          type === 'cfx' ? encode(decode(address).hexAddress, netId) : address
+
+        const addrTx = newAddressTx({
+          eid: -1,
+          value,
+          hex,
+          network: eid,
+        })
+
+        t([
+          addrTx,
+          {
+            eid: account ?? -2,
+            account: {
+              index: idx,
+              nickname,
+              address: addrTx.eid,
+              hidden: false,
+            },
+          },
+          {
+            eid: groupId,
+            accountGroup: {account: account ?? -2},
+          },
+        ])
+        idx === 0 && firstAccountCreatedChan.write(true)
+      })
+      return
+    }
   })
 }
 
@@ -235,6 +298,7 @@ const processAddress = address => {
 export const main = async arg => {
   const {
     db: {
+      getAddress,
       createVault,
       getVault,
       findGroup,
@@ -244,7 +308,9 @@ export const main = async arg => {
     },
     rpcs: {wallet_validatePassword, wallet_deleteAccountGroup, wallet_unlock},
     params: {
+      device = 'FluentWebExt',
       password: optionalPassword,
+      accountGroupData,
       mnemonic,
       privateKey,
       address,
@@ -268,8 +334,8 @@ export const main = async arg => {
     throw InvalidParams('Invalid password')
 
   // create vault to be added
-  const vault = {cfxOnly: false}
-  vault.data = mnemonic || privateKey || address
+  const vault = {cfxOnly: false, device}
+  vault.data = mnemonic || privateKey || address || accountGroupData
   if (privateKey) {
     vault.type = 'pk'
     vault.data = stripHexPrefix(privateKey)
@@ -281,6 +347,10 @@ export const main = async arg => {
     vault.type = 'pub'
     vault.data = validateResult.address
     vault.cfxOnly = validateResult.cfxOnly
+  } else if (accountGroupData) {
+    vault.type = 'hw'
+    vault.data = JSON.stringify(accountGroupData)
+    vault.cfxOnly = cfxOnly
   }
 
   const vaults = getVault({type: vault.type}) || []
@@ -348,5 +418,9 @@ export const main = async arg => {
   ]
   if (arg.params.waitTillFinish) promises.push(allAccountCreatedChan.read())
 
-  return await Promise.all(promises).then(() => groupId)
+  return await Promise.all(promises).then(() => {
+    updateUserId(getAddress()?.[0]?.hex)
+    if (isFirstGroup) captureMessage('user_created_first_account_group')
+    return groupId
+  })
 }

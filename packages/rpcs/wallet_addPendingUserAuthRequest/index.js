@@ -53,12 +53,11 @@ export const main = async ({
     mode: MODE,
   })
   if (MODE.isProd) popup.onFocusChanged(w.id, popup.remove)
-  popup.onRemoved(
-    w?.id,
-    () =>
-      getAuthReqById(authReqId) &&
-      wallet_userRejectedAuthRequest({errorFallThrough: true}, {authReqId}),
-  )
+  popup.onRemoved(w?.id, () => {
+    const authReq = getAuthReqById(authReqId)
+    if (authReq && !authReq.processed)
+      wallet_userRejectedAuthRequest({errorFallThrough: true}, {authReqId})
+  })
   const rst = await c.read()
   if (rst instanceof Error) throw rst
   return rst

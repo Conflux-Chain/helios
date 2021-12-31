@@ -1,25 +1,32 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
+import {useRPC} from '@fluent-wallet/use-rpc'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {DownOutlined} from '@fluent-wallet/component-icons'
+import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
+import Text from '../../../components/Text'
+import {useCurrentAddress, useAddressType} from '../../../hooks/useApi'
 import {
-  useCurrentNativeToken,
-  useCurrentAccount,
-  useCurrentNetwork,
-  useBalance,
-} from '../../../hooks/useApi'
-import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
+  DisplayBalance,
+  ProgressIcon,
+  CopyButton,
+  WrapIcon,
+} from '../../../components'
+import {RPC_METHODS} from '../../../constants'
+const {QUERY_ADDRESS} = RPC_METHODS
 
 const AddressDetail = ({
   fromAddress,
   toAddress,
   currentAccountName,
   toAddressLabel,
+  isCreateContract,
+  nativeBalance,
+  decimals,
+  symbol,
 }) => {
-  const {eid: networkId} = useCurrentNetwork()
-  const nativeToken = useCurrentNativeToken()
-  const balanceMap = useBalance(fromAddress, networkId)
-  const balance = balanceMap?.[fromAddress]?.['0x0']
+  const {t} = useTranslation()
+  const type = useAddressType(toAddress)
+  const isContract = type === 'contract' || type === 'builtin'
 
   return (
     <div className="flex items-start w-full" id="addressDetailContainer">
@@ -35,27 +42,54 @@ const AddressDetail = ({
         />
       </div>
       <div className="ml-3 flex flex-col flex-1">
-        <span className="text-xs text-gray-40" id="currentAccountName">
-          {currentAccountName}
-        </span>
         <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2">
-          <span className="text-gray-80" id="fromAddress">
-            {fromAddress && shortenAddress(fromAddress)}
-          </span>
-          <DisplayBalance
-            balance={balance}
-            maxWidth={120}
-            maxWidthStyle="max-w-[120px]"
-            className="text-xs !text-gray-60"
-            initialFontSize={12}
-            decimals={nativeToken?.decimals}
-            id="fromAddressCfxBalance"
-          />
+          <div className="flex flex-col">
+            <Text
+              className="text-xs text-gray-40"
+              id="currentAccountName"
+              text={currentAccountName}
+            />
+            <Text
+              className="text-gray-80"
+              id="fromAddress"
+              text={fromAddress ? shortenAddress(fromAddress) : ''}
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-gray-80">{t('balance')}</span>
+            <DisplayBalance
+              balance={nativeBalance}
+              maxWidth={120}
+              maxWidthStyle="max-w-[120px]"
+              className="text-xs !text-gray-60 !font-normal"
+              initialFontSize={12}
+              decimals={decimals}
+              symbol={symbol}
+              id="fromAddressCfxBalance"
+            />
+          </div>
         </div>
         <span className="text-xs text-gray-40">{toAddressLabel}</span>
         <span className="text-gray-80 flex items-center" id="toAddress">
+          {isContract && <FileOutlined className="w-4 h-4 mr-1 text-primary" />}
           {toAddress && shortenAddress(toAddress)}
-          <CopyButton text={toAddress} className="ml-2  text-gray-60" />
+          {isCreateContract && t('createContract')}
+          {toAddress && (
+            <CopyButton
+              text={toAddress}
+              className="text-gray-60 group-hover:text-primary"
+              CopyWrapper={({children, ...props}) => {
+                return (
+                  <WrapIcon
+                    {...props}
+                    className="mx-1 shadow-none bg-transparent hover:bg-primary-4 group"
+                  >
+                    {children}
+                  </WrapIcon>
+                )
+              }}
+            />
+          )}
         </span>
       </div>
     </div>
@@ -67,10 +101,45 @@ AddressDetail.propTypes = {
   toAddress: PropTypes.string,
   currentAccountName: PropTypes.string,
   toAddressLabel: PropTypes.string,
+  isCreateContract: PropTypes.bool,
+  nativeBalance: PropTypes.string,
+  decimals: PropTypes.number,
+  symbol: PropTypes.string,
+}
+
+const useQueryAddressInAddressCard = address => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {data} = useRPC(
+    address && networkId
+      ? [QUERY_ADDRESS, 'useQueryAddressInAddressCard', address, networkId]
+      : null,
+    {
+      value: address,
+      networkId,
+      g: {
+        eid: 1,
+        _account: {nickname: 1, eid: 1},
+        network: {eid: 1, ticker: 1},
+        nativeBalance: 1,
+      },
+    },
+    {
+      fallbackData: {
+        account: {},
+        network: {ticker: {}},
+      },
+    },
+  )
+  return data
 }
 
 function AddressCard({
   token,
+  fromAddress,
   toAddress,
   value,
   isSendToken,
@@ -78,8 +147,13 @@ function AddressCard({
   isDapp,
 }) {
   const {t} = useTranslation()
-  const {address: userAddress, nickname: currentAccountName} =
-    useCurrentAccount()
+  const {
+    account: {nickname},
+    nativeBalance,
+    network: {
+      ticker: {decimals, symbol},
+    },
+  } = useQueryAddressInAddressCard(fromAddress)
 
   return (
     <div
@@ -121,7 +195,7 @@ function AddressCard({
             {token?.symbol}
           </span>
           <img
-            src={token?.iconUrl || '/images/default-token-icon.svg'}
+            src={token?.logoURI || '/images/default-token-icon.svg'}
             alt="icon"
             className="w-4 h-4"
             id="sendTokenIcon"
@@ -129,12 +203,16 @@ function AddressCard({
         </div>
       )}
       <AddressDetail
-        fromAddress={userAddress}
+        fromAddress={fromAddress}
         toAddress={toAddress}
-        currentAccountName={currentAccountName}
+        currentAccountName={nickname}
+        nativeBalance={nativeBalance}
+        decimals={decimals}
+        symbol={symbol}
         toAddressLabel={t(
           isSendToken ? 'toAddress' : isApproveToken ? 'approveTo' : 'contract',
         )}
+        isCreateContract={!isSendToken && !isApproveToken && !toAddress}
       />
     </div>
   )
@@ -143,6 +221,7 @@ function AddressCard({
 AddressCard.propTypes = {
   token: PropTypes.object,
   value: PropTypes.string,
+  fromAddress: PropTypes.string,
   toAddress: PropTypes.string,
   isSendToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,

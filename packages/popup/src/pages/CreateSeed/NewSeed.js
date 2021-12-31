@@ -21,10 +21,11 @@ function NewSeed() {
   const hdGroup = useHdAccountGroup()
   useEffect(() => {
     setGroupNamePlaceholder(`Seed-${hdGroup.length + 1}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hdGroup])
 
   return (
-    <div className="flex flex-col h-full bg-bg" id="newSeedContainer">
+    <div className="flex flex-col h-full w-full bg-bg" id="newSeedContainer">
       <TitleNav title={t('newAccount')} />
       <main className="px-3 flex flex-1 flex-col justify-between">
         <div>

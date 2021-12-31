@@ -1,6 +1,6 @@
 // # rpc engine
 import {stream} from '@thi.ng/rstream'
-import {partial} from '@fluent-wallet/compose'
+import {partial, identity} from '@fluent-wallet/compose'
 import {chan} from '@fluent-wallet/csp'
 import {rpcErrorHandlerFactory} from './src/error.js'
 import * as perms from './src/permissions.js'
@@ -62,7 +62,11 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
     closeIn: false,
     closeOut: false,
     cache: false,
-    error: rpcErrorHandlerFactory({isProd, debugLog: _debugLog}),
+    error: rpcErrorHandlerFactory({
+      isProd,
+      debugLog: _debugLog,
+      sentryCapture: options?.sentryCapture || identity,
+    }),
   })
 
   const sendNewRpcRequest = partial(request, s)
