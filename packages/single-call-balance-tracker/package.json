@@ -1,0 +1,13 @@
+{
+  "name": "@fluent-wallet/single-call-balance-tracker",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.0.1",
+  "version": "0.0.2",
+  "dependencies": {
+    "@ethersproject/abi": "5.5.0",
+    "@ethersproject/bytes": "5.5.0",
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address",
+    "@fluent-wallet/compose": "workspace:packages/compose"
+  }
+}

@@ -1,0 +1,1 @@
+# @fluent-wallet/contract-abis

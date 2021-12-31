@@ -1,5 +1,13 @@
+### yarn v2 ###
+.yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
 ### Custom ###
-/build/
+build
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,vscode,emacs,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,vscode,emacs,node
@@ -149,11 +157,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-.env.test
-.env*.local
-
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
@@ -224,3 +227,31 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,vscode,emacs,node
+/packages/popup/index.html
+/packages/browser-extension/manifest.json
+/packages/browser-extension/popup.html
+/packages/popup/public/index.html
+.env.*.local
+.env.local
+
+/packages/db/**/*.js
+/packages/spec/**/*.js
+!/packages/spec/index.js
+!/packages/db/src/db.test.js
+!/packages/db/index.js
+/.shadow-cljs/
+/stories
+/storybook-static
+/packages/browser-extension/content-script.js
+/packages/browser-extension/reload.js
+/packages/browser-extension/inpage.js
+/.lsp/
+
+.vscode/*
+/releases/
+cljs-runtime
+/packages/content-script/index.js
+/websites/doc/docs/standard-rpc.mdx
+/websites/doc/docs/provider-rpc.mdx
+/websites/doc/docs/inner-rpc.mdx
+/packages/background/src/local-dev.js

@@ -1,0 +1,68 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+# Workflow syntax for GitHub Actions
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+# Context and expression syntax for GitHub Actions
+# https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
+
+name: Publish Pre-release Version
+
+on:
+  pull_request:
+    branches:
+      - dev
+    types:
+      - closed
+
+jobs:
+  pre-release:
+    if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [16.5]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # to trigger next gh action
+          # https://github.community/t/push-from-action-even-with-pat-does-not-trigger-action/17622/6
+          persist-credentials: false
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: |
+            ~/.m2/repository
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ./.shadow-cljs
+          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-and-maven-
+      - run: yarn install --immutable
+      - uses: release-drafter/release-drafter@v5
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commitish: ${{ github.sha }}
+          config-name: release-drafter-pre.yml
+          publish: true
+          prerelease: true
+      - name: build and release
+        env:
+          FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
+        run: yarn prod:release
+
+      - uses: shogo82148/actions-upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: releases/*

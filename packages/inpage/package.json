@@ -1,0 +1,15 @@
+{
+  "name": "helios-inpage",
+  "type": "module",
+  "version": "2.0.0",
+  "main": "index.js",
+  "author": "yqrashawn <namy.19@gmail.com>",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
+    "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api",
+    "@thi.ng/rstream": "6.0.21",
+    "webextension-polyfill": "0.8.0"
+  }
+}

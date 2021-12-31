@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "version": "0.0.8",
+  "name": "@fluent-wallet/component-input",
+  "type": "module",
+  "main": "index.js",
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
+  }
+}

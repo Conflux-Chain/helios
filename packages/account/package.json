@@ -1,0 +1,15 @@
+{
+  "name": "@fluent-wallet/account",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@ethersproject/address": "5.5.0",
+    "@ethersproject/transactions": "5.5.0",
+    "@ethersproject/wallet": "5.5.0",
+    "@fluent-wallet/compose": "workspace:packages/compose",
+    "@fluent-wallet/consts": "workspace:packages/consts",
+    "@fluent-wallet/utils": "workspace:packages/utils",
+    "elliptic": "6.5.4"
+  }
+}

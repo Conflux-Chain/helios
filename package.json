@@ -1,64 +1,147 @@
 {
-  "name": "protal",
-  "version": "1.0.0",
-  "main": "index.js",
-  "author": "yqrashawn <namy.19@gmail.com>",
-  "license": "MIT",
+  "name": "helios",
+  "private": true,
+  "workspaces": [
+    "websites/*",
+    "packages/doc-ui/*",
+    "packages/ui/components/*",
+    "packages/ui/*",
+    "packages/rpcs/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=15"
+  },
+  "resolutions": {
+    "tslib": "^2.3.1",
+    "ethereumjs-vm": "4.2.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "babel-plugin-dynamic-import-node": "2.3.3",
+    "esinstall/rollup-plugin-polyfill-node": "0.7.0"
+  },
   "scripts": {
-    "watch:js": "chokidar 'src/**/*.js' './spack.config.js' 'config/spack.utils.js' --initial -c 'yarn run build:dev'",
-    "dev": "concurrently --names watch:js,watch:non-js --prefix-colors blue,blue 'yarn run watch:js' 'yarn run watch:non-js'",
-    "watch:non-js": "yarn run cp:non-js --watch",
-    "cp:non-js": "node config/copy-none-js-file.js",
-    "build:dev": "cross-env NODE_ENV=development spack",
-    "build:prod": "cross-env NODE_ENV=production spack --mode production",
-    "prod": "concurrently --names build:prod,cp:non-js --prefix-colors blue,blue 'yarn run build:prod' 'yarn run cp:non-js'",
-    "lint": "eslint  --ignore-path .gitignore src config",
-    "lint:fix": "yarn run lint --fix"
+    "postinstall": "husky install && yarn run prod:shadow",
+    "compile:inpage": "swc --config-file scripts/inpage.swcrc.json -o packages/browser-extension/build/inpage/dist/index.js --source-maps inline packages/browser-extension/build/inpage/dist/index.js",
+    "dev": "cross-env NODE_ENV=development node scripts/dev.js",
+    "doc": "yarn workspace doc start",
+    "story": "yarn start-storybook",
+    "prod-all": "node scripts/prod.js",
+    "prod:shadow": "shadow-cljs release spec db",
+    "prod": "cross-env NODE_ENV=production run-s prod-all compile:inpage",
+    "prod:zip": "node ./scripts/create-zip.cjs",
+    "prod:release": "yarn prod && yarn prod:zip",
+    "lint": "eslint  --ignore-path .gitignore packages",
+    "lint:fix": "yarn run lint --fix",
+    "test:unit": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --no-cache --testPathIgnorePatterns '.*\\.integration\\.test\\.jsx?'",
+    "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test node ./scripts/integration-test.js --no-cache --testMatch '**/*.integration.test.[jt]s?(x)'",
+    "contract:compile": "bash ./scripts/solc.sh",
+    "contract:watch": "watchexec --restart --on-busy-update queue -w ./contracts/ --debounce 500 yarn run contract:compile"
   },
   "devDependencies": {
-    "@swc/cli": "^0.1.27",
-    "@swc/core": "^1.2.40",
-    "browserslist": "^4.16.0",
-    "chokidar": "^3.4.3",
-    "chokidar-cli": "^2.1.0",
-    "concurrently": "^5.3.0",
+    "@babel/core": "7.16.0",
+    "@babel/eslint-parser": "7.16.3",
+    "@babel/plugin-syntax-import-meta": "7.10.4",
+    "@mdx-js/react": "1.6.22",
+    "@open-wc/webpack-import-meta-loader": "0.4.7",
+    "@snowpack/plugin-dotenv": "^2.2.0",
+    "@snowpack/plugin-postcss": "1.4.3",
+    "@snowpack/plugin-react-refresh": "^2.5.0",
+    "@snowpack/plugin-webpack": "3.0.0",
+    "@storybook/addon-a11y": "6.3.12",
+    "@storybook/addon-cssresources": "6.2.9",
+    "@storybook/addon-docs": "6.3.12",
+    "@storybook/addon-essentials": "6.3.12",
+    "@storybook/addon-links": "6.3.12",
+    "@storybook/addon-postcss": "2.0.0",
+    "@storybook/addon-viewport": "6.3.12",
+    "@storybook/react": "6.3.12",
+    "@swc/cli": "0.1.51",
+    "@swc/core": "1.2.111",
+    "@swc/helpers": "0.2.14",
+    "@testing-library/jest-dom": "5.15.0",
+    "@testing-library/react": "12.1.2",
+    "@types/js-string-escape": "^1",
+    "autoprefixer": "^10.4.0",
+    "babel-loader": "8.2.3",
+    "browserslist": "^4.18.1",
+    "concurrently": "^6.4.0",
     "cross-env": "^7.0.3",
-    "eslint": "^7.16.0",
-    "eslint-config-prettier": "^7.1.0",
-    "eslint-config-standard": "^16.0.2",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.3.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "fs-extra": "^9.0.1",
-    "husky": ">=4",
-    "lint-staged": ">=10",
-    "prettier": "^2.2.1"
+    "cssnano": "5.0.11",
+    "dot-env": "^0.0.1",
+    "dotenv-expand": "^5.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jest": "^25.2.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-testing-library": "^4.12.4",
+    "fs-extra": "^10.0.0",
+    "highlight.js": "9.18.5",
+    "husky": "^7.0.4",
+    "identity-obj-proxy": "3.0.0",
+    "jest": "^27.3.1",
+    "jest-webextension-mock": "^3.7.19",
+    "js-string-escape": "1.0.1",
+    "lint-staged": "^12.1.2",
+    "mustache": "^4.2.0",
+    "nock": "13.2.0",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.3.11",
+    "prettier": "^2.4.1",
+    "prettier-plugin-solidity": "1.0.0-beta.18",
+    "ramda": "^0.27.1",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-highlight.js": "1.0.7",
+    "regenerator-runtime": "^0.13.9",
+    "rimraf": "^3.0.2",
+    "shadow-cljs": "^2.16.6",
+    "snowpack": "3.8.6",
+    "storybook": "6.3.12",
+    "storybook-addon-outline": "1.4.1",
+    "storybook-addon-pseudo-states": "1.0.0",
+    "stylelint": "^14.1.0",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-standard": "^24.0.0",
+    "tailwindcss": "^2.2.19",
+    "wait-for-expect": "3.0.2",
+    "zip-a-folder": "1.1.0"
   },
+  "nohoist": [
+    "*/@docusaurus/*",
+    "**/html-minifier-terser"
+  ],
   "browserslist": [
     "last 2 Chrome versions",
-    "last 2 Firefox versions"
+    "last 2 Firefox versions",
+    "last 2 Edge versions"
   ],
-  "eslintConfig": {
-    "extends": [
-      "standard",
-      "prettier"
-    ],
-    "plugins": [
-      "prettier"
-    ],
-    "globals": {
-      "browser": "readonly"
-    }
-  },
-  "dependencies": {
-    "ramda": "^0.27.1",
-    "webextension-polyfill": "^0.7.0"
-  },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": [
+        "lint-staged"
+      ]
     }
+  },
+  "prettier": {
+    "semi": false,
+    "bracketSpacing": false,
+    "proseWrap": "never",
+    "singleQuote": true,
+    "trailingComma": "all",
+    "arrowParens": "avoid",
+    "overrides": [
+      {
+        "files": ".yarnrc.yml",
+        "options": {
+          "singleQuote": false
+        }
+      }
+    ]
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -67,6 +150,36 @@
     ],
     "*.{json,md}": [
       "prettier --write"
+    ],
+    "*.css": [
+      "prettier --write",
+      "stylelint"
     ]
-  }
+  },
+  "stylelint": {
+    "extends": [
+      "stylelint-config-standard",
+      "stylelint-config-prettier"
+    ],
+    "rules": {
+      "at-rule-no-unknown": [
+        true,
+        {
+          "ignoreAtRules": [
+            "tailwind",
+            "apply",
+            "variants",
+            "responsive",
+            "screen"
+          ]
+        }
+      ],
+      "declaration-block-trailing-semicolon": null,
+      "no-descending-specificity": null
+    }
+  },
+  "dependencies": {
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
+  },
+  "packageManager": "yarn@3.1.0"
 }

@@ -1,0 +1,10 @@
+{
+  "name": "@fluent-wallet/csp",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.4",
+  "dependencies": {
+    "@fluent-wallet/checks": "workspace:packages/checks",
+    "@thi.ng/csp": "^1.1.74"
+  }
+}

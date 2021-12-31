@@ -1,0 +1,10 @@
+{
+  "minify": true,
+  "module": {
+    "type": "umd",
+    "strict": true,
+    "strictMode": true,
+    "lazy": false,
+    "noInterop": true
+  }
+}

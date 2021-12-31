@@ -1,0 +1,11 @@
+{
+  "name": "@fluent-wallet/safe-event-emiter",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.5",
+  "dependencies": {
+    "@fluent-wallet/checks": "workspace:packages/checks",
+    "@fluent-wallet/transducers": "workspace:packages/transducers",
+    "@thi.ng/rstream": "6.0.21"
+  }
+}

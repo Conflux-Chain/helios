@@ -1,0 +1,15 @@
+coverage:
+  status:
+    patch: false
+    project:
+      default:
+        # basic
+        target: auto
+        threshold: 1%
+        base: auto
+        flags:
+          - unit
+
+ignore:
+  - 'packages/db'
+  - 'packages/spec'

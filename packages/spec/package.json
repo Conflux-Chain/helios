@@ -1,0 +1,51 @@
+{
+  "name": "@fluent-wallet/spec",
+  "type": "module",
+  "version": "0.0.27",
+  "main": "index.js",
+  "scripts": {
+    "build": "shadow-cljs release app"
+  },
+  "module": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    },
+    "./gen": {
+      "import": "./src/gen.js"
+    },
+    "./doc": {
+      "import": "./src/doc.js"
+    },
+    "./src/gen": {
+      "import": "./src/gen.js"
+    },
+    "./src/doc": {
+      "import": "./src/doc.js"
+    },
+    "./src/gen.js": {
+      "import": "./src/gen.js"
+    },
+    "./src/doc.js": {
+      "import": "./src/doc.js"
+    }
+  },
+  "dependencies": {
+    "@fluent-wallet/account": "workspace:packages/account",
+    "@fluent-wallet/associative": "workspace:packages/associative",
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address",
+    "@fluent-wallet/consts": "workspace:packages/consts",
+    "@fluent-wallet/hdkey": "workspace:packages/hdkey",
+    "bip39": "^3.0.4"
+  },
+  "keywords": [
+    "spec",
+    "schema",
+    "blockchain",
+    "crypto"
+  ],
+  "files": [
+    "src/*.js",
+    "README.md"
+  ]
+}

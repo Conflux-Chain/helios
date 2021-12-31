@@ -1,0 +1,26 @@
+{
+  "name": "@fluent-wallet/rpc-engine",
+  "type": "module",
+  "main": "index.js",
+  "version": "1.0.0",
+  "dependencies": {
+    "@fluent-wallet/associative": "workspace:packages/associative",
+    "@fluent-wallet/cache-rpc": "workspace:packages/cache-rpc",
+    "@fluent-wallet/checks": "workspace:packages/checks",
+    "@fluent-wallet/compose": "workspace:packages/compose",
+    "@fluent-wallet/consts": "workspace:packages/consts",
+    "@fluent-wallet/csp": "workspace:packages/csp",
+    "@fluent-wallet/errors": "workspace:packages/errors",
+    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc",
+    "@fluent-wallet/json-rpc": "workspace:packages/json-rpc",
+    "@fluent-wallet/json-rpc-error": "workspace:packages/json-rpc-error",
+    "@fluent-wallet/random-id": "workspace:packages/random-id",
+    "@fluent-wallet/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref",
+    "@fluent-wallet/spec": "workspace:packages/spec",
+    "@fluent-wallet/transducers": "workspace:packages/transducers",
+    "@thi.ng/atom": "4.1.42",
+    "@thi.ng/rstream": "6.0.21",
+    "@thi.ng/rstream-graph": "3.2.81",
+    "ramda": "^0.27.1"
+  }
+}

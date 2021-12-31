@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -e
+set -u
+set -o pipefail
+
+if ! gh pr create \
+   --base dev \
+   --head __release-pkg \
+   --title 'chore(release-pkg): release packages' \
+   --body ''
+then
+  printf '%s\n' 'Pull Request already exists'
+fi

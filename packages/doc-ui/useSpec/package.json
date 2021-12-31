@@ -1,0 +1,13 @@
+{
+  "name": "@fluent-wallet/doc-use-spec",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.8",
+  "peerDependencies": {
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
+  },
+  "dependencies": {
+    "zustand": "^3.6.5"
+  }
+}

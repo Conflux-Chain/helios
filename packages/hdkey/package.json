@@ -1,0 +1,11 @@
+{
+  "name": "@fluent-wallet/hdkey",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.1.0",
+  "dependencies": {
+    "@ethersproject/hdnode": "5.5.0",
+    "@ethersproject/random": "5.5.0",
+    "@fluent-wallet/utils": "workspace:packages/utils"
+  }
+}

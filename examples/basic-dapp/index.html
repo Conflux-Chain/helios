@@ -1,0 +1,93 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Fluent Demo - Basic Dapp</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">
+            You are using an <strong>outdated</strong> browser. Please
+            <a href="http://browsehappy.com/">upgrade your browser</a> to improve
+            your experience.
+            </p>
+        <![endif]-->
+        <section>
+            <h4>Install</h4>
+            <p>Fluent Wallet is <span id='installed'>not installed</span></p>
+        </section>
+        <div id="installed">
+            <section>
+                <h4>Initialize</h4>
+                <p>
+                    Fluent Wallet is <span id='initialized'>initializing</span>
+                    <br/>
+                    chainId: <span id='chainId'>n/a</span>
+                    <br/>
+                    networkId: <span id='networkId'>n/a</span>
+                </p>
+            </section>
+            <section>
+                <h4>Connect</h4>
+                <button id='connect' disabled=true>Connect Wallet</button>
+                <p>Address: <span id='address'>n/a</span></p>
+            </section>
+            <section>
+                <h4>send native token</h4>
+                <button id='send_native_token' disabled=true>send native token to myself</button>
+                <p>Result: <span id='send_native_token_result'>n/a</span></p>
+            </section>
+            <section>
+              <h4>approve (cUSDT)</h4>
+              <div>
+                <span>spender address </span><input type="text" id="approve-account">
+              </div>
+              <button id='approve' disabled=true>approve 100 cUSDT limit</button>
+            </section>
+            <section>
+              <h4>transfer from (cUSDT)</h4>
+              <div>
+                <span>from  </span><input type="text" id="from-account">
+              </div>
+              <br/>
+              <button id='transfer_from' disabled=true>transfer 10 cUSDT</button>
+              <div>
+                <span>to  </span><input type="text" id="to-account">
+              </div>
+            </section>
+            <section>
+                <h4>personal sign</h4>
+                <button id='personal_sign' disabled=true>personal_sign</button>
+                <p>Result: <span id='personal_sign_result'>n/a</span></p>
+            </section>
+            <section>
+                <h4>typed sign</h4>
+                <button id='typed_sign' disabled=true>typed_sign</button>
+                <p>Result: <span id='typed_sign_result'>n/a</span></p>
+            </section>
+            <section>
+                <h4>add token</h4>
+                <button id='add_token' disabled=true>add token</button>
+            </section>
+            <section>
+                <h4>add network</h4>
+                <button id='add_network' disabled=true>add network</button>
+            </section>
+            <section>
+                <h4>switch network</h4>
+                <button id='switch_network' disabled=true>switch network</button>
+            </section>
+        </div>
+
+
+        <script type="module">
+         import './index.js'
+        </script>
+    </body>
+</html>

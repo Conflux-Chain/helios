@@ -1,0 +1,6 @@
+{
+  "name": "@fluent-wallet/wallet-permission",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.1"
+}

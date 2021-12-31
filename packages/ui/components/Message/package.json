@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "version": "0.0.2",
+  "name": "@fluent-wallet/component-message",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@fluent-wallet/component-icons": "workspace:packages/ui/icons",
+    "@fluent-wallet/component-loading": "workspace:packages/ui/components/Loading",
+    "rc-notification": "4.5.7"
+  },
+  "peerDependencies": {
+    "react": "^17",
+    "react-dom": "^17"
+  }
+}

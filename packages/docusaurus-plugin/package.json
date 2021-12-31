@@ -1,0 +1,6 @@
+{
+  "name": "@fluent-wallet/docusaurus-plugin",
+  "main": "index.js",
+  "version": "0.0.5",
+  "private": true
+}
