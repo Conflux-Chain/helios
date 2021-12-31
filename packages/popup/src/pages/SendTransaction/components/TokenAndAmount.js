@@ -41,16 +41,17 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
         {t('tokenList')}
       </span>
       <TokenList tokenList={homeTokenList} onSelectToken={onSelectToken} />
+      <div className="absolute bottom-6 left-0 right-0 h-6 bg-token-background rounded-xl" />
     </div>
   )
   return (
     <Modal
-      className="!bg-gray-circles bg-no-repeat w-80 h-[552px]"
+      className="!bg-gray-circles bg-no-repeat w-80 h-[552px] overflow-y-hidden"
       open={open}
       title={t('chooseToken')}
       content={content}
       onClose={onCloseTokenList}
-      contentClassName="flex-1 flex"
+      contentClassName="flex-1 flex overflow-y-auto"
       id="tokenListModal"
     />
   )
