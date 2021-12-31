@@ -9,6 +9,7 @@ function SlideCard({
   open = false,
   maskClosable = true,
   showClose = true,
+  needAnimation = true,
   cardTitle,
   cardContent,
   cardFooter = null,
@@ -20,7 +21,7 @@ function SlideCard({
   backgroundColor = 'bg-bg',
   direction = 'vertical',
 }) {
-  const animateStyle = useSlideAnimation(open, direction)
+  const animateStyle = useSlideAnimation(open, direction, needAnimation)
   const ref = useRef(null)
 
   useClickAway(ref, e => {
@@ -48,9 +49,11 @@ function SlideCard({
       </div>
       <div
         className={`absolute inset-0 z-10 bg-black ${
-          open
-            ? `animate-mask-fade-in opacity-60`
-            : `animate-mask-fade-out opacity-0`
+          open && needAnimation
+            ? 'animate-mask-fade-in opacity-60'
+            : !open && needAnimation
+            ? 'animate-mask-fade-out opacity-0'
+            : 'opacity-60'
         }`}
       />
     </div>
@@ -72,5 +75,6 @@ SlideCard.propTypes = {
   backgroundColor: PropTypes.string,
   direction: PropTypes.string,
   maskClosable: PropTypes.bool,
+  needAnimation: PropTypes.bool,
 }
 export default SlideCard

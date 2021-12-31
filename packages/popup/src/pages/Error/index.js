@@ -48,7 +48,7 @@ function Error() {
     const timer = setTimeout(() => {
       zendeskTimer && clearTimeout(zendeskTimer)
       setZendeskTimer(null)
-      window.open('')
+      window.open('https://fluent-wallet.zendesk.com/hc/en-001/requests/new')
     }, 900)
     setZendeskTimer(timer)
   }

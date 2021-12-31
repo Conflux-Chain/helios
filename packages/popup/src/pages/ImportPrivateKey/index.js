@@ -72,7 +72,9 @@ function ImportPrivateKey() {
               })
               .catch(error => {
                 setLoading(false)
-                setErrorMessage(error?.message?.split?.('\n')?.[0] ?? error)
+                setErrorMessage(
+                  error?.message?.split?.('\n')?.[0] ?? error?.message ?? error,
+                )
               })
           })
         } else {
@@ -85,7 +87,9 @@ function ImportPrivateKey() {
         if (typeof error?.data?.duplicateAccountGroupId === 'number') {
           return setErrorMessage(t('duplicatePkError'))
         }
-        setErrorMessage(error?.message?.split?.('\n')?.[0] ?? error)
+        setErrorMessage(
+          error?.message?.split?.('\n')?.[0] ?? error?.message ?? error,
+        )
       })
   }
 
