@@ -2,8 +2,8 @@
  * @fileOverview snowpack prod
  * @name snowpackjs.js
  */
-require('./before_all.js')
 require('./setup-dotenv.js')
+require('./before_all.js')
 const {resolve} = require('path')
 const buildContentScript = require('./build-content-script.js')
 // const buildInpage = require('./build-inpage.js')

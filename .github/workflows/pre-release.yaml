@@ -47,7 +47,23 @@ jobs:
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
+
       - run: yarn install --immutable
+
+      - name: Dotenv Action
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.7
+
+      - name: Get PR Release
+        uses: actions/github-script@v4
+        id: pre-release-number
+        env:
+          NEXT_VERSION: ${{steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION}}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return await require('.github/scripts/getPreReleaseNumber.js')({github, context, core});
+
       - uses: release-drafter/release-drafter@v5
         id: create_release
         env:
@@ -55,13 +71,16 @@ jobs:
         with:
           commitish: ${{ github.sha }}
           config-name: release-drafter-pre.yml
-          publish: false
+          version: ${{steps.pre-release-number.outputs.result}}
+          tag: "v${{steps.pre-release-number.outputs.result}}"
+          prerelease: true
+          publish: true
+
       - name: build and release
         env:
-          FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
           SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
           SNOWPACK_PUBLIC_FLUENT_ENV: "debug-release"
-          SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
+          SNOWPACK_PUBLIC_FLUENT_VERSION: ${{steps.pre-release-number.outputs.result}}
         run: yarn prod:release
 
       - uses: shogo82148/actions-upload-release-asset@v1
