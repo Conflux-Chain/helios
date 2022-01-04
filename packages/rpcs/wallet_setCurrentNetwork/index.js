@@ -10,25 +10,25 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   methods: [],
-  db: ['setCurrentNetwork', 'getNetworkById'],
+  db: ['setCurrentNetwork', 'getNetworkById', 'getSite'],
 }
 
 export const main = ({
   Err: {InvalidParams},
-  db: {setCurrentNetwork, getNetworkById},
+  db: {setCurrentNetwork, getNetworkById, getSite},
   params: networks,
 }) => {
-  const [network] = networks
-  if (!getNetworkById(network))
-    throw InvalidParams(`Invalid networkId ${network}`)
+  const [networkId] = networks
+  const network = getNetworkById(networkId)
+  if (!network) throw InvalidParams(`Invalid networkId ${networkId}`)
 
-  const apps = setCurrentNetwork(network)
-  apps.forEach(
-    ({currentNetwork, site: {post}}) =>
+  setCurrentNetwork(networkId)
+  getSite().forEach(
+    ({post}) =>
       post &&
       post({
         event: 'chainChanged',
-        params: currentNetwork.chainId,
+        params: network.chainId,
       }),
   )
   Sentry.setTag('current_network', network.name)

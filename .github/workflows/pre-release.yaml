@@ -55,8 +55,7 @@ jobs:
         with:
           commitish: ${{ github.sha }}
           config-name: release-drafter-pre.yml
-          publish: true
-          prerelease: true
+          publish: false
       - name: build and release
         env:
           FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
