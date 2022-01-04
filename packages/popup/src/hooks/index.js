@@ -212,16 +212,16 @@ export const useCheckBalanceAndGas = (
         )
       }
     } else {
-      if (isNativeToken && isBalanceEnough !== undefined) {
-        if (!isBalanceEnough) {
+      if (isNativeToken) {
+        if (isBalanceEnough === false) {
           return t('balanceIsNotEnough')
         } else {
           return ''
         }
-      } else if (!isNativeToken && isTokenBalanceEnough !== undefined) {
-        if (isSendToken && !isTokenBalanceEnough) {
+      } else {
+        if (isSendToken && isTokenBalanceEnough === false) {
           return t('balanceIsNotEnough')
-        } else if (!isBalanceEnough && isBalanceEnough !== undefined) {
+        } else if (isBalanceEnough === false) {
           return t('gasFeeIsNotEnough')
         } else {
           return ''

@@ -4,7 +4,11 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import Text from '../../../components/Text'
-import {useCurrentAddress, useAddressType} from '../../../hooks/useApi'
+import {
+  useCurrentAddress,
+  useAddressType,
+  useDbRefetchBalance,
+} from '../../../hooks/useApi'
 import {
   DisplayBalance,
   ProgressIcon,
@@ -113,6 +117,7 @@ const useQueryAddressInAddressCard = address => {
       network: {eid: networkId},
     },
   } = useCurrentAddress()
+  useDbRefetchBalance()
   const {data} = useRPC(
     address && networkId
       ? [QUERY_ADDRESS, 'useQueryAddressInAddressCard', address, networkId]
