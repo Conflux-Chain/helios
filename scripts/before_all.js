@@ -6,13 +6,16 @@ const extDir = path.resolve(__dirname, '../packages/browser-extension')
 
 ensureDirSync(path.resolve(extDir, 'build'))
 
+const version = process.env.SNOWPACK_PUBLIC_FLUENT_VERSION
+
 mustacheRender(
   path.resolve(extDir, 'manifest.json.mustache'),
   isDev()
     ? path.resolve(extDir, 'manifest.json')
     : path.resolve(extDir, 'build/manifest.json'),
   {
-    version: '1.1.0',
+    version: version.replace('-rc', ''),
+    versionName: version,
     contentSecurityPolicy: isDev()
       ? `
 "content_security_policy": "

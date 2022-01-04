@@ -47,7 +47,13 @@ jobs:
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
+
       - run: yarn install --immutable
+
+      - name: Dotenv Action
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.7
+
       - uses: release-drafter/release-drafter@v5
         id: create_release
         env:
@@ -55,24 +61,27 @@ jobs:
         with:
           commitish: ${{ github.sha }}
           config-name: release-drafter-prod.yml
+          tag: "v${{ steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION }}"
+          version: ${{ steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION }}
           publish: true
           prerelease: false
       - name: build and release
         env:
-          FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
           SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
           SNOWPACK_PUBLIC_FLUENT_ENV: "production"
-          SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
+          SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION }}
         run: yarn prod:release
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: releases/*
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3.12.0
         with:
           token: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
-          branch: "dev"
-          base: "main"
+          branch: "create-pull-request/__main->dev__"
+          delete-branch: true
+          base: "dev"
           title: "chore: merge main back to dev"
