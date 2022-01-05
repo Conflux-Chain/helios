@@ -239,34 +239,40 @@ function ConfirmTransition() {
       })
       const balance = balanceData?.[from]
 
-      if (isNativeToken) {
-        if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
-          return t('balanceIsNotEnough')
+      if (isSendToken) {
+        if (isNativeToken) {
+          if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
+            return t('balanceIsNotEnough')
+          } else {
+            return ''
+          }
         } else {
-          return ''
+          if (
+            bn16(balance[tokenAddress]).lt(
+              bn16(convertValueToData(displayValue, decimals)),
+            )
+          ) {
+            return t('balanceIsNotEnough')
+          } else {
+            return ''
+          }
         }
+      }
+      const {willPayCollateral, willPayTxFee} = await request(
+        'cfx_checkBalanceAgainstTransaction',
+        [from, to, gas, gasPrice, storageLimit, 'latest_state'],
+      )
+
+      if (
+        (bn16(balance['0x0']).lt(txFeeDrip) &&
+          willPayTxFee &&
+          willPayCollateral) ||
+        (bn16(balance['0x0']).lt(storageFeeDrip) && willPayCollateral) ||
+        (bn16(balance['0x0']).lt(gasFeeDrip) && willPayTxFee)
+      ) {
+        return t('gasFeeIsNotEnough')
       } else {
-        const {willPayCollateral, willPayTxFee} = await request(
-          'cfx_checkBalanceAgainstTransaction',
-          [from, to, gas, gasPrice, storageLimit, 'latest_state'],
-        )
-        if (
-          bn16(balance[tokenAddress]).lt(
-            bn16(convertValueToData(displayValue, decimals)),
-          )
-        ) {
-          return t('balanceIsNotEnough')
-        } else if (
-          (bn16(balance['0x0']).lt(txFeeDrip) &&
-            willPayTxFee &&
-            willPayCollateral) ||
-          (bn16(balance['0x0']).lt(storageFeeDrip) && willPayCollateral) ||
-          (bn16(balance['0x0']).lt(gasFeeDrip) && willPayTxFee)
-        ) {
-          return t('gasFeeIsNotEnough')
-        } else {
-          return ''
-        }
+        return ''
       }
     } catch (err) {
       console.error(err)
@@ -288,14 +294,14 @@ function ConfirmTransition() {
     }
     if (!isHwAccount) setLoading(true)
     else setSendStatus(HW_TX_STATUS.WAITING)
-    if (isSendToken) {
-      const error = await checkBalance()
-      if (error) {
-        setLoading(false)
-        setBalanceError(error)
-        return
-      }
+
+    const error = await checkBalance()
+    if (error) {
+      setLoading(false)
+      setBalanceError(error)
+      return
     }
+
     request(SEND_TRANSACTION, [params])
       .then(() => {
         if (!isHwAccount) setLoading(false)

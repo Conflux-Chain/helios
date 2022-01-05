@@ -85,11 +85,9 @@ export default defMiddleware(
       sideEffect(({req}) => updateReqRpcStack(req)),
       sideEffect(({req}) =>
         addBreadcrumb({
-          category: 'injectRpcStore',
-          description: {
-            data: {
-              rpcStack: req._rpcStack,
-            },
+          category: 'middleware-injectRpcStore',
+          data: {
+            rpcStack: req._rpcStack,
           },
         }),
       ),
