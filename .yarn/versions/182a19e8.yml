@@ -4,3 +4,4 @@ releases:
 declined:
   - helios-background
   - browser-extension
+  - "@fluent-wallet/rpc-engine"

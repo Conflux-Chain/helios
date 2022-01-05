@@ -34,7 +34,7 @@ export default defMiddleware(
         req: {stream: '/injectWalletDB/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'injectFetchFn'})),
+        sideEffect(() => addBreadcrumb({category: 'middleware-injectFetchFn'})),
         map(({req}) => ({
           ...req,
           f: (...args) => {
