@@ -7,6 +7,7 @@ import {
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
+import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
 import {TitleNav, AccountDisplay} from '../../components'
@@ -62,6 +63,8 @@ function SendTransaction() {
   const [addressError, setAddressError] = useState('')
   const [balanceError, setBalanceError] = useState('')
   const [hasNoTxn, setHasNoTxn] = useState(false)
+  const {errorAnimateStyle, displayErrorMsg} =
+    useInputErrorAnimation(balanceError)
   const isNativeToken = !tokenAddress
   const params = useTxParams()
   const estimateRst =
@@ -169,11 +172,11 @@ function SendTransaction() {
             isNativeToken={isNativeToken}
             nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
           />
-          {balanceError && (
-            <span className="text-error text-xs inline-block mt-2">
-              {balanceError}
-            </span>
-          )}
+          <div
+            className={`scale-y-0 transition duration-300 ease-in-out ${errorAnimateStyle}`}
+          >
+            {displayErrorMsg}
+          </div>
         </div>
         <div className="flex flex-col">
           <Alert
