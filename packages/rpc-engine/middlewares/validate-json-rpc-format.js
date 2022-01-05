@@ -12,14 +12,12 @@ export default defMiddleware(({tx: {map, sideEffect, comp}}) => {
       sideEffect(({req}) =>
         addBreadcrumb({
           category: 'middleware-validateAndFormatJsonRpc',
-          description: {
-            data: {
-              method: req.method,
-              rpcStack: req._rpcStack,
-              internal: req._internal,
-              popup: req._popup,
-              inpage: req._inpage,
-            },
+          data: {
+            method: req.method,
+            rpcStack: req._rpcStack,
+            internal: req._internal,
+            popup: req._popup,
+            inpage: req._inpage,
           },
         }),
       ),

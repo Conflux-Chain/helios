@@ -38,7 +38,7 @@ export default defMiddleware(
         req: {stream: '/validateRpcParams/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'beforeCallRpc'})),
+        sideEffect(() => addBreadcrumb({category: 'middleware-beforeCallRpc'})),
         map(async ({rpcStore, req, db}) => {
           const method = rpcStore[req.method]
           // validate dapp permissions to call this rpc
@@ -99,7 +99,7 @@ export default defMiddleware(
         },
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'callRpc'})),
+        sideEffect(() => addBreadcrumb({category: 'middleware-callRpc'})),
         map(async ({rpcStore, req}) => ({
           req,
           res: await rpcStore[req.method].main(req).catch(err => {
@@ -115,7 +115,7 @@ export default defMiddleware(
         ctx: {stream: r => r('/callRpc/node').subscribe(resolve())},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'afterCallRpc'})),
+        sideEffect(() => addBreadcrumb({category: 'middleware-afterCallRpc'})),
         map(({ctx: {req, res}}) => ({
           req,
           res: formatRes(res, req.id),
@@ -133,7 +133,7 @@ export default defMiddleware(
         req: {stream: '/afterCallRpc/outs/req'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'END'})),
+        sideEffect(() => addBreadcrumb({category: 'middleware-END'})),
         sideEffect(({res, req: {_c}}) => _c.write(res)),
       ),
     },

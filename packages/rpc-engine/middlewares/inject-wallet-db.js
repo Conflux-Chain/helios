@@ -8,7 +8,7 @@ export default defMiddleware(
       req: {stream: '/injectRpcStore/node'},
     },
     fn: comp(
-      sideEffect(() => addBreadcrumb({category: 'injectWalletDB'})),
+      sideEffect(() => addBreadcrumb({category: 'middleware-injectWalletDB'})),
       map(({req, rpcStore, db}) => {
         return {
           ...req,

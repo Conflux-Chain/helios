@@ -8,7 +8,7 @@ export default defMiddleware(({tx: {map, comp, sideEffect}}) => ({
     req: {stream: '/injectFetchFn/node'},
   },
   fn: comp(
-    sideEffect(() => addBreadcrumb({category: 'validateRpcParams'})),
+    sideEffect(() => addBreadcrumb({category: 'middleware-validateRpcParams'})),
     map(({rpcStore, req}) => {
       const {params, method} = req
       const {schemas, Err} = rpcStore[method]
