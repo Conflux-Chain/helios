@@ -1,0 +1,17 @@
+releases:
+  "@fluent-wallet/cfx_gas-price": patch
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/consts": patch
+  "@fluent-wallet/db": patch
+
+declined:
+  - "@fluent-wallet/account"
+  - "@fluent-wallet/addr-by-network"
+  - helios-background
+  - helios-popup
+  - "@fluent-wallet/rpc-engine"
+  - "@fluent-wallet/wallet_add-network"
+  - "@fluent-wallet/wallet_add-vault"
+  - "@fluent-wallet/wallet_export-account-group"
+  - "@fluent-wallet/spec"
+  - "@fluent-wallet/data-format"

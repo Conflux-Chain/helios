@@ -27,14 +27,14 @@ export const ADDRESS_TYPES = ['user', 'contract', 'builtin', 'null']
 export const DEFAULT_CURRENCY_DECIMALS = 18
 
 export const CFX_MAINNET_RPC_ENDPOINT = 'https://portal-main.confluxrpc.com'
-export const CFX_MAINNET_NAME = 'CFX_MAINNET'
+export const CFX_MAINNET_NAME = 'Conflux Tethys'
 export const CFX_MAINNET_CHAINID = '0x405'
 export const CFX_MAINNET_NETID = 1029
 export const CFX_MAINNET_CURRENCY_SYMBOL = 'CFX'
 export const CFX_MAINNET_CURRENCY_NAME = 'Conflux'
 
 export const CFX_TESTNET_RPC_ENDPOINT = 'https://portal-test.confluxrpc.com'
-export const CFX_TESTNET_NAME = 'CFX_TESTNET'
+export const CFX_TESTNET_NAME = 'Conflux Testnet'
 export const CFX_TESTNET_CHAINID = '0x1'
 export const CFX_TESTNET_NETID = 1
 export const CFX_TESTNET_CURRENCY_SYMBOL = 'CFX'
