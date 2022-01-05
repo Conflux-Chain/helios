@@ -1,10 +1,10 @@
-// github api doc https://octokit.github.io/rest.js/v18#repos-delete-release
+// github api doc https://octokit.github.io/rest.js/v18#repos-list-tags
 module.exports = async ({github, context}) => {
   const {
     repo: {owner, repo},
   } = context
   const nextver = process.env.NEXT_VERSION
-  const tags = await github.repos.listTags({owner, repo})
+  const tags = (await github.repos.listTags({owner, repo})) || []
   const re = new RegExp(`v${nextver}-rc\.`)
 
   const nextrc =
