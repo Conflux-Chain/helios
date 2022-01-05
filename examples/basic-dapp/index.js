@@ -3,99 +3,8 @@
 // https://github.com/Conflux-Chain/js-conflux-sdk#readme
 // eslint-disable-next-line import/no-unresolved
 import {Conflux} from 'https://cdn.skypack.dev/js-conflux-sdk'
-const exampleContract = new Conflux().Contract({
-  abi: [
-    {
-      inputs: [{internalType: 'address', name: 'tokenHolder', type: 'address'}],
-      name: 'balanceOf',
-      outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'decimals',
-      outputs: [{internalType: 'uint8', name: '', type: 'uint8'}],
-      stateMutability: 'pure',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'name',
-      outputs: [{internalType: 'string', name: '', type: 'string'}],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'symbol',
-      outputs: [{internalType: 'string', name: '', type: 'string'}],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {internalType: 'address', name: 'recipient', type: 'address'},
-        {internalType: 'uint256', name: 'amount', type: 'uint256'},
-      ],
-      name: 'transfer',
-      outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {internalType: 'address', name: 'holder', type: 'address'},
-        {internalType: 'address', name: 'spender', type: 'address'},
-      ],
-      name: 'allowance',
-      outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {internalType: 'address', name: 'spender', type: 'address'},
-        {internalType: 'uint256', name: 'value', type: 'uint256'},
-      ],
-      name: 'approve',
-      outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'granularity',
-      outputs: [{internalType: 'uint256', name: '', type: 'uint256'}],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {internalType: 'address', name: 'recipient', type: 'address'},
-        {internalType: 'uint256', name: 'amount', type: 'uint256'},
-        {internalType: 'bytes', name: 'data', type: 'bytes'},
-      ],
-      name: 'send',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {internalType: 'address', name: 'holder', type: 'address'},
-        {internalType: 'address', name: 'recipient', type: 'address'},
-        {internalType: 'uint256', name: 'amount', type: 'uint256'},
-      ],
-      name: 'transferFrom',
-      outputs: [{internalType: 'bool', name: '', type: 'bool'}],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-  ],
-})
 
-const erc20Contract = new Conflux().Contract({
+const exampleContract = new Conflux().Contract({
   abi: [
     {
       inputs: [
@@ -648,7 +557,7 @@ function walletInitialized({chainId, networkId}) {
 
       const tx = {
         from: connectedAddress,
-        data: erc20Contract.constructor('Example', 18, 'EP', 10000).data,
+        data: exampleContract.constructor('Example', 18, 'EP', 10000).data,
       }
       provider
         .request({method: 'cfx_sendTransaction', params: [tx]})
