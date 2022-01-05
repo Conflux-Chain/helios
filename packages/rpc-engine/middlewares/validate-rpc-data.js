@@ -198,7 +198,7 @@ export default defMiddleware(
       },
       fn: comp(
         sideEffect(() =>
-          addBreadcrumb({category: 'transformFakeDbRpcMethods'}),
+          addBreadcrumb({category: 'middleware-transformFakeDbRpcMethods'}),
         ),
         map(transformFakeDbRpcMethods),
         pluck('req'),
@@ -210,7 +210,9 @@ export default defMiddleware(
         req: {stream: '/transformFakeDbRpcMethods/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'validateRpcMethod'})),
+        sideEffect(() =>
+          addBreadcrumb({category: 'middleware-validateRpcMethod'}),
+        ),
         check(validateRpcMehtod),
         pluck('req'),
       ),
@@ -221,7 +223,9 @@ export default defMiddleware(
         req: {stream: '/validateRpcMethod/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'validateExternalMethod'})),
+        sideEffect(() =>
+          addBreadcrumb({category: 'middleware-validateExternalMethod'}),
+        ),
         check(validateExternalMethod),
         pluck('req'),
       ),
@@ -232,7 +236,9 @@ export default defMiddleware(
         req: {stream: '/validateExternalMethod/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'validateLockState'})),
+        sideEffect(() =>
+          addBreadcrumb({category: 'middleware-validateLockState'}),
+        ),
         check(validateLockState),
         pluck('req'),
       ),
@@ -243,7 +249,9 @@ export default defMiddleware(
         req: {stream: '/validateLockState/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'formatRpcSiteAndApp'})),
+        sideEffect(() =>
+          addBreadcrumb({category: 'middleware-formatRpcSiteAndApp'}),
+        ),
         map(formatRpcSiteAndApp),
         pluck('req'),
       ),
@@ -254,7 +262,9 @@ export default defMiddleware(
         req: {stream: '/formatRpcSiteAndApp/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'formatRpcNetwork'})),
+        sideEffect(() =>
+          addBreadcrumb({category: 'middleware-formatRpcNetwork'}),
+        ),
         map(formatRpcNetwork),
         filter(({req}) => Boolean(req)),
         pluck('req'),
@@ -266,7 +276,9 @@ export default defMiddleware(
         req: {stream: '/formatRpcNetwork/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'formatEpochRef'})),
+        sideEffect(() =>
+          addBreadcrumb({category: 'middleware-formatEpochRef'}),
+        ),
         map(formatEpochRef),
         pluck('req'),
       ),
@@ -277,7 +289,9 @@ export default defMiddleware(
         req: {stream: '/formatEpochRef/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'validateNetworkSupport'})),
+        sideEffect(() =>
+          addBreadcrumb({category: 'middleware-validateNetworkSupport'}),
+        ),
         check(validateNetworkSupport),
         pluck('req'),
       ),
@@ -288,7 +302,9 @@ export default defMiddleware(
         req: {stream: '/validateNetworkSupport/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'validateRpcDataEnd'})),
+        sideEffect(() =>
+          addBreadcrumb({category: 'middleware-validateRpcDataEnd'}),
+        ),
         pluck('req'),
         filter(req => Boolean(req)),
       ),

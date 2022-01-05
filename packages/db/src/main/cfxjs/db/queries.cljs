@@ -1067,9 +1067,19 @@
      :currentNetwork cur-net
      :accountGroups  data}))
 
-(defn- sort-nonce [[noncea _ _] [nonceb _ _]]
-  (.gt (bn/BigNumber.from noncea)
-       (bn/BigNumber.from nonceb)))
+(defn- sort-tx [[noncea txa _] [nonceb txb _]]
+
+  (cond
+    ;; sort by nonce
+    (.gt (bn/BigNumber.from noncea)
+         (bn/BigNumber.from nonceb))
+    true
+    ;; sort by created order when with same nonce
+    (.eq (bn/BigNumber.from noncea)
+         (bn/BigNumber.from nonceb))
+    (> txa txb)
+    :else
+    false))
 
 (defn query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
   (let [offset    (or offset 0)
@@ -1140,7 +1150,7 @@
                           [:where] (:where query-initial))
 
         txs   (->> (apply q query (:args query-initial))
-                   (sort sort-nonce)
+                   (sort sort-tx)
                    (map rest))
         total (count txs)
         txs   (when-not countOnly (->> txs
