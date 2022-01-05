@@ -63,8 +63,9 @@ function SendTransaction() {
   const [addressError, setAddressError] = useState('')
   const [balanceError, setBalanceError] = useState('')
   const [hasNoTxn, setHasNoTxn] = useState(false)
-  const {errorAnimateStyle, displayErrorMsg} =
-    useInputErrorAnimation(balanceError)
+  const {errorAnimateStyle, displayErrorMsg} = useInputErrorAnimation(
+    sendAmount ? balanceError : '',
+  )
   const isNativeToken = !tokenAddress
   const params = useTxParams()
   const estimateRst =
@@ -99,8 +100,8 @@ function SendTransaction() {
   ])
   const errorMessage = useCheckBalanceAndGas(estimateRst, tokenAddress)
   useEffect(() => {
-    sendAmount && setBalanceError(errorMessage)
-  }, [errorMessage, sendAmount])
+    !loading && setBalanceError(errorMessage)
+  }, [errorMessage, loading])
 
   useEffect(() => {
     txHistoryChecker({
