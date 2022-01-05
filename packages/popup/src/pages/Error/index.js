@@ -54,7 +54,7 @@ function Error() {
   }
 
   return errorType ? (
-    <div id="errorContainer" className="h-150 w-93 flex flex-col p-6">
+    <div id="errorContainer" className="h-150 w-93 flex flex-col p-6 m-auto">
       <div className="flex-1 text-center">
         <CloseCircleFilled
           className={`text-error w-20 h-20 ${
