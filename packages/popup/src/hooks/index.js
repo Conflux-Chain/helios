@@ -212,20 +212,25 @@ export const useCheckBalanceAndGas = (
         )
       }
     } else {
-      if (isNativeToken && isBalanceEnough !== undefined) {
-        if (!isBalanceEnough) {
-          return t('balanceIsNotEnough')
+      if (isSendToken) {
+        if (isNativeToken) {
+          if (isBalanceEnough === false) {
+            return t('balanceIsNotEnough')
+          } else {
+            return ''
+          }
         } else {
-          return ''
+          if (isTokenBalanceEnough === false) {
+            return t('gasFeeIsNotEnough')
+          } else {
+            return ''
+          }
         }
-      } else if (!isNativeToken && isTokenBalanceEnough !== undefined) {
-        if (isSendToken && !isTokenBalanceEnough) {
-          return t('balanceIsNotEnough')
-        } else if (!isBalanceEnough && isBalanceEnough !== undefined) {
-          return t('gasFeeIsNotEnough')
-        } else {
-          return ''
-        }
+      }
+      if (isBalanceEnough === false) {
+        return t('gasFeeIsNotEnough')
+      } else {
+        return ''
       }
     }
   }, [
