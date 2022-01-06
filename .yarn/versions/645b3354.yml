@@ -1,0 +1,13 @@
+releases:
+  "@fluent-wallet/webextension": patch
+
+declined:
+  - helios-background
+  - browser-extension
+  - "@fluent-wallet/wallet_add-pending-user-auth-request"
+  - "@fluent-wallet/wallet_get-current-viewing-app"
+  - "@fluent-wallet/wallet_handle-unfinished-cfx-tx"
+  - "@fluent-wallet/wallet_request-unlock-ui"
+
+undecided:
+  - helios-popup
