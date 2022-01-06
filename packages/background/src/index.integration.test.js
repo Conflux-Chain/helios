@@ -127,7 +127,7 @@ describe('integration test', function () {
           networkName: CFX_MAINNET_NAME,
         })
         expect(res.error.message).toMatch(
-          /Method eth_getBalance not supported by network CFX_MAINNET/,
+          /Method eth_getBalance not supported by network Conflux Tethys/,
         )
       })
       test('error call method with incorrect scope', async function () {
