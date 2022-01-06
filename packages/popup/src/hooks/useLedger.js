@@ -1,4 +1,6 @@
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
+import {useEffectOnce} from 'react-use'
+
 import {Conflux} from '@fluent-wallet/ledger'
 
 import {LEDGER_AUTH_STATUS, LEDGER_OPEN_STATUS} from '../constants'
@@ -8,7 +10,7 @@ export const useConnect = () => {
   const [isAppOpen, setIsAppOpen] = useState(LEDGER_OPEN_STATUS.LOADING)
   const cfx = new Conflux()
 
-  useEffect(() => {
+  useEffectOnce(() => {
     const fetchStatus = async () => {
       const isAuthed = await cfx.isDeviceAuthed()
       setAuthStatus(
@@ -18,7 +20,6 @@ export const useConnect = () => {
       setIsAppOpen(isOpen ? LEDGER_OPEN_STATUS.OPEN : LEDGER_OPEN_STATUS.UNOPEN)
     }
     fetchStatus()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  })
   return {authStatus, isAppOpen}
 }
