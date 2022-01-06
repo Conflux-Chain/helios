@@ -36,8 +36,8 @@ function GasFee({estimateRst}) {
   const gasPrice = useDebouncedValue(_gasPrice, [_gasPrice])
 
   return (
-    <div className="flex flex-col">
-      <span className="flex items-center justify-between w-full text-gray-40 mb-2">
+    <div className="gas-fee-container flex flex-col">
+      <header className="gas-fee-header flex items-center justify-between w-full text-gray-40 mb-2">
         {t('gasFee')}
         <span className="flex items-center">
           <Link onClick={() => history.push(EDIT_GAS_FEE)}>
@@ -45,9 +45,9 @@ function GasFee({estimateRst}) {
             <RightOutlined className="w-3 h-3 text-primary ml-1" />
           </Link>
         </span>
-      </span>
+      </header>
       <div
-        className="flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative"
+        className="gas-fee-body flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative"
         id="gasFeeContainer"
       >
         <DisplayBalance

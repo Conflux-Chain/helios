@@ -48,7 +48,7 @@ const {
   WALLET_GET_PENDING_AUTH_REQUEST,
 } = RPC_METHODS
 
-function ConfirmTransition() {
+function ConfirmTransaction() {
   const {t} = useTranslation()
   const history = useHistory()
   const {authStatus: authStatusFromLedger, isAppOpen: isAppOpenFromLedger} =
@@ -322,9 +322,11 @@ function ConfirmTransition() {
     Object.keys(estimateRst).length === 0
 
   return (
-    <div className="flex flex-col h-full w-full relative">
-      <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
-      <div className="flex flex-1 flex-col justify-between mt-1 pb-4">
+    <div className="confirm-transaction-container flex flex-col h-full w-full relative">
+      <header>
+        <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
+      </header>
+      <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-4">
         <div className="flex flex-col px-3">
           <AddressCard
             token={displayToken}
@@ -411,4 +413,4 @@ function ConfirmTransition() {
   )
 }
 
-export default ConfirmTransition
+export default ConfirmTransaction

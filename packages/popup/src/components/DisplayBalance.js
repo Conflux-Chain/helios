@@ -41,7 +41,7 @@ function DisplayBalance({
 
   return (
     <div
-      className={`flex text-gray-80 font-mono font-semibold items-center ${className}`}
+      className={`display-balance-container flex text-gray-80 font-mono font-semibold items-center ${className}`}
     >
       <div id={id} className={`text-ellipsis relative ${maxWidthStyle}`}>
         {showTooltip ? (
