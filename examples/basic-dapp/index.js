@@ -512,18 +512,18 @@ function walletInitialized({chainId, networkId}) {
   addNetworkButton.onclick = () => {
     provider
       .request({
-        method: 'wallet_addEthereumChain',
+        method: 'wallet_addConfluxChain',
         params: [
           {
-            chainId: '0xa4b1',
-            chainName: 'Arbitrum One',
+            chainId: '0x406',
+            chainName: 'EVM Conflux',
             nativeCurrency: {
-              name: 'Arbitrum Ether',
-              symbol: 'AETH',
+              name: 'Conflux',
+              symbol: 'CFX',
               decimals: 18,
             },
-            rpcUrls: ['https://arb1.arbitrum.io/rpc'],
-            blockExplorerUrls: ['https://arbiscan.io'],
+            rpcUrls: ['http://47.104.89.179:12537'],
+            blockExplorerUrls: ['https://confluxscan.io'],
           },
         ],
       })

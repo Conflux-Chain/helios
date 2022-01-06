@@ -49,7 +49,7 @@ function ConfirmAddSuggestedToken() {
           <p className="text-sm text-gray-80 font-medium pb-2 ml-1">
             {t('confirmAddSuggestedToken')}
           </p>
-          <div className="px-3 bg-bg rounded" id="tokens">
+          <div className="bg-bg rounded" id="tokens">
             <TokenItem
               index={1}
               token={{
