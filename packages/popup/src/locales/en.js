@@ -254,6 +254,7 @@ const en = {
     lock: 'Lock',
     enterPassword: 'Enter your password to continue',
     viewSeed: 'Reveal secret Seed Phrase',
+    hide: 'Hide',
 
     // backup seed
     backupIdentity: 'Backup Seed Phrase',
