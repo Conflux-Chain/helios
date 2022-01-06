@@ -10,6 +10,7 @@
 
 name: Publish Pre-release Version
 
+# on: [push]
 on:
   pull_request:
     branches:
@@ -19,7 +20,7 @@ on:
 
 jobs:
   pre-release:
-    if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
+    # if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -47,7 +48,23 @@ jobs:
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
+
       - run: yarn install --immutable
+
+      - name: Dotenv Action
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.7
+
+      - name: Get PR Release
+        uses: actions/github-script@v4
+        id: pre-release-number
+        env:
+          NEXT_VERSION: ${{ steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return await require('.github/scripts/getPreReleaseNumber.js')({github, context, core});
+
       - uses: release-drafter/release-drafter@v5
         id: create_release
         env:
@@ -55,13 +72,21 @@ jobs:
         with:
           commitish: ${{ github.sha }}
           config-name: release-drafter-pre.yml
-          publish: false
+          name: Pre release ${{ fromJSON(steps.pre-release-number.outputs.result).tag }}
+          version: ${{ fromJSON(steps.pre-release-number.outputs.result).version }}
+          tag: ${{ fromJSON(steps.pre-release-number.outputs.result).tag }}
+          prerelease: true
+          publish: true
+      # - run: |
+      #     echo "::debug:: ${{ steps.pre-release-number.outputs.result }}"
+      # - run: |
+      #     echo "::debug:: ${{ fromJSON( steps.pre-release-number.outputs.result ) }}"
+
       - name: build and release
         env:
-          FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
           SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
           SNOWPACK_PUBLIC_FLUENT_ENV: "debug-release"
-          SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ steps.create_release.outputs.tag_name }}
+          SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ fromJSON(steps.pre-release-number.outputs.result).version }}
         run: yarn prod:release
 
       - uses: shogo82148/actions-upload-release-asset@v1

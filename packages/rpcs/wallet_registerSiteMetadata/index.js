@@ -14,14 +14,15 @@ export const schemas = {
 export const permissions = {
   external: ['inpage'],
   locked: true,
-  methods: [],
-  db: ['t'],
+  methods: ['wallet_requestPermissions'],
+  db: ['t', 'findAccount'],
   scope: null,
 }
 
 export const main = ({
   Err: {InvalidRequest},
-  db: {t},
+  db: {t, findAccount},
+  rpcs: {wallet_requestPermissions},
   params: {name, icon},
   _inpage,
   _origin,
@@ -29,7 +30,7 @@ export const main = ({
   network,
 }) => {
   if (_inpage && !_origin) throw InvalidRequest(`no origin found`)
-  t([
+  const {tempids} = t([
     {eid: 'newsite', site: {name, origin: _origin, post: _post}},
     icon && {eid: 'newsite', site: {icon}},
   ])
@@ -38,6 +39,25 @@ export const main = ({
     event: 'connect',
     params: {chainId: network.chainId, networkId: network.netId},
   })
+
+  // auto authed app
+  // x.fluentwallet.com
+  // x-x.fluentwallet.com
+  // x.x.fluentwallet.com
+  if (
+    tempids.newsite &&
+    (/^[a-zA-Z0-9-]+\.fluentwallet\.com$/.test(_origin) ||
+      /^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+\.fluentwallet\.com$/.test(_origin))
+  ) {
+    wallet_requestPermissions(
+      {_popup: true, network},
+      {
+        siteId: tempids.newsite,
+        permissions: [{wallet_accounts: {}}],
+        accounts: findAccount(),
+      },
+    )
+  }
 
   return
 }
