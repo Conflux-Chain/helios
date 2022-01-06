@@ -4,7 +4,8 @@ module.exports = async ({github, context}) => {
     repo: {owner, repo},
   } = context
   const nextver = process.env.NEXT_VERSION
-  const tags = (await github.repos.listTags({owner, repo})) || []
+  let tags = await github.repos.listTags({owner, repo})
+  tags = (tags && tags.data) || []
   const re = new RegExp(`v${nextver}-rc\.`)
 
   const nextrc =
@@ -15,5 +16,5 @@ module.exports = async ({github, context}) => {
       return Math.max(nextrc, rc)
     }, 0) + 1
 
-  return `${nextver}-rc.${nextrc}`
+  return {version: `${nextver}-rc.${nextrc}`, tag: `v${nextver}-rc.${nextrc}`}
 }
