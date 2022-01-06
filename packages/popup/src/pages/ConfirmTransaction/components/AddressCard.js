@@ -18,7 +18,7 @@ import {
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
 
-const AddressDetail = ({
+const TransactionDirection = ({
   fromAddress,
   toAddress,
   currentAccountName,
@@ -33,7 +33,10 @@ const AddressDetail = ({
   const isContract = type === 'contract' || type === 'builtin'
 
   return (
-    <div className="flex items-start w-full" id="addressDetailContainer">
+    <div
+      className="transaction-direction-container flex items-start w-full"
+      id="addressDetailContainer"
+    >
       <div className="pt-1">
         <ProgressIcon
           dashLengthStyle="h-[14px]"
@@ -100,7 +103,7 @@ const AddressDetail = ({
   )
 }
 
-AddressDetail.propTypes = {
+TransactionDirection.propTypes = {
   fromAddress: PropTypes.string,
   toAddress: PropTypes.string,
   currentAccountName: PropTypes.string,
@@ -163,9 +166,12 @@ function AddressCard({
   return (
     <div
       id="addressCardContainer"
-      className="w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat mt-1 mb-4"
+      className="address-card-container w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat mt-1 mb-4"
     >
-      <span className="text-primary flex items-center" id="addressCardTitle">
+      <header
+        className="address-card-header text-primary flex items-center"
+        id="addressCardTitle"
+      >
         <img
           alt="icon"
           className="w-3 h-3 mr-1"
@@ -184,7 +190,7 @@ function AddressCard({
             ? 'approveToken'
             : 'signTransaction',
         )}
-      </span>
+      </header>
       {isSendToken && (
         <div className="h-10 mt-1 mb-3 flex items-center" id="sendToken">
           <DisplayBalance
@@ -207,7 +213,7 @@ function AddressCard({
           />
         </div>
       )}
-      <AddressDetail
+      <TransactionDirection
         fromAddress={fromAddress}
         toAddress={toAddress}
         currentAccountName={nickname}

@@ -19,11 +19,13 @@ const ProtectedRoute = ({hasAccount, isLocked, pendingAuthReq, ...rest}) => {
     case isLocked:
       return <Redirect to={{pathname: WALLET_UNLOCK}} />
     case isDapp && hasPendingAuthReq:
+      // eslint-disable-next-line no-case-declarations
+      const path = DAPP_REQUEST_ROUTES[pendingAuthReq[0]?.req?.method]
       return (
         <Redirect
           to={{
-            pathname:
-              DAPP_REQUEST_ROUTES[pendingAuthReq[0]?.req?.method] || ERROR,
+            pathname: path || ERROR,
+            state: {params: path ? pendingAuthReq[0]?.req?.params : undefined},
           }}
         />
       )
