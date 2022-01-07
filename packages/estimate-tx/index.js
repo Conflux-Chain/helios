@@ -147,7 +147,7 @@ export const cfxEstimate = async (
         tokens: ['0x0'].concat(Object.keys(tokensAmount)),
       },
     }).then(r => {
-      balances = r[from]
+      balances = r[from.toLowerCase()]
     }),
   )
 
