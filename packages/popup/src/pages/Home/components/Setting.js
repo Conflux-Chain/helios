@@ -10,7 +10,7 @@ import {request} from '../../../utils'
 import useGlobalStore from '../../../stores/index.js'
 
 const {LOCK, WALLET_IS_LOCKED, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
-const {ACCOUNT_MANAGEMENT} = ROUTES
+const {ACCOUNT_MANAGEMENT, NETWORK_MANAGEMENT} = ROUTES
 
 function SettingItem({icon, content, onClick}) {
   return (
@@ -73,6 +73,13 @@ function Setting({onClose, open}) {
                 <img src="/images/account.svg" alt="icon" className="w-5 h-5" />
               }
               content={t('accountManagement')}
+            />
+            <SettingItem
+              onClick={() => history.push(NETWORK_MANAGEMENT)}
+              icon={
+                <img src="/images/account.svg" alt="icon" className="w-5 h-5" />
+              }
+              content={t('networkManagement')}
             />
           </div>
         }

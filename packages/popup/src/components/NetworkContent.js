@@ -26,6 +26,8 @@ function NetworkItem({
   networkId,
   networkItemSize = 'medium',
   onClose,
+  showCurrentIcon = true,
+  needSwitchNet = true,
   ...props
 }) {
   const {setLoading} = useLoading()
@@ -42,6 +44,9 @@ function NetworkItem({
 
   const onChangeNetwork = () => {
     onClose && onClose()
+    if (!needSwitchNet) {
+      return onClickNetworkItem?.({networkId, networkName, icon})
+    }
     if (eid !== networkId) {
       setLoading(true)
       request(WALLET_SET_CURRENT_NETWORK, [networkId])
@@ -53,8 +58,7 @@ function NetworkItem({
             top: '110px',
             duration: 1,
           })
-          onClickNetworkItem &&
-            onClickNetworkItem({networkId, networkName, icon})
+          onClickNetworkItem?.({networkId, networkName, icon})
         })
         .catch(error => {
           // TODO: need deal with error condition
@@ -73,7 +77,7 @@ function NetworkItem({
       {...props}
       aria-hidden="true"
       className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative hover:bg-primary-4 ${
-        eid === networkId ? 'cursor-default' : 'cursor-pointer'
+        eid === networkId && needSwitchNet ? 'cursor-default' : 'cursor-pointer'
       } ${itemWrapperPaddingStyle} pr-3.5`}
       onClick={onChangeNetwork}
     >
@@ -87,7 +91,7 @@ function NetworkItem({
       <div className="ml-2.5 text-gray-80 text-sm font-medium flex-1">
         {networkName}
       </div>
-      {eid === networkId && (
+      {eid === networkId && showCurrentIcon && (
         <CheckCircleFilled className="w-4 h-4 text-success" />
       )}
       <CustomTag className={`absolute right-0 top-0 ${networkTypeColor}`}>
@@ -104,9 +108,16 @@ NetworkItem.propTypes = {
   icon: PropTypes.string,
   onClickNetworkItem: PropTypes.func,
   onClose: PropTypes.func,
+  showCurrentIcon: PropTypes.bool,
+  needSwitchNet: PropTypes.bool,
 }
 
-function NetworkContent({onClickNetworkItem, networkItemSize, onClose}) {
+function NetworkContent({
+  onClickNetworkItem,
+  networkItemSize,
+  onClose,
+  ...props
+}) {
   const networkData = useCfxNetwork()
 
   return (
@@ -130,6 +141,7 @@ function NetworkContent({onClickNetworkItem, networkItemSize, onClose}) {
           onClose={onClose}
           icon={icon}
           id={`item-${eid}`}
+          {...props}
         />
       ))}
     </>

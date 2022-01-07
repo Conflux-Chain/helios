@@ -117,7 +117,7 @@ function AccountManagement() {
       className="bg-bg pb-8 h-full w-full flex flex-col"
     >
       <TitleNav title={t('accountManagement')} />
-      <div className="flex-1 overflow-y-auto no-scroll">
+      <div className="flex-1 overflow-y-auto no-scroll mt-1">
         {Object.values(accountGroups || {}).map(
           ({nickname, account, vault, eid}) => (
             <GroupItem

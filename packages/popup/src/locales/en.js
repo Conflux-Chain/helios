@@ -24,6 +24,7 @@ const en = {
     transactionDetails: 'Transaction Details',
     functionName: 'Function',
     hexData: 'Hex Data',
+    add: 'Add',
 
     // - home page
     send: 'Send',
@@ -256,6 +257,11 @@ const en = {
     viewSeed: 'Reveal secret Seed Phrase',
     hide: 'Hide',
     delete: 'Delete',
+
+    // Network Management
+    networkManagement: 'Network Management',
+    newRpcUrl: 'New RPC URL',
+    networkType: 'Network Type',
 
     // backup seed
     backupIdentity: 'Backup Seed Phrase',
