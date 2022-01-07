@@ -41,7 +41,8 @@ function AccountItem({
     })
   }
   const onInputBlur = () => {
-    if (inputNickname === accountNickname) {
+    if (inputNickname === accountNickname || !inputNickname) {
+      !inputNickname && setInputNickname(accountNickname)
       return setShowInputStatus(false)
     }
     setLoading(true)
@@ -104,6 +105,7 @@ function AccountItem({
           {
             <Input
               width="w-[188px]"
+              maxLength="20"
               containerClassName={`border-none absolute -top-px left-0 bg-transparent text-sm h-[18px] ${
                 showInputStatus ? 'visible' : 'invisible'
               }`}
