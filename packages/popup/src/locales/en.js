@@ -223,8 +223,8 @@ const en = {
     networkName: 'Network Name',
     networkUrl: 'Network URL',
     chainId: 'Chain ID',
-    currencySymbol: 'Currency Symbol',
-    blockExplorerUrl: 'Block Explorer URL',
+    currencySymbol: 'Currency Symbol (Optional)',
+    blockExplorerUrl: 'Block Explorer URL (Optional)',
 
     // - add suggested token
     addSuggestedToken: 'Add suggested token',

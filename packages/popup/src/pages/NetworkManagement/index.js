@@ -17,6 +17,7 @@ function NetworkManagement() {
         title={t('networkManagement')}
         rightButton={
           <span
+            id="add-chain"
             aria-hidden
             className="text-primary text-sm hover:text-[#5D5FEF]"
             onClick={() => history.push(NETWORK_DETAIL)}

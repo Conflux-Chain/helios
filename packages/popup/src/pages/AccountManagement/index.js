@@ -9,7 +9,7 @@ import {request, validatePasswordReg} from '../../utils'
 import {TitleNav, ConfirmPassword} from '../../components'
 import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
 import {GroupItem} from './components'
-const {EXPORT_SEED, EXPORT_PRIVATEKEY} = ROUTES
+const {EXPORT_SEED, EXPORT_PRIVATEKEY, SELECT_CREATE_TYPE} = ROUTES
 const {
   WALLET_EXPORT_ACCOUNT_GROUP,
   WALLET_EXPORT_ACCOUNT,
@@ -116,7 +116,19 @@ function AccountManagement() {
       id="account-management"
       className="bg-bg pb-8 h-full w-full flex flex-col"
     >
-      <TitleNav title={t('accountManagement')} />
+      <TitleNav
+        title={t('accountManagement')}
+        rightButton={
+          <span
+            id="add-account"
+            aria-hidden
+            className="text-primary text-sm hover:text-[#5D5FEF]"
+            onClick={() => history.push(SELECT_CREATE_TYPE)}
+          >
+            {t('add')}
+          </span>
+        }
+      />
       <div className="flex-1 overflow-y-auto no-scroll mt-1">
         {Object.values(accountGroups || {}).map(
           ({nickname, account, vault, eid}) => (
