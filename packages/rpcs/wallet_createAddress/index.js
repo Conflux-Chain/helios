@@ -54,7 +54,7 @@ export const main = async ({
         .tempids.newAddr || addrTx.eid,
     ]
   } else if (vault.type === 'pk') {
-    const hex = fromPrivate(decrypted)
+    const hex = fromPrivate(decrypted).address
     const addrTx = newAddressTx({
       eid: 'newAddr',
       hex: hex.toLowerCase(),
