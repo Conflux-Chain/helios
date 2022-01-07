@@ -64,6 +64,7 @@ function ConfirmTransaction() {
     )
   }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
+  const [sendError, setSendError] = useState('')
   const [balanceError, setBalanceError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
   const isDapp = getPageType() === 'notification'
@@ -310,9 +311,10 @@ function ConfirmTransaction() {
         history.push(HOME)
       })
       .catch(error => {
-        console.error('error', error?.message ?? error)
+        console.error('error', error)
         if (!isHwAccount) setLoading(false)
         setSendStatus(HW_TX_STATUS.REJECTED)
+        setSendError(error?.message ?? error)
       })
   }
 
@@ -401,11 +403,16 @@ function ConfirmTransaction() {
               pendingAuthReq={pendingAuthReq}
               isHwAccount={isHwAccount}
               setAuthStatus={setAuthStatus}
+              setSendError={setSendError}
               setIsAppOpen={setIsAppOpen}
             />
           )}
           {(isHwAccount || sendStatus === HW_TX_STATUS.REJECTED) && (
-            <HwTransactionResult status={sendStatus} isDapp={isDapp} />
+            <HwTransactionResult
+              status={sendStatus}
+              isDapp={isDapp}
+              sendError={sendError}
+            />
           )}
         </div>
       </div>

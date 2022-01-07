@@ -62,9 +62,9 @@ export const LEDGER_OPEN_STATUS = {
 }
 
 export const HW_TX_STATUS = {
-  WAITING: 'waiting',
-  SUCCESS: 'success',
-  REJECTED: 'rejected',
+  WAITING: 'waiting', // only used for ledger account
+  SUCCESS: 'success', // only used for ledger account
+  REJECTED: 'rejected', // used for all accounts
 }
 
 export const HARDWARE_ACCOUNT_PAGE_LIMIT = 5
