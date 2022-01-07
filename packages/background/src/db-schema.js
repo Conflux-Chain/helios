@@ -152,7 +152,7 @@ const schema = {
     created: {doc: 'created timestamp get with new Date().getTime()'},
     err: {doc: 'basic error type/info'},
     txExtra: {doc: 'enriched tx info', ref: true, component: true},
-    fromFluent: {doc: 'tx sumitted from fluent'},
+    fromFluent: {doc: 'tx submitted from fluent'},
     resendAt: {doc: 'epoch/block where wallet resend tx'},
   },
   txPayload: {
