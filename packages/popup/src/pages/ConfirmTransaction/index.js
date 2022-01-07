@@ -409,7 +409,6 @@ function ConfirmTransaction() {
           )}
           {(isHwAccount || sendStatus === HW_TX_STATUS.REJECTED) && (
             <HwTransactionResult
-              isHwAccount={isHwAccount}
               status={sendStatus}
               isDapp={isDapp}
               sendError={sendError}
