@@ -1,4 +1,4 @@
-import React, {useEffect, useState, memo, forwardRef} from 'react'
+import React, {useEffect, useState, memo, forwardRef, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {CSSTransition, SwitchTransition} from 'react-transition-group'
 import classNames from 'classnames'
@@ -57,6 +57,7 @@ const Text = forwardRef(
     ref,
   ) => {
     const [inDelay, setInDelay] = useState(() => !text && delay > 100)
+    const textNodeRef = useRef(null)
     useEffect(() => {
       if (!text && delay > 100) setInDelay(true)
       else setInDelay(false)
@@ -85,6 +86,7 @@ const Text = forwardRef(
       <SwitchTransition>
         <CSSTransition
           key={text || placeholder || 'text_loading'}
+          nodeRef={textNodeRef}
           classNames={{
             enter:
               !!skeleton && !text
@@ -118,6 +120,7 @@ const Text = forwardRef(
           appear={!!skeleton}
         >
           <span
+            ref={textNodeRef}
             className={classNames(
               {
                 'text-placeholder-animation':
