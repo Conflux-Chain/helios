@@ -2,14 +2,15 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {RPC_METHODS} from '../../../constants'
 import {AccountItem} from './'
-const {WALLET_EXPORT_ACCOUNT_GROUP} = RPC_METHODS
+const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_DELETE_ACCOUNT_GROUP} = RPC_METHODS
 
 function GroupItem({
   nickname,
   account,
+  showDelete = false,
   groupType = '',
   onOpenConfirmPassword,
-  accountGroupEid,
+  accountGroupId,
 }) {
   const {t} = useTranslation()
 
@@ -21,9 +22,11 @@ function GroupItem({
       {account.map(({nickname, eid}) => (
         <AccountItem
           key={eid}
-          accountEid={eid}
+          accountId={eid}
+          accountGroupId={accountGroupId}
           accountNickname={nickname}
           groupType={groupType}
+          showDelete={showDelete}
           onOpenConfirmPassword={onOpenConfirmPassword}
         />
       ))}
@@ -32,16 +35,27 @@ function GroupItem({
           <div
             onClick={() =>
               onOpenConfirmPassword &&
-              onOpenConfirmPassword(
-                WALLET_EXPORT_ACCOUNT_GROUP,
-                accountGroupEid,
-              )
+              onOpenConfirmPassword(WALLET_EXPORT_ACCOUNT_GROUP, {
+                accountGroupId,
+              })
             }
             aria-hidden="true"
           >
             {t('viewSeed')}
           </div>
-          <div aria-hidden="true">{t('hide')}</div>
+          {showDelete && (
+            <div
+              aria-hidden="true"
+              onClick={() =>
+                onOpenConfirmPassword &&
+                onOpenConfirmPassword(WALLET_DELETE_ACCOUNT_GROUP, {
+                  accountGroupId,
+                })
+              }
+            >
+              {t('delete')}
+            </div>
+          )}
         </div>
       ) : null}
     </div>
@@ -50,9 +64,10 @@ function GroupItem({
 
 GroupItem.propTypes = {
   nickname: PropTypes.string,
-  accountGroupEid: PropTypes.number,
+  accountGroupId: PropTypes.number,
   account: PropTypes.array,
   groupType: PropTypes.string,
+  showDelete: PropTypes.bool,
   onOpenConfirmPassword: PropTypes.func,
 }
 

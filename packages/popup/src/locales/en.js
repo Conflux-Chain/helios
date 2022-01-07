@@ -255,6 +255,7 @@ const en = {
     enterPassword: 'Enter your password to continue',
     viewSeed: 'Reveal secret Seed Phrase',
     hide: 'Hide',
+    delete: 'Delete',
 
     // backup seed
     backupIdentity: 'Backup Seed Phrase',

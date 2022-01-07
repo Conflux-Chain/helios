@@ -1,5 +1,6 @@
 import {useState} from 'react'
-import {isNumber, isArray} from '@fluent-wallet/checks'
+import {useSWRConfig} from 'swr'
+import {isArray} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import useGlobalStore from '../../stores'
 import {useHistory} from 'react-router-dom'
@@ -9,29 +10,32 @@ import {TitleNav, ConfirmPassword} from '../../components'
 import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
 import {GroupItem} from './components'
 const {EXPORT_SEED, EXPORT_PRIVATEKEY} = ROUTES
-const {WALLET_EXPORT_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
+const {
+  WALLET_EXPORT_ACCOUNT_GROUP,
+  WALLET_EXPORT_ACCOUNT,
+  ACCOUNT_GROUP_TYPE,
+  WALLETDB_ACCOUNT_LIST_ASSETS,
+} = RPC_METHODS
 
 function AccountManagement() {
   const {t} = useTranslation()
   const history = useHistory()
+  const {mutate} = useSWRConfig()
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
-  const [exportMethod, setExportMethod] = useState('')
+  const [rpcMethod, setRpcMethod] = useState('')
   const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
-  const [dbId, setDbId] = useState('')
+  const [confirmParams, setConfirmParams] = useState({})
   const {setExportPrivateKey, setExportSeedPhrase} = useGlobalStore()
 
-  const {
-    data: {
-      network: {name: networkName},
-    },
-  } = useCurrentAddress()
-
+  const {data} = useCurrentAddress()
+  const networkName = data?.network?.name ?? ''
   const {accountGroups} = useDbAccountListAssets({
     type: 'all',
     accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
   })
+  const showDelete = !!accountGroups && Object.keys(accountGroups).length > 1
   const validatePassword = value => {
     const isValid = validatePasswordReg(value)
     setPasswordErrorMessage(isValid ? '' : t('passwordRulesWarning'))
@@ -41,34 +45,44 @@ function AccountManagement() {
   const onConfirmPassword = () => {
     if (
       !validatePassword(password) ||
-      !exportMethod ||
-      !isNumber(dbId) ||
+      !rpcMethod ||
+      !Object.keys(confirmParams).length ||
       sendingRequestStatus
     ) {
       return
     }
     setSendingRequestStatus(true)
-    const params =
-      exportMethod === WALLET_EXPORT_ACCOUNT_GROUP
-        ? {password, accountGroupId: dbId}
-        : {password, accountId: dbId}
-
-    request(exportMethod, {...params})
+    request(rpcMethod, {...confirmParams, password})
       .then(res => {
-        setOpenPasswordStatus(false)
-        setSendingRequestStatus(false)
-        if (exportMethod === WALLET_EXPORT_ACCOUNT_GROUP) {
+        // export account group
+        if (rpcMethod === WALLET_EXPORT_ACCOUNT_GROUP) {
           setExportSeedPhrase(res)
+          setOpenPasswordStatus(false)
+          setSendingRequestStatus(false)
           return history.push(EXPORT_SEED)
         }
-        setExportPrivateKey(
-          isArray(res)
-            ? res
-                .filter(item => item.network.name === networkName)[0]
-                .privateKey.replace('0x', '')
-            : res,
-        )
-        history.push(EXPORT_PRIVATEKEY)
+        // export account (include pk account group)
+        if (rpcMethod === WALLET_EXPORT_ACCOUNT) {
+          setExportPrivateKey(
+            isArray(res)
+              ? res
+                  .filter(item => item.network.name === networkName)[0]
+                  .privateKey.replace('0x', '')
+              : res,
+          )
+          setOpenPasswordStatus(false)
+          setSendingRequestStatus(false)
+          return history.push(EXPORT_PRIVATEKEY)
+        }
+        // delete account
+        mutate([
+          WALLETDB_ACCOUNT_LIST_ASSETS,
+          ACCOUNT_GROUP_TYPE.HD,
+          ACCOUNT_GROUP_TYPE.PK,
+        ]).then(() => {
+          clearPasswordInfo()
+          setSendingRequestStatus(false)
+        })
       })
       .catch(e => {
         setSendingRequestStatus(false)
@@ -80,21 +94,21 @@ function AccountManagement() {
       })
   }
 
-  const onCancelPassword = () => {
+  const clearPasswordInfo = () => {
     setPassword('')
     setOpenPasswordStatus(false)
-    setExportMethod('')
-    setDbId('')
+    setRpcMethod('')
+    setConfirmParams({})
   }
 
-  const onOpenConfirmPassword = (method, eid) => {
+  const onOpenConfirmPassword = (method, params) => {
     if (!networkName) {
       return
     }
     setPasswordErrorMessage('')
     setOpenPasswordStatus(true)
-    setExportMethod(method)
-    setDbId(eid)
+    setRpcMethod(method)
+    setConfirmParams({...params})
   }
 
   return accountGroups ? (
@@ -108,11 +122,12 @@ function AccountManagement() {
           ({nickname, account, vault, eid}) => (
             <GroupItem
               key={eid}
-              accountGroupEid={eid}
+              accountGroupId={eid}
               account={Object.values(account)}
               nickname={nickname}
               groupType={vault?.type}
               onOpenConfirmPassword={onOpenConfirmPassword}
+              showDelete={showDelete}
             />
           ),
         )}
@@ -120,7 +135,7 @@ function AccountManagement() {
 
       <ConfirmPassword
         open={openPasswordStatus}
-        onCancel={onCancelPassword}
+        onCancel={clearPasswordInfo}
         onConfirm={onConfirmPassword}
         password={password}
         passwordErrorMessage={passwordErrorMessage}
