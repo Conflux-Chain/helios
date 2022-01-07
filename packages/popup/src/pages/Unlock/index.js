@@ -1,5 +1,5 @@
 import {useState, useRef, useLayoutEffect} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
@@ -9,11 +9,11 @@ import {usePendingAuthReq} from '../../hooks/useApi'
 import {request, validatePasswordReg, isKeyOf, getPageType} from '../../utils'
 import useLoading from '../../hooks/useLoading'
 
-const {WALLET_IS_LOCKED, WALLET_UNLOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
+const {WALLET_UNLOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 
 const {HOME} = ROUTES
 const UnlockPage = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const {t} = useTranslation()
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -31,16 +31,14 @@ const UnlockPage = () => {
     if (password) {
       setLoading(true)
       request(WALLET_UNLOCK, {password})
+        .then(() => mutate([WALLET_METADATA_FOR_POPUP]))
         .then(() => {
-          mutate([WALLET_METADATA_FOR_POPUP]).then(() => {
-            mutate([WALLET_IS_LOCKED], false)
-            setLoading(false)
-            if (isDapp && pendingAuthReq?.length === 0) {
-              window.close()
-            } else {
-              history.push(HOME)
-            }
-          })
+          setLoading(false)
+          if (isDapp && pendingAuthReq?.length === 0) {
+            window.close()
+          } else {
+            navigate(HOME)
+          }
         })
         .catch(e => {
           setLoading(false)

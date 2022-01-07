@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {
   formatHexToDecimal,
   convertDataToValue,
@@ -29,7 +29,7 @@ const {CONFIRM_TRANSACTION} = ROUTES
 
 function SendTransaction() {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {
     toAddress,
     sendAmount,
@@ -193,7 +193,7 @@ function SendTransaction() {
               className="flex-1 mr-3"
               onClick={() => {
                 setTimeout(() => clearSendTransactionParams(), 500)
-                history.goBack()
+                navigate(-1)
               }}
             >
               {t('cancel')}
@@ -202,7 +202,7 @@ function SendTransaction() {
               disabled={sendDisabled}
               onClick={() => {
                 if (loading) return
-                history.push(CONFIRM_TRANSACTION)
+                navigate(CONFIRM_TRANSACTION)
               }}
               className="flex-1"
             >

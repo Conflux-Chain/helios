@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
@@ -11,7 +11,7 @@ import {useDappParams, useDecodeData} from '../../hooks'
 
 function EditPermission() {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const tx = useDappParams()
   const {decodeData, token} = useDecodeData(tx)
   const [permissionChoice, setPermissionChoice] = useState('recommend')
@@ -61,7 +61,7 @@ function EditPermission() {
     } else {
       setCustomAllowance('')
     }
-    history.goBack()
+    navigate(-1)
   }
 
   return (

@@ -1,4 +1,4 @@
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
@@ -22,7 +22,7 @@ function Tag() {
 }
 function SelectCreateType() {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const hdGroup = useHdAccountGroup()
   const zeroGroup = useIsZeroGroup()
 
@@ -43,7 +43,7 @@ function SelectCreateType() {
             subTitle={t('useExistingSeedDes')}
             Tag={Tag}
             onClick={() => {
-              history.push(CURRENT_SEED_PHRASE)
+              navigate(CURRENT_SEED_PHRASE)
             }}
           />
         ) : null}
@@ -53,7 +53,7 @@ function SelectCreateType() {
           title={t('newSeedPhrase')}
           subTitle={t('newSeedPhraseDes')}
           onClick={() => {
-            history.push(NEW_SEED_PHRASE)
+            navigate(NEW_SEED_PHRASE)
           }}
         />
         <em className="not-italic text-xs text-gray-40 ml-1 mb-2 inline-block">
@@ -65,7 +65,7 @@ function SelectCreateType() {
           title={t('seedPhrase')}
           subTitle={t('seedPhraseDes')}
           onClick={() => {
-            history.push(IMPORT_SEED_PHRASE)
+            navigate(IMPORT_SEED_PHRASE)
           }}
         />
         <CreateTypeItem
@@ -74,7 +74,7 @@ function SelectCreateType() {
           title={t('pKey')}
           subTitle={t('pKeysDes')}
           onClick={() => {
-            history.push(WALLET_IMPORT_PRIVATE_KEY)
+            navigate(WALLET_IMPORT_PRIVATE_KEY)
           }}
         />
         {zeroGroup === false ? (
@@ -85,7 +85,7 @@ function SelectCreateType() {
             subTitle={t('ledgerDes')}
             typeClass="mt-9"
             onClick={() => {
-              history.push(HARDWARE_GUARD)
+              navigate(HARDWARE_GUARD)
             }}
           />
         ) : null}

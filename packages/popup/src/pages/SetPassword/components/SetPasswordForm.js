@@ -1,5 +1,5 @@
 import {useState, useRef, useLayoutEffect} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {PasswordInput} from '../../../components'
 import useGlobalStore from '../../../stores'
@@ -9,7 +9,7 @@ import {ROUTES} from '../../../constants'
 
 const {SELECT_CREATE_TYPE} = ROUTES
 function SetPasswordForm() {
-  const history = useHistory()
+  const navigate = useNavigate()
   const {t} = useTranslation()
   const setCreatedPassword = useGlobalStore(state => state.setCreatedPassword)
 
@@ -49,7 +49,7 @@ function SetPasswordForm() {
     validateConfirmPassword(confirmPassword)
     if (password && confirmPassword) {
       setCreatedPassword(confirmPassword)
-      history.push(SELECT_CREATE_TYPE)
+      navigate(SELECT_CREATE_TYPE)
     }
   }
 

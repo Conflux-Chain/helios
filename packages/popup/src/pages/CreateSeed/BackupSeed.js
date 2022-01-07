@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import {useEffectOnce} from 'react-use'
 import {useTranslation, Trans} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import useGlobalStore from '../../stores'
 import {SeedWord} from './components'
@@ -15,7 +15,7 @@ const {WALLET_GENERATE_MNEMONIC} = RPC_METHODS
 function BackupSeed() {
   useCreatedPasswordGuard()
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {setCreatedMnemonic} = useGlobalStore()
   const [mnemonic, setMnemonic] = useState('')
   useEffectOnce(() =>
@@ -55,7 +55,7 @@ function BackupSeed() {
             className="w-70"
             id="backupSeedBtn"
             onClick={() => {
-              history.push(CONFIRM_SEED_PHRASE)
+              navigate(CONFIRM_SEED_PHRASE)
               setCreatedMnemonic(mnemonic)
             }}
           >

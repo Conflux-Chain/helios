@@ -1,11 +1,11 @@
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {LanguageNav, HomeTitle} from '../../components'
 import SetPasswordForm from './components/SetPasswordForm'
 
 const SetPassword = () => {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <div
@@ -16,7 +16,7 @@ const SetPassword = () => {
         showLan={false}
         hasGoBack={true}
         onClickBack={() => {
-          history.goBack()
+          navigate(-1)
         }}
       />
       <header className="mt-8 mb-4">

@@ -1,5 +1,5 @@
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useState} from 'react'
 import Button from '@fluent-wallet/component-button'
 import {Conflux} from '@fluent-wallet/ledger'
@@ -13,7 +13,7 @@ function OpenApp() {
   // TODO: loading
   const [loadingStatus, setLoadingStatus] = useState(false)
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const query = useQuery()
 
   const onClick = async () => {
@@ -29,8 +29,8 @@ function OpenApp() {
         window.close()
         return
       }
-      history.push(IMPORT_HW_ACCOUNT)
-      history.go(0) // sometimes, when you open the conflux app in ledger, we should refresh the page
+      navigate(IMPORT_HW_ACCOUNT)
+      navigate(0) // sometimes, when you open the conflux app in ledger, we should refresh the page
     }
   }
 

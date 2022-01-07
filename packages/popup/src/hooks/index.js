@@ -11,7 +11,7 @@ import {
 } from '@fluent-wallet/data-format'
 import {getCFXContractMethodSignature} from '@fluent-wallet/contract-method-name'
 import useGlobalStore from '../stores'
-import {useHistory, useLocation} from 'react-router-dom'
+import {useNavigate, useLocation} from 'react-router-dom'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
   useSingleTokenInfoWithNativeTokenSupport,
@@ -29,14 +29,14 @@ const {HOME} = ROUTES
 
 export const useCreatedPasswordGuard = () => {
   const {createdPassword} = useGlobalStore()
-  const history = useHistory()
+  const navigate = useNavigate()
   const zeroGroup = useIsZeroGroup()
 
   useEffect(() => {
     if (zeroGroup && !createdPassword) {
-      history.push(HOME)
+      navigate.push(HOME)
     }
-  }, [createdPassword, history, zeroGroup])
+  }, [createdPassword, navigate, zeroGroup])
 }
 
 export const useQuery = () => {

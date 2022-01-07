@@ -3,7 +3,7 @@ import {useQuery} from '../../hooks'
 import {useTxList} from '../../hooks/useApi'
 
 import {useEffectOnce} from 'react-use'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {HomeNav} from '../../components'
@@ -30,12 +30,12 @@ function Home() {
   const [settingsStatus, setSettingStatus] = useState(false)
   const [accountsAnimate, setAccountsAnimate] = useState(true)
   const query = useQuery()
-  const history = useHistory()
+  const navigate = useNavigate()
   const pendingCount = useTxList({status: {gte: 0, lt: 4}, countOnly: true})
 
   useEffectOnce(() => {
     if (query.get('open') === 'account-list') {
-      history.replace('')
+      navigate('', true)
       setAccountsAnimate(false)
       setAccountStatus(true)
     }
@@ -73,7 +73,7 @@ function Home() {
             variant="outlined"
             className="!border-white !text-white !bg-transparent mr-2 hover:!bg-[#3C3A5D]"
             onClick={() => {
-              history.push('/send-transaction')
+              navigate('/send-transaction')
             }}
           >
             {t('send')}
@@ -85,7 +85,7 @@ function Home() {
               variant="outlined"
               className="!border-white !text-white !bg-transparent hover:!bg-[#3C3A5D]"
               onClick={() => {
-                history.push(HISTORY)
+                navigate(HISTORY)
               }}
             >
               {t('history')}

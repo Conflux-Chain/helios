@@ -1,7 +1,7 @@
 import {useAsync} from 'react-use'
 import {useState, useEffect} from 'react'
 import {isFalse} from '@fluent-wallet/checks'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {
   Authorizing,
   OpenApp,
@@ -21,7 +21,7 @@ function WalletInner() {
   const [isAppOpen, setIsAppOpen] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [showReconnectStatus, setShowReconnectStatus] = useState(false)
-  const history = useHistory()
+  const navigate = useNavigate()
   const query = useQuery()
 
   const {loading, value} = useAsync(async () => {
@@ -46,7 +46,7 @@ function WalletInner() {
         window.close()
         return
       }
-      history.push(IMPORT_HW_ACCOUNT)
+      navigate(IMPORT_HW_ACCOUNT)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, isAppOpen])

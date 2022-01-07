@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
 import Loading from '@fluent-wallet/component-loading'
@@ -11,7 +11,7 @@ const {HOME} = ROUTES
 
 function HwTransactionResult({status, isDapp, sendError}) {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {clearSendTransactionParams} = useGlobalStore()
   const isRejected = status === HW_TX_STATUS.REJECTED
   const open = status && status !== HW_TX_STATUS.SUCCESS
@@ -36,7 +36,7 @@ function HwTransactionResult({status, isDapp, sendError}) {
             fullWidth={true}
             onClick={() => {
               clearSendTransactionParams()
-              if (!isDapp) history.push(HOME)
+              if (!isDapp) navigate(HOME)
               else window.close()
             }}
           >

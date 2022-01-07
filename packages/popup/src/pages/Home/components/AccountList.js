@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import Message from '@fluent-wallet/component-message'
@@ -109,12 +109,12 @@ AccountItem.propTypes = {
 function AccountList({onClose, open, accountsAnimate = true}) {
   const {t} = useTranslation()
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {accountGroups, currentNetwork} = useDbAccountListAssets()
   const ticker = currentNetwork?.ticker
   const onAddAccount = () => {
-    history.push('?open=account-list')
-    history.push(SELECT_CREATE_TYPE)
+    navigate('?open=account-list')
+    navigate(SELECT_CREATE_TYPE)
   }
 
   return accountGroups && currentNetwork ? (

@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
 import Alert from '@fluent-wallet/component-alert'
@@ -50,7 +50,7 @@ const {
 
 function ConfirmTransaction() {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {authStatus: authStatusFromLedger, isAppOpen: isAppOpenFromLedger} =
     useConnect()
   const [authStatus, setAuthStatus] = useState(true)
@@ -306,7 +306,7 @@ function ConfirmTransaction() {
         if (!isHwAccount) setLoading(false)
         else setSendStatus(HW_TX_STATUS.SUCCESS)
         setTimeout(() => clearSendTransactionParams(), 500)
-        history.push(HOME)
+        navigate(HOME)
       })
       .catch(error => {
         console.error('error', error)
@@ -364,7 +364,7 @@ function ConfirmTransaction() {
         </div>
         <div className="flex flex-col items-center">
           {isDapp && params.data && (
-            <Link onClick={() => history.push(VIEW_DATA)} className="mb-6">
+            <Link onClick={() => navigate(VIEW_DATA)} className="mb-6">
               {t('viewData')}
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
             </Link>
@@ -376,7 +376,7 @@ function ConfirmTransaction() {
                 className="flex-1 mr-3"
                 onClick={() => {
                   clearSendTransactionParams()
-                  history.push(HOME)
+                  navigate(HOME)
                 }}
               >
                 {t('cancel')}

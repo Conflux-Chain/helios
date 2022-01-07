@@ -1,5 +1,5 @@
 import {useEffect} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {t} from 'i18next'
 import Alert from '@fluent-wallet/component-alert'
 import {TitleNav, IdentityPanel} from '../../components'
@@ -9,16 +9,16 @@ const {HOME} = ROUTES
 
 function ExportPrivateKey() {
   const {exportPrivateKey, setExportPrivateKey} = useGlobalStore()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!exportPrivateKey) {
-      history.push(HOME)
+      navigate(HOME)
     }
     return () => {
       setExportPrivateKey('')
     }
-  }, [setExportPrivateKey, exportPrivateKey, history])
+  }, [setExportPrivateKey, exportPrivateKey, navigate])
 
   return (
     <div

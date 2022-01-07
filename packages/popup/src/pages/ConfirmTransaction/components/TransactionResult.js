@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {CheckCircleOutlined} from '@fluent-wallet/component-icons'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
@@ -18,7 +18,7 @@ function TransactionResult({transactionHash}) {
     },
   } = useCurrentAddress()
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const {clearSendTransactionParams} = useGlobalStore()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   return (
@@ -43,7 +43,7 @@ function TransactionResult({transactionHash}) {
       <Button
         className="w-70"
         onClick={() => {
-          history.push(HOME)
+          navigate(HOME)
           clearSendTransactionParams()
         }}
       >

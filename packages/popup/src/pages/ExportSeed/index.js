@@ -1,5 +1,5 @@
 import {useEffect} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {t} from 'i18next'
 import Alert from '@fluent-wallet/component-alert'
 import {TitleNav, IdentityPanel} from '../../components'
@@ -9,16 +9,16 @@ const {HOME} = ROUTES
 
 function ExportSeed() {
   const {exportSeedPhrase, setExportSeedPhrase} = useGlobalStore()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!exportSeedPhrase) {
-      history.push(HOME)
+      navigate(HOME)
     }
     return () => {
       setExportSeedPhrase('')
     }
-  }, [setExportSeedPhrase, exportSeedPhrase, history])
+  }, [setExportSeedPhrase, exportSeedPhrase, navigate])
 
   return (
     <div id="export-seed" className="h-full w-full pb-6 bg-bg flex flex-col">

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
 import {useCurrentDapp, useCurrentAddress} from '../../../hooks/useApi'
 import {DisplayBalance, WrapIcon} from '../../../components'
@@ -38,7 +38,7 @@ function InfoList({
   pendingAuthReq,
 }) {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const data = useCurrentDapp()
   const {
     data: {network},
@@ -68,7 +68,7 @@ function InfoList({
               <EditOutlined
                 className="w-4 h-4 cursor-pointer group-hover:text-primary"
                 id="editAllowance"
-                onClick={() => history.push(EDIT_PERMISSION)}
+                onClick={() => navigate(EDIT_PERMISSION)}
               />
             </WrapIcon>
           </span>

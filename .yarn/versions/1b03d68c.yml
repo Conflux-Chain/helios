@@ -1,0 +1,32 @@
+releases:
+  "@fluent-wallet/base32-address": patch
+  "@fluent-wallet/provider-api": patch
+  helios-inpage: patch
+
+declined:
+  - "@fluent-wallet/addr-by-network"
+  - browser-extension
+  - "@fluent-wallet/contract-method-name"
+  - "@fluent-wallet/detect-address-type"
+  - "@fluent-wallet/doc-rpc-parameter"
+  - "@fluent-wallet/doc-try-rpc"
+  - "@fluent-wallet/doc-use-rpc"
+  - "@fluent-wallet/doc-use-spec"
+  - helios-popup
+  - "@fluent-wallet/wallet_add-vault"
+  - "@fluent-wallet/wallet_create-account"
+  - "@fluent-wallet/wallet_create-address"
+  - "@fluent-wallet/wallet_enrich-conflux-tx"
+  - "@fluent-wallet/wallet_export-account-group"
+  - "@fluent-wallet/wallet_generate-address"
+  - "@fluent-wallet/wallet_get-balance"
+  - "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account"
+  - "@fluent-wallet/wallet_validate20token"
+  - "@fluent-wallet/signature"
+  - "@fluent-wallet/single-call-balance-tracker"
+  - "@fluent-wallet/spec"
+  - "@fluent-wallet/test-helpers"
+  - "@fluent-wallet/tx-history-checker"
+  - "@fluent-wallet/component-modal"
+  - "@fluent-wallet/shorten-address"
+  - "@fluent-wallet/use-rpc"

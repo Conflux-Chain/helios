@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
 import {SlideCard, LanguageNav} from '../../../components'
@@ -9,7 +9,7 @@ import {RPC_METHODS, ROUTES} from '../../../constants'
 import {request} from '../../../utils'
 import useGlobalStore from '../../../stores/index.js'
 
-const {LOCK, WALLET_IS_LOCKED, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
+const {LOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 const {ACCOUNT_MANAGEMENT} = ROUTES
 
 function SettingItem({icon, content, onClick}) {
@@ -37,15 +37,13 @@ SettingItem.propTypes = {
 
 function Setting({onClose, open}) {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {setFatalError} = useGlobalStore()
   const {mutate} = useSWRConfig()
   const onLock = () => {
     request(LOCK)
       .then(() => {
-        mutate([WALLET_METADATA_FOR_POPUP]).then(() => {
-          mutate([WALLET_IS_LOCKED], true, true)
-        })
+        mutate([WALLET_METADATA_FOR_POPUP])
       })
       .catch(error => setFatalError(error))
   }
@@ -68,7 +66,7 @@ function Setting({onClose, open}) {
         cardContent={
           <div className="pt-1 pb-4 flex-1">
             <SettingItem
-              onClick={() => history.push(ACCOUNT_MANAGEMENT)}
+              onClick={() => navigate(ACCOUNT_MANAGEMENT)}
               icon={
                 <img src="/images/account.svg" alt="icon" className="w-5 h-5" />
               }

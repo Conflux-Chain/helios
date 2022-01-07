@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useSWRConfig} from 'swr'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {QuestionCircleOutlined} from '@fluent-wallet/component-icons'
 import Input from '@fluent-wallet/component-input'
@@ -13,7 +13,7 @@ import {RPC_METHODS, ROUTES} from '../../constants'
 import {useHdAccountGroup} from '../../hooks/useApi'
 import useLoading from '../../hooks/useLoading'
 
-const {WALLET_CREATE_ACCOUNT, WALLET_ZERO_ACCOUNT_GROUP} = RPC_METHODS
+const {WALLET_CREATE_ACCOUNT, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 const {HOME} = ROUTES
 
 function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
@@ -56,7 +56,7 @@ SeedPhrase.propTypes = {
 
 function CurrentSeed() {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {mutate} = useSWRConfig()
   const hdGroup = useHdAccountGroup()
 
@@ -86,10 +86,10 @@ function CurrentSeed() {
       accountGroupId: hdGroup[selectedGroupIdx].eid,
       nickname: accountName || accountNamePlaceholder,
     })
+      .then(() => mutate([WALLET_METADATA_FOR_POPUP]))
       .then(() => {
-        mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
         setLoading(false)
-        history.push(HOME)
+        navigate(HOME)
       })
       .catch(error => {
         setLoading(false)
