@@ -171,7 +171,7 @@ export const useIsZeroGroup = () => {
 export const usePendingAuthReq = () => {
   const isLocked = useIsLocked()
   const {data: pendingAuthReq} = useRPC(
-    !isLocked ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
+    isLocked === false ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
   )
   return isLocked ? [] : pendingAuthReq
 }

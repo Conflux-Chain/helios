@@ -1,5 +1,5 @@
 import {useState, useRef, useLayoutEffect} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
@@ -13,7 +13,7 @@ const {WALLET_IS_LOCKED, WALLET_UNLOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 
 const {HOME} = ROUTES
 const UnlockPage = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const {t} = useTranslation()
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -38,7 +38,7 @@ const UnlockPage = () => {
             if (isDapp && pendingAuthReq?.length === 0) {
               window.close()
             } else {
-              history.push(HOME)
+              navigate(HOME)
             }
           })
         })

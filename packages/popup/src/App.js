@@ -1,21 +1,22 @@
+import PropTypes from 'prop-types'
 import {ErrorBoundary} from 'react-error-boundary'
+import history from 'history/browser'
 import {isUndefined} from '@fluent-wallet/checks'
 import React, {Suspense, cloneElement, useEffect} from 'react'
 import {
+  useLocation,
   HashRouter as Router,
-  Redirect,
+  Navigate,
   Route,
-  Switch,
-  withRouter,
+  Routes,
 } from 'react-router-dom'
 import {TransitionGroup, CSSTransition} from 'react-transition-group'
 import {useDataForPopup} from './hooks/useApi'
-import {ProtectedRoute} from './components'
-import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
+import {ROUTES, FULL_WINDOW_ROUTES, DAPP_REQUEST_ROUTES} from './constants'
 import PageLoading from './hooks/useLoading/PageLoading'
 import './App.css'
 import useGlobalStore from './stores/index.js'
-// import {getPageType} from './utils'
+import {getPageType} from './utils'
 
 import ErrorPage from './pages/Error'
 import HomePage from './pages/Home'
@@ -79,180 +80,207 @@ const {
   IMPORT_HW_ACCOUNT,
 } = ROUTES
 
-const routes = [
-  {
-    path: WALLET_UNLOCK,
-    component: Unlock,
-  },
-  {
-    path: WELCOME,
-    component: Welcome,
-  },
-  {
-    path: CURRENT_SEED_PHRASE,
-    component: CurrentSeed,
-  },
-  {
-    path: NEW_SEED_PHRASE,
-    component: NewSeed,
-  },
-  {
-    path: BACKUP_SEED_PHRASE,
-    component: BackupSeed,
-  },
-  {
-    path: CONFIRM_SEED_PHRASE,
-    component: ConfirmSeed,
-  },
-  {
-    path: IMPORT_SEED_PHRASE,
-    component: ImportSeedPhrase,
-  },
-  {
-    path: WALLET_IMPORT_PRIVATE_KEY,
-    component: ImportPrivateKey,
-  },
-  {
-    path: SEND_TRANSACTION,
-    component: SendTransaction,
-  },
-  {
-    path: CONFIRM_TRANSACTION,
-    component: ConfirmTransaction,
-  },
-  {
-    path: EDIT_GAS_FEE,
-    component: EditGasFee,
-  },
-  {
-    path: EDIT_PERMISSION,
-    component: EditPermission,
-  },
-  {
-    path: SET_PASSWORD,
-    component: SetPassword,
-  },
-  {
-    path: SELECT_CREATE_TYPE,
-    component: SelectCreateType,
-  },
-  {
-    path: VIEW_DATA,
-    component: ViewData,
-  },
-  {
-    path: CONNECT_SITE,
-    component: ConnectSite,
-  },
-  {
-    path: CONFIRM_ADD_SUGGESTED_TOKEN,
-    component: ConfirmAddSuggestedToken,
-  },
-  {
-    path: REQUEST_SIGNATURE,
-    component: RequestSignature,
-  },
-  {
-    path: DAPP_SWITCH_NETWORK,
-    component: DappSwitchNetwork,
-  },
-  {
-    path: DAPP_ADD_NETWORK,
-    component: DappAddNetwork,
-  },
-  {
-    path: HISTORY,
-    component: History,
-  },
-  {
-    path: ACCOUNT_MANAGEMENT,
-    component: AccountManagement,
-  },
-  {
-    path: EXPORT_SEED,
-    component: ExportSeed,
-  },
-  {
-    path: EXPORT_PRIVATEKEY,
-    component: ExportPrivateKey,
-  },
-  {
-    path: ERROR,
-    component: ErrorPage,
-  },
-  {
-    path: HARDWARE_GUARD,
-    component: HardwareGuard,
-  },
-  {
-    path: CONNECT_HARDWARE_WALLET,
-    component: ConnectHardwareWallet,
-  },
-  {
-    path: IMPORT_HW_ACCOUNT,
-    component: ImportHwAccount,
-  },
-]
+function RouteTransition({children}) {
+  // The normal case of routing forward and backward applies a forward/backward sliding field to the left and right.
+  // When switching completely to unrelated content: e.g. tap on the first screen of the wallet; switch to a locked page. Such places should use another transition animation.
+  const location = useLocation()
 
-const AppRoutes = withRouter(
-  ({isLocked, isZeroGroup, pendingAuthReq, location, history}) => {
-    // The normal case of routing forward and backward applies a forward/backward sliding field to the left and right.
-    // When switching completely to unrelated content: e.g. tap on the first screen of the wallet; switch to a locked page. Such places should use another transition animation.
-    const fullSwitch =
-      location.pathname === WALLET_UNLOCK ||
-      location.pathname === ERROR ||
-      history.length === 1
+  const fullSwitch =
+    location.pathname === WALLET_UNLOCK ||
+    location.pathname === ERROR ||
+    history.length === 1
 
-    return (
-      <div
-        id="router"
-        className={`m-auto light relative overflow-hidden ${
-          FULL_WINDOW_ROUTES.includes(location.pathname)
-            ? 'h-screen w-full'
-            : 'h-150 w-93'
-        }`}
+  return (
+    <div
+      id="router"
+      className={`m-auto light relative overflow-hidden ${
+        FULL_WINDOW_ROUTES.includes(location.pathname)
+          ? 'h-screen w-full'
+          : 'h-150 w-93'
+      }`}
+    >
+      <TransitionGroup
+        component={null}
+        childFactory={child =>
+          cloneElement(child, {
+            classNames: `router router-${
+              fullSwitch
+                ? 'full-switch'
+                : history.action === 'PUSH'
+                ? 'forward'
+                : 'back'
+            }`,
+          })
+        }
       >
-        <TransitionGroup
-          component={null}
-          childFactory={child =>
-            cloneElement(child, {
-              classNames: `router router-${
-                fullSwitch
-                  ? 'full-switch'
-                  : history.action === 'PUSH'
-                  ? 'forward'
-                  : 'back'
-              }`,
-            })
-          }
-        >
-          <CSSTransition key={location.pathname} timeout={300} in>
-            <Switch location={location}>
-              <ProtectedRoute
-                key={HOME}
-                hasAccount={!isZeroGroup}
-                isLocked={isLocked}
-                pendingAuthReq={pendingAuthReq}
-                exact
-                path={HOME}
-                component={HomePage}
-              />
-              {routes.map(route => (
-                <Route
-                  key={route.path}
-                  exact
-                  path={route.path}
-                  component={route.component}
-                />
-              ))}
-              <Route path="*" render={() => <Redirect to={ERROR} />} />
-            </Switch>
-          </CSSTransition>
-        </TransitionGroup>
-      </div>
+        <CSSTransition key={location.pathname} timeout={300} in>
+          {children}
+        </CSSTransition>
+      </TransitionGroup>
+    </div>
+  )
+}
+
+RouteTransition.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+}
+
+function LockedRoutes() {
+  /* prettier-ignore */
+  return (
+    <Routes>
+      <Route path={WALLET_UNLOCK} exect element={<Unlock />} />
+      <Route path="*" element={<Navigate to={WALLET_UNLOCK} />} />
+    </Routes>
+  )
+}
+
+function ZeroAccountRoutes() {
+  /* prettier-ignore */
+  return (
+    <Routes>
+      <Route exact path={CURRENT_SEED_PHRASE} element={<CurrentSeed/>} />
+      <Route exact path={NEW_SEED_PHRASE} element={<NewSeed/>} />
+      <Route exact path={IMPORT_SEED_PHRASE} element={<ImportSeedPhrase/>} />
+      <Route exact path={WALLET_IMPORT_PRIVATE_KEY} element={<ImportPrivateKey/>} />
+      <Route exact path={NEW_SEED_PHRASE} element={<NewSeed/>} />
+      <Route exact path={SET_PASSWORD} element={<SetPassword/>} />
+      <Route exact path={SELECT_CREATE_TYPE} element={<SelectCreateType/>} />
+      <Route exact path={WELCOME} element={<Welcome />} />
+      <Route path="*" element={<Navigate to={{pathname: WELCOME}} />} />
+    </Routes>
+  )
+}
+
+function FatalErrorRoutes() {
+  /* prettier-ignore */
+  return (
+    <Routes>
+      <Route exact path={ERROR} element={<ErrorPage/>} />
+      <Route path="*" element={<Navigate to={ERROR} />} />
+    </Routes>
+  )
+}
+
+function AuthReqRoutes() {
+  const {pendingAuthReq} = useDataForPopup()
+  const path = DAPP_REQUEST_ROUTES[pendingAuthReq[0]?.req?.method]
+  /* prettier-ignore */
+  return (
+    <Routes>
+      <Route exact path={DAPP_SWITCH_NETWORK} element={<DappSwitchNetwork/>} />
+      <Route exact path={WALLET_IMPORT_PRIVATE_KEY} element={<ImportPrivateKey/>} />
+      <Route exact path={CONFIRM_ADD_SUGGESTED_TOKEN} element={<ConfirmAddSuggestedToken/>} />
+      <Route exact path={CONNECT_SITE} element={<ConnectSite/>} />
+      <Route exact path={EDIT_GAS_FEE} element={<EditGasFee/>} />
+      <Route exact path={EDIT_PERMISSION} element={<EditPermission/>} />
+      <Route exact path={CONFIRM_TRANSACTION} element={<ConfirmTransaction/>} />
+      <Route exact path={VIEW_DATA} element={<ViewData/>} />
+      <Route exact path={DAPP_ADD_NETWORK} element={<DappAddNetwork/>} />
+      <Route exact path={REQUEST_SIGNATURE} element={<RequestSignature/>} />
+      <Route exact path={ERROR} element={<ErrorPage/>} />
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to={path || ERROR}
+            state={{params: path ? pendingAuthReq[0]?.req?.params : undefined,}}
+          />
+        }
+      />
+    </Routes>
+  )
+}
+
+function PageRoutes() {
+  /* prettier-ignore */
+  return (
+      <Routes>
+        <Route exact path={HOME} element={<HomePage />} />
+
+        <Route exact path={HISTORY} element={<History/>} />
+
+        <Route exact path={SELECT_CREATE_TYPE} element={<SelectCreateType/>} />
+        <Route exact path={CURRENT_SEED_PHRASE} element={<CurrentSeed/>} />
+        <Route exact path={NEW_SEED_PHRASE} element={<NewSeed/>} />
+        <Route exact path={CONFIRM_SEED_PHRASE} element={<ConfirmSeed/>} />
+        <Route exact path={IMPORT_SEED_PHRASE} element={<ImportSeedPhrase/>} />
+        <Route exact path={WALLET_IMPORT_PRIVATE_KEY} element={<ImportPrivateKey/>} />
+
+        <Route exact path={SEND_TRANSACTION} element={<SendTransaction/>} />
+        <Route exact path={CONFIRM_TRANSACTION} element={<ConfirmTransaction/>} />
+        <Route exact path={EDIT_GAS_FEE} element={<EditGasFee/>} />
+        <Route exact path={VIEW_DATA} element={<ViewData/>}/>
+
+
+        <Route exact path={ACCOUNT_MANAGEMENT} element={<AccountManagement/>} />
+
+
+        <Route exact path={BACKUP_SEED_PHRASE} element={<BackupSeed/>} />
+        <Route exact path={EXPORT_SEED} element={<ExportSeed/>} />
+        <Route exact path={EXPORT_PRIVATEKEY} element={<ExportPrivateKey/>} />
+
+        <Route exact path={HARDWARE_GUARD} element={<HardwareGuard/>} />
+        <Route exact path={CONNECT_HARDWARE_WALLET} element={<ConnectHardwareWallet/>} />
+        <Route exact path={IMPORT_HW_ACCOUNT} element={<ImportHwAccount/>} />
+
+        <Route exact path={ERROR} element={<ErrorPage/>} />
+
+        <Route path="*" element={<Navigate to={HOME} />} />
+      </Routes> )
+}
+
+function AppRoutes() {
+  const {
+    locked: isLocked,
+    zeroGroup: isZeroGroup,
+    pendingAuthReq,
+  } = useDataForPopup()
+  const {FATAL_ERROR} = useGlobalStore()
+  const isDapp = getPageType() === 'notification'
+  const hasPendingAuthReq = pendingAuthReq?.length > 0
+
+  if (FATAL_ERROR) {
+    return (
+      <RouteTransition>
+        <FatalErrorRoutes />
+      </RouteTransition>
     )
-  },
-)
+  }
+
+  if (isZeroGroup) {
+    return (
+      <RouteTransition>
+        <ZeroAccountRoutes />
+      </RouteTransition>
+    )
+  }
+
+  if (isLocked) {
+    return (
+      <RouteTransition>
+        <LockedRoutes />
+      </RouteTransition>
+    )
+  }
+
+  if (isDapp && hasPendingAuthReq) {
+    return (
+      <RouteTransition>
+        <AuthReqRoutes />
+      </RouteTransition>
+    )
+  }
+
+  return (
+    <RouteTransition>
+      <PageRoutes />
+    </RouteTransition>
+  )
+}
 
 function App() {
   const {
@@ -261,13 +289,13 @@ function App() {
     pendingAuthReq,
   } = useDataForPopup()
 
-  // TODO add this when make sure pendingAuthReq return right
-  // useEffect(() => {
-  //   if (getPageType() === 'popup' && pendingAuthReq?.length > 0) {
-  //     console.log(pendingAuthReq)
-  //     setTimeout(() => window.close(), 300)
-  //   }
-  // }, [pendingAuthReq?.length])
+  useEffect(() => {
+    if (isLocked !== false) return
+    if (getPageType() !== 'popup') return
+    if (pendingAuthReq?.length > 0) {
+      setTimeout(() => window.close(), 300)
+    }
+  }, [isLocked, pendingAuthReq?.length])
 
   const {setFatalError} = useGlobalStore()
 
@@ -291,11 +319,7 @@ function App() {
         onError={error => setFatalError(error)}
       >
         <Suspense fallback={<PageLoading />}>
-          <AppRoutes
-            isLocked={isLocked}
-            isZeroGroup={isZeroGroup}
-            pendingAuthReq={pendingAuthReq}
-          />
+          <AppRoutes />
         </Suspense>
       </ErrorBoundary>
     </Router>

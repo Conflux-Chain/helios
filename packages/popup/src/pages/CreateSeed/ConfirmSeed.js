@@ -1,7 +1,7 @@
 import {useState, useEffect, useMemo} from 'react'
 import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import useGlobalStore from '../../stores'
 import {SeedWord} from './components'
@@ -17,7 +17,7 @@ function ConfirmSeed() {
   useCreatedPasswordGuard()
   const {t} = useTranslation()
   const {mutate} = useSWRConfig()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {
     createdMnemonic,
     createdPassword,
@@ -87,7 +87,7 @@ function ConfirmSeed() {
           .then(() => {
             createdPassword && setCreatedPassword('')
             setLoading(false)
-            history.push(HOME)
+            navigate(HOME)
           })
           .catch(() => {
             setLoading(false)

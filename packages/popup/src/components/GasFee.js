@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import {CFX_DECIMALS, ETH_DECIMALS} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
@@ -14,7 +14,7 @@ const {EDIT_GAS_FEE} = ROUTES
 function GasFee({estimateRst}) {
   const {gasPrice: _gasPrice} = useGlobalStore()
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
   const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
@@ -40,7 +40,7 @@ function GasFee({estimateRst}) {
       <header className="gas-fee-header flex items-center justify-between w-full text-gray-40 mb-2">
         {t('gasFee')}
         <span className="flex items-center">
-          <Link onClick={() => history.push(EDIT_GAS_FEE)}>
+          <Link onClick={() => navigate(EDIT_GAS_FEE)}>
             {t('edit')}
             <RightOutlined className="w-3 h-3 text-primary ml-1" />
           </Link>

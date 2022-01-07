@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useSWRConfig} from 'swr'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {QuestionCircleOutlined} from '@fluent-wallet/component-icons'
 import Input from '@fluent-wallet/component-input'
@@ -56,7 +56,7 @@ SeedPhrase.propTypes = {
 
 function CurrentSeed() {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {mutate} = useSWRConfig()
   const hdGroup = useHdAccountGroup()
 
@@ -89,7 +89,7 @@ function CurrentSeed() {
       .then(() => {
         mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
         setLoading(false)
-        history.push(HOME)
+        navigate(HOME)
       })
       .catch(error => {
         setLoading(false)

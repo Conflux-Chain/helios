@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {runtime} from '@fluent-wallet/webextension'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
@@ -15,7 +15,7 @@ const {HOME} = ROUTES
 
 function Error() {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {FATAL_ERROR} = useGlobalStore()
   const query = useQuery()
   const urlErrorMsg = query.get('errorMsg') ?? ''
@@ -110,7 +110,7 @@ function Error() {
           id="error-btn"
           className="w-70 mt-4 mx-auto"
           onClick={() =>
-            errorType === 'fullNode' ? runtime.reload() : history.push(HOME)
+            errorType === 'fullNode' ? runtime.reload() : navigate(HOME)
           }
         >
           {errorType === 'fullNode' ? t('retry') : t('back')}

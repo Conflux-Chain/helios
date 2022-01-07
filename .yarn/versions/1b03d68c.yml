@@ -1,0 +1,9 @@
+declined:
+  - "@fluent-wallet/doc-rpc-parameter"
+  - "@fluent-wallet/doc-try-rpc"
+  - "@fluent-wallet/doc-use-rpc"
+  - "@fluent-wallet/doc-use-spec"
+  - helios-popup
+  - "@fluent-wallet/test-helpers"
+  - "@fluent-wallet/component-modal"
+  - "@fluent-wallet/use-rpc"

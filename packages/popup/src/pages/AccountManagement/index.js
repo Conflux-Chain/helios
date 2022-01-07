@@ -4,7 +4,7 @@ import {isNumber, isArray} from '@fluent-wallet/checks'
 import {KeyOutlined} from '@fluent-wallet/component-icons'
 import {useTranslation} from 'react-i18next'
 import useGlobalStore from '../../stores'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../constants'
 import {request, validatePasswordReg} from '../../utils'
 import {Avatar, TitleNav, WrapIcon, ConfirmPassword} from '../../components'
@@ -78,7 +78,7 @@ AccountManagementItem.propTypes = {
 
 function AccountManagement() {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
@@ -124,7 +124,7 @@ function AccountManagement() {
         setSendingRequestStatus(false)
         if (exportMethod === WALLET_EXPORT_ACCOUNT_GROUP) {
           setExportSeedPhrase(res)
-          return history.push(EXPORT_SEED)
+          return navigate(EXPORT_SEED)
         }
         setExportPrivateKey(
           isArray(res)
@@ -133,7 +133,7 @@ function AccountManagement() {
                 .privateKey.replace('0x', '')
             : res,
         )
-        history.push(EXPORT_PRIVATEKEY)
+        navigate(EXPORT_PRIVATEKEY)
       })
       .catch(e => {
         setSendingRequestStatus(false)

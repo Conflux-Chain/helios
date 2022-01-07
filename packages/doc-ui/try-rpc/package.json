@@ -11,9 +11,9 @@
   "dependencies": {
     "@fluent-wallet/doc-use-rpc": "workspace:packages/doc-ui/useRPC",
     "@fluent-wallet/doc-use-spec": "workspace:packages/doc-ui/useSpec",
-    "prop-types": "^15.7.2",
+    "prop-types": "^15.8.1",
     "react-json-editor-ajrm": "2.5.13",
-    "react-use": "17.3.1",
-    "zustand": "^3.6.7"
+    "react-use": "17.3.2",
+    "zustand": "^3.6.8"
   }
 }

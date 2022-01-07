@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TitleNav, CompWithLabel} from '../../components'
 import Button from '@fluent-wallet/component-button'
@@ -20,7 +20,7 @@ const {HOME} = ROUTES
 
 function ImportPrivateKey() {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {mutate} = useSWRConfig()
 
   const [name, setName] = useState('')
@@ -68,7 +68,7 @@ function ImportPrivateKey() {
               .then(() => {
                 createdPassword && setCreatedPassword('')
                 setLoading(false)
-                history.push(HOME)
+                navigate(HOME)
               })
               .catch(error => {
                 setLoading(false)

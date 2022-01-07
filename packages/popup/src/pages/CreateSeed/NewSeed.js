@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import {useTranslation, Trans} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
 import {CompWithLabel, TitleNav} from '../../components'
@@ -14,7 +14,7 @@ const {BACKUP_SEED_PHRASE} = ROUTES
 function NewSeed() {
   useCreatedPasswordGuard()
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {setCreatedGroupName} = useGlobalStore()
   const [groupName, setGroupName] = useState('')
   const [groupNamePlaceholder, setGroupNamePlaceholder] = useState('')
@@ -57,7 +57,7 @@ function NewSeed() {
             className="w-70"
             id="newSeedBtn"
             onClick={() => {
-              history.push(BACKUP_SEED_PHRASE)
+              navigate(BACKUP_SEED_PHRASE)
               setCreatedGroupName(groupName || groupNamePlaceholder)
             }}
             disabled={!(groupName || groupNamePlaceholder)}

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
 import {SlideCard, LanguageNav} from '../../../components'
@@ -37,7 +37,7 @@ SettingItem.propTypes = {
 
 function Setting({onClose, open}) {
   const {t} = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const {setFatalError} = useGlobalStore()
   const {mutate} = useSWRConfig()
   const onLock = () => {
@@ -68,7 +68,7 @@ function Setting({onClose, open}) {
         cardContent={
           <div className="pt-1 pb-4 flex-1">
             <SettingItem
-              onClick={() => history.push(ACCOUNT_MANAGEMENT)}
+              onClick={() => navigate(ACCOUNT_MANAGEMENT)}
               icon={
                 <img src="/images/account.svg" alt="icon" className="w-5 h-5" />
               }
