@@ -31,6 +31,7 @@ function TokenItem({
   rightIcon = null,
   onSelect,
   index,
+  className = '',
   ...props
 }) {
   const [state, balance] = getTokenItem(token)
@@ -47,9 +48,9 @@ function TokenItem({
 
   return (
     <div
-      className={`w-full h-14 flex items-center flex-shrink-0 ${
+      className={`w-full h-14 flex items-center flex-shrink-0 px-3 ${
         onSelect ? 'cursor-pointer' : ''
-      } hover:bg-primary-4 px-2`}
+      } ${onSelect ? 'hover:bg-primary-4' : ''} ${className}`}
       id={`tokenItem${index}`}
       onClick={() => onSelect && onSelect(token)}
       aria-hidden="true"
@@ -101,6 +102,7 @@ TokenItem.propTypes = {
   rightIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   onSelect: PropTypes.func,
   index: PropTypes.number,
+  className: PropTypes.string,
 }
 
 export default TokenItem

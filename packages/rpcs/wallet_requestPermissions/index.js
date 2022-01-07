@@ -85,9 +85,9 @@ export const main = async ({
   site,
   app,
 }) => {
-  if ((_inpage || _internal) && !_origin)
+  if ((_inpage || _internal) && !_origin && !_popup)
     throw InvalidRequest(`no origin found`)
-  if (_inpage || _internal) {
+  if ((_inpage || _internal) && !_popup) {
     const perms = formatPermissions(params)
     if (app && JSON.stringify(app.perms) === JSON.stringify(perms))
       return app.perms

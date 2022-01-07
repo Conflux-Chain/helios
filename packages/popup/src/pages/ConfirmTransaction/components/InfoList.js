@@ -48,7 +48,7 @@ function InfoList({
   const currentDapp = isDapp ? app : data?.app
   const currentNetwork = isDapp ? app?.currentNetwork : network
   return (
-    <div className="flex flex-col">
+    <div className="info-list-container flex flex-col">
       <div className="flex justify-between mb-4">
         <span className="text-gray-40">{t('network')}</span>
         <CurrentNetworkDisplay currentNetwork={currentNetwork} />

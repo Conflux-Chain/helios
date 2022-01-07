@@ -109,8 +109,8 @@ function AddToken({onClose, open}) {
         <div className="mt-4 flex flex-col flex-grow h-[calc(100%-2.75rem)]">
           <SearchToken value={searchContent} onChange={setSearchContent} />
           {tokenList && (
-            <div className="relative p-3 mt-3 bg-gray-0 rounded flex flex-col flex-grow">
-              <p className="ml-1 mb-1 text-gray-40">{t('searchResults')}</p>
+            <div className="relative pt-3 mt-3 bg-gray-0 rounded flex flex-col flex-grow">
+              <p className="ml-4 mb-1 text-gray-40">{t('searchResults')}</p>
               <div className="flex flex-col flex-auto overflow-auto h-0 no-scroll">
                 {tokenList.map(([token, added], index) => (
                   <TokenItem
@@ -135,11 +135,11 @@ function AddToken({onClose, open}) {
                   />
                 ))}
               </div>
-              <div className="absolute bottom-0 left-0 right-0 h-6 bg-token-background rounded-xl" />
+              <div className="absolute left-0 right-0 bottom-0 h-6 bg-token-background rounded-b-xl" />
             </div>
           )}
           {!tokenList && (
-            <div className="flex  items-center flex-col">
+            <div className="flex px-3 items-center flex-col">
               <img
                 src="/images/no-available-token.svg"
                 alt="no result"

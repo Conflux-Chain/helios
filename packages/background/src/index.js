@@ -25,6 +25,12 @@ import {updateUserId} from '@fluent-wallet/sentry'
 
 if (!IS_PROD_MODE) window.b = browser
 if (!IS_PROD_MODE) window.bb = bb
+
+bb.commands.onCommand.addListener(commandName => {
+  if (commandName === 'inner_debug_only')
+    window.open(`${location.origin}/popup.html`)
+})
+
 import {rpcEngineOpts} from './rpc-engine-opts'
 
 initSentry(getDefaultOptions())

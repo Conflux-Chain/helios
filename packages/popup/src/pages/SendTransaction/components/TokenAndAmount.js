@@ -36,17 +36,19 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   }
   const content = (
     <div className="relative flex flex-col flex-1">
-      <SearchToken value={searchValue} onChange={setSearchValue} />
-      <span className="inline-block mt-3 mb-1 text-gray-40 text-xs">
+      <div className="px-3">
+        <SearchToken value={searchValue} onChange={setSearchValue} />
+      </div>
+      <span className="inline-block px-3 mt-3 mb-1 text-gray-40 text-xs">
         {t('tokenList')}
       </span>
       <TokenList tokenList={homeTokenList} onSelectToken={onSelectToken} />
-      <div className="absolute bottom-0 left-0 right-0 h-6 bg-token-background rounded-xl" />
+      <div className="absolute left-0 right-0 bottom-0 h-6 bg-token-background rounded-b-xl" />
     </div>
   )
   return (
     <Modal
-      className="!bg-gray-circles bg-no-repeat w-80 h-[552px] pb-3 overflow-y-hidden"
+      className="!bg-gray-circles !px-3 bg-no-repeat w-80 h-[552px] pb-3 overflow-y-hidden"
       open={open}
       title={t('chooseToken')}
       content={content}

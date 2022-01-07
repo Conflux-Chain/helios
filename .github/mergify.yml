@@ -1,0 +1,39 @@
+pull_request_rules:
+  - name: Automatic squash to dev on approval
+    conditions:
+      - "#approved-reviews-by>=1"
+      - label!=work-in-progress
+      - label!=wip
+      - "base=dev"
+      - "-merged"
+      - "-closed"
+      - "-conflict"
+      - "-merged"
+      - "-draft"
+      - "-locked"
+      - "#check-pending=0"
+      - "#check-failure=0"
+      - "#review-threads-unresolved=0"
+      - "#commits=1"
+    actions:
+      merge:
+        method: squash
+  - name: Automatic merge to dev on approval
+    conditions:
+      - "#approved-reviews-by>=1"
+      - label!=work-in-progress
+      - label!=wip
+      - "base=dev"
+      - "-merged"
+      - "-closed"
+      - "-conflict"
+      - "-merged"
+      - "-draft"
+      - "-locked"
+      - "#check-pending=0"
+      - "#check-failure=0"
+      - "#review-threads-unresolved=0"
+      - "#commits>1"
+    actions:
+      merge:
+        method: merge
