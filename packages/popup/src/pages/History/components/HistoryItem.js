@@ -71,7 +71,7 @@ function HistoryItem({
 
   // TODO: should throw error in decode data
   const {decodeData} = useDecodeData({
-    to: token?.address || payload?.to,
+    to: payload?.to,
     data: payload?.data,
   })
   useEffect(() => {
