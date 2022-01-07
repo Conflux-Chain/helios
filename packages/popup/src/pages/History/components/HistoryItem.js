@@ -71,15 +71,14 @@ function HistoryItem({
 
   // TODO: should throw error in decode data
   const {decodeData} = useDecodeData({
-    to: token?.address,
+    to: token?.address || payload?.to,
     data: payload?.data,
   })
   useEffect(() => {
     setActionName(
       simple
         ? t('send')
-        : transformToTitleCase(decodeData?.functionFragment?.name) ||
-            t('unknown'),
+        : transformToTitleCase(decodeData?.name) || t('unknown'),
     )
   }, [simple, Object.keys(decodeData).length])
 
