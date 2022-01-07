@@ -7,7 +7,7 @@ function CurrentNetworkDisplay({name, icon}) {
       id="currentNetworkContainer"
     >
       <img
-        className="w-2.5 h-2.5 mr-1"
+        className="w-4 h-4 mr-1"
         src={icon || '/images/default-network-icon.svg'}
         alt="logo"
       />

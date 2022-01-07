@@ -62,7 +62,7 @@ const TransactionDirection = ({
               text={fromAddress ? shortenAddress(fromAddress) : ''}
             />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col items-end">
             <span className="text-gray-80">{t('balance')}</span>
             <DisplayBalance
               balance={nativeBalance}
