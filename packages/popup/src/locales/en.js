@@ -25,11 +25,14 @@ const en = {
     functionName: 'Function',
     hexData: 'Hex Data',
     add: 'Add',
+    notFilled: 'Not filled',
 
     // - home page
     send: 'Send',
     history: 'History',
     assets: 'Assets',
+    urlWarning: 'URLs require the appropriate HTTP/HTTPS prefix.',
+    invalidRpcUrl: 'Invalid RPC URL',
 
     // - homepage / 连接网站状态模块和切换连接弹窗模块
     noConnectedDapp: 'Not connected to current website',
