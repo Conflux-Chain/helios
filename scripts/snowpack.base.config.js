@@ -29,6 +29,7 @@ getWorkspacePackages({
     '@fluent-wallet/jest-helper',
     '@fluent-wallet/test-helpers',
     '@fluent-wallet/content-script',
+    'dapp-cross-space',
   ],
 }).forEach(({location, name}) => {
   const packageAbsPath = path.resolve(__dirname, '../', location)

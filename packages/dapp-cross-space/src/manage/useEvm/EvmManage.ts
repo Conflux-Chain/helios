@@ -25,7 +25,11 @@ class EvmManage {
     }
     
     getBalance = async () => {
-        if (!this.networkConfig.value || !FluentManage.evmMappedAddress.value) return;
+        if (!this.networkConfig.value) {
+            this.isSupportEvmSpace.value = false;
+            return;
+        }
+        if (!FluentManage.evmMappedAddress.value) return;
 
         try {
             const balance = await fetch(this.networkConfig.value.url, {
@@ -38,7 +42,7 @@ class EvmManage {
                 headers: { 'content-type': 'application/json' },
                 method: 'POST',
             }).then(response => response.json());
-
+            console.log(balance);
             if (typeof balance?.result === 'string') {
                 this.balance.value = convertDrip2CFX(balance.result || '0');
                 this.isSupportEvmSpace.value = true;
