@@ -30,6 +30,7 @@ function DappFooter({
   onClickCancel,
   onClickConfirm,
   setSendStatus,
+  setSendError,
   setAuthStatus,
   setIsAppOpen,
   isHwAccount,
@@ -108,11 +109,12 @@ function DappFooter({
         else setSendStatus(HW_TX_STATUS.SUCCESS)
         window.close()
       })
-      .catch(e => {
+      .catch(error => {
         // TODO: error message
-        console.log('error', e)
+        console.log('error', error)
         if (!isHwAccount) setLoading(false)
         setSendStatus(HW_TX_STATUS.REJECTED)
+        setSendError(error?.message ?? error)
       })
   }
 
@@ -147,6 +149,7 @@ DappFooter.propTypes = {
   onClickConfirm: PropTypes.func,
   onClickCancel: PropTypes.func,
   setSendStatus: PropTypes.func,
+  setSendError: PropTypes.func,
   setIsAppOpen: PropTypes.func,
   setAuthStatus: PropTypes.func,
   pendingAuthReq: PropTypes.array,
