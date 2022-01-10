@@ -192,7 +192,6 @@ export const useCheckBalanceAndGas = (
   sendTokenAddress,
   isSendToken = true,
 ) => {
-  console.log('estimateRst', estimateRst)
   const {t} = useTranslation()
   const {error, isBalanceEnough, tokens} = estimateRst
   const isNativeToken = !sendTokenAddress
