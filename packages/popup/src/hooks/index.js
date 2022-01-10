@@ -222,8 +222,6 @@ export const useCheckBalanceAndGas = (
         } else {
           if (isTokenBalanceEnough === false) {
             return t('gasFeeIsNotEnough')
-          } else {
-            return ''
           }
         }
       }

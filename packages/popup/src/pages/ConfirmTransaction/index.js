@@ -254,8 +254,6 @@ function ConfirmTransaction() {
             )
           ) {
             return t('balanceIsNotEnough')
-          } else {
-            return ''
           }
         }
       }
