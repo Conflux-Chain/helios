@@ -11,7 +11,7 @@ import classNames from 'classnames'
 
 const iconWrapper = ({children, ...props}) => {
   return (
-    <WrapIcon {...props} className="bg-transparent hover:bg-[#3C3A5D] group">
+    <WrapIcon {...props} className="bg-transparent hover:bg-[#3C3A5D]">
       {children}
     </WrapIcon>
   )
@@ -53,7 +53,7 @@ function CurrentAccount({onOpenAccount}) {
         <CopyButton
           text={address}
           className={classNames(
-            'text-white transform transition-all duration-100 ease-in-out group-hover:text-primary',
+            'text-white transform transition-all duration-100 ease-in-out',
             {['opacity-0']: !displayAddress},
           )}
           CopyWrapper={iconWrapper}
@@ -61,12 +61,9 @@ function CurrentAccount({onOpenAccount}) {
         <QRCodeButton
           title={nickname}
           qrcodeValue={address}
-          className={classNames(
-            'transition-all duration-100 ease-in-out group-hover:text-primary',
-            {
-              ['opacity-0']: !displayAddress,
-            },
-          )}
+          className={classNames('transition-all duration-100 ease-in-out', {
+            ['opacity-0']: !displayAddress,
+          })}
           Wrapper={iconWrapper}
         />
       </div>
