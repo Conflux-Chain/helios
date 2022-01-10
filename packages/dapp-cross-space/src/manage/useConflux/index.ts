@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
-import { format } from 'js-conflux-sdk';
-import CrossSpaceContractConfig from 'js-conflux-sdk/src/contract/internal/CrossSpaceCall.json';
-import { useConflux } from './useConflux';
-import { convertDrip2CFX } from '../../utils';
+import {useEffect, useState} from 'react'
+import {format} from 'js-conflux-sdk'
+import CrossSpaceContractConfig from 'js-conflux-sdk/src/contract/internal/CrossSpaceCall.json'
+import {useConflux} from './useConflux'
+import {convertDrip2CFX} from '../../utils'
 
-export const CrossSpaceContractAdress = format.address(CrossSpaceContractConfig.address, 1030);
+export const CrossSpaceContractAdress = format.address(
+  CrossSpaceContractConfig.address,
+  1030,
+)
 
 // export const useTrackCfxAdressBalance = (cfxAddress?: string) => {
 //     const conflux = useConflux();
@@ -32,6 +35,6 @@ export const CrossSpaceContractAdress = format.address(CrossSpaceContractConfig.
 //     return balance;
 // }
 
-export { useConflux } from './useConflux';
-export { useCrossSpaceContract } from './useCrossSpaceContract';
-export { confluxNetworkConfig } from './ConfluxManage';
+export {useConflux} from './useConflux'
+export {useCrossSpaceContract} from './useCrossSpaceContract'
+export {confluxNetworkConfig} from './ConfluxManage'
