@@ -47,7 +47,7 @@ function CurrentAccount({onOpenAccount}) {
       </div>
       <div className="flex items-center">
         <Text
-          className="text-white font-medium mr-2 w-[7.5rem]"
+          className="text-white font-medium mr-2 w-auto"
           text={displayAddress}
         />
         <CopyButton
