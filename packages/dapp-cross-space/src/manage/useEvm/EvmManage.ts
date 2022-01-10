@@ -42,7 +42,7 @@ class EvmManage {
                 headers: { 'content-type': 'application/json' },
                 method: 'POST',
             }).then(response => response.json());
-            console.log(balance);
+
             if (typeof balance?.result === 'string') {
                 this.balance.value = convertDrip2CFX(balance.result || '0');
                 this.isSupportEvmSpace.value = true;
