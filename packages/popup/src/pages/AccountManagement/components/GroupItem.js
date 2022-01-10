@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
+import {isNumber} from '@fluent-wallet/checks'
+import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS} from '../../../constants'
 import {AccountItem} from './'
 const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_DELETE_ACCOUNT_GROUP} = RPC_METHODS
@@ -7,12 +9,27 @@ const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_DELETE_ACCOUNT_GROUP} = RPC_METHODS
 function GroupItem({
   nickname,
   account,
+  currentAccountId,
   showDelete = false,
   groupType = '',
   onOpenConfirmPassword,
   accountGroupId,
 }) {
   const {t} = useTranslation()
+  const onDeleteAccountGroup = () => {
+    if (isNumber(currentAccountId)) {
+      if (account.find(({eid}) => eid === currentAccountId)) {
+        return Message.warning({
+          content: t('groupDeleteWarning'),
+          top: '10px',
+          duration: 1,
+        })
+      }
+      onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
+        accountGroupId,
+      })
+    }
+  }
 
   return (
     <div className="bg-gray-0 rounded mt-3 mx-3">
@@ -31,11 +48,11 @@ function GroupItem({
         />
       ))}
       {groupType === 'hd' ? (
-        <div className="flex justify-between mx-3 py-4 border-t border-gray-10 text-xs cursor-pointer text-gray-60 hover:text-primary">
+        <div className="flex justify-between mx-3 py-4 border-t border-gray-10 text-xs cursor-pointer text-gray-60">
           <div
+            className="hover:text-primary"
             onClick={() =>
-              onOpenConfirmPassword &&
-              onOpenConfirmPassword(WALLET_EXPORT_ACCOUNT_GROUP, {
+              onOpenConfirmPassword?.(WALLET_EXPORT_ACCOUNT_GROUP, {
                 accountGroupId,
               })
             }
@@ -46,12 +63,8 @@ function GroupItem({
           {showDelete && (
             <div
               aria-hidden="true"
-              onClick={() =>
-                onOpenConfirmPassword &&
-                onOpenConfirmPassword(WALLET_DELETE_ACCOUNT_GROUP, {
-                  accountGroupId,
-                })
-              }
+              className="hover:text-primary"
+              onClick={onDeleteAccountGroup}
             >
               {t('delete')}
             </div>
@@ -65,6 +78,7 @@ function GroupItem({
 GroupItem.propTypes = {
   nickname: PropTypes.string,
   accountGroupId: PropTypes.number,
+  currentAccountId: PropTypes.number,
   account: PropTypes.array,
   groupType: PropTypes.string,
   showDelete: PropTypes.bool,

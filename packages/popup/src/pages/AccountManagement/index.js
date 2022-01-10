@@ -31,6 +31,8 @@ function AccountManagement() {
 
   const {data} = useCurrentAddress()
   const networkName = data?.network?.name ?? ''
+  const currentAccountId = data?.account?.eid
+
   const {accountGroups} = useDbAccountListAssets({
     type: 'all',
     accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
@@ -140,6 +142,7 @@ function AccountManagement() {
               groupType={vault?.type}
               onOpenConfirmPassword={onOpenConfirmPassword}
               showDelete={showDelete}
+              currentAccountId={currentAccountId}
             />
           ),
         )}

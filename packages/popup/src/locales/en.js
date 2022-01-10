@@ -257,6 +257,7 @@ const en = {
     viewSeed: 'Reveal secret Seed Phrase',
     hide: 'Hide',
     delete: 'Delete',
+    groupDeleteWarning: 'Can not delete current account group.',
 
     // Network Management
     networkManagement: 'Network Management',
