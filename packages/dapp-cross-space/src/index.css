@@ -1,3 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
-  margin: 0;
+    overflow-y: hidden;
+}
+
+button:disabled {
+    @apply opacity-30 cursor-not-allowed hover:ring-0;
+}
+
+.backface-visible {
+    backface-visibility: visible;
+}
+
+.contain-strict {
+    contain: strict;
+}
+
+.contain-content {
+    contain: layout paint style;
 }

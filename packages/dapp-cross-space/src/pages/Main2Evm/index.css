@@ -1,0 +1,3 @@
+#input-amount:focus ~ label {
+    opacity: 1;
+}
