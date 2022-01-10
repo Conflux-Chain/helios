@@ -1,5 +1,5 @@
 {
-    "name": "cfx_cross_space",
+    "name": "dapp-cross-space",
     "version": "0.0.0",
     "scripts": {
         "start": "vite",

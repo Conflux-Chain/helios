@@ -14313,31 +14313,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cfx_cross_space@workspace:packages/dapp-cross-space":
-  version: 0.0.0-use.local
-  resolution: "cfx_cross_space@workspace:packages/dapp-cross-space"
-  dependencies:
-    "@formily/reactive": ^2.0.8
-    "@react-spring/web": ^9.4.1
-    "@types/lodash-es": ^4.17.5
-    "@types/react": ^17.0.38
-    "@types/react-dom": ^17.0.11
-    "@vitejs/plugin-react": ^1.1.4
-    autoprefixer: ^10.4.1
-    clsx: ^1.1.1
-    js-conflux-sdk: ^2.0.0-beta.14
-    lodash-es: ^4.17.21
-    postcss: ^8.4.5
-    react: ^17.0.2
-    react-dom: ^17.0.2
-    react-hook-form: ^7.22.5
-    react-use-clipboard: ^1.0.7
-    tailwindcss: ^3.0.11
-    typescript: ^4.5.4
-    vite: ^2.7.10
-  languageName: unknown
-  linkType: soft
-
 "chainsaw@npm:~0.1.0":
   version: 0.1.0
   resolution: "chainsaw@npm:0.1.0"
@@ -16036,6 +16011,31 @@ __metadata:
   checksum: ec8161cb381523e0db9b5c9b64863736da3197808b6fdc4a3a2ca764c0b4357e9232a4c5592220fb18755a91240b8fee7b13ab1b269fbbdc5f68c36f0053aceb
   languageName: node
   linkType: hard
+
+"dapp-cross-space@workspace:packages/dapp-cross-space":
+  version: 0.0.0-use.local
+  resolution: "dapp-cross-space@workspace:packages/dapp-cross-space"
+  dependencies:
+    "@formily/reactive": ^2.0.8
+    "@react-spring/web": ^9.4.1
+    "@types/lodash-es": ^4.17.5
+    "@types/react": ^17.0.38
+    "@types/react-dom": ^17.0.11
+    "@vitejs/plugin-react": ^1.1.4
+    autoprefixer: ^10.4.1
+    clsx: ^1.1.1
+    js-conflux-sdk: ^2.0.0-beta.14
+    lodash-es: ^4.17.21
+    postcss: ^8.4.5
+    react: ^17.0.2
+    react-dom: ^17.0.2
+    react-hook-form: ^7.22.5
+    react-use-clipboard: ^1.0.7
+    tailwindcss: ^3.0.11
+    typescript: ^4.5.4
+    vite: ^2.7.10
+  languageName: unknown
+  linkType: soft
 
 "dashdash@npm:^1.12.0":
   version: 1.14.1
