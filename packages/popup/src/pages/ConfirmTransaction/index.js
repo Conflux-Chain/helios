@@ -168,6 +168,7 @@ function ConfirmTransaction() {
           }
         : {},
     ) || {}
+  console.log('estimateRst', estimateRst)
 
   // only need to estimate gas not need to get whether balance is enough
   // so do not pass the gas info params
@@ -254,8 +255,6 @@ function ConfirmTransaction() {
             )
           ) {
             return t('balanceIsNotEnough')
-          } else {
-            return ''
           }
         }
       }
