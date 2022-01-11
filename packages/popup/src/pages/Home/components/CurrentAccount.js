@@ -4,17 +4,35 @@ import {
   // QrcodeOutlined,
 } from '@fluent-wallet/component-icons'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {useCurrentAddress} from '../../../hooks/useApi'
+import {
+  useCurrentAddress,
+  useBlockchainExplorerUrl,
+} from '../../../hooks/useApi'
 import Text from '../../../components/Text'
 import {CopyButton, QRCodeButton, WrapIcon} from '../../../components'
+import {SendOutlined} from '@fluent-wallet/component-icons'
 import classNames from 'classnames'
 
-const iconWrapper = ({children, ...props}) => {
+const OpenScanButton = ({address}) => {
+  const {address: scanAddrUrl} = useBlockchainExplorerUrl(
+    address ? {address: [address]} : null,
+  )
   return (
-    <WrapIcon {...props} className="bg-transparent hover:bg-[#3C3A5D]">
-      {children}
+    <WrapIcon className="bg-transparent hover:bg-[#3C3A5D]">
+      <SendOutlined
+        className={classNames(
+          'text-white transition-all duration-100 ease-in-out w-4 h-4',
+          {['opacity-0']: !address},
+        )}
+        id="openScanAddrUrl"
+        onClick={() => window.open(scanAddrUrl?.[0])}
+      />
     </WrapIcon>
   )
+}
+
+OpenScanButton.propTypes = {
+  address: PropTypes.string,
 }
 
 function CurrentAccount({onOpenAccount}) {
@@ -53,10 +71,10 @@ function CurrentAccount({onOpenAccount}) {
         <CopyButton
           text={address}
           className={classNames(
-            'text-white transform transition-all duration-100 ease-in-out',
+            'text-white transition-all duration-100 ease-in-out',
             {['opacity-0']: !displayAddress},
           )}
-          CopyWrapper={iconWrapper}
+          wrapperClassName="bg-transparent hover:bg-[#3C3A5D]"
         />
         <QRCodeButton
           title={nickname}
@@ -64,8 +82,9 @@ function CurrentAccount({onOpenAccount}) {
           className={classNames('transition-all duration-100 ease-in-out', {
             ['opacity-0']: !displayAddress,
           })}
-          Wrapper={iconWrapper}
+          wrapperClassName="bg-transparent hover:bg-[#3C3A5D]"
         />
+        <OpenScanButton address={address} />
       </div>
     </div>
   )

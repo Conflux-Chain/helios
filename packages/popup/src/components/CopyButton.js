@@ -3,6 +3,7 @@ import {useState} from 'react'
 import {useTranslation} from 'react-i18next'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 import {CopyOutlined} from '@fluent-wallet/component-icons'
+import {WrapIcon} from './index'
 import Toast from '@fluent-wallet/component-toast'
 
 function CopyButton({
@@ -10,23 +11,21 @@ function CopyButton({
   className = '',
   wrapperClassName = '',
   containerClassName = 'relative',
-  CopyWrapper,
   CopyInner,
   toastClassName = '-top-8 -right-10',
 }) {
   const {t} = useTranslation()
   const [copied, setCopied] = useState(false)
+  const CopyContent = CopyInner || (
+    <CopyOutlined className={`cursor-pointer w-4 h-4 ${className}`} />
+  )
   return (
     <div className={containerClassName} id="copyBtn">
       <CopyToClipboard text={text} onCopy={() => setCopied(true)}>
-        {CopyWrapper ? (
-          <CopyWrapper className={wrapperClassName}>
-            <CopyOutlined className={`cursor-pointer w-4 h-4 ${className}`} />
-          </CopyWrapper>
+        {wrapperClassName ? (
+          <WrapIcon className={wrapperClassName}>{CopyContent}</WrapIcon>
         ) : (
-          CopyInner || (
-            <CopyOutlined className={`cursor-pointer w-4 h-4 ${className}`} />
-          )
+          CopyContent
         )}
       </CopyToClipboard>
       <Toast
@@ -45,7 +44,6 @@ CopyButton.propTypes = {
   className: PropTypes.string,
   wrapperClassName: PropTypes.string,
   toastClassName: PropTypes.string,
-  CopyWrapper: PropTypes.elementType,
   CopyInner: PropTypes.node,
   containerClassName: PropTypes.string,
 }
