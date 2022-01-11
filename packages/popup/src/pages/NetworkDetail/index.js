@@ -1,5 +1,6 @@
 import validUrl from 'valid-url'
-import {useState} from 'react'
+import {useState, useEffect, useRef} from 'react'
+import {isUndefined} from '@fluent-wallet/checks'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {useSWRConfig} from 'swr'
@@ -8,16 +9,19 @@ import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
 import {COMMON_DECIMALS} from '@fluent-wallet/data-format'
 import {CFX_MAINNET_CURRENCY_SYMBOL} from '@fluent-wallet/consts'
-import {TitleNav, CompWithLabel} from '../../components'
-import {request} from '../../utils'
+import {TitleNav, CompWithLabel, ConfirmPassword} from '../../components'
+import {request, validatePasswordReg} from '../../utils'
+import {useCurrentAddress} from '../../hooks/useApi'
 import {ROUTES, RPC_METHODS, NETWORK_TYPE} from '../../constants'
 import useLoading from '../../hooks/useLoading'
+import useGlobalStore from '../../stores'
 
 const {HOME} = ROUTES
 const {
-  WALLET_ADD_CONFLUX_CHAIN,
   WALLET_DETECT_NETWORK_TYPE,
+  WALLET_ADD_CONFLUX_CHAIN,
   WALLET_GET_NETWORK,
+  WALLET_DELETE_NETWORK,
 } = RPC_METHODS
 const formItems = [
   {labelKey: 'networkName', valueKey: 'chainName'},
@@ -31,18 +35,29 @@ const formItems = [
   },
 ]
 
+const addUrlPrefix = url => {
+  if (url && url.indexOf('http') !== 0) {
+    return `https://${url}`
+  }
+  return url || ''
+}
+
 function NetworkDetail() {
   const {t} = useTranslation()
   const history = useHistory()
   const {mutate} = useSWRConfig()
   const {setLoading} = useLoading()
-  const [networkParams, setNetworkParams] = useState({
-    chainName: '',
-    rpcUrl: '',
-    chainId: '',
-    networkType: 'Conflux Network',
-    symbol: '',
-    blockExplorerUrl: '',
+  const rpcUrlRef = useRef(null)
+  const {networkInfo, setNetworkInfo} = useGlobalStore()
+  const [networkFieldValues, setNetworkFieldValues] = useState(() => {
+    return {
+      chainName: networkInfo?.networkName ?? '',
+      rpcUrl: networkInfo?.rpcUrl ?? '',
+      chainId: networkInfo?.chainId ?? '',
+      networkType: 'Conflux Network',
+      symbol: networkInfo?.symbol ?? '',
+      blockExplorerUrl: addUrlPrefix(networkInfo?.blockExplorerUrl),
+    }
   })
   const [networkError, setNetworkError] = useState({
     chainName: '',
@@ -51,11 +66,31 @@ function NetworkDetail() {
     symbol: '',
     blockExplorerUrl: '',
   })
+  // for confirm password
+  const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
+  const [password, setPassword] = useState('')
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
+  const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
+  const isAddChain = !Object.keys(networkInfo).length
+  const {data} = useCurrentAddress(isAddChain)
+  const currentNetworkId = data?.network?.eid
+
+  useEffect(() => {
+    return () => {
+      setNetworkInfo({})
+    }
+  }, [setNetworkInfo])
+
   const canSubmit =
-    networkParams.chainName &&
-    networkParams.rpcUrl &&
-    networkParams.chainId &&
+    networkFieldValues.chainName &&
+    networkFieldValues.rpcUrl &&
+    networkFieldValues.chainId &&
     !Object.values(networkError).some(Boolean)
+
+  const clearPasswordInfo = () => {
+    setPassword('')
+    setOpenPasswordStatus(false)
+  }
 
   const validateInputValue = (value, valueKey) => {
     let errMsg = ''
@@ -75,28 +110,36 @@ function NetworkDetail() {
 
   const onNetworkInputChange = (e, valueKey) => {
     validateInputValue(e.target.value, valueKey)
-    setNetworkParams({
-      ...networkParams,
+    setNetworkFieldValues({
+      ...networkFieldValues,
       [valueKey]: e.target.value,
     })
   }
+  const onRpcInputFocus = () => {
+    rpcUrlRef.current = networkFieldValues.rpcUrl
+  }
   const onRpcInputBlur = () => {
-    if (networkParams.rpcUrl && !networkError.rpcUrl) {
+    if (
+      networkFieldValues.rpcUrl &&
+      !networkError.rpcUrl &&
+      (rpcUrlRef.current !== networkFieldValues.rpcUrl ||
+        !networkFieldValues.chainId)
+    ) {
       setLoading(true)
-      request(WALLET_DETECT_NETWORK_TYPE, {url: networkParams.rpcUrl})
+      request(WALLET_DETECT_NETWORK_TYPE, {url: networkFieldValues.rpcUrl})
         .then(res => {
           setLoading(false)
           if (res?.chainId) {
             setNetworkError({...networkError, chainId: ''})
-            setNetworkParams({...networkParams, chainId: res.chainId})
+            setNetworkFieldValues({...networkFieldValues, chainId: res.chainId})
           } else {
-            setNetworkParams({...networkParams, chainId: ''})
+            setNetworkFieldValues({...networkFieldValues, chainId: ''})
             setNetworkError({...networkError, chainId: t('unCaughtErrMsg')})
           }
         })
         .catch(err => {
           setLoading(false)
-          setNetworkParams({...networkParams, chainId: ''})
+          setNetworkFieldValues({...networkFieldValues, chainId: ''})
           if (err?.message?.indexOf?.('InvalidParams') !== -1) {
             return setNetworkError({...networkError, chainId: t('wrongRpcUrl')})
           }
@@ -111,8 +154,14 @@ function NetworkDetail() {
     }
   }
 
-  const onSubmit = () => {
-    const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} = networkParams
+  const mutateData = () => {
+    mutate([WALLET_GET_NETWORK, NETWORK_TYPE.CFX]).then(() => {
+      history.push(HOME)
+    })
+  }
+  const onAddNetwork = () => {
+    const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
+      networkFieldValues
     const params = [
       {
         chainId,
@@ -129,14 +178,10 @@ function NetworkDetail() {
       params.blockExplorerUrls = [blockExplorerUrl]
     }
     request(WALLET_ADD_CONFLUX_CHAIN, params)
-      .then(res => {
-        mutate([WALLET_GET_NETWORK, NETWORK_TYPE.CFX]).then(() => {
-          console.log('res', res)
-          history.push(HOME)
-        })
+      .then(() => {
+        mutateData()
       })
       .catch(err => {
-        console.log('err', err)
         Message.error({
           content:
             err?.message?.split?.('\n')?.[0] ??
@@ -145,6 +190,44 @@ function NetworkDetail() {
           top: '10px',
           duration: 1,
         })
+      })
+  }
+  const validatePassword = value => {
+    const isValid = validatePasswordReg(value)
+    setPasswordErrorMessage(isValid ? '' : t('passwordRulesWarning'))
+    return isValid
+  }
+  const onConfirmPassword = () => {
+    if (currentNetworkId === networkInfo.networkId) {
+      return Message.warning({
+        content: t('groupDeleteWarning'),
+        top: '10px',
+        duration: 1,
+      })
+    }
+
+    if (
+      !validatePassword(password) ||
+      sendingRequestStatus ||
+      isUndefined(currentNetworkId)
+    ) {
+      return
+    }
+    setSendingRequestStatus(true)
+    request(WALLET_DELETE_NETWORK, {
+      networkId: networkInfo.networkId,
+      password,
+    })
+      .then(() => {
+        mutateData()
+      })
+      .catch(e => {
+        setSendingRequestStatus(false)
+        setPasswordErrorMessage(
+          e?.message?.indexOf?.('Invalid password') !== -1
+            ? t('invalidPassword')
+            : e?.message ?? t('invalidPasswordFromRpc'),
+        )
       })
   }
 
@@ -156,26 +239,57 @@ function NetworkDetail() {
           <CompWithLabel label={t(labelKey)} className="!mt-0" key={labelKey}>
             <Input
               width="w-full"
-              isChainId={valueKey === 'chainId'}
-              readonly={valueKey === 'networkType' || valueKey === 'chainId'}
-              disabled={valueKey === 'networkType' || valueKey === 'chainId'}
-              value={networkParams[valueKey]}
+              readonly={
+                valueKey === 'networkType' ||
+                valueKey === 'chainId' ||
+                !isAddChain
+              }
+              disabled={
+                valueKey === 'networkType' ||
+                valueKey === 'chainId' ||
+                !isAddChain
+              }
+              value={networkFieldValues[valueKey]}
               onChange={e => onNetworkInputChange(e, valueKey)}
               onBlur={() => valueKey === 'rpcUrl' && onRpcInputBlur()}
+              onFocus={() => valueKey === 'rpcUrl' && onRpcInputFocus()}
               errorMessage={networkError?.[valueKey] ?? ''}
               id={`change-${valueKey}-input`}
             />
           </CompWithLabel>
         ))}
       </div>
-      <Button
-        id="save-btn"
-        className="mx-3"
-        disabled={!canSubmit}
-        onClick={onSubmit}
-      >
-        {t('save')}
-      </Button>
+      {isAddChain && (
+        <Button
+          id="save-btn"
+          className="mx-3"
+          disabled={!canSubmit}
+          onClick={onAddNetwork}
+        >
+          {t('save')}
+        </Button>
+      )}
+      {networkInfo?.networkType === 'custom' && (
+        <Button
+          id="delete-btn"
+          className="mx-3"
+          onClick={() => setOpenPasswordStatus(true)}
+          danger={true}
+        >
+          {t('delete')}
+        </Button>
+      )}
+      {networkInfo?.networkType === 'custom' && (
+        <ConfirmPassword
+          open={openPasswordStatus}
+          onCancel={clearPasswordInfo}
+          onConfirm={onConfirmPassword}
+          password={password}
+          passwordErrorMessage={passwordErrorMessage}
+          setPassword={setPassword}
+          validatePassword={validatePassword}
+        />
+      )}
     </div>
   )
 }

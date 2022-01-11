@@ -21,6 +21,7 @@ const useGlobalStore = create(set => ({
   createdMnemonic: '',
   exportPrivateKey: '',
   exportSeedPhrase: '',
+  networkInfo: {},
   ...defaultSendTransactionParams,
 
   // logic
@@ -28,6 +29,7 @@ const useGlobalStore = create(set => ({
   setCreatedGroupName: createdGroupName => set({createdGroupName}),
   setCreatedSeedPhase: createdSeedPhase => set({createdSeedPhase}),
   setCreatedMnemonic: createdMnemonic => set({createdMnemonic}),
+  setNetworkInfo: networkInfo => set({networkInfo}),
 
   setToAddress: toAddress => set({toAddress}),
   setSendAmount: sendAmount => set({sendAmount}),

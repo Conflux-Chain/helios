@@ -21,6 +21,10 @@ const itemWrapperPaddingStyleObj = {
 function NetworkItem({
   networkName,
   networkType,
+  rpcUrl,
+  chainId,
+  symbol,
+  blockExplorerUrl,
   icon,
   onClickNetworkItem,
   networkId,
@@ -44,8 +48,18 @@ function NetworkItem({
 
   const onChangeNetwork = () => {
     onClose && onClose()
+    const netData = {
+      networkId,
+      networkName,
+      icon,
+      rpcUrl,
+      chainId,
+      symbol,
+      blockExplorerUrl,
+      networkType,
+    }
     if (!needSwitchNet) {
-      return onClickNetworkItem?.({networkId, networkName, icon})
+      return onClickNetworkItem?.({...netData})
     }
     if (eid !== networkId) {
       setLoading(true)
@@ -58,7 +72,7 @@ function NetworkItem({
             top: '110px',
             duration: 1,
           })
-          onClickNetworkItem?.({networkId, networkName, icon})
+          onClickNetworkItem?.({...netData})
         })
         .catch(error => {
           // TODO: need deal with error condition
@@ -102,6 +116,10 @@ function NetworkItem({
 }
 NetworkItem.propTypes = {
   networkName: PropTypes.string.isRequired,
+  rpcUrl: PropTypes.string.isRequired,
+  chainId: PropTypes.string.isRequired,
+  symbol: PropTypes.string.isRequired,
+  blockExplorerUrl: PropTypes.string.isRequired,
   networkType: PropTypes.oneOf(['mainnet', 'testnet', 'custom']).isRequired,
   networkItemSize: PropTypes.oneOf(['small', 'medium']),
   networkId: PropTypes.number.isRequired,
@@ -120,30 +138,48 @@ function NetworkContent({
 }) {
   const networkData = useCfxNetwork()
 
+  console.log('networkData', networkData)
   return (
     <>
-      {networkData.map(({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
-        <NetworkItem
-          key={eid}
-          networkId={eid}
-          networkName={name}
-          networkItemSize={networkItemSize}
-          networkType={
-            isCustom
-              ? 'custom'
-              : isMainnet
-              ? 'mainnet'
-              : isTestnet
-              ? 'testnet'
-              : ''
-          }
-          onClickNetworkItem={onClickNetworkItem}
-          onClose={onClose}
-          icon={icon}
-          id={`item-${eid}`}
-          {...props}
-        />
-      ))}
+      {networkData.map(
+        ({
+          eid,
+          name,
+          isCustom,
+          isMainnet,
+          isTestnet,
+          icon,
+          endpoint,
+          chainId,
+          ticker,
+          scanUrl,
+        }) => (
+          <NetworkItem
+            key={eid}
+            networkId={eid}
+            networkName={name}
+            networkItemSize={networkItemSize}
+            networkType={
+              isCustom
+                ? 'custom'
+                : isMainnet
+                ? 'mainnet'
+                : isTestnet
+                ? 'testnet'
+                : ''
+            }
+            rpcUrl={endpoint}
+            chainId={chainId}
+            symbol={ticker.symbol}
+            blockExplorerUrl={scanUrl}
+            onClickNetworkItem={onClickNetworkItem}
+            onClose={onClose}
+            icon={icon}
+            id={`item-${eid}`}
+            {...props}
+          />
+        ),
+      )}
     </>
   )
 }
