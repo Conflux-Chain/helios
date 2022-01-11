@@ -1,0 +1,3 @@
+releases:
+  "@fluent-wallet/wallet_add-conflux-chain": patch
+  "@fluent-wallet/wallet_add-ethereum-chain": patch
