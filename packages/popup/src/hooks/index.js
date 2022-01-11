@@ -1,4 +1,5 @@
 import {useEffect, useState, useMemo} from 'react'
+import create from 'zustand'
 import {useAsync} from 'react-use'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {estimate} from '@fluent-wallet/estimate-tx'
@@ -150,10 +151,45 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   return rst
 }
 
-export const useTxParams = () => {
-  const {toAddress, sendAmount, sendTokenId} = useGlobalStore()
+const defaultSendTransactionParams = {
+  toAddress: '',
+  sendAmount: '',
+  gasPrice: '',
+  gasLimit: '',
+  storageLimit: '',
+  data: '',
+  nonce: '',
+  sendTokenId: 'native',
+  customAllowance: '',
+  tx: {},
+}
+
+export const useCurrentTxStore = create(set => ({
+  ...defaultSendTransactionParams,
+
+  setTx: tx => set({tx}),
+  setData: data => set({data}),
+  setToAddress: toAddress => set({toAddress}),
+  setSendAmount: sendAmount => set({sendAmount}),
+  setGasPrice: gasPrice => set({gasPrice}),
+  setGasLimit: gasLimit => set({gasLimit}),
+  setStorageLimit: storageLimit => set({storageLimit}),
+  setCustomAllowance: customAllowance => set({customAllowance}),
+  setNonce: nonce => set({nonce}),
+  setSendTokenId: sendTokenId => set({sendTokenId}),
+  clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
+}))
+
+// TODO: support max mode
+// TODO: combine estimate here
+// MAYBE: support multiple tx and rename this to useTxParams
+export const useCurrentTxParams = () => {
+  const txStore = useCurrentTxStore()
+  const {toAddress, sendAmount, sendTokenId, setData, setTx} = txStore
+
   const {decimals: tokenDecimals, address: tokenAddress} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
+
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const {
     data: {
@@ -184,7 +220,13 @@ export const useTxParams = () => {
   }
   if (isNativeToken) params['value'] = sendData
   if (data) params['data'] = data
-  return params
+
+  useEffect(() => {
+    if (data) setData(data)
+    setTx(params)
+  }, [JSON.stringify(params)])
+
+  return txStore
 }
 
 export const useCheckBalanceAndGas = (
@@ -287,7 +329,7 @@ export const useDecodeDisplay = ({
   const {
     data: {value: address},
   } = useCurrentAddress()
-  const {toAddress, sendTokenId, sendAmount} = useGlobalStore()
+  const {toAddress, sendTokenId, sendAmount} = useCurrentTxParams()
   const {from, to, data, value} = tx
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
@@ -348,7 +390,7 @@ export const useDecodeDisplay = ({
 
 export const useViewData = ({data, to} = {}, isApproveToken) => {
   const {decodeData, token} = useDecodeData({data, to})
-  const {customAllowance} = useGlobalStore()
+  const {customAllowance} = useCurrentTxParams()
   const allowance =
     convertValueToData(customAllowance, token?.decimals) || '0x0'
   const spender =
