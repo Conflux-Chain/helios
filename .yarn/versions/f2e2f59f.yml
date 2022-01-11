@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/wallet_validate-mnemonic": patch
+
+declined:
+  - helios-background
