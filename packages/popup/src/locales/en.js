@@ -269,6 +269,7 @@ const en = {
     networkType: 'Network Type',
     wrongRpcUrl: 'Could not fetch chain ID. Is your RPC URL correct?',
     networkDeleteWarning: 'Can not delete current network.',
+    duplicateNetworkEndpoint: 'Duplicate network endpoint.',
 
     // backup seed
     backupIdentity: 'Backup Seed Phrase',

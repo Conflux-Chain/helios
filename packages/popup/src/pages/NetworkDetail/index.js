@@ -159,6 +159,17 @@ function NetworkDetail() {
       history.push(HOME)
     })
   }
+  const onClickDeleteNetwork = () => {
+    if (currentNetworkId === networkInfo.networkId) {
+      return Message.warning({
+        content: t('groupDeleteWarning'),
+        top: '10px',
+        duration: 1,
+      })
+    }
+    setOpenPasswordStatus(true)
+  }
+
   const onAddNetwork = () => {
     const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
       networkFieldValues
@@ -182,11 +193,14 @@ function NetworkDetail() {
         mutateData()
       })
       .catch(err => {
+        console.log(err)
         Message.error({
           content:
-            err?.message?.split?.('\n')?.[0] ??
-            err?.message ??
-            t('unCaughtErrMsg'),
+            err?.message?.indexOf?.('Duplicate network endpoint') !== -1
+              ? t('duplicateNetworkEndpoint')
+              : err?.message?.split?.('\n')?.[0] ??
+                err?.message ??
+                t('unCaughtErrMsg'),
           top: '10px',
           duration: 1,
         })
@@ -198,14 +212,6 @@ function NetworkDetail() {
     return isValid
   }
   const onConfirmPassword = () => {
-    if (currentNetworkId === networkInfo.networkId) {
-      return Message.warning({
-        content: t('groupDeleteWarning'),
-        top: '10px',
-        duration: 1,
-      })
-    }
-
     if (
       !validatePassword(password) ||
       sendingRequestStatus ||
@@ -273,7 +279,7 @@ function NetworkDetail() {
         <Button
           id="delete-btn"
           className="mx-3"
-          onClick={() => setOpenPasswordStatus(true)}
+          onClick={onClickDeleteNetwork}
           danger={true}
         >
           {t('delete')}
