@@ -124,7 +124,7 @@ function AccountManagement() {
           <span
             id="add-account"
             aria-hidden
-            className="text-primary text-sm hover:text-[#5D5FEF]"
+            className="text-primary text-sm  mr-1 hover:text-[#5D5FEF]"
             onClick={() => history.push(SELECT_CREATE_TYPE)}
           >
             {t('add')}

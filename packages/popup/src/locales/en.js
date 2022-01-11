@@ -26,6 +26,7 @@ const en = {
     hexData: 'Hex Data',
     add: 'Add',
     notFilled: 'Not filled',
+    unCaughtErrMsg: 'something goes wrong',
 
     // - home page
     send: 'Send',
@@ -266,6 +267,7 @@ const en = {
     networkManagement: 'Network Management',
     newRpcUrl: 'New RPC URL',
     networkType: 'Network Type',
+    wrongRpcUrl: 'Could not fetch chain ID. Is your RPC URL correct?',
 
     // backup seed
     backupIdentity: 'Backup Seed Phrase',

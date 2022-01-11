@@ -63,9 +63,7 @@ function AccountItem({
         setInputNickname(accountNickname)
         Message.error({
           content:
-            e?.message?.split?.('\n')?.[0] ??
-            e?.message ??
-            'some thing goes wrong',
+            e?.message?.split?.('\n')?.[0] ?? e?.message ?? t('unCaughtErrMsg'),
           top: '10px',
           duration: 1,
         })

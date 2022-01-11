@@ -19,7 +19,7 @@ function NetworkManagement() {
           <span
             id="add-chain"
             aria-hidden
-            className="text-primary text-sm hover:text-[#5D5FEF]"
+            className="text-primary text-sm mr-1 hover:text-[#5D5FEF]"
             onClick={() => history.push(NETWORK_DETAIL)}
           >
             {t('add')}

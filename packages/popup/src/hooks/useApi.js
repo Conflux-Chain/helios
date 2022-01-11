@@ -90,9 +90,9 @@ export const useNetwork = () => {
 
 export const useCfxNetwork = () => {
   const {data: cfxNetWork} = useRPC(
-    [WALLET_GET_NETWORK, 'cfx'],
+    [WALLET_GET_NETWORK, NETWORK_TYPE.CFX],
     {
-      type: 'cfx',
+      type: NETWORK_TYPE.CFX,
     },
     {fallbackData: []},
   )
@@ -101,9 +101,9 @@ export const useCfxNetwork = () => {
 
 export const useEthNetwork = () => {
   const {data: ethNetWork} = useRPC(
-    [WALLET_GET_NETWORK, 'eth'],
+    [WALLET_GET_NETWORK, NETWORK_TYPE.ETH],
     {
-      type: 'eth',
+      type: NETWORK_TYPE.ETH,
     },
     {fallbackData: []},
   )
