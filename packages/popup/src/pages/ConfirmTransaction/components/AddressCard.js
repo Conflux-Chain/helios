@@ -9,12 +9,7 @@ import {
   useAddressType,
   useDbRefetchBalance,
 } from '../../../hooks/useApi'
-import {
-  DisplayBalance,
-  ProgressIcon,
-  CopyButton,
-  WrapIcon,
-} from '../../../components'
+import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
 
@@ -85,16 +80,7 @@ const TransactionDirection = ({
             <CopyButton
               text={toAddress}
               className="text-gray-60 group-hover:text-primary"
-              CopyWrapper={({children, ...props}) => {
-                return (
-                  <WrapIcon
-                    {...props}
-                    className="mx-1 shadow-none bg-transparent hover:bg-primary-4 group"
-                  >
-                    {children}
-                  </WrapIcon>
-                )
-              }}
+              wrapperClassName="mx-1 shadow-none bg-transparent hover:bg-primary-4 group"
             />
           )}
         </span>
