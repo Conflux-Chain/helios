@@ -73,6 +73,12 @@ export const main = async ({
     return await wallet_addPendingUserAuthRequest({appId: app.eid, req})
   }
 
+  // add network from popup
+  if (_popup && Array.isArray(params)) {
+    await wallet_addNetwork(params[0])
+    return '__null__'
+  }
+
   if (_popup) {
     const {authReqId} = params
     if (!authReqId) throw InvalidParams(`Invalid auth req id ${authReqId}`)

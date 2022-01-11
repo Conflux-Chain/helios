@@ -3,7 +3,13 @@ import {useDebounce} from 'react-use'
 import PropTypes from 'prop-types'
 import {useState, useMemo} from 'react'
 import {useTranslation} from 'react-i18next'
-import {SearchToken, SlideCard, TokenItem, WrapIcon} from '../../../components'
+import {
+  SearchToken,
+  SlideCard,
+  TokenItem,
+  WrapIcon,
+  TokenList,
+} from '../../../components'
 import {DEFAULT_TOKEN_URL, RPC_METHODS} from '../../../constants'
 import {
   useDbRefetchBalance,
@@ -111,7 +117,7 @@ function AddToken({onClose, open}) {
           {tokenList && (
             <div className="relative pt-3 mt-3 bg-gray-0 rounded flex flex-col flex-grow">
               <p className="ml-4 mb-1 text-gray-40">{t('searchResults')}</p>
-              <div className="flex flex-col flex-auto overflow-auto h-0 no-scroll">
+              <TokenList>
                 {tokenList.map(([token, added], index) => (
                   <TokenItem
                     key={index}
@@ -134,8 +140,7 @@ function AddToken({onClose, open}) {
                     }
                   />
                 ))}
-              </div>
-              <div className="absolute left-0 right-0 bottom-0 h-6 bg-token-background rounded-b-xl" />
+              </TokenList>
             </div>
           )}
           {!tokenList && (
