@@ -3,8 +3,8 @@ import {useHistory} from 'react-router-dom'
 import {TitleNav, NetworkContent} from '../../components'
 import {ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
-
 const {NETWORK_DETAIL} = ROUTES
+
 function NetworkManagement() {
   const {t} = useTranslation()
   const history = useHistory()
