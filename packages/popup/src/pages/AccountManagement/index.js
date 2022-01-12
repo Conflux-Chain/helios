@@ -5,7 +5,6 @@ import {useTranslation} from 'react-i18next'
 import useGlobalStore from '../../stores'
 import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../constants'
-import {request, validatePasswordReg} from '../../utils'
 import {TitleNav, ConfirmPassword} from '../../components'
 import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
 import {GroupItem} from './components'
@@ -23,9 +22,9 @@ function AccountManagement() {
   const {mutate} = useSWRConfig()
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
+  // const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
   const [rpcMethod, setRpcMethod] = useState('')
-  const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
+  // const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
   const [confirmParams, setConfirmParams] = useState({})
   const {setExportPrivateKey, setExportSeedPhrase} = useGlobalStore()
 
@@ -38,62 +37,41 @@ function AccountManagement() {
     accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
   })
   const showDelete = !!accountGroups && Object.keys(accountGroups).length > 1
-  const validatePassword = value => {
-    const isValid = validatePasswordReg(value)
-    setPasswordErrorMessage(isValid ? '' : t('passwordRulesWarning'))
-    return isValid
-  }
+  // const validatePassword = value => {
+  //   const isValid = validatePasswordReg(value)
+  //   setPasswordErrorMessage(isValid ? '' : t('passwordRulesWarning'))
+  //   return isValid
+  // }
 
-  const onConfirmPassword = () => {
-    if (
-      !validatePassword(password) ||
-      !rpcMethod ||
-      !Object.keys(confirmParams).length ||
-      sendingRequestStatus
-    ) {
-      return
+  const onConfirmCallback = res => {
+    // export account group
+    if (rpcMethod === WALLET_EXPORT_ACCOUNT_GROUP) {
+      setExportSeedPhrase(res)
+      setOpenPasswordStatus(false)
+      history.push(EXPORT_SEED)
+      return Promise.resolve()
     }
-    setSendingRequestStatus(true)
-    request(rpcMethod, {...confirmParams, password})
-      .then(res => {
-        // export account group
-        if (rpcMethod === WALLET_EXPORT_ACCOUNT_GROUP) {
-          setExportSeedPhrase(res)
-          setOpenPasswordStatus(false)
-          setSendingRequestStatus(false)
-          return history.push(EXPORT_SEED)
-        }
-        // export account (include pk account group)
-        if (rpcMethod === WALLET_EXPORT_ACCOUNT) {
-          setExportPrivateKey(
-            isArray(res)
-              ? res
-                  .filter(item => item.network.name === networkName)[0]
-                  .privateKey.replace('0x', '')
-              : res,
-          )
-          setOpenPasswordStatus(false)
-          setSendingRequestStatus(false)
-          return history.push(EXPORT_PRIVATEKEY)
-        }
-        // delete account
-        mutate([
-          WALLETDB_ACCOUNT_LIST_ASSETS,
-          ACCOUNT_GROUP_TYPE.HD,
-          ACCOUNT_GROUP_TYPE.PK,
-        ]).then(() => {
-          clearPasswordInfo()
-          setSendingRequestStatus(false)
-        })
-      })
-      .catch(e => {
-        setSendingRequestStatus(false)
-        setPasswordErrorMessage(
-          e?.message?.indexOf?.('Invalid password') !== -1
-            ? t('invalidPassword')
-            : e?.message ?? t('invalidPasswordFromRpc'),
-        )
-      })
+    // export account (include pk account group)
+    if (rpcMethod === WALLET_EXPORT_ACCOUNT) {
+      setExportPrivateKey(
+        isArray(res)
+          ? res
+              .filter(item => item.network.name === networkName)[0]
+              .privateKey.replace('0x', '')
+          : res,
+      )
+      setOpenPasswordStatus(false)
+      history.push(EXPORT_PRIVATEKEY)
+      return Promise.resolve()
+    }
+    // delete account
+    return mutate([
+      WALLETDB_ACCOUNT_LIST_ASSETS,
+      ACCOUNT_GROUP_TYPE.HD,
+      ACCOUNT_GROUP_TYPE.PK,
+    ]).then(() => {
+      clearPasswordInfo()
+    })
   }
 
   const clearPasswordInfo = () => {
@@ -107,7 +85,7 @@ function AccountManagement() {
     if (!networkName) {
       return
     }
-    setPasswordErrorMessage('')
+    // setPasswordErrorMessage('')
     setOpenPasswordStatus(true)
     setRpcMethod(method)
     setConfirmParams({...params})
@@ -151,11 +129,11 @@ function AccountManagement() {
       <ConfirmPassword
         open={openPasswordStatus}
         onCancel={clearPasswordInfo}
-        onConfirm={onConfirmPassword}
         password={password}
-        passwordErrorMessage={passwordErrorMessage}
         setPassword={setPassword}
-        validatePassword={validatePassword}
+        rpcMethod={rpcMethod}
+        confirmParams={confirmParams}
+        onConfirmCallback={onConfirmCallback}
       />
     </div>
   ) : null

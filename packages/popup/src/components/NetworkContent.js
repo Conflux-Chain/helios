@@ -138,7 +138,6 @@ function NetworkContent({
 }) {
   const networkData = useCfxNetwork()
 
-  console.log('networkData', networkData)
   return (
     <>
       {networkData.map(

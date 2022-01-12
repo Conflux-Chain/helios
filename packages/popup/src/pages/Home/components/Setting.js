@@ -12,6 +12,19 @@ import useGlobalStore from '../../../stores/index.js'
 const {LOCK, WALLET_IS_LOCKED, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 const {ACCOUNT_MANAGEMENT, NETWORK_MANAGEMENT} = ROUTES
 
+const SETTING_ITEMS = [
+  {
+    contentKey: 'accountManagement',
+    iconPath: '/images/userGroup.svg',
+    jumpPath: ACCOUNT_MANAGEMENT,
+  },
+  {
+    contentKey: 'networkManagement',
+    iconPath: '/images/chart.svg',
+    jumpPath: NETWORK_MANAGEMENT,
+  },
+]
+
 function SettingItem({icon, content, onClick}) {
   return (
     <div
@@ -67,20 +80,14 @@ function Setting({onClose, open}) {
         }
         cardContent={
           <div className="pt-1 pb-4 flex-1">
-            <SettingItem
-              onClick={() => history.push(ACCOUNT_MANAGEMENT)}
-              icon={
-                <img src="/images/account.svg" alt="icon" className="w-5 h-5" />
-              }
-              content={t('accountManagement')}
-            />
-            <SettingItem
-              onClick={() => history.push(NETWORK_MANAGEMENT)}
-              icon={
-                <img src="/images/account.svg" alt="icon" className="w-5 h-5" />
-              }
-              content={t('networkManagement')}
-            />
+            {SETTING_ITEMS.map(({contentKey, iconPath, jumpPath}) => (
+              <SettingItem
+                key={contentKey}
+                onClick={() => history.push(jumpPath)}
+                icon={<img src={iconPath} alt="icon" className="w-5 h-5" />}
+                content={t(contentKey)}
+              />
+            ))}
           </div>
         }
         cardFooter={

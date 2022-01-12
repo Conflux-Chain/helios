@@ -10,7 +10,7 @@ import Button from '@fluent-wallet/component-button'
 import {COMMON_DECIMALS} from '@fluent-wallet/data-format'
 import {CFX_MAINNET_CURRENCY_SYMBOL} from '@fluent-wallet/consts'
 import {TitleNav, CompWithLabel, ConfirmPassword} from '../../components'
-import {request, validatePasswordReg} from '../../utils'
+import {request} from '../../utils'
 import {useCurrentAddress} from '../../hooks/useApi'
 import {ROUTES, RPC_METHODS, NETWORK_TYPE} from '../../constants'
 import useLoading from '../../hooks/useLoading'
@@ -23,7 +23,7 @@ const {
   WALLET_GET_NETWORK,
   WALLET_DELETE_NETWORK,
 } = RPC_METHODS
-const formItems = [
+const FORM_ITEMS = [
   {labelKey: 'networkName', valueKey: 'chainName'},
   {labelKey: 'newRpcUrl', valueKey: 'rpcUrl'},
   {labelKey: 'chainId', valueKey: 'chainId'},
@@ -66,11 +66,8 @@ function NetworkDetail() {
     symbol: '',
     blockExplorerUrl: '',
   })
-  // for confirm password
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
-  const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
   const isAddChain = !Object.keys(networkInfo).length
   const {data} = useCurrentAddress(isAddChain)
   const currentNetworkId = data?.network?.eid
@@ -81,7 +78,8 @@ function NetworkDetail() {
     }
   }, [setNetworkInfo])
 
-  const canSubmit =
+  const canAddNetwork =
+    isAddChain &&
     networkFieldValues.chainName &&
     networkFieldValues.rpcUrl &&
     networkFieldValues.chainId &&
@@ -115,9 +113,11 @@ function NetworkDetail() {
       [valueKey]: e.target.value,
     })
   }
+
   const onRpcInputFocus = () => {
     rpcUrlRef.current = networkFieldValues.rpcUrl
   }
+
   const onRpcInputBlur = () => {
     if (
       networkFieldValues.rpcUrl &&
@@ -154,11 +154,11 @@ function NetworkDetail() {
     }
   }
 
-  const mutateData = () => {
+  const mutateData = () =>
     mutate([WALLET_GET_NETWORK, NETWORK_TYPE.CFX]).then(() => {
       history.push(HOME)
     })
-  }
+
   const onClickDeleteNetwork = () => {
     if (currentNetworkId === networkInfo.networkId) {
       return Message.warning({
@@ -193,7 +193,6 @@ function NetworkDetail() {
         mutateData()
       })
       .catch(err => {
-        console.log(err)
         Message.error({
           content:
             err?.message?.indexOf?.('Duplicate network endpoint') !== -1
@@ -206,43 +205,18 @@ function NetworkDetail() {
         })
       })
   }
-  const validatePassword = value => {
-    const isValid = validatePasswordReg(value)
-    setPasswordErrorMessage(isValid ? '' : t('passwordRulesWarning'))
-    return isValid
-  }
-  const onConfirmPassword = () => {
-    if (
-      !validatePassword(password) ||
-      sendingRequestStatus ||
-      isUndefined(currentNetworkId)
-    ) {
-      return
-    }
-    setSendingRequestStatus(true)
-    request(WALLET_DELETE_NETWORK, {
-      networkId: networkInfo.networkId,
-      password,
-    })
-      .then(() => {
-        mutateData()
-      })
-      .catch(e => {
-        setSendingRequestStatus(false)
-        setPasswordErrorMessage(
-          e?.message?.indexOf?.('Invalid password') !== -1
-            ? t('invalidPassword')
-            : e?.message ?? t('invalidPasswordFromRpc'),
-        )
-      })
-  }
 
   return (
     <div id="network-detail" className="bg-bg pb-4 h-full w-full flex flex-col">
       <TitleNav title={t('networkManagement')} />
       <div className="flex-1 overflow-y-auto no-scroll px-3 mt-1">
-        {formItems.map(({labelKey, valueKey}) => (
-          <CompWithLabel label={t(labelKey)} className="!mt-0" key={labelKey}>
+        {FORM_ITEMS.map(({labelKey, valueKey}, index) => (
+          <CompWithLabel
+            label={t(labelKey)}
+            key={labelKey}
+            className={`${index === 0 ? '!mt-0' : '!mt-2'}`}
+            labelClassName="!text-gray-40"
+          >
             <Input
               width="w-full"
               readonly={
@@ -259,7 +233,11 @@ function NetworkDetail() {
               onChange={e => onNetworkInputChange(e, valueKey)}
               onBlur={() => valueKey === 'rpcUrl' && onRpcInputBlur()}
               onFocus={() => valueKey === 'rpcUrl' && onRpcInputFocus()}
-              errorMessage={networkError?.[valueKey] ?? ''}
+              errorMessage={
+                networkFieldValues[valueKey] || valueKey === 'chainId'
+                  ? networkError?.[valueKey] ?? ''
+                  : ''
+              }
               id={`change-${valueKey}-input`}
             />
           </CompWithLabel>
@@ -269,7 +247,7 @@ function NetworkDetail() {
         <Button
           id="save-btn"
           className="mx-3"
-          disabled={!canSubmit}
+          disabled={!canAddNetwork}
           onClick={onAddNetwork}
         >
           {t('save')}
@@ -285,17 +263,18 @@ function NetworkDetail() {
           {t('delete')}
         </Button>
       )}
-      {networkInfo?.networkType === 'custom' && (
-        <ConfirmPassword
-          open={openPasswordStatus}
-          onCancel={clearPasswordInfo}
-          onConfirm={onConfirmPassword}
-          password={password}
-          passwordErrorMessage={passwordErrorMessage}
-          setPassword={setPassword}
-          validatePassword={validatePassword}
-        />
-      )}
+      {networkInfo?.networkType === 'custom' &&
+        !isUndefined(currentNetworkId) && (
+          <ConfirmPassword
+            open={openPasswordStatus}
+            onCancel={clearPasswordInfo}
+            password={password}
+            setPassword={setPassword}
+            rpcMethod={WALLET_DELETE_NETWORK}
+            onConfirmCallback={() => mutateData()}
+            confirmParams={{networkId: networkInfo.networkId, password}}
+          />
+        )}
     </div>
   )
 }

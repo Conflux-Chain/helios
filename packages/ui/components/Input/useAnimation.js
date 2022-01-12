@@ -16,11 +16,10 @@ const useAnimation = errorMessage => {
       timer = setTimeout(() => {
         setErrorAnimateStyle('')
         setDisplayErrorMsg(errorMessage)
-        clearTimeout(timer)
       }, DURATION)
     }
     return () => {
-      timer && clearTimeout(timer)
+      clearTimeout(timer)
     }
   }, [errorAnimateStyle, errorMessage])
 
