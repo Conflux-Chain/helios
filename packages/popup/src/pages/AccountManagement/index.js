@@ -22,9 +22,7 @@ function AccountManagement() {
   const {mutate} = useSWRConfig()
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
-  // const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
   const [rpcMethod, setRpcMethod] = useState('')
-  // const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
   const [confirmParams, setConfirmParams] = useState({})
   const {setExportPrivateKey, setExportSeedPhrase} = useGlobalStore()
 
@@ -37,11 +35,6 @@ function AccountManagement() {
     accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
   })
   const showDelete = !!accountGroups && Object.keys(accountGroups).length > 1
-  // const validatePassword = value => {
-  //   const isValid = validatePasswordReg(value)
-  //   setPasswordErrorMessage(isValid ? '' : t('passwordRulesWarning'))
-  //   return isValid
-  // }
 
   const onConfirmCallback = res => {
     // export account group
@@ -85,7 +78,6 @@ function AccountManagement() {
     if (!networkName) {
       return
     }
-    // setPasswordErrorMessage('')
     setOpenPasswordStatus(true)
     setRpcMethod(method)
     setConfirmParams({...params})
