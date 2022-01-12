@@ -1,3 +1,4 @@
+// shouldDiscard mains should stop tracking this tx
 export function processError(err) {
   if (typeof err?.data === 'string') {
     if (
@@ -18,7 +19,7 @@ export function processError(err) {
     if (err.data?.includes?.('too distant future'))
       return {errorType: 'tooDistantFuture', shouldDiscard: true}
     if (err.data?.includes?.('tx already exist'))
-      return {errorType: 'duplicateTx', shouldDiscard: true}
+      return {errorType: 'duplicateTx', shouldDiscard: false}
     if (err.data?.includes?.('EpochHeightOutOfBound'))
       return {errorType: 'epochHeightOutOfBound', shouldDiscard: true}
     if (err.data?.includes?.('exceeds the maximum value'))

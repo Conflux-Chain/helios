@@ -1,0 +1,10 @@
+releases:
+  "@fluent-wallet/conflux-tx-error": patch
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
+  "@fluent-wallet/webextension": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/wallet_add-pending-user-auth-request"
+  - "@fluent-wallet/wallet_get-current-viewing-app"
+  - "@fluent-wallet/wallet_request-unlock-ui"
