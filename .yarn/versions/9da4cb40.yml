@@ -1,8 +1,0 @@
-releases:
-  "@fluent-wallet/cache-rpc": patch
-  "@fluent-wallet/cfx_get-max-gas-limit": patch
-  "@fluent-wallet/rpc-epoch-ref": patch
-
-declined:
-  - helios-background
-  - "@fluent-wallet/rpc-engine"
