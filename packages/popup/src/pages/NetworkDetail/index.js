@@ -173,22 +173,21 @@ function NetworkDetail() {
   const onAddNetwork = () => {
     const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
       networkFieldValues
-    const params = [
-      {
-        chainId,
-        chainName,
-        nativeCurrency: {
-          name: symbol || CFX_MAINNET_CURRENCY_SYMBOL,
-          symbol: symbol || CFX_MAINNET_CURRENCY_SYMBOL,
-          decimals: COMMON_DECIMALS,
-        },
-        rpcUrls: [rpcUrl],
+    const param = {
+      chainId,
+      chainName,
+      nativeCurrency: {
+        name: symbol || CFX_MAINNET_CURRENCY_SYMBOL,
+        symbol: symbol || CFX_MAINNET_CURRENCY_SYMBOL,
+        decimals: COMMON_DECIMALS,
       },
-    ]
-    if (blockExplorerUrl) {
-      params.blockExplorerUrls = [blockExplorerUrl]
+      rpcUrls: [rpcUrl],
     }
-    request(WALLET_ADD_CONFLUX_CHAIN, params)
+
+    if (blockExplorerUrl) {
+      param.blockExplorerUrls = [blockExplorerUrl]
+    }
+    request(WALLET_ADD_CONFLUX_CHAIN, [param])
       .then(() => {
         mutateData()
       })
