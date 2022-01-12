@@ -1,5 +1,8 @@
 import {observable, autorun, batch} from '@formily/reactive'
-import {convertDrip2CFX, convertMappedAdress} from '../../utils'
+import {Unit, convertMappedAdress} from '../../utils'
+import {CrossSpaceContractAdress} from '../../manage/useConflux'
+import ConfluxManage from '../../manage/useConflux/ConfluxManage'
+import {estimate} from '@fluent-wallet/estimate-tx'
 
 export interface Status {
   isInstalled: boolean
@@ -23,13 +26,16 @@ const defaultFluentStatus: Omit<
 class FluentManage {
   status = observable.shallow(defaultFluentStatus)
   account = observable.computed(() => this.status.accounts?.[0])
-  isConnected = observable.computed(() => !!this.account.value && (typeof this.status.chainId !== 'undefined'))
+  isConnected = observable.computed(
+    () => !!this.account.value && typeof this.status.chainId !== 'undefined',
+  )
   evmMappedAddress = observable.computed(() =>
     this.account.value ? convertMappedAdress(this.account.value) : undefined,
   )
 
   trackBalanceCount = observable.ref(1)
-  balance = observable.ref<string | undefined>(undefined)
+  balance = observable.ref<Unit | undefined>(undefined)
+  maxAvailableBalance = observable.ref<Unit | undefined>(undefined)
   balanceTimer?: number = undefined
 
   constructor() {
@@ -46,14 +52,23 @@ class FluentManage {
   getAccounts = () => window.conflux!.request({method: 'cfx_requestAccounts'})
 
   getBalance = async () => {
-    if (!this.account.value) return
+    if (!this.account.value) {
+      this.balance.value = undefined
+      return
+    }
     try {
       const balance = await window.conflux!.request({
         method: 'wallet_getBalance',
         params: [this.account.value],
       })
-      this.balance.value = convertDrip2CFX(balance)
+
+      if (
+        this.balance.value === undefined ||
+        this.balance.value.drip !== Unit.fromHexDrip(balance).drip
+      )
+        this.balance.value = Unit.fromHexDrip(balance)
     } catch (err) {
+      this.balance.value = undefined
       console.error('Get fluent balance error: ', err)
     }
   }
@@ -107,6 +122,11 @@ class FluentManage {
         1000,
       ) as unknown) as number
     })
+
+    autorun(() => {
+      if (!this.balance.value) return
+      this.estimateMaxAvailableBalance()
+    })
   }
 
   startTrackBalance = () => (this.trackBalanceCount.value += 1)
@@ -146,7 +166,7 @@ class FluentManage {
           from: from ?? this.account.value,
           to,
           data,
-          value: !!value ? '0x' + (+value!).toString(16) : '0x0',
+          value: !!value ? value : '0x0',
         },
       ],
     })
@@ -171,6 +191,41 @@ class FluentManage {
         },
       ],
     })
+  }
+
+  estimateMaxAvailableBalance = async () => {
+    if (
+      !this.account.value ||
+      !this.balance.value ||
+      !ConfluxManage.crossSpaceContract.value
+    )
+      return
+    try {
+      const estimateRes = await estimate(
+        {
+          from: this.account.value,
+          to: CrossSpaceContractAdress,
+          data: ConfluxManage.crossSpaceContract.value.transferEVM(
+            '0xFBBEd826c29b88BCC428B6fa0cfE6b0908653676',
+          ).data,
+          value: this.balance.value.toHexDrip(),
+        },
+        {
+          type: 'cfx',
+          request: window.conflux?.request.bind(window.conflux),
+          tokensAmount: {},
+          isFluentRequest: true,
+        },
+      )
+      this.maxAvailableBalance.value = Unit.fromHexDrip(
+        estimateRes.nativeMaxDrip,
+      )
+    } catch (err) {
+      console.error('EstimateMaxAvailableBalance error: ', err)
+      this.maxAvailableBalance.value = new Unit(
+        this.balance.value.drip - Unit.fromDecimalCfx('0.000001').drip,
+      )
+    }
   }
 }
 

@@ -1,9 +1,26 @@
 .input {
-  @apply block w-full px-4 py-5 bg-white border border-gray-300 rounded-md text-base shadow-sm placeholder-gray-400
-    focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
-    disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none
-    invalid:border-pink-500 invalid:text-pink-600
-    focus:invalid:border-pink-500 focus:invalid:ring-pink-500;
+  @apply block w-full h-[48px] px-[12px] bg-white border-[1px] border-[#EAECEF] rounded-[2px] text-[16px] placeholder-gray-400
+     focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+    invalid:border-[#E96170] invalid:text-[#E96170]
+    focus:invalid:border-[#E96170] focus:invalid:ring-[#E96170];
+}
+
+.input-within {
+  @apply flex items-center justify-center w-full h-[48px] pl-[12px] pr-[16px] bg-white border-[1px] border-[#EAECEF] rounded-[2px] text-[16px] placeholder-gray-400
+   focus-within:outline-none focus-within:border-sky-500 focus-within:ring-1 focus-within:ring-sky-500
+  focus-within:invalid:border-[#E96170] focus-within:invalid:ring-[#E96170];
+}
+
+.input-within.disabled {
+  @apply opacity-60 cursor-not-allowed;
+}
+
+.input-within.disabled > * {
+  @apply pointer-events-none;
+}
+
+.input-within > input {
+  @apply w-full focus:outline-none disabled:bg-transparent;
 }
 
 input::-webkit-outer-spin-button,
@@ -13,6 +30,10 @@ input::-webkit-inner-spin-button {
 }
 
 .main-content {
-  position: absolute;
+  @apply absolute p-[24px] mt-[24px] rounded-[16px] bg-white;
+
+  box-shadow: 0 8px 16px rgba(164 170 216 / 80%);
   will-change: transform, opacity;
+  backface-visibility: visible;
+  contain: layout style;
 }

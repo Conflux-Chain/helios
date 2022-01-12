@@ -5407,7 +5407,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/estimate-tx@workspace:*, @fluent-wallet/estimate-tx@workspace:packages/estimate-tx":
+"@fluent-wallet/estimate-tx@^0.0.7, @fluent-wallet/estimate-tx@workspace:packages/estimate-tx":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/estimate-tx@workspace:packages/estimate-tx"
   dependencies:
@@ -16016,7 +16016,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dapp-cross-space@workspace:packages/dapp-cross-space"
   dependencies:
-    "@fluent-wallet/estimate-tx": "workspace:*"
+    "@fluent-wallet/estimate-tx": ^0.0.7
     "@formily/reactive": ^2.0.8
     "@react-spring/web": ^9.4.1
     "@types/lodash-es": ^4.17.5

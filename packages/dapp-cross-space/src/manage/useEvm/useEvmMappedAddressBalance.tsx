@@ -1,13 +1,14 @@
 import React, {createContext, useState, useEffect, useContext} from 'react'
 import {autorun} from '@formily/reactive'
 import Manage, {startTrackBalance, stopTrackBalance} from './EvmManage'
+import {type Unit} from '../../utils'
 
-const EvmMappedAddressBalanceContext = createContext<string | undefined>(
+const EvmMappedAddressBalanceContext = createContext<Unit | undefined>(
   undefined,
 )
 
 const EvmMappedAddressBalanceProvider: React.FC = ({children}) => {
-  const [balance, setBalance] = useState<string | undefined>(undefined)
+  const [balance, setBalance] = useState<Unit | undefined>(undefined)
   useEffect(() => {
     startTrackBalance()
     const dispose = autorun(() => {

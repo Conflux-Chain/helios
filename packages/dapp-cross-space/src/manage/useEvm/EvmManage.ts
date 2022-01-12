@@ -1,7 +1,7 @@
 import {observable, autorun} from '@formily/reactive'
 import FluentManage from '../useFluent/FluentManage'
 import {confluxNetworkConfig} from '../useConflux'
-import {convertDrip2CFX} from '../../utils'
+import {Unit} from '../../utils'
 
 export interface Status {
   isInstalled: boolean
@@ -21,7 +21,7 @@ class EvmManage {
   isSupportEvmSpace = observable.ref(true)
 
   trackBalanceCount = observable.ref(1)
-  balance = observable.ref<string | undefined>(undefined)
+  balance = observable.ref<Unit | undefined>(undefined)
   balanceTimer?: number = undefined
 
   constructor() {
@@ -31,9 +31,13 @@ class EvmManage {
   getBalance = async () => {
     if (!this.networkConfig.value) {
       this.isSupportEvmSpace.value = false
+      this.balance.value = undefined
       return
     }
-    if (!FluentManage.evmMappedAddress.value) return
+    if (!FluentManage.evmMappedAddress.value) {
+      this.balance.value = undefined
+      return
+    }
 
     try {
       const balance = await fetch(this.networkConfig.value.url, {
@@ -47,16 +51,23 @@ class EvmManage {
         method: 'POST',
       }).then(response => response.json())
 
-      if (typeof balance?.result === 'string') {
-        this.balance.value = convertDrip2CFX(balance.result || '0')
+      if (
+        typeof balance?.result === 'string' &&
+        (this.balance.value === undefined ||
+          this.balance.value.drip !== Unit.fromHexDrip(balance.result).drip)
+      ) {
+        this.balance.value = Unit.fromHexDrip(balance.result)
         this.isSupportEvmSpace.value = true
       } else if (
         balance?.error?.message ===
         'the method eth_getBalance does not exist/is not available'
-      )
+      ) {
         this.isSupportEvmSpace.value = false
+      }
     } catch (err) {
       console.error('Track evmMappedAddress balance error: ', err)
+      this.balance.value = undefined
+      this.isSupportEvmSpace.value = false
     }
   }
 

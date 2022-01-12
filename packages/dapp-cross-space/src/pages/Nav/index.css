@@ -1,3 +1,37 @@
-.nav-btn {
-  @apply bg-gray-400 text-[1em] px-[.5em] py-[.25em] rounded-[.25em] ring-inset ring-gray-500 hover:ring transition-shadow overflow-hidden;
+.nav-spin {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  position: relative;
+}
+
+.nav-spin::after,
+.nav-spin::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #808be7;
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  animation: animspin 2s ease-in-out infinite;
+}
+
+.nav-spin::after {
+  animation-delay: 1s;
+}
+
+@keyframes animspin {
+  0%,
+  100% {
+    transform: scale(0);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1);
+    opacity: 0;
+  }
 }

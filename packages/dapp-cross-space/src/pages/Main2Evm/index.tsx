@@ -1,121 +1,241 @@
-import React, { useState, useCallback, memo } from 'react';
-import { a } from '@react-spring/web'
-import { clamp } from 'lodash-es';
-import { useForm, type UseFormRegister, type UseFormSetValue, type FieldValues } from "react-hook-form";
-import { useFluent, useBalance, sendTransaction, trackBalanceChangeOnce } from '../../manage/useFluent';
-import { useCrossSpaceContract, CrossSpaceContractAdress } from '../../manage/useConflux';
-import { useIsSupportEvmSpace } from '../../manage/useEvm';
-import { convertCFX2Drip } from '../../utils';
-import { showWaitFluent, showTransactionSubmitted, hideWaitFluent, hideTransactionSubmitted } from '../../components/tools/Modal';
-import showToast from '../../components/tools/Toast';
+import React, {useCallback, memo, useEffect} from 'react'
+import {a} from '@react-spring/web'
+import {useForm, type UseFormRegister, type FieldValues} from 'react-hook-form'
+import classNames from 'clsx'
+import EllipsisCenter from '../../components/EllipsisCenter'
+import {
+  useFluent,
+  useBalance,
+  sendTransaction,
+  trackBalanceChangeOnce,
+} from '../../manage/useFluent'
+import {
+  useCrossSpaceContract,
+  CrossSpaceContractAdress,
+} from '../../manage/useConflux'
+import {useIsSupportEvmSpace} from '../../manage/useEvm'
+import {Unit} from '../../utils'
+import {
+  showWaitFluent,
+  showTransactionSubmitted,
+  hideWaitFluent,
+  hideTransactionSubmitted,
+} from '../../components/tools/Modal'
+import showToast from '../../components/tools/Toast'
+import CFXIcon from '../../assets/cfx.svg'
+import PageTurn from '../../assets/page-turn.svg'
 import './index.css';
 
-const Main2Evm: React.FC<{ style: any; }> = ({ style }) => {
-    const { register, handleSubmit, setValue } = useForm();
-    const { account } = useFluent();
-    const isSupportEvmSpace = useIsSupportEvmSpace();
-    const crossSpaceContract = useCrossSpaceContract();
+const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
+  style,
+  handleClickFlipped,
+}) => {
+  const {register, handleSubmit, setValue} = useForm()
+  const {account} = useFluent()
+  const crossSpaceContract = useCrossSpaceContract()
 
-    const [receivedAmount, setReceivedAmount] = useState(0);
+  const setAmount = useCallback((val: string) => {
+    const _val = val.replace(/(?:\.0*|(\.\d+?)0+)$/, '$1')
+    setValue('amount', _val)
+    const receivedCFX = document.querySelector('#receivedCFX')
+    if (receivedCFX)
+      receivedCFX.textContent = _val ? `${_val} CFX` : ''
+  }, [])
 
-    const onSubmit = useCallback(handleSubmit(async ({ evmAddress, amount }: { evmAddress: string; amount: string; }) => {
-        if (!crossSpaceContract) return;
-        let waitFluentKey: string | number = null!;
-        let transactionSubmittedKey: string | number = null!;
+  useEffect(() => setAmount(''), [account])
+
+  const onSubmit = useCallback(
+    handleSubmit(
+      async ({evmAddress, amount}: {evmAddress: string; amount: string}) => {
+        if (!crossSpaceContract) return
+        let waitFluentKey: string | number = null!
+        let transactionSubmittedKey: string | number = null!
         try {
-            waitFluentKey = showWaitFluent();
-            const TxnHash = await sendTransaction({
-                to: CrossSpaceContractAdress,
-                data: crossSpaceContract.transferEVM(evmAddress).data,
-                value: convertCFX2Drip(amount)
-            });
-            transactionSubmittedKey = showTransactionSubmitted(TxnHash);
-            trackBalanceChangeOnce(() => {
-                hideTransactionSubmitted(transactionSubmittedKey);
-                showToast('It seems you have sent CFX to EVM Space.');
-            });
+          waitFluentKey = showWaitFluent()
+          const TxnHash = await sendTransaction({
+            to: CrossSpaceContractAdress,
+            data: crossSpaceContract.transferEVM(evmAddress).data,
+            value: Unit.fromDecimalCfx(amount).toHexDrip(),
+          })
+          transactionSubmittedKey = showTransactionSubmitted(TxnHash)
+          trackBalanceChangeOnce(() => {
+            hideTransactionSubmitted(transactionSubmittedKey)
+            showToast('It seems you have sent CFX to EVM Space.')
+          })
         } catch (err) {
-            console.error('SendTransaction to EVM Space error: ', err);
-            hideWaitFluent(waitFluentKey);
-            if ((err as { code: number; })?.code === 4001)
-                showToast('You canceled the transaction.');
+          console.error('SendTransaction to EVM Space error: ', err)
+          hideWaitFluent(waitFluentKey)
+          if ((err as {code: number})?.code === 4001)
+            showToast('You canceled the transaction.')
         } finally {
-            setValue('amount', '');
-            setReceivedAmount(0);
+          setAmount('')
         }
-    }), [crossSpaceContract]);
+      },
+    ),
+    [crossSpaceContract],
+  )
 
-    return (
-        <a.div className='main-content backface-visible contain-content' style={style}>
-            <p>From: <span className='ml-1 text-blue-700'>Conflux Core-Chain</span></p>
-            <p className='text-ellipsis overflow-hidden'>{account}</p>
+  return (
+    <a.div className="main-content" style={style}>
+      <div className="bg-[#F7F8FA] rounded-[8px] p-[16px]">
+        <p className="flex items-center">
+          <span className="text-[14px] text-[#A9ABB2]">From:</span>
+          <span className="ml-[8px] text-[18px] text-[#2959B4]">
+            Conflux Core-Chain
+          </span>
+        </p>
+        <div className="flex items-center mt-[12px] ">
+          <EllipsisCenter
+            className="w-[124px] text-[16px] leading-[22px] text-[#3D3F4C] dfn-center"
+            text={account!}
+          />
+          <span className="inline-block ml-[4px] px-[4px] text-[12px] text-white text-center leading-[18px] bg-[#44D7B6] rounded-[2px] translate-y-[1.5px]">
+            Connected
+          </span>
+        </div>
+      </div>
 
-            <p className='mt-8'>To: <span className='ml-1 text-green-500'>Conflux EVM-Chain</span></p>
+      <button
+        className="absolute left-[50%] translate-x-[-50%] top-[110px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-1 hover:scale-110 transition-transform"
+        onClick={handleClickFlipped}
+      >
+        <img
+          className="w-[20px] h-[20px] select-none"
+          src={PageTurn}
+          alt="page-turn button"
+        />
+      </button>
 
-            <form onSubmit={onSubmit}>
-                <input
-                    className="input mt-4"
-                    placeholder='Conflux EVM-Chain Destination Address'
-                    pattern="0x[a-fA-F0-9]{40}"
-                    {...register("evmAddress", { pattern: /0x[a-fA-F0-9]{40}/g, required: true })}
-                />
+      <form onSubmit={onSubmit}>
+        <div className="relative mt-[16px] p-[16px] w-[432px] border-[1px] border-[#EAECEF] rounded-[8px]">
+          <p className="flex items-center">
+            <span className="text-[14px] text-[#A9ABB2]">To:</span>
+            <span className="ml-[8px] text-[18px] text-[#15C184]">
+              Conflux EVM-Chain
+            </span>
+          </p>
+          <input
+            className="input mt-[8px]"
+            id="evm-address"
+            placeholder="Conflux EVM-Chain Destination Address"
+            pattern="0x[a-fA-F0-9]{40}"
+            {...register('evmAddress', {
+              pattern: /0x[a-fA-F0-9]{40}/g,
+              required: true,
+            })}
+          />
+          {<span className="invalid absolute right-[18px] top-[32px] text-[12px] text-[#E96170] opacity-0 transition-opacity">Invalid address</span>}
+        </div>
 
-                <AmountInput register={register} setValue={setValue} receivedAmount={receivedAmount} setReceivedAmount={setReceivedAmount} />
+        <div className="mt-[20px] mb-[16px] p-[12px] flex items-center text-[14px] text-[#3D3F4C] bg-[#F7F8FA] rounded-[2px]">
+          <img
+            className="mr-[8px] w-[24px] h-[24px]"
+            src={CFXIcon}
+            alt="cfx icon"
+          />
+          CFX (Conflux Network)
+        </div>
 
-                <button
-                    type="submit"
-                    className='mt-14 px-40 py-4 border border-black rounded text-12 ring-black ring-opacity-60 hover:ring transition-shadow whitespace-nowrap'
-                    disabled={!isSupportEvmSpace}
-                >
-                    Transfer
-                </button>
-            </form>
-        </a.div>
-    );
+        <AmountInput register={register} setAmount={setAmount} />
+
+        <TransferButton />
+      </form>
+    </a.div>
+  )
 }
 
 const AmountInput: React.FC<{
-    register: UseFormRegister<FieldValues>;
-    setValue: UseFormSetValue<FieldValues>;
-    receivedAmount: number;
-    setReceivedAmount:  React.Dispatch<React.SetStateAction<number>>;
-}> = memo(({ register, setValue, receivedAmount, setReceivedAmount }) => {
-    const balance = useBalance();
+  register: UseFormRegister<FieldValues>
+  setAmount: (val: string) => void
+}> = memo(({register, setAmount}) => {
+  const {balance, maxAvailableBalance} = useBalance()
 
-    const handleBlur = useCallback<React.FocusEventHandler<HTMLInputElement>>((evt) => {
-        if (evt.target.value)
-            evt.target.value = clamp(+evt.target.value, 0, Math.floor(+balance!)) + '';
-        setReceivedAmount(+evt.target.value);
-    }, [balance]);
+  const handleCheckAmount = useCallback(
+    async (evt: React.FocusEvent<HTMLInputElement, Element>) => {
+      if (Number(evt.target.value) < 0) {
+        return setAmount('')
+      }
 
-    const handleClickMax = useCallback(() => {
-        setValue('amount', typeof balance !== undefined ? Math.floor(+balance!) : '0');
-    }, [balance]);
-    
-    return (
-        <>
-            <div className='relative flex items-center mt-4 mb-3'>
-                <input
-                    id="input-amount"
-                    className="input"
-                    placeholder='Amount you want to transfer'
-                    type="number"
-                    min={1}
-                    max={balance}
-                    {...register("amount", { min: 0.1, max: balance ?? 0, required: true, onBlur: handleBlur })}
-                />
-                <label
-                    className='opacity-0 absolute right-6 text-blue-400 cursor-pointer hover:underline'
-                    onClick={handleClickMax}
-                    htmlFor="input-amount"
-                >
-                    MAX
-                </label>
-            </div>
-            <p><span className='text-blue-700'>Core-Chain</span> Balance: {typeof balance !== 'undefined' ? Math.floor(+balance) + 'CFX' : ''}</p>
-            <p className='mt-4'>Will receive on <span className='ml-1 text-green-500'>EVM-Chain</span>: {Math.max(0, receivedAmount)} CFX</p>
-        </>
-    );
-});
+      if (!maxAvailableBalance) return
+      if (
+        Unit.fromDecimalCfx(evt.target.value).drip > maxAvailableBalance.drip
+      ) {
+        return setAmount(maxAvailableBalance.toDecimalCfx())
+      }
+    },
+    [maxAvailableBalance],
+  )
 
-export default memo(Main2Evm);
+  const handleClickMax = useCallback(() => {
+    if (!maxAvailableBalance) return
+    setAmount(maxAvailableBalance.toDecimalCfx())
+  }, [maxAvailableBalance])
+
+  return (
+    <>
+      <div
+        className={classNames('input-within mb-[12px]', {
+          disabled: !maxAvailableBalance
+            ? true
+            : maxAvailableBalance.drip === 0n,
+        })}
+      >
+        <input
+          id="input-amount"
+          placeholder="Amount you want to transfer"
+          type="number"
+          step={1e-18}
+          min={new Unit(1n).toDecimalCfx()}
+          {...register('amount', { required: true, min: new Unit(1n).toDecimalCfx(), onBlur: handleCheckAmount})}
+        />
+        <div
+          className="ml-4 text-[14px] text-[#808BE7] cursor-pointer hover:underline"
+          onClick={handleClickMax}
+        >
+          MAX
+        </div>
+      </div>
+      <p className="text-[14px] text-[#3D3F4C]">
+        <span className="text-[#2959B4]">Core-Chain</span> Balance:
+        {typeof balance !== 'undefined' ? (
+          (balance.drip !== 0n && balance.drip < Unit.fromDecimalCfx('0.000001').drip) ? (
+            <span
+              className="dfn dfn-center"
+              data-info={balance.toDecimalCfx() + 'CFX'}
+            >
+              {' '}
+              ＜0.000001 CFX
+            </span>
+          ) : (
+            <span className="dfn dfn-center" data-info={balance.toDecimalCfx() + 'CFX'}>{` ${balance} CFX`}</span>
+          )
+        ) : (
+          ''
+        )}
+      </p>
+      <p className="mt-[20px] text-[14px] text-[#3D3F4C]">
+        Will receive on <span className="text-[#15C184]">EVM-Chain</span>:{' '}
+        <span id="receivedCFX"></span>
+      </p>
+    </>
+  )
+})
+
+const TransferButton: React.FC = memo(() => {
+  const {maxAvailableBalance} = useBalance()
+  const isSupportEvmSpace = useIsSupportEvmSpace()
+
+  return (
+    <>
+        <button
+          type="submit"
+          className="mt-[24px] w-full h-[48px] button"
+          disabled={!isSupportEvmSpace || maxAvailableBalance === undefined || maxAvailableBalance.drip === 0n}
+        >
+          Transfer
+        </button>
+    </>
+  )
+})
+
+export default memo(Main2Evm)

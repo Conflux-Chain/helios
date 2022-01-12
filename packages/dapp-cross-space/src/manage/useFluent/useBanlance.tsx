@@ -1,15 +1,19 @@
 import React, {createContext, useState, useEffect, useContext} from 'react'
 import {autorun} from '@formily/reactive'
 import Manage, {startTrackBalance, stopTrackBalance} from './FluentManage'
+import {type Unit} from '../../utils'
 
-const BalanceContext = createContext<string | undefined>(undefined)
+const BalanceContext = createContext<{ balance?: Unit, maxAvailableBalance?: Unit }>({ balance: undefined, maxAvailableBalance: undefined })
 
 const BalanceProvider: React.FC = ({children}) => {
-  const [balance, setBalance] = useState<string | undefined>(undefined)
+  const [balance, setBalance] = useState<Unit | undefined>(undefined)
+  const [maxAvailableBalance, setMaxAvailableBalance] = useState<Unit | undefined>(undefined)
+
   useEffect(() => {
     startTrackBalance()
     const dispose = autorun(() => {
       setBalance(Manage.balance.value)
+      setMaxAvailableBalance(Manage.maxAvailableBalance.value)
     })
 
     return () => {
@@ -19,7 +23,7 @@ const BalanceProvider: React.FC = ({children}) => {
   }, [])
 
   return (
-    <BalanceContext.Provider value={balance}>
+    <BalanceContext.Provider value={{ balance, maxAvailableBalance }}>
       {children}
     </BalanceContext.Provider>
   )

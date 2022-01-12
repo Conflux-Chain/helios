@@ -25,7 +25,7 @@ const ToastComponent: React.FC<{text: string; duration: number}> = memo(
         {text}
         {duration ? (
           <a.div
-            className="absolute bottom-0 w-full h-[4px] bg-gradient-to-l from-cyan-500 to-blue-500"
+            className="absolute bottom-0 w-full h-[4px] bg-gradient-to-l from-[#15C184] to-[#2959B4]"
             style={props}
           />
         ) : null}

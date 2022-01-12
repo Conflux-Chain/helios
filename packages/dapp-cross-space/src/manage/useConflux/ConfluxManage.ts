@@ -3,7 +3,7 @@ import CrossSpaceContractConfig from 'js-conflux-sdk/src/contract/internal/Cross
 import {Conflux} from 'js-conflux-sdk'
 import FluentManage from '../useFluent/FluentManage'
 
-interface CrossSpaceContract {
+export interface CrossSpaceContract {
   transferEVM(evmAddress: string): Record<string, string>
   withdrawFromMapped(evmAddress: string): any
 }
@@ -29,7 +29,7 @@ class ConfluxManage {
       ? new Conflux(confluxNetworkConfig[FluentManage.status.chainId])
       : undefined,
   )
-  CrossSpaceContract = observable.computed(
+  crossSpaceContract = observable.computed(
     () =>
       (this.conflux.value?.Contract(
         CrossSpaceContractConfig,

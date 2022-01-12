@@ -3,16 +3,16 @@ import {autorun} from '@formily/reactive'
 import ConfluxManage from './ConfluxManage'
 
 const CrossSpaceContractContext = createContext<
-  typeof ConfluxManage.CrossSpaceContract.value
+  typeof ConfluxManage.crossSpaceContract.value
 >(null!)
 
 const CrossSpaceContractProvider: React.FC = ({children}) => {
   const [crossSpaceContract, setCrossSpaceContract] = useState(
-    () => ConfluxManage.CrossSpaceContract.value,
+    () => ConfluxManage.crossSpaceContract.value,
   )
   useEffect(() => {
     return autorun(() => {
-      setCrossSpaceContract(ConfluxManage.CrossSpaceContract.value)
+      setCrossSpaceContract(ConfluxManage.crossSpaceContract.value)
     })
   }, [])
 

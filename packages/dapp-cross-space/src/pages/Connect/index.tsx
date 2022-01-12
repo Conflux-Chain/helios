@@ -20,7 +20,7 @@ const Connect: React.FC = () => {
 
   return (
     <button
-      className="mt-14 px-40 py-4 border border-black rounded text-12 ring-black ring-opacity-60 hover:ring transition-shadow whitespace-nowrap"
+      className="button text-[16px] w-[432px] h-[48px] mt-[48px]"
       onClick={handleClickConnect}
     >
       Connect Fluent Wallet
