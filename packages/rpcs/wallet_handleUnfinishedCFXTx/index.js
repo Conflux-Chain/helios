@@ -207,7 +207,6 @@ export const main = ({
 
             const {errorType, shouldDiscard} = processError(err)
             const isDuplicateTx = errorType === 'duplicateTx'
-            const failed = shouldDiscard && !isDuplicateTx
 
             if (errorType === 'unknownError')
               sentryCaptureError(err, {
@@ -218,9 +217,9 @@ export const main = ({
               })
 
             defs({
-              failed: failed && {errorType, err},
-              isDuplicateTx,
-              keepTrack: !failed,
+              failed: shouldDiscard && {errorType, err},
+              sameAsSuccess: isDuplicateTx,
+              resend: !shouldDiscard && !isDuplicateTx,
             }).transform(
               branchObj({
                 failed: [
@@ -242,16 +241,14 @@ export const main = ({
                   }),
                   sideEffect(() => updateBadge(getUnfinishedTxCount())),
                 ],
-                isDuplicateTx: [
+                resend: [keepTruthy(), sideEffect(keepTrack)],
+                // retry in next run
+                sameAsSuccess: [
                   keepTruthy(),
-                  sideEffect(() => {
-                    setTxPending({hash})
-                    typeof okCb === 'function' && okCb(hash)
-                    keepTrack()
-                  }),
+                  sideEffect(() => setTxPending({hash})),
+                  sideEffect(() => typeof okCb === 'function' && okCb(hash)),
+                  sideEffect(keepTrack),
                 ],
-
-                keepTrack: map(x => x && keepTrack()), // retry in next run
               }),
             )
           },
