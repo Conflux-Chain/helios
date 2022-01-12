@@ -10,9 +10,8 @@ import {
   formatHexToDecimal,
   convertValueToData,
 } from '@fluent-wallet/data-format'
-import useGlobalStore from '../../stores'
 import {
-  useTxParams,
+  useCurrentTxParams,
   useEstimateTx,
   useCheckBalanceAndGas,
   useDecodeData,
@@ -88,7 +87,8 @@ function ConfirmTransaction() {
     setStorageLimit,
     setNonce,
     clearSendTransactionParams,
-  } = useGlobalStore()
+    tx: txParams,
+  } = useCurrentTxParams()
   const {setLoading} = useLoading()
 
   const {
@@ -123,7 +123,6 @@ function ConfirmTransaction() {
   const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
 
   // params in wallet send or dapp send
-  const txParams = useTxParams()
   const originParams = !isDapp ? {...txParams} : {...tx}
   // user can edit nonce, gasPrice and gas
   const {

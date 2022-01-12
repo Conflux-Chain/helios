@@ -4,7 +4,7 @@ import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
 import {useNetworkTypeIsCfx} from '../../hooks/useApi'
-import {useTxParams, useEstimateTx, useDappParams} from '../../hooks'
+import {useCurrentTxParams, useEstimateTx, useDappParams} from '../../hooks'
 import {getPageType} from '../../utils'
 import {WrapperWithLabel} from './components'
 import {
@@ -14,7 +14,6 @@ import {
   CFX_DECIMALS,
   ETH_DECIMALS,
 } from '@fluent-wallet/data-format'
-import useGlobalStore from '../../stores'
 
 function EditGasFee() {
   const {t} = useTranslation()
@@ -25,8 +24,15 @@ function EditGasFee() {
   const [inputGasPrice, setInputGasPrice] = useState('0')
   const [inputGasLimit, setInputGasLimit] = useState('0')
   const [inputNonce, setInputNonce] = useState('')
-  const {gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce} =
-    useGlobalStore()
+  const {
+    gasPrice,
+    gasLimit,
+    nonce,
+    setGasPrice,
+    setGasLimit,
+    setNonce,
+    tx: txParams,
+  } = useCurrentTxParams()
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
@@ -34,7 +40,6 @@ function EditGasFee() {
 
   const isDapp = getPageType() === 'notification'
   const tx = useDappParams()
-  const txParams = useTxParams()
   const originParams = !isDapp ? {...txParams} : {...tx}
 
   const params = {

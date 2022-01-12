@@ -33,9 +33,9 @@ const {
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
 } = RPC_METHODS
 
-export const useCurrentAddress = () => {
+export const useCurrentAddress = (notSendReq = false) => {
   const {data, mutate} = useRPC(
-    [QUERY_ADDRESS, 'useCurrentAddress'],
+    notSendReq ? null : [QUERY_ADDRESS, 'useCurrentAddress'],
     {
       selected: true,
       g: {
@@ -90,9 +90,9 @@ export const useNetwork = () => {
 
 export const useCfxNetwork = () => {
   const {data: cfxNetWork} = useRPC(
-    [WALLET_GET_NETWORK, 'cfx'],
+    [WALLET_GET_NETWORK, NETWORK_TYPE.CFX],
     {
-      type: 'cfx',
+      type: NETWORK_TYPE.CFX,
     },
     {fallbackData: []},
   )
@@ -101,9 +101,9 @@ export const useCfxNetwork = () => {
 
 export const useEthNetwork = () => {
   const {data: ethNetWork} = useRPC(
-    [WALLET_GET_NETWORK, 'eth'],
+    [WALLET_GET_NETWORK, NETWORK_TYPE.ETH],
     {
-      type: 'eth',
+      type: NETWORK_TYPE.ETH,
     },
     {fallbackData: []},
   )

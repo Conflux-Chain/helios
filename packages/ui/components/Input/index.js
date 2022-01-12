@@ -149,7 +149,7 @@ const Input = forwardRef(function Input(
       </div>
 
       <div
-        className={`${errorClassName} scale-y-0 transition duration-300  ease-in-out ${errorAnimateStyle}`}
+        className={`${errorClassName} scale-y-0 transition duration-300  ease-in-out transform-gpu ${errorAnimateStyle}`}
       >
         {displayErrorMsg}
       </div>

@@ -1,0 +1,70 @@
+.dfn {
+  position: relative;
+  cursor: help;
+}
+
+.dfn-left::after {
+  left: 0;
+}
+
+.dfn-right::after {
+  right: 0;
+}
+
+.dfn-center::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dfn::after {
+  content: attr(data-info);
+  display: inline;
+  position: absolute;
+  top: 20px;
+  opacity: 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5em;
+  padding: 0.5em 0.8em;
+  background: rgba(0 0 0 / 80%);
+  border-radius: 4px;
+  color: #fff;
+  pointer-events: none;
+  transition: opacity 150ms, top 250ms;
+  z-index: 20;
+  contain: layout paint style;
+}
+
+.dfn::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  width: 0;
+  height: 0;
+  border: solid transparent 5px;
+  border-bottom-color: rgba(0 0 0 / 80%);
+  transition: opacity 150ms, top 250ms;
+  z-index: 0;
+  contain: strict;
+}
+
+.dfn:hover {
+  z-index: 2;
+}
+
+.dfn:hover::after,
+.dfn:hover::before {
+  opacity: 1;
+}
+
+.dfn:hover::after {
+  top: 28px;
+}
+
+.dfn:hover::before {
+  top: 20px;
+}

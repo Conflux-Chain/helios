@@ -24,6 +24,9 @@ const en = {
     transactionDetails: 'Transaction Details',
     functionName: 'Function',
     hexData: 'Hex Data',
+    add: 'Add',
+    notFilled: 'Not filled',
+    unCaughtErrMsg: 'something goes wrong',
 
     // - home page
     send: 'Send',
@@ -223,8 +226,8 @@ const en = {
     networkName: 'Network Name',
     networkUrl: 'Network URL',
     chainId: 'Chain ID',
-    currencySymbol: 'Currency Symbol',
-    blockExplorerUrl: 'Block Explorer URL',
+    currencySymbol: 'Currency Symbol (Optional)',
+    blockExplorerUrl: 'Block Explorer URL (Optional)',
 
     // - add suggested token
     addSuggestedToken: 'Add suggested token',
@@ -255,6 +258,19 @@ const en = {
     lock: 'Lock',
     enterPassword: 'Enter your password to continue',
     viewSeed: 'Reveal secret Seed Phrase',
+    hide: 'Hide',
+    delete: 'Delete',
+    groupDeleteWarning: 'Can not delete current account group.',
+
+    // Network Management
+    networkManagement: 'Network Management',
+    newRpcUrl: 'New RPC URL',
+    networkType: 'Network Type',
+    wrongRpcUrl: 'Could not fetch chain ID. Is your RPC URL correct?',
+    networkDeleteWarning: 'Can not delete current network.',
+    duplicateNetworkEndpoint: 'Duplicate network endpoint.',
+    urlWarning: 'URLs require the appropriate HTTP/HTTPS prefix.',
+    invalidRpcUrl: 'Invalid RPC URL',
 
     // backup seed
     backupIdentity: 'Backup Seed Phrase',
