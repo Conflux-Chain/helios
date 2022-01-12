@@ -5,9 +5,8 @@ import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
 import {Radio, Group} from '@fluent-wallet/radio'
 import {Big, convertDecimal} from '@fluent-wallet/data-format'
-import useGlobalStore from '../../stores'
 import {useCurrentDapp} from '../../hooks/useApi'
-import {useDappParams, useDecodeData} from '../../hooks'
+import {useDappParams, useDecodeData, useCurrentTxParams} from '../../hooks'
 
 function EditPermission() {
   const {t} = useTranslation()
@@ -17,7 +16,7 @@ function EditPermission() {
   const [permissionChoice, setPermissionChoice] = useState('recommend')
   const [customLimitValue, setCustomLimitValue] = useState('')
   const [customLimitErr, setCustomLimitErr] = useState('')
-  const {customAllowance, setCustomAllowance} = useGlobalStore()
+  const {customAllowance, setCustomAllowance} = useCurrentTxParams()
 
   const {symbol, decimals} = token
   const decodeAllowance = convertDecimal(

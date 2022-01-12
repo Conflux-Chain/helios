@@ -6,7 +6,8 @@ import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
 import {CFX_SCAN_DOMAINS, ETH_SCAN_DOMAINS} from '@fluent-wallet/consts'
 import {useNetworkTypeIsCfx, useCurrentAddress} from '../../../hooks/useApi'
-import useGlobalStore from '../../../stores'
+import {useCurrentTxParams} from '../../../hooks'
+
 import {ROUTES} from '../../../constants'
 const {HOME} = ROUTES
 
@@ -19,7 +20,7 @@ function TransactionResult({transactionHash}) {
   } = useCurrentAddress()
 
   const history = useHistory()
-  const {clearSendTransactionParams} = useGlobalStore()
+  const {clearSendTransactionParams} = useCurrentTxParams()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   return (
     <div className="w-full h-full flex flex-col items-center justify-between absolute inset-0 bg-gray-0 pb-4">
