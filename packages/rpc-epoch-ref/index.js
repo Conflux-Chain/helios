@@ -27,6 +27,8 @@ const RPC_EPOCH_TAG_CONFIG = {
   ////
   cfx_getTransactionByHash: 'latest_mined',
   cfx_getTransactionReceipt: 'latest_executed',
+  cfx_getBestBlockHash: 'latest_state',
+  cfx_getBlockByHash: 'latest_mined',
 
   // eth
   eth_getBalance: 1,

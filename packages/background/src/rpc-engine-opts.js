@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as cfxGetMaxGasLimit from '@fluent-wallet/cfx_get-max-gas-limit'
 import * as walletMetadataForPopup from '@fluent-wallet/wallet_metadata-for-popup'
 import * as cfxSignTxWithLedgerNanoS from '@fluent-wallet/cfx_sign-tx-with-ledger-nano-s'
 import * as walletGetImportHardwareWalletInfo from '@fluent-wallet/wallet_get-import-hardware-wallet-info'
@@ -273,6 +274,7 @@ export const rpcEngineOpts = {
     cfxSignTransaction,
     cfxSendTransaction,
     cfxSignTxWithLedgerNanoS,
+    cfxGetMaxGasLimit,
 
     // eth
     ethGetCode,
