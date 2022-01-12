@@ -1,6 +1,7 @@
 {
   "name": "dapp-cross-space",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "start": "vite",
     "build": "vite build"
