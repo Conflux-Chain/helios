@@ -29,6 +29,7 @@ const en = {
     send: 'Send',
     history: 'History',
     assets: 'Assets',
+    crossSpace: 'Cross Space',
 
     // - homepage / 连接网站状态模块和切换连接弹窗模块
     noConnectedDapp: 'Not connected to current website',

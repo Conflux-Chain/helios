@@ -1,8 +1,5 @@
 import PropTypes from 'prop-types'
-import {
-  RightOutlined,
-  // QrcodeOutlined,
-} from '@fluent-wallet/component-icons'
+import {RightOutlined} from '@fluent-wallet/component-icons'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {
   useCurrentAddress,
