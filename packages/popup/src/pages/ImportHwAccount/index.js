@@ -118,7 +118,7 @@ function ImportHwAccount() {
         content:
           e?.appCode == 5031
             ? t('refreshLater')
-            : e?.message ?? 'some thing goes wrong',
+            : e?.message ?? t('unCaughtErrMsg'),
         top: '110px',
         duration: 1,
       })
@@ -228,7 +228,7 @@ function ImportHwAccount() {
       .catch(e => {
         setImportStatus('')
         Message.error({
-          content: e.message ?? 'some thing goes wrong',
+          content: e?.message ?? t('unCaughtErrMsg'),
           top: '110px',
           duration: 1,
         })

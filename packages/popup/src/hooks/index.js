@@ -70,12 +70,11 @@ export const useSlideAnimation = (
       )
       timer = setTimeout(() => {
         setWrapperAnimateStyle('')
-        clearTimeout(timer)
       }, ANIMATE_DURING_TIME)
     }
 
     return () => {
-      timer && clearTimeout(timer)
+      clearTimeout(timer)
     }
   }, [show, wrapperAnimateStyle, direction, needAnimation])
 

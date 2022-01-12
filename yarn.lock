@@ -20834,6 +20834,7 @@ fsevents@^1.2.7:
     react-transition-group: ^4.4.2
     react-use: 17.3.1
     swr: 1.1.1
+    valid-url: 1.0.9
     webextension-polyfill: ^0.8.0
     zustand: ^3.6.7
   languageName: unknown
@@ -34137,6 +34138,13 @@ resolve@^2.0.0-next.3:
     convert-source-map: ^1.6.0
     source-map: ^0.7.3
   checksum: c7dabf9567e0c210b24d0720e553803cbe1ff81edb1ec7f2080eb4be01ed081a40286cc9f4aaa86d1bf8d57840cefae8fdf326b7cb8faa316ba50c7b948030d4
+  languageName: node
+  linkType: hard
+
+"valid-url@npm:1.0.9":
+  version: 1.0.9
+  resolution: "valid-url@npm:1.0.9"
+  checksum: 3ecb030559404441c2cf104cbabab8770efb0f36d117db03d1081052ef133015a68806148ce954bb4dd0b5c42c14b709a88783c93d66b0916cb67ba771c98702
   languageName: node
   linkType: hard
 
