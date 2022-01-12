@@ -183,7 +183,7 @@ function HistoryItem({
           {transactionUrl ? (
             <WrapIcon
               size="w-5 h-5 ml-2"
-              id="openScanUrl"
+              id="openScanTxUrl"
               onClick={() => window.open(transactionUrl)}
             >
               <SendOutlined className="w-3 h-3 text-primary" />

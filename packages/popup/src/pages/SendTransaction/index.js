@@ -11,13 +11,16 @@ import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
 import {TitleNav, AccountDisplay} from '../../components'
-import {useTxParams, useEstimateTx, useCheckBalanceAndGas} from '../../hooks'
+import {
+  useCurrentTxParams,
+  useEstimateTx,
+  useCheckBalanceAndGas,
+} from '../../hooks'
 import {
   ToAddressInput,
   TokenAndAmount,
   CurrentNetworkDisplay,
 } from './components'
-import useGlobalStore from '../../stores'
 import {validateAddress} from '../../utils'
 import {
   useNetworkTypeIsCfx,
@@ -41,8 +44,10 @@ function SendTransaction() {
     setGasLimit,
     setNonce,
     setStorageLimit,
+    tx,
     clearSendTransactionParams,
-  } = useGlobalStore()
+  } = useCurrentTxParams()
+
   const {
     data: {
       value: address,
@@ -67,10 +72,9 @@ function SendTransaction() {
     sendAmount ? balanceError : '',
   )
   const isNativeToken = !tokenAddress
-  const params = useTxParams()
   const estimateRst =
     useEstimateTx(
-      params,
+      tx,
       !isNativeToken
         ? {[tokenAddress]: convertValueToData(sendAmount, decimals)}
         : {},
