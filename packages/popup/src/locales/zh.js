@@ -241,7 +241,7 @@ const zh = {
     invalidPassword: '密码错误',
     invalidConfirmPassword: '两次输入的密码不一致',
     // - welcome page
-    hello: 'Hello',
+    hello: '欢迎',
 
     // - migration
     migration: '一键迁移',
