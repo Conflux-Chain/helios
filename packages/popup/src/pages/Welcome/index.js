@@ -14,7 +14,7 @@ const Welcome = () => {
       className="bg-secondary h-full w-full flex flex-col bg-welcome-background"
       id="unlockContainer"
     >
-      <LanguageNav showLan={false} />
+      <LanguageNav />
       <header className="flex flex-col items-center pb-7 mt-7">
         <img
           src="/images/logo-vertical.svg"

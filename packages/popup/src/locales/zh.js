@@ -2,7 +2,7 @@ const zh = {
   translation: {
     faster: 'Faster',
     en: 'English',
-    'zh-CN': '简体中文',
+    zh: '简体中文',
     back: 'Back',
     // welcome page
     hello: 'Hello',

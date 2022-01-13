@@ -133,7 +133,7 @@ const en = {
     passwordRulesWarning:
       'Use 8 ~ 16 characters with a mix of letters & numbers.',
     en: 'English',
-    'zh-CN': '简体中文',
+    zh: '简体中文',
 
     // - Send Transaction
     // - Send Transaction / send transaction
@@ -272,6 +272,14 @@ const en = {
     duplicateNetworkEndpoint: 'Duplicate network endpoint.',
     urlWarning: 'URLs require the appropriate HTTP/HTTPS prefix.',
     invalidRpcUrl: 'Invalid RPC URL',
+
+    // About
+    about: 'About',
+    website: 'Web Site',
+    feedback: 'Feedback',
+    docs: 'Docs',
+    walletName: 'Fluent Wallet',
+    version: 'Version',
 
     // backup seed
     backupIdentity: 'Backup Seed Phrase',

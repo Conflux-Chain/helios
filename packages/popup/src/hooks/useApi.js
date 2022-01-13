@@ -31,6 +31,7 @@ const {
   WALLET_VALIDATE_20TOKEN,
   WALLETDB_TXLIST,
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
+  WALLET_GET_FLUENT_METADATA,
   CFX_GET_MAX_GAS_LIMIT,
 } = RPC_METHODS
 
@@ -568,5 +569,14 @@ export const useCfxMaxGasLimit = isCfxChain => {
   const {data} = useRPC(
     isCfxChain && networkId ? [CFX_GET_MAX_GAS_LIMIT, networkId] : null,
   )
+  return data
+}
+
+export const useWalletVersion = () => {
+  const {data} = useRPC([WALLET_GET_FLUENT_METADATA], undefined, {
+    fallbackData: {
+      version: '',
+    },
+  })
   return data
 }
