@@ -31,6 +31,7 @@ const {
   WALLET_VALIDATE_20TOKEN,
   WALLETDB_TXLIST,
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
+  CFX_GET_MAX_GAS_LIMIT,
 } = RPC_METHODS
 
 export const useCurrentAddress = (notSendReq = false) => {
@@ -554,6 +555,18 @@ export const useAddressTypeInConfirmTx = address => {
         account: {accountGroup: {vault: {}}},
       },
     },
+  )
+  return data
+}
+
+export const useCfxMaxGasLimit = isCfxChain => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {data} = useRPC(
+    isCfxChain && networkId ? [CFX_GET_MAX_GAS_LIMIT, networkId] : null,
   )
   return data
 }

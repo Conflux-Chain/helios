@@ -167,7 +167,8 @@ const en = {
     totalFee: 'Total Fee',
     customNonce: 'Custom Nonce',
     gasPriceErrMSg: 'The minimum Gas Price is 1 {{unit}}',
-    gasLimitErrMsg: 'Gas Limit must be at least {{gasUsed}}',
+    gasLimitMinErr: 'Gas Limit must be at least {{gasUsed}}',
+    gasLimitMaxErr: 'Gas Limit must be at most {{gasMax}}',
     nonceErr: 'Nonce can not be 0',
 
     // - Send Transaction / Sign Transaction / 2. transaction result
