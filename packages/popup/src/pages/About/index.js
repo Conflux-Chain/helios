@@ -45,7 +45,7 @@ AboutItem.propTypes = {
 }
 
 function About() {
-  const {t} = useTranslation()
+  const {t, i18n} = useTranslation()
   const {version} = useWalletVersion()
 
   return (
@@ -72,7 +72,7 @@ function About() {
           <AboutItem
             key={contentKey}
             icon={<img src={iconPath} alt="link_log" className="w-5 h-5" />}
-            jumpPath={enLink}
+            jumpPath={i18n.language === 'zh-CN' ? zhLink : enLink}
             content={t(contentKey)}
           />
         ))}

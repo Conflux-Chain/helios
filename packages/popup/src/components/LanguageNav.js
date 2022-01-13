@@ -64,11 +64,9 @@ function LanguageNav({
           trigger={['hover']}
           id="languageDropdown"
         >
-          <div className="flex items-center">
+          <div className="flex items-center cursor-pointer">
             <span className="text-xs">{t(language)}</span>
-            {LANGUAGES.length ? (
-              <CaretDownFilled className="ml-1 w-3 h-3" />
-            ) : null}
+            <CaretDownFilled className="ml-1 w-3 h-3" />
           </div>
         </Dropdown>
       ) : null}

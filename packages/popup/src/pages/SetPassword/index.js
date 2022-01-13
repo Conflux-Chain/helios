@@ -13,7 +13,6 @@ const SetPassword = () => {
       id="setPasswordContainer"
     >
       <LanguageNav
-        showLan={false}
         hasGoBack={true}
         onClickBack={() => {
           history.goBack()
