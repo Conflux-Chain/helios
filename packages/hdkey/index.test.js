@@ -1,12 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
-import {
-  getNthAccountOfHDKey,
-  validateHDPath,
-  randomHDPath,
-  generateMnemonic,
-} from './'
-// import {generateMnemonic} from 'bip39'
+import {getNthAccountOfHDKey, validateHDPath, randomHDPath} from './'
 
 // there is a promise task in getNthAccountOfHDKey, need to increase timeout to avoid test fail
 jest.setTimeout(20000)
@@ -14,7 +8,8 @@ jest.setTimeout(20000)
 describe('HDKey', function () {
   it('should return a hdkey', async function () {
     const account = await getNthAccountOfHDKey({
-      mnemonic: generateMnemonic(),
+      mnemonic:
+        'error mom brown point sun magnet armor fish urge business until plastic',
       nth: 1,
       only0x1Prefixed: true,
     })
