@@ -8,7 +8,6 @@ const en = {
     confirm: 'Confirm',
     save: 'Save',
     ok: 'OK',
-    set: 'Set',
     sign: 'Sign',
     switch: 'Switch',
     no: 'No',
@@ -273,6 +272,13 @@ const en = {
     urlWarning: 'URLs require the appropriate HTTP/HTTPS prefix.',
     invalidRpcUrl: 'Invalid RPC URL',
 
+    // About
+    about: 'About',
+    website: 'Web Site',
+    feedback: 'Feedback',
+    docs: 'Docs',
+    version: 'Version',
+
     // backup seed
     backupIdentity: 'Backup Seed Phrase',
     backupSeedDes:
@@ -286,7 +292,7 @@ const en = {
     gasFeeIsNotEnough: 'Insufficient gas fee',
     contractError: 'Contract error: ',
     addressHasBeenChanged: 'Address has been changed',
-    invalidPasswordFromRpc: 'Invalid password from RPC',
+    invalidPasswordFromRpc: 'Invalid password',
     required: 'Please type your seed phrase.',
     changeNetworkError: 'Change network error',
 

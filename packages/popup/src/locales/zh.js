@@ -8,7 +8,6 @@ const zh = {
     confirm: '确认',
     save: '保存',
     ok: '好的',
-    set: 'Set',
     sign: '签名',
     switch: '切换',
     no: '否',
@@ -161,7 +160,7 @@ const zh = {
     storageFee: '存储抵押费',
     storageCollateralized: '存储抵押限制',
     totalFee: 'Total Fee',
-    customNonce: '自定义 Nonce Nonce',
+    customNonce: '自定义 Nonce',
     gasPriceErrMSg: 'Gas 价格最小是 1 {{unit}}',
     gasLimitMinErr: 'Gas 限制至少是 {{gasUsed}}',
     gasLimitMaxErr: 'Gas 限制最多是 {{gasMax}}',
@@ -245,7 +244,7 @@ const zh = {
     hello: 'Hello',
 
     // - migration
-    migration: 'One-Click Migration',
+    migration: '一键迁移',
 
     // account management
     accountManagement: '账户管理',
@@ -266,6 +265,13 @@ const zh = {
     urlWarning: '请填写 Http/Https 前缀',
     invalidRpcUrl: '无效的 RPC URL',
 
+    // About
+    about: '关于',
+    website: '官网',
+    feedback: '反馈',
+    docs: '文档',
+    version: '版本号',
+
     // backup seed
     backupIdentity: '备份助记词',
     backupSeedDes: '请以正确的顺序备份助记词，不要在网络环境中存储或分享助记词',
@@ -278,7 +284,7 @@ const zh = {
     gasFeeIsNotEnough: 'Gas 不足',
     contractError: '合约错误: ',
     addressHasBeenChanged: '地址已发生改变',
-    invalidPasswordFromRpc: 'Invalid password from RPC',
+    invalidPasswordFromRpc: '密码错误',
     required: '请填写助记词',
     changeNetworkError: '切换网络发生错误',
 
@@ -330,11 +336,11 @@ const zh = {
 
     // error page
     errorTile: '错误',
-    errorDes: 'hoops.something goes wrong...',
-    routeError: 'Sorry! The page you’re looking for cannot be found.',
-    errorCode: 'Error Code',
-    feedBackCode: 'Copy code and feedback',
-    fullNodeError: 'Unable to connect RPC node.',
+    errorDes: '未知错误',
+    routeError: '你访问的页面不存在',
+    errorCode: '错误码',
+    feedBackCode: '复制错误信息并反馈',
+    fullNodeError: '无法连接到 RPC 节点',
   },
 }
 
