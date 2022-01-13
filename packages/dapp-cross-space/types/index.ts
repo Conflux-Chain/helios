@@ -1,6 +1,6 @@
 type ConfluxMainNetwork = '1029'
 type ConfluxTestNetwork = '1'
-type ConfluxTest2Network = '1030'
+type ConfluxTest2Network = '12000'
 type ConfluxChainId =
   | ConfluxMainNetwork
   | ConfluxTestNetwork
