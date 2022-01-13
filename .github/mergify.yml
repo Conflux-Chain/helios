@@ -12,7 +12,6 @@ pull_request_rules:
       - "-draft"
       - "-locked"
       - "#check-pending=0"
-      - "#check-failure=0"
       - "#review-threads-unresolved=0"
       - "#commits=1"
     actions:
@@ -31,7 +30,6 @@ pull_request_rules:
       - "-draft"
       - "-locked"
       - "#check-pending=0"
-      - "#check-failure=0"
       - "#review-threads-unresolved=0"
       - "#commits>1"
     actions:
