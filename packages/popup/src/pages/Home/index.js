@@ -11,7 +11,7 @@ import {PendingQueue} from './components'
 import {ROUTES, MAX_PENDING_COUNT} from '../../constants'
 import './index.css'
 
-const {HISTORY} = ROUTES
+const {HISTORY, SEND_TRANSACTION} = ROUTES
 import {
   CurrentAccount,
   CurrentNetwork,
@@ -75,7 +75,7 @@ function Home() {
               variant="outlined"
               className="!border-white !text-white !bg-transparent mr-2 hover:!bg-[#3C3A5D]"
               onClick={() => {
-                history.push('/send-transaction')
+                history.push(SEND_TRANSACTION)
               }}
             >
               {t('send')}
