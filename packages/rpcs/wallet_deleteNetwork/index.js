@@ -8,14 +8,14 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup'],
-  db: ['retractNetwork', 'getNetworkById'],
-  methods: ['wallet_validatePassword'],
+  db: ['retractNetwork', 'getNetworkById', 'getNetwork'],
+  methods: ['wallet_validatePassword', 'wallet_setCurrentNetwork'],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {getNetworkById, retractNetwork},
-  rpcs: {wallet_validatePassword},
+  db: {getNetworkById, retractNetwork, getNetwork},
+  rpcs: {wallet_validatePassword, wallet_setCurrentNetwork},
   params: {password, networkId},
 }) => {
   if (!(await wallet_validatePassword({password})))
@@ -26,6 +26,14 @@ export const main = async ({
   if (network.builtin)
     throw InvalidParams(`Not allowed to delete builtin network`)
 
+  if (network.selected) {
+    const networks = getNetwork()
+    // select the 'next' network of the to-b deleted one
+    const nextNetwork = networks.reduce((_, n, idx) => {
+      if (n.eid === networkId) return networks[idx + 1] || networks[0]
+    }, undefined)
+    await wallet_setCurrentNetwork({errorFallThrough: true}, [nextNetwork.eid])
+  }
   retractNetwork({networkId})
   return true
 }
