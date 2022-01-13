@@ -74,7 +74,7 @@ function About() {
             key={contentKey}
             id={contentKey}
             icon={<img src={iconPath} alt="link_log" className="w-5 h-5" />}
-            jumpPath={i18n.language === 'zh-CN' ? zhLink : enLink}
+            jumpPath={i18n.language === 'zh' ? zhLink : enLink}
             content={t(contentKey)}
           />
         ))}

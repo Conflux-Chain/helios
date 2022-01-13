@@ -4,25 +4,35 @@ import {LANGUAGES} from '../constants'
 import {
   CaretDownFilled,
   ArrowLeftOutlined,
+  CheckCircleFilled,
 } from '@fluent-wallet/component-icons'
 import PropTypes from 'prop-types'
 
-const Overlay = changeLanguage => {
-  const {t} = useTranslation()
+function Overlay({changeLanguage}) {
+  const {t, i18n} = useTranslation()
+
   return (
     <>
       {LANGUAGES.map(lang => (
         <div
-          className="cursor-pointer"
+          className="px-4 h-10 flex items-center justify-between text-sm text-gray-80 cursor-pointer hover:bg-primary-4 hover:text-primary"
           aria-hidden="true"
           key={lang}
-          onClick={changeLanguage}
+          id={`switch-${lang}`}
+          onClick={() => changeLanguage(lang)}
         >
-          {t(lang)}
+          <span>{t(lang)}</span>
+          {i18n.language === lang && (
+            <CheckCircleFilled className="w-4 h-4 text-primary" />
+          )}
         </div>
       ))}
     </>
   )
+}
+
+Overlay.propTypes = {
+  changeLanguage: PropTypes.func,
 }
 
 function LanguageNav({
@@ -33,12 +43,8 @@ function LanguageNav({
 }) {
   const {i18n, t} = useTranslation()
   const {language} = i18n
-  const changeLanguage = () => {
-    if (language.indexOf('en') !== -1) {
-      i18n.changeLanguage('zh-CN')
-    } else if (language.indexOf('zh') !== -1) {
-      i18n.changeLanguage('en')
-    }
+  const changeLanguage = lang => {
+    lang !== language && i18n.changeLanguage(lang)
   }
 
   return (
@@ -58,18 +64,19 @@ function LanguageNav({
       ) : (
         <div />
       )}
-      {showLan ? (
+      {showLan && (
         <Dropdown
-          overlay={Overlay(changeLanguage)}
+          overlay={<Overlay changeLanguage={changeLanguage} />}
           trigger={['hover']}
-          id="languageDropdown"
+          overlayClassName="bg-gray-0 rounded py-2"
+          id="language-dropdown"
         >
-          <div className="flex items-center cursor-pointer">
+          <div className="flex items-center cursor-pointer w-[132px] justify-end">
             <span className="text-xs">{t(language)}</span>
             <CaretDownFilled className="ml-1 w-3 h-3" />
           </div>
         </Dropdown>
-      ) : null}
+      )}
     </nav>
   )
 }
