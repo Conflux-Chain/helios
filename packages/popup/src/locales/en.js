@@ -133,7 +133,7 @@ const en = {
     passwordRulesWarning:
       'Use 8 ~ 16 characters with a mix of letters & numbers.',
     en: 'English',
-    'zh-CN': '简体中文',
+    zh: '简体中文',
 
     // - Send Transaction
     // - Send Transaction / send transaction
