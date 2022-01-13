@@ -95,7 +95,9 @@ class FluentManage {
         this.status.chainId = String(parseInt(newChainId)) as ConfluxChainId
         this.handleAccountsChanged(newAccounts)
       })
-    } catch {}
+    } catch (err) {
+      console.error('getAccounts error: ', err);
+    }
   }
 
   connect = () => {

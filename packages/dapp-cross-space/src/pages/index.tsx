@@ -41,25 +41,27 @@ const App: React.FC = () => {
       {!isConnected && <Connect />}
       {isConnected && (
         <>
-          <Main2Evm
-            style={{
-              zIndex: flipped ? 0 : 1,
-              opacity: opacity.to(o => 1 - o),
-              transform,
-            }}
-            handleClickFlipped={handleClickFlipped}
-          />
-          <Evm2Main
-            style={{
-              zIndex: flipped ? 1 : 0,
-              opacity,
-              transform,
-              rotateX: '180deg',
-            }}
-            handleClickFlipped={handleClickFlipped}
-          />
+          <div className='mt-[24px] h-[726px]'>
+            <Main2Evm
+              style={{
+                zIndex: flipped ? 0 : 1,
+                opacity: opacity.to(o => 1 - o),
+                transform,
+              }}
+              handleClickFlipped={handleClickFlipped}
+            />
+            <Evm2Main
+              style={{
+                zIndex: flipped ? 1 : 0,
+                opacity,
+                transform,
+                rotateX: '180deg',
+              }}
+              handleClickFlipped={handleClickFlipped}
+            />
+          </div>
           {!isSupportEvmSpace && (
-            <div className="fixed bottom-[24px] left-[50%] translate-x-[-46%] flex justify-center items-center px-[32px] py-[12px] bg-[#445159] text-white rounded overflow-hidden">
+            <div className="fixed bottom-[24px] left-[50%] translate-x-[-50%] flex justify-center items-center px-[32px] py-[12px] bg-[#445159] text-white rounded overflow-hidden z-10">
               It seems that current network doesn't support EVM Space, please
               check your network.
             </div>
