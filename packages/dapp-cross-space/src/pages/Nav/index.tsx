@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useCallback} from 'react'
 import {useFluent, connect, addEVMChain} from '../../manage/useFluent'
 import showToast from '../../components/tools/Toast'
-import EllipsisCenter from '../../components/EllipsisCenter'
+import ShortenAddress from '../../components/ShortenAddress'
 import ConfluxIcon from '../../assets/icon.svg'
 import FluentIcon from '../../assets/fluent.svg'
 import './index.css'
@@ -84,7 +84,7 @@ const Nav: React.FC = () => {
             <div className="flex justify-end items-center  ml-[12px] pr-[4px] text-[14px] bg-white w-[240px] h-[40px] rounded-[54px] text-[#3D3F4C]">
               <span className="nav-spin mr-[4px]" />
               Core-Chain
-              <EllipsisCenter
+              <ShortenAddress
                 className="w-[124px] h-[32px] px-[8px] ml-[8px] text-[#808BE7] bg-[#F8F9FE] rounded-[54px] dfn-right"
                 text={account}
               />
