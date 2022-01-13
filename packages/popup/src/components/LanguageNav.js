@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import Dropdown from '@fluent-wallet/component-dropdown'
 import {useTranslation} from 'react-i18next'
 import {LANGUAGES} from '../constants'
@@ -43,6 +44,8 @@ function LanguageNav({
 }) {
   const {i18n, t} = useTranslation()
   const {language} = i18n
+  const [rotateTriangle, setRotateTriangle] = useState(false)
+
   const changeLanguage = lang => {
     lang !== language && i18n.changeLanguage(lang)
   }
@@ -67,13 +70,19 @@ function LanguageNav({
       {showLan && (
         <Dropdown
           overlay={<Overlay changeLanguage={changeLanguage} />}
-          trigger={['hover']}
           overlayClassName="bg-gray-0 rounded py-2"
           id="language-dropdown"
+          onVisibleChange={status => {
+            setRotateTriangle(status)
+          }}
         >
           <div className="flex items-center cursor-pointer w-[132px] justify-end">
             <span className="text-xs">{t(language)}</span>
-            <CaretDownFilled className="ml-1 w-3 h-3" />
+            <CaretDownFilled
+              className={`ml-1 w-3 h-3 transition duration-300 ease-in-out ${
+                rotateTriangle ? 'transform rotate-180' : ''
+              }`}
+            />
           </div>
         </Dropdown>
       )}
