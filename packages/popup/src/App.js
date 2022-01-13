@@ -49,6 +49,7 @@ import HardwareGuard from './pages/HardwareGuard'
 import ConnectHardwareWallet from './pages/ConnectHardwareWallet'
 import ImportHwAccount from './pages/ImportHwAccount'
 import NetworkDetail from './pages/NetworkDetail'
+import About from './pages/About'
 
 const {
   HOME,
@@ -83,6 +84,7 @@ const {
   NETWORK_MANAGEMENT,
   AUTHORIZED_WEBSITE,
   NETWORK_DETAIL,
+  ABOUT,
 } = ROUTES
 
 const routes = [
@@ -209,6 +211,10 @@ const routes = [
   {
     path: IMPORT_HW_ACCOUNT,
     component: ImportHwAccount,
+  },
+  {
+    path: ABOUT,
+    component: About,
   },
 ]
 

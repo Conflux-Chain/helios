@@ -31,6 +31,7 @@ const {
   WALLET_VALIDATE_20TOKEN,
   WALLETDB_TXLIST,
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
+  WALLET_GET_FLUENT_METADATA,
 } = RPC_METHODS
 
 export const useCurrentAddress = (notSendReq = false) => {
@@ -555,5 +556,14 @@ export const useAddressTypeInConfirmTx = address => {
       },
     },
   )
+  return data
+}
+
+export const useWalletVersion = () => {
+  const {data} = useRPC([WALLET_GET_FLUENT_METADATA], undefined, {
+    fallbackData: {
+      version: '',
+    },
+  })
   return data
 }

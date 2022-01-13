@@ -10,7 +10,7 @@ import {request} from '../../../utils'
 import useGlobalStore from '../../../stores/index.js'
 
 const {LOCK, WALLET_IS_LOCKED, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
-const {ACCOUNT_MANAGEMENT, NETWORK_MANAGEMENT} = ROUTES
+const {ACCOUNT_MANAGEMENT, NETWORK_MANAGEMENT, ABOUT} = ROUTES
 
 const SETTING_ITEMS = [
   {
@@ -22,6 +22,11 @@ const SETTING_ITEMS = [
     contentKey: 'networkManagement',
     iconPath: '/images/chart.svg',
     jumpPath: NETWORK_MANAGEMENT,
+  },
+  {
+    contentKey: 'about',
+    iconPath: '/images/exclamation-circle.svg',
+    jumpPath: ABOUT,
   },
 ]
 

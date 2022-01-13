@@ -271,6 +271,14 @@ const en = {
     networkDeleteWarning: 'Can not delete current network.',
     duplicateNetworkEndpoint: 'Duplicate network endpoint.',
 
+    // About
+    about: 'About',
+    website: 'Web Site',
+    feedback: 'Feedback',
+    docs: 'Docs',
+    walletName: 'Fluent Wallet',
+    version: 'Version',
+
     // backup seed
     backupIdentity: 'Backup Seed Phrase',
     backupSeedDes:

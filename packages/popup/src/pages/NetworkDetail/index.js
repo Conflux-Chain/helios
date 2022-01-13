@@ -68,8 +68,8 @@ function NetworkDetail() {
   })
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
-  const isAddChain = !Object.keys(networkInfo).length
-  const {data} = useCurrentAddress(isAddChain)
+  const isAddingChain = !Object.keys(networkInfo).length
+  const {data} = useCurrentAddress(isAddingChain)
   const currentNetworkId = data?.network?.eid
 
   useEffect(() => {
@@ -79,7 +79,7 @@ function NetworkDetail() {
   }, [setNetworkInfo])
 
   const canAddNetwork =
-    isAddChain &&
+    isAddingChain &&
     networkFieldValues.chainName &&
     networkFieldValues.rpcUrl &&
     networkFieldValues.chainId &&
@@ -221,12 +221,12 @@ function NetworkDetail() {
               readonly={
                 valueKey === 'networkType' ||
                 valueKey === 'chainId' ||
-                !isAddChain
+                !isAddingChain
               }
               disabled={
                 valueKey === 'networkType' ||
                 valueKey === 'chainId' ||
-                !isAddChain
+                !isAddingChain
               }
               value={networkFieldValues[valueKey]}
               onChange={e => onNetworkInputChange(e, valueKey)}
@@ -242,7 +242,7 @@ function NetworkDetail() {
           </CompWithLabel>
         ))}
       </div>
-      {isAddChain && (
+      {isAddingChain && (
         <Button
           id="save-btn"
           className="mx-3"
