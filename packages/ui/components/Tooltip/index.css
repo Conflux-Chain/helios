@@ -1,3 +1,4 @@
+/* stylelint-disable */
 /* @tooltip-arrow-shadow-width: 4px;
 
 @tooltip-arrow-rotate-width: 15px;
@@ -22,6 +23,7 @@
   @apply max-w-60;
   @apply visible;
 }
+
 .tooltip-hidden {
   @apply hidden;
 }
@@ -63,6 +65,7 @@
   @apply break-words;
   @apply bg-gray-100;
   @apply border-2;
+  @apply border-transparent;
   @apply shadow-1;
 }
 
@@ -170,6 +173,7 @@
 .tooltip-placement-bottomRight .tooltip-arrow {
   @apply -top-1.25;
 }
+
 .tooltip-placement-bottom .tooltip-arrow-content,
 .tooltip-placement-bottomLeft .tooltip-arrow-content,
 .tooltip-placement-bottomRight .tooltip-arrow-content {
