@@ -20,6 +20,7 @@
 
 html {
   font-family: SF-Pro-Display, sans-serif;
+  overflow-x: hidden;
 }
 
 body {

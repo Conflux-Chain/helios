@@ -32,7 +32,6 @@ export {
 export {
   useConflux,
   useCrossSpaceContract,
-  CrossSpaceContractAdress,
   confluxNetworkConfig,
 } from './useConflux'
 export {
