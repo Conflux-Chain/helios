@@ -11,7 +11,7 @@ export interface CrossSpaceContract {
 export const confluxNetworkConfig = {
   '1030': {
     networkId: 1030,
-    url: 'http://47.104.89.179:12537',
+    url: 'https://47.104.89.179:12537',
   },
   '1029': {
     networkId: 1029,

@@ -2,7 +2,7 @@ import React, {useCallback, memo, useEffect} from 'react'
 import {a} from '@react-spring/web'
 import {useForm, type UseFormRegister, type FieldValues} from 'react-hook-form'
 import classNames from 'clsx'
-import EllipsisCenter from '../../components/EllipsisCenter'
+import ShortenAddress from '../../components/ShortenAddress'
 import {
   useFluent,
   useBalance,
@@ -85,7 +85,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
           </span>
         </p>
         <div className="flex items-center mt-[12px] ">
-          <EllipsisCenter
+          <ShortenAddress
             className="w-[124px] text-[16px] leading-[22px] text-[#3D3F4C] dfn-center"
             text={account!}
           />

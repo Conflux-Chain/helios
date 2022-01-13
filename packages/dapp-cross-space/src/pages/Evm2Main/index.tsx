@@ -17,7 +17,7 @@ import {
   hideWaitFluent,
   hideTransactionSubmitted,
 } from '../../components/tools/Modal'
-import EllipsisCenter from '../../components/EllipsisCenter'
+import ShortenAddress from '../../components/ShortenAddress'
 import {Unit} from '../../utils'
 import showToast, {hideToast} from '../../components/tools/Toast'
 import PageTurn from '../../assets/page-turn.svg'
@@ -100,7 +100,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
           </span>
         </p>
         <div className="flex items-center mt-[12px] ">
-          <EllipsisCenter
+          <ShortenAddress
             className="w-[124px] text-[16px] leading-[22px] text-[#3D3F4C] dfn-center"
             text={account!}
           />
@@ -237,7 +237,7 @@ const Withdraw: React.FC<{
       <div className="mt-[8px] mb-[8px] flex items-center h-[22px] text-[14px]">
         <span className="mr-[4px] text-[#A9ABB2]">Current Address: </span>
         <div className="flex items-center">
-          <EllipsisCenter
+          <ShortenAddress
             className="w-[124px] text-[#3D3F4C] dfn-center"
             text={account!}
           />

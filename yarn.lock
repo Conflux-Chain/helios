@@ -5716,7 +5716,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/shorten-address@workspace:packages/ui/shorten-address":
+"@fluent-wallet/shorten-address@^0.1.2, @fluent-wallet/shorten-address@workspace:packages/ui/shorten-address":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/shorten-address@workspace:packages/ui/shorten-address"
   dependencies:
@@ -16025,6 +16025,7 @@ __metadata:
   resolution: "dapp-cross-space@workspace:packages/dapp-cross-space"
   dependencies:
     "@fluent-wallet/estimate-tx": ^0.0.7
+    "@fluent-wallet/shorten-address": ^0.1.2
     "@formily/reactive": ^2.0.8
     "@react-spring/web": ^9.4.1
     "@types/lodash-es": ^4.17.5
