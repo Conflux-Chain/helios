@@ -32,7 +32,7 @@ jobs:
       - run: yarn install --immutable
       - run: yarn workspace dapp-cross-space build
       - run: cp packages/dapp-cross-space/CNAME-DEV packages/dapp-cross-space/dist/CNAME
-      - name: Deploy to cross-space.fluentwallet.dev
+      - name: Deploy to evm.fluentwallet.dev
         uses: dswistowski/surge-sh-action@v1
         with:
           domain: "evm.fluentwallet.dev"
