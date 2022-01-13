@@ -25,12 +25,13 @@ const ABOUT_ITEMS = [
   },
 ]
 
-function AboutItem({content, icon, jumpPath}) {
+function AboutItem({content, icon, jumpPath, ...props}) {
   return (
     <div
       className="flex items-center h-13 mt-2 px-6 cursor-pointer hover:bg-primary-4"
       aria-hidden
       onClick={() => window?.open?.(jumpPath)}
+      {...props}
     >
       {icon}
       <span className="ml-4 flex-1 text-gray-80 text-sm">{content}</span>
@@ -71,6 +72,7 @@ function About() {
         {ABOUT_ITEMS.map(({contentKey, iconPath, enLink, zhLink}) => (
           <AboutItem
             key={contentKey}
+            id={contentKey}
             icon={<img src={iconPath} alt="link_log" className="w-5 h-5" />}
             jumpPath={i18n.language === 'zh-CN' ? zhLink : enLink}
             content={t(contentKey)}
