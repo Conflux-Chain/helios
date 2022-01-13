@@ -32,8 +32,7 @@ const en = {
     send: 'Send',
     history: 'History',
     assets: 'Assets',
-    urlWarning: 'URLs require the appropriate HTTP/HTTPS prefix.',
-    invalidRpcUrl: 'Invalid RPC URL',
+    crossSpace: 'Cross Space',
 
     // - homepage / 连接网站状态模块和切换连接弹窗模块
     noConnectedDapp: 'Not connected to current website',
@@ -168,7 +167,8 @@ const en = {
     totalFee: 'Total Fee',
     customNonce: 'Custom Nonce',
     gasPriceErrMSg: 'The minimum Gas Price is 1 {{unit}}',
-    gasLimitErrMsg: 'Gas Limit must be at least {{gasUsed}}',
+    gasLimitMinErr: 'Gas Limit must be at least {{gasUsed}}',
+    gasLimitMaxErr: 'Gas Limit must be at most {{gasMax}}',
     nonceErr: 'Nonce can not be 0',
 
     // - Send Transaction / Sign Transaction / 2. transaction result
@@ -270,6 +270,8 @@ const en = {
     wrongRpcUrl: 'Could not fetch chain ID. Is your RPC URL correct?',
     networkDeleteWarning: 'Can not delete current network.',
     duplicateNetworkEndpoint: 'Duplicate network endpoint.',
+    urlWarning: 'URLs require the appropriate HTTP/HTTPS prefix.',
+    invalidRpcUrl: 'Invalid RPC URL',
 
     // About
     about: 'About',

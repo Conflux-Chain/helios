@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
-import {useNetworkTypeIsCfx} from '../../hooks/useApi'
+import {useNetworkTypeIsCfx, useCfxMaxGasLimit} from '../../hooks/useApi'
 import {useCurrentTxParams, useEstimateTx, useDappParams} from '../../hooks'
 import {getPageType} from '../../utils'
 import {WrapperWithLabel} from './components'
@@ -35,6 +35,7 @@ function EditGasFee() {
   } = useCurrentTxParams()
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const cfxMaxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
   const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
 
@@ -77,14 +78,23 @@ function EditGasFee() {
 
   const onChangeGasLimit = gasLimit => {
     setInputGasLimit(gasLimit)
-    if (new Big(gasLimit || '0').gte(formatHexToDecimal(gasUsed || '21000'))) {
-      setGasLimitErr('')
-    } else {
+    if (new Big(gasLimit || '0').lt(formatHexToDecimal(gasUsed || '21000'))) {
       setGasLimitErr(
-        t('gasLimitErrMsg', {
+        t('gasLimitMinErr', {
           gasUsed: formatHexToDecimal(gasUsed || '21000'),
         }),
       )
+    } else if (
+      cfxMaxGasLimit &&
+      new Big(gasLimit || '0').gt(formatHexToDecimal(cfxMaxGasLimit))
+    ) {
+      setGasLimitErr(
+        t('gasLimitMaxErr', {
+          gasMax: formatHexToDecimal(cfxMaxGasLimit),
+        }),
+      )
+    } else {
+      setGasLimitErr('')
     }
   }
 

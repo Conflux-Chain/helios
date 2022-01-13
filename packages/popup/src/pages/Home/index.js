@@ -11,7 +11,7 @@ import {PendingQueue} from './components'
 import {ROUTES, MAX_PENDING_COUNT} from '../../constants'
 import './index.css'
 
-const {HISTORY} = ROUTES
+const {HISTORY, SEND_TRANSACTION} = ROUTES
 import {
   CurrentAccount,
   CurrentNetwork,
@@ -21,6 +21,7 @@ import {
   NetworkList,
   AddToken,
   Setting,
+  CrossSpaceButton,
 } from './components'
 function Home() {
   const {t} = useTranslation()
@@ -66,40 +67,43 @@ function Home() {
           <CurrentAccount onOpenAccount={() => setAccountStatus(true)} />
           <CurrentNetwork onOpenNetwork={() => setNetworkStatus(true)} />
         </div>
-        <div className="flex mt-3 mb-4">
-          <Button
-            id="sendBtn"
-            size="small"
-            variant="outlined"
-            className="!border-white !text-white !bg-transparent mr-2 hover:!bg-[#3C3A5D]"
-            onClick={() => {
-              history.push('/send-transaction')
-            }}
-          >
-            {t('send')}
-          </Button>
-          <div className="relative">
+        <div className="flex mt-3 mb-4 justify-between">
+          <div className="flex">
             <Button
-              id="historyBtn"
+              id="sendBtn"
               size="small"
               variant="outlined"
-              className="!border-white !text-white !bg-transparent hover:!bg-[#3C3A5D]"
+              className="!border-white !text-white !bg-transparent mr-2 hover:!bg-[#3C3A5D]"
               onClick={() => {
-                history.push(HISTORY)
+                history.push(SEND_TRANSACTION)
               }}
             >
-              {t('history')}
+              {t('send')}
             </Button>
-            {pendingCount ? (
-              <PendingQueue
-                count={`${
-                  pendingCount > MAX_PENDING_COUNT
-                    ? MAX_PENDING_COUNT + '+'
-                    : pendingCount
-                } `}
-              />
-            ) : null}
+            <div className="relative">
+              <Button
+                id="historyBtn"
+                size="small"
+                variant="outlined"
+                className="!border-white !text-white !bg-transparent hover:!bg-[#3C3A5D]"
+                onClick={() => {
+                  history.push(HISTORY)
+                }}
+              >
+                {t('history')}
+              </Button>
+              {pendingCount ? (
+                <PendingQueue
+                  count={`${
+                    pendingCount > MAX_PENDING_COUNT
+                      ? MAX_PENDING_COUNT + '+'
+                      : pendingCount
+                  } `}
+                />
+              ) : null}
+            </div>
           </div>
+          <CrossSpaceButton />
         </div>
       </div>
       <HomeTokenList onOpenAddToken={() => setAddTokenStatus(true)} />
