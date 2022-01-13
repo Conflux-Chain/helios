@@ -61,7 +61,7 @@ function About() {
             <div className="bg-logo-bottom h-[18px] rounded-[32px] mt-0.5" />
           </div>
           <p className="text-center text-gray-80 font-medium text-lg">
-            {t('walletName')}
+            Fluent Wallet
           </p>
           <p className="text-center text-gray-40 text-sm">{`${t(
             'version',
