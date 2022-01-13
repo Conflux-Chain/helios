@@ -1,6 +1,5 @@
 import {observable, autorun, batch} from '@formily/reactive'
 import {Unit, convertMappedAdress} from '../../utils'
-import {CrossSpaceContractAdress} from '../../manage/useConflux'
 import ConfluxManage from '../../manage/useConflux/ConfluxManage'
 import {estimate} from '@fluent-wallet/estimate-tx'
 
@@ -181,14 +180,14 @@ class FluentManage {
       method: 'wallet_addConfluxChain',
       params: [
         {
-          chainId: '0x406',
+          chainId: '0x2ee0',
           chainName: 'EVM Conflux',
           nativeCurrency: {
             name: 'Conflux',
             symbol: 'CFX',
             decimals: 18,
           },
-          rpcUrls: ['http://47.104.89.179:12537'],
+          rpcUrls: ['https://evmnet.confluxrpc.com'],
           blockExplorerUrls: ['https://confluxscan.io'],
         },
       ],
@@ -199,14 +198,15 @@ class FluentManage {
     if (
       !this.account.value ||
       !this.balance.value ||
-      !ConfluxManage.crossSpaceContract.value
+      !ConfluxManage.crossSpaceContract.value ||
+      !ConfluxManage.CrossSpaceContractAddress.value
     )
       return
     try {
       const estimateRes = await estimate(
         {
           from: this.account.value,
-          to: CrossSpaceContractAdress,
+          to: ConfluxManage.CrossSpaceContractAddress.value,
           data: ConfluxManage.crossSpaceContract.value.transferEVM(
             '0xFBBEd826c29b88BCC428B6fa0cfE6b0908653676',
           ).data,

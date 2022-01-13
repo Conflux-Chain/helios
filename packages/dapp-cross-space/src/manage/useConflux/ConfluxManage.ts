@@ -1,6 +1,6 @@
 import {observable} from '@formily/reactive'
 import CrossSpaceContractConfig from 'js-conflux-sdk/src/contract/internal/CrossSpaceCall.json'
-import {Conflux} from 'js-conflux-sdk'
+import {Conflux, format} from 'js-conflux-sdk'
 import FluentManage from '../useFluent/FluentManage'
 
 export interface CrossSpaceContract {
@@ -9,9 +9,9 @@ export interface CrossSpaceContract {
 }
 
 export const confluxNetworkConfig = {
-  '1030': {
-    networkId: 1030,
-    url: 'https://47.104.89.179:12537',
+  '12000': {
+    networkId: 12000,
+    url: 'https://evmnet.confluxrpc.com',
   },
   '1029': {
     networkId: 1029,
@@ -29,11 +29,22 @@ class ConfluxManage {
       ? new Conflux(confluxNetworkConfig[FluentManage.status.chainId])
       : undefined,
   )
+
   crossSpaceContract = observable.computed(
     () =>
       (this.conflux.value?.Contract(
         CrossSpaceContractConfig,
       ) as unknown) as CrossSpaceContract,
+  )
+
+  CrossSpaceContractAddress = observable.computed(
+    () =>
+    FluentManage.status.chainId
+      ? format.address(
+          CrossSpaceContractConfig.address,
+          +FluentManage.status.chainId,
+        ) as string
+      : undefined
   )
 }
 

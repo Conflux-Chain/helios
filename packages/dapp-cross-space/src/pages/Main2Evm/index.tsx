@@ -11,7 +11,6 @@ import {
 } from '../../manage/useFluent'
 import {
   useCrossSpaceContract,
-  CrossSpaceContractAdress,
 } from '../../manage/useConflux'
 import {useIsSupportEvmSpace} from '../../manage/useEvm'
 import {Unit} from '../../utils'
@@ -32,7 +31,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
 }) => {
   const {register, handleSubmit, setValue} = useForm()
   const {account} = useFluent()
-  const crossSpaceContract = useCrossSpaceContract()
+  const {crossSpaceContract, CrossSpaceContractAdress} = useCrossSpaceContract()
 
   const setAmount = useCallback((val: string) => {
     const _val = val.replace(/(?:\.0*|(\.\d+?)0+)$/, '$1')
@@ -47,7 +46,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
   const onSubmit = useCallback(
     handleSubmit(
       async ({evmAddress, amount}: {evmAddress: string; amount: string}) => {
-        if (!crossSpaceContract) return
+        if (!crossSpaceContract || !CrossSpaceContractAdress) return
         let waitFluentKey: string | number = null!
         let transactionSubmittedKey: string | number = null!
         try {
@@ -72,7 +71,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         }
       },
     ),
-    [crossSpaceContract],
+    [crossSpaceContract, CrossSpaceContractAdress],
   )
 
   return (
@@ -86,10 +85,10 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         </p>
         <div className="flex items-center mt-[12px] ">
           <ShortenAddress
-            className="w-[124px] text-[16px] leading-[22px] text-[#3D3F4C] dfn-center"
+            className="text-[16px] leading-[22px] text-[#3D3F4C] dfn-center"
             text={account!}
           />
-          <span className="inline-block ml-[4px] px-[4px] text-[12px] text-white text-center leading-[18px] bg-[#44D7B6] rounded-[2px] translate-y-[1.5px]">
+          <span className="inline-block ml-[4px] px-[4px] text-[12px] text-white text-center leading-[18px] bg-[#44D7B6] rounded-[2px]">
             Connected
           </span>
         </div>
@@ -100,9 +99,10 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         onClick={handleClickFlipped}
       >
         <img
-          className="w-[20px] h-[20px] select-none"
+          className="w-[20px] h-[20px]"
           src={PageTurn}
           alt="page-turn button"
+          draggable="false"
         />
       </button>
 
@@ -152,6 +152,7 @@ const AmountInput: React.FC<{
 
   const handleCheckAmount = useCallback(
     async (evt: React.FocusEvent<HTMLInputElement, Element>) => {
+      if (!evt.target.value) return;
       if (Number(evt.target.value) < 0) {
         return setAmount('')
       }
