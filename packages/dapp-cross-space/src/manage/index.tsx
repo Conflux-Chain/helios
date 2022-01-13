@@ -38,4 +38,5 @@ export {
   useEvmMappedAddressBalance,
   trackEvmMappedAddressBalanceChangeOnce,
   useIsSupportEvmSpace,
+  addEVMChainToMetaMask
 } from './useEvm'

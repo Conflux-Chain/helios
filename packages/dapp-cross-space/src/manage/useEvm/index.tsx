@@ -2,5 +2,5 @@ export {
   useEvmMappedAddressBalance,
   EvmMappedAddressBalanceProvider,
 } from './useEvmMappedAddressBalance'
-export {trackEvmMappedAddressBalanceChangeOnce} from './EvmManage'
+export {trackEvmMappedAddressBalanceChangeOnce, addEVMChainToMetaMask} from './EvmManage'
 export {useIsSupportEvmSpace} from './useIsSupportEvmSpace'
