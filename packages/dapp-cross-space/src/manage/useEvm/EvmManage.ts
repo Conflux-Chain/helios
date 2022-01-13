@@ -57,12 +57,15 @@ class EvmManage {
           this.balance.value.drip !== Unit.fromHexDrip(balance.result).drip)
       ) {
         this.balance.value = Unit.fromHexDrip(balance.result)
-        this.isSupportEvmSpace.value = true
-      } else if (
+      }
+
+      if (
         balance?.error?.message ===
         'the method eth_getBalance does not exist/is not available'
       ) {
         this.isSupportEvmSpace.value = false
+      } else {
+        this.isSupportEvmSpace.value = true
       }
     } catch (err) {
       console.error('Track evmMappedAddress balance error: ', err)
