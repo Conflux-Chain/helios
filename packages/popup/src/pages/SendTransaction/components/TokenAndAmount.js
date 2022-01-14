@@ -91,7 +91,7 @@ function TokenAndAmount({
     useBalance(address, networkId, tokenAddress)?.[address]?.[tokenAddress] ||
     '0x0'
   const label = (
-    <span className="flex items-center justify-between text-gray-60 w-full">
+    <span className="flex items-center justify-between text-gray-40 w-full">
       {t('tokenAndAmount')}
       <span className="flex items-center text-xs">
         {t('available')}
