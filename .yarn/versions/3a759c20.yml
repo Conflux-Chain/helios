@@ -1,5 +1,0 @@
-declined:
-  - "@fluent-wallet/base32-address"
-  - "@fluent-wallet/contract-method-name"
-  - "@fluent-wallet/tx-history-checker"
-  - "@fluent-wallet/shorten-address"
