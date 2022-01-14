@@ -69,14 +69,18 @@ const Nav: React.FC = () => {
   }, [])
 
   const handleClickAddEVMChainToMetaMask = useCallback(async () => {
+    if (!window.ethereum) {
+      showToast("You don't have MetaMask installed", {key: 'not-installed-metamask'})
+      return;
+    }
     try {
       await addEVMChainToMetaMask()
       hideToast('switch-metamask')
       showToast('Added EVM-Chain to MetaMask Success!')
       setShowAddedEvmChainToMetaMask(false)
-      await window.conflux!.request({
-        method: 'wallet_switchConfluxChain',
-        params: [{chainId: '0x2ee0'}],
+      await window.ethereum!.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{chainId: '0x2ee1'}],
       })
     } catch (err) {
       console.error(err)

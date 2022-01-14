@@ -1,6 +1,8 @@
 import React, {useState, useCallback} from 'react'
 import {useSpring} from '@react-spring/web'
+import classNames from 'clsx'
 import {useFluent} from '../manage/useFluent'
+import {useIsSupportEvmSpace} from '../manage/useEvm'
 import Connect from './Connect'
 import Main2Evm from './Main2Evm'
 import Evm2Main from './Evm2Main'
@@ -8,6 +10,7 @@ import './index.css'
 
 const App: React.FC = () => {
   const {isConnected, chainId} = useFluent()
+  const isSupportEvmSpace = useIsSupportEvmSpace();
 
   const [flipped, setFlipped] = useState(
     () => localStorage.getItem('filpped') === 'true',
@@ -58,12 +61,17 @@ const App: React.FC = () => {
               handleClickFlipped={handleClickFlipped}
             />
           </div>
-          {chainId !== '12000' && (
-            <div className="fixed bottom-[24px] left-[50%] translate-x-[-50%] flex justify-center items-center px-[32px] py-[12px] bg-[#445159] text-white rounded overflow-hidden z-10">
-              It seems that current network doesn't support EVM Space, please
-              check your network.
-            </div>
-          )}
+          
+          <div
+            className={classNames(
+              "fixed bottom-[24px] left-[50%] translate-x-[-50%] flex justify-center items-center px-[32px] py-[12px] bg-[#445159] text-white rounded overflow-hidden opacity-0 transition-opacity z-10",
+              { ['opacity-100']: !isSupportEvmSpace }
+            )}
+          >
+            It seems that current network doesn't support EVM Space, please
+            check your network.
+          </div>
+          
         </>
       )}
     </div>
