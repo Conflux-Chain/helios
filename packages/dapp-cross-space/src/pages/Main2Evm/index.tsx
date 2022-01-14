@@ -95,7 +95,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
       </div>
 
       <button
-        className="absolute left-[50%] translate-x-[-50%] top-[110px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-1 hover:scale-110 transition-transform"
+        className="absolute left-[50%] translate-x-[-50%] top-[110px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-10 hover:scale-110 transition-transform"
         onClick={handleClickFlipped}
       >
         <img
@@ -226,7 +226,7 @@ const AmountInput: React.FC<{
 const TransferButton: React.FC = memo(() => {
   const {maxAvailableBalance} = useBalance()
   const isSupportEvmSpace = useIsSupportEvmSpace()
-
+  
   return (
     <>
         <button
