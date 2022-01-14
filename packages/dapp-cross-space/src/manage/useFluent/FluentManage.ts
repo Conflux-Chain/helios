@@ -173,7 +173,7 @@ class FluentManage {
     })
   }
 
-  addEVMChain = () => {
+  addEVMChain = async () => {
     if (!this.account.value) return
 
     return window.conflux!.request({

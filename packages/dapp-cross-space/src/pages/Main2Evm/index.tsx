@@ -64,7 +64,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         } catch (err) {
           console.error('SendTransaction to EVM Space error: ', err)
           hideWaitFluent(waitFluentKey)
-          if ((err as {code: number})?.code === 4001)
+          if ((err as {code: number})?.code === 4001 && (err as any)?.message?.indexOf('UserRejected') !== -1)
             showToast('You canceled the transaction.')
         } finally {
           setAmount('')
@@ -163,6 +163,7 @@ const AmountInput: React.FC<{
       ) {
         return setAmount(maxAvailableBalance.toDecimalCfx())
       }
+      return setAmount(evt.target.value);
     },
     [maxAvailableBalance],
   )
@@ -208,7 +209,7 @@ const AmountInput: React.FC<{
               ＜0.000001 CFX
             </span>
           ) : (
-            <span className="dfn dfn-center" data-info={balance.toDecimalCfx() + 'CFX'}>{` ${balance} CFX`}</span>
+            ` ${balance} CFX`
           )
         ) : (
           ''
