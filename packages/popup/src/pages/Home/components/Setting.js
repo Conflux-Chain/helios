@@ -53,7 +53,7 @@ SettingItem.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-function Setting({onClose, open}) {
+function Setting({onClose, open, settingAnimate = true}) {
   const {t} = useTranslation()
   const history = useHistory()
   const {setFatalError} = useGlobalStore()
@@ -68,6 +68,11 @@ function Setting({onClose, open}) {
       .catch(error => setFatalError(error))
   }
 
+  const onClickSettingItem = jumpPath => {
+    history.push('?open=setting-page')
+    history.push(jumpPath)
+  }
+
   return (
     <div>
       <SlideCard
@@ -75,6 +80,7 @@ function Setting({onClose, open}) {
         onClose={onClose}
         open={open}
         showClose={false}
+        needAnimation={settingAnimate}
         cardTitle={
           <LanguageNav
             hasGoBack={true}
@@ -88,7 +94,7 @@ function Setting({onClose, open}) {
             {SETTING_ITEMS.map(({contentKey, iconPath, jumpPath}) => (
               <SettingItem
                 key={contentKey}
-                onClick={() => history.push(jumpPath)}
+                onClick={() => onClickSettingItem(jumpPath)}
                 icon={<img src={iconPath} alt="icon" className="w-5 h-5" />}
                 content={t(contentKey)}
               />
@@ -127,6 +133,7 @@ function Setting({onClose, open}) {
 Setting.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
+  settingAnimate: PropTypes.bool,
 }
 
 export default Setting

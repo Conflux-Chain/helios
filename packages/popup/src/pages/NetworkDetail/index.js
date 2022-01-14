@@ -7,7 +7,7 @@ import {useSWRConfig} from 'swr'
 import Message from '@fluent-wallet/component-message'
 import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
-import {COMMON_DECIMALS} from '@fluent-wallet/data-format'
+import {COMMON_DECIMALS, formatHexToDecimal} from '@fluent-wallet/data-format'
 import {CFX_MAINNET_CURRENCY_SYMBOL} from '@fluent-wallet/consts'
 import {TitleNav, CompWithLabel, ConfirmPassword} from '../../components'
 import {request} from '../../utils'
@@ -228,7 +228,11 @@ function NetworkDetail() {
                 valueKey === 'chainId' ||
                 !isAddingChain
               }
-              value={networkFieldValues[valueKey]}
+              value={
+                valueKey === 'chainId'
+                  ? formatHexToDecimal(networkFieldValues[valueKey])
+                  : networkFieldValues[valueKey]
+              }
               onChange={e => onNetworkInputChange(e, valueKey)}
               onBlur={() => valueKey === 'rpcUrl' && onRpcInputBlur()}
               onFocus={() => valueKey === 'rpcUrl' && onRpcInputFocus()}
