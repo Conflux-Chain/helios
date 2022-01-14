@@ -106,6 +106,27 @@ class EvmManage {
       dispose()
     })
   }
+
+  addEVMChain = async () => {
+    if (!window.ethereum) return
+    
+    return window.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [
+        {
+          chainId: '0x2ee1',
+          chainName: 'EVM Conflux',
+          nativeCurrency: {
+            name: 'Conflux',
+            symbol: 'CFX',
+            decimals: 18,
+          },
+          rpcUrls: ['https://evmnet.confluxrpc.com'],
+          blockExplorerUrls: ['https://confluxscan.io'],
+        },
+      ],
+    })
+  }
 }
 
 const Manage = new EvmManage()
@@ -114,5 +135,6 @@ export const startTrackBalance = Manage.startTrackBalance
 export const stopTrackBalance = Manage.stopTrackBalance
 export const trackEvmMappedAddressBalanceChangeOnce =
   Manage.trackEvmMappedAddressBalanceChangeOnce
+export const addEVMChainToMetaMask = Manage.addEVMChain
 
 export default Manage
