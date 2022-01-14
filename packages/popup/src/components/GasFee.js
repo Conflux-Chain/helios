@@ -34,13 +34,17 @@ function GasFee({estimateRst}) {
     [isBeAllPayed, isBePayed, partPayedFeeDrip, txFeeDrip],
   )
   const gasPrice = useDebouncedValue(_gasPrice, [_gasPrice])
+  console.log(realPayedFeeDrip, gasPrice)
 
   return (
     <div className="gas-fee-container flex flex-col">
       <header className="gas-fee-header flex items-center justify-between w-full text-gray-40 mb-2">
         {t('gasFee')}
         <span className="flex items-center">
-          <Link onClick={() => history.push(EDIT_GAS_FEE)}>
+          <Link
+            onClick={() => history.push(EDIT_GAS_FEE)}
+            disabled={!realPayedFeeDrip || !gasPrice}
+          >
             {t('edit')}
             <RightOutlined className="w-3 h-3 text-primary ml-1" />
           </Link>
