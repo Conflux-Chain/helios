@@ -177,10 +177,12 @@ function SendTransaction() {
             isNativeToken={isNativeToken}
             nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
           />
-          <div
-            className={`scale-y-0 transition duration-300 ease-in-out ${errorAnimateStyle}`}
-          >
-            {displayErrorMsg}
+          <div className="overflow-hidden">
+            <div
+              className={`transition duration-300 slide-in-down ease-in-out pt-2 ${errorAnimateStyle}`}
+            >
+              {displayErrorMsg}
+            </div>
           </div>
         </div>
         <div className="flex flex-col">

@@ -77,7 +77,7 @@ function AccountItem({
             </div>
           </div>
           <div className="inline-flex justify-center items-center">
-            {authorizedAccountIdIconObj[eid] ? (
+            {authorizedAccountIdIconObj[eid] && (
               <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
                 <img
                   className="w-4 h-4"
@@ -85,9 +85,9 @@ function AccountItem({
                   alt="favicon"
                 />
               </div>
-            ) : null}
+            )}
             {currentAccountId === eid && (
-              <CheckCircleFilled className="w-4 h-4 text-success" />
+              <CheckCircleFilled className="w-4 h-4 ml-3 text-success" />
             )}
           </div>
         </div>
