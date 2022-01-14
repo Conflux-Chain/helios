@@ -51,21 +51,20 @@ class EvmManage {
         method: 'POST',
       }).then(response => response.json())
 
-      if (
-        typeof balance?.result === 'string' &&
-        (this.balance.value === undefined ||
-          this.balance.value.drip !== Unit.fromHexDrip(balance.result).drip)
-      ) {
-        this.balance.value = Unit.fromHexDrip(balance.result)
+      if (typeof balance?.result === 'string') {
+        this.isSupportEvmSpace.value = true
+        if (
+          this.balance.value === undefined ||
+            this.balance.value.drip !== Unit.fromHexDrip(balance.result).drip
+        ) {
+          this.balance.value = Unit.fromHexDrip(balance.result)
+        }
       }
 
-      if (
-        balance?.error?.message ===
-        'the method eth_getBalance does not exist/is not available'
-      ) {
+      if (balance?.error) {
+        console.error('Track evmMappedAddress balance error: ', balance?.error)
         this.isSupportEvmSpace.value = false
-      } else {
-        this.isSupportEvmSpace.value = true
+        this.balance.value = undefined
       }
     } catch (err) {
       console.error('Track evmMappedAddress balance error: ', err)
