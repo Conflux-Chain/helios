@@ -270,6 +270,7 @@ describe('integration test', function () {
         expect(db.getNetwork().length).toBe(1)
         expect(db.getAccount().length).toBe(1)
         expect(db.getAddress().length).toBe(1)
+        expect(db.getNetwork()[0].selected).toBe(true)
       })
       test('delete builtin network', async () => {
         db.createNetwork({

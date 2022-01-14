@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/wallet_delete-network": patch
+
+declined:
+  - helios-background
