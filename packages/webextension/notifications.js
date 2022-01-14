@@ -7,6 +7,9 @@ function notificationOnClicked(notificationId) {
 }
 
 function subscribeToNotificationClicked() {
+  // none browser env
+  if (typeof window === 'undefined') return
+  if (typeof global !== 'undefined') return
   if (!browser.notifications.onClicked.hasListener(notificationOnClicked)) {
     browser.notifications.onClicked.addListener(notificationOnClicked)
   }
