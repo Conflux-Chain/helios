@@ -117,7 +117,7 @@ function EditGasFee() {
   return (
     <div
       id="editGasFeeContainer"
-      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat bg-bg"
+      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat bg-0"
     >
       <div className="flex-1">
         <TitleNav title={t('editGasFeeControl')} />
