@@ -1,3 +1,5 @@
+import {CFX_MAINNET_NETID, CFX_TESTNET_NETID} from '@fluent-wallet/consts'
+
 export const ETH_FOUR_BYTE_DOMAIN = 'https://www.4byte.directory'
 
 // ETH endpoints
@@ -10,6 +12,6 @@ export const ETH_ENDPOINT = {
 }
 
 export const CFX_SCAN_DOMAINS = {
-  1029: 'https://confluxscan.io',
-  1: 'https://testnet.confluxscan.io',
+  [CFX_MAINNET_NETID]: 'https://confluxscan.io',
+  [CFX_TESTNET_NETID]: 'https://testnet.confluxscan.io',
 }
