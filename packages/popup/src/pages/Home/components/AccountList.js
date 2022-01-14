@@ -165,7 +165,7 @@ function AccountList({onClose, open, accountsAnimate = true}) {
 AccountList.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  accountsAnimate: PropTypes.bool.isRequired,
+  accountsAnimate: PropTypes.bool,
 }
 
 export default AccountList

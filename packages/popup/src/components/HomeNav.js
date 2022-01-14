@@ -12,7 +12,7 @@ function HomeNav({onClickMenu}) {
       <AlignRightOutlined
         className="w-6 h-6 text-white cursor-pointer"
         onClick={() => {
-          onClickMenu && onClickMenu()
+          onClickMenu?.()
         }}
         id="showMenu"
       />
