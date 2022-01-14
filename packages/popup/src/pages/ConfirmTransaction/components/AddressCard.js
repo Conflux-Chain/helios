@@ -47,7 +47,7 @@ const TransactionDirection = ({
         <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2">
           <div className="flex flex-col">
             <Text
-              className="text-xs text-gray-40"
+              className="text-xs text-gray-40 mb-1"
               id="currentAccountName"
               text={currentAccountName}
             />
@@ -58,7 +58,7 @@ const TransactionDirection = ({
             />
           </div>
           <div className="flex flex-col items-end">
-            <span className="text-gray-80">{t('balance')}</span>
+            <span className="text-gray-80 mb-0.5">{t('balance')}</span>
             <DisplayBalance
               balance={nativeBalance}
               maxWidth={120}
@@ -71,8 +71,8 @@ const TransactionDirection = ({
             />
           </div>
         </div>
-        <span className="text-xs text-gray-40">{toAddressLabel}</span>
-        <span className="text-gray-80 flex items-center" id="toAddress">
+        <span className="text-xs text-gray-40 mb-1">{toAddressLabel}</span>
+        <span className="text-gray-80 flex items-center h-4" id="toAddress">
           {isContract && <FileOutlined className="w-4 h-4 mr-1 text-primary" />}
           {toAddress && shortenAddress(toAddress)}
           {isCreateContract && t('createContract')}

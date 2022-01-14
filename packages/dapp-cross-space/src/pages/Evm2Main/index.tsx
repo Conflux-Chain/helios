@@ -18,7 +18,7 @@ import {
 } from '../../components/tools/Modal'
 import ShortenAddress from '../../components/ShortenAddress'
 import {Unit} from '../../utils'
-import showToast, {hideToast} from '../../components/tools/Toast'
+import showToast from '../../components/tools/Toast'
 import PageTurn from '../../assets/page-turn.svg'
 import CFXIcon from '../../assets/cfx.svg'
 import Suggest from '../../assets/suggest.svg'
@@ -81,7 +81,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
       </div>
 
       <button
-        className="absolute left-[50%] translate-x-[-50%] top-[76px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-1 hover:scale-110 transition-transform"
+        className="absolute left-[50%] translate-x-[-50%] top-[76px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-10 hover:scale-110 transition-transform"
         onClick={handleClickFlipped}
       >
         <img
