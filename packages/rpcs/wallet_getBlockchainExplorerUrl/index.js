@@ -44,10 +44,10 @@ export const main = ({
 }) => {
   const {scanUrl} = network
   const to = {
-    address: addr => `https://${scanUrl}/address/${addr}`,
-    contract: addr => `https://${scanUrl}/contract/${addr}`,
-    token: addr => `https://${scanUrl}/token/${addr}`,
-    transaction: txhash => `https://${scanUrl}/tx/${txhash}`,
+    address: addr => `${scanUrl}/address/${addr}`,
+    contract: addr => `${scanUrl}/contract/${addr}`,
+    token: addr => `${scanUrl}/token/${addr}`,
+    transaction: txhash => `${scanUrl}/tx/${txhash}`,
   }
 
   return {
