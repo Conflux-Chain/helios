@@ -1,7 +1,6 @@
 import {useState} from 'react'
 import {useQuery} from '../../hooks'
 import {useTxList} from '../../hooks/useApi'
-
 import {useEffectOnce} from 'react-use'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -30,20 +29,31 @@ function Home() {
   const [addTokenStatus, setAddTokenStatus] = useState(false)
   const [settingsStatus, setSettingStatus] = useState(false)
   const [accountsAnimate, setAccountsAnimate] = useState(true)
+  const [settingAnimate, setSettingAnimate] = useState(true)
   const query = useQuery()
   const history = useHistory()
   const pendingCount = useTxList({status: {gte: 0, lt: 4}, countOnly: true})
 
   useEffectOnce(() => {
-    if (query.get('open') === 'account-list') {
+    const forward = query.get('open')
+    if (forward === 'account-list') {
       history.replace('')
       setAccountsAnimate(false)
       setAccountStatus(true)
+    } else if (forward === 'setting-page') {
+      history.replace('')
+      setSettingAnimate(false)
+      setSettingStatus(true)
     }
   })
   const onCloseAccountList = () => {
     !accountsAnimate && setAccountsAnimate(true)
     setAccountStatus(false)
+  }
+
+  const onCloseSetting = () => {
+    !settingAnimate && setSettingAnimate(true)
+    setSettingStatus(false)
   }
 
   return (
@@ -121,7 +131,11 @@ function Home() {
         onClose={() => setAddTokenStatus(false)}
         open={addTokenStatus}
       />
-      <Setting onClose={() => setSettingStatus(false)} open={settingsStatus} />
+      <Setting
+        onClose={onCloseSetting}
+        open={settingsStatus}
+        settingAnimate={settingAnimate}
+      />
     </div>
   )
 }

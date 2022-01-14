@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import {useSWRConfig} from 'swr'
+import {formatHexToDecimal} from '@fluent-wallet/data-format'
 import {DappFooter, TitleNav} from '../../components'
 import {useTranslation} from 'react-i18next'
 import {usePendingAuthReq} from '../../hooks/useApi'
@@ -72,7 +73,7 @@ function DappAddNetwork() {
             />
             <NetworkContentItem
               labelText={t('chainId')}
-              contentText={req?.params?.[0]?.chainId || ''}
+              contentText={formatHexToDecimal(req?.params?.[0]?.chainId || '')}
               containerClass="mt-3"
             />
             <NetworkContentItem

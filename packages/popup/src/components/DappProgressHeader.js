@@ -28,7 +28,7 @@ function DappProgressHeader({title}) {
             }
           />
           <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center ml-2">
-            <img className="w-8 h-8" src="/images/logo.svg" alt="logo" />
+            <img className="w-6 h-6" src="/images/logo.svg" alt="logo" />
           </div>
         </div>
         <p
