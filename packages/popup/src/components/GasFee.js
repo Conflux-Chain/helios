@@ -34,7 +34,6 @@ function GasFee({estimateRst}) {
     [isBeAllPayed, isBePayed, partPayedFeeDrip, txFeeDrip],
   )
   const gasPrice = useDebouncedValue(_gasPrice, [_gasPrice])
-  console.log(realPayedFeeDrip, gasPrice)
 
   return (
     <div className="gas-fee-container flex flex-col">
