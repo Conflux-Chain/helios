@@ -58,7 +58,7 @@ const TransactionDirection = ({
             />
           </div>
           <div className="flex flex-col items-end">
-            <span className="text-gray-80 mb-0.5">{t('balance')}</span>
+            <span className="text-gray-40 mb-0.5">{t('balance')}</span>
             <DisplayBalance
               balance={nativeBalance}
               maxWidth={120}
