@@ -363,8 +363,8 @@ describe('integration test', function () {
         ).result
 
         expect(db.getAccount().length).toBe(1)
+        await waitForExpect(() => expect(db.getAddress().length).toBe(3))
         const addrs = db.getAddress()
-        expect(addrs.length).toBe(3)
         expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
         expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
       })
