@@ -4,6 +4,7 @@
   "main": "index.js",
   "version": "0.0.1",
   "dependencies": {
-    "@fluent-wallet/base32-address": "workspace:*"
+    "@fluent-wallet/base32-address": "workspace:*",
+    "@fluent-wallet/consts": "workspace:packages/consts"
   }
 }
