@@ -20,7 +20,7 @@ on:
 
 jobs:
   pre-release:
-    # if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
+    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -66,6 +66,20 @@ jobs:
             return await require('.github/scripts/getPreReleaseNumber.js')({github, context, core});
 
       - uses: release-drafter/release-drafter@v5
+        if: ${{ github.head_ref != '__release-pkg' }}
+        id: create_draft_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commitish: ${{ github.sha }}
+          config-name: release-drafter-pre.yml
+          name: Pre release ${{ fromJSON(steps.pre-release-number.outputs.result).tag }}
+          version: ${{ fromJSON(steps.pre-release-number.outputs.result).version }}
+          tag: ${{ fromJSON(steps.pre-release-number.outputs.result).tag }}
+          prerelease: true
+
+      - uses: release-drafter/release-drafter@v5
+        if: ${{ github.head_ref == '__release-pkg' }}
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,12 +91,9 @@ jobs:
           tag: ${{ fromJSON(steps.pre-release-number.outputs.result).tag }}
           prerelease: true
           publish: true
-      # - run: |
-      #     echo "::debug:: ${{ steps.pre-release-number.outputs.result }}"
-      # - run: |
-      #     echo "::debug:: ${{ fromJSON( steps.pre-release-number.outputs.result ) }}"
 
       - name: build and release
+        if: ${{ github.head_ref == '__release-pkg' }}
         env:
           SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
           SNOWPACK_PUBLIC_FLUENT_ENV: "debug-release"
