@@ -141,6 +141,8 @@ function HistoryItem({
     Object.keys(decodeData).length,
   ])
 
+  if (!actionName || !contractName) return null
+
   return (
     <div className="px-3 pb-3 pt-2 bg-white mx-3 mt-3 rounded">
       <div className="flex justify-between">
