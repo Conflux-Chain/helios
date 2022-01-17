@@ -110,7 +110,7 @@ const zh = {
     // - Network
     network: '网络',
     mainnet: '主网',
-    Testnet: '测试网',
+    testnet: '测试网',
     custom: '自定义网络',
 
     // - add token
@@ -234,7 +234,6 @@ const zh = {
     switchNetwork: '切换网络',
     allowSwitchNetwork: '允许此网站切换网络?',
     warningSwitchNetwork: '这将会把网络切换至钱包已经添加的网络',
-    testnet: '测试网',
 
     // - set password page
     setPWD: '设置密码',

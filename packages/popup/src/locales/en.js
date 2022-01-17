@@ -111,9 +111,9 @@ const en = {
 
     // - Network
     network: 'Network',
-    mainnet: 'Mainnet',
-    Testnet: 'Testnet',
-    custom: 'Custom',
+    mainnet: 'mainnet',
+    testnet: 'testnet',
+    custom: 'custom',
 
     // - add token
     addToken: 'Add Token',
@@ -241,7 +241,6 @@ const en = {
     allowSwitchNetwork: 'Allow this site to switch the network?',
     warningSwitchNetwork:
       'This will switch the selected network within Fluent to a previously added network',
-    testnet: 'testnet',
 
     // - set password page
     setPWD: 'Set the password',
