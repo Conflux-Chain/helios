@@ -3122,6 +3122,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.14.6":
+  version: 7.16.7
+  resolution: "@babel/runtime@npm:7.16.7"
+  dependencies:
+    regenerator-runtime: ^0.13.4
+  checksum: 47912f0aaacd1cab2e2552aaf3e6eaffbcaf2d5ac9b07a89a12ac0d42029cb92c070b0d16f825e4277c4a34677c54d8ffe85e1f7c6feb57de58f700eec67ce2f
+  languageName: node
+  linkType: hard
+
 "@babel/runtime@npm:^7.8.7":
   version: 7.16.5
   resolution: "@babel/runtime@npm:7.16.5"
@@ -20831,6 +20840,7 @@ fsevents@^1.2.7:
     bn.js: 5.2.0
     dayjs: 1.10.7
     i18next: 21.5.2
+    i18next-browser-languagedetector: 6.1.2
     qrcode.react: 1.0.1
     react-copy-to-clipboard: 5.0.4
     react-error-boundary: 3.1.4
@@ -21379,6 +21389,15 @@ fsevents@^1.2.7:
   version: 1.0.4
   resolution: "hyphenate-style-name@npm:1.0.4"
   checksum: 4f5bf4b055089754924babebaa23c17845937bcca6aee95d5d015f8fa1e6814279002bd6a9e541e3fac2cd02519fc76305396727066c57c8e21a7e73e7a12137
+  languageName: node
+  linkType: hard
+
+"i18next-browser-languagedetector@npm:6.1.2":
+  version: 6.1.2
+  resolution: "i18next-browser-languagedetector@npm:6.1.2"
+  dependencies:
+    "@babel/runtime": ^7.14.6
+  checksum: 927719d2ad186ced97b16348d9db730333632f3ca47c762022e46315045f4fcacb86df33ed3f5c57aa90cac1e010ec2227de51776cf55a2ec0ab54b4d79cc06b
   languageName: node
   linkType: hard
 

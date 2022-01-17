@@ -133,6 +133,9 @@ const en = {
       'Use 8 ~ 16 characters with a mix of letters & numbers.',
     en: 'English',
     zh: '简体中文',
+    'zh-CN': '简体中文',
+    'zh-TW': '简体中文',
+    'zh-HK': '简体中文',
 
     // - Send Transaction
     // - Send Transaction / send transaction

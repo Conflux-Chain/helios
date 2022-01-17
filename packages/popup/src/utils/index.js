@@ -132,3 +132,6 @@ export const getPageType = () => {
     .getAttribute('content')
   return pageType
 }
+
+export const formatLocalizationLang = lang =>
+  lang?.split?.('-')?.[0] === 'zh' ? 'zh' : lang
