@@ -111,9 +111,9 @@ const en = {
 
     // - Network
     network: 'Network',
-    mainnet: 'mainnet',
-    testnet: 'testnet',
-    custom: 'custom',
+    mainnet: 'Mainnet',
+    testnet: 'Testnet',
+    custom: 'Custom',
 
     // - add token
     addToken: 'Add Token',
