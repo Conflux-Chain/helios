@@ -6,6 +6,7 @@ import Button from '@fluent-wallet/component-button'
 import {HomeTitle, PasswordInput, LanguageNav} from '../../components'
 import {RPC_METHODS, ROUTES} from '../../constants'
 import {usePendingAuthReq} from '../../hooks/useApi'
+import {useDisplayErrorMessage} from '../../hooks'
 import {request, validatePasswordReg, isKeyOf, getPageType} from '../../utils'
 import useLoading from '../../hooks/useLoading'
 
@@ -22,10 +23,12 @@ const UnlockPage = () => {
   const inputRef = useRef(null)
   const pendingAuthReq = usePendingAuthReq()
   const isDapp = getPageType() === 'notification'
+  const displayErrorMessage = useDisplayErrorMessage(errorMessage)
 
   const validatePassword = value => {
-    setErrorMessage(validatePasswordReg(value) ? '' : t('passwordRulesWarning'))
+    setErrorMessage(validatePasswordReg(value) ? '' : 'passwordRulesWarning')
   }
+
   const onUnlock = () => {
     validatePassword(password)
     if (password) {
@@ -46,8 +49,8 @@ const UnlockPage = () => {
           setLoading(false)
           setErrorMessage(
             e?.message?.indexOf?.('Invalid password') !== -1
-              ? t('invalidPassword')
-              : e?.message ?? t('invalidPasswordFromRpc'),
+              ? 'invalidPassword'
+              : e?.message ?? 'invalidPasswordFromRpc',
           )
         })
     }
@@ -88,7 +91,7 @@ const UnlockPage = () => {
             <PasswordInput
               validateInputValue={validatePassword}
               setInputValue={setPassword}
-              errorMessage={errorMessage}
+              errorMessage={displayErrorMessage}
               value={password}
               id="unlockPassword"
               onKeyDown={onKeyDown}
