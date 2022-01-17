@@ -132,3 +132,16 @@ export const getPageType = () => {
     .getAttribute('content')
   return pageType
 }
+
+export function composeRef() {
+  let refs = []
+  if (arguments.length === 1 && arguments[0] instanceof Array)
+    refs = arguments[0]
+  else refs = Array.from(arguments)
+  return ref => {
+    refs.forEach(r => {
+      if (r !== null && typeof r === 'object' && 'current' in r) r.current = ref
+      if (typeof r === 'function') r(ref)
+    })
+  }
+}
