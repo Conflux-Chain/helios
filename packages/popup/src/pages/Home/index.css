@@ -18,3 +18,17 @@
 .home-container > .current-dapp-container {
   z-index: 1;
 }
+
+.pending-queue-spin {
+  animation: pending-queue-spin-animation 2200ms linear infinite;
+}
+
+@keyframes pending-queue-spin-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
