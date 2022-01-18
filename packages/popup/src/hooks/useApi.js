@@ -406,9 +406,10 @@ export const useDbAccountListAssets = (
       ACCOUNT_GROUP_TYPE.HW,
     ],
   },
+  dep = 'queryAllAccount',
 ) => {
   const {data: accountListAssets} = useRPC(
-    [WALLETDB_ACCOUNT_LIST_ASSETS, ...params.accountGroupTypes],
+    [WALLETDB_ACCOUNT_LIST_ASSETS, dep],
     params,
     {
       fallbackData: {},

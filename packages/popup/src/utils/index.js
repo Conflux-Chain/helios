@@ -4,7 +4,11 @@ import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
 import {PASSWORD_REG_EXP, RPC_METHODS} from '../constants'
 const globalThis = window ?? global
-const {WALLET_GET_ACCOUNT_GROUP, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
+const {
+  WALLET_GET_ACCOUNT_GROUP,
+  WALLET_METADATA_FOR_POPUP,
+  WALLETDB_ACCOUNT_LIST_ASSETS,
+} = RPC_METHODS
 
 export function request(...args) {
   const [method, params] = args
@@ -141,3 +145,6 @@ export function composeRef() {
     })
   }
 }
+
+export const updateDbAccountList = (mutate, ...args) =>
+  Promise.all(args.map(dep => mutate([WALLETDB_ACCOUNT_LIST_ASSETS, dep])))

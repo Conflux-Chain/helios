@@ -29,12 +29,11 @@ import {
 } from '../../hooks/useApi'
 import useLoading from '../../hooks/useLoading'
 import useImportHWParams from './useImportHWParams'
-import {request} from '../../utils'
+import {request, updateDbAccountList} from '../../utils'
 
 const {
   WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT,
   WALLETDB_REFETCH_BALANCE,
-  WALLETDB_ACCOUNT_LIST_ASSETS,
 } = RPC_METHODS
 const cfx = new Conflux()
 
@@ -44,7 +43,7 @@ function ImportingResults({importStatus}) {
 
   const onClickDone = () => {
     mutate([WALLETDB_REFETCH_BALANCE])
-    mutate([WALLETDB_ACCOUNT_LIST_ASSETS, 'all'])
+    updateDbAccountList(mutate, 'queryAllAccount')
     window.open(' ', '_self')
     window.close()
   }
