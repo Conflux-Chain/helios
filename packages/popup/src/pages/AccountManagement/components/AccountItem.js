@@ -13,15 +13,13 @@ import {
 } from '@fluent-wallet/component-icons'
 import {Avatar, WrapIcon} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
-import {request} from '../../../utils'
+import {request, updateDbAccountList} from '../../../utils'
 import useLoading from '../../../hooks/useLoading'
 
 const {
   WALLET_EXPORT_ACCOUNT,
   WALLET_DELETE_ACCOUNT_GROUP,
   WALLET_UPDATE_ACCOUNT,
-  WALLETDB_ACCOUNT_LIST_ASSETS,
-  ACCOUNT_GROUP_TYPE,
 } = RPC_METHODS
 
 function AccountItem({
@@ -54,11 +52,11 @@ function AccountItem({
     return new Promise((resolve, reject) => {
       request(WALLET_UPDATE_ACCOUNT, params)
         .then(() => {
-          mutate([
-            WALLETDB_ACCOUNT_LIST_ASSETS,
-            ACCOUNT_GROUP_TYPE.HD,
-            ACCOUNT_GROUP_TYPE.PK,
-          ]).then(resolve)
+          updateDbAccountList(
+            mutate,
+            'accountManagementQueryAccount',
+            'queryAllAccount',
+          ).then(resolve)
         })
         .catch(e => {
           Message.error({
