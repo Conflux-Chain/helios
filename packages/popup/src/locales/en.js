@@ -112,7 +112,7 @@ const en = {
     // - Network
     network: 'Network',
     mainnet: 'Mainnet',
-    Testnet: 'Testnet',
+    testnet: 'Testnet',
     custom: 'Custom',
 
     // - add token
@@ -133,6 +133,9 @@ const en = {
       'Use 8 ~ 16 characters with a mix of letters & numbers.',
     en: 'English',
     zh: '简体中文',
+    'zh-CN': '简体中文',
+    'zh-TW': '简体中文',
+    'zh-HK': '简体中文',
 
     // - Send Transaction
     // - Send Transaction / send transaction
@@ -238,7 +241,6 @@ const en = {
     allowSwitchNetwork: 'Allow this site to switch the network?',
     warningSwitchNetwork:
       'This will switch the selected network within Fluent to a previously added network',
-    testnet: 'testnet',
 
     // - set password page
     setPWD: 'Set the password',
