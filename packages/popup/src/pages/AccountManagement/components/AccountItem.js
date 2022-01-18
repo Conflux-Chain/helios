@@ -41,6 +41,7 @@ function AccountItem({
   const [showInputStatus, setShowInputStatus] = useState(false)
   const [showEditIconStatus, setShowEditIconStatus] = useState(false)
   const [inputNickname, setInputNickname] = useState(accountNickname)
+  const [hidingAccountStatus, setHidingAccountStatus] = useState(false)
 
   const onClickEditBtn = () => {
     setShowInputStatus(true)
@@ -50,7 +51,6 @@ function AccountItem({
   }
 
   const updateAccount = params => {
-    setLoading(true)
     return new Promise((resolve, reject) => {
       request(WALLET_UPDATE_ACCOUNT, params)
         .then(() => {
@@ -58,13 +58,9 @@ function AccountItem({
             WALLETDB_ACCOUNT_LIST_ASSETS,
             ACCOUNT_GROUP_TYPE.HD,
             ACCOUNT_GROUP_TYPE.PK,
-          ]).then(() => {
-            setLoading(false)
-            resolve()
-          })
+          ]).then(resolve)
         })
         .catch(e => {
-          setLoading(false)
           Message.error({
             content:
               e?.message?.split?.('\n')?.[0] ??
@@ -83,17 +79,23 @@ function AccountItem({
       !inputNickname && setInputNickname(accountNickname)
       return setShowInputStatus(false)
     }
+    setLoading(true)
     updateAccount({accountId, nickname: inputNickname})
       .then(() => {
+        setLoading(false)
         setShowInputStatus(false)
       })
       .catch(() => {
+        setLoading(false)
         setShowInputStatus(false)
         setInputNickname(accountNickname)
       })
   }
 
   const onSwitchAccount = hidden => {
+    if (hidingAccountStatus) {
+      return
+    }
     if (isNumber(currentAccountId)) {
       if (accountId === currentAccountId) {
         return Message.warning({
@@ -102,7 +104,10 @@ function AccountItem({
           duration: 1,
         })
       }
-      updateAccount({accountId, hidden})
+      setHidingAccountStatus(true)
+      updateAccount({accountId, hidden}).finally(() => {
+        setHidingAccountStatus(false)
+      })
     }
   }
 
@@ -163,8 +168,12 @@ function AccountItem({
       >
         <KeyOutlined className="w-3 h-3 text-primary" />
       </WrapIcon>
-      <WrapIcon size="w-5 h-5 ml-3" id="switch-account" onClick={() => {}}>
-        <div aria-hidden="true" onClick={() => onSwitchAccount(!hidden)}>
+      <WrapIcon
+        size="w-5 h-5 ml-3"
+        id="switch-account"
+        onClick={() => onSwitchAccount(!hidden)}
+      >
+        <div>
           {hidden ? (
             <LeftSwitchOutlined className="w-4 h-4 text-gray-40" />
           ) : (
