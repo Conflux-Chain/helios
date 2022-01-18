@@ -47,7 +47,7 @@ function ConfirmSeed() {
     if (mnemonic.split(' ').indexOf('') !== -1) {
       setMnemonicError('')
     }
-  }, [mnemonic, createdMnemonic, t])
+  }, [mnemonic])
   const onDeleteMnemonic = index => {
     const mnemonicIndexArray = mnemonicIndex.split(' ')
     mnemonicIndexArray.splice(index, 1, null)
@@ -67,10 +67,7 @@ function ConfirmSeed() {
     return findIndex > -1
   }
   const onCreate = () => {
-    if (
-      mnemonic.split(' ').indexOf('') === -1 &&
-      mnemonic !== createdMnemonic
-    ) {
+    if (mnemonic !== createdMnemonic) {
       setMnemonicError(t('confirmSeedError'))
       return
     }
