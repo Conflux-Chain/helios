@@ -134,7 +134,7 @@ export const getPageType = () => {
 }
 
 export const formatLocalizationLang = lang =>
-  lang?.split?.('-')?.[0] === 'zh' ? 'zh' : lang
+  lang?.split?.('-')?.[0] === 'zh' ? 'zh' : 'en'
 
 export function composeRef() {
   let refs = []
