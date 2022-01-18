@@ -57,7 +57,7 @@ function History() {
         onScroll={onScroll}
         ref={composeRef(historyRef, loadingRef)}
       >
-        {txList?.length > 1 &&
+        {txList?.length > 0 &&
           txList.map(
             (
               {status, created, txExtra, txPayload, app, token, eid, hash},

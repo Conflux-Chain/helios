@@ -48,7 +48,7 @@ function LanguageNav({
   const [rotateTriangle, setRotateTriangle] = useState(false)
 
   const changeLanguage = lang => {
-    formatLocalizationLang(i18n.language) !== lang && i18n.changeLanguage(lang)
+    formatLocalizationLang(language) !== lang && i18n.changeLanguage(lang)
   }
 
   return (
@@ -78,7 +78,9 @@ function LanguageNav({
           }}
         >
           <div className="flex items-center cursor-pointer w-[132px] justify-end">
-            <span className="text-xs">{t(language)}</span>
+            <span className="text-xs">
+              {t(formatLocalizationLang(language))}
+            </span>
             <CaretDownFilled
               className={`ml-1 w-3 h-3 transition duration-300 ease-in-out ${
                 rotateTriangle ? 'transform rotate-180' : ''

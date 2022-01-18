@@ -130,9 +130,6 @@ const zh = {
     passwordRulesWarning: '请使用 8～16 个字符，并且同时包含字母和数字',
     en: 'English',
     zh: '简体中文',
-    'zh-CN': '简体中文',
-    'zh-TW': '简体中文',
-    'zh-HK': '简体中文',
 
     // - Send Transaction
     // - Send Transaction / send transaction
