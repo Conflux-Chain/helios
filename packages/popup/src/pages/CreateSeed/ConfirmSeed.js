@@ -24,9 +24,9 @@ function ConfirmSeed() {
     setCreatedPassword,
     createdGroupName,
   } = useGlobalStore()
-  const initData = new Array(12).fill(null)
+  const initData = new Array(12).fill(null).join(' ')
   // record the index of buttonArray
-  const [mnemonicIndex, setMnemonicIndex] = useState(initData.join(' '))
+  const [mnemonicIndex, setMnemonicIndex] = useState(initData)
   const [mnemonicError, setMnemonicError] = useState('')
   const [buttonArray, setButtonArray] = useState([])
   const {setLoading} = useLoading({showBlur: 'high'})
@@ -44,12 +44,10 @@ function ConfirmSeed() {
     [mnemonicIndex],
   )
   useEffect(() => {
-    if (mnemonic === createdMnemonic) {
+    if (mnemonic.split(' ').indexOf('') !== -1) {
       setMnemonicError('')
-    } else if (mnemonic.split(' ').indexOf('') === -1) {
-      setMnemonicError(t('confirmSeedError'))
     }
-  }, [mnemonic, createdMnemonic, t])
+  }, [mnemonic])
   const onDeleteMnemonic = index => {
     const mnemonicIndexArray = mnemonicIndex.split(' ')
     mnemonicIndexArray.splice(index, 1, null)
@@ -69,10 +67,10 @@ function ConfirmSeed() {
     return findIndex > -1
   }
   const onCreate = () => {
-    if (mnemonicError) {
+    if (mnemonic !== createdMnemonic) {
+      setMnemonicError(t('confirmSeedError'))
       return
     }
-    setMnemonicError('')
     setLoading(true)
     let params = {
       nickname: createdGroupName,
@@ -95,7 +93,9 @@ function ConfirmSeed() {
       })
       .catch(error => {
         setLoading(false)
-        setMnemonicError(error?.message ?? error)
+        setMnemonicError(
+          error?.message?.split?.('\n')?.[0] ?? error?.message ?? error,
+        )
       })
   }
 
@@ -162,7 +162,7 @@ function ConfirmSeed() {
             className="w-70"
             onClick={onCreate}
             id="onCreateMnemonicBtn"
-            disabled={!!mnemonicError}
+            disabled={mnemonic.split(' ').indexOf('') !== -1}
           >
             {t('create')}
           </Button>
