@@ -140,7 +140,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
             Use <span className="text-[#15C184]">Conflux EVM-Chain</span>.
           </li>
           <li>
-            {`Send your {CFX} to the`}{' '}
+            Send your CFX to the{' '}
             <span className="text-[#3D3F4C]">following address</span>.
           </li>
           <li>
