@@ -1,21 +1,25 @@
 import PropTypes from 'prop-types'
 import {useState, useRef} from 'react'
 import {useSWRConfig} from 'swr'
+import {isNumber} from '@fluent-wallet/checks'
 import Input from '@fluent-wallet/component-input'
 import Message from '@fluent-wallet/component-message'
 import {useTranslation} from 'react-i18next'
-import {KeyOutlined, EditOutlined} from '@fluent-wallet/component-icons'
+import {
+  KeyOutlined,
+  EditOutlined,
+  LeftSwitchOutlined,
+  RightSwitchOutlined,
+} from '@fluent-wallet/component-icons'
 import {Avatar, WrapIcon} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
-import {request} from '../../../utils'
+import {request, updateDbAccountList} from '../../../utils'
 import useLoading from '../../../hooks/useLoading'
 
 const {
   WALLET_EXPORT_ACCOUNT,
   WALLET_DELETE_ACCOUNT_GROUP,
   WALLET_UPDATE_ACCOUNT,
-  WALLETDB_ACCOUNT_LIST_ASSETS,
-  ACCOUNT_GROUP_TYPE,
 } = RPC_METHODS
 
 function AccountItem({
@@ -24,7 +28,9 @@ function AccountItem({
   accountGroupId = '',
   accountNickname = '',
   showDelete = false,
+  hidden = false,
   onOpenConfirmPassword,
+  currentAccountId,
 }) {
   const {t} = useTranslation()
   const inputRef = useRef(null)
@@ -33,6 +39,7 @@ function AccountItem({
   const [showInputStatus, setShowInputStatus] = useState(false)
   const [showEditIconStatus, setShowEditIconStatus] = useState(false)
   const [inputNickname, setInputNickname] = useState(accountNickname)
+  const [hidingAccountStatus, setHidingAccountStatus] = useState(false)
 
   const onClickEditBtn = () => {
     setShowInputStatus(true)
@@ -40,34 +47,66 @@ function AccountItem({
       inputRef.current.focus()
     })
   }
+
+  const updateAccount = params => {
+    return new Promise((resolve, reject) => {
+      request(WALLET_UPDATE_ACCOUNT, params)
+        .then(() => {
+          updateDbAccountList(
+            mutate,
+            'accountManagementQueryAccount',
+            'queryAllAccount',
+          ).then(resolve)
+        })
+        .catch(e => {
+          Message.error({
+            content:
+              e?.message?.split?.('\n')?.[0] ??
+              e?.message ??
+              t('unCaughtErrMsg'),
+            top: '10px',
+            duration: 1,
+          })
+          reject()
+        })
+    })
+  }
+
   const onInputBlur = () => {
     if (inputNickname === accountNickname || !inputNickname) {
       !inputNickname && setInputNickname(accountNickname)
       return setShowInputStatus(false)
     }
     setLoading(true)
-    request(WALLET_UPDATE_ACCOUNT, {accountId, nickname: inputNickname})
+    updateAccount({accountId, nickname: inputNickname})
       .then(() => {
-        mutate([
-          WALLETDB_ACCOUNT_LIST_ASSETS,
-          ACCOUNT_GROUP_TYPE.HD,
-          ACCOUNT_GROUP_TYPE.PK,
-        ]).then(() => {
-          setLoading(false)
-          setShowInputStatus(false)
-        })
+        setLoading(false)
+        setShowInputStatus(false)
       })
-      .catch(e => {
+      .catch(() => {
         setLoading(false)
         setShowInputStatus(false)
         setInputNickname(accountNickname)
-        Message.error({
-          content:
-            e?.message?.split?.('\n')?.[0] ?? e?.message ?? t('unCaughtErrMsg'),
+      })
+  }
+
+  const onSwitchAccount = hidden => {
+    if (hidingAccountStatus) {
+      return
+    }
+    if (isNumber(currentAccountId)) {
+      if (accountId === currentAccountId) {
+        return Message.warning({
+          content: t('accountHideWarning'),
           top: '10px',
           duration: 1,
         })
+      }
+      setHidingAccountStatus(true)
+      updateAccount({accountId, hidden}).finally(() => {
+        setHidingAccountStatus(false)
       })
+    }
   }
 
   return (
@@ -127,6 +166,19 @@ function AccountItem({
       >
         <KeyOutlined className="w-3 h-3 text-primary" />
       </WrapIcon>
+      <WrapIcon
+        size="w-5 h-5 ml-3"
+        id="switch-account"
+        onClick={() => onSwitchAccount(!hidden)}
+      >
+        <div>
+          {hidden ? (
+            <LeftSwitchOutlined className="w-4 h-4 text-gray-40" />
+          ) : (
+            <RightSwitchOutlined className="w-4 h-4 text-primary" />
+          )}
+        </div>
+      </WrapIcon>
       {/* delete pk account group */}
       {groupType === 'pk' && showDelete && (
         <div
@@ -150,8 +202,10 @@ AccountItem.propTypes = {
   accountId: PropTypes.number,
   accountGroupId: PropTypes.number,
   showDelete: PropTypes.bool,
+  hidden: PropTypes.bool,
   accountNickname: PropTypes.string,
   onOpenConfirmPassword: PropTypes.func,
+  currentAccountId: PropTypes.number,
 }
 
 export default AccountItem

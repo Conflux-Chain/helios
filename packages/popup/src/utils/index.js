@@ -9,6 +9,7 @@ const {
   WALLET_METADATA_FOR_POPUP,
   WALLET_IS_LOCKED,
   WALLET_ZERO_ACCOUNT_GROUP,
+  WALLETDB_ACCOUNT_LIST_ASSETS,
 } = RPC_METHODS
 
 export function request(...args) {
@@ -148,3 +149,6 @@ export function composeRef() {
     })
   }
 }
+
+export const updateDbAccountList = (mutate, ...args) =>
+  Promise.all(args.map(dep => mutate([WALLETDB_ACCOUNT_LIST_ASSETS, dep])))

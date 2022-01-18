@@ -36,7 +36,7 @@ function GroupItem({
       {groupType === 'pk' ? null : (
         <p className="text-gray-40 ml-4 mb-1 text-xs pt-3">{nickname}</p>
       )}
-      {account.map(({nickname, eid}) => (
+      {account.map(({nickname, eid, hidden}) => (
         <AccountItem
           key={eid}
           accountId={eid}
@@ -44,7 +44,9 @@ function GroupItem({
           accountNickname={nickname}
           groupType={groupType}
           showDelete={showDelete}
+          hidden={hidden}
           onOpenConfirmPassword={onOpenConfirmPassword}
+          currentAccountId={currentAccountId}
         />
       ))}
       {groupType === 'hd' ? (
