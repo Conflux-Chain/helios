@@ -124,7 +124,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         </span>
         Transfer Token
       </p>
-      <p className="mt-[8px] text-[#A9ABB2] text-[14px]">{`Transfer {CFX} to the following address.`}</p>
+      <p className="mt-[8px] text-[#A9ABB2] text-[14px]">Transfer CFX to the following address.</p>
 
       <div className="mt-[12px] pl-[16px] py-[12px] bg-[#F8F9FE]">
         <div className="flex items-center h-[20px] mb-[3px] text-[14px] text-[#3D3F4C] font-semibold">
@@ -145,7 +145,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
           </li>
           <li>
             This address can{' '}
-            <span className="text-[#3D3F4C]">{`only receive {CFX}.`}</span>
+            <span className="text-[#3D3F4C]">only receive CFX.</span>
           </li>
         </ul>
       </div>
