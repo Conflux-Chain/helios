@@ -5,12 +5,12 @@ import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
 import {HomeTitle, PasswordInput, LanguageNav} from '../../components'
 import {RPC_METHODS, ROUTES} from '../../constants'
-import {usePendingAuthReq} from '../../hooks/useApi'
+import {useDataForPopup} from '../../hooks/useApi'
 import {useDisplayErrorMessage} from '../../hooks'
 import {request, validatePasswordReg, isKeyOf, getPageType} from '../../utils'
 import useLoading from '../../hooks/useLoading'
 
-const {WALLET_IS_LOCKED, WALLET_UNLOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
+const {WALLET_UNLOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 
 const {HOME} = ROUTES
 const UnlockPage = () => {
@@ -21,9 +21,10 @@ const UnlockPage = () => {
   const {mutate} = useSWRConfig()
   const {setLoading} = useLoading()
   const inputRef = useRef(null)
-  const pendingAuthReq = usePendingAuthReq()
   const isDapp = getPageType() === 'notification'
   const displayErrorMessage = useDisplayErrorMessage(errorMessage)
+  const data = useDataForPopup()
+  const {pendingAuthReq} = data
 
   const validatePassword = value => {
     setErrorMessage(validatePasswordReg(value) ? '' : 'passwordRulesWarning')
@@ -35,8 +36,11 @@ const UnlockPage = () => {
       setLoading(true)
       request(WALLET_UNLOCK, {password})
         .then(() => {
-          mutate([WALLET_METADATA_FOR_POPUP]).then(() => {
-            mutate([WALLET_IS_LOCKED], false)
+          mutate(
+            [WALLET_METADATA_FOR_POPUP],
+            {...data, locked: false},
+            false,
+          ).then(() => {
             setLoading(false)
             if (isDapp && pendingAuthReq?.length === 0) {
               window.close()

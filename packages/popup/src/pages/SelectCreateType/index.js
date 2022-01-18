@@ -2,7 +2,7 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
-import {useHdAccountGroup, useIsZeroGroup} from '../../hooks/useApi'
+import {useHdAccountGroup, useDataForPopup} from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
 
 const {
@@ -24,7 +24,7 @@ function SelectCreateType() {
   const {t} = useTranslation()
   const history = useHistory()
   const hdGroup = useHdAccountGroup()
-  const zeroGroup = useIsZeroGroup()
+  const {zeroGroup} = useDataForPopup()
 
   return (
     <div className="bg-bg h-full w-full" id="selectCreateTypeContainer">

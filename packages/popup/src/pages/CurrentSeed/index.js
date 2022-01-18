@@ -10,10 +10,10 @@ import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {CompWithLabel, TitleNav} from '../../components'
 import {request} from '../../utils'
 import {RPC_METHODS, ROUTES} from '../../constants'
-import {useHdAccountGroup} from '../../hooks/useApi'
+import {useHdAccountGroup, useDataForPopup} from '../../hooks/useApi'
 import useLoading from '../../hooks/useLoading'
 
-const {WALLET_CREATE_ACCOUNT, WALLET_ZERO_ACCOUNT_GROUP} = RPC_METHODS
+const {WALLET_CREATE_ACCOUNT, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 const {HOME} = ROUTES
 
 function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
@@ -65,6 +65,7 @@ function CurrentSeed() {
   const [selectedGroupIdx, setSelectedGroupIdx] = useState(0)
   const [accountCreationError, setAccountCreationError] = useState('')
   const {setLoading} = useLoading({showBlur: 'high'})
+  const data = useDataForPopup()
 
   useEffect(() => {
     const hdGroupName = hdGroup[0]?.nickname || 'Seed-1'
@@ -87,7 +88,7 @@ function CurrentSeed() {
       nickname: accountName || accountNamePlaceholder,
     })
       .then(() => {
-        mutate([WALLET_ZERO_ACCOUNT_GROUP], false)
+        mutate([WALLET_METADATA_FOR_POPUP], {...data, zeroGroup: false}, false)
         setLoading(false)
         history.push(HOME)
       })

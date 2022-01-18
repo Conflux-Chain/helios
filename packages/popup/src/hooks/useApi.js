@@ -125,7 +125,7 @@ export const useNetworkByChainId = (chainId, type) => {
 }
 
 export const useHdAccountGroup = () => {
-  const zeroGroup = useIsZeroGroup()
+  const {zeroGroup} = useDataForPopup()
   const {data: hdGroup} = useRPC(
     zeroGroup === false
       ? [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD]
@@ -137,7 +137,7 @@ export const useHdAccountGroup = () => {
 }
 
 export const usePkAccountGroup = () => {
-  const zeroGroup = useIsZeroGroup()
+  const {zeroGroup} = useDataForPopup()
   const {data: pkGroup} = useRPC(
     zeroGroup === false
       ? [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK]
@@ -149,7 +149,7 @@ export const usePkAccountGroup = () => {
 }
 
 export const useAllGroup = () => {
-  const zeroGroup = useIsZeroGroup()
+  const {zeroGroup} = useDataForPopup()
   const {data: group} = useRPC(
     zeroGroup === false ? [WALLET_GET_ACCOUNT_GROUP] : null,
     undefined,
@@ -160,6 +160,10 @@ export const useAllGroup = () => {
   return group
 }
 
+/************************************************************************************************
+unused functions
+because locked and zeroGroup has logic relationship
+************************************************************************************************/
 export const useIsLocked = () => {
   const {data: lockedData} = useRPC([WALLET_IS_LOCKED])
   return lockedData
@@ -169,9 +173,12 @@ export const useIsZeroGroup = () => {
   const {data: zeroGroup} = useRPC([WALLET_ZERO_ACCOUNT_GROUP])
   return zeroGroup
 }
+/************************************************************************************************
+end
+************************************************************************************************/
 
 export const usePendingAuthReq = () => {
-  const isLocked = useIsLocked()
+  const {locked: isLocked} = useDataForPopup()
   const {data: pendingAuthReq} = useRPC(
     !isLocked ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
   )
