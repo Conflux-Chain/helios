@@ -13,14 +13,16 @@ function TitleNav({
   return (
     <nav className="flex h-13 items-center justify-center px-3 relative">
       {hasGoBack ? (
-        <LeftOutlined
+        <span
+          aria-hidden="true"
+          id="go-back"
           onClick={() => {
             history.goBack()
             onGoBack && onGoBack()
           }}
-          id="goBack"
-          className="w-5 h-5 text-gray-60 absolute left-3 top-4 cursor-pointer"
-        />
+        >
+          <LeftOutlined className="w-5 h-5 text-gray-60 absolute left-3 top-4 cursor-pointer" />
+        </span>
       ) : null}
       <div className={`text-sm text-gray-100 ${className}`}>{title}</div>
       <div className="absolute right-3 cursor-pointer">
