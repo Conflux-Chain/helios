@@ -1,4 +1,6 @@
 import {useEffect, useState, useMemo} from 'react'
+import i18next from 'i18next'
+import {useTranslation} from 'react-i18next'
 import create from 'zustand'
 import {useAsync} from 'react-use'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
@@ -24,7 +26,6 @@ import {
   usePendingAuthReq,
 } from './useApi'
 import {validateAddress} from '../utils'
-import {useTranslation} from 'react-i18next'
 
 const {HOME} = ROUTES
 
@@ -406,4 +407,15 @@ export const useViewData = ({data, to} = {}, isApproveToken) => {
     }
   }, [customAllowance, data, allowance, spender, isApproveToken])
   return viewData
+}
+
+export const useDisplayErrorMessage = errorMessage => {
+  const [displayErrorMessage, setDisplayErrorMessage] = useState('')
+  const {t, i18n} = useTranslation()
+  useEffect(() => {
+    setDisplayErrorMessage(
+      i18next.exists(errorMessage) ? t(errorMessage) : errorMessage,
+    )
+  }, [i18n.language, errorMessage, t])
+  return displayErrorMessage
 }

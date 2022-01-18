@@ -2,6 +2,7 @@ import {useState} from 'react'
 import Dropdown from '@fluent-wallet/component-dropdown'
 import {useTranslation} from 'react-i18next'
 import {LANGUAGES} from '../constants'
+import {formatLocalizationLang} from '../utils'
 import {
   CaretDownFilled,
   ArrowLeftOutlined,
@@ -23,7 +24,7 @@ function Overlay({changeLanguage}) {
           onClick={() => changeLanguage(lang)}
         >
           <span>{t(lang)}</span>
-          {i18n.language === lang && (
+          {formatLocalizationLang(i18n.language) === lang && (
             <CheckCircleFilled className="w-4 h-4 text-primary" />
           )}
         </div>
@@ -47,7 +48,7 @@ function LanguageNav({
   const [rotateTriangle, setRotateTriangle] = useState(false)
 
   const changeLanguage = lang => {
-    lang !== language && i18n.changeLanguage(lang)
+    formatLocalizationLang(i18n.language) !== lang && i18n.changeLanguage(lang)
   }
 
   return (

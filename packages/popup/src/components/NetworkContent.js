@@ -108,8 +108,11 @@ function NetworkItem({
       {eid === networkId && showCurrentIcon && (
         <CheckCircleFilled className="w-4 h-4 text-success" />
       )}
-      <CustomTag className={`absolute right-0 top-0 ${networkTypeColor}`}>
-        {networkType}
+      <CustomTag
+        className={`absolute right-0 top-0 ${networkTypeColor} px-2`}
+        width="w-auto"
+      >
+        {t(networkType)}
       </CustomTag>
     </div>
   )

@@ -53,9 +53,10 @@ function DappSwitchNetwork() {
               {isTestnet ? (
                 <CustomTag
                   backgroundColor="bg-[#FFF7F4]"
-                  className="absolute top-px right-px text-[#F5B797]"
+                  className="absolute top-px right-px text-[#F5B797] px-2"
+                  width="w-auto"
                 >
-                  testnet
+                  {t('testnet')}
                 </CustomTag>
               ) : null}
             </div>
