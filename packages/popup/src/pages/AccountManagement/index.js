@@ -7,14 +7,11 @@ import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../constants'
 import {TitleNav, ConfirmPassword} from '../../components'
 import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
+import {updateDbAccountList} from '../../utils'
 import {GroupItem} from './components'
 const {EXPORT_SEED, EXPORT_PRIVATEKEY, SELECT_CREATE_TYPE} = ROUTES
-const {
-  WALLET_EXPORT_ACCOUNT_GROUP,
-  WALLET_EXPORT_ACCOUNT,
-  ACCOUNT_GROUP_TYPE,
-  WALLETDB_ACCOUNT_LIST_ASSETS,
-} = RPC_METHODS
+const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_EXPORT_ACCOUNT, ACCOUNT_GROUP_TYPE} =
+  RPC_METHODS
 
 function AccountManagement() {
   const {t} = useTranslation()
@@ -30,10 +27,13 @@ function AccountManagement() {
   const networkName = data?.network?.name ?? ''
   const currentAccountId = data?.account?.eid
 
-  const {accountGroups} = useDbAccountListAssets({
-    type: 'all',
-    accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
-  })
+  const {accountGroups} = useDbAccountListAssets(
+    {
+      type: 'all',
+      accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+    },
+    'accountManagementQueryAccount',
+  )
   const showDelete = !!accountGroups && Object.keys(accountGroups).length > 1
 
   const onConfirmCallback = res => {
@@ -58,11 +58,11 @@ function AccountManagement() {
       return Promise.resolve()
     }
     // delete account
-    return mutate([
-      WALLETDB_ACCOUNT_LIST_ASSETS,
-      ACCOUNT_GROUP_TYPE.HD,
-      ACCOUNT_GROUP_TYPE.PK,
-    ]).then(() => {
+    return updateDbAccountList(
+      mutate,
+      'accountManagementQueryAccount',
+      'queryAllAccount',
+    ).then(() => {
       clearPasswordInfo()
     })
   }
