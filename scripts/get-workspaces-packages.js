@@ -5,11 +5,22 @@
 
 const childProcess = require('child_process')
 const path = require('path')
+const yarnPath = path.resolve(
+  __dirname,
+  '..',
+  '.yarn',
+  'releases',
+  'yarn-3.1.0.cjs',
+)
 
 module.exports = function ({noPrivate = false, ignore = []} = {}) {
-  const rst = childProcess.spawnSync('yarn', ['workspaces', 'list', '--json'], {
-    cwd: path.resolve(__dirname, '../'),
-  })
+  const rst = childProcess.spawnSync(
+    'node',
+    [yarnPath, 'workspaces', 'list', '--json'],
+    {
+      cwd: path.resolve(__dirname, '..'),
+    },
+  )
 
   const packages = rst.stdout
     .toString()
