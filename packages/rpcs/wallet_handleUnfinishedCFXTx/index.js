@@ -6,9 +6,10 @@ import {
   map,
   keep,
   // comp,
-  keepTruthy,
   // trace,
+  keepTruthy,
   branchObj,
+  pluck,
 } from '@fluent-wallet/transducers'
 import {processError} from '@fluent-wallet/conflux-tx-error'
 import {BigNumber} from '@ethersproject/bignumber'
@@ -220,37 +221,42 @@ export const main = ({
               failed: shouldDiscard && {errorType, err},
               sameAsSuccess: isDuplicateTx,
               resend: !shouldDiscard && !isDuplicateTx,
-            }).transform(
-              branchObj({
-                failed: [
-                  keepTruthy(),
-                  sideEffect(
-                    ({err}) => typeof failedCb === 'function' && failedCb(err),
-                  ),
-                  sideEffect(({errorType}) => {
-                    setTxFailed({hash, error: errorType})
-                    getExt().then(ext =>
-                      ext.notifications.create(hash, {
-                        title: 'Failed transaction',
-                        message: `Transaction ${parseInt(
-                          tx.txPayload.nonce,
-                          16,
-                        )} failed! ${err?.message || ''}`,
-                      }),
-                    )
-                  }),
-                  sideEffect(() => updateBadge(getUnfinishedTxCount())),
-                ],
-                resend: [keepTruthy(), sideEffect(keepTrack)],
-                // retry in next run
-                sameAsSuccess: [
-                  keepTruthy(),
-                  sideEffect(() => setTxPending({hash})),
-                  sideEffect(() => typeof okCb === 'function' && okCb(hash)),
-                  sideEffect(keepTrack),
-                ],
-              }),
-            )
+            })
+              .transform(
+                branchObj({
+                  failed: [
+                    keepTruthy(),
+                    sideEffect(
+                      ({err}) =>
+                        typeof failedCb === 'function' && failedCb(err),
+                    ),
+                    sideEffect(({errorType}) => {
+                      setTxFailed({hash, error: errorType})
+                      getExt().then(ext =>
+                        ext.notifications.create(hash, {
+                          title: 'Failed transaction',
+                          message: `Transaction ${parseInt(
+                            tx.txPayload.nonce,
+                            16,
+                          )} failed! ${err?.message || ''}`,
+                        }),
+                      )
+                    }),
+                    sideEffect(() => {
+                      updateBadge(getUnfinishedTxCount())
+                    }),
+                  ],
+                  resend: [keepTruthy(), sideEffect(keepTrack)],
+                  // retry in next run
+                  sameAsSuccess: [
+                    keepTruthy(),
+                    sideEffect(() => setTxPending({hash})),
+                    sideEffect(() => typeof okCb === 'function' && okCb(hash)),
+                    sideEffect(keepTrack),
+                  ],
+                }),
+              )
+              .done()
           },
         }),
       )
@@ -267,8 +273,9 @@ export const main = ({
     s.map(() => cfx_getTransactionByHash({errorFallThrough: true}, [hash]))
       .subscribe(resolve({fail: keepTrack}))
       .transform(
-        sideEffect(rst => {
-          if (rst) return
+        // not packaged or no blockhash in getTransactionByHash result
+        map(rst => {
+          if (rst && rst.blockHash) return rst
           // getTransactionByHash return null
           cfx_epochNumber({errorFallThrough: true}, ['latest_state'])
             .then(n => {
@@ -284,32 +291,31 @@ export const main = ({
           return keepTrack()
         }),
         keepTruthy(),
-      )
-      .transform(
+
+        // packaged
         map(rst => {
-          // no blockhash in  getTransactionByHash result
-          if (!rst.blockHash) {
-            keepTrack()
-            return false
-          }
-          return rst
-        }),
-        keepTruthy(),
-        sideEffect(rst => {
-          // getTransactionByHash result has block hash
           setTxPackaged({hash, blockHash: rst.blockHash})
           const {status} = rst
-          if (status === '0x1') {
-            let err = 'Transaction reverted'
-            setTxFailed({hash, err})
-
+          return {
+            failed: status === '0x1',
+            skipped: status === '0x2',
+            executed: status === '0x0',
+            statusNull: status === null,
+          }
+        }),
+      )
+      .transform(
+        branchObj({
+          failed: map(() => {
+            sdone()
             // get the error message in receipt
             cfx_getTransactionReceipt({errorFallThrough: true}, [hash])
               .then(receipt => {
+                let err
                 if (receipt?.txExecErrorMsg) {
                   err = receipt.txExecErrorMsg
-                  setTxFailed({hash, err})
                 }
+                setTxFailed({hash, err: receipt.txExecErrorMsg})
                 updateBadge(getUnfinishedTxCount())
                 getExt().then(ext =>
                   ext.notifications.create(hash, {
@@ -321,20 +327,12 @@ export const main = ({
                   }),
                 )
               })
-              .catch(identity)
-
-            getExt().then(ext =>
-              ext.notifications.create(hash, {
-                title: 'Failed transaction',
-                message: `Transaction ${parseInt(
-                  tx.txPayload.nonce,
-                  16,
-                )} failed! ${err?.message || ''}`,
-              }),
-            )
-            return
-          }
-          if (status === '0x2') {
+              .catch(() => {
+                setTxPending({hash})
+                keepTrack()
+              })
+          }),
+          skipped: map(() => {
             setTxSkipped({hash})
             updateBadge(getUnfinishedTxCount())
             wallet_getBlockchainExplorerUrl({transaction: [hash]}).then(
@@ -350,20 +348,19 @@ export const main = ({
                 )
               },
             )
-            return
-          }
+            sdone()
+          }),
+          executed: map(keepTrack),
+          statusNull: map(() => {
+            setTxPending({hash})
+            return cfx_getNextNonce([address.value])
+          }),
         }),
-        map(rst => {
-          if (rst) {
-            keepTrack(5 * cacheTime)
-            return Promise.resolve(null)
-          }
-          return cfx_getNextNonce([address.value])
-        }),
+        pluck('statusNull'),
+        keepTruthy(),
       )
       .subscribe(resolve({fail: keepTrack}))
       .transform(
-        keep(),
         sideEffect(nonce => {
           if (nonce > tx.txPayload.nonce) {
             setTxSkipped({hash})
