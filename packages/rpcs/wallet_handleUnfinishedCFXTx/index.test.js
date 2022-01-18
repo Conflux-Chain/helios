@@ -14,7 +14,9 @@ beforeEach(() => {
       cfx_getTransactionByHash: jest.fn(() => Promise.resolve()),
       cfx_getTransactionReceipt: jest.fn(() => Promise.resolve()),
       cfx_getNextNonce: jest.fn(() => Promise.resolve()),
-      wallet_getBlockchainExplorerUrl: jest.fn(() => Promise.resolve()),
+      wallet_getBlockchainExplorerUrl: jest.fn(() =>
+        Promise.resolve({transaction: ['tx']}),
+      ),
       wallet_handleUnfinishedCFXTx: jest.fn(() => Promise.resolve()),
     },
     db: {
@@ -950,6 +952,492 @@ describe('wallet_handleUnfinishedCFXTx', function () {
         hash: 'txhash',
         resendAt: '0x51',
       })
+    })
+    test('not packaged (no blockhash), not resend', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_epochNumber: jest.fn(() => Promise.resolve('0x1')),
+          cfx_getTransactionByHash: jest.fn(() => Promise.resolve({})),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {nonce: 'txnonce', epochHeight: '0x1'},
+          })),
+        },
+      })
+
+      main(inputs)
+      await waitForExpect(() =>
+        expect(inputs.rpcs.wallet_handleUnfinishedCFXTx).toHaveBeenCalledTimes(
+          1,
+        ),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.rpcs.cfx_epochNumber).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_epochNumber).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['latest_state'],
+      )
+
+      expect(inputs.db.setTxUnsent).toHaveBeenCalledTimes(0)
+    })
+    test('not packaged (no blockhash), 40 epoch old', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_epochNumber: jest.fn(() => Promise.resolve('0x29')), // decimal 41
+          cfx_getTransactionByHash: jest.fn(() => Promise.resolve({})),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {nonce: 'txnonce', epochHeight: '0x1'},
+          })),
+        },
+      })
+
+      main(inputs)
+      await waitForExpect(() =>
+        expect(inputs.rpcs.wallet_handleUnfinishedCFXTx).toHaveBeenCalledTimes(
+          1,
+        ),
+      )
+      await waitForExpect(() =>
+        expect(inputs.db.setTxUnsent).toHaveBeenCalledTimes(1),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.rpcs.cfx_epochNumber).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_epochNumber).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['latest_state'],
+      )
+
+      expect(inputs.db.setTxUnsent).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        resendAt: '0x29',
+      })
+    })
+    test('not packaged (no blockhash), resend at 40 epoch before', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_epochNumber: jest.fn(() => Promise.resolve('0x51')), // decimal 81
+          cfx_getTransactionByHash: jest.fn(() => Promise.resolve({})),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {
+              nonce: 'txnonce',
+              epochHeight: '0x1',
+              resendAt: '0x29',
+            },
+          })),
+        },
+      })
+
+      main(inputs)
+      await waitForExpect(() =>
+        expect(inputs.rpcs.wallet_handleUnfinishedCFXTx).toHaveBeenCalledTimes(
+          1,
+        ),
+      )
+      await waitForExpect(() =>
+        expect(inputs.db.setTxUnsent).toHaveBeenCalledTimes(1),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.rpcs.cfx_epochNumber).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_epochNumber).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['latest_state'],
+      )
+
+      expect(inputs.db.setTxUnsent).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        resendAt: '0x51',
+      })
+    })
+    test('packaged, failed, status = 0x1', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_getTransactionByHash: jest.fn(() =>
+            Promise.resolve({blockHash: 'blockhash', status: '0x1'}),
+          ),
+          cfx_getTransactionReceipt: jest.fn(() =>
+            Promise.resolve({txExecErrorMsg: 'txExecErrorMsg'}),
+          ),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {
+              nonce: 'txnonce',
+              epochHeight: '0x1',
+              resendAt: '0x29',
+            },
+          })),
+        },
+      })
+
+      main(inputs)
+
+      await waitForExpect(() =>
+        expect(inputs.db.setTxFailed).toHaveBeenCalledTimes(1),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        blockHash: 'blockhash',
+      })
+
+      expect(inputs.rpcs.cfx_getTransactionReceipt).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionReceipt).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.db.setTxFailed).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        err: 'txExecErrorMsg',
+      })
+    })
+    test('packaged, failed, status = 0x1, cfx_getTransactionReceipt failed', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_getTransactionByHash: jest.fn(() =>
+            Promise.resolve({blockHash: 'blockhash', status: '0x1'}),
+          ),
+          cfx_getTransactionReceipt: jest.fn(() => Promise.reject()),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {
+              nonce: 'txnonce',
+              epochHeight: '0x1',
+              resendAt: '0x29',
+            },
+          })),
+        },
+      })
+
+      main(inputs)
+
+      await waitForExpect(() =>
+        expect(inputs.rpcs.wallet_handleUnfinishedCFXTx).toHaveBeenCalledTimes(
+          1,
+        ),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        blockHash: 'blockhash',
+      })
+
+      expect(inputs.rpcs.cfx_getTransactionReceipt).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionReceipt).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+      expect(inputs.db.setTxPending).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPending).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+      })
+    })
+    test('packaged, skipped, status = 0x2', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_getTransactionByHash: jest.fn(() =>
+            Promise.resolve({blockHash: 'blockhash', status: '0x2'}),
+          ),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {
+              nonce: 'txnonce',
+              epochHeight: '0x1',
+              resendAt: '0x29',
+            },
+          })),
+        },
+      })
+
+      main(inputs)
+
+      await waitForExpect(() =>
+        expect(
+          inputs.rpcs.wallet_getBlockchainExplorerUrl,
+        ).toHaveBeenCalledTimes(1),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        blockHash: 'blockhash',
+      })
+
+      expect(inputs.db.setTxSkipped).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxSkipped).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+      })
+
+      expect(
+        inputs.rpcs.wallet_getBlockchainExplorerUrl,
+      ).toHaveBeenLastCalledWith({transaction: ['txhash']})
+    })
+    test('packaged, executed, status = 0x0', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_getTransactionByHash: jest.fn(() =>
+            Promise.resolve({blockHash: 'blockhash', status: '0x0'}),
+          ),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {
+              nonce: 'txnonce',
+              epochHeight: '0x1',
+              resendAt: '0x29',
+            },
+          })),
+        },
+      })
+
+      main(inputs)
+
+      await waitForExpect(() =>
+        expect(inputs.rpcs.wallet_handleUnfinishedCFXTx).toHaveBeenCalledTimes(
+          1,
+        ),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        blockHash: 'blockhash',
+      })
+    })
+    test('packages, not executed, status = null, nonce passed', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_getTransactionByHash: jest.fn(() =>
+            Promise.resolve({blockHash: 'blockhash', status: null}),
+          ),
+          cfx_getNextNonce: jest.fn(() => Promise.resolve(1)),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {
+              nonce: 0,
+              epochHeight: '0x1',
+              resendAt: '0x29',
+            },
+          })),
+        },
+      })
+
+      main(inputs)
+
+      await waitForExpect(() =>
+        expect(inputs.db.setTxSkipped).toHaveBeenCalledTimes(1),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        blockHash: 'blockhash',
+      })
+
+      expect(inputs.db.setTxPending).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPending).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+      })
+
+      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenLastCalledWith(['addr'])
+
+      expect(inputs.db.setTxSkipped).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxSkipped).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+      })
+    })
+    test('packages, not executed, status = null, nonce is right', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_getTransactionByHash: jest.fn(() =>
+            Promise.resolve({blockHash: 'blockhash', status: null}),
+          ),
+          cfx_getNextNonce: jest.fn(() => Promise.resolve(0)),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {
+              nonce: 0,
+              epochHeight: '0x1',
+              resendAt: '0x29',
+            },
+          })),
+        },
+      })
+
+      main(inputs)
+
+      await waitForExpect(() =>
+        expect(inputs.rpcs.wallet_handleUnfinishedCFXTx).toHaveBeenCalledTimes(
+          1,
+        ),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        blockHash: 'blockhash',
+      })
+
+      expect(inputs.db.setTxPending).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPending).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+      })
+
+      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenLastCalledWith(['addr'])
+    })
+    test('packages, not executed, status = null, cfx_getNextNonce failed', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_getTransactionByHash: jest.fn(() =>
+            Promise.resolve({blockHash: 'blockhash', status: null}),
+          ),
+          cfx_getNextNonce: jest.fn(() => Promise.reject()),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {
+              nonce: 0,
+              epochHeight: '0x1',
+              resendAt: '0x29',
+            },
+          })),
+        },
+      })
+
+      main(inputs)
+
+      await waitForExpect(() =>
+        expect(inputs.rpcs.wallet_handleUnfinishedCFXTx).toHaveBeenCalledTimes(
+          1,
+        ),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        blockHash: 'blockhash',
+      })
+
+      expect(inputs.db.setTxPending).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPending).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+      })
+
+      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenLastCalledWith(['addr'])
     })
   })
 })

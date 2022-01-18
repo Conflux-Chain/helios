@@ -23,16 +23,22 @@ export const keepTruthy = fn =>
     keep(x => x || null),
   )
 
+/**
+ * like multiplexObj but only branches with truthy value get executed and only
+ * branches with truthy result get remained
+ * @param {any} obj -
+ * @returns {any} -
+ */
 export function branchObj(obj) {
   const multiplexObjTx = Object.entries(obj).reduce((acc, [k, vs]) => {
     vs = Array.isArray(vs) ? vs : [vs]
-    acc[k] = comp(pluck(k), ...vs)
+    acc[k] = comp(pluck(k), keepTruthy(), ...vs)
     return acc
   }, {})
   return comp(
     multiplexObj(multiplexObjTx),
     map(d => {
-      Object.entries(d).reduce((acc, [k, v]) => {
+      return Object.entries(d).reduce((acc, [k, v]) => {
         if (v) acc[k] = v
         return acc
       }, {})
