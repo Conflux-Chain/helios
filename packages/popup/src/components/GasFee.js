@@ -2,7 +2,11 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
-import {CFX_DECIMALS, ETH_DECIMALS} from '@fluent-wallet/data-format'
+import {
+  CFX_DECIMALS,
+  ETH_DECIMALS,
+  roundBalance,
+} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {DisplayBalance, CustomTag} from '../components'
 import {useNetworkTypeIsCfx} from '../hooks/useApi'
@@ -74,7 +78,7 @@ function GasFee({estimateRst}) {
             decimals={decimals}
           />
         )}
-        <span className="text-xs text-gray-60">{`${gasPrice} ${
+        <span className="text-xs text-gray-60">{`${roundBalance(gasPrice)} ${
           networkTypeIsCfx ? 'Drip' : 'Gwei'
         }`}</span>
         {isBePayed && (
