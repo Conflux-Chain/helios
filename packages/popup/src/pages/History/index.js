@@ -24,7 +24,6 @@ function History() {
     setLoading(txList === undefined)
   }, [txList])
 
-  // TODO:loading
   const onScroll = () => {
     if (
       historyRef.current.scrollHeight - historyRef.current.clientHeight <=
@@ -35,6 +34,7 @@ function History() {
       setLimit(limit + HISTORY_PAGE_LIMIT)
     }
   }
+
   useEffect(() => {
     if (historyListData?.total !== total) {
       setTotal(historyListData.total)
@@ -47,13 +47,16 @@ function History() {
 
   return (
     <div
-      id="historyContainer"
-      className="bg-bg h-full w-full overflow-auto relative"
-      onScroll={onScroll}
-      ref={composeRef(historyRef, loadingRef)}
+      id="history-container"
+      className="bg-bg h-full w-full  relative flex flex-col"
     >
       <TitleNav title={t('activity')} />
-      <main>
+      <main
+        id="history-content"
+        className="flex-1 overflow-auto no-scroll"
+        onScroll={onScroll}
+        ref={composeRef(historyRef, loadingRef)}
+      >
         {txList?.length > 1 &&
           txList.map(
             (
