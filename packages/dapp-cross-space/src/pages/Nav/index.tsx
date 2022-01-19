@@ -14,7 +14,6 @@ const Nav: React.FC = () => {
 
   // delete this after testnet ready
   const checkNetwork = useCallback(async () => {
-    if (!chainId) return;
     try {
       await window.conflux!.request({
         method: 'wallet_switchConfluxChain',
