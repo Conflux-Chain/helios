@@ -54,6 +54,16 @@ jobs:
         id: dotenv
         uses: falti/dotenv-action@v0.2.7
 
+      - name: Get PR Release
+        uses: actions/github-script@v4
+        id: get-release-version-and-tag
+        env:
+          NEXT_VERSION: ${{ steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return await require('.github/scripts/getPreReleaseNumber.js')({github, context, core});
+
       - uses: release-drafter/release-drafter@v5
         id: create_release
         env:
@@ -61,10 +71,12 @@ jobs:
         with:
           commitish: ${{ github.sha }}
           config-name: release-drafter-prod.yml
-          tag: "v${{ steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION }}"
-          version: ${{ steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION }}
+          name: Release ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).prod_tag }}
+          version: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).prod_version }}
+          tag: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).prod_tag }}
           publish: true
           prerelease: false
+
       - name: build and release
         env:
           SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
