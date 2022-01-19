@@ -12,6 +12,8 @@ pull_request_rules:
     conditions:
       - -conflict # skip PRs with conflicts
       - -draft # filter-out GH draft PRs
+      - "head!=dev"
+      - "head!=main"
       - "#commits-behind>0"
     actions:
       rebase:

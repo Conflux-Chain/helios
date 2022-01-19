@@ -63,7 +63,7 @@ autolabeler:
       - '/BREAKING\sCHANGE/'
 
 replacers:
-  - search: '/chore\(release-pkg\): release packages .*\n/'
+  - search: '/\* chore\(release-pkg\): release packages.*$/'
     replace: ""
 
 template: |
