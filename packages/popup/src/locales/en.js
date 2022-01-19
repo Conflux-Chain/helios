@@ -260,6 +260,7 @@ const en = {
     hide: 'Hide',
     delete: 'Delete',
     groupDeleteWarning: 'Can not delete current account group.',
+    accountHideWarning: 'Can not hide current account.',
 
     // Network Management
     networkManagement: 'Network Management',

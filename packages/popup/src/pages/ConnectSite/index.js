@@ -19,8 +19,7 @@ import {
   Avatar,
 } from '../../components'
 import {useDbAccountListAssets} from '../../hooks/useApi'
-import {RPC_METHODS} from '../../constants'
-const {WALLETDB_ACCOUNT_LIST_ASSETS} = RPC_METHODS
+import {updateDbAccountList} from '../../utils'
 
 function ConnectSitesList({
   accountGroupData,
@@ -184,7 +183,7 @@ function ConnectSite() {
   }, [checkboxStatusObj])
 
   const onClickNetworkItem = ({networkName, icon}) => {
-    mutate([WALLETDB_ACCOUNT_LIST_ASSETS])
+    updateDbAccountList(mutate, 'queryAllAccount')
     setSearchContent(networkName)
     setSearchIcon(icon || '')
     setNetworkShow(false)

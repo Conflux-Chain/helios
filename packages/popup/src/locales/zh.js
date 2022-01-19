@@ -253,6 +253,7 @@ const zh = {
     hide: '隐藏',
     delete: '删除',
     groupDeleteWarning: '不能删除当前账户组',
+    accountHideWarning: '不能隐藏当前账户',
 
     // Network Management
     networkManagement: '网络管理',
