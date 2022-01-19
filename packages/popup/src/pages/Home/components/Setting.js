@@ -10,7 +10,25 @@ import {request} from '../../../utils'
 import useGlobalStore from '../../../stores/index.js'
 
 const {LOCK, WALLET_IS_LOCKED, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
-const {ACCOUNT_MANAGEMENT} = ROUTES
+const {ACCOUNT_MANAGEMENT, NETWORK_MANAGEMENT, ABOUT} = ROUTES
+
+const SETTING_ITEMS = [
+  {
+    contentKey: 'accountManagement',
+    iconPath: '/images/userGroup.svg',
+    jumpPath: ACCOUNT_MANAGEMENT,
+  },
+  {
+    contentKey: 'networkManagement',
+    iconPath: '/images/chart.svg',
+    jumpPath: NETWORK_MANAGEMENT,
+  },
+  {
+    contentKey: 'about',
+    iconPath: '/images/exclamation-circle.svg',
+    jumpPath: ABOUT,
+  },
+]
 
 function SettingItem({icon, content, onClick}) {
   return (
@@ -35,7 +53,7 @@ SettingItem.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-function Setting({onClose, open}) {
+function Setting({onClose, open, settingAnimate = true}) {
   const {t} = useTranslation()
   const history = useHistory()
   const {setFatalError} = useGlobalStore()
@@ -50,6 +68,11 @@ function Setting({onClose, open}) {
       .catch(error => setFatalError(error))
   }
 
+  const onClickSettingItem = jumpPath => {
+    history.push('?open=setting-page')
+    history.push(jumpPath)
+  }
+
   return (
     <div>
       <SlideCard
@@ -57,6 +80,7 @@ function Setting({onClose, open}) {
         onClose={onClose}
         open={open}
         showClose={false}
+        needAnimation={settingAnimate}
         cardTitle={
           <LanguageNav
             hasGoBack={true}
@@ -67,13 +91,14 @@ function Setting({onClose, open}) {
         }
         cardContent={
           <div className="pt-1 pb-4 flex-1">
-            <SettingItem
-              onClick={() => history.push(ACCOUNT_MANAGEMENT)}
-              icon={
-                <img src="/images/account.svg" alt="icon" className="w-5 h-5" />
-              }
-              content={t('accountManagement')}
-            />
+            {SETTING_ITEMS.map(({contentKey, iconPath, jumpPath}) => (
+              <SettingItem
+                key={contentKey}
+                onClick={() => onClickSettingItem(jumpPath)}
+                icon={<img src={iconPath} alt="icon" className="w-5 h-5" />}
+                content={t(contentKey)}
+              />
+            ))}
           </div>
         }
         cardFooter={
@@ -108,6 +133,7 @@ function Setting({onClose, open}) {
 Setting.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
+  settingAnimate: PropTypes.bool,
 }
 
 export default Setting

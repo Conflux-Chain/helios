@@ -10,17 +10,16 @@ const useAnimation = errorMessage => {
     if (errorMessage) {
       timer && clearTimeout(timer)
       setDisplayErrorMsg(errorMessage)
-      setErrorAnimateStyle('!scale-y-100 text-xs text-error pt-2')
+      setErrorAnimateStyle('slide-in-up text-xs text-error')
     } else if (errorAnimateStyle) {
-      setErrorAnimateStyle('scale-y-0 text-xs text-error pt-2')
+      setErrorAnimateStyle('text-xs text-error')
       timer = setTimeout(() => {
         setErrorAnimateStyle('')
         setDisplayErrorMsg(errorMessage)
-        clearTimeout(timer)
       }, DURATION)
     }
     return () => {
-      timer && clearTimeout(timer)
+      clearTimeout(timer)
     }
   }, [errorAnimateStyle, errorMessage])
 

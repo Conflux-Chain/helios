@@ -6,7 +6,11 @@ import Input from '@fluent-wallet/component-input'
 function ToAddressInput({address, onChangeAddress, errorMessage}) {
   const {t} = useTranslation()
   return (
-    <CompWithLabel label={t('toAddressLabel')} className="!mt-0">
+    <CompWithLabel
+      label={t('toAddressLabel')}
+      className="!mt-0"
+      labelClassName="!text-gray-40"
+    >
       <Input
         width="w-full"
         value={address}

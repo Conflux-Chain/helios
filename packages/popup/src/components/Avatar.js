@@ -7,12 +7,13 @@ import {isHexAddress} from '@fluent-wallet/account'
 import {removeAllChild, jsNumberForAddress} from '../utils'
 import {useCfxNetwork} from '../hooks/useApi'
 import {RPC_METHODS} from '../constants'
+import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
 
 const {WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK} = RPC_METHODS
 const useCfxMainnetAddress = accountIdentity => {
   const cfxNetwork = useCfxNetwork()
   let networkId
-  const cfxMainnetArr = cfxNetwork.filter(({name}) => name === 'CFX_MAINNET')
+  const cfxMainnetArr = cfxNetwork.filter(({name}) => name === CFX_MAINNET_NAME)
   if (cfxMainnetArr.length) {
     networkId = cfxMainnetArr[0].eid
   }

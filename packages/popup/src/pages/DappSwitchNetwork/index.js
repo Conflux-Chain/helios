@@ -1,4 +1,5 @@
 import {useTranslation} from 'react-i18next'
+import {formatHexToDecimal} from '@fluent-wallet/data-format'
 import {DappFooter, DappProgressHeader, CustomTag} from '../../components'
 import {RPC_METHODS} from '../../constants'
 import {usePendingAuthReq, useNetworkByChainId} from '../../hooks/useApi'
@@ -52,9 +53,10 @@ function DappSwitchNetwork() {
               {isTestnet ? (
                 <CustomTag
                   backgroundColor="bg-[#FFF7F4]"
-                  className="absolute top-px right-px text-[#F5B797]"
+                  className="absolute top-px right-px text-[#F5B797] px-2"
+                  width="w-auto"
                 >
-                  testnet
+                  {t('testnet')}
                 </CustomTag>
               ) : null}
             </div>
@@ -69,7 +71,7 @@ function DappSwitchNetwork() {
             <div className="mt-3" id="chainId">
               <div className="text-xs text-gray-40">{t('chainId')}</div>
               <div className="text-sm text-gray-80 font-medium mt-0.5">
-                {req?.params?.[0]?.chainId || ''}
+                {formatHexToDecimal(req?.params?.[0]?.chainId || '')}
               </div>
             </div>
           </div>

@@ -1,4 +1,7 @@
 import {useEffect, useState, useMemo} from 'react'
+import i18next from 'i18next'
+import {useTranslation} from 'react-i18next'
+import create from 'zustand'
 import {useAsync} from 'react-use'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {estimate} from '@fluent-wallet/estimate-tx'
@@ -23,7 +26,6 @@ import {
   usePendingAuthReq,
 } from './useApi'
 import {validateAddress} from '../utils'
-import {useTranslation} from 'react-i18next'
 
 const {HOME} = ROUTES
 
@@ -69,12 +71,11 @@ export const useSlideAnimation = (
       )
       timer = setTimeout(() => {
         setWrapperAnimateStyle('')
-        clearTimeout(timer)
       }, ANIMATE_DURING_TIME)
     }
 
     return () => {
-      timer && clearTimeout(timer)
+      clearTimeout(timer)
     }
   }, [show, wrapperAnimateStyle, direction, needAnimation])
 
@@ -150,10 +151,45 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   return rst
 }
 
-export const useTxParams = () => {
-  const {toAddress, sendAmount, sendTokenId} = useGlobalStore()
+const defaultSendTransactionParams = {
+  toAddress: '',
+  sendAmount: '',
+  gasPrice: '',
+  gasLimit: '',
+  storageLimit: '',
+  data: '',
+  nonce: '',
+  sendTokenId: 'native',
+  customAllowance: '',
+  tx: {},
+}
+
+export const useCurrentTxStore = create(set => ({
+  ...defaultSendTransactionParams,
+
+  setTx: tx => set({tx}),
+  setData: data => set({data}),
+  setToAddress: toAddress => set({toAddress}),
+  setSendAmount: sendAmount => set({sendAmount}),
+  setGasPrice: gasPrice => set({gasPrice}),
+  setGasLimit: gasLimit => set({gasLimit}),
+  setStorageLimit: storageLimit => set({storageLimit}),
+  setCustomAllowance: customAllowance => set({customAllowance}),
+  setNonce: nonce => set({nonce}),
+  setSendTokenId: sendTokenId => set({sendTokenId}),
+  clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
+}))
+
+// TODO: support max mode
+// TODO: combine estimate here
+// MAYBE: support multiple tx and rename this to useTxParams
+export const useCurrentTxParams = () => {
+  const txStore = useCurrentTxStore()
+  const {toAddress, sendAmount, sendTokenId, setData, setTx} = txStore
+
   const {decimals: tokenDecimals, address: tokenAddress} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
+
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const {
     data: {
@@ -184,7 +220,13 @@ export const useTxParams = () => {
   }
   if (isNativeToken) params['value'] = sendData
   if (data) params['data'] = data
-  return params
+
+  useEffect(() => {
+    if (data) setData(data)
+    setTx(params)
+  }, [JSON.stringify(params)])
+
+  return txStore
 }
 
 export const useCheckBalanceAndGas = (
@@ -212,20 +254,23 @@ export const useCheckBalanceAndGas = (
         )
       }
     } else {
-      if (isNativeToken && isBalanceEnough !== undefined) {
-        if (!isBalanceEnough) {
-          return t('balanceIsNotEnough')
+      if (isSendToken) {
+        if (isNativeToken) {
+          if (isBalanceEnough === false) {
+            return t('balanceIsNotEnough')
+          } else {
+            return ''
+          }
         } else {
-          return ''
+          if (isTokenBalanceEnough === false) {
+            return t('balanceIsNotEnough')
+          }
         }
-      } else if (!isNativeToken && isTokenBalanceEnough !== undefined) {
-        if (isSendToken && !isTokenBalanceEnough) {
-          return t('balanceIsNotEnough')
-        } else if (!isBalanceEnough && isBalanceEnough !== undefined) {
-          return t('gasFeeIsNotEnough')
-        } else {
-          return ''
-        }
+      }
+      if (isBalanceEnough === false) {
+        return t('gasFeeIsNotEnough')
+      } else {
+        return ''
       }
     }
   }, [
@@ -284,7 +329,7 @@ export const useDecodeDisplay = ({
   const {
     data: {value: address},
   } = useCurrentAddress()
-  const {toAddress, sendTokenId, sendAmount} = useGlobalStore()
+  const {toAddress, sendTokenId, sendAmount} = useCurrentTxParams()
   const {from, to, data, value} = tx
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
@@ -345,7 +390,7 @@ export const useDecodeDisplay = ({
 
 export const useViewData = ({data, to} = {}, isApproveToken) => {
   const {decodeData, token} = useDecodeData({data, to})
-  const {customAllowance} = useGlobalStore()
+  const {customAllowance} = useCurrentTxParams()
   const allowance =
     convertValueToData(customAllowance, token?.decimals) || '0x0'
   const spender =
@@ -362,4 +407,15 @@ export const useViewData = ({data, to} = {}, isApproveToken) => {
     }
   }, [customAllowance, data, allowance, spender, isApproveToken])
   return viewData
+}
+
+export const useDisplayErrorMessage = errorMessage => {
+  const [displayErrorMessage, setDisplayErrorMessage] = useState('')
+  const {t, i18n} = useTranslation()
+  useEffect(() => {
+    setDisplayErrorMessage(
+      i18next.exists(errorMessage) ? t(errorMessage) : errorMessage,
+    )
+  }, [i18n.language, errorMessage, t])
+  return displayErrorMessage
 }

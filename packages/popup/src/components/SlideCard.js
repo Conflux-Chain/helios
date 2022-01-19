@@ -34,7 +34,7 @@ function SlideCard({
   return (
     <div id={id} className={containerClassName}>
       <div
-        className={`z-20 rounded-t-xl px-3 pt-4 pb-7 absolute bottom-0 overflow-y-auto no-scroll bg-gray-circles bg-no-repeat bg-contain ${animateStyle} ${cardClassName} ${width} ${height} ${backgroundColor}`}
+        className={`z-20 rounded-t-xl px-3 pt-4 pb-3 absolute bottom-0 overflow-y-auto no-scroll bg-gray-circles bg-no-repeat bg-contain ${animateStyle} ${cardClassName} ${width} ${height} ${backgroundColor}`}
         ref={ref}
       >
         {cardTitle}

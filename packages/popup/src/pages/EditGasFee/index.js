@@ -3,8 +3,8 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
-import {useNetworkTypeIsCfx} from '../../hooks/useApi'
-import {useTxParams, useEstimateTx, useDappParams} from '../../hooks'
+import {useNetworkTypeIsCfx, useCfxMaxGasLimit} from '../../hooks/useApi'
+import {useCurrentTxParams, useEstimateTx, useDappParams} from '../../hooks'
 import {getPageType} from '../../utils'
 import {WrapperWithLabel} from './components'
 import {
@@ -14,7 +14,6 @@ import {
   CFX_DECIMALS,
   ETH_DECIMALS,
 } from '@fluent-wallet/data-format'
-import useGlobalStore from '../../stores'
 
 function EditGasFee() {
   const {t} = useTranslation()
@@ -25,16 +24,23 @@ function EditGasFee() {
   const [inputGasPrice, setInputGasPrice] = useState('0')
   const [inputGasLimit, setInputGasLimit] = useState('0')
   const [inputNonce, setInputNonce] = useState('')
-  const {gasPrice, gasLimit, nonce, setGasPrice, setGasLimit, setNonce} =
-    useGlobalStore()
+  const {
+    gasPrice,
+    gasLimit,
+    nonce,
+    setGasPrice,
+    setGasLimit,
+    setNonce,
+    tx: txParams,
+  } = useCurrentTxParams()
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const cfxMaxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
   const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
   const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
 
   const isDapp = getPageType() === 'notification'
   const tx = useDappParams()
-  const txParams = useTxParams()
   const originParams = !isDapp ? {...txParams} : {...tx}
 
   const params = {
@@ -72,14 +78,23 @@ function EditGasFee() {
 
   const onChangeGasLimit = gasLimit => {
     setInputGasLimit(gasLimit)
-    if (new Big(gasLimit || '0').gte(formatHexToDecimal(gasUsed || '21000'))) {
-      setGasLimitErr('')
-    } else {
+    if (new Big(gasLimit || '0').lt(formatHexToDecimal(gasUsed || '21000'))) {
       setGasLimitErr(
-        t('gasLimitErrMsg', {
+        t('gasLimitMinErr', {
           gasUsed: formatHexToDecimal(gasUsed || '21000'),
         }),
       )
+    } else if (
+      cfxMaxGasLimit &&
+      new Big(gasLimit || '0').gt(formatHexToDecimal(cfxMaxGasLimit))
+    ) {
+      setGasLimitErr(
+        t('gasLimitMaxErr', {
+          gasMax: formatHexToDecimal(cfxMaxGasLimit),
+        }),
+      )
+    } else {
+      setGasLimitErr('')
     }
   }
 
@@ -102,7 +117,7 @@ function EditGasFee() {
   return (
     <div
       id="editGasFeeContainer"
-      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat bg-bg"
+      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat bg-0"
     >
       <div className="flex-1">
         <TitleNav title={t('editGasFeeControl')} />

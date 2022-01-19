@@ -7,16 +7,20 @@ import {
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
+import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
 import {TitleNav, AccountDisplay} from '../../components'
-import {useTxParams, useEstimateTx, useCheckBalanceAndGas} from '../../hooks'
+import {
+  useCurrentTxParams,
+  useEstimateTx,
+  useCheckBalanceAndGas,
+} from '../../hooks'
 import {
   ToAddressInput,
   TokenAndAmount,
   CurrentNetworkDisplay,
 } from './components'
-import useGlobalStore from '../../stores'
 import {validateAddress} from '../../utils'
 import {
   useNetworkTypeIsCfx,
@@ -40,8 +44,10 @@ function SendTransaction() {
     setGasLimit,
     setNonce,
     setStorageLimit,
+    tx,
     clearSendTransactionParams,
-  } = useGlobalStore()
+  } = useCurrentTxParams()
+
   const {
     data: {
       value: address,
@@ -62,11 +68,13 @@ function SendTransaction() {
   const [addressError, setAddressError] = useState('')
   const [balanceError, setBalanceError] = useState('')
   const [hasNoTxn, setHasNoTxn] = useState(false)
+  const {errorAnimateStyle, displayErrorMsg} = useInputErrorAnimation(
+    sendAmount ? balanceError : '',
+  )
   const isNativeToken = !tokenAddress
-  const params = useTxParams()
   const estimateRst =
     useEstimateTx(
-      params,
+      tx,
       !isNativeToken
         ? {[tokenAddress]: convertValueToData(sendAmount, decimals)}
         : {},
@@ -96,8 +104,8 @@ function SendTransaction() {
   ])
   const errorMessage = useCheckBalanceAndGas(estimateRst, tokenAddress)
   useEffect(() => {
-    sendAmount && setBalanceError(errorMessage)
-  }, [errorMessage, sendAmount])
+    !loading && setBalanceError(errorMessage)
+  }, [errorMessage, loading])
 
   useEffect(() => {
     txHistoryChecker({
@@ -169,11 +177,13 @@ function SendTransaction() {
             isNativeToken={isNativeToken}
             nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
           />
-          {balanceError && (
-            <span className="text-error text-xs inline-block mt-2">
-              {balanceError}
-            </span>
-          )}
+          <div className="overflow-hidden">
+            <div
+              className={`transition duration-300 slide-in-down ease-in-out pt-2 ${errorAnimateStyle}`}
+            >
+              {displayErrorMsg}
+            </div>
+          </div>
         </div>
         <div className="flex flex-col">
           <Alert

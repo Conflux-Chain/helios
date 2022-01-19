@@ -4,11 +4,13 @@
 
 (def id 2)
 
-(defn- update-version-tx [db]
-  {:db/id (d/q '[:find ?v .
-                 :where [?v :dbmeta/version]]
-               db)
-   :dbmeta/version id})
+(defn- update-version-tx
+  ([db] (update-version-tx db id))
+  ([db custom-id]
+   {:db/id (d/q '[:find ?v .
+                  :where [?v :dbmeta/version]]
+                db)
+    :dbmeta/version custom-id}))
 
 (defn up [old-db]
   (let [old-schema (d/schema old-db)
@@ -28,11 +30,12 @@
 
 (defn down [new-db]
   (let [new-schema (d/schema new-db)
-        new-db     (d/db-with new-db (->> (d/q '[:find [?vault ...]
-                                                 :where [?vault :vault/device]]
-                                               new-db)
-                                          (mapv (fn [vault-id]
-                                                  [:db.fn/retractAttribute vault-id :vault/device]))))
+        new-db     (d/db-with new-db (conj (->> (d/q '[:find [?vault ...]
+                                                       :where [?vault :vault/device]]
+                                                     new-db)
+                                                (mapv (fn [vault-id]
+                                                        [:db.fn/retractAttribute vault-id :vault/device])))
+                                           (update-version-tx new-db (dec id))))
         old-datoms (d/datoms new-db :eavt)
         old-schema (dissoc new-schema :vault/device)
         old-db     (d/init-db old-datoms old-schema)]

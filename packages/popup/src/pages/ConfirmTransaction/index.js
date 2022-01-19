@@ -10,9 +10,8 @@ import {
   formatHexToDecimal,
   convertValueToData,
 } from '@fluent-wallet/data-format'
-import useGlobalStore from '../../stores'
 import {
-  useTxParams,
+  useCurrentTxParams,
   useEstimateTx,
   useCheckBalanceAndGas,
   useDecodeData,
@@ -48,7 +47,7 @@ const {
   WALLET_GET_PENDING_AUTH_REQUEST,
 } = RPC_METHODS
 
-function ConfirmTransition() {
+function ConfirmTransaction() {
   const {t} = useTranslation()
   const history = useHistory()
   const {authStatus: authStatusFromLedger, isAppOpen: isAppOpenFromLedger} =
@@ -64,6 +63,7 @@ function ConfirmTransition() {
     )
   }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
+  const [sendError, setSendError] = useState('')
   const [balanceError, setBalanceError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
   const isDapp = getPageType() === 'notification'
@@ -87,7 +87,8 @@ function ConfirmTransition() {
     setStorageLimit,
     setNonce,
     clearSendTransactionParams,
-  } = useGlobalStore()
+    tx: txParams,
+  } = useCurrentTxParams()
   const {setLoading} = useLoading()
 
   const {
@@ -122,7 +123,6 @@ function ConfirmTransition() {
   const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
 
   // params in wallet send or dapp send
-  const txParams = useTxParams()
   const originParams = !isDapp ? {...txParams} : {...tx}
   // user can edit nonce, gasPrice and gas
   const {
@@ -239,34 +239,38 @@ function ConfirmTransition() {
       })
       const balance = balanceData?.[from]
 
-      if (isNativeToken) {
-        if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
-          return t('balanceIsNotEnough')
+      if (isSendToken) {
+        if (isNativeToken) {
+          if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
+            return t('balanceIsNotEnough')
+          } else {
+            return ''
+          }
         } else {
-          return ''
+          if (
+            bn16(balance[tokenAddress]).lt(
+              bn16(convertValueToData(displayValue, decimals)),
+            )
+          ) {
+            return t('balanceIsNotEnough')
+          }
         }
+      }
+      const {willPayCollateral, willPayTxFee} = await request(
+        'cfx_checkBalanceAgainstTransaction',
+        [from, to, gas, gasPrice, storageLimit, 'latest_state'],
+      )
+
+      if (
+        (bn16(balance['0x0']).lt(txFeeDrip) &&
+          willPayTxFee &&
+          willPayCollateral) ||
+        (bn16(balance['0x0']).lt(storageFeeDrip) && willPayCollateral) ||
+        (bn16(balance['0x0']).lt(gasFeeDrip) && willPayTxFee)
+      ) {
+        return t('gasFeeIsNotEnough')
       } else {
-        const {willPayCollateral, willPayTxFee} = await request(
-          'cfx_checkBalanceAgainstTransaction',
-          [from, to, gas, gasPrice, storageLimit, 'latest_state'],
-        )
-        if (
-          bn16(balance[tokenAddress]).lt(
-            bn16(convertValueToData(displayValue, decimals)),
-          )
-        ) {
-          return t('balanceIsNotEnough')
-        } else if (
-          (bn16(balance['0x0']).lt(txFeeDrip) &&
-            willPayTxFee &&
-            willPayCollateral) ||
-          (bn16(balance['0x0']).lt(storageFeeDrip) && willPayCollateral) ||
-          (bn16(balance['0x0']).lt(gasFeeDrip) && willPayTxFee)
-        ) {
-          return t('gasFeeIsNotEnough')
-        } else {
-          return ''
-        }
+        return ''
       }
     } catch (err) {
       console.error(err)
@@ -288,14 +292,14 @@ function ConfirmTransition() {
     }
     if (!isHwAccount) setLoading(true)
     else setSendStatus(HW_TX_STATUS.WAITING)
-    if (isSendToken) {
-      const error = await checkBalance()
-      if (error) {
-        setLoading(false)
-        setBalanceError(error)
-        return
-      }
+
+    const error = await checkBalance()
+    if (error) {
+      setLoading(false)
+      setBalanceError(error)
+      return
     }
+
     request(SEND_TRANSACTION, [params])
       .then(() => {
         if (!isHwAccount) setLoading(false)
@@ -304,9 +308,10 @@ function ConfirmTransition() {
         history.push(HOME)
       })
       .catch(error => {
-        console.error('error', error?.message ?? error)
+        console.error('error', error)
         if (!isHwAccount) setLoading(false)
         setSendStatus(HW_TX_STATUS.REJECTED)
+        setSendError(error?.message ?? error)
       })
   }
 
@@ -316,9 +321,11 @@ function ConfirmTransition() {
     Object.keys(estimateRst).length === 0
 
   return (
-    <div className="flex flex-col h-full w-full relative">
-      <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
-      <div className="flex flex-1 flex-col justify-between mt-1 pb-4">
+    <div className="confirm-transaction-container flex flex-col h-full w-full relative">
+      <header>
+        <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
+      </header>
+      <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-4">
         <div className="flex flex-col px-3">
           <AddressCard
             token={displayToken}
@@ -393,11 +400,16 @@ function ConfirmTransition() {
               pendingAuthReq={pendingAuthReq}
               isHwAccount={isHwAccount}
               setAuthStatus={setAuthStatus}
+              setSendError={setSendError}
               setIsAppOpen={setIsAppOpen}
             />
           )}
           {(isHwAccount || sendStatus === HW_TX_STATUS.REJECTED) && (
-            <HwTransactionResult status={sendStatus} isDapp={isDapp} />
+            <HwTransactionResult
+              status={sendStatus}
+              isDapp={isDapp}
+              sendError={sendError}
+            />
           )}
         </div>
       </div>
@@ -405,4 +417,4 @@ function ConfirmTransition() {
   )
 }
 
-export default ConfirmTransition
+export default ConfirmTransaction

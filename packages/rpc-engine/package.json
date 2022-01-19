@@ -21,6 +21,6 @@
     "@thi.ng/atom": "4.1.42",
     "@thi.ng/rstream": "6.0.21",
     "@thi.ng/rstream-graph": "3.2.81",
-    "ramda": "^0.27.1"
+    "ramda": "^0.27.2"
   }
 }

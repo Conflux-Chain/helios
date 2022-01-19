@@ -143,7 +143,9 @@ export const main = async ({
     {
       eid: 'networkId',
       network: {
+        isCustom: true,
         name,
+        cacheTime: networkType === 'cfx' ? 1000 : 15000,
         endpoint: url,
         type: networkType,
         hdPath: hdPathId,

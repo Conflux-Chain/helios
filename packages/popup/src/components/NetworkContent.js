@@ -21,11 +21,17 @@ const itemWrapperPaddingStyleObj = {
 function NetworkItem({
   networkName,
   networkType,
+  rpcUrl,
+  chainId,
+  symbol,
+  blockExplorerUrl = '',
   icon,
   onClickNetworkItem,
   networkId,
   networkItemSize = 'medium',
   onClose,
+  showCurrentIcon = true,
+  needSwitchNet = true,
   ...props
 }) {
   const {setLoading} = useLoading()
@@ -42,6 +48,19 @@ function NetworkItem({
 
   const onChangeNetwork = () => {
     onClose && onClose()
+    const netData = {
+      networkId,
+      networkName,
+      icon,
+      rpcUrl,
+      chainId,
+      symbol,
+      blockExplorerUrl,
+      networkType,
+    }
+    if (!needSwitchNet) {
+      return onClickNetworkItem?.({...netData})
+    }
     if (eid !== networkId) {
       setLoading(true)
       request(WALLET_SET_CURRENT_NETWORK, [networkId])
@@ -53,8 +72,7 @@ function NetworkItem({
             top: '110px',
             duration: 1,
           })
-          onClickNetworkItem &&
-            onClickNetworkItem({networkId, networkName, icon})
+          onClickNetworkItem?.({...netData})
         })
         .catch(error => {
           // TODO: need deal with error condition
@@ -73,7 +91,7 @@ function NetworkItem({
       {...props}
       aria-hidden="true"
       className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative hover:bg-primary-4 ${
-        eid === networkId ? 'cursor-default' : 'cursor-pointer'
+        eid === networkId && needSwitchNet ? 'cursor-default' : 'cursor-pointer'
       } ${itemWrapperPaddingStyle} pr-3.5`}
       onClick={onChangeNetwork}
     >
@@ -87,51 +105,83 @@ function NetworkItem({
       <div className="ml-2.5 text-gray-80 text-sm font-medium flex-1">
         {networkName}
       </div>
-      {eid === networkId && (
+      {eid === networkId && showCurrentIcon && (
         <CheckCircleFilled className="w-4 h-4 text-success" />
       )}
-      <CustomTag className={`absolute right-0 top-0 ${networkTypeColor}`}>
-        {networkType}
+      <CustomTag
+        className={`absolute right-0 top-0 ${networkTypeColor} px-2`}
+        width="w-auto"
+      >
+        {t(networkType)}
       </CustomTag>
     </div>
   )
 }
 NetworkItem.propTypes = {
   networkName: PropTypes.string.isRequired,
+  rpcUrl: PropTypes.string.isRequired,
+  chainId: PropTypes.string.isRequired,
+  symbol: PropTypes.string.isRequired,
+  blockExplorerUrl: PropTypes.string,
   networkType: PropTypes.oneOf(['mainnet', 'testnet', 'custom']).isRequired,
   networkItemSize: PropTypes.oneOf(['small', 'medium']),
   networkId: PropTypes.number.isRequired,
   icon: PropTypes.string,
   onClickNetworkItem: PropTypes.func,
   onClose: PropTypes.func,
+  showCurrentIcon: PropTypes.bool,
+  needSwitchNet: PropTypes.bool,
 }
 
-function NetworkContent({onClickNetworkItem, networkItemSize, onClose}) {
+function NetworkContent({
+  onClickNetworkItem,
+  networkItemSize,
+  onClose,
+  ...props
+}) {
   const networkData = useCfxNetwork()
 
   return (
     <>
-      {networkData.map(({eid, name, isCustom, isMainnet, isTestnet, icon}) => (
-        <NetworkItem
-          key={eid}
-          networkId={eid}
-          networkName={name}
-          networkItemSize={networkItemSize}
-          networkType={
-            isCustom
-              ? 'custom'
-              : isMainnet
-              ? 'mainnet'
-              : isTestnet
-              ? 'testnet'
-              : ''
-          }
-          onClickNetworkItem={onClickNetworkItem}
-          onClose={onClose}
-          icon={icon}
-          id={`item-${eid}`}
-        />
-      ))}
+      {networkData.map(
+        ({
+          eid,
+          name,
+          isCustom,
+          isMainnet,
+          isTestnet,
+          icon,
+          endpoint,
+          chainId,
+          ticker,
+          scanUrl,
+        }) => (
+          <NetworkItem
+            key={eid}
+            networkId={eid}
+            networkName={name}
+            networkItemSize={networkItemSize}
+            networkType={
+              isCustom
+                ? 'custom'
+                : isMainnet
+                ? 'mainnet'
+                : isTestnet
+                ? 'testnet'
+                : ''
+            }
+            rpcUrl={endpoint}
+            chainId={chainId}
+            symbol={ticker.symbol}
+            blockExplorerUrl={scanUrl}
+            onClickNetworkItem={onClickNetworkItem}
+            onClose={onClose}
+            icon={icon}
+            id={`item-${eid}`}
+            {...props}
+          />
+        ),
+      )}
     </>
   )
 }

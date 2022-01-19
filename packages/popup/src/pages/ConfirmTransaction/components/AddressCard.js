@@ -4,17 +4,16 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import Text from '../../../components/Text'
-import {useCurrentAddress, useAddressType} from '../../../hooks/useApi'
 import {
-  DisplayBalance,
-  ProgressIcon,
-  CopyButton,
-  WrapIcon,
-} from '../../../components'
+  useCurrentAddress,
+  useAddressType,
+  useDbRefetchBalance,
+} from '../../../hooks/useApi'
+import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
 
-const AddressDetail = ({
+const TransactionDirection = ({
   fromAddress,
   toAddress,
   currentAccountName,
@@ -29,7 +28,10 @@ const AddressDetail = ({
   const isContract = type === 'contract' || type === 'builtin'
 
   return (
-    <div className="flex items-start w-full" id="addressDetailContainer">
+    <div
+      className="transaction-direction-container flex items-start w-full"
+      id="addressDetailContainer"
+    >
       <div className="pt-1">
         <ProgressIcon
           dashLengthStyle="h-[14px]"
@@ -45,7 +47,7 @@ const AddressDetail = ({
         <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2">
           <div className="flex flex-col">
             <Text
-              className="text-xs text-gray-40"
+              className="text-xs text-gray-40 mb-1"
               id="currentAccountName"
               text={currentAccountName}
             />
@@ -55,8 +57,8 @@ const AddressDetail = ({
               text={fromAddress ? shortenAddress(fromAddress) : ''}
             />
           </div>
-          <div className="flex flex-col">
-            <span className="text-gray-80">{t('balance')}</span>
+          <div className="flex flex-col items-end">
+            <span className="text-gray-40 mb-0.5 text-xs">{t('balance')}</span>
             <DisplayBalance
               balance={nativeBalance}
               maxWidth={120}
@@ -69,8 +71,8 @@ const AddressDetail = ({
             />
           </div>
         </div>
-        <span className="text-xs text-gray-40">{toAddressLabel}</span>
-        <span className="text-gray-80 flex items-center" id="toAddress">
+        <span className="text-xs text-gray-40 mb-1">{toAddressLabel}</span>
+        <span className="text-gray-80 flex items-center h-4" id="toAddress">
           {isContract && <FileOutlined className="w-4 h-4 mr-1 text-primary" />}
           {toAddress && shortenAddress(toAddress)}
           {isCreateContract && t('createContract')}
@@ -78,16 +80,7 @@ const AddressDetail = ({
             <CopyButton
               text={toAddress}
               className="text-gray-60 group-hover:text-primary"
-              CopyWrapper={({children, ...props}) => {
-                return (
-                  <WrapIcon
-                    {...props}
-                    className="mx-1 shadow-none bg-transparent hover:bg-primary-4 group"
-                  >
-                    {children}
-                  </WrapIcon>
-                )
-              }}
+              wrapperClassName="mx-1 shadow-none bg-transparent hover:bg-primary-4 group"
             />
           )}
         </span>
@@ -96,7 +89,7 @@ const AddressDetail = ({
   )
 }
 
-AddressDetail.propTypes = {
+TransactionDirection.propTypes = {
   fromAddress: PropTypes.string,
   toAddress: PropTypes.string,
   currentAccountName: PropTypes.string,
@@ -113,6 +106,7 @@ const useQueryAddressInAddressCard = address => {
       network: {eid: networkId},
     },
   } = useCurrentAddress()
+  useDbRefetchBalance()
   const {data} = useRPC(
     address && networkId
       ? [QUERY_ADDRESS, 'useQueryAddressInAddressCard', address, networkId]
@@ -158,9 +152,12 @@ function AddressCard({
   return (
     <div
       id="addressCardContainer"
-      className="w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat mt-1 mb-4"
+      className="address-card-container w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat mt-1 mb-4"
     >
-      <span className="text-primary flex items-center" id="addressCardTitle">
+      <header
+        className="address-card-header text-primary flex items-center"
+        id="addressCardTitle"
+      >
         <img
           alt="icon"
           className="w-3 h-3 mr-1"
@@ -179,7 +176,7 @@ function AddressCard({
             ? 'approveToken'
             : 'signTransaction',
         )}
-      </span>
+      </header>
       {isSendToken && (
         <div className="h-10 mt-1 mb-3 flex items-center" id="sendToken">
           <DisplayBalance
@@ -202,7 +199,7 @@ function AddressCard({
           />
         </div>
       )}
-      <AddressDetail
+      <TransactionDirection
         fromAddress={fromAddress}
         toAddress={toAddress}
         currentAccountName={nickname}

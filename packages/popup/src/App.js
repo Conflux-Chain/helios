@@ -41,11 +41,15 @@ import ConfirmTransaction from './pages/ConfirmTransaction'
 import History from './pages/History'
 import ViewData from './pages/ViewData'
 import AccountManagement from './pages/AccountManagement'
+import AuthorizedWebsite from './pages/AuthorizedWebsite'
+import NetworkManagement from './pages/NetworkManagement'
 import ExportSeed from './pages/ExportSeed'
 import ExportPrivateKey from './pages/ExportPrivateKey'
 import HardwareGuard from './pages/HardwareGuard'
 import ConnectHardwareWallet from './pages/ConnectHardwareWallet'
 import ImportHwAccount from './pages/ImportHwAccount'
+import NetworkDetail from './pages/NetworkDetail'
+import About from './pages/About'
 
 const {
   HOME,
@@ -77,6 +81,10 @@ const {
   HARDWARE_GUARD,
   CONNECT_HARDWARE_WALLET,
   IMPORT_HW_ACCOUNT,
+  NETWORK_MANAGEMENT,
+  AUTHORIZED_WEBSITE,
+  NETWORK_DETAIL,
+  ABOUT,
 } = ROUTES
 
 const routes = [
@@ -169,6 +177,18 @@ const routes = [
     component: AccountManagement,
   },
   {
+    path: NETWORK_MANAGEMENT,
+    component: NetworkManagement,
+  },
+  {
+    path: AUTHORIZED_WEBSITE,
+    component: AuthorizedWebsite,
+  },
+  {
+    path: NETWORK_DETAIL,
+    component: NetworkDetail,
+  },
+  {
     path: EXPORT_SEED,
     component: ExportSeed,
   },
@@ -191,6 +211,10 @@ const routes = [
   {
     path: IMPORT_HW_ACCOUNT,
     component: ImportHwAccount,
+  },
+  {
+    path: ABOUT,
+    component: About,
   },
 ]
 

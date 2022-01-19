@@ -13,10 +13,11 @@ export const permissions = {
   locked: true,
 }
 
-function getWordListByWord(word) {
-  for (const lang in wordlists) {
-    if (wordlists[lang]?.includes(word)) return lang
-  }
+function filterWordlistsByWord(wordlists, word) {
+  if (typeof wordlists === 'string') return wordlists
+  wordlists = wordlists.filter(([, list]) => list.includes(word))
+  if (!wordlists.length) return word
+  return wordlists
 }
 
 export const main = ({params: {mnemonic}}) => {
@@ -25,16 +26,21 @@ export const main = ({params: {mnemonic}}) => {
     .map(w => w?.trim())
     .filter(w => Boolean(w))
 
-  const lang = getWordListByWord(words[0])
+  const validWordlistsOrInvalidWord = words.reduce(
+    filterWordlistsByWord,
+    Object.entries(wordlists),
+  )
 
-  if (!lang) return {valid: false, invalidWord: words[0]}
+  if (typeof validWordlistsOrInvalidWord === 'string')
+    return {valid: false, invalidWord: validWordlistsOrInvalidWord}
 
-  const wordlist = wordlists[lang]
+  const invalids = validWordlistsOrInvalidWord.reduce((acc, [lang, list]) => {
+    if (!validateMnemonic(mnemonic, list)) return acc.concat([lang])
+    return acc.concat([false])
+  }, [])
 
-  for (let i = 0; i < words.length; i++) {
-    if (!wordlist.includes(words[i]))
-      return {valid: false, invalidWord: words[i]}
-  }
+  if (invalids.every(x => !!x))
+    return {valid: false, invalidWordlists: invalids}
 
-  return {valid: validateMnemonic(mnemonic, wordlist)}
+  return {valid: true}
 }

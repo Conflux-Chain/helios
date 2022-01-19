@@ -3,12 +3,12 @@ import {useState} from 'react'
 import QRCode from 'qrcode.react'
 import Modal from '@fluent-wallet/component-modal'
 import {QrcodeOutlined} from '@fluent-wallet/component-icons'
+import {WrapIcon} from './index'
 
 function QRCodeButton({
   title,
   qrcodeValue,
   className = '',
-  Wrapper,
   wrapperClassName = '',
 }) {
   const [qrcodeShow, setQrcodeShow] = useState(false)
@@ -21,7 +21,11 @@ function QRCodeButton({
   )
   return (
     <>
-      {Wrapper ? <Wrapper className={wrapperClassName}>{icon}</Wrapper> : icon}
+      {wrapperClassName ? (
+        <WrapIcon className={wrapperClassName}>{icon}</WrapIcon>
+      ) : (
+        icon
+      )}
 
       <Modal
         open={qrcodeShow}
@@ -44,7 +48,6 @@ QRCodeButton.propTypes = {
   title: PropTypes.string,
   qrcodeValue: PropTypes.string,
   className: PropTypes.string,
-  Wrapper: PropTypes.elementType,
   wrapperClassName: PropTypes.string,
 }
 

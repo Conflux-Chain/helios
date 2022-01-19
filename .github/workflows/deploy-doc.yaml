@@ -19,7 +19,7 @@ on:
       - dev
 
 jobs:
-  doploy-doc:
+  deploy-doc:
     if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
     runs-on: ubuntu-20.04
     strategy:

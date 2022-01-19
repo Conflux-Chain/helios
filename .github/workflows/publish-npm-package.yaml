@@ -52,14 +52,14 @@ jobs:
       - run: rm -rf .yarn/versions || true
       - env:
           YARN_NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        run: yarn workspaces foreach --topological --no-private --verbose --parallel --interlaced npm publish --tolerate-republish || true
+        run: yarn workspaces changed foreach --topological --no-private --verbose --parallel --interlaced npm publish --access public --tolerate-republish || true
       - run: git add .
       - run: |
           git -c user.name='ConfluxBot' \
               -c user.email='confluxbot@users.noreply.github.com' \
               commit \
               --no-verify \
-              --message 'chore(release-pkg): release packages' || true
+              --message 'chore(common): release packages' || true
       - env:
           GH_TOKEN: ${{ secrets.CONFLUX_BOT_GH_TOKEN }}
         run: git push --force --verbose "https://ConfluxBot:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" HEAD:refs/heads/__release-pkg

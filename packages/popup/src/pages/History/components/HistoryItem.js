@@ -71,15 +71,14 @@ function HistoryItem({
 
   // TODO: should throw error in decode data
   const {decodeData} = useDecodeData({
-    to: token?.address,
+    to: payload?.to,
     data: payload?.data,
   })
   useEffect(() => {
     setActionName(
       simple
         ? t('send')
-        : transformToTitleCase(decodeData?.functionFragment?.name) ||
-            t('unknown'),
+        : transformToTitleCase(decodeData?.name) || t('unknown'),
     )
   }, [simple, Object.keys(decodeData).length])
 
@@ -142,6 +141,8 @@ function HistoryItem({
     Object.keys(decodeData).length,
   ])
 
+  if (!actionName || !contractName) return null
+
   return (
     <div className="px-3 pb-3 pt-2 bg-white mx-3 mt-3 rounded">
       <div className="flex justify-between">
@@ -184,7 +185,7 @@ function HistoryItem({
           {transactionUrl ? (
             <WrapIcon
               size="w-5 h-5 ml-2"
-              id="openScanUrl"
+              id="openScanTxUrl"
               onClick={() => window.open(transactionUrl)}
             >
               <SendOutlined className="w-3 h-3 text-primary" />

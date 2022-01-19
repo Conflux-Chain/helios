@@ -7,7 +7,7 @@
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
     "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api",
     "react-use": "17.3.1",
-    "swr": "1.1.1",
+    "swr": "1.1.2",
     "webextension-polyfill": "0.8.0"
   },
   "peerDependencies": {

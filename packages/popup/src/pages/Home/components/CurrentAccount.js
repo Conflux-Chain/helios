@@ -1,20 +1,35 @@
 import PropTypes from 'prop-types'
-import {
-  RightOutlined,
-  // QrcodeOutlined,
-} from '@fluent-wallet/component-icons'
+import {RightOutlined} from '@fluent-wallet/component-icons'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {useCurrentAddress} from '../../../hooks/useApi'
+import {
+  useCurrentAddress,
+  useBlockchainExplorerUrl,
+} from '../../../hooks/useApi'
 import Text from '../../../components/Text'
 import {CopyButton, QRCodeButton, WrapIcon} from '../../../components'
+import {SendOutlined} from '@fluent-wallet/component-icons'
 import classNames from 'classnames'
 
-const iconWrapper = ({children, ...props}) => {
+const OpenScanButton = ({address}) => {
+  const {address: scanAddrUrl} = useBlockchainExplorerUrl(
+    address ? {address: [address]} : null,
+  )
   return (
-    <WrapIcon {...props} className="bg-transparent hover:bg-[#3C3A5D] group">
-      {children}
+    <WrapIcon className="bg-transparent hover:bg-[#ffffff1a]">
+      <SendOutlined
+        className={classNames(
+          'text-white transition-all duration-100 ease-in-out w-4 h-4 cursor-pointer',
+          {['opacity-0']: !address},
+        )}
+        id="openScanAddrUrl"
+        onClick={() => window.open(scanAddrUrl?.[0])}
+      />
     </WrapIcon>
   )
+}
+
+OpenScanButton.propTypes = {
+  address: PropTypes.string,
 }
 
 function CurrentAccount({onOpenAccount}) {
@@ -47,28 +62,26 @@ function CurrentAccount({onOpenAccount}) {
       </div>
       <div className="flex items-center">
         <Text
-          className="text-white font-medium mr-2 w-[7.5rem]"
+          className="text-white font-medium mr-2 w-auto"
           text={displayAddress}
         />
         <CopyButton
           text={address}
           className={classNames(
-            'text-white transform transition-all duration-100 ease-in-out group-hover:text-primary',
+            'text-white transition-all duration-100 ease-in-out',
             {['opacity-0']: !displayAddress},
           )}
-          CopyWrapper={iconWrapper}
+          wrapperClassName="bg-transparent hover:bg-[#ffffff1a]"
         />
         <QRCodeButton
           title={nickname}
           qrcodeValue={address}
-          className={classNames(
-            'transition-all duration-100 ease-in-out group-hover:text-primary',
-            {
-              ['opacity-0']: !displayAddress,
-            },
-          )}
-          Wrapper={iconWrapper}
+          className={classNames('transition-all duration-100 ease-in-out', {
+            ['opacity-0']: !displayAddress,
+          })}
+          wrapperClassName="bg-transparent hover:bg-[#ffffff1a]"
         />
+        <OpenScanButton address={address} />
       </div>
     </div>
   )

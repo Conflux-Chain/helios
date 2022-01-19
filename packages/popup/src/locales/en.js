@@ -8,7 +8,6 @@ const en = {
     confirm: 'Confirm',
     save: 'Save',
     ok: 'OK',
-    set: 'Set',
     sign: 'Sign',
     switch: 'Switch',
     no: 'No',
@@ -24,11 +23,15 @@ const en = {
     transactionDetails: 'Transaction Details',
     functionName: 'Function',
     hexData: 'Hex Data',
+    add: 'Add',
+    notFilled: 'Not filled',
+    unCaughtErrMsg: 'something goes wrong',
 
     // - home page
     send: 'Send',
     history: 'History',
     assets: 'Assets',
+    crossSpace: 'Cross Space',
 
     // - homepage / 连接网站状态模块和切换连接弹窗模块
     noConnectedDapp: 'Not connected to current website',
@@ -109,7 +112,7 @@ const en = {
     // - Network
     network: 'Network',
     mainnet: 'Mainnet',
-    Testnet: 'Testnet',
+    testnet: 'Testnet',
     custom: 'Custom',
 
     // - add token
@@ -129,7 +132,7 @@ const en = {
     passwordRulesWarning:
       'Use 8 ~ 16 characters with a mix of letters & numbers.',
     en: 'English',
-    'zh-CN': '简体中文',
+    zh: '简体中文',
 
     // - Send Transaction
     // - Send Transaction / send transaction
@@ -163,7 +166,8 @@ const en = {
     totalFee: 'Total Fee',
     customNonce: 'Custom Nonce',
     gasPriceErrMSg: 'The minimum Gas Price is 1 {{unit}}',
-    gasLimitErrMsg: 'Gas Limit must be at least {{gasUsed}}',
+    gasLimitMinErr: 'Gas Limit must be at least {{gasUsed}}',
+    gasLimitMaxErr: 'Gas Limit must be at most {{gasMax}}',
     nonceErr: 'Nonce can not be 0',
 
     // - Send Transaction / Sign Transaction / 2. transaction result
@@ -222,8 +226,8 @@ const en = {
     networkName: 'Network Name',
     networkUrl: 'Network URL',
     chainId: 'Chain ID',
-    currencySymbol: 'Currency Symbol',
-    blockExplorerUrl: 'Block Explorer URL',
+    currencySymbol: 'Currency Symbol (Optional)',
+    blockExplorerUrl: 'Block Explorer URL (Optional)',
 
     // - add suggested token
     addSuggestedToken: 'Add suggested token',
@@ -234,7 +238,6 @@ const en = {
     allowSwitchNetwork: 'Allow this site to switch the network?',
     warningSwitchNetwork:
       'This will switch the selected network within Fluent to a previously added network',
-    testnet: 'testnet',
 
     // - set password page
     setPWD: 'Set the password',
@@ -254,6 +257,26 @@ const en = {
     lock: 'Lock',
     enterPassword: 'Enter your password to continue',
     viewSeed: 'Reveal secret Seed Phrase',
+    hide: 'Hide',
+    delete: 'Delete',
+    groupDeleteWarning: 'Can not delete current account group.',
+
+    // Network Management
+    networkManagement: 'Network Management',
+    newRpcUrl: 'New RPC URL',
+    networkType: 'Network Type',
+    wrongRpcUrl: 'Could not fetch chain ID. Is your RPC URL correct?',
+    networkDeleteWarning: 'Can not delete current network.',
+    duplicateNetworkEndpoint: 'Duplicate network endpoint.',
+    urlWarning: 'URLs require the appropriate HTTP/HTTPS prefix.',
+    invalidRpcUrl: 'Invalid RPC URL',
+
+    // About
+    about: 'About',
+    website: 'Web Site',
+    feedback: 'Feedback',
+    docs: 'Docs',
+    version: 'Version',
 
     // backup seed
     backupIdentity: 'Backup Seed Phrase',
@@ -268,7 +291,7 @@ const en = {
     gasFeeIsNotEnough: 'Insufficient gas fee',
     contractError: 'Contract error: ',
     addressHasBeenChanged: 'Address has been changed',
-    invalidPasswordFromRpc: 'Invalid password from RPC',
+    invalidPasswordFromRpc: 'Invalid password',
     required: 'Please type your seed phrase.',
     changeNetworkError: 'Change network error',
 

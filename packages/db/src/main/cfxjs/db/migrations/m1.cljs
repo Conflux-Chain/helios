@@ -4,11 +4,13 @@
 
 (def id 1)
 
-(defn- update-version-tx [db]
-  {:db/id (d/q '[:find ?v .
-                 :where [?v :dbmeta/version]]
-               db)
-   :dbmeta/version id})
+(defn- update-version-tx
+  ([db] (update-version-tx db id))
+  ([db custom-id]
+   {:db/id (d/q '[:find ?v .
+                  :where [?v :dbmeta/version]]
+                db)
+    :dbmeta/version custom-id}))
 
 (defn up [old-db]
   (let [old-schema (d/schema old-db)

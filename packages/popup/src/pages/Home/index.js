@@ -1,7 +1,6 @@
 import {useState} from 'react'
 import {useQuery} from '../../hooks'
 import {useTxList} from '../../hooks/useApi'
-
 import {useEffectOnce} from 'react-use'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -11,7 +10,7 @@ import {PendingQueue} from './components'
 import {ROUTES, MAX_PENDING_COUNT} from '../../constants'
 import './index.css'
 
-const {HISTORY} = ROUTES
+const {HISTORY, SEND_TRANSACTION} = ROUTES
 import {
   CurrentAccount,
   CurrentNetwork,
@@ -21,6 +20,7 @@ import {
   NetworkList,
   AddToken,
   Setting,
+  CrossSpaceButton,
 } from './components'
 function Home() {
   const {t} = useTranslation()
@@ -29,20 +29,31 @@ function Home() {
   const [addTokenStatus, setAddTokenStatus] = useState(false)
   const [settingsStatus, setSettingStatus] = useState(false)
   const [accountsAnimate, setAccountsAnimate] = useState(true)
+  const [settingAnimate, setSettingAnimate] = useState(true)
   const query = useQuery()
   const history = useHistory()
   const pendingCount = useTxList({status: {gte: 0, lt: 4}, countOnly: true})
 
   useEffectOnce(() => {
-    if (query.get('open') === 'account-list') {
+    const forward = query.get('open')
+    if (forward === 'account-list') {
       history.replace('')
       setAccountsAnimate(false)
       setAccountStatus(true)
+    } else if (forward === 'setting-page') {
+      history.replace('')
+      setSettingAnimate(false)
+      setSettingStatus(true)
     }
   })
   const onCloseAccountList = () => {
     !accountsAnimate && setAccountsAnimate(true)
     setAccountStatus(false)
+  }
+
+  const onCloseSetting = () => {
+    !settingAnimate && setSettingAnimate(true)
+    setSettingStatus(false)
   }
 
   return (
@@ -66,40 +77,43 @@ function Home() {
           <CurrentAccount onOpenAccount={() => setAccountStatus(true)} />
           <CurrentNetwork onOpenNetwork={() => setNetworkStatus(true)} />
         </div>
-        <div className="flex mt-3 mb-4">
-          <Button
-            id="sendBtn"
-            size="small"
-            variant="outlined"
-            className="!border-white !text-white !bg-transparent mr-2 hover:!bg-[#3C3A5D]"
-            onClick={() => {
-              history.push('/send-transaction')
-            }}
-          >
-            {t('send')}
-          </Button>
-          <div className="relative">
+        <div className="flex mt-3 mb-4 justify-between">
+          <div className="flex">
             <Button
-              id="historyBtn"
+              id="sendBtn"
               size="small"
               variant="outlined"
-              className="!border-white !text-white !bg-transparent hover:!bg-[#3C3A5D]"
+              className="!border-white !text-white !bg-transparent mr-2 hover:!bg-[#3C3A5D]"
               onClick={() => {
-                history.push(HISTORY)
+                history.push(SEND_TRANSACTION)
               }}
             >
-              {t('history')}
+              {t('send')}
             </Button>
-            {pendingCount ? (
-              <PendingQueue
-                count={`${
-                  pendingCount > MAX_PENDING_COUNT
-                    ? MAX_PENDING_COUNT + '+'
-                    : pendingCount
-                } `}
-              />
-            ) : null}
+            <div className="relative">
+              <Button
+                id="historyBtn"
+                size="small"
+                variant="outlined"
+                className="!border-white !text-white !bg-transparent hover:!bg-[#3C3A5D]"
+                onClick={() => {
+                  history.push(HISTORY)
+                }}
+              >
+                {t('history')}
+              </Button>
+              {pendingCount ? (
+                <PendingQueue
+                  count={`${
+                    pendingCount > MAX_PENDING_COUNT
+                      ? MAX_PENDING_COUNT + '+'
+                      : pendingCount
+                  } `}
+                />
+              ) : null}
+            </div>
           </div>
+          <CrossSpaceButton />
         </div>
       </div>
       <HomeTokenList onOpenAddToken={() => setAddTokenStatus(true)} />
@@ -117,7 +131,11 @@ function Home() {
         onClose={() => setAddTokenStatus(false)}
         open={addTokenStatus}
       />
-      <Setting onClose={() => setSettingStatus(false)} open={settingsStatus} />
+      <Setting
+        onClose={onCloseSetting}
+        open={settingsStatus}
+        settingAnimate={settingAnimate}
+      />
     </div>
   )
 }

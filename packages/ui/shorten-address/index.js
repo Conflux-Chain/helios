@@ -2,6 +2,7 @@
 import {isNegative, isString} from '@fluent-wallet/checks'
 import {validateBase32Address, decode} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
+import {CFX_MAINNET_NETID} from '@fluent-wallet/consts'
 
 export const getEllipsStr = (str, frontNum, endNum) => {
   if (!isString(str) || isNegative(frontNum) || isNegative(endNum)) {
@@ -25,7 +26,7 @@ export const shortenCfxAddress = address => {
     throw new Error('Only shorten the conflux address not containing type')
   }
   const {netId} = decode(address)
-  const secondStr = getEllipsStr(arr[1], 3, netId === 1029 ? 8 : 4)
+  const secondStr = getEllipsStr(arr[1], 3, netId === CFX_MAINNET_NETID ? 8 : 4)
 
   return `${arr[0]}:${secondStr}`
 }

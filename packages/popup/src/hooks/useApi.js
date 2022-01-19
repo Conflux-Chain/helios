@@ -31,11 +31,13 @@ const {
   WALLET_VALIDATE_20TOKEN,
   WALLETDB_TXLIST,
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
+  WALLET_GET_FLUENT_METADATA,
+  CFX_GET_MAX_GAS_LIMIT,
 } = RPC_METHODS
 
-export const useCurrentAddress = () => {
+export const useCurrentAddress = (notSendReq = false) => {
   const {data, mutate} = useRPC(
-    [QUERY_ADDRESS, 'useCurrentAddress'],
+    notSendReq ? null : [QUERY_ADDRESS, 'useCurrentAddress'],
     {
       selected: true,
       g: {
@@ -90,9 +92,9 @@ export const useNetwork = () => {
 
 export const useCfxNetwork = () => {
   const {data: cfxNetWork} = useRPC(
-    [WALLET_GET_NETWORK, 'cfx'],
+    [WALLET_GET_NETWORK, NETWORK_TYPE.CFX],
     {
-      type: 'cfx',
+      type: NETWORK_TYPE.CFX,
     },
     {fallbackData: []},
   )
@@ -101,9 +103,9 @@ export const useCfxNetwork = () => {
 
 export const useEthNetwork = () => {
   const {data: ethNetWork} = useRPC(
-    [WALLET_GET_NETWORK, 'eth'],
+    [WALLET_GET_NETWORK, NETWORK_TYPE.ETH],
     {
-      type: 'eth',
+      type: NETWORK_TYPE.ETH,
     },
     {fallbackData: []},
   )
@@ -555,5 +557,26 @@ export const useAddressTypeInConfirmTx = address => {
       },
     },
   )
+  return data
+}
+
+export const useCfxMaxGasLimit = isCfxChain => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {data} = useRPC(
+    isCfxChain && networkId ? [CFX_GET_MAX_GAS_LIMIT, networkId] : null,
+  )
+  return data
+}
+
+export const useWalletVersion = () => {
+  const {data} = useRPC([WALLET_GET_FLUENT_METADATA], undefined, {
+    fallbackData: {
+      version: '',
+    },
+  })
   return data
 }

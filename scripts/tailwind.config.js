@@ -185,7 +185,10 @@ module.exports = {
         'hardware-background':
           'linear-gradient(180deg, #F8F8FE 0.11%, rgba(248, 249, 254, 0) 44.61%);',
         'token-background':
-          'linear-gradient(19.03deg, #FFFFFF 20.24%, rgba(255, 255, 255, 0) 86.89%)',
+          'linear-gradient(0deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%)',
+        'logo-background': 'linear-gradient(180deg, #D0D9FF 0%, #F2F5FF 102%)',
+        'logo-bottom':
+          'linear-gradient(180deg, #F0F3FF 0%, rgba(240, 243, 255, 0) 47.37%)',
         'gray-circles': "url('/images/gray-circles-bg.svg')",
         'blue-circles': "url('/images/blue-circles-bg.svg')",
         'blue-card-linear': "url('/images/blue-card-linear-bg.svg')",

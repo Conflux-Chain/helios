@@ -3,8 +3,8 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
 import {useCurrentDapp, useCurrentAddress} from '../../../hooks/useApi'
+import {useCurrentTxParams} from '../../../hooks'
 import {DisplayBalance, WrapIcon} from '../../../components'
-import useGlobalStore from '../../../stores'
 import {ROUTES} from '../../../constants'
 const {EDIT_PERMISSION} = ROUTES
 
@@ -43,12 +43,12 @@ function InfoList({
   const {
     data: {network},
   } = useCurrentAddress()
-  const {customAllowance} = useGlobalStore()
+  const {customAllowance} = useCurrentTxParams()
   const [{app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const currentDapp = isDapp ? app : data?.app
   const currentNetwork = isDapp ? app?.currentNetwork : network
   return (
-    <div className="flex flex-col">
+    <div className="info-list-container flex flex-col">
       <div className="flex justify-between mb-4">
         <span className="text-gray-40">{t('network')}</span>
         <CurrentNetworkDisplay currentNetwork={currentNetwork} />

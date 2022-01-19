@@ -3,6 +3,7 @@ import {addHexPrefix, stripHexPrefix} from '@fluent-wallet/utils'
 import {address} from 'js-conflux-sdk'
 import {memoize, memoize1} from '@thi.ng/memoize'
 import {LRUCache} from '@thi.ng/cache'
+import {CFX_MAINNET_NETID} from '@fluent-wallet/consts'
 
 export const encode = memoize(
   (hexAddress, netId, verbose) =>
@@ -85,7 +86,7 @@ export const randomBase32Address = (...args) => {
   }
 
   if (type === undefined) type = randomAddressType()
-  if (netId === undefined) netId = 1029
+  if (netId === undefined) netId = CFX_MAINNET_NETID
 
   const hexAddress = stripHexPrefix(randomHexAddress(type))
 

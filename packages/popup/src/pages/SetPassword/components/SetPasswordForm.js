@@ -6,6 +6,7 @@ import useGlobalStore from '../../../stores'
 import Button from '@fluent-wallet/component-button'
 import {validatePasswordReg, isKeyOf} from '../../../utils'
 import {ROUTES} from '../../../constants'
+import {useDisplayErrorMessage} from '../../../hooks'
 
 const {SELECT_CREATE_TYPE} = ROUTES
 function SetPasswordForm() {
@@ -17,6 +18,9 @@ function SetPasswordForm() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [confirmErrorMessage, setConfirmErrorMessage] = useState('')
+  const displayErrorMessage = useDisplayErrorMessage(errorMessage)
+  const displayConfirmErrorMessage = useDisplayErrorMessage(confirmErrorMessage)
+
   const inputRef = useRef(null)
   const confirmInputRef = useRef(null)
 
@@ -27,12 +31,12 @@ function SetPasswordForm() {
   const validatePassword = value => {
     if (validatePasswordReg(value)) {
       setConfirmErrorMessage(
-        value !== confirmPassword ? t('invalidConfirmPassword') : '',
+        value !== confirmPassword ? 'invalidConfirmPassword' : '',
       )
       return setErrorMessage('')
     } else {
       setConfirmErrorMessage('')
-      setErrorMessage(t('passwordRulesWarning'))
+      setErrorMessage('passwordRulesWarning')
     }
   }
   const validateConfirmPassword = value => {
@@ -40,7 +44,7 @@ function SetPasswordForm() {
       if (password === value) {
         return setConfirmErrorMessage('')
       }
-      setConfirmErrorMessage(t('invalidConfirmPassword'))
+      setConfirmErrorMessage('invalidConfirmPassword')
     }
   }
 
@@ -75,7 +79,7 @@ function SetPasswordForm() {
         <PasswordInput
           validateInputValue={validatePassword}
           setInputValue={setPassword}
-          errorMessage={errorMessage}
+          errorMessage={displayErrorMessage}
           value={password}
           id="password"
           onKeyDown={onKeyDown}
@@ -86,7 +90,9 @@ function SetPasswordForm() {
           validateInputValue={validateConfirmPassword}
           setInputValue={setConfirmPassword}
           errorMessage={
-            confirmErrorMessage && confirmPassword ? confirmErrorMessage : ''
+            displayConfirmErrorMessage && confirmPassword
+              ? displayConfirmErrorMessage
+              : ''
           }
           value={confirmPassword}
           id="confirmPassword"

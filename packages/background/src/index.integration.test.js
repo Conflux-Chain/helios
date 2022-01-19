@@ -127,7 +127,7 @@ describe('integration test', function () {
           networkName: CFX_MAINNET_NAME,
         })
         expect(res.error.message).toMatch(
-          /Method eth_getBalance not supported by network CFX_MAINNET/,
+          /Method eth_getBalance not supported by network Conflux Tethys/,
         )
       })
       test('error call method with incorrect scope', async function () {
@@ -270,6 +270,7 @@ describe('integration test', function () {
         expect(db.getNetwork().length).toBe(1)
         expect(db.getAccount().length).toBe(1)
         expect(db.getAddress().length).toBe(1)
+        expect(db.getNetwork()[0].selected).toBe(true)
       })
       test('delete builtin network', async () => {
         db.createNetwork({
@@ -329,8 +330,8 @@ describe('integration test', function () {
         ).result
 
         expect(db.getAccount().length).toBe(1)
+        await waitForExpect(() => expect(db.getAddress().length).toBe(3))
         const addrs = db.getAddress()
-        expect(addrs.length).toBe(3)
         expect(addrs[addrs.length - 1].hex).toBe(CFX_ACCOUNTS[0].address)
         expect(addrs[addrs.length - 1].value).toBe(CFX_ACCOUNTS[0].base32)
         expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
@@ -362,8 +363,8 @@ describe('integration test', function () {
         ).result
 
         expect(db.getAccount().length).toBe(1)
+        await waitForExpect(() => expect(db.getAddress().length).toBe(3))
         const addrs = db.getAddress()
-        expect(addrs.length).toBe(3)
         expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
         expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
       })

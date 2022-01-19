@@ -4,11 +4,12 @@
  */
 
 import {validateBase32Address} from '@fluent-wallet/base32-address'
+import {CFX_MAINNET_NETID} from '@fluent-wallet/consts'
 
 export default async function txHistoryChecker({
   address = '',
   type = 'cfx',
-  chainId = 1029,
+  chainId = CFX_MAINNET_NETID,
 }) {
   try {
     if (!address) throw new Error('not params address')
@@ -21,7 +22,7 @@ export default async function txHistoryChecker({
         return window
           .fetch(
             `https://${
-              chainId === 1029 ? 'api' : 'api-testnet'
+              chainId === CFX_MAINNET_NETID ? 'api' : 'api-testnet'
             }.confluxscan.net/account/transactions?account=${address}&limit=0`,
           )
           .then(response => response.json())

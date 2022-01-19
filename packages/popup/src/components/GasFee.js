@@ -2,17 +2,21 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
-import {CFX_DECIMALS, ETH_DECIMALS} from '@fluent-wallet/data-format'
+import {
+  CFX_DECIMALS,
+  ETH_DECIMALS,
+  roundBalance,
+} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {DisplayBalance, CustomTag} from '../components'
 import {useNetworkTypeIsCfx} from '../hooks/useApi'
+import {useCurrentTxParams} from '../hooks'
 import useDebouncedValue from '../hooks/useDebouncedValue'
-import useGlobalStore from '../stores'
 import {ROUTES} from '../constants'
 const {EDIT_GAS_FEE} = ROUTES
 
 function GasFee({estimateRst}) {
-  const {gasPrice: _gasPrice} = useGlobalStore()
+  const {gasPrice: _gasPrice} = useCurrentTxParams()
   const {t} = useTranslation()
   const history = useHistory()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
@@ -36,18 +40,21 @@ function GasFee({estimateRst}) {
   const gasPrice = useDebouncedValue(_gasPrice, [_gasPrice])
 
   return (
-    <div className="flex flex-col">
-      <span className="flex items-center justify-between w-full text-gray-40 mb-2">
+    <div className="gas-fee-container flex flex-col">
+      <header className="gas-fee-header flex items-center justify-between w-full text-gray-40 mb-2">
         {t('gasFee')}
         <span className="flex items-center">
-          <Link onClick={() => history.push(EDIT_GAS_FEE)}>
+          <Link
+            onClick={() => history.push(EDIT_GAS_FEE)}
+            disabled={!realPayedFeeDrip || !gasPrice}
+          >
             {t('edit')}
             <RightOutlined className="w-3 h-3 text-primary ml-1" />
           </Link>
         </span>
-      </span>
+      </header>
       <div
-        className="flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative"
+        className="gas-fee-body flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative"
         id="gasFeeContainer"
       >
         <DisplayBalance
@@ -71,7 +78,7 @@ function GasFee({estimateRst}) {
             decimals={decimals}
           />
         )}
-        <span className="text-xs text-gray-60">{`${gasPrice} ${
+        <span className="text-xs text-gray-60">{`${roundBalance(gasPrice)} ${
           networkTypeIsCfx ? 'Drip' : 'Gwei'
         }`}</span>
         {isBePayed && (

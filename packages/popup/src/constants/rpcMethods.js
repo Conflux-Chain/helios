@@ -58,3 +58,9 @@ export const WALLET_GET_BLOCKCHAIN_EXPLORER_URL =
 export const WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT =
   'wallet_importHardwareWalletAccountGroupOrAccount'
 export const CFX_GET_STATUS = 'cfx_getStatus'
+export const WALLET_DELETE_ACCOUNT_GROUP = 'wallet_deleteAccountGroup'
+export const WALLET_UPDATE_ACCOUNT = 'wallet_updateAccount'
+export const WALLET_DETECT_NETWORK_TYPE = 'wallet_detectNetworkType'
+export const WALLET_DELETE_NETWORK = 'wallet_deleteNetwork'
+export const WALLET_GET_FLUENT_METADATA = 'wallet_getFluentMetadata'
+export const CFX_GET_MAX_GAS_LIMIT = 'cfx_getMaxGasLimit'

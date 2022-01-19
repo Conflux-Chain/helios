@@ -8,6 +8,7 @@ import {
 } from 'react'
 import PropTypes from 'prop-types'
 import useAnimation from './useAnimation'
+import './index.css'
 
 const sizeStyleObj = {
   small: 'h-8',
@@ -147,11 +148,12 @@ const Input = forwardRef(function Input(
           </div>
         )}
       </div>
-
-      <div
-        className={`${errorClassName} scale-y-0 transition duration-300  ease-in-out ${errorAnimateStyle}`}
-      >
-        {displayErrorMsg}
+      <div className="overflow-hidden">
+        <div
+          className={`${errorClassName} transition duration-300 slide-in-down ease-in-out pt-2 transform-gpu ${errorAnimateStyle}`}
+        >
+          {displayErrorMsg}
+        </div>
       </div>
     </div>
   )

@@ -23,7 +23,7 @@ import {
 } from './rpcMethods'
 export * as RPC_METHODS from './rpcMethods'
 export * as ROUTES from './route'
-export const LANGUAGES = []
+export const LANGUAGES = ['en', 'zh']
 export const ANIMATE_DURING_TIME = 300
 export const PASSWORD_REG_EXP = /^(?=.*\d)(?=.*[a-zA-Z]).{8,16}$/
 export const NETWORK_TYPE = {
@@ -62,9 +62,9 @@ export const LEDGER_OPEN_STATUS = {
 }
 
 export const HW_TX_STATUS = {
-  WAITING: 'waiting',
-  SUCCESS: 'success',
-  REJECTED: 'rejected',
+  WAITING: 'waiting', // only used for ledger account
+  SUCCESS: 'success', // only used for ledger account
+  REJECTED: 'rejected', // used for all accounts
 }
 
 export const HARDWARE_ACCOUNT_PAGE_LIMIT = 5
