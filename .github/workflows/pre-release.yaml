@@ -57,7 +57,7 @@ jobs:
 
       - name: Get PR Release
         uses: actions/github-script@v4
-        id: pre-release-number
+        id: get-release-version-and-tag
         env:
           NEXT_VERSION: ${{ steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION }}
         with:
@@ -67,15 +67,28 @@ jobs:
 
       - uses: release-drafter/release-drafter@v5
         if: ${{ github.head_ref != '__release-pkg' }}
+        id: create_draft_prod_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commitish: ${{ github.sha }}
+          name: Release ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).prod_tag }}
+          config-name: release-drafter-prod.yml
+          version: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).prod_version }}
+          tag: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).prod_tag }}
+          draft: true
+
+      - uses: release-drafter/release-drafter@v5
+        if: ${{ github.head_ref != '__release-pkg' }}
         id: create_draft_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           commitish: ${{ github.sha }}
           config-name: release-drafter-pre.yml
-          name: Pre release ${{ fromJSON(steps.pre-release-number.outputs.result).tag }}
-          version: ${{ fromJSON(steps.pre-release-number.outputs.result).version }}
-          tag: ${{ fromJSON(steps.pre-release-number.outputs.result).tag }}
+          name: Pre release ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).tag }}
+          version: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).version }}
+          tag: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).tag }}
           prerelease: true
 
       - uses: release-drafter/release-drafter@v5
@@ -86,9 +99,9 @@ jobs:
         with:
           commitish: ${{ github.sha }}
           config-name: release-drafter-pre.yml
-          name: Pre release ${{ fromJSON(steps.pre-release-number.outputs.result).tag }}
-          version: ${{ fromJSON(steps.pre-release-number.outputs.result).version }}
-          tag: ${{ fromJSON(steps.pre-release-number.outputs.result).tag }}
+          name: Pre release ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).tag }}
+          version: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).version }}
+          tag: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).tag }}
           prerelease: true
           publish: true
 
@@ -97,7 +110,7 @@ jobs:
         env:
           SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
           SNOWPACK_PUBLIC_FLUENT_ENV: "debug-release"
-          SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ fromJSON(steps.pre-release-number.outputs.result).version }}
+          SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).version }}
         run: yarn prod:release
 
       - uses: shogo82148/actions-upload-release-asset@v1

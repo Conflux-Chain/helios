@@ -16,5 +16,10 @@ module.exports = async ({github, context}) => {
       return Math.max(nextrc, rc)
     }, 0) + 1
 
-  return {version: `${nextver}-rc.${nextrc}`, tag: `v${nextver}-rc.${nextrc}`}
+  return {
+    version: `${nextver}-rc.${nextrc}`,
+    tag: `v${nextver}-rc.${nextrc}`,
+    prod_version: `${nextver}`,
+    prod_tag: `v${nextver}`,
+  }
 }
