@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useState, useEffect} from 'react'
@@ -22,7 +23,7 @@ import {RPC_METHODS} from '../../constants'
 const {WALLETDB_ACCOUNT_LIST_ASSETS} = RPC_METHODS
 
 function ConnectSitesList({
-  accountData,
+  accountGroupData,
   allCheckboxStatus,
   onSelectAllAccount,
   currentAddress,
@@ -30,7 +31,7 @@ function ConnectSitesList({
   checkboxStatusObj,
 }) {
   const {t} = useTranslation()
-  return accountData.length ? (
+  return accountGroupData.length ? (
     <>
       <CompWithLabel
         label={
@@ -65,7 +66,7 @@ function ConnectSitesList({
           id="accountWrapper"
           className="max-h-[282px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll"
         >
-          {accountData.map(({nickname, account, eid}) => (
+          {accountGroupData.map(({nickname, account, eid}) => (
             <div key={eid}>
               <p className="text-gray-40 ml-4 mb-1 mt-1 text-xs">{nickname}</p>
               {Object.values(account).map((accountItem, index) => (
@@ -119,7 +120,7 @@ function ConnectSitesList({
   ) : null
 }
 ConnectSitesList.propTypes = {
-  accountData: PropTypes.array.isRequired,
+  accountGroupData: PropTypes.array.isRequired,
   allCheckboxStatus: PropTypes.bool.isRequired,
   checkboxStatusObj: PropTypes.object.isRequired,
   currentAddress: PropTypes.object.isRequired,
@@ -139,7 +140,10 @@ function ConnectSite() {
 
   const {accountGroups, currentNetwork, currentAddress} =
     useDbAccountListAssets()
-  const accountData = Object.values(accountGroups || {})
+  const accountGroupData = Object.values(accountGroups || {})
+  const accountData = accountGroupData.reduce((acc, cur) => {
+    return {...acc, ...cur.account}
+  }, {})
 
   useEffect(() => {
     setSearchIcon(currentNetwork?.icon || '')
@@ -148,22 +152,25 @@ function ConnectSite() {
   }, [currentNetwork?.eid])
 
   useEffect(() => {
+    const accountDataKeys = Object.keys(accountData)
     if (
-      accountData.length &&
-      !Object.keys(checkboxStatusObj).length &&
-      currentAddress?.eid
+      accountDataKeys.length &&
+      currentAddress?.eid &&
+      accountDataKeys.length !== Object.keys(checkboxStatusObj).length
     ) {
       const ret = {}
-      accountData.forEach(({account}) =>
-        Object.values(account).forEach(accountItem => {
-          ret[accountItem.eid] =
-            accountItem.currentAddress.eid === currentAddress.eid
-        }),
-      )
+      accountDataKeys.forEach(eid => {
+        ret[eid] =
+          checkboxStatusObj?.[eid] ??
+          accountData[eid].currentAddress.eid === currentAddress.eid
+      })
       setCheckboxStatusObj({...ret})
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentAddress?.eid, accountData.length])
+  }, [
+    currentAddress?.eid,
+    Object.keys(accountData).length,
+    Object.keys(checkboxStatusObj).length,
+  ])
 
   useEffect(() => {
     setAllCheckboxStatus(
@@ -233,7 +240,7 @@ function ConnectSite() {
           </CompWithLabel>
 
           <ConnectSitesList
-            accountData={accountData}
+            accountGroupData={accountGroupData}
             allCheckboxStatus={allCheckboxStatus}
             currentAddress={currentAddress}
             onSelectSingleAccount={onSelectSingleAccount}
