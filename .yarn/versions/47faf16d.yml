@@ -1,8 +1,0 @@
-releases:
-  "@fluent-wallet/transducers": patch
-  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
-
-declined:
-  - helios-background
-  - "@fluent-wallet/rpc-engine"
-  - "@fluent-wallet/safe-event-emiter"
