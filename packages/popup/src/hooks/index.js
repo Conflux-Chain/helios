@@ -18,7 +18,7 @@ import {useHistory, useLocation} from 'react-router-dom'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
   useSingleTokenInfoWithNativeTokenSupport,
-  useIsZeroGroup,
+  useDataForPopup,
   useCurrentAddress,
   useNetworkTypeIsCfx,
   useAddressType,
@@ -32,7 +32,7 @@ const {HOME} = ROUTES
 export const useCreatedPasswordGuard = () => {
   const {createdPassword} = useGlobalStore()
   const history = useHistory()
-  const zeroGroup = useIsZeroGroup()
+  const {zeroGroup} = useDataForPopup()
 
   useEffect(() => {
     if (zeroGroup && !createdPassword) {
