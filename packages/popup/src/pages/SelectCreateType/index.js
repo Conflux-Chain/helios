@@ -33,7 +33,7 @@ function SelectCreateType() {
         <em className="not-italic text-xs text-gray-40 ml-1 mt-3 mb-2 inline-block">
           {t('createAccount')}
         </em>
-        {hdGroup?.length ? (
+        {hdGroup?.length && (
           <CreateTypeItem
             id="useExistingSeed"
             Icon={
@@ -46,7 +46,7 @@ function SelectCreateType() {
               history.push(CURRENT_SEED_PHRASE)
             }}
           />
-        ) : null}
+        )}
         <CreateTypeItem
           id="newSeedPhrase"
           Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
@@ -77,7 +77,7 @@ function SelectCreateType() {
             history.push(WALLET_IMPORT_PRIVATE_KEY)
           }}
         />
-        {zeroGroup === false ? (
+        {zeroGroup && (
           <CreateTypeItem
             id="hw"
             Icon={<img src="/images/hardware-wallet-icon.svg" alt="icon" />}
@@ -88,7 +88,7 @@ function SelectCreateType() {
               history.push(HARDWARE_GUARD)
             }}
           />
-        ) : null}
+        )}
       </main>
     </div>
   )

@@ -55,6 +55,8 @@ function HistoryItem({
   token,
   transactionUrl,
   hash,
+  copyButtonContainerClassName,
+  copyButtonToastClassName,
 }) {
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
@@ -173,16 +175,18 @@ function HistoryItem({
             </CustomTag>
           )}
         </div>
-        <div className="flex relative">
-          {hash ? (
+        <div className="flex">
+          {hash && (
             <CopyButton
               text={hash}
               className="w-3 h-3 text-primary"
+              containerClassName={copyButtonContainerClassName}
+              toastClassName={copyButtonToastClassName}
               CopyWrapper={WrapIcon}
               wrapperClassName="!w-5 !h-5"
             />
-          ) : null}
-          {transactionUrl ? (
+          )}
+          {transactionUrl && (
             <WrapIcon
               size="w-5 h-5 ml-2"
               id="openScanTxUrl"
@@ -190,7 +194,7 @@ function HistoryItem({
             >
               <SendOutlined className="w-3 h-3 text-primary" />
             </WrapIcon>
-          ) : null}
+          )}
         </div>
       </div>
       <div className="mt-3 flex items-center">
@@ -247,5 +251,7 @@ HistoryItem.propTypes = {
   hash: PropTypes.string,
   app: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   token: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
+  copyButtonContainerClassName: PropTypes.string,
+  copyButtonToastClassName: PropTypes.string,
 }
 export default HistoryItem
