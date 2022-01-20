@@ -8,10 +8,20 @@ pull_request_rules:
       review:
         type: APPROVE
         message: Automatically approving release package PR
+  - name: automatic update PR with merge
+    conditions:
+      - -conflict # skip PRs with conflicts
+      - -draft # filter-out GH draft PRs
+      - label!=work-in-progress
+      - label!=wip
+      - "head!=dev"
+      - "head!=main"
+    actions:
+      update:
   - name: Automatic queue to dev on approval [low]
     conditions:
       - "#approved-reviews-by>=1"
-      - "head!=__release-pkg"
+      # - "head!=__release-pkg"
       - label!=work-in-progress
       - label!=wip
       - "base~=^(dev|next)$"
@@ -26,27 +36,27 @@ pull_request_rules:
         method: squash
         update_method: merge
         require_branch_protection: true
-        priority: low
+        # priority: low
 
-  - name: Automatic queue to dev on approval [medium]
-    conditions:
-      - "#approved-reviews-by>=1"
-      - "head=__release-pkg"
-      - label!=work-in-progress
-      - label!=wip
-      - "base~=^(dev|next)$"
-      - -conflict
-      - -draft
-      - -locked
-      - "#check-pending=0"
-      - "#review-threads-unresolved=0"
-    actions:
-      queue:
-        name: default queue
-        method: squash
-        update_method: merge
-        require_branch_protection: true
-        priority: medium
+  # - name: Automatic queue to dev on approval [medium]
+  #   conditions:
+  #     - "#approved-reviews-by>=1"
+  #     - "head=__release-pkg"
+  #     - label!=work-in-progress
+  #     - label!=wip
+  #     - "base~=^(dev|next)$"
+  #     - -conflict
+  #     - -draft
+  #     - -locked
+  #     - "#check-pending=0"
+  #     - "#review-threads-unresolved=0"
+  #   actions:
+  #     queue:
+  #       name: default queue
+  #       method: squash
+  #       update_method: merge
+  #       require_branch_protection: true
+  #       priority: medium
 
 queue_rules:
   - name: default queue
