@@ -109,6 +109,7 @@ module.exports = {
           'Arial',
           'sans-serif',
         ],
+        zh: 'PingFang SC',
       },
       minHeight: {
         8: '2rem',

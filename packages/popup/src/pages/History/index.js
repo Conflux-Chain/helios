@@ -72,6 +72,10 @@ function History() {
                 app={app}
                 token={token}
                 hash={hash}
+                copyButtonContainerClassName={index === 0 ? '' : undefined}
+                copyButtonToastClassName={
+                  index === 0 ? 'top-10 right-3' : undefined
+                }
                 transactionUrl={transactionUrls?.[index]}
               />
             ),

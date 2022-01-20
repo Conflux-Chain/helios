@@ -143,10 +143,10 @@ function AccountItem({
             <Input
               width="w-[188px]"
               maxLength="20"
-              containerClassName={`border-none absolute -top-px left-0 bg-transparent text-sm h-[18px] ${
+              containerClassName={`border-none absolute align-top top-0 left-0 bg-transparent text-sm h-[18px] ${
                 showInputStatus ? 'visible' : 'invisible'
               }`}
-              className="!p-0 text-gray-60"
+              className="!p-0 text-gray-60 h-[18px]"
               ref={inputRef}
               value={inputNickname}
               onChange={e => setInputNickname(e.target.value)}
