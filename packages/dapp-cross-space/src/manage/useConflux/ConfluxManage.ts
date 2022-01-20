@@ -11,15 +11,18 @@ export interface CrossSpaceContract {
 export const confluxNetworkConfig = {
   '12000': {
     networkId: 12000,
-    url: 'https://evmnet.confluxrpc.com',
+    url: 'https://net12000cfx.confluxrpc.com',
+    evmSpaceUrl: 'https://net12001eth.confluxrpc.com'
   },
   '1029': {
     networkId: 1029,
     url: 'https://main.confluxrpc.com',
+    evmSpaceUrl: 'https://main.confluxrpc.com'
   },
   '1': {
     networkId: 1,
     url: 'https://test.confluxrpc.com',
+    evmSpaceUrl: 'https://test.confluxrpc.com'
   },
 } as const
 

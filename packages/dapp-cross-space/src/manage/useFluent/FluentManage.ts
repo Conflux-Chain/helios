@@ -187,7 +187,7 @@ class FluentManage {
             symbol: 'CFX',
             decimals: 18,
           },
-          rpcUrls: ['https://evmnet.confluxrpc.com'],
+          rpcUrls: ['https://net12000cfx.confluxrpc.com'],
           blockExplorerUrls: ['https://confluxscan.io'],
         },
       ],

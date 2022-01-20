@@ -40,7 +40,7 @@ class EvmManage {
     }
 
     try {
-      const balance = await fetch(this.networkConfig.value.url, {
+      const balance = await fetch(this.networkConfig.value.evmSpaceUrl, {
         body: JSON.stringify({
           jsonrpc: '2.0',
           method: 'eth_getBalance',
@@ -120,7 +120,7 @@ class EvmManage {
             symbol: 'CFX',
             decimals: 18,
           },
-          rpcUrls: ['https://evmnet.confluxrpc.com'],
+          rpcUrls: ['https://net12001eth.confluxrpc.com'],
           blockExplorerUrls: ['https://confluxscan.io'],
         },
       ],

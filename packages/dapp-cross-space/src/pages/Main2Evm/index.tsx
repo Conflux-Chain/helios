@@ -59,7 +59,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
           transactionSubmittedKey = showTransactionSubmitted(TxnHash)
           trackBalanceChangeOnce(() => {
             hideTransactionSubmitted(transactionSubmittedKey)
-            showToast('It seems you have sent CFX to EVM Space.')
+            showToast('It seems transfer CFX to EVM Space success.')
           })
         } catch (err) {
           console.error('SendTransaction to EVM Space error: ', err)
@@ -95,6 +95,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
       </div>
 
       <button
+        id="btn-goto-evm2main"
         className="absolute left-[50%] translate-x-[-50%] top-[110px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-10 hover:scale-110 transition-transform"
         onClick={handleClickFlipped}
       >
@@ -198,7 +199,7 @@ const AmountInput: React.FC<{
         </div>
       </div>
       <p className="text-[14px] text-[#3D3F4C]">
-        <span className="text-[#2959B4]">Core-Chain</span> Balance:
+        <span className="text-[#2959B4]" id="core-chain-balance">Core-Chain</span> Balance:
         {typeof balance !== 'undefined' ? (
           (balance.drip !== 0n && balance.drip < Unit.fromDecimalCfx('0.000001').drip) ? (
             <span
@@ -215,7 +216,7 @@ const AmountInput: React.FC<{
           ''
         )}
       </p>
-      <p className="mt-[20px] text-[14px] text-[#3D3F4C]">
+      <p className="mt-[20px] text-[14px] text-[#3D3F4C]" id="will-receive">
         Will receive on <span className="text-[#15C184]">EVM-Chain</span>:{' '}
         <span id="receivedCFX"></span>
       </p>
@@ -230,6 +231,7 @@ const TransferButton: React.FC = memo(() => {
   return (
     <>
         <button
+          id="btn-transfer"
           type="submit"
           className="mt-[24px] w-full h-[48px] button"
           disabled={!isSupportEvmSpace || maxAvailableBalance === undefined || maxAvailableBalance.drip === 0n}
