@@ -1,30 +1,38 @@
+queue_rules:
+  - name: default queue
+    conditions:
+      - label!=work-in-progress
+      - label!=wip
+      - status-success~=^build\s\(.*\)$
+      - "#check-pending=0"
+
 pull_request_rules:
   - name: automatic approval for release package PR
     conditions:
       - author~=^ConfluxBot$
-      - "base=dev"
-      - "head=__release-pkg"
+      - base=dev
+      - head=__release-pkg
     actions:
       review:
         type: APPROVE
         message: Automatically approving release package PR
   - name: automatic update PR with merge
     conditions:
-      - -conflict # skip PRs with conflicts
-      - -draft # filter-out GH draft PRs
+      - -conflict
+      - -draft
       - label!=work-in-progress
       - label!=wip
-      - "head!=dev"
-      - "head!=main"
+      - head!=dev
+      - head!=main
     actions:
       update:
   - name: Automatic queue to dev on approval [low]
     conditions:
       - "#approved-reviews-by>=1"
-      # - "head!=__release-pkg"
       - label!=work-in-progress
       - label!=wip
-      - "base~=^(dev|next)$"
+      - base=dev
+      - head!=next
       - -conflict
       - -draft
       - -locked
@@ -34,33 +42,3 @@ pull_request_rules:
       queue:
         name: default queue
         method: squash
-        update_method: merge
-        require_branch_protection: true
-        # priority: low
-
-  # - name: Automatic queue to dev on approval [medium]
-  #   conditions:
-  #     - "#approved-reviews-by>=1"
-  #     - "head=__release-pkg"
-  #     - label!=work-in-progress
-  #     - label!=wip
-  #     - "base~=^(dev|next)$"
-  #     - -conflict
-  #     - -draft
-  #     - -locked
-  #     - "#check-pending=0"
-  #     - "#review-threads-unresolved=0"
-  #   actions:
-  #     queue:
-  #       name: default queue
-  #       method: squash
-  #       update_method: merge
-  #       require_branch_protection: true
-  #       priority: medium
-
-queue_rules:
-  - name: default queue
-    conditions:
-      - label!=work-in-progress
-      - label!=wip
-      - "base~=^(dev|next)$"
