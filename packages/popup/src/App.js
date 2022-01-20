@@ -1,6 +1,7 @@
 import {ErrorBoundary} from 'react-error-boundary'
 import {isUndefined} from '@fluent-wallet/checks'
 import React, {Suspense, cloneElement, useEffect} from 'react'
+import {useTranslation} from 'react-i18next'
 import {
   HashRouter as Router,
   Redirect,
@@ -15,6 +16,7 @@ import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
 import PageLoading from './hooks/useLoading/PageLoading'
 import './App.css'
 import useGlobalStore from './stores/index.js'
+import {formatLocalizationLang} from './utils'
 // import {getPageType} from './utils'
 
 import ErrorPage from './pages/Error'
@@ -226,6 +228,7 @@ const AppRoutes = withRouter(
       location.pathname === WALLET_UNLOCK ||
       location.pathname === ERROR ||
       history.length === 1
+    const {i18n} = useTranslation()
 
     return (
       <div
@@ -234,7 +237,7 @@ const AppRoutes = withRouter(
           FULL_WINDOW_ROUTES.includes(location.pathname)
             ? 'h-screen w-full'
             : 'h-150 w-93'
-        }`}
+        } ${formatLocalizationLang(i18n.language) === 'zh' ? 'font-zh' : ''}`}
       >
         <TransitionGroup
           component={null}
