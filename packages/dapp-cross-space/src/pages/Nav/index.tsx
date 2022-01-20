@@ -134,6 +134,7 @@ const Nav: React.FC = () => {
           )}
           {!isConnected && (
             <button
+              id="btn-connect-nav"
               className="button text-[14px] h-[40px]"
               disabled={!!account}
               onClick={handleClickConnect}
@@ -147,7 +148,7 @@ const Nav: React.FC = () => {
             </button>
           )}
           {isConnected && account && (
-            <div className="flex justify-end items-center ml-[12px] pr-[4px] text-[14px] bg-white w-[252px] h-[40px] rounded-[54px] text-[#3D3F4C]">
+            <div className="flex justify-end items-center ml-[12px] pr-[4px] text-[14px] bg-white w-[256px] h-[40px] rounded-[54px] text-[#3D3F4C]">
               <span className="nav-spin mr-[4px]" />
               Core-Chain
               <ShortenAddress
