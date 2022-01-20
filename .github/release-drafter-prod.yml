@@ -63,7 +63,11 @@ autolabeler:
       - '/BREAKING\sCHANGE/'
 
 replacers:
-  - search: '/\* chore\(release-pkg\): release packages.*$/'
+  - search: '/\*\schore.*$/'
+    replace: ""
+  - search: '/\*\sci.*$/'
+    replace: ""
+  - search: '/\*\sdoc.*$/'
     replace: ""
 
 template: |
