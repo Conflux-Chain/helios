@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/wallet_refetch-balance": patch
+
+declined:
+  - helios-background
