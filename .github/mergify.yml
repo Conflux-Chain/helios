@@ -35,7 +35,6 @@ pull_request_rules:
       - -conflict
       - -draft
       - -locked
-      - "#check-pending=0"
       - "#review-threads-unresolved=0"
     actions:
       queue:
