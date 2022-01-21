@@ -166,19 +166,21 @@ function AccountItem({
       >
         <KeyOutlined className="w-3 h-3 text-primary" />
       </WrapIcon>
-      <WrapIcon
-        size="w-5 h-5 ml-3"
-        id="switch-account"
-        onClick={() => onSwitchAccount(!hidden)}
-      >
-        <div>
-          {hidden ? (
-            <LeftSwitchOutlined className="w-4 h-4 text-gray-40" />
-          ) : (
-            <RightSwitchOutlined className="w-4 h-4 text-primary" />
-          )}
-        </div>
-      </WrapIcon>
+      {groupType !== 'pk' && (
+        <WrapIcon
+          size="w-5 h-5 ml-3"
+          id="switch-account"
+          onClick={() => onSwitchAccount(!hidden)}
+        >
+          <div>
+            {hidden ? (
+              <LeftSwitchOutlined className="w-4 h-4 text-gray-40" />
+            ) : (
+              <RightSwitchOutlined className="w-4 h-4 text-primary" />
+            )}
+          </div>
+        </WrapIcon>
+      )}
       {/* delete pk account group */}
       {groupType === 'pk' && showDelete && (
         <div
