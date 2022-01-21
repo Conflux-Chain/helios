@@ -32,8 +32,12 @@ input::-webkit-inner-spin-button {
 .main-content {
   @apply absolute p-[24px] rounded-[16px] bg-white;
 
-  box-shadow: 0 8px 16px rgba(164 170 216 / 80%);
+  box-shadow: 0 8px 16px rgba(164 170 216 / 8%);
   will-change: transform, opacity;
   backface-visibility: visible;
   contain: layout style;
+}
+
+.turn-btn {
+  box-shadow: 0 2px 8px rgba(75 100 233 / 12%);
 }

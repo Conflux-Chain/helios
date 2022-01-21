@@ -81,7 +81,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
 
       <button
         id="btn-goto-main2evm"
-        className="absolute left-[50%] translate-x-[-50%] top-[76px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-10 hover:scale-110 transition-transform"
+        className="turn-btn absolute left-[50%] translate-x-[-50%] top-[76px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-10 hover:scale-110 transition-transform"
         onClick={handleClickFlipped}
       >
         <img

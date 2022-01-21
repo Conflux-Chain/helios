@@ -35,3 +35,7 @@
     opacity: 0;
   }
 }
+
+.beta {
+  background: linear-gradient(270.89deg, #ffe99c -7.44%, #fff3d3 110.32%);
+}
