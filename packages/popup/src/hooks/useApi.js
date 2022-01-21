@@ -64,17 +64,21 @@ export const useCurrentAddress = (notSendReq = false) => {
 }
 
 export const useCurrentDapp = () => {
+  const {locked: isLocked} = useDataForPopup()
+
   const {
     data: {eid: addressId},
   } = useCurrentAddress()
+
   const {data, mutate} = useRPC(
-    [WALLET_GET_CURRENT_DAPP, addressId],
+    isLocked === false && isNumber(addressId)
+      ? [WALLET_GET_CURRENT_DAPP, addressId]
+      : null,
     undefined,
     {
       fallbackData: {},
     },
   )
-
   return {data, mutate}
 }
 
