@@ -112,6 +112,7 @@ const Nav: React.FC = () => {
           />
           <h4 className="text-[16px] leading-[22px] font-medium">
             Conflux Network
+            <span className='beta ml-[8px] inline-block w-[35px] h-[18px] leading-[18px] rounded-[2px] text-center text-[12px] text-[#7B492D] translate-y-[-2px]'>Beta</span>
           </h4>
         </div>
 
