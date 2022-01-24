@@ -73,7 +73,7 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           flags: unittests
-          directory: ./coverage
+          directory: ./coverage/ut
           functionalities: coveragepy, html
           verbose: true
 
@@ -107,7 +107,7 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           flags: integrationtests
-          directory: ./coverage
+          directory: ./coverage/integration
           functionalities: coveragepy, html
           verbose: true
 
