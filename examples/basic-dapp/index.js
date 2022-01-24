@@ -322,6 +322,7 @@ function isFluentInstalled() {
 
 function walletInitialized({chainId, networkId}) {
   const provider = window.cfx
+
   getElement('initialized').innerHTML = 'initialized'
   getElement('chainId').innerHTML = chainId
   getElement('networkId').innerHTML = networkId
@@ -341,6 +342,13 @@ function walletInitialized({chainId, networkId}) {
   const switchNetworkButton = getElement('switch_network')
   const addTokenButton = getElement('add_token')
   const deployContract = getElement('deploy_contract')
+
+  provider.on('accountsChanged', accounts => {
+    console.log('accountsChcanged, accounts = ', accounts)
+    if (!accounts.length) return
+    getElement('address').innerHTML = accounts[0]
+    connectButton.disabled = true
+  })
 
   connectButton.disabled = false
   connectButton.onclick = () => {

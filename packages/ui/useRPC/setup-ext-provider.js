@@ -21,6 +21,6 @@ export const setupExtProvider = ({name = RUNTIME_NAME} = {}) => {
 
   const {send, stream} = rpcStream(port)
 
-  globalThis.___CFXJS_USE_RPC__PRIVIDER = initProvider(stream, send)
+  globalThis.___CFXJS_USE_RPC__PRIVIDER = initProvider(stream, send, true)
   return globalThis.___CFXJS_USE_RPC__PRIVIDER
 }

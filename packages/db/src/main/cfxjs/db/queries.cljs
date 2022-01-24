@@ -1,5 +1,6 @@
 (ns cfxjs.db.queries
   (:require
+   [medley.core :refer [deep-merge]]
    ["@ethersproject/bignumber" :as bn]
    [clojure.walk :refer [postwalk walk]]
    [cfxjs.spec.cljs]
@@ -1166,6 +1167,26 @@
                               (assoc :token (and token (e :token token))))))
                       txs)})))
 
+(defonce default-preferences {:hideTestNetwork false
+                              :usePortalCompatibleProviderAPI true})
+
+(defn get-preferences []
+  (let [preferences (or (:preferences
+                         (q '[:find (pull ?p [:preferences]) .
+                              :where
+                              [?p :preferences]]))
+                        default-preferences)]
+    preferences))
+
+(defn set-preferences [preferences]
+  (let [preferences (deep-merge default-preferences (or preferences {}))
+        pref-id     (or (q '[:find ?p .
+                             :where [?p :preferences]])
+                        -1)
+        txs         [{:db/id pref-id :preferences preferences}]]
+    (t txs)
+    true))
+
 (def queries {:batchTx
               (fn [txs]
                 (let [txs (-> txs js/window.JSON.parse j->c)
@@ -1215,6 +1236,8 @@
               :upsertTokenList                 upsert-token-list
               :retractNetwork                  retract-network
               :retractGroup                    retract-group
+              :setPreferences                  set-preferences
+              :getPreferences                  get-preferences
 
               :queryqueryApp              get-apps
               :queryqueryAddress          get-address
