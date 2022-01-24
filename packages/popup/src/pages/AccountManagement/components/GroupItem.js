@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types'
+import {useState} from 'react'
 import {useTranslation} from 'react-i18next'
 import {isNumber} from '@fluent-wallet/checks'
 import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS} from '../../../constants'
 import {AccountItem} from './'
+import {TextField} from '../../../components'
 const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_DELETE_ACCOUNT_GROUP} = RPC_METHODS
 
 function GroupItem({
@@ -16,6 +18,8 @@ function GroupItem({
   accountGroupId,
 }) {
   const {t} = useTranslation()
+  const [inputNickname, setInputNickname] = useState(nickname)
+
   const onDeleteAccountGroup = () => {
     if (isNumber(currentAccountId)) {
       if (account.find(({eid}) => eid === currentAccountId)) {
@@ -30,11 +34,24 @@ function GroupItem({
       })
     }
   }
+  const onTextFieldBlur = () => {
+    console.log('inputNickname', inputNickname)
+  }
 
   return (
     <div className="bg-gray-0 rounded mt-3 mx-3">
       {groupType === 'pk' ? null : (
-        <p className="text-gray-40 ml-4 mb-1 text-xs pt-3">{nickname}</p>
+        <div className="pt-3">
+          <TextField
+            textValue={nickname}
+            inputValue={inputNickname}
+            onInputBlur={onTextFieldBlur}
+            onInputChange={setInputNickname}
+            className="text-gray-40 ml-4 mb-1"
+            fontSize="!text-xs"
+            height="!h-4"
+          />
+        </div>
       )}
       {account.map(({nickname, eid, hidden}) => (
         <AccountItem
