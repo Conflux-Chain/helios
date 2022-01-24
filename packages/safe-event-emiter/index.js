@@ -9,7 +9,7 @@ export default class SafeEventEmitter {
   #allowedEventType = []
   #listeners = new Map()
   constructor(opts = {}) {
-    const {allowedEventType = []} = opts
+    const {allowedEventType = [], streamCacheLast = false} = opts
     this.#allowedEventType = allowedEventType
     this.#pb = pubsub({topic: ({topic} = {}) => topic})
     this.#pb.closeIn = CloseMode.NEVER
@@ -24,7 +24,7 @@ export default class SafeEventEmitter {
       const s = stream({
         closeIn: CloseMode.NEVER,
         closeOut: CloseMode.NEVER,
-        cache: true,
+        cache: streamCacheLast,
         id: `topic-${eventType}`,
       })
       this.#pb.subscribeTopic(eventType, s, {xform: pluck('data')})
