@@ -264,7 +264,7 @@ const en = {
 
     // Network Management
     networkManagement: 'Network Management',
-    newRpcUrl: 'New RPC URL',
+    newRpcUrl: 'RPC URL',
     networkType: 'Network Type',
     wrongRpcUrl: 'Could not fetch chain ID. Is your RPC URL correct?',
     networkDeleteWarning: 'Can not delete current network.',
