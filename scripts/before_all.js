@@ -27,7 +27,7 @@ frame-src 'self' http://localhost:* data: chrome-extension-resource:;
 font-src 'self' data: chrome-extension-resource:;
 media-src * data: blob: filesystem:;",`.replaceAll('\n', ' ')
       : '',
-    name: isDev() ? 'AFluent' : 'Fluent',
+    name: isDev() ? 'AFluent' : '__MSG_extensionNAME__',
     backgroundScripts: isDev()
       ? '"reload.js","background.dev.js"'
       : '"background/dist/index.prod.js"',
