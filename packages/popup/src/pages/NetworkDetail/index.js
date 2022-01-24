@@ -78,8 +78,8 @@ function NetworkDetail() {
     }
   }, [setNetworkInfo])
 
-  const canAddNetwork =
-    isAddingChain &&
+  const canSave =
+    (isAddingChain || networkInfo?.networkType == 'custom') &&
     networkFieldValues.chainName &&
     networkFieldValues.rpcUrl &&
     networkFieldValues.chainId &&
@@ -209,11 +209,11 @@ function NetworkDetail() {
     <div id="network-detail" className="bg-bg pb-4 h-full w-full flex flex-col">
       <TitleNav title={t('networkManagement')} />
       <div className="flex-1 overflow-y-auto no-scroll px-3 mt-1">
-        {FORM_ITEMS.map(({labelKey, valueKey}, index) => (
+        {FORM_ITEMS.map(({labelKey, valueKey}) => (
           <CompWithLabel
             label={t(labelKey)}
             key={labelKey}
-            className={`${index === 0 ? '!mt-0' : '!mt-2'}`}
+            className="!mt-0"
             labelClassName="!text-gray-40"
           >
             <Input
@@ -221,12 +221,12 @@ function NetworkDetail() {
               readonly={
                 valueKey === 'networkType' ||
                 valueKey === 'chainId' ||
-                !isAddingChain
+                (!isAddingChain && networkInfo?.networkType !== 'custom')
               }
               disabled={
                 valueKey === 'networkType' ||
                 valueKey === 'chainId' ||
-                !isAddingChain
+                (!isAddingChain && networkInfo?.networkType !== 'custom')
               }
               value={
                 valueKey === 'chainId'
@@ -248,23 +248,35 @@ function NetworkDetail() {
       </div>
       {isAddingChain && (
         <Button
-          id="save-btn"
+          id="save-network-btn"
           className="mx-3"
-          disabled={!canAddNetwork}
+          disabled={!canSave}
           onClick={onAddNetwork}
         >
           {t('save')}
         </Button>
       )}
       {networkInfo?.networkType === 'custom' && (
-        <Button
-          id="delete-btn"
-          className="mx-3"
-          onClick={onClickDeleteNetwork}
-          danger={true}
-        >
-          {t('delete')}
-        </Button>
+        <div className="mx-3 flex">
+          <Button
+            id="delete-btn"
+            className="flex-1 mr-3"
+            variant="outlined"
+            onClick={onClickDeleteNetwork}
+            danger={true}
+          >
+            {t('delete')}
+          </Button>
+          <Button
+            id="edit-btn"
+            className="flex-1"
+            disabled={!canSave}
+            // TODO: replace with edit network fuc
+            onClick={onClickDeleteNetwork}
+          >
+            {t('save')}
+          </Button>
+        </div>
       )}
       {networkInfo?.networkType === 'custom' &&
         !isUndefined(currentNetworkId) && (
