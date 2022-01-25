@@ -1168,7 +1168,7 @@
                       txs)})))
 
 (defonce default-preferences {:hideTestNetwork false
-                              :usePortalCompatibleProviderAPI true})
+                              :useMordenProviderAPI true})
 
 (defn get-preferences []
   (let [preferences (or (:preferences
