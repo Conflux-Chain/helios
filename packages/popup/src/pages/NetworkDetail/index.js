@@ -214,7 +214,7 @@ function NetworkDetail() {
             label={t(labelKey)}
             key={labelKey}
             className="!mt-0"
-            labelClassName="!text-gray-40"
+            labelClassName="!text-gray-40 !mb-1"
           >
             <Input
               width="w-full"
