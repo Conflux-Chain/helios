@@ -109,6 +109,21 @@ function AccountItem({
     }
   }
 
+  const onDeletePkAccountGroup = () => {
+    if (isNumber(currentAccountId)) {
+      if (accountId === currentAccountId) {
+        return Message.warning({
+          content: t('groupDeleteWarning'),
+          top: '10px',
+          duration: 1,
+        })
+      }
+      onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
+        accountGroupId,
+      })
+    }
+  }
+
   return (
     <div
       aria-hidden="true"
@@ -186,11 +201,7 @@ function AccountItem({
         <div
           aria-hidden="true"
           className="text-xs cursor-pointer text-gray-60 hover:text-primary ml-3"
-          onClick={() =>
-            onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
-              accountGroupId,
-            })
-          }
+          onClick={onDeletePkAccountGroup}
         >
           {t('delete')}
         </div>
