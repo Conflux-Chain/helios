@@ -10,7 +10,7 @@ import './index.css'
 const Nav: React.FC = () => {
   const {account, isConnected, chainId} = useFluent()
   const [showAddedEvmChainToFluent, setShowAddedEvmChainToFluent] = useState(false)
-  const [showAddedEvmChainToMetaMask, setShowAddedEvmChainToMetaMask] = useState(false)
+  const [showAddedEvmChainToMetaMask, setShowAddedEvmChainToMetaMask] = useState(true)
 
   // delete this after testnet ready
   const checkNetwork = useCallback(async () => {
@@ -21,26 +21,17 @@ const Nav: React.FC = () => {
       })
     } catch (err) {
         if (!((err as {code: number})?.code === 4001 && (err as any)?.message?.indexOf('UserRejected') !== -1)) {
-          showToast("You haven't add EVM-Chain in fluent, Please click the top button to add.", {key: 'switch-fluent'});
+          showToast("You haven't add EVM-Space in fluent, Please click the top button to add.", {key: 'switch-fluent'});
           setShowAddedEvmChainToFluent(true);
         }
     }
 
-    try {
-      if (!window.ethereum) {
-        showToast("You don't have MetaMask installed", {key: 'not-installed-metamask'})
-        return;
-      }
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{chainId: '0x2ee1'}],
-      })
-    } catch (err) {
-        if (!((err as {code: number})?.code === 4001 && (err as any)?.message === 'User rejected the request.')) {
-          showToast("You haven't add EVM-Chain in MetaMask, Please click the top button to add.", {key: 'switch-metamask'});
-          setShowAddedEvmChainToMetaMask(true);
-        }
+    if (!window.ethereum) {
+      showToast("You don't have MetaMask installed", {key: 'not-installed-metamask'});
+      setShowAddedEvmChainToFluent(false)
+      return;
     }
+    setShowAddedEvmChainToFluent(true)
   }, []);
 
   useEffect(() => {
@@ -56,7 +47,7 @@ const Nav: React.FC = () => {
     try {
       await addEVMChain()
       hideToast('switch-fluent')
-      showToast('Added EVM-Chain to Fluent Success!')
+      showToast('Added EVM-Space to Fluent Success!')
       setShowAddedEvmChainToFluent(false)
       await window.conflux!.request({
         method: 'wallet_switchConfluxChain',
@@ -74,13 +65,7 @@ const Nav: React.FC = () => {
     }
     try {
       await addEVMChainToMetaMask()
-      hideToast('switch-metamask')
-      showToast('Added EVM-Chain to MetaMask Success!')
-      setShowAddedEvmChainToMetaMask(false)
-      await window.ethereum!.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{chainId: '0x2ee1'}],
-      })
+      showToast('Added EVM-Space to MetaMask Success!')
     } catch (err) {
       console.error(err)
     }
@@ -122,7 +107,7 @@ const Nav: React.FC = () => {
               className="button text-[14px] h-[40px]"
               onClick={handleClickAddEVMChainToMetaMask}
             >
-              Add EVM-Chain To MetaMask
+              Add EVM-Space To MetaMask
             </button>
           )}
           {isConnected && showAddedEvmChainToFluent && chainId !== '12000' && (
@@ -130,7 +115,7 @@ const Nav: React.FC = () => {
               className="button text-[14px] h-[40px] ml-[12px]"
               onClick={handleClickAddEVMChainToFluent}
             >
-              Add EVM-Chain To Fluent
+              Add EVM-Space To Fluent
             </button>
           )}
           {!isConnected && (
@@ -149,9 +134,9 @@ const Nav: React.FC = () => {
             </button>
           )}
           {isConnected && account && (
-            <div className="flex justify-end items-center ml-[12px] pr-[4px] text-[14px] bg-white w-[256px] h-[40px] rounded-[54px] text-[#3D3F4C]">
+            <div className="flex justify-end items-center ml-[12px] pr-[4px] text-[14px] bg-white w-[264px] h-[40px] rounded-[54px] text-[#3D3F4C]">
               <span className="nav-spin mr-[4px]" />
-              Core-Chain
+              Native-Space
               <ShortenAddress
                 className="h-[32px] px-[8px] ml-[8px] text-[#808BE7] bg-[#F8F9FE] rounded-[54px] dfn-right"
                 text={account}
