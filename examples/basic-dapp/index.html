@@ -1,98 +1,150 @@
-<!doctype html>
-<html class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Fluent Demo - Basic Dapp</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-        <!-- Place favicon.ico in the root directory -->
-
-    </head>
-    <body>
-        <!--[if lt IE 8]>
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Fluent Demo - Basic Dapp</title>
+  <meta name="description" content="">
+  <meta name="viewport" content=
+  "width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href=
+  "https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+  <!-- Place favicon.ico in the root directory -->
+</head>
+<body>
+  <main class="container">
+    <!--[if lt IE 8]>
             <p class="browserupgrade">
             You are using an <strong>outdated</strong> browser. Please
             <a href="http://browsehappy.com/">upgrade your browser</a> to improve
             your experience.
             </p>
         <![endif]-->
-        <section>
-            <h4>Install</h4>
-            <p>Fluent Wallet is <span id='installed'>not installed</span></p>
-        </section>
-        <div id="installed">
-            <section>
-                <h4>Initialize</h4>
-                <p>
-                    Fluent Wallet is <span id='initialized'>initializing</span>
-                    <br/>
-                    chainId: <span id='chainId'>n/a</span>
-                    <br/>
-                    networkId: <span id='networkId'>n/a</span>
-                </p>
-            </section>
-            <section>
-                <h4>Connect</h4>
-                <button id='connect' disabled=true>Connect Wallet</button>
-                <p>Address: <span id='address'>n/a</span></p>
-            </section>
-            <section>
-                <h4>send native token</h4>
-                <button id='send_native_token' disabled=true>send native token to myself</button>
-                <p>Result: <span id='send_native_token_result'>n/a</span></p>
-            </section>
-            <section>
-              <h4>approve (cUSDT)</h4>
-              <div>
-                <span>spender address </span><input type="text" id="approve-account">
-              </div>
-              <button id='approve' disabled=true>approve 100 cUSDT limit</button>
-            </section>
-            <section>
-              <h4>transfer from (cUSDT)</h4>
-              <div>
-                <span>from  </span><input type="text" id="from-account">
-              </div>
-              <br/>
-              <button id='transfer_from' disabled=true>transfer 10 cUSDT</button>
-              <div>
-                <span>to  </span><input type="text" id="to-account">
-              </div>
-            </section>
-            <section>
-                <h4>personal sign</h4>
-                <button id='personal_sign' disabled=true>personal_sign</button>
-                <p>Result: <span id='personal_sign_result'>n/a</span></p>
-            </section>
-            <section>
-                <h4>typed sign</h4>
-                <button id='typed_sign' disabled=true>typed_sign</button>
-                <p>Result: <span id='typed_sign_result'>n/a</span></p>
-            </section>
-            <section>
-                <h4>Deploy Contract</h4>
-                <button id='deploy_contract' disabled=true>Deploy Contract</button>
-                <p>Result: <span id='deploy_contract_result'></span></p>
-            </section>
-            <section>
-                <h4>add token</h4>
-                <button id='add_token' disabled=true>add token</button>
-            </section>
-            <section>
-                <h4>add network</h4>
-                <button id='add_network' disabled=true>add network</button>
-            </section>
-            <section>
-                <h4>switch network</h4>
-                <button id='switch_network' disabled=true>switch network</button>
-            </section>
-        </div>
-
-
-        <script type="module">
-         import './index.js'
-        </script>
-    </body>
+    <article>
+      <header>
+        Install
+      </header>
+      <p>Fluent Wallet is <span id='installed'>not
+      installed</span></p>
+      <footer>
+        Fluent Version: <span id='version'>N/A</span>
+      </footer>
+    </article>
+    <article id="deprecated-provider-api-warning" style=
+    "display:none">
+      <header>
+        Deprecaterd Provider API
+      </header>
+      <p>Fluent is using the ConfluxPortal compatible provider
+      API.</p>
+      <p>Please use <a href=
+      "https://conflux-portal-docs.conflux-chain.org/e2e_test_demo/">
+      ConfluxPortal E2E test Dapp</a> as example code</p>
+      <p>Please turn the <code>Use Morden Provider API</code>
+      preference on in Fluent if you want to develop on the new
+      provider API.</p>
+    </article>
+    <div id="installed-section" style="display:none">
+      <article>
+        <header>
+          Initialize
+        </header>
+        <p>Fluent Wallet is <span id=
+        'initialized'>initializing</span></p>
+        <footer>
+          <code>chainId</code>: <span id='chainId'>N/A</span><br>
+          <code>networkId</code>: <span id='networkId'>N/A</span>
+        </footer>
+      </article>
+      <article>
+        <header>
+          Connect
+        </header><button id='connect' disabled="true">Connect
+        Wallet</button>
+        <footer>
+          Address: <span id='address'>N/A</span>
+        </footer>
+      </article>
+      <article>
+        <header>
+          Send native token
+        </header><button id='send_native_token' disabled=
+        "true">send native token to myself</button>
+        <footer>
+          Result: <span id='send_native_token_result'>N/A</span>
+        </footer>
+      </article>
+      <article>
+        <header>
+          Approve (cUSDT)
+        </header>
+        <form>
+          <label>Spender Address <input type="text" id=
+          "approve-account"></label> <button id='approve' disabled=
+          "true">approve 100 cUSDT limit</button>
+        </form>
+      </article>
+      <article>
+        <header>
+          Transfer from (cUSDT)
+        </header>
+        <form>
+          <label>From <input type="text" id="from-account"></label>
+          <button id='transfer_from' disabled="true">transfer 10
+          cUSDT</button> <label>To</label> <input type="text" id=
+          "to-account">
+        </form>
+      </article>
+      <article>
+        <header>
+          Personal Sign
+        </header><button id='personal_sign' disabled=
+        "true">personal_sign</button>
+        <footer>
+          Result: <span id='personal_sign_result'>N/A</span>
+        </footer>
+      </article>
+      <article>
+        <header>
+          Typed Sign
+        </header><button id='typed_sign' disabled=
+        "true">typed_sign</button>
+        <footer>
+          Result: <span id='typed_sign_result'>N/A</span>
+        </footer>
+      </article>
+      <article>
+        <header>
+          Deploy Contract
+        </header><button id='deploy_contract' disabled=
+        "true">Deploy Contract</button>
+        <footer>
+          Result: <span id='deploy_contract_result'>N/A</span>
+        </footer>
+      </article>
+      <article>
+        <header>
+          Add Token
+        </header><button id='add_token' disabled="true">Add
+        Token</button>
+      </article>
+      <article>
+        <header>
+          Add Network
+        </header><button id='add_network' disabled="true">Add
+        Network</button>
+      </article>
+      <article>
+        <header>
+          Switch Network
+        </header><button id='switch_network' disabled="true">Switch
+        Network</button>
+      </article>
+    </div>
+    <script type="module">
+    import './index.js'
+    </script>
+  </main>
+</body>
 </html>
