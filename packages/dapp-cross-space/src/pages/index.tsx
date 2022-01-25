@@ -9,7 +9,7 @@ import Evm2Main from './Evm2Main'
 import './index.css'
 
 const App: React.FC = () => {
-  const {isConnected, chainId} = useFluent()
+  const {isConnected} = useFluent()
   const isSupportEvmSpace = useIsSupportEvmSpace();
 
   const [flipped, setFlipped] = useState(
@@ -36,7 +36,7 @@ const App: React.FC = () => {
         Transfer Assets
       </p>
       <p className="pl-[32px] text-[16px] leading-[22px] mt-[4px] mb-24px text-[#A9ABB2]">
-        Between Conflux Core-Chain and Conflux EVM-Chain
+        Between Conflux Native-Space and Conflux EVM-Space
       </p>
 
       {!isConnected && <Connect />}
