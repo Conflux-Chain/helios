@@ -28,7 +28,7 @@ function setupProvider() {
     if (!validateMessage(e)) return
 
     if (e.data.msg.event === FLUENT_USE_MORDEN_PROVIDER_API) {
-      if (e.data.msg.event.params) {
+      if (e.data.msg.params) {
         if (window.localStorage.getItem(FLUENT_USE_MORDEN_PROVIDER_API)) return
         window.localStorage.setItem(FLUENT_USE_MORDEN_PROVIDER_API, true)
       } else {

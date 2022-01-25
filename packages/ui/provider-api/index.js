@@ -47,6 +47,7 @@ class Provider extends SafeEventEmitter {
   #send
   #isConnected
   isFluent = true
+  isConfluxPortal = true
   constructor(stream, send) {
     super({
       allowedEventType: [
@@ -91,7 +92,6 @@ class PortalProvider extends SafeEventEmitter {
   #send
   #isConnected
   isFluent = true
-  // TODO: remote this
   isConfluxPortal = true
   constructor(stream, send) {
     super({
