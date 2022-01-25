@@ -49,7 +49,7 @@ function GroupItem({
           currentAccountId={currentAccountId}
         />
       ))}
-      {groupType === 'hd' ? (
+      {groupType === 'hd' && (
         <div className="flex justify-between mx-3 py-4 border-t border-gray-10 text-xs cursor-pointer text-gray-60">
           <div
             className="hover:text-primary"
@@ -72,7 +72,7 @@ function GroupItem({
             </div>
           )}
         </div>
-      ) : null}
+      )}
     </div>
   )
 }

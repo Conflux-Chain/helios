@@ -9,27 +9,36 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup'],
-  methods: [],
-  db: ['setCurrentNetwork', 'getNetworkById', 'getSite'],
+  methods: ['wallet_setAppCurrentNetwork'],
+  db: [
+    'setCurrentNetwork',
+    'getNetworkById',
+    'getAppsWithDifferentSelectedNetwork',
+  ],
 }
 
-export const main = ({
+export const main = async ({
   Err: {InvalidParams},
-  db: {setCurrentNetwork, getNetworkById, getSite},
+  db: {setCurrentNetwork, getNetworkById, getAppsWithDifferentSelectedNetwork},
+  rpcs: {wallet_setAppCurrentNetwork},
   params: networks,
+  network,
 }) => {
   const [networkId] = networks
-  const network = getNetworkById(networkId)
-  if (!network) throw InvalidParams(`Invalid networkId ${networkId}`)
+  const nextNetwork = getNetworkById(networkId)
+  if (!nextNetwork) throw InvalidParams(`Invalid networkId ${networkId}`)
+  const apps = getAppsWithDifferentSelectedNetwork(networkId)
 
   setCurrentNetwork(networkId)
-  getSite().forEach(
-    ({post}) =>
-      post &&
-      post({
-        event: 'chainChanged',
-        params: network.chainId,
-      }),
+
+  await Promise.all(
+    apps.map(async app =>
+      wallet_setAppCurrentNetwork(
+        {network},
+        {appId: app.eid, networkId: networkId},
+      ),
+    ),
   )
-  Sentry.setTag('current_network', network.name)
+
+  Sentry.setTag('current_network', nextNetwork.name)
 }
