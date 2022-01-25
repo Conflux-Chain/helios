@@ -272,6 +272,12 @@ const zh = {
     docs: '文档',
     version: '版本号',
 
+    // Developer Mode
+    developerMode: '开发者模式',
+    compatibilityMode: '兼容模式',
+    compatibilityDes:
+      'Fluent 最终将会停止支持 ConfluxPortal 的 API。为了方便开发者测试，关掉开关将模拟 Fluent 不支持 ConfluxPortal API 的环境',
+
     // backup seed
     backupIdentity: '备份助记词',
     backupSeedDes: '请以正确的顺序备份助记词，不要在网络环境中存储或分享助记词',
