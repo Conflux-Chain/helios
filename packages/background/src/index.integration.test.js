@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-commented-out-tests */
 // eslint-disable-next-line no-unused-vars
 import { expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach } from '@jest/globals' // prettier-ignore
 import waitForExpect from 'wait-for-expect'
@@ -2338,6 +2339,165 @@ describe('integration test', function () {
         expect(n2.name).toBe(ETH_MAINNET_NAME)
         expect(n2.endpoint).toBe(ETH_LOCALNET_RPC_ENDPOINT)
       })
+
+      test('error call adding duplicate endpoint network', async () => {
+        await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
+          request({
+            method: 'wallet_importPrivateKey',
+            params: {privateKey: result, password},
+          }),
+        )
+
+        const [a1] = db.getAccount()
+        res = request({
+          method: 'cfx_requestAccounts',
+          _inpage: true,
+          _origin: 'foo.site',
+          networkName: CFX_MAINNET_NAME,
+        })
+
+        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
+
+        await request({
+          method: 'wallet_requestPermissions',
+          params: {
+            permissions: [{cfx_accounts: {}}],
+            accounts: [a1.eid],
+            authReqId: db.getAuthReq()[0].eid,
+          },
+          networkName: CFX_MAINNET_NAME,
+          _popup: true,
+        })
+
+        res = request({
+          _origin: 'foo.site',
+          _inpage: true,
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: ETH_LOCALNET_CHAINID,
+              chainName: ETH_MAINNET_NAME,
+              nativeCurrency: {
+                name: 'ETH',
+                symbol: 'ETH',
+                decimals: DEFAULT_CURRENCY_DECIMALS,
+              },
+              rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT],
+            },
+          ],
+        })
+
+        expect((await res).error.message).toMatch(
+          /Duplicate network endpoint with network /,
+        )
+      })
+
+      test('error call : chainId is not the detectedChainId', async () => {
+        await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
+          request({
+            method: 'wallet_importPrivateKey',
+            params: {privateKey: result, password},
+          }),
+        )
+
+        const [a1] = db.getAccount()
+        res = request({
+          method: 'cfx_requestAccounts',
+          _inpage: true,
+          _origin: 'foo.site',
+          networkName: CFX_MAINNET_NAME,
+        })
+
+        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
+
+        await request({
+          method: 'wallet_requestPermissions',
+          params: {
+            permissions: [{cfx_accounts: {}}],
+            accounts: [a1.eid],
+            authReqId: db.getAuthReq()[0].eid,
+          },
+          networkName: CFX_MAINNET_NAME,
+          _popup: true,
+        })
+
+        await request({
+          method: 'wallet_deleteNetwork',
+          params: {password, networkId: db.getNetworkByType('eth')[0].eid},
+        })
+
+        res = request({
+          _origin: 'foo.site',
+          _inpage: true,
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: '0x538',
+              chainName: ETH_MAINNET_NAME,
+              nativeCurrency: {
+                name: 'ETH',
+                symbol: 'ETH',
+                decimals: DEFAULT_CURRENCY_DECIMALS,
+              },
+              rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT],
+            },
+          ],
+        })
+
+        expect((await res).error.message).toMatch(/Invalid chainId /)
+      })
+
+      // test('error call : duplicate chaiId', async () => {
+      //   await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
+      //     request({
+      //       method: 'wallet_importPrivateKey',
+      //       params: {privateKey: result, password},
+      //     }),
+      //   )
+
+      //   const [a1] = db.getAccount()
+      //   res = request({
+      //     method: 'cfx_requestAccounts',
+      //     _inpage: true,
+      //     _origin: 'foo.site',
+      //     networkName: CFX_MAINNET_NAME,
+      //   })
+
+      //   await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
+
+      //   await request({
+      //     method: 'wallet_requestPermissions',
+      //     params: {
+      //       permissions: [{cfx_accounts: {}}],
+      //       accounts: [a1.eid],
+      //       authReqId: db.getAuthReq()[0].eid,
+      //     },
+      //     networkName: CFX_MAINNET_NAME,
+      //     _popup: true,
+      //   })
+
+      //   res = request({
+      //     _origin: 'foo.site',
+      //     _inpage: true,
+      //     method: 'wallet_addEthereumChain',
+      //     params: [
+      //       {
+      //         chainId: ETH_LOCALNET_CHAINID,
+      //         chainName: ETH_MAINNET_NAME,
+      //         nativeCurrency: {
+      //           name: 'ETH',
+      //           symbol: 'ETH',
+      //           decimals: DEFAULT_CURRENCY_DECIMALS,
+      //         },
+      //         rpcUrls: ['http://localhost:8546'],
+      //       },
+      //     ],
+      //   })
+
+      //   expect((await res).error.message).toMatch(
+      //     /Duplicate chainId /,
+      //   )
+      // })
     })
     describe('wallet_discoverAccount', function () {
       test('wallet_discoverAccount', async function () {
