@@ -3,6 +3,7 @@ import Input from '@fluent-wallet/component-input'
 import {EditOutlined} from '@fluent-wallet/component-icons'
 import {useState, useRef} from 'react'
 import useLoading from '../hooks/useLoading'
+import {isKeyOf} from '../utils'
 
 function TextField({
   onInputBlur,
@@ -44,6 +45,11 @@ function TextField({
         onInputChange(textValue)
       })
   }
+  const onKeyDown = e => {
+    if (isKeyOf(e, 'enter')) {
+      onBlur()
+    }
+  }
 
   return (
     <div
@@ -79,6 +85,7 @@ function TextField({
           value={inputValue}
           onChange={e => onInputChange(e.target.value)}
           onBlur={onBlur}
+          onKeyDown={onKeyDown}
         />
       }
     </div>
