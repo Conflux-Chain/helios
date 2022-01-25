@@ -1175,7 +1175,8 @@
                          (q '[:find (pull ?p [:preferences]) .
                               :where
                               [?p :preferences]]))
-                        default-preferences)]
+                        default-preferences)
+        preferences (deep-merge default-preferences preferences)]
     preferences))
 
 (defn set-preferences [preferences]

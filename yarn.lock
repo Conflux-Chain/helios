@@ -6225,6 +6225,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-preferences@workspace:packages/rpcs/wallet_getPreferences":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-preferences@workspace:packages/rpcs/wallet_getPreferences"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:*, @fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:packages/rpcs/wallet_handleUnfinishedCFXTx":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:packages/rpcs/wallet_handleUnfinishedCFXTx"
@@ -6386,6 +6394,14 @@ __metadata:
   dependencies:
     "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_set-preferences@workspace:packages/rpcs/wallet_setPreferences":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_set-preferences@workspace:packages/rpcs/wallet_setPreferences"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 

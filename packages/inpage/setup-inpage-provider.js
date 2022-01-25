@@ -26,16 +26,20 @@ function setupProvider() {
   let sameOriginListener = () => {}
   window.addEventListener('message', e => {
     if (!validateMessage(e)) return
+
     if (e.data.msg.event === FLUENT_USE_MORDEN_PROVIDER_API) {
       if (e.data.msg.event.params) {
+        if (window.localStorage.getItem(FLUENT_USE_MORDEN_PROVIDER_API)) return
         window.localStorage.setItem(FLUENT_USE_MORDEN_PROVIDER_API, true)
       } else {
+        if (!window.localStorage.getItem(FLUENT_USE_MORDEN_PROVIDER_API)) return
         window.localStorage.removeItem(FLUENT_USE_MORDEN_PROVIDER_API)
       }
 
       window.location.reload()
       return
     }
+
     sameOriginListener(e.data.msg)
   })
 
