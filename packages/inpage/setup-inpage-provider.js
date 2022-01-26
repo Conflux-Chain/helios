@@ -19,7 +19,7 @@ function validateMessage(e) {
   return true
 }
 
-const FLUENT_USE_MORDEN_PROVIDER_API = '__FLUENT_USE_MORDEN_PROVIDER_API__'
+const FLUENT_USE_MODERN_PROVIDER_API = '__FLUENT_USE_MODERN_PROVIDER_API__'
 
 function setupProvider() {
   if (PROVIDER) return
@@ -27,13 +27,13 @@ function setupProvider() {
   window.addEventListener('message', e => {
     if (!validateMessage(e)) return
 
-    if (e.data.msg.event === FLUENT_USE_MORDEN_PROVIDER_API) {
+    if (e.data.msg.event === FLUENT_USE_MODERN_PROVIDER_API) {
       if (e.data.msg.params) {
-        if (window.localStorage.getItem(FLUENT_USE_MORDEN_PROVIDER_API)) return
-        window.localStorage.setItem(FLUENT_USE_MORDEN_PROVIDER_API, true)
+        if (window.localStorage.getItem(FLUENT_USE_MODERN_PROVIDER_API)) return
+        window.localStorage.setItem(FLUENT_USE_MODERN_PROVIDER_API, true)
       } else {
-        if (!window.localStorage.getItem(FLUENT_USE_MORDEN_PROVIDER_API)) return
-        window.localStorage.removeItem(FLUENT_USE_MORDEN_PROVIDER_API)
+        if (!window.localStorage.getItem(FLUENT_USE_MODERN_PROVIDER_API)) return
+        window.localStorage.removeItem(FLUENT_USE_MODERN_PROVIDER_API)
       }
 
       window.location.reload()
@@ -64,7 +64,7 @@ function setupProvider() {
   PROVIDER = initProvider(
     stream,
     sendToBg,
-    Boolean(window.localStorage.getItem(FLUENT_USE_MORDEN_PROVIDER_API)),
+    Boolean(window.localStorage.getItem(FLUENT_USE_MODERN_PROVIDER_API)),
   )
   window.cfx = PROVIDER
   window.conflux = PROVIDER
