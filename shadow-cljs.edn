@@ -14,6 +14,7 @@
   [binaryage/oops "0.7.1"]
   [datascript "1.0.7"]
   [hashp "0.2.1"]
+  [medley "1.3.0"]
   ;; [philoskim/debux-stubs "0.8.1"]
   ;; [philoskim/debux "0.8.1"]
   ]
