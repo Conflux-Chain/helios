@@ -18,9 +18,10 @@ export const main = ({
   params,
 }) => {
   const network = getNetworkById(params.networkId)
-  if (!network) throw InvalidParams(`Invalid network id: ${networkId}`)
+  if (!network) throw InvalidParams(`Invalid network id: ${params.networkId}`)
   if (network.builtin)
     throw InvalidParams(`Don't support update builtin network`)
+  // eslint-disable-next-line no-unused-vars
   const {networkId, ...newParams} = params
 
   return wallet_addNetwork({toUpdateNetwork: network}, newParams)
