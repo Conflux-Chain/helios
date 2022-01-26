@@ -305,7 +305,7 @@ const exampleContract = new Conflux().Contract({
 const cusdtAddress = 'cfxtest:acepe88unk7fvs18436178up33hb4zkuf62a9dk1gv'
 // async function cfxEstimateGasAndCollateralAdvance(tx) {
 //   console.log('tx', tx)
-//   const estimateRst = await window.cfx.request({
+//   const estimateRst = await window.conflux.request({
 //     method: 'cfx_estimateGasAndCollateral',
 //     params: [tx, 'latest_state'],
 //   })
@@ -320,11 +320,9 @@ function isFluentInstalled() {
   return Boolean(window?.cfx?.isFluent)
 }
 
-function walletInitialized({chainId, networkId}) {
-  const provider = window.cfx
-  getElement('initialized').innerHTML = 'initialized'
-  getElement('chainId').innerHTML = chainId
-  getElement('networkId').innerHTML = networkId
+async function walletInitialized() {
+  console.log('wallet connected')
+  const provider = window.conflux
 
   // connect
   const connectButton = getElement('connect')
@@ -342,25 +340,75 @@ function walletInitialized({chainId, networkId}) {
   const addTokenButton = getElement('add_token')
   const deployContract = getElement('deploy_contract')
 
-  connectButton.disabled = false
+  function authed(address) {
+    getElement('address').innerHTML = address
+    console.log('authed address: ', address)
+    sendNativeTokenButton.disabled = false
+    approveButton.disabled = false
+    transferFromButton.disabled = false
+    personalSignButton.disabled = false
+    typedSignButton.disabled = false
+    addNetworkButton.disabled = false
+    switchNetworkButton.disabled = false
+    addTokenButton.disabled = false
+    deployContract.disabled = false
+  }
+
+  function unAuthed() {
+    getElement('address').innerHTML = 'N/A'
+    console.log('unauthed')
+    sendNativeTokenButton.disabled = true
+    approveButton.disabled = true
+    transferFromButton.disabled = true
+    personalSignButton.disabled = true
+    typedSignButton.disabled = true
+    addNetworkButton.disabled = true
+    switchNetworkButton.disabled = true
+    addTokenButton.disabled = true
+    deployContract.disabled = true
+  }
+
+  provider.on('accountsChanged', accounts => {
+    console.log('accountsChcanged, accounts = ', accounts)
+    if (!accounts.length) return unAuthed()
+    authed(accounts[0])
+  })
+
+  provider.on('chainChanged', chainId => {
+    getElement('chainId').innerHTML = chainId
+    provider.request({method: 'cfx_netVersion'}).then(networkId => {
+      getElement('networkId').innerHTML = networkId
+    })
+  })
+
+  provider.request({method: 'wallet_getFluentMetadata'}).then(({version}) => {
+    getElement('version').innerHTML = version
+  })
+
+  const [chainId, networkId, alreadyAuthedAddresses] = await Promise.all([
+    provider.request({method: 'cfx_chainId'}),
+    provider.request({method: 'cfx_netVersion'}),
+    provider.request({
+      method: 'cfx_accounts',
+    }),
+  ])
+
+  getElement('initialized').innerHTML = 'initialized'
+  getElement('chainId').innerHTML = chainId
+  getElement('networkId').innerHTML = networkId
+
+  if (!alreadyAuthedAddresses.length) {
+    unAuthed()
+  } else {
+    authed(alreadyAuthedAddresses[0])
+  }
+
   connectButton.onclick = () => {
     provider
       .request({
         method: 'cfx_requestAccounts',
       })
-      .then(result => {
-        getElement('address').innerHTML = result
-        console.log('result', result)
-        sendNativeTokenButton.disabled = false
-        approveButton.disabled = false
-        transferFromButton.disabled = false
-        personalSignButton.disabled = false
-        typedSignButton.disabled = false
-        addNetworkButton.disabled = false
-        switchNetworkButton.disabled = false
-        addTokenButton.disabled = false
-        deployContract.disabled = false
-      })
+      .then(authed)
       .catch(error => console.error('error', error.message || error))
   }
 
@@ -591,11 +639,28 @@ function walletInitialized({chainId, networkId}) {
   }
 }
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
   if (!isFluentInstalled()) {
     return
   }
 
   getElement('installed').innerHTML = 'installed'
-  window.cfx.on('connect', walletInitialized)
+  if (window.localStorage.getItem('__FLUENT_USE_MORDEN_PROVIDER_API__')) {
+    getElement('installed-section').style.display = 'block'
+  } else {
+    getElement('deprecated-provider-api-warning').style.display = 'block'
+  }
+
+  if (window.conflux.isConnected()) {
+    window.conflux
+      .request({method: 'wallet_getFluentMetadata'})
+      .then(({version}) => {
+        getElement('version').innerHTML = version
+      })
+    walletInitialized()
+  } else {
+    alert(
+      'Fluent is not connected, please try refresh this page or restart your browser.',
+    )
+  }
 })
