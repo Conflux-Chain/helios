@@ -595,6 +595,8 @@ export const useWalletVersion = () => {
 }
 
 export const usePreferences = () => {
-  const {data, mutate} = useRPC([WALLET_GET_PREFERENCES])
+  const {data, mutate} = useRPC([WALLET_GET_PREFERENCES], undefined, {
+    refreshInterval: 0,
+  })
   return {data, mutate}
 }

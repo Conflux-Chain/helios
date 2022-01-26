@@ -22,6 +22,7 @@ const {
   WALLET_ADD_CONFLUX_CHAIN,
   WALLET_GET_NETWORK,
   WALLET_DELETE_NETWORK,
+  WALLET_UPDATE_NETWORK,
 } = RPC_METHODS
 const FORM_ITEMS = [
   {labelKey: 'networkName', valueKey: 'chainName'},
@@ -170,7 +171,7 @@ function NetworkDetail() {
     setOpenPasswordStatus(true)
   }
 
-  const onAddNetwork = () => {
+  const onSave = (type = 'add') => {
     const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
       networkFieldValues
     const param = {
@@ -187,7 +188,14 @@ function NetworkDetail() {
     if (blockExplorerUrl) {
       param.blockExplorerUrls = [blockExplorerUrl]
     }
-    request(WALLET_ADD_CONFLUX_CHAIN, [param])
+
+    if (type === 'edit') {
+      param.networkId = networkInfo.networkId
+    }
+    request(
+      type === 'edit' ? WALLET_UPDATE_NETWORK : WALLET_ADD_CONFLUX_CHAIN,
+      type === 'edit' ? param : [param],
+    )
       .then(() => {
         mutateData()
       })
@@ -251,7 +259,7 @@ function NetworkDetail() {
           id="save-network-btn"
           className="mx-3"
           disabled={!canSave}
-          onClick={onAddNetwork}
+          onClick={onSave}
         >
           {t('save')}
         </Button>
@@ -271,8 +279,7 @@ function NetworkDetail() {
             id="edit-btn"
             className="flex-1"
             disabled={!canSave}
-            // TODO: replace with edit network fuc
-            onClick={onClickDeleteNetwork}
+            onClick={() => onSave('edit')}
           >
             {t('save')}
           </Button>
