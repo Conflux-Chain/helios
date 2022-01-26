@@ -1,0 +1,7 @@
+releases:
+  "@fluent-wallet/wallet_add-network": patch
+  "@fluent-wallet/wallet_update-network": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/wallet_add-ethereum-chain"

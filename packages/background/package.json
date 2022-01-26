@@ -132,6 +132,7 @@
     "@fluent-wallet/wallet_unwatch-asset": "workspace:packages/rpcs/wallet_unwatchAsset",
     "@fluent-wallet/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount",
     "@fluent-wallet/wallet_update-account-group": "workspace:packages/rpcs/wallet_updateAccountGroup",
+    "@fluent-wallet/wallet_update-network": "workspace:*",
     "@fluent-wallet/wallet_update-token-list": "workspace:packages/rpcs/wallet_updateTokenList",
     "@fluent-wallet/wallet_user-approved-auth-request": "workspace:packages/rpcs/wallet_userApprovedAuthRequest",
     "@fluent-wallet/wallet_user-rejected-auth-request": "workspace:packages/rpcs/wallet_userRejectedAuthRequest",
