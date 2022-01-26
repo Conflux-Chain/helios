@@ -106,7 +106,9 @@ export const main = async ({
   const [dupNameNetwork] = getNetworkByName(name)
   if (
     (!toUpdateNetwork && dupNameNetwork) ||
-    (toUpdateNetwork && toUpdateNetwork.eid !== dupNameNetwork.eid)
+    (dupNameNetwork &&
+      toUpdateNetwork &&
+      toUpdateNetwork.eid !== dupNameNetwork.eid)
   )
     throw InvalidParams('Duplicate network name')
 
@@ -114,7 +116,9 @@ export const main = async ({
   const [dupEndpointNetwork] = getNetworkByEndpoint(url)
   if (
     (!toUpdateNetwork && dupEndpointNetwork) ||
-    (toUpdateNetwork && toUpdateNetwork.eid !== dupEndpointNetwork.eid)
+    (dupEndpointNetwork &&
+      toUpdateNetwork &&
+      toUpdateNetwork.eid !== dupEndpointNetwork?.eid)
   )
     throw InvalidParams(
       `Duplicate network endpoint with network ${dupEndpointNetwork.eid}`,

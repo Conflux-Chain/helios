@@ -411,6 +411,35 @@ describe('integration test', function () {
         )
       })
     })
+    describe('wallet_updateNetwork', function () {
+      test('update cfx network omit hdPath', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        await request({
+          method: 'wallet_updateNetwork',
+          params: {
+            networkId: db.getNetwork()[0].eid,
+            chainId: '0xbb7',
+            chainName: 'cfxfoo',
+            nativeCurrency: {
+              name: 'CFX',
+              decimals: DEFAULT_CURRENCY_DECIMALS,
+              symbol: 'CFX',
+            },
+            rpcUrls: [CFX_LOCALNET_RPC_ENDPOINT + '/'],
+          },
+        })
+
+        await waitForExpect(() =>
+          expect(db.getNetwork()[0].name).toBe('cfxfoo'),
+        )
+      })
+    })
     describe('wallet_updateTokenList', function () {
       test.todo('wallet_updateTokenList')
     })
