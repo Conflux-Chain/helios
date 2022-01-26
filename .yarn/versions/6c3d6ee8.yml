@@ -1,3 +1,12 @@
+releases:
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/provider-api": patch
+  "@fluent-wallet/wallet_register-site-metadata": patch
+  "@fluent-wallet/wallet_set-preferences": patch
+
 declined:
+  - helios-background
   - browser-extension
+  - helios-inpage
   - helios-popup
+  - "@fluent-wallet/use-rpc"

@@ -267,8 +267,8 @@ class PortalProvider extends SafeEventEmitter {
   }
 }
 
-export const initProvider = (stream, send, useMordenProviderAPI = false) => {
-  if (useMordenProviderAPI) {
+export const initProvider = (stream, send, useModernProviderAPI = false) => {
+  if (useModernProviderAPI) {
     return new Provider(stream, send)
   }
   return new PortalProvider(stream, send)

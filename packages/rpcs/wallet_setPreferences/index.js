@@ -7,7 +7,7 @@ export const schemas = {
     map,
     {closed: true},
     ['hideTestNetwork', {optional: true}, boolean],
-    ['useMordenProviderAPI', {optional: true}, boolean],
+    ['useModernProviderAPI', {optional: true}, boolean],
   ],
 }
 
