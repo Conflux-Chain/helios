@@ -7,7 +7,7 @@ function CrossSpaceButton() {
   const {t} = useTranslation()
   return (
     <Tooltip content={t('crossSpace')}>
-      <WrapIcon className="bg-transparent hover:bg-[#ffffff1a]">
+      <WrapIcon className="!bg-transparent hover:!bg-[#ffffff1a]">
         <CrossOutlined
           className="text-white transition-all duration-100 ease-in-out w-4 h-4 cursor-pointer"
           id="openCrossSpace"

@@ -118,7 +118,7 @@ function AccountItem({
       </div>
       <WrapIcon
         size="w-5 h-5"
-        id="open-scan-url"
+        id="export-account"
         onClick={() => {
           onOpenConfirmPassword?.(WALLET_EXPORT_ACCOUNT, {
             accountId,

@@ -15,7 +15,7 @@ const OpenScanButton = ({address}) => {
     address ? {address: [address]} : null,
   )
   return (
-    <WrapIcon className="bg-transparent hover:bg-[#ffffff1a]">
+    <WrapIcon className="!bg-transparent hover:!bg-[#ffffff1a]">
       <SendOutlined
         className={classNames(
           'text-white transition-all duration-100 ease-in-out w-4 h-4 cursor-pointer',
@@ -71,7 +71,7 @@ function CurrentAccount({onOpenAccount}) {
             'text-white transition-all duration-100 ease-in-out',
             {['opacity-0']: !displayAddress},
           )}
-          wrapperClassName="bg-transparent hover:bg-[#ffffff1a]"
+          wrapperClassName="!bg-transparent hover:!bg-[#ffffff1a]"
         />
         <QRCodeButton
           title={nickname}
@@ -79,7 +79,7 @@ function CurrentAccount({onOpenAccount}) {
           className={classNames('transition-all duration-100 ease-in-out', {
             ['opacity-0']: !displayAddress,
           })}
-          wrapperClassName="bg-transparent hover:bg-[#ffffff1a]"
+          wrapperClassName="!bg-transparent hover:!bg-[#ffffff1a]"
         />
         <OpenScanButton address={address} />
       </div>
