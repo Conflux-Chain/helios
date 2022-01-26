@@ -645,7 +645,7 @@ window.addEventListener('load', async () => {
   }
 
   getElement('installed').innerHTML = 'installed'
-  if (window.localStorage.getItem('__FLUENT_USE_MORDEN_PROVIDER_API__')) {
+  if (window.localStorage.getItem('__FLUENT_USE_MODERN_PROVIDER_API__')) {
     getElement('installed-section').style.display = 'block'
   } else {
     getElement('deprecated-provider-api-warning').style.display = 'block'

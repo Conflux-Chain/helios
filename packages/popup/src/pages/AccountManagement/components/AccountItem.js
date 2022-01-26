@@ -5,13 +5,8 @@ import {isNumber} from '@fluent-wallet/checks'
 import Input from '@fluent-wallet/component-input'
 import Message from '@fluent-wallet/component-message'
 import {useTranslation} from 'react-i18next'
-import {
-  KeyOutlined,
-  EditOutlined,
-  LeftSwitchOutlined,
-  RightSwitchOutlined,
-} from '@fluent-wallet/component-icons'
-import {Avatar, WrapIcon} from '../../../components'
+import {KeyOutlined, EditOutlined} from '@fluent-wallet/component-icons'
+import {Avatar, WrapIcon, SwitchButtonGroup} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 import {request, updateDbAccountList} from '../../../utils'
 import useLoading from '../../../hooks/useLoading'
@@ -182,19 +177,12 @@ function AccountItem({
         <KeyOutlined className="w-3 h-3 text-primary" />
       </WrapIcon>
       {groupType !== 'pk' && (
-        <WrapIcon
-          size="w-5 h-5 ml-3"
-          id="switch-account"
-          onClick={() => onSwitchAccount(!hidden)}
-        >
-          <div>
-            {hidden ? (
-              <LeftSwitchOutlined className="w-4 h-4 text-gray-40" />
-            ) : (
-              <RightSwitchOutlined className="w-4 h-4 text-primary" />
-            )}
-          </div>
-        </WrapIcon>
+        <SwitchButtonGroup
+          showLeft={hidden}
+          onSwitch={onSwitchAccount}
+          Wrapper={WrapIcon}
+          containerClassName="w-5 h-5 ml-3"
+        />
       )}
       {/* delete pk account group */}
       {groupType === 'pk' && showDelete && (

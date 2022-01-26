@@ -33,7 +33,7 @@ function SelectCreateType() {
         <em className="not-italic text-xs text-gray-40 ml-1 mt-3 mb-2 inline-block">
           {t('createAccount')}
         </em>
-        {!!hdGroup?.length && (
+        {hdGroup?.length > 0 && (
           <CreateTypeItem
             id="useExistingSeed"
             Icon={
