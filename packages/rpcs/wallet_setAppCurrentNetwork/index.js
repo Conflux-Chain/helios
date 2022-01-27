@@ -43,6 +43,6 @@ export const main = ({
       account: app.currentAccount.eid,
       network: nextNetwork.eid,
     })
-    post({event: 'accountsChanged', params: addr.value})
+    post({event: 'accountsChanged', params: [addr.value]})
   }
 }
