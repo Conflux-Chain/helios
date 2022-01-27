@@ -330,7 +330,7 @@ describe('integration test', function () {
         ).result
 
         expect(db.getAccount().length).toBe(1)
-        await waitForExpect(() => expect(db.getAddress().length).toBe(3))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(3), 20000)
         const addrs = db.getAddress()
         expect(addrs[addrs.length - 1].hex).toBe(CFX_ACCOUNTS[0].address)
         expect(addrs[addrs.length - 1].value).toBe(CFX_ACCOUNTS[0].base32)
@@ -363,7 +363,7 @@ describe('integration test', function () {
         ).result
 
         expect(db.getAccount().length).toBe(1)
-        await waitForExpect(() => expect(db.getAddress().length).toBe(3))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(3), 20000)
         const addrs = db.getAddress()
         expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
         expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
