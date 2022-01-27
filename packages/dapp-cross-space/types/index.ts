@@ -1,10 +1,8 @@
 type ConfluxMainNetwork = '1029'
 type ConfluxTestNetwork = '1'
-type ConfluxTest2Network = '12000'
 type ConfluxChainId =
   | ConfluxMainNetwork
   | ConfluxTestNetwork
-  | ConfluxTest2Network
 
 type FluentEvents =
   | 'chainChanged'

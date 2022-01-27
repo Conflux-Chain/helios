@@ -27,7 +27,6 @@ export {
   connect,
   sendTransaction,
   trackBalanceChangeOnce,
-  addEVMChain,
 } from './useFluent'
 export {
   useConflux,

@@ -40,7 +40,7 @@ class EvmManage {
     }
 
     try {
-      const balance = await fetch(this.networkConfig.value.evmSpaceUrl, {
+      const balance = await fetch(this.networkConfig.value.EvmSpace.url, {
         body: JSON.stringify({
           jsonrpc: '2.0',
           method: 'eth_getBalance',
@@ -107,21 +107,21 @@ class EvmManage {
   }
 
   addEVMChain = async () => {
-    if (!window.ethereum) return
+    if (!window.ethereum || !this.networkConfig.value) return
     
     return window.ethereum.request({
       method: 'wallet_addEthereumChain',
       params: [
         {
-          chainId: '0x2ee1',
-          chainName: 'EVM Conflux',
+          chainId: `0x${this.networkConfig.value.EvmSpace.networkId.toString(16)}`,
+          chainName: 'Conflux',
           nativeCurrency: {
             name: 'Conflux',
             symbol: 'CFX',
             decimals: 18,
           },
-          rpcUrls: ['https://net12001eth.confluxrpc.com'],
-          blockExplorerUrls: ['https://confluxscan.io'],
+          rpcUrls: [this.networkConfig.value.EvmSpace.url],
+          blockExplorerUrls: [this.networkConfig.value.EvmSpace.scan],
         },
       ],
     })
