@@ -259,3 +259,5 @@ cljs-runtime
 /websites/doc/docs/provider-rpc.mdx
 /websites/doc/docs/inner-rpc.mdx
 /packages/background/src/local-dev.js
+/blockchain_data/
+/pos_config/
