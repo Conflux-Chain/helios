@@ -5,6 +5,7 @@ import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
 import Loading from '@fluent-wallet/component-loading'
 import Modal from '@fluent-wallet/component-modal'
+import {processError} from '@fluent-wallet/conflux-tx-error'
 import {ROUTES, HW_TX_STATUS} from '../../../constants'
 import {useCurrentTxParams} from '../../../hooks'
 
@@ -16,8 +17,11 @@ function HwTransactionResult({status, isDapp, sendError}) {
   const {clearSendTransactionParams} = useCurrentTxParams()
   const isRejected = status === HW_TX_STATUS.REJECTED
   const open = status && status !== HW_TX_STATUS.SUCCESS
-  const title = isRejected ? t('rejected') : t('waitingForSign')
+  const {errorType} = processError(sendError)
+  // TODO: handle hw account user reject tx, should display rejected title and content
+  const title = isRejected ? t(errorType) : t('waitingForSign')
   const content = isRejected ? sendError : t('waitingContent')
+
   return (
     <Modal
       open={open}
