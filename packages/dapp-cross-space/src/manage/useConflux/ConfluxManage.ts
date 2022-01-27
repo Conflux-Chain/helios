@@ -22,7 +22,7 @@ export const confluxNetworkConfig = {
     networkId: 1,
     url: 'https://test.confluxrpc.com',
     EvmSpace: {
-      url: 'https://evmtest.confluxrpc.com',
+      url: 'https://evmtestnet.confluxrpc.com',
       networkId: 71,
       scan: 'https://evmtestnet.confluxscan.net'
     }

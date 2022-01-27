@@ -65,7 +65,7 @@ const App: React.FC = () => {
           <div
             className={classNames(
               "fixed bottom-[24px] left-[50%] translate-x-[-50%] flex justify-center items-center px-[32px] py-[12px] bg-[#445159] text-white rounded overflow-hidden opacity-0 transition-opacity z-10",
-              { ['opacity-100']: !isSupportEvmSpace }
+              !isSupportEvmSpace ? 'opacity-100' : 'pointer-events-none'
             )}
           >
             It seems that current network doesn't support EVM Space, please
