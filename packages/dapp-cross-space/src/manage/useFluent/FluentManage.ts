@@ -173,27 +173,6 @@ class FluentManage {
     })
   }
 
-  addEVMChain = async () => {
-    if (!this.account.value) return
-
-    return window.conflux!.request({
-      method: 'wallet_addConfluxChain',
-      params: [
-        {
-          chainId: '0x2ee0',
-          chainName: 'EVM Conflux',
-          nativeCurrency: {
-            name: 'Conflux',
-            symbol: 'CFX',
-            decimals: 18,
-          },
-          rpcUrls: ['https://net12000cfx.confluxrpc.com'],
-          blockExplorerUrls: ['https://confluxscan.io'],
-        },
-      ],
-    })
-  }
-
   estimateMaxAvailableBalance = async () => {
     if (
       !this.account.value ||
@@ -238,6 +217,5 @@ export const startTrackBalance = Manage.startTrackBalance
 export const stopTrackBalance = Manage.stopTrackBalance
 export const sendTransaction = Manage.sendTransaction
 export const trackBalanceChangeOnce = Manage.trackBalanceChangeOnce
-export const addEVMChain = Manage.addEVMChain
 
 export default Manage
