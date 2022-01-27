@@ -4,5 +4,4 @@ export {
   connect,
   sendTransaction,
   trackBalanceChangeOnce,
-  addEVMChain,
 } from './FluentManage'
