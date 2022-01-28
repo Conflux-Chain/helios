@@ -13,6 +13,7 @@ export const confluxNetworkConfig = {
     networkId: 1029,
     url: 'https://main.confluxrpc.com',
     EvmSpace: {
+      name: 'Conflux Mainnet',
       url: 'https://evm.confluxrpc.com',
       networkId: 1030,
       scan: 'https://evm.confluxscan.net'
@@ -22,6 +23,7 @@ export const confluxNetworkConfig = {
     networkId: 1,
     url: 'https://test.confluxrpc.com',
     EvmSpace: {
+      name: 'Conflux Testnet',
       url: 'https://evmtestnet.confluxrpc.com',
       networkId: 71,
       scan: 'https://evmtestnet.confluxscan.net'

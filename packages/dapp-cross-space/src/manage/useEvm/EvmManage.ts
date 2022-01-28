@@ -114,7 +114,7 @@ class EvmManage {
       params: [
         {
           chainId: `0x${this.networkConfig.value.EvmSpace.networkId.toString(16)}`,
-          chainName: 'Conflux',
+          chainName: this.networkConfig.value.EvmSpace.name,
           nativeCurrency: {
             name: 'Conflux',
             symbol: 'CFX',

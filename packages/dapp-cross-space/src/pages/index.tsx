@@ -36,7 +36,7 @@ const App: React.FC = () => {
         Transfer Assets
       </p>
       <p className="pl-[32px] text-[16px] leading-[22px] mt-[4px] mb-24px text-[#A9ABB2]">
-        Between Conflux Native-Space and Conflux EVM-Space
+        Between Conflux Space and EVM Subspace
       </p>
 
       {!isConnected && <Connect />}

@@ -17,7 +17,7 @@ const Nav: React.FC = () => {
     }
     try {
       await addEVMChainToMetaMask()
-      showToast('Added EVM-Space to MetaMask Success!')
+      showToast('Added EVM Subspace to MetaMask Success!')
     } catch (err) {
       console.error(err)
     }
@@ -59,7 +59,7 @@ const Nav: React.FC = () => {
               className="button text-[14px] h-[40px]"
               onClick={handleClickAddEVMChainToMetaMask}
             >
-              Add EVM-Space To MetaMask
+              Add EVM Subspace To MetaMask
             </button>
           )}
           {!isConnected && (
@@ -80,7 +80,7 @@ const Nav: React.FC = () => {
           {isConnected && account && (
             <div className="flex justify-end items-center ml-[12px] pr-[4px] text-[14px] bg-white w-[264px] h-[40px] rounded-[54px] text-[#3D3F4C]">
               <span className="nav-spin mr-[4px]" />
-              Native-Space
+              Conflux Space
               <ShortenAddress
                 className="h-[32px] px-[8px] ml-[8px] text-[#808BE7] bg-[#F8F9FE] rounded-[54px] dfn-right"
                 text={account}
