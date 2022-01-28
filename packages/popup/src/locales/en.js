@@ -130,7 +130,7 @@ const en = {
     password: 'Enter your password',
     unlock: 'Unlock',
     passwordRulesWarning:
-      'Use 8 ~ 16 characters with a mix of letters & numbers.',
+      'Use 8 ~ 128 characters with a mix of letters & numbers.',
     en: 'English',
     zh: '简体中文',
 
