@@ -1,0 +1,41 @@
+releases:
+  "@fluent-wallet/cache-rpc": patch
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/cfx_sign-transaction": patch
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/eth-transaction-schema": patch
+  "@fluent-wallet/eth_call": patch
+  "@fluent-wallet/eth_estimate-gas": patch
+  "@fluent-wallet/eth_fee-history": patch
+  "@fluent-wallet/eth_get-block-by-hash": patch
+  "@fluent-wallet/eth_get-block-by-number": patch
+  "@fluent-wallet/eth_get-transaction-by-hash": patch
+  "@fluent-wallet/eth_get-transaction-receipt": patch
+  "@fluent-wallet/eth_send-raw-transaction": patch
+  "@fluent-wallet/eth_send-transaction": patch
+  "@fluent-wallet/eth_sign-transaction": patch
+  "@fluent-wallet/ethereum-tx-error": patch
+  "@fluent-wallet/provider-api": patch
+  "@fluent-wallet/rpc-epoch-ref": patch
+  "@fluent-wallet/safe-event-emiter": patch
+  "@fluent-wallet/signature": patch
+  "@fluent-wallet/wallet_add-conflux-chain": patch
+  "@fluent-wallet/wallet_add-ethereum-chain": patch
+  "@fluent-wallet/wallet_enrich-conflux-tx": patch
+  "@fluent-wallet/wallet_enrich-ethereum-tx": patch
+  "@fluent-wallet/wallet_enrich-txs": patch
+  "@fluent-wallet/wallet_get-next-nonce": major
+  "@fluent-wallet/wallet_handle-unfinished-eth-tx": patch
+  "@fluent-wallet/wallet_handle-unfinished-txs": patch
+  "@fluent-wallet/wallet_network1559compatible": patch
+  "@fluent-wallet/wallet_send-transaction": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/conflux-tx-error"
+  - helios-inpage
+  - "@fluent-wallet/rpc-engine"
+  - "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s"
+  - "@fluent-wallet/cfx_sign-typed-data_v4"
+  - "@fluent-wallet/personal_sign"
+  - "@fluent-wallet/use-rpc"

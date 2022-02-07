@@ -1,0 +1,12 @@
+{
+  "name": "@fluent-wallet/eth_sign-transaction",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.1.0",
+  "version": "0.0.0",
+  "dependencies": {
+    "@fluent-wallet/eth-transaction-schema": "workspace:*",
+    "@fluent-wallet/signature": "workspace:*",
+    "@fluent-wallet/spec": "workspace:*"
+  }
+}

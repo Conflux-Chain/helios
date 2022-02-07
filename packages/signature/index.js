@@ -16,7 +16,10 @@ import {
   Wallet as EthWallet,
   verifyMessage as verifyEthPersonalSign,
 } from '@ethersproject/wallet'
-import {computeAddress as ethComputeAddress} from '@ethersproject/transactions'
+import {
+  computeAddress as ethComputeAddress,
+  serialize as serializeUnsignedETHTransaction,
+} from '@ethersproject/transactions'
 import {getMessage as cip23GetMessage} from 'cip-23'
 import {TypedDataUtils} from 'eth-sig-util'
 import {keccak256} from '@ethersproject/keccak256'
@@ -124,6 +127,14 @@ export const ecdsaRecover = (type, hash, sig, netId) =>
 export const cfxSignTransaction = (tx, pk, netId) => {
   const transaction = new CfxTransaction(tx)
   return transaction.sign(pk, netId).serialize()
+}
+
+export const ethSignTransaction = (tx, pk) => {
+  pk = addHexPrefix(pk)
+  const signature = new SigningKey(pk).signDigest(
+    keccak256(serializeUnsignedETHTransaction(tx)),
+  )
+  return serializeUnsignedETHTransaction(tx, signature)
 }
 
 export const cfxRecoverTransactionToAddress = (tx, {r, s, v}, netId) => {
