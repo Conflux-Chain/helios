@@ -6,6 +6,7 @@ import {useIsSupportEvmSpace} from '../manage/useEvm'
 import Connect from './Connect'
 import Main2Evm from './Main2Evm'
 import Evm2Main from './Evm2Main'
+import {ConfluxSpace, EvmSpace} from '../main'
 import './index.css'
 
 const App: React.FC = () => {
@@ -36,7 +37,7 @@ const App: React.FC = () => {
         Transfer Assets
       </p>
       <p className="pl-[32px] text-[16px] leading-[22px] mt-[4px] mb-24px text-[#A9ABB2]">
-        Between Conflux Space and EVM Subspace
+        {`Between ${ConfluxSpace} and ${EvmSpace}`}
       </p>
 
       {!isConnected && <Connect />}
