@@ -97,7 +97,9 @@ class FluentManage {
       throw new Error('not installed')
     }
 
-    return this.requestAccounts().then(this.handleAccountsChanged);
+    return this.requestAccounts().then(() => {
+      this.getChainId().then(this.handleChainChanged);
+    });
   }
 
   trackBalance = () => {

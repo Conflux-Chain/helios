@@ -23,6 +23,7 @@ import {
 import showToast from '../../components/tools/Toast'
 import CFXIcon from '../../assets/cfx.svg'
 import PageTurn from '../../assets/page-turn.svg'
+import {ConfluxSpace, EvmSpace} from '../../main'
 import './index.css';
 
 const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
@@ -80,7 +81,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         <p className="flex items-center">
           <span className="text-[14px] text-[#A9ABB2]">From:</span>
           <span className="ml-[8px] text-[18px] text-[#2959B4]">
-            Conflux Space
+            {`${ConfluxSpace}`}
           </span>
         </p>
         <div className="flex items-center mt-[12px] ">
@@ -112,13 +113,13 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
           <p className="flex items-center">
             <span className="text-[14px] text-[#A9ABB2]">To:</span>
             <span className="ml-[8px] text-[18px] text-[#15C184]">
-              EVM Subspace
+              {`${EvmSpace}`}
             </span>
           </p>
           <input
             className="input mt-[8px]"
             id="evm-address"
-            placeholder="EVM Subspace Destination Address"
+            placeholder={`${EvmSpace} Destination Address`}
             pattern="0x[a-fA-F0-9]{40}"
             {...register('evmAddress', {
               pattern: /0x[a-fA-F0-9]{40}/g,
@@ -199,7 +200,7 @@ const AmountInput: React.FC<{
         </div>
       </div>
       <p className="text-[14px] text-[#3D3F4C]">
-        <span className="text-[#2959B4]" id="core-chain-balance">Conflux Space</span> Balance:
+        <span className="text-[#2959B4]" id="core-chain-balance">{`${ConfluxSpace}`}</span> Balance:
         {typeof balance !== 'undefined' ? (
           (balance.drip !== 0n && balance.drip < Unit.fromDecimalCfx('0.000001').drip) ? (
             <span
@@ -217,7 +218,7 @@ const AmountInput: React.FC<{
         )}
       </p>
       <p className="mt-[20px] text-[14px] text-[#3D3F4C]" id="will-receive">
-        Will receive on <span className="text-[#15C184]">EVM Subspace</span>:{' '}
+        Will receive on <span className="text-[#15C184]">{`${EvmSpace}`}</span>:{' '}
         <span id="receivedCFX"></span>
       </p>
     </>
