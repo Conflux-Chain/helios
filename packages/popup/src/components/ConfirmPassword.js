@@ -47,8 +47,7 @@ function ConfirmPassword({
       .catch(e => {
         setSendingRequestStatus(false)
         setPasswordErrorMessage(
-          e?.message?.indexOf?.('Invalid password') !== -1 ||
-            e?.message?.indexOf?.('Incorrect password') !== -1
+          e?.message?.indexOf?.('Invalid password') !== -1
             ? t('invalidPassword')
             : e?.message ?? t('invalidPasswordFromRpc'),
         )
