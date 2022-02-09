@@ -56,10 +56,12 @@ export const permissions = {
     't',
     'getNetwork',
     'getHdPathById',
+    'getNetworkById',
     'getNetworkByName',
     'getNetworkByEndpoint',
     'getOneHdPath',
     'filterAccountGroupByNetworkType',
+    'retractAttr',
   ],
   methods: [
     'wallet_addHdPath',
@@ -79,6 +81,8 @@ export const main = async ({
   },
   db: {
     t,
+    retractAttr,
+    getNetworkById,
     getHdPathById,
     getNetwork,
     getNetworkByName,
@@ -86,6 +90,8 @@ export const main = async ({
     getOneHdPath,
     filterAccountGroupByNetworkType,
   },
+  networkName,
+  network,
   params: {
     chainId,
     chainName: name,
@@ -184,6 +190,10 @@ export const main = async ({
     },
   ])
 
+  if (toUpdateNetwork?.eid && !explorerUrl) {
+    retractAttr({eid: toUpdateNetwork.eid, attr: 'network/scanUrl'})
+  }
+
   const groups = filterAccountGroupByNetworkType(networkType)
 
   if (!toUpdateNetwork) {
@@ -198,11 +208,20 @@ export const main = async ({
     )
   }
 
+  let discoverAccounts = ({eid}) =>
+    wallet_discoverAccounts({accountGroupId: eid})
+  // current network name changed
+  if (toUpdateNetwork?.eid === network.eid && name !== networkName) {
+    discoverAccounts = ({eid}) =>
+      wallet_discoverAccounts(
+        {networkName: name, network: getNetworkById(network.eid)},
+        {accountGroupId: eid},
+      )
+  }
+
   // discover new accounts for each hd group
   await Promise.all(
-    groups
-      .filter(({vault: {type}}) => type === 'hd')
-      .map(({eid}) => wallet_discoverAccounts({accountGroupId: eid})),
+    groups.filter(({vault: {type}}) => type === 'hd').map(discoverAccounts),
   )
 
   return toUpdateNetwork?.eid || upsertResult.tempids.networkId
