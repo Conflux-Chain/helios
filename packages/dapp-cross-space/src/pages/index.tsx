@@ -14,7 +14,14 @@ const App: React.FC = () => {
   const isSupportEvmSpace = useIsSupportEvmSpace();
 
   const [flipped, setFlipped] = useState(
-    () => localStorage.getItem('filpped') === 'true',
+    () => {
+      if (window.location.hash.slice(1).indexOf('source=fluent-wallet') !== -1) {
+        localStorage.setItem('filpped', 'false')
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+        return false;
+      }
+      return localStorage.getItem('filpped') === 'true'
+    }
   )
   const {transform, opacity} = useSpring({
     opacity: flipped ? 1 : 0,
