@@ -77,7 +77,7 @@ function SelectCreateType() {
             history.push(WALLET_IMPORT_PRIVATE_KEY)
           }}
         />
-        {zeroGroup && (
+        {zeroGroup === false && (
           <CreateTypeItem
             id="hw"
             Icon={<img src="/images/hardware-wallet-icon.svg" alt="icon" />}
