@@ -335,6 +335,21 @@ const zh = {
     waitingContent: '请在 Ledger 中确认此交易',
     rejectedContent: '交易被拒绝',
 
+    // conflux confirm tx error
+    txPoolFull: '交易池拥堵',
+    nodeInCatchUpMode: '节点追块中',
+    canNotRecoverPubKey: '无法恢复公钥',
+    rlpIncorrectListLen: '无效的 RLP 列表长度',
+    chainIdMismatch: '无法匹配 Chain ID',
+    zeroGasPrice: 'Gas 价格不能为 0',
+    tooDistantFuture: 'Nonce 值太大',
+    duplicateTx: '重复的交易',
+    epochHeightOutOfBound: '超出纪元高度范围',
+    gasExceedsLimit: '超出 Gas 限制',
+    tooStaleNonce: 'Nonce 太旧',
+    replacedWithHigherGasPriceTx: '重复的交易',
+    unknownError: '未知错误',
+
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger 未连接',
     openExpandView: '在 Fluent 扩展视图连接硬件钱包',
