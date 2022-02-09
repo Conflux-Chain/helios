@@ -47,7 +47,51 @@ class Provider extends SafeEventEmitter {
   #send
   #isConnected
   isFluent = true
-  // TODO: remote this
+  isConfluxPortal = true
+  constructor(stream, send) {
+    super({
+      allowedEventType: [
+        'connect',
+        'disconnect',
+        'accountsChanged',
+        'chainChanged',
+        'message',
+      ],
+    })
+    this.#s = stream
+    this.#send = send
+    this.#s.subscribe({next: this.#streamEventListener.bind(this)})
+
+    this.on('connect', () => {
+      this.#isConnected = true
+    })
+  }
+
+  request(req) {
+    return requestFactory(this.#send, req).then(res => {
+      if (res.error) throw res.error
+      return res.result
+    })
+  }
+
+  #streamEventListener(msg = {}) {
+    const {event, params, id} = msg
+    if (id !== undefined) return
+    if (!event) return
+    this.emit(event, params)
+  }
+
+  isConnected() {
+    return this.#isConnected
+  }
+}
+
+// DEPRECATED
+class PortalProvider extends SafeEventEmitter {
+  #s
+  #send
+  #isConnected
+  isFluent = true
   isConfluxPortal = true
   constructor(stream, send) {
     super({
@@ -223,6 +267,9 @@ class Provider extends SafeEventEmitter {
   }
 }
 
-export const initProvider = (stream, send) => {
-  return new Provider(stream, send)
+export const initProvider = (stream, send, useModernProviderAPI = false) => {
+  if (useModernProviderAPI) {
+    return new Provider(stream, send)
+  }
+  return new PortalProvider(stream, send)
 }

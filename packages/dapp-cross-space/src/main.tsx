@@ -5,6 +5,9 @@ import Nav from './pages/Nav'
 import App from './pages'
 import './index.css'
 
+export const ConfluxSpace = 'Conflux Core';
+export const EvmSpace = 'Conflux eSpace';
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider>

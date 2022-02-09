@@ -41,14 +41,15 @@ class FluentManage {
     if (!this.status.isInstalled || !window.conflux) return
     window.conflux.on('accountsChanged', this.handleAccountsChanged)
     window.conflux.on('chainChanged', this.handleChainChanged)
-    window.conflux.on('connect', this.handleConnect)
-    window.conflux.on('disconnect', this.handleDisconnect)
+    this.getChainId().then(this.handleChainChanged);
     this.trackBalance()
   }
 
   getStatus = () => this.status
 
-  getAccounts = () => window.conflux!.request({method: 'cfx_requestAccounts'})
+  requestAccounts = () => window.conflux!.request({method: 'cfx_requestAccounts'})
+  getAccounts = () => window.conflux!.request({ method: 'cfx_accounts' });
+  getChainId = () => window.conflux!.request({ method: 'cfx_chainId' });
 
   getBalance = async () => {
     if (!this.account.value) {
@@ -70,14 +71,6 @@ class FluentManage {
       this.balance.value = undefined
       console.error('Get fluent balance error: ', err)
     }
-  }
-
-  handleConnect = ({chainId}: {chainId: ConfluxChainId}) => {
-    this.status.chainId = String(parseInt(chainId)) as ConfluxChainId
-  }
-
-  handleDisconnect = () => {
-    Object.assign(this.status, defaultFluentStatus)
   }
 
   handleAccountsChanged = (accounts?: string[]) => {
@@ -104,11 +97,9 @@ class FluentManage {
       throw new Error('not installed')
     }
 
-    return window.conflux
-      .request({method: 'cfx_requestAccounts'})
-      .then(accounts => {
-        this.handleAccountsChanged(accounts)
-      })
+    return this.requestAccounts().then(() => {
+      this.getChainId().then(this.handleChainChanged);
+    });
   }
 
   trackBalance = () => {
@@ -173,27 +164,6 @@ class FluentManage {
     })
   }
 
-  addEVMChain = async () => {
-    if (!this.account.value) return
-
-    return window.conflux!.request({
-      method: 'wallet_addConfluxChain',
-      params: [
-        {
-          chainId: '0x2ee0',
-          chainName: 'EVM Conflux',
-          nativeCurrency: {
-            name: 'Conflux',
-            symbol: 'CFX',
-            decimals: 18,
-          },
-          rpcUrls: ['https://net12000cfx.confluxrpc.com'],
-          blockExplorerUrls: ['https://confluxscan.io'],
-        },
-      ],
-    })
-  }
-
   estimateMaxAvailableBalance = async () => {
     if (
       !this.account.value ||
@@ -238,6 +208,5 @@ export const startTrackBalance = Manage.startTrackBalance
 export const stopTrackBalance = Manage.stopTrackBalance
 export const sendTransaction = Manage.sendTransaction
 export const trackBalanceChangeOnce = Manage.trackBalanceChangeOnce
-export const addEVMChain = Manage.addEVMChain
 
 export default Manage

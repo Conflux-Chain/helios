@@ -3,6 +3,9 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletSetPreferences from '@fluent-wallet/wallet_set-preferences'
+import * as walletGetPreferences from '@fluent-wallet/wallet_get-preferences'
+import * as walletUpdateNetwork from '@fluent-wallet/wallet_update-network'
 import * as cfxGetMaxGasLimit from '@fluent-wallet/cfx_get-max-gas-limit'
 import * as walletMetadataForPopup from '@fluent-wallet/wallet_metadata-for-popup'
 import * as cfxSignTxWithLedgerNanoS from '@fluent-wallet/cfx_sign-tx-with-ledger-nano-s'
@@ -187,6 +190,7 @@ export const rpcEngineOpts = {
     walletDeleteAccountGroup,
     walletAddHdPath,
     walletAddNetwork,
+    walletUpdateNetwork,
     walletGetNetwork,
     walletDeleteNetwork,
     walletDetectNetworkType,
@@ -299,5 +303,7 @@ export const rpcEngineOpts = {
     walletHandleUnfinishedTxs,
     walletCleanupTx,
     walletGetFluentMetadata,
+    walletGetPreferences,
+    walletSetPreferences,
   ],
 }

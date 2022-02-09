@@ -33,6 +33,7 @@ const {
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
   WALLET_GET_FLUENT_METADATA,
   CFX_GET_MAX_GAS_LIMIT,
+  WALLET_GET_PREFERENCES,
 } = RPC_METHODS
 
 export const useCurrentAddress = (notSendReq = false) => {
@@ -591,4 +592,11 @@ export const useWalletVersion = () => {
     },
   })
   return data
+}
+
+export const usePreferences = () => {
+  const {data, mutate} = useRPC([WALLET_GET_PREFERENCES], undefined, {
+    refreshInterval: 0,
+  })
+  return {data, mutate}
 }

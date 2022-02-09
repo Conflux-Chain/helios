@@ -182,7 +182,6 @@ function HistoryItem({
               className="w-3 h-3 text-primary"
               containerClassName={copyButtonContainerClassName}
               toastClassName={copyButtonToastClassName}
-              CopyWrapper={WrapIcon}
               wrapperClassName="!w-5 !h-5"
             />
           )}

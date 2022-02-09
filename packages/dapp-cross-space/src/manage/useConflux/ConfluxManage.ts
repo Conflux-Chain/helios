@@ -9,20 +9,25 @@ export interface CrossSpaceContract {
 }
 
 export const confluxNetworkConfig = {
-  '12000': {
-    networkId: 12000,
-    url: 'https://net12000cfx.confluxrpc.com',
-    evmSpaceUrl: 'https://net12001eth.confluxrpc.com'
-  },
   '1029': {
     networkId: 1029,
     url: 'https://main.confluxrpc.com',
-    evmSpaceUrl: 'https://main.confluxrpc.com'
+    EvmSpace: {
+      name: 'Conflux eSpace',
+      url: 'https://evm.confluxrpc.com',
+      networkId: 1030,
+      scan: 'https://evm.confluxscan.net'
+    }
   },
   '1': {
     networkId: 1,
     url: 'https://test.confluxrpc.com',
-    evmSpaceUrl: 'https://test.confluxrpc.com'
+    EvmSpace: {
+      name: 'Conflux eSpace (Testnet)',
+      url: 'https://evmtestnet.confluxrpc.com',
+      networkId: 71,
+      scan: 'https://evmtestnet.confluxscan.net'
+    }
   },
 } as const
 

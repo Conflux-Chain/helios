@@ -127,7 +127,7 @@ const zh = {
     welcome: '进入 Web3 世界',
     password: '请输入密码',
     unlock: '解锁',
-    passwordRulesWarning: '请使用 8～16 个字符，并且同时包含字母和数字',
+    passwordRulesWarning: '请使用 8～128 个字符，并且同时包含字母和数字',
     en: 'English',
     zh: '简体中文',
 
@@ -271,6 +271,12 @@ const zh = {
     feedback: '反馈',
     docs: '文档',
     version: '版本号',
+
+    // Developer Mode
+    developerMode: '开发者模式',
+    compatibilityMode: '兼容模式',
+    compatibilityDes:
+      'Fluent 最终将会停止支持 ConfluxPortal 的 API。为了方便开发者测试，关掉开关将模拟 Fluent 不支持 ConfluxPortal API 的环境',
 
     // backup seed
     backupIdentity: '备份助记词',

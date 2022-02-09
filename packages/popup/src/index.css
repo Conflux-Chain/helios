@@ -2,14 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  @apply mx-auto;
+
+  width: fit-content;
+}
+
 body {
+  @apply font-body text-sm font-normal overflow-auto;
+
+  width: fit-content;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #fff;
-  @apply font-body;
-  @apply text-sm;
-  @apply font-normal;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 strong {

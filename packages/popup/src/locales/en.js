@@ -130,7 +130,7 @@ const en = {
     password: 'Enter your password',
     unlock: 'Unlock',
     passwordRulesWarning:
-      'Use 8 ~ 16 characters with a mix of letters & numbers.',
+      'Use 8 ~ 128 characters with a mix of letters & numbers.',
     en: 'English',
     zh: '简体中文',
 
@@ -278,6 +278,12 @@ const en = {
     feedback: 'Feedback',
     docs: 'Docs',
     version: 'Version',
+
+    // Developer Mode
+    developerMode: 'Developer Mode',
+    compatibilityMode: 'Compatibility Mode',
+    compatibilityDes:
+      'Fluent will eventually stop supporting ConfluxPortal API.Turn off the switch to make Fluent incompatible with the ConfluxPortal API. Only for developers to test.',
 
     // backup seed
     backupIdentity: 'Backup Seed Phrase',

@@ -23,6 +23,7 @@ import CFXIcon from '../../assets/cfx.svg'
 import Suggest from '../../assets/suggest.svg'
 import Copy from '../../assets/copy.svg'
 import Success from '../../assets/success.svg'
+import {ConfluxSpace, EvmSpace} from '../../main'
 
 const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
   style,
@@ -74,7 +75,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         <p className="flex items-center">
           <span className="text-[14px] text-[#A9ABB2]">From:</span>
           <span className="ml-[8px] text-[18px] text-[#15C184]">
-            Conflux EVM-Space
+            {`${EvmSpace}`}
           </span>
         </p>
       </div>
@@ -96,7 +97,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         <p className="flex items-center">
           <span className="text-[14px] text-[#A9ABB2]">To:</span>
           <span className="ml-[8px] text-[18px] text-[#2959B4]">
-            Conflux Native-Space
+            {`${ConfluxSpace}`}
           </span>
         </p>
         <div className="flex items-center mt-[12px] ">
@@ -137,7 +138,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         </div>
         <ul className="list-disc pl-[23px] text-[14px] text-[#898D9A] leading-[18px]">
           <li>
-            Use <span className="text-[#15C184]">Conflux EVM-Space</span>.
+            Use <span className="text-[#15C184]">{`${EvmSpace}`}</span>.
           </li>
           <li>
             Send your CFX to the{' '}
