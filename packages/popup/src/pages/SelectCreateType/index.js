@@ -4,6 +4,9 @@ import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
 import {useHdAccountGroup, useDataForPopup} from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
+import {detectFirefox} from '../../utils'
+
+const isFirefox = detectFirefox()
 
 const {
   CURRENT_SEED_PHRASE,
@@ -77,7 +80,7 @@ function SelectCreateType() {
             history.push(WALLET_IMPORT_PRIVATE_KEY)
           }}
         />
-        {zeroGroup && (
+        {zeroGroup === false && !isFirefox && (
           <CreateTypeItem
             id="hw"
             Icon={<img src="/images/hardware-wallet-icon.svg" alt="icon" />}
