@@ -252,6 +252,9 @@ function NetworkDetail() {
                   ? networkError?.[valueKey] ?? ''
                   : ''
               }
+              placeholder={
+                valueKey === 'symbol' ? CFX_MAINNET_CURRENCY_SYMBOL : ''
+              }
               id={`change-${valueKey}-input`}
             />
           </CompWithLabel>
