@@ -19,7 +19,6 @@ function HwTransactionResult({status, isDapp, sendError}) {
   const isRejected = sendError?.includes('UserRejected')
   const isWaiting = status === TX_STATUS.HW_WAITING
   const {errorType} = processError(sendError)
-  // TODO: handle hw account user reject tx, should display rejected title and content
   const title = isWaiting
     ? t('waitingForSign')
     : isRejected
