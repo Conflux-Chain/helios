@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
 import {request} from '../utils'
-import {RPC_METHODS, HW_TX_STATUS} from '../constants'
+import {RPC_METHODS, TX_STATUS} from '../constants'
 import {usePendingAuthReq} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 import {Conflux} from '@fluent-wallet/ledger'
@@ -73,7 +73,7 @@ function DappFooter({
       }
     }
     if (!isHwAccount) setLoading(true)
-    else setSendStatus(HW_TX_STATUS.WAITING)
+    else setSendStatus(TX_STATUS.HW_WAITING)
     let params = {}
     switch (req.method) {
       case WALLET_REQUEST_PERMISSIONS:
@@ -106,14 +106,14 @@ function DappFooter({
       .then(() => {
         onClickConfirm && onClickConfirm()
         if (!isHwAccount) setLoading(false)
-        else setSendStatus(HW_TX_STATUS.SUCCESS)
+        else setSendStatus(TX_STATUS.HW_SUCCESS)
         window.close()
       })
       .catch(error => {
         // TODO: error message
         console.log('error', error)
         if (!isHwAccount) setLoading(false)
-        setSendStatus(HW_TX_STATUS.REJECTED)
+        setSendStatus(TX_STATUS.ERROR)
         setSendError(error?.message ?? error)
       })
   }
