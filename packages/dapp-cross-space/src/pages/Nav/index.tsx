@@ -79,7 +79,7 @@ const Nav: React.FC = () => {
             </button>
           )}
           {isConnected && account && (
-            <div className="flex justify-end items-center ml-[12px] pr-[4px] text-[14px] bg-white w-[264px] h-[40px] rounded-[54px] text-[#3D3F4C]">
+            <div className="flex justify-end items-center ml-[12px] pr-[4px] text-[14px] bg-white w-[248px] h-[40px] rounded-[54px] text-[#3D3F4C]">
               <span className="nav-spin mr-[4px]" />
               {`${ConfluxSpace}`}
               <ShortenAddress
