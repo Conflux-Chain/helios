@@ -148,3 +148,6 @@ export function composeRef() {
 
 export const updateDbAccountList = (mutate, ...args) =>
   Promise.all(args.map(dep => mutate([WALLETDB_ACCOUNT_LIST_ASSETS, dep])))
+
+export const detectFirefox = () =>
+  navigator?.userAgent?.toLowerCase().indexOf('firefox') > -1
