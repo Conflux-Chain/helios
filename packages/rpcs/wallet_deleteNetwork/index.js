@@ -19,7 +19,7 @@ export const main = async ({
   params: {password, networkId},
 }) => {
   if (!(await wallet_validatePassword({password})))
-    throw InvalidParams('Incorrect password')
+    throw InvalidParams('Invalid password')
 
   const network = getNetworkById(networkId)
   if (!network) throw InvalidParams(`Invalid network id ${networkId}`)
