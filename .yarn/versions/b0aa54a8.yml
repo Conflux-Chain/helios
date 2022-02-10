@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/extension-runtime": patch
+
+declined:
+  - helios-background
+  - helios-inpage
+  - helios-popup
+  - "@fluent-wallet/use-rpc"
