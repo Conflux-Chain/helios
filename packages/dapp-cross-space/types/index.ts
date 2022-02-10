@@ -1,10 +1,8 @@
 type ConfluxMainNetwork = '1029'
 type ConfluxTestNetwork = '1'
-type ConfluxTest2Network = '12000'
 type ConfluxChainId =
   | ConfluxMainNetwork
   | ConfluxTestNetwork
-  | ConfluxTest2Network
 
 type FluentEvents =
   | 'chainChanged'
@@ -23,13 +21,15 @@ interface RPCMethod<T extends string> {
   on(event: 'accountsChanged', cb: (accounts: Array<string>) => void): void
   on(event: 'chainChanged', cb: (chainId: ConfluxChainId) => void): void
   off(event: FluentEvents, cb: Function): void
-  request(args: {method: 'cfx_requestAccounts'}): Promise<Array<string>>
+  request(args: {method: `${T extends 'Conflux' ? 'cfx' : 'eth'}_accounts`}): Promise<Array<string>>
+  request(args: {method: `${T extends 'Conflux' ? 'cfx' : 'eth'}_chainId`}): Promise<ConfluxChainId>
+  request(args: {method: `${T extends 'Conflux' ? 'cfx' : 'eth'}_requestAccounts`}): Promise<Array<string>>
   request(args: {
     method: 'wallet_getBalance'
     params: [string]
   }): Promise<string>
   request(args: {
-    method: 'cfx_sendTransaction'
+    method: `${T extends 'Conflux' ? 'cfx' : 'eth'}_sendTransaction`
     params: [{from: string; to: string; value?: string; data?: string}]
   }): Promise<any>
   request(args: {method: `wallet_add${T}Chain`; params: any}): Promise<any>

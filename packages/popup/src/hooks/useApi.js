@@ -33,6 +33,7 @@ const {
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
   WALLET_GET_FLUENT_METADATA,
   CFX_GET_MAX_GAS_LIMIT,
+  WALLET_GET_PREFERENCES,
 } = RPC_METHODS
 
 export const useCurrentAddress = (notSendReq = false) => {
@@ -64,17 +65,21 @@ export const useCurrentAddress = (notSendReq = false) => {
 }
 
 export const useCurrentDapp = () => {
+  const {locked: isLocked} = useDataForPopup()
+
   const {
     data: {eid: addressId},
   } = useCurrentAddress()
+
   const {data, mutate} = useRPC(
-    [WALLET_GET_CURRENT_DAPP, addressId],
+    isLocked === false && isNumber(addressId)
+      ? [WALLET_GET_CURRENT_DAPP, addressId]
+      : null,
     undefined,
     {
       fallbackData: {},
     },
   )
-
   return {data, mutate}
 }
 
@@ -125,7 +130,7 @@ export const useNetworkByChainId = (chainId, type) => {
 }
 
 export const useHdAccountGroup = () => {
-  const zeroGroup = useIsZeroGroup()
+  const {zeroGroup} = useDataForPopup()
   const {data: hdGroup} = useRPC(
     zeroGroup === false
       ? [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.HD]
@@ -137,7 +142,7 @@ export const useHdAccountGroup = () => {
 }
 
 export const usePkAccountGroup = () => {
-  const zeroGroup = useIsZeroGroup()
+  const {zeroGroup} = useDataForPopup()
   const {data: pkGroup} = useRPC(
     zeroGroup === false
       ? [WALLET_GET_ACCOUNT_GROUP, ACCOUNT_GROUP_TYPE.PK]
@@ -149,7 +154,7 @@ export const usePkAccountGroup = () => {
 }
 
 export const useAllGroup = () => {
-  const zeroGroup = useIsZeroGroup()
+  const {zeroGroup} = useDataForPopup()
   const {data: group} = useRPC(
     zeroGroup === false ? [WALLET_GET_ACCOUNT_GROUP] : null,
     undefined,
@@ -160,6 +165,10 @@ export const useAllGroup = () => {
   return group
 }
 
+/************************************************************************************************
+unused functions
+because locked and zeroGroup has logic relationship
+************************************************************************************************/
 export const useIsLocked = () => {
   const {data: lockedData} = useRPC([WALLET_IS_LOCKED])
   return lockedData
@@ -169,9 +178,12 @@ export const useIsZeroGroup = () => {
   const {data: zeroGroup} = useRPC([WALLET_ZERO_ACCOUNT_GROUP])
   return zeroGroup
 }
+/************************************************************************************************
+end
+************************************************************************************************/
 
 export const usePendingAuthReq = () => {
-  const isLocked = useIsLocked()
+  const {locked: isLocked} = useDataForPopup()
   const {data: pendingAuthReq} = useRPC(
     !isLocked ? [WALLET_GET_PENDING_AUTH_REQUEST] : null,
   )
@@ -399,9 +411,10 @@ export const useDbAccountListAssets = (
       ACCOUNT_GROUP_TYPE.HW,
     ],
   },
+  dep = 'queryAllAccount',
 ) => {
   const {data: accountListAssets} = useRPC(
-    [WALLETDB_ACCOUNT_LIST_ASSETS, ...params.accountGroupTypes],
+    [WALLETDB_ACCOUNT_LIST_ASSETS, dep],
     params,
     {
       fallbackData: {},
@@ -579,4 +592,11 @@ export const useWalletVersion = () => {
     },
   })
   return data
+}
+
+export const usePreferences = () => {
+  const {data, mutate} = useRPC([WALLET_GET_PREFERENCES], undefined, {
+    refreshInterval: 0,
+  })
+  return {data, mutate}
 }

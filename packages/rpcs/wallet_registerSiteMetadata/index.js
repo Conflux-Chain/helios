@@ -14,7 +14,7 @@ export const schemas = {
 export const permissions = {
   external: ['inpage'],
   locked: true,
-  methods: ['wallet_requestPermissions'],
+  methods: ['wallet_requestPermissions', 'wallet_getPreferences'],
   db: ['t', 'findAccount'],
   scope: null,
 }
@@ -22,7 +22,7 @@ export const permissions = {
 export const main = ({
   Err: {InvalidRequest},
   db: {t, findAccount},
-  rpcs: {wallet_requestPermissions},
+  rpcs: {wallet_requestPermissions, wallet_getPreferences},
   params: {name, icon},
   _inpage,
   _origin,
@@ -34,6 +34,13 @@ export const main = ({
     {eid: 'newsite', site: {name, origin: _origin, post: _post}},
     icon && {eid: 'newsite', site: {icon}},
   ])
+
+  wallet_getPreferences().then(p =>
+    _post({
+      event: '__FLUENT_USE_MODERN_PROVIDER_API__',
+      params: p?.useModernProviderAPI,
+    }),
+  )
 
   _post({
     event: 'connect',

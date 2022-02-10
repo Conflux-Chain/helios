@@ -16,7 +16,7 @@ const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function AccountItem({
   nickname,
-  account, // TODO: use accountId
+  accounts, // TODO: use accountId
   authorizedAccountIdIconObj,
   onClose,
   tokeName = '',
@@ -46,59 +46,61 @@ function AccountItem({
   }
 
   return (
-    <div className="bg-gray-0 rounded mt-3">
-      {groupType === 'pk' ? null : (
-        <p className="text-gray-40 ml-4 mb-1 text-xs pt-3">{nickname}</p>
-      )}
-      {account.map(({nickname, eid, currentAddress}, index) => (
-        <div
-          aria-hidden="true"
-          onClick={() => onChangeAccount(eid)}
-          key={index}
-          className={`flex p-3 rounded hover:bg-primary-4 ${
-            currentAccountId === eid ? 'cursor-default' : 'cursor-pointer'
-          }`}
-        >
-          <Avatar
-            className="w-5 h-5 mr-2"
-            diameter={20}
-            accountIdentity={eid}
-          />
-          <div className="flex-1">
-            <p className="text-xs text-gray-40 ">{nickname}</p>
-            <div className="flex w-full">
-              <DisplayBalance
-                balance={currentAddress?.nativeBalance || '0x0'}
-                maxWidthStyle="max-w-[270px]"
-                maxWidth={270}
-                decimals={decimals}
-              />
-              <pre className="text-sm text-gray-80"> {tokeName}</pre>
+    !!accounts.length && (
+      <div className="bg-gray-0 rounded mt-3">
+        {groupType === 'pk' ? null : (
+          <p className="text-gray-40 ml-4 mb-1 text-xs pt-3">{nickname}</p>
+        )}
+        {accounts.map(({nickname, eid, currentAddress}, index) => (
+          <div
+            aria-hidden="true"
+            onClick={() => onChangeAccount(eid)}
+            key={index}
+            className={`flex p-3 rounded hover:bg-primary-4 ${
+              currentAccountId === eid ? 'cursor-default' : 'cursor-pointer'
+            }`}
+          >
+            <Avatar
+              className="w-5 h-5 mr-2"
+              diameter={20}
+              accountIdentity={eid}
+            />
+            <div className="flex-1">
+              <p className="text-xs text-gray-40 ">{nickname}</p>
+              <div className="flex w-full">
+                <DisplayBalance
+                  balance={currentAddress?.nativeBalance || '0x0'}
+                  maxWidthStyle="max-w-[270px]"
+                  maxWidth={270}
+                  decimals={decimals}
+                />
+                <pre className="text-sm text-gray-80"> {tokeName}</pre>
+              </div>
+            </div>
+            <div className="inline-flex justify-center items-center">
+              {authorizedAccountIdIconObj[eid] && (
+                <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
+                  <img
+                    className="w-4 h-4"
+                    src={authorizedAccountIdIconObj[eid]}
+                    alt="favicon"
+                  />
+                </div>
+              )}
+              {currentAccountId === eid && (
+                <CheckCircleFilled className="w-4 h-4 ml-3 text-success" />
+              )}
             </div>
           </div>
-          <div className="inline-flex justify-center items-center">
-            {authorizedAccountIdIconObj[eid] && (
-              <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
-                <img
-                  className="w-4 h-4"
-                  src={authorizedAccountIdIconObj[eid]}
-                  alt="favicon"
-                />
-              </div>
-            )}
-            {currentAccountId === eid && (
-              <CheckCircleFilled className="w-4 h-4 ml-3 text-success" />
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    )
   )
 }
 
 AccountItem.propTypes = {
   nickname: PropTypes.string,
-  account: PropTypes.array,
+  accounts: PropTypes.array,
   authorizedAccountIdIconObj: PropTypes.object.isRequired,
   onClose: PropTypes.func,
   tokeName: PropTypes.string,
@@ -136,7 +138,7 @@ function AccountList({onClose, open, accountsAnimate = true}) {
             ({nickname, account, vault}, index) => (
               <AccountItem
                 key={index}
-                account={Object.values(account)}
+                accounts={Object.values(account).filter(({hidden}) => !hidden)}
                 nickname={nickname}
                 onClose={onClose}
                 authorizedAccountIdIconObj={authorizedAccountIdIconObj}

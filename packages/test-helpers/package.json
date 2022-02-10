@@ -1,9 +1,9 @@
 {
   "name": "@fluent-wallet/test-helpers",
   "main": "index.js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "dependencies": {
-    "@cfxjs/fullnode": "1.9.0",
+    "@cfxjs/fullnode": "2.1.0",
     "ethers": "5.5.2",
     "ganache-core": "2.13.2"
   }

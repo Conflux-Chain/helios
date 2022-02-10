@@ -2,8 +2,11 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
-import {useHdAccountGroup, useIsZeroGroup} from '../../hooks/useApi'
+import {useHdAccountGroup, useDataForPopup} from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
+import {detectFirefox} from '../../utils'
+
+const isFirefox = detectFirefox()
 
 const {
   CURRENT_SEED_PHRASE,
@@ -24,7 +27,7 @@ function SelectCreateType() {
   const {t} = useTranslation()
   const history = useHistory()
   const hdGroup = useHdAccountGroup()
-  const zeroGroup = useIsZeroGroup()
+  const {zeroGroup} = useDataForPopup()
 
   return (
     <div className="bg-bg h-full w-full" id="selectCreateTypeContainer">
@@ -33,7 +36,7 @@ function SelectCreateType() {
         <em className="not-italic text-xs text-gray-40 ml-1 mt-3 mb-2 inline-block">
           {t('createAccount')}
         </em>
-        {hdGroup?.length ? (
+        {hdGroup?.length > 0 && (
           <CreateTypeItem
             id="useExistingSeed"
             Icon={
@@ -46,7 +49,7 @@ function SelectCreateType() {
               history.push(CURRENT_SEED_PHRASE)
             }}
           />
-        ) : null}
+        )}
         <CreateTypeItem
           id="newSeedPhrase"
           Icon={<img src="/images/new-seed-phrase-icon.svg" alt="icon" />}
@@ -77,7 +80,7 @@ function SelectCreateType() {
             history.push(WALLET_IMPORT_PRIVATE_KEY)
           }}
         />
-        {zeroGroup === false ? (
+        {zeroGroup === false && !isFirefox && (
           <CreateTypeItem
             id="hw"
             Icon={<img src="/images/hardware-wallet-icon.svg" alt="icon" />}
@@ -88,7 +91,7 @@ function SelectCreateType() {
               history.push(HARDWARE_GUARD)
             }}
           />
-        ) : null}
+        )}
       </main>
     </div>
   )

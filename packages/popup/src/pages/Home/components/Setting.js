@@ -6,11 +6,12 @@ import Button from '@fluent-wallet/component-button'
 import {SlideCard, LanguageNav} from '../../../components'
 import {LockOutLined} from '@fluent-wallet/component-icons'
 import {RPC_METHODS, ROUTES} from '../../../constants'
+import {useDataForPopup} from '../../../hooks/useApi'
 import {request} from '../../../utils'
-import useGlobalStore from '../../../stores/index.js'
+import useGlobalStore from '../../../stores'
 
-const {LOCK, WALLET_IS_LOCKED, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
-const {ACCOUNT_MANAGEMENT, NETWORK_MANAGEMENT, ABOUT} = ROUTES
+const {LOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
+const {ACCOUNT_MANAGEMENT, NETWORK_MANAGEMENT, ABOUT, DEVELOPER_MODE} = ROUTES
 
 const SETTING_ITEMS = [
   {
@@ -22,6 +23,11 @@ const SETTING_ITEMS = [
     contentKey: 'networkManagement',
     iconPath: '/images/chart.svg',
     jumpPath: NETWORK_MANAGEMENT,
+  },
+  {
+    contentKey: 'developerMode',
+    iconPath: '/images/developer.svg',
+    jumpPath: DEVELOPER_MODE,
   },
   {
     contentKey: 'about',
@@ -58,12 +64,11 @@ function Setting({onClose, open, settingAnimate = true}) {
   const history = useHistory()
   const {setFatalError} = useGlobalStore()
   const {mutate} = useSWRConfig()
+  const data = useDataForPopup()
   const onLock = () => {
     request(LOCK)
       .then(() => {
-        mutate([WALLET_METADATA_FOR_POPUP]).then(() => {
-          mutate([WALLET_IS_LOCKED], true, true)
-        })
+        mutate([WALLET_METADATA_FOR_POPUP], {...data, locked: true}, false)
       })
       .catch(error => setFatalError(error))
   }

@@ -33,7 +33,7 @@ import {
   RPC_METHODS,
   LEDGER_AUTH_STATUS,
   LEDGER_OPEN_STATUS,
-  HW_TX_STATUS,
+  TX_STATUS,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import {Conflux} from '@fluent-wallet/ledger'
@@ -291,7 +291,7 @@ function ConfirmTransaction() {
       }
     }
     if (!isHwAccount) setLoading(true)
-    else setSendStatus(HW_TX_STATUS.WAITING)
+    else setSendStatus(TX_STATUS.HW_WAITING)
 
     const error = await checkBalance()
     if (error) {
@@ -303,14 +303,14 @@ function ConfirmTransaction() {
     request(SEND_TRANSACTION, [params])
       .then(() => {
         if (!isHwAccount) setLoading(false)
-        else setSendStatus(HW_TX_STATUS.SUCCESS)
+        else setSendStatus(TX_STATUS.HW_SUCCESS)
         setTimeout(() => clearSendTransactionParams(), 500)
         history.push(HOME)
       })
       .catch(error => {
         console.error('error', error)
         if (!isHwAccount) setLoading(false)
-        setSendStatus(HW_TX_STATUS.REJECTED)
+        setSendStatus(TX_STATUS.ERROR)
         setSendError(error?.message ?? error)
       })
   }
@@ -404,7 +404,7 @@ function ConfirmTransaction() {
               setIsAppOpen={setIsAppOpen}
             />
           )}
-          {(isHwAccount || sendStatus === HW_TX_STATUS.REJECTED) && (
+          {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (
             <HwTransactionResult
               status={sendStatus}
               isDapp={isDapp}

@@ -1,5 +1,6 @@
 (ns cfxjs.db.queries
   (:require
+   [medley.core :refer [deep-merge]]
    ["@ethersproject/bignumber" :as bn]
    [clojure.walk :refer [postwalk walk]]
    [cfxjs.spec.cljs]
@@ -411,21 +412,27 @@
 
 (defn set-current-network
   "set wallet current network, change all apps' currentNetwork"
-  [net]
+  [nextnet]
   (let [selected-net  (q '[:find ?net .
                            :where
                            [?net :network/selected true]])
         ;; unselect selected net
         net-unselect  [[:db.fn/retractAttribute selected-net :network/selected]]
         ;; select unselected net
-        net-select    [[:db/add net :network/selected true]]
-        ;; get all app
-        apps          (q '[:find [?app ...]
-                           :where
-                           [?app :app/site]])
-        apps-reselect (mapv (fn [app] [:db/add app :app/currentNetwork net]) apps)
-        txns          (concat net-unselect net-select apps-reselect)]
+        net-select    [[:db/add nextnet :network/selected true]]
+        txns          (concat net-unselect net-select)]
     (t txns)
+    true))
+
+(defn get-apps-with-different-selected-network
+  "given the to-be-selected network, return all apps with different selected network"
+  [nextnet]
+  (let [apps (q '[:find [?app ...]
+                  :in $ ?net
+                  :where
+                  [?app :app/site]
+                  (not [?app :app/currentNetwork ?net])]
+                nextnet)]
     (map (partial e :app) apps)))
 
 (defn upsert-app-permissions
@@ -1166,6 +1173,27 @@
                               (assoc :token (and token (e :token token))))))
                       txs)})))
 
+(defonce default-preferences {:hideTestNetwork false
+                              :useModernProviderAPI false})
+
+(defn get-preferences []
+  (let [preferences (or (:preferences
+                         (q '[:find (pull ?p [:preferences]) .
+                              :where
+                              [?p :preferences]]))
+                        default-preferences)
+        preferences (deep-merge default-preferences preferences)]
+    preferences))
+
+(defn set-preferences [preferences]
+  (let [preferences (deep-merge default-preferences (or preferences {}))
+        pref-id     (or (q '[:find ?p .
+                             :where [?p :preferences]])
+                        -1)
+        txs         [{:db/id pref-id :preferences preferences}]]
+    (t txs)
+    true))
+
 (def queries {:batchTx
               (fn [txs]
                 (let [txs (-> txs js/window.JSON.parse j->c)
@@ -1173,48 +1201,51 @@
                       rst (t txs)]
                   (clj->js rst)))
 
-              :getPendingAuthReq               get-pending-auth-req
-              :newAddressTx                    new-address-tx
-              :newtokenTx                      new-token-tx
-              :getGroupFirstAccountId          get-group-first-account-id
-              :filterAccountGroupByNetworkType filter-account-group-by-network-type
-              :getExportAllData                get-export-all-data
-              :setCurrentAccount               set-current-account
-              :setCurrentNetwork               set-current-network
-              :upsertAppPermissions            upsert-app-permissions
-              :accountAddrByNetwork            account-addr-by-network
-              :retract                         retract
-              :retractAttr                     retract-attr
-              :getCurrentAddr                  #(e :address (get-current-addr))
-              :addTokenToAddr                  add-token-to-addr
-              :getSingleCallBalanceParams      get-single-call-balance-params
-              :upsertBalances                  upsert-balances
-              :retractAddressToken             retract-address-token
-              :getAddrTxByHash                 get-addr-tx-by-hash
-              :isTokenInAddr                   token-in-addr?
-              :getUnfinishedTx                 get-unfinished-tx
-              :getUnfinishedTxCount            get-unfinished-tx-count
-              :setTxSkipped                    set-tx-skipped
-              :setTxFailed                     set-tx-failed
-              :setTxSending                    set-tx-sending
-              :setTxPending                    set-tx-pending
-              :setTxPackaged                   set-tx-packaged
-              :setTxExecuted                   set-tx-executed
-              :setTxConfirmed                  set-tx-confirmed
-              :setTxChainSwitched              set-tx-chain-switched
-              :setTxUnsent                     set-tx-unsent
-              :getCfxTxsToEnrich               get-cfx-txs-to-enrich
-              :cleanupTx                       cleanup-tx
-              :findApp                         get-apps
-              :findAddress                     get-address
-              :findNetwork                     get-network
-              :findAccount                     get-account
-              :findToken                       get-token
-              :findGroup                       get-group
-              :validateAddrInApp               validate-addr-in-app
-              :upsertTokenList                 upsert-token-list
-              :retractNetwork                  retract-network
-              :retractGroup                    retract-group
+              :getPendingAuthReq                   get-pending-auth-req
+              :newAddressTx                        new-address-tx
+              :newtokenTx                          new-token-tx
+              :getGroupFirstAccountId              get-group-first-account-id
+              :filterAccountGroupByNetworkType     filter-account-group-by-network-type
+              :getExportAllData                    get-export-all-data
+              :setCurrentAccount                   set-current-account
+              :setCurrentNetwork                   set-current-network
+              :upsertAppPermissions                upsert-app-permissions
+              :accountAddrByNetwork                account-addr-by-network
+              :retract                             retract
+              :retractAttr                         retract-attr
+              :getCurrentAddr                      #(e :address (get-current-addr))
+              :addTokenToAddr                      add-token-to-addr
+              :getSingleCallBalanceParams          get-single-call-balance-params
+              :upsertBalances                      upsert-balances
+              :retractAddressToken                 retract-address-token
+              :getAddrTxByHash                     get-addr-tx-by-hash
+              :isTokenInAddr                       token-in-addr?
+              :getUnfinishedTx                     get-unfinished-tx
+              :getUnfinishedTxCount                get-unfinished-tx-count
+              :setTxSkipped                        set-tx-skipped
+              :setTxFailed                         set-tx-failed
+              :setTxSending                        set-tx-sending
+              :setTxPending                        set-tx-pending
+              :setTxPackaged                       set-tx-packaged
+              :setTxExecuted                       set-tx-executed
+              :setTxConfirmed                      set-tx-confirmed
+              :setTxChainSwitched                  set-tx-chain-switched
+              :setTxUnsent                         set-tx-unsent
+              :getCfxTxsToEnrich                   get-cfx-txs-to-enrich
+              :cleanupTx                           cleanup-tx
+              :findApp                             get-apps
+              :findAddress                         get-address
+              :findNetwork                         get-network
+              :findAccount                         get-account
+              :findToken                           get-token
+              :findGroup                           get-group
+              :validateAddrInApp                   validate-addr-in-app
+              :upsertTokenList                     upsert-token-list
+              :retractNetwork                      retract-network
+              :retractGroup                        retract-group
+              :setPreferences                      set-preferences
+              :getPreferences                      get-preferences
+              :getAppsWithDifferentSelectedNetwork get-apps-with-different-selected-network
 
               :queryqueryApp              get-apps
               :queryqueryAddress          get-address

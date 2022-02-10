@@ -27,15 +27,13 @@ frame-src 'self' http://localhost:* data: chrome-extension-resource:;
 font-src 'self' data: chrome-extension-resource:;
 media-src * data: blob: filesystem:;",`.replaceAll('\n', ' ')
       : '',
-    name: isDev() ? 'AFluent' : 'Fluent',
+    name: isDev() ? 'AFluent' : '__MSG_extensionNAME__',
     backgroundScripts: isDev()
       ? '"reload.js","background.dev.js"'
       : '"background/dist/index.prod.js"',
     contentScripts: '"content-script.js"',
     webResources: '"content-script.js","inpage.js"',
     popupHTML: isDev() ? 'popup.html' : 'popup/popup.html',
-    permissions: isDev()
-      ? '"http://localhost:18001/",\n "http://localhost:18002/",\n "http://localhost:18003/",\n "tabs",\n'
-      : '',
+    permissions: isDev() ? '"<all_urls>",\n  "tabs",\n' : '',
   },
 )

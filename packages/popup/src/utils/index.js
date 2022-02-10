@@ -7,8 +7,7 @@ const globalThis = window ?? global
 const {
   WALLET_GET_ACCOUNT_GROUP,
   WALLET_METADATA_FOR_POPUP,
-  WALLET_IS_LOCKED,
-  WALLET_ZERO_ACCOUNT_GROUP,
+  WALLETDB_ACCOUNT_LIST_ASSETS,
 } = RPC_METHODS
 
 export function request(...args) {
@@ -66,8 +65,6 @@ export function updateAddedNewAccount(mutate, noAccountBefore, groupType) {
   const promises = []
   if (noAccountBefore) {
     promises.push(mutate([WALLET_METADATA_FOR_POPUP]))
-    promises.push(mutate([WALLET_IS_LOCKED]))
-    promises.push(mutate([WALLET_ZERO_ACCOUNT_GROUP]))
   }
   promises.push(mutate([WALLET_GET_ACCOUNT_GROUP]))
   promises.push(mutate([WALLET_GET_ACCOUNT_GROUP, groupType]))
@@ -148,3 +145,9 @@ export function composeRef() {
     })
   }
 }
+
+export const updateDbAccountList = (mutate, ...args) =>
+  Promise.all(args.map(dep => mutate([WALLETDB_ACCOUNT_LIST_ASSETS, dep])))
+
+export const detectFirefox = () =>
+  navigator?.userAgent?.toLowerCase().indexOf('firefox') > -1

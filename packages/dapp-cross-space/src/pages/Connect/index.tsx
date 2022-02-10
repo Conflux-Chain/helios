@@ -20,6 +20,7 @@ const Connect: React.FC = () => {
 
   return (
     <button
+      id="btn-connect"
       className="button text-[16px] w-[432px] h-[48px] mt-[48px]"
       onClick={handleClickConnect}
     >

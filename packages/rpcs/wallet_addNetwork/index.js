@@ -56,10 +56,12 @@ export const permissions = {
     't',
     'getNetwork',
     'getHdPathById',
+    'getNetworkById',
     'getNetworkByName',
     'getNetworkByEndpoint',
     'getOneHdPath',
     'filterAccountGroupByNetworkType',
+    'retractAttr',
   ],
   methods: [
     'wallet_addHdPath',
@@ -79,6 +81,8 @@ export const main = async ({
   },
   db: {
     t,
+    retractAttr,
+    getNetworkById,
     getHdPathById,
     getNetwork,
     getNetworkByName,
@@ -86,6 +90,8 @@ export const main = async ({
     getOneHdPath,
     filterAccountGroupByNetworkType,
   },
+  networkName,
+  network,
   params: {
     chainId,
     chainName: name,
@@ -95,19 +101,40 @@ export const main = async ({
     iconUrls = [],
     hdPath,
   },
+  // only when called from wallet_updateNetwork
+  toUpdateNetwork,
 }) => {
   const [url] = rpcUrls
   const [explorerUrl] = blockExplorerUrls
   const [iconUrl] = iconUrls
+
+  // duplidate name
   const [dupNameNetwork] = getNetworkByName(name)
-  if (dupNameNetwork) throw InvalidParams('Duplicate network name')
+  if (
+    (!toUpdateNetwork && dupNameNetwork) ||
+    (dupNameNetwork &&
+      toUpdateNetwork &&
+      toUpdateNetwork.eid !== dupNameNetwork.eid)
+  )
+    throw InvalidParams('Duplicate network name')
+
+  // duplicate rpc endpoint
   const [dupEndpointNetwork] = getNetworkByEndpoint(url)
-  if (dupEndpointNetwork)
+  if (
+    (!toUpdateNetwork && dupEndpointNetwork) ||
+    (dupEndpointNetwork &&
+      toUpdateNetwork &&
+      toUpdateNetwork.eid !== dupEndpointNetwork?.eid)
+  )
     throw InvalidParams(
       `Duplicate network endpoint with network ${dupEndpointNetwork.eid}`,
     )
+
+  // invalid hdPath id
   if (Number.isInteger(hdPath) && !getHdPathById(hdPath))
     throw InvalidParams(`Invalid hdPath id ${hdPath}`)
+
+  // chain id duplicate with builtin network
   const [dupChainIdBuiltInNetwork] = getNetwork({chainId, builtin: true})
   if (dupChainIdBuiltInNetwork)
     throw InvalidParams(`Duplicate chainId ${chainId} with builtin network`)
@@ -137,11 +164,9 @@ export const main = async ({
     hdPathId = await wallet_addHdPath({name: `${name}-hdPath`, value: hdPath})
   }
 
-  const {
-    tempids: {networkId},
-  } = t([
+  const upsertResult = t([
     {
-      eid: 'networkId',
+      eid: toUpdateNetwork?.eid || 'networkId',
       network: {
         isCustom: true,
         name,
@@ -155,23 +180,49 @@ export const main = async ({
         builtin: false,
       },
     },
-    explorerUrl && {eid: 'networkId', network: {scanUrl: explorerUrl}},
-    iconUrl && {eid: 'networkId', network: {icon: iconUrl}},
+    explorerUrl && {
+      eid: toUpdateNetwork?.eid || 'networkId',
+      network: {scanUrl: explorerUrl},
+    },
+    iconUrl && {
+      eid: toUpdateNetwork?.eid || 'networkId',
+      network: {icon: iconUrl},
+    },
   ])
+
+  if (toUpdateNetwork?.eid && !explorerUrl) {
+    retractAttr({eid: toUpdateNetwork.eid, attr: 'network/scanUrl'})
+  }
 
   const groups = filterAccountGroupByNetworkType(networkType)
 
+  if (!toUpdateNetwork) {
+    // create new network address for each group
+    await Promise.all(
+      groups.map(({eid}) =>
+        wallet_createAddress({
+          accountGroupId: eid,
+          networkId: upsertResult.tempids.networkId,
+        }),
+      ),
+    )
+  }
+
+  let discoverAccounts = ({eid}) =>
+    wallet_discoverAccounts({accountGroupId: eid})
+  // current network name changed
+  if (toUpdateNetwork?.eid === network.eid && name !== networkName) {
+    discoverAccounts = ({eid}) =>
+      wallet_discoverAccounts(
+        {networkName: name, network: getNetworkById(network.eid)},
+        {accountGroupId: eid},
+      )
+  }
+
+  // discover new accounts for each hd group
   await Promise.all(
-    groups.map(({eid}) =>
-      wallet_createAddress({accountGroupId: eid, networkId}),
-    ),
+    groups.filter(({vault: {type}}) => type === 'hd').map(discoverAccounts),
   )
 
-  await Promise.all(
-    groups
-      .filter(({vault: {type}}) => type === 'hd')
-      .map(({eid}) => wallet_discoverAccounts({accountGroupId: eid})),
-  )
-
-  return networkId
+  return toUpdateNetwork?.eid || upsertResult.tempids.networkId
 }

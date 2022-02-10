@@ -1,6 +1,7 @@
 import {ErrorBoundary} from 'react-error-boundary'
 import {isUndefined} from '@fluent-wallet/checks'
 import React, {Suspense, cloneElement, useEffect} from 'react'
+import {useTranslation} from 'react-i18next'
 import {
   HashRouter as Router,
   Redirect,
@@ -15,6 +16,7 @@ import {ROUTES, FULL_WINDOW_ROUTES} from './constants'
 import PageLoading from './hooks/useLoading/PageLoading'
 import './App.css'
 import useGlobalStore from './stores/index.js'
+import {formatLocalizationLang} from './utils'
 // import {getPageType} from './utils'
 
 import ErrorPage from './pages/Error'
@@ -50,6 +52,7 @@ import ConnectHardwareWallet from './pages/ConnectHardwareWallet'
 import ImportHwAccount from './pages/ImportHwAccount'
 import NetworkDetail from './pages/NetworkDetail'
 import About from './pages/About'
+import DeveloperMode from './pages/DeveloperMode'
 
 const {
   HOME,
@@ -85,6 +88,7 @@ const {
   AUTHORIZED_WEBSITE,
   NETWORK_DETAIL,
   ABOUT,
+  DEVELOPER_MODE,
 } = ROUTES
 
 const routes = [
@@ -216,6 +220,10 @@ const routes = [
     path: ABOUT,
     component: About,
   },
+  {
+    path: DEVELOPER_MODE,
+    component: DeveloperMode,
+  },
 ]
 
 const AppRoutes = withRouter(
@@ -226,6 +234,7 @@ const AppRoutes = withRouter(
       location.pathname === WALLET_UNLOCK ||
       location.pathname === ERROR ||
       history.length === 1
+    const {i18n} = useTranslation()
 
     return (
       <div
@@ -234,7 +243,7 @@ const AppRoutes = withRouter(
           FULL_WINDOW_ROUTES.includes(location.pathname)
             ? 'h-screen w-full'
             : 'h-150 w-93'
-        }`}
+        } ${formatLocalizationLang(i18n.language) === 'zh' ? 'font-zh' : ''}`}
       >
         <TransitionGroup
           component={null}
@@ -297,7 +306,10 @@ function App() {
 
   useEffect(() => {
     // make up for the rest of height
-    window.resizeBy(0, 600 - window.innerHeight)
+    window.resizeBy(
+      document.body.clientWidth - window.innerWidth,
+      600 - window.innerHeight,
+    )
   }, [])
 
   if (

@@ -8,21 +8,41 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup'],
-  db: ['getNetworkById', 'getAppById', 't'],
+  db: ['getNetworkById', 'getAppById', 't', 'accountAddrByNetwork'],
 }
 
 export const main = ({
   Err: {InvalidParams},
-  db: {getNetworkById, getAppById, t},
+  db: {getNetworkById, getAppById, t, accountAddrByNetwork},
   params: {appId, networkId},
+  network,
 }) => {
-  const network = getNetworkById(networkId)
-  if (!network) throw InvalidParams(`Invalid network ${networkId}`)
+  const nextNetwork = getNetworkById(networkId)
+  if (!nextNetwork) throw InvalidParams(`Invalid network ${networkId}`)
   const app = getAppById(appId)
   if (!app) throw InvalidParams(`Invalid app id ${appId}`)
 
   t([{eid: app.eid, app: {currentNetwork: networkId}}])
 
   const {post} = app.site
-  if (post) post({event: 'chainChanged', params: network.chainId})
+
+  if (!post) return
+
+  post({event: 'chainChanged', params: nextNetwork.chainId})
+  post({
+    event: 'connect',
+    params: {chainId: nextNetwork.chainId, networkId: nextNetwork.netId},
+  })
+
+  // fire accountsChanged event when
+  // eth switch to cfx
+  // cfx switch to eth
+  // cfx to another cfx network
+  if (network.type === 'cfx' || nextNetwork.type === 'cfx') {
+    const addr = accountAddrByNetwork({
+      account: app.currentAccount.eid,
+      network: nextNetwork.eid,
+    })
+    post({event: 'accountsChanged', params: [addr.value]})
+  }
 }

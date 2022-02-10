@@ -1,70 +1,42 @@
+queue_rules:
+  - name: default queue
+    conditions:
+      - label!=work-in-progress
+      - label!=wip
+      - status-success~=^build\s\(.*\)$
+
 pull_request_rules:
   - name: automatic approval for release package PR
     conditions:
       - author~=^ConfluxBot$
-      - "base~=^(dev|next)$"
-      - "head=__release-pkg"
+      - base=dev
+      - head=__release-pkg
     actions:
       review:
         type: APPROVE
         message: Automatically approving release package PR
-  - name: automatic update PR with rebase
+  - name: automatic update PR with merge
     conditions:
-      - -conflict # skip PRs with conflicts
-      - -draft # filter-out GH draft PRs
-      - "head!=dev"
-      - "head!=main"
-      - "#commits-behind>0"
+      - -conflict
+      - -draft
+      - label!=work-in-progress
+      - label!=wip
+      - head!=dev
+      - head!=main
     actions:
-      rebase:
-  - name: Automatic squash to dev on approval
+      update:
+  - name: Automatic queue to dev on approval [low]
     conditions:
       - "#approved-reviews-by>=1"
       - label!=work-in-progress
       - label!=wip
-      - "base~=^(dev|next)$"
+      - base=dev
+      - head!=next
       - -conflict
       - -draft
       - -locked
-      - "#check-pending=0"
       - "#review-threads-unresolved=0"
-      - "#commits=1"
-      - linear-history
     actions:
-      merge:
+      queue:
+        name: default queue
         method: squash
-  - name: Automatic merge to dev on approval
-    conditions:
-      - "#approved-reviews-by>=1"
-      - label!=work-in-progress
-      - label!=wip
-      - "base~=^(dev|next)$"
-      - -conflict
-      - -draft
-      - -locked
-      - "#check-pending=0"
-      - "#review-threads-unresolved=0"
-      - "#commits>1"
-      - linear-history
-    actions:
-      merge:
-        method: merge
-
-  - name: Automatic merge to dev on approval
-    conditions:
-      - "#approved-reviews-by>=1"
-      - label!=work-in-progress
-      - label!=wip
-      - "base~=^(dev|next)$"
-      - -conflict
-      - -draft
-      - -locked
-      - "#check-pending=0"
-      - "#review-threads-unresolved=0"
-      - "#commits>1"
-      - -linear-history
-    actions:
-      comment:
-        message: "⚠ Non linear history detected"
-      merge:
-        method: merge

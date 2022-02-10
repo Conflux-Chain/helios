@@ -9,7 +9,6 @@ import {
   trackEvmMappedAddressBalanceChangeOnce,
   useIsSupportEvmSpace,
 } from '../../manage'
-import {useBalance} from '../../manage/useFluent'
 import {
   showWaitFluent,
   showTransactionSubmitted,
@@ -24,6 +23,7 @@ import CFXIcon from '../../assets/cfx.svg'
 import Suggest from '../../assets/suggest.svg'
 import Copy from '../../assets/copy.svg'
 import Success from '../../assets/success.svg'
+import {ConfluxSpace, EvmSpace} from '../../main'
 
 const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
   style,
@@ -75,13 +75,14 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         <p className="flex items-center">
           <span className="text-[14px] text-[#A9ABB2]">From:</span>
           <span className="ml-[8px] text-[18px] text-[#15C184]">
-            Conflux EVM-Chain
+            {`${EvmSpace}`}
           </span>
         </p>
       </div>
 
       <button
-        className="absolute left-[50%] translate-x-[-50%] top-[76px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-10 hover:scale-110 transition-transform"
+        id="btn-goto-main2evm"
+        className="turn-btn absolute left-[50%] translate-x-[-50%] top-[76px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-10 hover:scale-110 transition-transform"
         onClick={handleClickFlipped}
       >
         <img
@@ -96,7 +97,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         <p className="flex items-center">
           <span className="text-[14px] text-[#A9ABB2]">To:</span>
           <span className="ml-[8px] text-[18px] text-[#2959B4]">
-            Conflux Core-Chain
+            {`${ConfluxSpace}`}
           </span>
         </p>
         <div className="flex items-center mt-[12px] ">
@@ -137,7 +138,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         </div>
         <ul className="list-disc pl-[23px] text-[14px] text-[#898D9A] leading-[18px]">
           <li>
-            Use <span className="text-[#15C184]">Conflux EVM-Chain</span>.
+            Use <span className="text-[#15C184]">{`${EvmSpace}`}</span>.
           </li>
           <li>
             Send your CFX to the{' '}
@@ -156,6 +157,7 @@ const Evm2Main: React.FC<{style: any; handleClickFlipped: () => void}> = ({
       <div
         className="relative w-full mt-[12px] font-medium text-[14px] h-[18px] text-[#15C184] inline-flex items-center cursor-pointer hover:ring-[2px] ring-[#15C184] transition-shadow"
         onClick={setCopied}
+        id="copy-mirror-address"
       >
         {isCopied && (
           <>
@@ -196,7 +198,6 @@ const Withdraw: React.FC<{
 }> = memo(({account, inWithdraw, handleWithdraw}) => {
   const withdrawableBalance = useEvmMappedAddressBalance()
   const preBalance = useRef(withdrawableBalance)
-  const {maxAvailableBalance} = useBalance()
   const isSupportEvmSpace = useIsSupportEvmSpace()
   const preAccount = useRef(account)
 
@@ -248,7 +249,7 @@ const Withdraw: React.FC<{
       </div>
 
       <p className="text-[14px]">
-        <span className="mr-[4px] text-[#A9ABB2]">Withdrawable: </span>
+        <span className="mr-[4px] text-[#A9ABB2]" id="withdrawable">Withdrawable: </span>
         <span className="text-[#3D3F4C]">
           {inWithdraw
             ? 'in withdraw...'
@@ -258,6 +259,7 @@ const Withdraw: React.FC<{
         </span>
       </p>
       <button
+        id="btn-Withdraw"
         className="mt-[16px] button w-[134px] h-[40px]"
         disabled={
           inWithdraw ||

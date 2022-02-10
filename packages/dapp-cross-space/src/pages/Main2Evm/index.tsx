@@ -23,6 +23,7 @@ import {
 import showToast from '../../components/tools/Toast'
 import CFXIcon from '../../assets/cfx.svg'
 import PageTurn from '../../assets/page-turn.svg'
+import {ConfluxSpace, EvmSpace} from '../../main'
 import './index.css';
 
 const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
@@ -59,7 +60,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
           transactionSubmittedKey = showTransactionSubmitted(TxnHash)
           trackBalanceChangeOnce(() => {
             hideTransactionSubmitted(transactionSubmittedKey)
-            showToast('It seems you have sent CFX to EVM Space.')
+            showToast('It seems transfer CFX to EVM Space success.')
           })
         } catch (err) {
           console.error('SendTransaction to EVM Space error: ', err)
@@ -80,7 +81,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
         <p className="flex items-center">
           <span className="text-[14px] text-[#A9ABB2]">From:</span>
           <span className="ml-[8px] text-[18px] text-[#2959B4]">
-            Conflux Core-Chain
+            {`${ConfluxSpace}`}
           </span>
         </p>
         <div className="flex items-center mt-[12px] ">
@@ -95,7 +96,8 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
       </div>
 
       <button
-        className="absolute left-[50%] translate-x-[-50%] top-[110px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-10 hover:scale-110 transition-transform"
+        id="btn-goto-evm2main"
+        className="turn-btn absolute left-[50%] translate-x-[-50%] top-[110px] w-[32px] h-[32px] flex justify-center items-center bg-white rounded-full z-10 hover:scale-110 transition-transform"
         onClick={handleClickFlipped}
       >
         <img
@@ -111,13 +113,13 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
           <p className="flex items-center">
             <span className="text-[14px] text-[#A9ABB2]">To:</span>
             <span className="ml-[8px] text-[18px] text-[#15C184]">
-              Conflux EVM-Chain
+              {`${EvmSpace}`}
             </span>
           </p>
           <input
             className="input mt-[8px]"
             id="evm-address"
-            placeholder="Conflux EVM-Chain Destination Address"
+            placeholder={`${EvmSpace} Destination Address`}
             pattern="0x[a-fA-F0-9]{40}"
             {...register('evmAddress', {
               pattern: /0x[a-fA-F0-9]{40}/g,
@@ -198,7 +200,7 @@ const AmountInput: React.FC<{
         </div>
       </div>
       <p className="text-[14px] text-[#3D3F4C]">
-        <span className="text-[#2959B4]">Core-Chain</span> Balance:
+        <span className="text-[#2959B4]" id="core-chain-balance">{`${ConfluxSpace}`}</span> Balance:
         {typeof balance !== 'undefined' ? (
           (balance.drip !== 0n && balance.drip < Unit.fromDecimalCfx('0.000001').drip) ? (
             <span
@@ -215,8 +217,8 @@ const AmountInput: React.FC<{
           ''
         )}
       </p>
-      <p className="mt-[20px] text-[14px] text-[#3D3F4C]">
-        Will receive on <span className="text-[#15C184]">EVM-Chain</span>:{' '}
+      <p className="mt-[20px] text-[14px] text-[#3D3F4C]" id="will-receive">
+        Will receive on <span className="text-[#15C184]">{`${EvmSpace}`}</span>:{' '}
         <span id="receivedCFX"></span>
       </p>
     </>
@@ -230,6 +232,7 @@ const TransferButton: React.FC = memo(() => {
   return (
     <>
         <button
+          id="btn-transfer"
           type="submit"
           className="mt-[24px] w-full h-[48px] button"
           disabled={!isSupportEvmSpace || maxAvailableBalance === undefined || maxAvailableBalance.drip === 0n}

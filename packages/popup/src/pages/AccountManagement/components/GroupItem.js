@@ -1,10 +1,19 @@
 import PropTypes from 'prop-types'
+import {useState} from 'react'
+import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
 import {isNumber} from '@fluent-wallet/checks'
 import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS} from '../../../constants'
 import {AccountItem} from './'
-const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_DELETE_ACCOUNT_GROUP} = RPC_METHODS
+import {TextField} from '../../../components'
+import {request, updateDbAccountList} from '../../../utils'
+
+const {
+  WALLET_EXPORT_ACCOUNT_GROUP,
+  WALLET_DELETE_ACCOUNT_GROUP,
+  WALLET_UPDATE_ACCOUNT_GROUP,
+} = RPC_METHODS
 
 function GroupItem({
   nickname,
@@ -16,6 +25,33 @@ function GroupItem({
   accountGroupId,
 }) {
   const {t} = useTranslation()
+  const {mutate} = useSWRConfig()
+  const [inputNickname, setInputNickname] = useState(nickname)
+
+  const updateAccountGroup = params => {
+    return new Promise((resolve, reject) => {
+      request(WALLET_UPDATE_ACCOUNT_GROUP, params)
+        .then(() => {
+          updateDbAccountList(
+            mutate,
+            'accountManagementQueryAccount',
+            'queryAllAccount',
+          ).then(resolve)
+        })
+        .catch(e => {
+          Message.error({
+            content:
+              e?.message?.split?.('\n')?.[0] ??
+              e?.message ??
+              t('unCaughtErrMsg'),
+            top: '10px',
+            duration: 1,
+          })
+          reject()
+        })
+    })
+  }
+
   const onDeleteAccountGroup = () => {
     if (isNumber(currentAccountId)) {
       if (account.find(({eid}) => eid === currentAccountId)) {
@@ -30,13 +66,29 @@ function GroupItem({
       })
     }
   }
+  const onTextFieldBlur = () => {
+    return updateAccountGroup.call(this, {
+      accountGroupId,
+      nickname: inputNickname,
+    })
+  }
 
   return (
     <div className="bg-gray-0 rounded mt-3 mx-3">
       {groupType === 'pk' ? null : (
-        <p className="text-gray-40 ml-4 mb-1 text-xs pt-3">{nickname}</p>
+        <div className="pt-3">
+          <TextField
+            textValue={nickname}
+            inputValue={inputNickname}
+            onInputBlur={onTextFieldBlur}
+            onInputChange={setInputNickname}
+            className="text-gray-40 ml-4 mb-1"
+            fontSize="!text-xs"
+            height="!h-4"
+          />
+        </div>
       )}
-      {account.map(({nickname, eid}) => (
+      {account.map(({nickname, eid, hidden}) => (
         <AccountItem
           key={eid}
           accountId={eid}
@@ -44,10 +96,12 @@ function GroupItem({
           accountNickname={nickname}
           groupType={groupType}
           showDelete={showDelete}
+          hidden={hidden}
           onOpenConfirmPassword={onOpenConfirmPassword}
+          currentAccountId={currentAccountId}
         />
       ))}
-      {groupType === 'hd' ? (
+      {groupType === 'hd' && (
         <div className="flex justify-between mx-3 py-4 border-t border-gray-10 text-xs cursor-pointer text-gray-60">
           <div
             className="hover:text-primary"
@@ -70,7 +124,7 @@ function GroupItem({
             </div>
           )}
         </div>
-      ) : null}
+      )}
     </div>
   )
 }

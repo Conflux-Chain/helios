@@ -330,7 +330,7 @@ describe('integration test', function () {
         ).result
 
         expect(db.getAccount().length).toBe(1)
-        await waitForExpect(() => expect(db.getAddress().length).toBe(3))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(3), 20000)
         const addrs = db.getAddress()
         expect(addrs[addrs.length - 1].hex).toBe(CFX_ACCOUNTS[0].address)
         expect(addrs[addrs.length - 1].value).toBe(CFX_ACCOUNTS[0].base32)
@@ -363,7 +363,7 @@ describe('integration test', function () {
         ).result
 
         expect(db.getAccount().length).toBe(1)
-        await waitForExpect(() => expect(db.getAddress().length).toBe(3))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(3), 20000)
         const addrs = db.getAddress()
         expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
         expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
@@ -408,6 +408,35 @@ describe('integration test', function () {
         expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
         expect(db.findAddress({networkId: networkEid})[0]).toBe(
           addrs[addrs.length - 1].eid,
+        )
+      })
+    })
+    describe('wallet_updateNetwork', function () {
+      test('update cfx network omit hdPath', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+
+        await request({
+          method: 'wallet_updateNetwork',
+          params: {
+            networkId: db.getNetwork()[0].eid,
+            chainId: '0xbb7',
+            chainName: 'cfxfoo',
+            nativeCurrency: {
+              name: 'CFX',
+              decimals: DEFAULT_CURRENCY_DECIMALS,
+              symbol: 'CFX',
+            },
+            rpcUrls: [CFX_LOCALNET_RPC_ENDPOINT + '/'],
+          },
+        })
+
+        await waitForExpect(() =>
+          expect(db.getNetwork()[0].name).toBe('cfxfoo'),
         )
       })
     })
