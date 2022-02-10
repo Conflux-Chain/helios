@@ -68,49 +68,52 @@ function ConnectSitesList({
           {accountGroupData.map(({nickname, account, eid}) => (
             <div key={eid}>
               <p className="text-gray-40 ml-4 mb-1 mt-1 text-xs">{nickname}</p>
-              {Object.values(account).map((accountItem, index) => (
-                <div
-                  aria-hidden="true"
-                  onClick={() => onSelectSingleAccount(accountItem.eid)}
-                  key={accountItem.eid}
-                  id={`item-${index}`}
-                  className="flex px-3 items-center h-15 cursor-pointer"
-                >
-                  <div className="flex w-full">
-                    <Avatar
-                      className="w-5 h-5 mr-2"
-                      diameter={20}
-                      accountIdentity={accountItem.eid}
-                    />
-                    <div className="flex-1">
-                      <p className="text-xs text-gray-40">
-                        {accountItem.nickname}
-                      </p>
-                      <p className="text-sm text-gray-80">
-                        {shortenAddress(
-                          accountItem.currentAddress?.value ||
-                            accountItem.currentAddress?.hex,
-                        )}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      {currentAddress.eid === accountItem.currentAddress.eid ? (
-                        <img
-                          src="/images/location.svg"
-                          alt="current address"
-                          className="mr-3 w-3 h-3"
-                          id="location"
-                        />
-                      ) : null}
-                      <Checkbox
-                        checked={checkboxStatusObj[accountItem.eid]}
-                        id={`check-${index}`}
-                        iconClassName="mr-0"
+              {Object.values(account)
+                .filter(({hidden}) => !hidden)
+                .map((accountItem, index) => (
+                  <div
+                    aria-hidden="true"
+                    onClick={() => onSelectSingleAccount(accountItem.eid)}
+                    key={accountItem.eid}
+                    id={`item-${index}`}
+                    className="flex px-3 items-center h-15 cursor-pointer"
+                  >
+                    <div className="flex w-full">
+                      <Avatar
+                        className="w-5 h-5 mr-2"
+                        diameter={20}
+                        accountIdentity={accountItem.eid}
                       />
+                      <div className="flex-1">
+                        <p className="text-xs text-gray-40">
+                          {accountItem.nickname}
+                        </p>
+                        <p className="text-sm text-gray-80">
+                          {shortenAddress(
+                            accountItem.currentAddress?.value ||
+                              accountItem.currentAddress?.hex,
+                          )}
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        {currentAddress.eid ===
+                        accountItem.currentAddress.eid ? (
+                          <img
+                            src="/images/location.svg"
+                            alt="current address"
+                            className="mr-3 w-3 h-3"
+                            id="location"
+                          />
+                        ) : null}
+                        <Checkbox
+                          checked={checkboxStatusObj[accountItem.eid]}
+                          id={`check-${index}`}
+                          iconClassName="mr-0"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           ))}
         </div>

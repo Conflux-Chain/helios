@@ -1,4 +1,5 @@
 import {map, boolean} from '@fluent-wallet/spec'
+import {isUndefined} from '@fluent-wallet/checks'
 
 export const NAME = 'wallet_setPreferences'
 
@@ -14,9 +15,22 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   methods: [],
-  db: ['setPreferences'],
+  db: ['setPreferences', 'getApp'],
 }
 
-export const main = ({db: {setPreferences}, params}) => {
-  return setPreferences(params)
+export const main = ({db: {setPreferences, getApp}, params}) => {
+  const txRst = setPreferences(params)
+
+  if (!isUndefined(params?.useModernProviderAPI)) {
+    const apps = getApp()
+    apps.forEach(app => {
+      if (!app.site.post) return
+      app.site.post({
+        event: '__FLUENT_USE_MODERN_PROVIDER_API__',
+        params: params.useModernProviderAPI,
+      })
+    })
+  }
+
+  return txRst
 }

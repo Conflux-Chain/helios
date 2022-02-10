@@ -163,7 +163,7 @@ function NetworkDetail() {
   const onClickDeleteNetwork = () => {
     if (currentNetworkId === networkInfo.networkId) {
       return Message.warning({
-        content: t('groupDeleteWarning'),
+        content: t('networkDeleteWarning'),
         top: '10px',
         duration: 1,
       })
@@ -192,14 +192,17 @@ function NetworkDetail() {
     if (type === 'edit') {
       param.networkId = networkInfo.networkId
     }
+    setLoading(true)
     request(
       type === 'edit' ? WALLET_UPDATE_NETWORK : WALLET_ADD_CONFLUX_CHAIN,
       type === 'edit' ? param : [param],
     )
       .then(() => {
+        setLoading(false)
         mutateData()
       })
       .catch(err => {
+        setLoading(false)
         Message.error({
           content:
             err?.message?.indexOf?.('Duplicate network endpoint') !== -1
@@ -249,6 +252,9 @@ function NetworkDetail() {
                   ? networkError?.[valueKey] ?? ''
                   : ''
               }
+              placeholder={
+                valueKey === 'symbol' ? CFX_MAINNET_CURRENCY_SYMBOL : ''
+              }
               id={`change-${valueKey}-input`}
             />
           </CompWithLabel>
@@ -259,7 +265,7 @@ function NetworkDetail() {
           id="save-network-btn"
           className="mx-3"
           disabled={!canSave}
-          onClick={onSave}
+          onClick={() => onSave()}
         >
           {t('save')}
         </Button>

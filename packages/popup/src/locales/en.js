@@ -347,6 +347,21 @@ const en = {
     waitingContent: 'Please confirm this transaction in your Ledger.',
     rejectedContent: 'Transaction has been rejected.',
 
+    // conflux confirm tx error
+    txPoolFull: 'Transaction pool is full',
+    nodeInCatchUpMode: 'Node in catch-up mode',
+    canNotRecoverPubKey: 'Unable to recover public key',
+    rlpIncorrectListLen: 'Incorrect RLP list length',
+    chainIdMismatch: 'Chain ID does not match',
+    zeroGasPrice: 'Gas price cannot be 0',
+    tooDistantFuture: 'Nonce is too large',
+    duplicateTx: 'Duplicate Transaction',
+    epochHeightOutOfBound: 'Epoch height out of bound',
+    gasExceedsLimit: 'Gas exceeds limit',
+    tooStaleNonce: 'Too Stale Nonce',
+    replacedWithHigherGasPriceTx: 'Duplicate Transaction',
+    unknownError: 'Unknown Error',
+
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger is not connected',
     openExpandView: 'Open Fluent expand view to connect',

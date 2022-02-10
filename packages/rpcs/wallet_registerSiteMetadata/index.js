@@ -38,7 +38,7 @@ export const main = ({
   wallet_getPreferences().then(p =>
     _post({
       event: '__FLUENT_USE_MODERN_PROVIDER_API__',
-      params: p.useModernProviderAPI,
+      params: p?.useModernProviderAPI,
     }),
   )
 

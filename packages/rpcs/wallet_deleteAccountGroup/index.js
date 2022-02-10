@@ -24,7 +24,7 @@ export const main = async ({
   params: {accountGroupId, password},
 }) => {
   if (!(await wallet_validatePassword({password})))
-    throw InvalidParams('Incorrect password')
+    throw InvalidParams('Invalid password')
 
   const group = getAccountGroupById(accountGroupId)
 

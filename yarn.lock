@@ -5536,6 +5536,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/extension-runtime@workspace:packages/extension-runtime"
   dependencies:
+    "@fluent-wallet/sentry": "workspace:*"
     "@thi.ng/rstream": 6.0.21
     webextension-polyfill: 0.8.0
   languageName: unknown
@@ -6401,6 +6402,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_set-preferences@workspace:packages/rpcs/wallet_setPreferences"
   dependencies:
+    "@fluent-wallet/checks": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -20969,6 +20971,7 @@ fsevents@^1.2.7:
     "@fluent-wallet/component-modal": "workspace:packages/ui/components/Modal"
     "@fluent-wallet/component-toast": "workspace:packages/ui/components/Toast"
     "@fluent-wallet/component-tooltip": "workspace:*"
+    "@fluent-wallet/conflux-tx-error": "workspace:*"
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format"
