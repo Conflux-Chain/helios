@@ -6401,6 +6401,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_set-preferences@workspace:packages/rpcs/wallet_setPreferences"
   dependencies:
+    "@fluent-wallet/checks": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
