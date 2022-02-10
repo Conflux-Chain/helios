@@ -261,3 +261,6 @@ cljs-runtime
 /packages/background/src/local-dev.js
 /blockchain_data/
 /pos_config/
+
+/resources/*
+!/resources/firefox-debug-profile

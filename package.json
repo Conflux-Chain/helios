@@ -25,6 +25,7 @@
     "postinstall": "husky install && yarn run prod:shadow",
     "compile:inpage": "swc --config-file scripts/inpage.swcrc.json -o packages/browser-extension/build/inpage/dist/index.js --source-maps inline packages/browser-extension/build/inpage/dist/index.js",
     "dev": "cross-env NODE_ENV=development node scripts/dev.js",
+    "firefox:dev": "web-ext run --start-url 'about:devtools-toolbox?id=fluent-wallet%40confluxnetwork.org&type=extension' --firefox-profile resources/firefox-debug-profile/ --source-dir packages/browser-extension/",
     "doc": "yarn workspace doc start",
     "story": "yarn start-storybook",
     "prod-all": "node scripts/prod.js",
@@ -179,5 +180,8 @@
       "no-descending-specificity": null
     }
   },
-  "packageManager": "yarn@3.1.0"
+  "packageManager": "yarn@3.1.0",
+  "dependencies": {
+    "web-ext": "6.7.0"
+  }
 }

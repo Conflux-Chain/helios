@@ -29,6 +29,7 @@ function onConnect(port) {
       port.postMessage(msg)
     } catch (err) {
       // firefox can't serialize some of the postMessage data here
+      // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities#data_cloning_algorithm
       if (err.message?.includes('object could not be cloned')) {
         try {
           msg = JSON.parse(JSON.stringify(msg))
