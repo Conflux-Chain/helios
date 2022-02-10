@@ -5536,6 +5536,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/extension-runtime@workspace:packages/extension-runtime"
   dependencies:
+    "@fluent-wallet/sentry": "workspace:*"
     "@thi.ng/rstream": 6.0.21
     webextension-polyfill: 0.8.0
   languageName: unknown

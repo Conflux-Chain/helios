@@ -34,8 +34,6 @@ media-src * data: blob: filesystem:;",`.replaceAll('\n', ' ')
     contentScripts: '"content-script.js"',
     webResources: '"content-script.js","inpage.js"',
     popupHTML: isDev() ? 'popup.html' : 'popup/popup.html',
-    permissions: isDev()
-      ? '"http://localhost:18001/",\n "http://localhost:18002/",\n "http://localhost:18003/",\n "tabs",\n'
-      : '',
+    permissions: isDev() ? '"<all_urls>",\n  "tabs",\n' : '',
   },
 )
