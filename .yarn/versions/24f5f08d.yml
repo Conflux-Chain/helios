@@ -1,6 +1,0 @@
-releases:
-  "@fluent-wallet/wallet_register-site-metadata": patch
-  "@fluent-wallet/wallet_set-preferences": patch
-
-declined:
-  - helios-background
