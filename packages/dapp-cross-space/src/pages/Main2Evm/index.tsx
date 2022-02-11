@@ -60,7 +60,7 @@ const Main2Evm: React.FC<{style: any; handleClickFlipped: () => void}> = ({
           transactionSubmittedKey = showTransactionSubmitted(TxnHash)
           trackBalanceChangeOnce(() => {
             hideTransactionSubmitted(transactionSubmittedKey)
-            showToast('It seems transfer CFX to EVM Space success.')
+            showToast('Transfer CFX to eSpace success.')
           })
         } catch (err) {
           console.error('SendTransaction to EVM Space error: ', err)
