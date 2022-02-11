@@ -1,9 +1,9 @@
-import {cat, map, or, dbid} from '@fluent-wallet/spec'
+import {cat, map, or, dbid, any, zeroOrMore} from '@fluent-wallet/spec'
 import {ChainParameterSchema} from '@fluent-wallet/wallet_add-network'
 
 export const NAME = 'wallet_addEthereumChain'
 
-const PublicSchema = [cat, ChainParameterSchema]
+const PublicSchema = [cat, ChainParameterSchema, [zeroOrMore, any]]
 const InnerSchema = [
   map,
   {closed: true},

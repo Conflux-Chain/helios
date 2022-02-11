@@ -49,6 +49,7 @@ export const schemas = {
 export const permissions = {
   external: [],
   methods: [
+    'cfx_gasPrice',
     'cfx_signTxWithLedgerNanoS',
     'wallet_getAddressPrivateKey',
     'cfx_getNextUsableNonce',
@@ -66,6 +67,7 @@ export const main = async args => {
     rpcs: {
       wallet_getAddressPrivateKey,
       cfx_epochNumber,
+      cfx_gasPrice,
       cfx_estimateGasAndCollateral,
       cfx_getNextUsableNonce,
       wallet_detectAddressType,
@@ -76,7 +78,7 @@ export const main = async args => {
   const {epoch, returnTxMeta, dryRun} = opts
   let newTx = {...tx}
   if (newTx.chainId && newTx.chainId !== network.chainId)
-    throw InvalidParams(`Invalid chainId ${chainId}`)
+    throw InvalidParams(`Invalid chainId ${newTx.chainId}`)
 
   const fromAddr = findAddress({
     networkId: network.eid,
@@ -94,7 +96,7 @@ export const main = async args => {
 
   if (!newTx.chainId) newTx.chainId = network.chainId
   if (newTx.data === '0x') newTx.data = undefined
-  if (!newTx.gasPrice) newTx.gasPrice = '0x1'
+  if (!newTx.gasPrice) newTx.gasPrice = await cfx_gasPrice()
 
   if (!newTx.value) newTx.value = '0x0'
 
@@ -115,7 +117,7 @@ export const main = async args => {
       {address: newTx.to},
     )
     if (type !== 'contract' && !newTx.data) {
-      if (!newTx.gas) newTx.gas = '0x5280'
+      if (!newTx.gas) newTx.gas = '0x5208'
       if (!newTx.storageLimit) newTx.storageLimit = '0x0'
     }
   }

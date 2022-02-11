@@ -343,6 +343,7 @@ async function walletInitialized() {
   function authed(address) {
     getElement('address').innerHTML = address
     console.log('authed address: ', address)
+    connectButton.disabled = true
     sendNativeTokenButton.disabled = false
     approveButton.disabled = false
     transferFromButton.disabled = false
@@ -355,6 +356,7 @@ async function walletInitialized() {
   }
 
   function unAuthed() {
+    connectButton.disabled = false
     getElement('address').innerHTML = 'N/A'
     console.log('unauthed')
     sendNativeTokenButton.disabled = true

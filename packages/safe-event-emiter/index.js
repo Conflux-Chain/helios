@@ -11,6 +11,13 @@ export default class SafeEventEmitter {
   constructor(opts = {}) {
     const {allowedEventType = [], streamCacheLast = false} = opts
     this.#allowedEventType = allowedEventType
+
+    // NodeJS event emitter events
+    if (!this.#allowedEventType.includes('error'))
+      this.#allowedEventType = [...this.#allowedEventType, 'error']
+    if (!this.#allowedEventType.includes('close'))
+      this.#allowedEventType = [...this.#allowedEventType, 'close']
+
     this.#pb = pubsub({topic: ({topic} = {}) => topic})
     this.#pb.closeIn = CloseMode.NEVER
     this.#pb.closeOut = CloseMode.NEVER
@@ -20,7 +27,7 @@ export default class SafeEventEmitter {
       // so that stream won't go into ERROR state
       return true
     }
-    this.#streams = allowedEventType.reduce((acc, eventType) => {
+    this.#streams = this.#allowedEventType.reduce((acc, eventType) => {
       const s = stream({
         closeIn: CloseMode.NEVER,
         closeOut: CloseMode.NEVER,

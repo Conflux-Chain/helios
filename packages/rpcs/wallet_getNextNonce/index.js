@@ -21,5 +21,6 @@ export const main = async ({
   address = addrByNet({address, networkType: type, networkId: netId})
   const getNextNonce =
     type === 'cfx' ? cfx_getNextNonce : eth_getTransactionCount
-  return await getNextNonce([address])
+  const args = type === 'cfx' ? [address] : [address, 'pending']
+  return await getNextNonce(args)
 }

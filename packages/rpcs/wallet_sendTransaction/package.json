@@ -1,0 +1,16 @@
+{
+  "name": "@fluent-wallet/wallet_send-transaction",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.1.0",
+  "version": "0.0.0",
+  "dependencies": {
+    "@ethersproject/bignumber": "5.5.0",
+    "@fluent-wallet/cfx_send-transaction": "workspace:*",
+    "@fluent-wallet/consts": "workspace:*",
+    "@fluent-wallet/eth_send-transaction": "workspace:*",
+    "@fluent-wallet/json-rpc-error": "workspace:*",
+    "@fluent-wallet/signature": "workspace:*",
+    "@fluent-wallet/spec": "workspace:*"
+  }
+}

@@ -990,11 +990,11 @@
 (defn set-tx-chain-switched [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
 
-(defn get-cfx-txs-to-enrich
-  ([] (get-cfx-txs-to-enrich {}))
-  ([{:keys [txhash]}]
+(defn get-txs-to-enrich
+  ([] (get-txs-to-enrich {}))
+  ([{:keys [txhash type]}]
    (let [txs (q '[:find ?tx ?addr ?net ?token ?app
-                  :in $ ?txhash
+                  :in $ ?txhash ?nettype
                   :where
                   (or (and [(and true ?txhash)]
                            [?tx :tx/hash ?txhash])
@@ -1009,7 +1009,8 @@
 
                   [?addr :address/tx ?tx]
                   [?addr :address/network ?net]
-                  [?net :network/type "cfx"]
+                  (or [(= ?nettype "all")]
+                      [?net :network/type ?nettype])
 
                   (or
                    [?token :token/tx ?tx]
@@ -1019,7 +1020,7 @@
                   (or
                    [?app :app/tx ?tx]
                    [(and true false) ?app])]
-                txhash)
+                txhash (or type "all"))
          process (if txhash (fn [[tx addr net token app]]
                               {:tx      (e :tx tx)
                                :address (e :address addr)
@@ -1231,7 +1232,7 @@
               :setTxConfirmed                      set-tx-confirmed
               :setTxChainSwitched                  set-tx-chain-switched
               :setTxUnsent                         set-tx-unsent
-              :getCfxTxsToEnrich                   get-cfx-txs-to-enrich
+              :getTxsToEnrich                      get-txs-to-enrich
               :cleanupTx                           cleanup-tx
               :findApp                             get-apps
               :findAddress                         get-address

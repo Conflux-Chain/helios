@@ -5095,20 +5095,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/cfx_send-transaction@workspace:packages/rpcs/cfx_sendTransaction":
+"@fluent-wallet/cfx_send-transaction@workspace:*, @fluent-wallet/cfx_send-transaction@workspace:packages/rpcs/cfx_sendTransaction":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_send-transaction@workspace:packages/rpcs/cfx_sendTransaction"
   dependencies:
-    "@ethersproject/bignumber": 5.5.0
-    "@fluent-wallet/cfx_sign-transaction": "workspace:packages/rpcs/cfx_signTransaction"
-    "@fluent-wallet/consts": "workspace:*"
-    "@fluent-wallet/json-rpc-error": "workspace:*"
-    "@fluent-wallet/signature": "workspace:*"
+    "@fluent-wallet/cfx_sign-transaction": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/cfx_sign-transaction@workspace:packages/rpcs/cfx_signTransaction":
+"@fluent-wallet/cfx_sign-transaction@workspace:*, @fluent-wallet/cfx_sign-transaction@workspace:packages/rpcs/cfx_signTransaction":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_sign-transaction@workspace:packages/rpcs/cfx_signTransaction"
   dependencies:
@@ -5495,7 +5491,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/eth-transaction-schema@workspace:packages/eth-transaction-schema":
+"@fluent-wallet/eth-transaction-schema@workspace:*, @fluent-wallet/eth-transaction-schema@workspace:packages/eth-transaction-schema":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth-transaction-schema@workspace:packages/eth-transaction-schema"
   languageName: unknown
@@ -5543,6 +5539,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/eth_fee-history@workspace:*, @fluent-wallet/eth_fee-history@workspace:packages/rpcs/eth_feeHistory":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_fee-history@workspace:packages/rpcs/eth_feeHistory"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/eth_gas-price@workspace:packages/rpcs/eth_gasPrice":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_gas-price@workspace:packages/rpcs/eth_gasPrice"
@@ -5559,11 +5563,35 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/eth_get-block-by-hash@workspace:*, @fluent-wallet/eth_get-block-by-hash@workspace:packages/rpcs/eth_getBlockByHash":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_get-block-by-hash@workspace:packages/rpcs/eth_getBlockByHash"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_get-block-by-number@workspace:*, @fluent-wallet/eth_get-block-by-number@workspace:packages/rpcs/eth_getBlockByNumber":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_get-block-by-number@workspace:packages/rpcs/eth_getBlockByNumber"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/eth_get-code@workspace:packages/rpcs/eth_getCode":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_get-code@workspace:packages/rpcs/eth_getCode"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_get-transaction-by-hash@workspace:*, @fluent-wallet/eth_get-transaction-by-hash@workspace:packages/rpcs/eth_getTransactionByHash":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_get-transaction-by-hash@workspace:packages/rpcs/eth_getTransactionByHash"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5575,6 +5603,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/eth_get-transaction-receipt@workspace:*, @fluent-wallet/eth_get-transaction-receipt@workspace:packages/rpcs/eth_getTransactionReceipt":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_get-transaction-receipt@workspace:packages/rpcs/eth_getTransactionReceipt"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/eth_request-accounts@workspace:packages/rpcs/eth_requestAccounts":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_request-accounts@workspace:packages/rpcs/eth_requestAccounts"
@@ -5583,11 +5619,44 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/eth_send-raw-transaction@workspace:*, @fluent-wallet/eth_send-raw-transaction@workspace:packages/rpcs/eth_sendRawTransaction":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_send-raw-transaction@workspace:packages/rpcs/eth_sendRawTransaction"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_send-transaction@workspace:*, @fluent-wallet/eth_send-transaction@workspace:packages/rpcs/eth_sendTransaction":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_send-transaction@workspace:packages/rpcs/eth_sendTransaction"
+  dependencies:
+    "@fluent-wallet/eth_sign-transaction": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_sign-transaction@workspace:*, @fluent-wallet/eth_sign-transaction@workspace:packages/rpcs/eth_signTransaction":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_sign-transaction@workspace:packages/rpcs/eth_signTransaction"
+  dependencies:
+    "@fluent-wallet/eth-transaction-schema": "workspace:*"
+    "@fluent-wallet/signature": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/eth_sign-typed-data_v4@workspace:packages/rpcs/eth_signTypedData_v4":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_sign-typed-data_v4@workspace:packages/rpcs/eth_signTypedData_v4"
   dependencies:
     "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/ethereum-tx-error@workspace:*, @fluent-wallet/ethereum-tx-error@workspace:packages/ethereum-tx-error":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/ethereum-tx-error@workspace:packages/ethereum-tx-error"
   languageName: unknown
   linkType: soft
 
@@ -6087,9 +6156,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/wallet_enrich-conflux-txs@workspace:*, @fluent-wallet/wallet_enrich-conflux-txs@workspace:packages/rpcs/wallet_enrichConfluxTxs":
+"@fluent-wallet/wallet_enrich-ethereum-tx@workspace:*, @fluent-wallet/wallet_enrich-ethereum-tx@workspace:packages/rpcs/wallet_enrichEthereumTx":
   version: 0.0.0-use.local
-  resolution: "@fluent-wallet/wallet_enrich-conflux-txs@workspace:packages/rpcs/wallet_enrichConfluxTxs"
+  resolution: "@fluent-wallet/wallet_enrich-ethereum-tx@workspace:packages/rpcs/wallet_enrichEthereumTx"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_enrich-txs@workspace:*, @fluent-wallet/wallet_enrich-txs@workspace:packages/rpcs/wallet_enrichTxs":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_enrich-txs@workspace:packages/rpcs/wallet_enrichTxs"
   dependencies:
     "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
@@ -6308,6 +6385,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_handle-unfinished-eth-tx@workspace:*, @fluent-wallet/wallet_handle-unfinished-eth-tx@workspace:packages/rpcs/wallet_handleUnfinishedETHTx":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_handle-unfinished-eth-tx@workspace:packages/rpcs/wallet_handleUnfinishedETHTx"
+  dependencies:
+    "@ethersproject/bignumber": 5.5.0
+    "@fluent-wallet/compose": "workspace:*"
+    "@fluent-wallet/ethereum-tx-error": "workspace:*"
+    "@fluent-wallet/sentry": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+    "@thi.ng/rstream": 7.2.2
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_handle-unfinished-txs@workspace:*, @fluent-wallet/wallet_handle-unfinished-txs@workspace:packages/rpcs/wallet_handleUnfinishedTxs":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_handle-unfinished-txs@workspace:packages/rpcs/wallet_handleUnfinishedTxs"
@@ -6380,6 +6470,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_network1559compatible@workspace:*, @fluent-wallet/wallet_network1559compatible@workspace:packages/rpcs/wallet_network1559Compatible":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_network1559compatible@workspace:packages/rpcs/wallet_network1559Compatible"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_refetch-balance@workspace:packages/rpcs/wallet_refetchBalance":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_refetch-balance@workspace:packages/rpcs/wallet_refetchBalance"
@@ -6421,6 +6519,20 @@ __metadata:
     "@fluent-wallet/csp": "workspace:packages/csp"
     "@fluent-wallet/spec": "workspace:packages/spec"
     "@fluent-wallet/webextension": "workspace:packages/webextension"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_send-transaction@workspace:*, @fluent-wallet/wallet_send-transaction@workspace:packages/rpcs/wallet_sendTransaction":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_send-transaction@workspace:packages/rpcs/wallet_sendTransaction"
+  dependencies:
+    "@ethersproject/bignumber": 5.5.0
+    "@fluent-wallet/cfx_send-transaction": "workspace:*"
+    "@fluent-wallet/consts": "workspace:*"
+    "@fluent-wallet/eth_send-transaction": "workspace:*"
+    "@fluent-wallet/json-rpc-error": "workspace:*"
+    "@fluent-wallet/signature": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -9635,6 +9747,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/api@npm:^8.3.3":
+  version: 8.3.3
+  resolution: "@thi.ng/api@npm:8.3.3"
+  checksum: 3976c61728b3e0149e4de833d6c08f3a6724a8c1b6d322732e40e7484e6cb8d6710185cf2b162a7aeabcc10ec272aef41aeb96c60b441b618cf675922be23e51
+  languageName: node
+  linkType: hard
+
 "@thi.ng/arrays@npm:^1.0.3":
   version: 1.0.3
   resolution: "@thi.ng/arrays@npm:1.0.3"
@@ -9663,6 +9782,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/arrays@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@thi.ng/arrays@npm:2.1.3"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+    "@thi.ng/checks": ^3.1.3
+    "@thi.ng/compare": ^2.1.3
+    "@thi.ng/equiv": ^2.1.3
+    "@thi.ng/errors": ^2.1.3
+    "@thi.ng/random": ^3.2.3
+  checksum: 5f643d78e4cab345ed26a6f528e620a8efda846aae4d8649afd569efb11e82132868e47ef298e0eb1aea53cf9c2df5dd8fadd1b75bc930b268ecb5cee865c855
+  languageName: node
+  linkType: hard
+
 "@thi.ng/associative@npm:^5.2.16":
   version: 5.2.16
   resolution: "@thi.ng/associative@npm:5.2.16"
@@ -9681,6 +9814,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/associative@npm:^6.1.4":
+  version: 6.1.4
+  resolution: "@thi.ng/associative@npm:6.1.4"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+    "@thi.ng/arrays": ^2.1.3
+    "@thi.ng/binary": ^3.1.3
+    "@thi.ng/checks": ^3.1.3
+    "@thi.ng/compare": ^2.1.3
+    "@thi.ng/dcons": ^3.1.4
+    "@thi.ng/equiv": ^2.1.3
+    "@thi.ng/errors": ^2.1.3
+    "@thi.ng/transducers": ^8.2.0
+    tslib: ^2.3.1
+  checksum: 7f21cb3daa839aad41ce8609fcbcad21d3d8faf166f558ef8b08ac86fa60ee328d6744965799b72fa0b115338126e0a67a8fc185fb239a2b5930d783f8978036
+  languageName: node
+  linkType: hard
+
 "@thi.ng/atom@npm:4.1.42, @thi.ng/atom@npm:^4.1.42":
   version: 4.1.42
   resolution: "@thi.ng/atom@npm:4.1.42"
@@ -9694,12 +9845,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/atom@npm:^5.1.3":
+  version: 5.1.3
+  resolution: "@thi.ng/atom@npm:5.1.3"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+    "@thi.ng/equiv": ^2.1.3
+    "@thi.ng/errors": ^2.1.3
+    "@thi.ng/paths": ^5.1.3
+    tslib: ^2.3.1
+  checksum: 9adc0ffba550ece4a3c66ea9e690a2cacb47cb5f5073ec157eea1bb67ec0523525196f52ea6ac41063e84bf6de7c921b1c0db01b598309c207cb116fb1664a44
+  languageName: node
+  linkType: hard
+
 "@thi.ng/binary@npm:^2.2.11":
   version: 2.2.11
   resolution: "@thi.ng/binary@npm:2.2.11"
   dependencies:
     "@thi.ng/api": ^7.2.0
   checksum: b62fc24b7010daea05dc1f78b14b5cf0c6e32d3f86313755969671ffacb428a85996c2a528dbb92d55e7e0edf388d5222cecdb6635b30379a15981b0ee26c95f
+  languageName: node
+  linkType: hard
+
+"@thi.ng/binary@npm:^3.1.3":
+  version: 3.1.3
+  resolution: "@thi.ng/binary@npm:3.1.3"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+  checksum: 90b59bc4a8d68ace0d7a5ff847f6a8fd9206c1a0273557d474ca753839be40ceb0804b12f0aee083ec1746dff9f9f53951b568cfca2f44630495a422399d8130
   languageName: node
   linkType: hard
 
@@ -9743,6 +9916,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/checks@npm:^3.1.3":
+  version: 3.1.3
+  resolution: "@thi.ng/checks@npm:3.1.3"
+  dependencies:
+    tslib: ^2.3.1
+  checksum: 7de9c3369aba42c1a7ca4b57e1aa0e48a4c7550938671fe7d7540edba9d24c51b88442d96e5a31db021c9ba813761ecf6b88f452d2b7a232cea0548434baae50
+  languageName: node
+  linkType: hard
+
 "@thi.ng/compare@npm:^1.3.34":
   version: 1.3.34
   resolution: "@thi.ng/compare@npm:1.3.34"
@@ -9758,6 +9940,15 @@ __metadata:
   dependencies:
     "@thi.ng/api": ^8.3.2
   checksum: aa39aa077c63730b9f9b097683d33bc4e168b8df263aee4411f25ef31f83ecbef41398c336e4e67dc8c0553fc308f244c161c89695bbace739526c8da626d79e
+  languageName: node
+  linkType: hard
+
+"@thi.ng/compare@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@thi.ng/compare@npm:2.1.3"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+  checksum: 6fe0ae038eac45cb74697d19b7a7447ee620aa2818d9f9cd7bef83f54bc25bf000ea911d966eb02a4409caf2dcb36e16a5bc5239038c7bbf670ca4b2505ddd53
   languageName: node
   linkType: hard
 
@@ -9778,6 +9969,16 @@ __metadata:
     "@thi.ng/api": ^8.3.2
     "@thi.ng/errors": ^2.1.2
   checksum: 21a96ad61172b8f9dad840aae9bc2d56e52346c9a1555d122c921a8a694b8ce33c8de943e208507368a0bcc272c819bae0db1fa11e557acd18db6a16da821f60
+  languageName: node
+  linkType: hard
+
+"@thi.ng/compose@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@thi.ng/compose@npm:2.1.3"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+    "@thi.ng/errors": ^2.1.3
+  checksum: e8186c12de3b082833e8c353a9dca8c10c37b30b9ae7cf899b7437832bcd9885d43f3e0ee7ec76bb4ad243cce3316a0f542cb3ba2b58a6e63f767d9e50934823
   languageName: node
   linkType: hard
 
@@ -9825,6 +10026,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/dcons@npm:^3.1.4":
+  version: 3.1.4
+  resolution: "@thi.ng/dcons@npm:3.1.4"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+    "@thi.ng/checks": ^3.1.3
+    "@thi.ng/compare": ^2.1.3
+    "@thi.ng/equiv": ^2.1.3
+    "@thi.ng/errors": ^2.1.3
+    "@thi.ng/random": ^3.2.3
+    "@thi.ng/transducers": ^8.2.0
+  checksum: d1e8aadd16ded590a1da820f0befd6a1d43adc361d2e156059a50d151bd87a04aaadc320f0b01a4b416f4bb6e150172a23246f43e35ae73c1aed900ec16bb54d
+  languageName: node
+  linkType: hard
+
 "@thi.ng/equiv@npm:^1.0.45":
   version: 1.0.45
   resolution: "@thi.ng/equiv@npm:1.0.45"
@@ -9836,6 +10052,13 @@ __metadata:
   version: 2.1.2
   resolution: "@thi.ng/equiv@npm:2.1.2"
   checksum: 6eb3317aef3bdf57c00a5379c7e02e9324cf81d6efc45995105da99a44038cfdda1cf9fe6c395296cacf4d3e0f1554dd2c43214eeaa160f82adf9e58450c62fb
+  languageName: node
+  linkType: hard
+
+"@thi.ng/equiv@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@thi.ng/equiv@npm:2.1.3"
+  checksum: bcd18c5b19be01a7ddc1c46fa7a8ca3d044ff7c8bd87b3ce8080af8c9e454dcf5db48c9a1fdc9ac21e6bf7894349fc1ec6142187d84f13a74c01cedced4a2ff0
   languageName: node
   linkType: hard
 
@@ -9853,6 +10076,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/errors@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@thi.ng/errors@npm:2.1.3"
+  checksum: 0198dcebf0b771fbaa3b579343290094816a29e9336d04fbcd6e9a9e20334cad5e32d2475bb2e0b8135a83e994ca1a794c44fbd96f9b75aba47f5e296dab15cd
+  languageName: node
+  linkType: hard
+
 "@thi.ng/hex@npm:^1.0.4":
   version: 1.0.4
   resolution: "@thi.ng/hex@npm:1.0.4"
@@ -9867,6 +10097,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/hex@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@thi.ng/hex@npm:2.1.3"
+  checksum: d1843fd2a8d2ab50de73719188bfba49e3bbfc6933b038291ee8571378859719f71520f191d7a14e1dcfd2c0e1d60b12e76a98628677bccbc649217e74fe0d8a
+  languageName: node
+  linkType: hard
+
 "@thi.ng/iterators@npm:^5.1.74":
   version: 5.1.74
   resolution: "@thi.ng/iterators@npm:5.1.74"
@@ -9875,6 +10112,13 @@ __metadata:
     "@thi.ng/dcons": ^2.3.34
     "@thi.ng/errors": ^1.3.4
   checksum: b92acf22bac570eb10ef4277ceffa2624850b0913f64152a49eb06c7f3d9bc7a8ad7533fd6b747aee8e78110aaf9ba290eda1c33eafab9bbbfe4d7b695288b25
+  languageName: node
+  linkType: hard
+
+"@thi.ng/logger@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "@thi.ng/logger@npm:1.1.3"
+  checksum: b8fe35acf55adcac5dcb4ddbfd529dd93850f496bd9717c70b30e24284415cbe8dce1d3f0e1c0808f316ca385c930e6722cf17088901239194686238f7b109ff
   languageName: node
   linkType: hard
 
@@ -9893,6 +10137,15 @@ __metadata:
   dependencies:
     "@thi.ng/api": ^8.3.2
   checksum: 4fb13af5d6ce7e83b9a96dfbc1699136eda3371a3d089d8cd49b64ca7cee9498a218fca7b6802cda3b503189820fb0b3501ec552ffedd4abcd2207f5435680fe
+  languageName: node
+  linkType: hard
+
+"@thi.ng/math@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "@thi.ng/math@npm:5.2.0"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+  checksum: 99cac436d84536d77ccbb9e3d9a601e3adffdfd26595df826bff88de5ad94fbfa9cdfe8e518ce10c8d0bc401b303244d361c785022b22aed7b4f3605b9a4c1b5
   languageName: node
   linkType: hard
 
@@ -9916,6 +10169,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/paths@npm:^5.1.3":
+  version: 5.1.3
+  resolution: "@thi.ng/paths@npm:5.1.3"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+    "@thi.ng/checks": ^3.1.3
+    "@thi.ng/errors": ^2.1.3
+  checksum: 4757e7934bdc12063cc007f4086b253e2ff493413778eade4c35123742d2bcab7edf5737414e61c032f0dbc8b29ef5e20b0e0afdfc6b6b64087cad9f546f082f
+  languageName: node
+  linkType: hard
+
 "@thi.ng/random@npm:^2.4.8":
   version: 2.4.8
   resolution: "@thi.ng/random@npm:2.4.8"
@@ -9936,6 +10200,18 @@ __metadata:
     "@thi.ng/errors": ^2.1.2
     "@thi.ng/hex": ^2.1.2
   checksum: 81788e246179cbf9a4957ba794ab25afad7323b91e400962dbfb5ddf7566749ae821ee5fc488622ddd2ca1dde761cf40370f807b1b422a634e55f24e10907e07
+  languageName: node
+  linkType: hard
+
+"@thi.ng/random@npm:^3.2.3":
+  version: 3.2.3
+  resolution: "@thi.ng/random@npm:3.2.3"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+    "@thi.ng/checks": ^3.1.3
+    "@thi.ng/errors": ^2.1.3
+    "@thi.ng/hex": ^2.1.3
+  checksum: 8371a59d2dd774f70ef32eeaa9c722f00e55cba7d8f367a3bbc4bf074d504d54b30270b96d377b2a89a9669e4868214dafe8b9cf4af6ab08a297f5bc0208e914
   languageName: node
   linkType: hard
 
@@ -9992,6 +10268,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/rstream@npm:7.2.2":
+  version: 7.2.2
+  resolution: "@thi.ng/rstream@npm:7.2.2"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+    "@thi.ng/arrays": ^2.1.3
+    "@thi.ng/associative": ^6.1.4
+    "@thi.ng/atom": ^5.1.3
+    "@thi.ng/checks": ^3.1.3
+    "@thi.ng/errors": ^2.1.3
+    "@thi.ng/logger": ^1.1.3
+    "@thi.ng/transducers": ^8.2.0
+  checksum: c3d930cc2ec2b6fbea523c5b583248f79995adf19ce361c025daac2483601ee06873c6375bc7132ab6f817b35a6df45e8d2a885c89e416714eecd5892995cb02
+  languageName: node
+  linkType: hard
+
 "@thi.ng/transducers@npm:^7.9.2":
   version: 7.9.2
   resolution: "@thi.ng/transducers@npm:7.9.2"
@@ -10021,6 +10313,22 @@ __metadata:
     "@thi.ng/math": ^5.1.2
     "@thi.ng/random": ^3.2.2
   checksum: 862948b5f72e1853a716be14b0359179d5a0d445bfc9a3c7b64d71f70068f5d6f9b1aa84501b89864d28bccdd6a4b954ffdd4cfa234ca52406355aea9cbf040b
+  languageName: node
+  linkType: hard
+
+"@thi.ng/transducers@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "@thi.ng/transducers@npm:8.2.0"
+  dependencies:
+    "@thi.ng/api": ^8.3.3
+    "@thi.ng/arrays": ^2.1.3
+    "@thi.ng/checks": ^3.1.3
+    "@thi.ng/compare": ^2.1.3
+    "@thi.ng/compose": ^2.1.3
+    "@thi.ng/errors": ^2.1.3
+    "@thi.ng/math": ^5.2.0
+    "@thi.ng/random": ^3.2.3
+  checksum: 238f4d4e5904f821bf6964f99e447120c239ec3d735db3e0e1a419d7bdef0554105b5f27a021b36cbcd0688d26987c339090b8b9f26a2fa5da18febb37ad6807
   languageName: node
   linkType: hard
 
@@ -21446,11 +21754,18 @@ fsevents@^1.2.7:
     "@fluent-wallet/eth_call": "workspace:packages/rpcs/eth_call"
     "@fluent-wallet/eth_chain-id": "workspace:packages/rpcs/eth_chainId"
     "@fluent-wallet/eth_estimate-gas": "workspace:packages/rpcs/eth_estimateGas"
+    "@fluent-wallet/eth_fee-history": "workspace:*"
     "@fluent-wallet/eth_gas-price": "workspace:packages/rpcs/eth_gasPrice"
     "@fluent-wallet/eth_get-balance": "workspace:packages/rpcs/eth_getBalance"
+    "@fluent-wallet/eth_get-block-by-hash": "workspace:*"
+    "@fluent-wallet/eth_get-block-by-number": "workspace:*"
     "@fluent-wallet/eth_get-code": "workspace:packages/rpcs/eth_getCode"
+    "@fluent-wallet/eth_get-transaction-by-hash": "workspace:*"
     "@fluent-wallet/eth_get-transaction-count": "workspace:packages/rpcs/eth_getTransactionCount"
+    "@fluent-wallet/eth_get-transaction-receipt": "workspace:*"
     "@fluent-wallet/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
+    "@fluent-wallet/eth_send-raw-transaction": "workspace:*"
+    "@fluent-wallet/eth_sign-transaction": "workspace:*"
     "@fluent-wallet/eth_sign-typed-data_v4": "workspace:packages/rpcs/eth_signTypedData_v4"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
     "@fluent-wallet/inner-utils": "workspace:packages/inner-utils"
@@ -21476,7 +21791,8 @@ fsevents@^1.2.7:
     "@fluent-wallet/wallet_detect-network-type": "workspace:packages/rpcs/wallet_detectNetworkType"
     "@fluent-wallet/wallet_discover-accounts": "workspace:packages/rpcs/wallet_discoverAccounts"
     "@fluent-wallet/wallet_enrich-conflux-tx": "workspace:*"
-    "@fluent-wallet/wallet_enrich-conflux-txs": "workspace:*"
+    "@fluent-wallet/wallet_enrich-ethereum-tx": "workspace:*"
+    "@fluent-wallet/wallet_enrich-txs": "workspace:*"
     "@fluent-wallet/wallet_export-account": "workspace:packages/rpcs/wallet_exportAccount"
     "@fluent-wallet/wallet_export-account-group": "workspace:packages/rpcs/wallet_exportAccountGroup"
     "@fluent-wallet/wallet_export-all": "workspace:packages/rpcs/wallet_exportAll"
@@ -21499,6 +21815,7 @@ fsevents@^1.2.7:
     "@fluent-wallet/wallet_get-permissions": "workspace:packages/rpcs/wallet_getPermissions"
     "@fluent-wallet/wallet_get-preferences": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*"
+    "@fluent-wallet/wallet_handle-unfinished-eth-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-txs": "workspace:*"
     "@fluent-wallet/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
     "@fluent-wallet/wallet_import-all": "workspace:packages/rpcs/wallet_importAll"
@@ -21507,11 +21824,13 @@ fsevents@^1.2.7:
     "@fluent-wallet/wallet_is-locked": "workspace:packages/rpcs/wallet_isLocked"
     "@fluent-wallet/wallet_lock": "workspace:packages/rpcs/wallet_lock"
     "@fluent-wallet/wallet_metadata-for-popup": "workspace:*"
+    "@fluent-wallet/wallet_network1559compatible": "workspace:*"
     "@fluent-wallet/wallet_refetch-balance": "workspace:packages/rpcs/wallet_refetchBalance"
     "@fluent-wallet/wallet_refetch-token-list": "workspace:packages/rpcs/wallet_refetchTokenList"
     "@fluent-wallet/wallet_register-site-metadata": "workspace:packages/rpcs/wallet_registerSiteMetadata"
     "@fluent-wallet/wallet_request-permissions": "workspace:packages/rpcs/wallet_requestPermissions"
     "@fluent-wallet/wallet_request-unlock-ui": "workspace:packages/rpcs/wallet_requestUnlockUI"
+    "@fluent-wallet/wallet_send-transaction": "workspace:*"
     "@fluent-wallet/wallet_set-app-current-account": "workspace:packages/rpcs/wallet_setAppCurrentAccount"
     "@fluent-wallet/wallet_set-app-current-network": "workspace:packages/rpcs/wallet_setAppCurrentNetwork"
     "@fluent-wallet/wallet_set-current-account": "workspace:packages/rpcs/wallet_setCurrentAccount"
