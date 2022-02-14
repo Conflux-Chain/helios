@@ -1,5 +1,6 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 import App from '@fluent-wallet/hw-app-conflux'
+import {decode} from '@fluent-wallet/base32-address'
 import {
   LEDGER_APP_NAME,
   LEDGER_CLA,
@@ -131,8 +132,9 @@ export default class Conflux {
       for (const index of indexArray) {
         const hdPath = `${HDPATH.CONFLUX}${index}`
         const {address} = await this.getAddress(hdPath)
+        const {hexAddress} = decode(address)
         addressArr.push({
-          address,
+          address: hexAddress,
           hdPath,
         })
       }

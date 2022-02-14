@@ -3324,6 +3324,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@conflux-dev/conflux-address-js@npm:1.1.8":
+  version: 1.1.8
+  resolution: "@conflux-dev/conflux-address-js@npm:1.1.8"
+  dependencies:
+    jsbi: ^3.1.4
+  checksum: b5b440cd2a2de69d260b2dacd5bde17a05ba3ae38f187d744d5c0a03613a838df05332439f40fe2e75b496bfb8c7859b87a949ccbd871dda0d047c6efa9f14f1
+  languageName: node
+  linkType: hard
+
 "@conflux-dev/conflux-address-js@npm:^1.0.0, @conflux-dev/conflux-address-js@npm:^1.2.1":
   version: 1.2.1
   resolution: "@conflux-dev/conflux-address-js@npm:1.2.1"
@@ -5690,9 +5699,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/hw-app-conflux@npm:0.0.3":
-  version: 0.0.3
-  resolution: "@fluent-wallet/hw-app-conflux@npm:0.0.3"
+"@fluent-wallet/hw-app-conflux@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@fluent-wallet/hw-app-conflux@npm:0.0.4"
   dependencies:
     "@ledgerhq/cryptoassets": ^6.18.0
     "@ledgerhq/errors": ^6.10.0
@@ -5700,8 +5709,8 @@ __metadata:
     "@ledgerhq/logs": ^6.10.0
     axios: ^0.24.0
     bip32-path: ^0.4.2
-    js-conflux-sdk: ^2.0.0-beta.10
-  checksum: 2420466bffa17d59386cd8923c99d8b115a7c3b27b8a4158ba8f3d5e74df1f3e6ef4f62a7b6c6ff29d93c97f60ee99da1626df7029ff90306b5ae475bbc1b717
+    js-conflux-sdk: 1.7.3
+  checksum: 36cf6ad0c246d970fe6106c18d56de768f88762cf65daef0cbfcc6bcb06863842e92535c78e5e96fb1969f8602a1c382a2484a63dec4efbfb718674f939aea68
   languageName: node
   linkType: hard
 
@@ -5753,7 +5762,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/ledger@workspace:packages/ledger"
   dependencies:
-    "@fluent-wallet/hw-app-conflux": 0.0.3
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/hw-app-conflux": 0.0.4
     "@ledgerhq/hw-app-eth": 6.24.1
     "@ledgerhq/hw-transport-webusb": 6.19.0
   languageName: unknown
@@ -7076,16 +7086,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/cryptoassets@npm:^6.18.0":
-  version: 6.20.0
-  resolution: "@ledgerhq/cryptoassets@npm:6.20.0"
-  dependencies:
-    invariant: 2
-  checksum: bfd344092b9006966b2236f0cb054b131812f599f846ae0af447ee90edb1a327baa9cbcbceada77fbc65f1300c17a53b648c110f068602c7ea3c0ce15ce83671
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/cryptoassets@npm:^6.24.1":
+"@ledgerhq/cryptoassets@npm:^6.18.0, @ledgerhq/cryptoassets@npm:^6.24.1":
   version: 6.24.1
   resolution: "@ledgerhq/cryptoassets@npm:6.24.1"
   dependencies:
@@ -7103,18 +7104,6 @@ __metadata:
     rxjs: 6
     semver: ^7.3.5
   checksum: a5a2e14e69993f08a4c53521f7a173e6e43b403cd50aeff60f701795e3c84f73a98ec4643e9ce863d94292e7d6b7e1563900d65d34799d3e256bce8637087473
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/devices@npm:^6.20.0":
-  version: 6.20.0
-  resolution: "@ledgerhq/devices@npm:6.20.0"
-  dependencies:
-    "@ledgerhq/errors": ^6.10.0
-    "@ledgerhq/logs": ^6.10.0
-    rxjs: 6
-    semver: ^7.3.5
-  checksum: 67246ffe6d6b95e3ec2f6ce2f02eeb138397911f7018c1055ec8ed103e9790b4f825754e2f0e64f554e90f698fec05e2c80abf2bf3ec3c0eecc490acf4c21ad7
   languageName: node
   linkType: hard
 
@@ -7165,14 +7154,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-transport@npm:^6.11.2":
-  version: 6.20.0
-  resolution: "@ledgerhq/hw-transport@npm:6.20.0"
+"@ledgerhq/hw-transport@npm:^6.11.2, @ledgerhq/hw-transport@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "@ledgerhq/hw-transport@npm:6.24.1"
   dependencies:
-    "@ledgerhq/devices": ^6.20.0
+    "@ledgerhq/devices": ^6.24.1
     "@ledgerhq/errors": ^6.10.0
     events: ^3.3.0
-  checksum: 89ecfeba2b2e179a665325603d74c7aa85042d1268bbb6f0cd023e15510cda468a3f162ba9140134fe1c1f24832765fbe5a99f396caaa67b2a5914ea02ab07c4
+  checksum: 31920d43268f65240fd6e48cdfb94059f676bdf2fd1a63a1a15b4dbd8ece2802e2fbfc6933019c80a2b4f830bf3fc5554065a4c5ee6dd6856084db26426e73e1
   languageName: node
   linkType: hard
 
@@ -7184,17 +7173,6 @@ __metadata:
     "@ledgerhq/errors": ^6.10.0
     events: ^3.3.0
   checksum: adfede7b58cbaef1c925342777dd1d22836b5bddab0e5c322ece90eb78cf6e556aa0ea4d811cbdfb51e6630f8333e53a7fab4e0a99515fc92c16ed40934fa772
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/hw-transport@npm:^6.24.1":
-  version: 6.24.1
-  resolution: "@ledgerhq/hw-transport@npm:6.24.1"
-  dependencies:
-    "@ledgerhq/devices": ^6.24.1
-    "@ledgerhq/errors": ^6.10.0
-    events: ^3.3.0
-  checksum: 31920d43268f65240fd6e48cdfb94059f676bdf2fd1a63a1a15b4dbd8ece2802e2fbfc6933019c80a2b4f830bf3fc5554065a4c5ee6dd6856084db26426e73e1
   languageName: node
   linkType: hard
 
@@ -24544,6 +24522,25 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"js-conflux-sdk@npm:1.7.3":
+  version: 1.7.3
+  resolution: "js-conflux-sdk@npm:1.7.3"
+  dependencies:
+    "@conflux-dev/conflux-address-js": 1.1.8
+    big.js: ^5.2.2
+    commander: ^8.0.0
+    keccak: ^2.0.0
+    lodash: ^4.17.19
+    scrypt-js: ^3.0.1
+    secp256k1: ^3.7.1
+    superagent: ^6.1.0
+    websocket: ^1.0.31
+  bin:
+    cfxjs: bin/cfxjs.js
+  checksum: 998a94ca94413abd454eb182b0d2650596508cad13fc3c69b9f20f52d7c56ca7fd49f3aa00c2ebb0e7f958bfe886cae17c89c4147417ee66994bf3dbc97af803
+  languageName: node
+  linkType: hard
+
 "js-conflux-sdk@npm:2.0.0-beta.14":
   version: 2.0.0-beta.14
   resolution: "js-conflux-sdk@npm:2.0.0-beta.14"
@@ -24562,27 +24559,6 @@ fsevents@^1.2.7:
   bin:
     cfxjs: bin/cfxjs.js
   checksum: 0bca80d2f5a8f1f1a85396508be094ff0cd9a4b7a084a0897deccae0c6e307b3838cd90a04e0823b9cfdb070fb5ea2f0b7f71abdc752c5bbf0d04ba37a56da4b
-  languageName: node
-  linkType: hard
-
-"js-conflux-sdk@npm:^2.0.0-beta.10":
-  version: 2.0.0-beta.10
-  resolution: "js-conflux-sdk@npm:2.0.0-beta.10"
-  dependencies:
-    "@conflux-dev/conflux-address-js": ^1.3.7
-    abi-util-lite: ^0.1.0
-    big.js: ^5.2.2
-    commander: ^8.0.0
-    keccak: ^2.0.0
-    lodash: ^4.17.19
-    rlp: ^2.2.7
-    scrypt-js: ^3.0.1
-    secp256k1: ^3.7.1
-    superagent: ^6.1.0
-    websocket: ^1.0.31
-  bin:
-    cfxjs: bin/cfxjs.js
-  checksum: e694f6adbdf77b5382f29528f7912c5574332cb76a05c5604e20d2900dc5a0035b255b2fbf4aebe90d0e5d6767f2717937eff6efbfb727da20d1351b68cee1df
   languageName: node
   linkType: hard
 
