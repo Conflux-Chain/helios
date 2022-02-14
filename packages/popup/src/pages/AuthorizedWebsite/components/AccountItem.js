@@ -1,11 +1,27 @@
 import PropTypes from 'prop-types'
-import {useState} from 'react'
+import {useState, useCallback, useEffect} from 'react'
 import {UpOutlined, DownOutlined} from '@fluent-wallet/component-icons'
 import {Avatar} from '../../../components'
 import {DappItem} from './'
 
 function AccountItem({accountId, accountNickname, app = [], accountSiteId}) {
   const [showDappItem, setShowDappItem] = useState(false)
+  const [dappWrapperHeight, setDappWrapperHeight] = useState('')
+  const dappRef = useCallback(
+    node => {
+      if (node !== null) {
+        setDappWrapperHeight(node.getBoundingClientRect().height)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [app.length],
+  )
+
+  useEffect(() => {
+    if (app.length === 0) {
+      setShowDappItem(false)
+    }
+  }, [app.length])
 
   return (
     <div className="py-3">
@@ -32,17 +48,23 @@ function AccountItem({accountId, accountNickname, app = [], accountSiteId}) {
           )
         ) : null}
       </div>
-      {showDappItem &&
-        app.map(({site}, index) => (
-          <DappItem
-            key={index}
-            origin={site?.origin}
-            iconUrl={site?.icon}
-            siteId={site?.eid}
-            accountId={accountId}
-            accountSiteId={accountSiteId}
-          />
-        ))}
+      <div
+        className="overflow-hidden duration-300 ease-in-out transition-all"
+        style={{height: `${showDappItem ? dappWrapperHeight : 0}px`}}
+      >
+        <div ref={dappRef}>
+          {app.map(({site}, index) => (
+            <DappItem
+              key={index}
+              origin={site?.origin}
+              iconUrl={site?.icon}
+              siteId={site?.eid}
+              accountId={accountId}
+              accountSiteId={accountSiteId}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
