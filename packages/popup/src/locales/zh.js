@@ -272,6 +272,9 @@ const zh = {
     docs: '文档',
     version: '版本号',
 
+    // Authorized Website
+    authorizedWebsite: '已授权的网站',
+
     // Developer Mode
     developerMode: '开发者模式',
     compatibilityMode: '兼容模式',
