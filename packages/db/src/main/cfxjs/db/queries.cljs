@@ -401,7 +401,9 @@
         authed-app           (q '[:find [?app ...]
                                   :in $ ?acc
                                   :where
-                                  [?app :app/account ?acc]] acc)
+                                  [?app :app/account ?acc]
+                                  (not [?app :app/currentAccount ?acc])]
+                                acc)
         authed-app-reselects (reduce (fn [ac app-eid]
                                        (concat ac [[:db.fn/retractAttribute app-eid :app/currentAccount]
                                                    [:db/add app-eid :app/currentAccount acc]]))
