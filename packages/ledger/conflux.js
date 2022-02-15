@@ -75,6 +75,21 @@ export default class Conflux {
     return this.app?.getAppConfiguration()
   }
 
+  /**
+   * sign personal message
+   * @param {*} hdPath the hd path
+   * @param {*} messageHex hex string of message
+   * @returns Promise
+   */
+  async signPersonalMessage(hdPath, messageHex) {
+    await this.setApp()
+    try {
+      return this.app?.signPersonalMessage(hdPath, messageHex)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
   async isDeviceAuthed() {
     const devices = await TransportWebUSB.list()
     return Boolean(devices.length)

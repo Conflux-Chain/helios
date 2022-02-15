@@ -93,6 +93,12 @@ export default class Ethereum {
     }
   }
 
+  /**
+   * sign personal message
+   * @param {*} hdPath the hd path
+   * @param {*} messageHex hex string of message
+   * @returns Promise
+   */
   async signPersonalMessage(hdPath, messageHex) {
     await this.setApp()
     try {
