@@ -1,19 +1,27 @@
 export const LEDGER_APP_NAME = {
   CONFLUX: 'Conflux',
+  ETHEREUM: 'Ethereum',
 }
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/productID
+ * Attention: as the doc said, the productId can identify a USB device.
+ * But, the productId I get when I open different app using a same NanoS device is different,
+ * for example, the productId is 4113 when I open Conflux App,the productId is 4117 when I open Ethereum App.
+ */
 export const LEDGER_NANOS_ID = 4113
 export const LEDGER_NANOX_ID = 16401
-export const LEDGER_VERDOR_ID = '0x2c97' //11415
+export const LEDGER_NANOS_PRODUCT_NAME = 'Nano S'
+export const LEDGER_NANOX_PRODUCT_NAME = 'Nano X'
 export const LEDGER_DEVICE = {
-  [LEDGER_NANOS_ID]: {
+  [LEDGER_NANOS_PRODUCT_NAME]: {
     NAME: 'LedgerNanoS',
     PRODUCT_NAME: 'Nano S',
-    VERDOR_ID: LEDGER_VERDOR_ID,
+    VERDOR_ID: '0x2c97', //11415
   },
-  [LEDGER_NANOX_ID]: {
+  [LEDGER_NANOX_PRODUCT_NAME]: {
     NAME: 'LedgerNanoX',
     PRODUCT_NAME: 'Nano X',
-    VERDOR_ID: LEDGER_VERDOR_ID,
+    VERDOR_ID: '0x2c97', //11415
   },
 }
 export const LEDGER_CLA = 0xe0
@@ -22,6 +30,7 @@ export const INS = {
 }
 export const HDPATH = {
   CONFLUX: "44'/503'/0'/0/",
+  ETHEREUM: "44'/60'/0'/0/",
 }
 
 export const ERROR = {
