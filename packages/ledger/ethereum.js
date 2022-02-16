@@ -1,6 +1,6 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
-import App from '@fluent-wallet/hw-app-conflux'
-import {decode} from '@fluent-wallet/base32-address'
+import App from '@ledgerhq/hw-app-eth'
+
 import {
   LEDGER_APP_NAME,
   LEDGER_CLA,
@@ -8,18 +8,18 @@ import {
   HDPATH,
   LEDGER_DEVICE,
   ERROR,
-} from './const.js'
+} from './const'
 
 /**
- * Connecting Ledger Conflux App API for fluent
+ * Connecting Ledger Ethereum App API for fluent
  *
  * @example
- * import {Conflux} from "@fluent-wallet/ledger";
- * const cfx = new Conflux()
- * cfx.getAddress("44'/503'/0'/0/0").then(o => o.publicKey)
+ * import {Ethereum} from "@fluent-wallet/ledger";
+ * const eth = new Ethereum()
+ * eth.getAddress("44'/60'/0'/0/0").then(o => o.publicKey)
  */
 
-export default class Conflux {
+export default class Ethereum {
   app = null
   transport = null
   constuctor() {
@@ -43,9 +43,9 @@ export default class Conflux {
    * @param {*} hdPath
    * @returns
    */
-  async getAddress(hdPath) {
+  async getAddress(hdPath, boolAddress, boolChainCode) {
     await this.setApp()
-    return this.app?.getAddress(hdPath)
+    return this.app?.getAddress(hdPath, boolAddress, boolChainCode)
   }
 
   /**
@@ -72,7 +72,25 @@ export default class Conflux {
    */
   async getAppConfiguration() {
     await this.setApp()
-    return this.app?.getAppConfiguration()
+    const r = await this.transport.send(0xb0, 0x01, 0x00, 0x00)
+    let i = 0
+    const format = r[i++]
+
+    if (format !== 1) {
+      throw new Error('getAppAndVersion: format not supported')
+    }
+
+    const nameLength = r[i++]
+    const name = r.slice(i, (i += nameLength)).toString('ascii')
+    const versionLength = r[i++]
+    const version = r.slice(i, (i += versionLength)).toString('ascii')
+    const flagLength = r[i++]
+    const flags = r.slice(i, (i += flagLength))
+    return {
+      name,
+      version,
+      flags,
+    }
   }
 
   /**
@@ -99,8 +117,9 @@ export default class Conflux {
     try {
       const isAuthed = await this.isDeviceAuthed()
       if (!isAuthed) return false
-      const {name} = await this.getAppConfiguration()
-      return name === LEDGER_APP_NAME.CONFLUX
+      const config = await this.getAppConfiguration()
+      const {name} = config
+      return name === LEDGER_APP_NAME.ETHEREUM
     } catch (error) {
       return false
     } finally {
@@ -115,7 +134,7 @@ export default class Conflux {
         INS.OPEN_APP,
         0x00,
         0x00,
-        Buffer.from(LEDGER_APP_NAME.CONFLUX, 'ascii'),
+        Buffer.from(LEDGER_APP_NAME.ETHEREUM, 'ascii'),
       )
       return true
     } catch (error) {
@@ -145,11 +164,10 @@ export default class Conflux {
     const addressArr = []
     try {
       for (const index of indexArray) {
-        const hdPath = `${HDPATH.CONFLUX}${index}`
+        const hdPath = `${HDPATH.ETHEREUM}${index}`
         const {address} = await this.getAddress(hdPath)
-        const {hexAddress} = decode(address)
         addressArr.push({
-          address: hexAddress,
+          address,
           hdPath,
         })
       }
