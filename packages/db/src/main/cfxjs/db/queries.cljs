@@ -547,14 +547,24 @@
              rst           (apply q query (:args query-initial))]
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
-(defn get-address [{:keys [addressId networkId hex value accountId groupId index tokenId appId selected g]}]
+(defn get-address [{:keys [addressId networkId hex value accountId groupId
+                           index tokenId appId selected fuzzy g]}]
   (let [g            (and g {:address g})
         post-process (if (seq g) identity #(get % :db/id))
         addr         (if (string? value) [value] value)
         addr         (if (vector? addr) (map #(.toLowerCase %) addr) addr)
         hex          (if (string? hex) [hex] hex)
         hex          (if (vector? hex) (map #(.toLowerCase %) hex) hex)
-        addressId    (if selected (get-current-addr) addressId)]
+        addressId    (if selected (get-current-addr) addressId)
+        fuzzy        (if (string? fuzzy)
+                       (try
+                         (re-pattern
+                          (str "(?i)"
+                               (-> fuzzy
+                                   (.replaceAll "  " "\\s")
+                                   (.replaceAll " " ".*"))))
+                         (catch js/Error _ "_"))
+                       nil)]
     (prst->js
      (cond
        (vector? addressId)
@@ -590,6 +600,13 @@
                              (-> (update :args conj (if (vector? groupId) groupId [groupId]))
                                  (update :in conj '[?gid ...])
                                  (update :where conj '[?gid :accountGroup/account ?acc] '[?acc :account/address ?addr]))
+                             fuzzy
+                             (-> (update :args conj fuzzy)
+                                 (update :in conj '?fuzzy)
+                                 (update :where conj
+                                         '[?acc :account/address ?addr]
+                                         '[?acc :account/nickname ?acc-name]
+                                         '[(re-find ?fuzzy ?acc-name)]))
                              accountId
                              (-> (update :args conj (if (vector? accountId) accountId [accountId]))
                                  (update :in conj '[?acc ...])
