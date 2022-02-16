@@ -12,14 +12,16 @@ export const LEDGER_NANOS_ID = 4113
 export const LEDGER_NANOX_ID = 16401
 export const LEDGER_NANOS_PRODUCT_NAME = 'Nano S'
 export const LEDGER_NANOX_PRODUCT_NAME = 'Nano X'
+export const LEDGER_NANOS_NAME = 'LedgerNanoS'
+export const LEDGER_NANOX_NAME = 'LedgerNanoX'
 export const LEDGER_DEVICE = {
   [LEDGER_NANOS_PRODUCT_NAME]: {
-    NAME: 'LedgerNanoS',
+    NAME: LEDGER_NANOS_NAME,
     PRODUCT_NAME: 'Nano S',
     VERDOR_ID: '0x2c97', //11415
   },
   [LEDGER_NANOX_PRODUCT_NAME]: {
-    NAME: 'LedgerNanoX',
+    NAME: LEDGER_NANOX_NAME,
     PRODUCT_NAME: 'Nano X',
     VERDOR_ID: '0x2c97', //11415
   },
