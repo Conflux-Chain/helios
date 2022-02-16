@@ -5117,6 +5117,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_sign-transaction@workspace:packages/rpcs/cfx_signTransaction"
   dependencies:
+    "@fluent-wallet/ledger": "workspace:packages/ledger"
     "@fluent-wallet/signature": "workspace:packages/signature"
   languageName: unknown
   linkType: soft
@@ -6440,6 +6441,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account@workspace:packages/rpcs/wallet_importHardwareWalletAccountGroupOrAccount"
   dependencies:
     "@fluent-wallet/base32-address": "workspace:*"
+    "@fluent-wallet/ledger": "workspace:packages/ledger"
     "@fluent-wallet/spec": "workspace:*"
     browser-passworder: 2.0.3
   languageName: unknown
