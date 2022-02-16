@@ -57,6 +57,7 @@ class Provider extends SafeEventEmitter {
         'chainChanged',
         'message',
       ],
+      streamCacheLast: false,
     })
     this.#s = stream
     this.#send = send
@@ -105,6 +106,7 @@ class PortalProvider extends SafeEventEmitter {
         'chainChanged',
         'message',
       ],
+      streamCacheLast: true,
     })
     this.#s = stream
     this.#send = send
@@ -126,6 +128,8 @@ class PortalProvider extends SafeEventEmitter {
           this._networkVersion = networkId.toString(10)
           this.confluxJS.networkId = networkId
           this.confluxJS.wallet.networkId = networkId
+          this.emit('chainChanged', result)
+          this.emit('networkChanged', networkId)
         })
         this.request({method: 'cfx_accounts'})
           .then(result => {
