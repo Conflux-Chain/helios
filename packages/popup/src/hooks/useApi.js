@@ -5,7 +5,7 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import {NETWORK_TYPE, RPC_METHODS} from '../constants'
 import {validateAddress, flatArray} from '../utils'
 import {encode} from '@fluent-wallet/base32-address'
-import {request} from '../utils/'
+import {request, formatAccountGroupData} from '../utils/'
 
 const {
   WALLET_GET_IMPORT_HARDWARE_WALLET_INFO,
@@ -288,6 +288,7 @@ export const useCurrentNetworkTokens = ({fuzzy, addressId}) => {
     {fallbackData: []},
   )
 }
+
 export const useCurrentAddressTokens = () => {
   const {
     data: {eid: addressId},
@@ -305,6 +306,7 @@ export const useCurrentAddressTokens = () => {
     },
   )
 }
+
 export const useSingleTokenInfoWithNativeTokenSupport = tokenId => {
   if (tokenId === 'native' || tokenId === '0x0') {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -594,6 +596,38 @@ export const useAddressTypeInConfirmTx = address => {
     },
   )
   return data
+}
+
+export const useAccountList = () => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  useDbRefetchBalance()
+  return useRPC(
+    networkId ? [QUERY_ADDRESS, 'queryAllAccount', networkId] : null,
+    {
+      networkId,
+      g: {
+        nativeBalance: 1,
+        _account: {
+          nickname: 1,
+          eid: 1,
+          hidden: 1,
+          _accountGroup: {nickname: 1, eid: 1, vault: {type: 1}},
+          selected: 1,
+        },
+        network: {
+          ticker: 1,
+        },
+      },
+    },
+    {
+      fallbackData: {},
+      postprocessSuccessData: formatAccountGroupData,
+    },
+  )
 }
 
 export const useCfxMaxGasLimit = isCfxChain => {

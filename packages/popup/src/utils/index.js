@@ -2,13 +2,12 @@ import BN from 'bn.js'
 import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
+import {isArray} from '@fluent-wallet/checks'
+
 import {PASSWORD_REG_EXP, RPC_METHODS} from '../constants'
 const globalThis = window ?? global
-const {
-  WALLET_GET_ACCOUNT_GROUP,
-  WALLET_METADATA_FOR_POPUP,
-  WALLETDB_ACCOUNT_LIST_ASSETS,
-} = RPC_METHODS
+const {WALLET_GET_ACCOUNT_GROUP, WALLET_METADATA_FOR_POPUP, QUERY_ADDRESS} =
+  RPC_METHODS
 
 export function request(...args) {
   const [method, params] = args
@@ -147,7 +146,32 @@ export function composeRef() {
 }
 
 export const updateDbAccountList = (mutate, ...args) =>
-  Promise.all(args.map(dep => mutate([WALLETDB_ACCOUNT_LIST_ASSETS, dep])))
+  Promise.all(
+    args.map(dep => mutate([QUERY_ADDRESS, ...(isArray(dep) ? dep : [dep])])),
+  )
 
 export const detectFirefox = () =>
   navigator?.userAgent?.toLowerCase().indexOf('firefox') > -1
+
+export const formatAccountGroupData = d => {
+  if (isArray(d)) {
+    d.sort((a, b) => {
+      if (a.account.accountGroup.eid === b.account.accountGroup.eid) {
+        return a.account.eid - b.account.eid
+      }
+      return a.account.accountGroup.eid - b.account.accountGroup.eid
+    })
+    let ret = {}
+    d.forEach(({account: {accountGroup, ...accountData}, ...rest}) => {
+      if (!ret[accountGroup.eid]) {
+        ret[accountGroup.eid] = {...accountGroup}
+      }
+      if (!ret[accountGroup.eid]?.account) {
+        ret[accountGroup.eid].account = {}
+      }
+      ret[accountGroup.eid].account[accountData.eid] = {...accountData, ...rest}
+    })
+    return ret
+  }
+  return d
+}

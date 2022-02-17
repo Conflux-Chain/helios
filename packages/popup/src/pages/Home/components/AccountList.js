@@ -1,48 +1,52 @@
 import PropTypes from 'prop-types'
-
+import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
-import {ROUTES, RPC_METHODS} from '../../../constants'
 import Button from '@fluent-wallet/component-button'
 import Message from '@fluent-wallet/component-message'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
-import {request} from '../../../utils'
+import {request, updateDbAccountList} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {SlideCard, DisplayBalance, Avatar} from '../../../components'
-import {useDbAccountListAssets, useCurrentAddress} from '../../../hooks/useApi'
+import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
+import {ROUTES, RPC_METHODS} from '../../../constants'
 
 const {SELECT_CREATE_TYPE} = ROUTES
 const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
 
 function AccountItem({
   nickname,
-  accounts, // TODO: use accountId
+  currentNetworkId,
+  accounts,
   authorizedAccountIdIconObj,
   onClose,
-  tokeName = '',
   groupType = '',
-  decimals,
 }) {
   const {t} = useTranslation()
-  const {
-    data: {
-      account: {eid: currentAccountId},
-    },
-    mutate,
-  } = useCurrentAddress()
+  const {mutate} = useSWRConfig()
   const onChangeAccount = accountId => {
-    onClose && onClose()
-    if (currentAccountId !== accountId) {
-      request(WALLET_SET_CURRENT_ACCOUNT, [accountId]).then(() => {
-        mutate()
-        Message.warning({
-          content: t('addressHasBeenChanged'),
-          top: '110px',
+    request(WALLET_SET_CURRENT_ACCOUNT, [accountId])
+      .then(() => {
+        updateDbAccountList(mutate, 'useCurrentAddress', [
+          'queryAllAccount',
+          currentNetworkId,
+        ]).then(() => {
+          onClose && onClose()
+          Message.warning({
+            content: t('addressHasBeenChanged'),
+            top: '110px',
+            duration: 1,
+          })
+        })
+      })
+      .catch(e => {
+        Message.error({
+          content:
+            e?.message?.split?.('\n')?.[0] ?? e?.message ?? t('unCaughtErrMsg'),
+          top: '10px',
           duration: 1,
         })
-        // TODO: deal with error condition
       })
-    }
   }
 
   return (
@@ -51,13 +55,13 @@ function AccountItem({
         {groupType === 'pk' ? null : (
           <p className="text-gray-40 ml-4 mb-1 text-xs pt-3">{nickname}</p>
         )}
-        {accounts.map(({nickname, eid, currentAddress}, index) => (
+        {accounts.map(({nickname, eid, selected, nativeBalance, network}) => (
           <div
             aria-hidden="true"
-            onClick={() => onChangeAccount(eid)}
-            key={index}
+            onClick={() => !selected && onChangeAccount(eid)}
+            key={eid}
             className={`flex p-3 rounded hover:bg-primary-4 ${
-              currentAccountId === eid ? 'cursor-default' : 'cursor-pointer'
+              selected ? 'cursor-default' : 'cursor-pointer'
             }`}
           >
             <Avatar
@@ -69,12 +73,14 @@ function AccountItem({
               <p className="text-xs text-gray-40 ">{nickname}</p>
               <div className="flex w-full">
                 <DisplayBalance
-                  balance={currentAddress?.nativeBalance || '0x0'}
+                  balance={nativeBalance || '0x0'}
                   maxWidthStyle="max-w-[270px]"
                   maxWidth={270}
-                  decimals={decimals}
+                  decimals={network?.ticker?.decimals}
                 />
-                <pre className="text-sm text-gray-80"> {tokeName}</pre>
+                <pre className="text-sm text-gray-80">
+                  {network?.ticker?.symbol || ''}
+                </pre>
               </div>
             </div>
             <div className="inline-flex justify-center items-center">
@@ -87,7 +93,7 @@ function AccountItem({
                   />
                 </div>
               )}
-              {currentAccountId === eid && (
+              {selected && (
                 <CheckCircleFilled className="w-4 h-4 ml-3 text-success" />
               )}
             </div>
@@ -100,26 +106,29 @@ function AccountItem({
 
 AccountItem.propTypes = {
   nickname: PropTypes.string,
+  currentNetworkId: PropTypes.number.isRequired,
   accounts: PropTypes.array,
   authorizedAccountIdIconObj: PropTypes.object.isRequired,
   onClose: PropTypes.func,
-  tokeName: PropTypes.string,
   groupType: PropTypes.string,
-  decimals: PropTypes.number,
 }
 
 function AccountList({onClose, open, accountsAnimate = true}) {
   const {t} = useTranslation()
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
   const history = useHistory()
-  const {accountGroups, currentNetwork} = useDbAccountListAssets()
-  const ticker = currentNetwork?.ticker
   const onAddAccount = () => {
     history.push('?open=account-list')
     history.push(SELECT_CREATE_TYPE)
   }
+  const {data: accountGroups} = useAccountList()
+  const {
+    data: {
+      network: {eid: currentNetworkId},
+    },
+  } = useCurrentAddress()
 
-  return accountGroups && currentNetwork ? (
+  return Object.values(accountGroups).length ? (
     <SlideCard
       id="account-list"
       cardTitle={
@@ -134,17 +143,16 @@ function AccountList({onClose, open, accountsAnimate = true}) {
       needAnimation={accountsAnimate}
       cardContent={
         <div>
-          {Object.values(accountGroups || {}).map(
-            ({nickname, account, vault}, index) => (
+          {Object.values(accountGroups).map(
+            ({nickname, account, vault, eid}) => (
               <AccountItem
-                key={index}
+                key={eid}
                 accounts={Object.values(account).filter(({hidden}) => !hidden)}
                 nickname={nickname}
+                currentNetworkId={currentNetworkId}
                 onClose={onClose}
                 authorizedAccountIdIconObj={authorizedAccountIdIconObj}
-                tokeName={ticker?.symbol}
                 groupType={vault?.type}
-                decimals={ticker?.ticker}
               />
             ),
           )}

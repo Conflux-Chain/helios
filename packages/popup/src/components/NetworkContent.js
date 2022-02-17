@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types'
+import {useSWRConfig} from 'swr'
 import Message from '@fluent-wallet/component-message'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {RPC_METHODS} from '../constants'
-import {request} from '../utils'
+import {request, updateDbAccountList} from '../utils'
 import {useCfxNetwork, useCurrentAddress} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 import {CustomTag} from './'
@@ -40,8 +41,8 @@ function NetworkItem({
     data: {
       network: {eid},
     },
-    mutate,
   } = useCurrentAddress()
+  const {mutate} = useSWRConfig()
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
     itemWrapperPaddingStyleObj[networkItemSize] || ''
@@ -65,16 +66,19 @@ function NetworkItem({
       setLoading(true)
       return request(WALLET_SET_CURRENT_NETWORK, [networkId])
         .then(() => {
-          setLoading(false)
-          mutate().then(() => {
+          updateDbAccountList(mutate, 'useCurrentAddress', [
+            'queryAllAccount',
+            networkId,
+          ]).then(() => {
             onClose && onClose()
+            onClickNetworkItem?.({...netData})
+            setLoading(false)
+            Message.warning({
+              content: t('addressHasBeenChanged'),
+              top: '110px',
+              duration: 1,
+            })
           })
-          Message.warning({
-            content: t('addressHasBeenChanged'),
-            top: '110px',
-            duration: 1,
-          })
-          onClickNetworkItem?.({...netData})
         })
         .catch(error => {
           // TODO: need deal with error condition

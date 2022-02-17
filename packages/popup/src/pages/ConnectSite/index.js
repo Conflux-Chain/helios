@@ -2,6 +2,7 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useState, useEffect} from 'react'
+import {isUndefined} from '@fluent-wallet/checks'
 import Input from '@fluent-wallet/component-input'
 import Checkbox from '@fluent-wallet/component-checkbox'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
@@ -18,7 +19,7 @@ import {
   CompWithLabel,
   Avatar,
 } from '../../components'
-import {useDbAccountListAssets} from '../../hooks/useApi'
+import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
 import {updateDbAccountList} from '../../utils'
 
 function ConnectSitesList({
@@ -142,6 +143,12 @@ function ConnectSite() {
 
   const {accountGroups, currentNetwork, currentAddress} =
     useDbAccountListAssets()
+  const {
+    data: {
+      network: {eid: currentNetworkId},
+    },
+  } = useCurrentAddress()
+
   const accountGroupData = Object.values(accountGroups || {})
   const accountData = accountGroupData.reduce((acc, cur) => {
     return {...acc, ...cur.account}
@@ -186,7 +193,7 @@ function ConnectSite() {
   }, [checkboxStatusObj])
 
   const onClickNetworkItem = ({networkName, icon}) => {
-    updateDbAccountList(mutate, 'queryAllAccount')
+    updateDbAccountList(mutate, ['queryAllAccount', currentNetworkId])
     setSearchContent(networkName)
     setSearchIcon(icon || '')
     setNetworkShow(false)
@@ -206,7 +213,10 @@ function ConnectSite() {
     })
   }
 
-  return accountGroups && currentNetwork && currentAddress ? (
+  return accountGroups &&
+    currentNetwork &&
+    currentAddress &&
+    !isUndefined(currentNetworkId) ? (
     <div
       id="connectSiteContainer"
       className="flex flex-col h-full w-full justify-between bg-blue-circles bg-no-repeat pb-4"
