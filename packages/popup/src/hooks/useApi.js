@@ -611,6 +611,8 @@ export const useAccountList = () => {
       networkId,
       g: {
         nativeBalance: 1,
+        value: 1,
+        hex: 1,
         _account: {
           nickname: 1,
           eid: 1,
