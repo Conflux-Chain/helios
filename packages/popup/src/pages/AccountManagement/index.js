@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import {useSWRConfig} from 'swr'
-import {isArray} from '@fluent-wallet/checks'
+import {isArray, isUndefined} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import useGlobalStore from '../../stores'
 import {useHistory} from 'react-router-dom'
@@ -26,6 +26,7 @@ function AccountManagement() {
   const {data} = useCurrentAddress()
   const networkName = data?.network?.name ?? ''
   const currentAccountId = data?.account?.eid
+  const currentNetworkId = data?.network?.eid
 
   const {accountGroups} = useDbAccountListAssets(
     {
@@ -58,11 +59,10 @@ function AccountManagement() {
       return Promise.resolve()
     }
     // delete account
-    return updateDbAccountList(
-      mutate,
-      'accountManagementQueryAccount',
+    return updateDbAccountList(mutate, 'accountManagementQueryAccount', [
       'queryAllAccount',
-    ).then(() => {
+      currentNetworkId,
+    ]).then(() => {
       clearPasswordInfo()
     })
   }
@@ -83,7 +83,7 @@ function AccountManagement() {
     setConfirmParams({...params})
   }
 
-  return accountGroups ? (
+  return accountGroups && !isUndefined(currentNetworkId) ? (
     <div
       id="account-management"
       className="bg-bg pb-8 h-full w-full flex flex-col"
@@ -113,6 +113,7 @@ function AccountManagement() {
               onOpenConfirmPassword={onOpenConfirmPassword}
               showDelete={showDelete}
               currentAccountId={currentAccountId}
+              currentNetworkId={currentNetworkId}
             />
           ),
         )}

@@ -19,6 +19,7 @@ function GroupItem({
   nickname,
   account,
   currentAccountId,
+  currentNetworkId,
   showDelete = false,
   groupType = '',
   onOpenConfirmPassword,
@@ -32,11 +33,10 @@ function GroupItem({
     return new Promise((resolve, reject) => {
       request(WALLET_UPDATE_ACCOUNT_GROUP, params)
         .then(() => {
-          updateDbAccountList(
-            mutate,
-            'accountManagementQueryAccount',
+          updateDbAccountList(mutate, 'accountManagementQueryAccount', [
             'queryAllAccount',
-          ).then(resolve)
+            currentNetworkId,
+          ]).then(resolve)
         })
         .catch(e => {
           Message.error({
@@ -99,6 +99,7 @@ function GroupItem({
           hidden={hidden}
           onOpenConfirmPassword={onOpenConfirmPassword}
           currentAccountId={currentAccountId}
+          currentNetworkId={currentNetworkId}
         />
       ))}
       {groupType === 'hd' && (
@@ -133,6 +134,7 @@ GroupItem.propTypes = {
   nickname: PropTypes.string,
   accountGroupId: PropTypes.number,
   currentAccountId: PropTypes.number,
+  currentNetworkId: PropTypes.number,
   account: PropTypes.array,
   groupType: PropTypes.string,
   showDelete: PropTypes.bool,

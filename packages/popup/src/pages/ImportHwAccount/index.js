@@ -37,13 +37,13 @@ const {
 } = RPC_METHODS
 const cfx = new Conflux()
 
-function ImportingResults({importStatus}) {
+function ImportingResults({importStatus, currentNetworkId}) {
   const {t} = useTranslation()
   const {mutate} = useSWRConfig()
 
   const onClickDone = () => {
     mutate([WALLETDB_REFETCH_BALANCE])
-    updateDbAccountList(mutate, 'queryAllAccount')
+    updateDbAccountList(mutate, ['queryAllAccount', currentNetworkId])
     window.open(' ', '_self')
     window.close()
   }
@@ -88,6 +88,7 @@ function ImportingResults({importStatus}) {
 }
 ImportingResults.propTypes = {
   importStatus: PropTypes.string.isRequired,
+  currentNetworkId: PropTypes.number.isRequired,
 }
 
 function ImportHwAccount() {
@@ -234,11 +235,16 @@ function ImportHwAccount() {
       })
   }
 
-  if (!deviceInfo?.name) {
+  if (!deviceInfo?.name || isUndefined(networkId)) {
     return null
   }
   if (importStatus) {
-    return <ImportingResults importStatus={importStatus} />
+    return (
+      <ImportingResults
+        importStatus={importStatus}
+        currentNetworkId={networkId}
+      />
+    )
   }
   return (
     <div

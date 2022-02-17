@@ -29,6 +29,7 @@ function AccountItem({
   hidden = false,
   onOpenConfirmPassword,
   currentAccountId,
+  currentNetworkId,
 }) {
   const {t} = useTranslation()
   const {mutate} = useSWRConfig()
@@ -39,11 +40,10 @@ function AccountItem({
     return new Promise((resolve, reject) => {
       request(WALLET_UPDATE_ACCOUNT, params)
         .then(() => {
-          updateDbAccountList(
-            mutate,
-            'accountManagementQueryAccount',
+          updateDbAccountList(mutate, 'accountManagementQueryAccount', [
             'queryAllAccount',
-          ).then(resolve)
+            currentNetworkId,
+          ]).then(resolve)
         })
         .catch(e => {
           Message.error({
@@ -158,6 +158,7 @@ AccountItem.propTypes = {
   accountNickname: PropTypes.string,
   onOpenConfirmPassword: PropTypes.func,
   currentAccountId: PropTypes.number,
+  currentNetworkId: PropTypes.number,
 }
 
 export default AccountItem
