@@ -7,7 +7,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@fluent-wallet/estimate-tx": "^0.0.7",
+    "@fluent-wallet/estimate-tx": "^0.1.0",
     "@fluent-wallet/shorten-address": "^0.1.2",
     "@formily/reactive": "^2.0.8",
     "@react-spring/web": "^9.4.1",
