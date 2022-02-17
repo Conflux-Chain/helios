@@ -25,7 +25,7 @@ describe('@fluent-wallet/wallet_get-next-nonce', function () {
       await main(input)
       expect(input.rpcs.eth_getTransactionCount).toHaveBeenCalledWith([
         '0x208b86e65753bba8f557ac2a8a79ba6536ab05e2',
-        'pending',
+        'latest',
       ])
       expect(input.rpcs.cfx_getNextNonce).toHaveBeenCalledTimes(1)
     })

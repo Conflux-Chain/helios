@@ -106,12 +106,15 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
   // ## initialize db
   const {request, db} = await initBG()
   updateUserId(db.getAddress()?.[0]?.hex)
-  request({method: 'wallet_handleUnfinishedTxs', _rpcStack: ['frombg']})
-  request({method: 'wallet_enrichTxs', _rpcStack: ['frombg']})
-  setInterval(
-    () => request({method: 'wallet_cleanupTx', _rpcStack: ['frombg']}),
-    1000 * 60 * 60,
-  )
+
+  if (!IS_TEST_MODE) {
+    request({method: 'wallet_handleUnfinishedTxs', _rpcStack: ['frombg']})
+    request({method: 'wallet_enrichTxs', _rpcStack: ['frombg']})
+    setInterval(
+      () => request({method: 'wallet_cleanupTx', _rpcStack: ['frombg']}),
+      1000 * 60 * 60,
+    )
+  }
 
   // ## Dev/Test
   if (!IS_TEST_MODE) {
