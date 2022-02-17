@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletRequestAccounts from '@fluent-wallet/wallet_request-accounts'
 import * as walletAccounts from '@fluent-wallet/wallet_accounts'
 import * as walletChainId from '@fluent-wallet/wallet_chain-id'
 import * as walletGetNextUsableNonce from '@fluent-wallet/wallet_get-next-usable-nonce'
@@ -219,6 +220,7 @@ export const rpcEngineOpts = {
     walletGetCurrentNetwork,
     walletGetCurrentAccount,
 
+    walletRequestAccounts,
     walletAccounts,
     walletGetNextUsableNonce,
     walletGetNextNonce,

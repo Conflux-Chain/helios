@@ -1203,8 +1203,10 @@
                               (assoc :token (and token (e :token token))))))
                       txs)})))
 
-(defonce default-preferences {:hideTestNetwork false
-                              :useModernProviderAPI false})
+(defonce default-preferences {:hideTestNetwork      false
+                              :useModernProviderAPI false
+                              :overrideWindowDotConflux  true
+                              :overrideWindowDotEthereum false})
 
 (defn get-preferences []
   (let [preferences (or (:preferences

@@ -35,12 +35,21 @@ export const main = ({
     icon && {eid: 'newsite', site: {icon}},
   ])
 
-  wallet_getPreferences().then(p =>
-    _post({
-      event: '__FLUENT_USE_MODERN_PROVIDER_API__',
-      params: p?.useModernProviderAPI,
-    }),
-  )
+  wallet_getPreferences().then(p => {
+    const {
+      useModernProviderAPI,
+      overrideWindowDotConflux,
+      overrideWindowDotEthereum,
+    } = p
+    return _post({
+      event: '__FLUENT_BACKEND_PREFERENCES__',
+      params: {
+        useModernProviderAPI,
+        overrideWindowDotConflux,
+        overrideWindowDotEthereum,
+      },
+    })
+  })
 
   _post({
     event: 'connect',

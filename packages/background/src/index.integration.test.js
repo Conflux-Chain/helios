@@ -132,7 +132,7 @@ describe('integration test', function () {
       })
       test('error call method with incorrect scope', async function () {
         res = await request({
-          method: 'wallet_isLocked',
+          method: 'wallet_getAccountGroup',
           _inpage: true,
           _origin: 'foo.site',
         })

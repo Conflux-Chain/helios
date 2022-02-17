@@ -9,11 +9,11 @@ describe('inpage', function () {
         eventName = e
         listener = l
       })
-      expect(window.cfx).toBe(undefined)
+      expect(window.conflux).toBe(undefined)
       await import('./index.js')
       expect(typeof listener).toBe('function')
       expect(eventName).toBe('message')
-      expect(window.cfx).toBeDefined()
+      expect(window.conflux).toBeDefined()
     })
   })
 })

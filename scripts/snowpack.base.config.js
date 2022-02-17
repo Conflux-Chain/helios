@@ -40,6 +40,7 @@ getWorkspacePackages({
 module.exports = {
   workspaceRoot: path.resolve(__dirname, '../'),
   exclude: [
+    '*.test.js',
     '**/node_modules/**',
     '**/*.cjs',
     '**/*.cljs',

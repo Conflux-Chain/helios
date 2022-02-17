@@ -108,6 +108,8 @@ export const main = ({
   network,
 }) => {
   tx = getTxById(tx)
+  // this only happends in integration test
+  if (!tx) return
   address = getAddressById(address)
   const cacheTime = network.cacheTime || 1000
   const {status, hash, raw} = tx
