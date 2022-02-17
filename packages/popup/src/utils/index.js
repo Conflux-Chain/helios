@@ -162,15 +162,21 @@ export const formatAccountGroupData = d => {
       return a.account.accountGroup.eid - b.account.accountGroup.eid
     })
     let ret = {}
-    d.forEach(({account: {accountGroup, ...accountData}, ...rest}) => {
-      if (!ret[accountGroup.eid]) {
-        ret[accountGroup.eid] = {...accountGroup}
-      }
-      if (!ret[accountGroup.eid]?.account) {
-        ret[accountGroup.eid].account = {}
-      }
-      ret[accountGroup.eid].account[accountData.eid] = {...accountData, ...rest}
-    })
+    d.forEach(
+      ({account: {accountGroup, ...accountData}, hex, value, ...rest}) => {
+        if (!ret[accountGroup.eid]) {
+          ret[accountGroup.eid] = {...accountGroup}
+        }
+        if (!ret[accountGroup.eid]?.account) {
+          ret[accountGroup.eid].account = {}
+        }
+        ret[accountGroup.eid].account[accountData.eid] = {
+          currentAddress: {hex, value},
+          ...accountData,
+          ...rest,
+        }
+      },
+    )
     return ret
   }
   return d
