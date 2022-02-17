@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill'
 // eslint-disable-next-line no-unused-vars
 import {stream, trace} from '@thi.ng/rstream'
+
 import {capture as sentryCaptureError} from '@fluent-wallet/sentry'
 
 function sentryCapturePostMessageeError(err) {

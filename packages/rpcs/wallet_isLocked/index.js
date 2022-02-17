@@ -2,7 +2,7 @@ export const NAME = 'wallet_isLocked'
 
 export const permissions = {
   db: ['getLocked'],
-  external: ['popup'],
+  external: ['popup', 'inpage'],
   locked: true,
 }
 

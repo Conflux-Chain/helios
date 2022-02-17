@@ -6,6 +6,25 @@ let INPAGE_INJECTED = false
 
 injectInpage({{{content}}})
 
+function _retry() {
+    let retryTimeout = 100
+    if (CONNECT_RETRY_COUNT >= 10) {
+      retryTimeout = 1000
+    } else if (CONNECT_RETRY_COUNT >= 60) {
+      retryTimeout = 30000
+    } else if (CONNECT_RETRY_COUNT >= 120) {
+      console.error(
+        `[Fluent] Failed to connect background with 120 retry. Give up`,
+      )
+      return
+    }
+
+    console.warn(
+      `[Fluent] Failed to connect background, retry: ${++CONNECT_RETRY_COUNT}`,
+    )
+    setTimeout(setup, retryTimeout)
+}
+
 function injectInpage(content) {
   try {
     const container = document.head || document.documentElement
@@ -48,7 +67,19 @@ function setup() {
     closeOut: false,
     cache: false,
   })
-  const port = browser.runtime.connect({name: 'content-script'})
+
+  let port
+  try {
+    port = browser.runtime.connect({name: 'content-script'})
+  } catch (err) {
+    // reload dapp page when ext bg is reloaded
+    // this only happends in development env
+    if (err.message.match(/extension.*context.*invalid/i))
+      setTimeout(() => window.location.reload(), 500)
+    else
+      _retry()
+  }
+  if (!port) return
   const sub = {next: port.postMessage.bind(port)}
 
   s.subscribe(sub)
@@ -73,6 +104,7 @@ function setup() {
 
   window.addEventListener('message', listenToInpageMessage, false)
 
+
   port.onDisconnect.addListener(() => {
     window.postMessage({
       msg: {
@@ -87,23 +119,8 @@ function setup() {
     window.removeEventListener('message', listenToInpageMessage)
     s.unsubscribe(sub)
     s = null
-    let retryTimeout = 100
-    if (CONNECT_RETRY_COUNT >= 10) {
-      retryTimeout = 1000
-    } else if (CONNECT_RETRY_COUNT >= 60) {
-      retryTimeout = 30000
-    } else if (CONNECT_RETRY_COUNT >= 120) {
-      console.error(
-        `[Fluent] Failed to connect background with 120 retry. Give up`,
-      )
-      return
-    }
-
-    console.warn(
-      `[Fluent] Failed to connect background, retry: ${++CONNECT_RETRY_COUNT}`,
-    )
-    setTimeout(setup, retryTimeout)
-})
+    _retry()
+  })
 
   port.onMessage.addListener(e => {
     window.postMessage(

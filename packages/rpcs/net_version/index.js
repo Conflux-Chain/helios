@@ -8,6 +8,7 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup', 'inpage'],
+  methods: ['cfx_netVersion'],
   locked: true,
 }
 
@@ -17,6 +18,7 @@ export const cache = {
   key: () => NAME,
 }
 
-export const main = async ({f, params}) => {
-  return await f(params)
+export const main = ({f, params, rpcs: {cfx_netVersion}, network: {type}}) => {
+  if (type === 'cfx') return cfx_netVersion()
+  return f(params)
 }
