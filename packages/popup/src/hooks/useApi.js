@@ -1,4 +1,4 @@
-import {isNumber, isString, isArray} from '@fluent-wallet/checks'
+import {isNumber, isString, isArray, isUndefined} from '@fluent-wallet/checks'
 import {useMemo} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 
@@ -606,7 +606,9 @@ export const useAccountList = () => {
   } = useCurrentAddress()
   useDbRefetchBalance()
   return useRPC(
-    networkId ? [QUERY_ADDRESS, 'queryAllAccount', networkId] : null,
+    isUndefined(networkId)
+      ? null
+      : [QUERY_ADDRESS, 'queryAllAccount', networkId],
     {
       networkId,
       g: {
