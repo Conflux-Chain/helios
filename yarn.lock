@@ -6006,6 +6006,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_accounts@workspace:*, @fluent-wallet/wallet_accounts@workspace:packages/rpcs/wallet_accounts":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_accounts@workspace:packages/rpcs/wallet_accounts"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_add-conflux-chain@workspace:packages/rpcs/wallet_addConfluxChain":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_add-conflux-chain@workspace:packages/rpcs/wallet_addConfluxChain"
@@ -6062,6 +6070,14 @@ __metadata:
     "@fluent-wallet/spec": "workspace:packages/spec"
     "@fluent-wallet/utils": "workspace:packages/utils"
     browser-passworder: ^2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_chain-id@workspace:*, @fluent-wallet/wallet_chain-id@workspace:packages/rpcs/wallet_chainId":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_chain-id@workspace:packages/rpcs/wallet_chainId"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -6355,6 +6371,14 @@ __metadata:
   dependencies:
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network"
     "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-next-usable-nonce@workspace:*, @fluent-wallet/wallet_get-next-usable-nonce@workspace:packages/rpcs/wallet_getNextUsableNonce":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-next-usable-nonce@workspace:packages/rpcs/wallet_getNextUsableNonce"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -21812,10 +21836,12 @@ fsevents@^1.2.7:
     "@fluent-wallet/test-helpers": "workspace:packages/test-helpers"
     "@fluent-wallet/transducers": "workspace:packages/transducers"
     "@fluent-wallet/txpool_next-nonce": "workspace:*"
+    "@fluent-wallet/wallet_accounts": "workspace:*"
     "@fluent-wallet/wallet_add-hd-path": "workspace:packages/rpcs/wallet_addHdPath"
     "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
     "@fluent-wallet/wallet_add-pending-user-auth-request": "workspace:packages/rpcs/wallet_addPendingUserAuthRequest"
     "@fluent-wallet/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault"
+    "@fluent-wallet/wallet_chain-id": "workspace:*"
     "@fluent-wallet/wallet_cleanup-tx": "workspace:*"
     "@fluent-wallet/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount"
     "@fluent-wallet/wallet_create-address": "workspace:packages/rpcs/wallet_createAddress"
@@ -21847,6 +21873,7 @@ fsevents@^1.2.7:
     "@fluent-wallet/wallet_get-import-hardware-wallet-info": "workspace:*"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"
     "@fluent-wallet/wallet_get-next-nonce": "workspace:packages/rpcs/wallet_getNextNonce"
+    "@fluent-wallet/wallet_get-next-usable-nonce": "workspace:*"
     "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest"
     "@fluent-wallet/wallet_get-permissions": "workspace:packages/rpcs/wallet_getPermissions"
     "@fluent-wallet/wallet_get-preferences": "workspace:*"

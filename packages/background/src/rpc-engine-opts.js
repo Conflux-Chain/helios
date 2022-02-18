@@ -3,6 +3,9 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletAccounts from '@fluent-wallet/wallet_accounts'
+import * as walletChainId from '@fluent-wallet/wallet_chain-id'
+import * as walletGetNextUsableNonce from '@fluent-wallet/wallet_get-next-usable-nonce'
 import * as walletEnrichEthereumTx from '@fluent-wallet/wallet_enrich-ethereum-tx'
 import * as walletSendTransaction from '@fluent-wallet/wallet_send-transaction'
 import * as walletHandleUnfinishedETHTx from '@fluent-wallet/wallet_handle-unfinished-eth-tx'
@@ -216,9 +219,12 @@ export const rpcEngineOpts = {
     walletGetCurrentNetwork,
     walletGetCurrentAccount,
 
+    walletAccounts,
+    walletGetNextUsableNonce,
     walletGetNextNonce,
     walletGetBalance,
     walletRefreshBalance,
+    walletChainId,
 
     cfxRequestAccounts,
     ethRequestAccounts,
