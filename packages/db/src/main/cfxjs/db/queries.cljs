@@ -548,7 +548,7 @@
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
 (defn get-address [{:keys [addressId networkId hex value accountId groupId
-                           index tokenId appId selected fuzzy g]}]
+                           index tokenId appId selected fuzzy groupTypes g]}]
   (let [g            (and g {:address g})
         post-process (if (seq g) identity #(get % :db/id))
         addr         (if (string? value) [value] value)
@@ -599,7 +599,17 @@
                              groupId
                              (-> (update :args conj (if (vector? groupId) groupId [groupId]))
                                  (update :in conj '[?gid ...])
-                                 (update :where conj '[?gid :accountGroup/account ?acc] '[?acc :account/address ?addr]))
+                                 (update :where conj
+                                         '[?acc :account/address ?addr]
+                                         '[?gid :accountGroup/account ?acc]))
+                             (and (not groupId) (seq groupTypes))
+                             (-> (update :args conj groupTypes)
+                                 (update :args conj '[?groupTypes ...])
+                                 (update :where conj
+                                         '[?acc :account/address ?addr]
+                                         '[?gid :accountGroup/account ?acc]
+                                         '[?gid :accountGroup/vault ?vault]
+                                         '[?vault :vault/type ?groupTypes]))
                              fuzzy
                              (-> (update :args conj fuzzy)
                                  (update :in conj '?fuzzy)
