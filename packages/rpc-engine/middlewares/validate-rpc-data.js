@@ -99,7 +99,9 @@ function validateNetworkSupport({req}) {
   const {method, network} = req
 
   const bothSupport =
-    method.startsWith('wallet') || method.startsWith('personal')
+    method.startsWith('wallet') ||
+    method.startsWith('personal') ||
+    method === 'eth_signTypedData_v4'
   if (bothSupport) return
 
   const cfxRpc = method.startsWith('cfx') || method.startsWith('txpool')
