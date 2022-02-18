@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
 import {useSWRConfig} from 'swr'
-import {isNumber} from '@fluent-wallet/checks'
 import Message from '@fluent-wallet/component-message'
 import {useTranslation} from 'react-i18next'
 import {KeyOutlined} from '@fluent-wallet/component-icons'
@@ -27,8 +26,8 @@ function AccountItem({
   accountNickname = '',
   showDelete = false,
   hidden = false,
+  selected = false,
   onOpenConfirmPassword,
-  currentAccountId,
   currentNetworkId,
 }) {
   const {t} = useTranslation()
@@ -67,34 +66,30 @@ function AccountItem({
     if (hidingAccountStatus) {
       return
     }
-    if (isNumber(currentAccountId)) {
-      if (accountId === currentAccountId) {
-        return Message.warning({
-          content: t('accountHideWarning'),
-          top: '10px',
-          duration: 1,
-        })
-      }
-      setHidingAccountStatus(true)
-      updateAccount({accountId, hidden}).finally(() => {
-        setHidingAccountStatus(false)
+    if (selected) {
+      return Message.warning({
+        content: t('accountHideWarning'),
+        top: '10px',
+        duration: 1,
       })
     }
+    setHidingAccountStatus(true)
+    updateAccount({accountId, hidden}).finally(() => {
+      setHidingAccountStatus(false)
+    })
   }
 
   const onDeletePkAccountGroup = () => {
-    if (isNumber(currentAccountId)) {
-      if (accountId === currentAccountId) {
-        return Message.warning({
-          content: t('groupDeleteWarning'),
-          top: '10px',
-          duration: 1,
-        })
-      }
-      onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
-        accountGroupId,
+    if (selected) {
+      return Message.warning({
+        content: t('groupDeleteWarning'),
+        top: '10px',
+        duration: 1,
       })
     }
+    onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
+      accountGroupId,
+    })
   }
 
   return (
@@ -154,10 +149,10 @@ AccountItem.propTypes = {
   accountId: PropTypes.number,
   accountGroupId: PropTypes.number,
   showDelete: PropTypes.bool,
+  selected: PropTypes.bool,
   hidden: PropTypes.bool,
   accountNickname: PropTypes.string,
   onOpenConfirmPassword: PropTypes.func,
-  currentAccountId: PropTypes.number,
   currentNetworkId: PropTypes.number,
 }
 

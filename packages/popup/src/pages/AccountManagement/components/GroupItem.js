@@ -2,7 +2,6 @@ import PropTypes from 'prop-types'
 import {useState} from 'react'
 import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
-import {isNumber} from '@fluent-wallet/checks'
 import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS} from '../../../constants'
 import {AccountItem} from './'
@@ -18,7 +17,6 @@ const {
 function GroupItem({
   nickname,
   account,
-  currentAccountId,
   currentNetworkId,
   showDelete = false,
   groupType = '',
@@ -53,18 +51,16 @@ function GroupItem({
   }
 
   const onDeleteAccountGroup = () => {
-    if (isNumber(currentAccountId)) {
-      if (account.find(({eid}) => eid === currentAccountId)) {
-        return Message.warning({
-          content: t('groupDeleteWarning'),
-          top: '10px',
-          duration: 1,
-        })
-      }
-      onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
-        accountGroupId,
+    if (account.find(({selected}) => !!selected)) {
+      return Message.warning({
+        content: t('groupDeleteWarning'),
+        top: '10px',
+        duration: 1,
       })
     }
+    onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
+      accountGroupId,
+    })
   }
   const onTextFieldBlur = () => {
     return updateAccountGroup.call(this, {
@@ -88,7 +84,7 @@ function GroupItem({
           />
         </div>
       )}
-      {account.map(({nickname, eid, hidden}) => (
+      {account.map(({nickname, eid, hidden, selected}) => (
         <AccountItem
           key={eid}
           accountId={eid}
@@ -97,8 +93,8 @@ function GroupItem({
           groupType={groupType}
           showDelete={showDelete}
           hidden={hidden}
+          selected={selected}
           onOpenConfirmPassword={onOpenConfirmPassword}
-          currentAccountId={currentAccountId}
           currentNetworkId={currentNetworkId}
         />
       ))}
@@ -133,7 +129,6 @@ function GroupItem({
 GroupItem.propTypes = {
   nickname: PropTypes.string,
   accountGroupId: PropTypes.number,
-  currentAccountId: PropTypes.number,
   currentNetworkId: PropTypes.number,
   account: PropTypes.array,
   groupType: PropTypes.string,

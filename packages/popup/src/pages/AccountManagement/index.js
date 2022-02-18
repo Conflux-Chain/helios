@@ -6,7 +6,7 @@ import useGlobalStore from '../../stores'
 import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../constants'
 import {TitleNav, ConfirmPassword} from '../../components'
-import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
+import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
 import {updateDbAccountList} from '../../utils'
 import {GroupItem} from './components'
 const {EXPORT_SEED, EXPORT_PRIVATEKEY, SELECT_CREATE_TYPE} = ROUTES
@@ -25,17 +25,18 @@ function AccountManagement() {
 
   const {data} = useCurrentAddress()
   const networkName = data?.network?.name ?? ''
-  const currentAccountId = data?.account?.eid
   const currentNetworkId = data?.network?.eid
+  // TODO: 过滤一下hw账户。
+  const {data: accountGroups} = useAccountList()
 
-  const {accountGroups} = useDbAccountListAssets(
-    {
-      type: 'all',
-      accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
-    },
-    'accountManagementQueryAccount',
-  )
-  const showDelete = !!accountGroups && Object.keys(accountGroups).length > 1
+  // const {accountGroups} = useDbAccountListAssets(
+  //   {
+  //     type: 'all',
+  //     accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+  //   },
+  //   'accountManagementQueryAccount',
+  // )
+  const showDelete = Object.keys(accountGroups).length > 1
 
   const onConfirmCallback = res => {
     // export account group
@@ -112,7 +113,6 @@ function AccountManagement() {
               groupType={vault?.type}
               onOpenConfirmPassword={onOpenConfirmPassword}
               showDelete={showDelete}
-              currentAccountId={currentAccountId}
               currentNetworkId={currentNetworkId}
             />
           ),
