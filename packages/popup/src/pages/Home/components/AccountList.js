@@ -1,18 +1,25 @@
 import PropTypes from 'prop-types'
 import {useSWRConfig} from 'swr'
-import {useTranslation} from 'react-i18next'
+import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
-import Button from '@fluent-wallet/component-button'
+import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
-import {CheckCircleFilled} from '@fluent-wallet/component-icons'
+import {CheckCircleFilled, PlusOutlined} from '@fluent-wallet/component-icons'
 import {request, updateDbAccountList} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
-import {SlideCard, DisplayBalance, Avatar} from '../../../components'
-import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
-import {ROUTES, RPC_METHODS} from '../../../constants'
+import {
+  SlideCard,
+  DisplayBalance,
+  Avatar,
+  NoResult,
+  WrapIcon,
+  StretchInput,
+} from '../../../components'
+import {useDbAccountListAssets, useCurrentAddress} from '../../../hooks/useApi'
+import {RPC_METHODS, ROUTES} from '../../../constants'
 
-const {SELECT_CREATE_TYPE} = ROUTES
 const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
+const {SELECT_CREATE_TYPE} = ROUTES
 
 function AccountItem({
   nickname,
@@ -31,7 +38,7 @@ function AccountItem({
           'queryAllAccount',
           currentNetworkId,
         ]).then(() => {
-          onClose && onClose()
+          onClose?.()
           Message.warning({
             content: t('addressHasBeenChanged'),
             top: '110px',
@@ -51,9 +58,14 @@ function AccountItem({
 
   return (
     !!accounts.length && (
-      <div className="bg-gray-0 rounded mt-3">
+      <div className="bg-gray-0 rounded mt-4">
         {groupType === 'pk' ? null : (
-          <p className="text-gray-40 ml-4 mb-1 text-xs pt-3">{nickname}</p>
+          <div className="flex items-center ml-3 pt-2.5">
+            <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
+              <img src="/images/seed-group-icon.svg" alt="group-icon" />
+            </WrapIcon>
+            <p className="text-gray-40 text-xs">{nickname}</p>
+          </div>
         )}
         {accounts.map(({nickname, eid, selected, nativeBalance, network}) => (
           <div
@@ -113,60 +125,98 @@ AccountItem.propTypes = {
   groupType: PropTypes.string,
 }
 
-function AccountList({onClose, open, accountsAnimate = true}) {
+function AccountCardContent({
+  currentNetworkId,
+  searchedAccountGroup,
+  accountGroupData,
+  onClose,
+}) {
   const {t} = useTranslation()
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
+
+  return (
+    <div>
+      {searchedAccountGroup && accountGroupData.length === 0 ? (
+        <NoResult content={t('noResult')} imgClassName="mt-[105px]" />
+      ) : (
+        accountGroupData.map(({nickname, account, vault, eid}) => (
+          <AccountItem
+            key={eid}
+            accounts={Object.values(account).filter(({hidden}) => !hidden)}
+            nickname={nickname}
+            currentNetworkId={currentNetworkId}
+            onClose={onClose}
+            authorizedAccountIdIconObj={authorizedAccountIdIconObj}
+            groupType={vault?.type}
+          />
+        ))
+      )}
+    </div>
+  )
+}
+AccountCardContent.propTypes = {
+  currentNetworkId: PropTypes.number.isRequired,
+  searchedAccountGroup: PropTypes.object,
+  accountGroupData: PropTypes.array,
+  onClose: PropTypes.func,
+}
+
+function AccountList({onClose, open, accountsAnimate = true}) {
+  const {i18n, t} = useTranslation()
   const history = useHistory()
-  const onAddAccount = () => {
-    history.push('?open=account-list')
-    history.push(SELECT_CREATE_TYPE)
-  }
-  const {data: accountGroups} = useAccountList()
   const {
     data: {
       network: {eid: currentNetworkId},
     },
   } = useCurrentAddress()
+  const {data: allAccountGroups} = useDbAccountListAssets(currentNetworkId)
+  const [searchedAccountGroup, setSearchedAccountGroup] = useState(null)
 
-  return Object.values(accountGroups).length ? (
+  const onAddAccount = () => {
+    history.push('?open=account-list')
+    history.push(SELECT_CREATE_TYPE)
+  }
+
+  const accountGroupData = searchedAccountGroup
+    ? Object.values(searchedAccountGroup)
+    : Object.values(allAccountGroups)
+
+  return Object.values(allAccountGroups).length ? (
     <SlideCard
       id="account-list"
       cardTitle={
-        <div className="ml-3 pb-1">
-          <p className="text-base text-gray-80 font-medium">
-            {t('myAccounts')}
-          </p>
-        </div>
+        <StretchInput
+          currentNetworkId={currentNetworkId}
+          setSearchedAccountGroup={setSearchedAccountGroup}
+          expandWidth="w-4"
+          shrinkWidth={i18n.language === 'en' ? 'w-[137px]' : 'w-[170px]'}
+          wrapperClassName="ml-2.5"
+          rightNode={
+            <WrapIcon
+              size="w-5 h-5"
+              onClick={onAddAccount}
+              id="add-account-btn"
+            >
+              <PlusOutlined className="w-3 h-3 text-primary" />
+            </WrapIcon>
+          }
+          leftNode={
+            <div className="text-base text-gray-80 font-medium">
+              {t('myAccounts')}
+            </div>
+          }
+        />
       }
       onClose={onClose}
       open={open}
       needAnimation={accountsAnimate}
       cardContent={
-        <div>
-          {Object.values(accountGroups).map(
-            ({nickname, account, vault, eid}) => (
-              <AccountItem
-                key={eid}
-                accounts={Object.values(account).filter(({hidden}) => !hidden)}
-                nickname={nickname}
-                currentNetworkId={currentNetworkId}
-                onClose={onClose}
-                authorizedAccountIdIconObj={authorizedAccountIdIconObj}
-                groupType={vault?.type}
-              />
-            ),
-          )}
-        </div>
-      }
-      cardFooter={
-        <Button
-          id="addAccountBtn"
-          color="transparent"
-          className="w-full border-dashed border-gray-40 mt-3 text-gray-80 hover:border-primary hover:text-primary"
-          onClick={onAddAccount}
-        >
-          {t('addAccount')}
-        </Button>
+        <AccountCardContent
+          currentNetworkId={currentNetworkId}
+          searchedAccountGroup={searchedAccountGroup}
+          accountGroupData={accountGroupData}
+          onClose={onClose}
+        />
       }
     />
   ) : null

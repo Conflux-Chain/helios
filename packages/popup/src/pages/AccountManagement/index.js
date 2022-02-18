@@ -1,13 +1,19 @@
 import {useState} from 'react'
 import {useSWRConfig} from 'swr'
-import {isArray, isUndefined} from '@fluent-wallet/checks'
+import {isArray} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
+import Message from '@fluent-wallet/component-message'
 import useGlobalStore from '../../stores'
 import {useHistory} from 'react-router-dom'
 import {ROUTES, RPC_METHODS} from '../../constants'
-import {TitleNav, ConfirmPassword} from '../../components'
-import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
-import {updateDbAccountList} from '../../utils'
+import {
+  TitleNav,
+  ConfirmPassword,
+  SearchAccount,
+  NoResult,
+} from '../../components'
+import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
+import {updateDbAccountList, request} from '../../utils'
 import {GroupItem} from './components'
 const {EXPORT_SEED, EXPORT_PRIVATEKEY, SELECT_CREATE_TYPE} = ROUTES
 const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_EXPORT_ACCOUNT, ACCOUNT_GROUP_TYPE} =
@@ -22,21 +28,24 @@ function AccountManagement() {
   const [rpcMethod, setRpcMethod] = useState('')
   const [confirmParams, setConfirmParams] = useState({})
   const {setExportPrivateKey, setExportSeedPhrase} = useGlobalStore()
+  const [searchContent, setSearchContent] = useState('')
+  const [searchedAccountGroup, setSearchedAccountGroup] = useState(null)
+  // to refresh searched data
+  const [refreshDataStatus, setRefreshDataStatus] = useState(false)
 
   const {data} = useCurrentAddress()
   const networkName = data?.network?.name ?? ''
   const currentNetworkId = data?.network?.eid
-  // TODO: 过滤一下hw账户。
-  const {data: accountGroups} = useAccountList()
+  const {data: allAccountGroups} = useDbAccountListAssets(
+    currentNetworkId,
+    'accountManagementQueryAccount',
+    [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+  )
+  const accountGroupData = searchedAccountGroup
+    ? Object.values(searchedAccountGroup)
+    : Object.values(allAccountGroups)
 
-  // const {accountGroups} = useDbAccountListAssets(
-  //   {
-  //     type: 'all',
-  //     accountGroupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
-  //   },
-  //   'accountManagementQueryAccount',
-  // )
-  const showDelete = Object.keys(accountGroups).length > 1
+  const showDelete = Object.keys(allAccountGroups).length > 1
 
   const onConfirmCallback = res => {
     // export account group
@@ -60,10 +69,12 @@ function AccountManagement() {
       return Promise.resolve()
     }
     // delete account
-    return updateDbAccountList(mutate, 'accountManagementQueryAccount', [
-      'queryAllAccount',
-      currentNetworkId,
-    ]).then(() => {
+    setRefreshDataStatus(!refreshDataStatus)
+    return updateDbAccountList(
+      mutate,
+      ['accountManagementQueryAccount', currentNetworkId],
+      ['queryAllAccount', currentNetworkId],
+    ).then(() => {
       clearPasswordInfo()
     })
   }
@@ -84,7 +95,33 @@ function AccountManagement() {
     setConfirmParams({...params})
   }
 
-  return accountGroups && !isUndefined(currentNetworkId) ? (
+  // update data when edit account / group name
+  const updateEditedName = (params, rpcMethod) => {
+    return new Promise((resolve, reject) => {
+      request(rpcMethod, params)
+        .then(() => {
+          setRefreshDataStatus(!refreshDataStatus)
+          updateDbAccountList(
+            mutate,
+            ['accountManagementQueryAccount', currentNetworkId],
+            ['queryAllAccount', currentNetworkId],
+          ).then(resolve)
+        })
+        .catch(e => {
+          Message.error({
+            content:
+              e?.message?.split?.('\n')?.[0] ??
+              e?.message ??
+              t('unCaughtErrMsg'),
+            top: '10px',
+            duration: 1,
+          })
+          reject()
+        })
+    })
+  }
+
+  return Object.values(allAccountGroups).length ? (
     <div
       id="account-management"
       className="bg-bg pb-8 h-full w-full flex flex-col"
@@ -102,20 +139,34 @@ function AccountManagement() {
           </span>
         }
       />
-      <div className="flex-1 overflow-y-auto no-scroll mt-1">
-        {Object.values(accountGroups || {}).map(
-          ({nickname, account, vault, eid}) => (
-            <GroupItem
-              key={eid}
-              accountGroupId={eid}
-              account={Object.values(account)}
-              nickname={nickname}
-              groupType={vault?.type}
-              onOpenConfirmPassword={onOpenConfirmPassword}
-              showDelete={showDelete}
-              currentNetworkId={currentNetworkId}
-            />
-          ),
+      <div className="px-3 mt-1">
+        <SearchAccount
+          currentNetworkId={currentNetworkId}
+          onSearch={setSearchContent}
+          searchContent={searchContent}
+          onSearchCallback={setSearchedAccountGroup}
+          refreshDataStatus={refreshDataStatus}
+        />
+      </div>
+      <div className="flex-1 overflow-y-auto no-scroll mt-0">
+        {searchedAccountGroup && accountGroupData.length === 0 ? (
+          <NoResult content={t('noResult')} imgClassName="mt-[116px]" />
+        ) : (
+          Object.values(accountGroupData).map(
+            ({nickname, account, vault, eid}) => (
+              <GroupItem
+                key={eid}
+                accountGroupId={eid}
+                account={Object.values(account)}
+                nickname={nickname}
+                groupType={vault?.type}
+                onOpenConfirmPassword={onOpenConfirmPassword}
+                showDelete={showDelete}
+                currentNetworkId={currentNetworkId}
+                updateEditedName={updateEditedName}
+              />
+            ),
+          )
         )}
       </div>
 

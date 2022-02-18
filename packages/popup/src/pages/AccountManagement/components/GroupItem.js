@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
-import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS} from '../../../constants'
 import {AccountItem} from './'
-import {TextField} from '../../../components'
-import {request, updateDbAccountList} from '../../../utils'
+import {TextField, WrapIcon} from '../../../components'
 
 const {
   WALLET_EXPORT_ACCOUNT_GROUP,
@@ -22,33 +20,10 @@ function GroupItem({
   groupType = '',
   onOpenConfirmPassword,
   accountGroupId,
+  updateEditedName,
 }) {
   const {t} = useTranslation()
-  const {mutate} = useSWRConfig()
   const [inputNickname, setInputNickname] = useState(nickname)
-
-  const updateAccountGroup = params => {
-    return new Promise((resolve, reject) => {
-      request(WALLET_UPDATE_ACCOUNT_GROUP, params)
-        .then(() => {
-          updateDbAccountList(mutate, 'accountManagementQueryAccount', [
-            'queryAllAccount',
-            currentNetworkId,
-          ]).then(resolve)
-        })
-        .catch(e => {
-          Message.error({
-            content:
-              e?.message?.split?.('\n')?.[0] ??
-              e?.message ??
-              t('unCaughtErrMsg'),
-            top: '10px',
-            duration: 1,
-          })
-          reject()
-        })
-    })
-  }
 
   const onDeleteAccountGroup = () => {
     if (account.find(({selected}) => !!selected)) {
@@ -63,22 +38,28 @@ function GroupItem({
     })
   }
   const onTextFieldBlur = () => {
-    return updateAccountGroup.call(this, {
-      accountGroupId,
-      nickname: inputNickname,
-    })
+    return updateEditedName(
+      {
+        accountGroupId,
+        nickname: inputNickname,
+      },
+      WALLET_UPDATE_ACCOUNT_GROUP,
+    )
   }
 
   return (
     <div className="bg-gray-0 rounded mt-3 mx-3">
       {groupType === 'pk' ? null : (
-        <div className="pt-3">
+        <div className="flex items-center ml-3 pt-2.5 mb-0.5">
+          <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
+            <img src="/images/seed-group-icon.svg" alt="group-icon" />
+          </WrapIcon>
           <TextField
             textValue={nickname}
             inputValue={inputNickname}
             onInputBlur={onTextFieldBlur}
             onInputChange={setInputNickname}
-            className="text-gray-40 ml-4 mb-1"
+            className="text-gray-40 ml-1"
             fontSize="!text-xs"
             height="!h-4"
           />
@@ -96,6 +77,7 @@ function GroupItem({
           selected={selected}
           onOpenConfirmPassword={onOpenConfirmPassword}
           currentNetworkId={currentNetworkId}
+          updateEditedName={updateEditedName}
         />
       ))}
       {groupType === 'hd' && (
@@ -134,6 +116,7 @@ GroupItem.propTypes = {
   groupType: PropTypes.string,
   showDelete: PropTypes.bool,
   onOpenConfirmPassword: PropTypes.func,
+  updateEditedName: PropTypes.func.isRequired,
 }
 
 export default GroupItem

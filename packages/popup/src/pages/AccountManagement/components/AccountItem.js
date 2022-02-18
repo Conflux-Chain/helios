@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
-import {useSWRConfig} from 'swr'
 import Message from '@fluent-wallet/component-message'
 import {useTranslation} from 'react-i18next'
 import {KeyOutlined} from '@fluent-wallet/component-icons'
@@ -11,7 +10,6 @@ import {
   TextField,
 } from '../../../components'
 import {RPC_METHODS} from '../../../constants'
-import {request, updateDbAccountList} from '../../../utils'
 
 const {
   WALLET_EXPORT_ACCOUNT,
@@ -28,38 +26,17 @@ function AccountItem({
   hidden = false,
   selected = false,
   onOpenConfirmPassword,
-  currentNetworkId,
+  updateEditedName,
 }) {
   const {t} = useTranslation()
-  const {mutate} = useSWRConfig()
   const [inputNickname, setInputNickname] = useState(accountNickname)
   const [hidingAccountStatus, setHidingAccountStatus] = useState(false)
 
-  const updateAccount = params => {
-    return new Promise((resolve, reject) => {
-      request(WALLET_UPDATE_ACCOUNT, params)
-        .then(() => {
-          updateDbAccountList(mutate, 'accountManagementQueryAccount', [
-            'queryAllAccount',
-            currentNetworkId,
-          ]).then(resolve)
-        })
-        .catch(e => {
-          Message.error({
-            content:
-              e?.message?.split?.('\n')?.[0] ??
-              e?.message ??
-              t('unCaughtErrMsg'),
-            top: '10px',
-            duration: 1,
-          })
-          reject()
-        })
-    })
-  }
-
   const onTextFieldBlur = () => {
-    return updateAccount.call(this, {accountId, nickname: inputNickname})
+    return updateEditedName(
+      {accountId, nickname: inputNickname},
+      WALLET_UPDATE_ACCOUNT,
+    )
   }
 
   const onSwitchAccount = hidden => {
@@ -74,7 +51,7 @@ function AccountItem({
       })
     }
     setHidingAccountStatus(true)
-    updateAccount({accountId, hidden}).finally(() => {
+    updateEditedName({accountId, hidden}, WALLET_UPDATE_ACCOUNT).finally(() => {
       setHidingAccountStatus(false)
     })
   }
@@ -153,7 +130,7 @@ AccountItem.propTypes = {
   hidden: PropTypes.bool,
   accountNickname: PropTypes.string,
   onOpenConfirmPassword: PropTypes.func,
-  currentNetworkId: PropTypes.number,
+  updateEditedName: PropTypes.func.isRequired,
 }
 
 export default AccountItem
