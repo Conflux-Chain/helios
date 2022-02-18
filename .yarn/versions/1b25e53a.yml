@@ -1,7 +1,0 @@
-releases:
-  "@fluent-wallet/wallet_accounts": patch
-  "@fluent-wallet/wallet_chain-id": patch
-  "@fluent-wallet/wallet_get-next-usable-nonce": patch
-
-declined:
-  - helios-background
