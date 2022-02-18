@@ -54,6 +54,9 @@ const Input = forwardRef(function Input(
     errorMessage = '',
     errorClassName = '',
     suffixWrapperClassName = '',
+    prefixWrapperClassName = '',
+    suffixContainerClassName = '',
+    prefixContainerClassName = '',
     onBlur,
     onSuffixClick,
     elementType = 'input',
@@ -125,9 +128,13 @@ const Input = forwardRef(function Input(
           <div
             aria-hidden="true"
             onClick={() => setFocused(true)}
-            className={`pl-3 ${prefixStyle}`}
+            className={`pl-3 ${prefixStyle} ${prefixContainerClassName}`}
           >
-            <div className={`text-gray-40 ${iconSize}`}>{prefix}</div>
+            <div
+              className={`text-gray-40 ${iconSize} ${prefixWrapperClassName}`}
+            >
+              {prefix}
+            </div>
           </div>
         )}
         {InputElement}
@@ -138,7 +145,7 @@ const Input = forwardRef(function Input(
               setFocused(true)
               onSuffixClick && onSuffixClick()
             }}
-            className={`pr-3 ${suffixStyle}`}
+            className={`pr-3 ${suffixStyle} ${suffixContainerClassName}`}
           >
             <div
               className={`text-gray-40 ${iconSize} ${suffixWrapperClassName}`}
@@ -172,6 +179,9 @@ Input.propTypes = {
   errorMessage: PropTypes.string,
   errorClassName: PropTypes.string,
   suffixWrapperClassName: PropTypes.string,
+  prefixWrapperClassName: PropTypes.string,
+  suffixContainerClassName: PropTypes.string,
+  prefixContainerClassName: PropTypes.string,
   prefix: PropTypes.node,
   suffix: PropTypes.node,
   onSuffixClick: PropTypes.func,

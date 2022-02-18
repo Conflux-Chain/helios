@@ -8,7 +8,7 @@ import Modal from '@fluent-wallet/component-modal'
 import {
   CompWithLabel,
   DisplayBalance,
-  SearchToken,
+  SearchInput,
   TokenList,
   NumberInput,
 } from '../../../components'
@@ -38,7 +38,7 @@ const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const content = (
     <div className="relative flex flex-col flex-1">
       <div className="px-3">
-        <SearchToken value={searchValue} onChange={setSearchValue} />
+        <SearchInput value={searchValue} onChange={setSearchValue} />
       </div>
       <span className="inline-block px-3 mt-3 mb-1 text-gray-40 text-xs">
         {t('tokenList')}

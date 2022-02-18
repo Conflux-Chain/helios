@@ -27,7 +27,6 @@ const {
   ACCOUNT_GROUP_TYPE,
   WALLET_DETECT_ADDRESS_TYPE,
   WALLETDB_REFETCH_BALANCE,
-  WALLETDB_ACCOUNT_LIST_ASSETS,
   WALLET_VALIDATE_20TOKEN,
   WALLETDB_TXLIST,
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
@@ -427,28 +426,6 @@ export const useGroupAccountAuthorizedDapps = () => {
   })
 }
 
-export const useDbAccountListAssets = (
-  params = {
-    type: 'all',
-    accountGroupTypes: [
-      ACCOUNT_GROUP_TYPE.HD,
-      ACCOUNT_GROUP_TYPE.PK,
-      ACCOUNT_GROUP_TYPE.HW,
-    ],
-  },
-  dep = 'queryAllAccount',
-) => {
-  const {data: accountListAssets} = useRPC(
-    [WALLETDB_ACCOUNT_LIST_ASSETS, dep],
-    params,
-    {
-      fallbackData: {},
-    },
-  )
-  useDbRefetchBalance()
-  return accountListAssets
-}
-
 export const useValid20Token = address => {
   const {data: token} = useRPC(
     address ? [WALLET_VALIDATE_20TOKEN, address] : null,
@@ -598,19 +575,21 @@ export const useAddressTypeInConfirmTx = address => {
   return data
 }
 
-export const useAccountList = () => {
-  const {
-    data: {
-      network: {eid: networkId},
-    },
-  } = useCurrentAddress()
+export const useDbAccountListAssets = (
+  networkId,
+  dep = 'queryAllAccount',
+  groupTypes = [
+    ACCOUNT_GROUP_TYPE.HD,
+    ACCOUNT_GROUP_TYPE.PK,
+    ACCOUNT_GROUP_TYPE.HW,
+  ],
+) => {
   useDbRefetchBalance()
   return useRPC(
-    isUndefined(networkId)
-      ? null
-      : [QUERY_ADDRESS, 'queryAllAccount', networkId],
+    isUndefined(networkId) ? null : [QUERY_ADDRESS, dep, networkId],
     {
       networkId,
+      groupTypes,
       g: {
         nativeBalance: 1,
         value: 1,
