@@ -22,22 +22,16 @@
             </p>
         <![endif]-->
     <article>
-      <header>
-        Install
-      </header>
-      <p>Fluent Wallet is <span id='installed'>not
-      installed</span></p>
+      <header> Install </header>
+      <p>Fluent Wallet is <span id='installed'>not installed</span></p>
       <footer>
         Fluent Version: <span id='version'>N/A</span>
       </footer>
     </article>
     <article id="deprecated-provider-api-warning" style=
     "display:none">
-      <header>
-        Deprecaterd Provider API
-      </header>
-      <p>Fluent is using the ConfluxPortal compatible provider
-      API.</p>
+      <header>Deprecaterd Provider API</header>
+      <p>Fluent is using the ConfluxPortal compatible provider API.</p>
       <p>Please use <a href=
       "https://conflux-portal-docs.conflux-chain.org/e2e_test_demo/">
       ConfluxPortal E2E test Dapp</a> as example code</p>
@@ -106,12 +100,17 @@
         </footer>
       </article>
       <article>
-        <header>
-          Typed Sign
-        </header><button id='typed_sign' disabled=
-        "true">typed_sign</button>
+        <header>EIP712 Typed Sign (Available on all networks)</header>
+        <button id='eth_typed_sign' disabled="true">eth_signTypedData_v4</button>
         <footer>
-          Result: <span id='typed_sign_result'>N/A</span>
+          Result: <span id='eth_typed_sign_result'>N/A</span>
+        </footer>
+      </article>
+      <article>
+        <header>CIP23 Typed Sign (Only available on Conflux network)</header>
+        <button id='cfx_typed_sign' disabled="true">cfx_signTypedData_v4</button>
+        <footer>
+          Result: <span id='cfx_typed_sign_result'>N/A</span>
         </footer>
       </article>
       <article>
