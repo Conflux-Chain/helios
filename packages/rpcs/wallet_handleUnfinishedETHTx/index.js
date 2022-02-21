@@ -277,7 +277,7 @@ export const main = ({
         map(rst => {
           if (rst && rst.blockHash) return rst
           // getTransactionByHash return null
-          eth_blockNumber({errorFallThrough: true}, ['latest'])
+          eth_blockNumber({errorFallThrough: true}, [])
             .then(n => {
               if (
                 (!tx.resendAt && !tx.blockNumber) ||
@@ -294,13 +294,18 @@ export const main = ({
         // packaged
         map(rst => {
           setTxPackaged({hash, blockHash: rst.blockHash})
-          return eth_getTransactionCount([address.value])
+          return eth_getTransactionCount({errorFallThrough: true}, [
+            address.value,
+            rst.blockNumber,
+          ])
         }),
       )
       .subscribe(resolve({fail: keepTrack}))
       .transform(
         sideEffect(nonce => {
-          if (nonce > tx.txPayload.nonce) {
+          if (
+            BigNumber.from(nonce).gt(BigNumber.from(tx.txPayload.nonce).add(1))
+          ) {
             setTxSkipped({hash})
             updateBadge(getUnfinishedTxCount())
             getExt().then(ext =>
@@ -364,7 +369,7 @@ export const main = ({
       )
   } else if (status === 4) {
     // ## executed
-    s.map(() => eth_blockNumber(['latest']))
+    s.map(() => eth_blockNumber({errorFallThrough: true}, []))
       .subscribe(resolve({fail: keepTrack}))
       .transform(
         map(n => {

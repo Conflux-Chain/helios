@@ -69,17 +69,21 @@ export const main = async args => {
     network,
   } = args
   const {block, returnTxMeta, dryRun} = opts
-  let newTx = {...tx}
+  // ethers.js
+  // 1. don't allow from in tx
+  // 2. use `gasLimit` instead of `gas` in tx
+  let {from, gas, ...newTx} = {...tx}
+  newTx.gasLimit = gas
   if (newTx.chainId && newTx.chainId !== network.chainId)
     throw InvalidParams(`Invalid chainId ${newTx.chainId}`)
 
   const fromAddr = findAddress({
     networkId: network.eid,
-    value: newTx.from,
+    value: from,
     g: {eid: 1, _account: {_accountGroup: {vault: {type: 1, device: 1}}}},
   })
   // from address is not belong to wallet
-  if (!fromAddr) throw InvalidParams(`Invalid from address ${newTx.from}`)
+  if (!fromAddr) throw InvalidParams(`Invalid from address ${from}`)
 
   // tx without to must have data (deploy contract)
   if (!newTx.to && !newTx.data)
@@ -97,6 +101,7 @@ export const main = async args => {
   //   )
 
   if (!newTx.chainId) newTx.chainId = network.chainId
+  newTx.chainId = parseInt(newTx.chainId, 16)
   if (newTx.data === '0x') newTx.data = undefined
   if (!newTx.gasPrice) newTx.gasPrice = await eth_gasPrice()
 
@@ -104,27 +109,27 @@ export const main = async args => {
 
   if (!newTx.nonce) {
     newTx.nonce = await eth_getTransactionCount({errorFallThrough: true}, [
-      newTx.from,
+      from,
       'pending',
     ])
   }
 
-  if (newTx.to && !newTx.gas) {
+  if (newTx.to && !newTx.gasLimit) {
     const {contract: typeContract} = await wallet_detectAddressType(
       {errorFallThrough: true},
       {address: newTx.to},
     )
     if (!typeContract && !newTx.data) {
-      if (!newTx.gas) newTx.gas = '0x5208'
+      if (!newTx.gasLimit) newTx.gasLimit = '0x5208'
     }
   }
 
-  if (!newTx.gas) {
+  if (!newTx.gasLimit) {
     const gasLimit = await eth_estimateGas({errorFallThrough: true}, [
       newTx,
-      block,
+      block || 'latest',
     ])
-    if (!newTx.gas) newTx.gas = gasLimit
+    if (!newTx.gasLimit) newTx.gasLimit = gasLimit
   }
 
   let raw
@@ -146,7 +151,7 @@ export const main = async args => {
     //   })
     // }
   } else {
-    let pk = await wallet_getAddressPrivateKey({address: newTx.from})
+    let pk = await wallet_getAddressPrivateKey({address: from})
 
     if (dryRun)
       pk = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
