@@ -66,13 +66,13 @@ export async function signTypedData_v4(type, privateKey, typedData) {
       ),
     )
     const signature = CfxMessage.sign(
-      toBuffer(privateKey),
+      toBuffer(addHexPrefix(privateKey)),
       toBuffer(hashedMessage),
     )
     return signature
   }
 
-  const digest = TypedDataUtils.sign(typedData)
+  const digest = TypedDataUtils.sign(typedData, true)
   const signature = new SigningKey(addHexPrefix(privateKey)).signDigest(digest)
   return joinSignature(signature)
 }
@@ -94,7 +94,7 @@ export function recoverTypedSignature_v4(type, signature, typedData, netId) {
     )
   }
 
-  const digest = TypedDataUtils.sign(typedData)
+  const digest = TypedDataUtils.sign(typedData, true)
   const pub = ethRecoverPublicKey(digest, signature)
   return ethComputeAddress(pub)
 }
@@ -102,7 +102,7 @@ export function recoverTypedSignature_v4(type, signature, typedData, netId) {
 export const ethEcdsaSign = (hash, pk) =>
   new SigningKey(addHexPrefix(pk)).sign(addHexPrefix(hash))
 export const cfxEcdsaSign = (hash, pk) =>
-  CfxMessage.sign(toBuffer(pk), toBuffer(hash))
+  CfxMessage.sign(toBuffer(addHexPrefix(pk)), toBuffer(hash))
 
 export const ecdsaSign = (type, hash, privateKey) =>
   type === 'cfx'

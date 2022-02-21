@@ -37,6 +37,11 @@ getWorkspacePackages({
   alias[name] = packageAbsPath
 })
 
+alias['readable-stream'] = path.resolve(
+  __dirname,
+  '../node_modules/cip-23/node_modules/readable-stream/readable-browser.js',
+)
+
 module.exports = {
   workspaceRoot: path.resolve(__dirname, '../'),
   exclude: [
@@ -68,8 +73,9 @@ module.exports = {
     polyfillNode: true,
     // remove browser, since most packages' browser field leads to umd file
     // packageLookupFields: ['browser', 'module'],
-    packageLookupFields: ['module'],
-    packageExportLookupFields: ['exports'],
+    packageLookupFields: ['module', 'browser'],
+    packageExportLookupFields: ['exports', 'browser'],
+    knownEntrypoints: [],
   },
   buildOptions: {
     // this brokes sourcemap
