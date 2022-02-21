@@ -19,10 +19,12 @@ function Error() {
   const {FATAL_ERROR} = useGlobalStore()
   const query = useQuery()
   const urlErrorMsg = query.get('errorMsg') ?? ''
+  const fromPath = query.get('from') ?? ''
   // type: route,fullNode,inner
   const [errorType, setErrorType] = useState('')
   const [zendeskTimer, setZendeskTimer] = useState(null)
   const [networkShow, setNetworkShow] = useState(false)
+
   useEffect(() => {
     if (!FATAL_ERROR && !urlErrorMsg) {
       return setErrorType('route')
@@ -110,10 +112,16 @@ function Error() {
           id="error-btn"
           className="w-70 mt-4 mx-auto"
           onClick={() =>
-            errorType === 'fullNode' ? runtime.reload() : history.push(HOME)
+            errorType === 'fullNode' || fromPath === 'home'
+              ? runtime.reload()
+              : history.push(HOME)
           }
         >
-          {errorType === 'fullNode' ? t('retry') : t('back')}
+          {errorType === 'fullNode'
+            ? t('retry')
+            : fromPath === 'home'
+            ? t('close')
+            : t('back')}
         </Button>
       </div>
       <Modal
