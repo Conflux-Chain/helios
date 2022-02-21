@@ -47,7 +47,6 @@ function NetworkItem({
     itemWrapperPaddingStyleObj[networkItemSize] || ''
 
   const onChangeNetwork = () => {
-    onClose && onClose()
     const netData = {
       networkId,
       networkName,
@@ -59,6 +58,7 @@ function NetworkItem({
       networkType,
     }
     if (!needSwitchNet) {
+      onClose && onClose()
       return onClickNetworkItem?.({...netData})
     }
     if (eid !== networkId) {
@@ -66,7 +66,9 @@ function NetworkItem({
       request(WALLET_SET_CURRENT_NETWORK, [networkId])
         .then(() => {
           setLoading(false)
-          mutate()
+          mutate().then(() => {
+            onClose && onClose()
+          })
           Message.warning({
             content: t('addressHasBeenChanged'),
             top: '110px',
@@ -84,6 +86,7 @@ function NetworkItem({
           setLoading(false)
         })
     }
+    onClose && onClose()
   }
 
   return (
