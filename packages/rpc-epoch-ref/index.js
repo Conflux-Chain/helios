@@ -41,8 +41,13 @@ const RPC_EPOCH_TAG_CONFIG = {
   eth_getBlockByNumber: 0,
   eth_getTransactionByBlockNumberAndIndex: 0,
   eth_getUncleByBlockNumberAndIndex: 0,
+  eth_feeHistory: 1,
   // eth_newFilter: [{fromBlock: true, toBlock: true}],
   // eth_getLogs: [{fromBlock: true, toBlock: true}],
+  ////
+  eth_getTransactionByHash: 'latest',
+  eth_getTransactionReceipt: 'latest',
+  eth_getBlockByHash: 'latest',
 }
 
 export default RPC_EPOCH_TAG_CONFIG

@@ -1,5 +1,6 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
-import AppCfx from '@fluent-wallet/hw-app-conflux'
+import App from '@fluent-wallet/hw-app-conflux'
+import {decode} from '@fluent-wallet/base32-address'
 import {
   LEDGER_APP_NAME,
   LEDGER_CLA,
@@ -30,7 +31,7 @@ export default class Conflux {
     if (!this.app) {
       try {
         this.transport = await TransportWebUSB.create()
-        this.app = new AppCfx(this.transport)
+        this.app = new App(this.transport)
       } catch (error) {
         console.warn(error)
       }
@@ -66,12 +67,27 @@ export default class Conflux {
   }
 
   /**
-   * get configuration of ledger conflux app
+   * get configuration of ledger app
    * @returns
    */
   async getAppConfiguration() {
     await this.setApp()
     return this.app?.getAppConfiguration()
+  }
+
+  /**
+   * sign personal message
+   * @param {*} hdPath the hd path
+   * @param {*} messageHex hex string of message
+   * @returns Promise
+   */
+  async signPersonalMessage(hdPath, messageHex) {
+    await this.setApp()
+    try {
+      return this.app?.signPersonalMessage(hdPath, messageHex)
+    } catch (error) {
+      return Promise.reject(error)
+    }
   }
 
   async isDeviceAuthed() {
@@ -108,7 +124,7 @@ export default class Conflux {
   }
 
   /**
-   *
+   * auth the USBDevice
    * @returns boolean, means that whether user has already authed this hardware
    */
   async requestAuth() {
@@ -131,8 +147,9 @@ export default class Conflux {
       for (const index of indexArray) {
         const hdPath = `${HDPATH.CONFLUX}${index}`
         const {address} = await this.getAddress(hdPath)
+        const {hexAddress} = decode(address)
         addressArr.push({
-          address,
+          address: hexAddress,
           hdPath,
         })
       }
@@ -147,7 +164,7 @@ export default class Conflux {
     if (devices.length > 0) {
       const device = devices[0]
       return {
-        name: LEDGER_DEVICE[device?.productId]?.NAME,
+        name: LEDGER_DEVICE[device?.productName]?.NAME,
         productId: device?.productId,
         productName: device?.productName,
       }
@@ -155,6 +172,9 @@ export default class Conflux {
     return {}
   }
 
+  /**
+   * Close the transport when finish using it
+   */
   async cleanUp() {
     this.app = null
     if (this.transport) await this.transport.close()

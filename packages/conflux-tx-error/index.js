@@ -1,4 +1,4 @@
-// shouldDiscard mains should stop tracking this tx
+// shouldDiscard means should stop tracking this tx
 export function processError(err) {
   if (typeof err?.data === 'string') {
     if (

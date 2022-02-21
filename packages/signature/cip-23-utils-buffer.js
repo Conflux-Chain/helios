@@ -4,8 +4,9 @@ import {keccak256 as etherjsKeccak256} from '@ethersproject/keccak256'
 import {Buffer} from 'buffer'
 
 export const keccak256 = (data, encoding) => {
-  return toBuffer(etherjsKeccak256(Buffer.from(encoding || 'utf-8')))
+  return toBuffer(etherjsKeccak256(Buffer.from(data, encoding || 'utf-8')))
 }
+
 export const toBuffer = (data, encoding) => {
   if (!encoding) {
     if (data.startsWith('0x')) {

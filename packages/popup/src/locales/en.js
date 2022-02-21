@@ -279,6 +279,9 @@ const en = {
     docs: 'Docs',
     version: 'Version',
 
+    // Authorized Website
+    authorizedWebsite: 'Authorized Website',
+
     // Developer Mode
     developerMode: 'Developer Mode',
     compatibilityMode: 'Compatibility Mode',

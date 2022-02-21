@@ -19,7 +19,7 @@ on:
 
 jobs:
   prod-release:
-    if: ${{ github.event.pull_request.merged == true && github.head_ref == 'dev' }}
+    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -69,7 +69,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          commitish: ${{ github.sha }}
+          filter-by-commitish: true
+          commitish: ${{ github.base_ref }}
           config-name: release-drafter-prod.yml
           name: Release ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).prod_tag }}
           version: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).prod_version }}

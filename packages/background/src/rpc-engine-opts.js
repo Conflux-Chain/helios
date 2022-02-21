@@ -3,6 +3,21 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletRequestAccounts from '@fluent-wallet/wallet_request-accounts'
+import * as walletAccounts from '@fluent-wallet/wallet_accounts'
+import * as walletChainId from '@fluent-wallet/wallet_chain-id'
+import * as walletGetNextUsableNonce from '@fluent-wallet/wallet_get-next-usable-nonce'
+import * as walletEnrichEthereumTx from '@fluent-wallet/wallet_enrich-ethereum-tx'
+import * as walletSendTransaction from '@fluent-wallet/wallet_send-transaction'
+import * as walletHandleUnfinishedETHTx from '@fluent-wallet/wallet_handle-unfinished-eth-tx'
+import * as ethGetTransactionByHash from '@fluent-wallet/eth_get-transaction-by-hash'
+import * as ethGetTransactionReceipt from '@fluent-wallet/eth_get-transaction-receipt'
+import * as ethSendRawTransaction from '@fluent-wallet/eth_send-raw-transaction'
+import * as ethSignTransaction from '@fluent-wallet/eth_sign-transaction'
+import * as ethFeeHistory from '@fluent-wallet/eth_fee-history'
+import * as walletNetwork1559Compatible from '@fluent-wallet/wallet_network1559compatible'
+import * as ethGetBlockByHash from '@fluent-wallet/eth_get-block-by-hash'
+import * as ethGetBlockByNumber from '@fluent-wallet/eth_get-block-by-number'
 import * as walletSetPreferences from '@fluent-wallet/wallet_set-preferences'
 import * as walletGetPreferences from '@fluent-wallet/wallet_get-preferences'
 import * as walletUpdateNetwork from '@fluent-wallet/wallet_update-network'
@@ -14,7 +29,7 @@ import * as walletImportHardwareWalletAccountGroupOrAccount from '@fluent-wallet
 import * as walletGetFluentMetadata from '@fluent-wallet/wallet_get-fluent-metadata'
 import * as walletCleanupTx from '@fluent-wallet/wallet_cleanup-tx'
 import * as walletEnrichConfluxTx from '@fluent-wallet/wallet_enrich-conflux-tx'
-import * as walletEnrichConfluxTxs from '@fluent-wallet/wallet_enrich-conflux-txs'
+import * as walletEnrichTxs from '@fluent-wallet/wallet_enrich-txs'
 import * as walletGetBlockchainExplorerUrl from '@fluent-wallet/wallet_get-blockchain-explorer-url'
 import * as cfxGetNextUsableNonce from '@fluent-wallet/cfx_get-next-usable-nonce'
 import * as walletHandleUnfinishedTxs from '@fluent-wallet/wallet_handle-unfinished-txs'
@@ -205,9 +220,13 @@ export const rpcEngineOpts = {
     walletGetCurrentNetwork,
     walletGetCurrentAccount,
 
+    walletRequestAccounts,
+    walletAccounts,
+    walletGetNextUsableNonce,
     walletGetNextNonce,
     walletGetBalance,
     walletRefreshBalance,
+    walletChainId,
 
     cfxRequestAccounts,
     ethRequestAccounts,
@@ -224,8 +243,9 @@ export const rpcEngineOpts = {
     walletRefetchTokenList,
     walletUpdateTokenList,
     walletGetBlockchainExplorerUrl,
+    walletEnrichTxs,
     walletEnrichConfluxTx,
-    walletEnrichConfluxTxs,
+    walletEnrichEthereumTx,
 
     walletWatchAsset,
     unwalletWatchAsset,
@@ -288,17 +308,27 @@ export const rpcEngineOpts = {
     ethChainId,
     netVersion,
     ethAccounts,
+    ethFeeHistory,
     ethGasPrice,
     ethEstimateGas,
     ethBlockNumber,
+    ethGetBlockByNumber,
+    ethGetBlockByHash,
     walletAddEthereumChain,
     walletSwitchEthereumChain,
+    walletNetwork1559Compatible,
+    ethSignTransaction,
+    ethSendRawTransaction,
+    ethGetTransactionReceipt,
+    ethGetTransactionByHash,
 
     // sign
     personalSign,
     ethTypedSignV4,
     cfxTypedSignV4,
 
+    walletSendTransaction,
+    walletHandleUnfinishedETHTx,
     walletHandleUnfinishedCFXTx,
     walletHandleUnfinishedTxs,
     walletCleanupTx,

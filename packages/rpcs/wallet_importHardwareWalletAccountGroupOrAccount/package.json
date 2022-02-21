@@ -6,6 +6,7 @@
   "version": "2.0.2",
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:*",
+    "@fluent-wallet/ledger": "workspace:packages/ledger",
     "@fluent-wallet/spec": "workspace:*",
     "browser-passworder": "2.0.3"
   }

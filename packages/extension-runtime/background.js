@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill'
 // eslint-disable-next-line no-unused-vars
 import {stream, trace} from '@thi.ng/rstream'
+
 import {capture as sentryCaptureError} from '@fluent-wallet/sentry'
 
 function sentryCapturePostMessageeError(err) {
@@ -29,6 +30,7 @@ function onConnect(port) {
       port.postMessage(msg)
     } catch (err) {
       // firefox can't serialize some of the postMessage data here
+      // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities#data_cloning_algorithm
       if (err.message?.includes('object could not be cloned')) {
         try {
           msg = JSON.parse(JSON.stringify(msg))

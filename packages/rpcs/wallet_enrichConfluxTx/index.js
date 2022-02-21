@@ -11,15 +11,15 @@ export const permissions = {
   external: [],
   locked: true,
   methods: ['wallet_validate20Token', 'wallet_refetchBalance'],
-  db: ['getCfxTxsToEnrich', 't', 'isTokenInAddr', 'newtokenTx'],
+  db: ['getTxsToEnrich', 't', 'isTokenInAddr', 'newtokenTx'],
 }
 
 export const main = async ({
-  db: {getCfxTxsToEnrich, t, isTokenInAddr, newtokenTx},
+  db: {getTxsToEnrich, t, isTokenInAddr, newtokenTx},
   rpcs: {wallet_validate20Token, wallet_refetchBalance},
   params: {txhash},
 }) => {
-  const txData = getCfxTxsToEnrich({txhash})
+  const txData = getTxsToEnrich({txhash, type: 'cfx'})
   if (!txData) return
 
   const {tx, address, network, token, app} = txData

@@ -16,7 +16,10 @@ import {
   Wallet as EthWallet,
   verifyMessage as verifyEthPersonalSign,
 } from '@ethersproject/wallet'
-import {computeAddress as ethComputeAddress} from '@ethersproject/transactions'
+import {
+  computeAddress as ethComputeAddress,
+  serialize as serializeUnsignedETHTransaction,
+} from '@ethersproject/transactions'
 import {getMessage as cip23GetMessage} from 'cip-23'
 import {TypedDataUtils} from 'eth-sig-util'
 import {keccak256} from '@ethersproject/keccak256'
@@ -63,13 +66,13 @@ export async function signTypedData_v4(type, privateKey, typedData) {
       ),
     )
     const signature = CfxMessage.sign(
-      toBuffer(privateKey),
+      toBuffer(addHexPrefix(privateKey)),
       toBuffer(hashedMessage),
     )
     return signature
   }
 
-  const digest = TypedDataUtils.sign(typedData)
+  const digest = TypedDataUtils.sign(typedData, true)
   const signature = new SigningKey(addHexPrefix(privateKey)).signDigest(digest)
   return joinSignature(signature)
 }
@@ -91,7 +94,7 @@ export function recoverTypedSignature_v4(type, signature, typedData, netId) {
     )
   }
 
-  const digest = TypedDataUtils.sign(typedData)
+  const digest = TypedDataUtils.sign(typedData, true)
   const pub = ethRecoverPublicKey(digest, signature)
   return ethComputeAddress(pub)
 }
@@ -99,7 +102,7 @@ export function recoverTypedSignature_v4(type, signature, typedData, netId) {
 export const ethEcdsaSign = (hash, pk) =>
   new SigningKey(addHexPrefix(pk)).sign(addHexPrefix(hash))
 export const cfxEcdsaSign = (hash, pk) =>
-  CfxMessage.sign(toBuffer(pk), toBuffer(hash))
+  CfxMessage.sign(toBuffer(addHexPrefix(pk)), toBuffer(hash))
 
 export const ecdsaSign = (type, hash, privateKey) =>
   type === 'cfx'
@@ -124,6 +127,14 @@ export const ecdsaRecover = (type, hash, sig, netId) =>
 export const cfxSignTransaction = (tx, pk, netId) => {
   const transaction = new CfxTransaction(tx)
   return transaction.sign(pk, netId).serialize()
+}
+
+export const ethSignTransaction = (tx, pk) => {
+  pk = addHexPrefix(pk)
+  const signature = new SigningKey(pk).signDigest(
+    keccak256(serializeUnsignedETHTransaction(tx)),
+  )
+  return serializeUnsignedETHTransaction(tx, signature)
 }
 
 export const cfxRecoverTransactionToAddress = (tx, {r, s, v}, netId) => {

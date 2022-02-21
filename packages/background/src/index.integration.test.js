@@ -133,7 +133,7 @@ describe('integration test', function () {
       })
       test('error call method with incorrect scope', async function () {
         res = await request({
-          method: 'wallet_isLocked',
+          method: 'wallet_getAccountGroup',
           _inpage: true,
           _origin: 'foo.site',
         })
@@ -2300,7 +2300,7 @@ describe('integration test', function () {
           networkName: CFX_MAINNET_NAME,
         })
 
-        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
+        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1), 20000)
 
         await request({
           method: 'wallet_requestPermissions',
@@ -2631,11 +2631,13 @@ describe('integration test', function () {
           networkName: CFX_MAINNET_NAME,
           _popup: true,
         })
+
         await res
 
         res = request({
           _origin: 'foo.site',
           _inpage: true,
+          networkName: CFX_MAINNET_NAME,
           method: 'cfx_sendTransaction',
           params: [
             {
@@ -2644,10 +2646,9 @@ describe('integration test', function () {
               value: '0x1',
             },
           ],
-        })
-        await new Promise(resolve => setTimeout(resolve, 500))
+        }).catch(console.error)
 
-        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
+        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1), 20000)
 
         await request({
           networkName: CFX_MAINNET_NAME,

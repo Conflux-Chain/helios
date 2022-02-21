@@ -11,6 +11,7 @@ import {
   Uint,
 } from '@fluent-wallet/spec'
 import {cfxSignTransaction} from '@fluent-wallet/signature'
+import {consts as ledgerConsts} from '@fluent-wallet/ledger'
 
 export const NAME = 'cfx_signTransaction'
 
@@ -49,6 +50,7 @@ export const schemas = {
 export const permissions = {
   external: [],
   methods: [
+    'cfx_gasPrice',
     'cfx_signTxWithLedgerNanoS',
     'wallet_getAddressPrivateKey',
     'cfx_getNextUsableNonce',
@@ -66,6 +68,7 @@ export const main = async args => {
     rpcs: {
       wallet_getAddressPrivateKey,
       cfx_epochNumber,
+      cfx_gasPrice,
       cfx_estimateGasAndCollateral,
       cfx_getNextUsableNonce,
       wallet_detectAddressType,
@@ -76,7 +79,7 @@ export const main = async args => {
   const {epoch, returnTxMeta, dryRun} = opts
   let newTx = {...tx}
   if (newTx.chainId && newTx.chainId !== network.chainId)
-    throw InvalidParams(`Invalid chainId ${chainId}`)
+    throw InvalidParams(`Invalid chainId ${newTx.chainId}`)
 
   const fromAddr = findAddress({
     networkId: network.eid,
@@ -94,7 +97,7 @@ export const main = async args => {
 
   if (!newTx.chainId) newTx.chainId = network.chainId
   if (newTx.data === '0x') newTx.data = undefined
-  if (!newTx.gasPrice) newTx.gasPrice = '0x1'
+  if (!newTx.gasPrice) newTx.gasPrice = await cfx_gasPrice()
 
   if (!newTx.value) newTx.value = '0x0'
 
@@ -115,7 +118,7 @@ export const main = async args => {
       {address: newTx.to},
     )
     if (type !== 'contract' && !newTx.data) {
-      if (!newTx.gas) newTx.gas = '0x5280'
+      if (!newTx.gas) newTx.gas = '0x5208'
       if (!newTx.storageLimit) newTx.storageLimit = '0x0'
     }
   }
@@ -169,7 +172,10 @@ async function signWithHardwareWallet({
   addressId,
   device,
 }) {
-  const hwSignMap = {LedgerNanoS: cfx_signTxWithLedgerNanoS}
+  const hwSignMap = {
+    [ledgerConsts.LEDGER_NANOS_NAME]: cfx_signTxWithLedgerNanoS,
+    [ledgerConsts.LEDGER_NANOX_NAME]: cfx_signTxWithLedgerNanoS,
+  }
   const signMethod = hwSignMap[device]
   return await signMethod({errorFallThrough: true}, {tx, addressId})
 }
