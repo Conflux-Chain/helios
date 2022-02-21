@@ -367,6 +367,7 @@ const zh = {
     feedBackCode: '复制错误信息并反馈',
     fullNodeError: '无法连接到 RPC 节点',
     close: '关闭',
+    reload: '重新加载',
   },
 }
 

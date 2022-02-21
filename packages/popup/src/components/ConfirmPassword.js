@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef, useLayoutEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import Modal from '@fluent-wallet/component-modal'
 import Button from '@fluent-wallet/component-button'
 import {PasswordInput} from '.'
-import {request, validatePasswordReg} from '../utils'
+import {request, validatePasswordReg, isKeyOf} from '../utils'
 
 function ConfirmPassword({
   open,
@@ -16,19 +16,35 @@ function ConfirmPassword({
   confirmParams = {},
 }) {
   const {t} = useTranslation()
+  const inputRef = useRef(null)
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
   const [sendingRequestStatus, setSendingRequestStatus] = useState(false)
+
+  useEffect(() => {
+    setPasswordErrorMessage('')
+  }, [open])
+
+  useLayoutEffect(() => {
+    if (open) {
+      setTimeout(() => {
+        inputRef?.current?.focus?.()
+      })
+    }
+  }, [open])
+
+  const onKeyDown = e => {
+    if (isKeyOf(e, 'enter')) {
+      onConfirm()
+    }
+  }
 
   const validatePassword = value => {
     const isValid = validatePasswordReg(value)
     setPasswordErrorMessage(isValid ? '' : t('passwordRulesWarning'))
     return isValid
   }
-  useEffect(() => {
-    setPasswordErrorMessage('')
-  }, [open])
 
-  const onClick = () => {
+  const onConfirm = () => {
     if (
       !validatePassword(password) ||
       !rpcMethod ||
@@ -66,6 +82,8 @@ function ConfirmPassword({
           setInputValue={setPassword}
           errorMessage={passwordErrorMessage}
           value={password}
+          onKeyDown={onKeyDown}
+          ref={inputRef}
           containerClassName="mt-1"
           id="confirmPassword"
         />
@@ -82,7 +100,7 @@ function ConfirmPassword({
         </Button>,
         <Button
           className="flex flex-1"
-          onClick={onClick}
+          onClick={onConfirm}
           disabled={!!passwordErrorMessage}
           key="confirm"
           id="confirm-btn"
