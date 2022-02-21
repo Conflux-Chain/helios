@@ -274,6 +274,7 @@ const zh = {
 
     // Authorized Website
     authorizedWebsite: '已授权的网站',
+    noAuthorizedWebsite: '您没有授权任何网站',
 
     // Developer Mode
     developerMode: '开发者模式',

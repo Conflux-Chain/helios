@@ -8,15 +8,17 @@ function GroupItem({groupNickname, account = [], groupType, accountSiteId}) {
         {groupType === 'pk' ? null : (
           <p className="text-gray-40 ml-4 mb-1 text-xs pt-3">{groupNickname}</p>
         )}
-        {account.map(({nickname, eid, app}, index) => (
-          <AccountItem
-            key={index}
-            accountNickname={nickname}
-            accountId={eid}
-            app={app}
-            accountSiteId={accountSiteId}
-          />
-        ))}
+        {account
+          .filter(({app}) => !!app)
+          .map(({nickname, eid, app}, index) => (
+            <AccountItem
+              key={index}
+              accountNickname={nickname}
+              accountId={eid}
+              app={app}
+              accountSiteId={accountSiteId}
+            />
+          ))}
       </div>
     )
   )

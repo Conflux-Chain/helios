@@ -9,6 +9,7 @@ import {
   TokenItem,
   WrapIcon,
   TokenList,
+  NoResult,
 } from '../../../components'
 import {DEFAULT_TOKEN_URL, RPC_METHODS} from '../../../constants'
 import {
@@ -143,17 +144,7 @@ function AddToken({onClose, open}) {
               </TokenList>
             </div>
           )}
-          {!tokenList && (
-            <div className="flex px-3 items-center flex-col">
-              <img
-                src="/images/no-available-token.svg"
-                alt="no result"
-                className="w-33 h-24 mt-13 mb-4"
-                data-clear-btn="true"
-              />
-              <p className="text-sm text-gray-40">{t('noResult')}</p>
-            </div>
-          )}
+          {!tokenList && <NoResult content={t('noResult')} />}
         </div>
       }
     />

@@ -404,31 +404,25 @@ export const useGroupAccountList = () => {
 }
 
 export const useGroupAccountAuthorizedDapps = () => {
-  return useRPC(
-    [QUERY_GROUP, 'useGroupAccountAuthorizedDapps'],
-    {
-      types: [
-        ACCOUNT_GROUP_TYPE.HD,
-        ACCOUNT_GROUP_TYPE.PK,
-        ACCOUNT_GROUP_TYPE.HW,
-      ],
-      g: {
+  return useRPC([QUERY_GROUP, 'useGroupAccountAuthorizedDapps'], {
+    types: [
+      ACCOUNT_GROUP_TYPE.HD,
+      ACCOUNT_GROUP_TYPE.PK,
+      ACCOUNT_GROUP_TYPE.HW,
+    ],
+    g: {
+      nickname: 1,
+      vault: {type: 1},
+      account: {
+        eid: 1,
         nickname: 1,
-        vault: {type: 1},
-        account: {
+        _app: {
+          site: {origin: 1, icon: 1, eid: 1},
           eid: 1,
-          nickname: 1,
-          _app: {
-            site: {origin: 1, icon: 1, eid: 1},
-            eid: 1,
-          },
         },
       },
     },
-    {
-      fallbackData: [],
-    },
-  )
+  })
 }
 
 export const useDbAccountListAssets = (

@@ -1,6 +1,6 @@
 import {useTranslation} from 'react-i18next'
 import {useState, useRef, useEffect} from 'react'
-import {TitleNav} from '../../components'
+import {TitleNav, NoResult} from '../../components'
 import HistoryItem from './components/HistoryItem'
 import {useTxList, useBlockchainExplorerUrl} from '../../hooks/useApi'
 import useLoading from '../../hooks/useLoading'
@@ -80,17 +80,7 @@ function History() {
               />
             ),
           )}
-        {txList?.length === 0 && (
-          <div className="flex  items-center flex-col">
-            <img
-              src="/images/no-available-token.svg"
-              alt="no result"
-              className="w-33 h-24 mt-13 mb-4"
-              data-clear-btn="true"
-            />
-            <p className="text-sm text-gray-40">{t('noResult')}</p>
-          </div>
-        )}
+        {txList?.length === 0 && <NoResult content={t('noResult')} />}
       </main>
     </div>
   )
