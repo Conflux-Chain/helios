@@ -281,6 +281,7 @@ const en = {
 
     // Authorized Website
     authorizedWebsite: 'Authorized Website',
+    noAuthorizedWebsite: 'No website authorized',
 
     // Developer Mode
     developerMode: 'Developer Mode',
