@@ -9,6 +9,8 @@ export const schemas = {
     {closed: true},
     ['hideTestNetwork', {optional: true}, boolean],
     ['useModernProviderAPI', {optional: true}, boolean],
+    ['overrideWindowDotEthereum', {optional: true}, boolean],
+    ['overrideWindowDotConflux', {optional: true}, boolean],
   ],
 }
 

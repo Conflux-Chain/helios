@@ -3,6 +3,7 @@ releases:
   "@fluent-wallet/consts": patch
   "@fluent-wallet/db": patch
   "@fluent-wallet/wallet_send-transaction": patch
+  "@fluent-wallet/wallet_set-preferences": patch
 
 declined:
   - "@fluent-wallet/account"
