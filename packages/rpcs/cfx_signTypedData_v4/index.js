@@ -1,4 +1,5 @@
 import * as spec from '@fluent-wallet/spec'
+import {encode} from '@fluent-wallet/base32-address'
 import getTypedDataSpec from '@fluent-wallet/typed-data-spec'
 import {signTypedData_v4, hashTypedData} from '@fluent-wallet/signature'
 
@@ -74,6 +75,10 @@ export const gen = {
       _popup,
     }) => {
       if (_inpage) {
+        // calling eth_signTypedData_v4 in conflux network
+        if (app.currentNetwork.type === 'cfx' && type === 'eth') {
+          params[0] = encode(params[0], app.currentNetwork.netId)
+        }
         const [from, typedDataString] = params
 
         if (
@@ -90,6 +95,7 @@ export const gen = {
           networkId: app.currentNetwork.eid,
           value: from,
           g: {
+            hex: 1,
             _account: {_accountGroup: {vault: {type: 1}}},
           },
         })
@@ -103,18 +109,29 @@ export const gen = {
 
         if (addr.account.accountGroup.vault.type === 'pub') throw UserRejected()
 
-        const req = {method: NAME, params}
+        if (app.currentNetwork.type === 'cfx' && type === 'eth') {
+          params[0] = addr.hex
+        }
+        const req = {method: `${type}_signTypedData_v4`, params}
         return wallet_addPendingUserAuthRequest({appId: app.eid, req})
       }
 
       if (_popup) {
-        const {
-          authReqId,
-          data: [from, typedDataString],
-        } = params
+        const {authReqId} = params
 
         const authReq = getAuthReqById(authReqId)
         if (!authReq) throw InvalidParams(`Invalid auth req id ${authReqId}`)
+
+        if (authReq.app.currentNetwork.type === 'cfx' && type === 'eth') {
+          params.data[0] = encode(
+            params.data[0].replace(/^0x./, '0x1'),
+            authReq.app.currentNetwork.netId,
+          )
+        }
+
+        const {
+          data: [from, typedDataString],
+        } = params
 
         if (
           !validateAddrInApp({

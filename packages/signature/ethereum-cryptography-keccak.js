@@ -6,8 +6,16 @@ import {Buffer} from 'buffer'
 export const keccak256 = (data, encoding) => {
   return toBuffer(etherjsKeccak256(Buffer.from(data, encoding || 'utf-8')))
 }
-
-export const toBuffer = (data, encoding) => {
+export const keccak224 = () => {
+  throw new Error('keccak224 not not supported')
+}
+export const keccak384 = () => {
+  throw new Error('keccak384 not not supported')
+}
+export const keccak512 = () => {
+  throw new Error('keccak512 not not supported')
+}
+const toBuffer = (data, encoding) => {
   if (!encoding) {
     if (data.startsWith('0x')) {
       return Buffer.from(data.substring(2), 'hex')
