@@ -1218,7 +1218,7 @@
     preferences))
 
 (defn set-preferences [preferences]
-  (let [preferences (deep-merge default-preferences (or preferences {}))
+  (let [preferences (deep-merge (get-preferences) (or preferences {}))
         pref-id     (or (q '[:find ?p .
                              :where [?p :preferences]])
                         -1)
