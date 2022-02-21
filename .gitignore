@@ -264,3 +264,4 @@ cljs-runtime
 
 /resources/*
 !/resources/firefox-debug-profile
+/.nrepl-port
