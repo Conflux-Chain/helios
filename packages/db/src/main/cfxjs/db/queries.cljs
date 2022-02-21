@@ -604,7 +604,7 @@
                                          '[?gid :accountGroup/account ?acc]))
                              (and (not groupId) (seq groupTypes))
                              (-> (update :args conj groupTypes)
-                                 (update :args conj '[?groupTypes ...])
+                                 (update :in conj '[?groupTypes ...])
                                  (update :where conj
                                          '[?acc :account/address ?addr]
                                          '[?gid :accountGroup/account ?acc]
