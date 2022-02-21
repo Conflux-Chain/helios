@@ -93,7 +93,7 @@ module.exports = {
     '/packages/workspace-tools',
     '/packages/docusaurus-plugin',
     '/packages/doc-ui',
-    './packages/rpcs/*/doc.js',
+    '/packages/rpcs/*/doc.js',
     '/packages/ext-reload',
     '/packages/test-helpers',
     '.*.test.jsx?', // eslint-disable-line no-useless-escape
@@ -110,7 +110,7 @@ module.exports = {
   coverageDirectory: 'coverage/integration',
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: ['packages/**/*.js'],
+  collectCoverageFrom: ['packages/**/*.js', '!packages/rpcs/*/doc.js'],
 
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
