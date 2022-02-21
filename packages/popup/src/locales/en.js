@@ -379,6 +379,7 @@ const en = {
     feedBackCode: 'Copy code and feedback',
     fullNodeError: 'Unable to connect RPC node.',
     close: 'Close',
+    reload: 'Reload',
   },
 }
 

@@ -63,7 +63,7 @@ function NetworkItem({
     }
     if (eid !== networkId) {
       setLoading(true)
-      request(WALLET_SET_CURRENT_NETWORK, [networkId])
+      return request(WALLET_SET_CURRENT_NETWORK, [networkId])
         .then(() => {
           setLoading(false)
           mutate().then(() => {

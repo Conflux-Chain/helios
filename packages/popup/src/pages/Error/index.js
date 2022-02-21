@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react'
-import {useHistory} from 'react-router-dom'
 import {runtime} from '@fluent-wallet/webextension'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
@@ -8,22 +7,24 @@ import {useTranslation} from 'react-i18next'
 import {CopyButton, NetworkContent} from '../../components'
 import useGlobalStore from '../../stores/index.js'
 import {useQuery} from '../../hooks'
-import {RPC_METHODS, ROUTES} from '../../constants'
-import {request} from '../../utils'
+import {RPC_METHODS} from '../../constants'
+import {request, getPageType} from '../../utils'
 const {CFX_GET_STATUS} = RPC_METHODS
-const {HOME} = ROUTES
+
+const isDapp = getPageType() === 'notification'
 
 function Error() {
   const {t} = useTranslation()
-  const history = useHistory()
   const {FATAL_ERROR} = useGlobalStore()
   const query = useQuery()
   const urlErrorMsg = query.get('errorMsg') ?? ''
-  const fromPath = query.get('from') ?? ''
+  const isFromHome = query.get('from') === 'home'
+
   // type: route,fullNode,inner
   const [errorType, setErrorType] = useState('')
   const [zendeskTimer, setZendeskTimer] = useState(null)
   const [networkShow, setNetworkShow] = useState(false)
+  const [resetButtonText, setResetButtonText] = useState('')
 
   useEffect(() => {
     if (!FATAL_ERROR && !urlErrorMsg) {
@@ -45,7 +46,22 @@ function Error() {
     }
   }, [zendeskTimer])
 
-  // TODO: need put zendesk link together with error message
+  useEffect(() => {
+    if (errorType === '') {
+      return
+    }
+    if (errorType === 'fullNode') {
+      return setResetButtonText(t('retry'))
+    }
+    if (isDapp) {
+      return setResetButtonText(t('close'))
+    }
+    if (isFromHome) {
+      return setResetButtonText(t('reload'))
+    }
+    setResetButtonText(t('back'))
+  }, [isFromHome, errorType, t])
+
   const onClickFeedback = () => {
     const timer = setTimeout(() => {
       zendeskTimer && clearTimeout(zendeskTimer)
@@ -53,6 +69,25 @@ function Error() {
       window.open('https://fluent-wallet.zendesk.com/hc/en-001/requests/new')
     }, 900)
     setZendeskTimer(timer)
+  }
+
+  const onHandleError = () => {
+    if (errorType === 'fullNode') {
+      return runtime.reload()
+    }
+
+    if (isDapp) {
+      return window?.close?.()
+    }
+
+    if (isFromHome) {
+      return runtime.reload()
+    }
+
+    if (location?.hash !== '#/') {
+      location.href = `${location.origin}${location.pathname}#/`
+    }
+    location?.reload()
   }
 
   return errorType ? (
@@ -111,17 +146,9 @@ function Error() {
         <Button
           id="error-btn"
           className="w-70 mt-4 mx-auto"
-          onClick={() =>
-            errorType === 'fullNode' || fromPath === 'home'
-              ? runtime.reload()
-              : history.push(HOME)
-          }
+          onClick={onHandleError}
         >
-          {errorType === 'fullNode'
-            ? t('retry')
-            : fromPath === 'home'
-            ? t('close')
-            : t('back')}
+          {resetButtonText}
         </Button>
       </div>
       <Modal
