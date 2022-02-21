@@ -45,6 +45,7 @@ alias['readable-stream'] = path.resolve(
 module.exports = {
   workspaceRoot: path.resolve(__dirname, '../'),
   exclude: [
+    '*.test.js',
     '**/node_modules/**',
     '**/*.cjs',
     '**/*.cljs',
