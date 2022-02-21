@@ -157,6 +157,42 @@ describe('integration test', function () {
         expect(stat.result.networkId).toBe('0xbb7')
       })
     })
+    describe('wallet_accounts', function () {
+      // eslint-disable-next-line jest/expect-expect
+      test('wallet_accounts', async () => {
+        let accounts
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        accounts = await request({method: 'wallet_accounts'})
+        expect(accounts.result[0]).toBe(CFX_ACCOUNTS[0].base32)
+        await request({
+          method: 'wallet_addNetwork',
+          params: {
+            chainId: '0x539',
+            chainName: 'ethfoo',
+            nativeCurrency: {
+              name: 'ETH',
+              symbol: 'ETH',
+              decimals: DEFAULT_CURRENCY_DECIMALS,
+            },
+            rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT + '/'],
+          },
+          _rpcStack: ['frombg'],
+          _internal: true,
+        })
+        accounts = await request({method: 'wallet_accounts'})
+        accounts = await request({
+          method: 'wallet_accounts',
+          params: [],
+          networkName: 'ethfoo',
+        })
+        expect(accounts.result[0]).toBe(
+          '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
+        )
+      })
+    })
     describe('cfx_chainId', function () {
       test('cfx_chainId', async () => {
         const stat = await request({method: 'cfx_chainId'})
@@ -2341,12 +2377,12 @@ describe('integration test', function () {
         })
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
-
+        const authReq = db.getAuthReq()[0]
         await request({
           _popup: true,
           method: 'wallet_addEthereumChain',
           params: {
-            authReqId: db.getAuthReq()[0].eid,
+            authReqId: authReq.eid,
             newChainConfig: [
               {
                 chainId: ETH_LOCALNET_CHAINID,
@@ -2367,6 +2403,30 @@ describe('integration test', function () {
         const [, n2] = db.getNetwork()
         expect(n2.name).toBe(ETH_MAINNET_NAME)
         expect(n2.endpoint).toBe(ETH_LOCALNET_RPC_ENDPOINT)
+        await request({
+          method: 'wallet_deleteNetwork',
+          params: {
+            password,
+            networkId: db.getNetworkByName(ETH_MAINNET_NAME)[0].eid,
+          },
+        })
+        res = request({
+          _popup: true,
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: ETH_LOCALNET_CHAINID,
+              chainName: ETH_MAINNET_NAME,
+              nativeCurrency: {
+                name: 'ETH',
+                symbol: 'ETH',
+                decimals: DEFAULT_CURRENCY_DECIMALS,
+              },
+              rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT],
+            },
+          ],
+        })
+        expect((await res).result).toBe('__null__')
       })
 
       test('error call adding duplicate endpoint network', async () => {
