@@ -8,7 +8,7 @@ import {
   HDPATH,
   LEDGER_DEVICE,
   ERROR,
-} from './const'
+} from './const.js'
 
 /**
  * Connecting Ledger Ethereum App API for fluent
