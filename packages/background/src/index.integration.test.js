@@ -157,15 +157,14 @@ describe('integration test', function () {
         expect(stat.result.networkId).toBe('0xbb7')
       })
     })
+
     describe('wallet_accounts', function () {
-      // eslint-disable-next-line jest/expect-expect
       test('wallet_accounts', async () => {
-        let accounts
         await request({
           method: 'wallet_importMnemonic',
           params: {mnemonic: MNEMONIC, password},
         })
-        accounts = await request({method: 'wallet_accounts'})
+        const accounts = await request({method: 'wallet_accounts'})
         expect(accounts.result[0]).toBe(CFX_ACCOUNTS[0].base32)
         await request({
           method: 'wallet_addNetwork',
@@ -182,13 +181,12 @@ describe('integration test', function () {
           _rpcStack: ['frombg'],
           _internal: true,
         })
-        accounts = await request({method: 'wallet_accounts'})
-        accounts = await request({
+        const accountsAnother = await request({
           method: 'wallet_accounts',
           params: [],
           networkName: 'ethfoo',
         })
-        expect(accounts.result[0]).toBe(
+        expect(accountsAnother.result[0]).toBe(
           '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
         )
       })
