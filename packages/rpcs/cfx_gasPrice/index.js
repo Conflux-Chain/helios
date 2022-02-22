@@ -44,8 +44,8 @@ async function gasStationFastest(gasPrice) {
   return gasPrice
 }
 
-export const main = async ({network, f}) => {
-  if (network.name === CFX_MAINNET_NAME) {
+export const main = async ({network, f, MODE}) => {
+  if (network.name === CFX_MAINNET_NAME && !MODE.isTest) {
     return await gasStationFastest()
   }
   return await f()
