@@ -2535,58 +2535,6 @@ describe('integration test', function () {
 
         expect((await res).error.message).toMatch(/Invalid chainId /)
       })
-
-      // test('error call : duplicate chaiId', async () => {
-      //   await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
-      //     request({
-      //       method: 'wallet_importPrivateKey',
-      //       params: {privateKey: result, password},
-      //     }),
-      //   )
-
-      //   const [a1] = db.getAccount()
-      //   res = request({
-      //     method: 'cfx_requestAccounts',
-      //     _inpage: true,
-      //     _origin: 'foo.site',
-      //     networkName: CFX_MAINNET_NAME,
-      //   })
-
-      //   await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
-
-      //   await request({
-      //     method: 'wallet_requestPermissions',
-      //     params: {
-      //       permissions: [{cfx_accounts: {}}],
-      //       accounts: [a1.eid],
-      //       authReqId: db.getAuthReq()[0].eid,
-      //     },
-      //     networkName: CFX_MAINNET_NAME,
-      //     _popup: true,
-      //   })
-
-      //   res = request({
-      //     _origin: 'foo.site',
-      //     _inpage: true,
-      //     method: 'wallet_addEthereumChain',
-      //     params: [
-      //       {
-      //         chainId: ETH_LOCALNET_CHAINID,
-      //         chainName: ETH_MAINNET_NAME,
-      //         nativeCurrency: {
-      //           name: 'ETH',
-      //           symbol: 'ETH',
-      //           decimals: DEFAULT_CURRENCY_DECIMALS,
-      //         },
-      //         rpcUrls: ['http://localhost:8546'],
-      //       },
-      //     ],
-      //   })
-
-      //   expect((await res).error.message).toMatch(
-      //     /Duplicate chainId /,
-      //   )
-      // })
     })
     describe('wallet_discoverAccount', function () {
       test('wallet_discoverAccount', async function () {
