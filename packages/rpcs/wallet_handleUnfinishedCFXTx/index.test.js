@@ -1330,7 +1330,10 @@ describe('wallet_handleUnfinishedCFXTx', function () {
       })
 
       expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenCalledTimes(1)
-      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenLastCalledWith(['addr'])
+      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['addr'],
+      )
 
       expect(inputs.db.setTxSkipped).toHaveBeenCalledTimes(1)
       expect(inputs.db.setTxSkipped).toHaveBeenLastCalledWith({
@@ -1386,7 +1389,10 @@ describe('wallet_handleUnfinishedCFXTx', function () {
       })
 
       expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenCalledTimes(1)
-      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenLastCalledWith(['addr'])
+      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['addr'],
+      )
     })
     test('packages, not executed, status = null, cfx_getNextNonce failed', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
@@ -1437,7 +1443,10 @@ describe('wallet_handleUnfinishedCFXTx', function () {
       })
 
       expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenCalledTimes(1)
-      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenLastCalledWith(['addr'])
+      expect(inputs.rpcs.cfx_getNextNonce).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['addr'],
+      )
     })
   })
 })

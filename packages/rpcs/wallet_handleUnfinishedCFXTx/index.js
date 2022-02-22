@@ -353,7 +353,7 @@ export const main = ({
           executed: map(keepTrack),
           statusNull: map(() => {
             setTxPending({hash})
-            return cfx_getNextNonce([address.value])
+            return cfx_getNextNonce({errorFallThrough: true}, [address.value])
           }),
         }),
         pluck('statusNull'),
@@ -362,7 +362,7 @@ export const main = ({
       .subscribe(resolve({fail: keepTrack}))
       .transform(
         sideEffect(nonce => {
-          if (nonce > tx.txPayload.nonce) {
+          if (BigNumber.from(nonce).gt(BigNumber.from(tx.txPayload.nonce))) {
             setTxSkipped({hash})
             updateBadge(getUnfinishedTxCount())
             getExt().then(ext =>
@@ -435,7 +435,7 @@ export const main = ({
       )
   } else if (status === 4) {
     // ## executed
-    s.map(() => cfx_epochNumber(['latest_confirmed']))
+    s.map(() => cfx_epochNumber({errorFallThrough: true}, ['latest_confirmed']))
       .subscribe(resolve({fail: keepTrack}))
       .transform(
         map(n => {
