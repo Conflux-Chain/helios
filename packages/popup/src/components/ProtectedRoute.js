@@ -13,7 +13,7 @@ const ProtectedRoute = ({hasAccount, isLocked, pendingAuthReq, ...rest}) => {
 
   switch (true) {
     case FATAL_ERROR:
-      return <Redirect to={{pathname: ERROR}} />
+      return <Redirect to={{pathname: ERROR, search: `?from=home`}} />
     case !hasAccount:
       return <Redirect to={{pathname: WELCOME}} />
     case isLocked:
@@ -25,6 +25,7 @@ const ProtectedRoute = ({hasAccount, isLocked, pendingAuthReq, ...rest}) => {
         <Redirect
           to={{
             pathname: path || ERROR,
+            search: `?from=home`,
             state: {params: path ? pendingAuthReq[0]?.req?.params : undefined},
           }}
         />
