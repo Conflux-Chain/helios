@@ -1,6 +1,8 @@
 import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 
+const {blockRef} = spec
+
 const {
   TransactionLegacyUnsigned,
   Transaction1559Unsigned,
@@ -24,6 +26,7 @@ export const schemas = {
         Array.isArray(k) ? spec.optionalMapKey(k) : k,
       ),
     ],
+    blockRef,
   ],
 }
 

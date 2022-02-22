@@ -210,7 +210,7 @@ describe('integration test', function () {
       test('eth_estimateGas', async () => {
         res = await request({
           method: 'eth_estimateGas',
-          params: [{}],
+          params: [{}, 'latest'],
           networkName: ETH_MAINNET_NAME,
         })
         expect(res?.result).toBeDefined()
@@ -2016,7 +2016,6 @@ describe('integration test', function () {
       test('eth_gasPrice', async () => {
         res = await request({
           method: 'eth_gasPrice',
-          params: [],
           networkName: ETH_MAINNET_NAME,
         })
         expect(typeof res.result === 'string').toBeTruthy()

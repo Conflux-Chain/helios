@@ -10,6 +10,7 @@ import * as walletGetNextUsableNonce from '@fluent-wallet/wallet_get-next-usable
 import * as walletEnrichEthereumTx from '@fluent-wallet/wallet_enrich-ethereum-tx'
 import * as walletSendTransaction from '@fluent-wallet/wallet_send-transaction'
 import * as walletHandleUnfinishedETHTx from '@fluent-wallet/wallet_handle-unfinished-eth-tx'
+import * as ethSendTransaction from '@fluent-wallet/eth_send-transaction'
 import * as ethGetTransactionByHash from '@fluent-wallet/eth_get-transaction-by-hash'
 import * as ethGetTransactionReceipt from '@fluent-wallet/eth_get-transaction-receipt'
 import * as ethSendRawTransaction from '@fluent-wallet/eth_send-raw-transaction'
@@ -321,6 +322,7 @@ export const rpcEngineOpts = {
     ethSendRawTransaction,
     ethGetTransactionReceipt,
     ethGetTransactionByHash,
+    ethSendTransaction,
 
     // sign
     personalSign,
