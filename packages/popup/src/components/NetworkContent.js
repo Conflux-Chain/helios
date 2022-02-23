@@ -178,6 +178,7 @@ function NetworkContent({
               chainId,
               ticker,
               scanUrl,
+              type,
             },
             index,
           ) => (
@@ -187,6 +188,7 @@ function NetworkContent({
               networkId={eid}
               networkName={name}
               networkItemSize={networkItemSize}
+              type={type}
               networkType={
                 isCustom
                   ? 'custom'

@@ -9,6 +9,14 @@ const userBase32Address = 'cfxtest:aaktk1zbvj0snrxuc1m60deh1fh0ka862e2b78mnvs'
 const contractAddress = 'cfxtest:acgd1ex04h88ybdyxxdg45wjj0mrcwx1fak1snk3db'
 const userHexAddress = decode(userBase32Address).hexAddress
 
+const getError = async call => {
+  try {
+    await call()
+    throw new Error('NoErrorThrownError')
+  } catch (error) {
+    return error
+  }
+}
 describe('CFX Name', () => {
   describe('getCFXScanDomain', () => {
     it('should return testnet url', () => {
@@ -73,12 +81,15 @@ describe('CFX Name', () => {
       nock('https://testnet.confluxscan.io/v1/contract')
         .get('/some-wrong-address?fields=abi')
         .reply(500)
-      const res = await getCFXContractMethodSignature(
-        'some-wrong-address',
-        erc20TransferData,
-        1,
-      )
-      expect(res).toEqual({})
+
+      const err = await getError(() => {
+        return getCFXContractMethodSignature(
+          'some-wrong-address',
+          erc20TransferData,
+          1,
+        )
+      })
+      expect(err).toEqual(new Error('inValidate base32 address'))
     })
     // it('should return empty object when input wrong transaction data', async () => {
     //   const res = await getCFXContractMethodSignature(
