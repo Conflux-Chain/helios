@@ -23,7 +23,7 @@ Object {
           class="overflow-hidden"
         >
           <div
-            class=" transition duration-300 slide-in-down ease-in-out pt-2 transform-gpu "
+            class=" transition duration-300 slide-in-down ease-in-out pt-0 transform-gpu "
           />
         </div>
       </div>
@@ -48,7 +48,7 @@ Object {
         class="overflow-hidden"
       >
         <div
-          class=" transition duration-300 slide-in-down ease-in-out pt-2 transform-gpu "
+          class=" transition duration-300 slide-in-down ease-in-out pt-0 transform-gpu "
         />
       </div>
     </div>
