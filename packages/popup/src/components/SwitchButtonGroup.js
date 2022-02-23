@@ -35,11 +35,12 @@ function SwitchButtonGroup({
   onSwitch,
   showLeft,
   containerClassName,
+  WrapperId = 'switch-btn-group',
   ...props
 }) {
   return Wrapper ? (
     <Wrapper
-      id="switch-btn-group"
+      id={WrapperId}
       className={containerClassName}
       onClick={() => onSwitch?.(!showLeft)}
     >
@@ -48,7 +49,7 @@ function SwitchButtonGroup({
   ) : (
     <div
       aria-hidden
-      id="switch-btn-group"
+      id={WrapperId}
       onClick={() => onSwitch?.(!showLeft)}
       className={`cursor-pointer ${containerClassName}`}
     >
@@ -60,6 +61,7 @@ SwitchButtonGroup.propTypes = {
   showLeft: PropTypes.bool.isRequired,
   onSwitch: PropTypes.func.isRequired,
   Wrapper: PropTypes.elementType,
+  WrapperId: PropTypes.string,
   containerClassName: PropTypes.string,
 }
 export default SwitchButtonGroup
