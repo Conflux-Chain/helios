@@ -6,12 +6,14 @@ import {
   useBalance,
   useAddressByNetworkId,
 } from '../../hooks/useApi'
+import {useCheckImage} from '../../hooks'
+
 import {TitleNav, AccountDisplay, DappFooter, TokenItem} from '../../components'
 import {RPC_METHODS} from '../../constants'
 import {useSWRConfig} from 'swr'
 const {WALLETDB_HOME_PAGE_ASSETS, WALLETDB_REFETCH_BALANCE} = RPC_METHODS
 
-function ConfirmAddSuggestedToken() {
+function DappAddToken() {
   const {mutate} = useSWRConfig()
   const {t} = useTranslation()
   const pendingAuthReq = usePendingAuthReq()
@@ -28,6 +30,7 @@ function ConfirmAddSuggestedToken() {
     mutate([WALLETDB_HOME_PAGE_ASSETS])
     mutate([WALLETDB_REFETCH_BALANCE])
   }
+  const isImgUrl = useCheckImage(req?.params?.options?.image)
 
   return (
     <div
@@ -53,8 +56,9 @@ function ConfirmAddSuggestedToken() {
             <TokenItem
               index={1}
               token={{
-                logoURI:
-                  req?.params?.options?.image || '/images/default-token-icon',
+                logoURI: isImgUrl
+                  ? req?.params?.options?.image
+                  : '/images/default-token-icon.svg',
                 symbol: req?.params?.options?.symbol || '',
                 name: req?.params?.options?.name || '',
                 balance: formatBalance(
@@ -77,4 +81,4 @@ function ConfirmAddSuggestedToken() {
   )
 }
 
-export default ConfirmAddSuggestedToken
+export default DappAddToken
