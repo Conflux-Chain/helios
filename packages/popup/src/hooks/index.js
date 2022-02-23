@@ -423,10 +423,10 @@ export const useDisplayErrorMessage = errorMessage => {
 export const useCheckImage = url => {
   const isImgUrl = imgUrl => {
     return new Promise(function (resolve, reject) {
-      var ImgObj = new Image() //判断图片是否存在
+      // check whether the image exists
+      var ImgObj = new Image()
       ImgObj.src = imgUrl
       ImgObj.onload = function (res) {
-        console.log(res)
         resolve(res)
       }
       ImgObj.onerror = function (err) {
