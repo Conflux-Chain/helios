@@ -633,7 +633,7 @@ async function walletInitialized() {
               decimals: 18,
             },
             rpcUrls: ['https://evmtestnet.confluxrpc.com'],
-            blockExplorerUrls: ['https://evmtestnet.confluxscan.io/'],
+            blockExplorerUrls: ['https://evmtestnet.confluxscan.io'],
           },
         ],
       })
