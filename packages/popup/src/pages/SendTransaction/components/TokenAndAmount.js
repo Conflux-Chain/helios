@@ -81,13 +81,13 @@ function TokenAndAmount({
       network: {eid: networkId},
     },
   } = useCurrentAddress()
-  const isImgUrl = useCheckImage(logoURI)
   const {
     symbol,
     logoURI,
     decimals,
     address: selectedTokenIdAddress,
   } = useSingleTokenInfoWithNativeTokenSupport(selectedTokenId)
+  const isImgUrl = useCheckImage(logoURI)
   const tokenAddress = isNativeToken ? '0x0' : selectedTokenIdAddress
   const balance =
     useBalance(address, networkId, tokenAddress)?.[address]?.[tokenAddress] ||

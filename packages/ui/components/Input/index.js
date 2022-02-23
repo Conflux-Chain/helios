@@ -116,7 +116,7 @@ const Input = forwardRef(function Input(
   }))
 
   return (
-    <div className={`${width}`} data-testid="input-wrapper">
+    <div className={`${width} ${sizeStyle}`} data-testid="input-wrapper">
       <div
         data-testid="input-container"
         className={`flex justify-between items-center rounded border-solid transition duration-300 ease-in-out ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}

@@ -8,7 +8,7 @@ import {Big, convertDecimal} from '@fluent-wallet/data-format'
 import {useCurrentDapp} from '../../hooks/useApi'
 import {useDappParams, useDecodeData, useCurrentTxParams} from '../../hooks'
 
-function EditPermission() {
+function EditAllowance() {
   const {t} = useTranslation()
   const history = useHistory()
   const tx = useDappParams()
@@ -168,4 +168,4 @@ function EditPermission() {
   )
 }
 
-export default EditPermission
+export default EditAllowance

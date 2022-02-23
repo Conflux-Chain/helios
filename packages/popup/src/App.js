@@ -38,7 +38,7 @@ import DappSwitchNetwork from './pages/DappSwitchNetwork'
 import DappAddToken from './pages/DappAddToken'
 import SendTransaction from './pages/SendTransaction'
 import EditGasFee from './pages/EditGasFee'
-import EditPermission from './pages/EditPermission'
+import EditAllowance from './pages/EditAllowance'
 import ConfirmTransaction from './pages/ConfirmTransaction'
 import History from './pages/History'
 import ViewData from './pages/ViewData'
@@ -74,7 +74,7 @@ const {
   DAPP_SWITCH_NETWORK,
   SEND_TRANSACTION,
   EDIT_GAS_FEE,
-  EDIT_PERMISSION,
+  EDIT_ALLOWANCE,
   CONFIRM_TRANSACTION,
   VIEW_DATA,
   HISTORY,
@@ -137,8 +137,8 @@ const routes = [
     component: EditGasFee,
   },
   {
-    path: EDIT_PERMISSION,
-    component: EditPermission,
+    path: EDIT_ALLOWANCE,
+    component: EditAllowance,
   },
   {
     path: SET_PASSWORD,
