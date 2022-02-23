@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-commented-out-tests */
 // eslint-disable-next-line no-unused-vars
 import { expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach } from '@jest/globals' // prettier-ignore
 import waitForExpect from 'wait-for-expect'
@@ -164,8 +163,14 @@ describe('integration test', function () {
           method: 'wallet_importMnemonic',
           params: {mnemonic: MNEMONIC, password},
         })
-        const accounts = await request({method: 'wallet_accounts'})
-        expect(accounts.result[0]).toBe(CFX_ACCOUNTS[0].base32)
+        const accountsCfx = await request({method: 'wallet_accounts'})
+        expect(accountsCfx.result[0]).toBe(CFX_ACCOUNTS[0].base32)
+        const accountsCfxInpage = await request({
+          method: 'wallet_accounts',
+          _inpage: true,
+          _origin: 'foo.site',
+        })
+        expect(accountsCfxInpage.result[0]).toBe(CFX_ACCOUNTS[0].base32)
         await request({
           method: 'wallet_addNetwork',
           params: {
@@ -187,6 +192,16 @@ describe('integration test', function () {
           networkName: 'ethfoo',
         })
         expect(accountsAnother.result[0]).toBe(
+          '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
+        )
+        const accountsFromInpage = await request({
+          _origin: 'foo.site',
+          _inpage: true,
+          method: 'wallet_accounts',
+          params: [],
+          networkName: 'ethfoo',
+        })
+        expect(accountsFromInpage.result[0]).toBe(
           '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
         )
       })
