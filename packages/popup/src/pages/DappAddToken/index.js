@@ -58,7 +58,7 @@ function DappAddToken() {
               token={{
                 logoURI: isImgUrl
                   ? req?.params?.options?.image
-                  : '/images/default-token-icon',
+                  : '/images/default-token-icon.svg',
                 symbol: req?.params?.options?.symbol || '',
                 name: req?.params?.options?.name || '',
                 balance: formatBalance(

@@ -116,7 +116,7 @@ const Input = forwardRef(function Input(
   }))
 
   return (
-    <div className={`${width} ${sizeStyle}`} data-testid="input-wrapper">
+    <div className={`${width}`} data-testid="input-wrapper">
       <div
         data-testid="input-container"
         className={`flex justify-between items-center rounded border-solid transition duration-300 ease-in-out ${width} ${disabledStyle} ${sizeStyle} ${borderStyle} ${containerClassName}`}
@@ -150,7 +150,9 @@ const Input = forwardRef(function Input(
       </div>
       <div className="overflow-hidden">
         <div
-          className={`${errorClassName} transition duration-300 slide-in-down ease-in-out pt-2 transform-gpu ${errorAnimateStyle}`}
+          className={`${errorClassName} transition duration-300 slide-in-down ease-in-out ${
+            errorMessage ? 'pt-2' : 'pt-0'
+          } transform-gpu ${errorAnimateStyle}`}
         >
           {displayErrorMsg}
         </div>
