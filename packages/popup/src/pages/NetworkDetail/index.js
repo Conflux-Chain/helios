@@ -224,7 +224,7 @@ function NetworkDetail() {
           <CompWithLabel
             label={t(labelKey)}
             key={labelKey}
-            className="!mt-0"
+            // className="!mt-0"
             labelClassName="!text-gray-40 !mb-1"
           >
             <Input
