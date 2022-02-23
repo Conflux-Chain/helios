@@ -9,6 +9,7 @@ import {
   useAddressType,
   useDbRefetchBalance,
 } from '../../../hooks/useApi'
+import {useCheckImage} from '../../../hooks'
 import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
@@ -148,6 +149,7 @@ function AddressCard({
       ticker: {decimals, symbol},
     },
   } = useQueryAddressInAddressCard(fromAddress)
+  const isImgUrl = useCheckImage(token?.logoURI)
 
   return (
     <div
@@ -192,7 +194,7 @@ function AddressCard({
             {token?.symbol}
           </span>
           <img
-            src={token?.logoURI || '/images/default-token-icon.svg'}
+            src={isImgUrl ? token?.logoURI : '/images/default-token-icon.svg'}
             alt="icon"
             className="w-4 h-4"
             id="sendTokenIcon"

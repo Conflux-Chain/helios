@@ -6,6 +6,7 @@ import {
   useSingleAddressTokenBalanceWithNativeTokenSupport,
   useSingleTokenInfoWithNativeTokenSupport,
 } from '../hooks/useApi'
+import {useCheckImage} from '../hooks'
 import {DisplayBalance} from './'
 
 const getTokenItem = t => {
@@ -20,7 +21,6 @@ const getTokenItem = t => {
   if (t?.name) {
     return [{...t}, t?.balance]
   }
-
   return rst
 }
 
@@ -45,6 +45,7 @@ function TokenItem({
       setTimeout(() => setNextTickState(state), 50)
     }
   }, [token, state])
+  const isImgUrl = useCheckImage(logoURI)
 
   return (
     <div
@@ -58,7 +59,7 @@ function TokenItem({
     >
       <img
         className="w-8 h-8 rounded-full mr-2"
-        src={logoURI || '/images/default-token-icon.svg'}
+        src={isImgUrl ? logoURI : '/images/default-token-icon.svg'}
         alt="logo"
       />
       <div className="flex flex-1 flex-col">

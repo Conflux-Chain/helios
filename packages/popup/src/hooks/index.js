@@ -419,3 +419,34 @@ export const useDisplayErrorMessage = errorMessage => {
   }, [i18n.language, errorMessage, t])
   return displayErrorMessage
 }
+
+export const useCheckImage = url => {
+  const isImgUrl = imgUrl => {
+    return new Promise(function (resolve, reject) {
+      var ImgObj = new Image() //判断图片是否存在
+      ImgObj.src = imgUrl
+      ImgObj.onload = function (res) {
+        console.log(res)
+        resolve(res)
+      }
+      ImgObj.onerror = function (err) {
+        reject(err)
+      }
+      // eslint-disable-next-line no-unused-vars
+    }).catch(e => {})
+  }
+  const [isImg, setIsImg] = useState(null)
+  useEffect(() => {
+    if (!/\.(gif|jpg|jpeg|png|svg|GIF|JPG|PNG)$/.test(url)) {
+      return setIsImg(false)
+    }
+    isImgUrl(url)
+      .then(() => {
+        setIsImg(true)
+      })
+      .catch(() => {
+        setIsImg(false)
+      })
+  }, [url])
+  return isImg
+}

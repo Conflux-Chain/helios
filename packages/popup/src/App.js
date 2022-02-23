@@ -35,7 +35,7 @@ import ConnectSite from './pages/ConnectSite'
 import RequestSignature from './pages/RequestSignature'
 import DappAddNetwork from './pages/DappAddNetwork'
 import DappSwitchNetwork from './pages/DappSwitchNetwork'
-import ConfirmAddSuggestedToken from './pages/ConfirmAddSuggestedToken'
+import DappAddToken from './pages/DappAddToken'
 import SendTransaction from './pages/SendTransaction'
 import EditGasFee from './pages/EditGasFee'
 import EditPermission from './pages/EditPermission'
@@ -68,7 +68,7 @@ const {
   WALLET_IMPORT_PRIVATE_KEY,
   ERROR,
   CONNECT_SITE,
-  CONFIRM_ADD_SUGGESTED_TOKEN,
+  DAPP_ADD_TOKEN,
   REQUEST_SIGNATURE,
   DAPP_ADD_NETWORK,
   DAPP_SWITCH_NETWORK,
@@ -157,8 +157,8 @@ const routes = [
     component: ConnectSite,
   },
   {
-    path: CONFIRM_ADD_SUGGESTED_TOKEN,
-    component: ConfirmAddSuggestedToken,
+    path: DAPP_ADD_TOKEN,
+    component: DappAddToken,
   },
   {
     path: REQUEST_SIGNATURE,

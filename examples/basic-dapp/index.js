@@ -633,15 +633,15 @@ async function walletInitialized() {
         method: 'wallet_addConfluxChain',
         params: [
           {
-            chainId: '0x406',
+            chainId: '0x47',
             chainName: 'EVM Conflux',
             nativeCurrency: {
               name: 'Conflux',
               symbol: 'CFX',
               decimals: 18,
             },
-            rpcUrls: ['http://47.104.89.179:12537'],
-            blockExplorerUrls: ['https://confluxscan.io'],
+            rpcUrls: ['https://evmtestnet.confluxrpc.com'],
+            blockExplorerUrls: ['https://evmtestnet.confluxscan.io/'],
           },
         ],
       })

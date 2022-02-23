@@ -18,6 +18,7 @@ import {
   useCurrentAddress,
   useSingleTokenInfoWithNativeTokenSupport,
 } from '../../../hooks/useApi'
+import {useCheckImage} from '../../../hooks'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
@@ -80,6 +81,7 @@ function TokenAndAmount({
       network: {eid: networkId},
     },
   } = useCurrentAddress()
+  const isImgUrl = useCheckImage(logoURI)
   const {
     symbol,
     logoURI,
@@ -127,7 +129,7 @@ function TokenAndAmount({
         >
           <img
             className="w-5 h-5 mr-1"
-            src={logoURI || '/images/default-token-icon.svg'}
+            src={isImgUrl ? logoURI : '/images/default-token-icon.svg'}
             alt="logo"
             id="tokenIcon"
           />
