@@ -8,7 +8,7 @@ async function ethEstimateGasAdvance(request, tx) {
       params: [tx, 'latest'],
     })
 
-    return estimateRst
+    return {gasUsed: estimateRst, gasLimit: estimateRst}
   } catch (err) {
     if (err.message?.includes?.('nonce is too old')) {
       tx.nonce = pre0x(bn16(tx.nonce).addn(1).toString(16))
