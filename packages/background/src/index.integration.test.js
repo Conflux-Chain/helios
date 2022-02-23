@@ -171,25 +171,10 @@ describe('integration test', function () {
           _origin: 'foo.site',
         })
         expect(accountsCfxInpage.result[0]).toBe(CFX_ACCOUNTS[0].base32)
-        await request({
-          method: 'wallet_addNetwork',
-          params: {
-            chainId: '0x539',
-            chainName: 'ethfoo',
-            nativeCurrency: {
-              name: 'ETH',
-              symbol: 'ETH',
-              decimals: DEFAULT_CURRENCY_DECIMALS,
-            },
-            rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT + '/'],
-          },
-          _rpcStack: ['frombg'],
-          _internal: true,
-        })
         const accountsAnother = await request({
           method: 'wallet_accounts',
           params: [],
-          networkName: 'ethfoo',
+          networkName: ETH_MAINNET_NAME,
         })
         expect(accountsAnother.result[0]).toBe(
           '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
@@ -199,7 +184,7 @@ describe('integration test', function () {
           _inpage: true,
           method: 'wallet_accounts',
           params: [],
-          networkName: 'ethfoo',
+          networkName: ETH_MAINNET_NAME,
         })
         expect(accountsFromInpage.result[0]).toBe(
           '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
