@@ -4,7 +4,7 @@ import Message from '@fluent-wallet/component-message'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {RPC_METHODS} from '../constants'
 import {request, updateDbAccountList} from '../utils'
-import {useCfxNetwork, useCurrentAddress, usePreferences} from '../hooks/useApi'
+import {useNetwork, useCurrentAddress, usePreferences} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 import {CustomTag} from './'
 import {useTranslation} from 'react-i18next'
@@ -20,6 +20,7 @@ const itemWrapperPaddingStyleObj = {
   medium: 'pl-3.5',
 }
 function NetworkItem({
+  type,
   networkName,
   networkType,
   rpcUrl,
@@ -50,6 +51,7 @@ function NetworkItem({
 
   const onChangeNetwork = () => {
     const netData = {
+      type,
       networkId,
       networkName,
       icon,
@@ -131,6 +133,7 @@ NetworkItem.propTypes = {
   networkName: PropTypes.string.isRequired,
   rpcUrl: PropTypes.string.isRequired,
   chainId: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
   blockExplorerUrl: PropTypes.string,
   networkType: PropTypes.oneOf(['mainnet', 'testnet', 'custom']).isRequired,
@@ -151,7 +154,7 @@ function NetworkContent({
   ...props
 }) {
   const {data: preferencesData} = usePreferences()
-  const networkData = useCfxNetwork()
+  const networkData = useNetwork()
 
   return (
     <>
@@ -175,6 +178,7 @@ function NetworkContent({
               chainId,
               ticker,
               scanUrl,
+              type,
             },
             index,
           ) => (
@@ -184,6 +188,7 @@ function NetworkContent({
               networkId={eid}
               networkName={name}
               networkItemSize={networkItemSize}
+              type={type}
               networkType={
                 isCustom
                   ? 'custom'
