@@ -52,7 +52,7 @@ jobs:
       - run: rm -rf .yarn/versions || true
       - env:
           YARN_NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        run: yarn workspaces changed foreach --topological --no-private --verbose --parallel --interlaced npm publish --access public --tolerate-republish || true
+        run: yarn workspaces foreach --topological --no-private --verbose --parallel --interlaced npm publish --access public --tolerate-republish || true
       - run: git add .
       - run: |
           git -c user.name='ConfluxBot' \
