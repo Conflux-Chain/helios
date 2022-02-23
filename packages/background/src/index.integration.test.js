@@ -176,9 +176,7 @@ describe('integration test', function () {
           params: [],
           networkName: ETH_MAINNET_NAME,
         })
-        expect(accountsAnother.result[0]).toBe(
-          '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
-        )
+        expect(accountsAnother.result[0]).toBe(ETH_ACCOUNTS[0].address)
         const accountsFromInpage = await request({
           _origin: 'foo.site',
           _inpage: true,
@@ -186,9 +184,7 @@ describe('integration test', function () {
           params: [],
           networkName: ETH_MAINNET_NAME,
         })
-        expect(accountsFromInpage.result[0]).toBe(
-          '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
-        )
+        expect(accountsFromInpage.result[0]).toBe(ETH_ACCOUNTS[0].address)
       })
     })
     describe('cfx_chainId', function () {
@@ -792,9 +788,7 @@ describe('integration test', function () {
           '0xf581242f2de1111638b9da336c283f177ca1e17cb3d6e3b09434161e26135992',
         )
         expect(res.result[0].network.name).toBe(CFX_MAINNET_NAME)
-        expect(res.result[1].hex).toBe(
-          '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
-        )
+        expect(res.result[1].hex).toBe(ETH_ACCOUNTS[0].address)
         expect(res.result[1].value).toEqual(res.result[1].hex)
         expect(res.result[1].privateKey).toBe(
           '0x6a94c1f02edc1caff0849d46a068ff2819c0a338774fb99674e3d286a3351552',
