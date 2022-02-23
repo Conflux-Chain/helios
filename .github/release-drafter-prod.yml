@@ -69,6 +69,8 @@ replacers:
     replace: ""
   - search: '/\*\sdoc.*$/'
     replace: ""
+  - search: '/\* chore\(common\): release packages.*$/'
+    replace: ""
 
 template: |
   ## What’s Changed

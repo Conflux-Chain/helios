@@ -9,6 +9,7 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   methods: [],
+  locked: true,
   db: ['getPreferences'],
 }
 
