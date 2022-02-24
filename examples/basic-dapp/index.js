@@ -2,7 +2,7 @@
 // more info about js-conflux-sdk
 // https://github.com/Conflux-Chain/js-conflux-sdk#readme
 // eslint-disable-next-line import/no-unresolved
-import {Conflux} from 'https://cdn.skypack.dev/js-conflux-sdk'
+import {Conflux, format} from 'https://cdn.skypack.dev/js-conflux-sdk'
 
 const exampleContract = new Conflux().Contract({
   abi: [
@@ -317,7 +317,7 @@ function getElement(id) {
 }
 
 function isFluentInstalled() {
-  return Boolean(window?.cfx?.isFluent)
+  return Boolean(window?.conflux?.isFluent)
 }
 
 async function walletInitialized() {
@@ -334,7 +334,8 @@ async function walletInitialized() {
   const transferToAccountInput = getElement('to-account')
 
   const personalSignButton = getElement('personal_sign')
-  const typedSignButton = getElement('typed_sign')
+  const ethTypedSignButton = getElement('eth_typed_sign')
+  const cfxTypedSignButton = getElement('cfx_typed_sign')
   const addNetworkButton = getElement('add_network')
   const switchNetworkButton = getElement('switch_network')
   const addTokenButton = getElement('add_token')
@@ -343,11 +344,13 @@ async function walletInitialized() {
   function authed(address) {
     getElement('address').innerHTML = address
     console.log('authed address: ', address)
+    connectButton.disabled = true
     sendNativeTokenButton.disabled = false
     approveButton.disabled = false
     transferFromButton.disabled = false
     personalSignButton.disabled = false
-    typedSignButton.disabled = false
+    cfxTypedSignButton.disabled = false
+    ethTypedSignButton.disabled = false
     addNetworkButton.disabled = false
     switchNetworkButton.disabled = false
     addTokenButton.disabled = false
@@ -355,13 +358,14 @@ async function walletInitialized() {
   }
 
   function unAuthed() {
+    connectButton.disabled = false
     getElement('address').innerHTML = 'N/A'
     console.log('unauthed')
     sendNativeTokenButton.disabled = true
     approveButton.disabled = true
     transferFromButton.disabled = true
     personalSignButton.disabled = true
-    typedSignButton.disabled = true
+    cfxTypedSignButton.disabled = true
     addNetworkButton.disabled = true
     switchNetworkButton.disabled = true
     addTokenButton.disabled = true
@@ -430,50 +434,42 @@ async function walletInitialized() {
   }
   // approve spender
   approveButton.onclick = async () => {
-    try {
-      const [connectedAddress] = await provider.request({
-        method: 'cfx_accounts',
-      })
-      const tx = {
-        from: connectedAddress,
-        to: cusdtAddress,
-        data: exampleContract.approve(
-          approveAccountInput.value,
-          100000000000000000000,
-        ).data,
-      }
-      provider
-        .request({method: 'cfx_sendTransaction', params: [tx]})
-        .then(result => {
-          console.log('result', result)
-        })
-    } catch (err) {
-      console.log('err', err)
+    const [connectedAddress] = await provider.request({method: 'cfx_accounts'})
+    const tx = {
+      from: connectedAddress,
+      to: cusdtAddress,
+      data: exampleContract.approve(
+        approveAccountInput.value,
+        100000000000000000000,
+      ).data,
     }
+    provider
+      .request({method: 'cfx_sendTransaction', params: [tx]})
+      .then(result => {
+        getElement('approve_token_result').innerHTML = `txhash: ${result}`
+      })
+      .catch(error => console.error('error', error.message || error))
   }
   //transfer from
   transferFromButton.onclick = async () => {
-    try {
-      const [connectedAddress] = await provider.request({
-        method: 'cfx_accounts',
-      })
-      const tx = {
-        from: connectedAddress,
-        to: cusdtAddress,
-        data: exampleContract.transferFrom(
-          transferFromAccountInput.value,
-          transferToAccountInput.value,
-          10000000000000000000,
-        ).data,
-      }
-      provider
-        .request({method: 'cfx_sendTransaction', params: [tx]})
-        .then(result => {
-          console.log('result', result)
-        })
-    } catch (err) {
-      console.log('err', err)
+    const [connectedAddress] = await provider.request({
+      method: 'cfx_accounts',
+    })
+    const tx = {
+      from: connectedAddress,
+      to: cusdtAddress,
+      data: exampleContract.transferFrom(
+        transferFromAccountInput.value,
+        transferToAccountInput.value,
+        10000000000000000000,
+      ).data,
     }
+    provider
+      .request({method: 'cfx_sendTransaction', params: [tx]})
+      .then(result => {
+        getElement('send_token_result').innerHTML = `txhash: ${result}`
+      })
+      .catch(error => console.error('error', error.message || error))
   }
   // personal sign
   personalSignButton.onclick = () => {
@@ -493,7 +489,7 @@ async function walletInitialized() {
   }
 
   // typed sign
-  const typedData = {
+  const cfxTypedData = {
     types: {
       CIP23Domain: [
         {name: 'name', type: 'string'},
@@ -543,14 +539,80 @@ async function walletInitialized() {
       contents: 'Hello, Bob!',
     },
   }
-  typedSignButton.onclick = () => {
+  cfxTypedSignButton.onclick = () => {
     provider
       .request({
         method: 'cfx_signTypedData_v4',
-        params: [getElement('address').innerHTML, JSON.stringify(typedData)],
+        params: [getElement('address').innerHTML, JSON.stringify(cfxTypedData)],
       })
       .then(result => {
-        getElement('typed_sign_result').innerHTML = result
+        getElement('cfx_typed_sign_result').innerHTML = result
+        console.log('result', result)
+      })
+      .catch(console.log)
+  }
+
+  const ethTypedData = {
+    types: {
+      EIP712Domain: [
+        {name: 'name', type: 'string'},
+        {name: 'version', type: 'string'},
+        {name: 'chainId', type: 'uint256'},
+        {name: 'verifyingContract', type: 'address'},
+      ],
+      Person: [
+        {name: 'name', type: 'string'},
+        {name: 'wallets', type: 'address[]'},
+      ],
+      Mail: [
+        {name: 'from', type: 'Person'},
+        {name: 'to', type: 'Person[]'},
+        {name: 'contents', type: 'string'},
+      ],
+      Group: [
+        {name: 'name', type: 'string'},
+        {name: 'members', type: 'Person[]'},
+      ],
+    },
+    domain: {
+      name: 'Ether Mail',
+      version: '1',
+      chainId: 1,
+      verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+    },
+    primaryType: 'Mail',
+    message: {
+      from: {
+        name: 'Cow',
+        wallets: [
+          '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+          '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+        ],
+      },
+      to: [
+        {
+          name: 'Bob',
+          wallets: [
+            '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+            '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+            '0xB0B0b0b0b0b0B000000000000000000000000000',
+          ],
+        },
+      ],
+      contents: 'Hello, Bob!',
+    },
+  }
+  ethTypedSignButton.onclick = () => {
+    provider
+      .request({
+        method: 'eth_signTypedData_v4',
+        params: [
+          format.hexAddress(getElement('address').innerHTML),
+          JSON.stringify(ethTypedData),
+        ],
+      })
+      .then(result => {
+        getElement('eth_typed_sign_result').innerHTML = result
         console.log('result', result)
       })
       .catch(console.log)
@@ -563,15 +625,15 @@ async function walletInitialized() {
         method: 'wallet_addConfluxChain',
         params: [
           {
-            chainId: '0x406',
+            chainId: '0x47',
             chainName: 'EVM Conflux',
             nativeCurrency: {
               name: 'Conflux',
               symbol: 'CFX',
               decimals: 18,
             },
-            rpcUrls: ['http://47.104.89.179:12537'],
-            blockExplorerUrls: ['https://confluxscan.io'],
+            rpcUrls: ['https://evmtestnet.confluxrpc.com'],
+            blockExplorerUrls: ['https://evmtestnet.confluxscan.io'],
           },
         ],
       })

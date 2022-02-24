@@ -1,9 +1,9 @@
-import {and, arrp, empty} from '@fluent-wallet/spec'
+import {optParam} from '@fluent-wallet/spec'
 
 export const NAME = 'eth_blockNumber'
 
 export const schemas = {
-  input: [and, arrp, empty],
+  input: optParam,
 }
 
 export const permissions = {
@@ -13,9 +13,9 @@ export const permissions = {
 
 export const cache = {
   type: 'ttl',
-  key: ({params}) => `EPOCH${params[0]}`,
+  key: () => NAME,
 }
 
-export const main = async ({f, params}) => {
-  return await f(params)
+export const main = async ({f}) => {
+  return await f([])
 }

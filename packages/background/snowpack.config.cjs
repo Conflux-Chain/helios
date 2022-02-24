@@ -24,6 +24,13 @@ const mergedConfig = mergeConfig(baseConfig, {
   },
   packageOptions: {
     ...baseConfig.packageOptions,
+    knownEntrypoints: [
+      ...baseConfig.packageOptions.knownEntrypoints,
+      'keccak',
+      'create-hash/md5',
+      'ethereumjs-util',
+      // 'readable-stream',
+    ],
     cache: '.snowpack-bg',
   },
   optimize: {

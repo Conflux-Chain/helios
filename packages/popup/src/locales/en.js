@@ -279,6 +279,10 @@ const en = {
     docs: 'Docs',
     version: 'Version',
 
+    // Authorized Website
+    authorizedWebsite: 'Authorized Website',
+    noAuthorizedWebsite: 'No website authorized',
+
     // Developer Mode
     developerMode: 'Developer Mode',
     compatibilityMode: 'Compatibility Mode',
@@ -374,6 +378,8 @@ const en = {
     errorCode: 'Error Code',
     feedBackCode: 'Copy code and feedback',
     fullNodeError: 'Unable to connect RPC node.',
+    close: 'Close',
+    reload: 'Reload',
   },
 }
 

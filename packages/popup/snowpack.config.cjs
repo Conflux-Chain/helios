@@ -54,6 +54,21 @@ const mergedConfig = mergeConfig(baseConfig, {
   },
   packageOptions: {
     ...baseConfig.packageOptions,
+    knownEntrypoints: [
+      ...baseConfig.packageOptions.knownEntrypoints,
+      'rc-util/es/raf',
+      'rc-util/es/ref',
+      'rc-util/es/Portal',
+      'rc-util/es/isMobile',
+      'rc-util/es/createChainedFunction',
+      'rc-util/es/Dom/addEventListener',
+      'rc-util/es/Dom/contains',
+      'rc-util/es/Dom/findDOMNode',
+      'rc-util/es/Dom/isVisible',
+      'rc-util/es/Dom/canUseDom',
+      'node-fetch',
+      ...(isDev() ? ['prop-types', 'react/jsx-dev-runtime'] : []),
+    ],
     cache: '.snowpack-popup',
   },
   optimize: {

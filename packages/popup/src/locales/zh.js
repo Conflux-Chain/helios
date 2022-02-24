@@ -272,6 +272,10 @@ const zh = {
     docs: '文档',
     version: '版本号',
 
+    // Authorized Website
+    authorizedWebsite: '已授权的网站',
+    noAuthorizedWebsite: '您没有授权任何网站',
+
     // Developer Mode
     developerMode: '开发者模式',
     compatibilityMode: '兼容模式',
@@ -362,6 +366,8 @@ const zh = {
     errorCode: '错误码',
     feedBackCode: '复制错误信息并反馈',
     fullNodeError: '无法连接到 RPC 节点',
+    close: '关闭',
+    reload: '重新加载',
   },
 }
 

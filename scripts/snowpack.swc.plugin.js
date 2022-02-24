@@ -24,6 +24,10 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
       // https://github.com/nodejs/readable-stream/issues/456
       if (id.endsWith('/cip-23/lib/es/utils/buffer.js'))
         return 'export * from "@fluent-wallet/signature/cip-23-utils-buffer.js"'
+      if (id.endsWith('/ethereum-cryptography/keccak.js'))
+        return `
+export {keccak256, keccak512, keccak224, keccak384} from "@fluent-wallet/signature/ethereum-cryptography-keccak.js";
+export * as default from "@fluent-wallet/signature/ethereum-cryptography-keccak.js";`
 
       if (ignores.reduce((acc, test) => acc || id.includes(test), false))
         return contents

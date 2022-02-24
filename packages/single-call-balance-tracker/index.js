@@ -55,3 +55,23 @@ export const balances = async (...args) => {
 
   return rst
 }
+
+export const NetworkMetaData = {
+  eth: {
+    1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39', // ethereum
+    3: '0x8D9708f3F514206486D7E988533f770a16d074a7', // ropsten
+    4: '0x3183B673f4816C94BeF53958BaF93C671B7F8Cf2', // rinkeby
+    42: '0x55ABBa8d669D60A10c104CC493ec5ef389EC92bb', // kovan
+    56: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // bsc
+    97: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // bsc test
+    137: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // polygon
+    80001: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // mumbai
+    10: '0xB1c568e9C3E6bdaf755A60c7418C269eb11524FC', // optimism
+    69: '0xB1c568e9C3E6bdaf755A60c7418C269eb11524FC', // optimism kovan
+    42161: '0x151E24A486D7258dd7C33Fb67E4bB01919B7B32c', // arbitrum
+  },
+  cfx: {
+    1029: 'cfx:achxne2gfh8snrstkxn0f32ua2cf19zwky2y66hj2d', // cfx mainnet
+    1: 'cfxtest:achxne2gfh8snrstkxn0f32ua2cf19zwkyw9tpbc6k', // cfx testnet
+  },
+}

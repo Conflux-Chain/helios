@@ -547,14 +547,24 @@
              rst           (apply q query (:args query-initial))]
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
-(defn get-address [{:keys [addressId networkId hex value accountId groupId index tokenId appId selected g]}]
+(defn get-address [{:keys [addressId networkId hex value accountId groupId
+                           index tokenId appId selected fuzzy groupTypes g]}]
   (let [g            (and g {:address g})
         post-process (if (seq g) identity #(get % :db/id))
         addr         (if (string? value) [value] value)
         addr         (if (vector? addr) (map #(.toLowerCase %) addr) addr)
         hex          (if (string? hex) [hex] hex)
         hex          (if (vector? hex) (map #(.toLowerCase %) hex) hex)
-        addressId    (if selected (get-current-addr) addressId)]
+        addressId    (if selected (get-current-addr) addressId)
+        fuzzy        (if (string? fuzzy)
+                       (try
+                         (re-pattern
+                          (str "(?i)"
+                               (-> fuzzy
+                                   (.replaceAll "  " "\\s")
+                                   (.replaceAll " " ".*"))))
+                         (catch js/Error _ "_"))
+                       nil)]
     (prst->js
      (cond
        (vector? addressId)
@@ -589,7 +599,24 @@
                              groupId
                              (-> (update :args conj (if (vector? groupId) groupId [groupId]))
                                  (update :in conj '[?gid ...])
-                                 (update :where conj '[?gid :accountGroup/account ?acc] '[?acc :account/address ?addr]))
+                                 (update :where conj
+                                         '[?acc :account/address ?addr]
+                                         '[?gid :accountGroup/account ?acc]))
+                             (and (not groupId) (seq groupTypes))
+                             (-> (update :args conj groupTypes)
+                                 (update :in conj '[?groupTypes ...])
+                                 (update :where conj
+                                         '[?acc :account/address ?addr]
+                                         '[?gid :accountGroup/account ?acc]
+                                         '[?gid :accountGroup/vault ?vault]
+                                         '[?vault :vault/type ?groupTypes]))
+                             fuzzy
+                             (-> (update :args conj fuzzy)
+                                 (update :in conj '?fuzzy)
+                                 (update :where conj
+                                         '[?acc :account/address ?addr]
+                                         '[?acc :account/nickname ?acc-name]
+                                         '[(re-find ?fuzzy ?acc-name)]))
                              accountId
                              (-> (update :args conj (if (vector? accountId) accountId [accountId]))
                                  (update :in conj '[?acc ...])
@@ -992,11 +1019,11 @@
 (defn set-tx-chain-switched [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
 
-(defn get-cfx-txs-to-enrich
-  ([] (get-cfx-txs-to-enrich {}))
-  ([{:keys [txhash]}]
+(defn get-txs-to-enrich
+  ([] (get-txs-to-enrich {}))
+  ([{:keys [txhash type]}]
    (let [txs (q '[:find ?tx ?addr ?net ?token ?app
-                  :in $ ?txhash
+                  :in $ ?txhash ?nettype
                   :where
                   (or (and [(and true ?txhash)]
                            [?tx :tx/hash ?txhash])
@@ -1011,7 +1038,8 @@
 
                   [?addr :address/tx ?tx]
                   [?addr :address/network ?net]
-                  [?net :network/type "cfx"]
+                  (or [(= ?nettype "all")]
+                      [?net :network/type ?nettype])
 
                   (or
                    [?token :token/tx ?tx]
@@ -1021,7 +1049,7 @@
                   (or
                    [?app :app/tx ?tx]
                    [(and true false) ?app])]
-                txhash)
+                txhash (or type "all"))
          process (if txhash (fn [[tx addr net token app]]
                               {:tx      (e :tx tx)
                                :address (e :address addr)
@@ -1175,8 +1203,10 @@
                               (assoc :token (and token (e :token token))))))
                       txs)})))
 
-(defonce default-preferences {:hideTestNetwork false
-                              :useModernProviderAPI false})
+(defonce default-preferences {:hideTestNetwork      false
+                              :useModernProviderAPI false
+                              :overrideWindowDotConflux  true
+                              :overrideWindowDotEthereum false})
 
 (defn get-preferences []
   (let [preferences (or (:preferences
@@ -1188,7 +1218,7 @@
     preferences))
 
 (defn set-preferences [preferences]
-  (let [preferences (deep-merge default-preferences (or preferences {}))
+  (let [preferences (deep-merge (get-preferences) (or preferences {}))
         pref-id     (or (q '[:find ?p .
                              :where [?p :preferences]])
                         -1)
@@ -1233,7 +1263,7 @@
               :setTxConfirmed                      set-tx-confirmed
               :setTxChainSwitched                  set-tx-chain-switched
               :setTxUnsent                         set-tx-unsent
-              :getCfxTxsToEnrich                   get-cfx-txs-to-enrich
+              :getTxsToEnrich                      get-txs-to-enrich
               :cleanupTx                           cleanup-tx
               :findApp                             get-apps
               :findAddress                         get-address

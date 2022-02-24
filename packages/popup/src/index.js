@@ -74,10 +74,13 @@ ReactDOM.render(
         use: [swrPostProcessDataMiddleware],
         onError: error => {
           if (error && location) {
+            const prevPath = window?.location?.hash === '#/' ? 'home' : ''
             sentryCapture(error)
             location.href = `${location.origin}${
               location.pathname
-            }#${ERROR}?errorMsg=${encodeURIComponent(error.message) || ''}`
+            }#${ERROR}?errorMsg=${
+              encodeURIComponent(error.message) || ''
+            }&from=${prevPath}`
           }
         },
       }}

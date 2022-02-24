@@ -55,7 +55,7 @@ const Nav: React.FC = () => {
         </div>
 
         <div className="flex items-center justify-center">
-          {isConnected && chainId === '1' && (
+          {isConnected && (
             <button
               className="button text-[14px] h-[40px]"
               onClick={handleClickAddEVMChainToMetaMask}
@@ -79,9 +79,9 @@ const Nav: React.FC = () => {
             </button>
           )}
           {isConnected && account && (
-            <div className="flex justify-end items-center ml-[12px] pr-[4px] text-[14px] bg-white w-[248px] h-[40px] rounded-[54px] text-[#3D3F4C]">
+            <div className="flex justify-end items-center ml-[12px] pr-[4px] text-[14px] bg-white pl-[6px] h-[40px] rounded-[54px] text-[#3D3F4C]">
               <span className="nav-spin mr-[4px]" />
-              {`${ConfluxSpace}`}
+              Conflux {chainId === '1029' ? 'Hydra' : 'Testnet'}
               <ShortenAddress
                 className="h-[32px] px-[8px] ml-[8px] text-[#808BE7] bg-[#F8F9FE] rounded-[54px] dfn-right"
                 text={account}

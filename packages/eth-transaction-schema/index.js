@@ -32,6 +32,7 @@ export default function ({
     accessList: ['accessList', AccessListSpec],
     chainId: ['chainId', chainId],
   }
+  // EIP-2930
   const Transaction2930Unsigned = [
     map,
     {closed: true},
@@ -51,6 +52,7 @@ export default function ({
     optionalMapKey(TxMapSpecs.accessList),
     optionalMapKey(TxMapSpecs.chainId),
   ]
+  // EIP-1559
   const Transaction1559Unsigned = [
     map,
     {closed: true},
@@ -71,10 +73,17 @@ export default function ({
     optionalMapKey(TxMapSpecs.accessList),
     optionalMapKey(TxMapSpecs.chainId),
   ]
+  // EIP-155
   const TransactionLegacyUnsigned = [
     map,
     {closed: true},
     TxMapSpecs.from,
+
+    [
+      TxMapSpecs.type[0],
+      optionalMapKey(TxMapSpecs.type)[1],
+      [and, TxMapSpecs.type[2], [eq, '0x0']],
+    ],
 
     optionalMapKey(TxMapSpecs.nonce),
     optionalMapKey(TxMapSpecs.to),

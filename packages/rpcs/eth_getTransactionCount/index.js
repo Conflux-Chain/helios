@@ -1,9 +1,9 @@
-import {ethHexAddress, cat, blockTag} from '@fluent-wallet/spec'
+import {ethHexAddress, cat, blockRef} from '@fluent-wallet/spec'
 
 export const NAME = 'eth_getTransactionCount'
 
 export const schemas = {
-  input: [cat, ethHexAddress, blockTag],
+  input: [cat, ethHexAddress, blockRef],
 }
 
 export const permissions = {

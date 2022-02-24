@@ -12,6 +12,7 @@ import {
 } from '@fluent-wallet/spec'
 import {decode, encode} from '@fluent-wallet/base32-address'
 import {encrypt} from 'browser-passworder'
+import {consts as ledgerConsts} from '@fluent-wallet/ledger'
 
 export const NAME = 'wallet_importHardwareWalletAccountGroupOrAccount'
 
@@ -32,7 +33,10 @@ const BasicSchema = [
 
 const NewAccountGroupSchema = [
   ['type', [enums, 'cfx', 'eth']],
-  ['device', [enums, 'LedgerNanoS']],
+  [
+    'device',
+    [enums, ledgerConsts.LEDGER_NANOS_NAME, ledgerConsts.LEDGER_NANOX_NAME],
+  ],
   ['accountGroupNickname', stringp],
 ]
 const OldAccountGroupSchema = [['accountGroupId', dbid]]

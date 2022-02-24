@@ -19,12 +19,16 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "babel-plugin-dynamic-import-node": "2.3.3",
-    "esinstall/rollup-plugin-polyfill-node": "0.7.0"
+    "esinstall/rollup-plugin-polyfill-node": "0.8.0",
+    "esinstall/cjs-module-lexer": "^1.2.2",
+    "esinstall/es-module-lexer": "^0.9.3",
+    "esinstall/@rollup/plugin-node-resolve": "^10.0.0"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",
     "compile:inpage": "swc --config-file scripts/inpage.swcrc.json -o packages/browser-extension/build/inpage/dist/index.js --source-maps inline packages/browser-extension/build/inpage/dist/index.js",
     "dev": "cross-env NODE_ENV=development node scripts/dev.js",
+    "firefox:dev": "web-ext run --start-url 'about:devtools-toolbox?id=fluent-wallet%40confluxnetwork.org&type=extension' --firefox-profile resources/firefox-debug-profile/ --source-dir packages/browser-extension/",
     "doc": "yarn workspace doc start",
     "story": "yarn start-storybook",
     "prod-all": "node scripts/prod.js",
@@ -35,7 +39,7 @@
     "lint": "eslint  --ignore-path .gitignore packages",
     "lint:fix": "yarn run lint --fix",
     "test:unit": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --no-cache --testPathIgnorePatterns '.*\\.integration\\.test\\.jsx?'",
-    "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test node ./scripts/integration-test.js --no-cache --testMatch '**/*.integration.test.[jt]s?(x)' --coverageDirectory './coverage/integration'",
+    "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test node ./scripts/integration-test.js --no-cache  --config='./integration.jest.config.js'",
     "contract:compile": "bash ./scripts/solc.sh",
     "contract:watch": "watchexec --restart --on-busy-update queue -w ./contracts/ --debounce 500 yarn run contract:compile"
   },
@@ -58,8 +62,8 @@
     "@storybook/addon-viewport": "6.3.12",
     "@storybook/react": "6.3.12",
     "@swc/cli": "0.1.55",
-    "@swc/core": "1.2.130",
-    "@swc/helpers": "0.3.2",
+    "@swc/core": "1.2.141",
+    "@swc/helpers": "0.3.3",
     "@testing-library/jest-dom": "5.15.0",
     "@testing-library/react": "12.1.2",
     "@types/js-string-escape": "^1",
@@ -69,7 +73,7 @@
     "browserslist": "^4.19.1",
     "concurrently": "^6.5.1",
     "cross-env": "^7.0.3",
-    "cssnano": "5.0.15",
+    "cssnano": "5.0.17",
     "dot-env": "^0.0.1",
     "dotenv-expand": "^5.1.0",
     "eslint": "^7.32.0",
@@ -88,11 +92,11 @@
     "jest": "^27.3.1",
     "jest-webextension-mock": "^3.7.19",
     "js-string-escape": "1.0.1",
-    "lint-staged": "^12.1.7",
+    "lint-staged": "^12.3.4",
     "mustache": "^4.2.0",
     "nock": "13.2.0",
     "npm-run-all": "^4.1.5",
-    "postcss": "^8.4.5",
+    "postcss": "^8.4.6",
     "prettier": "^2.5.1",
     "prettier-plugin-solidity": "1.0.0-beta.18",
     "ramda": "^0.27.2",
@@ -101,7 +105,7 @@
     "react-highlight.js": "1.0.7",
     "regenerator-runtime": "^0.13.9",
     "rimraf": "^3.0.2",
-    "shadow-cljs": "^2.16.12",
+    "shadow-cljs": "^2.17.3",
     "storybook": "6.3.12",
     "storybook-addon-outline": "1.4.1",
     "storybook-addon-pseudo-states": "1.0.0",
@@ -179,5 +183,8 @@
       "no-descending-specificity": null
     }
   },
-  "packageManager": "yarn@3.1.0"
+  "packageManager": "yarn@3.1.0",
+  "dependencies": {
+    "web-ext": "6.7.0"
+  }
 }

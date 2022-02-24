@@ -1,1 +1,1 @@
-# eth-transaction-schema
+# @fluent-wallet/eth-transaction-schema

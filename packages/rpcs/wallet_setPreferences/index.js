@@ -9,6 +9,8 @@ export const schemas = {
     {closed: true},
     ['hideTestNetwork', {optional: true}, boolean],
     ['useModernProviderAPI', {optional: true}, boolean],
+    ['overrideWindowDotEthereum', {optional: true}, boolean],
+    ['overrideWindowDotConflux', {optional: true}, boolean],
   ],
 }
 
@@ -26,7 +28,7 @@ export const main = ({db: {setPreferences, getApp}, params}) => {
     apps.forEach(app => {
       if (!app.site.post) return
       app.site.post({
-        event: '__FLUENT_USE_MODERN_PROVIDER_API__',
+        event: '__FLUENT_BACKEND_PREFERENCES__',
         params: params.useModernProviderAPI,
       })
     })

@@ -150,7 +150,9 @@ const Input = forwardRef(function Input(
       </div>
       <div className="overflow-hidden">
         <div
-          className={`${errorClassName} transition duration-300 slide-in-down ease-in-out pt-2 transform-gpu ${errorAnimateStyle}`}
+          className={`${errorClassName} transition duration-300 slide-in-down ease-in-out ${
+            errorMessage ? 'pt-2' : 'pt-0'
+          } transform-gpu ${errorAnimateStyle}`}
         >
           {displayErrorMsg}
         </div>

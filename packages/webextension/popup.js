@@ -30,6 +30,7 @@ const focus = async wid => {
         await browser.windows.update(wid, {focused: true})
       }
     } catch (err) {
+      // can't find window with id `wid`
       if (FOCUS_LISTENER) {
         browser.windows.onFocusChanged.hasListener(FOCUS_LISTENER) &&
           browser.windows.onFocusChanged.removeListener(FOCUS_LISTENER)
@@ -59,14 +60,27 @@ const newPopup = async ({url, alwaysOnTop}) => {
   return w
 }
 
-export const show = async ({url, alwaysOnTop = false, mode = {}} = {}) => {
+export const show = async (arg = {}) => {
+  let {url, alwaysOnTop = false, mode = {}} = arg
   url = url || (mode.isProd ? 'popup/notification.html' : 'notification.html')
   if (!browser?.windows?.getAll) return
   let popup = (await browser.windows.getAll()).filter(
     w => w.type === 'popup',
   )?.[0]
   if (popup) {
-    await browser.windows.update(popup.id, {focused: true})
+    try {
+      await browser.windows.update(popup.id, {focused: true})
+      // eslint-disable-next-line no-empty
+    } catch (err) {
+      // popup got deleted
+      if (
+        popup.id !==
+        (await browser.windows.getAll()).filter(w => w.type === 'popup')?.[0]
+          ?.id
+      ) {
+        show(arg)
+      }
+    }
   } else {
     popup = await newPopup({url, alwaysOnTop})
   }
@@ -128,10 +142,18 @@ export const onRemoved = (windowId, f) => {
   if (!isFunction(f)) throw new Error('Invalid callback, must be a function')
   ON_REMOVED.push(id => {
     if (windowId === id) {
-      return f(id)
+      try {
+        return f(id)
+        // eslint-disable-next-line no-empty
+      } catch (err) {}
     }
     return true
   })
 }
 
-export const remove = browser.windows?.remove
+export const remove = (...args) => {
+  try {
+    return browser.windows?.remove(...args)
+    // eslint-disable-next-line no-empty
+  } catch (err) {}
+}
