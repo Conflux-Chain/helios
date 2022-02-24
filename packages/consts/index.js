@@ -39,6 +39,7 @@ export const CFX_TESTNET_CHAINID = '0x1'
 export const CFX_TESTNET_NETID = 1
 export const CFX_TESTNET_CURRENCY_SYMBOL = 'CFX'
 export const CFX_TESTNET_CURRENCY_NAME = 'Conflux'
+export const CFX_TESTNET_SCAN_URL = 'https://testnet.confluxscan.io'
 
 // TODO: setup ci to use own infura
 export const ETH_MAINNET_RPC_ENDPOINT =

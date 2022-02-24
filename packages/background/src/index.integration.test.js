@@ -19,6 +19,8 @@ import {
   ETH_LOCALNET_CURRENCY_SYMBOL,
   ETH_LOCALNET_CURRENCY_NAME,
   DEFAULT_ETH_HDPATH,
+  CFX_TESTNET_RPC_ENDPOINT,
+  CFX_TESTNET_SCAN_URL,
 } from '@fluent-wallet/consts'
 import {
   MNEMONIC,
@@ -333,6 +335,7 @@ describe('integration test', function () {
     describe('wallet_getNetwork', function () {
       test.todo('wallet_getNetwork')
     })
+
     describe('wallet_addNetwork', function () {
       test('add cfx network omit hdPath', async () => {
         await request({
@@ -366,6 +369,67 @@ describe('integration test', function () {
         expect(addrs[addrs.length - 1].hex).toBe(CFX_ACCOUNTS[0].address)
         expect(addrs[addrs.length - 1].value).toBe(CFX_ACCOUNTS[0].base32)
         expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
+
+        //error case:Duplicate network endpoint
+        res = await request({
+          method: 'wallet_addNetwork',
+          params: {
+            chainId: '0xbb7',
+            chainName: 'cfxfoo1',
+            nativeCurrency: {
+              name: 'CFX',
+              decimals: DEFAULT_CURRENCY_DECIMALS,
+              symbol: 'CFX',
+            },
+            rpcUrls: [CFX_LOCALNET_RPC_ENDPOINT + '/'],
+          },
+          _rpcStack: ['frombg'],
+          _internal: true,
+        })
+
+        expect((await res).error.message).toMatch(/Duplicate network endpoint/)
+
+        //error case:Invalid chainId
+        res = await request({
+          method: 'wallet_addNetwork',
+          params: {
+            chainId: '0xbb8',
+            chainName: 'cfxfoo1',
+            nativeCurrency: {
+              name: 'CFX',
+              decimals: DEFAULT_CURRENCY_DECIMALS,
+              symbol: 'CFX',
+            },
+            rpcUrls: [CFX_TESTNET_RPC_ENDPOINT + '/'],
+          },
+          _rpcStack: ['frombg'],
+          _internal: true,
+        })
+
+        expect((await res).error.message).toMatch(/Invalid chainId/)
+
+        //test for the new hdPath
+        res = await request({
+          method: 'wallet_addNetwork',
+          params: {
+            chainId: '0x1',
+            chainName: 'cfxtest1',
+            nativeCurrency: {
+              name: 'CFX',
+              decimals: DEFAULT_CURRENCY_DECIMALS,
+              symbol: 'CFX',
+            },
+            rpcUrls: [CFX_TESTNET_RPC_ENDPOINT + '/'],
+            blockExplorerUrls: [CFX_TESTNET_SCAN_URL], //only for test,it is not the real scan url
+            iconUrls: [
+              'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/cfx.svg',
+            ],
+            hdPath: `m/44'/0'/0'/0`,
+          },
+          _rpcStack: ['frombg'],
+          _internal: true,
+        })
+        expect(typeof res.result === 'number').toEqual(true)
       })
       test('add eth network omit hdPath', async () => {
         await request({
@@ -399,6 +463,7 @@ describe('integration test', function () {
         expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
         expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
       })
+
       test('add eth network, with cfxOnly: true, type: pub vault', async () => {
         await request({
           method: 'wallet_importMnemonic',
@@ -2527,6 +2592,30 @@ describe('integration test', function () {
         expect((await res).error.message).toMatch(/Invalid chainId /)
       })
     })
+
+    describe('wallet_addHdPath', function () {
+      test('wallet_addHdPath', async function () {
+        res = await request({
+          method: 'wallet_addHdPath',
+          params: {name: 'btc-1', hdPath: `m/44'/0'/0'/0`},
+        })
+        expect(typeof (await res).result === 'number').toEqual(true)
+      })
+
+      test('error call : wallet_addHdPath', async () => {
+        res = request({
+          method: 'wallet_addHdPath',
+          params: {name: 'cfx-default', hdPath: DEFAULT_CFX_HDPATH},
+        })
+        expect((await res).error.message).toMatch(/Duplicate hd path name/)
+        res = await request({
+          method: 'wallet_addHdPath',
+          params: {name: 'cfx-default1', hdPath: DEFAULT_CFX_HDPATH},
+        })
+        expect((await res).error.message).toMatch(/hd path already added/)
+      })
+    })
+
     describe('wallet_discoverAccount', function () {
       test('wallet_discoverAccount', async function () {
         await sendCFX({to: CFX_ACCOUNTS[0].address, balance: 1})

@@ -161,7 +161,7 @@ export const main = async ({
     'newHdPath'
 
   if (hdPathId === 'newHdPath') {
-    hdPathId = await wallet_addHdPath({name: `${name}-hdPath`, value: hdPath})
+    hdPathId = await wallet_addHdPath({name: `${name}-hdPath`, hdPath})
   }
 
   const upsertResult = t([
