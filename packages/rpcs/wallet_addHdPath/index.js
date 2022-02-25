@@ -15,8 +15,8 @@ export const permissions = {
   db: ['getHdPathByName', 'getHdPathByValue', 't'],
 }
 export const main = ({
-  Err: {InvalidParams, t},
-  db: {getHdPathByName, getHdPathByValue},
+  Err: {InvalidParams},
+  db: {getHdPathByName, getHdPathByValue, t},
   params: {name, hdPath},
 }) => {
   if (getHdPathByName(name).length)
