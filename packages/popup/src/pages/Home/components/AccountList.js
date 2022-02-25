@@ -28,6 +28,7 @@ function AccountItem({
   authorizedAccountIdIconObj,
   onClose,
   groupType = '',
+  index,
 }) {
   const {t} = useTranslation()
   const {mutate} = useSWRConfig()
@@ -58,7 +59,7 @@ function AccountItem({
 
   return (
     !!accounts.length && (
-      <div className="bg-gray-0 rounded mt-4">
+      <div className={`bg-gray-0 rounded ${index !== 0 ? 'mt-4' : ''}`}>
         {groupType === 'pk' ? null : (
           <div className="flex items-center ml-3 pt-2.5">
             <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
@@ -123,6 +124,7 @@ AccountItem.propTypes = {
   authorizedAccountIdIconObj: PropTypes.object.isRequired,
   onClose: PropTypes.func,
   groupType: PropTypes.string,
+  index: PropTypes.number.isRequired,
 }
 
 function AccountCardContent({
@@ -139,9 +141,10 @@ function AccountCardContent({
       {searchedAccountGroup && accountGroupData.length === 0 ? (
         <NoResult content={t('noResult')} imgClassName="mt-[105px]" />
       ) : (
-        accountGroupData.map(({nickname, account, vault, eid}) => (
+        accountGroupData.map(({nickname, account, vault, eid}, index) => (
           <AccountItem
             key={eid}
+            index={index}
             accounts={Object.values(account).filter(({hidden}) => !hidden)}
             nickname={nickname}
             currentNetworkId={currentNetworkId}
@@ -185,27 +188,29 @@ function AccountList({onClose, open, accountsAnimate = true}) {
     <SlideCard
       id="account-list"
       cardTitle={
-        <StretchInput
-          currentNetworkId={currentNetworkId}
-          setSearchedAccountGroup={setSearchedAccountGroup}
-          expandWidth="w-4"
-          shrinkWidth={i18n.language === 'en' ? 'w-[137px]' : 'w-[170px]'}
-          wrapperClassName="ml-2.5"
-          rightNode={
-            <WrapIcon
-              size="w-5 h-5"
-              onClick={onAddAccount}
-              id="add-account-btn"
-            >
-              <PlusOutlined className="w-3 h-3 text-primary" />
-            </WrapIcon>
-          }
-          leftNode={
-            <div className="text-base text-gray-80 font-medium">
-              {t('myAccounts')}
-            </div>
-          }
-        />
+        <div className="pb-4">
+          <StretchInput
+            currentNetworkId={currentNetworkId}
+            setSearchedAccountGroup={setSearchedAccountGroup}
+            expandWidth="w-4"
+            shrinkWidth={i18n.language === 'en' ? 'w-[137px]' : 'w-[170px]'}
+            wrapperClassName="ml-2.5"
+            rightNode={
+              <WrapIcon
+                size="w-5 h-5"
+                onClick={onAddAccount}
+                id="add-account-btn"
+              >
+                <PlusOutlined className="w-3 h-3 text-primary" />
+              </WrapIcon>
+            }
+            leftNode={
+              <div className="text-base text-gray-80 font-medium">
+                {t('myAccounts')}
+              </div>
+            }
+          />
+        </div>
       }
       onClose={onClose}
       open={open}

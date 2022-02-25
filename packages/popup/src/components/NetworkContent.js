@@ -33,6 +33,7 @@ function NetworkItem({
   onClose,
   showCurrentIcon = true,
   needSwitchNet = true,
+  index,
   ...props
 }) {
   const {setLoading} = useLoading()
@@ -97,7 +98,9 @@ function NetworkItem({
     <div
       {...props}
       aria-hidden="true"
-      className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative hover:bg-primary-4 ${
+      className={`bg-gray-0 ${
+        index !== 0 ? 'mt-4' : ''
+      } h-15 flex items-center rounded relative hover:bg-primary-4 ${
         eid === networkId && needSwitchNet ? 'cursor-default' : 'cursor-pointer'
       } ${itemWrapperPaddingStyle} pr-3.5`}
       onClick={onChangeNetwork}
@@ -138,6 +141,7 @@ NetworkItem.propTypes = {
   onClose: PropTypes.func,
   showCurrentIcon: PropTypes.bool,
   needSwitchNet: PropTypes.bool,
+  index: PropTypes.number.isRequired,
 }
 
 function NetworkContent({
@@ -151,20 +155,24 @@ function NetworkContent({
   return (
     <>
       {networkData.map(
-        ({
-          eid,
-          name,
-          isCustom,
-          isMainnet,
-          isTestnet,
-          icon,
-          endpoint,
-          chainId,
-          ticker,
-          scanUrl,
-        }) => (
+        (
+          {
+            eid,
+            name,
+            isCustom,
+            isMainnet,
+            isTestnet,
+            icon,
+            endpoint,
+            chainId,
+            ticker,
+            scanUrl,
+          },
+          index,
+        ) => (
           <NetworkItem
             key={eid}
+            index={index}
             networkId={eid}
             networkName={name}
             networkItemSize={networkItemSize}

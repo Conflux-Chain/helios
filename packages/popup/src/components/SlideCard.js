@@ -37,10 +37,10 @@ function SlideCard({
         className={`z-20 rounded-t-xl px-3 pt-4 pb-3 absolute bottom-0  bg-gray-circles bg-no-repeat bg-contain ${animateStyle} ${cardClassName} ${width} ${height} ${backgroundColor}`}
         ref={ref}
       >
-        <div className="overflow-y-auto no-scroll w-full h-full">
-          {cardTitle}
-          {cardContent}
-          {cardFooter}
+        <div className="w-full h-full flex flex-col">
+          <div>{cardTitle}</div>
+          <div className="flex-1 overflow-y-auto no-scroll">{cardContent}</div>
+          <div>{cardFooter}</div>
         </div>
         {showClose ? (
           <CloseCircleFilled
