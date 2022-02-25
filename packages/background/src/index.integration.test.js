@@ -400,7 +400,7 @@ describe('integration test', function () {
               decimals: DEFAULT_CURRENCY_DECIMALS,
               symbol: 'CFX',
             },
-            rpcUrls: [CFX_TESTNET_RPC_ENDPOINT + '/'],
+            rpcUrls: ['https://test.confluxrpc.com'],
           },
           _rpcStack: ['frombg'],
           _internal: true,
