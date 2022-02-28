@@ -29,7 +29,7 @@ const SearchInput = forwardRef(function SearchInput(
     <div ref={searchContainerRef}>
       <Input
         id="searchText"
-        prefix={<SearchOutlined className={prefixClassName} />}
+        prefix={<SearchOutlined className={prefixClassName} id="search-icon" />}
         width="w-full"
         value={value}
         ref={ref}
