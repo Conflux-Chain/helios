@@ -434,50 +434,42 @@ async function walletInitialized() {
   }
   // approve spender
   approveButton.onclick = async () => {
-    try {
-      const [connectedAddress] = await provider.request({
-        method: 'cfx_accounts',
-      })
-      const tx = {
-        from: connectedAddress,
-        to: cusdtAddress,
-        data: exampleContract.approve(
-          approveAccountInput.value,
-          100000000000000000000,
-        ).data,
-      }
-      provider
-        .request({method: 'cfx_sendTransaction', params: [tx]})
-        .then(result => {
-          console.log('result', result)
-        })
-    } catch (err) {
-      console.log('err', err)
+    const [connectedAddress] = await provider.request({method: 'cfx_accounts'})
+    const tx = {
+      from: connectedAddress,
+      to: cusdtAddress,
+      data: exampleContract.approve(
+        approveAccountInput.value,
+        100000000000000000000,
+      ).data,
     }
+    provider
+      .request({method: 'cfx_sendTransaction', params: [tx]})
+      .then(result => {
+        getElement('approve_token_result').innerHTML = `txhash: ${result}`
+      })
+      .catch(error => console.error('error', error.message || error))
   }
   //transfer from
   transferFromButton.onclick = async () => {
-    try {
-      const [connectedAddress] = await provider.request({
-        method: 'cfx_accounts',
-      })
-      const tx = {
-        from: connectedAddress,
-        to: cusdtAddress,
-        data: exampleContract.transferFrom(
-          transferFromAccountInput.value,
-          transferToAccountInput.value,
-          10000000000000000000,
-        ).data,
-      }
-      provider
-        .request({method: 'cfx_sendTransaction', params: [tx]})
-        .then(result => {
-          console.log('result', result)
-        })
-    } catch (err) {
-      console.log('err', err)
+    const [connectedAddress] = await provider.request({
+      method: 'cfx_accounts',
+    })
+    const tx = {
+      from: connectedAddress,
+      to: cusdtAddress,
+      data: exampleContract.transferFrom(
+        transferFromAccountInput.value,
+        transferToAccountInput.value,
+        10000000000000000000,
+      ).data,
     }
+    provider
+      .request({method: 'cfx_sendTransaction', params: [tx]})
+      .then(result => {
+        getElement('send_token_result').innerHTML = `txhash: ${result}`
+      })
+      .catch(error => console.error('error', error.message || error))
   }
   // personal sign
   personalSignButton.onclick = () => {
@@ -633,15 +625,15 @@ async function walletInitialized() {
         method: 'wallet_addConfluxChain',
         params: [
           {
-            chainId: '0x406',
+            chainId: '0x47',
             chainName: 'EVM Conflux',
             nativeCurrency: {
               name: 'Conflux',
               symbol: 'CFX',
               decimals: 18,
             },
-            rpcUrls: ['http://47.104.89.179:12537'],
-            blockExplorerUrls: ['https://confluxscan.io'],
+            rpcUrls: ['https://evmtestnet.confluxrpc.com'],
+            blockExplorerUrls: ['https://evmtestnet.confluxscan.io'],
           },
         ],
       })

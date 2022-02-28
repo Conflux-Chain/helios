@@ -19,6 +19,8 @@ import {
   ETH_LOCALNET_CURRENCY_SYMBOL,
   ETH_LOCALNET_CURRENCY_NAME,
   DEFAULT_ETH_HDPATH,
+  CFX_TESTNET_RPC_ENDPOINT,
+  CFX_TESTNET_SCAN_URL,
 } from '@fluent-wallet/consts'
 import {
   MNEMONIC,
@@ -154,6 +156,37 @@ describe('integration test', function () {
         expect(stat.jsonrpc).toBe('2.0')
         expect(stat.result.chainId).toBe('0xbb7')
         expect(stat.result.networkId).toBe('0xbb7')
+      })
+    })
+
+    describe('wallet_accounts', function () {
+      test('wallet_accounts', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        const accountsCfx = await request({method: 'wallet_accounts'})
+        expect(accountsCfx.result[0]).toBe(CFX_ACCOUNTS[0].base32)
+        const accountsCfxInpage = await request({
+          method: 'wallet_accounts',
+          _inpage: true,
+          _origin: 'foo.site',
+        })
+        expect(accountsCfxInpage.result[0]).toBe(CFX_ACCOUNTS[0].base32)
+        const accountsAnother = await request({
+          method: 'wallet_accounts',
+          params: [],
+          networkName: ETH_MAINNET_NAME,
+        })
+        expect(accountsAnother.result[0]).toBe(ETH_ACCOUNTS[0].address)
+        const accountsFromInpage = await request({
+          _origin: 'foo.site',
+          _inpage: true,
+          method: 'wallet_accounts',
+          params: [],
+          networkName: ETH_MAINNET_NAME,
+        })
+        expect(accountsFromInpage.result[0]).toBe(ETH_ACCOUNTS[0].address)
       })
     })
     describe('cfx_chainId', function () {
@@ -302,6 +335,7 @@ describe('integration test', function () {
     describe('wallet_getNetwork', function () {
       test.todo('wallet_getNetwork')
     })
+
     describe('wallet_addNetwork', function () {
       test('add cfx network omit hdPath', async () => {
         await request({
@@ -335,6 +369,67 @@ describe('integration test', function () {
         expect(addrs[addrs.length - 1].hex).toBe(CFX_ACCOUNTS[0].address)
         expect(addrs[addrs.length - 1].value).toBe(CFX_ACCOUNTS[0].base32)
         expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
+
+        //error case:Duplicate network endpoint
+        res = await request({
+          method: 'wallet_addNetwork',
+          params: {
+            chainId: '0xbb7',
+            chainName: 'cfxfoo1',
+            nativeCurrency: {
+              name: 'CFX',
+              decimals: DEFAULT_CURRENCY_DECIMALS,
+              symbol: 'CFX',
+            },
+            rpcUrls: [CFX_LOCALNET_RPC_ENDPOINT + '/'],
+          },
+          _rpcStack: ['frombg'],
+          _internal: true,
+        })
+
+        expect((await res).error.message).toMatch(/Duplicate network endpoint/)
+
+        //error case:Invalid chainId
+        res = await request({
+          method: 'wallet_addNetwork',
+          params: {
+            chainId: '0xbb8',
+            chainName: 'cfxfoo1',
+            nativeCurrency: {
+              name: 'CFX',
+              decimals: DEFAULT_CURRENCY_DECIMALS,
+              symbol: 'CFX',
+            },
+            rpcUrls: ['http://test.confluxrpc.com/'],
+          },
+          _rpcStack: ['frombg'],
+          _internal: true,
+        })
+
+        expect((await res).error.message).toMatch(/Invalid chainId/)
+
+        //test for the new hdPath
+        res = await request({
+          method: 'wallet_addNetwork',
+          params: {
+            chainId: '0x1',
+            chainName: 'cfxtest1',
+            nativeCurrency: {
+              name: 'CFX',
+              decimals: DEFAULT_CURRENCY_DECIMALS,
+              symbol: 'CFX',
+            },
+            rpcUrls: [CFX_TESTNET_RPC_ENDPOINT + '/'],
+            blockExplorerUrls: [CFX_TESTNET_SCAN_URL], //only for test,it is not the real scan url
+            iconUrls: [
+              'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/cfx.svg',
+            ],
+            hdPath: `m/44'/0'/0'/0`,
+          },
+          _rpcStack: ['frombg'],
+          _internal: true,
+        })
+        expect(typeof res.result === 'number').toEqual(true)
       })
       test('add eth network omit hdPath', async () => {
         await request({
@@ -368,6 +463,7 @@ describe('integration test', function () {
         expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
         expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
       })
+
       test('add eth network, with cfxOnly: true, type: pub vault', async () => {
         await request({
           method: 'wallet_importMnemonic',
@@ -757,9 +853,7 @@ describe('integration test', function () {
           '0xf581242f2de1111638b9da336c283f177ca1e17cb3d6e3b09434161e26135992',
         )
         expect(res.result[0].network.name).toBe(CFX_MAINNET_NAME)
-        expect(res.result[1].hex).toBe(
-          '0x1de7fb621a141182bf6e65beabc6e8705cdff3d1',
-        )
+        expect(res.result[1].hex).toBe(ETH_ACCOUNTS[0].address)
         expect(res.result[1].value).toEqual(res.result[1].hex)
         expect(res.result[1].privateKey).toBe(
           '0x6a94c1f02edc1caff0849d46a068ff2819c0a338774fb99674e3d286a3351552',
@@ -2339,12 +2433,12 @@ describe('integration test', function () {
         })
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
-
+        const authReq = db.getAuthReq()[0]
         await request({
           _popup: true,
           method: 'wallet_addEthereumChain',
           params: {
-            authReqId: db.getAuthReq()[0].eid,
+            authReqId: authReq.eid,
             newChainConfig: [
               {
                 chainId: ETH_LOCALNET_CHAINID,
@@ -2365,8 +2459,163 @@ describe('integration test', function () {
         const [, n2] = db.getNetwork()
         expect(n2.name).toBe(ETH_MAINNET_NAME)
         expect(n2.endpoint).toBe(ETH_LOCALNET_RPC_ENDPOINT)
+        await request({
+          method: 'wallet_deleteNetwork',
+          params: {
+            password,
+            networkId: db.getNetworkByName(ETH_MAINNET_NAME)[0].eid,
+          },
+        })
+        res = request({
+          _popup: true,
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: ETH_LOCALNET_CHAINID,
+              chainName: ETH_MAINNET_NAME,
+              nativeCurrency: {
+                name: 'ETH',
+                symbol: 'ETH',
+                decimals: DEFAULT_CURRENCY_DECIMALS,
+              },
+              rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT],
+            },
+          ],
+        })
+        expect((await res).result).toBe('__null__')
+      })
+
+      test('error call adding duplicate endpoint network', async () => {
+        await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
+          request({
+            method: 'wallet_importPrivateKey',
+            params: {privateKey: result, password},
+          }),
+        )
+
+        const [a1] = db.getAccount()
+        res = request({
+          method: 'cfx_requestAccounts',
+          _inpage: true,
+          _origin: 'foo.site',
+          networkName: CFX_MAINNET_NAME,
+        })
+
+        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
+
+        await request({
+          method: 'wallet_requestPermissions',
+          params: {
+            permissions: [{cfx_accounts: {}}],
+            accounts: [a1.eid],
+            authReqId: db.getAuthReq()[0].eid,
+          },
+          networkName: CFX_MAINNET_NAME,
+          _popup: true,
+        })
+
+        res = request({
+          _origin: 'foo.site',
+          _inpage: true,
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: ETH_LOCALNET_CHAINID,
+              chainName: ETH_MAINNET_NAME,
+              nativeCurrency: {
+                name: 'ETH',
+                symbol: 'ETH',
+                decimals: DEFAULT_CURRENCY_DECIMALS,
+              },
+              rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT],
+            },
+          ],
+        })
+
+        expect((await res).error.message).toMatch(
+          /Duplicate network endpoint with network /,
+        )
+      })
+
+      test('error call : chainId is not the detectedChainId', async () => {
+        await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
+          request({
+            method: 'wallet_importPrivateKey',
+            params: {privateKey: result, password},
+          }),
+        )
+
+        const [a1] = db.getAccount()
+        res = request({
+          method: 'cfx_requestAccounts',
+          _inpage: true,
+          _origin: 'foo.site',
+          networkName: CFX_MAINNET_NAME,
+        })
+
+        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
+
+        await request({
+          method: 'wallet_requestPermissions',
+          params: {
+            permissions: [{cfx_accounts: {}}],
+            accounts: [a1.eid],
+            authReqId: db.getAuthReq()[0].eid,
+          },
+          networkName: CFX_MAINNET_NAME,
+          _popup: true,
+        })
+
+        await request({
+          method: 'wallet_deleteNetwork',
+          params: {password, networkId: db.getNetworkByType('eth')[0].eid},
+        })
+
+        res = request({
+          _origin: 'foo.site',
+          _inpage: true,
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: '0x538',
+              chainName: ETH_MAINNET_NAME,
+              nativeCurrency: {
+                name: 'ETH',
+                symbol: 'ETH',
+                decimals: DEFAULT_CURRENCY_DECIMALS,
+              },
+              rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT],
+            },
+          ],
+        })
+
+        expect((await res).error.message).toMatch(/Invalid chainId /)
       })
     })
+
+    describe('wallet_addHdPath', function () {
+      test('wallet_addHdPath', async function () {
+        res = await request({
+          method: 'wallet_addHdPath',
+          params: {name: 'btc-1', hdPath: `m/44'/0'/0'/0`},
+        })
+        expect(typeof (await res).result === 'number').toEqual(true)
+      })
+
+      test('error call : wallet_addHdPath', async () => {
+        res = request({
+          method: 'wallet_addHdPath',
+          params: {name: 'cfx-default', hdPath: DEFAULT_CFX_HDPATH},
+        })
+        expect((await res).error.message).toMatch(/Duplicate hd path name/)
+        res = await request({
+          method: 'wallet_addHdPath',
+          params: {name: 'cfx-default1', hdPath: DEFAULT_CFX_HDPATH},
+        })
+        expect((await res).error.message).toMatch(/hd path already added/)
+      })
+    })
+
     describe('wallet_discoverAccount', function () {
       test('wallet_discoverAccount', async function () {
         await sendCFX({to: CFX_ACCOUNTS[0].address, balance: 1})

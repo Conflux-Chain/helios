@@ -39,7 +39,7 @@
     "lint": "eslint  --ignore-path .gitignore packages",
     "lint:fix": "yarn run lint --fix",
     "test:unit": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --no-cache --testPathIgnorePatterns '.*\\.integration\\.test\\.jsx?'",
-    "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test node ./scripts/integration-test.js --no-cache --testMatch '**/*.integration.test.[jt]s?(x)' --coverageDirectory './coverage/integration'",
+    "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test node ./scripts/integration-test.js --no-cache  --config='./integration.jest.config.js'",
     "contract:compile": "bash ./scripts/solc.sh",
     "contract:watch": "watchexec --restart --on-busy-update queue -w ./contracts/ --debounce 500 yarn run contract:compile"
   },

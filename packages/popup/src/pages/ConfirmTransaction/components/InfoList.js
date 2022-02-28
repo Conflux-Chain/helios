@@ -6,7 +6,7 @@ import {useCurrentDapp, useCurrentAddress} from '../../../hooks/useApi'
 import {useCurrentTxParams} from '../../../hooks'
 import {DisplayBalance, WrapIcon} from '../../../components'
 import {ROUTES} from '../../../constants'
-const {EDIT_PERMISSION} = ROUTES
+const {EDIT_ALLOWANCE} = ROUTES
 
 // TODO: use network id
 const CurrentNetworkDisplay = ({currentNetwork}) => {
@@ -68,7 +68,7 @@ function InfoList({
               <EditOutlined
                 className="w-4 h-4 cursor-pointer group-hover:text-primary"
                 id="editAllowance"
-                onClick={() => history.push(EDIT_PERMISSION)}
+                onClick={() => history.push(EDIT_ALLOWANCE)}
               />
             </WrapIcon>
           </span>

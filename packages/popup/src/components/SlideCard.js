@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {useClickAway} from 'react-use'
-import {CloseOutlined} from '@fluent-wallet/component-icons'
+import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import {useRef} from 'react'
 import {useSlideAnimation} from '../hooks'
 
@@ -34,16 +34,18 @@ function SlideCard({
   return (
     <div id={id} className={containerClassName}>
       <div
-        className={`z-20 rounded-t-xl px-3 pt-4 pb-3 absolute bottom-0 overflow-y-auto no-scroll bg-gray-circles bg-no-repeat bg-contain ${animateStyle} ${cardClassName} ${width} ${height} ${backgroundColor}`}
+        className={`z-20 rounded-t-xl px-3 pt-4 pb-3 absolute bottom-0  bg-gray-circles bg-no-repeat bg-contain ${animateStyle} ${cardClassName} ${width} ${height} ${backgroundColor}`}
         ref={ref}
       >
-        {cardTitle}
-        {cardContent}
-        {cardFooter}
+        <div className="w-full h-full flex flex-col">
+          <div>{cardTitle}</div>
+          <div className="flex-1 overflow-y-auto no-scroll">{cardContent}</div>
+          <div>{cardFooter}</div>
+        </div>
         {showClose ? (
-          <CloseOutlined
+          <CloseCircleFilled
             onClick={onClose}
-            className="w-5 h-5 text-gray-60 cursor-pointer absolute top-3 right-3"
+            className="w-6 h-6 text-[#ffffff33] cursor-pointer absolute -top-9 right-3 z-50"
           />
         ) : null}
       </div>

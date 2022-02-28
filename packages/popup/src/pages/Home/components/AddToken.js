@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import {useState, useMemo} from 'react'
 import {useTranslation} from 'react-i18next'
 import {
-  SearchToken,
+  SearchInput,
   SlideCard,
   TokenItem,
   WrapIcon,
@@ -114,7 +114,7 @@ function AddToken({onClose, open}) {
       cardContent={
         // 2.75rem = parent paddingBottom + current marginTop = 1.75rem + 1rem
         <div className="mt-4 flex flex-col flex-grow h-[calc(100%-2.75rem)]">
-          <SearchToken value={searchContent} onChange={setSearchContent} />
+          <SearchInput value={searchContent} onChange={setSearchContent} />
           {tokenList && (
             <div className="relative pt-3 mt-3 bg-gray-0 rounded flex flex-col flex-grow">
               <p className="ml-4 mb-1 text-gray-40">{t('searchResults')}</p>
