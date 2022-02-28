@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
-import {useSWRConfig} from 'swr'
-import {isNumber} from '@fluent-wallet/checks'
 import Message from '@fluent-wallet/component-message'
 import {useTranslation} from 'react-i18next'
 import {KeyOutlined} from '@fluent-wallet/component-icons'
@@ -12,7 +10,6 @@ import {
   TextField,
 } from '../../../components'
 import {RPC_METHODS} from '../../../constants'
-import {request, updateDbAccountList} from '../../../utils'
 
 const {
   WALLET_EXPORT_ACCOUNT,
@@ -27,74 +24,49 @@ function AccountItem({
   accountNickname = '',
   showDelete = false,
   hidden = false,
+  selected = false,
   onOpenConfirmPassword,
-  currentAccountId,
+  updateEditedName,
 }) {
   const {t} = useTranslation()
-  const {mutate} = useSWRConfig()
   const [inputNickname, setInputNickname] = useState(accountNickname)
   const [hidingAccountStatus, setHidingAccountStatus] = useState(false)
 
-  const updateAccount = params => {
-    return new Promise((resolve, reject) => {
-      request(WALLET_UPDATE_ACCOUNT, params)
-        .then(() => {
-          updateDbAccountList(
-            mutate,
-            'accountManagementQueryAccount',
-            'queryAllAccount',
-          ).then(resolve)
-        })
-        .catch(e => {
-          Message.error({
-            content:
-              e?.message?.split?.('\n')?.[0] ??
-              e?.message ??
-              t('unCaughtErrMsg'),
-            top: '10px',
-            duration: 1,
-          })
-          reject()
-        })
-    })
-  }
-
   const onTextFieldBlur = () => {
-    return updateAccount.call(this, {accountId, nickname: inputNickname})
+    return updateEditedName(
+      {accountId, nickname: inputNickname},
+      WALLET_UPDATE_ACCOUNT,
+    )
   }
 
   const onSwitchAccount = hidden => {
     if (hidingAccountStatus) {
       return
     }
-    if (isNumber(currentAccountId)) {
-      if (accountId === currentAccountId) {
-        return Message.warning({
-          content: t('accountHideWarning'),
-          top: '10px',
-          duration: 1,
-        })
-      }
-      setHidingAccountStatus(true)
-      updateAccount({accountId, hidden}).finally(() => {
-        setHidingAccountStatus(false)
+    if (selected) {
+      return Message.warning({
+        content: t('accountHideWarning'),
+        top: '10px',
+        duration: 1,
       })
     }
+    setHidingAccountStatus(true)
+    updateEditedName({accountId, hidden}, WALLET_UPDATE_ACCOUNT).finally(() => {
+      setHidingAccountStatus(false)
+    })
   }
 
   const onDeletePkAccountGroup = () => {
-    if (isNumber(currentAccountId)) {
-      if (accountId === currentAccountId) {
-        return Message.warning({
-          content: t('groupDeleteWarning'),
-          top: '10px',
-          duration: 1,
-        })
-      }
-      onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
-        accountGroupId,
+    if (selected) {
+      return Message.warning({
+        content: t('groupDeleteWarning'),
+        top: '10px',
+        duration: 1,
       })
     }
+    onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
+      accountGroupId,
+    })
   }
 
   return (
@@ -154,10 +126,11 @@ AccountItem.propTypes = {
   accountId: PropTypes.number,
   accountGroupId: PropTypes.number,
   showDelete: PropTypes.bool,
+  selected: PropTypes.bool,
   hidden: PropTypes.bool,
   accountNickname: PropTypes.string,
   onOpenConfirmPassword: PropTypes.func,
-  currentAccountId: PropTypes.number,
+  updateEditedName: PropTypes.func.isRequired,
 }
 
 export default AccountItem

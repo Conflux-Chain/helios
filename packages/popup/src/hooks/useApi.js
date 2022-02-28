@@ -1,11 +1,11 @@
-import {isNumber, isString, isArray} from '@fluent-wallet/checks'
+import {isNumber, isString, isArray, isUndefined} from '@fluent-wallet/checks'
 import {useMemo} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 
 import {NETWORK_TYPE, RPC_METHODS} from '../constants'
 import {validateAddress, flatArray} from '../utils'
 import {encode} from '@fluent-wallet/base32-address'
-import {request} from '../utils/'
+import {request, formatAccountGroupData} from '../utils/'
 
 const {
   WALLET_GET_IMPORT_HARDWARE_WALLET_INFO,
@@ -27,7 +27,6 @@ const {
   ACCOUNT_GROUP_TYPE,
   WALLET_DETECT_ADDRESS_TYPE,
   WALLETDB_REFETCH_BALANCE,
-  WALLETDB_ACCOUNT_LIST_ASSETS,
   WALLET_VALIDATE_20TOKEN,
   WALLETDB_TXLIST,
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
@@ -288,6 +287,7 @@ export const useCurrentNetworkTokens = ({fuzzy, addressId}) => {
     {fallbackData: []},
   )
 }
+
 export const useCurrentAddressTokens = () => {
   const {
     data: {eid: addressId},
@@ -305,6 +305,7 @@ export const useCurrentAddressTokens = () => {
     },
   )
 }
+
 export const useSingleTokenInfoWithNativeTokenSupport = tokenId => {
   if (tokenId === 'native' || tokenId === '0x0') {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -423,28 +424,6 @@ export const useGroupAccountAuthorizedDapps = () => {
       },
     },
   })
-}
-
-export const useDbAccountListAssets = (
-  params = {
-    type: 'all',
-    accountGroupTypes: [
-      ACCOUNT_GROUP_TYPE.HD,
-      ACCOUNT_GROUP_TYPE.PK,
-      ACCOUNT_GROUP_TYPE.HW,
-    ],
-  },
-  dep = 'queryAllAccount',
-) => {
-  const {data: accountListAssets} = useRPC(
-    [WALLETDB_ACCOUNT_LIST_ASSETS, dep],
-    params,
-    {
-      fallbackData: {},
-    },
-  )
-  useDbRefetchBalance()
-  return accountListAssets
 }
 
 export const useValid20Token = address => {
@@ -594,6 +573,44 @@ export const useAddressTypeInConfirmTx = address => {
     },
   )
   return data
+}
+
+export const useDbAccountListAssets = (
+  networkId,
+  dep = 'queryAllAccount',
+  groupTypes = [
+    ACCOUNT_GROUP_TYPE.HD,
+    ACCOUNT_GROUP_TYPE.PK,
+    ACCOUNT_GROUP_TYPE.HW,
+  ],
+) => {
+  useDbRefetchBalance()
+  return useRPC(
+    isUndefined(networkId) ? null : [QUERY_ADDRESS, dep, networkId],
+    {
+      networkId,
+      groupTypes,
+      g: {
+        nativeBalance: 1,
+        value: 1,
+        hex: 1,
+        _account: {
+          nickname: 1,
+          eid: 1,
+          hidden: 1,
+          _accountGroup: {nickname: 1, eid: 1, vault: {type: 1}},
+          selected: 1,
+        },
+        network: {
+          ticker: 1,
+        },
+      },
+    },
+    {
+      fallbackData: {},
+      postprocessSuccessData: formatAccountGroupData,
+    },
+  )
 }
 
 export const useCfxMaxGasLimit = isCfxChain => {

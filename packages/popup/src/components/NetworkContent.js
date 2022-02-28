@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types'
+import {useSWRConfig} from 'swr'
 import Message from '@fluent-wallet/component-message'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {RPC_METHODS} from '../constants'
-import {request} from '../utils'
+import {request, updateDbAccountList} from '../utils'
 import {useCfxNetwork, useCurrentAddress} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 import {CustomTag} from './'
@@ -32,6 +33,7 @@ function NetworkItem({
   onClose,
   showCurrentIcon = true,
   needSwitchNet = true,
+  index,
   ...props
 }) {
   const {setLoading} = useLoading()
@@ -40,8 +42,8 @@ function NetworkItem({
     data: {
       network: {eid},
     },
-    mutate,
   } = useCurrentAddress()
+  const {mutate} = useSWRConfig()
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
     itemWrapperPaddingStyleObj[networkItemSize] || ''
@@ -65,16 +67,19 @@ function NetworkItem({
       setLoading(true)
       return request(WALLET_SET_CURRENT_NETWORK, [networkId])
         .then(() => {
-          setLoading(false)
-          mutate().then(() => {
+          updateDbAccountList(mutate, 'useCurrentAddress', [
+            'queryAllAccount',
+            networkId,
+          ]).then(() => {
             onClose && onClose()
+            onClickNetworkItem?.({...netData})
+            setLoading(false)
+            Message.warning({
+              content: t('addressHasBeenChanged'),
+              top: '110px',
+              duration: 1,
+            })
           })
-          Message.warning({
-            content: t('addressHasBeenChanged'),
-            top: '110px',
-            duration: 1,
-          })
-          onClickNetworkItem?.({...netData})
         })
         .catch(error => {
           // TODO: need deal with error condition
@@ -93,7 +98,9 @@ function NetworkItem({
     <div
       {...props}
       aria-hidden="true"
-      className={`bg-gray-0 mt-4 h-15 flex items-center rounded relative hover:bg-primary-4 ${
+      className={`bg-gray-0 ${
+        index !== 0 ? 'mt-4' : ''
+      } h-15 flex items-center rounded relative hover:bg-primary-4 ${
         eid === networkId && needSwitchNet ? 'cursor-default' : 'cursor-pointer'
       } ${itemWrapperPaddingStyle} pr-3.5`}
       onClick={onChangeNetwork}
@@ -134,6 +141,7 @@ NetworkItem.propTypes = {
   onClose: PropTypes.func,
   showCurrentIcon: PropTypes.bool,
   needSwitchNet: PropTypes.bool,
+  index: PropTypes.number.isRequired,
 }
 
 function NetworkContent({
@@ -147,20 +155,24 @@ function NetworkContent({
   return (
     <>
       {networkData.map(
-        ({
-          eid,
-          name,
-          isCustom,
-          isMainnet,
-          isTestnet,
-          icon,
-          endpoint,
-          chainId,
-          ticker,
-          scanUrl,
-        }) => (
+        (
+          {
+            eid,
+            name,
+            isCustom,
+            isMainnet,
+            isTestnet,
+            icon,
+            endpoint,
+            chainId,
+            ticker,
+            scanUrl,
+          },
+          index,
+        ) => (
           <NetworkItem
             key={eid}
+            index={index}
             networkId={eid}
             networkName={name}
             networkItemSize={networkItemSize}
