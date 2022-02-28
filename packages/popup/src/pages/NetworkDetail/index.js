@@ -8,7 +8,10 @@ import Message from '@fluent-wallet/component-message'
 import Input from '@fluent-wallet/component-input'
 import Button from '@fluent-wallet/component-button'
 import {COMMON_DECIMALS, formatHexToDecimal} from '@fluent-wallet/data-format'
-import {CFX_MAINNET_CURRENCY_SYMBOL} from '@fluent-wallet/consts'
+import {
+  CFX_MAINNET_CURRENCY_NAME,
+  ETH_MAINNET_CURRENCY_NAME,
+} from '@fluent-wallet/consts'
 import {TitleNav, CompWithLabel, ConfirmPassword} from '../../components'
 import {request} from '../../utils'
 import {useCurrentAddress} from '../../hooks/useApi'
@@ -19,6 +22,7 @@ import useGlobalStore from '../../stores'
 const {HOME} = ROUTES
 const {
   WALLET_DETECT_NETWORK_TYPE,
+  WALLET_ADD_ETHEREUM_CHAIN,
   WALLET_ADD_CONFLUX_CHAIN,
   WALLET_GET_NETWORK,
   WALLET_DELETE_NETWORK,
@@ -43,6 +47,17 @@ const addUrlPrefix = url => {
   return url || ''
 }
 
+const getNetworkType = type => {
+  if (!type) {
+    return ''
+  }
+  return `${
+    type === NETWORK_TYPE.CFX
+      ? CFX_MAINNET_CURRENCY_NAME
+      : ETH_MAINNET_CURRENCY_NAME
+  } Network`
+}
+
 function NetworkDetail() {
   const {t} = useTranslation()
   const history = useHistory()
@@ -55,7 +70,7 @@ function NetworkDetail() {
       chainName: networkInfo?.networkName ?? '',
       rpcUrl: networkInfo?.rpcUrl ?? '',
       chainId: networkInfo?.chainId ?? '',
-      networkType: 'Conflux Network',
+      networkType: getNetworkType(networkInfo?.type),
       symbol: networkInfo?.symbol ?? '',
       blockExplorerUrl: addUrlPrefix(networkInfo?.blockExplorerUrl),
     }
@@ -69,6 +84,7 @@ function NetworkDetail() {
   })
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
+  const [detectedChainType, setDetectedChainType] = useState('')
   const isAddingChain = !Object.keys(networkInfo).length
   const {data} = useCurrentAddress(isAddingChain)
   const currentNetworkId = data?.network?.eid
@@ -130,17 +146,30 @@ function NetworkDetail() {
       request(WALLET_DETECT_NETWORK_TYPE, {url: networkFieldValues.rpcUrl})
         .then(res => {
           setLoading(false)
-          if (res?.chainId) {
+          if (res?.chainId && res?.type) {
+            setDetectedChainType(res.type)
             setNetworkError({...networkError, chainId: ''})
-            setNetworkFieldValues({...networkFieldValues, chainId: res.chainId})
+            setNetworkFieldValues({
+              ...networkFieldValues,
+              chainId: res.chainId,
+              networkType: getNetworkType(res.type),
+            })
           } else {
-            setNetworkFieldValues({...networkFieldValues, chainId: ''})
+            setNetworkFieldValues({
+              ...networkFieldValues,
+              chainId: '',
+              networkType: '',
+            })
             setNetworkError({...networkError, chainId: t('unCaughtErrMsg')})
           }
         })
         .catch(err => {
           setLoading(false)
-          setNetworkFieldValues({...networkFieldValues, chainId: ''})
+          setNetworkFieldValues({
+            ...networkFieldValues,
+            chainId: '',
+            networkType: '',
+          })
           if (err?.message?.indexOf?.('InvalidParams') !== -1) {
             return setNetworkError({...networkError, chainId: t('wrongRpcUrl')})
           }
@@ -156,7 +185,7 @@ function NetworkDetail() {
   }
 
   const mutateData = () =>
-    mutate([WALLET_GET_NETWORK, NETWORK_TYPE.CFX]).then(() => {
+    mutate([WALLET_GET_NETWORK]).then(() => {
       history.push(HOME)
     })
 
@@ -178,8 +207,8 @@ function NetworkDetail() {
       chainId,
       chainName,
       nativeCurrency: {
-        name: symbol || CFX_MAINNET_CURRENCY_SYMBOL,
-        symbol: symbol || CFX_MAINNET_CURRENCY_SYMBOL,
+        name: symbol || detectedChainType.toUpperCase(),
+        symbol: symbol || detectedChainType.toUpperCase(),
         decimals: COMMON_DECIMALS,
       },
       rpcUrls: [rpcUrl],
@@ -194,7 +223,11 @@ function NetworkDetail() {
     }
     setLoading(true)
     request(
-      type === 'edit' ? WALLET_UPDATE_NETWORK : WALLET_ADD_CONFLUX_CHAIN,
+      type === 'edit'
+        ? WALLET_UPDATE_NETWORK
+        : detectedChainType === NETWORK_TYPE.CFX
+        ? WALLET_ADD_CONFLUX_CHAIN
+        : WALLET_ADD_ETHEREUM_CHAIN,
       type === 'edit' ? param : [param],
     )
       .then(() => {
@@ -253,7 +286,7 @@ function NetworkDetail() {
                   : ''
               }
               placeholder={
-                valueKey === 'symbol' ? CFX_MAINNET_CURRENCY_SYMBOL : ''
+                valueKey === 'symbol' ? detectedChainType.toUpperCase() : ''
               }
               id={`change-${valueKey}-input`}
             />
