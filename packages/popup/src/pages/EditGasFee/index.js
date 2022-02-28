@@ -2,6 +2,10 @@ import {useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
+import {
+  CFX_MAINNET_CURRENCY_SYMBOL,
+  ETH_MAINNET_CURRENCY_SYMBOL,
+} from '@fluent-wallet/consts'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
 import {
   useNetworkTypeIsCfx,

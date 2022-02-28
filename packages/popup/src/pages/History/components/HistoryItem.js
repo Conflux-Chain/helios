@@ -8,6 +8,11 @@ import {
   convertDataToValue,
   formatHexToDecimal,
 } from '@fluent-wallet/data-format'
+import {
+  CFX_MAINNET_CURRENCY_SYMBOL,
+  ETH_MAINNET_CURRENCY_SYMBOL,
+  ETH_MAINNET_CURRENCY_NAME,
+} from '@fluent-wallet/consts'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {
   CloseCircleFilled,
