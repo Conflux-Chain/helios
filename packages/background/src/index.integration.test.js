@@ -189,6 +189,20 @@ describe('integration test', function () {
         expect(accountsFromInpage.result[0]).toBe(ETH_ACCOUNTS[0].address)
       })
     })
+
+    describe('wallet_chainId', function () {
+      test('wallet_chainId', async () => {
+        res = await request({
+          method: 'wallet_chainId',
+          params: [],
+          networkName: ETH_MAINNET_NAME,
+        })
+        expect(res.result).toBe('0x539')
+        res = await request({method: 'wallet_chainId'})
+        expect(res.result).toBe('0xbb7')
+      })
+    })
+
     describe('cfx_chainId', function () {
       test('cfx_chainId', async () => {
         const stat = await request({method: 'cfx_chainId'})
@@ -580,6 +594,32 @@ describe('integration test', function () {
         expect(db.getAddress().length).toBe(2)
       })
     })
+
+    describe('wallet_importHardwareWalletAccountGroupOrAccount', function () {
+      test('wallet_importHardwareWalletAccountGroupOrAccount', async function () {
+        res = await request({
+          method: 'wallet_importHardwareWalletAccountGroupOrAccount',
+          params: {
+            accountGroupNickname: 'LedgerNanoS-1',
+            accountGroupData: {
+              'net2999:aak86utdktvnh3yta2kjvz62yae3kkcu1ywbppysrv': `m/44'/0'/0'/0/0`,
+            },
+            address: [
+              {
+                address: 'net2999:aak86utdktvnh3yta2kjvz62yae3kkcu1ywbppysrv',
+                nickname: 'LedgerNanoS-1',
+              },
+            ],
+            device: 'LedgerNanoS',
+            type: 'cfx',
+            password,
+          },
+        })
+        expect(db.getVault().length).toBe(1)
+        expect(db.getVaultByType('hw').length).toBe(1)
+      })
+    })
+
     describe('wallet_getAccountAddressByNetwork', function () {
       test('wallet_getAccountAddressByNetwork', async function () {
         await Promise.all([
@@ -652,6 +692,36 @@ describe('integration test', function () {
         expect(ethAddr.hex).toBe(ETH_ACCOUNTS[0].address)
         expect(ethAddr.pk).toBe(ETH_ACCOUNTS[0].privateKey)
         expect(ethAddr.value).toBe(ETH_ACCOUNTS[0].address)
+
+        //test for error case
+        res = await request({
+          method: 'wallet_importMnemonic',
+          params: {
+            mnemonic: MNEMONIC,
+            password,
+            waitTillFinish: true,
+            force: true,
+          },
+        })
+        res = await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
+        })
+        expect((await res).error.message).toMatch(
+          /Duplicate credential with account group/,
+        )
+        res = await request({
+          method: 'wallet_importMnemonic',
+          params: {
+            mnemonic: MNEMONIC,
+            password,
+            waitTillFinish: true,
+            cfxOnly: true,
+          },
+        })
+        expect((await res).error.message).toMatch(
+          /Duplicate credential\(with different cfxOnly setting\)/,
+        )
       })
     })
     describe('wallet_createAccount', function () {
