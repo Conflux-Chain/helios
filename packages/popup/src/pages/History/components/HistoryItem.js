@@ -8,6 +8,11 @@ import {
   convertDataToValue,
   formatHexToDecimal,
 } from '@fluent-wallet/data-format'
+import {
+  CFX_MAINNET_CURRENCY_SYMBOL,
+  ETH_MAINNET_CURRENCY_SYMBOL,
+  ETH_MAINNET_CURRENCY_NAME,
+} from '@fluent-wallet/consts'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {
   CloseCircleFilled,
@@ -86,7 +91,11 @@ function HistoryItem({
 
   useEffect(() => {
     if (simple) {
-      return setContractName(networkTypeIsCfx ? 'CFX' : 'Ether')
+      return setContractName(
+        networkTypeIsCfx
+          ? CFX_MAINNET_CURRENCY_SYMBOL
+          : ETH_MAINNET_CURRENCY_NAME,
+      )
     }
     if (contractCreation) {
       return setContractName(t('contractCreation'))
@@ -109,7 +118,11 @@ function HistoryItem({
 
   useEffect(() => {
     if (simple) {
-      setSymbol(networkTypeIsCfx ? 'CFX' : 'ETH')
+      setSymbol(
+        networkTypeIsCfx
+          ? CFX_MAINNET_CURRENCY_SYMBOL
+          : ETH_MAINNET_CURRENCY_SYMBOL,
+      )
       setToAddress(payload?.to ?? '')
       setAmount(convertDataToValue(payload?.value, CFX_DECIMALS) ?? '')
       return

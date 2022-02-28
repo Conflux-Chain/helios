@@ -20,6 +20,7 @@ const itemWrapperPaddingStyleObj = {
   medium: 'pl-3.5',
 }
 function NetworkItem({
+  type,
   networkName,
   networkType,
   rpcUrl,
@@ -50,6 +51,7 @@ function NetworkItem({
 
   const onChangeNetwork = () => {
     const netData = {
+      type,
       networkId,
       networkName,
       icon,
@@ -131,6 +133,7 @@ NetworkItem.propTypes = {
   networkName: PropTypes.string.isRequired,
   rpcUrl: PropTypes.string.isRequired,
   chainId: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
   blockExplorerUrl: PropTypes.string,
   networkType: PropTypes.oneOf(['mainnet', 'testnet', 'custom']).isRequired,
@@ -167,6 +170,7 @@ function NetworkContent({
             chainId,
             ticker,
             scanUrl,
+            type,
           },
           index,
         ) => (
@@ -176,6 +180,7 @@ function NetworkContent({
             networkId={eid}
             networkName={name}
             networkItemSize={networkItemSize}
+            type={type}
             networkType={
               isCustom
                 ? 'custom'
