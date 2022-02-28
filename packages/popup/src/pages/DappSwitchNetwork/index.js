@@ -1,7 +1,7 @@
 import {useTranslation} from 'react-i18next'
 import {formatHexToDecimal} from '@fluent-wallet/data-format'
 import {DappFooter, DappProgressHeader, CustomTag} from '../../components'
-import {RPC_METHODS} from '../../constants'
+import {RPC_METHODS, NETWORK_TYPE} from '../../constants'
 import {usePendingAuthReq, useNetworkByChainId} from '../../hooks/useApi'
 const {WALLET_SWITCH_CONFLUX_CHAIN} = RPC_METHODS
 
@@ -11,7 +11,9 @@ function DappSwitchNetwork() {
   const [{req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const networkData = useNetworkByChainId(
     req?.params[0]?.chainId,
-    req?.method === WALLET_SWITCH_CONFLUX_CHAIN ? 'cfx' : 'eth',
+    req?.method === WALLET_SWITCH_CONFLUX_CHAIN
+      ? NETWORK_TYPE.CFX
+      : NETWORK_TYPE.ETH,
   )
   const [{isTestnet, name, endpoint, icon}] = networkData.length
     ? networkData
