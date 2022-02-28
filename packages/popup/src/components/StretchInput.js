@@ -81,33 +81,31 @@ function StretchInput({
       />
       <div className={`flex items-center ${wrapperClassName}`}>
         {leftNode}
-        <div className="flex flex-1 items-center">
-          <div
-            className={`${
-              spreadInputStatus ? expandWidth : shrinkWidth
-            } transition-all`}
+        <div
+          className={`${
+            spreadInputStatus ? expandWidth : shrinkWidth
+          } transition-all`}
+        />
+        <div className="flex-1 mr-3">
+          <SearchAccount
+            currentNetworkId={currentNetworkId}
+            onSearch={onVisibleInputChange}
+            searchContent={visibleInputValue}
+            onSearchCallback={setSearchedAccountGroup}
+            containerClassName={`!h-6 !border-transparent !rounded-full ${inputClassName}`}
+            size="small"
+            prefixClassName="w-3 h-3 text-gray-40"
+            suffixClassName="w-3 h-3 text-gray-40 cursor-pointer"
+            prefixContainerClassName="!pl-[6px] !mr-0"
+            suffixContainerClassName="!ml-0 pr-[6px]"
+            className="!pl-1 !pr-0"
+            onFocus={onVisibleInputFocus}
+            onBlur={onVisibleInputBlur}
+            onClickAway={spreadInput}
+            ref={visibleInputRef}
           />
-          <div className="flex-1 mr-3">
-            <SearchAccount
-              currentNetworkId={currentNetworkId}
-              onSearch={onVisibleInputChange}
-              searchContent={visibleInputValue}
-              onSearchCallback={setSearchedAccountGroup}
-              containerClassName={`!h-6 !border-transparent !rounded-full ${inputClassName}`}
-              size="small"
-              prefixClassName="w-3 h-3 text-gray-40"
-              suffixClassName="w-3 h-3 text-gray-40 cursor-pointer"
-              prefixContainerClassName="!pl-[6px] !mr-0"
-              suffixContainerClassName="!ml-0 pr-[6px]"
-              className="!pl-1 !pr-0"
-              onFocus={onVisibleInputFocus}
-              onBlur={onVisibleInputBlur}
-              onClickAway={spreadInput}
-              ref={visibleInputRef}
-            />
-          </div>
-          {rightNode}
         </div>
+        {rightNode}
       </div>
     </>
   )
