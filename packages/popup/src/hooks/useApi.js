@@ -63,6 +63,16 @@ export const useCurrentAddress = (notSendReq = false) => {
   return {data, mutate}
 }
 
+export const useCurrentTicker = () => {
+  const {
+    data: {
+      network: {ticker},
+    },
+  } = useCurrentAddress()
+
+  return ticker
+}
+
 export const useCurrentDapp = () => {
   const {locked: isLocked} = useDataForPopup()
 
