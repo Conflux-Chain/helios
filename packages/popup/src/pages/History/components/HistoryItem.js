@@ -65,14 +65,20 @@ function HistoryItem({
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7ef22d1f (refactor: remove hardcoded decimals)
   const {
     symbol: tokenSymbol,
     name: tokenName,
     decimals: tokenDecimals,
   } = useCurrentTicker()
+<<<<<<< HEAD
 =======
   const {symbol: tokenSymbol, name: tokenName} = useCurrentTicker()
 >>>>>>> 60a33ebd (refactor: remove hardcoded symbol)
+=======
+>>>>>>> 7ef22d1f (refactor: remove hardcoded decimals)
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
@@ -120,10 +126,14 @@ function HistoryItem({
 
   useEffect(() => {
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (simple && tokenSymbol && !isUndefined(tokenDecimals)) {
 =======
     if (simple && tokenSymbol) {
 >>>>>>> 60a33ebd (refactor: remove hardcoded symbol)
+=======
+    if (simple && tokenSymbol && !isUndefined(tokenDecimals)) {
+>>>>>>> 7ef22d1f (refactor: remove hardcoded decimals)
       setSymbol(tokenSymbol)
       setToAddress(payload?.to ?? '')
       setAmount(convertDataToValue(payload?.value, tokenDecimals) ?? '')
@@ -151,9 +161,13 @@ function HistoryItem({
     Boolean(token),
     tokenSymbol,
 <<<<<<< HEAD
+<<<<<<< HEAD
     tokenDecimals,
 =======
 >>>>>>> 60a33ebd (refactor: remove hardcoded symbol)
+=======
+    tokenDecimals,
+>>>>>>> 7ef22d1f (refactor: remove hardcoded decimals)
     simple,
     token20,
     contractInteraction,
