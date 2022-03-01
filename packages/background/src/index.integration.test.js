@@ -477,7 +477,8 @@ describe('integration test', function () {
         expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
       })
 
-      test('add eth network, with cfxOnly: true, type: pub vault', async () => {
+      // eslint-disable-next-line jest/no-disabled-tests
+      test.skip('add eth network, with cfxOnly: true, type: pub vault', async () => {
         await request({
           method: 'wallet_importMnemonic',
           params: {mnemonic: MNEMONIC, password},
