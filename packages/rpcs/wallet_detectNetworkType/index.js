@@ -26,7 +26,6 @@ export const main = async ({f, Err: {InvalidParams}, params: {url}}) => {
       [],
     )
   } catch (err) {
-    console.error('detect_cfx_getStatus', err)
     throw InvalidParams(`Invalid rpc endpoint ${url}`)
   }
 
