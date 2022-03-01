@@ -400,7 +400,9 @@ describe('integration test', function () {
           _internal: true,
         })
 
-        expect((await res).error.message).toMatch(/Duplicate network endpoint/)
+        await waitForExpect(() =>
+          expect(res.error.message).toMatch(/Duplicate network endpoint/),
+        )
 
         //error case:Invalid chainId
         res = await request({
@@ -418,8 +420,9 @@ describe('integration test', function () {
           _rpcStack: ['frombg'],
           _internal: true,
         })
-
-        expect((await res).error.message).toMatch(/Invalid chainId/)
+        await waitForExpect(() =>
+          expect(res.error.message).toMatch(/Invalid chainId/),
+        )
 
         //test for the new hdPath
         res = await request({
@@ -442,7 +445,9 @@ describe('integration test', function () {
           _rpcStack: ['frombg'],
           _internal: true,
         })
-        expect(typeof res.result === 'number').toEqual(true)
+        await waitForExpect(() =>
+          expect(typeof res.result === 'number').toEqual(true),
+        )
       })
       test('add eth network omit hdPath', async () => {
         await request({
