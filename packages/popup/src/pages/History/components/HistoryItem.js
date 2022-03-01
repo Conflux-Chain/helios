@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import dayjs from 'dayjs'
+import {isUndefined} from '@fluent-wallet/checks'
 import {
-  CFX_DECIMALS,
   convertDataToValue,
   formatHexToDecimal,
 } from '@fluent-wallet/data-format'
@@ -66,7 +66,11 @@ function HistoryItem({
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
-  const {symbol: tokenSymbol, name: tokenName} = useCurrentTicker()
+  const {
+    symbol: tokenSymbol,
+    name: tokenName,
+    decimals: tokenDecimals,
+  } = useCurrentTicker()
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
@@ -114,10 +118,10 @@ function HistoryItem({
   ])
 
   useEffect(() => {
-    if (simple && tokenSymbol) {
+    if (simple && tokenSymbol && !isUndefined(tokenDecimals)) {
       setSymbol(tokenSymbol)
       setToAddress(payload?.to ?? '')
-      setAmount(convertDataToValue(payload?.value, CFX_DECIMALS) ?? '')
+      setAmount(convertDataToValue(payload?.value, tokenDecimals) ?? '')
       return
     }
     if (token20 && token) {
@@ -141,6 +145,7 @@ function HistoryItem({
   }, [
     Boolean(token),
     tokenSymbol,
+    tokenDecimals,
     simple,
     token20,
     contractInteraction,

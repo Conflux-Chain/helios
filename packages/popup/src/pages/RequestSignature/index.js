@@ -1,5 +1,4 @@
 import {useTranslation} from 'react-i18next'
-import {CFX_DECIMALS} from '@fluent-wallet/data-format'
 import {
   DappFooter,
   CompWithLabel,
@@ -11,6 +10,7 @@ import {
   usePendingAuthReq,
   useBalance,
   useAddressByNetworkId,
+  useCurrentTicker,
 } from '../../hooks/useApi'
 import PlaintextMessage from './components/PlaintextMessage'
 import {RPC_METHODS} from '../../constants'
@@ -23,6 +23,7 @@ function RequestSignature() {
   const isPersonalSign = req?.method === PERSONAL_SIGN
   const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
+  const {decimals} = useCurrentTicker()
   const {value: address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const balanceData = useBalance(address, dappNetworkId)
   const plaintextData =
@@ -49,7 +50,7 @@ function RequestSignature() {
               balance={balanceData?.[address]?.['0x0'] || '0x0'}
               maxWidthStyle="max-w-[140px]"
               maxWidth={140}
-              decimals={CFX_DECIMALS}
+              decimals={decimals}
             />
             <span className="text-gray-60 text-xs ml-0.5">
               {app?.currentNetwork?.ticker?.symbol || ''}

@@ -15,8 +15,6 @@ import {
   Big,
   formatDecimalToHex,
   formatHexToDecimal,
-  CFX_DECIMALS,
-  ETH_DECIMALS,
 } from '@fluent-wallet/data-format'
 
 function EditGasFee() {
@@ -40,8 +38,7 @@ function EditGasFee() {
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const cfxMaxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
-  const {symbol} = useCurrentTicker()
-  const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
+  const {symbol, decimals} = useCurrentTicker()
 
   const isDapp = getPageType() === 'notification'
   const tx = useDappParams()
