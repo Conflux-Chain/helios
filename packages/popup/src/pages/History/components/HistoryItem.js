@@ -8,11 +8,6 @@ import {
   convertDataToValue,
   formatHexToDecimal,
 } from '@fluent-wallet/data-format'
-import {
-  CFX_MAINNET_CURRENCY_SYMBOL,
-  ETH_MAINNET_CURRENCY_SYMBOL,
-  ETH_MAINNET_CURRENCY_NAME,
-} from '@fluent-wallet/consts'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {
   CloseCircleFilled,
@@ -20,7 +15,7 @@ import {
   SendOutlined,
 } from '@fluent-wallet/component-icons'
 import {transformToTitleCase, formatStatus} from '../../../utils'
-import {useNetworkTypeIsCfx} from '../../../hooks/useApi'
+import {useNetworkTypeIsCfx, useCurrentTicker} from '../../../hooks/useApi'
 import {useDecodeData} from '../../../hooks'
 import {
   WrapIcon,
@@ -69,6 +64,8 @@ function HistoryItem({
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
+  const {symbol: tokenSymbol, name: tokenName} = useCurrentTicker()
+
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
   const txStatus = formatStatus(status)
@@ -90,12 +87,8 @@ function HistoryItem({
   }, [simple, Object.keys(decodeData).length])
 
   useEffect(() => {
-    if (simple) {
-      return setContractName(
-        networkTypeIsCfx
-          ? CFX_MAINNET_CURRENCY_SYMBOL
-          : ETH_MAINNET_CURRENCY_NAME,
-      )
+    if (simple && tokenName) {
+      return setContractName(tokenName)
     }
     if (contractCreation) {
       return setContractName(t('contractCreation'))
@@ -107,6 +100,7 @@ function HistoryItem({
       setContractName(t('contractInteraction'))
     }
   }, [
+    tokenName,
     simple,
     token20,
     Boolean(token),
@@ -117,12 +111,8 @@ function HistoryItem({
   ])
 
   useEffect(() => {
-    if (simple) {
-      setSymbol(
-        networkTypeIsCfx
-          ? CFX_MAINNET_CURRENCY_SYMBOL
-          : ETH_MAINNET_CURRENCY_SYMBOL,
-      )
+    if (simple && tokenSymbol) {
+      setSymbol(tokenSymbol)
       setToAddress(payload?.to ?? '')
       setAmount(convertDataToValue(payload?.value, CFX_DECIMALS) ?? '')
       return
@@ -147,6 +137,7 @@ function HistoryItem({
     }
   }, [
     Boolean(token),
+    tokenSymbol,
     simple,
     token20,
     contractInteraction,
