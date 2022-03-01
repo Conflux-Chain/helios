@@ -8,11 +8,6 @@ import {
   convertDataToValue,
   formatHexToDecimal,
 } from '@fluent-wallet/data-format'
-import {
-  CFX_MAINNET_CURRENCY_SYMBOL,
-  ETH_MAINNET_CURRENCY_SYMBOL,
-  ETH_MAINNET_CURRENCY_NAME,
-} from '@fluent-wallet/consts'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {
   CloseCircleFilled,
@@ -69,11 +64,15 @@ function HistoryItem({
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
+<<<<<<< HEAD
   const {
     symbol: tokenSymbol,
     name: tokenName,
     decimals: tokenDecimals,
   } = useCurrentTicker()
+=======
+  const {symbol: tokenSymbol, name: tokenName} = useCurrentTicker()
+>>>>>>> 60a33ebd (refactor: remove hardcoded symbol)
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
@@ -120,7 +119,11 @@ function HistoryItem({
   ])
 
   useEffect(() => {
+<<<<<<< HEAD
     if (simple && tokenSymbol && !isUndefined(tokenDecimals)) {
+=======
+    if (simple && tokenSymbol) {
+>>>>>>> 60a33ebd (refactor: remove hardcoded symbol)
       setSymbol(tokenSymbol)
       setToAddress(payload?.to ?? '')
       setAmount(convertDataToValue(payload?.value, tokenDecimals) ?? '')
@@ -147,7 +150,10 @@ function HistoryItem({
   }, [
     Boolean(token),
     tokenSymbol,
+<<<<<<< HEAD
     tokenDecimals,
+=======
+>>>>>>> 60a33ebd (refactor: remove hardcoded symbol)
     simple,
     token20,
     contractInteraction,

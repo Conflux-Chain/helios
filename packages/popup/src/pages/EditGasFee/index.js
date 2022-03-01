@@ -2,10 +2,6 @@ import {useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
-import {
-  CFX_MAINNET_CURRENCY_SYMBOL,
-  ETH_MAINNET_CURRENCY_SYMBOL,
-} from '@fluent-wallet/consts'
 import {TitleNav, DisplayBalance, NumberInput} from '../../components'
 import {
   useNetworkTypeIsCfx,
@@ -42,7 +38,12 @@ function EditGasFee() {
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const cfxMaxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
+<<<<<<< HEAD
   const {symbol, decimals} = useCurrentTicker()
+=======
+  const {symbol} = useCurrentTicker()
+  const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
+>>>>>>> 60a33ebd (refactor: remove hardcoded symbol)
 
   const isDapp = getPageType() === 'notification'
   const tx = useDappParams()
