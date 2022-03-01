@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-commented-out-tests */
 // eslint-disable-next-line no-unused-vars
 import { expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach } from '@jest/globals' // prettier-ignore
 import waitForExpect from 'wait-for-expect'
@@ -449,40 +450,39 @@ describe('integration test', function () {
           expect(typeof res.result === 'number').toEqual(true),
         )
       })
-      test('add eth network omit hdPath', async () => {
-        await request({
-          method: 'wallet_importMnemonic',
-          params: {mnemonic: MNEMONIC, password},
-        })
-        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
-        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+      // test('add eth network omit hdPath', async () => {
+      //   await request({
+      //     method: 'wallet_importMnemonic',
+      //     params: {mnemonic: MNEMONIC, password},
+      //   })
+      //   await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+      //   await waitForExpect(() => expect(db.getAddress().length).toBe(2))
 
-        const networkId = (
-          await request({
-            method: 'wallet_addNetwork',
-            params: {
-              chainId: '0x539',
-              chainName: 'ethfoo',
-              nativeCurrency: {
-                name: 'ETH',
-                symbol: 'ETH',
-                decimals: DEFAULT_CURRENCY_DECIMALS,
-              },
-              rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT + '/'],
-            },
-            _rpcStack: ['frombg'],
-            _internal: true,
-          })
-        ).result
+      //   const networkId = (
+      //     await request({
+      //       method: 'wallet_addNetwork',
+      //       params: {
+      //         chainId: '0x539',
+      //         chainName: 'ethfoo',
+      //         nativeCurrency: {
+      //           name: 'ETH',
+      //           symbol: 'ETH',
+      //           decimals: DEFAULT_CURRENCY_DECIMALS,
+      //         },
+      //         rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT + '/'],
+      //       },
+      //       _rpcStack: ['frombg'],
+      //       _internal: true,
+      //     })
+      //   ).result
 
-        expect(db.getAccount().length).toBe(1)
-        await waitForExpect(() => expect(db.getAddress().length).toBe(3), 20000)
-        const addrs = db.getAddress()
-        expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
-        expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
-      })
+      //   expect(db.getAccount().length).toBe(1)
+      //   await waitForExpect(() => expect(db.getAddress().length).toBe(3), 20000)
+      //   const addrs = db.getAddress()
+      //   expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
+      //   expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
+      // })
 
-      // eslint-disable-next-line jest/no-commented-out-tests
       // test('add eth network, with cfxOnly: true, type: pub vault', async () => {
       //   await request({
       //     method: 'wallet_importMnemonic',
