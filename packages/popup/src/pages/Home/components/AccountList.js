@@ -5,7 +5,11 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
 import {CheckCircleFilled, PlusOutlined} from '@fluent-wallet/component-icons'
-import {request, updateDbAccountList} from '../../../utils'
+import {
+  request,
+  updateDbAccountList,
+  formatLocalizationLang,
+} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {
   SlideCard,
@@ -193,7 +197,11 @@ function AccountList({onClose, open, accountsAnimate = true}) {
             currentNetworkId={currentNetworkId}
             setSearchedAccountGroup={setSearchedAccountGroup}
             expandWidth="w-4"
-            shrinkWidth={i18n.language === 'en' ? 'w-[137px]' : 'w-[170px]'}
+            shrinkWidth={
+              formatLocalizationLang(i18n.language) === 'en'
+                ? 'w-[137px]'
+                : 'w-[170px]'
+            }
             wrapperClassName="ml-2.5"
             rightNode={
               <WrapIcon
