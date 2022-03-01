@@ -19,6 +19,7 @@ import {
   StretchInput,
   WrapIcon,
 } from '../../components'
+import {formatLocalizationLang} from '../../utils'
 import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
 
 function ConnectSitesList({
@@ -42,7 +43,11 @@ function ConnectSitesList({
             currentNetworkId={currentNetworkId}
             setSearchedAccountGroup={setSearchedAccountGroup}
             expandWidth="w-4"
-            shrinkWidth={i18n.language === 'en' ? 'w-[114px]' : 'w-[184px]'}
+            shrinkWidth={
+              formatLocalizationLang(i18n.language) === 'en'
+                ? 'w-[114px]'
+                : 'w-[184px]'
+            }
             inputClassName="!bg-gray-10"
             leftNode={
               <div className="flex items-center">
