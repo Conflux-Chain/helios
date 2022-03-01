@@ -2,14 +2,10 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
-import {
-  CFX_DECIMALS,
-  ETH_DECIMALS,
-  roundBalance,
-} from '@fluent-wallet/data-format'
+import {roundBalance} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {DisplayBalance, CustomTag} from '../components'
-import {useNetworkTypeIsCfx} from '../hooks/useApi'
+import {useNetworkTypeIsCfx, useCurrentTicker} from '../hooks/useApi'
 import {useCurrentTxParams} from '../hooks'
 import useDebouncedValue from '../hooks/useDebouncedValue'
 import {ROUTES} from '../constants'
@@ -20,8 +16,7 @@ function GasFee({estimateRst}) {
   const {t} = useTranslation()
   const history = useHistory()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const symbol = networkTypeIsCfx ? 'CFX' : 'ETH'
-  const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
+  const {symbol, decimals} = useCurrentTicker()
   const {
     willPayCollateral,
     willPayTxFee,
