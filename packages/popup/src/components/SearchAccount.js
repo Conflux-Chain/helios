@@ -18,6 +18,7 @@ const SearchAccount = forwardRef(function SearchAccount(
     onSearch,
     onClickAway,
     refreshDataStatus,
+    showHiddenAccount = false,
     ...props
   },
   ref,
@@ -63,7 +64,9 @@ const SearchAccount = forwardRef(function SearchAccount(
         },
       })
         .then(res => {
-          onSearchCallback?.(isArray(res) ? formatAccountGroupData(res) : {})
+          onSearchCallback?.(
+            isArray(res) ? formatAccountGroupData(res, showHiddenAccount) : {},
+          )
         })
         .catch(err => {
           Message.error({
@@ -77,6 +80,7 @@ const SearchAccount = forwardRef(function SearchAccount(
         })
     }
   }, [
+    showHiddenAccount,
     currentNetworkId,
     debouncedSearchAccount,
     onSearchCallback,
@@ -103,6 +107,7 @@ SearchAccount.propTypes = {
   currentNetworkId: PropTypes.number.isRequired,
   onSearchCallback: PropTypes.func,
   refreshDataStatus: PropTypes.bool,
+  showHiddenAccount: PropTypes.bool,
 }
 
 export default SearchAccount

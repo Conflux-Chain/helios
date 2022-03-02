@@ -146,6 +146,7 @@ function AccountManagement() {
           searchContent={searchContent}
           onSearchCallback={setSearchedAccountGroup}
           refreshDataStatus={refreshDataStatus}
+          showHiddenAccount={true}
         />
       </div>
       <div className="flex-1 overflow-y-auto no-scroll mt-0">

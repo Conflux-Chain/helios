@@ -153,8 +153,11 @@ export const updateDbAccountList = (mutate, ...args) =>
 export const detectFirefox = () =>
   navigator?.userAgent?.toLowerCase().indexOf('firefox') > -1
 
-export const formatAccountGroupData = d => {
+export const formatAccountGroupData = (d, showHiddenAccount = true) => {
   if (isArray(d)) {
+    if (!showHiddenAccount) {
+      d = d.filter(({account}) => !account?.hidden)
+    }
     d.sort((a, b) => {
       if (a.account.accountGroup.eid === b.account.accountGroup.eid) {
         return a.account.eid - b.account.eid
