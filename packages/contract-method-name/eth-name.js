@@ -1,4 +1,5 @@
 import {MethodRegistry} from 'eth-method-registry'
+import HttpProvider from 'ethjs-provider-http'
 import {ETH_ENDPOINT} from './constance'
 import {ETH_FOUR_BYTE_DOMAIN} from './constance'
 import fetchHelper from './util/fetch-helper'
@@ -30,22 +31,15 @@ export const geTextSignature = async fourBytePrefix => {
 
 export const getEthContractMethodSignature = async (
   transactionData,
-  ethProvider,
   networkType,
 ) => {
+  // eslint-disable-next-line no-useless-catch
   try {
-    let provider
-    if (ethProvider) {
-      provider = ethProvider
-    } else {
-      const Eth = (await import('ethjs')).default
-      provider = new Eth.HttpProvider(getETHEndpoint(networkType))
-    }
-
+    const provider = new HttpProvider(getETHEndpoint(networkType))
     const registry = new MethodRegistry({provider})
     const fourBytePrefix = transactionData.substr(0, 10)
-    const fourByteSig = geTextSignature(fourBytePrefix).catch(() => {
-      return null
+    const fourByteSig = geTextSignature(fourBytePrefix).catch(e => {
+      throw e
     })
 
     let sig = await registry.lookup(fourBytePrefix)
@@ -61,7 +55,6 @@ export const getEthContractMethodSignature = async (
       params: parsedResult.args,
     }
   } catch (error) {
-    // console.log('error', error)
-    return {}
+    throw error
   }
 }

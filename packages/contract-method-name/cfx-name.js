@@ -35,9 +35,11 @@ export const getCFXContractMethodSignature = async (
   transactionData,
   netId,
 ) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     if (!validateBase32Address(address)) {
       return {}
+      // throw new Error('inValidate base32 address')
     }
     let abiInterface
     if (eip777AbiSignatures.includes(transactionData.substr(0, 10))) {
@@ -56,5 +58,6 @@ export const getCFXContractMethodSignature = async (
     return ret
   } catch (e) {
     return {}
+    // throw e
   }
 }
