@@ -29,7 +29,7 @@ export const main = ({db: {setPreferences, getApp}, params}) => {
       if (!app.site.post) return
       app.site.post({
         event: '__FLUENT_BACKEND_PREFERENCES__',
-        params: params.useModernProviderAPI,
+        params,
       })
     })
   }
