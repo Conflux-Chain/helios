@@ -3,6 +3,7 @@
    [medley.core :refer [deep-merge]]
    ["@ethersproject/bignumber" :as bn]
    [clojure.walk :refer [postwalk walk]]
+   [goog.string :as gstr]
    [cfxjs.spec.cljs]
    [cfxjs.db.datascript.core :as db]
    [cfxjs.db.schema :refer [model->attr-keys]]))
@@ -130,10 +131,17 @@
     {:eid eid :token token}))
 
 (defn get-account [{:keys [accountId groupId index g nickname selected fuzzy]}]
-  (let [g (and g {:account g})
-        fuzzy (if (string? fuzzy)
-                (re-pattern (str "(?i)" (.replaceAll (.trim fuzzy) " " ".*")))
-                nil)
+  (let [g            (and g {:account g})
+        fuzzy        (if (string? fuzzy)
+                       (try
+                         (re-pattern
+                          (str "(?i)"
+                               (-> fuzzy
+                                   (.trim)
+                                   gstr/regExpEscape
+                                   (.replaceAll " " ".*"))))
+                         (catch js/Error _ "_"))
+                       nil)
         post-process (if (seq g) identity #(get % :db/id))]
     (prst->js
      (cond
@@ -178,15 +186,22 @@
          (map post-process (if (seq accs) (pm (jsp->p g) accs) [])))))))
 
 (defn get-token [{:keys [addressId networkId address tokenId g fuzzy]}]
-  (let [g            (and g {:token g})
-        post-process (if (seq g) identity #(get % :db/id))
-        addr         (and (string? address) (.toLowerCase address))
-        fuzzy-length (if (string? fuzzy) (count (.trim fuzzy)) nil)
+  (let [g                   (and g {:token g})
+        post-process        (if (seq g) identity #(get % :db/id))
+        addr                (and (string? address) (.toLowerCase address))
+        fuzzy-length        (if (string? fuzzy) (count (.trim fuzzy)) nil)
         fuzzy-has-match-any (if (string? fuzzy) (.includes fuzzy ".*") nil)
-        fuzzy        (if (string? fuzzy)
-                       (try (re-pattern (str "(?i)" (.replaceAll (.trim fuzzy) " " ".*")))
-                            (catch js/Error _ "_"))
-                       nil)]
+        fuzzy               (if fuzzy-has-match-any (.replaceAll fuzzy ".*" " ") nil)
+        fuzzy               (if (string? fuzzy)
+                              (try
+                                (re-pattern
+                                 (str "(?i)"
+                                      (-> fuzzy
+                                          (.trim)
+                                          gstr/regExpEscape
+                                          (.replaceAll " " ".*"))))
+                                (catch js/Error _ "_"))
+                              nil)]
     (prst->js
      (cond
        tokenId
@@ -561,7 +576,8 @@
                          (re-pattern
                           (str "(?i)"
                                (-> fuzzy
-                                   (.replaceAll "  " "\\s")
+                                   (.trim)
+                                   gstr/regExpEscape
                                    (.replaceAll " " ".*"))))
                          (catch js/Error _ "_"))
                        nil)]
