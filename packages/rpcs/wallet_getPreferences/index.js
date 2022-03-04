@@ -7,7 +7,7 @@ export const schemas = {
 }
 
 export const permissions = {
-  external: ['popup'],
+  external: ['popup', 'inpage'],
   methods: [],
   locked: true,
   db: ['getPreferences'],

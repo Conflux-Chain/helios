@@ -14,7 +14,7 @@ export const schemas = {
 export const permissions = {
   external: ['inpage'],
   locked: true,
-  methods: ['wallet_requestPermissions', 'wallet_getPreferences'],
+  methods: ['wallet_requestPermissions'],
   db: ['t', 'findAccount'],
   scope: null,
 }
@@ -22,7 +22,7 @@ export const permissions = {
 export const main = ({
   Err: {InvalidRequest},
   db: {t, findAccount},
-  rpcs: {wallet_requestPermissions, wallet_getPreferences},
+  rpcs: {wallet_requestPermissions},
   params: {name, icon},
   _inpage,
   _origin,
@@ -35,21 +35,21 @@ export const main = ({
     icon && {eid: 'newsite', site: {icon}},
   ])
 
-  wallet_getPreferences().then(p => {
-    const {
-      useModernProviderAPI,
-      overrideWindowDotConflux,
-      overrideWindowDotEthereum,
-    } = p
-    return _post({
-      event: '__FLUENT_BACKEND_PREFERENCES__',
-      params: {
-        useModernProviderAPI,
-        overrideWindowDotConflux,
-        overrideWindowDotEthereum,
-      },
-    })
-  })
+  // wallet_getPreferences().then(p => {
+  //   const {
+  //     useModernProviderAPI,
+  //     overrideWindowDotConflux,
+  //     overrideWindowDotEthereum,
+  //   } = p
+  //   return _post({
+  //     event: '__FLUENT_BACKEND_PREFERENCES__',
+  //     params: {
+  //       useModernProviderAPI,
+  //       overrideWindowDotConflux,
+  //       overrideWindowDotEthereum,
+  //     },
+  //   })
+  // })
 
   _post({
     event: 'connect',

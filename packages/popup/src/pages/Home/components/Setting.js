@@ -15,8 +15,8 @@ const {
   ACCOUNT_MANAGEMENT,
   NETWORK_MANAGEMENT,
   ABOUT,
-  DEVELOPER_MODE,
   AUTHORIZED_WEBSITE,
+  ADVANCED_SETTINGS,
 } = ROUTES
 
 const SETTING_ITEMS = [
@@ -36,14 +36,14 @@ const SETTING_ITEMS = [
     jumpPath: AUTHORIZED_WEBSITE,
   },
   {
-    contentKey: 'developerMode',
-    iconPath: '/images/developer.svg',
-    jumpPath: DEVELOPER_MODE,
-  },
-  {
     contentKey: 'about',
     iconPath: '/images/exclamation-circle.svg',
     jumpPath: ABOUT,
+  },
+  {
+    contentKey: 'AdvancedSettings',
+    iconPath: '/images/exclamation-circle.svg',
+    jumpPath: ADVANCED_SETTINGS,
   },
 ]
 

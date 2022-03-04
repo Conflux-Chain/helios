@@ -53,6 +53,7 @@ import ImportHwAccount from './pages/ImportHwAccount'
 import NetworkDetail from './pages/NetworkDetail'
 import About from './pages/About'
 import DeveloperMode from './pages/DeveloperMode'
+import AdvancedSettings from './pages/AdvancedSettings'
 
 const {
   HOME,
@@ -89,6 +90,7 @@ const {
   NETWORK_DETAIL,
   ABOUT,
   DEVELOPER_MODE,
+  ADVANCED_SETTINGS,
 } = ROUTES
 
 const routes = [
@@ -223,6 +225,10 @@ const routes = [
   {
     path: DEVELOPER_MODE,
     component: DeveloperMode,
+  },
+  {
+    path: ADVANCED_SETTINGS,
+    component: AdvancedSettings,
   },
 ]
 
