@@ -131,6 +131,7 @@ const zh = {
     passwordRulesWarning: '请使用 8～128 个字符，并且同时包含字母和数字',
     en: 'English',
     zh: '简体中文',
+    fr: 'Français',
 
     // - Send Transaction
     // - Send Transaction / send transaction
