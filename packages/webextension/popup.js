@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill'
 import {isFunction} from '@fluent-wallet/checks'
 
 // TODO, hardcode is not accurate, need to find more effective way
-const POPUP_HEIGHT = 628
+const POPUP_HEIGHT = 629
 const POPUP_WIDTH = 372
 let FOCUS_LISTENER = null
 let REMOVED_LISTENER = null
