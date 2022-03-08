@@ -76,68 +76,78 @@ function ConnectSitesList({
           {searchedAccountGroup && accountGroupData.length === 0 ? (
             <NoResult content={t('noResult')} containerClassName="h-[262px]" />
           ) : (
-            accountGroupData.map(({nickname, account, vault, eid}) => (
-              <div key={eid}>
-                {vault?.type === 'pk' ? null : (
-                  <div className="flex items-center ml-3 mt-0.5">
-                    <WrapIcon
-                      size="w-5 h-5 mr-1 bg-primary-4"
-                      clickable={false}
-                    >
-                      <img src="/images/seed-group-icon.svg" alt="group-icon" />
-                    </WrapIcon>
-                    <p className="text-gray-40 text-xs">{nickname}</p>
-                  </div>
-                )}
-                {Object.values(account)
-                  .filter(({hidden}) => !hidden)
-                  .map(
-                    (
-                      {eid: accountId, nickname, currentAddress, selected},
-                      index,
-                    ) => (
-                      <div
-                        aria-hidden="true"
-                        onClick={() => onSelectSingleAccount(accountId)}
-                        key={accountId}
-                        id={`item-${index}`}
-                        className="flex px-3 items-center h-15 cursor-pointer"
-                      >
-                        <div className="flex w-full">
-                          <Avatar
-                            className="w-5 h-5 mr-2"
-                            diameter={20}
-                            accountIdentity={accountId}
+            accountGroupData.map(
+              ({nickname, account, vault, eid}) =>
+                !!Object.values(account).filter(({hidden}) => !hidden)
+                  .length && (
+                  <div key={eid}>
+                    {vault?.type === 'pk' ? null : (
+                      <div className="flex items-center ml-3 mt-0.5">
+                        <WrapIcon
+                          size="w-5 h-5 mr-1 bg-primary-4"
+                          clickable={false}
+                        >
+                          <img
+                            src="/images/seed-group-icon.svg"
+                            alt="group-icon"
                           />
-                          <div className="flex-1">
-                            <p className="text-xs text-gray-40">{nickname}</p>
-                            <p className="text-sm text-gray-80">
-                              {shortenAddress(
-                                currentAddress?.value || currentAddress?.hex,
-                              )}
-                            </p>
-                          </div>
-                          <div className="flex items-center">
-                            {selected ? (
-                              <img
-                                src="/images/location.svg"
-                                alt="current address"
-                                className="mr-3 w-3 h-3"
-                                id="location"
-                              />
-                            ) : null}
-                            <Checkbox
-                              checked={checkboxStatusObj[accountId]}
-                              id={`check-${index}`}
-                              iconClassName="mr-0"
-                            />
-                          </div>
-                        </div>
+                        </WrapIcon>
+                        <p className="text-gray-40 text-xs">{nickname}</p>
                       </div>
-                    ),
-                  )}
-              </div>
-            ))
+                    )}
+                    {Object.values(account)
+                      .filter(({hidden}) => !hidden)
+                      .map(
+                        (
+                          {eid: accountId, nickname, currentAddress, selected},
+                          index,
+                        ) => (
+                          <div
+                            aria-hidden="true"
+                            onClick={() => onSelectSingleAccount(accountId)}
+                            key={accountId}
+                            id={`item-${index}`}
+                            className="flex px-3 items-center h-15 cursor-pointer"
+                          >
+                            <div className="flex w-full">
+                              <Avatar
+                                className="w-5 h-5 mr-2"
+                                diameter={20}
+                                accountIdentity={accountId}
+                              />
+                              <div className="flex-1">
+                                <p className="text-xs text-gray-40">
+                                  {nickname}
+                                </p>
+                                <p className="text-sm text-gray-80">
+                                  {shortenAddress(
+                                    currentAddress?.value ||
+                                      currentAddress?.hex,
+                                  )}
+                                </p>
+                              </div>
+                              <div className="flex items-center">
+                                {selected ? (
+                                  <img
+                                    src="/images/location.svg"
+                                    alt="current address"
+                                    className="mr-3 w-3 h-3"
+                                    id="location"
+                                  />
+                                ) : null}
+                                <Checkbox
+                                  checked={checkboxStatusObj[accountId]}
+                                  id={`check-${index}`}
+                                  iconClassName="mr-0"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ),
+                      )}
+                  </div>
+                ),
+            )
           )}
         </div>
       </CompWithLabel>
