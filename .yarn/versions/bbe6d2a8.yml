@@ -1,0 +1,3 @@
+declined:
+  - "@fluent-wallet/db"
+  - "@fluent-wallet/wallet_db-query"
