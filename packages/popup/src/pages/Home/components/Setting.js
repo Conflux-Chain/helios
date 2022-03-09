@@ -36,14 +36,14 @@ const SETTING_ITEMS = [
     jumpPath: AUTHORIZED_WEBSITE,
   },
   {
+    contentKey: 'AdvancedSettings',
+    iconPath: '/images/advanced-settings.svg',
+    jumpPath: ADVANCED_SETTINGS,
+  },
+  {
     contentKey: 'about',
     iconPath: '/images/exclamation-circle.svg',
     jumpPath: ABOUT,
-  },
-  {
-    contentKey: 'AdvancedSettings',
-    iconPath: '/images/exclamation-circle.svg',
-    jumpPath: ADVANCED_SETTINGS,
   },
 ]
 

@@ -31,11 +31,13 @@ export const geTextSignature = async fourBytePrefix => {
 
 export const getEthContractMethodSignature = async (
   transactionData,
+  ethProvider,
   networkType,
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const provider = new HttpProvider(getETHEndpoint(networkType))
+    const provider =
+      ethProvider || new HttpProvider(getETHEndpoint(networkType))
     const registry = new MethodRegistry({provider})
     const fourBytePrefix = transactionData.substr(0, 10)
     const fourByteSig = geTextSignature(fourBytePrefix).catch(e => {

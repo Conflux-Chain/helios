@@ -38,16 +38,7 @@ function EditGasFee() {
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const cfxMaxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
-<<<<<<< HEAD
-<<<<<<< HEAD
   const {symbol, decimals} = useCurrentTicker()
-=======
-  const {symbol} = useCurrentTicker()
-  const decimals = networkTypeIsCfx ? CFX_DECIMALS : ETH_DECIMALS
->>>>>>> 60a33ebd (refactor: remove hardcoded symbol)
-=======
-  const {symbol, decimals} = useCurrentTicker()
->>>>>>> 7ef22d1f (refactor: remove hardcoded decimals)
 
   const isDapp = getPageType() === 'notification'
   const tx = useDappParams()

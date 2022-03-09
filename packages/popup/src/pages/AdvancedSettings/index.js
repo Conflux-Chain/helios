@@ -15,10 +15,8 @@ function AdvancedSettings() {
   const {setLoading} = useLoading()
   const {mutate} = useSWRConfig()
 
-  console.log('preferencesData', preferencesData)
   const onSwitchMode = (preferencesKey, preferencesValue) => {
     const params = {[preferencesKey]: preferencesValue}
-    console.log('params', params)
     setLoading(true)
     request(WALLET_SET_PREFERENCES, params)
       .then(() => {
@@ -51,15 +49,17 @@ function AdvancedSettings() {
       </header>
       <main className="mt-1 flex-1 px-6">
         <div>
-          <div className="h-13 flex items-center justify-between text-base font-medium">
+          <div className="flex items-center justify-between text-base font-medium">
             {t('priorityConnection')}
           </div>
           <p className="text-sm text-gray-60 mt-1">
             {t('priorityConnectionDes')}
           </p>
         </div>
-        <div>
-          <div>{t('underCfxProvider')}</div>
+        <div className="flex items-center justify-between h-13 mt-3">
+          <div className="text-gray-80 text-sm font-medium">
+            {t('underCfxProvider')}
+          </div>
           <SwitchButtonGroup
             showLeft={!preferencesData?.overrideWindowDotConflux}
             onSwitch={status =>
@@ -67,10 +67,13 @@ function AdvancedSettings() {
             }
             leftSwitchClassName="!w-8 !h-8 !text-gray-60"
             rightSwitchClassName="!w-8 !h-8"
+            WrapperId="takeover-conflux"
           />
         </div>
-        <div>
-          <div>{t('underEtherProvider')}</div>
+        <div className="flex items-center justify-between h-13">
+          <div className="text-gray-80 text-sm font-medium">
+            {t('underEtherProvider')}
+          </div>
           <SwitchButtonGroup
             showLeft={!preferencesData?.overrideWindowDotEthereum}
             onSwitch={status =>
@@ -78,20 +81,24 @@ function AdvancedSettings() {
             }
             leftSwitchClassName="!w-8 !h-8 !text-gray-60"
             rightSwitchClassName="!w-8 !h-8"
+            WrapperId="takeover-eth"
           />
         </div>
-        <div>-----------------</div>
+        <div className="w-full h-px bg-gray-20 mt-6 mb-3" />
         <div>
-          <div>
-            <div>{t('showTestnet')}</div>
+          <div className="flex items-center justify-between h-13">
+            <div className="text-gray-80 text-base font-medium">
+              {t('showTestnet')}
+            </div>
             <SwitchButtonGroup
               showLeft={preferencesData?.hideTestNetwork}
               onSwitch={status => onSwitchMode('hideTestNetwork', status)}
               leftSwitchClassName="!w-8 !h-8 !text-gray-60"
               rightSwitchClassName="!w-8 !h-8"
+              WrapperId="hide-testnet"
             />
           </div>
-          <div>{t('showTestnetDes')}</div>
+          <div className="text-sm text-gray-60 mt-1">{t('showTestnetDes')}</div>
         </div>
       </main>
     </div>

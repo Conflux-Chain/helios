@@ -143,10 +143,15 @@ function setupProvider() {
           value: PROVIDER,
           writable: false,
         })
-
-        window.web3 = {
-          currentProvider: window.ethereum,
-        }
+        let web3 = {}
+        Object.defineProperty(web3, 'currentProvider', {
+          value: PROVIDER,
+          writable: false,
+        })
+        Object.defineProperty(window, 'web3', {
+          value: web3,
+          writable: false,
+        })
       }
     })
     .catch(() => {
