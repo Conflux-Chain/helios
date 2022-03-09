@@ -19,9 +19,5 @@ export const permissions = {
 
 export const main = ({Err: {InvalidParams}, db, params: {method, params}}) => {
   if (!db[method]) throw InvalidParams(`Invalid db query method ${method}`)
-  try {
-    return db[method](params)
-  } catch (error) {
-    return []
-  }
+  return db[method](params)
 }
