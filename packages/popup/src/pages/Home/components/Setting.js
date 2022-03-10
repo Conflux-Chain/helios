@@ -111,7 +111,14 @@ function Setting({onClose, open, settingAnimate = true}) {
               <SettingItem
                 key={contentKey}
                 onClick={() => onClickSettingItem(jumpPath)}
-                icon={<img src={iconPath} alt="icon" className="w-5 h-5" />}
+                icon={
+                  <img
+                    src={iconPath}
+                    alt="icon"
+                    className="w-5 h-5"
+                    id={contentKey}
+                  />
+                }
                 content={t(contentKey)}
               />
             ))}

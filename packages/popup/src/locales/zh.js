@@ -43,7 +43,7 @@ const zh = {
     // - homepage / dapp connect site 弹窗
     connectSite: '连接至此网站？',
     selectNetwork: '想要使用哪个网络？',
-    selectAuthorizedAccounts: '请选择需要授权的账户',
+    selectAuthorizedAccounts: '授权账户',
     selectAll: '全部',
     connect: '连接',
     chooseNetwork: '选择网络',
@@ -57,6 +57,7 @@ const zh = {
     // - homepage / 账户管理 / 账户列表
     myAccounts: '我的账户',
     addAccount: '添加账户',
+    search: '搜索',
 
     // homepage / 账户管理 / 创建账户
     manyAccounts: '{{accountNum}} 个账户',
@@ -130,6 +131,7 @@ const zh = {
     passwordRulesWarning: '请使用 8～128 个字符，并且同时包含字母和数字',
     en: 'English',
     zh: '简体中文',
+    fr: 'Français',
 
     // - Send Transaction
     // - Send Transaction / send transaction

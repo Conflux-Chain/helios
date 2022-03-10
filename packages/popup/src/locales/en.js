@@ -43,7 +43,7 @@ const en = {
     // - homepage / dapp connect site 弹窗
     connectSite: 'Connect to this Website?',
     selectNetwork: 'Which network want to use?',
-    selectAuthorizedAccounts: 'Which accounts will be authorized?',
+    selectAuthorizedAccounts: 'Authorized account',
     selectAll: 'All',
     connect: 'Connect',
     chooseNetwork: 'Choose Network',
@@ -57,6 +57,7 @@ const en = {
     // - homepage / 账户管理 / 账户列表
     myAccounts: 'My Accounts',
     addAccount: 'Add Account',
+    search: 'Search',
 
     // homepage / 账户管理 / 创建账户
     manyAccounts: '{{accountNum}} Accounts',
@@ -133,6 +134,7 @@ const en = {
       'Use 8 ~ 128 characters with a mix of letters & numbers.',
     en: 'English',
     zh: '简体中文',
+    fr: 'Français',
 
     // - Send Transaction
     // - Send Transaction / send transaction

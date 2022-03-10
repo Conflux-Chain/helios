@@ -1,13 +1,10 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
-import {useSWRConfig} from 'swr'
 import {useTranslation} from 'react-i18next'
-import {isNumber} from '@fluent-wallet/checks'
 import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS} from '../../../constants'
 import {AccountItem} from './'
-import {TextField} from '../../../components'
-import {request, updateDbAccountList} from '../../../utils'
+import {TextField, WrapIcon} from '../../../components'
 
 const {
   WALLET_EXPORT_ACCOUNT_GROUP,
@@ -18,77 +15,57 @@ const {
 function GroupItem({
   nickname,
   account,
-  currentAccountId,
+  currentNetworkId,
   showDelete = false,
   groupType = '',
   onOpenConfirmPassword,
   accountGroupId,
+  updateEditedName,
 }) {
   const {t} = useTranslation()
-  const {mutate} = useSWRConfig()
   const [inputNickname, setInputNickname] = useState(nickname)
 
-  const updateAccountGroup = params => {
-    return new Promise((resolve, reject) => {
-      request(WALLET_UPDATE_ACCOUNT_GROUP, params)
-        .then(() => {
-          updateDbAccountList(
-            mutate,
-            'accountManagementQueryAccount',
-            'queryAllAccount',
-          ).then(resolve)
-        })
-        .catch(e => {
-          Message.error({
-            content:
-              e?.message?.split?.('\n')?.[0] ??
-              e?.message ??
-              t('unCaughtErrMsg'),
-            top: '10px',
-            duration: 1,
-          })
-          reject()
-        })
-    })
-  }
-
   const onDeleteAccountGroup = () => {
-    if (isNumber(currentAccountId)) {
-      if (account.find(({eid}) => eid === currentAccountId)) {
-        return Message.warning({
-          content: t('groupDeleteWarning'),
-          top: '10px',
-          duration: 1,
-        })
-      }
-      onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
-        accountGroupId,
+    if (account.find(({selected}) => !!selected)) {
+      return Message.warning({
+        content: t('groupDeleteWarning'),
+        top: '10px',
+        duration: 1,
       })
     }
+    onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
+      accountGroupId,
+    })
   }
   const onTextFieldBlur = () => {
-    return updateAccountGroup.call(this, {
-      accountGroupId,
-      nickname: inputNickname,
-    })
+    return updateEditedName(
+      {
+        accountGroupId,
+        nickname: inputNickname,
+      },
+      WALLET_UPDATE_ACCOUNT_GROUP,
+    )
   }
 
   return (
     <div className="bg-gray-0 rounded mt-3 mx-3">
       {groupType === 'pk' ? null : (
-        <div className="pt-3">
+        <div className="flex items-center ml-3 pt-2.5 mb-0.5">
+          <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
+            <img src="/images/seed-group-icon.svg" alt="group-icon" />
+          </WrapIcon>
           <TextField
             textValue={nickname}
             inputValue={inputNickname}
             onInputBlur={onTextFieldBlur}
             onInputChange={setInputNickname}
-            className="text-gray-40 ml-4 mb-1"
+            className="text-gray-40 ml-1"
             fontSize="!text-xs"
             height="!h-4"
           />
         </div>
       )}
-      {account.map(({nickname, eid, hidden}) => (
+      {account.map(({nickname, eid, hidden, selected}) => (
         <AccountItem
           key={eid}
           accountId={eid}
@@ -97,8 +74,10 @@ function GroupItem({
           groupType={groupType}
           showDelete={showDelete}
           hidden={hidden}
+          selected={selected}
           onOpenConfirmPassword={onOpenConfirmPassword}
-          currentAccountId={currentAccountId}
+          currentNetworkId={currentNetworkId}
+          updateEditedName={updateEditedName}
         />
       ))}
       {groupType === 'hd' && (
@@ -132,11 +111,12 @@ function GroupItem({
 GroupItem.propTypes = {
   nickname: PropTypes.string,
   accountGroupId: PropTypes.number,
-  currentAccountId: PropTypes.number,
+  currentNetworkId: PropTypes.number,
   account: PropTypes.array,
   groupType: PropTypes.string,
   showDelete: PropTypes.bool,
   onOpenConfirmPassword: PropTypes.func,
+  updateEditedName: PropTypes.func.isRequired,
 }
 
 export default GroupItem

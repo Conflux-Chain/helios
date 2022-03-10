@@ -12,7 +12,7 @@ function NetworkList({onClose, open}) {
     <SlideCard
       id="network-list"
       cardTitle={
-        <div className="ml-3 pb-1">
+        <div className="ml-3 pb-4">
           <p className="text-base text-gray-80 font-medium">{t('network')}</p>
         </div>
       }
