@@ -1,13 +1,14 @@
 import {MethodRegistry} from 'eth-method-registry'
+import {iface} from '@fluent-wallet/contract-abis/777.js'
 import HttpProvider from 'ethjs-provider-http'
 import {ETH_ENDPOINT} from './constance'
 import {ETH_FOUR_BYTE_DOMAIN} from './constance'
 import fetchHelper from './util/fetch-helper'
 
-// networkType must be any of Mainnet,Ropsten,Rinkeby,Kovan,Goerli
-export const getETHEndpoint = networkType => {
-  return Object.prototype.hasOwnProperty.call(ETH_ENDPOINT, networkType)
-    ? ETH_ENDPOINT[networkType]
+// chainId must be one of Mainnet,Ropsten,Rinkeby,Kovan,Goerli
+const getETHEndpoint = chainId => {
+  return Object.prototype.hasOwnProperty.call(ETH_ENDPOINT, chainId)
+    ? ETH_ENDPOINT[chainId]
     : null
 }
 
@@ -29,20 +30,17 @@ export const geTextSignature = async fourBytePrefix => {
   return null
 }
 
-export const getEthContractMethodSignature = async (
+// Attempts to return the method data from the MethodRegistry library.
+export const getEthMethodData = async (
   transactionData,
   ethProvider,
-  networkType,
+  chainId,
 ) => {
-  // eslint-disable-next-line no-useless-catch
   try {
-    const provider =
-      ethProvider || new HttpProvider(getETHEndpoint(networkType))
+    const provider = ethProvider || new HttpProvider(getETHEndpoint(chainId))
     const registry = new MethodRegistry({provider})
     const fourBytePrefix = transactionData.substr(0, 10)
-    const fourByteSig = geTextSignature(fourBytePrefix).catch(e => {
-      throw e
-    })
+    const fourByteSig = await geTextSignature(fourBytePrefix)
 
     let sig = await registry.lookup(fourBytePrefix)
 
@@ -56,7 +54,15 @@ export const getEthContractMethodSignature = async (
       name: parsedResult.name,
       params: parsedResult.args,
     }
-  } catch (error) {
-    throw error
+  } catch (e) {
+    throw new Error('failed to get method data')
+  }
+}
+
+export const getEthContractMethodSignature = transactionData => {
+  try {
+    return iface.parseTransaction({data: transactionData})
+  } catch (e) {
+    return undefined
   }
 }

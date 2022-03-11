@@ -1,27 +1,25 @@
 import nock from 'nock'
 import {expect, describe, afterEach} from '@jest/globals'
-import {ETH_ENDPOINT} from './constance'
 import {
-  getETHEndpoint,
   geTextSignature,
+  getEthMethodData,
   getEthContractMethodSignature,
 } from './eth-name'
+
+const getError = async call => {
+  try {
+    await call()
+    throw new Error('NoErrorThrownError')
+  } catch (error) {
+    return error
+  }
+}
+
 describe('ETH Name', () => {
   afterEach(() => {
     nock.cleanAll()
   })
-  describe('getETHEndpoint', () => {
-    it('should return ETH ENDPOINT', () => {
-      expect(getETHEndpoint('Mainnet')).toEqual(ETH_ENDPOINT['Mainnet'])
-      expect(getETHEndpoint('Ropsten')).toEqual(ETH_ENDPOINT['Ropsten'])
-      expect(getETHEndpoint('Rinkeby')).toEqual(ETH_ENDPOINT['Rinkeby'])
-      expect(getETHEndpoint('Kovan')).toEqual(ETH_ENDPOINT['Kovan'])
-      expect(getETHEndpoint('Goerli')).toEqual(ETH_ENDPOINT['Goerli'])
-    })
-    it('should return null', () => {
-      expect(getETHEndpoint('some net')).toBeNull()
-    })
-  })
+
   describe('geTextSignature', () => {
     it('should return null when got wrong prefix', async () => {
       const res = await geTextSignature('some error prefix')
@@ -36,7 +34,6 @@ describe('ETH Name', () => {
       )
       expect(res).toEqual(null)
     })
-
     it('should return text_signature', async () => {
       nock('https://www.4byte.directory/api/v1')
         .get('/signatures/?hex_signature=0x6057361d')
@@ -58,7 +55,7 @@ describe('ETH Name', () => {
       expect(res).toBe('store(uint256)')
     })
   })
-  describe('getEthContractMethodSignature', () => {
+  describe('getEthMethodData', () => {
     it('should return eth contract method name', async () => {
       nock('https://www.4byte.directory/api/v1')
         .get('/signatures/?hex_signature=0x6057361d')
@@ -76,24 +73,43 @@ describe('ETH Name', () => {
             },
           ],
         })
-      const res = await getEthContractMethodSignature(
+      const res = await getEthMethodData(
         '0x6057361d000000000000000000000000000000000000000000000000000000000000022b',
         null,
-        'Ropsten',
+        '3',
       )
       expect(res).toHaveProperty('fullName', 'store(uint256)')
     })
+    it('should throw error', async function () {
+      nock('https://www.4byte.directory/api/v1')
+        .get('/signatures/?hex_signature=0x6057361d')
+        .reply(500)
+      const err = await getError(() => {
+        return getEthMethodData(
+          '0x6057361d000000000000000000000000000000000000000000000000000000000000022b',
+          null,
+          '3',
+        )
+      })
+      expect(err).toEqual(new Error('failed to get method data'))
+    })
+  })
 
-    // it('should return empty object', async function () {
-    //   nock('https://www.4byte.directory/api/v1')
-    //     .get('/signatures/?hex_signature=0x6057361d')
-    //     .reply(500)
-    //   const res = await getEthContractMethodSignature(
-    //     '0x6057361d000000000000000000000000000000000000000000000000000000000000022b',
-    //     null,
-    //     'Ropsten',
-    //   )
-    //   expect(res).toEqual({})
-    // })
+  describe('getEthContractMethodSignature', () => {
+    it('should return token data', () => {
+      const tokenData = getEthContractMethodSignature(
+        '0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000003a98',
+      )
+      const {name, args} = tokenData
+      expect(name).toStrictEqual('transfer')
+      const to = args[0]
+      const value = args[1]
+      expect(to).toStrictEqual('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      expect(value._hex).toStrictEqual('0x3a98')
+    })
+
+    it('should return undefined when called without arguments', () => {
+      expect(getEthContractMethodSignature()).toBeUndefined()
+    })
   })
 })
