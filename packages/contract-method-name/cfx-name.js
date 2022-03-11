@@ -38,19 +38,24 @@ export const getCFXContractMethodSignature = async (
   if (!validateBase32Address(address)) {
     throw new Error('inValidate base32 address')
   }
-  let abiInterface
-  if (eip777AbiSignatures.includes(transactionData.substr(0, 10))) {
-    abiInterface = iface
-  } else {
-    const response = await getCFXAbi(address, netId)
-    abiInterface = new Interface(JSON.parse(response.abi))
-  }
 
-  const ret = abiInterface.parseTransaction({data: transactionData})
-  if (ret.args) {
-    ret.args = ret.args.map(arg =>
-      isHexAddress(arg) ? encode(arg.substr(2), netId) : arg,
-    )
+  try {
+    let abiInterface
+    if (eip777AbiSignatures.includes(transactionData.substr(0, 10))) {
+      abiInterface = iface
+    } else {
+      const response = await getCFXAbi(address, netId)
+      abiInterface = new Interface(JSON.parse(response.abi))
+    }
+
+    const ret = abiInterface.parseTransaction({data: transactionData})
+    if (ret.args) {
+      ret.args = ret.args.map(arg =>
+        isHexAddress(arg) ? encode(arg.substr(2), netId) : arg,
+      )
+    }
+    return ret
+  } catch (e) {
+    throw new Error('failed to parse transaction data')
   }
-  return ret
 }
