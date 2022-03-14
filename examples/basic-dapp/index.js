@@ -707,11 +707,7 @@ window.addEventListener('load', async () => {
   }
 
   getElement('installed').innerHTML = 'installed'
-  if (window.localStorage.getItem('__FLUENT_USE_MODERN_PROVIDER_API__')) {
-    getElement('installed-section').style.display = 'block'
-  } else {
-    getElement('deprecated-provider-api-warning').style.display = 'block'
-  }
+  getElement('installed-section').style.display = 'block'
 
   if (window.conflux.isConnected()) {
     window.conflux

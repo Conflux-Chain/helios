@@ -1213,8 +1213,6 @@
                       txs)})))
 
 (defonce default-preferences {:hideTestNetwork      false
-                              :useModernProviderAPI false
-                              :overrideWindowDotConflux  true
                               :overrideWindowDotEthereum false})
 
 (defn get-preferences []

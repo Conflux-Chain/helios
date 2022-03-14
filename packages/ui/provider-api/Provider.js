@@ -6,7 +6,6 @@ class Provider extends SafeEventEmitter {
   #send
   #isConnected
   isFluent = true
-  isConfluxPortal = true
   isMetaMask = true
 
   // DEPRECATED

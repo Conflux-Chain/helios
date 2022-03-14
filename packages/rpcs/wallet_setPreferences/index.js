@@ -8,28 +8,34 @@ export const schemas = {
     map,
     {closed: true},
     ['hideTestNetwork', {optional: true}, boolean],
-    ['useModernProviderAPI', {optional: true}, boolean],
     ['overrideWindowDotEthereum', {optional: true}, boolean],
-    ['overrideWindowDotConflux', {optional: true}, boolean],
   ],
 }
 
 export const permissions = {
   external: ['popup'],
-  methods: [],
+  methods: ['wallet_getPreferences'],
   db: ['setPreferences', 'getApp'],
 }
 
-export const main = ({db: {setPreferences, getApp}, params}) => {
+export const main = async ({
+  rpcs: {wallet_getPreferences},
+  db: {setPreferences, getApp},
+  params,
+}) => {
   const txRst = setPreferences(params)
 
-  if (!isUndefined(params?.useModernProviderAPI)) {
+  const {overrideWindowDotEthereum} = await wallet_getPreferences()
+
+  // if overrideWindowDotEthereum is set
+  if (!isUndefined(params?.overrideWindowDotEthereum)) {
     const apps = getApp()
     apps.forEach(app => {
       if (!app.site.post) return
       app.site.post({
         event: '__FLUENT_BACKEND_PREFERENCES__',
-        params,
+        // don't pass all preferences to content script
+        params: {overrideWindowDotEthereum},
       })
     })
   }
