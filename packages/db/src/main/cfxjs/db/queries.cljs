@@ -133,6 +133,7 @@
 (defn get-account [{:keys [accountId groupId index g nickname selected fuzzy]}]
   (let [g            (and g {:account g})
         fuzzy        (if (string? fuzzy)
+<<<<<<< HEAD
                        (try
                          (re-pattern
                           (str "(?i)"
@@ -141,6 +142,14 @@
                                    gstr/regExpEscape
                                    (.replaceAll " " ".*"))))
                          (catch js/Error _ "_"))
+=======
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 (.trim)
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+>>>>>>> 9decbf3d... fix: escape fuzzy regexp PORTAL-2709 (#815)
                        nil)
         post-process (if (seq g) identity #(get % :db/id))]
     (prst->js
@@ -190,6 +199,7 @@
         post-process        (if (seq g) identity #(get % :db/id))
         addr                (and (string? address) (.toLowerCase address))
         fuzzy-length        (if (string? fuzzy) (count (.trim fuzzy)) nil)
+<<<<<<< HEAD
         fuzzy-has-match-any (if (string? fuzzy) (.includes fuzzy ".*") nil)
         fuzzy               (if fuzzy-has-match-any (.replaceAll fuzzy ".*" " ") nil)
         fuzzy               (if (string? fuzzy)
@@ -202,6 +212,17 @@
                                           (.replaceAll " " ".*"))))
                                 (catch js/Error _ "_"))
                               nil)]
+=======
+        fuzzy               (if (string? fuzzy)
+                              (re-pattern
+                               (str "(?i)"
+                                    (-> fuzzy
+                                        (.trim)
+                                        gstr/regExpEscape
+                                        (.replaceAll " " ".*"))))
+                              nil)
+        fuzzy-has-match-any (if (string? fuzzy) (.includes fuzzy ".*") nil)]
+>>>>>>> 9decbf3d... fix: escape fuzzy regexp PORTAL-2709 (#815)
     (prst->js
      (cond
        tokenId
@@ -572,14 +593,12 @@
         hex          (if (vector? hex) (map #(.toLowerCase %) hex) hex)
         addressId    (if selected (get-current-addr) addressId)
         fuzzy        (if (string? fuzzy)
-                       (try
-                         (re-pattern
-                          (str "(?i)"
-                               (-> fuzzy
-                                   (.trim)
-                                   gstr/regExpEscape
-                                   (.replaceAll " " ".*"))))
-                         (catch js/Error _ "_"))
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 (.trim)
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
                        nil)]
     (prst->js
      (cond

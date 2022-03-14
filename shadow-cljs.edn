@@ -11,7 +11,7 @@
 
  :dependencies
  [[metosin/malli "0.6.2"]
-  [binaryage/oops "0.7.1"]
+  [binaryage/oops "0.7.2"]
   [datascript "1.0.7"]
   [hashp "0.2.1"]
   [medley "1.3.0"]
