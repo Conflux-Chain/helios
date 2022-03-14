@@ -135,6 +135,7 @@ const fr = {
     en: 'English',
     zh: '简体中文',
     fr: 'Français',
+    ru: 'Русский',
 
     // - Send Transaction
     // - Send Transaction / send transaction
