@@ -1,5 +1,0 @@
-releases:
-  "@fluent-wallet/single-call-balance-tracker": patch
-
-declined:
-  - "@fluent-wallet/wallet_get-balance"
