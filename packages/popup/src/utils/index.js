@@ -3,11 +3,14 @@ import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
 import {isArray} from '@fluent-wallet/checks'
-
 import {PASSWORD_REG_EXP, RPC_METHODS} from '../constants'
 const globalThis = window ?? global
-const {WALLET_GET_ACCOUNT_GROUP, WALLET_METADATA_FOR_POPUP, QUERY_ADDRESS} =
-  RPC_METHODS
+const {
+  WALLET_GET_ACCOUNT_GROUP,
+  WALLET_METADATA_FOR_POPUP,
+  QUERY_ADDRESS,
+  WALLET_GET_BALANCE,
+} = RPC_METHODS
 
 export function request(...args) {
   const [method, params] = args
@@ -183,4 +186,61 @@ export const formatAccountGroupData = (d, showHiddenAccount = true) => {
     return ret
   }
   return d
+}
+
+export const checkBalance = async (
+  txParams,
+  token,
+  isNativeToken,
+  isSendToken,
+  sendTokenValue,
+) => {
+  const {from, to, gasPrice, gas, value, storageLimit} = txParams
+  const storageFeeDrip = bn16(storageLimit)
+    .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
+    .divn(1024)
+  const gasFeeDrip = bn16(gas).mul(bn16(gasPrice))
+  const txFeeDrip = gasFeeDrip.add(storageFeeDrip)
+  const {address: tokenAddress} = token
+  try {
+    const balanceData = await request(WALLET_GET_BALANCE, {
+      users: [from],
+      tokens: isNativeToken ? ['0x0'] : ['0x0'].concat(tokenAddress),
+    })
+    const balance = balanceData?.[from]
+
+    if (isSendToken) {
+      if (isNativeToken) {
+        if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
+          return 'balanceIsNotEnough'
+        } else {
+          return ''
+        }
+      } else {
+        if (bn16(balance[tokenAddress]).lt(bn16(sendTokenValue))) {
+          return 'balanceIsNotEnough'
+        }
+      }
+    }
+
+    const {willPayCollateral, willPayTxFee} = await request(
+      'cfx_checkBalanceAgainstTransaction',
+      [from, to, gas, gasPrice, storageLimit, 'latest_state'],
+    )
+
+    if (
+      (bn16(balance['0x0']).lt(txFeeDrip) &&
+        willPayTxFee &&
+        willPayCollateral) ||
+      (bn16(balance['0x0']).lt(storageFeeDrip) && willPayCollateral) ||
+      (bn16(balance['0x0']).lt(gasFeeDrip) && willPayTxFee)
+    ) {
+      return 'gasFeeIsNotEnough'
+    } else {
+      return ''
+    }
+  } catch (err) {
+    console.error(err)
+    return ''
+  }
 }

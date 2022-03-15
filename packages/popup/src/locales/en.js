@@ -168,7 +168,7 @@ const en = {
     storageCollateralized: 'Storage Limit',
     totalFee: 'Total Fee',
     customNonce: 'Custom Nonce',
-    gasPriceErrMSg: 'The minimum Gas Price is 1 {{unit}}',
+    gasPriceErrMSg: 'The minimum Gas Price is {{amount}} {{unit}}',
     gasLimitMinErr: 'Gas Limit must be at least {{gasUsed}}',
     gasLimitMaxErr: 'Gas Limit must be at most {{gasMax}}',
     nonceErr: 'Nonce can not be 0',
@@ -211,6 +211,23 @@ const en = {
     contractCreation: 'Contract Deployment',
     contractInteraction: 'Contract Interaction',
     unknown: 'Unknown',
+
+    // - Send Transaction / - speedup and cancel tx
+    cancelTransaction: 'Cancel transaction',
+    suggestedGasPrice: 'Suggested Gas Price',
+    inputGasPrice: 'Input Gas Price',
+    spend: 'Spend',
+    cancelTxDes:
+      'Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTxDes:
+      'Submitting this attempt does not guarantee your original transaction will be cancelled.If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTransaction: 'Speed up transaction',
+    canceledTx:
+      'The transaction has been executed or finished.No action required',
+    submit: 'Submit',
+    customGasPrice: 'Custom Gas Price',
+    executedTx:
+      'The transaction has been executed or finished.No action required.',
 
     // - request signature - 1. Sign Text
     signText: 'Sign Text',

@@ -15,7 +15,14 @@ import useDebouncedValue from '../hooks/useDebouncedValue'
 import {ROUTES} from '../constants'
 const {EDIT_GAS_FEE} = ROUTES
 
-function GasFee({estimateRst}) {
+function GasFee({
+  estimateRst,
+  titleDes,
+  goEdit = true,
+  showDrip = true,
+  titleClassName = 'mb-2',
+  contentClassName = '',
+}) {
   const {gasPrice: _gasPrice} = useCurrentTxParams()
   const {t} = useTranslation()
   const history = useHistory()
@@ -41,20 +48,24 @@ function GasFee({estimateRst}) {
 
   return (
     <div className="gas-fee-container flex flex-col">
-      <header className="gas-fee-header flex items-center justify-between w-full text-gray-40 mb-2">
-        {t('gasFee')}
-        <span className="flex items-center">
-          <Link
-            onClick={() => history.push(EDIT_GAS_FEE)}
-            disabled={!realPayedFeeDrip || !gasPrice}
-          >
-            {t('edit')}
-            <RightOutlined className="w-3 h-3 text-primary ml-1" />
-          </Link>
-        </span>
+      <header
+        className={`gas-fee-header flex items-center justify-between w-full text-gray-40 ${titleClassName}`}
+      >
+        {titleDes || t('gasFee')}
+        {goEdit && (
+          <span className="flex items-center">
+            <Link
+              onClick={() => history.push(EDIT_GAS_FEE)}
+              disabled={!realPayedFeeDrip || !gasPrice}
+            >
+              {t('edit')}
+              <RightOutlined className="w-3 h-3 text-primary ml-1" />
+            </Link>
+          </span>
+        )}
       </header>
       <div
-        className="gas-fee-body flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative"
+        className={`gas-fee-body flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative ${contentClassName}`}
         id="gasFeeContainer"
       >
         <DisplayBalance
@@ -78,9 +89,11 @@ function GasFee({estimateRst}) {
             decimals={decimals}
           />
         )}
-        <span className="text-xs text-gray-60">{`${roundBalance(gasPrice)} ${
-          networkTypeIsCfx ? 'Drip' : 'Gwei'
-        }`}</span>
+        {showDrip && (
+          <span className="text-xs text-gray-60">{`${roundBalance(gasPrice)} ${
+            networkTypeIsCfx ? 'Drip' : 'Gwei'
+          }`}</span>
+        )}
         {isBePayed && (
           <CustomTag
             width="w-auto"
@@ -98,8 +111,11 @@ function GasFee({estimateRst}) {
 
 GasFee.propTypes = {
   estimateRst: PropTypes.object,
-  isDapp: PropTypes.bool,
-  willPayTxFee: PropTypes.bool,
+  titleDes: PropTypes.string,
+  titleClassName: PropTypes.string,
+  contentClassName: PropTypes.string,
+  goEdit: PropTypes.bool,
+  showDrip: PropTypes.bool,
 }
 
 export default GasFee

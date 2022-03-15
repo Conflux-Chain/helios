@@ -45,7 +45,7 @@ export const useCurrentAddress = (notSendReq = false) => {
         hex: 1,
         eid: 1,
         nativeBalance: 1,
-        _account: {nickname: 1, eid: 1},
+        _account: {nickname: 1, eid: 1, _accountGroup: {vault: {type: 1}}},
         network: {
           eid: 1,
           ticker: 1,
@@ -61,6 +61,16 @@ export const useCurrentAddress = (notSendReq = false) => {
     {fallbackData: {network: {ticker: {}}, account: {}}},
   )
   return {data, mutate}
+}
+
+export const useCurrentTicker = () => {
+  const {
+    data: {
+      network: {ticker},
+    },
+  } = useCurrentAddress()
+
+  return ticker
 }
 
 export const useCurrentDapp = () => {
@@ -442,14 +452,14 @@ export const useTxList = params => {
   const {
     data: {eid: addressId},
   } = useCurrentAddress()
-  const {data: listData} = useRPC(
+  const {data, mutate} = useRPC(
     addressId ? [WALLETDB_TXLIST, ...Object.values(params), addressId] : null,
     {...params, addressId},
     {
       fallbackData: params?.countOnly ? 0 : {},
     },
   )
-  return listData
+  return {data, mutate}
 }
 
 export const useBlockchainExplorerUrl = params => {

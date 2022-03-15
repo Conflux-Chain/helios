@@ -70,6 +70,7 @@ function EditGasFee() {
     } else {
       setGasPriceErr(
         t('gasPriceErrMSg', {
+          amount: 1,
           unit: networkTypeIsCfx ? t('drip') : t('gWei'),
         }),
       )

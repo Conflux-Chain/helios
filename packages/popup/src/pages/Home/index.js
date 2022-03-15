@@ -32,7 +32,10 @@ function Home() {
   const [settingAnimate, setSettingAnimate] = useState(true)
   const query = useQuery()
   const history = useHistory()
-  const pendingCount = useTxList({status: {gte: 0, lt: 4}, countOnly: true})
+  const {data: pendingCount} = useTxList({
+    status: {gte: 0, lt: 4},
+    countOnly: true,
+  })
 
   useEffectOnce(() => {
     const forward = query.get('open')

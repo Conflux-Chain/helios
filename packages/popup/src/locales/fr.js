@@ -67,12 +67,15 @@ const fr = {
     createAccount: 'Créer un nouveau compte',
     useExistingSeed: 'Utiliser une phrase de récupération existante',
     faster: 'Plus rapide',
-    useExistingSeedDes: 'Utiliser HD Wallet, inutile de le sauvegarder à nouveau.',
+    useExistingSeedDes:
+      'Utiliser HD Wallet, inutile de le sauvegarder à nouveau.',
     newSeedPhrase: 'Nouvelle phrase de récupération',
-    newSeedPhraseDes: 'Créer une nouvelle phrase de récupération et la sauvegarder.',
+    newSeedPhraseDes:
+      'Créer une nouvelle phrase de récupération et la sauvegarder.',
     importExistingAccount: 'Importer un Compte',
     seedPhrase: 'Phrase de récupération',
-    seedPhraseDes: 'La phrase de récupération est composée de mots séparés par des espaces.',
+    seedPhraseDes:
+      'La phrase de récupération est composée de mots séparés par des espaces.',
     pKey: 'Clé Privée',
     pKeysDes: 'Saisir la clé privée en texte en clair.',
     ledgerDes: 'Utiliser votre portefeuille Ledger.',
@@ -101,13 +104,15 @@ const fr = {
     seedImport: 'Importer la Phrase de récupération',
     seedImportPlaceholder:
       'La phrase de récupération est composée de mots séparés par des espaces. Séparez chaque mot par un espace.',
-    duplicateSeedError: 'Cette phrase de récupération est déjà présente dans votre portefeuille.',
+    duplicateSeedError:
+      'Cette phrase de récupération est déjà présente dans votre portefeuille.',
     invalidSeed: 'Phrase de récupération invalide, vérifiez à nouveau.',
 
     // homepage / 账户管理 / 创建账户 / 4. Import account with private key
     pKeyImport: 'Importer la Clé Privée',
     pKeyImportPlaceholder: 'Saisir votre Clé Privée ici.',
-    duplicatePkError: 'Cette Clé Privée est déjà présente dans votre portefeuille.',
+    duplicatePkError:
+      'Cette Clé Privée est déjà présente dans votre portefeuille.',
     invalidPrivateKey: 'Clé invalide, vérifiez à nouveau.',
 
     // - Network
@@ -168,7 +173,7 @@ const fr = {
     storageCollateralized: 'Limite de stockage',
     totalFee: 'Frais Totaux',
     customNonce: 'Nonce personalisé',
-    gasPriceErrMSg: 'Le prix minimum du Gas est de 1 {{unit}}',
+    gasPriceErrMSg: 'Le prix minimum du Gas est de {{amount}} {{unit}}',
     gasLimitMinErr: 'La limite de Gas doit être d’au moins {{gasUsed}}',
     gasLimitMaxErr: 'La limite de Gas doit être au maximum de {{gasMax}}',
     nonceErr: 'Le Nonce ne peut pas être égal à 0',
@@ -212,6 +217,23 @@ const fr = {
     contractInteraction: 'Intéraction du Contrat',
     unknown: 'Inconnue',
 
+    // - Send Transaction / - speedup and cancel tx
+    cancelTransaction: 'Cancel transaction',
+    suggestedGasPrice: 'Suggested Gas Price',
+    inputGasPrice: 'Input Gas Price',
+    spend: 'Spend',
+    cancelTxDes:
+      'Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTxDes:
+      'Submitting this attempt does not guarantee your original transaction will be cancelled.If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTransaction: 'Speed up transaction',
+    canceledTx:
+      'The transaction has been executed or finished.No action required',
+    submit: 'Submit',
+    customGasPrice: 'Custom Gas Price',
+    executedTx:
+      'The transaction has been executed or finished.No action required.',
+
     // - request signature - 1. Sign Text
     signText: 'Signer le Texte',
     signThisText: 'Signer ce Texte ?',
@@ -248,7 +270,8 @@ const fr = {
     enterPWDAgain: 'Confirmer le mot de passe',
     rememberPWD: 'Ce mot de passe ne peut pas être récupéré, retenez-le.',
     invalidPassword: 'Mot de passe incorrect.',
-    invalidConfirmPassword: 'La confirmation du mot de passe ne correspond pas.',
+    invalidConfirmPassword:
+      'La confirmation du mot de passe ne correspond pas.',
     // - welcome page
     hello: 'Bonjour',
 
@@ -269,7 +292,8 @@ const fr = {
     networkManagement: 'Gestion du Réseau',
     newRpcUrl: 'URL du RPC',
     networkType: 'Type de Réseau',
-    wrongRpcUrl: 'Impossible de récupérer l’ID de la chaîne. Votre URL RPC est-elle correcte ?',
+    wrongRpcUrl:
+      'Impossible de récupérer l’ID de la chaîne. Votre URL RPC est-elle correcte ?',
     networkDeleteWarning: 'Impossible de supprimer le réseau actuel.',
     duplicateNetworkEndpoint: 'Point de terminaison du réseau en doublon.',
     urlWarning: 'L’URL nécessite le préfixe HTTP/HTTPS approprié.',
@@ -300,7 +324,8 @@ const fr = {
     backupPkDes:
       'Ceci est votre clé privée. L’obtenir signifie posséder tous les actifs. Veuillez la garder en lieu sûr car une fois perdue, elle ne pourra pas être récupérée.',
 
-    transferAmountExceedsAllowance: 'Le montant du transfert dépasse l’allocation',
+    transferAmountExceedsAllowance:
+      'Le montant du transfert dépasse l’allocation',
     balanceIsNotEnough: 'Balance insuffisante',
     gasFeeIsNotEnough: 'Frais de gas insuffisant',
     contractError: 'Erreur Contrat : ',
@@ -327,12 +352,14 @@ const fr = {
     connectLedgerTips:
       'Connecter votre Ledger, assurez-vous qu’il soit déverrouillé et que vous avez approuvé les autorisations sur votre navigateur.',
     connectLedger: 'Connecter votre Ledger',
-    connectLedgerDes: 'Cochez le bouton ci-dessous pour autoriser la connexion.',
+    connectLedgerDes:
+      'Cochez le bouton ci-dessous pour autoriser la connexion.',
     waitForPermission: 'En attente d’autorisation',
     connectFailed: 'Connexion Échouée',
     retry: 'Réessayer',
     openConfluxApp: 'Ouvrir Conflux App',
-    openConfluxAppDes: 'Selectionner and ouvrir Conflux App sur votre dispositif Ledger.',
+    openConfluxAppDes:
+      'Selectionner and ouvrir Conflux App sur votre dispositif Ledger.',
     chooseAddress: 'Choisir une Adresse',
     hdPath: 'Chemin HD',
     chooseHwAddress: 'Choisir l’adresse que vous souhaitez importer :',
@@ -372,7 +399,8 @@ const fr = {
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger n’est pas connecté',
     openExpandView: 'Ouvrir la vue étendue de Fluent pour vous connecter',
-    hwOpenApp: 'Assurez-vous que Conflux App est ouverte avant de cliquer pour confirmer.',
+    hwOpenApp:
+      'Assurez-vous que Conflux App est ouverte avant de cliquer pour confirmer.',
 
     // error page
     errorTile: 'Erreur',
