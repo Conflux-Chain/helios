@@ -69,7 +69,14 @@ export const show = async (arg = {}) => {
   )?.[0]
   if (popup) {
     try {
-      await browser.windows.update(popup.id, {focused: true})
+      // for some reason, chrome won't throw the error if popup is destroyed
+      // so we add
+      // 1. setTimeout
+      // 2. browser.windows.get &&
+      // to ensure the logic goes into catch
+      await new Promise(resolve => setTimeout(resolve, 1))
+      ;(await browser.windows.get(popup.id)) &&
+        (await browser.windows.update(popup.id, {focused: true}))
       // eslint-disable-next-line no-empty
     } catch (err) {
       // popup got deleted
