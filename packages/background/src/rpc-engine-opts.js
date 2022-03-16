@@ -162,6 +162,7 @@ import * as walletValidate20Token from '@fluent-wallet/wallet_validate20token'
 import * as walletWatchAsset from '@fluent-wallet/wallet_watch-asset'
 import * as unwalletWatchAsset from '@fluent-wallet/wallet_unwatch-asset'
 import * as walletZeroAccountGroup from '@fluent-wallet/wallet_zero-account-group'
+import * as walletAfterUnlock from '@fluent-wallet/wallet_after-unlock'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -337,5 +338,7 @@ export const rpcEngineOpts = {
     walletGetFluentMetadata,
     walletGetPreferences,
     walletSetPreferences,
+
+    walletAfterUnlock,
   ],
 }
