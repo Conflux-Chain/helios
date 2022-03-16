@@ -14,38 +14,14 @@ export const schemas = {
 export const permissions = {
   locked: true,
   external: ['popup'],
-  methods: [
-    'wallet_validatePassword',
-    'wallet_refetchTokenList',
-    'wallet_refetchBalance',
-    'wallet_discoverAccounts',
-  ],
-  db: [
-    'setPassword',
-    'getUnlockReq',
-    'retract',
-    'getAccountGroup',
-    'findApp',
-    'findAddress',
-  ],
+  methods: ['wallet_afterUnlock', 'wallet_validatePassword'],
+  db: ['setPassword', 'getUnlockReq', 'retract', 'findApp', 'findAddress'],
 }
 
 export const main = async ({
   params: {password, waitSideEffects},
-  db: {
-    setPassword,
-    retract,
-    getUnlockReq,
-    getAccountGroup,
-    findApp,
-    findAddress,
-  },
-  rpcs: {
-    wallet_discoverAccounts,
-    wallet_validatePassword,
-    wallet_refetchTokenList,
-    wallet_refetchBalance,
-  },
+  db: {setPassword, retract, getUnlockReq, findApp, findAddress},
+  rpcs: {wallet_validatePassword, wallet_afterUnlock},
   Err: {InvalidParams},
 }) => {
   if (!(await wallet_validatePassword({password})))
@@ -77,14 +53,5 @@ export const main = async ({
     } catch (err) {}
   })
 
-  let promise = wallet_refetchTokenList()
-    .then(() =>
-      Promise.all(
-        getAccountGroup().map(({eid}) =>
-          wallet_discoverAccounts({accountGroupId: eid, waitTillFinish: true}),
-        ),
-      ),
-    )
-    .then(() => wallet_refetchBalance({type: 'all', allNetwork: true}))
-  if (waitSideEffects) await promise
+  await wallet_afterUnlock({waitSideEffects: Boolean(waitSideEffects)})
 }

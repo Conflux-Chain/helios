@@ -5512,7 +5512,6 @@ __metadata:
     "@thi.ng/atom": 4.1.42
     "@thi.ng/rstream": 6.0.21
     "@thi.ng/rstream-graph": 3.2.81
-    ramda: ^0.28.0
   languageName: unknown
   linkType: soft
 
@@ -5745,6 +5744,16 @@ __metadata:
     "@fluent-wallet/spec": "workspace:packages/spec"
     "@fluent-wallet/utils": "workspace:packages/utils"
     browser-passworder: ^2.0.3
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_after-unlock@workspace:*, @fluent-wallet/wallet_after-unlock@workspace:packages/rpcs/wallet_afterUnlock":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_after-unlock@workspace:packages/rpcs/wallet_afterUnlock"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+    "@types/ramda": ^0
+    ramda: 0.28.0
   languageName: unknown
   linkType: soft
 
@@ -10472,6 +10481,15 @@ __metadata:
   version: 6.9.7
   resolution: "@types/qs@npm:6.9.7"
   checksum: 7fd6f9c25053e9b5bb6bc9f9f76c1d89e6c04f7707a7ba0e44cc01f17ef5284adb82f230f542c2d5557d69407c9a40f0f3515e8319afd14e1e16b5543ac6cdba
+  languageName: node
+  linkType: hard
+
+"@types/ramda@npm:^0":
+  version: 0.28.1
+  resolution: "@types/ramda@npm:0.28.1"
+  dependencies:
+    ts-toolbelt: ^6.15.1
+  checksum: 6589471c023093ca0dc5d1d83b75835f6b2ef966f8b63ac5bdc75f93da7da9ea43270c46c2954d39f57f779f4e3633c916b54243caa551c2210f24939ef1d2af
   languageName: node
   linkType: hard
 
@@ -21236,6 +21254,7 @@ fsevents@^1.2.7:
     "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
     "@fluent-wallet/wallet_add-pending-user-auth-request": "workspace:packages/rpcs/wallet_addPendingUserAuthRequest"
     "@fluent-wallet/wallet_add-vault": "workspace:packages/rpcs/wallet_addVault"
+    "@fluent-wallet/wallet_after-unlock": "workspace:*"
     "@fluent-wallet/wallet_chain-id": "workspace:*"
     "@fluent-wallet/wallet_cleanup-tx": "workspace:*"
     "@fluent-wallet/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount"
@@ -29935,17 +29954,17 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"ramda@npm:0.28.0, ramda@npm:^0.28.0":
+  version: 0.28.0
+  resolution: "ramda@npm:0.28.0"
+  checksum: 44ea6e5010bba70151b6a92d8114a91915e8b5a16105cce65fae58c9d7386b812c429645e35f21141d7087568550ce383bc10ee1a65cdec951f4b69ea457e6a4
+  languageName: node
+  linkType: hard
+
 "ramda@npm:^0.21.0":
   version: 0.21.0
   resolution: "ramda@npm:0.21.0"
   checksum: e08d63c12ed4bab70bfd700a843901d9fa340d1a88c50085a6ef0ecf25f528e5ac7c71848481270923491e7315a34301bb35905d45861cb13cc75b8ca05add32
-  languageName: node
-  linkType: hard
-
-"ramda@npm:^0.28.0":
-  version: 0.28.0
-  resolution: "ramda@npm:0.28.0"
-  checksum: 44ea6e5010bba70151b6a92d8114a91915e8b5a16105cce65fae58c9d7386b812c429645e35f21141d7087568550ce383bc10ee1a65cdec951f4b69ea457e6a4
   languageName: node
   linkType: hard
 
@@ -34661,6 +34680,13 @@ resolve@^2.0.0-next.3:
     typescript:
       optional: true
   checksum: c2a698b85d521298fe6f2435fbf2d3dc5834b423ea25abd321805ead3f399dbeedce7ca09492d7eb005b9d2c009c6b9587055bc3ab273dc6b9e40eefd7edb5b2
+  languageName: node
+  linkType: hard
+
+"ts-toolbelt@npm:^6.15.1":
+  version: 6.15.5
+  resolution: "ts-toolbelt@npm:6.15.5"
+  checksum: 24ad00cfd9ce735c76c873a9b1347eac475b94e39ebbdf100c9019dce88dd5f4babed52884cf82bb456a38c28edd0099ab6f704b84b2e5e034852b618472c1f3
   languageName: node
   linkType: hard
 
