@@ -15,7 +15,7 @@ const {
   ACCOUNT_MANAGEMENT,
   NETWORK_MANAGEMENT,
   ABOUT,
-  DEVELOPER_MODE,
+  // DEVELOPER_MODE,
   AUTHORIZED_WEBSITE,
 } = ROUTES
 
@@ -35,11 +35,11 @@ const SETTING_ITEMS = [
     iconPath: '/images/safety.svg',
     jumpPath: AUTHORIZED_WEBSITE,
   },
-  {
-    contentKey: 'developerMode',
-    iconPath: '/images/developer.svg',
-    jumpPath: DEVELOPER_MODE,
-  },
+  // {
+  //   contentKey: 'developerMode',
+  //   iconPath: '/images/developer.svg',
+  //   jumpPath: DEVELOPER_MODE,
+  // },
   {
     contentKey: 'about',
     iconPath: '/images/exclamation-circle.svg',
