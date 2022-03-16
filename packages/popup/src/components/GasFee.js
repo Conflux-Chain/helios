@@ -40,6 +40,7 @@ function GasFee({
     [isBeAllPayed, isBePayed, partPayedFeeDrip, txFeeDrip],
   )
   const gasPrice = useDebouncedValue(_gasPrice, [_gasPrice])
+  console.log(gasPrice)
 
   return (
     <div className="gas-fee-container flex flex-col">
