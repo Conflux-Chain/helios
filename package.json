@@ -114,6 +114,7 @@
     "stylelint-config-standard": "^24.0.0",
     "tailwindcss": "^2.2.19",
     "wait-for-expect": "3.0.2",
+    "web-ext": "6.7.0",
     "zip-a-folder": "1.1.3"
   },
   "nohoist": [
@@ -183,8 +184,5 @@
       "no-descending-specificity": null
     }
   },
-  "packageManager": "yarn@3.1.0",
-  "dependencies": {
-    "web-ext": "6.7.0"
-  }
+  "packageManager": "yarn@3.1.0"
 }

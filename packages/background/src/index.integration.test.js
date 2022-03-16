@@ -20,7 +20,7 @@ import {
   ETH_LOCALNET_CURRENCY_SYMBOL,
   ETH_LOCALNET_CURRENCY_NAME,
   DEFAULT_ETH_HDPATH,
-  CFX_TESTNET_SCAN_URL,
+  CFX_TESTNET_EXPLORER_URL,
 } from '@fluent-wallet/consts'
 import {
   MNEMONIC,
@@ -437,7 +437,7 @@ describe('integration test', function () {
               symbol: 'CFX',
             },
             rpcUrls: ['http://test.confluxrpc.com/'],
-            blockExplorerUrls: [CFX_TESTNET_SCAN_URL], //only for test,it is not the real scan url
+            blockExplorerUrls: [CFX_TESTNET_EXPLORER_URL], //only for test,it is not the real scan url
             iconUrls: [
               'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/cfx.svg',
             ],
