@@ -19,13 +19,11 @@ describe('wallet_unlock', function () {
         findApp: jest.fn(() => []),
         setPassword: jest.fn(),
         getUnlockReq: jest.fn(),
-        getAccountGroup: jest.fn(() => []),
       },
       rpcs: {
         wallet_discoverAccounts: jest.fn(() => Promise.resolve(true)),
         wallet_validatePassword: jest.fn(() => true),
-        wallet_refetchBalance: jest.fn(),
-        wallet_refetchTokenList: jest.fn(() => Promise.resolve(true)),
+        wallet_afterUnlock: jest.fn(() => Promise.resolve()),
       },
       Err: {InvalidParams: msg => new Error(msg)},
     }
@@ -33,7 +31,7 @@ describe('wallet_unlock', function () {
     it('should set the password in db', async function () {
       await main(input)
       expect(input.db.setPassword).toHaveBeenCalledWith(input.params.password)
-      expect(input.rpcs.wallet_refetchTokenList).toHaveBeenCalled()
+      expect(input.rpcs.wallet_afterUnlock).toHaveBeenCalled()
     })
 
     it('should throw invalid password error if the password is invalid', async function () {
