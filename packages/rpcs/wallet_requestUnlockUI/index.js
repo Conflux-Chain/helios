@@ -24,7 +24,8 @@ async function requestUnlockUI({
     mode: MODE,
   })
 
-  if (MODE.isProd) popup.onFocusChanged(w?.id, popup.remove)
+  if (MODE.isProd)
+    setTimeout(() => popup.onFocusChanged(w?.id, popup.remove), 500)
   function windowOnRemovedListener() {
     browser.windows.onRemoved.removeListener(windowOnRemovedListener)
     if (!getLocked()) return
