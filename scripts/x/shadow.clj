@@ -20,18 +20,34 @@
 (defn- get-shadow-cljs-command [args]
   (let [command "npx shadow-cljs"]
     (if (= (first args) "server")
-      (let [jack-in-deps
+      (let [command
+            (str
+             command
+             " -d cider/cider-nrepl:"
+             (-> (sh "emacsclient" "--eval" "cider-injected-middleware-version")
+                 :out
+                 s/trim-newline
+                 read-string)
+             " -d nrepl/nrepl:"
+             (-> (sh "emacsclient" "--eval" "cider-injected-nrepl-version")
+                 :out
+                 s/trim-newline
+                 read-string)
+
+             ;; " -d refactor-nrepl/refactor-nrepl:"
+             ;; (-> (sh "emacsclient" "--eval" "cljr-injected-middleware-version")
+             ;;     :out
+             ;;     s/trim-newline
+             ;;     read-string)
+             )
+            jack-in-deps
+
             (-> (sh "emacsclient" "--eval" "cider-jack-in-dependencies")
                 :out
                 s/trim-newline
                 read-string)
-            lein-jack-in-deps
-            (-> (sh "emacsclient" "--eval" "cider-jack-in-lein-plugins")
-                :out
-                s/trim-newline
-                read-string)
             deps
-            (concat jack-in-deps lein-jack-in-deps)
+            jack-in-deps
             ;; => "npx shadow-cljs -d nrepl/nrepl:0.9.0-beta5
             ;;                     -d refactor-nrepl/refactor-nrepl:3.0.0-alpha13
             ;;                     -d cider/cider-nrepl:0.27.2 "
