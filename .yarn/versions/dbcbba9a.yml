@@ -1,0 +1,13 @@
+releases:
+  "@fluent-wallet/wallet_add-pending-user-auth-request": patch
+  "@fluent-wallet/wallet_request-unlock-ui": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/doc-rpc-parameter"
+  - "@fluent-wallet/doc-try-rpc"
+  - helios-popup
+  - "@fluent-wallet/rpc-engine"
+  - "@fluent-wallet/sentry"
+  - "@fluent-wallet/component-modal"
+  - "@fluent-wallet/use-rpc"
