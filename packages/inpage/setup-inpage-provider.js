@@ -75,12 +75,14 @@ function setupProvider() {
 
   PROVIDER = initProvider(stream, sendToBg)
 
-  window.conflux = PROVIDER
-  window.confluxJS = PROVIDER.confluxJS
+  Object.defineProperty(window, 'conflux', {value: PROVIDER, writable: false})
   takeOver(PROVIDER, 'cfx')
 
   if (window.localStorage.getItem(FLUENT_OVERRIDE_WINDOW_DOT_ETHEREUM)) {
-    window.ethereum = PROVIDER
+    Object.defineProperty(window, 'ethereum', {
+      value: PROVIDER,
+      writable: false,
+    })
     takeOver(PROVIDER, 'eth')
   }
   return PROVIDER
