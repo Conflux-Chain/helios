@@ -52,7 +52,8 @@ export const main = async ({
     alwaysOnTop: MODE.isProd ? true : false,
     mode: MODE,
   })
-  if (MODE.isProd) popup.onFocusChanged(w.id, popup.remove)
+  if (MODE.isProd)
+    setTimeout(() => popup.onFocusChanged(w.id, popup.remove), 500)
   popup.onRemoved(w?.id, () => {
     const authReq = getAuthReqById(authReqId)
     if (authReq && !authReq.processed)

@@ -9,8 +9,7 @@ function _takeOverConflux(PROVIDER, resolve) {
   if (!TakeOverInterval.cfx) return
   if (!window.conflux) return
   GlobalProviderCache.cfx = window.conflux
-  window.conflux = PROVIDER
-  window.confluxJS = PROVIDER.confluxJS
+  Object.defineProperty(window, 'conflux', {value: PROVIDER, writable: false})
   clearInterval(TakeOverInterval.cfx)
   resolve(true)
 }
@@ -19,7 +18,7 @@ function _takeOverEthereum(PROVIDER, resolve) {
   if (!TakeOverInterval.eth) return
   if (!window.ethereum) return
   GlobalProviderCache.eth = window.ethereum
-  window.ethereum = PROVIDER
+  Object.defineProperty(window, 'ethereum', {value: PROVIDER, writable: false})
   clearInterval(TakeOverInterval.eth)
   resolve(true)
 }
