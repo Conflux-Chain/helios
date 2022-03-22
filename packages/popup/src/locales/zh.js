@@ -285,6 +285,16 @@ const zh = {
     urlWarning: '请填写 Http/Https 前缀',
     invalidRpcUrl: '无效的 RPC URL',
 
+    // Advanced Settings
+    AdvancedSettings: 'Advanced Settings',
+    priorityConnection: 'Priority Connection',
+    priorityConnectionDes:
+      'Fluent will be the first option when connecting to any dApp.',
+    underCfxProvider: 'Enable on Conflux networks',
+    underEtherProvider: 'Enable on Ethereum/EVM networks',
+    showTestnet: 'Show test networks',
+    showTestnetDes: 'Select this to show test networks in network list.',
+
     // About
     about: '关于',
     website: '官网',

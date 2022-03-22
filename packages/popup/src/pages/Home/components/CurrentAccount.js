@@ -39,6 +39,8 @@ function CurrentAccount({onOpenAccount}) {
       account: {nickname},
     },
   } = useCurrentAddress()
+
+  console.log('useCurrentAddress', address)
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (

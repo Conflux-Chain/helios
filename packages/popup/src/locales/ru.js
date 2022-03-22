@@ -295,6 +295,16 @@ const ru = {
     urlWarning: 'URL требуют ввода соотвествующего префикса HTTP/HTTPS.',
     invalidRpcUrl: 'Ошибка ввода RPC URL',
 
+    // Advanced Settings
+    AdvancedSettings: 'Advanced Settings',
+    priorityConnection: 'Priority Connection',
+    priorityConnectionDes:
+      'Fluent will be the first option when connecting to any dApp.',
+    underCfxProvider: 'Enable on Conflux networks',
+    underEtherProvider: 'Enable on Ethereum/EVM networks',
+    showTestnet: 'Show test networks',
+    showTestnetDes: 'Select this to show test networks in network list.',
+
     // О нас
     about: 'О нас',
     website: 'Официальный сайт',

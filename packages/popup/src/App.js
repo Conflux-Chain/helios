@@ -52,7 +52,7 @@ import ConnectHardwareWallet from './pages/ConnectHardwareWallet'
 import ImportHwAccount from './pages/ImportHwAccount'
 import NetworkDetail from './pages/NetworkDetail'
 import About from './pages/About'
-import DeveloperMode from './pages/DeveloperMode'
+import ShowTestnet from './pages/ShowTestnet'
 
 const {
   HOME,
@@ -88,7 +88,7 @@ const {
   AUTHORIZED_WEBSITE,
   NETWORK_DETAIL,
   ABOUT,
-  DEVELOPER_MODE,
+  SHOW_TESTNET,
 } = ROUTES
 
 const routes = [
@@ -221,8 +221,8 @@ const routes = [
     component: About,
   },
   {
-    path: DEVELOPER_MODE,
-    component: DeveloperMode,
+    path: SHOW_TESTNET,
+    component: ShowTestnet,
   },
 ]
 

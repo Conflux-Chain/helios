@@ -7,7 +7,7 @@ import useLoading from '../../hooks/useLoading'
 import {RPC_METHODS} from '../../constants'
 const {WALLET_SET_PREFERENCES} = RPC_METHODS
 
-function DeveloperMode() {
+function ShowTestnet() {
   const {t} = useTranslation()
   const {data: preferencesData, mutate} = usePreferences()
   const {setLoading} = useLoading()
@@ -15,7 +15,7 @@ function DeveloperMode() {
   const onSwitchMode = status => {
     setLoading(true)
     request(WALLET_SET_PREFERENCES, {
-      useModernProviderAPI: status,
+      hideTestNetwork: status,
     })
       .then(() => {
         mutate().then(() => {
@@ -39,22 +39,22 @@ function DeveloperMode() {
       className="bg-gray-0 pb-4 h-full w-full flex flex-col"
     >
       <header>
-        <TitleNav title={t('developerMode')} />
+        <TitleNav title={t('showTestnet')} />
       </header>
       <main className="mt-1 flex-1 px-6">
         <div className="h-13 flex items-center justify-between">
-          <div className="text-base font-medium">{t('compatibilityMode')}</div>
+          <div className="text-base font-medium">{t('showTestnet')}</div>
           <SwitchButtonGroup
-            showLeft={preferencesData?.useModernProviderAPI}
+            showLeft={preferencesData?.hideTestNetwork}
             onSwitch={onSwitchMode}
             leftSwitchClassName="!w-8 !h-8 !text-gray-60"
             rightSwitchClassName="!w-8 !h-8"
           />
         </div>
-        <p className="text-sm text-gray-60 mt-1">{t('compatibilityDes')}</p>
+        <p className="text-sm text-gray-60 mt-1">{t('showTestnetDes')}</p>
       </main>
     </div>
   ) : null
 }
 
-export default DeveloperMode
+export default ShowTestnet

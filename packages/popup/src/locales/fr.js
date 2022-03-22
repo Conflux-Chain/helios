@@ -299,6 +299,16 @@ const fr = {
     urlWarning: 'L’URL nécessite le préfixe HTTP/HTTPS approprié.',
     invalidRpcUrl: 'URL du RPC invalide',
 
+    // Advanced Settings
+    AdvancedSettings: 'Advanced Settings',
+    priorityConnection: 'Priority Connection',
+    priorityConnectionDes:
+      'Fluent will be the first option when connecting to any dApp.',
+    underCfxProvider: 'Enable on Conflux networks',
+    underEtherProvider: 'Enable on Ethereum/EVM networks',
+    showTestnet: 'Show test networks',
+    showTestnetDes: 'Select this to show test networks in network list.',
+
     // About
     about: 'À Propos',
     website: 'Site internet',
