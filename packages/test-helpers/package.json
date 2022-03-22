@@ -5,6 +5,7 @@
   "dependencies": {
     "@cfxjs/fullnode": "3.0.1",
     "ethers": "5.5.2",
-    "ganache-core": "2.13.2"
+    "ganache-core": "2.13.2",
+    "js-conflux-sdk": "2.0.4"
   }
 }
