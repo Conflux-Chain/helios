@@ -134,8 +134,8 @@ const en = {
       'Use 8 ~ 128 characters with a mix of letters & numbers.',
     en: 'English',
     zh: '简体中文',
-    fr: 'Français',
-    ru: 'Русский',
+    fr: 'Français (Communauté)',
+    ru: 'Pусский (Сообщество)',
 
     // - Send Transaction
     // - Send Transaction / send transaction
@@ -168,7 +168,7 @@ const en = {
     storageCollateralized: 'Storage Limit',
     totalFee: 'Total Fee',
     customNonce: 'Custom Nonce',
-    gasPriceErrMSg: 'The minimum Gas Price is 1 {{unit}}',
+    gasPriceErrMSg: 'The minimum Gas Price is {{amount}} {{unit}}',
     gasLimitMinErr: 'Gas Limit must be at least {{gasUsed}}',
     gasLimitMaxErr: 'Gas Limit must be at most {{gasMax}}',
     nonceErr: 'Nonce can not be 0',
@@ -211,6 +211,23 @@ const en = {
     contractCreation: 'Contract Deployment',
     contractInteraction: 'Contract Interaction',
     unknown: 'Unknown',
+
+    // - Send Transaction / - speedup and cancel tx
+    cancelTransaction: 'Cancel transaction',
+    suggestedGasPrice: 'Suggested Gas Price',
+    inputGasPrice: 'Input Gas Price',
+    spend: 'Spend',
+    cancelTxDes:
+      'Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTxDes:
+      'Submitting this attempt does not guarantee your original transaction will be cancelled.If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTransaction: 'Speed up transaction',
+    canceledTx:
+      'The transaction has been executed or finished.No action required',
+    submit: 'Submit',
+    customGasPrice: 'Custom Gas Price',
+    executedTx:
+      'The transaction has been executed or finished.No action required.',
 
     // - request signature - 1. Sign Text
     signText: 'Sign Text',
@@ -274,6 +291,16 @@ const en = {
     duplicateNetworkEndpoint: 'Duplicate network endpoint.',
     urlWarning: 'URLs require the appropriate HTTP/HTTPS prefix.',
     invalidRpcUrl: 'Invalid RPC URL',
+
+    // Advanced Settings
+    AdvancedSettings: 'Advanced Settings',
+    priorityConnection: 'Priority Connection',
+    priorityConnectionDes:
+      'Fluent will be the first option when connecting to any dApp.',
+    underCfxProvider: 'Enable on Conflux networks',
+    underEtherProvider: 'Enable on Ethereum/EVM networks',
+    showTestnet: 'Show test networks',
+    showTestnetDes: 'Select this to show test networks in network list.',
 
     // About
     about: 'About',

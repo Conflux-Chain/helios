@@ -13,6 +13,8 @@ import {
   CloseCircleFilled,
   ReloadOutlined,
   SendOutlined,
+  RocketOutlined,
+  CancelOutlined,
 } from '@fluent-wallet/component-icons'
 import {transformToTitleCase, formatStatus} from '../../../utils'
 import {useNetworkTypeIsCfx} from '../../../hooks/useApi'
@@ -23,7 +25,6 @@ import {
   DisplayBalance,
   CustomTag,
 } from '../../../components'
-
 const tagColorStyle = {
   failed: 'bg-error-10 text-error',
   executed: 'bg-[#F0FDFC] text-[#83DBC6]',
@@ -57,6 +58,7 @@ function HistoryItem({
   hash,
   copyButtonContainerClassName,
   copyButtonToastClassName,
+  onResend,
 }) {
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
@@ -76,6 +78,7 @@ function HistoryItem({
     to: payload?.to,
     data: payload?.data,
   })
+
   useEffect(() => {
     setActionName(
       simple
@@ -171,11 +174,43 @@ function HistoryItem({
                   <ReloadOutlined className="w-2 h-2 text-white" />
                 </WrapperWithCircle>
               ) : null}
-              <span className="text-sm">{transformToTitleCase(txStatus)}</span>
+              {
+                <div>
+                  <span className="text-sm">
+                    {transformToTitleCase(txStatus)}
+                  </span>
+                  <span className="text-gray-60 text-xs absolute right-0 translate-x-full pl-2 top-[5px]">
+                    #{formatHexToDecimal(payload.nonce)}
+                  </span>
+                </div>
+              }
             </CustomTag>
           )}
         </div>
-        <div className="flex">
+
+        <div className="flex items-center">
+          {txStatus === 'pending' && (
+            <WrapIcon
+              size="w-5 h-5 ml-2"
+              id="speed-up-tx"
+              onClick={() =>
+                onResend?.('speedup', {payload, token, extra, hash})
+              }
+            >
+              <RocketOutlined className="w-3 h-3 text-primary" />
+            </WrapIcon>
+          )}
+          {txStatus === 'pending' && (
+            <WrapIcon
+              size="w-5 h-5 ml-2"
+              id="cancel-tx"
+              onClick={() =>
+                onResend?.('cancel', {payload, token, extra, hash})
+              }
+            >
+              <CancelOutlined className="w-3 h-3 text-primary" />
+            </WrapIcon>
+          )}
           {hash && (
             <CopyButton
               text={hash}
@@ -252,5 +287,6 @@ HistoryItem.propTypes = {
   token: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   copyButtonContainerClassName: PropTypes.string,
   copyButtonToastClassName: PropTypes.string,
+  onResend: PropTypes.func.isRequired,
 }
 export default HistoryItem

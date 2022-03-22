@@ -131,8 +131,8 @@ const zh = {
     passwordRulesWarning: '请使用 8～128 个字符，并且同时包含字母和数字',
     en: 'English',
     zh: '简体中文',
-    fr: 'Français',
-    ru: 'Русский',
+    fr: 'Français (Communauté)',
+    ru: 'Pусский (Сообщество)',
 
     // - Send Transaction
     // - Send Transaction / send transaction
@@ -164,7 +164,7 @@ const zh = {
     storageCollateralized: '存储抵押限制',
     totalFee: 'Total Fee',
     customNonce: '自定义 Nonce',
-    gasPriceErrMSg: 'Gas 价格最小是 1 {{unit}}',
+    gasPriceErrMSg: 'Gas 价格最小是 {{amount}} {{unit}}',
     gasLimitMinErr: 'Gas 限制至少是 {{gasUsed}}',
     gasLimitMaxErr: 'Gas 限制最多是 {{gasMax}}',
     nonceErr: 'Nonce 不能是 0',
@@ -206,6 +206,23 @@ const zh = {
     contractCreation: '合约部署',
     contractInteraction: '合约交互',
     unknown: '未知的',
+
+    // - Send Transaction / - speedup and cancel tx
+    cancelTransaction: 'Cancel transaction',
+    suggestedGasPrice: 'Suggested Gas Price',
+    inputGasPrice: 'Input Gas Price',
+    spend: 'Spend',
+    cancelTxDes:
+      'Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTxDes:
+      'Submitting this attempt does not guarantee your original transaction will be cancelled.If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTransaction: 'Speed up transaction',
+    canceledTx:
+      'The transaction has been executed or finished.No action required',
+    submit: 'Submit',
+    customGasPrice: 'Custom Gas Price',
+    executedTx:
+      'The transaction has been executed or finished.No action required.',
 
     // - request signature - 1. Sign Text
     signText: '文本签名',
@@ -267,6 +284,16 @@ const zh = {
     duplicateNetworkEndpoint: '重复的网络端点',
     urlWarning: '请填写 Http/Https 前缀',
     invalidRpcUrl: '无效的 RPC URL',
+
+    // Advanced Settings
+    AdvancedSettings: 'Advanced Settings',
+    priorityConnection: 'Priority Connection',
+    priorityConnectionDes:
+      'Fluent will be the first option when connecting to any dApp.',
+    underCfxProvider: 'Enable on Conflux networks',
+    underEtherProvider: 'Enable on Ethereum/EVM networks',
+    showTestnet: 'Show test networks',
+    showTestnetDes: 'Select this to show test networks in network list.',
 
     // About
     about: '关于',
