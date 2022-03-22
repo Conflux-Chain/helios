@@ -83,6 +83,14 @@ jobs:
     strategy:
       matrix:
         node-version: [16.5]
+        split-tests:
+          [
+            "integration test rpc engine",
+            "integration rpcs wallet_",
+            "integration rpcs cfx_",
+            "integration rpcs eth_",
+            "integration rpcs (personal_|net_|typedSign)",
+          ]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
@@ -103,7 +111,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
       - run: yarn install --immutable
-      - run: yarn test:integration --coverage --detectOpenHandles --forceExit
+      - run: yarn test:integration --testNamePattern='${{matrix.split-tests}}' --coverage --detectOpenHandles --forceExit
       - uses: codecov/codecov-action@v1
         with:
           flags: integrationtests
