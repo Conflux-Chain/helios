@@ -462,14 +462,16 @@ export const useTxList = params => {
   return {data, mutate}
 }
 
-export const useBlockchainExplorerUrl = params => {
+export const useBlockchainExplorerUrl = (params, deps) => {
+  let rpcDeps = []
+  if (!deps) {
+    rpcDeps = [...flatArray(Object.values(params))]
+  } else {
+    rpcDeps = isArray(deps) ? deps : [deps]
+  }
+
   const {data: urlData} = useRPC(
-    params
-      ? [
-          WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
-          ...flatArray(Object.values(params)),
-        ]
-      : null,
+    params ? [WALLET_GET_BLOCKCHAIN_EXPLORER_URL, ...rpcDeps] : null,
     {
       ...params,
     },

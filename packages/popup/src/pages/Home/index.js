@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useCallback} from 'react'
 import {useQuery} from '../../hooks'
 import {useTxList} from '../../hooks/useApi'
 import {useEffectOnce} from 'react-use'
@@ -59,6 +59,10 @@ function Home() {
     setSettingStatus(false)
   }
 
+  const onOpenAccount = useCallback(() => {
+    setAccountStatus(true)
+  }, [])
+
   return (
     <div
       className="home-container flex flex-col bg-bg h-full w-full relative overflow-hidden"
@@ -77,7 +81,7 @@ function Home() {
       />
       <div className="flex flex-col pt-1 px-4 z-10 flex-shrink-0">
         <div className="flex items-start justify-between">
-          <CurrentAccount onOpenAccount={() => setAccountStatus(true)} />
+          <CurrentAccount onOpenAccount={onOpenAccount} />
           <CurrentNetwork onOpenNetwork={() => setNetworkStatus(true)} />
         </div>
         <div className="flex mt-3 mb-4 justify-between">
