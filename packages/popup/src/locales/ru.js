@@ -67,7 +67,8 @@ const ru = {
     createAccount: 'Создать новый аккаунт',
     useExistingSeed: 'Использовать существующую seed фразу',
     faster: 'Быстрее',
-    useExistingSeedDes: 'Использовать HD кошелек, не создавать резервную копию повторно.',
+    useExistingSeedDes:
+      'Использовать HD кошелек, не создавать резервную копию повторно.',
     newSeedPhrase: 'Новая seed фраза',
     newSeedPhraseDes: 'Создать новую seed фразу и резервную копию.',
     importExistingAccount: 'Импортировать аккаунт',
@@ -102,7 +103,8 @@ const ru = {
     seedImportPlaceholder:
       'Seed фраза cостоит из слов, разделенных между собой пробелом. Пробелом разделены все слова seed фразы.',
     duplicateSeedError: 'Данная seed фраза уже в Вашем кошельке.',
-    invalidSeed: 'Неверная seed фраза, перепроверьте корректность ввода данных.',
+    invalidSeed:
+      'Неверная seed фраза, перепроверьте корректность ввода данных.',
 
     // homepage / 账户管理 / 创建账户 / 4. импорт аккаунта с помощью  секретного ключа
     pKeyImport: 'Импортировать секретный ключ',
@@ -134,8 +136,8 @@ const ru = {
       'Пароль должен содержать от  8 до 128 символов, как буквенных так и численных.',
     en: 'English',
     zh: '简体中文',
-    fr: 'Français',
-    ru: 'Русский',
+    fr: 'Français (Communauté)',
+    ru: 'Pусский (Сообщество)',
 
     // - Отправить транзацию
     // -Отправить транзакцию/отправить транзакцию
@@ -194,8 +196,7 @@ const ru = {
     spendLimitPermission: 'Разрешение на лимит расходования',
 
     // 允许操作的限额权限描述
-    allowSpendDes:
-      'Разрешить {{dapp}} вывод и расходование суммы',
+    allowSpendDes: 'Разрешить {{dapp}} вывод и расходование суммы',
     proposedApprovalLimit: 'Установить лимиты подтверждения',
     proposedApprovalLimitDes: 'Запрос лимита расходов для {{dapp}}',
     customSpendLimit: 'Пользовательский лимит расходов ',
@@ -211,6 +212,23 @@ const ru = {
     contractCreation: 'Создание контракта',
     contractInteraction: 'Взаимодействие с контрактом',
     unknown: 'Неизвестно',
+
+    // - Send Transaction / - speedup and cancel tx
+    cancelTransaction: 'Cancel transaction',
+    suggestedGasPrice: 'Suggested Gas Price',
+    inputGasPrice: 'Input Gas Price',
+    spend: 'Spend',
+    cancelTxDes:
+      'Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTxDes:
+      'Submitting this attempt does not guarantee your original transaction will be cancelled.If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTransaction: 'Speed up transaction',
+    canceledTx:
+      'The transaction has been executed or finished.No action required',
+    submit: 'Submit',
+    customGasPrice: 'Custom Gas Price',
+    executedTx:
+      'The transaction has been executed or finished.No action required.',
 
     // - request signature - 1. Sign Text
     signText: 'Подписать текст',
@@ -246,7 +264,8 @@ const ru = {
     setPWD: 'Установить пароль',
     enterPWD: 'Введите пароль ',
     enterPWDAgain: 'Введите пароль еше раз',
-    rememberPWD: 'Данный пароль не может быть извлечен, пожалуйста запомните и надежно сохраните его.',
+    rememberPWD:
+      'Данный пароль не может быть извлечен, пожалуйста запомните и надежно сохраните его.',
     invalidPassword: 'Неверный пароль.',
     invalidConfirmPassword: 'Введенные Вами пароли не совпадают.',
     // - страница входа
@@ -269,11 +288,22 @@ const ru = {
     networkManagement: 'Управление сетями',
     newRpcUrl: 'RPC URL',
     networkType: 'Тип сети',
-    wrongRpcUrl: 'Не удалось получить chain ID. Проверьте верность ввода RPC URL',
+    wrongRpcUrl:
+      'Не удалось получить chain ID. Проверьте верность ввода RPC URL',
     networkDeleteWarning: 'Невозможно удалить данную сеть.',
     duplicateNetworkEndpoint: 'Задвоение конечных точек сети.',
     urlWarning: 'URL требуют ввода соотвествующего префикса HTTP/HTTPS.',
     invalidRpcUrl: 'Ошибка ввода RPC URL',
+
+    // Advanced Settings
+    AdvancedSettings: 'Advanced Settings',
+    priorityConnection: 'Priority Connection',
+    priorityConnectionDes:
+      'Fluent will be the first option when connecting to any dApp.',
+    underCfxProvider: 'Enable on Conflux networks',
+    underEtherProvider: 'Enable on Ethereum/EVM networks',
+    showTestnet: 'Show test networks',
+    showTestnetDes: 'Select this to show test networks in network list.',
 
     // О нас
     about: 'О нас',
@@ -300,7 +330,8 @@ const ru = {
     backupPkDes:
       'Это Ваш секретный ключ. Владение секретными ключами является единственным подтверждением права владения аккаунтами и средствами на них. Пожалуйста, храните их должным образом, в оффлайн режиме и без допуска третьих лиц. Потерянные ключи не могут быть восстановлены.',
 
-    transferAmountExceedsAllowance: 'Сумма перевода превышает установленный лимит',
+    transferAmountExceedsAllowance:
+      'Сумма перевода превышает установленный лимит',
     balanceIsNotEnough: 'Недостаточный баланс',
     gasFeeIsNotEnough: 'Недостаточный лимит gas',
     contractError: 'Ошибка контракта ',
@@ -316,8 +347,7 @@ const ru = {
     followConnectLedgerSteps:
       'Пожалуйста, следуйте данной пошаговой инструкции для подключения Ledger.',
     steps: 'Шаг {{number}}',
-    pluginHardwareWallet:
-      'Вставьте Ваш аппаратный кошелек в USB порт.',
+    pluginHardwareWallet: 'Вставьте Ваш аппаратный кошелек в USB порт.',
     enterPinCode: 'Введите PIN код.',
     selectConfluxApp: 'Выберите и откройте приложение Conflux',
     ready: 'Готово',
@@ -332,7 +362,8 @@ const ru = {
     connectFailed: 'Ошибка соединения',
     retry: 'Повторить',
     openConfluxApp: 'Открыть приложение Conflux',
-    openConfluxAppDes: 'Выберите и откройте приложение Conflux на Вашем устройстве Ledger.',
+    openConfluxAppDes:
+      'Выберите и откройте приложение Conflux на Вашем устройстве Ledger.',
     chooseAddress: 'Выбрать адрес',
     hdPath: 'HD Путь',
     chooseHwAddress: 'Выберите адрес, который необходимо импортировать:',
@@ -351,7 +382,8 @@ const ru = {
     // confirm hw Modal
     waitingForSign: 'Ожидание подписи',
     rejected: 'Ошибка',
-    waitingContent: 'Пожалуйста, подтвердите выполнение транзакции в вашем Ledger.',
+    waitingContent:
+      'Пожалуйста, подтвердите выполнение транзакции в вашем Ledger.',
     rejectedContent: 'Ошибка транзакции.',
 
     // conflux confirm tx error

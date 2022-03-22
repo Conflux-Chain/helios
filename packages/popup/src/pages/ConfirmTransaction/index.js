@@ -25,9 +25,15 @@ import {
   useAddressTypeInConfirmTx,
 } from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
-import {request, bn16, getPageType} from '../../utils'
-import {AddressCard, InfoList, HwTransactionResult} from './components'
-import {TitleNav, GasFee, DappFooter, HwAlert} from '../../components'
+import {request, bn16, getPageType, checkBalance} from '../../utils'
+import {AddressCard, InfoList} from './components'
+import {
+  TitleNav,
+  GasFee,
+  DappFooter,
+  HwAlert,
+  TransactionResult,
+} from '../../components'
 import {
   ROUTES,
   RPC_METHODS,
@@ -43,7 +49,6 @@ const {VIEW_DATA, HOME} = ROUTES
 const {
   CFX_SEND_TRANSACTION,
   ETH_SEND_TRANSACTION,
-  WALLET_GET_BALANCE,
   WALLET_GET_PENDING_AUTH_REQUEST,
 } = RPC_METHODS
 
@@ -182,6 +187,7 @@ function ConfirmTransaction() {
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
     displayTokenAddress,
+    !displayTokenAddress,
     isSendToken,
   )
 
@@ -223,61 +229,6 @@ function ConfirmTransaction() {
     nonce,
   ])
 
-  // check balance when click send button
-  const checkBalance = async () => {
-    const {from, to, gasPrice, gas, value, storageLimit} = params
-    const storageFeeDrip = bn16(storageLimit)
-      .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
-      .divn(1024)
-    const gasFeeDrip = bn16(gas).mul(bn16(gasPrice))
-    const txFeeDrip = gasFeeDrip.add(storageFeeDrip)
-    const {address: tokenAddress, decimals} = displayToken
-    try {
-      const balanceData = await request(WALLET_GET_BALANCE, {
-        users: [from],
-        tokens: isNativeToken ? ['0x0'] : ['0x0'].concat(tokenAddress),
-      })
-      const balance = balanceData?.[from]
-
-      if (isSendToken) {
-        if (isNativeToken) {
-          if (bn16(balance['0x0']).lt(bn16(value).add(txFeeDrip))) {
-            return t('balanceIsNotEnough')
-          } else {
-            return ''
-          }
-        } else {
-          if (
-            bn16(balance[tokenAddress]).lt(
-              bn16(convertValueToData(displayValue, decimals)),
-            )
-          ) {
-            return t('balanceIsNotEnough')
-          }
-        }
-      }
-      const {willPayCollateral, willPayTxFee} = await request(
-        'cfx_checkBalanceAgainstTransaction',
-        [from, to, gas, gasPrice, storageLimit, 'latest_state'],
-      )
-
-      if (
-        (bn16(balance['0x0']).lt(txFeeDrip) &&
-          willPayTxFee &&
-          willPayCollateral) ||
-        (bn16(balance['0x0']).lt(storageFeeDrip) && willPayCollateral) ||
-        (bn16(balance['0x0']).lt(gasFeeDrip) && willPayTxFee)
-      ) {
-        return t('gasFeeIsNotEnough')
-      } else {
-        return ''
-      }
-    } catch (err) {
-      console.error(err)
-      return ''
-    }
-  }
-
   const onSend = async () => {
     if (isHwAccount) {
       const authStatus = await cfxLedger.isDeviceAuthed()
@@ -293,10 +244,21 @@ function ConfirmTransaction() {
     if (!isHwAccount) setLoading(true)
     else setSendStatus(TX_STATUS.HW_WAITING)
 
-    const error = await checkBalance()
+    const sendTokenValue =
+      isSendToken && !isNativeToken && Object.keys(displayToken).length
+        ? bn16(convertValueToData(displayValue, displayToken.decimals))
+        : '0x0'
+
+    const error = await checkBalance(
+      params,
+      displayToken,
+      isNativeToken,
+      isSendToken,
+      sendTokenValue,
+    )
     if (error) {
       setLoading(false)
-      setBalanceError(error)
+      setBalanceError(t(error))
       return
     }
 
@@ -313,6 +275,12 @@ function ConfirmTransaction() {
         setSendStatus(TX_STATUS.ERROR)
         setSendError(error?.message ?? error)
       })
+  }
+
+  const onHwReject = () => {
+    clearSendTransactionParams()
+    if (!isDapp) history.push(HOME)
+    else window.close()
   }
 
   const confirmDisabled =
@@ -405,10 +373,10 @@ function ConfirmTransaction() {
             />
           )}
           {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (
-            <HwTransactionResult
+            <TransactionResult
               status={sendStatus}
-              isDapp={isDapp}
               sendError={sendError}
+              onReject={onHwReject}
             />
           )}
         </div>

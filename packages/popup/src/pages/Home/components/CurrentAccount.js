@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import {memo} from 'react'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {
@@ -13,7 +14,9 @@ import classNames from 'classnames'
 const OpenScanButton = ({address}) => {
   const {address: scanAddrUrl} = useBlockchainExplorerUrl(
     address ? {address: [address]} : null,
+    'useCurrentAddressUrl',
   )
+
   return (
     <WrapIcon className="!bg-transparent hover:!bg-[#ffffff1a]">
       <SendOutlined
@@ -39,6 +42,7 @@ function CurrentAccount({onOpenAccount}) {
       account: {nickname},
     },
   } = useCurrentAddress()
+
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (
@@ -89,4 +93,4 @@ function CurrentAccount({onOpenAccount}) {
 CurrentAccount.propTypes = {
   onOpenAccount: PropTypes.func.isRequired,
 }
-export default CurrentAccount
+export default memo(CurrentAccount)

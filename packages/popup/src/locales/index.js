@@ -5,9 +5,9 @@ import zh from './zh'
 
 const resources = {
   en,
+  zh,
   fr,
   ru,
-  zh,
 }
 
 export default resources
