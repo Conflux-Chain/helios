@@ -61,7 +61,7 @@
     "@storybook/addon-postcss": "2.0.0",
     "@storybook/addon-viewport": "6.3.12",
     "@storybook/react": "6.3.12",
-    "@swc/cli": "0.1.55",
+    "@swc/cli": "0.1.56",
     "@swc/core": "1.2.159",
     "@swc/helpers": "0.3.8",
     "@testing-library/jest-dom": "5.15.0",

@@ -29,7 +29,6 @@ getWorkspacePackages({
     '@fluent-wallet/jest-helper',
     '@fluent-wallet/test-helpers',
     '@fluent-wallet/content-script',
-    'dapp-cross-space',
   ],
 }).forEach(({location, name}) => {
   const packageAbsPath = path.resolve(__dirname, '../', location)
@@ -39,7 +38,7 @@ getWorkspacePackages({
 
 alias['readable-stream'] = path.resolve(
   __dirname,
-  '../node_modules/cip-23/node_modules/readable-stream/readable-browser.js',
+  '../node_modules/readable-stream/readable-browser.js',
 )
 
 module.exports = {
