@@ -3,7 +3,7 @@ import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
 import {isArray} from '@fluent-wallet/checks'
-import {PASSWORD_REG_EXP, RPC_METHODS} from '../constants'
+import {PASSWORD_REG_EXP, RPC_METHODS, LANGUAGES} from '../constants'
 const globalThis = window ?? global
 const {
   WALLET_GET_ACCOUNT_GROUP,
@@ -133,7 +133,11 @@ export const getPageType = () => {
 }
 
 export const formatLocalizationLang = lang =>
-  lang?.split?.('-')?.[0] === 'zh' ? 'zh' : 'en'
+  lang?.split?.('-')?.[0] === 'zh'
+    ? 'zh'
+    : LANGUAGES.includes(lang)
+    ? lang
+    : 'en'
 
 export function composeRef() {
   let refs = []

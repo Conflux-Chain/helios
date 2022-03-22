@@ -464,7 +464,7 @@ export const useTxList = params => {
 
 export const useBlockchainExplorerUrl = (params, deps) => {
   let rpcDeps = []
-  if (!deps) {
+  if (!deps && params) {
     rpcDeps = [...flatArray(Object.values(params))]
   } else {
     rpcDeps = isArray(deps) ? deps : [deps]

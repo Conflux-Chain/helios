@@ -237,7 +237,6 @@ export const useCheckBalanceAndGas = (
 ) => {
   const {t} = useTranslation()
   const {error, isBalanceEnough, tokens} = estimateRst
-  // const isNativeToken = !sendTokenAddress
   const isTokenBalanceEnough = tokens?.[sendTokenAddress]?.isTokenBalanceEnough
   return useMemo(() => {
     if (error?.message) {

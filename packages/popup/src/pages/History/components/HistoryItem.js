@@ -152,7 +152,12 @@ function HistoryItem({
     <div className="px-3 pb-3 pt-2 bg-white mx-3 mt-3 rounded">
       <div className="flex justify-between">
         <div className="relative">
-          {
+          {txStatus === 'confirmed' ? (
+            <div className="text-gray-60 text-xs">
+              <span>#{formatHexToDecimal(payload.nonce)}</span>
+              <span className="ml-2">{createdTime}</span>
+            </div>
+          ) : (
             <CustomTag
               className={`${tagColor} absolute flex items-center h-6 px-2.5 -left-3 -top-2`}
               width="w-auto"
@@ -169,65 +174,61 @@ function HistoryItem({
                   <ReloadOutlined className="w-2 h-2 text-white" />
                 </WrapperWithCircle>
               ) : null}
-              {txStatus !== 'confirmed' && (
-                <span className="text-sm">
-                  {transformToTitleCase(txStatus)}
-                </span>
-              )}
+              {
+                <div>
+                  <span className="text-sm">
+                    {transformToTitleCase(txStatus)}
+                  </span>
+                  <span className="text-gray-60 text-xs absolute right-0 translate-x-full pl-2 top-[5px]">
+                    #{formatHexToDecimal(payload.nonce)}
+                  </span>
+                </div>
+              }
             </CustomTag>
-          }
+          )}
         </div>
-        <div
-          className={`flex items-center justify-between w-full ${
-            txStatus !== 'confirmed' ? 'pt-[18px]' : ''
-          }`}
-        >
-          <div className="text-gray-60 text-xs">
-            <span>#{formatHexToDecimal(payload.nonce)}</span>
-            <span className="ml-2">{createdTime}</span>
-          </div>
-          <div className="flex items-center">
-            {txStatus === 'pending' && (
-              <WrapIcon
-                size="w-5 h-5 ml-2"
-                id="speed-up-tx"
-                onClick={() =>
-                  onResend?.('speedup', {payload, token, extra, hash})
-                }
-              >
-                <RocketOutlined className="w-3 h-3 text-primary" />
-              </WrapIcon>
-            )}
-            {txStatus === 'pending' && (
-              <WrapIcon
-                size="w-5 h-5 ml-2"
-                id="cancel-tx"
-                onClick={() =>
-                  onResend?.('cancel', {payload, token, extra, hash})
-                }
-              >
-                <CancelOutlined className="w-3 h-3 text-primary" />
-              </WrapIcon>
-            )}
-            {hash && (
-              <CopyButton
-                text={hash}
-                className="w-3 h-3 text-primary"
-                containerClassName={copyButtonContainerClassName}
-                toastClassName={copyButtonToastClassName}
-                wrapperClassName="!w-5 !h-5"
-              />
-            )}
-            {transactionUrl && (
-              <WrapIcon
-                size="w-5 h-5 ml-2"
-                id="openScanTxUrl"
-                onClick={() => window.open(transactionUrl)}
-              >
-                <SendOutlined className="w-3 h-3 text-primary" />
-              </WrapIcon>
-            )}
-          </div>
+
+        <div className="flex items-center">
+          {txStatus === 'pending' && (
+            <WrapIcon
+              size="w-5 h-5 ml-2"
+              id="speed-up-tx"
+              onClick={() =>
+                onResend?.('speedup', {payload, token, extra, hash})
+              }
+            >
+              <RocketOutlined className="w-3 h-3 text-primary" />
+            </WrapIcon>
+          )}
+          {txStatus === 'pending' && (
+            <WrapIcon
+              size="w-5 h-5 ml-2"
+              id="cancel-tx"
+              onClick={() =>
+                onResend?.('cancel', {payload, token, extra, hash})
+              }
+            >
+              <CancelOutlined className="w-3 h-3 text-primary" />
+            </WrapIcon>
+          )}
+          {hash && (
+            <CopyButton
+              text={hash}
+              className="w-3 h-3 text-primary"
+              containerClassName={copyButtonContainerClassName}
+              toastClassName={copyButtonToastClassName}
+              wrapperClassName="!w-5 !h-5"
+            />
+          )}
+          {transactionUrl && (
+            <WrapIcon
+              size="w-5 h-5 ml-2"
+              id="openScanTxUrl"
+              onClick={() => window.open(transactionUrl)}
+            >
+              <SendOutlined className="w-3 h-3 text-primary" />
+            </WrapIcon>
+          )}
         </div>
       </div>
       <div className="mt-3 flex items-center">

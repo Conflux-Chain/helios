@@ -134,8 +134,8 @@ const en = {
       'Use 8 ~ 128 characters with a mix of letters & numbers.',
     en: 'English',
     zh: '简体中文',
-    fr: 'Français',
-    ru: 'Русский',
+    fr: 'Français (Communauté)',
+    ru: 'Pусский (Сообщество)',
 
     // - Send Transaction
     // - Send Transaction / send transaction
