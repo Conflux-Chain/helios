@@ -106,28 +106,32 @@
       clj->js
       js/console.log))
 
-(defn new-address-tx [{:keys [value network eid hex] :as addr}]
-  (let [value (and (string? value) (.toLowerCase value))
-        hex (and (string? value) (.toLowerCase hex))
-        addr (if hex (assoc addr :hex hex) addr)
-        addr (if value (assoc addr :value value) addr)
-        eid (if (pos-int? eid)
-              eid
-              (try (:db/id (p [:db/id] [:address/id [network value]]))
-                   (catch js/Error _ eid)))
+(defn new-address-tx
+  "Generate a tx to create address,
+  replace eid with eid or found addr dbid if eid is tmpid
+  value, network is required"
+  [{:keys [value network eid hex] :as addr}]
+  (let [value    (and (string? value) (.toLowerCase value))
+        hex      (and (string? value) (.toLowerCase hex))
+        addr     (if hex (assoc addr :hex hex) addr)
+        addr     (if value (assoc addr :value value) addr)
+        eid      (if (pos-int? eid)
+                   eid
+                   (try (:db/id (p [:db/id] [:address/id [network value]]))
+                        (catch js/Error _ eid)))
         oldaddr? (pos-int? eid)
-        addr (dissoc addr :eid)
-        addr (if oldaddr? (dissoc addr :network :value) addr)]
+        addr     (dissoc addr :eid)
+        addr     (if oldaddr? (dissoc addr :network :value) addr)]
     {:eid eid :address addr}))
 (defn new-token-tx [{:keys [address network eid] :as token}]
-  (let [address (and (string? address) (.toLowerCase address))
-        eid (if (pos-int? eid)
-              eid
-              (try (:db/id (p [:db/id] [:token/id [network address]]))
-                   (catch js/Error _ eid)))
+  (let [address   (and (string? address) (.toLowerCase address))
+        eid       (if (pos-int? eid)
+                    eid
+                    (try (:db/id (p [:db/id] [:token/id [network address]]))
+                         (catch js/Error _ eid)))
         oldtoken? (pos-int? eid)
-        token (dissoc token :eid)
-        token (if oldtoken? (dissoc token :network :address) token)]
+        token     (dissoc token :eid)
+        token     (if oldtoken? (dissoc token :network :address) token)]
     {:eid eid :token token}))
 
 (defn get-account [{:keys [accountId groupId index g nickname selected fuzzy]}]
