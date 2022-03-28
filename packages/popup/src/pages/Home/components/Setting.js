@@ -15,7 +15,7 @@ const {
   ACCOUNT_MANAGEMENT,
   NETWORK_MANAGEMENT,
   ABOUT,
-  DEVELOPER_MODE,
+  SHOW_TESTNET,
   AUTHORIZED_WEBSITE,
 } = ROUTES
 
@@ -36,9 +36,9 @@ const SETTING_ITEMS = [
     jumpPath: AUTHORIZED_WEBSITE,
   },
   {
-    contentKey: 'developerMode',
-    iconPath: '/images/developer.svg',
-    jumpPath: DEVELOPER_MODE,
+    contentKey: 'showTestnet',
+    iconPath: '/images/show-testnet.svg',
+    jumpPath: SHOW_TESTNET,
   },
   {
     contentKey: 'about',

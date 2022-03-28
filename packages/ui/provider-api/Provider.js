@@ -6,7 +6,6 @@ class Provider extends SafeEventEmitter {
   #send
   #isConnected
   isFluent = true
-  isConfluxPortal = true
   isMetaMask = true
 
   // DEPRECATED
@@ -72,7 +71,10 @@ class Provider extends SafeEventEmitter {
 
   request(req) {
     return requestFactory(this.#send, req).then(res => {
-      if (res.error) throw res.error
+      if (res.error) {
+        console.error(res.error.message, res.error)
+        throw res.error
+      }
       return res.result
     })
   }
@@ -166,7 +168,14 @@ class Provider extends SafeEventEmitter {
     )
     const [a1, a2] = args
     if (typeof a2 === 'function') return this.sendAsync(a1, a2)
-    if (typeof a1 === 'string') return this.request({method: a1, params: a2})
+    if (typeof a1 === 'string')
+      return requestFactory(this.#send, {method: a1, params: a2}).then(res => {
+        if (res.error) {
+          console.error(res.error.message, res.error)
+          throw res.error
+        }
+        return res
+      })
 
     if (!a2 && typeof a1 === 'object') {
       if (
