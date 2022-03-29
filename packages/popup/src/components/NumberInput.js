@@ -35,15 +35,13 @@ function NumberInput({
 
   const onKeyDown = e => {
     if (e.key === '-' || e.key === 'e') {
-      clearInput(e)
       e.preventDefault()
     }
   }
 
   const onCompositionEnd = e => {
-    if (e?.data === 'e') {
-      clearInput(e)
-    }
+    clearInput(e)
+    e.preventDefault()
   }
 
   return (
