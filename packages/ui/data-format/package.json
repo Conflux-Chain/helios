@@ -4,9 +4,6 @@
   "main": "index.js",
   "version": "0.1.9",
   "dependencies": {
-    "@fluent-wallet/component-loading": "workspace:packages/ui/components/Loading",
-    "@fluent-wallet/consts": "workspace:packages/consts",
-    "@fluent-wallet/contract-method-name": "workspace:packages/contract-method-name",
     "@fluent-wallet/utils": "workspace:packages/utils",
     "big.js": "^6.1.1",
     "bn.js": "5.2.0"
