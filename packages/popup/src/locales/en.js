@@ -222,8 +222,6 @@ const en = {
     speedupTxDes:
       'Submitting this attempt does not guarantee your original transaction will be cancelled.If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
     speedupTransaction: 'Speed up transaction',
-    canceledTx:
-      'The transaction has been executed or finished.No action required',
     submit: 'Submit',
     customGasPrice: 'Custom Gas Price',
     executedTx:
