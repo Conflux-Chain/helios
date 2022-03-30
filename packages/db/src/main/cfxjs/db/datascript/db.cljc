@@ -3,6 +3,7 @@
    #?(:cljs [goog.array :as garray])
    [clojure.walk]
    [clojure.data]
+   [cfxjs.db.datascript.lru :as lru]
    [me.tonsky.persistent-sorted-set :as set]
    [me.tonsky.persistent-sorted-set.arrays :as arrays])
   #?(:cljs (:require-macros [cfxjs.db.datascript.db :refer [case-tree combine-cmp raise defrecord-updatable cond+]]))
@@ -47,7 +48,9 @@
    (defmacro cond+ [& clauses]
      (when-some [[test expr & rest] clauses]
        (case test
-         :let `(let ~expr (cond+ ~@rest))
+         :do   `(do ~expr (cond+ ~@rest))
+         :let  `(let ~expr (cond+ ~@rest))
+         :some `(or ~expr (cond+ ~@rest))
          `(if ~test ~expr (cond+ ~@rest))))))
 
 #?(:clj
@@ -150,13 +153,17 @@
 
 (defprotocol IDatom
   (datom-tx [this])
-  (datom-added [this]))
+  (datom-added [this])
+  (datom-get-idx [this])
+  (datom-set-idx [this value]))
 
-(deftype Datom #?(:clj [^int e a v ^int tx ^:unsynchronized-mutable ^int _hash]
-                  :cljs [^number e a v ^number tx ^:mutable ^number _hash])
+(deftype Datom #?(:clj [^int e a v ^int tx ^:unsynchronized-mutable ^int idx ^:unsynchronized-mutable ^int _hash]
+                  :cljs [^number e a v ^number tx ^:mutable ^number idx ^:mutable ^number _hash])
   IDatom
   (datom-tx [d] (if (pos? tx) tx (- tx)))
   (datom-added [d] (pos? tx))
+  (datom-get-idx [_] idx)
+  (datom-set-idx [_ value] (set! idx (int value)))
 
   #?@(:cljs
       [IHash
@@ -220,12 +227,12 @@
        (containsKey [e k] (#{:e :a :v :tx :added} k))
        (assoc [d k v] (assoc-datom d k v))]))
 
-#?(:cljs (goog/exportSymbol "datascript.db.Datom" Datom))
+#?(:cljs (goog/exportSymbol "cfxjs.db.datascript.db.Datom" Datom))
 
 (defn ^Datom datom
-  ([e a v] (Datom. e a v tx0 0))
-  ([e a v tx] (Datom. e a v tx 0))
-  ([e a v tx added] (Datom. e a v (if added tx (- tx)) 0)))
+  ([e a v] (Datom. e a v tx0 0 0))
+  ([e a v tx] (Datom. e a v tx 0 0))
+  ([e a v tx added] (Datom. e a v (if added tx (- tx)) 0 0)))
 
 (defn datom? [x] (instance? Datom x))
 
@@ -347,7 +354,7 @@
       #?@(:clj  [(instance? Comparable x)   (.compareTo ^Comparable x y)]
           :cljs [(satisfies? IComparable x) (-compare x y)])
       (not (class-identical? x y)) (class-compare x y)
-      #?@(:cljs [(or (string? x) (array? x) (true? x) (false? x)) (garray/defaultCompare x y)])
+      #?@(:cljs [(or (number? x) (string? x) (array? x) (true? x) (false? x)) (garray/defaultCompare x y)])
       :else (- (hash x) (hash y)))
     (catch #?(:clj ClassCastException :cljs js/Error) e
       (if (not (class-identical? x y))
@@ -488,23 +495,21 @@
       (update :aevt persistent!)
       (update :avet persistent!)))
 
-(defrecord-updatable DB [schema eavt aevt avet max-eid max-tx rschema hash]
+(defrecord-updatable DB [schema eavt aevt avet max-eid max-tx rschema pull-patterns pull-attrs hash]
   #?@(:cljs
       [IHash                (-hash  [db]        (hash-db db))
        IEquiv               (-equiv [db other]  (equiv-db db other))
-       ISeqable             (-seq   [db]        (-seq  (.-eavt db)))
        IReversible          (-rseq  [db]        (-rseq (.-eavt db)))
        ICounted             (-count [db]        (count (.-eavt db)))
        IEmptyableCollection (-empty [db]        (with-meta (empty-db (.-schema db)) (meta db)))
        IPrintWithWriter     (-pr-writer [db w opts] (pr-db db w opts))
        IEditableCollection  (-as-transient [db] (db-transient db))
-       ITransientCollection (-conj! [db key] (throw (ex-info "datascript.DB/conj! is not supported" {})))
+       ITransientCollection (-conj! [db key] (throw (ex-info "cfxjs.db.datascript.DB/conj! is not supported" {})))
        (-persistent! [db] (db-persistent! db))]
 
       :clj
       [Object               (hashCode [db]      (hash-db db))
        clojure.lang.IHashEq (hasheq [db]        (hash-db db))
-       clojure.lang.Seqable (seq [db]           (seq eavt))
        clojure.lang.IPersistentCollection
        (count [db]         (count eavt))
        (equiv [db other]   (equiv-db db other))
@@ -512,7 +517,7 @@
        (empty [db]         (with-meta (empty-db schema) (meta db)))
        (asTransient [db] (db-transient db))
        clojure.lang.ITransientCollection
-       (conj [db key] (throw (ex-info "datascript.DB/conj! is not supported" {})))
+       (conj [db key] (throw (ex-info "cfxjs.db.datascript.DB/conj! is not supported" {})))
        (persistent [db] (db-persistent! db))])
 
   IDB
@@ -596,7 +601,6 @@
   #?@(:cljs
       [IHash                (-hash  [db]        (hash-fdb db))
        IEquiv               (-equiv [db other]  (equiv-db db other))
-       ISeqable             (-seq   [db]        (seq (-datoms db :eavt [])))
        ICounted             (-count [db]        (count (-datoms db :eavt [])))
        IPrintWithWriter     (-pr-writer [db w opts] (pr-db db w opts))
 
@@ -618,8 +622,6 @@
        (equiv [db o]       (equiv-db db o))
        (cons [db [k v]]    (throw (UnsupportedOperationException. "cons is not supported on FilteredDB")))
        (empty [db]         (throw (UnsupportedOperationException. "empty is not supported on FilteredDB")))
-
-       clojure.lang.Seqable (seq [db]           (seq (-datoms db :eavt [])))
 
        clojure.lang.ILookup (valAt [db k]       (throw (UnsupportedOperationException. "valAt/2 is not supported on FilteredDB")))
        (valAt [db k nf]    (throw (UnsupportedOperationException. "valAt/3 is not supported on FilteredDB")))
@@ -655,6 +657,11 @@
   (-index-range [db attr start end]
                 (filter (.-pred db) (-index-range (.-unfiltered-db db) attr start end))))
 
+(defn unfiltered-db ^DB [db]
+  (if (instance? FilteredDB db)
+    (.-unfiltered-db ^FilteredDB db)
+    db))
+
 ;; ----------------------------------------------------------------------------
 
 (defn attr->properties [k v]
@@ -664,11 +671,11 @@
     :db.cardinality/many [:db.cardinality/many]
     :db.type/ref         [:db.type/ref :db/index]
     (cond
-      (and (= :db/persist k) (false? v)) [:db/memOnly]
+      (and (= :db/persist k) (false? v))    [:db/memOnly]
       (and (= :db/isComponent k) (true? v)) [:db/isComponent]
       (and (= :db/index k) (true? v))       [:db/index]
       (= :db/tupleAttrs k)                  [:db.type/tuple :db/index]
-      :else [])))
+      :else                                 [])))
 
 (defn attr-tuples
   "e.g. :reg/semester => #{:reg/semester+course+student ...}"
@@ -679,7 +686,7 @@
       (fn [m src-attr idx] ;; e.g. :reg/semester
         (update m src-attr assoc tuple-attr idx))
       m
-      (-> schema tuple-attr :db/tupleAttrs)))
+      (-> schema (get tuple-attr) :db/tupleAttrs)))
    {}
    (:db.type/tuple rschema)))
 
@@ -729,8 +736,16 @@
                 :key       :db/isComponent})))
 
     (validate-schema-key a :db/unique (:db/unique kv) #{:db.unique/value :db.unique/identity})
-    (validate-schema-key a :db/valueType (:db/valueType kv) #{:db.type/ref})
+    (validate-schema-key a :db/valueType (:db/valueType kv) #{:db.type/ref :db.type/tuple})
     (validate-schema-key a :db/cardinality (:db/cardinality kv) #{:db.cardinality/one :db.cardinality/many})
+
+    ;; tuple should have tupleAttrs
+    (when (and (= :db.type/tuple (:db/valueType kv))
+               (not (contains? kv :db/tupleAttrs)))
+      (raise "Bad attribute specification for " a ": {:db/valueType :db.type/tuple} should also have :db/tupleAttrs"
+             {:error :schema/validation
+              :attribute a
+              :key :db/valueType}))
 
     ;; :db/tupleAttrs is a non-empty sequential coll
     (when (contains? kv :db/tupleAttrs)
@@ -761,14 +776,16 @@
    {:pre [(or (nil? schema) (map? schema))]}
    (validate-schema schema)
    (map->DB
-    {:schema  schema
-     :rschema (rschema (merge implicit-schema schema))
-     :eavt    (set/sorted-set-by cmp-datoms-eavt)
-     :aevt    (set/sorted-set-by cmp-datoms-aevt)
-     :avet    (set/sorted-set-by cmp-datoms-avet)
-     :max-eid e0
-     :max-tx  tx0
-     :hash    (atom 0)})))
+    {:schema        schema
+     :rschema       (rschema (merge implicit-schema schema))
+     :eavt          (set/sorted-set-by cmp-datoms-eavt)
+     :aevt          (set/sorted-set-by cmp-datoms-aevt)
+     :avet          (set/sorted-set-by cmp-datoms-avet)
+     :max-eid       e0
+     :max-tx        tx0
+     :pull-patterns (lru/cache 100)
+     :pull-attrs    (lru/cache 100)
+     :hash          (atom 0)})))
 
 (defn- init-max-eid [eavt]
   (or (-> (set/rslice eavt (datom (dec tx0) nil nil txmax) (datom e0 nil nil tx0))
@@ -797,14 +814,16 @@
          avet        (set/from-sorted-array cmp-datoms-avet avet-arr)
          max-eid     (init-max-eid eavt)
          max-tx      (transduce (map (fn [^Datom d] (datom-tx d))) max tx0 eavt)]
-     (map->DB {:schema  schema
-               :rschema rschema
-               :eavt    eavt
-               :aevt    aevt
-               :avet    avet
-               :max-eid max-eid
-               :max-tx  max-tx
-               :hash    (atom 0)}))))
+     (map->DB {:schema        schema
+               :rschema       rschema
+               :eavt          eavt
+               :aevt          aevt
+               :avet          avet
+               :max-eid       max-eid
+               :max-tx        max-tx
+               :pull-patterns (lru/cache 100)
+               :pull-attrs    (lru/cache 100)
+               :hash          (atom 0)}))))
 
 (defn- equiv-db-index [x y]
   (loop [xs (seq x)
@@ -994,7 +1013,7 @@
            :cljs [^boolean tx-id?])
   [e]
   (or (= e :db/current-tx)
-      (= e ":db/current-tx") ;; for datascript.js interop
+      (= e ":db/current-tx") ;; for cfxjs.db.datascript.js interop
       (= e "datomic.tx")
       (= e "datascript.tx")))
 
@@ -1205,8 +1224,14 @@
     :else vs))
 
 (defn- explode [db entity]
-  (let [eid (:db/id entity)]
-    (for [[a vs] entity
+  (let [eid  (:db/id entity)
+        ;; sort tuple attrs after non-tuple
+        a+vs (apply concat
+                    (reduce
+                     (fn [acc [a vs]]
+                       (update acc (if (tuple? db a) 1 0) conj [a vs]))
+                     [[] []] entity))]
+    (for [[a vs] a+vs
           :when  (not= a :db/id)
           :let   [_          (validate-attr a {:db/id eid, a vs})
                   reverse?   (reverse-ref? a)
@@ -1375,8 +1400,11 @@
                    (contains? tempids old-eid)
                    (not= upserted-eid (get tempids old-eid)))
             (retry-with-tempid initial-report report initial-es old-eid upserted-eid)
-            (recur (allocate-eid report old-eid upserted-eid)
-                   (concat (explode db (assoc entity' :db/id upserted-eid)) entities)))
+            (recur
+             (-> report
+                 (allocate-eid old-eid upserted-eid)
+                 (update ::tx-redundant conjv (datom upserted-eid nil nil tx0)))
+             (concat (explode db (assoc entity' :db/id upserted-eid)) entities)))
 
             ;; resolved | allocated-tempid | tempid | nil => explode
           (or (number? old-eid)
@@ -1466,8 +1494,19 @@
 
            (and (not (::internal (meta entity)))
                 (tuple? db a))
-           (raise "Can’t modify tuple attrs directly: " entity
-                  {:error :transact/syntax, :tx-data entity})
+            ;; allow transacting in tuples if they fully match already existing values
+           (let [tuple-attrs (get-in db [:schema a :db/tupleAttrs])]
+             (if (and
+                  (= (count tuple-attrs) (count v))
+                  (every? some? v)
+                  (every?
+                   (fn [[tuple-attr tuple-value]]
+                     (let [db-value (:v (first (-datoms db :eavt [e tuple-attr])))]
+                       (= tuple-value db-value)))
+                   (map vector tuple-attrs v)))
+               (recur report entities)
+               (raise "Can’t modify tuple attrs directly: " entity
+                      {:error :transact/syntax, :tx-data entity})))
 
            (= op :db/add)
            (recur (transact-add report entity) entities)

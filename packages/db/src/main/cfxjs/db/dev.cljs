@@ -41,11 +41,27 @@
           :accs      (get-accounts-structure (:accountGroup/account g))})
        groups)})
 
-
 (defn reload! []
   (js/chrome.storage.local.clear)
   (js/chrome.runtime.reload))
 
+(defn l
+  ([method] (l [method {}]))
+  ([method params]
+   (let [payload {:method method}
+         payload (if params (assoc payload :params params) payload)]
+     (->
+      (js/r (clj->js payload))
+      (.then prn)
+      (.catch prn)))))
+
 (comment
+  (p '[:address/_account] 53)
+  (p '[:address/_account] 54)
+  (p '[*] 53)
+  (p '[*] 54)
+  (d/pull @conn [:account/_address] 52)
   (:account/_address (p '[{:account/_address [*]}] 52))
-  (reload!))
+  (p '[:account/_address] 54)
+  (reload!)
+  (l "wallet_metadataForPopup" []))

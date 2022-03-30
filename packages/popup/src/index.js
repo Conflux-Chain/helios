@@ -74,6 +74,7 @@ ReactDOM.render(
         use: [swrPostProcessDataMiddleware],
         onError: error => {
           if (error && location) {
+            if (!IS_PROD_MODE) console.error(error)
             const prevPath = window?.location?.hash === '#/' ? 'home' : ''
             sentryCapture(error)
             location.href = `${location.origin}${

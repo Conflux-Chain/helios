@@ -117,8 +117,10 @@
         addr     (if value (assoc addr :value value) addr)
         eid      (if (pos-int? eid)
                    eid
-                   (try (:db/id (p [:db/id] [:address/id [network value]]))
-                        (catch js/Error _ eid)))
+                   (or
+                    (try (:db/id (p [:db/id] [:address/id [network value]]))
+                         (catch js/Error _ eid))
+                    eid))
         oldaddr? (pos-int? eid)
         addr     (dissoc addr :eid)
         addr     (if oldaddr? (dissoc addr :network :value) addr)]
@@ -127,12 +129,64 @@
   (let [address   (and (string? address) (.toLowerCase address))
         eid       (if (pos-int? eid)
                     eid
-                    (try (:db/id (p [:db/id] [:token/id [network address]]))
-                         (catch js/Error _ eid)))
+                    (or (try (:db/id (p [:db/id] [:token/id [network address]]))
+                             (catch js/Error _ eid))
+                        eid))
         oldtoken? (pos-int? eid)
         token     (dissoc token :eid)
         token     (if oldtoken? (dissoc token :network :address) token)]
     {:eid eid :token token}))
+
+(defn get-account-group [{:keys [groupId g fuzzy selected]}]
+  (let [g            (and g {:accountGroup g})
+        fuzzy        (if (string? fuzzy)
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 (.trim)
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)
+        post-process (if (seq g) identity #(get % :db/id))]
+    (prst->js
+     (cond
+       groupId
+       (when (q '[:find ?acc .
+                  :in $ ?acc
+                  :where [?acc :accountGroup/nickname]]
+                groupId)
+         (post-process (p (jsp->p g) groupId)))
+       :else
+       (let [query-initial (cond-> '{:find  [[?g ...]]
+                                     :in    [$]
+                                     :where [[?g :accountGroup/nickname]]
+                                     :args []}
+                             (true? selected)
+                             (-> (update :where conj
+                                         '[?g :accountGroup/account ?acc]
+                                         '[?acc :account/selected true]))
+                             (false? selected)
+                             (-> (update :where conj
+                                         '[?g :accountGroup/account ?acc]
+                                         (not '[?acc :account/selected true])))
+                             fuzzy
+                             (-> (update :args conj fuzzy)
+                                 (update :in conj '?fuzzy)
+                                 (update :where conj
+                                         (or
+                                          (and
+                                           '[?g :accountGroup/nickname ?g-name]
+                                           '[(re-find ?fuzzy ?g-name)])
+                                          (and
+                                           '[?g :accountGroup/account ?acc]
+                                           '[?acc :account/nickname ?acc-name]
+                                           '[(re-find ?fuzzy ?acc-name)]))))
+                             true identity)
+             query         (concat [:find] (:find query-initial)
+                                   [:in] (:in query-initial)
+                                   [:where] (:where query-initial))
+             accs          (apply q query (:args query-initial))]
+         (map post-process (if (seq accs) (pm (jsp->p g) accs) [])))))))
 
 (defn get-account [{:keys [accountId groupId index g nickname selected fuzzy]}]
   (let [g            (and g {:account g})
@@ -1294,6 +1348,7 @@
               :queryqueryAddress          get-address
               :queryqueryNetwork          get-network
               :queryqueryAccount          get-account
+              :queryqueryAccountGroup     get-account-group
               :queryqueryToken            get-token
               :queryqueryGroup            get-group
               :queryqueryBalance          get-balance

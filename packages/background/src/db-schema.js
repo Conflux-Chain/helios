@@ -125,7 +125,7 @@ const schema = {
   account: {
     index: {doc: 'index of account in account group'},
     nickname: {doc: 'account nickname'},
-    address: {many: true, component: true, ref: true},
+    address: {many: true, ref: true},
     hidden: {doc: 'If hide this account in ui'},
     offline: {doc: 'Offline account'},
     selected: {doc: 'selected by wallet'},
