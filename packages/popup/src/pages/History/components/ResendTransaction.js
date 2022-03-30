@@ -241,7 +241,11 @@ function ResendTransaction({
 
   //cancel resend tx when tx status is not pending
   useEffect(() => {
-    if (reSendTxStatus && reSendTxStatus !== 'pending') {
+    if (
+      reSendTxStatus &&
+      reSendTxStatus !== 'pending' &&
+      reSendTxStatus !== 'sending'
+    ) {
       setExecutedTxResultStatus(true)
       onCloseCard({restSendStatus: true})
       setLoading(false)
