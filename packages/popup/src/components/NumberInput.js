@@ -34,7 +34,7 @@ function NumberInput({
   }
 
   const onKeyDown = e => {
-    if (e.key === '-' || e.key === 'e') {
+    if (e?.key === '-' || e?.key === '+' || e?.key?.toLowerCase?.() === 'e') {
       e.preventDefault()
     }
   }
