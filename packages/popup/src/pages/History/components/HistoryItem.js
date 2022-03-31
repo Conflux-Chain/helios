@@ -200,7 +200,7 @@ function HistoryItem({
         <div className="flex items-center">
           {txStatus === 'pending' && (
             <WrapIcon
-              size="w-5 h-5 ml-2"
+              size="w-5 h-5"
               id="speed-up-tx"
               onClick={() =>
                 onResend?.('speedup', {payload, token, extra, hash})
@@ -211,7 +211,7 @@ function HistoryItem({
           )}
           {txStatus === 'pending' && (
             <WrapIcon
-              size="w-5 h-5 ml-2"
+              size="w-5 h-5 mx-2"
               id="cancel-tx"
               onClick={() =>
                 onResend?.('cancel', {payload, token, extra, hash})
