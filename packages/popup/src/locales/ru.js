@@ -214,15 +214,15 @@ const ru = {
     unknown: 'Неизвестно',
 
     // - Send Transaction / - speedup and cancel tx
-    cancelTransaction: 'Cancel transaction',
+    cancelTransaction: 'Cancel Transaction',
     suggestedGasPrice: 'Suggested Gas Price',
     inputGasPrice: 'Input Gas Price',
     spend: 'Spend',
     cancelTxDes:
       'Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
     speedupTxDes:
-      'Submitting this attempt does not guarantee your original transaction will be cancelled.If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
-    speedupTransaction: 'Speed up transaction',
+      'Submitting this attempt does not guarantee your original transaction will be accelerated. If the acceleration attempt is successful, you will be charged the transaction gas fee above.',
+    speedupTransaction: 'Speed up Transaction',
     submit: 'Submit',
     customGasPrice: 'Custom Gas Price',
     executedTx:
@@ -300,7 +300,7 @@ const ru = {
       'Fluent will be the first option when connecting to any dApp.',
     underCfxProvider: 'Enable on Conflux networks',
     underEtherProvider: 'Enable on Ethereum/EVM networks',
-    showTestnet: 'Show test networks',
+    showTestnet: 'Show Testnet',
     showTestnetDes: 'Select this to show test networks in network list.',
 
     // О нас

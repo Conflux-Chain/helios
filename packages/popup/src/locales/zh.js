@@ -152,7 +152,7 @@ const zh = {
     signTransaction: '交易签名',
     sendToken: '发送代币',
     toAddress: '接收方地址',
-    gasFee: 'Gas fee',
+    gasFee: 'Gas 费',
     edit: '编辑',
     sponsored: '已赞助',
 
@@ -162,7 +162,7 @@ const zh = {
     gasLimit: 'Gas 限制',
     storageFee: '存储抵押费',
     storageCollateralized: '存储抵押限制',
-    totalFee: 'Total Fee',
+    totalFee: '总费用',
     customNonce: '自定义 Nonce',
     gasPriceErrMSg: 'Gas 价格最小是 {{amount}} {{unit}}',
     gasLimitMinErr: 'Gas 限制至少是 {{gasUsed}}',
@@ -208,19 +208,18 @@ const zh = {
     unknown: '未知的',
 
     // - Send Transaction / - speedup and cancel tx
-    cancelTransaction: 'Cancel transaction',
-    suggestedGasPrice: 'Suggested Gas Price',
-    inputGasPrice: 'Input Gas Price',
-    spend: 'Spend',
+    cancelTransaction: '取消交易',
+    suggestedGasPrice: '建议的 Gas 价格',
+    inputGasPrice: '设置 Gas 价格',
+    spend: '将花费',
     cancelTxDes:
-      'Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+      '尝试取消，提交并不意味着取消成功。如果执行成功，您将被收取以上数额的 Gas 费',
     speedupTxDes:
-      'Submitting this attempt does not guarantee your original transaction will be cancelled.If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
-    speedupTransaction: 'Speed up transaction',
-    submit: 'Submit',
-    customGasPrice: 'Custom Gas Price',
-    executedTx:
-      'The transaction has been executed or finished.No action required.',
+      '尝试加速，提交并不意味着加速成功。如果执行成功，您将被收取以上数额的 Gas 费',
+    speedupTransaction: '交易加速',
+    submit: '提交',
+    customGasPrice: '自定义 Gas 价格',
+    executedTx: '此交易已被执行或者已完成，不需要执行额外操作',
 
     // - request signature - 1. Sign Text
     signText: '文本签名',
@@ -284,14 +283,13 @@ const zh = {
     invalidRpcUrl: '无效的 RPC URL',
 
     // Advanced Settings
-    AdvancedSettings: 'Advanced Settings',
-    priorityConnection: 'Priority Connection',
-    priorityConnectionDes:
-      'Fluent will be the first option when connecting to any dApp.',
-    underCfxProvider: 'Enable on Conflux networks',
-    underEtherProvider: 'Enable on Ethereum/EVM networks',
-    showTestnet: 'Show test networks',
-    showTestnetDes: 'Select this to show test networks in network list.',
+    AdvancedSettings: '高级选项',
+    priorityConnection: '优先连接',
+    priorityConnectionDes: '在连接至 DApp 时，Fluent 将会作为默认钱包',
+    underCfxProvider: '在 Conflux 网络中启用',
+    underEtherProvider: '在 Ethereum/EVM 网络中启用',
+    showTestnet: '显示测试网络',
+    showTestnetDes: '开启后，可在网络列表中展示测试网络',
 
     // About
     about: '关于',
