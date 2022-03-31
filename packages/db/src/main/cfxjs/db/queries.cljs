@@ -137,7 +137,7 @@
         token     (if oldtoken? (dissoc token :network :address) token)]
     {:eid eid :token token}))
 
-(defn get-account-group [{:keys [groupId g fuzzy selected]}]
+(defn get-account-group [{:keys [groupId g fuzzy selected groupTypes]}]
   (let [g            (and g {:accountGroup g})
         fuzzy        (if (string? fuzzy)
                        (re-pattern
@@ -169,24 +169,97 @@
                              (-> (update :where conj
                                          '[?g :accountGroup/account ?acc]
                                          (not '[?acc :account/selected true])))
+                             (seq groupTypes)
+                             (-> (update :args conj groupTypes)
+                                 (update :in conj '[?groupTypes ...])
+                                 (update :where conj
+                                         '[?g :accountGroup/vault ?vault]
+                                         '[?vault :vault/type ?groupTypes]))
                              fuzzy
                              (-> (update :args conj fuzzy)
                                  (update :in conj '?fuzzy)
                                  (update :where conj
-                                         (or
-                                          (and
-                                           '[?g :accountGroup/nickname ?g-name]
-                                           '[(re-find ?fuzzy ?g-name)])
-                                          (and
-                                           '[?g :accountGroup/account ?acc]
-                                           '[?acc :account/nickname ?acc-name]
-                                           '[(re-find ?fuzzy ?acc-name)]))))
+                                         '[?g :accountGroup/nickname ?g-name]
+                                         '[?g :accountGroup/account ?acc]
+                                         '[?acc :account/nickname ?acc-name]
+                                         '(or
+                                           [(re-find ?fuzzy ?g-name)]
+                                           [(re-find ?fuzzy ?acc-name)])))
                              true identity)
              query         (concat [:find] (:find query-initial)
                                    [:in] (:in query-initial)
                                    [:where] (:where query-initial))
              accs          (apply q query (:args query-initial))]
          (map post-process (if (seq accs) (pm (jsp->p g) accs) [])))))))
+
+(defn get-account-list [{:keys [fuzzy groupTypes includeHidden networkId groupG accountG addressG]}]
+  (let [accountG      (and accountG {:account accountG})
+        groupG        (and groupG {:accountGroup groupG})
+        addressG      (and addressG {:address addressG})
+        pull-group    #(if (seq groupG) (p (jsp->p groupG) %) {:eid %})
+        pull-account  #(if (seq accountG) (p (jsp->p accountG) %) {:eid %})
+        pull-address  #(if (seq addressG) (p (jsp->p addressG) %) {:eid %})
+        postprocess-group-account-address
+        (fn [data]
+          (reduce-kv
+           (fn [m groupId v]
+             (let [v (map rest v)]
+               (assoc m groupId
+                      (assoc
+                       (pull-group groupId)
+                       :account
+                       (reduce-kv
+                        (fn [m accountId v]
+                          (let [v (map #(-> % rest first pull-address) v)]
+                            (assoc m accountId (assoc (pull-account accountId) (if networkId :currentAddress :address) (if networkId (first v) v)))))
+                        {}
+                        (group-by first v))))))
+           {}
+           (group-by first data)))
+        fuzzy         (if (string? fuzzy)
+                        (re-pattern
+                         (str "(?i)"
+                              (-> fuzzy
+                                  (.trim)
+                                  gstr/regExpEscape
+                                  (.replaceAll " " ".*"))))
+                        nil)
+        query-initial (cond-> '{:find  [?g ?acc ?addr]
+                                :in    [$]
+                                :where [[?g :accountGroup/nickname]
+                                        [?g :accountGroup/account ?acc]
+                                        [?acc :account/address ?addr]]
+                                :args []}
+                        (seq groupTypes)
+                        (-> (update :args conj groupTypes)
+                            (update :in conj '[?groupTypes ...])
+                            (update :where conj
+                                    '[?g :accountGroup/vault ?vault]
+                                    '[?vault :vault/type ?groupTypes]))
+                        fuzzy
+                        (-> (update :args conj fuzzy)
+                            (update :in conj '?fuzzy)
+                            (update :where conj
+                                    '[?g :accountGroup/nickname ?g-name]
+                                    '[?g :accountGroup/account ?acc]
+                                    '[?acc :account/nickname ?acc-name]
+                                    '(or
+                                      [(re-find ?fuzzy ?g-name)]
+                                      [(re-find ?fuzzy ?acc-name)])))
+                        (not (true? includeHidden))
+                        (-> (update :where conj
+                                    '(not [?acc :account/hidden true])))
+                        networkId
+                        (-> (update :args conj networkId)
+                            (update :in conj '?net)
+                            (update :where conj
+                                    '[?addr :address/network ?net]))
+                        true identity)
+        query         (concat [:find] (:find query-initial)
+                              [:in] (:in query-initial)
+                              [:where] (:where query-initial))
+        accs          (apply q query (:args query-initial))]
+    (prst->js (postprocess-group-account-address accs))))
 
 (defn get-account [{:keys [accountId groupId index g nickname selected fuzzy]}]
   (let [g            (and g {:account g})
@@ -1349,6 +1422,7 @@
               :queryqueryNetwork          get-network
               :queryqueryAccount          get-account
               :queryqueryAccountGroup     get-account-group
+              :queryqueryAccountList      get-account-list
               :queryqueryToken            get-token
               :queryqueryGroup            get-group
               :queryqueryBalance          get-balance
@@ -1376,6 +1450,29 @@
    queries))
 
 (comment
+  (get-account-group {:networkId 6})
+  (q '[:find ?n
+       :where
+       [?n :network/name]])
+  (reduce-kv
+   (fn [m groupId v]
+     (let [v (map rest v)]
+       (assoc m groupId
+              (reduce-kv
+               (fn [m accountId v]
+                 (let [v (mapcat rest v)]
+                   (assoc m accountId v)))
+               {}
+               (group-by first v)))))
+   {}
+   (group-by first (get-account-list {:networkId 7})))
+  (get-account-list {})
+  ;; => #{[51 53 52] [51 53 54] [56 58 57] [56 58 59] [56 60 52] [56 60 54]}
+  (try
+    (get-account-list {:networkId 7})
+    (get-account-list {:addressG {:value 1} :accountG {:nickname 1}})
+    (catch js/Error err
+      (js/console.error err)))
   (tap> (->> (q '[:find [?tx ...]
                   :where
                   [?tx :tx/txPayload _]])

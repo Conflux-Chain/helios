@@ -12,7 +12,7 @@ import {
   SearchAccount,
   NoResult,
 } from '../../components'
-import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
+import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
 import {updateDbAccountList, request} from '../../utils'
 import {GroupItem} from './components'
 const {EXPORT_SEED, EXPORT_PRIVATEKEY, SELECT_CREATE_TYPE} = ROUTES
@@ -36,11 +36,10 @@ function AccountManagement() {
   const {data} = useCurrentAddress()
   const networkName = data?.network?.name ?? ''
   const currentNetworkId = data?.network?.eid
-  const {data: allAccountGroups} = useDbAccountListAssets(
-    currentNetworkId,
-    'accountManagementQueryAccount',
-    [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
-  )
+  const {data: allAccountGroups} = useAccountList({
+    networkId: currentNetworkId,
+    groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+  })
   const accountGroupData = searchedAccountGroup
     ? Object.values(searchedAccountGroup)
     : Object.values(allAccountGroups)

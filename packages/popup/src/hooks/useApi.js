@@ -5,7 +5,7 @@ import {useRPC} from '@fluent-wallet/use-rpc'
 import {NETWORK_TYPE, RPC_METHODS} from '../constants'
 import {validateAddress, flatArray} from '../utils'
 import {encode} from '@fluent-wallet/base32-address'
-import {request, formatAccountGroupData} from '../utils/'
+import {request} from '../utils/'
 
 const {
   WALLET_GET_IMPORT_HARDWARE_WALLET_INFO,
@@ -14,6 +14,7 @@ const {
   QUERY_BALANCE,
   QUERY_ADDRESS,
   QUERY_ACCOUNT,
+  QUERY_ACCOUNT_LIST,
   QUERY_TOKEN,
   WALLET_GET_ACCOUNT_GROUP,
   WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK,
@@ -587,40 +588,55 @@ export const useAddressTypeInConfirmTx = address => {
   return data
 }
 
-export const useDbAccountListAssets = (
+export const useAccountList = ({
   networkId,
-  dep = 'queryAllAccount',
+  fuzzy,
+  includeHidden,
   groupTypes = [
     ACCOUNT_GROUP_TYPE.HD,
     ACCOUNT_GROUP_TYPE.PK,
     ACCOUNT_GROUP_TYPE.HW,
   ],
-) => {
+}) => {
   useDbRefetchBalance()
   return useRPC(
-    isUndefined(networkId) ? null : [QUERY_ADDRESS, dep, networkId],
+    isUndefined(networkId)
+      ? null
+      : [
+          QUERY_ACCOUNT_LIST,
+          'useAccountList',
+          fuzzy,
+          networkId,
+          includeHidden,
+          ...groupTypes,
+        ],
     {
+      includeHidden,
+      fuzzy,
       networkId,
       groupTypes,
-      g: {
+      addressG: {
         nativeBalance: 1,
         value: 1,
         hex: 1,
-        _account: {
-          nickname: 1,
-          eid: 1,
-          hidden: 1,
-          _accountGroup: {nickname: 1, eid: 1, vault: {type: 1}},
-          selected: 1,
-        },
         network: {
           ticker: 1,
         },
       },
+      accountG: {
+        nickname: 1,
+        eid: 1,
+        hidden: 1,
+        selected: 1,
+      },
+      groupG: {
+        nickname: 1,
+        eid: 1,
+        vault: {type: 1},
+      },
     },
     {
       fallbackData: {},
-      postprocessSuccessData: formatAccountGroupData,
     },
   )
 }

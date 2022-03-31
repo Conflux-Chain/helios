@@ -19,7 +19,7 @@ import {
   WrapIcon,
   StretchInput,
 } from '../../../components'
-import {useDbAccountListAssets, useCurrentAddress} from '../../../hooks/useApi'
+import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
 import {RPC_METHODS, ROUTES} from '../../../constants'
 
 const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
@@ -72,50 +72,57 @@ function AccountItem({
             <p className="text-gray-40 text-xs">{nickname}</p>
           </div>
         )}
-        {accounts.map(({nickname, eid, selected, nativeBalance, network}) => (
-          <div
-            aria-hidden="true"
-            onClick={() => !selected && onChangeAccount(eid)}
-            key={eid}
-            className={`flex p-3 rounded hover:bg-primary-4 ${
-              selected ? 'cursor-default' : 'cursor-pointer'
-            }`}
-          >
-            <Avatar
-              className="w-5 h-5 mr-2"
-              diameter={20}
-              accountIdentity={eid}
-            />
-            <div className="flex-1">
-              <p className="text-xs text-gray-40 ">{nickname}</p>
-              <div className="flex w-full">
-                <DisplayBalance
-                  balance={nativeBalance || '0x0'}
-                  maxWidthStyle="max-w-[270px]"
-                  maxWidth={270}
-                  decimals={network?.ticker?.decimals}
-                />
-                <pre className="text-sm text-gray-80">
-                  {network?.ticker?.symbol || ''}
-                </pre>
+        {accounts.map(
+          ({
+            nickname,
+            eid,
+            selected,
+            currentAddress: {nativeBalance, network},
+          }) => (
+            <div
+              aria-hidden="true"
+              onClick={() => !selected && onChangeAccount(eid)}
+              key={eid}
+              className={`flex p-3 rounded hover:bg-primary-4 ${
+                selected ? 'cursor-default' : 'cursor-pointer'
+              }`}
+            >
+              <Avatar
+                className="w-5 h-5 mr-2"
+                diameter={20}
+                accountIdentity={eid}
+              />
+              <div className="flex-1">
+                <p className="text-xs text-gray-40 ">{nickname}</p>
+                <div className="flex w-full">
+                  <DisplayBalance
+                    balance={nativeBalance || '0x0'}
+                    maxWidthStyle="max-w-[270px]"
+                    maxWidth={270}
+                    decimals={network?.ticker?.decimals}
+                  />
+                  <pre className="text-sm text-gray-80">
+                    {network?.ticker?.symbol || ''}
+                  </pre>
+                </div>
+              </div>
+              <div className="inline-flex justify-center items-center">
+                {authorizedAccountIdIconObj[eid] && (
+                  <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
+                    <img
+                      className="w-4 h-4"
+                      src={authorizedAccountIdIconObj[eid]}
+                      alt="favicon"
+                    />
+                  </div>
+                )}
+                {selected && (
+                  <CheckCircleFilled className="w-4 h-4 ml-3 text-success" />
+                )}
               </div>
             </div>
-            <div className="inline-flex justify-center items-center">
-              {authorizedAccountIdIconObj[eid] && (
-                <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
-                  <img
-                    className="w-4 h-4"
-                    src={authorizedAccountIdIconObj[eid]}
-                    alt="favicon"
-                  />
-                </div>
-              )}
-              {selected && (
-                <CheckCircleFilled className="w-4 h-4 ml-3 text-success" />
-              )}
-            </div>
-          </div>
-        ))}
+          ),
+        )}
       </div>
     )
   )
@@ -176,7 +183,7 @@ function AccountList({onClose, open, accountsAnimate = true}) {
       network: {eid: currentNetworkId},
     },
   } = useCurrentAddress()
-  const {data: allAccountGroups} = useDbAccountListAssets(currentNetworkId)
+  const {data: allAccountGroups} = useAccountList({networkId: currentNetworkId})
   const [searchedAccountGroup, setSearchedAccountGroup] = useState(null)
 
   const onAddAccount = () => {

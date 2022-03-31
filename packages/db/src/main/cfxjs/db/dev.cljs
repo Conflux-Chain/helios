@@ -52,8 +52,8 @@
          payload (if params (assoc payload :params params) payload)]
      (->
       (js/r (clj->js payload))
-      (.then prn)
-      (.catch prn)))))
+      (.then js/console.log)
+      (.catch js/console.error)))))
 
 (comment
   (p '[:address/_account] 53)
@@ -64,4 +64,5 @@
   (:account/_address (p '[{:account/_address [*]}] 52))
   (p '[:account/_address] 54)
   (reload!)
-  (l "wallet_metadataForPopup" []))
+  (l "wallet_metadataForPopup" [])
+  (l "walletdb_queryAccountList" {:networkId 6 :addressG {:value 1 :hex 1 :nativeBalance 1} :accountG {:nickname 1} :groupG {:vault {:type 1}}}))
