@@ -11,13 +11,8 @@ import {request} from '../../../utils'
 import useGlobalStore from '../../../stores'
 
 const {LOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
-const {
-  ACCOUNT_MANAGEMENT,
-  NETWORK_MANAGEMENT,
-  ABOUT,
-  SHOW_TESTNET,
-  AUTHORIZED_WEBSITE,
-} = ROUTES
+const {ACCOUNT_MANAGEMENT, NETWORK_MANAGEMENT, ABOUT, AUTHORIZED_WEBSITE} =
+  ROUTES
 
 const SETTING_ITEMS = [
   {
@@ -34,11 +29,6 @@ const SETTING_ITEMS = [
     contentKey: 'authorizedWebsite',
     iconPath: '/images/safety.svg',
     jumpPath: AUTHORIZED_WEBSITE,
-  },
-  {
-    contentKey: 'showTestnet',
-    iconPath: '/images/show-testnet.svg',
-    jumpPath: SHOW_TESTNET,
   },
   {
     contentKey: 'about',
