@@ -1,15 +1,21 @@
 releases:
   "@fluent-wallet/consts": patch
+  "@fluent-wallet/contract-method-name": patch
+  "@fluent-wallet/data-format": patch
   "@fluent-wallet/db": patch
   "@fluent-wallet/wallet_after-unlock": patch
+  "@fluent-wallet/wallet_get-preferences": patch
+  "@fluent-wallet/wallet_register-site-metadata": patch
+  "@fluent-wallet/wallet_set-preferences": patch
   "@fluent-wallet/wallet_unlock": patch
+  browser-extension: patch
+  helios-background: patch
+  helios-inpage: patch
 
 declined:
   - "@fluent-wallet/account"
   - "@fluent-wallet/addr-by-network"
-  - helios-background
   - "@fluent-wallet/base32-address"
-  - "@fluent-wallet/contract-method-name"
   - helios-popup
   - "@fluent-wallet/rpc-engine"
   - "@fluent-wallet/cfx_gas-price"
@@ -20,5 +26,4 @@ declined:
   - "@fluent-wallet/wallet_send-transaction"
   - "@fluent-wallet/spec"
   - "@fluent-wallet/tx-history-checker"
-  - "@fluent-wallet/data-format"
   - "@fluent-wallet/shorten-address"
