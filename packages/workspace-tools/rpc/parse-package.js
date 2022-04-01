@@ -17,7 +17,7 @@ export default async function parseRpcPackage(dir, withSchema) {
     packageJSON: JSON.parse(await read(resolve(dir, 'package.json'))),
     paramDoc: {},
     doc: {
-      en: 'No doc avaiable',
+      en: 'No doc available',
     },
   }
 
