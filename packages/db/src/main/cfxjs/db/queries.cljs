@@ -897,10 +897,31 @@
         txs (map (fn [eid] [:db.fn/retractEntity eid]) tokens)]
     (t txs)))
 
-(defn retract-group [{:keys [groupId]}]
-  (t [[:db.fn/retractEntity groupId]])
-  (cleanup-token-list-after-delete-address)
-  true)
+(defn retract-group
+  "used to retract account grolup"
+  [{:keys [groupId]}]
+  (let [addrs-in-group
+        (q '[:find [?addr ...]
+             :in $ ?g
+             :where
+             [?g :accountGroup/account ?acc]
+             [?acc :account/address ?addr]]
+           groupId)
+        addrs-has-accs-not-in-group
+        (q '[:find [?addr ...]
+             :in $ ?g
+             :where
+             [?g :accountGroup/account ?acc]
+             [?acc :account/address ?addr]
+             [?account :account/address ?addr]
+             [(!= ?account ?acc)]]
+           groupId)
+        addrs-to-delete (filter #(not (some #{%} addrs-has-accs-not-in-group)) addrs-in-group)
+        txs             (mapv #(vector :db.fn/retractEntity %) addrs-to-delete)
+        txs             (conj txs [:db.fn/retractEntity groupId])]
+    (t txs)
+    (cleanup-token-list-after-delete-address)
+    true))
 
 (defn retract-network [{:keys [networkId]}]
   (let [addrs  (q '[:find [?addr ...]
