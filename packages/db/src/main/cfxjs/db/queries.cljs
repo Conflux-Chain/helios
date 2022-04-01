@@ -688,37 +688,66 @@
              rst           (apply q query (:args query-initial))]
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
-(defn get-address [{:keys [addressId networkId hex value accountId groupId
-                           index tokenId appId selected fuzzy groupTypes g]}]
-  (let [g            (and g {:address g})
-        post-process (if (seq g) identity #(get % :db/id))
-        addr         (if (string? value) [value] value)
-        addr         (if (vector? addr) (map #(.toLowerCase %) addr) addr)
-        hex          (if (string? hex) [hex] hex)
-        hex          (if (vector? hex) (map #(.toLowerCase %) hex) hex)
-        addressId    (if selected (get-current-addr) addressId)
-        fuzzy        (if (string? fuzzy)
-                       (re-pattern
-                        (str "(?i)"
-                             (-> fuzzy
-                                 (.trim)
-                                 gstr/regExpEscape
-                                 (.replaceAll " " ".*"))))
-                       nil)]
+(defn get-address
+  "Query and pull addrs
+
+  1. return single addreess when :address/id can be identified, or return vector of addrs
+  2. when :address/id and accountId can be identified, return addr with the specified account
+  3. given selected: true, means get the addr of current account under current network, which fullfill 2
+  4. given appId: X, mains get the addr of app's current account under app's current network, which fullfill 2
+
+  ways to find single address
+  1. addressId
+  2. network+value
+  3. network+account
+  4. app -> network+account
+
+  ways to find single address and single account
+  1. addressId+accountId
+  2. network+value+accountId
+  3. network+account
+  4. current: selected network+account
+  5. app: app current selected network+account
+  "
+  [{:keys [addressId networkId hex value accountId groupId
+           index tokenId appId selected fuzzy groupTypes g accountG]}]
+  (let [g                (if (and accountG (not (map? g))) {:eid 1} (and g (assoc g :eid 1)))
+        g                (and g {:address g})
+        accountG         (or accountG (get-in g [:address :_account]))
+        accountG         (and accountG {:account accountG})
+        post-process     (if (seq g) identity #(get % :db/id))
+        post-process-acc (if (seq accountG) identity #(get % :db/id))
+        addr             (if (string? value) [value] value)
+        addr             (if (vector? addr) (map #(.toLowerCase %) addr) addr)
+        hex              (if (string? hex) [hex] hex)
+        hex              (if (vector? hex) (map #(.toLowerCase %) hex) hex)
+        addressId        (if selected (get-current-addr) addressId)
+        accountId        (if selected (q '[:find ?acc . :where [?acc :account/selected true]]) accountId)
+        networkId        (if selected (q '[:find ?net . :where [?net :network/selected true]]) networkId)
+        networkId        (if (int? appId) (q '[:find ?net . :in $ ?app :where [?app :app/currentNetwork ?net]] appId) networkId)
+        accountId        (if (int? appId) (q '[:find ?acc . :in $ ?app :where [?app :app/currentAccount ?acc]] appId) accountId)
+        addressId        (if (and (int? accountId) (int? networkId)) (:addressId (addr-acc-network {:accountId accountId :networkId networkId})) addressId)
+        fuzzy            (if (string? fuzzy)
+                           (re-pattern
+                            (str "(?i)"
+                                 (-> fuzzy
+                                     (.trim)
+                                     gstr/regExpEscape
+                                     (.replaceAll " " ".*"))))
+                           nil)]
     (prst->js
      (cond
        (vector? addressId)
        (pm (jsp->p g) addressId)
-       addressId
-       (when (q '[:find ?addr .
-                  :in $ ?addr
-                  :where [?addr :address/id]]
-                addressId)
-         (post-process (p (jsp->p g) addressId)))
-       selected
-       nil
-       (and networkId (= (count addr) 1))
-       (post-process (p (jsp->p g) [:address/id [networkId (first addr)]]))
+       ;; can get single addressId
+       (or addressId (and (int? networkId) (= (count addr) 1)))
+       (let [addrId  (or addressId [:address/id [networkId (first addr)]])
+             rst     (post-process (p (jsp->p g) addrId))
+             acc-rst (if (int? accountId)
+                       (post-process-acc (p (jsp->p accountG) accountId))
+                       nil)
+             rst     (if (and acc-rst (map? rst)) (assoc rst :account acc-rst) rst)]
+         rst)
        :else
        (let [query-initial (cond-> '{:find  [[?addr ...]]
                                      :in    [$]
@@ -1473,6 +1502,7 @@
     (get-account-list {:addressG {:value 1} :accountG {:nickname 1}})
     (catch js/Error err
       (js/console.error err)))
+  (get-address {:appId 64})
   (tap> (->> (q '[:find [?tx ...]
                   :where
                   [?tx :tx/txPayload _]])

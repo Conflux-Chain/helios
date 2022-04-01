@@ -37,10 +37,26 @@ const {
 } = RPC_METHODS
 
 export const useCurrentAddress = (notSendReq = false) => {
-  const {data, mutate} = useRPC(
-    notSendReq ? null : [QUERY_ADDRESS, 'useCurrentAddress'],
+  const {data, mutate} = useAddress({
+    selected: true,
+    stop: notSendReq,
+    deps: 'useCurrentAddress',
+  })
+  return {data, mutate}
+}
+
+export const useAddress = (opts = {}) => {
+  const {stop, deps, ...params} = opts
+  let newDeps = deps || []
+  if (!Array.isArray(newDeps)) newDeps = [newDeps]
+  return useRPC(
+    stop
+      ? null
+      : [QUERY_ADDRESS, 'useAddress', ...newDeps].concat(
+          ...Object.entries(params),
+        ),
     {
-      selected: true,
+      ...params,
       g: {
         value: 1,
         hex: 1,
@@ -61,7 +77,6 @@ export const useCurrentAddress = (notSendReq = false) => {
     },
     {fallbackData: {network: {ticker: {}}, account: {}}},
   )
-  return {data, mutate}
 }
 
 export const useCurrentTicker = () => {

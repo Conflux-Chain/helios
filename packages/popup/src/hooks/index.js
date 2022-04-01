@@ -20,6 +20,7 @@ import {
   useSingleTokenInfoWithNativeTokenSupport,
   useDataForPopup,
   useCurrentAddress,
+  useAddress,
   useNetworkTypeIsCfx,
   useAddressType,
   useValid20Token,
@@ -320,17 +321,25 @@ export const useDecodeDisplay = ({
   isDapp,
   isContract,
   nativeToken,
+  pendingAuthReq = {},
   tx = {},
 }) => {
   let displayToken = {},
     displayValue = '0x0',
+    displayAccount,
     displayToAddress,
     displayFromAddress
-  const {
-    data: {value: address},
-  } = useCurrentAddress()
-  const {toAddress, sendTokenId, sendAmount} = useCurrentTxParams()
   const {from, to, data, value} = tx
+  const {toAddress, sendTokenId, sendAmount} = useCurrentTxParams()
+  const {
+    data: {value: address, account},
+  } = useAddress({
+    value: from,
+    stop: isDapp && !pendingAuthReq?.app?.currentAccount?.eid,
+    selected: isDapp ? undefined : true,
+    appId: isDapp && pendingAuthReq?.app?.eid,
+  })
+  displayAccount = account
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
   const isSendNativeToken = (!isContract && !!to) || !data || data === '0x'
@@ -383,6 +392,7 @@ export const useDecodeDisplay = ({
     isSendToken,
     displayFromAddress,
     displayToAddress,
+    displayAccount,
     displayValue,
     displayToken,
   }

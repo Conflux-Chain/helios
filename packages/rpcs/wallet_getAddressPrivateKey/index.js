@@ -3,6 +3,7 @@ import {
   password,
   base32UserAddress,
   ethHexAddress,
+  dbid,
   or,
 } from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
@@ -16,6 +17,7 @@ export const schemas = {
     map,
     {closed: true},
     ['address', [or, base32UserAddress, ethHexAddress]],
+    ['accountId', dbid],
     [
       'password',
       {optional: true, doc: 'required when calling from popup'},
@@ -33,7 +35,7 @@ export const permissions = {
 export const main = async ({
   Err: {InvalidParams},
   db: {getPassword, findAddress},
-  params: {password, address},
+  params: {password, address, accountId},
   _popup,
   network,
 }) => {
@@ -41,6 +43,7 @@ export const main = async ({
     throw InvalidParams('Invalid password')
   const addr = findAddress({
     value: address,
+    accountId,
     networkId: network.eid,
     g: {
       _account: {

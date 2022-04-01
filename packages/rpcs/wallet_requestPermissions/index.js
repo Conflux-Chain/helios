@@ -145,15 +145,15 @@ export const main = async ({
       app = findApp({
         siteId,
         g: {
+          eid: 1,
           currentAccount: {eid: 1},
           site: {post: 1},
           currentNetwork: {eid: 1},
         },
       })
       if (app?.site?.post) {
-        const [addr] = findAddress({
-          networkId: app.currentNetwork.eid,
-          accountId: app.currentAccount.eid,
+        const addr = findAddress({
+          appId: app.eid,
           g: {value: 1},
         })
         if (addr)
