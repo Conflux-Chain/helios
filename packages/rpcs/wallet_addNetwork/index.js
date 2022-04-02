@@ -108,7 +108,7 @@ export const main = async ({
   const [explorerUrl] = blockExplorerUrls
   const [iconUrl] = iconUrls
 
-  // duplidate name
+  // duplidate network name
   const [dupNameNetwork] = getNetworkByName(name)
   if (
     (!toUpdateNetwork && dupNameNetwork) ||
@@ -164,7 +164,7 @@ export const main = async ({
     hdPathId = await wallet_addHdPath({name: `${name}-hdPath`, hdPath})
   }
 
-  const upsertResult = t([
+  const upsertNetworkResult = t([
     {
       eid: toUpdateNetwork?.eid || 'networkId',
       network: {
@@ -202,7 +202,7 @@ export const main = async ({
       groups.map(({eid}) =>
         wallet_createAddress({
           accountGroupId: eid,
-          networkId: upsertResult.tempids.networkId,
+          networkId: upsertNetworkResult.tempids.networkId,
         }),
       ),
     )
@@ -224,5 +224,5 @@ export const main = async ({
     groups.filter(({vault: {type}}) => type === 'hd').map(discoverAccounts),
   )
 
-  return toUpdateNetwork?.eid || upsertResult.tempids.networkId
+  return toUpdateNetwork?.eid || upsertNetworkResult.tempids.networkId
 }

@@ -1297,11 +1297,10 @@
               :queryaccountListAssets     account-list-assets
               :getAccountGroupByVaultType get-account-group-by-vault-type})
 
-(defn apply-queries [rst conn qfn entity tfn ffn]
-  (defn p [x eid]
-    (db/pull @conn x eid))
+(defn apply-queries [rst conn qfn entity tfn ffn pfn]
   (defn pm [x eids]
     (db/pull-many @conn x eids))
+  (def p pfn)
   (def q qfn)
   (def e (fn [model eid] (entity model (model->attr-keys model) eid)))
   (def t tfn)

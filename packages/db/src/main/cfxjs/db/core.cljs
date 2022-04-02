@@ -285,7 +285,7 @@
          db-conn       (cfxjs.db.migrate/run db-conn)
          tfn           (fn [txs] (d/transact! db-conn txs))
          qfn           (fn [query & args] (apply d/q query (d/db db-conn) args))
-         pfn           (partial d/pull (d/db db-conn))
+         pfn           (fn [selector eid] (d/pull (d/db db-conn) selector eid))
          efn           (fn [model attr-keys & args] (apply de/entity (d/db db-conn) model attr-keys args))
          ffn           (fn [f] (d/filter (d/db db-conn) f))
          rst           (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
@@ -294,7 +294,7 @@
          ;; rst           (assoc rst :deleteById delete-by-id)
          ;; rst           (assoc rst :updateById update-by-id)
          rst           (assoc rst :tmpid random-tmp-id)
-         rst           (apply-queries rst db-conn qfn efn tfn ffn)]
+         rst           (apply-queries rst db-conn qfn efn tfn ffn pfn)]
      (def conn db-conn)
      (def t tfn)
      (def q qfn)
