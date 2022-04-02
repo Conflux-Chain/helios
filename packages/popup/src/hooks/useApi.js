@@ -613,9 +613,12 @@ export const useAccountList = ({
     ACCOUNT_GROUP_TYPE.HW,
   ],
 }) => {
+  const {
+    data: {eid: currentAddrId},
+  } = useCurrentAddress()
   useDbRefetchBalance()
   return useRPC(
-    isUndefined(networkId)
+    isUndefined(networkId) || isUndefined(currentAddrId)
       ? null
       : [
           QUERY_ACCOUNT_LIST,
@@ -623,6 +626,7 @@ export const useAccountList = ({
           fuzzy,
           networkId,
           includeHidden,
+          currentAddrId,
           ...groupTypes,
         ],
     {

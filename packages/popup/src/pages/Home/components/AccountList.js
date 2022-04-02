@@ -1,15 +1,10 @@
 import PropTypes from 'prop-types'
-import {useSWRConfig} from 'swr'
 import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
 import {CheckCircleFilled, PlusOutlined} from '@fluent-wallet/component-icons'
-import {
-  request,
-  updateDbAccountList,
-  formatLocalizationLang,
-} from '../../../utils'
+import {request, formatLocalizationLang} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {
   SlideCard,
@@ -27,7 +22,7 @@ const {SELECT_CREATE_TYPE} = ROUTES
 
 function AccountItem({
   nickname,
-  currentNetworkId,
+  // currentNetworkId,
   accounts,
   authorizedAccountIdIconObj,
   onClose,
@@ -35,14 +30,11 @@ function AccountItem({
   index,
 }) {
   const {t} = useTranslation()
-  const {mutate} = useSWRConfig()
+  const {mutate} = useCurrentAddress()
   const onChangeAccount = accountId => {
     request(WALLET_SET_CURRENT_ACCOUNT, [accountId])
       .then(() => {
-        updateDbAccountList(mutate, 'useCurrentAddress', [
-          'queryAllAccount',
-          currentNetworkId,
-        ]).then(() => {
+        mutate().then(() => {
           onClose?.()
           Message.warning({
             content: t('addressHasBeenChanged'),
@@ -130,7 +122,7 @@ function AccountItem({
 
 AccountItem.propTypes = {
   nickname: PropTypes.string,
-  currentNetworkId: PropTypes.number.isRequired,
+  // currentNetworkId: PropTypes.number.isRequired,
   accounts: PropTypes.array,
   authorizedAccountIdIconObj: PropTypes.object.isRequired,
   onClose: PropTypes.func,
