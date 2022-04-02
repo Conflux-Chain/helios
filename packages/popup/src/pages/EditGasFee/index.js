@@ -70,7 +70,7 @@ function EditGasFee() {
 
   const onChangeGasPrice = gasPrice => {
     setInputGasPrice(gasPrice)
-    if (new Big(gasPrice || '0').times(9).gt(0)) {
+    if (new Big(gasPrice || '0').times('1e9').gt(0)) {
       setGasPriceErr('')
     } else {
       setGasPriceErr(
