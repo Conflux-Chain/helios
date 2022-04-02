@@ -1,3 +1,4 @@
+import langResources from '../locales'
 import {
   CONNECT_SITE,
   DAPP_ADD_TOKEN,
@@ -24,7 +25,7 @@ import {
 } from './rpcMethods'
 export * as RPC_METHODS from './rpcMethods'
 export * as ROUTES from './route'
-export const LANGUAGES = ['en', 'zh']
+export const LANGUAGES = Object.keys(langResources || {})
 export const ANIMATE_DURING_TIME = 300
 export const PASSWORD_REG_EXP = /^(?=.*\d)(?=.*[a-zA-Z]).{8,128}$/
 export const NETWORK_TYPE = {

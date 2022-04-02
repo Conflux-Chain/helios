@@ -102,7 +102,11 @@ function SendTransaction() {
     setNonce,
     setStorageLimit,
   ])
-  const errorMessage = useCheckBalanceAndGas(estimateRst, tokenAddress)
+  const errorMessage = useCheckBalanceAndGas(
+    estimateRst,
+    tokenAddress,
+    !tokenAddress,
+  )
   useEffect(() => {
     !loading && setBalanceError(errorMessage)
   }, [errorMessage, loading])

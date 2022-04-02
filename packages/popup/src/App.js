@@ -52,7 +52,6 @@ import ConnectHardwareWallet from './pages/ConnectHardwareWallet'
 import ImportHwAccount from './pages/ImportHwAccount'
 import NetworkDetail from './pages/NetworkDetail'
 import About from './pages/About'
-import DeveloperMode from './pages/DeveloperMode'
 
 const {
   HOME,
@@ -88,7 +87,6 @@ const {
   AUTHORIZED_WEBSITE,
   NETWORK_DETAIL,
   ABOUT,
-  DEVELOPER_MODE,
 } = ROUTES
 
 const routes = [
@@ -219,10 +217,6 @@ const routes = [
   {
     path: ABOUT,
     component: About,
-  },
-  {
-    path: DEVELOPER_MODE,
-    component: DeveloperMode,
   },
 ]
 

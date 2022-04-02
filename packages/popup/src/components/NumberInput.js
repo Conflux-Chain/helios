@@ -28,9 +28,32 @@ function NumberInput({
     e.target.value = formatValue
     onChange?.(e)
   }
+  const clearInput = e => {
+    e.target.value = ''
+    onInputChange(e)
+  }
+
+  const onKeyDown = e => {
+    if (e?.key === '-' || e?.key === '+' || e?.key?.toLowerCase?.() === 'e') {
+      e.preventDefault()
+    }
+  }
+
+  const onCompositionEnd = e => {
+    clearInput(e)
+    e.preventDefault()
+  }
 
   return (
-    <Input {...props} onChange={onInputChange} value={value} type="number" />
+    <Input
+      {...props}
+      onChange={onInputChange}
+      onKeyDown={onKeyDown}
+      onCompositionEnd={onCompositionEnd}
+      value={value}
+      type="number"
+      onPaste={e => e.preventDefault()}
+    />
   )
 }
 

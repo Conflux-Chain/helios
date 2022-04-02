@@ -1,10 +1,11 @@
 {
   "name": "@fluent-wallet/test-helpers",
   "main": "index.js",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "dependencies": {
-    "@cfxjs/fullnode": "3.0.0",
+    "@cfxjs/fullnode": "3.0.1",
     "ethers": "5.5.2",
-    "ganache-core": "2.13.2"
+    "ganache-core": "2.13.2",
+    "js-conflux-sdk": "2.0.4"
   }
 }

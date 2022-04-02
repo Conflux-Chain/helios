@@ -36,16 +36,10 @@ export const main = ({
   ])
 
   wallet_getPreferences().then(p => {
-    const {
-      useModernProviderAPI,
-      overrideWindowDotConflux,
-      overrideWindowDotEthereum,
-    } = p
+    const {overrideWindowDotEthereum} = p
     return _post({
       event: '__FLUENT_BACKEND_PREFERENCES__',
       params: {
-        useModernProviderAPI,
-        overrideWindowDotConflux,
         overrideWindowDotEthereum,
       },
     })

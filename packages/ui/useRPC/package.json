@@ -2,12 +2,12 @@
   "name": "@fluent-wallet/use-rpc",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "dependencies": {
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
     "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api",
-    "react-use": "17.3.1",
-    "swr": "1.2.1",
+    "react-use": "17.3.2",
+    "swr": "1.2.2",
     "webextension-polyfill": "0.8.0"
   },
   "peerDependencies": {

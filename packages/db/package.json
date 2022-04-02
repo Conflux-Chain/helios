@@ -1,6 +1,6 @@
 {
   "name": "@fluent-wallet/db",
-  "version": "1.0.28",
+  "version": "1.0.30",
   "main": "index.js",
   "type": "module",
   "files": [

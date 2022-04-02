@@ -1,4 +1,4 @@
 export default {
   metadata: {standard: true},
-  en: 'No doc avaiable',
+  en: 'No doc available',
 }
