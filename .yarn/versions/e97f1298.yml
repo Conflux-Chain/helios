@@ -1,6 +1,0 @@
-releases:
-  "@fluent-wallet/contract-method-name": patch
-
-declined:
-  - browser-extension
-  - helios-popup
