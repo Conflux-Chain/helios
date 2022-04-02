@@ -21,10 +21,14 @@ export const main = async ({
   if (getLocked()) return []
   if (_inpage && !app) return []
 
-  const addr = findAddress({
+  const addrs = findAddress({
     appId: app?.eid,
     networkId: app ? app.currentNetwork.eid : network.eid,
     g: {value: 1},
   })
-  return [addr.value]
+  if (app) {
+    return [addrs.value]
+  }
+
+  return addrs.map(({value}) => value)
 }

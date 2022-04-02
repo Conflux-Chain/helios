@@ -1455,7 +1455,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: db.getAddress()[0].value},
+              params: {
+                password,
+                address: db.getAddress()[0].value,
+                accountId: db.getAccount()[0].eid,
+              },
             })
           ).result,
         ).toBe(pk)
@@ -1463,7 +1467,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: db.getAddress()[1].value},
+              params: {
+                password,
+                address: db.getAddress()[1].value,
+                accountId: db.getAccount()[0].eid,
+              },
               networkName: ETH_MAINNET_NAME,
             })
           ).result,
@@ -1516,7 +1524,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: a2.value},
+              params: {
+                password,
+                address: a2.value,
+                accountId: db.getAccount()[0].eid,
+              },
               networkName: ETH_MAINNET_NAME,
             })
           ).result,
@@ -1527,7 +1539,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: a1.value},
+              params: {
+                password,
+                address: a1.value,
+                accountId: db.getAccount()[0].eid,
+              },
             })
           ).result,
         ).toBe(CFX_ACCOUNTS[0].privateKey)
@@ -1545,7 +1561,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: a1.value},
+              params: {
+                password,
+                address: a1.value,
+                accountId: db.getAccount()[0].eid,
+              },
             })
           ).result,
         ).toBe(CFX_ACCOUNTS[0].privateKey)
@@ -1564,7 +1584,7 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {address: addr.value},
+              params: {address: addr.value, accountId: db.getAccount()[0].eid},
               _internal: true,
             })
           ).error.message,
