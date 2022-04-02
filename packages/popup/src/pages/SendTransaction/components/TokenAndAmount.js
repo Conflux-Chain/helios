@@ -142,7 +142,6 @@ function TokenAndAmount({
             bordered={false}
             value={amount}
             decimals={decimals}
-            maxLength="22"
             onChange={e => onChangeAmount && onChangeAmount(e.target.value)}
             id="amount"
           />
