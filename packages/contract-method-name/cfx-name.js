@@ -35,10 +35,11 @@ export const getCFXContractMethodSignature = async (
   transactionData,
   netId,
 ) => {
+  if (!validateBase32Address(address)) {
+    throw new Error('inValidate base32 address')
+  }
+
   try {
-    if (!validateBase32Address(address)) {
-      return {}
-    }
     let abiInterface
     if (eip777AbiSignatures.includes(transactionData.substr(0, 10))) {
       abiInterface = iface
@@ -55,6 +56,6 @@ export const getCFXContractMethodSignature = async (
     }
     return ret
   } catch (e) {
-    return {}
+    throw new Error('failed to parse transaction data')
   }
 }
