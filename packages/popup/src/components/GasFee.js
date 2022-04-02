@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
-import {roundBalance} from '@fluent-wallet/data-format'
+import {formatBalance, GWEI_DECIMALS} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {DisplayBalance, CustomTag} from '../components'
 import {useNetworkTypeIsCfx, useCurrentTicker} from '../hooks/useApi'
@@ -85,9 +85,10 @@ function GasFee({
           />
         )}
         {showDrip && (
-          <span className="text-xs text-gray-60">{`${roundBalance(gasPrice)} ${
-            networkTypeIsCfx ? 'Drip' : 'Gwei'
-          }`}</span>
+          <span className="text-xs text-gray-60">{`${formatBalance(
+            gasPrice,
+            GWEI_DECIMALS,
+          )} ${networkTypeIsCfx ? 'GDrip' : 'GWei'}`}</span>
         )}
         {isBePayed && (
           <CustomTag

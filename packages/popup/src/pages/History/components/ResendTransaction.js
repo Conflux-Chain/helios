@@ -84,7 +84,7 @@ function ResendTransaction({
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const cfxMaxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
-  const minUnit = networkTypeIsCfx ? 'Drip' : 'Wei'
+  const minUnit = networkTypeIsCfx ? 'GDrip' : 'GWei'
   const SEND_TRANSACTION = networkTypeIsCfx
     ? CFX_SEND_TRANSACTION
     : ETH_SEND_TRANSACTION
