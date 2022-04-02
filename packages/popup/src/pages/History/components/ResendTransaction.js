@@ -5,6 +5,8 @@ import {
   Big,
   formatDecimalToHex,
   formatHexToDecimal,
+  convertDecimal,
+  GWEI_DECIMALS,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
 import {Radio, Group} from '@fluent-wallet/radio'
@@ -153,7 +155,11 @@ function ResendTransaction({
     useEstimateTx(
       {
         ...txParams,
-        gasPrice: gasPrice ? formatDecimalToHex(gasPrice) : lastGasPrice,
+        gasPrice: gasPrice
+          ? formatDecimalToHex(
+              convertDecimal(gasPrice, 'multiply', GWEI_DECIMALS),
+            )
+          : lastGasPrice,
         gas: gasLimit ? formatDecimalToHex(gasLimit) : lastGasLimit,
       },
       token20Params,
@@ -181,21 +187,35 @@ function ResendTransaction({
         originEstimateRst?.gasPrice,
       )
 
-      const recommendGasPrice = new Big(decimalGasPrice)
-        .times(1.1)
-        .gt(decimalEstimateGasPrice)
-        ? new Big(decimalGasPrice).times(1.1).toFixed(0, 3)
-        : new Big(decimalEstimateGasPrice).toString()
+      const biggerGasPrice = new Big(decimalGasPrice).times(1.1).toString(10)
 
-      const minGasPrice = new Big(decimalGasPrice)
-        .plus(1)
-        .gt(decimalEstimateGasPrice)
-        ? new Big(decimalGasPrice).plus(1).toString()
-        : new Big(decimalEstimateGasPrice).toString()
+      const recommendGasPrice = new Big(biggerGasPrice).gt(
+        decimalEstimateGasPrice,
+      )
+        ? biggerGasPrice
+        : decimalEstimateGasPrice
+      const displayRecommendGasPrice = convertDecimal(
+        recommendGasPrice,
+        'divide',
+        GWEI_DECIMALS,
+      )
+        .round(6)
+        .toString(10)
 
-      setSuggestedGasPrice(recommendGasPrice)
-      setGasPrice(recommendGasPrice)
-      setMinimumGasPrice(minGasPrice)
+      const lastGasPricePlusOne = new Big(decimalGasPrice).plus(1).toString(10)
+      const minGasPrice = new Big(lastGasPricePlusOne).gt(
+        decimalEstimateGasPrice,
+      )
+        ? lastGasPricePlusOne
+        : decimalEstimateGasPrice
+      const displayMinGasPrice = convertDecimal(
+        minGasPrice,
+        'divide',
+        GWEI_DECIMALS,
+      ).toString(10)
+      setSuggestedGasPrice(displayRecommendGasPrice)
+      setGasPrice(displayRecommendGasPrice)
+      setMinimumGasPrice(displayMinGasPrice)
     }
   }, [originEstimateRst?.gasPrice, lastGasPrice])
 
@@ -211,7 +231,7 @@ function ResendTransaction({
       return
     }
     setGasPrice(val)
-    if (new Big(val || '0').gte(formatHexToDecimal(minimumGasPrice))) {
+    if (new Big(val || '0').gte(minimumGasPrice)) {
       setGasPriceErr('')
     } else {
       setGasPriceErr(
@@ -293,7 +313,9 @@ function ResendTransaction({
     let params = {}
     const _params = {
       ...txParams,
-      gasPrice: formatDecimalToHex(gasPrice),
+      gasPrice: formatDecimalToHex(
+        convertDecimal(gasPrice, 'multiply', GWEI_DECIMALS),
+      ),
       gas: formatDecimalToHex(gasLimit),
       storageLimit: estimateRst.storageCollateralized,
     }
