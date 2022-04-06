@@ -69,11 +69,14 @@ export const main = async args => {
     app,
     network,
   } = args
+
   const {block, returnTxMeta, dryRun} = opts
   // ethers.js
   // 1. don't allow from in tx
   // 2. use `gasLimit` instead of `gas` in tx
-  let {from, gas, ...newTx} = {...tx}
+  let {from, gas, type, ...newTx} = {...tx}
+  type = type || '0x0'
+  newTx.type = parseInt(type, 16)
   newTx.gasLimit = gas
   if (newTx.chainId && newTx.chainId !== network.chainId)
     throw InvalidParams(`Invalid chainId ${newTx.chainId}`)
