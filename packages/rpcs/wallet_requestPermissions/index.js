@@ -35,6 +35,7 @@ export const permissions = {
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
     'wallet_userRejectedAuthRequest',
+    'wallet_getPermissions',
   ],
   db: [
     'findApp',
@@ -72,6 +73,7 @@ export const main = async ({
     findAddress,
   },
   rpcs: {
+    wallet_getPermissions,
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
     wallet_userRejectedAuthRequest,
@@ -131,7 +133,7 @@ export const main = async ({
     if (!accounts.includes(currentAccount)) currentAccount = accounts[0]
 
     const perms = formatPermissions(permissions)
-    upsertAppPermissions({
+    const newPermApp = upsertAppPermissions({
       siteId,
       accounts,
       currentAccount,
@@ -140,7 +142,10 @@ export const main = async ({
     })
 
     if (authReqId)
-      return await wallet_userApprovedAuthRequest({authReqId, res: perms})
+      return await wallet_userApprovedAuthRequest({
+        authReqId,
+        res: await wallet_getPermissions({app: newPermApp}, []),
+      })
     else {
       app = findApp({
         siteId,
@@ -159,8 +164,7 @@ export const main = async ({
         if (addr)
           app.site.post({event: 'accountsChanged', params: [addr.value]})
       }
+      if (app) return await wallet_getPermissions({app: newPermApp}, [])
     }
-
-    return null
   }
 }
