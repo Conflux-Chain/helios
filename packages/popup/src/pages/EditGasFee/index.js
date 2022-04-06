@@ -158,7 +158,7 @@ function EditGasFee() {
                 errorMessage={gasPriceErr}
                 errorClassName="absolute right-0 -bottom-6"
                 containerClassName="relative z-50"
-                onChange={e => onChangeGasPrice(e.target.value)}
+                onChange={value => onChangeGasPrice(value)}
               />
             }
           />
@@ -174,7 +174,7 @@ function EditGasFee() {
                 containerClassName="relative z-50"
                 value={inputGasLimit}
                 errorMessage={gasLimitErr}
-                onChange={e => onChangeGasLimit(e.target.value)}
+                onChange={value => onChangeGasLimit(value)}
               />
             }
           />
@@ -240,7 +240,7 @@ function EditGasFee() {
                 errorMessage={nonceErr}
                 errorClassName="absolute right-0 -bottom-6"
                 containerClassName="relative z-50"
-                onChange={e => onChangeNonce(e.target.value)}
+                onChange={value => onChangeNonce(value)}
               />
             }
           />
