@@ -49,6 +49,8 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
           _origin: req._origin,
           network: req.network,
           networkName: req.networkName,
+          _inpage: req._inpage,
+          _popup: req._popup,
           ...overrides,
           method: targetRpcName,
           _rpcStack: req._rpcStack,
