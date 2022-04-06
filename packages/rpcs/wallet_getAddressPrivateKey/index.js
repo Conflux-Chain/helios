@@ -37,9 +37,10 @@ export const main = async ({
   db: {getPassword, findAddress},
   params: {password, address, accountId},
   _popup,
+  _internal,
   network,
 }) => {
-  if (_popup && password !== getPassword())
+  if (!_internal && _popup && password !== getPassword())
     throw InvalidParams('Invalid password')
   const addr = findAddress({
     value: address,
