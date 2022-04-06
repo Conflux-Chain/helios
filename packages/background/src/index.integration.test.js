@@ -172,7 +172,7 @@ describe('integration test', function () {
           _inpage: true,
           _origin: 'foo.site',
         })
-        expect(accountsCfxInpage.result[0]).toBe(CFX_ACCOUNTS[0].base32)
+        expect(accountsCfxInpage.result).toEqual([])
         const accountsAnother = await request({
           method: 'wallet_accounts',
           params: [],
@@ -186,7 +186,7 @@ describe('integration test', function () {
           params: [],
           networkName: ETH_MAINNET_NAME,
         })
-        expect(accountsFromInpage.result[0]).toBe(ETH_ACCOUNTS[0].address)
+        expect(accountsFromInpage.result).toEqual([])
       })
     })
 
@@ -1197,8 +1197,15 @@ describe('integration test', function () {
 
         expect(res2.result).toBe('0x1')
 
-        expect((await res).result).toStrictEqual([
-          {wallet_accounts: {}, wallet_basic: {}},
+        expect(
+          (await res).result.map(({parentCapability}) => parentCapability),
+        ).toStrictEqual([
+          'wallet_basic',
+          'cfx_basic',
+          'eth_basic',
+          'wallet_accounts',
+          'cfx_accounts',
+          'eth_accounts',
         ])
         res = await request({
           method: 'wallet_getPermissions',
@@ -1208,19 +1215,19 @@ describe('integration test', function () {
         expect(res.result.map(({date}) => typeof date === 'number')).toEqual([
           true,
           true,
+          true,
+          true,
+          true,
+          true,
         ])
         expect(res.result.map(({invoker}) => invoker === 'foo.site')).toEqual([
           true,
           true,
+          true,
+          true,
+          true,
+          true,
         ])
-
-        const parentCapabilities = res.result.map(
-          ({parentCapability}) => parentCapability,
-        )
-        expect(
-          parentCapabilities.includes('wallet_basic') &&
-            parentCapabilities.includes('wallet_accounts'),
-        ).toBeTruthy()
       })
       test('from popup', async () => {
         await Promise.all(
@@ -1261,7 +1268,16 @@ describe('integration test', function () {
         expect(app.account.map(a => a.eid).includes(a3.eid)).toBeFalsy()
         // app has the right currentAccount
         expect([a1.eid, a2.eid].includes(app.currentAccount.eid)).toBe(true)
-        expect(res.result).toBe(null)
+        expect(
+          res.result.map(({parentCapability}) => parentCapability),
+        ).toStrictEqual([
+          'wallet_basic',
+          'cfx_basic',
+          'eth_basic',
+          'wallet_accounts',
+          'cfx_accounts',
+          'eth_accounts',
+        ])
       })
     })
     describe('wallet_getPendingAuthRequest', function () {
