@@ -64,6 +64,10 @@ export const main = async ({
 
   if (_inpage) {
     if (params.authReqId) throw InvalidParams('Invalid tx data')
+    if (params[0].gasLimit) {
+      if (!params[0].gas) params[0].gas = params[0].gasLimit
+      delete params[0].gasLimit
+    }
 
     const [{from}] = params
 
@@ -128,6 +132,10 @@ export const main = async ({
 
   // tx array [tx]
   const tx = params.authReqId ? params.tx : params
+  if (tx[0].gasLimit) {
+    if (!tx[0].gas) tx[0].gas = tx[0].gasLimit
+    delete tx[0].gasLimit
+  }
   const addr = findAddress({
     // filter by app.currentNetwork and app.currentAccount
     appId: authReq?.app?.eid,
