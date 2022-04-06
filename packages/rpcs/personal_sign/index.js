@@ -7,6 +7,7 @@ import {
   base32UserAddress,
   dbid,
   validate,
+  zeroOrOne,
 } from '@fluent-wallet/spec'
 import {personalSign} from '@fluent-wallet/signature'
 
@@ -16,6 +17,7 @@ const publicSchema = [
   cat,
   [stringp, {doc: 'message string to sign'}],
   [or, ethHexAddress, base32UserAddress],
+  [zeroOrOne, {doc: 'Ignored optional password for compatibility'}, stringp],
 ]
 
 const innerSchema = [
