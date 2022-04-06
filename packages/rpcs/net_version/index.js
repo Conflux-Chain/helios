@@ -1,9 +1,9 @@
-import {arrp, empty, and} from '@fluent-wallet/spec'
+import {optParam} from '@fluent-wallet/spec'
 
 export const NAME = 'net_version'
 
 export const schemas = {
-  input: [and, arrp, empty],
+  input: optParam,
 }
 
 export const permissions = {
