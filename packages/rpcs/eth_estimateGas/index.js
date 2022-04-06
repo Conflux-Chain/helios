@@ -1,7 +1,7 @@
 import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 
-const {blockRef} = spec
+const {blockRef, zeroOrOne} = spec
 
 const {
   TransactionLegacyUnsigned,
@@ -26,7 +26,7 @@ export const schemas = {
         Array.isArray(k) ? spec.optionalMapKey(k) : k,
       ),
     ],
-    blockRef,
+    [zeroOrOne, blockRef],
   ],
 }
 
@@ -36,10 +36,13 @@ export const permissions = {
 }
 
 export const main = async ({f, params}) => {
+  let [tx, ref] = params
+  ref = ref || 'latest'
   // network without EIP-1559 support may throw error when estimate with `type`
-  if (params[0].type === '0x0' || params[0].type === null) {
-    const [{type, ...newParams}] = params // eslint-disable-line no-unused-vars
-    params = [newParams]
+  if (tx.type === '0x0' || tx.type === null) {
+    // eslint-disable-next-line no-unused-vars
+    const {type, ...newTx} = tx
+    tx = newTx
   }
-  return await f(params)
+  return await f([tx, ref])
 }
