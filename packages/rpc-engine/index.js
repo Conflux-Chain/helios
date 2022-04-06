@@ -14,7 +14,7 @@ const wrapRpcError =
   (methodName, ErrConstructor) =>
   (errorMessage, rpcData = {}) => {
     const error = new ErrConstructor(
-      `In method ${methodName}\n${errorMessage || ''}`,
+      `${errorMessage || ''} - [${methodName}]`,
       rpcData,
     )
     jsonRpcErr.errorStackPop(error)
