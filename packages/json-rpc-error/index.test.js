@@ -7,39 +7,35 @@ describe('json-rpc-error', function () {
     it('should return the expected error message', async function () {
       expect(() => {
         throw new err.Parse('foo')
-      }).toThrowError(
-        `JSON-RPC ${err.ERROR.PARSE.name} ${err.ERROR.PARSE.code}\n\nfoo`,
-      )
+      }).toThrowError(`foo [${err.ERROR.PARSE.name} ${err.ERROR.PARSE.code}]\n`)
 
       expect(() => {
         throw new err.InvalidRequest('foo')
       }).toThrow(
-        `JSON-RPC ${err.ERROR.INVALID_REQUEST.name} ${err.ERROR.INVALID_REQUEST.code}\n\nfoo`,
+        `foo [${err.ERROR.INVALID_REQUEST.name} ${err.ERROR.INVALID_REQUEST.code}]\n`,
       )
 
       expect(() => {
         throw new err.MethodNotFound('foo')
       }).toThrow(
-        `JSON-RPC ${err.ERROR.METHOD_NOT_FOUND.name} ${err.ERROR.METHOD_NOT_FOUND.code}\n\nfoo`,
+        `foo [${err.ERROR.METHOD_NOT_FOUND.name} ${err.ERROR.METHOD_NOT_FOUND.code}]\n`,
       )
 
       expect(() => {
         throw new err.InvalidParams('foo')
       }).toThrow(
-        `JSON-RPC ${err.ERROR.INVALID_PARAMS.name} ${err.ERROR.INVALID_PARAMS.code}\n\nfoo`,
+        `foo [${err.ERROR.INVALID_PARAMS.name} ${err.ERROR.INVALID_PARAMS.code}]\n`,
       )
 
       expect(() => {
         throw new err.Internal('foo')
       }).toThrow(
-        `JSON-RPC ${err.ERROR.INTERNAL.name} ${err.ERROR.INTERNAL.code}\n\nfoo`,
+        `foo [${err.ERROR.INTERNAL.name} ${err.ERROR.INTERNAL.code}]\n`,
       )
 
       expect(() => {
         throw new err.Server('foo')
-      }).toThrow(
-        `JSON-RPC ${err.ERROR.SERVER.name} ${err.ERROR.SERVER.code}\n\nfoo`,
-      )
+      }).toThrow(`foo [${err.ERROR.SERVER.name} ${err.ERROR.SERVER.code}]\n`)
     })
   })
 
