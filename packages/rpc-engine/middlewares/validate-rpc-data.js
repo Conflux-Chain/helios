@@ -26,7 +26,7 @@ function validateRpcMehtod({req, rpcStore}) {
 }
 
 function validateExternalMethod({MODE: {isProd}, req, rpcStore}) {
-  const {method, _inpage, _origin, _popup, _rpcStack} = req
+  const {method, _inpage, _origin, _popup, _rpcStack, _internal} = req
   const external = rpcStore[method]?.permissions?.external
 
   // internal only
@@ -41,7 +41,7 @@ function validateExternalMethod({MODE: {isProd}, req, rpcStore}) {
   const allowInpage = external.includes('inpage')
   const allowPopup = external.includes('popup')
 
-  if (_inpage && (!allowInpage || !_origin)) {
+  if (_inpage && ((!_internal && !allowInpage) || !_origin)) {
     const err = new jsonRpcErr.MethodNotFound(
       isProd
         ? undefined
@@ -53,7 +53,7 @@ function validateExternalMethod({MODE: {isProd}, req, rpcStore}) {
     throw err
   }
 
-  if (_popup && !allowPopup) {
+  if (_popup && !_internal && !allowPopup) {
     const err = new jsonRpcErr.MethodNotFound(
       isProd ? undefined : 'Not allowd to call from popup',
     )

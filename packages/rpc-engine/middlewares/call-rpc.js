@@ -44,6 +44,7 @@ export default defMiddleware(
           // validate dapp permissions to call this rpc
           if (
             req._inpage &&
+            !req._internal &&
             method.permissions.scope &&
             !method.permissions.locked
           ) {
