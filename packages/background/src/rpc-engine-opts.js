@@ -35,6 +35,7 @@ import * as walletGetBlockchainExplorerUrl from '@fluent-wallet/wallet_get-block
 import * as cfxGetNextUsableNonce from '@fluent-wallet/cfx_get-next-usable-nonce'
 import * as walletHandleUnfinishedTxs from '@fluent-wallet/wallet_handle-unfinished-txs'
 import * as walletHandleUnfinishedCFXTx from '@fluent-wallet/wallet_handle-unfinished-cfx-tx'
+import * as cfxGetBlockByEpochNumber from '@fluent-wallet/cfx_get-block-by-epoch-number'
 import * as cfxGetBlockByBlockNumber from '@fluent-wallet/cfx_get-block-by-block-number'
 import * as cfxGetAccountPendingInfo from '@fluent-wallet/cfx_get-account-pending-info'
 import * as cfxGetAccountPendingTransactions from '@fluent-wallet/cfx_get-account-pending-transactions'
@@ -272,6 +273,7 @@ export const rpcEngineOpts = {
     cfxGetTransactionReceipt,
     cfxGetVoteList,
     cfxGetBlockByBlockNumber,
+    cfxGetBlockByEpochNumber,
     cfxGetAccountPendingInfo,
     cfxGetAccountPendingTransactions,
     cfxGetPoSEconomics,
