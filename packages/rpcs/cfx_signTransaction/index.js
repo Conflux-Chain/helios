@@ -24,6 +24,7 @@ export const txSchema = [
   ['nonce', {optional: true}, Uint],
   ['data', {optional: true}, Bytes],
   ['gas', {optional: true}, Uint],
+  ['gasLimit', {doc: 'gas limit, same as the "gas" key', optional: true}, Uint],
   ['gasPrice', {optional: true}, Uint],
   ['storageLimit', {optional: true}, Uint],
   ['chainId', {optional: true}, chainId],
