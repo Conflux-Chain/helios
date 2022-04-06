@@ -477,7 +477,7 @@ function ResendTransaction({
                       width="w-full"
                       suffix={minUnit}
                       value={gasPrice}
-                      onChange={e => onChangeGasPrice(e.target.value)}
+                      onChange={value => onChangeGasPrice(value)}
                       id="input-gas-price"
                       bordered={false}
                     />
@@ -527,7 +527,7 @@ function ResendTransaction({
                   width="w-full"
                   value={gasLimit}
                   errorMessage={gasLimitErr}
-                  onChange={e => onChangeGasLimit(e.target.value)}
+                  onChange={value => onChangeGasLimit(value)}
                   containerClassName="mt-2"
                   id="input-gas-limit"
                 />

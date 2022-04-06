@@ -142,7 +142,7 @@ function TokenAndAmount({
             bordered={false}
             value={amount}
             decimals={decimals}
-            onChange={e => onChangeAmount && onChangeAmount(e.target.value)}
+            onChange={value => onChangeAmount && onChangeAmount(value)}
             id="amount"
           />
         </div>
