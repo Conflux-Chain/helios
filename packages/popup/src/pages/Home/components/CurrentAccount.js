@@ -16,7 +16,7 @@ const {WALLET_GET_BLOCKCHAIN_EXPLORER_URL} = RPC_METHODS
 
 const OpenScanButton = ({address}) => {
   const {t} = useTranslation()
-  const [jumpUrlStatus, setJumpUrlStatus] = useState('')
+  const [jumpUrlStatus, setJumpUrlStatus] = useState(false)
   const onClick = () => {
     if (jumpUrlStatus) {
       return

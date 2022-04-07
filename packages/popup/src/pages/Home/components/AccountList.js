@@ -141,7 +141,7 @@ function AccountCardContent({searchedAccountGroup, accountGroupData, onClose}) {
           <AccountItem
             key={eid}
             index={index}
-            accounts={Object.values(account).filter(({hidden}) => !hidden)}
+            accounts={Object.values(account)}
             nickname={nickname}
             onClose={onClose}
             authorizedAccountIdIconObj={authorizedAccountIdIconObj}

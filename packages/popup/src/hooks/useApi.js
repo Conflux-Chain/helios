@@ -606,19 +606,16 @@ export const useAddressTypeInConfirmTx = address => {
 export const useAccountList = ({
   networkId,
   fuzzy,
-  includeHidden,
+  includeHidden = false,
   groupTypes = [
     ACCOUNT_GROUP_TYPE.HD,
     ACCOUNT_GROUP_TYPE.PK,
     ACCOUNT_GROUP_TYPE.HW,
   ],
 }) => {
-  const {
-    data: {eid: currentAddrId},
-  } = useCurrentAddress()
   useDbRefetchBalance()
   return useRPC(
-    isUndefined(networkId) || isUndefined(currentAddrId)
+    isUndefined(networkId)
       ? null
       : [
           QUERY_ACCOUNT_LIST,
@@ -626,7 +623,6 @@ export const useAccountList = ({
           fuzzy,
           networkId,
           includeHidden,
-          currentAddrId,
           ...groupTypes,
         ],
     {
