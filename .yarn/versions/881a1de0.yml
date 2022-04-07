@@ -18,6 +18,7 @@ releases:
   "@fluent-wallet/wallet_set-current-account": patch
   "@fluent-wallet/wallet_unlock": patch
   "@fluent-wallet/wallet_watch-asset": patch
+  "@fluent-wallet/wallet_zero-account-group": patch
 
 declined:
   - helios-background
