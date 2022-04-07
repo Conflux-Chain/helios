@@ -115,7 +115,8 @@
     (RulesVar.)))
 
 (defn parse-constant [form]
-  (when (not (symbol? form))
+  (when-not (and (symbol? form)
+                 (= (first (name form)) \?))
     (Constant. form)))
 
 (defn parse-plain-symbol [form]
@@ -130,19 +131,14 @@
   (when (parse-plain-symbol form)
     (Variable. form)))
 
-
-
 ;; fn-arg = (variable | constant | src-var)
-
 
 (defn parse-fn-arg [form]
   (or (parse-variable form)
-      (parse-constant form)
-      (parse-src-var form)))
-
+      (parse-src-var form)
+      (parse-constant form)))
 
 ;; rule-vars = [ variable+ | ([ variable+ ] variable*) ]
-
 
 (deftrecord RuleVars [required free])
 
@@ -166,19 +162,17 @@
 (defn flatten-rule-vars [rule-vars]
   (concat
    (when (:required rule-vars)
-     [(mapv :symbol (:required rule-vars))]
-     (mapv :symbol (:free rule-vars)))))
+     [(mapv :symbol (:required rule-vars))])
+   (mapv :symbol (:free rule-vars))))
 
 (defn rule-vars-arity [rule-vars]
   [(count (:required rule-vars)) (count (:free rule-vars))])
-
 
 ;; binding        = (bind-scalar | bind-tuple | bind-coll | bind-rel)
 ;; bind-scalar    = variable
 ;; bind-tuple     = [ (binding | '_')+ ]
 ;; bind-coll      = [ binding '...' ]
 ;; bind-rel       = [ [ (binding | '_')+ ] ]
-
 
 (deftrecord BindIgnore [])
 (deftrecord BindScalar [variable])
@@ -227,19 +221,17 @@
       (raise "Cannot parse binding, expected (bind-scalar | bind-tuple | bind-coll | bind-rel)"
              {:error :parser/binding, :form form})))
 
-
 ;; find-spec        = ':find' (find-rel | find-coll | find-tuple | find-scalar)
 ;; find-rel         = find-elem+
 ;; find-coll        = [ find-elem '...' ]
 ;; find-scalar      = find-elem '.'
 ;; find-tuple       = [ find-elem+ ]
-;; find-elem        = (variable | pull-expr | aggregate | custom-aggregate) 
+;; find-elem        = (variable | pull-expr | aggregate | custom-aggregate)
 ;; pull-expr        = [ 'pull' src-var? variable pull-pattern ]
 ;; pull-pattern     = (constant | variable | plain-symbol)
 ;; aggregate        = [ aggregate-fn fn-arg+ ]
 ;; aggregate-fn     = plain-symbol
 ;; custom-aggregate = [ 'aggregate' variable fn-arg+ ]
-
 
 (defprotocol IFindVars
   (-find-vars [this]))
@@ -364,12 +356,10 @@
       (raise "Cannot parse :find, expected: (find-rel | find-coll | find-tuple | find-scalar)"
              {:error :parser/find, :fragment form})))
 
-
 ;; return-map  = (return-keys | return-syms | return-strs)
 ;; return-keys = ':keys' symbol+
 ;; return-syms = ':syms' symbol+
 ;; return-strs = ':strs' symbol+
-
 
 (deftrecord ReturnMap [type symbols])
 
@@ -390,9 +380,7 @@
    (raise "Cannot parse :with clause, expected [ variable+ ]"
           {:error :parser/with, :form form})))
 
-
 ;; in = [ (src-var | rules-var | plain-symbol | binding)+ ]
-
 
 (defn- parse-in-binding [form]
   (if-let [var (or (parse-src-var form)
@@ -407,7 +395,6 @@
    (raise "Cannot parse :in clause, expected (src-var | % | plain-symbol | bind-scalar | bind-tuple | bind-coll | bind-rel)"
           {:error :parser/in, :form form})))
 
-
 ;; clause          = (data-pattern | pred-expr | fn-expr | rule-expr | not-clause | not-join-clause | or-clause | or-join-clause)
 ;; data-pattern    = [ src-var? (variable | constant | '_')+ ]
 ;; pred-expr       = [ [ pred fn-arg+ ] ]
@@ -420,7 +407,6 @@
 ;; or-clause       = [ src-var? 'or' (clause | and-clause)+ ]
 ;; or-join-clause  = [ src-var? 'or-join' rule-vars (clause | and-clause)+ ]
 ;; and-clause      = [ 'and' clause+ ]
-
 
 (deftrecord Pattern   [source pattern])
 (deftrecord Predicate [fn args])
@@ -629,11 +615,9 @@
       (raise "Cannot parse :where clause, expected [clause+]"
              {:error :parser/where, :form form})))
 
-
 ;; rule-branch = [rule-head clause+]
 ;; rule-head   = [rule-name rule-vars]
 ;; rule-name   = plain-symbol
-
 
 (deftrecord RuleBranch [vars clauses])
 (deftrecord Rule [name branches])
@@ -677,12 +661,9 @@
        (validate-arity name branches)
        (Rule. name branches)))))
 
-
 ;; query
 
 ;; q* prefix because of https://dev.clojure.org/jira/browse/CLJS-2237
-
-
 (deftrecord Query [qfind qwith qreturn-map qin qwhere])
 
 (defn query->map [query]

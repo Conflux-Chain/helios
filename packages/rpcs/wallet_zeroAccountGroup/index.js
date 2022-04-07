@@ -13,6 +13,7 @@ export const permissions = {
 }
 
 export const main = ({db: {findAddress}}) => {
-  const hasSelectedAddr = findAddress({selected: true})
-  return !hasSelectedAddr
+  const selectedAddr = findAddress({selected: true})
+  if (Number.isInteger(selectedAddr)) return false
+  else return true
 }

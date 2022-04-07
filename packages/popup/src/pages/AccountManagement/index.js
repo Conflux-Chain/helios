@@ -1,5 +1,4 @@
 import {useState} from 'react'
-import {useSWRConfig} from 'swr'
 import {isArray} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
@@ -12,8 +11,8 @@ import {
   SearchAccount,
   NoResult,
 } from '../../components'
-import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
-import {updateDbAccountList, request} from '../../utils'
+import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
+import {request} from '../../utils'
 import {GroupItem} from './components'
 const {EXPORT_SEED, EXPORT_PRIVATEKEY, SELECT_CREATE_TYPE} = ROUTES
 const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_EXPORT_ACCOUNT, ACCOUNT_GROUP_TYPE} =
@@ -22,7 +21,6 @@ const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_EXPORT_ACCOUNT, ACCOUNT_GROUP_TYPE} =
 function AccountManagement() {
   const {t} = useTranslation()
   const history = useHistory()
-  const {mutate} = useSWRConfig()
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
   const [rpcMethod, setRpcMethod] = useState('')
@@ -33,14 +31,13 @@ function AccountManagement() {
   // to refresh searched data
   const [refreshDataStatus, setRefreshDataStatus] = useState(false)
 
-  const {data} = useCurrentAddress()
+  const {data, mutate: mutateCurrentAddress} = useCurrentAddress()
   const networkName = data?.network?.name ?? ''
   const currentNetworkId = data?.network?.eid
-  const {data: allAccountGroups} = useDbAccountListAssets(
-    currentNetworkId,
-    'accountManagementQueryAccount',
-    [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
-  )
+  const {data: allAccountGroups} = useAccountList({
+    networkId: currentNetworkId,
+    groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+  })
   const accountGroupData = searchedAccountGroup
     ? Object.values(searchedAccountGroup)
     : Object.values(allAccountGroups)
@@ -70,11 +67,7 @@ function AccountManagement() {
     }
     // delete account
     setRefreshDataStatus(!refreshDataStatus)
-    return updateDbAccountList(
-      mutate,
-      ['accountManagementQueryAccount', currentNetworkId],
-      ['queryAllAccount', currentNetworkId],
-    ).then(() => {
+    return mutateCurrentAddress().then(() => {
       clearPasswordInfo()
     })
   }
@@ -101,11 +94,7 @@ function AccountManagement() {
       request(rpcMethod, params)
         .then(() => {
           setRefreshDataStatus(!refreshDataStatus)
-          updateDbAccountList(
-            mutate,
-            ['accountManagementQueryAccount', currentNetworkId],
-            ['queryAllAccount', currentNetworkId],
-          ).then(resolve)
+          mutateCurrentAddress().then(resolve)
         })
         .catch(e => {
           Message.error({

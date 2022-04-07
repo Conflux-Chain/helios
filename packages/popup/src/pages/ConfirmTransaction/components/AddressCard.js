@@ -133,6 +133,7 @@ const useQueryAddressInAddressCard = address => {
 }
 
 function AddressCard({
+  nickname,
   token,
   fromAddress,
   toAddress,
@@ -143,7 +144,6 @@ function AddressCard({
 }) {
   const {t} = useTranslation()
   const {
-    account: {nickname},
     nativeBalance,
     network: {
       ticker: {decimals, symbol},
@@ -225,6 +225,7 @@ AddressCard.propTypes = {
   isSendToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,
   isDapp: PropTypes.bool,
+  nickname: PropTypes.string,
 }
 
 export default AddressCard

@@ -21,23 +21,23 @@ export const main = async ({
   app,
 }) => {
   if (app) {
-    return findAddress({appId: app.eid, g: {value: 1}}).map(({value}) => value)
+    return findAddress({appId: app.eid, g: {value: 1}}).value
   }
   const permsRes = await wallet_requestPermissions([{eth_accounts: {}}])
 
   if (permsRes && !permsRes.error) {
     const newapp = getOneApp({site: site.eid})
-    const addrs = findAddress({
+    const addr = findAddress({
       appId: newapp.eid,
       g: {value: 1},
-    }).map(({value}) => value)
+    }).value
 
     newapp.site?.post?.({
       event: 'accountsChanged',
-      params: addrs,
+      params: [addr],
     })
 
-    return addrs
+    return [addr]
   }
 
   return []

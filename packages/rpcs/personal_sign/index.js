@@ -78,8 +78,9 @@ export const main = async ({
 
     const addr = findAddress({
       networkId: app.currentNetwork.eid,
+      appId: app.eid,
       value: from,
-      g: {_account: {_accountGroup: {vault: {type: 1}}}},
+      accountG: {_accountGroup: {vault: {type: 1}}},
     })
 
     if (addr.account.accountGroup.vault.type === 'pub') throw UserRejected()
@@ -109,11 +110,9 @@ export const main = async ({
     }
     const addr = findAddress({
       networkId: authReq.app.currentNetwork.eid,
+      appId: authReq.app.eid,
       value: from,
-      g: {
-        pk: 1,
-        _account: {_accountGroup: {vault: {type: 1}}},
-      },
+      g: {pk: 1, _account: {eid: 1, _accountGroup: {vault: {type: 1}}}},
     })
 
     if (addr.account.accountGroup.vault.type === 'pub')
@@ -123,7 +122,7 @@ export const main = async ({
       addr.pk ||
       (await wallet_getAddressPrivateKey(
         {network: authReq.app.currentNetwork},
-        {address: from},
+        {address: from, accountId: addr.account.eid},
       ))
     const sig = await personalSign(type, pk, message)
 

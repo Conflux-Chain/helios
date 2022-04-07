@@ -66,6 +66,7 @@ export const main = async args => {
       wallet_detectAddressType,
     },
     params: [tx, opts = {}],
+    app,
     network,
   } = args
   const {block, returnTxMeta, dryRun} = opts
@@ -78,9 +79,13 @@ export const main = async args => {
     throw InvalidParams(`Invalid chainId ${newTx.chainId}`)
 
   const fromAddr = findAddress({
-    networkId: network.eid,
+    appId: app && app.eid,
+    networkId: app ? app.currentNetwork.eid : network.eid,
     value: from,
-    g: {eid: 1, _account: {_accountGroup: {vault: {type: 1, device: 1}}}},
+    g: {
+      eid: 1,
+      _account: {eid: 1, _accountGroup: {vault: {type: 1, device: 1}}},
+    },
   })
   // from address is not belong to wallet
   if (!fromAddr) throw InvalidParams(`Invalid from address ${from}`)
@@ -151,7 +156,10 @@ export const main = async args => {
     //   })
     // }
   } else {
-    let pk = await wallet_getAddressPrivateKey({address: from})
+    let pk = await wallet_getAddressPrivateKey({
+      address: from,
+      accountId: fromAddr.account.eid,
+    })
 
     if (dryRun)
       pk = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'

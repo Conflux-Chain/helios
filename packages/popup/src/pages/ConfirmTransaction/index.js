@@ -19,11 +19,7 @@ import {
   useDappParams,
   useViewData,
 } from '../../hooks'
-import {
-  useCurrentAddress,
-  useNetworkTypeIsCfx,
-  useAddressTypeInConfirmTx,
-} from '../../hooks/useApi'
+import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
 import {request, bn16, getPageType, checkBalance} from '../../utils'
 import {AddressCard, InfoList} from './components'
@@ -112,17 +108,18 @@ function ConfirmTransaction() {
     displayToken,
     displayValue,
     displayFromAddress,
+    displayAccount,
     displayToAddress,
-  } = useDecodeDisplay({isDapp, isContract, nativeToken, tx})
+  } = useDecodeDisplay({
+    isDapp,
+    isContract,
+    nativeToken,
+    tx,
+    pendingAuthReq: pendingAuthReq?.[0],
+  })
   const isSign = !isSendToken && !isApproveToken
 
-  const {
-    account: {
-      accountGroup: {
-        vault: {type},
-      },
-    },
-  } = useAddressTypeInConfirmTx(displayFromAddress)
+  const type = displayAccount?.accountGroup?.vault?.type
   const isHwAccount = type === 'hw' && type !== undefined
   const isHwUnAuth = !authStatus && isHwAccount
   const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
@@ -296,6 +293,7 @@ function ConfirmTransaction() {
       <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-4">
         <div className="flex flex-col px-3">
           <AddressCard
+            nickname={displayAccount?.nickname}
             token={displayToken}
             fromAddress={displayFromAddress}
             toAddress={displayToAddress}

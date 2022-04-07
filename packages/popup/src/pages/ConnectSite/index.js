@@ -20,7 +20,7 @@ import {
   WrapIcon,
 } from '../../components'
 import {formatLocalizationLang} from '../../utils'
-import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
+import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
 
 function ConnectSitesList({
   allAccountGroupData,
@@ -95,13 +95,18 @@ function ConnectSitesList({
                         <p className="text-gray-40 text-xs">{nickname}</p>
                       </div>
                     )}
-                    {Object.values(account)
-                      .filter(({hidden}) => !hidden)
-                      .map(
-                        (
-                          {eid: accountId, nickname, currentAddress, selected},
-                          index,
-                        ) => (
+                    {Object.values(account).map(
+                      (
+                        {
+                          eid: accountId,
+                          nickname,
+                          currentAddress,
+                          selected,
+                          hidden,
+                        },
+                        index,
+                      ) =>
+                        !hidden && (
                           <div
                             aria-hidden="true"
                             onClick={() => onSelectSingleAccount(accountId)}
@@ -144,7 +149,7 @@ function ConnectSitesList({
                             </div>
                           </div>
                         ),
-                      )}
+                    )}
                   </div>
                 ),
             )
@@ -178,7 +183,7 @@ function ConnectSite() {
       },
     },
   } = useCurrentAddress()
-  const {data: allAccountGroups} = useDbAccountListAssets(currentNetworkId)
+  const {data: allAccountGroups} = useAccountList({networkId: currentNetworkId})
 
   const allAccountGroupData = Object.values(allAccountGroups)
   const accountData = allAccountGroupData.reduce((acc, cur) => {
