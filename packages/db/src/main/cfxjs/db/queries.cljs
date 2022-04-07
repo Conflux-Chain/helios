@@ -694,7 +694,7 @@
   1. return single addreess when :address/id can be identified, or return vector of addrs
   2. when :address/id and accountId can be identified, return addr with the specified account
   3. given selected: true, means get the addr of current account under current network, which fullfill 2
-  4. given appId: X, mains get the addr of app's current account under app's current network, which fullfill 2
+  4. given appId: X, means get the addr of app's current account under app's current network, which fullfill 2
 
   ways to find single address
   1. addressId

@@ -22,7 +22,6 @@ const {SELECT_CREATE_TYPE} = ROUTES
 
 function AccountItem({
   nickname,
-  // currentNetworkId,
   accounts,
   authorizedAccountIdIconObj,
   onClose,
@@ -122,7 +121,6 @@ function AccountItem({
 
 AccountItem.propTypes = {
   nickname: PropTypes.string,
-  // currentNetworkId: PropTypes.number.isRequired,
   accounts: PropTypes.array,
   authorizedAccountIdIconObj: PropTypes.object.isRequired,
   onClose: PropTypes.func,
@@ -130,12 +128,7 @@ AccountItem.propTypes = {
   index: PropTypes.number.isRequired,
 }
 
-function AccountCardContent({
-  currentNetworkId,
-  searchedAccountGroup,
-  accountGroupData,
-  onClose,
-}) {
+function AccountCardContent({searchedAccountGroup, accountGroupData, onClose}) {
   const {t} = useTranslation()
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
 
@@ -150,7 +143,6 @@ function AccountCardContent({
             index={index}
             accounts={Object.values(account).filter(({hidden}) => !hidden)}
             nickname={nickname}
-            currentNetworkId={currentNetworkId}
             onClose={onClose}
             authorizedAccountIdIconObj={authorizedAccountIdIconObj}
             groupType={vault?.type}
@@ -161,7 +153,6 @@ function AccountCardContent({
   )
 }
 AccountCardContent.propTypes = {
-  currentNetworkId: PropTypes.number.isRequired,
   searchedAccountGroup: PropTypes.object,
   accountGroupData: PropTypes.array,
   onClose: PropTypes.func,
@@ -224,7 +215,6 @@ function AccountList({onClose, open, accountsAnimate = true}) {
       needAnimation={accountsAnimate}
       cardContent={
         <AccountCardContent
-          currentNetworkId={currentNetworkId}
           searchedAccountGroup={searchedAccountGroup}
           accountGroupData={accountGroupData}
           onClose={onClose}
