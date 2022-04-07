@@ -23,8 +23,12 @@ export const main = async ({
 
   const addrs = findAddress({
     appId: app?.eid,
-    networkId: app ? null : network.eid,
+    networkId: app ? app.currentNetwork.eid : network.eid,
     g: {value: 1},
-  }).map(({value}) => value)
-  return addrs
+  })
+  if (app) {
+    return [addrs.value]
+  }
+
+  return addrs.map(({value}) => value)
 }

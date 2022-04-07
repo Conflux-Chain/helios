@@ -1,15 +1,10 @@
 import PropTypes from 'prop-types'
-import {useSWRConfig} from 'swr'
 import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
 import {CheckCircleFilled, PlusOutlined} from '@fluent-wallet/component-icons'
-import {
-  request,
-  updateDbAccountList,
-  formatLocalizationLang,
-} from '../../../utils'
+import {request, formatLocalizationLang} from '../../../utils'
 import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {
   SlideCard,
@@ -19,7 +14,7 @@ import {
   WrapIcon,
   StretchInput,
 } from '../../../components'
-import {useDbAccountListAssets, useCurrentAddress} from '../../../hooks/useApi'
+import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
 import {RPC_METHODS, ROUTES} from '../../../constants'
 
 const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
@@ -27,7 +22,6 @@ const {SELECT_CREATE_TYPE} = ROUTES
 
 function AccountItem({
   nickname,
-  currentNetworkId,
   accounts,
   authorizedAccountIdIconObj,
   onClose,
@@ -35,14 +29,11 @@ function AccountItem({
   index,
 }) {
   const {t} = useTranslation()
-  const {mutate} = useSWRConfig()
+  const {mutate} = useCurrentAddress()
   const onChangeAccount = accountId => {
     request(WALLET_SET_CURRENT_ACCOUNT, [accountId])
       .then(() => {
-        updateDbAccountList(mutate, 'useCurrentAddress', [
-          'queryAllAccount',
-          currentNetworkId,
-        ]).then(() => {
+        mutate().then(() => {
           onClose?.()
           Message.warning({
             content: t('addressHasBeenChanged'),
@@ -72,50 +63,57 @@ function AccountItem({
             <p className="text-gray-40 text-xs">{nickname}</p>
           </div>
         )}
-        {accounts.map(({nickname, eid, selected, nativeBalance, network}) => (
-          <div
-            aria-hidden="true"
-            onClick={() => !selected && onChangeAccount(eid)}
-            key={eid}
-            className={`flex p-3 rounded hover:bg-primary-4 ${
-              selected ? 'cursor-default' : 'cursor-pointer'
-            }`}
-          >
-            <Avatar
-              className="w-5 h-5 mr-2"
-              diameter={20}
-              accountIdentity={eid}
-            />
-            <div className="flex-1">
-              <p className="text-xs text-gray-40 ">{nickname}</p>
-              <div className="flex w-full">
-                <DisplayBalance
-                  balance={nativeBalance || '0x0'}
-                  maxWidthStyle="max-w-[270px]"
-                  maxWidth={270}
-                  decimals={network?.ticker?.decimals}
-                />
-                <pre className="text-sm text-gray-80">
-                  {network?.ticker?.symbol || ''}
-                </pre>
+        {accounts.map(
+          ({
+            nickname,
+            eid,
+            selected,
+            currentAddress: {nativeBalance, network},
+          }) => (
+            <div
+              aria-hidden="true"
+              onClick={() => !selected && onChangeAccount(eid)}
+              key={eid}
+              className={`flex p-3 rounded hover:bg-primary-4 ${
+                selected ? 'cursor-default' : 'cursor-pointer'
+              }`}
+            >
+              <Avatar
+                className="w-5 h-5 mr-2"
+                diameter={20}
+                accountIdentity={eid}
+              />
+              <div className="flex-1">
+                <p className="text-xs text-gray-40 ">{nickname}</p>
+                <div className="flex w-full">
+                  <DisplayBalance
+                    balance={nativeBalance || '0x0'}
+                    maxWidthStyle="max-w-[270px]"
+                    maxWidth={270}
+                    decimals={network?.ticker?.decimals}
+                  />
+                  <pre className="text-sm text-gray-80">
+                    {network?.ticker?.symbol || ''}
+                  </pre>
+                </div>
+              </div>
+              <div className="inline-flex justify-center items-center">
+                {authorizedAccountIdIconObj[eid] && (
+                  <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
+                    <img
+                      className="w-4 h-4"
+                      src={authorizedAccountIdIconObj[eid]}
+                      alt="favicon"
+                    />
+                  </div>
+                )}
+                {selected && (
+                  <CheckCircleFilled className="w-4 h-4 ml-3 text-success" />
+                )}
               </div>
             </div>
-            <div className="inline-flex justify-center items-center">
-              {authorizedAccountIdIconObj[eid] && (
-                <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
-                  <img
-                    className="w-4 h-4"
-                    src={authorizedAccountIdIconObj[eid]}
-                    alt="favicon"
-                  />
-                </div>
-              )}
-              {selected && (
-                <CheckCircleFilled className="w-4 h-4 ml-3 text-success" />
-              )}
-            </div>
-          </div>
-        ))}
+          ),
+        )}
       </div>
     )
   )
@@ -123,7 +121,6 @@ function AccountItem({
 
 AccountItem.propTypes = {
   nickname: PropTypes.string,
-  currentNetworkId: PropTypes.number.isRequired,
   accounts: PropTypes.array,
   authorizedAccountIdIconObj: PropTypes.object.isRequired,
   onClose: PropTypes.func,
@@ -131,12 +128,7 @@ AccountItem.propTypes = {
   index: PropTypes.number.isRequired,
 }
 
-function AccountCardContent({
-  currentNetworkId,
-  searchedAccountGroup,
-  accountGroupData,
-  onClose,
-}) {
+function AccountCardContent({searchedAccountGroup, accountGroupData, onClose}) {
   const {t} = useTranslation()
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
 
@@ -151,7 +143,6 @@ function AccountCardContent({
             index={index}
             accounts={Object.values(account).filter(({hidden}) => !hidden)}
             nickname={nickname}
-            currentNetworkId={currentNetworkId}
             onClose={onClose}
             authorizedAccountIdIconObj={authorizedAccountIdIconObj}
             groupType={vault?.type}
@@ -162,7 +153,6 @@ function AccountCardContent({
   )
 }
 AccountCardContent.propTypes = {
-  currentNetworkId: PropTypes.number.isRequired,
   searchedAccountGroup: PropTypes.object,
   accountGroupData: PropTypes.array,
   onClose: PropTypes.func,
@@ -176,7 +166,7 @@ function AccountList({onClose, open, accountsAnimate = true}) {
       network: {eid: currentNetworkId},
     },
   } = useCurrentAddress()
-  const {data: allAccountGroups} = useDbAccountListAssets(currentNetworkId)
+  const {data: allAccountGroups} = useAccountList({networkId: currentNetworkId})
   const [searchedAccountGroup, setSearchedAccountGroup] = useState(null)
 
   const onAddAccount = () => {
@@ -225,7 +215,6 @@ function AccountList({onClose, open, accountsAnimate = true}) {
       needAnimation={accountsAnimate}
       cardContent={
         <AccountCardContent
-          currentNetworkId={currentNetworkId}
           searchedAccountGroup={searchedAccountGroup}
           accountGroupData={accountGroupData}
           onClose={onClose}

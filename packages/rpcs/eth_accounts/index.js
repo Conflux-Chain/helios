@@ -25,6 +25,9 @@ export const main = async ({
     appId: app?.eid,
     networkId: app ? null : network.eid,
     g: {value: 1},
-  }).map(({value}) => value)
-  return addrs
+  })
+  if (app) {
+    return [addrs.value]
+  }
+  return addrs.map(({value}) => value)
 }

@@ -343,6 +343,7 @@
        [?g :accountGroup/account ?e]]
      #(= % 24))
   (create-db (.-schema js/window))
+  (:schema @conn)
   (js/console.log (clj->js (t [{:db/id "a" :hdPath/name "a"}
                                {:db/id "a" :hdPath/value "b"}])))
   (t [{:db/id -1 :hdPath/name "a"}
@@ -369,7 +370,6 @@
    :eavt)
   (d/db? @conn)
   (d/db conn)
-  (d/schema @conn)
   (prn (-> @conn
            d/schema
            :address/value))

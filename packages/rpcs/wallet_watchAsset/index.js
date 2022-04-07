@@ -124,7 +124,7 @@ export const main = async ({
     }
 
     // from dapp
-    const [curAddr] = findAddress({appId: app.eid})
+    const curAddr = findAddress({appId: app.eid})
     const {alreadyInAddr} = addTokenToAddr({
       ...params.options,
       network: app.currentNetwork.eid,
@@ -151,7 +151,7 @@ export const main = async ({
     if (authReq.processed)
       throw InvalidParams(`Already processing auth req ${params.authReqId}`)
     const authedApp = authReq.app
-    const [addr] = findAddress({appId: authedApp.eid})
+    const addr = findAddress({appId: authedApp.eid})
     addTokenToAddr({
       ...authReq.req.params.options,
       network: authedApp.currentNetwork.eid,

@@ -13,7 +13,13 @@ import {
 export const NAME = 'cfx_signTxWithLedgerNanoS'
 
 export const schemas = {
-  input: [map, {closed: true}, ['tx', mapp], ['addressId', dbid]],
+  input: [
+    map,
+    {closed: true},
+    ['tx', mapp],
+    ['addressId', dbid],
+    ['accountId', dbid],
+  ],
 }
 
 export const permissions = {
@@ -29,11 +35,12 @@ function getLedgerHDPathFromAddressAndGroupData(groupData, hex) {
 export const main = async ({
   Err: {InvalidParams, UserRejected},
   db: {findAddress, getPassword},
-  params: {tx, addressId},
+  params: {tx, addressId, accountId},
 }) => {
   const newTx = {...tx}
   const addr = findAddress({
     addressId,
+    accountId,
     g: {
       value: 1,
       hex: 1,
