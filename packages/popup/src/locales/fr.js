@@ -164,6 +164,7 @@ const fr = {
     gasFee: 'Frais de Gas',
     edit: 'Éditer',
     sponsored: 'Sponsorisé',
+    partSponsored: 'Partially Sponsored',
 
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
     editGasFeeControl: 'Contrôleur du Gas',

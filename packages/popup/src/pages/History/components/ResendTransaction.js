@@ -194,14 +194,11 @@ function ResendTransaction({
       )
         ? biggerGasPrice
         : decimalEstimateGasPrice
-      const displayRecommendGasPrice = convertDecimal(
-        recommendGasPrice,
-        'divide',
-        GWEI_DECIMALS,
+      const displayRecommendGasPrice = new Big(
+        convertDecimal(recommendGasPrice, 'divide', GWEI_DECIMALS),
       )
-        .round(6)
+        .round(GWEI_DECIMALS, 3)
         .toString(10)
-
       const lastGasPricePlusOne = new Big(decimalGasPrice).plus(1).toString(10)
       const minGasPrice = new Big(lastGasPricePlusOne).gt(
         decimalEstimateGasPrice,
@@ -478,6 +475,7 @@ function ResendTransaction({
                       suffix={minUnit}
                       value={gasPrice}
                       onChange={value => onChangeGasPrice(value)}
+                      decimals={GWEI_DECIMALS}
                       id="input-gas-price"
                       bordered={false}
                     />

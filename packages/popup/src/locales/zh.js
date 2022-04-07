@@ -155,6 +155,7 @@ const zh = {
     gasFee: 'Gas 费',
     edit: '编辑',
     sponsored: '已赞助',
+    partSponsored: '部分赞助',
 
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
     editGasFeeControl: 'Gas 控制器',

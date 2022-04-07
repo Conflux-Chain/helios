@@ -21261,6 +21261,7 @@ fsevents@^1.2.7:
     react-transition-group: ^4.4.2
     react-use: 17.3.2
     swr: 1.2.2
+    use-debounce: 7.0.1
     valid-url: 1.0.9
     webextension-polyfill: ^0.8.0
     zustand: ^3.7.1
@@ -35233,6 +35234,15 @@ resolve@^2.0.0-next.3:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0
   checksum: b438c1577eafb26dd8aff8d7ffbeae10b544172fc4c4f38733343f70c04da6f14a748a274cb76b70b829604e1382be56fb37a96f3c62b5aeec50657e23e61097
+  languageName: node
+  linkType: hard
+
+"use-debounce@npm:7.0.1":
+  version: 7.0.1
+  resolution: "use-debounce@npm:7.0.1"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: c5c1c34ccef6c11fe25fecef983a07f5a7260fce77b58f0f648f6ae08693a22a9077b5362b96154896e9ea756e6aaea303eb44550a293456cecb6f15cf87d73b
   languageName: node
   linkType: hard
 
