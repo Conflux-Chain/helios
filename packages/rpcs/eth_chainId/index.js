@@ -8,6 +8,7 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup', 'inpage'],
+  db: ['getOneNetwork'],
   locked: true,
 }
 
@@ -17,6 +18,13 @@ export const cache = {
   key: () => NAME,
 }
 
-export const main = async ({f, params}) => {
+export const main = async ({f, db: {getOneNetwork}, params, _inpage, app}) => {
+  if (
+    _inpage &&
+    ((app && app.currentNetwork.type === 'cfx') ||
+      getOneNetwork({selected: true}).type === 'cfx')
+  ) {
+    return '0x' + Number.MAX_SAFE_INTEGER.toString(16)
+  }
   return await f(params)
 }

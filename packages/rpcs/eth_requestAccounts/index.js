@@ -21,7 +21,7 @@ export const main = async ({
   app,
 }) => {
   if (app) {
-    return findAddress({appId: app.eid, g: {value: 1}}).value
+    return [findAddress({appId: app.eid, g: {value: 1}}).value]
   }
   const permsRes = await wallet_requestPermissions([{eth_accounts: {}}])
 
