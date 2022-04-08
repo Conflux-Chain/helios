@@ -315,7 +315,7 @@ export const main = ({
                 if (receipt?.txExecErrorMsg) {
                   err = receipt.txExecErrorMsg
                 }
-                setTxFailed({hash, err: receipt.txExecErrorMsg})
+                setTxFailed({hash, error: receipt.txExecErrorMsg})
                 updateBadge(getUnfinishedTxCount())
                 getExt().then(ext =>
                   ext.notifications.create(hash, {
@@ -418,7 +418,7 @@ export const main = ({
             setTxExecuted({hash, receipt})
             keepTrack(50 * cacheTime)
           } else {
-            setTxFailed({hash, err: txExecErrorMsg})
+            setTxFailed({hash, error: txExecErrorMsg})
             updateBadge(getUnfinishedTxCount())
             getExt().then(ext =>
               ext.notifications.create(hash, {
