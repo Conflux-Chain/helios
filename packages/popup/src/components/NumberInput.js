@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types'
+import {useState, useEffect} from 'react'
 import Input from '@fluent-wallet/component-input'
 import {Big} from '@fluent-wallet/data-format'
-import {useDebouncedCallback} from 'use-debounce'
+
+const reCenter = /^(0|[1-9]\d*)(\.){1}$/
+const re = /^(0|[1-9]\d*)(\.\d+)?$/
+const exponentialCenter = /^\d+(\.\d+)?([Ee]{1})$/
+const exponential = /^\d+(\.\d+)?([Ee][+-]?[\d]+)?$/
 
 const formatInputValue = (targetValue, decimals) => {
-  const reCenter = /^(0|[1-9]\d*)(\.){1}$/
-  const re = /^(0|[1-9]\d*)(\.\d+)?$/
-  const exponentialCenter = /^\d+(\.\d+)?([Ee]{1})$/
-  const exponential = /^\d+(\.\d+)?([Ee][+-]?[\d]+)?$/
   if (!targetValue) return ''
   if (isNaN(targetValue)) {
     if (exponentialCenter.test(targetValue)) return targetValue
@@ -22,7 +23,7 @@ const formatInputValue = (targetValue, decimals) => {
     }
     const ret = new Big(value).times(`1e${decimals}`)
     return ret.gte(0)
-      ? ret.toString().indexOf('.') === -1
+      ? ret.toString(10).indexOf('.') === -1
         ? value
         : ret.div(`1e${decimals}`).round(decimals).toString()
       : '0'
@@ -31,16 +32,22 @@ const formatInputValue = (targetValue, decimals) => {
 }
 
 function NumberInput({onChange, value, decimals = 0, ...props}) {
-  const onInputChange = useDebouncedCallback(value => {
-    const formatValue = formatInputValue(value, decimals)
-    onChange?.(formatValue)
-  }, 100)
+  const [inputValue, setInputValue] = useState('')
+  const onInputChange = targetValue => {
+    const formatValue = formatInputValue(targetValue, decimals)
+    if (!exponentialCenter.test(formatValue)) onChange?.(formatValue)
+    else setInputValue(formatValue)
+  }
+
+  useEffect(() => {
+    setInputValue(value)
+  }, [value])
 
   return (
     <Input
       {...props}
       onChange={e => onInputChange(e.target.value)}
-      value={value}
+      value={inputValue}
       type="text"
     />
   )
