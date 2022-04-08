@@ -36,7 +36,7 @@ function NumberInput({onChange, value, decimals = 0, ...props}) {
   const onInputChange = targetValue => {
     const formatValue = formatInputValue(targetValue, decimals)
     if (!exponentialCenter.test(formatValue)) onChange?.(formatValue)
-    else setInputValue(formatValue)
+    setInputValue(formatValue)
   }
 
   useEffect(() => {
