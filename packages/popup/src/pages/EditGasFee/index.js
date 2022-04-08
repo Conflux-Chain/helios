@@ -152,7 +152,7 @@ function EditGasFee() {
               <NumberInput
                 size="small"
                 width="w-32"
-                decimals={9}
+                decimals={GWEI_DECIMALS}
                 value={inputGasPrice}
                 id="gasPrice"
                 errorMessage={gasPriceErr}

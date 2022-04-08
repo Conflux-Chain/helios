@@ -14,7 +14,10 @@ const formatInputValue = (targetValue, decimals) => {
     if (exponentialCenter.test(targetValue)) return targetValue
     else return ''
   }
-  if (reCenter.test(targetValue)) return targetValue
+  if (reCenter.test(targetValue)) {
+    if (decimals > 0) return targetValue
+    else return targetValue.split('.')[0]
+  }
   if (re.test(targetValue) || exponential.test(targetValue)) {
     let value = targetValue
     if (decimals > 0 && targetValue.indexOf('.') > -1) {
