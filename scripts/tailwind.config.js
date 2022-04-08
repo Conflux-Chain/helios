@@ -97,6 +97,18 @@ module.exports = {
         'gray-100': 'var(--color-gray-100)',
       },
       fontFamily: {
+        sans: [
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Helvetica Neue',
+          'Helvetica',
+          'Microsoft YaHei',
+          '微软雅黑',
+          'Arial',
+          'sans-serif',
+        ],
         body: [
           'ui-sans-serif',
           'system-ui',
