@@ -161,6 +161,7 @@ const ru = {
     gasFee: 'Gas комиссионные',
     edit: 'Изменить',
     sponsored: 'Спонсировано',
+    partSponsored: 'Partially Sponsored',
 
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
     editGasFeeControl: 'Gas контроллер',

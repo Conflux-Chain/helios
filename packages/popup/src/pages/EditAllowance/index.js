@@ -49,8 +49,7 @@ function EditAllowance() {
     }
   }, [permissionChoice, customLimitValue, symbol, t])
 
-  const onChangeCustomInput = e => {
-    const value = e.target.value
+  const onChangeCustomInput = value => {
     setCustomLimitValue(value)
   }
 
