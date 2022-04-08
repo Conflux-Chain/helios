@@ -34,7 +34,7 @@
                             (.write w " ")
                             (pp/pprint-newline :linear)
                             (pp/pprint-logical-block :prefix "[" :suffix "]"
-                                                     (pp/print-length-loop [aseq (seq db)]
+                                                     (pp/print-length-loop [aseq (db/-datoms db :eavt [])]
                                                                            (when aseq
                                                                              (let [^Datom d (first aseq)]
                                                                                (pp/write-out [(.-e d) (.-a d) (.-v d) (db/datom-tx d)])

@@ -29,7 +29,7 @@ import {
 } from '../../hooks/useApi'
 import useLoading from '../../hooks/useLoading'
 import useImportHWParams from './useImportHWParams'
-import {request, updateDbAccountList} from '../../utils'
+import {request} from '../../utils'
 
 const {
   WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT,
@@ -37,13 +37,14 @@ const {
 } = RPC_METHODS
 const cfx = new Conflux()
 
-function ImportingResults({importStatus, currentNetworkId}) {
+function ImportingResults({importStatus}) {
   const {t} = useTranslation()
   const {mutate} = useSWRConfig()
+  const {mutate: mutateCurrentAddress} = useCurrentAddress()
 
   const onClickDone = () => {
     mutate([WALLETDB_REFETCH_BALANCE])
-    updateDbAccountList(mutate, ['queryAllAccount', currentNetworkId])
+    mutateCurrentAddress()
     window.open(' ', '_self')
     window.close()
   }
@@ -88,7 +89,6 @@ function ImportingResults({importStatus, currentNetworkId}) {
 }
 ImportingResults.propTypes = {
   importStatus: PropTypes.string.isRequired,
-  currentNetworkId: PropTypes.number.isRequired,
 }
 
 function ImportHwAccount() {
@@ -239,12 +239,7 @@ function ImportHwAccount() {
     return null
   }
   if (importStatus) {
-    return (
-      <ImportingResults
-        importStatus={importStatus}
-        currentNetworkId={networkId}
-      />
-    )
+    return <ImportingResults importStatus={importStatus} />
   }
   return (
     <div

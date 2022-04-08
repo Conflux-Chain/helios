@@ -92,12 +92,9 @@ export const gen = {
         }
 
         const addr = findAddress({
-          networkId: app.currentNetwork.eid,
+          appId: app.eid,
           value: from,
-          g: {
-            hex: 1,
-            _account: {_accountGroup: {vault: {type: 1}}},
-          },
+          g: {hex: 1, _account: {eid: 1, _accountGroup: {vault: {type: 1}}}},
         })
 
         validateAndFormatTypedDataString({
@@ -144,12 +141,9 @@ export const gen = {
         }
 
         const addr = findAddress({
-          networkId: authReq.app.currentNetwork.eid,
+          appId: authReq.app.eid,
           value: from,
-          g: {
-            pk: 1,
-            _account: {_accountGroup: {vault: {type: 1}}},
-          },
+          g: {pk: 1, _account: {eid: 1, _accountGroup: {vault: {type: 1}}}},
         })
 
         if (addr.account.accountGroup.vault.type === 'pub')
@@ -163,7 +157,11 @@ export const gen = {
         })
 
         const pk =
-          addr.pk || (await wallet_getAddressPrivateKey({address: from}))
+          addr.pk ||
+          (await wallet_getAddressPrivateKey({
+            address: from,
+            accountId: addr.account.eid,
+          }))
 
         const sig = await signTypedData_v4(type, pk, typedData)
 

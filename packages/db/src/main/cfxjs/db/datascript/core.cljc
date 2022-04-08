@@ -5,6 +5,7 @@
    [cfxjs.db.datascript.db :as db #?@(:cljs [:refer [FilteredDB]])]
    #?(:clj [cfxjs.db.datascript.pprint])
    [cfxjs.db.datascript.pull-api :as dp]
+   [cfxjs.db.datascript.serialize :as ds]
    [cfxjs.db.datascript.query :as dq]
    [cfxjs.db.datascript.impl.entity :as de])
   #?(:clj
@@ -15,9 +16,7 @@
 
 (def ^:const ^:no-doc tx0 db/tx0)
 
-
 ; Entities
-
 
 (def ^{:arglists '([db eid])
        :doc "Retrieves an entity by its id from database. Entities are lazy map-like structures to navigate DataScript database content.
@@ -65,7 +64,7 @@
              - Entities retain reference to the whole database.
              - You can’t change database through entities, only read.
              - Creating an entity by id is very cheap, almost no-op (attributes are looked up on demand).
-             - Comparing entities just compares their ids. Be careful when comparing entities taken from differenct dbs or from different versions of the same db.
+             - Comparing entities just compares their ids. Be careful when comparing entities taken from different dbs or from different versions of the same db.
              - Accessed entity attributes are cached on entity itself (except backward references).
              - When printing, only cached attributes (the ones you have accessed before) are printed. See [[touch]]."}
   entity de/entity)
@@ -95,9 +94,7 @@
              ```"}
   touch de/touch)
 
-
 ; Pull
-
 
 (def ^{:arglists '([db selector eid])
        :doc "Fetches data from database using recursive declarative description. See [docs.datomic.com/on-prem/pull.html](https://docs.datomic.com/on-prem/pull.html).
@@ -125,9 +122,7 @@
              ```"}
   pull-many dp/pull-many)
 
-
 ; Query
-
 
 (def
   ^{:arglists '([query & inputs])
@@ -143,9 +138,7 @@
           ```"}
   q dq/q)
 
-
 ; Creating DB
-
 
 (def ^{:arglists '([] [schema])
        :doc "Creates an empty database with an optional schema.
@@ -185,6 +178,30 @@
              Used internally in db (de)serialization. See also [[datom]]."}
   init-db db/init-db)
 
+(def ^{:arglists '([db] [db opts])
+       :doc "Converts db into a data structure (not string!) that can be fed to serializer
+             of your choice (e.g. `js/JSON.stringify` in CLJS, `cheshire.core/generate-string`
+             or `jsonista.core/write-value-as-string` in CLJ).
+
+             On JVM, `serializable` holds a global lock that prevents any two serializations
+             to run in parallel (an implementation constraint, be aware).
+
+             Options:
+
+             `:freeze-fn` Non-primitive values will be serialized using this. Optional.
+             `pr-str` by default."}
+  serializable ds/serializable)
+
+(def ^{:arglists '([serializable] [serializable opts])
+       :doc "Creates db from a data structure (not string!) produced by serializable.
+
+             Opts:
+
+             `:thaw-fn` Non-primitive values will be deserialized using this.
+             Must match :freeze-fn from serializable. Optional. `clojure.edn/read-string`
+             by default."}
+  from-serializable ds/from-serializable)
+
 ; Schema
 
 (def ^{:arglists '([db])
@@ -216,9 +233,7 @@
       (FilteredDB. orig-db #(and (orig-pred %) (pred orig-db %)) (atom 0)))
     (FilteredDB. db #(pred db %) (atom 0))))
 
-
 ; Changing DB
-
 
 (defn with
   "Same as [[transact!]], but applies to an immutable database value. Returns transaction report (see [[transact!]])."
@@ -240,9 +255,7 @@
   {:pre [(db/db? db)]}
   (:db-after (with db tx-data)))
 
-
 ; Index lookups
-
 
 (defn datoms
   "Index lookup. Returns a sequence of datoms (lazy iterator over actual DB index) which components (e, a, v) match passed arguments.
@@ -394,9 +407,7 @@
   {:pre [(db/db? db)]}
   (db/-index-range db attr start end))
 
-
 ;; Conn
-
 
 (defn conn?
   "Returns `true` if this is a connection to a DataScript db, `false` otherwise."
@@ -482,7 +493,7 @@
       (transact! conn [[:db/add -1 :friend 296]])
 
       ; create an entity and set multiple attributes (in a single transaction
-      ; equal tempids will be replaced with the same unused yet entid)
+      ; equal tempids will be replaced with the same yet unused entid)
       (transact! conn [[:db/add -1 :name \"Ivan\"]
                        [:db/add -1 :likes \"fries\"]
                        [:db/add -1 :likes \"pizza\"]
@@ -501,11 +512,11 @@
                         :name   \"Oleg\"
                         :likes  [\"fish\"]}])
 
-      ; ref attributes can be specified as nested map, that will create netsed entity as well
+      ; ref attributes can be specified as nested map, that will create nested entity as well
       (transact! conn [{:db/id  -1
                         :name   \"Oleg\"
                         :friend {:db/id -2
-                                 :name \"Sergey\"}])
+                                 :name \"Sergey\"}}])
 
       ; reverse attribute name can be used if you want created entity to become
       ; a value in another entity reference
@@ -517,7 +528,7 @@
                        {:db/id 296, :friend -1}])
       ; equivalent to
       (transact! conn [[:db/add  -1 :name   \"Oleg\"]
-                       {:db/add 296 :friend -1]])"
+                       [:db/add 296 :friend -1]])"
   ([conn tx-data] (transact! conn tx-data nil))
   ([conn tx-data tx-meta]
    {:pre [(conn? conn)]}
@@ -565,9 +576,7 @@
   {:pre [(conn? conn) (atom? (:listeners (meta conn)))]}
   (swap! (:listeners (meta conn)) dissoc key))
 
-
 ; Data Readers
-
 
 (def ^{:doc "Data readers for EDN readers. In CLJS they’re registered automatically. In CLJ, if `data_readers.clj` do not work, you can always do
 
@@ -580,9 +589,7 @@
 #?(:cljs
    (doseq [[tag cb] data-readers] (edn/register-tag-parser! tag cb)))
 
-
 ;; Datomic compatibility layer
-
 
 (def ^:private last-tempid (atom -1000000))
 
@@ -639,10 +646,7 @@
           clojure.lang.IPending
           (isRealized [_] true))))))
 
-
 ;; ersatz future without proper blocking
-
-
 #?(:cljs
    (defn- future-call [f]
      (let [res      (atom nil)

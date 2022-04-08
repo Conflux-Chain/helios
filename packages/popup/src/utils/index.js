@@ -160,38 +160,6 @@ export const updateDbAccountList = (mutate, ...args) =>
 export const detectFirefox = () =>
   navigator?.userAgent?.toLowerCase().indexOf('firefox') > -1
 
-export const formatAccountGroupData = (d, showHiddenAccount = true) => {
-  if (isArray(d)) {
-    if (!showHiddenAccount) {
-      d = d.filter(({account}) => !account?.hidden)
-    }
-    d.sort((a, b) => {
-      if (a.account.accountGroup.eid === b.account.accountGroup.eid) {
-        return a.account.eid - b.account.eid
-      }
-      return a.account.accountGroup.eid - b.account.accountGroup.eid
-    })
-    let ret = {}
-    d.forEach(
-      ({account: {accountGroup, ...accountData}, hex, value, ...rest}) => {
-        if (!ret[accountGroup.eid]) {
-          ret[accountGroup.eid] = {...accountGroup}
-        }
-        if (!ret[accountGroup.eid]?.account) {
-          ret[accountGroup.eid].account = {}
-        }
-        ret[accountGroup.eid].account[accountData.eid] = {
-          currentAddress: {hex, value},
-          ...accountData,
-          ...rest,
-        }
-      },
-    )
-    return ret
-  }
-  return d
-}
-
 export const checkBalance = async (
   txParams,
   token,

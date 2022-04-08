@@ -25,7 +25,9 @@
                    (with-eval-after-load 'jest (setq-local jest-executable "yarn run test:integration"))
                  (with-eval-after-load 'jest (setq-local jest-executable "yarn run test:unit"))))
          (eval add-hook 'find-file-hook '+jest-setup-integration-test nil t)
-         (eval load-file (concat (car (dir-locals-find-file ".")) "scripts/tools.el"))))
+         (eval let ((tools-file (concat (car (dir-locals-find-file ".")) "scripts/tools.el")))
+               (when (file-exists-p tools-file)
+                 (load-file tools-file)))))
 
  ((rjsx-mode js2-mode typescript-mode) . ((lsp-enabled-clients . (ts-ls eslint))
                                           (eval . (lexical-let
@@ -36,4 +38,4 @@
                                                      (make-local-variable 'flycheck-javascript-eslint-executable)
                                                      (concat project-directory ".yarn/sdks/eslint/bin/eslint.js"))))))
 
- ((clojure-mode clojurec-mode clojurescript-mode) . ((cider-shadow-cljs-command . "yarn run shadow-cljs"))))
+  ((clojure-mode clojurec-mode clojurescript-mode) . ((cider-shadow-cljs-command . "yarn run shadow-cljs"))))

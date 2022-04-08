@@ -42,7 +42,7 @@ export const main = async ({
       currentNetwork: {eid: networkId},
     } = app
     try {
-      const addr = findAddress({accountId, networkId, g: {value: 1}})[0]
+      const addr = findAddress({accountId, networkId, g: {value: 1}})
       if (!addr) return
       post &&
         post({

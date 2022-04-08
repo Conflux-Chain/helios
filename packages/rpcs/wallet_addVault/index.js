@@ -148,7 +148,9 @@ export async function newAccounts(arg) {
 
   const networks = getNetwork()
 
+  // for each network
   // create ONE account and address for pk/pub group
+  // or create specified accounts and addrs for hw group
   networks.forEach(({eid, netId, type}) => {
     if (vault.type === 'pk') {
       const [account] = findAccount({groupId, index: 0})

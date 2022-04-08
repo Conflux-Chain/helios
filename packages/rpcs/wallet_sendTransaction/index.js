@@ -72,14 +72,17 @@ export const main = async ({
       !findAddress({
         value: from,
         appId: app.eid,
-      })?.length
+      })
     )
       throw InvalidParams(`Invalid from address in tx ${from}`)
 
     delete params[0].nonce
     try {
       // try sign tx
-      await signTxFn({errorFallThrough: true}, [...params, {dryRun: true}])
+      await signTxFn(
+        {app, network: app.currentNetwork, errorFallThrough: true},
+        [...params, {dryRun: true}],
+      )
     } catch (err) {
       if (err?.code === ERROR.USER_REJECTED.code) throw err
       err.message = `Error while processing tx.\nparams:\n${JSON.stringify(
@@ -109,7 +112,7 @@ export const main = async ({
 
     return await wallet_addPendingUserAuthRequest({
       appId: app.eid,
-      req: {method: NAME, params},
+      req: {method: NAME, accountId: app.currentAccount.eid, params},
     })
   }
 
@@ -125,20 +128,21 @@ export const main = async ({
 
   // tx array [tx]
   const tx = params.authReqId ? params.tx : params
-  let addr = findAddress({
+  const addr = findAddress({
     // filter by app.currentNetwork and app.currentAccount
     appId: authReq?.app?.eid,
+    selected: !authReqId ? true : undefined,
     // filter by current network
-    networkId: !authReqId && network.eid,
+    networkId: !authReqId ? network.eid : authReq.app.currentNetwork.eid,
     value: tx[0].from,
   })
-  addr = addr[0] || addr
   if (!addr) throw InvalidParams(`Invalid from address ${tx[0].from}`)
 
   let signed
   try {
     signed = await signTxFn(
       {
+        app: authReqId ? authReq.app : undefined,
         network: authReqId ? authReq.app.currentNetwork : network,
         errorFallThrough: true,
       },

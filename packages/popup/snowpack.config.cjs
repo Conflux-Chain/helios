@@ -56,6 +56,8 @@ const mergedConfig = mergeConfig(baseConfig, {
     ...baseConfig.packageOptions,
     knownEntrypoints: [
       ...baseConfig.packageOptions.knownEntrypoints,
+      'js-sha3',
+      'ethjs-util',
       'rc-util/es/raf',
       'rc-util/es/ref',
       'rc-util/es/Portal',

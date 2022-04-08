@@ -1,278 +1,359 @@
 (ns ^:no-doc cfxjs.db.datascript.pull-api
   (:require
-   [cfxjs.db.datascript.db :as db]
-   [cfxjs.db.datascript.pull-parser :as dpp #?@(:cljs [:refer [PullSpec]])])
+   [cfxjs.db.datascript.pull-parser :as dpp]
+   #?(:clj  [cfxjs.db.datascript.db :as db :refer [cond+]]
+      :cljs [cfxjs.db.datascript.db :as db :refer [DB] :refer-macros [cond+]])
+   [cfxjs.db.datascript.lru :as lru]
+   [me.tonsky.persistent-sorted-set :as set])
   #?(:clj
      (:import
-      [cfxjs.db.datascript.db Datom]
-      [cfxjs.db.datascript.pull_parser PullSpec])))
+      [clojure.lang ISeq]
+      [cfxjs.db.datascript.db Datom DB]
+      [cfxjs.db.datascript.pull_parser PullAttr PullPattern])))
 
-(defn- into!
-  [transient-coll items]
-  (reduce conj! transient-coll items))
+(declare pull-impl attrs-frame ref-frame ->ReverseAttrsFrame)
 
-(def ^:private ^:const +default-limit+ 1000)
+(defn- first-seq [#?(:clj ^ISeq xs :cljs ^seq xs)]
+  (if (nil? xs)
+    nil
+    #?(:clj (.first xs) :cljs (-first xs))))
 
-(defn- initial-frame
-  [pattern eids multi?]
-  {:state     :pattern
-   :pattern   pattern
-   :wildcard? (:wildcard? pattern)
-   :specs     (-> pattern :attrs seq)
-   :results   (transient [])
-   :kvps      (transient {})
-   :eids      eids
-   :multi?    multi?
-   :recursion {:depth {} :seen #{}}})
+(defn- next-seq [#?(:clj ^ISeq xs :cljs ^seq xs)]
+  (if (nil? xs)
+    nil
+    #?(:clj (.next xs) :cljs (-next xs))))
 
-(defn- subpattern-frame
-  [pattern eids multi? attr]
-  (assoc (initial-frame pattern eids multi?) :attr attr))
+(defn- conj-seq [#?(:clj ^ISeq xs :cljs ^seq xs) x]
+  (if (nil? xs)
+    (list x)
+    #?(:clj (.cons xs x) :cljs (-conj xs x))))
 
-(defn- reset-frame
-  [frame eids kvps]
-  (let [pattern (:pattern frame)]
-    (assoc frame
-           :eids      eids
-           :specs     (seq (:attrs pattern))
-           :wildcard? (:wildcard? pattern)
-           :kvps      (transient {})
-           :results   (cond-> (:results frame)
-                        (seq kvps) (conj! kvps)))))
+(defn- assoc-some! [m k v]
+  (if (nil? v) m (assoc! m k v)))
 
-(defn- push-recursion
-  [rec attr eid]
-  (let [{:keys [depth seen]} rec]
-    (assoc rec
-           :depth (update depth attr (fnil inc 0))
-           :seen (conj seen eid))))
+(defn- conj-some! [xs v]
+  (if (nil? v) xs (conj! xs v)))
 
-(defn- seen-eid?
-  [frame eid]
-  (-> frame
-      (get-in [:recursion :seen] #{})
-      (contains? eid)))
+(defrecord Context [db visitor])
 
-(defn- pull-seen-eid
-  [frame frames eid]
-  (when (seen-eid? frame eid)
-    (conj frames (update frame :results conj! {:db/id eid}))))
+(defn visit [^Context context pattern e a v]
+  (when-some [visitor (.-visitor context)]
+    (visitor pattern e a v)))
 
-(defn- single-frame-result
-  [key frame]
-  (some-> (:kvps frame) persistent! (get key)))
+(defprotocol IFrame
+  (-merge [this result])
+  (-run [this context]))
 
-(defn- recursion-result [frame]
-  (single-frame-result ::recursion frame))
+(defrecord ResultFrame [value datoms])
 
-(defn- recursion-frame
-  [parent eid]
-  (let [attr (:attr parent)
-        rec  (push-recursion (:recursion parent) attr eid)]
-    (assoc (subpattern-frame (:pattern parent) [eid] false ::recursion)
-           :recursion rec)))
+(defrecord MultivalAttrFrame [acc ^PullAttr attr datoms]
+  IFrame
+  (-run [this context]
+    (loop [acc acc
+           datoms datoms]
+      (cond+
+       :let [^Datom datom (first-seq datoms)]
 
-(defn- pull-recursion-frame
-  [db [frame & frames]]
-  (if-let [eids (seq (:eids frame))]
-    (let [frame  (reset-frame frame (rest eids) (recursion-result frame))
-          eid    (first eids)]
-      (or (pull-seen-eid frame frames eid)
-          (conj frames frame (recursion-frame frame eid))))
-    (let [kvps    (recursion-result frame)
-          results (cond-> (:results frame)
-                    (seq kvps) (conj! kvps))]
-      (conj frames (assoc frame :state :done :results results)))))
+       (or (nil? datom) (not= (.-a datom) (.-name attr)))
+       [(ResultFrame. ((.-xform attr) (not-empty (persistent! acc))) (or datoms ()))]
 
-(defn- recurse-attr
-  [db attr multi? eids eid parent frames]
-  (let [{:keys [recursion pattern]} parent
-        depth  (-> recursion (get :depth) (get attr 0))]
-    (if (-> pattern :attrs (get attr) :recursion (= depth))
-      (conj frames parent)
-      (pull-recursion-frame
-       db
-       (conj frames parent
-             {:state :recursion :pattern pattern
-              :attr attr :multi? multi? :eids eids
-              :recursion recursion
-              :results (transient [])})))))
+        ; got limit, skip rest of the datoms
+       (and (.-limit attr) (>= (count acc) (.-limit attr)))
+       (loop [datoms datoms]
+         (let [^Datom datom (first-seq datoms)]
+           (if (or (nil? datom) (not= (.-a datom) (.-name attr)))
+             [(ResultFrame. (persistent! acc) (or datoms ()))]
+             (recur (next-seq datoms)))))
 
-(let [pattern (PullSpec. true {})]
-  (defn- expand-frame
-    [parent eid attr-key multi? eids]
-    (let [rec (push-recursion (:recursion parent) attr-key eid)]
-      (-> pattern
-          (subpattern-frame eids multi? attr-key)
-          (assoc :recursion rec)))))
+       :else
+       (recur (conj! acc (.-v datom)) (next-seq datoms))))))
 
-(defn- pull-attr-datoms
-  [db attr-key attr eid forward? datoms opts [parent & frames]]
-  (let [limit (get opts :limit +default-limit+)
-        attr-key (or (:as opts) attr-key)
-        found (not-empty
-               (cond->> datoms
-                 limit (into [] (take limit))))]
-    (if found
-      (let [ref?       (db/ref? db attr)
-            component? (and ref? (db/component? db attr))
-            multi?     (if forward? (db/multival? db attr) (not component?))
-            datom-val  (if forward? (fn [d] (.-v ^Datom d)) (fn [d] (.-e ^Datom d)))]
-        (cond
-          (contains? opts :subpattern)
-          (->> (subpattern-frame (:subpattern opts)
-                                 (mapv datom-val found)
-                                 multi? attr-key)
-               (conj frames parent))
+(defrecord MultivalRefAttrFrame [seen recursion-limits acc pattern ^PullAttr attr datoms]
+  IFrame
+  (-merge [this result]
+    (MultivalRefAttrFrame.
+     seen
+     recursion-limits
+     (conj-some! acc (.-value ^ResultFrame result))
+     pattern
+     attr
+     (next-seq datoms)))
+  (-run [this context]
+    (cond+
+     :let [^Datom datom (first-seq datoms)]
 
-          (contains? opts :recursion)
-          (recurse-attr db attr-key multi?
-                        (mapv datom-val found)
-                        eid parent frames)
+     (or (nil? datom) (not= (.-a datom) (.-name attr)))
+     [(ResultFrame. ((.-xform attr) (not-empty (persistent! acc))) (or datoms ()))]
 
-          (and component? forward?)
-          (->> found
-               (mapv datom-val)
-               (expand-frame parent eid attr-key multi?)
-               (conj frames parent))
+      ; got limit, skip rest of the datoms
+     (and (.-limit attr) (>= (count acc) (.-limit attr)))
+     (loop [datoms datoms]
+       (let [^Datom datom (first-seq datoms)]
+         (if (or (nil? datom) (not= (.-a datom) (.-name attr)))
+           [(ResultFrame. (persistent! acc) (or datoms ()))]
+           (recur (next-seq datoms)))))
 
-          :else
-          (let [as-value  (cond->> datom-val
-                            ref? (comp #(hash-map :db/id %)))
-                single?   (not multi?)]
-            (->> (cond-> (into [] (map as-value) found)
-                   single? first)
-                 (update parent :kvps assoc! attr-key)
-                 (conj frames)))))
-      (->> (cond-> parent
-             (contains? opts :default)
-             (update :kvps assoc! attr-key (:default opts)))
-           (conj frames)))))
+     :let [id (if (.-reverse? attr) (.-e datom) (.-v datom))]
 
-(defn- pull-attr
-  [db spec eid frames]
-  (let [[attr-key opts] spec]
-    (if (= :db/id attr-key)
-      (if (not-empty (db/-datoms db :eavt [eid]))
-        (conj (rest frames)
-              (update (first frames) :kvps assoc! :db/id eid))
-        frames)
-      (let [attr     (:attr opts)
-            forward? (= attr-key attr)
-            results  (if forward?
-                       (db/-datoms db :eavt [eid attr])
-                       (db/-datoms db :avet [attr eid]))]
-        (pull-attr-datoms db attr-key attr eid forward?
-                          results opts frames)))))
+     :else
+     [this (ref-frame context seen recursion-limits pattern attr id)])))
 
-(def ^:private filter-reverse-attrs
-  (filter (fn [[k v]] (not= k (:attr v)))))
+(defrecord AttrsFrame [seen recursion-limits acc ^PullPattern pattern ^PullAttr attr attrs datoms id]
+  IFrame
+  (-merge [this result]
+    (AttrsFrame.
+     seen
+     recursion-limits
+     (assoc-some! acc (.-as ^PullAttr attr) (.-value ^ResultFrame result))
+     pattern
+     (first-seq attrs)
+     (next-seq attrs)
+     (not-empty (or (.-datoms ^ResultFrame result) (next-seq datoms)))
+     id))
+  (-run [this context]
+    (loop [acc    acc
+           ^PullAttr attr   attr
+           attrs  attrs
+           datoms datoms]
+      (cond+
+        ;; exit
+       (and (nil? datoms) (nil? attr))
+       [(->ReverseAttrsFrame seen recursion-limits acc pattern (first-seq (.-reverse-attrs ^PullPattern pattern)) (next-seq (.-reverse-attrs ^PullPattern pattern)) id)]
 
-(defn- expand-reverse-subpattern-frame
-  [parent eid rattrs]
-  (-> (:pattern parent)
-      (assoc :attrs rattrs :wildcard? false)
-      (subpattern-frame [eid] false ::expand-rev)))
+        ;; :db/id
+       (and (some? attr) (= :db/id (.-name ^PullAttr attr)))
+       (recur (assoc! acc (.-as ^PullAttr attr) ((.-xform ^PullAttr attr) id)) (first-seq attrs) (next-seq attrs) datoms)
 
-(defn- expand-result
-  [frames kvps]
-  (->> kvps
-       (persistent!)
-       (update (first frames) :kvps into!)
-       (conj (rest frames))))
+       :let [^Datom datom (first-seq datoms)
+             cmp          (when (and datom attr)
+                            (compare (.-name ^PullAttr attr) (.-a datom)))
+             attr-ahead?  (or (nil? attr) (and cmp (pos? cmp)))
+             datom-ahead? (or (nil? datom) (and cmp (neg? cmp)))]
 
-(defn- pull-expand-reverse-frame
-  [db [frame & frames]]
-  (->> (or (single-frame-result ::expand-rev frame) {})
-       (into! (:expand-kvps frame))
-       (expand-result frames)))
+        ;; wildcard
+       (and (.-wildcard? ^PullPattern pattern) (some? datom) attr-ahead?)
+       (let [datom-attr (lru/-get
+                         (.-pull-attrs (db/unfiltered-db (.-db ^Context context)))
+                         (.-a datom)
+                         #(dpp/parse-attr-name (.-db ^Context context) (.-a datom)))]
+         (recur acc datom-attr (when attr (conj-seq attrs attr)) datoms))
 
-(defn- pull-expand-frame
-  [db [frame & frames]]
-  (if-let [datoms-by-attr (seq (:datoms frame))]
-    (let [[attr datoms] (first datoms-by-attr)
-          opts          (-> frame
-                            (get-in [:pattern :attrs])
-                            (get attr {}))]
-      (pull-attr-datoms db attr attr (:eid frame) true datoms opts
-                        (conj frames (update frame :datoms rest))))
-    (if-let [rattrs (->> (get-in frame [:pattern :attrs])
-                         (into {} filter-reverse-attrs)
-                         not-empty)]
-      (let [frame  (assoc frame
-                          :state       :expand-rev
-                          :expand-kvps (:kvps frame)
-                          :kvps        (transient {}))]
-        (->> rattrs
-             (expand-reverse-subpattern-frame frame (:eid frame))
-             (conj frames frame)))
-      (expand-result frames (:kvps frame)))))
+        ;; advance datom
+       attr-ahead?
+       (recur acc attr attrs (next-seq datoms))
 
-(defn- pull-wildcard-expand
-  [db frame frames eid pattern]
-  (let [datoms (group-by (fn [d] (.-a ^Datom d)) (db/-datoms db :eavt [eid]))
-        {:keys [attr recursion]} frame
-        rec (cond-> recursion
-              (some? attr) (push-recursion attr eid))]
-    (->> {:state :expand :kvps (transient {:db/id eid})
-          :eid eid :pattern pattern :datoms (seq datoms)
-          :recursion rec}
-         (conj frames frame)
-         (pull-expand-frame db))))
+       :do (visit context :db.pull/attr id (.-name ^PullAttr attr) nil)
 
-(defn- pull-wildcard
-  [db frame frames]
-  (let [{:keys [eid pattern]} frame]
-    (or (pull-seen-eid frame frames eid)
-        (pull-wildcard-expand db frame frames eid pattern))))
+        ;; advance attr
+       (and datom-ahead? (nil? attr))
+       (recur acc (first-seq attrs) (next-seq attrs) datoms)
 
-(defn- pull-pattern-frame
-  [db [frame & frames]]
-  (if-let [eids (seq (:eids frame))]
-    (if (:wildcard? frame)
-      (pull-wildcard db
-                     (assoc frame
-                            :specs []
-                            :eid (first eids)
-                            :wildcard? false)
-                     frames)
-      (if-let [specs (seq (:specs frame))]
-        (let [spec       (first specs)
-              pattern    (:pattern frame)
-              new-frames (conj frames (assoc frame :specs (rest specs)))]
-          (pull-attr db spec (first eids) new-frames))
-        (->> frame :kvps persistent! not-empty
-             (reset-frame frame (rest eids))
-             (conj frames)
-             (recur db))))
-    (conj frames (assoc frame :state :done))))
+        ;; default
+       (and datom-ahead? (some? (#?(:clj .-default :cljs :default) attr)))
+       (recur (assoc! acc (.-as ^PullAttr attr) (#?(:clj .-default :cljs :default) attr)) (first-seq attrs) (next-seq attrs) datoms)
 
-(defn- pull-pattern
-  [db frames]
-  (case (:state (first frames))
-    :expand     (recur db (pull-expand-frame db frames))
-    :expand-rev (recur db (pull-expand-reverse-frame db frames))
-    :pattern    (recur db (pull-pattern-frame db frames))
-    :recursion  (recur db (pull-recursion-frame db frames))
-    :done       (let [[f & remaining] frames
-                      result (cond-> (persistent! (:results f))
-                               (not (:multi? f)) first)]
-                  (if (seq remaining)
-                    (->> (cond-> (first remaining)
-                           result (update :kvps assoc! (:attr f) result))
-                         (conj (rest remaining))
-                         (recur db))
-                    result))))
+        ;; xform
+       datom-ahead?
+       (if-some [value ((.-xform ^PullAttr attr) nil)]
+         (recur (assoc! acc (.-as ^PullAttr attr) value) (first-seq attrs) (next-seq attrs) datoms)
+         (recur acc (first-seq attrs) (next-seq attrs) datoms))
 
-(defn pull-spec
-  [db pattern eids multi?]
-  (let [eids (into [] (map #(db/entid-strict db %)) eids)]
-    (pull-pattern db (list (initial-frame pattern eids multi?)))))
+        ;; matching attr
+       (and (.-multival? ^PullAttr attr) (.-ref? ^PullAttr attr))
+       [(AttrsFrame. seen recursion-limits acc pattern attr attrs datoms id)
+        (MultivalRefAttrFrame. seen recursion-limits (transient []) pattern attr datoms)]
 
-(defn pull [db selector eid]
-  {:pre [(db/db? db)]}
-  (pull-spec db (dpp/parse-pull selector) [eid] false))
+       (.-multival? ^PullAttr attr)
+       [(AttrsFrame. seen recursion-limits acc pattern attr attrs datoms id)
+        (MultivalAttrFrame. (transient []) attr datoms)]
 
-(defn pull-many [db selector eids]
-  {:pre [(db/db? db)]}
-  (pull-spec db (dpp/parse-pull selector) eids true))
+       (.-ref? ^PullAttr attr)
+       [(AttrsFrame. seen recursion-limits acc pattern attr attrs datoms id)
+        (ref-frame context seen recursion-limits pattern attr (.-v datom))]
+
+       :else
+       (recur
+        (assoc! acc (.-as ^PullAttr attr) ((.-xform ^PullAttr attr) (.-v datom)))
+        (first-seq attrs)
+        (next-seq attrs)
+        (next-seq datoms))))))
+
+(defrecord ReverseAttrsFrame [seen recursion-limits acc pattern ^PullAttr attr attrs id]
+  IFrame
+  (-merge [this result]
+    (ReverseAttrsFrame.
+     seen
+     recursion-limits
+     (assoc-some! acc (.-as ^PullAttr attr) (.-value ^ResultFrame result))
+     pattern
+     (first-seq attrs)
+     (next-seq attrs)
+     id))
+  (-run [this context]
+    (loop [acc   acc
+           ^PullAttr attr  attr
+           attrs attrs]
+      (cond+
+       (nil? attr)
+       [(ResultFrame. (not-empty (persistent! acc)) nil)]
+
+       :let [name   (.-name ^PullAttr attr)
+             db     (.-db ^Context context)
+             datoms (if (instance? DB db)
+                      (set/slice (.-avet ^DB db) (db/datom db/e0 name id db/tx0) (db/datom db/emax name id db/txmax))
+                      (db/-search db [nil name id]))]
+
+       :do (visit context :db.pull/reverse nil name id)
+
+       (and (empty? datoms) (some? (#?(:clj .-default :cljs :default) attr)))
+       (recur (assoc! acc (.-as ^PullAttr attr) (#?(:clj .-default :cljs :default) attr)) (first-seq attrs) (next-seq attrs))
+
+       (empty? datoms)
+       (recur acc (first-seq attrs) (next-seq attrs))
+
+       (.-component? ^PullAttr attr)
+       [(ReverseAttrsFrame. seen recursion-limits acc pattern attr attrs id)
+        (ref-frame context seen recursion-limits pattern attr (.-e ^Datom (first-seq datoms)))]
+
+       :else
+       [(ReverseAttrsFrame. seen recursion-limits acc pattern attr attrs id)
+        (MultivalRefAttrFrame. seen recursion-limits (transient []) pattern attr datoms)]))))
+
+(defn- auto-expanding? [^PullAttr attr]
+  (or
+   (.-recursive? attr)
+   (and
+    (.-component? attr)
+    (.-wildcard? ^PullPattern (.-pattern attr)))))
+
+(defn ref-frame [context seen recursion-limits pattern ^PullAttr attr id]
+  (cond+
+   (not (auto-expanding? attr))
+   (attrs-frame context seen recursion-limits (.-pattern attr) id)
+
+   (seen id)
+   (ResultFrame. {:db/id id} nil)
+
+   :let [lim (recursion-limits attr)]
+
+   (and lim (<= lim 0))
+   (ResultFrame. nil nil)
+
+   :let [seen' (conj seen id)
+         recursion-limits' (cond
+                             lim                      (update recursion-limits attr dec)
+                             (.-recursion-limit attr) (assoc recursion-limits attr (dec (.-recursion-limit attr)))
+                             :else                    recursion-limits)]
+
+   :else
+   (attrs-frame context seen' recursion-limits' (if (.-recursive? attr) pattern (.-pattern attr)) id)))
+
+(defn attrs-frame [^Context context seen recursion-limits ^PullPattern pattern id]
+  (let [db (.-db context)
+        datoms (cond+
+                (and (.-wildcard? ^PullPattern pattern) (instance? DB db))
+                (set/slice (.-eavt ^DB db) (db/datom id nil nil db/tx0) (db/datom id nil nil db/txmax))
+
+                (.-wildcard? ^PullPattern pattern)
+                (db/-search db [id])
+
+                (nil? (.-first-attr ^PullPattern pattern))
+                nil
+
+                :let [from (.-name ^PullAttr (.-first-attr ^PullPattern pattern))
+                      to   (.-name ^PullAttr (.-last-attr ^PullPattern pattern))]
+
+                (instance? DB db)
+                (set/slice (.-eavt ^DB db) (db/datom id from nil db/tx0) (db/datom id to nil db/txmax))
+
+                :else
+                (->> (db/-seek-datoms db :eavt [id]))
+                (take-while
+                 (fn [^Datom d]
+                   (and
+                    (= (.-e d) id)
+                    (<= (compare (.-a d) to) 0)))))]
+    (when (.-wildcard? ^PullPattern pattern)
+      (visit context :db.pull/wildcard id nil nil))
+    (AttrsFrame.
+     seen
+     recursion-limits
+     (transient {})
+     pattern
+     (first-seq (.-attrs ^PullPattern pattern))
+     (next-seq (.-attrs ^PullPattern pattern))
+     datoms
+     id)))
+
+(defn pull-impl [parsed-opts id]
+  (let [{^Context context :context
+         ^PullPattern pattern :pattern} parsed-opts]
+    (when-some [eid (db/entid (.-db context) id)]
+      (loop [stack (list (attrs-frame context #{} {} pattern eid))]
+        (cond+
+         :let [last   (first-seq stack)
+               stack' (next-seq stack)]
+
+         (not (instance? ResultFrame last))
+         (recur (reduce conj-seq stack' (-run last context)))
+
+         (nil? stack')
+         (.-value ^ResultFrame last)
+
+         :let [penultimate (first-seq stack')
+               stack''     (next-seq stack')]
+
+         :else
+         (recur (conj-seq stack'' (-merge penultimate last))))))))
+
+(defn parse-opts
+  ([db pattern] (parse-opts db pattern nil))
+  ([db pattern {:keys [visitor]}]
+   (tap> db)
+   (tap> (db/unfiltered-db db))
+   (tap> (.-pull-patterns (db/unfiltered-db db)))
+   {:pattern (lru/-get (.-pull-patterns (db/unfiltered-db db)) pattern #(dpp/parse-pattern db pattern))
+    :context (Context. db visitor)}))
+
+(defn pull
+  "Supported opts:
+
+   :visitor a fn of 4 arguments, will be called for every entity/attribute pull touches
+
+   (:db.pull/attr     e   a   nil) - when pulling a normal attribute, no matter if it has value or not
+   (:db.pull/wildcard e   nil nil) - when pulling every attribute on an entity
+   (:db.pull/reverse  nil a   v  ) - when pulling reverse attribute"
+  ([db pattern id] (pull db pattern id {}))
+  ([db pattern id opts]
+   {:pre [(db/db? db)]}
+   (let [parsed-opts (parse-opts db pattern opts)]
+     (pull-impl parsed-opts id))))
+
+(defn pull-many
+  ([db pattern ids] (pull-many db pattern ids {}))
+  ([db pattern ids opts]
+   {:pre [(db/db? db)]}
+   (let [parsed-opts (parse-opts db pattern opts)]
+     (mapv #(pull-impl parsed-opts %) ids))))
+
+(comment
+  (do
+    (set! *warn-on-reflection* true)
+    (require 'datascript.test :reload-all)
+    (binding [clojure.test/*report-counters* (ref clojure.test/*initial-report-counters*)]
+      (clojure.test/test-vars
+       [#'datascript.test.pull-parser/test-parse-pattern
+        #'datascript.test.pull-api/test-pull-attr-spec
+        #'datascript.test.pull-api/test-pull-reverse-attr-spec
+        #'datascript.test.pull-api/test-pull-component-attr
+        #'datascript.test.pull-api/test-pull-wildcard
+        #'datascript.test.pull-api/test-pull-limit
+        #'datascript.test.pull-api/test-pull-default
+        #'datascript.test.pull-api/test-pull-as
+        #'datascript.test.pull-api/test-pull-attr-with-opts
+        #'datascript.test.pull-api/test-pull-map
+        #'datascript.test.pull-api/test-pull-recursion
+        #'datascript.test.pull-api/test-dual-recursion
+        #'datascript.test.pull-api/test-deep-recursion
+        #'datascript.test.pull-api/test-lookup-ref-pull])
+      @clojure.test/*report-counters*)))
