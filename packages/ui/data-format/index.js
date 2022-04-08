@@ -23,6 +23,7 @@ export const convertDecimal = (
   action = 'divide',
   decimals = COMMON_DECIMALS,
 ) => {
+  if (!isValidNumber(numOrStr)) return numOrStr
   if (action === 'divide') {
     return new Big(numOrStr).div(`1e${decimals}`).toString(10)
   } else if (action === 'multiply') {
@@ -86,7 +87,7 @@ export const isValidNumber = numOrStr => {
 export const formatHexToDecimal = numOrStr => {
   if (!isValidNumber(numOrStr)) return numOrStr
   return isHexPrefixed(numOrStr)
-    ? new BN(stripHexPrefix(numOrStr), 16).toString()
+    ? new BN(stripHexPrefix(numOrStr), 16).toString(10)
     : numOrStr
 }
 

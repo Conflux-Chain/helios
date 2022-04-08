@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
-import {roundBalance} from '@fluent-wallet/data-format'
+import {formatBalance, GWEI_DECIMALS} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {DisplayBalance, CustomTag} from '../components'
 import {useNetworkTypeIsCfx, useCurrentTicker} from '../hooks/useApi'
@@ -35,10 +35,17 @@ function GasFee({
   const isBeAllPayed = willPayCollateral === false && willPayTxFee === false
   const partPayedFeeDrip =
     willPayCollateral === false ? gasFeeDrip : storageFeeDrip
+  const partSponsoredFeeDrip =
+    willPayCollateral === false ? storageFeeDrip : gasFeeDrip
   const realPayedFeeDrip = useDebouncedValue(
     isBeAllPayed ? '0x0' : isBePayed ? partPayedFeeDrip : txFeeDrip,
     [isBeAllPayed, isBePayed, partPayedFeeDrip, txFeeDrip],
   )
+  const sponsoredFeeDrip = useDebouncedValue(
+    isBeAllPayed ? txFeeDrip : isBePayed ? partSponsoredFeeDrip : '0x0',
+    [isBeAllPayed, isBePayed, partPayedFeeDrip, txFeeDrip],
+  )
+
   const gasPrice = useDebouncedValue(_gasPrice, [_gasPrice])
 
   return (
@@ -66,28 +73,32 @@ function GasFee({
         <DisplayBalance
           id="realPayedFee"
           balance={realPayedFeeDrip}
-          maxWidth={234}
-          maxWidthStyle="max-w-[234px]"
-          className="text-base mb-0.5"
+          maxWidth={202}
+          maxWidthStyle="max-w-[202px]"
+          className="text-lg mb-0.5 font-medium"
           symbol={symbol}
           decimals={decimals}
-          initialFontSize={16}
+          initialFontSize={20}
         />
         {isBePayed && (
-          <DisplayBalance
-            id="txFee"
-            balance={txFeeDrip || '0x0'}
-            maxWidth={300}
-            maxWidthStyle="max-w-[300px]"
-            className="!text-gray-40 line-through !font-normal mb-0.5"
-            symbol={symbol}
-            decimals={decimals}
-          />
+          <div className="flex text-gray-40">
+            <span>{`${t('sponsored')}:`}&nbsp;</span>
+            <DisplayBalance
+              id="sponsoredFee"
+              balance={sponsoredFeeDrip}
+              maxWidth={230}
+              maxWidthStyle="max-w-[230px]"
+              className="!text-gray-40 !font-normal mb-0.5"
+              symbol={symbol}
+              decimals={decimals}
+            />
+          </div>
         )}
         {showDrip && (
-          <span className="text-xs text-gray-60">{`${roundBalance(gasPrice)} ${
-            networkTypeIsCfx ? 'Drip' : 'Gwei'
-          }`}</span>
+          <span className="text-xs text-gray-60">{`${formatBalance(
+            gasPrice,
+            GWEI_DECIMALS,
+          )} ${networkTypeIsCfx ? 'GDrip' : 'GWei'}`}</span>
         )}
         {isBePayed && (
           <CustomTag
@@ -96,7 +107,9 @@ function GasFee({
             backgroundColor="bg-[#44d7b6]"
             className="absolute right-0 top-0 !h-6 px-2"
           >
-            <span className="text-2xs text-white">{t('sponsored')}</span>
+            <span className="text-2xs text-white">
+              {isBeAllPayed ? t('sponsored') : t('partSponsored')}
+            </span>
           </CustomTag>
         )}
       </div>
