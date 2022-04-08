@@ -32,8 +32,7 @@ const formatInputValue = (targetValue, decimals) => {
 
 function NumberInput({onChange, value, decimals = 0, ...props}) {
   const onInputChange = useDebouncedCallback(value => {
-    const targetValue = value
-    const formatValue = formatInputValue(targetValue, decimals)
+    const formatValue = formatInputValue(value, decimals)
     onChange?.(formatValue)
   }, 100)
 
