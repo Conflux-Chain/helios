@@ -352,7 +352,7 @@ export const main = ({
             setTxExecuted({hash, receipt})
             keepTrack(50 * cacheTime)
           } else {
-            setTxFailed({hash, err: 'tx failed'})
+            setTxFailed({hash, error: 'tx failed'})
             updateBadge(getUnfinishedTxCount())
             getExt().then(ext =>
               ext.notifications.create(hash, {

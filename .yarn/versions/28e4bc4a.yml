@@ -14,6 +14,7 @@ releases:
   "@fluent-wallet/rpc-engine": major
   "@fluent-wallet/wallet_get-address-private-key": patch
   "@fluent-wallet/wallet_get-permissions": major
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
   "@fluent-wallet/wallet_handle-unfinished-eth-tx": minor
   "@fluent-wallet/wallet_request-permissions": major
   "@fluent-wallet/wallet_send-transaction": patch
