@@ -95,13 +95,29 @@ function validateLockState({req, rpcStore, db}) {
   }
 }
 
+const METHOD_SUPPORT_BOTH_NETWORK = [
+  'net_version',
+  'cfx_chainId',
+  'eth_chainId',
+  'cfx_accounts',
+  'eth_accounts',
+  'cfx_requestAccounts',
+  'eth_requestAccounts',
+  'personal_sign',
+  'eth_signTypedData_v4',
+]
+
+function isMethodSupportBothNetwork(methodName) {
+  return (
+    methodName.startsWith('wallet_') ||
+    METHOD_SUPPORT_BOTH_NETWORK.includes(methodName)
+  )
+}
+
 function validateNetworkSupport({req}) {
   const {method, network} = req
 
-  const bothSupport =
-    method.startsWith('wallet') ||
-    method.startsWith('personal') ||
-    method === 'eth_signTypedData_v4'
+  const bothSupport = isMethodSupportBothNetwork(method)
   if (bothSupport) return
 
   const cfxRpc = method.startsWith('cfx') || method.startsWith('txpool')
