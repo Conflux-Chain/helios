@@ -34,10 +34,12 @@ function AccountManagement() {
   const {data, mutate: mutateCurrentAddress} = useCurrentAddress()
   const networkName = data?.network?.name ?? ''
   const currentNetworkId = data?.network?.eid
-  const {data: allAccountGroups} = useAccountList({
-    networkId: currentNetworkId,
-    groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
-  })
+  const {data: allAccountGroups, mutate: mutateAllAccountGroups} =
+    useAccountList({
+      networkId: currentNetworkId,
+      groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+      includeHidden: true,
+    })
   const accountGroupData = searchedAccountGroup
     ? Object.values(searchedAccountGroup)
     : Object.values(allAccountGroups)
@@ -67,9 +69,11 @@ function AccountManagement() {
     }
     // delete account
     setRefreshDataStatus(!refreshDataStatus)
-    return mutateCurrentAddress().then(() => {
-      clearPasswordInfo()
-    })
+    return Promise.all([mutateCurrentAddress(), mutateAllAccountGroups()]).then(
+      () => {
+        clearPasswordInfo()
+      },
+    )
   }
 
   const clearPasswordInfo = () => {
@@ -94,7 +98,9 @@ function AccountManagement() {
       request(rpcMethod, params)
         .then(() => {
           setRefreshDataStatus(!refreshDataStatus)
-          mutateCurrentAddress().then(resolve)
+          Promise.all([mutateCurrentAddress(), mutateAllAccountGroups()]).then(
+            resolve,
+          )
         })
         .catch(e => {
           Message.error({

@@ -41,9 +41,10 @@ const SearchAccount = forwardRef(function SearchAccount(
   })
 
   useEffect(() => {
-    if (!Object.keys(accountList).length) onSearchCallback?.(null)
-    else onSearchCallback?.(accountList)
-  }, [refreshDataStatus, accountList, onSearchCallback])
+    if (!Object.keys(accountList).length && !debouncedSearchAccount) {
+      onSearchCallback?.(null)
+    } else onSearchCallback?.(accountList)
+  }, [refreshDataStatus, accountList, onSearchCallback, debouncedSearchAccount])
 
   return (
     <SearchInput

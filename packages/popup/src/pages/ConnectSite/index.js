@@ -78,8 +78,7 @@ function ConnectSitesList({
           ) : (
             accountGroupData.map(
               ({nickname, account, vault, eid}) =>
-                !!Object.values(account).filter(({hidden}) => !hidden)
-                  .length && (
+                !!Object.values(account).length && (
                   <div key={eid}>
                     {vault?.type === 'pk' ? null : (
                       <div className="flex items-center ml-3 mt-0.5">
@@ -97,58 +96,48 @@ function ConnectSitesList({
                     )}
                     {Object.values(account).map(
                       (
-                        {
-                          eid: accountId,
-                          nickname,
-                          currentAddress,
-                          selected,
-                          hidden,
-                        },
+                        {eid: accountId, nickname, currentAddress, selected},
                         index,
-                      ) =>
-                        !hidden && (
-                          <div
-                            aria-hidden="true"
-                            onClick={() => onSelectSingleAccount(accountId)}
-                            key={accountId}
-                            id={`item-${index}`}
-                            className="flex px-3 items-center h-15 cursor-pointer"
-                          >
-                            <div className="flex w-full">
-                              <Avatar
-                                className="w-5 h-5 mr-2"
-                                diameter={20}
-                                accountIdentity={accountId}
-                              />
-                              <div className="flex-1">
-                                <p className="text-xs text-gray-40">
-                                  {nickname}
-                                </p>
-                                <p className="text-sm text-gray-80">
-                                  {shortenAddress(
-                                    currentAddress?.value ||
-                                      currentAddress?.hex,
-                                  )}
-                                </p>
-                              </div>
-                              <div className="flex items-center">
-                                {selected ? (
-                                  <img
-                                    src="/images/location.svg"
-                                    alt="current address"
-                                    className="mr-3 w-3 h-3"
-                                    id="location"
-                                  />
-                                ) : null}
-                                <Checkbox
-                                  checked={checkboxStatusObj[accountId]}
-                                  id={`check-${index}`}
-                                  iconClassName="mr-0"
+                      ) => (
+                        <div
+                          aria-hidden="true"
+                          onClick={() => onSelectSingleAccount(accountId)}
+                          key={accountId}
+                          id={`item-${index}`}
+                          className="flex px-3 items-center h-15 cursor-pointer"
+                        >
+                          <div className="flex w-full">
+                            <Avatar
+                              className="w-5 h-5 mr-2"
+                              diameter={20}
+                              accountIdentity={accountId}
+                            />
+                            <div className="flex-1">
+                              <p className="text-xs text-gray-40">{nickname}</p>
+                              <p className="text-sm text-gray-80">
+                                {shortenAddress(
+                                  currentAddress?.value || currentAddress?.hex,
+                                )}
+                              </p>
+                            </div>
+                            <div className="flex items-center">
+                              {selected ? (
+                                <img
+                                  src="/images/location.svg"
+                                  alt="current address"
+                                  className="mr-3 w-3 h-3"
+                                  id="location"
                                 />
-                              </div>
+                              ) : null}
+                              <Checkbox
+                                checked={checkboxStatusObj[accountId]}
+                                id={`check-${index}`}
+                                iconClassName="mr-0"
+                              />
                             </div>
                           </div>
-                        ),
+                        </div>
+                      ),
                     )}
                   </div>
                 ),
@@ -169,6 +158,8 @@ ConnectSitesList.propTypes = {
 function ConnectSite() {
   const {t} = useTranslation()
   const [confirmAccounts, setConfirmAccounts] = useState([])
+  const [allAccountGroupData, setAllAccountGroupData] = useState([])
+  const [accountData, setAccountData] = useState([])
   const [networkContent, setNetworkContent] = useState('')
   const [networkShow, setNetworkShow] = useState(false)
   const [networkIcon, setNetworkIcon] = useState('')
@@ -183,12 +174,9 @@ function ConnectSite() {
       },
     },
   } = useCurrentAddress()
-  const {data: allAccountGroups} = useAccountList({networkId: currentNetworkId})
-
-  const allAccountGroupData = Object.values(allAccountGroups)
-  const accountData = allAccountGroupData.reduce((acc, cur) => {
-    return {...acc, ...cur.account}
-  }, {})
+  const {data: allAccountGroups} = useAccountList({
+    networkId: currentNetworkId,
+  })
 
   useEffect(() => {
     setNetworkIcon(currentNetworkIcon || '')
@@ -196,11 +184,20 @@ function ConnectSite() {
   }, [currentNetworkIcon, currentNetworkName])
 
   useEffect(() => {
+    const allAccountGroupsArr = Object.values(allAccountGroups)
+    if (allAccountGroupsArr.length) {
+      setAllAccountGroupData(allAccountGroupsArr)
+      setAccountData(
+        allAccountGroupsArr.reduce((acc, cur) => {
+          return {...acc, ...cur.account}
+        }, {}),
+      )
+    }
+  }, [allAccountGroups])
+
+  useEffect(() => {
     const accountDataKeys = Object.keys(accountData)
-    if (
-      accountDataKeys.length &&
-      accountDataKeys.length !== Object.keys(checkboxStatusObj).length
-    ) {
+    if (accountDataKeys.length) {
       const ret = {}
       accountDataKeys.forEach(eid => {
         ret[eid] = checkboxStatusObj?.[eid] ?? !!accountData[eid]?.selected
@@ -208,7 +205,7 @@ function ConnectSite() {
       setCheckboxStatusObj({...ret})
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Object.keys(accountData).length, Object.keys(checkboxStatusObj).length])
+  }, [accountData, Object.keys(checkboxStatusObj).length])
 
   useEffect(() => {
     setConfirmAccounts(
@@ -231,7 +228,7 @@ function ConnectSite() {
     })
   }
 
-  return Object.values(allAccountGroups).length ? (
+  return allAccountGroupData.length ? (
     <div
       id="connectSiteContainer"
       className="flex flex-col h-full w-full justify-between bg-blue-circles bg-no-repeat pb-4"
