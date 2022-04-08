@@ -1134,7 +1134,7 @@ describe('wallet_handleUnfinishedCFXTx', function () {
 
       expect(inputs.db.setTxFailed).toHaveBeenLastCalledWith({
         hash: 'txhash',
-        err: 'txExecErrorMsg',
+        error: 'txExecErrorMsg',
       })
     })
     test('packaged, failed, status = 0x1, cfx_getTransactionReceipt failed', async () => {
