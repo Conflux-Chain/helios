@@ -22,6 +22,7 @@
     "@fluent-wallet/cfx_get-admin": "workspace:packages/rpcs/cfx_getAdmin",
     "@fluent-wallet/cfx_get-balance": "workspace:packages/rpcs/cfx_getBalance",
     "@fluent-wallet/cfx_get-best-block-hash": "workspace:packages/rpcs/cfx_getBestBlockHash",
+    "@fluent-wallet/cfx_get-block-by-epoch-number": "workspace:*",
     "@fluent-wallet/cfx_get-block-by-hash": "workspace:packages/rpcs/cfx_getBlockByHash",
     "@fluent-wallet/cfx_get-block-by-hash-with-pivot-assumption": "workspace:packages/rpcs/cfx_getBlockByHashWithPivotAssumption",
     "@fluent-wallet/cfx_get-block-reward-info": "workspace:packages/rpcs/cfx_getBlockRewardInfo",
