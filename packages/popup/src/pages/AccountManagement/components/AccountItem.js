@@ -15,6 +15,7 @@ const {
   WALLET_EXPORT_ACCOUNT,
   WALLET_DELETE_ACCOUNT_GROUP,
   WALLET_UPDATE_ACCOUNT,
+  ACCOUNT_GROUP_TYPE,
 } = RPC_METHODS
 
 function AccountItem({
@@ -88,18 +89,20 @@ function AccountItem({
           className="text-gray-80"
         />
       </div>
-      <WrapIcon
-        size="w-5 h-5"
-        id="export-account"
-        onClick={() => {
-          onOpenConfirmPassword?.(WALLET_EXPORT_ACCOUNT, {
-            accountId,
-          })
-        }}
-      >
-        <KeyOutlined className="w-3 h-3 text-primary" />
-      </WrapIcon>
-      {groupType !== 'pk' && (
+      {groupType !== ACCOUNT_GROUP_TYPE.HW && (
+        <WrapIcon
+          size="w-5 h-5"
+          id="export-account"
+          onClick={() => {
+            onOpenConfirmPassword?.(WALLET_EXPORT_ACCOUNT, {
+              accountId,
+            })
+          }}
+        >
+          <KeyOutlined className="w-3 h-3 text-primary" />
+        </WrapIcon>
+      )}
+      {groupType !== ACCOUNT_GROUP_TYPE.PK && (
         <SwitchButtonGroup
           showLeft={hidden}
           onSwitch={onSwitchAccount}
@@ -108,7 +111,7 @@ function AccountItem({
         />
       )}
       {/* delete pk account group */}
-      {groupType === 'pk' && showDelete && (
+      {groupType === ACCOUNT_GROUP_TYPE.PK && showDelete && (
         <div
           aria-hidden="true"
           className="text-xs cursor-pointer text-gray-60 hover:text-primary ml-3"

@@ -274,6 +274,7 @@ const zh = {
     delete: '删除',
     groupDeleteWarning: '不能删除当前账户组',
     accountHideWarning: '不能隐藏当前账户',
+    ledgerTips: 'This account can only be used on {{network}}.',
 
     // Network Management
     networkManagement: '网络管理',
@@ -331,13 +332,15 @@ const zh = {
     // hardware guard
     connectHardwareWallet: '连接硬件钱包',
     supportLedger: '现已支持 Ledger 硬件钱包',
-    ledgerGuardDes: '如何在 Ledger 中创建一个 Conflux 钱包?',
+    ledgerGuardDes: 'How to create a Conflux Wallet in Ledger?',
     followConnectLedgerSteps: '请根据以下步骤连接 Ledger',
     steps: '步骤 {{number}}',
     pluginHardwareWallet: '请将硬件钱包插入电脑的 USB 端口',
     enterPinCode: '在硬件钱包上输入 PIN 码',
-    selectConfluxApp: '选择并打开 Conflux App',
+    selectConfluxApp: 'Select and open the App for {{chainName}} in Ledger',
     ready: '开始连接',
+    specifiedConnectedChain:
+      '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
 
     // connect hardware wallet
     searchHwWallet: '寻找钱包中',
@@ -347,8 +350,9 @@ const zh = {
     waitForPermission: '等待授权',
     connectFailed: '连接失败',
     retry: '重试',
-    openConfluxApp: '打开 Conflux App',
-    openConfluxAppDes: '在硬件钱包中选择并打开 Conflux App',
+    openConfluxApp: 'Open the App for {{chainName}}',
+    openConfluxAppDes:
+      'Select and open the App for {{chainName}} in your Ledger device.',
     chooseAddress: '选择地址',
     hdPath: '钱包路径',
     chooseHwAddress: '选择你要导入的钱包地址:',
@@ -403,7 +407,8 @@ const zh = {
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger 未连接',
     openExpandView: '在 Fluent 扩展视图连接硬件钱包',
-    hwOpenApp: '请确保 Conflux App 已打开，再点击确认',
+    hwOpenApp:
+      'Before clicking confirm, make sure the App for {{chainName}} is open.',
 
     // error page
     errorTile: '错误',

@@ -13,11 +13,12 @@ import {
   NoResult,
   WrapIcon,
   StretchInput,
+  LedgerGroupTag,
 } from '../../../components'
 import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
 import {RPC_METHODS, ROUTES} from '../../../constants'
 
-const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
+const {WALLET_SET_CURRENT_ACCOUNT, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 const {SELECT_CREATE_TYPE} = ROUTES
 
 function AccountItem({
@@ -29,7 +30,12 @@ function AccountItem({
   index,
 }) {
   const {t} = useTranslation()
-  const {mutate} = useCurrentAddress()
+  const {
+    mutate,
+    data: {
+      network: {type: currentNetworkType},
+    },
+  } = useCurrentAddress()
   const onChangeAccount = accountId => {
     request(WALLET_SET_CURRENT_ACCOUNT, [accountId])
       .then(() => {
@@ -49,16 +55,21 @@ function AccountItem({
 
   return (
     !!accounts.length && (
-      <div className={`bg-gray-0 rounded ${index !== 0 ? 'mt-4' : ''}`}>
-        {groupType === 'pk' ? null : (
+      <div
+        className={`bg-gray-0 relative rounded ${index !== 0 ? 'mt-4' : ''}`}
+      >
+        {groupType !== ACCOUNT_GROUP_TYPE.PK && (
           <div className="flex items-center ml-3 pt-2.5">
-            {groupType === 'hd' && (
+            {groupType === ACCOUNT_GROUP_TYPE.HD && (
               <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
                 <img src="/images/seed-group-icon.svg" alt="group-icon" />
               </WrapIcon>
             )}
             <p className="text-gray-40 text-xs">{nickname}</p>
           </div>
+        )}
+        {groupType === ACCOUNT_GROUP_TYPE.HW && (
+          <LedgerGroupTag networkType={currentNetworkType} />
         )}
         {accounts.map(
           ({

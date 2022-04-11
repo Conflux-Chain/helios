@@ -6,7 +6,7 @@ import {isUndefined} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
 import Loading from '@fluent-wallet/component-loading'
-import {CFX_DECIMALS} from '@fluent-wallet/data-format'
+import {COMMON_DECIMALS} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Checkbox from '@fluent-wallet/component-checkbox'
 import Button from '@fluent-wallet/component-button'
@@ -19,14 +19,18 @@ import {
 } from '@fluent-wallet/component-icons'
 import {DEFAULT_CFX_HDPATH} from '@fluent-wallet/consts'
 import {encode} from '@fluent-wallet/base32-address'
-import {Conflux} from '@fluent-wallet/ledger'
 import {TitleNav, CompWithLabel, Avatar, DisplayBalance} from '../../components'
-import {RPC_METHODS, HARDWARE_ACCOUNT_PAGE_LIMIT} from '../../constants'
+import {
+  RPC_METHODS,
+  HARDWARE_ACCOUNT_PAGE_LIMIT,
+  NETWORK_TYPE,
+} from '../../constants'
 import {
   useCurrentAddress,
   useBalance,
   useQueryImportedAddress,
 } from '../../hooks/useApi'
+import {useLedgerBindingApi} from '../../hooks'
 import useLoading from '../../hooks/useLoading'
 import useImportHWParams from './useImportHWParams'
 import {request} from '../../utils'
@@ -35,7 +39,6 @@ const {
   WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT,
   WALLETDB_REFETCH_BALANCE,
 } = RPC_METHODS
-const cfx = new Conflux()
 
 function ImportingResults({importStatus}) {
   const {t} = useTranslation()
@@ -100,20 +103,28 @@ function ImportHwAccount() {
   const {setLoading} = useLoading()
   const {
     data: {
-      network: {eid: networkId, netId},
+      network: {
+        eid: networkId,
+        netId,
+        type,
+        ticker: {symbol},
+      },
     },
   } = useCurrentAddress()
   const {data: importedAddressData} = useQueryImportedAddress(networkId)
+  const ledgerBindingApi = useLedgerBindingApi()
+
   const {value: addressList, loading} = useAsync(async () => {
     let addresses = []
     try {
-      addresses = await cfx.getAddressList(
-        new Array(HARDWARE_ACCOUNT_PAGE_LIMIT)
-          .fill('')
-          .map((_item, index) => index + offset),
-      )
+      if (ledgerBindingApi) {
+        addresses = await ledgerBindingApi.getAddressList(
+          new Array(HARDWARE_ACCOUNT_PAGE_LIMIT)
+            .fill('')
+            .map((_item, index) => index + offset),
+        )
+      }
     } catch (e) {
-      // TODO: error message
       Message.error({
         content:
           e?.appCode == 5031
@@ -123,29 +134,38 @@ function ImportHwAccount() {
         duration: 1,
       })
     }
-    return addresses
-  }, [offset])
+    return addresses?.length
+      ? addresses.map(({address, hdPath}) => {
+          return {address: address?.toLowerCase?.(), hdPath}
+        })
+      : addresses
+  }, [offset, ledgerBindingApi])
 
   const {value: deviceInfo} = useAsync(async () => {
-    const info = await cfx.getDeviceInfo()
-    return info
-  }, [])
+    if (ledgerBindingApi) {
+      const info = await ledgerBindingApi.getDeviceInfo()
+      return info
+    }
+  }, [ledgerBindingApi])
 
   const {params: hwParams, nextAccountIndex} = useImportHWParams(
     deviceInfo?.name,
   )
 
-  // TODO： take care when add multiple chain
-  const base32Address = useMemo(() => {
+  const displayAddresses = useMemo(() => {
     if (isUndefined(netId) || isUndefined(addressList)) {
       return []
     }
-    return addressList.map(({address}) => encode(address, netId))
-  }, [addressList, netId])
+    return addressList.map(({address}) =>
+      type === NETWORK_TYPE.CFX ? encode(address, netId) : address,
+    )
+  }, [addressList, netId, type])
 
   useEffect(() => {
-    setLoading(loading)
-  }, [loading, setLoading])
+    if (ledgerBindingApi) {
+      setLoading(loading)
+    }
+  }, [loading, setLoading, ledgerBindingApi])
 
   useEffect(() => {
     if (addressList?.length) {
@@ -197,10 +217,9 @@ function ImportHwAccount() {
     }
   }
   const balances = useBalance(
-    base32Address?.length ? base32Address : null,
+    displayAddresses?.length ? displayAddresses : null,
     networkId,
   )
-
   const onImportAccount = () => {
     let chosenBase32Address = []
     let accountGroupData = {}
@@ -208,7 +227,7 @@ function ImportHwAccount() {
       if (checkboxStatusObj?.[address] && !importedAddressData?.[address]) {
         accountGroupData[address] = hdPath
         chosenBase32Address.push({
-          address: base32Address[index],
+          address: displayAddresses[index],
           nickname: `${deviceInfo.name}-${
             nextAccountIndex + chosenBase32Address.length
           }`,
@@ -219,7 +238,11 @@ function ImportHwAccount() {
     if ('accountGroupData' in hwParams) {
       accountGroupData = {...accountGroupData, ...hwParams.accountGroupData}
     }
-    let params = {...hwParams, accountGroupData, address: chosenBase32Address}
+    let params = {
+      ...hwParams,
+      accountGroupData,
+      address: chosenBase32Address,
+    }
     setImportStatus('loading')
     request(WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT, params)
       .then(() => {
@@ -235,7 +258,7 @@ function ImportHwAccount() {
       })
   }
 
-  if (!deviceInfo?.name || isUndefined(networkId)) {
+  if (!deviceInfo?.name || isUndefined(networkId) || !ledgerBindingApi) {
     return null
   }
   if (importStatus) {
@@ -319,19 +342,19 @@ function ImportHwAccount() {
                     />
                     <div className="flex-1">
                       <p className="text-xs text-gray-40">
-                        {base32Address?.[index]
-                          ? shortenAddress(base32Address[index])
+                        {displayAddresses?.[index]
+                          ? shortenAddress(displayAddresses[index])
                           : ''}
                       </p>
                       <DisplayBalance
                         balance={
-                          balances?.[base32Address?.[index]]?.['0x0'] || '0'
+                          balances?.[displayAddresses?.[index]]?.['0x0'] || '0'
                         }
                         maxWidth={264}
                         maxWidthStyle="max-w-[264px]"
                         className="!text-gray-80 !font-normal"
-                        decimals={CFX_DECIMALS}
-                        symbol="CFX"
+                        decimals={COMMON_DECIMALS}
+                        symbol={symbol || ''}
                         id="hwAddressCfxBalance"
                       />
                     </div>
@@ -377,7 +400,7 @@ function ImportHwAccount() {
           className="w-70 mx-auto mt-6"
           onClick={onImportAccount}
           disabled={
-            !base32Address?.length ||
+            !displayAddresses?.length ||
             loading ||
             !Object.keys(hwParams).length ||
             Object.keys(checkboxStatusObj).filter(

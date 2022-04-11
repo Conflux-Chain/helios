@@ -1,8 +1,14 @@
 import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
-import {useTranslation} from 'react-i18next'
-import {TitleNav, DiscSerialNumber} from '../../components/'
-import {ROUTES} from '../../constants'
+import {HeartBeatOutlined} from '@fluent-wallet/component-icons'
+import {useTranslation, Trans} from 'react-i18next'
+import {
+  TitleNav,
+  DiscSerialNumber,
+  CurrentNetworkDisplay,
+} from '../../components/'
+import {ROUTES, NETWORK_TYPE} from '../../constants'
+import {useCurrentAddress} from '../../hooks/useApi'
 
 const {CONNECT_HARDWARE_WALLET} = ROUTES
 function StepItem({serialNumber, des, isLast = false}) {
@@ -34,6 +40,11 @@ StepItem.propTypes = {
 
 function HardwareGuard() {
   const {t} = useTranslation()
+  const {
+    data: {
+      network: {type: networkType, name: chainName},
+    },
+  } = useCurrentAddress()
 
   const onClick = () => {
     window &&
@@ -45,6 +56,7 @@ function HardwareGuard() {
         )}#${CONNECT_HARDWARE_WALLET}`,
       )
   }
+
   return (
     <div
       id="hardware-guard"
@@ -52,19 +64,45 @@ function HardwareGuard() {
     >
       <div className="flex-1 px-4">
         <TitleNav title={t('connectHardwareWallet')} />
-        <div className="mt-3 rounded-xl px-4 pt-4 pb-8 bg-guard-banner">
-          <p className="text-sm text-gray-80 mb-2 font-medium">
+        <div className="flex items-center mt-5">
+          <HeartBeatOutlined className="text-[#333] w-4 h-4 mr-1" />
+          <Trans
+            i18nKey="specifiedConnectedChain"
+            values={{chainName: chainName || ''}}
+            components={{
+              Container: <div className="flex items-center text-gray-80" />,
+              Content: <div className="mr-1" />,
+              CurrentNetworkDisplay: (
+                <CurrentNetworkDisplay
+                  contentClassName={`${
+                    networkType == NETWORK_TYPE.CFX
+                      ? 'text-[#1E3DE4]'
+                      : 'text-[#17B38A]'
+                  } font-medium`}
+                />
+              ),
+            }}
+          />
+        </div>
+        <div
+          className={`mt-3 rounded-xl px-4 bg-guard-banner h-[110px] flex flex-col ${
+            networkType == NETWORK_TYPE.CFX ? 'pt-4' : 'justify-center'
+          }`}
+        >
+          <p className="text-sm text-gray-80 font-medium">
             {t('supportLedger')}
           </p>
-          <a
-            href="https://fluent-wallet.zendesk.com/hc/en-001/articles/4414201694235-Set-up-the-Ledger-Nano-S-and-install-the-Conflux-Ledger-App"
-            target="_blank"
-            id="ledger-guard-link"
-            className="text-primary w-56 block text-sm"
-            rel="noreferrer"
-          >
-            {t('ledgerGuardDes')}
-          </a>
+          {networkType == NETWORK_TYPE.CFX && (
+            <a
+              href="https://fluent-wallet.zendesk.com/hc/en-001/articles/4414201694235-Set-up-the-Ledger-Nano-S-and-install-the-Conflux-Ledger-App"
+              target="_blank"
+              id="ledger-guard-link"
+              className="text-primary w-56 block text-sm mt-2"
+              rel="noreferrer"
+            >
+              {t('ledgerGuardDes')}
+            </a>
+          )}
         </div>
         <div className="font-medium	text-sm px-2 mt-8 mb-4">
           {t('followConnectLedgerSteps')}
@@ -74,7 +112,7 @@ function HardwareGuard() {
           <StepItem serialNumber="2" des={t('enterPinCode')} />
           <StepItem
             serialNumber="3"
-            des={t('selectConfluxApp')}
+            des={t('selectConfluxApp', {chainName})}
             isLast={true}
           />
         </div>

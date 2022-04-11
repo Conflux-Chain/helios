@@ -284,6 +284,7 @@ const ru = {
     delete: 'Удалить',
     groupDeleteWarning: 'Нельзя удалить данную группу аккаунтов.',
     accountHideWarning: 'Нельзя скрыть данный аккаунт.',
+    ledgerTips: 'This account can only be used on {{network}}.',
 
     // Управление сетями
     networkManagement: 'Управление сетями',
@@ -345,14 +346,16 @@ const ru = {
     // аппаратный кошелек
     connectHardwareWallet: 'Подключить аппаратный кошелек',
     supportLedger: 'Добавлена поддержка Ledger .',
-    ledgerGuardDes: 'Создать кошелек Conflux в Ledger?',
+    ledgerGuardDes: 'How to create a Conflux Wallet in Ledger?',
     followConnectLedgerSteps:
       'Пожалуйста, следуйте данной пошаговой инструкции для подключения Ledger.',
     steps: 'Шаг {{number}}',
     pluginHardwareWallet: 'Вставьте Ваш аппаратный кошелек в USB порт.',
     enterPinCode: 'Введите PIN код.',
-    selectConfluxApp: 'Выберите и откройте приложение Conflux',
+    selectConfluxApp: 'Select and open the App for {{chainName}} in Ledger',
     ready: 'Готово',
+    specifiedConnectedChain:
+      '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
 
     // подключение аппаратного кошелька
     searchHwWallet: 'Поиск кошелька',
@@ -363,9 +366,9 @@ const ru = {
     waitForPermission: 'Дождитесь разрешения',
     connectFailed: 'Ошибка соединения',
     retry: 'Повторить',
-    openConfluxApp: 'Открыть приложение Conflux',
+    openConfluxApp: 'Open the App for {{chainName}}',
     openConfluxAppDes:
-      'Выберите и откройте приложение Conflux на Вашем устройстве Ledger.',
+      'Select and open the App for {{chainName}} in your Ledger device.',
     chooseAddress: 'Выбрать адрес',
     hdPath: 'HD Путь',
     chooseHwAddress: 'Выберите адрес, который необходимо импортировать:',
@@ -422,7 +425,8 @@ const ru = {
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger не подсоединен',
     openExpandView: 'Откройте Fluent и проверьте подключение',
-    hwOpenApp: 'Перед потверждением, убедитесь что приложение Conflux открыто.',
+    hwOpenApp:
+      'Before clicking confirm, make sure the App for {{chainName}} is open.',
 
     // error page
     errorTile: 'Ошибка',

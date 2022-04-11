@@ -7,6 +7,7 @@ import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {estimate} from '@fluent-wallet/estimate-tx'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
+import {Conflux, Ethereum} from '@fluent-wallet/ledger'
 import {
   COMMON_DECIMALS,
   convertValueToData,
@@ -497,4 +498,23 @@ export const useCheckImage = url => {
       })
   }, [url])
   return isImg
+}
+
+export const useLedgerBindingApi = () => {
+  const {
+    data: {
+      network: {type},
+    },
+  } = useCurrentAddress()
+
+  const ret = useMemo(() => {
+    if (type === NETWORK_TYPE.CFX) {
+      return new Conflux()
+    }
+    if (type === NETWORK_TYPE.ETH) {
+      return new Ethereum()
+    }
+  }, [type])
+
+  return ret
 }
