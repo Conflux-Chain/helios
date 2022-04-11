@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/json-rpc-error",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "dependencies": {
     "@fluent-wallet/errors": "workspace:packages/errors"
   }
