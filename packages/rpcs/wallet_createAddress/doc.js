@@ -2,5 +2,5 @@ export default {
   metadata: {
     inner: true,
   },
-  en: 'No doc available',
+  en: 'Create addresses under network `networkId` in account group `accountGroupId`',
 }

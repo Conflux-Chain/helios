@@ -1,8 +1,10 @@
 releases:
+  "@fluent-wallet/db": patch
   "@fluent-wallet/eth_send-transaction": patch
   "@fluent-wallet/eth_sign-transaction": minor
   "@fluent-wallet/eth_sign-tx-with-ledger-nano-s": patch
   "@fluent-wallet/signature": patch
+  "@fluent-wallet/wallet_create-address": patch
   "@fluent-wallet/wallet_send-transaction": patch
 
 declined:
@@ -11,3 +13,5 @@ declined:
   - "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s"
   - "@fluent-wallet/cfx_sign-typed-data_v4"
   - "@fluent-wallet/personal_sign"
+  - "@fluent-wallet/wallet_create-account"
+  - "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account"
