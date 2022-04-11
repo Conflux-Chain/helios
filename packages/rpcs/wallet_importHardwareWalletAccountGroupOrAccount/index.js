@@ -89,7 +89,7 @@ export const main = async ({
   },
 }) => {
   if (accountGroupNickname) {
-    // credate new account group
+    // crate new account group
     const toImport = {
       accountGroupData,
       nickname: accountGroupNickname,
@@ -137,7 +137,7 @@ export const main = async ({
     networks.reduce(
       (acc, {eid, netId, type}, idx) =>
         address.reduce((acc, {address, nickname}, jdx) => {
-          // hw-vaults.cfxOnly are set explicitly the first time credating the group
+          // hw-vaults.cfxOnly are set explicitly the first time creating the group
           // so hw group can only have 1. cfx network addrs or 2. eth network addrs
           if (group.vault.cfxOnly && type !== 'cfx') return acc
           if (!group.vault.cfxOnly && type === 'cfx') return acc
