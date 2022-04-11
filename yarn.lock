@@ -5324,8 +5324,20 @@ __metadata:
   resolution: "@fluent-wallet/eth_sign-transaction@workspace:packages/rpcs/eth_signTransaction"
   dependencies:
     "@fluent-wallet/eth-transaction-schema": "workspace:*"
+    "@fluent-wallet/ledger": "workspace:*"
     "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_sign-tx-with-ledger-nano-s@workspace:*, @fluent-wallet/eth_sign-tx-with-ledger-nano-s@workspace:packages/rpcs/eth_signTxWithLedgerNanoS":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_sign-tx-with-ledger-nano-s@workspace:packages/rpcs/eth_signTxWithLedgerNanoS"
+  dependencies:
+    "@fluent-wallet/ledger": "workspace:*"
+    "@fluent-wallet/signature": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+    browser-passworder: 2.0.3
   languageName: unknown
   linkType: soft
 
@@ -21108,6 +21120,7 @@ fsevents@^1.2.7:
     "@fluent-wallet/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
     "@fluent-wallet/eth_send-raw-transaction": "workspace:*"
     "@fluent-wallet/eth_sign-transaction": "workspace:*"
+    "@fluent-wallet/eth_sign-tx-with-ledger-nano-s": "workspace:*"
     "@fluent-wallet/eth_sign-typed-data_v4": "workspace:packages/rpcs/eth_signTypedData_v4"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
     "@fluent-wallet/inner-utils": "workspace:packages/inner-utils"

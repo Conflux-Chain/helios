@@ -71,6 +71,7 @@
     "@fluent-wallet/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts",
     "@fluent-wallet/eth_send-raw-transaction": "workspace:*",
     "@fluent-wallet/eth_sign-transaction": "workspace:*",
+    "@fluent-wallet/eth_sign-tx-with-ledger-nano-s": "workspace:*",
     "@fluent-wallet/eth_sign-typed-data_v4": "workspace:packages/rpcs/eth_signTypedData_v4",
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
     "@fluent-wallet/inner-utils": "workspace:packages/inner-utils",
