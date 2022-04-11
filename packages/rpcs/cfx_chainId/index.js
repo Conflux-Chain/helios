@@ -8,6 +8,7 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup', 'inpage'],
+  db: ['getOneNetwork'],
   locked: true,
   methods: ['cfx_getStatus'],
 }
@@ -21,7 +22,21 @@ export const cache = {
   },
 }
 
-export const main = async ({f, rpcs: {cfx_getStatus}}) => {
+export const main = async ({
+  f,
+  db: {getOneNetwork},
+  rpcs: {cfx_getStatus},
+  _inpage,
+  app,
+}) => {
+  if (
+    _inpage &&
+    ((app && app.currentNetwork.type === 'cfx') ||
+      getOneNetwork({selected: true}).type === 'cfx')
+  ) {
+    return '0x' + Number.MAX_SAFE_INTEGER.toString(16)
+  }
+
   const rst = await f()
   if (!rst?.result || rst.result === 'nocache')
     return (await cfx_getStatus())?.chainId

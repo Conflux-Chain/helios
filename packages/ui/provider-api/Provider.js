@@ -63,6 +63,12 @@ class Provider extends SafeEventEmitter {
     return this.request({method: 'wallet_isLocked'}).then(x => !x)
   }
 
+  get _metamask() {
+    return {
+      isUnlocked: this.#_isUnlocked.bind(this),
+    }
+  }
+
   get _fluent() {
     return {
       isUnlocked: this.#_isUnlocked.bind(this),

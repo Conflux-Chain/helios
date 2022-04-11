@@ -1,0 +1,28 @@
+releases:
+  "@fluent-wallet/cfx_chain-id": major
+  "@fluent-wallet/cfx_send-transaction": minor
+  "@fluent-wallet/cfx_sign-transaction": minor
+  "@fluent-wallet/eth-transaction-schema": patch
+  "@fluent-wallet/eth_call": minor
+  "@fluent-wallet/eth_chain-id": minor
+  "@fluent-wallet/eth_estimate-gas": minor
+  "@fluent-wallet/eth_request-accounts": patch
+  "@fluent-wallet/eth_send-transaction": minor
+  "@fluent-wallet/eth_sign-transaction": minor
+  "@fluent-wallet/ethereum-tx-error": patch
+  "@fluent-wallet/json-rpc-error": major
+  "@fluent-wallet/net_version": minor
+  "@fluent-wallet/personal_sign": minor
+  "@fluent-wallet/provider-api": patch
+  "@fluent-wallet/rpc-engine": major
+  "@fluent-wallet/wallet_get-address-private-key": patch
+  "@fluent-wallet/wallet_get-permissions": major
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
+  "@fluent-wallet/wallet_handle-unfinished-eth-tx": minor
+  "@fluent-wallet/wallet_request-permissions": major
+  "@fluent-wallet/wallet_send-transaction": patch
+
+declined:
+  - helios-background
+  - helios-inpage
+  - "@fluent-wallet/use-rpc"

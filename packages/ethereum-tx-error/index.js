@@ -5,57 +5,52 @@
 // https://github.com/ethereum/go-ethereum/blob/2d20fed893faa894f50af709349b13b6ad9b45db/core/error.go#L48
 // https://github.com/ethereum/go-ethereum/blob/2d20fed893faa894f50af709349b13b6ad9b45db/core/state_transition.go#L214
 export function processError(err) {
-  if (typeof err?.data === 'string') {
+  if (typeof err?.data === 'string' || typeof err?.message === 'string') {
+    const errstr = err.data || err.message || ''
     if (
-      /known transaction/i.test(err.data || '') ||
-      /already known/i.test(err.data || '') ||
-      /transaction with the same hash was already imported/i.test(
-        err.data || '',
-      )
+      /known transaction/i.test(errstr) ||
+      /already known/i.test(errstr) ||
+      /transaction with the same hash was already imported/i.test(errstr)
     )
       return {errorType: 'duplicateTx', shouldDiscard: false}
-    if (/replacement transaction underpriced/i.test(err.data || ''))
+    if (/replacement transaction underpriced/i.test(errstr))
       return {errorType: 'replaceUnderpriced', shouldDiscard: true}
-    if (/transaction underpriced/i.test(err.data || ''))
+    if (/transaction underpriced/i.test(errstr))
       return {errorType: 'gasTooLow', shouldDiscard: true}
     if (
-      /tx\s?pool is full/i.test(err.data || '') ||
-      /transaction pool is full/i.test(err.data || '')
+      /tx\s?pool is full/i.test(errstr) ||
+      /transaction pool is full/i.test(errstr)
     )
       return {errorType: 'txPoolFull', shouldDiscard: true}
-    if (/exceeds block gas limit/i.test(err.data || ''))
+    if (/exceeds block gas limit/i.test(errstr))
       return {errorType: 'gasExceedsLimit', shouldDiscard: true}
     // https://github.com/ethereum/go-ethereum/blob/2d20fed893faa894f50af709349b13b6ad9b45db/core/error.go#L58
-    if (/gas limit reached/i.test(err.data || ''))
+    if (/gas limit reached/i.test(errstr))
       return {errorType: 'gasLimitReached', shouldDiscard: false}
-    if (/oversized data/i.test(err.data || ''))
+    if (/oversized data/i.test(errstr))
       return {errorType: 'oversizedData', shouldDiscard: true}
-    if (/nonce too low/i.test(err.data || ''))
+    if (/nonce too low/i.test(errstr))
       return {errorType: 'tooStaleNonce', shouldDiscard: true}
-    if (/nonce too high/i.test(err.data || ''))
+    if (/nonce too high/i.test(errstr))
       return {errorType: 'nonceTooHigh', shouldDiscard: true}
-    if (/nonce has max value/i.test(err.data || ''))
+    if (/nonce has max value/i.test(errstr))
       return {errorType: 'nonceMax', shouldDiscard: true}
-    if (/insufficient funds/i.test(err.data || ''))
+    if (/insufficient funds/i.test(errstr))
       return {errorType: 'insufficientFunds', shouldDiscard: true}
-    if (/intrinsic gas too low/i.test(err.data || ''))
+    if (/intrinsic gas too low/i.test(errstr))
       return {errorType: 'intrinsicGas', shouldDiscard: true}
-    if (/transaction type not supported/i.test(err.data || ''))
+    if (/transaction type not supported/i.test(errstr))
       return {errorType: 'txTypeNotSupported', shouldDiscard: true}
-    if (/max fee per gas higher than/i.test(err.data || ''))
+    if (/max fee per gas higher than/i.test(errstr))
       return {errorType: 'feeCapVeryHigh', shouldDiscard: true}
-    if (/max fee per gas less than block base fee/i.test(err.data || ''))
+    if (/max fee per gas less than block base fee/i.test(errstr))
       return {errorType: 'feeCapTooLow', shouldDiscard: true}
-    if (
-      /max priority fee per gas higher than max fee per gas/i.test(
-        err.data || '',
-      )
-    )
+    if (/max priority fee per gas higher than max fee per gas/i.test(errstr))
       return {errorType: 'tipAboveFeeCap', shouldDiscard: true}
-    if (/max priority fee per gas higher than/i.test(err.data || ''))
+    if (/max priority fee per gas higher than/i.test(errstr))
       return {errorType: 'tipVeryHigh', shouldDiscard: true}
     // can't find this error in geth
-    if (/invalid chainid/i.test(err.data || ''))
+    if (/invalid chainid/i.test(errstr))
       return {errorType: 'chainIdMismatch', shouldDiscard: true}
   }
 

@@ -1,6 +1,12 @@
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import * as spec from '@fluent-wallet/spec'
-import {blockRef, cat, map, optionalMapKey} from '@fluent-wallet/spec'
+import {
+  blockRef,
+  cat,
+  map,
+  optionalMapKey,
+  zeroOrMore,
+} from '@fluent-wallet/spec'
 
 const {TxMapSpecs} = genEthTxSchema(spec)
 export const NAME = 'eth_call'
@@ -19,7 +25,7 @@ export const schemas = {
       optionalMapKey(TxMapSpecs.value),
       optionalMapKey(TxMapSpecs.data),
     ],
-    blockRef,
+    [zeroOrMore, blockRef],
   ],
 }
 
@@ -39,5 +45,7 @@ export const cache = {
 }
 
 export const main = async ({f, params}) => {
-  return await f(params)
+  let [tx, ref] = params
+  ref = ref || 'latest'
+  return await f([tx, ref])
 }
