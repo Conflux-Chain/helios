@@ -1,4 +1,4 @@
-import {addHexPrefix, toBuffer} from '@fluent-wallet/utils'
+import {addHexPrefix, stripHexPrefix, toBuffer} from '@fluent-wallet/utils'
 import {encode as encodeCfxAddress} from '@fluent-wallet/base32-address'
 import {hashMessage as ethHashPersonalMessage} from '@ethersproject/hash'
 import {
@@ -17,8 +17,9 @@ import {
   verifyMessage as verifyEthPersonalSign,
 } from '@ethersproject/wallet'
 import {
+  recoverAddress as recoverEthAddress,
   computeAddress as ethComputeAddress,
-  serialize as serializeUnsignedETHTransaction,
+  serialize as serializeETHTransaction,
 } from '@ethersproject/transactions'
 import {getMessage as cip23GetMessage} from 'cip-23'
 import {TypedDataUtils} from 'eth-sig-util'
@@ -132,9 +133,9 @@ export const cfxSignTransaction = (tx, pk, netId) => {
 export const ethSignTransaction = (tx, pk) => {
   pk = addHexPrefix(pk)
   const signature = new SigningKey(pk).signDigest(
-    keccak256(serializeUnsignedETHTransaction(tx)),
+    keccak256(serializeETHTransaction(tx)),
   )
-  return serializeUnsignedETHTransaction(tx, signature)
+  return serializeETHTransaction(tx, signature)
 }
 
 export const cfxRecoverTransactionToAddress = (tx, {r, s, v}, netId) => {
@@ -153,11 +154,22 @@ export const cfxRecoverTransactionToAddress = (tx, {r, s, v}, netId) => {
   )
 }
 
+export const ethRecoverTransactionToAddress = (tx, {r, s, v}) => {
+  const addr = recoverEthAddress(addHexPrefix(tx), {r, s, v})
+  return addr
+}
+
 export const cfxEncodeTx = (tx, shouldStripHexPrefix = false) => {
   const transaction = new CfxTransaction(tx)
   const encoded = transaction.encode(false).toString('hex')
   if (shouldStripHexPrefix) return encoded
   return `0x${encoded}`
+}
+
+export const ethEncodeTx = (tx, shouldStripHexPrefix = false) => {
+  tx = serializeETHTransaction(tx)
+  if (shouldStripHexPrefix) return stripHexPrefix(tx)
+  return tx
 }
 
 export const cfxJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
@@ -168,6 +180,10 @@ export const cfxJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
     v: addHexPrefix(v),
   })
   return transaction.serialize()
+}
+
+export const ethJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
+  return serializeETHTransaction(addHexPrefix(tx), {r, s, v})
 }
 
 export const getTxHashFromRawTx = txhash => {

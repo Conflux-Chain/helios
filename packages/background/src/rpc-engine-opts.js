@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as ethSignTxWithLedgerNanoS from '@fluent-wallet/eth_sign-tx-with-ledger-nano-s'
 import * as walletRequestAccounts from '@fluent-wallet/wallet_request-accounts'
 import * as walletAccounts from '@fluent-wallet/wallet_accounts'
 import * as walletChainId from '@fluent-wallet/wallet_chain-id'
@@ -326,6 +327,7 @@ export const rpcEngineOpts = {
     ethGetTransactionReceipt,
     ethGetTransactionByHash,
     ethSendTransaction,
+    ethSignTxWithLedgerNanoS,
 
     // sign
     personalSign,

@@ -1,6 +1,7 @@
 import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import {ethSignTransaction} from '@fluent-wallet/signature'
+import {consts as ledgerConsts} from '@fluent-wallet/ledger'
 
 const {
   TransactionLegacyUnsigned,
@@ -142,22 +143,20 @@ export const main = async args => {
 
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {
-    throw new InvalidParams(
-      `Fluent don't support hardware wallet for eth type network yet`,
-    )
-    // if (dryRun) {
-    //   raw = ethSignTransaction(
-    //     newTx,
-    //     '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
-    //   )
-    // } else {
-    //   raw = await signWithHardwareWallet({
-    //     args,
-    //     tx: newTx,
-    //     addressId: fromAddr.eid,
-    //     device: fromAddr.account.accountGroup.vault.device,
-    //   })
-    // }
+    if (dryRun) {
+      raw = ethSignTransaction(
+        newTx,
+        '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+      )
+    } else {
+      raw = await signWithHardwareWallet({
+        args,
+        accountId: fromAddr.account.eid,
+        tx: newTx,
+        addressId: fromAddr.eid,
+        device: fromAddr.account.accountGroup.vault.device,
+      })
+    }
   } else {
     let pk = await wallet_getAddressPrivateKey({
       address: from,
@@ -176,15 +175,19 @@ export const main = async args => {
   return raw
 }
 
-// async function signWithHardwareWallet({
-//   args: {
-//     rpcs: {eth_signTxWithLedgerNanoS},
-//   },
-//   tx,
-//   addressId,
-//   device,
-// }) {
-//   const hwSignMap = {LedgerNanoS: eth_signTxWithLedgerNanoS}
-//   const signMethod = hwSignMap[device]
-//   return await signMethod({errorFallThrough: true}, {tx, addressId})
-// }
+async function signWithHardwareWallet({
+  args: {
+    rpcs: {eth_signTxWithLedgerNanoS},
+  },
+  tx,
+  addressId,
+  device,
+  accountId,
+}) {
+  const hwSignMap = {
+    [ledgerConsts.LEDGER_NANOS_NAME]: eth_signTxWithLedgerNanoS,
+    [ledgerConsts.LEDGER_NANOX_NAME]: eth_signTxWithLedgerNanoS,
+  }
+  const signMethod = hwSignMap[device]
+  return await signMethod({errorFallThrough: true}, {tx, addressId, accountId})
+}

@@ -44,6 +44,7 @@ export const main = async ({
     },
   })
   if (!group) throw InvalidParams('Invalid account group id')
+
   const {vault} = group
   if (vault.type !== 'hd')
     throw InvalidParams("Can't add account into none hd vault")

@@ -710,7 +710,7 @@
   5. app: app current selected network+account
   "
   [{:keys [addressId networkId hex value accountId groupId
-           index tokenId appId selected fuzzy groupTypes g accountG]}]
+           index tokenId appId selected fuzzy groupTypes g accountG networkType]}]
   (let [g                (if (and accountG (not (map? g))) {:eid 1} (and g (assoc g :eid 1)))
         g                (and g {:address g})
         accountG         (or accountG (get-in g [:address :_account]))
@@ -757,6 +757,12 @@
                              (-> (update :args conj (if (vector? networkId) networkId [networkId]))
                                  (update :in conj '[?net ...])
                                  (update :where conj '[?addr :address/network ?net]))
+                             (and (not networkId) networkType)
+                             (-> (update :args conj networkType)
+                                 (update :in conj '?netType)
+                                 (update :where conj
+                                         '[?net :network/type ?netType]
+                                         '[?addr :address/network ?net]))
                              addr
                              (-> (update :args conj addr)
                                  (update :in conj '[?addrv ...])

@@ -12,16 +12,24 @@ export const schemas = {
 
 export const permissions = {
   methods: [],
-  db: ['getPassword', 'findGroup', 'getNetworkById', 't', 'newAddressTx'],
+  db: [
+    'getPassword',
+    'findGroup',
+    'getNetworkById',
+    't',
+    'newAddressTx',
+    'findAddress',
+  ],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {getNetworkById, findGroup, getPassword, t, newAddressTx},
+  db: {getNetworkById, findGroup, getPassword, t, newAddressTx, findAddress},
   params: {networkId, accountGroupId},
 }) => {
   const network = getNetworkById(networkId)
   if (!network) throw InvalidParams(`Invalid network id ${networkId}`)
+
   const group = findGroup({
     groupId: accountGroupId,
     g: {
@@ -30,6 +38,7 @@ export const main = async ({
     },
   })
   if (!group) throw InvalidParams(`Invalid account group id ${accountGroupId}`)
+
   const {vault} = group
   if (vault.type === 'pub' && vault.cfxOnly && network.type !== 'cfx')
     throw InvalidParams(
@@ -68,6 +77,25 @@ export const main = async ({
       t([addrTx, {eid: group.account[0].eid, account: {address: addrTx.eid}}])
         .tempids.newAddr || addrTx.eid,
     ]
+  } else if (vault.type === 'hw') {
+    return group.account.map(account => {
+      const [sameNetworkTypeAddress] = findAddress({
+        accountId: account.eid,
+        networkType: network.type,
+        groupId: accountGroupId,
+        g: {value: 1},
+      })
+      const addrTx = newAddressTx({
+        eid: 'newAddr',
+        hex: sameNetworkTypeAddress.value,
+        value: sameNetworkTypeAddress.value,
+        network: networkId,
+      })
+      return (
+        t([addrTx, {eid: account.eid, account: {address: addrTx.eid}}]).tempids
+          .newAddr || addrTx.eid
+      )
+    })
   } else {
     return await Promise.all(
       group.account.map(async account => ({
