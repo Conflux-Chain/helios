@@ -2780,6 +2780,7 @@ describe('integration test', function () {
                 value: '0x1',
               },
             ],
+            _popup: true,
           })
           expect(res.result).toBeDefined()
           expect(res.result.startsWith('0x')).toBe(true)
@@ -2805,6 +2806,7 @@ describe('integration test', function () {
                 value: '0x1',
               },
             ],
+            _popup: true,
           })
           expect(res.result).toBeDefined()
           expect(res.result.startsWith('0x')).toBe(true)

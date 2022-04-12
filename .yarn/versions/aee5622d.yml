@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/cfx_sign-transaction": patch
+  "@fluent-wallet/eth_sign-transaction": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/cfx_send-transaction"
+  - "@fluent-wallet/eth_send-transaction"
