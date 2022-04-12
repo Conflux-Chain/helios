@@ -15,6 +15,13 @@ export const create = ({pk} = {}) => {
 }
 
 export const toChecksum = compL(addHexPrefix, toChecksumAddress)
+export const isChecksumed = compL(addHexPrefix, addr => {
+  try {
+    return Boolean(toChecksumAddress(addr))
+  } catch (err) {
+    return false
+  }
+})
 
 export const fromPrivate = pk => ({
   address: threadFirst(pk, addHexPrefix, computeAddress),
