@@ -69,6 +69,7 @@ export const main = async args => {
     params: [tx, opts = {}],
     app,
     network,
+    _popup,
   } = args
 
   const {block, returnTxMeta, dryRun} = opts
@@ -84,7 +85,7 @@ export const main = async args => {
 
   const fromAddr = findAddress({
     appId: app && app.eid,
-    networkId: app ? app.currentNetwork.eid : network.eid,
+    selected: _popup && !app ? true : undefined,
     value: from,
     g: {
       eid: 1,

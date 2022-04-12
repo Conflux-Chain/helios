@@ -77,6 +77,7 @@ export const main = async args => {
     },
     params: [tx, opts = {}],
     network,
+    _popup,
   } = args
   const {epoch, returnTxMeta, dryRun} = opts
   let newTx = {...tx}
@@ -84,9 +85,8 @@ export const main = async args => {
     throw InvalidParams(`Invalid chainId ${newTx.chainId}`)
 
   const fromAddr = findAddress({
-    appId: app ? app.eid : undefined,
-    selected: app ? undefined : true,
-    networkId: app ? app.currentNetwork.eid : network.eid,
+    appId: app && app.eid,
+    selected: _popup && !app ? true : undefined,
     value: newTx.from,
     g: {
       eid: 1,
