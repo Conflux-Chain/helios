@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/cfx_chain-id": patch
+
+declined:
+  - helios-background
