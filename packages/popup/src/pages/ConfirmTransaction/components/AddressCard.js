@@ -116,8 +116,6 @@ const useQueryAddressInAddressCard = address => {
       value: address,
       networkId,
       g: {
-        eid: 1,
-        _account: {nickname: 1, eid: 1},
         network: {eid: 1, ticker: 1},
         nativeBalance: 1,
       },
