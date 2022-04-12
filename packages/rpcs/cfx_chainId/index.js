@@ -31,8 +31,8 @@ export const main = async ({
 }) => {
   if (
     _inpage &&
-    ((app && app.currentNetwork.type === 'cfx') ||
-      getOneNetwork({selected: true}).type === 'cfx')
+    ((app && app.currentNetwork.type === 'eth') ||
+      getOneNetwork({selected: true}).type === 'eth')
   ) {
     return '0x' + Number.MAX_SAFE_INTEGER.toString(16)
   }
