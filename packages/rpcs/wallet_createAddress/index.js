@@ -83,12 +83,18 @@ export const main = async ({
         accountId: account.eid,
         networkType: network.type,
         groupId: accountGroupId,
-        g: {value: 1},
+        g: {hex: 1},
       })
       const addrTx = newAddressTx({
         eid: 'newAddr',
-        hex: sameNetworkTypeAddress.value,
-        value: sameNetworkTypeAddress.value,
+        hex: sameNetworkTypeAddress.hex,
+        value:
+          network.type === 'cfx'
+            ? encode(
+                toAccountAddress(sameNetworkTypeAddress.hex),
+                network.netId,
+              )
+            : sameNetworkTypeAddress.hex,
         network: networkId,
       })
       return (
