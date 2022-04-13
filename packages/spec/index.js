@@ -8,6 +8,7 @@ import {
 import {defRestSchemas, defBase32AddressSchemaFactory, or} from './src/spec.js'
 
 import {
+  isChecksummed,
   randomHexAddress,
   randomCfxHexAddress,
   randomPrivateKey,
@@ -33,6 +34,7 @@ export const {
   INTERNAL_CONTRACTS_HEX_ADDRESS,
   NULL_HEX_ADDRESS,
   validatePrivateKey,
+  isChecksummed,
   randomHexAddress,
   randomCfxHexAddress,
   randomPrivateKey,
