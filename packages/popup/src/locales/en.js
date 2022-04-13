@@ -15,6 +15,7 @@ const en = {
     copiedSuccess: 'Copied success',
     invalidAddress: 'Please enter valid cfx address',
     invalidHexAddress: 'Please enter valid hex address',
+    unChecksumAddress: 'Invalid address, make sure the letter case is correct',
     protocol: 'Protocol',
     viewData: 'View Data',
     learnMore: 'Learn More',

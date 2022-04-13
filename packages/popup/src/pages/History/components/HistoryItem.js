@@ -16,7 +16,11 @@ import {
   RocketOutlined,
   CancelOutlined,
 } from '@fluent-wallet/component-icons'
-import {transformToTitleCase, formatStatus} from '../../../utils'
+import {
+  transformToTitleCase,
+  formatStatus,
+  formatIntoChecksumAddress,
+} from '../../../utils'
 import {useNetworkTypeIsCfx, useCurrentTicker} from '../../../hooks/useApi'
 import {useDecodeData} from '../../../hooks'
 import {
@@ -277,7 +281,11 @@ function HistoryItem({
           </div>
           <div className="flex mt-0.5 items-center justify-between text-gray-40 text-xs">
             <span>{contractName}</span>
-            <span>{toAddress ? shortenAddress(toAddress) : ''}</span>
+            <span>
+              {toAddress
+                ? shortenAddress(formatIntoChecksumAddress(toAddress))
+                : ''}
+            </span>
           </div>
         </div>
       </div>

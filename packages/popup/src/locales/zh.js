@@ -15,6 +15,7 @@ const zh = {
     copiedSuccess: '复制成功',
     invalidAddress: '请填写有效的 Conflux 地址',
     invalidHexAddress: '请填写有效的十六进制地址',
+    unChecksumAddress: '无效地址，请确保字母大小写无误',
     protocol: '协议',
     viewData: '查看数据',
     learnMore: '了解更多',

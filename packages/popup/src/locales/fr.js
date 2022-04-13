@@ -15,6 +15,7 @@ const fr = {
     copiedSuccess: 'Copiée avec succès',
     invalidAddress: 'Merci d’indiquer une adresse cfx valide',
     invalidHexAddress: 'Merci d’indiquer une adresse hex valide',
+    unChecksumAddress: 'Invalid address, make sure the letter case is correct',
     protocol: 'Protocole',
     viewData: 'Visualiser les données',
     learnMore: 'En savoir plus',

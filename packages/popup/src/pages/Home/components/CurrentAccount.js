@@ -9,7 +9,7 @@ import {SendOutlined} from '@fluent-wallet/component-icons'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
 import classNames from 'classnames'
-import {request} from '../../../utils'
+import {request, formatIntoChecksumAddress} from '../../../utils'
 import {RPC_METHODS} from '../../../constants'
 
 const {WALLET_GET_BLOCKCHAIN_EXPLORER_URL} = RPC_METHODS
@@ -62,11 +62,11 @@ OpenScanButton.propTypes = {
 function CurrentAccount({onOpenAccount}) {
   const {
     data: {
-      value: address,
+      value,
       account: {nickname},
     },
   } = useCurrentAddress()
-
+  const address = formatIntoChecksumAddress(value)
   const displayAddress = address ? shortenAddress(address) : ''
 
   return (

@@ -56,20 +56,6 @@ function AdvancedSettings() {
             {t('priorityConnectionDes')}
           </p>
         </div>
-        <div className="flex items-center justify-between h-13 mt-3">
-          <div className="text-gray-80 text-sm font-medium">
-            {t('underCfxProvider')}
-          </div>
-          <SwitchButtonGroup
-            showLeft={!preferencesData?.overrideWindowDotConflux}
-            onSwitch={status =>
-              onSwitchMode('overrideWindowDotConflux', !status)
-            }
-            leftSwitchClassName="!w-8 !h-8 !text-gray-60"
-            rightSwitchClassName="!w-8 !h-8"
-            WrapperId="takeover-conflux"
-          />
-        </div>
         <div className="flex items-center justify-between h-13">
           <div className="text-gray-80 text-sm font-medium">
             {t('underEtherProvider')}
