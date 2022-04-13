@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/eth_get-balance",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "dependencies": {
     "@fluent-wallet/spec": "workspace:packages/spec"
   }
