@@ -1,10 +1,10 @@
 import {
   Uint,
   map,
-  cat,
   epochRefNoMined,
   Bytes32,
   base32ContractAddress,
+  zeroOrOne,
   or,
   repeat,
   nul,
@@ -21,15 +21,15 @@ const topicSchema = [
 
 export const schemas = {
   input: [
-    cat,
+    zeroOrOne,
     [
       map,
       {closed: true},
       ['fromEpoch', {optional: true}, epochRefNoMined],
       ['toEpoch', {optional: true}, epochRefNoMined],
-      ['blockHashes', {optional: true}, [repeat, {min: 1, max: 128}, Bytes32]],
+      ['blockHashes', {optional: true}, [repeat, {min: 0, max: 128}, Bytes32]],
       ['address', {optional: true}, [repeat, base32ContractAddress]],
-      ['topics', {optional: true}, [repeat, {min: 1, max: 4}, topicSchema]],
+      ['topics', {optional: true}, [repeat, {min: 0, max: 4}, topicSchema]],
       ['limit', {optional: true}, Uint],
     ],
   ],

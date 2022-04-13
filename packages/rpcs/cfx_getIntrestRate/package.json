@@ -1,0 +1,7 @@
+{
+  "name": "@fluent-wallet/cfx_get-intrest-rate",
+  "packageManager": "yarn@3.1.0",
+  "dependencies": {
+    "@fluent-wallet/spec": "workspace:*"
+  }
+}
