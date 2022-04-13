@@ -1,0 +1,7 @@
+releases:
+  "@fluent-wallet/cfx_get-logs": patch
+  "@fluent-wallet/cfx_get-pos-reward-by-epoch": patch
+  "@fluent-wallet/eth_get-logs": patch
+
+declined:
+  - helios-background
