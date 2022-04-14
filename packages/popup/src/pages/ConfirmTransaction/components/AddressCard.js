@@ -10,6 +10,7 @@ import {
   useDbRefetchBalance,
 } from '../../../hooks/useApi'
 import {useCheckImage} from '../../../hooks'
+import {formatIntoChecksumAddress} from '../../../utils'
 import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
@@ -55,7 +56,11 @@ const TransactionDirection = ({
             <Text
               className="text-gray-80"
               id="fromAddress"
-              text={fromAddress ? shortenAddress(fromAddress) : ''}
+              text={
+                fromAddress
+                  ? shortenAddress(formatIntoChecksumAddress(fromAddress))
+                  : ''
+              }
             />
           </div>
           <div className="flex flex-col items-end">
