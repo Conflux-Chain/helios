@@ -21,7 +21,7 @@ import {
   TokenAndAmount,
   CurrentNetworkDisplay,
 } from './components'
-import {validateAddress} from '../../utils'
+import {validateAddress, validateByEip55} from '../../utils'
 import {
   useNetworkTypeIsCfx,
   useCurrentAddress,
@@ -135,14 +135,14 @@ function SendTransaction() {
   const onChangeAddress = address => {
     setToAddress(address)
     if (!validateAddress(address, networkTypeIsCfx, netId)) {
-      if (networkTypeIsCfx) {
-        setAddressError(t('invalidAddress'))
-      } else {
-        setAddressError(t('invalidHexAddress'))
-      }
-    } else {
-      setAddressError('')
+      return setAddressError(
+        networkTypeIsCfx ? t('invalidAddress') : t('invalidHexAddress'),
+      )
     }
+    if (!networkTypeIsCfx && !validateByEip55(address)) {
+      return setAddressError(t('unChecksumAddress'))
+    }
+    setAddressError('')
   }
   useEffect(() => {
     if (nativeToken.symbol && !tokenAddress) setSendTokenId('native')

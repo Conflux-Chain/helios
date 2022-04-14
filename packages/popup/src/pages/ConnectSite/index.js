@@ -19,7 +19,7 @@ import {
   StretchInput,
   WrapIcon,
 } from '../../components'
-import {formatLocalizationLang} from '../../utils'
+import {formatLocalizationLang, formatIntoChecksumAddress} from '../../utils'
 import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
 
 function ConnectSitesList({
@@ -116,7 +116,10 @@ function ConnectSitesList({
                               <p className="text-xs text-gray-40">{nickname}</p>
                               <p className="text-sm text-gray-80">
                                 {shortenAddress(
-                                  currentAddress?.value || currentAddress?.hex,
+                                  formatIntoChecksumAddress(
+                                    currentAddress?.value ||
+                                      currentAddress?.hex,
+                                  ),
                                 )}
                               </p>
                             </div>
@@ -276,7 +279,7 @@ function ConnectSite() {
             title={t('chooseNetwork')}
             onClose={() => setNetworkShow(false)}
             content={<NetworkContent onClickNetworkItem={onClickNetworkItem} />}
-            className="bg-bg bg-gray-circles bg-no-repeat bg-contain"
+            className="bg-bg bg-gray-circles bg-no-repeat bg-contain max-h-[552px]"
           />
         </main>
       </div>

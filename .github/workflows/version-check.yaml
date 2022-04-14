@@ -20,12 +20,13 @@ jobs:
       matrix:
         node-version: [16.5]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # https://yarnpkg.com/features/release-workflow/#commit-history
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
+          cache: "yarn"
           node-version: ${{ matrix.node-version }}
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path

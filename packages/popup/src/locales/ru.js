@@ -15,6 +15,7 @@ const ru = {
     copiedSuccess: 'Копирование успешно завершено',
     invalidAddress: 'Пожалуйста, введите корректный адрес cfx',
     invalidHexAddress: 'Пожалуйста, введите корректный адрес hex',
+    unChecksumAddress: 'Invalid address, make sure the letter case is correct',
     protocol: 'Протокол',
     viewData: 'Просмотреть данные',
     learnMore: 'Узнать больше',
@@ -298,7 +299,7 @@ const ru = {
     AdvancedSettings: 'Advanced Settings',
     priorityConnection: 'Priority Connection',
     priorityConnectionDes:
-      'Fluent will be the first option when connecting to any dApp.',
+      'Fluent will be the first option when connecting to any dApp on EVM networks.',
     underCfxProvider: 'Enable on Conflux networks',
     underEtherProvider: 'Enable on Ethereum/EVM networks',
     showTestnet: 'Show Testnet',
