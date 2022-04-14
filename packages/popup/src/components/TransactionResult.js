@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-import {useState} from 'react'
 import {useTranslation} from 'react-i18next'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
@@ -11,7 +10,6 @@ import {TX_STATUS} from '../constants'
 
 function TransactionResult({status, sendError, onClose}) {
   const {t} = useTranslation()
-  const [zendeskTimer, setZendeskTimer] = useState(null)
   const open = status && status !== TX_STATUS.HW_SUCCESS
   const isRejected = sendError?.includes('UserRejected')
   const isWaiting = status === TX_STATUS.HW_WAITING
@@ -28,19 +26,10 @@ function TransactionResult({status, sendError, onClose}) {
     ? t('rejectedContent')
     : sendError
 
-  const onClickFeedback = () => {
-    const timer = setTimeout(() => {
-      zendeskTimer && clearTimeout(zendeskTimer)
-      setZendeskTimer(null)
-      window.open('https://fluent-wallet.zendesk.com/hc/en-001/requests/new')
-    }, 900)
-    setZendeskTimer(timer)
-  }
-
   return (
     <Modal
       open={open}
-      closable={!isWaiting}
+      closable={false}
       onClose={() => !isWaiting && onClose?.()}
       title={title}
       content={
@@ -57,9 +46,8 @@ function TransactionResult({status, sendError, onClose}) {
                   id="feedback"
                   aria-hidden="true"
                   className="text-center text-xs text-primary cursor-pointer"
-                  onClick={onClickFeedback}
                 >
-                  {t('feedBackCode')}
+                  {t('copyError')}
                 </div>
               }
             />
