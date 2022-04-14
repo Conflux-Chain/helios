@@ -49,26 +49,23 @@ function AdvancedSettings() {
       </header>
       <main className="mt-1 flex-1 px-6">
         <div>
-          <div className="flex items-center justify-between text-base font-medium">
-            {t('priorityConnection')}
+          <div className="flex items-center justify-between h-13">
+            <div className="text-gray-80 text-base font-medium">
+              {t('priorityConnection')}
+            </div>
+            <SwitchButtonGroup
+              showLeft={!preferencesData?.overrideWindowDotEthereum}
+              onSwitch={status =>
+                onSwitchMode('overrideWindowDotEthereum', !status)
+              }
+              leftSwitchClassName="!w-8 !h-8 !text-gray-60"
+              rightSwitchClassName="!w-8 !h-8"
+              WrapperId="takeover-eth"
+            />
           </div>
-          <p className="text-sm text-gray-60 mt-1">
+          <div className="text-sm text-gray-60 mt-1">
             {t('priorityConnectionDes')}
-          </p>
-        </div>
-        <div className="flex items-center justify-between h-13">
-          <div className="text-gray-80 text-sm font-medium">
-            {t('underEtherProvider')}
           </div>
-          <SwitchButtonGroup
-            showLeft={!preferencesData?.overrideWindowDotEthereum}
-            onSwitch={status =>
-              onSwitchMode('overrideWindowDotEthereum', !status)
-            }
-            leftSwitchClassName="!w-8 !h-8 !text-gray-60"
-            rightSwitchClassName="!w-8 !h-8"
-            WrapperId="takeover-eth"
-          />
         </div>
         <div className="w-full h-px bg-gray-20 mt-6 mb-3" />
         <div>
