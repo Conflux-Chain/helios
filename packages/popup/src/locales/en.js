@@ -380,6 +380,7 @@ const en = {
     rejected: 'Rejected',
     waitingContent: 'Please confirm this transaction in your Ledger.',
     rejectedContent: 'Transaction has been rejected.',
+    copyError: 'Copy error code',
 
     // conflux confirm tx error
     txPoolFull: 'Transaction pool is full',

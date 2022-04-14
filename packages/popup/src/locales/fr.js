@@ -390,6 +390,7 @@ const fr = {
     rejected: 'Rejettée',
     waitingContent: 'Merci de confirmer cette transaction sur votre Ledger.',
     rejectedContent: 'La transaction a été rejettée.',
+    copyError: 'Copy error code',
 
     // conflux confirm tx error
     txPoolFull: 'La pool de transaction est pleine',

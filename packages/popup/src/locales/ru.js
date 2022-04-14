@@ -385,6 +385,7 @@ const ru = {
     waitingContent:
       'Пожалуйста, подтвердите выполнение транзакции в вашем Ledger.',
     rejectedContent: 'Ошибка транзакции.',
+    copyError: 'Copy error code',
 
     // conflux confirm tx error
     txPoolFull: 'Пул транзакций переполнен',

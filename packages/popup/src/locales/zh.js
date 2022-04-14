@@ -366,6 +366,7 @@ const zh = {
     rejected: '拒绝',
     waitingContent: '请在 Ledger 中确认此交易',
     rejectedContent: '交易被拒绝',
+    copyError: '复制错误信息',
 
     // conflux confirm tx error
     txPoolFull: '交易池拥堵',
