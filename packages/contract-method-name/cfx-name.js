@@ -24,10 +24,7 @@ export const getCFXScanDomain = netId => {
 
 export const getCFXAbi = async (address, netId) => {
   const scanDomain = getCFXScanDomain(netId)
-  return await fetchHelper(
-    `${scanDomain}/v1/contract/${address}?fields=abi`,
-    'GET',
-  )
+  return await fetchHelper(`${scanDomain}/v1/contract/${address}?fields=abi`)
 }
 
 export const getCFXContractMethodSignature = async (

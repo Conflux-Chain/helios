@@ -5,6 +5,8 @@ const {ensureDirSync} = require('fs-extra')
 const extDir = path.resolve(__dirname, '../packages/browser-extension')
 
 ensureDirSync(path.resolve(extDir, 'build'))
+ensureDirSync(path.resolve(extDir, 'build/popup'))
+ensureDirSync(path.resolve(extDir, 'build/background'))
 
 const version = process.env.SNOWPACK_PUBLIC_FLUENT_VERSION
 

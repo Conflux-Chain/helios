@@ -1,4 +1,4 @@
-import {placements} from 'rc-tooltip/lib/placements'
+import {placements} from 'rc-tooltip/es/placements'
 
 const autoAdjustOverflowEnabled = {
   adjustX: 1,

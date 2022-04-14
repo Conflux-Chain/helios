@@ -1,7 +1,5 @@
 import {map, stringp} from '@fluent-wallet/spec'
 
-import {wordlists, validateMnemonic} from 'bip39'
-
 export const NAME = 'wallet_validateMnemonic'
 
 export const schemas = {
@@ -20,7 +18,8 @@ function filterWordlistsByWord(wordlists, word) {
   return wordlists
 }
 
-export const main = ({params: {mnemonic}}) => {
+export const main = async ({params: {mnemonic}}) => {
+  const {wordlists, validateMnemonic} = await import('bip39')
   const words = mnemonic
     .split(' ')
     .map(w => w?.trim())

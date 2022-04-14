@@ -83,7 +83,7 @@ function LanguageNav({
             </span>
             <CaretDownFilled
               className={`ml-1 w-3 h-3 transition duration-300 ease-in-out ${
-                rotateTriangle ? 'transform rotate-180' : ''
+                rotateTriangle ? 'rotate-180' : ''
               }`}
             />
           </div>

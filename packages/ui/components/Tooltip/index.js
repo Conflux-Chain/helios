@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import RcTooltip from 'rc-tooltip'
-import useMergedState from 'rc-util/lib/hooks/useMergedState'
+import useMergedState from 'rc-util/es/hooks/useMergedState'
 import classNames from 'classnames'
 import getPlacements from './Placements'
 import './index.css'

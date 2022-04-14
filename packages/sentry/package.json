@@ -6,7 +6,7 @@
   "version": "0.0.4",
   "dependencies": {
     "@ethersproject/keccak256": "5.5.0",
-    "@sentry/browser": "6.18.2",
-    "@sentry/tracing": "6.18.2"
+    "@sentry/browser": "6.19.6",
+    "@sentry/tracing": "6.19.6"
   }
 }

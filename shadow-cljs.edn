@@ -1,23 +1,6 @@
 ;; shadow-cljs configuration
-{:source-paths
- ["packages/spec/src/dev"
-  "packages/spec/src/main"
-  "packages/spec/src/test"
-  "packages/db/src/dev"
-  "packages/db/src/main"
-  "packages/db/src/test"]
-
+{:deps {:aliases [:cljs]}
  :dev-http {8000 ["packages"]}
-
- :dependencies
- [[metosin/malli "0.6.2"]
-  [binaryage/oops "0.7.2"]
-  [datascript "1.3.12"]
-  [hashp "0.2.1"]
-  [medley "1.3.0"]
-  ;; [philoskim/debux-stubs "0.8.1"]
-  ;; [philoskim/debux "0.8.1"]
-  ]
 
  :builds
  {:spec {:target           :esm

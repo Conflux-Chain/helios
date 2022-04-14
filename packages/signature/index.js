@@ -22,7 +22,6 @@ import {
   serialize as serializeETHTransaction,
 } from '@ethersproject/transactions'
 import {getMessage as cip23GetMessage} from 'cip-23'
-import {TypedDataUtils} from 'eth-sig-util'
 import {keccak256} from '@ethersproject/keccak256'
 
 export const hashPersonalMessage = (type, message) =>
@@ -73,12 +72,18 @@ export async function signTypedData_v4(type, privateKey, typedData) {
     return signature
   }
 
+  const {TypedDataUtils} = await import('eth-sig-util')
   const digest = TypedDataUtils.sign(typedData, true)
   const signature = new SigningKey(addHexPrefix(privateKey)).signDigest(digest)
   return joinSignature(signature)
 }
 
-export function recoverTypedSignature_v4(type, signature, typedData, netId) {
+export async function recoverTypedSignature_v4(
+  type,
+  signature,
+  typedData,
+  netId,
+) {
   if (type === 'cfx') {
     const hashedMessage = keccak256(
       cip23GetMessage(
@@ -95,6 +100,7 @@ export function recoverTypedSignature_v4(type, signature, typedData, netId) {
     )
   }
 
+  const {TypedDataUtils} = await import('eth-sig-util')
   const digest = TypedDataUtils.sign(typedData, true)
   const pub = ethRecoverPublicKey(digest, signature)
   return ethComputeAddress(pub)

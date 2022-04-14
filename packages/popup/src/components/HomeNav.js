@@ -3,7 +3,7 @@ import {AlignRightOutlined} from '@fluent-wallet/component-icons'
 
 function HomeNav({onClickMenu}) {
   return (
-    <nav className="flex h-13 items-center justify-between px-4 z-10 flex-shrink-0">
+    <nav className="flex h-13 items-center justify-between px-4 z-10 shrink-0">
       <img
         className="w-auto h-5"
         src="/images/logo-horizontal.svg"

@@ -1,4 +1,5 @@
-require('../scripts/setup-dotenv')
+const setupDotEnv = require('../scripts/setup-dotenv')
+setupDotEnv()
 const {resolve} = require('path')
 
 module.exports = {

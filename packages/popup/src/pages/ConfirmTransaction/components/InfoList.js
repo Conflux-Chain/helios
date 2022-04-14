@@ -92,7 +92,7 @@ function InfoList({
             <img
               src={currentDapp?.site?.icon || '/images/default-dapp-icon.svg'}
               alt="icon"
-              className="w-4 h-4 mr-1 flex-shrink-0"
+              className="w-4 h-4 mr-1 shrink-0"
               id="currentDappIcon"
             />
             {currentDapp?.site?.origin}
