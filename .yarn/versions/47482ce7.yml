@@ -1,7 +1,42 @@
 releases:
+  "@fluent-wallet/cfx_get-intrest-rate": patch
   "@fluent-wallet/cfx_get-logs": patch
   "@fluent-wallet/cfx_get-pos-reward-by-epoch": patch
+  "@fluent-wallet/component-alert": patch
+  "@fluent-wallet/component-tooltip": patch
+  "@fluent-wallet/contract-method-name": major
+  "@fluent-wallet/doc-rpc-parameter": patch
+  "@fluent-wallet/doc-use-rpc": patch
+  "@fluent-wallet/doc-use-spec": patch
   "@fluent-wallet/eth_get-logs": patch
+  "@fluent-wallet/fetch-rpc": patch
+  "@fluent-wallet/ledger": patch
+  "@fluent-wallet/sentry": patch
+  "@fluent-wallet/signature": patch
+  "@fluent-wallet/test-helpers": patch
+  "@fluent-wallet/use-rpc": patch
+  "@fluent-wallet/wallet_validate-mnemonic": patch
 
 declined:
   - helios-background
+  - "@fluent-wallet/base32-address"
+  - "@fluent-wallet/doc-try-rpc"
+  - "@fluent-wallet/extension-runtime"
+  - "@fluent-wallet/jest-helper"
+  - helios-popup
+  - "@fluent-wallet/rpc-engine"
+  - "@fluent-wallet/cfx_sign-transaction"
+  - "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s"
+  - "@fluent-wallet/cfx_sign-typed-data_v4"
+  - "@fluent-wallet/eth_sign-transaction"
+  - "@fluent-wallet/eth_sign-tx-with-ledger-nano-s"
+  - "@fluent-wallet/personal_sign"
+  - "@fluent-wallet/wallet_add-vault"
+  - "@fluent-wallet/wallet_handle-unfinished-cfx-tx"
+  - "@fluent-wallet/wallet_handle-unfinished-eth-tx"
+  - "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account"
+  - "@fluent-wallet/wallet_refetch-balance"
+  - "@fluent-wallet/wallet_send-transaction"
+  - "@fluent-wallet/wallet_set-current-network"
+  - "@fluent-wallet/component-popover"
+  - doc

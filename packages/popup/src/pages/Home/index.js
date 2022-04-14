@@ -88,7 +88,7 @@ function Home() {
           setSettingStatus(true)
         }}
       />
-      <div className="flex flex-col pt-1 px-4 z-10 flex-shrink-0">
+      <div className="flex flex-col pt-1 px-4 z-10 shrink-0">
         <div className="flex items-start justify-between">
           <CurrentAccount onOpenAccount={onOpenAccount} />
           <CurrentNetwork onOpenNetwork={() => setNetworkStatus(true)} />

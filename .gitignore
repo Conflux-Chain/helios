@@ -266,3 +266,6 @@ cljs-runtime
 !/resources/firefox-debug-profile
 /.nrepl-port
 /.clj-kondo/
+/.cpcache/
+/bg-report.txt
+/popup-report.txt

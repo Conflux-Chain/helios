@@ -5,6 +5,10 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "5.15.0"
+    "@testing-library/jest-dom": "5.15.0",
+    "text-encoding": "0.7.0"
+  },
+  "devDependencies": {
+    "@types/text-encoding": "^0"
   }
 }
