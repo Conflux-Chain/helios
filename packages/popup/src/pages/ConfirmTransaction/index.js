@@ -274,7 +274,7 @@ function ConfirmTransaction() {
       })
   }
 
-  const onHwReject = () => {
+  const onCloseTransactionResult = () => {
     clearSendTransactionParams()
     if (!isDapp) history.push(HOME)
     else window.close()
@@ -374,7 +374,7 @@ function ConfirmTransaction() {
             <TransactionResult
               status={sendStatus}
               sendError={sendError}
-              onReject={onHwReject}
+              onClose={onCloseTransactionResult}
             />
           )}
         </div>

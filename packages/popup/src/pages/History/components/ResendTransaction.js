@@ -581,7 +581,7 @@ function ResendTransaction({
         <TransactionResult
           status={sendStatus}
           sendError={sendError}
-          onReject={onCloseTransactionResult}
+          onClose={onCloseTransactionResult}
         />
       )}
 
