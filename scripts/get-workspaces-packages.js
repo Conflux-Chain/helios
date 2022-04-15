@@ -10,7 +10,7 @@ const yarnPath = path.resolve(
   '..',
   '.yarn',
   'releases',
-  'yarn-3.1.0.cjs',
+  'yarn-3.2.0.cjs',
 )
 
 module.exports = function ({noPrivate = false, ignore = []} = {}) {

@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 5
+  version: 6
   cacheKey: 8
 
 "@algolia/autocomplete-core@npm:1.2.2":
@@ -9665,28 +9665,28 @@ __metadata:
 "@swc/core-linux-arm64-gnu@npm:1.2.165":
   version: 1.2.165
   resolution: "@swc/core-linux-arm64-gnu@npm:1.2.165"
-  conditions: os=linux & cpu=arm64
+  conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
 "@swc/core-linux-arm64-musl@npm:1.2.165":
   version: 1.2.165
   resolution: "@swc/core-linux-arm64-musl@npm:1.2.165"
-  conditions: os=linux & cpu=arm64
+  conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
 "@swc/core-linux-x64-gnu@npm:1.2.165":
   version: 1.2.165
   resolution: "@swc/core-linux-x64-gnu@npm:1.2.165"
-  conditions: os=linux & cpu=x64
+  conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
 "@swc/core-linux-x64-musl@npm:1.2.165":
   version: 1.2.165
   resolution: "@swc/core-linux-x64-musl@npm:1.2.165"
-  conditions: os=linux & cpu=x64
+  conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
@@ -11619,7 +11619,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.0.0, acorn@npm:^8.7.0":
+"acorn@npm:^8.0.0, acorn@npm:^8.5.0, acorn@npm:^8.7.0":
   version: 8.7.0
   resolution: "acorn@npm:8.7.0"
   bin:
