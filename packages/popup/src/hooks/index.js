@@ -210,7 +210,7 @@ export const useCurrentTxParams = () => {
     to = toAddress ? tokenAddress : ''
     data = toAddress
       ? iface.encodeFunctionData('transfer', [
-          decode(toAddress).hexAddress,
+          networkTypeIsCfx ? decode(toAddress).hexAddress : toAddress,
           sendData,
         ])
       : ''

@@ -71,17 +71,22 @@ function ConnectSitesList({
       >
         <div
           id="accountWrapper"
-          className="max-h-[272px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll"
+          className="max-h-[272px] rounded overflow-auto no-scroll"
         >
           {searchedAccountGroup && accountGroupData.length === 0 ? (
             <NoResult content={t('noResult')} containerClassName="h-[262px]" />
           ) : (
             accountGroupData.map(
-              ({nickname, account, vault, eid}) =>
+              ({nickname, account, vault, eid}, index) =>
                 !!Object.values(account).length && (
-                  <div key={eid}>
+                  <div
+                    key={eid}
+                    className={`${
+                      index === 0 ? '' : 'mt-2'
+                    } bg-gray-4 border border-solid border-gray-10`}
+                  >
                     {vault?.type === 'pk' ? null : (
-                      <div className="flex items-center ml-3 mt-0.5">
+                      <div className="flex items-center ml-3 pt-2.5">
                         <WrapIcon
                           size="w-5 h-5 mr-1 bg-primary-4"
                           clickable={false}
