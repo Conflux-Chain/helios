@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [16.5]
+        node-version: [16.14]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -40,7 +40,8 @@ jobs:
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
-      - run: yarn install --immutable
+      - run: yarn install
+      - run: git diff
       - run: yarn lint
 
   unit-test:
@@ -48,7 +49,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [16.5]
+        node-version: [16.14]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -84,7 +85,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [16.5]
+        node-version: [16.14]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -118,7 +119,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [16.5]
+        node-version: [16.14]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -147,7 +148,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [16.5]
+        node-version: [16.14]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -175,7 +176,7 @@ jobs:
   #   runs-on: ubuntu-20.04
   #   strategy:
   #     matrix:
-  #       node-version: [16.5]
+  #       node-version: [16.14]
   #   steps:
   #     - uses: actions/checkout@v3
   #     - name: Use Node.js ${{ matrix.node-version }}
