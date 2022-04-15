@@ -165,8 +165,8 @@
     "@fluent-wallet/wallet_watch-asset": "workspace:packages/rpcs/wallet_watchAsset",
     "@fluent-wallet/wallet_zero-account-group": "workspace:packages/rpcs/wallet_zeroAccountGroup",
     "@fluent-wallet/webextension": "workspace:packages/webextension",
-    "@thi.ng/rstream": "6.0.21",
-    "@thi.ng/rstream-csp": "^2.0.80",
+    "@thi.ng/rstream": "7.2.4",
+    "@thi.ng/rstream-csp": "^3.1.6",
     "regenerator-runtime": "^0.13.9",
     "webextension-polyfill": "^0.8.0"
   },

@@ -1,7 +1,9 @@
 releases:
   "@fluent-wallet/account": patch
   "@fluent-wallet/addr-by-network": patch
+  "@fluent-wallet/associative": patch
   "@fluent-wallet/base32-address": patch
+  "@fluent-wallet/cache-rpc": patch
   "@fluent-wallet/cfx_accounts": patch
   "@fluent-wallet/cfx_call": patch
   "@fluent-wallet/cfx_chain-id": patch
@@ -53,11 +55,15 @@ releases:
   "@fluent-wallet/cfx_sign-transaction": patch
   "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": patch
   "@fluent-wallet/cfx_sign-typed-data_v4": patch
+  "@fluent-wallet/checks": patch
   "@fluent-wallet/component-alert": patch
   "@fluent-wallet/component-popover": patch
   "@fluent-wallet/component-tooltip": patch
+  "@fluent-wallet/compose": patch
+  "@fluent-wallet/content-script": patch
   "@fluent-wallet/contract-abis": patch
   "@fluent-wallet/contract-method-name": major
+  "@fluent-wallet/csp": patch
   "@fluent-wallet/db": patch
   "@fluent-wallet/detect-address-type": patch
   "@fluent-wallet/discover-accounts": patch
@@ -65,6 +71,7 @@ releases:
   "@fluent-wallet/doc-try-rpc": patch
   "@fluent-wallet/doc-use-rpc": patch
   "@fluent-wallet/doc-use-spec": patch
+  "@fluent-wallet/errors": patch
   "@fluent-wallet/estimate-tx": patch
   "@fluent-wallet/eth_accounts": patch
   "@fluent-wallet/eth_block-number": patch
@@ -90,16 +97,21 @@ releases:
   "@fluent-wallet/extension-runtime": patch
   "@fluent-wallet/fetch-rpc": patch
   "@fluent-wallet/hdkey": patch
+  "@fluent-wallet/iterators": patch
+  "@fluent-wallet/json-rpc-error": patch
   "@fluent-wallet/ledger": patch
   "@fluent-wallet/net_version": patch
   "@fluent-wallet/personal_sign": patch
+  "@fluent-wallet/provider-api": patch
   "@fluent-wallet/rpc-engine": patch
+  "@fluent-wallet/safe-event-emiter": patch
   "@fluent-wallet/sentry": patch
   "@fluent-wallet/shorten-address": patch
   "@fluent-wallet/signature": patch
   "@fluent-wallet/single-call-balance-tracker": patch
   "@fluent-wallet/spec": patch
   "@fluent-wallet/test-helpers": patch
+  "@fluent-wallet/transducers": patch
   "@fluent-wallet/tx-history-checker": patch
   "@fluent-wallet/txpool_next-nonce": patch
   "@fluent-wallet/use-rpc": patch
@@ -186,6 +198,8 @@ releases:
   "@fluent-wallet/wallet_validate20token": patch
   "@fluent-wallet/wallet_watch-asset": patch
   "@fluent-wallet/wallet_zero-account-group": patch
+  "@fluent-wallet/webextension": patch
+  ext-reload: patch
   helios-inpage: patch
   workspace-tools: patch
 
