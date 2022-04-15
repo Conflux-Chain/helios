@@ -6,6 +6,6 @@
   "dependencies": {
     "@fluent-wallet/checks": "workspace:packages/checks",
     "@fluent-wallet/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref",
-    "@thi.ng/cache": "1.0.94"
+    "@thi.ng/cache": "2.1.6"
   }
 }

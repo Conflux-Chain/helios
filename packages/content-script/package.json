@@ -6,7 +6,7 @@
   "version": "1.0.2",
   "dependencies": {
     "@fluent-wallet/site-metadata": "workspace:packages/site-metadata",
-    "@thi.ng/rstream": "6.0.21",
+    "@thi.ng/rstream": "7.2.4",
     "webextension-polyfill": "0.8.0"
   }
 }

@@ -9,7 +9,7 @@
   "dependencies": {
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
     "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api",
-    "@thi.ng/rstream": "6.0.21",
+    "@thi.ng/rstream": "7.2.4",
     "webextension-polyfill": "0.8.0"
   }
 }
