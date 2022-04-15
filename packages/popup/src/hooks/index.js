@@ -12,7 +12,10 @@ import {
   convertValueToData,
   convertDecimal,
 } from '@fluent-wallet/data-format'
-import {getCFXContractMethodSignature} from '@fluent-wallet/contract-method-name'
+import {
+  getCFXContractMethodSignature,
+  getEthContractMethodSignature,
+} from '@fluent-wallet/contract-method-name'
 import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
@@ -296,7 +299,7 @@ export const useDecodeData = ({to, data} = {}) => {
   const type = useAddressType(to)
   const {
     data: {
-      network: {netId},
+      network: {netId, type: currentNetworkType},
     },
   } = useCurrentAddress()
 
@@ -305,14 +308,25 @@ export const useDecodeData = ({to, data} = {}) => {
   const crc20Token = useValid20Token(isOutContract ? to : '')
 
   useEffect(() => {
-    if (data && isContract) {
-      getCFXContractMethodSignature(to, data, netId).then(result => {
-        setDecodeData({...result})
-      })
+    if (data && isContract && currentNetworkType) {
+      const getSignature =
+        currentNetworkType === NETWORK_TYPE.CFX
+          ? getCFXContractMethodSignature
+          : getEthContractMethodSignature
+      const params =
+        currentNetworkType === NETWORK_TYPE.CFX ? [to, data, netId] : [data]
+
+      getSignature(...params)
+        .then(result => {
+          setDecodeData({...result})
+        })
+        .catch(() => {
+          setDecodeData({})
+        })
     } else {
       setDecodeData({})
     }
-  }, [data, isContract, to, netId])
+  }, [data, isContract, to, netId, currentNetworkType])
 
   return {isContract, token: crc20Token, decodeData}
 }
