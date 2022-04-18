@@ -36,6 +36,16 @@ jobs:
         with:
           cache: "yarn"
           node-version: ${{ matrix.node-version }}
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "adopt"
+          java-version: "11"
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@5.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          cli: latest
+          bb: latest
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -46,7 +56,7 @@ jobs:
             ~/.m2/repository
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             ./.shadow-cljs
-          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}
+          key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}-${{ hashFiles('./deps.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
 
