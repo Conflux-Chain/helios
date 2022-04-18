@@ -4,6 +4,6 @@
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "@thi.ng/associative": "^6.1.6"
+    "@thi.ng/associative": "^5.2.16"
   }
 }
