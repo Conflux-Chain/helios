@@ -297,7 +297,6 @@ const en = {
     priorityConnection: 'Priority Connection',
     priorityConnectionDes:
       'Fluent will be the first option when connecting to any dApp on EVM networks.',
-    underCfxProvider: 'Enable on Conflux networks',
     showTestnet: 'Show Testnet',
     showTestnetDes: 'Select this to show test networks in network list.',
 
