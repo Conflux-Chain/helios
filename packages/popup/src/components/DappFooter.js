@@ -28,6 +28,7 @@ function DappFooter({
   cancelText,
   confirmText,
   confirmDisabled = false,
+  showError = true,
   confirmParams = {},
   onClickCancel,
   onClickConfirm,
@@ -117,17 +118,16 @@ function DappFooter({
         window.close()
       })
       .catch(e => {
-        if (!isHwAccount) {
-          setLoading(false)
+        !isHwAccount && setLoading(false)
+        setSendStatus?.(TX_STATUS.ERROR)
+        setSendError?.(e?.message ?? e)
+
+        showError &&
           Message.error({
             content: e?.message ?? t('unCaughtErrMsg'),
             top: '10px',
             duration: 1,
           })
-        } else {
-          setSendStatus?.(TX_STATUS.ERROR)
-          setSendError?.(e?.message ?? e)
-        }
       })
   }
 
@@ -167,6 +167,7 @@ DappFooter.propTypes = {
   setAuthStatus: PropTypes.func,
   pendingAuthReq: PropTypes.array,
   isHwAccount: PropTypes.bool,
+  showError: PropTypes.bool,
 }
 
 export default DappFooter
