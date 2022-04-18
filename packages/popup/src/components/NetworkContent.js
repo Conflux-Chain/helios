@@ -8,7 +8,12 @@ import useLoading from '../hooks/useLoading'
 import {CustomTag} from './'
 import {useTranslation} from 'react-i18next'
 
-const {WALLET_SET_CURRENT_NETWORK} = RPC_METHODS
+const {
+  WALLET_SET_CURRENT_NETWORK,
+  ACCOUNT_GROUP_TYPE,
+  WALLET_SET_CURRENT_ACCOUNT,
+  QUERY_ACCOUNT_LIST,
+} = RPC_METHODS
 const networkTypeColorObj = {
   mainnet: 'bg-primary-10 text-[#ACB6E0]',
   testnet: 'bg-[#FFF7F4] text-[#F5B797]',
@@ -41,14 +46,35 @@ function NetworkItem({
   const {
     mutate: mutateCurrentAddress,
     data: {
-      network: {eid},
+      network: {eid: currentNetworkId},
+      account: currentAccount,
     },
   } = useCurrentAddress()
+
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
     itemWrapperPaddingStyleObj[networkItemSize] || ''
 
-  const onChangeNetwork = () => {
+  const onChangeNetwork = async isHw => {
+    if (isHw) {
+      const target = await request(QUERY_ACCOUNT_LIST, {
+        networkId,
+        groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+        includeHidden: false,
+        accountG: {
+          eid: 1,
+        },
+      })
+      const targetAccountId = Object.values(Object.values(target)[0].account)[0]
+        .eid
+      await request(WALLET_SET_CURRENT_ACCOUNT, [targetAccountId])
+    }
+
+    await request(WALLET_SET_CURRENT_NETWORK, [networkId])
+    await mutateCurrentAddress()
+  }
+
+  const onClickNetwork = () => {
     const netData = {
       type,
       networkId,
@@ -61,35 +87,41 @@ function NetworkItem({
       networkType,
     }
     if (!needSwitchNet) {
-      onClose && onClose()
+      onClose?.()
       return onClickNetworkItem?.({...netData})
     }
-    if (eid !== networkId) {
-      setLoading(true)
-      return request(WALLET_SET_CURRENT_NETWORK, [networkId])
-        .then(() => {
-          mutateCurrentAddress().then(() => {
-            onClose && onClose()
-            onClickNetworkItem?.({...netData})
-            setLoading(false)
-            Message.warning({
-              content: t('addressHasBeenChanged'),
-              top: '110px',
-              duration: 1,
-            })
-          })
-        })
-        .catch(error => {
-          // TODO: need deal with error condition
-          Message.error({
-            content: error?.message || t('changeNetworkError'),
-            top: '110px',
-            duration: 1,
-          })
-          setLoading(false)
-        })
+
+    if (currentNetworkId === networkId) {
+      return onClose?.()
     }
-    onClose && onClose()
+
+    if (!Object.keys(currentAccount).length) {
+      return
+    }
+    const isHw =
+      currentAccount.accountGroup?.vault?.type === ACCOUNT_GROUP_TYPE.HW
+    setLoading(true)
+
+    onChangeNetwork(isHw)
+      .then(() => {
+        onClickNetworkItem?.({...netData})
+        onClose?.()
+        Message.warning({
+          content: t('addressHasBeenChanged'),
+          top: '110px',
+          duration: 1,
+        })
+      })
+      .catch(error => {
+        Message.error({
+          content: error?.message || t('changeNetworkError'),
+          top: '110px',
+          duration: 1,
+        })
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   return (
@@ -99,9 +131,11 @@ function NetworkItem({
       className={`bg-gray-0 ${
         index !== 0 ? 'mt-4' : ''
       } h-15 flex items-center rounded relative hover:bg-primary-4 ${
-        eid === networkId && needSwitchNet ? 'cursor-default' : 'cursor-pointer'
+        currentNetworkId === networkId && needSwitchNet
+          ? 'cursor-default'
+          : 'cursor-pointer'
       } ${itemWrapperPaddingStyle} pr-3.5`}
-      onClick={onChangeNetwork}
+      onClick={onClickNetwork}
     >
       <div className="w-8 h-8 border border-solid border-gray-20 rounded-full flex items-center justify-center">
         <img
@@ -113,7 +147,7 @@ function NetworkItem({
       <div className="ml-2.5 text-gray-80 text-sm font-medium flex-1">
         {networkName}
       </div>
-      {eid === networkId && showCurrentIcon && (
+      {currentNetworkId === networkId && showCurrentIcon && (
         <CheckCircleFilled className="w-4 h-4 text-success" />
       )}
       <CustomTag
