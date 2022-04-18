@@ -18,8 +18,8 @@
     "@fluent-wallet/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref",
     "@fluent-wallet/spec": "workspace:packages/spec",
     "@fluent-wallet/transducers": "workspace:packages/transducers",
-    "@thi.ng/atom": "5.1.5",
-    "@thi.ng/rstream": "7.2.4",
-    "@thi.ng/rstream-graph": "4.1.6"
+    "@thi.ng/atom": "4.1.42",
+    "@thi.ng/rstream": "6.0.21",
+    "@thi.ng/rstream-graph": "3.2.81"
   }
 }

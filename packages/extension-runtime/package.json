@@ -5,7 +5,7 @@
   "version": "0.0.8",
   "dependencies": {
     "@fluent-wallet/sentry": "workspace:*",
-    "@thi.ng/rstream": "7.2.4",
+    "@thi.ng/rstream": "6.0.21",
     "webextension-polyfill": "0.8.0"
   }
 }
