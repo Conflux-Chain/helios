@@ -23,9 +23,13 @@ export const schemas = {
       {closed: true},
       ['fromBlock', {optional: true}, blockRef],
       ['toBlock', {optional: true}, blockRef],
-      ['address', {optional: true}, [zeroOrMore, ethHexAddress]],
+      [
+        'address',
+        {optional: true},
+        [or, ethHexAddress, [zeroOrMore, ethHexAddress]],
+      ],
       ['blockHash', {optional: true}, Hash32],
-      ['topics', [zeroOrMore, topicSchema]],
+      ['topics', [zeroOrMore, [or, singleTopic, topicSchema]]],
     ],
   ],
 }
