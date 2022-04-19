@@ -1,5 +1,8 @@
 import {cat, map, or, dbid, any, zeroOrMore} from '@fluent-wallet/spec'
-import {ChainParameterSchema} from '@fluent-wallet/wallet_add-network'
+import {
+  ChainParameterSchema,
+  firstHttpOrHttpsUrl,
+} from '@fluent-wallet/wallet_add-network'
 
 export const NAME = 'wallet_addEthereumChain'
 
@@ -43,10 +46,8 @@ export const main = async ({
   _inpage,
 }) => {
   const chainConf = Array.isArray(params) ? params[0] : params.newChainConfig[0]
-  const {
-    chainId,
-    rpcUrls: [rpcUrl],
-  } = chainConf
+  const {chainId, rpcUrls} = chainConf
+  const rpcUrl = firstHttpOrHttpsUrl(rpcUrls)
   const [dupEndpointNetwork] = getNetworkByEndpoint(rpcUrl)
   if (dupEndpointNetwork)
     throw InvalidParams(
