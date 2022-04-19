@@ -1,7 +1,7 @@
 {
   "name": "@fluent-wallet/contract-method-name",
   "type": "module",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
     "@ethersproject/abi": "5.6.1",
