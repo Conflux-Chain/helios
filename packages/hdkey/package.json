@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/hdkey",
   "type": "module",
   "main": "index.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "dependencies": {
     "@ethersproject/hdnode": "5.6.0",
     "@ethersproject/random": "5.6.0",
