@@ -368,6 +368,7 @@ function ConfirmTransaction() {
               setAuthStatus={setAuthStatus}
               setSendError={setSendError}
               setIsAppOpen={setIsAppOpen}
+              showError={false}
             />
           )}
           {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (
