@@ -306,10 +306,12 @@ function App() {
 
   useEffect(() => {
     // make up for the rest of height
-    window.resizeBy(
-      document.body.clientWidth - window.innerWidth,
-      600 - window.innerHeight,
-    )
+    if (document.body.clientWidth - window.innerWidth > 0) {
+      window.resizeBy(
+        document.body.clientWidth - window.innerWidth,
+        600 - window.innerHeight,
+      )
+    }
   }, [])
 
   if (
