@@ -1,5 +1,8 @@
 require('../setup-dotenv.js')
 const NodeModulesPolyfills = require('@esbuild-plugins/node-modules-polyfill')
+const browserslist = require('browserslist')
+const {esbuildPluginBrowserslist} = require('esbuild-plugin-browserslist')
+const browserLists = require('../../package.json').browserslist
 const {pnpPlugin} = require('@yarnpkg/esbuild-plugin-pnp')
 const esb = require('esbuild')
 const stylePlugin = require('esbuild-style-plugin')
@@ -18,6 +21,10 @@ const config = {
       return acc
     },
     {
+      'import.meta.env.SNOWPACK_PUBLIC_SENTRY_DSN': null,
+      'import.meta.env.SNOWPACK_PUBLIC_FLUENT_ENV': JSON.stringify(
+        process.env.NODE_ENV,
+      ),
       'import.meta.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'import.meta.env.CI': JSON.stringify(process.env.CI),
     },
@@ -36,6 +43,9 @@ const config = {
   sourcemap: true,
   // sourcemap: isProd() ? 'inline' : true,
   plugins: [
+    esbuildPluginBrowserslist(browserslist(browserLists), {
+      printUnknownTargets: false,
+    }),
     pnpPlugin(),
     NodeModulesPolyfills.default(),
     stylePlugin({

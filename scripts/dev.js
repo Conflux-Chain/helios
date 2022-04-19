@@ -8,6 +8,7 @@ require('./before_all.js')
 const {resolve} = require('path')
 const buildContentScript = require('./build-content-script.js')
 const buildExtReload = require('./build-reload.js')
+const buildBg = require('./build/bg.js')
 // const buildInpage = require('./build-inpage.js')
 
 const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
@@ -19,10 +20,7 @@ const {
   clearCache,
 } = require('@yqrashawn/snowpack')
 
-const builds = [
-  resolve(__dirname, '../packages/background/snowpack.config.cjs'),
-  resolve(__dirname, '../packages/popup/snowpack.config.cjs'),
-]
+const builds = [resolve(__dirname, '../packages/popup/snowpack.config.cjs')]
 // let servers = []
 
 const shouldCleanCache =
@@ -49,6 +47,7 @@ process.on('uncaughtException', (...args) => console.error(...args))
         startServer({config}),
       )
     }),
+    buildBg.serve(),
     buildExtReload(),
     // buildInpage(),
     buildContentScript(),

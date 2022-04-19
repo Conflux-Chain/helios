@@ -121,10 +121,10 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
   // ## Dev/Test
   if (!IS_TEST_MODE) {
     if (IS_DEV_MODE) {
-      if (import.meta.env?.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
+      if (import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
         try {
           const localDevModule = await import(
-            import.meta.env?.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH
+            import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH
           )
           await localDevModule.run({request, db})
         } catch (err) {

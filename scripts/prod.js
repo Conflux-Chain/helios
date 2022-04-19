@@ -29,7 +29,7 @@ process.on('uncaughtException', err => {
   throw err
 })
 ;(async () => {
-  await Promise.all([buildContentScript(), buildBg(), buildPopup()])
+  await Promise.all([buildContentScript(), buildBg.analyze(), buildPopup()])
   await require('./after_prod.js')()
   process.exit(0)
 })()

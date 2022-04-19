@@ -1,6 +1,9 @@
 const setupDotenv = require('../setup-dotenv.js')
 setupDotenv(true)
 const NodeModulesPolyfills = require('@esbuild-plugins/node-modules-polyfill')
+const browserslist = require('browserslist')
+const {esbuildPluginBrowserslist} = require('esbuild-plugin-browserslist')
+const browserLists = require('../../package.json').browserslist
 const alias = require('esbuild-plugin-alias')
 const {pnpPlugin} = require('@yarnpkg/esbuild-plugin-pnp')
 const esb = require('esbuild')
@@ -20,11 +23,16 @@ const config = {
       return acc
     },
     {
+      'import.meta.env.SNOWPACK_PUBLIC_FLUENT_ENV': JSON.stringify(
+        process.env.NODE_ENV,
+      ),
+      'import.meta.env.SNOWPACK_PUBLIC_SENTRY_DSN': null,
       'import.meta.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'import.meta.env.CI': JSON.stringify(process.env.CI),
     },
   ),
   inject: ['scripts/build/buffer-shim.js'],
+  logLevel: isProd() ? 'warning' : 'error',
   bundle: true,
   write: true,
   treeShaking: true,
@@ -36,6 +44,13 @@ const config = {
   format: 'esm',
   outdir: 'packages/browser-extension/build/background/dist',
   plugins: [
+    ...(isProd()
+      ? [
+          esbuildPluginBrowserslist(browserslist(browserLists), {
+            printUnknownTargets: false,
+          }),
+        ]
+      : []),
     pnpPlugin(),
     alias({
       jsbi: path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi-cjs.js'),
@@ -44,16 +59,28 @@ const config = {
   ],
 }
 
+function buildIndexProd() {
+  return esb.build({
+    ...config,
+    entryPoints: ['packages/background/src/index.prod.js'],
+    splitting: false,
+    format: undefined,
+  })
+}
+
 function analyze() {
-  return esb
-    .build({...config, metafile: true})
-    .then(x => esb.analyzeMetafile(x.metafile, {verbose: true}))
-    .then(x => fs.writeFileSync('bg-report.txt', x))
+  return Promise.all([
+    esb
+      .build({...config, metafile: true})
+      .then(x => esb.analyzeMetafile(x.metafile, {verbose: true}))
+      .then(x => fs.writeFileSync('bg-report.txt', x)),
+    buildIndexProd(),
+  ])
 }
 
 // eslint-disable-next-line no-unused-vars
 function build() {
-  return esb.build(config)
+  return Promise.all([esb.build(config), buildIndexProd()])
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -64,7 +91,7 @@ function serve() {
   )
 }
 
-module.exports = analyze
+module.exports = {analyze, build, serve}
 
 // serve()
 // build()
