@@ -113,10 +113,10 @@ function AddToken({onClose, open}) {
       open={open}
       cardContent={
         // 2.75rem = parent paddingBottom + current marginTop = 1.75rem + 1rem
-        <div className="mt-4 flex flex-col flex-grow h-[calc(100%-2.75rem)]">
+        <div className="mt-4 flex flex-col grow h-[calc(100%-2.75rem)]">
           <SearchInput value={searchContent} onChange={setSearchContent} />
           {tokenList && (
-            <div className="relative pt-3 mt-3 bg-gray-0 rounded flex flex-col flex-grow">
+            <div className="relative pt-3 mt-3 bg-gray-0 rounded flex flex-col grow">
               <p className="ml-4 mb-1 text-gray-40">{t('searchResults')}</p>
               <TokenList>
                 {tokenList.map(([token, added], index) => (
