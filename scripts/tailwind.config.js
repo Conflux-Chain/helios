@@ -1,23 +1,23 @@
 module.exports = {
-  mode: 'jit',
-  purge: {
-    content: [
-      './packages/popup/**/*.html',
-      './packages/popup/**/*.js',
-      './packages/doc-ui/**/*.html',
-      './packages/doc-ui/**/*.js',
-      './packages/ui/**/*.html',
-      './packages/ui/**/*.js',
-      './packages/ui-components/**/*.html',
-      './packages/ui-components/**/*.js',
-      './websites/doc/**/*.html',
-      './websites/doc/**/*.js',
-    ],
-    options: {
-      keyframes: true,
-    },
-  },
-  darkMode: false, // or 'media' or 'class'
+  content: [
+    './packages/popup/**/*.html',
+    './packages/popup/**/*.js',
+    './packages/doc-ui/**/*.html',
+    './packages/doc-ui/**/*.js',
+    './packages/ui/**/*.html',
+    './packages/ui/**/*.js',
+    './packages/ui-components/**/*.html',
+    './packages/ui-components/**/*.js',
+    './websites/doc/**/*.html',
+    './websites/doc/**/*.js',
+  ],
+
+  // purge: {
+  //   options: {
+  //     keyframes: true,
+  //   },
+  // },
+  // darkMode: false, // or 'media' or 'class'
   theme: {
     fontSize: {
       '2xs': ['10px', '14px'],
@@ -30,6 +30,7 @@ module.exports = {
       '2xl': ['32px', '40px'],
     },
     extend: {
+      current: 'currentColor',
       flex: {
         2: '2 2 0%',
         3: '2 2 0%',

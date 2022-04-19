@@ -2,7 +2,8 @@
 'use strict'
 const {cli} = require('@yqrashawn/snowpack')
 const {setEnvBasedOnArgv} = require('./snowpack.utils')
-require('./setup-dotenv')
+const setupDotenv = require('./setup-dotenv.js')
+setupDotenv()
 
 setEnvBasedOnArgv()
 
