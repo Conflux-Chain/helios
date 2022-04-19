@@ -4,7 +4,6 @@
  */
 
 import * as ethGetLogs from '@fluent-wallet/eth_get-logs'
-import * as cfxGetIntrestRate from '@fluent-wallet/cfx_get-intrest-rate'
 import * as cfxGetPosRewardByEpoch from '@fluent-wallet/cfx_get-pos-reward-by-epoch'
 import * as ethSignTxWithLedgerNanoS from '@fluent-wallet/eth_sign-tx-with-ledger-nano-s'
 import * as walletRequestAccounts from '@fluent-wallet/wallet_request-accounts'
@@ -267,7 +266,6 @@ export const rpcEngineOpts = {
     cfxGetBlocksByEpoch,
     cfxGetCollateralForStorage,
     cfxGetConfirmationRiskByHash,
-    cfxGetInterestRate,
     cfxGetLogs,
     cfxGetSkippedBlocksByEpoch,
     cfxGetSponsorInfo,
@@ -282,7 +280,7 @@ export const rpcEngineOpts = {
     cfxGetAccountPendingTransactions,
     cfxGetPoSEconomics,
     cfxGetPosRewardByEpoch,
-    cfxGetIntrestRate,
+    cfxGetInterestRate,
     cfxGetSupplyInfo,
     cfxOpenedMethodGroups,
     txpoolNextNonce,

@@ -1,9 +1,0 @@
-{
-  "name": "@fluent-wallet/cfx_get-intrest-rate",
-  "type": "module",
-  "main": "index.js",
-  "version": "0.0.0",
-  "dependencies": {
-    "@fluent-wallet/spec": "workspace:packages/spec"
-  }
-}

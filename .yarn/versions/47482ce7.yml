@@ -28,7 +28,7 @@ releases:
   "@fluent-wallet/cfx_get-confirmation-risk-by-hash": patch
   "@fluent-wallet/cfx_get-deposit-list": patch
   "@fluent-wallet/cfx_get-interest-rate": patch
-  "@fluent-wallet/cfx_get-intrest-rate": patch
+  "@fluent-wallet/cfx_get-interest-rate": patch
   "@fluent-wallet/cfx_get-logs": patch
   "@fluent-wallet/cfx_get-max-gas-limit": patch
   "@fluent-wallet/cfx_get-next-nonce": patch
