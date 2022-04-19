@@ -288,8 +288,6 @@ const zh = {
     AdvancedSettings: '高级选项',
     priorityConnection: '优先连接',
     priorityConnectionDes: '在连接至 DApp 时，Fluent 将会作为默认钱包',
-    underCfxProvider: '在 Conflux 网络中启用',
-    underEtherProvider: '在 Ethereum/EVM 网络中启用',
     showTestnet: '显示测试网络',
     showTestnetDes: '开启后，可在网络列表中展示测试网络',
 

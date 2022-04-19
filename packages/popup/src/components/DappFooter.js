@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types'
+import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
+import Message from '@fluent-wallet/component-message'
+import {Conflux} from '@fluent-wallet/ledger'
 import {request} from '../utils'
 import {RPC_METHODS, TX_STATUS} from '../constants'
 import {usePendingAuthReq} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
-import {Conflux} from '@fluent-wallet/ledger'
 
 const cfxLedger = new Conflux()
 
@@ -26,6 +28,7 @@ function DappFooter({
   cancelText,
   confirmText,
   confirmDisabled = false,
+  showError = true,
   confirmParams = {},
   onClickCancel,
   onClickConfirm,
@@ -36,6 +39,8 @@ function DappFooter({
   isHwAccount,
   pendingAuthReq: customPendingAuthReq,
 }) {
+  const {t} = useTranslation()
+
   let pendingAuthReq = usePendingAuthReq()
   pendingAuthReq = customPendingAuthReq || pendingAuthReq
 
@@ -51,8 +56,11 @@ function DappFooter({
         window.close()
       })
       .catch(e => {
-        console.log('error', e)
-        // TODO: error message
+        Message.error({
+          content: e?.message ?? t('unCaughtErrMsg'),
+          top: '10px',
+          duration: 1,
+        })
         setLoading(false)
       })
   }
@@ -73,7 +81,7 @@ function DappFooter({
       }
     }
     if (!isHwAccount) setLoading(true)
-    else setSendStatus(TX_STATUS.HW_WAITING)
+    else setSendStatus?.(TX_STATUS.HW_WAITING)
     let params = {}
     switch (req.method) {
       case WALLET_REQUEST_PERMISSIONS:
@@ -106,15 +114,20 @@ function DappFooter({
       .then(() => {
         onClickConfirm && onClickConfirm()
         if (!isHwAccount) setLoading(false)
-        else setSendStatus(TX_STATUS.HW_SUCCESS)
+        else setSendStatus?.(TX_STATUS.HW_SUCCESS)
         window.close()
       })
-      .catch(error => {
-        // TODO: error message
-        console.log('error', error)
-        if (!isHwAccount) setLoading(false)
-        setSendStatus(TX_STATUS.ERROR)
-        setSendError(error?.message ?? error)
+      .catch(e => {
+        !isHwAccount && setLoading(false)
+        setSendStatus?.(TX_STATUS.ERROR)
+        setSendError?.(e?.message ?? e)
+
+        showError &&
+          Message.error({
+            content: e?.message ?? t('unCaughtErrMsg'),
+            top: '10px',
+            duration: 1,
+          })
       })
   }
 
@@ -154,6 +167,7 @@ DappFooter.propTypes = {
   setAuthStatus: PropTypes.func,
   pendingAuthReq: PropTypes.array,
   isHwAccount: PropTypes.bool,
+  showError: PropTypes.bool,
 }
 
 export default DappFooter
