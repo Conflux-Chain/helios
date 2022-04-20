@@ -159,3 +159,6 @@ declined:
   - "@fluent-wallet/wallet_watch-asset"
   - "@fluent-wallet/wallet_zero-account-group"
   - workspace-tools
+
+undecided:
+  - "@fluent-wallet/ethereum-tx-error"
