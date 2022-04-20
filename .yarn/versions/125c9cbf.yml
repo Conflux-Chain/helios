@@ -1,4 +1,5 @@
 releases:
+  "@fluent-wallet/cfx_send-transaction": patch
   "@fluent-wallet/ethereum-tx-error": patch
   "@fluent-wallet/spec": patch
   "@fluent-wallet/wallet_add-conflux-chain": patch
@@ -57,7 +58,6 @@ declined:
   - "@fluent-wallet/cfx_opened-method-groups"
   - "@fluent-wallet/cfx_request-accounts"
   - "@fluent-wallet/cfx_send-raw-transaction"
-  - "@fluent-wallet/cfx_send-transaction"
   - "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s"
   - "@fluent-wallet/cfx_sign-typed-data_v4"
   - "@fluent-wallet/eth_accounts"
