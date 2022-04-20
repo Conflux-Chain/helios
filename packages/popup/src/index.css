@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-  @apply mx-auto;
+  @apply mx-auto text-[16px];
 
   width: fit-content;
 }
