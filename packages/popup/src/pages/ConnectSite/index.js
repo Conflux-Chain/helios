@@ -87,15 +87,17 @@ function ConnectSitesList({
                   >
                     {vault?.type === 'pk' ? null : (
                       <div className="flex items-center ml-3 pt-2.5">
-                        <WrapIcon
-                          size="w-5 h-5 mr-1 bg-primary-4"
-                          clickable={false}
-                        >
-                          <img
-                            src="/images/seed-group-icon.svg"
-                            alt="group-icon"
-                          />
-                        </WrapIcon>
+                        {vault?.type === 'hd' && (
+                          <WrapIcon
+                            size="w-5 h-5 mr-1 bg-primary-4"
+                            clickable={false}
+                          >
+                            <img
+                              src="/images/seed-group-icon.svg"
+                              alt="group-icon"
+                            />
+                          </WrapIcon>
+                        )}
                         <p className="text-gray-40 text-xs">{nickname}</p>
                       </div>
                     )}

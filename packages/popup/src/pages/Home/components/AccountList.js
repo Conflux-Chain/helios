@@ -57,9 +57,11 @@ function AccountItem({
       <div className={`bg-gray-0 rounded ${index !== 0 ? 'mt-4' : ''}`}>
         {groupType === 'pk' ? null : (
           <div className="flex items-center ml-3 pt-2.5">
-            <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
-              <img src="/images/seed-group-icon.svg" alt="group-icon" />
-            </WrapIcon>
+            {groupType === 'hd' && (
+              <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
+                <img src="/images/seed-group-icon.svg" alt="group-icon" />
+              </WrapIcon>
+            )}
             <p className="text-gray-40 text-xs">{nickname}</p>
           </div>
         )}

@@ -160,7 +160,7 @@ function Error() {
         content={
           <NetworkContent onClickNetworkItem={() => setNetworkShow(false)} />
         }
-        className="bg-bg bg-gray-circles bg-no-repeat bg-contain"
+        className="bg-bg bg-gray-circles bg-no-repeat bg-contain max-h-[552px]"
       />
     </div>
   ) : null
