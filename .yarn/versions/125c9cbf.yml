@@ -5,9 +5,11 @@ releases:
   "@fluent-wallet/wallet_add-ethereum-chain": patch
   "@fluent-wallet/wallet_add-network": patch
   "@fluent-wallet/wallet_update-network": patch
+  "@fluent-wallet/wallet_validate20token": patch
 
 declined:
   - helios-background
+  - helios-popup
   - "@fluent-wallet/rpc-engine"
   - "@fluent-wallet/cfx_accounts"
   - "@fluent-wallet/cfx_call"
@@ -152,7 +154,6 @@ declined:
   - "@fluent-wallet/wallet_update-token-list"
   - "@fluent-wallet/wallet_user-approved-auth-request"
   - "@fluent-wallet/wallet_user-rejected-auth-request"
-  - "@fluent-wallet/wallet_validate20token"
   - "@fluent-wallet/wallet_validate-app-permissions"
   - "@fluent-wallet/wallet_validate-mnemonic"
   - "@fluent-wallet/wallet_validate-password"

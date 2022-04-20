@@ -65,6 +65,7 @@ export const main = async ({
     uaddr = addr.hex
   }
   if (userAddress && type === 'cfx') uaddr = decode(userAddress).hexAddress
+  if (userAddress && type === 'eth') uaddr = userAddress
   if (selectedAccountAddress) uaddr = getCurrentAddr().hex
 
   const call = type === 'cfx' ? cfx_call : eth_call
