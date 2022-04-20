@@ -2,8 +2,8 @@ import {expect, describe} from '@jest/globals'
 import {getEthContractMethodSignature} from './eth-name'
 
 describe('ETH Name', () => {
-  it('should return token data', () => {
-    const tokenData = getEthContractMethodSignature(
+  it('should return token data', async () => {
+    const tokenData = await getEthContractMethodSignature(
       '0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000003a98',
     )
     const {name, args} = tokenData
