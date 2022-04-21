@@ -30,7 +30,7 @@ export const permissions = {
 export const generateMain =
   type =>
   async ({
-    Err: {InvalidParams},
+    Err: {InvalidParams, UnrecognizedChainId},
     db: {getNetwork, getAuthReqById},
     rpcs: {
       wallet_setCurrentNetwork,
@@ -49,8 +49,10 @@ export const generateMain =
       return '__null__'
     const [network] = getNetwork({chainId, type: type}) || []
     if (!network)
-      throw InvalidParams(
-        `No ethereum network with chainId ${chainId}, try add the network with wallet_addEthereumChain`,
+      throw UnrecognizedChainId(
+        `Unrecognized chain ID "${chainId}". Try adding the chain using ${
+          type === 'eth' ? 'wallet_addEthereumChain' : 'wallet_addConfluxChain'
+        } first.`,
       )
 
     if (_inpage) {
