@@ -1399,7 +1399,7 @@
                               (assoc :token (and token (e :token token))))))
                       txs)})))
 
-(defonce default-preferences {:hideTestNetwork      false
+(defonce default-preferences {:hideTestNetwork           true
                               :overrideWindowDotEthereum false})
 
 (defn get-preferences []
