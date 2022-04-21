@@ -433,6 +433,31 @@
    :error/message "invalid http/https url"
    :doc "http/https url"))
 
+(def export-rich-url
+  (update-properties
+   [:re #"(?i)^(?:(?:((http|ws)s?|ipfs))://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))?\.?)(?::\d{2,5})?(?:[/?#]\S*)?$"]
+   :gen/fmap (fn [] "https://example.com/")
+   :type :url
+   :error/message "Invalid http/https/wss/ws/ipfs url"
+   :doc "http/https/ws/wss/ipfs url"))
+
+(defn at-least-one
+  [name pred gen]
+  (m/-simple-schema
+   {:type            (str "at-least-one-" name)
+    :pred            #(some pred %)
+    :type-properties {:error/message (str "At least one fullfill " name)
+                      :doc           (str "At least one fullfill " name)
+                      :gen/fmap      gen}}))
+
+(def export-at-least-one-http-or-https-url
+  (update-properties
+   [:and (at-least-one "starts-with-http" #(and (string? %) (.startsWith % "http")) (fn [] "https://example.com")) [:+ export-rich-url]]
+   :type :at-least-one-http-or-https-url
+   :error/message "should has at least one http/https url"
+   :doc "array with at least one http/https url"
+   :gen/fmap #(vector "https://example.com")))
+
 (def nil-or-empty-vec
   (update-properties
    [:or export-js-undefined export-nil [:and vector? empty?]]

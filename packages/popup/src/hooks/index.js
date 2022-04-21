@@ -308,7 +308,7 @@ export const useDecodeData = ({to, data} = {}) => {
   const crc20Token = useValid20Token(isOutContract ? to : '')
 
   useEffect(() => {
-    if (data && isContract && currentNetworkType) {
+    if (data && isContract && currentNetworkType && crc20Token.valid) {
       const getSignature =
         currentNetworkType === NETWORK_TYPE.CFX
           ? getCFXContractMethodSignature

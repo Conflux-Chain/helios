@@ -170,7 +170,7 @@ export const main = async args => {
   }
 
   if (returnTxMeta) {
-    return {txMeta: newTx, raw}
+    return {txMeta: {...newTx, gasLimit: undefined, type, from, gas}, raw}
   }
 
   return raw

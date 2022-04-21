@@ -9,6 +9,7 @@ export function processError(err) {
     const errstr = err.data || err.message || ''
     if (
       /known transaction/i.test(errstr) ||
+      /tx already exist/i.test(errstr) ||
       /already known/i.test(errstr) ||
       /transaction with the same hash was already imported/i.test(errstr)
     )
