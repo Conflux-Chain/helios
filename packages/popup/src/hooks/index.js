@@ -326,7 +326,7 @@ export const useDecodeData = ({to, data} = {}) => {
     } else {
       setDecodeData({})
     }
-  }, [data, isContract, to, netId, currentNetworkType])
+  }, [data, isContract, to, netId, currentNetworkType, crc20Token.valid])
 
   return {isContract, token: crc20Token, decodeData}
 }
