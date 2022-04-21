@@ -29,6 +29,7 @@ export const ERROR = {
   DISCONNECTED: {code: 4900, name: 'Disconnected'},
   // disconnected from requested chain
   CHAIN_DISCONNECTED: {code: 4901, name: 'Chain Disconnected'},
+  UNRECOGNIZED_CHAIN_ID: {code: 4902, name: 'Unrecognized chain ID'},
 }
 
 export const Parse = defRpcError(
@@ -88,6 +89,12 @@ export const ChainDisconnected = defRpcError(
   () => ``,
   msg =>
     `${msg} [${ERROR.CHAIN_DISCONNECTED.name} ${ERROR.CHAIN_DISCONNECTED.code}]\n`,
+)
+
+export const UnrecognizedChainId = defRpcError(
+  () => ``,
+  msg =>
+    `${msg} [${ERROR.UNRECOGNIZED_CHAIN_ID.name} ${ERROR.UNRECOGNIZED_CHAIN_ID.code}]\n`,
 )
 
 export const errorInstanceToErrorCode = instance => {
