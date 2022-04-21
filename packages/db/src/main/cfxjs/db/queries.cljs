@@ -971,7 +971,7 @@
                           :token/name     name
                           :token/symbol   symbol
                           :token/decimals decimals
-                          :token/logoURI  image
+                          :token/logoURI  (if (nil? image) "" image)
                           :token/network  networkId
                           :token/address  address
                           :token/fromUser (boolean fromUser)
