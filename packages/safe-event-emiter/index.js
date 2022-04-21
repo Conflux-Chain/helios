@@ -81,8 +81,13 @@ export default class SafeEventEmitter {
     this.#listeners.delete(listener)
   }
 
-  removeLitener(...args) {
+  removeListener(...args) {
     return this.off(...args)
+  }
+
+  removeAllListeners() {
+    Object.values(this.#streams).forEach(s => s.unsubscribeSelf())
+    this.#listeners = new Map()
   }
 
   emit(eventType, data) {
