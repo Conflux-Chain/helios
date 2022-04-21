@@ -3,7 +3,7 @@ import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, before
 
 describe('inpage', function () {
   describe('setupProvider', function () {
-    it('should setup the provider on window.cfx', async function () {
+    it('should setup the provider on window.conflux', async function () {
       let listener, eventName
       window.addEventListener = jest.fn((e, l) => {
         eventName = e
@@ -14,6 +14,20 @@ describe('inpage', function () {
       expect(typeof listener).toBe('function')
       expect(eventName).toBe('message')
       expect(window.conflux).toBeDefined()
+    })
+
+    it('shouldn not setup the provider on window.ethereum when already defined', async function () {
+      let listener, eventName
+      window.addEventListener = jest.fn((e, l) => {
+        eventName = e
+        listener = l
+      })
+      window.ethereum = 1
+      expect(window.ethereum).toBe(1)
+      await import('./index.js')
+      expect(typeof listener).toBe('function')
+      expect(eventName).toBe('message')
+      expect(window.ethereum).toBe(1)
     })
   })
 })
