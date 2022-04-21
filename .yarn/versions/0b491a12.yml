@@ -1,0 +1,9 @@
+releases:
+  "@fluent-wallet/json-rpc-error": minor
+  "@fluent-wallet/rpc-engine": patch
+  "@fluent-wallet/wallet_switch-conflux-chain": major
+  "@fluent-wallet/wallet_switch-ethereum-chain": major
+
+declined:
+  - helios-background
+  - "@fluent-wallet/wallet_send-transaction"
