@@ -44,3 +44,19 @@ pull_request_rules:
       queue:
         name: default queue
         method: squash
+  - name: Automatic queue to release on approval [low]
+    conditions:
+      - author~=^ConfluxBot$
+      - "#approved-reviews-by>=1"
+      - label!=work-in-progress
+      - label!=wip
+      - label!=no-auto-squash-merge
+      - base=dev
+      - head=__release-pkg
+      - -conflict
+      - -draft
+      - -locked
+    actions:
+      queue:
+        name: release queue
+        method: squash
