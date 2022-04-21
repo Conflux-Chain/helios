@@ -16,17 +16,10 @@ describe('inpage', function () {
       expect(window.conflux).toBeDefined()
     })
 
-    it('shouldn not setup the provider on window.ethereum when already defined', async function () {
-      let listener, eventName
-      window.addEventListener = jest.fn((e, l) => {
-        eventName = e
-        listener = l
-      })
+    it('should not setup the provider on window.ethereum when already defined', async function () {
       window.ethereum = 1
       expect(window.ethereum).toBe(1)
       await import('./index.js')
-      expect(typeof listener).toBe('function')
-      expect(eventName).toBe('message')
       expect(window.ethereum).toBe(1)
     })
   })
