@@ -333,7 +333,6 @@ const ru = {
     balanceIsNotEnough: 'Недостаточный баланс',
     gasFeeIsNotEnough: 'Недостаточный лимит gas',
     contractError: 'Ошибка контракта ',
-    addressHasBeenChanged: 'Адрес был изменен',
     invalidPasswordFromRpc: 'Неверный пароль',
     required: 'Пожалуйста, введите вашу seed фразу.',
     changeNetworkError: 'Ошибка смены сети',

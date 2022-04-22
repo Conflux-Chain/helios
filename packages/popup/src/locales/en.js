@@ -329,7 +329,6 @@ const en = {
     balanceIsNotEnough: 'Insufficient balance',
     gasFeeIsNotEnough: 'Insufficient gas fee',
     contractError: 'Contract error: ',
-    addressHasBeenChanged: 'Address has been changed',
     invalidPasswordFromRpc: 'Invalid password',
     required: 'Please type your seed phrase.',
     changeNetworkError: 'Change network error',
