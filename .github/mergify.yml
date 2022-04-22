@@ -5,6 +5,8 @@ queue_rules:
       - label!=wip
       - status-success~=^build\s\(.*\)$
   - name: release queue
+    conditions:
+      - label!=wip
 
 pull_request_rules:
   - name: automatic approval for release package PR
