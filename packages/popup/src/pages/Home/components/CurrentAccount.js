@@ -11,6 +11,7 @@ import Message from '@fluent-wallet/component-message'
 import classNames from 'classnames'
 import {request, formatIntoChecksumAddress} from '../../../utils'
 import {RPC_METHODS} from '../../../constants'
+import useAddressAnimation from './useAddressAnimation'
 
 const {WALLET_GET_BLOCKCHAIN_EXPLORER_URL} = RPC_METHODS
 
@@ -68,6 +69,7 @@ function CurrentAccount({onOpenAccount}) {
   } = useCurrentAddress()
   const address = formatIntoChecksumAddress(value)
   const displayAddress = address ? shortenAddress(address) : ''
+  const addressAnimateStyle = useAddressAnimation(value)
 
   return (
     <div className="flex flex-col" id="currentAccount">
@@ -89,12 +91,10 @@ function CurrentAccount({onOpenAccount}) {
         />
       </div>
       <div className="flex items-center">
-        {/* TODO: add animate-address-change-blink*/}
-        <div className="px-0.5 mr-2">
-          <Text
-            className="text-white font-medium w-auto"
-            text={displayAddress}
-          />
+        <div
+          className={`px-0.5 mr-2 text-white font-medium w-auto ${addressAnimateStyle}`}
+        >
+          {displayAddress}
         </div>
         <CopyButton
           text={address}

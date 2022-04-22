@@ -106,11 +106,6 @@ function NetworkItem({
       .then(() => {
         onClickNetworkItem?.({...netData})
         onClose?.()
-        Message.warning({
-          content: t('addressHasBeenChanged'),
-          top: '110px',
-          duration: 1,
-        })
       })
       .catch(error => {
         Message.error({
