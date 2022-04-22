@@ -32,7 +32,7 @@ function SelectCreateType() {
   const history = useHistory()
   const hdGroup = useHdAccountGroup()
   const {zeroGroup} = useDataForPopup()
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const networkTypeIsCfx = useNetworkTypeIsCfx(zeroGroup)
 
   return (
     <div className="bg-bg h-full w-full" id="selectCreateTypeContainer">
