@@ -75,6 +75,7 @@ function setupProvider() {
 
   PROVIDER = initProvider(stream, sendToBg)
 
+  if (!window.ethereum) window.ethereum = PROVIDER
   Object.defineProperty(window, 'conflux', {value: PROVIDER, writable: false})
   takeOver(PROVIDER, 'cfx')
 
