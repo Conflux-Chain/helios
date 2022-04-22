@@ -1,5 +1,4 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
-import App from '@fluent-wallet/hw-app-conflux'
 import {decode} from '@fluent-wallet/base32-address'
 import {
   LEDGER_APP_NAME,
@@ -31,7 +30,8 @@ export default class Conflux {
     if (!this.app) {
       try {
         this.transport = await TransportWebUSB.create()
-        this.app = new App(this.transport)
+        const App = await import('@fluent-wallet/hw-app-conflux')
+        this.app = new App.default(this.transport)
       } catch (error) {
         console.warn(error)
       }
