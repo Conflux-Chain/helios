@@ -90,7 +90,7 @@ function CurrentAccount({onOpenAccount}) {
       </div>
       <div className="flex items-center">
         {/* TODO: add animate-address-change-blink*/}
-        <div className="px-0.5 mr-2 animate-address-change-blink">
+        <div className="px-0.5 mr-2">
           <Text
             className="text-white font-medium w-auto"
             text={displayAddress}
