@@ -971,12 +971,14 @@
                           :token/name     name
                           :token/symbol   symbol
                           :token/decimals decimals
-                          :token/logoURI  (if (nil? image) "" image)
                           :token/network  networkId
                           :token/address  address
                           :token/fromUser (boolean fromUser)
                           :token/fromApp  (boolean fromApp)
                           :token/fromList (boolean fromList)})
+        add-token-tx  (if (and image add-token-tx)
+                        (assoc add-token-tx :token/logoURI image)
+                        add-token-tx)
         token-in-addr? (and token-exist?
                             (q '[:find ?t .
                                  :in $ ?taddr ?addr
