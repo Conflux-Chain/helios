@@ -6,7 +6,7 @@ import {useAsync} from 'react-use'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {estimate} from '@fluent-wallet/estimate-tx'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
-import {decode} from '@fluent-wallet/base32-address'
+import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
 import {
   COMMON_DECIMALS,
   convertValueToData,
@@ -213,7 +213,9 @@ export const useCurrentTxParams = () => {
     to = toAddress ? tokenAddress : ''
     data = toAddress
       ? iface.encodeFunctionData('transfer', [
-          networkTypeIsCfx ? decode(toAddress).hexAddress : toAddress,
+          validateBase32Address(toAddress)
+            ? decode(toAddress).hexAddress
+            : toAddress,
           sendData,
         ])
       : ''
@@ -417,9 +419,12 @@ export const useViewData = ({data, to} = {}, isApproveToken) => {
   const {customAllowance} = useCurrentTxParams()
   const allowance =
     convertValueToData(customAllowance, token?.decimals) || '0x0'
+  const firstArg = decodeData?.args?.[0]
   const spender =
-    isApproveToken && decodeData?.args?.[0]
-      ? decode(decodeData?.args?.[0]).hexAddress
+    isApproveToken && firstArg
+      ? validateBase32Address(firstArg)
+        ? decode(firstArg).hexAddress
+        : firstArg
       : ''
   const viewData = useMemo(() => {
     if (customAllowance && isApproveToken) {

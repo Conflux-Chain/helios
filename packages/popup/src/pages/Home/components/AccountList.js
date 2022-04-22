@@ -35,6 +35,7 @@ function AccountItem({
       .then(() => {
         mutate().then(() => {
           onClose?.()
+          //TODO: remove this and i18n
           Message.warning({
             content: t('addressHasBeenChanged'),
             top: '110px',

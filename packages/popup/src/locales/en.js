@@ -12,7 +12,7 @@ const en = {
     switch: 'Switch',
     no: 'No',
     yes: 'Yes',
-    copiedSuccess: 'Copied success',
+    copiedSuccess: 'Copied',
     invalidAddress: 'Please enter valid cfx address',
     invalidHexAddress: 'Please enter valid hex address',
     unChecksumAddress: 'Invalid address, make sure the letter case is correct',

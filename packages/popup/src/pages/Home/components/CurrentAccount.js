@@ -89,10 +89,13 @@ function CurrentAccount({onOpenAccount}) {
         />
       </div>
       <div className="flex items-center">
-        <Text
-          className="text-white font-medium mr-2 w-auto"
-          text={displayAddress}
-        />
+        {/* TODO: add animate-address-change-blink*/}
+        <div className="px-0.5 mr-2 animate-address-change-blink">
+          <Text
+            className="text-white font-medium w-auto"
+            text={displayAddress}
+          />
+        </div>
         <CopyButton
           text={address}
           className={classNames(
