@@ -81,7 +81,7 @@ function RequestSignature() {
               id="plaintext"
               className={`${
                 isPersonalSign ? 'pl-3 max-h-[376px]' : 'pl-1 max-h-[338px]'
-              } pr-3 pt-3 pb-4 rounded bg-gray-4 overflow-auto`}
+              } pr-3 pt-3 pb-4 rounded bg-gray-4 overflow-auto break-words`}
             >
               {isPersonalSign ? (
                 req?.params?.[0] ?? ''
