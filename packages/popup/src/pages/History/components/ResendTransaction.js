@@ -328,7 +328,7 @@ function ResendTransaction({
   const resendTransaction = (params, isHwAccount) => {
     request(SEND_TRANSACTION, [params])
       .then(() => {
-        if (reSendTxStatus !== 'pending') {
+        if (reSendTxStatus !== 'pending' && reSendTxStatus !== 'sending') {
           return
         }
         refreshHistoryData?.()
@@ -341,8 +341,7 @@ function ResendTransaction({
         setSendStatus(TX_STATUS.HW_SUCCESS)
       })
       .catch(error => {
-        console.error(error)
-        if (reSendTxStatus !== 'pending') {
+        if (reSendTxStatus !== 'pending' && reSendTxStatus !== 'sending') {
           return
         }
         !isHwAccount && setLoading(false)
