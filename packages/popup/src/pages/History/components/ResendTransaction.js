@@ -316,15 +316,12 @@ function ResendTransaction({
       gas: formatDecimalToHex(gasLimit),
       storageLimit: estimateRst.storageCollateralized,
     }
-    if (isSpeedup) {
-      Object.keys(_params)
-        .filter(_k => !!_params[_k])
-        .forEach(k => {
-          params[k] = _params[k]
-        })
-    } else {
-      params = {..._params}
-    }
+
+    Object.keys(_params)
+      .filter(_k => !!_params[_k])
+      .forEach(k => {
+        params[k] = _params[k]
+      })
     return params
   }
 
