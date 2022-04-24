@@ -13,7 +13,7 @@ import {
 } from 'js-conflux-sdk'
 import {joinSignature} from '@ethersproject/bytes'
 import {
-  Wallet as EthWallet,
+  // Wallet as EthWallet,
   verifyMessage as verifyEthPersonalSign,
 } from '@ethersproject/wallet'
 import {
@@ -32,7 +32,12 @@ export const hashPersonalMessage = (type, message) =>
 export async function personalSign(type, privateKey, message) {
   return type === 'cfx'
     ? CfxPersonalMessage.sign(addHexPrefix(privateKey), message)
-    : await new EthWallet(addHexPrefix(privateKey)).signMessage(message)
+    : (await import('eth-sig-util')).default.personalSign(
+        toBuffer(addHexPrefix(privateKey)),
+        {
+          data: message,
+        },
+      )
 }
 
 export function recoverPersonalSignature(type, signature, message, netId) {
