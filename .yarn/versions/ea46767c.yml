@@ -1,0 +1,15 @@
+releases:
+  "@fluent-wallet/cfx_sign-typed-data_v4": patch
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/eth_sign-typed-data_v4": patch
+  "@fluent-wallet/signature": patch
+  "@fluent-wallet/wallet_handle-unfinished-eth-tx": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/cfx_sign-transaction"
+  - "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s"
+  - "@fluent-wallet/eth_sign-transaction"
+  - "@fluent-wallet/eth_sign-tx-with-ledger-nano-s"
+  - "@fluent-wallet/personal_sign"
+  - "@fluent-wallet/wallet_send-transaction"
