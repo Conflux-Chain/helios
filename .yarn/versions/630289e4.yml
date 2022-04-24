@@ -1,6 +1,0 @@
-releases:
-  "@fluent-wallet/wallet_create-account": major
-
-declined:
-  - helios-background
-  - "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account"
