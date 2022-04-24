@@ -29,8 +29,6 @@ pull_request_rules:
   - name: Automatic queue to dev on approval [low]
     conditions:
       - "#approved-reviews-by>=1"
-      - "#check-failure=0"
-      - "#check-pending=0"
       - label!=work-in-progress
       - label!=wip
       - label!=no-auto-squash-merge
@@ -39,14 +37,15 @@ pull_request_rules:
       - -conflict
       - -draft
       - -locked
+      - status-success~=^version-check\s\(.*\)$
       - "#review-threads-unresolved=0"
     actions:
       queue:
         name: default queue
         method: squash
-  - name: Automatic queue to release on approval [low]
+
+  - name: Automatic queue to dev on approval (__release-pkg) [low]
     conditions:
-      - author~=^ConfluxBot$
       - "#approved-reviews-by>=1"
       - label!=work-in-progress
       - label!=wip
@@ -56,6 +55,7 @@ pull_request_rules:
       - -conflict
       - -draft
       - -locked
+      - "#review-threads-unresolved=0"
     actions:
       queue:
         name: default queue
