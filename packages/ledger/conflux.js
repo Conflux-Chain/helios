@@ -31,7 +31,7 @@ export default class Conflux {
       try {
         this.transport = await TransportWebUSB.create()
         const App = await import('@fluent-wallet/hw-app-conflux')
-        this.app = new App(this.transport)
+        this.app = new App.default(this.transport)
       } catch (error) {
         console.warn(error)
       }
