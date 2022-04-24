@@ -63,8 +63,8 @@ module.exports = async function ({onlyRerenderRpcName} = {}) {
     const rpcs = await getAllRpcs()
     rpcs.forEach(rpc => {
       if (
-        rpc?.module?.NAME?.startsWith?.('eth_') ||
-        rpc?.module?.NAME?.includes?.('Ethereum') ||
+        // rpc?.module?.NAME?.startsWith?.('eth_') ||
+        // rpc?.module?.NAME?.includes?.('Ethereum') ||
         rpc?.module?.NAME?.includes?.('wallet_getNextNonce')
       )
         return
