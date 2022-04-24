@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/wallet_enrich-ethereum-tx": patch
+
+declined:
+  - helios-background
