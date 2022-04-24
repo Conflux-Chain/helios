@@ -319,7 +319,6 @@ const zh = {
     balanceIsNotEnough: '余额不足',
     gasFeeIsNotEnough: 'Gas 不足',
     contractError: '合约错误: ',
-    addressHasBeenChanged: '地址已发生改变',
     invalidPasswordFromRpc: '密码错误',
     required: '请填写助记词',
     changeNetworkError: '切换网络发生错误',
