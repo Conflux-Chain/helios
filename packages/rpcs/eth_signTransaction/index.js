@@ -102,7 +102,10 @@ export const main = async args => {
     )
 
   const legacyTx = !newTx.type || newTx.type === '0x0'
-  if (!legacyTx) throw InvalidParams(`Fluent don't support EIP-1559 yet`)
+  if (!legacyTx)
+    throw InvalidParams(
+      `Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559`,
+    )
   // TODO: EIP-1559 support
   // const network1559Compatible = await wallet_network1559Compatible()
   // if (!legacyTx && network1559Compatible)
