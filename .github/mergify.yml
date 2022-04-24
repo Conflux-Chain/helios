@@ -4,7 +4,6 @@ queue_rules:
       - label!=work-in-progress
       - label!=wip
       - status-success~=^build\s\(.*\)$
-  - name: release queue
 
 pull_request_rules:
   - name: automatic approval for release package PR
@@ -59,5 +58,5 @@ pull_request_rules:
       - -locked
     actions:
       queue:
-        name: release queue
+        name: default queue
         method: squash

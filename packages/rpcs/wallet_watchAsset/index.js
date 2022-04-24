@@ -23,7 +23,7 @@ const publicSchema = [
       ['address', [or, base32ContractAddress, ethHexAddress]],
       ['symbol', tokenSymbol],
       ['decimals', [posInt, {max: 255}]],
-      ['image', url],
+      ['image', {optional: true}, url],
     ],
   ],
 ]
