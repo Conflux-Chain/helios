@@ -72,7 +72,7 @@ export async function signTypedData_v4(type, privateKey, typedData) {
     return signature
   }
 
-  const {TypedDataUtils} = await import('eth-sig-util')
+  const {TypedDataUtils} = (await import('eth-sig-util')).default
   const digest = TypedDataUtils.sign(typedData, true)
   const signature = new SigningKey(addHexPrefix(privateKey)).signDigest(digest)
   return joinSignature(signature)
@@ -100,7 +100,7 @@ export async function recoverTypedSignature_v4(
     )
   }
 
-  const {TypedDataUtils} = await import('eth-sig-util')
+  const {TypedDataUtils} = (await import('eth-sig-util')).default
   const digest = TypedDataUtils.sign(typedData, true)
   const pub = ethRecoverPublicKey(digest, signature)
   return ethComputeAddress(pub)
