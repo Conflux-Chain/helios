@@ -279,9 +279,12 @@ export const main = ({
           // getTransactionByHash return null
           eth_blockNumber({errorFallThrough: true}, [])
             .then(n => {
-              if (
-                (!tx.resendAt && !tx.blockNumber) ||
-                n !== (tx.resendAt || tx.blockNumber)
+              if (!tx.resendAt && !tx.blockNumber) {
+                setTxSending({hash, resendAt: n})
+              } else if (
+                BigNumber.from(n)
+                  .sub(BigNumber.from(tx.resendAt || tx.blockNumber))
+                  .gte(10)
               ) {
                 setTxUnsent({hash, resendAt: n})
               }
