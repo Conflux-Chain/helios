@@ -39,7 +39,7 @@ const config = {
   platform: 'browser',
   splitting: true,
   minify: isProd(),
-  sourcemap: true,
+  sourcemap: isProd() ? true : 'inline',
   // sourcemap: isProd() ? 'inline' : true,
   format: 'esm',
   outdir: 'packages/browser-extension/build/background/dist',

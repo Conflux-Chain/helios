@@ -13,7 +13,7 @@ import {
 } from 'js-conflux-sdk'
 import {joinSignature} from '@ethersproject/bytes'
 import {
-  Wallet as EthWallet,
+  // Wallet as EthWallet,
   verifyMessage as verifyEthPersonalSign,
 } from '@ethersproject/wallet'
 import {
@@ -32,7 +32,12 @@ export const hashPersonalMessage = (type, message) =>
 export async function personalSign(type, privateKey, message) {
   return type === 'cfx'
     ? CfxPersonalMessage.sign(addHexPrefix(privateKey), message)
-    : await new EthWallet(addHexPrefix(privateKey)).signMessage(message)
+    : (await import('eth-sig-util')).default.personalSign(
+        toBuffer(addHexPrefix(privateKey)),
+        {
+          data: message,
+        },
+      )
 }
 
 export function recoverPersonalSignature(type, signature, message, netId) {
@@ -72,7 +77,7 @@ export async function signTypedData_v4(type, privateKey, typedData) {
     return signature
   }
 
-  const {TypedDataUtils} = await import('eth-sig-util')
+  const {TypedDataUtils} = (await import('eth-sig-util')).default
   const digest = TypedDataUtils.sign(typedData, true)
   const signature = new SigningKey(addHexPrefix(privateKey)).signDigest(digest)
   return joinSignature(signature)
@@ -100,7 +105,7 @@ export async function recoverTypedSignature_v4(
     )
   }
 
-  const {TypedDataUtils} = await import('eth-sig-util')
+  const {TypedDataUtils} = (await import('eth-sig-util')).default
   const digest = TypedDataUtils.sign(typedData, true)
   const pub = ethRecoverPublicKey(digest, signature)
   return ethComputeAddress(pub)
