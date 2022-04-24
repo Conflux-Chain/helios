@@ -31,7 +31,7 @@ export default class Ethereum {
       try {
         this.transport = await TransportWebUSB.create()
         const App = await import('@ledgerhq/hw-app-eth')
-        this.app = new App(this.transport)
+        this.app = new App.default(this.transport)
       } catch (error) {
         console.warn(error)
       }
