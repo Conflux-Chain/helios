@@ -262,8 +262,8 @@ export const useBalance = (
   return balance
 }
 
-export const useNetworkTypeIsCfx = () => {
-  return useCurrentAddress().data?.network?.type === NETWORK_TYPE.CFX
+export const useNetworkTypeIsCfx = (...args) => {
+  return useCurrentAddress(...args).data?.network?.type === NETWORK_TYPE.CFX
 }
 
 export const useAddressType = address => {

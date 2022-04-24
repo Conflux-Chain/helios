@@ -202,7 +202,7 @@ function HistoryItem({
         </div>
 
         <div className="flex items-center">
-          {txStatus === 'pending' && (
+          {(txStatus === 'pending' || txStatus === 'sending') && (
             <WrapIcon
               size="w-5 h-5"
               id="speed-up-tx"
@@ -213,7 +213,7 @@ function HistoryItem({
               <RocketOutlined className="w-3 h-3 text-primary" />
             </WrapIcon>
           )}
-          {txStatus === 'pending' && (
+          {(txStatus === 'pending' || txStatus === 'sending') && (
             <WrapIcon
               size="w-5 h-5 mx-2"
               id="cancel-tx"

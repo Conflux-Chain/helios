@@ -316,22 +316,19 @@ function ResendTransaction({
       gas: formatDecimalToHex(gasLimit),
       storageLimit: estimateRst.storageCollateralized,
     }
-    if (isSpeedup) {
-      Object.keys(_params)
-        .filter(_k => !!_params[_k])
-        .forEach(k => {
-          params[k] = _params[k]
-        })
-    } else {
-      params = {..._params}
-    }
+
+    Object.keys(_params)
+      .filter(_k => !!_params[_k])
+      .forEach(k => {
+        params[k] = _params[k]
+      })
     return params
   }
 
   const resendTransaction = (params, isHwAccount) => {
     request(SEND_TRANSACTION, [params])
       .then(() => {
-        if (reSendTxStatus !== 'pending') {
+        if (reSendTxStatus !== 'pending' && reSendTxStatus !== 'sending') {
           return
         }
         refreshHistoryData?.()
@@ -344,8 +341,7 @@ function ResendTransaction({
         setSendStatus(TX_STATUS.HW_SUCCESS)
       })
       .catch(error => {
-        console.error(error)
-        if (reSendTxStatus !== 'pending') {
+        if (reSendTxStatus !== 'pending' && reSendTxStatus !== 'sending') {
           return
         }
         !isHwAccount && setLoading(false)
