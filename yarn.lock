@@ -6359,9 +6359,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/hw-app-conflux@npm:0.0.6":
-  version: 0.0.6
-  resolution: "@fluent-wallet/hw-app-conflux@npm:0.0.6"
+"@fluent-wallet/hw-app-conflux@npm:0.0.8":
+  version: 0.0.8
+  resolution: "@fluent-wallet/hw-app-conflux@npm:0.0.8"
   dependencies:
     "@ledgerhq/cryptoassets": ^6.18.0
     "@ledgerhq/errors": ^6.10.0
@@ -6370,7 +6370,7 @@ __metadata:
     axios: ^0.24.0
     bip32-path: ^0.4.2
     js-conflux-sdk: ^2.0.7
-  checksum: 8a689d3b19ad37c9d6c0bd243454aad4570600376c1e9cd0e56d93bb259004a4823c236b64577c9a256f88738e01a0359ec689c1f632e257353be1a926a72a48
+  checksum: 36c0ce8de9823a15d64bb6e440695a843423dac7acdc9b12f65c62a40c90c9e4cf3306bd9346478aa3b29faa9a9094e82b3548c07d59eab270b8a347906bebe4
   languageName: node
   linkType: hard
 
@@ -6425,7 +6425,7 @@ __metadata:
   resolution: "@fluent-wallet/ledger@workspace:packages/ledger"
   dependencies:
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
-    "@fluent-wallet/hw-app-conflux": 0.0.6
+    "@fluent-wallet/hw-app-conflux": 0.0.8
     "@ledgerhq/hw-app-eth": 6.24.1
     "@ledgerhq/hw-transport-webusb": 6.19.0
   languageName: unknown
@@ -7753,7 +7753,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/cryptoassets@npm:^6.18.0, @ledgerhq/cryptoassets@npm:^6.24.1":
+"@ledgerhq/cryptoassets@npm:^6.18.0":
+  version: 6.28.0
+  resolution: "@ledgerhq/cryptoassets@npm:6.28.0"
+  dependencies:
+    invariant: 2
+  checksum: 5000ef69b7c4a647e31fb46f81dd85b566878264e858f6dfe317012e7c198222311dc09f7dbcd814cad2280529e2bab028b92681e54d1c84d803b9381eaf3de7
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/cryptoassets@npm:^6.24.1":
   version: 6.24.1
   resolution: "@ledgerhq/cryptoassets@npm:6.24.1"
   dependencies:
@@ -7783,6 +7792,18 @@ __metadata:
     rxjs: 6
     semver: ^7.3.5
   checksum: f42bce5c0d3bda8b4f3ccdfcdf576e916f736fbffef3820c742cafd9baa49335a6cdfeed473cb055fb95a6bb2ae37f02753246cf4b9e623dfc2ad39212379f17
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/devices@npm:^6.27.1":
+  version: 6.27.1
+  resolution: "@ledgerhq/devices@npm:6.27.1"
+  dependencies:
+    "@ledgerhq/errors": ^6.10.0
+    "@ledgerhq/logs": ^6.10.0
+    rxjs: 6
+    semver: ^7.3.5
+  checksum: e4615841b094fe4990c74421c23f57da6a83b56bfa73880af3ce0a67db86f5b3a642f6022be24bf4b24d7b236623a578dbdba74805b28e2486006d1f0cbff543
   languageName: node
   linkType: hard
 
@@ -7821,14 +7842,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-transport@npm:^6.11.2, @ledgerhq/hw-transport@npm:^6.24.1":
-  version: 6.24.1
-  resolution: "@ledgerhq/hw-transport@npm:6.24.1"
+"@ledgerhq/hw-transport@npm:^6.11.2":
+  version: 6.27.1
+  resolution: "@ledgerhq/hw-transport@npm:6.27.1"
   dependencies:
-    "@ledgerhq/devices": ^6.24.1
+    "@ledgerhq/devices": ^6.27.1
     "@ledgerhq/errors": ^6.10.0
     events: ^3.3.0
-  checksum: 31920d43268f65240fd6e48cdfb94059f676bdf2fd1a63a1a15b4dbd8ece2802e2fbfc6933019c80a2b4f830bf3fc5554065a4c5ee6dd6856084db26426e73e1
+  checksum: 415acc9e7bab27b3738d4304f8517cdc3e3c0efe0b3f1afd960d61e55b8a5610c48edce891cef012049597df1e13a08d052c23fd9c87f5c1a36899d1157fd254
   languageName: node
   linkType: hard
 
@@ -7840,6 +7861,17 @@ __metadata:
     "@ledgerhq/errors": ^6.10.0
     events: ^3.3.0
   checksum: adfede7b58cbaef1c925342777dd1d22836b5bddab0e5c322ece90eb78cf6e556aa0ea4d811cbdfb51e6630f8333e53a7fab4e0a99515fc92c16ed40934fa772
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-transport@npm:^6.24.1":
+  version: 6.24.1
+  resolution: "@ledgerhq/hw-transport@npm:6.24.1"
+  dependencies:
+    "@ledgerhq/devices": ^6.24.1
+    "@ledgerhq/errors": ^6.10.0
+    events: ^3.3.0
+  checksum: 31920d43268f65240fd6e48cdfb94059f676bdf2fd1a63a1a15b4dbd8ece2802e2fbfc6933019c80a2b4f830bf3fc5554065a4c5ee6dd6856084db26426e73e1
   languageName: node
   linkType: hard
 
