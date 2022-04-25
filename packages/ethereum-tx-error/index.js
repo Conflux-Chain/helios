@@ -30,7 +30,7 @@ export function processError(err) {
       return {errorType: 'gasLimitReached', shouldDiscard: false}
     if (/oversized data/i.test(errstr))
       return {errorType: 'oversizedData', shouldDiscard: true}
-    if (/nonce too low/i.test(errstr))
+    if (/nonce too low/i.test(errstr) || /too stale nonce/i.test(errstr))
       return {errorType: 'tooStaleNonce', shouldDiscard: true}
     if (/nonce too high/i.test(errstr))
       return {errorType: 'nonceTooHigh', shouldDiscard: true}
