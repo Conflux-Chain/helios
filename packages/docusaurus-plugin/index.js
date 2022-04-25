@@ -1,8 +1,5 @@
 const path = require('path')
-const webpack = require(path.resolve(
-  __dirname,
-  '../../node_modules/@docusaurus/core/node_modules/webpack',
-))
+const webpack = require(path.resolve(__dirname, '../../node_modules/webpack'))
 const jsbi = path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi-cjs.js')
 
 module.exports = function (/* context, options */) {
