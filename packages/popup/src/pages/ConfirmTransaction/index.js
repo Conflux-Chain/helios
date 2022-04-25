@@ -21,7 +21,13 @@ import {
 } from '../../hooks'
 import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
-import {request, bn16, getPageType, checkBalance} from '../../utils'
+import {
+  request,
+  bn16,
+  getPageType,
+  checkBalance,
+  transformToTitleCase,
+} from '../../utils'
 import {AddressCard, InfoList} from './components'
 import {
   TitleNav,
@@ -307,7 +313,13 @@ function ConfirmTransaction() {
             isApproveToken={isApproveToken}
             isDapp={isDapp}
             isSign={isSign}
-            method={decodeData?.name || 'Unknown'}
+            method={
+              decodeData?.name
+                ? decodeData.name === 'unknown'
+                  ? t('unknown')
+                  : transformToTitleCase(decodeData.name)
+                : '-'
+            }
             allowance={displayValue}
             pendingAuthReq={pendingAuthReq}
           />
