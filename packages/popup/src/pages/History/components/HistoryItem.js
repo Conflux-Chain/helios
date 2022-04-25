@@ -83,7 +83,6 @@ function HistoryItem({
   const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
   const {contractCreation, simple, contractInteraction, token20} = extra
 
-  // TODO: should throw error in decode data
   const {decodeData} = useDecodeData({
     to: payload?.to,
     data: payload?.data,
@@ -93,7 +92,11 @@ function HistoryItem({
     setActionName(
       simple
         ? t('send')
-        : transformToTitleCase(decodeData?.name) || t('unknown'),
+        : decodeData?.name
+        ? decodeData.name === 'unknown'
+          ? t('unknown')
+          : transformToTitleCase(decodeData.name)
+        : '-',
     )
   }, [simple, Object.keys(decodeData).length])
 

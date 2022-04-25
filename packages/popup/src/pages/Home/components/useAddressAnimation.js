@@ -1,5 +1,4 @@
 import {useState, useEffect, useRef} from 'react'
-import {isUndefined} from '@fluent-wallet/checks'
 
 const DURATION = 2000
 
@@ -9,7 +8,7 @@ const useAddressAnimation = address => {
 
   useEffect(() => {
     let timer = null
-    if (address && !isUndefined(ref.current)) {
+    if (address && ref.current) {
       setAddressAnimateStyle('animate-address-change-blink')
       timer = setTimeout(() => {
         setAddressAnimateStyle('')

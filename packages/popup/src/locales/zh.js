@@ -120,6 +120,7 @@ const zh = {
     searchToken: '通过名称或地址搜索',
     searchResults: '搜索结果',
     noResult: '无结果',
+    willSupport1559: '后续将会支持 EIP-1559',
 
     // welcome page
     welcomeToConflux: '欢迎来到 Conflux 网络',
@@ -314,10 +315,10 @@ const zh = {
     backupPk: '备份私钥',
     backupPkDes:
       '获得了私钥就等于拥有了钱包里的资产，请妥善保管，一单丢失就无法找回',
-    confluxPathStandard: 'Conflux Network Standard',
-    confluxPathStandardDes: 'Use this key in Conflux standards wallet.',
-    ethereumPathStandard: 'Ethereum Network Standard',
-    ethereumPathStandardDes: 'Use this key in Ethereum standards wallet.',
+    confluxPathStandard: 'Conflux 钱包路径',
+    confluxPathStandardDes: "由 Conflux 钱包路径 'm/503' 生成",
+    ethereumPathStandard: 'Ethereum 钱包路径',
+    ethereumPathStandardDes: "有 Ethereum 钱包路径 m/60' 生成",
 
     transferAmountExceedsAllowance: '转账金额超出限制',
     balanceIsNotEnough: '余额不足',

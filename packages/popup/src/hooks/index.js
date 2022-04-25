@@ -323,7 +323,7 @@ export const useDecodeData = ({to, data} = {}) => {
           setDecodeData({...result})
         })
         .catch(() => {
-          setDecodeData({})
+          setDecodeData({name: 'unknown'})
         })
     } else {
       setDecodeData({})
