@@ -99,6 +99,13 @@ function initNetwork(d) {
         url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list/cfx.test.fluent.json',
       },
     },
+    {
+      eid: -6,
+      tokenList: {
+        name: 'Fluent Default Conflux Espace List',
+        url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list/cfx-espace.fluent.json',
+      },
+    },
 
     // mainnets
     {
@@ -148,7 +155,7 @@ function initNetwork(d) {
         hdPath: -2,
         builtin: true,
         balanceChecker: '0x74191f6b288dff3db43b34d3637842c8146e2103',
-        // tokenList: -3,
+        tokenList: -6,
         isMainnet: true,
       },
     },
