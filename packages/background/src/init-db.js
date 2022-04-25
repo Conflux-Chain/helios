@@ -134,7 +134,7 @@ function initNetwork(d) {
         type: 'eth',
         chainId: CFX_ESPACE_MAINNET_CHAINID,
         netId: CFX_ESPACE_MAINNET_NETID,
-        cacheTime: 10000,
+        cacheTime: 4000,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
         ticker: {
           name: CFX_ESPACE_MAINNET_CURRENCY_NAME,
@@ -212,7 +212,7 @@ function initNetwork(d) {
         chainId: CFX_ESPACE_TESTNET_CHAINID,
         netId: CFX_ESPACE_TESTNET_NETID,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
-        cacheTime: 10000,
+        cacheTime: 4000,
         ticker: {
           name: CFX_ESPACE_TESTNET_CURRENCY_NAME,
           symbol: CFX_ESPACE_TESTNET_CURRENCY_SYMBOL,

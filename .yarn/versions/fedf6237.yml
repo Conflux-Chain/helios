@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/ethereum-tx-error": major
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": major
+  "@fluent-wallet/wallet_handle-unfinished-eth-tx": major
+
+declined:
+  - helios-background

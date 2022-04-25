@@ -219,9 +219,12 @@ export const main = ({
                 },
               })
 
+            const resendingTxNonceErr =
+              tx.resendAt && errorType === 'tooStaleNonce'
+
             defs({
-              failed: shouldDiscard && {errorType, err},
-              sameAsSuccess: isDuplicateTx,
+              failed: shouldDiscard && !resendingTxNonceErr && {errorType, err},
+              sameAsSuccess: isDuplicateTx || resendingTxNonceErr,
               resend: !shouldDiscard && !isDuplicateTx,
             })
               .transform(
@@ -239,7 +242,7 @@ export const main = ({
                           message: `Transaction ${parseInt(
                             tx.txPayload.nonce,
                             16,
-                          )} failed! ${err?.message || ''}`,
+                          )} failed! ${err?.data || err?.message || ''}`,
                         }),
                       )
                     }),

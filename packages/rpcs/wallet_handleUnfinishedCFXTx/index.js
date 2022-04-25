@@ -239,7 +239,7 @@ export const main = ({
                           message: `Transaction ${parseInt(
                             tx.txPayload.nonce,
                             16,
-                          )} failed! ${err?.message || ''}`,
+                          )} failed! ${err?.data || err?.message || ''}`,
                         }),
                       )
                     }),

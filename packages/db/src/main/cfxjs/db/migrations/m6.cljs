@@ -27,7 +27,7 @@
                                                           :iconUrls ["https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/cfx.svg"]}
                                  :network/builtin        true
                                  :network/scanUrl        "https://evm.confluxscan.net"
-                                 :network/cacheTime      10000
+                                 :network/cacheTime      4000
                                  :network/balanceChecker "0x74191f6b288dff3db43b34d3637842c8146e2103"
                                  :network/isMainnet      true}
         eth-mainnet             {:db/id                  -3
@@ -62,7 +62,7 @@
                                                           :iconUrls ["https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/cfx.svg"]}
                                  :network/builtin        true
                                  :network/scanUrl        "https://evmtestnet.confluxscan.net"
-                                 :network/cacheTime      10000
+                                 :network/cacheTime      4000
                                  :network/balanceChecker "0x74191f6b288dff3db43b34d3637842c8146e2103"
                                  :network/isTestnet      true}
         ropsten                 {:db/id                  -5
