@@ -10,6 +10,9 @@ const esb = require('esbuild')
 const path = require('path')
 const {isProd} = require('../snowpack.utils.js')
 const fs = require('fs')
+const http = require('http')
+const serveStatic = require('serve-static')
+const finalhandler = require('finalhandler')
 
 const config = {
   entryPoints: [
@@ -35,12 +38,11 @@ const config = {
   logLevel: isProd() ? 'warning' : 'error',
   bundle: true,
   write: true,
-  treeShaking: true,
+  treeShaking: isProd(),
   platform: 'browser',
   splitting: true,
   minify: isProd(),
-  sourcemap: isProd() ? true : 'inline',
-  // sourcemap: isProd() ? 'inline' : true,
+  sourcemap: true,
   format: 'esm',
   outdir: 'packages/browser-extension/build/background/dist',
   plugins: [
@@ -85,10 +87,48 @@ function build() {
 
 // eslint-disable-next-line no-unused-vars
 function serve() {
-  return esb.serve(
-    {servedir: 'packages/browser-extension/', port: 18003},
-    config,
-  )
+  const serve = serveStatic(path.resolve(__dirname, '../../'), {
+    index: false,
+  })
+
+  return esb
+    .serve(
+      {
+        servedir: 'packages/browser-extension/', // port: 18003
+        port: 8174,
+      },
+      config,
+    )
+    .then(result => {
+      const {host, port} = result
+      http
+        .createServer((req, res) => {
+          const options = {
+            hostname: host,
+            port: port,
+            path: req.url,
+            method: req.method,
+            headers: req.headers,
+          }
+
+          // Forward each incoming request to esbuild
+          const proxyReq = http.request(options, proxyRes => {
+            // If esbuild returns "not found", send a custom 404 page
+            if (proxyRes.statusCode === 404) {
+              serve(req, res, finalhandler(req, res))
+              return
+            }
+
+            // Otherwise, forward the response from esbuild to the client
+            res.writeHead(proxyRes.statusCode, proxyRes.headers)
+            proxyRes.pipe(res, {end: true})
+          })
+
+          // Forward the body of the request to esbuild
+          req.pipe(proxyReq, {end: true})
+        })
+        .listen(18003)
+    })
 }
 
 module.exports = {analyze, build, serve}
