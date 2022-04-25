@@ -239,7 +239,7 @@ export const main = ({
                           message: `Transaction ${parseInt(
                             tx.txPayload.nonce,
                             16,
-                          )} failed! ${err?.message || ''}`,
+                          )} failed! ${err?.data || err?.message || ''}`,
                         }),
                       )
                     }),
@@ -284,7 +284,7 @@ export const main = ({
               } else if (
                 BigNumber.from(n)
                   .sub(BigNumber.from(tx.resendAt || tx.blockNumber))
-                  .gte(10)
+                  .gte(40)
               ) {
                 setTxUnsent({hash, resendAt: n})
               }
