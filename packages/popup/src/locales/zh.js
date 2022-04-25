@@ -308,12 +308,16 @@ const zh = {
     compatibilityDes:
       'Fluent 最终将会停止支持 ConfluxPortal 的 API。为了方便开发者测试，关掉开关将模拟 Fluent 不支持 ConfluxPortal API 的环境',
 
-    // backup seed
+    // backup
     backupIdentity: '备份助记词',
     backupSeedDes: '请以正确的顺序备份助记词，不要在网络环境中存储或分享助记词',
     backupPk: '备份私钥',
     backupPkDes:
       '获得了私钥就等于拥有了钱包里的资产，请妥善保管，一单丢失就无法找回',
+    confluxPathStandard: 'Conflux Network Standard',
+    confluxPathStandardDes: 'Use this key in Conflux standards wallet.',
+    ethereumPathStandard: 'Ethereum Network Standard',
+    ethereumPathStandardDes: 'Use this key in Ethereum standards wallet.',
 
     transferAmountExceedsAllowance: '转账金额超出限制',
     balanceIsNotEnough: '余额不足',

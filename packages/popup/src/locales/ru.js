@@ -320,13 +320,17 @@ const ru = {
     compatibilityDes:
       'Fluent со временем перестанет поддерживать API ConfluxPortal. Отключите режим совместимости, чтобы сделать Fluent несовместимым с API ConfluxPortal.  Только для тестирования в режиме разработчиков .',
 
-    // резервная копия
+    // резервная
     backupIdentity: 'Резервная копия seed фразы',
     backupSeedDes:
       'Пожалуйста, сохраните резервную копию и храните ее должным образом, в оффлайн режиме и без допуска третьих лиц',
     backupPk: 'Резервная копия аккаунта',
     backupPkDes:
       'Это Ваш секретный ключ. Владение секретными ключами является единственным подтверждением права владения аккаунтами и средствами на них. Пожалуйста, храните их должным образом, в оффлайн режиме и без допуска третьих лиц. Потерянные ключи не могут быть восстановлены.',
+    confluxPathStandard: 'Conflux Network Standard',
+    confluxPathStandardDes: 'Use this key in Conflux standards wallet.',
+    ethereumPathStandard: 'Ethereum Network Standard',
+    ethereumPathStandardDes: 'Use this key in Ethereum standards wallet.',
 
     transferAmountExceedsAllowance:
       'Сумма перевода превышает установленный лимит',

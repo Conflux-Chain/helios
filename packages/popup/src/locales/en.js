@@ -317,13 +317,17 @@ const en = {
     compatibilityDes:
       'Fluent will eventually stop supporting ConfluxPortal API.Turn off the switch to make Fluent incompatible with the ConfluxPortal API. Only for developers to test.',
 
-    // backup seed
+    // backup
     backupIdentity: 'Backup Seed Phrase',
     backupSeedDes:
       'Please back up the Seed Phrase in the correct order. Don’t share and store in networked environment.',
     backupPk: 'Backup Account',
     backupPkDes:
       'This is your private key. Acquiring means owning all assets. Please keep it safe. Once lost, it cannot be retrieved.',
+    confluxPathStandard: 'Conflux Network Standard',
+    confluxPathStandardDes: 'Use this key in Conflux standards wallet.',
+    ethereumPathStandard: 'Ethereum Network Standard',
+    ethereumPathStandardDes: 'Use this key in Ethereum standards wallet.',
 
     transferAmountExceedsAllowance: 'Transfer amount exceeds allowance',
     balanceIsNotEnough: 'Insufficient balance',

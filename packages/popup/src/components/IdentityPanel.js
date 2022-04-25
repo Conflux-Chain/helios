@@ -13,7 +13,7 @@ function IdentityPanel({content, title}) {
   }, [eyeStatus, content])
 
   return (
-    <div className="bg-identity-panel rounded px-3 pt-3 pb-8 bg-gray-0">
+    <div className="bg-identity-panel bg-no-repeat rounded px-3 pt-3 pb-8 bg-gray-0">
       <div className="flex justify-between items-center">
         <div className="text-gray-80 text-sm font-medium">{title}</div>
         <div className="flex items-center">
