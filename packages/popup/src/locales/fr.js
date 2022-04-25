@@ -127,6 +127,7 @@ const fr = {
     searchToken: 'Rechercher par nom ou adresse',
     searchResults: 'Résultats de recherche',
     noResult: 'Pas de résultat',
+    willSupport1559: 'EIP-1559 support coming soon.',
 
     // welcome page
     welcomeToConflux: 'Bienvenue sur Conflux Network',

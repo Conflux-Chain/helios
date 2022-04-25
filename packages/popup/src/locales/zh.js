@@ -120,6 +120,7 @@ const zh = {
     searchToken: '通过名称或地址搜索',
     searchResults: '搜索结果',
     noResult: '无结果',
+    willSupport1559: '后续将会支持 EIP-1559',
 
     // welcome page
     welcomeToConflux: '欢迎来到 Conflux 网络',
