@@ -387,6 +387,7 @@ function ResendTransaction({
       isSpeedup ? simple : true,
       isSpeedup ? isSendingToken || simple : true,
       sendTokenValue,
+      networkTypeIsCfx,
     )
 
     if (error) {
