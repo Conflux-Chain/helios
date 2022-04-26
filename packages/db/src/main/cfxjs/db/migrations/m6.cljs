@@ -13,7 +13,10 @@
         uniswap-tokenlist       {:db/id          -1
                                  :tokenList/url  "https://cdn.jsdelivr.net/gh/conflux-fans/token-list/eth.uniswap.json"
                                  :tokenList/name "Uniswap Default List"}
-        e-space-mainnet         {:db/id                  -2
+        espace-tokenlist        {:db/id          -2
+                                 :tokenList/url  "https://cdn.jsdelivr.net/gh/conflux-fans/token-list/cfx-espace.fluent.json"
+                                 :tokenList/name "Conflux eSpace Default Token List"}
+        e-space-mainnet         {:db/id                  -3
                                  :network/name           "Conflux eSpace"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg"
                                  :network/endpoint       "https://evm.confluxrpc.com"
@@ -28,9 +31,10 @@
                                  :network/builtin        true
                                  :network/scanUrl        "https://evm.confluxscan.net"
                                  :network/cacheTime      4000
+                                 :network/tokenList      -2
                                  :network/balanceChecker "0x74191f6b288dff3db43b34d3637842c8146e2103"
                                  :network/isMainnet      true}
-        eth-mainnet             {:db/id                  -3
+        eth-mainnet             {:db/id                  -4
                                  :network/name           "Ethereum Mainnet"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg"
                                  :network/endpoint       "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
@@ -48,7 +52,7 @@
                                  :network/tokenList      -1
                                  :network/balanceChecker "0xb1f8e55c7f64d203c1400b9d8555d050f94adf39"
                                  :network/isMainnet      true}
-        e-space-testnet         {:db/id                  -4
+        e-space-testnet         {:db/id                  -5
                                  :network/name           "Conflux eSpace (Testnet)"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg"
                                  :network/endpoint       "https://evmtestnet.confluxrpc.com"
@@ -65,7 +69,7 @@
                                  :network/cacheTime      4000
                                  :network/balanceChecker "0x74191f6b288dff3db43b34d3637842c8146e2103"
                                  :network/isTestnet      true}
-        ropsten                 {:db/id                  -5
+        ropsten                 {:db/id                  -6
                                  :network/name           "Ethereum Ropsten"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg"
                                  :network/endpoint       "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
@@ -82,7 +86,7 @@
                                  :network/cacheTime      15000
                                  :network/balanceChecker "0x8d9708f3f514206486d7e988533f770a16d074a7"
                                  :network/isTestnet      true}
-        rinkeby                 {:db/id                  -6
+        rinkeby                 {:db/id                  -7
                                  :network/name           "Ethereum Rinkeby"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg"
                                  :network/endpoint       "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
@@ -99,7 +103,7 @@
                                  :network/cacheTime      15000
                                  :network/balanceChecker "0x3183b673f4816c94bef53958baf93c671b7f8cf2"
                                  :network/isTestnet      true}
-        goerli                  {:db/id                  -7
+        goerli                  {:db/id                  -8
                                  :network/name           "Ethereum Goerli"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg"
                                  :network/endpoint       "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
@@ -116,7 +120,7 @@
                                  :network/cacheTime      15000
                                  :network/balanceChecker "0x9788c4e93f9002a7ad8e72633b11e8d1ecd51f9b"
                                  :network/isTestnet      true}
-        kovan                   {:db/id                  -8
+        kovan                   {:db/id                  -9
                                  :network/name           "Ethereum Kovan"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg"
                                  :network/endpoint       "https://kovan.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
@@ -142,6 +146,7 @@
         change-cfx-mainnet-name {:db/id cfx-mainnet-id :network/name "Conflux Mainnet"}
         txs                     [change-cfx-mainnet-name
                                  uniswap-tokenlist
+                                 espace-tokenlist
                                  e-space-mainnet
                                  eth-mainnet
                                  e-space-testnet
@@ -196,6 +201,7 @@
                                   [:db.fn/retractEntity [:network/name "Ethereum Goerli"]]
                                   [:db.fn/retractEntity [:network/name "Ethereum Kovan"]]
                                   [:db.fn/retractEntity [:tokenList/url "https://cdn.jsdelivr.net/gh/conflux-fans/token-list/eth.uniswap.json"]]
+                                  [:db.fn/retractEntity [:tokenList/url "https://cdn.jsdelivr.net/gh/conflux-fans/token-list/cfx-espace.fluent.json"]]
                                   (update-version-tx new-db (dec id))])
         old-db                  (d/db-with new-db txs)]
     old-db))
