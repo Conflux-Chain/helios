@@ -52,7 +52,7 @@ export const CFX_TESTNET_EXPLORER_URL = 'https://testnet.confluxscan.io'
 
 export const CFX_ESPACE_TESTNET_RPC_ENDPOINT =
   'https://evmtestnet.confluxrpc.com'
-export const CFX_ESPACE_TESTNET_NAME = 'Conflux espace (Testnet)'
+export const CFX_ESPACE_TESTNET_NAME = 'Conflux eSpace (Testnet)'
 export const CFX_ESPACE_TESTNET_CHAINID = '0x47'
 export const CFX_ESPACE_TESTNET_NETID = 71
 export const CFX_ESPACE_TESTNET_CURRENCY_SYMBOL = 'CFX'
