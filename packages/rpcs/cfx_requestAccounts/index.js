@@ -8,36 +8,36 @@ export const schemas = {
 
 export const permissions = {
   external: ['inpage'],
-  methods: ['wallet_requestPermissions'],
-  db: ['getOneApp', 'findAddress'],
-  // TODO: this should be wallet_accounts, set it to null to make it compatible with metamask
+  methods: ['wallet_requestPermissions', 'cfx_accounts'],
+  db: ['getOneApp'],
   scope: null,
 }
 
 export const main = async ({
-  db: {getOneApp, findAddress},
-  rpcs: {wallet_requestPermissions},
+  db: {getOneApp},
+  rpcs: {wallet_requestPermissions, cfx_accounts},
   site,
   app,
 }) => {
   if (app) {
-    return [findAddress({appId: app.eid, g: {value: 1}}).value]
+    return await cfx_accounts()
   }
-  const permsRes = await wallet_requestPermissions([{cfx_accounts: {}}])
+  const permissionsToRequest = {
+    cfx_accounts: {},
+    wallet_crossNetworkTypeGetConfluxBase32Address: {},
+  }
+  const permsRes = await wallet_requestPermissions([permissionsToRequest])
 
   if (permsRes && !permsRes.error) {
     const newapp = getOneApp({site: site.eid})
-    const addr = findAddress({
-      appId: newapp.eid,
-      g: {value: 1},
-    }).value
+    const addrs = await cfx_accounts({app: newapp}, [])
 
     newapp.site?.post?.({
       event: 'accountsChanged',
-      params: [addr],
+      params: addrs,
     })
 
-    return [addr]
+    return addrs
   }
 
   return []
