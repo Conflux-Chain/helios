@@ -133,7 +133,8 @@
   "husky": {
     "hooks": {
       "pre-commit": [
-        "lint-staged"
+        "lint-staged",
+        "yarn version check"
       ]
     }
   },
