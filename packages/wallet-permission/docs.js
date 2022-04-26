@@ -7,6 +7,12 @@ export default {
   },
   cfx_accounts: {en: 'alias for wallet_account'},
   eth_accounts: {en: 'alias for wallet_account'},
+  wallet_crossNetworkTypeGetConfluxBase32Address: {
+    en: "permission for methods need user's Conflux core space mainnet address on other network",
+  },
+  wallet_crossNetworkTypeGetEthereumHexAddress: {
+    en: "permission for methods need user's Ethereum type address (hex address) on other(Conflux core) network",
+  },
   wallet_networks: {
     en: 'permission for methods related to network change, eg. wallet_addEthereumChain, wallet_switchConfluxChain, this permission is added by default',
   },

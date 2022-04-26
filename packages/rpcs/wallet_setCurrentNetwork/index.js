@@ -9,7 +9,7 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup'],
-  methods: ['wallet_setAppCurrentNetwork'],
+  methods: ['wallet_setAppCurrentNetwork', 'wallet_requestPermissions'],
   db: [
     'setCurrentNetwork',
     'getNetworkById',
@@ -17,10 +17,22 @@ export const permissions = {
   ],
 }
 
+function shouldGivenCrossNetworkAddressLookupPermissonsBasedOnNetworkChange(
+  currentNetwork,
+  nextNetwork,
+) {
+  if (currentNetwork.type === nextNetwork.type) return false
+  if (nextNetwork.type === 'cfx')
+    return 'wallet_crossNetworkTypeGetConfluxBase32Address'
+  if (nextNetwork.type === 'eth')
+    return 'wallet_crossNetworkTypeGetEthereumHexAddress'
+  return false
+}
+
 export const main = async ({
   Err: {InvalidParams},
   db: {setCurrentNetwork, getNetworkById, getAppsWithDifferentSelectedNetwork},
-  rpcs: {wallet_setAppCurrentNetwork},
+  rpcs: {wallet_setAppCurrentNetwork, wallet_requestPermissions},
   params: networks,
   network,
 }) => {
@@ -32,12 +44,30 @@ export const main = async ({
   setCurrentNetwork(networkId)
 
   await Promise.all(
-    apps.map(async app =>
-      wallet_setAppCurrentNetwork(
+    apps.map(async app => {
+      const newPerm =
+        shouldGivenCrossNetworkAddressLookupPermissonsBasedOnNetworkChange(
+          app.currentNetwork,
+          nextNetwork,
+        )
+      if (newPerm && !app.perms[newPerm]) {
+        await wallet_requestPermissions(
+          {
+            _popup: true,
+          },
+          {
+            siteId: app.site.eid,
+            permissions: [{...app.perms, [newPerm]: {}}],
+            accounts: app.account.map(a => a.eid),
+          },
+        )
+      }
+      await wallet_setAppCurrentNetwork(
         {network},
         {appId: app.eid, networkId: networkId},
-      ),
-    ),
+      )
+      return true
+    }),
   )
 
   Sentry.setTag('current_network', nextNetwork.name)

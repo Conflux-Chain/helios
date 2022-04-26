@@ -1,0 +1,14 @@
+releases:
+  "@fluent-wallet/cfx_accounts": major
+  "@fluent-wallet/cfx_request-accounts": major
+  "@fluent-wallet/eth_accounts": major
+  "@fluent-wallet/eth_request-accounts": major
+  "@fluent-wallet/wallet-permission": minor
+  "@fluent-wallet/wallet_set-current-network": patch
+  "@fluent-wallet/wallet_switch-conflux-chain": patch
+  "@fluent-wallet/wallet_switch-ethereum-chain": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/db"
+  - "@fluent-wallet/wallet_request-permissions"

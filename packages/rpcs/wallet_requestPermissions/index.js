@@ -89,6 +89,8 @@ export const main = async ({
 }) => {
   if ((_inpage || _internal) && !_origin && !_popup)
     throw InvalidRequest(`no origin found`)
+
+  // called from inpage
   if ((_inpage || _internal) && !_popup) {
     const perms = formatPermissions(params)
     if (app && JSON.stringify(app.perms) === JSON.stringify(perms))
@@ -102,6 +104,9 @@ export const main = async ({
     return await wallet_addPendingUserAuthRequest({siteId: site.eid, req})
   }
 
+  // called from popup
+  // 1. confirm app permission request (authReqId is defined)
+  // 2. alter/revoke permissions (authReqId is undefined)
   if (_popup) {
     if (params.siteId && !params.accounts.length)
       throw InvalidParams('Must have at least 1 accounts')
