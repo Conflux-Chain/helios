@@ -100,7 +100,8 @@ function ConfirmTransaction() {
 
   const {
     data: {
-      network: {ticker},
+      network: {ticker, chainId},
+      account: {eid: accountId},
     },
   } = useCurrentAddress()
   const nativeToken = ticker || {}
@@ -117,6 +118,7 @@ function ConfirmTransaction() {
     displayAccount,
     displayToAddress,
   } = useDecodeDisplay({
+    deps: [chainId, accountId],
     isDapp,
     isContract,
     nativeToken,

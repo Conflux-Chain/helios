@@ -334,6 +334,7 @@ export const useDecodeData = ({to, data} = {}) => {
 }
 
 export const useDecodeDisplay = ({
+  deps,
   isDapp,
   isContract,
   nativeToken,
@@ -350,11 +351,13 @@ export const useDecodeDisplay = ({
   const {
     data: {value: address, account},
   } = useAddress({
+    deps,
     value: from,
     stop: isDapp && !pendingAuthReq?.app?.currentAccount?.eid,
     selected: isDapp ? undefined : true,
     appId: isDapp && pendingAuthReq?.app?.eid,
   })
+
   displayAccount = account
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'

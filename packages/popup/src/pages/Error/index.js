@@ -7,9 +7,10 @@ import {useTranslation} from 'react-i18next'
 import {CopyButton, NetworkContent} from '../../components'
 import useGlobalStore from '../../stores/index.js'
 import {useQuery} from '../../hooks'
+import {useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {RPC_METHODS} from '../../constants'
 import {request, getPageType} from '../../utils'
-const {CFX_GET_STATUS} = RPC_METHODS
+const {CFX_GET_STATUS, ETH_GET_CHAIN_ID} = RPC_METHODS
 
 const isDapp = getPageType() === 'notification'
 
@@ -26,19 +27,21 @@ function Error() {
   const [networkShow, setNetworkShow] = useState(false)
   const [resetButtonText, setResetButtonText] = useState('')
 
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+
   useEffect(() => {
     if (!FATAL_ERROR && !urlErrorMsg) {
       return setErrorType('route')
     }
 
-    request(CFX_GET_STATUS)
+    request(networkTypeIsCfx ? CFX_GET_STATUS : ETH_GET_CHAIN_ID)
       .then(() => setErrorType('inner'))
       .catch(() => {
         request(CFX_GET_STATUS)
           .then(() => setErrorType('inner'))
           .catch(() => setErrorType('fullNode'))
       })
-  }, [FATAL_ERROR, urlErrorMsg])
+  }, [FATAL_ERROR, urlErrorMsg, networkTypeIsCfx])
 
   useEffect(() => {
     return () => {
