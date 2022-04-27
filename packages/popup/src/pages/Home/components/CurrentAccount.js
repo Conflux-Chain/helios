@@ -92,7 +92,7 @@ function CurrentAccount({onOpenAccount}) {
       </div>
       <div className="flex items-center">
         <div
-          className={`px-0.5 mr-2 text-white font-medium w-auto ${addressAnimateStyle}`}
+          className={`px-0.5 mr-1 text-white font-medium w-auto ${addressAnimateStyle}`}
         >
           {displayAddress}
         </div>
