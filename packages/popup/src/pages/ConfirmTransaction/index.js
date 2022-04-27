@@ -260,6 +260,7 @@ function ConfirmTransaction() {
       isNativeToken,
       isSendToken,
       sendTokenValue,
+      networkTypeIsCfx,
     )
     if (error) {
       setLoading(false)
