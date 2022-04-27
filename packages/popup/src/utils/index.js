@@ -173,6 +173,7 @@ export const checkBalance = async (
   isNativeToken,
   isSendToken,
   sendTokenValue,
+  networkTypeIsCfx,
 ) => {
   const {from, to, gasPrice, gas, value, storageLimit} = txParams
   const storageFeeDrip = bn16(storageLimit)
@@ -201,11 +202,20 @@ export const checkBalance = async (
         }
       }
     }
-
-    const {willPayCollateral, willPayTxFee} = await request(
-      'cfx_checkBalanceAgainstTransaction',
-      [from, to, gas, gasPrice, storageLimit, 'latest_state'],
-    )
+    let willPayCollateral = true,
+      willPayTxFee = true
+    if (networkTypeIsCfx) {
+      const response = await request('cfx_checkBalanceAgainstTransaction', [
+        from,
+        to,
+        gas,
+        gasPrice,
+        storageLimit,
+        'latest_state',
+      ])
+      willPayCollateral = response?.willPayCollateral
+      willPayTxFee = response?.willPayTxFee
+    }
 
     if (
       (bn16(balance['0x0']).lt(txFeeDrip) &&
