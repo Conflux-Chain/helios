@@ -60,8 +60,8 @@ function InfoList({
             <DisplayBalance
               id="allowance"
               balance={customAllowance || allowance}
-              maxWidth={220}
-              maxWidthStyle="max-w-[220px]"
+              maxWidth={160}
+              maxWidthStyle="max-w-[160px]"
               symbol={token?.symbol}
             />
             <WrapIcon className="mx-1 shadow-none !bg-transparent hover:!bg-primary-4 group">
