@@ -78,7 +78,6 @@ export const main = async args => {
   // 2. use `gasLimit` instead of `gas` in tx
   let {from, gas, type, ...newTx} = {...tx}
   type = type || '0x0'
-  newTx.type = parseInt(type, 16)
   newTx.gasLimit = gas
   if (newTx.chainId && newTx.chainId !== network.chainId)
     throw InvalidParams(`Invalid chainId ${newTx.chainId}`)
@@ -113,8 +112,6 @@ export const main = async args => {
   //     `Network ${network.name} don't support 1559 transactions`,
   //   )
 
-  if (!newTx.chainId) newTx.chainId = network.chainId
-  newTx.chainId = parseInt(newTx.chainId, 16)
   if (newTx.data === '0x') newTx.data = undefined
   if (!newTx.gasPrice) newTx.gasPrice = await eth_gasPrice()
 
@@ -144,6 +141,11 @@ export const main = async args => {
     ])
     if (!newTx.gasLimit) newTx.gasLimit = gasLimit
   }
+
+  if (!newTx.chainId) newTx.chainId = network.chainId
+  newTx.chainId = parseInt(newTx.chainId, 16)
+
+  newTx.type = parseInt(type, 16)
 
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {
