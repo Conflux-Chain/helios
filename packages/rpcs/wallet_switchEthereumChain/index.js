@@ -69,7 +69,9 @@ export const generateMain =
       const {authReqId} = params
       const authReq = getAuthReqById(authReqId)
       if (!authReq) throw InvalidParams(`Invalid auth req id ${authReqId}`)
-      const rst = await wallet_setCurrentNetwork([network.eid])
+      const rst = await wallet_setCurrentNetwork({app: authReq.app}, [
+        network.eid,
+      ])
       if (rst?.error) return await wallet_userRejectedAuthRequest({authReqId})
       return await wallet_userApprovedAuthRequest({authReqId, res: '__null__'})
     }
