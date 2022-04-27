@@ -429,17 +429,19 @@
 
 (defn upsert-token-list [{:keys [newList networkId]}]
   (let [chainId                         (js/parseInt (:network/chainId (p '[:network/chainId] networkId)) 16)
-        [token-ids token-map addresses] (reduce (fn [[coll m addresses] {:keys [address] :as x}]
-                                                  (let [address (and (string? address) (.toLowerCase address))
-                                                        x       (assoc x :address address)]
+        [token-ids token-map addresses] (reduce (fn [[coll m addresses] {:keys [address] :as token-list-item}]
+                                                  (let [address         (and (string? address) (.toLowerCase address))
+                                                        token-list-item (assoc token-list-item :address address)]
                                                     ;; only support tokens with current chainid
-                                                    (if (not= (js/parseInt (:chainId x) 10) chainId)
+                                                    (if (not= (js/parseInt (:chainId token-list-item) 10) chainId)
                                                       [coll m addresses]
-                                                      (let [x (map->nsmap x :token)]
-                                                        [(conj coll [[networkId address] (assoc x :token/network networkId :token/fromList true)])
-                                                         (assoc m address (dissoc x :token/address))
-                                                         (conj addresses (:token/address x))]))))
+                                                      (let [token-list-item (map->nsmap token-list-item :token)]
+                                                        [(conj coll [[networkId address] (assoc token-list-item :token/network networkId :token/fromList true)])
+                                                         (assoc m address (dissoc token-list-item :token/address))
+                                                         (conj addresses (:token/address token-list-item))]))))
                                                 [[] {} #{}] newList)
+        ;; find tokens removed between tokenlist upgrade
+        ;; tokens not from user/dapp, not tracked by any address and not in latest tokenlist
         tokens-might-remove             (q '[:find [(pull ?t [:db/id :token/address]) ...]
                                              :in $ ?net
                                              :where
@@ -449,7 +451,7 @@
                                              [?t :token/fromList true]
                                              [?any-addr :address/network ?net]
                                              (not [?any-addr :address/token ?t])] networkId)
-        tokens-might-remove             (reduce (fn [acc token]
+        tokens-might-remove-txs         (reduce (fn [acc token]
                                                   (if (some #{(:token/address token)} addresses)
                                                     acc
                                                     (conj acc (:db/id token))))
@@ -470,7 +472,7 @@
                    (-> (get token-map addr {})
                        (assoc :token/id [networkId addr])))
                  (assoc x :db/id (- (- idx) 10000)))) txs)
-        txs (reduce (fn [acc tid] (conj acc [:db.fn/retractEntity tid])) txs tokens-might-remove)]
+        txs (reduce (fn [acc tid] (conj acc [:db.fn/retractEntity tid])) txs tokens-might-remove-txs)]
     (t txs)))
 
 (defn validate-addr-in-app [{:keys [appId networkId addr]}]
