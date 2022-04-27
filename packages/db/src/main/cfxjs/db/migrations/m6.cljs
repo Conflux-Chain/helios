@@ -53,7 +53,7 @@
                                  :network/balanceChecker "0xb1f8e55c7f64d203c1400b9d8555d050f94adf39"
                                  :network/isMainnet      true}
         e-space-testnet         {:db/id                  -5
-                                 :network/name           "Conflux eSpace (Testnet)"
+                                 :network/name           "eSpace Testnet"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg"
                                  :network/endpoint       "https://evmtestnet.confluxrpc.com"
                                  :network/type           "eth"
