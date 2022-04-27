@@ -1,10 +1,6 @@
 import {useState, useCallback} from 'react'
 import {useQuery} from '../../hooks'
-import {
-  useTxList,
-  useCurrentAddress,
-  useNetworkTypeIsCfx,
-} from '../../hooks/useApi'
+import {useTxList, useCurrentAddress} from '../../hooks/useApi'
 import {useEffectOnce} from 'react-use'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -35,7 +31,6 @@ function Home() {
   const [accountsAnimate, setAccountsAnimate] = useState(true)
   const [settingAnimate, setSettingAnimate] = useState(true)
 
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
   const {
     data: {network},
   } = useCurrentAddress()
@@ -129,10 +124,10 @@ function Home() {
               ) : null}
             </div>
           </div>
-          {/* only conflux network show cross space button */}
-          {(networkTypeIsCfx ||
-            network?.chainId === '0x47' ||
-            network?.chainId === '0x406') && <CrossSpaceButton />}
+          {/* only conflux main network show cross space button */}
+          {(network?.chainId === '0x405' || network?.chainId === '0x406') && (
+            <CrossSpaceButton />
+          )}
         </div>
       </div>
       <HomeTokenList onOpenAddToken={() => setAddTokenStatus(true)} />
