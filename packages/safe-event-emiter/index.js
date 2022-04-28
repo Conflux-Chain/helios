@@ -86,7 +86,9 @@ export default class SafeEventEmitter {
   }
 
   removeAllListeners() {
-    Object.values(this.#streams).forEach(s => s.unsubscribeSelf())
+    Object.values(this.#streams).forEach(s =>
+      [...s.subs].forEach(sub => sub.unsubscribe()),
+    )
     this.#listeners = new Map()
   }
 
