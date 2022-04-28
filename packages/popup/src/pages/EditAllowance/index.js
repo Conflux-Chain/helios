@@ -140,7 +140,7 @@ function EditAllowance() {
                     errorMessage={customLimitErr}
                     onChange={onChangeCustomInput}
                     suffix={<div>{symbol}</div>}
-                    suffixWrapperClassName="w-auto"
+                    suffixWrapperClassName="w-max"
                     decimals={decimals}
                     width="w-full"
                   />
