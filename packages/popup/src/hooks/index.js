@@ -310,24 +310,31 @@ export const useDecodeData = ({to, data} = {}) => {
   const crc20Token = useValid20Token(isOutContract ? to : '')
 
   useEffect(() => {
-    if (data && isContract && currentNetworkType && crc20Token.valid) {
-      const getSignature =
-        currentNetworkType === NETWORK_TYPE.CFX
-          ? getCFXContractMethodSignature
-          : getEthContractMethodSignature
-      const params =
-        currentNetworkType === NETWORK_TYPE.CFX ? [to, data, netId] : [data]
+    if (data && isContract && currentNetworkType) {
+      if (crc20Token.valid === false) {
+        return setDecodeData({name: 'unknown'})
+      }
 
-      getSignature(...params)
-        .then(result => {
-          setDecodeData({...result})
-        })
-        .catch(() => {
-          setDecodeData({name: 'unknown'})
-        })
-    } else {
-      setDecodeData({})
+      if (crc20Token.valid === true) {
+        const getSignature =
+          currentNetworkType === NETWORK_TYPE.CFX
+            ? getCFXContractMethodSignature
+            : getEthContractMethodSignature
+        const params =
+          currentNetworkType === NETWORK_TYPE.CFX ? [to, data, netId] : [data]
+
+        getSignature(...params)
+          .then(result => {
+            setDecodeData({...result})
+          })
+          .catch(() => {
+            setDecodeData({name: 'unknown'})
+          })
+        return
+      }
     }
+
+    setDecodeData({})
   }, [data, isContract, to, netId, currentNetworkType, crc20Token.valid])
 
   return {isContract, token: crc20Token, decodeData}
