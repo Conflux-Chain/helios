@@ -13,7 +13,9 @@ function CrossSpaceButton() {
           className="text-white transition-all duration-100 ease-in-out w-4 h-4 cursor-pointer"
           id="openCrossSpace"
           onClick={() =>
-            window.open('https://confluxhub.io/espace-bridge/cross-space')
+            window.open(
+              'https://confluxhub.io/espace-bridge/cross-space#source=fluent-wallet',
+            )
           }
         />
       </WrapIcon>
