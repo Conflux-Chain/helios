@@ -172,7 +172,10 @@ export const main = async ({
   const txhash = getTxHashFromRawTx(rawtx)
   const duptx = getAddrTxByHash({addressId: addr, txhash})
 
-  if (duptx) throw InvalidParams('duplicate tx')
+  if (duptx) {
+    if (authReqId) await wallet_userRejectedAuthRequest({authReqId})
+    throw InvalidParams('duplicate tx')
+  }
 
   const blockNumber =
     network.type === 'eth' &&
