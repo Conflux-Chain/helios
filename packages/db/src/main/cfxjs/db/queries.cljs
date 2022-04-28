@@ -741,6 +741,15 @@
      (cond
        (vector? addressId)
        (pm (jsp->p g) addressId)
+       ;; addressId is determined by
+       ;; 1. selected true
+       ;; 2. appId -> networkId + accountId
+       ;; 3. directly passing in addressId
+       ;; check these situations if there're hex/addr
+       (and addressId (= (count addr) 1) (not (= (first addr) (:address/value (p '[:address/value] addressId)))))
+       nil
+       (and addressId (= (count hex) 1) (not (= (first hex) (:address/hex (p '[:address/hex] addressId)))))
+       nil
        ;; can get single addressId
        (or addressId (and (int? networkId) (= (count addr) 1)))
        (let [addrId  (or addressId [:address/id [networkId (first addr)]])
