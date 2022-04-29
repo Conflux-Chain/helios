@@ -210,6 +210,13 @@ export const main = ({
 
             const {errorType, shouldDiscard} = processError(err)
             const isDuplicateTx = errorType === 'duplicateTx'
+            const resendNonceTooStale =
+              tx.resendAt && errorType === 'nonceTooStale'
+            const resendPriceTooLow =
+              tx.resendAt && errorType === 'replaceUnderpriced'
+
+            const sameAsSuccess =
+              isDuplicateTx || resendNonceTooStale || resendPriceTooLow
 
             if (errorType === 'unknownError')
               sentryCaptureError(err, {
@@ -220,9 +227,9 @@ export const main = ({
               })
 
             defs({
-              failed: shouldDiscard && {errorType, err},
-              sameAsSuccess: isDuplicateTx,
-              resend: !shouldDiscard && !isDuplicateTx,
+              failed: !sameAsSuccess && shouldDiscard && {errorType, err},
+              sameAsSuccess,
+              resend: !shouldDiscard && !sameAsSuccess,
             })
               .transform(
                 branchObj({

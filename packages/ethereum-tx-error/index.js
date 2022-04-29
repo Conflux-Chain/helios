@@ -14,10 +14,16 @@ export function processError(err) {
       /transaction with the same hash was already imported/i.test(errstr)
     )
       return {errorType: 'duplicateTx', shouldDiscard: false}
-    if (/replacement transaction underpriced/i.test(errstr))
+    if (
+      /replacement transaction underpriced/i.test(errstr) ||
+      /gas price too low to replace/i.test(errstr)
+    )
       return {errorType: 'replaceUnderpriced', shouldDiscard: true}
+
+    // ErrUnderpriced is returned if a transaction's gas price is below the minimum
     if (/transaction underpriced/i.test(errstr))
       return {errorType: 'gasTooLow', shouldDiscard: true}
+
     if (
       /tx\s?pool is full/i.test(errstr) ||
       /transaction pool is full/i.test(errstr)
