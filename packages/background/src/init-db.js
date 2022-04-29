@@ -182,6 +182,7 @@ function initNetwork(d) {
         balanceChecker: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
         tokenList: -4,
         isMainnet: true,
+        gasBuffer: 1.5,
       },
     },
 
@@ -258,6 +259,7 @@ function initNetwork(d) {
         builtin: true,
         isTestnet: true,
         balanceChecker: '0x8d9708f3f514206486d7e988533f770a16d074a7',
+        gasBuffer: 1.5,
       },
     },
     {
@@ -283,6 +285,7 @@ function initNetwork(d) {
         builtin: true,
         isTestnet: true,
         balanceChecker: '0x3183b673f4816c94bef53958baf93c671b7f8cf2',
+        gasBuffer: 1.5,
       },
     },
     {
@@ -308,6 +311,7 @@ function initNetwork(d) {
         builtin: true,
         isTestnet: true,
         balanceChecker: '0x9788c4e93f9002a7ad8e72633b11e8d1ecd51f9b',
+        gasBuffer: 1.5,
       },
     },
     {
@@ -333,6 +337,7 @@ function initNetwork(d) {
         builtin: true,
         isTestnet: true,
         balanceChecker: '0x55abba8d669d60a10c104cc493ec5ef389ec92bb',
+        gasBuffer: 1.5,
       },
     },
   ])

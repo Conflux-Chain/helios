@@ -1,0 +1,7 @@
+releases:
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/estimate-tx": minor
+
+declined:
+  - helios-background
+  - helios-popup

@@ -70,6 +70,8 @@ export const ethEstimate = async (
     toAddressType, // networkId,
     tokensAmount = {},
     isFluentRequest,
+    chainIdToGasBuffer = {},
+    defaultGasBuffer = 1,
   } = {},
 ) => {
   // we use non-standard rpcs from fluent wallet like
@@ -180,10 +182,15 @@ export const ethEstimate = async (
   newTx.nonce = nonce
 
   // run estimate
-  let rst = await ethEstimateGasAdvance(request, newTx)
+  let [rst, chainId] = await Promise.all([
+    ethEstimateGasAdvance(request, newTx),
+    request({method: 'eth_chainId'}),
+  ])
   const {gasLimit} = rst
   const clcGasPrice = customGasPrice || gasPrice
-  const clcGasLimit = customGasLimit || gasLimit
+  const clcGasLimit =
+    customGasLimit ||
+    pre0x(bn16(gasLimit).muln(chainIdToGasBuffer[chainId] || defaultGasBuffer))
 
   rst = {
     ...rst,
