@@ -64,10 +64,11 @@ export default class SafeEventEmitter {
 
   on(eventType, listener) {
     this.#checkBeforeSub({eventType, listener})
-    if (this.#listeners.has(listener)) return
+    if (this.#listeners.has(listener)) return this
     const sub = {next: listener}
     this.#listeners.set(listener, sub)
     this.#streams[eventType].subscribe(sub)
+    return this
   }
 
   once() {
@@ -76,9 +77,10 @@ export default class SafeEventEmitter {
 
   off(eventType, listener) {
     this.#checkBeforeSub({eventType, listener})
-    if (!this.#listeners.has(listener)) return
+    if (!this.#listeners.has(listener)) return this
     this.#streams[eventType].unsubscribe(this.#listeners.get(listener))
     this.#listeners.delete(listener)
+    return this
   }
 
   removeListener(...args) {
@@ -86,17 +88,22 @@ export default class SafeEventEmitter {
   }
 
   removeAllListeners() {
-    Object.values(this.#streams).forEach(s => s.unsubscribeSelf())
+    Object.values(this.#streams).forEach(s =>
+      [...s.subs].forEach(sub => sub.unsubscribe()),
+    )
     this.#listeners = new Map()
+    return this
   }
 
   emit(eventType, data) {
     this.#checkEventType(eventType)
     this.#pb.next({topic: eventType, data})
+    return true
   }
 
   dispatchEvent(event, data) {
-    if (isObject(event) && isString(event.type)) this.emit(event.type, data)
+    if (isObject(event) && isString(event.type))
+      return this.emit(event.type, data)
     throw new Error('invalid event.type')
   }
 }
