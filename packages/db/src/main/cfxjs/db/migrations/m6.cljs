@@ -51,7 +51,8 @@
                                  :network/cacheTime      15000
                                  :network/tokenList      -1
                                  :network/balanceChecker "0xb1f8e55c7f64d203c1400b9d8555d050f94adf39"
-                                 :network/isMainnet      true}
+                                 :network/isMainnet      true
+                                 :network/gasBuffer      1.5}
         e-space-testnet         {:db/id                  -5
                                  :network/name           "eSpace Testnet"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg"
@@ -85,7 +86,9 @@
                                  :network/scanUrl        "https://ropsten.etherscan.io"
                                  :network/cacheTime      15000
                                  :network/balanceChecker "0x8d9708f3f514206486d7e988533f770a16d074a7"
-                                 :network/isTestnet      true}
+                                 :network/isTestnet      true
+                                 :network/gasBuffer      1.5
+                                 }
         rinkeby                 {:db/id                  -7
                                  :network/name           "Ethereum Rinkeby"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg"
@@ -102,7 +105,9 @@
                                  :network/scanUrl        "https://rinkeby.etherscan.io"
                                  :network/cacheTime      15000
                                  :network/balanceChecker "0x3183b673f4816c94bef53958baf93c671b7f8cf2"
-                                 :network/isTestnet      true}
+                                 :network/isTestnet      true
+                                 :network/gasBuffer      1.5
+                                 }
         goerli                  {:db/id                  -8
                                  :network/name           "Ethereum Goerli"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg"
@@ -119,7 +124,9 @@
                                  :network/scanUrl        "https://goerli.etherscan.io"
                                  :network/cacheTime      15000
                                  :network/balanceChecker "0x9788c4e93f9002a7ad8e72633b11e8d1ecd51f9b"
-                                 :network/isTestnet      true}
+                                 :network/isTestnet      true
+                                 :network/gasBuffer      1.5
+                                 }
         kovan                   {:db/id                  -9
                                  :network/name           "Ethereum Kovan"
                                  :network/icon           "https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg"
@@ -136,7 +143,8 @@
                                  :network/scanUrl        "https://kovan.etherscan.io"
                                  :network/cacheTime      15000
                                  :network/balanceChecker "0x55abba8d669d60a10c104cc493ec5ef389ec92bb"
-                                 :network/isTestnet      true}
+                                 :network/isTestnet      true
+                                 :network/gasBuffer      1.5}
         cfx-mainnet-id          (d/q '[:find ?net .
                                        :where
                                        [?net :network/builtin true]

@@ -121,12 +121,19 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     loading,
     error,
   } = useAsync(async () => {
-    if (!provider || !currentNetwork?.netId || (!to && !data)) return
+    if (
+      !provider ||
+      !currentNetwork?.netId ||
+      (!to && !data) ||
+      !network.chainId
+    )
+      return
     return await estimate(tx, {
       type,
       request: provider.request.bind(provider),
       tokensAmount,
       isFluentRequest: true,
+      chainIdToGasBuffer: {[network.chainId]: network.gasBuffer},
       // networkId: currentNetwork.netId,
     })
   }, [
@@ -138,6 +145,8 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     gasPrice,
     gas,
     storageLimit,
+    network.chainId,
+    network.gasBuffer,
     // currentNetwork.netId,
     Boolean(provider),
     Object.keys(tokensAmount)?.[0],
