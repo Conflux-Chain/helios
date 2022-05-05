@@ -19858,6 +19858,7 @@ __metadata:
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format"
+    "@fluent-wallet/ethereum-tx-error": "workspace:*"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
     "@fluent-wallet/inner-utils": "workspace:*"
     "@fluent-wallet/jazz-icon": "workspace:packages/jazz-icon"
