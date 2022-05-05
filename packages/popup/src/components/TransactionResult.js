@@ -13,7 +13,7 @@ import {TX_STATUS} from '../constants'
 function TransactionResult({status, sendError, onClose}) {
   const {t} = useTranslation()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const errorMessgae = sendError?.message
+  const errorMessgae = sendError?.message || t('errorDes')
   const open = status && status !== TX_STATUS.HW_SUCCESS
   const isRejected = errorMessgae?.includes('UserRejected')
   const isWaiting = status === TX_STATUS.HW_WAITING
