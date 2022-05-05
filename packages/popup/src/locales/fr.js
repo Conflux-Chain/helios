@@ -409,6 +409,21 @@ const fr = {
     replacedWithHigherGasPriceTx: 'Remplacer la Transaction',
     unknownError: 'Erreur inconnue',
 
+    // ethereum confirm tx error
+    replaceUnderpriced: 'Gas too low',
+    gasTooLow: 'Gas too low',
+    gasLimitReached: 'Gas limit reached',
+    oversizedData: 'Data is oversized',
+    nonceTooHigh: 'Nonce is too large',
+    nonceMax: 'Nonce is too large',
+    insufficientFunds: 'Insufficient funds',
+    intrinsicGas: 'Intrinsic Gas too low',
+    txTypeNotSupported: 'Unsupported transaction type',
+    feeCapVeryHigh: 'Gas price too high',
+    feeCapTooLow: 'Gas price too low',
+    tipAboveFeeCap: 'Priority fee error',
+    tipVeryHigh: 'Priority fee error',
+
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger n’est pas connecté',
     openExpandView: 'Ouvrir la vue étendue de Fluent pour vous connecter',

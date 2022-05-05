@@ -404,6 +404,21 @@ const ru = {
     replacedWithHigherGasPriceTx: 'Задвоение транзакции',
     unknownError: 'Неизвестная ошибка',
 
+    // ethereum confirm tx error
+    replaceUnderpriced: 'Gas too low',
+    gasTooLow: 'Gas too low',
+    gasLimitReached: 'Gas limit reached',
+    oversizedData: 'Data is oversized',
+    nonceTooHigh: 'Nonce is too large',
+    nonceMax: 'Nonce is too large',
+    insufficientFunds: 'Insufficient funds',
+    intrinsicGas: 'Intrinsic Gas too low',
+    txTypeNotSupported: 'Unsupported transaction type',
+    feeCapVeryHigh: 'Gas price too high',
+    feeCapTooLow: 'Gas price too low',
+    tipAboveFeeCap: 'Priority fee error',
+    tipVeryHigh: 'Priority fee error',
+
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger не подсоединен',
     openExpandView: 'Откройте Fluent и проверьте подключение',

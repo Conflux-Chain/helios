@@ -4,16 +4,21 @@ import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
 import Loading from '@fluent-wallet/component-loading'
 import Modal from '@fluent-wallet/component-modal'
-import {processError} from '@fluent-wallet/conflux-tx-error'
+import {processError as cfxProcessError} from '@fluent-wallet/conflux-tx-error'
+import {processError as ethProcessError} from '@fluent-wallet/ethereum-tx-error'
+import {useNetworkTypeIsCfx} from '../hooks/useApi'
 import {CopyButton} from '../components'
 import {TX_STATUS} from '../constants'
 
 function TransactionResult({status, sendError, onClose}) {
   const {t} = useTranslation()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
   const open = status && status !== TX_STATUS.HW_SUCCESS
   const isRejected = sendError?.includes('UserRejected')
   const isWaiting = status === TX_STATUS.HW_WAITING
-  const {errorType} = processError(sendError)
+  const {errorType} = networkTypeIsCfx
+    ? cfxProcessError(sendError)
+    : ethProcessError(sendError)
   const title = isWaiting
     ? t('waitingForSign')
     : isRejected
