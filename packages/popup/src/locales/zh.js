@@ -385,6 +385,21 @@ const zh = {
     replacedWithHigherGasPriceTx: '重复的交易',
     unknownError: '未知错误',
 
+    // ethereum confirm tx error
+    replaceUnderpriced: 'Gas 太低',
+    gasTooLow: 'Gas 太低',
+    gasLimitReached: '达到 Gas 限制',
+    oversizedData: 'Data 数据过大',
+    nonceTooHigh: 'Nonce 太大',
+    nonceMax: 'Nonce 太大',
+    insufficientFunds: '余额不足',
+    intrinsicGas: 'Intrinsic Gas 太低',
+    txTypeNotSupported: '不支持此交易类型',
+    feeCapVeryHigh: 'Gas 价格太高',
+    feeCapTooLow: 'Gas 价格太低',
+    tipAboveFeeCap: 'Priority fee 错误',
+    tipVeryHigh: 'Priority fee 错误',
+
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger 未连接',
     openExpandView: '在 Fluent 扩展视图连接硬件钱包',
