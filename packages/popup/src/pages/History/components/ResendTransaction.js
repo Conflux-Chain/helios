@@ -403,7 +403,7 @@ function ResendTransaction({
 
   const onCloseTransactionResult = () => {
     setSendStatus('')
-    setSendError('')
+    setSendError({})
   }
 
   const onChangeGasPriceChoice = e => {
