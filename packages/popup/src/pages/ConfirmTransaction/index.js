@@ -70,7 +70,7 @@ function ConfirmTransaction() {
     )
   }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
-  const [sendError, setSendError] = useState('')
+  const [sendError, setSendError] = useState({})
   const [balanceError, setBalanceError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
   const isDapp = getPageType() === 'notification'
@@ -279,7 +279,7 @@ function ConfirmTransaction() {
         console.error('error', error)
         if (!isHwAccount) setLoading(false)
         setSendStatus(TX_STATUS.ERROR)
-        setSendError(error?.message ?? error)
+        setSendError(error)
       })
   }
 
