@@ -66,7 +66,7 @@ function ResendTransaction({
   const [gasPriceErr, setGasPriceErr] = useState('')
   const [gasLimitErr, setGasLimitErr] = useState('')
   const [balanceError, setBalanceError] = useState('')
-  const [sendError, setSendError] = useState('')
+  const [sendError, setSendError] = useState({})
   const [canResend, setCanResend] = useState(true)
 
   const {
@@ -354,7 +354,7 @@ function ResendTransaction({
           return
         }
         setSendStatus(TX_STATUS.ERROR)
-        setSendError(error?.message ?? error)
+        setSendError(error)
       })
   }
 
