@@ -1,26 +1,12 @@
-import fetch from 'node-fetch'
+import {initFetcher} from '@fluent-wallet/fetch-rpc'
 
-const fetchHelper = async (url, method, options) => {
-  let request =
-    window?.fetch && typeof window.fetch === 'function' ? window.fetch : null
-  if (!request) {
-    request = fetch
-  }
-  const response = await request(url, {
-    method,
-    headers: {
-      'content-type': 'application/json',
-    },
-    mode: 'cors',
-    referrer: 'no-referrer',
-    cache: 'no-cache',
-    ...options,
-  }).catch(err => err)
-  if (response.ok) {
-    const json = await response.json()
-    return json
-  }
-  return null
+const fetcher = initFetcher()
+
+function fetchHelper(url) {
+  return fetcher
+    .get(url)
+    .json()
+    .catch(() => null)
 }
 
 export default fetchHelper

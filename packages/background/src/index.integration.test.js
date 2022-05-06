@@ -20,7 +20,7 @@ import {
   ETH_LOCALNET_CURRENCY_SYMBOL,
   ETH_LOCALNET_CURRENCY_NAME,
   DEFAULT_ETH_HDPATH,
-  CFX_TESTNET_SCAN_URL,
+  CFX_TESTNET_EXPLORER_URL,
 } from '@fluent-wallet/consts'
 import {
   MNEMONIC,
@@ -172,7 +172,7 @@ describe('integration test', function () {
           _inpage: true,
           _origin: 'foo.site',
         })
-        expect(accountsCfxInpage.result[0]).toBe(CFX_ACCOUNTS[0].base32)
+        expect(accountsCfxInpage.result).toEqual([])
         const accountsAnother = await request({
           method: 'wallet_accounts',
           params: [],
@@ -186,7 +186,7 @@ describe('integration test', function () {
           params: [],
           networkName: ETH_MAINNET_NAME,
         })
-        expect(accountsFromInpage.result[0]).toBe(ETH_ACCOUNTS[0].address)
+        expect(accountsFromInpage.result).toEqual([])
       })
     })
 
@@ -437,7 +437,7 @@ describe('integration test', function () {
               symbol: 'CFX',
             },
             rpcUrls: ['http://test.confluxrpc.com/'],
-            blockExplorerUrls: [CFX_TESTNET_SCAN_URL], //only for test,it is not the real scan url
+            blockExplorerUrls: [CFX_TESTNET_EXPLORER_URL], //only for test,it is not the real scan url
             iconUrls: [
               'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/cfx.svg',
             ],
@@ -1197,8 +1197,15 @@ describe('integration test', function () {
 
         expect(res2.result).toBe('0x1')
 
-        expect((await res).result).toStrictEqual([
-          {wallet_accounts: {}, wallet_basic: {}},
+        expect(
+          (await res).result.map(({parentCapability}) => parentCapability),
+        ).toStrictEqual([
+          'wallet_basic',
+          'cfx_basic',
+          'eth_basic',
+          'wallet_accounts',
+          'cfx_accounts',
+          'eth_accounts',
         ])
         res = await request({
           method: 'wallet_getPermissions',
@@ -1208,19 +1215,19 @@ describe('integration test', function () {
         expect(res.result.map(({date}) => typeof date === 'number')).toEqual([
           true,
           true,
+          true,
+          true,
+          true,
+          true,
         ])
         expect(res.result.map(({invoker}) => invoker === 'foo.site')).toEqual([
           true,
           true,
+          true,
+          true,
+          true,
+          true,
         ])
-
-        const parentCapabilities = res.result.map(
-          ({parentCapability}) => parentCapability,
-        )
-        expect(
-          parentCapabilities.includes('wallet_basic') &&
-            parentCapabilities.includes('wallet_accounts'),
-        ).toBeTruthy()
       })
       test('from popup', async () => {
         await Promise.all(
@@ -1261,7 +1268,16 @@ describe('integration test', function () {
         expect(app.account.map(a => a.eid).includes(a3.eid)).toBeFalsy()
         // app has the right currentAccount
         expect([a1.eid, a2.eid].includes(app.currentAccount.eid)).toBe(true)
-        expect(res.result).toBe(null)
+        expect(
+          res.result.map(({parentCapability}) => parentCapability),
+        ).toStrictEqual([
+          'wallet_basic',
+          'cfx_basic',
+          'eth_basic',
+          'wallet_accounts',
+          'cfx_accounts',
+          'eth_accounts',
+        ])
       })
     })
     describe('wallet_getPendingAuthRequest', function () {
@@ -1455,7 +1471,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: db.getAddress()[0].value},
+              params: {
+                password,
+                address: db.getAddress()[0].value,
+                accountId: db.getAccount()[0].eid,
+              },
             })
           ).result,
         ).toBe(pk)
@@ -1463,7 +1483,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: db.getAddress()[1].value},
+              params: {
+                password,
+                address: db.getAddress()[1].value,
+                accountId: db.getAccount()[0].eid,
+              },
               networkName: ETH_MAINNET_NAME,
             })
           ).result,
@@ -1475,7 +1499,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: db.getAddress()[0].value},
+              params: {
+                password,
+                address: db.getAddress()[0].value,
+                accountId: db.getAccount()[0].eid,
+              },
             })
           ).result,
         ).toBe(pk)
@@ -1483,7 +1511,7 @@ describe('integration test', function () {
         db.retractAttr({
           eid: db.findAddress({
             g: {_account: {_accountGroup: {vault: {eid: 1}}}},
-          })[0].account.accountGroup.vault.eid,
+          })[0].account[0].accountGroup.vault.eid,
           attr: 'vault/ddata',
         })
       })
@@ -1500,7 +1528,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: a1.value},
+              params: {
+                password,
+                address: a1.value,
+                accountId: db.getAccount()[0].eid,
+              },
             })
           ).result,
         ).toBe(CFX_ACCOUNTS[0].privateKey)
@@ -1508,7 +1540,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: a2.value},
+              params: {
+                password,
+                address: a2.value,
+                accountId: db.getAccount()[0].eid,
+              },
               networkName: ETH_MAINNET_NAME,
             })
           ).result,
@@ -1519,7 +1555,11 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: a1.value},
+              params: {
+                password,
+                address: a1.value,
+                accountId: db.getAccount()[0].eid,
+              },
             })
           ).result,
         ).toBe(CFX_ACCOUNTS[0].privateKey)
@@ -1530,14 +1570,18 @@ describe('integration test', function () {
             g: {
               _account: {_accountGroup: {vault: {eid: 1}}},
             },
-          }).account.accountGroup.vault.eid,
+          }).account[0].accountGroup.vault.eid,
           attr: 'vault/ddata',
         })
         expect(
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {password, address: a1.value},
+              params: {
+                password,
+                address: a1.value,
+                accountId: db.getAccount()[0].eid,
+              },
             })
           ).result,
         ).toBe(CFX_ACCOUNTS[0].privateKey)
@@ -1556,7 +1600,7 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {address: addr.value},
+              params: {address: addr.value, accountId: db.getAccount()[0].eid},
               _internal: true,
             })
           ).error.message,
@@ -2736,6 +2780,7 @@ describe('integration test', function () {
                 value: '0x1',
               },
             ],
+            _popup: true,
           })
           expect(res.result).toBeDefined()
           expect(res.result.startsWith('0x')).toBe(true)
@@ -2761,6 +2806,7 @@ describe('integration test', function () {
                 value: '0x1',
               },
             ],
+            _popup: true,
           })
           expect(res.result).toBeDefined()
           expect(res.result.startsWith('0x')).toBe(true)

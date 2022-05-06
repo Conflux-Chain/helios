@@ -62,7 +62,9 @@ function DappAddToken() {
                 symbol: req?.params?.options?.symbol || '',
                 name: req?.params?.options?.name || '',
                 balance: formatBalance(
-                  balanceData?.[address]?.[req?.params?.options?.address],
+                  balanceData?.[address?.toLowerCase?.()]?.[
+                    req?.params?.options?.address?.toLowerCase?.()
+                  ],
                   req?.params?.options?.decimals || CFX_DECIMALS,
                 ),
               }}

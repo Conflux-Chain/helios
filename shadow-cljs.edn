@@ -1,23 +1,6 @@
 ;; shadow-cljs configuration
-{:source-paths
- ["packages/spec/src/dev"
-  "packages/spec/src/main"
-  "packages/spec/src/test"
-  "packages/db/src/dev"
-  "packages/db/src/main"
-  "packages/db/src/test"]
-
+{:deps     {:aliases [:cljs]}
  :dev-http {8000 ["packages"]}
-
- :dependencies
- [[metosin/malli "0.6.2"]
-  [binaryage/oops "0.7.2"]
-  [datascript "1.0.7"]
-  [hashp "0.2.1"]
-  [medley "1.3.0"]
-  ;; [philoskim/debux-stubs "0.8.1"]
-  ;; [philoskim/debux "0.8.1"]
-  ]
 
  :builds
  {:spec {:target           :esm
@@ -151,20 +134,22 @@
                               explain  cfxjs.spec.core/export-explain
                               k        cfxjs.spec.core/export-k
 
-                              password        cfxjs.spec.core/export-password
-                              networkId       cfxjs.spec.core/export-networkId
-                              chainId         cfxjs.spec.core/export-chainId
-                              addressType     cfxjs.spec.core/export-addressType
-                              hex             cfxjs.spec.core/export-hex-string
-                              epochTag        cfxjs.spec.core/export-epoch-tag
-                              epochRef        cfxjs.spec.core/export-epoch-ref
-                              epochTagNoMined cfxjs.spec.core/export-epoch-tag-no-mined
-                              epochRefNoMined cfxjs.spec.core/export-epoch-ref-no-mined
-                              blockTag        cfxjs.spec.core/export-block-tag
-                              blockRef        cfxjs.spec.core/export-block-ref
-                              undefine        cfxjs.spec.core/export-js-undefined
-                              url             cfxjs.spec.core/export-url
-                              dbid            cfxjs.spec.core/export-dbid
+                              password          cfxjs.spec.core/export-password
+                              networkId         cfxjs.spec.core/export-networkId
+                              chainId           cfxjs.spec.core/export-chainId
+                              addressType       cfxjs.spec.core/export-addressType
+                              hex               cfxjs.spec.core/export-hex-string
+                              epochTag          cfxjs.spec.core/export-epoch-tag
+                              epochRef          cfxjs.spec.core/export-epoch-ref
+                              epochTagNoMined   cfxjs.spec.core/export-epoch-tag-no-mined
+                              epochRefNoMined   cfxjs.spec.core/export-epoch-ref-no-mined
+                              blockTag          cfxjs.spec.core/export-block-tag
+                              blockRef          cfxjs.spec.core/export-block-ref
+                              undefine          cfxjs.spec.core/export-js-undefined
+                              url               cfxjs.spec.core/export-url
+                              richUrl           cfxjs.spec.core/export-rich-url
+                              atLeastOneHttpUrl cfxjs.spec.core/export-at-least-one-http-or-https-url
+                              dbid              cfxjs.spec.core/export-dbid
 
                               tokenSymbol cfxjs.spec.core/export-token-symbol
                               Byte        cfxjs.spec.core/export-byte
@@ -176,15 +161,15 @@
                               Uint256     cfxjs.spec.core/export-uint256
                               Hash32      cfxjs.spec.core/export-hash32}
                              :depends-on #{:shared}}
-                            :gen         {:exports    {gen cfxjs.spec.gen/gen}
-                                          :depends-on #{:shared}}
-                            :doc         {:exports    {generateDocumentation cfxjs.spec.doc/gen
-                                                       explain               cfxjs.spec.doc/export-explain
-                                                       validate              cfxjs.spec.doc/export-validate}
-                                          :depends-on #{:shared}}}}
+                            :gen {:exports    {gen cfxjs.spec.gen/gen}
+                                  :depends-on #{:shared}}
+                            :doc {:exports    {generateDocumentation cfxjs.spec.doc/gen
+                                               explain               cfxjs.spec.doc/export-explain
+                                               validate              cfxjs.spec.doc/export-validate}
+                                  :depends-on #{:shared}}}}
   :db {:target           :esm
        :output-dir       "packages/db/src"
-       :devtools         {:preloads [hashp.core]
+       :devtools         {:preloads     [hashp.core]
                           :devtools-url "http://localhost:9630"}
        :js-options       {:js-package-dirs ["node_modules"
                                             "packages/db/node_modules"]}

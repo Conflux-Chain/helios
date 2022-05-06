@@ -2,7 +2,7 @@ import 'regenerator-runtime/runtime'
 
 import {defRpcEngine} from '@fluent-wallet/rpc-engine'
 import {persist} from './persist-db-to-ext-storage'
-import {createdb} from '@fluent-wallet/db'
+// import {createdb} from '@fluent-wallet/db'
 import {EXT_STORAGE} from '@fluent-wallet/consts'
 import {
   IS_PROD_MODE,
@@ -43,6 +43,8 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
     skipRestore || Boolean(importAllTx)
       ? null
       : (await browser.storage.local.get(EXT_STORAGE))?.[EXT_STORAGE]
+
+  const {createdb} = await import('@fluent-wallet/db')
 
   const dbConnection = createdb(SCHEMA, persist, data || null)
   if (!IS_PROD_MODE) window.d = dbConnection
@@ -119,10 +121,10 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
   // ## Dev/Test
   if (!IS_TEST_MODE) {
     if (IS_DEV_MODE) {
-      if (import.meta.env?.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
+      if (import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
         try {
           const localDevModule = await import(
-            import.meta.env?.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH
+            import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH
           )
           await localDevModule.run({request, db})
         } catch (err) {

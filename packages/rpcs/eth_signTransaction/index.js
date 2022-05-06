@@ -1,6 +1,7 @@
 import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import {ethSignTransaction} from '@fluent-wallet/signature'
+import {consts as ledgerConsts} from '@fluent-wallet/ledger'
 
 const {
   TransactionLegacyUnsigned,
@@ -66,21 +67,29 @@ export const main = async args => {
       wallet_detectAddressType,
     },
     params: [tx, opts = {}],
+    app,
     network,
+    _popup,
   } = args
+
   const {block, returnTxMeta, dryRun} = opts
   // ethers.js
   // 1. don't allow from in tx
   // 2. use `gasLimit` instead of `gas` in tx
-  let {from, gas, ...newTx} = {...tx}
-  newTx.gasLimit = gas
+  let {from, gas, type, ...newTx} = {...tx}
+  type = type || '0x0'
+  let gasLimit = gas
   if (newTx.chainId && newTx.chainId !== network.chainId)
     throw InvalidParams(`Invalid chainId ${newTx.chainId}`)
 
   const fromAddr = findAddress({
-    networkId: network.eid,
+    appId: app && app.eid,
+    selected: _popup && !app ? true : undefined,
     value: from,
-    g: {eid: 1, _account: {_accountGroup: {vault: {type: 1, device: 1}}}},
+    g: {
+      eid: 1,
+      _account: {eid: 1, _accountGroup: {vault: {type: 1, device: 1}}},
+    },
   })
   // from address is not belong to wallet
   if (!fromAddr) throw InvalidParams(`Invalid from address ${from}`)
@@ -92,7 +101,10 @@ export const main = async args => {
     )
 
   const legacyTx = !newTx.type || newTx.type === '0x0'
-  if (!legacyTx) throw InvalidParams(`Fluent don't support EIP-1559 yet`)
+  if (!legacyTx)
+    throw InvalidParams(
+      `Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559`,
+    )
   // TODO: EIP-1559 support
   // const network1559Compatible = await wallet_network1559Compatible()
   // if (!legacyTx && network1559Compatible)
@@ -100,8 +112,6 @@ export const main = async args => {
   //     `Network ${network.name} don't support 1559 transactions`,
   //   )
 
-  if (!newTx.chainId) newTx.chainId = network.chainId
-  newTx.chainId = parseInt(newTx.chainId, 16)
   if (newTx.data === '0x') newTx.data = undefined
   if (!newTx.gasPrice) newTx.gasPrice = await eth_gasPrice()
 
@@ -114,66 +124,73 @@ export const main = async args => {
     ])
   }
 
-  if (newTx.to && !newTx.gasLimit) {
+  if (newTx.to && !gasLimit) {
     const {contract: typeContract} = await wallet_detectAddressType(
       {errorFallThrough: true},
       {address: newTx.to},
     )
     if (!typeContract && !newTx.data) {
-      if (!newTx.gasLimit) newTx.gasLimit = '0x5208'
+      if (!gasLimit) gasLimit = '0x5208'
     }
   }
 
-  if (!newTx.gasLimit) {
-    const gasLimit = await eth_estimateGas({errorFallThrough: true}, [
-      newTx,
+  if (!gasLimit) {
+    gasLimit = await eth_estimateGas({errorFallThrough: true}, [
+      {from, type, ...newTx},
       block || 'latest',
     ])
-    if (!newTx.gasLimit) newTx.gasLimit = gasLimit
   }
+
+  if (!newTx.chainId) newTx.chainId = network.chainId
+  newTx.chainId = parseInt(newTx.chainId, 16)
 
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {
-    throw new InvalidParams(
-      `Fluent don't support hardware wallet for eth type network yet`,
-    )
-    // if (dryRun) {
-    //   raw = ethSignTransaction(
-    //     newTx,
-    //     '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
-    //   )
-    // } else {
-    //   raw = await signWithHardwareWallet({
-    //     args,
-    //     tx: newTx,
-    //     addressId: fromAddr.eid,
-    //     device: fromAddr.account.accountGroup.vault.device,
-    //   })
-    // }
+    if (dryRun) {
+      raw = ethSignTransaction(
+        newTx,
+        '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+      )
+    } else {
+      raw = await signWithHardwareWallet({
+        args,
+        accountId: fromAddr.account.eid,
+        tx: newTx,
+        addressId: fromAddr.eid,
+        device: fromAddr.account.accountGroup.vault.device,
+      })
+    }
   } else {
-    let pk = await wallet_getAddressPrivateKey({address: from})
+    let pk = await wallet_getAddressPrivateKey({
+      address: from,
+      accountId: fromAddr.account.eid,
+    })
 
     if (dryRun)
       pk = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
-    raw = ethSignTransaction(newTx, pk)
+    raw = ethSignTransaction({...newTx, gasLimit, type: parseInt(type, 16)}, pk)
   }
 
   if (returnTxMeta) {
-    return {txMeta: newTx, raw}
+    return {txMeta: {...newTx, type, from, gas}, raw}
   }
 
   return raw
 }
 
-// async function signWithHardwareWallet({
-//   args: {
-//     rpcs: {eth_signTxWithLedgerNanoS},
-//   },
-//   tx,
-//   addressId,
-//   device,
-// }) {
-//   const hwSignMap = {LedgerNanoS: eth_signTxWithLedgerNanoS}
-//   const signMethod = hwSignMap[device]
-//   return await signMethod({errorFallThrough: true}, {tx, addressId})
-// }
+async function signWithHardwareWallet({
+  args: {
+    rpcs: {eth_signTxWithLedgerNanoS},
+  },
+  tx,
+  addressId,
+  device,
+  accountId,
+}) {
+  const hwSignMap = {
+    [ledgerConsts.LEDGER_NANOS_NAME]: eth_signTxWithLedgerNanoS,
+    [ledgerConsts.LEDGER_NANOX_NAME]: eth_signTxWithLedgerNanoS,
+  }
+  const signMethod = hwSignMap[device]
+  return await signMethod({errorFallThrough: true}, {tx, addressId, accountId})
+}

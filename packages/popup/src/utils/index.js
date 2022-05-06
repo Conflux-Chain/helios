@@ -1,7 +1,7 @@
 import BN from 'bn.js'
 import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
-import {isHexAddress} from '@fluent-wallet/account'
+import {isHexAddress, isChecksummed, toChecksum} from '@fluent-wallet/account'
 import {isArray} from '@fluent-wallet/checks'
 import {PASSWORD_REG_EXP, RPC_METHODS, LANGUAGES} from '../constants'
 const globalThis = window ?? global
@@ -59,6 +59,13 @@ export const validateAddress = (address, networkTypeIsCfx, netId) => {
     return false
   }
   return true
+}
+
+export const validateByEip55 = address => {
+  if (address === address.toLowerCase() || address === address.toUpperCase()) {
+    return true
+  }
+  return isChecksummed(address)
 }
 
 export const bn16 = x => new BN(stripHexPrefix(x), 16)
@@ -160,44 +167,13 @@ export const updateDbAccountList = (mutate, ...args) =>
 export const detectFirefox = () =>
   navigator?.userAgent?.toLowerCase().indexOf('firefox') > -1
 
-export const formatAccountGroupData = (d, showHiddenAccount = true) => {
-  if (isArray(d)) {
-    if (!showHiddenAccount) {
-      d = d.filter(({account}) => !account?.hidden)
-    }
-    d.sort((a, b) => {
-      if (a.account.accountGroup.eid === b.account.accountGroup.eid) {
-        return a.account.eid - b.account.eid
-      }
-      return a.account.accountGroup.eid - b.account.accountGroup.eid
-    })
-    let ret = {}
-    d.forEach(
-      ({account: {accountGroup, ...accountData}, hex, value, ...rest}) => {
-        if (!ret[accountGroup.eid]) {
-          ret[accountGroup.eid] = {...accountGroup}
-        }
-        if (!ret[accountGroup.eid]?.account) {
-          ret[accountGroup.eid].account = {}
-        }
-        ret[accountGroup.eid].account[accountData.eid] = {
-          currentAddress: {hex, value},
-          ...accountData,
-          ...rest,
-        }
-      },
-    )
-    return ret
-  }
-  return d
-}
-
 export const checkBalance = async (
   txParams,
   token,
   isNativeToken,
   isSendToken,
   sendTokenValue,
+  networkTypeIsCfx,
 ) => {
   const {from, to, gasPrice, gas, value, storageLimit} = txParams
   const storageFeeDrip = bn16(storageLimit)
@@ -226,11 +202,20 @@ export const checkBalance = async (
         }
       }
     }
-
-    const {willPayCollateral, willPayTxFee} = await request(
-      'cfx_checkBalanceAgainstTransaction',
-      [from, to, gas, gasPrice, storageLimit, 'latest_state'],
-    )
+    let willPayCollateral = true,
+      willPayTxFee = true
+    if (networkTypeIsCfx) {
+      const response = await request('cfx_checkBalanceAgainstTransaction', [
+        from,
+        to,
+        gas,
+        gasPrice,
+        storageLimit,
+        'latest_state',
+      ])
+      willPayCollateral = response?.willPayCollateral
+      willPayTxFee = response?.willPayTxFee
+    }
 
     if (
       (bn16(balance['0x0']).lt(txFeeDrip) &&
@@ -247,4 +232,11 @@ export const checkBalance = async (
     console.error(err)
     return ''
   }
+}
+
+export const formatIntoChecksumAddress = address => {
+  if (isHexAddress(address)) {
+    return toChecksum(address)
+  }
+  return address
 }

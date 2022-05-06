@@ -2,21 +2,18 @@
  * @fileOverview snowpack prod
  * @name snowpackjs.js
  */
-require('./setup-dotenv.js')
+const setupDotenv = require('./setup-dotenv.js')
+setupDotenv()
 require('./before_all.js')
 const {resolve} = require('path')
 const buildContentScript = require('./build-content-script.js')
-// const buildInpage = require('./build-inpage.js')
+const buildBg = require('./build/bg.js')
+const buildPopup = require('./build/popup.js')
+require(resolve(__dirname, '../packages/background/snowpack.config.cjs'))
+require(resolve(__dirname, '../packages/popup/snowpack.config.cjs'))
 
 const {setEnvBasedOnArgv} = require('./snowpack.utils.js')
 setEnvBasedOnArgv()
-
-const {loadConfiguration, build} = require('@yqrashawn/snowpack')
-
-const builds = [
-  resolve(__dirname, '../packages/background/snowpack.config.cjs'),
-  resolve(__dirname, '../packages/popup/snowpack.config.cjs'),
-]
 
 async function cleanup(exitCode) {
   process.exit(exitCode)
@@ -32,18 +29,7 @@ process.on('uncaughtException', err => {
   throw err
 })
 ;(async () => {
-  // await loadConfiguration(undefined, builds[0]).then(config => build({config}))
-  // await loadConfiguration(undefined, builds[1]).then(config => build({config}))
-  // await buildContentScript()
-  // await buildInpage()
-
-  await Promise.all([
-    ...builds.map(b =>
-      loadConfiguration(undefined, b).then(config => build({config})),
-    ),
-    buildContentScript(),
-    // buildInpage(),
-  ])
+  await Promise.all([buildContentScript(), buildBg.analyze(), buildPopup()])
   await require('./after_prod.js')()
   process.exit(0)
 })()

@@ -2,12 +2,12 @@
   "name": "@fluent-wallet/doc-use-rpc",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "peerDependencies": {
     "react": "^17"
   },
   "dependencies": {
     "param-case": "3.0.4",
-    "zustand": "^3.7.1"
+    "zustand": "^3.7.2"
   }
 }

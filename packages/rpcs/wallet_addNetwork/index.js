@@ -1,6 +1,6 @@
 import {
+  atLeastOneHttpUrl,
   map,
-  url,
   stringp,
   enums,
   or,
@@ -8,12 +8,15 @@ import {
   hdPath,
   chainId,
   eq,
-  plus,
   tokenSymbol,
 } from '@fluent-wallet/spec'
 import {DEFAULT_CFX_HDPATH, DEFAULT_ETH_HDPATH} from '@fluent-wallet/consts'
 
 export const NAME = 'wallet_addNetwork'
+
+export const firstHttpOrHttpsUrl = function (urls) {
+  return urls.reduce((acc, url) => acc || (url.startsWith('http') && url), null)
+}
 
 const nativeCurrencySchema = [
   map,
@@ -21,7 +24,7 @@ const nativeCurrencySchema = [
   ['name', stringp],
   ['symbol', tokenSymbol],
   ['decimals', [eq, 18]],
-  ['iconUrls', {optional: true}, [plus, url]],
+  ['iconUrls', {optional: true}, atLeastOneHttpUrl],
 ]
 
 export const ChainParameterSchema = [
@@ -33,9 +36,9 @@ export const ChainParameterSchema = [
   ['chainId', chainId],
   ['chainName', stringp],
   ['nativeCurrency', nativeCurrencySchema],
-  ['rpcUrls', [plus, url]],
-  ['blockExplorerUrls', {optional: true}, [plus, url]],
-  ['iconUrls', {optional: true}, [plus, url]],
+  ['rpcUrls', atLeastOneHttpUrl],
+  ['blockExplorerUrls', {optional: true}, atLeastOneHttpUrl],
+  ['iconUrls', {optional: true}, atLeastOneHttpUrl],
   [
     'hdPath',
     {
@@ -104,11 +107,11 @@ export const main = async ({
   // only when called from wallet_updateNetwork
   toUpdateNetwork,
 }) => {
-  const [url] = rpcUrls
-  const [explorerUrl] = blockExplorerUrls
-  const [iconUrl] = iconUrls
+  const url = firstHttpOrHttpsUrl(rpcUrls)
+  const explorerUrl = firstHttpOrHttpsUrl(blockExplorerUrls)
+  const iconUrl = firstHttpOrHttpsUrl(iconUrls)
 
-  // duplidate name
+  // duplidate network name
   const [dupNameNetwork] = getNetworkByName(name)
   if (
     (!toUpdateNetwork && dupNameNetwork) ||
@@ -164,7 +167,7 @@ export const main = async ({
     hdPathId = await wallet_addHdPath({name: `${name}-hdPath`, hdPath})
   }
 
-  const upsertResult = t([
+  const upsertNetworkResult = t([
     {
       eid: toUpdateNetwork?.eid || 'networkId',
       network: {
@@ -202,7 +205,7 @@ export const main = async ({
       groups.map(({eid}) =>
         wallet_createAddress({
           accountGroupId: eid,
-          networkId: upsertResult.tempids.networkId,
+          networkId: upsertNetworkResult.tempids.networkId,
         }),
       ),
     )
@@ -224,5 +227,5 @@ export const main = async ({
     groups.filter(({vault: {type}}) => type === 'hd').map(discoverAccounts),
   )
 
-  return toUpdateNetwork?.eid || upsertResult.tempids.networkId
+  return toUpdateNetwork?.eid || upsertNetworkResult.tempids.networkId
 }

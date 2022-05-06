@@ -60,8 +60,8 @@ function InfoList({
             <DisplayBalance
               id="allowance"
               balance={customAllowance || allowance}
-              maxWidth={220}
-              maxWidthStyle="max-w-[220px]"
+              maxWidth={160}
+              maxWidthStyle="max-w-[160px]"
               symbol={token?.symbol}
             />
             <WrapIcon className="mx-1 shadow-none !bg-transparent hover:!bg-primary-4 group">
@@ -92,7 +92,7 @@ function InfoList({
             <img
               src={currentDapp?.site?.icon || '/images/default-dapp-icon.svg'}
               alt="icon"
-              className="w-4 h-4 mr-1 flex-shrink-0"
+              className="w-4 h-4 mr-1 shrink-0"
               id="currentDappIcon"
             />
             {currentDapp?.site?.origin}

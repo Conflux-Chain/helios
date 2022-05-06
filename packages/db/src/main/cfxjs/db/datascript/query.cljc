@@ -4,22 +4,24 @@
    [clojure.set :as set]
    [clojure.string :as str]
    [clojure.walk :as walk]
+   [cfxjs.db.datascript.built-ins :as built-ins]
    [cfxjs.db.datascript.db :as db #?(:cljs :refer-macros :clj :refer) [raise cond+]]
    [me.tonsky.persistent-sorted-set.arrays :as da]
-   [cfxjs.db.datascript.lru]
+   [cfxjs.db.datascript.lru :as lru]
    [cfxjs.db.datascript.impl.entity :as de]
    [cfxjs.db.datascript.parser :as dp #?@(:cljs [:refer [BindColl BindIgnore BindScalar BindTuple Constant
                                                          FindColl FindRel FindScalar FindTuple PlainSymbol
                                                          RulesVar SrcVar Variable]])]
-   [cfxjs.db.datascript.pull-api :as dpa]
-   [cfxjs.db.datascript.pull-parser :as dpp])
-  #?(:clj (:import [cfxjs.db.datascript.parser BindColl BindIgnore BindScalar BindTuple
-                    Constant FindColl FindRel FindScalar FindTuple PlainSymbol
-                    RulesVar SrcVar Variable])))
+   [cfxjs.db.datascript.pull-api :as dpa])
+  #?(:clj
+     (:import
+      [cfxjs.db.datascript.parser BindColl BindIgnore BindScalar BindTuple
+       Constant FindColl FindRel FindScalar FindTuple PlainSymbol
+       RulesVar SrcVar Variable])))
 
 ;; ----------------------------------------------------------------------------
 
-(def ^:const lru-cache-size 100)
+(def ^:dynamic *query-cache* (lru/cache 100))
 
 (declare -collect -resolve-clause resolve-clause)
 
@@ -34,9 +36,7 @@
 ;; or [ (Datom. 2 "Oleg" 1 55) ... ]
 (defrecord Relation [attrs tuples])
 
-
 ;; Utilities
-
 
 (defn single [coll]
   (assert (nil? (next coll)) "Expected single element")
@@ -156,130 +156,10 @@
                   acc (:tuples rel2)))
         (transient []) (:tuples rel1)))))))
 
-;; built-ins
-
-
-(defn- -differ? [& xs]
-  (let [l (count xs)]
-    (not= (take (/ l 2) xs) (drop (/ l 2) xs))))
-
-(defn- -get-else
-  [db e a else-val]
-  (when (nil? else-val)
-    (raise "get-else: nil default value is not supported" {:error :query/where}))
-  (if-some [datom (first (db/-search db [e a]))]
-    (:v datom)
-    else-val))
-
-(defn- -get-some
-  [db e & as]
-  (reduce
-   (fn [_ a]
-     (when-some [datom (first (db/-search db [e a]))]
-       (reduced [(:a datom) (:v datom)])))
-   nil
-   as))
-
-(defn- -missing?
-  [db e a]
-  (nil? (get (de/entity db e) a)))
-
-(defn- and-fn [& args]
-  (reduce (fn [a b]
-            (if b b (reduced b))) true args))
-
-(defn- or-fn [& args]
-  (reduce (fn [a b]
-            (if b (reduced b) b)) nil args))
-
-(def built-ins {'= =, '== ==, 'not= not=, '!= not=, '< <, '> >, '<= <=, '>= >=, '+ +, '- -,
-                '* *, '/ /, 'quot quot, 'rem rem, 'mod mod, 'inc inc, 'dec dec, 'max max, 'min min,
-                'zero? zero?, 'pos? pos?, 'neg? neg?, 'even? even?, 'odd? odd?, 'compare compare,
-                'rand rand, 'rand-int rand-int,
-                'true? true?, 'false? false?, 'nil? nil?, 'some? some?, 'not not, 'and and-fn, 'or or-fn,
-                'complement complement, 'identical? identical?,
-                'identity identity, 'keyword keyword, 'meta meta, 'name name, 'namespace namespace, 'type type,
-                'vector vector, 'list list, 'set set, 'hash-map hash-map, 'array-map array-map,
-                'count count, 'range range, 'not-empty not-empty, 'empty? empty?, 'contains? contains?,
-                'str str, 'pr-str pr-str, 'print-str print-str, 'println-str println-str, 'prn-str prn-str, 'subs subs,
-                're-find re-find, 're-matches re-matches, 're-seq re-seq, 're-pattern re-pattern,
-                '-differ? -differ?, 'get-else -get-else, 'get-some -get-some, 'missing? -missing?, 'ground identity,
-                'clojure.string/blank? str/blank?, 'clojure.string/includes? str/includes?,
-                'clojure.string/starts-with? str/starts-with?, 'clojure.string/ends-with? str/ends-with?
-                'tuple vector, 'untuple identity})
-
-(def built-in-aggregates
-  (letfn [(sum [coll] (reduce + 0 coll))
-          (avg [coll] (/ (sum coll) (count coll)))
-          (median
-            [coll]
-            (let [terms (sort coll)
-                  size (count coll)
-                  med (bit-shift-right size 1)]
-              (cond-> (nth terms med)
-                (even? size)
-                (-> (+ (nth terms (dec med)))
-                    (/ 2)))))
-          (variance
-            [coll]
-            (let [mean (avg coll)
-                  sum  (sum (for [x coll
-                                  :let [delta (- x mean)]]
-                              (* delta delta)))]
-              (/ sum (count coll))))
-          (stddev
-            [coll]
-            (#?(:cljs js/Math.sqrt :clj Math/sqrt) (variance coll)))]
-    {'avg      avg
-     'median   median
-     'variance variance
-     'stddev   stddev
-     'distinct set
-     'min      (fn
-                 ([coll] (reduce (fn [acc x]
-                                   (if (neg? (compare x acc))
-                                     x acc))
-                                 (first coll) (next coll)))
-                 ([n coll]
-                  (vec
-                   (reduce (fn [acc x]
-                             (cond
-                               (< (count acc) n)
-                               (sort compare (conj acc x))
-                               (neg? (compare x (last acc)))
-                               (sort compare (conj (butlast acc) x))
-                               :else acc))
-                           [] coll))))
-     'max      (fn
-                 ([coll] (reduce (fn [acc x]
-                                   (if (pos? (compare x acc))
-                                     x acc))
-                                 (first coll) (next coll)))
-                 ([n coll]
-                  (vec
-                   (reduce (fn [acc x]
-                             (cond
-                               (< (count acc) n)
-                               (sort compare (conj acc x))
-                               (pos? (compare x (first acc)))
-                               (sort compare (conj (next acc) x))
-                               :else acc))
-                           [] coll))))
-     'sum      sum
-     'rand     (fn
-                 ([coll] (rand-nth coll))
-                 ([n coll] (vec (repeatedly n #(rand-nth coll)))))
-     'sample   (fn [n coll]
-                 (vec (take n (shuffle coll))))
-     'count    count
-     'count-distinct (fn [coll] (count (distinct coll)))}))
-
-
 ;;
 
-
 (defn parse-rules [rules]
-  (let [rules (if (string? rules) (edn/read-string rules) rules)] ;; for datascript.js interop
+  (let [rules (if (string? rules) (edn/read-string rules) rules)] ;; for cfxjs.db.datascript.js interop
     (dp/parse-rules rules) ;; validation
     (group-by ffirst rules)))
 
@@ -434,7 +314,7 @@
 
 (defn lookup-pattern-db [db pattern]
   ;; TODO optimize with bound attrs min/max values here
-  (let [search-pattern (mapv #(if (symbol? %) nil %) pattern)
+  (let [search-pattern (mapv #(if (or (= % '_) (free-var? %)) nil %) pattern)
         datoms         (db/-search db search-pattern)
         attr->prop     (->> (map vector pattern ["e" "a" "v" "tx"])
                             (filter (fn [[s _]] (free-var? s)))
@@ -447,7 +327,7 @@
     (if (and tuple pattern)
       (let [t (first tuple)
             p (first pattern)]
-        (if (or (symbol? p) (= t p))
+        (if (or (= p '_) (free-var? p) (= t p))
           (recur (next tuple) (next pattern))
           false))
       true)))
@@ -537,7 +417,7 @@
 
 (defn filter-by-pred [context clause]
   (let [[[f & args]] clause
-        pred         (or (get built-ins f)
+        pred         (or (get built-ins/query-fns f)
                          (context-resolve-val context f)
                          (resolve-sym f)
                          (when (nil? (rel-with-attr context f))
@@ -553,7 +433,7 @@
 (defn bind-by-fn [context clause]
   (let [[[f & args] out] clause
         binding  (dp/parse-binding out)
-        fun      (or (get built-ins f)
+        fun      (or (get built-ins/query-fns f)
                      (context-resolve-val context f)
                      (resolve-sym f)
                      (when (nil? (rel-with-attr context f))
@@ -906,7 +786,7 @@
     (get-in context [:sources (.-symbol var)]))
   PlainSymbol
   (-context-resolve [var _]
-    (or (get built-in-aggregates (.-symbol var))
+    (or (get built-ins/aggregates (.-symbol var))
         (resolve-sym (.-symbol var))))
   Constant
   (-context-resolve [var _]
@@ -976,29 +856,20 @@
 (defn- pull [find-elements context resultset]
   (let [resolved (for [find find-elements]
                    (when (dp/pull? find)
-                     [(-context-resolve (:source find) context)
-                      (dpp/parse-pull
-                       (-context-resolve (:pattern find) context))]))]
+                     (let [db (-context-resolve (:source find) context)
+                           pattern (-context-resolve (:pattern find) context)]
+                       (dpa/parse-opts db pattern))))]
     (for [tuple resultset]
-      (mapv (fn [env el]
-              (if env
-                (let [[src spec] env]
-                  (dpa/pull-spec src spec [el] false))
-                el))
-            resolved
-            tuple))))
-
-(def ^:private query-cache (volatile! (cfxjs.db.datascript.lru/lru lru-cache-size)))
-
-(defn memoized-parse-query [q]
-  (if-some [cached (get @query-cache q nil)]
-    cached
-    (let [qp (dp/parse-query q)]
-      (vswap! query-cache assoc q qp)
-      qp)))
+      (mapv
+       (fn [parsed-opts el]
+         (if parsed-opts
+           (dpa/pull-impl parsed-opts el)
+           el))
+       resolved
+       tuple))))
 
 (defn q [q & inputs]
-  (let [parsed-q      (memoized-parse-query q)
+  (let [parsed-q      (lru/-get *query-cache* q #(dp/parse-query q))
         find          (:qfind parsed-q)
         find-elements (dp/find-elements find)
         find-vars     (dp/find-vars find)

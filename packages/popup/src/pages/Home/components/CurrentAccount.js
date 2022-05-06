@@ -1,21 +1,46 @@
 import PropTypes from 'prop-types'
-import {memo} from 'react'
+import {memo, useState} from 'react'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {
-  useCurrentAddress,
-  useBlockchainExplorerUrl,
-} from '../../../hooks/useApi'
+import {useCurrentAddress} from '../../../hooks/useApi'
 import Text from '../../../components/Text'
 import {CopyButton, QRCodeButton, WrapIcon} from '../../../components'
 import {SendOutlined} from '@fluent-wallet/component-icons'
+import {useTranslation} from 'react-i18next'
+import Message from '@fluent-wallet/component-message'
 import classNames from 'classnames'
+import {request, formatIntoChecksumAddress} from '../../../utils'
+import {RPC_METHODS} from '../../../constants'
+import useAddressAnimation from './useAddressAnimation'
+
+const {WALLET_GET_BLOCKCHAIN_EXPLORER_URL} = RPC_METHODS
 
 const OpenScanButton = ({address}) => {
-  const {address: scanAddrUrl} = useBlockchainExplorerUrl(
-    address ? {address: [address]} : null,
-    'useCurrentAddressUrl',
-  )
+  const {t} = useTranslation()
+  const [jumpUrlStatus, setJumpUrlStatus] = useState(false)
+  const onClick = () => {
+    if (jumpUrlStatus) {
+      return
+    }
+    if (address) {
+      setJumpUrlStatus(true)
+      request(WALLET_GET_BLOCKCHAIN_EXPLORER_URL, {address: [address]})
+        .then(res => {
+          setJumpUrlStatus(false)
+          if (res?.address?.[0]) {
+            window.open(res.address[0])
+          }
+        })
+        .catch(e => {
+          setJumpUrlStatus(false)
+          Message.error({
+            content: e?.message ?? t('unCaughtErrMsg'),
+            top: '110px',
+            duration: 1,
+          })
+        })
+    }
+  }
 
   return (
     <WrapIcon className="!bg-transparent hover:!bg-[#ffffff1a]">
@@ -25,7 +50,7 @@ const OpenScanButton = ({address}) => {
           {['opacity-0']: !address},
         )}
         id="openScanAddrUrl"
-        onClick={() => window.open(scanAddrUrl?.[0])}
+        onClick={onClick}
       />
     </WrapIcon>
   )
@@ -38,12 +63,13 @@ OpenScanButton.propTypes = {
 function CurrentAccount({onOpenAccount}) {
   const {
     data: {
-      value: address,
+      value,
       account: {nickname},
     },
   } = useCurrentAddress()
-
+  const address = formatIntoChecksumAddress(value)
   const displayAddress = address ? shortenAddress(address) : ''
+  const addressAnimateStyle = useAddressAnimation(value)
 
   return (
     <div className="flex flex-col" id="currentAccount">
@@ -65,10 +91,11 @@ function CurrentAccount({onOpenAccount}) {
         />
       </div>
       <div className="flex items-center">
-        <Text
-          className="text-white font-medium mr-2 w-auto"
-          text={displayAddress}
-        />
+        <div
+          className={`px-0.5 mr-1 text-white font-medium w-auto ${addressAnimateStyle}`}
+        >
+          {displayAddress}
+        </div>
         <CopyButton
           text={address}
           className={classNames(

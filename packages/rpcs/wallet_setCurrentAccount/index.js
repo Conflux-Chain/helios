@@ -24,13 +24,13 @@ export const main = ({
 
   apps.forEach(({eid, site: {post}}) => {
     if (!post) return
-    const addrs = findAddress({
+    const addr = findAddress({
       appId: eid,
       g: {value: 1},
     })
     post({
       event: 'accountsChanged',
-      params: addrs.map(a => a.value),
+      params: [addr.value],
     })
   })
 }

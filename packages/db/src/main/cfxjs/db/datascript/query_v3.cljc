@@ -1,14 +1,15 @@
 (ns ^:no-doc cfxjs.db.datascript.query-v3
   (:require
    [clojure.set :as set]
+   [cfxjs.db.datascript.built-ins :as built-ins]
    [cfxjs.db.datascript.core :as d]
    [cfxjs.db.datascript.db :as db]
    [cfxjs.db.datascript.query :as dq]
    [cfxjs.db.datascript.lru :as lru]
    [me.tonsky.persistent-sorted-set.arrays :as da]
-   [cfxjs.db.datascript.parser :as dp #?@(:cljs [:refer [BindColl BindIgnore BindScalar BindTuple
-                                                         Constant DefaultSrc Pattern RulesVar SrcVar Variable
-                                                         Not Or And Predicate PlainSymbol]])])
+   [cfxjs.db.datascript.parser :as dp #?@(:cljs [:refer [:refer [BindColl BindIgnore BindScalar BindTuple
+                                                                 Constant DefaultSrc Pattern RulesVar SrcVar Variable
+                                                                 Not Or And Predicate PlainSymbol]]])])
   #?(:clj
      (:import
       [cfxjs.db.datascript.parser
@@ -186,7 +187,7 @@
 
 ;; (declare equiv-tuple)
 
-;; (deftype Tuple [arr hash]  
+;; (deftype Tuple [arr hash]
 ;;   #?@(
 ;;     :cljs [
 ;;       Object (equiv  [this other] (equiv-tuple this other))
@@ -259,9 +260,7 @@
 (defn array-rel [symbols coll]
   (->ArrayRelation (zipmap symbols (range)) coll))
 
-
 ;;; CollRelation
-
 
 (deftype CollRelation [offset-map coll]
   IRelation
@@ -307,10 +306,9 @@
    (defmethod print-method CollRelation [rel w]
      (pr-rel rel w)))
 
-
 ;;; ProdRelation
 
-;; (deftype ProdRelation [rel1 rel2]  
+;; (deftype ProdRelation [rel1 rel2]
 ;;   IRelation
 ;;   (-symbols [_] (concatv (-symbols rel1) (-symbols rel2)))
 ;;   (-arity   [_] (+ (-arity rel1) (-arity rel2)))
@@ -348,9 +346,7 @@
 
 ;; (def prod-rel ->ProdRelation)
 
-
 ;;; SingletonRelation
-
 
 (deftype SingletonRelation []
   IRelation
@@ -400,9 +396,7 @@
 (defn product-all [rels]
   (reduce product rels)) ;; TODO check for empty rels
 
-
 ;; hash-join
-
 
 (defn- key-fn [rel syms]
   (let [arity (count syms)]
@@ -457,9 +451,7 @@
                            (fast-arr))]
     (array-rel full-syms (persistent! coll))))
 
-
 ;; Bindings
-
 
 (defn- bind! [tuples binding source indexes]
   (condp instance? binding
@@ -537,9 +529,7 @@
               {:error :query/binding, :binding (mapv dp/source bindings)}))
   (reduce resolve-in context (zip bindings values)))
 
-
 ;;; Resolution
-
 
 (defprotocol IClause
   (-resolve-clause [clause context]))
@@ -553,9 +543,7 @@
         (db/raise "Source " symbol " is not defined"
                   {:error :query/where, :symbol symbol}))))
 
-
 ;; Patterns
-
 
 (defn resolve-pattern-db [db clause]
   ;; TODO optimize with bound attrs min/max values here
@@ -771,7 +759,7 @@
 (defn get-f [context fun form]
   (let [sym (:symbol fun)]
     (if (instance? PlainSymbol fun)
-      (or (get dq/built-ins sym)
+      (or (get built-ins/query-fns sym)
           (throw (ex-info (str "Unknown built-in " sym " in " form)
                           {:error :query/where, :form form, :var sym})))
       (or (get (:consts context) sym) ;; variable then
@@ -898,21 +886,12 @@
                             (concat xfs))]
        (into acc (apply comp xfs) [specimen])))))
 
-
 ;; Query
 
-
-(def query-cache (volatile! (cfxjs.db.datascript.lru/lru lru-cache-size)))
-
-(defn parse-query [q]
-  (if-let [cached (get @query-cache q nil)]
-    cached
-    (let [qp (dp/parse-query q)]
-      (vswap! query-cache assoc q qp)
-      qp)))
+(def query-cache (lru/cache lru-cache-size))
 
 (defn q [q & inputs]
-  (let [parsed-q (parse-query q)
+  (let [parsed-q (lru/-get query-cache q #(dp/parse-query q))
         context  {:rels    []
                   :consts  {}
                   :sources {}
@@ -925,7 +904,7 @@
     (native-coll (collect-to context syms (fast-set) [(map vec)]))))
 
 (comment
-  (t/test-ns 'cfxjs.db.datascript.test.query-v3)
+  (t/test-ns 'datascript.test.query-v3)
 
   (let [query   '[:find  ?lid ?status ?starttime ?endtime (min ?paid) (distinct ?studentinfo) ?lgid
                   :in    $ ?tid ?week ?list

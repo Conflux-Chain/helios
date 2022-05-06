@@ -2,5 +2,5 @@ export default {
   metadata: {
     inner: true,
   },
-  en: 'No doc available',
+  en: 'Traverse each network and upsert their tokenlist with wallet_updateTokenlist',
 }

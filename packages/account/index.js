@@ -15,6 +15,13 @@ export const create = ({pk} = {}) => {
 }
 
 export const toChecksum = compL(addHexPrefix, toChecksumAddress)
+export const isChecksummed = compL(addHexPrefix, addr => {
+  try {
+    return Boolean(toChecksumAddress(addr))
+  } catch (err) {
+    return false
+  }
+})
 
 export const fromPrivate = pk => ({
   address: threadFirst(pk, addHexPrefix, computeAddress),
@@ -29,7 +36,7 @@ export const toContractAddress = address => {
   return address.replace(/^0x./, '0x8')
 }
 
-export const randomHexAddress = type => {
+export const randomHexAddress = (type, checksum = false) => {
   if (type && !ADDRESS_TYPES.includes(type))
     throw new Error(`Invalid address type ${type}`)
   if (type === 'builtin')
@@ -40,6 +47,7 @@ export const randomHexAddress = type => {
   const addr = create().address
   if (type === 'user') return toAccountAddress(addr)
   if (type === 'contract') return toContractAddress(addr)
+  if (checksum) return toChecksum(addr)
   return addr
 }
 

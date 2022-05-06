@@ -5,12 +5,16 @@ const {
   mustacheRender,
 } = require('../../scripts/snowpack.utils.js')
 const path = require('path')
+
 ;['popup', 'notification', 'page'].forEach(templateName =>
   mustacheRender(
     path.resolve(__dirname, `./public/${templateName}.html.mustache`),
     isDev()
       ? path.resolve(__dirname, `../browser-extension/${templateName}.html`)
-      : path.resolve(__dirname, `./public/${templateName}.html`),
+      : path.resolve(
+          __dirname,
+          `../browser-extension/build/popup/${templateName}.html`,
+        ),
     {
       scripts: isDev()
         ? `<script src="http://localhost:18001/dist/index.dev.js" type="module" charset="utf-8"></script>`
@@ -56,6 +60,8 @@ const mergedConfig = mergeConfig(baseConfig, {
     ...baseConfig.packageOptions,
     knownEntrypoints: [
       ...baseConfig.packageOptions.knownEntrypoints,
+      'js-sha3',
+      'ethjs-util',
       'rc-util/es/raf',
       'rc-util/es/ref',
       'rc-util/es/Portal',

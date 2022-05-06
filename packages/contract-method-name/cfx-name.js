@@ -24,10 +24,7 @@ export const getCFXScanDomain = netId => {
 
 export const getCFXAbi = async (address, netId) => {
   const scanDomain = getCFXScanDomain(netId)
-  return await fetchHelper(
-    `${scanDomain}/v1/contract/${address}?fields=abi`,
-    'GET',
-  )
+  return await fetchHelper(`${scanDomain}/v1/contract/${address}?fields=abi`)
 }
 
 export const getCFXContractMethodSignature = async (
@@ -35,10 +32,11 @@ export const getCFXContractMethodSignature = async (
   transactionData,
   netId,
 ) => {
+  if (!validateBase32Address(address)) {
+    throw new Error('inValidate base32 address')
+  }
+
   try {
-    if (!validateBase32Address(address)) {
-      return {}
-    }
     let abiInterface
     if (eip777AbiSignatures.includes(transactionData.substr(0, 10))) {
       abiInterface = iface
@@ -55,6 +53,6 @@ export const getCFXContractMethodSignature = async (
     }
     return ret
   } catch (e) {
-    return {}
+    throw new Error('failed to parse transaction data')
   }
 }

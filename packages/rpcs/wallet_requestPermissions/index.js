@@ -35,6 +35,7 @@ export const permissions = {
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
     'wallet_userRejectedAuthRequest',
+    'wallet_getPermissions',
   ],
   db: [
     'findApp',
@@ -72,6 +73,7 @@ export const main = async ({
     findAddress,
   },
   rpcs: {
+    wallet_getPermissions,
     wallet_addPendingUserAuthRequest,
     wallet_userApprovedAuthRequest,
     wallet_userRejectedAuthRequest,
@@ -87,6 +89,8 @@ export const main = async ({
 }) => {
   if ((_inpage || _internal) && !_origin && !_popup)
     throw InvalidRequest(`no origin found`)
+
+  // called from inpage
   if ((_inpage || _internal) && !_popup) {
     const perms = formatPermissions(params)
     if (app && JSON.stringify(app.perms) === JSON.stringify(perms))
@@ -100,6 +104,9 @@ export const main = async ({
     return await wallet_addPendingUserAuthRequest({siteId: site.eid, req})
   }
 
+  // called from popup
+  // 1. confirm app permission request (authReqId is defined)
+  // 2. alter/revoke permissions (authReqId is undefined)
   if (_popup) {
     if (params.siteId && !params.accounts.length)
       throw InvalidParams('Must have at least 1 accounts')
@@ -131,7 +138,7 @@ export const main = async ({
     if (!accounts.includes(currentAccount)) currentAccount = accounts[0]
 
     const perms = formatPermissions(permissions)
-    upsertAppPermissions({
+    const newPermApp = upsertAppPermissions({
       siteId,
       accounts,
       currentAccount,
@@ -140,27 +147,29 @@ export const main = async ({
     })
 
     if (authReqId)
-      return await wallet_userApprovedAuthRequest({authReqId, res: perms})
+      return await wallet_userApprovedAuthRequest({
+        authReqId,
+        res: await wallet_getPermissions({app: newPermApp}, []),
+      })
     else {
       app = findApp({
         siteId,
         g: {
+          eid: 1,
           currentAccount: {eid: 1},
           site: {post: 1},
           currentNetwork: {eid: 1},
         },
       })
       if (app?.site?.post) {
-        const [addr] = findAddress({
-          networkId: app.currentNetwork.eid,
-          accountId: app.currentAccount.eid,
+        const addr = findAddress({
+          appId: app.eid,
           g: {value: 1},
         })
         if (addr)
           app.site.post({event: 'accountsChanged', params: [addr.value]})
       }
+      if (app) return await wallet_getPermissions({app: newPermApp}, [])
     }
-
-    return null
   }
 }

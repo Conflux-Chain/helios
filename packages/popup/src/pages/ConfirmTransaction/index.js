@@ -19,13 +19,15 @@ import {
   useDappParams,
   useViewData,
 } from '../../hooks'
-import {
-  useCurrentAddress,
-  useNetworkTypeIsCfx,
-  useAddressTypeInConfirmTx,
-} from '../../hooks/useApi'
+import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
-import {request, bn16, getPageType, checkBalance} from '../../utils'
+import {
+  request,
+  bn16,
+  getPageType,
+  checkBalance,
+  transformToTitleCase,
+} from '../../utils'
 import {AddressCard, InfoList} from './components'
 import {
   TitleNav,
@@ -68,7 +70,7 @@ function ConfirmTransaction() {
     )
   }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
-  const [sendError, setSendError] = useState('')
+  const [sendError, setSendError] = useState({})
   const [balanceError, setBalanceError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
   const isDapp = getPageType() === 'notification'
@@ -98,7 +100,8 @@ function ConfirmTransaction() {
 
   const {
     data: {
-      network: {ticker},
+      network: {ticker, chainId},
+      account: {eid: accountId},
     },
   } = useCurrentAddress()
   const nativeToken = ticker || {}
@@ -112,17 +115,19 @@ function ConfirmTransaction() {
     displayToken,
     displayValue,
     displayFromAddress,
+    displayAccount,
     displayToAddress,
-  } = useDecodeDisplay({isDapp, isContract, nativeToken, tx})
+  } = useDecodeDisplay({
+    deps: [chainId, accountId],
+    isDapp,
+    isContract,
+    nativeToken,
+    tx,
+    pendingAuthReq: pendingAuthReq?.[0],
+  })
   const isSign = !isSendToken && !isApproveToken
 
-  const {
-    account: {
-      accountGroup: {
-        vault: {type},
-      },
-    },
-  } = useAddressTypeInConfirmTx(displayFromAddress)
+  const type = displayAccount?.accountGroup?.vault?.type
   const isHwAccount = type === 'hw' && type !== undefined
   const isHwUnAuth = !authStatus && isHwAccount
   const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
@@ -255,6 +260,7 @@ function ConfirmTransaction() {
       isNativeToken,
       isSendToken,
       sendTokenValue,
+      networkTypeIsCfx,
     )
     if (error) {
       setLoading(false)
@@ -273,11 +279,11 @@ function ConfirmTransaction() {
         console.error('error', error)
         if (!isHwAccount) setLoading(false)
         setSendStatus(TX_STATUS.ERROR)
-        setSendError(error?.message ?? error)
+        setSendError(error)
       })
   }
 
-  const onHwReject = () => {
+  const onCloseTransactionResult = () => {
     clearSendTransactionParams()
     if (!isDapp) history.push(HOME)
     else window.close()
@@ -296,6 +302,7 @@ function ConfirmTransaction() {
       <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-4">
         <div className="flex flex-col px-3">
           <AddressCard
+            nickname={displayAccount?.nickname}
             token={displayToken}
             fromAddress={displayFromAddress}
             toAddress={displayToAddress}
@@ -309,7 +316,13 @@ function ConfirmTransaction() {
             isApproveToken={isApproveToken}
             isDapp={isDapp}
             isSign={isSign}
-            method={decodeData?.name || 'Unknown'}
+            method={
+              decodeData?.name
+                ? decodeData.name === 'unknown'
+                  ? t('unknown')
+                  : transformToTitleCase(decodeData.name)
+                : '-'
+            }
             allowance={displayValue}
             pendingAuthReq={pendingAuthReq}
           />
@@ -370,13 +383,14 @@ function ConfirmTransaction() {
               setAuthStatus={setAuthStatus}
               setSendError={setSendError}
               setIsAppOpen={setIsAppOpen}
+              showError={false}
             />
           )}
           {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (
             <TransactionResult
               status={sendStatus}
               sendError={sendError}
-              onReject={onHwReject}
+              onClose={onCloseTransactionResult}
             />
           )}
         </div>

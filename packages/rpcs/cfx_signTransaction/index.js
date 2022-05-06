@@ -24,6 +24,7 @@ export const txSchema = [
   ['nonce', {optional: true}, Uint],
   ['data', {optional: true}, Bytes],
   ['gas', {optional: true}, Uint],
+  ['gasLimit', {doc: 'gas limit, same as the "gas" key', optional: true}, Uint],
   ['gasPrice', {optional: true}, Uint],
   ['storageLimit', {optional: true}, Uint],
   ['chainId', {optional: true}, chainId],
@@ -63,6 +64,7 @@ export const permissions = {
 
 export const main = async args => {
   const {
+    app,
     Err: {InvalidParams},
     db: {findAddress},
     rpcs: {
@@ -75,6 +77,7 @@ export const main = async args => {
     },
     params: [tx, opts = {}],
     network,
+    _popup,
   } = args
   const {epoch, returnTxMeta, dryRun} = opts
   let newTx = {...tx}
@@ -82,9 +85,13 @@ export const main = async args => {
     throw InvalidParams(`Invalid chainId ${newTx.chainId}`)
 
   const fromAddr = findAddress({
-    networkId: network.eid,
+    appId: app && app.eid,
+    selected: _popup && !app ? true : undefined,
     value: newTx.from,
-    g: {eid: 1, _account: {_accountGroup: {vault: {type: 1, device: 1}}}},
+    g: {
+      eid: 1,
+      _account: {eid: 1, _accountGroup: {vault: {type: 1, device: 1}}},
+    },
   })
   // from address is not belong to wallet
   if (!fromAddr) throw InvalidParams(`Invalid from address ${newTx.from}`)
@@ -144,13 +151,17 @@ export const main = async args => {
     } else {
       raw = await signWithHardwareWallet({
         args,
+        accountId: fromAddr.account.eid,
         tx: newTx,
         addressId: fromAddr.eid,
         device: fromAddr.account.accountGroup.vault.device,
       })
     }
   } else {
-    let pk = await wallet_getAddressPrivateKey({address: newTx.from})
+    let pk = await wallet_getAddressPrivateKey({
+      address: newTx.from,
+      accountId: fromAddr.account.eid,
+    })
 
     if (dryRun)
       pk = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
@@ -171,11 +182,12 @@ async function signWithHardwareWallet({
   tx,
   addressId,
   device,
+  accountId,
 }) {
   const hwSignMap = {
     [ledgerConsts.LEDGER_NANOS_NAME]: cfx_signTxWithLedgerNanoS,
     [ledgerConsts.LEDGER_NANOX_NAME]: cfx_signTxWithLedgerNanoS,
   }
   const signMethod = hwSignMap[device]
-  return await signMethod({errorFallThrough: true}, {tx, addressId})
+  return await signMethod({errorFallThrough: true}, {tx, addressId, accountId})
 }

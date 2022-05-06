@@ -29,66 +29,72 @@ export const ERROR = {
   DISCONNECTED: {code: 4900, name: 'Disconnected'},
   // disconnected from requested chain
   CHAIN_DISCONNECTED: {code: 4901, name: 'Chain Disconnected'},
+  UNRECOGNIZED_CHAIN_ID: {code: 4902, name: 'Unrecognized chain ID'},
 }
 
 export const Parse = defRpcError(
-  () => `JSON-RPC ${ERROR.PARSE.name} ${ERROR.PARSE.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg => `${msg} [${ERROR.PARSE.name} ${ERROR.PARSE.code}]\n`,
 )
 
 export const InvalidRequest = defRpcError(
-  () =>
-    `JSON-RPC ${ERROR.INVALID_REQUEST.name} ${ERROR.INVALID_REQUEST.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg =>
+    `${msg} [${ERROR.INVALID_REQUEST.name} ${ERROR.INVALID_REQUEST.code}]\n`,
 )
 
 export const MethodNotFound = defRpcError(
-  () =>
-    `JSON-RPC ${ERROR.METHOD_NOT_FOUND.name} ${ERROR.METHOD_NOT_FOUND.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg =>
+    `${msg} [${ERROR.METHOD_NOT_FOUND.name} ${ERROR.METHOD_NOT_FOUND.code}]\n`,
 )
 
 export const InvalidParams = defRpcError(
-  () =>
-    `JSON-RPC ${ERROR.INVALID_PARAMS.name} ${ERROR.INVALID_PARAMS.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg => `${msg} [${ERROR.INVALID_PARAMS.name} ${ERROR.INVALID_PARAMS.code}]\n`,
 )
 
 export const Internal = defRpcError(
-  () => `JSON-RPC ${ERROR.INTERNAL.name} ${ERROR.INTERNAL.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg => `${msg} [${ERROR.INTERNAL.name} ${ERROR.INTERNAL.code}]\n`,
 )
 
 export const Server = defRpcError(
-  () => `JSON-RPC ${ERROR.SERVER.name} ${ERROR.SERVER.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg => `${msg} [${ERROR.SERVER.name} ${ERROR.SERVER.code}]\n`,
 )
 
 export const UserRejected = defRpcError(
-  () => `JSON-RPC ${ERROR.USER_REJECTED.name} ${ERROR.USER_REJECTED.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg => `${msg} [${ERROR.USER_REJECTED.name} ${ERROR.USER_REJECTED.code}]\n`,
 )
 
 export const Unauthorized = defRpcError(
-  () => `JSON-RPC ${ERROR.UNAUTHORIZED.name} ${ERROR.UNAUTHORIZED.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg => `${msg} [${ERROR.UNAUTHORIZED.name} ${ERROR.UNAUTHORIZED.code}]\n`,
 )
 
 export const UnsupportedMethod = defRpcError(
-  () =>
-    `JSON-RPC ${ERROR.UNSUPPORTED_METHOD.name} ${ERROR.UNSUPPORTED_METHOD.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg =>
+    `${msg} [${ERROR.UNSUPPORTED_METHOD.name} ${ERROR.UNSUPPORTED_METHOD.code}]\n`,
 )
 
 export const Disconnected = defRpcError(
-  () => `JSON-RPC ${ERROR.DISCONNECTED.name} ${ERROR.DISCONNECTED.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg => `${msg} [${ERROR.DISCONNECTED.name} ${ERROR.DISCONNECTED.code}]\n`,
 )
 
 export const ChainDisconnected = defRpcError(
-  () =>
-    `JSON-RPC ${ERROR.CHAIN_DISCONNECTED.name} ${ERROR.CHAIN_DISCONNECTED.code}\n\n`,
-  msg => msg,
+  () => ``,
+  msg =>
+    `${msg} [${ERROR.CHAIN_DISCONNECTED.name} ${ERROR.CHAIN_DISCONNECTED.code}]\n`,
+)
+
+export const UnrecognizedChainId = defRpcError(
+  () => ``,
+  msg =>
+    `${msg} [${ERROR.UNRECOGNIZED_CHAIN_ID.name} ${ERROR.UNRECOGNIZED_CHAIN_ID.code}]\n`,
 )
 
 export const errorInstanceToErrorCode = instance => {
@@ -115,8 +121,8 @@ export const guessErrorType = err => {
   if (err?.code) {
     if (err.code >= -32099 && err.code <= -32000)
       return defRpcError(
-        () => `JSON-RPC ${ERROR.SERVER.name} ${err.code}\n\n`,
-        msg => msg,
+        () => ``,
+        msg => `${msg} [${ERROR.SERVER.name} ${err.code}]\n`,
       )
     if (err.code === ERROR.PARSE.code) return Parse
     if (err.code === ERROR.INVALID_REQUEST.code) return InvalidRequest
@@ -134,9 +140,9 @@ export const guessErrorType = err => {
   return Internal
 }
 
-export const parseError = (err, prefix) => {
+export const parseError = (err, prefix = '', suffix = '') => {
   const C = guessErrorType(err)
-  const error = new C(prefix + err?.message || '')
+  const error = new C(prefix + err?.message || '' + suffix)
   error.code = err?.code || error.code
   error.data = err?.data || error.data
   return error

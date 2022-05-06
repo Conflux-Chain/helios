@@ -49,7 +49,7 @@ function TokenItem({
 
   return (
     <div
-      className={`w-full h-14 flex items-center flex-shrink-0 px-3 ${
+      className={`w-full h-14 flex items-center shrink-0 px-3 ${
         onSelect ? 'cursor-pointer' : ''
       } ${onSelect ? 'hover:bg-primary-4' : ''} ${className}`}
       id={`tokenItem${index}`}

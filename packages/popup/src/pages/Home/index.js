@@ -1,6 +1,6 @@
 import {useState, useCallback} from 'react'
 import {useQuery} from '../../hooks'
-import {useTxList} from '../../hooks/useApi'
+import {useTxList, useCurrentAddress} from '../../hooks/useApi'
 import {useEffectOnce} from 'react-use'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -30,6 +30,10 @@ function Home() {
   const [settingsStatus, setSettingStatus] = useState(false)
   const [accountsAnimate, setAccountsAnimate] = useState(true)
   const [settingAnimate, setSettingAnimate] = useState(true)
+
+  const {
+    data: {network},
+  } = useCurrentAddress()
   const query = useQuery()
   const history = useHistory()
   const {data: pendingCount} = useTxList({
@@ -79,7 +83,7 @@ function Home() {
           setSettingStatus(true)
         }}
       />
-      <div className="flex flex-col pt-1 px-4 z-10 flex-shrink-0">
+      <div className="flex flex-col pt-1 px-4 z-10 shrink-0">
         <div className="flex items-start justify-between">
           <CurrentAccount onOpenAccount={onOpenAccount} />
           <CurrentNetwork onOpenNetwork={() => setNetworkStatus(true)} />
@@ -120,7 +124,10 @@ function Home() {
               ) : null}
             </div>
           </div>
-          <CrossSpaceButton />
+          {/* only conflux main network show cross space button */}
+          {(network?.chainId === '0x405' || network?.chainId === '0x406') && (
+            <CrossSpaceButton />
+          )}
         </div>
       </div>
       <HomeTokenList onOpenAddToken={() => setAddTokenStatus(true)} />

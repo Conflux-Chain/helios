@@ -244,8 +244,6 @@ $RECYCLE.BIN/
 !/packages/db/src/db.test.js
 !/packages/db/index.js
 /.shadow-cljs/
-/stories
-/storybook-static
 /packages/browser-extension/content-script.js
 /packages/browser-extension/reload.js
 /packages/browser-extension/inpage.js
@@ -266,3 +264,6 @@ cljs-runtime
 !/resources/firefox-debug-profile
 /.nrepl-port
 /.clj-kondo/
+/.cpcache/
+/bg-report.txt
+/popup-report.txt

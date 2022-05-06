@@ -210,6 +210,13 @@ export const main = ({
 
             const {errorType, shouldDiscard} = processError(err)
             const isDuplicateTx = errorType === 'duplicateTx'
+            const resendNonceTooStale =
+              tx.resendAt && errorType === 'nonceTooStale'
+            const resendPriceTooLow =
+              tx.resendAt && errorType === 'replaceUnderpriced'
+
+            const sameAsSuccess =
+              isDuplicateTx || resendNonceTooStale || resendPriceTooLow
 
             if (errorType === 'unknownError')
               sentryCaptureError(err, {
@@ -220,9 +227,9 @@ export const main = ({
               })
 
             defs({
-              failed: shouldDiscard && {errorType, err},
-              sameAsSuccess: isDuplicateTx,
-              resend: !shouldDiscard && !isDuplicateTx,
+              failed: !sameAsSuccess && shouldDiscard && {errorType, err},
+              sameAsSuccess,
+              resend: !shouldDiscard && !sameAsSuccess,
             })
               .transform(
                 branchObj({
@@ -239,7 +246,7 @@ export const main = ({
                           message: `Transaction ${parseInt(
                             tx.txPayload.nonce,
                             16,
-                          )} failed! ${err?.message || ''}`,
+                          )} failed! ${err?.data || err?.message || ''}`,
                         }),
                       )
                     }),
@@ -279,9 +286,12 @@ export const main = ({
           // getTransactionByHash return null
           eth_blockNumber({errorFallThrough: true}, [])
             .then(n => {
-              if (
-                (!tx.resendAt && !tx.blockNumber) ||
-                n !== (tx.resendAt || tx.blockNumber)
+              if (!tx.resendAt && !tx.blockNumber) {
+                setTxSending({hash, resendAt: n})
+              } else if (
+                BigNumber.from(n)
+                  .sub(BigNumber.from(tx.resendAt || tx.blockNumber))
+                  .gte(40)
               ) {
                 setTxUnsent({hash, resendAt: n})
               }
@@ -352,7 +362,7 @@ export const main = ({
             setTxExecuted({hash, receipt})
             keepTrack(50 * cacheTime)
           } else {
-            setTxFailed({hash, err: 'tx failed'})
+            setTxFailed({hash, error: 'tx failed'})
             updateBadge(getUnfinishedTxCount())
             getExt().then(ext =>
               ext.notifications.create(hash, {

@@ -49,6 +49,8 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
           _origin: req._origin,
           network: req.network,
           networkName: req.networkName,
+          _inpage: req._inpage,
+          _popup: req._popup,
           ...overrides,
           method: targetRpcName,
           _rpcStack: req._rpcStack,
@@ -58,7 +60,7 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
           req._rpcStack.pop()
           if (res.error) {
             if (overrides.errorFallThrough) {
-              const error = parseError(res.error, `In RPC ${targetRpcName}\n`)
+              const error = parseError(res.error, '', ` - in ${targetRpcName}`)
               error.rpcData = newReq
               throw error
             }

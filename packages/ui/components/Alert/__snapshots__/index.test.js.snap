@@ -13,7 +13,7 @@ Object {
           class="flex items-start"
         >
           <span
-            class="flex-shrink-0"
+            class="shrink-0"
           >
             <svg
               class="w-4 h-4 mr-2 text-warning"
@@ -54,7 +54,7 @@ Object {
         class="flex items-start"
       >
         <span
-          class="flex-shrink-0"
+          class="shrink-0"
         >
           <svg
             class="w-4 h-4 mr-2 text-warning"

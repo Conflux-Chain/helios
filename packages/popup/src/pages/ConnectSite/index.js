@@ -19,8 +19,8 @@ import {
   StretchInput,
   WrapIcon,
 } from '../../components'
-import {formatLocalizationLang} from '../../utils'
-import {useDbAccountListAssets, useCurrentAddress} from '../../hooks/useApi'
+import {formatLocalizationLang, formatIntoChecksumAddress} from '../../utils'
+import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
 
 function ConnectSitesList({
   allAccountGroupData,
@@ -71,80 +71,84 @@ function ConnectSitesList({
       >
         <div
           id="accountWrapper"
-          className="max-h-[272px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll"
+          className="max-h-[272px] rounded overflow-auto no-scroll"
         >
           {searchedAccountGroup && accountGroupData.length === 0 ? (
             <NoResult content={t('noResult')} containerClassName="h-[262px]" />
           ) : (
             accountGroupData.map(
-              ({nickname, account, vault, eid}) =>
-                !!Object.values(account).filter(({hidden}) => !hidden)
-                  .length && (
-                  <div key={eid}>
+              ({nickname, account, vault, eid}, index) =>
+                !!Object.values(account).length && (
+                  <div
+                    key={eid}
+                    className={`${
+                      index === 0 ? '' : 'mt-2'
+                    } bg-gray-4 border border-solid border-gray-10`}
+                  >
                     {vault?.type === 'pk' ? null : (
-                      <div className="flex items-center ml-3 mt-0.5">
-                        <WrapIcon
-                          size="w-5 h-5 mr-1 bg-primary-4"
-                          clickable={false}
-                        >
-                          <img
-                            src="/images/seed-group-icon.svg"
-                            alt="group-icon"
-                          />
-                        </WrapIcon>
+                      <div className="flex items-center ml-3 pt-2.5">
+                        {vault?.type === 'hd' && (
+                          <WrapIcon
+                            size="w-5 h-5 mr-1 bg-primary-4"
+                            clickable={false}
+                          >
+                            <img
+                              src="/images/seed-group-icon.svg"
+                              alt="group-icon"
+                            />
+                          </WrapIcon>
+                        )}
                         <p className="text-gray-40 text-xs">{nickname}</p>
                       </div>
                     )}
-                    {Object.values(account)
-                      .filter(({hidden}) => !hidden)
-                      .map(
-                        (
-                          {eid: accountId, nickname, currentAddress, selected},
-                          index,
-                        ) => (
-                          <div
-                            aria-hidden="true"
-                            onClick={() => onSelectSingleAccount(accountId)}
-                            key={accountId}
-                            id={`item-${index}`}
-                            className="flex px-3 items-center h-15 cursor-pointer"
-                          >
-                            <div className="flex w-full">
-                              <Avatar
-                                className="w-5 h-5 mr-2"
-                                diameter={20}
-                                accountIdentity={accountId}
-                              />
-                              <div className="flex-1">
-                                <p className="text-xs text-gray-40">
-                                  {nickname}
-                                </p>
-                                <p className="text-sm text-gray-80">
-                                  {shortenAddress(
+                    {Object.values(account).map(
+                      (
+                        {eid: accountId, nickname, currentAddress, selected},
+                        index,
+                      ) => (
+                        <div
+                          aria-hidden="true"
+                          onClick={() => onSelectSingleAccount(accountId)}
+                          key={accountId}
+                          id={`item-${index}`}
+                          className="flex px-3 items-center h-15 cursor-pointer"
+                        >
+                          <div className="flex w-full">
+                            <Avatar
+                              className="w-5 h-5 mr-2"
+                              diameter={20}
+                              accountIdentity={accountId}
+                            />
+                            <div className="flex-1">
+                              <p className="text-xs text-gray-40">{nickname}</p>
+                              <p className="text-sm text-gray-80">
+                                {shortenAddress(
+                                  formatIntoChecksumAddress(
                                     currentAddress?.value ||
                                       currentAddress?.hex,
-                                  )}
-                                </p>
-                              </div>
-                              <div className="flex items-center">
-                                {selected ? (
-                                  <img
-                                    src="/images/location.svg"
-                                    alt="current address"
-                                    className="mr-3 w-3 h-3"
-                                    id="location"
-                                  />
-                                ) : null}
-                                <Checkbox
-                                  checked={checkboxStatusObj[accountId]}
-                                  id={`check-${index}`}
-                                  iconClassName="mr-0"
+                                  ),
+                                )}
+                              </p>
+                            </div>
+                            <div className="flex items-center">
+                              {selected ? (
+                                <img
+                                  src="/images/location.svg"
+                                  alt="current address"
+                                  className="mr-3 w-3 h-3"
+                                  id="location"
                                 />
-                              </div>
+                              ) : null}
+                              <Checkbox
+                                checked={checkboxStatusObj[accountId]}
+                                id={`check-${index}`}
+                                iconClassName="mr-0"
+                              />
                             </div>
                           </div>
-                        ),
-                      )}
+                        </div>
+                      ),
+                    )}
                   </div>
                 ),
             )
@@ -164,6 +168,8 @@ ConnectSitesList.propTypes = {
 function ConnectSite() {
   const {t} = useTranslation()
   const [confirmAccounts, setConfirmAccounts] = useState([])
+  const [allAccountGroupData, setAllAccountGroupData] = useState([])
+  const [accountData, setAccountData] = useState([])
   const [networkContent, setNetworkContent] = useState('')
   const [networkShow, setNetworkShow] = useState(false)
   const [networkIcon, setNetworkIcon] = useState('')
@@ -178,12 +184,9 @@ function ConnectSite() {
       },
     },
   } = useCurrentAddress()
-  const {data: allAccountGroups} = useDbAccountListAssets(currentNetworkId)
-
-  const allAccountGroupData = Object.values(allAccountGroups)
-  const accountData = allAccountGroupData.reduce((acc, cur) => {
-    return {...acc, ...cur.account}
-  }, {})
+  const {data: allAccountGroups} = useAccountList({
+    networkId: currentNetworkId,
+  })
 
   useEffect(() => {
     setNetworkIcon(currentNetworkIcon || '')
@@ -191,11 +194,20 @@ function ConnectSite() {
   }, [currentNetworkIcon, currentNetworkName])
 
   useEffect(() => {
+    const allAccountGroupsArr = Object.values(allAccountGroups)
+    if (allAccountGroupsArr.length) {
+      setAllAccountGroupData(allAccountGroupsArr)
+      setAccountData(
+        allAccountGroupsArr.reduce((acc, cur) => {
+          return {...acc, ...cur.account}
+        }, {}),
+      )
+    }
+  }, [allAccountGroups])
+
+  useEffect(() => {
     const accountDataKeys = Object.keys(accountData)
-    if (
-      accountDataKeys.length &&
-      accountDataKeys.length !== Object.keys(checkboxStatusObj).length
-    ) {
+    if (accountDataKeys.length) {
       const ret = {}
       accountDataKeys.forEach(eid => {
         ret[eid] = checkboxStatusObj?.[eid] ?? !!accountData[eid]?.selected
@@ -203,7 +215,7 @@ function ConnectSite() {
       setCheckboxStatusObj({...ret})
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Object.keys(accountData).length, Object.keys(checkboxStatusObj).length])
+  }, [accountData, Object.keys(checkboxStatusObj).length])
 
   useEffect(() => {
     setConfirmAccounts(
@@ -226,7 +238,7 @@ function ConnectSite() {
     })
   }
 
-  return Object.values(allAccountGroups).length ? (
+  return allAccountGroupData.length ? (
     <div
       id="connectSiteContainer"
       className="flex flex-col h-full w-full justify-between bg-blue-circles bg-no-repeat pb-4"
@@ -274,7 +286,7 @@ function ConnectSite() {
             title={t('chooseNetwork')}
             onClose={() => setNetworkShow(false)}
             content={<NetworkContent onClickNetworkItem={onClickNetworkItem} />}
-            className="bg-bg bg-gray-circles bg-no-repeat bg-contain"
+            className="bg-bg bg-gray-circles bg-no-repeat bg-contain max-h-[552px]"
           />
         </main>
       </div>

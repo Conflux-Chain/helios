@@ -2,7 +2,11 @@ import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {TitleNav} from '../../components'
 import {CreateTypeItem} from './components'
-import {useHdAccountGroup, useDataForPopup} from '../../hooks/useApi'
+import {
+  useHdAccountGroup,
+  useDataForPopup,
+  useNetworkTypeIsCfx,
+} from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
 import {detectFirefox} from '../../utils'
 
@@ -28,6 +32,7 @@ function SelectCreateType() {
   const history = useHistory()
   const hdGroup = useHdAccountGroup()
   const {zeroGroup} = useDataForPopup()
+  const networkTypeIsCfx = useNetworkTypeIsCfx(zeroGroup)
 
   return (
     <div className="bg-bg h-full w-full" id="selectCreateTypeContainer">
@@ -80,7 +85,7 @@ function SelectCreateType() {
             history.push(WALLET_IMPORT_PRIVATE_KEY)
           }}
         />
-        {zeroGroup === false && !isFirefox && (
+        {zeroGroup === false && !isFirefox && networkTypeIsCfx && (
           <CreateTypeItem
             id="hw"
             Icon={<img src="/images/hardware-wallet-icon.svg" alt="icon" />}

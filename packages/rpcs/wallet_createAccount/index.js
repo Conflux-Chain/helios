@@ -1,4 +1,4 @@
-import {map, dbid, nickname} from '@fluent-wallet/spec'
+import {map, dbid, nickname, boolean} from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
 import {getNthAccountOfHDKey} from '@fluent-wallet/hdkey'
 import {toAccountAddress} from '@fluent-wallet/account'
@@ -12,6 +12,7 @@ export const schemas = {
     {closed: true},
     ['accountGroupId', dbid],
     ['nickname', {optional: true}, nickname],
+    ['select', {optional: true}, boolean],
   ],
 }
 
@@ -31,7 +32,7 @@ export const permissions = {
 export const main = async ({
   rpcs: {wallet_setCurrentAccount},
   db: {findGroup, getPassword, getNetwork, t, findAccount, newAddressTx},
-  params: {accountGroupId, nickname},
+  params: {accountGroupId, nickname, select},
   Err: {InvalidParams},
   _popup,
 }) => {
@@ -44,6 +45,7 @@ export const main = async ({
     },
   })
   if (!group) throw InvalidParams('Invalid account group id')
+
   const {vault} = group
   if (vault.type !== 'hd')
     throw InvalidParams("Can't add account into none hd vault")
@@ -112,7 +114,7 @@ export const main = async ({
     )
   )[0]
 
-  if (_popup) {
+  if (_popup && select) {
     await wallet_setCurrentAccount([accountId])
   }
   return accountId

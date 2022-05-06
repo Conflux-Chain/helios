@@ -23,7 +23,8 @@ export const main = async ({
   params: {address},
   network: {type},
 }) => {
-  if (getTokenByAddress(address).length > 0) return {type: 'contract'}
+  if (getTokenByAddress(address).length > 0)
+    return {type: 'contract', contract: true}
   if (type === 'cfx') return await detectCfxAddressType(address)
   if (type === 'eth')
     return await detectEthAddressType(address, {

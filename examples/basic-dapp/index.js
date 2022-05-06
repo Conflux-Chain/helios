@@ -373,7 +373,7 @@ async function walletInitialized() {
   }
 
   provider.on('accountsChanged', accounts => {
-    console.log('accountsChcanged, accounts = ', accounts)
+    console.log('accountsChanged, accounts = ', accounts)
     if (!accounts.length) return unAuthed()
     authed(accounts[0])
   })

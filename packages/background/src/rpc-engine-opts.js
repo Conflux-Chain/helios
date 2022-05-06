@@ -3,6 +3,9 @@
  * @name rpc-engine-opts.js
  */
 
+import * as ethGetLogs from '@fluent-wallet/eth_get-logs'
+import * as cfxGetPosRewardByEpoch from '@fluent-wallet/cfx_get-pos-reward-by-epoch'
+import * as ethSignTxWithLedgerNanoS from '@fluent-wallet/eth_sign-tx-with-ledger-nano-s'
 import * as walletRequestAccounts from '@fluent-wallet/wallet_request-accounts'
 import * as walletAccounts from '@fluent-wallet/wallet_accounts'
 import * as walletChainId from '@fluent-wallet/wallet_chain-id'
@@ -35,6 +38,7 @@ import * as walletGetBlockchainExplorerUrl from '@fluent-wallet/wallet_get-block
 import * as cfxGetNextUsableNonce from '@fluent-wallet/cfx_get-next-usable-nonce'
 import * as walletHandleUnfinishedTxs from '@fluent-wallet/wallet_handle-unfinished-txs'
 import * as walletHandleUnfinishedCFXTx from '@fluent-wallet/wallet_handle-unfinished-cfx-tx'
+import * as cfxGetBlockByEpochNumber from '@fluent-wallet/cfx_get-block-by-epoch-number'
 import * as cfxGetBlockByBlockNumber from '@fluent-wallet/cfx_get-block-by-block-number'
 import * as cfxGetAccountPendingInfo from '@fluent-wallet/cfx_get-account-pending-info'
 import * as cfxGetAccountPendingTransactions from '@fluent-wallet/cfx_get-account-pending-transactions'
@@ -162,6 +166,7 @@ import * as walletValidate20Token from '@fluent-wallet/wallet_validate20token'
 import * as walletWatchAsset from '@fluent-wallet/wallet_watch-asset'
 import * as unwalletWatchAsset from '@fluent-wallet/wallet_unwatch-asset'
 import * as walletZeroAccountGroup from '@fluent-wallet/wallet_zero-account-group'
+import * as walletAfterUnlock from '@fluent-wallet/wallet_after-unlock'
 
 export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
@@ -261,7 +266,6 @@ export const rpcEngineOpts = {
     cfxGetBlocksByEpoch,
     cfxGetCollateralForStorage,
     cfxGetConfirmationRiskByHash,
-    cfxGetInterestRate,
     cfxGetLogs,
     cfxGetSkippedBlocksByEpoch,
     cfxGetSponsorInfo,
@@ -271,9 +275,12 @@ export const rpcEngineOpts = {
     cfxGetTransactionReceipt,
     cfxGetVoteList,
     cfxGetBlockByBlockNumber,
+    cfxGetBlockByEpochNumber,
     cfxGetAccountPendingInfo,
     cfxGetAccountPendingTransactions,
     cfxGetPoSEconomics,
+    cfxGetPosRewardByEpoch,
+    cfxGetInterestRate,
     cfxGetSupplyInfo,
     cfxOpenedMethodGroups,
     txpoolNextNonce,
@@ -303,6 +310,7 @@ export const rpcEngineOpts = {
 
     // eth
     ethGetCode,
+    ethGetLogs,
     ethGetTransactionCount,
     ethGetBalance,
     ethCall,
@@ -323,6 +331,7 @@ export const rpcEngineOpts = {
     ethGetTransactionReceipt,
     ethGetTransactionByHash,
     ethSendTransaction,
+    ethSignTxWithLedgerNanoS,
 
     // sign
     personalSign,
@@ -337,5 +346,7 @@ export const rpcEngineOpts = {
     walletGetFluentMetadata,
     walletGetPreferences,
     walletSetPreferences,
+
+    walletAfterUnlock,
   ],
 }

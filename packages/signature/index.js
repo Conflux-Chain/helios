@@ -1,4 +1,4 @@
-import {addHexPrefix, toBuffer} from '@fluent-wallet/utils'
+import {addHexPrefix, stripHexPrefix, toBuffer} from '@fluent-wallet/utils'
 import {encode as encodeCfxAddress} from '@fluent-wallet/base32-address'
 import {hashMessage as ethHashPersonalMessage} from '@ethersproject/hash'
 import {
@@ -13,15 +13,15 @@ import {
 } from 'js-conflux-sdk'
 import {joinSignature} from '@ethersproject/bytes'
 import {
-  Wallet as EthWallet,
+  // Wallet as EthWallet,
   verifyMessage as verifyEthPersonalSign,
 } from '@ethersproject/wallet'
 import {
+  recoverAddress as recoverEthAddress,
   computeAddress as ethComputeAddress,
-  serialize as serializeUnsignedETHTransaction,
+  serialize as serializeETHTransaction,
 } from '@ethersproject/transactions'
 import {getMessage as cip23GetMessage} from 'cip-23'
-import {TypedDataUtils} from 'eth-sig-util'
 import {keccak256} from '@ethersproject/keccak256'
 
 export const hashPersonalMessage = (type, message) =>
@@ -32,7 +32,12 @@ export const hashPersonalMessage = (type, message) =>
 export async function personalSign(type, privateKey, message) {
   return type === 'cfx'
     ? CfxPersonalMessage.sign(addHexPrefix(privateKey), message)
-    : await new EthWallet(addHexPrefix(privateKey)).signMessage(message)
+    : (await import('eth-sig-util')).default.personalSign(
+        toBuffer(addHexPrefix(privateKey)),
+        {
+          data: message,
+        },
+      )
 }
 
 export function recoverPersonalSignature(type, signature, message, netId) {
@@ -72,12 +77,18 @@ export async function signTypedData_v4(type, privateKey, typedData) {
     return signature
   }
 
+  const {TypedDataUtils} = (await import('eth-sig-util')).default
   const digest = TypedDataUtils.sign(typedData, true)
   const signature = new SigningKey(addHexPrefix(privateKey)).signDigest(digest)
   return joinSignature(signature)
 }
 
-export function recoverTypedSignature_v4(type, signature, typedData, netId) {
+export async function recoverTypedSignature_v4(
+  type,
+  signature,
+  typedData,
+  netId,
+) {
   if (type === 'cfx') {
     const hashedMessage = keccak256(
       cip23GetMessage(
@@ -94,6 +105,7 @@ export function recoverTypedSignature_v4(type, signature, typedData, netId) {
     )
   }
 
+  const {TypedDataUtils} = (await import('eth-sig-util')).default
   const digest = TypedDataUtils.sign(typedData, true)
   const pub = ethRecoverPublicKey(digest, signature)
   return ethComputeAddress(pub)
@@ -132,9 +144,9 @@ export const cfxSignTransaction = (tx, pk, netId) => {
 export const ethSignTransaction = (tx, pk) => {
   pk = addHexPrefix(pk)
   const signature = new SigningKey(pk).signDigest(
-    keccak256(serializeUnsignedETHTransaction(tx)),
+    keccak256(serializeETHTransaction(tx)),
   )
-  return serializeUnsignedETHTransaction(tx, signature)
+  return serializeETHTransaction(tx, signature)
 }
 
 export const cfxRecoverTransactionToAddress = (tx, {r, s, v}, netId) => {
@@ -153,11 +165,22 @@ export const cfxRecoverTransactionToAddress = (tx, {r, s, v}, netId) => {
   )
 }
 
+export const ethRecoverTransactionToAddress = (tx, {r, s, v}) => {
+  const addr = recoverEthAddress(addHexPrefix(tx), {r, s, v})
+  return addr
+}
+
 export const cfxEncodeTx = (tx, shouldStripHexPrefix = false) => {
   const transaction = new CfxTransaction(tx)
   const encoded = transaction.encode(false).toString('hex')
   if (shouldStripHexPrefix) return encoded
   return `0x${encoded}`
+}
+
+export const ethEncodeTx = (tx, shouldStripHexPrefix = false) => {
+  tx = serializeETHTransaction(tx)
+  if (shouldStripHexPrefix) return stripHexPrefix(tx)
+  return tx
 }
 
 export const cfxJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
@@ -168,6 +191,10 @@ export const cfxJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
     v: addHexPrefix(v),
   })
   return transaction.serialize()
+}
+
+export const ethJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
+  return serializeETHTransaction(addHexPrefix(tx), {r, s, v})
 }
 
 export const getTxHashFromRawTx = txhash => {

@@ -1,5 +1,4 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
-import App from '@ledgerhq/hw-app-eth'
 
 import {
   LEDGER_APP_NAME,
@@ -31,7 +30,8 @@ export default class Ethereum {
     if (!this.app) {
       try {
         this.transport = await TransportWebUSB.create()
-        this.app = new App(this.transport)
+        const App = await import('@ledgerhq/hw-app-eth')
+        this.app = new App.default(this.transport)
       } catch (error) {
         console.warn(error)
       }

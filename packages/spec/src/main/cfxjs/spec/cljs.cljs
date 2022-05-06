@@ -1,4 +1,6 @@
 (ns cfxjs.spec.cljs
+  (:refer-clojure
+   :exclude [js->clj])
   (:require
    [oops.core :refer [ocall]]
    goog.math.Long

@@ -10,6 +10,7 @@ import {
   useDbRefetchBalance,
 } from '../../../hooks/useApi'
 import {useCheckImage} from '../../../hooks'
+import {formatIntoChecksumAddress} from '../../../utils'
 import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
@@ -55,7 +56,11 @@ const TransactionDirection = ({
             <Text
               className="text-gray-80"
               id="fromAddress"
-              text={fromAddress ? shortenAddress(fromAddress) : ''}
+              text={
+                fromAddress
+                  ? shortenAddress(formatIntoChecksumAddress(fromAddress))
+                  : ''
+              }
             />
           </div>
           <div className="flex flex-col items-end">
@@ -116,8 +121,6 @@ const useQueryAddressInAddressCard = address => {
       value: address,
       networkId,
       g: {
-        eid: 1,
-        _account: {nickname: 1, eid: 1},
         network: {eid: 1, ticker: 1},
         nativeBalance: 1,
       },
@@ -133,6 +136,7 @@ const useQueryAddressInAddressCard = address => {
 }
 
 function AddressCard({
+  nickname,
   token,
   fromAddress,
   toAddress,
@@ -143,7 +147,6 @@ function AddressCard({
 }) {
   const {t} = useTranslation()
   const {
-    account: {nickname},
     nativeBalance,
     network: {
       ticker: {decimals, symbol},
@@ -225,6 +228,7 @@ AddressCard.propTypes = {
   isSendToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,
   isDapp: PropTypes.bool,
+  nickname: PropTypes.string,
 }
 
 export default AddressCard

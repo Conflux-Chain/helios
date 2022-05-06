@@ -26,7 +26,7 @@ function validateRpcMehtod({req, rpcStore}) {
 }
 
 function validateExternalMethod({MODE: {isProd}, req, rpcStore}) {
-  const {method, _inpage, _origin, _popup, _rpcStack} = req
+  const {method, _inpage, _origin, _popup, _rpcStack, _internal} = req
   const external = rpcStore[method]?.permissions?.external
 
   // internal only
@@ -41,7 +41,7 @@ function validateExternalMethod({MODE: {isProd}, req, rpcStore}) {
   const allowInpage = external.includes('inpage')
   const allowPopup = external.includes('popup')
 
-  if (_inpage && (!allowInpage || !_origin)) {
+  if (_inpage && ((!_internal && !allowInpage) || !_origin)) {
     const err = new jsonRpcErr.MethodNotFound(
       isProd
         ? undefined
@@ -53,7 +53,7 @@ function validateExternalMethod({MODE: {isProd}, req, rpcStore}) {
     throw err
   }
 
-  if (_popup && !allowPopup) {
+  if (_popup && !_internal && !allowPopup) {
     const err = new jsonRpcErr.MethodNotFound(
       isProd ? undefined : 'Not allowd to call from popup',
     )
@@ -95,13 +95,29 @@ function validateLockState({req, rpcStore, db}) {
   }
 }
 
+const METHOD_SUPPORT_BOTH_NETWORK = [
+  'net_version',
+  'cfx_chainId',
+  'eth_chainId',
+  'cfx_accounts',
+  'eth_accounts',
+  'cfx_requestAccounts',
+  'eth_requestAccounts',
+  'personal_sign',
+  'eth_signTypedData_v4',
+]
+
+function isMethodSupportBothNetwork(methodName) {
+  return (
+    methodName.startsWith('wallet_') ||
+    METHOD_SUPPORT_BOTH_NETWORK.includes(methodName)
+  )
+}
+
 function validateNetworkSupport({req}) {
   const {method, network} = req
 
-  const bothSupport =
-    method.startsWith('wallet') ||
-    method.startsWith('personal') ||
-    method === 'eth_signTypedData_v4'
+  const bothSupport = isMethodSupportBothNetwork(method)
   if (bothSupport) return
 
   const cfxRpc = method.startsWith('cfx') || method.startsWith('txpool')

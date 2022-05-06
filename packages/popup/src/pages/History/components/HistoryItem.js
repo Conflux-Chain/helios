@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import dayjs from 'dayjs'
+import {isUndefined} from '@fluent-wallet/checks'
 import {
-  CFX_DECIMALS,
   convertDataToValue,
   formatHexToDecimal,
 } from '@fluent-wallet/data-format'
@@ -16,8 +16,12 @@ import {
   RocketOutlined,
   CancelOutlined,
 } from '@fluent-wallet/component-icons'
-import {transformToTitleCase, formatStatus} from '../../../utils'
-import {useNetworkTypeIsCfx} from '../../../hooks/useApi'
+import {
+  transformToTitleCase,
+  formatStatus,
+  formatIntoChecksumAddress,
+} from '../../../utils'
+import {useNetworkTypeIsCfx, useCurrentTicker} from '../../../hooks/useApi'
 import {useDecodeData} from '../../../hooks'
 import {
   WrapIcon,
@@ -66,6 +70,12 @@ function HistoryItem({
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
+  const {
+    symbol: tokenSymbol,
+    name: tokenName,
+    decimals: tokenDecimals,
+  } = useCurrentTicker()
+
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
   const txStatus = formatStatus(status)
@@ -73,7 +83,6 @@ function HistoryItem({
   const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
   const {contractCreation, simple, contractInteraction, token20} = extra
 
-  // TODO: should throw error in decode data
   const {decodeData} = useDecodeData({
     to: payload?.to,
     data: payload?.data,
@@ -83,13 +92,17 @@ function HistoryItem({
     setActionName(
       simple
         ? t('send')
-        : transformToTitleCase(decodeData?.name) || t('unknown'),
+        : decodeData?.name
+        ? decodeData.name === 'unknown'
+          ? t('unknown')
+          : transformToTitleCase(decodeData.name)
+        : '-',
     )
   }, [simple, Object.keys(decodeData).length])
 
   useEffect(() => {
-    if (simple) {
-      return setContractName(networkTypeIsCfx ? 'CFX' : 'Ether')
+    if (simple && tokenName) {
+      return setContractName(tokenName)
     }
     if (contractCreation) {
       return setContractName(t('contractCreation'))
@@ -101,6 +114,7 @@ function HistoryItem({
       setContractName(t('contractInteraction'))
     }
   }, [
+    tokenName,
     simple,
     token20,
     Boolean(token),
@@ -111,10 +125,10 @@ function HistoryItem({
   ])
 
   useEffect(() => {
-    if (simple) {
-      setSymbol(networkTypeIsCfx ? 'CFX' : 'ETH')
+    if (simple && tokenSymbol && !isUndefined(tokenDecimals)) {
+      setSymbol(tokenSymbol)
       setToAddress(payload?.to ?? '')
-      setAmount(convertDataToValue(payload?.value, CFX_DECIMALS) ?? '')
+      setAmount(convertDataToValue(payload?.value, tokenDecimals) ?? '')
       return
     }
     if (token20 && token) {
@@ -137,6 +151,8 @@ function HistoryItem({
     }
   }, [
     Boolean(token),
+    tokenSymbol,
+    tokenDecimals,
     simple,
     token20,
     contractInteraction,
@@ -189,7 +205,7 @@ function HistoryItem({
         </div>
 
         <div className="flex items-center">
-          {txStatus === 'pending' && (
+          {(txStatus === 'pending' || txStatus === 'sending') && (
             <WrapIcon
               size="w-5 h-5"
               id="speed-up-tx"
@@ -200,7 +216,7 @@ function HistoryItem({
               <RocketOutlined className="w-3 h-3 text-primary" />
             </WrapIcon>
           )}
-          {txStatus === 'pending' && (
+          {(txStatus === 'pending' || txStatus === 'sending') && (
             <WrapIcon
               size="w-5 h-5 mx-2"
               id="cancel-tx"
@@ -268,7 +284,11 @@ function HistoryItem({
           </div>
           <div className="flex mt-0.5 items-center justify-between text-gray-40 text-xs">
             <span>{contractName}</span>
-            <span>{toAddress ? shortenAddress(toAddress) : ''}</span>
+            <span>
+              {toAddress
+                ? shortenAddress(formatIntoChecksumAddress(toAddress))
+                : ''}
+            </span>
           </div>
         </div>
       </div>

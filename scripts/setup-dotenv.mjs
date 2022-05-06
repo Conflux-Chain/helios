@@ -4,7 +4,7 @@
  */
 
 import fs from 'fs'
-import dotenvExpand from 'dotenv-expand'
+import {expand} from 'dotenv-expand'
 import dotenv from 'dotenv'
 
 const NODE_ENV = process.env.NODE_ENV
@@ -27,7 +27,7 @@ const dotenvFiles = [
 // https://github.com/motdotla/dotenv-expand
 dotenvFiles.forEach(dotenvFile => {
   if (fs.existsSync(dotenvFile)) {
-    dotenvExpand(
+    expand(
       dotenv.config({
         path: dotenvFile,
       }),
