@@ -1,59 +1,77 @@
+// # imports
 import 'regenerator-runtime/runtime'
 
-import {defRpcEngine} from '@fluent-wallet/rpc-engine'
-import {persist} from './persist-db-to-ext-storage'
-// import {createdb} from '@fluent-wallet/db'
-import {EXT_STORAGE} from '@fluent-wallet/consts'
 import {
   IS_PROD_MODE,
   IS_DEV_MODE,
   IS_TEST_MODE,
 } from '@fluent-wallet/inner-utils'
+import {EXT_STORAGE} from '@fluent-wallet/consts'
+
+import {defRpcEngine} from '@fluent-wallet/rpc-engine'
+import {persist as persistToExtStorageHandler} from './persist-db-to-ext-storage'
 import {
   Sentry,
   init as initSentry,
   capture as sentryCapture,
 } from '@fluent-wallet/sentry'
-import {getDefaultOptions} from '@fluent-wallet/sentry/computeDefaultOptions'
+import {getDefaultOptions as getSentryDefaultOptions} from '@fluent-wallet/sentry/computeDefaultOptions'
 
 import browser from 'webextension-polyfill'
 import SCHEMA from './db-schema'
 import {listen} from '@fluent-wallet/extension-runtime/background.js'
-import initDB from './init-db.js'
+import fillInitialDBData from './init-db.js'
 import * as bb from '@fluent-wallet/webextension'
 import {updateUserId} from '@fluent-wallet/sentry'
+import {rpcEngineOpts} from './rpc-engine-opts'
 
+// # setup
+// ## dev helper
 if (!IS_PROD_MODE) window.b = browser
 if (!IS_PROD_MODE) window.bb = bb
 
+// ## ext shortcuts
+// shortcut for popup page in big screen
 bb.commands.onCommand.addListener(commandName => {
   if (commandName === 'inner_debug_only')
-    window.open(`${location.origin}/popup.html`)
+    if (IS_PROD_MODE) window.open(`${location.origin}/popup/index.html`)
+    else window.open(`${location.origin}/popup.html`)
 })
 
-import {rpcEngineOpts} from './rpc-engine-opts'
-
-initSentry(getDefaultOptions())
+// ## sentry
+initSentry(getSentryDefaultOptions())
 Sentry.setTag('custom_location', 'background')
 
-export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
+// ## init db
+async function initDB(initDBFn, skipRestore) {
+  const {createdb} = await import('@fluent-wallet/db')
+
+  // check if there's importAll request
+  // importAll is used to override wallet config with config from other wallet
+  // check wallet_importAll for detail
   const importAllTx = (await browser.storage.local.get('wallet_importAll'))
     ?.wallet_importAll
+
   const data =
     skipRestore || Boolean(importAllTx)
       ? null
       : (await browser.storage.local.get(EXT_STORAGE))?.[EXT_STORAGE]
 
-  const {createdb} = await import('@fluent-wallet/db')
+  // create db
+  const dbConnection = createdb(SCHEMA, persistToExtStorageHandler, data)
 
-  const dbConnection = createdb(SCHEMA, persist, data || null)
   if (!IS_PROD_MODE) window.d = dbConnection
   else window.__FLUENT_DB_CONN = dbConnection
+
   if (!data) await initDBFn(dbConnection, {importAllTx})
 
+  return dbConnection
+}
+
+// ## init rpc engine
+async function initRPCEngine(dbConnection) {
   rpcEngineOpts.sentryCapture = sentryCapture
 
-  // ## initialize rpc engine
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
   const protectedRequest = (req = {}) =>
     request({
@@ -99,19 +117,36 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
 
   if (!IS_PROD_MODE) window.r = protectedRequest
   else window.__FLUENT_REQUEST = protectedRequest
+
+  return protectedRequest
+}
+
+// ## initBG
+export const initBG = async ({
+  initDBFn = fillInitialDBData,
+  skipRestore = false,
+} = {}) => {
+  const dbConnection = await initDB(initDBFn, skipRestore)
+  const protectedRequest = await initRPCEngine(dbConnection)
+
   return {db: dbConnection, request: protectedRequest}
 }
 
 // # initialize
-// ## initialize db
 ;(async () => {
-  // ## initialize db
+  // ## db
   const {request, db} = await initBG()
+
+  // ## sentry
   updateUserId(db.getAddress()?.[0]?.hex)
 
+  // ## start long running jobs
   if (!IS_TEST_MODE) {
+    // start handle unfinished txs
     request({method: 'wallet_handleUnfinishedTxs', _rpcStack: ['frombg']})
+    // start enrich tx
     request({method: 'wallet_enrichTxs', _rpcStack: ['frombg']})
+    // start cleanup tx
     setInterval(
       () => request({method: 'wallet_cleanupTx', _rpcStack: ['frombg']}),
       1000 * 60 * 60,
@@ -121,6 +156,7 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
   // ## Dev/Test
   if (!IS_TEST_MODE) {
     if (IS_DEV_MODE) {
+      // ### load dev script on ext startup
       if (import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
         try {
           const localDevModule = await import(
@@ -131,33 +167,6 @@ export const initBG = async ({initDBFn = initDB, skipRestore = false} = {}) => {
           console.log('local dev error', err)
         }
       }
-      // if (db.getAccountGroup()?.length) {
-      //   // console.log(
-      //   //   'wallet_unlock',
-      //   //   await request({
-      //   //     method: 'wallet_unlock',
-      //   //     params: {password: '1111aaaa'},
-      //   //   }),
-      //   // )
-      // }
-      // console.log(
-      //   'wallet_importMnemonic',
-      //   await request({
-      //     method: 'wallet_importMnemonic',
-      //     params: {
-      //       mnemonic:
-      //         'error mom brown point sun magnet armor fish urge business until plastic',
-      //       password: '1111aaaa',
-      //     },
-      //   }),
-      // )
-      // await request({
-      //   method: 'wallet_importAddress',
-      //   params: {
-      //     address: 'cfx:aamysddjren1zfp36agsek5fxt2w0st8feps3297ek',
-      //     password: '1111aaaa',
-      //   },
-      // })
     }
   }
 })()

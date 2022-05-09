@@ -8,6 +8,7 @@
   snowpack {:doc  "start snowpack dev server"
             :task (shell "yarn run dev")}
 
-  -start {:depends [nrepl shadow snowpack]}
+  -start {:depends [;; nrepl
+                    shadow snowpack]}
   start  {:doc  "start bb and cljs repl"
           :task (run '-start {:parallel true})}}}
