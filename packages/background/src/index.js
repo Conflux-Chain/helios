@@ -65,6 +65,9 @@ async function initDB(initDBFn, skipRestore) {
 
   if (!data) await initDBFn(dbConnection, {importAllTx})
 
+  // cleanup imported importAll data
+  if (importAllTx) browser.storage.local.remove('wallet_importAll')
+
   return dbConnection
 }
 
