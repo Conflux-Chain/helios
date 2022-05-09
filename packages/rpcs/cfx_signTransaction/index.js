@@ -79,10 +79,11 @@ export const main = async args => {
     network,
     _popup,
   } = args
+  if (tx.chainId && tx.chainId !== network.chainId)
+    throw InvalidParams(`Invalid chainId ${tx.chainId}`)
+
   const {epoch, returnTxMeta, dryRun} = opts
-  let newTx = {...tx}
-  if (newTx.chainId && newTx.chainId !== network.chainId)
-    throw InvalidParams(`Invalid chainId ${newTx.chainId}`)
+  const newTx = {...tx}
 
   const fromAddr = findAddress({
     appId: app && app.eid,
