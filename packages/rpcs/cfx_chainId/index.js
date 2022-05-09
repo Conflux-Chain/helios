@@ -15,7 +15,7 @@ export const permissions = {
 
 export const cache = {
   type: 'ttl',
-  ttl: 24 * 60 * 60 * 1000,
+  ttl: 24 * 60 * 60 * 1000, // 1 day
   key: () => NAME,
   afterGet(_, c) {
     return c ?? 'nocache'

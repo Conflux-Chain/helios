@@ -1,0 +1,6 @@
+declined:
+  - "@fluent-wallet/rpc-engine"
+  - "@fluent-wallet/cache-rpc"
+  - "@fluent-wallet/cfx_chain-id"
+  - "@fluent-wallet/eth_chain-id"
+  - "@fluent-wallet/net_version"

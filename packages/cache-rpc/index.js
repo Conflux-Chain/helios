@@ -9,6 +9,30 @@ import {
 import {TLRUCache, LRUCache} from '@thi.ng/cache'
 import EpochRefConf from '@fluent-wallet/rpc-epoch-ref'
 
+// cache type
+// 1. ttl cache
+// CACHE.<network_name>.ttl
+// when rpc cache config conf.type === 'ttl'
+// ttl = conf.type.ttl ?? network.cacheTime
+//
+// 2. epoch/block cache
+// CACHE.<network_name>.EPOCH
+// store types:
+// CACHE.<network_name>.EPOCH.<epoch/block number>
+// CACHE.<network_name>.EPOCH.<epoch/block tag>
+// CACHE.<network_name>.EPOCH.<default>
+// EPOCH store caches each store by network.cacheTime, and only keeps latest 20 epoch/block
+//
+// What affects cache
+// req.network.cacheTime
+// rpc_cache_conf.type
+// rpc_cache_conf.ttl
+// rpc_cache_conf.key
+// rpc_cache_conf.beforeGet
+// rpc_cache_conf.afterGet
+// rpc_cache_conf.cacheTime when type is block/epoch
+// EpochRefConf
+
 let CACHE = {}
 
 export const getCacheStore = ({network, params, method}, {type, cacheTime}) => {
@@ -82,10 +106,11 @@ export const setCache = ({req, res, conf}) => {
     !res // || !res.result
   )
     return
-  const {ttl, key} = conf
 
   const Cache = getCacheStore(req, conf)
   if (!Cache) return
+
+  const {ttl, key} = conf
 
   const k = getCacheKey(key, req)
   Cache.set(k, res.result, ttl ?? req.network.cacheTime ?? undefined)
