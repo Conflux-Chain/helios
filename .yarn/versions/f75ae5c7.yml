@@ -1,0 +1,3 @@
+declined:
+  - "@fluent-wallet/cfx_sign-transaction"
+  - "@fluent-wallet/eth_sign-transaction"
