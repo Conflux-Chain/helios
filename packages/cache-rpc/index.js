@@ -30,6 +30,8 @@ import EpochRefConf from '@fluent-wallet/rpc-epoch-ref'
 // rpc_cache_conf.key
 // rpc_cache_conf.beforeGet
 // rpc_cache_conf.afterGet
+// rpc_cache_conf.beforeSet
+// rpc_cache_conf.afterSet
 // rpc_cache_conf.cacheTime when type is block/epoch
 // EpochRefConf
 
@@ -76,6 +78,7 @@ export const getCacheKey = (key, req) => {
 }
 
 export const getCache = ({req, conf}) => {
+  conf = req._cacheConf || conf
   if (isFunction(conf?.beforeGet) && !conf.beforeGet(req)) return
 
   if (!conf || !conf.type || !conf.key) return
@@ -97,6 +100,7 @@ export const getCache = ({req, conf}) => {
 }
 
 export const setCache = ({req, res, conf}) => {
+  conf = req._cacheConf || conf
   if (isFunction(conf?.beforeSet) && !conf.beforeSet(req, res)) return
 
   if (
