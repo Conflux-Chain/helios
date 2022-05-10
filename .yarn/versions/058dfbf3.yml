@@ -1,0 +1,12 @@
+releases:
+  "@fluent-wallet/sentry": patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/extension-runtime"
+  - helios-popup
+  - "@fluent-wallet/wallet_add-vault"
+  - "@fluent-wallet/wallet_handle-unfinished-cfx-tx"
+  - "@fluent-wallet/wallet_handle-unfinished-eth-tx"
+  - "@fluent-wallet/wallet_refetch-balance"
+  - "@fluent-wallet/wallet_set-current-network"
