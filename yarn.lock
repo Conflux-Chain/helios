@@ -6976,6 +6976,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-block-time@workspace:*, @fluent-wallet/wallet_get-block-time@workspace:packages/rpcs/wallet_getBlockTime":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-block-time@workspace:packages/rpcs/wallet_getBlockTime"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-blockchain-explorer-url@workspace:*, @fluent-wallet/wallet_get-blockchain-explorer-url@workspace:packages/rpcs/wallet_getBlockchainExplorerUrl":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-blockchain-explorer-url@workspace:packages/rpcs/wallet_getBlockchainExplorerUrl"
@@ -19767,6 +19775,7 @@ __metadata:
     "@fluent-wallet/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
     "@fluent-wallet/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey"
     "@fluent-wallet/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
+    "@fluent-wallet/wallet_get-block-time": "workspace:*"
     "@fluent-wallet/wallet_get-blockchain-explorer-url": "workspace:*"
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
