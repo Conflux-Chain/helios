@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/wallet_detect-network-type": patch
+
+declined:
+  - helios-background
