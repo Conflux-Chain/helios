@@ -18,6 +18,7 @@ class Provider extends SafeEventEmitter {
         // DEPRECATED
         'networkChanged',
         'chainIdChanged',
+        'data',
 
         'connect',
         'disconnect',
@@ -163,7 +164,9 @@ class Provider extends SafeEventEmitter {
     )
     if (typeof callback !== 'function')
       throw new Error('Invalid callback, not a function')
-    this.request(payload).catch(callback)
+    requestFactory(this.#send, payload)
+      .then(res => callback(null, res))
+      .catch(callback)
   }
 
   // DEPRECATED
