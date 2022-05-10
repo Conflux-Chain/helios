@@ -211,7 +211,7 @@ export const main = ({
             const {errorType, shouldDiscard} = processError(err)
             const isDuplicateTx = errorType === 'duplicateTx'
             const resendNonceTooStale =
-              tx.resendAt && errorType === 'nonceTooStale'
+              tx.resendAt && errorType === 'tooStaleNonce'
             const resendPriceTooLow =
               tx.resendAt && errorType === 'replaceUnderpriced'
 
