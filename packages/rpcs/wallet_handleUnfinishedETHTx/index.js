@@ -208,15 +208,17 @@ export const main = ({
             // failed to send
             setTxUnsent({hash})
 
-            const {errorType, shouldDiscard} = processError(err)
+            let {errorType, shouldDiscard} = processError(err)
             const isDuplicateTx = errorType === 'duplicateTx'
             const resendNonceTooStale =
               tx.resendAt && errorType === 'tooStaleNonce'
             const resendPriceTooLow =
               tx.resendAt && errorType === 'replaceUnderpriced'
+            if (resendPriceTooLow) errorType = 'replacedByAnotherTx'
 
-            const sameAsSuccess =
-              isDuplicateTx || resendNonceTooStale || resendPriceTooLow
+            const sameAsSuccess = isDuplicateTx || resendNonceTooStale
+            const failed =
+              !sameAsSuccess && (shouldDiscard || resendPriceTooLow)
 
             if (errorType === 'unknownError')
               sentryCaptureError(err, {
@@ -227,7 +229,7 @@ export const main = ({
               })
 
             defs({
-              failed: !sameAsSuccess && shouldDiscard && {errorType, err},
+              failed: failed && {errorType, err},
               sameAsSuccess,
               resend: !shouldDiscard && !sameAsSuccess,
             })
