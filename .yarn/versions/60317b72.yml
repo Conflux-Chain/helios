@@ -1,0 +1,7 @@
+releases:
+  "@fluent-wallet/provider-api": patch
+  helios-inpage: patch
+
+declined:
+  - browser-extension
+  - "@fluent-wallet/use-rpc"
