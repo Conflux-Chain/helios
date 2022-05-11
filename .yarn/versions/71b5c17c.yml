@@ -1,5 +1,0 @@
-releases:
-  "@fluent-wallet/cache-rpc": patch
-
-declined:
-  - "@fluent-wallet/rpc-engine"
