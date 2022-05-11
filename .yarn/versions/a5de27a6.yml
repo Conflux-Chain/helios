@@ -1,5 +1,0 @@
-releases:
-  "@fluent-wallet/wallet_get-block-time": patch
-
-declined:
-  - helios-background
