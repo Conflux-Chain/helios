@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletGetBlockTime from '@fluent-wallet/wallet_get-block-time'
 import * as ethGetLogs from '@fluent-wallet/eth_get-logs'
 import * as cfxGetPosRewardByEpoch from '@fluent-wallet/cfx_get-pos-reward-by-epoch'
 import * as ethSignTxWithLedgerNanoS from '@fluent-wallet/eth_sign-tx-with-ledger-nano-s'
@@ -346,6 +347,7 @@ export const rpcEngineOpts = {
     walletGetFluentMetadata,
     walletGetPreferences,
     walletSetPreferences,
+    walletGetBlockTime,
 
     walletAfterUnlock,
   ],
