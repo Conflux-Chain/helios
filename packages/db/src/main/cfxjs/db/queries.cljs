@@ -1201,32 +1201,73 @@
             ])
        (mapv #(e :authReq %))))
 
+(defn- tx-end-state? [hash]
+  (try
+    (let [status (:tx/status (p [:tx/status] [:tx/hash hash]))]
+      (or (< status 0) (> status 4)))
+    (catch js/Error e nil)))
+
 (defn set-tx-skipped [{:keys [hash]}]
-  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status -2}]))
+  (when-not (tx-end-state? hash)
+    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        {:db/id [:tx/hash hash] :tx/status -2}])))
 (defn set-tx-failed [{:keys [hash error]}]
-  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}]))
+  (when-not (tx-end-state? hash)
+    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}])))
 (defn set-tx-unsent [{:keys [hash resendAt]}]
-  (let [tx {:db/id [:tx/hash hash] :tx/status 0}
-        tx (if resendAt (assoc tx :tx/resendAt resendAt) tx)]
-    (t [tx])))
+  (when-not (tx-end-state? hash)
+    (let [tx {:db/id [:tx/hash hash] :tx/status 0}
+          tx (if resendAt (assoc tx :tx/resendAt resendAt) tx)]
+      (t [tx]))))
 (defn set-tx-sending [{:keys [hash resendAt]}]
-  (let [tx {:db/id [:tx/hash hash] :tx/status 1}
-        tx (if resendAt (assoc tx :tx/resendAt resendAt) tx)]
-    (t [tx])))
+  (when-not (tx-end-state? hash)
+    (let [tx {:db/id [:tx/hash hash] :tx/status 1}
+          tx (if resendAt (assoc tx :tx/resendAt resendAt) tx)]
+      (t [tx]))))
 (defn set-tx-pending [{:keys [hash]}]
-  (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status 2}]))
+  (when-not (tx-end-state? hash)
+    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        {:db/id [:tx/hash hash] :tx/status 2}])))
 (defn set-tx-packaged [{:keys [hash blockHash]}]
-  (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status 3 :tx/blockHash blockHash}]))
+  (when-not (tx-end-state? hash)
+    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        {:db/id [:tx/hash hash] :tx/status 3 :tx/blockHash blockHash}])))
 (defn set-tx-executed [{:keys [hash receipt]}]
-  (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}]))
+  (when-not (tx-end-state? hash)
+    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}])))
+
 (defn set-tx-confirmed [{:keys [hash]}]
-  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status 5}]))
+  (when-not (tx-end-state? hash)
+    (let [confirmed
+          (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+              {:db/id [:tx/hash hash] :tx/status 5}])
+
+         ;; find tx with
+         ;; 1. same addr
+         ;; 2. same nonce
+         ;; 3. not in end state
+         ;;
+         ;; set them as failed
+          replaced-none-finished-txs
+          (q '[:find [?hash ...]
+               :in $ ?confirmed-tx
+               :where
+               [?address :address/tx ?confirmed-tx]
+               [?confirmed-tx :tx/txPayload ?payload]
+               [?payload :txPayload/nonce ?nonce]
+               [?address :address/tx ?tx]
+               [?tx :tx/txPayload ?tx-payload]
+               [?tx-payload :txPayload/nonce ?nonce]
+               [?tx :tx/status ?status]
+               [(>= ?status 0)]
+               [(< ?status 5)]
+               [?tx :tx/hash ?hash]]
+             [:tx/hash hash])]
+      (doseq [hash replaced-none-finished-txs]
+        (set-tx-failed {:hash hash :error "replacedByAnotherTx"}))
+      confirmed)))
 (defn set-tx-chain-switched [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
 
