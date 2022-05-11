@@ -171,6 +171,7 @@
   },
   "devDependencies": {
     "@fluent-wallet/test-helpers": "workspace:packages/test-helpers",
+    "@fluent-wallet/wallet_get-block-time": "workspace:*",
     "browser-passworder": "2.0.3"
   }
 }
