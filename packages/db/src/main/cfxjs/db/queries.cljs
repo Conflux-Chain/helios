@@ -915,7 +915,7 @@
     (t txs)))
 
 (defn retract-group
-  "used to retract account grolup"
+  "used to retract account group"
   [{:keys [groupId]}]
   (let [addrs-in-group
         (q '[:find [?addr ...]
@@ -936,6 +936,39 @@
         addrs-to-delete (filter #(not (some #{%} addrs-has-accs-not-in-group)) addrs-in-group)
         txs             (mapv #(vector :db.fn/retractEntity %) addrs-to-delete)
         txs             (conj txs [:db.fn/retractEntity groupId])]
+    (t txs)
+    (cleanup-token-list-after-delete-address)
+    true))
+
+(defn retract-account
+  "used to retract accounts"
+  [{:keys [accountId hwVaultData]}]
+  (let [addrs-in-account
+        (q '[:find [?addr ...]
+             :in $ ?acc
+             :where
+             [?acc :account/address ?addr]]
+           accountId)
+        addrs-has-other-accs
+        (q '[:find [?addr ...]
+             :in $ ?acc
+             :where
+             [?acc :account/address ?addr]
+             [?account :account/address ?addr]
+             [(!= ?account ?acc)]]
+           accountId)
+        addrs-to-delete (filter #(not (some #{%} addrs-has-other-accs)) addrs-in-account)
+        txs             (mapv #(vector :db.fn/retractEntity %) addrs-to-delete)
+        txs             (conj txs [:db.fn/retractEntity accountId])
+
+        vault (when hwVaultData
+                (q '[:find ?vault
+                     :in $ ?acc
+                     :where
+                     [?group :accountGroup/account ?acc]
+                     [?group :accountGroup/vault ?vault]]
+                   accountId))
+        txs   (if vault (conj txs {:db/id vault :vault/data hwVaultData}) txs)]
     (t txs)
     (cleanup-token-list-after-delete-address)
     true))
@@ -1525,6 +1558,7 @@
               :upsertTokenList                     upsert-token-list
               :retractNetwork                      retract-network
               :retractGroup                        retract-group
+              :retractAccount                      retract-account
               :setPreferences                      set-preferences
               :getPreferences                      get-preferences
               :getAppsWithDifferentSelectedNetwork get-apps-with-different-selected-network
