@@ -503,7 +503,7 @@ export const useCheckImage = url => {
 export const useLedgerBindingApi = () => {
   const {
     data: {
-      network: {type},
+      network: {type, chainId},
     },
   } = useCurrentAddress()
 
@@ -512,9 +512,14 @@ export const useLedgerBindingApi = () => {
       return new Conflux()
     }
     if (type === NETWORK_TYPE.ETH) {
-      return new Ethereum()
+      let ethInstance = new Ethereum()
+      ethInstance.isAppOpen = ethInstance.isAppOpen.bind(
+        ethInstance,
+        chainId === '0x406' || chainId === '0x47' ? 'ESPACE' : 'ETHEREUM',
+      )
+      return ethInstance
     }
-  }, [type])
+  }, [type, chainId])
 
   return ret
 }
