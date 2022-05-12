@@ -128,6 +128,7 @@ const fr = {
     searchResults: 'Résultats de recherche',
     noResult: 'Pas de résultat',
     willSupport1559: 'EIP-1559 support coming soon.',
+    remove: 'Remove',
 
     // welcome page
     welcomeToConflux: 'Bienvenue sur Conflux Network',

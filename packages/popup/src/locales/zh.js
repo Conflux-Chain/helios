@@ -121,6 +121,7 @@ const zh = {
     searchResults: '搜索结果',
     noResult: '无结果',
     willSupport1559: '后续将会支持 EIP-1559',
+    remove: 'Remove',
 
     // welcome page
     welcomeToConflux: '欢迎来到 Conflux 网络',

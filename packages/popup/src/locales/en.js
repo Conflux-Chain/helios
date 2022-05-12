@@ -123,6 +123,7 @@ const en = {
     searchResults: 'Search Results',
     noResult: 'No result',
     willSupport1559: 'EIP-1559 support coming soon.',
+    remove: 'Remove',
 
     // welcome page
     welcomeToConflux: 'Welcome to Conflux Network',

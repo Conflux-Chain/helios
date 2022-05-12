@@ -64,7 +64,7 @@ function HardwareGuard() {
     >
       <div className="flex-1 px-4">
         <TitleNav title={t('connectHardwareWallet')} />
-        <div className="flex items-center mt-5">
+        <div className="flex items-center mt-3">
           <HeartBeatOutlined className="text-[#333] w-4 h-4 mr-1" />
           <Trans
             i18nKey="specifiedConnectedChain"

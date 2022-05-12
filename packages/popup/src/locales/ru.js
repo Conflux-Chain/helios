@@ -125,6 +125,7 @@ const ru = {
     searchResults: 'Искать',
     noResult: 'Совпадений не найдено',
     willSupport1559: 'EIP-1559 support coming soon.',
+    remove: 'Remove',
 
     // Начальная страница
     welcomeToConflux: 'Добро пожаловать в Conflux Network',
