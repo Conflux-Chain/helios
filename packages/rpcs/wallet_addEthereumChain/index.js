@@ -27,7 +27,7 @@ export const permissions = {
     'wallet_userRejectedAuthRequest',
   ],
   db: ['getNetwork', 'getAuthReqById', 'getNetworkByEndpoint'],
-  scope: {wallet_networks: {}},
+  // scope: {wallet_networks: {}},
 }
 
 export const main = async ({
