@@ -983,7 +983,7 @@
         txs             (conj txs [:db.fn/retractEntity accountId])
 
         vault (when hwVaultData
-                (q '[:find ?vault
+                (q '[:find ?vault .
                      :in $ ?acc
                      :where
                      [?group :accountGroup/account ?acc]
