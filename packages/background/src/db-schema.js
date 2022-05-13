@@ -115,6 +115,11 @@ const schema = {
       many: true,
       ref: true,
     },
+    antiToken: {
+      doc: 'black tokenlist of this address',
+      many: true,
+      ref: true,
+    },
     tx: {
       doc: 'transactions of this address',
       many: true,
