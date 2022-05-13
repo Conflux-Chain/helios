@@ -1,6 +1,0 @@
-releases:
-  "@fluent-wallet/db": patch
-  "@fluent-wallet/wallet_delete-account": patch
-
-declined:
-  - helios-background
