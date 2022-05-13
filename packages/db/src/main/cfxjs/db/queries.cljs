@@ -1,5 +1,7 @@
 (ns cfxjs.db.queries
   (:require
+   [lambdaisland.glogi :as log]
+   [taoensso.encore :as enc]
    [medley.core :refer [deep-merge]]
    ["@ethersproject/bignumber" :as bn]
    [clojure.walk :refer [postwalk walk]]
@@ -113,8 +115,8 @@
   [{:keys [value network eid hex] :as addr}]
   (let [value    (and (string? value) (.toLowerCase value))
         hex      (and (string? value) (.toLowerCase hex))
-        addr     (if hex (assoc addr :hex hex) addr)
-        addr     (if value (assoc addr :value value) addr)
+        addr     (enc/assoc-when addr :hex hex)
+        addr     (enc/assoc-when addr :value value)
         eid      (if (pos-int? eid)
                    eid
                    (or
@@ -968,7 +970,7 @@
                      [?group :accountGroup/account ?acc]
                      [?group :accountGroup/vault ?vault]]
                    accountId))
-        txs   (if vault (conj txs {:db/id vault :vault/data hwVaultData}) txs)]
+        txs   (enc/conj-when txs (and vault {:db/id vault :vault/data hwVaultData}))]
     (t txs)
     (cleanup-token-list-after-delete-address)
     true))
@@ -1251,12 +1253,12 @@
 (defn set-tx-unsent [{:keys [hash resendAt]}]
   (when-not (tx-end-state? hash)
     (let [tx {:db/id [:tx/hash hash] :tx/status 0}
-          tx (if resendAt (assoc tx :tx/resendAt resendAt) tx)]
+          tx (enc/assoc-when tx :tx/resendAt resendAt)]
       (t [tx]))))
 (defn set-tx-sending [{:keys [hash resendAt]}]
   (when-not (tx-end-state? hash)
     (let [tx {:db/id [:tx/hash hash] :tx/status 1}
-          tx (if resendAt (assoc tx :tx/resendAt resendAt) tx)]
+          tx (enc/assoc-when tx :tx/resendAt resendAt)]
       (t [tx]))))
 (defn set-tx-pending [{:keys [hash]}]
   (when-not (tx-end-state? hash)

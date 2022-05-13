@@ -1,5 +1,7 @@
 (ns cfxjs.db.core
   (:require
+   [lambdaisland.glogi :as log]
+   [lambdaisland.glogi.console :as glogi-console]
    [cfxjs.spec.cljs]
    [cfxjs.db.datascript.core :as d]
    [cfxjs.db.queries :refer [apply-queries]]
@@ -10,6 +12,9 @@
    [goog.string :as gs]
    [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]])
   (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query]]))
+
+(glogi-console/install!)
+(log/set-levels {:glogi/root (if goog.DEBUG :all :info)})
 
 (defn random-tmp-id []
   (gs/getRandomString))
