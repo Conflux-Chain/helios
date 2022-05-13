@@ -17,7 +17,7 @@ import {
   CheckCircleFilled,
   QuestionCircleOutlined,
 } from '@fluent-wallet/component-icons'
-import {DEFAULT_CFX_HDPATH} from '@fluent-wallet/consts'
+import {DEFAULT_CFX_HDPATH, DEFAULT_ETH_HDPATH} from '@fluent-wallet/consts'
 import {encode} from '@fluent-wallet/base32-address'
 import {TitleNav, CompWithLabel, Avatar, DisplayBalance} from '../../components'
 import {
@@ -281,7 +281,11 @@ function ImportHwAccount() {
           label={<p className="text-sm text-gray-40">{t('hdPath')}</p>}
         >
           <Input
-            value={`BIP 44 Standard(${DEFAULT_CFX_HDPATH})`}
+            value={`BIP 44 Standard(${
+              type === NETWORK_TYPE.CFX
+                ? DEFAULT_CFX_HDPATH
+                : DEFAULT_ETH_HDPATH
+            })`}
             width="w-full box-border"
             readOnly
             className="pointer-events-none"

@@ -121,7 +121,7 @@ const zh = {
     searchResults: '搜索结果',
     noResult: '无结果',
     willSupport1559: '后续将会支持 EIP-1559',
-    remove: 'Remove',
+    remove: '移除',
 
     // welcome page
     welcomeToConflux: '欢迎来到 Conflux 网络',
@@ -274,8 +274,9 @@ const zh = {
     hide: '隐藏',
     delete: '删除',
     groupDeleteWarning: '不能删除当前账户组',
+    accountDeleteWarning: '不能删除当前账户',
     accountHideWarning: '不能隐藏当前账户',
-    ledgerTips: 'This account can only be used on {{network}}.',
+    ledgerTips: '这些账户只能在 {{network}} 上使用',
 
     // Network Management
     networkManagement: '网络管理',
@@ -333,15 +334,15 @@ const zh = {
     // hardware guard
     connectHardwareWallet: '连接硬件钱包',
     supportLedger: '现已支持 Ledger 硬件钱包',
-    ledgerGuardDes: 'How to create a Conflux Wallet in Ledger?',
+    ledgerGuardDes: '如何在 Ledger 中添加 Conflux Core 的钱包？',
     followConnectLedgerSteps: '请根据以下步骤连接 Ledger',
     steps: '步骤 {{number}}',
     pluginHardwareWallet: '请将硬件钱包插入电脑的 USB 端口',
     enterPinCode: '在硬件钱包上输入 PIN 码',
-    selectConfluxApp: 'Select and open the App for {{chainName}} in Ledger',
+    selectConfluxApp: '在 Ledger 中选择并打开适用于 {{chainName}} 的App',
     ready: '开始连接',
     specifiedConnectedChain:
-      '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
+      '<Container><Content>连接 Ledger 在</Content><CurrentNetworkDisplay/></Container>',
 
     // connect hardware wallet
     searchHwWallet: '寻找钱包中',
@@ -351,9 +352,8 @@ const zh = {
     waitForPermission: '等待授权',
     connectFailed: '连接失败',
     retry: '重试',
-    openConfluxApp: 'Open the App for {{chainName}}',
-    openConfluxAppDes:
-      'Select and open the App for {{chainName}} in your Ledger device.',
+    openConfluxApp: '打开适用于 {{chainName}} 的 App',
+    openConfluxAppDes: '在 Ledger 中选择并打开适用于 {{chainName}} 的 App　',
     chooseAddress: '选择地址',
     hdPath: '钱包路径',
     chooseHwAddress: '选择你要导入的钱包地址:',
@@ -408,8 +408,7 @@ const zh = {
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger 未连接',
     openExpandView: '在 Fluent 扩展视图连接硬件钱包',
-    hwOpenApp:
-      'Before clicking confirm, make sure the App for {{chainName}} is open.',
+    hwOpenApp: '点击确认之前，请确保已经打开适用于 {{chainName}} 的 App',
 
     // error page
     errorTile: '错误',

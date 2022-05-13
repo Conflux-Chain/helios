@@ -13,9 +13,9 @@ import {TX_STATUS} from '../constants'
 function TransactionResult({status, sendError, onClose}) {
   const {t} = useTranslation()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const errorMessgae = sendError?.message || t('errorDes')
+  const errorMessage = sendError?.message || t('errorDes')
   const open = status && status !== TX_STATUS.HW_SUCCESS
-  const isRejected = errorMessgae?.includes('UserRejected')
+  const isRejected = errorMessage?.includes('UserRejected')
   const isWaiting = status === TX_STATUS.HW_WAITING
   const {errorType} = networkTypeIsCfx
     ? cfxProcessError(sendError)
@@ -30,7 +30,7 @@ function TransactionResult({status, sendError, onClose}) {
     ? t('waitingContent')
     : isRejected
     ? t('rejectedContent')
-    : errorMessgae
+    : errorMessage
 
   return (
     <Modal

@@ -18,15 +18,19 @@ import {
   NoResult,
   StretchInput,
   WrapIcon,
+  LedgerGroupTag,
 } from '../../components'
+import {RPC_METHODS} from '../../constants'
 import {formatLocalizationLang, formatIntoChecksumAddress} from '../../utils'
 import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
 
+const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
 function ConnectSitesList({
   allAccountGroupData,
   onSelectSingleAccount,
   checkboxStatusObj,
   currentNetworkId,
+  currentNetworkType,
 }) {
   const {t, i18n} = useTranslation()
   const [searchedAccountGroup, setSearchedAccountGroup] = useState(null)
@@ -83,11 +87,11 @@ function ConnectSitesList({
                     key={eid}
                     className={`${
                       index === 0 ? '' : 'mt-2'
-                    } bg-gray-4 border border-solid border-gray-10`}
+                    } bg-gray-4 border border-solid border-gray-10 relative`}
                   >
-                    {vault?.type === 'pk' ? null : (
+                    {vault?.type !== ACCOUNT_GROUP_TYPE.PK && (
                       <div className="flex items-center ml-3 pt-2.5">
-                        {vault?.type === 'hd' && (
+                        {vault?.type === ACCOUNT_GROUP_TYPE.HD && (
                           <WrapIcon
                             size="w-5 h-5 mr-1 bg-primary-4"
                             clickable={false}
@@ -100,6 +104,9 @@ function ConnectSitesList({
                         )}
                         <p className="text-gray-40 text-xs">{nickname}</p>
                       </div>
+                    )}
+                    {vault?.type === ACCOUNT_GROUP_TYPE.HW && (
+                      <LedgerGroupTag networkType={currentNetworkType} />
                     )}
                     {Object.values(account).map(
                       (
@@ -163,6 +170,7 @@ ConnectSitesList.propTypes = {
   checkboxStatusObj: PropTypes.object.isRequired,
   onSelectSingleAccount: PropTypes.func.isRequired,
   currentNetworkId: PropTypes.number,
+  currentNetworkType: PropTypes.string,
 }
 
 function ConnectSite() {
@@ -181,6 +189,7 @@ function ConnectSite() {
         eid: currentNetworkId,
         icon: currentNetworkIcon,
         name: currentNetworkName,
+        type: currentNetworkType,
       },
     },
   } = useCurrentAddress()
@@ -275,6 +284,7 @@ function ConnectSite() {
 
           <ConnectSitesList
             currentNetworkId={currentNetworkId}
+            currentNetworkType={currentNetworkType}
             allAccountGroupData={allAccountGroupData}
             onSelectSingleAccount={onSelectSingleAccount}
             checkboxStatusObj={checkboxStatusObj}

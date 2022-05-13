@@ -16,7 +16,8 @@ import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
 import {request} from '../../utils'
 import {GroupItem} from './components'
 const {EXPORT_SEED, EXPORT_PRIVATEKEY, SELECT_CREATE_TYPE} = ROUTES
-const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_EXPORT_ACCOUNT} = RPC_METHODS
+const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_EXPORT_ACCOUNT, ACCOUNT_GROUP_TYPE} =
+  RPC_METHODS
 
 const PKDATAINFO = {
   [DEFAULT_CFX_HDPATH]: {
@@ -89,11 +90,18 @@ function AccountManagement() {
       getAllNetworkAccount: true,
       includeHidden: true,
     })
+
+  const {data: pkHdAccountGroups} = useAccountList({
+    networkId: currentNetworkId,
+    groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+    includeHidden: true,
+  })
+
   const accountGroupData = searchedAccountGroup
     ? Object.values(searchedAccountGroup)
     : Object.values(allAccountGroups)
 
-  const showDelete = Object.keys(allAccountGroups).length > 1
+  const showDelete = Object.keys(pkHdAccountGroups).length > 1
 
   const onConfirmCallback = res => {
     // export account group

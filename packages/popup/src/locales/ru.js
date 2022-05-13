@@ -284,6 +284,7 @@ const ru = {
     hide: 'Скрыть',
     delete: 'Удалить',
     groupDeleteWarning: 'Нельзя удалить данную группу аккаунтов.',
+    accountDeleteWarning: 'Can not delete current account.',
     accountHideWarning: 'Нельзя скрыть данный аккаунт.',
     ledgerTips: 'This account can only be used on {{network}}.',
 
