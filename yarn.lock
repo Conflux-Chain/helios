@@ -6799,6 +6799,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_delete-account@workspace:*, @fluent-wallet/wallet_delete-account@workspace:packages/rpcs/wallet_deleteAccount":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_delete-account@workspace:packages/rpcs/wallet_deleteAccount"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+    browser-passworder: 2.0.3
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_delete-app@workspace:packages/rpcs/wallet_deleteApp":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_delete-app@workspace:packages/rpcs/wallet_deleteApp"
@@ -6973,6 +6982,14 @@ __metadata:
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     "@fluent-wallet/single-call-balance-tracker": "workspace:packages/single-call-balance-tracker"
     "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-block-time@workspace:*, @fluent-wallet/wallet_get-block-time@workspace:packages/rpcs/wallet_getBlockTime":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-block-time@workspace:packages/rpcs/wallet_getBlockTime"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -19748,6 +19765,7 @@ __metadata:
     "@fluent-wallet/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount"
     "@fluent-wallet/wallet_create-address": "workspace:packages/rpcs/wallet_createAddress"
     "@fluent-wallet/wallet_db-query": "workspace:packages/rpcs/wallet_dbQuery"
+    "@fluent-wallet/wallet_delete-account": "workspace:*"
     "@fluent-wallet/wallet_delete-account-group": "workspace:packages/rpcs/wallet_deleteAccountGroup"
     "@fluent-wallet/wallet_delete-app": "workspace:packages/rpcs/wallet_deleteApp"
     "@fluent-wallet/wallet_delete-network": "workspace:packages/rpcs/wallet_deleteNetwork"
@@ -19767,6 +19785,7 @@ __metadata:
     "@fluent-wallet/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
     "@fluent-wallet/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey"
     "@fluent-wallet/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
+    "@fluent-wallet/wallet_get-block-time": "workspace:*"
     "@fluent-wallet/wallet_get-blockchain-explorer-url": "workspace:*"
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
