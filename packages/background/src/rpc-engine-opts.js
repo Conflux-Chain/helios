@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletDeleteAccount from '@fluent-wallet/wallet_delete-account'
 import * as walletGetBlockTime from '@fluent-wallet/wallet_get-block-time'
 import * as ethGetLogs from '@fluent-wallet/eth_get-logs'
 import * as cfxGetPosRewardByEpoch from '@fluent-wallet/cfx_get-pos-reward-by-epoch'
@@ -210,6 +211,7 @@ export const rpcEngineOpts = {
     walletExportAll,
     walletImportAll,
     walletDeleteAccountGroup,
+    walletDeleteAccount,
     walletAddHdPath,
     walletAddNetwork,
     walletUpdateNetwork,
