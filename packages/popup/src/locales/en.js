@@ -284,7 +284,7 @@ const en = {
     groupDeleteWarning: 'Can not delete current account group.',
     accountDeleteWarning: 'Can not delete current account.',
     accountHideWarning: 'Can not hide current account.',
-    ledgerTips: 'This account can only be used on {{network}}.',
+    ledgerTips: 'This account(s) can only be used on {{network}}.',
 
     // Network Management
     networkManagement: 'Network Management',
@@ -344,7 +344,7 @@ const en = {
     // hardware guard
     connectHardwareWallet: 'Connect Hardware Wallet',
     supportLedger: 'Ledger is now supported.',
-    ledgerGuardDes: 'How to create a Conflux Wallet in Ledger?',
+    ledgerGuardDes: 'How to create a Conflux Core Wallet in Ledger?',
     followConnectLedgerSteps:
       'Please follow the below steps to connect Ledger.',
     steps: 'Steps {{number}}',

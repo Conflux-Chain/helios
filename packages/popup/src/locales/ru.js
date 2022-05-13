@@ -286,7 +286,7 @@ const ru = {
     groupDeleteWarning: 'Нельзя удалить данную группу аккаунтов.',
     accountDeleteWarning: 'Can not delete current account.',
     accountHideWarning: 'Нельзя скрыть данный аккаунт.',
-    ledgerTips: 'This account can only be used on {{network}}.',
+    ledgerTips: 'This account(s) can only be used on {{network}}.',
 
     // Управление сетями
     networkManagement: 'Управление сетями',
@@ -348,7 +348,7 @@ const ru = {
     // аппаратный кошелек
     connectHardwareWallet: 'Подключить аппаратный кошелек',
     supportLedger: 'Добавлена поддержка Ledger .',
-    ledgerGuardDes: 'How to create a Conflux Wallet in Ledger?',
+    ledgerGuardDes: 'How to create a Conflux Core Wallet in Ledger?',
     followConnectLedgerSteps:
       'Пожалуйста, следуйте данной пошаговой инструкции для подключения Ledger.',
     steps: 'Шаг {{number}}',
