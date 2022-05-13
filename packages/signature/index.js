@@ -166,7 +166,11 @@ export const cfxRecoverTransactionToAddress = (tx, {r, s, v}, netId) => {
 }
 
 export const ethRecoverTransactionToAddress = (tx, {r, s, v}) => {
-  const addr = recoverEthAddress(addHexPrefix(tx), {r, s, v})
+  const addr = recoverEthAddress(keccak256(serializeETHTransaction(tx)), {
+    r: addHexPrefix(r),
+    s: addHexPrefix(s),
+    v: addHexPrefix(v),
+  })
   return addr
 }
 
@@ -194,7 +198,10 @@ export const cfxJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
 }
 
 export const ethJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
-  return serializeETHTransaction(addHexPrefix(tx), {r, s, v})
+  return serializeETHTransaction(
+    tx,
+    joinSignature({r: addHexPrefix(r), s: addHexPrefix(s), v: addHexPrefix(v)}),
+  )
 }
 
 export const getTxHashFromRawTx = txhash => {
