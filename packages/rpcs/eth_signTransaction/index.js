@@ -53,7 +53,7 @@ export const permissions = {
   external: [],
   methods: [
     // TODO: ledger support for eth
-    // 'eth_signTxWithLedgerNanoS',
+    'eth_signTxWithLedgerNanoS',
     'wallet_getAddressPrivateKey',
     'eth_getTransactionCount',
     // 'eth_blockNumber',
@@ -166,7 +166,7 @@ export const main = async args => {
       raw = await signWithHardwareWallet({
         args,
         accountId: fromAddr.account.eid,
-        tx: newTx,
+        tx: toEthersTx(newTx),
         addressId: fromAddr.eid,
         device: fromAddr.account.accountGroup.vault.device,
       })
@@ -185,7 +185,6 @@ export const main = async args => {
   if (returnTxMeta) {
     return {txMeta: newTx, raw}
   }
-
   return raw
 }
 
