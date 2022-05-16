@@ -1,7 +1,7 @@
 import {useCurrentAddress} from '../../hooks/useApi'
 import {useRPC} from '@fluent-wallet/use-rpc'
 import {isUndefined} from '@fluent-wallet/checks'
-import {RPC_METHODS} from '../../constants'
+import {RPC_METHODS, NETWORK_TYPE} from '../../constants'
 
 const {WALLET_GET_IMPORT_HARDWARE_WALLET_INFO} = RPC_METHODS
 
@@ -25,7 +25,11 @@ const useImportHWParams = device => {
     let addToGroupData = null
     if (hmInfoData.length) {
       for (let i = 0; i < hmInfoData.length; i++) {
-        if (hmInfoData[i].vault.device === device) {
+        if (
+          hmInfoData[i].vault.device === device &&
+          ((netType === NETWORK_TYPE.CFX && hmInfoData[i].vault?.cfxOnly) ||
+            (netType === NETWORK_TYPE.ETH && !hmInfoData[i].vault?.cfxOnly))
+        ) {
           addToGroupData = hmInfoData[i]
           break
         }
@@ -33,7 +37,9 @@ const useImportHWParams = device => {
     }
 
     if (!addToGroupData) {
-      params.accountGroupNickname = device
+      params.accountGroupNickname = `${device}-${
+        netType === NETWORK_TYPE.CFX ? 'CFX' : 'EVM'
+      }`
       params.device = device
       params.type = netType
     } else {

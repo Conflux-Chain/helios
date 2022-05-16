@@ -1,15 +1,10 @@
 import {isNumber, isString, isArray, isUndefined} from '@fluent-wallet/checks'
-import {useMemo} from 'react'
 import {useRPC} from '@fluent-wallet/use-rpc'
 
 import {NETWORK_TYPE, RPC_METHODS} from '../constants'
 import {validateAddress, flatArray} from '../utils'
-import {encode} from '@fluent-wallet/base32-address'
-import {request} from '../utils/'
 
 const {
-  WALLET_GET_IMPORT_HARDWARE_WALLET_INFO,
-  WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT,
   QUERY_GROUP,
   QUERY_BALANCE,
   QUERY_ADDRESS,
@@ -497,61 +492,6 @@ export const useBlockchainExplorerUrl = (params, deps) => {
   return urlData
 }
 
-// data should be {[hex]: hdPath}
-export const useImportHW = ({data = {}, device = 'LedgerNanoS'}) => {
-  const params = {}
-  const hex = Object.keys(data)
-  const {
-    data: {
-      network: {eid: networkId, type: netType, netId},
-    },
-  } = useCurrentAddress()
-
-  const {
-    data: [group],
-  } = useRPC(
-    networkId
-      ? [WALLET_GET_IMPORT_HARDWARE_WALLET_INFO, 'useImportHW', device]
-      : null,
-    {
-      devices: [device],
-    },
-    {fallbackData: []},
-  )
-
-  let nextAccountIndex = 1
-  if (!group) {
-    params.accountGroupNickname = device
-    params.device = device
-    ;(params.type = netType), (params.accountGroupData = {...data})
-  } else {
-    params.accountGroupId = group.eid
-    params.accountGroupData = {...data, ...group.vault.ddata}
-    nextAccountIndex = group.account.length + 1
-  }
-
-  const base32Addrs = useMemo(() => {
-    if (!netId) return []
-    return hex.map((x, idx) => ({
-      address: encode(x, netId),
-      nickname: `${device}-${nextAccountIndex + idx}`,
-    }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...hex, netId, nextAccountIndex])
-
-  params.address = base32Addrs
-
-  return useMemo(() => {
-    if (!networkId) return async () => {}
-    return request(
-      WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT,
-      params,
-      [...hex, networkId, device],
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [networkId])
-}
-
 export const useQueryImportedAddress = networkId => {
   return useRPC(
     networkId ? [QUERY_ADDRESS, 'useQueryImportedAddress', networkId] : null,
@@ -613,10 +553,42 @@ export const useAccountList = ({
     ACCOUNT_GROUP_TYPE.PK,
     ACCOUNT_GROUP_TYPE.HW,
   ],
+  getAllNetworkAccount = false,
 }) => {
   useDbRefetchBalance()
+
+  let params = {
+    includeHidden,
+    fuzzy,
+    groupTypes,
+    addressG: {
+      nativeBalance: 1,
+      value: 1,
+      hex: 1,
+      network: {
+        ticker: 1,
+        type: 1,
+      },
+    },
+    accountG: {
+      nickname: 1,
+      eid: 1,
+      hidden: 1,
+      selected: 1,
+    },
+    groupG: {
+      nickname: 1,
+      eid: 1,
+      vault: {type: 1, cfxOnly: 1},
+    },
+  }
+
+  if (!getAllNetworkAccount) {
+    params.networkId = networkId
+  }
+
   return useRPC(
-    isUndefined(networkId)
+    isUndefined(networkId) && !getAllNetworkAccount
       ? null
       : [
           QUERY_ACCOUNT_LIST,
@@ -624,33 +596,10 @@ export const useAccountList = ({
           fuzzy,
           networkId,
           includeHidden,
+          getAllNetworkAccount ? 'getAllNetworkAccount' : '',
           ...groupTypes,
         ],
-    {
-      includeHidden,
-      fuzzy,
-      networkId,
-      groupTypes,
-      addressG: {
-        nativeBalance: 1,
-        value: 1,
-        hex: 1,
-        network: {
-          ticker: 1,
-        },
-      },
-      accountG: {
-        nickname: 1,
-        eid: 1,
-        hidden: 1,
-        selected: 1,
-      },
-      groupG: {
-        nickname: 1,
-        eid: 1,
-        vault: {type: 1},
-      },
-    },
+    params,
     {
       fallbackData: {},
     },

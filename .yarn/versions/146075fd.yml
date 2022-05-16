@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/wallet_delete-account": patch
+
+declined:
+  - helios-background
+  - browser-extension
+  - helios-popup
+  - "@fluent-wallet/component-icons"

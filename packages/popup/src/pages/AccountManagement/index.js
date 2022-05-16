@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import {isString, isArray} from '@fluent-wallet/checks'
+import {isString, isArray, isUndefined} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
 import {useHistory} from 'react-router-dom'
@@ -83,19 +83,25 @@ function AccountManagement() {
   const [refreshDataStatus, setRefreshDataStatus] = useState(false)
 
   const {data, mutate: mutateCurrentAddress} = useCurrentAddress()
-  const networkName = data?.network?.name ?? ''
   const currentNetworkId = data?.network?.eid
+
   const {data: allAccountGroups, mutate: mutateAllAccountGroups} =
     useAccountList({
-      networkId: currentNetworkId,
-      groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+      getAllNetworkAccount: true,
       includeHidden: true,
     })
+
+  const {data: pkHdAccountGroups} = useAccountList({
+    networkId: currentNetworkId,
+    groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+    includeHidden: true,
+  })
+
   const accountGroupData = searchedAccountGroup
     ? Object.values(searchedAccountGroup)
     : Object.values(allAccountGroups)
 
-  const showDelete = Object.keys(allAccountGroups).length > 1
+  const showDelete = Object.keys(pkHdAccountGroups).length > 1
 
   const onConfirmCallback = res => {
     // export account group
@@ -129,14 +135,13 @@ function AccountManagement() {
   }
 
   const onOpenConfirmPassword = (method, params) => {
-    if (!networkName) {
+    if (isUndefined(currentNetworkId)) {
       return
     }
     setOpenPasswordStatus(true)
     setRpcMethod(method)
     setConfirmParams({...params})
   }
-
   // update data when edit account / group name
   const updateEditedName = (params, rpcMethod) => {
     return new Promise((resolve, reject) => {
@@ -193,21 +198,20 @@ function AccountManagement() {
         {searchedAccountGroup && accountGroupData.length === 0 ? (
           <NoResult content={t('noResult')} imgClassName="mt-[116px]" />
         ) : (
-          Object.values(accountGroupData).map(
-            ({nickname, account, vault, eid}) => (
-              <GroupItem
-                key={eid}
-                accountGroupId={eid}
-                account={Object.values(account)}
-                nickname={nickname}
-                groupType={vault?.type}
-                onOpenConfirmPassword={onOpenConfirmPassword}
-                showDelete={showDelete}
-                currentNetworkId={currentNetworkId}
-                updateEditedName={updateEditedName}
-              />
-            ),
-          )
+          accountGroupData.map(({nickname, account, vault, eid}) => (
+            <GroupItem
+              key={eid}
+              accountGroupId={eid}
+              account={Object.values(account)}
+              nickname={nickname}
+              groupType={vault?.type}
+              isCfxHwGroup={vault?.cfxOnly}
+              onOpenConfirmPassword={onOpenConfirmPassword}
+              showDelete={showDelete}
+              currentNetworkId={currentNetworkId}
+              updateEditedName={updateEditedName}
+            />
+          ))
         )}
       </div>
 
