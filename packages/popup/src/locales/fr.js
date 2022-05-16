@@ -290,6 +290,7 @@ const fr = {
     groupDeleteWarning: 'Impossible de supprimer le groupe de compte actuel.',
     accountDeleteWarning: 'Can not delete current account.',
     accountHideWarning: 'Impossible de cacher le compte actuel.',
+    lastAccountHideWarning: 'Keep at least one account.',
     ledgerTips: 'This account(s) can only be used on {{network}}.',
 
     // Network Management

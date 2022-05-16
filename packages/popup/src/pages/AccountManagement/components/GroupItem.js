@@ -86,6 +86,7 @@ function GroupItem({
           onOpenConfirmPassword={onOpenConfirmPassword}
           currentNetworkId={currentNetworkId}
           updateEditedName={updateEditedName}
+          account={account}
         />
       ))}
       {groupType === ACCOUNT_GROUP_TYPE.HD && (
