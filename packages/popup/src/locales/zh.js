@@ -276,6 +276,7 @@ const zh = {
     groupDeleteWarning: '不能删除当前账户组',
     accountDeleteWarning: '不能删除当前账户',
     accountHideWarning: '不能隐藏当前账户',
+    lastAccountHideWarning: '至少保留一个账户',
     ledgerTips: '这些账户只能在 {{network}} 上使用',
 
     // Network Management

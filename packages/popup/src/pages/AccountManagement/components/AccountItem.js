@@ -29,6 +29,7 @@ function AccountItem({
   selected = false,
   onOpenConfirmPassword,
   updateEditedName,
+  account = [],
 }) {
   const {t} = useTranslation()
   const [inputNickname, setInputNickname] = useState(accountNickname)
@@ -52,6 +53,22 @@ function AccountItem({
         duration: 1,
       })
     }
+
+    const remainShowAccounts = account.filter(({hidden}) => !hidden)
+
+    // Each hd account group must have at least one displayed account
+    if (
+      remainShowAccounts.length === 1 &&
+      remainShowAccounts?.[0]?.eid === accountId &&
+      hidden
+    ) {
+      return Message.warning({
+        content: t('lastAccountHideWarning'),
+        top: '10px',
+        duration: 1,
+      })
+    }
+
     setHidingAccountStatus(true)
     updateEditedName({accountId, hidden}, WALLET_UPDATE_ACCOUNT).finally(() => {
       setHidingAccountStatus(false)
@@ -157,6 +174,7 @@ AccountItem.propTypes = {
   hidden: PropTypes.bool,
   accountNickname: PropTypes.string,
   onOpenConfirmPassword: PropTypes.func,
+  account: PropTypes.array,
   updateEditedName: PropTypes.func.isRequired,
 }
 
