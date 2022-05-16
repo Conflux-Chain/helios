@@ -2,6 +2,7 @@ import {useAsync} from 'react-use'
 import {useState, useEffect} from 'react'
 import {isFalse} from '@fluent-wallet/checks'
 import {useHistory} from 'react-router-dom'
+import {CurrentNetworkDisplay} from '../../components'
 import {
   Authorizing,
   OpenApp,
@@ -10,10 +11,8 @@ import {
   SearchingWallet,
 } from './components'
 import {ROUTES} from '../../constants'
-import {useQuery} from '../../hooks'
+import {useQuery, useLedgerBindingApi} from '../../hooks'
 
-import {Conflux} from '@fluent-wallet/ledger'
-const cfx = new Conflux()
 const {IMPORT_HW_ACCOUNT} = ROUTES
 
 function WalletInner() {
@@ -24,13 +23,17 @@ function WalletInner() {
   const history = useHistory()
   const query = useQuery()
 
+  const ledgerBindingApi = useLedgerBindingApi()
   const {loading, value} = useAsync(async () => {
-    const [isAuthenticated, isAppOpen] = await Promise.all([
-      cfx.isDeviceAuthed(),
-      cfx.isAppOpen(),
-    ])
-    return {isAuthenticated, isAppOpen}
-  }, [])
+    if (ledgerBindingApi) {
+      const [isAuthenticated, isAppOpen] = await Promise.all([
+        ledgerBindingApi.isDeviceAuthed(),
+        ledgerBindingApi.isAppOpen(),
+      ])
+      return {isAuthenticated, isAppOpen}
+    }
+  }, [ledgerBindingApi])
+
   useEffect(() => {
     if (value) {
       setIsAuthenticated(value.isAuthenticated)
@@ -52,9 +55,12 @@ function WalletInner() {
   }, [isAuthenticated, isAppOpen])
 
   const onConnectHwWallet = async () => {
+    if (!ledgerBindingApi) {
+      return
+    }
     setConnecting(true)
-    const authRet = await cfx.requestAuth()
-    const openRet = await cfx.isAppOpen()
+    const authRet = await ledgerBindingApi.requestAuth()
+    const openRet = await ledgerBindingApi.isAppOpen()
     setConnecting(false)
     setIsAppOpen(openRet)
     setIsAuthenticated(authRet)
@@ -62,7 +68,7 @@ function WalletInner() {
   }
   return (
     <div className="overflow-auto">
-      {loading ? (
+      {loading && ledgerBindingApi ? (
         <SearchingWallet />
       ) : connecting ? (
         <Authorizing />
@@ -79,10 +85,20 @@ function WalletInner() {
 
 function ConnectHardwareWallet() {
   return (
-    <div id="connect-hardware-wallet" className="flex flex-col h-full w-full">
-      <div className="flex-2" />
-      <WalletInner />
-      <div className="flex-3" />
+    <div id="connect-hardware-wallet" className="h-full">
+      <div className="w-screen flex justify-between px-10 p-4">
+        <img
+          className="w-auto h-6"
+          src="/images/logo-horizontal-light.svg"
+          alt="logo"
+        />
+        <CurrentNetworkDisplay />
+      </div>
+      <div className="flex flex-col h-full w-full">
+        <div className="flex-1" />
+        <WalletInner />
+        <div className="flex-2" />
+      </div>
     </div>
   )
 }

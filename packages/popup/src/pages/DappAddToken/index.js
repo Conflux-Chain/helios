@@ -1,5 +1,5 @@
 import {useTranslation} from 'react-i18next'
-import {formatBalance, CFX_DECIMALS} from '@fluent-wallet/data-format'
+import {formatBalance, COMMON_DECIMALS} from '@fluent-wallet/data-format'
 
 import {
   usePendingAuthReq,
@@ -65,7 +65,7 @@ function DappAddToken() {
                   balanceData?.[address?.toLowerCase?.()]?.[
                     req?.params?.options?.address?.toLowerCase?.()
                   ],
-                  req?.params?.options?.decimals || CFX_DECIMALS,
+                  req?.params?.options?.decimals || COMMON_DECIMALS,
                 ),
               }}
               maxWidthStyle="max-w-[184px]"

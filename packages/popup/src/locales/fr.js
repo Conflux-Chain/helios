@@ -128,6 +128,7 @@ const fr = {
     searchResults: 'Résultats de recherche',
     noResult: 'Pas de résultat',
     willSupport1559: 'EIP-1559 support coming soon.',
+    remove: 'Remove',
 
     // welcome page
     welcomeToConflux: 'Bienvenue sur Conflux Network',
@@ -287,7 +288,9 @@ const fr = {
     hide: 'Cacher',
     delete: 'Supprimer',
     groupDeleteWarning: 'Impossible de supprimer le groupe de compte actuel.',
+    accountDeleteWarning: 'Can not delete current account.',
     accountHideWarning: 'Impossible de cacher le compte actuel.',
+    ledgerTips: 'This account(s) can only be used on {{network}}.',
 
     // Network Management
     networkManagement: 'Gestion du Réseau',
@@ -349,15 +352,17 @@ const fr = {
     // hardware guard
     connectHardwareWallet: 'Connecter le Hardware Wallet',
     supportLedger: 'Ledger est supporté maintenant.',
-    ledgerGuardDes: 'Comment créer un portefeuille Conflux sur Ledger ?',
+    ledgerGuardDes: 'How to create a Conflux Core Wallet in Ledger?',
     followConnectLedgerSteps:
       'Merci de suivre les étapes ci-dessous pour connecter votre Ledger.',
     steps: 'Étapes {{number}}',
     pluginHardwareWallet:
       'Branchez votre hardware wallet sur votre ordinateur en utilisant un port USB.',
     enterPinCode: 'Entrer votre code PIN.',
-    selectConfluxApp: 'Sélectionner et ouvrir Conflux App.',
+    selectConfluxApp: 'Select and open the App for {{chainName}} in Ledger',
     ready: 'Prêt',
+    specifiedConnectedChain:
+      '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
 
     // connect hardware wallet
     searchHwWallet: 'Recherche du wallet en cours',
@@ -369,9 +374,9 @@ const fr = {
     waitForPermission: 'En attente d’autorisation',
     connectFailed: 'Connexion Échouée',
     retry: 'Réessayer',
-    openConfluxApp: 'Ouvrir Conflux App',
+    openConfluxApp: 'Open the App for {{chainName}}',
     openConfluxAppDes:
-      'Selectionner and ouvrir Conflux App sur votre dispositif Ledger.',
+      'Select and open the App for {{chainName}} in your Ledger device.',
     chooseAddress: 'Choisir une Adresse',
     hdPath: 'Chemin HD',
     chooseHwAddress: 'Choisir l’adresse que vous souhaitez importer :',
@@ -428,7 +433,7 @@ const fr = {
     ledgerIsNotConnected: 'Ledger n’est pas connecté',
     openExpandView: 'Ouvrir la vue étendue de Fluent pour vous connecter',
     hwOpenApp:
-      'Assurez-vous que Conflux App est ouverte avant de cliquer pour confirmer.',
+      'Before clicking confirm, make sure the App for {{chainName}} is open.',
 
     // error page
     errorTile: 'Erreur',

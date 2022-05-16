@@ -2,13 +2,11 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import Message from '@fluent-wallet/component-message'
-import {Conflux} from '@fluent-wallet/ledger'
 import {request} from '../utils'
 import {RPC_METHODS, TX_STATUS} from '../constants'
 import {usePendingAuthReq} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
-
-const cfxLedger = new Conflux()
+import {useLedgerBindingApi} from '../hooks'
 
 const {
   WALLET_REJECT_PENDING_AUTH_REQUSET,
@@ -41,6 +39,7 @@ function DappFooter({
 }) {
   const {t} = useTranslation()
 
+  const ledgerBindingApi = useLedgerBindingApi()
   let pendingAuthReq = usePendingAuthReq()
   pendingAuthReq = customPendingAuthReq || pendingAuthReq
 
@@ -70,8 +69,11 @@ function DappFooter({
       return
     }
     if (isHwAccount) {
-      const authStatus = await cfxLedger.isDeviceAuthed()
-      const isAppOpen = await cfxLedger.isAppOpen()
+      if (!ledgerBindingApi) {
+        return
+      }
+      const authStatus = await ledgerBindingApi.isDeviceAuthed()
+      const isAppOpen = await ledgerBindingApi.isAppOpen()
       if (!authStatus) {
         setAuthStatus(authStatus)
         return
