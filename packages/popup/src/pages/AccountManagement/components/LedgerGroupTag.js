@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import Tooltip from '@fluent-wallet/component-tooltip'
-import {CustomTag} from './'
-import {NETWORK_TYPE} from '../constants'
+import {CustomTag} from '../../../components'
+import {NETWORK_TYPE} from '../../../constants'
 
 function LedgerGroupTag({networkType}) {
   const {t} = useTranslation()

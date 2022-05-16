@@ -13,7 +13,6 @@ import {
   NoResult,
   WrapIcon,
   StretchInput,
-  LedgerGroupTag,
 } from '../../../components'
 import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
 import {RPC_METHODS, ROUTES} from '../../../constants'
@@ -30,12 +29,7 @@ function AccountItem({
   index,
 }) {
   const {t} = useTranslation()
-  const {
-    mutate,
-    data: {
-      network: {type: currentNetworkType},
-    },
-  } = useCurrentAddress()
+  const {mutate} = useCurrentAddress()
   const onChangeAccount = accountId => {
     request(WALLET_SET_CURRENT_ACCOUNT, [accountId])
       .then(() => {
@@ -55,9 +49,7 @@ function AccountItem({
 
   return (
     !!accounts.length && (
-      <div
-        className={`bg-gray-0 relative rounded ${index !== 0 ? 'mt-4' : ''}`}
-      >
+      <div className={`bg-gray-0 rounded ${index !== 0 ? 'mt-4' : ''}`}>
         {groupType !== ACCOUNT_GROUP_TYPE.PK && (
           <div className="flex items-center ml-3 pt-2.5">
             {groupType === ACCOUNT_GROUP_TYPE.HD && (
@@ -67,9 +59,6 @@ function AccountItem({
             )}
             <p className="text-gray-40 text-xs">{nickname}</p>
           </div>
-        )}
-        {groupType === ACCOUNT_GROUP_TYPE.HW && (
-          <LedgerGroupTag networkType={currentNetworkType} />
         )}
         {accounts.map(
           ({

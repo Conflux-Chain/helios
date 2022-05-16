@@ -3,8 +3,8 @@ import {useState} from 'react'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS, NETWORK_TYPE} from '../../../constants'
-import {AccountItem} from './'
-import {TextField, WrapIcon, LedgerGroupTag} from '../../../components'
+import {AccountItem, LedgerGroupTag} from './'
+import {TextField, WrapIcon} from '../../../components'
 
 const {
   WALLET_EXPORT_ACCOUNT_GROUP,
