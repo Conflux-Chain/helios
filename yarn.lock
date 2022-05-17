@@ -6817,6 +6817,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_delete-memo@workspace:*, @fluent-wallet/wallet_delete-memo@workspace:packages/rpcs/wallet_deleteMemo":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_delete-memo@workspace:packages/rpcs/wallet_deleteMemo"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_delete-network@workspace:packages/rpcs/wallet_deleteNetwork":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_delete-network@workspace:packages/rpcs/wallet_deleteNetwork"
@@ -7374,6 +7382,15 @@ __metadata:
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
     "@fluent-wallet/token-list-schema": "workspace:packages/token-list-schema"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_upsert-memo@workspace:*, @fluent-wallet/wallet_upsert-memo@workspace:packages/rpcs/wallet_upsertMemo":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_upsert-memo@workspace:packages/rpcs/wallet_upsertMemo"
+  dependencies:
+    "@fluent-wallet/base32-address": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -19767,6 +19784,7 @@ __metadata:
     "@fluent-wallet/wallet_delete-account": "workspace:*"
     "@fluent-wallet/wallet_delete-account-group": "workspace:packages/rpcs/wallet_deleteAccountGroup"
     "@fluent-wallet/wallet_delete-app": "workspace:packages/rpcs/wallet_deleteApp"
+    "@fluent-wallet/wallet_delete-memo": "workspace:*"
     "@fluent-wallet/wallet_delete-network": "workspace:packages/rpcs/wallet_deleteNetwork"
     "@fluent-wallet/wallet_detect-address-type": "workspace:packages/rpcs/wallet_detectAddressType"
     "@fluent-wallet/wallet_detect-network-type": "workspace:packages/rpcs/wallet_detectNetworkType"
@@ -19826,6 +19844,7 @@ __metadata:
     "@fluent-wallet/wallet_update-account-group": "workspace:packages/rpcs/wallet_updateAccountGroup"
     "@fluent-wallet/wallet_update-network": "workspace:*"
     "@fluent-wallet/wallet_update-token-list": "workspace:packages/rpcs/wallet_updateTokenList"
+    "@fluent-wallet/wallet_upsert-memo": "workspace:*"
     "@fluent-wallet/wallet_user-approved-auth-request": "workspace:packages/rpcs/wallet_userApprovedAuthRequest"
     "@fluent-wallet/wallet_user-rejected-auth-request": "workspace:packages/rpcs/wallet_userRejectedAuthRequest"
     "@fluent-wallet/wallet_validate-app-permissions": "workspace:packages/rpcs/wallet_validateAppPermissions"

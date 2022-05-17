@@ -262,6 +262,16 @@ const schema = {
       ref: true,
     },
   },
+
+  // # memo
+  memo: {
+    id: {tuples: ['memo/address', 'memo/value'], identity: true},
+    address: {doc: 'address string'},
+    value: {doc: 'memo content'},
+    type: {doc: 'eth/cfx'},
+  },
+
+  // # db
   dbmeta: {version: {doc: 'db version'}},
 }
 
