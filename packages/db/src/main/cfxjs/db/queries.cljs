@@ -1,7 +1,7 @@
 (ns cfxjs.db.queries
   (:require
    [lambdaisland.glogi :as log]
-   [better-cond.core :as bc]
+   [better-cond.core :as bc :refer [defnc]]
    [taoensso.encore :as enc]
    [medley.core :refer [deep-merge]]
    ["@ethersproject/bignumber" :as bn]
@@ -1043,6 +1043,51 @@
              rst           (apply q query (:args query-initial))]
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
+(defnc get-memo [{:keys [address type fuzzy g limit offset]}]
+  :let [g            (and g {:memo g})
+        limit (or limit 100)
+        offset (or offset 0)
+        fuzzy        (if (string? fuzzy)
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 (.trim)
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)
+        ;; id to data by `g`
+        post-process (if (seq g) identity #(get % :db/id))
+        post-process (fn [rst] (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))
+        addr         (cond (coll? address) address (string? address) [address] :else nil)]
+
+  :let [query-initial (cond-> '{:find [[?m ...]]
+                                :in [$]
+                                :where []
+                                :args []}
+                        addr
+                        (-> (update :args conj addr)
+                            (update :in conj '[?addr ...])
+                            (update :where conj '[?m :memo/address ?addr]))
+                        type
+                        (-> (update :args conj type)
+                            (update :in conj '?type)
+                            (update :where conj '[?m :memo/type ?type]))
+                        fuzzy
+                        (-> (update :args conj fuzzy)
+                            (update :in conj '?fuzzy)
+                            (update :where conj
+                                    '[?m :memo/value ?v]
+                                    '[(re-find ?fuzzy ?v)]))
+
+                        (and (not addr) (not type) (not fuzzy))
+                        (-> (update :where conj '[?m :memo/address _])))
+        query         (concat [:find] (:find query-initial)
+                              [:in] (:in query-initial)
+                              [:where] (:where query-initial))
+        rst          (apply q query (:args query-initial))
+        rst (->> rst reverse (drop offset) (take limit) post-process)]
+  rst)
+
 (defn- cleanup-token-list-after-delete-address []
   (let [tokens (q '[:find [?t ...]
                     :where
@@ -1592,15 +1637,24 @@
     false))
 
 (defn query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
-  (let [offset    (or offset 0)
-        limit     (min 100 (or limit 10))
+  (let [offset (or offset 0)
+        limit  (min 100 (or limit 10))
         [status> status>= status< status<=]
         (if (map? status) [(:gt status)
                            (:gte status)
                            (:lt status)
                            (:lte status)]
             (repeat 4 nil))
-        extraType (if extraType (keyword "txExtra" extraType) extraType)
+
+        extraType (if (map? extraType) extraType nil)
+
+        {ext-and :and ext-or :or} extraType
+
+        ext-and-where (and (seq ext-and) (mapv (fn [[k v]] ['?extra (keyword "txExtra" k) v]) ext-and))
+        ext-and-where (and ext-and-where (into ['[?tx :tx/txExtra ?extra]] ext-and-where))
+        ext-or-where  (and (seq ext-or) (mapv (fn [[k v]] ['?extra (keyword "txExtra" k) v]) ext-or))
+        ext-or-where  (and ext-or-where (vector '[?tx :tx/txExtra ?extra] (cons 'or ext-or-where)))
+
         query-initial
         (cond-> '{:find  [?nonce ?tx (pull ?tx [:app/_tx [:db/id]]) (pull ?tx [:token/_tx [:db/id]])]
                   :in    [$]
@@ -1619,11 +1673,10 @@
           (-> (update :args conj appId)
               (update :in conj '?target-app)
               (update :where conj '[?target-app :app/tx ?tx]))
-          extraType
-          (-> (update :args conj extraType)
-              (update :in conj '?extraType)
-              (update :where into '[[?tx :tx/txExtra ?extra]
-                                    [?extra ?extraType true]]))
+          ext-and-where
+          (-> (update :where into ext-and-where))
+          ext-or-where
+          (-> (update :where into ext-or-where))
           (int? status)
           (-> (update :args conj status)
               (update :in conj '?target-status)
@@ -1655,9 +1708,9 @@
               (update :where into '[[?tx :tx/status ?status]
                                     [(<= ?status ?status<=)]]))
           true identity)
-        query     (concat [:find] (:find query-initial)
-                          [:in] (:in query-initial)
-                          [:where] (:where query-initial))
+        query (concat [:find] (:find query-initial)
+                      [:in] (:in query-initial)
+                      [:where] (:where query-initial))
 
         txs   (->> (apply q query (:args query-initial))
                    (sort sort-tx)
@@ -1669,7 +1722,7 @@
     (if countOnly total
         {:total total
          :data  (mapv (fn [[tx app token]]
-                        (let [app (-> app :app/_tx first :db/id)
+                        (let [app   (-> app :app/_tx first :db/id)
                               token (-> token :token/_tx first :db/id)]
                           (-> (.toMap (e :tx tx))
                               (assoc :app (and app (e :app app)))
@@ -1759,6 +1812,7 @@
               :queryqueryAddress          get-address
               :queryqueryNetwork          get-network
               :queryqueryAccount          get-account
+              :queryqueryMemo             get-memo
               :queryqueryAccountGroup     get-account-group
               :queryqueryAccountList      get-account-list
               :queryqueryToken            get-token

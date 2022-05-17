@@ -3,6 +3,8 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletDeleteMemo from '@fluent-wallet/wallet_delete-memo'
+import * as walletUpsertMemo from '@fluent-wallet/wallet_upsert-memo'
 import * as walletDeleteAccount from '@fluent-wallet/wallet_delete-account'
 import * as walletGetBlockTime from '@fluent-wallet/wallet_get-block-time'
 import * as ethGetLogs from '@fluent-wallet/eth_get-logs'
@@ -349,6 +351,8 @@ export const rpcEngineOpts = {
     walletGetFluentMetadata,
     walletGetPreferences,
     walletSetPreferences,
+    walletUpsertMemo,
+    walletDeleteMemo,
     walletGetBlockTime,
 
     walletAfterUnlock,
