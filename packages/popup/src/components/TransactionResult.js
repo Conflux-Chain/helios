@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
@@ -20,17 +21,37 @@ function TransactionResult({status, sendError, onClose}) {
   const {errorType} = networkTypeIsCfx
     ? cfxProcessError(sendError)
     : ethProcessError(sendError)
-  const title = isWaiting
-    ? t('waitingForSign')
-    : isRejected
-    ? t('rejected')
-    : t(errorType)
 
-  const content = isWaiting
-    ? t('waitingContent')
-    : isRejected
-    ? t('rejectedContent')
-    : errorMessage
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
+  const [displayWaiting, setDisplayWaiting] = useState(isWaiting)
+
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+    setTitle(
+      isWaiting
+        ? t('waitingForSign')
+        : isRejected
+        ? t('rejected')
+        : t(errorType),
+    )
+    setContent(
+      isWaiting
+        ? t('waitingContent')
+        : isRejected
+        ? t('rejectedContent')
+        : errorMessage,
+    )
+  }, [isWaiting, isRejected, open, t, errorType, errorMessage])
+
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+    setDisplayWaiting(isWaiting)
+  }, [isWaiting, open])
 
   return (
     <Modal
@@ -61,10 +82,14 @@ function TransactionResult({status, sendError, onClose}) {
         </div>
       }
       icon={
-        !isWaiting ? <CloseCircleFilled className="text-error" /> : <Loading />
+        displayWaiting ? (
+          <Loading />
+        ) : (
+          <CloseCircleFilled className="text-error" />
+        )
       }
       actions={
-        !isWaiting ? (
+        !displayWaiting ? (
           <Button
             fullWidth={true}
             onClick={() => {
