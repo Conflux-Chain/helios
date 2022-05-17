@@ -130,7 +130,6 @@ function ImportHwAccount() {
           e?.appCode == 5031
             ? t('refreshLater')
             : e?.message ?? t('unCaughtErrMsg'),
-        top: '110px',
         duration: 1,
       })
     }
@@ -252,7 +251,6 @@ function ImportHwAccount() {
         setImportStatus('')
         Message.error({
           content: e?.message ?? t('unCaughtErrMsg'),
-          top: '110px',
           duration: 1,
         })
       })
@@ -267,7 +265,7 @@ function ImportHwAccount() {
   return (
     <div
       id="import-hw-account"
-      className="flex flex-col h-full w-full overflow-auto no-scroll"
+      className="flex flex-col h-full w-full overflow-auto no-scroll w-screen"
     >
       <div className="flex-2" />
       <div className="w-120 rounded-2xl shadow-fluent-3 px-8 pb-6 m-auto">
