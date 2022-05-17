@@ -27,7 +27,7 @@ export const ADDRESS_TYPES = ['user', 'contract', 'builtin', 'null']
 export const DEFAULT_CURRENCY_DECIMALS = 18
 
 export const CFX_MAINNET_RPC_ENDPOINT = 'https://portal-main.confluxrpc.com'
-export const CFX_MAINNET_NAME = 'Conflux Hydra'
+export const CFX_MAINNET_NAME = 'Conflux Mainnet'
 export const CFX_MAINNET_CHAINID = '0x405'
 export const CFX_MAINNET_NETID = 1029
 export const CFX_MAINNET_CURRENCY_SYMBOL = 'CFX'
