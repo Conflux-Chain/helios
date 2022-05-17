@@ -17,7 +17,7 @@ import {
 import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
 import {RPC_METHODS, ROUTES} from '../../../constants'
 
-const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
+const {WALLET_SET_CURRENT_ACCOUNT, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 const {SELECT_CREATE_TYPE} = ROUTES
 
 function AccountItem({
@@ -50,9 +50,9 @@ function AccountItem({
   return (
     !!accounts.length && (
       <div className={`bg-gray-0 rounded ${index !== 0 ? 'mt-4' : ''}`}>
-        {groupType === 'pk' ? null : (
+        {groupType !== ACCOUNT_GROUP_TYPE.PK && (
           <div className="flex items-center ml-3 pt-2.5">
-            {groupType === 'hd' && (
+            {groupType === ACCOUNT_GROUP_TYPE.HD && (
               <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
                 <img src="/images/seed-group-icon.svg" alt="group-icon" />
               </WrapIcon>

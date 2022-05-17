@@ -25,7 +25,7 @@ export const main = async ({
   const account = findAccount({
     accountId,
     g: {
-      _accountGroup: {vault: {type: 1, data: 1}, account: 1},
+      _accountGroup: {eid: 1, vault: {type: 1, data: 1}, account: 1},
       address: {value: 1},
     },
   })

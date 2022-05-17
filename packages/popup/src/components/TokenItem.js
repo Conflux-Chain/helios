@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {CFX_DECIMALS} from '@fluent-wallet/data-format'
+import {COMMON_DECIMALS} from '@fluent-wallet/data-format'
 import PropTypes from 'prop-types'
 import Text from './Text'
 import {
@@ -74,7 +74,7 @@ function TokenItem({
               balance={balance}
               maxWidthStyle={maxWidthStyle}
               maxWidth={maxWidth}
-              decimals={decimals || CFX_DECIMALS}
+              decimals={decimals || COMMON_DECIMALS}
             />
             {rightIcon && <span className="ml-5">{rightIcon}</span>}
           </div>

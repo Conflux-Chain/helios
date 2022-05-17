@@ -2,31 +2,15 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
-import {useCurrentDapp, useCurrentAddress} from '../../../hooks/useApi'
+import {useCurrentDapp} from '../../../hooks/useApi'
 import {useCurrentTxParams} from '../../../hooks'
-import {DisplayBalance, WrapIcon} from '../../../components'
+import {
+  DisplayBalance,
+  WrapIcon,
+  CurrentNetworkDisplay,
+} from '../../../components'
 import {ROUTES} from '../../../constants'
 const {EDIT_ALLOWANCE} = ROUTES
-
-// TODO: use network id
-const CurrentNetworkDisplay = ({currentNetwork}) => {
-  const {name, icon} = currentNetwork || {}
-
-  return (
-    <div className="flex items-center">
-      <img
-        className="w-4 h-4 mr-1"
-        src={icon || '/images/default-network-icon.svg'}
-        alt="logo"
-      />
-      <span className="text-gray-80 mr-1">{name}</span>
-    </div>
-  )
-}
-
-CurrentNetworkDisplay.propTypes = {
-  currentNetwork: PropTypes.object,
-}
 
 function InfoList({
   isDapp,
@@ -40,18 +24,19 @@ function InfoList({
   const {t} = useTranslation()
   const history = useHistory()
   const data = useCurrentDapp()
-  const {
-    data: {network},
-  } = useCurrentAddress()
   const {customAllowance} = useCurrentTxParams()
   const [{app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const currentDapp = isDapp ? app : data?.app
-  const currentNetwork = isDapp ? app?.currentNetwork : network
+  const currentNetwork = isDapp ? app?.currentNetwork : {}
+
   return (
     <div className="info-list-container flex flex-col">
       <div className="flex justify-between mb-4">
         <span className="text-gray-40">{t('network')}</span>
-        <CurrentNetworkDisplay currentNetwork={currentNetwork} />
+        <CurrentNetworkDisplay
+          contentClassName="mr-1"
+          currentNetwork={currentNetwork}
+        />
       </div>
       {isApproveToken && (
         <div className="flex justify-between mb-4">

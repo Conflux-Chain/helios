@@ -1,8 +1,15 @@
-import {PlusOutlined, SelectedOutlined} from '@fluent-wallet/component-icons'
+import {
+  PlusOutlined,
+  SelectedOutlined,
+  CloseOutlined,
+} from '@fluent-wallet/component-icons'
+import {isNumber} from '@fluent-wallet/checks'
 import {useDebounce} from 'react-use'
 import PropTypes from 'prop-types'
 import {useState, useMemo} from 'react'
 import {useTranslation} from 'react-i18next'
+import Message from '@fluent-wallet/component-message'
+import Tooltip from '@fluent-wallet/component-tooltip'
 import {
   SearchInput,
   SlideCard,
@@ -22,11 +29,13 @@ import {
 } from '../../../hooks/useApi'
 import {request, validateAddress} from '../../../utils'
 
-const {WALLET_WATCH_ASSET} = RPC_METHODS
+const {WALLET_WATCH_ASSET, WALLET_UNWATCH_ASSET} = RPC_METHODS
 
 function AddToken({onClose, open}) {
   const {t} = useTranslation()
   const [searchContent, setSearchContent] = useState('')
+  const [showDeleteButtonTokenId, setShowDeleteButtonTokenId] = useState('')
+
   const [debouncedSearchContent, setDebouncedSearchContent] =
     useState(searchContent)
   const [mutateAddrTokenBalance] = useDbRefetchBalance()
@@ -73,7 +82,7 @@ function AddToken({onClose, open}) {
 
   const onAddToken = token => {
     let params
-    if (Number.isInteger(token)) {
+    if (isNumber(token)) {
       params = {tokenId: token}
     } else {
       const {decimals, symbol, address, logoURI} = token
@@ -87,18 +96,54 @@ function AddToken({onClose, open}) {
         },
       }
     }
-    request(WALLET_WATCH_ASSET, params).then(() => {
-      // TODO: error
-      mutateAddrTokenBalance().then(() => {
-        mutateNetworkTokens()
-        mutateAddressTokens()
+    request(WALLET_WATCH_ASSET, params)
+      .then(() => {
+        mutateAddrTokenBalance().then(() => {
+          mutateNetworkTokens()
+          mutateAddressTokens()
+        })
       })
-    })
+      .catch(e => {
+        Message.error({
+          content: e?.message ?? t('unCaughtErrMsg'),
+          top: '10px',
+          duration: 1,
+        })
+      })
+  }
+
+  const onDeleteToken = token => {
+    if (!isNumber(token) || !addressId) {
+      return
+    }
+
+    request(WALLET_UNWATCH_ASSET, {tokenId: token, addressId})
+      .then(() => {
+        mutateAddrTokenBalance().then(() => {
+          mutateNetworkTokens()
+          mutateAddressTokens()
+        })
+      })
+      .catch(e => {
+        Message.error({
+          content: e?.message ?? t('unCaughtErrMsg'),
+          top: '10px',
+          duration: 1,
+        })
+      })
   }
 
   const onCloseAddToken = () => {
     onClose && onClose()
     setSearchContent('')
+  }
+
+  const onRightIconClick = (token, added) => {
+    if (added) {
+      onDeleteToken(token)
+    } else {
+      onAddToken(token)
+    }
   }
 
   return (
@@ -127,13 +172,26 @@ function AddToken({onClose, open}) {
                     maxWidth={135}
                     maxWidthStyle="max-w-[135px]"
                     id={`tokenItem-${token}`}
+                    onMouseEnter={() =>
+                      added &&
+                      isNumber(token) &&
+                      setShowDeleteButtonTokenId(token)
+                    }
+                    onMouseLeave={() => setShowDeleteButtonTokenId('')}
                     rightIcon={
                       <WrapIcon
                         size="w-5 h-5"
-                        onClick={() => !added && onAddToken(token)}
+                        onClick={() => onRightIconClick(token, added)}
                       >
                         {added ? (
-                          <SelectedOutlined className="w-3 h-3 text-gray-40" />
+                          isNumber(showDeleteButtonTokenId) &&
+                          showDeleteButtonTokenId === token ? (
+                            <Tooltip content={t('remove')}>
+                              <CloseOutlined className="w-3 h-3 text-error" />
+                            </Tooltip>
+                          ) : (
+                            <SelectedOutlined className="w-3 h-3 text-gray-40" />
+                          )
                         ) : (
                           <PlusOutlined className="w-3 h-3 text-primary" />
                         )}
