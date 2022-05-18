@@ -68,7 +68,6 @@ function SendTransaction() {
         ? {[tokenAddress]: convertValueToData(sendAmount, decimals)}
         : {},
     ) || {}
-  console.log(estimateRst)
   const {
     gasPrice,
     gasLimit,
