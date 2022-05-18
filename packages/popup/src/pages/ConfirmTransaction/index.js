@@ -162,6 +162,7 @@ function ConfirmTransaction() {
   if (!params.storageLimit) delete params.storageLimit
   if (!params.data) delete params.data
   const sendParams = [params]
+
   const {address: displayTokenAddress} = displayToken || {}
 
   const isNativeToken = !displayTokenAddress
