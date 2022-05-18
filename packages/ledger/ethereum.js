@@ -217,7 +217,7 @@ export default class Ethereum {
       error.appCode = ERROR.INVALID_CHANNEL.CODE
     }
     if (error?.message?.includes('UNKNOWN_ERROR')) {
-      error.message = `Ledger connection error, please make sure the Ledger device is unlocked and open the Conflux App, and reopen this page. ${
+      error.message = `Ledger connection error, please make sure the Ledger device is unlocked and open the Ethereum App, and reopen this page. ${
         error?.statusCode ? '(0x' + error?.statusCode?.toString(16) + ')' : ''
       }`
     }
