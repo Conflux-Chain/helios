@@ -286,6 +286,7 @@ const ru = {
     groupDeleteWarning: 'Нельзя удалить данную группу аккаунтов.',
     accountDeleteWarning: 'Can not delete current account.',
     accountHideWarning: 'Нельзя скрыть данный аккаунт.',
+    lastAccountHideWarning: 'Keep at least one account.',
     ledgerTips: 'This account(s) can only be used on {{network}}.',
 
     // Управление сетями
