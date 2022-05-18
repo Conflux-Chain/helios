@@ -501,6 +501,11 @@ export const useCheckImage = url => {
   return isImg
 }
 
+export const useDappIcon = url => {
+  const isImgUrl = useCheckImage(url)
+  return isImgUrl ? url : '/images/default-dapp-icon.svg'
+}
+
 export const useLedgerBindingApi = () => {
   const {
     data: {
