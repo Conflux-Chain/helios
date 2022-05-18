@@ -34,6 +34,7 @@ import {
   useValid20Token,
   usePendingAuthReq,
   useGasPrice,
+  useBalance,
 } from './useApi'
 import {validateAddress} from '../utils'
 
@@ -161,15 +162,24 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   ])
 
   const estimateGasPrice = useGasPrice(type)
+  const balances = useBalance(
+    from,
+    currentNetwork?.netId,
+    ['0x0'].concat(Object.keys(tokensAmount)),
+  )?.[from?.toLowerCase()]
 
-  if (gas && storageLimit) {
+  if (!!gas && !!storageLimit) {
     const newTx = {
       gas,
       storageLimit,
       gasPrice: gasPrice || estimateGasPrice,
       value,
+      tokensAmount,
     }
-    return type === 'cfx' ? cfxGetFeeData(newTx) : ethGetFeeData(newTx)
+    const newBalances = {balance: balances['0x0'], tokensBalance: balances}
+    return type === 'cfx'
+      ? cfxGetFeeData(newTx, newBalances)
+      : ethGetFeeData(newTx, newBalances)
   }
 
   if (loading) {

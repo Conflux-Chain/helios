@@ -1,4 +1,4 @@
-import {isNumber, isString, isArray, isUndefined} from '@fluent-wallet/checks'
+import {isNumber, isArray, isUndefined} from '@fluent-wallet/checks'
 import {useRPC} from '@fluent-wallet/use-rpc'
 
 import {NETWORK_TYPE, RPC_METHODS} from '../constants'
@@ -255,13 +255,18 @@ export const useBalance = (
       ? [address]
       : address
     : null
+  const tokenAddress = tokenContractAddress
+    ? typeof tokenContractAddress === 'string'
+      ? [tokenContractAddress]
+      : tokenContractAddress
+    : null
   const {data: balance} = useRPC(
-    userAddress && isNumber(networkId) && isString(tokenContractAddress)
-      ? [WALLET_GET_BALANCE, networkId, tokenContractAddress, ...userAddress]
+    isArray(userAddress) && isNumber(networkId) && isArray(tokenAddress)
+      ? [WALLET_GET_BALANCE, networkId, ...tokenAddress, ...userAddress]
       : null,
     {
       users: userAddress,
-      tokens: [tokenContractAddress],
+      tokens: tokenAddress,
     },
     {fallbackData: {}},
   )
