@@ -119,9 +119,9 @@ export const useNetwork = () => {
 }
 
 export const useGasPrice = type => {
-  const method = type === 'cfx' ? CFX_GASPRICE : ETH_GASPRICE
+  const method = type === NETWORK_TYPE.CFX ? CFX_GASPRICE : ETH_GASPRICE
   const {data: gasPrice} = useRPC([method, type], undefined, {
-    fallbackData: type === 'cfx' ? '0x3b9aca00' : undefined,
+    fallbackData: type === NETWORK_TYPE.CFX ? '0x3b9aca00' : undefined,
   })
   return gasPrice
 }
