@@ -4,6 +4,7 @@ import {AuthorizeModal, DisconnectModal} from '../components'
 import {request} from '../../../utils'
 import useGlobalStore from '../../../stores/index.js'
 import {useCurrentDapp, useCurrentAddress} from '../../../hooks/useApi'
+import {useDappIcon} from '../../../hooks'
 import {RPC_METHODS} from '../../../constants'
 const {WALLET_REQUEST_PERMISSIONS, WALLET_DELETE_APP} = RPC_METHODS
 
@@ -24,6 +25,7 @@ function CurrentDapp() {
       account: {nickname: currentNickname, eid: currentEid},
     },
   } = useCurrentAddress()
+  const dappIconUrl = useDappIcon(icon)
   const isConnected = !!data?.app
   const isConnectedCurrentAccount = connectedEid === currentEid
   const connectedAccounts =
@@ -63,11 +65,7 @@ function CurrentDapp() {
       {isConnected && (
         <>
           <div className="flex items-center justify-center border border-gray-20 w-8 h-8 rounded-full mr-2">
-            <img
-              className="w-6 h-6"
-              src={icon || '/images/default-dapp-icon.svg'}
-              alt="logo"
-            />
+            <img className="w-6 h-6" src={dappIconUrl} alt="logo" />
           </div>
           <div className="flex flex-col flex-1 items-center">
             <div className="flex w-full items-center justify-between mb-0.5">

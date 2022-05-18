@@ -4,7 +4,7 @@ import {useCurrentDapp} from '../../../hooks/useApi'
 const getAuthorizedAccountIdIcon = (accounts, icon) => {
   const accountIcons = {}
   accounts.forEach(({eid}) => {
-    accountIcons[eid] = icon || '/images/default-dapp-icon.svg'
+    accountIcons[eid] = icon
   })
   return accountIcons
 }

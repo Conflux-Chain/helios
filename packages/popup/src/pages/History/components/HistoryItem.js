@@ -22,7 +22,7 @@ import {
   formatIntoChecksumAddress,
 } from '../../../utils'
 import {useNetworkTypeIsCfx, useCurrentTicker} from '../../../hooks/useApi'
-import {useDecodeData} from '../../../hooks'
+import {useDecodeData, useDappIcon} from '../../../hooks'
 import {
   WrapIcon,
   CopyButton,
@@ -70,6 +70,7 @@ function HistoryItem({
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
+  const dappIconUrl = useDappIcon(app?.site?.icon)
   const {
     symbol: tokenSymbol,
     name: tokenName,
@@ -254,11 +255,7 @@ function HistoryItem({
           } w-8 h-8 rounded-full border-solid border flex items-center justify-center mr-2`}
         >
           {app ? (
-            <img
-              src={app?.site?.icon || '/images/default-dapp-icon.svg'}
-              alt="favicon"
-              className="w-4 h-4"
-            />
+            <img src={dappIconUrl} alt="favicon" className="w-4 h-4" />
           ) : (
             <SendOutlined className="w-4 h-4 text-success" />
           )}

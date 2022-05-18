@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
 import {useCurrentDapp} from '../../../hooks/useApi'
-import {useCurrentTxParams} from '../../../hooks'
+import {useCurrentTxParams, useDappIcon} from '../../../hooks'
 import {
   DisplayBalance,
   WrapIcon,
@@ -28,6 +28,8 @@ function InfoList({
   const [{app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const currentDapp = isDapp ? app : data?.app
   const currentNetwork = isDapp ? app?.currentNetwork : {}
+
+  const dappIconUrl = useDappIcon(currentDapp?.site?.icon)
 
   return (
     <div className="info-list-container flex flex-col">
@@ -75,7 +77,7 @@ function InfoList({
             id="currentDapp"
           >
             <img
-              src={currentDapp?.site?.icon || '/images/default-dapp-icon.svg'}
+              src={dappIconUrl}
               alt="icon"
               className="w-4 h-4 mr-1 shrink-0"
               id="currentDappIcon"
