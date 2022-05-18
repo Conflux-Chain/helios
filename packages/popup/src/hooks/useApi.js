@@ -29,6 +29,8 @@ const {
   WALLET_GET_FLUENT_METADATA,
   CFX_GET_MAX_GAS_LIMIT,
   WALLET_GET_PREFERENCES,
+  CFX_GASPRICE,
+  ETH_GASPRICE,
 } = RPC_METHODS
 
 export const useCurrentAddress = (notSendReq = false) => {
@@ -114,6 +116,14 @@ export const useNetwork = () => {
     fallbackData: [],
   })
   return networkData
+}
+
+export const useGasPrice = type => {
+  const method = type === 'cfx' ? CFX_GASPRICE : ETH_GASPRICE
+  const {data: gasPrice} = useRPC([method, type], undefined, {
+    fallbackData: type === 'cfx' ? '0x3b9aca00' : '0x1',
+  })
+  return gasPrice
 }
 
 export const useCfxNetwork = () => {

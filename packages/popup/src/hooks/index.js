@@ -4,7 +4,11 @@ import {useTranslation} from 'react-i18next'
 import create from 'zustand'
 import {useAsync} from 'react-use'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
-import {estimate} from '@fluent-wallet/estimate-tx'
+import {
+  estimate,
+  cfxGetFeeData,
+  ethGetFeeData,
+} from '@fluent-wallet/estimate-tx'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
 import {Conflux, Ethereum} from '@fluent-wallet/ledger'
@@ -29,6 +33,7 @@ import {
   useAddressType,
   useValid20Token,
   usePendingAuthReq,
+  useGasPrice,
 } from './useApi'
 import {validateAddress} from '../utils'
 
@@ -126,7 +131,8 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
       !provider ||
       !currentNetwork?.netId ||
       (!to && !data) ||
-      !network.chainId
+      !network.chainId ||
+      (!!gas && !!storageLimit)
     )
       return
     return await estimate(tx, {
@@ -153,6 +159,18 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     Object.keys(tokensAmount)?.[0],
     type,
   ])
+
+  const estimateGasPrice = useGasPrice(type)
+
+  if (gas && storageLimit) {
+    const newTx = {
+      gas,
+      storageLimit,
+      gasPrice: gasPrice || estimateGasPrice,
+      value,
+    }
+    return type === 'cfx' ? cfxGetFeeData(newTx) : ethGetFeeData(newTx)
+  }
 
   if (loading) {
     return {loading}
