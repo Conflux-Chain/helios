@@ -1,4 +1,8 @@
 import {useState, useCallback} from 'react'
+import {
+  CFX_MAINNET_CHAINID,
+  CFX_ESPACE_MAINNET_CHAINID,
+} from '@fluent-wallet/consts'
 import {useQuery} from '../../hooks'
 import {useTxList, useCurrentAddress} from '../../hooks/useApi'
 import {useEffectOnce} from 'react-use'
@@ -125,7 +129,8 @@ function Home() {
             </div>
           </div>
           {/* only conflux main network show cross space button */}
-          {(network?.chainId === '0x405' || network?.chainId === '0x406') && (
+          {(network?.chainId === CFX_MAINNET_CHAINID ||
+            network?.chainId === CFX_ESPACE_MAINNET_CHAINID) && (
             <CrossSpaceButton />
           )}
         </div>
