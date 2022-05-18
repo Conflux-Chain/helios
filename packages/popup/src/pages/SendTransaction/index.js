@@ -169,6 +169,7 @@ function SendTransaction() {
             onChangeToken={onChangeToken}
             isNativeToken={isNativeToken}
             nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
+            loading={loading}
           />
           <div className="overflow-hidden">
             <div
