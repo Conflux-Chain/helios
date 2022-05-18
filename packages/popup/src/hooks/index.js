@@ -116,7 +116,7 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   const {
     data: {network},
   } = useCurrentAddress()
-  const currentNetwork = network?.type ? network : {type: NETWORK_TYPE.CFX}
+  const currentNetwork = network || {type: NETWORK_TYPE.CFX}
   const {type} = currentNetwork
   const {from, to, value, data, nonce, gasPrice, gas, storageLimit} = tx
   const {
@@ -158,23 +158,38 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   ])
 
   const estimateGasPrice = useGasPrice(type)
-  const balances = useBalance(
-    from,
-    currentNetwork?.netId,
-    ['0x0'].concat(Object.keys(tokensAmount)),
-  )?.[from?.toLowerCase()]
+  const balances =
+    useBalance(
+      from,
+      currentNetwork?.netId,
+      ['0x0'].concat(Object.keys(tokensAmount)),
+    )?.[from?.toLowerCase()] || {}
+
+  const calcData = useMemo(() => {
+    if (!!gas && !!storageLimit)
+      return getFeeData(
+        {
+          gas,
+          storageLimit,
+          gasPrice: gasPrice || estimateGasPrice,
+          value,
+          tokensAmount,
+        },
+        {balance: balances?.['0x0'], tokensBalance: balances, type},
+      )
+  }, [
+    estimateGasPrice,
+    gas,
+    storageLimit,
+    gasPrice,
+    value,
+    Object.keys(tokensAmount)?.[0],
+    Object.keys(balances)?.[0],
+    type,
+  ])
 
   if (!!gas && !!storageLimit) {
-    return getFeeData(
-      {
-        gas,
-        storageLimit,
-        gasPrice: gasPrice || estimateGasPrice,
-        value,
-        tokensAmount,
-      },
-      {balance: balances?.['0x0'], tokensBalance: balances, type},
-    )
+    return calcData
   }
 
   if (loading) {
