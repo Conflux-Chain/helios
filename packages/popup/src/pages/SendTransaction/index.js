@@ -68,6 +68,7 @@ function SendTransaction() {
         ? {[tokenAddress]: convertValueToData(sendAmount, decimals)}
         : {},
     ) || {}
+  console.log(estimateRst)
   const {
     gasPrice,
     gasLimit,
@@ -169,6 +170,7 @@ function SendTransaction() {
             onChangeToken={onChangeToken}
             isNativeToken={isNativeToken}
             nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
+            loading={loading}
           />
           <div className="overflow-hidden">
             <div

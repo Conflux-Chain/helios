@@ -72,6 +72,7 @@ function TokenAndAmount({
   onChangeAmount,
   isNativeToken,
   nativeMax,
+  loading,
 }) {
   const {t} = useTranslation()
   const [tokenListShow, setTokenListShow] = useState(false)
@@ -111,6 +112,7 @@ function TokenAndAmount({
     </span>
   )
   const onClickMax = () => {
+    if (loading) return
     if (isNativeToken) onChangeAmount(nativeMax)
     else onChangeAmount(convertDataToValue(balance, decimals))
   }
@@ -166,6 +168,7 @@ TokenAndAmount.propTypes = {
   onChangeAmount: PropTypes.func,
   isNativeToken: PropTypes.bool,
   nativeMax: PropTypes.string,
+  loading: PropTypes.bool,
 }
 
 export default TokenAndAmount
