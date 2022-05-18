@@ -259,7 +259,8 @@ export const useCheckBalanceAndGas = (
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
         return t('transferAmountExceedsAllowance')
       } else if (
-        error?.message?.indexOf('transfer amount exceeds balance') > -1
+        error?.message?.indexOf('transfer amount exceeds balance') > -1 ||
+        error?.message?.indexOf('insufficient funds') > -1
       ) {
         return t('balanceIsNotEnough')
       } else {
