@@ -1,37 +1,51 @@
 import jazzIcon from '@fluent-wallet/jazz-icon'
 import PropTypes from 'prop-types'
-import {useRef, useEffect} from 'react'
-import {useRPC} from '@fluent-wallet/use-rpc'
-import {isNumber} from '@fluent-wallet/checks'
+import {useRef, useEffect, useState} from 'react'
+import {isNumber, isArray} from '@fluent-wallet/checks'
 import {isHexAddress} from '@fluent-wallet/account'
 import {removeAllChild, jsNumberForAddress} from '../utils'
-import {useCfxNetwork} from '../hooks/useApi'
+import {useAddress} from '../hooks/useApi'
 import {RPC_METHODS} from '../constants'
-import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
+import {CFX_MAINNET_CHAINID} from '@fluent-wallet/consts'
 
-const {WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK} = RPC_METHODS
-const useCfxMainnetAddress = accountIdentity => {
-  const cfxNetwork = useCfxNetwork()
-  let networkId
-  const cfxMainnetArr = cfxNetwork.filter(({name}) => name === CFX_MAINNET_NAME)
-  if (cfxMainnetArr.length) {
-    networkId = cfxMainnetArr[0].eid
-  }
-  const {data: accountAddress} = useRPC(
-    isNumber(accountIdentity) && isNumber(networkId)
-      ? [WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK, networkId, accountIdentity]
-      : null,
-    {accountId: accountIdentity, networkId},
-    {fallbackData: {}},
-  )
-  const hex = isHexAddress(accountIdentity)
-    ? accountIdentity
-    : accountAddress?.hex
-  return jsNumberForAddress(hex)
+const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
+
+const useAvatarAddress = accountIdentity => {
+  const [address, setAddress] = useState(undefined)
+
+  const {data} = useAddress({
+    stop: !isNumber(accountIdentity),
+    accountId: accountIdentity,
+  })
+  useEffect(() => {
+    let hex
+
+    if (isHexAddress(accountIdentity)) {
+      hex = accountIdentity
+    } else if (isArray(data) && data.length) {
+      const accountGroupType =
+        data?.[0]?.account?.[0]?.accountGroup?.vault?.type
+
+      if (accountGroupType === ACCOUNT_GROUP_TYPE.HW) {
+        hex = data?.[0]?.hex
+      }
+      if (
+        accountGroupType === ACCOUNT_GROUP_TYPE.HD ||
+        accountGroupType === ACCOUNT_GROUP_TYPE.PK
+      ) {
+        hex = data.filter(
+          ({network}) => network?.chainId === CFX_MAINNET_CHAINID,
+        )?.[0]?.hex
+      }
+    }
+    setAddress(jsNumberForAddress(hex))
+  }, [accountIdentity, data])
+
+  return address
 }
 
 function Avatar({diameter, accountIdentity, ...props}) {
-  const address = useCfxMainnetAddress(accountIdentity)
+  const address = useAvatarAddress(accountIdentity)
   const avatarContainerRef = useRef(null)
   useEffect(() => {
     const avatarDom = jazzIcon(diameter, address)

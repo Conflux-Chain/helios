@@ -329,21 +329,25 @@ export const useCurrentAddressTokens = () => {
 }
 
 export const useSingleTokenInfoWithNativeTokenSupport = tokenId => {
-  if (tokenId === 'native' || tokenId === '0x0') {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const {ticker} = useCurrentAddress().data.network
-    ticker.logoURI = ticker.iconUrls?.[0]
-    return ticker
-  }
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  return useRPC(
-    tokenId ? [QUERY_TOKEN, 'useSingleTokenInfo', tokenId] : null,
+  const {
+    data: {
+      network: {ticker},
+    },
+  } = useCurrentAddress()
+  const {data} = useRPC(
+    isNumber(tokenId) ? [QUERY_TOKEN, 'useSingleTokenInfo', tokenId] : null,
     {
       tokenId,
       g: {name: 1, address: 1, symbol: 1, decimals: 1, logoURI: 1},
     },
-    {fallbackData: {}},
-  ).data
+    {fallbackData: {}, refreshInterval: 0},
+  )
+  if (tokenId === 'native' || tokenId === '0x0') {
+    ticker.logoURI = ticker?.iconUrls?.[0]
+    return ticker
+  }
+
+  return data || {}
 }
 
 export const useValidate20Token = address => {
