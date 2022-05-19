@@ -128,6 +128,7 @@
         addr     (dissoc addr :eid)
         addr     (if oldaddr? (dissoc addr :network :value) addr)]
     {:eid eid :address addr}))
+
 (defn new-token-tx [{:keys [address network eid] :as token}]
   (let [address   (and (string? address) (.toLowerCase address))
         eid       (if (pos-int? eid)
@@ -1246,7 +1247,7 @@
                                   [])
         ;; add to address black tokenlist if token is in new version tokenlist
         ;; so that it won't get auto watched once there's none zero balance
-        txs                   (enc/conj-when txs (and from-list? (not no-other-linked-addr?) {:db/id addressId :address/antiToken tokenId}))
+        txs                   (enc/conj-when txs (and (not no-other-linked-addr?) {:db/id addressId :address/antiToken tokenId}))
         txs                   (enc/conj-when txs (and no-other-linked-addr? [:db.fn/retractEntity tokenId]))
         ;; retract token will retract its balance automatically
         ;; so there's no need to retract balance if no-other-linked-addr? is true
