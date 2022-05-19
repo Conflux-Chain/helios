@@ -43,7 +43,8 @@ export const main = ({
       account: app.currentAccount.eid,
       network: nextNetwork.eid,
     })
-    //sometimes, if you authorize a hardware ledger account under ethereum to dapp, when you switch to conflux network, you cannot get addr
-    post({event: 'accountsChanged', params: [addr?.value]})
+    // sometimes, if you authorize a hardware ledger account to dapp under ethereum,
+    // when you switch to conflux network, you cannot get addr
+    if (addr?.value) post({event: 'accountsChanged', params: [addr.value]})
   }
 }

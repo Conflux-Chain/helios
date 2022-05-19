@@ -38,10 +38,11 @@ export const main = ({
       network: currentNetwork.eid,
     })
 
-    post({
-      event: 'accountsChanged',
-      params: [addr.value],
-    })
+    if (addr?.value)
+      post({
+        event: 'accountsChanged',
+        params: [addr.value],
+      })
   }
 
   return
