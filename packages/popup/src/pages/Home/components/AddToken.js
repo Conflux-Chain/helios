@@ -27,6 +27,7 @@ import {
   useNetworkTypeIsCfx,
   useValidate20Token,
 } from '../../../hooks/useApi'
+import useLoading from '../../../hooks/useLoading'
 import {request, validateAddress} from '../../../utils'
 
 const {WALLET_WATCH_ASSET, WALLET_UNWATCH_ASSET} = RPC_METHODS
@@ -35,7 +36,9 @@ function AddToken({onClose, open}) {
   const {t} = useTranslation()
   const [searchContent, setSearchContent] = useState('')
   const [showDeleteButtonTokenId, setShowDeleteButtonTokenId] = useState('')
+  const [maskClosable, setMaskClosable] = useState(true)
 
+  const {setLoading} = useLoading()
   const [debouncedSearchContent, setDebouncedSearchContent] =
     useState(searchContent)
   const [mutateAddrTokenBalance] = useDbRefetchBalance()
@@ -80,7 +83,7 @@ function AddToken({onClose, open}) {
   const tokenList =
     builtinTokens || (other20Token.valid && [[other20Token, false]]) || null
 
-  const onAddToken = token => {
+  const onAddToken = async token => {
     let params
     if (isNumber(token)) {
       params = {tokenId: token}
@@ -96,41 +99,11 @@ function AddToken({onClose, open}) {
         },
       }
     }
-    request(WALLET_WATCH_ASSET, params)
-      .then(() => {
-        mutateAddrTokenBalance().then(() => {
-          mutateNetworkTokens()
-          mutateAddressTokens()
-        })
-      })
-      .catch(e => {
-        Message.error({
-          content: e?.message ?? t('unCaughtErrMsg'),
-          top: '10px',
-          duration: 1,
-        })
-      })
+    return request(WALLET_WATCH_ASSET, params)
   }
 
-  const onDeleteToken = token => {
-    if (!isNumber(token) || !addressId) {
-      return
-    }
-
-    request(WALLET_UNWATCH_ASSET, {tokenId: token, addressId})
-      .then(() => {
-        mutateAddrTokenBalance().then(() => {
-          mutateNetworkTokens()
-          mutateAddressTokens()
-        })
-      })
-      .catch(e => {
-        Message.error({
-          content: e?.message ?? t('unCaughtErrMsg'),
-          top: '10px',
-          duration: 1,
-        })
-      })
+  const onDeleteToken = async token => {
+    return request(WALLET_UNWATCH_ASSET, {tokenId: token, addressId})
   }
 
   const onCloseAddToken = () => {
@@ -139,10 +112,34 @@ function AddToken({onClose, open}) {
   }
 
   const onRightIconClick = (token, added) => {
-    if (added) {
-      onDeleteToken(token)
-    } else {
-      onAddToken(token)
+    let clickMethod
+    if (!added) {
+      clickMethod = onAddToken
+    } else if (isNumber(token) && isNumber(addressId)) {
+      clickMethod = onDeleteToken
+    }
+
+    if (clickMethod) {
+      setLoading(true)
+      setMaskClosable(false)
+      clickMethod(token)
+        .then(() => {
+          mutateAddrTokenBalance().then(() => {
+            mutateNetworkTokens()
+            mutateAddressTokens()
+          })
+        })
+        .catch(e => {
+          Message.error({
+            content: e?.message ?? t('unCaughtErrMsg'),
+            top: '10px',
+            duration: 1,
+          })
+        })
+        .finally(() => {
+          setLoading(false)
+          setTimeout(() => setMaskClosable(true), 200)
+        })
     }
   }
 
@@ -156,6 +153,7 @@ function AddToken({onClose, open}) {
       }
       onClose={onCloseAddToken}
       open={open}
+      maskClosable={maskClosable}
       cardContent={
         // 2.75rem = parent paddingBottom + current marginTop = 1.75rem + 1rem
         <div className="mt-4 flex flex-col grow h-[calc(100%-2.75rem)]">
