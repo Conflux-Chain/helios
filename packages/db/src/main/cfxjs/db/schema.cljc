@@ -1,4 +1,6 @@
-(ns cfxjs.db.schema)
+(ns cfxjs.db.schema
+  (:require
+   [lambdaisland.glogi :as log]))
 
 (def current-schema (atom nil))
 
@@ -6,7 +8,8 @@
   (cond ref              [:db/valueType :db.type/ref]
         many             [:db/cardinality :db.cardinality/many]
         one              [:db/cardinality :db.cardinality/one]
-        doc              [:db/doc doc]
+        ;; doc              [:db/doc doc]
+        doc              []
         identity         [:db/unique :db.unique/identity]
         value            [:db/unique :db.unique/value]
         index            [:db/unique :db/index]
@@ -59,15 +62,20 @@
          (fn [[parentk attrs]]
            (reduce-kv
             (fn [attrm attrk attrv]
-              (assoc
-               attrm
-               (keyword (str (name parentk) "/" (name attrk)))
-               (reduce-kv
-                (fn [sm sk sv]
-                  (let [[sk sv] (parse-attr-value {sk sv})]
-                    (assoc sm sk sv)))
-                {} attrv)))
-            {} attrs))
+              (let [k (keyword (str (name parentk) "/" (name attrk)))
+                    v (reduce-kv
+                       (fn [sm sk sv]
+                         (let [[sk sv] (parse-attr-value {sk sv})]
+                           (if sk
+                             (assoc sm sk sv)
+                             sm)))
+                       {}
+                       attrv)]
+                (if (and (-> v keys count pos?))
+                  (assoc attrm k v)
+                  attrm)))
+            {}
+            attrs))
          s)))
 
 (defn js-schema->query-structure
