@@ -1,5 +1,0 @@
-releases:
-  "@fluent-wallet/wallet_send-transaction": patch
-
-declined:
-  - helios-background
