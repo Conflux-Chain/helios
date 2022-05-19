@@ -129,6 +129,7 @@ export const main = async args => {
       if (!newTx.storageLimit) newTx.storageLimit = '0x0'
     }
   }
+
   if (!newTx.gas || !newTx.storageLimit) {
     const {gasLimit, storageCollateralized} =
       await cfx_estimateGasAndCollateral({errorFallThrough: true}, [
