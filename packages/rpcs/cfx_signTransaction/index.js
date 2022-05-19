@@ -105,7 +105,6 @@ export const main = async args => {
 
   if (!newTx.chainId) newTx.chainId = network.chainId
   if (newTx.data === '0x') newTx.data = undefined
-  if (!newTx.gasPrice) newTx.gasPrice = await cfx_gasPrice()
 
   if (!newTx.value) newTx.value = '0x0'
 
@@ -130,7 +129,6 @@ export const main = async args => {
       if (!newTx.storageLimit) newTx.storageLimit = '0x0'
     }
   }
-
   if (!newTx.gas || !newTx.storageLimit) {
     const {gasLimit, storageCollateralized} =
       await cfx_estimateGasAndCollateral({errorFallThrough: true}, [
@@ -140,6 +138,8 @@ export const main = async args => {
     if (!newTx.gas) newTx.gas = gasLimit
     if (!newTx.storageLimit) newTx.storageLimit = storageCollateralized
   }
+
+  if (!newTx.gasPrice) newTx.gasPrice = await cfx_gasPrice()
 
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {
