@@ -487,7 +487,7 @@ export const useCheckImage = url => {
   }
   const [isImg, setIsImg] = useState(null)
   useEffect(() => {
-    if (!/\.(gif|jpg|jpeg|png|svg|GIF|JPG|PNG)$/.test(url)) {
+    if (!/\.(gif|jpg|jpeg|png|svg|ico|GIF|JPG|PNG|ICO)$/.test(url)) {
       return setIsImg(false)
     }
     isImgUrl(url)
