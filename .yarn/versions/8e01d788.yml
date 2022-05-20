@@ -1,0 +1,6 @@
+releases:
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/wallet_set-app-current-network": patch
+
+declined:
+  - helios-background
