@@ -2,8 +2,11 @@ import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {Avatar} from '.'
 import PropTypes from 'prop-types'
 
+import {formatIntoChecksumAddress} from '../utils'
 function AccountDisplay({address, accountId, nickname}) {
-  const displayAddress = address ? shortenAddress(address) : ''
+  const displayAddress = address
+    ? shortenAddress(formatIntoChecksumAddress(address))
+    : ''
 
   return (
     <div className="flex items-center" id="accountDisplay">

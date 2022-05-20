@@ -12,7 +12,6 @@ import Button from '@fluent-wallet/component-button'
 import {Radio, Group} from '@fluent-wallet/radio'
 import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import {EditOutlined} from '@fluent-wallet/component-icons'
-import {Conflux} from '@fluent-wallet/ledger'
 import {
   NumberInput,
   GasFee,
@@ -31,14 +30,13 @@ import {
   useEstimateTx,
   useDecodeData,
   useCheckBalanceAndGas,
+  useLedgerBindingApi,
 } from '../../../hooks'
 import useLoading from '../../../hooks/useLoading'
 import {request, checkBalance} from '../../../utils'
 import {RPC_METHODS, TX_STATUS} from '../../../constants'
 
 const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION} = RPC_METHODS
-
-const cfxLedger = new Conflux()
 
 function ResendTransaction({
   reSendType,
@@ -47,6 +45,8 @@ function ResendTransaction({
   reSendTxStatus = 'pending',
   refreshHistoryData,
 }) {
+  const ledgerBindingApi = useLedgerBindingApi()
+
   const {t} = useTranslation()
   const {setLoading} = useLoading()
 
@@ -66,7 +66,7 @@ function ResendTransaction({
   const [gasPriceErr, setGasPriceErr] = useState('')
   const [gasLimitErr, setGasLimitErr] = useState('')
   const [balanceError, setBalanceError] = useState('')
-  const [sendError, setSendError] = useState('')
+  const [sendError, setSendError] = useState({})
   const [canResend, setCanResend] = useState(true)
 
   const {
@@ -80,7 +80,10 @@ function ResendTransaction({
   } = useInputErrorAnimation(balanceError || hwAccountError)
 
   const {
-    data: {account},
+    data: {
+      account,
+      network: {name: chainName},
+    },
   } = useCurrentAddress()
   const accountType = account?.accountGroup?.vault?.type
 
@@ -316,22 +319,19 @@ function ResendTransaction({
       gas: formatDecimalToHex(gasLimit),
       storageLimit: estimateRst.storageCollateralized,
     }
-    if (isSpeedup) {
-      Object.keys(_params)
-        .filter(_k => !!_params[_k])
-        .forEach(k => {
-          params[k] = _params[k]
-        })
-    } else {
-      params = {..._params}
-    }
+
+    Object.keys(_params)
+      .filter(_k => !!_params[_k])
+      .forEach(k => {
+        params[k] = _params[k]
+      })
     return params
   }
 
   const resendTransaction = (params, isHwAccount) => {
     request(SEND_TRANSACTION, [params])
       .then(() => {
-        if (reSendTxStatus !== 'pending') {
+        if (reSendTxStatus !== 'pending' && reSendTxStatus !== 'sending') {
           return
         }
         refreshHistoryData?.()
@@ -344,8 +344,7 @@ function ResendTransaction({
         setSendStatus(TX_STATUS.HW_SUCCESS)
       })
       .catch(error => {
-        console.error(error)
-        if (reSendTxStatus !== 'pending') {
+        if (reSendTxStatus !== 'pending' && reSendTxStatus !== 'sending') {
           return
         }
         !isHwAccount && setLoading(false)
@@ -358,7 +357,7 @@ function ResendTransaction({
           return
         }
         setSendStatus(TX_STATUS.ERROR)
-        setSendError(error?.message ?? error)
+        setSendError(error)
       })
   }
 
@@ -369,14 +368,22 @@ function ResendTransaction({
     const isHwAccount = accountType === 'hw'
 
     if (isHwAccount) {
-      const authStatus = await cfxLedger.isDeviceAuthed()
-      const isAppOpen = await cfxLedger.isAppOpen()
+      if (!ledgerBindingApi) {
+        return
+      }
+
+      const authStatus = await ledgerBindingApi.isDeviceAuthed()
+      const isAppOpen = await ledgerBindingApi.isAppOpen()
 
       if (!authStatus) {
         return setHwAccountError(t('connectLedger'))
       }
       if (!isAppOpen) {
-        return setHwAccountError(t('openConfluxApp'))
+        return setHwAccountError(
+          t('openConfluxApp', {
+            chainName: chainName || '',
+          }),
+        )
       }
 
       setSendStatus(TX_STATUS.HW_WAITING)
@@ -391,6 +398,7 @@ function ResendTransaction({
       isSpeedup ? simple : true,
       isSpeedup ? isSendingToken || simple : true,
       sendTokenValue,
+      networkTypeIsCfx,
     )
 
     if (error) {
@@ -406,7 +414,7 @@ function ResendTransaction({
 
   const onCloseTransactionResult = () => {
     setSendStatus('')
-    setSendError('')
+    setSendError({})
   }
 
   const onChangeGasPriceChoice = e => {
@@ -581,7 +589,7 @@ function ResendTransaction({
         <TransactionResult
           status={sendStatus}
           sendError={sendError}
-          onReject={onCloseTransactionResult}
+          onClose={onCloseTransactionResult}
         />
       )}
 

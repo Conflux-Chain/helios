@@ -3,6 +3,10 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletDeleteAccount from '@fluent-wallet/wallet_delete-account'
+import * as walletGetBlockTime from '@fluent-wallet/wallet_get-block-time'
+import * as ethGetLogs from '@fluent-wallet/eth_get-logs'
+import * as cfxGetPosRewardByEpoch from '@fluent-wallet/cfx_get-pos-reward-by-epoch'
 import * as ethSignTxWithLedgerNanoS from '@fluent-wallet/eth_sign-tx-with-ledger-nano-s'
 import * as walletRequestAccounts from '@fluent-wallet/wallet_request-accounts'
 import * as walletAccounts from '@fluent-wallet/wallet_accounts'
@@ -207,6 +211,7 @@ export const rpcEngineOpts = {
     walletExportAll,
     walletImportAll,
     walletDeleteAccountGroup,
+    walletDeleteAccount,
     walletAddHdPath,
     walletAddNetwork,
     walletUpdateNetwork,
@@ -264,7 +269,6 @@ export const rpcEngineOpts = {
     cfxGetBlocksByEpoch,
     cfxGetCollateralForStorage,
     cfxGetConfirmationRiskByHash,
-    cfxGetInterestRate,
     cfxGetLogs,
     cfxGetSkippedBlocksByEpoch,
     cfxGetSponsorInfo,
@@ -278,6 +282,8 @@ export const rpcEngineOpts = {
     cfxGetAccountPendingInfo,
     cfxGetAccountPendingTransactions,
     cfxGetPoSEconomics,
+    cfxGetPosRewardByEpoch,
+    cfxGetInterestRate,
     cfxGetSupplyInfo,
     cfxOpenedMethodGroups,
     txpoolNextNonce,
@@ -307,6 +313,7 @@ export const rpcEngineOpts = {
 
     // eth
     ethGetCode,
+    ethGetLogs,
     ethGetTransactionCount,
     ethGetBalance,
     ethCall,
@@ -342,6 +349,7 @@ export const rpcEngineOpts = {
     walletGetFluentMetadata,
     walletGetPreferences,
     walletSetPreferences,
+    walletGetBlockTime,
 
     walletAfterUnlock,
   ],

@@ -1,13 +1,14 @@
 {:paths ["scripts"]
- :deps {medley/medley {:mvn/version "1.3.0"}}
+ :deps  {medley/medley {:mvn/version "1.4.0"}}
  :tasks
- {nrepl {:doc "start bb nrepl"
-         :task x.nrepl/run}
-  shadow {:doc "start shadow-cljs repl"
-          :task x.shadow/run}
-  snowpack {:doc "start snowpack dev server"
+ {nrepl    {:doc  "start bb nrepl"
+            :task x.nrepl/run}
+  shadow   {:doc  "start shadow-cljs repl"
+            :task x.shadow/run}
+  snowpack {:doc  "start snowpack dev server"
             :task (shell "yarn run dev")}
 
-  -start {:depends [nrepl shadow snowpack]}
-  start {:doc "start bb and cljs repl"
-         :task (run '-start {:parallel true})}}}
+  -start {:depends [;; nrepl
+                    shadow snowpack]}
+  start  {:doc  "start bb and cljs repl"
+          :task (run '-start {:parallel true})}}}

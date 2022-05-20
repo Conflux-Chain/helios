@@ -1,10 +1,10 @@
 import {useState, useCallback} from 'react'
-import {useQuery} from '../../hooks'
 import {
-  useTxList,
-  useCurrentAddress,
-  useNetworkTypeIsCfx,
-} from '../../hooks/useApi'
+  CFX_MAINNET_CHAINID,
+  CFX_ESPACE_MAINNET_CHAINID,
+} from '@fluent-wallet/consts'
+import {useQuery} from '../../hooks'
+import {useTxList, useCurrentAddress} from '../../hooks/useApi'
 import {useEffectOnce} from 'react-use'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -35,7 +35,6 @@ function Home() {
   const [accountsAnimate, setAccountsAnimate] = useState(true)
   const [settingAnimate, setSettingAnimate] = useState(true)
 
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
   const {
     data: {network},
   } = useCurrentAddress()
@@ -88,7 +87,7 @@ function Home() {
           setSettingStatus(true)
         }}
       />
-      <div className="flex flex-col pt-1 px-4 z-10 flex-shrink-0">
+      <div className="flex flex-col pt-1 px-4 z-10 shrink-0">
         <div className="flex items-start justify-between">
           <CurrentAccount onOpenAccount={onOpenAccount} />
           <CurrentNetwork onOpenNetwork={() => setNetworkStatus(true)} />
@@ -129,10 +128,11 @@ function Home() {
               ) : null}
             </div>
           </div>
-          {/* only conflux network show cross space button */}
-          {(networkTypeIsCfx ||
-            network?.chainId === '0x47' ||
-            network?.chainId === '0x406') && <CrossSpaceButton />}
+          {/* only conflux main network show cross space button */}
+          {(network?.chainId === CFX_MAINNET_CHAINID ||
+            network?.chainId === CFX_ESPACE_MAINNET_CHAINID) && (
+            <CrossSpaceButton />
+          )}
         </div>
       </div>
       <HomeTokenList onOpenAddToken={() => setAddTokenStatus(true)} />

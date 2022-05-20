@@ -13,7 +13,7 @@ import {
 } from 'js-conflux-sdk'
 import {joinSignature} from '@ethersproject/bytes'
 import {
-  Wallet as EthWallet,
+  // Wallet as EthWallet,
   verifyMessage as verifyEthPersonalSign,
 } from '@ethersproject/wallet'
 import {
@@ -22,7 +22,6 @@ import {
   serialize as serializeETHTransaction,
 } from '@ethersproject/transactions'
 import {getMessage as cip23GetMessage} from 'cip-23'
-import {TypedDataUtils} from 'eth-sig-util'
 import {keccak256} from '@ethersproject/keccak256'
 
 export const hashPersonalMessage = (type, message) =>
@@ -33,7 +32,12 @@ export const hashPersonalMessage = (type, message) =>
 export async function personalSign(type, privateKey, message) {
   return type === 'cfx'
     ? CfxPersonalMessage.sign(addHexPrefix(privateKey), message)
-    : await new EthWallet(addHexPrefix(privateKey)).signMessage(message)
+    : (await import('eth-sig-util')).default.personalSign(
+        toBuffer(addHexPrefix(privateKey)),
+        {
+          data: message,
+        },
+      )
 }
 
 export function recoverPersonalSignature(type, signature, message, netId) {
@@ -73,12 +77,18 @@ export async function signTypedData_v4(type, privateKey, typedData) {
     return signature
   }
 
+  const {TypedDataUtils} = (await import('eth-sig-util')).default
   const digest = TypedDataUtils.sign(typedData, true)
   const signature = new SigningKey(addHexPrefix(privateKey)).signDigest(digest)
   return joinSignature(signature)
 }
 
-export function recoverTypedSignature_v4(type, signature, typedData, netId) {
+export async function recoverTypedSignature_v4(
+  type,
+  signature,
+  typedData,
+  netId,
+) {
   if (type === 'cfx') {
     const hashedMessage = keccak256(
       cip23GetMessage(
@@ -95,6 +105,7 @@ export function recoverTypedSignature_v4(type, signature, typedData, netId) {
     )
   }
 
+  const {TypedDataUtils} = (await import('eth-sig-util')).default
   const digest = TypedDataUtils.sign(typedData, true)
   const pub = ethRecoverPublicKey(digest, signature)
   return ethComputeAddress(pub)
@@ -155,7 +166,11 @@ export const cfxRecoverTransactionToAddress = (tx, {r, s, v}, netId) => {
 }
 
 export const ethRecoverTransactionToAddress = (tx, {r, s, v}) => {
-  const addr = recoverEthAddress(addHexPrefix(tx), {r, s, v})
+  const addr = recoverEthAddress(keccak256(serializeETHTransaction(tx)), {
+    r: addHexPrefix(r),
+    s: addHexPrefix(s),
+    v: addHexPrefix(v),
+  })
   return addr
 }
 
@@ -183,7 +198,10 @@ export const cfxJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
 }
 
 export const ethJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
-  return serializeETHTransaction(addHexPrefix(tx), {r, s, v})
+  return serializeETHTransaction(
+    tx,
+    joinSignature({r: addHexPrefix(r), s: addHexPrefix(s), v: addHexPrefix(v)}),
+  )
 }
 
 export const getTxHashFromRawTx = txhash => {

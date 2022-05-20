@@ -1,5 +1,8 @@
 (ns cfxjs.db.queries
   (:require
+   [lambdaisland.glogi :as log]
+   [better-cond.core :as bc]
+   [taoensso.encore :as enc]
    [medley.core :refer [deep-merge]]
    ["@ethersproject/bignumber" :as bn]
    [clojure.walk :refer [postwalk walk]]
@@ -113,8 +116,8 @@
   [{:keys [value network eid hex] :as addr}]
   (let [value    (and (string? value) (.toLowerCase value))
         hex      (and (string? value) (.toLowerCase hex))
-        addr     (if hex (assoc addr :hex hex) addr)
-        addr     (if value (assoc addr :value value) addr)
+        addr     (enc/assoc-when addr :hex hex)
+        addr     (enc/assoc-when addr :value value)
         eid      (if (pos-int? eid)
                    eid
                    (or
@@ -125,6 +128,7 @@
         addr     (dissoc addr :eid)
         addr     (if oldaddr? (dissoc addr :network :value) addr)]
     {:eid eid :address addr}))
+
 (defn new-token-tx [{:keys [address network eid] :as token}]
   (let [address   (and (string? address) (.toLowerCase address))
         eid       (if (pos-int? eid)
@@ -427,19 +431,31 @@
              rst           (apply q query (:args query-initial))]
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
-(defn upsert-token-list [{:keys [newList networkId]}]
+(defn upsert-token-list
+  "Given new tokenlist, remove uninteresting token,
+  update exsiting token info (update based on [networkId token-addr] tuple),
+  insert newly added tokens"
+  [{:keys [newList networkId]}]
   (let [chainId                         (js/parseInt (:network/chainId (p '[:network/chainId] networkId)) 16)
-        [token-ids token-map addresses] (reduce (fn [[coll m addresses] {:keys [address] :as x}]
-                                                  (let [address (and (string? address) (.toLowerCase address))
-                                                        x       (assoc x :address address)]
+        [token-ids token-map addresses] (reduce (fn [[coll m addresses] {:keys [address] :as token-list-item}]
+                                                  (let [address         (and (string? address) (.toLowerCase address))
+                                                        token-list-item (assoc token-list-item :address address)]
                                                     ;; only support tokens with current chainid
-                                                    (if (not= (js/parseInt (:chainId x) 10) chainId)
+                                                    (if (not= (js/parseInt (:chainId token-list-item) 10) chainId)
                                                       [coll m addresses]
-                                                      (let [x (map->nsmap x :token)]
-                                                        [(conj coll [[networkId address] (assoc x :token/network networkId :token/fromList true)])
-                                                         (assoc m address (dissoc x :token/address))
-                                                         (conj addresses (:token/address x))]))))
+                                                      (let [token-list-item (map->nsmap token-list-item :token)]
+                                                        [;; token-ids
+                                                         (conj coll [[networkId address]
+                                                                     (assoc token-list-item :token/network networkId :token/fromList true)])
+                                                         ;; token-map
+                                                         (assoc m address (dissoc token-list-item :token/address))
+                                                         ;; addresses
+                                                         (conj addresses (:token/address token-list-item))]))))
                                                 [[] {} #{}] newList)
+        ;; find tokens removed between tokenlist upgrade
+        ;; tokens
+        ;; 1. not from user/dapp
+        ;; 2. not tracked by any address
         tokens-might-remove             (q '[:find [(pull ?t [:db/id :token/address]) ...]
                                              :in $ ?net
                                              :where
@@ -449,28 +465,36 @@
                                              [?t :token/fromList true]
                                              [?any-addr :address/network ?net]
                                              (not [?any-addr :address/token ?t])] networkId)
+        ;; 3. not in latest tokenlist
         tokens-might-remove             (reduce (fn [acc token]
                                                   (if (some #{(:token/address token)} addresses)
                                                     acc
                                                     (conj acc (:db/id token))))
                                                 [] tokens-might-remove)
 
-        txs (q '[:find [?t ...]
-                 :in $ [[?tid ?token] ...]
-                 :where
-                 (or [?t :token/id ?tid]
-                     (and
-                      (not [?t :token/id ?tid])
-                      [(and true ?token) ?t]))]
-               token-ids)
+        ;; ?tid is [networkId address] tuple
+        ;; ?token is newly added token in latest tokenlist
+        tokens-to-upsert (q '[:find [?t ...]
+                              :in $ [[?tid ?token] ...]
+                              :where
+                              (or [?t :token/id ?tid]
+                                  (and
+                                   (not [?t :token/id ?tid])
+                                   [(and true ?token) ?t]))]
+                            token-ids)
+
         txs (map-indexed
              (fn [idx x]
                (if (int? x)
                  (let [addr (:token/address (p '[:token/address] x))]
                    (-> (get token-map addr {})
                        (assoc :token/id [networkId addr])))
-                 (assoc x :db/id (- (- idx) 10000)))) txs)
-        txs (reduce (fn [acc tid] (conj acc [:db.fn/retractEntity tid])) txs tokens-might-remove)]
+                 (assoc x :db/id (- (- idx) 10000))))
+             tokens-to-upsert)
+
+        txs (reduce
+             (fn [acc tid] (conj acc [:db.fn/retractEntity tid]))
+             txs tokens-might-remove)]
     (t txs)))
 
 (defn validate-addr-in-app [{:keys [appId networkId addr]}]
@@ -694,7 +718,7 @@
   1. return single addreess when :address/id can be identified, or return vector of addrs
   2. when :address/id and accountId can be identified, return addr with the specified account
   3. given selected: true, means get the addr of current account under current network, which fullfill 2
-  4. given appId: X, means get the addr of app's current account under app's current network, which fullfill 2
+  4. given appId: X, means get the addr of X app's current account under app's current network, which fullfill 2
 
   ways to find single address
   1. addressId
@@ -739,6 +763,15 @@
      (cond
        (vector? addressId)
        (pm (jsp->p g) addressId)
+       ;; addressId is determined by
+       ;; 1. selected true
+       ;; 2. appId -> networkId + accountId
+       ;; 3. directly passing in addressId
+       ;; check these situations if there're hex/addr
+       (and addressId (= (count addr) 1) (not (= (first addr) (:address/value (p '[:address/value] addressId)))))
+       nil
+       (and addressId (= (count hex) 1) (not (= (first hex) (:address/hex (p '[:address/hex] addressId)))))
+       nil
        ;; can get single addressId
        (or addressId (and (int? networkId) (= (count addr) 1)))
        (let [addrId  (or addressId [:address/id [networkId (first addr)]])
@@ -904,7 +937,7 @@
     (t txs)))
 
 (defn retract-group
-  "used to retract account grolup"
+  "used to retract account group"
   [{:keys [groupId]}]
   (let [addrs-in-group
         (q '[:find [?addr ...]
@@ -925,6 +958,39 @@
         addrs-to-delete (filter #(not (some #{%} addrs-has-accs-not-in-group)) addrs-in-group)
         txs             (mapv #(vector :db.fn/retractEntity %) addrs-to-delete)
         txs             (conj txs [:db.fn/retractEntity groupId])]
+    (t txs)
+    (cleanup-token-list-after-delete-address)
+    true))
+
+(defn retract-account
+  "used to retract accounts"
+  [{:keys [accountId hwVaultData]}]
+  (let [addrs-in-account
+        (q '[:find [?addr ...]
+             :in $ ?acc
+             :where
+             [?acc :account/address ?addr]]
+           accountId)
+        addrs-has-other-accs
+        (q '[:find [?addr ...]
+             :in $ ?acc
+             :where
+             [?acc :account/address ?addr]
+             [?account :account/address ?addr]
+             [(!= ?account ?acc)]]
+           accountId)
+        addrs-to-delete (filter #(not (some #{%} addrs-has-other-accs)) addrs-in-account)
+        txs             (mapv #(vector :db.fn/retractEntity %) addrs-to-delete)
+        txs             (conj txs [:db.fn/retractEntity accountId])
+
+        vault (when hwVaultData
+                (q '[:find ?vault .
+                     :in $ ?acc
+                     :where
+                     [?group :accountGroup/account ?acc]
+                     [?group :accountGroup/vault ?vault]]
+                   accountId))
+        txs   (enc/conj-when txs (and vault {:db/id vault :vault/data hwVaultData}))]
     (t txs)
     (cleanup-token-list-after-delete-address)
     true))
@@ -956,41 +1022,52 @@
    {:db/id eid} document-map))
 
 (defn add-token-to-addr [{:keys [address decimals image name symbol targetAddressId fromApp fromUser fromList checkOnly network]}]
-  (let [addressId      targetAddressId
-        address        (and (string? address) (.toLowerCase address))
-        networkId      network
-        token-exist?   (q '[:find ?t .
-                            :in $ ?tid
-                            :where
-                            [?t :token/id ?tid]]
-                          [networkId address])
-        token-id       (or token-exist? -1)
-        address        (and (string? address) (.toLowerCase address))
-        add-token-tx   (when-not token-exist?
-                         {:db/id          token-id
-                          :token/name     name
-                          :token/symbol   symbol
-                          :token/decimals decimals
-                          :token/logoURI  image
-                          :token/network  networkId
-                          :token/address  address
-                          :token/fromUser (boolean fromUser)
-                          :token/fromApp  (boolean fromApp)
-                          :token/fromList (boolean fromList)})
-        token-in-addr? (and token-exist?
-                            (q '[:find ?t .
-                                 :in $ ?taddr ?addr
-                                 :where
-                                 [?t :token/address ?taddr]
-                                 [?addr :address/token ?t]]
-                               address addressId))
-        tx             (if token-exist? [] [add-token-tx])
-        tx             (if token-in-addr? tx (conj tx {:db/id addressId :address/token token-id}
-                                                   {:db/id "new-balance" :balance/value "0x0"}
-                                                   {:db/id addressId :address/balance "new-balance"}
-                                                   {:db/id token-id :token/balance "new-balance"}))
-        tx-rst         (and (not checkOnly) (t tx))
-        token-id       (if (and (not checkOnly) (= token-id -1)) (get-in tx-rst [:tempids -1]) token-id)]
+  (let [addressId        targetAddressId
+        address          (and (string? address) (.toLowerCase address))
+        networkId        network
+        token-exist?     (q '[:find ?t .
+                              :in $ ?tid
+                              :where
+                              [?t :token/id ?tid]]
+                            [networkId address])
+        token-id         (or token-exist? -1)
+        address          (and (string? address) (.toLowerCase address))
+        add-token-tx     (when-not token-exist?
+                           {:db/id          token-id
+                            :token/name     name
+                            :token/symbol   symbol
+                            :token/decimals decimals
+                            :token/network  networkId
+                            :token/address  address
+                            :token/fromUser (boolean fromUser)
+                            :token/fromApp  (boolean fromApp)
+                            :token/fromList (boolean fromList)})
+        add-token-tx     (if (and image add-token-tx)
+                           (assoc add-token-tx :token/logoURI image)
+                           add-token-tx)
+        token-in-addr?   (and token-exist?
+                              (q '[:find ?t .
+                                   :in $ ?taddr ?addr
+                                   :where
+                                   [?t :token/address ?taddr]
+                                   [?addr :address/token ?t]]
+                                 address addressId))
+        addr-anti-token? (and token-exist?
+                              (q '[:find ?t .
+                                   :in $ ?addr ?t
+                                   :where
+                                   [?addr :address/antiToken ?t]]
+                                 addressId token-id))
+        txs              (if token-exist? [] [add-token-tx])
+        txs              (enc/conj-when txs (and addr-anti-token? [:db/retract addressId :address/antiToken token-id]))
+        txs              (if token-in-addr?
+                           txs
+                           (conj txs {:db/id addressId :address/token token-id}
+                                 {:db/id "new-balance" :balance/value "0x0"}
+                                 {:db/id addressId :address/balance "new-balance"}
+                                 {:db/id token-id :token/balance "new-balance"}))
+        tx-rst           (and (not checkOnly) (t txs))
+        token-id         (if (and (not checkOnly) (= token-id -1)) (get-in tx-rst [:tempids -1]) token-id)]
     {:tokenId       token-id
      :alreadyInNet  (boolean token-exist?)
      :alreadyInAddr (boolean token-in-addr?)}))
@@ -1069,44 +1146,73 @@
         params               (reduce format-balance-binds params token-binds)]
     (into [] params)))
 
-(defn upsert-balances [{:keys [networkId data]}]
-  (let [txs
-        (reduce
-         (fn [acc [uaddr d]]
-           (let [uaddr (name uaddr)]
-             (reduce
-              (fn [acc [taddr balance]]
-                (let [taddr (name taddr)]
-                  (if (= taddr "0x0")
-                    (conj acc {:db/id                 [:address/id [networkId uaddr]]
-                               :address/nativeBalance balance})
-                    (let [balance-eid (q '[:find ?b .
+(defn upsert-balances
+  [{:keys [networkId data]}]
+  ;; data are [user-address token-balances] tuples
+  ;; token-balances are [token-address balance] tuples
+  (let [user-data->txs (fn [[uaddr acc] [taddr balance]]
+                         (bc/cond
+                           :let [taddr (name taddr)]
+                           ;; native token balance
+                           (= taddr "0x0")
+                           [uaddr (conj acc {:db/id                 [:address/id [networkId uaddr]]
+                                             :address/nativeBalance balance})]
+
+                           :let [anti-token? (q '[:find ?t .
+                                                  :in $ ?uaddr ?taddr
+                                                  :where
+                                                  [?u :address/id ?uaddr]
+                                                  [?t :token/id ?taddr]
+                                                  [?u :address/antiToken ?t]]
+                                                [networkId uaddr] [networkId taddr])
+
+                                 ;; get balance entity by uaddr and taddr
+                                 balance-eid
+                                 (and (not anti-token?)
+                                      (q '[:find ?b .
                                            :in $ ?uaddr ?taddr
                                            :where
                                            [?u :address/id ?uaddr]
                                            [?t :token/id ?taddr]
                                            [?u :address/balance ?b]
                                            [?t :token/balance ?b]]
-                                         [networkId uaddr] [networkId taddr])
-                          gt0?        (.gt (bn/BigNumber.from balance) 0)]
-                      (if (and (not gt0?) (not balance-eid))
-                        acc
-                        (let [tmp-balance-id (str networkId uaddr taddr)
-                              acc            (conj acc {:db/id         (or
-                                                                        balance-eid
-                                                                        tmp-balance-id)
-                                                        :balance/value balance}
-                                                   {:db/id         [:address/id [networkId uaddr]]
-                                                    :address/token [:token/id [networkId taddr]]})
-                              acc            (if balance-eid acc
-                                                 (conj acc {:db/id           [:address/id [networkId uaddr]]
-                                                            :address/balance (str networkId uaddr taddr)}
-                                                       {:db/id         [:token/id [networkId taddr]]
-                                                        :token/balance (str networkId uaddr taddr)}))]
-                          acc))))))
-              acc d)))
-         []
-         data)]
+                                         [networkId uaddr] [networkId taddr]))
+
+                                 ;; has balance
+                                 gt0?
+                                 (.gt (bn/BigNumber.from balance) 0)]
+
+                           (and (not gt0?) (not balance-eid))
+                           [uaddr acc]
+
+                           :let [tmp-balance-id
+                                 (str networkId uaddr taddr)
+
+                                 ;; upsert balance
+                                 acc
+                                 (enc/conj-when acc {:db/id         (or
+                                                                     balance-eid
+                                                                     tmp-balance-id)
+                                                     :balance/value balance}
+                                                (and (not anti-token?)
+                                                     {:db/id         [:address/id [networkId uaddr]]
+                                                      :address/token [:token/id [networkId taddr]]}))
+
+                                 ;; bind new balance to address and token
+                                 acc
+                                 (if balance-eid
+                                   acc
+                                   (conj acc {:db/id           [:address/id [networkId uaddr]]
+                                              :address/balance tmp-balance-id}
+                                         {:db/id         [:token/id [networkId taddr]]
+                                          :token/balance tmp-balance-id}))]
+                           [uaddr acc]))
+
+        data->txs (fn [acc [uaddr d]]
+                    (let [uaddr (name uaddr)]
+                      (second (reduce user-data->txs [uaddr acc] d))))
+
+        txs (reduce data->txs [] data)]
     (t txs)
     true))
 
@@ -1126,23 +1232,27 @@
                                                    [?token :token/balance ?b]]
                                                  tokenId addressId))
         token                 (and has-token? (e :token tokenId))
-        ;; token not from toke list get deleted when link to zero addr
-        not-from-list?        (and has-token? (not (:token/fromList token)))
-        no-other-linked-addr? (and not-from-list? (-> (q '[:find [?addr ...]
-                                                           :in $ ?token
-                                                           :where
-                                                           [?addr :address/token ?token]]
-                                                         tokenId)
-                                                      count
-                                                      (= 1)))
-        tx                    (if has-token? [[:db/retract addressId :address/token tokenId]
+        ;; token not from token list get deleted when link to zero addr
+        from-list?            (and has-token? (:token/fromList token))
+        no-other-linked-addr? (and (not from-list?)
+                                   (-> (q '[:find [?addr ...]
+                                            :in $ ?token
+                                            :where
+                                            [?addr :address/token ?token]]
+                                          tokenId)
+                                       count
+                                       (= 1)))
+        txs                   (if has-token? [[:db/retract addressId :address/token tokenId]
                                               [:db.fn/retractAttribute tokenId :token/fromUser]]
                                   [])
-        tx                    (if no-other-linked-addr? (conj tx [:db.fn/retractEntity tokenId]) tx)
+        ;; add to address black tokenlist if token is in new version tokenlist
+        ;; so that it won't get auto watched once there's none zero balance
+        txs                   (enc/conj-when txs (and (not no-other-linked-addr?) {:db/id addressId :address/antiToken tokenId}))
+        txs                   (enc/conj-when txs (and no-other-linked-addr? [:db.fn/retractEntity tokenId]))
         ;; retract token will retract its balance automatically
         ;; so there's no need to retract balance if no-other-linked-addr? is true
-        tx                    (if (and (not no-other-linked-addr?) has-balance?) (conj tx [:db.fn/retractEntity has-balance?]) tx)]
-    (if has-token? (t tx) false)))
+        txs                   (enc/conj-when txs (and (not no-other-linked-addr?) has-balance?  [:db.fn/retractEntity has-balance?]))]
+    (if has-token? (t txs) false)))
 
 (defn get-addr-tx-by-hash [{:keys [addressId txhash]}]
   (->> (q '[:find ?tx .
@@ -1188,30 +1298,73 @@
             ])
        (mapv #(e :authReq %))))
 
+(defn- tx-end-state? [hash]
+  (try
+    (let [status (:tx/status (p [:tx/status] [:tx/hash hash]))]
+      (or (< status 0) (> status 4)))
+    (catch js/Error e nil)))
+
 (defn set-tx-skipped [{:keys [hash]}]
-  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status -2}]))
+  (when-not (tx-end-state? hash)
+    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        {:db/id [:tx/hash hash] :tx/status -2}])))
 (defn set-tx-failed [{:keys [hash error]}]
-  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}]))
+  (when-not (tx-end-state? hash)
+    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}])))
 (defn set-tx-unsent [{:keys [hash resendAt]}]
-  (let [tx {:db/id [:tx/hash hash] :tx/status 0}
-        tx (if resendAt (assoc tx :tx/resendAt resendAt) tx)]
-    (t [tx])))
-(defn set-tx-sending [{:keys [hash]}]
-  (t [{:db/id [:tx/hash hash] :tx/status 1}]))
+  (when-not (tx-end-state? hash)
+    (let [tx {:db/id [:tx/hash hash] :tx/status 0}
+          tx (enc/assoc-when tx :tx/resendAt resendAt)]
+      (t [tx]))))
+(defn set-tx-sending [{:keys [hash resendAt]}]
+  (when-not (tx-end-state? hash)
+    (let [tx {:db/id [:tx/hash hash] :tx/status 1}
+          tx (enc/assoc-when tx :tx/resendAt resendAt)]
+      (t [tx]))))
 (defn set-tx-pending [{:keys [hash]}]
-  (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status 2}]))
+  (when-not (tx-end-state? hash)
+    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        {:db/id [:tx/hash hash] :tx/status 2}])))
 (defn set-tx-packaged [{:keys [hash blockHash]}]
-  (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status 3 :tx/blockHash blockHash}]))
+  (when-not (tx-end-state? hash)
+    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        {:db/id [:tx/hash hash] :tx/status 3 :tx/blockHash blockHash}])))
 (defn set-tx-executed [{:keys [hash receipt]}]
-  (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}]))
+  (when-not (tx-end-state? hash)
+    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}])))
+
 (defn set-tx-confirmed [{:keys [hash]}]
-  (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-      {:db/id [:tx/hash hash] :tx/status 5}]))
+  (when-not (tx-end-state? hash)
+    (let [confirmed
+          (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+              {:db/id [:tx/hash hash] :tx/status 5}])
+
+         ;; find tx with
+         ;; 1. same addr
+         ;; 2. same nonce
+         ;; 3. not in end state
+         ;;
+         ;; set them as failed
+          replaced-none-finished-txs
+          (q '[:find [?hash ...]
+               :in $ ?confirmed-tx
+               :where
+               [?address :address/tx ?confirmed-tx]
+               [?confirmed-tx :tx/txPayload ?payload]
+               [?payload :txPayload/nonce ?nonce]
+               [?address :address/tx ?tx]
+               [?tx :tx/txPayload ?tx-payload]
+               [?tx-payload :txPayload/nonce ?nonce]
+               [?tx :tx/status ?status]
+               [(>= ?status 0)]
+               [(< ?status 5)]
+               [?tx :tx/hash ?hash]]
+             [:tx/hash hash])]
+      (doseq [hash replaced-none-finished-txs]
+        (set-tx-failed {:hash hash :error "replacedByAnotherTx"}))
+      confirmed)))
 (defn set-tx-chain-switched [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
 
@@ -1399,7 +1552,7 @@
                               (assoc :token (and token (e :token token))))))
                       txs)})))
 
-(defonce default-preferences {:hideTestNetwork      false
+(defonce default-preferences {:hideTestNetwork           true
                               :overrideWindowDotEthereum false})
 
 (defn get-preferences []
@@ -1469,6 +1622,7 @@
               :upsertTokenList                     upsert-token-list
               :retractNetwork                      retract-network
               :retractGroup                        retract-group
+              :retractAccount                      retract-account
               :setPreferences                      set-preferences
               :getPreferences                      get-preferences
               :getAppsWithDifferentSelectedNetwork get-apps-with-different-selected-network

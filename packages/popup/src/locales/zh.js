@@ -15,6 +15,7 @@ const zh = {
     copiedSuccess: '复制成功',
     invalidAddress: '请填写有效的 Conflux 地址',
     invalidHexAddress: '请填写有效的十六进制地址',
+    unChecksumAddress: '无效地址，请确保字母大小写无误',
     protocol: '协议',
     viewData: '查看数据',
     learnMore: '了解更多',
@@ -119,6 +120,8 @@ const zh = {
     searchToken: '通过名称或地址搜索',
     searchResults: '搜索结果',
     noResult: '无结果',
+    willSupport1559: '后续将会支持 EIP-1559',
+    remove: '移除',
 
     // welcome page
     welcomeToConflux: '欢迎来到 Conflux 网络',
@@ -271,7 +274,10 @@ const zh = {
     hide: '隐藏',
     delete: '删除',
     groupDeleteWarning: '不能删除当前账户组',
+    accountDeleteWarning: '不能删除当前账户',
     accountHideWarning: '不能隐藏当前账户',
+    lastAccountHideWarning: '至少保留一个账户',
+    ledgerTips: '这些账户只能在 {{network}} 上使用',
 
     // Network Management
     networkManagement: '网络管理',
@@ -287,8 +293,6 @@ const zh = {
     AdvancedSettings: '高级选项',
     priorityConnection: '优先连接',
     priorityConnectionDes: '在连接至 DApp 时，Fluent 将会作为默认钱包',
-    underCfxProvider: '在 Conflux 网络中启用',
-    underEtherProvider: '在 Ethereum/EVM 网络中启用',
     showTestnet: '显示测试网络',
     showTestnetDes: '开启后，可在网络列表中展示测试网络',
 
@@ -309,18 +313,21 @@ const zh = {
     compatibilityDes:
       'Fluent 最终将会停止支持 ConfluxPortal 的 API。为了方便开发者测试，关掉开关将模拟 Fluent 不支持 ConfluxPortal API 的环境',
 
-    // backup seed
+    // backup
     backupIdentity: '备份助记词',
     backupSeedDes: '请以正确的顺序备份助记词，不要在网络环境中存储或分享助记词',
     backupPk: '备份私钥',
     backupPkDes:
       '获得了私钥就等于拥有了钱包里的资产，请妥善保管，一单丢失就无法找回',
+    confluxPathStandard: 'Conflux 钱包路径',
+    confluxPathStandardDes: "由 Conflux 钱包路径 'm/503' 生成",
+    ethereumPathStandard: 'Ethereum 钱包路径',
+    ethereumPathStandardDes: "有 Ethereum 钱包路径 m/60' 生成",
 
     transferAmountExceedsAllowance: '转账金额超出限制',
     balanceIsNotEnough: '余额不足',
     gasFeeIsNotEnough: 'Gas 不足',
     contractError: '合约错误: ',
-    addressHasBeenChanged: '地址已发生改变',
     invalidPasswordFromRpc: '密码错误',
     required: '请填写助记词',
     changeNetworkError: '切换网络发生错误',
@@ -328,13 +335,15 @@ const zh = {
     // hardware guard
     connectHardwareWallet: '连接硬件钱包',
     supportLedger: '现已支持 Ledger 硬件钱包',
-    ledgerGuardDes: '如何在 Ledger 中创建一个 Conflux 钱包?',
+    ledgerGuardDes: '如何在 Ledger 中添加 Conflux Core 的钱包？',
     followConnectLedgerSteps: '请根据以下步骤连接 Ledger',
     steps: '步骤 {{number}}',
     pluginHardwareWallet: '请将硬件钱包插入电脑的 USB 端口',
     enterPinCode: '在硬件钱包上输入 PIN 码',
-    selectConfluxApp: '选择并打开 Conflux App',
+    selectConfluxApp: '在 Ledger 中选择并打开适用于 {{chainName}} 的App',
     ready: '开始连接',
+    specifiedConnectedChain:
+      '<Container><Content>连接 Ledger 在</Content><CurrentNetworkDisplay/></Container>',
 
     // connect hardware wallet
     searchHwWallet: '寻找钱包中',
@@ -344,8 +353,8 @@ const zh = {
     waitForPermission: '等待授权',
     connectFailed: '连接失败',
     retry: '重试',
-    openConfluxApp: '打开 Conflux App',
-    openConfluxAppDes: '在硬件钱包中选择并打开 Conflux App',
+    openConfluxApp: '打开适用于 {{chainName}} 的 App',
+    openConfluxAppDes: '在 Ledger 中选择并打开适用于 {{chainName}} 的 App　',
     chooseAddress: '选择地址',
     hdPath: '钱包路径',
     chooseHwAddress: '选择你要导入的钱包地址:',
@@ -365,6 +374,7 @@ const zh = {
     rejected: '拒绝',
     waitingContent: '请在 Ledger 中确认此交易',
     rejectedContent: '交易被拒绝',
+    copyError: '复制错误信息',
 
     // conflux confirm tx error
     txPoolFull: '交易池拥堵',
@@ -381,10 +391,25 @@ const zh = {
     replacedWithHigherGasPriceTx: '重复的交易',
     unknownError: '未知错误',
 
+    // ethereum confirm tx error
+    replaceUnderpriced: 'Gas 太低',
+    gasTooLow: 'Gas 太低',
+    gasLimitReached: '达到 Gas 限制',
+    oversizedData: 'Data 数据过大',
+    nonceTooHigh: 'Nonce 太大',
+    nonceMax: 'Nonce 太大',
+    insufficientFunds: '余额不足',
+    intrinsicGas: 'Intrinsic Gas 太低',
+    txTypeNotSupported: '不支持此交易类型',
+    feeCapVeryHigh: 'Gas 价格太高',
+    feeCapTooLow: 'Gas 价格太低',
+    tipAboveFeeCap: 'Priority fee 错误',
+    tipVeryHigh: 'Priority fee 错误',
+
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger 未连接',
     openExpandView: '在 Fluent 扩展视图连接硬件钱包',
-    hwOpenApp: '请确保 Conflux App 已打开，再点击确认',
+    hwOpenApp: '点击确认之前，请确保已经打开适用于 {{chainName}} 的 App',
 
     // error page
     errorTile: '错误',

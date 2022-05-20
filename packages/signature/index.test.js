@@ -95,7 +95,7 @@ describe('cfx', function () {
       )
 
       expect(
-        recoverTypedSignature_v4(
+        await recoverTypedSignature_v4(
           'cfx',
           '0x3404e089c443cbe853e35d53670ae074860731930fa4ac87f2f6e10d7f2337270ac970680c7d609b5bb2f05b50398aee323ddac925e9e9ead5accc3fd2fb849001',
           typedData,
@@ -144,7 +144,7 @@ describe('cfx', function () {
       )
 
       expect(
-        recoverTypedSignature_v4(
+        await recoverTypedSignature_v4(
           'cfx',
           '0xa5d4de96227cb8d7b6e3d44c8ca3f66f6361d81530e7c386c4fbaa55a8fa3df0229807250407e0c500803f1efd095d2a24554b520be9e88ee1e79a13efc4379101',
           typedData,
@@ -288,7 +288,7 @@ describe('eth', function () {
       )
 
       expect(
-        recoverTypedSignature_v4(
+        await recoverTypedSignature_v4(
           'eth',
           '0xf2ec61e636ff7bb3ac8bc2a4cc2c8b8f635dd1b2ec8094c963128b358e79c85c5ca6dd637ed7e80f0436fe8fce39c0e5f2082c9517fe677cc2917dcd6c84ba881c',
           typedData,

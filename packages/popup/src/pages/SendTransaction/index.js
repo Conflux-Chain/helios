@@ -10,18 +10,14 @@ import Button from '@fluent-wallet/component-button'
 import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
-import {TitleNav, AccountDisplay} from '../../components'
+import {TitleNav, AccountDisplay, CurrentNetworkDisplay} from '../../components'
 import {
   useCurrentTxParams,
   useEstimateTx,
   useCheckBalanceAndGas,
 } from '../../hooks'
-import {
-  ToAddressInput,
-  TokenAndAmount,
-  CurrentNetworkDisplay,
-} from './components'
-import {validateAddress} from '../../utils'
+import {ToAddressInput, TokenAndAmount} from './components'
+import {validateAddress, validateByEip55} from '../../utils'
 import {
   useNetworkTypeIsCfx,
   useCurrentAddress,
@@ -51,14 +47,7 @@ function SendTransaction() {
   const {
     data: {
       value: address,
-      network: {
-        eid: networkId,
-        type,
-        netId,
-        ticker: nativeToken,
-        name: networkName,
-        icon: networkIcon,
-      },
+      network: {eid: networkId, type, netId, ticker: nativeToken},
       account: {eid: accountId, nickname},
     },
   } = useCurrentAddress()
@@ -135,14 +124,14 @@ function SendTransaction() {
   const onChangeAddress = address => {
     setToAddress(address)
     if (!validateAddress(address, networkTypeIsCfx, netId)) {
-      if (networkTypeIsCfx) {
-        setAddressError(t('invalidAddress'))
-      } else {
-        setAddressError(t('invalidHexAddress'))
-      }
-    } else {
-      setAddressError('')
+      return setAddressError(
+        networkTypeIsCfx ? t('invalidAddress') : t('invalidHexAddress'),
+      )
     }
+    if (!networkTypeIsCfx && !validateByEip55(address)) {
+      return setAddressError(t('unChecksumAddress'))
+    }
+    setAddressError('')
   }
   useEffect(() => {
     if (nativeToken.symbol && !tokenAddress) setSendTokenId('native')
@@ -164,7 +153,7 @@ function SendTransaction() {
           nickname={nickname}
           address={address}
         />
-        <CurrentNetworkDisplay name={networkName} icon={networkIcon} />
+        <CurrentNetworkDisplay containerClassName="rounded h-6 pl-2" />
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">
         <div className="flex flex-col">
@@ -180,6 +169,7 @@ function SendTransaction() {
             onChangeToken={onChangeToken}
             isNativeToken={isNativeToken}
             nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
+            loading={loading}
           />
           <div className="overflow-hidden">
             <div

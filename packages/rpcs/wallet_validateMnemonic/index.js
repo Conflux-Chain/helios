@@ -1,5 +1,4 @@
 import {map, stringp} from '@fluent-wallet/spec'
-
 import {wordlists, validateMnemonic} from 'bip39'
 
 export const NAME = 'wallet_validateMnemonic'

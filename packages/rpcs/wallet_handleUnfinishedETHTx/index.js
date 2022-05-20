@@ -111,12 +111,11 @@ export const main = ({
   // this only happends in integration test
   if (!tx) return
   address = getAddressById(address)
-  const cacheTime = network.cacheTime || 1000
+  const cacheTime = Math.min(network.cacheTime || 1000, 4000)
   const {status, hash, raw} = tx
+
   const s = defs(hash, {tx, address})
-  const ss = defs(hash, {tx, address})
   const sdone = () => s.done()
-  const ssdone = () => ss.done()
   const keepTrack = (delay = cacheTime) => {
     if (!Number.isInteger(delay)) delay = cacheTime
     sdone()
@@ -125,6 +124,9 @@ export const main = ({
       delay,
     )
   }
+
+  const ss = defs(hash, {tx, address})
+  const ssdone = () => ss.done()
   const skeepTrack = (delay = cacheTime) => {
     if (!Number.isInteger(delay)) delay = cacheTime
     ssdone()
@@ -208,8 +210,17 @@ export const main = ({
             // failed to send
             setTxUnsent({hash})
 
-            const {errorType, shouldDiscard} = processError(err)
+            let {errorType, shouldDiscard} = processError(err)
             const isDuplicateTx = errorType === 'duplicateTx'
+            const resendNonceTooStale =
+              tx.resendAt && errorType === 'tooStaleNonce'
+            const resendPriceTooLow =
+              tx.resendAt && errorType === 'replaceUnderpriced'
+            if (resendPriceTooLow) errorType = 'replacedByAnotherTx'
+
+            const sameAsSuccess = isDuplicateTx || resendNonceTooStale
+            const failed =
+              !sameAsSuccess && (shouldDiscard || resendPriceTooLow)
 
             if (errorType === 'unknownError')
               sentryCaptureError(err, {
@@ -220,9 +231,9 @@ export const main = ({
               })
 
             defs({
-              failed: shouldDiscard && {errorType, err},
-              sameAsSuccess: isDuplicateTx,
-              resend: !shouldDiscard && !isDuplicateTx,
+              failed: failed && {errorType, err},
+              sameAsSuccess,
+              resend: !shouldDiscard && !sameAsSuccess,
             })
               .transform(
                 branchObj({
@@ -239,7 +250,7 @@ export const main = ({
                           message: `Transaction ${parseInt(
                             tx.txPayload.nonce,
                             16,
-                          )} failed! ${err?.message || ''}`,
+                          )} failed! ${err?.data || err?.message || ''}`,
                         }),
                       )
                     }),
@@ -279,9 +290,12 @@ export const main = ({
           // getTransactionByHash return null
           eth_blockNumber({errorFallThrough: true}, [])
             .then(n => {
-              if (
-                (!tx.resendAt && !tx.blockNumber) ||
-                n !== (tx.resendAt || tx.blockNumber)
+              if (!tx.resendAt && !tx.blockNumber) {
+                setTxSending({hash, resendAt: n})
+              } else if (
+                BigNumber.from(n)
+                  .sub(BigNumber.from(tx.resendAt || tx.blockNumber))
+                  .gte(1)
               ) {
                 setTxUnsent({hash, resendAt: n})
               }
@@ -319,7 +333,7 @@ export const main = ({
             )
             return sdone()
           }
-          keepTrack()
+          keepTrack(0)
         }),
       )
   } else if (status === 3) {
@@ -350,7 +364,7 @@ export const main = ({
 
           if (status === '0x1') {
             setTxExecuted({hash, receipt})
-            keepTrack(50 * cacheTime)
+            keepTrack(0)
           } else {
             setTxFailed({hash, error: 'tx failed'})
             updateBadge(getUnfinishedTxCount())
@@ -381,7 +395,7 @@ export const main = ({
             updateBadge(getUnfinishedTxCount())
             return true
           }
-          keepTrack(50 * cacheTime)
+          keepTrack()
           return false
         }),
         keepTruthy(), // filter non-null tx

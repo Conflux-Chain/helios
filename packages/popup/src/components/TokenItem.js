@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {CFX_DECIMALS} from '@fluent-wallet/data-format'
+import {COMMON_DECIMALS} from '@fluent-wallet/data-format'
 import PropTypes from 'prop-types'
 import Text from './Text'
 import {
@@ -9,11 +9,9 @@ import {
 import {useCheckImage} from '../hooks'
 import {DisplayBalance} from './'
 
-const getTokenItem = t => {
+const useTokenItemData = t => {
   const rst = [
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     useSingleTokenInfoWithNativeTokenSupport(t),
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     useSingleAddressTokenBalanceWithNativeTokenSupport({
       tokenId: t,
     }),
@@ -34,12 +32,13 @@ function TokenItem({
   className = '',
   ...props
 }) {
-  const [state, balance] = getTokenItem(token)
+  const [state, balance] = useTokenItemData(token)
 
   // In order for cfx that exist locally to appear with other coins as much as possible
   const [nextTickState, setNextTickState] = useState(() => {})
   const {logoURI, name, symbol, decimals} =
     token === 'native' ? nextTickState ?? {} : state
+
   useEffect(() => {
     if (token === 'native') {
       setTimeout(() => setNextTickState(state), 50)
@@ -49,7 +48,7 @@ function TokenItem({
 
   return (
     <div
-      className={`w-full h-14 flex items-center flex-shrink-0 px-3 ${
+      className={`w-full h-14 flex items-center shrink-0 px-3 ${
         onSelect ? 'cursor-pointer' : ''
       } ${onSelect ? 'hover:bg-primary-4' : ''} ${className}`}
       id={`tokenItem${index}`}
@@ -74,7 +73,7 @@ function TokenItem({
               balance={balance}
               maxWidthStyle={maxWidthStyle}
               maxWidth={maxWidth}
-              decimals={decimals || CFX_DECIMALS}
+              decimals={decimals || COMMON_DECIMALS}
             />
             {rightIcon && <span className="ml-5">{rightIcon}</span>}
           </div>

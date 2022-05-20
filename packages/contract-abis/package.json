@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/contract-abis",
   "type": "module",
   "packageManager": "yarn@3.0.1",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
-    "@ethersproject/abi": "5.5.0",
+    "@ethersproject/abi": "5.6.1",
     "@fluent-wallet/compose": "workspace:packages/compose"
   }
 }

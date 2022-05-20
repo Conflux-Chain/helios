@@ -15,6 +15,8 @@ const {
   WALLET_EXPORT_ACCOUNT,
   WALLET_DELETE_ACCOUNT_GROUP,
   WALLET_UPDATE_ACCOUNT,
+  WALLET_DELETE_ACCOUNT,
+  ACCOUNT_GROUP_TYPE,
 } = RPC_METHODS
 
 function AccountItem({
@@ -27,6 +29,7 @@ function AccountItem({
   selected = false,
   onOpenConfirmPassword,
   updateEditedName,
+  account = [],
 }) {
   const {t} = useTranslation()
   const [inputNickname, setInputNickname] = useState(accountNickname)
@@ -50,6 +53,22 @@ function AccountItem({
         duration: 1,
       })
     }
+
+    const remainShowAccounts = account.filter(({hidden}) => !hidden)
+
+    // Each hd account group must have at least one displayed account
+    if (
+      remainShowAccounts.length === 1 &&
+      remainShowAccounts?.[0]?.eid === accountId &&
+      hidden
+    ) {
+      return Message.warning({
+        content: t('lastAccountHideWarning'),
+        top: '10px',
+        duration: 1,
+      })
+    }
+
     setHidingAccountStatus(true)
     updateEditedName({accountId, hidden}, WALLET_UPDATE_ACCOUNT).finally(() => {
       setHidingAccountStatus(false)
@@ -66,6 +85,19 @@ function AccountItem({
     }
     onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
       accountGroupId,
+    })
+  }
+
+  const onDeleteHwAccount = () => {
+    if (selected) {
+      return Message.warning({
+        content: t('accountDeleteWarning'),
+        top: '10px',
+        duration: 1,
+      })
+    }
+    onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT, {
+      accountId,
     })
   }
 
@@ -88,18 +120,20 @@ function AccountItem({
           className="text-gray-80"
         />
       </div>
-      <WrapIcon
-        size="w-5 h-5"
-        id="export-account"
-        onClick={() => {
-          onOpenConfirmPassword?.(WALLET_EXPORT_ACCOUNT, {
-            accountId,
-          })
-        }}
-      >
-        <KeyOutlined className="w-3 h-3 text-primary" />
-      </WrapIcon>
-      {groupType !== 'pk' && (
+      {groupType !== ACCOUNT_GROUP_TYPE.HW && (
+        <WrapIcon
+          size="w-5 h-5"
+          id="export-account"
+          onClick={() => {
+            onOpenConfirmPassword?.(WALLET_EXPORT_ACCOUNT, {
+              accountId,
+            })
+          }}
+        >
+          <KeyOutlined className="w-3 h-3 text-primary" />
+        </WrapIcon>
+      )}
+      {groupType === ACCOUNT_GROUP_TYPE.HD && (
         <SwitchButtonGroup
           showLeft={hidden}
           onSwitch={onSwitchAccount}
@@ -107,8 +141,18 @@ function AccountItem({
           containerClassName="w-5 h-5 ml-3"
         />
       )}
+      {/* delete hw account  */}
+      {groupType === ACCOUNT_GROUP_TYPE.HW && (
+        <div
+          aria-hidden="true"
+          className="text-xs cursor-pointer text-gray-60 hover:text-primary ml-3"
+          onClick={onDeleteHwAccount}
+        >
+          {t('delete')}
+        </div>
+      )}
       {/* delete pk account group */}
-      {groupType === 'pk' && showDelete && (
+      {groupType === ACCOUNT_GROUP_TYPE.PK && showDelete && (
         <div
           aria-hidden="true"
           className="text-xs cursor-pointer text-gray-60 hover:text-primary ml-3"
@@ -130,6 +174,7 @@ AccountItem.propTypes = {
   hidden: PropTypes.bool,
   accountNickname: PropTypes.string,
   onOpenConfirmPassword: PropTypes.func,
+  account: PropTypes.array,
   updateEditedName: PropTypes.func.isRequired,
 }
 

@@ -1,14 +1,14 @@
 {
   "name": "@fluent-wallet/contract-method-name",
   "type": "module",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
-    "@ethersproject/abi": "5.5.0",
+    "@ethersproject/abi": "5.6.1",
     "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
-    "node-fetch": "3.0.0"
+    "@fluent-wallet/fetch-rpc": "workspace:*"
   }
 }

@@ -1,5 +1,4 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
-import App from '@ledgerhq/hw-app-eth'
 
 import {
   LEDGER_APP_NAME,
@@ -31,7 +30,8 @@ export default class Ethereum {
     if (!this.app) {
       try {
         this.transport = await TransportWebUSB.create()
-        this.app = new App(this.transport)
+        const App = await import('@ledgerhq/hw-app-eth')
+        this.app = new App.default(this.transport)
       } catch (error) {
         console.warn(error)
       }
@@ -113,13 +113,21 @@ export default class Ethereum {
     return Boolean(devices.length)
   }
 
-  async isAppOpen() {
+  /**
+   * whether the ledger app for the evm-based or ethereum chain is open
+   * You can sign the transaction in the evm-based chain with the evm-based app or the ethereum app
+   * @param {String} chainName:'CONFLUX','ETHEREUM','ESPACE'
+   * @returns boolean
+   */
+  async isAppOpen(chainName) {
     try {
       const isAuthed = await this.isDeviceAuthed()
       if (!isAuthed) return false
       const config = await this.getAppConfiguration()
-      const {name} = config
-      return name === LEDGER_APP_NAME.ETHEREUM
+      const name = config?.name || ''
+      return (
+        name === LEDGER_APP_NAME[chainName] || name === LEDGER_APP_NAME.ETHEREUM
+      )
     } catch (error) {
       return false
     } finally {
@@ -127,14 +135,19 @@ export default class Ethereum {
     }
   }
 
-  async openApp() {
+  /**
+   *
+   * @param {String} ledgerAppName: the name of the ledger app  which you want to open
+   * @returns boolean
+   */
+  async openApp(ledgerAppName) {
     try {
       await this.transport?.send(
         LEDGER_CLA,
         INS.OPEN_APP,
         0x00,
         0x00,
-        Buffer.from(LEDGER_APP_NAME.ETHEREUM, 'ascii'),
+        Buffer.from(ledgerAppName || LEDGER_APP_NAME.ETHEREUM, 'ascii'),
       )
       return true
     } catch (error) {
@@ -204,7 +217,7 @@ export default class Ethereum {
       error.appCode = ERROR.INVALID_CHANNEL.CODE
     }
     if (error?.message?.includes('UNKNOWN_ERROR')) {
-      error.message = `Ledger connection error, please make sure the Ledger device is unlocked and open the Conflux App, and reopen this page. ${
+      error.message = `Ledger connection error, please make sure the Ledger device is unlocked and open the Ethereum App, and reopen this page. ${
         error?.statusCode ? '(0x' + error?.statusCode?.toString(16) + ')' : ''
       }`
     }

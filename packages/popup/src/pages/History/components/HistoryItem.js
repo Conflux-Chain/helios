@@ -16,9 +16,13 @@ import {
   RocketOutlined,
   CancelOutlined,
 } from '@fluent-wallet/component-icons'
-import {transformToTitleCase, formatStatus} from '../../../utils'
+import {
+  transformToTitleCase,
+  formatStatus,
+  formatIntoChecksumAddress,
+} from '../../../utils'
 import {useNetworkTypeIsCfx, useCurrentTicker} from '../../../hooks/useApi'
-import {useDecodeData} from '../../../hooks'
+import {useDecodeData, useDappIcon} from '../../../hooks'
 import {
   WrapIcon,
   CopyButton,
@@ -66,6 +70,7 @@ function HistoryItem({
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const {t} = useTranslation()
+  const dappIconUrl = useDappIcon(app?.site?.icon)
   const {
     symbol: tokenSymbol,
     name: tokenName,
@@ -79,7 +84,6 @@ function HistoryItem({
   const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
   const {contractCreation, simple, contractInteraction, token20} = extra
 
-  // TODO: should throw error in decode data
   const {decodeData} = useDecodeData({
     to: payload?.to,
     data: payload?.data,
@@ -89,7 +93,11 @@ function HistoryItem({
     setActionName(
       simple
         ? t('send')
-        : transformToTitleCase(decodeData?.name) || t('unknown'),
+        : decodeData?.name
+        ? decodeData.name === 'unknown'
+          ? t('unknown')
+          : transformToTitleCase(decodeData.name)
+        : '-',
     )
   }, [simple, Object.keys(decodeData).length])
 
@@ -198,7 +206,7 @@ function HistoryItem({
         </div>
 
         <div className="flex items-center">
-          {txStatus === 'pending' && (
+          {(txStatus === 'pending' || txStatus === 'sending') && (
             <WrapIcon
               size="w-5 h-5"
               id="speed-up-tx"
@@ -209,7 +217,7 @@ function HistoryItem({
               <RocketOutlined className="w-3 h-3 text-primary" />
             </WrapIcon>
           )}
-          {txStatus === 'pending' && (
+          {(txStatus === 'pending' || txStatus === 'sending') && (
             <WrapIcon
               size="w-5 h-5 mx-2"
               id="cancel-tx"
@@ -247,11 +255,7 @@ function HistoryItem({
           } w-8 h-8 rounded-full border-solid border flex items-center justify-center mr-2`}
         >
           {app ? (
-            <img
-              src={app?.site?.icon || '/images/default-dapp-icon.svg'}
-              alt="favicon"
-              className="w-4 h-4"
-            />
+            <img src={dappIconUrl} alt="favicon" className="w-4 h-4" />
           ) : (
             <SendOutlined className="w-4 h-4 text-success" />
           )}
@@ -277,7 +281,11 @@ function HistoryItem({
           </div>
           <div className="flex mt-0.5 items-center justify-between text-gray-40 text-xs">
             <span>{contractName}</span>
-            <span>{toAddress ? shortenAddress(toAddress) : ''}</span>
+            <span>
+              {toAddress
+                ? shortenAddress(formatIntoChecksumAddress(toAddress))
+                : ''}
+            </span>
           </div>
         </div>
       </div>

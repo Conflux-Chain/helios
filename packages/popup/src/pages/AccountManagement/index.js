@@ -1,9 +1,10 @@
 import {useState} from 'react'
-import {isArray} from '@fluent-wallet/checks'
+import {isString, isArray, isUndefined} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
-import useGlobalStore from '../../stores'
 import {useHistory} from 'react-router-dom'
+import {DEFAULT_CFX_HDPATH, DEFAULT_ETH_HDPATH} from '@fluent-wallet/consts'
+import useGlobalStore from '../../stores'
 import {ROUTES, RPC_METHODS} from '../../constants'
 import {
   TitleNav,
@@ -18,6 +19,56 @@ const {EXPORT_SEED, EXPORT_PRIVATEKEY, SELECT_CREATE_TYPE} = ROUTES
 const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_EXPORT_ACCOUNT, ACCOUNT_GROUP_TYPE} =
   RPC_METHODS
 
+const PKDATAINFO = {
+  [DEFAULT_CFX_HDPATH]: {
+    des: 'confluxPathStandard',
+    subDes: 'confluxPathStandardDes',
+    index: 0,
+  },
+  [DEFAULT_ETH_HDPATH]: {
+    des: 'ethereumPathStandard',
+    subDes: 'ethereumPathStandardDes',
+    index: 1,
+  },
+}
+
+const getPrivateKey = res => {
+  let pkObj = {}
+  if (isArray(res)) {
+    for (let i in res) {
+      const hdPath = res[i]?.network?.hdPath?.value
+      if (PKDATAINFO?.[hdPath] && !pkObj?.[hdPath]) {
+        const pk = res[i]?.privateKey?.replace?.('0x', '')
+
+        pkObj[hdPath] = {
+          pk,
+          ...PKDATAINFO[hdPath],
+        }
+      }
+
+      if (Object.keys(pkObj).length === 2) {
+        break
+      }
+    }
+  } else if (isString(res)) {
+    pkObj = {
+      [DEFAULT_CFX_HDPATH]: {
+        pk: res,
+        ...PKDATAINFO[DEFAULT_CFX_HDPATH],
+      },
+      [DEFAULT_ETH_HDPATH]: {
+        pk: res,
+        ...PKDATAINFO[DEFAULT_ETH_HDPATH],
+      },
+    }
+  }
+  const ret = Object.values(pkObj).length
+    ? Object.values(pkObj).sort((a, b) => a.index - b.index)
+    : []
+
+  return ret
+}
+
 function AccountManagement() {
   const {t} = useTranslation()
   const history = useHistory()
@@ -25,26 +76,32 @@ function AccountManagement() {
   const [password, setPassword] = useState('')
   const [rpcMethod, setRpcMethod] = useState('')
   const [confirmParams, setConfirmParams] = useState({})
-  const {setExportPrivateKey, setExportSeedPhrase} = useGlobalStore()
+  const {setExportPrivateKeyData, setExportSeedPhrase} = useGlobalStore()
   const [searchContent, setSearchContent] = useState('')
   const [searchedAccountGroup, setSearchedAccountGroup] = useState(null)
   // to refresh searched data
   const [refreshDataStatus, setRefreshDataStatus] = useState(false)
 
   const {data, mutate: mutateCurrentAddress} = useCurrentAddress()
-  const networkName = data?.network?.name ?? ''
   const currentNetworkId = data?.network?.eid
+
   const {data: allAccountGroups, mutate: mutateAllAccountGroups} =
     useAccountList({
-      networkId: currentNetworkId,
-      groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+      getAllNetworkAccount: true,
       includeHidden: true,
     })
+
+  const {data: pkHdAccountGroups} = useAccountList({
+    networkId: currentNetworkId,
+    groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+    includeHidden: true,
+  })
+
   const accountGroupData = searchedAccountGroup
     ? Object.values(searchedAccountGroup)
     : Object.values(allAccountGroups)
 
-  const showDelete = Object.keys(allAccountGroups).length > 1
+  const showDelete = Object.keys(pkHdAccountGroups).length > 1
 
   const onConfirmCallback = res => {
     // export account group
@@ -56,13 +113,7 @@ function AccountManagement() {
     }
     // export account (include pk account group)
     if (rpcMethod === WALLET_EXPORT_ACCOUNT) {
-      setExportPrivateKey(
-        isArray(res)
-          ? res
-              .filter(item => item.network.name === networkName)[0]
-              .privateKey.replace('0x', '')
-          : res,
-      )
+      setExportPrivateKeyData(getPrivateKey(res))
       setOpenPasswordStatus(false)
       history.push(EXPORT_PRIVATEKEY)
       return Promise.resolve()
@@ -84,14 +135,13 @@ function AccountManagement() {
   }
 
   const onOpenConfirmPassword = (method, params) => {
-    if (!networkName) {
+    if (isUndefined(currentNetworkId)) {
       return
     }
     setOpenPasswordStatus(true)
     setRpcMethod(method)
     setConfirmParams({...params})
   }
-
   // update data when edit account / group name
   const updateEditedName = (params, rpcMethod) => {
     return new Promise((resolve, reject) => {
@@ -148,21 +198,20 @@ function AccountManagement() {
         {searchedAccountGroup && accountGroupData.length === 0 ? (
           <NoResult content={t('noResult')} imgClassName="mt-[116px]" />
         ) : (
-          Object.values(accountGroupData).map(
-            ({nickname, account, vault, eid}) => (
-              <GroupItem
-                key={eid}
-                accountGroupId={eid}
-                account={Object.values(account)}
-                nickname={nickname}
-                groupType={vault?.type}
-                onOpenConfirmPassword={onOpenConfirmPassword}
-                showDelete={showDelete}
-                currentNetworkId={currentNetworkId}
-                updateEditedName={updateEditedName}
-              />
-            ),
-          )
+          accountGroupData.map(({nickname, account, vault, eid}) => (
+            <GroupItem
+              key={eid}
+              accountGroupId={eid}
+              account={Object.values(account)}
+              nickname={nickname}
+              groupType={vault?.type}
+              isCfxHwGroup={vault?.cfxOnly}
+              onOpenConfirmPassword={onOpenConfirmPassword}
+              showDelete={showDelete}
+              currentNetworkId={currentNetworkId}
+              updateEditedName={updateEditedName}
+            />
+          ))
         )}
       </div>
 

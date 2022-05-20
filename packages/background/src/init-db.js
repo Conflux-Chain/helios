@@ -21,6 +21,7 @@ import {
   CFX_ESPACE_TESTNET_NETID,
   CFX_ESPACE_TESTNET_CURRENCY_SYMBOL,
   CFX_ESPACE_TESTNET_CURRENCY_NAME,
+  CFX_ESPACE_TESTNET_EXPLORER_URL,
   CFX_TESTNET_RPC_ENDPOINT,
   CFX_TESTNET_NAME,
   CFX_TESTNET_CHAINID,
@@ -98,6 +99,13 @@ function initNetwork(d) {
         url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list/cfx.test.fluent.json',
       },
     },
+    {
+      eid: -6,
+      tokenList: {
+        name: 'Fluent Default Conflux Espace List',
+        url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list/cfx-espace.fluent.json',
+      },
+    },
 
     // mainnets
     {
@@ -133,7 +141,7 @@ function initNetwork(d) {
         type: 'eth',
         chainId: CFX_ESPACE_MAINNET_CHAINID,
         netId: CFX_ESPACE_MAINNET_NETID,
-        cacheTime: 10000,
+        cacheTime: 4000,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
         ticker: {
           name: CFX_ESPACE_MAINNET_CURRENCY_NAME,
@@ -147,7 +155,7 @@ function initNetwork(d) {
         hdPath: -2,
         builtin: true,
         balanceChecker: '0x74191f6b288dff3db43b34d3637842c8146e2103',
-        // tokenList: -3,
+        tokenList: -6,
         isMainnet: true,
       },
     },
@@ -174,6 +182,7 @@ function initNetwork(d) {
         balanceChecker: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
         tokenList: -4,
         isMainnet: true,
+        gasBuffer: 1.5,
       },
     },
 
@@ -211,7 +220,7 @@ function initNetwork(d) {
         chainId: CFX_ESPACE_TESTNET_CHAINID,
         netId: CFX_ESPACE_TESTNET_NETID,
         icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Conflux.svg',
-        cacheTime: 10000,
+        cacheTime: 4000,
         ticker: {
           name: CFX_ESPACE_TESTNET_CURRENCY_NAME,
           symbol: CFX_ESPACE_TESTNET_CURRENCY_SYMBOL,
@@ -221,7 +230,7 @@ function initNetwork(d) {
           ],
         },
         hdPath: -2,
-        scanUrl: CFX_TESTNET_EXPLORER_URL,
+        scanUrl: CFX_ESPACE_TESTNET_EXPLORER_URL,
         balanceChecker: '0x74191f6b288dff3db43b34d3637842c8146e2103',
         builtin: true,
         isTestnet: true,
@@ -250,6 +259,7 @@ function initNetwork(d) {
         builtin: true,
         isTestnet: true,
         balanceChecker: '0x8d9708f3f514206486d7e988533f770a16d074a7',
+        gasBuffer: 1.5,
       },
     },
     {
@@ -275,6 +285,7 @@ function initNetwork(d) {
         builtin: true,
         isTestnet: true,
         balanceChecker: '0x3183b673f4816c94bef53958baf93c671b7f8cf2',
+        gasBuffer: 1.5,
       },
     },
     {
@@ -300,6 +311,7 @@ function initNetwork(d) {
         builtin: true,
         isTestnet: true,
         balanceChecker: '0x9788c4e93f9002a7ad8e72633b11e8d1ecd51f9b',
+        gasBuffer: 1.5,
       },
     },
     {
@@ -325,6 +337,7 @@ function initNetwork(d) {
         builtin: true,
         isTestnet: true,
         balanceChecker: '0x55abba8d669d60a10c104cc493ec5ef389ec92bb',
+        gasBuffer: 1.5,
       },
     },
   ])

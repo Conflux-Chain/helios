@@ -1,6 +1,6 @@
 {
   "name": "helios-background",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "type": "module",
   "main": "src/index.js",
   "private": true,
@@ -30,12 +30,13 @@
     "@fluent-wallet/cfx_get-code": "workspace:packages/rpcs/cfx_getCode",
     "@fluent-wallet/cfx_get-collateral-for-storage": "workspace:packages/rpcs/cfx_getCollateralForStorage",
     "@fluent-wallet/cfx_get-confirmation-risk-by-hash": "workspace:packages/rpcs/cfx_getConfirmationRiskByHash",
-    "@fluent-wallet/cfx_get-interest-rate": "workspace:packages/rpcs/cfx_getInterestRate",
+    "@fluent-wallet/cfx_get-interest-rate": "workspace:*",
     "@fluent-wallet/cfx_get-logs": "workspace:packages/rpcs/cfx_getLogs",
     "@fluent-wallet/cfx_get-max-gas-limit": "workspace:*",
     "@fluent-wallet/cfx_get-next-nonce": "workspace:packages/rpcs/cfx_getNextNonce",
     "@fluent-wallet/cfx_get-next-usable-nonce": "workspace:*",
     "@fluent-wallet/cfx_get-pos-economics": "workspace:*",
+    "@fluent-wallet/cfx_get-pos-reward-by-epoch": "workspace:*",
     "@fluent-wallet/cfx_get-skipped-blocks-by-epoch": "workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch",
     "@fluent-wallet/cfx_get-staking-balance": "workspace:packages/rpcs/cfx_getStakingBalance",
     "@fluent-wallet/cfx_get-status": "workspace:packages/rpcs/cfx_getStatus",
@@ -65,6 +66,7 @@
     "@fluent-wallet/eth_get-block-by-hash": "workspace:*",
     "@fluent-wallet/eth_get-block-by-number": "workspace:*",
     "@fluent-wallet/eth_get-code": "workspace:packages/rpcs/eth_getCode",
+    "@fluent-wallet/eth_get-logs": "workspace:*",
     "@fluent-wallet/eth_get-transaction-by-hash": "workspace:*",
     "@fluent-wallet/eth_get-transaction-count": "workspace:packages/rpcs/eth_getTransactionCount",
     "@fluent-wallet/eth_get-transaction-receipt": "workspace:*",
@@ -92,6 +94,7 @@
     "@fluent-wallet/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount",
     "@fluent-wallet/wallet_create-address": "workspace:packages/rpcs/wallet_createAddress",
     "@fluent-wallet/wallet_db-query": "workspace:packages/rpcs/wallet_dbQuery",
+    "@fluent-wallet/wallet_delete-account": "workspace:*",
     "@fluent-wallet/wallet_delete-account-group": "workspace:packages/rpcs/wallet_deleteAccountGroup",
     "@fluent-wallet/wallet_delete-app": "workspace:packages/rpcs/wallet_deleteApp",
     "@fluent-wallet/wallet_delete-network": "workspace:packages/rpcs/wallet_deleteNetwork",
@@ -169,6 +172,7 @@
   },
   "devDependencies": {
     "@fluent-wallet/test-helpers": "workspace:packages/test-helpers",
+    "@fluent-wallet/wallet_get-block-time": "workspace:*",
     "browser-passworder": "2.0.3"
   }
 }

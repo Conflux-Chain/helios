@@ -27,7 +27,7 @@ export const ADDRESS_TYPES = ['user', 'contract', 'builtin', 'null']
 export const DEFAULT_CURRENCY_DECIMALS = 18
 
 export const CFX_MAINNET_RPC_ENDPOINT = 'https://portal-main.confluxrpc.com'
-export const CFX_MAINNET_NAME = 'Conflux Hydra'
+export const CFX_MAINNET_NAME = 'Conflux Mainnet'
 export const CFX_MAINNET_CHAINID = '0x405'
 export const CFX_MAINNET_NETID = 1029
 export const CFX_MAINNET_CURRENCY_SYMBOL = 'CFX'
@@ -52,7 +52,7 @@ export const CFX_TESTNET_EXPLORER_URL = 'https://testnet.confluxscan.io'
 
 export const CFX_ESPACE_TESTNET_RPC_ENDPOINT =
   'https://evmtestnet.confluxrpc.com'
-export const CFX_ESPACE_TESTNET_NAME = 'Conflux espace (Testnet)'
+export const CFX_ESPACE_TESTNET_NAME = 'eSpace Testnet'
 export const CFX_ESPACE_TESTNET_CHAINID = '0x47'
 export const CFX_ESPACE_TESTNET_NETID = 71
 export const CFX_ESPACE_TESTNET_CURRENCY_SYMBOL = 'CFX'

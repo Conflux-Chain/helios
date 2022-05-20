@@ -1,6 +1,7 @@
 export const LEDGER_APP_NAME = {
   CONFLUX: 'Conflux',
   ETHEREUM: 'Ethereum',
+  ESPACE: 'Conflux eSpace',
 }
 /**
  * https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/productID

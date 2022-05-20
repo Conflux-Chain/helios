@@ -1,8 +1,15 @@
-import {PlusOutlined, SelectedOutlined} from '@fluent-wallet/component-icons'
+import {
+  PlusOutlined,
+  SelectedOutlined,
+  CloseOutlined,
+} from '@fluent-wallet/component-icons'
+import {isNumber} from '@fluent-wallet/checks'
 import {useDebounce} from 'react-use'
 import PropTypes from 'prop-types'
 import {useState, useMemo} from 'react'
 import {useTranslation} from 'react-i18next'
+import Message from '@fluent-wallet/component-message'
+import Tooltip from '@fluent-wallet/component-tooltip'
 import {
   SearchInput,
   SlideCard,
@@ -20,13 +27,18 @@ import {
   useNetworkTypeIsCfx,
   useValidate20Token,
 } from '../../../hooks/useApi'
+import useLoading from '../../../hooks/useLoading'
 import {request, validateAddress} from '../../../utils'
 
-const {WALLET_WATCH_ASSET} = RPC_METHODS
+const {WALLET_WATCH_ASSET, WALLET_UNWATCH_ASSET} = RPC_METHODS
 
 function AddToken({onClose, open}) {
   const {t} = useTranslation()
   const [searchContent, setSearchContent] = useState('')
+  const [showDeleteButtonTokenId, setShowDeleteButtonTokenId] = useState('')
+  const [maskClosable, setMaskClosable] = useState(true)
+
+  const {setLoading} = useLoading()
   const [debouncedSearchContent, setDebouncedSearchContent] =
     useState(searchContent)
   const [mutateAddrTokenBalance] = useDbRefetchBalance()
@@ -71,9 +83,9 @@ function AddToken({onClose, open}) {
   const tokenList =
     builtinTokens || (other20Token.valid && [[other20Token, false]]) || null
 
-  const onAddToken = token => {
+  const onAddToken = async token => {
     let params
-    if (Number.isInteger(token)) {
+    if (isNumber(token)) {
       params = {tokenId: token}
     } else {
       const {decimals, symbol, address, logoURI} = token
@@ -87,18 +99,48 @@ function AddToken({onClose, open}) {
         },
       }
     }
-    request(WALLET_WATCH_ASSET, params).then(() => {
-      // TODO: error
-      mutateAddrTokenBalance().then(() => {
-        mutateNetworkTokens()
-        mutateAddressTokens()
-      })
-    })
+    return request(WALLET_WATCH_ASSET, params)
+  }
+
+  const onDeleteToken = async token => {
+    return request(WALLET_UNWATCH_ASSET, {tokenId: token, addressId})
   }
 
   const onCloseAddToken = () => {
     onClose && onClose()
     setSearchContent('')
+  }
+
+  const onRightIconClick = (token, added) => {
+    let clickMethod
+    if (!added) {
+      clickMethod = onAddToken
+    } else if (isNumber(token) && isNumber(addressId)) {
+      clickMethod = onDeleteToken
+    }
+
+    if (clickMethod) {
+      setLoading(true)
+      setMaskClosable(false)
+      clickMethod(token)
+        .then(() => {
+          mutateAddrTokenBalance().then(() => {
+            mutateNetworkTokens()
+            mutateAddressTokens()
+          })
+        })
+        .catch(e => {
+          Message.error({
+            content: e?.message ?? t('unCaughtErrMsg'),
+            top: '10px',
+            duration: 1,
+          })
+        })
+        .finally(() => {
+          setLoading(false)
+          setTimeout(() => setMaskClosable(true), 200)
+        })
+    }
   }
 
   return (
@@ -111,12 +153,13 @@ function AddToken({onClose, open}) {
       }
       onClose={onCloseAddToken}
       open={open}
+      maskClosable={maskClosable}
       cardContent={
         // 2.75rem = parent paddingBottom + current marginTop = 1.75rem + 1rem
-        <div className="mt-4 flex flex-col flex-grow h-[calc(100%-2.75rem)]">
+        <div className="mt-4 flex flex-col grow h-[calc(100%-2.75rem)]">
           <SearchInput value={searchContent} onChange={setSearchContent} />
           {tokenList && (
-            <div className="relative pt-3 mt-3 bg-gray-0 rounded flex flex-col flex-grow">
+            <div className="relative pt-3 mt-3 bg-gray-0 rounded flex flex-col grow">
               <p className="ml-4 mb-1 text-gray-40">{t('searchResults')}</p>
               <TokenList>
                 {tokenList.map(([token, added], index) => (
@@ -127,13 +170,26 @@ function AddToken({onClose, open}) {
                     maxWidth={135}
                     maxWidthStyle="max-w-[135px]"
                     id={`tokenItem-${token}`}
+                    onMouseEnter={() =>
+                      added &&
+                      isNumber(token) &&
+                      setShowDeleteButtonTokenId(token)
+                    }
+                    onMouseLeave={() => setShowDeleteButtonTokenId('')}
                     rightIcon={
                       <WrapIcon
                         size="w-5 h-5"
-                        onClick={() => !added && onAddToken(token)}
+                        onClick={() => onRightIconClick(token, added)}
                       >
                         {added ? (
-                          <SelectedOutlined className="w-3 h-3 text-gray-40" />
+                          isNumber(showDeleteButtonTokenId) &&
+                          showDeleteButtonTokenId === token ? (
+                            <Tooltip content={t('remove')}>
+                              <CloseOutlined className="w-3 h-3 text-error" />
+                            </Tooltip>
+                          ) : (
+                            <SelectedOutlined className="w-3 h-3 text-gray-40" />
+                          )
                         ) : (
                           <PlusOutlined className="w-3 h-3 text-primary" />
                         )}

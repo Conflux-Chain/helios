@@ -6,13 +6,17 @@ import {useAsync} from 'react-use'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {estimate} from '@fluent-wallet/estimate-tx'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
-import {decode} from '@fluent-wallet/base32-address'
+import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
+import {Conflux, Ethereum} from '@fluent-wallet/ledger'
 import {
   COMMON_DECIMALS,
   convertValueToData,
   convertDecimal,
 } from '@fluent-wallet/data-format'
-import {getCFXContractMethodSignature} from '@fluent-wallet/contract-method-name'
+import {
+  getCFXContractMethodSignature,
+  getEthContractMethodSignature,
+} from '@fluent-wallet/contract-method-name'
 import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
@@ -118,12 +122,19 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     loading,
     error,
   } = useAsync(async () => {
-    if (!provider || !currentNetwork?.netId || (!to && !data)) return
+    if (
+      !provider ||
+      !currentNetwork?.netId ||
+      (!to && !data) ||
+      !network.chainId
+    )
+      return
     return await estimate(tx, {
       type,
       request: provider.request.bind(provider),
       tokensAmount,
       isFluentRequest: true,
+      chainIdToGasBuffer: {[network.chainId]: network.gasBuffer},
       // networkId: currentNetwork.netId,
     })
   }, [
@@ -135,6 +146,8 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     gasPrice,
     gas,
     storageLimit,
+    network.chainId,
+    network.gasBuffer,
     // currentNetwork.netId,
     Boolean(provider),
     Object.keys(tokensAmount)?.[0],
@@ -210,7 +223,9 @@ export const useCurrentTxParams = () => {
     to = toAddress ? tokenAddress : ''
     data = toAddress
       ? iface.encodeFunctionData('transfer', [
-          decode(toAddress).hexAddress,
+          validateBase32Address(toAddress)
+            ? decode(toAddress).hexAddress
+            : toAddress,
           sendData,
         ])
       : ''
@@ -244,7 +259,8 @@ export const useCheckBalanceAndGas = (
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
         return t('transferAmountExceedsAllowance')
       } else if (
-        error?.message?.indexOf('transfer amount exceeds balance') > -1
+        error?.message?.indexOf('transfer amount exceeds balance') > -1 ||
+        error?.message?.indexOf('insufficient funds') > -1
       ) {
         return t('balanceIsNotEnough')
       } else {
@@ -296,7 +312,7 @@ export const useDecodeData = ({to, data} = {}) => {
   const type = useAddressType(to)
   const {
     data: {
-      network: {netId},
+      network: {netId, type: currentNetworkType},
     },
   } = useCurrentAddress()
 
@@ -305,19 +321,38 @@ export const useDecodeData = ({to, data} = {}) => {
   const crc20Token = useValid20Token(isOutContract ? to : '')
 
   useEffect(() => {
-    if (data && isContract) {
-      getCFXContractMethodSignature(to, data, netId).then(result => {
-        setDecodeData({...result})
-      })
-    } else {
-      setDecodeData({})
+    if (data && isContract && currentNetworkType) {
+      if (crc20Token.valid === false) {
+        return setDecodeData({name: 'unknown'})
+      }
+
+      if (crc20Token.valid === true) {
+        const getSignature =
+          currentNetworkType === NETWORK_TYPE.CFX
+            ? getCFXContractMethodSignature
+            : getEthContractMethodSignature
+        const params =
+          currentNetworkType === NETWORK_TYPE.CFX ? [to, data, netId] : [data]
+
+        getSignature(...params)
+          .then(result => {
+            setDecodeData({...result})
+          })
+          .catch(() => {
+            setDecodeData({name: 'unknown'})
+          })
+        return
+      }
     }
-  }, [data, isContract, to, netId])
+
+    setDecodeData({})
+  }, [data, isContract, to, netId, currentNetworkType, crc20Token.valid])
 
   return {isContract, token: crc20Token, decodeData}
 }
 
 export const useDecodeDisplay = ({
+  deps,
   isDapp,
   isContract,
   nativeToken,
@@ -334,11 +369,13 @@ export const useDecodeDisplay = ({
   const {
     data: {value: address, account},
   } = useAddress({
+    deps,
     value: from,
     stop: isDapp && !pendingAuthReq?.app?.currentAccount?.eid,
     selected: isDapp ? undefined : true,
     appId: isDapp && pendingAuthReq?.app?.eid,
   })
+
   displayAccount = account
   const {token, decodeData} = useDecodeData(tx)
   const isApproveToken = isDapp && decodeData?.name === 'approve'
@@ -403,9 +440,12 @@ export const useViewData = ({data, to} = {}, isApproveToken) => {
   const {customAllowance} = useCurrentTxParams()
   const allowance =
     convertValueToData(customAllowance, token?.decimals) || '0x0'
+  const firstArg = decodeData?.args?.[0]
   const spender =
-    isApproveToken && decodeData?.args?.[0]
-      ? decode(decodeData?.args?.[0]).hexAddress
+    isApproveToken && firstArg
+      ? validateBase32Address(firstArg)
+        ? decode(firstArg).hexAddress
+        : firstArg
       : ''
   const viewData = useMemo(() => {
     if (customAllowance && isApproveToken) {
@@ -447,7 +487,7 @@ export const useCheckImage = url => {
   }
   const [isImg, setIsImg] = useState(null)
   useEffect(() => {
-    if (!/\.(gif|jpg|jpeg|png|svg|GIF|JPG|PNG)$/.test(url)) {
+    if (!/\.(gif|jpg|jpeg|png|svg|ico|GIF|JPG|PNG|ICO)$/.test(url)) {
       return setIsImg(false)
     }
     isImgUrl(url)
@@ -459,4 +499,33 @@ export const useCheckImage = url => {
       })
   }, [url])
   return isImg
+}
+
+export const useDappIcon = url => {
+  const isImgUrl = useCheckImage(url)
+  return isImgUrl ? url : '/images/default-dapp-icon.svg'
+}
+
+export const useLedgerBindingApi = () => {
+  const {
+    data: {
+      network: {type, chainId},
+    },
+  } = useCurrentAddress()
+
+  const ret = useMemo(() => {
+    if (type === NETWORK_TYPE.CFX) {
+      return new Conflux()
+    }
+    if (type === NETWORK_TYPE.ETH) {
+      let ethInstance = new Ethereum()
+      ethInstance.isAppOpen = ethInstance.isAppOpen.bind(
+        ethInstance,
+        chainId === '0x406' || chainId === '0x47' ? 'ESPACE' : 'ETHEREUM',
+      )
+      return ethInstance
+    }
+  }, [type, chainId])
+
+  return ret
 }

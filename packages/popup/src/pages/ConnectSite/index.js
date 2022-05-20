@@ -19,9 +19,11 @@ import {
   StretchInput,
   WrapIcon,
 } from '../../components'
-import {formatLocalizationLang} from '../../utils'
+import {RPC_METHODS} from '../../constants'
+import {formatLocalizationLang, formatIntoChecksumAddress} from '../../utils'
 import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
 
+const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
 function ConnectSitesList({
   allAccountGroupData,
   onSelectSingleAccount,
@@ -71,26 +73,33 @@ function ConnectSitesList({
       >
         <div
           id="accountWrapper"
-          className="max-h-[272px] rounded border border-solid border-gray-10 pt-2 overflow-auto bg-gray-4 no-scroll"
+          className="max-h-[272px] rounded overflow-auto no-scroll"
         >
           {searchedAccountGroup && accountGroupData.length === 0 ? (
             <NoResult content={t('noResult')} containerClassName="h-[262px]" />
           ) : (
             accountGroupData.map(
-              ({nickname, account, vault, eid}) =>
+              ({nickname, account, vault, eid}, index) =>
                 !!Object.values(account).length && (
-                  <div key={eid}>
-                    {vault?.type === 'pk' ? null : (
-                      <div className="flex items-center ml-3 mt-0.5">
-                        <WrapIcon
-                          size="w-5 h-5 mr-1 bg-primary-4"
-                          clickable={false}
-                        >
-                          <img
-                            src="/images/seed-group-icon.svg"
-                            alt="group-icon"
-                          />
-                        </WrapIcon>
+                  <div
+                    key={eid}
+                    className={`${
+                      index === 0 ? '' : 'mt-2'
+                    } bg-gray-4 border border-solid border-gray-10`}
+                  >
+                    {vault?.type !== ACCOUNT_GROUP_TYPE.PK && (
+                      <div className="flex items-center ml-3 pt-2.5">
+                        {vault?.type === ACCOUNT_GROUP_TYPE.HD && (
+                          <WrapIcon
+                            size="w-5 h-5 mr-1 bg-primary-4"
+                            clickable={false}
+                          >
+                            <img
+                              src="/images/seed-group-icon.svg"
+                              alt="group-icon"
+                            />
+                          </WrapIcon>
+                        )}
                         <p className="text-gray-40 text-xs">{nickname}</p>
                       </div>
                     )}
@@ -116,7 +125,10 @@ function ConnectSitesList({
                               <p className="text-xs text-gray-40">{nickname}</p>
                               <p className="text-sm text-gray-80">
                                 {shortenAddress(
-                                  currentAddress?.value || currentAddress?.hex,
+                                  formatIntoChecksumAddress(
+                                    currentAddress?.value ||
+                                      currentAddress?.hex,
+                                  ),
                                 )}
                               </p>
                             </div>
@@ -276,7 +288,7 @@ function ConnectSite() {
             title={t('chooseNetwork')}
             onClose={() => setNetworkShow(false)}
             content={<NetworkContent onClickNetworkItem={onClickNetworkItem} />}
-            className="bg-bg bg-gray-circles bg-no-repeat bg-contain"
+            className="bg-bg bg-gray-circles bg-no-repeat bg-contain max-h-[552px]"
           />
         </main>
       </div>

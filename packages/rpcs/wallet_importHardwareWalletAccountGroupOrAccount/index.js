@@ -54,7 +54,7 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup'],
-  methods: ['wallet_addVault', 'wallet_createAccount'],
+  methods: ['wallet_addVault'],
   db: [
     'getPassword',
     'findGroup',
