@@ -30,7 +30,6 @@ export const schemas = {
 
 export const permissions = {
   external: ['inpage', 'popup'],
-  locked: true,
   methods: [
     'wallet_addPendingUserAuthRequest',
     'wallet_userApprovedAuthRequest',
