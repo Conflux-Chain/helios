@@ -21,7 +21,7 @@ function LedgerGroupTag({networkType}) {
         networkType === NETWORK_TYPE.CFX ? 'bg-[#1E3DE4]' : 'bg-[#17B38A]'
       }`}
     >
-      <Tooltip content={t('ledgerTips', {network})}>
+      <Tooltip content={t('ledgerTips', {network})} placement="topLeft">
         <span className="text-white">{network}</span>
       </Tooltip>
     </CustomTag>
