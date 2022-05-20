@@ -8,12 +8,26 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup'],
-  db: ['getNetworkById', 'getAppById', 't', 'accountAddrByNetwork'],
+  methods: ['wallet_deleteApp', 'wallet_setAppCurrentAccount'],
+  db: [
+    'getNetworkById',
+    'getAppById',
+    't',
+    'accountAddrByNetwork',
+    'getAppAnotherAuthedNoneHWAccount',
+  ],
 }
 
-export const main = ({
+export const main = async ({
   Err: {InvalidParams},
-  db: {getNetworkById, getAppById, t, accountAddrByNetwork},
+  db: {
+    getNetworkById,
+    getAppById,
+    t,
+    accountAddrByNetwork,
+    getAppAnotherAuthedNoneHWAccount,
+  },
+  rpcs: {wallet_deleteApp, wallet_setAppCurrentAccount},
   params: {appId, networkId},
   network,
 }) => {
@@ -44,6 +58,18 @@ export const main = ({
       network: nextNetwork.eid,
     })
     //sometimes, if you authorize a hardware ledger account under ethereum to dapp, when you switch to conflux network, you cannot get addr
-    post({event: 'accountsChanged', params: [addr?.value]})
+    if (!addr) {
+      const anotherAccId = getAppAnotherAuthedNoneHWAccount({appId: app.eid})
+      if (anotherAccId) {
+        await wallet_setAppCurrentAccount({
+          accountId: anotherAccId,
+          appId: app.eid,
+        })
+      } else {
+        await wallet_deleteApp({appId: app.eid})
+      }
+      return
+    }
+    post({event: 'accountsChanged', params: [addr.value]})
   }
 }

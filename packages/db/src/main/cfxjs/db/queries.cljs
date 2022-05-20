@@ -602,6 +602,17 @@
                 nextnet)]
     (map (partial e :app) apps)))
 
+(defn get-app-another-authed-none-hw-account [{:keys [appId]}]
+  (q '[:find ?acc .
+       :in $ ?app
+       :where
+       [?app :app/account ?acc]
+       [?g :accountGroup/account ?acc]
+       [?g :accountGroup/vault ?v]
+       [?v :vault/type ?type]
+       (not [(= ?type "hw")])]
+     appId))
+
 (defn upsert-app-permissions
   [opt]
   (let [{:keys [siteId
@@ -1626,6 +1637,7 @@
               :setPreferences                      set-preferences
               :getPreferences                      get-preferences
               :getAppsWithDifferentSelectedNetwork get-apps-with-different-selected-network
+              :getAppAnotherAuthedNoneHWAccount get-app-another-authed-none-hw-account
 
               :queryqueryApp              get-apps
               :queryqueryAddress          get-address
