@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types'
+import {isUndefined} from '@fluent-wallet/checks'
 import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import Message from '@fluent-wallet/component-message'
-import {request} from '../utils'
+import {request, setEffectiveCurrentAccount} from '../utils'
 import {RPC_METHODS, TX_STATUS} from '../constants'
-import {usePendingAuthReq} from '../hooks/useApi'
+import {usePendingAuthReq, useCurrentAddress} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 import {useLedgerBindingApi} from '../hooks'
 
@@ -21,6 +22,7 @@ const {
   WALLET_ADD_CONFLUX_CHAIN,
   WALLET_WATCH_ASSET,
   PERSONAL_SIGN,
+  ACCOUNT_GROUP_TYPE,
 } = RPC_METHODS
 function DappFooter({
   cancelText,
@@ -36,9 +38,16 @@ function DappFooter({
   setIsAppOpen,
   isHwAccount,
   pendingAuthReq: customPendingAuthReq,
+  targetNetwork,
 }) {
   const {t} = useTranslation()
 
+  const {
+    data: {
+      account: currentAccount,
+      network: {type: currentNetworkType},
+    },
+  } = useCurrentAddress()
   const ledgerBindingApi = useLedgerBindingApi()
   let pendingAuthReq = usePendingAuthReq()
   pendingAuthReq = customPendingAuthReq || pendingAuthReq
@@ -64,26 +73,7 @@ function DappFooter({
       })
   }
 
-  const onConfirm = async () => {
-    if (!req?.method) {
-      return
-    }
-    if (isHwAccount) {
-      if (!ledgerBindingApi) {
-        return
-      }
-      const authStatus = await ledgerBindingApi.isDeviceAuthed()
-      const isAppOpen = await ledgerBindingApi.isAppOpen()
-      if (!authStatus) {
-        setAuthStatus(authStatus)
-        return
-      } else if (!isAppOpen) {
-        setIsAppOpen(isAppOpen)
-        return
-      }
-    }
-    if (!isHwAccount) setLoading(true)
-    else setSendStatus?.(TX_STATUS.HW_WAITING)
+  const sendDappRequest = async () => {
     let params = {}
     switch (req.method) {
       case WALLET_REQUEST_PERMISSIONS:
@@ -111,26 +101,67 @@ function DappFooter({
         break
     }
     params = {...params, ...confirmParams}
+    return request(req.method, {authReqId: eid, ...params})
+  }
 
-    request(req.method, {authReqId: eid, ...params})
-      .then(() => {
-        onClickConfirm && onClickConfirm()
-        if (!isHwAccount) setLoading(false)
-        else setSendStatus?.(TX_STATUS.HW_SUCCESS)
-        window.close()
-      })
-      .catch(e => {
-        !isHwAccount && setLoading(false)
-        setSendStatus?.(TX_STATUS.ERROR)
-        setSendError?.(e?.message ?? e)
+  const onConfirm = async () => {
+    try {
+      if (!req?.method) {
+        return
+      }
 
-        showError &&
-          Message.error({
-            content: e?.message ?? t('unCaughtErrMsg'),
-            top: '10px',
-            duration: 1,
-          })
-      })
+      if (isHwAccount) {
+        if (!ledgerBindingApi) {
+          return
+        }
+        const authStatus = await ledgerBindingApi.isDeviceAuthed()
+        const isAppOpen = await ledgerBindingApi.isAppOpen()
+        if (!authStatus) {
+          setAuthStatus(authStatus)
+          return
+        } else if (!isAppOpen) {
+          setIsAppOpen(isAppOpen)
+          return
+        }
+      }
+      if (!isHwAccount) setLoading(true)
+      else setSendStatus?.(TX_STATUS.HW_WAITING)
+
+      if (
+        req.method === WALLET_SWITCH_ETHEREUM_CHAIN ||
+        req.method === WALLET_SWITCH_CONFLUX_CHAIN
+      ) {
+        const currentAccountType = currentAccount?.accountGroup?.vault?.type
+        if (
+          isUndefined(currentAccountType) ||
+          isUndefined(targetNetwork?.type)
+        ) {
+          return
+        }
+
+        if (
+          currentNetworkType !== targetNetwork.type &&
+          currentAccountType === ACCOUNT_GROUP_TYPE.HW
+        ) {
+          await setEffectiveCurrentAccount(targetNetwork.eid)
+        }
+      }
+      await sendDappRequest()
+      onClickConfirm?.()
+      if (!isHwAccount) setLoading(false)
+      else setSendStatus?.(TX_STATUS.HW_SUCCESS)
+      window.close()
+    } catch (e) {
+      !isHwAccount && setLoading(false)
+      setSendStatus?.(TX_STATUS.ERROR)
+      setSendError?.(e?.message ?? e)
+      showError &&
+        Message.error({
+          content: e?.message ?? t('unCaughtErrMsg'),
+          top: '10px',
+          duration: 1,
+        })
+    }
   }
 
   return (
@@ -170,6 +201,7 @@ DappFooter.propTypes = {
   pendingAuthReq: PropTypes.array,
   isHwAccount: PropTypes.bool,
   showError: PropTypes.bool,
+  targetNetwork: PropTypes.object,
 }
 
 export default DappFooter
