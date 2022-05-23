@@ -591,6 +591,16 @@
     (t txns)
     true))
 
+(defn get-connected-sites-without-apps
+  "Get sites that not authed as an app but has the post method defined"
+  []
+  (->> (q '[:find [?site ...]
+            :where
+            [?site :site/post _]
+            (not [?app :app/site ?site])])
+       (map (partial e :site))
+       clj->js))
+
 (defn get-apps-with-different-selected-network
   "given the to-be-selected network, return all apps with different selected network"
   [nextnet]
@@ -1728,6 +1738,7 @@
               :getAppAnotherAuthedNoneHWAccount    get-app-another-authed-none-hw-account
               :updateAccountWithHiddenHandler      update-account
               :isLastNoneHWAccount                 is-last-none-hw-account
+              :getConnectedSitesWithoutApps         get-connected-sites-without-apps
 
               :queryqueryApp              get-apps
               :queryqueryAddress          get-address
