@@ -699,17 +699,18 @@
 (defn is-last-none-hw-account
   "Check if acc is last none hw acc"
   [{:keys [accountId]}]
-  (q '[:find ?acc .
-       :in $ ?a
-       :where
-       [?acc :account/index]
-       (not [(= ?acc ?a)])
-       (not [?acc :account/hidden true])
-       [?g :accountGroup/account ?acc]
-       [?g :accountGroup/vault ?v]
-       [?v :vault/type ?type]
-       (not [(= ?type "hw")])]
-     (not accountId)))
+  (not
+   (q '[:find ?acc .
+        :in $ ?a
+        :where
+        [?acc :account/index]
+        (not [(= ?acc ?a)])
+        (not [?acc :account/hidden true])
+        [?g :accountGroup/account ?acc]
+        [?g :accountGroup/vault ?v]
+        [?v :vault/type ?type]
+        (not [(= ?type "hw")])]
+      accountId)))
 
 (defn upsert-app-permissions
   [opt]
