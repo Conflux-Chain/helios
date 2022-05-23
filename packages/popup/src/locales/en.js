@@ -235,6 +235,9 @@ const en = {
     // - request signature - 1. Sign Text
     signText: 'Sign Text',
     signThisText: 'Sign this Text?',
+    disablePersonSign:
+      'Personal sign with hardware wallet is not yet supported.',
+    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Sign this Message?',
@@ -353,7 +356,7 @@ const en = {
     pluginHardwareWallet:
       'Plug your hardware wallet into your computer using the USB port.',
     enterPinCode: 'Enter your PIN code.',
-    selectConfluxApp: 'Select and open {{type}} App in Ledger',
+    selectLedgerApp: 'Select and open {{type}} App in Ledger',
     ready: 'Ready',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -367,8 +370,8 @@ const en = {
     waitForPermission: 'Waiting for permission',
     connectFailed: 'Connection Failed',
     retry: 'Retry',
-    openConfluxApp: 'Open {{type}} App',
-    openConfluxAppDes: 'Select and open {{type}} App in your Ledger device.',
+    openLedgerApp: 'Open {{type}} App',
+    openLedgerAppDes: 'Select and open {{type}} App in your Ledger device.',
     chooseAddress: 'Choose Address',
     hdPath: 'HD Path',
     chooseHwAddress: 'Choose the address you want to import:',

@@ -48,7 +48,7 @@ function OpenApp() {
       <img src="/images/open-conflux-app.svg" alt="connect" />
       <div className="w-110 text-center">
         <p className="text-gray-80 text-lg font-medium mb-2">
-          {t('openConfluxApp', {
+          {t('openLedgerApp', {
             type:
               networkType == NETWORK_TYPE.CFX
                 ? LEDGER_APP_NAME.CONFLUX
@@ -56,7 +56,7 @@ function OpenApp() {
           })}
         </p>
         <p className="text-gray-60 text-sm">
-          {t('openConfluxAppDes', {
+          {t('openLedgerAppDes', {
             type:
               networkType == NETWORK_TYPE.CFX
                 ? LEDGER_APP_NAME.CONFLUX

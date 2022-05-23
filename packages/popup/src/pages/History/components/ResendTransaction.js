@@ -12,6 +12,7 @@ import Button from '@fluent-wallet/component-button'
 import {Radio, Group} from '@fluent-wallet/radio'
 import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import {EditOutlined} from '@fluent-wallet/component-icons'
+import {consts} from '@fluent-wallet/ledger'
 import {
   NumberInput,
   GasFee,
@@ -34,9 +35,10 @@ import {
 } from '../../../hooks'
 import useLoading from '../../../hooks/useLoading'
 import {request, checkBalance} from '../../../utils'
-import {RPC_METHODS, TX_STATUS} from '../../../constants'
+import {RPC_METHODS, TX_STATUS, NETWORK_TYPE} from '../../../constants'
 
 const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION} = RPC_METHODS
+const {LEDGER_APP_NAME} = consts
 
 function ResendTransaction({
   reSendType,
@@ -82,7 +84,7 @@ function ResendTransaction({
   const {
     data: {
       account,
-      network: {name: chainName},
+      network: {type: networkType},
     },
   } = useCurrentAddress()
   const accountType = account?.accountGroup?.vault?.type
@@ -380,8 +382,11 @@ function ResendTransaction({
       }
       if (!isAppOpen) {
         return setHwAccountError(
-          t('openConfluxApp', {
-            chainName: chainName || '',
+          t('openLedgerApp', {
+            type:
+              networkType == NETWORK_TYPE.CFX
+                ? LEDGER_APP_NAME.CONFLUX
+                : LEDGER_APP_NAME.ETHEREUM,
           }),
         )
       }

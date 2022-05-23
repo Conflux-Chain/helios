@@ -114,7 +114,7 @@ function HardwareGuard() {
           <StepItem serialNumber="2" des={t('enterPinCode')} />
           <StepItem
             serialNumber="3"
-            des={t('selectConfluxApp', {
+            des={t('selectLedgerApp', {
               type:
                 networkType == NETWORK_TYPE.CFX
                   ? LEDGER_APP_NAME.CONFLUX
