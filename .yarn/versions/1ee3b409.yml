@@ -1,6 +1,4 @@
 releases:
-  "@fluent-wallet/db": patch
-  "@fluent-wallet/wallet_set-current-network": patch
   "@fluent-wallet/wallet_update-account": patch
 
 declined:
