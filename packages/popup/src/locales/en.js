@@ -353,7 +353,7 @@ const en = {
     pluginHardwareWallet:
       'Plug your hardware wallet into your computer using the USB port.',
     enterPinCode: 'Enter your PIN code.',
-    selectConfluxApp: 'Select and open the App for {{chainName}} in Ledger',
+    selectConfluxApp: 'Select and open {{type}} App in Ledger',
     ready: 'Ready',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -367,9 +367,8 @@ const en = {
     waitForPermission: 'Waiting for permission',
     connectFailed: 'Connection Failed',
     retry: 'Retry',
-    openConfluxApp: 'Open the App for {{chainName}}',
-    openConfluxAppDes:
-      'Select and open the App for {{chainName}} in your Ledger device.',
+    openConfluxApp: 'Open {{type}} App',
+    openConfluxAppDes: 'Select and open {{type}} App in your Ledger device.',
     chooseAddress: 'Choose Address',
     hdPath: 'HD Path',
     chooseHwAddress: 'Choose the address you want to import:',

@@ -2,11 +2,13 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {useState} from 'react'
 import Button from '@fluent-wallet/component-button'
-import {ROUTES} from '../../../constants'
+import {consts} from '@fluent-wallet/ledger'
+import {ROUTES, NETWORK_TYPE} from '../../../constants'
 import {useQuery, useLedgerBindingApi} from '../../../hooks'
 import {useCurrentAddress} from '../../../hooks/useApi'
 
 const {IMPORT_HW_ACCOUNT} = ROUTES
+const {LEDGER_APP_NAME} = consts
 
 function OpenApp() {
   const [loadingStatus, setLoadingStatus] = useState(false)
@@ -16,7 +18,7 @@ function OpenApp() {
   const ledgerBindingApi = useLedgerBindingApi()
   const {
     data: {
-      network: {name: chainName},
+      network: {type: networkType},
     },
   } = useCurrentAddress()
 
@@ -47,12 +49,18 @@ function OpenApp() {
       <div className="w-110 text-center">
         <p className="text-gray-80 text-lg font-medium mb-2">
           {t('openConfluxApp', {
-            chainName: chainName || '',
+            type:
+              networkType == NETWORK_TYPE.CFX
+                ? LEDGER_APP_NAME.CONFLUX
+                : LEDGER_APP_NAME.ETHEREUM,
           })}
         </p>
         <p className="text-gray-60 text-sm">
           {t('openConfluxAppDes', {
-            chainName: chainName || '',
+            type:
+              networkType == NETWORK_TYPE.CFX
+                ? LEDGER_APP_NAME.CONFLUX
+                : LEDGER_APP_NAME.ETHEREUM,
           })}
         </p>
       </div>

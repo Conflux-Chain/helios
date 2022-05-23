@@ -359,8 +359,7 @@ const ru = {
     pluginHardwareWallet:
       'Подключите аппаратный кошелек к компьютеру через порт USB.',
     enterPinCode: 'Введите PIN-код.',
-    selectConfluxApp:
-      'Выберите и откройте приложение для {{chainName}} в Ledger',
+    selectConfluxApp: 'Select and open {{type}} App in Ledger',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -374,9 +373,8 @@ const ru = {
     waitForPermission: 'Ожидание разрешения',
     connectFailed: 'Не удалось установить соединение',
     retry: 'Повторить',
-    openConfluxApp: 'Открыть приложение для {{chainName}}',
-    openConfluxAppDes:
-      'Выберите и откройте приложение для {{chainName}} в вашем устройстве Ledger.',
+    openConfluxApp: 'Open {{type}} App',
+    openConfluxAppDes: 'Select and open {{type}} App in your Ledger device.',
     chooseAddress: 'Выберите адрес',
     hdPath: 'Путь HD',
     chooseHwAddress: 'Выберите адрес, который вы хотите импортировать:',

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import Button from '@fluent-wallet/component-button'
 import {HeartBeatOutlined} from '@fluent-wallet/component-icons'
+import {consts} from '@fluent-wallet/ledger'
 import {useTranslation, Trans} from 'react-i18next'
 import {
   TitleNav,
@@ -11,6 +12,7 @@ import {ROUTES, NETWORK_TYPE} from '../../constants'
 import {useCurrentAddress} from '../../hooks/useApi'
 
 const {CONNECT_HARDWARE_WALLET} = ROUTES
+const {LEDGER_APP_NAME} = consts
 function StepItem({serialNumber, des, isLast = false}) {
   const {t} = useTranslation()
 
@@ -112,7 +114,12 @@ function HardwareGuard() {
           <StepItem serialNumber="2" des={t('enterPinCode')} />
           <StepItem
             serialNumber="3"
-            des={t('selectConfluxApp', {chainName})}
+            des={t('selectConfluxApp', {
+              type:
+                networkType == NETWORK_TYPE.CFX
+                  ? LEDGER_APP_NAME.CONFLUX
+                  : LEDGER_APP_NAME.ETHEREUM,
+            })}
             isLast={true}
           />
         </div>
