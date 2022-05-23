@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/wallet_update-account": patch
+
+declined:
+  - helios-background
