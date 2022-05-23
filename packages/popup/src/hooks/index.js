@@ -483,8 +483,7 @@ export const useCheckImage = url => {
       ImgObj.onerror = function (err) {
         reject(err)
       }
-      // eslint-disable-next-line no-unused-vars
-    }).catch(e => {})
+    })
   }
   const [isImg, setIsImg] = useState(null)
   useEffect(() => {
