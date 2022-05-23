@@ -14,6 +14,7 @@ export const permissions = {
     'setCurrentNetwork',
     'getNetworkById',
     'getAppsWithDifferentSelectedNetwork',
+    'getConnectedSitesWithoutApps',
   ],
 }
 
@@ -31,7 +32,12 @@ function shouldGivenCrossNetworkAddressLookupPermissonsBasedOnNetworkChange(
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {setCurrentNetwork, getNetworkById, getAppsWithDifferentSelectedNetwork},
+  db: {
+    setCurrentNetwork,
+    getNetworkById,
+    getAppsWithDifferentSelectedNetwork,
+    getConnectedSitesWithoutApps,
+  },
   rpcs: {wallet_setAppCurrentNetwork, wallet_requestPermissions},
   params: networks,
   network,
@@ -69,6 +75,10 @@ export const main = async ({
       return true
     }),
   )
+
+  getConnectedSitesWithoutApps().forEach(site => {
+    site.post({event: 'chainChanged', params: nextNetwork.chainId})
+  })
 
   Sentry.setTag('current_network', nextNetwork.name)
 }

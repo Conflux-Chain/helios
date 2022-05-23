@@ -591,6 +591,16 @@
     (t txns)
     true))
 
+(defn get-connected-sites-without-apps
+  "Get sites that not authed as an app but has the post method defined"
+  []
+  (->> (q '[:find [?site ...]
+            :where
+            [?site :site/post _]
+            (not [?app :app/site ?site])])
+       (map (partial e :site))
+       clj->js))
+
 (defn get-apps-with-different-selected-network
   "given the to-be-selected network, return all apps with different selected network"
   [nextnet]
@@ -612,6 +622,94 @@
        [?v :vault/type ?type]
        (not [(= ?type "hw")])]
      appId))
+
+(defn get-hidden-account-apps
+  "Given to-hide accountId, find apps which authed this account,
+  return [txs sideeffects] to handle the hidden account"
+  [{:keys [accountId]}]
+  (let [apps-data
+        (q '[:find ?app (count-distinct ?all-acc) ?current-acc
+             :in $ ?acc
+             :where
+             [?app :app/account ?acc]
+             [?app :app/account ?all-acc]
+             [?app :app/currentAccount ?curacc]
+             [(= ?curacc ?acc) ?current-acc]]
+           accountId)
+
+        ->txs
+        ;; txs: transactions send to db
+        ;; sideeffects: methods to call in js to notify app
+        (fn [[txs sideeffects] [app-id authed-acc-count current-acc?]]
+          (bc/cond
+            ;; hidden acc is the only and current authed acc of app
+            ;; delete the app
+            (and current-acc? (= authed-acc-count 1))
+            [txs (conj sideeffects [:wallet_deleteApp {:appId app-id}])]
+
+            ;; hidden acc is not current acc of dapp (more than 1 authed acc)
+            ;; unauth acc
+            (not current-acc?)
+            [(conj txs [:db/retract app-id :app/account accountId]) sideeffects]
+
+            ;; hidden acc is current acc of app and app has multiple authed acc
+            ;; switch current acc, unauth acc
+            :let
+            [app-switch-acc-data
+             (q '[:find ?app (distinct ?next-acc)
+                  :in $ ?acc
+                  :where
+                  [?app :app/currentAccount ?acc]
+                  [?app :app/account ?next-acc]
+                  (not [(= ?next-acc ?acc)])
+                  ;; make sure next acc has addr in current net
+                  [?next-acc :account/address ?addr]
+                  [?addr :address/network ?net]
+                  [?net :network/selected true]]
+                accountId)
+
+             ->txs
+             (fn [[txs sideeffects] [app-id next-acc-ids]]
+               (if (first next-acc-ids)
+                 ;; has next acc
+                 [(conj txs [:db/retract app-id :app/account accountId])
+                  (conj sideeffects [:wallet_setAppCurrentAccount {:appId app-id :accountId (first next-acc-ids)}])]
+                 ;; no next acc (next authed acc is hw acc and no addr under current net)
+                 [txs (conj sideeffects [:wallet_deleteApp {:appId app-id}])]))]
+
+            :else
+            (reduce ->txs [txs sideeffects] app-switch-acc-data)))]
+    (reduce ->txs [[] []] apps-data)))
+
+(defn update-account [{:keys [accountId nickname hidden offline]}]
+  (let [acc               (p [:account/hidden ;; :account/selected
+                              ]
+                             accountId)
+        newly-hidden?     (and hidden (not (:account/hidden acc)))
+        ;; cur-acc?          (:account/selected acc)
+        [txs sideeffects] (if newly-hidden? (get-hidden-account-apps {:accountId accountId}) [[] []])
+        update-acc-tx     (-> {:db/id accountId}
+                              (enc/assoc-some :account/nickname nickname)
+                              (enc/assoc-some :account/hidden hidden)
+                              (enc/assoc-some :account/offline offline))
+        txs               (conj txs update-acc-tx)]
+    (t txs)
+    (clj->js sideeffects)))
+
+(defn is-last-none-hw-account
+  "Check if acc is last none hw acc"
+  [{:keys [accountId]}]
+  (q '[:find ?acc .
+       :in $ ?a
+       :where
+       [?acc :account/index]
+       (not [(= ?acc ?a)])
+       (not [?acc :account/hidden true])
+       [?g :accountGroup/account ?acc]
+       [?g :accountGroup/vault ?v]
+       [?v :vault/type ?type]
+       (not [(= ?type "hw")])]
+     (not accountId)))
 
 (defn upsert-app-permissions
   [opt]
@@ -1637,7 +1735,10 @@
               :setPreferences                      set-preferences
               :getPreferences                      get-preferences
               :getAppsWithDifferentSelectedNetwork get-apps-with-different-selected-network
-              :getAppAnotherAuthedNoneHWAccount get-app-another-authed-none-hw-account
+              :getAppAnotherAuthedNoneHWAccount    get-app-another-authed-none-hw-account
+              :updateAccountWithHiddenHandler      update-account
+              :isLastNoneHWAccount                 is-last-none-hw-account
+              :getConnectedSitesWithoutApps         get-connected-sites-without-apps
 
               :queryqueryApp              get-apps
               :queryqueryAddress          get-address

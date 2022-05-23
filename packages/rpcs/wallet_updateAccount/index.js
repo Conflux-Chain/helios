@@ -1,6 +1,4 @@
 import {map, boolean, dbid, nickname} from '@fluent-wallet/spec'
-import {isBoolean} from '@fluent-wallet/checks'
-import {isUndefined} from '@fluent-wallet/checks'
 
 export const NAME = 'wallet_updateAccount'
 
@@ -16,31 +14,28 @@ export const schemas = {
 }
 
 export const permissions = {
-  db: ['t', 'getAccountGroup', 'findAccount'],
+  db: ['findAccount', 'updateAccountWithHiddenHandler', 'isLastNoneHWAccount'],
+  methods: ['wallet_deleteApp', 'wallet_setAppCurrentAccount'],
   external: ['popup'],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {t, findAccount},
-  params: {nickname, hidden, accountId, offline},
+  rpcs,
+  db: {findAccount, updateAccountWithHiddenHandler, isLastNoneHWAccount},
+  params,
 }) => {
   const account = findAccount({
-    accountId,
-    g: {_accountGroup: {eid: 1}},
+    accountId: params.accountId,
+    g: {eid: 1},
   })
-  if (!account) throw InvalidParams(`Invalid account id ${accountId}`)
-  // if (
-  //   nickname &&
-  //   findAccount({groupId: account.accountGroup.eid, nickname})?.length
-  // )
-  //   throw InvalidParams(
-  //     `Invalid nickname ${nickname}, duplicate with other account in the same account group`,
-  //   )
 
-  t([
-    nickname && {eid: accountId, account: {nickname}},
-    isBoolean(hidden) && {eid: accountId, account: {hidden}},
-    !isUndefined(offline) && {eid: accountId, account: {offline}},
-  ])
+  if (!account) throw InvalidParams(`Invalid account id ${params.accountId}`)
+
+  if (params.hidden && !isLastNoneHWAccount(account.eid))
+    throw InvalidParams(`Account ${account.eid} is last none HW account`)
+
+  const sideEffects = updateAccountWithHiddenHandler(params)
+
+  await Promise.all(sideEffects.map(([method, params]) => rpcs[method](params)))
 }
