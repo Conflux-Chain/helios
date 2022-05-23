@@ -1,5 +1,0 @@
-releases:
-  "@fluent-wallet/wallet_request-permissions": patch
-
-declined:
-  - helios-background
