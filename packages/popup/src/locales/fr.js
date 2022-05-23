@@ -127,7 +127,7 @@ const fr = {
     searchToken: 'Rechercher par nom ou adresse',
     searchResults: 'Résultats de recherche',
     noResult: 'Pas de résultat',
-    willSupport1559: 'La fonctionnalité EIP-1559 sera binetôt disponible.',
+    willSupport1559: 'La fonctionnalité EIP-1559 sera bientôt disponible.',
     remove: 'Supprimer',
 
     // welcome page
@@ -308,9 +308,9 @@ const fr = {
     AdvancedSettings: 'Paramêtres avancés',
     priorityConnection: 'Connexion Prioritaire',
     priorityConnectionDes:
-      'Fluent sera la première option lors de la connexion à n’importe quel dApp sur les réseaux EVM.',
+      'Fluent sera la première option lors de la connexion à une dApp sur les réseaux EVM.',
     showTestnet: 'Afficher la Testnet',
-    showTestnetDes: 'Selectionner cela pour afficher les réseaux de test dans la liste des réseaux disponibles.',
+    showTestnetDes: 'Selectionner cela pour afficher les testnets dans la liste de réseaux disponibles.',
 
     // About
     about: 'À Propos',
