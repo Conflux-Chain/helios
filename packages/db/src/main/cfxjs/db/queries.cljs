@@ -1197,6 +1197,7 @@
        [?addr-id :address/value ?addr]
        [?addr-id :address/network ?net]]
      (and (string? addr) (.toLowerCase addr)) netId))
+
 (defn addr-network-id-to-token-id [addr netId]
   (q '[:find ?token-id .
        :in $ ?addr ?net
@@ -1214,108 +1215,112 @@
      type))
 
 (defn get-single-call-balance-params [{:keys [type allNetwork networkId]}]
-  (let [all?                 (= type "all")
-        native-balance-binds (q '[:find ?net ?addr ?token
-                                  :in $ ?allnet ?network
-                                  :where
-                                  (or
-                                   (and
-                                    [(true? ?allnet)]
-                                    [?net :network/name _])
-                                   (and
-                                    [(not ?allnet)]
-                                    [(and true ?network) ?net]))
-                                  [?addr-id :address/network ?net]
-                                  [?addr-id :address/value ?addr]
-                                  [(and true "0x0") ?token]] allNetwork networkId)
-        token-binds          (q '[:find ?net ?addr ?token
-                                  :in $ ?allnet ?alladdr ?network
-                                  :where
-                                  (or
-                                   (and [(true? ?allnet)]
-                                        [?net :network/name _])
-                                   (and
-                                    [(not ?allnet)]
-                                    [(and true ?network) ?net]))
-                                  [?addr-id :address/network ?net]
-                                  [?acc :account/address ?addr-id]
-                                  (or
-                                   [(true? ?alladdr)]
-                                   (and
-                                    [(not ?alladdr)]
-                                    [?acc :account/selected true]))
-                                  [?token-id :token/network ?net]
-                                  [?token-id :token/address ?token]
-                                  [?addr-id :address/value ?addr]]
-                                allNetwork all? networkId)
-        format-balance-binds (fn [acc [network-id uaddr taddr]]
-                               (let [[u t net] (get acc network-id [#{} #{} (e :network network-id)])]
-                                 (assoc acc network-id [(conj u uaddr) (conj t taddr) net])))
-        params               (reduce format-balance-binds {} native-balance-binds)
-        params               (reduce format-balance-binds params token-binds)]
-    (into [] params)))
+  (let [cur-addr-only? (not (= type "all"))
+        cur-net-only?  (not allNetwork)
+
+        rst
+        (and cur-net-only?
+             (first
+              (q '[:find (distinct ?addr) (distinct ?token)
+                   :in $ ?caddr ?net
+                   :where
+                   [?addr :address/network ?net]
+                   [?acc :account/address ?addr]
+                   (or
+                    (and [(true? ?caddr)]
+                         [?acc :account/selected true])
+                    (not [(true? ?caddr)]))
+                   (or [?token :token/network ?net]
+                       [(identity false) ?token])]
+                 cur-addr-only? networkId)))
+
+        rst
+        (or (and rst [(into [networkId] rst)])
+            (and (not cur-net-only?)
+                 (q '[:find ?net (distinct ?addr) (distinct ?token)
+                      :in $ ?caddr
+                      :where
+                      [?addr :address/network ?net]
+                      [?acc :account/address ?addr]
+                      (or
+                       (and [(true? ?caddr)]
+                            [?acc :account/selected true])
+                       (not [(true? ?caddr)]))
+                      (or [?token :token/network ?net]
+                          [(identity false) ?token])]
+                    cur-addr-only?)))
+
+        process-rst
+        (fn [[network-id address-ids token-ids]]
+          [network-id
+           [(mapv :address/value (pm [:address/value] address-ids))
+            (into ["0x0"] (mapv :token/address (pm [:token/address] (disj token-ids false))))
+            (p [:network/name :db/id] network-id)]])
+        rst (mapv process-rst rst)]
+    rst))
 
 (defn upsert-balances
   [{:keys [networkId data]}]
   ;; data are [user-address token-balances] tuples
   ;; token-balances are [token-address balance] tuples
-  (let [user-data->txs (fn [[uaddr acc] [taddr balance]]
-                         (bc/cond
-                           :let [taddr (name taddr)]
-                           ;; native token balance
-                           (= taddr "0x0")
-                           [uaddr (conj acc {:db/id                 [:address/id [networkId uaddr]]
-                                             :address/nativeBalance balance})]
+  (let [user-data->txs
+        (fn [[uaddr acc] [taddr balance]]
+          (bc/cond
+            :let [taddr (name taddr)]
+            ;; native token balance
+            (= taddr "0x0")
+            [uaddr (conj acc {:db/id                 [:address/id [networkId uaddr]]
+                              :address/nativeBalance balance})]
 
-                           :let [anti-token? (q '[:find ?t .
-                                                  :in $ ?uaddr ?taddr
-                                                  :where
-                                                  [?u :address/id ?uaddr]
-                                                  [?t :token/id ?taddr]
-                                                  [?u :address/antiToken ?t]]
-                                                [networkId uaddr] [networkId taddr])
+            :let [anti-token? (q '[:find ?t .
+                                   :in $ ?uaddr ?taddr
+                                   :where
+                                   [?u :address/id ?uaddr]
+                                   [?t :token/id ?taddr]
+                                   [?u :address/antiToken ?t]]
+                                 [networkId uaddr] [networkId taddr])
 
-                                 ;; get balance entity by uaddr and taddr
-                                 balance-eid
+                  ;; get balance entity by uaddr and taddr
+                  balance-eid
+                  (and (not anti-token?)
+                       (q '[:find ?b .
+                            :in $ ?uaddr ?taddr
+                            :where
+                            [?u :address/id ?uaddr]
+                            [?t :token/id ?taddr]
+                            [?u :address/balance ?b]
+                            [?t :token/balance ?b]]
+                          [networkId uaddr] [networkId taddr]))
+
+                  ;; has balance
+                  gt0?
+                  (.gt (bn/BigNumber.from balance) 0)]
+
+            (and (not gt0?) (not balance-eid))
+            [uaddr acc]
+
+            :let [tmp-balance-id
+                  (str networkId uaddr taddr)
+
+                  ;; upsert balance
+                  acc
+                  (enc/conj-when acc {:db/id         (or
+                                                      balance-eid
+                                                      tmp-balance-id)
+                                      :balance/value balance}
                                  (and (not anti-token?)
-                                      (q '[:find ?b .
-                                           :in $ ?uaddr ?taddr
-                                           :where
-                                           [?u :address/id ?uaddr]
-                                           [?t :token/id ?taddr]
-                                           [?u :address/balance ?b]
-                                           [?t :token/balance ?b]]
-                                         [networkId uaddr] [networkId taddr]))
+                                      {:db/id         [:address/id [networkId uaddr]]
+                                       :address/token [:token/id [networkId taddr]]}))
 
-                                 ;; has balance
-                                 gt0?
-                                 (.gt (bn/BigNumber.from balance) 0)]
-
-                           (and (not gt0?) (not balance-eid))
-                           [uaddr acc]
-
-                           :let [tmp-balance-id
-                                 (str networkId uaddr taddr)
-
-                                 ;; upsert balance
-                                 acc
-                                 (enc/conj-when acc {:db/id         (or
-                                                                     balance-eid
-                                                                     tmp-balance-id)
-                                                     :balance/value balance}
-                                                (and (not anti-token?)
-                                                     {:db/id         [:address/id [networkId uaddr]]
-                                                      :address/token [:token/id [networkId taddr]]}))
-
-                                 ;; bind new balance to address and token
-                                 acc
-                                 (if balance-eid
-                                   acc
-                                   (conj acc {:db/id           [:address/id [networkId uaddr]]
-                                              :address/balance tmp-balance-id}
-                                         {:db/id         [:token/id [networkId taddr]]
-                                          :token/balance tmp-balance-id}))]
-                           [uaddr acc]))
+                  ;; bind new balance to address and token
+                  acc
+                  (if balance-eid
+                    acc
+                    (conj acc {:db/id           [:address/id [networkId uaddr]]
+                               :address/balance tmp-balance-id}
+                          {:db/id         [:token/id [networkId taddr]]
+                           :token/balance tmp-balance-id}))]
+            [uaddr acc]))
 
         data->txs (fn [acc [uaddr d]]
                     (let [uaddr (name uaddr)]
