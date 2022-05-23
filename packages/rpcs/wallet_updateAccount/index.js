@@ -32,7 +32,7 @@ export const main = async ({
 
   if (!account) throw InvalidParams(`Invalid account id ${params.accountId}`)
 
-  if (params.hidden && !isLastNoneHWAccount(account.eid))
+  if (params.hidden && isLastNoneHWAccount(account.eid))
     throw InvalidParams(`Account ${account.eid} is last none HW account`)
 
   const sideEffects = updateAccountWithHiddenHandler(params)
