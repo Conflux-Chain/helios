@@ -136,6 +136,7 @@ const zh = {
     zh: '简体中文',
     fr: 'Français (Communauté)',
     ru: 'Pусский (Сообщество)',
+    uk: 'Українська (Cпільнота)',
 
     // - Send Transaction
     // - Send Transaction / send transaction
