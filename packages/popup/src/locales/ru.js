@@ -236,6 +236,9 @@ const ru = {
     // - request signature - 1. Sign Text
     signText: 'Подписать текст',
     signThisText: 'Подписать этот текст?',
+    disablePersonSign:
+      'Personal sign with hardware wallet is not yet supported.',
+    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Подписать это сообщение?',
@@ -358,7 +361,7 @@ const ru = {
     pluginHardwareWallet:
       'Подключите аппаратный кошелек к компьютеру через порт USB.',
     enterPinCode: 'Введите PIN-код.',
-    selectConfluxApp: 'Select and open {{type}} App in Ledger',
+    selectLedgerApp: 'Select and open {{type}} App in Ledger',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -372,8 +375,8 @@ const ru = {
     waitForPermission: 'Ожидание разрешения',
     connectFailed: 'Не удалось установить соединение',
     retry: 'Повторить',
-    openConfluxApp: 'Open {{type}} App',
-    openConfluxAppDes: 'Select and open {{type}} App in your Ledger device.',
+    openLedgerApp: 'Open {{type}} App',
+    openLedgerAppDes: 'Select and open {{type}} App in your Ledger device.',
     chooseAddress: 'Выберите адрес',
     hdPath: 'Путь HD',
     chooseHwAddress: 'Выберите адрес, который вы хотите импортировать:',
