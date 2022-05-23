@@ -144,7 +144,7 @@ const fr = {
     zh: '简体中文',
     fr: 'Français (Communauté)',
     ru: 'Pусский (Сообщество)',
-    ua: 'Українська (Cпільнота)',
+    uk: 'Українська (Cпільнота)',
 
     // - Send Transaction
     // - Send Transaction / send transaction

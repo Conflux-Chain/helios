@@ -141,7 +141,7 @@ const ua = {
     zh: '简体中文',
     fr: 'Français (Communauté)',
     ru: 'Pусский (Cообщество)',
-    ua: 'Українська (Cпільнота)',
+    uk: 'Українська (Cпільнота)',
 
     // - Send Transaction
     // - Send Transaction / send transaction

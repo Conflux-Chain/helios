@@ -1,7 +1,2 @@
 declined:
-  - "@fluent-wallet/db"
   - helios-popup
-
-undecided:
-  - "@fluent-wallet/wallet_set-current-network"
-  - "@fluent-wallet/wallet_update-account"
