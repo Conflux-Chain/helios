@@ -15,7 +15,8 @@ const fr = {
     copiedSuccess: 'Copiée avec succès',
     invalidAddress: 'Merci d’indiquer une adresse cfx valide',
     invalidHexAddress: 'Merci d’indiquer une adresse hex valide',
-    unChecksumAddress: 'Adresse invalide, assurez-vous que la casse des lettres est correcte',
+    unChecksumAddress:
+      'Adresse invalide, assurez-vous que la casse des lettres est correcte',
     protocol: 'Protocole',
     viewData: 'Visualiser les données',
     learnMore: 'En savoir plus',
@@ -310,7 +311,8 @@ const fr = {
     priorityConnectionDes:
       'Fluent sera la première option lors de la connexion à une dApp sur les réseaux EVM.',
     showTestnet: 'Afficher la Testnet',
-    showTestnetDes: 'Selectionner cela pour afficher les testnets dans la liste de réseaux disponibles.',
+    showTestnetDes:
+      'Selectionner cela pour afficher les testnets dans la liste de réseaux disponibles.',
 
     // About
     about: 'À Propos',
@@ -360,7 +362,8 @@ const fr = {
     pluginHardwareWallet:
       'Branchez votre hardware wallet sur votre ordinateur en utilisant un port USB.',
     enterPinCode: 'Entrer votre code PIN.',
-    selectConfluxApp: 'Selectionner et ouvrir l’App pour {{chainName}} dans Ledger',
+    selectConfluxApp:
+      'Selectionner et ouvrir l’App pour {{chainName}} dans Ledger',
     ready: 'Prêt',
     specifiedConnectedChain:
       '<Container><Content>Connecter Ledger sur</Content><CurrentNetworkDisplay/></Container>',
