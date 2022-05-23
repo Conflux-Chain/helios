@@ -15,7 +15,7 @@ const fr = {
     copiedSuccess: 'Copiée avec succès',
     invalidAddress: 'Merci d’indiquer une adresse cfx valide',
     invalidHexAddress: 'Merci d’indiquer une adresse hex valide',
-    unChecksumAddress: 'Invalid address, make sure the letter case is correct',
+    unChecksumAddress: 'Adresse invalide, assurez-vous que la casse des lettres est correcte',
     protocol: 'Protocole',
     viewData: 'Visualiser les données',
     learnMore: 'En savoir plus',
@@ -127,8 +127,8 @@ const fr = {
     searchToken: 'Rechercher par nom ou adresse',
     searchResults: 'Résultats de recherche',
     noResult: 'Pas de résultat',
-    willSupport1559: 'EIP-1559 support coming soon.',
-    remove: 'Remove',
+    willSupport1559: 'La fonctionnalité EIP-1559 sera binetôt disponible.',
+    remove: 'Supprimer',
 
     // welcome page
     welcomeToConflux: 'Bienvenue sur Conflux Network',
@@ -167,7 +167,7 @@ const fr = {
     gasFee: 'Frais de Gas',
     edit: 'Éditer',
     sponsored: 'Sponsorisé',
-    partSponsored: 'Partially Sponsored',
+    partSponsored: 'Partiellement sponsorisé',
 
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
     editGasFeeControl: 'Contrôleur du Gas',
@@ -222,19 +222,19 @@ const fr = {
     unknown: 'Inconnue',
 
     // - Send Transaction / - speedup and cancel tx
-    cancelTransaction: 'Cancel Transaction',
-    suggestedGasPrice: 'Suggested Gas Price',
-    inputGasPrice: 'Input Gas Price',
-    spend: 'Spend',
+    cancelTransaction: 'Annuler la transaction',
+    suggestedGasPrice: 'Prix de Gas suggéré',
+    inputGasPrice: 'Prix de Gas d’entrée',
+    spend: 'Dépenser',
     cancelTxDes:
-      'Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction gas fee above.',
+      'L’envoi de cette modification ne garantit pas que votre transaction originale sera annulée. Si la tentative d’annulation réussit, les frais de Gas de la transaction ci-dessus vous seront facturés',
     speedupTxDes:
-      'Submitting this attempt does not guarantee your original transaction will be accelerated. If the acceleration attempt is successful, you will be charged the transaction gas fee above.',
-    speedupTransaction: 'Speed up Transaction',
-    submit: 'Submit',
-    customGasPrice: 'Custom Gas Price',
+      'L’envoi de cette modification ne garantit pas que votre transaction d’origine sera accélérée. Si la tentative d’accélération réussit, les frais de Gas de la transaction ci-dessus vous seront facturés.',
+    speedupTransaction: 'Accélérer la Transaction',
+    submit: 'Soumettre',
+    customGasPrice: 'Prix de Gas personalisé',
     executedTx:
-      'The transaction has been executed or finished.No action required.',
+      'La transaction a été exécutée ou terminée. Aucune action n’est requise.',
 
     // - request signature - 1. Sign Text
     signText: 'Signer le Texte',
@@ -284,14 +284,14 @@ const fr = {
     accountManagement: 'Gestion du Compte',
     lock: 'Verrouiller',
     enterPassword: 'Saisir votre mot de passe pour continuer',
-    viewSeed: 'Afficher la phrase Seed secrète',
+    viewSeed: 'Afficher la phrase secrète de récupération',
     hide: 'Cacher',
     delete: 'Supprimer',
     groupDeleteWarning: 'Impossible de supprimer le groupe de compte actuel.',
-    accountDeleteWarning: 'Can not delete current account.',
+    accountDeleteWarning: 'Impossible de supprimer le compte actuel.',
     accountHideWarning: 'Impossible de cacher le compte actuel.',
-    lastAccountHideWarning: 'Keep at least one account.',
-    ledgerTips: 'This account(s) can only be used on {{network}}.',
+    lastAccountHideWarning: 'Vous devez garder un compte au minimum.',
+    ledgerTips: 'Ce(s) compte(s) ne peut être utilisé que sur {{network}}.',
 
     // Network Management
     networkManagement: 'Gestion du Réseau',
@@ -305,12 +305,12 @@ const fr = {
     invalidRpcUrl: 'URL du RPC invalide',
 
     // Advanced Settings
-    AdvancedSettings: 'Advanced Settings',
-    priorityConnection: 'Priority Connection',
+    AdvancedSettings: 'Paramêtres avancés',
+    priorityConnection: 'Connexion Prioritaire',
     priorityConnectionDes:
-      'Fluent will be the first option when connecting to any dApp on EVM networks.',
-    showTestnet: 'Show Testnet',
-    showTestnetDes: 'Select this to show test networks in network list.',
+      'Fluent sera la première option lors de la connexion à n’importe quel dApp sur les réseaux EVM.',
+    showTestnet: 'Afficher la Testnet',
+    showTestnetDes: 'Selectionner cela pour afficher les réseaux de test dans la liste des réseaux disponibles.',
 
     // About
     about: 'À Propos',
@@ -330,16 +330,16 @@ const fr = {
       'L’API ConfluxPortal ne sera bientôt plus prise en charge par Fluent. Désactivez cette option pour rendre Fluent incompatible avec ConfluxPortal. Pour les tests des développeurs uniquement.',
 
     // backup
-    backupIdentity: 'Sauvegarder la Phrase Seed',
+    backupIdentity: 'Sauvegarder la Phrase de récupération',
     backupSeedDes:
-      'Veuillez sauvegarder la phrase seed dans le bon ordre. Ne la partagez pas et ne la stockez pas dans un environnement en réseau.',
-    backupPk: 'Sauvegarder du Compte',
+      'Veuillez sauvegarder la phrase de récupération dans le bon ordre. Ne la partagez pas et ne la stockez pas dans un environnement en réseau.',
+    backupPk: 'Sauvegarde du Compte',
     backupPkDes:
       'Ceci est votre clé privée. L’obtenir signifie posséder tous les actifs. Veuillez la garder en lieu sûr car une fois perdue, elle ne pourra pas être récupérée.',
-    confluxPathStandard: 'Conflux Path Standard',
-    confluxPathStandardDes: "Generated by Conflux path standard 'm/503'",
-    ethereumPathStandard: 'Ethereum Path Standard',
-    ethereumPathStandardDes: "Generated by Conflux path standard 'm/60'",
+    confluxPathStandard: 'Chemin Conflux Standard',
+    confluxPathStandardDes: "Généré par le chemin Conflux standard 'm/503'",
+    ethereumPathStandard: 'Chemin Ethereum standard',
+    ethereumPathStandardDes: "Généré par le chemin Conflux standard 'm/60'",
 
     transferAmountExceedsAllowance:
       'Le montant du transfert dépasse l’allocation',
@@ -353,17 +353,17 @@ const fr = {
     // hardware guard
     connectHardwareWallet: 'Connecter le Hardware Wallet',
     supportLedger: 'Ledger est supporté maintenant.',
-    ledgerGuardDes: 'How to create a Conflux Core Wallet in Ledger?',
+    ledgerGuardDes: 'Comment créer un Core Wallet Conflux dans Ledger?',
     followConnectLedgerSteps:
       'Merci de suivre les étapes ci-dessous pour connecter votre Ledger.',
     steps: 'Étapes {{number}}',
     pluginHardwareWallet:
       'Branchez votre hardware wallet sur votre ordinateur en utilisant un port USB.',
     enterPinCode: 'Entrer votre code PIN.',
-    selectConfluxApp: 'Select and open the App for {{chainName}} in Ledger',
+    selectConfluxApp: 'Selectionner et ouvrir l’App pour {{chainName}} dans Ledger',
     ready: 'Prêt',
     specifiedConnectedChain:
-      '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
+      '<Container><Content>Connecter Ledger sur</Content><CurrentNetworkDisplay/></Container>',
 
     // connect hardware wallet
     searchHwWallet: 'Recherche du wallet en cours',
@@ -375,9 +375,9 @@ const fr = {
     waitForPermission: 'En attente d’autorisation',
     connectFailed: 'Connexion Échouée',
     retry: 'Réessayer',
-    openConfluxApp: 'Open the App for {{chainName}}',
+    openConfluxApp: 'Ouvrir l’App pour {{chainName}}',
     openConfluxAppDes:
-      'Select and open the App for {{chainName}} in your Ledger device.',
+      'Selectionner et ouvrir l’App pour {{chainName}} sur votre dispositif Ledger.',
     chooseAddress: 'Choisir une Adresse',
     hdPath: 'Chemin HD',
     chooseHwAddress: 'Choisir l’adresse que vous souhaitez importer :',
@@ -395,10 +395,10 @@ const fr = {
 
     // confirm hw Modal
     waitingForSign: 'En attente de signature',
-    rejected: 'Rejettée',
+    rejected: 'Rejetée',
     waitingContent: 'Merci de confirmer cette transaction sur votre Ledger.',
-    rejectedContent: 'La transaction a été rejettée.',
-    copyError: 'Copy error code',
+    rejectedContent: 'La transaction a été rejetée.',
+    copyError: 'Copier le code erreur',
 
     // conflux confirm tx error
     txPoolFull: 'La pool de transaction est pleine',
@@ -416,29 +416,29 @@ const fr = {
     unknownError: 'Erreur inconnue',
 
     // ethereum confirm tx error
-    replaceUnderpriced: 'Gas too low',
-    gasTooLow: 'Gas too low',
-    gasLimitReached: 'Gas limit reached',
-    oversizedData: 'Data is oversized',
-    nonceTooHigh: 'Nonce is too large',
-    nonceMax: 'Nonce is too large',
-    insufficientFunds: 'Insufficient funds',
-    intrinsicGas: 'Intrinsic Gas too low',
-    txTypeNotSupported: 'Unsupported transaction type',
-    feeCapVeryHigh: 'Gas price too high',
-    feeCapTooLow: 'Gas price too low',
-    tipAboveFeeCap: 'Priority fee error',
-    tipVeryHigh: 'Priority fee error',
+    replaceUnderpriced: 'Gas insufisant',
+    gasTooLow: 'Gas insufisant',
+    gasLimitReached: 'Limite de Gas atteinte',
+    oversizedData: 'Les datas sont surdimensionnées',
+    nonceTooHigh: 'Le Nonce est trop grand',
+    nonceMax: 'Le Nonce est trop grand',
+    insufficientFunds: 'Fonds insuffisants',
+    intrinsicGas: 'Gas intrasèque insuffisant',
+    txTypeNotSupported: 'Type de transaction non supporté',
+    feeCapVeryHigh: 'Le prix du Gas est trop élevé',
+    feeCapTooLow: 'Le prix du Gas est trop bas',
+    tipAboveFeeCap: 'Erreur de frais de priorité',
+    tipVeryHigh: 'Erreur de frais de priorité',
 
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger n’est pas connecté',
     openExpandView: 'Ouvrir la vue étendue de Fluent pour vous connecter',
     hwOpenApp:
-      'Before clicking confirm, make sure the App for {{chainName}} is open.',
+      'Assurez-vous que l’App pour {{chainName}} est ouverte avant de valider.',
 
     // error page
     errorTile: 'Erreur',
-    errorDes: 'oups.quelque chose ne va pas...',
+    errorDes: 'oups, quelque chose ne va pas...',
     routeError: 'Désolé ! La page recherchée n’existe pas.',
     errorCode: 'Code Erreur',
     feedBackCode: 'Copier le code et envoyer un feedback',
