@@ -4,7 +4,6 @@
   "main": "index.js",
   "version": "0.0.9",
   "dependencies": {
-    "@fluent-wallet/checks": "workspace:packages/checks",
     "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }
