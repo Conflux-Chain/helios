@@ -1,7 +1,7 @@
 import en from './en'
 import fr from './fr'
 import ru from './ru'
-import ua from './ua'
+import uk from './uk'
 import zh from './zh'
 
 const resources = {
@@ -9,7 +9,7 @@ const resources = {
   zh,
   fr,
   ru,
-  ua,
+  uk,
 }
 
 export default resources
