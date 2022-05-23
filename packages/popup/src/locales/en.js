@@ -138,7 +138,8 @@ const en = {
     en: 'English',
     zh: '简体中文',
     fr: 'Français (Communauté)',
-    ru: 'Pусский (Сообщество)',
+    ru: 'Pусский (Cообщество)',
+    ua: 'Українська (Cпільнота)',
 
     // - Send Transaction
     // - Send Transaction / send transaction
