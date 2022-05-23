@@ -10,6 +10,9 @@ const {
   WALLET_METADATA_FOR_POPUP,
   QUERY_ADDRESS,
   WALLET_GET_BALANCE,
+  ACCOUNT_GROUP_TYPE,
+  WALLET_SET_CURRENT_ACCOUNT,
+  QUERY_ACCOUNT_LIST,
 } = RPC_METHODS
 
 export function request(...args) {
@@ -239,4 +242,17 @@ export const formatIntoChecksumAddress = address => {
     return toChecksum(address)
   }
   return address
+}
+
+export const setEffectiveCurrentAccount = async networkId => {
+  const target = await request(QUERY_ACCOUNT_LIST, {
+    networkId,
+    groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+    includeHidden: false,
+    accountG: {
+      eid: 1,
+    },
+  })
+  const targetAccountId = Object.values(Object.values(target)[0].account)[0].eid
+  return request(WALLET_SET_CURRENT_ACCOUNT, [targetAccountId])
 }
