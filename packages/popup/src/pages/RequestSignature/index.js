@@ -1,4 +1,6 @@
 import {useTranslation} from 'react-i18next'
+import {isUndefined} from '@fluent-wallet/checks'
+import Alert from '@fluent-wallet/component-alert'
 import {
   DappFooter,
   CompWithLabel,
@@ -11,10 +13,11 @@ import {
   useBalance,
   useAddressByNetworkId,
   useCurrentTicker,
+  useAddress,
 } from '../../hooks/useApi'
 import PlaintextMessage from './components/PlaintextMessage'
 import {RPC_METHODS} from '../../constants'
-const {PERSONAL_SIGN} = RPC_METHODS
+const {PERSONAL_SIGN, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
 function RequestSignature() {
   const {t} = useTranslation()
@@ -26,6 +29,15 @@ function RequestSignature() {
   const {decimals} = useCurrentTicker()
   const {value: address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const balanceData = useBalance(address, dappNetworkId)
+  const {data: AddressData} = useAddress({
+    stop: isUndefined(dappAccountId) || isUndefined(dappNetworkId),
+    accountId: dappAccountId,
+    networkId: dappNetworkId,
+  })
+
+  const isHw =
+    AddressData?.account?.accountGroup?.vault?.type === ACCOUNT_GROUP_TYPE.HW
+
   const plaintextData =
     !isPersonalSign && req?.params?.[1] ? JSON.parse(req.params[1]) : {}
 
@@ -80,7 +92,7 @@ function RequestSignature() {
             <div
               id="plaintext"
               className={`${
-                isPersonalSign ? 'pl-3 max-h-[376px]' : 'pl-1 max-h-[338px]'
+                isPersonalSign ? 'pl-3 max-h-[316px]' : 'pl-1 max-h-[282px]'
               } pr-3 pt-3 pb-4 rounded bg-gray-4 overflow-auto break-words`}
             >
               {isPersonalSign ? (
@@ -90,9 +102,22 @@ function RequestSignature() {
               )}
             </div>
           </CompWithLabel>
-          <div className="mt-3"></div>
+          <Alert
+            open={isHw}
+            className="mt-3"
+            type="warning"
+            closable={false}
+            width="w-full"
+            content={t(
+              isPersonalSign ? 'disablePersonSign' : 'disableTypeSign',
+            )}
+          />
         </main>
-        <DappFooter cancelText={t('cancel')} confirmText={t('sign')} />
+        <DappFooter
+          cancelText={t('cancel')}
+          confirmText={t('sign')}
+          confirmDisabled={isHw}
+        />
       </div>
     </div>
   )

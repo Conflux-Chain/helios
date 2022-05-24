@@ -237,6 +237,9 @@ const ru = {
     // - request signature - 1. Sign Text
     signText: 'Подписать текст',
     signThisText: 'Подписать этот текст?',
+    disablePersonSign:
+      'Personal sign with hardware wallet is not yet supported.',
+    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Подписать это сообщение?',
@@ -359,8 +362,7 @@ const ru = {
     pluginHardwareWallet:
       'Подключите аппаратный кошелек к компьютеру через порт USB.',
     enterPinCode: 'Введите PIN-код.',
-    selectConfluxApp:
-      'Выберите и откройте приложение для {{chainName}} в Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -374,9 +376,8 @@ const ru = {
     waitForPermission: 'Ожидание разрешения',
     connectFailed: 'Не удалось установить соединение',
     retry: 'Повторить',
-    openConfluxApp: 'Открыть приложение для {{chainName}}',
-    openConfluxAppDes:
-      'Выберите и откройте приложение для {{chainName}} в вашем устройстве Ledger.',
+    openLedgerApp: 'Open {{appName}} App',
+    openLedgerAppDes: 'Select and open {{appName}} App in your Ledger device.',
     chooseAddress: 'Выберите адрес',
     hdPath: 'Путь HD',
     chooseHwAddress: 'Выберите адрес, который вы хотите импортировать:',
@@ -433,7 +434,7 @@ const ru = {
     ledgerIsNotConnected: 'Ledger не подключен',
     openExpandView: 'Откройте расширение Fluent Wallet для подключения',
     hwOpenApp:
-      'Прежде чем продолжить, убедитесь, что приложение для {{chainName}} открыто.',
+      'Before clicking confirm, make sure the {{appName}} App is open.',
 
     // error page
     errorTile: 'Ошибка',

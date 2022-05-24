@@ -15,6 +15,7 @@ function DappSwitchNetwork() {
       ? NETWORK_TYPE.CFX
       : NETWORK_TYPE.ETH,
   )
+
   const [{isTestnet, name, endpoint, icon}] = networkData.length
     ? networkData
     : [{}]
@@ -79,7 +80,11 @@ function DappSwitchNetwork() {
           </div>
         </main>
       </div>
-      <DappFooter cancelText={t('cancel')} confirmText={t('switch')} />
+      <DappFooter
+        cancelText={t('cancel')}
+        confirmText={t('switch')}
+        targetNetwork={networkData?.[0]}
+      />
     </div>
   )
 }

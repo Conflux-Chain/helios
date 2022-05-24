@@ -241,6 +241,9 @@ const fr = {
     // - request signature - 1. Sign Text
     signText: 'Signer le Texte',
     signThisText: 'Signer ce Texte ?',
+    disablePersonSign:
+      'Personal sign with hardware wallet is not yet supported.',
+    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Signer ce Message ?',
@@ -363,8 +366,7 @@ const fr = {
     pluginHardwareWallet:
       'Branchez votre hardware wallet sur votre ordinateur en utilisant un port USB.',
     enterPinCode: 'Entrer votre code PIN.',
-    selectConfluxApp:
-      'Selectionner et ouvrir l’App pour {{chainName}} dans Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
     ready: 'Prêt',
     specifiedConnectedChain:
       '<Container><Content>Connecter Ledger sur</Content><CurrentNetworkDisplay/></Container>',
@@ -379,9 +381,8 @@ const fr = {
     waitForPermission: 'En attente d’autorisation',
     connectFailed: 'Connexion Échouée',
     retry: 'Réessayer',
-    openConfluxApp: 'Ouvrir l’App pour {{chainName}}',
-    openConfluxAppDes:
-      'Selectionner et ouvrir l’App pour {{chainName}} sur votre dispositif Ledger.',
+    openLedgerApp: 'Open {{appName}} App',
+    openLedgerAppDes: 'Select and open {{appName}} App in your Ledger device.',
     chooseAddress: 'Choisir une Adresse',
     hdPath: 'Chemin HD',
     chooseHwAddress: 'Choisir l’adresse que vous souhaitez importer :',
@@ -438,7 +439,7 @@ const fr = {
     ledgerIsNotConnected: 'Ledger n’est pas connecté',
     openExpandView: 'Ouvrir la vue étendue de Fluent pour vous connecter',
     hwOpenApp:
-      'Assurez-vous que l’App pour {{chainName}} est ouverte avant de valider.',
+      'Before clicking confirm, make sure the {{appName}} App is open.',
 
     // error page
     errorTile: 'Erreur',

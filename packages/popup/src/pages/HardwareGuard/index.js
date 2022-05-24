@@ -9,6 +9,7 @@ import {
 } from '../../components/'
 import {ROUTES, NETWORK_TYPE} from '../../constants'
 import {useCurrentAddress} from '../../hooks/useApi'
+import {useLedgerAppName} from '../../hooks'
 
 const {CONNECT_HARDWARE_WALLET} = ROUTES
 function StepItem({serialNumber, des, isLast = false}) {
@@ -45,6 +46,7 @@ function HardwareGuard() {
       network: {type: networkType, name: chainName},
     },
   } = useCurrentAddress()
+  const LedgerAppName = useLedgerAppName()
 
   const onClick = () => {
     window &&
@@ -112,7 +114,9 @@ function HardwareGuard() {
           <StepItem serialNumber="2" des={t('enterPinCode')} />
           <StepItem
             serialNumber="3"
-            des={t('selectConfluxApp', {chainName})}
+            des={t('selectLedgerApp', {
+              appName: LedgerAppName,
+            })}
             isLast={true}
           />
         </div>
