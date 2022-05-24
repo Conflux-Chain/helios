@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/wallet_after-unlock": patch
+
+declined:
+  - helios-background
