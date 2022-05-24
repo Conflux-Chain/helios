@@ -362,7 +362,7 @@ const ru = {
     pluginHardwareWallet:
       'Подключите аппаратный кошелек к компьютеру через порт USB.',
     enterPinCode: 'Введите PIN-код.',
-    selectLedgerApp: 'Select and open {{type}} App in Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -376,8 +376,8 @@ const ru = {
     waitForPermission: 'Ожидание разрешения',
     connectFailed: 'Не удалось установить соединение',
     retry: 'Повторить',
-    openLedgerApp: 'Open {{type}} App',
-    openLedgerAppDes: 'Select and open {{type}} App in your Ledger device.',
+    openLedgerApp: 'Open {{appName}} App',
+    openLedgerAppDes: 'Select and open {{appName}} App in your Ledger device.',
     chooseAddress: 'Выберите адрес',
     hdPath: 'Путь HD',
     chooseHwAddress: 'Выберите адрес, который вы хотите импортировать:',
@@ -434,7 +434,7 @@ const ru = {
     ledgerIsNotConnected: 'Ledger не подключен',
     openExpandView: 'Откройте расширение Fluent Wallet для подключения',
     hwOpenApp:
-      'Прежде чем продолжить, убедитесь, что приложение для {{chainName}} открыто.',
+      'Before clicking confirm, make sure the {{appName}} App is open.',
 
     // error page
     errorTile: 'Ошибка',

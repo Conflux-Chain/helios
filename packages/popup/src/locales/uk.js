@@ -356,7 +356,7 @@ const ua = {
     pluginHardwareWallet:
       "Підключіть апаратний гаманець до комп'ютера через порт USB.",
     enterPinCode: 'Введіть PIN- код.',
-    selectConfluxApp: 'Виберіть і відкрийте додаток для {{chainName}} в Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -370,9 +370,8 @@ const ua = {
     waitForPermission: 'Очікування дозволу',
     connectFailed: "Не вдалося встановити з'єднання",
     retry: 'Повторити',
-    openConfluxApp: 'Відкрити додаток для {{chainName}}',
-    openConfluxAppDes:
-      'Виберіть і відкрийте додаток для {{chainName}} у вашому пристрої Ledger.',
+    openLedgerApp: 'Open {{appName}} App',
+    openLedgerAppDes: 'Select and open {{appName}} App in your Ledger device.',
     chooseAddress: 'Виберіть адресу',
     hdPath: 'Шлях HD',
     chooseHwAddress: 'Виберіть адресу, яку ви хочете імпортувати :',
@@ -429,7 +428,7 @@ const ua = {
     ledgerIsNotConnected: 'Ledger не підключений',
     openExpandView: 'Відкрийте розширення Fluent Wallet для підключення',
     hwOpenApp:
-      'Перш ніж продовжити, переконаєтеся, що додаток для {{chainName}} відкрито.',
+      'Before clicking confirm, make sure the {{appName}} App is open.',
 
     // error page
     errorTile: 'Помилка',

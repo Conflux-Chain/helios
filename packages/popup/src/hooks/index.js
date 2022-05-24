@@ -19,6 +19,7 @@ import {
 } from '@fluent-wallet/contract-method-name'
 import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
+import {consts} from '@fluent-wallet/ledger'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
   useSingleTokenInfoWithNativeTokenSupport,
@@ -33,6 +34,7 @@ import {
 import {validateAddress} from '../utils'
 
 const {HOME} = ROUTES
+const {LEDGER_APP_NAME} = consts
 
 export const useCreatedPasswordGuard = () => {
   const {createdPassword} = useGlobalStore()
@@ -528,4 +530,18 @@ export const useLedgerBindingApi = () => {
   }, [type, chainId])
 
   return ret
+}
+
+export const useLedgerAppName = () => {
+  const {
+    data: {
+      network: {type: networkType},
+    },
+  } = useCurrentAddress()
+
+  return networkType == NETWORK_TYPE.CFX
+    ? LEDGER_APP_NAME.CONFLUX
+    : networkType == NETWORK_TYPE.ETH
+    ? LEDGER_APP_NAME.ETHEREUM
+    : ''
 }

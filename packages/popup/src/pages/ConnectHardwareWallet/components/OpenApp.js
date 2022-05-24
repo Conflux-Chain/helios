@@ -2,13 +2,10 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {useState} from 'react'
 import Button from '@fluent-wallet/component-button'
-import {consts} from '@fluent-wallet/ledger'
-import {ROUTES, NETWORK_TYPE} from '../../../constants'
-import {useQuery, useLedgerBindingApi} from '../../../hooks'
-import {useCurrentAddress} from '../../../hooks/useApi'
+import {ROUTES} from '../../../constants'
+import {useQuery, useLedgerBindingApi, useLedgerAppName} from '../../../hooks'
 
 const {IMPORT_HW_ACCOUNT} = ROUTES
-const {LEDGER_APP_NAME} = consts
 
 function OpenApp() {
   const [loadingStatus, setLoadingStatus] = useState(false)
@@ -16,11 +13,7 @@ function OpenApp() {
   const history = useHistory()
   const query = useQuery()
   const ledgerBindingApi = useLedgerBindingApi()
-  const {
-    data: {
-      network: {type: networkType},
-    },
-  } = useCurrentAddress()
+  const LedgerAppName = useLedgerAppName()
 
   const onClick = async () => {
     if (!ledgerBindingApi) {
@@ -49,18 +42,12 @@ function OpenApp() {
       <div className="w-110 text-center">
         <p className="text-gray-80 text-lg font-medium mb-2">
           {t('openLedgerApp', {
-            type:
-              networkType == NETWORK_TYPE.CFX
-                ? LEDGER_APP_NAME.CONFLUX
-                : LEDGER_APP_NAME.ETHEREUM,
+            appName: LedgerAppName,
           })}
         </p>
         <p className="text-gray-60 text-sm">
           {t('openLedgerAppDes', {
-            type:
-              networkType == NETWORK_TYPE.CFX
-                ? LEDGER_APP_NAME.CONFLUX
-                : LEDGER_APP_NAME.ETHEREUM,
+            appName: LedgerAppName,
           })}
         </p>
       </div>

@@ -343,7 +343,7 @@ const zh = {
     steps: '步骤 {{number}}',
     pluginHardwareWallet: '请将硬件钱包插入电脑的 USB 端口',
     enterPinCode: '在硬件钱包上输入 PIN 码',
-    selectLedgerApp: '在 Ledger 中打开 {{type}} App',
+    selectLedgerApp: '在 Ledger 中打开 {{appName}} App',
     ready: '开始连接',
     specifiedConnectedChain:
       '<Container><Content>连接 Ledger 在</Content><CurrentNetworkDisplay/></Container>',
@@ -356,8 +356,8 @@ const zh = {
     waitForPermission: '等待授权',
     connectFailed: '连接失败',
     retry: '重试',
-    openLedgerApp: '打开 {{type}} App',
-    openLedgerAppDes: '在 Ledger 中选择并打开 {{type}} App',
+    openLedgerApp: '打开 {{appName}} App',
+    openLedgerAppDes: '在 Ledger 中选择并打开 {{appName}} App',
     chooseAddress: '选择地址',
     hdPath: '钱包路径',
     chooseHwAddress: '选择你要导入的钱包地址:',
@@ -412,7 +412,7 @@ const zh = {
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger 未连接',
     openExpandView: '在 Fluent 扩展视图连接硬件钱包',
-    hwOpenApp: '点击确认之前，请确保已经打开适用于 {{chainName}} 的 App',
+    hwOpenApp: '点击确认之前，请确保已经打开 {{appName}} App',
 
     // error page
     errorTile: '错误',

@@ -356,7 +356,7 @@ const en = {
     pluginHardwareWallet:
       'Plug your hardware wallet into your computer using the USB port.',
     enterPinCode: 'Enter your PIN code.',
-    selectLedgerApp: 'Select and open {{type}} App in Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
     ready: 'Ready',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -370,8 +370,8 @@ const en = {
     waitForPermission: 'Waiting for permission',
     connectFailed: 'Connection Failed',
     retry: 'Retry',
-    openLedgerApp: 'Open {{type}} App',
-    openLedgerAppDes: 'Select and open {{type}} App in your Ledger device.',
+    openLedgerApp: 'Open {{appName}} App',
+    openLedgerAppDes: 'Select and open {{appName}} App in your Ledger device.',
     chooseAddress: 'Choose Address',
     hdPath: 'HD Path',
     chooseHwAddress: 'Choose the address you want to import:',
@@ -428,7 +428,7 @@ const en = {
     ledgerIsNotConnected: 'Ledger is not connected',
     openExpandView: 'Open Fluent expand view to connect',
     hwOpenApp:
-      'Before clicking confirm, make sure the App for {{chainName}} is open.',
+      'Before clicking confirm, make sure the {{appName}} App is open.',
 
     // error page
     errorTile: 'Error',
