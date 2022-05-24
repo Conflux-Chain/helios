@@ -31,6 +31,7 @@ import {
   useDecodeData,
   useCheckBalanceAndGas,
   useLedgerBindingApi,
+  useLedgerAppName,
 } from '../../../hooks'
 import useLoading from '../../../hooks/useLoading'
 import {request, checkBalance} from '../../../utils'
@@ -79,11 +80,9 @@ function ResendTransaction({
     displayErrorMsg: balanceHwDisplayErr,
   } = useInputErrorAnimation(balanceError || hwAccountError)
 
+  const LedgerAppName = useLedgerAppName()
   const {
-    data: {
-      account,
-      network: {name: chainName},
-    },
+    data: {account},
   } = useCurrentAddress()
   const accountType = account?.accountGroup?.vault?.type
 
@@ -380,8 +379,8 @@ function ResendTransaction({
       }
       if (!isAppOpen) {
         return setHwAccountError(
-          t('openConfluxApp', {
-            chainName: chainName || '',
+          t('openLedgerApp', {
+            appName: LedgerAppName,
           }),
         )
       }

@@ -19,6 +19,7 @@ import {
   useDappParams,
   useViewData,
   useLedgerBindingApi,
+  useLedgerAppName,
 } from '../../hooks'
 import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
@@ -101,10 +102,12 @@ function ConfirmTransaction() {
 
   const {
     data: {
-      network: {ticker, chainId, name: chainName},
+      network: {ticker, chainId},
       account: {eid: accountId},
     },
   } = useCurrentAddress()
+  const LedgerAppName = useLedgerAppName()
+
   const nativeToken = ticker || {}
   const tx = useDappParams(pendingAuthReq)
 
@@ -344,7 +347,7 @@ function ConfirmTransaction() {
             closable={false}
             width="w-full"
             content={t('hwOpenApp', {
-              chainName: chainName || '',
+              appName: LedgerAppName,
             })}
           />
         </div>

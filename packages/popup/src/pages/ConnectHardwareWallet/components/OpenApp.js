@@ -3,8 +3,7 @@ import {useHistory} from 'react-router-dom'
 import {useState} from 'react'
 import Button from '@fluent-wallet/component-button'
 import {ROUTES} from '../../../constants'
-import {useQuery, useLedgerBindingApi} from '../../../hooks'
-import {useCurrentAddress} from '../../../hooks/useApi'
+import {useQuery, useLedgerBindingApi, useLedgerAppName} from '../../../hooks'
 
 const {IMPORT_HW_ACCOUNT} = ROUTES
 
@@ -14,11 +13,7 @@ function OpenApp() {
   const history = useHistory()
   const query = useQuery()
   const ledgerBindingApi = useLedgerBindingApi()
-  const {
-    data: {
-      network: {name: chainName},
-    },
-  } = useCurrentAddress()
+  const LedgerAppName = useLedgerAppName()
 
   const onClick = async () => {
     if (!ledgerBindingApi) {
@@ -46,13 +41,13 @@ function OpenApp() {
       <img src="/images/open-conflux-app.svg" alt="connect" />
       <div className="w-110 text-center">
         <p className="text-gray-80 text-lg font-medium mb-2">
-          {t('openConfluxApp', {
-            chainName: chainName || '',
+          {t('openLedgerApp', {
+            appName: LedgerAppName,
           })}
         </p>
         <p className="text-gray-60 text-sm">
-          {t('openConfluxAppDes', {
-            chainName: chainName || '',
+          {t('openLedgerAppDes', {
+            appName: LedgerAppName,
           })}
         </p>
       </div>
