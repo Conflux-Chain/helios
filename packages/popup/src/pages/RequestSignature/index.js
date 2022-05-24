@@ -40,6 +40,7 @@ function RequestSignature() {
 
   const plaintextData =
     !isPersonalSign && req?.params?.[1] ? JSON.parse(req.params[1]) : {}
+  const personalSignData = isPersonalSign ? req?.params?.[0] ?? '' : ''
 
   return (
     <div
@@ -96,7 +97,14 @@ function RequestSignature() {
               } pr-3 pt-3 pb-4 rounded bg-gray-4 overflow-auto break-words`}
             >
               {isPersonalSign ? (
-                req?.params?.[0] ?? ''
+                personalSignData
+                  .replace(/\r/g, '\n')
+                  .split('\n')
+                  .map(str => (
+                    <div key={str} className={str ? '' : 'h-[18px]'}>
+                      {str}
+                    </div>
+                  ))
               ) : (
                 <PlaintextMessage message={plaintextData?.message ?? {}} />
               )}
