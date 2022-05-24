@@ -518,18 +518,24 @@
   (map #(e :accountGroup %)
        (if (= network-type "eth")
          ;; accountGroup without vault with
-         ;; network-type "pub", cfxOnly true
+         ;; 1. type "pub", cfxOnly true
+         ;; 2. type hw cfxOnly true/false
          (q '[:find [?g ...]
               :where
               [?g :accountGroup/vault ?v]
-              [?v :vault/cfxOnly ?cfxOnly]
               [?v :vault/type ?vtype]
               (not [?v :vault/cfxOnly true]
-                   [?v :vault/type "pub"])])
-         ;; all accountGroup
+                   [?v :vault/type "pub"])
+              (not [?v :vault/cfxOnly true]
+                   [?v :vault/type "hw"])])
+
          (q '[:find [?g ...]
               :where
-              [?g :accountGroup/vault]]))))
+              [?g :accountGroup/vault ?v]
+              [?v :vault/type ?vtype]
+              (not (or [?v :vault/cfxOnly false]
+                       [?v :vault/cfxOnly nil])
+                   [?v :vault/type "hw"])]))))
 
 (defn get-export-all-data
   []
