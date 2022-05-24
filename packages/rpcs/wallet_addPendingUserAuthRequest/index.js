@@ -13,24 +13,49 @@ export const schemas = {
 
 export const permissions = {
   methods: ['wallet_userRejectedAuthRequest'],
-  db: ['t', 'getSiteById', 'getAppById', 'getAuthReqById'],
+  db: ['t', 'getSiteById', 'getAppById', 'getAuthReqById', 'getAuthReq'],
 }
 
-export const main = async ({
-  Err: {InvalidParams},
-  db: {t, getSiteById, getAppById, getAuthReqById},
-  rpcs: {wallet_userRejectedAuthRequest},
-  MODE,
+function getDupAuthReq({
+  db: {getAuthReq},
   params: {
     req: {method, params},
     siteId,
     appId,
   },
-}) => {
+}) {
+  const reqs = getAuthReq({site: siteId, app: appId})
+  return reqs.filter(
+    r =>
+      !r.req.processed &&
+      r.req.method === method &&
+      JSON.stringify(r.req.params) === JSON.stringify(params),
+  )[0]
+}
+
+export const main = async args => {
+  const {
+    Err: {InvalidParams},
+    db: {t, getSiteById, getAppById, getAuthReqById},
+    rpcs: {wallet_userRejectedAuthRequest},
+    MODE,
+    params: {
+      req: {method, params},
+      siteId,
+      appId,
+    },
+  } = args
   const site = getSiteById(siteId)
   const app = getAppById(appId)
   if (siteId && !site) throw InvalidParams(`Invalid site id ${siteId}`)
   if (appId && !app) throw InvalidParams(`Invalid app id ${appId}`)
+
+  const dupReq = getDupAuthReq(args)
+  if (dupReq) {
+    const rst = await dupReq.c.read()
+    if (rst instanceof Error) throw rst
+    return rst
+  }
 
   const c = chan(1)
   const {
