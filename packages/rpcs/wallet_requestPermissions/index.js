@@ -6,7 +6,7 @@ const {map, dbid, or, zeroOrMore, oneOrMore} = spec
 export const NAME = 'wallet_requestPermissions'
 
 const permissionSchema = genPermissionSchema(spec)
-const publicSchema = [zeroOrMore, permissionSchema]
+const publicSchema = [oneOrMore, permissionSchema]
 
 const responseToAppAuthSchema = [
   map,
@@ -100,7 +100,9 @@ export const main = async ({
       params: perms,
     }
 
-    return await wallet_addPendingUserAuthRequest({siteId: site.eid, req})
+    const rst = await wallet_addPendingUserAuthRequest({siteId: site.eid, req})
+
+    return rst
   }
 
   // called from popup
@@ -137,7 +139,11 @@ export const main = async ({
     if (!accounts.includes(currentAccount)) currentAccount = accounts[0]
 
     const perms = formatPermissions(permissions)
-    const newPermApp = upsertAppPermissions({
+    const {
+      app: newPermApp,
+      newlyCreated,
+      accountsChanged,
+    } = upsertAppPermissions({
       siteId,
       accounts,
       currentAccount,
@@ -145,12 +151,7 @@ export const main = async ({
       perms: perms[0],
     })
 
-    if (authReqId)
-      return await wallet_userApprovedAuthRequest({
-        authReqId,
-        res: await wallet_getPermissions({app: newPermApp}, []),
-      })
-    else {
+    if (newlyCreated || accountsChanged) {
       app = findApp({
         siteId,
         g: {
@@ -168,6 +169,14 @@ export const main = async ({
         if (addr)
           app.site.post({event: 'accountsChanged', params: [addr.value]})
       }
+    }
+
+    if (authReqId)
+      return await wallet_userApprovedAuthRequest({
+        authReqId,
+        res: await wallet_getPermissions({app: newPermApp}, []),
+      })
+    else {
       if (app) return await wallet_getPermissions({app: newPermApp}, [])
     }
   }

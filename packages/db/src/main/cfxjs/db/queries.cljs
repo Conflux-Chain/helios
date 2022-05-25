@@ -550,9 +550,9 @@
                                              acc))
                                          #{1 2} datoms)
         datoms                   (filter #(not (contains? builtin-entity-id (.-e %))) datoms)]
-    (clj->js (map
-              (fn [d] [(.-e d) (str (namespace (.-a d)) "/" (name (.-a d))) (.-v d)])
-              datoms))))
+    (map
+     (fn [d] [(.-e d) (str (namespace (.-a d)) "/" (name (.-a d))) (.-v d)])
+     datoms)))
 
 (defn set-current-account
   "set current selected account by wallet
@@ -604,8 +604,7 @@
             :where
             [?site :site/post _]
             (not [?app :app/site ?site])])
-       (map (partial e :site))
-       clj->js))
+       (map (partial e :site))))
 
 (defn get-apps-with-different-selected-network
   "given the to-be-selected network, return all apps with different selected network"
@@ -700,7 +699,7 @@
                               (enc/assoc-some :account/offline offline))
         txs               (conj txs update-acc-tx)]
     (t txs)
-    (clj->js sideeffects)))
+    sideeffects))
 
 (defn is-last-none-hw-account
   "Check if acc is last none hw acc"
@@ -730,6 +729,8 @@
                                 :in $ ?site
                                 :where
                                 [?app :app/site ?site]] siteId)
+        old-cur-acc        (and exist-app (:app/currentAccount (p [:app/currentAccount] exist-app)))
+        accounts-changed?   (or (not exist-app) (and exist-app (not (= old-cur-acc currentAccount))))
         _                  (when exist-app (t [[:db.fn/retractAttribute exist-app :app/account]
                                                [:db.fn/retractAttribute exist-app :app/currentAccount]
                                                [:db.fn/retractAttribute exist-app :app/currentNetowrk]
@@ -743,7 +744,9 @@
         add-currentAccount [[:db/add app :app/currentAccount currentAccount]]
         add-currentNetowrk [[:db/add app :app/currentNetwork currentNetwork]]]
     (t (concat add-perms add-accounts add-currentNetowrk add-currentAccount))
-    (e :app app)))
+    {:app            (e :app app)
+     :newlyCreated   (not exist-app)
+     :accountsChanged accounts-changed?}))
 
 (defn addr-acc-network [{:keys [accountId addressId networkId]}]
   (cond addressId

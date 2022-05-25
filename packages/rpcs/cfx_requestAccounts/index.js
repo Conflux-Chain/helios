@@ -32,11 +32,6 @@ export const main = async ({
     const newapp = getOneApp({site: site.eid})
     const addrs = await cfx_accounts({app: newapp}, [])
 
-    newapp.site?.post?.({
-      event: 'accountsChanged',
-      params: addrs,
-    })
-
     return addrs
   }
 
