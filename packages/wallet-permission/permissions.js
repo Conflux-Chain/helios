@@ -9,7 +9,7 @@ export default {
   eth_accounts: {},
   // methods to about networks
   // eg. wallet_addEthereumChain, wallet_switchConfluxChain
-  wallet_networks: {},
+  // wallet_networks: {},
   wallet_crossNetworkTypeGetConfluxBase32Address: {},
   wallet_crossNetworkTypeGetEthereumHexAddress: {},
 }

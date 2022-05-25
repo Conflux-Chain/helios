@@ -13,7 +13,7 @@ export default {
   wallet_crossNetworkTypeGetEthereumHexAddress: {
     en: "permission for methods need user's Ethereum type address (hex address) on other(Conflux core) network",
   },
-  wallet_networks: {
-    en: 'permission for methods related to network change, eg. wallet_switchEthereumChain, wallet_switchConfluxChain, this permission is added by default',
-  },
+  // wallet_networks: {
+  //   en: 'permission for methods related to network change, eg. wallet_switchEthereumChain, wallet_switchConfluxChain, this permission is added by default',
+  // },
 }
