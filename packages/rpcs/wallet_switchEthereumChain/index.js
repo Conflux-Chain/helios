@@ -24,7 +24,7 @@ export const permissions = {
     'wallet_userRejectedAuthRequest',
   ],
   db: ['getNetwork', 'getAuthReqById'],
-  scope: {wallet_networks: {}},
+  // scope: {wallet_networks: {}},
 }
 
 export const generateMain =
