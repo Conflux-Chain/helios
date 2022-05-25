@@ -1,5 +1,0 @@
-releases:
-  "@fluent-wallet/wallet_add-pending-user-auth-request": patch
-
-declined:
-  - helios-background
