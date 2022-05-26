@@ -140,7 +140,7 @@ const ru = {
     en: 'English',
     zh: '简体中文',
     fr: 'Français (Communauté)',
-    ru: 'Pусский (Сообщество)',
+    ru: 'Pусский (Cообщество)',
     uk: 'Українська (Cпільнота)',
 
     // - Send Transaction
@@ -362,7 +362,7 @@ const ru = {
     pluginHardwareWallet:
       'Подключите аппаратный кошелек к компьютеру через порт USB.',
     enterPinCode: 'Введите PIN-код.',
-    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
+    selectLedgerApp: 'Выберите и откройте приложение для {{appName}} в Ledger',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -376,8 +376,9 @@ const ru = {
     waitForPermission: 'Ожидание разрешения',
     connectFailed: 'Не удалось установить соединение',
     retry: 'Повторить',
-    openLedgerApp: 'Open {{appName}} App',
-    openLedgerAppDes: 'Select and open {{appName}} App in your Ledger device.',
+    openLedgerApp: 'Открыть приложение для {{appName}}',
+    openLedgerAppDes:
+      'Выберите и откройте приложение для {{appName}} в вашем устройстве Ledger.',
     chooseAddress: 'Выберите адрес',
     hdPath: 'Путь HD',
     chooseHwAddress: 'Выберите адрес, который вы хотите импортировать:',
@@ -434,7 +435,7 @@ const ru = {
     ledgerIsNotConnected: 'Ledger не подключен',
     openExpandView: 'Откройте расширение Fluent Wallet для подключения',
     hwOpenApp:
-      'Before clicking confirm, make sure the {{appName}} App is open.',
+      'Прежде чем продолжить, убедитесь, что приложение для {{appName}} открыто.',
 
     // error page
     errorTile: 'Ошибка',
