@@ -1,4 +1,4 @@
-const ua = {
+const uk = {
   translation: {
     // - common
     cancel: 'Відміна',
@@ -85,7 +85,7 @@ const ua = {
     selectSeedPhrase: 'Виберіть секретну фразу',
 
     // homepage / 账户管理 / 创建账户 / 2. new seed phrase
-    seedGroupName: "Секретна фраза Ім'я групи",
+    seedGroupName: 'Оберить секретну фразу групи',
     invalidWord: 'Невірне слово',
     seedCreateTitle: 'Далі відображатиметься секретна фраза.',
     seedCreateContent:
@@ -236,6 +236,9 @@ const ua = {
     // - request signature - 1. Sign Text
     signText: 'Підписати текст',
     signThisText: 'Підписати цей текст?',
+    disablePersonSign:
+      'Personal sign with hardware wallet is not yet supported.',
+    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Підписати це повідомлення?',
@@ -329,7 +332,7 @@ const ua = {
     // backup
     backupIdentity: 'Резервна секретна фраза',
     backupSeedDes:
-      'Будь ласка, створіть резервну копію секретної фрази у вiрному порядку. Не діліться і не зберiгайте в мережевому оточенні.',
+      'Будь ласка, створіть резервну копію секретної фрази у вiрному порядку. Не діліться і не зберiгайте в мережі.',
     backupPk: 'Резервний обліковий запис',
     backupPkDes:
       'Це ваш приватний ключ. Його отримання означає право власності на усі активи. Будь ласка, зберігаєте його у безпеці. Після втрати його неможливо відновити.',
@@ -356,7 +359,7 @@ const ua = {
     pluginHardwareWallet:
       "Підключіть апаратний гаманець до комп'ютера через порт USB.",
     enterPinCode: 'Введіть PIN- код.',
-    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
+    selectLedgerApp: 'Виберіть і відкрийте додаток для {{appName}} в Ledger',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -370,8 +373,9 @@ const ua = {
     waitForPermission: 'Очікування дозволу',
     connectFailed: "Не вдалося встановити з'єднання",
     retry: 'Повторити',
-    openLedgerApp: 'Open {{appName}} App',
-    openLedgerAppDes: 'Select and open {{appName}} App in your Ledger device.',
+    openLedgerApp: 'Відкрити додаток для {{appName}}',
+    openLedgerAppDes:
+      'Виберіть і відкрийте додаток для {{appName}} у вашому пристрої Ledger.',
     chooseAddress: 'Виберіть адресу',
     hdPath: 'Шлях HD',
     chooseHwAddress: 'Виберіть адресу, яку ви хочете імпортувати :',
@@ -428,7 +432,7 @@ const ua = {
     ledgerIsNotConnected: 'Ledger не підключений',
     openExpandView: 'Відкрийте розширення Fluent Wallet для підключення',
     hwOpenApp:
-      'Before clicking confirm, make sure the {{appName}} App is open.',
+      'Перш ніж продовжити, переконаєтеся, що додаток для {{appName}} відкрито.',
 
     // error page
     errorTile: 'Помилка',
@@ -438,8 +442,8 @@ const ua = {
     feedBackCode: "Скопіювати код і надати зворотний зв'язок",
     fullNodeError: 'Неможливо підключитися до вузла RPC.',
     close: 'Закрити',
-    reload: 'Перезавантаження',
+    reload: 'Перезавантажити',
   },
 }
 
-export default ua
+export default uk
