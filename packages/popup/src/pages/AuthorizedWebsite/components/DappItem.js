@@ -7,20 +7,16 @@ import {request} from '../../../utils'
 import {RPC_METHODS} from '../../../constants'
 import useLoading from '../../../hooks/useLoading'
 import {useGroupAccountAuthorizedDapps} from '../../../hooks/useApi'
+import {useDappIcon} from '../../../hooks'
 
 const {WALLET_REQUEST_PERMISSIONS, WALLET_DELETE_APP} = RPC_METHODS
 
-function DappItem({
-  iconUrl = '/images/default-dapp-icon.svg',
-  origin,
-  siteId,
-  appId,
-  accountId,
-  accountSiteId,
-}) {
+function DappItem({iconUrl, origin, siteId, appId, accountId, accountSiteId}) {
   const {t} = useTranslation()
   const {setLoading} = useLoading()
   const {mutate} = useGroupAccountAuthorizedDapps()
+  const dappIconUrl = useDappIcon(iconUrl)
+
   const onCancelAuth = () => {
     const method =
       accountSiteId[siteId]?.length === 1
@@ -55,7 +51,7 @@ function DappItem({
   return (
     <div className="hover:bg-primary-4 flex items-center p-3">
       <WrapIcon className="w-6 h-6 mr-2">
-        <img src={iconUrl} alt="icon" className="w-4 h-4" />
+        <img src={dappIconUrl} alt="icon" className="w-4 h-4" />
       </WrapIcon>
       <div className="flex-1 text-gray-80 text-ellipsis">{origin}</div>
       <CloseCircleFilled

@@ -1,6 +1,6 @@
 {
   "name": "helios-background",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "type": "module",
   "main": "src/index.js",
   "private": true,
@@ -94,6 +94,7 @@
     "@fluent-wallet/wallet_create-account": "workspace:packages/rpcs/wallet_createAccount",
     "@fluent-wallet/wallet_create-address": "workspace:packages/rpcs/wallet_createAddress",
     "@fluent-wallet/wallet_db-query": "workspace:packages/rpcs/wallet_dbQuery",
+    "@fluent-wallet/wallet_delete-account": "workspace:*",
     "@fluent-wallet/wallet_delete-account-group": "workspace:packages/rpcs/wallet_deleteAccountGroup",
     "@fluent-wallet/wallet_delete-app": "workspace:packages/rpcs/wallet_deleteApp",
     "@fluent-wallet/wallet_delete-network": "workspace:packages/rpcs/wallet_deleteNetwork",
@@ -171,6 +172,7 @@
   },
   "devDependencies": {
     "@fluent-wallet/test-helpers": "workspace:packages/test-helpers",
+    "@fluent-wallet/wallet_get-block-time": "workspace:*",
     "browser-passworder": "2.0.3"
   }
 }

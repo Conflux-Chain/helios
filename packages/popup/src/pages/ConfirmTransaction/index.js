@@ -18,6 +18,8 @@ import {
   useDecodeDisplay,
   useDappParams,
   useViewData,
+  useLedgerBindingApi,
+  useLedgerAppName,
 } from '../../hooks'
 import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
@@ -44,9 +46,7 @@ import {
   TX_STATUS,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
-import {Conflux} from '@fluent-wallet/ledger'
 
-const cfxLedger = new Conflux()
 const {VIEW_DATA, HOME} = ROUTES
 const {
   CFX_SEND_TRANSACTION,
@@ -55,6 +55,8 @@ const {
 } = RPC_METHODS
 
 function ConfirmTransaction() {
+  const ledgerBindingApi = useLedgerBindingApi()
+
   const {t} = useTranslation()
   const history = useHistory()
   const {authStatus: authStatusFromLedger, isAppOpen: isAppOpenFromLedger} =
@@ -104,6 +106,8 @@ function ConfirmTransaction() {
       account: {eid: accountId},
     },
   } = useCurrentAddress()
+  const LedgerAppName = useLedgerAppName()
+
   const nativeToken = ticker || {}
   const tx = useDappParams(pendingAuthReq)
 
@@ -236,8 +240,11 @@ function ConfirmTransaction() {
 
   const onSend = async () => {
     if (isHwAccount) {
-      const authStatus = await cfxLedger.isDeviceAuthed()
-      const isAppOpen = await cfxLedger.isAppOpen()
+      if (!ledgerBindingApi) {
+        return
+      }
+      const authStatus = await ledgerBindingApi.isDeviceAuthed()
+      const isAppOpen = await ledgerBindingApi.isAppOpen()
       if (!authStatus) {
         setAuthStatus(authStatus)
         return
@@ -339,7 +346,9 @@ function ConfirmTransaction() {
             type="warning"
             closable={false}
             width="w-full"
-            content={t('hwOpenApp')}
+            content={t('hwOpenApp', {
+              appName: LedgerAppName,
+            })}
           />
         </div>
         <div className="flex flex-col items-center">

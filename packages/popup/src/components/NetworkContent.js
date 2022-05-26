@@ -2,18 +2,13 @@ import PropTypes from 'prop-types'
 import Message from '@fluent-wallet/component-message'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {RPC_METHODS, NETWORK_TYPE} from '../constants'
-import {request} from '../utils'
+import {request, setEffectiveCurrentAccount} from '../utils'
 import {useNetwork, useCurrentAddress, usePreferences} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 import {CustomTag} from './'
 import {useTranslation} from 'react-i18next'
 
-const {
-  WALLET_SET_CURRENT_NETWORK,
-  ACCOUNT_GROUP_TYPE,
-  WALLET_SET_CURRENT_ACCOUNT,
-  QUERY_ACCOUNT_LIST,
-} = RPC_METHODS
+const {WALLET_SET_CURRENT_NETWORK, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 const networkTypeColorObj = {
   mainnet: 'bg-primary-10 text-[#ACB6E0]',
   testnet: 'bg-[#FFF7F4] text-[#F5B797]',
@@ -46,7 +41,7 @@ function NetworkItem({
   const {
     mutate: mutateCurrentAddress,
     data: {
-      network: {eid: currentNetworkId},
+      network: {eid: currentNetworkId, type: currentNetworkType},
       account: currentAccount,
     },
   } = useCurrentAddress()
@@ -54,20 +49,12 @@ function NetworkItem({
   const networkTypeColor = networkTypeColorObj[networkType] || ''
   const itemWrapperPaddingStyle =
     itemWrapperPaddingStyleObj[networkItemSize] || ''
+  const isHw =
+    currentAccount.accountGroup?.vault?.type === ACCOUNT_GROUP_TYPE.HW
 
-  const onChangeNetwork = async isHw => {
-    if (isHw) {
-      const target = await request(QUERY_ACCOUNT_LIST, {
-        networkId,
-        groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
-        includeHidden: false,
-        accountG: {
-          eid: 1,
-        },
-      })
-      const targetAccountId = Object.values(Object.values(target)[0].account)[0]
-        .eid
-      await request(WALLET_SET_CURRENT_ACCOUNT, [targetAccountId])
+  const onChangeNetwork = async () => {
+    if (isHw && currentNetworkType !== type) {
+      await setEffectiveCurrentAccount(networkId)
     }
 
     await request(WALLET_SET_CURRENT_NETWORK, [networkId])
@@ -98,11 +85,9 @@ function NetworkItem({
     if (!Object.keys(currentAccount).length) {
       return
     }
-    const isHw =
-      currentAccount.accountGroup?.vault?.type === ACCOUNT_GROUP_TYPE.HW
     setLoading(true)
 
-    onChangeNetwork(isHw)
+    onChangeNetwork()
       .then(() => {
         onClickNetworkItem?.({...netData})
         onClose?.()

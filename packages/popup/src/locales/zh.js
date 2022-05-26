@@ -121,6 +121,7 @@ const zh = {
     searchResults: '搜索结果',
     noResult: '无结果',
     willSupport1559: '后续将会支持 EIP-1559',
+    remove: '移除',
 
     // welcome page
     welcomeToConflux: '欢迎来到 Conflux 网络',
@@ -135,6 +136,7 @@ const zh = {
     zh: '简体中文',
     fr: 'Français (Communauté)',
     ru: 'Pусский (Сообщество)',
+    uk: 'Українська (Cпільнота)',
 
     // - Send Transaction
     // - Send Transaction / send transaction
@@ -227,6 +229,8 @@ const zh = {
     // - request signature - 1. Sign Text
     signText: '文本签名',
     signThisText: '签署这个文本?',
+    disablePersonSign: 'Personal sign 暂不支持使用硬件钱包签名',
+    disableTypeSign: 'Typed sign 暂不支持使用硬件钱包签名',
 
     // - request signature - 2. Sign Message
     signThisMessage: '签署这个信息？',
@@ -273,7 +277,10 @@ const zh = {
     hide: '隐藏',
     delete: '删除',
     groupDeleteWarning: '不能删除当前账户组',
+    accountDeleteWarning: '不能删除当前账户',
     accountHideWarning: '不能隐藏当前账户',
+    lastAccountHideWarning: '至少保留一个账户',
+    ledgerTips: '这些账户只能在 {{network}} 上使用',
 
     // Network Management
     networkManagement: '网络管理',
@@ -331,13 +338,15 @@ const zh = {
     // hardware guard
     connectHardwareWallet: '连接硬件钱包',
     supportLedger: '现已支持 Ledger 硬件钱包',
-    ledgerGuardDes: '如何在 Ledger 中创建一个 Conflux 钱包?',
+    ledgerGuardDes: '如何在 Ledger 中添加 Conflux Core 的钱包？',
     followConnectLedgerSteps: '请根据以下步骤连接 Ledger',
     steps: '步骤 {{number}}',
     pluginHardwareWallet: '请将硬件钱包插入电脑的 USB 端口',
     enterPinCode: '在硬件钱包上输入 PIN 码',
-    selectConfluxApp: '选择并打开 Conflux App',
+    selectLedgerApp: '在 Ledger 中打开 {{appName}} App',
     ready: '开始连接',
+    specifiedConnectedChain:
+      '<Container><Content>连接 Ledger 在</Content><CurrentNetworkDisplay/></Container>',
 
     // connect hardware wallet
     searchHwWallet: '寻找钱包中',
@@ -347,8 +356,8 @@ const zh = {
     waitForPermission: '等待授权',
     connectFailed: '连接失败',
     retry: '重试',
-    openConfluxApp: '打开 Conflux App',
-    openConfluxAppDes: '在硬件钱包中选择并打开 Conflux App',
+    openLedgerApp: '打开 {{appName}} App',
+    openLedgerAppDes: '在 Ledger 中选择并打开 {{appName}} App',
     chooseAddress: '选择地址',
     hdPath: '钱包路径',
     chooseHwAddress: '选择你要导入的钱包地址:',
@@ -403,7 +412,7 @@ const zh = {
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger 未连接',
     openExpandView: '在 Fluent 扩展视图连接硬件钱包',
-    hwOpenApp: '请确保 Conflux App 已打开，再点击确认',
+    hwOpenApp: '点击确认之前，请确保已经打开 {{appName}} App',
 
     // error page
     errorTile: '错误',

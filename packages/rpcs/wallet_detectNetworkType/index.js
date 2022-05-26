@@ -26,7 +26,8 @@ export const main = async ({f, Err: {InvalidParams}, params: {url}}) => {
       [],
     )
   } catch (err) {
-    throw InvalidParams(`Invalid rpc endpoint ${url}`)
+    if (!(err?.response?.status < 500))
+      throw InvalidParams(`Invalid rpc endpoint ${url}`)
   }
 
   if (rst?.result) {
@@ -49,7 +50,8 @@ export const main = async ({f, Err: {InvalidParams}, params: {url}}) => {
       [],
     )
   } catch (err) {
-    throw InvalidParams(`Invalid rpc endpoint ${url}`)
+    if (!(err?.response?.status < 500))
+      throw InvalidParams(`Invalid rpc endpoint ${url}`)
   }
 
   if (rst?.result) {

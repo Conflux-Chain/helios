@@ -12,7 +12,6 @@ import Button from '@fluent-wallet/component-button'
 import {Radio, Group} from '@fluent-wallet/radio'
 import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import {EditOutlined} from '@fluent-wallet/component-icons'
-import {Conflux} from '@fluent-wallet/ledger'
 import {
   NumberInput,
   GasFee,
@@ -31,14 +30,14 @@ import {
   useEstimateTx,
   useDecodeData,
   useCheckBalanceAndGas,
+  useLedgerBindingApi,
+  useLedgerAppName,
 } from '../../../hooks'
 import useLoading from '../../../hooks/useLoading'
 import {request, checkBalance} from '../../../utils'
 import {RPC_METHODS, TX_STATUS} from '../../../constants'
 
 const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION} = RPC_METHODS
-
-const cfxLedger = new Conflux()
 
 function ResendTransaction({
   reSendType,
@@ -47,6 +46,8 @@ function ResendTransaction({
   reSendTxStatus = 'pending',
   refreshHistoryData,
 }) {
+  const ledgerBindingApi = useLedgerBindingApi()
+
   const {t} = useTranslation()
   const {setLoading} = useLoading()
 
@@ -79,6 +80,7 @@ function ResendTransaction({
     displayErrorMsg: balanceHwDisplayErr,
   } = useInputErrorAnimation(balanceError || hwAccountError)
 
+  const LedgerAppName = useLedgerAppName()
   const {
     data: {account},
   } = useCurrentAddress()
@@ -365,14 +367,22 @@ function ResendTransaction({
     const isHwAccount = accountType === 'hw'
 
     if (isHwAccount) {
-      const authStatus = await cfxLedger.isDeviceAuthed()
-      const isAppOpen = await cfxLedger.isAppOpen()
+      if (!ledgerBindingApi) {
+        return
+      }
+
+      const authStatus = await ledgerBindingApi.isDeviceAuthed()
+      const isAppOpen = await ledgerBindingApi.isAppOpen()
 
       if (!authStatus) {
         return setHwAccountError(t('connectLedger'))
       }
       if (!isAppOpen) {
-        return setHwAccountError(t('openConfluxApp'))
+        return setHwAccountError(
+          t('openLedgerApp', {
+            appName: LedgerAppName,
+          }),
+        )
       }
 
       setSendStatus(TX_STATUS.HW_WAITING)

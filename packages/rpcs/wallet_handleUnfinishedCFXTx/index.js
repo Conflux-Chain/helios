@@ -282,7 +282,7 @@ export const main = ({
               if (
                 BigNumber.from(n)
                   .sub(BigNumber.from(tx.resendAt || tx.txPayload.epochHeight))
-                  .gte(40)
+                  .gte(5)
               ) {
                 setTxUnsent({hash, resendAt: n})
               }
@@ -376,7 +376,7 @@ export const main = ({
             )
             return sdone()
           }
-          keepTrack()
+          keepTrack(0)
         }),
       )
   } else if (status === 3) {
@@ -416,7 +416,7 @@ export const main = ({
 
           if (outcomeStatus === '0x0') {
             setTxExecuted({hash, receipt})
-            keepTrack(50 * cacheTime)
+            keepTrack()
           } else {
             setTxFailed({hash, error: txExecErrorMsg})
             updateBadge(getUnfinishedTxCount())
@@ -447,7 +447,7 @@ export const main = ({
             updateBadge(getUnfinishedTxCount())
             return true
           }
-          keepTrack(50 * cacheTime)
+          keepTrack()
           return false
         }),
         keepTruthy(), // filter non-null tx

@@ -7,6 +7,7 @@ import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {estimate} from '@fluent-wallet/estimate-tx'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
+import {Conflux, Ethereum} from '@fluent-wallet/ledger'
 import {
   COMMON_DECIMALS,
   convertValueToData,
@@ -18,6 +19,7 @@ import {
 } from '@fluent-wallet/contract-method-name'
 import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
+import {consts} from '@fluent-wallet/ledger'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
   useSingleTokenInfoWithNativeTokenSupport,
@@ -32,6 +34,7 @@ import {
 import {validateAddress} from '../utils'
 
 const {HOME} = ROUTES
+const {LEDGER_APP_NAME} = consts
 
 export const useCreatedPasswordGuard = () => {
   const {createdPassword} = useGlobalStore()
@@ -258,7 +261,9 @@ export const useCheckBalanceAndGas = (
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
         return t('transferAmountExceedsAllowance')
       } else if (
-        error?.message?.indexOf('transfer amount exceeds balance') > -1
+        error?.message?.indexOf('transfer amount exceeds balance') > -1 ||
+        error?.message?.indexOf('insufficient funds') > -1 ||
+        error?.message?.indexOf('NotEnoughCash') > -1
       ) {
         return t('balanceIsNotEnough')
       } else {
@@ -480,12 +485,11 @@ export const useCheckImage = url => {
       ImgObj.onerror = function (err) {
         reject(err)
       }
-      // eslint-disable-next-line no-unused-vars
-    }).catch(e => {})
+    })
   }
   const [isImg, setIsImg] = useState(null)
   useEffect(() => {
-    if (!/\.(gif|jpg|jpeg|png|svg|GIF|JPG|PNG)$/.test(url)) {
+    if (!/\.(gif|jpg|jpeg|png|svg|ico|GIF|JPG|PNG|ICO)$/.test(url)) {
       return setIsImg(false)
     }
     isImgUrl(url)
@@ -497,4 +501,47 @@ export const useCheckImage = url => {
       })
   }, [url])
   return isImg
+}
+
+export const useDappIcon = url => {
+  const isImgUrl = useCheckImage(url)
+  return isImgUrl ? url : '/images/default-dapp-icon.svg'
+}
+
+export const useLedgerBindingApi = () => {
+  const {
+    data: {
+      network: {type, chainId},
+    },
+  } = useCurrentAddress()
+
+  const ret = useMemo(() => {
+    if (type === NETWORK_TYPE.CFX) {
+      return new Conflux()
+    }
+    if (type === NETWORK_TYPE.ETH) {
+      let ethInstance = new Ethereum()
+      ethInstance.isAppOpen = ethInstance.isAppOpen.bind(
+        ethInstance,
+        chainId === '0x406' || chainId === '0x47' ? 'ESPACE' : 'ETHEREUM',
+      )
+      return ethInstance
+    }
+  }, [type, chainId])
+
+  return ret
+}
+
+export const useLedgerAppName = () => {
+  const {
+    data: {
+      network: {type: networkType},
+    },
+  } = useCurrentAddress()
+
+  return networkType == NETWORK_TYPE.CFX
+    ? LEDGER_APP_NAME.CONFLUX
+    : networkType == NETWORK_TYPE.ETH
+    ? LEDGER_APP_NAME.ETHEREUM
+    : ''
 }

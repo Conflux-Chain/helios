@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types'
 import {TitleNav, ProgressIcon} from '.'
 import {usePendingAuthReq} from '../hooks/useApi'
+import {useDappIcon} from '../hooks'
 function DappProgressHeader({title}) {
   const pendingAuthReq = usePendingAuthReq()
   const [{app, site}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+
+  const dappIconUrl = useDappIcon(app?.site?.icon)
 
   return (
     <header>
@@ -11,11 +14,7 @@ function DappProgressHeader({title}) {
         <TitleNav title={title} hasGoBack={false} />
         <div className="flex justify-center items-center mt-1">
           <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center mr-2">
-            <img
-              src={app?.site?.icon || '/images/default-dapp-icon.svg'}
-              alt="favicon"
-              className="w-8 h-8"
-            />
+            <img src={dappIconUrl} alt="favicon" className="w-8 h-8" />
           </div>
           <ProgressIcon
             dashLengthStyle="w-[42px]"

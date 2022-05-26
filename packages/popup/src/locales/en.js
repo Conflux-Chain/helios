@@ -123,6 +123,7 @@ const en = {
     searchResults: 'Search Results',
     noResult: 'No result',
     willSupport1559: 'EIP-1559 support coming soon.',
+    remove: 'Remove',
 
     // welcome page
     welcomeToConflux: 'Welcome to Conflux Network',
@@ -137,7 +138,8 @@ const en = {
     en: 'English',
     zh: '简体中文',
     fr: 'Français (Communauté)',
-    ru: 'Pусский (Сообщество)',
+    ru: 'Pусский (Cообщество)',
+    uk: 'Українська (Cпільнота)',
 
     // - Send Transaction
     // - Send Transaction / send transaction
@@ -233,6 +235,9 @@ const en = {
     // - request signature - 1. Sign Text
     signText: 'Sign Text',
     signThisText: 'Sign this Text?',
+    disablePersonSign:
+      'Personal sign with hardware wallet is not yet supported.',
+    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Sign this Message?',
@@ -281,7 +286,10 @@ const en = {
     hide: 'Hide',
     delete: 'Delete',
     groupDeleteWarning: 'Can not delete current account group.',
+    accountDeleteWarning: 'Can not delete current account.',
     accountHideWarning: 'Can not hide current account.',
+    lastAccountHideWarning: 'Keep at least one account.',
+    ledgerTips: 'This account(s) can only be used on {{network}}.',
 
     // Network Management
     networkManagement: 'Network Management',
@@ -341,15 +349,17 @@ const en = {
     // hardware guard
     connectHardwareWallet: 'Connect Hardware Wallet',
     supportLedger: 'Ledger is now supported.',
-    ledgerGuardDes: 'How to create a Conflux Wallet in Ledger?',
+    ledgerGuardDes: 'How to create a Conflux Core Wallet in Ledger?',
     followConnectLedgerSteps:
       'Please follow the below steps to connect Ledger.',
     steps: 'Steps {{number}}',
     pluginHardwareWallet:
       'Plug your hardware wallet into your computer using the USB port.',
     enterPinCode: 'Enter your PIN code.',
-    selectConfluxApp: 'Select and open Conflux App.',
+    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
     ready: 'Ready',
+    specifiedConnectedChain:
+      '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
 
     // connect hardware wallet
     searchHwWallet: 'Searching for wallet',
@@ -360,8 +370,8 @@ const en = {
     waitForPermission: 'Waiting for permission',
     connectFailed: 'Connection Failed',
     retry: 'Retry',
-    openConfluxApp: 'Open the Conflux App',
-    openConfluxAppDes: 'Select and open Conflux App in your Ledger device.',
+    openLedgerApp: 'Open {{appName}} App',
+    openLedgerAppDes: 'Select and open {{appName}} App in your Ledger device.',
     chooseAddress: 'Choose Address',
     hdPath: 'HD Path',
     chooseHwAddress: 'Choose the address you want to import:',
@@ -417,7 +427,8 @@ const en = {
     // confirm hw alert
     ledgerIsNotConnected: 'Ledger is not connected',
     openExpandView: 'Open Fluent expand view to connect',
-    hwOpenApp: 'Before clicking confirm, make sure the Conflux App is open.',
+    hwOpenApp:
+      'Before clicking confirm, make sure the {{appName}} App is open.',
 
     // error page
     errorTile: 'Error',

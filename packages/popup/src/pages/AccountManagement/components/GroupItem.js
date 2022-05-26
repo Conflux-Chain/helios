@@ -2,14 +2,15 @@ import PropTypes from 'prop-types'
 import {useState} from 'react'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
-import {RPC_METHODS} from '../../../constants'
-import {AccountItem} from './'
+import {RPC_METHODS, NETWORK_TYPE} from '../../../constants'
+import {AccountItem, LedgerGroupTag} from './'
 import {TextField, WrapIcon} from '../../../components'
 
 const {
   WALLET_EXPORT_ACCOUNT_GROUP,
   WALLET_DELETE_ACCOUNT_GROUP,
   WALLET_UPDATE_ACCOUNT_GROUP,
+  ACCOUNT_GROUP_TYPE,
 } = RPC_METHODS
 
 function GroupItem({
@@ -21,6 +22,7 @@ function GroupItem({
   onOpenConfirmPassword,
   accountGroupId,
   updateEditedName,
+  isCfxHwGroup,
 }) {
   const {t} = useTranslation()
   const [inputNickname, setInputNickname] = useState(nickname)
@@ -46,12 +48,11 @@ function GroupItem({
       WALLET_UPDATE_ACCOUNT_GROUP,
     )
   }
-
   return (
-    <div className="bg-gray-0 rounded mt-3 mx-3">
-      {groupType === 'pk' ? null : (
+    <div className="bg-gray-0 rounded mt-3 mx-3 relative">
+      {groupType !== ACCOUNT_GROUP_TYPE.PK && (
         <div className="flex items-center ml-3 pt-2.5 mb-0.5">
-          {groupType === 'hd' && (
+          {groupType === ACCOUNT_GROUP_TYPE.HD && (
             <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
               <img src="/images/seed-group-icon.svg" alt="group-icon" />
             </WrapIcon>
@@ -67,6 +68,11 @@ function GroupItem({
           />
         </div>
       )}
+      {groupType === ACCOUNT_GROUP_TYPE.HW && (
+        <LedgerGroupTag
+          networkType={isCfxHwGroup ? NETWORK_TYPE.CFX : NETWORK_TYPE.ETH}
+        />
+      )}
       {account.map(({nickname, eid, hidden, selected}) => (
         <AccountItem
           key={eid}
@@ -80,9 +86,10 @@ function GroupItem({
           onOpenConfirmPassword={onOpenConfirmPassword}
           currentNetworkId={currentNetworkId}
           updateEditedName={updateEditedName}
+          account={account}
         />
       ))}
-      {groupType === 'hd' && (
+      {groupType === ACCOUNT_GROUP_TYPE.HD && (
         <div className="flex justify-between mx-3 py-4 border-t border-gray-10 text-xs cursor-pointer text-gray-60">
           <div
             className="hover:text-primary"
@@ -116,6 +123,7 @@ GroupItem.propTypes = {
   currentNetworkId: PropTypes.number,
   account: PropTypes.array,
   groupType: PropTypes.string,
+  isCfxHwGroup: PropTypes.bool,
   showDelete: PropTypes.bool,
   onOpenConfirmPassword: PropTypes.func,
   updateEditedName: PropTypes.func.isRequired,
