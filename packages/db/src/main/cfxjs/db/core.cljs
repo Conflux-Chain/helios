@@ -68,24 +68,26 @@
                                 (and (= (count all-keys) 2)
                                      (some #{:db/id} all-keys)))
                     (throw (js/Error. "Invalid transaction params, too many top level keys")))
-         arg      (reduce-kv (fn [m k v]
-                               (let [->attrk (partial ->attrk k)
-                                     v       (cond
-                                               (map? v)     (reduce-kv
-                                                             (fn [m k v]
-                                                               (let [qualified-k (->attrk k)
-                                                                     ;; note, we can't use look up-ref as identifier in map-form
-                                                                     processed-v (cond (and (map? v) (-> v keys count (= 1))) ;; lookup-ref
-                                                                                       (->lookup-ref v)
-                                                                                       (vector? v)                            ;; db/isComponents
-                                                                                       (map #(parse-js-transact-arg % (random-tmp-id)) v)
-                                                                                       :else                                  v)]
-                                                                 (assoc m qualified-k processed-v)))
-                                                             {} v)
-                                               (= k :db/id) (assoc m k v)
-                                               :else        m)]
-                                 (into m v)))
-                             {} arg)]
+         arg
+         (reduce-kv (fn [m k v]
+                      (let [->attrk (partial ->attrk k)
+                            v       (cond
+                                      (map? v)     (reduce-kv
+                                                    (fn [m k v]
+                                                      (let [qualified-k (->attrk k)
+                                                            ;; note, we can't use look up-ref as identifier in map-form
+                                                            processed-v (cond
+                                                                          (and (map? v) (-> v keys count (= 1)) (-> v first second string?)) ;; lookup-ref
+                                                                          (->lookup-ref v)
+                                                                          (vector? v) ;; db/isComponents
+                                                                          (map #(parse-js-transact-arg (log/spy %) (random-tmp-id)) v)
+                                                                          :else v)]
+                                                        (assoc m qualified-k processed-v)))
+                                                    {} v)
+                                      (= k :db/id) (assoc m k v)
+                                      :else        m)]
+                        (into m v)))
+                    {} arg)]
      arg)))
 
 (defn def-get-fn

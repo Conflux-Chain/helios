@@ -6002,7 +6002,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/contract-method-name@workspace:packages/contract-method-name":
+"@fluent-wallet/contract-method-name@workspace:*, @fluent-wallet/contract-method-name@workspace:packages/contract-method-name":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/contract-method-name@workspace:packages/contract-method-name"
   dependencies:
@@ -6867,6 +6867,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_enrich-conflux-tx@workspace:packages/rpcs/wallet_enrichConfluxTx"
   dependencies:
     "@fluent-wallet/base32-address": "workspace:*"
+    "@fluent-wallet/contract-method-name": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -6875,6 +6876,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_enrich-ethereum-tx@workspace:packages/rpcs/wallet_enrichEthereumTx"
   dependencies:
+    "@fluent-wallet/contract-method-name": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft

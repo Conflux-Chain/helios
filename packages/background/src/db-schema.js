@@ -187,6 +187,8 @@ const schema = {
     token20: {doc: '20 contract'},
     tokenNFT: {doc: 'nft contract'},
     moreInfo: {doc: 'more info about above action'},
+    address: {doc: 'intresting address of this tx, usually recipient'},
+    method: {doc: 'contract call method name'},
   },
 
   // ## dapp interaction
