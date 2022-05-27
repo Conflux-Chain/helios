@@ -1,0 +1,7 @@
+releases:
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/wallet_delete-memo": patch
+  "@fluent-wallet/wallet_upsert-memo": patch
+
+declined:
+  - helios-background
