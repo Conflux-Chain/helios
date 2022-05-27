@@ -1596,6 +1596,87 @@
           true)
       false)))
 
+(defn get-recent-interesting-address-from-tx
+  "Get interesting address from tx
+
+  interesting means
+  1. to addr of simple send tx
+  2. send/transfer tx to 20/777 contract"
+  [{:keys [limit offset fuzzy]}]
+  (let [limit  (or limit 10)
+        offset (or offset 0)
+        fuzzy  (if (string? fuzzy)
+                 (re-pattern
+                  (str "(?i)"
+                       (-> fuzzy
+                           (.trim)
+                           gstr/regExpEscape
+                           (.replaceAll " " ".*"))))
+                 nil)
+
+        query
+        {:find '[?address ?memo ?memov ?acc ?nick]
+         :in   '[$]
+         :where
+         '[[?net :network/selected true]
+           [?net :network/type ?type]
+           [?tnet :network/type ?type]
+           [?addr :address/network ?tnet]
+           [?addr :address/tx ?tx]
+           [?tx :tx/txExtra ?extra]
+           (or
+            (and
+             [?extra :txExtra/simple true]
+             [?tx :tx/txPayload ?payload]
+             [?payload :txPayload/to ?address])
+            (and
+             [?extra :txExtra/token20 true]
+             (or [?extra :txExtra/method "transfer"]
+                 [?extra :txExtra/method "send"])
+             [?payload :txExtra/address ?address]))
+           (or-join  [?address ?memo ?memov]
+                     (and [?memo :memo/address ?address]
+                          [?memo :memo/value ?memov])
+                     (and (not [?memo :memo/address ?address])
+                          [(identity false) ?memo]
+                          [(identity false) ?memov]))
+           (or-join [?address ?acc ?nick]
+                    (and [?aaddr :address/value ?address]
+                         [?acc :account/address ?aaddr]
+                         [?acc :account/nickname ?nick])
+                    (and (not [?aaddr :address/value ?address])
+                         [(identity false) ?acc]
+                         [(identity false) ?nick]))]}
+
+        query (if fuzzy
+                (-> query
+                    (update :in conj '?fuzzy)
+                    (update :where conj
+                            '(or
+                              (and [(and true ?nick)]
+                                   [(re-find ?fuzzy ?nick)])
+                              (and [(and true ?memov)]
+                                   [(re-find ?fuzzy ?memov)]))))
+                query)
+
+        query
+        (concat [:find] (:find query)
+                [:in] (:in query)
+                [:where] (:where query))
+
+        addrs
+        (->> (if fuzzy (q query fuzzy) (q query))
+             (drop offset)
+             (take limit))
+
+        format (fn [[addr memo-id memo-value acc-id nickname]]
+                 (enc/assoc-when {:address addr}
+                                 :memoId memo-id
+                                 :memoValue memo-value
+                                 :accountId acc-id
+                                 :accountNickname nickname))]
+    (map format addrs)))
+
 ;;; UI QUERIES
 (defn account-list-assets [{:keys [accountGroupTypes]}]
   (let [accountGroupTypes (if (vector? accountGroupTypes) accountGroupTypes ["hd" "pk" "hw" "pub"])
@@ -1806,21 +1887,22 @@
               :getAppAnotherAuthedNoneHWAccount    get-app-another-authed-none-hw-account
               :updateAccountWithHiddenHandler      update-account
               :isLastNoneHWAccount                 is-last-none-hw-account
-              :getConnectedSitesWithoutApps         get-connected-sites-without-apps
+              :getConnectedSitesWithoutApps        get-connected-sites-without-apps
 
-              :queryqueryApp              get-apps
-              :queryqueryAddress          get-address
-              :queryqueryNetwork          get-network
-              :queryqueryAccount          get-account
-              :queryqueryMemo             get-memo
-              :queryqueryAccountGroup     get-account-group
-              :queryqueryAccountList      get-account-list
-              :queryqueryToken            get-token
-              :queryqueryGroup            get-group
-              :queryqueryBalance          get-balance
-              :querytxList                query-tx-list
-              :queryaccountListAssets     account-list-assets
-              :getAccountGroupByVaultType get-account-group-by-vault-type})
+              :queryqueryRecentInterestingAddress get-recent-interesting-address-from-tx
+              :queryqueryApp                      get-apps
+              :queryqueryAddress                  get-address
+              :queryqueryNetwork                  get-network
+              :queryqueryAccount                  get-account
+              :queryqueryMemo                     get-memo
+              :queryqueryAccountGroup             get-account-group
+              :queryqueryAccountList              get-account-list
+              :queryqueryToken                    get-token
+              :queryqueryGroup                    get-group
+              :queryqueryBalance                  get-balance
+              :querytxList                        query-tx-list
+              :queryaccountListAssets             account-list-assets
+              :getAccountGroupByVaultType         get-account-group-by-vault-type})
 
 (defn apply-queries [rst conn qfn entity tfn ffn pfn]
   (defn pm [x eids]
