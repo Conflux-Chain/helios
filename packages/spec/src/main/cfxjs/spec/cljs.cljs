@@ -16,33 +16,41 @@
   ([x] (js->clj x :keywordize-keys false))
   ([x & opts]
    (let [{:keys [keywordize-keys]} opts
-         keyfn                     (if keywordize-keys keyword str)
-         f                         (fn thisfn [x]
-                                     (cond
-                                       (satisfies? IEncodeClojure x)
-                                       (-js->clj x (apply array-map opts))
+         keyfn
+         (if keywordize-keys keyword str)
 
-                                       (seq? x)
-                                       (doall (map thisfn x))
+         f
+         (fn thisfn [x]
+           (cond
+             (satisfies? IEncodeClojure x)
+             (-js->clj x (apply array-map opts))
 
-                                       (map-entry? x)
-                                       (MapEntry. (thisfn (key x)) (thisfn (val x)) nil)
+             (seq? x)
+             (doall (map thisfn x))
 
-                                       (coll? x)
-                                       (into (empty x) (map thisfn) x)
+             (map-entry? x)
+             (MapEntry. (thisfn (key x)) (thisfn (val x)) nil)
 
-                                       (array? x)
-                                       (persistent!
-                                        (reduce #(conj! %1 (thisfn %2))
-                                                (transient []) x))
+             (coll? x)
+             (into (empty x) (map thisfn) x)
 
-                                       (identical? (type x) js/Object)
-                                       (persistent!
-                                        (reduce (fn [r k]
-                                                  (let [v (gobject/get x k)]
-                                                    (if (nil? v)
-                                                      r
-                                                      (assoc! r (keyfn k) (thisfn v)))))
-                                                (transient {}) (js-keys x)))
-                                       :else x))]
+             (array? x)
+             (persistent!
+              (reduce #(conj! %1 (thisfn %2))
+                      (transient []) x))
+
+             (identical? (type x) js/Object)
+             (persistent!
+              (reduce (fn [r k]
+                        (let [v (gobject/get x k)]
+                          (if (nil? v)
+                            r
+                            (assoc! r (keyfn k) (thisfn v)))))
+                      (transient {}) (js-keys x)))
+             (and x
+                  (.-constructor x)
+                  (= (.-name (.-constructor x)) "BigNumber")
+                  (fn? (.-toHexString x)))
+             (.toHexString x)
+             :else x))]
      (f x))))
