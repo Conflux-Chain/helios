@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {useState} from 'react'
+import {useState, useRef} from 'react'
 import Message from '@fluent-wallet/component-message'
 import {useTranslation} from 'react-i18next'
 import {KeyOutlined} from '@fluent-wallet/component-icons'
@@ -32,10 +32,12 @@ function AccountItem({
   account = [],
 }) {
   const {t} = useTranslation()
+  const textInputRef = useRef(null)
+
   const [inputNickname, setInputNickname] = useState(accountNickname)
   const [hidingAccountStatus, setHidingAccountStatus] = useState(false)
 
-  const onTextFieldBlur = () => {
+  const onUpdateAccountName = () => {
     return updateEditedName(
       {accountId, nickname: inputNickname},
       WALLET_UPDATE_ACCOUNT,
@@ -113,11 +115,13 @@ function AccountItem({
       />
       <div className="flex-1 flex items-center">
         <TextField
+          inputClassName="border-none"
           textValue={accountNickname}
           inputValue={inputNickname}
-          onInputBlur={onTextFieldBlur}
+          onSubmit={onUpdateAccountName}
           onInputChange={setInputNickname}
           className="text-gray-80"
+          ref={textInputRef}
         />
       </div>
       {groupType !== ACCOUNT_GROUP_TYPE.HW && (

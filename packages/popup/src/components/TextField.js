@@ -1,40 +1,57 @@
 import PropTypes from 'prop-types'
+import {forwardRef} from 'react'
 import Input from '@fluent-wallet/component-input'
 import {EditOutlined} from '@fluent-wallet/component-icons'
-import {useState, useRef} from 'react'
+import {useState, useEffect} from 'react'
 import useLoading from '../hooks/useLoading'
 import {isKeyOf} from '../utils'
 
-function TextField({
-  onInputBlur,
-  inputValue,
-  textValue,
-  onInputChange,
-  width = 'w-[188px]',
-  height = 'h-[18px]',
-  fontSize = 'text-sm',
-  className = '',
-}) {
+const TextField = forwardRef(function TextField(
+  {
+    onSubmit,
+    inputValue,
+    textValue,
+    onInputChange,
+    width = 'w-[188px]',
+    height = 'h-[18px]',
+    fontSize = 'text-sm',
+    className = '',
+    controlInputStatus = '',
+    inputClassName = '',
+  },
+  ref,
+) {
   const [showInputStatus, setShowInputStatus] = useState(false)
   const [showEditIconStatus, setShowEditIconStatus] = useState(false)
   const {setLoading} = useLoading()
 
-  const inputRef = useRef(null)
+  useEffect(() => {
+    if (controlInputStatus === 'show') {
+      setShowInputStatus(true)
+    }
+    if (controlInputStatus === 'hidden') {
+      setShowInputStatus(false)
+    }
+  }, [controlInputStatus])
 
   const onClickEditBtn = () => {
     setShowInputStatus(true)
     setTimeout(() => {
-      inputRef.current.focus()
+      ref?.current?.focus?.()
     })
   }
 
-  const onBlur = () => {
+  const onSubmitInputValue = () => {
+    if (!onSubmit) {
+      return
+    }
+
     if (inputValue === textValue || !inputValue) {
       !inputValue && onInputChange(textValue)
       return setShowInputStatus(false)
     }
     setLoading(true)
-    onInputBlur()
+    onSubmit()
       .then(() => {
         setLoading(false)
         setShowInputStatus(false)
@@ -45,27 +62,34 @@ function TextField({
         onInputChange(textValue)
       })
   }
+
   const onKeyDown = e => {
     if (isKeyOf(e, 'enter')) {
-      onBlur()
+      onSubmitInputValue()
+    }
+  }
+
+  const onMouseOver = bool => {
+    if (!controlInputStatus) {
+      setShowEditIconStatus(bool)
     }
   }
 
   return (
     <div
       className={`relative ${height} ${className}`}
-      onMouseEnter={() => setShowEditIconStatus(true)}
-      onMouseLeave={() => setShowEditIconStatus(false)}
+      onMouseEnter={() => onMouseOver(true)}
+      onMouseLeave={() => onMouseOver(false)}
     >
       {!showInputStatus && (
         <div className={`flex ${width} items-center`}>
           <div className={`${fontSize} text-ellipsis`}>{textValue}</div>
-          {showEditIconStatus ? (
+          {showEditIconStatus && !controlInputStatus ? (
             <EditOutlined
               className={
                 'ml-2 w-4 h-4 cursor-pointer text-gray-60 hover:text-primary'
               }
-              id="edit-textValue"
+              id="edit-text-value"
               onClick={onClickEditBtn}
             />
           ) : (
@@ -77,30 +101,33 @@ function TextField({
         <Input
           width={width}
           maxLength="20"
-          containerClassName={`border-none absolute align-top top-0 left-0 bg-transparent ${height} ${
+          containerClassName={`absolute align-top top-0 left-0 bg-transparent ${height} ${inputClassName} ${
             showInputStatus ? 'visible' : 'invisible'
           }`}
           className={`!p-0 text-gray-60 ${height} ${fontSize}`}
-          ref={inputRef}
+          ref={ref}
           value={inputValue}
           onChange={e => onInputChange(e.target.value)}
-          onBlur={onBlur}
+          onBlur={onSubmitInputValue}
           onKeyDown={onKeyDown}
         />
       }
     </div>
   )
-}
+})
 
 TextField.propTypes = {
   textValue: PropTypes.string.isRequired,
   inputValue: PropTypes.string.isRequired,
-  onInputBlur: PropTypes.func.isRequired,
   onInputChange: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func,
   width: PropTypes.string,
   height: PropTypes.string,
   fontSize: PropTypes.string,
   className: PropTypes.string,
+  inputClassName: '',
+  // show,hidden or empty. not empty means to hide edit button and take over showInputStatus
+  controlInputStatus: PropTypes.string,
 }
 
 export default TextField

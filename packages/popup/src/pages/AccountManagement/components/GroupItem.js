@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {useState} from 'react'
+import {useState, useRef} from 'react'
 import {useTranslation} from 'react-i18next'
 import Message from '@fluent-wallet/component-message'
 import {RPC_METHODS, NETWORK_TYPE} from '../../../constants'
@@ -25,6 +25,7 @@ function GroupItem({
   isCfxHwGroup,
 }) {
   const {t} = useTranslation()
+  const textInputRef = useRef(null)
   const [inputNickname, setInputNickname] = useState(nickname)
 
   const onDeleteAccountGroup = () => {
@@ -39,7 +40,7 @@ function GroupItem({
       accountGroupId,
     })
   }
-  const onTextFieldBlur = () => {
+  const onUpdateAccountGroupName = () => {
     return updateEditedName(
       {
         accountGroupId,
@@ -58,13 +59,15 @@ function GroupItem({
             </WrapIcon>
           )}
           <TextField
+            inputClassName="border-none"
             textValue={nickname}
             inputValue={inputNickname}
-            onInputBlur={onTextFieldBlur}
+            onSubmit={onUpdateAccountGroupName}
             onInputChange={setInputNickname}
             className="text-gray-40 ml-1"
             fontSize="!text-xs"
             height="!h-4"
+            ref={textInputRef}
           />
         </div>
       )}

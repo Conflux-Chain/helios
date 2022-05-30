@@ -424,6 +424,14 @@ const zh = {
     fullNodeError: '无法连接到 RPC 节点',
     close: '关闭',
     reload: '重新加载',
+
+    // address book & contacts
+    addressBook: 'Address Book',
+    contacts: 'Contacts',
+    contact: 'Contact',
+    recent: 'Recent',
+    account: 'Account',
+    searchAddressNickname: 'Search address or nickname',
   },
 }
 

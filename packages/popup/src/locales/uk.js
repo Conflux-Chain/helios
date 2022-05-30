@@ -444,6 +444,14 @@ const uk = {
     fullNodeError: 'Неможливо підключитися до вузла RPC.',
     close: 'Закрити',
     reload: 'Перезавантажити',
+
+    // address book & contacts
+    addressBook: 'Address Book',
+    contacts: 'Contacts',
+    contact: 'Contact',
+    recent: 'Recent',
+    account: 'Account',
+    searchAddressNickname: 'Search address or nickname',
   },
 }
 

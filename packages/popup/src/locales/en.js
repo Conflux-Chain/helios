@@ -440,6 +440,14 @@ const en = {
     fullNodeError: 'Unable to connect RPC node.',
     close: 'Close',
     reload: 'Reload',
+
+    // address book & contacts
+    addressBook: 'Address Book',
+    contacts: 'Contacts',
+    contact: 'Contact',
+    recent: 'Recent',
+    account: 'Account',
+    searchAddressNickname: 'Search address or nickname',
   },
 }
 
