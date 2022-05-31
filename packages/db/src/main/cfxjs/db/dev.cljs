@@ -1,8 +1,8 @@
 (ns cfxjs.db.dev
   "namespace only used in dev env"
   (:require
-   [cfxjs.db.datascript.core :as d]
-   [cfxjs.db.core :refer [p q t e fdb conn]]))
+   [cfxjs.db.core :refer [p q t e fdb conn]]
+   [cfxjs.db.datascript.core :as d]))
 
 (def accounts
   (q '[:find [(pull ?acc [*]) ...]
@@ -64,5 +64,8 @@
   (:account/_address (p '[{:account/_address [*]}] 52))
   (p '[:account/_address] 54)
   (reload!)
+  (l "wallet_upsertMemo" {:address "0x0000000000000000000000000000000000000000" :value "foo"})
+  (l "wallet_upsertMemo" {:address "0x0000000000000000000000000000000000000001" :value "bar foo bar"})
+  (l "wallet_upsertMemo" {:address "0x0000000000000000000000000000000000000002" :value "bar foo"})
   (l "wallet_metadataForPopup" [])
   (l "walletdb_queryAccountList" {:networkId 6 :addressG {:value 1 :hex 1 :nativeBalance 1} :accountG {:nickname 1} :groupG {:vault {:type 1}}}))

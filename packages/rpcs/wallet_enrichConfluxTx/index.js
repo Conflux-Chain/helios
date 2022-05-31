@@ -99,7 +99,7 @@ export const main = async ({
                 eid: txExtraEid,
                 txExtra: {
                   moreInfo: {args: [...args]},
-                  address: args[0],
+                  address: args[0].toLowerCase(),
                   method: name,
                 },
               })

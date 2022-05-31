@@ -2,6 +2,7 @@ import {
   base32Address,
   dbid,
   ethHexAddress,
+  or,
   map,
   string,
 } from '@fluent-wallet/spec'
@@ -14,7 +15,7 @@ export const schemas = {
   input: [
     map,
     {closed: true},
-    ['address', base32Address, ethHexAddress],
+    ['address', [or, base32Address, ethHexAddress]],
     ['value', [string, {min: 1}]],
     ['memoId', {optional: true}, dbid],
   ],
@@ -22,18 +23,19 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup'],
-  db: ['getMemoById', 'getOneMemo', 'getAddressByValue', 't'],
+  db: ['getMemoById', 'upsertMemo', 'findMemo'],
 }
 
 export const main = ({
   Err: {InvalidParams},
-  db: {getMemoById, getOneMemo, t},
+  db: {getMemoById, upsertMemo, findMemo},
   params: {address, value, memoId},
   network,
 }) => {
   if (memoId && !getMemoById(memoId))
     throw InvalidParams(`Invalid memo id ${memoId}`)
-  if (getOneMemo({id: [address, value]})) return
+  if (findMemo({networkId: network.eid, address, value}).length)
+    throw InvalidParams(`Invalid duplicate memo`)
 
   const isBase32 = validateBase32Address(address)
 
@@ -43,14 +45,8 @@ export const main = ({
   if (network.type === 'eth' && isBase32)
     throw InvalidParams(`Invalid address ${address}, not valid hex address`)
 
-  if (memoId) {
-    t([{eid: memoId, memo: {address, value, type: network.type}}])
-  } else {
-    t([
-      {
-        eid: `memo-${address}-${value}`,
-        memo: {address, value, type: network.type},
-      },
-    ])
-  }
+  address = address.toLowerCase()
+
+  upsertMemo({address, value, memoId, networkId: network.eid})
+  return
 }

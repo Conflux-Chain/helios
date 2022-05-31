@@ -1,16 +1,16 @@
 (ns cfxjs.db.core
   (:require
-   [lambdaisland.glogi :as log]
-   [lambdaisland.glogi.console :as glogi-console]
-   [cfxjs.spec.cljs]
    [cfxjs.db.datascript.core :as d]
-   [cfxjs.db.queries :refer [apply-queries]]
-   [cljs.reader]
-   [cfxjs.db.migrate]
    ;; [cfxjs.db.datascript.db :as ddb]
    [cfxjs.db.datascript.impl.entity :as de]
+   [cfxjs.db.migrate]
+   [cfxjs.db.queries :refer [apply-queries]]
+   [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]]
+   [cfxjs.spec.cljs]
+   [cljs.reader]
    [goog.string :as gs]
-   [cfxjs.db.schema :refer [js-schema->schema js-schema->query-structure model->attr-keys qattr->model]])
+   [lambdaisland.glogi :as log]
+   [lambdaisland.glogi.console :as glogi-console])
   (:require-macros [cfxjs.db.core :refer [def-get-by-query def-get-query-or def-get-query-and def-get-one-query-and def-get-all-query]]))
 
 (glogi-console/install!)
@@ -387,4 +387,5 @@
   (d/datoms (d/db conn) :eavt)
   (q '[:find ?v .
        :where [?v :dbmeta/version]])
-  (t [{:db/id :dbmeta :dbmeta/version 1}]))
+  (t [{:db/id :dbmeta :dbmeta/version 1}])
+  (d/schema (d/db conn)))

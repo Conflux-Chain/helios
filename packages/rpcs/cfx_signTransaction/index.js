@@ -83,6 +83,8 @@ export const main = async args => {
     throw InvalidParams(`Invalid chainId ${tx.chainId}`)
 
   const {epoch, returnTxMeta, dryRun} = opts
+  tx.from = tx.from.toLowerCase()
+  if (tx.to) tx.to = tx.to.toLowerCase()
   const newTx = {...tx}
 
   const fromAddr = findAddress({
