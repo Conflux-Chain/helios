@@ -13,7 +13,8 @@ import {useNetworkTypeIsCfx, useCurrentAddress} from '../hooks/useApi'
 
 function ContactItem({address = '', memo = ''}) {
   const {t} = useTranslation()
-  const ref = useRef(null)
+  const containerRef = useRef(null)
+  const memoTextInputRef = useRef(null)
 
   const [showAddressInput, setShowAddressInput] = useState('hidden')
   const [showMemoInput, setShowMemoInput] = useState('hidden')
@@ -57,16 +58,27 @@ function ContactItem({address = '', memo = ''}) {
   }, [address])
 
   useEffect(() => {
-    setShowMemoInput(memo === '' ? 'show' : 'hidden')
+    if (memo === '') {
+      setShowMemoInput('show')
+      setTimeout(() => {
+        memoTextInputRef?.current?.focus?.()
+      })
+    } else {
+      setShowMemoInput('hidden')
+    }
   }, [memo])
 
-  useClickAway(ref, () => {
+  useClickAway(containerRef, () => {
     onsubmit()
   })
 
   return (
     <div>
-      <div className="flex items-center bg-primary-10" id={address} ref={ref}>
+      <div
+        className="flex items-center bg-primary-10"
+        id={address}
+        ref={containerRef}
+      >
         <Avatar
           className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2"
           diameter={30}
@@ -76,16 +88,19 @@ function ContactItem({address = '', memo = ''}) {
         />
         <div>
           <TextField
-            textValue={address}
-            inputValue={inputAddress}
-            controlInputStatus={showAddressInput}
-            onInputChange={address => setInputAddress(address)}
-          />
-          <TextField
+            maxLength={null}
             textValue={memo}
             inputValue={inputMemo}
             controlInputStatus={showMemoInput}
             onInputChange={memo => setInputMemo(memo)}
+            ref={memoTextInputRef}
+          />
+          <TextField
+            maxLength={null}
+            textValue={address}
+            inputValue={inputAddress}
+            controlInputStatus={showAddressInput}
+            onInputChange={address => setInputAddress(address)}
           />
         </div>
         <CheckCircleFilled

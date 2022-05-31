@@ -18,6 +18,7 @@ const TextField = forwardRef(function TextField(
     className = '',
     controlInputStatus = '',
     inputClassName = '',
+    maxLength = '20',
   },
   ref,
 ) {
@@ -100,7 +101,7 @@ const TextField = forwardRef(function TextField(
       {
         <Input
           width={width}
-          maxLength="20"
+          maxLength={maxLength}
           containerClassName={`absolute align-top top-0 left-0 bg-transparent ${height} ${inputClassName} ${
             showInputStatus ? 'visible' : 'invisible'
           }`}
@@ -126,6 +127,7 @@ TextField.propTypes = {
   fontSize: PropTypes.string,
   className: PropTypes.string,
   inputClassName: '',
+  maxLength: PropTypes.string,
   // show,hidden or empty. not empty means to hide edit button and take over showInputStatus
   controlInputStatus: PropTypes.string,
 }
