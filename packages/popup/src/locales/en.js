@@ -448,6 +448,7 @@ const en = {
     recent: 'Recent',
     account: 'Account',
     searchAddressNickname: 'Search address or nickname',
+    addedContactWarning: 'Already added!',
   },
 }
 

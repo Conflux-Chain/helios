@@ -126,7 +126,7 @@ TextField.propTypes = {
   height: PropTypes.string,
   fontSize: PropTypes.string,
   className: PropTypes.string,
-  inputClassName: '',
+  inputClassName: PropTypes.string,
   maxLength: PropTypes.string,
   // show,hidden or empty. not empty means to hide edit button and take over showInputStatus
   controlInputStatus: PropTypes.string,
