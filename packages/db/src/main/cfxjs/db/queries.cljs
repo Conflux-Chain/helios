@@ -1,15 +1,15 @@
 (ns cfxjs.db.queries
   (:require
-   [lambdaisland.glogi :as log]
-   [better-cond.core :as bc :refer [defnc]]
-   [taoensso.encore :as enc]
-   [medley.core :refer [deep-merge]]
    ["@ethersproject/bignumber" :as bn]
+   [better-cond.core :as bc :refer [defnc]]
+   [cfxjs.db.datascript.core :as db]
+   [cfxjs.db.schema :refer [model->attr-keys]]
+   [cfxjs.spec.cljs]
    [clojure.walk :refer [postwalk walk]]
    [goog.string :as gstr]
-   [cfxjs.spec.cljs]
-   [cfxjs.db.datascript.core :as db]
-   [cfxjs.db.schema :refer [model->attr-keys]]))
+   [lambdaisland.glogi :as log]
+   [medley.core :refer [deep-merge]]
+   [taoensso.encore :as enc]))
 
 (declare q p pm e t fdb)
 
@@ -1043,8 +1043,25 @@
              rst           (apply q query (:args query-initial))]
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
 
-(defnc get-memo [{:keys [address type fuzzy g limit offset]}]
-  :let [g            (and g {:memo g})
+(defnc upsert-memo [{:keys [networkId address memoId value]}]
+  :let [addr-exists? (q '[:find ?addr .
+                          :in $ [?net ?gaddr]
+                          :where
+                          [?addr :gaddr/network ?net]
+                          [?addr :gaddr/value ?gaddr]]
+                        [networkId address])
+        gaddr-id (or addr-exists? "newgaddr")
+        txs (enc/conj-when [] (and (not addr-exists?)
+                                   {:db/id         gaddr-id
+                                    :gaddr/network networkId
+                                    :gaddr/value   address}))
+        txs (conj txs {:db/id        (or memoId "newmemo")
+                       :memo/address gaddr-id
+                       :memo/value   value})]
+  (t txs))
+
+(defnc get-memo [{:keys [address fuzzy networkId value g limit offset]}]
+  :let [g     (and g {:memo g})
         limit (or limit 100)
         offset (or offset 0)
         fuzzy        (if (string? fuzzy)
@@ -1058,29 +1075,43 @@
         ;; id to data by `g`
         post-process (if (seq g) identity #(get % :db/id))
         post-process (fn [rst] (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))
-        addr         (cond (coll? address) address (string? address) [address] :else nil)]
+        addr         (cond (coll? address) address (string? address) [address] :else nil)
+        addr (if addr (map #(.toLowerCase %) addr) nil)]
 
   :let [query-initial (cond-> '{:find [[?m ...]]
                                 :in [$]
                                 :where []
                                 :args []}
+                        networkId
+                        (-> (update :args conj networkId)
+                            (update :in conj '?net)
+                            (update :where conj
+                                    '[?ga :gaddr/network ?net]
+                                    '[?m :memo/address ?ga]))
+                        (not networkId)
+                        (-> (update :where conj
+                                    '[?net :network/selected true]
+                                    '[?ga :gaddr/network ?net]
+                                    '[?m :memo/address ?ga]))
                         addr
                         (-> (update :args conj addr)
                             (update :in conj '[?addr ...])
-                            (update :where conj '[?m :memo/address ?addr]))
-                        type
-                        (-> (update :args conj type)
-                            (update :in conj '?type)
-                            (update :where conj '[?m :memo/type ?type]))
-                        fuzzy
+                            (update :where conj
+                                    '[?ga :gaddr/value ?addr]
+                                    '[?m :memo/address ?ga]))
+                        value
+                        (-> (update :args conj value)
+                            (update :in conj '?value)
+                            (update :where conj '[?m :memo/value ?value]))
+
+                        (and (not value) fuzzy)
                         (-> (update :args conj fuzzy)
                             (update :in conj '?fuzzy)
                             (update :where conj
                                     '[?m :memo/value ?v]
                                     '[(re-find ?fuzzy ?v)]))
-
-                        (and (not addr) (not type) (not fuzzy))
-                        (-> (update :where conj '[?m :memo/address _])))
+                        (not addr)
+                        (-> (update :where conj '[?m :memo/address ?ga])))
         query         (concat [:find] (:find query-initial)
                               [:in] (:in query-initial)
                               [:where] (:where query-initial))
@@ -1596,6 +1627,93 @@
           true)
       false)))
 
+(defn get-recent-interesting-address-from-tx
+  "Get interesting address from tx
+
+  interesting means
+  1. to addr of simple send tx
+  2. send/transfer tx to 20/777 contract"
+  [{:keys [limit offset fuzzy]}]
+  (let [limit  (or limit 10)
+        offset (or offset 0)
+        fuzzy  (if (string? fuzzy)
+                 (re-pattern
+                  (str "(?i)"
+                       (-> fuzzy
+                           (.trim)
+                           gstr/regExpEscape
+                           (.replaceAll " " ".*"))))
+                 nil)
+
+        query
+        {:find '[?address ?memo ?memov ?acc ?nick]
+         :in   '[$]
+         :where
+         '[[?net :network/selected true]
+           [?addr :address/network ?net]
+           [?addr :address/tx ?tx]
+           [?tx :tx/txExtra ?extra]
+           (or
+            (and
+             [?extra :txExtra/simple true]
+             [?tx :tx/txPayload ?payload]
+             [?payload :txPayload/to ?address])
+            (and
+             [?extra :txExtra/token20 true]
+             (or [?extra :txExtra/method "transfer"]
+                 [?extra :txExtra/method "send"])
+             [?payload :txExtra/address ?address]))
+           [(vector ?net ?address) ?addr-id]
+           (or-join  [?addr-id ?memo ?memov]
+                     (and
+                      [(vector :gaddr/id ?addr-id) ?addr-id-ref]
+                      [?memo :memo/address ?addr-id-ref]
+                      [?memo :memo/value ?memov])
+                     (and
+                      [(vector :gaddr/id ?addr-id) ?addr-id-ref]
+                      (not [?memo :memo/address ?addr-id-ref])
+                      [(identity false) ?memo]
+                      [(identity false) ?memov]))
+           (or-join [?addr-id ?acc ?nick]
+                    (and
+                     [(vector :address/id ?addr-id) ?addr-id-ref]
+                     [?acc :account/address ?addr-id-ref]
+                     [?acc :account/nickname ?nick])
+                    (and
+                     [(vector :address/id ?addr-id) ?addr-id-ref]
+                     (not [?acc :account/address ?addr-id-ref])
+                     [(identity false) ?acc]
+                     [(identity false) ?nick]))]}
+
+        query (if fuzzy
+                (-> query
+                    (update :in conj '?fuzzy)
+                    (update :where conj
+                            '(or
+                              (and [(and true ?nick)]
+                                   [(re-find ?fuzzy ?nick)])
+                              (and [(and true ?memov)]
+                                   [(re-find ?fuzzy ?memov)]))))
+                query)
+
+        query
+        (concat [:find] (:find query)
+                [:in] (:in query)
+                [:where] (:where query))
+
+        addrs
+        (->> (if fuzzy (q query fuzzy) (q query))
+             (drop offset)
+             (take limit))
+
+        format (fn [[addr memo-id memo-value acc-id nickname]]
+                 (enc/assoc-when {:address addr}
+                                 :memoId memo-id
+                                 :memoValue memo-value
+                                 :accountId acc-id
+                                 :accountNickname nickname))]
+    (map format addrs)))
+
 ;;; UI QUERIES
 (defn account-list-assets [{:keys [accountGroupTypes]}]
   (let [accountGroupTypes (if (vector? accountGroupTypes) accountGroupTypes ["hd" "pk" "hw" "pub"])
@@ -1795,6 +1913,7 @@
               :findAccount                         get-account
               :findToken                           get-token
               :findGroup                           get-group
+              :findMemo                            get-memo
               :validateAddrInApp                   validate-addr-in-app
               :upsertTokenList                     upsert-token-list
               :retractNetwork                      retract-network
@@ -1806,21 +1925,23 @@
               :getAppAnotherAuthedNoneHWAccount    get-app-another-authed-none-hw-account
               :updateAccountWithHiddenHandler      update-account
               :isLastNoneHWAccount                 is-last-none-hw-account
-              :getConnectedSitesWithoutApps         get-connected-sites-without-apps
+              :getConnectedSitesWithoutApps        get-connected-sites-without-apps
+              :upsertMemo                          upsert-memo
 
-              :queryqueryApp              get-apps
-              :queryqueryAddress          get-address
-              :queryqueryNetwork          get-network
-              :queryqueryAccount          get-account
-              :queryqueryMemo             get-memo
-              :queryqueryAccountGroup     get-account-group
-              :queryqueryAccountList      get-account-list
-              :queryqueryToken            get-token
-              :queryqueryGroup            get-group
-              :queryqueryBalance          get-balance
-              :querytxList                query-tx-list
-              :queryaccountListAssets     account-list-assets
-              :getAccountGroupByVaultType get-account-group-by-vault-type})
+              :queryqueryRecentInterestingAddress get-recent-interesting-address-from-tx
+              :queryqueryApp                      get-apps
+              :queryqueryAddress                  get-address
+              :queryqueryNetwork                  get-network
+              :queryqueryAccount                  get-account
+              :queryqueryMemo                     get-memo
+              :queryqueryAccountGroup             get-account-group
+              :queryqueryAccountList              get-account-list
+              :queryqueryToken                    get-token
+              :queryqueryGroup                    get-group
+              :queryqueryBalance                  get-balance
+              :querytxList                        query-tx-list
+              :queryaccountListAssets             account-list-assets
+              :getAccountGroupByVaultType         get-account-group-by-vault-type})
 
 (defn apply-queries [rst conn qfn entity tfn ffn pfn]
   (defn pm [x eids]

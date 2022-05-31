@@ -87,7 +87,7 @@ describe('db', function () {
       })
       conn.t({vault: {name: 'a'}})
 
-      // {vault: {name: 'a'} } is a lookup-ref to look up vault entity, as the
+      // {vault: {name: 'a'}} is a lookup-ref to look up vault entity, as the
       // name of vault is set to identity in schema
       conn.t({addr: {hex: 'foo', vault: {vault: {name: 'a'}}}})
       expect(conn.getAddr()[0].vault.name).toBe('a')

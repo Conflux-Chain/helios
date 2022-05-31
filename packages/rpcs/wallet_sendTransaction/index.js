@@ -69,6 +69,10 @@ export const main = async ({
       delete params[0].gasLimit
     }
 
+    if (params[0].gas && BigNumber.from(params[0].gas).lt(21000)) {
+      params[0].gas = '0x5208'
+    }
+
     const [{from}] = params
 
     // check that from address is authed to the app
