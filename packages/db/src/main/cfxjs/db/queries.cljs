@@ -1663,19 +1663,27 @@
              (or [?extra :txExtra/method "transfer"]
                  [?extra :txExtra/method "send"])
              [?payload :txExtra/address ?address]))
-           (or-join  [?net ?address ?memo ?memov]
-                     (and [?memo :memo/address [?net ?address]]
-                          [?memo :memo/value ?memov])
-                     (and (not [?memo :memo/address ?address])
-                          [(identity false) ?memo]
-                          [(identity false) ?memov]))
-           (or-join [?net ?address ?acc ?nick]
-                    (and [?aaddr :address/value [?net ?address]]
-                         [?acc :account/address ?aaddr]
-                         [?acc :account/nickname ?nick])
-                    (and (not [?aaddr :address/value ?address])
-                         [(identity false) ?acc]
-                         [(identity false) ?nick]))]}
+           [(vector ?net ?address) ?addr-id]
+           (or-join  [?addr-id ?memo ?memov]
+                     (and
+                      [(vector :gaddr/id ?addr-id) ?addr-id-ref]
+                      [?memo :memo/address ?addr-id-ref]
+                      [?memo :memo/value ?memov])
+                     (and
+                      [(vector :gaddr/id ?addr-id) ?addr-id-ref]
+                      (not [?memo :memo/address ?addr-id-ref])
+                      [(identity false) ?memo]
+                      [(identity false) ?memov]))
+           (or-join [?addr-id ?acc ?nick]
+                    (and
+                     [(vector :address/id ?addr-id) ?addr-id-ref]
+                     [?acc :account/address ?addr-id-ref]
+                     [?acc :account/nickname ?nick])
+                    (and
+                     [(vector :address/id ?addr-id) ?addr-id-ref]
+                     (not [?acc :account/address ?addr-id-ref])
+                     [(identity false) ?acc]
+                     [(identity false) ?nick]))]}
 
         query (if fuzzy
                 (-> query
