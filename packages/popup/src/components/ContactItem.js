@@ -2,7 +2,6 @@ import PropTypes from 'prop-types'
 import {useState, useEffect, useRef} from 'react'
 import {useTranslation} from 'react-i18next'
 import {isNumber} from '@fluent-wallet/checks'
-
 import Message from '@fluent-wallet/component-message'
 import {isHexAddress} from '@fluent-wallet/account'
 import {decode} from '@fluent-wallet/base32-address'
@@ -16,7 +15,15 @@ import useLoading from '../hooks/useLoading'
 import {RPC_METHODS} from '../constants'
 
 const {WALLET_UPDATE_INSERT_MEMO, WALLET_QUERY_MEMO} = RPC_METHODS
-function ContactItem({address = '', memo = '', memoId, callback}) {
+function ContactItem({
+  address = '',
+  memo = '',
+  memoId,
+  onSubmitCallback,
+  onClickAwayCallback,
+  editMemo = false,
+  rightComponent,
+}) {
   const {t} = useTranslation()
   const containerRef = useRef(null)
   const memoTextInputRef = useRef(null)
@@ -31,15 +38,14 @@ function ContactItem({address = '', memo = '', memoId, callback}) {
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const {
     data: {
-      network: {netId, type},
+      network: {netId, eid: networkId},
     },
   } = useCurrentAddress()
 
   const queryAddressMemo = async () => {
     return request(WALLET_QUERY_MEMO, {
       address: inputAddress,
-      // TODO: chainId 替换？
-      type,
+      networkId,
     })
   }
 
@@ -51,31 +57,41 @@ function ContactItem({address = '', memo = '', memoId, callback}) {
     })
   }
 
+  const onValidate = () => {
+    const isValidatedAddress = validateInputAddress()
+    if (
+      !inputMemo.trim() ||
+      !isValidatedAddress ||
+      (inputMemo.trim() === memo.trim() && inputAddress === address)
+    ) {
+      return false
+    }
+    return true
+  }
+
   const onsubmit = async () => {
+    if (!isNumber(memoId)) {
+      // can not add twice
+      const addedMemo = await queryAddressMemo()
+
+      if (addedMemo?.data?.length) {
+        setAddressErrorMsg(t('addedContactWarning'))
+        return
+      }
+    }
+
+    const ret = await updateInsertMemo()
+    ret && onSubmitCallback?.()
+  }
+
+  const onClickSubmitButton = async () => {
     try {
-      const isValidatedAddress = validateInputAddress()
-      if (!inputMemo.trim() || !isValidatedAddress) {
+      const isValidate = onValidate()
+      if (!isValidate) {
         return
       }
       setLoading(true)
-
-      if (!isNumber(memoId)) {
-        // can not add twice
-        const addedMemoArray = await queryAddressMemo()
-
-        console.log('addedMemoArray', addedMemoArray)
-
-        if (addedMemoArray?.length) {
-          setLoading(false)
-          setAddressErrorMsg(t('addedContactWarning'))
-          return
-        }
-      }
-
-      const ret = await updateInsertMemo()
-
-      console.log('ret', ret)
-      ret && callback?.()
+      await onsubmit()
       setLoading(false)
     } catch (e) {
       setLoading(false)
@@ -84,6 +100,28 @@ function ContactItem({address = '', memo = '', memoId, callback}) {
         top: '10px',
         duration: 1,
       })
+    }
+  }
+
+  const onClickAway = async () => {
+    if (showAddressInput === 'show' || showMemoInput === 'show') {
+      try {
+        const isValidate = onValidate()
+        if (isValidate) {
+          setLoading(true)
+          await onsubmit()
+          setLoading(false)
+        }
+        onClickAwayCallback?.()
+      } catch (e) {
+        setLoading(false)
+        onClickAwayCallback?.()
+        Message.error({
+          content: e?.message ?? t('unCaughtErrMsg'),
+          top: '10px',
+          duration: 1,
+        })
+      }
     }
   }
 
@@ -107,18 +145,22 @@ function ContactItem({address = '', memo = '', memoId, callback}) {
   }, [address])
 
   useEffect(() => {
-    if (memo === '') {
+    let timer = null
+    if (memo === '' || (isNumber(memoId) && editMemo)) {
       setShowMemoInput('show')
-      setTimeout(() => {
+      timer = setTimeout(() => {
         memoTextInputRef?.current?.focus?.()
       })
     } else {
       setShowMemoInput('hidden')
     }
-  }, [memo])
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [memo, editMemo, memoId])
 
   useClickAway(containerRef, () => {
-    onsubmit()
+    onClickAway()
   })
 
   return (
@@ -128,36 +170,45 @@ function ContactItem({address = '', memo = '', memoId, callback}) {
         id={address}
         ref={containerRef}
       >
-        <Avatar
-          className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2"
-          diameter={30}
-          accountIdentity={
-            address && !isHexAddress(address) ? decode(address) : address
-          }
-        />
-        <div>
-          <TextField
-            maxLength={null}
-            textValue={memo}
-            inputValue={inputMemo}
-            controlInputStatus={showMemoInput}
-            onInputChange={memo => setInputMemo(memo)}
-            ref={memoTextInputRef}
+        <div className="flex">
+          <Avatar
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2"
+            diameter={30}
+            accountIdentity={
+              address && !isHexAddress(address) ? decode(address) : address
+            }
           />
-          <TextField
-            maxLength={null}
-            textValue={address}
-            inputValue={inputAddress}
-            controlInputStatus={showAddressInput}
-            onInputChange={address => setInputAddress(address)}
-          />
+          <div>
+            <TextField
+              maxLength={null}
+              textValue={memo}
+              inputValue={inputMemo}
+              controlInputStatus={showMemoInput}
+              onInputChange={memo => setInputMemo(memo)}
+              ref={memoTextInputRef}
+            />
+            <TextField
+              maxLength={null}
+              textValue={address}
+              inputValue={inputAddress}
+              controlInputStatus={showAddressInput}
+              onInputChange={address => setInputAddress(address)}
+              isAddress={true}
+            />
+          </div>
         </div>
-        <CheckCircleFilled
-          className="w-5 h-5 text-white cursor-pointer"
-          strokeColor="#ccc"
-          onClick={onsubmit}
-          id="update-memo"
-        />
+        <div>
+          {showAddressInput === 'show' || showMemoInput === 'show' ? (
+            <CheckCircleFilled
+              className="w-5 h-5 text-white cursor-pointer"
+              strokeColor="#ccc"
+              onClick={onClickSubmitButton}
+              id="update-memo"
+            />
+          ) : rightComponent ? (
+            rightComponent
+          ) : null}
+        </div>
       </div>
       <div> {addressErrorMsg}</div>
     </div>
@@ -167,6 +218,13 @@ ContactItem.propTypes = {
   address: PropTypes.string,
   memo: PropTypes.string,
   memoId: PropTypes.number,
-  callback: PropTypes.func,
+  onSubmitCallback: PropTypes.func,
+  onClickAwayCallback: PropTypes.func,
+  editMemo: PropTypes.bool,
+  rightComponent: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+    PropTypes.string,
+  ]),
 }
 export default ContactItem

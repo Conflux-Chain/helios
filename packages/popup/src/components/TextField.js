@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import {forwardRef} from 'react'
 import Input from '@fluent-wallet/component-input'
+import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {EditOutlined} from '@fluent-wallet/component-icons'
 import {useState, useEffect} from 'react'
 import useLoading from '../hooks/useLoading'
@@ -19,6 +20,7 @@ const TextField = forwardRef(function TextField(
     controlInputStatus = '',
     inputClassName = '',
     maxLength = '20',
+    isAddress = false,
   },
   ref,
 ) {
@@ -84,7 +86,9 @@ const TextField = forwardRef(function TextField(
     >
       {!showInputStatus && (
         <div className={`flex ${width} items-center`}>
-          <div className={`${fontSize} text-ellipsis`}>{textValue}</div>
+          <div className={`${fontSize} text-ellipsis`}>
+            {isAddress && textValue ? shortenAddress(textValue) : textValue}
+          </div>
           {showEditIconStatus && !controlInputStatus ? (
             <EditOutlined
               className={
@@ -130,6 +134,8 @@ TextField.propTypes = {
   maxLength: PropTypes.string,
   // show,hidden or empty. not empty means to hide edit button and take over showInputStatus
   controlInputStatus: PropTypes.string,
+  // display address must be shorten
+  isAddress: PropTypes.bool,
 }
 
 export default TextField

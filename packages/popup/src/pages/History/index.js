@@ -5,12 +5,13 @@ import {HistoryItem, ResendTransaction} from './components'
 import {useTxList, useBlockchainExplorerUrl} from '../../hooks/useApi'
 import useLoading from '../../hooks/useLoading'
 import {composeRef, formatStatus} from '../../utils'
-import {HISTORY_PAGE_LIMIT} from '../../constants'
+import {PAGE_LIMIT} from '../../constants'
+
 function History() {
   const {t} = useTranslation()
   const historyRef = useRef(null)
   const [txList, setTxList] = useState(undefined)
-  const [limit, setLimit] = useState(HISTORY_PAGE_LIMIT)
+  const [limit, setLimit] = useState(PAGE_LIMIT)
   const [total, setTotal] = useState(0)
   const {data: historyListData, mutate: refreshHistoryData} = useTxList({
     limit,
@@ -52,7 +53,7 @@ function History() {
       txList?.length < total &&
       limit < total
     ) {
-      setLimit(limit + HISTORY_PAGE_LIMIT)
+      setLimit(limit + PAGE_LIMIT)
     }
   }
 

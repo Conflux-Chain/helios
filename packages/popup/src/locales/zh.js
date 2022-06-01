@@ -433,6 +433,8 @@ const zh = {
     account: 'Account',
     searchAddressNickname: 'Search address or nickname',
     addedContactWarning: 'Already added!',
+    deleteContactTitle: 'Confirm delete this contact',
+    deleteContactContent: 'Do you want to delete this contact?',
   },
 }
 
