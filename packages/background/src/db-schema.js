@@ -274,8 +274,8 @@ const schema = {
 
   // # memo
   memo: {
-    id: {tuples: ['memo/address', 'memo/value'], identity: true},
-    address: {ref: 'gaddr'},
+    id: {tuples: ['memo/gaddr', 'memo/value'], identity: true},
+    gaddr: {ref: true},
     value: {doc: 'memo content'},
   },
 
