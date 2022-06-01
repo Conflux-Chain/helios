@@ -290,7 +290,7 @@ const uk = {
     groupDeleteWarning: 'Неможливо видалити поточну групу облікових записів.',
     accountDeleteWarning: 'Неможливо видалити поточний аккаунт.',
     accountHideWarning: 'Неможливо приховати поточний аккаунт.',
-    lastAccountHideWarning: 'Збережіть хоча б один аккаунт.',
+    lastAccountHideWarning: 'Keep at least one account in this group.',
     ledgerTips: 'Цей акаунт(и) можна використовувати тільки в {{network}}.',
 
     // Network Management

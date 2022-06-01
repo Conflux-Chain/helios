@@ -288,7 +288,7 @@ const en = {
     groupDeleteWarning: 'Can not delete current account group.',
     accountDeleteWarning: 'Can not delete current account.',
     accountHideWarning: 'Can not hide current account.',
-    lastAccountHideWarning: 'Keep at least one account.',
+    lastAccountHideWarning: 'Keep at least one account in this group.',
     ledgerTips: 'This account(s) can only be used on {{network}}.',
 
     // Network Management
