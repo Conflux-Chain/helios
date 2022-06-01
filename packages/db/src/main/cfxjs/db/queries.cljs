@@ -1116,8 +1116,9 @@
                               [:in] (:in query-initial)
                               [:where] (:where query-initial))
         rst          (apply q query (:args query-initial))
+        total        (count rst)
         rst (->> rst reverse (drop offset) (take limit) post-process)]
-  rst)
+  {:total total :data rst})
 
 (defn- cleanup-token-list-after-delete-address []
   (let [tokens (q '[:find [?t ...]
@@ -1704,7 +1705,6 @@
         addrs
         (if fuzzy (q query fuzzy) (q query))
         total (count addrs)
-
 
         addrs
         (->> addrs
