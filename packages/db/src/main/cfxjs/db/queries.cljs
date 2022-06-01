@@ -1702,7 +1702,12 @@
                 [:where] (:where query))
 
         addrs
-        (->> (if fuzzy (q query fuzzy) (q query))
+        (if fuzzy (q query fuzzy) (q query))
+        total (count addrs)
+
+
+        addrs
+        (->> addrs
              (drop offset)
              (take limit))
 
@@ -1712,7 +1717,7 @@
                                  :memoValue memo-value
                                  :accountId acc-id
                                  :accountNickname nickname))]
-    (map format addrs)))
+    {:total total :data (map format addrs)}))
 
 ;;; UI QUERIES
 (defn account-list-assets [{:keys [accountGroupTypes]}]
