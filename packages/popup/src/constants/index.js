@@ -75,3 +75,8 @@ export const HARDWARE_ACCOUNT_PAGE_LIMIT = 5
 export const FULL_WINDOW_ROUTES = [CONNECT_HARDWARE_WALLET, IMPORT_HW_ACCOUNT]
 
 export const MAX_PENDING_COUNT = 9
+
+export const MULTI_ADDRESS_PERMISSIONS = {
+  cfx: 'wallet_crossNetworkTypeGetEthereumHexAddress',
+  eth: 'wallet_crossNetworkTypeGetConfluxBase32Address',
+}

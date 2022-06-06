@@ -29,39 +29,43 @@ const ru = {
     notFilled: 'Не заполнено',
     unCaughtErrMsg: 'Что-то пошло не так',
 
-    // - home page
+    // - homepage
     send: 'Отправить',
     history: 'История',
     assets: 'Активы',
     crossSpace: 'Cross Space',
 
-    // - homepage / 连接网站状态模块和切换连接弹窗模块
+    // - homepage / dapp footer
     noConnectedDapp: 'Не подключен к текущему веб-сайту',
     connected: 'Подключно',
     disconnect: 'Отключиться',
     disconnectTitle: 'Отключиться',
     disconnectContent: 'Отключиться от текущего веб-сайта?',
 
-    // - homepage / dapp connect site 弹窗
+    // - homepage / dapp connect site popup
     connectSite: 'Подключиться к этому веб-сайту?',
+    permissionRequest: 'Permission Request',
+    allowPermission: 'Allow these permissions for this site?',
     selectNetwork: 'Какую сеть хотите использовать?',
     selectAuthorizedAccounts: 'Авторизовать учетную запись',
     selectAll: 'Выбрать все',
     connect: 'Подключиться',
     chooseNetwork: 'Выбрать сеть',
+    viewSelectedAddress: 'View selected account public address',
+    viewMultiAddress: 'View selected account‘s multi-chain address',
 
-    // - homepage / 授权单个账号
+    // - homepage / authorize single account
     authorizeCurrentAccount: 'Авторизировать {{currentAccount}}',
     needAuthTitle: 'Нужна авторизация',
     needAuthContent:
       'Эта учетная запись не авторизована на этом сайте.<br/>Разрешить использование этого веб-сайта {{accountName}} ？',
 
-    // - homepage / 账户管理 / 账户列表
+    // - homepage / account management / account list
     myAccounts: 'Мои учетные записи',
     addAccount: 'Добавить учетную запись',
     search: 'Поиск',
 
-    // homepage / 账户管理 / 创建账户
+    // homepage / account management / create account
     manyAccounts: '{{accountNum}} Учетные записи',
     oneAccount: '1 Учетная запись',
 
@@ -80,18 +84,18 @@ const ru = {
     pKeysDes: 'Введите приватный ключ в текстовом виде.',
     ledgerDes: 'Используйте свой Ledger кошелек.',
 
-    // homepage / 账户管理 / 创建账户 / 1. use existing seed phraseу
+    // homepage / account management / create account / 1. use existing seed phraseу
     accountName: 'Имя учетной записи',
     selectSeedPhrase: 'Выберите секретную фразу',
 
-    // homepage / 账户管理 / 创建账户 / 2. new seed phrase
+    // homepage / account management / create account / 2. new seed phrase
     seedGroupName: 'Секретная фраза Имя группы',
     invalidWord: 'Неверное слово',
     seedCreateTitle: 'Далее будет отображаться секретная фраза.',
     seedCreateContent:
       'Получение секретной фразы эквивалентно владению активами в кошельке.<br/>Если секретная фраза утеряна, ее невозможно восстановить, храните ее должным образом.',
 
-    // homepage / 账户管理 / 创建账户 / 2. new seed phrase / backup seed phrase
+    // homepage / account management / create account / 2. new seed phrase / backup seed phrase
     backupSeedTitle: 'Резервная секретная фраза',
     backupSeedContent:
       'Пожалуйста, скопируйте секретную фразу по порядку.<br/>Не передавайте и не храните секретнную фразу в сети.',
@@ -100,14 +104,14 @@ const ru = {
       'Пожалуйста кликните на секретную фразу, чтобы обеспечить правильное резервное копирование.',
     confirmSeedError: 'Ошибка в секретной фразе.',
 
-    // homepage / 账户管理 / 创建账户 / 3. Import existing account
+    // homepage / account management / create account / 3. Import existing account
     seedImport: 'Импорт секретной фразы',
     seedImportPlaceholder:
       'Секретная фраза состоит из слов, разделенных пробелами. Разделяйте каждое введенное слово пробелом.',
     duplicateSeedError: 'Эта секретная фраза уже в вашем кошельке.',
     invalidSeed: 'Неверная секретная фраза, проверьте еще раз.',
 
-    // homepage / 账户管理 / 创建账户 / 4. Import account with private key
+    // homepage / account management / create account / 4. Import account with private key
     pKeyImport: 'Импортировать привантый ключ',
     pKeyImportPlaceholder: 'Введите свой приватный ключ здесь.',
     duplicatePkError: 'Этот приватный ключ уже в вашем кошельке.',
@@ -193,14 +197,11 @@ const ru = {
     balance: 'Баланс',
     createContract: 'Развернуть контракт',
 
-    // - Send Transaction / Sign Transaction / 3. token approve - view data
-    // 此处展示内容为交易详情，在多种情况是相同的，不止是 token approve 这个场景，详见 common
-
     // - Send Transaction / Sign Transaction / 3. token approve -  edit approve limit permissions
     editPermission: 'Разрешение на редактирование',
     spendLimitPermission: 'Разрешение на лимит расходов',
 
-    // 允许操作的限额权限描述
+    // approve allowance
     allowSpendDes:
       'Разрешить {{dapp}} выводить и оплачивать до следующей суммы:',
     proposedApprovalLimit: 'Предлагаемый лимит одобрения',
