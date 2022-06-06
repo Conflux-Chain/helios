@@ -1,2 +1,2 @@
-export {getEthContractMethodSignature} from './eth-name'
-export {getCFXContractMethodSignature} from './cfx-name'
+export {getEthContractMethodSignature} from './eth-name.js'
+export {getCFXContractMethodSignature} from './cfx-name.js'

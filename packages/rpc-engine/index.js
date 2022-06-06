@@ -46,6 +46,10 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
         Unauthorized: wrapRpcError(rpc.NAME, jsonRpcErr.Unauthorized),
         UnsupportedMethod: wrapRpcError(rpc.NAME, jsonRpcErr.UnsupportedMethod),
         Disconnected: wrapRpcError(rpc.NAME, jsonRpcErr.Disconnected),
+        UnrecognizedChainId: wrapRpcError(
+          rpc.NAME,
+          jsonRpcErr.UnrecognizedChainId,
+        ),
         ChainDisconnected: wrapRpcError(rpc.NAME, jsonRpcErr.ChainDisconnected),
       },
       NAME,

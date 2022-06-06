@@ -1,5 +1,5 @@
-import {CFX_SCAN_DOMAINS} from './constance'
-import fetchHelper from './util/fetch-helper'
+import {CFX_SCAN_DOMAINS} from './constance.js'
+import fetchHelper from './util/fetch-helper.js'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {Interface} from '@ethersproject/abi'
 import {encode, validateBase32Address} from '@fluent-wallet/base32-address'
