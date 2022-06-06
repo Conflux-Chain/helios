@@ -1,6 +1,6 @@
 export const WALLET_GET_ACCOUNT_GROUP = 'wallet_getAccountGroup'
 export const WALLET_GET_PENDING_AUTH_REQUEST = 'wallet_getPendingAuthRequest'
-export const WALLET_REJECT_PENDING_AUTH_REQUSET =
+export const WALLET_REJECT_PENDING_AUTH_REQUEST =
   'wallet_userRejectedAuthRequest'
 export const WALLET_APPROVE_PENDING_AUTH_REQUEST =
   'wallet_userApprovedAuthRequest'

@@ -10,7 +10,7 @@ import useLoading from '../hooks/useLoading'
 import {useLedgerBindingApi} from '../hooks'
 
 const {
-  WALLET_REJECT_PENDING_AUTH_REQUSET,
+  WALLET_REJECT_PENDING_AUTH_REQUEST,
   WALLET_REQUEST_PERMISSIONS,
   WALLET_SWITCH_CONFLUX_CHAIN,
   WALLET_SWITCH_ETHEREUM_CHAIN,
@@ -57,7 +57,7 @@ function DappFooter({
 
   const onCancel = () => {
     setLoading(true)
-    request(WALLET_REJECT_PENDING_AUTH_REQUSET, {authReqId: eid})
+    request(WALLET_REJECT_PENDING_AUTH_REQUEST, {authReqId: eid})
       .then(() => {
         onClickCancel && onClickCancel()
         setLoading(false)
@@ -165,7 +165,7 @@ function DappFooter({
   }
 
   return (
-    <footer className="dapp-footer-container flex w-full px-4">
+    <footer className="flex w-full px-4">
       <Button
         id="cancelBtn"
         className="flex-1"

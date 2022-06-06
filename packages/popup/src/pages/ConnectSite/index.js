@@ -3,8 +3,12 @@ import {useTranslation} from 'react-i18next'
 import {useState, useEffect} from 'react'
 import Input from '@fluent-wallet/component-input'
 import Checkbox from '@fluent-wallet/component-checkbox'
+import Button from '@fluent-wallet/component-button'
+import Message from '@fluent-wallet/component-message'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Modal from '@fluent-wallet/component-modal'
+import useLoading from '../../hooks/useLoading'
+import {request} from '../../utils'
 import {
   CaretDownFilled,
   QuestionCircleOutlined,
@@ -19,11 +23,15 @@ import {
   StretchInput,
   WrapIcon,
 } from '../../components'
-import {RPC_METHODS} from '../../constants'
+import {RPC_METHODS, MULTI_ADDRESS_PERMISSIONS} from '../../constants'
 import {formatLocalizationLang, formatIntoChecksumAddress} from '../../utils'
-import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
+import {
+  useAccountList,
+  useCurrentAddress,
+  usePendingAuthReq,
+} from '../../hooks/useApi'
 
-const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
+const {ACCOUNT_GROUP_TYPE, WALLET_REJECT_PENDING_AUTH_REQUEST} = RPC_METHODS
 function ConnectSitesList({
   allAccountGroupData,
   onSelectSingleAccount,
@@ -113,40 +121,37 @@ function ConnectSitesList({
                           onClick={() => onSelectSingleAccount(accountId)}
                           key={accountId}
                           id={`item-${index}`}
-                          className="flex px-3 items-center h-15 cursor-pointer"
+                          className="flex px-3 items-center h-15 cursor-pointer w-full"
                         >
-                          <div className="flex w-full">
-                            <Avatar
-                              className="w-5 h-5 mr-2"
-                              diameter={20}
-                              accountIdentity={accountId}
-                            />
-                            <div className="flex-1">
-                              <p className="text-xs text-gray-40">{nickname}</p>
-                              <p className="text-sm text-gray-80">
-                                {shortenAddress(
-                                  formatIntoChecksumAddress(
-                                    currentAddress?.value ||
-                                      currentAddress?.hex,
-                                  ),
-                                )}
-                              </p>
-                            </div>
-                            <div className="flex items-center">
-                              {selected ? (
-                                <img
-                                  src="/images/location.svg"
-                                  alt="current address"
-                                  className="mr-3 w-3 h-3"
-                                  id="location"
-                                />
-                              ) : null}
-                              <Checkbox
-                                checked={checkboxStatusObj[accountId]}
-                                id={`check-${index}`}
-                                iconClassName="mr-0"
+                          <Avatar
+                            className="w-5 h-5 mr-2"
+                            diameter={20}
+                            accountIdentity={accountId}
+                          />
+                          <div className="flex-1">
+                            <p className="text-xs text-gray-40">{nickname}</p>
+                            <p className="text-sm text-gray-80">
+                              {shortenAddress(
+                                formatIntoChecksumAddress(
+                                  currentAddress?.value || currentAddress?.hex,
+                                ),
+                              )}
+                            </p>
+                          </div>
+                          <div className="flex items-center">
+                            {selected ? (
+                              <img
+                                src="/images/location.svg"
+                                alt="current address"
+                                className="mr-3 w-3 h-3"
+                                id="location"
                               />
-                            </div>
+                            ) : null}
+                            <Checkbox
+                              checked={checkboxStatusObj[accountId]}
+                              id={`check-${index}`}
+                              iconClassName="mr-0"
+                            />
                           </div>
                         </div>
                       ),
@@ -176,10 +181,18 @@ function ConnectSite() {
   const [networkShow, setNetworkShow] = useState(false)
   const [networkIcon, setNetworkIcon] = useState('')
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
+  const [confirmPermissions, setConfirmPermissions] = useState({})
+  const [showNext, setShowNext] = useState(false)
+  const {setLoading} = useLoading()
+  const pendingAuthReq = usePendingAuthReq()
+
+  const [{eid, req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  const permissions = req?.params?.[0] || {}
 
   const {
     data: {
       network: {
+        type,
         eid: currentNetworkId,
         icon: currentNetworkIcon,
         name: currentNetworkName,
@@ -189,6 +202,19 @@ function ConnectSite() {
   const {data: allAccountGroups} = useAccountList({
     networkId: currentNetworkId,
   })
+
+  const showSecondPermission =
+    type &&
+    Object.keys(permissions).indexOf(MULTI_ADDRESS_PERMISSIONS[type]) > -1
+
+  const checkedPermission =
+    Object.keys(confirmPermissions).indexOf(MULTI_ADDRESS_PERMISSIONS[type]) >
+    -1
+
+  useEffect(() => {
+    setConfirmPermissions(permissions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Object.keys(permissions).length])
 
   useEffect(() => {
     setNetworkIcon(currentNetworkIcon || '')
@@ -240,66 +266,167 @@ function ConnectSite() {
     })
   }
 
+  const onCancel = () => {
+    setLoading(true)
+    request(WALLET_REJECT_PENDING_AUTH_REQUEST, {authReqId: eid})
+      .then(() => {
+        setLoading(false)
+        window.close()
+      })
+      .catch(e => {
+        Message.error({
+          content: e?.message ?? t('unCaughtErrMsg'),
+          top: '10px',
+          duration: 1,
+        })
+        setLoading(false)
+      })
+  }
+
+  const onNext = () => {
+    setShowNext(true)
+  }
+
+  const onChangePermission = () => {
+    if (checkedPermission) {
+      const newPermissions = {...confirmPermissions}
+      delete newPermissions[MULTI_ADDRESS_PERMISSIONS[type]]
+      setConfirmPermissions(newPermissions)
+    } else {
+      const newPermissions = {
+        ...confirmPermissions,
+        [MULTI_ADDRESS_PERMISSIONS[type]]: {},
+      }
+      setConfirmPermissions(newPermissions)
+    }
+  }
+
   return allAccountGroupData.length ? (
     <div
       id="connectSiteContainer"
       className="flex flex-col h-full w-full justify-between bg-blue-circles bg-no-repeat pb-4"
     >
       <div id="content">
-        <DappProgressHeader title={t('connectSite')} />
-        <main className="px-3">
-          <CompWithLabel
-            label={<p className="text-sm text-gray-40">{t('selectNetwork')}</p>}
-          >
-            <div
-              id="setNetworkShow"
-              aria-hidden="true"
-              onClick={() => setNetworkShow(true)}
-              className="cursor-pointer"
-            >
-              <Input
-                value={networkContent}
-                width="w-full box-border"
-                readOnly
-                className="pointer-events-none"
-                suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
-                id="selectNetwork"
-                prefix={
-                  <img
-                    src={networkIcon || '/images/default-network-icon.svg'}
-                    alt="network icon"
-                    className="w-4 h-4"
-                  />
-                }
+        <DappProgressHeader
+          title={!showNext ? t('connectSite') : t('permissionRequest')}
+          showNext={showNext}
+          setShowNext={setShowNext}
+        />
+        {showNext ? (
+          <main className="px-3 pt-3">
+            <span className="mb-4 px-3 text-gray-40 text-sm inline-block">
+              {t('allowPermission')}
+            </span>
+            <div aria-hidden="true" className="flex px-3 items-center w-full">
+              <span className="flex-1 flex text-sm text-gray-80">
+                {t('viewSelectedAddress')}
+              </span>
+              <Checkbox
+                checked={true}
+                id="default-current-address"
+                iconClassName="mr-0"
+                disabled={true}
               />
             </div>
-          </CompWithLabel>
+            {showSecondPermission && (
+              <div
+                aria-hidden="true"
+                className="flex px-3 items-center w-full cursor-pointer"
+                onClick={onChangePermission}
+              >
+                <span className="flex-1 flex text-sm text-gray-80">
+                  {t('viewMultiAddress')}
+                </span>
+                <Checkbox
+                  checked={checkedPermission}
+                  id="multi-address"
+                  iconClassName="mr-0"
+                />
+              </div>
+            )}
+          </main>
+        ) : (
+          <main className="px-3">
+            <CompWithLabel
+              label={
+                <p className="text-sm text-gray-40">{t('selectNetwork')}</p>
+              }
+            >
+              <div
+                id="setNetworkShow"
+                aria-hidden="true"
+                onClick={() => setNetworkShow(true)}
+                className="cursor-pointer"
+              >
+                <Input
+                  value={networkContent}
+                  width="w-full box-border"
+                  readOnly
+                  className="pointer-events-none"
+                  suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
+                  id="selectNetwork"
+                  prefix={
+                    <img
+                      src={networkIcon || '/images/default-network-icon.svg'}
+                      alt="network icon"
+                      className="w-4 h-4"
+                    />
+                  }
+                />
+              </div>
+            </CompWithLabel>
 
-          <ConnectSitesList
-            currentNetworkId={currentNetworkId}
-            allAccountGroupData={allAccountGroupData}
-            onSelectSingleAccount={onSelectSingleAccount}
-            checkboxStatusObj={checkboxStatusObj}
-          />
-          <Modal
-            id="networkModal"
-            open={networkShow}
-            size="medium"
-            title={t('chooseNetwork')}
-            onClose={() => setNetworkShow(false)}
-            content={<NetworkContent onClickNetworkItem={onClickNetworkItem} />}
-            className="bg-bg bg-gray-circles bg-no-repeat bg-contain max-h-[552px]"
-          />
-        </main>
+            <ConnectSitesList
+              currentNetworkId={currentNetworkId}
+              allAccountGroupData={allAccountGroupData}
+              onSelectSingleAccount={onSelectSingleAccount}
+              checkboxStatusObj={checkboxStatusObj}
+            />
+            <Modal
+              id="networkModal"
+              open={networkShow}
+              size="medium"
+              title={t('chooseNetwork')}
+              onClose={() => setNetworkShow(false)}
+              content={
+                <NetworkContent onClickNetworkItem={onClickNetworkItem} />
+              }
+              className="bg-bg bg-gray-circles bg-no-repeat bg-contain max-h-[552px]"
+            />
+          </main>
+        )}
       </div>
-      <DappFooter
-        cancelText={t('cancel')}
-        confirmText={t('connect')}
-        confirmDisabled={!confirmAccounts.length}
-        confirmParams={{
-          accounts: [...confirmAccounts],
-        }}
-      />
+      {!showNext ? (
+        <footer className="dapp-footer-container flex w-full px-4">
+          <Button
+            id="cancelBtn"
+            className="flex-1"
+            variant="outlined"
+            onClick={onCancel}
+          >
+            {t('cancel')}
+          </Button>
+          <div className="w-3" />
+          <Button
+            id="nextBtn"
+            className="flex-1"
+            onClick={onNext}
+            disabled={!confirmAccounts.length}
+          >
+            {t('next')}
+          </Button>
+        </footer>
+      ) : (
+        <DappFooter
+          cancelText={t('cancel')}
+          confirmText={t('connect')}
+          confirmDisabled={!confirmAccounts.length}
+          confirmParams={{
+            accounts: [...confirmAccounts],
+            permissions: [confirmPermissions],
+          }}
+        />
+      )}
     </div>
   ) : null
 }
