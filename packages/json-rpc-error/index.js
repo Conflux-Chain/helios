@@ -111,6 +111,8 @@ export const errorInstanceToErrorCode = instance => {
   if (instance instanceof Disconnected) return ERROR.DISCONNECTED.code
   if (instance instanceof ChainDisconnected)
     return ERROR.CHAIN_DISCONNECTED.code
+  if (instance instanceof UnrecognizedChainId)
+    return ERROR.UNRECOGNIZED_CHAIN_ID.code
   if (!instance?.code) return -32000
   if (instance.code >= -32099 && instance.code <= -32000) return instance.code
   return -32000
