@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 import {useState, useRef, useEffect} from 'react'
 import {useDebounce} from 'react-use'
 import {useHistory} from 'react-router-dom'
@@ -9,6 +11,7 @@ import Message from '@fluent-wallet/component-message'
 import {
   TitleNav,
   ContactItem,
+  ContactList,
   SearchInput,
   NoResult,
   CopyButton,
@@ -23,6 +26,48 @@ import DeleteContactModal from './components/DeleteContactModal'
 
 const {SEND_TRANSACTION} = ROUTES
 const {WALLET_DELETE_MEMO} = RPC_METHODS
+
+function ContactOperationComponent({
+  mouseOverId,
+  address = '',
+  onClickEdit,
+  onClickSend,
+  onClickDelete,
+}) {
+  const {t} = useTranslation()
+
+  return (
+    <div className="flex">
+      <WrapIcon onClick={() => onClickEdit?.(mouseOverId)} id="edit-memo">
+        <EditOutlined />
+      </WrapIcon>
+      <CopyButton
+        text={address}
+        className="w-3 h-3 text-primary"
+        wrapperClassName="top-10 right-3"
+      />
+      <WrapIcon onClick={() => onClickSend?.(address)} id="send-tx">
+        <img src="/images/paper-plane.svg" alt="send" />
+      </WrapIcon>
+      <span
+        aria-hidden="true"
+        className="cursor-pointer"
+        id="delete"
+        onClick={() => onClickDelete?.(mouseOverId)}
+      >
+        {t('delete')}
+      </span>
+    </div>
+  )
+}
+
+ContactOperationComponent.propTypes = {
+  mouseOverId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  address: PropTypes.string,
+  onClickEdit: PropTypes.func,
+  onClickSend: PropTypes.func,
+  onClickDelete: PropTypes.func,
+}
 
 function Contacts() {
   const {t} = useTranslation()
@@ -39,6 +84,7 @@ function Contacts() {
   const [editMemoId, setEditMemoId] = useState('')
   const [deleteMemoId, setDeleteMemoId] = useState('')
   const [mouseOverId, setMouseOverId] = useState('')
+  const [mouseOverAddress, setMouseOverAddress] = useState('')
 
   const [showAddContact, setShowAddContact] = useState(false)
 
@@ -86,6 +132,11 @@ function Contacts() {
     }
   }
 
+  const onMouseOver = (id, address) => {
+    setMouseOverId(id)
+    setMouseOverAddress(address)
+  }
+
   const onAddedCallBack = () => {
     setShowAddContact(false)
     setLimit(PAGE_LIMIT)
@@ -99,7 +150,7 @@ function Contacts() {
     setEditMemoId('')
   }
 
-  const onClickSendButton = (address = '') => {
+  const onClickSend = (address = '') => {
     setToAddress(address)
     history.push(SEND_TRANSACTION)
   }
@@ -136,6 +187,7 @@ function Contacts() {
         }
       />
       <SearchInput value={searchContent} onChange={setSearchContent} />
+
       {showAddContact && (
         <ContactItem
           onSubmitCallback={onAddedCallBack}
@@ -147,57 +199,27 @@ function Contacts() {
         onScroll={onScroll}
         ref={contactListRef}
       >
-        {contactList?.length > 0 &&
-          contactList.map(({id, gaddr, value}) => (
-            <div
-              key={id}
-              className="relative"
-              onMouseEnter={() => setMouseOverId(id)}
-              onMouseLeave={() => setMouseOverId('')}
-            >
-              <ContactItem
-                memoId={id}
-                address={gaddr?.value}
-                memo={value}
-                editMemo={editMemoId === id}
-                onSubmitCallback={onEditedCallBack}
-                onClickAwayCallback={() => setEditMemoId('')}
-                rightComponent={
-                  id === mouseOverId && (
-                    <div className="flex">
-                      <WrapIcon
-                        onClick={() => setEditMemoId(id)}
-                        id="edit-memo"
-                      >
-                        <EditOutlined />
-                      </WrapIcon>
-                      <CopyButton
-                        text={gaddr?.value || ''}
-                        className="w-3 h-3 text-primary"
-                        wrapperClassName="top-10 right-3"
-                      />
-                      <WrapIcon
-                        onClick={() => onClickSendButton(gaddr?.value)}
-                        id="send-tx"
-                      >
-                        <img src="/images/paper-plane.svg" alt="send" />
-                      </WrapIcon>
-                      <span
-                        aria-hidden="true"
-                        className="cursor-pointer"
-                        id="delete"
-                        onClick={() => setDeleteMemoId(id)}
-                      >
-                        {t('delete')}
-                      </span>
-                    </div>
-                  )
-                }
+        {contactList?.length > 0 && (
+          <ContactList
+            onMouseOver={onMouseOver}
+            contactSubmitCallback={onEditedCallBack}
+            contactClickAwayCallback={() => setEditMemoId('')}
+            editMemoId={editMemoId}
+            mouseOverId={mouseOverId}
+            list={contactList}
+            contactRightComponent={
+              <ContactOperationComponent
+                mouseOverId={mouseOverId}
+                address={mouseOverAddress}
+                onClickEdit={setEditMemoId}
+                onClickSend={onClickSend}
+                onClickDelete={setDeleteMemoId}
               />
-            </div>
-          ))}
-        {contactList?.length === 0 && <NoResult content={t('noResult')} />}
+            }
+          />
+        )}
       </div>
+      {contactList?.length === 0 && <NoResult content={t('noResult')} />}
       <DeleteContactModal
         open={isNumber(deleteMemoId)}
         onClose={() => setDeleteMemoId('')}
