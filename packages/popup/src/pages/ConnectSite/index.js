@@ -139,14 +139,14 @@ function ConnectSitesList({
                             </p>
                           </div>
                           <div className="flex items-center">
-                            {selected ? (
+                            {selected && (
                               <img
                                 src="/images/location.svg"
                                 alt="current address"
                                 className="mr-3 w-3 h-3"
                                 id="location"
                               />
-                            ) : null}
+                            )}
                             <Checkbox
                               checked={checkboxStatusObj[accountId]}
                               id={`check-${index}`}
@@ -301,7 +301,9 @@ function ConnectSite() {
     }
   }
 
-  return allAccountGroupData.length ? (
+  if (!allAccountGroupData.length) return null
+
+  return (
     <div
       id="connectSiteContainer"
       className="flex flex-col h-full w-full justify-between bg-blue-circles bg-no-repeat pb-4"
@@ -428,7 +430,7 @@ function ConnectSite() {
         />
       )}
     </div>
-  ) : null
+  )
 }
 
 export default ConnectSite
