@@ -1,0 +1,6 @@
+releases:
+  "@fluent-wallet/wallet_get-permissions": major
+  "@fluent-wallet/wallet_request-permissions": major
+
+declined:
+  - helios-background
