@@ -657,7 +657,7 @@ export const useCurrentNetworkAddressMemo = (params = {}) => {
     isUndefined(networkId)
       ? null
       : [WALLET_QUERY_MEMO, ...Object.values(params), networkId],
-    {...params, networkId},
+    {offset: 0, limit: PAGE_LIMIT, ...params, networkId},
     {
       fallbackData: {},
     },

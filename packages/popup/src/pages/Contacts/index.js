@@ -173,7 +173,7 @@ function Contacts() {
   }
 
   return (
-    <div id="contacts" className="h-full w-full  flex flex-col">
+    <div id="contacts" className="h-full w-full flex flex-col">
       <TitleNav
         title={t('contacts')}
         rightButton={

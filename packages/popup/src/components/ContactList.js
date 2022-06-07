@@ -10,6 +10,7 @@ function ContactList({
   contactClickAwayCallback,
   onMouseOver,
   contactRightComponent,
+  onClickContact,
   ...props
 }) {
   return (
@@ -18,10 +19,13 @@ function ContactList({
         list.map(({id, gaddr, value}) => (
           <div
             key={id}
-            className="relative"
+            className={`relative ${onClickContact ? 'cursor-pointer' : ''}`}
+            aria-hidden="true"
+            id={`contact-${id}`}
             {...props}
             onMouseEnter={() => onMouseOver?.(id, gaddr?.value || '')}
             onMouseLeave={() => onMouseOver?.('', '')}
+            onClick={() => onClickContact?.(gaddr?.value || '')}
           >
             <ContactItem
               memoId={id}
@@ -50,5 +54,6 @@ ContactList.propTypes = {
   contactSubmitCallback: PropTypes.func,
   contactClickAwayCallback: PropTypes.func,
   onMouseOver: PropTypes.func,
+  onClickContact: PropTypes.func,
 }
 export default ContactList

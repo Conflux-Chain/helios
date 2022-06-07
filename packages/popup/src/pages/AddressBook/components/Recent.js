@@ -8,8 +8,9 @@ import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {useRecentTradingAddress} from '../../../hooks/useApi'
 import {NoResult, ContactItem, Avatar} from '../../../components'
 
-function RecentItem({address, memo, refreshData}) {
+function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
   const {t} = useTranslation()
+
   const [addToContact, setAddToContact] = useState(false)
 
   const onAddedContactCallback = async () => {
@@ -18,7 +19,12 @@ function RecentItem({address, memo, refreshData}) {
   }
 
   return (
-    <div>
+    <div
+      aria-hidden="true"
+      onClick={() => onJumpToSendTx(address)}
+      className="cursor-pointer"
+      id={address}
+    >
       {memo ? (
         <ContactItem address={address} memo={memo} />
       ) : address && !addToContact ? (
@@ -34,6 +40,7 @@ function RecentItem({address, memo, refreshData}) {
           <span
             aria-hidden="true"
             className="cursor-pointer"
+            id={`add-contact-${address}`}
             onClick={() => setAddToContact(true)}
           >
             {t('add')}
@@ -55,9 +62,10 @@ RecentItem.propTypes = {
   address: PropTypes.string,
   memo: PropTypes.string,
   refreshData: PropTypes.func,
+  onJumpToSendTx: PropTypes.func,
 }
 
-function Recent({fuzzy = ''}) {
+function Recent({fuzzy = '', onJumpToSendTx}) {
   const {t} = useTranslation()
   const {data: tradingAddressData, mutate} = useRecentTradingAddress({fuzzy})
 
@@ -70,7 +78,6 @@ function Recent({fuzzy = ''}) {
     }
   }, [tradingAddressData?.data])
 
-  console.log('displayTradingAddressData', displayTradingAddressData)
   return (
     <div>
       {displayTradingAddressData?.length > 0 &&
@@ -80,6 +87,7 @@ function Recent({fuzzy = ''}) {
             memo={memoValue}
             key={address}
             refreshData={mutate}
+            onJumpToSendTx={onJumpToSendTx}
           />
         ))}
       {displayTradingAddressData?.length === 0 && (
@@ -91,5 +99,6 @@ function Recent({fuzzy = ''}) {
 
 Recent.propTypes = {
   fuzzy: PropTypes.string,
+  onJumpToSendTx: PropTypes.func,
 }
 export default Recent
