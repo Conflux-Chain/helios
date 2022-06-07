@@ -20,7 +20,7 @@ export const main = ({Err: {InvalidRequest}, app}) => {
         date: app.permUpdatedAt,
       },
     ]
-    if (p.startsWith('wallet_')) {
+    if (p.startsWith('wallet_') && !p.includes('crossNetwork')) {
       perm.push({
         invoker: app.site.origin,
         parentCapability: p.replace('wallet_', 'cfx_'),
