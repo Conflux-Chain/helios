@@ -320,7 +320,7 @@ function ConnectSite() {
               {t('allowPermission')}
             </span>
             <div aria-hidden="true" className="flex px-3 items-center w-full">
-              <span className="flex-1 flex text-sm text-gray-80">
+              <span className="flex-1 flex text-sm text-gray-80 mb-2">
                 {t('viewSelectedAddress')}
               </span>
               <Checkbox
