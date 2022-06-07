@@ -1,0 +1,48 @@
+import PropTypes from 'prop-types'
+import {RPC_METHODS} from '../constants'
+import {WrapIcon} from '.'
+
+const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
+
+function GroupItem({
+  nickname,
+  groupType = '',
+  GroupNameOverlay,
+  groupTag,
+  groupFooter,
+  children,
+}) {
+  return (
+    <div className="bg-gray-0 rounded mt-3 mx-3 relative">
+      {groupType !== ACCOUNT_GROUP_TYPE.PK && (
+        <div className="flex items-center ml-3 pt-2.5 mb-0.5">
+          {groupType === ACCOUNT_GROUP_TYPE.HD && (
+            <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
+              <img src="/images/seed-group-icon.svg" alt="group-icon" />
+            </WrapIcon>
+          )}
+          {GroupNameOverlay || (
+            <p className="text-gray-40 text-xs">{nickname}</p>
+          )}
+        </div>
+      )}
+      {groupTag}
+      {children}
+      {groupFooter}
+    </div>
+  )
+}
+
+GroupItem.propTypes = {
+  nickname: PropTypes.string,
+  groupType: PropTypes.string,
+  GroupNameOverlay: PropTypes.node,
+  groupTag: PropTypes.node,
+  groupFooter: PropTypes.node,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+}
+
+export default GroupItem
