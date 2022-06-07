@@ -5,6 +5,8 @@ import {WrapIcon} from '.'
 const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
 function GroupItem({
+  className = '',
+  groupContainerClassName = '',
   nickname,
   groupType = '',
   GroupNameOverlay,
@@ -13,9 +15,11 @@ function GroupItem({
   children,
 }) {
   return (
-    <div className="bg-gray-0 rounded mt-3 mx-3 relative">
+    <div className={`bg-gray-0 rounded mt-3 mx-3 relative ${className}`}>
       {groupType !== ACCOUNT_GROUP_TYPE.PK && (
-        <div className="flex items-center ml-3 pt-2.5 mb-0.5">
+        <div
+          className={`flex items-center ml-3 pt-2.5 mb-0.5 ${groupContainerClassName}`}
+        >
           {groupType === ACCOUNT_GROUP_TYPE.HD && (
             <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
               <img src="/images/seed-group-icon.svg" alt="group-icon" />
@@ -34,6 +38,8 @@ function GroupItem({
 }
 
 GroupItem.propTypes = {
+  className: PropTypes.string,
+  groupContainerClassName: PropTypes.string,
   nickname: PropTypes.string,
   groupType: PropTypes.string,
   GroupNameOverlay: PropTypes.node,

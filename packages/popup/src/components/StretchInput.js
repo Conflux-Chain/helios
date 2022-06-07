@@ -12,6 +12,7 @@ function StretchInput({
   leftNode,
   wrapperClassName = '',
   inputClassName = '',
+  ...props
 }) {
   const invisibleInputRef = useRef({})
   const visibleInputRef = useRef(null)
@@ -103,6 +104,7 @@ function StretchInput({
             onBlur={onVisibleInputBlur}
             onClickAway={spreadInput}
             ref={visibleInputRef}
+            {...props}
           />
         </div>
         {rightNode}
