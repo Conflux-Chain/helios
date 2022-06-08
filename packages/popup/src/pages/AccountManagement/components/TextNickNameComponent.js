@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import {isUndefined} from '@fluent-wallet/checks'
-import {useState, useRef} from 'react'
+import {useState} from 'react'
 import {RPC_METHODS} from '../../../constants'
-import {TextField} from '../../../components'
+import {TextFieldWithEditIcon} from '../../../components'
 
 const {WALLET_UPDATE_ACCOUNT_GROUP, WALLET_UPDATE_ACCOUNT} = RPC_METHODS
 
@@ -12,7 +12,6 @@ function TextNickNameComponent({
   accountGroupId,
   accountId,
 }) {
-  const textInputRef = useRef(null)
   const [inputNickname, setInputNickname] = useState(nickname)
 
   const onUpdateAccountGroupName = () => {
@@ -39,8 +38,8 @@ function TextNickNameComponent({
   }
 
   return (
-    <TextField
-      inputClassName="border-none"
+    <TextFieldWithEditIcon
+      inputClassName="border-none pointer-events-none"
       textValue={nickname}
       inputValue={inputNickname}
       onSubmit={onUpdateAccountGroupName}
@@ -48,7 +47,6 @@ function TextNickNameComponent({
       className="text-gray-40 ml-1"
       fontSize="!text-xs"
       height="!h-4"
-      ref={textInputRef}
     />
   )
 }

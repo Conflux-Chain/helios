@@ -2,8 +2,6 @@ import PropTypes from 'prop-types'
 import {forwardRef} from 'react'
 import Input from '@fluent-wallet/component-input'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {EditOutlined} from '@fluent-wallet/component-icons'
-import {useState, useEffect} from 'react'
 import useLoading from '../hooks/useLoading'
 import {isKeyOf} from '../utils'
 
@@ -17,32 +15,17 @@ const TextField = forwardRef(function TextField(
     height = 'h-[18px]',
     fontSize = 'text-sm',
     className = '',
-    controlInputStatus = '',
     inputClassName = '',
     maxLength = '20',
     isAddress = false,
+    showInputStatus = false,
+    setShowInputStatus,
+    rightComponent,
+    ...props
   },
   ref,
 ) {
-  const [showInputStatus, setShowInputStatus] = useState(false)
-  const [showEditIconStatus, setShowEditIconStatus] = useState(false)
   const {setLoading} = useLoading()
-
-  useEffect(() => {
-    if (controlInputStatus === 'show') {
-      setShowInputStatus(true)
-    }
-    if (controlInputStatus === 'hidden') {
-      setShowInputStatus(false)
-    }
-  }, [controlInputStatus])
-
-  const onClickEditBtn = () => {
-    setShowInputStatus(true)
-    setTimeout(() => {
-      ref?.current?.focus?.()
-    })
-  }
 
   const onSubmitInputValue = () => {
     if (!onSubmit) {
@@ -72,34 +55,15 @@ const TextField = forwardRef(function TextField(
     }
   }
 
-  const onMouseOver = bool => {
-    if (!controlInputStatus) {
-      setShowEditIconStatus(bool)
-    }
-  }
-
   return (
-    <div
-      className={`relative ${height} ${className}`}
-      onMouseEnter={() => onMouseOver(true)}
-      onMouseLeave={() => onMouseOver(false)}
-    >
+    <div className={`relative ${height} ${className}`} {...props}>
       {!showInputStatus && (
         <div className={`flex ${width} items-center`}>
           <div className={`${fontSize} text-ellipsis`}>
             {isAddress && textValue ? shortenAddress(textValue) : textValue}
           </div>
-          {showEditIconStatus && !controlInputStatus ? (
-            <EditOutlined
-              className={
-                'ml-2 w-4 h-4 cursor-pointer text-gray-60 hover:text-primary'
-              }
-              id="edit-text-value"
-              onClick={onClickEditBtn}
-            />
-          ) : (
-            <div className="ml-2 w-4 h-4" />
-          )}
+
+          <div>{rightComponent || <div className="ml-2 w-4 h-4" />}</div>
         </div>
       )}
       {
@@ -132,10 +96,16 @@ TextField.propTypes = {
   className: PropTypes.string,
   inputClassName: PropTypes.string,
   maxLength: PropTypes.string,
-  // show,hidden or empty. not empty means to hide edit button and take over showInputStatus
-  controlInputStatus: PropTypes.string,
+  // show or hidden  input
+  showInputStatus: PropTypes.bool,
+  setShowInputStatus: PropTypes.func,
   // display address must be shorten
   isAddress: PropTypes.bool,
+  rightComponent: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+    PropTypes.string,
+  ]),
 }
 
 export default TextField

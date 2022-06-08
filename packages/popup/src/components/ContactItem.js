@@ -28,8 +28,8 @@ function ContactItem({
   const containerRef = useRef(null)
   const memoTextInputRef = useRef(null)
 
-  const [showAddressInput, setShowAddressInput] = useState('hidden')
-  const [showMemoInput, setShowMemoInput] = useState('hidden')
+  const [showAddressInput, setShowAddressInput] = useState(false)
+  const [showMemoInput, setShowMemoInput] = useState(false)
   const [inputAddress, setInputAddress] = useState(address)
   const [inputMemo, setInputMemo] = useState(memo)
   const [addressErrorMsg, setAddressErrorMsg] = useState('')
@@ -104,7 +104,7 @@ function ContactItem({
   }
 
   const onClickAway = async () => {
-    if (showAddressInput === 'show' || showMemoInput === 'show') {
+    if (showAddressInput || showMemoInput) {
       try {
         const isValidate = onValidate()
         if (isValidate) {
@@ -141,18 +141,18 @@ function ContactItem({
   }
 
   useEffect(() => {
-    setShowAddressInput(address === '' ? 'show' : 'hidden')
+    setShowAddressInput(address === '' ? true : false)
   }, [address])
 
   useEffect(() => {
     let timer = null
     if (memo === '' || (isNumber(memoId) && editMemo)) {
-      setShowMemoInput('show')
+      setShowMemoInput(true)
       timer = setTimeout(() => {
         memoTextInputRef?.current?.focus?.()
       })
     } else {
-      setShowMemoInput('hidden')
+      setShowMemoInput(false)
     }
     return () => {
       clearTimeout(timer)
@@ -183,7 +183,8 @@ function ContactItem({
               maxLength={null}
               textValue={memo}
               inputValue={inputMemo}
-              controlInputStatus={showMemoInput}
+              showInputStatus={showMemoInput}
+              setShowInputStatus={setShowMemoInput}
               onInputChange={memo => setInputMemo(memo)}
               ref={memoTextInputRef}
             />
@@ -191,14 +192,15 @@ function ContactItem({
               maxLength={null}
               textValue={address}
               inputValue={inputAddress}
-              controlInputStatus={showAddressInput}
+              showInputStatus={showAddressInput}
+              setShowInputStatus={setShowAddressInput}
               onInputChange={address => setInputAddress(address)}
               isAddress={true}
             />
           </div>
         </div>
         <div>
-          {showAddressInput === 'show' || showMemoInput === 'show' ? (
+          {showAddressInput || showMemoInput ? (
             <CheckCircleFilled
               className="w-5 h-5 text-white cursor-pointer"
               strokeColor="#ccc"
