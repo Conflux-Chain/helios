@@ -69,7 +69,7 @@ function AddressBook() {
         )}
       </div>
 
-      <div>
+      <div className="flex-1 overflow-auto no-scroll">
         {TABS.map((tab, index) => (
           <div
             key={tab}

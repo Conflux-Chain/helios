@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {useState, forwardRef, useEffect} from 'react'
 import {useDebounce} from 'react-use'
 import {useTranslation} from 'react-i18next'
-import {useAccountList} from '../hooks/useApi.js'
+import {useAccountList} from '../hooks/useApi'
 
 import {SearchInput} from './'
 
