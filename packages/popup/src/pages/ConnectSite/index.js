@@ -332,6 +332,7 @@ function ConnectSite() {
             </div>
             {showSecondPermission && (
               <div
+                id="multi-address"
                 aria-hidden="true"
                 className="flex px-3 items-center w-full cursor-pointer"
                 onClick={onChangePermission}
@@ -339,11 +340,7 @@ function ConnectSite() {
                 <span className="flex-1 flex text-sm text-gray-80">
                   {t('viewMultiAddress')}
                 </span>
-                <Checkbox
-                  checked={checkedPermission}
-                  id="multi-address"
-                  iconClassName="mr-0"
-                />
+                <Checkbox checked={checkedPermission} iconClassName="mr-0" />
               </div>
             )}
           </main>
