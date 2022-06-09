@@ -23,27 +23,33 @@ function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
     setAddToContact(true)
   }
   return (
-    <div
-      aria-hidden="true"
-      onClick={() => onJumpToSendTx(address)}
-      className="cursor-pointer"
-      id={address}
-    >
+    <div className="cursor-pointer" id={address}>
       {memo ? (
-        <ContactItem address={address} memo={memo} />
+        <div aria-hidden="true" onClick={() => onJumpToSendTx(address)}>
+          <ContactItem address={address} memo={memo} />
+        </div>
       ) : address && !addToContact ? (
-        <div className="flex">
-          <Avatar
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2"
-            diameter={30}
-            accountIdentity={
-              address && !isHexAddress(address) ? decode(address) : address
-            }
-          />
-          <span>{shortenAddress(address)}</span>
+        <div
+          className="flex items-center justify-between rounded p-3 bg-white hover:bg-primary-4 mt-3"
+          aria-hidden="true"
+          onClick={() => onJumpToSendTx(address)}
+        >
+          <div className="flex items-center">
+            <Avatar
+              className="w-7.5 h-7.5 mr-2"
+              diameter={30}
+              accountIdentity={
+                address && !isHexAddress(address) ? decode(address) : address
+              }
+            />
+            <span className="text-gray-40 text-xs">
+              {shortenAddress(address)}
+            </span>
+          </div>
+
           <span
             aria-hidden="true"
-            className="cursor-pointer"
+            className="cursor-pointer text-primary"
             id={`add-contact-${address}`}
             onClick={onAddToContact}
           >

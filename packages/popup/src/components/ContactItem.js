@@ -176,7 +176,7 @@ function ContactItem({
         id={address}
         ref={containerRef}
       >
-        <div className="flex items-center rounded-full rounded">
+        <div className="flex items-center rounded">
           <Avatar
             className="w-7.5 h-7.5 mr-2"
             diameter={30}
@@ -188,7 +188,8 @@ function ContactItem({
             <TextField
               width="w-[170px]"
               className="text-gray-80 font-medium mb-1"
-              inputClassName="!rounded-sm"
+              inputClassName="!rounded-sm border-none"
+              inputInnerClassName="bg-white"
               placeholder={t('name')}
               triggerEnter={true}
               triggerBlur={false}
@@ -202,6 +203,7 @@ function ContactItem({
             />
             <TextField
               width="w-[170px]"
+              className="text-gray-40"
               height="!h-4"
               fontSize="text-xs"
               inputClassName={`!rounded-sm ${

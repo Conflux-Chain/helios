@@ -16,6 +16,7 @@ const TextField = forwardRef(function TextField(
     placeholder = '',
     className = '',
     inputClassName = '',
+    inputInnerClassName = '',
     maxLength = '20',
     isAddress = false,
     showInputStatus = false,
@@ -50,7 +51,7 @@ const TextField = forwardRef(function TextField(
           containerClassName={`absolute align-top top-0 left-0 bg-transparent ${height} ${inputClassName} ${
             showInputStatus ? 'visible' : 'invisible'
           }`}
-          className={`!p-0 text-gray-60 ${height} ${fontSize}`}
+          className={`!p-0 text-gray-60 ${height} ${fontSize} ${inputInnerClassName}`}
           placeholder={placeholder}
           ref={ref}
           value={inputValue}
@@ -73,6 +74,7 @@ TextField.propTypes = {
   fontSize: PropTypes.string,
   className: PropTypes.string,
   inputClassName: PropTypes.string,
+  inputInnerClassName: PropTypes.string,
   maxLength: PropTypes.string,
   placeholder: PropTypes.string,
   // show or hidden  input

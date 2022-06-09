@@ -40,32 +40,41 @@ function AddressBook() {
   )
 
   return (
-    <div id="address-book" className="h-full w-full flex flex-col">
+    <div id="address-book" className="h-full w-full flex flex-col bg-bg px-3">
       <TitleNav title={t('contacts')} />
-      <SearchInput value={searchContent} onChange={setSearchContent} />
-      <div>
-        <span>
+      <SearchInput
+        value={searchContent}
+        onChange={setSearchContent}
+        containerClassName="mt-4"
+      />
+      <div className="flex items-center w-full justify-between">
+        <div className="flex border-b border-[#E0E4FC] w-max mt-3 px-2">
           {TABS.map(tab => (
-            <span
+            <div
               key={tab}
-              className="cursor-pointer"
+              className={`relative cursor-pointer pb-2 px-[3px] ${
+                currentTab === tab ? 'text-gray-80 font-medium' : 'text-gray-40'
+              }`}
               aria-hidden="true"
               id={`tab-${tab}`}
               onClick={() => onTabClick(tab)}
             >
-              {t(tab)}
-            </span>
+              <div>{t(tab)}</div>
+              {currentTab === tab && (
+                <div className="absolute bottom-0 w-full h-0.5 bg-[#7084ED] rounded-[1px]" />
+              )}
+            </div>
           ))}
-        </span>
+        </div>
         {currentTab === 'contact' && (
-          <span
-            className="cursor-pointer"
+          <div
+            className="cursor-pointer text-primary"
             aria-hidden="true"
             id="add-contact"
             onClick={() => setShowAddContact(true)}
           >
             {t('add')}
-          </span>
+          </div>
         )}
       </div>
 
