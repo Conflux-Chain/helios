@@ -16,6 +16,7 @@ import {RPC_METHODS} from '../constants'
 
 const {WALLET_UPDATE_INSERT_MEMO, WALLET_QUERY_MEMO} = RPC_METHODS
 function ContactItem({
+  containerClassName = 'mt-1',
   address = '',
   memo = '',
   memoId,
@@ -58,25 +59,26 @@ function ContactItem({
   }
 
   const onValidate = () => {
-    const isValidatedAddress = validateInputAddress()
-    if (
-      !inputMemo.trim() ||
-      !isValidatedAddress ||
-      (inputMemo.trim() === memo.trim() && inputAddress === address)
-    ) {
-      return false
+    let ret = {isValidate: true, isValueChange: true}
+    if (!inputMemo.trim() || !validateInputAddress()) {
+      ret = {
+        isValidate: false,
+      }
     }
-    return true
+    ret.isValueChange =
+      inputMemo.trim() !== memo.trim() || inputAddress !== address
+    return ret
   }
 
-  const onsubmit = async () => {
+  const onsubmit = async isValueChange => {
+    if (!isValueChange) {
+      return onSubmitCallback?.()
+    }
     if (!isNumber(memoId)) {
       // can not add twice
       const addedMemo = await queryAddressMemo()
-
       if (addedMemo?.data?.length) {
-        setAddressErrorMsg(t('addedContactWarning'))
-        return
+        return setAddressErrorMsg(t('addedContactWarning'))
       }
     }
 
@@ -86,12 +88,12 @@ function ContactItem({
 
   const onClickSubmitButton = async () => {
     try {
-      const isValidate = onValidate()
+      const {isValidate, isValueChange} = onValidate()
       if (!isValidate) {
         return
       }
-      setLoading(true)
-      await onsubmit()
+      isValueChange && setLoading(true)
+      await onsubmit(isValueChange)
       setLoading(false)
     } catch (e) {
       setLoading(false)
@@ -106,10 +108,10 @@ function ContactItem({
   const onClickAway = async () => {
     if (showAddressInput || showMemoInput) {
       try {
-        const isValidate = onValidate()
+        const {isValidate, isValueChange} = onValidate()
         if (isValidate) {
-          setLoading(true)
-          await onsubmit()
+          isValueChange && setLoading(true)
+          await onsubmit(isValueChange)
           setLoading(false)
         }
         onClickAwayCallback?.()
@@ -164,15 +166,19 @@ function ContactItem({
   })
 
   return (
-    <div>
+    <div className="w-full">
       <div
-        className="flex items-center bg-primary-10"
+        className={`flex items-center ${
+          showAddressInput || showMemoInput
+            ? 'bg-primary-4'
+            : 'bg-white hover:bg-primary-4'
+        } p-3 ${containerClassName}`}
         id={address}
         ref={containerRef}
       >
-        <div className="flex">
+        <div className="flex items-center rounded-full rounded">
           <Avatar
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2"
+            className="w-7.5 h-7.5 mr-2"
             diameter={30}
             accountIdentity={
               address && !isHexAddress(address) ? decode(address) : address
@@ -180,6 +186,9 @@ function ContactItem({
           />
           <div>
             <TextField
+              width="w-[170px]"
+              className="text-gray-80 font-medium mb-1"
+              inputClassName="!rounded-sm"
               maxLength={null}
               textValue={memo}
               inputValue={inputMemo}
@@ -189,6 +198,12 @@ function ContactItem({
               ref={memoTextInputRef}
             />
             <TextField
+              width="w-[170px]"
+              height="!h-4"
+              fontSize="text-xs"
+              inputClassName={`!rounded-sm ${
+                addressErrorMsg ? 'border-error' : ''
+              }`}
               maxLength={null}
               textValue={address}
               inputValue={inputAddress}
@@ -199,20 +214,22 @@ function ContactItem({
             />
           </div>
         </div>
-        <div>
+        <div className="flex-1">
           {showAddressInput || showMemoInput ? (
-            <CheckCircleFilled
-              className="w-5 h-5 text-white cursor-pointer"
-              strokeColor="#ccc"
-              onClick={onClickSubmitButton}
-              id="update-memo"
-            />
+            <div className="flex w-full h-full justify-end items-center">
+              <CheckCircleFilled
+                className="w-5 h-5 cursor-pointer text-white"
+                strokeColor={inputMemo.trim() ? '#6FC5B1' : '#ccc'}
+                onClick={onClickSubmitButton}
+                id="update-memo"
+              />
+            </div>
           ) : rightComponent ? (
             rightComponent
           ) : null}
         </div>
       </div>
-      <div> {addressErrorMsg}</div>
+      <div className="text-xs text-error ml-[46px]"> {addressErrorMsg}</div>
     </div>
   )
 }
@@ -228,5 +245,6 @@ ContactItem.propTypes = {
     PropTypes.node,
     PropTypes.string,
   ]),
+  containerClassName: PropTypes.string,
 }
 export default ContactItem

@@ -1,10 +1,7 @@
-import PropTypes from 'prop-types'
-
 import {useState, useRef, useEffect} from 'react'
 import {useDebounce} from 'react-use'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {EditOutlined} from '@fluent-wallet/component-icons'
 import {isNumber} from '@fluent-wallet/checks'
 import Message from '@fluent-wallet/component-message'
 
@@ -14,60 +11,16 @@ import {
   ContactList,
   SearchInput,
   NoResult,
-  CopyButton,
-  WrapIcon,
 } from '../../components'
 import {PAGE_LIMIT, ROUTES, RPC_METHODS} from '../../constants'
 import {useCurrentNetworkAddressMemo} from '../../hooks/useApi'
 import {useCurrentTxStore} from '../../hooks'
 import {request} from '../../utils'
 import useLoading from '../../hooks/useLoading'
-import DeleteContactModal from './components/DeleteContactModal'
+import {DeleteContactModal, ContactOperationComponent} from './components'
 
 const {SEND_TRANSACTION} = ROUTES
 const {WALLET_DELETE_MEMO} = RPC_METHODS
-
-function ContactOperationComponent({
-  mouseOverId,
-  address = '',
-  onClickEdit,
-  onClickSend,
-  onClickDelete,
-}) {
-  const {t} = useTranslation()
-
-  return (
-    <div className="flex">
-      <WrapIcon onClick={() => onClickEdit?.(mouseOverId)} id="edit-memo">
-        <EditOutlined />
-      </WrapIcon>
-      <CopyButton
-        text={address}
-        className="w-3 h-3 text-primary"
-        wrapperClassName="top-10 right-3"
-      />
-      <WrapIcon onClick={() => onClickSend?.(address)} id="send-tx">
-        <img src="/images/paper-plane.svg" alt="send" />
-      </WrapIcon>
-      <span
-        aria-hidden="true"
-        className="cursor-pointer"
-        id="delete"
-        onClick={() => onClickDelete?.(mouseOverId)}
-      >
-        {t('delete')}
-      </span>
-    </div>
-  )
-}
-
-ContactOperationComponent.propTypes = {
-  mouseOverId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  address: PropTypes.string,
-  onClickEdit: PropTypes.func,
-  onClickSend: PropTypes.func,
-  onClickDelete: PropTypes.func,
-}
 
 function Contacts() {
   const {t} = useTranslation()
@@ -173,7 +126,7 @@ function Contacts() {
   }
 
   return (
-    <div id="contacts" className="h-full w-full flex flex-col">
+    <div id="contacts" className="h-full w-full flex flex-col bg-bg px-3">
       <TitleNav
         title={t('contacts')}
         rightButton={
@@ -186,8 +139,11 @@ function Contacts() {
           </span>
         }
       />
-      <SearchInput value={searchContent} onChange={setSearchContent} />
-
+      <SearchInput
+        value={searchContent}
+        onChange={setSearchContent}
+        containerClassName="mt-1 mb-3"
+      />
       {showAddContact && (
         <ContactItem
           onSubmitCallback={onAddedCallBack}

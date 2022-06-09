@@ -51,14 +51,19 @@ function Account({fuzzy, onJumpToSendTx}) {
               groupType={vault?.type}
             >
               {Object.values(account).map(
-                ({nickname: accountNickname, eid: accountId, selected}) =>
+                ({
+                  nickname: accountNickname,
+                  eid: accountId,
+                  selected,
+                  currentAddress: {value: address},
+                }) =>
                   !selected && (
                     <AccountItem
                       key={accountId}
                       className="!p-3  cursor-pointer"
                       accountId={accountId}
                       accountNickname={accountNickname}
-                      onClickAccount={onJumpToSendTx}
+                      onClickAccount={() => onJumpToSendTx(address)}
                     />
                   ),
               )}
