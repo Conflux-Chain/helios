@@ -18,6 +18,10 @@ function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
     await refreshData?.()
   }
 
+  const onAddToContact = e => {
+    e.stopPropagation()
+    setAddToContact(true)
+  }
   return (
     <div
       aria-hidden="true"
@@ -41,7 +45,7 @@ function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
             aria-hidden="true"
             className="cursor-pointer"
             id={`add-contact-${address}`}
-            onClick={() => setAddToContact(true)}
+            onClick={onAddToContact}
           >
             {t('add')}
           </span>

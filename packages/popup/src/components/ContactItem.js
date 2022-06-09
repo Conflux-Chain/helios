@@ -16,7 +16,7 @@ import {RPC_METHODS} from '../constants'
 
 const {WALLET_UPDATE_INSERT_MEMO, WALLET_QUERY_MEMO} = RPC_METHODS
 function ContactItem({
-  containerClassName = 'mt-1',
+  containerClassName = 'mt-3',
   address = '',
   memo = '',
   memoId,
@@ -70,7 +70,7 @@ function ContactItem({
     return ret
   }
 
-  const onsubmit = async isValueChange => {
+  const onUpdateInsertMemo = async isValueChange => {
     if (!isValueChange) {
       return onSubmitCallback?.()
     }
@@ -86,14 +86,14 @@ function ContactItem({
     ret && onSubmitCallback?.()
   }
 
-  const onClickSubmitButton = async () => {
+  const onSubmitForm = async () => {
     try {
       const {isValidate, isValueChange} = onValidate()
       if (!isValidate) {
         return
       }
       isValueChange && setLoading(true)
-      await onsubmit(isValueChange)
+      await onUpdateInsertMemo(isValueChange)
       setLoading(false)
     } catch (e) {
       setLoading(false)
@@ -111,7 +111,7 @@ function ContactItem({
         const {isValidate, isValueChange} = onValidate()
         if (isValidate) {
           isValueChange && setLoading(true)
-          await onsubmit(isValueChange)
+          await onUpdateInsertMemo(isValueChange)
           setLoading(false)
         }
         onClickAwayCallback?.()
@@ -189,12 +189,15 @@ function ContactItem({
               width="w-[170px]"
               className="text-gray-80 font-medium mb-1"
               inputClassName="!rounded-sm"
+              placeholder={t('name')}
+              triggerEnter={true}
+              triggerBlur={false}
               maxLength={null}
               textValue={memo}
               inputValue={inputMemo}
               showInputStatus={showMemoInput}
-              setShowInputStatus={setShowMemoInput}
               onInputChange={memo => setInputMemo(memo)}
+              onSubmit={onSubmitForm}
               ref={memoTextInputRef}
             />
             <TextField
@@ -204,12 +207,15 @@ function ContactItem({
               inputClassName={`!rounded-sm ${
                 addressErrorMsg ? 'border-error' : ''
               }`}
+              placeholder={t('address')}
+              triggerEnter={true}
+              triggerBlur={false}
               maxLength={null}
               textValue={address}
               inputValue={inputAddress}
               showInputStatus={showAddressInput}
-              setShowInputStatus={setShowAddressInput}
               onInputChange={address => setInputAddress(address)}
+              onSubmit={onSubmitForm}
               isAddress={true}
             />
           </div>
@@ -220,7 +226,7 @@ function ContactItem({
               <CheckCircleFilled
                 className="w-5 h-5 cursor-pointer text-white"
                 strokeColor={inputMemo.trim() ? '#6FC5B1' : '#ccc'}
-                onClick={onClickSubmitButton}
+                onClick={onSubmitForm}
                 id="update-memo"
               />
             </div>

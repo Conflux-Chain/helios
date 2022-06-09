@@ -42,7 +42,7 @@ function TextNickNameComponent({
       inputClassName="border-none pointer-events-none"
       textValue={nickname}
       inputValue={inputNickname}
-      onSubmit={onUpdateAccountGroupName}
+      onUpdateAccountGroupName={onUpdateAccountGroupName}
       onInputChange={setInputNickname}
       className="text-gray-40 ml-1"
       fontSize="!text-xs"

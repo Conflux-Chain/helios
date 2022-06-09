@@ -142,7 +142,7 @@ function Contacts() {
       <SearchInput
         value={searchContent}
         onChange={setSearchContent}
-        containerClassName="mt-1 mb-3"
+        containerClassName="mt-1"
       />
       {showAddContact && (
         <ContactItem
