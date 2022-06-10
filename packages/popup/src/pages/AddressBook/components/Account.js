@@ -16,6 +16,7 @@ function Account({fuzzy, onJumpToSendTx}) {
   const {t} = useTranslation()
 
   const [accountList, setAccountList] = useState(undefined)
+
   const {
     data: {
       network: {eid: currentNetworkId},
@@ -81,7 +82,9 @@ function Account({fuzzy, onJumpToSendTx}) {
                       className="!p-3 cursor-pointer"
                       accountId={accountId}
                       accountNickname={accountNickname}
-                      onClickAccount={() => onJumpToSendTx(address)}
+                      onClickAccount={() =>
+                        onJumpToSendTx({address, note: accountNickname})
+                      }
                       AccountNameOverlay={
                         <p className="text-xs text-[#000]">{accountNickname}</p>
                       }

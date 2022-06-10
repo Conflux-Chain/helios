@@ -15,6 +15,7 @@ import {
 import {PAGE_LIMIT, ROUTES, RPC_METHODS} from '../../constants'
 import {useCurrentNetworkAddressMemo} from '../../hooks/useApi'
 import {useCurrentTxStore} from '../../hooks'
+import useGlobalStore from '../../stores'
 import {request} from '../../utils'
 import useLoading from '../../hooks/useLoading'
 import {DeleteContactModal, ContactOperationComponent} from './components'
@@ -28,6 +29,7 @@ function Contacts() {
   const history = useHistory()
   const {setToAddress} = useCurrentTxStore()
   const {setLoading} = useLoading()
+  const {setAddressNote} = useGlobalStore()
 
   const [limit, setLimit] = useState(PAGE_LIMIT)
   const [total, setTotal] = useState(0)
@@ -36,8 +38,7 @@ function Contacts() {
 
   const [editMemoId, setEditMemoId] = useState('')
   const [deleteMemoId, setDeleteMemoId] = useState('')
-  const [mouseOverId, setMouseOverId] = useState('')
-  const [mouseOverAddress, setMouseOverAddress] = useState('')
+  const [mouseOverItem, setMouseOverAddressItem] = useState({})
 
   const [showAddContact, setShowAddContact] = useState(false)
 
@@ -85,9 +86,8 @@ function Contacts() {
     }
   }
 
-  const onMouseOver = (id, address) => {
-    setMouseOverId(id)
-    setMouseOverAddress(address)
+  const onMouseOver = item => {
+    setMouseOverAddressItem({...item})
   }
 
   const onAddedCallBack = () => {
@@ -103,8 +103,9 @@ function Contacts() {
     setEditMemoId('')
   }
 
-  const onClickSend = (address = '') => {
+  const onClickSend = ({address = '', note = ''}) => {
     setToAddress(address)
+    address && note && setAddressNote({[address]: note})
     history.push(SEND_TRANSACTION)
   }
 
@@ -161,12 +162,11 @@ function Contacts() {
             contactSubmitCallback={onEditedCallBack}
             contactClickAwayCallback={() => setEditMemoId('')}
             editMemoId={editMemoId}
-            mouseOverId={mouseOverId}
+            mouseOverItem={mouseOverItem}
             list={contactList}
             contactRightComponent={
               <ContactOperationComponent
-                mouseOverId={mouseOverId}
-                address={mouseOverAddress}
+                mouseOverItem={mouseOverItem}
                 onClickEdit={setEditMemoId}
                 onClickSend={onClickSend}
                 onClickDelete={setDeleteMemoId}

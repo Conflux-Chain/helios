@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next'
 import {TitleNav, SearchInput} from '../../components'
 import {Account, Contact, Recent} from './components'
 import {useCurrentTxStore} from '../../hooks'
+import useGlobalStore from '../../stores'
 import {ROUTES} from '../../constants'
 
 const {SEND_TRANSACTION} = ROUTES
@@ -14,6 +15,7 @@ function AddressBook() {
   const {t} = useTranslation()
   const history = useHistory()
   const {setToAddress} = useCurrentTxStore()
+  const {setAddressNote} = useGlobalStore()
 
   const [searchContent, setSearchContent] = useState('')
   const [currentTab, setCurrentTab] = useState('recent')
@@ -22,8 +24,9 @@ function AddressBook() {
   const [debouncedSearchContent, setDebouncedSearchContent] =
     useState(searchContent)
 
-  const onJumpToSendTx = (address = '') => {
+  const onJumpToSendTx = ({address = '', note = ''}) => {
     setToAddress(address)
+    address && note && setAddressNote({[address]: note})
     history.push(SEND_TRANSACTION)
   }
 

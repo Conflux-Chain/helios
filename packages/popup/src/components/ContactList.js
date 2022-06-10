@@ -5,7 +5,7 @@ import {ContactItem} from './'
 function ContactList({
   list = [],
   editMemoId,
-  mouseOverId,
+  mouseOverItem = {},
   contactSubmitCallback,
   contactClickAwayCallback,
   onMouseOver,
@@ -23,9 +23,22 @@ function ContactList({
             aria-hidden="true"
             id={`contact-${id}`}
             {...props}
-            onMouseEnter={() => onMouseOver?.(id, gaddr?.value || '')}
-            onMouseLeave={() => onMouseOver?.('', '')}
-            onClick={() => onClickContact?.(gaddr?.value || '')}
+            onMouseMove={() =>
+              mouseOverItem?.memoId !== id &&
+              onMouseOver?.({
+                memoId: id,
+                note: value,
+                address: gaddr?.value || '',
+              })
+            }
+            onMouseLeave={() => onMouseOver?.({})}
+            onClick={() =>
+              onClickContact?.({
+                memoId: id,
+                note: value,
+                address: gaddr?.value || '',
+              })
+            }
           >
             <ContactItem
               memoId={id}
@@ -34,7 +47,9 @@ function ContactList({
               editMemo={editMemoId === id}
               onSubmitCallback={contactSubmitCallback}
               onClickAwayCallback={contactClickAwayCallback}
-              rightComponent={mouseOverId === id && contactRightComponent}
+              rightComponent={
+                mouseOverItem?.memoId === id && contactRightComponent
+              }
             />
           </div>
         ))}
@@ -44,7 +59,7 @@ function ContactList({
 
 ContactList.propTypes = {
   editMemoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  mouseOverId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  mouseOverItem: PropTypes.object,
   list: PropTypes.array,
   contactRightComponent: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),

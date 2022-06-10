@@ -4,8 +4,7 @@ import {EditOutlined, DeleteOutlined} from '@fluent-wallet/component-icons'
 import {CopyButton, WrapIcon} from '../../../components'
 
 function ContactOperationComponent({
-  mouseOverId,
-  address = '',
+  mouseOverItem,
   onClickEdit,
   onClickSend,
   onClickDelete,
@@ -13,19 +12,19 @@ function ContactOperationComponent({
   return (
     <div className="flex">
       <WrapIcon
-        onClick={() => onClickEdit?.(mouseOverId)}
+        onClick={() => onClickEdit?.(mouseOverItem?.memoId)}
         id="edit-memo"
         size="w-5 h-5"
       >
         <EditOutlined className="w-[14px] h-[14px] text-primary" />
       </WrapIcon>
       <CopyButton
-        text={address}
+        text={mouseOverItem?.address}
         className="!w-[14px] !h-[14px] text-primary"
         wrapperClassName="!w-5 !h-5 mx-2"
       />
       <WrapIcon
-        onClick={() => onClickSend?.(address)}
+        onClick={() => onClickSend?.({...mouseOverItem})}
         id="send-tx"
         size="w-5 h-5"
         className="mr-2"
@@ -37,7 +36,7 @@ function ContactOperationComponent({
         />
       </WrapIcon>
       <WrapIcon
-        onClick={() => onClickDelete?.(mouseOverId)}
+        onClick={() => onClickDelete?.(mouseOverItem?.memoId)}
         id="delete"
         size="w-5 h-5"
       >
@@ -48,7 +47,7 @@ function ContactOperationComponent({
 }
 
 ContactOperationComponent.propTypes = {
-  mouseOverId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  mouseOverItem: PropTypes.object,
   address: PropTypes.string,
   onClickEdit: PropTypes.func,
   onClickSend: PropTypes.func,

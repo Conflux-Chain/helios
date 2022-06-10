@@ -25,7 +25,10 @@ function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
   return (
     <div className="cursor-pointer" id={address}>
       {memo ? (
-        <div aria-hidden="true" onClick={() => onJumpToSendTx(address)}>
+        <div
+          aria-hidden="true"
+          onClick={() => onJumpToSendTx({address, note: memo})}
+        >
           <ContactItem address={address} memo={memo} />
         </div>
       ) : address && !addToContact ? (

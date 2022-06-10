@@ -646,7 +646,7 @@ export const usePreferences = () => {
   return {data, mutate}
 }
 
-export const useCurrentNetworkAddressMemo = (params = {}) => {
+export const useCurrentNetworkAddressMemo = (params = {}, stopSend = false) => {
   const {
     data: {
       network: {eid: networkId},
@@ -654,7 +654,7 @@ export const useCurrentNetworkAddressMemo = (params = {}) => {
   } = useCurrentAddress()
 
   const {data, mutate} = useRPC(
-    isUndefined(networkId)
+    isUndefined(networkId) || stopSend
       ? null
       : [WALLET_QUERY_MEMO, ...Object.values(params), networkId],
     {offset: 0, limit: PAGE_LIMIT, ...params, networkId},
