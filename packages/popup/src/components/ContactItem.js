@@ -187,8 +187,8 @@ function ContactItem({
           <div>
             <TextField
               width="w-[170px]"
-              className="text-gray-80 font-medium mb-1"
-              inputClassName="!rounded-sm border-none"
+              className="text-gray-80 font-medium mb-0.5"
+              inputClassName="!rounded-sm"
               inputInnerClassName="bg-white"
               placeholder={t('name')}
               triggerEnter={true}
@@ -204,10 +204,9 @@ function ContactItem({
             <TextField
               width="w-[170px]"
               className="text-gray-40"
-              height="!h-4"
               fontSize="text-xs"
               inputClassName={`!rounded-sm ${
-                addressErrorMsg ? 'border-error' : ''
+                addressErrorMsg ? '!border-error' : ''
               }`}
               placeholder={t('address')}
               triggerEnter={true}

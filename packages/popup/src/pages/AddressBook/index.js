@@ -45,7 +45,7 @@ function AddressBook() {
       <SearchInput
         value={searchContent}
         onChange={setSearchContent}
-        containerClassName="mt-4"
+        containerClassName="mt-1"
       />
       <div className="flex items-center w-full justify-between">
         <div className="flex border-b border-[#E0E4FC] w-max mt-3 px-2">
@@ -68,7 +68,7 @@ function AddressBook() {
         </div>
         {currentTab === 'contact' && (
           <div
-            className="cursor-pointer text-primary"
+            className="cursor-pointer text-primary mt-1"
             aria-hidden="true"
             id="add-contact"
             onClick={() => setShowAddContact(true)}
@@ -78,12 +78,9 @@ function AddressBook() {
         )}
       </div>
 
-      <div className="flex-1 overflow-auto no-scroll">
+      <div className="flex-1 overflow-auto no-scroll pb-4">
         {TABS.map((tab, index) => (
-          <div
-            key={tab}
-            className={currentTab === tab ? 'visible' : 'invisible h-0'}
-          >
+          <div key={tab} className={currentTab === tab ? '' : 'hidden'}>
             {index === 0 ? (
               <Recent
                 fuzzy={debouncedSearchContent}

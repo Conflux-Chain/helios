@@ -22,7 +22,7 @@ function AccountItem({
       />
       <div className="flex-1 flex items-center">
         {AccountNameOverlay || (
-          <p className="text-xs text-gray-40 ">{accountNickname}</p>
+          <p className="text-xs text-gray-40">{accountNickname}</p>
         )}
       </div>
       {rightComponent}

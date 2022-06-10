@@ -3,8 +3,15 @@ import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 
 import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
-import {NoResult, GroupItem, AccountItem} from '../../../components'
+import {
+  NoResult,
+  GroupItem,
+  AccountItem,
+  LedgerGroupTag,
+} from '../../../components'
+import {NETWORK_TYPE, RPC_METHODS} from '../../../constants'
 
+const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
 function Account({fuzzy, onJumpToSendTx}) {
   const {t} = useTranslation()
 
@@ -36,7 +43,7 @@ function Account({fuzzy, onJumpToSendTx}) {
   }, [accountListData, fuzzy])
 
   return (
-    <div className=" h-full">
+    <div>
       {accountList?.length > 0 &&
         accountList.map(
           (
@@ -46,9 +53,20 @@ function Account({fuzzy, onJumpToSendTx}) {
             <GroupItem
               key={accountGroupId}
               className={`!mx-0 ${index !== 0 ? 'mt-4' : ''}`}
-              groupContainerClassName="!mb-0"
               nickname={groupNickname}
               groupType={vault?.type}
+              GroupNameOverlay={
+                <p className="text-gray-40 text-xs ml-1">{groupNickname}</p>
+              }
+              groupTag={
+                vault?.type === ACCOUNT_GROUP_TYPE.HW && (
+                  <LedgerGroupTag
+                    networkType={
+                      vault?.cfxOnly ? NETWORK_TYPE.CFX : NETWORK_TYPE.ETH
+                    }
+                  />
+                )
+              }
             >
               {Object.values(account).map(
                 ({
@@ -60,10 +78,13 @@ function Account({fuzzy, onJumpToSendTx}) {
                   !selected && (
                     <AccountItem
                       key={accountId}
-                      className="!p-3  cursor-pointer"
+                      className="!p-3 cursor-pointer"
                       accountId={accountId}
                       accountNickname={accountNickname}
                       onClickAccount={() => onJumpToSendTx(address)}
+                      AccountNameOverlay={
+                        <p className="text-xs text-[#000]">{accountNickname}</p>
+                      }
                     />
                   ),
               )}

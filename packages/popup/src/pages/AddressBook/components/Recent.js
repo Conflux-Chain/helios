@@ -30,11 +30,11 @@ function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
         </div>
       ) : address && !addToContact ? (
         <div
-          className="flex items-center justify-between rounded p-3 bg-white hover:bg-primary-4 mt-3"
+          className="flex items-center justify-between rounded px-3 bg-white hover:bg-primary-4 mt-3"
           aria-hidden="true"
           onClick={() => onJumpToSendTx(address)}
         >
-          <div className="flex items-center">
+          <div className="flex items-center py-3">
             <Avatar
               className="w-7.5 h-7.5 mr-2"
               diameter={30}
@@ -47,14 +47,14 @@ function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
             </span>
           </div>
 
-          <span
+          <div
             aria-hidden="true"
-            className="cursor-pointer text-primary"
+            className="cursor-pointer text-primary h-full py-3"
             id={`add-contact-${address}`}
             onClick={onAddToContact}
           >
             {t('add')}
-          </span>
+          </div>
         </div>
       ) : address && addToContact ? (
         <ContactItem
