@@ -12,13 +12,14 @@ function DeleteContactModal({open, onClose, onDelete}) {
       onClose={onClose}
       title={t('deleteContactTitle')}
       content={t('deleteContactContent')}
+      id="delete-contact-content-modal"
       actions={[
         <Button
           className="flex flex-1 mr-3"
           onClick={onClose}
           variant="outlined"
           key="cancel"
-          id="cancel"
+          id="delete-contact-content-modal-cancel"
         >
           {t('cancel')}
         </Button>,
@@ -27,7 +28,7 @@ function DeleteContactModal({open, onClose, onDelete}) {
           onClick={onDelete}
           key="confirm"
           danger
-          id="confirm"
+          id="delete-contact-content-modal-confirm"
         >
           {t('confirm')}
         </Button>,

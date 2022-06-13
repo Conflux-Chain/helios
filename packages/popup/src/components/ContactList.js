@@ -5,7 +5,7 @@ import {ContactItem} from './'
 function ContactList({
   list = [],
   editMemoId,
-  mouseOverItem = {},
+  hoverContactId,
   contactSubmitCallback,
   contactClickAwayCallback,
   onMouseOver,
@@ -24,7 +24,7 @@ function ContactList({
             id={`contact-${id}`}
             {...props}
             onMouseMove={() =>
-              mouseOverItem?.memoId !== id &&
+              hoverContactId !== id &&
               onMouseOver?.({
                 memoId: id,
                 note: value,
@@ -47,9 +47,7 @@ function ContactList({
               editMemo={editMemoId === id}
               onSubmitCallback={contactSubmitCallback}
               onClickAwayCallback={contactClickAwayCallback}
-              rightComponent={
-                mouseOverItem?.memoId === id && contactRightComponent
-              }
+              rightComponent={hoverContactId === id && contactRightComponent}
             />
           </div>
         ))}
@@ -59,7 +57,7 @@ function ContactList({
 
 ContactList.propTypes = {
   editMemoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  mouseOverItem: PropTypes.object,
+  hoverContactId: PropTypes.number,
   list: PropTypes.array,
   contactRightComponent: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),

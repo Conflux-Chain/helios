@@ -13,7 +13,7 @@ function ContactOperationComponent({
     <div className="flex">
       <WrapIcon
         onClick={() => onClickEdit?.(mouseOverItem?.memoId)}
-        id="edit-memo"
+        id={`edit-memo-${mouseOverItem?.memoId}`}
         size="w-5 h-5"
       >
         <EditOutlined className="w-[14px] h-[14px] text-primary" />
@@ -25,7 +25,7 @@ function ContactOperationComponent({
       />
       <WrapIcon
         onClick={() => onClickSend?.({...mouseOverItem})}
-        id="send-tx"
+        id={`send-tx-${mouseOverItem?.memoId}`}
         size="w-5 h-5"
         className="mr-2"
       >
@@ -37,7 +37,7 @@ function ContactOperationComponent({
       </WrapIcon>
       <WrapIcon
         onClick={() => onClickDelete?.(mouseOverItem?.memoId)}
-        id="delete"
+        id={`delete-memo-${mouseOverItem?.memoId}`}
         size="w-5 h-5"
       >
         <DeleteOutlined className="w-[14px] h-[14px] text-primary" />

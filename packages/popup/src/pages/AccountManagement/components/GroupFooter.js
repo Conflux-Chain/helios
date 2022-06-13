@@ -27,9 +27,13 @@ function GroupFooter({
     })
   }
   return (
-    <div className="flex justify-between mx-3 py-4 border-t border-gray-10 text-xs cursor-pointer text-gray-60">
+    <div
+      className="flex justify-between mx-3 py-4 border-t border-gray-10 text-xs cursor-pointer text-gray-60"
+      id="group-footer"
+    >
       <div
         className="hover:text-primary"
+        id="group-footer-confirm"
         onClick={() =>
           onOpenConfirmPassword?.(WALLET_EXPORT_ACCOUNT_GROUP, {
             accountGroupId,
@@ -43,6 +47,7 @@ function GroupFooter({
         <div
           aria-hidden="true"
           className="hover:text-primary"
+          id="group-footer-delete"
           onClick={onDeleteAccountGroup}
         >
           {t('delete')}

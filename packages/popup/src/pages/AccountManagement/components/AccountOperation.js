@@ -116,6 +116,7 @@ function AccountOperation({
       {groupType === ACCOUNT_GROUP_TYPE.HW && (
         <div
           aria-hidden="true"
+          id="delete-hw-account"
           className="text-xs cursor-pointer text-gray-60 hover:text-primary ml-3"
           onClick={onDeleteHwAccount}
         >
@@ -126,6 +127,7 @@ function AccountOperation({
       {groupType === ACCOUNT_GROUP_TYPE.PK && showDelete && (
         <div
           aria-hidden="true"
+          id="delete-account-group"
           className="text-xs cursor-pointer text-gray-60 hover:text-primary ml-3"
           onClick={onDeletePkAccountGroup}
         >

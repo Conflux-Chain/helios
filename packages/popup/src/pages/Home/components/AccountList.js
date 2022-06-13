@@ -30,7 +30,7 @@ function AccountCardContent({
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
 
   return (
-    <div>
+    <div id="home-account-list">
       {searchedAccountGroup && accountGroupData.length === 0 ? (
         <NoResult content={t('noResult')} imgClassName="mt-[105px]" />
       ) : (

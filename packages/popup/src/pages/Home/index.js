@@ -130,7 +130,7 @@ function Home() {
               ) : null}
             </div>
             <Button
-              id="sendBtn"
+              id="go-contacts"
               size="small"
               variant="outlined"
               className="!border-white !text-white !bg-transparent ml-2 px-2 hover:!bg-[#3C3A5D]"

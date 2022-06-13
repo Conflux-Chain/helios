@@ -218,6 +218,7 @@ function AccountManagement() {
                 groupType={vault?.type}
                 GroupNameOverlay={
                   <TextNickNameComponent
+                    id={accountGroupId}
                     nickname={groupNickname}
                     accountGroupId={accountGroupId}
                     updateEditedName={updateEditedName}

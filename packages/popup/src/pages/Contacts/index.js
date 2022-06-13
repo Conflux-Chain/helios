@@ -162,7 +162,7 @@ function Contacts() {
             contactSubmitCallback={onEditedCallBack}
             contactClickAwayCallback={() => setEditMemoId('')}
             editMemoId={editMemoId}
-            mouseOverItem={mouseOverItem}
+            hoverContactId={mouseOverItem?.memoId}
             list={contactList}
             contactRightComponent={
               <ContactOperationComponent

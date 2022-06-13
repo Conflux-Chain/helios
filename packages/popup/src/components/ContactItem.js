@@ -173,7 +173,7 @@ function ContactItem({
             ? 'bg-primary-4'
             : 'bg-white hover:bg-primary-4'
         } p-3 ${containerClassName}`}
-        id={address}
+        id={`contact-${address}`}
         ref={containerRef}
       >
         <div className="flex items-center rounded">

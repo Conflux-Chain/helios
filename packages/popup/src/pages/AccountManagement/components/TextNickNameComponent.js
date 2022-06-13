@@ -11,6 +11,7 @@ function TextNickNameComponent({
   updateEditedName,
   accountGroupId,
   accountId,
+  ...props
 }) {
   const [inputNickname, setInputNickname] = useState(nickname)
 
@@ -47,6 +48,7 @@ function TextNickNameComponent({
       className="text-gray-40 ml-1"
       fontSize="!text-xs"
       height="!h-4"
+      {...props}
     />
   )
 }
