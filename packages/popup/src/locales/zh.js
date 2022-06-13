@@ -43,15 +43,15 @@ const zh = {
 
     // - homepage / dapp connect site popup
     connectSite: '连接至此网站？',
-    permissionRequest: 'Permission Request',
-    allowPermission: 'Allow these permissions for this site?',
+    permissionRequest: '权限申请',
+    allowPermission: '授权给此网站以下权限？',
     selectNetwork: '想要使用哪个网络？',
     selectAuthorizedAccounts: '授权账户',
     selectAll: '全部',
     connect: '连接',
     chooseNetwork: '选择网络',
-    viewSelectedAddress: 'View selected account public address',
-    viewMultiAddress: 'View selected account‘s multi-chain address',
+    viewSelectedAddress: '查看选中账户的地址',
+    viewMultiAddress: '查看选中账户的多链地址',
 
     // - homepage / authorize single account
     authorizeCurrentAccount: '授权 {{currentAccount}}',
@@ -432,9 +432,9 @@ const zh = {
     recent: '最近',
     account: '我的账户',
     searchAddressNickname: '输入地址或名字查找',
-    addedContactWarning: '已添加!',
+    addedContactWarning: '已添加！',
     deleteContactTitle: '删除联系人',
-    deleteContactContent: '确认删除此联系人?',
+    deleteContactContent: '确认删除此联系人？',
   },
 }
 
