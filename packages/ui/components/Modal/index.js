@@ -53,11 +53,11 @@ function Modal({
   return (
     <div
       data-testid="modal-wrapper"
-      ref={ref}
       className={`fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-[#000] bg-opacity-0 transition duration-500 ease-in-out flex justify-center items-center z-50 ${wrapperAnimateStyle}`}
     >
       <div
         data-testid="modal-content"
+        ref={ref}
         className={`relative overflow-auto flex flex-col items-center z-20 scale-0 ${
           width
             ? width

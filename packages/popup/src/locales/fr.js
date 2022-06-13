@@ -451,6 +451,17 @@ const fr = {
     fullNodeError: 'Impossible de se connecter au noeud RPC.',
     close: 'Fermer',
     reload: 'Rafraichir',
+
+    // address book & contacts
+    addressBook: 'Address Book',
+    contacts: 'Contacts',
+    contact: 'Contact',
+    recent: 'Recent',
+    account: 'Account',
+    searchAddressNickname: 'Search address or nickname',
+    addedContactWarning: 'Already added!',
+    deleteContactTitle: 'Confirm delete this contact',
+    deleteContactContent: 'Do you want to delete this contact?',
   },
 }
 

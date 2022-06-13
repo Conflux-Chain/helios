@@ -74,3 +74,10 @@ export const WALLET_UPDATE_ACCOUNT_GROUP = 'wallet_updateAccountGroup'
 export const WALLET_UPDATE_NETWORK = 'wallet_updateNetwork'
 export const WALLET_SEND_TRANSACTION = 'wallet_sendTransaction'
 export const ETH_GET_CHAIN_ID = 'eth_chainId'
+
+// address book
+export const WALLET_UPDATE_INSERT_MEMO = 'wallet_upsertMemo'
+export const WALLET_DELETE_MEMO = 'wallet_deleteMemo'
+export const WALLET_QUERY_MEMO = 'walletdb_queryMemo'
+export const WALLET_QUERY_RECENT_TRADING_ADDRESS =
+  'walletdb_queryRecentInterestingAddress'

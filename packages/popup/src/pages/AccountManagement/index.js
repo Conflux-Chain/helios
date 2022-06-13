@@ -5,16 +5,19 @@ import Message from '@fluent-wallet/component-message'
 import {useHistory} from 'react-router-dom'
 import {DEFAULT_CFX_HDPATH, DEFAULT_ETH_HDPATH} from '@fluent-wallet/consts'
 import useGlobalStore from '../../stores'
-import {ROUTES, RPC_METHODS} from '../../constants'
+import {ROUTES, RPC_METHODS, NETWORK_TYPE} from '../../constants'
 import {
   TitleNav,
   ConfirmPassword,
   SearchAccount,
   NoResult,
+  AccountGroupItem,
+  AccountItem,
+  LedgerGroupTag,
 } from '../../components'
 import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
 import {request} from '../../utils'
-import {GroupItem} from './components'
+import {TextNickname, GroupFooter, AccountOperation} from './components'
 const {EXPORT_SEED, EXPORT_PRIVATEKEY, SELECT_CREATE_TYPE} = ROUTES
 const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_EXPORT_ACCOUNT, ACCOUNT_GROUP_TYPE} =
   RPC_METHODS
@@ -198,20 +201,82 @@ function AccountManagement() {
         {searchedAccountGroup && accountGroupData.length === 0 ? (
           <NoResult content={t('noResult')} imgClassName="mt-[116px]" />
         ) : (
-          accountGroupData.map(({nickname, account, vault, eid}) => (
-            <GroupItem
-              key={eid}
-              accountGroupId={eid}
-              account={Object.values(account)}
-              nickname={nickname}
-              groupType={vault?.type}
-              isCfxHwGroup={vault?.cfxOnly}
-              onOpenConfirmPassword={onOpenConfirmPassword}
-              showDelete={showDelete}
-              currentNetworkId={currentNetworkId}
-              updateEditedName={updateEditedName}
-            />
-          ))
+          accountGroupData.map(
+            ({
+              nickname: groupNickname,
+              account,
+              vault,
+              eid: accountGroupId,
+            }) => (
+              <AccountGroupItem
+                key={accountGroupId}
+                nickname={groupNickname}
+                groupType={vault?.type}
+                GroupNameOverlay={
+                  <TextNickname
+                    id={accountGroupId}
+                    nickname={groupNickname}
+                    accountGroupId={accountGroupId}
+                    updateEditedName={updateEditedName}
+                  />
+                }
+                groupTag={
+                  vault?.type === ACCOUNT_GROUP_TYPE.HW && (
+                    <LedgerGroupTag
+                      networkType={
+                        vault?.cfxOnly ? NETWORK_TYPE.CFX : NETWORK_TYPE.ETH
+                      }
+                    />
+                  )
+                }
+                groupFooter={
+                  vault?.type === ACCOUNT_GROUP_TYPE.HD && (
+                    <GroupFooter
+                      onOpenConfirmPassword={onOpenConfirmPassword}
+                      accountGroupId={accountGroupId}
+                      showDelete={showDelete}
+                      accounts={Object.values(account)}
+                    />
+                  )
+                }
+              >
+                {Object.values(account).map(
+                  ({
+                    nickname: accountNickname,
+                    eid: accountId,
+                    hidden,
+                    selected,
+                  }) => (
+                    <AccountItem
+                      key={accountId}
+                      accountId={accountId}
+                      accountNickname={accountNickname}
+                      AccountNameOverlay={
+                        <TextNickname
+                          nickname={accountNickname}
+                          accountId={accountId}
+                          updateEditedName={updateEditedName}
+                        />
+                      }
+                      rightComponent={
+                        <AccountOperation
+                          groupType={vault?.type}
+                          accountId={accountId}
+                          accountGroupId={accountGroupId}
+                          hidden={hidden}
+                          selected={selected}
+                          showDelete={showDelete}
+                          accounts={Object.values(account)}
+                          onOpenConfirmPassword={onOpenConfirmPassword}
+                          updateEditedName={updateEditedName}
+                        />
+                      }
+                    />
+                  ),
+                )}
+              </AccountGroupItem>
+            ),
+          )
         )}
       </div>
 

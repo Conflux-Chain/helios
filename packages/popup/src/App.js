@@ -53,6 +53,8 @@ import ImportHwAccount from './pages/ImportHwAccount'
 import NetworkDetail from './pages/NetworkDetail'
 import About from './pages/About'
 import AdvancedSettings from './pages/AdvancedSettings'
+import AddressBook from './pages/AddressBook'
+import Contacts from './pages/Contacts'
 
 const {
   HOME,
@@ -89,6 +91,8 @@ const {
   NETWORK_DETAIL,
   ABOUT,
   ADVANCED_SETTINGS,
+  ADDRESS_BOOK,
+  CONTACTS,
 } = ROUTES
 
 const routes = [
@@ -223,6 +227,14 @@ const routes = [
   {
     path: ADVANCED_SETTINGS,
     component: AdvancedSettings,
+  },
+  {
+    path: ADDRESS_BOOK,
+    component: AddressBook,
+  },
+  {
+    path: CONTACTS,
+    component: Contacts,
   },
 ]
 
