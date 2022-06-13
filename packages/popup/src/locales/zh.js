@@ -229,7 +229,7 @@ const zh = {
 
     // - request signature - 1. Sign Text
     signText: '文本签名',
-    signThisText: '签署这个文本?',
+    signThisText: '签署这个文本？',
     disablePersonSign: 'Personal sign 暂不支持使用硬件钱包签名',
     disableTypeSign: 'Typed sign 暂不支持使用硬件钱包签名',
 
@@ -254,7 +254,7 @@ const zh = {
 
     // - Switch Network
     switchNetwork: '切换网络',
-    allowSwitchNetwork: '允许此网站切换网络?',
+    allowSwitchNetwork: '允许此网站切换网络？',
     warningSwitchNetwork: '这将会把网络切换至钱包已经添加的网络',
 
     // - set password page
