@@ -6,7 +6,7 @@ import {TextFieldWithEditIcon} from '../../../components'
 
 const {WALLET_UPDATE_ACCOUNT_GROUP, WALLET_UPDATE_ACCOUNT} = RPC_METHODS
 
-function TextNickNameComponent({
+function TextNickname({
   nickname,
   updateEditedName,
   accountGroupId,
@@ -53,11 +53,11 @@ function TextNickNameComponent({
   )
 }
 
-TextNickNameComponent.propTypes = {
+TextNickname.propTypes = {
   nickname: PropTypes.string,
   accountGroupId: PropTypes.number,
   accountId: PropTypes.number,
   updateEditedName: PropTypes.func.isRequired,
 }
 
-export default TextNickNameComponent
+export default TextNickname

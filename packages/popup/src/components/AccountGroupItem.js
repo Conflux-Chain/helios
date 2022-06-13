@@ -4,7 +4,7 @@ import {WrapIcon} from '.'
 
 const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
-function GroupItem({
+function AccountGroupItem({
   className = '',
   groupContainerClassName = '',
   nickname,
@@ -37,7 +37,7 @@ function GroupItem({
   )
 }
 
-GroupItem.propTypes = {
+AccountGroupItem.propTypes = {
   className: PropTypes.string,
   groupContainerClassName: PropTypes.string,
   nickname: PropTypes.string,
@@ -51,4 +51,4 @@ GroupItem.propTypes = {
   ]).isRequired,
 }
 
-export default GroupItem
+export default AccountGroupItem

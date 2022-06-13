@@ -48,7 +48,7 @@ function AddressBook() {
       <SearchInput
         value={searchContent}
         onChange={setSearchContent}
-        containerClassName="mt-1"
+        searchInputWrapperClassName="mt-1"
       />
       <div className="flex items-center w-full justify-between">
         <div className="flex border-b border-[#E0E4FC] w-max mt-3 px-2">

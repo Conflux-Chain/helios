@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {EditOutlined, DeleteOutlined} from '@fluent-wallet/component-icons'
 import {CopyButton, WrapIcon} from '../../../components'
 
-function ContactOperationComponent({
+function ContactOperation({
   mouseOverItem,
   onClickEdit,
   onClickSend,
@@ -46,7 +46,7 @@ function ContactOperationComponent({
   )
 }
 
-ContactOperationComponent.propTypes = {
+ContactOperation.propTypes = {
   mouseOverItem: PropTypes.object,
   address: PropTypes.string,
   onClickEdit: PropTypes.func,
@@ -54,4 +54,4 @@ ContactOperationComponent.propTypes = {
   onClickDelete: PropTypes.func,
 }
 
-export default ContactOperationComponent
+export default ContactOperation

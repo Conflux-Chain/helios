@@ -11,7 +11,7 @@ const SearchInput = forwardRef(function SearchInput(
     value,
     prefixClassName = 'w-4 h-4 text-gray-40',
     suffixClassName = 'w-4 h-4 text-gray-40 cursor-pointer',
-    containerClassName = '',
+    searchInputWrapperClassName = '',
     onChange,
     placeholder,
     onClickAway,
@@ -27,7 +27,7 @@ const SearchInput = forwardRef(function SearchInput(
   })
 
   return (
-    <div ref={searchContainerRef} className={containerClassName}>
+    <div ref={searchContainerRef} className={searchInputWrapperClassName}>
       <Input
         id="searchText"
         prefix={<SearchOutlined className={prefixClassName} id="search-icon" />}
@@ -50,7 +50,7 @@ SearchInput.propTypes = {
   value: PropTypes.string,
   prefixClassName: PropTypes.string,
   suffixClassName: PropTypes.string,
-  containerClassName: PropTypes.string,
+  searchInputWrapperClassName: PropTypes.string,
   placeholder: PropTypes.string,
   onChange: PropTypes.func,
   onClickAway: PropTypes.func,

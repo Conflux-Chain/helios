@@ -5,7 +5,7 @@ import {useTranslation} from 'react-i18next'
 import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
 import {
   NoResult,
-  GroupItem,
+  AccountGroupItem,
   AccountItem,
   LedgerGroupTag,
 } from '../../../components'
@@ -51,7 +51,7 @@ function Account({fuzzy, onJumpToSendTx}) {
             {nickname: groupNickname, account, vault, eid: accountGroupId},
             index,
           ) => (
-            <GroupItem
+            <AccountGroupItem
               key={accountGroupId}
               className={`!mx-0 ${index !== 0 ? 'mt-4' : ''}`}
               nickname={groupNickname}
@@ -91,7 +91,7 @@ function Account({fuzzy, onJumpToSendTx}) {
                     />
                   ),
               )}
-            </GroupItem>
+            </AccountGroupItem>
           ),
         )}
       {accountList?.length === 0 && <NoResult content={t('noResult')} />}

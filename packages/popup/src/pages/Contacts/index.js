@@ -18,7 +18,7 @@ import {useCurrentTxStore} from '../../hooks'
 import useGlobalStore from '../../stores'
 import {request} from '../../utils'
 import useLoading from '../../hooks/useLoading'
-import {DeleteContactModal, ContactOperationComponent} from './components'
+import {DeleteContactModal, ContactOperation} from './components'
 
 const {SEND_TRANSACTION} = ROUTES
 const {WALLET_DELETE_MEMO} = RPC_METHODS
@@ -143,7 +143,7 @@ function Contacts() {
       <SearchInput
         value={searchContent}
         onChange={setSearchContent}
-        containerClassName="mt-1"
+        searchInputWrapperClassName="mt-1"
       />
       {showAddContact && (
         <ContactItem
@@ -165,7 +165,7 @@ function Contacts() {
             hoverContactId={mouseOverItem?.memoId}
             list={contactList}
             contactRightComponent={
-              <ContactOperationComponent
+              <ContactOperation
                 mouseOverItem={mouseOverItem}
                 onClickEdit={setEditMemoId}
                 onClickSend={onClickSend}

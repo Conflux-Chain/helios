@@ -12,7 +12,7 @@ import {
   NoResult,
   WrapIcon,
   StretchInput,
-  GroupItem,
+  AccountGroupItem,
   AccountItem,
 } from '../../../components'
 import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
@@ -39,7 +39,7 @@ function AccountCardContent({
             {nickname: groupNickname, account, vault, eid: accountGroupId},
             index,
           ) => (
-            <GroupItem
+            <AccountGroupItem
               key={accountGroupId}
               className={`!mx-0 ${index !== 0 ? 'mt-4' : ''}`}
               groupContainerClassName="!mb-0"
@@ -100,7 +100,7 @@ function AccountCardContent({
                   />
                 ),
               )}
-            </GroupItem>
+            </AccountGroupItem>
           ),
         )
       )}
@@ -158,34 +158,32 @@ function AccountList({onClose, open, accountsAnimate = true}) {
     <SlideCard
       id="account-list"
       cardTitle={
-        <div className="pb-4">
-          <StretchInput
-            currentNetworkId={currentNetworkId}
-            refreshDataStatus={refreshDataStatus}
-            setSearchedAccountGroup={setSearchedAccountGroup}
-            expandWidth="w-4"
-            shrinkWidth={
-              formatLocalizationLang(i18n.language) === 'en'
-                ? 'w-[137px]'
-                : 'w-[170px]'
-            }
-            wrapperClassName="ml-2.5"
-            rightNode={
-              <WrapIcon
-                size="w-5 h-5"
-                onClick={onAddAccount}
-                id="add-account-btn"
-              >
-                <PlusOutlined className="w-3 h-3 text-primary" />
-              </WrapIcon>
-            }
-            leftNode={
-              <div className="text-base text-gray-80 font-medium">
-                {t('myAccounts')}
-              </div>
-            }
-          />
-        </div>
+        <StretchInput
+          currentNetworkId={currentNetworkId}
+          refreshDataStatus={refreshDataStatus}
+          setSearchedAccountGroup={setSearchedAccountGroup}
+          expandWidth="w-4"
+          shrinkWidth={
+            formatLocalizationLang(i18n.language) === 'en'
+              ? 'w-[137px]'
+              : 'w-[170px]'
+          }
+          wrapperClassName="ml-2.5"
+          rightNode={
+            <WrapIcon
+              size="w-5 h-5"
+              onClick={onAddAccount}
+              id="add-account-btn"
+            >
+              <PlusOutlined className="w-3 h-3 text-primary" />
+            </WrapIcon>
+          }
+          leftNode={
+            <div className="text-base text-gray-80 font-medium">
+              {t('myAccounts')}
+            </div>
+          }
+        />
       }
       onClose={onClose}
       open={open}
