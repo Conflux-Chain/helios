@@ -1,0 +1,10 @@
+{
+  "name": "@fluent-wallet/eth_estimate-1559-fee",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.1",
+  "dependencies": {
+    "@fluent-wallet/spec": "workspace:packages/spec",
+    "bn.js": "5.2.0"
+  }
+}

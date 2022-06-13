@@ -71,10 +71,11 @@ export default function ({
     optionalMapKey(TxMapSpecs.gasLimit),
     optionalMapKey(TxMapSpecs.value),
     optionalMapKey(TxMapSpecs.data),
-    TxMapSpecs.maxPriorityFeePerGas,
-    TxMapSpecs.maxFeePerGas,
+    optionalMapKey(TxMapSpecs.maxPriorityFeePerGas),
+    optionalMapKey(TxMapSpecs.maxFeePerGas),
     optionalMapKey(TxMapSpecs.accessList),
     optionalMapKey(TxMapSpecs.chainId),
+    optionalMapKey(TxMapSpecs.gasPrice), //actually no gasPrice params for EIP-1559 transaction,but sometimes, the dapp developer will pass this param
   ]
   // EIP-155
   const TransactionLegacyUnsigned = [

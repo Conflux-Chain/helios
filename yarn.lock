@@ -6179,6 +6179,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/eth_estimate-1559-fee@workspace:packages/rpcs/eth_estimate1559Fee":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_estimate-1559-fee@workspace:packages/rpcs/eth_estimate1559Fee"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    bn.js: 5.2.0
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/eth_estimate-gas@workspace:packages/rpcs/eth_estimateGas":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_estimate-gas@workspace:packages/rpcs/eth_estimateGas"
@@ -6265,6 +6274,14 @@ __metadata:
   resolution: "@fluent-wallet/eth_get-transaction-receipt@workspace:packages/rpcs/eth_getTransactionReceipt"
   dependencies:
     "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_max-priority-fee-per-gas@workspace:packages/rpcs/eth_maxPriorityFeePerGas":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_max-priority-fee-per-gas@workspace:packages/rpcs/eth_maxPriorityFeePerGas"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
 
