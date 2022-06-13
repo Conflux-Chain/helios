@@ -51,7 +51,7 @@ export const DAPP_REQUEST_ROUTES = {
 export const DEFAULT_TOKEN_URL =
   'https://conflux-static.oss-cn-beijing.aliyuncs.com/fluent/icons/default-token-icon.svg'
 
-export const HISTORY_PAGE_LIMIT = 10
+export const PAGE_LIMIT = 10
 
 export const LEDGER_AUTH_STATUS = {
   LOADING: 'loading',

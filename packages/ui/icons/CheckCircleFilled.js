@@ -1,4 +1,6 @@
-function CheckCircleFilled(props) {
+import PropTypes from 'prop-types'
+
+function CheckCircleFilled({strokeColor = '#fff', ...props}) {
   return (
     <svg
       width={24}
@@ -11,7 +13,7 @@ function CheckCircleFilled(props) {
       <circle cx={12} cy={12} r={10} fill="currentColor" />
       <path
         d="M15.5 8.5L11.432 14 9 12.125"
-        stroke="#fff"
+        stroke={strokeColor}
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -20,4 +22,7 @@ function CheckCircleFilled(props) {
   )
 }
 
+CheckCircleFilled.propTypes = {
+  strokeColor: PropTypes.string,
+}
 export default CheckCircleFilled

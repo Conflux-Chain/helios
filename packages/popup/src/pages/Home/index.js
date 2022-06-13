@@ -1,8 +1,10 @@
 import {useState, useCallback} from 'react'
+import {ContactsOutlined} from '@fluent-wallet/component-icons'
 import {
   CFX_MAINNET_CHAINID,
   CFX_ESPACE_MAINNET_CHAINID,
 } from '@fluent-wallet/consts'
+
 import {useQuery} from '../../hooks'
 import {useTxList, useCurrentAddress} from '../../hooks/useApi'
 import {useEffectOnce} from 'react-use'
@@ -14,7 +16,7 @@ import {PendingQueue} from './components'
 import {ROUTES, MAX_PENDING_COUNT} from '../../constants'
 import './index.css'
 
-const {HISTORY, SEND_TRANSACTION} = ROUTES
+const {HISTORY, SEND_TRANSACTION, CONTACTS} = ROUTES
 import {
   CurrentAccount,
   CurrentNetwork,
@@ -127,6 +129,17 @@ function Home() {
                 />
               ) : null}
             </div>
+            <Button
+              id="go-contacts"
+              size="small"
+              variant="outlined"
+              className="!border-white !text-white !bg-transparent ml-2 px-2 hover:!bg-[#3C3A5D]"
+              onClick={() => {
+                history.push(CONTACTS)
+              }}
+            >
+              <ContactsOutlined />
+            </Button>
           </div>
           {/* only conflux main network show cross space button */}
           {(network?.chainId === CFX_MAINNET_CHAINID ||

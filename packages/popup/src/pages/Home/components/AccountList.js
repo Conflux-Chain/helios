@@ -9,142 +9,100 @@ import useAuthorizedAccountIdIcon from './useAuthorizedAccountIdIcon'
 import {
   SlideCard,
   DisplayBalance,
-  Avatar,
   NoResult,
   WrapIcon,
   StretchInput,
+  AccountGroupItem,
+  AccountItem,
 } from '../../../components'
 import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
 import {RPC_METHODS, ROUTES} from '../../../constants'
 
-const {WALLET_SET_CURRENT_ACCOUNT, ACCOUNT_GROUP_TYPE} = RPC_METHODS
+const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
 const {SELECT_CREATE_TYPE} = ROUTES
 
-function AccountItem({
-  nickname,
-  accounts,
-  authorizedAccountIdIconObj,
-  onClose,
-  groupType = '',
-  index,
+function AccountCardContent({
+  searchedAccountGroup,
+  accountGroupData,
+  onChangeAccount,
 }) {
-  const {t} = useTranslation()
-  const {mutate} = useCurrentAddress()
-  const onChangeAccount = accountId => {
-    request(WALLET_SET_CURRENT_ACCOUNT, [accountId])
-      .then(() => {
-        mutate().then(() => {
-          onClose?.()
-        })
-      })
-      .catch(e => {
-        Message.error({
-          content:
-            e?.message?.split?.('\n')?.[0] ?? e?.message ?? t('unCaughtErrMsg'),
-          top: '10px',
-          duration: 1,
-        })
-      })
-  }
-
-  return (
-    !!accounts.length && (
-      <div className={`bg-gray-0 rounded ${index !== 0 ? 'mt-4' : ''}`}>
-        {groupType !== ACCOUNT_GROUP_TYPE.PK && (
-          <div className="flex items-center ml-3 pt-2.5">
-            {groupType === ACCOUNT_GROUP_TYPE.HD && (
-              <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
-                <img src="/images/seed-group-icon.svg" alt="group-icon" />
-              </WrapIcon>
-            )}
-            <p className="text-gray-40 text-xs">{nickname}</p>
-          </div>
-        )}
-        {accounts.map(
-          ({
-            nickname,
-            eid,
-            selected,
-            currentAddress: {nativeBalance, network},
-          }) => (
-            <div
-              aria-hidden="true"
-              onClick={() => !selected && onChangeAccount(eid)}
-              key={eid}
-              className={`flex p-3 rounded hover:bg-primary-4 ${
-                selected ? 'cursor-default' : 'cursor-pointer'
-              }`}
-            >
-              <Avatar
-                className="w-5 h-5 mr-2"
-                diameter={20}
-                accountIdentity={eid}
-              />
-              <div className="flex-1">
-                <p className="text-xs text-gray-40 ">{nickname}</p>
-                <div className="flex w-full">
-                  <DisplayBalance
-                    balance={nativeBalance || '0x0'}
-                    maxWidthStyle="max-w-[270px]"
-                    maxWidth={270}
-                    decimals={network?.ticker?.decimals}
-                  />
-                  <pre className="text-sm text-gray-80">
-                    {network?.ticker?.symbol || ''}
-                  </pre>
-                </div>
-              </div>
-              <div className="inline-flex justify-center items-center">
-                {authorizedAccountIdIconObj[eid] && (
-                  <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
-                    <img
-                      className="w-4 h-4"
-                      src={authorizedAccountIdIconObj[eid]}
-                      alt="favicon"
-                    />
-                  </div>
-                )}
-                {selected && (
-                  <CheckCircleFilled className="w-4 h-4 ml-3 text-success" />
-                )}
-              </div>
-            </div>
-          ),
-        )}
-      </div>
-    )
-  )
-}
-
-AccountItem.propTypes = {
-  nickname: PropTypes.string,
-  accounts: PropTypes.array,
-  authorizedAccountIdIconObj: PropTypes.object.isRequired,
-  onClose: PropTypes.func,
-  groupType: PropTypes.string,
-  index: PropTypes.number.isRequired,
-}
-
-function AccountCardContent({searchedAccountGroup, accountGroupData, onClose}) {
   const {t} = useTranslation()
   const authorizedAccountIdIconObj = useAuthorizedAccountIdIcon()
 
   return (
-    <div>
+    <div id="home-account-list">
       {searchedAccountGroup && accountGroupData.length === 0 ? (
         <NoResult content={t('noResult')} imgClassName="mt-[105px]" />
       ) : (
-        accountGroupData.map(({nickname, account, vault, eid}, index) => (
-          <AccountItem
-            key={eid}
-            index={index}
-            accounts={Object.values(account)}
-            nickname={nickname}
-            onClose={onClose}
-            authorizedAccountIdIconObj={authorizedAccountIdIconObj}
-            groupType={vault?.type}
-          />
-        ))
+        accountGroupData.map(
+          (
+            {nickname: groupNickname, account, vault, eid: accountGroupId},
+            index,
+          ) => (
+            <AccountGroupItem
+              key={accountGroupId}
+              className={`!mx-0 ${index !== 0 ? 'mt-4' : ''}`}
+              groupContainerClassName="!mb-0"
+              nickname={groupNickname}
+              groupType={vault?.type}
+            >
+              {Object.values(account).map(
+                ({
+                  nickname: accountNickname,
+                  eid: accountId,
+                  selected,
+                  currentAddress: {nativeBalance, network},
+                }) => (
+                  <AccountItem
+                    key={accountId}
+                    className={`!p-3  ${
+                      selected ? 'cursor-default' : 'cursor-pointer'
+                    }`}
+                    accountId={accountId}
+                    accountNickname={accountNickname}
+                    onClickAccount={() =>
+                      !selected && onChangeAccount?.(accountId)
+                    }
+                    AccountNameOverlay={
+                      <div className="w-full">
+                        <p className="text-xs text-gray-40 ">
+                          {accountNickname}
+                        </p>
+                        <div className="flex w-full">
+                          <DisplayBalance
+                            balance={nativeBalance || '0x0'}
+                            maxWidthStyle="max-w-[270px]"
+                            maxWidth={270}
+                            decimals={network?.ticker?.decimals}
+                          />
+                          <pre className="text-sm text-gray-80">
+                            {network?.ticker?.symbol || ''}
+                          </pre>
+                        </div>
+                      </div>
+                    }
+                    rightComponent={
+                      <div className="inline-flex justify-center items-center">
+                        {authorizedAccountIdIconObj[accountId] && (
+                          <div className="w-6 h-6 border-gray-20 border border-solid rounded-full flex justify-center items-center">
+                            <img
+                              className="w-4 h-4"
+                              src={authorizedAccountIdIconObj[accountId]}
+                              alt="favicon"
+                            />
+                          </div>
+                        )}
+                        {selected && (
+                          <CheckCircleFilled className="w-4 h-4 ml-3 text-success" />
+                        )}
+                      </div>
+                    }
+                  />
+                ),
+              )}
+            </AccountGroupItem>
+          ),
+        )
       )}
     </div>
   )
@@ -152,7 +110,7 @@ function AccountCardContent({searchedAccountGroup, accountGroupData, onClose}) {
 AccountCardContent.propTypes = {
   searchedAccountGroup: PropTypes.object,
   accountGroupData: PropTypes.array,
-  onClose: PropTypes.func,
+  onChangeAccount: PropTypes.func,
 }
 
 function AccountList({onClose, open, accountsAnimate = true}) {
@@ -162,9 +120,30 @@ function AccountList({onClose, open, accountsAnimate = true}) {
     data: {
       network: {eid: currentNetworkId},
     },
+    mutate: refreshCurrentAddress,
   } = useCurrentAddress()
-  const {data: allAccountGroups} = useAccountList({networkId: currentNetworkId})
+  const {data: allAccountGroups, mutate: refreshAccountGroups} = useAccountList(
+    {networkId: currentNetworkId},
+  )
   const [searchedAccountGroup, setSearchedAccountGroup] = useState(null)
+  // to refresh searched data
+  const [refreshDataStatus, setRefreshDataStatus] = useState(false)
+
+  const onChangeAccount = async accountId => {
+    try {
+      await request(WALLET_SET_CURRENT_ACCOUNT, [accountId])
+      setRefreshDataStatus(!refreshDataStatus)
+      await Promise.all([refreshCurrentAddress(), refreshAccountGroups()])
+      onClose?.()
+    } catch (e) {
+      Message.error({
+        content:
+          e?.message?.split?.('\n')?.[0] ?? e?.message ?? t('unCaughtErrMsg'),
+        top: '10px',
+        duration: 1,
+      })
+    }
+  }
 
   const onAddAccount = () => {
     history.push('?open=account-list')
@@ -179,33 +158,32 @@ function AccountList({onClose, open, accountsAnimate = true}) {
     <SlideCard
       id="account-list"
       cardTitle={
-        <div className="pb-4">
-          <StretchInput
-            currentNetworkId={currentNetworkId}
-            setSearchedAccountGroup={setSearchedAccountGroup}
-            expandWidth="w-4"
-            shrinkWidth={
-              formatLocalizationLang(i18n.language) === 'en'
-                ? 'w-[137px]'
-                : 'w-[170px]'
-            }
-            wrapperClassName="ml-2.5"
-            rightNode={
-              <WrapIcon
-                size="w-5 h-5"
-                onClick={onAddAccount}
-                id="add-account-btn"
-              >
-                <PlusOutlined className="w-3 h-3 text-primary" />
-              </WrapIcon>
-            }
-            leftNode={
-              <div className="text-base text-gray-80 font-medium">
-                {t('myAccounts')}
-              </div>
-            }
-          />
-        </div>
+        <StretchInput
+          currentNetworkId={currentNetworkId}
+          refreshDataStatus={refreshDataStatus}
+          setSearchedAccountGroup={setSearchedAccountGroup}
+          expandWidth="w-4"
+          shrinkWidth={
+            formatLocalizationLang(i18n.language) === 'en'
+              ? 'w-[137px]'
+              : 'w-[170px]'
+          }
+          wrapperClassName="ml-2.5"
+          rightNode={
+            <WrapIcon
+              size="w-5 h-5"
+              onClick={onAddAccount}
+              id="add-account-btn"
+            >
+              <PlusOutlined className="w-3 h-3 text-primary" />
+            </WrapIcon>
+          }
+          leftNode={
+            <div className="text-base text-gray-80 font-medium">
+              {t('myAccounts')}
+            </div>
+          }
+        />
       }
       onClose={onClose}
       open={open}
@@ -215,6 +193,7 @@ function AccountList({onClose, open, accountsAnimate = true}) {
           searchedAccountGroup={searchedAccountGroup}
           accountGroupData={accountGroupData}
           onClose={onClose}
+          onChangeAccount={onChangeAccount}
         />
       }
     />
