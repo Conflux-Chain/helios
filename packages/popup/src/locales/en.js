@@ -28,39 +28,43 @@ const en = {
     notFilled: 'Not filled',
     unCaughtErrMsg: 'something goes wrong',
 
-    // - home page
+    // - homepage
     send: 'Send',
     history: 'History',
     assets: 'Assets',
     crossSpace: 'Cross Space',
 
-    // - homepage / 连接网站状态模块和切换连接弹窗模块
+    // - homepage / dapp footer
     noConnectedDapp: 'Not connected to current website',
     connected: 'Connected',
     disconnect: 'Disconnect',
     disconnectTitle: 'Disconnect',
     disconnectContent: 'Disconnect this website?',
 
-    // - homepage / dapp connect site 弹窗
+    // - homepage / dapp connect site popup
     connectSite: 'Connect to this Website?',
+    permissionRequest: 'Permission Request',
+    allowPermission: 'Allow these permissions for this site?',
     selectNetwork: 'Which network want to use?',
     selectAuthorizedAccounts: 'Authorized account',
     selectAll: 'All',
     connect: 'Connect',
     chooseNetwork: 'Choose Network',
+    viewSelectedAddress: 'View selected account public address',
+    viewMultiAddress: 'View selected account‘s multi-chain address',
 
-    // - homepage / 授权单个账号
+    // - homepage / authorize single account
     authorizeCurrentAccount: 'Authorize {{currentAccount}}',
     needAuthTitle: 'Need authorization',
     needAuthContent:
       'This Account has not authorized to this site.<br/>Authorize this site to use {{accountName}} ？',
 
-    // - homepage / 账户管理 / 账户列表
+    // - homepage / account management / account list
     myAccounts: 'My Accounts',
     addAccount: 'Add Account',
     search: 'Search',
 
-    // homepage / 账户管理 / 创建账户
+    // homepage / account management / create account
     manyAccounts: '{{accountNum}} Accounts',
     oneAccount: '1 Account',
 
@@ -78,18 +82,18 @@ const en = {
     pKeysDes: 'Enter the plaintext private key.',
     ledgerDes: 'Use your Ledger wallet.',
 
-    // homepage / 账户管理 / 创建账户 / 1. use existing seed phrase
+    // homepage / account management / create account / 1. use existing seed phrase
     accountName: 'Account Name',
     selectSeedPhrase: 'Select a Seed Phrase Group',
 
-    // homepage / 账户管理 / 创建账户 / 2. new seed phrase
+    // homepage / account management / create account / 2. new seed phrase
     seedGroupName: 'Seed Phrase Group Name',
     invalidWord: 'Invalid Word',
     seedCreateTitle: 'Next, the Seed Phrase will be displayed',
     seedCreateContent:
       'Obtaining the Seed Phrase is equivalent to owning the assets in the wallet.<br/>Once the Seed Phrase is lost, it cannot be retrieved, please keep it properly',
 
-    // homepage / 账户管理 / 创建账户 / 2. new seed phrase / backup seed phrase
+    // homepage / account management / create account / 2. new seed phrase / backup seed phrase
     backupSeedTitle: 'Backup Seed Phrase',
     backupSeedContent:
       'Please copy the Seed Phrase in order.<br/>Do not share and store Seed Phrase in a networked environment.',
@@ -98,14 +102,14 @@ const en = {
       'Please click the Seed Phrase in order to ensure correct backup.',
     confirmSeedError: 'Mistakes in Seed Phrase.',
 
-    // homepage / 账户管理 / 创建账户 / 3. Import existing account
+    // homepage / / account management / create account / 3. Import existing account
     seedImport: 'Import Seed Phrase',
     seedImportPlaceholder:
       'The Seed Phrase consists of words separated by spaces. Separate each word entered by a space.',
     duplicateSeedError: 'This seed Phrase already in your wallet.',
     invalidSeed: 'Invalid Seed Phrase, check again.',
 
-    // homepage / 账户管理 / 创建账户 / 4. Import account with private key
+    // homepage / / account management / create account / 4. Import account with private key
     pKeyImport: 'Import Private Key',
     pKeyImportPlaceholder: 'Type your Private Key here.',
     duplicatePkError: 'This Private Key already in your wallet.',
@@ -191,14 +195,11 @@ const en = {
     balance: 'Balance',
     createContract: 'Deploy Contract',
 
-    // - Send Transaction / Sign Transaction / 3. token approve - view data
-    // 此处展示内容为交易详情，在多种情况是相同的，不止是 token approve 这个场景，详见 common
-
     // - Send Transaction / Sign Transaction / 3. token approve -  edit approve limit permissions
     editPermission: 'Edit Permission',
     spendLimitPermission: 'Spend Limit Permission',
 
-    // 允许操作的限额权限描述
+    // approve allowance
     allowSpendDes:
       'Allow {{dapp}} to withdraw and spend up to the following amount:',
     proposedApprovalLimit: 'Proposed approval limit',
@@ -288,7 +289,7 @@ const en = {
     groupDeleteWarning: 'Can not delete current account group.',
     accountDeleteWarning: 'Can not delete current account.',
     accountHideWarning: 'Can not hide current account.',
-    lastAccountHideWarning: 'Keep at least one account.',
+    lastAccountHideWarning: 'Keep at least one account in this group.',
     ledgerTips: 'This account(s) can only be used on {{network}}.',
 
     // Network Management

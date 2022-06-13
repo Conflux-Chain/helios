@@ -1056,7 +1056,7 @@
                                     :gaddr/network networkId
                                     :gaddr/value   address}))
         txs (conj txs {:db/id        (or memoId "newmemo")
-                       :memo/address gaddr-id
+                       :memo/gaddr gaddr-id
                        :memo/value   value})]
   (t txs))
 
@@ -1087,18 +1087,18 @@
                             (update :in conj '?net)
                             (update :where conj
                                     '[?ga :gaddr/network ?net]
-                                    '[?m :memo/address ?ga]))
+                                    '[?m :memo/gaddr ?ga]))
                         (not networkId)
                         (-> (update :where conj
                                     '[?net :network/selected true]
                                     '[?ga :gaddr/network ?net]
-                                    '[?m :memo/address ?ga]))
+                                    '[?m :memo/gaddr ?ga]))
                         addr
                         (-> (update :args conj addr)
                             (update :in conj '[?addr ...])
                             (update :where conj
                                     '[?ga :gaddr/value ?addr]
-                                    '[?m :memo/address ?ga]))
+                                    '[?m :memo/gaddr ?ga]))
                         value
                         (-> (update :args conj value)
                             (update :in conj '?value)
@@ -1111,13 +1111,14 @@
                                     '[?m :memo/value ?v]
                                     '[(re-find ?fuzzy ?v)]))
                         (not addr)
-                        (-> (update :where conj '[?m :memo/address ?ga])))
+                        (-> (update :where conj '[?m :memo/gaddr ?ga])))
         query         (concat [:find] (:find query-initial)
                               [:in] (:in query-initial)
                               [:where] (:where query-initial))
         rst          (apply q query (:args query-initial))
+        total        (count rst)
         rst (->> rst reverse (drop offset) (take limit) post-process)]
-  rst)
+  {:total total :data rst})
 
 (defn- cleanup-token-list-after-delete-address []
   (let [tokens (q '[:find [?t ...]
@@ -1667,11 +1668,11 @@
            (or-join  [?addr-id ?memo ?memov]
                      (and
                       [(vector :gaddr/id ?addr-id) ?addr-id-ref]
-                      [?memo :memo/address ?addr-id-ref]
+                      [?memo :memo/gaddr ?addr-id-ref]
                       [?memo :memo/value ?memov])
                      (and
                       [(vector :gaddr/id ?addr-id) ?addr-id-ref]
-                      (not [?memo :memo/address ?addr-id-ref])
+                      (not [?memo :memo/gaddr ?addr-id-ref])
                       [(identity false) ?memo]
                       [(identity false) ?memov]))
            (or-join [?addr-id ?acc ?nick]
@@ -1704,7 +1705,6 @@
         addrs
         (if fuzzy (q query fuzzy) (q query))
         total (count addrs)
-
 
         addrs
         (->> addrs

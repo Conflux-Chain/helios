@@ -29,39 +29,43 @@ const fr = {
     notFilled: 'Non renseigné',
     unCaughtErrMsg: 'quelque chose ne va pas',
 
-    // - home page
+    // - homepage
     send: 'Envoyer',
     history: 'Historique',
     assets: 'Actifs',
     crossSpace: 'Cross Space',
 
-    // - homepage / 连接网站状态模块和切换连接弹窗模块
+    // - homepage /  dapp footer
     noConnectedDapp: 'Non connecté au site internet actuel',
     connected: 'Connecté',
     disconnect: 'Déconnecté',
     disconnectTitle: 'Déconnexion',
     disconnectContent: 'Déconnecter ce site internet ?',
 
-    // - homepage / dapp connect site 弹窗
+    // - homepage / dapp connect site popup
     connectSite: 'Se connecter à ce site internet ?',
+    permissionRequest: 'Permission Request',
+    allowPermission: 'Allow these permissions for this site?',
     selectNetwork: 'Quel réseau souhaitez-vous utiliser ?',
     selectAuthorizedAccounts: 'Comptes autorisés',
     selectAll: 'Tout',
     connect: 'Connecter',
     chooseNetwork: 'Choisir un réseau',
+    viewSelectedAddress: 'View selected account public address',
+    viewMultiAddress: 'View selected account‘s multi-chain address',
 
-    // - homepage / 授权单个账号
+    // - homepage / authorize single account
     authorizeCurrentAccount: 'Autoriser {{currentAccount}}',
     needAuthTitle: 'Autorisation nécessaire',
     needAuthContent:
       'Le compte n’est pas autorisé sur ce site internet.<br/>Autoriser ce site internet à utiliser {{accountName}} ？',
 
-    // - homepage / 账户管理 / 账户列表
+    // - homepage / account management / account list
     myAccounts: 'Mes Comptes',
     addAccount: 'Ajouter un compte',
     search: 'Rechercher',
 
-    // homepage / 账户管理 / 创建账户
+    // homepage / account management / create account
     manyAccounts: '{{accountNum}} Comptes',
     oneAccount: '1 Compte',
 
@@ -82,18 +86,18 @@ const fr = {
     pKeysDes: 'Saisir la clé privée en texte en clair.',
     ledgerDes: 'Utiliser votre portefeuille Ledger.',
 
-    // homepage / 账户管理 / 创建账户 / 1. use existing seed phrase
+    // homepage / account management / create account / 1. use existing seed phrase
     accountName: 'Nom du Compte',
     selectSeedPhrase: 'Sélectionner un groupe de phrases de récupération',
 
-    // homepage / 账户管理 / 创建账户 / 2. new seed phrase
+    // homepage / account management / create account / 2. new seed phrase
     seedGroupName: 'Nom du Groupe de phrases de récupération',
     invalidWord: 'Mot invalide',
     seedCreateTitle: 'La phrase de récupération sera affichée par la suite',
     seedCreateContent:
       'L’obtention de la phrase de récupération permet de récupérer tous les actifs du portefeuille.<br/>Si cette phrase est perdue, elle ne peut pas être récupérée, veuillez la conserver précieusement',
 
-    // homepage / 账户管理 / 创建账户 / 2. new seed phrase / backup seed phrase
+    // homepage / account management / create account / 2. new seed phrase / backup seed phrase
     backupSeedTitle: 'Sauvegarder la Phrase de récupération',
     backupSeedContent:
       'Merci de copier la phrase de récupération dans l’ordre.<br/>Ne partagez pas et ne conservez pas cette phrase dans un environnement en réseau.',
@@ -102,7 +106,7 @@ const fr = {
       'Merci de cliquer sur les mots de la phrase de récupération dans l’ordre pour s’assurer qu’elle soit correctement sauvegardée.',
     confirmSeedError: 'Phrase de récupération invalide.',
 
-    // homepage / 账户管理 / 创建账户 / 3. Import existing account
+    // homepage / account management / create account / 3. Import existing account
     seedImport: 'Importer la Phrase de récupération',
     seedImportPlaceholder:
       'La phrase de récupération est composée de mots séparés par des espaces. Séparez chaque mot par un espace.',
@@ -110,7 +114,7 @@ const fr = {
       'Cette phrase de récupération est déjà présente dans votre portefeuille.',
     invalidSeed: 'Phrase de récupération invalide, vérifiez à nouveau.',
 
-    // homepage / 账户管理 / 创建账户 / 4. Import account with private key
+    // homepage / account management / create account / 4. Import account with private key
     pKeyImport: 'Importer la Clé Privée',
     pKeyImportPlaceholder: 'Saisir votre Clé Privée ici.',
     duplicatePkError:
@@ -197,14 +201,11 @@ const fr = {
     balance: 'Balance',
     createContract: 'Déployer le Contrat',
 
-    // - Send Transaction / Sign Transaction / 3. token approve - view data
-    // 此处展示内容为交易详情，在多种情况是相同的，不止是 token approve 这个场景，详见 common
-
     // - Send Transaction / Sign Transaction / 3. token approve -  edit approve limit permissions
     editPermission: 'Éditer la restriction',
     spendLimitPermission: 'Restriction de limite de dépense',
 
-    // 允许操作的限额权限描述
+    // approve allowance
     allowSpendDes:
       'Autoriser {{dapp}} à retirer et dépenser jusqu’au montant suivant:',
     proposedApprovalLimit: 'Limite d’approbation proposée',
@@ -295,7 +296,7 @@ const fr = {
     groupDeleteWarning: 'Impossible de supprimer le groupe de compte actuel.',
     accountDeleteWarning: 'Impossible de supprimer le compte actuel.',
     accountHideWarning: 'Impossible de cacher le compte actuel.',
-    lastAccountHideWarning: 'Vous devez garder un compte au minimum.',
+    lastAccountHideWarning: 'Keep at least one account in this group.',
     ledgerTips: 'Ce(s) compte(s) ne peut être utilisé que sur {{network}}.',
 
     // Network Management
