@@ -46,13 +46,16 @@ function toEthersTx(tx) {
   const {from, type, gas, ...ethersTx} = tx
   ethersTx.gasLimit = gas
   ethersTx.type = parseInt(type, 16)
+  if (type === '0x2') {
+    //EIP-1559
+    delete ethersTx.gasPrice
+  }
   return ethersTx
 }
 
 export const permissions = {
   external: [],
   methods: [
-    // TODO: ledger support for eth
     'eth_signTxWithLedgerNanoS',
     'wallet_getAddressPrivateKey',
     'eth_getTransactionCount',
@@ -60,7 +63,8 @@ export const permissions = {
     'eth_gasPrice',
     'eth_estimateGas',
     'wallet_detectAddressType',
-    // 'wallet_network1559Compatible',
+    'wallet_network1559Compatible',
+    'eth_maxPriorityFeePerGas',
   ],
   db: ['findAddress'],
 }
@@ -72,11 +76,12 @@ export const main = async args => {
     rpcs: {
       // eth_blockNumber,
       eth_gasPrice,
-      // wallet_network1559Compatible,
+      wallet_network1559Compatible,
       wallet_getAddressPrivateKey,
       eth_estimateGas,
       eth_getTransactionCount,
       wallet_detectAddressType,
+      eth_maxPriorityFeePerGas,
     },
     params: [tx, opts = {}],
     app,
@@ -91,7 +96,6 @@ export const main = async args => {
   tx.from = tx.from.toLowerCase()
   if (tx.to) tx.to = tx.to.toLowerCase()
   const newTx = {...tx}
-
   newTx.type = newTx.type || '0x0'
 
   const fromAddr = findAddress({
@@ -103,6 +107,7 @@ export const main = async args => {
       _account: {eid: 1, _accountGroup: {vault: {type: 1, device: 1}}},
     },
   })
+
   // from address is not belong to wallet
   if (!fromAddr) throw InvalidParams(`Invalid from address ${newTx.from}`)
 
@@ -112,22 +117,7 @@ export const main = async args => {
       `Invalid tx, [to] and [data] can't be omit at the same time`,
     )
 
-  const legacyTx = !newTx.type || newTx.type === '0x0'
-  if (!legacyTx)
-    throw InvalidParams(
-      `Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559`,
-    )
-
-  // TODO: EIP-1559 support
-  // const network1559Compatible = await wallet_network1559Compatible()
-  // if (!legacyTx && network1559Compatible)
-  //   throw InvalidParams(
-  //     `Network ${network.name} don't support 1559 transactions`,
-  //   )
-
   if (newTx.data === '0x') newTx.data = undefined
-  if (!newTx.gasPrice) newTx.gasPrice = await eth_gasPrice()
-
   if (!newTx.value) newTx.value = '0x0'
 
   if (!newTx.nonce) {
@@ -136,6 +126,16 @@ export const main = async args => {
       'pending',
     ])
   }
+  // EIP-1559
+  const network1559Compatible = await wallet_network1559Compatible()
+  const is1559Tx = newTx.type === '0x2'
+  if (is1559Tx && !network1559Compatible)
+    throw InvalidParams(
+      `Network ${network.name} don't support 1559 transactions`,
+    )
+
+  const gasPrice = await eth_gasPrice()
+  if (!is1559Tx && !newTx.gasPrice) newTx.gasPrice = gasPrice
 
   if (newTx.to && !newTx.gas) {
     const {contract: typeContract} = await wallet_detectAddressType(
@@ -146,7 +146,6 @@ export const main = async args => {
       if (!newTx.gas) newTx.gas = '0x5208'
     }
   }
-
   if (!newTx.gas) {
     newTx.gas = await eth_estimateGas({errorFallThrough: true}, [
       newTx,
@@ -156,7 +155,11 @@ export const main = async args => {
 
   if (!newTx.chainId) newTx.chainId = network.chainId
   newTx.chainId = parseInt(newTx.chainId, 16)
-
+  if (is1559Tx && network1559Compatible) {
+    if (!newTx.maxPriorityFeePerGas)
+      newTx.maxPriorityFeePerGas = await eth_maxPriorityFeePerGas()
+    if (!newTx.maxFeePerGas) newTx.maxFeePerGas = gasPrice
+  }
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {
     if (dryRun) {

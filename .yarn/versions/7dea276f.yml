@@ -1,0 +1,9 @@
+declined:
+  - helios-background
+  - "@fluent-wallet/eth-transaction-schema"
+  - "@fluent-wallet/eth_estimate-1559-fee"
+  - "@fluent-wallet/eth_sign-transaction"
+  - "@fluent-wallet/wallet_send-transaction"
+
+undecided:
+  - "@fluent-wallet/eth_max-priority-fee-per-gas"
