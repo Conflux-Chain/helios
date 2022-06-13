@@ -174,8 +174,9 @@ function Contacts() {
             }
           />
         )}
+        {contactList?.length === 0 && <NoResult content={t('noResult')} />}
       </div>
-      {contactList?.length === 0 && <NoResult content={t('noResult')} />}
+
       <DeleteContactModal
         open={isNumber(deleteMemoId)}
         onClose={() => setDeleteMemoId('')}
