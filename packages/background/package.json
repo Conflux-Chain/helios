@@ -170,7 +170,7 @@
     "@thi.ng/rstream": "6.0.21",
     "@thi.ng/rstream-csp": "^2.0.80",
     "regenerator-runtime": "^0.13.9",
-    "webextension-polyfill": "^0.8.0"
+    "webextension-polyfill": "0.8.0"
   },
   "devDependencies": {
     "@fluent-wallet/test-helpers": "workspace:packages/test-helpers",

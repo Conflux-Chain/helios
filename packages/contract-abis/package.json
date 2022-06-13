@@ -4,7 +4,7 @@
   "packageManager": "yarn@3.0.1",
   "version": "0.0.3",
   "dependencies": {
-    "@ethersproject/abi": "5.6.1",
+    "@ethersproject/abi": "5.6.3",
     "@fluent-wallet/compose": "workspace:packages/compose"
   }
 }
