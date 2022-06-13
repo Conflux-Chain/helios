@@ -426,15 +426,15 @@ const zh = {
     reload: '重新加载',
 
     // address book & contacts
-    addressBook: 'Address Book',
-    contacts: 'Contacts',
-    contact: 'Contact',
-    recent: 'Recent',
-    account: 'Account',
-    searchAddressNickname: 'Search address or nickname',
-    addedContactWarning: 'Already added!',
-    deleteContactTitle: 'Confirm delete this contact',
-    deleteContactContent: 'Do you want to delete this contact?',
+    addressBook: '地址簿',
+    contacts: '联系人',
+    contact: '联系人',
+    recent: '最近',
+    account: '我的账户',
+    searchAddressNickname: '输入地址或名字查找',
+    addedContactWarning: '已添加!',
+    deleteContactTitle: '删除联系人',
+    deleteContactContent: '确认删除此联系人?',
   },
 }
 
