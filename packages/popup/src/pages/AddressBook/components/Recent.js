@@ -37,7 +37,7 @@ function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
           className="flex items-center justify-between rounded px-3 bg-white hover:bg-primary-4 mt-3"
           aria-hidden="true"
           id={`send-tx-${address}`}
-          onClick={() => onJumpToSendTx(address)}
+          onClick={() => onJumpToSendTx({address})}
         >
           <div className="flex items-center py-3">
             <Avatar
