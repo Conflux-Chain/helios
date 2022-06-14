@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect} from 'react'
+import {useState, useRef, useEffect, useCallback} from 'react'
 import {useDebounce} from 'react-use'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -16,7 +16,7 @@ import {PAGE_LIMIT, ROUTES, RPC_METHODS} from '../../constants'
 import {useCurrentNetworkAddressMemo} from '../../hooks/useApi'
 import {useCurrentTxStore} from '../../hooks'
 import useGlobalStore from '../../stores'
-import {request} from '../../utils'
+import {request, setScrollPageLimit} from '../../utils'
 import useLoading from '../../hooks/useLoading'
 import {DeleteContactModal, ContactOperation} from './components'
 
@@ -74,17 +74,15 @@ function Contacts() {
     }
   }, [memoData, total])
 
-  const onScroll = () => {
-    if (
-      contactListRef.current.scrollHeight -
-        contactListRef.current.clientHeight <=
-        contactListRef.current.scrollTop &&
-      contactList?.length < total &&
-      limit < total
-    ) {
-      setLimit(limit + PAGE_LIMIT)
-    }
-  }
+  const onScroll = useCallback(() => {
+    setScrollPageLimit(
+      contactListRef?.current,
+      setLimit,
+      contactList,
+      total,
+      limit,
+    )
+  }, [contactList, limit, total])
 
   const onMouseOver = item => {
     setMouseOverAddressItem({...item})

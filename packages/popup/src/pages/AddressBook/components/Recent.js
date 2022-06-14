@@ -94,7 +94,7 @@ function Recent({fuzzy = '', onJumpToSendTx}) {
   }, [tradingAddressData?.data])
 
   return (
-    <div>
+    <div className="h-full overflow-auto">
       {displayTradingAddressData?.length > 0 &&
         displayTradingAddressData.map(({address, memoValue}) => (
           <RecentItem

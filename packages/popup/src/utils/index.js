@@ -8,6 +8,7 @@ import {
   RPC_METHODS,
   NETWORK_TYPE,
   LANGUAGES,
+  PAGE_LIMIT,
 } from '../constants'
 const globalThis = window ?? global
 const {
@@ -268,4 +269,24 @@ export const getBaseChainName = networkType => {
     : networkType === NETWORK_TYPE.ETH
     ? 'EVM Chain'
     : ''
+}
+
+// set page limit when scroll to the bottom of target dom
+export const setScrollPageLimit = (
+  dom,
+  setLimit,
+  list,
+  total,
+  currentLimit,
+) => {
+  if (!dom) {
+    return
+  }
+  if (
+    dom.scrollHeight - dom.clientHeight <= dom.scrollTop &&
+    list?.length < total &&
+    currentLimit < total
+  ) {
+    setLimit(currentLimit + PAGE_LIMIT)
+  }
 }
