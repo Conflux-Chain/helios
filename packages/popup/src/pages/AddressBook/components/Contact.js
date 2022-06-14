@@ -49,8 +49,8 @@ function Contact({
         {contactList?.length > 0 && (
           <ContactList list={contactList} onClickContact={onJumpToSendTx} />
         )}
+        {contactList?.length === 0 && <NoResult content={t('noResult')} />}
       </div>
-      {contactList?.length === 0 && <NoResult content={t('noResult')} />}
     </div>
   )
 }
