@@ -144,6 +144,9 @@
 (defn get-account-group [{:keys [groupId g fuzzy selected groupTypes]}]
   (let [g            (and g {:accountGroup g})
         fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if-not (= fuzzy "")
                        (re-pattern
                         (str "(?i)"
                              (-> fuzzy
@@ -220,14 +223,17 @@
                         (group-by first v))))))
            {}
            (group-by first data)))
-        fuzzy         (if (string? fuzzy)
-                        (re-pattern
-                         (str "(?i)"
-                              (-> fuzzy
-                                  (.trim)
-                                  gstr/regExpEscape
-                                  (.replaceAll " " ".*"))))
-                        nil)
+        fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if-not (= fuzzy "")
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 (.trim)
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)
         query-initial (cond-> '{:find  [?g ?acc ?addr]
                                 :in    [$]
                                 :where [[?g :accountGroup/nickname]
@@ -270,6 +276,9 @@
 (defn get-account [{:keys [accountId groupId index g nickname selected fuzzy]}]
   (let [g            (and g {:account g})
         fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if-not (= fuzzy "")
                        (re-pattern
                         (str "(?i)"
                              (-> fuzzy
@@ -324,16 +333,19 @@
   (let [g                   (and g {:token g})
         post-process        (if (seq g) identity #(get % :db/id))
         addr                (and (string? address) (.toLowerCase address))
-        fuzzy-length        (if (string? fuzzy) (count (.trim fuzzy)) nil)
-        fuzzy               (if (string? fuzzy)
-                              (re-pattern
-                               (str "(?i)"
-                                    (-> fuzzy
-                                        (.trim)
-                                        gstr/regExpEscape
-                                        (.replaceAll " " ".*"))))
-                              nil)
-        fuzzy-has-match-any (if (string? fuzzy) (.includes fuzzy ".*") nil)]
+        fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy-length        (if fuzzy (count fuzzy) nil)
+        fuzzy        (if-not (= fuzzy "")
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 (.trim)
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)
+        fuzzy-has-match-any (if fuzzy (.includes fuzzy ".*") nil)]
     (prst->js
      (cond
        tokenId
@@ -872,14 +884,17 @@
         networkId        (if (int? appId) (q '[:find ?net . :in $ ?app :where [?app :app/currentNetwork ?net]] appId) networkId)
         accountId        (if (int? appId) (q '[:find ?acc . :in $ ?app :where [?app :app/currentAccount ?acc]] appId) accountId)
         addressId        (if (and (int? accountId) (int? networkId)) (:addressId (addr-acc-network {:accountId accountId :networkId networkId})) addressId)
-        fuzzy            (if (string? fuzzy)
-                           (re-pattern
-                            (str "(?i)"
-                                 (-> fuzzy
-                                     (.trim)
-                                     gstr/regExpEscape
-                                     (.replaceAll " " ".*"))))
-                           nil)]
+        fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if-not (= fuzzy "")
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 (.trim)
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)]
     (prst->js
      (cond
        (vector? addressId)
@@ -1067,6 +1082,9 @@
         limit (or limit 100)
         offset (or offset 0)
         fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if-not (= fuzzy "")
                        (re-pattern
                         (str "(?i)"
                              (-> fuzzy
@@ -1653,14 +1671,17 @@
   [{:keys [limit offset fuzzy countOnly]}]
   :let  [limit  (or limit 10)
          offset (or offset 0)
-         fuzzy  (if (string? fuzzy)
-                  (re-pattern
-                   (str "(?i)"
-                        (-> fuzzy
-                            (.trim)
-                            gstr/regExpEscape
-                            (.replaceAll " " ".*"))))
-                  nil)
+         fuzzy        (if (string? fuzzy)
+                        (.trim fuzzy)
+                        nil)
+         fuzzy        (if-not (= fuzzy "")
+                        (re-pattern
+                         (str "(?i)"
+                              (-> fuzzy
+                                  (.trim)
+                                  gstr/regExpEscape
+                                  (.replaceAll " " ".*"))))
+                        nil)
 
          ;; get all none contract to / transfer recipient
          ;; no dup address here
