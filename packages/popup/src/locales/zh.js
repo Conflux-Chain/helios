@@ -343,8 +343,8 @@ const zh = {
     followConnectLedgerSteps: '请根据以下步骤连接 Ledger',
     steps: '步骤 {{number}}',
     pluginHardwareWallet: '请将硬件钱包插入电脑的 USB 端口',
-    enterPinCode: '在硬件钱包上输入 PIN 码',
-    selectLedgerApp: '在 Ledger 中打开 {{appName}} App',
+    selectLedgerApp: '打开 {{appName}} App',
+    hardwareAccountTips: 'Added account(s) is available on {{chain}}',
     ready: '开始连接',
     specifiedConnectedChain:
       '<Container><Content>连接 Ledger 在</Content><CurrentNetworkDisplay/></Container>',
@@ -428,7 +428,6 @@ const zh = {
     // address book & contacts
     addressBook: '地址簿',
     contacts: '联系人',
-    contact: '联系人',
     recent: '最近',
     account: '我的账户',
     searchAddressNickname: '输入地址或名字查找',

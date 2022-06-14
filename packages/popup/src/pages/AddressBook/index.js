@@ -9,7 +9,7 @@ import useGlobalStore from '../../stores'
 import {ROUTES} from '../../constants'
 
 const {SEND_TRANSACTION} = ROUTES
-const TABS = ['recent', 'contact', 'account']
+const TABS = ['recent', 'contacts', 'account']
 
 function AddressBook() {
   const {t} = useTranslation()
