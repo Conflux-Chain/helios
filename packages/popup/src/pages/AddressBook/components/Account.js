@@ -44,7 +44,7 @@ function Account({fuzzy, onJumpToSendTx}) {
   }, [accountListData, fuzzy])
 
   return (
-    <div>
+    <div className="h-full overflow-auto">
       {accountList?.length > 0 &&
         accountList.map(
           (

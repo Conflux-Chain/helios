@@ -458,7 +458,7 @@ const fr = {
     recent: 'Recent',
     account: 'Account',
     searchAddressNickname: 'Search address or nickname',
-    addedContactWarning: 'Already added!',
+    addedContactWarning: 'This address has already been added!',
     deleteContactTitle: 'Confirm delete this contact',
     deleteContactContent: 'Do you want to delete this contact?',
   },

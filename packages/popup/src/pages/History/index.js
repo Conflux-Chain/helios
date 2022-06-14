@@ -1,10 +1,10 @@
 import {useTranslation} from 'react-i18next'
-import {useState, useRef, useEffect} from 'react'
+import {useState, useRef, useEffect, useCallback} from 'react'
 import {TitleNav, NoResult} from '../../components'
 import {HistoryItem, ResendTransaction} from './components'
 import {useTxList, useBlockchainExplorerUrl} from '../../hooks/useApi'
 import useLoading from '../../hooks/useLoading'
-import {composeRef, formatStatus} from '../../utils'
+import {composeRef, formatStatus, setScrollPageLimit} from '../../utils'
 import {PAGE_LIMIT} from '../../constants'
 
 function History() {
@@ -46,16 +46,9 @@ function History() {
     }
   }, [txList, transactionRecord, setLoading])
 
-  const onScroll = () => {
-    if (
-      historyRef.current.scrollHeight - historyRef.current.clientHeight <=
-        historyRef.current.scrollTop &&
-      txList?.length < total &&
-      limit < total
-    ) {
-      setLimit(limit + PAGE_LIMIT)
-    }
-  }
+  const onScroll = useCallback(() => {
+    setScrollPageLimit(historyRef?.current, setLimit, txList, total, limit)
+  }, [txList, limit, total])
 
   const onResendTx = (type, record) => {
     setReSendTxStatus('pending')

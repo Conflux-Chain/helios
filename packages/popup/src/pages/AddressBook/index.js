@@ -65,7 +65,7 @@ function AddressBook() {
             >
               <div>{t(tab)}</div>
               {currentTab === tab && (
-                <div className="absolute bottom-0 w-full h-0.5 bg-[#7084ED] rounded-[1px]" />
+                <div className="absolute left-0 bottom-0 w-full h-0.5 bg-[#7084ED] rounded-[1px]" />
               )}
             </div>
           ))}
@@ -82,9 +82,12 @@ function AddressBook() {
         )}
       </div>
 
-      <div className="flex-1 overflow-auto no-scroll pb-4">
+      <div className="flex-1 overflow-hidden pb-4">
         {TABS.map((tab, index) => (
-          <div key={tab} className={currentTab === tab ? '' : 'hidden'}>
+          <div
+            key={tab}
+            className={`h-full ${currentTab === tab ? '' : 'hidden'}`}
+          >
             {index === 0 ? (
               <Recent
                 fuzzy={debouncedSearchContent}
