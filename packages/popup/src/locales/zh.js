@@ -431,7 +431,7 @@ const zh = {
     recent: '最近',
     account: '我的账户',
     searchAddressNickname: '输入地址或名字查找',
-    addedContactWarning: '已添加！',
+    addedContactWarning: '该地址已经添加过了！',
     deleteContactTitle: '删除联系人',
     deleteContactContent: '确认删除此联系人？',
   },
