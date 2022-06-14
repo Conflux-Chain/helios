@@ -25,6 +25,7 @@ function AddressBook() {
     useState(searchContent)
 
   const onJumpToSendTx = ({address = '', note = ''}) => {
+    history.replace('')
     setToAddress(address)
     address && note && setAddressNote({[address]: note})
     history.push(SEND_TRANSACTION)

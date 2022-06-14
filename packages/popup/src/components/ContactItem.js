@@ -181,7 +181,9 @@ function ContactItem({
             className="w-7.5 h-7.5 mr-2"
             diameter={30}
             accountIdentity={
-              address && !isHexAddress(address) ? decode(address) : address
+              address && !isHexAddress(address)
+                ? decode(address)?.hexAddress
+                : address
             }
           />
           <div>
