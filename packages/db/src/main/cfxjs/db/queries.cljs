@@ -247,9 +247,11 @@
                                     '[?g :accountGroup/nickname ?g-name]
                                     '[?g :accountGroup/account ?acc]
                                     '[?acc :account/nickname ?acc-name]
+                                    '[?addr :address/value ?addrv]
                                     '(or
                                       [(re-find ?fuzzy ?g-name)]
-                                      [(re-find ?fuzzy ?acc-name)])))
+                                      [(re-find ?fuzzy ?acc-name)]
+                                      [(re-find ?fuzzy ?addrv)])))
                         (not (true? includeHidden))
                         (-> (update :where conj
                                     '(not [?acc :account/hidden true])))
@@ -1086,32 +1088,46 @@
                         (-> (update :args conj networkId)
                             (update :in conj '?net)
                             (update :where conj
-                                    '[?ga :gaddr/network ?net]
-                                    '[?m :memo/gaddr ?ga]))
+                                    '[?ga :gaddr/network ?net]))
                         (not networkId)
                         (-> (update :where conj
                                     '[?net :network/selected true]
-                                    '[?ga :gaddr/network ?net]
-                                    '[?m :memo/gaddr ?ga]))
+                                    '[?ga :gaddr/network ?net]))
                         addr
                         (-> (update :args conj addr)
                             (update :in conj '[?addr ...])
                             (update :where conj
-                                    '[?ga :gaddr/value ?addr]
-                                    '[?m :memo/gaddr ?ga]))
+                                    '[?ga :gaddr/value ?addr]))
                         value
                         (-> (update :args conj value)
                             (update :in conj '?value)
                             (update :where conj '[?m :memo/value ?value]))
 
-                        (and (not value) fuzzy)
+                        true
+                        (-> (update :where conj '[?m :memo/gaddr ?ga]))
+
+                        (and (or (not value) (not addr)) fuzzy)
                         (-> (update :args conj fuzzy)
-                            (update :in conj '?fuzzy)
-                            (update :where conj
+                            (update :in conj '?fuzzy))
+
+                        (and (not value) (not addr))
+                        (-> (update :where conj
+                                    '(or
+                                      (and
+                                       [?m :memo/value ?v]
+                                       [(re-find ?fuzzy ?v)])
+                                      (and
+                                       [?ga :gaddr/value ?v]
+                                       [(re-find ?fuzzy ?v)]))))
+
+                        (and addr (not value) fuzzy)
+                        (-> (update :where conj
                                     '[?m :memo/value ?v]
                                     '[(re-find ?fuzzy ?v)]))
-                        (not addr)
-                        (-> (update :where conj '[?m :memo/gaddr ?ga])))
+                        (and value (not addr) fuzzy)
+                        (-> (update :where conj
+                                    '[?ga :gaddr/value ?gav]
+                                    '[(re-find ?fuzzy ?gav)])))
         query         (concat [:find] (:find query-initial)
                               [:in] (:in query-initial)
                               [:where] (:where query-initial))
@@ -1694,7 +1710,8 @@
                               (and [(and true ?nick)]
                                    [(re-find ?fuzzy ?nick)])
                               (and [(and true ?memov)]
-                                   [(re-find ?fuzzy ?memov)]))))
+                                   [(re-find ?fuzzy ?memov)])
+                              [(re-find ?fuzzy ?address)])))
                 query)
 
         query
