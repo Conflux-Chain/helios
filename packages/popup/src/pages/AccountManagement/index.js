@@ -36,8 +36,9 @@ const PKDATAINFO = {
 }
 
 const getPrivateKey = res => {
-  let pkObj = {}
+  let ret = []
   if (isArray(res)) {
+    let pkObj = {}
     for (let i in res) {
       const hdPath = res[i]?.network?.hdPath?.value
       if (PKDATAINFO?.[hdPath] && !pkObj?.[hdPath]) {
@@ -53,22 +54,12 @@ const getPrivateKey = res => {
         break
       }
     }
+    ret = Object.values(pkObj).length
+      ? Object.values(pkObj).sort((a, b) => a.index - b.index)
+      : []
   } else if (isString(res)) {
-    pkObj = {
-      [DEFAULT_CFX_HDPATH]: {
-        pk: res,
-        ...PKDATAINFO[DEFAULT_CFX_HDPATH],
-      },
-      [DEFAULT_ETH_HDPATH]: {
-        pk: res,
-        ...PKDATAINFO[DEFAULT_ETH_HDPATH],
-      },
-    }
+    ret = [{pk: res}]
   }
-  const ret = Object.values(pkObj).length
-    ? Object.values(pkObj).sort((a, b) => a.index - b.index)
-    : []
-
   return ret
 }
 

@@ -356,8 +356,8 @@ const en = {
     steps: 'Steps {{number}}',
     pluginHardwareWallet:
       'Plug your hardware wallet into your computer using the USB port.',
-    enterPinCode: 'Enter your PIN code.',
-    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App.',
+    hardwareAccountTips: 'Added account(s) is available on {{chain}}',
     ready: 'Ready',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -444,7 +444,6 @@ const en = {
     // address book & contacts
     addressBook: 'Address Book',
     contacts: 'Contacts',
-    contact: 'Contact',
     recent: 'Recent',
     account: 'Account',
     searchAddressNickname: 'Search address or nickname',

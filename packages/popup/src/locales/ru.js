@@ -362,8 +362,8 @@ const ru = {
     steps: 'Шаги {{number}}',
     pluginHardwareWallet:
       'Подключите аппаратный кошелек к компьютеру через порт USB.',
-    enterPinCode: 'Введите PIN-код.',
-    selectLedgerApp: 'Выберите и откройте приложение для {{appName}} в Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App.',
+    hardwareAccountTips: 'Added account(s) is available on {{chain}}',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -451,7 +451,6 @@ const ru = {
     // address book & contacts
     addressBook: 'Address Book',
     contacts: 'Contacts',
-    contact: 'Contact',
     recent: 'Recent',
     account: 'Account',
     searchAddressNickname: 'Search address or nickname',

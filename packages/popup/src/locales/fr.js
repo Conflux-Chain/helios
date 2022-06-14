@@ -366,8 +366,8 @@ const fr = {
     steps: 'Étapes {{number}}',
     pluginHardwareWallet:
       'Branchez votre hardware wallet sur votre ordinateur en utilisant un port USB.',
-    enterPinCode: 'Entrer votre code PIN.',
-    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App.',
+    hardwareAccountTips: 'Added account(s) is available on {{chain}}',
     ready: 'Prêt',
     specifiedConnectedChain:
       '<Container><Content>Connecter Ledger sur</Content><CurrentNetworkDisplay/></Container>',
@@ -455,7 +455,6 @@ const fr = {
     // address book & contacts
     addressBook: 'Address Book',
     contacts: 'Contacts',
-    contact: 'Contact',
     recent: 'Recent',
     account: 'Account',
     searchAddressNickname: 'Search address or nickname',
