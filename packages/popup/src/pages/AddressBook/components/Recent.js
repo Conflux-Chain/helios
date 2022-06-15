@@ -44,7 +44,9 @@ function RecentItem({address, note, refreshData, onJumpToSendTx}) {
               className="w-7.5 h-7.5 mr-2"
               diameter={30}
               accountIdentity={
-                address && !isHexAddress(address) ? decode(address) : address
+                address && !isHexAddress(address)
+                  ? decode(address)?.hexAddress
+                  : address
               }
             />
             <span className="text-gray-40 text-xs">
