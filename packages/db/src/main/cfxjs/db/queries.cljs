@@ -144,10 +144,12 @@
 (defn get-account-group [{:keys [groupId g fuzzy selected groupTypes]}]
   (let [g            (and g {:accountGroup g})
         fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
                        (re-pattern
                         (str "(?i)"
                              (-> fuzzy
-                                 (.trim)
                                  gstr/regExpEscape
                                  (.replaceAll " " ".*"))))
                        nil)
@@ -220,14 +222,16 @@
                         (group-by first v))))))
            {}
            (group-by first data)))
-        fuzzy         (if (string? fuzzy)
-                        (re-pattern
-                         (str "(?i)"
-                              (-> fuzzy
-                                  (.trim)
-                                  gstr/regExpEscape
-                                  (.replaceAll " " ".*"))))
-                        nil)
+        fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)
         query-initial (cond-> '{:find  [?g ?acc ?addr]
                                 :in    [$]
                                 :where [[?g :accountGroup/nickname]
@@ -270,10 +274,12 @@
 (defn get-account [{:keys [accountId groupId index g nickname selected fuzzy]}]
   (let [g            (and g {:account g})
         fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
                        (re-pattern
                         (str "(?i)"
                              (-> fuzzy
-                                 (.trim)
                                  gstr/regExpEscape
                                  (.replaceAll " " ".*"))))
                        nil)
@@ -324,16 +330,18 @@
   (let [g                   (and g {:token g})
         post-process        (if (seq g) identity #(get % :db/id))
         addr                (and (string? address) (.toLowerCase address))
-        fuzzy-length        (if (string? fuzzy) (count (.trim fuzzy)) nil)
-        fuzzy               (if (string? fuzzy)
-                              (re-pattern
-                               (str "(?i)"
-                                    (-> fuzzy
-                                        (.trim)
-                                        gstr/regExpEscape
-                                        (.replaceAll " " ".*"))))
-                              nil)
-        fuzzy-has-match-any (if (string? fuzzy) (.includes fuzzy ".*") nil)]
+        fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy-length        (if fuzzy (count fuzzy) nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)
+        fuzzy-has-match-any (if fuzzy (.includes fuzzy ".*") nil)]
     (prst->js
      (cond
        tokenId
@@ -872,14 +880,16 @@
         networkId        (if (int? appId) (q '[:find ?net . :in $ ?app :where [?app :app/currentNetwork ?net]] appId) networkId)
         accountId        (if (int? appId) (q '[:find ?acc . :in $ ?app :where [?app :app/currentAccount ?acc]] appId) accountId)
         addressId        (if (and (int? accountId) (int? networkId)) (:addressId (addr-acc-network {:accountId accountId :networkId networkId})) addressId)
-        fuzzy            (if (string? fuzzy)
-                           (re-pattern
-                            (str "(?i)"
-                                 (-> fuzzy
-                                     (.trim)
-                                     gstr/regExpEscape
-                                     (.replaceAll " " ".*"))))
-                           nil)]
+        fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)]
     (prst->js
      (cond
        (vector? addressId)
@@ -1067,10 +1077,12 @@
         limit (or limit 100)
         offset (or offset 0)
         fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
                        (re-pattern
                         (str "(?i)"
                              (-> fuzzy
-                                 (.trim)
                                  gstr/regExpEscape
                                  (.replaceAll " " ".*"))))
                        nil)
@@ -1110,7 +1122,7 @@
                         (-> (update :args conj fuzzy)
                             (update :in conj '?fuzzy))
 
-                        (and (not value) (not addr))
+                        (and (not value) (not addr) fuzzy)
                         (-> (update :where conj
                                     '(or
                                       (and
@@ -1644,89 +1656,106 @@
           true)
       false)))
 
-(defn get-recent-interesting-address-from-tx
-  "Get interesting address from tx
+(defnc get-recent-interesting-address-from-tx
+  ;; "Get interesting address from tx
 
-  interesting means
-  1. to addr of simple send tx
-  2. send/transfer tx to 20/777 contract"
-  [{:keys [limit offset fuzzy]}]
-  (let [limit  (or limit 10)
-        offset (or offset 0)
-        fuzzy  (if (string? fuzzy)
-                 (re-pattern
-                  (str "(?i)"
-                       (-> fuzzy
-                           (.trim)
-                           gstr/regExpEscape
-                           (.replaceAll " " ".*"))))
-                 nil)
+  ;; interesting means
+  ;; 1. to addr of simple send tx
+  ;; 2. send/transfer tx to 20/777 contract"
+  [{:keys [limit offset fuzzy countOnly]}]
+  :let  [limit  (or limit 10)
+         offset (or offset 0)
+         fuzzy        (if (string? fuzzy)
+                        (.trim fuzzy)
+                        nil)
+         fuzzy        (if (and fuzzy (not (= fuzzy "")))
+                        (re-pattern
+                         (str "(?i)"
+                              (-> fuzzy
+                                  gstr/regExpEscape
+                                  (.replaceAll " " ".*"))))
+                        nil)
 
-        query
-        {:find '[?address ?memo ?memov ?acc ?nick]
-         :in   '[$]
-         :where
-         '[[?net :network/selected true]
-           [?addr :address/network ?net]
-           [?addr :address/tx ?tx]
-           [?tx :tx/txExtra ?extra]
-           (or
-            (and
-             [?extra :txExtra/simple true]
-             [?tx :tx/txPayload ?payload]
-             [?payload :txPayload/to ?address])
-            (and
-             [?extra :txExtra/token20 true]
-             (or [?extra :txExtra/method "transfer"]
-                 [?extra :txExtra/method "send"])
-             [?payload :txExtra/address ?address]))
-           [(vector ?net ?address) ?addr-id]
-           (or-join  [?addr-id ?memo ?memov]
+         ;; get all none contract to / transfer recipient
+         ;; no dup address here
+         addrs
+         (q '[:find [?address ...]
+              :in   $
+              :where
+              [?net :network/selected true]
+              [?addr :address/network ?net]
+              [?addr :address/tx ?tx]
+              [?tx :tx/txExtra ?extra]
+              (or
+               (and
+                [?extra :txExtra/simple true]
+                [?tx :tx/txPayload ?payload]
+                [?payload :txPayload/to ?address])
+               (and
+                [?extra :txExtra/token20 true]
+                (or [?extra :txExtra/method "transfer"]
+                    [?extra :txExtra/method "send"])
+                [?payload :txExtra/address ?address]))])
+
+         query
+         {:find '[?address ?memo ?memov ?acc ?nick]
+          :in   '[$ [?address-from-tx ...]]
+          :where
+          '[[?net :network/selected true]
+            [(identity ?address-from-tx) ?address]
+            [(vector ?net ?address) ?addr-id]
+            ;; filter by memo
+            (or-join  [?addr-id ?memo ?memov]
+                      ;; has memo
+                      (and
+                       [(vector :gaddr/id ?addr-id) ?addr-id-ref]
+                       [?memo :memo/gaddr ?addr-id-ref]
+                       [?memo :memo/value ?memov])
+                      ;; has no memo
+                      (and
+                       [(vector :gaddr/id ?addr-id) ?addr-id-ref]
+                       (not [?memo :memo/gaddr ?addr-id-ref])
+                       [(identity false) ?memo]
+                       [(identity false) ?memov]))
+            ;; filter by account nickname
+            (or-join [?addr-id ?acc ?nick]
+                     ;; is account
                      (and
-                      [(vector :gaddr/id ?addr-id) ?addr-id-ref]
-                      [?memo :memo/gaddr ?addr-id-ref]
-                      [?memo :memo/value ?memov])
+                      [(vector :address/id ?addr-id) ?addr-id-ref]
+                      [?acc :account/address ?addr-id-ref]
+                      [?acc :account/nickname ?nick])
+                     ;; is not account
                      (and
-                      [(vector :gaddr/id ?addr-id) ?addr-id-ref]
-                      (not [?memo :memo/gaddr ?addr-id-ref])
-                      [(identity false) ?memo]
-                      [(identity false) ?memov]))
-           (or-join [?addr-id ?acc ?nick]
-                    (and
-                     [(vector :address/id ?addr-id) ?addr-id-ref]
-                     [?acc :account/address ?addr-id-ref]
-                     [?acc :account/nickname ?nick])
-                    (and
-                     [(vector :address/id ?addr-id) ?addr-id-ref]
-                     (not [?acc :account/address ?addr-id-ref])
-                     [(identity false) ?acc]
-                     [(identity false) ?nick]))]}
+                      [(vector :address/id ?addr-id) ?addr-id-ref]
+                      (not [?acc :account/address ?addr-id-ref])
+                      [(identity false) ?acc]
+                      [(identity false) ?nick]))]}
 
-        query (if fuzzy
-                (-> query
-                    (update :in conj '?fuzzy)
-                    (update :where conj
-                            '(or
-                              (and [(and true ?nick)]
-                                   [(re-find ?fuzzy ?nick)])
-                              (and [(and true ?memov)]
-                                   [(re-find ?fuzzy ?memov)])
-                              [(re-find ?fuzzy ?address)])))
-                query)
+         query (if fuzzy
+                 (-> query
+                     (update :in conj '?fuzzy)
+                     (update :where conj
+                             '(or
+                               (and [(and true ?nick)]
+                                    [(re-find ?fuzzy ?nick)])
+                               (and [(and true ?memov)]
+                                    [(re-find ?fuzzy ?memov)])
+                               [(re-find ?fuzzy ?address)])))
+                 query)
 
-        query
-        (concat [:find] (:find query)
-                [:in] (:in query)
-                [:where] (:where query))
+         query (concat [:find] (:find query)
+                       [:in] (:in query)
+                       [:where] (:where query))
 
-        addrs
-        (if fuzzy (q query fuzzy) (q query))
-        total (count addrs)
+         addrs (if fuzzy (q query addrs fuzzy) (q query addrs))
 
-        addrs
-        (->> addrs
-             (drop offset)
-             (take limit))
+         total (count addrs)]
+  countOnly
+  total
+
+  :let [addrs (->> addrs
+                   (drop offset)
+                   (take limit))
 
         format (fn [[addr memo-id memo-value acc-id nickname]]
                  (enc/assoc-when {:address addr}
@@ -1734,7 +1763,10 @@
                                  :memoValue memo-value
                                  :accountId acc-id
                                  :accountNickname nickname))]
-    {:total total :data (map format addrs)}))
+  {:total total :data (map format addrs)})
+
+(comment
+  (get-recent-interesting-address-from-tx {:fuzzy ""}))
 
 ;;; UI QUERIES
 (defn account-list-assets [{:keys [accountGroupTypes]}]
