@@ -45,7 +45,7 @@ function AddressBook() {
 
   return (
     <div id="address-book" className="h-full w-full flex flex-col bg-bg px-3">
-      <TitleNav title={t('contacts')} />
+      <TitleNav title={t('addressBook')} />
       <SearchInput
         value={searchContent}
         onChange={setSearchContent}
@@ -70,7 +70,7 @@ function AddressBook() {
             </div>
           ))}
         </div>
-        {currentTab === 'contact' && (
+        {currentTab === 'contacts' && (
           <div
             className="cursor-pointer text-primary mt-1"
             aria-hidden="true"
