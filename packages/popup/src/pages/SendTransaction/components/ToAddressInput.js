@@ -5,7 +5,7 @@ import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
 import {ContactsOutlined, RightOutlined} from '@fluent-wallet/component-icons'
 
-import {useCurrentNetworkAddressMemo} from '../../../hooks/useApi'
+import {useAddressNote} from '../../../hooks/useApi'
 import {CompWithLabel, CustomTag} from '../../../components'
 import useGlobalStore from '../../../stores'
 import {ROUTES} from '../../../constants'
@@ -17,22 +17,18 @@ function ToAddressInput({address, onChangeAddress, errorMessage}) {
   const {addressNote, setAddressNote} = useGlobalStore()
   const history = useHistory()
 
-  const {data: memoData} = useCurrentNetworkAddressMemo(
-    {
-      address,
-      g: {
-        value: 1,
-      },
-    },
+  const noteName = useAddressNote(
+    address,
     address === Object.keys(addressNote)?.[0],
   )
+
   useEffect(() => {
     return () => {
       setAddressNote?.({})
     }
   }, [setAddressNote])
 
-  const note = addressNote?.[address] || memoData?.data?.[0]?.value
+  const displayNoteName = addressNote?.[address] || noteName
 
   return (
     <CompWithLabel
@@ -63,14 +59,16 @@ function ToAddressInput({address, onChangeAddress, errorMessage}) {
         id="toAddressInput"
         suffixWrapperClassName="w-auto h-auto"
         suffix={
-          note && (
+          displayNoteName && (
             <CustomTag
               backgroundColor="bg-primary-10"
               roundedStyle="rounded"
               width="max-w-[60px] min-w-[24px]"
               className="h-auto"
             >
-              <div className="text-primary text-ellipsis p-1">{note}</div>
+              <div className="text-primary text-ellipsis p-1">
+                {displayNoteName}
+              </div>
             </CustomTag>
           )
         }
