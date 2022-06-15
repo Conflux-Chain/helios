@@ -100,6 +100,8 @@ import * as ethGetTransactionCount from '@fluent-wallet/eth_get-transaction-coun
 import * as ethRequestAccounts from '@fluent-wallet/eth_request-accounts'
 import * as ethTypedSignV4 from '@fluent-wallet/eth_sign-typed-data_v4'
 import * as ethMaxPriorityFeePerGas from '@fluent-wallet/eth_max-priority-fee-per-gas'
+import * as ethEstimate1559Fee from '@fluent-wallet/eth_estimate-1559-fee'
+
 import {
   IS_CI,
   IS_DEV_MODE,
@@ -339,7 +341,7 @@ export const rpcEngineOpts = {
     ethSendTransaction,
     ethSignTxWithLedgerNanoS,
     ethMaxPriorityFeePerGas,
-
+    ethEstimate1559Fee,
     // sign
     personalSign,
     ethTypedSignV4,
