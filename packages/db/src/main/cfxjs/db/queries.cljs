@@ -1794,22 +1794,44 @@
      :currentNetwork cur-net
      :accountGroups  data}))
 
-(defn- sort-tx [[noncea txa _] [nonceb txb _]]
-
+(defn- sort-tx [[noncea _] [nonceb _]]
   (cond
     ;; sort by nonce
     (.gt (bn/BigNumber.from noncea)
          (bn/BigNumber.from nonceb))
     true
-    ;; sort by created order when with same nonce
-    (.eq (bn/BigNumber.from noncea)
-         (bn/BigNumber.from nonceb))
-    (> txa txb)
+    ;; ;; sort by created order when with same nonce
+    ;; (.eq (bn/BigNumber.from noncea)
+    ;;      (bn/BigNumber.from nonceb))
+    ;; (> txa txb)
     :else
     false))
 
-(defn query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
-  (let [offset (or offset 0)
+(defn- ->single-nonce-tx-id [tx-ids]
+  (->> tx-ids
+       (sort >)
+       (map #(vector % (:tx/status (p [:tx/status] %))))
+       (sort-by second >)
+       first
+       first))
+
+(defn- tx-id->data [id]
+  (let [app-id   (->> id
+                      (p [:app/_tx [:db/id]])
+                      :app/_tx
+                      first
+                      :db/id)
+        token-id (->> id
+                      (p [:token/_tx [:db/id]])
+                      :app/_tx
+                      first
+                      :db/id)]
+    (-> (.toMap (e :tx id))
+        (assoc :app (and app-id (e :app app-id)))
+        (assoc :token (and token-id (e :token token-id))))))
+
+(defnc query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
+  :let [offset (or offset 0)
         limit  (min 100 (or limit 10))
         [status> status>= status< status<=]
         (if (map? status) [(:gt status)
@@ -1828,7 +1850,7 @@
         ext-or-where  (and ext-or-where (vector '[?tx :tx/txExtra ?extra] (cons 'or ext-or-where)))
 
         query-initial
-        (cond-> '{:find  [?nonce ?tx (pull ?tx [:app/_tx [:db/id]]) (pull ?tx [:token/_tx [:db/id]])]
+        (cond-> '{:find  [?nonce (distinct ?tx)]
                   :in    [$]
                   :where [[?tx :tx/txPayload ?payload]
                           [?payload :txPayload/nonce ?nonce]]
@@ -1885,21 +1907,19 @@
                       [:where] (:where query-initial))
 
         txs   (->> (apply q query (:args query-initial))
-                   (sort sort-tx)
-                   (map rest))
-        total (count txs)
-        txs   (when-not countOnly (->> txs
-                                       (drop offset)
-                                       (take limit)))]
-    (if countOnly total
-        {:total total
-         :data  (mapv (fn [[tx app token]]
-                        (let [app   (-> app :app/_tx first :db/id)
-                              token (-> token :token/_tx first :db/id)]
-                          (-> (.toMap (e :tx tx))
-                              (assoc :app (and app (e :app app)))
-                              (assoc :token (and token (e :token token))))))
-                      txs)})))
+                   (sort sort-tx))
+        total (count txs)]
+  countOnly  total
+  :let  [txs (->> txs
+                  (drop offset)
+                  (take limit)
+                  (map rest))
+         data (map (comp tx-id->data ->single-nonce-tx-id first) txs)]
+  {:total total
+   :data  data})
+
+(comment
+  (query-tx-list {}))
 
 (defonce default-preferences {:hideTestNetwork           true
                               :overrideWindowDotEthereum false})
