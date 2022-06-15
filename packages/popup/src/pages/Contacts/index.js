@@ -130,6 +130,7 @@ function Contacts() {
         title={t('contacts')}
         rightButton={
           <span
+            className="text-primary"
             onClick={() => setShowAddContact(true)}
             aria-hidden="true"
             id="add-contact"

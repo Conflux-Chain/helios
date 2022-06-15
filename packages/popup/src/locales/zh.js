@@ -434,6 +434,8 @@ const zh = {
     addedContactWarning: '该地址已经添加过了！',
     deleteContactTitle: '删除联系人',
     deleteContactContent: '确认删除此联系人？',
+    name: '名称',
+    address: '地址',
   },
 }
 
