@@ -4,9 +4,9 @@
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "@ethersproject/address": "5.6.0",
-    "@ethersproject/transactions": "5.6.0",
-    "@ethersproject/wallet": "5.6.0",
+    "@ethersproject/address": "5.6.1",
+    "@ethersproject/transactions": "5.6.2",
+    "@ethersproject/wallet": "5.6.2",
     "@fluent-wallet/compose": "workspace:packages/compose",
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/utils": "workspace:packages/utils",

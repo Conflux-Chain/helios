@@ -43,15 +43,15 @@ const zh = {
 
     // - homepage / dapp connect site popup
     connectSite: '连接至此网站？',
-    permissionRequest: 'Permission Request',
-    allowPermission: 'Allow these permissions for this site?',
+    permissionRequest: '权限申请',
+    allowPermission: '授权给此网站以下权限？',
     selectNetwork: '想要使用哪个网络？',
     selectAuthorizedAccounts: '授权账户',
     selectAll: '全部',
     connect: '连接',
     chooseNetwork: '选择网络',
-    viewSelectedAddress: 'View selected account public address',
-    viewMultiAddress: 'View selected account‘s multi-chain address',
+    viewSelectedAddress: '查看选中账户的地址',
+    viewMultiAddress: '查看选中账户的多链地址',
 
     // - homepage / authorize single account
     authorizeCurrentAccount: '授权 {{currentAccount}}',
@@ -229,7 +229,7 @@ const zh = {
 
     // - request signature - 1. Sign Text
     signText: '文本签名',
-    signThisText: '签署这个文本?',
+    signThisText: '签署这个文本？',
     disablePersonSign: 'Personal sign 暂不支持使用硬件钱包签名',
     disableTypeSign: 'Typed sign 暂不支持使用硬件钱包签名',
 
@@ -254,7 +254,7 @@ const zh = {
 
     // - Switch Network
     switchNetwork: '切换网络',
-    allowSwitchNetwork: '允许此网站切换网络?',
+    allowSwitchNetwork: '允许此网站切换网络？',
     warningSwitchNetwork: '这将会把网络切换至钱包已经添加的网络',
 
     // - set password page
@@ -343,8 +343,8 @@ const zh = {
     followConnectLedgerSteps: '请根据以下步骤连接 Ledger',
     steps: '步骤 {{number}}',
     pluginHardwareWallet: '请将硬件钱包插入电脑的 USB 端口',
-    enterPinCode: '在硬件钱包上输入 PIN 码',
-    selectLedgerApp: '在 Ledger 中打开 {{appName}} App',
+    selectLedgerApp: '打开 {{appName}} App',
+    hardwareAccountTips: '添加的账户只能在 {{chain}} 上使用',
     ready: '开始连接',
     specifiedConnectedChain:
       '<Container><Content>连接 Ledger 在</Content><CurrentNetworkDisplay/></Container>',
@@ -424,6 +424,16 @@ const zh = {
     fullNodeError: '无法连接到 RPC 节点',
     close: '关闭',
     reload: '重新加载',
+
+    // address book & contacts
+    addressBook: '地址簿',
+    contacts: '联系人',
+    recent: '最近',
+    account: '我的账户',
+    searchAddressNickname: '输入地址或名字查找',
+    addedContactWarning: '该地址已经添加过了！',
+    deleteContactTitle: '删除联系人',
+    deleteContactContent: '确认删除此联系人？',
   },
 }
 

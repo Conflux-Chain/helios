@@ -356,8 +356,8 @@ const en = {
     steps: 'Steps {{number}}',
     pluginHardwareWallet:
       'Plug your hardware wallet into your computer using the USB port.',
-    enterPinCode: 'Enter your PIN code.',
-    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App.',
+    hardwareAccountTips: 'Added account(s) is available on {{chain}}',
     ready: 'Ready',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -440,6 +440,18 @@ const en = {
     fullNodeError: 'Unable to connect RPC node.',
     close: 'Close',
     reload: 'Reload',
+
+    // address book & contacts
+    addressBook: 'Address Book',
+    contacts: 'Contacts',
+    recent: 'Recent',
+    account: 'Account',
+    searchAddressNickname: 'Search address or nickname',
+    addedContactWarning: 'This address has already been added!',
+    deleteContactTitle: 'Confirm delete this contact',
+    deleteContactContent: 'Do you want to delete this contact?',
+    name: 'Name',
+    address: 'Address',
   },
 }
 

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {useState, forwardRef, useEffect} from 'react'
 import {useDebounce} from 'react-use'
 import {useTranslation} from 'react-i18next'
-import {useAccountList} from '../hooks/useApi.js'
+import {useAccountList} from '../hooks/useApi'
 
 import {SearchInput} from './'
 
@@ -34,17 +34,23 @@ const SearchAccount = forwardRef(function SearchAccount(
     [searchContent],
   )
 
-  const {data: accountList} = useAccountList({
+  const {data: accountList, mutate} = useAccountList({
     networkId: debouncedSearchAccount && currentNetworkId,
     fuzzy: debouncedSearchAccount,
     includeHidden: showHiddenAccount,
   })
 
   useEffect(() => {
+    mutate?.()
+  }, [mutate, refreshDataStatus])
+
+  useEffect(() => {
     if (!Object.keys(accountList).length && !debouncedSearchAccount) {
       onSearchCallback?.(null)
-    } else onSearchCallback?.(accountList)
-  }, [refreshDataStatus, accountList, onSearchCallback, debouncedSearchAccount])
+    } else {
+      onSearchCallback?.(accountList)
+    }
+  }, [accountList, onSearchCallback, debouncedSearchAccount])
 
   return (
     <SearchInput

@@ -366,8 +366,8 @@ const fr = {
     steps: 'Étapes {{number}}',
     pluginHardwareWallet:
       'Branchez votre hardware wallet sur votre ordinateur en utilisant un port USB.',
-    enterPinCode: 'Entrer votre code PIN.',
-    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App.',
+    hardwareAccountTips: 'Added account(s) is available on {{chain}}',
     ready: 'Prêt',
     specifiedConnectedChain:
       '<Container><Content>Connecter Ledger sur</Content><CurrentNetworkDisplay/></Container>',
@@ -451,6 +451,16 @@ const fr = {
     fullNodeError: 'Impossible de se connecter au noeud RPC.',
     close: 'Fermer',
     reload: 'Rafraichir',
+
+    // address book & contacts
+    addressBook: 'Address Book',
+    contacts: 'Contacts',
+    recent: 'Recent',
+    account: 'Account',
+    searchAddressNickname: 'Search address or nickname',
+    addedContactWarning: 'This address has already been added!',
+    deleteContactTitle: 'Confirm delete this contact',
+    deleteContactContent: 'Do you want to delete this contact?',
   },
 }
 

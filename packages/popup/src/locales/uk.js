@@ -359,8 +359,8 @@ const uk = {
     steps: 'Шаги {{number}}',
     pluginHardwareWallet:
       "Підключіть апаратний гаманець до комп'ютера через порт USB.",
-    enterPinCode: 'Введіть PIN- код.',
-    selectLedgerApp: 'Виберіть і відкрийте додаток для {{appName}} в Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App.',
+    hardwareAccountTips: 'Added account(s) is available on {{chain}}',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -444,6 +444,16 @@ const uk = {
     fullNodeError: 'Неможливо підключитися до вузла RPC.',
     close: 'Закрити',
     reload: 'Перезавантажити',
+
+    // address book & contacts
+    addressBook: 'Address Book',
+    contacts: 'Contacts',
+    recent: 'Recent',
+    account: 'Account',
+    searchAddressNickname: 'Search address or nickname',
+    addedContactWarning: 'This address has already been added!',
+    deleteContactTitle: 'Confirm delete this contact',
+    deleteContactContent: 'Do you want to delete this contact?',
   },
 }
 

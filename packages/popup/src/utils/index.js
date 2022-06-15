@@ -3,7 +3,13 @@ import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress, isChecksummed, toChecksum} from '@fluent-wallet/account'
 import {isArray} from '@fluent-wallet/checks'
-import {PASSWORD_REG_EXP, RPC_METHODS, LANGUAGES} from '../constants'
+import {
+  PASSWORD_REG_EXP,
+  RPC_METHODS,
+  NETWORK_TYPE,
+  LANGUAGES,
+  PAGE_LIMIT,
+} from '../constants'
 const globalThis = window ?? global
 const {
   WALLET_GET_ACCOUNT_GROUP,
@@ -255,4 +261,32 @@ export const setEffectiveCurrentAccount = async networkId => {
   })
   const targetAccountId = Object.values(Object.values(target)[0].account)[0].eid
   return request(WALLET_SET_CURRENT_ACCOUNT, [targetAccountId])
+}
+
+export const getBaseChainName = networkType => {
+  return networkType === NETWORK_TYPE.CFX
+    ? 'Conflux Core'
+    : networkType === NETWORK_TYPE.ETH
+    ? 'EVM Chain'
+    : ''
+}
+
+// set page limit when scroll to the bottom of target dom
+export const setScrollPageLimit = (
+  dom,
+  setLimit,
+  list,
+  total,
+  currentLimit,
+) => {
+  if (!dom) {
+    return
+  }
+  if (
+    dom.scrollHeight - dom.clientHeight <= dom.scrollTop &&
+    list?.length < total &&
+    currentLimit < total
+  ) {
+    setLimit(currentLimit + PAGE_LIMIT)
+  }
 }

@@ -1,17 +1,13 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import Tooltip from '@fluent-wallet/component-tooltip'
-import {CustomTag} from '../../../components'
-import {NETWORK_TYPE} from '../../../constants'
+import {CustomTag} from '.'
+import {NETWORK_TYPE} from '../constants'
+import {getBaseChainName} from '../utils'
 
 function LedgerGroupTag({networkType}) {
   const {t} = useTranslation()
-  const network =
-    networkType === NETWORK_TYPE.CFX
-      ? 'Conflux Core'
-      : networkType === NETWORK_TYPE.ETH
-      ? 'EVM Chain'
-      : ''
+  const networkName = getBaseChainName(networkType)
 
   return (
     <CustomTag
@@ -21,8 +17,11 @@ function LedgerGroupTag({networkType}) {
         networkType === NETWORK_TYPE.CFX ? 'bg-[#1E3DE4]' : 'bg-[#17B38A]'
       }`}
     >
-      <Tooltip content={t('ledgerTips', {network})} placement="topLeft">
-        <span className="text-white">{network}</span>
+      <Tooltip
+        content={t('ledgerTips', {network: networkName})}
+        placement="topLeft"
+      >
+        <span className="text-white">{networkName}</span>
       </Tooltip>
     </CustomTag>
   )

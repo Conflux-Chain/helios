@@ -362,8 +362,8 @@ const ru = {
     steps: 'Шаги {{number}}',
     pluginHardwareWallet:
       'Подключите аппаратный кошелек к компьютеру через порт USB.',
-    enterPinCode: 'Введите PIN-код.',
-    selectLedgerApp: 'Выберите и откройте приложение для {{appName}} в Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App.',
+    hardwareAccountTips: 'Added account(s) is available on {{chain}}',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -447,6 +447,16 @@ const ru = {
     fullNodeError: 'Невозможно подключиться к узлу RPC.',
     close: 'Закрыть',
     reload: 'Перезагрузка',
+
+    // address book & contacts
+    addressBook: 'Address Book',
+    contacts: 'Contacts',
+    recent: 'Recent',
+    account: 'Account',
+    searchAddressNickname: 'Search address or nickname',
+    addedContactWarning: 'This address has already been added!',
+    deleteContactTitle: 'Confirm delete this contact',
+    deleteContactContent: 'Do you want to delete this contact?',
   },
 }
 
