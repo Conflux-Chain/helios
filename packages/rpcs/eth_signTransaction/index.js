@@ -2,6 +2,8 @@ import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import {ethSignTransaction} from '@fluent-wallet/signature'
 import {consts as ledgerConsts} from '@fluent-wallet/ledger'
+import Big from 'big.js'
+import {addHexPrefix} from '@fluent-wallet/utils'
 
 const {
   TransactionLegacyUnsigned,
@@ -161,8 +163,13 @@ export const main = async args => {
     const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
       gasInfoEip1559?.medium || {}
     if (!newTx.maxPriorityFeePerGas)
-      newTx.maxPriorityFeePerGas = suggestedMaxPriorityFeePerGas
-    if (!newTx.maxFeePerGas) newTx.maxFeePerGas = suggestedMaxFeePerGas
+      newTx.maxPriorityFeePerGas = addHexPrefix(
+        new Big(suggestedMaxPriorityFeePerGas).times(10 ** 9).toString(16),
+      )
+    if (!newTx.maxFeePerGas)
+      newTx.maxFeePerGas = addHexPrefix(
+        new Big(suggestedMaxFeePerGas).times(10 ** 9).toString(16),
+      )
   }
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {

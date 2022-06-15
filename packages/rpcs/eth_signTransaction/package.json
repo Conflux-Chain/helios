@@ -8,6 +8,11 @@
     "@fluent-wallet/eth-transaction-schema": "workspace:*",
     "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
-    "@fluent-wallet/spec": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*",
+    "@fluent-wallet/utils": "workspace:*",
+    "big.js": "6.2.0"
+  },
+  "devDependencies": {
+    "@types/big.js": "^6"
   }
 }
