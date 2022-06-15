@@ -454,6 +454,8 @@ const uk = {
     addedContactWarning: 'This address has already been added!',
     deleteContactTitle: 'Confirm delete this contact',
     deleteContactContent: 'Do you want to delete this contact?',
+    name: 'Name',
+    address: 'Address',
   },
 }
 

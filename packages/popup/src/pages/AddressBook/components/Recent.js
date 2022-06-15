@@ -8,7 +8,7 @@ import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {useRecentTradingAddress} from '../../../hooks/useApi'
 import {NoResult, ContactItem, Avatar} from '../../../components'
 
-function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
+function RecentItem({address, note, refreshData, onJumpToSendTx}) {
   const {t} = useTranslation()
 
   const [addToContact, setAddToContact] = useState(false)
@@ -23,14 +23,14 @@ function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
     setAddToContact(true)
   }
   return (
-    <div className="cursor-pointer" id={address}>
-      {memo ? (
+    <div className="cursor-pointer" id={`recent-tx-${address}`}>
+      {note ? (
         <div
           aria-hidden="true"
           id={`send-tx-${address}`}
-          onClick={() => onJumpToSendTx({address, note: memo})}
+          onClick={() => onJumpToSendTx({address, note})}
         >
-          <ContactItem address={address} memo={memo} />
+          <ContactItem address={address} memo={note} />
         </div>
       ) : address && !addToContact ? (
         <div
@@ -75,7 +75,7 @@ function RecentItem({address, memo, refreshData, onJumpToSendTx}) {
 
 RecentItem.propTypes = {
   address: PropTypes.string,
-  memo: PropTypes.string,
+  note: PropTypes.string,
   refreshData: PropTypes.func,
   onJumpToSendTx: PropTypes.func,
 }
@@ -96,15 +96,17 @@ function Recent({fuzzy = '', onJumpToSendTx}) {
   return (
     <div className="h-full overflow-auto">
       {displayTradingAddressData?.length > 0 &&
-        displayTradingAddressData.map(({address, memoValue}) => (
-          <RecentItem
-            address={address}
-            memo={memoValue}
-            key={address}
-            refreshData={mutate}
-            onJumpToSendTx={onJumpToSendTx}
-          />
-        ))}
+        displayTradingAddressData.map(
+          ({address, memoValue, accountNickname}) => (
+            <RecentItem
+              address={address}
+              note={accountNickname || memoValue}
+              key={address}
+              refreshData={mutate}
+              onJumpToSendTx={onJumpToSendTx}
+            />
+          ),
+        )}
       {displayTradingAddressData?.length === 0 && (
         <NoResult content={t('noResult')} />
       )}

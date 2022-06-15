@@ -1,3 +1,4 @@
+import {useEffect, useState} from 'react'
 import {
   isNumber,
   isString,
@@ -686,4 +687,37 @@ export const useRecentTradingAddress = (params = {}) => {
     },
   )
   return {data, mutate}
+}
+
+//get address account nickname or contact memo
+export const useAddressNote = (address, stop) => {
+  const [noteName, setNoteName] = useState('')
+
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {data: addressData} = useAddress({
+    value: address,
+    networkId,
+    stop: stop || isUndefined(networkId),
+  })
+
+  const {data: memoData} = useCurrentNetworkAddressMemo(
+    {
+      address,
+      g: {
+        value: 1,
+      },
+    },
+    stop || addressData !== null,
+  )
+
+  useEffect(() => {
+    setNoteName(
+      addressData?.account?.[0]?.nickname || memoData?.data?.[0]?.value || '',
+    )
+  }, [addressData?.account, memoData?.data])
+  return noteName
 }
