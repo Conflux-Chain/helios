@@ -1145,7 +1145,7 @@
                               [:where] (:where query-initial))
         rst          (apply q query (:args query-initial))
         total        (count rst)
-        rst (->> rst reverse (drop offset) (take limit) post-process)]
+        rst (->> rst (sort >) (drop offset) (take limit) post-process)]
   {:total total :data rst})
 
 (defn- cleanup-token-list-after-delete-address []
@@ -1679,27 +1679,27 @@
          ;; get all none contract to / transfer recipient
          ;; no dup address here
          addrs
-         (q '[:find [?address ...]
+         (q '[:find ?tx ?address
               :in   $
               :where
               [?net :network/selected true]
               [?addr :address/network ?net]
               [?addr :address/tx ?tx]
               [?tx :tx/txExtra ?extra]
+              [?tx :tx/txPayload ?payload]
               (or
                (and
                 [?extra :txExtra/simple true]
-                [?tx :tx/txPayload ?payload]
                 [?payload :txPayload/to ?address])
                (and
                 [?extra :txExtra/token20 true]
                 (or [?extra :txExtra/method "transfer"]
                     [?extra :txExtra/method "send"])
-                [?payload :txExtra/address ?address]))])
+                [?extra :txExtra/address ?address]))])
 
          query
-         {:find '[?address ?memo ?memov ?acc ?nick]
-          :in   '[$ [?address-from-tx ...]]
+         {:find '[?tx ?address ?memo ?memov ?acc ?nick]
+          :in   '[$ [[?tx ?address-from-tx]]]
           :where
           '[[?net :network/selected true]
             [(identity ?address-from-tx) ?address]
@@ -1754,10 +1754,11 @@
   total
 
   :let [addrs (->> addrs
+                   (sort-by first >)
                    (drop offset)
                    (take limit))
 
-        format (fn [[addr memo-id memo-value acc-id nickname]]
+        format (fn [[_ addr memo-id memo-value acc-id nickname]]
                  (enc/assoc-when {:address addr}
                                  :memoId memo-id
                                  :memoValue memo-value
