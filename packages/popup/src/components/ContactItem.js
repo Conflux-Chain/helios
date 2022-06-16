@@ -24,6 +24,7 @@ function ContactItem({
   onClickAwayCallback,
   editMemo = false,
   rightComponent,
+  itemId,
 }) {
   const {t} = useTranslation()
   const containerRef = useRef(null)
@@ -173,7 +174,7 @@ function ContactItem({
             ? 'bg-primary-4'
             : 'bg-white hover:bg-primary-4'
         } p-3 ${containerClassName}`}
-        id={`contact-${address}`}
+        id={itemId || `contact-${address}`}
         ref={containerRef}
       >
         <div className="flex items-center">
@@ -244,6 +245,7 @@ function ContactItem({
   )
 }
 ContactItem.propTypes = {
+  itemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   address: PropTypes.string,
   memo: PropTypes.string,
   memoId: PropTypes.number,
