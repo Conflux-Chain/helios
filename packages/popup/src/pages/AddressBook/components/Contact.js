@@ -57,7 +57,7 @@ function Contact({
   }, [memoData, total])
 
   return (
-    <div className="h-full w-full flex overflow-auto">
+    <div className="h-full w-full flex flex-col overflow-auto">
       {showAddContact && (
         <ContactItem
           onSubmitCallback={onAddedCallBack}
