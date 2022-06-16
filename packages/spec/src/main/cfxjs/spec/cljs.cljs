@@ -2,11 +2,11 @@
   (:refer-clojure
    :exclude [js->clj])
   (:require
-   [oops.core :refer [ocall]]
-   goog.math.Long
+   [goog.Uri]
    goog.math.Integer
+   goog.math.Long
    [goog.object :as gobject]
-   [goog.Uri]))
+   [oops.core :refer [ocall]]))
 
 (defn js->clj
   "Recursively transforms JavaScript arrays into ClojureScript
@@ -47,10 +47,9 @@
                             r
                             (assoc! r (keyfn k) (thisfn v)))))
                       (transient {}) (js-keys x)))
-             (and x
-                  (.-constructor x)
-                  (= (.-name (.-constructor x)) "BigNumber")
-                  (fn? (.-toHexString x)))
-             (.toHexString x)
+             ;; (and x
+             ;;      (.-_isBigNumber x)
+             ;;      (fn? (.-toHexString x)))
+             ;; (.toHexString x)
              :else x))]
      (f x))))
