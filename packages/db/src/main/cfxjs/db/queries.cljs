@@ -1830,7 +1830,7 @@
                       :db/id)
         token-id (->> id
                       (p [:token/_tx [:db/id]])
-                      :app/_tx
+                      :token/_tx
                       first
                       :db/id)]
     (-> (.toMap (e :tx id))
