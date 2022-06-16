@@ -330,18 +330,18 @@
   (let [g                   (and g {:token g})
         post-process        (if (seq g) identity #(get % :db/id))
         addr                (and (string? address) (.toLowerCase address))
-        fuzzy        (if (string? fuzzy)
-                       (.trim fuzzy)
-                       nil)
+        fuzzy               (if (and (string? fuzzy) (not (-> fuzzy .trim (= ""))))
+                              (.trim fuzzy)
+                              nil)
         fuzzy-length        (if fuzzy (count fuzzy) nil)
-        fuzzy        (if (and fuzzy (not (= fuzzy "")))
-                       (re-pattern
-                        (str "(?i)"
-                             (-> fuzzy
-                                 gstr/regExpEscape
-                                 (.replaceAll " " ".*"))))
-                       nil)
-        fuzzy-has-match-any (if fuzzy (.includes fuzzy ".*") nil)]
+        fuzzy               (if (and fuzzy (not (= fuzzy "")))
+                              (re-pattern
+                               (str "(?i)"
+                                    (-> fuzzy
+                                        gstr/regExpEscape
+                                        (.replaceAll " " ".*"))))
+                              nil)
+        fuzzy-has-match-any (if fuzzy (.includes (str fuzzy) ".*") nil)]
     (prst->js
      (cond
        tokenId
