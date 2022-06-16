@@ -330,18 +330,18 @@
   (let [g                   (and g {:token g})
         post-process        (if (seq g) identity #(get % :db/id))
         addr                (and (string? address) (.toLowerCase address))
-        fuzzy        (if (string? fuzzy)
-                       (.trim fuzzy)
-                       nil)
+        fuzzy               (if (and (string? fuzzy) (not (-> fuzzy .trim (= ""))))
+                              (.trim fuzzy)
+                              nil)
         fuzzy-length        (if fuzzy (count fuzzy) nil)
-        fuzzy        (if (and fuzzy (not (= fuzzy "")))
-                       (re-pattern
-                        (str "(?i)"
-                             (-> fuzzy
-                                 gstr/regExpEscape
-                                 (.replaceAll " " ".*"))))
-                       nil)
-        fuzzy-has-match-any (if fuzzy (.includes fuzzy ".*") nil)]
+        fuzzy               (if (and fuzzy (not (= fuzzy "")))
+                              (re-pattern
+                               (str "(?i)"
+                                    (-> fuzzy
+                                        gstr/regExpEscape
+                                        (.replaceAll " " ".*"))))
+                              nil)
+        fuzzy-has-match-any (if fuzzy (.includes (str fuzzy) ".*") nil)]
     (prst->js
      (cond
        tokenId
@@ -1663,6 +1663,7 @@
   ;; 1. to addr of simple send tx
   ;; 2. send/transfer tx to 20/777 contract"
   [{:keys [limit offset fuzzy countOnly]}]
+  ;; :do (js/console.time "get-recent-interesting-address-from-tx")
   :let  [limit  (or limit 10)
          offset (or offset 0)
          fuzzy        (if (string? fuzzy)
@@ -1679,7 +1680,7 @@
          ;; get all none contract to / transfer recipient
          ;; no dup address here
          addrs
-         (q '[:find ?tx ?address
+         (q '[:find (distinct ?tx) ?address
               :in   $
               :where
               [?net :network/selected true]
@@ -1699,12 +1700,12 @@
 
          query
          {:find '[?tx ?address ?memo ?memov ?acc ?nick]
-          :in   '[$ [[?tx ?address-from-tx]]]
+          :in       '[$ [[?tx ?address-from-tx]]]
           :where
           '[[?net :network/selected true]
             [(identity ?address-from-tx) ?address]
             [(vector ?net ?address) ?addr-id]
-            ;; filter by memo
+          ;; filter by memo
             (or-join  [?addr-id ?memo ?memov]
                       ;; has memo
                       (and
@@ -1717,7 +1718,7 @@
                        (not [?memo :memo/gaddr ?addr-id-ref])
                        [(identity false) ?memo]
                        [(identity false) ?memov]))
-            ;; filter by account nickname
+          ;; filter by account nickname
             (or-join [?addr-id ?acc ?nick]
                      ;; is account
                      (and
@@ -1754,7 +1755,11 @@
   total
 
   :let [addrs (->> addrs
-                   (sort-by first >)
+                   (sort-by
+                    first
+                    (fn [txsa txsb]
+                      (> (->> txsa (sort >) first)
+                         (->> txsb (sort >) first))))
                    (drop offset)
                    (take limit))
 
@@ -1764,10 +1769,11 @@
                                  :memoValue memo-value
                                  :accountId acc-id
                                  :accountNickname nickname))]
+  ;; :do (js/console.timeEnd "get-recent-interesting-address-from-tx")
   {:total total :data (map format addrs)})
 
 (comment
-  (get-recent-interesting-address-from-tx {:fuzzy ""}))
+  (get-recent-interesting-address-from-tx {:fuzzy " "}))
 
 ;;; UI QUERIES
 (defn account-list-assets [{:keys [accountGroupTypes]}]
