@@ -98,7 +98,7 @@ export const main = async ({
               txs.push({
                 eid: txExtraEid,
                 txExtra: {
-                  moreInfo: {args: [...args]},
+                  // moreInfo: {args: [...args]},
                   address: args[0].toLowerCase(),
                   method: name,
                 },
