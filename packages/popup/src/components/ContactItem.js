@@ -24,6 +24,7 @@ function ContactItem({
   onClickAwayCallback,
   editMemo = false,
   rightComponent,
+  itemId,
 }) {
   const {t} = useTranslation()
   const containerRef = useRef(null)
@@ -168,15 +169,15 @@ function ContactItem({
   return (
     <div className="w-full">
       <div
-        className={`flex items-center ${
+        className={`flex items-center rounded shadow-fluent-4 ${
           showAddressInput || showMemoInput
             ? 'bg-primary-4'
             : 'bg-white hover:bg-primary-4'
         } p-3 ${containerClassName}`}
-        id={`contact-${address}`}
+        id={itemId || `contact-${address}`}
         ref={containerRef}
       >
-        <div className="flex items-center rounded">
+        <div className="flex items-center">
           <Avatar
             className="w-7.5 h-7.5 mr-2"
             diameter={30}
@@ -190,8 +191,8 @@ function ContactItem({
             <TextField
               width="w-[170px]"
               className="text-gray-80 font-medium mb-0.5"
-              inputClassName="!rounded-sm"
-              inputInnerClassName="bg-white"
+              inputClassName="overflow-hidden !rounded-sm"
+              inputInnerClassName="!text-xs !bg-white"
               placeholder={t('name')}
               triggerEnter={true}
               triggerBlur={false}
@@ -207,9 +208,10 @@ function ContactItem({
               width="w-[170px]"
               className="text-gray-40"
               fontSize="text-xs"
-              inputClassName={`!rounded-sm ${
+              inputClassName={`overflow-hidden !rounded-sm ${
                 addressErrorMsg ? '!border-error' : ''
               }`}
+              inputInnerClassName="!text-xs !bg-white"
               placeholder={t('address')}
               triggerEnter={true}
               triggerBlur={false}
@@ -243,6 +245,7 @@ function ContactItem({
   )
 }
 ContactItem.propTypes = {
+  itemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   address: PropTypes.string,
   memo: PropTypes.string,
   memoId: PropTypes.number,
