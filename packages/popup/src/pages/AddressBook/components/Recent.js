@@ -34,7 +34,7 @@ function RecentItem({address, note, refreshData, onJumpToSendTx}) {
         </div>
       ) : address && !addToContact ? (
         <div
-          className="flex items-center justify-between rounded px-3 bg-white hover:bg-primary-4 mt-3"
+          className="flex items-center justify-between rounded shadow-fluent-4 px-3 bg-white hover:bg-primary-4 mt-3"
           aria-hidden="true"
           id={`send-tx-${address}`}
           onClick={() => onJumpToSendTx({address})}

@@ -58,6 +58,7 @@ module.exports = {
         'fluent-1': '0px 2px 8px rgba(75, 100, 233, 0.12)',
         'fluent-2': '0px 6px 16px rgba(149, 163, 233, 0.08)',
         'fluent-3': '0px 8px 16px rgba(149, 163, 233, 0.08)',
+        'fluent-4': '0px 8px 16px rgba(164, 170, 216, 0.08)',
       },
       colors: {
         bg: 'var(--color-bg)',

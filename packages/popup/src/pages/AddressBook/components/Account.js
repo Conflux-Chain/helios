@@ -53,7 +53,7 @@ function Account({fuzzy, onJumpToSendTx}) {
           ) => (
             <AccountGroupItem
               key={accountGroupId}
-              className={`!mx-0 ${index !== 0 ? 'mt-4' : ''}`}
+              className={`!mx-0 shadow-fluent-4 ${index !== 0 ? 'mt-4' : ''}`}
               nickname={groupNickname}
               groupType={vault?.type}
               GroupNameOverlay={
