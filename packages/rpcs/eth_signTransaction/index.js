@@ -2,9 +2,8 @@ import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import {ethSignTransaction} from '@fluent-wallet/signature'
 import {consts as ledgerConsts} from '@fluent-wallet/ledger'
-import Big from 'big.js'
-import {addHexPrefix} from '@fluent-wallet/utils'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {parseUnits} from '@ethersproject/units'
 
 const {
   TransactionLegacyUnsigned,
@@ -163,13 +162,15 @@ export const main = async args => {
     const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
       gasInfoEip1559?.medium || {}
     if (!newTx.maxPriorityFeePerGas)
-      newTx.maxPriorityFeePerGas = addHexPrefix(
-        new Big(suggestedMaxPriorityFeePerGas).times(10 ** 9).toString(16),
-      )
+      newTx.maxPriorityFeePerGas = parseUnits(
+        suggestedMaxPriorityFeePerGas,
+        'gwei',
+      ).toHexString()
     if (!newTx.maxFeePerGas)
-      newTx.maxFeePerGas = addHexPrefix(
-        new Big(suggestedMaxFeePerGas).times(10 ** 9).toString(16),
-      )
+      newTx.maxFeePerGas = parseUnits(
+        suggestedMaxFeePerGas,
+        'gwei',
+      ).toHexString()
   }
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {
@@ -195,7 +196,6 @@ export const main = async args => {
 
     if (dryRun)
       pk = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
-    console.info('txtx', toEthersTx(newTx))
     raw = ethSignTransaction(toEthersTx(newTx), pk)
   }
 

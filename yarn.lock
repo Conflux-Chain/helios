@@ -6239,7 +6239,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/eth_estimate-1559-fee@workspace:packages/rpcs/eth_estimate1559Fee":
+"@fluent-wallet/eth_estimate-1559-fee@workspace:*, @fluent-wallet/eth_estimate-1559-fee@workspace:packages/rpcs/eth_estimate1559Fee":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_estimate-1559-fee@workspace:packages/rpcs/eth_estimate1559Fee"
   dependencies:
@@ -6338,7 +6338,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/eth_max-priority-fee-per-gas@workspace:packages/rpcs/eth_maxPriorityFeePerGas":
+"@fluent-wallet/eth_max-priority-fee-per-gas@workspace:*, @fluent-wallet/eth_max-priority-fee-per-gas@workspace:packages/rpcs/eth_maxPriorityFeePerGas":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_max-priority-fee-per-gas@workspace:packages/rpcs/eth_maxPriorityFeePerGas"
   dependencies:
@@ -6375,14 +6375,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_sign-transaction@workspace:packages/rpcs/eth_signTransaction"
   dependencies:
+    "@ethersproject/units": 5.6.1
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/eth-transaction-schema": "workspace:*"
     "@fluent-wallet/ledger": "workspace:*"
     "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
-    "@fluent-wallet/utils": "workspace:*"
-    "@types/big.js": ^6
-    big.js: 6.2.0
   languageName: unknown
   linkType: soft
 
@@ -6731,7 +6729,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/utils@workspace:*, @fluent-wallet/utils@workspace:packages/utils":
+"@fluent-wallet/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/utils@workspace:packages/utils"
   dependencies:
@@ -20154,6 +20152,7 @@ __metadata:
     "@fluent-wallet/eth_block-number": "workspace:packages/rpcs/eth_blockNumber"
     "@fluent-wallet/eth_call": "workspace:packages/rpcs/eth_call"
     "@fluent-wallet/eth_chain-id": "workspace:packages/rpcs/eth_chainId"
+    "@fluent-wallet/eth_estimate-1559-fee": "workspace:*"
     "@fluent-wallet/eth_estimate-gas": "workspace:packages/rpcs/eth_estimateGas"
     "@fluent-wallet/eth_fee-history": "workspace:*"
     "@fluent-wallet/eth_gas-price": "workspace:packages/rpcs/eth_gasPrice"
@@ -20165,6 +20164,7 @@ __metadata:
     "@fluent-wallet/eth_get-transaction-by-hash": "workspace:*"
     "@fluent-wallet/eth_get-transaction-count": "workspace:packages/rpcs/eth_getTransactionCount"
     "@fluent-wallet/eth_get-transaction-receipt": "workspace:*"
+    "@fluent-wallet/eth_max-priority-fee-per-gas": "workspace:*"
     "@fluent-wallet/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
     "@fluent-wallet/eth_send-raw-transaction": "workspace:*"
     "@fluent-wallet/eth_sign-transaction": "workspace:*"
