@@ -142,3 +142,9 @@ export const ETH_SCAN_DOMAINS = {
   [ETH_MAINNET_NETID]: 'https://etherscan.io/',
   [CFX_TESTNET_NETID]: 'https://ropsten.etherscan.io/',
 }
+
+export const ETH_TX_TYPES = {
+  LEGACY: '0x0',
+  EIP2930: '0x1',
+  EIP1559: '0x2',
+}

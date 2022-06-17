@@ -38,6 +38,7 @@ const {
   WALLET_GET_PREFERENCES,
   WALLET_QUERY_MEMO,
   WALLET_QUERY_RECENT_TRADING_ADDRESS,
+  WALLET_NETWORK1559COMPATIBLE,
 } = RPC_METHODS
 
 export const useCurrentAddress = (notSendReq = false) => {
@@ -720,4 +721,10 @@ export const useAddressNote = (address, stop) => {
     )
   }, [addressData?.account, memoData?.data])
   return noteName
+}
+
+//Whether this network supports EIP1559 TX
+export const useNetwork1559Compatible = () => {
+  const {data: network1559Compatible} = useRPC([WALLET_NETWORK1559COMPATIBLE])
+  return network1559Compatible
 }

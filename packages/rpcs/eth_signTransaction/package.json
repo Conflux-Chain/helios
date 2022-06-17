@@ -5,6 +5,7 @@
   "packageManager": "yarn@3.1.0",
   "version": "1.0.0",
   "dependencies": {
+    "@fluent-wallet/consts": "workspace:*",
     "@fluent-wallet/eth-transaction-schema": "workspace:*",
     "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",

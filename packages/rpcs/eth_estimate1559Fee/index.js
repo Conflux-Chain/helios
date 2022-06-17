@@ -64,7 +64,7 @@ export const main = async ({
   let gasInfo = {}
   //First fetch through gas station,if error occured, then fetch througe the rpc: eth_feeHistory
   try {
-    gasInfo = await getGasByGasStation(Number(network.chainId))
+    gasInfo = await getGasFeeByGasStation(Number(network.chainId))
   } catch (error) {
     const latestBlock = await eth_getBlockByNumber(['latest', false])
     const baseFeePerGas = new BN(Number(latestBlock?.baseFeePerGas))
@@ -102,7 +102,7 @@ function calculateEstimatesForPriorityLevel(
   baseFeePerGas,
 ) {
   const settings = SETTINGS_BY_PRIORITY_LEVEL[priorityLevel]
-  const adjustedBaseFee = baseFeePerGas
+  const adjustedBaseFeePerGas = baseFeePerGas
     .mul(settings.baseFeePercentageMultiplier)
     .divn(100)
   const priorityFees = feeData.reward
@@ -116,7 +116,7 @@ function calculateEstimatesForPriorityLevel(
     adjustedPriorityFee,
     settings.minSuggestedMaxPriorityFeePerGas,
   )
-  const suggestedMaxFeePerGas = adjustedBaseFee.add(
+  const suggestedMaxFeePerGas = adjustedBaseFeePerGas.add(
     suggestedMaxPriorityFeePerGas,
   )
   return {
@@ -138,7 +138,7 @@ function medianOf(numbers) {
   return sortedNumbers[index]
 }
 
-async function getGasByGasStation(chainId) {
+async function getGasFeeByGasStation(chainId) {
   const gaseFeeApiUrl = `${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`
   if (typeof window?.fetch === 'function') {
     const res = await fetch(gaseFeeApiUrl, {
