@@ -104,8 +104,6 @@ export const formatStatus = status => {
       break
     case 0:
     case 1:
-      ret = 'sending'
-      break
     case 2:
     case 3:
       ret = 'pending'

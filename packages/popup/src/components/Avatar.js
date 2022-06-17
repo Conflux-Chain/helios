@@ -42,7 +42,7 @@ const useAvatarAddress = address => {
       return
     }
 
-    // EVM address or not validated address
+    // EVM address or invalidated address
     if (isHexAddress(address) || !validateBase32Address(address, netId)) {
       return setAvatarAddress(jsNumberForAddress(address))
     }
