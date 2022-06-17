@@ -4,7 +4,13 @@ import {DownOutlined} from '@fluent-wallet/component-icons'
 import {Avatar} from '../../../components'
 import {DappItem} from './'
 
-function AccountItem({accountId, accountNickname, app = [], accountSiteId}) {
+function AccountItem({
+  accountId,
+  address,
+  accountNickname,
+  app = [],
+  accountSiteId,
+}) {
   const [showDappItem, setShowDappItem] = useState(false)
   const [dappWrapperHeight, setDappWrapperHeight] = useState(0)
   const dappRef = useCallback(
@@ -26,11 +32,7 @@ function AccountItem({accountId, accountNickname, app = [], accountSiteId}) {
   return (
     <div className="py-3">
       <div className="flex items-center px-3">
-        <Avatar
-          className="w-5 h-5 mr-2"
-          diameter={20}
-          accountIdentity={accountId}
-        />
+        <Avatar className="w-5 h-5 mr-2" diameter={20} address={address} />
         <div className="flex-1 text-xs text-gray-40">{accountNickname}</div>
         {!!app.length && (
           <DownOutlined
@@ -66,6 +68,7 @@ function AccountItem({accountId, accountNickname, app = [], accountSiteId}) {
 
 AccountItem.propTypes = {
   accountId: PropTypes.number.isRequired,
+  address: PropTypes.string,
   accountNickname: PropTypes.string.isRequired,
   accountSiteId: PropTypes.object.isRequired,
   app: PropTypes.array,

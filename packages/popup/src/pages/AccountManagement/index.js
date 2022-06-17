@@ -16,7 +16,7 @@ import {
   LedgerGroupTag,
 } from '../../components'
 import {useAccountList, useCurrentAddress} from '../../hooks/useApi'
-import {request} from '../../utils'
+import {request, getAvatarAddress} from '../../utils'
 import {TextNickname, GroupFooter, AccountOperation} from './components'
 const {EXPORT_SEED, EXPORT_PRIVATEKEY, SELECT_CREATE_TYPE} = ROUTES
 const {WALLET_EXPORT_ACCOUNT_GROUP, WALLET_EXPORT_ACCOUNT, ACCOUNT_GROUP_TYPE} =
@@ -237,11 +237,13 @@ function AccountManagement() {
                     eid: accountId,
                     hidden,
                     selected,
+                    address,
                   }) => (
                     <AccountItem
                       key={accountId}
                       accountId={accountId}
                       accountNickname={accountNickname}
+                      address={getAvatarAddress(address)}
                       AccountNameOverlay={
                         <TextNickname
                           nickname={accountNickname}

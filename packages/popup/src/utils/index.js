@@ -2,6 +2,7 @@ import BN from 'bn.js'
 import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress, isChecksummed, toChecksum} from '@fluent-wallet/account'
+import {CFX_MAINNET_CHAINID, ETH_MAINNET_CHAINID} from '@fluent-wallet/consts'
 import {isArray} from '@fluent-wallet/checks'
 import {
   PASSWORD_REG_EXP,
@@ -289,4 +290,19 @@ export const setScrollPageLimit = (
   ) {
     setLimit(currentLimit + PAGE_LIMIT)
   }
+}
+
+export const getAvatarAddress = addresses => {
+  const cfxMainNetAddressItem = addresses?.filter?.(
+    ({network}) => network?.chainId === CFX_MAINNET_CHAINID,
+  )?.[0]
+
+  const ethMainNetAddressItem = addresses?.filter?.(
+    ({network}) => network?.chainId === ETH_MAINNET_CHAINID,
+  )?.[0]
+
+  if (cfxMainNetAddressItem) {
+    return cfxMainNetAddressItem?.hex
+  }
+  return ethMainNetAddressItem?.hex
 }

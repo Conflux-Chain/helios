@@ -55,7 +55,6 @@ function RequestSignature() {
         <div className="flex mt-1 px-4 pb-3 items-center justify-between">
           <AccountDisplay
             address={address}
-            accountId={dappAccountId}
             nickname={app?.currentAccount?.nickname}
           />
           <div className="flex items-center justify-between">
