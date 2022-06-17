@@ -1533,10 +1533,13 @@
       (or (< status 0) (> status 4)))
     (catch js/Error e nil)))
 
-(defn set-tx-skipped [{:keys [hash]}]
+(defn set-tx-skipped [{:keys [hash skippedChecked]}]
   (when-not (tx-end-state? hash)
-    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-        {:db/id [:tx/hash hash] :tx/status -2}])))
+    (if skippedChecked
+      (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+          [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
+          {:db/id [:tx/hash hash] :tx/status -2}])
+      (t [{:db/id [:tx/hash hash] :tx/skippedChecked true}]))))
 (defn set-tx-failed [{:keys [hash error]}]
   (when-not (tx-end-state? hash)
     (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
@@ -1557,17 +1560,18 @@
         {:db/id [:tx/hash hash] :tx/status 2}])))
 (defn set-tx-packaged [{:keys [hash blockHash]}]
   (when-not (tx-end-state? hash)
-    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
         {:db/id [:tx/hash hash] :tx/status 3 :tx/blockHash blockHash}])))
 (defn set-tx-executed [{:keys [hash receipt]}]
   (when-not (tx-end-state? hash)
-    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
         {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}])))
 
 (defn set-tx-confirmed [{:keys [hash]}]
   (when-not (tx-end-state? hash)
     (let [confirmed
           (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+              [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
               {:db/id [:tx/hash hash] :tx/status 5}])
 
          ;; find tx with
