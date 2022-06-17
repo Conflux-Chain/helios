@@ -81,3 +81,5 @@ export const WALLET_DELETE_MEMO = 'wallet_deleteMemo'
 export const WALLET_QUERY_MEMO = 'walletdb_queryMemo'
 export const WALLET_QUERY_RECENT_TRADING_ADDRESS =
   'walletdb_queryRecentInterestingAddress'
+
+export const WALLET_NETWORK1559COMPATIBLE = 'wallet_network1559Compatible'

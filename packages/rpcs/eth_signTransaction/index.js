@@ -4,6 +4,7 @@ import {ethSignTransaction} from '@fluent-wallet/signature'
 import {consts as ledgerConsts} from '@fluent-wallet/ledger'
 import Big from 'big.js'
 import {addHexPrefix} from '@fluent-wallet/utils'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 
 const {
   TransactionLegacyUnsigned,
@@ -12,8 +13,7 @@ const {
 } = genEthTxSchema(spec)
 
 const {or, cat, zeroOrOne, map, blockRef, boolean} = spec
-const TX_TYPE_LEGACY = '0x0'
-const TX_TYPE_EIP1559 = '0x2'
+
 export const txSchema = [
   or,
   TransactionLegacyUnsigned,
@@ -49,7 +49,7 @@ function toEthersTx(tx) {
   const {from, type, gas, ...ethersTx} = tx
   ethersTx.gasLimit = gas
   ethersTx.type = parseInt(type, 16)
-  if (type === TX_TYPE_EIP1559) {
+  if (type === ETH_TX_TYPES.EIP1559) {
     //EIP-1559
     delete ethersTx.gasPrice
   }
@@ -99,8 +99,8 @@ export const main = async args => {
   const newTx = {...tx}
   const network1559Compatible = await wallet_network1559Compatible()
   if (!newTx.type) {
-    if (network1559Compatible) newTx.type = TX_TYPE_EIP1559
-    else newTx.type = TX_TYPE_LEGACY
+    if (network1559Compatible) newTx.type = ETH_TX_TYPES.EIP1559
+    else newTx.type = ETH_TX_TYPES.LEGACY
   }
 
   const fromAddr = findAddress({
@@ -132,7 +132,7 @@ export const main = async args => {
     ])
   }
   // EIP-1559
-  const is1559Tx = newTx.type === TX_TYPE_EIP1559
+  const is1559Tx = newTx.type === ETH_TX_TYPES.EIP1559
   if (is1559Tx && !network1559Compatible)
     throw InvalidParams(
       `Network ${network.name} don't support 1559 transaction`,
@@ -195,6 +195,7 @@ export const main = async args => {
 
     if (dryRun)
       pk = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+    console.info('txtx', toEthersTx(newTx))
     raw = ethSignTransaction(toEthersTx(newTx), pk)
   }
 
