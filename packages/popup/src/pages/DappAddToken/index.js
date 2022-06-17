@@ -42,7 +42,6 @@ function DappAddToken() {
         <div className="mt-1 px-4 pb-3">
           <AccountDisplay
             address={address}
-            accountId={dappAccountId}
             nickname={app?.currentAccount?.nickname}
           />
         </div>

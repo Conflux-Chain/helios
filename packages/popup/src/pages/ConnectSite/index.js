@@ -126,7 +126,7 @@ function ConnectSitesList({
                           <Avatar
                             className="w-5 h-5 mr-2"
                             diameter={20}
-                            accountIdentity={accountId}
+                            address={currentAddress?.value}
                           />
                           <div className="flex-1">
                             <p className="text-xs text-gray-40">{nickname}</p>

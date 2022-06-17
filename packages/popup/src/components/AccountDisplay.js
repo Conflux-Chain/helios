@@ -3,7 +3,7 @@ import {Avatar} from '.'
 import PropTypes from 'prop-types'
 
 import {formatIntoChecksumAddress} from '../utils'
-function AccountDisplay({address, accountId, nickname}) {
+function AccountDisplay({address, nickname}) {
   const displayAddress = address
     ? shortenAddress(formatIntoChecksumAddress(address))
     : ''
@@ -13,7 +13,7 @@ function AccountDisplay({address, accountId, nickname}) {
       <Avatar
         className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-0 mr-2"
         diameter={30}
-        accountIdentity={accountId}
+        address={address}
       />
       <div className="flex flex-col">
         <span className="text-xs text-gray-40">{nickname}</span>
@@ -24,7 +24,6 @@ function AccountDisplay({address, accountId, nickname}) {
 }
 AccountDisplay.propTypes = {
   address: PropTypes.string,
-  accountId: PropTypes.number,
   nickname: PropTypes.string,
 }
 export default AccountDisplay
