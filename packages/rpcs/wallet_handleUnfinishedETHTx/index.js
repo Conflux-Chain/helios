@@ -320,18 +320,24 @@ export const main = ({
           if (
             BigNumber.from(nonce).gt(BigNumber.from(tx.txPayload.nonce).add(1))
           ) {
-            setTxSkipped({hash})
-            updateBadge(getUnfinishedTxCount())
-            getExt().then(ext =>
-              ext.notifications.create(hash, {
-                title: 'Skipped transaction',
-                message: `Transaction ${parseInt(
-                  tx.txPayload.nonce,
-                  16,
-                )}  skipped!`,
-              }),
-            )
-            return sdone()
+            if (tx.skippedChecked) {
+              setTxSkipped({hash})
+              updateBadge(getUnfinishedTxCount())
+              getExt().then(ext =>
+                ext.notifications.create(hash, {
+                  title: 'Skipped transaction',
+                  message: `Transaction ${parseInt(
+                    tx.txPayload.nonce,
+                    16,
+                  )}  skipped!`,
+                }),
+              )
+              return sdone()
+            } else {
+              setTxSkipped({hash, skippedChecked: true})
+              // check if skipped again immediately
+              return keepTrack(0)
+            }
           }
           keepTrack(0)
         }),
