@@ -3,8 +3,6 @@ import {useState, useEffect, useRef} from 'react'
 import {useTranslation} from 'react-i18next'
 import {isNumber} from '@fluent-wallet/checks'
 import Message from '@fluent-wallet/component-message'
-import {isHexAddress} from '@fluent-wallet/account'
-import {decode} from '@fluent-wallet/base32-address'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {Avatar, TextField} from '.'
 import {useClickAway} from 'react-use'
@@ -181,11 +179,7 @@ function ContactItem({
           <Avatar
             className="w-7.5 h-7.5 mr-2"
             diameter={30}
-            accountIdentity={
-              address && !isHexAddress(address)
-                ? decode(address)?.hexAddress
-                : address
-            }
+            address={address}
           />
           <div>
             <TextField

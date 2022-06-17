@@ -48,7 +48,7 @@ function SendTransaction() {
     data: {
       value: address,
       network: {eid: networkId, type, netId, ticker: nativeToken},
-      account: {eid: accountId, nickname},
+      account: {nickname},
     },
   } = useCurrentAddress()
   const {address: tokenAddress, decimals} =
@@ -148,11 +148,7 @@ function SendTransaction() {
         onGoBack={() => setTimeout(() => clearSendTransactionParams(), 500)}
       />
       <div className="flex mt-1 mb-3 mx-4 justify-between items-center z-20">
-        <AccountDisplay
-          accountId={accountId}
-          nickname={nickname}
-          address={address}
-        />
+        <AccountDisplay nickname={nickname} address={address} />
         <CurrentNetworkDisplay containerClassName="rounded h-6 pl-2" />
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">

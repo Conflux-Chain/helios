@@ -81,6 +81,7 @@ function Account({fuzzy, onJumpToSendTx}) {
                       key={accountId}
                       className="!p-3 cursor-pointer"
                       accountId={accountId}
+                      address={address}
                       accountNickname={accountNickname}
                       onClickAccount={() =>
                         onJumpToSendTx({address, note: accountNickname})

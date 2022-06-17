@@ -2,15 +2,9 @@ import PropTypes from 'prop-types'
 import {AccountDisplay} from '../../../components'
 
 function CurrentAccountDisplay({currentAccount}) {
-  const {nickname, address, eid: accountId} = currentAccount
+  const {nickname, address} = currentAccount
 
-  return (
-    <AccountDisplay
-      address={address}
-      accountId={accountId}
-      nickname={nickname}
-    />
-  )
+  return <AccountDisplay address={address} nickname={nickname} />
 }
 
 CurrentAccountDisplay.propTypes = {
