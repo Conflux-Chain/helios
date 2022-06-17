@@ -1235,11 +1235,106 @@ describe('wallet_handleUnfinishedCFXTx', function () {
       expect(inputs.db.setTxSkipped).toHaveBeenCalledTimes(1)
       expect(inputs.db.setTxSkipped).toHaveBeenLastCalledWith({
         hash: 'txhash',
+        skippedChecked: true,
       })
 
       expect(
         inputs.rpcs.wallet_getBlockchainExplorerUrl,
       ).toHaveBeenLastCalledWith({transaction: ['txhash']})
+    })
+    test('packaged, check skipped, status = null', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_getTransactionByHash: jest.fn(() =>
+            Promise.resolve({blockHash: 'blockhash', status: null}),
+          ),
+          cfx_getNextNonce: jest.fn(() => Promise.resolve('0x2')),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            raw: 'txraw',
+            txPayload: {
+              nonce: '0x1',
+              epochHeight: '0x1',
+              resendAt: '0x29',
+            },
+          })),
+        },
+      })
+
+      main(inputs)
+
+      await waitForExpect(() =>
+        expect(inputs.db.setTxSkipped).toHaveBeenCalledTimes(1),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        blockHash: 'blockhash',
+      })
+
+      expect(inputs.db.setTxSkipped).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxSkipped).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+      })
+    })
+    test('packaged, recheck skipped, status = null', async () => {
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_getTransactionByHash: jest.fn(() =>
+            Promise.resolve({blockHash: 'blockhash', status: null}),
+          ),
+          cfx_getNextNonce: jest.fn(() => Promise.resolve('0x2')),
+        },
+        db: {
+          getTxById: jest.fn(() => ({
+            eid: 'txeid',
+            status: 2,
+            hash: 'txhash',
+            skippedChecked: true,
+            raw: 'txraw',
+            txPayload: {
+              nonce: '0x1',
+              epochHeight: '0x1',
+              resendAt: '0x29',
+            },
+          })),
+        },
+      })
+
+      main(inputs)
+
+      await waitForExpect(() =>
+        expect(inputs.db.setTxSkipped).toHaveBeenCalledTimes(1),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
+      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+
+      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        blockHash: 'blockhash',
+      })
+
+      expect(inputs.db.setTxSkipped).toHaveBeenCalledTimes(1)
+      expect(inputs.db.setTxSkipped).toHaveBeenLastCalledWith({
+        skippedChecked: true,
+        hash: 'txhash',
+      })
     })
     test('packaged, executed, status = 0x0', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
@@ -1289,7 +1384,7 @@ describe('wallet_handleUnfinishedCFXTx', function () {
           cfx_getTransactionByHash: jest.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: null}),
           ),
-          cfx_getNextNonce: jest.fn(() => Promise.resolve(1)),
+          cfx_getNextNonce: jest.fn(() => Promise.resolve('0x1')),
         },
         db: {
           getTxById: jest.fn(() => ({
@@ -1346,7 +1441,7 @@ describe('wallet_handleUnfinishedCFXTx', function () {
           cfx_getTransactionByHash: jest.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: null}),
           ),
-          cfx_getNextNonce: jest.fn(() => Promise.resolve(0)),
+          cfx_getNextNonce: jest.fn(() => Promise.resolve('0x0')),
         },
         db: {
           getTxById: jest.fn(() => ({
