@@ -1,13 +1,27 @@
 releases:
+  "@fluent-wallet/consts": patch
   "@fluent-wallet/estimate-tx": patch
+  "@fluent-wallet/eth-transaction-schema": patch
 
 declined:
+  - "@fluent-wallet/account"
+  - "@fluent-wallet/addr-by-network"
   - helios-background
-  - "@fluent-wallet/consts"
-  - "@fluent-wallet/eth-transaction-schema"
+  - "@fluent-wallet/base32-address"
+  - "@fluent-wallet/contract-method-name"
   - helios-popup
+  - "@fluent-wallet/rpc-engine"
+  - "@fluent-wallet/cfx_gas-price"
+  - "@fluent-wallet/eth_call"
   - "@fluent-wallet/eth_estimate-1559-fee"
+  - "@fluent-wallet/eth_estimate-gas"
   - "@fluent-wallet/eth_fee-history"
   - "@fluent-wallet/eth_max-priority-fee-per-gas"
   - "@fluent-wallet/eth_sign-transaction"
+  - "@fluent-wallet/wallet_add-network"
+  - "@fluent-wallet/wallet_add-vault"
+  - "@fluent-wallet/wallet_export-account-group"
   - "@fluent-wallet/wallet_send-transaction"
+  - "@fluent-wallet/spec"
+  - "@fluent-wallet/tx-history-checker"
+  - "@fluent-wallet/shorten-address"
