@@ -5,6 +5,7 @@ import {getTxHashFromRawTx} from '@fluent-wallet/signature'
 import {ERROR} from '@fluent-wallet/json-rpc-error'
 import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
 import {BigNumber} from '@ethersproject/bignumber'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 
 export const NAME = 'wallet_sendTransaction'
 
@@ -85,7 +86,7 @@ export const main = async ({
       throw InvalidParams(`Invalid from address in tx ${from}`)
 
     delete params[0].nonce
-    if (params[0].type === '0x2' && params[0].gasPrice) {
+    if (params[0].type === ETH_TX_TYPES.EIP1559 && params[0].gasPrice) {
       delete params[0].gasPrice
     }
     try {

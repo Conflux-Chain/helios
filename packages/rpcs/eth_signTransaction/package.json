@@ -5,15 +5,11 @@
   "packageManager": "yarn@3.1.0",
   "version": "1.0.0",
   "dependencies": {
+    "@ethersproject/units": "5.6.1",
     "@fluent-wallet/consts": "workspace:*",
     "@fluent-wallet/eth-transaction-schema": "workspace:*",
     "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
-    "@fluent-wallet/spec": "workspace:*",
-    "@fluent-wallet/utils": "workspace:*",
-    "big.js": "6.2.0"
-  },
-  "devDependencies": {
-    "@types/big.js": "^6"
+    "@fluent-wallet/spec": "workspace:*"
   }
 }
