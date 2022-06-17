@@ -65,14 +65,14 @@ function AddressBook() {
             >
               <div>{t(tab)}</div>
               {currentTab === tab && (
-                <div className="absolute left-0 bottom-0 w-full h-0.5 bg-[#7084ED] rounded-[1px]" />
+                <div className="absolute left-0 -bottom-[1px] w-full h-0.5 bg-[#7084ED] rounded-[1px]" />
               )}
             </div>
           ))}
         </div>
         {currentTab === 'contacts' && (
           <div
-            className="cursor-pointer text-primary mt-1"
+            className="cursor-pointer text-primary mt-1 mr-1"
             aria-hidden="true"
             id="add-contact"
             onClick={() => setShowAddContact(true)}

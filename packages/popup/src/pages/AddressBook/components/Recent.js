@@ -8,7 +8,13 @@ import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {useRecentTradingAddress} from '../../../hooks/useApi'
 import {NoResult, ContactItem, Avatar} from '../../../components'
 
-function RecentItem({address, note, refreshData, onJumpToSendTx}) {
+function RecentItem({
+  address,
+  note,
+  refreshData,
+  onJumpToSendTx,
+  recentItemId,
+}) {
   const {t} = useTranslation()
 
   const [addToContact, setAddToContact] = useState(false)
@@ -27,16 +33,16 @@ function RecentItem({address, note, refreshData, onJumpToSendTx}) {
       {note ? (
         <div
           aria-hidden="true"
-          id={`send-tx-${address}`}
+          id={recentItemId}
           onClick={() => onJumpToSendTx({address, note})}
         >
           <ContactItem address={address} memo={note} />
         </div>
       ) : address && !addToContact ? (
         <div
-          className="flex items-center justify-between rounded px-3 bg-white hover:bg-primary-4 mt-3"
+          className="flex items-center justify-between rounded shadow-fluent-4 px-3 bg-white hover:bg-primary-4 mt-3"
           aria-hidden="true"
-          id={`send-tx-${address}`}
+          id={recentItemId}
           onClick={() => onJumpToSendTx({address})}
         >
           <div className="flex items-center py-3">
@@ -69,6 +75,7 @@ function RecentItem({address, note, refreshData, onJumpToSendTx}) {
           memo=""
           onSubmitCallback={onAddedContactCallback}
           onClickAwayCallback={() => setAddToContact(false)}
+          id={recentItemId}
         />
       ) : null}
     </div>
@@ -76,6 +83,7 @@ function RecentItem({address, note, refreshData, onJumpToSendTx}) {
 }
 
 RecentItem.propTypes = {
+  recentItemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   address: PropTypes.string,
   note: PropTypes.string,
   refreshData: PropTypes.func,
@@ -99,11 +107,12 @@ function Recent({fuzzy = '', onJumpToSendTx}) {
     <div className="h-full overflow-auto">
       {displayTradingAddressData?.length > 0 &&
         displayTradingAddressData.map(
-          ({address, memoValue, accountNickname}) => (
+          ({address, memoValue, accountNickname}, index) => (
             <RecentItem
               address={address}
               note={accountNickname || memoValue}
-              key={address}
+              key={index}
+              recentItemId={index}
               refreshData={mutate}
               onJumpToSendTx={onJumpToSendTx}
             />
