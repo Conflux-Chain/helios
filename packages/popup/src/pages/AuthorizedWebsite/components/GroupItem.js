@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import {AccountItem} from './'
 import {RPC_METHODS} from '../../../constants'
+import {getAvatarAddress} from '../../../utils'
 
 const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
 function GroupItem({groupNickname, account = [], groupType, accountSiteId}) {
@@ -12,11 +13,12 @@ function GroupItem({groupNickname, account = [], groupType, accountSiteId}) {
         )}
         {account
           .filter(({app}) => !!app)
-          .map(({nickname, eid, app}, index) => (
+          .map(({nickname, eid, app, address}, index) => (
             <AccountItem
               key={index}
               accountNickname={nickname}
               accountId={eid}
+              address={getAvatarAddress(address)}
               app={app}
               accountSiteId={accountSiteId}
             />

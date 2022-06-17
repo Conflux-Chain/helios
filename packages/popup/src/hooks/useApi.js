@@ -453,6 +453,14 @@ export const useGroupAccountAuthorizedDapps = () => {
       account: {
         eid: 1,
         nickname: 1,
+        address: {
+          value: 1,
+          hex: 1,
+          network: {
+            chainId: 1,
+          },
+        },
+
         _app: {
           site: {origin: 1, icon: 1, eid: 1},
           eid: 1,
@@ -582,6 +590,7 @@ export const useAccountList = ({
       network: {
         ticker: 1,
         type: 1,
+        chainId: 1,
       },
     },
     accountG: {

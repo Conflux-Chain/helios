@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types'
 
-import {EditOutlined, DeleteOutlined} from '@fluent-wallet/component-icons'
+import {
+  EditOutlined,
+  DeleteOutlined,
+  PlaneOutlined,
+} from '@fluent-wallet/component-icons'
 import {CopyButton, WrapIcon} from '../../../components'
 
 function ContactOperation({
@@ -29,11 +33,7 @@ function ContactOperation({
         size="w-5 h-5"
         className="mr-2"
       >
-        <img
-          src="/images/paper-plane.png"
-          alt="send"
-          className="w-[14px] h-[14px]"
-        />
+        <PlaneOutlined className="w-[14px] h-[14px] text-primary" />
       </WrapIcon>
       <WrapIcon
         onClick={() => onClickDelete?.(mouseOverItem?.memoId)}

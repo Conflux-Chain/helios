@@ -33,7 +33,6 @@ const tagColorStyle = {
   failed: 'bg-error-10 text-error',
   executed: 'bg-[#F0FDFC] text-[#83DBC6]',
   pending: 'bg-warning-10 text-warning',
-  sending: 'bg-warning-10 text-warning',
 }
 
 function WrapperWithCircle({children, className}) {
@@ -186,7 +185,7 @@ function HistoryItem({
                 <WrapperWithCircle className="bg-[#83DBC6]">
                   <ReloadOutlined className="w-2 h-2 text-white" />
                 </WrapperWithCircle>
-              ) : txStatus === 'pending' || txStatus === 'sending' ? (
+              ) : txStatus === 'pending' ? (
                 <WrapperWithCircle className="bg-[#F0955F]">
                   <ReloadOutlined className="w-2 h-2 text-white" />
                 </WrapperWithCircle>
@@ -206,7 +205,7 @@ function HistoryItem({
         </div>
 
         <div className="flex items-center">
-          {(txStatus === 'pending' || txStatus === 'sending') && (
+          {txStatus === 'pending' && (
             <WrapIcon
               size="w-5 h-5"
               id="speed-up-tx"
@@ -217,7 +216,7 @@ function HistoryItem({
               <RocketOutlined className="w-3 h-3 text-primary" />
             </WrapIcon>
           )}
-          {(txStatus === 'pending' || txStatus === 'sending') && (
+          {txStatus === 'pending' && (
             <WrapIcon
               size="w-5 h-5 mx-2"
               id="cancel-tx"
