@@ -57,26 +57,29 @@
   ```
 "
   [s]
-  (into {}
-        (mapcat
-         (fn [[parentk attrs]]
-           (reduce-kv
-            (fn [attrm attrk attrv]
-              (let [k (keyword (str (name parentk) "/" (name attrk)))
-                    v (reduce-kv
-                       (fn [sm sk sv]
-                         (let [[sk sv] (parse-attr-value {sk sv})]
-                           (if sk
-                             (assoc sm sk sv)
-                             sm)))
-                       {}
-                       attrv)]
-                (if (and (-> v keys count pos?))
-                  (assoc attrm k v)
-                  attrm)))
-            {}
-            attrs))
-         s)))
+  (let [;; _ (js/console.time "a")
+        x (into {}
+                (mapcat
+                 (fn [[parentk attrs]]
+                   (reduce-kv
+                    (fn [attrm attrk attrv]
+                      (let [k (keyword (str (name parentk) "/" (name attrk)))
+                            v (reduce-kv
+                               (fn [sm sk sv]
+                                 (let [[sk sv] (parse-attr-value {sk sv})]
+                                   (if sk
+                                     (assoc sm sk sv)
+                                     sm)))
+                               {}
+                               attrv)]
+                        (if (and (-> v keys count pos?))
+                          (assoc attrm k v)
+                          attrm)))
+                    {}
+                    attrs))
+                 s))]
+    ;; (js/console.timeEnd "a")
+    x))
 
 (defn js-schema->query-structure
   "Convert datascript schema from js to clj, example:
