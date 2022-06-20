@@ -85,11 +85,12 @@ function AccountManagement() {
       includeHidden: true,
     })
 
-  const {data: pkHdAccountGroups} = useAccountList({
-    networkId: currentNetworkId,
-    groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
-    includeHidden: true,
-  })
+  const {data: pkHdAccountGroups, mutate: mutatePkHdAccountGroups} =
+    useAccountList({
+      networkId: currentNetworkId,
+      groupTypes: [ACCOUNT_GROUP_TYPE.HD, ACCOUNT_GROUP_TYPE.PK],
+      includeHidden: true,
+    })
 
   const accountGroupData = searchedAccountGroup
     ? Object.values(searchedAccountGroup)
@@ -112,13 +113,15 @@ function AccountManagement() {
       history.push(EXPORT_PRIVATEKEY)
       return Promise.resolve()
     }
-    // delete account
+    // delete account or account group
     setRefreshDataStatus(!refreshDataStatus)
-    return Promise.all([mutateCurrentAddress(), mutateAllAccountGroups()]).then(
-      () => {
-        clearPasswordInfo()
-      },
-    )
+    return Promise.all([
+      mutateCurrentAddress?.(),
+      mutateAllAccountGroups?.(),
+      mutatePkHdAccountGroups?.(),
+    ]).then(() => {
+      clearPasswordInfo()
+    })
   }
 
   const clearPasswordInfo = () => {
