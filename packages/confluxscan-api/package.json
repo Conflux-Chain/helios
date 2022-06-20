@@ -1,0 +1,8 @@
+{
+  "name": "@fluent-wallet/confluxscan-api",
+  "type": "module",
+  "packageManager": "yarn@3.2.0",
+  "dependencies": {
+    "@fluent-wallet/fetch-rpc": "workspace:*"
+  }
+}

@@ -3,6 +3,8 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletGetBlockOrEpochNumber from '@fluent-wallet/wallet_get-block-or-epoch-number'
+import * as walletRefetchTxList from '@fluent-wallet/wallet_refetch-tx-list'
 import * as walletDeleteMemo from '@fluent-wallet/wallet_delete-memo'
 import * as walletUpsertMemo from '@fluent-wallet/wallet_upsert-memo'
 import * as walletDeleteAccount from '@fluent-wallet/wallet_delete-account'
@@ -238,6 +240,7 @@ export const rpcEngineOpts = {
     walletAccounts,
     walletGetNextUsableNonce,
     walletGetNextNonce,
+    walletGetBlockOrEpochNumber,
     walletGetBalance,
     walletRefreshBalance,
     walletChainId,
@@ -255,6 +258,7 @@ export const rpcEngineOpts = {
     walletDeleteApp,
     walletGetAccountAddressByNetwork,
     walletRefetchTokenList,
+    walletRefetchTxList,
     walletUpdateTokenList,
     walletGetBlockchainExplorerUrl,
     walletEnrichTxs,
