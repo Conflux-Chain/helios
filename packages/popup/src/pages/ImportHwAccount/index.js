@@ -340,7 +340,7 @@ function ImportHwAccount() {
                     <Avatar
                       className="w-5 h-5 mr-2"
                       diameter={20}
-                      accountIdentity={hexAddress}
+                      address={hexAddress}
                     />
                     <div className="flex-1">
                       <p className="text-xs text-gray-40">

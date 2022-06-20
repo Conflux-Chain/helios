@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
-import {isHexAddress} from '@fluent-wallet/account'
-import {decode} from '@fluent-wallet/base32-address'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 
 import {useRecentTradingAddress} from '../../../hooks/useApi'
@@ -49,11 +47,7 @@ function RecentItem({
             <Avatar
               className="w-7.5 h-7.5 mr-2"
               diameter={30}
-              accountIdentity={
-                address && !isHexAddress(address)
-                  ? decode(address)?.hexAddress
-                  : address
-              }
+              address={address}
             />
             <span className="text-gray-40 text-xs">
               {shortenAddress(address)}

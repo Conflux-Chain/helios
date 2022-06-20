@@ -51,7 +51,7 @@ function AccountCardContent({
                   nickname: accountNickname,
                   eid: accountId,
                   selected,
-                  currentAddress: {nativeBalance, network},
+                  currentAddress: {nativeBalance, network, value},
                 }) => (
                   <AccountItem
                     key={accountId}
@@ -59,6 +59,7 @@ function AccountCardContent({
                       selected ? 'cursor-default' : 'cursor-pointer'
                     }`}
                     accountId={accountId}
+                    address={value}
                     accountNickname={accountNickname}
                     onClickAccount={() =>
                       !selected && onChangeAccount?.(accountId)

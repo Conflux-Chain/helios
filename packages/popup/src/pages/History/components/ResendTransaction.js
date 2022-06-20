@@ -260,11 +260,7 @@ function ResendTransaction({
 
   //cancel resend tx when tx status is not pending
   useEffect(() => {
-    if (
-      reSendTxStatus &&
-      reSendTxStatus !== 'pending' &&
-      reSendTxStatus !== 'sending'
-    ) {
+    if (reSendTxStatus && reSendTxStatus !== 'pending') {
       setExecutedTxResultStatus(true)
       onCloseCard({restSendStatus: true})
       setLoading(false)
@@ -330,7 +326,7 @@ function ResendTransaction({
   const resendTransaction = (params, isHwAccount) => {
     request(SEND_TRANSACTION, [params])
       .then(() => {
-        if (reSendTxStatus !== 'pending' && reSendTxStatus !== 'sending') {
+        if (reSendTxStatus !== 'pending') {
           return
         }
         refreshHistoryData?.()
@@ -343,7 +339,7 @@ function ResendTransaction({
         setSendStatus(TX_STATUS.HW_SUCCESS)
       })
       .catch(error => {
-        if (reSendTxStatus !== 'pending' && reSendTxStatus !== 'sending') {
+        if (reSendTxStatus !== 'pending') {
           return
         }
         !isHwAccount && setLoading(false)

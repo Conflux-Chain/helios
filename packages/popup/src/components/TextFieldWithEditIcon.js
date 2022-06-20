@@ -46,7 +46,6 @@ function TextFieldWithEditIcon({
     <TextField
       ref={ref}
       showInputStatus={showInputStatus}
-      setShowInputStatus={setShowInputStatus}
       onMouseEnter={() => setShowEditIconStatus(true)}
       onMouseLeave={() => setShowEditIconStatus(false)}
       textValue={textValue}
