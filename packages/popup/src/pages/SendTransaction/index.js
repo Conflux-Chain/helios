@@ -37,6 +37,8 @@ function SendTransaction() {
     setSendAmount,
     setSendTokenId,
     setGasPrice,
+    setMaxPriorityFeePerGas,
+    setMaxFeePerGas,
     setGasLimit,
     setNonce,
     setStorageLimit,
@@ -70,6 +72,8 @@ function SendTransaction() {
     ) || {}
   const {
     gasPrice,
+    maxPriorityFeePerGas,
+    maxFeePerGas,
     gasLimit,
     storageCollateralized,
     nonce,
@@ -77,16 +81,22 @@ function SendTransaction() {
     loading,
   } = estimateRst
   useEffect(() => {
-    setGasPrice(formatHexToDecimal(gasPrice))
+    gasPrice && setGasPrice(formatHexToDecimal(gasPrice))
+    maxPriorityFeePerGas && setMaxPriorityFeePerGas(maxPriorityFeePerGas)
+    maxFeePerGas && setMaxFeePerGas(maxFeePerGas)
     setGasLimit(formatHexToDecimal(gasLimit))
     setNonce(formatHexToDecimal(nonce))
     setStorageLimit(formatHexToDecimal(storageCollateralized))
   }, [
     gasPrice,
+    maxPriorityFeePerGas,
+    maxFeePerGas,
     gasLimit,
     nonce,
     storageCollateralized,
     setGasPrice,
+    setMaxPriorityFeePerGas,
+    setMaxFeePerGas,
     setGasLimit,
     setNonce,
     setStorageLimit,
