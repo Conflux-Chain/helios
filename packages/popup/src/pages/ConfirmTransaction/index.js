@@ -152,11 +152,12 @@ function ConfirmTransaction() {
     nonce: initNonce,
     storageLimit: initStorageLimit,
   } = tx
-
   // user can edit nonce, gasPrice and gas
   const params = {
     ...originParams,
     gasPrice: formatDecimalToHex(gasPrice),
+    maxFeePerGas: formatDecimalToHex(maxFeePerGas),
+    maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
     gas: formatDecimalToHex(gasLimit),
     nonce: formatDecimalToHex(nonce),
     storageLimit: formatDecimalToHex(storageLimit),
@@ -204,7 +205,6 @@ function ConfirmTransaction() {
     nonce: rpcNonce,
     storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
-
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
     displayTokenAddress,
@@ -243,18 +243,24 @@ function ConfirmTransaction() {
     initGasLimit,
     initNonce,
     initGasPrice,
+    initMaxFeePerGas,
+    initMaxPriorityFeePerGas,
     initStorageLimit,
     setGasPrice,
     setNonce,
     setGasLimit,
     setStorageLimit,
     estimateGasPrice,
+    estimateMaxFeePerGas,
+    estimateMaxPriorityPerGas,
     estimateGasLimit,
     estimateStorageLimit,
     rpcNonce,
     gasLimit,
     storageLimit,
     gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     nonce,
   ])
 

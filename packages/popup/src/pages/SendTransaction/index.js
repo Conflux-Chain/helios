@@ -45,7 +45,6 @@ function SendTransaction() {
     tx,
     clearSendTransactionParams,
   } = useCurrentTxParams()
-
   const {
     data: {
       value: address,
@@ -82,8 +81,9 @@ function SendTransaction() {
   } = estimateRst
   useEffect(() => {
     gasPrice && setGasPrice(formatHexToDecimal(gasPrice))
-    maxPriorityFeePerGas && setMaxPriorityFeePerGas(maxPriorityFeePerGas)
-    maxFeePerGas && setMaxFeePerGas(maxFeePerGas)
+    maxPriorityFeePerGas &&
+      setMaxPriorityFeePerGas(formatHexToDecimal(maxPriorityFeePerGas))
+    maxFeePerGas && setMaxFeePerGas(formatHexToDecimal(maxFeePerGas))
     setGasLimit(formatHexToDecimal(gasLimit))
     setNonce(formatHexToDecimal(nonce))
     setStorageLimit(formatHexToDecimal(storageCollateralized))
