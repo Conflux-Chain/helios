@@ -1,8 +1,8 @@
 (ns cfxjs.db.datascript.built-ins
   (:require
-   [clojure.string :as str]
    [cfxjs.db.datascript.db :as db #?(:cljs :refer-macros :clj :refer) [raise]]
-   [cfxjs.db.datascript.impl.entity :as de]))
+   [cfxjs.db.datascript.impl.entity :as de]
+   [clojure.string :as str]))
 
 (defn- -differ? [& xs]
   (let [l (count xs)]
@@ -94,7 +94,8 @@
                 '-differ? -differ?, 'get-else -get-else, 'get-some -get-some, 'missing? -missing?, 'ground identity,
                 'clojure.string/blank? str/blank?, 'clojure.string/includes? str/includes?,
                 'clojure.string/starts-with? str/starts-with?, 'clojure.string/ends-with? str/ends-with?
-                'tuple vector, 'untuple identity})
+                'tuple vector, 'untuple identity
+                #?(:cljs 'js/parseInt) #?(:cljs js/parseInt)})
 
 ;; Aggregates
 
