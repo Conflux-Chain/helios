@@ -1,7 +1,14 @@
-import {isNumber, isString, isArray, isUndefined} from '@fluent-wallet/checks'
+import {useEffect, useState} from 'react'
+import {
+  isNumber,
+  isString,
+  isArray,
+  isUndefined,
+  isObject,
+} from '@fluent-wallet/checks'
 import {useRPC} from '@fluent-wallet/use-rpc'
 
-import {NETWORK_TYPE, RPC_METHODS} from '../constants'
+import {NETWORK_TYPE, RPC_METHODS, PAGE_LIMIT} from '../constants'
 import {validateAddress, flatArray} from '../utils'
 
 const {
@@ -29,6 +36,8 @@ const {
   WALLET_GET_FLUENT_METADATA,
   CFX_GET_MAX_GAS_LIMIT,
   WALLET_GET_PREFERENCES,
+  WALLET_QUERY_MEMO,
+  WALLET_QUERY_RECENT_TRADING_ADDRESS,
 } = RPC_METHODS
 
 export const useCurrentAddress = (notSendReq = false) => {
@@ -443,6 +452,14 @@ export const useGroupAccountAuthorizedDapps = () => {
       account: {
         eid: 1,
         nickname: 1,
+        address: {
+          value: 1,
+          hex: 1,
+          network: {
+            chainId: 1,
+          },
+        },
+
         _app: {
           site: {origin: 1, icon: 1, eid: 1},
           eid: 1,
@@ -572,6 +589,7 @@ export const useAccountList = ({
       network: {
         ticker: 1,
         type: 1,
+        chainId: 1,
       },
     },
     accountG: {
@@ -636,4 +654,79 @@ export const usePreferences = () => {
     refreshInterval: 0,
   })
   return {data, mutate}
+}
+
+export const useCurrentNetworkAddressMemo = (params = {}, stopSend = false) => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+
+  const {data, mutate} = useRPC(
+    isUndefined(networkId) || stopSend
+      ? null
+      : [WALLET_QUERY_MEMO, ...Object.values(params), networkId],
+    {offset: 0, limit: PAGE_LIMIT, ...params, networkId},
+    {
+      fallbackData: {},
+    },
+  )
+  return {data, mutate}
+}
+
+export const useRecentTradingAddress = (params = {}) => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+
+  const {data, mutate} = useRPC(
+    isObject(params) && !isUndefined(networkId)
+      ? [
+          WALLET_QUERY_RECENT_TRADING_ADDRESS,
+          ...Object.values(params),
+          networkId,
+        ]
+      : null,
+    {offset: 0, limit: PAGE_LIMIT, ...params},
+    {
+      fallbackData: {},
+    },
+  )
+  return {data, mutate}
+}
+
+//get address account nickname or contact memo
+export const useAddressNote = (address, stop) => {
+  const [noteName, setNoteName] = useState('')
+
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {data: addressData} = useAddress({
+    value: address,
+    networkId,
+    stop: stop || isUndefined(networkId),
+  })
+
+  const {data: memoData} = useCurrentNetworkAddressMemo(
+    {
+      address,
+      g: {
+        value: 1,
+      },
+    },
+    stop || addressData !== null,
+  )
+
+  useEffect(() => {
+    setNoteName(
+      addressData?.account?.[0]?.nickname || memoData?.data?.[0]?.value || '',
+    )
+  }, [addressData?.account, memoData?.data])
+  return noteName
 }

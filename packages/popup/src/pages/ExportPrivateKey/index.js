@@ -30,12 +30,16 @@ function ExportPrivateKey() {
         <div className="px-3">
           {exportPrivateKeyData.map(({pk, des, subDes}, index) => (
             <div key={des} className={`${index === 0 ? 'mt-2' : 'mt-4'}`}>
-              <div className="ml-1">
-                <div className="text-gray-80 font-medium font-sm">{t(des)}</div>
-                <div className="text-gray-40 text-xs mt-0.5 mb-3">
-                  {t(subDes)}
+              {des && subDes && (
+                <div className="ml-1">
+                  <div className="text-gray-80 font-medium font-sm">
+                    {t(des)}
+                  </div>
+                  <div className="text-gray-40 text-xs mt-0.5 mb-3">
+                    {t(subDes)}
+                  </div>
                 </div>
-              </div>
+              )}
               <IdentityPanel title={t('pKey')} content={pk || ''} />
             </div>
           ))}

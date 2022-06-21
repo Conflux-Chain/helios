@@ -1,46 +1,34 @@
 import PropTypes from 'prop-types'
 import {useState} from 'react'
-import Message from '@fluent-wallet/component-message'
 import {useTranslation} from 'react-i18next'
+import Message from '@fluent-wallet/component-message'
 import {KeyOutlined} from '@fluent-wallet/component-icons'
-import {
-  Avatar,
-  WrapIcon,
-  SwitchButtonGroup,
-  TextField,
-} from '../../../components'
+
+import {WrapIcon, SwitchButtonGroup} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 
 const {
   WALLET_EXPORT_ACCOUNT,
-  WALLET_DELETE_ACCOUNT_GROUP,
   WALLET_UPDATE_ACCOUNT,
   WALLET_DELETE_ACCOUNT,
+  WALLET_DELETE_ACCOUNT_GROUP,
   ACCOUNT_GROUP_TYPE,
 } = RPC_METHODS
 
-function AccountItem({
-  groupType = '',
-  accountId = '',
-  accountGroupId = '',
-  accountNickname = '',
-  showDelete = false,
+function AccountOperation({
+  groupType,
+  accountId,
+  accountGroupId,
   hidden = false,
   selected = false,
-  onOpenConfirmPassword,
+  showDelete = false,
+  accounts = [],
   updateEditedName,
-  account = [],
+  onOpenConfirmPassword,
 }) {
   const {t} = useTranslation()
-  const [inputNickname, setInputNickname] = useState(accountNickname)
-  const [hidingAccountStatus, setHidingAccountStatus] = useState(false)
 
-  const onTextFieldBlur = () => {
-    return updateEditedName(
-      {accountId, nickname: inputNickname},
-      WALLET_UPDATE_ACCOUNT,
-    )
-  }
+  const [hidingAccountStatus, setHidingAccountStatus] = useState(false)
 
   const onSwitchAccount = hidden => {
     if (hidingAccountStatus) {
@@ -54,7 +42,7 @@ function AccountItem({
       })
     }
 
-    const remainShowAccounts = account.filter(({hidden}) => !hidden)
+    const remainShowAccounts = accounts.filter(({hidden}) => !hidden)
 
     // Each hd account group must have at least one displayed account
     if (
@@ -75,19 +63,6 @@ function AccountItem({
     })
   }
 
-  const onDeletePkAccountGroup = () => {
-    if (selected) {
-      return Message.warning({
-        content: t('groupDeleteWarning'),
-        top: '10px',
-        duration: 1,
-      })
-    }
-    onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
-      accountGroupId,
-    })
-  }
-
   const onDeleteHwAccount = () => {
     if (selected) {
       return Message.warning({
@@ -101,25 +76,21 @@ function AccountItem({
     })
   }
 
+  const onDeletePkAccountGroup = () => {
+    if (selected) {
+      return Message.warning({
+        content: t('groupDeleteWarning'),
+        top: '10px',
+        duration: 1,
+      })
+    }
+    onOpenConfirmPassword?.(WALLET_DELETE_ACCOUNT_GROUP, {
+      accountGroupId,
+    })
+  }
+
   return (
-    <div
-      aria-hidden="true"
-      className="flex px-3 py-3.5 rounded hover:bg-primary-4 items-center"
-    >
-      <Avatar
-        className="w-5 h-5 mr-2"
-        diameter={20}
-        accountIdentity={accountId}
-      />
-      <div className="flex-1 flex items-center">
-        <TextField
-          textValue={accountNickname}
-          inputValue={inputNickname}
-          onInputBlur={onTextFieldBlur}
-          onInputChange={setInputNickname}
-          className="text-gray-80"
-        />
-      </div>
+    <div className="flex items-center">
       {groupType !== ACCOUNT_GROUP_TYPE.HW && (
         <WrapIcon
           size="w-5 h-5"
@@ -145,6 +116,7 @@ function AccountItem({
       {groupType === ACCOUNT_GROUP_TYPE.HW && (
         <div
           aria-hidden="true"
+          id="delete-hw-account"
           className="text-xs cursor-pointer text-gray-60 hover:text-primary ml-3"
           onClick={onDeleteHwAccount}
         >
@@ -155,6 +127,7 @@ function AccountItem({
       {groupType === ACCOUNT_GROUP_TYPE.PK && showDelete && (
         <div
           aria-hidden="true"
+          id="delete-account-group"
           className="text-xs cursor-pointer text-gray-60 hover:text-primary ml-3"
           onClick={onDeletePkAccountGroup}
         >
@@ -165,17 +138,15 @@ function AccountItem({
   )
 }
 
-AccountItem.propTypes = {
+AccountOperation.propTypes = {
   groupType: PropTypes.string,
   accountId: PropTypes.number,
   accountGroupId: PropTypes.number,
-  showDelete: PropTypes.bool,
-  selected: PropTypes.bool,
   hidden: PropTypes.bool,
-  accountNickname: PropTypes.string,
+  selected: PropTypes.bool,
+  showDelete: PropTypes.bool,
+  accounts: PropTypes.array,
   onOpenConfirmPassword: PropTypes.func,
-  account: PropTypes.array,
   updateEditedName: PropTypes.func.isRequired,
 }
-
-export default AccountItem
+export default AccountOperation

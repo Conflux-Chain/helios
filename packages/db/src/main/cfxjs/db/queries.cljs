@@ -1,15 +1,15 @@
 (ns cfxjs.db.queries
   (:require
-   [lambdaisland.glogi :as log]
-   [better-cond.core :as bc]
-   [taoensso.encore :as enc]
-   [medley.core :refer [deep-merge]]
    ["@ethersproject/bignumber" :as bn]
+   [better-cond.core :as bc :refer [defnc]]
+   [cfxjs.db.datascript.core :as db]
+   [cfxjs.db.schema :refer [model->attr-keys]]
+   [cfxjs.spec.cljs]
    [clojure.walk :refer [postwalk walk]]
    [goog.string :as gstr]
-   [cfxjs.spec.cljs]
-   [cfxjs.db.datascript.core :as db]
-   [cfxjs.db.schema :refer [model->attr-keys]]))
+   [lambdaisland.glogi :as log]
+   [medley.core :refer [deep-merge]]
+   [taoensso.encore :as enc]))
 
 (declare q p pm e t fdb)
 
@@ -144,10 +144,12 @@
 (defn get-account-group [{:keys [groupId g fuzzy selected groupTypes]}]
   (let [g            (and g {:accountGroup g})
         fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
                        (re-pattern
                         (str "(?i)"
                              (-> fuzzy
-                                 (.trim)
                                  gstr/regExpEscape
                                  (.replaceAll " " ".*"))))
                        nil)
@@ -220,14 +222,16 @@
                         (group-by first v))))))
            {}
            (group-by first data)))
-        fuzzy         (if (string? fuzzy)
-                        (re-pattern
-                         (str "(?i)"
-                              (-> fuzzy
-                                  (.trim)
-                                  gstr/regExpEscape
-                                  (.replaceAll " " ".*"))))
-                        nil)
+        fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)
         query-initial (cond-> '{:find  [?g ?acc ?addr]
                                 :in    [$]
                                 :where [[?g :accountGroup/nickname]
@@ -247,9 +251,11 @@
                                     '[?g :accountGroup/nickname ?g-name]
                                     '[?g :accountGroup/account ?acc]
                                     '[?acc :account/nickname ?acc-name]
+                                    '[?addr :address/value ?addrv]
                                     '(or
                                       [(re-find ?fuzzy ?g-name)]
-                                      [(re-find ?fuzzy ?acc-name)])))
+                                      [(re-find ?fuzzy ?acc-name)]
+                                      [(re-find ?fuzzy ?addrv)])))
                         (not (true? includeHidden))
                         (-> (update :where conj
                                     '(not [?acc :account/hidden true])))
@@ -268,10 +274,12 @@
 (defn get-account [{:keys [accountId groupId index g nickname selected fuzzy]}]
   (let [g            (and g {:account g})
         fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
                        (re-pattern
                         (str "(?i)"
                              (-> fuzzy
-                                 (.trim)
                                  gstr/regExpEscape
                                  (.replaceAll " " ".*"))))
                        nil)
@@ -322,16 +330,18 @@
   (let [g                   (and g {:token g})
         post-process        (if (seq g) identity #(get % :db/id))
         addr                (and (string? address) (.toLowerCase address))
-        fuzzy-length        (if (string? fuzzy) (count (.trim fuzzy)) nil)
-        fuzzy               (if (string? fuzzy)
+        fuzzy               (if (and (string? fuzzy) (not (-> fuzzy .trim (= ""))))
+                              (.trim fuzzy)
+                              nil)
+        fuzzy-length        (if fuzzy (count fuzzy) nil)
+        fuzzy               (if (and fuzzy (not (= fuzzy "")))
                               (re-pattern
                                (str "(?i)"
                                     (-> fuzzy
-                                        (.trim)
                                         gstr/regExpEscape
                                         (.replaceAll " " ".*"))))
                               nil)
-        fuzzy-has-match-any (if (string? fuzzy) (.includes fuzzy ".*") nil)]
+        fuzzy-has-match-any (if fuzzy (.includes (str fuzzy) ".*") nil)]
     (prst->js
      (cond
        tokenId
@@ -870,14 +880,16 @@
         networkId        (if (int? appId) (q '[:find ?net . :in $ ?app :where [?app :app/currentNetwork ?net]] appId) networkId)
         accountId        (if (int? appId) (q '[:find ?acc . :in $ ?app :where [?app :app/currentAccount ?acc]] appId) accountId)
         addressId        (if (and (int? accountId) (int? networkId)) (:addressId (addr-acc-network {:accountId accountId :networkId networkId})) addressId)
-        fuzzy            (if (string? fuzzy)
-                           (re-pattern
-                            (str "(?i)"
-                                 (-> fuzzy
-                                     (.trim)
-                                     gstr/regExpEscape
-                                     (.replaceAll " " ".*"))))
-                           nil)]
+        fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)]
     (prst->js
      (cond
        (vector? addressId)
@@ -1042,6 +1054,99 @@
                                    [:where] (:where query-initial))
              rst           (apply q query (:args query-initial))]
          (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))))))
+
+(defnc upsert-memo [{:keys [networkId address memoId value]}]
+  :let [addr-exists? (q '[:find ?addr .
+                          :in $ [?net ?gaddr]
+                          :where
+                          [?addr :gaddr/network ?net]
+                          [?addr :gaddr/value ?gaddr]]
+                        [networkId address])
+        gaddr-id (or addr-exists? "newgaddr")
+        txs (enc/conj-when [] (and (not addr-exists?)
+                                   {:db/id         gaddr-id
+                                    :gaddr/network networkId
+                                    :gaddr/value   address}))
+        txs (conj txs {:db/id        (or memoId "newmemo")
+                       :memo/gaddr gaddr-id
+                       :memo/value   value})]
+  (t txs))
+
+(defnc get-memo [{:keys [address fuzzy networkId value g limit offset]}]
+  :let [g     (and g {:memo g})
+        limit (or limit 100)
+        offset (or offset 0)
+        fuzzy        (if (string? fuzzy)
+                       (.trim fuzzy)
+                       nil)
+        fuzzy        (if (and fuzzy (not (= fuzzy "")))
+                       (re-pattern
+                        (str "(?i)"
+                             (-> fuzzy
+                                 gstr/regExpEscape
+                                 (.replaceAll " " ".*"))))
+                       nil)
+        ;; id to data by `g`
+        post-process (if (seq g) identity #(get % :db/id))
+        post-process (fn [rst] (map post-process (if (seq rst) (pm (jsp->p g) rst) [])))
+        addr         (cond (coll? address) address (string? address) [address] :else nil)
+        addr (if addr (map #(.toLowerCase %) addr) nil)]
+
+  :let [query-initial (cond-> '{:find [[?m ...]]
+                                :in [$]
+                                :where []
+                                :args []}
+                        networkId
+                        (-> (update :args conj networkId)
+                            (update :in conj '?net)
+                            (update :where conj
+                                    '[?ga :gaddr/network ?net]))
+                        (not networkId)
+                        (-> (update :where conj
+                                    '[?net :network/selected true]
+                                    '[?ga :gaddr/network ?net]))
+                        addr
+                        (-> (update :args conj addr)
+                            (update :in conj '[?addr ...])
+                            (update :where conj
+                                    '[?ga :gaddr/value ?addr]))
+                        value
+                        (-> (update :args conj value)
+                            (update :in conj '?value)
+                            (update :where conj '[?m :memo/value ?value]))
+
+                        true
+                        (-> (update :where conj '[?m :memo/gaddr ?ga]))
+
+                        (and (or (not value) (not addr)) fuzzy)
+                        (-> (update :args conj fuzzy)
+                            (update :in conj '?fuzzy))
+
+                        (and (not value) (not addr) fuzzy)
+                        (-> (update :where conj
+                                    '(or
+                                      (and
+                                       [?m :memo/value ?v]
+                                       [(re-find ?fuzzy ?v)])
+                                      (and
+                                       [?ga :gaddr/value ?v]
+                                       [(re-find ?fuzzy ?v)]))))
+
+                        (and addr (not value) fuzzy)
+                        (-> (update :where conj
+                                    '[?m :memo/value ?v]
+                                    '[(re-find ?fuzzy ?v)]))
+                        (and value (not addr) fuzzy)
+                        (-> (update :where conj
+                                    '[?ga :gaddr/value ?gav]
+                                    '[(re-find ?fuzzy ?gav)])))
+        query         (concat [:find] (:find query-initial)
+                              [:in] (:in query-initial)
+                              [:where] (:where query-initial))
+        rst          (apply q query (:args query-initial))
+        total        (count rst)
+        rst (->> rst (sort >) (drop offset) (take limit) post-process)]
+  {:total total :data rst})
 
 (defn- cleanup-token-list-after-delete-address []
   (let [tokens (q '[:find [?t ...]
@@ -1428,10 +1533,13 @@
       (or (< status 0) (> status 4)))
     (catch js/Error e nil)))
 
-(defn set-tx-skipped [{:keys [hash]}]
+(defn set-tx-skipped [{:keys [hash skippedChecked]}]
   (when-not (tx-end-state? hash)
-    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-        {:db/id [:tx/hash hash] :tx/status -2}])))
+    (if skippedChecked
+      (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+          [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
+          {:db/id [:tx/hash hash] :tx/status -2}])
+      (t [{:db/id [:tx/hash hash] :tx/skippedChecked true}]))))
 (defn set-tx-failed [{:keys [hash error]}]
   (when-not (tx-end-state? hash)
     (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
@@ -1452,17 +1560,18 @@
         {:db/id [:tx/hash hash] :tx/status 2}])))
 (defn set-tx-packaged [{:keys [hash blockHash]}]
   (when-not (tx-end-state? hash)
-    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
         {:db/id [:tx/hash hash] :tx/status 3 :tx/blockHash blockHash}])))
 (defn set-tx-executed [{:keys [hash receipt]}]
   (when-not (tx-end-state? hash)
-    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
         {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}])))
 
 (defn set-tx-confirmed [{:keys [hash]}]
   (when-not (tx-end-state? hash)
     (let [confirmed
           (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+              [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
               {:db/id [:tx/hash hash] :tx/status 5}])
 
          ;; find tx with
@@ -1551,6 +1660,125 @@
           true)
       false)))
 
+(defnc get-recent-interesting-address-from-tx
+  ;; "Get interesting address from tx
+
+  ;; interesting means
+  ;; 1. to addr of simple send tx
+  ;; 2. send/transfer tx to 20/777 contract"
+  [{:keys [limit offset fuzzy countOnly]}]
+  ;; :do (js/console.time "get-recent-interesting-address-from-tx")
+  :let  [limit  (or limit 10)
+         offset (or offset 0)
+         fuzzy        (if (string? fuzzy)
+                        (.trim fuzzy)
+                        nil)
+         fuzzy        (if (and fuzzy (not (= fuzzy "")))
+                        (re-pattern
+                         (str "(?i)"
+                              (-> fuzzy
+                                  gstr/regExpEscape
+                                  (.replaceAll " " ".*"))))
+                        nil)
+
+         ;; get all none contract to / transfer recipient
+         ;; no dup address here
+         addrs
+         (q '[:find (distinct ?tx) ?address
+              :in   $
+              :where
+              [?net :network/selected true]
+              [?addr :address/network ?net]
+              [?addr :address/tx ?tx]
+              [?tx :tx/txExtra ?extra]
+              [?tx :tx/txPayload ?payload]
+              (or
+               (and
+                [?extra :txExtra/simple true]
+                [?payload :txPayload/to ?address])
+               (and
+                [?extra :txExtra/token20 true]
+                (or [?extra :txExtra/method "transfer"]
+                    [?extra :txExtra/method "send"])
+                [?extra :txExtra/address ?address]))])
+
+         query
+         {:find '[?tx ?address ?memo ?memov ?acc ?nick]
+          :in       '[$ [[?tx ?address-from-tx]]]
+          :where
+          '[[?net :network/selected true]
+            [(identity ?address-from-tx) ?address]
+            [(vector ?net ?address) ?addr-id]
+          ;; filter by memo
+            (or-join  [?addr-id ?memo ?memov]
+                      ;; has memo
+                      (and
+                       [(vector :gaddr/id ?addr-id) ?addr-id-ref]
+                       [?memo :memo/gaddr ?addr-id-ref]
+                       [?memo :memo/value ?memov])
+                      ;; has no memo
+                      (and
+                       [(vector :gaddr/id ?addr-id) ?addr-id-ref]
+                       (not [?memo :memo/gaddr ?addr-id-ref])
+                       [(identity false) ?memo]
+                       [(identity false) ?memov]))
+          ;; filter by account nickname
+            (or-join [?addr-id ?acc ?nick]
+                     ;; is account
+                     (and
+                      [(vector :address/id ?addr-id) ?addr-id-ref]
+                      [?acc :account/address ?addr-id-ref]
+                      [?acc :account/nickname ?nick])
+                     ;; is not account
+                     (and
+                      [(vector :address/id ?addr-id) ?addr-id-ref]
+                      (not [?acc :account/address ?addr-id-ref])
+                      [(identity false) ?acc]
+                      [(identity false) ?nick]))]}
+
+         query (if fuzzy
+                 (-> query
+                     (update :in conj '?fuzzy)
+                     (update :where conj
+                             '(or
+                               (and [(and true ?nick)]
+                                    [(re-find ?fuzzy ?nick)])
+                               (and [(and true ?memov)]
+                                    [(re-find ?fuzzy ?memov)])
+                               [(re-find ?fuzzy ?address)])))
+                 query)
+
+         query (concat [:find] (:find query)
+                       [:in] (:in query)
+                       [:where] (:where query))
+
+         addrs (if fuzzy (q query addrs fuzzy) (q query addrs))
+
+         total (count addrs)]
+  countOnly
+  total
+
+  :let [addrs (->> addrs
+                   (sort-by
+                    first
+                    (fn [txsa txsb]
+                      (> (->> txsa (sort >) first)
+                         (->> txsb (sort >) first))))
+                   (drop offset)
+                   (take limit))
+
+        format (fn [[_ addr memo-id memo-value acc-id nickname]]
+                 (enc/assoc-when {:address addr}
+                                 :memoId memo-id
+                                 :memoValue memo-value
+                                 :accountId acc-id
+                                 :accountNickname nickname))]
+  ;; :do (js/console.timeEnd "get-recent-interesting-address-from-tx")
+  {:total total :data (map format addrs)})
+
+(comment
+  (get-recent-interesting-address-from-tx {:fuzzy " "}))
+
 ;;; UI QUERIES
 (defn account-list-assets [{:keys [accountGroupTypes]}]
   (let [accountGroupTypes (if (vector? accountGroupTypes) accountGroupTypes ["hd" "pk" "hw" "pub"])
@@ -1577,32 +1805,63 @@
      :currentNetwork cur-net
      :accountGroups  data}))
 
-(defn- sort-tx [[noncea txa _] [nonceb txb _]]
-
+(defn- sort-tx [[noncea _] [nonceb _]]
   (cond
     ;; sort by nonce
     (.gt (bn/BigNumber.from noncea)
          (bn/BigNumber.from nonceb))
     true
-    ;; sort by created order when with same nonce
-    (.eq (bn/BigNumber.from noncea)
-         (bn/BigNumber.from nonceb))
-    (> txa txb)
+    ;; ;; sort by created order when with same nonce
+    ;; (.eq (bn/BigNumber.from noncea)
+    ;;      (bn/BigNumber.from nonceb))
+    ;; (> txa txb)
     :else
     false))
 
-(defn query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
-  (let [offset    (or offset 0)
-        limit     (min 100 (or limit 10))
+(defn- ->single-nonce-tx-id [tx-ids]
+  (->> tx-ids
+       (sort >)
+       (map #(vector % (:tx/status (p [:tx/status] %))))
+       (sort-by second >)
+       first
+       first))
+
+(defn- tx-id->data [id]
+  (let [app-id   (->> id
+                      (p [:app/_tx [:db/id]])
+                      :app/_tx
+                      first
+                      :db/id)
+        token-id (->> id
+                      (p [:token/_tx [:db/id]])
+                      :token/_tx
+                      first
+                      :db/id)]
+    (-> (.toMap (e :tx id))
+        (assoc :app (and app-id (e :app app-id)))
+        (assoc :token (and token-id (e :token token-id))))))
+
+(defnc query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
+  :let [offset (or offset 0)
+        limit  (min 100 (or limit 10))
         [status> status>= status< status<=]
         (if (map? status) [(:gt status)
                            (:gte status)
                            (:lt status)
                            (:lte status)]
             (repeat 4 nil))
-        extraType (if extraType (keyword "txExtra" extraType) extraType)
+
+        extraType (if (map? extraType) extraType nil)
+
+        {ext-and :and ext-or :or} extraType
+
+        ext-and-where (and (seq ext-and) (mapv (fn [[k v]] ['?extra (keyword "txExtra" k) v]) ext-and))
+        ext-and-where (and ext-and-where (into ['[?tx :tx/txExtra ?extra]] ext-and-where))
+        ext-or-where  (and (seq ext-or) (mapv (fn [[k v]] ['?extra (keyword "txExtra" k) v]) ext-or))
+        ext-or-where  (and ext-or-where (vector '[?tx :tx/txExtra ?extra] (cons 'or ext-or-where)))
+
         query-initial
-        (cond-> '{:find  [?nonce ?tx (pull ?tx [:app/_tx [:db/id]]) (pull ?tx [:token/_tx [:db/id]])]
+        (cond-> '{:find  [?nonce (distinct ?tx)]
                   :in    [$]
                   :where [[?tx :tx/txPayload ?payload]
                           [?payload :txPayload/nonce ?nonce]]
@@ -1619,11 +1878,10 @@
           (-> (update :args conj appId)
               (update :in conj '?target-app)
               (update :where conj '[?target-app :app/tx ?tx]))
-          extraType
-          (-> (update :args conj extraType)
-              (update :in conj '?extraType)
-              (update :where into '[[?tx :tx/txExtra ?extra]
-                                    [?extra ?extraType true]]))
+          ext-and-where
+          (-> (update :where into ext-and-where))
+          ext-or-where
+          (-> (update :where into ext-or-where))
           (int? status)
           (-> (update :args conj status)
               (update :in conj '?target-status)
@@ -1655,26 +1913,24 @@
               (update :where into '[[?tx :tx/status ?status]
                                     [(<= ?status ?status<=)]]))
           true identity)
-        query     (concat [:find] (:find query-initial)
-                          [:in] (:in query-initial)
-                          [:where] (:where query-initial))
+        query (concat [:find] (:find query-initial)
+                      [:in] (:in query-initial)
+                      [:where] (:where query-initial))
 
         txs   (->> (apply q query (:args query-initial))
-                   (sort sort-tx)
-                   (map rest))
-        total (count txs)
-        txs   (when-not countOnly (->> txs
-                                       (drop offset)
-                                       (take limit)))]
-    (if countOnly total
-        {:total total
-         :data  (mapv (fn [[tx app token]]
-                        (let [app (-> app :app/_tx first :db/id)
-                              token (-> token :token/_tx first :db/id)]
-                          (-> (.toMap (e :tx tx))
-                              (assoc :app (and app (e :app app)))
-                              (assoc :token (and token (e :token token))))))
-                      txs)})))
+                   (sort sort-tx))
+        total (count txs)]
+  countOnly  total
+  :let  [txs (->> txs
+                  (drop offset)
+                  (take limit)
+                  (map rest))
+         data (map (comp tx-id->data ->single-nonce-tx-id first) txs)]
+  {:total total
+   :data  data})
+
+(comment
+  (query-tx-list {}))
 
 (defonce default-preferences {:hideTestNetwork           true
                               :overrideWindowDotEthereum false})
@@ -1742,6 +1998,7 @@
               :findAccount                         get-account
               :findToken                           get-token
               :findGroup                           get-group
+              :findMemo                            get-memo
               :validateAddrInApp                   validate-addr-in-app
               :upsertTokenList                     upsert-token-list
               :retractNetwork                      retract-network
@@ -1753,20 +2010,23 @@
               :getAppAnotherAuthedNoneHWAccount    get-app-another-authed-none-hw-account
               :updateAccountWithHiddenHandler      update-account
               :isLastNoneHWAccount                 is-last-none-hw-account
-              :getConnectedSitesWithoutApps         get-connected-sites-without-apps
+              :getConnectedSitesWithoutApps        get-connected-sites-without-apps
+              :upsertMemo                          upsert-memo
 
-              :queryqueryApp              get-apps
-              :queryqueryAddress          get-address
-              :queryqueryNetwork          get-network
-              :queryqueryAccount          get-account
-              :queryqueryAccountGroup     get-account-group
-              :queryqueryAccountList      get-account-list
-              :queryqueryToken            get-token
-              :queryqueryGroup            get-group
-              :queryqueryBalance          get-balance
-              :querytxList                query-tx-list
-              :queryaccountListAssets     account-list-assets
-              :getAccountGroupByVaultType get-account-group-by-vault-type})
+              :queryqueryRecentInterestingAddress get-recent-interesting-address-from-tx
+              :queryqueryApp                      get-apps
+              :queryqueryAddress                  get-address
+              :queryqueryNetwork                  get-network
+              :queryqueryAccount                  get-account
+              :queryqueryMemo                     get-memo
+              :queryqueryAccountGroup             get-account-group
+              :queryqueryAccountList              get-account-list
+              :queryqueryToken                    get-token
+              :queryqueryGroup                    get-group
+              :queryqueryBalance                  get-balance
+              :querytxList                        query-tx-list
+              :queryaccountListAssets             account-list-assets
+              :getAccountGroupByVaultType         get-account-group-by-vault-type})
 
 (defn apply-queries [rst conn qfn entity tfn ffn pfn]
   (defn pm [x eids]

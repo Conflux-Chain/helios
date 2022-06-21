@@ -8,6 +8,6 @@
     "@fluent-wallet/csp": "workspace:packages/csp",
     "@fluent-wallet/hdkey": "workspace:packages/hdkey",
     "@fluent-wallet/utils": "workspace:packages/utils",
-    "bn.js": "5.2.0"
+    "bn.js": "5.2.1"
   }
 }

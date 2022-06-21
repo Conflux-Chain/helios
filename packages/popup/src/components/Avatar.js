@@ -1,63 +1,97 @@
 import jazzIcon from '@fluent-wallet/jazz-icon'
 import PropTypes from 'prop-types'
 import {useRef, useEffect, useState} from 'react'
-import {isNumber, isArray} from '@fluent-wallet/checks'
+import {isArray, isUndefined} from '@fluent-wallet/checks'
 import {isHexAddress} from '@fluent-wallet/account'
+import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
 import {removeAllChild, jsNumberForAddress} from '../utils'
-import {useAddress} from '../hooks/useApi'
+import {useAddress, useCurrentAddress} from '../hooks/useApi'
 import {RPC_METHODS} from '../constants'
 import {CFX_MAINNET_CHAINID} from '@fluent-wallet/consts'
 
 const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
-const useAvatarAddress = accountIdentity => {
-  const [address, setAddress] = useState(undefined)
+const useAvatarAddress = address => {
+  const [avatarAddress, setAvatarAddress] = useState(undefined)
 
-  const {data} = useAddress({
-    stop: !isNumber(accountIdentity),
-    accountId: accountIdentity,
+  const {
+    data: {
+      network: {eid: networkId, type, chainId},
+    },
+  } = useCurrentAddress()
+
+  // get built-in account id
+  const {data: accountData} = useAddress({
+    value: address,
+    networkId,
+    stop: isUndefined(networkId),
   })
-  useEffect(() => {
-    let hex
 
-    if (isHexAddress(accountIdentity)) {
-      hex = accountIdentity
-    } else if (isArray(data) && data.length) {
+  const accountId = accountData?.account?.[0]?.eid
+
+  // get built-in cfx mainnet address
+  const {data: addressData} = useAddress({
+    accountId,
+    stop: isUndefined(accountId) || chainId === CFX_MAINNET_CHAINID,
+  })
+
+  useEffect(() => {
+    // invalidated address
+    if (!isHexAddress(address) && !validateBase32Address(address)) {
+      return
+    }
+
+    // external address or built-in address in non-current network
+    if (accountData === null) {
+      return setAvatarAddress(
+        jsNumberForAddress(
+          isHexAddress(address) ? address : decode(address)?.hexAddress,
+        ),
+      )
+    }
+
+    // built-in cfx mainnet address (current network is mainnet)
+    if (chainId === CFX_MAINNET_CHAINID) {
+      return setAvatarAddress(jsNumberForAddress(accountData?.hex))
+    }
+
+    // built-in address (current network is non-cfx network)
+    if (isArray(addressData) && addressData.length) {
+      let hex
       const accountGroupType =
-        data?.[0]?.account?.[0]?.accountGroup?.vault?.type
+        addressData?.[0]?.account?.[0]?.accountGroup?.vault?.type
 
       if (accountGroupType === ACCOUNT_GROUP_TYPE.HW) {
-        hex = data?.[0]?.hex
+        hex = addressData?.[0]?.hex
       }
       if (
         accountGroupType === ACCOUNT_GROUP_TYPE.HD ||
         accountGroupType === ACCOUNT_GROUP_TYPE.PK
       ) {
-        hex = data.filter(
+        hex = addressData.filter(
           ({network}) => network?.chainId === CFX_MAINNET_CHAINID,
         )?.[0]?.hex
       }
+      setAvatarAddress(jsNumberForAddress(hex))
     }
-    setAddress(jsNumberForAddress(hex))
-  }, [accountIdentity, data])
-
-  return address
+  }, [accountData, address, addressData, chainId, type])
+  return avatarAddress
 }
 
-function Avatar({diameter, accountIdentity, ...props}) {
-  const address = useAvatarAddress(accountIdentity)
+function Avatar({diameter, address, ...props}) {
+  const renderAddress = useAvatarAddress(address)
   const avatarContainerRef = useRef(null)
   useEffect(() => {
-    const avatarDom = jazzIcon(diameter, address)
+    const avatarDom = jazzIcon(diameter, renderAddress)
     removeAllChild(avatarContainerRef.current)
     avatarContainerRef.current.appendChild(avatarDom)
-  }, [avatarContainerRef, diameter, address])
+  }, [avatarContainerRef, diameter, renderAddress])
   return <div {...props} ref={avatarContainerRef} />
 }
 
 Avatar.propTypes = {
-  accountIdentity: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-    .isRequired,
+  // hex address or base32 address. base32 address must comply with the current network
+  address: PropTypes.string.isRequired,
   diameter: PropTypes.number.isRequired,
   containerClassName: PropTypes.string,
 }

@@ -88,6 +88,8 @@ export const main = async args => {
 
   const {block, returnTxMeta, dryRun} = opts
 
+  tx.from = tx.from.toLowerCase()
+  if (tx.to) tx.to = tx.to.toLowerCase()
   const newTx = {...tx}
 
   newTx.type = newTx.type || '0x0'

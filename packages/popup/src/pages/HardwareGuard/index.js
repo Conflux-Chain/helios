@@ -10,6 +10,7 @@ import {
 import {ROUTES, NETWORK_TYPE} from '../../constants'
 import {useCurrentAddress} from '../../hooks/useApi'
 import {useLedgerAppName} from '../../hooks'
+import {getBaseChainName} from '../../utils'
 
 const {CONNECT_HARDWARE_WALLET} = ROUTES
 function StepItem({serialNumber, des, isLast = false}) {
@@ -47,6 +48,7 @@ function HardwareGuard() {
     },
   } = useCurrentAddress()
   const LedgerAppName = useLedgerAppName()
+  const networkName = getBaseChainName(networkType)
 
   const onClick = () => {
     window &&
@@ -111,15 +113,17 @@ function HardwareGuard() {
         </div>
         <div className="px-2">
           <StepItem serialNumber="1" des={t('pluginHardwareWallet')} />
-          <StepItem serialNumber="2" des={t('enterPinCode')} />
           <StepItem
-            serialNumber="3"
+            serialNumber="2"
             des={t('selectLedgerApp', {
               appName: LedgerAppName,
             })}
             isLast={true}
           />
         </div>
+      </div>
+      <div className="text-[#4C65E9] text-center text-xs mb-4">
+        {t('hardwareAccountTips', {chain: networkName})}
       </div>
       <div className="w-70 mx-auto">
         <Button id="ready" fullWidth onClick={onClick}>

@@ -1,4 +1,4 @@
-const ua = {
+const uk = {
   translation: {
     // - common
     cancel: 'Відміна',
@@ -29,39 +29,43 @@ const ua = {
     notFilled: 'Не заповнено',
     unCaughtErrMsg: 'Щось пішло не так',
 
-    // - home page
+    // - homepage
     send: 'Відправити',
     history: 'Історія',
     assets: 'Активи',
     crossSpace: 'Cross Space',
 
-    // - homepage / 连接网站状态模块和切换连接弹窗模块
+    // - homepage / dapp footer
     noConnectedDapp: 'Не підключений до поточного веб-сайту',
     connected: 'Підключено',
     disconnect: 'Відключитися',
     disconnectTitle: 'Відключитися',
     disconnectContent: 'Відключитися від поточного веб-сайту?',
 
-    // - homepage / dapp connect site 弹窗
+    // - homepage / dapp connect site popup
     connectSite: 'Підключитися до цього веб-сайту?',
+    permissionRequest: 'Permission Request',
+    allowPermission: 'Allow these permissions for this site?',
     selectNetwork: 'Яку мережу хочете використати?',
     selectAuthorizedAccounts: 'Авторизувати обліковий запис',
     selectAll: 'Вибрати все',
     connect: 'Підключитися',
     chooseNetwork: 'Вибрати мережу',
+    viewSelectedAddress: 'View selected account public address',
+    viewMultiAddress: 'View selected account‘s multi-chain address',
 
-    // - homepage / 授权单个账号
+    // - homepage / authorize single account
     authorizeCurrentAccount: 'Авторизувати {{currentAccount}}',
     needAuthTitle: 'Потрібна авторизація',
     needAuthContent:
       'Цей обліковий запис не авторизований на цьому сайті.<br/>Дозволити використання цього веб-сайту  {{accountName}} ？',
 
-    // - homepage / 账户管理 / 账户列表
+    // - homepage / account management / account list
     myAccounts: 'Мої облікові записи',
     addAccount: 'Додати обліковий запис',
     search: 'Пошук',
 
-    // homepage / 账户管理 / 创建账户
+    // homepage / account management / create account
     manyAccounts: '{{accountNum}} Облікові записи',
     oneAccount: '1 Обліковий запис',
 
@@ -80,18 +84,18 @@ const ua = {
     pKeysDes: 'Введіть приватний ключ в текстовому вигляді.',
     ledgerDes: 'Використайте свій Ledger гаманець.',
 
-    // homepage / 账户管理 / 创建账户 / 1. use existing seed phraseу
+    // homepage / account management / create account / 1. use existing seed phraseу
     accountName: "Ім'я облікового запису",
     selectSeedPhrase: 'Виберіть секретну фразу',
 
-    // homepage / 账户管理 / 创建账户 / 2. new seed phrase
-    seedGroupName: "Секретна фраза Ім'я групи",
+    // homepage / account management / create account / 2. new seed phrase
+    seedGroupName: 'Оберить секретну фразу групи',
     invalidWord: 'Невірне слово',
     seedCreateTitle: 'Далі відображатиметься секретна фраза.',
     seedCreateContent:
       'Отримання секретної фрази еквівалентне володінню активами в гаманці.<br/>Якщо секретна фраза загублена, її неможливо відновити, зберігаєте її належним чином.',
 
-    // homepage / 账户管理 / 创建账户 / 2. new seed phrase / backup seed phrase
+    // homepage / account management / create account / 2. new seed phrase / backup seed phrase
     backupSeedTitle: 'Резервна секретна фраза',
     backupSeedContent:
       'Будь ласка, скопіюйте секретну фразу по порядку.<br/>Не передавайте і не зберігайте секретнную фразу в мережі.',
@@ -100,14 +104,14 @@ const ua = {
       'Будь ласка кликніть на секретну фразу, щоб забезпечити правильне резервне копіювання.',
     confirmSeedError: 'Помилка в секретній фразі.',
 
-    // homepage / 账户管理 / 创建账户 / 3. Import existing account
+    // homepage / account management / create account / 3. Import existing account
     seedImport: 'Імпорт секретної фрази',
     seedImportPlaceholder:
       'Секретна фраза складається із слів, розділених пробiлом. Розділяйте кожне введене слово пробiлом.',
     duplicateSeedError: 'Ця секретна фраза вже у вашому гаманці.',
     invalidSeed: 'Невірна секретна фраза, перевірте ще раз.',
 
-    // homepage / 账户管理 / 创建账户 / 4. Import account with private key
+    // homepage / account management / create account / 4. Import account with private key
     pKeyImport: 'Імпортувати привантый ключ',
     pKeyImportPlaceholder: 'Введіть свій приватний ключ тут.',
     duplicatePkError: 'Цей приватний ключ вже у вашому гаманці.',
@@ -193,14 +197,11 @@ const ua = {
     balance: 'Баланс',
     createContract: 'Розгорнути контракт',
 
-    // - Send Transaction / Sign Transaction / 3. token approve - view data
-    // 此处展示内容为交易详情，在多种情况是相同的，不止是 token approve 这个场景，详见 common
-
     // - Send Transaction / Sign Transaction / 3. token approve -  edit approve limit permissions
     editPermission: 'Дозвіл на редагування',
     spendLimitPermission: 'Дозвіл на ліміт витрат',
 
-    // 允许操作的限额权限描述
+    // approve allowance
     allowSpendDes:
       'Дозволити {{dapp}} виводити і оплачувати до наступної суми:',
     proposedApprovalLimit: 'Пропонований ліміт схвалення',
@@ -236,6 +237,9 @@ const ua = {
     // - request signature - 1. Sign Text
     signText: 'Підписати текст',
     signThisText: 'Підписати цей текст?',
+    disablePersonSign:
+      'Personal sign with hardware wallet is not yet supported.',
+    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Підписати це повідомлення?',
@@ -287,7 +291,7 @@ const ua = {
     groupDeleteWarning: 'Неможливо видалити поточну групу облікових записів.',
     accountDeleteWarning: 'Неможливо видалити поточний аккаунт.',
     accountHideWarning: 'Неможливо приховати поточний аккаунт.',
-    lastAccountHideWarning: 'Збережіть хоча б один аккаунт.',
+    lastAccountHideWarning: 'Keep at least one account in this group.',
     ledgerTips: 'Цей акаунт(и) можна використовувати тільки в {{network}}.',
 
     // Network Management
@@ -329,7 +333,7 @@ const ua = {
     // backup
     backupIdentity: 'Резервна секретна фраза',
     backupSeedDes:
-      'Будь ласка, створіть резервну копію секретної фрази у вiрному порядку. Не діліться і не зберiгайте в мережевому оточенні.',
+      'Будь ласка, створіть резервну копію секретної фрази у вiрному порядку. Не діліться і не зберiгайте в мережі.',
     backupPk: 'Резервний обліковий запис',
     backupPkDes:
       'Це ваш приватний ключ. Його отримання означає право власності на усі активи. Будь ласка, зберігаєте його у безпеці. Після втрати його неможливо відновити.',
@@ -355,8 +359,8 @@ const ua = {
     steps: 'Шаги {{number}}',
     pluginHardwareWallet:
       "Підключіть апаратний гаманець до комп'ютера через порт USB.",
-    enterPinCode: 'Введіть PIN- код.',
-    selectLedgerApp: 'Select and open {{appName}} App in Ledger',
+    selectLedgerApp: 'Select and open {{appName}} App.',
+    hardwareAccountTips: 'Added account(s) is available on {{chain}}',
     ready: 'Готово',
     specifiedConnectedChain:
       '<Container><Content>Connect Ledger on</Content><CurrentNetworkDisplay/></Container>',
@@ -370,8 +374,9 @@ const ua = {
     waitForPermission: 'Очікування дозволу',
     connectFailed: "Не вдалося встановити з'єднання",
     retry: 'Повторити',
-    openLedgerApp: 'Open {{appName}} App',
-    openLedgerAppDes: 'Select and open {{appName}} App in your Ledger device.',
+    openLedgerApp: 'Відкрити додаток для {{appName}}',
+    openLedgerAppDes:
+      'Виберіть і відкрийте додаток для {{appName}} у вашому пристрої Ledger.',
     chooseAddress: 'Виберіть адресу',
     hdPath: 'Шлях HD',
     chooseHwAddress: 'Виберіть адресу, яку ви хочете імпортувати :',
@@ -428,7 +433,7 @@ const ua = {
     ledgerIsNotConnected: 'Ledger не підключений',
     openExpandView: 'Відкрийте розширення Fluent Wallet для підключення',
     hwOpenApp:
-      'Before clicking confirm, make sure the {{appName}} App is open.',
+      'Перш ніж продовжити, переконаєтеся, що додаток для {{appName}} відкрито.',
 
     // error page
     errorTile: 'Помилка',
@@ -438,8 +443,20 @@ const ua = {
     feedBackCode: "Скопіювати код і надати зворотний зв'язок",
     fullNodeError: 'Неможливо підключитися до вузла RPC.',
     close: 'Закрити',
-    reload: 'Перезавантаження',
+    reload: 'Перезавантажити',
+
+    // address book & contacts
+    addressBook: 'Address Book',
+    contacts: 'Contacts',
+    recent: 'Recent',
+    account: 'Account',
+    searchAddressNickname: 'Search address or nickname',
+    addedContactWarning: 'This address has already been added!',
+    deleteContactTitle: 'Confirm delete this contact',
+    deleteContactContent: 'Do you want to delete this contact?',
+    name: 'Name',
+    address: 'Address',
   },
 }
 
-export default ua
+export default uk

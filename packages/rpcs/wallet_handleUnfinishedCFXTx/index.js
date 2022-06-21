@@ -210,6 +210,11 @@ export const main = ({
 
             const {errorType, shouldDiscard} = processError(err)
             const isDuplicateTx = errorType === 'duplicateTx'
+            const resendNonceTooStale =
+              tx.resendAt && errorType === 'tooStaleNonce'
+
+            const sameAsSuccess = isDuplicateTx || resendNonceTooStale
+            const failed = !sameAsSuccess && shouldDiscard
 
             if (errorType === 'unknownError')
               sentryCaptureError(err, {
@@ -220,9 +225,9 @@ export const main = ({
               })
 
             defs({
-              failed: shouldDiscard && {errorType, err},
-              sameAsSuccess: isDuplicateTx,
-              resend: !shouldDiscard && !isDuplicateTx,
+              failed: failed && {errorType, err},
+              sameAsSuccess,
+              resend: !shouldDiscard && !sameAsSuccess,
             })
               .transform(
                 branchObj({
@@ -333,7 +338,7 @@ export const main = ({
               })
           }),
           skipped: map(() => {
-            setTxSkipped({hash})
+            setTxSkipped({hash, skippedChecked: true})
             updateBadge(getUnfinishedTxCount())
             wallet_getBlockchainExplorerUrl({transaction: [hash]}).then(
               ({transaction: [txUrl]}) => {
@@ -363,18 +368,23 @@ export const main = ({
       .transform(
         sideEffect(nonce => {
           if (BigNumber.from(nonce).gt(BigNumber.from(tx.txPayload.nonce))) {
-            setTxSkipped({hash})
-            updateBadge(getUnfinishedTxCount())
-            getExt().then(ext =>
-              ext.notifications.create(hash, {
-                title: 'Skipped transaction',
-                message: `Transaction ${parseInt(
-                  tx.txPayload.nonce,
-                  16,
-                )}  skipped!`,
-              }),
-            )
-            return sdone()
+            if (tx.skippedChecked) {
+              setTxSkipped({hash, skippedChecked: true})
+              updateBadge(getUnfinishedTxCount())
+              getExt().then(ext =>
+                ext.notifications.create(hash, {
+                  title: 'Skipped transaction',
+                  message: `Transaction ${parseInt(
+                    tx.txPayload.nonce,
+                    16,
+                  )}  skipped!`,
+                }),
+              )
+              return sdone()
+            } else {
+              setTxSkipped({hash})
+              return keepTrack(0)
+            }
           }
           keepTrack(0)
         }),

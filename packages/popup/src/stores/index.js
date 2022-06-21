@@ -8,16 +8,17 @@ const useGlobalStore = create(set => ({
   createdSeedPhase: '',
   createdPassword: '',
   createdMnemonic: '',
+  networkInfo: {},
+  addressNote: {},
   exportPrivateKeyData: [],
   exportSeedPhrase: '',
-  networkInfo: {},
-
   // logic
   setCreatedPassword: createdPassword => set({createdPassword}),
   setCreatedGroupName: createdGroupName => set({createdGroupName}),
   setCreatedSeedPhase: createdSeedPhase => set({createdSeedPhase}),
   setCreatedMnemonic: createdMnemonic => set({createdMnemonic}),
   setNetworkInfo: networkInfo => set({networkInfo}),
+  setAddressNote: addressNote => set({addressNote}),
 
   setExportPrivateKeyData: exportPrivateKeyData => set({exportPrivateKeyData}),
   setExportSeedPhrase: exportSeedPhrase => set({exportSeedPhrase}),

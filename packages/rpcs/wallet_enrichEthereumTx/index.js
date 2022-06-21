@@ -1,4 +1,5 @@
 import {map, Bytes32} from '@fluent-wallet/spec'
+import {getEthContractMethodSignature} from '@fluent-wallet/contract-method-name'
 
 export const NAME = 'wallet_enrichEthereumTx'
 
@@ -87,6 +88,24 @@ export const main = async ({
         })
         if (app) txs.push({eid: tokenTx.eid, token: {fromApp: true}})
         else txs.push({eid: tokenTx.eid, token: {fromUser: true}})
+
+        try {
+          const {name, args} = await getEthContractMethodSignature(data)
+          switch (name) {
+            case 'transfer':
+            case 'approve':
+            case 'send':
+              txs.push({
+                eid: txExtraEid,
+                txExtra: {
+                  // moreInfo: {args: [...args]},
+                  address: args[0].toLowerCase(),
+                  method: name,
+                },
+              })
+              break
+          }
+        } catch (err) {} // eslint-disable-line no-empty
 
         wallet_refetchBalance(
           {

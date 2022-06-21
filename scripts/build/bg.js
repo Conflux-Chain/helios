@@ -40,7 +40,7 @@ const config = {
   write: true,
   treeShaking: isProd(),
   platform: 'browser',
-  splitting: true,
+  splitting: isProd(),
   minify: isProd(),
   sourcemap: true,
   format: 'esm',

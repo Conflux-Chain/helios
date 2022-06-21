@@ -186,7 +186,8 @@ const schema = {
     contractInteraction: {doc: 'contract interaction tx'},
     token20: {doc: '20 contract'},
     tokenNFT: {doc: 'nft contract'},
-    moreInfo: {doc: 'more info about above action'},
+    address: {doc: 'intresting address of this tx, usually recipient'},
+    method: {doc: 'contract call method name'},
   },
 
   // ## dapp interaction
@@ -262,6 +263,22 @@ const schema = {
       ref: true,
     },
   },
+
+  // # general addr, not linked to accounts
+  gaddr: {
+    id: {tuples: ['gaddr/network', 'gaddr/value'], identity: true},
+    value: {doc: 'addr value'},
+    network: {ref: true},
+  },
+
+  // # memo
+  memo: {
+    id: {tuples: ['memo/gaddr', 'memo/value'], identity: true},
+    gaddr: {ref: true},
+    value: {doc: 'memo content'},
+  },
+
+  // # db
   dbmeta: {version: {doc: 'db version'}},
 }
 

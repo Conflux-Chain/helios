@@ -34,33 +34,37 @@ const zh = {
     assets: '资产',
     crossSpace: 'Cross Space',
 
-    // - homepage / 连接网站状态模块和切换连接弹窗模块
+    // - homepage / dapp footer
     noConnectedDapp: '未连接至当前网站',
     connected: '已连接',
     disconnect: '断开连接',
     disconnectTitle: '断开连接',
     disconnectContent: '与此网站断开连接？',
 
-    // - homepage / dapp connect site 弹窗
+    // - homepage / dapp connect site popup
     connectSite: '连接至此网站？',
+    permissionRequest: '权限申请',
+    allowPermission: '授权给此网站以下权限？',
     selectNetwork: '想要使用哪个网络？',
     selectAuthorizedAccounts: '授权账户',
     selectAll: '全部',
     connect: '连接',
     chooseNetwork: '选择网络',
+    viewSelectedAddress: '查看选中账户的地址',
+    viewMultiAddress: '查看选中账户的多链地址',
 
-    // - homepage / 授权单个账户
+    // - homepage / authorize single account
     authorizeCurrentAccount: '授权 {{currentAccount}}',
     needAuthTitle: '需要授权',
     needAuthContent:
       '此账户未授权本网站<br/>授权此网站使用账户 {{accountName}} ？',
 
-    // - homepage / 账户管理 / 账户列表
+    // - homepage / account management / account list
     myAccounts: '我的账户',
     addAccount: '添加账户',
     search: '搜索',
 
-    // homepage / 账户管理 / 创建账户
+    // homepage / account management / create account
     manyAccounts: '{{accountNum}} 个账户',
     oneAccount: '1 个账户',
 
@@ -78,18 +82,18 @@ const zh = {
     pKeysDes: '填写明文私钥',
     ledgerDes: '连接你的 Ledger 钱包',
 
-    // homepage / 账户管理 / 创建账户 / 1. use existing seed phrase
+    // homepage / account management / create account / 1. use existing seed phrase
     accountName: '账户名称',
     selectSeedPhrase: '选择一个助记词账户组',
 
-    // homepage / 账户管理 / 创建账户 / 2. new seed phrase
+    // homepage / account management / create account / 2. new seed phrase
     seedGroupName: '助记词账户组',
     invalidWord: '无效单词',
     seedCreateTitle: '下一步，助记词组将会展示出来',
     seedCreateContent:
       '获得了助记词就等于拥有了钱包里的资产<br/>助记词一旦丢失将无法找回，请妥善保管',
 
-    // homepage / 账户管理 / 创建账户 / 2. new seed phrase / backup seed phrase
+    // homepage / account management / create account / 2. new seed phrase / backup seed phrase
     backupSeedTitle: '备份助记词',
     backupSeedContent:
       '请按顺序复制助记词<br/>请勿在联网环境下共享和存储助记词',
@@ -97,13 +101,13 @@ const zh = {
     confirmSeedContent: '请按顺序点击助记词，以确保备份正确',
     confirmSeedError: '助记词错误',
 
-    // homepage / 账户管理 / 创建账户 / 3. Import existing account
+    // homepage / account management / create account / 3. Import existing account
     seedImport: '导入助记词',
     seedImportPlaceholder: '助记词是一组由空格分隔的词组，输入时请用空格分隔',
     duplicateSeedError: '此助记词在钱包中已存在',
     invalidSeed: '助记词无效，请再次检查',
 
-    // homepage / 账户管理 / 创建账户 / 4. Import account with private key
+    // homepage / account management / create account / 4. Import account with private key
     pKeyImport: '导入私钥',
     pKeyImportPlaceholder: '请在此填写私钥',
     duplicatePkError: '此私钥在钱包中已存在',
@@ -187,14 +191,11 @@ const zh = {
     balance: '余额',
     createContract: '部署合约',
 
-    // - Send Transaction / Sign Transaction / 3. token approve - view data
-    // 此处展示内容为交易详情，在多种情况是相同的，不止是 token approve 这个场景，详见 common
-
     // - Send Transaction / Sign Transaction / 3. token approve -  edit approve limit permissions
     editPermission: '编辑权限',
     spendLimitPermission: '授权数额权限',
 
-    // 允许操作的限额权限描述
+    // approve allowance
     allowSpendDes: '允许 {{dapp}} 转账和花费的最大数额:',
     proposedApprovalLimit: '建议授权的数额',
     proposedApprovalLimitDes: '由 {{dapp}} 给出的建议',
@@ -228,7 +229,7 @@ const zh = {
 
     // - request signature - 1. Sign Text
     signText: '文本签名',
-    signThisText: '签署这个文本?',
+    signThisText: '签署这个文本？',
     disablePersonSign: 'Personal sign 暂不支持使用硬件钱包签名',
     disableTypeSign: 'Typed sign 暂不支持使用硬件钱包签名',
 
@@ -253,7 +254,7 @@ const zh = {
 
     // - Switch Network
     switchNetwork: '切换网络',
-    allowSwitchNetwork: '允许此网站切换网络?',
+    allowSwitchNetwork: '允许此网站切换网络？',
     warningSwitchNetwork: '这将会把网络切换至钱包已经添加的网络',
 
     // - set password page
@@ -279,7 +280,7 @@ const zh = {
     groupDeleteWarning: '不能删除当前账户组',
     accountDeleteWarning: '不能删除当前账户',
     accountHideWarning: '不能隐藏当前账户',
-    lastAccountHideWarning: '至少保留一个账户',
+    lastAccountHideWarning: '在账户组中至少保留一个账户',
     ledgerTips: '这些账户只能在 {{network}} 上使用',
 
     // Network Management
@@ -342,8 +343,8 @@ const zh = {
     followConnectLedgerSteps: '请根据以下步骤连接 Ledger',
     steps: '步骤 {{number}}',
     pluginHardwareWallet: '请将硬件钱包插入电脑的 USB 端口',
-    enterPinCode: '在硬件钱包上输入 PIN 码',
-    selectLedgerApp: '在 Ledger 中打开 {{appName}} App',
+    selectLedgerApp: '打开 {{appName}} App',
+    hardwareAccountTips: '添加的账户只能在 {{chain}} 上使用',
     ready: '开始连接',
     specifiedConnectedChain:
       '<Container><Content>连接 Ledger 在</Content><CurrentNetworkDisplay/></Container>',
@@ -423,6 +424,18 @@ const zh = {
     fullNodeError: '无法连接到 RPC 节点',
     close: '关闭',
     reload: '重新加载',
+
+    // address book & contacts
+    addressBook: '地址簿',
+    contacts: '联系人',
+    recent: '最近',
+    account: '我的账户',
+    searchAddressNickname: '输入地址或名字查找',
+    addedContactWarning: '该地址已经添加过了！',
+    deleteContactTitle: '删除联系人',
+    deleteContactContent: '确认删除此联系人？',
+    name: '名称',
+    address: '地址',
   },
 }
 
