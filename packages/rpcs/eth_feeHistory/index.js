@@ -3,21 +3,18 @@ import {
   Uint,
   blockRef,
   or,
-  gte,
-  lte,
   zeroOrMore,
-  and,
   number,
+  schema,
 } from '@fluent-wallet/spec'
 
 export const NAME = 'eth_feeHistory'
-
 export const schemas = {
   input: [
     cat,
-    Uint,
+    number,
     [or, blockRef, Uint],
-    [zeroOrMore, [and, number, [gte, 0], [lte, 100]]],
+    [schema, [zeroOrMore, [number, {max: 100, min: 1}]]],
   ],
 }
 
