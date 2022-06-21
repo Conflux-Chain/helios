@@ -88,10 +88,14 @@ function ConfirmTransaction() {
     : ETH_SEND_TRANSACTION
   const {
     gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     gasLimit,
     storageLimit,
     nonce,
     setGasPrice,
+    setMaxFeePerGas,
+    setMaxPriorityFeePerGas,
     setGasLimit,
     setStorageLimit,
     setNonce,
@@ -138,17 +142,22 @@ function ConfirmTransaction() {
 
   // params in wallet send or dapp send
   const originParams = !isDapp ? {...txParams} : {...tx}
-  // user can edit nonce, gasPrice and gas
+
+  // dapp send params
   const {
     gasPrice: initGasPrice,
+    maxFeePerGas: initMaxFeePerGas,
+    maxPriorityFeePerGas: initMaxPriorityFeePerGas,
     gas: initGasLimit,
     nonce: initNonce,
     storageLimit: initStorageLimit,
   } = tx
-
+  // user can edit nonce, gasPrice and gas
   const params = {
     ...originParams,
     gasPrice: formatDecimalToHex(gasPrice),
+    maxFeePerGas: formatDecimalToHex(maxFeePerGas),
+    maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
     gas: formatDecimalToHex(gasLimit),
     nonce: formatDecimalToHex(nonce),
     storageLimit: formatDecimalToHex(storageLimit),
@@ -160,6 +169,8 @@ function ConfirmTransaction() {
   // send params, need to delete '' or undefined params,
   // otherwise cfx_sendTransaction will return params error
   if (!params.gasPrice) delete params.gasPrice
+  if (!params.maxFeePerGas) delete params.maxFeePerGas
+  if (!params.maxPriorityFeePerGas) delete params.maxPriorityFeePerGas
   if (!params.nonce) delete params.nonce
   if (!params.gas) delete params.gas
   if (!params.storageLimit) delete params.storageLimit
@@ -188,11 +199,12 @@ function ConfirmTransaction() {
   const originEstimateRst = useEstimateTx(originParams) || {}
   const {
     gasPrice: estimateGasPrice,
+    maxFeePerGas: estimateMaxFeePerGas,
+    maxPriorityFeePerGas: estimateMaxPriorityPerGas,
     gasLimit: estimateGasLimit,
     nonce: rpcNonce,
     storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
-
   const errorMessage = useCheckBalanceAndGas(
     estimateRst,
     displayTokenAddress,
@@ -215,6 +227,14 @@ function ConfirmTransaction() {
         )
       !gasPrice &&
         setGasPrice(formatHexToDecimal(initGasPrice || estimateGasPrice || ''))
+      !maxFeePerGas &&
+        setMaxFeePerGas(
+          formatHexToDecimal(initMaxFeePerGas || estimateMaxFeePerGas || ''),
+        )
+      !maxPriorityFeePerGas &&
+        setMaxPriorityFeePerGas(
+          initMaxPriorityFeePerGas || estimateMaxPriorityPerGas || '',
+        )
       !nonce && setNonce(formatHexToDecimal(initNonce || rpcNonce || ''))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -223,18 +243,24 @@ function ConfirmTransaction() {
     initGasLimit,
     initNonce,
     initGasPrice,
+    initMaxFeePerGas,
+    initMaxPriorityFeePerGas,
     initStorageLimit,
     setGasPrice,
     setNonce,
     setGasLimit,
     setStorageLimit,
     estimateGasPrice,
+    estimateMaxFeePerGas,
+    estimateMaxPriorityPerGas,
     estimateGasLimit,
     estimateStorageLimit,
     rpcNonce,
     gasLimit,
     storageLimit,
     gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     nonce,
   ])
 
