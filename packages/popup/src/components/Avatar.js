@@ -16,7 +16,7 @@ const useAvatarAddress = address => {
 
   const {
     data: {
-      network: {eid: networkId, netId, type, chainId},
+      network: {eid: networkId, type, chainId},
     },
   } = useCurrentAddress()
 
@@ -24,38 +24,38 @@ const useAvatarAddress = address => {
   const {data: accountData} = useAddress({
     value: address,
     networkId,
-    stop: isHexAddress(address) || isUndefined(networkId),
+    stop: isUndefined(networkId),
   })
+
   const accountId = accountData?.account?.[0]?.eid
 
   // get built-in cfx mainnet address
   const {data: addressData} = useAddress({
     accountId,
-    stop:
-      isHexAddress(address) ||
-      isUndefined(accountId) ||
-      chainId === CFX_MAINNET_CHAINID,
+    stop: isUndefined(accountId) || chainId === CFX_MAINNET_CHAINID,
   })
 
   useEffect(() => {
-    if (isUndefined(netId)) {
+    // invalidated address
+    if (!isHexAddress(address) && !validateBase32Address(address)) {
       return
     }
 
-    // EVM address or invalidated address
-    if (isHexAddress(address) || !validateBase32Address(address, netId)) {
-      return setAvatarAddress(jsNumberForAddress(address))
+    // external address or built-in address in non-current network
+    if (accountData === null) {
+      return setAvatarAddress(
+        jsNumberForAddress(
+          isHexAddress(address) ? address : decode(address)?.hexAddress,
+        ),
+      )
     }
 
-    // external cfx address
-    if (accountData === null) {
-      return setAvatarAddress(jsNumberForAddress(decode(address)?.hexAddress))
-    }
-    // built-in cfx address (current network is mainnet)
+    // built-in cfx mainnet address (current network is mainnet)
     if (chainId === CFX_MAINNET_CHAINID) {
       return setAvatarAddress(jsNumberForAddress(accountData?.hex))
     }
-    // built-in cfx address (current network is testnet)
+
+    // built-in address (current network is non-cfx network)
     if (isArray(addressData) && addressData.length) {
       let hex
       const accountGroupType =
@@ -74,7 +74,7 @@ const useAvatarAddress = address => {
       }
       setAvatarAddress(jsNumberForAddress(hex))
     }
-  }, [accountData, address, addressData, chainId, netId, type])
+  }, [accountData, address, addressData, chainId, type])
   return avatarAddress
 }
 
