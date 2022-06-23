@@ -460,7 +460,6 @@ export const useGroupAccountAuthorizedDapps = () => {
             chainId: 1,
           },
         },
-
         _app: {
           site: {origin: 1, icon: 1, eid: 1},
           eid: 1,
@@ -598,6 +597,10 @@ export const useAccountList = ({
       eid: 1,
       hidden: 1,
       selected: 1,
+      _app: {
+        site: {origin: 1, icon: 1, eid: 1},
+        eid: 1,
+      },
     },
     groupG: {
       nickname: 1,
