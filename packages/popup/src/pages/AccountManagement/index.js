@@ -262,7 +262,9 @@ function AccountManagement() {
                           hidden={hidden}
                           selected={selected}
                           showDelete={showDelete}
-                          accounts={Object.values(account)}
+                          accounts={Object.values(
+                            pkHdAccountGroups?.[accountGroupId]?.account || {},
+                          )}
                           onOpenConfirmPassword={onOpenConfirmPassword}
                           updateEditedName={updateEditedName}
                         />
