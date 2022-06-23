@@ -18,10 +18,10 @@ import {
   DappProgressHeader,
   DappFooter,
   CompWithLabel,
-  Avatar,
   NoResult,
   StretchInput,
-  WrapIcon,
+  AccountGroupItem,
+  AccountItem,
 } from '../../components'
 import {RPC_METHODS, MULTI_ADDRESS_PERMISSIONS} from '../../constants'
 import {formatLocalizationLang, formatIntoChecksumAddress} from '../../utils'
@@ -31,7 +31,7 @@ import {
   usePendingAuthReq,
 } from '../../hooks/useApi'
 
-const {ACCOUNT_GROUP_TYPE, WALLET_REJECT_PENDING_AUTH_REQUEST} = RPC_METHODS
+const {WALLET_REJECT_PENDING_AUTH_REQUEST} = RPC_METHODS
 function ConnectSitesList({
   allAccountGroupData,
   onSelectSingleAccount,
@@ -87,49 +87,35 @@ function ConnectSitesList({
             <NoResult content={t('noResult')} containerClassName="h-[262px]" />
           ) : (
             accountGroupData.map(
-              ({nickname, account, vault, eid}, index) =>
-                !!Object.values(account).length && (
-                  <div
-                    key={eid}
-                    className={`${
-                      index === 0 ? '' : 'mt-2'
-                    } bg-gray-4 border border-solid border-gray-10`}
-                  >
-                    {vault?.type !== ACCOUNT_GROUP_TYPE.PK && (
-                      <div className="flex items-center ml-3 pt-2.5">
-                        {vault?.type === ACCOUNT_GROUP_TYPE.HD && (
-                          <WrapIcon
-                            size="w-5 h-5 mr-1 bg-primary-4"
-                            clickable={false}
-                          >
-                            <img
-                              src="/images/seed-group-icon.svg"
-                              alt="group-icon"
-                            />
-                          </WrapIcon>
-                        )}
-                        <p className="text-gray-40 text-xs">{nickname}</p>
-                      </div>
-                    )}
-                    {Object.values(account).map(
-                      (
-                        {eid: accountId, nickname, currentAddress, selected},
-                        index,
-                      ) => (
-                        <div
-                          aria-hidden="true"
-                          onClick={() => onSelectSingleAccount(accountId)}
-                          key={accountId}
-                          id={`item-${index}`}
-                          className="flex px-3 items-center h-15 cursor-pointer w-full"
-                        >
-                          <Avatar
-                            className="w-5 h-5 mr-2"
-                            diameter={20}
-                            address={currentAddress?.value}
-                          />
-                          <div className="flex-1">
-                            <p className="text-xs text-gray-40">{nickname}</p>
+              ({nickname: groupNickname, account, vault, eid}, index) => (
+                <AccountGroupItem
+                  key={eid}
+                  nickname={groupNickname}
+                  groupType={vault?.type}
+                  className={`${
+                    index === 0 ? '' : 'mt-2'
+                  } bg-gray-4 border border-solid border-gray-10`}
+                  groupContainerClassName="mb-0"
+                >
+                  {Object.values(account).map(
+                    ({
+                      nickname: accountNickname,
+                      eid: accountId,
+                      selected,
+                      currentAddress,
+                    }) => (
+                      <AccountItem
+                        key={accountId}
+                        className="h-15 cursor-pointer"
+                        accountId={accountId}
+                        accountNickname={accountNickname}
+                        address={currentAddress?.value}
+                        onClickAccount={() => onSelectSingleAccount(accountId)}
+                        AccountNameOverlay={
+                          <div>
+                            <p className="text-xs text-gray-40">
+                              {accountNickname}
+                            </p>
                             <p className="text-sm text-gray-80">
                               {shortenAddress(
                                 formatIntoChecksumAddress(
@@ -138,6 +124,8 @@ function ConnectSitesList({
                               )}
                             </p>
                           </div>
+                        }
+                        rightComponent={
                           <div className="flex items-center">
                             {selected && (
                               <img
@@ -153,11 +141,12 @@ function ConnectSitesList({
                               iconClassName="mr-0"
                             />
                           </div>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                ),
+                        }
+                      />
+                    ),
+                  )}
+                </AccountGroupItem>
+              ),
             )
           )}
         </div>
