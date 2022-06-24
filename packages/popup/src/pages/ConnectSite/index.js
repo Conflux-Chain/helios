@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useState, useEffect} from 'react'
+import {isArray} from '@fluent-wallet/checks'
 import Input from '@fluent-wallet/component-input'
 import Checkbox from '@fluent-wallet/component-checkbox'
 import Button from '@fluent-wallet/component-button'
@@ -175,7 +176,7 @@ function ConnectSite() {
   const {setLoading} = useLoading()
   const pendingAuthReq = usePendingAuthReq()
 
-  const [{eid, req}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  const [{eid, req, site = {}}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const permissions = req?.params?.[0] || {}
 
   const {
@@ -224,15 +225,32 @@ function ConnectSite() {
 
   useEffect(() => {
     const accountDataKeys = Object.keys(accountData)
-    if (accountDataKeys.length) {
+    if (accountDataKeys.length && Object.keys(site).length) {
       const ret = {}
       accountDataKeys.forEach(eid => {
-        ret[eid] = checkboxStatusObj?.[eid] ?? !!accountData[eid]?.selected
+        const app = accountData[eid]?.app
+        // already authorized
+        const isChosen =
+          isArray(app) &&
+          app.some(
+            ({site: appSite}) => appSite?.eid && appSite.eid === site?.eid,
+          )
+
+        ret[eid] = !!(
+          checkboxStatusObj?.[eid] ??
+          (accountData[eid]?.selected || isChosen)
+        )
       })
       setCheckboxStatusObj({...ret})
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountData, Object.keys(checkboxStatusObj).length])
+  }, [
+    accountData,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    Object.keys(checkboxStatusObj).length,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    Object.keys(site).length,
+  ])
 
   useEffect(() => {
     setConfirmAccounts(
