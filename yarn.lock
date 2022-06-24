@@ -20373,7 +20373,7 @@ __metadata:
     regenerator-runtime: ^0.13.9
     rimraf: ^3.0.2
     serve-static: 1.15.0
-    shadow-cljs: ^2.19.2
+    shadow-cljs: ^2.19.4
     stylelint: ^14.9.0
     stylelint-config-prettier: ^9.0.3
     stylelint-config-standard: ^26.0.0
@@ -30983,9 +30983,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"shadow-cljs@npm:^2.19.2":
-  version: 2.19.2
-  resolution: "shadow-cljs@npm:2.19.2"
+"shadow-cljs@npm:^2.19.4":
+  version: 2.19.4
+  resolution: "shadow-cljs@npm:2.19.4"
   dependencies:
     node-libs-browser: ^2.2.1
     readline-sync: ^1.4.7
@@ -30995,7 +30995,7 @@ resolve@^2.0.0-next.3:
     ws: ^7.4.6
   bin:
     shadow-cljs: cli/runner.js
-  checksum: 9d60e57a5566290980ff87551e271450cafad675ba689e3237b2d58a9189a9d0e42b139c65c09cb9540f8d4889c9cf376f26d18810304155bc48c4ba2d65c3f7
+  checksum: 012010ddc2d0e801b316a9d6949dd0eefe249100ba67b4e9e6593fd802e0be307dcd29f0f9cc488576967fdce861101ff7da1dc7c30a220ccd53b1541cb00335
   languageName: node
   linkType: hard
 

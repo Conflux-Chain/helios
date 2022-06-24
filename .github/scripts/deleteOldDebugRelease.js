@@ -6,7 +6,11 @@ module.exports = async ({github, context}) => {
   const {
     repo: {owner, repo},
   } = context
-  let releases = await github.repos.listReleases({owner, repo, per_page: 100})
+  let releases = await github.rest.repos.listReleases({
+    owner,
+    repo,
+    per_page: 100,
+  })
   if (!releases || !releases.data) throw new Error('Github api is broken')
   releases = releases.data
   const debugReleases = releases.filter(
@@ -29,7 +33,9 @@ module.exports = async ({github, context}) => {
 
   return await Promise.all(
     oldDebugRelease.map(([release_id, tag]) =>
-      github.repos.deleteRelease({owner, repo, release_id}).then(github.git.deleteRef({owner, repo, ref: `tags/${tag}`})),
+      github.rest.repos
+        .deleteRelease({owner, repo, release_id})
+        .then(github.rest.git.deleteRef({owner, repo, ref: `tags/${tag}`})),
     ),
   ).catch(console.error)
 }
