@@ -2,6 +2,12 @@
 {:deps     {:aliases [:cljs]}
  :dev-http {8000 ["packages"]}
 
+ :build-defaults
+ {:devtools    {:preloads        [cljs-devtool x.portal.setup]
+                :console-support false
+                :devtools-url    "http://localhost:9630"}
+  :build-hooks [(hooks.portal/start)]}
+
  :builds
  {:spec {:target           :esm
          :output-dir       "packages/spec/src"

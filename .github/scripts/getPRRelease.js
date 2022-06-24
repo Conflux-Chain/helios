@@ -4,7 +4,11 @@ module.exports = async ({github, context}) => {
     repo: {owner, repo},
   } = context
   const prnum = process.env.PR_NUMBER
-  const releases = await github.repos.listReleases({owner, repo, per_page: 100})
+  const releases = await github.rest.repos.listReleases({
+    owner,
+    repo,
+    per_page: 100,
+  })
   if (!releases || !releases.data) throw new Error('Github api is broken')
   const [release] = releases.data.filter(
     ({name}) => name === `Debug Release for PR`,
