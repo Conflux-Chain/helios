@@ -309,9 +309,6 @@
 (defn parse-opts
   ([db pattern] (parse-opts db pattern nil))
   ([db pattern {:keys [visitor]}]
-   (tap> db)
-   (tap> (db/unfiltered-db db))
-   (tap> (.-pull-patterns (db/unfiltered-db db)))
    {:pattern (lru/-get (.-pull-patterns (db/unfiltered-db db)) pattern #(dpp/parse-pattern db pattern))
     :context (Context. db visitor)}))
 
