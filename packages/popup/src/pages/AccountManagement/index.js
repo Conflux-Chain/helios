@@ -243,10 +243,12 @@ function AccountManagement() {
                     address,
                   }) => (
                     <AccountItem
+                      showAvatar={false}
                       key={accountId}
                       accountId={accountId}
                       accountNickname={accountNickname}
                       address={getAvatarAddress(address)}
+                      className="pl-4"
                       AccountNameOverlay={
                         <TextNickname
                           nickname={accountNickname}
