@@ -271,10 +271,10 @@ export const useCheckBalanceAndGas = (
       ) {
         return t('balanceIsNotEnough')
       } else {
-        return t(
-          'contractError' + error?.message?.split?.('\n')?.[0] ??
-            error?.message ??
-            error,
+        return (
+          t('contractError') + error?.message?.split?.('\n')?.[0] ??
+          error?.message ??
+          error
         )
       }
     } else {

@@ -3,7 +3,6 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
-import Alert from '@fluent-wallet/component-alert'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
   formatDecimalToHex,
@@ -19,7 +18,6 @@ import {
   useDappParams,
   useViewData,
   useLedgerBindingApi,
-  useLedgerAppName,
 } from '../../hooks'
 import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
@@ -30,14 +28,8 @@ import {
   checkBalance,
   transformToTitleCase,
 } from '../../utils'
-import {AddressCard, InfoList} from './components'
-import {
-  TitleNav,
-  GasFee,
-  DappFooter,
-  HwAlert,
-  TransactionResult,
-} from '../../components'
+import {AddressCard, InfoList, AlertMessage} from './components'
+import {TitleNav, GasFee, DappFooter, TransactionResult} from '../../components'
 import {
   ROUTES,
   RPC_METHODS,
@@ -110,7 +102,6 @@ function ConfirmTransaction() {
       account: {eid: accountId},
     },
   } = useCurrentAddress()
-  const LedgerAppName = useLedgerAppName()
 
   const nativeToken = ticker || {}
   const tx = useDappParams(pendingAuthReq)
@@ -297,7 +288,7 @@ function ConfirmTransaction() {
     )
     if (error) {
       setLoading(false)
-      setBalanceError(t(error))
+      setBalanceError(error)
       return
     }
 
@@ -322,8 +313,10 @@ function ConfirmTransaction() {
     else window.close()
   }
 
+  const isContractError = balanceError.indexOf(t('contractError')) !== -1
+
   const confirmDisabled =
-    !!balanceError ||
+    (!!balanceError && !isContractError) ||
     estimateRst.loading ||
     Object.keys(estimateRst).length === 0
 
@@ -332,7 +325,7 @@ function ConfirmTransaction() {
       <header>
         <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
       </header>
-      <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-4">
+      <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-6">
         <div className="flex flex-col px-3">
           <AddressCard
             nickname={displayAccount?.nickname}
@@ -360,22 +353,6 @@ function ConfirmTransaction() {
             pendingAuthReq={pendingAuthReq}
           />
           <GasFee estimateRst={estimateRst} />
-          {balanceError && (
-            <span className="text-error text-xs inline-block mt-2">
-              {balanceError}
-            </span>
-          )}
-          <HwAlert open={isHwUnAuth} isDapp={isDapp} className="mt-3" />
-          <Alert
-            open={isHwOpenAlert}
-            className="mt-3"
-            type="warning"
-            closable={false}
-            width="w-full"
-            content={t('hwOpenApp', {
-              appName: LedgerAppName,
-            })}
-          />
         </div>
         <div className="flex flex-col items-center">
           {isDapp && params.data && (
@@ -384,8 +361,9 @@ function ConfirmTransaction() {
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
             </Link>
           )}
+
           {!isDapp && (
-            <div className="w-full flex px-4">
+            <div className="w-full flex px-3 z-50">
               <Button
                 variant="outlined"
                 className="flex-1 mr-3"
@@ -421,6 +399,13 @@ function ConfirmTransaction() {
               showError={false}
             />
           )}
+          <AlertMessage
+            isDapp={isDapp}
+            isHwUnAuth={isHwUnAuth}
+            isHwOpenAlert={isHwOpenAlert}
+            balanceError={balanceError}
+            isContractError={isContractError}
+          />
           {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (
             <TransactionResult
               status={sendStatus}
