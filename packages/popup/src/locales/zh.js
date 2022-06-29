@@ -165,6 +165,10 @@ const zh = {
     sponsored: '已赞助',
     partSponsored: '部分赞助',
 
+    // - Send Transaction / Error or Warning
+    error: '错误',
+    warning: '警告',
+
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
     editGasFeeControl: 'Gas 控制器',
     gasPrice: 'Gas 价格',

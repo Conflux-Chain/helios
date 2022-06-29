@@ -125,10 +125,10 @@ function ImportPrivateKey() {
             ></Input>
           </CompWithLabel>
         </section>
-        <section className="h-14">
+        <section className="mb-6">
           <Button
             id="importPrivateKeyBtn"
-            className="w-70  mx-auto"
+            className="w-70 mx-auto"
             onClick={onCreate}
             disabled={(!name && !accountNamePlaceholder) || !!errorMessage}
           >

@@ -161,7 +161,7 @@ function SendTransaction() {
         <AccountDisplay nickname={nickname} address={address} />
         <CurrentNetworkDisplay containerClassName="rounded h-6 pl-2" />
       </div>
-      <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">
+      <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 pt-4 pb-6">
         <div className="flex flex-col">
           <ToAddressInput
             address={toAddress}
@@ -193,7 +193,7 @@ function SendTransaction() {
             type="warning"
             content={t('noTxnWarning')}
           />
-          <div className="w-full flex px-1 mt-6">
+          <div className="w-full flex mt-6">
             <Button
               variant="outlined"
               className="flex-1 mr-3"
