@@ -249,6 +249,11 @@ const zh = {
     submit: '提交',
     customGasPrice: '自定义 Gas 价格',
     executedTx: '此交易已被执行或者已完成，不需要执行额外操作',
+    speedup: '加速',
+    amount: 'Amount',
+    hash: 'Hash',
+    nonce: 'Nonce',
+    fromAddress: 'From Address',
 
     // - request signature - 1. Sign Text
     signText: '文本签名',

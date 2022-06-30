@@ -261,6 +261,11 @@ const fr = {
     customGasPrice: 'Prix de Gas personalisé',
     executedTx:
       'La transaction a été exécutée ou terminée. Aucune action n’est requise.',
+    speedup: 'speed up',
+    amount: 'Amount',
+    hash: 'Hash',
+    nonce: 'Nonce',
+    fromAddress: 'From Address',
 
     // - request signature - 1. Sign Text
     signText: 'Signer le Texte',
