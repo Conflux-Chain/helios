@@ -12,7 +12,7 @@ import {
 import {
   useCurrentTxParams,
   useEstimateTx,
-  useCheckBalanceAndGas,
+  useEstimateError,
   useDecodeData,
   useDecodeDisplay,
   useDappParams,
@@ -65,7 +65,7 @@ function ConfirmTransaction() {
   }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
   const [sendError, setSendError] = useState({})
-  const [balanceError, setBalanceError] = useState('')
+  const [estimateError, setEstimateError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
   const isDapp = getPageType() === 'notification'
   useEffect(() => {
@@ -196,7 +196,7 @@ function ConfirmTransaction() {
     nonce: rpcNonce,
     storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
-  const errorMessage = useCheckBalanceAndGas(
+  const errorMessage = useEstimateError(
     estimateRst,
     displayTokenAddress,
     !displayTokenAddress,
@@ -204,7 +204,7 @@ function ConfirmTransaction() {
   )
 
   useEffect(() => {
-    setBalanceError(errorMessage)
+    setEstimateError(errorMessage)
   }, [errorMessage])
   // when dapp send, init the gas edit global store
   useEffect(() => {
@@ -288,7 +288,7 @@ function ConfirmTransaction() {
     )
     if (error) {
       setLoading(false)
-      setBalanceError(error)
+      setEstimateError(error)
       return
     }
 
@@ -313,10 +313,10 @@ function ConfirmTransaction() {
     else window.close()
   }
 
-  const isContractError = balanceError.indexOf(t('contractError')) !== -1
+  const isContractError = estimateError.indexOf(t('contractError')) !== -1
 
   const confirmDisabled =
-    (!!balanceError && !isContractError) ||
+    (!!estimateError && !isContractError) ||
     estimateRst.loading ||
     Object.keys(estimateRst).length === 0
 
@@ -403,7 +403,7 @@ function ConfirmTransaction() {
             isDapp={isDapp}
             isHwUnAuth={isHwUnAuth}
             isHwOpenAlert={isHwOpenAlert}
-            balanceError={balanceError}
+            estimateError={estimateError}
             isContractError={isContractError}
           />
           {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (

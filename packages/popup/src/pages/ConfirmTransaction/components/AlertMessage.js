@@ -13,14 +13,14 @@ const {CONNECT_HARDWARE_WALLET} = ROUTES
 function AlertMessage({
   isHwUnAuth,
   isHwOpenAlert,
-  balanceError,
+  estimateError,
   isContractError,
   isDapp,
 }) {
   const {t} = useTranslation()
   const LedgerAppName = useLedgerAppName()
 
-  if (!isHwUnAuth && !isHwOpenAlert && !balanceError) return null
+  if (!isHwUnAuth && !isHwOpenAlert && !estimateError) return null
   return (
     <div className="bg-bg bg-gray-circles bg-no-repeat bg-contain w-full flex flex-col absolute bottom-0 pt-6 pb-[88px] px-3 rounded-t-xl">
       <div className="flex items-start">
@@ -28,14 +28,14 @@ function AlertMessage({
           {(isHwUnAuth || isHwOpenAlert || isContractError) && (
             <ExclamationCircleFilled className="w-[18px] h-[18px] mr-1 text-warning" />
           )}
-          {!isContractError && !!balanceError && (
+          {!isContractError && !!estimateError && (
             <CloseCircleFilled className="w-[18px] h-[18px] mr-1 text-error" />
           )}
         </span>
         <span className="font-medium text-warning">
           {isHwUnAuth && t('ledgerIsNotConnected')}
           {(isHwOpenAlert || isContractError) && t('warning')}
-          {!isContractError && !!balanceError && t('error')}
+          {!isContractError && !!estimateError && t('error')}
         </span>
       </div>
       {isHwUnAuth && (
@@ -63,8 +63,8 @@ function AlertMessage({
             })}
         </div>
       )}
-      {!isContractError && !!balanceError && (
-        <div className="text-xs text-error mt-3">{balanceError}</div>
+      {!isContractError && !!estimateError && (
+        <div className="text-xs text-error mt-3">{estimateError}</div>
       )}
     </div>
   )
@@ -73,7 +73,7 @@ function AlertMessage({
 AlertMessage.propTypes = {
   isHwUnAuth: PropTypes.bool,
   isHwOpenAlert: PropTypes.bool,
-  balanceError: PropTypes.string,
+  estimateError: PropTypes.string,
   isContractError: PropTypes.bool,
   isDapp: PropTypes.bool,
 }
