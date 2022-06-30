@@ -256,6 +256,11 @@ const uk = {
     submit: 'Підтвердити',
     customGasPrice: 'Користувальницька ціна на газ',
     executedTx: 'Транзакція виконана або завершена. Ніяких дій не потрібно.',
+    speedup: 'speed up',
+    amount: 'Amount',
+    hash: 'Hash',
+    nonce: 'Nonce',
+    fromAddress: 'From Address',
 
     // - request signature - 1. Sign Text
     signText: 'Підписати текст',

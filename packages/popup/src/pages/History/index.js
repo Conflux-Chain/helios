@@ -72,6 +72,7 @@ function History() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [historyListData?.data])
 
+  console.log('txList', txList)
   return (
     <div
       id="history-container"
@@ -87,7 +88,18 @@ function History() {
         {txList?.length > 0 &&
           txList.map(
             (
-              {status, created, txExtra, txPayload, app, token, eid, hash},
+              {
+                status,
+                created,
+                txExtra,
+                txPayload,
+                app,
+                token,
+                eid,
+                hash,
+                err,
+                receipt,
+              },
               index,
             ) => (
               <HistoryItem
@@ -99,6 +111,8 @@ function History() {
                 app={app}
                 token={token}
                 hash={hash}
+                receipt={receipt}
+                err={err}
                 copyButtonContainerClassName={index === 0 ? '' : undefined}
                 copyButtonToastClassName={
                   index === 0 ? 'top-10 right-3' : undefined

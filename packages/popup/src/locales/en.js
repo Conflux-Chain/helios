@@ -255,6 +255,11 @@ const en = {
     customGasPrice: 'Custom Gas Price',
     executedTx:
       'The transaction has been executed or finished.No action required.',
+    speedup: 'speed up',
+    amount: 'Amount',
+    hash: 'Hash',
+    nonce: 'Nonce',
+    fromAddress: 'From Address',
 
     // - request signature - 1. Sign Text
     signText: 'Sign Text',

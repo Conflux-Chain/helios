@@ -257,6 +257,11 @@ const ru = {
     customGasPrice: 'Пользовательская цена на газ',
     executedTx:
       'Транзакция выполнена или завершена. Никаких действий не требуется.',
+    speedup: 'speed up',
+    amount: 'Amount',
+    hash: 'Hash',
+    nonce: 'Nonce',
+    fromAddress: 'From Address',
 
     // - request signature - 1. Sign Text
     signText: 'Подписать текст',
