@@ -29,7 +29,7 @@ import {
 import {
   useEstimateTx,
   useDecodeData,
-  useCheckBalanceAndGas,
+  useEstimateError,
   useLedgerBindingApi,
   useLedgerAppName,
 } from '../../../hooks'
@@ -66,7 +66,7 @@ function ResendTransaction({
 
   const [gasPriceErr, setGasPriceErr] = useState('')
   const [gasLimitErr, setGasLimitErr] = useState('')
-  const [balanceError, setBalanceError] = useState('')
+  const [estimateError, setEstimateError] = useState('')
   const [sendError, setSendError] = useState({})
   const [canResend, setCanResend] = useState(true)
 
@@ -78,7 +78,7 @@ function ResendTransaction({
   const {
     errorAnimateStyle: balanceHwAnimateStyle,
     displayErrorMsg: balanceHwDisplayErr,
-  } = useInputErrorAnimation(balanceError || hwAccountError)
+  } = useInputErrorAnimation(estimateError || hwAccountError)
 
   const LedgerAppName = useLedgerAppName()
   const {
@@ -168,7 +168,7 @@ function ResendTransaction({
     ) || {}
 
   // check balance
-  const errorMessage = useCheckBalanceAndGas(
+  const errorMessage = useEstimateError(
     estimateRst,
     isSendingToken ? to : null,
     isSpeedup ? simple : true,
@@ -177,7 +177,7 @@ function ResendTransaction({
 
   useEffect(() => {
     if (!estimateRst?.loading) {
-      setBalanceError(errorMessage)
+      setEstimateError(errorMessage)
     }
   }, [errorMessage, estimateRst?.loading])
 
@@ -244,11 +244,17 @@ function ResendTransaction({
 
   // change submit button status
   useEffect(() => {
-    if (gasPrice && gasLimit && !gasPriceErr && !gasLimitErr && !balanceError) {
+    if (
+      gasPrice &&
+      gasLimit &&
+      !gasPriceErr &&
+      !gasLimitErr &&
+      !estimateError
+    ) {
       return setCanResend(true)
     }
     setCanResend(false)
-  }, [gasPrice, gasLimit, gasPriceErr, gasLimitErr, balanceError])
+  }, [gasPrice, gasLimit, gasPriceErr, gasLimitErr, estimateError])
 
   const onCloseCard = useCallback(
     (args = {}) => {
@@ -276,7 +282,7 @@ function ResendTransaction({
     setGasPriceChoice('recommend')
     setGasPriceErr('')
     setGasLimitErr('')
-    setBalanceError('')
+    setEstimateError('')
     setCanResend(true)
     !!restSendStatus && setSendStatus('')
     setHwAccountError('')
@@ -398,7 +404,7 @@ function ResendTransaction({
 
     if (error) {
       setLoading(false)
-      setBalanceError(t(error))
+      setEstimateError(error)
       setSendStatus('')
       return
     }
@@ -442,7 +448,7 @@ function ResendTransaction({
               <Radio
                 value="recommend"
                 id="recommend"
-                wrapperClassName="w-full rounded px-3 items-center  mb-3 bg-white border border-solid border-primary-10"
+                wrapperClassName="w-full rounded px-3 items-center mb-3 bg-white border border-solid border-primary-10"
               >
                 <div className="px-3 flex h-[70px] items-center">
                   <div className="w-12 h-12 bg-primary-4 flex items-center justify-center rounded-lg">

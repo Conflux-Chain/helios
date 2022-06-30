@@ -11,11 +11,7 @@ import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
 import {TitleNav, AccountDisplay, CurrentNetworkDisplay} from '../../components'
-import {
-  useCurrentTxParams,
-  useEstimateTx,
-  useCheckBalanceAndGas,
-} from '../../hooks'
+import {useCurrentTxParams, useEstimateTx, useEstimateError} from '../../hooks'
 import {ToAddressInput, TokenAndAmount} from './components'
 import {validateAddress, validateByEip55} from '../../utils'
 import {
@@ -56,10 +52,10 @@ function SendTransaction() {
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const [addressError, setAddressError] = useState('')
-  const [balanceError, setBalanceError] = useState('')
+  const [estimateError, setEstimateError] = useState('')
   const [hasNoTxn, setHasNoTxn] = useState(false)
   const {errorAnimateStyle, displayErrorMsg} = useInputErrorAnimation(
-    sendAmount ? balanceError : '',
+    sendAmount ? estimateError : '',
   )
   const isNativeToken = !tokenAddress
   const estimateRst =
@@ -101,13 +97,13 @@ function SendTransaction() {
     setNonce,
     setStorageLimit,
   ])
-  const errorMessage = useCheckBalanceAndGas(
+  const errorMessage = useEstimateError(
     estimateRst,
     tokenAddress,
     !tokenAddress,
   )
   useEffect(() => {
-    !loading && setBalanceError(errorMessage)
+    !loading && setEstimateError(errorMessage)
   }, [errorMessage, loading])
 
   useEffect(() => {
@@ -149,7 +145,7 @@ function SendTransaction() {
   }, [networkId])
 
   const sendDisabled =
-    !!addressError || !!balanceError || !toAddress || !sendAmount
+    !!addressError || !!estimateError || !toAddress || !sendAmount
 
   return (
     <div className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg">
@@ -161,7 +157,7 @@ function SendTransaction() {
         <AccountDisplay nickname={nickname} address={address} />
         <CurrentNetworkDisplay containerClassName="rounded h-6 pl-2" />
       </div>
-      <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 py-4">
+      <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 pt-4 pb-6">
         <div className="flex flex-col">
           <ToAddressInput
             address={toAddress}
@@ -193,7 +189,7 @@ function SendTransaction() {
             type="warning"
             content={t('noTxnWarning')}
           />
-          <div className="w-full flex px-1 mt-6">
+          <div className="w-full flex mt-6">
             <Button
               variant="outlined"
               className="flex-1 mr-3"

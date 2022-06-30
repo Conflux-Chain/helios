@@ -171,6 +171,10 @@ const uk = {
     sponsored: 'Спонсорується',
     partSponsored: 'Частково спонсорується',
 
+    // - Send Transaction / Error or Warning
+    error: 'Error',
+    warning: 'Warning',
+
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
     editGasFeeControl: 'Регулятор газу',
     gasPrice: 'Вартість газу',
