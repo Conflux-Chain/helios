@@ -251,7 +251,7 @@ export const useCurrentTxParams = () => {
   return txStore
 }
 
-export const useCheckBalanceAndGas = (
+export const useEstimateError = (
   estimateRst,
   sendTokenAddress,
   isNativeToken,
