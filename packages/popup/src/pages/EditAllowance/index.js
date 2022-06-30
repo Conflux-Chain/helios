@@ -152,7 +152,7 @@ function EditAllowance() {
       </div>
       <footer>
         <Button
-          className="w-70  mx-auto mb-9"
+          className="w-70 mx-auto mb-6"
           id="savePermission"
           disabled={
             permissionChoice === 'custom' &&

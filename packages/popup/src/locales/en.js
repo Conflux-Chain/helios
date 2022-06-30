@@ -169,6 +169,10 @@ const en = {
     sponsored: 'Sponsored',
     partSponsored: 'Partially Sponsored',
 
+    // - Send Transaction / Error or Warning
+    error: 'Error',
+    warning: 'Warning',
+
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
     editGasFeeControl: 'Gas controller',
     gasPrice: 'Gas Price',

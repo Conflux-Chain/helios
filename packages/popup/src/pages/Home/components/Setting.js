@@ -125,7 +125,7 @@ function Setting({onClose, open, settingAnimate = true}) {
           </div>
         }
         cardFooter={
-          <div className="px-6 pb-4">
+          <div className="px-6 pb-6">
             <Button
               size="medium"
               fullWidth

@@ -248,7 +248,7 @@ function EditGasFee() {
       </div>
       <footer>
         <Button
-          className="w-70  mx-auto mb-9"
+          className="w-70 mx-auto mb-6"
           id="saveGasFeeBtn"
           onClick={saveGasData}
           disabled={!!gasPriceErr || !!nonceErr || !!gasLimitErr}

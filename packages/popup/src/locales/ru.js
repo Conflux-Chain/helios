@@ -171,6 +171,10 @@ const ru = {
     sponsored: 'Спонсируется',
     partSponsored: 'Частично спонсируется',
 
+    // - Send Transaction / Error or Warning
+    error: 'Error',
+    warning: 'Warning',
+
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
     editGasFeeControl: 'Регулятор газа',
     gasPrice: 'Стоимость газа',

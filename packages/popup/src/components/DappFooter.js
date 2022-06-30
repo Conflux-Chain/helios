@@ -161,7 +161,7 @@ function DappFooter({
   }
 
   return (
-    <footer className="flex w-full px-4">
+    <footer className="flex w-full px-3 z-50">
       <Button
         id="cancelBtn"
         className="flex-1"

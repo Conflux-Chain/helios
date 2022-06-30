@@ -313,7 +313,7 @@ function ConnectSite() {
   return (
     <div
       id="connectSiteContainer"
-      className="flex flex-col h-full w-full justify-between bg-blue-circles bg-no-repeat pb-4"
+      className="flex flex-col h-full w-full justify-between bg-blue-circles bg-no-repeat pb-6"
     >
       <div id="content">
         <DappProgressHeader

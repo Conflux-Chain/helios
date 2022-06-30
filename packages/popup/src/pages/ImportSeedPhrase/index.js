@@ -125,10 +125,10 @@ function ImportSeedPhrase() {
             />
           </CompWithLabel>
         </section>
-        <section className="mb-4">
+        <section className="mb-6">
           <Button
             id="importSeedPhraseBtn"
-            className="w-70  mx-auto"
+            className="w-70 mx-auto"
             onClick={onCreate}
             disabled={(!name && !accountNamePlaceholder) || !!errorMessage}
           >

@@ -251,7 +251,7 @@ export const useCurrentTxParams = () => {
   return txStore
 }
 
-export const useCheckBalanceAndGas = (
+export const useEstimateError = (
   estimateRst,
   sendTokenAddress,
   isNativeToken,
@@ -271,10 +271,10 @@ export const useCheckBalanceAndGas = (
       ) {
         return t('balanceIsNotEnough')
       } else {
-        return t(
-          'contractError' + error?.message?.split?.('\n')?.[0] ??
-            error?.message ??
-            error,
+        return (
+          t('contractError') + error?.message?.split?.('\n')?.[0] ??
+          error?.message ??
+          error
         )
       }
     } else {
