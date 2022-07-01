@@ -22,7 +22,7 @@ function AccountGroupItem({
           className={`flex items-center ml-3 pt-2.5 mb-0.5 ${groupContainerClassName}`}
         >
           {groupType === ACCOUNT_GROUP_TYPE.HD && showGroupNameIcon && (
-            <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
+            <WrapIcon size="w-5 h-5 mr-1" clickable={false}>
               <img src="/images/seed-group-icon.svg" alt="group-icon" />
             </WrapIcon>
           )}
