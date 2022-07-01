@@ -51,7 +51,7 @@ function SettingItem({icon, content, onClick}) {
   return (
     <div
       aria-hidden
-      className="group mt-2 py-2.5 cursor-pointer text-gray-80 hover:bg-primary-4 hover:text-primary"
+      className="group mt-2 py-2.5 cursor-pointer text-gray-80 hover:bg-primary-10 hover:text-primary"
       onClick={() => {
         onClick && onClick()
       }}

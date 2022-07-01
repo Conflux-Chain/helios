@@ -14,7 +14,7 @@ function AccountItem({
   return (
     <div
       aria-hidden="true"
-      className={`flex px-3 py-3.5 rounded hover:bg-primary-4 items-center ${className}`}
+      className={`flex px-3 py-3.5 rounded hover:bg-primary-10 items-center ${className}`}
       id={`account-${accountId}`}
       onClick={() => onClickAccount?.()}
     >

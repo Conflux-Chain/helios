@@ -49,7 +49,7 @@ function DappItem({iconUrl, origin, siteId, appId, accountId, accountSiteId}) {
   }
 
   return (
-    <div className="hover:bg-primary-4 flex items-center p-3">
+    <div className="hover:bg-primary-10 flex items-center p-3">
       <WrapIcon className="w-6 h-6 mr-2">
         <img src={dappIconUrl} alt="icon" className="w-4 h-4" />
       </WrapIcon>
