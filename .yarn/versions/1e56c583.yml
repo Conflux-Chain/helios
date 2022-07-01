@@ -1,0 +1,10 @@
+releases:
+  "@fluent-wallet/conflux-tx-error": patch
+  "@fluent-wallet/ethereum-tx-error": patch
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
+  "@fluent-wallet/wallet_handle-unfinished-eth-tx": patch
+  "@fluent-wallet/wallet_refetch-tx-list": patch
+
+declined:
+  - helios-background
+  - helios-popup

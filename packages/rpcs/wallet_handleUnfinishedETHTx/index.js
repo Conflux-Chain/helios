@@ -358,9 +358,16 @@ export const main = ({
             transactionIndex,
             blockNumber,
             contractAddress,
+            cumulativeGasUsed,
+            effectiveGasPrice,
             gasUsed,
+            type,
+            txExecErrorMsg,
           } = rst
           const receipt = {
+            cumulativeGasUsed,
+            effectiveGasPrice,
+            type: type || '0x0',
             blockHash,
             transactionIndex,
             blockNumber,
@@ -372,7 +379,7 @@ export const main = ({
             setTxExecuted({hash, receipt})
             keepTrack(0)
           } else {
-            setTxFailed({hash, error: 'tx failed'})
+            setTxFailed({hash, error: txExecErrorMsg || 'tx failed'})
             updateBadge(getUnfinishedTxCount())
             getExt().then(ext =>
               ext.notifications.create(hash, {
