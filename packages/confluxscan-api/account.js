@@ -209,7 +209,7 @@ export async function transactionsESpace({
       else finished = true
     }
     return {
-      list: formatEspaceTxs(list, parseInt(chainId, 16)),
+      list: formatEspaceTxs(list, chainId),
       total: list.length,
     }
   } catch (err) {

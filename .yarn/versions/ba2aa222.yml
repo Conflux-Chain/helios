@@ -1,6 +1,7 @@
 releases:
   "@fluent-wallet/consts": patch
   "@fluent-wallet/db": patch
+  "@fluent-wallet/eth_sign-transaction": patch
   "@fluent-wallet/wallet_enrich-ethereum-tx": patch
   "@fluent-wallet/wallet_enrich-txs": patch
   "@fluent-wallet/wallet_get-block-or-epoch-number": patch
@@ -16,7 +17,7 @@ declined:
   - helios-popup
   - "@fluent-wallet/rpc-engine"
   - "@fluent-wallet/cfx_gas-price"
-  - "@fluent-wallet/eth_sign-transaction"
+  - "@fluent-wallet/eth_send-transaction"
   - "@fluent-wallet/wallet_add-network"
   - "@fluent-wallet/wallet_add-vault"
   - "@fluent-wallet/wallet_export-account-group"
