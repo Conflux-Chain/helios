@@ -5,7 +5,7 @@ import {
   CFX_ESPACE_MAINNET_NETID,
   CFX_ESPACE_TESTNET_NETID,
 } from '@fluent-wallet/consts'
-import {transaction} from '@fluent-wallet/confluxscan-api/account'
+import {transaction} from '@fluent-wallet/confluxscan-api/account.js'
 import {memoize1} from '@thi.ng/memoize'
 import {TLRUCache} from '@thi.ng/cache'
 
