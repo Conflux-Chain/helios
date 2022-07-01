@@ -45,7 +45,8 @@ export const schemas = {
 // 3. type must be an integer
 function toEthersTx(tx) {
   // eslint-disable-next-line no-unused-vars
-  const {from, type, gas, ...ethersTx} = tx
+  const {from, type, gas, chainId, ...ethersTx} = tx
+  ethersTx.chainId = parseInt(chainId, 16)
   ethersTx.gasLimit = gas
   ethersTx.type = parseInt(type, 16)
   if (type === ETH_TX_TYPES.EIP1559) {
@@ -156,7 +157,6 @@ export const main = async args => {
   }
 
   if (!newTx.chainId) newTx.chainId = network.chainId
-  newTx.chainId = parseInt(newTx.chainId, 16)
   if (is1559Tx && network1559Compatible) {
     const gasInfoEip1559 = await eth_estimate1559Fee()
     const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =

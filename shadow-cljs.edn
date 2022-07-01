@@ -2,17 +2,19 @@
 {:deps     {:aliases [:cljs]}
  :dev-http {8000 ["packages"]}
 
+ :build-defaults
+ {:devtools    {:preloads        [cljs-devtool x.portal.setup]
+                :console-support false
+                :devtools-url    "http://localhost:9630"}
+  :build-hooks [(hooks.portal/start)]}
+
  :builds
  {:spec {:target           :esm
          :output-dir       "packages/spec/src"
-         :js-options       {:js-package-dirs ["node_modules"
-                                              "packages/spec/node_modules"]}
+         :js-options       {:js-package-dirs ["node_modules" "packages/spec/node_modules"]}
          :dev              {:closure-defines {shadow.cljs.devtools.client.env/devtools-url "http://localhost:9630"}}
          :compiler-options {:cross-chunk-method-motion false
                             :infer-externs             :auto}
-         :devtools         {:preloads        [cljs-devtool]
-                            :console-support false
-                            :devtools-url    "http://localhost:9630"}
          :modules          {:shared {}
                             :spec
                             {:exports
@@ -170,9 +172,6 @@
                                   :depends-on #{:shared}}}}
   :db {:target           :esm
        :output-dir       "packages/db/src"
-       :devtools         {:preloads        [cljs-devtool]
-                          :console-support false
-                          :devtools-url    "http://localhost:9630"}
        :js-options       {:js-package-dirs ["node_modules"
                                             "packages/db/node_modules"]}
        :compiler-options {:cross-chunk-method-motion false
