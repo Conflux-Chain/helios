@@ -25,7 +25,11 @@ import {
   formatStatus,
   formatIntoChecksumAddress,
 } from '../../../utils'
-import {useNetworkTypeIsCfx, useCurrentTicker} from '../../../hooks/useApi'
+import {
+  useNetworkTypeIsCfx,
+  useCurrentTicker,
+  useCurrentAddress,
+} from '../../../hooks/useApi'
 import {useDecodeData, useDappIcon} from '../../../hooks'
 import {
   WrapIcon,
@@ -41,12 +45,18 @@ import {HistoryStatusIcon} from './'
 //   pending: 'bg-warning-10 text-warning',
 // }
 
-function HistoryBalance({amount = '', actionName = '', symbol = '', ...props}) {
-  // TODO: receive 的时候 不能 为-
-
+function HistoryBalance({
+  amount = '',
+  actionName = '',
+  symbol = '',
+  isExternalTx = false,
+  ...props
+}) {
   return amount ? (
     <div className="flex">
-      {amount != 0 && actionName !== 'Approve' ? <span>-</span> : ''}
+      {amount != 0 && actionName !== 'Approve' && !isExternalTx && (
+        <span>-</span>
+      )}
       <DisplayBalance
         balance={amount}
         maxWidth={114}
@@ -63,6 +73,7 @@ HistoryBalance.propTypes = {
   amount: PropTypes.string,
   symbol: PropTypes.string,
   actionName: PropTypes.string,
+  isExternalTx: PropTypes.bool,
 }
 
 function HistoryItem({
@@ -76,6 +87,7 @@ function HistoryItem({
   transactionUrl,
   hash,
   err,
+  fromScan = false,
   copyButtonContainerClassName,
   copyButtonToastClassName,
   onResend,
@@ -97,9 +109,16 @@ function HistoryItem({
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
 
+  const {
+    data: {value: currentAddress},
+  } = useCurrentAddress()
+
+  // is external transition
+  const isExternalTx = fromScan && currentAddress === payload?.to
+  const fromAddress = payload?.from || ''
+
   const txStatus = formatStatus(status)
   const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
-  // TODO: 透传 process error 并且判断 如果 状态失败 但是 都没有error 信息 给一个  unknownError
   const {errorType} = err
     ? networkTypeIsCfx
       ? cfxProcessError(err)
@@ -107,7 +126,6 @@ function HistoryItem({
     : 'unknownError'
 
   // TODO: 1559
-
   const {txFeeDrip = '0x0'} = receipt
     ? networkTypeIsCfx
       ? cfxGetFeeData({
@@ -121,7 +139,6 @@ function HistoryItem({
         })
     : {}
 
-  console.log('txFeeDrip', txFeeDrip)
   const {contractCreation, simple, contractInteraction, token20} = extra
 
   const {decodeData} = useDecodeData({
@@ -212,7 +229,7 @@ function HistoryItem({
   ])
 
   if (!actionName || !contractName) return null
-  // TODO：如果 是receive的 不可以加速
+
   return (
     <div>
       <div
@@ -224,6 +241,7 @@ function HistoryItem({
           txStatus={txStatus}
           dappIconUrl={dappIconUrl}
           isDapp={!!app}
+          isExternalTx={isExternalTx}
         />
 
         <div className="flex-1">
@@ -236,6 +254,7 @@ function HistoryItem({
                 amount={amount}
                 actionName={actionName}
                 symbol={symbol}
+                isExternalTx={isExternalTx}
               />
             ) : (
               <span className="text-gray-40 text-xs">--</span>
@@ -251,7 +270,7 @@ function HistoryItem({
           </div>
         </div>
       </div>
-      {txStatus === 'pending' && (
+      {txStatus === 'pending' && !isExternalTx && (
         <div>
           <div id="cancel-tx" aria-hidden="true" onClick={onCancelPendingTx}>
             <RocketOutlined className="w-3 h-3 text-primary" />
@@ -293,24 +312,25 @@ function HistoryItem({
               </div>
             )}
 
-            {/* TODO: or fromAddress */}
             <div>
-              <p>{t('toAddress')}</p>
+              <p>{t(isExternalTx ? 'fromAddress' : 'toAddress')}</p>
               <div>
                 <div>
-                  {toAddress
-                    ? shortenAddress(formatIntoChecksumAddress(toAddress))
-                    : ''}
+                  {shortenAddress(
+                    formatIntoChecksumAddress(
+                      isExternalTx ? fromAddress : toAddress,
+                    ),
+                  )}
                 </div>
-                {toAddress && (
+                {
                   <CopyButton
-                    text={toAddress}
+                    text={isExternalTx ? fromAddress : toAddress}
                     className="w-3 h-3 text-primary"
                     containerClassName={copyButtonContainerClassName}
                     toastClassName={copyButtonToastClassName}
                     wrapperClassName="!w-5 !h-5"
                   />
-                )}
+                }
               </div>
             </div>
             {receipt && (
@@ -396,6 +416,7 @@ HistoryItem.propTypes = {
   transactionUrl: PropTypes.string,
   hash: PropTypes.string,
   err: PropTypes.string,
+  fromScan: PropTypes.bool,
   app: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   token: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   copyButtonContainerClassName: PropTypes.string,

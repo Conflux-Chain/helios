@@ -43,8 +43,10 @@ function Home() {
   const query = useQuery()
   const history = useHistory()
   const {data: pendingCount} = useTxList({
-    status: {gte: 0, lt: 4},
-    countOnly: true,
+    params: {
+      status: {gte: 0, lt: 4},
+      countOnly: true,
+    },
   })
 
   useEffectOnce(() => {
