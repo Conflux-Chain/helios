@@ -10,14 +10,19 @@ export const useConnect = () => {
   useEffect(() => {
     if (ledgerBindingApi) {
       const fetchStatus = async () => {
-        const isAuthed = await ledgerBindingApi.isDeviceAuthed()
-        setAuthStatus(
-          isAuthed ? LEDGER_AUTH_STATUS.AUTHED : LEDGER_AUTH_STATUS.UNAUTHED,
-        )
-        const isOpen = await ledgerBindingApi.isAppOpen()
-        setIsAppOpen(
-          isOpen ? LEDGER_OPEN_STATUS.OPEN : LEDGER_OPEN_STATUS.UNOPEN,
-        )
+        try {
+          const isAuthed = await ledgerBindingApi.isDeviceAuthed()
+          setAuthStatus(
+            isAuthed ? LEDGER_AUTH_STATUS.AUTHED : LEDGER_AUTH_STATUS.UNAUTHED,
+          )
+          const isOpen = await ledgerBindingApi.isAppOpen()
+          setIsAppOpen(
+            isOpen ? LEDGER_OPEN_STATUS.OPEN : LEDGER_OPEN_STATUS.UNOPEN,
+          )
+        } catch (err) {
+          // handle error in browsers without navigator.usb
+          if (!err?.message?.includes('navigator.usb is undefined')) throw err
+        }
       }
       fetchStatus()
     }

@@ -5,7 +5,10 @@ import {stream, trace} from '@thi.ng/rstream'
 import {capture as sentryCaptureError} from '@fluent-wallet/sentry'
 
 function sentryCapturePostMessageeError(err) {
-  sentryCaptureError(err, {tags: {custom_type: 'error postMessage'}})
+  // skip disconnected port error
+  // these errors indicating bg try to post message to closed popup
+  if (!err?.message?.includes('disconnected port'))
+    sentryCaptureError(err, {tags: {custom_type: 'error postMessage'}})
 }
 
 const popupStream = stream({
