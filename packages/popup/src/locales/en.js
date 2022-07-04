@@ -255,7 +255,7 @@ const en = {
     customGasPrice: 'Custom Gas Price',
     executedTx:
       'The transaction has been executed or finished.No action required.',
-    speedup: 'speed up',
+    speedup: 'Speed up',
     amount: 'Amount',
     hash: 'Hash',
     nonce: 'Nonce',

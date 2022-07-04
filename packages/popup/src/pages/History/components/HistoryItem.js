@@ -14,7 +14,7 @@ import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {
   SendOutlined,
   RocketOutlined,
-  CancelOutlined,
+  CloseCircleOutlined,
 } from '@fluent-wallet/component-icons'
 import {processError as cfxProcessError} from '@fluent-wallet/conflux-tx-error'
 import {processError as ethProcessError} from '@fluent-wallet/ethereum-tx-error'
@@ -39,31 +39,37 @@ import {
 } from '../../../components'
 import {HistoryStatusIcon} from './'
 
-// const tagColorStyle = {
-//   failed: 'bg-error-10 text-error',
-//   executed: 'bg-[#F0FDFC] text-[#83DBC6]',
-//   pending: 'bg-warning-10 text-warning',
-// }
+const ICON_COLOR = {
+  failed: 'bg-error-10 text-error',
+  executed: 'bg-[#F0FDFC] text-[#83DBC6]',
+  pending: 'bg-warning-10 text-warning',
+  confirmed: 'bg-success-10 text-success',
+}
 
 function HistoryBalance({
+  isExternalTx = false,
   amount = '',
   actionName = '',
   symbol = '',
-  isExternalTx = false,
+  balanceMaxWidth = 114,
+  symbolClassName = 'text-2xs',
+  className = '',
+  balanceFontSize = 14,
   ...props
 }) {
   return amount ? (
-    <div className="flex">
+    <div className={`flex items-center ${className}`}>
       {amount != 0 && actionName !== 'Approve' && !isExternalTx && (
         <span>-</span>
       )}
       <DisplayBalance
         balance={amount}
-        maxWidth={114}
-        maxWidthStyle="max-w-[114px]"
+        maxWidth={balanceMaxWidth}
+        maxWidthStyle={`max-w-[${balanceMaxWidth}px]`}
+        initialFontSize={balanceFontSize}
         {...props}
       />
-      <span className="text-gray-60 ml-0.5">{symbol}</span>
+      <span className={`text-gray-60 ml-0.5 ${symbolClassName}`}>{symbol}</span>
     </div>
   ) : null
 }
@@ -73,6 +79,9 @@ HistoryBalance.propTypes = {
   amount: PropTypes.string,
   symbol: PropTypes.string,
   actionName: PropTypes.string,
+  symbolClassName: PropTypes.string,
+  balanceFontSize: PropTypes.number,
+  balanceMaxWidth: PropTypes.number,
   isExternalTx: PropTypes.bool,
 }
 
@@ -233,7 +242,7 @@ function HistoryItem({
   return (
     <div>
       <div
-        className="flex items-center cursor-pointer px-3 pb-3 pt-2 bg-white mx-3 mt-3 rounded"
+        className="flex items-center cursor-pointer p-3 bg-white mx-3 mt-3 rounded"
         aria-hidden="true"
         onClick={() => setShowDetail(true)}
       >
@@ -242,9 +251,10 @@ function HistoryItem({
           dappIconUrl={dappIconUrl}
           isDapp={!!app}
           isExternalTx={isExternalTx}
+          className={`${ICON_COLOR?.[txStatus]}`}
         />
 
-        <div className="flex-1">
+        <div className="flex-1 ml-2">
           <div className="flex items-center justify-between">
             <div className="text-gray-80 text-sm max-w-[120px] text-ellipsis font-medium">
               {actionName}
@@ -271,50 +281,75 @@ function HistoryItem({
         </div>
       </div>
       {txStatus === 'pending' && !isExternalTx && (
-        <div>
-          <div id="cancel-tx" aria-hidden="true" onClick={onCancelPendingTx}>
-            <RocketOutlined className="w-3 h-3 text-primary" />
-            <span>{t('cancel')}</span>
+        <div className="flex mx-3 bg-primary-10 h-6 rounded-b text-sm text-primary">
+          <div
+            id="cancel-tx"
+            className="flex flex-1 cursor-pointer shadow-fluent-4 items-center justify-center"
+            aria-hidden="true"
+            onClick={onCancelPendingTx}
+          >
+            <CloseCircleOutlined className="w-3 h-3" />
+            <span className="ml-2">{t('cancel')}</span>
           </div>
-          <div id="speedup-tx" aria-hidden="true" onClick={onSpeedupPendingTx}>
-            <CancelOutlined className="w-3 h-3 text-primary" />
-            <span>{t('speedup')}</span>
+
+          <div
+            id="speedup-tx"
+            className="flex flex-1 cursor-pointer shadow-fluent-4 items-center justify-center"
+            aria-hidden="true"
+            onClick={onSpeedupPendingTx}
+          >
+            <RocketOutlined className="w-3 h-3" />
+            <span className="ml-2">{t('speedup')}</span>
           </div>
         </div>
       )}
+
       <SlideCard
         id="tx-detail"
+        cardClassName="pb-6"
         open={showDetail}
         onClose={() => setShowDetail(false)}
+        height="h-auto"
         cardTitle={
-          <div>
+          <div className="flex items-center">
             <HistoryStatusIcon
               txStatus={txStatus}
               dappIconUrl={dappIconUrl}
               isDapp={!!app}
+              className={`${ICON_COLOR?.[txStatus]}`}
             />
-            <div>
-              <div> {transformToTitleCase(txStatus)}</div>
-              {txStatus === 'confirmed' && <div>{createdTime}</div>}
+            <div className="ml-2">
+              <div className="text-gray-80 font-medium">
+                {transformToTitleCase(txStatus)}
+              </div>
+              {txStatus === 'confirmed' && (
+                <div className="text-xs text-gray-40 mt-0.5">{createdTime}</div>
+              )}
             </div>
           </div>
         }
         cardContent={
-          <div>
+          <div className="bg-white p-3 mt-3">
             {amount && (
               <div>
-                <p>{t('amount')}</p>
+                <p className="text-gray-40 text-xs">{t('amount')}</p>
                 <HistoryBalance
                   amount={amount}
                   actionName={actionName}
                   symbol={symbol}
+                  balanceFontSize={24}
+                  balanceMaxWidth={140}
+                  symbolClassName="text-2lg text-gray-80 ml-1 !text-gray-80 !font-bold"
+                  className="text-2lg !font-bold"
                 />
               </div>
             )}
 
             <div>
-              <p>{t(isExternalTx ? 'fromAddress' : 'toAddress')}</p>
-              <div>
+              <p className="text-gray-40 text-xs mt-3">
+                {t(isExternalTx ? 'fromAddress' : 'toAddress')}
+              </p>
+              <div className="flex font-medium items-center">
                 <div>
                   {shortenAddress(
                     formatIntoChecksumAddress(
@@ -328,26 +363,30 @@ function HistoryItem({
                     className="w-3 h-3 text-primary"
                     containerClassName={copyButtonContainerClassName}
                     toastClassName={copyButtonToastClassName}
-                    wrapperClassName="!w-5 !h-5"
+                    wrapperClassName="!w-5 !h-5 ml-1"
                   />
                 }
               </div>
             </div>
             {receipt && (
               <div>
-                <p>{t('gasFee')}</p>
-                <DisplayBalance
-                  balance={txFeeDrip}
-                  maxWidth={114}
-                  maxWidthStyle="max-w-[114px]"
-                />
+                <p className="text-gray-40 text-xs mt-3">{t('gasFee')}</p>
+                <div className="flex items-center">
+                  <DisplayBalance
+                    balance={txFeeDrip}
+                    maxWidth={114}
+                    maxWidthStyle="max-w-[114px]"
+                    className="!font-medium"
+                  />
+                  <span className="ml-1 font-medium">{symbol}</span>
+                </div>
               </div>
             )}
             <div>
-              <p>{t('hash')}</p>
-              <div>
+              <p className="text-gray-40 text-xs mt-3">{t('hash')}</p>
+              <div className="flex items-center font-medium">
                 <Tooltip content={hash || ''} placement="topLeft">
-                  <div className="max-w-[120px] text-ellipsis">{hash}</div>
+                  <div className="max-w-[100px] text-ellipsis">{hash}</div>
                 </Tooltip>
 
                 {hash && (
@@ -371,10 +410,15 @@ function HistoryItem({
               </div>
             </div>
             <div>
-              <p>{t('nonce')}</p>
-              <div>#{formatHexToDecimal(payload.nonce)}</div>
+              <p className="text-gray-40 text-xs mt-3">{t('nonce')}</p>
+              <div className="font-medium">
+                #{formatHexToDecimal(payload.nonce)}
+              </div>
             </div>
-            {txStatus === 'failed' && <p>{t(errorType)}</p>}
+
+            {txStatus === 'failed' && (
+              <p className="text-error text-xs mt-3">{t(errorType)}</p>
+            )}
           </div>
         }
         cardFooter={
@@ -382,21 +426,28 @@ function HistoryItem({
             <div>
               <div className="flex mt-3">
                 <Button
-                  className="flex flex-1 mr-3"
+                  className="flex flex-1 mr-3 bg-primary-10 border-transparent hover:border-transparent"
                   variant="outlined"
                   key="cancel"
                   id="cancel-btn"
                   onClick={onCancelPendingTx}
                 >
-                  {t('cancel')}
+                  <div className="flex items-center">
+                    <CloseCircleOutlined className="w-3 h-3" />
+                    <span className="ml-1">{t('cancel')}</span>
+                  </div>
                 </Button>
                 <Button
-                  className="flex flex-1"
+                  className="flex flex-1 mr-3 bg-primary-10 text-primary border-transparent hover:border-transparent"
+                  variant="outlined"
                   key="confirm"
                   id="speedup-btn"
                   onClick={onSpeedupPendingTx}
                 >
-                  {t('speedup')}
+                  <div className="flex items-center">
+                    <RocketOutlined className="w-3 h-3" />
+                    <span className="ml-1">{t('speedup')}</span>
+                  </div>
                 </Button>
               </div>
             </div>

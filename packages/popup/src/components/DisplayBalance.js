@@ -46,10 +46,20 @@ function DisplayBalance({
       <div id={id} className={`text-ellipsis relative ${maxWidthStyle}`}>
         {showTooltip ? (
           <Tooltip content={`${displayRealBalance} ${symbol}`}>
-            <Text ref={balanceRef} text={displayBalance} placeholderAnimation />
+            <Text
+              ref={balanceRef}
+              text={displayBalance}
+              placeholderAnimation
+              className="leading-none"
+            />
           </Tooltip>
         ) : (
-          <Text ref={balanceRef} text={displayBalance} placeholderAnimation />
+          <Text
+            ref={balanceRef}
+            text={displayBalance}
+            placeholderAnimation
+            className="leading-none"
+          />
         )}
 
         <span ref={hiddenRef} className="invisible absolute left-0">
