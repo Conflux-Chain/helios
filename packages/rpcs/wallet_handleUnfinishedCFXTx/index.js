@@ -409,8 +409,9 @@ export const main = ({
             gasUsed,
             gasFee,
             storageCollateralized,
+            storageCoveredBySponsor,
             gasCoveredBySponsor,
-            storageReleased,
+            storageReleased, // array
           } = rst
           const receipt = {
             blockHash,
@@ -420,6 +421,7 @@ export const main = ({
             gasFee,
             storageCollateralized,
             gasCoveredBySponsor,
+            storageCoveredBySponsor,
           }
           if (storageReleased?.length) receipt.storageReleased = storageReleased
           if (contractCreated) receipt.contractCreated = contractCreated

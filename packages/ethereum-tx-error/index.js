@@ -24,10 +24,7 @@ export function processError(err) {
     if (/transaction underpriced/i.test(errstr))
       return {errorType: 'gasTooLow', shouldDiscard: true}
 
-    if (
-      /tx\s?pool is full/i.test(errstr) ||
-      /transaction pool is full/i.test(errstr)
-    )
+    if (/pool is full/i.test(errstr))
       return {errorType: 'txPoolFull', shouldDiscard: true}
     if (/exceeds block gas limit/i.test(errstr))
       return {errorType: 'gasExceedsLimit', shouldDiscard: true}
@@ -44,6 +41,10 @@ export function processError(err) {
       return {errorType: 'nonceMax', shouldDiscard: true}
     if (/insufficient funds/i.test(errstr))
       return {errorType: 'insufficientFunds', shouldDiscard: true}
+    if (/ZeroGasPrice/.test(errstr))
+      return {errorType: 'zeroGasPrice', shouldDiscard: true}
+    if (/gas price.*less than the minimum value/.test(errstr))
+      return {errorType: 'gasPriceTooLow', shouldDiscard: true}
     if (/intrinsic gas too low/i.test(errstr))
       return {errorType: 'intrinsicGas', shouldDiscard: true}
     if (/transaction type not supported/i.test(errstr))
@@ -56,6 +57,12 @@ export function processError(err) {
       return {errorType: 'tipAboveFeeCap', shouldDiscard: true}
     if (/max priority fee per gas higher than/i.test(errstr))
       return {errorType: 'tipVeryHigh', shouldDiscard: true}
+    if (/EpochHeightOutOfBound/.test(errstr))
+      return {errorType: 'epochHeightOutOfBound', shouldDiscard: true}
+    if (/exceeds the maximum value/.test(errstr))
+      return {errorType: 'gasExceedsLimit', shouldDiscard: true}
+    if (/NotEnoughBaseGas/.test(errstr))
+      return {errorType: 'notEnoughBaseGas', shouldDiscard: true}
     // can't find this error in geth
     if (/invalid chainid/i.test(errstr))
       return {errorType: 'chainIdMismatch', shouldDiscard: true}
