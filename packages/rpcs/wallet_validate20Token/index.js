@@ -29,6 +29,7 @@ export const schemas = {
 }
 
 export const permissions = {
+  locked: true,
   external: ['popup', 'inpage'],
   methods: ['cfx_call', 'eth_call'],
   db: ['getCurrentAddr', 'getAddressById'],

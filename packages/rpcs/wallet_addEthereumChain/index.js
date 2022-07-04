@@ -27,7 +27,7 @@ export const permissions = {
     'wallet_userRejectedAuthRequest',
   ],
   db: ['getNetwork', 'getAuthReqById', 'getNetworkByEndpoint'],
-  // scope: {wallet_networks: {}},
+  scope: null, // allowed to be called before connecting to dapp
 }
 
 export const main = async ({
@@ -40,6 +40,7 @@ export const main = async ({
     wallet_userApprovedAuthRequest,
     wallet_userRejectedAuthRequest,
   },
+  site,
   app,
   params,
   _popup,
@@ -71,7 +72,10 @@ export const main = async ({
 
   if (_inpage) {
     const req = {method: NAME, params}
-    return await wallet_addPendingUserAuthRequest({appId: app.eid, req})
+    const authReqParams = {req}
+    if (app) authReqParams.appId = app.eid
+    else authReqParams.siteId = site.eid
+    return await wallet_addPendingUserAuthRequest(authReqParams)
   }
 
   // add network from popup
