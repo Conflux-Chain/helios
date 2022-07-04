@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {
-  CloseCircleFilled,
+  CloseOutlined,
   ReloadOutlined,
   SendOutlined,
   ReceiveOutlined,
@@ -10,38 +10,36 @@ import {WrapIcon} from '../../../components'
 
 function HistoryStatusIcon({
   isExternalTx = false,
+  isDapp = false,
   txStatus = '',
   dappIconUrl = '',
-  isDapp = false,
+  className = '',
 }) {
+  const wrapperClassName = `${
+    txStatus === 'confirmed' && isDapp ? '' : className
+  }`
+  const wrapperSize = 'w-8 h-8'
+
   return txStatus ? (
     isExternalTx ? (
-      <WrapIcon>
-        {txStatus === 'confirmed' && (
-          <ReceiveOutlined className="w-4 h-4 text-success" />
-        )}
+      <WrapIcon className={wrapperClassName} size={wrapperSize}>
+        {txStatus === 'confirmed' && <ReceiveOutlined className="w-4 h-4" />}
       </WrapIcon>
     ) : (
-      <WrapIcon>
+      <WrapIcon className={wrapperClassName} size={wrapperSize}>
         {txStatus === 'confirmed' && isDapp && (
           <img src={dappIconUrl} alt="favicon" className="w-5 h-5" />
         )}
 
         {txStatus === 'confirmed' && !isDapp && (
-          <SendOutlined className="w-4 h-4 text-success" />
+          <SendOutlined className="w-4 h-4" />
         )}
 
-        {txStatus === 'executed' && (
-          <ReloadOutlined className="w-4 h-4 text-success" />
-        )}
+        {txStatus === 'executed' && <ReloadOutlined className="w-4 h-4" />}
 
-        {txStatus === 'pending' && (
-          <ReloadOutlined className="w-4 h-4 text-success" />
-        )}
+        {txStatus === 'pending' && <ReloadOutlined className="w-4 h-4" />}
 
-        {txStatus === 'failed' && (
-          <CloseCircleFilled className="w-4 h-4 text-success" />
-        )}
+        {txStatus === 'failed' && <CloseOutlined className="w-4 h-4" />}
       </WrapIcon>
     )
   ) : null
@@ -50,6 +48,7 @@ function HistoryStatusIcon({
 HistoryStatusIcon.propTypes = {
   txStatus: PropTypes.string,
   dappIconUrl: PropTypes.string,
+  className: PropTypes.string,
   isDapp: PropTypes.bool,
   showDes: PropTypes.bool,
   isExternalTx: PropTypes.bool,
