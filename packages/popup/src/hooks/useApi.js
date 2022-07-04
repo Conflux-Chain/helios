@@ -39,6 +39,7 @@ const {
   WALLET_QUERY_MEMO,
   WALLET_QUERY_RECENT_TRADING_ADDRESS,
   WALLET_NETWORK1559COMPATIBLE,
+  WALLET_REFETCH_TXLIST,
 } = RPC_METHODS
 
 export const useCurrentAddress = (notSendReq = false) => {
@@ -481,10 +482,15 @@ export const useValid20Token = address => {
   return token
 }
 
-export const useTxList = params => {
+export const useTxList = ({params, inCludeExternalTx = false}) => {
   const {
     data: {eid: addressId},
   } = useCurrentAddress()
+
+  useDbRefetchExternalTxList({
+    addressId,
+    stop: !inCludeExternalTx,
+  })
   const {data, mutate} = useRPC(
     addressId ? [WALLETDB_TXLIST, ...Object.values(params), addressId] : null,
     {...params, addressId},
@@ -739,4 +745,10 @@ export const useAddressNote = (address, stop) => {
 export const useNetwork1559Compatible = () => {
   const {data: network1559Compatible} = useRPC([WALLET_NETWORK1559COMPATIBLE])
   return network1559Compatible
+}
+
+export const useDbRefetchExternalTxList = ({stop = false, addressId}) => {
+  return useRPC(
+    isUndefined(addressId) || stop ? null : [WALLET_REFETCH_TXLIST, addressId],
+  )
 }

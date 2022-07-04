@@ -14,7 +14,10 @@ function History() {
   const [limit, setLimit] = useState(PAGE_LIMIT)
   const [total, setTotal] = useState(0)
   const {data: historyListData, mutate: refreshHistoryData} = useTxList({
-    limit,
+    params: {
+      limit,
+    },
+    inCludeExternalTx: true,
   })
   // open speed up / cancel tx modal. value must be empty,cancel or speedup
   const [reSendType, setReSendType] = useState('')
@@ -98,6 +101,7 @@ function History() {
                 eid,
                 hash,
                 err,
+                fromScan,
                 receipt,
               },
               index,
@@ -113,6 +117,7 @@ function History() {
                 hash={hash}
                 receipt={receipt}
                 err={err}
+                fromScan={fromScan}
                 copyButtonContainerClassName={index === 0 ? '' : undefined}
                 copyButtonToastClassName={
                   index === 0 ? 'top-10 right-3' : undefined
