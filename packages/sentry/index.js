@@ -19,8 +19,8 @@ export function init(opts = {}) {
   Sentry.init(Object.assign(defaultOpts, opts))
 }
 
-export function capture(err) {
-  Sentry.captureException(err)
+export function capture(err, cpatureContext) {
+  Sentry.captureException(err, cpatureContext)
 }
 
 export function captureMessage(message) {
