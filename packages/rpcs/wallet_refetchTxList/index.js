@@ -21,6 +21,8 @@ export const permissions = {
   external: ['popup'],
   locked: true,
   methods: [
+    'cfx_getTransactionByHash',
+    'eth_getTransactionByHash',
     'wallet_getNextNonce',
     'wallet_getBlockOrEpochNumber',
     'wallet_enrichConfluxTx',
@@ -34,12 +36,75 @@ async function eachTx(
   tx,
   {
     db: {insertExternalTx},
-    rpcs: {wallet_enrichEthereumTx, wallet_enrichConfluxTx},
+    rpcs: {
+      wallet_enrichEthereumTx,
+      wallet_enrichConfluxTx,
+      cfx_getTransactionByHash,
+      eth_getTransactionByHash,
+    },
   },
 ) {
-  const {payload, receipt, extra, ...restTx} = tx
+  const {payload, extra, ...restTx} = tx
+  let {receipt} = tx
+
+  if (addr.network.type === 'cfx') {
+    const {
+      blockHash,
+      index,
+      epochNumber,
+      gasUsed,
+      gasFee,
+      storageCollateralized,
+      gasCoveredBySponsor,
+      storageCoveredBySponsor,
+      txExecErrorMsg,
+    } = await cfx_getTransactionByHash(
+      {networkName: addr.network.name, errorFallThrough: true},
+      [tx.hash],
+    )
+    if (txExecErrorMsg) restTx.err = txExecErrorMsg
+
+    receipt = {
+      ...receipt,
+      blockHash,
+      index,
+      epochNumber,
+      gasUsed,
+      gasFee,
+      storageCollateralized,
+      gasCoveredBySponsor,
+      storageCoveredBySponsor,
+    }
+  } else {
+    const {
+      type,
+      blockHash,
+      transactionIndex,
+      blockNumber,
+      gasUsed,
+      cumulativeGasUsed,
+      effectiveGasPrice,
+      txExecErrorMsg,
+    } = await eth_getTransactionByHash(
+      {networkName: addr.network.name, errorFallThrough: true},
+      [tx.hash],
+    )
+    restTx.type = type || '0x0'
+    if (txExecErrorMsg) restTx.err = txExecErrorMsg
+    receipt = {
+      ...receipt,
+      cumulativeGasUsed,
+      effectiveGasPrice,
+      type: type || '0x0',
+      blockHash,
+      transactionIndex,
+      blockNumber,
+      gasUsed,
+    }
+  }
 
   insertExternalTx({tx: restTx, receipt, payload, extra, addressId: addr.eid})
+
   if (addr.network.type === 'cfx')
     await wallet_enrichConfluxTx({txhash: restTx.hash})
   else await wallet_enrichEthereumTx({txhash: restTx.hash})
