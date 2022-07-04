@@ -2054,6 +2054,15 @@
         (assoc :app (and app-id (e :app app-id)))
         (assoc :token (and token-id (e :token token-id))))))
 
+(defn get-tx [{:keys [hash]}]
+  (let [tx (q '[:find ?tx .
+                :in  $ ?tx
+                :where
+                [?tx :tx/created]]
+              [:tx/hash hash])]
+    (when tx
+      (tx-id->data tx))))
+
 (defnc query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
   ;; :do (js/console.time "query-tx-list")
   :let [offset (or offset 0)
@@ -2247,6 +2256,7 @@
               :queryqueryGroup                    get-group
               :queryqueryBalance                  get-balance
               :querytxList                        query-tx-list
+              :queryqueryTx                       get-tx
               :queryaccountListAssets             account-list-assets
               :getAccountGroupByVaultType         get-account-group-by-vault-type})
 
