@@ -108,13 +108,16 @@ function TransitionDetail({
             transitionTitle={t(isExternalTx ? 'fromAddress' : 'toAddress')}
             TransitionValueOverlay={
               <div className="flex font-medium items-center">
-                <div>
+                <Tooltip
+                  content={isExternalTx ? fromAddress : toAddress}
+                  placement="topLeft"
+                >
                   {shortenAddress(
                     formatIntoChecksumAddress(
                       isExternalTx ? fromAddress : toAddress,
                     ),
                   )}
-                </div>
+                </Tooltip>
                 {
                   <CopyButton
                     text={isExternalTx ? fromAddress : toAddress}
