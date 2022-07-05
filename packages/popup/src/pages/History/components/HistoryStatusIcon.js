@@ -18,15 +18,14 @@ function HistoryStatusIcon({
   const wrapperClassName = `${
     txStatus === 'confirmed' && isDapp ? '' : className
   }`
-  const wrapperSize = 'w-8 h-8'
 
   return txStatus ? (
     isExternalTx ? (
-      <WrapIcon className={wrapperClassName} size={wrapperSize}>
+      <WrapIcon className={wrapperClassName} size="w-8 h-8">
         {txStatus === 'confirmed' && <ReceiveOutlined className="w-4 h-4" />}
       </WrapIcon>
     ) : (
-      <WrapIcon className={wrapperClassName} size={wrapperSize}>
+      <WrapIcon className={wrapperClassName} size="w-8 h-8">
         {txStatus === 'confirmed' && isDapp && (
           <img src={dappIconUrl} alt="favicon" className="w-5 h-5" />
         )}
