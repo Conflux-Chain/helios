@@ -9,6 +9,29 @@ import {transformToTitleCase, formatIntoChecksumAddress} from '../../../utils'
 import {SlideCard, CopyButton, WrapIcon} from '../../../components'
 import {HistoryStatusIcon, HistoryBalance, ResendButtons} from './'
 
+function TransitionItem({
+  className = 'mt-3',
+  transitionTitle = '',
+  transitionValue = '',
+  TransitionValueOverlay,
+}) {
+  return (
+    <div className={className}>
+      <p className="text-gray-40 text-xs">{transitionTitle}</p>
+      {TransitionValueOverlay || (
+        <div className="font-medium">{transitionValue}</div>
+      )}
+    </div>
+  )
+}
+
+TransitionItem.propTypes = {
+  className: PropTypes.string,
+  transitionTitle: PropTypes.string,
+  transitionValue: PropTypes.string,
+  TransitionValueOverlay: PropTypes.node,
+}
+
 function TransitionDetail({
   open = false,
   isNegativeAmount = false,
@@ -64,87 +87,94 @@ function TransitionDetail({
       cardContent={
         <div className="bg-white p-3 mt-3">
           {amount && (
-            <div>
-              <p className="text-gray-40 text-xs">{t('amount')}</p>
-              <HistoryBalance
-                showNegative={isNegativeAmount}
-                amount={amount}
-                symbol={symbol}
-                balanceFontSize={24}
-                balanceMaxWidth={140}
-                symbolClassName="text-2lg text-gray-80 ml-1 !text-gray-80 !font-bold"
-                className="text-2lg !font-bold"
-              />
-            </div>
-          )}
-
-          <div>
-            <p className="text-gray-40 text-xs mt-3">
-              {t(isExternalTx ? 'fromAddress' : 'toAddress')}
-            </p>
-            <div className="flex font-medium items-center">
-              <div>
-                {shortenAddress(
-                  formatIntoChecksumAddress(
-                    isExternalTx ? fromAddress : toAddress,
-                  ),
-                )}
-              </div>
-              {
-                <CopyButton
-                  text={isExternalTx ? fromAddress : toAddress}
-                  className="w-3 h-3 text-primary"
-                  containerClassName={copyButtonContainerClassName}
-                  toastClassName={copyButtonToastClassName}
-                  wrapperClassName="!w-5 !h-5 ml-1"
+            <TransitionItem
+              className=""
+              transitionTitle={t('amount')}
+              TransitionValueOverlay={
+                <HistoryBalance
+                  showNegative={isNegativeAmount}
+                  amount={amount}
+                  symbol={symbol}
+                  balanceFontSize={24}
+                  balanceMaxWidth={140}
+                  symbolClassName="text-2lg text-gray-80 ml-1 !text-gray-80 !font-bold"
+                  className="text-2lg !font-bold"
                 />
               }
-            </div>
-          </div>
-          {receipt && (
-            <div>
-              <p className="text-gray-40 text-xs mt-3">{t('gasFee')}</p>
-              <HistoryBalance
-                amount={txFeeDrip}
-                symbol={symbol}
-                symbolClassName="ml-1 !font-medium !text-gray-80"
-                className="!font-medium"
-              />
-            </div>
+            />
           )}
-          <div>
-            <p className="text-gray-40 text-xs mt-3">{t('hash')}</p>
-            <div className="flex items-center font-medium">
-              <Tooltip content={hash || ''} placement="topLeft">
-                <div className="max-w-[100px] text-ellipsis">{hash}</div>
-              </Tooltip>
 
-              {hash && (
-                <CopyButton
-                  text={hash}
-                  className="w-3 h-3 text-primary"
-                  containerClassName={copyButtonContainerClassName}
-                  toastClassName={copyButtonToastClassName}
-                  wrapperClassName="!w-5 !h-5"
+          <TransitionItem
+            transitionTitle={t(isExternalTx ? 'fromAddress' : 'toAddress')}
+            TransitionValueOverlay={
+              <div className="flex font-medium items-center">
+                <div>
+                  {shortenAddress(
+                    formatIntoChecksumAddress(
+                      isExternalTx ? fromAddress : toAddress,
+                    ),
+                  )}
+                </div>
+                {
+                  <CopyButton
+                    text={isExternalTx ? fromAddress : toAddress}
+                    className="w-3 h-3 text-primary"
+                    containerClassName={copyButtonContainerClassName}
+                    toastClassName={copyButtonToastClassName}
+                    wrapperClassName="!w-5 !h-5 ml-1"
+                  />
+                }
+              </div>
+            }
+          />
+
+          {receipt && (
+            <TransitionItem
+              transitionTitle={t('gasFee')}
+              TransitionValueOverlay={
+                <HistoryBalance
+                  amount={txFeeDrip}
+                  symbol={symbol}
+                  symbolClassName="ml-1 !font-medium !text-gray-80"
+                  className="!font-medium"
                 />
-              )}
-              {transactionUrl && (
-                <WrapIcon
-                  size="w-5 h-5 ml-2"
-                  id="openScanTxUrl"
-                  onClick={() => window.open(transactionUrl)}
-                >
-                  <SendOutlined className="w-3 h-3 text-primary" />
-                </WrapIcon>
-              )}
-            </div>
-          </div>
-          <div>
-            <p className="text-gray-40 text-xs mt-3">{t('nonce')}</p>
-            <div className="font-medium">
-              #{formatHexToDecimal(payload?.nonce)}
-            </div>
-          </div>
+              }
+            />
+          )}
+          <TransitionItem
+            transitionTitle={t('hash')}
+            TransitionValueOverlay={
+              <div className="flex items-center font-medium">
+                <Tooltip content={hash || ''} placement="topLeft">
+                  <div className="max-w-[100px] text-ellipsis">{hash}</div>
+                </Tooltip>
+
+                {hash && (
+                  <CopyButton
+                    text={hash}
+                    className="w-3 h-3 text-primary"
+                    containerClassName={copyButtonContainerClassName}
+                    toastClassName={copyButtonToastClassName}
+                    wrapperClassName="!w-5 !h-5"
+                  />
+                )}
+                {transactionUrl && (
+                  <WrapIcon
+                    size="w-5 h-5 ml-2"
+                    id="openScanTxUrl"
+                    onClick={() => window.open(transactionUrl)}
+                  >
+                    <SendOutlined className="w-3 h-3 text-primary" />
+                  </WrapIcon>
+                )}
+              </div>
+            }
+          />
+
+          <TransitionItem
+            transitionTitle={t('nonce')}
+            transitionValue={`#${formatHexToDecimal(payload?.nonce)}`}
+          />
 
           {txStatus === 'failed' && (
             <p className="text-error text-xs mt-3">{t(errorType)}</p>
