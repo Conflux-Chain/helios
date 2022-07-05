@@ -50,7 +50,7 @@ function TransitionDetail({
   copyButtonContainerClassName,
   copyButtonToastClassName,
   txFeeDrip = '0x0',
-  hash,
+  hash = '',
   transactionUrl,
   payload,
   errorType,
@@ -73,6 +73,7 @@ function TransitionDetail({
             dappIconUrl={dappIconUrl}
             isDapp={!!app}
             className={statusIconColor}
+            isExternalTx={isExternalTx}
           />
           <div className="ml-2">
             <div className="text-gray-80 font-medium">
@@ -148,7 +149,7 @@ function TransitionDetail({
             transitionTitle={t('hash')}
             TransitionValueOverlay={
               <div className="flex items-center font-medium">
-                <Tooltip content={hash || ''} placement="topLeft">
+                <Tooltip content={hash} placement="topLeft">
                   <div className="max-w-[100px] text-ellipsis">{hash}</div>
                 </Tooltip>
 
