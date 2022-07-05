@@ -4,18 +4,9 @@ import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import dayjs from 'dayjs'
 import {isUndefined} from '@fluent-wallet/checks'
-import Button from '@fluent-wallet/component-button'
-import Tooltip from '@fluent-wallet/component-tooltip'
-import {
-  convertDataToValue,
-  formatHexToDecimal,
-} from '@fluent-wallet/data-format'
+import {convertDataToValue} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {
-  SendOutlined,
-  RocketOutlined,
-  CloseCircleOutlined,
-} from '@fluent-wallet/component-icons'
+
 import {processError as cfxProcessError} from '@fluent-wallet/conflux-tx-error'
 import {processError as ethProcessError} from '@fluent-wallet/ethereum-tx-error'
 import {cfxGetFeeData, ethGetFeeData} from '@fluent-wallet/estimate-tx'
@@ -32,57 +23,17 @@ import {
 } from '../../../hooks/useApi'
 import {useDecodeData, useDappIcon} from '../../../hooks'
 import {
-  WrapIcon,
-  CopyButton,
-  DisplayBalance,
-  SlideCard,
-} from '../../../components'
-import {HistoryStatusIcon} from './'
+  HistoryStatusIcon,
+  TransitionDetail,
+  HistoryBalance,
+  ResendButtons,
+} from './'
 
 const ICON_COLOR = {
   failed: 'bg-error-10 text-error',
   executed: 'bg-[#F0FDFC] text-[#83DBC6]',
   pending: 'bg-warning-10 text-warning',
   confirmed: 'bg-success-10 text-success',
-}
-
-function HistoryBalance({
-  isExternalTx = false,
-  amount = '',
-  actionName = '',
-  symbol = '',
-  balanceMaxWidth = 114,
-  symbolClassName = 'text-2xs',
-  className = '',
-  balanceFontSize = 14,
-  ...props
-}) {
-  return amount ? (
-    <div className={`flex items-center ${className}`}>
-      {amount != 0 && actionName !== 'Approve' && !isExternalTx && (
-        <span>-</span>
-      )}
-      <DisplayBalance
-        balance={amount}
-        maxWidth={balanceMaxWidth}
-        maxWidthStyle={`max-w-[${balanceMaxWidth}px]`}
-        initialFontSize={balanceFontSize}
-        {...props}
-      />
-      <span className={`text-gray-60 ml-0.5 ${symbolClassName}`}>{symbol}</span>
-    </div>
-  ) : null
-}
-
-HistoryBalance.propTypes = {
-  className: PropTypes.string,
-  amount: PropTypes.string,
-  symbol: PropTypes.string,
-  actionName: PropTypes.string,
-  symbolClassName: PropTypes.string,
-  balanceFontSize: PropTypes.number,
-  balanceMaxWidth: PropTypes.number,
-  isExternalTx: PropTypes.bool,
 }
 
 function HistoryItem({
@@ -122,11 +73,17 @@ function HistoryItem({
     data: {value: currentAddress},
   } = useCurrentAddress()
 
+  const fromAddress = payload?.from || ''
+  const txStatus = formatStatus(status)
+
   // is external transition
   const isExternalTx = fromScan && currentAddress === payload?.to
-  const fromAddress = payload?.from || ''
+  // show negative amount
+  const isNegativeAmount =
+    amount != 0 && actionName !== 'Approve' && !isExternalTx
+  // color according to tx status
+  const statusIconColor = ICON_COLOR?.[txStatus] ?? ''
 
-  const txStatus = formatStatus(status)
   const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
   const {errorType} = err
     ? networkTypeIsCfx
@@ -251,7 +208,7 @@ function HistoryItem({
           dappIconUrl={dappIconUrl}
           isDapp={!!app}
           isExternalTx={isExternalTx}
-          className={`${ICON_COLOR?.[txStatus]}`}
+          className={statusIconColor}
         />
 
         <div className="flex-1 ml-2">
@@ -261,10 +218,9 @@ function HistoryItem({
             </div>
             {amount ? (
               <HistoryBalance
+                showNegative={isNegativeAmount}
                 amount={amount}
-                actionName={actionName}
                 symbol={symbol}
-                isExternalTx={isExternalTx}
               />
             ) : (
               <span className="text-gray-40 text-xs">--</span>
@@ -281,178 +237,39 @@ function HistoryItem({
         </div>
       </div>
       {txStatus === 'pending' && !isExternalTx && (
-        <div className="flex mx-3 bg-primary-10 h-6 rounded-b text-sm text-primary">
-          <div
-            id="cancel-tx"
-            className="flex flex-1 cursor-pointer shadow-fluent-4 items-center justify-center"
-            aria-hidden="true"
-            onClick={onCancelPendingTx}
-          >
-            <CloseCircleOutlined className="w-3 h-3" />
-            <span className="ml-2">{t('cancel')}</span>
-          </div>
-
-          <div
-            id="speedup-tx"
-            className="flex flex-1 cursor-pointer shadow-fluent-4 items-center justify-center"
-            aria-hidden="true"
-            onClick={onSpeedupPendingTx}
-          >
-            <RocketOutlined className="w-3 h-3" />
-            <span className="ml-2">{t('speedup')}</span>
-          </div>
-        </div>
+        <ResendButtons
+          onCancelPendingTx={onCancelPendingTx}
+          onSpeedupPendingTx={onSpeedupPendingTx}
+          className="mx-3 rounded-b text-sm text-primary"
+          buttonClassName="shadow-fluent-4 border-transparent bg-primary-10 !h-6"
+          buttonTextClassName="ml-2"
+        />
       )}
 
-      <SlideCard
-        id="tx-detail"
-        cardClassName="pb-6"
+      <TransitionDetail
+        statusIconColor={statusIconColor}
         open={showDetail}
+        isNegativeAmount={isNegativeAmount}
         onClose={() => setShowDetail(false)}
-        height="h-auto"
-        cardTitle={
-          <div className="flex items-center">
-            <HistoryStatusIcon
-              txStatus={txStatus}
-              dappIconUrl={dappIconUrl}
-              isDapp={!!app}
-              className={`${ICON_COLOR?.[txStatus]}`}
-            />
-            <div className="ml-2">
-              <div className="text-gray-80 font-medium">
-                {transformToTitleCase(txStatus)}
-              </div>
-              {txStatus === 'confirmed' && (
-                <div className="text-xs text-gray-40 mt-0.5">{createdTime}</div>
-              )}
-            </div>
-          </div>
-        }
-        cardContent={
-          <div className="bg-white p-3 mt-3">
-            {amount && (
-              <div>
-                <p className="text-gray-40 text-xs">{t('amount')}</p>
-                <HistoryBalance
-                  amount={amount}
-                  actionName={actionName}
-                  symbol={symbol}
-                  balanceFontSize={24}
-                  balanceMaxWidth={140}
-                  symbolClassName="text-2lg text-gray-80 ml-1 !text-gray-80 !font-bold"
-                  className="text-2lg !font-bold"
-                />
-              </div>
-            )}
-
-            <div>
-              <p className="text-gray-40 text-xs mt-3">
-                {t(isExternalTx ? 'fromAddress' : 'toAddress')}
-              </p>
-              <div className="flex font-medium items-center">
-                <div>
-                  {shortenAddress(
-                    formatIntoChecksumAddress(
-                      isExternalTx ? fromAddress : toAddress,
-                    ),
-                  )}
-                </div>
-                {
-                  <CopyButton
-                    text={isExternalTx ? fromAddress : toAddress}
-                    className="w-3 h-3 text-primary"
-                    containerClassName={copyButtonContainerClassName}
-                    toastClassName={copyButtonToastClassName}
-                    wrapperClassName="!w-5 !h-5 ml-1"
-                  />
-                }
-              </div>
-            </div>
-            {receipt && (
-              <div>
-                <p className="text-gray-40 text-xs mt-3">{t('gasFee')}</p>
-                <div className="flex items-center">
-                  <DisplayBalance
-                    balance={txFeeDrip}
-                    maxWidth={114}
-                    maxWidthStyle="max-w-[114px]"
-                    className="!font-medium"
-                  />
-                  <span className="ml-1 font-medium">{symbol}</span>
-                </div>
-              </div>
-            )}
-            <div>
-              <p className="text-gray-40 text-xs mt-3">{t('hash')}</p>
-              <div className="flex items-center font-medium">
-                <Tooltip content={hash || ''} placement="topLeft">
-                  <div className="max-w-[100px] text-ellipsis">{hash}</div>
-                </Tooltip>
-
-                {hash && (
-                  <CopyButton
-                    text={hash}
-                    className="w-3 h-3 text-primary"
-                    containerClassName={copyButtonContainerClassName}
-                    toastClassName={copyButtonToastClassName}
-                    wrapperClassName="!w-5 !h-5"
-                  />
-                )}
-                {transactionUrl && (
-                  <WrapIcon
-                    size="w-5 h-5 ml-2"
-                    id="openScanTxUrl"
-                    onClick={() => window.open(transactionUrl)}
-                  >
-                    <SendOutlined className="w-3 h-3 text-primary" />
-                  </WrapIcon>
-                )}
-              </div>
-            </div>
-            <div>
-              <p className="text-gray-40 text-xs mt-3">{t('nonce')}</p>
-              <div className="font-medium">
-                #{formatHexToDecimal(payload.nonce)}
-              </div>
-            </div>
-
-            {txStatus === 'failed' && (
-              <p className="text-error text-xs mt-3">{t(errorType)}</p>
-            )}
-          </div>
-        }
-        cardFooter={
-          txStatus === 'pending' && (
-            <div>
-              <div className="flex mt-3">
-                <Button
-                  className="flex flex-1 mr-3 bg-primary-10 border-transparent hover:border-transparent"
-                  variant="outlined"
-                  key="cancel"
-                  id="cancel-btn"
-                  onClick={onCancelPendingTx}
-                >
-                  <div className="flex items-center">
-                    <CloseCircleOutlined className="w-3 h-3" />
-                    <span className="ml-1">{t('cancel')}</span>
-                  </div>
-                </Button>
-                <Button
-                  className="flex flex-1 mr-3 bg-primary-10 text-primary border-transparent hover:border-transparent"
-                  variant="outlined"
-                  key="confirm"
-                  id="speedup-btn"
-                  onClick={onSpeedupPendingTx}
-                >
-                  <div className="flex items-center">
-                    <RocketOutlined className="w-3 h-3" />
-                    <span className="ml-1">{t('speedup')}</span>
-                  </div>
-                </Button>
-              </div>
-            </div>
-          )
-        }
+        txStatus={txStatus}
+        dappIconUrl={dappIconUrl}
+        app={app}
+        createdTime={createdTime}
+        amount={amount}
+        symbol={symbol}
+        receipt={receipt}
+        isExternalTx={isExternalTx}
+        fromAddress={fromAddress}
+        toAddress={toAddress}
+        copyButtonContainerClassName={copyButtonContainerClassName}
+        copyButtonToastClassName={copyButtonToastClassName}
+        txFeeDrip={txFeeDrip}
+        hash={hash}
+        transactionUrl={transactionUrl}
+        payload={payload}
+        errorType={errorType}
+        onCancelPendingTx={onCancelPendingTx}
+        onSpeedupPendingTx={onSpeedupPendingTx}
       />
     </div>
   )
