@@ -18,6 +18,7 @@ import {
   useDappParams,
   useViewData,
   useLedgerBindingApi,
+  useIsTxTreatedAsEIP1559,
 } from '../../hooks'
 import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
@@ -134,6 +135,8 @@ function ConfirmTransaction() {
   // params in wallet send or dapp send
   const originParams = !isDapp ? {...txParams} : {...tx}
 
+  const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
+
   // dapp send params
   const {
     gasPrice: initGasPrice,
@@ -153,6 +156,7 @@ function ConfirmTransaction() {
     nonce: formatDecimalToHex(nonce),
     storageLimit: formatDecimalToHex(storageLimit),
   }
+
   // user can edit the approve limit
   const viewData = useViewData(params, isApproveToken)
   params.data = viewData
@@ -352,7 +356,10 @@ function ConfirmTransaction() {
             allowance={displayValue}
             pendingAuthReq={pendingAuthReq}
           />
-          <GasFee estimateRst={estimateRst} />
+          <GasFee
+            estimateRst={estimateRst}
+            isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
+          />
         </div>
         <div className="flex flex-col items-center">
           {isDapp && params.data && (

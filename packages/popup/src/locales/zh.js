@@ -170,7 +170,19 @@ const zh = {
     warning: '警告',
 
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
-    editGasFeeControl: 'Gas 控制器',
+    editGasFee: 'Edit Gas Fee',
+    low: 'Low',
+    medium: 'Market',
+    high: 'Aggressive',
+    suggested: 'Suggested',
+    advanced: 'Advanced',
+    gasCost: 'Est. Gas Cost',
+    gasOption: 'Gas Option',
+    gasFeeDetail: 'Gas Station Detail',
+    maxFeePerGas: 'Max Fee Per Gas',
+    maxFee: 'Max Fee',
+    baseFee: 'Base Fee',
+    priorityFee: 'Priority Fee',
     gasPrice: 'Gas 价格',
     gasLimit: 'Gas 限制',
     storageFee: '存储抵押费',
@@ -219,6 +231,7 @@ const zh = {
 
     // - Send Transaction / - speedup and cancel tx
     cancelTransaction: '取消交易',
+    speedUp: '加速',
     suggestedGasPrice: '建议的 Gas 价格',
     inputGasPrice: '设置 Gas 价格',
     spend: '将花费',
