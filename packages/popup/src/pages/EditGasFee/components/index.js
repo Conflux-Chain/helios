@@ -1,1 +1,2 @@
-export {default as WrapperWithLabel} from './WrapperWithLabel'
+export {default as GasStation} from './GasStation'
+export {default as GasCost} from './GasCost'

@@ -176,7 +176,19 @@ const uk = {
     warning: 'Warning',
 
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
-    editGasFeeControl: 'Регулятор газу',
+    editGasFee: 'Edit Gas Fee',
+    low: 'Low',
+    medium: 'Market',
+    high: 'Aggressive',
+    suggested: 'Suggested',
+    advanced: 'Advanced',
+    gasCost: 'Est. Gas Cost',
+    gasOption: 'Gas Option',
+    gasFeeDetail: 'Gas Station Detail',
+    maxFeePerGas: 'Max Fee Per Gas',
+    maxFee: 'Max Fee',
+    baseFee: 'Base Fee',
+    priorityFee: 'Priority Fee',
     gasPrice: 'Вартість газу',
     gasLimit: 'Ліміт газу',
     storageFee: 'Вартість зберігання',
@@ -226,6 +238,7 @@ const uk = {
 
     // - Send Transaction / - speedup and cancel tx
     cancelTransaction: 'Відміна транзакції',
+    speedUp: 'Speed Up',
     suggestedGasPrice: 'Пропонована ціна на газ',
     inputGasPrice: 'Початкова ціна на газ',
     spend: 'Провести',

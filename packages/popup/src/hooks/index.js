@@ -20,6 +20,7 @@ import {
 import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
 import {consts} from '@fluent-wallet/ledger'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
   useSingleTokenInfoWithNativeTokenSupport,
@@ -30,6 +31,7 @@ import {
   useAddressType,
   useValid20Token,
   usePendingAuthReq,
+  useNetwork1559Compatible,
 } from './useApi'
 import {validateAddress} from '../utils'
 
@@ -118,7 +120,18 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   } = useCurrentAddress()
   const currentNetwork = network || {type: NETWORK_TYPE.CFX}
   const {type} = currentNetwork
-  const {from, to, value, data, nonce, gasPrice, gas, storageLimit} = tx
+  const {
+    from,
+    to,
+    value,
+    data,
+    nonce,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    gas,
+    storageLimit,
+  } = tx
   const {
     value: rst,
     loading,
@@ -146,6 +159,8 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     data,
     nonce,
     gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     gas,
     storageLimit,
     network.chainId,
@@ -167,6 +182,14 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   return rst
 }
 
+const initAdvancedGasSetting = {
+  gasLimit: '',
+  gasPrice: '',
+  maxFeePerGas: '',
+  maxPriorityFeePerGas: '',
+  nonce: '',
+}
+
 const defaultSendTransactionParams = {
   toAddress: '',
   sendAmount: '',
@@ -175,6 +198,8 @@ const defaultSendTransactionParams = {
   maxPriorityFeePerGas: '',
   gasLimit: '',
   storageLimit: '',
+  gasLevel: 'medium',
+  advancedGasSetting: initAdvancedGasSetting,
   data: '',
   nonce: '',
   sendTokenId: 'native',
@@ -182,7 +207,7 @@ const defaultSendTransactionParams = {
   tx: {},
 }
 
-export const useCurrentTxStore = create(set => ({
+export const useCurrentTxStore = create((set, get) => ({
   ...defaultSendTransactionParams,
 
   setTx: tx => set({tx}),
@@ -194,6 +219,14 @@ export const useCurrentTxStore = create(set => ({
   setMaxPriorityFeePerGas: maxPriorityFeePerGas => set({maxPriorityFeePerGas}),
   setGasLimit: gasLimit => set({gasLimit}),
   setStorageLimit: storageLimit => set({storageLimit}),
+  setGasLevel: gasLevel => set({gasLevel}),
+  setAdvancedGasSetting: advancedGasSetting => {
+    const oldSetting = get().advancedGasSetting
+    const newSetting = {...oldSetting, ...advancedGasSetting}
+    set({newSetting})
+  },
+  clearAdvancedGasSetting: () =>
+    set({advancedGasSetting: initAdvancedGasSetting}),
   setCustomAllowance: customAllowance => set({customAllowance}),
   setNonce: nonce => set({nonce}),
   setSendTokenId: sendTokenId => set({sendTokenId}),
@@ -548,4 +581,9 @@ export const useLedgerAppName = () => {
     : networkType == NETWORK_TYPE.ETH
     ? LEDGER_APP_NAME.ETHEREUM
     : ''
+}
+
+export const useIsTxTreatedAsEIP1559 = txType => {
+  const network1559Compatible = useNetwork1559Compatible()
+  return network1559Compatible && (!txType || txType === ETH_TX_TYPES.EIP1559)
 }

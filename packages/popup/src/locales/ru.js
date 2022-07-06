@@ -176,7 +176,19 @@ const ru = {
     warning: 'Warning',
 
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
-    editGasFeeControl: 'Регулятор газа',
+    editGasFee: 'Edit Gas Fee',
+    low: 'Low',
+    medium: 'Market',
+    high: 'Aggressive',
+    suggested: 'Suggested',
+    advanced: 'Advanced',
+    gasCost: 'Est. Gas Cost',
+    gasOption: 'Gas Option',
+    gasFeeDetail: 'Gas Station Detail',
+    maxFeePerGas: 'Max Fee Per Gas',
+    maxFee: 'Max Fee',
+    baseFee: 'Base Fee',
+    priorityFee: 'Priority Fee',
     gasPrice: 'Стоимость газа',
     gasLimit: 'Лимит газа',
     storageFee: 'Стоимость хранения',
@@ -226,6 +238,7 @@ const ru = {
 
     // - Send Transaction / - speedup and cancel tx
     cancelTransaction: 'Отмена транзакции',
+    speedUp: 'Speed Up',
     suggestedGasPrice: 'Предлагаемая цена на газ',
     inputGasPrice: 'Исходная цена на газ',
     spend: 'Провести',

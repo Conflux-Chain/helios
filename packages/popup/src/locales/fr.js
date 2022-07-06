@@ -180,7 +180,19 @@ const fr = {
     warning: 'Warning',
 
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
-    editGasFeeControl: 'Contrôleur du Gas',
+    editGasFee: 'Edit Gas Fee',
+    low: 'Low',
+    medium: 'Market',
+    high: 'Aggressive',
+    suggested: 'Suggested',
+    advanced: 'Advanced',
+    gasCost: 'Est. Gas Cost',
+    gasOption: 'Gas Option',
+    gasFeeDetail: 'Gas Station Detail',
+    maxFeePerGas: 'Max Fee Per Gas',
+    maxFee: 'Max Fee',
+    baseFee: 'Base Fee',
+    priorityFee: 'Priority Fee',
     gasPrice: 'Prix du Gas',
     gasLimit: 'Limite de Gas',
     storageFee: 'Frais du stockage',
@@ -230,6 +242,7 @@ const fr = {
 
     // - Send Transaction / - speedup and cancel tx
     cancelTransaction: 'Annuler la transaction',
+    speedUp: 'Speed Up',
     suggestedGasPrice: 'Prix de Gas suggéré',
     inputGasPrice: 'Prix de Gas d’entrée',
     spend: 'Dépenser',
