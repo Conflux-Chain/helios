@@ -91,7 +91,6 @@ function HistoryItem({
       : ethProcessError(err)
     : 'unknownError'
 
-  // TODO: 1559
   const {txFeeDrip = '0x0'} = receipt
     ? networkTypeIsCfx
       ? cfxGetFeeData({
@@ -101,7 +100,7 @@ function HistoryItem({
         })
       : ethGetFeeData({
           gas: receipt?.gasUsed || '0x0',
-          gasPrice: receipt?.gasPrice || '0x1',
+          gasPrice: receipt?.effectiveGasPrice || '0x1',
         })
     : {}
 
