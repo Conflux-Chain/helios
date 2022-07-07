@@ -56,6 +56,7 @@ import About from './pages/About'
 import AdvancedSettings from './pages/AdvancedSettings'
 import AddressBook from './pages/AddressBook'
 import Contacts from './pages/Contacts'
+import ResendTransaction from './pages/ResendTransaction'
 
 const {
   HOME,
@@ -95,6 +96,7 @@ const {
   ADVANCED_SETTINGS,
   ADDRESS_BOOK,
   CONTACTS,
+  RESEND_TRANSACTION,
 } = ROUTES
 
 const routes = [
@@ -241,6 +243,10 @@ const routes = [
   {
     path: CONTACTS,
     component: Contacts,
+  },
+  {
+    path: RESEND_TRANSACTION,
+    component: ResendTransaction,
   },
 ]
 

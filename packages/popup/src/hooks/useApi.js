@@ -31,7 +31,8 @@ const {
   WALLET_DETECT_ADDRESS_TYPE,
   WALLETDB_REFETCH_BALANCE,
   WALLET_VALIDATE_20TOKEN,
-  WALLETDB_TXLIST,
+  QUERY_TXLIST,
+  QUERY_SINGLE_TX,
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
   WALLET_GET_FLUENT_METADATA,
   CFX_GET_MAX_GAS_LIMIT,
@@ -492,10 +493,21 @@ export const useTxList = ({params, inCludeExternalTx = false}) => {
     stop: !inCludeExternalTx,
   })
   const {data, mutate} = useRPC(
-    addressId ? [WALLETDB_TXLIST, ...Object.values(params), addressId] : null,
+    addressId ? [QUERY_TXLIST, ...Object.values(params), addressId] : null,
     {...params, addressId},
     {
       fallbackData: params?.countOnly ? 0 : {},
+    },
+  )
+  return {data, mutate}
+}
+
+export const useSingleTx = hash => {
+  const {data, mutate} = useRPC(
+    hash ? [QUERY_SINGLE_TX, hash] : null,
+    {hash},
+    {
+      fallbackData: {},
     },
   )
   return {data, mutate}
