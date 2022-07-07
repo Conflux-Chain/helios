@@ -1,10 +1,10 @@
 import {useTranslation} from 'react-i18next'
 import {useState, useRef, useEffect, useCallback} from 'react'
 import {TitleNav, NoResult} from '../../components'
-import {HistoryItem, ResendTransaction} from './components'
+import {HistoryItem} from './components'
 import {useTxList, useBlockchainExplorerUrl} from '../../hooks/useApi'
-import useLoading from '../../hooks/useLoading'
-import {composeRef, formatStatus, setScrollPageLimit} from '../../utils'
+// import useLoading from '../../hooks/useLoading'
+import {setScrollPageLimit} from '../../utils'
 import {PAGE_LIMIT} from '../../constants'
 
 function History() {
@@ -13,57 +13,57 @@ function History() {
   const [txList, setTxList] = useState(undefined)
   const [limit, setLimit] = useState(PAGE_LIMIT)
   const [total, setTotal] = useState(0)
-  const {data: historyListData, mutate: refreshHistoryData} = useTxList({
+  const {data: historyListData} = useTxList({
     params: {
       limit,
     },
     inCludeExternalTx: true,
   })
   // open speed up / cancel tx modal. value must be empty,cancel or speedup
-  const [reSendType, setReSendType] = useState('')
+  // const [reSendType, setReSendType] = useState('')
 
-  const [reSendTxStatus, setReSendTxStatus] = useState('')
-  const [transactionRecord, setTransactionRecord] = useState({
-    hash: '',
-    payload: {},
-    token: {},
-    extra: {},
-  })
+  // const [reSendTxStatus, setReSendTxStatus] = useState('')
+  // const [transactionRecord, setTransactionRecord] = useState({
+  //   hash: '',
+  //   payload: {},
+  //   token: {},
+  //   extra: {},
+  // })
 
   const {transaction: transactionUrls} = useBlockchainExplorerUrl(
     historyListData?.data
       ? {transaction: historyListData?.data.map(d => d.hash)}
       : null,
   )
-  const {ref: loadingRef, setLoading} = useLoading({type: 'Spin', delay: 666})
+  // const {ref: loadingRef, setLoading} = useLoading({type: 'Spin', delay: 666})
 
-  useEffect(() => {
-    setLoading(txList === undefined)
+  // useEffect(() => {
+  //   setLoading(txList === undefined)
 
-    const {hash: resendHash} = transactionRecord
-    if (resendHash) {
-      const filterTx = txList.filter(({hash}) => resendHash === hash)[0]
-      if (filterTx) {
-        setReSendTxStatus(formatStatus(filterTx.status))
-      }
-    }
-  }, [txList, transactionRecord, setLoading])
+  //   const {hash: resendHash} = transactionRecord
+  //   if (resendHash) {
+  //     const filterTx = txList.filter(({hash}) => resendHash === hash)[0]
+  //     if (filterTx) {
+  //       setReSendTxStatus(formatStatus(filterTx.status))
+  //     }
+  //   }
+  // }, [txList, transactionRecord, setLoading])
 
   const onScroll = useCallback(() => {
     setScrollPageLimit(historyRef?.current, setLimit, txList, total, limit)
   }, [txList, limit, total])
 
-  const onResendTx = (type, record) => {
-    setReSendTxStatus('pending')
-    setReSendType(type)
-    setTransactionRecord({...record})
-  }
+  // const onResendTx = (type, record) => {
+  //   // setReSendTxStatus('pending')
+  //   // setReSendType(type)
+  //   // setTransactionRecord({...record})
+  // }
 
-  const onCancelResendTx = () => {
-    setReSendType('')
-    setReSendTxStatus('')
-    setTransactionRecord({payload: {}, token: {}, extra: {}, hash: ''})
-  }
+  // const onCancelResendTx = () => {
+  //   // setReSendType('')
+  //   // setReSendTxStatus('')
+  //   // setTransactionRecord({payload: {}, token: {}, extra: {}, hash: ''})
+  // }
 
   useEffect(() => {
     if (historyListData?.total !== total) {
@@ -86,7 +86,7 @@ function History() {
         id="history-content"
         className="flex-1 overflow-auto no-scroll"
         onScroll={onScroll}
-        ref={composeRef(historyRef, loadingRef)}
+        ref={historyRef}
       >
         {txList?.length > 0 &&
           txList.map(
@@ -123,18 +123,17 @@ function History() {
                   index === 0 ? 'top-10 right-3' : undefined
                 }
                 transactionUrl={transactionUrls?.[index]}
-                onResend={onResendTx}
               />
             ),
           )}
         {txList?.length === 0 && <NoResult content={t('noResult')} />}
-        <ResendTransaction
+        {/* <ResendTransaction
           onClose={onCancelResendTx}
-          reSendType={reSendType}
-          reSendTxStatus={reSendTxStatus}
-          transactionRecord={transactionRecord}
-          refreshHistoryData={refreshHistoryData}
-        />
+          // reSendType={reSendType}
+          // reSendTxStatus={reSendTxStatus}
+          // transactionRecord={transactionRecord}
+          // refreshHistoryData={refreshHistoryData}
+        /> */}
       </main>
     </div>
   )

@@ -2,11 +2,11 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
+import {useHistory} from 'react-router-dom'
 import dayjs from 'dayjs'
 import {isUndefined} from '@fluent-wallet/checks'
 import {convertDataToValue} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-
 import {processError as cfxProcessError} from '@fluent-wallet/conflux-tx-error'
 import {processError as ethProcessError} from '@fluent-wallet/ethereum-tx-error'
 import {cfxGetFeeData, ethGetFeeData} from '@fluent-wallet/estimate-tx'
@@ -22,6 +22,11 @@ import {
   useCurrentAddress,
 } from '../../../hooks/useApi'
 import {useDecodeData, useDappIcon} from '../../../hooks'
+import useGlobalStore from '../../../stores'
+import {ROUTES} from '../../../constants'
+
+const {RESEND_TRANSACTION} = ROUTES
+
 import {
   HistoryStatusIcon,
   TransitionDetail,
@@ -50,8 +55,10 @@ function HistoryItem({
   fromScan = false,
   copyButtonContainerClassName,
   copyButtonToastClassName,
-  onResend,
 }) {
+  const {setResendInfo} = useGlobalStore()
+  const history = useHistory()
+
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
   const [amount, setAmount] = useState('')
@@ -112,11 +119,13 @@ function HistoryItem({
   })
 
   const onCancelPendingTx = () => {
-    onResend?.('cancel', {payload, token, extra, hash})
+    setResendInfo({type: 'cancel', hash})
+    history.push(RESEND_TRANSACTION)
   }
 
   const onSpeedupPendingTx = () => {
-    onResend?.('speedup', {payload, token, extra, hash})
+    setResendInfo({type: 'speedup', hash})
+    history.push(RESEND_TRANSACTION)
   }
 
   useEffect(() => {
@@ -288,6 +297,5 @@ HistoryItem.propTypes = {
   token: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   copyButtonContainerClassName: PropTypes.string,
   copyButtonToastClassName: PropTypes.string,
-  onResend: PropTypes.func.isRequired,
 }
 export default HistoryItem
