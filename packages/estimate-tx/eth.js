@@ -153,10 +153,16 @@ export const ethEstimate = async (
       const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
         gasInfo?.medium || {}
       maxPriorityFeePerGas = pre0x(
-        new Big(suggestedMaxPriorityFeePerGas).times(10 ** 9).toString(16),
+        new Big(suggestedMaxPriorityFeePerGas)
+          .times(10 ** 9)
+          .toNumber()
+          .toString(16),
       )
       maxFeePerGas = pre0x(
-        new Big(suggestedMaxFeePerGas).times(10 ** 9).toString(16),
+        new Big(suggestedMaxFeePerGas)
+          .times(10 ** 9)
+          .toNumber()
+          .toString(16),
       )
     }))
 
