@@ -35,7 +35,9 @@ function AlertMessage({
         <span className="font-medium text-warning">
           {isHwUnAuth && t('ledgerIsNotConnected')}
           {(isHwOpenAlert || isContractError) && t('warning')}
-          {!isContractError && !!estimateError && t('error')}
+          <span className="text-error">
+            {!isContractError && !!estimateError && t('error')}
+          </span>
         </span>
       </div>
       {isHwUnAuth && (
