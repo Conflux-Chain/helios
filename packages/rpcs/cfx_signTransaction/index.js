@@ -132,17 +132,22 @@ export const main = async args => {
     }
   }
 
-  if (!newTx.gas || !newTx.storageLimit) {
-    const {gasLimit, storageCollateralized} =
-      await cfx_estimateGasAndCollateral({errorFallThrough: true}, [
-        newTx,
-        epoch,
-      ])
-    if (!newTx.gas) newTx.gas = gasLimit
-    if (!newTx.storageLimit) newTx.storageLimit = storageCollateralized
-  }
-
   if (!newTx.gasPrice) newTx.gasPrice = await cfx_gasPrice()
+
+  if (!newTx.gas || !newTx.storageLimit) {
+    try {
+      const {gasLimit, storageCollateralized} =
+        await cfx_estimateGasAndCollateral({errorFallThrough: true}, [
+          newTx,
+          epoch,
+        ])
+      if (!newTx.gas) newTx.gas = gasLimit
+      if (!newTx.storageLimit) newTx.storageLimit = storageCollateralized
+    } catch (err) {
+      err.data = {originalData: err.data, estimateError: true}
+      throw err
+    }
+  }
 
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {
