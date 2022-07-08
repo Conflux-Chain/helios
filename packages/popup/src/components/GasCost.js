@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {DisplayBalance} from '../../../components'
-import {useCurrentTicker} from '../../../hooks/useApi'
-import {useEstimateTx} from '../../../hooks'
-import useDebouncedValue from '../../../hooks/useDebouncedValue'
+import {DisplayBalance} from '../components'
+import {useCurrentTicker} from '../hooks/useApi'
+import {useEstimateTx} from '../hooks'
+import useDebouncedValue from '../hooks/useDebouncedValue'
 
 function GasCost({sendParams, networkTypeIsCfx}) {
   const {t} = useTranslation()

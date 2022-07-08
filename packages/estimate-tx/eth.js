@@ -216,6 +216,8 @@ export const ethEstimate = async (
   // estimateGasAndCollateral result
   delete newTx.gas
   delete newTx.gasPrice
+  delete newTx.maxFeePerGas
+  delete newTx.maxPriorityFeePerGas
   newTx.nonce = nonce
 
   // run estimate

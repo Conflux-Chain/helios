@@ -9,6 +9,7 @@ import {
   toThousands,
 } from '@fluent-wallet/data-format'
 import {useCurrentTxStore} from '../../../hooks'
+import {addUnitForValue} from '../../../utils'
 import {ROUTES} from '../../../constants'
 
 const {ADVANCED_GAS} = ROUTES
@@ -22,9 +23,6 @@ const GasStationItem = ({
   networkTypeIsCfx = false,
 }) => {
   const {t} = useTranslation()
-  const addUnitForValue = value => {
-    return value ? `${value} ${networkTypeIsCfx ? 'GDrip' : 'GWei'}` : 'loading'
-  }
   const {maxFeePerGas, maxPriorityFeePerGas, gasLimit, baseFee, gasPrice} = data
   return (
     <div
@@ -38,7 +36,10 @@ const GasStationItem = ({
       <div className="flex items-center">
         <span className="text-primary">
           {gasLimit || level !== 'advanced'
-            ? addUnitForValue(isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice)
+            ? addUnitForValue(
+                isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice,
+                networkTypeIsCfx,
+              )
             : t('edit')}
         </span>
         {level !== 'advanced' && isTxTreatedAsEIP1559 && (

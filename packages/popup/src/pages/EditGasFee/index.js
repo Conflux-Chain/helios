@@ -9,8 +9,8 @@ import {
   GWEI_DECIMALS,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
-import {TitleNav} from '../../components'
-import {GasStation, GasCost} from './components'
+import {TitleNav, GasCost} from '../../components'
+import {GasStation} from './components'
 import {useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {
   useCurrentTxParams,
