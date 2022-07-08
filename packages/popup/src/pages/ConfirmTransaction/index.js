@@ -289,6 +289,7 @@ function ConfirmTransaction() {
       isSendToken,
       sendTokenValue,
       networkTypeIsCfx,
+      isTxTreatedAsEIP1559,
     )
     if (error) {
       setLoading(false)
