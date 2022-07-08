@@ -147,6 +147,7 @@ function ConfirmTransaction() {
     storageLimit: initStorageLimit,
   } = tx
   // user can edit nonce, gasPrice and gas
+  console.log('maxPriorityFeePerGas', maxPriorityFeePerGas)
   const params = {
     ...originParams,
     gasPrice: formatDecimalToHex(gasPrice),
@@ -228,7 +229,9 @@ function ConfirmTransaction() {
         )
       !maxPriorityFeePerGas &&
         setMaxPriorityFeePerGas(
-          initMaxPriorityFeePerGas || estimateMaxPriorityPerGas || '',
+          formatHexToDecimal(
+            initMaxPriorityFeePerGas || estimateMaxPriorityPerGas || '',
+          ),
         )
       !nonce && setNonce(formatHexToDecimal(initNonce || rpcNonce || ''))
     }
