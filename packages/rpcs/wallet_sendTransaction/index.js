@@ -96,8 +96,8 @@ export const main = async ({
         [...params, {dryRun: true}],
       )
     } catch (err) {
-      if (!/Can not estimate.*NotEnoughCash/i.test(err.message)) {
-        if (err?.code === ERROR.USER_REJECTED.code) throw err
+      if (err?.code === ERROR.USER_REJECTED.code) throw err
+      if (!err?.data?.estimateError) {
         err.message = `Error while processing tx.\nparams:\n${JSON.stringify(
           params,
           null,
