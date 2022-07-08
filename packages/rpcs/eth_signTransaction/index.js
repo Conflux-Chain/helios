@@ -150,10 +150,15 @@ export const main = async args => {
     }
   }
   if (!newTx.gas) {
-    newTx.gas = await eth_estimateGas({errorFallThrough: true}, [
-      newTx,
-      block || 'latest',
-    ])
+    try {
+      newTx.gas = await eth_estimateGas({errorFallThrough: true}, [
+        newTx,
+        block || 'latest',
+      ])
+    } catch (err) {
+      err.data = {originalData: err.data, estimateError: true}
+      throw err
+    }
   }
 
   if (!newTx.chainId) newTx.chainId = network.chainId
