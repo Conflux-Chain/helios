@@ -29,6 +29,7 @@ function EditGasFee({
   isSpeedUp = true,
   resendGasPrice,
   onSubmit,
+  resendDisabled,
 }) {
   const {t} = useTranslation()
   const history = useHistory()
@@ -188,7 +189,8 @@ function EditGasFee({
           onClick={saveGasData}
           disabled={
             (isTxTreatedAsEIP1559 && !gasInfoEip1559[selectedGasLevel]) ||
-            (!isTxTreatedAsEIP1559 && !suggestedGasPrice)
+            (!isTxTreatedAsEIP1559 && !suggestedGasPrice) ||
+            resendDisabled
           }
         >
           {isSendTx ? t('save') : t('submit')}
@@ -203,6 +205,7 @@ EditGasFee.propTypes = {
   isSpeedUp: PropTypes.bool,
   tx: PropTypes.object,
   resendGasPrice: PropTypes.string,
+  resendDisabled: PropTypes.bool,
 }
 
 export default EditGasFee
