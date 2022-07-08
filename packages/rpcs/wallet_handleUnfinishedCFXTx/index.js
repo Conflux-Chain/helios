@@ -316,11 +316,14 @@ export const main = ({
             // get the error message in receipt
             cfx_getTransactionReceipt({errorFallThrough: true}, [hash])
               .then(receipt => {
-                let err
+                let err = ''
                 if (receipt?.txExecErrorMsg) {
                   err = receipt.txExecErrorMsg
                 }
-                setTxFailed({hash, error: receipt.txExecErrorMsg})
+                setTxFailed({
+                  hash,
+                  error: err || 'tx failed',
+                })
                 updateBadge(getUnfinishedTxCount())
                 getExt().then(ext =>
                   ext.notifications.create(hash, {
