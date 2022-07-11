@@ -195,7 +195,7 @@ function EditGasFee({
           </div>
         )}
         <Button
-          className="w-full mx-auto"
+          className="w-full mx-auto z-50"
           id="saveGasFeeBtn"
           onClick={saveGasData}
           disabled={
