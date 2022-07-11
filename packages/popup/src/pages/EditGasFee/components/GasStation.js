@@ -7,6 +7,7 @@ import {
   convertDataToValue,
   GWEI_DECIMALS,
   toThousands,
+  convertDecimal,
 } from '@fluent-wallet/data-format'
 import {useCurrentTxStore} from '../../../hooks'
 import {addUnitForValue} from '../../../utils'
@@ -155,16 +156,48 @@ function GasStation({
       <GasStationItem
         level="advanced"
         data={{
-          maxFeePerGas: advancedGasSetting?.['maxFeePerGas'],
-          maxPriorityFeePerGas: advancedGasSetting?.['maxPriorityFeePerGas'],
+          maxFeePerGas: convertDecimal(
+            advancedGasSetting?.['maxFeePerGas'],
+            'divide',
+            GWEI_DECIMALS,
+          ),
+          maxPriorityFeePerGas: convertDecimal(
+            advancedGasSetting?.['maxPriorityFeePerGas'],
+            'divide',
+            GWEI_DECIMALS,
+          ),
           gasLimit: advancedGasSetting?.['gasLimit'],
-          gasPrice: advancedGasSetting?.['gasPrice'],
+          gasPrice: convertDecimal(
+            advancedGasSetting?.['gasPrice'],
+            'divide',
+            GWEI_DECIMALS,
+          ),
           baseFee: gasInfoEip1559?.['estimatedBaseFee'],
         }}
         networkTypeIsCfx={networkTypeIsCfx}
         isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
         selected={selectedGasLevel === 'advanced'}
-        onClick={() => history.push(ADVANCED_GAS)}
+        onClick={() => {
+          if (
+            selectedGasLevel !== 'advanced' &&
+            !gasInfoEip1559?.[selectedGasLevel]
+          )
+            return
+          const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} =
+            gasInfoEip1559?.[selectedGasLevel] || {}
+          history.push({
+            pathname: ADVANCED_GAS,
+            search: `?${
+              isTxTreatedAsEIP1559
+                ? `suggestedMaxFeePerGas=${suggestedMaxFeePerGas}&suggestedMaxPriorityFeePerGas=${suggestedMaxPriorityFeePerGas}&selectedGasLevel=${selectedGasLevel}`
+                : ''
+            }${
+              !isTxTreatedAsEIP1559
+                ? 'suggestedGasPrice=' + suggestedGasPrice
+                : ''
+            }`,
+          })
+        }}
       />
     </div>
   )

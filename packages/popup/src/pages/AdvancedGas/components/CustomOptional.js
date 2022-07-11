@@ -23,9 +23,15 @@ function CustomOptional({
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-between">
+      <div
+        className={`flex justify-between ${
+          showGasLimitInput ? 'mb-2' : 'mb-3'
+        }`}
+      >
         <span>{t('gasLimit')}</span>
-        <span>
+        <span
+          className={`flex items-center ${showGasLimitInput ? 'hidden' : ''}`}
+        >
           <span id="gasLimit">{toThousands(gasLimit || '21000')}</span>
           <WrapIcon
             onClick={() => setShowGasLimitInput(true)}
@@ -38,7 +44,8 @@ function CustomOptional({
         </span>
       </div>
       <NumberInput
-        className={`${showGasLimitInput ? '' : 'hidden'}`}
+        containerClassName={`${showGasLimitInput ? '' : 'hidden'}`}
+        width="w-full"
         id="gasLimitInput"
         value={inputGasLimit}
         placeholder={gasLimit}
@@ -51,10 +58,14 @@ function CustomOptional({
           <span id="storageLimit">{toThousands(storageLimit || '0')}</span>
         </div>
       )}
-      <div className="flex justify-between">
-        <span>{t('nonce')}</span>
-        <span>
-          <span id="nonce">{toThousands(nonce || '21000')}</span>
+      <div
+        className={`flex justify-between ${showNonceInput ? 'mb-2' : ''} ${
+          showGasLimitInput ? 'mt-3' : ''
+        }`}
+      >
+        <span>nonce</span>
+        <span className={`flex items-center ${showNonceInput ? 'hidden' : ''}`}>
+          <span id="nonce">{toThousands(nonce || '1')}</span>
           <WrapIcon
             onClick={() => setShowNonceInput(true)}
             className=" ml-1 shadow-none !bg-primary-10"
@@ -66,7 +77,8 @@ function CustomOptional({
         </span>
       </div>
       <NumberInput
-        className={`${showNonceInput ? '' : 'hidden'}`}
+        containerClassName={`${showNonceInput ? '' : 'hidden'}`}
+        width="w-full"
         id="nonceInput"
         value={inputNonce}
         placeholder={nonce}

@@ -24,7 +24,6 @@ import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
 import {
   request,
-  bn16,
   getPageType,
   checkBalance,
   transformToTitleCase,
@@ -147,7 +146,6 @@ function ConfirmTransaction() {
     storageLimit: initStorageLimit,
   } = tx
   // user can edit nonce, gasPrice and gas
-  console.log('maxPriorityFeePerGas', maxPriorityFeePerGas)
   const params = {
     ...originParams,
     gasPrice: formatDecimalToHex(gasPrice),
@@ -282,7 +280,7 @@ function ConfirmTransaction() {
 
     const sendTokenValue =
       isSendToken && !isNativeToken && Object.keys(displayToken).length
-        ? bn16(convertValueToData(displayValue, displayToken.decimals))
+        ? convertValueToData(displayValue, displayToken.decimals)
         : '0x0'
 
     const error = await checkBalance(

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {NumberInput, CompWithLabel} from '../../../components'
-import {addUnitForValue} from '../../../utils'
+// import {addUnitForValue} from '../../../utils'
 
 function CustomGasPrice({
-  gasInfoEip1559,
+  // gasInfoEip1559,
   networkTypeIsCfx,
   isTxTreatedAsEIP1559,
   inputGasPrice,
@@ -17,12 +17,12 @@ function CustomGasPrice({
   onChangeMaxPriorityFeePerGas,
 }) {
   const {t} = useTranslation()
-  const {
-    historicalBaseFeeRange,
-    historicalPriorityFeeRange,
-    low,
-    latestPriorityFeeRange,
-  } = gasInfoEip1559 || {}
+  // const {
+  //   historicalBaseFeeRange,
+  //   historicalPriorityFeeRange,
+  //   low,
+  //   latestPriorityFeeRange,
+  // } = gasInfoEip1559 || {}
   return (
     <div className="p-2 flex flex-col rounded bg-gray-10 mb-4">
       {isTxTreatedAsEIP1559 && (
@@ -35,11 +35,12 @@ function CustomGasPrice({
           >
             <NumberInput
               id="maxFeePerGas"
+              width="w-full"
               value={inputMaxFeePerGas}
               onChange={value => onChangeMaxFeePerGas(value)}
             />
           </CompWithLabel>
-          {historicalBaseFeeRange && (
+          {/* {historicalBaseFeeRange && (
             <div className="flex justify-between text-primary text-xs mt-2">
               <span>
                 {addUnitForValue(
@@ -56,7 +57,7 @@ function CustomGasPrice({
                 )}
               </span>
             </div>
-          )}
+          )} */}
           <CompWithLabel
             label={`${t('maxPriorityFeePerGas')}(${
               networkTypeIsCfx ? 'GDrip' : 'GWei'
@@ -65,31 +66,32 @@ function CustomGasPrice({
           >
             <NumberInput
               id="maxPriorityFeePerGas"
+              width="w-full"
               value={inputMaxPriorityFeePerGas}
               errorMessage={maxPriorityFeePerGasErr}
               onChange={value => onChangeMaxPriorityFeePerGas(value)}
             />
           </CompWithLabel>
-          {latestPriorityFeeRange && historicalPriorityFeeRange && (
-            <div className="flex justify-between text-primary text-xs mt-2">
-              <span>
-                {addUnitForValue(
-                  `${t('twelveHour')}${latestPriorityFeeRange?.[0]} ~ ${
-                    latestPriorityFeeRange?.[1]
-                  }`,
-                  networkTypeIsCfx,
-                )}
-              </span>
-              <span>
-                {addUnitForValue(
-                  `${t('twelveHour')}${historicalPriorityFeeRange?.[0]} ~ ${
-                    historicalPriorityFeeRange?.[1]
-                  }`,
-                  networkTypeIsCfx,
-                )}
-              </span>
-            </div>
-          )}
+          {/* {latestPriorityFeeRange && historicalPriorityFeeRange && (
+              <div className="flex justify-between text-primary text-xs mt-2">
+                <span>
+                  {addUnitForValue(
+                    `${t('twelveHour')}${latestPriorityFeeRange?.[0]} ~ ${
+                      latestPriorityFeeRange?.[1]
+                    }`,
+                    networkTypeIsCfx,
+                  )}
+                </span>
+                <span>
+                  {addUnitForValue(
+                    `${t('twelveHour')}${historicalPriorityFeeRange?.[0]} ~ ${
+                      historicalPriorityFeeRange?.[1]
+                    }`,
+                    networkTypeIsCfx,
+                  )}
+                </span>
+              </div>
+            )} */}
         </>
       )}
       {!isTxTreatedAsEIP1559 && (
@@ -110,7 +112,7 @@ function CustomGasPrice({
 }
 
 CustomGasPrice.propTypes = {
-  gasInfoEip1559: PropTypes.object,
+  // gasInfoEip1559: PropTypes.object,
   networkTypeIsCfx: PropTypes.bool,
   isTxTreatedAsEIP1559: PropTypes.bool,
   inputGasPrice: PropTypes.string,

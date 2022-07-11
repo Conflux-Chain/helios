@@ -4,9 +4,10 @@ import {useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {
   Big,
-  formatDecimalToHex,
   formatHexToDecimal,
+  formatDecimalToHex,
   convertDecimal,
+  convertValueToData,
   GWEI_DECIMALS,
 } from '@fluent-wallet/data-format'
 import {TitleNav, GasCost} from '../../components'
@@ -23,7 +24,13 @@ import {CustomGasPrice, CustomOptional} from './components'
 
 function AdvancedGas() {
   const {t} = useTranslation()
-  const {selectedGasLevel, suggestedGasPrice} = useQuery()
+  const query = useQuery()
+  const selectedGasLevel = query.get('selectedGasLevel')
+  const suggestedMaxFeePerGas = query.get('suggestedMaxFeePerGas')
+  const suggestedMaxPriorityFeePerGas = query.get(
+    'suggestedMaxPriorityFeePerGas',
+  )
+  const suggestedGasPrice = query.get('selectedGasPrice')
   const history = useHistory()
 
   const [inputGasPrice, setInputGasPrice] = useState('')
@@ -40,6 +47,7 @@ function AdvancedGas() {
     gasLimit,
     nonce,
     storageLimit,
+    advancedGasSetting,
     setAdvancedGasSetting,
     tx: txParams,
   } = useCurrentTxParams()
@@ -52,43 +60,56 @@ function AdvancedGas() {
   const originParams = !isDapp ? {...txParams} : {...tx}
 
   const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
-
   const params = {
     ...originParams,
-    gasPrice: formatDecimalToHex(
-      convertDecimal(inputGasPrice, 'multiply', GWEI_DECIMALS),
+    gasPrice: convertValueToData(inputGasPrice, GWEI_DECIMALS),
+    maxFeePerGas: convertValueToData(inputMaxFeePerGas, GWEI_DECIMALS),
+    maxPriorityFeePerGas: convertValueToData(
+      inputMaxPriorityFeePerGas,
+      GWEI_DECIMALS,
     ),
-    maxFeePerGas: formatDecimalToHex(
-      convertDecimal(inputMaxFeePerGas, 'multiply', GWEI_DECIMALS),
+    gas: formatDecimalToHex(
+      inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
     ),
-    inputMaxPriorityFeePerGas: formatDecimalToHex(
-      convertDecimal(inputMaxPriorityFeePerGas, 'multiply', GWEI_DECIMALS),
-    ),
-    gas: formatDecimalToHex(inputGasLimit),
-    nonce: formatDecimalToHex(inputNonce),
+    nonce: formatDecimalToHex(inputNonce || advancedGasSetting.nonce || nonce),
   }
   if (!params.maxFeePerGas) delete params.maxFeePerGas
   if (!params.inputMaxPriorityFeePerGas) delete params.inputMaxPriorityFeePerGas
   if (!params.gasPrice) delete params.gasPrice
   const estimateRst = useEstimateTx(params) || {}
-  const {gasUsed, gasInfoEip1559 = {}} = estimateRst
-  const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} =
-    gasInfoEip1559?.[selectedGasLevel] || {}
+  const {gasUsed} = estimateRst
+  const {
+    gasPrice: advancedGasPrice,
+    maxFeePerGas: advancedMaxFeePerGas,
+    maxPriorityFeePerGas: advancedMaxPriorityFeePerGas,
+  } = advancedGasSetting
 
   useEffect(() => {
-    setInputGasLimit(gasLimit)
-    setInputNonce(nonce)
     !isTxTreatedAsEIP1559 &&
+      !inputGasLimit &&
       setInputGasPrice(
-        convertDecimal(suggestedGasPrice, 'divide', GWEI_DECIMALS),
+        advancedGasPrice
+          ? convertDecimal(advancedGasPrice, 'divide', GWEI_DECIMALS)
+          : formatHexToDecimal(suggestedGasPrice),
+      )
+    // gas station unit is GWei
+    isTxTreatedAsEIP1559 &&
+      !inputMaxFeePerGas &&
+      setInputMaxFeePerGas(
+        selectedGasLevel === 'advanced'
+          ? convertDecimal(advancedMaxFeePerGas, 'divide', GWEI_DECIMALS)
+          : suggestedMaxFeePerGas,
       )
     isTxTreatedAsEIP1559 &&
-      setInputGasPrice(
-        convertDecimal(suggestedMaxFeePerGas, 'divide', GWEI_DECIMALS),
-      )
-    isTxTreatedAsEIP1559 &&
-      setInputGasPrice(
-        convertDecimal(suggestedMaxPriorityFeePerGas, 'divide', GWEI_DECIMALS),
+      !inputMaxPriorityFeePerGas &&
+      setInputMaxPriorityFeePerGas(
+        selectedGasLevel === 'advanced'
+          ? convertDecimal(
+              advancedMaxPriorityFeePerGas,
+              'divide',
+              GWEI_DECIMALS,
+            )
+          : suggestedMaxPriorityFeePerGas,
       )
   }, [
     gasLimit,
@@ -97,6 +118,13 @@ function AdvancedGas() {
     suggestedMaxFeePerGas,
     suggestedMaxPriorityFeePerGas,
     nonce,
+    inputGasLimit,
+    inputMaxFeePerGas,
+    inputMaxPriorityFeePerGas,
+    advancedGasPrice,
+    selectedGasLevel,
+    advancedMaxPriorityFeePerGas,
+    advancedMaxFeePerGas,
   ])
 
   const onChangeGasPrice = gasPrice => {
@@ -203,8 +231,9 @@ function AdvancedGas() {
         'multiply',
         GWEI_DECIMALS,
       ),
-      gasLimit: inputGasLimit || gasLimit,
-      nonce: inputNonce || nonce,
+      gasLimit: inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
+      nonce: inputNonce || advancedGasSetting.nonce || nonce,
+      gasLevel: 'advanced',
     })
     history.goBack()
   }
@@ -219,7 +248,6 @@ function AdvancedGas() {
         <main className="mt-3 px-4">
           <GasCost sendParams={params} networkTypeIsCfx={networkTypeIsCfx} />
           <CustomGasPrice
-            gasInfoEip1559={gasInfoEip1559}
             networkTypeIsCfx={networkTypeIsCfx}
             isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
             inputGasPrice={inputGasPrice}
@@ -240,21 +268,21 @@ function AdvancedGas() {
             nonceErr={nonceErr}
             onChangeNonce={onChangeNonce}
             storageLimit={storageLimit}
-            nonce={nonce}
-            gasLimit={gasLimit}
+            nonce={advancedGasSetting.nonce || nonce}
+            gasLimit={advancedGasSetting.gasLimit || gasLimit}
           />
         </main>
       </div>
       <footer>
         <Button
-          className="w-70 mx-auto mb-6"
-          id="saveGasFeeBtn"
+          className="w-full mx-auto mb-6"
+          id="saveAdvancedGasFeeBtn"
           onClick={saveGasData}
           disabled={
             !!gasPriceErr ||
             !!nonceErr ||
             !!gasLimitErr ||
-            !maxPriorityFeePerGasErr
+            !!maxPriorityFeePerGasErr
           }
         >
           {t('save')}

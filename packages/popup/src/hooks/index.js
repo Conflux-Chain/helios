@@ -188,6 +188,7 @@ const initAdvancedGasSetting = {
   maxFeePerGas: '',
   maxPriorityFeePerGas: '',
   nonce: '',
+  gasLevel: '',
 }
 
 const defaultSendTransactionParams = {
@@ -223,7 +224,7 @@ export const useCurrentTxStore = create((set, get) => ({
   setAdvancedGasSetting: advancedGasSetting => {
     const oldSetting = get().advancedGasSetting
     const newSetting = {...oldSetting, ...advancedGasSetting}
-    set({newSetting})
+    set({advancedGasSetting: newSetting})
   },
   clearAdvancedGasSetting: () =>
     set({advancedGasSetting: initAdvancedGasSetting}),

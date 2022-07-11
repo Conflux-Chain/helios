@@ -38,6 +38,7 @@ function EditGasFee({
   const {
     gasLevel,
     gasLimit,
+    nonce,
     advancedGasSetting,
     setGasLevel,
     setGasPrice,
@@ -73,40 +74,54 @@ function EditGasFee({
   const [selectedGasLevel, setSelectedGasLevel] = useState('')
 
   useEffect(() => {
-    setSelectedGasLevel(gasLevel)
-  }, [gasLevel])
-
-  useEffect(() => {
-    if (advancedGasSetting.nonce) setSelectedGasLevel('advanced')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(advancedGasSetting.nonce)])
+    if (advancedGasSetting.gasLevel === 'advanced')
+      setSelectedGasLevel('advanced')
+    else if (!selectedGasLevel) setSelectedGasLevel(gasLevel)
+  }, [advancedGasSetting.gasLevel, gasLevel, selectedGasLevel])
 
   let sendParams = {}
   if (selectedGasLevel === 'advanced') {
-    sendParams = {...originParams, ...advancedGasSetting}
-  } else {
+    const {gasPrice, maxFeePerGas, maxPriorityFeePerGas} = advancedGasSetting
+    sendParams = {
+      ...originParams,
+      gas: formatDecimalToHex(advancedGasSetting.gasLimit),
+      nonce: formatDecimalToHex(advancedGasSetting.nonce),
+    }
     if (isTxTreatedAsEIP1559) {
-      const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
-      const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
-      const maxFeePerGas = convertValueToData(
-        suggestedMaxFeePerGas || '0',
-        GWEI_DECIMALS,
-      )
-      const maxPriorityFeePerGas = convertValueToData(
-        suggestedMaxPriorityFeePerGas || '0',
-        GWEI_DECIMALS,
-      )
       sendParams = {
-        ...originParams,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
-        gas: formatDecimalToHex(gasLimit),
+        ...sendParams,
+        maxFeePerGas: formatDecimalToHex(maxFeePerGas),
+        maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
       }
     } else {
       sendParams = {
-        ...originParams,
+        gasPrice: formatDecimalToHex(gasPrice),
+      }
+    }
+  } else {
+    sendParams = {
+      ...originParams,
+      gas: formatDecimalToHex(gasLimit),
+      nonce: formatDecimalToHex(nonce),
+    }
+    if (isTxTreatedAsEIP1559) {
+      const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
+      const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
+      sendParams = {
+        ...sendParams,
+        maxFeePerGas: convertValueToData(
+          suggestedMaxFeePerGas || '0',
+          GWEI_DECIMALS,
+        ),
+        maxPriorityFeePerGas: convertValueToData(
+          suggestedMaxPriorityFeePerGas || '0',
+          GWEI_DECIMALS,
+        ),
+      }
+    } else {
+      sendParams = {
+        ...sendParams,
         gasPrice: suggestedGasPrice,
-        gas: formatDecimalToHex(gasLimit),
       }
     }
   }
@@ -188,7 +203,9 @@ function EditGasFee({
           id="saveGasFeeBtn"
           onClick={saveGasData}
           disabled={
-            (isTxTreatedAsEIP1559 && !gasInfoEip1559[selectedGasLevel]) ||
+            (isTxTreatedAsEIP1559 &&
+              selectedGasLevel !== 'advanced' &&
+              !gasInfoEip1559[selectedGasLevel]) ||
             (!isTxTreatedAsEIP1559 && !suggestedGasPrice) ||
             resendDisabled
           }
