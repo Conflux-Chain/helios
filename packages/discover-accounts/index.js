@@ -52,10 +52,14 @@ const _discoverAccounts = async ({
       only0x1Prefixed,
     })
 
-    const [txOk, balanceOk] = await Promise.all([
-      hasTx({getTxCount, address: rst.address}),
-      hasBalance({getBalance, address: rst.address}),
-    ])
+    // no request for first addr
+    const [txOk, balanceOk] =
+      startFrom === 0 && i === 0
+        ? [true, true]
+        : await Promise.all([
+            hasTx({getTxCount, address: rst.address}),
+            hasBalance({getBalance, address: rst.address}),
+          ])
 
     // always return the first address
     // nth: the try times starts at 0
