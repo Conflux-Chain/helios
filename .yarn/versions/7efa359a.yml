@@ -1,7 +1,0 @@
-releases:
-  "@fluent-wallet/discover-accounts": patch
-  "@fluent-wallet/wallet_discover-accounts": patch
-
-declined:
-  - helios-background
-  - doc
