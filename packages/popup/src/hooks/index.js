@@ -184,6 +184,7 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
 
 const initAdvancedGasSetting = {
   gasLimit: '',
+  storageLimit: '',
   gasPrice: '',
   maxFeePerGas: '',
   maxPriorityFeePerGas: '',

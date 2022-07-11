@@ -8,6 +8,7 @@ import {
   formatDecimalToHex,
   convertDecimal,
   convertValueToData,
+  convertDataToValue,
   GWEI_DECIMALS,
 } from '@fluent-wallet/data-format'
 import {TitleNav, GasCost} from '../../components'
@@ -30,7 +31,7 @@ function AdvancedGas() {
   const suggestedMaxPriorityFeePerGas = query.get(
     'suggestedMaxPriorityFeePerGas',
   )
-  const suggestedGasPrice = query.get('selectedGasPrice')
+  const suggestedGasPrice = query.get('suggestedGasPrice')
   const history = useHistory()
 
   const [inputGasPrice, setInputGasPrice] = useState('')
@@ -72,6 +73,9 @@ function AdvancedGas() {
       inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
     ),
     nonce: formatDecimalToHex(inputNonce || advancedGasSetting.nonce || nonce),
+    storageLimit: formatDecimalToHex(
+      advancedGasSetting.storageLimit || storageLimit,
+    ),
   }
   if (!params.maxFeePerGas) delete params.maxFeePerGas
   if (!params.inputMaxPriorityFeePerGas) delete params.inputMaxPriorityFeePerGas
@@ -86,11 +90,11 @@ function AdvancedGas() {
 
   useEffect(() => {
     !isTxTreatedAsEIP1559 &&
-      !inputGasLimit &&
+      !inputGasPrice &&
       setInputGasPrice(
         advancedGasPrice
           ? convertDecimal(advancedGasPrice, 'divide', GWEI_DECIMALS)
-          : formatHexToDecimal(suggestedGasPrice),
+          : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS),
       )
     // gas station unit is GWei
     isTxTreatedAsEIP1559 &&
@@ -112,17 +116,15 @@ function AdvancedGas() {
           : suggestedMaxPriorityFeePerGas,
       )
   }, [
-    gasLimit,
-    suggestedGasPrice,
+    selectedGasLevel,
     isTxTreatedAsEIP1559,
+    suggestedGasPrice,
     suggestedMaxFeePerGas,
     suggestedMaxPriorityFeePerGas,
-    nonce,
-    inputGasLimit,
+    inputGasPrice,
     inputMaxFeePerGas,
     inputMaxPriorityFeePerGas,
     advancedGasPrice,
-    selectedGasLevel,
     advancedMaxPriorityFeePerGas,
     advancedMaxFeePerGas,
   ])
@@ -233,6 +235,7 @@ function AdvancedGas() {
       ),
       gasLimit: inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
       nonce: inputNonce || advancedGasSetting.nonce || nonce,
+      storageLimit: advancedGasSetting.storageLimit || storageLimit,
       gasLevel: 'advanced',
     })
     history.goBack()
