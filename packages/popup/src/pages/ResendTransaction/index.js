@@ -23,9 +23,8 @@ import {
   useIsTxTreatedAsEIP1559,
 } from '../../hooks'
 import {formatStatus, request, checkBalance} from '../../utils'
-import {TransactionResult} from '../../components'
+import {TransactionResult, AlertMessage} from '../../components'
 import {ExecutedTransaction} from './components'
-import {AlertMessage} from '../ConfirmTransaction/components'
 
 import {RPC_METHODS, TX_STATUS} from '../../constants'
 
@@ -54,13 +53,8 @@ function ResendTransaction() {
   const {setLoading} = useLoading()
 
   const {setResendInfo, resendInfo} = useGlobalStore()
-  const {
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    gasLimit,
-    clearSendTransactionParams,
-  } = useCurrentTxParams()
+  const {gasPrice, maxFeePerGas, maxPriorityFeePerGas, gasLimit} =
+    useCurrentTxParams()
 
   const [suggestedGasPrice, setSuggestedGasPrice] = useState('')
   const [estimateError, setEstimateError] = useState('')
@@ -152,7 +146,6 @@ function ResendTransaction() {
 
   const originEstimateRst = useEstimateTx(originParams, token20Params) || {}
 
-  console.log('originEstimateRst', originEstimateRst)
   const estimateRst =
     useEstimateTx(
       getSendTxParams(
@@ -170,8 +163,6 @@ function ResendTransaction() {
       token20Params,
     ) || {}
 
-  console.log('estimateRst', estimateRst)
-
   // check balance
   const errorMessage = useEstimateError(
     estimateRst,
@@ -181,7 +172,7 @@ function ResendTransaction() {
   )
   const isContractError = estimateError.indexOf(t('contractError')) !== -1
 
-  console.log('errorMessage', errorMessage)
+  // console.log('errorMessage', errorMessage)
 
   const resendTransaction = params => {
     request(SEND_TRANSACTION, [params])
@@ -209,7 +200,15 @@ function ResendTransaction() {
 
   // feeParams contains: gasPrice maxFeePerGas maxPriorityFeePerGas gas storageLimit
   const onResend = async feeParams => {
-    if (estimateRst?.loading || !accountType) {
+    // console.log(
+    //   'gasPrice, maxFeePerGas, maxPriorityFeePerGas, gasLimit',
+    //   gasPrice,
+    //   maxFeePerGas,
+    //   maxPriorityFeePerGas,
+    //   gasLimit,
+    // )
+    // return
+    if (estimateRst?.loading || originEstimateRst?.loading || !accountType) {
       return
     }
 
@@ -235,7 +234,7 @@ function ResendTransaction() {
       setLoading(true)
     }
 
-    const params = {...originParams, ...feeParams}
+    const params = getSendTxParams({...originParams, ...feeParams})
 
     const error = await checkBalance(
       params,
@@ -286,7 +285,7 @@ function ResendTransaction() {
         .round(0, 3)
         .toString(10)
 
-      setSuggestedGasPrice(formatDecimalToHex(recommendGasPrice))
+      setSuggestedGasPrice(recommendGasPrice)
     }
   }, [originEstimateRst.gasPrice, lastGasPrice])
 
@@ -300,23 +299,24 @@ function ResendTransaction() {
 
   useEffect(() => {
     return () => {
-      clearSendTransactionParams()
       setResendInfo({})
     }
-  }, [setResendInfo, clearSendTransactionParams])
+  }, [setResendInfo])
 
-  if (!Object.keys(txPayload).length || !resendType || !hash) {
+  // if (!Object.keys(txPayload).length || !resendType ) {
+  //   return null
+  // }
+  if (!Object.keys(txPayload).length) {
     return null
   }
-
   return (
-    <>
+    <div className="relative">
       <EditGasFee
         resendGasPrice={suggestedGasPrice}
         isSpeedUp={isSpeedup}
         onSubmit={onResend}
         tx={{...originParams}}
-        disabled={!!estimateError}
+        resendDisabled={!!estimateError && !isContractError}
       />
       {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (
         <TransactionResult
@@ -338,7 +338,7 @@ function ResendTransaction() {
           onClose={() => history.goBack()}
         />
       )}
-    </>
+    </div>
   )
 }
 
