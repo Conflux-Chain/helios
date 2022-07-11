@@ -128,6 +128,17 @@ function AdvancedGas() {
 
   const onChangeMaxFeePerGas = maxFeePerGas => {
     setInputMaxFeePerGas(maxFeePerGas)
+    if (
+      !maxPriorityFeePerGasErr &&
+      new Big(inputMaxPriorityFeePerGas).gt(maxFeePerGas || '0')
+    ) {
+      setMaxPriorityFeePerGasErr(t('maxPriorityFeePerGasHighErr'))
+    } else if (
+      maxPriorityFeePerGasErr === t('maxPriorityFeePerGasHighErr') &&
+      new Big(inputMaxPriorityFeePerGas).lte(maxFeePerGas || '0')
+    ) {
+      setMaxPriorityFeePerGasErr('')
+    }
   }
 
   const onChangeMaxPriorityFeePerGas = maxPriorityFeePerGas => {
