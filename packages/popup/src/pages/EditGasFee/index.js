@@ -6,6 +6,7 @@ import {
   convertDecimal,
   convertValueToData,
   formatDecimalToHex,
+  formatHexToDecimal,
   GWEI_DECIMALS,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
@@ -23,7 +24,7 @@ import {getPageType} from '../../utils'
 
 const {EDIT_GAS_FEE} = ROUTES
 
-// resendGasPrice is hex wei
+// resendGasPrice is hex wei/drip
 function EditGasFee({
   tx: historyTx,
   isSpeedUp = true,
@@ -66,6 +67,7 @@ function EditGasFee({
     gasLimit: estimateGasLimit,
   } = estimateRst
 
+  // hex wei/drip
   const suggestedGasPrice = resendGasPrice || estimateGasPrice
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
@@ -156,7 +158,7 @@ function EditGasFee({
           ),
         )
       } else {
-        setGasPrice(formatDecimalToHex(suggestedGasPrice))
+        setGasPrice(formatHexToDecimal(suggestedGasPrice))
       }
     }
     onSubmit && onSubmit()
