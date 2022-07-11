@@ -40,6 +40,7 @@ function EditGasFee({
     gasLevel,
     gasLimit,
     nonce,
+    storageLimit,
     advancedGasSetting,
     setGasLevel,
     setGasPrice,
@@ -88,6 +89,7 @@ function EditGasFee({
       ...originParams,
       gas: formatDecimalToHex(advancedGasSetting.gasLimit),
       nonce: formatDecimalToHex(advancedGasSetting.nonce),
+      storageLimit: formatDecimalToHex(advancedGasSetting.storageLimit),
     }
     if (isTxTreatedAsEIP1559) {
       sendParams = {
@@ -105,6 +107,7 @@ function EditGasFee({
       ...originParams,
       gas: formatDecimalToHex(gasLimit),
       nonce: formatDecimalToHex(nonce),
+      storageLimit: formatDecimalToHex(storageLimit),
     }
     if (isTxTreatedAsEIP1559) {
       const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
@@ -161,7 +164,7 @@ function EditGasFee({
         setGasPrice(formatHexToDecimal(suggestedGasPrice))
       }
     }
-    onSubmit && onSubmit()
+    onSubmit && onSubmit(sendParams)
     history.goBack()
   }
 
