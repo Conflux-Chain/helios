@@ -78,8 +78,9 @@ function AdvancedGas() {
     ),
   }
   if (!params.maxFeePerGas) delete params.maxFeePerGas
-  if (!params.inputMaxPriorityFeePerGas) delete params.inputMaxPriorityFeePerGas
+  if (!params.maxPriorityFeePerGas) delete params.maxPriorityFeePerGas
   if (!params.gasPrice) delete params.gasPrice
+  if (!params.storageLimit) delete params.storageLimit
   const estimateRst = useEstimateTx(params) || {}
   const {gasUsed} = estimateRst
   const {

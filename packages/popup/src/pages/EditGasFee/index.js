@@ -90,46 +90,33 @@ function EditGasFee({
       gas: formatDecimalToHex(advancedGasSetting.gasLimit),
       nonce: formatDecimalToHex(advancedGasSetting.nonce),
       storageLimit: formatDecimalToHex(advancedGasSetting.storageLimit),
-    }
-    if (isTxTreatedAsEIP1559) {
-      sendParams = {
-        ...sendParams,
-        maxFeePerGas: formatDecimalToHex(maxFeePerGas),
-        maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
-      }
-    } else {
-      sendParams = {
-        gasPrice: formatDecimalToHex(gasPrice),
-      }
+      maxFeePerGas: formatDecimalToHex(maxFeePerGas),
+      maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
+      gasPrice: formatDecimalToHex(gasPrice),
     }
   } else {
+    const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
+    const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
     sendParams = {
       ...originParams,
       gas: formatDecimalToHex(gasLimit),
       nonce: formatDecimalToHex(nonce),
       storageLimit: formatDecimalToHex(storageLimit),
-    }
-    if (isTxTreatedAsEIP1559) {
-      const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
-      const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
-      sendParams = {
-        ...sendParams,
-        maxFeePerGas: convertValueToData(
-          suggestedMaxFeePerGas || '0',
-          GWEI_DECIMALS,
-        ),
-        maxPriorityFeePerGas: convertValueToData(
-          suggestedMaxPriorityFeePerGas || '0',
-          GWEI_DECIMALS,
-        ),
-      }
-    } else {
-      sendParams = {
-        ...sendParams,
-        gasPrice: suggestedGasPrice,
-      }
+      maxFeePerGas: convertValueToData(
+        suggestedMaxFeePerGas || '0',
+        GWEI_DECIMALS,
+      ),
+      maxPriorityFeePerGas: convertValueToData(
+        suggestedMaxPriorityFeePerGas || '0',
+        GWEI_DECIMALS,
+      ),
+      gasPrice: suggestedGasPrice,
     }
   }
+  if (!sendParams.maxFeePerGas) delete sendParams.maxFeePerGas
+  if (!sendParams.maxPriorityFeePerGas) delete sendParams.maxPriorityFeePerGas
+  if (!sendParams.gasPrice) delete sendParams.gasPrice
+  if (!sendParams.storageLimit) delete sendParams.storageLimit
 
   const saveGasData = () => {
     const {gasPrice, maxPriorityFeePerGas, maxFeePerGas, nonce, gasLimit} =
@@ -164,6 +151,7 @@ function EditGasFee({
         setGasPrice(formatHexToDecimal(suggestedGasPrice))
       }
     }
+    console.log('sendParams', sendParams)
     onSubmit && onSubmit(sendParams)
     history.goBack()
   }
