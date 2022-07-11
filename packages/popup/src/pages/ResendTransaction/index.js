@@ -174,32 +174,31 @@ function ResendTransaction() {
 
   // console.log('errorMessage', errorMessage)
 
-  const resendTransaction = params => {
-    request(SEND_TRANSACTION, [params])
-      .then(() => {
-        setLoading(false)
-        if (!isHwAccount) {
-          history.goBack()
-          return
-        }
-        setSendStatus(TX_STATUS.HW_SUCCESS)
-      })
-      .catch(error => {
-        setLoading(false)
-        if (reSendTxStatus !== 'pending') {
-          return
-        }
-        if (error?.data?.includes?.('too stale nonce')) {
-          history.goBack()
-          return
-        }
-        setSendStatus(TX_STATUS.ERROR)
-        setSendError(error)
-      })
+  const resendTransaction = async params => {
+    try {
+      await request(SEND_TRANSACTION, [params])
+      history.goBack()
+      // if (isHwAccount) {
+      //   setSendStatus(TX_STATUS.HW_SUCCESS)
+      // } else {
+      //   history.goBack()
+      // }
+    } catch (error) {
+      if (reSendTxStatus !== 'pending') {
+        return
+      }
+      if (error?.data?.includes?.('too stale nonce')) {
+        history.goBack()
+        return
+      }
+      setSendStatus(TX_STATUS.ERROR)
+      setSendError(error)
+    }
   }
 
   // feeParams contains: gasPrice maxFeePerGas maxPriorityFeePerGas gas storageLimit
   const onResend = async feeParams => {
+    // TODO: get params
     // console.log(
     //   'gasPrice, maxFeePerGas, maxPriorityFeePerGas, gasLimit',
     //   gasPrice,
@@ -208,6 +207,7 @@ function ResendTransaction() {
     //   gasLimit,
     // )
     // return
+
     if (estimateRst?.loading || originEstimateRst?.loading || !accountType) {
       return
     }
@@ -220,9 +220,6 @@ function ResendTransaction() {
       const authStatus = await ledgerBindingApi.isDeviceAuthed()
       const isAppOpen = await ledgerBindingApi.isAppOpen()
 
-      if (!ledgerBindingApi) {
-        return
-      }
       if (!authStatus) {
         return setAuthStatus(authStatus)
       }
@@ -253,7 +250,8 @@ function ResendTransaction() {
       return
     }
 
-    resendTransaction(params)
+    await resendTransaction(params)
+    setLoading(false)
   }
 
   const onCloseTransactionResult = () => {
@@ -318,7 +316,7 @@ function ResendTransaction() {
         tx={{...originParams}}
         resendDisabled={!!estimateError && !isContractError}
       />
-      {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (
+      {sendStatus && (
         <TransactionResult
           status={sendStatus}
           sendError={sendError}

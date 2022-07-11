@@ -155,8 +155,11 @@ function EditGasFee({
       }
     }
     console.log('sendParams', sendParams)
-    onSubmit && onSubmit(sendParams)
-    history.goBack()
+    if (onSubmit) {
+      onSubmit(sendParams)
+    } else {
+      history.goBack()
+    }
   }
 
   return (
