@@ -134,12 +134,10 @@ function EditGasFee({
 
     if (selectedGasLevel === 'advanced') {
       if (isTxTreatedAsEIP1559) {
-        setMaxFeePerGas(convertDecimal(maxFeePerGas, 'multiply', GWEI_DECIMALS))
-        setMaxPriorityFeePerGas(
-          convertDecimal(maxPriorityFeePerGas, 'multiply', GWEI_DECIMALS),
-        )
+        setMaxFeePerGas(maxFeePerGas)
+        setMaxPriorityFeePerGas(maxPriorityFeePerGas)
       } else {
-        setGasPrice(convertDecimal(gasPrice, GWEI_DECIMALS))
+        setGasPrice(gasPrice)
       }
       setNonce(nonce)
       setGasLimit(gasLimit)
@@ -158,7 +156,7 @@ function EditGasFee({
           ),
         )
       } else {
-        setGasPrice(suggestedGasPrice)
+        setGasPrice(formatDecimalToHex(suggestedGasPrice))
       }
     }
     onSubmit && onSubmit()
