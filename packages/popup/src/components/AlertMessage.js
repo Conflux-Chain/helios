@@ -63,6 +63,7 @@ function AlertMessage({
             t('hwOpenApp', {
               appName: LedgerAppName,
             })}
+          {isContractError && estimateError}
         </div>
       )}
       {!isContractError && !!estimateError && (
