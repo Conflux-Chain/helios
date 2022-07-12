@@ -7,6 +7,7 @@ import {WrapIcon, NumberInput} from '../../../components'
 
 function CustomOptional({
   networkTypeIsCfx,
+  isHistoryTx,
   inputGasLimit,
   gasLimitErr,
   onChangeGasLimit,
@@ -58,39 +59,44 @@ function CustomOptional({
           <span id="storageLimit">{toThousands(storageLimit || '0')}</span>
         </div>
       )}
-      <div className="flex flex-col mb-3">
-        <div className={`flex justify-between ${showNonceInput ? 'mb-2' : ''}`}>
-          <span>nonce</span>
-          <span
-            className={`flex items-center ${showNonceInput ? 'hidden' : ''}`}
+      {!isHistoryTx && (
+        <div className="flex flex-col mb-3">
+          <div
+            className={`flex justify-between ${showNonceInput ? 'mb-2' : ''}`}
           >
-            <span id="nonce">{toThousands(nonce || '1')}</span>
-            <WrapIcon
-              onClick={() => setShowNonceInput(true)}
-              className=" ml-1 shadow-none !bg-primary-10"
-              id="editGasLimit"
-              size="w-5 h-5"
+            <span>nonce</span>
+            <span
+              className={`flex items-center ${showNonceInput ? 'hidden' : ''}`}
             >
-              <EditOutlined className="w-[14px] h-[14px] text-primary" />
-            </WrapIcon>
-          </span>
+              <span id="nonce">{toThousands(nonce || '1')}</span>
+              <WrapIcon
+                onClick={() => setShowNonceInput(true)}
+                className=" ml-1 shadow-none !bg-primary-10"
+                id="editGasLimit"
+                size="w-5 h-5"
+              >
+                <EditOutlined className="w-[14px] h-[14px] text-primary" />
+              </WrapIcon>
+            </span>
+          </div>
+          <NumberInput
+            containerClassName={`${showNonceInput ? '' : 'hidden'}`}
+            width="w-full"
+            id="nonceInput"
+            value={inputNonce}
+            placeholder={nonce}
+            errorMessage={nonceErr}
+            onChange={value => onChangeNonce(value)}
+          />
         </div>
-        <NumberInput
-          containerClassName={`${showNonceInput ? '' : 'hidden'}`}
-          width="w-full"
-          id="nonceInput"
-          value={inputNonce}
-          placeholder={nonce}
-          errorMessage={nonceErr}
-          onChange={value => onChangeNonce(value)}
-        />
-      </div>
+      )}
     </div>
   )
 }
 
 CustomOptional.propTypes = {
   networkTypeIsCfx: PropTypes.bool,
+  isHistoryTx: PropTypes.bool,
   inputGasLimit: PropTypes.string,
   gasLimitErr: PropTypes.string,
   onChangeGasLimit: PropTypes.func,

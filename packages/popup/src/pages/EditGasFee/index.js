@@ -42,25 +42,23 @@ function EditGasFee({
     nonce,
     storageLimit,
     advancedGasSetting,
+    tx: txParams,
     setGasLevel,
     setGasPrice,
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
     setGasLimit,
     setNonce,
+    setTx,
     clearAdvancedGasSetting,
-    tx: txParams,
   } = useCurrentTxParams()
 
   const isSendTx = location.pathname === EDIT_GAS_FEE
 
   const isDapp = getPageType() === 'notification'
   const dappTx = useDappParams()
-  const originParams = isSendTx
-    ? !isDapp
-      ? {...txParams}
-      : {...dappTx}
-    : {...historyTx}
+
+  const originParams = !isDapp ? {...txParams} : {...dappTx}
 
   const estimateRst = useEstimateTx(originParams) || {}
   const {
@@ -76,6 +74,12 @@ function EditGasFee({
   const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
 
   const [selectedGasLevel, setSelectedGasLevel] = useState('')
+
+  useEffect(() => {
+    if (!isSendTx) {
+      setTx(historyTx)
+    }
+  }, [isSendTx, JSON.stringify(historyTx), setTx])
 
   useEffect(() => {
     if (advancedGasSetting.gasLevel === 'advanced')
@@ -176,6 +180,7 @@ function EditGasFee({
           />
           <GasStation
             isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
+            isHistoryTx={!isSendTx}
             gasInfoEip1559={gasInfoEip1559}
             suggestedGasPrice={suggestedGasPrice}
             selectedGasLevel={selectedGasLevel}

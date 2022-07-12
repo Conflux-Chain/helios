@@ -98,6 +98,7 @@ GasStationItem.propTypes = {
 
 function GasStation({
   isTxTreatedAsEIP1559,
+  isHistoryTx,
   gasInfoEip1559,
   selectedGasLevel,
   setSelectedGasLevel,
@@ -189,7 +190,7 @@ function GasStation({
             gasInfoEip1559?.[selectedGasLevel] || {}
           history.push({
             pathname: ADVANCED_GAS,
-            search: `?${
+            search: `?isHistoryTx=${isHistoryTx}&${
               isTxTreatedAsEIP1559
                 ? `suggestedMaxFeePerGas=${suggestedMaxFeePerGas}&suggestedMaxPriorityFeePerGas=${suggestedMaxPriorityFeePerGas}&selectedGasLevel=${selectedGasLevel}`
                 : ''
@@ -207,6 +208,7 @@ function GasStation({
 
 GasStation.propTypes = {
   isTxTreatedAsEIP1559: PropTypes.bool,
+  isHistoryTx: PropTypes.bool,
   gasInfoEip1559: PropTypes.object,
   selectedGasLevel: PropTypes.string,
   setSelectedGasLevel: PropTypes.func,

@@ -31,6 +31,7 @@ function AdvancedGas() {
   const suggestedMaxPriorityFeePerGas = query.get(
     'suggestedMaxPriorityFeePerGas',
   )
+  const isHistoryTx = JSON.parse(query.get('isHistoryTx'))
   const suggestedGasPrice = query.get('suggestedGasPrice')
   const history = useHistory()
 
@@ -265,6 +266,7 @@ function AdvancedGas() {
           />
           <CustomOptional
             networkTypeIsCfx={networkTypeIsCfx}
+            isHistoryTx={isHistoryTx}
             inputGasLimit={inputGasLimit}
             gasLimitErr={gasLimitErr}
             onChangeGasLimit={onChangeGasLimit}

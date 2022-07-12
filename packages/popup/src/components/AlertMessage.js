@@ -5,8 +5,8 @@ import {
   ExclamationCircleFilled,
   CloseCircleFilled,
 } from '@fluent-wallet/component-icons'
-import {useLedgerAppName} from '../../../hooks'
-import {ROUTES} from '../../../constants'
+import {useLedgerAppName} from '../hooks'
+import {ROUTES} from '../constants'
 
 const {CONNECT_HARDWARE_WALLET} = ROUTES
 
