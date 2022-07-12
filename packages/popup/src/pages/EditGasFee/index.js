@@ -48,6 +48,7 @@ function EditGasFee({
     setMaxPriorityFeePerGas,
     setGasLimit,
     setNonce,
+    clearAdvancedGasSetting,
     tx: txParams,
   } = useCurrentTxParams()
 
@@ -163,6 +164,7 @@ function EditGasFee({
     >
       <div className="flex-1">
         <TitleNav
+          onGoBack={() => clearAdvancedGasSetting()}
           title={
             isSendTx ? t('editGasFee') : isSpeedUp ? t('speedUp') : t('cancel')
           }
