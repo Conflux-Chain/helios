@@ -7,7 +7,6 @@ import {
   formatHexToDecimal,
 } from '@fluent-wallet/data-format'
 import EditGasFee from '../EditGasFee'
-import useGlobalStore from '../../stores'
 import {
   useSingleTx,
   useNetworkTypeIsCfx,
@@ -21,6 +20,7 @@ import {
   useCurrentTxParams,
   useLedgerBindingApi,
   useIsTxTreatedAsEIP1559,
+  useQuery,
 } from '../../hooks'
 import {formatStatus, request, checkBalance} from '../../utils'
 import {TransactionResult, AlertMessage} from '../../components'
@@ -30,7 +30,7 @@ import {RPC_METHODS, TX_STATUS} from '../../constants'
 
 const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION} = RPC_METHODS
 
-const getSendTxParams = (
+const filterNonValueParams = (
   originParams = {},
   otherParams = {},
   estimate = {},
@@ -49,12 +49,18 @@ const getSendTxParams = (
 function ResendTransaction() {
   const history = useHistory()
   const {t} = useTranslation()
+  const query = useQuery()
   const ledgerBindingApi = useLedgerBindingApi()
   const {setLoading} = useLoading()
 
-  const {setResendInfo, resendInfo} = useGlobalStore()
-  const {gasPrice, maxFeePerGas, maxPriorityFeePerGas, gasLimit} =
-    useCurrentTxParams()
+  const {
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    gasLimit,
+    storageLimit,
+    clearSendTransactionParams,
+  } = useCurrentTxParams()
 
   const [suggestedGasPrice, setSuggestedGasPrice] = useState('')
   const [estimateError, setEstimateError] = useState('')
@@ -77,7 +83,8 @@ function ResendTransaction() {
     ? CFX_SEND_TRANSACTION
     : ETH_SEND_TRANSACTION
 
-  const {type: resendType, hash} = resendInfo
+  const resendType = query.get('type')
+  const hash = query.get('hash')
   const isSpeedup = resendType === 'speedup'
 
   const {
@@ -95,6 +102,7 @@ function ResendTransaction() {
     gasPrice: lastGasPrice,
     type: eipVersionType,
   } = txPayload
+  console.log('txPayload', txPayload)
   const reSendTxStatus = formatStatus(status)
 
   const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(eipVersionType)
@@ -127,42 +135,47 @@ function ResendTransaction() {
       }
     : {}
 
-  const originParams = isSpeedup
-    ? {
-        type: eipVersionType,
-        from,
-        to,
-        nonce,
-        value,
-        data,
-      }
-    : {
-        type: eipVersionType,
-        from,
-        to: from,
-        nonce,
-        value: '0x0',
-      }
+  const originParams = filterNonValueParams(
+    isSpeedup
+      ? {
+          type: eipVersionType,
+          from,
+          to,
+          nonce,
+          value,
+          data,
+        }
+      : {
+          type: eipVersionType,
+          from,
+          to: from,
+          nonce,
+          value: '0x0',
+        },
+  )
 
-  const originEstimateRst = useEstimateTx(originParams, token20Params) || {}
+  const originEstimateRst =
+    useEstimateTx({...originParams}, token20Params) || {}
 
   const estimateRst =
     useEstimateTx(
-      getSendTxParams(
+      filterNonValueParams(
         {
           ...originParams,
         },
         {
-          gasPrice: formatDecimalToHex(gasPrice),
-          maxFeePerGas: formatDecimalToHex(maxFeePerGas),
-          maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
-          gas: formatDecimalToHex(gasLimit),
+          gasPrice: gasPrice || suggestedGasPrice,
+          maxFeePerGas: maxFeePerGas,
+          maxPriorityFeePerGas: maxPriorityFeePerGas,
+          gas: gasLimit,
+          storageLimit,
         },
-        {...originEstimateRst},
+        {...originEstimateRst, gas: originEstimateRst.gasLimit},
       ),
       token20Params,
     ) || {}
 
+  // console.log('estimateRst', estimateRst)
   // check balance
   const errorMessage = useEstimateError(
     estimateRst,
@@ -177,17 +190,14 @@ function ResendTransaction() {
   const resendTransaction = async params => {
     try {
       await request(SEND_TRANSACTION, [params])
+      clearSendTransactionParams()
       history.goBack()
-      // if (isHwAccount) {
-      //   setSendStatus(TX_STATUS.HW_SUCCESS)
-      // } else {
-      //   history.goBack()
-      // }
     } catch (error) {
       if (reSendTxStatus !== 'pending') {
         return
       }
       if (error?.data?.includes?.('too stale nonce')) {
+        clearSendTransactionParams()
         history.goBack()
         return
       }
@@ -196,18 +206,7 @@ function ResendTransaction() {
     }
   }
 
-  // feeParams contains: gasPrice maxFeePerGas maxPriorityFeePerGas gas storageLimit
   const onResend = async feeParams => {
-    // TODO: get params
-    // console.log(
-    //   'gasPrice, maxFeePerGas, maxPriorityFeePerGas, gasLimit',
-    //   gasPrice,
-    //   maxFeePerGas,
-    //   maxPriorityFeePerGas,
-    //   gasLimit,
-    // )
-    // return
-
     if (estimateRst?.loading || originEstimateRst?.loading || !accountType) {
       return
     }
@@ -231,8 +230,9 @@ function ResendTransaction() {
       setLoading(true)
     }
 
-    const params = getSendTxParams({...originParams, ...feeParams})
+    const params = filterNonValueParams({...feeParams}, {...originParams})
 
+    console.log('params', params)
     const error = await checkBalance(
       params,
       token || {},
@@ -245,12 +245,12 @@ function ResendTransaction() {
 
     if (error) {
       setLoading(false)
-      setEstimateError(error)
       setSendStatus('')
       return
     }
 
     await resendTransaction(params)
+
     setLoading(false)
   }
 
@@ -283,7 +283,7 @@ function ResendTransaction() {
         .round(0, 3)
         .toString(10)
 
-      setSuggestedGasPrice(recommendGasPrice)
+      setSuggestedGasPrice(formatDecimalToHex(recommendGasPrice))
     }
   }, [originEstimateRst.gasPrice, lastGasPrice])
 
@@ -295,18 +295,10 @@ function ResendTransaction() {
     }
   }, [reSendTxStatus, setLoading])
 
-  useEffect(() => {
-    return () => {
-      setResendInfo({})
-    }
-  }, [setResendInfo])
-
-  // if (!Object.keys(txPayload).length || !resendType ) {
-  //   return null
-  // }
-  if (!Object.keys(txPayload).length) {
+  if (!Object.keys(txPayload).length || !resendType) {
     return null
   }
+
   return (
     <div className="relative">
       <EditGasFee
