@@ -117,15 +117,13 @@ function AdvancedGas() {
             )
           : suggestedMaxPriorityFeePerGas,
       )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     selectedGasLevel,
     isTxTreatedAsEIP1559,
     suggestedGasPrice,
     suggestedMaxFeePerGas,
     suggestedMaxPriorityFeePerGas,
-    inputGasPrice,
-    inputMaxFeePerGas,
-    inputMaxPriorityFeePerGas,
     advancedGasPrice,
     advancedMaxPriorityFeePerGas,
     advancedMaxFeePerGas,
@@ -159,6 +157,7 @@ function AdvancedGas() {
   }
 
   const onChangeMaxFeePerGas = maxFeePerGas => {
+    console.log('maxFeePerGas', maxFeePerGas)
     setInputMaxFeePerGas(maxFeePerGas)
     if (
       !maxPriorityFeePerGasErr &&
