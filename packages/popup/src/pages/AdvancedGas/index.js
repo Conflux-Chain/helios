@@ -33,6 +33,8 @@ function AdvancedGas() {
   )
   const isHistoryTx = JSON.parse(query.get('isHistoryTx'))
   const suggestedGasPrice = query.get('suggestedGasPrice')
+  const estimateGasLimit = query.get('estimateGasLimit')
+
   const history = useHistory()
 
   const [inputGasPrice, setInputGasPrice] = useState('')
@@ -70,9 +72,10 @@ function AdvancedGas() {
       inputMaxPriorityFeePerGas,
       GWEI_DECIMALS,
     ),
-    gas: formatDecimalToHex(
-      inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
-    ),
+    gas:
+      formatDecimalToHex(
+        inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
+      ) || estimateGasLimit,
     nonce: formatDecimalToHex(inputNonce || advancedGasSetting.nonce || nonce),
     storageLimit: formatDecimalToHex(
       advancedGasSetting.storageLimit || storageLimit,
@@ -82,6 +85,8 @@ function AdvancedGas() {
   if (!params.maxPriorityFeePerGas) delete params.maxPriorityFeePerGas
   if (!params.gasPrice) delete params.gasPrice
   if (!params.storageLimit) delete params.storageLimit
+  if (!params.nonce) delete params.nonce
+
   const estimateRst = useEstimateTx(params) || {}
   const {gasUsed} = estimateRst
   const {
