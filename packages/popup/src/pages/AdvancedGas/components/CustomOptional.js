@@ -23,68 +23,68 @@ function CustomOptional({
 
   return (
     <div className="flex flex-col">
-      <div
-        className={`flex justify-between ${
-          showGasLimitInput ? 'mb-2' : 'mb-3'
-        }`}
-      >
-        <span>{t('gasLimit')}</span>
-        <span
-          className={`flex items-center ${showGasLimitInput ? 'hidden' : ''}`}
+      <div className="flex flex-col mb-3">
+        <div
+          className={`flex justify-between ${showGasLimitInput ? 'mb-2' : ''}`}
         >
-          <span id="gasLimit">{toThousands(gasLimit || '21000')}</span>
-          <WrapIcon
-            onClick={() => setShowGasLimitInput(true)}
-            className=" ml-1 shadow-none !bg-primary-10"
-            id="editGasLimit"
-            size="w-5 h-5"
+          <span>{t('gasLimit')}</span>
+          <span
+            className={`flex items-center ${showGasLimitInput ? 'hidden' : ''}`}
           >
-            <EditOutlined className="w-[14px] h-[14px] text-primary" />
-          </WrapIcon>
-        </span>
+            <span id="gasLimit">{toThousands(gasLimit || '21000')}</span>
+            <WrapIcon
+              onClick={() => setShowGasLimitInput(true)}
+              className=" ml-1 shadow-none !bg-primary-10"
+              id="editGasLimit"
+              size="w-5 h-5"
+            >
+              <EditOutlined className="w-[14px] h-[14px] text-primary" />
+            </WrapIcon>
+          </span>{' '}
+        </div>
+        <NumberInput
+          containerClassName={`${showGasLimitInput ? '' : 'hidden'}`}
+          width="w-full"
+          id="gasLimitInput"
+          value={inputGasLimit}
+          placeholder={gasLimit}
+          errorMessage={gasLimitErr}
+          onChange={value => onChangeGasLimit(value)}
+        />
       </div>
-      <NumberInput
-        containerClassName={`${showGasLimitInput ? '' : 'hidden'}`}
-        width="w-full"
-        id="gasLimitInput"
-        value={inputGasLimit}
-        placeholder={gasLimit}
-        errorMessage={gasLimitErr}
-        onChange={value => onChangeGasLimit(value)}
-      />
       {networkTypeIsCfx && (
-        <div className="flex justify-between">
+        <div className={`flex justify-between mb-3`}>
           <span>{t('storageLimit')}</span>
           <span id="storageLimit">{toThousands(storageLimit || '0')}</span>
         </div>
       )}
-      <div
-        className={`flex justify-between ${showNonceInput ? 'mb-2' : ''} ${
-          showGasLimitInput ? 'mt-3' : ''
-        }`}
-      >
-        <span>nonce</span>
-        <span className={`flex items-center ${showNonceInput ? 'hidden' : ''}`}>
-          <span id="nonce">{toThousands(nonce || '1')}</span>
-          <WrapIcon
-            onClick={() => setShowNonceInput(true)}
-            className=" ml-1 shadow-none !bg-primary-10"
-            id="editGasLimit"
-            size="w-5 h-5"
+      <div className="flex flex-col mb-3">
+        <div className={`flex justify-between ${showNonceInput ? 'mb-2' : ''}`}>
+          <span>nonce</span>
+          <span
+            className={`flex items-center ${showNonceInput ? 'hidden' : ''}`}
           >
-            <EditOutlined className="w-[14px] h-[14px] text-primary" />
-          </WrapIcon>
-        </span>
+            <span id="nonce">{toThousands(nonce || '1')}</span>
+            <WrapIcon
+              onClick={() => setShowNonceInput(true)}
+              className=" ml-1 shadow-none !bg-primary-10"
+              id="editGasLimit"
+              size="w-5 h-5"
+            >
+              <EditOutlined className="w-[14px] h-[14px] text-primary" />
+            </WrapIcon>
+          </span>
+        </div>
+        <NumberInput
+          containerClassName={`${showNonceInput ? '' : 'hidden'}`}
+          width="w-full"
+          id="nonceInput"
+          value={inputNonce}
+          placeholder={nonce}
+          errorMessage={nonceErr}
+          onChange={value => onChangeNonce(value)}
+        />
       </div>
-      <NumberInput
-        containerClassName={`${showNonceInput ? '' : 'hidden'}`}
-        width="w-full"
-        id="nonceInput"
-        value={inputNonce}
-        placeholder={nonce}
-        errorMessage={nonceErr}
-        onChange={value => onChangeNonce(value)}
-      />
     </div>
   )
 }
