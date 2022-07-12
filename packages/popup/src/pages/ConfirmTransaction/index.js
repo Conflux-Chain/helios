@@ -28,8 +28,14 @@ import {
   checkBalance,
   transformToTitleCase,
 } from '../../utils'
-import {AddressCard, InfoList, AlertMessage} from './components'
-import {TitleNav, GasFee, DappFooter, TransactionResult} from '../../components'
+import {AddressCard, InfoList} from './components'
+import {
+  TitleNav,
+  GasFee,
+  DappFooter,
+  TransactionResult,
+  AlertMessage,
+} from '../../components'
 import {
   ROUTES,
   RPC_METHODS,
