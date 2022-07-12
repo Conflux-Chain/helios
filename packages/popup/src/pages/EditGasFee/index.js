@@ -92,7 +92,7 @@ function EditGasFee({
     const {gasPrice, maxFeePerGas, maxPriorityFeePerGas} = advancedGasSetting
     sendParams = {
       ...originParams,
-      gas: formatDecimalToHex(advancedGasSetting.gasLimit),
+      gas: formatDecimalToHex(advancedGasSetting.gasLimit) || estimateGasLimit,
       nonce: formatDecimalToHex(advancedGasSetting.nonce),
       storageLimit: formatDecimalToHex(advancedGasSetting.storageLimit),
       maxFeePerGas: formatDecimalToHex(maxFeePerGas),
@@ -104,7 +104,7 @@ function EditGasFee({
     const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
     sendParams = {
       ...originParams,
-      gas: formatDecimalToHex(gasLimit),
+      gas: formatDecimalToHex(gasLimit) || estimateGasLimit,
       nonce: formatDecimalToHex(nonce),
       storageLimit: formatDecimalToHex(storageLimit),
       maxFeePerGas: convertValueToData(suggestedMaxFeePerGas, GWEI_DECIMALS),
@@ -119,6 +119,7 @@ function EditGasFee({
   if (!sendParams.maxPriorityFeePerGas) delete sendParams.maxPriorityFeePerGas
   if (!sendParams.gasPrice) delete sendParams.gasPrice
   if (!sendParams.storageLimit) delete sendParams.storageLimit
+  if (!sendParams.nonce) delete sendParams.nonce
 
   const saveGasData = () => {
     const {gasPrice, maxPriorityFeePerGas, maxFeePerGas, nonce, gasLimit} =

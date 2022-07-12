@@ -190,7 +190,7 @@ function GasStation({
             gasInfoEip1559?.[selectedGasLevel] || {}
           history.push({
             pathname: ADVANCED_GAS,
-            search: `?isHistoryTx=${isHistoryTx}&${
+            search: `?isHistoryTx=${isHistoryTx}&estimateGasLimit=${estimateGasLimit}&${
               isTxTreatedAsEIP1559
                 ? `suggestedMaxFeePerGas=${suggestedMaxFeePerGas}&suggestedMaxPriorityFeePerGas=${suggestedMaxPriorityFeePerGas}&selectedGasLevel=${selectedGasLevel}`
                 : ''
