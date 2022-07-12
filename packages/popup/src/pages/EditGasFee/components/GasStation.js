@@ -179,8 +179,10 @@ function GasStation({
         selected={selectedGasLevel === 'advanced'}
         onClick={() => {
           if (
-            selectedGasLevel !== 'advanced' &&
-            !gasInfoEip1559?.[selectedGasLevel]
+            (isTxTreatedAsEIP1559 &&
+              selectedGasLevel !== 'advanced' &&
+              !gasInfoEip1559?.[selectedGasLevel]) ||
+            (!isTxTreatedAsEIP1559 && !suggestedGasPrice)
           )
             return
           const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} =

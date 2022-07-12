@@ -101,6 +101,7 @@ function CustomGasPrice({
         >
           <NumberInput
             id="gasPrice"
+            width="w-full"
             value={inputGasPrice}
             errorMessage={gasPriceErr}
             onChange={value => onChangeGasPrice(value)}
@@ -112,7 +113,7 @@ function CustomGasPrice({
 }
 
 CustomGasPrice.propTypes = {
-  // gasInfoEip1559: PropTypes.object,
+  //  gasInfoEip1559: PropTypes.object,
   networkTypeIsCfx: PropTypes.bool,
   isTxTreatedAsEIP1559: PropTypes.bool,
   inputGasPrice: PropTypes.string,
