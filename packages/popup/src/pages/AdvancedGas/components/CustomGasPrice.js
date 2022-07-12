@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {NumberInput, CompWithLabel} from '../../../components'
+import {GWEI_DECIMALS} from '@fluent-wallet/data-format'
 // import {addUnitForValue} from '../../../utils'
 
 function CustomGasPrice({
@@ -36,6 +37,7 @@ function CustomGasPrice({
             <NumberInput
               id="maxFeePerGas"
               width="w-full"
+              decimals={GWEI_DECIMALS}
               value={inputMaxFeePerGas}
               onChange={value => onChangeMaxFeePerGas(value)}
             />
@@ -67,6 +69,7 @@ function CustomGasPrice({
             <NumberInput
               id="maxPriorityFeePerGas"
               width="w-full"
+              decimals={GWEI_DECIMALS}
               value={inputMaxPriorityFeePerGas}
               errorMessage={maxPriorityFeePerGasErr}
               onChange={value => onChangeMaxPriorityFeePerGas(value)}
@@ -102,6 +105,7 @@ function CustomGasPrice({
           <NumberInput
             id="gasPrice"
             width="w-full"
+            decimals={GWEI_DECIMALS}
             value={inputGasPrice}
             errorMessage={gasPriceErr}
             onChange={value => onChangeGasPrice(value)}
