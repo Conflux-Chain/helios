@@ -22,7 +22,6 @@ import {
   useCurrentAddress,
 } from '../../../hooks/useApi'
 import {useDecodeData, useDappIcon} from '../../../hooks'
-import useGlobalStore from '../../../stores'
 import {ROUTES} from '../../../constants'
 
 const {RESEND_TRANSACTION} = ROUTES
@@ -56,7 +55,6 @@ function HistoryItem({
   copyButtonContainerClassName,
   copyButtonToastClassName,
 }) {
-  const {setResendInfo} = useGlobalStore()
   const history = useHistory()
 
   const [actionName, setActionName] = useState('')
@@ -119,13 +117,17 @@ function HistoryItem({
   })
 
   const onCancelPendingTx = () => {
-    setResendInfo({type: 'cancel', hash})
-    history.push(RESEND_TRANSACTION)
+    history.push({
+      pathname: RESEND_TRANSACTION,
+      search: `type=cancel&hash=${hash}`,
+    })
   }
 
   const onSpeedupPendingTx = () => {
-    setResendInfo({type: 'speedup', hash})
-    history.push(RESEND_TRANSACTION)
+    history.push({
+      pathname: RESEND_TRANSACTION,
+      search: `type=speedup&hash=${hash}`,
+    })
   }
 
   useEffect(() => {
