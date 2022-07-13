@@ -30,6 +30,7 @@ function EditGasFee({
   isSpeedUp = true,
   resendGasPrice,
   onSubmit,
+  onClickGasStationItem,
   resendDisabled,
 }) {
   const {t} = useTranslation()
@@ -189,6 +190,7 @@ function EditGasFee({
             suggestedGasPrice={suggestedGasPrice}
             selectedGasLevel={selectedGasLevel}
             setSelectedGasLevel={setSelectedGasLevel}
+            onClickGasStationItem={onClickGasStationItem}
             networkTypeIsCfx={networkTypeIsCfx}
             estimateGasLimit={estimateGasLimit}
           />
@@ -221,6 +223,7 @@ function EditGasFee({
 
 EditGasFee.propTypes = {
   onSubmit: PropTypes.func,
+  onClickGasStationItem: PropTypes.func,
   isSpeedUp: PropTypes.bool,
   tx: PropTypes.object,
   resendGasPrice: PropTypes.string,

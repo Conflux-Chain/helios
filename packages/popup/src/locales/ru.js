@@ -128,7 +128,6 @@ const ru = {
     searchToken: 'Поиск по имени или адресу',
     searchResults: 'Результаты поиска',
     noResult: 'Нет результата',
-    willSupport1559: 'Поддержка EIP-1559 в ближайшее время.',
     remove: 'Удалить',
 
     // welcome page

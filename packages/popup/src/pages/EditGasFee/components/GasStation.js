@@ -109,6 +109,7 @@ function GasStation({
   gasInfoEip1559,
   selectedGasLevel,
   setSelectedGasLevel,
+  onClickGasStationItem,
   suggestedGasPrice,
   networkTypeIsCfx,
   estimateGasLimit,
@@ -143,6 +144,7 @@ function GasStation({
             onClick={level => {
               setSelectedGasLevel(level)
               clearAdvancedGasSetting()
+              onClickGasStationItem?.()
             }}
           />
         ))}
@@ -158,6 +160,7 @@ function GasStation({
           onClick={() => {
             setSelectedGasLevel('medium')
             clearAdvancedGasSetting()
+            onClickGasStationItem?.()
           }}
         />
       )}
@@ -220,6 +223,7 @@ GasStation.propTypes = {
   gasInfoEip1559: PropTypes.object,
   selectedGasLevel: PropTypes.string,
   setSelectedGasLevel: PropTypes.func,
+  onClickGasStationItem: PropTypes.func,
   suggestedGasPrice: PropTypes.string,
   networkTypeIsCfx: PropTypes.bool,
   estimateGasLimit: PropTypes.string,

@@ -126,7 +126,6 @@ const en = {
     searchToken: 'Search by name or address',
     searchResults: 'Search Results',
     noResult: 'No result',
-    willSupport1559: 'EIP-1559 support coming soon.',
     remove: 'Remove',
 
     // welcome page

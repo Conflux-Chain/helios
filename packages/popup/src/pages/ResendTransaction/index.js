@@ -16,7 +16,6 @@ import useLoading from '../../hooks/useLoading'
 import {
   useEstimateTx,
   useDecodeData,
-  useEstimateError,
   useCurrentTxParams,
   useLedgerBindingApi,
   useIsTxTreatedAsEIP1559,
@@ -53,14 +52,7 @@ function ResendTransaction() {
   const ledgerBindingApi = useLedgerBindingApi()
   const {setLoading} = useLoading()
 
-  const {
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    gasLimit,
-    storageLimit,
-    clearSendTransactionParams,
-  } = useCurrentTxParams()
+  const {clearSendTransactionParams} = useCurrentTxParams()
 
   const [suggestedGasPrice, setSuggestedGasPrice] = useState('')
   const [estimateError, setEstimateError] = useState('')
@@ -157,42 +149,20 @@ function ResendTransaction() {
   const originEstimateRst =
     useEstimateTx({...originParams}, token20Params) || {}
 
-  const estimateRst =
-    useEstimateTx(
-      filterNonValueParams(
-        {
-          ...originParams,
-        },
-        {
-          gasPrice: gasPrice || suggestedGasPrice,
-          maxFeePerGas: maxFeePerGas,
-          maxPriorityFeePerGas: maxPriorityFeePerGas,
-          gas: gasLimit,
-          storageLimit,
-        },
-        {...originEstimateRst, gas: originEstimateRst.gasLimit},
-      ),
-      token20Params,
-    ) || {}
-
-  // console.log('estimateRst', estimateRst)
-  // check balance
-  const errorMessage = useEstimateError(
-    estimateRst,
-    isSendingToken ? to : null,
-    isSpeedup ? simple : true,
-    isSpeedup ? isSendingToken || simple : true,
-  )
   const isContractError = estimateError.indexOf(t('contractError')) !== -1
 
   // console.log('errorMessage', errorMessage)
 
   const resendTransaction = async params => {
+    console.log('params', params)
+
     try {
-      await request(SEND_TRANSACTION, [params])
+      const ret = await request(SEND_TRANSACTION, [params])
+      console.log('ret', ret)
       clearSendTransactionParams()
       history.goBack()
     } catch (error) {
+      console.log('error', error)
       if (reSendTxStatus !== 'pending') {
         return
       }
@@ -207,7 +177,7 @@ function ResendTransaction() {
   }
 
   const onResend = async feeParams => {
-    if (estimateRst?.loading || originEstimateRst?.loading || !accountType) {
+    if (originEstimateRst?.loading || !accountType) {
       return
     }
 
@@ -231,8 +201,6 @@ function ResendTransaction() {
     }
 
     const params = filterNonValueParams({...feeParams}, {...originParams})
-
-    console.log('params', params)
     const error = await checkBalance(
       params,
       token || {},
@@ -246,11 +214,11 @@ function ResendTransaction() {
     if (error) {
       setLoading(false)
       setSendStatus('')
+      setEstimateError(error)
       return
     }
 
     await resendTransaction(params)
-
     setLoading(false)
   }
 
@@ -258,12 +226,6 @@ function ResendTransaction() {
     setSendStatus('')
     setSendError({})
   }
-
-  useEffect(() => {
-    if (!estimateRst?.loading) {
-      setEstimateError(errorMessage)
-    }
-  }, [errorMessage, estimateRst?.loading])
 
   // set default gas price (legacy tx)
   useEffect(() => {
@@ -307,6 +269,7 @@ function ResendTransaction() {
         onSubmit={onResend}
         tx={{...originParams}}
         resendDisabled={!!estimateError && !isContractError}
+        onClickGasStationItem={() => setEstimateError('')}
       />
       {sendStatus && (
         <TransactionResult
