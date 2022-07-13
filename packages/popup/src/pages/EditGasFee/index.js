@@ -92,7 +92,7 @@ function EditGasFee({
     const {gasPrice, maxFeePerGas, maxPriorityFeePerGas} = advancedGasSetting
     sendParams = {
       ...originParams,
-      gas: formatDecimalToHex(advancedGasSetting.gasLimit) || estimateGasLimit,
+      gas: formatDecimalToHex(advancedGasSetting.gasLimit),
       nonce: formatDecimalToHex(advancedGasSetting.nonce),
       storageLimit: formatDecimalToHex(advancedGasSetting.storageLimit),
       maxFeePerGas: formatDecimalToHex(maxFeePerGas),
@@ -117,7 +117,6 @@ function EditGasFee({
       ),
       gasPrice: suggestedGasPrice,
     }
-<<<<<<< HEAD
   }
   if (!sendParams.maxFeePerGas) delete sendParams.maxFeePerGas
   if (!sendParams.maxPriorityFeePerGas) delete sendParams.maxPriorityFeePerGas
@@ -158,17 +157,11 @@ function EditGasFee({
         setGasPrice(formatHexToDecimal(suggestedGasPrice))
       }
     }
-    console.log('sendParams', sendParams)
-    onSubmit && onSubmit(sendParams)
-    history.goBack()
-=======
-    console.log('sendParams', sendParams)
     if (onSubmit) {
       onSubmit(sendParams)
     } else {
       history.goBack()
     }
->>>>>>> c27b7c01 (refactor: refactor resend page)
   }
 
   return (
