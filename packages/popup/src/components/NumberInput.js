@@ -9,7 +9,6 @@ const exponentialCenter = /^\d+(\.\d+)?([Ee]{1})$/
 const exponential = /^\d+(\.\d+)?([Ee][+-]?[\d]+)?$/
 
 const formatInputValue = (targetValue, decimals) => {
-  console.log(!targetValue)
   if (!targetValue) return ''
   if (isNaN(targetValue)) {
     if (exponentialCenter.test(targetValue)) return targetValue

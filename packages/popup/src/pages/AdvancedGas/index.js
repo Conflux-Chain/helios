@@ -162,7 +162,6 @@ function AdvancedGas() {
   }
 
   const onChangeMaxFeePerGas = maxFeePerGas => {
-    console.log('maxFeePerGas', maxFeePerGas)
     setInputMaxFeePerGas(maxFeePerGas)
     if (
       !maxPriorityFeePerGasErr &&
