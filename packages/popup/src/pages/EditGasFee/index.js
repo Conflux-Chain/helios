@@ -158,7 +158,6 @@ function EditGasFee({
         setGasPrice(formatHexToDecimal(suggestedGasPrice))
       }
     }
-    console.log('sendParams', sendParams)
     if (onSubmit) {
       onSubmit(sendParams)
     } else {
