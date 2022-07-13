@@ -238,11 +238,7 @@ function AdvancedGas() {
         'multiply',
         GWEI_DECIMALS,
       ),
-      gasLimit:
-        inputGasLimit ||
-        advancedGasSetting.gasLimit ||
-        gasLimit ||
-        estimateGasLimit,
+      gasLimit: inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
       nonce: inputNonce || advancedGasSetting.nonce || nonce,
       storageLimit: advancedGasSetting.storageLimit || storageLimit,
       gasLevel: 'advanced',
