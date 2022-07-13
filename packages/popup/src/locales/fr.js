@@ -132,7 +132,6 @@ const fr = {
     searchToken: 'Rechercher par nom ou adresse',
     searchResults: 'Résultats de recherche',
     noResult: 'Pas de résultat',
-    willSupport1559: 'La fonctionnalité EIP-1559 sera bientôt disponible.',
     remove: 'Supprimer',
 
     // welcome page

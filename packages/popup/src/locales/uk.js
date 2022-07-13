@@ -128,7 +128,6 @@ const uk = {
     searchToken: 'Пошук по імені або адресі',
     searchResults: 'Результати пошуку',
     noResult: 'Немає результату',
-    willSupport1559: 'Підтримка EIP - 1559 найближчим часом.',
     remove: 'Видалити',
 
     // welcome page
