@@ -28,7 +28,7 @@ function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
       role="menuitem"
       tabIndex="-1"
       key={group.eid}
-      className="h-12 px-3 hover:bg-primary-4 flex items-center cursor-pointer justify-between flex-shrink-0"
+      className="h-12 px-3 hover:bg-primary-10 flex items-center cursor-pointer justify-between flex-shrink-0"
       onClick={() => onClickGroup && onClickGroup(idx)}
       onKeyDown={() => {}}
     >

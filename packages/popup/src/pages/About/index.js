@@ -28,7 +28,7 @@ const ABOUT_ITEMS = [
 function AboutItem({content, icon, jumpPath, ...props}) {
   return (
     <div
-      className="flex items-center h-13 mt-2 px-6 cursor-pointer hover:bg-primary-4"
+      className="flex items-center h-13 mt-2 px-6 cursor-pointer hover:bg-primary-10"
       aria-hidden
       onClick={() => window?.open?.(jumpPath)}
       {...props}

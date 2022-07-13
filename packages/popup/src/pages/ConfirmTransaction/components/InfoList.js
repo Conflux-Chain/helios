@@ -51,7 +51,7 @@ function InfoList({
               maxWidthStyle="max-w-[160px]"
               symbol={token?.symbol}
             />
-            <WrapIcon className="mx-1 shadow-none !bg-transparent hover:!bg-primary-4 group">
+            <WrapIcon className="mx-1 shadow-none !bg-transparent hover:!bg-primary-10 group">
               <EditOutlined
                 className="w-4 h-4 cursor-pointer group-hover:text-primary"
                 id="editAllowance"

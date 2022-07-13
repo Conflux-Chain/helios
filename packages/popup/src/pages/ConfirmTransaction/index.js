@@ -18,18 +18,24 @@ import {
   useDappParams,
   useViewData,
   useLedgerBindingApi,
+  useIsTxTreatedAsEIP1559,
 } from '../../hooks'
 import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
 import {
   request,
-  bn16,
   getPageType,
   checkBalance,
   transformToTitleCase,
 } from '../../utils'
-import {AddressCard, InfoList, AlertMessage} from './components'
-import {TitleNav, GasFee, DappFooter, TransactionResult} from '../../components'
+import {AddressCard, InfoList} from './components'
+import {
+  TitleNav,
+  GasFee,
+  DappFooter,
+  TransactionResult,
+  AlertMessage,
+} from '../../components'
 import {
   ROUTES,
   RPC_METHODS,
@@ -134,6 +140,8 @@ function ConfirmTransaction() {
   // params in wallet send or dapp send
   const originParams = !isDapp ? {...txParams} : {...tx}
 
+  const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
+
   // dapp send params
   const {
     gasPrice: initGasPrice,
@@ -153,6 +161,7 @@ function ConfirmTransaction() {
     nonce: formatDecimalToHex(nonce),
     storageLimit: formatDecimalToHex(storageLimit),
   }
+
   // user can edit the approve limit
   const viewData = useViewData(params, isApproveToken)
   params.data = viewData
@@ -224,7 +233,9 @@ function ConfirmTransaction() {
         )
       !maxPriorityFeePerGas &&
         setMaxPriorityFeePerGas(
-          initMaxPriorityFeePerGas || estimateMaxPriorityPerGas || '',
+          formatHexToDecimal(
+            initMaxPriorityFeePerGas || estimateMaxPriorityPerGas || '',
+          ),
         )
       !nonce && setNonce(formatHexToDecimal(initNonce || rpcNonce || ''))
     }
@@ -275,7 +286,7 @@ function ConfirmTransaction() {
 
     const sendTokenValue =
       isSendToken && !isNativeToken && Object.keys(displayToken).length
-        ? bn16(convertValueToData(displayValue, displayToken.decimals))
+        ? convertValueToData(displayValue, displayToken.decimals)
         : '0x0'
 
     const error = await checkBalance(
@@ -285,6 +296,7 @@ function ConfirmTransaction() {
       isSendToken,
       sendTokenValue,
       networkTypeIsCfx,
+      isTxTreatedAsEIP1559,
     )
     if (error) {
       setLoading(false)
@@ -352,7 +364,10 @@ function ConfirmTransaction() {
             allowance={displayValue}
             pendingAuthReq={pendingAuthReq}
           />
-          <GasFee estimateRst={estimateRst} />
+          <GasFee
+            estimateRst={estimateRst}
+            isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
+          />
         </div>
         <div className="flex flex-col items-center">
           {isDapp && params.data && (

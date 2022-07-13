@@ -451,7 +451,7 @@ function ResendTransaction({
                 wrapperClassName="w-full rounded px-3 items-center mb-3 bg-white border border-solid border-primary-10"
               >
                 <div className="px-3 flex h-[70px] items-center">
-                  <div className="w-12 h-12 bg-primary-4 flex items-center justify-center rounded-lg">
+                  <div className="w-12 h-12 bg-primary-10 flex items-center justify-center rounded-lg">
                     <img
                       className="w-auto h-6"
                       src="/images/sail.svg"

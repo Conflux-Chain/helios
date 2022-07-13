@@ -110,7 +110,7 @@ function NetworkItem({
       aria-hidden="true"
       className={`bg-gray-0 ${
         index !== 0 ? 'mt-4' : ''
-      } h-15 flex items-center rounded relative hover:bg-primary-4 ${
+      } h-15 flex items-center rounded relative hover:bg-primary-10 ${
         currentNetworkId === networkId && needSwitchNet
           ? 'cursor-default'
           : 'cursor-pointer'

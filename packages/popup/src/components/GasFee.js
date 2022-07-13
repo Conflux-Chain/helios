@@ -13,13 +13,15 @@ const {EDIT_GAS_FEE} = ROUTES
 
 function GasFee({
   estimateRst,
+  isTxTreatedAsEIP1559 = false,
   titleDes,
   goEdit = true,
   showDrip = true,
   titleClassName = 'mb-2',
   contentClassName = '',
 }) {
-  const {gasPrice: _gasPrice} = useCurrentTxParams()
+  const {gasPrice, maxFeePerGas} = useCurrentTxParams()
+  const txGasPrice = isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice
   const {t} = useTranslation()
   const history = useHistory()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
@@ -46,7 +48,7 @@ function GasFee({
     [isBeAllPayed, isBePayed, partPayedFeeDrip, txFeeDrip],
   )
 
-  const gasPrice = useDebouncedValue(_gasPrice, [_gasPrice])
+  const displayGasPrice = useDebouncedValue(txGasPrice, [txGasPrice])
 
   return (
     <div className="gas-fee-container flex flex-col">
@@ -58,7 +60,7 @@ function GasFee({
           <span className="flex items-center">
             <Link
               onClick={() => history.push(EDIT_GAS_FEE)}
-              disabled={!realPayedFeeDrip || !gasPrice}
+              disabled={!realPayedFeeDrip || !displayGasPrice}
             >
               {t('edit')}
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
@@ -80,7 +82,7 @@ function GasFee({
           decimals={decimals}
           initialFontSize={20}
         />
-        {isBePayed && (
+        {isBePayed && sponsoredFeeDrip !== '0x0' && (
           <div className="flex text-gray-40">
             <span>{`${t('sponsored')}:`}&nbsp;</span>
             <DisplayBalance
@@ -96,11 +98,11 @@ function GasFee({
         )}
         {showDrip && (
           <span className="text-xs text-gray-60">{`${formatBalance(
-            gasPrice,
+            displayGasPrice,
             GWEI_DECIMALS,
           )} ${networkTypeIsCfx ? 'GDrip' : 'GWei'}`}</span>
         )}
-        {isBePayed && (
+        {isBePayed && sponsoredFeeDrip !== '0x0' && (
           <CustomTag
             width="w-auto"
             textColor="text-white"
@@ -124,6 +126,7 @@ GasFee.propTypes = {
   contentClassName: PropTypes.string,
   goEdit: PropTypes.bool,
   showDrip: PropTypes.bool,
+  isTxTreatedAsEIP1559: PropTypes.bool,
 }
 
 export default GasFee
