@@ -181,7 +181,7 @@ function GasStation({
             GWEI_DECIMALS,
           ),
           baseFee: gasInfoEip1559?.['estimatedBaseFee'],
-          gasLevel: gasInfoEip1559?.['gasLevel'],
+          gasLevel: advancedGasSetting?.['gasLevel'],
         }}
         networkTypeIsCfx={networkTypeIsCfx}
         isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
