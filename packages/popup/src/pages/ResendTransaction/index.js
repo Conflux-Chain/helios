@@ -94,7 +94,6 @@ function ResendTransaction() {
     gasPrice: lastGasPrice,
     type: eipVersionType,
   } = txPayload
-  console.log('txPayload', txPayload)
   const reSendTxStatus = formatStatus(status)
 
   const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(eipVersionType)
@@ -151,18 +150,12 @@ function ResendTransaction() {
 
   const isContractError = estimateError.indexOf(t('contractError')) !== -1
 
-  // console.log('errorMessage', errorMessage)
-
   const resendTransaction = async params => {
-    console.log('params', params)
-
     try {
-      const ret = await request(SEND_TRANSACTION, [params])
-      console.log('ret', ret)
+      await request(SEND_TRANSACTION, [params])
       clearSendTransactionParams()
       history.goBack()
     } catch (error) {
-      console.log('error', error)
       if (reSendTxStatus !== 'pending') {
         return
       }
