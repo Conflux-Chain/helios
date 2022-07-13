@@ -107,9 +107,12 @@ function EditGasFee({
       gas: formatDecimalToHex(gasLimit) || estimateGasLimit,
       nonce: formatDecimalToHex(nonce),
       storageLimit: formatDecimalToHex(storageLimit),
-      maxFeePerGas: convertValueToData(suggestedMaxFeePerGas, GWEI_DECIMALS),
+      maxFeePerGas: convertValueToData(
+        suggestedMaxFeePerGas || '',
+        GWEI_DECIMALS,
+      ),
       maxPriorityFeePerGas: convertValueToData(
-        suggestedMaxPriorityFeePerGas,
+        suggestedMaxPriorityFeePerGas || '',
         GWEI_DECIMALS,
       ),
       gasPrice: suggestedGasPrice,
