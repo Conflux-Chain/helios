@@ -21,8 +21,8 @@ export const permissions = {
   external: ['popup'],
   locked: true,
   methods: [
-    'cfx_getTransactionReceipt',
-    'eth_getTransactionReceipt',
+    'cfx_getTransactionByHash',
+    'eth_getTransactionByHash',
     'wallet_getNextNonce',
     'wallet_getBlockOrEpochNumber',
     'wallet_enrichConfluxTx',
@@ -39,8 +39,8 @@ async function eachTx(
     rpcs: {
       wallet_enrichEthereumTx,
       wallet_enrichConfluxTx,
-      cfx_getTransactionReceipt,
-      eth_getTransactionReceipt,
+      cfx_getTransactionByHash,
+      eth_getTransactionByHash,
     },
   },
 ) {
@@ -58,7 +58,7 @@ async function eachTx(
       gasCoveredBySponsor,
       storageCoveredBySponsor,
       txExecErrorMsg,
-    } = await cfx_getTransactionReceipt(
+    } = await cfx_getTransactionByHash(
       {networkName: addr.network.name, errorFallThrough: true},
       [tx.hash],
     )
@@ -85,7 +85,7 @@ async function eachTx(
       cumulativeGasUsed,
       effectiveGasPrice,
       txExecErrorMsg,
-    } = await eth_getTransactionReceipt(
+    } = await eth_getTransactionByHash(
       {networkName: addr.network.name, errorFallThrough: true},
       [tx.hash],
     )

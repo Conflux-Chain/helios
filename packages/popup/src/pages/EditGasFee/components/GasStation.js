@@ -24,7 +24,14 @@ const GasStationItem = ({
   networkTypeIsCfx = false,
 }) => {
   const {t} = useTranslation()
-  const {maxFeePerGas, maxPriorityFeePerGas, gasLimit, baseFee, gasPrice} = data
+  const {
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    gasLimit,
+    baseFee,
+    gasPrice,
+    gasLevel,
+  } = data
   return (
     <div
       className={`w-full h-10 px-3 mb-3 flex cursor-pointer items-center justify-between rounded hover:bg-primary-10 text-xs border ${
@@ -36,7 +43,7 @@ const GasStationItem = ({
       <span className="text-gray-60">{t(level)}</span>
       <div className="flex items-center">
         <span className="text-primary">
-          {gasLimit || level !== 'advanced'
+          {gasLevel === 'advanced' || level !== 'advanced'
             ? addUnitForValue(
                 isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice,
                 networkTypeIsCfx,
@@ -174,6 +181,7 @@ function GasStation({
             GWEI_DECIMALS,
           ),
           baseFee: gasInfoEip1559?.['estimatedBaseFee'],
+          gasLevel: advancedGasSetting?.['gasLevel'],
         }}
         networkTypeIsCfx={networkTypeIsCfx}
         isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}

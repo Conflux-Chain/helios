@@ -92,7 +92,7 @@ function EditGasFee({
     const {gasPrice, maxFeePerGas, maxPriorityFeePerGas} = advancedGasSetting
     sendParams = {
       ...originParams,
-      gas: formatDecimalToHex(advancedGasSetting.gasLimit) || estimateGasLimit,
+      gas: formatDecimalToHex(advancedGasSetting.gasLimit),
       nonce: formatDecimalToHex(advancedGasSetting.nonce),
       storageLimit: formatDecimalToHex(advancedGasSetting.storageLimit),
       maxFeePerGas: formatDecimalToHex(maxFeePerGas),
@@ -107,9 +107,12 @@ function EditGasFee({
       gas: formatDecimalToHex(gasLimit) || estimateGasLimit,
       nonce: formatDecimalToHex(nonce),
       storageLimit: formatDecimalToHex(storageLimit),
-      maxFeePerGas: convertValueToData(suggestedMaxFeePerGas, GWEI_DECIMALS),
+      maxFeePerGas: convertValueToData(
+        suggestedMaxFeePerGas || '',
+        GWEI_DECIMALS,
+      ),
       maxPriorityFeePerGas: convertValueToData(
-        suggestedMaxPriorityFeePerGas,
+        suggestedMaxPriorityFeePerGas || '',
         GWEI_DECIMALS,
       ),
       gasPrice: suggestedGasPrice,
