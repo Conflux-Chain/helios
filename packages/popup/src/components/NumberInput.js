@@ -5,7 +5,7 @@ import {Big} from '@fluent-wallet/data-format'
 
 const reCenter = /^(0|[1-9]\d*)(\.){1}$/
 const re = /^(0|[1-9]\d*)(\.\d+)?$/
-const exponentialCenter = /^\d+(\.\d+)?([Ee]{1})$/
+const exponentialCenter = /^\d+(\.\d+)?([Ee][+-]?)$/
 const exponential = /^\d+(\.\d+)?([Ee][+-]?[\d]+)?$/
 
 const formatInputValue = (targetValue, decimals) => {
