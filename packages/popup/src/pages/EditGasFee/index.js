@@ -8,6 +8,7 @@ import {
   formatDecimalToHex,
   formatHexToDecimal,
   GWEI_DECIMALS,
+  Big,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, GasCost} from '../../components'
@@ -107,14 +108,18 @@ function EditGasFee({
       gas: formatDecimalToHex(gasLimit) || estimateGasLimit,
       nonce: formatDecimalToHex(nonce),
       storageLimit: formatDecimalToHex(storageLimit),
-      maxFeePerGas: convertValueToData(
-        suggestedMaxFeePerGas || '',
-        GWEI_DECIMALS,
-      ),
-      maxPriorityFeePerGas: convertValueToData(
-        suggestedMaxPriorityFeePerGas || '',
-        GWEI_DECIMALS,
-      ),
+      maxFeePerGas: suggestedMaxFeePerGas
+        ? convertValueToData(
+            new Big(suggestedMaxFeePerGas).round(9).toString(10),
+            GWEI_DECIMALS,
+          )
+        : '',
+      maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas
+        ? convertValueToData(
+            new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
+            GWEI_DECIMALS,
+          )
+        : '',
       gasPrice: suggestedGasPrice,
     }
   }
@@ -144,11 +149,15 @@ function EditGasFee({
         const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
         const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
         setMaxFeePerGas(
-          convertDecimal(suggestedMaxFeePerGas, 'multiply', GWEI_DECIMALS),
+          convertDecimal(
+            new Big(suggestedMaxFeePerGas).round(9).toString(10),
+            'multiply',
+            GWEI_DECIMALS,
+          ),
         )
         setMaxPriorityFeePerGas(
           convertDecimal(
-            suggestedMaxPriorityFeePerGas,
+            new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
             'multiply',
             GWEI_DECIMALS,
           ),
