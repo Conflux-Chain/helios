@@ -24,7 +24,7 @@ export function processError(err) {
     if (err.data?.includes?.('ZeroGasPrice'))
       return {errorType: 'zeroGasPrice', shouldDiscard: true}
     if (err.data?.includes?.('NotEnoughBaseGas'))
-      return {errorType: 'NotEnoughBaseGas', shouldDiscard: true}
+      return {errorType: 'notEnoughBaseGas', shouldDiscard: true}
     if (err.data?.includes?.('RlpIncorrectListLen'))
       return {errorType: 'rlpIncorrectListLen', shouldDiscard: true}
     if (err.data?.includes?.('still in the catch up mode'))
