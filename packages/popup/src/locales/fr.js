@@ -132,7 +132,6 @@ const fr = {
     searchToken: 'Rechercher par nom ou adresse',
     searchResults: 'Résultats de recherche',
     noResult: 'Pas de résultat',
-    willSupport1559: 'La fonctionnalité EIP-1559 sera bientôt disponible.',
     remove: 'Supprimer',
 
     // welcome page
@@ -261,6 +260,11 @@ const fr = {
     customGasPrice: 'Prix de Gas personalisé',
     executedTx:
       'La transaction a été exécutée ou terminée. Aucune action n’est requise.',
+    speedup: 'Speed up',
+    amount: 'Amount',
+    hash: 'Hash',
+    nonce: 'Nonce',
+    fromAddress: 'From Address',
 
     // - request signature - 1. Sign Text
     signText: 'Signer le Texte',

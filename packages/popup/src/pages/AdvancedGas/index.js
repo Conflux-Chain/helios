@@ -242,7 +242,7 @@ function AdvancedGas() {
         inputGasLimit ||
         advancedGasSetting.gasLimit ||
         gasLimit ||
-        estimateGasLimit,
+        formatHexToDecimal(estimateGasLimit),
       nonce: inputNonce || advancedGasSetting.nonce || nonce,
       storageLimit: advancedGasSetting.storageLimit || storageLimit,
       gasLevel: 'advanced',
@@ -282,7 +282,11 @@ function AdvancedGas() {
             onChangeNonce={onChangeNonce}
             storageLimit={storageLimit}
             nonce={advancedGasSetting.nonce || nonce}
-            gasLimit={advancedGasSetting.gasLimit || gasLimit}
+            gasLimit={
+              advancedGasSetting.gasLimit ||
+              gasLimit ||
+              formatHexToDecimal(estimateGasLimit)
+            }
           />
         </main>
       </div>

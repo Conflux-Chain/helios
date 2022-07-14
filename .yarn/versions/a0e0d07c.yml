@@ -1,0 +1,16 @@
+releases:
+  "@fluent-wallet/component-icons": patch
+  "@fluent-wallet/wallet_refetch-tx-list": patch
+
+declined:
+  - helios-background
+  - helios-popup
+  - "@fluent-wallet/component-alert"
+  - "@fluent-wallet/component-checkbox"
+  - "@fluent-wallet/component-dropdown"
+  - "@fluent-wallet/component-loading"
+  - "@fluent-wallet/component-menu"
+  - "@fluent-wallet/component-message"
+  - "@fluent-wallet/component-modal"
+  - "@fluent-wallet/component-notification"
+  - "@fluent-wallet/component-tag"

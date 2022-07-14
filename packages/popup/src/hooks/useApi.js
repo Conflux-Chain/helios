@@ -31,7 +31,8 @@ const {
   WALLET_DETECT_ADDRESS_TYPE,
   WALLETDB_REFETCH_BALANCE,
   WALLET_VALIDATE_20TOKEN,
-  WALLETDB_TXLIST,
+  QUERY_TXLIST,
+  QUERY_SINGLE_TX,
   WALLET_GET_BLOCKCHAIN_EXPLORER_URL,
   WALLET_GET_FLUENT_METADATA,
   CFX_GET_MAX_GAS_LIMIT,
@@ -39,6 +40,7 @@ const {
   WALLET_QUERY_MEMO,
   WALLET_QUERY_RECENT_TRADING_ADDRESS,
   WALLET_NETWORK1559COMPATIBLE,
+  WALLET_REFETCH_TXLIST,
 } = RPC_METHODS
 
 export const useCurrentAddress = (notSendReq = false) => {
@@ -481,15 +483,31 @@ export const useValid20Token = address => {
   return token
 }
 
-export const useTxList = params => {
+export const useTxList = ({params, includeExternalTx = false}) => {
   const {
     data: {eid: addressId},
   } = useCurrentAddress()
+
+  useDbRefetchExternalTxList({
+    addressId,
+    stop: !includeExternalTx,
+  })
   const {data, mutate} = useRPC(
-    addressId ? [WALLETDB_TXLIST, ...Object.values(params), addressId] : null,
+    addressId ? [QUERY_TXLIST, ...Object.values(params), addressId] : null,
     {...params, addressId},
     {
       fallbackData: params?.countOnly ? 0 : {},
+    },
+  )
+  return {data, mutate}
+}
+
+export const useSingleTx = hash => {
+  const {data, mutate} = useRPC(
+    hash ? [QUERY_SINGLE_TX, hash] : null,
+    {hash},
+    {
+      fallbackData: {},
     },
   )
   return {data, mutate}
@@ -739,4 +757,10 @@ export const useAddressNote = (address, stop) => {
 export const useNetwork1559Compatible = () => {
   const {data: network1559Compatible} = useRPC([WALLET_NETWORK1559COMPATIBLE])
   return network1559Compatible
+}
+
+export const useDbRefetchExternalTxList = ({stop = false, addressId}) => {
+  return useRPC(
+    isUndefined(addressId) || stop ? null : [WALLET_REFETCH_TXLIST, addressId],
+  )
 }

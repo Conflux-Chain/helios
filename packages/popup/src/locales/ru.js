@@ -128,7 +128,6 @@ const ru = {
     searchToken: 'Поиск по имени или адресу',
     searchResults: 'Результаты поиска',
     noResult: 'Нет результата',
-    willSupport1559: 'Поддержка EIP-1559 в ближайшее время.',
     remove: 'Удалить',
 
     // welcome page
@@ -257,6 +256,11 @@ const ru = {
     customGasPrice: 'Пользовательская цена на газ',
     executedTx:
       'Транзакция выполнена или завершена. Никаких действий не требуется.',
+    speedup: 'Speed up',
+    amount: 'Amount',
+    hash: 'Hash',
+    nonce: 'Nonce',
+    fromAddress: 'From Address',
 
     // - request signature - 1. Sign Text
     signText: 'Подписать текст',

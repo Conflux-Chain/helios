@@ -124,7 +124,6 @@ const zh = {
     searchToken: '通过名称或地址搜索',
     searchResults: '搜索结果',
     noResult: '无结果',
-    willSupport1559: '后续将会支持 EIP-1559',
     remove: '移除',
 
     // welcome page
@@ -249,6 +248,11 @@ const zh = {
     submit: '提交',
     customGasPrice: '自定义 Gas 价格',
     executedTx: '此交易已被执行或者已完成，不需要执行额外操作',
+    speedup: '加速',
+    amount: 'Amount',
+    hash: 'Hash',
+    nonce: 'Nonce',
+    fromAddress: 'From Address',
 
     // - request signature - 1. Sign Text
     signText: '文本签名',

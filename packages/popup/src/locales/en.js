@@ -126,7 +126,6 @@ const en = {
     searchToken: 'Search by name or address',
     searchResults: 'Search Results',
     noResult: 'No result',
-    willSupport1559: 'EIP-1559 support coming soon.',
     remove: 'Remove',
 
     // welcome page
@@ -255,6 +254,11 @@ const en = {
     customGasPrice: 'Custom Gas Price',
     executedTx:
       'The transaction has been executed or finished.No action required.',
+    speedup: 'Speed up',
+    amount: 'Amount',
+    hash: 'Hash',
+    nonce: 'Nonce',
+    fromAddress: 'From Address',
 
     // - request signature - 1. Sign Text
     signText: 'Sign Text',

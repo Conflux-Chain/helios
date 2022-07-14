@@ -128,7 +128,6 @@ const uk = {
     searchToken: 'Пошук по імені або адресі',
     searchResults: 'Результати пошуку',
     noResult: 'Немає результату',
-    willSupport1559: 'Підтримка EIP - 1559 найближчим часом.',
     remove: 'Видалити',
 
     // welcome page
@@ -256,6 +255,11 @@ const uk = {
     submit: 'Підтвердити',
     customGasPrice: 'Користувальницька ціна на газ',
     executedTx: 'Транзакція виконана або завершена. Ніяких дій не потрібно.',
+    speedup: 'Speed up',
+    amount: 'Amount',
+    hash: 'Hash',
+    nonce: 'Nonce',
+    fromAddress: 'From Address',
 
     // - request signature - 1. Sign Text
     signText: 'Підписати текст',

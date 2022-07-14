@@ -8,6 +8,7 @@ import {
   formatDecimalToHex,
   formatHexToDecimal,
   GWEI_DECIMALS,
+  Big,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, GasCost} from '../../components'
@@ -30,6 +31,7 @@ function EditGasFee({
   isSpeedUp = true,
   resendGasPrice,
   onSubmit,
+  onClickGasStationItem,
   resendDisabled,
 }) {
   const {t} = useTranslation()
@@ -92,7 +94,7 @@ function EditGasFee({
     const {gasPrice, maxFeePerGas, maxPriorityFeePerGas} = advancedGasSetting
     sendParams = {
       ...originParams,
-      gas: formatDecimalToHex(advancedGasSetting.gasLimit) || estimateGasLimit,
+      gas: formatDecimalToHex(advancedGasSetting.gasLimit),
       nonce: formatDecimalToHex(advancedGasSetting.nonce),
       storageLimit: formatDecimalToHex(advancedGasSetting.storageLimit),
       maxFeePerGas: formatDecimalToHex(maxFeePerGas),
@@ -107,14 +109,18 @@ function EditGasFee({
       gas: formatDecimalToHex(gasLimit) || estimateGasLimit,
       nonce: formatDecimalToHex(nonce),
       storageLimit: formatDecimalToHex(storageLimit),
-      maxFeePerGas: convertValueToData(
-        suggestedMaxFeePerGas || '',
-        GWEI_DECIMALS,
-      ),
-      maxPriorityFeePerGas: convertValueToData(
-        suggestedMaxPriorityFeePerGas || '',
-        GWEI_DECIMALS,
-      ),
+      maxFeePerGas: suggestedMaxFeePerGas
+        ? convertValueToData(
+            new Big(suggestedMaxFeePerGas).round(9).toString(10),
+            GWEI_DECIMALS,
+          )
+        : '',
+      maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas
+        ? convertValueToData(
+            new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
+            GWEI_DECIMALS,
+          )
+        : '',
       gasPrice: suggestedGasPrice,
     }
   }
@@ -144,11 +150,15 @@ function EditGasFee({
         const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
         const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
         setMaxFeePerGas(
-          convertDecimal(suggestedMaxFeePerGas, 'multiply', GWEI_DECIMALS),
+          convertDecimal(
+            new Big(suggestedMaxFeePerGas).round(9).toString(10),
+            'multiply',
+            GWEI_DECIMALS,
+          ),
         )
         setMaxPriorityFeePerGas(
           convertDecimal(
-            suggestedMaxPriorityFeePerGas,
+            new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
             'multiply',
             GWEI_DECIMALS,
           ),
@@ -157,9 +167,11 @@ function EditGasFee({
         setGasPrice(formatHexToDecimal(suggestedGasPrice))
       }
     }
-    console.log('sendParams', sendParams)
-    onSubmit && onSubmit(sendParams)
-    history.goBack()
+    if (onSubmit) {
+      onSubmit(sendParams)
+    } else {
+      history.goBack()
+    }
   }
 
   return (
@@ -186,6 +198,7 @@ function EditGasFee({
             suggestedGasPrice={suggestedGasPrice}
             selectedGasLevel={selectedGasLevel}
             setSelectedGasLevel={setSelectedGasLevel}
+            onClickGasStationItem={onClickGasStationItem}
             networkTypeIsCfx={networkTypeIsCfx}
             estimateGasLimit={estimateGasLimit}
           />
@@ -198,7 +211,7 @@ function EditGasFee({
           </div>
         )}
         <Button
-          className="w-full mx-auto"
+          className="w-full mx-auto z-50"
           id="saveGasFeeBtn"
           onClick={saveGasData}
           disabled={
@@ -218,6 +231,7 @@ function EditGasFee({
 
 EditGasFee.propTypes = {
   onSubmit: PropTypes.func,
+  onClickGasStationItem: PropTypes.func,
   isSpeedUp: PropTypes.bool,
   tx: PropTypes.object,
   resendGasPrice: PropTypes.string,
