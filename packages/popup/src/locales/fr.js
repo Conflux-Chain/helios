@@ -260,7 +260,6 @@ const fr = {
     customGasPrice: 'Prix de Gas personalisé',
     executedTx:
       'La transaction a été exécutée ou terminée. Aucune action n’est requise.',
-    speedup: 'Speed up',
     amount: 'Amount',
     hash: 'Hash',
     nonce: 'Nonce',

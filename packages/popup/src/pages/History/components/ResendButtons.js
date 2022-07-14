@@ -37,7 +37,7 @@ function ResendButtons({
         onClick={() => onSpeedupPendingTx?.()}
       >
         <RocketOutlined className="w-3 h-3" />
-        <span className={buttonTextClassName}>{t('speedup')}</span>
+        <span className={buttonTextClassName}>{t('speedUp')}</span>
       </Button>
     </div>
   )

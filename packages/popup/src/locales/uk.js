@@ -255,7 +255,6 @@ const uk = {
     submit: 'Підтвердити',
     customGasPrice: 'Користувальницька ціна на газ',
     executedTx: 'Транзакція виконана або завершена. Ніяких дій не потрібно.',
-    speedup: 'Speed up',
     amount: 'Amount',
     hash: 'Hash',
     nonce: 'Nonce',

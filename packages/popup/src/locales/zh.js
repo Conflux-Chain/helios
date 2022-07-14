@@ -247,7 +247,6 @@ const zh = {
     submit: '提交',
     customGasPrice: '自定义燃气价格',
     executedTx: '此交易已被执行或者已完成，不需要执行额外操作',
-    speedup: '加速',
     amount: '数额',
     hash: '交易哈希',
     nonce: '随机数',

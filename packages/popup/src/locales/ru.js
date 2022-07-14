@@ -256,7 +256,6 @@ const ru = {
     customGasPrice: 'Пользовательская цена на газ',
     executedTx:
       'Транзакция выполнена или завершена. Никаких действий не требуется.',
-    speedup: 'Speed up',
     amount: 'Amount',
     hash: 'Hash',
     nonce: 'Nonce',
