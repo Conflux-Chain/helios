@@ -1,4 +1,0 @@
-declined:
-  - "@fluent-wallet/conflux-tx-error"
-  - "@fluent-wallet/estimate-tx"
-  - helios-popup
