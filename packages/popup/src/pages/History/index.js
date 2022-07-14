@@ -16,7 +16,7 @@ function History() {
     params: {
       limit,
     },
-    inCludeExternalTx: true,
+    includeExternalTx: true,
   })
   const {transaction: transactionUrls} = useBlockchainExplorerUrl(
     historyListData?.data

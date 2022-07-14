@@ -483,14 +483,14 @@ export const useValid20Token = address => {
   return token
 }
 
-export const useTxList = ({params, inCludeExternalTx = false}) => {
+export const useTxList = ({params, includeExternalTx = false}) => {
   const {
     data: {eid: addressId},
   } = useCurrentAddress()
 
   useDbRefetchExternalTxList({
     addressId,
-    stop: !inCludeExternalTx,
+    stop: !includeExternalTx,
   })
   const {data, mutate} = useRPC(
     addressId ? [QUERY_TXLIST, ...Object.values(params), addressId] : null,
