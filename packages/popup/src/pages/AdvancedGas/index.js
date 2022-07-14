@@ -218,7 +218,7 @@ function AdvancedGas() {
 
   const onChangeNonce = nonce => {
     setInputNonce(nonce)
-    if (!nonce || new Big(nonce).gt(0)) {
+    if (!nonce || new Big(nonce).gte(0)) {
       setNonceErr('')
     } else {
       setNonceErr(t('nonceErr'))
