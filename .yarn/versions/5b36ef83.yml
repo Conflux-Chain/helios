@@ -1,2 +1,5 @@
+releases:
+  "@fluent-wallet/component-input": patch
+
 declined:
   - helios-popup
