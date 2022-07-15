@@ -29,15 +29,9 @@ import {RPC_METHODS, TX_STATUS} from '../../constants'
 
 const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION} = RPC_METHODS
 
-const filterNonValueParams = (
-  originParams = {},
-  otherParams = {},
-  estimate = {},
-) => {
-  let ret = {}
-  for (let k in otherParams) {
-    originParams[k] = otherParams[k] || estimate[k]
-  }
+const filterNonValueParams = (originParams = {}, otherParams = {}) => {
+  const ret = {}
+  originParams = {...originParams, ...otherParams}
   Object.keys(originParams)
     .filter(_k => !!originParams[_k])
     .forEach(k => {
@@ -193,7 +187,7 @@ function ResendTransaction() {
       setLoading(true)
     }
 
-    const params = filterNonValueParams({...feeParams}, {...originParams})
+    const params = filterNonValueParams({...originParams}, {...feeParams})
     const error = await checkBalance(
       params,
       token || {},

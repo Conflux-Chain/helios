@@ -58,6 +58,7 @@ function TransitionDetail({
   onSpeedupPendingTx,
 }) {
   const {t} = useTranslation()
+  const displayAddress = isExternalTx ? fromAddress : toAddress
 
   return (
     <SlideCard
@@ -109,19 +110,13 @@ function TransitionDetail({
             transitionTitle={t(isExternalTx ? 'fromAddress' : 'toAddress')}
             TransitionValueOverlay={
               <div className="flex font-medium items-center">
-                <Tooltip
-                  content={isExternalTx ? fromAddress : toAddress}
-                  placement="topLeft"
-                >
-                  {shortenAddress(
-                    formatIntoChecksumAddress(
-                      isExternalTx ? fromAddress : toAddress,
-                    ),
-                  )}
+                <Tooltip content={displayAddress} placement="topLeft">
+                  {displayAddress &&
+                    shortenAddress(formatIntoChecksumAddress(displayAddress))}
                 </Tooltip>
                 {
                   <CopyButton
-                    text={isExternalTx ? fromAddress : toAddress}
+                    text={displayAddress}
                     className="w-3 h-3 text-primary"
                     containerClassName={copyButtonContainerClassName}
                     toastClassName={copyButtonToastClassName}
