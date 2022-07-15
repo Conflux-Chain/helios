@@ -239,9 +239,8 @@ function HistoryItem({
           <div className="flex mt-0.5 items-center justify-between text-gray-40 text-xs">
             <span>{contractName}</span>
             <span>
-              {toAddress
-                ? shortenAddress(formatIntoChecksumAddress(toAddress))
-                : ''}
+              {toAddress &&
+                shortenAddress(formatIntoChecksumAddress(toAddress))}
             </span>
           </div>
         </div>
