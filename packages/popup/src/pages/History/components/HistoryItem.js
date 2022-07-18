@@ -1,14 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
+import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import dayjs from 'dayjs'
 import {isUndefined} from '@fluent-wallet/checks'
 import {convertDataToValue} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {processError as cfxProcessError} from '@fluent-wallet/conflux-tx-error'
-import {processError as ethProcessError} from '@fluent-wallet/ethereum-tx-error'
 import {cfxGetFeeData, ethGetFeeData} from '@fluent-wallet/estimate-tx'
 
 import {
@@ -90,11 +89,6 @@ function HistoryItem({
   const statusIconColor = ICON_COLOR?.[txStatus] ?? ''
 
   const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
-  const {errorType} = err
-    ? networkTypeIsCfx
-      ? cfxProcessError(err)
-      : ethProcessError(err)
-    : 'unknownError'
 
   const {txFeeDrip = '0x0'} = receipt
     ? networkTypeIsCfx
@@ -276,7 +270,7 @@ function HistoryItem({
         hash={hash}
         transactionUrl={transactionUrl}
         payload={payload}
-        errorType={errorType}
+        errorType={i18next?.exists(err) ? err : 'unknownError'}
         onCancelPendingTx={onCancelPendingTx}
         onSpeedupPendingTx={onSpeedupPendingTx}
       />
