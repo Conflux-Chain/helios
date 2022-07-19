@@ -264,6 +264,7 @@ function HistoryItem({
         isExternalTx={isExternalTx}
         fromAddress={fromAddress}
         toAddress={toAddress}
+        actionName={actionName}
         copyButtonContainerClassName={copyButtonContainerClassName}
         copyButtonToastClassName={copyButtonToastClassName}
         txFeeDrip={txFeeDrip}

@@ -5,7 +5,7 @@ import Tooltip from '@fluent-wallet/component-tooltip'
 import {formatHexToDecimal} from '@fluent-wallet/data-format'
 import {SendOutlined} from '@fluent-wallet/component-icons'
 
-import {transformToTitleCase, formatIntoChecksumAddress} from '../../../utils'
+import {formatIntoChecksumAddress, formatLocalizationLang} from '../../../utils'
 import {SlideCard, CopyButton, WrapIcon} from '../../../components'
 import {HistoryStatusIcon, HistoryBalance, ResendButtons} from './'
 
@@ -46,6 +46,7 @@ function TransitionDetail({
   isExternalTx,
   fromAddress = '',
   toAddress = '',
+  actionName = '',
   statusIconColor = '',
   copyButtonContainerClassName,
   copyButtonToastClassName,
@@ -57,8 +58,14 @@ function TransitionDetail({
   onCancelPendingTx,
   onSpeedupPendingTx,
 }) {
-  const {t} = useTranslation()
+  const {t, i18n} = useTranslation()
   const displayAddress = isExternalTx ? fromAddress : toAddress
+  const displayActionName =
+    txStatus === 'failed'
+      ? formatLocalizationLang(i18n.language) === 'zh'
+        ? `${actionName}（${t('failed')}）`
+        : `${actionName}(${t('failed')})`
+      : actionName
 
   return (
     <SlideCard
@@ -77,9 +84,7 @@ function TransitionDetail({
             isExternalTx={isExternalTx}
           />
           <div className="ml-2">
-            <div className="text-gray-80 font-medium">
-              {transformToTitleCase(txStatus)}
-            </div>
+            <div className="text-gray-80 font-medium">{displayActionName}</div>
             {txStatus === 'confirmed' && (
               <div className="text-xs text-gray-40 mt-0.5">{createdTime}</div>
             )}
@@ -212,6 +217,7 @@ TransitionDetail.propTypes = {
   receipt: PropTypes.object,
   fromAddress: PropTypes.string,
   toAddress: PropTypes.string,
+  actionName: PropTypes.string,
   copyButtonContainerClassName: PropTypes.string,
   copyButtonToastClassName: PropTypes.string,
   txFeeDrip: PropTypes.string,
