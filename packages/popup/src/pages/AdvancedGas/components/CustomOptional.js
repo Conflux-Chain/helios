@@ -64,7 +64,7 @@ function CustomOptional({
           <div
             className={`flex justify-between ${showNonceInput ? 'mb-2' : ''}`}
           >
-            <span>nonce</span>
+            <span>{t('customNonce')}</span>
             <span
               className={`flex items-center ${showNonceInput ? 'hidden' : ''}`}
             >
