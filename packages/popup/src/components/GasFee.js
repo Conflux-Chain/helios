@@ -20,7 +20,7 @@ function GasFee({
   titleClassName = 'mb-2',
   contentClassName = '',
 }) {
-  const {gasPrice, maxFeePerGas} = useCurrentTxParams()
+  const {gasPrice, maxFeePerGas, gasLevel} = useCurrentTxParams()
   const txGasPrice = isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice
   const {t} = useTranslation()
   const history = useHistory()
@@ -62,7 +62,7 @@ function GasFee({
               onClick={() => history.push(EDIT_GAS_FEE)}
               disabled={!realPayedFeeDrip || !displayGasPrice}
             >
-              {t('edit')}
+              {isTxTreatedAsEIP1559 ? t(gasLevel) : t('edit')}
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
             </Link>
           </span>

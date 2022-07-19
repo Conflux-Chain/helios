@@ -48,7 +48,7 @@ function GasCost({sendParams, networkTypeIsCfx}) {
         <>
           <div className="flex justify-between items-center mb-3">
             <span className="text-gray-40 font-medium">{t('sponsored')}</span>
-            <span className="text-gray-80 font-medium">
+            <span className="text-gray-80 font-medium flex items-center">
               {sponsoredFeeDrip === '0x0' ? '' : '-'}
               <DisplayBalance
                 id="soponsoredFee"
