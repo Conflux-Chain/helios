@@ -67,9 +67,12 @@ function AdvancedGas() {
   const params = {
     ...originParams,
     gasPrice: convertValueToData(inputGasPrice, GWEI_DECIMALS),
-    maxFeePerGas: convertValueToData(inputMaxFeePerGas, GWEI_DECIMALS),
+    maxFeePerGas: convertValueToData(
+      new Big(inputMaxFeePerGas).round(9).toString(10),
+      GWEI_DECIMALS,
+    ),
     maxPriorityFeePerGas: convertValueToData(
-      inputMaxPriorityFeePerGas,
+      new Big(inputMaxPriorityFeePerGas).round(9).toString(10),
       GWEI_DECIMALS,
     ),
     gas:
