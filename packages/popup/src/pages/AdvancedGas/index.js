@@ -67,14 +67,18 @@ function AdvancedGas() {
   const params = {
     ...originParams,
     gasPrice: convertValueToData(inputGasPrice, GWEI_DECIMALS),
-    maxFeePerGas: convertValueToData(
-      new Big(inputMaxFeePerGas).round(9).toString(10),
-      GWEI_DECIMALS,
-    ),
-    maxPriorityFeePerGas: convertValueToData(
-      new Big(inputMaxPriorityFeePerGas).round(9).toString(10),
-      GWEI_DECIMALS,
-    ),
+    maxFeePerGas: inputMaxFeePerGas
+      ? convertValueToData(
+          new Big(inputMaxFeePerGas).round(9).toString(10),
+          GWEI_DECIMALS,
+        )
+      : '',
+    maxPriorityFeePerGas: inputMaxPriorityFeePerGas
+      ? convertValueToData(
+          new Big(inputMaxPriorityFeePerGas).round(9).toString(10),
+          GWEI_DECIMALS,
+        )
+      : '',
     gas:
       formatDecimalToHex(
         inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
@@ -293,7 +297,7 @@ function AdvancedGas() {
           />
         </main>
       </div>
-      <footer>
+      <footer className="px-4">
         <Button
           className="w-full mx-auto mb-6"
           id="saveAdvancedGasFeeBtn"
