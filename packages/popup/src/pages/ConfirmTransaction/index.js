@@ -300,7 +300,7 @@ function ConfirmTransaction() {
     )
     if (error) {
       setLoading(false)
-      setEstimateError(error)
+      setEstimateError(t(error))
       return
     }
 

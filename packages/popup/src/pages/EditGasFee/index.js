@@ -53,6 +53,7 @@ function EditGasFee({
     setNonce,
     setTx,
     clearAdvancedGasSetting,
+    clearSendTransactionParams,
   } = useCurrentTxParams()
 
   const isSendTx = location.pathname === EDIT_GAS_FEE
@@ -181,7 +182,13 @@ function EditGasFee({
     >
       <div className="flex-1">
         <TitleNav
-          onGoBack={() => clearAdvancedGasSetting()}
+          onGoBack={() => {
+            if (isSendTx) {
+              clearAdvancedGasSetting()
+            } else {
+              clearSendTransactionParams()
+            }
+          }}
           title={
             isSendTx ? t('editGasFee') : isSpeedUp ? t('speedUp') : t('cancel')
           }
