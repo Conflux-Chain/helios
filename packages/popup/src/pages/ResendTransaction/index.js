@@ -201,7 +201,7 @@ function ResendTransaction() {
     if (error) {
       setLoading(false)
       setSendStatus('')
-      setEstimateError(error)
+      setEstimateError(t(error))
       return
     }
 
@@ -249,7 +249,7 @@ function ResendTransaction() {
   }
 
   return (
-    <div className="relative">
+    <div className="relative h-full">
       <EditGasFee
         resendGasPrice={suggestedGasPrice}
         isSpeedUp={isSpeedup}
