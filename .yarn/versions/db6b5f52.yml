@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/wallet_handle-unfinished-eth-tx": patch
+
+declined:
+  - helios-background
