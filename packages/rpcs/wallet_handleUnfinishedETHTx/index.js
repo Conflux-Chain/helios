@@ -321,7 +321,7 @@ export const main = ({
             BigNumber.from(nonce).gt(BigNumber.from(tx.txPayload.nonce).add(1))
           ) {
             if (tx.skippedChecked) {
-              setTxSkipped({hash})
+              setTxSkipped({hash, skippedChecked: true})
               updateBadge(getUnfinishedTxCount())
               getExt().then(ext =>
                 ext.notifications.create(hash, {
@@ -334,7 +334,7 @@ export const main = ({
               )
               return sdone()
             } else {
-              setTxSkipped({hash, skippedChecked: true})
+              setTxSkipped({hash})
               // check if skipped again immediately
               return keepTrack(0)
             }
