@@ -116,26 +116,27 @@ function TransitionDetail({
             />
           )}
 
-          <TransitionItem
-            transitionTitle={t(isExternalTx ? 'fromAddress' : 'toAddress')}
-            TransitionValueOverlay={
-              <div className="flex font-medium items-center">
-                <Tooltip content={displayAddress} placement="topLeft">
-                  {displayAddress &&
-                    shortenAddress(formatIntoChecksumAddress(displayAddress))}
-                </Tooltip>
-                {
-                  <CopyButton
-                    text={displayAddress}
-                    className="w-3 h-3 text-primary"
-                    containerClassName={copyButtonContainerClassName}
-                    toastClassName={copyButtonToastClassName}
-                    wrapperClassName="!w-5 !h-5 ml-1"
-                  />
-                }
-              </div>
-            }
-          />
+          {displayAddress && (
+            <TransitionItem
+              transitionTitle={t(isExternalTx ? 'fromAddress' : 'toAddress')}
+              TransitionValueOverlay={
+                <div className="flex font-medium items-center">
+                  <Tooltip content={displayAddress} placement="topLeft">
+                    {shortenAddress(formatIntoChecksumAddress(displayAddress))}
+                  </Tooltip>
+                  {
+                    <CopyButton
+                      text={displayAddress}
+                      className="w-3 h-3 text-primary"
+                      containerClassName={copyButtonContainerClassName}
+                      toastClassName={copyButtonToastClassName}
+                      wrapperClassName="!w-5 !h-5 ml-1"
+                    />
+                  }
+                </div>
+              }
+            />
+          )}
 
           {receipt && (
             <TransitionItem
