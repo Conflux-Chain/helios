@@ -79,10 +79,14 @@ function EditGasFee({
   const [selectedGasLevel, setSelectedGasLevel] = useState('')
 
   useEffect(() => {
-    if (!isSendTx) {
+    if (
+      !isSendTx &&
+      historyTx &&
+      JSON.stringify(historyTx) !== JSON.stringify(txParams)
+    ) {
       setTx(historyTx)
     }
-  }, [isSendTx, JSON.stringify(historyTx), setTx])
+  }, [isSendTx, JSON.stringify(historyTx), JSON.stringify(txParams), setTx])
 
   useEffect(() => {
     if (advancedGasSetting.gasLevel === 'advanced')
