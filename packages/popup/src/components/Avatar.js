@@ -23,7 +23,7 @@ function Avatar({diameter, address, ...props}) {
 }
 
 Avatar.propTypes = {
-  address: PropTypes.string.isRequired,
+  address: PropTypes.string,
   diameter: PropTypes.number.isRequired,
   containerClassName: PropTypes.string,
 }
