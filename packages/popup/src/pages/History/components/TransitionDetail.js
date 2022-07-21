@@ -4,6 +4,10 @@ import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Tooltip from '@fluent-wallet/component-tooltip'
 import {formatHexToDecimal} from '@fluent-wallet/data-format'
 import {SendOutlined} from '@fluent-wallet/component-icons'
+import {
+  CFX_MAINNET_CURRENCY_SYMBOL,
+  ETH_MAINNET_CURRENCY_SYMBOL,
+} from '@fluent-wallet/consts'
 
 import {formatIntoChecksumAddress, formatLocalizationLang} from '../../../utils'
 import {SlideCard, CopyButton, WrapIcon} from '../../../components'
@@ -35,6 +39,7 @@ TransitionItem.propTypes = {
 function TransitionDetail({
   open = false,
   isNegativeAmount = false,
+  networkTypeIsCfx = false,
   onClose,
   txStatus = '',
   dappIconUrl = '',
@@ -138,7 +143,11 @@ function TransitionDetail({
               TransitionValueOverlay={
                 <HistoryBalance
                   amount={txFeeDrip}
-                  symbol={symbol}
+                  symbol={
+                    networkTypeIsCfx
+                      ? CFX_MAINNET_CURRENCY_SYMBOL
+                      : ETH_MAINNET_CURRENCY_SYMBOL
+                  }
                   symbolClassName="ml-1 !font-medium !text-gray-80"
                   className="!font-medium"
                 />
@@ -206,6 +215,7 @@ TransitionDetail.propTypes = {
   open: PropTypes.bool,
   isExternalTx: PropTypes.bool,
   isNegativeAmount: PropTypes.bool,
+  networkTypeIsCfx: PropTypes.bool,
   onClose: PropTypes.func,
   txStatus: PropTypes.string,
   dappIconUrl: PropTypes.string,

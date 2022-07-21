@@ -95,7 +95,7 @@ function HistoryItem({
       ? cfxGetFeeData({
           gas: receipt?.gasUsed || '0x0',
           storageLimit: receipt?.storageCollateralized || '0x0',
-          gasPrice: receipt?.gasPrice || '0x1',
+          gasPrice: payload?.gasPrice || '0x1',
         })
       : ethGetFeeData({
           gas: receipt?.gasUsed || '0x0',
@@ -274,6 +274,7 @@ function HistoryItem({
         errorType={i18next?.exists(err) ? err : 'unknownError'}
         onCancelPendingTx={onCancelPendingTx}
         onSpeedupPendingTx={onSpeedupPendingTx}
+        networkTypeIsCfx={networkTypeIsCfx}
       />
     </div>
   )
