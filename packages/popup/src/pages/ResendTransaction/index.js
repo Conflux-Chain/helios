@@ -16,7 +16,7 @@ import useLoading from '../../hooks/useLoading'
 import {
   useEstimateTx,
   useDecodeData,
-  useCurrentTxParams,
+  useCurrentTxStore,
   useLedgerBindingApi,
   useIsTxTreatedAsEIP1559,
   useQuery,
@@ -46,7 +46,7 @@ function ResendTransaction() {
   const ledgerBindingApi = useLedgerBindingApi()
   const {setLoading} = useLoading()
 
-  const {clearSendTransactionParams} = useCurrentTxParams()
+  const {clearSendTransactionParams} = useCurrentTxStore()
 
   const [suggestedGasPrice, setSuggestedGasPrice] = useState('')
   const [estimateError, setEstimateError] = useState('')

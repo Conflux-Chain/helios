@@ -15,7 +15,7 @@ import {TitleNav, GasCost} from '../../components'
 import {GasStation} from './components'
 import {useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {
-  useCurrentTxParams,
+  useCurrentTxStore,
   useIsTxTreatedAsEIP1559,
   useDappParams,
   useEstimateTx,
@@ -54,7 +54,7 @@ function EditGasFee({
     setTx,
     clearAdvancedGasSetting,
     clearSendTransactionParams,
-  } = useCurrentTxParams()
+  } = useCurrentTxStore()
 
   const isSendTx = location.pathname === EDIT_GAS_FEE
 
