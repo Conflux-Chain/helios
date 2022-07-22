@@ -161,10 +161,12 @@ function HistoryItem({
   ])
 
   useEffect(() => {
-    if (simple && tokenSymbol && !isUndefined(tokenDecimals)) {
-      setSymbol(tokenSymbol)
+    if (simple && tokenSymbol) {
       setToAddress(payload?.to ?? '')
-      setAmount(convertDataToValue(payload?.value, tokenDecimals) ?? '')
+      if (!isUndefined(tokenDecimals)) {
+        setSymbol(tokenSymbol)
+        setAmount(convertDataToValue(payload?.value, tokenDecimals) ?? '')
+      }
       return
     }
     if (token20 && token) {
@@ -185,13 +187,14 @@ function HistoryItem({
         return
       }
     }
+
+    setToAddress(payload?.to ?? '')
   }, [
     Boolean(token),
     tokenSymbol,
     tokenDecimals,
     simple,
     token20,
-    contractInteraction,
     actionName,
     networkTypeIsCfx,
     Object.keys(payload).length,

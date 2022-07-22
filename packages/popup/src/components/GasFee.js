@@ -6,7 +6,7 @@ import {formatBalance, GWEI_DECIMALS} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {DisplayBalance, CustomTag} from '../components'
 import {useNetworkTypeIsCfx, useCurrentTicker} from '../hooks/useApi'
-import {useCurrentTxParams} from '../hooks'
+import {useCurrentTxStore} from '../hooks'
 import useDebouncedValue from '../hooks/useDebouncedValue'
 import {ROUTES} from '../constants'
 const {EDIT_GAS_FEE} = ROUTES
@@ -20,7 +20,7 @@ function GasFee({
   titleClassName = 'mb-2',
   contentClassName = '',
 }) {
-  const {gasPrice, maxFeePerGas, gasLevel} = useCurrentTxParams()
+  const {gasPrice, maxFeePerGas, gasLevel} = useCurrentTxStore()
   const txGasPrice = isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice
   const {t} = useTranslation()
   const history = useHistory()
