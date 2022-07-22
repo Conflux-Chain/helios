@@ -1,0 +1,9 @@
+releases:
+  "@fluent-wallet/confluxscan-api": patch
+  "@fluent-wallet/contract-method-name": patch
+  "@fluent-wallet/wallet_enrich-conflux-tx": patch
+  "@fluent-wallet/wallet_enrich-ethereum-tx": patch
+  "@fluent-wallet/wallet_refetch-tx-list": patch
+
+declined:
+  - helios-background
