@@ -1,9 +1,8 @@
-import {CFX_SCAN_DOMAINS} from './constance.js'
-import fetchHelper from './util/fetch-helper.js'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {Interface} from '@ethersproject/abi'
 import {encode, validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress} from '@fluent-wallet/account'
+import {abi} from '@fluent-wallet/confluxscan-api/contract.js'
 
 const eip777AbiSignatures = [
   // '0x70a08231', // balanceOf
@@ -19,15 +18,6 @@ const eip777AbiSignatures = [
   // burn
 ]
 
-export const getCFXScanDomain = netId => {
-  return CFX_SCAN_DOMAINS[`${netId}`]
-}
-
-export const getCFXAbi = async (address, netId) => {
-  const scanDomain = getCFXScanDomain(netId)
-  return await fetchHelper(`${scanDomain}/v1/contract/${address}?fields=abi`)
-}
-
 export const getCFXContractMethodSignature = async (
   address,
   transactionData,
@@ -35,7 +25,7 @@ export const getCFXContractMethodSignature = async (
   offlineOnly = false,
 ) => {
   if (!validateBase32Address(address)) {
-    throw new Error('inValidate base32 address')
+    throw new Error('invalid base32 address')
   }
 
   try {
@@ -43,8 +33,9 @@ export const getCFXContractMethodSignature = async (
     if (eip777AbiSignatures.includes(transactionData.substring(0, 10))) {
       abiInterface = iface
     } else if (!offlineOnly) {
-      const response = await getCFXAbi(address, netId)
-      abiInterface = new Interface(JSON.parse(response.abi))
+      const response = await abi({address, networkId: netId})
+      if (!response) throw new Error('failed to parse transaction data')
+      abiInterface = new Interface(response)
     } else {
       throw new Error('failed to parse transaction data')
     }

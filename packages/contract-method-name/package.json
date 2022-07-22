@@ -7,8 +7,8 @@
     "@ethersproject/abi": "5.6.3",
     "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
+    "@fluent-wallet/confluxscan-api": "workspace:*",
     "@fluent-wallet/consts": "workspace:packages/consts",
-    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
-    "@fluent-wallet/fetch-rpc": "workspace:*"
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
   }
 }
