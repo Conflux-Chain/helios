@@ -294,7 +294,9 @@ function AdvancedGas() {
             nonceErr={nonceErr}
             onChangeNonce={onChangeNonce}
             storageLimit={
-              storageLimit || formatHexToDecimal(estimateStorageLimit)
+              advancedGasSetting.storageLimit ||
+              storageLimit ||
+              formatHexToDecimal(estimateStorageLimit)
             }
             nonce={advancedGasSetting.nonce || nonce}
             gasLimit={
