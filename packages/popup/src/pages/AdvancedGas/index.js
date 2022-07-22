@@ -33,7 +33,6 @@ function AdvancedGas() {
   )
   const isHistoryTx = JSON.parse(query.get('isHistoryTx'))
   const suggestedGasPrice = query.get('suggestedGasPrice')
-  const estimateGasLimit = query.get('estimateGasLimit')
 
   const history = useHistory()
 
@@ -79,10 +78,9 @@ function AdvancedGas() {
           GWEI_DECIMALS,
         )
       : '',
-    gas:
-      formatDecimalToHex(
-        inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
-      ) || estimateGasLimit,
+    gas: formatDecimalToHex(
+      inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
+    ),
     nonce: formatDecimalToHex(inputNonce || advancedGasSetting.nonce || nonce),
     storageLimit: formatDecimalToHex(
       advancedGasSetting.storageLimit || storageLimit,
@@ -95,7 +93,12 @@ function AdvancedGas() {
   if (!params.nonce) delete params.nonce
 
   const estimateRst = useEstimateTx(params) || {}
-  const {gasUsed} = estimateRst
+  const {
+    gasUsed,
+    gasLimit: estimateGasLimit,
+    storageCollateralized: estimateStorageLimit,
+  } = estimateRst
+
   const {
     gasPrice: advancedGasPrice,
     maxFeePerGas: advancedMaxFeePerGas,
@@ -251,7 +254,10 @@ function AdvancedGas() {
         gasLimit ||
         formatHexToDecimal(estimateGasLimit),
       nonce: inputNonce || advancedGasSetting.nonce || nonce,
-      storageLimit: advancedGasSetting.storageLimit || storageLimit,
+      storageLimit:
+        advancedGasSetting.storageLimit ||
+        storageLimit ||
+        formatHexToDecimal(estimateStorageLimit),
       gasLevel: 'advanced',
     })
     history.goBack()
@@ -287,7 +293,11 @@ function AdvancedGas() {
             inputNonce={inputNonce}
             nonceErr={nonceErr}
             onChangeNonce={onChangeNonce}
-            storageLimit={storageLimit}
+            storageLimit={
+              advancedGasSetting.storageLimit ||
+              storageLimit ||
+              formatHexToDecimal(estimateStorageLimit)
+            }
             nonce={advancedGasSetting.nonce || nonce}
             gasLimit={
               advancedGasSetting.gasLimit ||
