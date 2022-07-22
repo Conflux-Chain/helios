@@ -14,7 +14,7 @@ import {
 import {TitleNav, GasCost} from '../../components'
 import {useNetworkTypeIsCfx, useCfxMaxGasLimit} from '../../hooks/useApi'
 import {
-  useCurrentTxParams,
+  useCurrentTxStore,
   useEstimateTx,
   useDappParams,
   useQuery,
@@ -54,7 +54,7 @@ function AdvancedGas() {
     advancedGasSetting,
     setAdvancedGasSetting,
     tx: txParams,
-  } = useCurrentTxParams()
+  } = useCurrentTxStore()
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const cfxMaxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
