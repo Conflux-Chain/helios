@@ -232,6 +232,7 @@ const zh = {
     contractCreation: '合约部署',
     contractInteraction: '合约交互',
     unknown: '未知的',
+    receive: '接收',
 
     // - Send Transaction / - speedup and cancel tx
     cancelTransaction: '取消交易',

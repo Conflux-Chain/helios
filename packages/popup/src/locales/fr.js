@@ -244,6 +244,7 @@ const fr = {
     contractCreation: 'Déploiement du Contrat',
     contractInteraction: 'Intéraction du Contrat',
     unknown: 'Inconnue',
+    receive: 'Receive',
 
     // - Send Transaction / - speedup and cancel tx
     cancelTransaction: 'Annuler la transaction',

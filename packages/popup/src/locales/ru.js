@@ -240,6 +240,7 @@ const ru = {
     contractCreation: 'Развертывание контракта',
     contractInteraction: 'Взаимодействие по контракту',
     unknown: 'Неизвестно',
+    receive: 'Receive',
 
     // - Send Transaction / - speedup and cancel tx
     cancelTransaction: 'Отмена транзакции',
