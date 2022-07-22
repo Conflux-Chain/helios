@@ -240,6 +240,7 @@ const uk = {
     contractCreation: 'Розгортання контракту',
     contractInteraction: 'Взаємодія за контрактом',
     unknown: 'Невідомо',
+    receive: 'Receive',
 
     // - Send Transaction / - speedup and cancel tx
     cancelTransaction: 'Відміна транзакції',

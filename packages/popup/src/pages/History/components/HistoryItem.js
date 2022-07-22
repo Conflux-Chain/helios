@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import i18next from 'i18next'
@@ -125,6 +124,9 @@ function HistoryItem({
   }
 
   useEffect(() => {
+    if (isExternalTx) {
+      return setActionName(t('receive'))
+    }
     setActionName(
       simple
         ? t('send')
@@ -134,7 +136,7 @@ function HistoryItem({
           : transformToTitleCase(decodeData.name)
         : '-',
     )
-  }, [simple, Object.keys(decodeData).length])
+  }, [simple, isExternalTx, t, decodeData?.name])
 
   useEffect(() => {
     if (simple && tokenName) {
@@ -153,11 +155,11 @@ function HistoryItem({
     tokenName,
     simple,
     token20,
-    Boolean(token),
     t,
     contractCreation,
     contractInteraction,
     networkTypeIsCfx,
+    token?.name,
   ])
 
   useEffect(() => {
@@ -190,15 +192,16 @@ function HistoryItem({
 
     setToAddress(payload?.to ?? '')
   }, [
-    Boolean(token),
     tokenSymbol,
     tokenDecimals,
     simple,
     token20,
     actionName,
     networkTypeIsCfx,
-    Object.keys(payload).length,
-    Object.keys(decodeData).length,
+    token,
+    payload?.to,
+    payload?.value,
+    decodeData?.args,
   ])
 
   if (!actionName || !contractName) return null

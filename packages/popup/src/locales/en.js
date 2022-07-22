@@ -238,6 +238,7 @@ const en = {
     contractCreation: 'Contract Deployment',
     contractInteraction: 'Contract Interaction',
     unknown: 'Unknown',
+    receive: 'Receive',
 
     // - Send Transaction / - speedup and cancel tx
     cancelTransaction: 'Cancel Transaction',
