@@ -82,8 +82,9 @@ function AdvancedGas() {
       inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
     ),
     nonce: formatDecimalToHex(inputNonce || advancedGasSetting.nonce || nonce),
-    storageLimit:
-      formatDecimalToHex(advancedGasSetting.storageLimit) || storageLimit,
+    storageLimit: formatDecimalToHex(
+      advancedGasSetting.storageLimit || storageLimit,
+    ),
   }
   if (!params.maxFeePerGas) delete params.maxFeePerGas
   if (!params.maxPriorityFeePerGas) delete params.maxPriorityFeePerGas
