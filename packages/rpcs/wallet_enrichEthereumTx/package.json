@@ -3,7 +3,7 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "dependencies": {
     "@fluent-wallet/contract-method-name": "workspace:*",
     "@fluent-wallet/spec": "workspace:*"
