@@ -1,9 +1,10 @@
 import {expect, describe, afterEach} from '@jest/globals'
 import nock from 'nock'
-import {getCFXScanDomain, getCFXContractMethodSignature} from './cfx-name'
+import {getCFXContractMethodSignature} from './cfx-name'
 import {Interface} from '@ethersproject/abi'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
 import {decode} from '@fluent-wallet/base32-address'
+import {getURL} from '@fluent-wallet/confluxscan-api/utils.js'
 
 const userBase32Address = 'cfxtest:aaktk1zbvj0snrxuc1m60deh1fh0ka862e2b78mnvs'
 const contractAddress = 'cfxtest:acgd1ex04h88ybdyxxdg45wjj0mrcwx1fak1snk3db'
@@ -19,16 +20,6 @@ const getError = async call => {
 }
 
 describe('CFX Name', () => {
-  describe('getCFXScanDomain', () => {
-    it('should return testnet url', () => {
-      expect(getCFXScanDomain('1')).toEqual('https://testnet.confluxscan.io')
-    })
-
-    it('should return mainnet url', () => {
-      expect(getCFXScanDomain('1029')).toEqual('https://confluxscan.io')
-    })
-  })
-
   describe('getCFXContractMethodSignature', () => {
     afterEach(() => {
       nock.cleanAll()
@@ -44,11 +35,10 @@ describe('CFX Name', () => {
         'store',
         ['0x1'],
       )
-      nock('https://testnet.confluxscan.io/v1/contract')
-        .get(`/${contractAddress}?fields=abi`)
-        .reply(200, {
-          abi,
-        })
+      nock(getURL(1)).get(/.*/).reply(200, {
+        code: 0,
+        data: abi,
+      })
 
       const res = await getCFXContractMethodSignature(
         contractAddress,
@@ -79,9 +69,16 @@ describe('CFX Name', () => {
     })
 
     it('should throw error when got wrong address', async () => {
-      nock('https://testnet.confluxscan.io/v1/contract')
-        .get('/some-wrong-address?fields=abi')
-        .reply(500)
+      nock(getURL(1))
+        .get(/.*/)
+        .reply(200, {
+          code: 510,
+          message:
+            'Invalid address parameter [address] with value [some-wrong-address].',
+          data: {
+            address: 'some-wrong-address',
+          },
+        })
 
       const err = await getError(() => {
         return getCFXContractMethodSignature(
@@ -90,17 +87,16 @@ describe('CFX Name', () => {
           1,
         )
       })
-      expect(err).toEqual(new Error('inValidate base32 address'))
+      expect(err).toEqual(new Error('invalid base32 address'))
     })
 
     it('should throw error when got wrong transaction data', async () => {
       const abi =
         '[{"inputs":[],"name":"retrieve","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"num","type":"uint256"}],"name":"store","outputs":[],"stateMutability":"nonpayable","type":"function"}]'
-      nock('https://testnet.confluxscan.io/v1/contract')
-        .get(`/${contractAddress}?fields=abi`)
-        .reply(200, {
-          abi,
-        })
+      nock(getURL(1)).get(/.*/).reply(200, {
+        code: 0,
+        data: abi,
+      })
 
       const err = await getError(() => {
         return getCFXContractMethodSignature(
