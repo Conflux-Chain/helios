@@ -5,6 +5,7 @@ function HistoryBalance({
   amount = '',
   symbol = '',
   balanceMaxWidth = 114,
+  maxWidthStyle = 'max-w-[114px]',
   symbolClassName = 'text-2xs',
   className = '',
   balanceFontSize = 14,
@@ -17,7 +18,7 @@ function HistoryBalance({
       <DisplayBalance
         balance={amount}
         maxWidth={balanceMaxWidth}
-        maxWidthStyle={`max-w-[${balanceMaxWidth}px]`}
+        maxWidthStyle={maxWidthStyle}
         initialFontSize={balanceFontSize}
         {...props}
       />
@@ -33,6 +34,7 @@ HistoryBalance.propTypes = {
   symbolClassName: PropTypes.string,
   balanceFontSize: PropTypes.number,
   balanceMaxWidth: PropTypes.number,
+  maxWidthStyle: PropTypes.string,
   showNegative: PropTypes.bool,
 }
 
