@@ -27,10 +27,14 @@ function AdvancedGas() {
   const {t} = useTranslation()
   const query = useQuery()
   const selectedGasLevel = query.get('selectedGasLevel')
-  const suggestedMaxFeePerGas = query.get('suggestedMaxFeePerGas')
-  const suggestedMaxPriorityFeePerGas = query.get(
-    'suggestedMaxPriorityFeePerGas',
-  )
+  let suggestedMaxFeePerGas = query.get('suggestedMaxFeePerGas')
+  suggestedMaxFeePerGas = suggestedMaxFeePerGas
+    ? new Big(suggestedMaxFeePerGas).round(9).toString(10)
+    : ''
+  let suggestedMaxPriorityFeePerGas = query.get('suggestedMaxPriorityFeePerGas')
+  suggestedMaxPriorityFeePerGas = suggestedMaxPriorityFeePerGas
+    ? new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10)
+    : ''
   const isHistoryTx = JSON.parse(query.get('isHistoryTx'))
   const suggestedGasPrice = query.get('suggestedGasPrice')
 
@@ -67,16 +71,10 @@ function AdvancedGas() {
     ...originParams,
     gasPrice: convertValueToData(inputGasPrice, GWEI_DECIMALS),
     maxFeePerGas: inputMaxFeePerGas
-      ? convertValueToData(
-          new Big(inputMaxFeePerGas).round(9).toString(10),
-          GWEI_DECIMALS,
-        )
+      ? convertValueToData(inputMaxFeePerGas, GWEI_DECIMALS)
       : '',
     maxPriorityFeePerGas: inputMaxPriorityFeePerGas
-      ? convertValueToData(
-          new Big(inputMaxPriorityFeePerGas).round(9).toString(10),
-          GWEI_DECIMALS,
-        )
+      ? convertValueToData(inputMaxPriorityFeePerGas, GWEI_DECIMALS)
       : '',
     gas: formatDecimalToHex(
       inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
