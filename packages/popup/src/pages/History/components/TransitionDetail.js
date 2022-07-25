@@ -108,7 +108,8 @@ function TransitionDetail({
                   amount={amount}
                   symbol={symbol}
                   balanceFontSize={24}
-                  balanceMaxWidth={140}
+                  balanceMaxWidth={240}
+                  maxWidthStyle="max-w-[240px]"
                   symbolClassName="text-2lg text-gray-80 ml-1 !text-gray-80 !font-bold"
                   className="text-2lg !font-bold"
                 />
