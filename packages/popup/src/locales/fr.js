@@ -487,7 +487,7 @@ const fr = {
     contacts: 'Contacts',
     recent: 'Récent',
     account: 'Compte',
-    searchAddressNickname: 'Rerchercher une adresse ou un pseudonyme',
+    searchAddressNickname: 'Rechercher une adresse ou un pseudonyme',
     addedContactWarning: 'Cette adresse a déjà été ajoutée !',
     deleteContactTitle: 'Confirmer la suppression de ce contact',
     deleteContactContent: 'Souhaitez-vous supprimer ce contact ?',
