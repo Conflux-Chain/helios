@@ -27,14 +27,10 @@ function AdvancedGas() {
   const {t} = useTranslation()
   const query = useQuery()
   const selectedGasLevel = query.get('selectedGasLevel')
-  let suggestedMaxFeePerGas = query.get('suggestedMaxFeePerGas')
-  suggestedMaxFeePerGas = suggestedMaxFeePerGas
-    ? new Big(suggestedMaxFeePerGas).round(9).toString(10)
-    : ''
-  let suggestedMaxPriorityFeePerGas = query.get('suggestedMaxPriorityFeePerGas')
-  suggestedMaxPriorityFeePerGas = suggestedMaxPriorityFeePerGas
-    ? new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10)
-    : ''
+  const suggestedMaxFeePerGas = query.get('suggestedMaxFeePerGas')
+  const suggestedMaxPriorityFeePerGas = query.get(
+    'suggestedMaxPriorityFeePerGas',
+  )
   const isHistoryTx = JSON.parse(query.get('isHistoryTx'))
   const suggestedGasPrice = query.get('suggestedGasPrice')
 
@@ -104,6 +100,14 @@ function AdvancedGas() {
   } = advancedGasSetting
 
   useEffect(() => {
+    const wrapSuggestedMaxFeePerGas = !isNaN(Number(suggestedMaxFeePerGas))
+      ? new Big(suggestedMaxFeePerGas).round(9).toString(10)
+      : ''
+    const wrapSuggestedMaxPriorityFeePerGas = !isNaN(
+      Number(suggestedMaxPriorityFeePerGas),
+    )
+      ? new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10)
+      : ''
     !isTxTreatedAsEIP1559 &&
       !inputGasPrice &&
       setInputGasPrice(
@@ -117,7 +121,7 @@ function AdvancedGas() {
       setInputMaxFeePerGas(
         selectedGasLevel === 'advanced'
           ? convertDecimal(advancedMaxFeePerGas, 'divide', GWEI_DECIMALS)
-          : suggestedMaxFeePerGas,
+          : wrapSuggestedMaxFeePerGas,
       )
     isTxTreatedAsEIP1559 &&
       !inputMaxPriorityFeePerGas &&
@@ -128,7 +132,7 @@ function AdvancedGas() {
               'divide',
               GWEI_DECIMALS,
             )
-          : suggestedMaxPriorityFeePerGas,
+          : wrapSuggestedMaxPriorityFeePerGas,
       )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
