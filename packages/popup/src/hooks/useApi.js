@@ -274,6 +274,18 @@ export const useNetworkTypeIsCfx = (...args) => {
   return useCurrentAddress(...args).data?.network?.type === NETWORK_TYPE.CFX
 }
 
+export const useIsCfxChain = () => {
+  const {
+    data: {
+      network: {
+        type,
+        ticker: {symbol},
+      },
+    },
+  } = useCurrentAddress()
+  return type === NETWORK_TYPE.CFX || symbol?.toLowerCase() === NETWORK_TYPE.CFX
+}
+
 export const useAddressType = address => {
   const netId = useCurrentAddress().data.network.netId
   const networkTypeIsCfx = useNetworkTypeIsCfx()

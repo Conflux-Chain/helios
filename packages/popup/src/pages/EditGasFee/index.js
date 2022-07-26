@@ -13,7 +13,7 @@ import {
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, GasCost} from '../../components'
 import {GasStation} from './components'
-import {useNetworkTypeIsCfx} from '../../hooks/useApi'
+import {useNetworkTypeIsCfx, useIsCfxChain} from '../../hooks/useApi'
 import {
   useCurrentTxStore,
   useIsTxTreatedAsEIP1559,
@@ -74,6 +74,7 @@ function EditGasFee({
   const suggestedGasPrice = resendGasPrice || estimateGasPrice
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const isCfxChain = useIsCfxChain()
   const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
 
   const [selectedGasLevel, setSelectedGasLevel] = useState('')
@@ -206,7 +207,7 @@ function EditGasFee({
             selectedGasLevel={selectedGasLevel}
             setSelectedGasLevel={setSelectedGasLevel}
             onClickGasStationItem={onClickGasStationItem}
-            networkTypeIsCfx={networkTypeIsCfx}
+            isCfxChain={isCfxChain}
             estimateGasLimit={estimateGasLimit}
           />
         </main>

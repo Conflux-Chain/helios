@@ -5,7 +5,7 @@ import Link from '@fluent-wallet/component-link'
 import {formatBalance, GWEI_DECIMALS} from '@fluent-wallet/data-format'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {DisplayBalance, CustomTag} from '../components'
-import {useNetworkTypeIsCfx, useCurrentTicker} from '../hooks/useApi'
+import {useIsCfxChain, useCurrentTicker} from '../hooks/useApi'
 import {useCurrentTxStore} from '../hooks'
 import useDebouncedValue from '../hooks/useDebouncedValue'
 import {ROUTES} from '../constants'
@@ -24,7 +24,7 @@ function GasFee({
   const txGasPrice = isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice
   const {t} = useTranslation()
   const history = useHistory()
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const isCfxChain = useIsCfxChain()
   const {symbol, decimals} = useCurrentTicker()
   const {
     willPayCollateral,
@@ -100,7 +100,7 @@ function GasFee({
           <span className="text-xs text-gray-60">{`${formatBalance(
             displayGasPrice,
             GWEI_DECIMALS,
-          )} ${networkTypeIsCfx ? 'GDrip' : 'GWei'}`}</span>
+          )} ${isCfxChain ? 'GDrip' : 'GWei'}`}</span>
         )}
         {isBePayed && sponsoredFeeDrip !== '0x0' && (
           <CustomTag
