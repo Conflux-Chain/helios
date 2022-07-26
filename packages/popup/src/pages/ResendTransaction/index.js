@@ -275,7 +275,10 @@ function ResendTransaction() {
       {executedTxResultStatus && (
         <ExecutedTransaction
           open={executedTxResultStatus}
-          onClose={() => history.goBack()}
+          onClose={() => {
+            clearSendTransactionParams()
+            history.goBack()
+          }}
         />
       )}
     </div>
