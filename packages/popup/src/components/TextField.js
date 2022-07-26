@@ -11,7 +11,7 @@ const TextField = forwardRef(function TextField(
     textValue,
     onInputChange,
     width = 'w-[188px]',
-    height = 'h-[18px]',
+    height = '!h-[18px]',
     fontSize = 'text-sm',
     placeholder = '',
     className = '',
