@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Tooltip from '@fluent-wallet/component-tooltip'
 import {formatHexToDecimal} from '@fluent-wallet/data-format'
-import {SendOutlined} from '@fluent-wallet/component-icons'
+import {SendOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import {
   CFX_MAINNET_CURRENCY_SYMBOL,
   ETH_MAINNET_CURRENCY_SYMBOL,
@@ -12,6 +12,7 @@ import {
 import {formatIntoChecksumAddress, formatLocalizationLang} from '../../../utils'
 import {SlideCard, CopyButton, WrapIcon} from '../../../components'
 import {HistoryStatusIcon, HistoryBalance, ResendButtons} from './'
+import {useAddressType} from '../../../hooks/useApi'
 
 function TransitionItem({
   className = 'mt-3',
@@ -65,6 +66,10 @@ function TransitionDetail({
 }) {
   const {t, i18n} = useTranslation()
   const displayAddress = isExternalTx ? fromAddress : toAddress
+  const displayAddressType = useAddressType(displayAddress)
+  const isContractAddress =
+    displayAddressType === 'contract' || displayAddressType === 'builtin'
+
   const displayActionName =
     txStatus === 'failed'
       ? formatLocalizationLang(i18n.language) === 'zh'
@@ -119,9 +124,19 @@ function TransitionDetail({
 
           {displayAddress && (
             <TransitionItem
-              transitionTitle={t(isExternalTx ? 'fromAddress' : 'toAddress')}
+              transitionTitle={t(
+                isContractAddress
+                  ? 'contract'
+                  : isExternalTx
+                  ? 'fromAddress'
+                  : 'toAddress',
+              )}
               TransitionValueOverlay={
                 <div className="flex font-medium items-center">
+                  {isContractAddress && (
+                    <FileOutlined className="w-4 h-4 mr-1 text-primary" />
+                  )}
+
                   <Tooltip content={displayAddress} placement="topLeft">
                     {shortenAddress(formatIntoChecksumAddress(displayAddress))}
                   </Tooltip>
