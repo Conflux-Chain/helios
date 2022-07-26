@@ -100,14 +100,14 @@ function AdvancedGas() {
   } = advancedGasSetting
 
   useEffect(() => {
-    const wrapSuggestedMaxFeePerGas = !isNaN(Number(suggestedMaxFeePerGas))
-      ? new Big(suggestedMaxFeePerGas).round(9).toString(10)
-      : ''
-    const wrapSuggestedMaxPriorityFeePerGas = !isNaN(
-      Number(suggestedMaxPriorityFeePerGas),
-    )
-      ? new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10)
-      : ''
+    const wrapSuggestedMaxFeePerGas =
+      isTxTreatedAsEIP1559 && !isNaN(Number(suggestedMaxFeePerGas))
+        ? new Big(suggestedMaxFeePerGas).round(9).toString(10)
+        : ''
+    const wrapSuggestedMaxPriorityFeePerGas =
+      isTxTreatedAsEIP1559 && !isNaN(Number(suggestedMaxPriorityFeePerGas))
+        ? new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10)
+        : ''
     !isTxTreatedAsEIP1559 &&
       !inputGasPrice &&
       setInputGasPrice(
