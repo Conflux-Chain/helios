@@ -8,12 +8,6 @@ import {isUndefined} from '@fluent-wallet/checks'
 import {convertDataToValue} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {cfxGetFeeData, ethGetFeeData} from '@fluent-wallet/estimate-tx'
-import {
-  CFX_ESPACE_TESTNET_CHAINID,
-  CFX_ESPACE_MAINNET_CHAINID,
-  CFX_MAINNET_CURRENCY_SYMBOL,
-  ETH_MAINNET_CURRENCY_SYMBOL,
-} from '@fluent-wallet/consts'
 
 import {
   transformToTitleCase,
@@ -78,18 +72,8 @@ function HistoryItem({
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const {
-    data: {
-      value: currentAddress,
-      network: {chainId: currentChainId},
-    },
+    data: {value: currentAddress},
   } = useCurrentAddress()
-
-  const gasFeeSymbol =
-    currentChainId === CFX_ESPACE_MAINNET_CHAINID ||
-    currentChainId === CFX_ESPACE_TESTNET_CHAINID ||
-    networkTypeIsCfx
-      ? CFX_MAINNET_CURRENCY_SYMBOL
-      : ETH_MAINNET_CURRENCY_SYMBOL
 
   const fromAddress = payload?.from || ''
   const txStatus = formatStatus(status)
@@ -295,7 +279,7 @@ function HistoryItem({
         errorType={i18next?.exists(err) ? err : 'unknownError'}
         onCancelPendingTx={onCancelPendingTx}
         onSpeedupPendingTx={onSpeedupPendingTx}
-        gasFeeSymbol={gasFeeSymbol}
+        gasFeeSymbol={tokenSymbol}
       />
     </div>
   )
