@@ -6449,7 +6449,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/jazz-icon@workspace:packages/jazz-icon"
   dependencies:
-    mersenne-twister: 1.1.0
+    mersenne-twister: ^1.1.0
   languageName: unknown
   linkType: soft
 
@@ -24646,7 +24646,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mersenne-twister@npm:1.1.0":
+"mersenne-twister@npm:^1.1.0":
   version: 1.1.0
   resolution: "mersenne-twister@npm:1.1.0"
   checksum: 7de1940ded117f2aad9320ae4d21d647b0ecf0667abbadcfe6a2835c669feb674ef46cb7a72da7af69a56d8b19e50e95e2fb7ef6d780efab7a6acd4d87f4cb2d

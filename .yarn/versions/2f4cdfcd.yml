@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/jazz-icon": patch
+
+declined:
+  - helios-popup
