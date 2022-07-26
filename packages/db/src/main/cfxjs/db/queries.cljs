@@ -1841,11 +1841,13 @@
                  (and hwrong [(sub mid (inc high)) (- high mid) (->mid (- high mid))]))]
         (recur d rst)))))
 
-(defnc query-latest-tx [{:keys [addressId]}]
+(defnc query-latest-confirmed-tx [{:keys [addressId]}]
   (let [max-created (q '[:find (max ?created) .
                          :in $ ?addr
                          :where
                          [?addr :address/tx ?tx]
+                         (not [?tx :tx/fromScan true])
+                         [?tx :tx/status 5]
                          [?tx :tx/created ?created]]
                        addressId)
         latest-tx   (and max-created
@@ -1863,6 +1865,8 @@
                       :where
                       [?addr :address/value ?addrv]
                       [?addr :address/tx ?tx]
+                      (not [?tx :tx/fromScan true])
+                      [?tx :tx/status 5]
                       [?tx :tx/txPayload ?payload]
                       [?payload :txPayload/from ?addrv]]
                     address-id)]
@@ -1875,6 +1879,8 @@
                        :where
                        [?addr :address/tx ?tx]
                        [?addr :address/value ?addrv]
+                       (not [?tx :tx/fromScan true])
+                       [?tx :tx/status 5]
                        [?tx :tx/txPayload ?payload]
                        [?payload :txPayload/from ?addrv]
                        [?payload :txPayload/nonce ?nonce-hex]
@@ -1885,7 +1891,7 @@
 
   :let [;; nonce is continuous
         nonce-continuous? (= tx-count (inc (- nonce-max nonce-min)))
-        latest-tx (query-latest-tx {:addressId address-id})
+        latest-tx (query-latest-confirmed-tx {:addressId address-id})
         latest-tx-receipt (and latest-tx (:tx/receipt (p [:tx/receipt] latest-tx)))
         latest-tx-block-or-epoch-number
         (and latest-tx
@@ -1907,6 +1913,7 @@
                     :where
                     [?addr :address/value ?addrv]
                     [?addr :address/tx ?tx]
+                    (not [?tx :tx/fromScan true])
                     [?tx :tx/status 5]
                     [?tx :tx/txPayload ?payload]
                     [?payload :txPayload/from ?addrv]
