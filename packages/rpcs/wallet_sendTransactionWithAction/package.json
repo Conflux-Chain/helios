@@ -1,0 +1,11 @@
+{
+  "name": "@fluent-wallet/wallet_send-transaction-with-action",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.2.0",
+  "version": "0.0.0",
+  "dependencies": {
+    "@fluent-wallet/spec": "workspace:*",
+    "@fluent-wallet/wallet_send-transaction": "workspace:*"
+  }
+}

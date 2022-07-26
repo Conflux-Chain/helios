@@ -3,6 +3,7 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletSendTransactionWithAction from '@fluent-wallet/wallet_send-transaction-with-action'
 import * as walletGetBlockOrEpochNumber from '@fluent-wallet/wallet_get-block-or-epoch-number'
 import * as walletRefetchTxList from '@fluent-wallet/wallet_refetch-tx-list'
 import * as walletDeleteMemo from '@fluent-wallet/wallet_delete-memo'
@@ -351,6 +352,7 @@ export const rpcEngineOpts = {
     ethTypedSignV4,
     cfxTypedSignV4,
 
+    walletSendTransactionWithAction,
     walletSendTransaction,
     walletHandleUnfinishedETHTx,
     walletHandleUnfinishedCFXTx,
