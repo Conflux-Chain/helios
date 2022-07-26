@@ -6,7 +6,7 @@ import {GWEI_DECIMALS} from '@fluent-wallet/data-format'
 
 function CustomGasPrice({
   // gasInfoEip1559,
-  networkTypeIsCfx,
+  isCfxChain,
   isTxTreatedAsEIP1559,
   inputGasPrice,
   gasPriceErr,
@@ -29,9 +29,7 @@ function CustomGasPrice({
       {isTxTreatedAsEIP1559 && (
         <>
           <CompWithLabel
-            label={`${t('maxFeePerGas')}(${
-              networkTypeIsCfx ? 'GDrip' : 'GWei'
-            })`}
+            label={`${t('maxFeePerGas')}(${isCfxChain ? 'GDrip' : 'GWei'})`}
             className="!mt-0"
           >
             <NumberInput
@@ -47,7 +45,7 @@ function CustomGasPrice({
               <span>
                 {addUnitForValue(
                   `${t('current')}${low?.suggestedMaxFeePerGas}`,
-                  networkTypeIsCfx,
+                  isCfxChain,
                 )}
               </span>
               <span>
@@ -55,14 +53,14 @@ function CustomGasPrice({
                   `${t('twelveHour')}${historicalBaseFeeRange?.[0] || '0'} ~ ${
                     historicalBaseFeeRange?.[1] || '0'
                   }`,
-                  networkTypeIsCfx,
+                  isCfxChain,
                 )}
               </span>
             </div>
           )} */}
           <CompWithLabel
             label={`${t('maxPriorityFeePerGas')}(${
-              networkTypeIsCfx ? 'GDrip' : 'GWei'
+              isCfxChain ? 'GDrip' : 'GWei'
             })`}
             className="!mt-6"
           >
@@ -82,7 +80,7 @@ function CustomGasPrice({
                     `${t('twelveHour')}${latestPriorityFeeRange?.[0]} ~ ${
                       latestPriorityFeeRange?.[1]
                     }`,
-                    networkTypeIsCfx,
+                    isCfxChain,
                   )}
                 </span>
                 <span>
@@ -90,7 +88,7 @@ function CustomGasPrice({
                     `${t('twelveHour')}${historicalPriorityFeeRange?.[0]} ~ ${
                       historicalPriorityFeeRange?.[1]
                     }`,
-                    networkTypeIsCfx,
+                    isCfxChain,
                   )}
                 </span>
               </div>
@@ -99,7 +97,7 @@ function CustomGasPrice({
       )}
       {!isTxTreatedAsEIP1559 && (
         <CompWithLabel
-          label={`${t('gasPrice')}(${networkTypeIsCfx ? 'GDrip' : 'GWei'})`}
+          label={`${t('gasPrice')}(${isCfxChain ? 'GDrip' : 'GWei'})`}
           className="!mt-0"
         >
           <NumberInput
@@ -118,7 +116,7 @@ function CustomGasPrice({
 
 CustomGasPrice.propTypes = {
   //  gasInfoEip1559: PropTypes.object,
-  networkTypeIsCfx: PropTypes.bool,
+  isCfxChain: PropTypes.bool,
   isTxTreatedAsEIP1559: PropTypes.bool,
   inputGasPrice: PropTypes.string,
   gasPriceErr: PropTypes.string,

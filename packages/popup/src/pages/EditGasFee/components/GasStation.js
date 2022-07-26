@@ -21,7 +21,7 @@ const GasStationItem = ({
   onClick,
   data,
   isTxTreatedAsEIP1559 = true,
-  networkTypeIsCfx = false,
+  isCfxChain = false,
 }) => {
   const {t} = useTranslation()
   const {
@@ -46,7 +46,7 @@ const GasStationItem = ({
           {gasLevel === 'advanced' || level !== 'advanced'
             ? addUnitForValue(
                 isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice,
-                networkTypeIsCfx,
+                isCfxChain,
               )
             : t('edit')}
         </span>
@@ -99,7 +99,7 @@ GasStationItem.propTypes = {
   level: PropTypes.string,
   onClick: PropTypes.func,
   isTxTreatedAsEIP1559: PropTypes.bool,
-  networkTypeIsCfx: PropTypes.bool,
+  isCfxChain: PropTypes.bool,
   data: PropTypes.object,
 }
 
@@ -111,7 +111,7 @@ function GasStation({
   setSelectedGasLevel,
   onClickGasStationItem,
   suggestedGasPrice,
-  networkTypeIsCfx,
+  isCfxChain,
   estimateGasLimit,
 }) {
   const {t} = useTranslation()
@@ -138,7 +138,7 @@ function GasStation({
               gasLimit: convertDataToValue(estimateGasLimit),
               baseFee: gasInfoEip1559?.['estimatedBaseFee'],
             }}
-            networkTypeIsCfx={networkTypeIsCfx}
+            isCfxChain={isCfxChain}
             isTxTreatedAsEIP1559={true}
             selected={selectedGasLevel === level}
             onClick={level => {
@@ -155,7 +155,7 @@ function GasStation({
             gasPrice: convertDataToValue(suggestedGasPrice, GWEI_DECIMALS),
           }}
           isTxTreatedAsEIP1559={false}
-          networkTypeIsCfx={networkTypeIsCfx}
+          isCfxChain={isCfxChain}
           selected={selectedGasLevel === 'medium'}
           onClick={() => {
             setSelectedGasLevel('medium')
@@ -186,7 +186,7 @@ function GasStation({
           baseFee: gasInfoEip1559?.['estimatedBaseFee'],
           gasLevel: advancedGasSetting?.['gasLevel'],
         }}
-        networkTypeIsCfx={networkTypeIsCfx}
+        isCfxChain={isCfxChain}
         isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
         selected={selectedGasLevel === 'advanced'}
         onClick={() => {
@@ -225,7 +225,7 @@ GasStation.propTypes = {
   setSelectedGasLevel: PropTypes.func,
   onClickGasStationItem: PropTypes.func,
   suggestedGasPrice: PropTypes.string,
-  networkTypeIsCfx: PropTypes.bool,
+  isCfxChain: PropTypes.bool,
   estimateGasLimit: PropTypes.string,
 }
 

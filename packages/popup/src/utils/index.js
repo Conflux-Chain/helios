@@ -310,6 +310,6 @@ export const getAvatarAddress = addresses => {
   return ethMainNetAddressItem?.hex
 }
 
-export const addUnitForValue = (value, networkTypeIsCfx = false) => {
-  return value ? `${value} ${networkTypeIsCfx ? 'GDrip' : 'GWei'}` : 'loading'
+export const addUnitForValue = (value, isCfxChain = false) => {
+  return value ? `${value} ${isCfxChain ? 'GDrip' : 'GWei'}` : 'loading'
 }
