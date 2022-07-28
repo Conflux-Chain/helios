@@ -169,8 +169,8 @@ function ContactItem({
       <div
         className={`flex items-center rounded shadow-fluent-4 ${
           showAddressInput || showMemoInput
-            ? 'bg-primary-4'
-            : 'bg-white hover:bg-primary-4'
+            ? 'bg-primary-10'
+            : 'bg-white hover:bg-primary-10'
         } p-3 ${containerClassName}`}
         id={itemId || `contact-${address}`}
         ref={containerRef}

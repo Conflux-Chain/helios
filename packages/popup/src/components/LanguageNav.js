@@ -17,7 +17,7 @@ function Overlay({changeLanguage}) {
     <>
       {LANGUAGES.map(lang => (
         <div
-          className="px-4 h-10 flex items-center justify-between text-sm text-gray-80 cursor-pointer hover:bg-primary-4 hover:text-primary"
+          className="px-4 h-10 flex items-center justify-between text-sm text-gray-80 cursor-pointer hover:bg-primary-10 hover:text-primary"
           aria-hidden="true"
           key={lang}
           id={`switch-${lang}`}

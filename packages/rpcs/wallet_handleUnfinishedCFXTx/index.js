@@ -237,16 +237,17 @@ export const main = ({
                         typeof failedCb === 'function' && failedCb(err),
                     ),
                     sideEffect(({errorType}) => {
-                      setTxFailed({hash, error: errorType})
-                      getExt().then(ext =>
-                        ext.notifications.create(hash, {
-                          title: 'Failed transaction',
-                          message: `Transaction ${parseInt(
-                            tx.txPayload.nonce,
-                            16,
-                          )} failed! ${err?.data || err?.message || ''}`,
-                        }),
-                      )
+                      if (setTxFailed({hash, error: errorType})) {
+                        getExt().then(ext =>
+                          ext.notifications.create(hash, {
+                            title: 'Failed transaction',
+                            message: `Transaction ${parseInt(
+                              tx.txPayload.nonce,
+                              16,
+                            )} failed! ${err?.data || err?.message || ''}`,
+                          }),
+                        )
+                      }
                     }),
                     sideEffect(() => {
                       updateBadge(getUnfinishedTxCount())
@@ -316,11 +317,14 @@ export const main = ({
             // get the error message in receipt
             cfx_getTransactionReceipt({errorFallThrough: true}, [hash])
               .then(receipt => {
-                let err
+                let err = ''
                 if (receipt?.txExecErrorMsg) {
                   err = receipt.txExecErrorMsg
                 }
-                setTxFailed({hash, error: receipt.txExecErrorMsg})
+                setTxFailed({
+                  hash,
+                  error: err || 'tx failed',
+                })
                 updateBadge(getUnfinishedTxCount())
                 getExt().then(ext =>
                   ext.notifications.create(hash, {
@@ -369,17 +373,18 @@ export const main = ({
         sideEffect(nonce => {
           if (BigNumber.from(nonce).gt(BigNumber.from(tx.txPayload.nonce))) {
             if (tx.skippedChecked) {
-              setTxSkipped({hash, skippedChecked: true})
+              if (setTxSkipped({hash, skippedChecked: true})) {
+                getExt().then(ext =>
+                  ext.notifications.create(hash, {
+                    title: 'Skipped transaction',
+                    message: `Transaction ${parseInt(
+                      tx.txPayload.nonce,
+                      16,
+                    )}  skipped!`,
+                  }),
+                )
+              }
               updateBadge(getUnfinishedTxCount())
-              getExt().then(ext =>
-                ext.notifications.create(hash, {
-                  title: 'Skipped transaction',
-                  message: `Transaction ${parseInt(
-                    tx.txPayload.nonce,
-                    16,
-                  )}  skipped!`,
-                }),
-              )
               return sdone()
             } else {
               setTxSkipped({hash})
@@ -409,8 +414,9 @@ export const main = ({
             gasUsed,
             gasFee,
             storageCollateralized,
+            storageCoveredBySponsor,
             gasCoveredBySponsor,
-            storageReleased,
+            storageReleased, // array
           } = rst
           const receipt = {
             blockHash,
@@ -420,6 +426,7 @@ export const main = ({
             gasFee,
             storageCollateralized,
             gasCoveredBySponsor,
+            storageCoveredBySponsor,
           }
           if (storageReleased?.length) receipt.storageReleased = storageReleased
           if (contractCreated) receipt.contractCreated = contractCreated
@@ -428,17 +435,18 @@ export const main = ({
             setTxExecuted({hash, receipt})
             keepTrack()
           } else {
-            setTxFailed({hash, error: txExecErrorMsg})
+            if (setTxFailed({hash, error: txExecErrorMsg})) {
+              getExt().then(ext =>
+                ext.notifications.create(hash, {
+                  title: 'Failed transaction',
+                  message: `Transaction ${parseInt(
+                    tx.txPayload.nonce,
+                    16,
+                  )} failed! ${txExecErrorMsg}`,
+                }),
+              )
+            }
             updateBadge(getUnfinishedTxCount())
-            getExt().then(ext =>
-              ext.notifications.create(hash, {
-                title: 'Failed transaction',
-                message: `Transaction ${parseInt(
-                  tx.txPayload.nonce,
-                  16,
-                )} failed! ${txExecErrorMsg}`,
-              }),
-            )
           }
         }),
         sideEffect(sdone),

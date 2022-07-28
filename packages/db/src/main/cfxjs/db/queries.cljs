@@ -1607,7 +1607,7 @@
    (let [txs (q '[:find ?tx ?addr ?net ?token ?app
                   :in $ ?txhash ?nettype
                   :where
-                  (or (and [(and true ?txhash)]
+                  (or (and [(some? ?txhash)]
                            [?tx :tx/hash ?txhash])
                       (and [(not ?txhash)]
                            [?tx :tx/hash]))
@@ -1637,11 +1637,11 @@
                                :address (e :address addr)
                                :network (e :network net)
                                :token   (and token (e :token token))
-                               :app     (and token (e :app app))})
+                               :app     (and app (e :app app))})
                      (fn [[tx addr net token app]]
                        {:tx      (e :tx tx)
                         :address addr
-                        :network net
+                        :network (e :network net)
                         :token   token
                         :app     app}))
          rst     (mapv process txs)
@@ -1779,6 +1779,219 @@
 (comment
   (get-recent-interesting-address-from-tx {:fuzzy " "}))
 
+(defnc get-query-nonce [all-nonce in-wallet-nonce]
+  ;; all-nonce min-nonce to max-nonce
+  ;; in-wallet-nonce nonce that already in wallet
+  :let [data (loop [all all-nonce
+                    in  in-wallet-nonce
+                    rst #{}]
+               (let [nonce1 (first all)
+                     nonce2 (second all)]
+                 (if (and nonce1 nonce2)
+                   (cond
+                     (and (in nonce1) (in nonce2))
+                     (recur (rest all) (disj in nonce1) rst)
+
+                     (and (in nonce1) (not (in nonce2)))
+                     (recur (rest all) (disj in nonce1) (conj rst nonce1))
+
+                     (and (not (in nonce1)) (not (in nonce2)))
+                     (recur (rest all) in rst)
+
+                     :else
+                     ;; (and (not (in nonce1)) (in nonce2))
+                     (recur (rest all) in (conj rst nonce2)))
+                   rst)))
+        last-nonce (last all-nonce)]
+
+  ;; last nonce is in wallet
+  (data last-nonce)
+  {:data data}
+
+  ;; last nonce is not in wallet
+  {:data data :last last-nonce})
+
+(defn- ->mid [high]
+  (-> high (/ 2) js/Math.floor))
+
+(defn- search-nonce-gap [data]
+  (let [high (dec (count data))
+        mid  (->mid high)]
+    (loop [d   [[data high mid]]
+           rst []]
+      rst
+      (bc/cond
+        :let [x (first d)]
+        (nil? x)
+        rst
+
+        :let [[data high mid] x
+              d (rest d)]
+        (= high 1)
+        (recur d (conj rst data))
+
+        :let [n (fn [n] (first (nth data n)))
+              sub (partial subvec data)
+              lwrong (> (- (n mid) (n 0)) mid)
+              hwrong (> (- (n high) (n mid)) (- high mid))
+
+              d (enc/conj-when
+                 d
+                 (and lwrong [(sub 0 (inc mid)) mid (->mid mid)])
+                 (and hwrong [(sub mid (inc high)) (- high mid) (->mid (- high mid))]))]
+        (recur d rst)))))
+
+(defnc query-latest-confirmed-tx [{:keys [addressId]}]
+  (let [max-created (q '[:find (max ?created) .
+                         :in $ ?addr
+                         :where
+                         [?addr :address/tx ?tx]
+                         (not [?tx :tx/fromScan true])
+                         [?tx :tx/status 5]
+                         [?tx :tx/created ?created]]
+                       addressId)
+        latest-tx   (and max-created
+                         (q '[:find ?tx .
+                              :in $ ?addr ?created
+                              :where
+                              [?addr :address/tx ?tx]
+                              [?tx :tx/created ?created]]
+                            addressId max-created))]
+    latest-tx))
+
+(defnc query-nonce-gap-txs [{address-id :addressId next-nonce :nextNonce}]
+  :let [tx-count (q '[:find (count ?tx) .
+                      :in $ ?addr
+                      :where
+                      [?addr :address/value ?addrv]
+                      [?addr :address/tx ?tx]
+                      (not [?tx :tx/fromScan true])
+                      [?tx :tx/status 5]
+                      [?tx :tx/txPayload ?payload]
+                      [?payload :txPayload/from ?addrv]]
+                    address-id)]
+  ;; no tx
+  (zero? tx-count)
+  nil
+  :let [nonce-max (dec (js/parseInt next-nonce))
+        nonce-min (q '[:find (min ?nonce) .
+                       :in $ ?addr
+                       :where
+                       [?addr :address/tx ?tx]
+                       [?addr :address/value ?addrv]
+                       (not [?tx :tx/fromScan true])
+                       [?tx :tx/status 5]
+                       [?tx :tx/txPayload ?payload]
+                       [?payload :txPayload/from ?addrv]
+                       [?payload :txPayload/nonce ?nonce-hex]
+                       [(js/parseInt ?nonce-hex) ?nonce]]
+                     address-id)]
+  (nil? nonce-min)
+  nil
+
+  :let [;; nonce is continuous
+        nonce-continuous? (= tx-count (inc (- nonce-max nonce-min)))
+        latest-tx (query-latest-confirmed-tx {:addressId address-id})
+        latest-tx-receipt (and latest-tx (:tx/receipt (p [:tx/receipt] latest-tx)))
+        latest-tx-block-or-epoch-number
+        (and latest-tx
+             (or
+              (:epochNumber latest-tx-receipt)
+              (:blockNumber latest-tx-receipt)))]
+
+  ;; :do (prn nonce-max nonce-min)
+  ;; get incoming txs when nonce is continuous
+  nonce-continuous?
+  [[[nil latest-tx-block-or-epoch-number] [nil "latest"]]]
+
+  :let [;; get all successful txs' nonce and receipt
+        nonces (q '[:find ?nonce
+                    ;; ?block
+                    ?receipt
+                    ;; (pull ?tx [:tx/receipt {:tx/txPayload [:txPayload/nonce]}])
+                    :in $ ?addr
+                    :where
+                    [?addr :address/value ?addrv]
+                    [?addr :address/tx ?tx]
+                    (not [?tx :tx/fromScan true])
+                    [?tx :tx/status 5]
+                    [?tx :tx/txPayload ?payload]
+                    [?payload :txPayload/from ?addrv]
+                    [?tx :tx/receipt ?receipt]
+                    [?payload :txPayload/nonce ?n]
+                    [(js/parseInt ?n) ?nonce]]
+                  address-id)
+        ;; get block/epoch number from receipt
+        nonces (mapv (fn [[nonce receipt]] [nonce (or (:blockNumber receipt) (:epochNumber receipt))]) nonces)
+        ;; get gaps in txlist
+        gaps (search-nonce-gap nonces)]
+
+  ;; empty gaps
+  (nil? (seq gaps))
+  [[[nil latest-tx-block-or-epoch-number] [nil "latest"]]]
+
+  :let [;; if latest tx in the list
+        has-latest? (if (= (-> nonces last first) nonce-max) true false)
+
+        ;; always add latest gap
+        gaps (conj gaps [(-> gaps last second)
+                         (if has-latest?
+                           [nil "latest"]
+                           [nonce-max "latest"])])]
+  gaps)
+
+(comment
+  (query-nonce-gap-txs {:addressId 116 :nextNonce "0x13d"})
+  (search-nonce-gap (mapv #(vector % :a) [1 2 3 4 5 6 10 20 40]))
+  (p '[*] 113)
+  (query-nonce-gap-txs {:addressId 119 :nextNonce "0x39"})
+
+  (p '[:tx/receipt {:tx/txPayload [:txPayload/nonce]}] 173))
+
+(defnc insert-external-tx [{:keys [tx payload receipt addressId extra]}]
+  :let [dup-tx? (some? (p [:db/id] [:tx/hash (:hash tx)]))]
+  dup-tx?
+  nil
+  :let [new-tx (reduce-kv (fn [acc k v] (assoc acc (keyword :tx k) v)) {} tx)
+        new-payload (reduce-kv (fn [acc k v] (assoc acc (keyword :txPayload k) v)) {} payload)
+        new-extra (reduce-kv (fn [acc k v] (assoc acc (keyword :txExtra k) v)) {} extra)]
+  (t [(assoc new-payload :db/id "new-payload")
+      (assoc new-extra :db/id "new-extra")
+      (assoc new-tx :db/id "new-tx"
+             :tx/txPayload "new-payload"
+             :tx/receipt receipt
+             :tx/txExtra "new-extra")
+      {:db/id      addressId
+       :address/tx "new-tx"}]))
+
+(comment
+  (t (reduce (fn [acc id]
+               (conj acc
+                     {:db/id      (str "new-tx-extra" id)
+                      :txExtra/ok false}
+                     {:db/id      id
+                      :tx/txExtra (str "new-tx-extra" id)}))
+             []
+
+             [178]))
+  (p [:tx/txExtra] 176)
+  (q '[:find [?tx ...]
+       :in $
+       :where
+       [?tx :tx/hash _]
+       [?tx :tx/txPayload ?payload]
+       [?payload :txPayload/nonce "0x139"]])
+  (get-txs-to-enrich)
+
+  (:address/value (p [:address/value] 112))
+  (q '[:find ?tx .
+       :in $ ?nonce ?addr-id
+       :where
+       [?addr-id :address/tx ?tx]
+       [?tx :tx/txPayload ?payload]
+       [?payload :txPayload/nonce ?nonce]]
+     "0x138" 112))
+
 ;;; UI QUERIES
 (defn account-list-assets [{:keys [accountGroupTypes]}]
   (let [accountGroupTypes (if (vector? accountGroupTypes) accountGroupTypes ["hd" "pk" "hw" "pub"])
@@ -1805,12 +2018,17 @@
      :currentNetwork cur-net
      :accountGroups  data}))
 
-(defn- sort-tx [[noncea _] [nonceb _]]
+(defn- sort-tx [[_ _ createda] [_ _ createdb]]
   (cond
-    ;; sort by nonce
-    (.gt (bn/BigNumber.from noncea)
-         (bn/BigNumber.from nonceb))
+    ;; sort by created
+    (> createda createdb)
     true
+
+    ;; ;; sort by nonce
+    ;; (.gt (bn/BigNumber.from noncea)
+    ;;      (bn/BigNumber.from nonceb))
+    ;; true
+
     ;; ;; sort by created order when with same nonce
     ;; (.eq (bn/BigNumber.from noncea)
     ;;      (bn/BigNumber.from nonceb))
@@ -1818,12 +2036,14 @@
     :else
     false))
 
-(defn- ->single-nonce-tx-id [tx-ids]
+(defn- ->single-nonce-tx-id
+  "filter txs with same nonce and add tx/created value"
+  [[_ tx-ids]]
   (->> tx-ids
        (sort >)
-       (map #(vector % (:tx/status (p [:tx/status] %))))
+       (map (fn [tx-id] (let [tx (p [:tx/status :tx/created] tx-id)]
+                          [tx-id (:tx/status tx) (:tx/created tx)])))
        (sort-by second >)
-       first
        first))
 
 (defn- tx-id->data [id]
@@ -1841,7 +2061,17 @@
         (assoc :app (and app-id (e :app app-id)))
         (assoc :token (and token-id (e :token token-id))))))
 
+(defn get-tx [{:keys [hash]}]
+  (let [tx (q '[:find ?tx .
+                :in  $ ?tx
+                :where
+                [?tx :tx/created]]
+              [:tx/hash hash])]
+    (when tx
+      (tx-id->data tx))))
+
 (defnc query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
+  ;; :do (js/console.time "query-tx-list")
   :let [offset (or offset 0)
         limit  (min 100 (or limit 10))
         [status> status>= status< status<=]
@@ -1917,17 +2147,23 @@
                       [:in] (:in query-initial)
                       [:where] (:where query-initial))
 
-        txs   (->> (apply q query (:args query-initial))
-                   (sort sort-tx))
+        txs   (apply q query (:args query-initial))
         total (count txs)]
   countOnly  total
   :let  [txs (->> txs
+                  ;; ["0x1a" #{188 192}]
+                  ;; ["nonce" #{tx-id1 tx-id2}]
+                  ;; tx-id1 tx-id2 has same nonce
+                  (map ->single-nonce-tx-id)
+                  (sort sort-tx)
                   (drop offset)
                   (take limit)
-                  (map rest))
-         data (map (comp tx-id->data ->single-nonce-tx-id first) txs)]
+                  ;; get tx-id
+                  (map first)
+                  (map tx-id->data))]
+  ;; :do (js/console.timeEnd "query-tx-list")
   {:total total
-   :data  data})
+   :data  txs})
 
 (comment
   (query-tx-list {}))
@@ -2012,6 +2248,8 @@
               :isLastNoneHWAccount                 is-last-none-hw-account
               :getConnectedSitesWithoutApps        get-connected-sites-without-apps
               :upsertMemo                          upsert-memo
+              :queryNonceGapTxs                    query-nonce-gap-txs
+              :insertExternalTx                    insert-external-tx
 
               :queryqueryRecentInterestingAddress get-recent-interesting-address-from-tx
               :queryqueryApp                      get-apps
@@ -2025,6 +2263,7 @@
               :queryqueryGroup                    get-group
               :queryqueryBalance                  get-balance
               :querytxList                        query-tx-list
+              :queryqueryTx                       get-tx
               :queryaccountListAssets             account-list-assets
               :getAccountGroupByVaultType         get-account-group-by-vault-type})
 

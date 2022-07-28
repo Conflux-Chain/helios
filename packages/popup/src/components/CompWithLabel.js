@@ -4,7 +4,7 @@ function CompWithLabel({label, children, className = '', labelClassName = ''}) {
   return (
     <div className={`mt-3 w-full ${className}`}>
       <span
-        className={`text-gray-80 ml-1 mb-2 inline-block w-full ${labelClassName}`}
+        className={`text-gray-40 mb-2 inline-block w-full ${labelClassName}`}
       >
         {label}
       </span>

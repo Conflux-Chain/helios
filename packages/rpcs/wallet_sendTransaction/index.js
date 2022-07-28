@@ -5,6 +5,7 @@ import {getTxHashFromRawTx} from '@fluent-wallet/signature'
 import {ERROR} from '@fluent-wallet/json-rpc-error'
 import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
 import {BigNumber} from '@ethersproject/bignumber'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 
 export const NAME = 'wallet_sendTransaction'
 
@@ -85,6 +86,9 @@ export const main = async ({
       throw InvalidParams(`Invalid from address in tx ${from}`)
 
     delete params[0].nonce
+    if (params[0].type === ETH_TX_TYPES.EIP1559 && params[0].gasPrice) {
+      delete params[0].gasPrice
+    }
     try {
       // try sign tx
       await signTxFn(
@@ -92,8 +96,8 @@ export const main = async ({
         [...params, {dryRun: true}],
       )
     } catch (err) {
-      if (!/Can not estimate.*NotEnoughCash/i.test(err.message)) {
-        if (err?.code === ERROR.USER_REJECTED.code) throw err
+      if (err?.code === ERROR.USER_REJECTED.code) throw err
+      if (!err?.data?.estimateError) {
         err.message = `Error while processing tx.\nparams:\n${JSON.stringify(
           params,
           null,
@@ -174,7 +178,6 @@ export const main = async ({
     throw Server(`Server error while signning tx`)
   }
   const {raw: rawtx, txMeta} = signed
-
   const txhash = getTxHashFromRawTx(rawtx)
   const duptx = getAddrTxByHash({addressId: addr, txhash})
 
@@ -186,7 +189,6 @@ export const main = async ({
   const blockNumber =
     network.type === 'eth' &&
     (await eth_blockNumber({errorFallThrough: true}, []))
-
   const dbtxs = [
     {eid: 'newTxPayload', txPayload: txMeta},
     {eid: 'newTxExtra', txExtra: {ok: false}},
@@ -206,7 +208,6 @@ export const main = async ({
     {eid: addr, address: {tx: 'newTxId'}},
     authReqId && {eid: authReq.app.eid, app: {tx: 'newTxId'}},
   ]
-
   const {
     tempids: {newTxId},
   } = t(dbtxs)
@@ -219,8 +220,9 @@ export const main = async ({
       },
       {txhash},
     )
-  } catch (err) {} // eslint-disable-line no-empty
 
+    // eslint-disable-next-line no-empty
+  } catch (err) {}
   return await new Promise((resolve, reject) => {
     handleUnfinishedTxFn(
       {network: authReqId ? authReq.app.currentNetwork : network},

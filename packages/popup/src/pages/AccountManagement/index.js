@@ -243,10 +243,12 @@ function AccountManagement() {
                     address,
                   }) => (
                     <AccountItem
+                      showAvatar={false}
                       key={accountId}
                       accountId={accountId}
                       accountNickname={accountNickname}
                       address={getAvatarAddress(address)}
+                      className="pl-4"
                       AccountNameOverlay={
                         <TextNickname
                           nickname={accountNickname}
@@ -262,7 +264,9 @@ function AccountManagement() {
                           hidden={hidden}
                           selected={selected}
                           showDelete={showDelete}
-                          accounts={Object.values(account)}
+                          accounts={Object.values(
+                            pkHdAccountGroups?.[accountGroupId]?.account || {},
+                          )}
                           onOpenConfirmPassword={onOpenConfirmPassword}
                           updateEditedName={updateEditedName}
                         />

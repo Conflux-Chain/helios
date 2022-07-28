@@ -6,6 +6,7 @@ function AccountItem({
   accountId,
   address = '',
   accountNickname = '',
+  showAvatar = true,
   rightComponent,
   AccountNameOverlay,
   onClickAccount,
@@ -13,11 +14,13 @@ function AccountItem({
   return (
     <div
       aria-hidden="true"
-      className={`flex px-3 py-3.5 rounded hover:bg-primary-4 items-center ${className}`}
+      className={`flex px-3 py-3.5 rounded hover:bg-primary-10 items-center ${className}`}
       id={`account-${accountId}`}
       onClick={() => onClickAccount?.()}
     >
-      <Avatar className="w-5 h-5 mr-2" diameter={20} address={address} />
+      {showAvatar && (
+        <Avatar className="w-5 h-5 mr-2" diameter={20} address={address} />
+      )}
       <div className="flex-1 flex items-center">
         {AccountNameOverlay || (
           <p className="text-xs text-gray-40">{accountNickname}</p>
@@ -29,8 +32,9 @@ function AccountItem({
 }
 
 AccountItem.propTypes = {
-  className: PropTypes.string,
+  showAvatar: PropTypes.bool,
   accountId: PropTypes.number,
+  className: PropTypes.string,
   address: PropTypes.string,
   accountNickname: PropTypes.string,
   AccountNameOverlay: PropTypes.node,

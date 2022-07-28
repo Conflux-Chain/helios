@@ -243,16 +243,17 @@ export const main = ({
                         typeof failedCb === 'function' && failedCb(err),
                     ),
                     sideEffect(({errorType}) => {
-                      setTxFailed({hash, error: errorType})
-                      getExt().then(ext =>
-                        ext.notifications.create(hash, {
-                          title: 'Failed transaction',
-                          message: `Transaction ${parseInt(
-                            tx.txPayload.nonce,
-                            16,
-                          )} failed! ${err?.data || err?.message || ''}`,
-                        }),
-                      )
+                      if (setTxFailed({hash, error: errorType})) {
+                        getExt().then(ext =>
+                          ext.notifications.create(hash, {
+                            title: 'Failed transaction',
+                            message: `Transaction ${parseInt(
+                              tx.txPayload.nonce,
+                              16,
+                            )} failed! ${err?.data || err?.message || ''}`,
+                          }),
+                        )
+                      }
                     }),
                     sideEffect(() => {
                       updateBadge(getUnfinishedTxCount())
@@ -321,20 +322,21 @@ export const main = ({
             BigNumber.from(nonce).gt(BigNumber.from(tx.txPayload.nonce).add(1))
           ) {
             if (tx.skippedChecked) {
-              setTxSkipped({hash})
+              if (setTxSkipped({hash, skippedChecked: true})) {
+                getExt().then(ext =>
+                  ext.notifications.create(hash, {
+                    title: 'Skipped transaction',
+                    message: `Transaction ${parseInt(
+                      tx.txPayload.nonce,
+                      16,
+                    )}  skipped!`,
+                  }),
+                )
+              }
               updateBadge(getUnfinishedTxCount())
-              getExt().then(ext =>
-                ext.notifications.create(hash, {
-                  title: 'Skipped transaction',
-                  message: `Transaction ${parseInt(
-                    tx.txPayload.nonce,
-                    16,
-                  )}  skipped!`,
-                }),
-              )
               return sdone()
             } else {
-              setTxSkipped({hash, skippedChecked: true})
+              setTxSkipped({hash})
               // check if skipped again immediately
               return keepTrack(0)
             }
@@ -358,9 +360,16 @@ export const main = ({
             transactionIndex,
             blockNumber,
             contractAddress,
+            cumulativeGasUsed,
+            effectiveGasPrice,
             gasUsed,
+            type,
+            txExecErrorMsg,
           } = rst
           const receipt = {
+            cumulativeGasUsed,
+            effectiveGasPrice,
+            type: type || '0x0',
             blockHash,
             transactionIndex,
             blockNumber,
@@ -372,17 +381,24 @@ export const main = ({
             setTxExecuted({hash, receipt})
             keepTrack(0)
           } else {
-            setTxFailed({hash, error: 'tx failed'})
+            let err = ''
+            if (txExecErrorMsg) {
+              err = txExecErrorMsg
+            }
+            if (setTxFailed({hash, error: err || 'tx failed'})) {
+              getExt().then(ext =>
+                ext.notifications.create(hash, {
+                  title: 'Failed transaction',
+                  message:
+                    txExecErrorMsg ||
+                    `Transaction ${parseInt(
+                      tx.txPayload.nonce,
+                      16,
+                    )} failed! ${err}`,
+                }),
+              )
+            }
             updateBadge(getUnfinishedTxCount())
-            getExt().then(ext =>
-              ext.notifications.create(hash, {
-                title: 'Failed transaction',
-                message: `Transaction ${parseInt(
-                  tx.txPayload.nonce,
-                  16,
-                )} failed!`,
-              }),
-            )
           }
         }),
         sideEffect(sdone),

@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "0.0.12",
+  "version": "0.0.13",
   "name": "@fluent-wallet/component-input",
   "type": "module",
   "main": "index.js",

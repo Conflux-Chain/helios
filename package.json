@@ -112,7 +112,7 @@
     "regenerator-runtime": "^0.13.9",
     "rimraf": "^3.0.2",
     "serve-static": "1.15.0",
-    "shadow-cljs": "^2.19.2",
+    "shadow-cljs": "^2.19.4",
     "stylelint": "^14.9.0",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-standard": "^26.0.0",

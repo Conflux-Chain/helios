@@ -3,10 +3,15 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "dependencies": {
+    "@fluent-wallet/consts": "workspace:*",
     "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type",
     "@fluent-wallet/utils": "workspace:packages/utils",
+    "big.js": "6.2.0",
     "bn.js": "5.2.1"
+  },
+  "devDependencies": {
+    "@types/big.js": "^6"
   }
 }

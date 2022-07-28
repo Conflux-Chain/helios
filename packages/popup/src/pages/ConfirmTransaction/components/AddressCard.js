@@ -86,7 +86,7 @@ const TransactionDirection = ({
             <CopyButton
               text={toAddress}
               className="text-gray-60 group-hover:text-primary"
-              wrapperClassName="mx-1 shadow-none !bg-transparent hover:!bg-primary-4 group"
+              wrapperClassName="mx-1 shadow-none !bg-transparent hover:!bg-primary-10 group"
             />
           )}
         </span>

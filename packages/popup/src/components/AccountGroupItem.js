@@ -7,8 +7,9 @@ const {ACCOUNT_GROUP_TYPE} = RPC_METHODS
 function AccountGroupItem({
   className = '',
   groupContainerClassName = '',
-  nickname,
+  nickname = '',
   groupType = '',
+  showGroupNameIcon = true,
   GroupNameOverlay,
   groupTag,
   groupFooter,
@@ -20,8 +21,8 @@ function AccountGroupItem({
         <div
           className={`flex items-center ml-3 pt-2.5 mb-0.5 ${groupContainerClassName}`}
         >
-          {groupType === ACCOUNT_GROUP_TYPE.HD && (
-            <WrapIcon size="w-5 h-5 mr-1 bg-primary-4" clickable={false}>
+          {groupType === ACCOUNT_GROUP_TYPE.HD && showGroupNameIcon && (
+            <WrapIcon size="w-5 h-5 mr-1" clickable={false}>
               <img src="/images/seed-group-icon.svg" alt="group-icon" />
             </WrapIcon>
           )}
@@ -42,6 +43,7 @@ AccountGroupItem.propTypes = {
   groupContainerClassName: PropTypes.string,
   nickname: PropTypes.string,
   groupType: PropTypes.string,
+  showGroupNameIcon: PropTypes.bool,
   GroupNameOverlay: PropTypes.node,
   groupTag: PropTypes.node,
   groupFooter: PropTypes.node,

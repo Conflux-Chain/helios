@@ -157,7 +157,7 @@ function ConfirmSeed() {
             ))}
           </div>
         </div>
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-6">
           <Button
             className="w-70"
             onClick={onCreate}

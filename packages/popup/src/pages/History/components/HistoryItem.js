@@ -1,73 +1,67 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
+import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
+import {useHistory} from 'react-router-dom'
 import dayjs from 'dayjs'
 import {isUndefined} from '@fluent-wallet/checks'
-import {
-  convertDataToValue,
-  formatHexToDecimal,
-} from '@fluent-wallet/data-format'
+import {convertDataToValue} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
-import {
-  CloseCircleFilled,
-  ReloadOutlined,
-  SendOutlined,
-  RocketOutlined,
-  CancelOutlined,
-} from '@fluent-wallet/component-icons'
+import {cfxGetFeeData, ethGetFeeData} from '@fluent-wallet/estimate-tx'
+
 import {
   transformToTitleCase,
   formatStatus,
   formatIntoChecksumAddress,
 } from '../../../utils'
-import {useNetworkTypeIsCfx, useCurrentTicker} from '../../../hooks/useApi'
-import {useDecodeData, useDappIcon} from '../../../hooks'
 import {
-  WrapIcon,
-  CopyButton,
-  DisplayBalance,
-  CustomTag,
-} from '../../../components'
-const tagColorStyle = {
+  useNetworkTypeIsCfx,
+  useCurrentTicker,
+  useCurrentAddress,
+} from '../../../hooks/useApi'
+import {useDecodeData, useDappIcon} from '../../../hooks'
+import {ROUTES} from '../../../constants'
+
+const {RESEND_TRANSACTION} = ROUTES
+
+import {
+  HistoryStatusIcon,
+  TransitionDetail,
+  HistoryBalance,
+  ResendButtons,
+} from './'
+
+const ICON_COLOR = {
   failed: 'bg-error-10 text-error',
   executed: 'bg-[#F0FDFC] text-[#83DBC6]',
   pending: 'bg-warning-10 text-warning',
-}
-
-function WrapperWithCircle({children, className}) {
-  return (
-    <div
-      className={`${className} flex items-center justify-center	rounded-full w-3 h-3 mr-1`}
-    >
-      {children}
-    </div>
-  )
-}
-
-WrapperWithCircle.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node]).isRequired,
-  className: PropTypes.string,
+  confirmed: 'bg-success-10 text-success',
 }
 
 function HistoryItem({
   status,
   created,
   extra,
+  receipt,
   payload,
   app,
   token,
   transactionUrl,
   hash,
+  err,
+  fromScan = false,
   copyButtonContainerClassName,
   copyButtonToastClassName,
-  onResend,
 }) {
+  const history = useHistory()
+
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
   const [amount, setAmount] = useState('')
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
+  const [showDetail, setShowDetail] = useState(false)
+
   const {t} = useTranslation()
   const dappIconUrl = useDappIcon(app?.site?.icon)
   const {
@@ -77,10 +71,36 @@ function HistoryItem({
   } = useCurrentTicker()
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const {
+    data: {value: currentAddress},
+  } = useCurrentAddress()
 
+  const fromAddress = payload?.from || ''
   const txStatus = formatStatus(status)
-  const tagColor = tagColorStyle[txStatus] ?? ''
+
+  // is external transition
+  const isExternalTx = fromScan && currentAddress === payload?.to
+  // show negative amount
+  const isNegativeAmount =
+    amount != 0 && actionName !== 'Approve' && !isExternalTx
+  // color according to tx status
+  const statusIconColor = ICON_COLOR?.[txStatus] ?? ''
+
   const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
+
+  const {txFeeDrip = '0x0'} = receipt
+    ? networkTypeIsCfx
+      ? cfxGetFeeData({
+          gas: receipt?.gasUsed || '0x0',
+          storageLimit: receipt?.storageCollateralized || '0x0',
+          gasPrice: payload?.gasPrice || '0x1',
+        })
+      : ethGetFeeData({
+          gas: receipt?.gasUsed || '0x0',
+          gasPrice: receipt?.effectiveGasPrice || '0x1',
+        })
+    : {}
+
   const {contractCreation, simple, contractInteraction, token20} = extra
 
   const {decodeData} = useDecodeData({
@@ -88,7 +108,24 @@ function HistoryItem({
     data: payload?.data,
   })
 
+  const onCancelPendingTx = () => {
+    history.push({
+      pathname: RESEND_TRANSACTION,
+      search: `type=cancel&hash=${hash}`,
+    })
+  }
+
+  const onSpeedupPendingTx = () => {
+    history.push({
+      pathname: RESEND_TRANSACTION,
+      search: `type=speedup&hash=${hash}`,
+    })
+  }
+
   useEffect(() => {
+    if (isExternalTx) {
+      return setActionName(t('receive'))
+    }
     setActionName(
       simple
         ? t('send')
@@ -98,7 +135,7 @@ function HistoryItem({
           : transformToTitleCase(decodeData.name)
         : '-',
     )
-  }, [simple, Object.keys(decodeData).length])
+  }, [simple, isExternalTx, t, decodeData?.name])
 
   useEffect(() => {
     if (simple && tokenName) {
@@ -117,18 +154,20 @@ function HistoryItem({
     tokenName,
     simple,
     token20,
-    Boolean(token),
     t,
     contractCreation,
     contractInteraction,
     networkTypeIsCfx,
+    token?.name,
   ])
 
   useEffect(() => {
-    if (simple && tokenSymbol && !isUndefined(tokenDecimals)) {
-      setSymbol(tokenSymbol)
+    if (simple && tokenSymbol) {
       setToAddress(payload?.to ?? '')
-      setAmount(convertDataToValue(payload?.value, tokenDecimals) ?? '')
+      if (!isUndefined(tokenDecimals)) {
+        setSymbol(tokenSymbol)
+        setAmount(convertDataToValue(payload?.value, tokenDecimals) ?? '')
+      }
       return
     }
     if (token20 && token) {
@@ -149,131 +188,49 @@ function HistoryItem({
         return
       }
     }
+
+    setToAddress(payload?.to ?? '')
   }, [
-    Boolean(token),
     tokenSymbol,
     tokenDecimals,
     simple,
     token20,
-    contractInteraction,
     actionName,
     networkTypeIsCfx,
-    Object.keys(payload).length,
-    Object.keys(decodeData).length,
+    token,
+    payload?.to,
+    payload?.value,
+    decodeData?.args,
   ])
 
   if (!actionName || !contractName) return null
 
   return (
-    <div className="px-3 pb-3 pt-2 bg-white mx-3 mt-3 rounded">
-      <div className="flex justify-between">
-        <div className="relative">
-          {txStatus === 'confirmed' ? (
-            <div className="text-gray-60 text-xs">
-              <span>#{formatHexToDecimal(payload.nonce)}</span>
-              <span className="ml-2">{createdTime}</span>
-            </div>
-          ) : (
-            <CustomTag
-              className={`${tagColor} absolute flex items-center h-6 px-2.5 -left-3 -top-2`}
-              width="w-auto"
-              roundedStyle="rounded-tl rounded-br-lg"
-            >
-              {txStatus === 'failed' ? (
-                <CloseCircleFilled className="w-3 h-3 mr-1" />
-              ) : txStatus === 'executed' ? (
-                <WrapperWithCircle className="bg-[#83DBC6]">
-                  <ReloadOutlined className="w-2 h-2 text-white" />
-                </WrapperWithCircle>
-              ) : txStatus === 'pending' ? (
-                <WrapperWithCircle className="bg-[#F0955F]">
-                  <ReloadOutlined className="w-2 h-2 text-white" />
-                </WrapperWithCircle>
-              ) : null}
-              {
-                <div>
-                  <span className="text-sm">
-                    {transformToTitleCase(txStatus)}
-                  </span>
-                  <span className="text-gray-60 text-xs absolute right-0 translate-x-full pl-2 top-[5px]">
-                    #{formatHexToDecimal(payload.nonce)}
-                  </span>
-                </div>
-              }
-            </CustomTag>
-          )}
-        </div>
+    <div>
+      <div
+        className="flex items-center cursor-pointer p-3 bg-white mx-3 mt-3 rounded"
+        aria-hidden="true"
+        onClick={() => setShowDetail(true)}
+      >
+        <HistoryStatusIcon
+          txStatus={txStatus}
+          dappIconUrl={dappIconUrl}
+          isDapp={!!app}
+          isExternalTx={isExternalTx}
+          className={statusIconColor}
+        />
 
-        <div className="flex items-center">
-          {txStatus === 'pending' && (
-            <WrapIcon
-              size="w-5 h-5"
-              id="speed-up-tx"
-              onClick={() =>
-                onResend?.('speedup', {payload, token, extra, hash})
-              }
-            >
-              <RocketOutlined className="w-3 h-3 text-primary" />
-            </WrapIcon>
-          )}
-          {txStatus === 'pending' && (
-            <WrapIcon
-              size="w-5 h-5 mx-2"
-              id="cancel-tx"
-              onClick={() =>
-                onResend?.('cancel', {payload, token, extra, hash})
-              }
-            >
-              <CancelOutlined className="w-3 h-3 text-primary" />
-            </WrapIcon>
-          )}
-          {hash && (
-            <CopyButton
-              text={hash}
-              className="w-3 h-3 text-primary"
-              containerClassName={copyButtonContainerClassName}
-              toastClassName={copyButtonToastClassName}
-              wrapperClassName="!w-5 !h-5"
-            />
-          )}
-          {transactionUrl && (
-            <WrapIcon
-              size="w-5 h-5 ml-2"
-              id="openScanTxUrl"
-              onClick={() => window.open(transactionUrl)}
-            >
-              <SendOutlined className="w-3 h-3 text-primary" />
-            </WrapIcon>
-          )}
-        </div>
-      </div>
-      <div className="mt-3 flex items-center">
-        <div
-          className={`${
-            !app ? 'bg-success-10 border-success-10' : 'border-gray-20'
-          } w-8 h-8 rounded-full border-solid border flex items-center justify-center mr-2`}
-        >
-          {app ? (
-            <img src={dappIconUrl} alt="favicon" className="w-4 h-4" />
-          ) : (
-            <SendOutlined className="w-4 h-4 text-success" />
-          )}
-        </div>
-        <div className="flex-1">
+        <div className="flex-1 ml-2">
           <div className="flex items-center justify-between">
             <div className="text-gray-80 text-sm max-w-[120px] text-ellipsis font-medium">
               {actionName}
             </div>
             {amount ? (
-              <div className="flex">
-                {amount != 0 && actionName !== 'Approve' ? <span>-</span> : ''}
-                <DisplayBalance
-                  balance={amount}
-                  maxWidth={114}
-                  maxWidthStyle="max-w-[114px]"
-                />
-                <span className="text-gray-60 ml-0.5">{symbol}</span>
-              </div>
+              <HistoryBalance
+                showNegative={isNegativeAmount}
+                amount={amount}
+                symbol={symbol}
+              />
             ) : (
               <span className="text-gray-40 text-xs">--</span>
             )}
@@ -281,13 +238,49 @@ function HistoryItem({
           <div className="flex mt-0.5 items-center justify-between text-gray-40 text-xs">
             <span>{contractName}</span>
             <span>
-              {toAddress
-                ? shortenAddress(formatIntoChecksumAddress(toAddress))
-                : ''}
+              {toAddress &&
+                shortenAddress(formatIntoChecksumAddress(toAddress))}
             </span>
           </div>
         </div>
       </div>
+      {txStatus === 'pending' && !isExternalTx && (
+        <ResendButtons
+          onCancelPendingTx={onCancelPendingTx}
+          onSpeedupPendingTx={onSpeedupPendingTx}
+          className="mx-3 rounded-b text-sm text-primary"
+          buttonClassName="shadow-fluent-4 border-transparent bg-primary-10 !h-6"
+          buttonTextClassName="ml-2"
+        />
+      )}
+
+      <TransitionDetail
+        statusIconColor={statusIconColor}
+        open={showDetail}
+        isNegativeAmount={isNegativeAmount}
+        onClose={() => setShowDetail(false)}
+        txStatus={txStatus}
+        dappIconUrl={dappIconUrl}
+        app={app}
+        createdTime={createdTime}
+        amount={amount}
+        symbol={symbol}
+        receipt={receipt}
+        isExternalTx={isExternalTx}
+        fromAddress={fromAddress}
+        toAddress={toAddress}
+        actionName={actionName}
+        copyButtonContainerClassName={copyButtonContainerClassName}
+        copyButtonToastClassName={copyButtonToastClassName}
+        txFeeDrip={txFeeDrip}
+        hash={hash}
+        transactionUrl={transactionUrl}
+        payload={payload}
+        errorType={i18next?.exists(err) ? err : 'unknownError'}
+        onCancelPendingTx={onCancelPendingTx}
+        onSpeedupPendingTx={onSpeedupPendingTx}
+        gasFeeSymbol={tokenSymbol}
+      />
     </div>
   )
 }
@@ -296,13 +289,15 @@ HistoryItem.propTypes = {
   status: PropTypes.number.isRequired,
   created: PropTypes.number.isRequired,
   extra: PropTypes.object.isRequired,
+  receipt: PropTypes.object,
   payload: PropTypes.object.isRequired,
   transactionUrl: PropTypes.string,
   hash: PropTypes.string,
+  err: PropTypes.string,
+  fromScan: PropTypes.bool,
   app: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   token: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   copyButtonContainerClassName: PropTypes.string,
   copyButtonToastClassName: PropTypes.string,
-  onResend: PropTypes.func.isRequired,
 }
 export default HistoryItem

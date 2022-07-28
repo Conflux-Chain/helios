@@ -1,8 +1,9 @@
 import {useTranslation} from 'react-i18next'
 import {isUndefined} from '@fluent-wallet/checks'
-import {TitleNav, NoResult} from '../../components'
-import {GroupItem} from './components'
+import {TitleNav, NoResult, AccountGroupItem} from '../../components'
+import {AuthorizedWebsiteAccountItem} from './components'
 import {useGroupAccountAuthorizedDapps} from '../../hooks/useApi'
+import {getAvatarAddress} from '../../utils'
 
 const getAccountSiteId = groupData => {
   let ret = {}
@@ -39,14 +40,30 @@ function AuthorizedWebsite() {
         {!isUndefined(data) && groupData.length === 0 ? (
           <NoResult content={t('noAuthorizedWebsite')} />
         ) : (
-          groupData.map(({nickname, account, vault}, index) => (
-            <GroupItem
-              groupNickname={nickname}
-              account={account}
+          groupData.map(({nickname: groupNickname, account, vault}, index) => (
+            <AccountGroupItem
               key={index}
+              nickname={groupNickname}
               groupType={vault?.type}
-              accountSiteId={accountSiteId}
-            />
+              className="mx-0"
+              showGroupNameIcon={false}
+              groupContainerClassName="mb-0 ml-4 pb-1 pt-3"
+            >
+              {account
+                .filter(({app}) => !!app)
+                .map(
+                  ({nickname: accountNickname, eid, app, address}, index) => (
+                    <AuthorizedWebsiteAccountItem
+                      key={index}
+                      accountNickname={accountNickname}
+                      accountId={eid}
+                      address={getAvatarAddress(address)}
+                      app={app}
+                      accountSiteId={accountSiteId}
+                    />
+                  ),
+                )}
+            </AccountGroupItem>
           ))
         )}
       </div>

@@ -1,0 +1,12 @@
+{
+  "name": "@fluent-wallet/wallet_get-block-or-epoch-number",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.2.0",
+  "version": "0.0.1",
+  "dependencies": {
+    "@fluent-wallet/cfx_epoch-number": "workspace:*",
+    "@fluent-wallet/eth_block-number": "workspace:*",
+    "@fluent-wallet/spec": "workspace:*"
+  }
+}

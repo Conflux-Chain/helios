@@ -52,10 +52,8 @@ html {
 
   /* TODO global component class name default use light theme, need to use better method */
   --color-bg: #f4f5f7;
-  --color-primary-4: #f8f9fe;
-  --color-primary-10: #f0f3ff;
+  --color-primary-10: #f3f6ff;
   --color-primary-90: #262933;
-  --color-primary-96: #262933;
   --color-error-10: #fff2f4;
   --color-error-90: #2b2021;
   --color-success-10: #f1fdfa;
@@ -78,10 +76,8 @@ html {
 
 .light {
   --color-bg: #f4f5f7;
-  --color-primary-4: #f8f9fe;
-  --color-primary-10: #f0f3ff;
+  --color-primary-10: #f3f6ff;
   --color-primary-90: #262933;
-  --color-primary-96: #262933;
   --color-error-10: #fff2f4;
   --color-error-90: #2b2021;
   --color-success-10: #f1fdfa;
@@ -104,10 +100,8 @@ html {
 
 .dark {
   --color-bg: #26282e;
-  --color-primary-4: #262933;
   --color-primary-10: #262933;
-  --color-primary-90: #f0f3ff;
-  --color-primary-96: #f8f9fe;
+  --color-primary-90: #f3f6ff;
   --color-error-10: #2b2021;
   --color-error-90: #fff2f4;
   --color-success-10: #18211e;

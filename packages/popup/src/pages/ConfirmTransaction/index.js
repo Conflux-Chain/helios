@@ -3,7 +3,6 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
 import Button from '@fluent-wallet/component-button'
-import Alert from '@fluent-wallet/component-alert'
 import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
   formatDecimalToHex,
@@ -13,19 +12,18 @@ import {
 import {
   useCurrentTxParams,
   useEstimateTx,
-  useCheckBalanceAndGas,
+  useEstimateError,
   useDecodeData,
   useDecodeDisplay,
   useDappParams,
   useViewData,
   useLedgerBindingApi,
-  useLedgerAppName,
+  useIsTxTreatedAsEIP1559,
 } from '../../hooks'
 import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
 import {
   request,
-  bn16,
   getPageType,
   checkBalance,
   transformToTitleCase,
@@ -35,8 +33,8 @@ import {
   TitleNav,
   GasFee,
   DappFooter,
-  HwAlert,
   TransactionResult,
+  AlertMessage,
 } from '../../components'
 import {
   ROUTES,
@@ -73,7 +71,7 @@ function ConfirmTransaction() {
   }, [authStatusFromLedger, isAppOpenFromLedger])
   const [sendStatus, setSendStatus] = useState()
   const [sendError, setSendError] = useState({})
-  const [balanceError, setBalanceError] = useState('')
+  const [estimateError, setEstimateError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
   const isDapp = getPageType() === 'notification'
   useEffect(() => {
@@ -88,10 +86,14 @@ function ConfirmTransaction() {
     : ETH_SEND_TRANSACTION
   const {
     gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     gasLimit,
     storageLimit,
     nonce,
     setGasPrice,
+    setMaxFeePerGas,
+    setMaxPriorityFeePerGas,
     setGasLimit,
     setStorageLimit,
     setNonce,
@@ -106,7 +108,6 @@ function ConfirmTransaction() {
       account: {eid: accountId},
     },
   } = useCurrentAddress()
-  const LedgerAppName = useLedgerAppName()
 
   const nativeToken = ticker || {}
   const tx = useDappParams(pendingAuthReq)
@@ -138,21 +139,29 @@ function ConfirmTransaction() {
 
   // params in wallet send or dapp send
   const originParams = !isDapp ? {...txParams} : {...tx}
-  // user can edit nonce, gasPrice and gas
+
+  const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
+
+  // dapp send params
   const {
     gasPrice: initGasPrice,
+    maxFeePerGas: initMaxFeePerGas,
+    maxPriorityFeePerGas: initMaxPriorityFeePerGas,
     gas: initGasLimit,
     nonce: initNonce,
     storageLimit: initStorageLimit,
   } = tx
-
+  // user can edit nonce, gasPrice and gas
   const params = {
     ...originParams,
     gasPrice: formatDecimalToHex(gasPrice),
+    maxFeePerGas: formatDecimalToHex(maxFeePerGas),
+    maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
     gas: formatDecimalToHex(gasLimit),
     nonce: formatDecimalToHex(nonce),
     storageLimit: formatDecimalToHex(storageLimit),
   }
+
   // user can edit the approve limit
   const viewData = useViewData(params, isApproveToken)
   params.data = viewData
@@ -160,6 +169,8 @@ function ConfirmTransaction() {
   // send params, need to delete '' or undefined params,
   // otherwise cfx_sendTransaction will return params error
   if (!params.gasPrice) delete params.gasPrice
+  if (!params.maxFeePerGas) delete params.maxFeePerGas
+  if (!params.maxPriorityFeePerGas) delete params.maxPriorityFeePerGas
   if (!params.nonce) delete params.nonce
   if (!params.gas) delete params.gas
   if (!params.storageLimit) delete params.storageLimit
@@ -188,12 +199,13 @@ function ConfirmTransaction() {
   const originEstimateRst = useEstimateTx(originParams) || {}
   const {
     gasPrice: estimateGasPrice,
+    maxFeePerGas: estimateMaxFeePerGas,
+    maxPriorityFeePerGas: estimateMaxPriorityPerGas,
     gasLimit: estimateGasLimit,
     nonce: rpcNonce,
     storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
-
-  const errorMessage = useCheckBalanceAndGas(
+  const errorMessage = useEstimateError(
     estimateRst,
     displayTokenAddress,
     !displayTokenAddress,
@@ -201,7 +213,7 @@ function ConfirmTransaction() {
   )
 
   useEffect(() => {
-    setBalanceError(errorMessage)
+    setEstimateError(errorMessage)
   }, [errorMessage])
   // when dapp send, init the gas edit global store
   useEffect(() => {
@@ -215,6 +227,16 @@ function ConfirmTransaction() {
         )
       !gasPrice &&
         setGasPrice(formatHexToDecimal(initGasPrice || estimateGasPrice || ''))
+      !maxFeePerGas &&
+        setMaxFeePerGas(
+          formatHexToDecimal(initMaxFeePerGas || estimateMaxFeePerGas || ''),
+        )
+      !maxPriorityFeePerGas &&
+        setMaxPriorityFeePerGas(
+          formatHexToDecimal(
+            initMaxPriorityFeePerGas || estimateMaxPriorityPerGas || '',
+          ),
+        )
       !nonce && setNonce(formatHexToDecimal(initNonce || rpcNonce || ''))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -223,18 +245,24 @@ function ConfirmTransaction() {
     initGasLimit,
     initNonce,
     initGasPrice,
+    initMaxFeePerGas,
+    initMaxPriorityFeePerGas,
     initStorageLimit,
     setGasPrice,
     setNonce,
     setGasLimit,
     setStorageLimit,
     estimateGasPrice,
+    estimateMaxFeePerGas,
+    estimateMaxPriorityPerGas,
     estimateGasLimit,
     estimateStorageLimit,
     rpcNonce,
     gasLimit,
     storageLimit,
     gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     nonce,
   ])
 
@@ -258,7 +286,7 @@ function ConfirmTransaction() {
 
     const sendTokenValue =
       isSendToken && !isNativeToken && Object.keys(displayToken).length
-        ? bn16(convertValueToData(displayValue, displayToken.decimals))
+        ? convertValueToData(displayValue, displayToken.decimals)
         : '0x0'
 
     const error = await checkBalance(
@@ -268,10 +296,11 @@ function ConfirmTransaction() {
       isSendToken,
       sendTokenValue,
       networkTypeIsCfx,
+      isTxTreatedAsEIP1559,
     )
     if (error) {
       setLoading(false)
-      setBalanceError(t(error))
+      setEstimateError(t(error))
       return
     }
 
@@ -296,8 +325,10 @@ function ConfirmTransaction() {
     else window.close()
   }
 
+  const isContractError = estimateError.indexOf(t('contractError')) !== -1
+
   const confirmDisabled =
-    !!balanceError ||
+    (!!estimateError && !isContractError) ||
     estimateRst.loading ||
     Object.keys(estimateRst).length === 0
 
@@ -306,7 +337,7 @@ function ConfirmTransaction() {
       <header>
         <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
       </header>
-      <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-4">
+      <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-6">
         <div className="flex flex-col px-3">
           <AddressCard
             nickname={displayAccount?.nickname}
@@ -333,22 +364,9 @@ function ConfirmTransaction() {
             allowance={displayValue}
             pendingAuthReq={pendingAuthReq}
           />
-          <GasFee estimateRst={estimateRst} />
-          {balanceError && (
-            <span className="text-error text-xs inline-block mt-2">
-              {balanceError}
-            </span>
-          )}
-          <HwAlert open={isHwUnAuth} isDapp={isDapp} className="mt-3" />
-          <Alert
-            open={isHwOpenAlert}
-            className="mt-3"
-            type="warning"
-            closable={false}
-            width="w-full"
-            content={t('hwOpenApp', {
-              appName: LedgerAppName,
-            })}
+          <GasFee
+            estimateRst={estimateRst}
+            isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
           />
         </div>
         <div className="flex flex-col items-center">
@@ -358,8 +376,9 @@ function ConfirmTransaction() {
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
             </Link>
           )}
+
           {!isDapp && (
-            <div className="w-full flex px-4">
+            <div className="w-full flex px-3 z-50">
               <Button
                 variant="outlined"
                 className="flex-1 mr-3"
@@ -395,6 +414,13 @@ function ConfirmTransaction() {
               showError={false}
             />
           )}
+          <AlertMessage
+            isDapp={isDapp}
+            isHwUnAuth={isHwUnAuth}
+            isHwOpenAlert={isHwOpenAlert}
+            estimateError={estimateError}
+            isContractError={isContractError}
+          />
           {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (
             <TransactionResult
               status={sendStatus}

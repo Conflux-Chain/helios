@@ -182,12 +182,15 @@ export const checkBalance = async (
   isSendToken,
   sendTokenValue,
   networkTypeIsCfx,
+  isTxTreatedAsEIP1559,
 ) => {
-  const {from, to, gasPrice, gas, value, storageLimit} = txParams
+  const {from, to, gasPrice, maxFeePerGas, gas, value, storageLimit} = txParams
   const storageFeeDrip = bn16(storageLimit)
     .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
     .divn(1024)
-  const gasFeeDrip = bn16(gas).mul(bn16(gasPrice))
+  const gasFeeDrip = bn16(gas).mul(
+    bn16(isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice),
+  )
   const txFeeDrip = gasFeeDrip.add(storageFeeDrip)
   const {address: tokenAddress} = token
   try {
@@ -207,6 +210,8 @@ export const checkBalance = async (
       } else {
         if (bn16(balance[tokenAddress]).lt(bn16(sendTokenValue))) {
           return 'balanceIsNotEnough'
+        } else {
+          return ''
         }
       }
     }
@@ -303,4 +308,8 @@ export const getAvatarAddress = addresses => {
     return cfxMainNetAddressItem?.hex
   }
   return ethMainNetAddressItem?.hex
+}
+
+export const addUnitForValue = (value, isCfxChain = false) => {
+  return value ? `${value} ${isCfxChain ? 'GDrip' : 'GWei'}` : 'loading'
 }

@@ -5444,7 +5444,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber":
+"@fluent-wallet/cfx_epoch-number@workspace:*, @fluent-wallet/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber"
   dependencies:
@@ -6003,6 +6003,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/confluxscan-api@workspace:*, @fluent-wallet/confluxscan-api@workspace:packages/confluxscan-api":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/confluxscan-api@workspace:packages/confluxscan-api"
+  dependencies:
+    "@fluent-wallet/fetch-rpc": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/consts@workspace:*, @fluent-wallet/consts@workspace:packages/consts":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/consts@workspace:packages/consts"
@@ -6035,9 +6043,9 @@ __metadata:
     "@ethersproject/abi": 5.6.3
     "@fluent-wallet/account": "workspace:packages/account"
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/confluxscan-api": "workspace:*"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
-    "@fluent-wallet/fetch-rpc": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -6160,8 +6168,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/estimate-tx@workspace:packages/estimate-tx"
   dependencies:
+    "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type"
     "@fluent-wallet/utils": "workspace:packages/utils"
+    "@types/big.js": ^6
+    big.js: 6.2.0
     bn.js: 5.2.1
   languageName: unknown
   linkType: soft
@@ -6180,7 +6191,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/eth_block-number@workspace:packages/rpcs/eth_blockNumber":
+"@fluent-wallet/eth_block-number@workspace:*, @fluent-wallet/eth_block-number@workspace:packages/rpcs/eth_blockNumber":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_block-number@workspace:packages/rpcs/eth_blockNumber"
   dependencies:
@@ -6202,6 +6213,16 @@ __metadata:
   resolution: "@fluent-wallet/eth_chain-id@workspace:packages/rpcs/eth_chainId"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/eth_estimate-1559-fee@workspace:*, @fluent-wallet/eth_estimate-1559-fee@workspace:packages/rpcs/eth_estimate1559Fee":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_estimate-1559-fee@workspace:packages/rpcs/eth_estimate1559Fee"
+  dependencies:
+    "@ethersproject/units": 5.6.1
+    "@fluent-wallet/spec": "workspace:packages/spec"
+    bn.js: 5.2.0
   languageName: unknown
   linkType: soft
 
@@ -6294,6 +6315,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/eth_max-priority-fee-per-gas@workspace:*, @fluent-wallet/eth_max-priority-fee-per-gas@workspace:packages/rpcs/eth_maxPriorityFeePerGas":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/eth_max-priority-fee-per-gas@workspace:packages/rpcs/eth_maxPriorityFeePerGas"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/eth_request-accounts@workspace:packages/rpcs/eth_requestAccounts":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_request-accounts@workspace:packages/rpcs/eth_requestAccounts"
@@ -6323,6 +6352,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_sign-transaction@workspace:packages/rpcs/eth_signTransaction"
   dependencies:
+    "@ethersproject/units": 5.6.1
+    "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/eth-transaction-schema": "workspace:*"
     "@fluent-wallet/ledger": "workspace:*"
     "@fluent-wallet/signature": "workspace:*"
@@ -6418,7 +6449,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/jazz-icon@workspace:packages/jazz-icon"
   dependencies:
-    mersenne-twister: 1.1.0
+    mersenne-twister: ^1.1.0
   languageName: unknown
   linkType: soft
 
@@ -6548,8 +6579,8 @@ __metadata:
   resolution: "@fluent-wallet/sentry@workspace:packages/sentry"
   dependencies:
     "@ethersproject/keccak256": 5.6.1
-    "@sentry/browser": 6.19.7
-    "@sentry/tracing": 6.19.7
+    "@sentry/browser": 7.4.1
+    "@sentry/tracing": 7.4.1
   languageName: unknown
   linkType: soft
 
@@ -7021,6 +7052,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-block-or-epoch-number@workspace:*, @fluent-wallet/wallet_get-block-or-epoch-number@workspace:packages/rpcs/wallet_getBlockOrEpochNumber":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-block-or-epoch-number@workspace:packages/rpcs/wallet_getBlockOrEpochNumber"
+  dependencies:
+    "@fluent-wallet/cfx_epoch-number": "workspace:*"
+    "@fluent-wallet/eth_block-number": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-block-time@workspace:*, @fluent-wallet/wallet_get-block-time@workspace:packages/rpcs/wallet_getBlockTime":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-block-time@workspace:packages/rpcs/wallet_getBlockTime"
@@ -7252,6 +7293,18 @@ __metadata:
   resolution: "@fluent-wallet/wallet_refetch-token-list@workspace:packages/rpcs/wallet_refetchTokenList"
   dependencies:
     "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_refetch-tx-list@workspace:*, @fluent-wallet/wallet_refetch-tx-list@workspace:packages/rpcs/wallet_refetchTxList":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_refetch-tx-list@workspace:packages/rpcs/wallet_refetchTxList"
+  dependencies:
+    "@fluent-wallet/confluxscan-api": "workspace:*"
+    "@fluent-wallet/consts": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+    "@thi.ng/cache": 2.1.10
+    "@thi.ng/memoize": 3.1.7
   languageName: unknown
   linkType: soft
 
@@ -8317,80 +8370,67 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:6.19.7":
-  version: 6.19.7
-  resolution: "@sentry/browser@npm:6.19.7"
+"@sentry/browser@npm:7.4.1":
+  version: 7.4.1
+  resolution: "@sentry/browser@npm:7.4.1"
   dependencies:
-    "@sentry/core": 6.19.7
-    "@sentry/types": 6.19.7
-    "@sentry/utils": 6.19.7
+    "@sentry/core": 7.4.1
+    "@sentry/types": 7.4.1
+    "@sentry/utils": 7.4.1
     tslib: ^1.9.3
-  checksum: 071d00c76c2d0384580474c634c58c6196bbd1a3cf510da1309bd1565c57df7422fca8ceb717db189fa557f2c711a21664ee1ab935dfd9869faf416d388e6f78
+  checksum: 92057f14a5e9d03d8e3ad165aa14cb2936b8341fef14b4564454b0f458bf366603c4a7534e22ae3b4ce59132dcbe7f623f566eaf41dbb2264d6b2866a0054187
   languageName: node
   linkType: hard
 
-"@sentry/core@npm:6.19.7":
-  version: 6.19.7
-  resolution: "@sentry/core@npm:6.19.7"
+"@sentry/core@npm:7.4.1":
+  version: 7.4.1
+  resolution: "@sentry/core@npm:7.4.1"
   dependencies:
-    "@sentry/hub": 6.19.7
-    "@sentry/minimal": 6.19.7
-    "@sentry/types": 6.19.7
-    "@sentry/utils": 6.19.7
+    "@sentry/hub": 7.4.1
+    "@sentry/types": 7.4.1
+    "@sentry/utils": 7.4.1
     tslib: ^1.9.3
-  checksum: d212e8ef07114549de4a93b81f8bfa217ca1550ca7a5eeaa611e5629faef78ff72663ce561ffa2cff48f3dc556745ef65177044f9965cdd3cbccf617cf3bf675
+  checksum: ede9efaac2703d3239879237797da0dba28bc63099e827aae25bd047744838c9ac5f5ca6450848cfe790ccccb5a7bdd76dab370c20b406733e393e9972b053d0
   languageName: node
   linkType: hard
 
-"@sentry/hub@npm:6.19.7":
-  version: 6.19.7
-  resolution: "@sentry/hub@npm:6.19.7"
+"@sentry/hub@npm:7.4.1":
+  version: 7.4.1
+  resolution: "@sentry/hub@npm:7.4.1"
   dependencies:
-    "@sentry/types": 6.19.7
-    "@sentry/utils": 6.19.7
+    "@sentry/types": 7.4.1
+    "@sentry/utils": 7.4.1
     tslib: ^1.9.3
-  checksum: 10bb1c5cba1b0f1e27a3dd0a186c22f94aeaf11c4662890ab07b2774f46f46af78d61e3ba71d76edc750a7b45af86edd032f35efecdb4efa2eaf551080ccdcb1
+  checksum: ea6bc1624d8b0fe5c8e594940fd60b1bf488ef98694e539677ff8e5083e354349f69c2003c8dd45df42b439f1b1d5ab2ca2fd079e2fe419964f12e3bbb020854
   languageName: node
   linkType: hard
 
-"@sentry/minimal@npm:6.19.7":
-  version: 6.19.7
-  resolution: "@sentry/minimal@npm:6.19.7"
+"@sentry/tracing@npm:7.4.1":
+  version: 7.4.1
+  resolution: "@sentry/tracing@npm:7.4.1"
   dependencies:
-    "@sentry/hub": 6.19.7
-    "@sentry/types": 6.19.7
+    "@sentry/hub": 7.4.1
+    "@sentry/types": 7.4.1
+    "@sentry/utils": 7.4.1
     tslib: ^1.9.3
-  checksum: 9153ac426ee056fc34c5be898f83d74ec08f559d69f544c5944ec05e584b62ed356b92d1a9b08993a7022ad42b5661c3d72881221adc19bee5fc1af3ad3864a8
+  checksum: e071581bea22ccfcbeae6097443e29ed901e2ec14be762b08debd7eb549028c3c92169ee70de3ea0424b32b89e15d95a5a86bc22eb2c250b4e7f3693710d1277
   languageName: node
   linkType: hard
 
-"@sentry/tracing@npm:6.19.7":
-  version: 6.19.7
-  resolution: "@sentry/tracing@npm:6.19.7"
-  dependencies:
-    "@sentry/hub": 6.19.7
-    "@sentry/minimal": 6.19.7
-    "@sentry/types": 6.19.7
-    "@sentry/utils": 6.19.7
-    tslib: ^1.9.3
-  checksum: 26e7bf435f0478356d95fab50fe4acd2cf449bfdfd457996111aeedd082f6c76f0592abd0c5f5dcfe2b582d3fd7988ffef07787e7ecc7f5d228278731ce6264e
+"@sentry/types@npm:7.4.1":
+  version: 7.4.1
+  resolution: "@sentry/types@npm:7.4.1"
+  checksum: a0d98c89f8221f10e960b062dd7ad21da7cdb2b2176954d0df37e4d1d645f35ee84da242b642cdfdc0dd86908e787973cd542665bf2d6096cd732c20c10fee77
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:6.19.7":
-  version: 6.19.7
-  resolution: "@sentry/types@npm:6.19.7"
-  checksum: f46ef74a33376ad6ea9b128115515c58eb9369d89293c60aa67abca26b5d5d519aa4d0a736db56ae0d75ffd816643d62187018298523cbc2e6c2fb3a6b2a9035
-  languageName: node
-  linkType: hard
-
-"@sentry/utils@npm:6.19.7":
-  version: 6.19.7
-  resolution: "@sentry/utils@npm:6.19.7"
+"@sentry/utils@npm:7.4.1":
+  version: 7.4.1
+  resolution: "@sentry/utils@npm:7.4.1"
   dependencies:
-    "@sentry/types": 6.19.7
+    "@sentry/types": 7.4.1
     tslib: ^1.9.3
-  checksum: a000223b9c646c64e3565e79cace1eeb75114342b768367c4dddd646476c215eb1bddfb70c63f05e2352d3bce2d7d415344e4757a001605d0e01ac74da5dd306
+  checksum: 48ead87a43ffc0abdaa49cd035ae31128cc86b89d005e7bbd55b441c6b3241a932a678a4ee6d3fb30e77ae8168c9374f1fa5c759fdf1e259b9fb29c157b53eca
   languageName: node
   linkType: hard
 
@@ -8957,6 +8997,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/arrays@npm:^2.2.5":
+  version: 2.2.5
+  resolution: "@thi.ng/arrays@npm:2.2.5"
+  dependencies:
+    "@thi.ng/api": ^8.3.7
+    "@thi.ng/checks": ^3.2.1
+    "@thi.ng/compare": ^2.1.7
+    "@thi.ng/equiv": ^2.1.7
+    "@thi.ng/errors": ^2.1.7
+    "@thi.ng/random": ^3.3.2
+  checksum: f4c67d209288850411429f6f054e462cbbd9322101d686a4d4b61fb3e0b61e21dad132b88b19df415cbcd7d38bee92dfdfc5a1f4b25065cd7fe6278d6c0e5731
+  languageName: node
+  linkType: hard
+
 "@thi.ng/associative@npm:^5.2.16":
   version: 5.2.16
   resolution: "@thi.ng/associative@npm:5.2.16"
@@ -9048,6 +9102,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/cache@npm:2.1.10":
+  version: 2.1.10
+  resolution: "@thi.ng/cache@npm:2.1.10"
+  dependencies:
+    "@thi.ng/api": ^8.3.7
+    "@thi.ng/dcons": ^3.2.5
+    "@thi.ng/transducers": ^8.3.5
+  checksum: e51c08687c05902bfa3bb5ab5881b3bf36e4d603178182d79113334c1c3de838a39b813d089d7c7afdf55fc3a05a35a1ff5eba000ca58cd626c96ce27c87067b
+  languageName: node
+  linkType: hard
+
 "@thi.ng/cache@npm:2.1.9":
   version: 2.1.9
   resolution: "@thi.ng/cache@npm:2.1.9"
@@ -9074,6 +9139,15 @@ __metadata:
   dependencies:
     tslib: ^2.4.0
   checksum: bec7abbe166ad5041eb16c60f8f05432a6fcd4a41c718a5d31ee6366c3a6cf5ce894696bc903bcfecc5e5b67ab0cec44db6df93ff7c970f7486940796f6d35a6
+  languageName: node
+  linkType: hard
+
+"@thi.ng/checks@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "@thi.ng/checks@npm:3.2.1"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: 182dc1694706650a0e5d91b9b937d03779f2d4d63eae950215fec47c49e37dd683a758e84f5d8e4c096031b73572a67b2a2bd78a3eb2e24b11651d1599a68143
   languageName: node
   linkType: hard
 
@@ -9156,6 +9230,21 @@ __metadata:
     "@thi.ng/random": ^3.3.1
     "@thi.ng/transducers": ^8.3.4
   checksum: a6a472f352db6178aab6e5e476effbce9ea06724e147f21f33855ae710a9704e0c8e16c78143664ca8d2a1c24f5626ccf9efdecd20b9d958ecb4fa006b1ab732
+  languageName: node
+  linkType: hard
+
+"@thi.ng/dcons@npm:^3.2.5":
+  version: 3.2.5
+  resolution: "@thi.ng/dcons@npm:3.2.5"
+  dependencies:
+    "@thi.ng/api": ^8.3.7
+    "@thi.ng/checks": ^3.2.1
+    "@thi.ng/compare": ^2.1.7
+    "@thi.ng/equiv": ^2.1.7
+    "@thi.ng/errors": ^2.1.7
+    "@thi.ng/random": ^3.3.2
+    "@thi.ng/transducers": ^8.3.5
+  checksum: 200e069cadfd1e36834516b1a8797c54eed38fc79f602aafdb53bd25ca5377d99ae00b7804f9637677283f3586ab5a171007f8c055e174241705ddc5ac806738
   languageName: node
   linkType: hard
 
@@ -9246,6 +9335,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/memoize@npm:3.1.7":
+  version: 3.1.7
+  resolution: "@thi.ng/memoize@npm:3.1.7"
+  dependencies:
+    "@thi.ng/api": ^8.3.7
+  checksum: 7124cf9969e4132251d5d7ebb5e3c4a60df113a4ed64fa999e9ce687f6af06c0585b2e7cf9ce14f9426db1aa96df778d30da0875ad39ac9511c2896ccbf250ed
+  languageName: node
+  linkType: hard
+
 "@thi.ng/paths@npm:^4.2.14":
   version: 4.2.14
   resolution: "@thi.ng/paths@npm:4.2.14"
@@ -9288,6 +9386,18 @@ __metadata:
     "@thi.ng/errors": ^2.1.7
     "@thi.ng/hex": ^2.1.7
   checksum: 7c84f62cd89192a1033ed35be15cdb0bb8d11732542a6cebcfdc4913f0db9a8685eaaffc4fd70da85ad653913503921bda1d221ae78bbff4f5d1acee6536d7ad
+  languageName: node
+  linkType: hard
+
+"@thi.ng/random@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "@thi.ng/random@npm:3.3.2"
+  dependencies:
+    "@thi.ng/api": ^8.3.7
+    "@thi.ng/checks": ^3.2.1
+    "@thi.ng/errors": ^2.1.7
+    "@thi.ng/hex": ^2.1.7
+  checksum: 617d3b4a880056529b0f6cf0ddb39cc080bcbccd05fe141f978121382add6c2746b098b065b7974803f384f517774b4185ace8d566b3a739a0545c6b54d19d26
   languageName: node
   linkType: hard
 
@@ -9392,6 +9502,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@thi.ng/transducers@npm:^8.3.5":
+  version: 8.3.5
+  resolution: "@thi.ng/transducers@npm:8.3.5"
+  dependencies:
+    "@thi.ng/api": ^8.3.7
+    "@thi.ng/arrays": ^2.2.5
+    "@thi.ng/checks": ^3.2.1
+    "@thi.ng/compare": ^2.1.7
+    "@thi.ng/compose": ^2.1.7
+    "@thi.ng/errors": ^2.1.7
+    "@thi.ng/math": ^5.3.3
+    "@thi.ng/random": ^3.3.2
+  checksum: d9206749895b439518dd3b173d66536f89e8700e4fd869a7c4a25fc4a67e7591449f7c0c0d744276f32b4ca51b381913c0ac2217c461e2e105cf666701d1704c
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:1":
   version: 1.1.2
   resolution: "@tootallnate/once@npm:1.1.2"
@@ -9474,6 +9600,13 @@ __metadata:
   dependencies:
     "@babel/types": ^7.3.0
   checksum: a797ea09c72307569e3ee08aa3900ca744ce3091114084f2dc59b67a45ee7d01df7865252790dbfa787a7915ce892cdc820c9b920f3683292765fc656b08dc63
+  languageName: node
+  linkType: hard
+
+"@types/big.js@npm:^6":
+  version: 6.1.3
+  resolution: "@types/big.js@npm:6.1.3"
+  checksum: bf52e25c1d91daf5f88e7c49d03465ac9ce537cb09697c7677e70f9a09727156f4278987959769aabbfcce9e225c50713ccd594ab0c3835a7712d8635f323f7c
   languageName: node
   linkType: hard
 
@@ -12438,6 +12571,13 @@ __metadata:
   version: 1.6.51
   resolution: "big-integer@npm:1.6.51"
   checksum: 3d444173d1b2e20747e2c175568bedeebd8315b0637ea95d75fd27830d3b8e8ba36c6af40374f36bdaea7b5de376dcada1b07587cb2a79a928fccdb6e6e3c518
+  languageName: node
+  linkType: hard
+
+"big.js@npm:6.2.0":
+  version: 6.2.0
+  resolution: "big.js@npm:6.2.0"
+  checksum: 42bcbf0be703c4ae8669c969d0e108f9e1730f20e85bd779e31f7a92d28f6b3e87de96e25ef8657edc0b5dc945a0f66c184ec2654276b86f49e4e9ba025f131a
   languageName: node
   linkType: hard
 
@@ -20084,6 +20224,7 @@ __metadata:
     "@fluent-wallet/eth_block-number": "workspace:packages/rpcs/eth_blockNumber"
     "@fluent-wallet/eth_call": "workspace:packages/rpcs/eth_call"
     "@fluent-wallet/eth_chain-id": "workspace:packages/rpcs/eth_chainId"
+    "@fluent-wallet/eth_estimate-1559-fee": "workspace:*"
     "@fluent-wallet/eth_estimate-gas": "workspace:packages/rpcs/eth_estimateGas"
     "@fluent-wallet/eth_fee-history": "workspace:*"
     "@fluent-wallet/eth_gas-price": "workspace:packages/rpcs/eth_gasPrice"
@@ -20095,6 +20236,7 @@ __metadata:
     "@fluent-wallet/eth_get-transaction-by-hash": "workspace:*"
     "@fluent-wallet/eth_get-transaction-count": "workspace:packages/rpcs/eth_getTransactionCount"
     "@fluent-wallet/eth_get-transaction-receipt": "workspace:*"
+    "@fluent-wallet/eth_max-priority-fee-per-gas": "workspace:*"
     "@fluent-wallet/eth_request-accounts": "workspace:packages/rpcs/eth_requestAccounts"
     "@fluent-wallet/eth_send-raw-transaction": "workspace:*"
     "@fluent-wallet/eth_sign-transaction": "workspace:*"
@@ -20141,6 +20283,7 @@ __metadata:
     "@fluent-wallet/wallet_get-account-group-vault-value": "workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
     "@fluent-wallet/wallet_get-address-private-key": "workspace:packages/rpcs/wallet_getAddressPrivateKey"
     "@fluent-wallet/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance"
+    "@fluent-wallet/wallet_get-block-or-epoch-number": "workspace:*"
     "@fluent-wallet/wallet_get-block-time": "workspace:*"
     "@fluent-wallet/wallet_get-blockchain-explorer-url": "workspace:*"
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
@@ -20167,6 +20310,7 @@ __metadata:
     "@fluent-wallet/wallet_network1559compatible": "workspace:*"
     "@fluent-wallet/wallet_refetch-balance": "workspace:packages/rpcs/wallet_refetchBalance"
     "@fluent-wallet/wallet_refetch-token-list": "workspace:packages/rpcs/wallet_refetchTokenList"
+    "@fluent-wallet/wallet_refetch-tx-list": "workspace:*"
     "@fluent-wallet/wallet_register-site-metadata": "workspace:packages/rpcs/wallet_registerSiteMetadata"
     "@fluent-wallet/wallet_request-accounts": "workspace:*"
     "@fluent-wallet/wallet_request-permissions": "workspace:packages/rpcs/wallet_requestPermissions"
@@ -20334,7 +20478,7 @@ __metadata:
     regenerator-runtime: ^0.13.9
     rimraf: ^3.0.2
     serve-static: 1.15.0
-    shadow-cljs: ^2.19.2
+    shadow-cljs: ^2.19.4
     stylelint: ^14.9.0
     stylelint-config-prettier: ^9.0.3
     stylelint-config-standard: ^26.0.0
@@ -24502,7 +24646,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mersenne-twister@npm:1.1.0":
+"mersenne-twister@npm:^1.1.0":
   version: 1.1.0
   resolution: "mersenne-twister@npm:1.1.0"
   checksum: 7de1940ded117f2aad9320ae4d21d647b0ecf0667abbadcfe6a2835c669feb674ef46cb7a72da7af69a56d8b19e50e95e2fb7ef6d780efab7a6acd4d87f4cb2d
@@ -30944,9 +31088,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"shadow-cljs@npm:^2.19.2":
-  version: 2.19.2
-  resolution: "shadow-cljs@npm:2.19.2"
+"shadow-cljs@npm:^2.19.4":
+  version: 2.19.4
+  resolution: "shadow-cljs@npm:2.19.4"
   dependencies:
     node-libs-browser: ^2.2.1
     readline-sync: ^1.4.7
@@ -30956,7 +31100,7 @@ resolve@^2.0.0-next.3:
     ws: ^7.4.6
   bin:
     shadow-cljs: cli/runner.js
-  checksum: 9d60e57a5566290980ff87551e271450cafad675ba689e3237b2d58a9189a9d0e42b139c65c09cb9540f8d4889c9cf376f26d18810304155bc48c4ba2d65c3f7
+  checksum: 012010ddc2d0e801b316a9d6949dd0eefe249100ba67b4e9e6593fd802e0be307dcd29f0f9cc488576967fdce861101ff7da1dc7c30a220ccd53b1541cb00335
   languageName: node
   linkType: hard
 

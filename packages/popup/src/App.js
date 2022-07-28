@@ -38,6 +38,7 @@ import DappSwitchNetwork from './pages/DappSwitchNetwork'
 import DappAddToken from './pages/DappAddToken'
 import SendTransaction from './pages/SendTransaction'
 import EditGasFee from './pages/EditGasFee'
+import AdvancedGas from './pages/AdvancedGas'
 import EditAllowance from './pages/EditAllowance'
 import ConfirmTransaction from './pages/ConfirmTransaction'
 import History from './pages/History'
@@ -55,6 +56,7 @@ import About from './pages/About'
 import AdvancedSettings from './pages/AdvancedSettings'
 import AddressBook from './pages/AddressBook'
 import Contacts from './pages/Contacts'
+import ResendTransaction from './pages/ResendTransaction'
 
 const {
   HOME,
@@ -76,6 +78,7 @@ const {
   DAPP_SWITCH_NETWORK,
   SEND_TRANSACTION,
   EDIT_GAS_FEE,
+  ADVANCED_GAS,
   EDIT_ALLOWANCE,
   CONFIRM_TRANSACTION,
   VIEW_DATA,
@@ -93,6 +96,7 @@ const {
   ADVANCED_SETTINGS,
   ADDRESS_BOOK,
   CONTACTS,
+  RESEND_TRANSACTION,
 } = ROUTES
 
 const routes = [
@@ -139,6 +143,10 @@ const routes = [
   {
     path: EDIT_GAS_FEE,
     component: EditGasFee,
+  },
+  {
+    path: ADVANCED_GAS,
+    component: AdvancedGas,
   },
   {
     path: EDIT_ALLOWANCE,
@@ -235,6 +243,10 @@ const routes = [
   {
     path: CONTACTS,
     component: Contacts,
+  },
+  {
+    path: RESEND_TRANSACTION,
+    component: ResendTransaction,
   },
 ]
 

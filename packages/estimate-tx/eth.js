@@ -1,5 +1,7 @@
 import BN from 'bn.js'
 import {bn16, pre0x} from './util.js'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import Big from 'big.js'
 
 async function ethEstimateGasAdvance(request, tx) {
   try {
@@ -81,7 +83,6 @@ export const ethEstimate = async (
     throw new Error(`usage without fluent-wallet provider is not supported yet`)
   let newTx = {...tx}
 
-  // TODO: EIP-1559 support
   let {
     from,
     to,
@@ -90,9 +91,20 @@ export const ethEstimate = async (
     nonce: customNonce,
     data,
     value,
+    type,
+    maxPriorityFeePerGas: customMaxPriorityFeePerGas,
+    maxFeePerGas: customMaxFeePerGas,
   } = newTx
 
-  let gasPrice, nonce
+  const network1559Compatible = await request({
+    method: 'wallet_network1559Compatible',
+  })
+
+  // If the network support EIP1559 transaction, we will send EIP1559-type tx first.
+  const isTxTreatedAsEIP1559 =
+    network1559Compatible && (!type || type === ETH_TX_TYPES.EIP1559)
+
+  let gasPrice, nonce, maxPriorityFeePerGas, maxFeePerGas, gasInfoEip1559
 
   if (!from) throw new Error(`Invalid from ${from}`)
   if (!to && !data)
@@ -129,9 +141,31 @@ export const ethEstimate = async (
   )
 
   // get gasPrice
-  await request({method: 'eth_gasPrice'}).then(r => {
-    gasPrice = r
-  })
+  !isTxTreatedAsEIP1559 &&
+    (await request({method: 'eth_gasPrice'}).then(r => {
+      gasPrice = r
+    }))
+
+  //fetch maxPriorityFeePerGas and maxFeePerGas
+  isTxTreatedAsEIP1559 &&
+    (await request({method: 'eth_estimate1559Fee'}).then(gasInfo => {
+      gasInfoEip1559 = gasInfo
+      const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
+        gasInfo?.medium || {}
+      maxPriorityFeePerGas = pre0x(
+        new BN(
+          new Big(suggestedMaxPriorityFeePerGas)
+            .round(9)
+            .times('1e9')
+            .toString(10),
+        ).toString(16),
+      )
+      maxFeePerGas = pre0x(
+        new BN(
+          new Big(suggestedMaxFeePerGas).round(9).times('1e9').toString(10),
+        ).toString(16),
+      )
+    }))
 
   // get nonce, since it may affect estimateGasAndCollateral result
   if (!nonce) {
@@ -152,9 +186,10 @@ export const ethEstimate = async (
   if (to && (!data || data === '0x')) {
     const clcGasPrice = customGasPrice || gasPrice
     const clcGasLimit = customGasLimit || '0x5208' /* 21000 */
+    const clcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
     const ethFeeData = ethGetFeeData(
       {
-        gasPrice: clcGasPrice,
+        gasPrice: isTxTreatedAsEIP1559 ? clcMaxFeePerGas : clcGasPrice,
         gas: clcGasLimit,
         value,
       },
@@ -172,6 +207,11 @@ export const ethEstimate = async (
         customNonce,
         willPayCollateral: true,
         willPayTxFee: true,
+        maxPriorityFeePerGas,
+        customMaxPriorityFeePerGas,
+        maxFeePerGas,
+        customMaxFeePerGas,
+        gasInfoEip1559,
       }
   }
 
@@ -179,6 +219,8 @@ export const ethEstimate = async (
   // estimateGasAndCollateral result
   delete newTx.gas
   delete newTx.gasPrice
+  delete newTx.maxFeePerGas
+  delete newTx.maxPriorityFeePerGas
   newTx.nonce = nonce
 
   // run estimate
@@ -188,6 +230,7 @@ export const ethEstimate = async (
   ])
   const {gasLimit} = rst
   const clcGasPrice = customGasPrice || gasPrice
+  const clcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
   const clcGasLimit =
     customGasLimit ||
     pre0x(bn16(gasLimit).muln(chainIdToGasBuffer[chainId] || defaultGasBuffer))
@@ -199,7 +242,7 @@ export const ethEstimate = async (
   if (toAddressType === 'contract') {
     const ethFeeData = ethGetFeeData(
       {
-        gasPrice: clcGasPrice,
+        gasPrice: isTxTreatedAsEIP1559 ? clcMaxFeePerGas : clcGasPrice,
         gas: clcGasLimit,
         value,
         tokensAmount,
@@ -213,7 +256,7 @@ export const ethEstimate = async (
   } else {
     const ethFeeData = ethGetFeeData(
       {
-        gasPrice: clcGasPrice,
+        gasPrice: isTxTreatedAsEIP1559 ? clcMaxFeePerGas : clcGasPrice,
         gas: clcGasLimit,
         value,
       },
@@ -232,6 +275,10 @@ export const ethEstimate = async (
   rst.customGasPrice = customGasPrice
   rst.customGasLimit = customGasLimit
   rst.customNonce = customNonce
-
+  rst.maxPriorityFeePerGas = maxPriorityFeePerGas
+  rst.customMaxPriorityFeePerGas = customMaxPriorityFeePerGas
+  rst.maxFeePerGas = maxFeePerGas
+  rst.customMaxFeePerGas = customMaxFeePerGas
+  rst.gasInfoEip1559 = gasInfoEip1559
   return rst
 }

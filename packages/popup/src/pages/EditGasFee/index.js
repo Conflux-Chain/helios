@@ -1,263 +1,249 @@
 import {useState, useEffect} from 'react'
-import {useHistory} from 'react-router-dom'
+import PropTypes from 'prop-types'
+import {useHistory, useLocation} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import Button from '@fluent-wallet/component-button'
 import {
-  Big,
+  convertDecimal,
+  convertValueToData,
   formatDecimalToHex,
   formatHexToDecimal,
-  convertDecimal,
   GWEI_DECIMALS,
+  Big,
 } from '@fluent-wallet/data-format'
-import {TitleNav, DisplayBalance, NumberInput} from '../../components'
+import Button from '@fluent-wallet/component-button'
+import {TitleNav, GasCost} from '../../components'
+import {GasStation} from './components'
+import {useNetworkTypeIsCfx, useIsCfxChain} from '../../hooks/useApi'
 import {
-  useNetworkTypeIsCfx,
-  useCfxMaxGasLimit,
-  useCurrentTicker,
-} from '../../hooks/useApi'
-import {useCurrentTxParams, useEstimateTx, useDappParams} from '../../hooks'
+  useCurrentTxStore,
+  useIsTxTreatedAsEIP1559,
+  useDappParams,
+  useEstimateTx,
+} from '../../hooks'
+import {ROUTES} from '../../constants'
 import {getPageType} from '../../utils'
-import {WrapperWithLabel} from './components'
 
-function EditGasFee() {
+const {EDIT_GAS_FEE} = ROUTES
+
+// resendGasPrice is hex wei/drip
+function EditGasFee({
+  tx: historyTx,
+  isSpeedUp = true,
+  resendGasPrice,
+  onSubmit,
+  onClickGasStationItem,
+  resendDisabled,
+}) {
   const {t} = useTranslation()
   const history = useHistory()
-  const [gasPriceErr, setGasPriceErr] = useState('')
-  const [gasLimitErr, setGasLimitErr] = useState('')
-  const [nonceErr, setNonceErr] = useState('')
-  const [inputGasPrice, setInputGasPrice] = useState('0')
-  const [inputGasLimit, setInputGasLimit] = useState('0')
-  const [inputNonce, setInputNonce] = useState('')
+  const location = useLocation()
+
   const {
-    gasPrice,
+    gasLevel,
     gasLimit,
     nonce,
+    storageLimit,
+    advancedGasSetting,
+    tx: txParams,
+    setGasLevel,
     setGasPrice,
+    setMaxFeePerGas,
+    setMaxPriorityFeePerGas,
     setGasLimit,
     setNonce,
-    tx: txParams,
-  } = useCurrentTxParams()
+    setTx,
+    clearAdvancedGasSetting,
+    clearSendTransactionParams,
+  } = useCurrentTxStore()
 
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
-  const cfxMaxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
-  const {symbol, decimals} = useCurrentTicker()
+  const isSendTx = location.pathname === EDIT_GAS_FEE
 
   const isDapp = getPageType() === 'notification'
-  const tx = useDappParams()
-  const originParams = !isDapp ? {...txParams} : {...tx}
+  const dappTx = useDappParams()
 
-  const params = {
-    ...originParams,
-    gasPrice: formatDecimalToHex(
-      convertDecimal(inputGasPrice, 'multiply', GWEI_DECIMALS),
-    ),
-    gas: formatDecimalToHex(inputGasLimit),
-  }
-  if (nonce) params.nonce = formatDecimalToHex(nonce)
-  const estimateRst = useEstimateTx(params) || {}
+  const originParams = !isDapp ? {...txParams} : {...dappTx}
+
+  const estimateRst = useEstimateTx(originParams) || {}
   const {
-    gasUsed,
-    storageCollateralized,
-    storageFeeDrip,
-    gasFeeDrip,
-    txFeeDrip,
+    gasInfoEip1559 = {},
+    gasPrice: estimateGasPrice,
+    gasLimit: estimateGasLimit,
   } = estimateRst
 
+  // hex wei/drip
+  const suggestedGasPrice = resendGasPrice || estimateGasPrice
+
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const isCfxChain = useIsCfxChain()
+  const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
+
+  const [selectedGasLevel, setSelectedGasLevel] = useState('')
+
   useEffect(() => {
-    setInputGasLimit(gasLimit)
-    setInputGasPrice(convertDecimal(gasPrice, 'divide', GWEI_DECIMALS))
-  }, [gasLimit, gasPrice])
+    if (!isSendTx) {
+      setTx(historyTx)
+    }
+  }, [isSendTx, JSON.stringify(historyTx), setTx])
 
-  const onChangeGasPrice = gasPrice => {
-    setInputGasPrice(gasPrice)
-    if (new Big(gasPrice || '0').times('1e9').gt(0)) {
-      setGasPriceErr('')
-    } else {
-      setGasPriceErr(
-        t('gasPriceErrMSg', {
-          amount: 0.000000001,
-          unit: networkTypeIsCfx ? 'GDrip' : 'GWei',
-        }),
-      )
+  useEffect(() => {
+    if (advancedGasSetting.gasLevel === 'advanced')
+      setSelectedGasLevel('advanced')
+    else if (!selectedGasLevel) setSelectedGasLevel(gasLevel)
+  }, [advancedGasSetting.gasLevel, gasLevel, selectedGasLevel])
+
+  let sendParams = {}
+  if (selectedGasLevel === 'advanced') {
+    const {gasPrice, maxFeePerGas, maxPriorityFeePerGas} = advancedGasSetting
+    sendParams = {
+      ...originParams,
+      gas: formatDecimalToHex(advancedGasSetting.gasLimit),
+      nonce: formatDecimalToHex(advancedGasSetting.nonce),
+      storageLimit: formatDecimalToHex(advancedGasSetting.storageLimit),
+      maxFeePerGas: formatDecimalToHex(maxFeePerGas),
+      maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
+      gasPrice: formatDecimalToHex(gasPrice),
+    }
+  } else {
+    const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
+    const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
+    sendParams = {
+      ...originParams,
+      gas: formatDecimalToHex(gasLimit) || estimateGasLimit,
+      nonce: formatDecimalToHex(nonce),
+      storageLimit: formatDecimalToHex(storageLimit),
+      maxFeePerGas: suggestedMaxFeePerGas
+        ? convertValueToData(
+            new Big(suggestedMaxFeePerGas).round(9).toString(10),
+            GWEI_DECIMALS,
+          )
+        : '',
+      maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas
+        ? convertValueToData(
+            new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
+            GWEI_DECIMALS,
+          )
+        : '',
+      gasPrice: suggestedGasPrice,
     }
   }
-
-  const onChangeGasLimit = gasLimit => {
-    setInputGasLimit(gasLimit)
-    if (new Big(gasLimit || '0').lt(formatHexToDecimal(gasUsed || '21000'))) {
-      setGasLimitErr(
-        t('gasLimitMinErr', {
-          gasUsed: formatHexToDecimal(gasUsed || '21000'),
-        }),
-      )
-    } else if (
-      cfxMaxGasLimit &&
-      new Big(gasLimit || '0').gt(formatHexToDecimal(cfxMaxGasLimit))
-    ) {
-      setGasLimitErr(
-        t('gasLimitMaxErr', {
-          gasMax: formatHexToDecimal(cfxMaxGasLimit),
-        }),
-      )
-    } else {
-      setGasLimitErr('')
-    }
-  }
-
-  const onChangeNonce = nonce => {
-    setInputNonce(nonce)
-    if (!nonce || new Big(nonce).gt(0)) {
-      setNonceErr('')
-    } else {
-      setNonceErr(t('nonceErr'))
-    }
-  }
+  if (!sendParams.maxFeePerGas) delete sendParams.maxFeePerGas
+  if (!sendParams.maxPriorityFeePerGas) delete sendParams.maxPriorityFeePerGas
+  if (!sendParams.gasPrice) delete sendParams.gasPrice
+  if (!sendParams.storageLimit) delete sendParams.storageLimit
+  if (!sendParams.nonce) delete sendParams.nonce
 
   const saveGasData = () => {
-    setGasPrice(convertDecimal(inputGasPrice, 'multiply', GWEI_DECIMALS))
-    setGasLimit(inputGasLimit)
-    inputNonce && setNonce(inputNonce)
-    history.goBack()
+    const {gasPrice, maxPriorityFeePerGas, maxFeePerGas, nonce, gasLimit} =
+      advancedGasSetting
+
+    setGasLevel(selectedGasLevel)
+
+    if (selectedGasLevel === 'advanced') {
+      if (isTxTreatedAsEIP1559) {
+        setMaxFeePerGas(maxFeePerGas)
+        setMaxPriorityFeePerGas(maxPriorityFeePerGas)
+      } else {
+        setGasPrice(gasPrice)
+      }
+      setNonce(nonce)
+      setGasLimit(gasLimit)
+    } else {
+      if (isTxTreatedAsEIP1559) {
+        const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
+        const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
+        setMaxFeePerGas(
+          convertDecimal(
+            new Big(suggestedMaxFeePerGas).round(9).toString(10),
+            'multiply',
+            GWEI_DECIMALS,
+          ),
+        )
+        setMaxPriorityFeePerGas(
+          convertDecimal(
+            new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
+            'multiply',
+            GWEI_DECIMALS,
+          ),
+        )
+      } else {
+        setGasPrice(formatHexToDecimal(suggestedGasPrice))
+      }
+    }
+    if (onSubmit) {
+      onSubmit(sendParams)
+    } else {
+      history.goBack()
+    }
   }
 
   return (
     <div
       id="editGasFeeContainer"
-      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat bg-0"
+      className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat bg-0 pb-6"
     >
       <div className="flex-1">
-        <TitleNav title={t('editGasFeeControl')} />
-        <main className="mt-3">
-          <WrapperWithLabel
-            leftContent={t('gasFee')}
-            containerClass="mb-3"
-            rightClass="text-gray-80"
-            rightContent={
-              <DisplayBalance
-                id="gasFee"
-                maxWidth={218}
-                maxWidthStyle="max-w-[218px]"
-                symbol={symbol}
-                balance={gasFeeDrip || '0x0'}
-                decimals={decimals}
-              />
+        <TitleNav
+          onGoBack={() => {
+            if (isSendTx) {
+              clearAdvancedGasSetting()
+            } else {
+              clearSendTransactionParams()
             }
+          }}
+          title={
+            isSendTx ? t('editGasFee') : isSpeedUp ? t('speedUp') : t('cancel')
+          }
+        />
+        <main className="mt-3 px-4 flex flex-col flex-1">
+          <GasCost
+            sendParams={sendParams}
+            networkTypeIsCfx={networkTypeIsCfx}
           />
-          <WrapperWithLabel
-            containerClass={`${gasPriceErr ? 'mb-9' : 'mb-3'} relative`}
-            leftContent={`${t('gasPrice')} (${
-              networkTypeIsCfx ? 'GDrip' : 'GWei'
-            })`}
-            rightContent={
-              <NumberInput
-                size="small"
-                width="w-32"
-                decimals={GWEI_DECIMALS}
-                value={inputGasPrice}
-                id="gasPrice"
-                errorMessage={gasPriceErr}
-                errorClassName="absolute right-0 -bottom-6"
-                containerClassName="relative z-50"
-                onChange={value => onChangeGasPrice(value)}
-              />
-            }
-          />
-          <WrapperWithLabel
-            leftContent={t('gasLimit')}
-            containerClass={`${gasLimitErr ? 'mb-9' : 'mb-3'} relative`}
-            rightContent={
-              <NumberInput
-                size="small"
-                width="w-32"
-                id="gasLimit"
-                errorClassName="absolute right-0 -bottom-6"
-                containerClassName="relative z-50"
-                value={inputGasLimit}
-                errorMessage={gasLimitErr}
-                onChange={value => onChangeGasLimit(value)}
-              />
-            }
-          />
-          {networkTypeIsCfx ? (
-            <div>
-              <WrapperWithLabel
-                leftContent={t('storageFee')}
-                containerClass="mb-3"
-                rightClass="text-gray-80"
-                rightContent={
-                  <DisplayBalance
-                    id="storageFee"
-                    maxWidth={218}
-                    maxWidthStyle="max-w-[218px]"
-                    symbol={symbol}
-                    balance={storageFeeDrip || '0x0'}
-                    decimals={decimals}
-                  />
-                }
-              />
-              <WrapperWithLabel
-                leftContent={t('storageCollateralized')}
-                rightClass="text-gray-80"
-                rightContent={
-                  <span id="storageLimit">
-                    {formatHexToDecimal(storageCollateralized)}
-                  </span>
-                }
-              />
-            </div>
-          ) : null}
-          <div className="bg-gray-20 h-px mx-3 my-4" />
-          {networkTypeIsCfx ? (
-            <WrapperWithLabel
-              leftContent={t('totalFee')}
-              containerClass="mb-10"
-              leftClass="text-gray-80"
-              rightClass="text-gray-80 text-base"
-              rightContent={
-                <DisplayBalance
-                  id="txFee"
-                  maxWidth={218}
-                  maxWidthStyle="max-w-[218px]"
-                  symbol={symbol}
-                  initialFontSize={16}
-                  balance={txFeeDrip || '0x0'}
-                  decimals={decimals}
-                />
-              }
-            />
-          ) : null}
-
-          <WrapperWithLabel
-            leftContent={t('customNonce')}
-            containerClass="relative"
-            rightContent={
-              <NumberInput
-                id="nonce"
-                placeholder={nonce}
-                size="small"
-                width="w-32"
-                value={inputNonce}
-                errorMessage={nonceErr}
-                errorClassName="absolute right-0 -bottom-6"
-                containerClassName="relative z-50"
-                onChange={value => onChangeNonce(value)}
-              />
-            }
+          <GasStation
+            isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
+            isHistoryTx={!isSendTx}
+            gasInfoEip1559={gasInfoEip1559}
+            suggestedGasPrice={suggestedGasPrice}
+            selectedGasLevel={selectedGasLevel}
+            setSelectedGasLevel={setSelectedGasLevel}
+            onClickGasStationItem={onClickGasStationItem}
+            isCfxChain={isCfxChain}
+            estimateGasLimit={estimateGasLimit}
           />
         </main>
       </div>
-      <footer>
+      <footer className="flex flex-col px-4">
+        {!isSendTx && (
+          <div className="bg-warning-10 text-warning px-3 py-2 mb-3 text-xs rounded-sm">
+            {isSpeedUp ? t('speedupTxDes') : t('cancelTxDes')}
+          </div>
+        )}
         <Button
-          className="w-70  mx-auto mb-9"
+          className="w-full mx-auto z-50"
           id="saveGasFeeBtn"
           onClick={saveGasData}
-          disabled={!!gasPriceErr || !!nonceErr || !!gasLimitErr}
+          disabled={
+            (isTxTreatedAsEIP1559 &&
+              selectedGasLevel !== 'advanced' &&
+              !gasInfoEip1559[selectedGasLevel]) ||
+            (!isTxTreatedAsEIP1559 && !suggestedGasPrice) ||
+            resendDisabled
+          }
         >
-          {t('save')}
+          {isSendTx ? t('save') : t('submit')}
         </Button>
       </footer>
     </div>
   )
+}
+
+EditGasFee.propTypes = {
+  onSubmit: PropTypes.func,
+  onClickGasStationItem: PropTypes.func,
+  isSpeedUp: PropTypes.bool,
+  tx: PropTypes.object,
+  resendGasPrice: PropTypes.string,
+  resendDisabled: PropTypes.bool,
 }
 
 export default EditGasFee

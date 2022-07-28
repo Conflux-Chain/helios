@@ -79,7 +79,7 @@ function CurrentDapp() {
             <div className="flex w-full items-center justify-between">
               <span
                 id="setDisconnectModalShowBtn"
-                className="h-5 px-2 bg-primary-4 hover:bg-primary-10 rounded-full text-success text-xs flex items-center justify-center cursor-pointer"
+                className="h-5 px-2 bg-primary-10 hover:bg-primary-10 rounded-full text-success text-xs flex items-center justify-center cursor-pointer"
                 aria-hidden="true"
                 onClick={() => setDisconnectModalShow(true)}
               >

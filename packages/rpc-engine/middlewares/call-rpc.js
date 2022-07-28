@@ -15,21 +15,6 @@ function formatRes(res, id) {
   return {...template, result: '0x1'}
 }
 
-const RequestLockMethods = [
-  'wallet_watchAsset',
-  'wallet_requestPermissions',
-  'wallet_switchConfluxChain',
-  'wallet_switchEthereumChain',
-  'wallet_addConfluxChain',
-  'wallet_addEthereumChain',
-  // 'cfx_sendTransaction',
-  // 'personal_sign',
-  // 'cfx_signTypedData_v4',
-  // 'eth_signTypedData_v4',
-  'cfx_requestAccounts',
-  'eth_requestAccounts',
-]
-
 export default defMiddleware(
   ({tx: {map, pluck, sideEffect, comp}, stream: {resolve}}) => [
     {
@@ -65,17 +50,23 @@ export default defMiddleware(
 
           // guard inpage methods when wallet locked
           if (
-            // req is from inpage
+            // called from inpage
             req._inpage &&
-            // req allowed to be called from inpage
-            rpcStore[req.method].permissions.external.includes('inpage') &&
+            // allowed to be called in locked state
+            !rpcStore[req.method].permissions.locked &&
             // wallet is locked
             db.getLocked() &&
-            // method is unlocked only method
-            !rpcStore[req.method].permissions.locked
+            // allowed to be called from inpage
+            rpcStore[req.method].permissions.external.includes('inpage')
           ) {
-            // allow some inpage rpc methods to request the unlock ui
-            if (RequestLockMethods.includes(req.method)) {
+            if (
+              // allowed to bring up unlock UI
+              // this is determined by function injectUIMethods at ../src/permissions.js
+              rpcStore[req.method].permissions.methods.includes(
+                'wallet_requestUnlockUI',
+              )
+            ) {
+              // allow some inpage rpc methods to request the unlock ui
               await req.rpcs.wallet_requestUnlockUI().catch(err => {
                 err.rpcData = req
                 throw err
@@ -87,7 +78,6 @@ export default defMiddleware(
               throw err
             }
           }
-
           return req
         }),
       ),

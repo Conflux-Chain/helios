@@ -79,7 +79,7 @@ module.exports = async function ({onlyRerenderRpcName} = {}) {
       ([p, s, i], {content, doc}) => {
         if (doc?.metadata?.standard) s += content + '\n\n'
         else if (doc?.metadata?.provider) p += content + '\n\n'
-        else if (doc?.metadata?.inner) i += content + '\n\n'
+        else i += content + '\n\n'
         return [p, s, i]
       },
       ['', '', ''],

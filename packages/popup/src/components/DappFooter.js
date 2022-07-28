@@ -106,10 +106,6 @@ function DappFooter({
 
   const onConfirm = async () => {
     try {
-      if (!req?.method) {
-        return
-      }
-
       if (isHwAccount) {
         if (!ledgerBindingApi) {
           return
@@ -165,7 +161,7 @@ function DappFooter({
   }
 
   return (
-    <footer className="flex w-full px-4">
+    <footer className="flex w-full px-3 z-50">
       <Button
         id="cancelBtn"
         className="flex-1"
@@ -179,7 +175,7 @@ function DappFooter({
         id="confirmBtn"
         className="flex-1"
         onClick={onConfirm}
-        disabled={confirmDisabled}
+        disabled={confirmDisabled || !req?.method}
       >
         {confirmText}
       </Button>

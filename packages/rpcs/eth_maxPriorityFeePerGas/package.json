@@ -1,0 +1,9 @@
+{
+  "name": "@fluent-wallet/eth_max-priority-fee-per-gas",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.1.0",
+  "dependencies": {
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  }
+}

@@ -5,7 +5,7 @@ module.exports = async ({github, context, release}) => {
   } = context
   const {html_url, assets} = release
   const [asset] = assets
-  const comments = await github.issues.listComments({
+  const comments = await github.rest.issues.listComments({
     owner,
     repo,
     issue_number,
@@ -31,7 +31,7 @@ Build of this PR:
 
     if (commentToUpdate) {
       const [comment_id, body] = commentToUpdate
-      return await github.issues.updateComment({
+      return await github.rest.issues.updateComment({
         owner,
         repo,
         comment_id,
@@ -39,7 +39,7 @@ Build of this PR:
       })
     }
 
-    return await github.issues.createComment({
+    return await github.rest.issues.createComment({
       issue_number,
       owner,
       repo,

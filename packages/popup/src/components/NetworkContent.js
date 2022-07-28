@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import Message from '@fluent-wallet/component-message'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
-import {RPC_METHODS, NETWORK_TYPE} from '../constants'
+import {RPC_METHODS} from '../constants'
 import {request, setEffectiveCurrentAccount} from '../utils'
 import {useNetwork, useCurrentAddress, usePreferences} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
@@ -110,7 +110,7 @@ function NetworkItem({
       aria-hidden="true"
       className={`bg-gray-0 ${
         index !== 0 ? 'mt-4' : ''
-      } h-15 flex items-center rounded relative hover:bg-primary-4 ${
+      } h-15 flex items-center rounded relative hover:bg-primary-10 ${
         currentNetworkId === networkId && needSwitchNet
           ? 'cursor-default'
           : 'cursor-pointer'
@@ -124,15 +124,8 @@ function NetworkItem({
           src={icon || '/images/default-network-icon.svg'}
         />
       </div>
-      <div className="ml-2.5 flex-1">
-        <div className="text-gray-80 text-sm font-medium">{networkName}</div>
-        {type === NETWORK_TYPE.ETH &&
-          chainId !== '0x47' &&
-          chainId !== '0x406' && (
-            <div className="text-xs text-gray-40 mt-0.5">
-              {t('willSupport1559')}
-            </div>
-          )}
+      <div className="ml-2.5 flex-1 text-gray-80 text-sm font-medium">
+        {networkName}
       </div>
       {currentNetworkId === networkId && showCurrentIcon && (
         <CheckCircleFilled className="w-4 h-4 text-success" />

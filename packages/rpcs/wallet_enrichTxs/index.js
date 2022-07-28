@@ -19,9 +19,9 @@ export const main = ({
 }) => {
   const enrichFn = {cfx: wallet_enrichConfluxTx, eth: wallet_enrichEthereumTx}
   const txsToEnrich = getTxsToEnrich()
-  txsToEnrich.forEach(({tx, net}) => {
+  txsToEnrich.forEach(({tx, network}) => {
     try {
-      enrichFn[net.type]({errorFallThrough: true}, {txhash: tx.hash})
+      enrichFn[network.type]({errorFallThrough: true}, {txhash: tx.hash})
     } catch (err) {} // eslint-disable-line no-empty
   })
 }

@@ -91,6 +91,7 @@ const Input = forwardRef(function Input(
 
   const inputProps = {
     'data-testid': 'input-text',
+    autoComplete: 'off',
     value,
     onFocus: () => {
       setFocused(true)

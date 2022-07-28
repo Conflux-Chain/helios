@@ -28,7 +28,7 @@ function SeedPhrase({group, idx, selectedGroupIdx, onClickGroup}) {
       role="menuitem"
       tabIndex="-1"
       key={group.eid}
-      className="h-12 px-3 hover:bg-primary-4 flex items-center cursor-pointer justify-between"
+      className="h-12 px-3 hover:bg-primary-10 flex items-center cursor-pointer justify-between flex-shrink-0"
       onClick={() => onClickGroup && onClickGroup(idx)}
       onKeyDown={() => {}}
     >
@@ -106,7 +106,7 @@ function CurrentSeed() {
       id="currentSeedContainer"
     >
       <TitleNav title={t('newAccount')} />
-      <main className="px-3 flex flex-1 flex-col">
+      <main className="px-3 flex flex-1 flex-col overflow-hidden">
         <CompWithLabel label={t('accountName')}>
           <Input
             width="w-full"
@@ -133,12 +133,12 @@ function CurrentSeed() {
               />
             </span>
           }
-          className="flex flex-1 flex-col mb-4"
+          className="flex flex-1 flex-col mb-4 overflow-hidden"
         >
           <div
             role="menu"
             id="menu"
-            className="flex flex-col flex-1 overflow-y-auto py-2 bg-gray-0 rounded-sm"
+            className="flex flex-col flex-1 overflow-y-auto no-scroll py-2 bg-gray-0 rounded-sm"
           >
             {hdGroup.map(
               (g, idx) =>
@@ -154,7 +154,7 @@ function CurrentSeed() {
             )}
           </div>
         </CompWithLabel>
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-6">
           <Button
             className="w-70"
             onClick={onCreate}

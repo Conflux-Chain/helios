@@ -3,6 +3,8 @@
  * @name rpc-engine-opts.js
  */
 
+import * as walletGetBlockOrEpochNumber from '@fluent-wallet/wallet_get-block-or-epoch-number'
+import * as walletRefetchTxList from '@fluent-wallet/wallet_refetch-tx-list'
 import * as walletDeleteMemo from '@fluent-wallet/wallet_delete-memo'
 import * as walletUpsertMemo from '@fluent-wallet/wallet_upsert-memo'
 import * as walletDeleteAccount from '@fluent-wallet/wallet_delete-account'
@@ -99,6 +101,9 @@ import * as ethGetCode from '@fluent-wallet/eth_get-code'
 import * as ethGetTransactionCount from '@fluent-wallet/eth_get-transaction-count'
 import * as ethRequestAccounts from '@fluent-wallet/eth_request-accounts'
 import * as ethTypedSignV4 from '@fluent-wallet/eth_sign-typed-data_v4'
+import * as ethMaxPriorityFeePerGas from '@fluent-wallet/eth_max-priority-fee-per-gas'
+import * as ethEstimate1559Fee from '@fluent-wallet/eth_estimate-1559-fee'
+
 import {
   IS_CI,
   IS_DEV_MODE,
@@ -235,6 +240,7 @@ export const rpcEngineOpts = {
     walletAccounts,
     walletGetNextUsableNonce,
     walletGetNextNonce,
+    walletGetBlockOrEpochNumber,
     walletGetBalance,
     walletRefreshBalance,
     walletChainId,
@@ -252,6 +258,7 @@ export const rpcEngineOpts = {
     walletDeleteApp,
     walletGetAccountAddressByNetwork,
     walletRefetchTokenList,
+    walletRefetchTxList,
     walletUpdateTokenList,
     walletGetBlockchainExplorerUrl,
     walletEnrichTxs,
@@ -337,7 +344,8 @@ export const rpcEngineOpts = {
     ethGetTransactionByHash,
     ethSendTransaction,
     ethSignTxWithLedgerNanoS,
-
+    ethMaxPriorityFeePerGas,
+    ethEstimate1559Fee,
     // sign
     personalSign,
     ethTypedSignV4,
