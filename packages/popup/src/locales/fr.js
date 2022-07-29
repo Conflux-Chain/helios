@@ -15,8 +15,7 @@ const fr = {
     copiedSuccess: 'Copiée avec succès',
     invalidAddress: 'Merci d’indiquer une adresse cfx valide',
     invalidHexAddress: 'Merci d’indiquer une adresse hex valide',
-    unChecksumAddress:
-      'Adresse invalide, assurez-vous que la casse des lettres est correcte',
+    unChecksumAddress: 'Adresse invalide, assurez-vous que la casse des lettres est correcte',
     protocol: 'Protocole',
     viewData: 'Visualiser les données',
     learnMore: 'En savoir plus',
@@ -73,15 +72,12 @@ const fr = {
     createAccount: 'Créer un nouveau compte',
     useExistingSeed: 'Utiliser une phrase de récupération existante',
     faster: 'Plus rapide',
-    useExistingSeedDes:
-      'Utiliser HD Wallet, inutile de le sauvegarder à nouveau.',
+    useExistingSeedDes: 'Utiliser HD Wallet, inutile de le sauvegarder à nouveau.',
     newSeedPhrase: 'Nouvelle phrase de récupération',
-    newSeedPhraseDes:
-      'Créer une nouvelle phrase de récupération et la sauvegarder.',
+    newSeedPhraseDes: 'Créer une nouvelle phrase de récupération et la sauvegarder.',
     importExistingAccount: 'Importer un Compte',
     seedPhrase: 'Phrase de récupération',
-    seedPhraseDes:
-      'La phrase de récupération est composée de mots séparés par des espaces.',
+    seedPhraseDes: 'La phrase de récupération est composée de mots séparés par des espaces.',
     pKey: 'Clé Privée',
     pKeysDes: 'Saisir la clé privée en texte en clair.',
     ledgerDes: 'Utiliser votre portefeuille Ledger.',
@@ -110,15 +106,13 @@ const fr = {
     seedImport: 'Importer la Phrase de récupération',
     seedImportPlaceholder:
       'La phrase de récupération est composée de mots séparés par des espaces. Séparez chaque mot par un espace.',
-    duplicateSeedError:
-      'Cette phrase de récupération est déjà présente dans votre portefeuille.',
+    duplicateSeedError: 'Cette phrase de récupération est déjà présente dans votre portefeuille.',
     invalidSeed: 'Phrase de récupération invalide, vérifiez à nouveau.',
 
     // homepage / account management / create account / 4. Import account with private key
     pKeyImport: 'Importer la Clé Privée',
     pKeyImportPlaceholder: 'Saisir votre Clé Privée ici.',
-    duplicatePkError:
-      'Cette Clé Privée est déjà présente dans votre portefeuille.',
+    duplicatePkError: 'Cette Clé Privée est déjà présente dans votre portefeuille.',
     invalidPrivateKey: 'Clé invalide, vérifiez à nouveau.',
 
     // - Network
@@ -305,8 +299,7 @@ const fr = {
     enterPWDAgain: 'Confirmer le mot de passe',
     rememberPWD: 'Ce mot de passe ne peut pas être récupéré, retenez-le.',
     invalidPassword: 'Mot de passe incorrect.',
-    invalidConfirmPassword:
-      'La confirmation du mot de passe ne correspond pas.',
+    invalidConfirmPassword: 'La confirmation du mot de passe ne correspond pas.',
     // - welcome page
     hello: 'Bonjour',
 
@@ -330,8 +323,7 @@ const fr = {
     networkManagement: 'Gestion du Réseau',
     newRpcUrl: 'URL du RPC',
     networkType: 'Type de Réseau',
-    wrongRpcUrl:
-      'Impossible de récupérer l’ID de la chaîne. Votre URL RPC est-elle correcte ?',
+    wrongRpcUrl: 'Impossible de récupérer l’ID de la chaîne. Votre URL RPC est-elle correcte ?',
     networkDeleteWarning: 'Impossible de supprimer le réseau actuel.',
     duplicateNetworkEndpoint: 'Point de terminaison du réseau en doublon.',
     urlWarning: 'L’URL nécessite le préfixe HTTP/HTTPS approprié.',
@@ -343,8 +335,7 @@ const fr = {
     priorityConnectionDes:
       'Fluent sera la première option lors de la connexion à une dApp sur les réseaux EVM.',
     showTestnet: 'Afficher la Testnet',
-    showTestnetDes:
-      'Selectionner cela pour afficher les testnets dans la liste de réseaux disponibles.',
+    showTestnetDes: 'Selectionner cela pour afficher les testnets dans la liste de réseaux disponibles.',
 
     // About
     about: 'À Propos',
@@ -375,8 +366,7 @@ const fr = {
     ethereumPathStandard: 'Ethereum Wallet',
     ethereumPathStandardDes: "Généré par le chemin Ethereum standard 'm/60'",
 
-    transferAmountExceedsAllowance:
-      'Le montant du transfert dépasse l’allocation',
+    transferAmountExceedsAllowance: 'Le montant du transfert dépasse l’allocation',
     balanceIsNotEnough: 'Balance insuffisante',
     gasFeeIsNotEnough: 'Frais de gas insuffisant',
     contractError: 'Erreur Contrat : ',
@@ -404,8 +394,7 @@ const fr = {
     connectLedgerTips:
       'Connecter votre Ledger, assurez-vous qu’il soit déverrouillé et que vous avez approuvé les autorisations sur votre navigateur.',
     connectLedger: 'Connecter votre Ledger',
-    connectLedgerDes:
-      'Cochez le bouton ci-dessous pour autoriser la connexion.',
+    connectLedgerDes: 'Cochez le bouton ci-dessous pour autoriser la connexion.',
     waitForPermission: 'En attente d’autorisation',
     connectFailed: 'Connexion Échouée',
     retry: 'Réessayer',
