@@ -9,7 +9,7 @@ export const schemas = {
     map,
     {closed: true},
     ['tx', SendTxSchema.input],
-    ['action', [enums, 'cancel', 'speedUp']],
+    ['action', [enums, 'cancel', 'speedup']],
   ],
 }
 
