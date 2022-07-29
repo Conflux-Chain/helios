@@ -71,7 +71,6 @@ function HistoryItem({
   } = useCurrentTicker()
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
-
   const {
     data: {value: currentAddress},
   } = useCurrentAddress()
@@ -280,7 +279,7 @@ function HistoryItem({
         errorType={i18next?.exists(err) ? err : 'unknownError'}
         onCancelPendingTx={onCancelPendingTx}
         onSpeedupPendingTx={onSpeedupPendingTx}
-        networkTypeIsCfx={networkTypeIsCfx}
+        gasFeeSymbol={tokenSymbol}
       />
     </div>
   )

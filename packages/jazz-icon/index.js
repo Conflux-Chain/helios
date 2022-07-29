@@ -59,6 +59,7 @@ function genShape(remainingColors, diameter, i, total, svg) {
 }
 
 function genColor(colors) {
+  generator.random()
   var idx = Math.floor(colors.length * generator.random())
   var color = colors.splice(idx, 1)[0]
   return color

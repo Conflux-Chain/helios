@@ -12,7 +12,11 @@ import {
   GWEI_DECIMALS,
 } from '@fluent-wallet/data-format'
 import {TitleNav, GasCost} from '../../components'
-import {useNetworkTypeIsCfx, useCfxMaxGasLimit} from '../../hooks/useApi'
+import {
+  useIsCfxChain,
+  useNetworkTypeIsCfx,
+  useCfxMaxGasLimit,
+} from '../../hooks/useApi'
 import {
   useCurrentTxStore,
   useEstimateTx,
@@ -55,6 +59,7 @@ function AdvancedGas() {
     tx: txParams,
   } = useCurrentTxStore()
 
+  const isCfxChain = useIsCfxChain()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const cfxMaxGasLimit = useCfxMaxGasLimit(networkTypeIsCfx)
 
@@ -148,7 +153,7 @@ function AdvancedGas() {
 
   const onChangeGasPrice = gasPrice => {
     setInputGasPrice(gasPrice)
-    if (!networkTypeIsCfx) {
+    if (!isCfxChain) {
       if (new Big(gasPrice || '0').times('1e9').gt(0)) {
         setGasPriceErr('')
       } else {
@@ -275,7 +280,7 @@ function AdvancedGas() {
         <main className="mt-3 px-4">
           <GasCost sendParams={params} networkTypeIsCfx={networkTypeIsCfx} />
           <CustomGasPrice
-            networkTypeIsCfx={networkTypeIsCfx}
+            isCfxChain={isCfxChain}
             isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
             inputGasPrice={inputGasPrice}
             gasPriceErr={gasPriceErr}

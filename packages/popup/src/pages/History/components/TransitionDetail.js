@@ -3,15 +3,12 @@ import {useTranslation} from 'react-i18next'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Tooltip from '@fluent-wallet/component-tooltip'
 import {formatHexToDecimal} from '@fluent-wallet/data-format'
-import {SendOutlined} from '@fluent-wallet/component-icons'
-import {
-  CFX_MAINNET_CURRENCY_SYMBOL,
-  ETH_MAINNET_CURRENCY_SYMBOL,
-} from '@fluent-wallet/consts'
+import {SendOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 
 import {formatIntoChecksumAddress, formatLocalizationLang} from '../../../utils'
 import {SlideCard, CopyButton, WrapIcon} from '../../../components'
 import {HistoryStatusIcon, HistoryBalance, ResendButtons} from './'
+import {useAddressType} from '../../../hooks/useApi'
 
 function TransitionItem({
   className = 'mt-3',
@@ -39,7 +36,7 @@ TransitionItem.propTypes = {
 function TransitionDetail({
   open = false,
   isNegativeAmount = false,
-  networkTypeIsCfx = false,
+  gasFeeSymbol = '',
   onClose,
   txStatus = '',
   dappIconUrl = '',
@@ -65,6 +62,10 @@ function TransitionDetail({
 }) {
   const {t, i18n} = useTranslation()
   const displayAddress = isExternalTx ? fromAddress : toAddress
+  const displayAddressType = useAddressType(displayAddress)
+  const isContractAddress =
+    displayAddressType === 'contract' || displayAddressType === 'builtin'
+
   const displayActionName =
     txStatus === 'failed'
       ? formatLocalizationLang(i18n.language) === 'zh'
@@ -119,9 +120,19 @@ function TransitionDetail({
 
           {displayAddress && (
             <TransitionItem
-              transitionTitle={t(isExternalTx ? 'fromAddress' : 'toAddress')}
+              transitionTitle={t(
+                isContractAddress
+                  ? 'contract'
+                  : isExternalTx
+                  ? 'fromAddress'
+                  : 'toAddress',
+              )}
               TransitionValueOverlay={
                 <div className="flex font-medium items-center">
+                  {isContractAddress && (
+                    <FileOutlined className="w-4 h-4 mr-1 text-primary" />
+                  )}
+
                   <Tooltip content={displayAddress} placement="topLeft">
                     {shortenAddress(formatIntoChecksumAddress(displayAddress))}
                   </Tooltip>
@@ -145,11 +156,7 @@ function TransitionDetail({
               TransitionValueOverlay={
                 <HistoryBalance
                   amount={txFeeDrip}
-                  symbol={
-                    networkTypeIsCfx
-                      ? CFX_MAINNET_CURRENCY_SYMBOL
-                      : ETH_MAINNET_CURRENCY_SYMBOL
-                  }
+                  symbol={gasFeeSymbol}
                   symbolClassName="ml-1 !font-medium !text-gray-80"
                   className="!font-medium"
                 />
@@ -217,8 +224,8 @@ TransitionDetail.propTypes = {
   open: PropTypes.bool,
   isExternalTx: PropTypes.bool,
   isNegativeAmount: PropTypes.bool,
-  networkTypeIsCfx: PropTypes.bool,
   onClose: PropTypes.func,
+  gasFeeSymbol: PropTypes.string,
   txStatus: PropTypes.string,
   dappIconUrl: PropTypes.string,
   statusIconColor: PropTypes.string,
