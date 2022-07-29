@@ -142,8 +142,6 @@ function ResendTransaction() {
   const originEstimateRst =
     useEstimateTx({...originParams}, token20Params) || {}
 
-  const isContractError = estimateError.indexOf(t('contractError')) !== -1
-
   const resendTransaction = async params => {
     try {
       await request(SEND_TRANSACTION, [params])
@@ -255,7 +253,7 @@ function ResendTransaction() {
         isSpeedUp={isSpeedup}
         onSubmit={onResend}
         tx={{...originParams}}
-        resendDisabled={!!estimateError && !isContractError}
+        resendDisabled={!!estimateError}
         onClickGasStationItem={() => setEstimateError('')}
       />
       {sendStatus && (
@@ -270,7 +268,6 @@ function ResendTransaction() {
         isHwUnAuth={isHwUnAuth}
         isHwOpenAlert={isHwOpenAlert}
         estimateError={estimateError}
-        isContractError={isContractError}
       />
       {executedTxResultStatus && (
         <ExecutedTransaction
