@@ -38,6 +38,7 @@ function History() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [historyListData?.data])
 
+  console.log('txList', txList)
   return (
     <div
       id="history-container"

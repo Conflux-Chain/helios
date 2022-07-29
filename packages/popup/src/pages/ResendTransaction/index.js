@@ -27,7 +27,7 @@ import {ExecutedTransaction} from './components'
 
 import {RPC_METHODS, TX_STATUS} from '../../constants'
 
-const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION} = RPC_METHODS
+const {WALLET_SEND_TRANSACTION_WITH_ACTION} = RPC_METHODS
 
 const filterNonValueParams = (originParams = {}, otherParams = {}) => {
   const ret = {}
@@ -65,9 +65,6 @@ function ResendTransaction() {
   const isHwAccount = accountType === 'hw'
   const isHwUnAuth = !authStatus && isHwAccount
   const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
-  const SEND_TRANSACTION = networkTypeIsCfx
-    ? CFX_SEND_TRANSACTION
-    : ETH_SEND_TRANSACTION
 
   const resendType = query.get('type')
   const hash = query.get('hash')
@@ -144,7 +141,10 @@ function ResendTransaction() {
 
   const resendTransaction = async params => {
     try {
-      await request(SEND_TRANSACTION, [params])
+      await request(WALLET_SEND_TRANSACTION_WITH_ACTION, {
+        action: resendType,
+        tx: [params],
+      })
       clearSendTransactionParams()
       history.goBack()
     } catch (error) {
