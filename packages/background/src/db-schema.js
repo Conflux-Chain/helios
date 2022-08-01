@@ -158,6 +158,7 @@ const schema = {
     blockHash: {doc: 'block this tx packaged in'},
     chainSwitched: {doc: 'chain switched'},
     created: {doc: 'created timestamp get with new Date().getTime()'},
+    pendingAt: {doc: 'first time pending timestamp'},
     err: {doc: 'basic error type/info'},
     txExtra: {doc: 'enriched tx info', ref: true, component: true},
     fromFluent: {doc: 'tx submitted from fluent'},
