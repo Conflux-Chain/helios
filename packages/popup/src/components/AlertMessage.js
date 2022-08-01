@@ -10,13 +10,7 @@ import {ROUTES} from '../constants'
 
 const {CONNECT_HARDWARE_WALLET} = ROUTES
 
-function AlertMessage({
-  isHwUnAuth,
-  isHwOpenAlert,
-  estimateError,
-  isContractError,
-  isDapp,
-}) {
+function AlertMessage({isHwUnAuth, isHwOpenAlert, estimateError, isDapp}) {
   const {t} = useTranslation()
   const LedgerAppName = useLedgerAppName()
 
@@ -25,19 +19,17 @@ function AlertMessage({
     <div className="bg-bg bg-gray-circles bg-no-repeat bg-contain w-full flex flex-col absolute bottom-0 pt-6 pb-[88px] px-3 rounded-t-xl">
       <div className="flex items-start">
         <span className="shrink-0">
-          {(isHwUnAuth || isHwOpenAlert || isContractError) && (
+          {(isHwUnAuth || isHwOpenAlert) && (
             <ExclamationCircleFilled className="w-[18px] h-[18px] mr-1 text-warning" />
           )}
-          {!isContractError && !!estimateError && (
+          {!!estimateError && (
             <CloseCircleFilled className="w-[18px] h-[18px] mr-1 text-error" />
           )}
         </span>
         <span className="font-medium text-warning">
           {isHwUnAuth && t('ledgerIsNotConnected')}
-          {(isHwOpenAlert || isContractError) && t('warning')}
-          <span className="text-error">
-            {!isContractError && !!estimateError && t('error')}
-          </span>
+          {isHwOpenAlert && t('warning')}
+          <span className="text-error">{!!estimateError && t('error')}</span>
         </span>
       </div>
       {isHwUnAuth && (
@@ -57,16 +49,15 @@ function AlertMessage({
           </Link>
         </div>
       )}
-      {(isHwOpenAlert || isContractError) && (
+      {isHwOpenAlert && (
         <div className="text-xs text-warning mt-3">
           {isHwOpenAlert &&
             t('hwOpenApp', {
               appName: LedgerAppName,
             })}
-          {isContractError && estimateError}
         </div>
       )}
-      {!isContractError && !!estimateError && (
+      {!!estimateError && (
         <div className="text-xs text-error mt-3">{estimateError}</div>
       )}
     </div>
@@ -77,7 +68,6 @@ AlertMessage.propTypes = {
   isHwUnAuth: PropTypes.bool,
   isHwOpenAlert: PropTypes.bool,
   estimateError: PropTypes.string,
-  isContractError: PropTypes.bool,
   isDapp: PropTypes.bool,
 }
 

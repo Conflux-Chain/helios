@@ -325,10 +325,8 @@ function ConfirmTransaction() {
     else window.close()
   }
 
-  const isContractError = estimateError.indexOf(t('contractError')) !== -1
-
   const confirmDisabled =
-    (!!estimateError && !isContractError) ||
+    !!estimateError ||
     estimateRst.loading ||
     Object.keys(estimateRst).length === 0
 
@@ -419,7 +417,6 @@ function ConfirmTransaction() {
             isHwUnAuth={isHwUnAuth}
             isHwOpenAlert={isHwOpenAlert}
             estimateError={estimateError}
-            isContractError={isContractError}
           />
           {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (
             <TransactionResult
