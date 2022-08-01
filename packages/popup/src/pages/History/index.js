@@ -65,6 +65,7 @@ function History() {
                 err,
                 fromScan,
                 receipt,
+                pendingAt,
               },
               index,
             ) => (
@@ -80,6 +81,7 @@ function History() {
                 receipt={receipt}
                 err={err}
                 fromScan={fromScan}
+                pendingAt={pendingAt}
                 copyButtonContainerClassName={index === 0 ? '' : undefined}
                 copyButtonToastClassName={
                   index === 0 ? 'top-10 right-3' : undefined

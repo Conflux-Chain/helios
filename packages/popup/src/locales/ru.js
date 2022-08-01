@@ -261,6 +261,7 @@ const ru = {
     hash: 'Hash',
     nonce: 'Nonce',
     fromAddress: 'From Address',
+    expeditedCancellation: 'Expedited Cancellation',
 
     // - request signature - 1. Sign Text
     signText: 'Подписать текст',

@@ -252,6 +252,7 @@ const zh = {
     hash: '交易哈希',
     nonce: '随机数',
     fromAddress: '发送方',
+    expeditedCancellation: '加速取消',
 
     // - request signature - 1. Sign Text
     signText: '文本签名',

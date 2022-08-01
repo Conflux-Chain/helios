@@ -27,7 +27,7 @@ import {ExecutedTransaction} from './components'
 
 import {RPC_METHODS, TX_STATUS} from '../../constants'
 
-const {CFX_SEND_TRANSACTION, ETH_SEND_TRANSACTION} = RPC_METHODS
+const {WALLET_SEND_TRANSACTION_WITH_ACTION} = RPC_METHODS
 
 const filterNonValueParams = (originParams = {}, otherParams = {}) => {
   const ret = {}
@@ -65,13 +65,13 @@ function ResendTransaction() {
   const isHwAccount = accountType === 'hw'
   const isHwUnAuth = !authStatus && isHwAccount
   const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
-  const SEND_TRANSACTION = networkTypeIsCfx
-    ? CFX_SEND_TRANSACTION
-    : ETH_SEND_TRANSACTION
+
+  // 1.speedup: speedup current transactions
+  // 2.cancel: cancel current transaction
+  // 3.expeditedCancellation: speedup a transaction that has already been cancelled
 
   const resendType = query.get('type')
   const hash = query.get('hash')
-  const isSpeedup = resendType === 'speedup'
 
   const {
     data: {txPayload = {}, token, txExtra = {}, status},
@@ -94,7 +94,7 @@ function ResendTransaction() {
 
   // decode erc20 data
   const {decodeData} = useDecodeData(
-    isSpeedup
+    resendType === 'speedup'
       ? {
           to,
           data,
@@ -103,7 +103,7 @@ function ResendTransaction() {
   )
 
   const isSendingToken =
-    isSpeedup &&
+    resendType === 'speedup' &&
     token20 &&
     token &&
     (decodeData?.name === 'transfer' || decodeData?.name === 'transferFrom')
@@ -121,7 +121,7 @@ function ResendTransaction() {
     : {}
 
   const originParams = filterNonValueParams(
-    isSpeedup
+    resendType === 'speedup'
       ? {
           type: eipVersionType,
           from,
@@ -144,7 +144,13 @@ function ResendTransaction() {
 
   const resendTransaction = async params => {
     try {
-      await request(SEND_TRANSACTION, [params])
+      await request(WALLET_SEND_TRANSACTION_WITH_ACTION, {
+        action:
+          resendType === 'expeditedCancellation' || resendType === 'cancel'
+            ? 'cancel'
+            : 'speedup',
+        tx: [params],
+      })
       clearSendTransactionParams()
       history.goBack()
     } catch (error) {
@@ -189,8 +195,8 @@ function ResendTransaction() {
     const error = await checkBalance(
       params,
       token || {},
-      isSpeedup ? simple : true,
-      isSpeedup ? isSendingToken || simple : true,
+      resendType === 'speedup' ? simple : true,
+      resendType === 'speedup' ? isSendingToken || simple : true,
       sendTokenValue,
       networkTypeIsCfx,
       isTxTreatedAsEIP1559,
@@ -250,7 +256,7 @@ function ResendTransaction() {
     <div className="relative h-full">
       <EditGasFee
         resendGasPrice={suggestedGasPrice}
-        isSpeedUp={isSpeedup}
+        resendType={resendType}
         onSubmit={onResend}
         tx={{...originParams}}
         resendDisabled={!!estimateError}

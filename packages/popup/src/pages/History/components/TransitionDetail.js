@@ -36,6 +36,7 @@ TransitionItem.propTypes = {
 function TransitionDetail({
   open = false,
   isNegativeAmount = false,
+  showResendButtons = false,
   gasFeeSymbol = '',
   onClose,
   txStatus = '',
@@ -54,11 +55,10 @@ function TransitionDetail({
   copyButtonToastClassName,
   txFeeDrip = '0x0',
   hash = '',
+  sendAction = '',
   transactionUrl,
   payload,
   errorType,
-  onCancelPendingTx,
-  onSpeedupPendingTx,
 }) {
   const {t, i18n} = useTranslation()
   const displayAddress = isExternalTx ? fromAddress : toAddress
@@ -204,13 +204,12 @@ function TransitionDetail({
         </div>
       }
       cardFooter={
-        txStatus === 'pending' &&
-        !isExternalTx && (
+        showResendButtons && (
           <ResendButtons
-            onCancelPendingTx={onCancelPendingTx}
-            onSpeedupPendingTx={onSpeedupPendingTx}
+            hash={hash}
+            sendAction={sendAction}
             className="mt-3"
-            blank="mr-3"
+            blank="ml-3"
             buttonClassName="bg-primary-10 text-primary"
             buttonTextClassName="ml-1"
           />
@@ -224,6 +223,7 @@ TransitionDetail.propTypes = {
   open: PropTypes.bool,
   isExternalTx: PropTypes.bool,
   isNegativeAmount: PropTypes.bool,
+  showResendButtons: PropTypes.bool,
   onClose: PropTypes.func,
   gasFeeSymbol: PropTypes.string,
   txStatus: PropTypes.string,
@@ -244,8 +244,7 @@ TransitionDetail.propTypes = {
   transactionUrl: PropTypes.string,
   payload: PropTypes.object.isRequired,
   errorType: PropTypes.string,
-  onCancelPendingTx: PropTypes.func,
-  onSpeedupPendingTx: PropTypes.func,
+  sendAction: PropTypes.string,
 }
 
 export default TransitionDetail

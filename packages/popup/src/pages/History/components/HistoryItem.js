@@ -49,6 +49,7 @@ function HistoryItem({
   transactionUrl,
   hash,
   err,
+  pendingAt = 0,
   fromScan = false,
   copyButtonContainerClassName,
   copyButtonToastClassName,
@@ -64,6 +65,7 @@ function HistoryItem({
 
   const {t} = useTranslation()
   const dappIconUrl = useDappIcon(app?.site?.icon)
+
   const {
     symbol: tokenSymbol,
     name: tokenName,
@@ -88,6 +90,11 @@ function HistoryItem({
 
   const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
 
+  const showResendButtons =
+    txStatus === 'pending' &&
+    !isExternalTx &&
+    new Date().getTime() - pendingAt > 5000
+
   const {txFeeDrip = '0x0'} = receipt
     ? networkTypeIsCfx
       ? cfxGetFeeData({
@@ -101,7 +108,8 @@ function HistoryItem({
         })
     : {}
 
-  const {contractCreation, simple, contractInteraction, token20} = extra
+  const {contractCreation, simple, contractInteraction, token20, sendAction} =
+    extra
 
   const {decodeData} = useDecodeData({
     to: payload?.to,
@@ -244,10 +252,10 @@ function HistoryItem({
           </div>
         </div>
       </div>
-      {txStatus === 'pending' && !isExternalTx && (
+      {showResendButtons && (
         <ResendButtons
-          onCancelPendingTx={onCancelPendingTx}
-          onSpeedupPendingTx={onSpeedupPendingTx}
+          hash={hash}
+          sendAction={sendAction}
           className="mx-3 rounded-b text-sm text-primary"
           buttonClassName="shadow-fluent-4 border-transparent bg-primary-10 !h-6"
           buttonTextClassName="ml-2"
@@ -280,6 +288,8 @@ function HistoryItem({
         onCancelPendingTx={onCancelPendingTx}
         onSpeedupPendingTx={onSpeedupPendingTx}
         gasFeeSymbol={tokenSymbol}
+        sendAction={sendAction}
+        showResendButtons={showResendButtons}
       />
     </div>
   )
@@ -288,6 +298,7 @@ function HistoryItem({
 HistoryItem.propTypes = {
   status: PropTypes.number.isRequired,
   created: PropTypes.number.isRequired,
+  pendingAt: PropTypes.number,
   extra: PropTypes.object.isRequired,
   receipt: PropTypes.object,
   payload: PropTypes.object.isRequired,

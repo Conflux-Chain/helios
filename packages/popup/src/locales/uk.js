@@ -260,6 +260,7 @@ const uk = {
     hash: 'Hash',
     nonce: 'Nonce',
     fromAddress: 'From Address',
+    expeditedCancellation: 'Expedited Cancellation',
 
     // - request signature - 1. Sign Text
     signText: 'Підписати текст',
