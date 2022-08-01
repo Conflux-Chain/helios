@@ -19,10 +19,27 @@ export const main = ({
 }) => {
   const network = getNetworkById(params.networkId)
   if (!network) throw InvalidParams(`Invalid network id: ${params.networkId}`)
-  if (network.builtin)
+  if (network.builtin && network.endpoint === params.rpcUrls[0])
     throw InvalidParams(`Don't support update builtin network`)
-  // eslint-disable-next-line no-unused-vars
-  const {networkId, ...newParams} = params
+
+  let newParams
+  // only allow changing builtin network's rpcUrls
+  if (network.builtin) {
+    newParams = {
+      rpcUrls: params.rpcUrls,
+
+      chainId: network.chainId,
+      chainName: network.name,
+      nativeCurrency: {...network.ticker},
+      blockExplorerUrls: [network.scanUrl],
+      iconUrls: [network.icon],
+      hdPath: network.hdPath.eid,
+    }
+  } else {
+    // eslint-disable-next-line no-unused-vars
+    let {networkId, ...newParams1} = params
+    newParams = newParams1
+  }
 
   return wallet_addNetwork({toUpdateNetwork: network}, newParams)
 }
