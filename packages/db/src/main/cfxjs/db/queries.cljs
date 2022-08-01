@@ -1556,8 +1556,11 @@
       (t [tx]))))
 (defn set-tx-pending [{:keys [hash]}]
   (when-not (tx-end-state? hash)
-    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-        {:db/id [:tx/hash hash] :tx/status 2}])))
+    (let [pending-at (:tx/pendingAt (p [:tx/pendingAt] [:tx/hash hash]))]
+      (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+          {:db/id        [:tx/hash hash]
+           :tx/status    2
+           :tx/pendingAt (or pending-at (.now js/Date))}]))))
 (defn set-tx-packaged [{:keys [hash blockHash]}]
   (when-not (tx-end-state? hash)
     (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
