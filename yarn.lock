@@ -3922,9 +3922,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cfxjs/fullnode@npm:3.1.0":
-  version: 3.1.0
-  resolution: "@cfxjs/fullnode@npm:3.1.0"
+"@cfxjs/fullnode@npm:3.2.0":
+  version: 3.2.0
+  resolution: "@cfxjs/fullnode@npm:3.2.0"
   dependencies:
     cfx-util: ">=0.0.4"
     cross-port-killer: ^1.4.0
@@ -3943,7 +3943,7 @@ __metadata:
     sleep-promise: ^8.0.1
     tmp: ^0.2.0
     unzipper: ^0.10.11
-  checksum: 07c2e2f8457a0a401c9501c2594da336523945f148541fae9df809b310ff108a20a30b9c3f56c3de04ce2778ca0fec505910a8171fe47a9e08557a44c40b8cd6
+  checksum: 3258d656e0ed6217dc136ace016d637717f16fef66e06e23819fc11628bd6042c87300ebf9c991d359960c29cb522810ff13cba24abe5f6266b56c949b5c75d9
   languageName: node
   linkType: hard
 
@@ -6647,7 +6647,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/test-helpers@workspace:packages/test-helpers"
   dependencies:
-    "@cfxjs/fullnode": 3.1.0
+    "@cfxjs/fullnode": 3.2.0
     ethers: 5.6.8
     ganache-core: 2.13.2
     js-conflux-sdk: 2.1.2
