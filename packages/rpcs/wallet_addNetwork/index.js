@@ -139,7 +139,10 @@ export const main = async ({
 
   // chain id duplicate with builtin network
   const [dupChainIdBuiltInNetwork] = getNetwork({chainId, builtin: true})
-  if (dupChainIdBuiltInNetwork)
+  if (
+    dupChainIdBuiltInNetwork &&
+    toUpdateNetwork?.eid !== dupChainIdBuiltInNetwork.eid
+  )
     throw InvalidParams(`Duplicate chainId ${chainId} with builtin network`)
 
   // this returns menas the rpcurl is valid
@@ -171,16 +174,17 @@ export const main = async ({
     {
       eid: toUpdateNetwork?.eid || 'networkId',
       network: {
-        isCustom: true,
+        isCustom: toUpdateNetwork?.isCustom ?? true,
         name,
-        cacheTime: networkType === 'cfx' ? 1000 : 15000,
+        cacheTime:
+          toUpdateNetwork?.cacheTime ?? (networkType === 'cfx' ? 1000 : 15000),
         endpoint: url,
         type: networkType,
         hdPath: hdPathId,
         chainId,
         netId: parseInt(netId, 10),
         ticker,
-        builtin: false,
+        builtin: toUpdateNetwork?.cacheTime ?? false,
       },
     },
     explorerUrl && {
