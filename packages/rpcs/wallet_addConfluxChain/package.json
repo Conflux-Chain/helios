@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/wallet_add-conflux-chain",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "dependencies": {
     "@fluent-wallet/wallet_add-ethereum-chain": "workspace:packages/rpcs/wallet_addEthereumChain"
   }

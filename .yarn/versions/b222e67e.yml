@@ -1,5 +1,0 @@
-releases:
-  "@fluent-wallet/test-helpers": patch
-
-declined:
-  - helios-background
