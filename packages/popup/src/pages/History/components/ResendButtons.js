@@ -1,20 +1,26 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
+import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import {
   RocketOutlined,
   CloseCircleOutlined,
 } from '@fluent-wallet/component-icons'
 
+import {ROUTES} from '../../../constants'
+
+const {RESEND_TRANSACTION} = ROUTES
+
 function ResendButtons({
-  onCancelPendingTx,
-  onSpeedupPendingTx,
   className = '',
   buttonClassName = '',
   buttonTextClassName = '',
   blank = '',
+  resendType = '',
+  hash,
 }) {
   const {t} = useTranslation()
+  const history = useHistory()
 
   return (
     <div className={`flex ${className}`}>
@@ -22,23 +28,36 @@ function ResendButtons({
         id="cancel-tx"
         variant="outlined"
         key="cancel"
-        className={`flex-1 !border-transparent ${buttonClassName} ${blank}`}
-        onClick={() => onCancelPendingTx?.()}
+        className={`flex-1 !border-transparent ${buttonClassName}`}
+        onClick={() => {
+          history.push({
+            pathname: RESEND_TRANSACTION,
+            search: `type=cancel&hash=${hash}`,
+          })
+        }}
       >
         <CloseCircleOutlined className="w-3 h-3" />
-        <span className={buttonTextClassName}>{t('cancel')}</span>
+        <span className={buttonTextClassName}>
+          {t(resendType === 'cancel' ? 'expeditedCancellation' : 'cancel')}
+        </span>
       </Button>
-
-      <Button
-        id="speedup-tx"
-        className={`flex-1 !border-transparent ${buttonClassName}`}
-        variant="outlined"
-        key="confirm"
-        onClick={() => onSpeedupPendingTx?.()}
-      >
-        <RocketOutlined className="w-3 h-3" />
-        <span className={buttonTextClassName}>{t('speedUp')}</span>
-      </Button>
+      {resendType !== 'cancel' && (
+        <Button
+          id="speedup-tx"
+          className={`flex-1 !border-transparent ${buttonClassName} ${blank}`}
+          variant="outlined"
+          key="confirm"
+          onClick={() => {
+            history.push({
+              pathname: RESEND_TRANSACTION,
+              search: `type=speedup&hash=${hash}`,
+            })
+          }}
+        >
+          <RocketOutlined className="w-3 h-3" />
+          <span className={buttonTextClassName}>{t('speedUp')}</span>
+        </Button>
+      )}
     </div>
   )
 }
@@ -48,8 +67,8 @@ ResendButtons.propTypes = {
   buttonClassName: PropTypes.string,
   buttonTextClassName: PropTypes.string,
   blank: PropTypes.string,
-  onCancelPendingTx: PropTypes.func,
-  onSpeedupPendingTx: PropTypes.func,
+  hash: PropTypes.string,
+  resendType: PropTypes.string,
 }
 
 export default ResendButtons
