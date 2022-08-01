@@ -15,8 +15,7 @@ const fr = {
     copiedSuccess: 'Copiée avec succès',
     invalidAddress: 'Merci d’indiquer une adresse cfx valide',
     invalidHexAddress: 'Merci d’indiquer une adresse hex valide',
-    unChecksumAddress:
-      'Adresse invalide, assurez-vous que la casse des lettres est correcte',
+    unChecksumAddress: 'Adresse invalide, assurez-vous que la casse des lettres est correcte',
     protocol: 'Protocole',
     viewData: 'Visualiser les données',
     learnMore: 'En savoir plus',
@@ -44,15 +43,15 @@ const fr = {
 
     // - homepage / dapp connect site popup
     connectSite: 'Se connecter à ce site internet ?',
-    permissionRequest: 'Permission Request',
-    allowPermission: 'Allow these permissions for this site?',
+    permissionRequest: 'Demande d’autorisation',
+    allowPermission: 'Autoriser ces permissions pour ce site ?',
     selectNetwork: 'Quel réseau souhaitez-vous utiliser ?',
     selectAuthorizedAccounts: 'Comptes autorisés',
     selectAll: 'Tout',
     connect: 'Connecter',
     chooseNetwork: 'Choisir un réseau',
-    viewSelectedAddress: 'View selected account public address',
-    viewMultiAddress: 'View selected account‘s multi-chain address',
+    viewSelectedAddress: 'Voir l’adresse publique du compte sélectionné',
+    viewMultiAddress: 'Voir l’adresse multi-chaîne du compte sélectionné',
 
     // - homepage / authorize single account
     authorizeCurrentAccount: 'Autoriser {{currentAccount}}',
@@ -73,15 +72,12 @@ const fr = {
     createAccount: 'Créer un nouveau compte',
     useExistingSeed: 'Utiliser une phrase de récupération existante',
     faster: 'Plus rapide',
-    useExistingSeedDes:
-      'Utiliser HD Wallet, inutile de le sauvegarder à nouveau.',
+    useExistingSeedDes: 'Utiliser HD Wallet, inutile de le sauvegarder à nouveau.',
     newSeedPhrase: 'Nouvelle phrase de récupération',
-    newSeedPhraseDes:
-      'Créer une nouvelle phrase de récupération et la sauvegarder.',
+    newSeedPhraseDes: 'Créer une nouvelle phrase de récupération et la sauvegarder.',
     importExistingAccount: 'Importer un Compte',
     seedPhrase: 'Phrase de récupération',
-    seedPhraseDes:
-      'La phrase de récupération est composée de mots séparés par des espaces.',
+    seedPhraseDes: 'La phrase de récupération est composée de mots séparés par des espaces.',
     pKey: 'Clé Privée',
     pKeysDes: 'Saisir la clé privée en texte en clair.',
     ledgerDes: 'Utiliser votre portefeuille Ledger.',
@@ -110,15 +106,13 @@ const fr = {
     seedImport: 'Importer la Phrase de récupération',
     seedImportPlaceholder:
       'La phrase de récupération est composée de mots séparés par des espaces. Séparez chaque mot par un espace.',
-    duplicateSeedError:
-      'Cette phrase de récupération est déjà présente dans votre portefeuille.',
+    duplicateSeedError: 'Cette phrase de récupération est déjà présente dans votre portefeuille.',
     invalidSeed: 'Phrase de récupération invalide, vérifiez à nouveau.',
 
     // homepage / account management / create account / 4. Import account with private key
     pKeyImport: 'Importer la Clé Privée',
     pKeyImportPlaceholder: 'Saisir votre Clé Privée ici.',
-    duplicatePkError:
-      'Cette Clé Privée est déjà présente dans votre portefeuille.',
+    duplicatePkError: 'Cette Clé Privée est déjà présente dans votre portefeuille.',
     invalidPrivateKey: 'Clé invalide, vérifiez à nouveau.',
 
     // - Network
@@ -175,26 +169,26 @@ const fr = {
     partSponsored: 'Partiellement sponsorisé',
 
     // - Send Transaction / Error or Warning
-    error: 'Error',
-    warning: 'Warning',
+    error: 'Erreur',
+    warning: 'Avertissement',
 
     // - Send Transaction / Sign Transaction / 1. Edit gas fee
-    editGasFee: 'Edit Gas Fee',
-    low: 'Low',
-    medium: 'Market',
-    high: 'Aggressive',
-    suggested: 'Suggested',
-    advanced: 'Advanced',
-    gasCost: 'Est. Gas Cost',
-    gasOption: 'Gas Option',
-    gasFeeDetail: 'Gas Fee Detail',
-    maxFeePerGas: 'Max Fee Per Gas',
-    maxPriorityFeePerGas: 'Max Priority Fee Per Gas',
-    maxFee: 'Max Fee',
-    baseFee: 'Base Fee',
-    priorityFee: 'Priority Fee',
-    current: 'Current: ',
-    twelveHour: '12hr: ',
+    editGasFee: 'Éditer Frais de Gas',
+    low: 'Faible',
+    medium: 'Marché',
+    high: 'Aggressif',
+    suggested: 'Suggéré',
+    advanced: 'Avancé',
+    gasCost: 'Est. Coût Gas',
+    gasOption: 'Option Gas',
+    gasFeeDetail: 'Détail Frais Gas',
+    maxFeePerGas: 'Frais Max Par Gas',
+    maxPriorityFeePerGas: 'Frais Priorité Max Par Gas',
+    maxFee: 'Frais Max',
+    baseFee: 'Frais de Base',
+    priorityFee: 'Frais Prioritaires',
+    current: 'Actuel: ',
+    twelveHour: '12h: ',
     gasPrice: 'Prix du Gas',
     gasLimit: 'Limite de Gas',
     storageFee: 'Frais du stockage',
@@ -203,11 +197,11 @@ const fr = {
     customNonce: 'Nonce personalisé',
     gasPriceErr: 'Le prix minimum du Gas est de {{amount}} {{unit}}',
     maxPriorityFeePerGasLowErr:
-      'The minimum typed value is {{amount}} {{unit}}',
-    maxPriorityFeePerGasHighErr: 'Typed value <= "Max Fee Per Gas" is required',
+      'Le minimum de la valeur tapée est {{amount}} {{unit}}',
+    maxPriorityFeePerGasHighErr: 'Valeur tapée <= "Frais Max Par Gas" est requise',
     gasLimitMinErr: 'La limite de Gas doit être d’au moins {{gasUsed}}',
     gasLimitMaxErr: 'La limite de Gas doit être au maximum de {{gasMax}}',
-    nonceErr: 'Nonce >= 0 is required',
+    nonceErr: 'Nonce >= 0 est requis',
 
     // - Send Transaction / Sign Transaction / 2. transaction result
     transactionSubmit: 'Transaction soumise',
@@ -244,11 +238,11 @@ const fr = {
     contractCreation: 'Déploiement du Contrat',
     contractInteraction: 'Intéraction du Contrat',
     unknown: 'Inconnue',
-    receive: 'Receive',
+    receive: 'Reçue',
 
     // - Send Transaction / - speedup and cancel tx
     cancelTransaction: 'Annuler la transaction',
-    speedUp: 'Speed Up',
+    speedUp: 'Accélérer',
     suggestedGasPrice: 'Prix de Gas suggéré',
     inputGasPrice: 'Prix de Gas d’entrée',
     spend: 'Dépenser',
@@ -261,17 +255,17 @@ const fr = {
     customGasPrice: 'Prix de Gas personalisé',
     executedTx:
       'La transaction a été exécutée ou terminée. Aucune action n’est requise.',
-    amount: 'Amount',
+    amount: 'Montant',
     hash: 'Hash',
     nonce: 'Nonce',
-    fromAddress: 'From Address',
+    fromAddress: 'Depuis l’adresse',
 
     // - request signature - 1. Sign Text
     signText: 'Signer le Texte',
     signThisText: 'Signer ce Texte ?',
     disablePersonSign:
-      'Personal sign with hardware wallet is not yet supported.',
-    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
+      'Le portefeuille matériel ne supporte pas encore de signe personel.',
+    disableTypeSign: 'Le portefeuille matériel ne supporte pas encore de signe tapé.',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Signer ce Message ?',
@@ -305,8 +299,7 @@ const fr = {
     enterPWDAgain: 'Confirmer le mot de passe',
     rememberPWD: 'Ce mot de passe ne peut pas être récupéré, retenez-le.',
     invalidPassword: 'Mot de passe incorrect.',
-    invalidConfirmPassword:
-      'La confirmation du mot de passe ne correspond pas.',
+    invalidConfirmPassword: 'La confirmation du mot de passe ne correspond pas.',
     // - welcome page
     hello: 'Bonjour',
 
@@ -323,15 +316,14 @@ const fr = {
     groupDeleteWarning: 'Impossible de supprimer le groupe de compte actuel.',
     accountDeleteWarning: 'Impossible de supprimer le compte actuel.',
     accountHideWarning: 'Impossible de cacher le compte actuel.',
-    lastAccountHideWarning: 'Keep at least one account in this group.',
+    lastAccountHideWarning: 'Garder un compte minimum dans ce groupe.',
     ledgerTips: 'Ce(s) compte(s) ne peut être utilisé que sur {{network}}.',
 
     // Network Management
     networkManagement: 'Gestion du Réseau',
     newRpcUrl: 'URL du RPC',
     networkType: 'Type de Réseau',
-    wrongRpcUrl:
-      'Impossible de récupérer l’ID de la chaîne. Votre URL RPC est-elle correcte ?',
+    wrongRpcUrl: 'Impossible de récupérer l’ID de la chaîne. Votre URL RPC est-elle correcte ?',
     networkDeleteWarning: 'Impossible de supprimer le réseau actuel.',
     duplicateNetworkEndpoint: 'Point de terminaison du réseau en doublon.',
     urlWarning: 'L’URL nécessite le préfixe HTTP/HTTPS approprié.',
@@ -343,8 +335,7 @@ const fr = {
     priorityConnectionDes:
       'Fluent sera la première option lors de la connexion à une dApp sur les réseaux EVM.',
     showTestnet: 'Afficher la Testnet',
-    showTestnetDes:
-      'Selectionner cela pour afficher les testnets dans la liste de réseaux disponibles.',
+    showTestnetDes: 'Selectionner cela pour afficher les testnets dans la liste de réseaux disponibles.',
 
     // About
     about: 'À Propos',
@@ -373,10 +364,9 @@ const fr = {
     confluxPathStandard: 'Conflux Core Wallet',
     confluxPathStandardDes: "Généré par le chemin Conflux standard 'm/503'",
     ethereumPathStandard: 'Ethereum Wallet',
-    ethereumPathStandardDes: "Generated by Ethereum path standard 'm/60'",
+    ethereumPathStandardDes: "Généré par le chemin Ethereum standard 'm/60'",
 
-    transferAmountExceedsAllowance:
-      'Le montant du transfert dépasse l’allocation',
+    transferAmountExceedsAllowance: 'Le montant du transfert dépasse l’allocation',
     balanceIsNotEnough: 'Balance insuffisante',
     gasFeeIsNotEnough: 'Frais de gas insuffisant',
     contractError: 'Erreur Contrat : ',
@@ -393,8 +383,8 @@ const fr = {
     steps: 'Étapes {{number}}',
     pluginHardwareWallet:
       'Branchez votre hardware wallet sur votre ordinateur en utilisant un port USB.',
-    selectLedgerApp: 'Select and open {{appName}} App.',
-    hardwareAccountTips: 'Added account(s) is available on {{chain}}',
+    selectLedgerApp: 'Sélectionner et ouvrir l’App {{appName}}.',
+    hardwareAccountTips: 'Le(s) compte(s) ajouté(s) est disponible sur {{chain}}',
     ready: 'Prêt',
     specifiedConnectedChain:
       '<Container><Content>Connecter Ledger sur</Content><CurrentNetworkDisplay/></Container>',
@@ -404,13 +394,12 @@ const fr = {
     connectLedgerTips:
       'Connecter votre Ledger, assurez-vous qu’il soit déverrouillé et que vous avez approuvé les autorisations sur votre navigateur.',
     connectLedger: 'Connecter votre Ledger',
-    connectLedgerDes:
-      'Cochez le bouton ci-dessous pour autoriser la connexion.',
+    connectLedgerDes: 'Cochez le bouton ci-dessous pour autoriser la connexion.',
     waitForPermission: 'En attente d’autorisation',
     connectFailed: 'Connexion Échouée',
     retry: 'Réessayer',
-    openLedgerApp: 'Open {{appName}} App',
-    openLedgerAppDes: 'Select and open {{appName}} App in your Ledger device.',
+    openLedgerApp: 'Ouvrir l’App {{appName}}',
+    openLedgerAppDes: 'Sélectionner et ouvrir l’App {{appName}} sur votre dispositif Ledger.',
     chooseAddress: 'Choisir une Adresse',
     hdPath: 'Chemin HD',
     chooseHwAddress: 'Choisir l’adresse que vous souhaitez importer :',
@@ -446,14 +435,14 @@ const fr = {
     gasExceedsLimit: 'Le Gas dépasse la limite',
     tooStaleNonce: 'Le Nonce est périmé',
     replacedWithHigherGasPriceTx: 'Remplacer la Transaction',
-    gasPriceTooLow: 'Gas price too low',
-    wrongAddressType: 'Wrong address type',
-    notEnoughBaseGas: 'Not enough base gas',
+    gasPriceTooLow: 'Le prix du Gas est trop bas',
+    wrongAddressType: 'Type d’adresse incorrect',
+    notEnoughBaseGas: 'Gas de base insuffisant',
     unknownError: 'Erreur inconnue',
 
     // ethereum confirm tx error
-    replaceUnderpriced: 'Gas insufisant',
-    gasTooLow: 'Gas insufisant',
+    replaceUnderpriced: 'Gas insuffisant',
+    gasTooLow: 'Gas insuffisant',
     gasLimitReached: 'Limite de Gas atteinte',
     oversizedData: 'Les datas sont surdimensionnées',
     nonceTooHigh: 'Le Nonce est trop grand',
@@ -470,7 +459,7 @@ const fr = {
     ledgerIsNotConnected: 'Ledger n’est pas connecté',
     openExpandView: 'Ouvrir la vue étendue de Fluent pour vous connecter',
     hwOpenApp:
-      'Before clicking confirm, make sure the {{appName}} App is open.',
+      'Assurez-vous que l’App {{appName}} est ouverte avant de cliquer sur Confirmer.',
 
     // error page
     errorTile: 'Erreur',
@@ -483,16 +472,16 @@ const fr = {
     reload: 'Rafraichir',
 
     // address book & contacts
-    addressBook: 'Address Book',
+    addressBook: 'Carnet d’adresses',
     contacts: 'Contacts',
-    recent: 'Recent',
-    account: 'Account',
-    searchAddressNickname: 'Search address or nickname',
-    addedContactWarning: 'This address has already been added!',
-    deleteContactTitle: 'Confirm delete this contact',
-    deleteContactContent: 'Do you want to delete this contact?',
-    name: 'Name',
-    address: 'Address',
+    recent: 'Récent',
+    account: 'Compte',
+    searchAddressNickname: 'Rechercher une adresse ou un pseudonyme',
+    addedContactWarning: 'Cette adresse a déjà été ajoutée !',
+    deleteContactTitle: 'Confirmer la suppression de ce contact',
+    deleteContactContent: 'Souhaitez-vous supprimer ce contact ?',
+    name: 'Nom',
+    address: 'Adresse',
   },
 }
 
