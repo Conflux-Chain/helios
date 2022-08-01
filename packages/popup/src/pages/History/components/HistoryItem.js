@@ -108,13 +108,8 @@ function HistoryItem({
         })
     : {}
 
-  const {
-    contractCreation,
-    simple,
-    contractInteraction,
-    token20,
-    sendAction: resendType,
-  } = extra
+  const {contractCreation, simple, contractInteraction, token20, sendAction} =
+    extra
 
   const {decodeData} = useDecodeData({
     to: payload?.to,
@@ -260,7 +255,7 @@ function HistoryItem({
       {showResendButtons && (
         <ResendButtons
           hash={hash}
-          resendType={resendType}
+          sendAction={sendAction}
           className="mx-3 rounded-b text-sm text-primary"
           buttonClassName="shadow-fluent-4 border-transparent bg-primary-10 !h-6"
           buttonTextClassName="ml-2"
@@ -293,7 +288,7 @@ function HistoryItem({
         onCancelPendingTx={onCancelPendingTx}
         onSpeedupPendingTx={onSpeedupPendingTx}
         gasFeeSymbol={tokenSymbol}
-        resendType={resendType}
+        sendAction={sendAction}
         showResendButtons={showResendButtons}
       />
     </div>

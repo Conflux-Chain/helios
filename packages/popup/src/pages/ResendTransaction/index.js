@@ -66,9 +66,12 @@ function ResendTransaction() {
   const isHwUnAuth = !authStatus && isHwAccount
   const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
 
+  // 1.speedup: speedup current transactions
+  // 2.cancel: cancel current transaction
+  // 3.expeditedCancellation: speedup a transaction that has already been cancelled
+
   const resendType = query.get('type')
   const hash = query.get('hash')
-  const isSpeedup = resendType === 'speedup'
 
   const {
     data: {txPayload = {}, token, txExtra = {}, status},
@@ -91,7 +94,7 @@ function ResendTransaction() {
 
   // decode erc20 data
   const {decodeData} = useDecodeData(
-    isSpeedup
+    resendType === 'speedup'
       ? {
           to,
           data,
@@ -100,7 +103,7 @@ function ResendTransaction() {
   )
 
   const isSendingToken =
-    isSpeedup &&
+    resendType === 'speedup' &&
     token20 &&
     token &&
     (decodeData?.name === 'transfer' || decodeData?.name === 'transferFrom')
@@ -118,7 +121,7 @@ function ResendTransaction() {
     : {}
 
   const originParams = filterNonValueParams(
-    isSpeedup
+    resendType === 'speedup'
       ? {
           type: eipVersionType,
           from,
@@ -142,7 +145,10 @@ function ResendTransaction() {
   const resendTransaction = async params => {
     try {
       await request(WALLET_SEND_TRANSACTION_WITH_ACTION, {
-        action: resendType,
+        action:
+          resendType === 'expeditedCancellation' || resendType === 'cancel'
+            ? 'cancel'
+            : 'speedup',
         tx: [params],
       })
       clearSendTransactionParams()
@@ -189,8 +195,8 @@ function ResendTransaction() {
     const error = await checkBalance(
       params,
       token || {},
-      isSpeedup ? simple : true,
-      isSpeedup ? isSendingToken || simple : true,
+      resendType === 'speedup' ? simple : true,
+      resendType === 'speedup' ? isSendingToken || simple : true,
       sendTokenValue,
       networkTypeIsCfx,
       isTxTreatedAsEIP1559,
@@ -250,7 +256,7 @@ function ResendTransaction() {
     <div className="relative h-full">
       <EditGasFee
         resendGasPrice={suggestedGasPrice}
-        isSpeedUp={isSpeedup}
+        resendType={resendType}
         onSubmit={onResend}
         tx={{...originParams}}
         resendDisabled={!!estimateError}

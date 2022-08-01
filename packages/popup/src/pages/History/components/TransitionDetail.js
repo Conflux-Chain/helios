@@ -55,7 +55,7 @@ function TransitionDetail({
   copyButtonToastClassName,
   txFeeDrip = '0x0',
   hash = '',
-  resendType = '',
+  sendAction = '',
   transactionUrl,
   payload,
   errorType,
@@ -207,7 +207,7 @@ function TransitionDetail({
         showResendButtons && (
           <ResendButtons
             hash={hash}
-            resendType={resendType}
+            sendAction={sendAction}
             className="mt-3"
             blank="ml-3"
             buttonClassName="bg-primary-10 text-primary"
@@ -244,7 +244,7 @@ TransitionDetail.propTypes = {
   transactionUrl: PropTypes.string,
   payload: PropTypes.object.isRequired,
   errorType: PropTypes.string,
-  resendType: PropTypes.string,
+  sendAction: PropTypes.string,
 }
 
 export default TransitionDetail
