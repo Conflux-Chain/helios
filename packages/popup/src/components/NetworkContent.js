@@ -3,7 +3,7 @@ import Message from '@fluent-wallet/component-message'
 import {CheckCircleFilled} from '@fluent-wallet/component-icons'
 import {RPC_METHODS} from '../constants'
 import {request, setEffectiveCurrentAccount} from '../utils'
-import {useNetwork, useCurrentAddress, usePreferences} from '../hooks/useApi'
+import {useNetwork, useCurrentAddress} from '../hooks/useApi'
 import useLoading from '../hooks/useLoading'
 import {CustomTag} from './'
 import {useTranslation} from 'react-i18next'
@@ -163,63 +163,55 @@ function NetworkContent({
   onClose,
   ...props
 }) {
-  const {data: preferencesData} = usePreferences()
   const networkData = useNetwork()
 
   return (
     <>
-      {networkData
-        .filter(({isTestnet}) => {
-          if (preferencesData?.hideTestNetwork) {
-            return !isTestnet
-          }
-          return true
-        })
-        .map(
-          (
-            {
-              eid,
-              name,
-              isCustom,
-              isMainnet,
-              isTestnet,
-              icon,
-              endpoint,
-              chainId,
-              ticker,
-              scanUrl,
-              type,
-            },
-            index,
-          ) => (
-            <NetworkItem
-              key={eid}
-              index={index}
-              networkId={eid}
-              networkName={name}
-              networkItemSize={networkItemSize}
-              type={type}
-              networkType={
-                isCustom
-                  ? 'custom'
-                  : isMainnet
-                  ? 'mainnet'
-                  : isTestnet
-                  ? 'testnet'
-                  : ''
-              }
-              rpcUrl={endpoint}
-              chainId={chainId}
-              symbol={ticker.symbol}
-              blockExplorerUrl={scanUrl}
-              onClickNetworkItem={onClickNetworkItem}
-              onClose={onClose}
-              icon={icon}
-              id={`item-${eid}`}
-              {...props}
-            />
-          ),
-        )}
+      {networkData.map(
+        (
+          {
+            eid,
+            name,
+            isCustom,
+            isMainnet,
+            isTestnet,
+            icon,
+            endpoint,
+            chainId,
+            ticker,
+            scanUrl,
+            type,
+          },
+          index,
+        ) => (
+          <NetworkItem
+            key={eid}
+            index={index}
+            networkId={eid}
+            networkName={name}
+            networkItemSize={networkItemSize}
+            type={type}
+            networkType={
+              isCustom
+                ? 'custom'
+                : isMainnet
+                ? 'mainnet'
+                : isTestnet
+                ? 'testnet'
+                : ''
+            }
+            rpcUrl={endpoint}
+            chainId={chainId}
+            symbol={ticker.symbol}
+            blockExplorerUrl={scanUrl}
+            onClickNetworkItem={onClickNetworkItem}
+            onClose={onClose}
+            icon={icon}
+            id={`item-${eid}`}
+            {...props}
+          />
+        ),
+      )}
     </>
   )
 }
