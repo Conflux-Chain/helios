@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/json-rpc-error": patch
+  "@fluent-wallet/wallet_send-transaction": major
+  "@fluent-wallet/wallet_send-transaction-with-action": major
+
+declined:
+  - helios-background
+  - "@fluent-wallet/rpc-engine"
