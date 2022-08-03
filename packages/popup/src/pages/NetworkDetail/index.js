@@ -96,7 +96,6 @@ function NetworkDetail() {
   }, [setNetworkInfo])
 
   const canSave =
-    (isAddingChain || networkInfo?.networkType == 'custom') &&
     networkFieldValues.chainName &&
     networkFieldValues.rpcUrl &&
     networkFieldValues.chainId &&
@@ -203,6 +202,11 @@ function NetworkDetail() {
   const onSave = (type = 'add') => {
     const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
       networkFieldValues
+
+    if (type === 'innerEdit' && rpcUrl === networkInfo?.rpcUrl) {
+      return history.push(HOME)
+    }
+
     const param = {
       chainId,
       chainName,
@@ -218,17 +222,17 @@ function NetworkDetail() {
       param.blockExplorerUrls = [blockExplorerUrl]
     }
 
-    if (type === 'edit') {
+    if (type !== 'add') {
       param.networkId = networkInfo.networkId
     }
     setLoading(true)
     request(
-      type === 'edit'
+      type !== 'add'
         ? WALLET_UPDATE_NETWORK
         : detectedChainType === NETWORK_TYPE.CFX
         ? WALLET_ADD_CONFLUX_CHAIN
         : WALLET_ADD_ETHEREUM_CHAIN,
-      type === 'edit' ? param : [param],
+      type !== 'add' ? param : [param],
     )
       .then(() => {
         setLoading(false)
@@ -262,15 +266,19 @@ function NetworkDetail() {
           >
             <Input
               width="w-full"
-              readonly={
+              readOnly={
                 valueKey === 'networkType' ||
                 valueKey === 'chainId' ||
-                (!isAddingChain && networkInfo?.networkType !== 'custom')
+                (!isAddingChain &&
+                  networkInfo?.networkType !== 'custom' &&
+                  valueKey !== 'rpcUrl')
               }
               disabled={
                 valueKey === 'networkType' ||
                 valueKey === 'chainId' ||
-                (!isAddingChain && networkInfo?.networkType !== 'custom')
+                (!isAddingChain &&
+                  networkInfo?.networkType !== 'custom' &&
+                  valueKey !== 'rpcUrl')
               }
               value={
                 valueKey === 'chainId'
@@ -293,49 +301,52 @@ function NetworkDetail() {
           </CompWithLabel>
         ))}
       </div>
-      {isAddingChain && (
+
+      {(isAddingChain || networkInfo?.networkType !== 'custom') && (
         <Button
           id="save-network-btn"
           className="mx-3"
           disabled={!canSave}
-          onClick={() => onSave()}
+          onClick={() => onSave(isAddingChain ? 'add' : 'innerEdit')}
         >
           {t('save')}
         </Button>
       )}
+
       {networkInfo?.networkType === 'custom' && (
-        <div className="mx-3 flex">
-          <Button
-            id="delete-btn"
-            className="flex-1 mr-3"
-            variant="outlined"
-            onClick={onClickDeleteNetwork}
-            danger={true}
-          >
-            {t('delete')}
-          </Button>
-          <Button
-            id="edit-btn"
-            className="flex-1"
-            disabled={!canSave}
-            onClick={() => onSave('edit')}
-          >
-            {t('save')}
-          </Button>
+        <div>
+          <div className="mx-3 flex">
+            <Button
+              id="delete-btn"
+              className="flex-1 mr-3"
+              variant="outlined"
+              onClick={onClickDeleteNetwork}
+              danger={true}
+            >
+              {t('delete')}
+            </Button>
+            <Button
+              id="edit-btn"
+              className="flex-1"
+              disabled={!canSave}
+              onClick={() => onSave('customEdit')}
+            >
+              {t('save')}
+            </Button>
+          </div>
+          {!isUndefined(currentNetworkId) && (
+            <ConfirmPassword
+              open={openPasswordStatus}
+              onCancel={clearPasswordInfo}
+              password={password}
+              setPassword={setPassword}
+              rpcMethod={WALLET_DELETE_NETWORK}
+              onConfirmCallback={() => mutateData()}
+              confirmParams={{networkId: networkInfo.networkId, password}}
+            />
+          )}
         </div>
       )}
-      {networkInfo?.networkType === 'custom' &&
-        !isUndefined(currentNetworkId) && (
-          <ConfirmPassword
-            open={openPasswordStatus}
-            onCancel={clearPasswordInfo}
-            password={password}
-            setPassword={setPassword}
-            rpcMethod={WALLET_DELETE_NETWORK}
-            onConfirmCallback={() => mutateData()}
-            confirmParams={{networkId: networkInfo.networkId, password}}
-          />
-        )}
     </div>
   )
 }

@@ -158,12 +158,13 @@ NetworkItem.propTypes = {
 }
 
 function NetworkContent({
+  showAllNetwork = false,
   onClickNetworkItem,
   networkItemSize,
   onClose,
   ...props
 }) {
-  const {data: preferencesData} = usePreferences()
+  const {data: preferencesData} = usePreferences(showAllNetwork)
   const networkData = useNetwork()
 
   return (
@@ -225,6 +226,7 @@ function NetworkContent({
 }
 
 NetworkContent.propTypes = {
+  showAllNetwork: PropTypes.bool,
   onClickNetworkItem: PropTypes.func,
   onClose: PropTypes.func,
   networkItemSize: PropTypes.oneOf(['small', 'medium']),
