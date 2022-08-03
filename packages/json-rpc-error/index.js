@@ -144,7 +144,13 @@ export const guessErrorType = err => {
 
 export const parseError = (err, prefix = '', suffix = '') => {
   const C = guessErrorType(err)
-  const error = new C(prefix + err?.message || '' + suffix)
+
+  let errmsg = prefix
+  if (err?.message) errmsg = errmsg + err.message
+  if (err?.data) errmsg = errmsg + ' - ' + err.data
+  errmsg = errmsg + suffix
+
+  const error = new C(errmsg)
   error.code = err?.code || error.code
   error.data = err?.data || error.data
   return error
