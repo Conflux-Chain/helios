@@ -38,6 +38,11 @@ pull_request_rules:
       - -draft
       - -locked
       - status-success~=^version-check\s\(.*\)$
+      - status-success~=^lint\s\(.*\)$
+      - status-success~=^build\s\(.*\)$
+      - status-success~=^build-doc\s\(.*\)$
+      - status-success~=^unit-test\s\(.*\)$
+      - status-success~=^integration-test\s\(.*\)$
       - "#review-threads-unresolved=0"
     actions:
       queue:
@@ -55,6 +60,7 @@ pull_request_rules:
       - -conflict
       - -draft
       - -locked
+      - status-success~=^build\s\(.*\)$
       - "#review-threads-unresolved=0"
     actions:
       queue:
