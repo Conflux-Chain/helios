@@ -178,7 +178,9 @@ export const main = async ({
     {
       eid: toUpdateNetwork?.eid || 'networkId',
       network: {
-        isCustom: toUpdateNetwork?.isCustom ?? true,
+        isCustom: toUpdateNetwork.builtin
+          ? false
+          : toUpdateNetwork?.isCustom ?? true,
         name,
         cacheTime:
           toUpdateNetwork?.cacheTime ?? (networkType === 'cfx' ? 1000 : 15000),
