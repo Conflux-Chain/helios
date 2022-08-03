@@ -34,6 +34,7 @@ function NetworkManagement() {
       />
       <div className="flex-1 overflow-y-auto no-scroll px-3 mt-1">
         <NetworkContent
+          showAllNetwork={true}
           showCurrentIcon={false}
           needSwitchNet={false}
           onClickNetworkItem={onClickNetworkItem}

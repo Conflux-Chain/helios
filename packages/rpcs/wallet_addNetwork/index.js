@@ -178,7 +178,7 @@ export const main = async ({
     {
       eid: toUpdateNetwork?.eid || 'networkId',
       network: {
-        isCustom: toUpdateNetwork.builtin
+        isCustom: toUpdateNetwork?.builtin
           ? false
           : toUpdateNetwork?.isCustom ?? true,
         name,
