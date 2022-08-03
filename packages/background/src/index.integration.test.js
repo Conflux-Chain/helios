@@ -2737,10 +2737,10 @@ describe('integration test', function () {
 
     describe('wallet_discoverAccount', function () {
       test('wallet_discoverAccount', async function () {
-        await sendCFX({to: CFX_ACCOUNTS[0].address, balance: 1})
-        await sendCFX({to: CFX_ACCOUNTS[1].address, balance: 1})
-        await sendETH({to: ETH_ACCOUNTS[0].address, balance: 1})
-        await sendETH({to: ETH_ACCOUNTS[1].address, balance: 1})
+        await sendCFX({to: CFX_ACCOUNTS[0].address, balance: 1e10 * 21000})
+        await sendCFX({to: CFX_ACCOUNTS[1].address, balance: 1e10 * 21000})
+        await sendETH({to: ETH_ACCOUNTS[0].address, balance: 1e10 * 21000})
+        await sendETH({to: ETH_ACCOUNTS[1].address, balance: 1e10 * 21000})
 
         expect(db.getVault().length).toBe(0)
 
