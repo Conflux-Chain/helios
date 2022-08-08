@@ -85,6 +85,8 @@ function NetworkDetail() {
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
   const [detectedChainType, setDetectedChainType] = useState('')
+  const [rpcUrlChecked, setRpcUrlChecked] = useState(false)
+
   const isAddingChain = !Object.keys(networkInfo).length
   const {data} = useCurrentAddress(isAddingChain)
   const currentNetworkId = data?.network?.eid
@@ -131,10 +133,56 @@ function NetworkDetail() {
   }
 
   const onRpcInputFocus = () => {
+    setRpcUrlChecked(false)
     rpcUrlRef.current = networkFieldValues.rpcUrl
   }
 
-  const onRpcInputBlur = () => {
+  const onValidateRpcUrl = async () => {
+    try {
+      const res = await request(WALLET_DETECT_NETWORK_TYPE, {
+        url: networkFieldValues.rpcUrl,
+      })
+      // validated url
+      if (res?.chainId && res?.type) {
+        setDetectedChainType(res.type)
+        setNetworkError({...networkError, chainId: ''})
+        setNetworkFieldValues({
+          ...networkFieldValues,
+          chainId: res.chainId,
+          networkType: getNetworkType(res.type),
+        })
+        return res.chainId
+      }
+
+      // invalidated url
+      setNetworkFieldValues({
+        ...networkFieldValues,
+        chainId: '',
+        networkType: '',
+      })
+      setNetworkError({...networkError, chainId: t('unCaughtErrMsg')})
+      return false
+    } catch (err) {
+      // invalidated url or other error
+      setNetworkFieldValues({
+        ...networkFieldValues,
+        chainId: '',
+        networkType: '',
+      })
+
+      const chainIdError =
+        err?.message?.indexOf?.('InvalidParams') !== -1
+          ? t('wrongRpcUrl')
+          : err?.message?.split?.('\n')?.[0] ??
+            err?.message ??
+            t('unCaughtErrMsg')
+
+      setNetworkError({...networkError, chainId: chainIdError})
+      return false
+    }
+  }
+
+  const onRpcInputBlur = async () => {
     if (
       networkFieldValues.rpcUrl &&
       !networkError.rpcUrl &&
@@ -142,51 +190,16 @@ function NetworkDetail() {
         !networkFieldValues.chainId)
     ) {
       setLoading(true)
-      request(WALLET_DETECT_NETWORK_TYPE, {url: networkFieldValues.rpcUrl})
-        .then(res => {
-          setLoading(false)
-          if (res?.chainId && res?.type) {
-            setDetectedChainType(res.type)
-            setNetworkError({...networkError, chainId: ''})
-            setNetworkFieldValues({
-              ...networkFieldValues,
-              chainId: res.chainId,
-              networkType: getNetworkType(res.type),
-            })
-          } else {
-            setNetworkFieldValues({
-              ...networkFieldValues,
-              chainId: '',
-              networkType: '',
-            })
-            setNetworkError({...networkError, chainId: t('unCaughtErrMsg')})
-          }
-        })
-        .catch(err => {
-          setLoading(false)
-          setNetworkFieldValues({
-            ...networkFieldValues,
-            chainId: '',
-            networkType: '',
-          })
-          if (err?.message?.indexOf?.('InvalidParams') !== -1) {
-            return setNetworkError({...networkError, chainId: t('wrongRpcUrl')})
-          }
-          setNetworkError({
-            ...networkError,
-            chainId:
-              err?.message?.split?.('\n')?.[0] ??
-              err?.message ??
-              t('unCaughtErrMsg'),
-          })
-        })
+      await onValidateRpcUrl()
+      setLoading(false)
     }
+    setRpcUrlChecked(true)
   }
 
-  const mutateData = () =>
-    mutate([WALLET_GET_NETWORK]).then(() => {
-      history.push(HOME)
-    })
+  const mutateData = async () => {
+    await mutate([WALLET_GET_NETWORK])
+    history.push(HOME)
+  }
 
   const onClickDeleteNetwork = () => {
     if (currentNetworkId === networkInfo.networkId) {
@@ -199,16 +212,50 @@ function NetworkDetail() {
     setOpenPasswordStatus(true)
   }
 
-  const onSave = (type = 'add') => {
+  const onSendUpdateNetworkRequest = async (param, rpcMethod) => {
+    console.log('param', param)
+    try {
+      await request(rpcMethod, param)
+      return true
+    } catch (err) {
+      Message.error({
+        content:
+          err?.message?.indexOf?.('Duplicate network endpoint') !== -1
+            ? t('duplicateNetworkEndpoint')
+            : err?.message?.split?.('\n')?.[0] ??
+              err?.message ??
+              t('unCaughtErrMsg'),
+        top: '10px',
+        duration: 1,
+      })
+      return false
+    }
+  }
+
+  const onSave = async (type = 'add') => {
     const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
       networkFieldValues
-
+    // TODO: should add reset condition
+    console.log('networkInfo', networkInfo)
     if (type === 'innerEdit' && rpcUrl === networkInfo?.rpcUrl) {
       return history.push(HOME)
     }
 
+    setLoading(true)
+
+    // check rpc url again when pasting a rpc url directly
+    let doubleCheckedChainId
+    if (!rpcUrlChecked) {
+      doubleCheckedChainId = await onValidateRpcUrl()
+      setRpcUrlChecked(true)
+      if (!doubleCheckedChainId) {
+        setLoading(false)
+        return
+      }
+    }
+
     const param = {
-      chainId,
+      chainId: doubleCheckedChainId || chainId,
       chainName,
       nativeCurrency: {
         name: symbol || detectedChainType.toUpperCase(),
@@ -225,32 +272,17 @@ function NetworkDetail() {
     if (type !== 'add') {
       param.networkId = networkInfo.networkId
     }
-    setLoading(true)
-    request(
+
+    const sendingRet = await onSendUpdateNetworkRequest(
+      type !== 'add' ? param : [param],
       type !== 'add'
         ? WALLET_UPDATE_NETWORK
         : detectedChainType === NETWORK_TYPE.CFX
         ? WALLET_ADD_CONFLUX_CHAIN
         : WALLET_ADD_ETHEREUM_CHAIN,
-      type !== 'add' ? param : [param],
     )
-      .then(() => {
-        setLoading(false)
-        mutateData()
-      })
-      .catch(err => {
-        setLoading(false)
-        Message.error({
-          content:
-            err?.message?.indexOf?.('Duplicate network endpoint') !== -1
-              ? t('duplicateNetworkEndpoint')
-              : err?.message?.split?.('\n')?.[0] ??
-                err?.message ??
-                t('unCaughtErrMsg'),
-          top: '10px',
-          duration: 1,
-        })
-      })
+    setLoading(false)
+    sendingRet && mutateData()
   }
 
   return (
@@ -307,7 +339,10 @@ function NetworkDetail() {
           id="save-network-btn"
           className="mx-3"
           disabled={!canSave}
-          onClick={() => onSave(isAddingChain ? 'add' : 'innerEdit')}
+          onMouseDown={e => {
+            e.preventDefault()
+            onSave(isAddingChain ? 'add' : 'innerEdit')
+          }}
         >
           {t('save')}
         </Button>
@@ -329,7 +364,10 @@ function NetworkDetail() {
               id="edit-btn"
               className="flex-1"
               disabled={!canSave}
-              onClick={() => onSave('customEdit')}
+              onMouseDown={e => {
+                e.preventDefault()
+                onSave('customEdit')
+              }}
             >
               {t('save')}
             </Button>
@@ -341,7 +379,7 @@ function NetworkDetail() {
               password={password}
               setPassword={setPassword}
               rpcMethod={WALLET_DELETE_NETWORK}
-              onConfirmCallback={() => mutateData()}
+              onConfirmCallback={mutateData}
               confirmParams={{networkId: networkInfo.networkId, password}}
             />
           )}
