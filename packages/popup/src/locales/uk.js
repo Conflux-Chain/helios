@@ -333,6 +333,7 @@ const uk = {
     duplicateNetworkEndpoint: 'Дублікат кінцевої точки мережі.',
     urlWarning: 'URL- адреси вимагають відповідної приставки HTTP/HTTPS.',
     invalidRpcUrl: 'Невірний URL RPC',
+    resetDefaultRpcUrl: 'Restore defaults',
 
     // Advanced Settings
     AdvancedSettings: 'Розширені налаштування',

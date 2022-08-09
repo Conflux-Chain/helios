@@ -321,6 +321,7 @@ const zh = {
     duplicateNetworkEndpoint: '重复的网络端点',
     urlWarning: '请填写 Http/Https 前缀',
     invalidRpcUrl: '无效的 RPC URL',
+    resetDefaultRpcUrl: 'Restore defaults',
 
     // Advanced Settings
     AdvancedSettings: '高级选项',

@@ -334,6 +334,7 @@ const ru = {
     duplicateNetworkEndpoint: 'Дубликат конечной точки сети.',
     urlWarning: 'URL-адреса требуют соответствующей приставки HTTP/HTTPS.',
     invalidRpcUrl: 'Неверный URL RPC',
+    resetDefaultRpcUrl: 'Restore defaults',
 
     // Advanced Settings
     AdvancedSettings: 'Расширенные настройки',

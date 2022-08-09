@@ -331,6 +331,7 @@ const en = {
     duplicateNetworkEndpoint: 'Duplicate network endpoint.',
     urlWarning: 'URLs require the appropriate HTTP/HTTPS prefix.',
     invalidRpcUrl: 'Invalid RPC URL',
+    resetDefaultRpcUrl: 'Restore defaults',
 
     // Advanced Settings
     AdvancedSettings: 'Advanced Settings',

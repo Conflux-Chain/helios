@@ -341,6 +341,7 @@ const fr = {
     duplicateNetworkEndpoint: 'Point de terminaison du réseau en doublon.',
     urlWarning: 'L’URL nécessite le préfixe HTTP/HTTPS approprié.',
     invalidRpcUrl: 'URL du RPC invalide',
+    resetDefaultRpcUrl: 'Restore defaults',
 
     // Advanced Settings
     AdvancedSettings: 'Paramêtres avancés',

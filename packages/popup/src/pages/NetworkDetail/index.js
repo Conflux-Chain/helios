@@ -58,6 +58,16 @@ const getNetworkType = type => {
   } Network`
 }
 
+const getInputDisabledStatus = (valueKey, isAddingChain, networkInfo) => {
+  return (
+    valueKey === 'networkType' ||
+    valueKey === 'chainId' ||
+    (!isAddingChain &&
+      networkInfo?.networkType !== 'custom' &&
+      valueKey !== 'rpcUrl')
+  )
+}
+
 function NetworkDetail() {
   const {t} = useTranslation()
   const history = useHistory()
@@ -183,6 +193,7 @@ function NetworkDetail() {
   }
 
   const onRpcInputBlur = async () => {
+    // TODO: should add reset default condition use `||`
     if (
       networkFieldValues.rpcUrl &&
       !networkError.rpcUrl &&
@@ -289,27 +300,39 @@ function NetworkDetail() {
       <div className="flex-1 overflow-y-auto no-scroll px-3 mt-1">
         {FORM_ITEMS.map(({labelKey, valueKey}) => (
           <CompWithLabel
-            label={t(labelKey)}
+            label={
+              <span className="flex justify-between items-center">
+                <span>{t(labelKey)}</span>
+                {valueKey === 'rpcUrl' && (
+                  <span
+                    aria-hidden="true"
+                    className="text-xs text-primary cursor-pointer"
+                    // TODO: reset rpc url
+                    onMouseDown={e => {
+                      e.preventDefault()
+                    }}
+                  >
+                    {t('resetDefaultRpcUrl')}
+                  </span>
+                )}
+              </span>
+            }
             key={labelKey}
             className="!mt-2"
             labelClassName="!text-gray-40 !mb-1"
           >
             <Input
               width="w-full"
-              readOnly={
-                valueKey === 'networkType' ||
-                valueKey === 'chainId' ||
-                (!isAddingChain &&
-                  networkInfo?.networkType !== 'custom' &&
-                  valueKey !== 'rpcUrl')
-              }
-              disabled={
-                valueKey === 'networkType' ||
-                valueKey === 'chainId' ||
-                (!isAddingChain &&
-                  networkInfo?.networkType !== 'custom' &&
-                  valueKey !== 'rpcUrl')
-              }
+              readOnly={getInputDisabledStatus(
+                valueKey,
+                isAddingChain,
+                networkInfo,
+              )}
+              disabled={getInputDisabledStatus(
+                valueKey,
+                isAddingChain,
+                networkInfo,
+              )}
               value={
                 valueKey === 'chainId'
                   ? formatHexToDecimal(networkFieldValues[valueKey])
