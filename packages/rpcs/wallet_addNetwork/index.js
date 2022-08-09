@@ -190,7 +190,7 @@ export const main = async ({
         chainId,
         netId: parseInt(netId, 10),
         ticker,
-        builtin: toUpdateNetwork?.cacheTime ?? false,
+        builtin: toUpdateNetwork?.builtin ?? false,
       },
     },
     explorerUrl && {
