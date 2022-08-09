@@ -50,7 +50,7 @@ function AlertMessage({isHwUnAuth, isHwOpenAlert, estimateError, isDapp}) {
         </div>
       )}
       {isHwOpenAlert && (
-        <div className="text-xs text-warning mt-3">
+        <div className="text-xs text-warning mt-3 break-words">
           {isHwOpenAlert &&
             t('hwOpenApp', {
               appName: LedgerAppName,
@@ -58,7 +58,9 @@ function AlertMessage({isHwUnAuth, isHwOpenAlert, estimateError, isDapp}) {
         </div>
       )}
       {!!estimateError && (
-        <div className="text-xs text-error mt-3">{estimateError}</div>
+        <div className="text-xs text-error mt-3 break-words">
+          {estimateError}
+        </div>
       )}
     </div>
   )
