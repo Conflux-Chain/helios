@@ -8,6 +8,7 @@ import {
   formatDecimalToHex,
   formatHexToDecimal,
   convertValueToData,
+  convertDataToValue,
 } from '@fluent-wallet/data-format'
 import {
   useCurrentTxParams,
@@ -91,12 +92,15 @@ function ConfirmTransaction() {
     gasLimit,
     storageLimit,
     nonce,
+    maxMode,
+    sendAmount,
     setGasPrice,
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
     setGasLimit,
     setStorageLimit,
     setNonce,
+    setSendAmount,
     clearSendTransactionParams,
     tx: txParams,
   } = useCurrentTxParams()
@@ -192,6 +196,22 @@ function ConfirmTransaction() {
           }
         : {},
     ) || {}
+
+  const {nativeMaxDrip} = estimateRst
+
+  useEffect(() => {
+    const nativeMax = convertDataToValue(nativeMaxDrip, nativeToken?.decimals)
+    if (maxMode && isNativeToken && sendAmount !== nativeMax && !!nativeMax) {
+      setSendAmount(nativeMax)
+    }
+  }, [
+    maxMode,
+    isNativeToken,
+    sendAmount,
+    setSendAmount,
+    nativeMaxDrip,
+    nativeToken?.decimals,
+  ])
 
   // only need to estimate gas not need to get whether balance is enough
   // so do not pass the gas info params

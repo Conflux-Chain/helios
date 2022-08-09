@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {convertDataToValue} from '@fluent-wallet/data-format'
 import {CaretDownFilled} from '@fluent-wallet/component-icons'
-import Link from '@fluent-wallet/component-link'
 import Modal from '@fluent-wallet/component-modal'
 import {
   CompWithLabel,
@@ -18,7 +17,7 @@ import {
   useCurrentAddress,
   useSingleTokenInfoWithNativeTokenSupport,
 } from '../../../hooks/useApi'
-import {useCheckImage} from '../../../hooks'
+import {useCheckImage, useCurrentTxStore} from '../../../hooks'
 
 const ChooseTokenList = ({open, onClose, onSelectToken}) => {
   const {t} = useTranslation()
@@ -75,6 +74,7 @@ function TokenAndAmount({
   loading,
 }) {
   const {t} = useTranslation()
+  const {maxMode, setMaxMode} = useCurrentTxStore()
   const [tokenListShow, setTokenListShow] = useState(false)
   const {
     data: {
@@ -113,6 +113,7 @@ function TokenAndAmount({
   )
   const onClickMax = () => {
     if (loading) return
+    setMaxMode(true)
     if (isNativeToken) onChangeAmount(nativeMax)
     else onChangeAmount(convertDataToValue(balance, decimals))
   }
@@ -144,13 +145,25 @@ function TokenAndAmount({
             bordered={false}
             value={amount}
             decimals={decimals}
-            onChange={value => onChangeAmount && onChangeAmount(value)}
+            onChange={value => {
+              onChangeAmount && onChangeAmount(value)
+              setMaxMode(false)
+            }}
             id="amount"
           />
         </div>
-        <Link onClick={onClickMax} id="max">
+        <div
+          onClick={onClickMax}
+          id="max"
+          className={`px-1 py-0.5 border-primary border rounded text-xs ${
+            maxMode
+              ? 'bg-primary text-white'
+              : 'bg-white cursor-pointer text-primary'
+          }`}
+          aria-hidden="true"
+        >
           {t('max')}
-        </Link>
+        </div>
       </div>
       <ChooseTokenList
         open={tokenListShow}
