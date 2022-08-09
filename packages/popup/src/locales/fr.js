@@ -126,6 +126,8 @@ const fr = {
     mainnet: 'Mainnet',
     testnet: 'Testnet',
     custom: 'Personalisé',
+    switchTestnetDisplay:
+      '<Container><SwitchButton>Show/Hide</SwitchButton>test networks</Container>',
 
     // - add token
     addToken: 'Ajouter un jeton',

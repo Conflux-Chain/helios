@@ -16,9 +16,10 @@ function TitleNav({
         <span
           aria-hidden="true"
           id="go-back"
-          onClick={() => {
+          onMouseDown={e => {
+            e.preventDefault()
             history.goBack()
-            onGoBack && onGoBack()
+            onGoBack?.()
           }}
         >
           <LeftOutlined className="w-5 h-5 text-gray-60 absolute left-3 top-4 cursor-pointer" />

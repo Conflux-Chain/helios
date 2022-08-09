@@ -118,6 +118,8 @@ const zh = {
     mainnet: '主网',
     testnet: '测试网',
     custom: '自定义网络',
+    switchTestnetDisplay:
+      '<Container><SwitchButton>Show/Hide</SwitchButton>test networks</Container>',
 
     // - add token
     addToken: '添加代币',

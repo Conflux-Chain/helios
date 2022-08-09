@@ -120,6 +120,8 @@ const en = {
     mainnet: 'Mainnet',
     testnet: 'Testnet',
     custom: 'Custom',
+    switchTestnetDisplay:
+      '<Container><SwitchButton>Show/Hide</SwitchButton>test networks</Container>',
 
     // - add token
     addToken: 'Add Token',

@@ -122,6 +122,8 @@ const ru = {
     mainnet: 'Основная сеть',
     testnet: 'Тестовая сеть',
     custom: 'Пользовательская сеть',
+    switchTestnetDisplay:
+      '<Container><SwitchButton>Show/Hide</SwitchButton>test networks</Container>',
 
     // - add token
     addToken: 'Добавить токен',

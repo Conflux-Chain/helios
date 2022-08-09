@@ -122,6 +122,8 @@ const uk = {
     mainnet: 'Основна мережа',
     testnet: 'Тестова мережа',
     custom: 'Призначена для користувача мережа',
+    switchTestnetDisplay:
+      '<Container><SwitchButton>Show/Hide</SwitchButton>test networks</Container>',
 
     // - add token
     addToken: 'Додати токен',

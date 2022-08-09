@@ -213,7 +213,6 @@ function NetworkDetail() {
   }
 
   const onSendUpdateNetworkRequest = async (param, rpcMethod) => {
-    console.log('param', param)
     try {
       await request(rpcMethod, param)
       return true
@@ -236,7 +235,6 @@ function NetworkDetail() {
     const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
       networkFieldValues
     // TODO: should add reset condition
-    console.log('networkInfo', networkInfo)
     if (type === 'innerEdit' && rpcUrl === networkInfo?.rpcUrl) {
       return history.push(HOME)
     }
