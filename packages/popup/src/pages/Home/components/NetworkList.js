@@ -1,9 +1,16 @@
 import PropTypes from 'prop-types'
-import {useTranslation} from 'react-i18next'
+import classNames from 'classnames'
+import {useTranslation, Trans} from 'react-i18next'
+import {Link} from 'react-router-dom'
 import {SlideCard, NetworkContent} from '../../../components'
+import {ROUTES} from '../../../constants'
+import {usePreferences} from '../../../hooks/useApi'
+
+const {ADVANCED_SETTINGS} = ROUTES
 
 function NetworkList({onClose, open}) {
   const {t} = useTranslation()
+  const {data: preferencesData} = usePreferences()
 
   const onCloseNetwork = () => {
     onClose && onClose()
@@ -19,6 +26,24 @@ function NetworkList({onClose, open}) {
       onClose={onClose}
       open={open}
       cardContent={<NetworkContent onClose={onCloseNetwork} />}
+      cardFooter={
+        <Trans
+          i18nKey="switchTestnetDisplay"
+          components={{
+            Container: (
+              <div
+                className={classNames('flex w-full justify-center  pt-6', {
+                  'pb-[104px]': preferencesData?.hideTestNetwork,
+                  'pb-[27px]': !preferencesData?.hideTestNetwork,
+                })}
+              />
+            ),
+            SwitchButton: (
+              <Link className="text-primary mr-0.5" to={ADVANCED_SETTINGS} />
+            ),
+          }}
+        />
+      }
     />
   )
 }

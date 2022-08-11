@@ -122,6 +122,8 @@ const ru = {
     mainnet: 'Основная сеть',
     testnet: 'Тестовая сеть',
     custom: 'Пользовательская сеть',
+    switchTestnetDisplay:
+      '<Container><SwitchButton>Show/Hide</SwitchButton>test networks</Container>',
 
     // - add token
     addToken: 'Добавить токен',
@@ -332,6 +334,7 @@ const ru = {
     duplicateNetworkEndpoint: 'Дубликат конечной точки сети.',
     urlWarning: 'URL-адреса требуют соответствующей приставки HTTP/HTTPS.',
     invalidRpcUrl: 'Неверный URL RPC',
+    resetDefaultRpcUrl: 'Restore defaults',
 
     // Advanced Settings
     AdvancedSettings: 'Расширенные настройки',
