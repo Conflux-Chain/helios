@@ -15,7 +15,12 @@ import {
 import {TitleNav, CompWithLabel, ConfirmPassword} from '../../components'
 import {request} from '../../utils'
 import {useCurrentAddress} from '../../hooks/useApi'
-import {ROUTES, RPC_METHODS, NETWORK_TYPE} from '../../constants'
+import {
+  ROUTES,
+  RPC_METHODS,
+  NETWORK_TYPE,
+  BUILTIN_NETWORK_ENDPOINTS,
+} from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import useGlobalStore from '../../stores'
 
@@ -58,13 +63,11 @@ const getNetworkType = type => {
   } Network`
 }
 
-const getInputDisabledStatus = (valueKey, isAddingChain, networkInfo) => {
+const getInputDisabledStatus = (valueKey, isBuiltin) => {
   return (
     valueKey === 'networkType' ||
     valueKey === 'chainId' ||
-    (!isAddingChain &&
-      networkInfo?.networkType !== 'custom' &&
-      valueKey !== 'rpcUrl')
+    (isBuiltin && valueKey !== 'rpcUrl')
   )
 }
 
@@ -73,7 +76,9 @@ function NetworkDetail() {
   const history = useHistory()
   const {mutate} = useSWRConfig()
   const {setLoading} = useLoading()
-  const rpcUrlRef = useRef(null)
+  const storageRpcUrlRef = useRef(null)
+  const rpcUrlInputRef = useRef(null)
+
   const {networkInfo, setNetworkInfo} = useGlobalStore()
   const [networkFieldValues, setNetworkFieldValues] = useState(() => {
     return {
@@ -96,10 +101,22 @@ function NetworkDetail() {
   const [password, setPassword] = useState('')
   const [detectedChainType, setDetectedChainType] = useState('')
   const [rpcUrlChecked, setRpcUrlChecked] = useState(false)
+  const [rpcUrlResetAble, setRpcUrlResetAble] = useState(false)
 
   const isAddingChain = !Object.keys(networkInfo).length
+  const isCustom = networkInfo?.networkType === 'custom'
+  const isBuiltin = !isAddingChain && !isCustom
+
   const {data} = useCurrentAddress(isAddingChain)
   const currentNetworkId = data?.network?.eid
+
+  useEffect(() => {
+    setRpcUrlResetAble(
+      isBuiltin &&
+        networkFieldValues.rpcUrl !==
+          BUILTIN_NETWORK_ENDPOINTS[networkInfo.networkName],
+    )
+  }, [isBuiltin, networkFieldValues.rpcUrl, networkInfo.networkName])
 
   useEffect(() => {
     return () => {
@@ -144,7 +161,7 @@ function NetworkDetail() {
 
   const onRpcInputFocus = () => {
     setRpcUrlChecked(false)
-    rpcUrlRef.current = networkFieldValues.rpcUrl
+    storageRpcUrlRef.current = networkFieldValues.rpcUrl
   }
 
   const onValidateRpcUrl = async () => {
@@ -193,12 +210,12 @@ function NetworkDetail() {
   }
 
   const onRpcInputBlur = async () => {
-    // TODO: should add reset default condition use `||`
     if (
       networkFieldValues.rpcUrl &&
       !networkError.rpcUrl &&
-      (rpcUrlRef.current !== networkFieldValues.rpcUrl ||
-        !networkFieldValues.chainId)
+      (storageRpcUrlRef.current !== networkFieldValues.rpcUrl ||
+        !networkFieldValues.chainId ||
+        (isBuiltin && rpcUrlResetAble))
     ) {
       setLoading(true)
       await onValidateRpcUrl()
@@ -245,13 +262,10 @@ function NetworkDetail() {
   const onSave = async (type = 'add') => {
     const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
       networkFieldValues
-    // TODO: should add reset condition
     if (type === 'innerEdit' && rpcUrl === networkInfo?.rpcUrl) {
       return history.push(HOME)
     }
-
     setLoading(true)
-
     // check rpc url again when pasting a rpc url directly
     let doubleCheckedChainId
     if (!rpcUrlChecked) {
@@ -303,13 +317,19 @@ function NetworkDetail() {
             label={
               <span className="flex justify-between items-center">
                 <span>{t(labelKey)}</span>
-                {valueKey === 'rpcUrl' && (
+                {/* reset builtin network urls into default */}
+                {valueKey === 'rpcUrl' && rpcUrlResetAble && (
                   <span
                     aria-hidden="true"
                     className="text-xs text-primary cursor-pointer"
-                    // TODO: reset rpc url
                     onMouseDown={e => {
                       e.preventDefault()
+                      setNetworkFieldValues({
+                        ...networkFieldValues,
+                        rpcUrl:
+                          BUILTIN_NETWORK_ENDPOINTS[networkInfo.networkName],
+                      })
+                      rpcUrlInputRef?.current?.focus()
                     }}
                   >
                     {t('resetDefaultRpcUrl')}
@@ -323,16 +343,8 @@ function NetworkDetail() {
           >
             <Input
               width="w-full"
-              readOnly={getInputDisabledStatus(
-                valueKey,
-                isAddingChain,
-                networkInfo,
-              )}
-              disabled={getInputDisabledStatus(
-                valueKey,
-                isAddingChain,
-                networkInfo,
-              )}
+              readOnly={getInputDisabledStatus(valueKey, isBuiltin)}
+              disabled={getInputDisabledStatus(valueKey, isBuiltin)}
               value={
                 valueKey === 'chainId'
                   ? formatHexToDecimal(networkFieldValues[valueKey])
@@ -341,6 +353,7 @@ function NetworkDetail() {
               onChange={e => onNetworkInputChange(e, valueKey)}
               onBlur={() => valueKey === 'rpcUrl' && onRpcInputBlur()}
               onFocus={() => valueKey === 'rpcUrl' && onRpcInputFocus()}
+              ref={valueKey === 'rpcUrl' ? rpcUrlInputRef : null}
               errorMessage={
                 networkFieldValues[valueKey] || valueKey === 'chainId'
                   ? networkError?.[valueKey] ?? ''
@@ -355,7 +368,7 @@ function NetworkDetail() {
         ))}
       </div>
 
-      {(isAddingChain || networkInfo?.networkType !== 'custom') && (
+      {(isAddingChain || isBuiltin) && (
         <Button
           id="save-network-btn"
           className="mx-3"
@@ -369,7 +382,7 @@ function NetworkDetail() {
         </Button>
       )}
 
-      {networkInfo?.networkType === 'custom' && (
+      {isCustom && (
         <div>
           <div className="mx-3 flex">
             <Button

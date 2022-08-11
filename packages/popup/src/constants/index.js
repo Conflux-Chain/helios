@@ -80,3 +80,20 @@ export const MULTI_ADDRESS_PERMISSIONS = {
   cfx: 'wallet_crossNetworkTypeGetEthereumHexAddress',
   eth: 'wallet_crossNetworkTypeGetConfluxBase32Address',
 }
+
+export const BUILTIN_NETWORK_ENDPOINTS = {
+  'Conflux Mainnet': 'https://portal-main.confluxrpc.com',
+  'Conflux eSpace': 'https://evm.confluxrpc.com',
+  'Ethereum Mainnet':
+    'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  'Conflux Testnet': 'https://portal-test.confluxrpc.com',
+  'eSpace Testnet': 'https://evmtestnet.confluxrpc.com',
+  'Ethereum Ropsten':
+    'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  'Ethereum Rinkeby':
+    'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  'Ethereum Goerli':
+    'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  'Ethereum Kovan':
+    'https://kovan.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+}
