@@ -29,6 +29,7 @@ function SendTransaction() {
     toAddress,
     sendAmount,
     sendTokenId,
+    maxMode,
     setToAddress,
     setSendAmount,
     setSendTokenId,
@@ -38,6 +39,7 @@ function SendTransaction() {
     setGasLimit,
     setNonce,
     setStorageLimit,
+    setMaxMode,
     tx,
     clearSendTransactionParams,
   } = useCurrentTxParams()
@@ -123,6 +125,10 @@ function SendTransaction() {
 
   const onChangeToken = token => {
     setSendTokenId(token)
+    if (maxMode) {
+      setSendAmount('')
+      setMaxMode(false)
+    }
   }
   const onChangeAmount = amount => {
     setSendAmount(amount)
