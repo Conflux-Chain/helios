@@ -6,9 +6,7 @@ import {TitleNav, SearchInput} from '../../components'
 import {Account, Contact, Recent} from './components'
 import {useCurrentTxStore} from '../../hooks'
 import useGlobalStore from '../../stores'
-import {ROUTES} from '../../constants'
 
-const {SEND_TRANSACTION} = ROUTES
 const TABS = ['recent', 'contacts', 'account']
 
 function AddressBook() {
@@ -25,10 +23,9 @@ function AddressBook() {
     useState(searchContent)
 
   const onJumpToSendTx = ({address = '', note = ''}) => {
-    history.replace('')
     setToAddress(address)
     address && note && setAddressNote({[address]: note})
-    history.push(SEND_TRANSACTION)
+    history.goBack()
   }
 
   const onTabClick = tab => {
