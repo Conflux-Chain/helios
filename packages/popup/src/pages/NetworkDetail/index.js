@@ -151,11 +151,11 @@ function NetworkDetail() {
     return setNetworkError({...networkError, [valueKey]: errMsg})
   }
 
-  const onNetworkInputChange = (e, valueKey) => {
-    validateInputValue(e.target.value, valueKey)
+  const onNetworkInputChange = (value, valueKey) => {
+    validateInputValue(value, valueKey)
     setNetworkFieldValues({
       ...networkFieldValues,
-      [valueKey]: e.target.value,
+      [valueKey]: value,
     })
   }
 
@@ -324,11 +324,10 @@ function NetworkDetail() {
                     className="text-xs text-primary cursor-pointer"
                     onMouseDown={e => {
                       e.preventDefault()
-                      setNetworkFieldValues({
-                        ...networkFieldValues,
-                        rpcUrl:
-                          BUILTIN_NETWORK_ENDPOINTS[networkInfo.networkName],
-                      })
+                      onNetworkInputChange(
+                        BUILTIN_NETWORK_ENDPOINTS[networkInfo.networkName],
+                        'rpcUrl',
+                      )
                       rpcUrlInputRef?.current?.focus()
                     }}
                   >
@@ -350,7 +349,7 @@ function NetworkDetail() {
                   ? formatHexToDecimal(networkFieldValues[valueKey])
                   : networkFieldValues[valueKey]
               }
-              onChange={e => onNetworkInputChange(e, valueKey)}
+              onChange={e => onNetworkInputChange(e.target.value, valueKey)}
               onBlur={() => valueKey === 'rpcUrl' && onRpcInputBlur()}
               onFocus={() => valueKey === 'rpcUrl' && onRpcInputFocus()}
               ref={valueKey === 'rpcUrl' ? rpcUrlInputRef : null}
