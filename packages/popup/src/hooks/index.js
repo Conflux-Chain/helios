@@ -260,8 +260,8 @@ export const useCurrentTxParams = () => {
   const decimals = isNativeToken ? COMMON_DECIMALS : tokenDecimals
   const sendData = convertValueToData(sendAmount, decimals) || '0x0'
   const isValid = validateAddress(toAddress, networkTypeIsCfx, netId)
-  if (isNativeToken && (isValid || !toAddress)) {
-    to = toAddress || address
+  if (isNativeToken) {
+    to = isValid ? toAddress : address
   } else if (tokenAddress) {
     to = toAddress ? tokenAddress : ''
     data = toAddress
