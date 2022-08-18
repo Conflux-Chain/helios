@@ -98,6 +98,8 @@ function AdvancedGas() {
     storageCollateralized: estimateStorageLimit,
   } = estimateRst
 
+  if (!params.gas) params.gas = estimateGasLimit
+
   const {
     gasPrice: advancedGasPrice,
     maxFeePerGas: advancedMaxFeePerGas,
