@@ -112,7 +112,10 @@ function TokenAndAmount({
     </span>
   )
   const onClickMax = () => {
-    if (loading) return
+    if (loading) {
+      console.log('isLoading', loading)
+      return
+    }
     setMaxMode(true)
     if (isNativeToken) onChangeAmount(nativeMax)
     else onChangeAmount(convertDataToValue(balance, decimals))
