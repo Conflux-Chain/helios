@@ -1964,8 +1964,8 @@
 (defnc insert-external-tx [{:keys [tx payload receipt addressId extra]}]
   :let [dup-tx? (some? (p [:db/id] [:tx/hash (:hash tx)]))]
   dup-tx?
-  {:db/id      addressId
-   :address/tx [:tx/hash (:hash tx)]}
+  (t [{:db/id      addressId
+       :address/tx [:tx/hash (:hash tx)]}])
   :let [new-tx (reduce-kv (fn [acc k v] (assoc acc (keyword :tx k) v)) {} tx)
         new-payload (reduce-kv (fn [acc k v] (assoc acc (keyword :txPayload k) v)) {} payload)
         new-extra (reduce-kv (fn [acc k v] (assoc acc (keyword :txExtra k) v)) {} extra)]
