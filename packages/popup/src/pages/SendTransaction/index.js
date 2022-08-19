@@ -27,6 +27,10 @@ function SendTransaction() {
   const history = useHistory()
   const {
     toAddress,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    gasLimit,
     sendAmount,
     sendTokenId,
     maxMode,
@@ -68,28 +72,40 @@ function SendTransaction() {
         : {},
     ) || {}
   const {
-    gasPrice,
-    maxPriorityFeePerGas,
-    maxFeePerGas,
-    gasLimit,
+    gasPrice: estimateGasPrice,
+    maxFeePerGas: estimateMaxFeePerGas,
+    maxPriorityFeePerGas: estimateMaxPriorityPerGas,
+    gasLimit: estimateGasLimit,
     storageCollateralized,
     nonce,
     nativeMaxDrip,
     loading,
   } = estimateRst
   useEffect(() => {
-    gasPrice && setGasPrice(formatHexToDecimal(gasPrice))
-    maxPriorityFeePerGas &&
-      setMaxPriorityFeePerGas(formatHexToDecimal(maxPriorityFeePerGas))
-    maxFeePerGas && setMaxFeePerGas(formatHexToDecimal(maxFeePerGas))
-    setGasLimit(formatHexToDecimal(gasLimit))
-    setNonce(formatHexToDecimal(nonce))
-    setStorageLimit(formatHexToDecimal(storageCollateralized))
+    !gasPrice &&
+      estimateGasPrice &&
+      setGasPrice(formatHexToDecimal(estimateGasPrice))
+    !maxPriorityFeePerGas &&
+      estimateMaxPriorityPerGas &&
+      setMaxPriorityFeePerGas(formatHexToDecimal(estimateMaxPriorityPerGas))
+    !maxFeePerGas &&
+      estimateMaxFeePerGas &&
+      setMaxFeePerGas(formatHexToDecimal(estimateMaxFeePerGas))
+    !gasLimit &&
+      estimateGasLimit &&
+      setGasLimit(formatHexToDecimal(estimateGasLimit))
+    nonce && setNonce(formatHexToDecimal(nonce))
+    storageCollateralized &&
+      setStorageLimit(formatHexToDecimal(storageCollateralized))
   }, [
     gasPrice,
+    estimateGasPrice,
     maxPriorityFeePerGas,
+    estimateMaxPriorityPerGas,
     maxFeePerGas,
+    estimateMaxFeePerGas,
     gasLimit,
+    estimateGasLimit,
     nonce,
     storageCollateralized,
     setGasPrice,
