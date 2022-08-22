@@ -53,6 +53,7 @@ function EditGasFee({
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
     setGasLimit,
+    setStorageLimit,
     setNonce,
     setTx,
     setAdvancedGasSetting,
@@ -152,8 +153,14 @@ function EditGasFee({
   if (!sendParams.nonce) delete sendParams.nonce
 
   const saveGasData = () => {
-    const {gasPrice, maxPriorityFeePerGas, maxFeePerGas, nonce, gasLimit} =
-      advancedGasSetting
+    const {
+      gasPrice,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      nonce,
+      gasLimit,
+      storageLimit,
+    } = advancedGasSetting
 
     setGasLevel(selectedGasLevel)
 
@@ -166,6 +173,7 @@ function EditGasFee({
       }
       setNonce(nonce)
       setGasLimit(gasLimit)
+      setStorageLimit(storageLimit)
     } else {
       if (isTxTreatedAsEIP1559) {
         const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
