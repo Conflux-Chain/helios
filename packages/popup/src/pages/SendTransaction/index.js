@@ -41,8 +41,10 @@ function SendTransaction() {
     setNonce,
     setStorageLimit,
     setMaxMode,
+    setGasLevel,
     tx,
     clearSendTransactionParams,
+    clearAdvancedGasSetting,
   } = useCurrentTxParams()
   const {
     data: {
@@ -142,6 +144,10 @@ function SendTransaction() {
     if (maxMode) {
       setSendAmount('')
       setMaxMode(false)
+    }
+    if (isAdvanced) {
+      setGasLevel('medium')
+      clearAdvancedGasSetting()
     }
   }
   const onChangeAmount = amount => {
