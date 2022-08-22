@@ -104,6 +104,7 @@ function EditGasFee({
         maxPriorityFeePerGas:
           advancedGasSetting.maxPriorityFeePerGas || maxPriorityFeePerGas,
         nonce: advancedGasSetting.nonce || nonce,
+        storageLimit: advancedGasSetting.storageLimit || storageLimit,
         gasLevel: 'advanced',
       })
     }
