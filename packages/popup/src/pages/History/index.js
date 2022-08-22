@@ -63,7 +63,6 @@ function History() {
                 eid,
                 hash,
                 err,
-                fromScan,
                 receipt,
                 pendingAt,
               },
@@ -80,7 +79,6 @@ function History() {
                 hash={hash}
                 receipt={receipt}
                 err={err}
-                fromScan={fromScan}
                 pendingAt={pendingAt}
                 copyButtonContainerClassName={index === 0 ? '' : undefined}
                 copyButtonToastClassName={

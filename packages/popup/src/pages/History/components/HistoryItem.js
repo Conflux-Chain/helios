@@ -50,7 +50,6 @@ function HistoryItem({
   hash,
   err,
   pendingAt = 0,
-  fromScan = false,
   copyButtonContainerClassName,
   copyButtonToastClassName,
 }) {
@@ -81,7 +80,8 @@ function HistoryItem({
   const txStatus = formatStatus(status)
 
   // is external transition
-  const isExternalTx = fromScan && currentAddress === payload?.to
+  const isExternalTx =
+    currentAddress !== payload?.from && currentAddress === payload?.to
   // show negative amount
   const isNegativeAmount =
     amount != 0 && actionName !== 'Approve' && !isExternalTx
@@ -305,7 +305,6 @@ HistoryItem.propTypes = {
   transactionUrl: PropTypes.string,
   hash: PropTypes.string,
   err: PropTypes.string,
-  fromScan: PropTypes.bool,
   app: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   token: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.object]),
   copyButtonContainerClassName: PropTypes.string,

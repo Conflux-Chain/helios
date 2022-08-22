@@ -41,6 +41,9 @@ function EditGasFee({
   const {
     gasLevel,
     gasLimit,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     nonce,
     storageLimit,
     advancedGasSetting,
@@ -52,6 +55,7 @@ function EditGasFee({
     setGasLimit,
     setNonce,
     setTx,
+    setAdvancedGasSetting,
     clearAdvancedGasSetting,
     clearSendTransactionParams,
   } = useCurrentTxStore()
@@ -90,6 +94,21 @@ function EditGasFee({
       setSelectedGasLevel('advanced')
     else if (!selectedGasLevel) setSelectedGasLevel(gasLevel)
   }, [advancedGasSetting.gasLevel, gasLevel, selectedGasLevel])
+
+  useEffect(() => {
+    if (gasLevel === 'advanced') {
+      setAdvancedGasSetting({
+        gasLimit: advancedGasSetting.gasLimit || gasLimit,
+        gasPrice: advancedGasSetting.gasPrice || gasPrice,
+        maxFeePerGas: advancedGasSetting.maxFeePerGas || maxFeePerGas,
+        maxPriorityFeePerGas:
+          advancedGasSetting.maxPriorityFeePerGas || maxPriorityFeePerGas,
+        nonce: advancedGasSetting.nonce || nonce,
+        storageLimit: advancedGasSetting.storageLimit || storageLimit,
+        gasLevel: 'advanced',
+      })
+    }
+  }, [])
 
   let sendParams = {}
   if (selectedGasLevel === 'advanced') {
