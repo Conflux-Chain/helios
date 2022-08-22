@@ -101,7 +101,9 @@ function ConfirmTransaction() {
     setStorageLimit,
     setNonce,
     setSendAmount,
+    setGasLevel,
     clearSendTransactionParams,
+    clearAdvancedGasSetting,
     tx: txParams,
   } = useCurrentTxParams()
   const {setLoading} = useLoading()
@@ -353,7 +355,14 @@ function ConfirmTransaction() {
   return (
     <div className="confirm-transaction-container flex flex-col h-full w-full relative">
       <header>
-        <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
+        <TitleNav
+          title={t('signTransaction')}
+          hasGoBack={!isDapp}
+          onGoBack={() => {
+            clearAdvancedGasSetting()
+            setGasLevel('medium')
+          }}
+        />
       </header>
       <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-6">
         <div className="flex flex-col px-3">
