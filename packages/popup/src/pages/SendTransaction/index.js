@@ -29,7 +29,6 @@ function SendTransaction() {
     toAddress,
     sendAmount,
     sendTokenId,
-    gasLevel,
     maxMode,
     setToAddress,
     setSendAmount,
@@ -41,10 +40,8 @@ function SendTransaction() {
     setNonce,
     setStorageLimit,
     setMaxMode,
-    setGasLevel,
     tx,
     clearSendTransactionParams,
-    clearAdvancedGasSetting,
   } = useCurrentTxParams()
   const {
     data: {
@@ -81,27 +78,17 @@ function SendTransaction() {
     loading,
   } = estimateRst
 
-  const isAdvanced = gasLevel === 'advanced'
-
   useEffect(() => {
-    !isAdvanced &&
-      estimateGasPrice &&
-      setGasPrice(formatHexToDecimal(estimateGasPrice))
-    !isAdvanced &&
-      estimateMaxPriorityPerGas &&
+    estimateGasPrice && setGasPrice(formatHexToDecimal(estimateGasPrice))
+    estimateMaxPriorityPerGas &&
       setMaxPriorityFeePerGas(formatHexToDecimal(estimateMaxPriorityPerGas))
-    !isAdvanced &&
-      estimateMaxFeePerGas &&
+    estimateMaxFeePerGas &&
       setMaxFeePerGas(formatHexToDecimal(estimateMaxFeePerGas))
-    !isAdvanced &&
-      estimateGasLimit &&
-      setGasLimit(formatHexToDecimal(estimateGasLimit))
-    !isAdvanced && nonce && setNonce(formatHexToDecimal(nonce))
-    !isAdvanced &&
-      estimateStorageLimit &&
+    estimateGasLimit && setGasLimit(formatHexToDecimal(estimateGasLimit))
+    nonce && setNonce(formatHexToDecimal(nonce))
+    estimateStorageLimit &&
       setStorageLimit(formatHexToDecimal(estimateStorageLimit))
   }, [
-    isAdvanced,
     estimateGasPrice,
     estimateMaxPriorityPerGas,
     estimateMaxFeePerGas,
@@ -144,10 +131,6 @@ function SendTransaction() {
     if (maxMode) {
       setSendAmount('')
       setMaxMode(false)
-    }
-    if (isAdvanced) {
-      setGasLevel('medium')
-      clearAdvancedGasSetting()
     }
   }
   const onChangeAmount = amount => {

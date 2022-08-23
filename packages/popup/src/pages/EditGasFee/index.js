@@ -212,9 +212,9 @@ function EditGasFee({
         <TitleNav
           onGoBack={() => {
             if (isSendTx) {
-              clearAdvancedGasSetting()
+              setTimeout(() => clearAdvancedGasSetting(), 500)
             } else {
-              clearSendTransactionParams()
+              setTimeout(() => clearSendTransactionParams(), 500)
             }
           }}
           title={
