@@ -118,6 +118,8 @@ const zh = {
     mainnet: '主网',
     testnet: '测试网',
     custom: '自定义网络',
+    switchTestnetDisplay:
+      '<Container><SwitchButton>显示/隐藏</SwitchButton>测试网络</Container>',
 
     // - add token
     addToken: '添加代币',
@@ -252,6 +254,7 @@ const zh = {
     hash: '交易哈希',
     nonce: '随机数',
     fromAddress: '发送方',
+    expeditedCancellation: '加速取消',
 
     // - request signature - 1. Sign Text
     signText: '文本签名',
@@ -318,6 +321,7 @@ const zh = {
     duplicateNetworkEndpoint: '重复的网络端点',
     urlWarning: '请填写 Http/Https 前缀',
     invalidRpcUrl: '无效的 RPC URL',
+    resetDefaultRpcUrl: '恢复为默认 RPC',
 
     // Advanced Settings
     AdvancedSettings: '高级选项',

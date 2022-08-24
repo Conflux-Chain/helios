@@ -225,7 +225,7 @@ export const main = ({
             if (errorType === 'unknownError')
               sentryCaptureError(err, {
                 tags: {
-                  custome_type: 'unknown sendTx error',
+                  custom_type: 'unknown sendTx error',
                   rpc_network: network.name,
                 },
               })

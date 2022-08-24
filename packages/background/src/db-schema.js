@@ -26,6 +26,10 @@
   Means this attribute is the representation of an entity and it's one of the
   children of the parent entity.
   Doc about component feature https://blog.datomic.com/2013/06/component-entities.html
+
+  Note:
+  1. when adding/removing doc only attribute, there's no need to use migration
+  2. attribute need to be added in this file in order to be able to read in js code
   */
 const schema = {
   // ## basic
@@ -158,6 +162,7 @@ const schema = {
     blockHash: {doc: 'block this tx packaged in'},
     chainSwitched: {doc: 'chain switched'},
     created: {doc: 'created timestamp get with new Date().getTime()'},
+    pendingAt: {doc: 'first time pending timestamp'},
     err: {doc: 'basic error type/info'},
     txExtra: {doc: 'enriched tx info', ref: true, component: true},
     fromFluent: {doc: 'tx submitted from fluent'},
@@ -184,6 +189,7 @@ const schema = {
     ok: {doc: 'extra data is finished'},
     contractCreation: {doc: 'contract creation tx'},
     simple: {doc: 'simple tx'},
+    sendAction: {doc: 'speedup or cancel'},
     contractInteraction: {doc: 'contract interaction tx'},
     token20: {doc: '20 contract'},
     tokenNFT: {doc: 'nft contract'},

@@ -49,6 +49,8 @@ export const main = async ({
   },
   params,
   _inpage,
+  _popup,
+  _sendAction,
   app,
   network,
 }) => {
@@ -189,9 +191,11 @@ export const main = async ({
   const blockNumber =
     network.type === 'eth' &&
     (await eth_blockNumber({errorFallThrough: true}, []))
+  const txExtra = {ok: false}
+  if (_popup && _sendAction) txExtra.sendAction = _sendAction
   const dbtxs = [
     {eid: 'newTxPayload', txPayload: txMeta},
-    {eid: 'newTxExtra', txExtra: {ok: false}},
+    {eid: 'newTxExtra', txExtra},
     {
       eid: 'newTxId',
       tx: {

@@ -29,6 +29,7 @@ function SendTransaction() {
     toAddress,
     sendAmount,
     sendTokenId,
+    maxMode,
     setToAddress,
     setSendAmount,
     setSendTokenId,
@@ -38,6 +39,7 @@ function SendTransaction() {
     setGasLimit,
     setNonce,
     setStorageLimit,
+    setMaxMode,
     tx,
     clearSendTransactionParams,
   } = useCurrentTxParams()
@@ -66,30 +68,33 @@ function SendTransaction() {
         : {},
     ) || {}
   const {
-    gasPrice,
-    maxPriorityFeePerGas,
-    maxFeePerGas,
-    gasLimit,
-    storageCollateralized,
+    gasPrice: estimateGasPrice,
+    maxFeePerGas: estimateMaxFeePerGas,
+    maxPriorityFeePerGas: estimateMaxPriorityPerGas,
+    gasLimit: estimateGasLimit,
+    storageCollateralized: estimateStorageLimit,
     nonce,
     nativeMaxDrip,
     loading,
   } = estimateRst
+
   useEffect(() => {
-    gasPrice && setGasPrice(formatHexToDecimal(gasPrice))
-    maxPriorityFeePerGas &&
-      setMaxPriorityFeePerGas(formatHexToDecimal(maxPriorityFeePerGas))
-    maxFeePerGas && setMaxFeePerGas(formatHexToDecimal(maxFeePerGas))
-    setGasLimit(formatHexToDecimal(gasLimit))
-    setNonce(formatHexToDecimal(nonce))
-    setStorageLimit(formatHexToDecimal(storageCollateralized))
+    estimateGasPrice && setGasPrice(formatHexToDecimal(estimateGasPrice))
+    estimateMaxPriorityPerGas &&
+      setMaxPriorityFeePerGas(formatHexToDecimal(estimateMaxPriorityPerGas))
+    estimateMaxFeePerGas &&
+      setMaxFeePerGas(formatHexToDecimal(estimateMaxFeePerGas))
+    estimateGasLimit && setGasLimit(formatHexToDecimal(estimateGasLimit))
+    nonce && setNonce(formatHexToDecimal(nonce))
+    estimateStorageLimit &&
+      setStorageLimit(formatHexToDecimal(estimateStorageLimit))
   }, [
-    gasPrice,
-    maxPriorityFeePerGas,
-    maxFeePerGas,
-    gasLimit,
+    estimateGasPrice,
+    estimateMaxPriorityPerGas,
+    estimateMaxFeePerGas,
+    estimateGasLimit,
     nonce,
-    storageCollateralized,
+    estimateStorageLimit,
     setGasPrice,
     setMaxPriorityFeePerGas,
     setMaxFeePerGas,
@@ -123,6 +128,10 @@ function SendTransaction() {
 
   const onChangeToken = token => {
     setSendTokenId(token)
+    if (maxMode) {
+      setSendAmount('')
+      setMaxMode(false)
+    }
   }
   const onChangeAmount = amount => {
     setSendAmount(amount)

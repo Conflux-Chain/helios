@@ -8,6 +8,7 @@ import {
   formatDecimalToHex,
   formatHexToDecimal,
   convertValueToData,
+  convertDataToValue,
 } from '@fluent-wallet/data-format'
 import {
   useCurrentTxParams,
@@ -91,13 +92,18 @@ function ConfirmTransaction() {
     gasLimit,
     storageLimit,
     nonce,
+    maxMode,
+    sendAmount,
     setGasPrice,
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
     setGasLimit,
     setStorageLimit,
     setNonce,
+    setSendAmount,
+    setGasLevel,
     clearSendTransactionParams,
+    clearAdvancedGasSetting,
     tx: txParams,
   } = useCurrentTxParams()
   const {setLoading} = useLoading()
@@ -192,6 +198,22 @@ function ConfirmTransaction() {
           }
         : {},
     ) || {}
+
+  const {nativeMaxDrip} = estimateRst
+
+  useEffect(() => {
+    const nativeMax = convertDataToValue(nativeMaxDrip, nativeToken?.decimals)
+    if (maxMode && isNativeToken && sendAmount !== nativeMax && !!nativeMax) {
+      setSendAmount(nativeMax)
+    }
+  }, [
+    maxMode,
+    isNativeToken,
+    sendAmount,
+    setSendAmount,
+    nativeMaxDrip,
+    nativeToken?.decimals,
+  ])
 
   // only need to estimate gas not need to get whether balance is enough
   // so do not pass the gas info params
@@ -325,17 +347,22 @@ function ConfirmTransaction() {
     else window.close()
   }
 
-  const isContractError = estimateError.indexOf(t('contractError')) !== -1
-
   const confirmDisabled =
-    (!!estimateError && !isContractError) ||
+    !!estimateError ||
     estimateRst.loading ||
     Object.keys(estimateRst).length === 0
 
   return (
     <div className="confirm-transaction-container flex flex-col h-full w-full relative">
       <header>
-        <TitleNav title={t('signTransaction')} hasGoBack={!isDapp} />
+        <TitleNav
+          title={t('signTransaction')}
+          hasGoBack={!isDapp}
+          onGoBack={() => {
+            clearAdvancedGasSetting()
+            setGasLevel('medium')
+          }}
+        />
       </header>
       <div className="confirm-transaction-body flex flex-1 flex-col justify-between mt-1 pb-6">
         <div className="flex flex-col px-3">
@@ -419,7 +446,6 @@ function ConfirmTransaction() {
             isHwUnAuth={isHwUnAuth}
             isHwOpenAlert={isHwOpenAlert}
             estimateError={estimateError}
-            isContractError={isContractError}
           />
           {(isHwAccount || sendStatus === TX_STATUS.ERROR) && (
             <TransactionResult

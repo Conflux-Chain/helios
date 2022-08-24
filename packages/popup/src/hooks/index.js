@@ -207,6 +207,7 @@ const defaultSendTransactionParams = {
   sendTokenId: 'native',
   customAllowance: '',
   tx: {},
+  maxMode: false,
 }
 
 export const useCurrentTxStore = create((set, get) => ({
@@ -222,6 +223,7 @@ export const useCurrentTxStore = create((set, get) => ({
   setGasLimit: gasLimit => set({gasLimit}),
   setStorageLimit: storageLimit => set({storageLimit}),
   setGasLevel: gasLevel => set({gasLevel}),
+  setMaxMode: maxMode => set({maxMode}),
   setAdvancedGasSetting: advancedGasSetting => {
     const oldSetting = get().advancedGasSetting
     const newSetting = {...oldSetting, ...advancedGasSetting}
@@ -258,8 +260,8 @@ export const useCurrentTxParams = () => {
   const decimals = isNativeToken ? COMMON_DECIMALS : tokenDecimals
   const sendData = convertValueToData(sendAmount, decimals) || '0x0'
   const isValid = validateAddress(toAddress, networkTypeIsCfx, netId)
-  if (isNativeToken && (isValid || !toAddress)) {
-    to = toAddress || address
+  if (isNativeToken) {
+    to = isValid ? toAddress : address
   } else if (tokenAddress) {
     to = toAddress ? tokenAddress : ''
     data = toAddress

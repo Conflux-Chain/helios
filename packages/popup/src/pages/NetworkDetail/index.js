@@ -15,7 +15,12 @@ import {
 import {TitleNav, CompWithLabel, ConfirmPassword} from '../../components'
 import {request} from '../../utils'
 import {useCurrentAddress} from '../../hooks/useApi'
-import {ROUTES, RPC_METHODS, NETWORK_TYPE} from '../../constants'
+import {
+  ROUTES,
+  RPC_METHODS,
+  NETWORK_TYPE,
+  BUILTIN_NETWORK_ENDPOINTS,
+} from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import useGlobalStore from '../../stores'
 
@@ -58,12 +63,22 @@ const getNetworkType = type => {
   } Network`
 }
 
+const getInputDisabledStatus = (valueKey, isBuiltin) => {
+  return (
+    valueKey === 'networkType' ||
+    valueKey === 'chainId' ||
+    (isBuiltin && valueKey !== 'rpcUrl')
+  )
+}
+
 function NetworkDetail() {
   const {t} = useTranslation()
   const history = useHistory()
   const {mutate} = useSWRConfig()
   const {setLoading} = useLoading()
-  const rpcUrlRef = useRef(null)
+  const storageRpcUrlRef = useRef(null)
+  const rpcUrlInputRef = useRef(null)
+
   const {networkInfo, setNetworkInfo} = useGlobalStore()
   const [networkFieldValues, setNetworkFieldValues] = useState(() => {
     return {
@@ -85,9 +100,23 @@ function NetworkDetail() {
   const [openPasswordStatus, setOpenPasswordStatus] = useState(false)
   const [password, setPassword] = useState('')
   const [detectedChainType, setDetectedChainType] = useState('')
+  const [rpcUrlChecked, setRpcUrlChecked] = useState(false)
+  const [rpcUrlResetAble, setRpcUrlResetAble] = useState(false)
+
   const isAddingChain = !Object.keys(networkInfo).length
+  const isCustom = networkInfo?.networkType === 'custom'
+  const isBuiltin = !isAddingChain && !isCustom
+
   const {data} = useCurrentAddress(isAddingChain)
   const currentNetworkId = data?.network?.eid
+
+  useEffect(() => {
+    setRpcUrlResetAble(
+      isBuiltin &&
+        networkFieldValues.rpcUrl !==
+          BUILTIN_NETWORK_ENDPOINTS[networkInfo.networkName],
+    )
+  }, [isBuiltin, networkFieldValues.rpcUrl, networkInfo.networkName])
 
   useEffect(() => {
     return () => {
@@ -96,7 +125,6 @@ function NetworkDetail() {
   }, [setNetworkInfo])
 
   const canSave =
-    (isAddingChain || networkInfo?.networkType == 'custom') &&
     networkFieldValues.chainName &&
     networkFieldValues.rpcUrl &&
     networkFieldValues.chainId &&
@@ -123,71 +151,83 @@ function NetworkDetail() {
     return setNetworkError({...networkError, [valueKey]: errMsg})
   }
 
-  const onNetworkInputChange = (e, valueKey) => {
-    validateInputValue(e.target.value, valueKey)
+  const onNetworkInputChange = (value, valueKey) => {
+    validateInputValue(value, valueKey)
     setNetworkFieldValues({
       ...networkFieldValues,
-      [valueKey]: e.target.value,
+      [valueKey]: value,
     })
   }
 
   const onRpcInputFocus = () => {
-    rpcUrlRef.current = networkFieldValues.rpcUrl
+    setRpcUrlChecked(false)
+    storageRpcUrlRef.current = networkFieldValues.rpcUrl
   }
 
-  const onRpcInputBlur = () => {
-    if (
-      networkFieldValues.rpcUrl &&
-      !networkError.rpcUrl &&
-      (rpcUrlRef.current !== networkFieldValues.rpcUrl ||
-        !networkFieldValues.chainId)
-    ) {
-      setLoading(true)
-      request(WALLET_DETECT_NETWORK_TYPE, {url: networkFieldValues.rpcUrl})
-        .then(res => {
-          setLoading(false)
-          if (res?.chainId && res?.type) {
-            setDetectedChainType(res.type)
-            setNetworkError({...networkError, chainId: ''})
-            setNetworkFieldValues({
-              ...networkFieldValues,
-              chainId: res.chainId,
-              networkType: getNetworkType(res.type),
-            })
-          } else {
-            setNetworkFieldValues({
-              ...networkFieldValues,
-              chainId: '',
-              networkType: '',
-            })
-            setNetworkError({...networkError, chainId: t('unCaughtErrMsg')})
-          }
+  const onValidateRpcUrl = async () => {
+    try {
+      const res = await request(WALLET_DETECT_NETWORK_TYPE, {
+        url: networkFieldValues.rpcUrl,
+      })
+      // validated url
+      if (res?.chainId && res?.type) {
+        setDetectedChainType(res.type)
+        setNetworkError({...networkError, chainId: ''})
+        setNetworkFieldValues({
+          ...networkFieldValues,
+          chainId: res.chainId,
+          networkType: getNetworkType(res.type),
         })
-        .catch(err => {
-          setLoading(false)
-          setNetworkFieldValues({
-            ...networkFieldValues,
-            chainId: '',
-            networkType: '',
-          })
-          if (err?.message?.indexOf?.('InvalidParams') !== -1) {
-            return setNetworkError({...networkError, chainId: t('wrongRpcUrl')})
-          }
-          setNetworkError({
-            ...networkError,
-            chainId:
-              err?.message?.split?.('\n')?.[0] ??
-              err?.message ??
-              t('unCaughtErrMsg'),
-          })
-        })
+        return res.chainId
+      }
+
+      // invalidated url
+      setNetworkFieldValues({
+        ...networkFieldValues,
+        chainId: '',
+        networkType: '',
+      })
+      setNetworkError({...networkError, chainId: t('unCaughtErrMsg')})
+      return false
+    } catch (err) {
+      // invalidated url or other error
+      setNetworkFieldValues({
+        ...networkFieldValues,
+        chainId: '',
+        networkType: '',
+      })
+
+      const chainIdError =
+        err?.message?.indexOf?.('InvalidParams') !== -1
+          ? t('wrongRpcUrl')
+          : err?.message?.split?.('\n')?.[0] ??
+            err?.message ??
+            t('unCaughtErrMsg')
+
+      setNetworkError({...networkError, chainId: chainIdError})
+      return false
     }
   }
 
-  const mutateData = () =>
-    mutate([WALLET_GET_NETWORK]).then(() => {
-      history.push(HOME)
-    })
+  const onRpcInputBlur = async () => {
+    if (
+      networkFieldValues.rpcUrl &&
+      !networkError.rpcUrl &&
+      (storageRpcUrlRef.current !== networkFieldValues.rpcUrl ||
+        !networkFieldValues.chainId ||
+        (isBuiltin && rpcUrlResetAble))
+    ) {
+      setLoading(true)
+      await onValidateRpcUrl()
+      setLoading(false)
+    }
+    setRpcUrlChecked(true)
+  }
+
+  const mutateData = async () => {
+    await mutate([WALLET_GET_NETWORK])
+    history.push(HOME)
+  }
 
   const onClickDeleteNetwork = () => {
     if (currentNetworkId === networkInfo.networkId) {
@@ -200,11 +240,45 @@ function NetworkDetail() {
     setOpenPasswordStatus(true)
   }
 
-  const onSave = (type = 'add') => {
+  const onSendUpdateNetworkRequest = async (param, rpcMethod) => {
+    try {
+      await request(rpcMethod, param)
+      return true
+    } catch (err) {
+      Message.error({
+        content:
+          err?.message?.indexOf?.('Duplicate network endpoint') !== -1
+            ? t('duplicateNetworkEndpoint')
+            : err?.message?.split?.('\n')?.[0] ??
+              err?.message ??
+              t('unCaughtErrMsg'),
+        top: '10px',
+        duration: 1,
+      })
+      return false
+    }
+  }
+
+  const onSave = async (type = 'add') => {
     const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
       networkFieldValues
+    if (type === 'innerEdit' && rpcUrl === networkInfo?.rpcUrl) {
+      return history.push(HOME)
+    }
+    setLoading(true)
+    // check rpc url again when pasting a rpc url directly
+    let doubleCheckedChainId
+    if (!rpcUrlChecked) {
+      doubleCheckedChainId = await onValidateRpcUrl()
+      setRpcUrlChecked(true)
+      if (!doubleCheckedChainId) {
+        setLoading(false)
+        return
+      }
+    }
+
     const param = {
-      chainId,
+      chainId: doubleCheckedChainId || chainId,
       chainName,
       nativeCurrency: {
         name: symbol || detectedChainType.toUpperCase(),
@@ -218,35 +292,20 @@ function NetworkDetail() {
       param.blockExplorerUrls = [blockExplorerUrl]
     }
 
-    if (type === 'edit') {
+    if (type !== 'add') {
       param.networkId = networkInfo.networkId
     }
-    setLoading(true)
-    request(
-      type === 'edit'
+
+    const sendingRet = await onSendUpdateNetworkRequest(
+      type !== 'add' ? param : [param],
+      type !== 'add'
         ? WALLET_UPDATE_NETWORK
         : detectedChainType === NETWORK_TYPE.CFX
         ? WALLET_ADD_CONFLUX_CHAIN
         : WALLET_ADD_ETHEREUM_CHAIN,
-      type === 'edit' ? param : [param],
     )
-      .then(() => {
-        setLoading(false)
-        mutateData()
-      })
-      .catch(err => {
-        setLoading(false)
-        Message.error({
-          content:
-            err?.message?.indexOf?.('Duplicate network endpoint') !== -1
-              ? t('duplicateNetworkEndpoint')
-              : err?.message?.split?.('\n')?.[0] ??
-                err?.message ??
-                t('unCaughtErrMsg'),
-          top: '10px',
-          duration: 1,
-        })
-      })
+    setLoading(false)
+    sendingRet && mutateData()
   }
 
   return (
@@ -255,31 +314,45 @@ function NetworkDetail() {
       <div className="flex-1 overflow-y-auto no-scroll px-3 mt-1">
         {FORM_ITEMS.map(({labelKey, valueKey}) => (
           <CompWithLabel
-            label={t(labelKey)}
+            label={
+              <span className="flex justify-between items-center">
+                <span>{t(labelKey)}</span>
+                {/* reset builtin network urls into default */}
+                {valueKey === 'rpcUrl' && rpcUrlResetAble && (
+                  <span
+                    aria-hidden="true"
+                    className="text-xs text-primary cursor-pointer"
+                    onMouseDown={e => {
+                      e.preventDefault()
+                      onNetworkInputChange(
+                        BUILTIN_NETWORK_ENDPOINTS[networkInfo.networkName],
+                        'rpcUrl',
+                      )
+                      rpcUrlInputRef?.current?.focus()
+                    }}
+                  >
+                    {t('resetDefaultRpcUrl')}
+                  </span>
+                )}
+              </span>
+            }
             key={labelKey}
             className="!mt-2"
             labelClassName="!text-gray-40 !mb-1"
           >
             <Input
               width="w-full"
-              readonly={
-                valueKey === 'networkType' ||
-                valueKey === 'chainId' ||
-                (!isAddingChain && networkInfo?.networkType !== 'custom')
-              }
-              disabled={
-                valueKey === 'networkType' ||
-                valueKey === 'chainId' ||
-                (!isAddingChain && networkInfo?.networkType !== 'custom')
-              }
+              readOnly={getInputDisabledStatus(valueKey, isBuiltin)}
+              disabled={getInputDisabledStatus(valueKey, isBuiltin)}
               value={
                 valueKey === 'chainId'
                   ? formatHexToDecimal(networkFieldValues[valueKey])
                   : networkFieldValues[valueKey]
               }
-              onChange={e => onNetworkInputChange(e, valueKey)}
+              onChange={e => onNetworkInputChange(e.target.value, valueKey)}
               onBlur={() => valueKey === 'rpcUrl' && onRpcInputBlur()}
               onFocus={() => valueKey === 'rpcUrl' && onRpcInputFocus()}
+              ref={valueKey === 'rpcUrl' ? rpcUrlInputRef : null}
               errorMessage={
                 networkFieldValues[valueKey] || valueKey === 'chainId'
                   ? networkError?.[valueKey] ?? ''
@@ -293,49 +366,58 @@ function NetworkDetail() {
           </CompWithLabel>
         ))}
       </div>
-      {isAddingChain && (
+
+      {(isAddingChain || isBuiltin) && (
         <Button
           id="save-network-btn"
           className="mx-3"
           disabled={!canSave}
-          onClick={() => onSave()}
+          onMouseDown={e => {
+            e.preventDefault()
+            onSave(isAddingChain ? 'add' : 'innerEdit')
+          }}
         >
           {t('save')}
         </Button>
       )}
-      {networkInfo?.networkType === 'custom' && (
-        <div className="mx-3 flex">
-          <Button
-            id="delete-btn"
-            className="flex-1 mr-3"
-            variant="outlined"
-            onClick={onClickDeleteNetwork}
-            danger={true}
-          >
-            {t('delete')}
-          </Button>
-          <Button
-            id="edit-btn"
-            className="flex-1"
-            disabled={!canSave}
-            onClick={() => onSave('edit')}
-          >
-            {t('save')}
-          </Button>
+
+      {isCustom && (
+        <div>
+          <div className="mx-3 flex">
+            <Button
+              id="delete-btn"
+              className="flex-1 mr-3"
+              variant="outlined"
+              onClick={onClickDeleteNetwork}
+              danger={true}
+            >
+              {t('delete')}
+            </Button>
+            <Button
+              id="edit-btn"
+              className="flex-1"
+              disabled={!canSave}
+              onMouseDown={e => {
+                e.preventDefault()
+                onSave('customEdit')
+              }}
+            >
+              {t('save')}
+            </Button>
+          </div>
+          {!isUndefined(currentNetworkId) && (
+            <ConfirmPassword
+              open={openPasswordStatus}
+              onCancel={clearPasswordInfo}
+              password={password}
+              setPassword={setPassword}
+              rpcMethod={WALLET_DELETE_NETWORK}
+              onConfirmCallback={mutateData}
+              confirmParams={{networkId: networkInfo.networkId, password}}
+            />
+          )}
         </div>
       )}
-      {networkInfo?.networkType === 'custom' &&
-        !isUndefined(currentNetworkId) && (
-          <ConfirmPassword
-            open={openPasswordStatus}
-            onCancel={clearPasswordInfo}
-            password={password}
-            setPassword={setPassword}
-            rpcMethod={WALLET_DELETE_NETWORK}
-            onConfirmCallback={() => mutateData()}
-            confirmParams={{networkId: networkInfo.networkId, password}}
-          />
-        )}
     </div>
   )
 }

@@ -122,6 +122,8 @@ const uk = {
     mainnet: 'Основна мережа',
     testnet: 'Тестова мережа',
     custom: 'Призначена для користувача мережа',
+    switchTestnetDisplay:
+      '<Container><SwitchButton>Show/Hide</SwitchButton>test networks</Container>',
 
     // - add token
     addToken: 'Додати токен',
@@ -260,6 +262,7 @@ const uk = {
     hash: 'Hash',
     nonce: 'Nonce',
     fromAddress: 'From Address',
+    expeditedCancellation: 'Expedited Cancellation',
 
     // - request signature - 1. Sign Text
     signText: 'Підписати текст',
@@ -330,6 +333,7 @@ const uk = {
     duplicateNetworkEndpoint: 'Дублікат кінцевої точки мережі.',
     urlWarning: 'URL- адреси вимагають відповідної приставки HTTP/HTTPS.',
     invalidRpcUrl: 'Невірний URL RPC',
+    resetDefaultRpcUrl: 'Restore defaults',
 
     // Advanced Settings
     AdvancedSettings: 'Розширені налаштування',

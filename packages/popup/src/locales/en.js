@@ -120,6 +120,8 @@ const en = {
     mainnet: 'Mainnet',
     testnet: 'Testnet',
     custom: 'Custom',
+    switchTestnetDisplay:
+      '<Container><SwitchButton>Show/Hide</SwitchButton>test networks</Container>',
 
     // - add token
     addToken: 'Add Token',
@@ -259,6 +261,7 @@ const en = {
     hash: 'Hash',
     nonce: 'Nonce',
     fromAddress: 'From Address',
+    expeditedCancellation: 'Expedited Cancellation',
 
     // - request signature - 1. Sign Text
     signText: 'Sign Text',
@@ -328,6 +331,7 @@ const en = {
     duplicateNetworkEndpoint: 'Duplicate network endpoint.',
     urlWarning: 'URLs require the appropriate HTTP/HTTPS prefix.',
     invalidRpcUrl: 'Invalid RPC URL',
+    resetDefaultRpcUrl: 'Restore defaults',
 
     // Advanced Settings
     AdvancedSettings: 'Advanced Settings',

@@ -3,6 +3,8 @@ import {ContactsOutlined} from '@fluent-wallet/component-icons'
 import {
   CFX_MAINNET_CHAINID,
   CFX_ESPACE_MAINNET_CHAINID,
+  CFX_TESTNET_CHAINID,
+  CFX_ESPACE_TESTNET_CHAINID,
 } from '@fluent-wallet/consts'
 
 import {useQuery} from '../../hooks'
@@ -143,10 +145,14 @@ function Home() {
               <ContactsOutlined />
             </Button>
           </div>
-          {/* only conflux main network show cross space button */}
+          {/* only conflux main and test network show cross space button */}
           {(network?.chainId === CFX_MAINNET_CHAINID ||
             network?.chainId === CFX_ESPACE_MAINNET_CHAINID) && (
-            <CrossSpaceButton />
+            <CrossSpaceButton type="mainnet" />
+          )}
+          {(network?.chainId === CFX_TESTNET_CHAINID ||
+            network?.chainId === CFX_ESPACE_TESTNET_CHAINID) && (
+            <CrossSpaceButton type="testnet" />
           )}
         </div>
       </div>

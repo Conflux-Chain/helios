@@ -28,7 +28,7 @@ const {EDIT_GAS_FEE} = ROUTES
 // resendGasPrice is hex wei/drip
 function EditGasFee({
   tx: historyTx,
-  isSpeedUp = true,
+  resendType = '',
   resendGasPrice,
   onSubmit,
   onClickGasStationItem,
@@ -41,6 +41,9 @@ function EditGasFee({
   const {
     gasLevel,
     gasLimit,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     nonce,
     storageLimit,
     advancedGasSetting,
@@ -50,8 +53,10 @@ function EditGasFee({
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
     setGasLimit,
+    setStorageLimit,
     setNonce,
     setTx,
+    setAdvancedGasSetting,
     clearAdvancedGasSetting,
     clearSendTransactionParams,
   } = useCurrentTxStore()
@@ -90,6 +95,21 @@ function EditGasFee({
       setSelectedGasLevel('advanced')
     else if (!selectedGasLevel) setSelectedGasLevel(gasLevel)
   }, [advancedGasSetting.gasLevel, gasLevel, selectedGasLevel])
+
+  useEffect(() => {
+    if (gasLevel === 'advanced') {
+      setAdvancedGasSetting({
+        gasLimit: advancedGasSetting.gasLimit || gasLimit,
+        gasPrice: advancedGasSetting.gasPrice || gasPrice,
+        maxFeePerGas: advancedGasSetting.maxFeePerGas || maxFeePerGas,
+        maxPriorityFeePerGas:
+          advancedGasSetting.maxPriorityFeePerGas || maxPriorityFeePerGas,
+        nonce: advancedGasSetting.nonce || nonce,
+        storageLimit: advancedGasSetting.storageLimit || storageLimit,
+        gasLevel: 'advanced',
+      })
+    }
+  }, [])
 
   let sendParams = {}
   if (selectedGasLevel === 'advanced') {
@@ -133,8 +153,14 @@ function EditGasFee({
   if (!sendParams.nonce) delete sendParams.nonce
 
   const saveGasData = () => {
-    const {gasPrice, maxPriorityFeePerGas, maxFeePerGas, nonce, gasLimit} =
-      advancedGasSetting
+    const {
+      gasPrice,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      nonce,
+      gasLimit,
+      storageLimit,
+    } = advancedGasSetting
 
     setGasLevel(selectedGasLevel)
 
@@ -147,6 +173,7 @@ function EditGasFee({
       }
       setNonce(nonce)
       setGasLimit(gasLimit)
+      setStorageLimit(storageLimit)
     } else {
       if (isTxTreatedAsEIP1559) {
         const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
@@ -185,13 +212,19 @@ function EditGasFee({
         <TitleNav
           onGoBack={() => {
             if (isSendTx) {
-              clearAdvancedGasSetting()
+              setTimeout(() => clearAdvancedGasSetting(), 500)
             } else {
-              clearSendTransactionParams()
+              setTimeout(() => clearSendTransactionParams(), 500)
             }
           }}
           title={
-            isSendTx ? t('editGasFee') : isSpeedUp ? t('speedUp') : t('cancel')
+            isSendTx
+              ? t('editGasFee')
+              : resendType === 'speedup'
+              ? t('speedUp')
+              : resendType === 'expeditedCancellation'
+              ? t('expeditedCancellation')
+              : t('cancel')
           }
         />
         <main className="mt-3 px-4 flex flex-col flex-1">
@@ -215,7 +248,9 @@ function EditGasFee({
       <footer className="flex flex-col px-4">
         {!isSendTx && (
           <div className="bg-warning-10 text-warning px-3 py-2 mb-3 text-xs rounded-sm">
-            {isSpeedUp ? t('speedupTxDes') : t('cancelTxDes')}
+            {resendType === 'speedup' || resendType === 'expeditedCancellation'
+              ? t('speedupTxDes')
+              : t('cancelTxDes')}
           </div>
         )}
         <Button
@@ -243,6 +278,7 @@ EditGasFee.propTypes = {
   isSpeedUp: PropTypes.bool,
   tx: PropTypes.object,
   resendGasPrice: PropTypes.string,
+  resendType: PropTypes.string,
   resendDisabled: PropTypes.bool,
 }
 

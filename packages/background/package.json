@@ -149,6 +149,7 @@
     "@fluent-wallet/wallet_request-permissions": "workspace:packages/rpcs/wallet_requestPermissions",
     "@fluent-wallet/wallet_request-unlock-ui": "workspace:packages/rpcs/wallet_requestUnlockUI",
     "@fluent-wallet/wallet_send-transaction": "workspace:*",
+    "@fluent-wallet/wallet_send-transaction-with-action": "workspace:*",
     "@fluent-wallet/wallet_set-app-current-account": "workspace:packages/rpcs/wallet_setAppCurrentAccount",
     "@fluent-wallet/wallet_set-app-current-network": "workspace:packages/rpcs/wallet_setAppCurrentNetwork",
     "@fluent-wallet/wallet_set-current-account": "workspace:packages/rpcs/wallet_setCurrentAccount",

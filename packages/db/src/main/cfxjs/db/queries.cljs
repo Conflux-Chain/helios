@@ -7,7 +7,6 @@
    [cfxjs.spec.cljs]
    [clojure.walk :refer [postwalk walk]]
    [goog.string :as gstr]
-   [lambdaisland.glogi :as log]
    [medley.core :refer [deep-merge]]
    [taoensso.encore :as enc]))
 
@@ -1488,7 +1487,10 @@
             :in $ ?addr ?hash
             :where
             [?tx :tx/hash ?hash]
-            [?addr :address/tx ?tx]]
+            [?addr :address/tx ?tx]
+            [?addr :address/value ?addrv]
+            [?tx :tx/txPayload ?payload]
+            [?payload :txPayload/from ?addrv]]
           addressId txhash)
        (e :tx)))
 
@@ -1556,8 +1558,11 @@
       (t [tx]))))
 (defn set-tx-pending [{:keys [hash]}]
   (when-not (tx-end-state? hash)
-    (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-        {:db/id [:tx/hash hash] :tx/status 2}])))
+    (let [pending-at (:tx/pendingAt (p [:tx/pendingAt] [:tx/hash hash]))]
+      (t [;; [:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+          {:db/id        [:tx/hash hash]
+           :tx/status    2
+           :tx/pendingAt (or pending-at (.now js/Date))}]))))
 (defn set-tx-packaged [{:keys [hash blockHash]}]
   (when-not (tx-end-state? hash)
     (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
@@ -1593,6 +1598,8 @@
                [?tx :tx/status ?status]
                [(>= ?status 0)]
                [(< ?status 5)]
+               [?address :address/value ?addrv]
+               [?tx-payload :txPayload/from ?addrv]
                [?tx :tx/hash ?hash]]
              [:tx/hash hash])]
       (doseq [hash replaced-none-finished-txs]
@@ -1845,16 +1852,22 @@
   (let [max-created (q '[:find (max ?created) .
                          :in $ ?addr
                          :where
+                         [?addr :address/value ?addrv]
                          [?addr :address/tx ?tx]
                          (not [?tx :tx/fromScan true])
                          [?tx :tx/status 5]
+                         [?tx :tx/txPayload ?payload]
+                         [?payload :txPayload/from ?addrv]
                          [?tx :tx/created ?created]]
                        addressId)
         latest-tx   (and max-created
                          (q '[:find ?tx .
                               :in $ ?addr ?created
                               :where
+                              [?addr :address/value ?addrv]
                               [?addr :address/tx ?tx]
+                              [?tx :tx/txPayload ?payload]
+                              [?payload :txPayload/from ?addrv]
                               [?tx :tx/created ?created]]
                             addressId max-created))]
     latest-tx))
@@ -1951,7 +1964,8 @@
 (defnc insert-external-tx [{:keys [tx payload receipt addressId extra]}]
   :let [dup-tx? (some? (p [:db/id] [:tx/hash (:hash tx)]))]
   dup-tx?
-  nil
+  (t [{:db/id      addressId
+       :address/tx [:tx/hash (:hash tx)]}])
   :let [new-tx (reduce-kv (fn [acc k v] (assoc acc (keyword :tx k) v)) {} tx)
         new-payload (reduce-kv (fn [acc k v] (assoc acc (keyword :txPayload k) v)) {} payload)
         new-extra (reduce-kv (fn [acc k v] (assoc acc (keyword :txExtra k) v)) {} extra)]
