@@ -4,6 +4,7 @@ import * as jsonRpcErr from '@fluent-wallet/json-rpc-error'
 import {addBreadcrumb} from '@fluent-wallet/sentry'
 
 function transformFakeDbRpcMethods(arg) {
+  console.log('arg', arg)
   const {req} = arg
   if (req.method.startsWith('walletdb_')) {
     const params = {
@@ -207,6 +208,7 @@ function formatEpochRef(arg) {
   return {...arg, req}
 }
 
+// 注意这里的中间件是array.触发 addMiddleware Array.isArray 逻辑
 export default defMiddleware(
   ({tx: {check, comp, pluck, map, filter, sideEffect}}) => [
     {
@@ -214,6 +216,7 @@ export default defMiddleware(
       ins: {
         req: {stream: '/validateAndFormatJsonRpc/node'},
       },
+      // transformFakeDbRpcMethods的作用是把查询数据库的method和参数替换为 wallet_dbQuery
       fn: comp(
         sideEffect(() =>
           addBreadcrumb({category: 'middleware-transformFakeDbRpcMethods'}),
@@ -235,6 +238,7 @@ export default defMiddleware(
         pluck('req'),
       ),
     },
+    // 验证权限 inpage & popup
     {
       id: 'validateExternalMethod',
       ins: {
@@ -261,6 +265,7 @@ export default defMiddleware(
         pluck('req'),
       ),
     },
+    // dapp请求的 加上 site key
     {
       id: 'formatRpcSiteAndApp',
       ins: {
@@ -288,6 +293,7 @@ export default defMiddleware(
         pluck('req'),
       ),
     },
+    // 给一些epoc方法加默认参数
     {
       id: 'formatEpochRef',
       ins: {

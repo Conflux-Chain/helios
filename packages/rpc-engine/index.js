@@ -24,13 +24,14 @@ const wrapRpcError =
 
 const request = (s, req = {}) => {
   const localChan = chan(1)
+  // 触发stream.next
   s.next.call(s, {...req, _c: localChan, __s: s})
   return localChan.read()
 }
 
 const defRpcEngineFactory = (db, options = {methods: []}) => {
   const {methods, isProd = true, isDev, isTest, isCI} = options
-  const rpcStore = new Object() // to store rpc defination
+  const rpcStore = new Object() // to store rpc definition
 
   methods.forEach(rpc => {
     const {NAME, permissions, main, schemas = {}, cache} = rpc
@@ -56,6 +57,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
       schemas,
       cache,
       main: async (...args) => main(...args),
+      // 把permissions深拷贝一份。并且给了一些默认值
       permissions: perms.format(permissions),
     }
   })
@@ -73,22 +75,29 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
     }),
   })
 
+  // partial(fn, ...args) = () => (...x) => fn(...args,...x)
+  // 这里相当于 (...rest) => request(s).bind(null,...rest)
   const sendNewRpcRequest = partial(request, s)
 
+  // init 图表
   const g = initGraph(
     {},
     {
       START: {
+        // 入参
         ins: {
           req: {
             stream: () => s,
           },
         },
+        // node 第一个形参 xform。所有的子监听器只能拿到transform以后的数据即 req
+        // 这里的目的是拿到上面那个stream 并输出出去。
         fn: node(pluck('req')),
       },
     },
   )
 
+  // 这种代码 写的有副作用 不太好。最好是写成纯函数。拿到外面去声明
   const processSpec = ({ins, fn, outs}) => ({
     ins: {
       ...ins,
@@ -100,7 +109,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
     fn,
     outs,
   })
-
+  // 职责链
   const addM = partial(addMiddleware, g, {
     debugLog: _debugLog,
     isProd,
@@ -112,9 +121,13 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
   addM(middlewares.validateJsonRpcFormatMiddleware)
   addM(middlewares.validateRpcDataMiddleware)
   addM(middlewares.injectRpcStoreMiddleware)
+  // 把需要调用的db的方法名 给 key db
   addM(middlewares.injectWalletDBMiddleware)
+  // fetch rpc数据。定义了一个f的方法。作为main的参数来调用
   addM(middlewares.fetchMiddleware)
+  //根据schemas验证input
   addM(middlewares.validateRpcParamsMiddleware)
+  // 执行main 方法。并触发上面的localChan.read()将返回值带回来
   addM(middlewares.callRpcMiddleware)
 
   return {request: sendNewRpcRequest}

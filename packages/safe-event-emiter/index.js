@@ -34,6 +34,9 @@ export default class SafeEventEmitter {
         cache: streamCacheLast,
         id: `topic-${eventType}`,
       })
+      // pluck 摘取 data 字段
+      // Transducer to transform incoming stream values.
+      // If given, all child subscriptions will only receive the transformed result values.
       this.#pb.subscribeTopic(eventType, s, {xform: pluck('data')})
       return {
         ...acc,

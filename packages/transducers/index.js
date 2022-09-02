@@ -14,7 +14,10 @@ import {
 
 export * from '@thi.ng/transducers'
 
-export const check = f => map(a => (f(a), a))
+export const check = f =>
+  map(a => {
+    return f(a), a
+  })
 export const keepTruthy = fn =>
   comp(
     sideEffect(x => {

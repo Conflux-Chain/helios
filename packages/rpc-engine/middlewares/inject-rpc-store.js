@@ -56,6 +56,7 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
           _rpcStack: req._rpcStack,
           _internal: true,
         }
+        // 调用前置method。同时将rpc stack 出栈。
         return sendNewRpcRequest(newReq).then(res => {
           req._rpcStack.pop()
           if (res.error) {
@@ -96,6 +97,9 @@ export default defMiddleware(
       map(({sendNewRpcRequest, req, rpcStore}) => ({
         ...req,
         ...rpcStore[req.method],
+        // permission.js getRpc 的作用验证 调用的方法是否是标准的rpc method 以及是否有权限调用。里面调用了下面的methods
+        // permission.methods 是有些方法必须调用前置的method（比如一些dapp 之类的）
+        // rpcs[methodName]() 来调用依赖的前置method。后面的中间件会用到 待补充
         rpcs: defRpcProxy({
           getRpcPermissions: getRpc,
           rpcStore,

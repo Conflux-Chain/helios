@@ -54,12 +54,18 @@ export const addMiddleware = (graph, config = {}, middleware) => {
   let newfn = fn
 
   if (!isProd && !isTest) {
+    // comp: 从右到左依次执行函数。前一个函数的返回值作为下一个函数的参数
     newfn = tx.comp(tx.sideEffect(comp.partial(addDebugLog, debugLog, id)), fn)
   }
 
   const spec = processSpec({ins, fn: newfn, outs})
   spec.fn = node(newfn)
   const n = addNode(graph, null, id, spec)
+  // Error handler, which will be called to handle any uncaught errors while executing ISubscriber.
+  // next or a transducer function attached to the Subscription wrapping this subscriber.
+  // The error handler must return true to indicate the error could be successfully handled / recovered from.If false, the subscription will go into State.
+  // ERROR and stops processing any further values(plus might trigger recursive teardown of the upstream dataflow topology).
+  // see: https://docs.thi.ng/umbrella/rstream/interfaces/ISubscription.html
   n.node.error = config?.errorHandler || n.node.error
 
   return n

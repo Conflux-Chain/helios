@@ -31,6 +31,7 @@ export const rpcStream = port => {
           },
         })
       })
+      port.postMessage(req)
       // 这里将监听到的request id 发送出去。
       // 如：setupProvider 中 这里就是 向bg 发送消息告诉 bg rq
       // bg 处理完成之后 会告诉 content-script.

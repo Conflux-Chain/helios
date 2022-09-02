@@ -39,6 +39,7 @@ export default defMiddleware(({tx: {map, comp, sideEffect}}) => ({
       if (method === 'eth_sendTransaction' && isArray(params))
         params[0] = preprocessTx(params[0])
       if (schemas.input) {
+        // 这里clojure 生成的js文件 可以问问yuxiao
         if (!validate(schemas.input, params, {netId: req.network.netId})) {
           throw Err.InvalidParams(
             `input params:\n${JSON.stringify(

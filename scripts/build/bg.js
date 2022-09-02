@@ -19,6 +19,7 @@ const config = {
     ...(isProd() ? [] : ['packages/background/src/index.dev.js']),
     'packages/background/src/index.js',
   ],
+  // 设置全局变量
   define: Object.entries(process.env).reduce(
     (acc, [k, v]) => {
       if (k.startsWith('SNOWPACK_PUBLIC_'))
@@ -34,6 +35,7 @@ const config = {
       'import.meta.env.CI': JSON.stringify(process.env.CI),
     },
   ),
+  // 在浏览器环境中 使用buffer
   inject: ['scripts/build/buffer-shim.js'],
   logLevel: isProd() ? 'warning' : 'error',
   bundle: true,
@@ -53,6 +55,7 @@ const config = {
           }),
         ]
       : []),
+    // 让esbuld的过程中 能使用 yarn
     pnpPlugin(),
     alias({
       jsbi: path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi-cjs.js'),
@@ -71,6 +74,8 @@ function buildIndexProd() {
 }
 
 function analyze() {
+  // 类似sourcemap 之类的东西
+  // bg-report.txt 一个打包分析 类似 webapck bundleanalyze
   return Promise.all([
     esb
       .build({...config, metafile: true})

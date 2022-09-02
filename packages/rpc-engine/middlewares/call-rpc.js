@@ -22,6 +22,7 @@ export default defMiddleware(
       ins: {
         req: {stream: '/validateRpcParams/node'},
       },
+      // 验证Dapp方法的权限
       fn: comp(
         sideEffect(() => addBreadcrumb({category: 'middleware-beforeCallRpc'})),
         map(async ({rpcStore, req, db}) => {
@@ -33,6 +34,7 @@ export default defMiddleware(
             method.permissions.scope &&
             !method.permissions.locked
           ) {
+            // wallet_validateAppPermissions 里的参数app.perms声明了app权限
             const isValid = await req.rpcs
               .wallet_validateAppPermissions({
                 permissions: rpcStore[req.method].permissions.scope,
@@ -47,7 +49,7 @@ export default defMiddleware(
               throw err
             }
           }
-
+          // 如果在locked 情况下调用不能调用的方法。直接跳unlock页面
           // guard inpage methods when wallet locked
           if (
             // called from inpage

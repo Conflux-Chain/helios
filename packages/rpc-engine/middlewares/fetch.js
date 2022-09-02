@@ -18,6 +18,7 @@ const s = stream({
 
 const {get: getCache, set: setCache} = initCache()
 
+// http 请求调用rpc 方法
 function fetch({id, method, params, jsonrpc, timeout, network: {endpoint}}) {
   return fetcher.post(endpoint, {
     timeout,
@@ -37,6 +38,7 @@ export default defMiddleware(
         sideEffect(() => addBreadcrumb({category: 'middleware-injectFetchFn'})),
         map(({req}) => ({
           ...req,
+          // f执行fetch方法,供main 调用
           f: (...args) => {
             let params
             let overrides = {}
@@ -49,10 +51,13 @@ export default defMiddleware(
             }
 
             return new Promise((resolve, reject) => {
+              // about csp see https://zhuanlan.zhihu.com/p/346048358
               const c = chan(1)
               c.onerror = reject
+              // 这里当c 被write 的时候 才会resolve
               c.read().then(resolve)
 
+              // 将参数传递给s。那么在 节点beforeFetch就可以拿到方法参数了
               s.next({
                 ...req,
                 params,
@@ -65,7 +70,7 @@ export default defMiddleware(
         })),
       ),
     },
-
+    // 看有没有缓存数据和结果
     {
       id: 'beforeFetch',
       ins: {
@@ -90,13 +95,16 @@ export default defMiddleware(
         return {...req, network}
       }),
     },
+    // 异步请求拿数据
     {
       id: 'fetchRpc',
       ins: {
         req: {stream: '/beforeFetch/node'},
       },
       fn: comp(
-        filter(({req}) => Boolean(req)), // filter early resolved request
+        filter(({req}) => {
+          return Boolean(req)
+        }), // filter early resolved request
         map(({req}) =>
           fetch(req)
             .then(res => res.json())
@@ -115,6 +123,9 @@ export default defMiddleware(
       id: 'afterFetch',
       ins: {
         ctx: {
+          // r
+          // Reference another node indirectly.
+          // The passed in resolve function can be used to lookup other nodes, with the same logic as above.E.g.the following spec looks up the main output of node "abc" and adds a transformed subscription, which is then used as input for current node.
           stream: r =>
             r('/fetchRpc/node').subscribe(
               resolve({
@@ -128,7 +139,9 @@ export default defMiddleware(
       },
       fn: map(({ctx: {res, req}, rpcStore}) => {
         if (!res) return
+        //缓存呐
         setCache({req, res, conf: rpcStore[req.method].cache})
+        // 触发上面的 c.read().resolve
         req.resC.write(res)
       }),
     },
