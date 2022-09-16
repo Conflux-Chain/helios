@@ -5,6 +5,8 @@
 (defonce psession (atom nil))
 
 (defn start
+  ;; metadata 代表buld的某个阶段 见6.3
+  ;; :configure means :target specific configuration
   {:shadow.build/stage :configure}
   [build-state & _]
   ;; (def x build-state)

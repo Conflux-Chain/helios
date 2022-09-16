@@ -8,6 +8,7 @@ require('./before_all.js')
 const {resolve} = require('path')
 const buildContentScript = require('./build-content-script.js')
 const buildBg = require('./build/bg.js')
+
 const buildPopup = require('./build/popup.js')
 require(resolve(__dirname, '../packages/background/snowpack.config.cjs'))
 require(resolve(__dirname, '../packages/popup/snowpack.config.cjs'))

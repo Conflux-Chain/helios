@@ -291,7 +291,9 @@
   ([js-schema persistfn data-to-restore]
    (let [js-schema     (j->c js-schema)
          db-to-restore (when data-to-restore (cljs.reader/read-string data-to-restore))
+        ;; 把scheam.js  生成clojure的scheam
          schema-rst    (js-schema->schema js-schema)
+        ;; 把缓存的数据库（storage中的那些）成一个atom.如果没有数据 那就创建一个空的atom.
          db-conn       (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn schema-rst))
          db-conn       (cfxjs.db.migrate/run db-conn)
          tfn           (fn [txs] (d/transact! db-conn txs))
@@ -318,7 +320,7 @@
              arg (filter map? arg)
              arg (map #(parse-js-transact-arg % (random-tmp-id)) arg)]
          (clj->js (t arg))))
-
+     (print db-to-restore)
      ;; (defn custom-pr-impl [obj writer opts]
      ;;   (-write writer (str "TYPE->" (type->str obj)))
      ;;   (pr-writer-impl obj writer opts))

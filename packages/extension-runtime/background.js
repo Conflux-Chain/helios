@@ -25,7 +25,7 @@ const inpageStream = stream({
   cache: false,
 })
 // inpageStream.subscribe(trace('inpage'))
-
+// bg 收到来自popup 或者 content-script message的时候的处理。
 function onConnect(port) {
   const post = msg => {
     if (msg?.result === null) msg.result = '__null__'

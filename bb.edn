@@ -1,3 +1,4 @@
+;; babshka的配置文件
 {:paths ["scripts"]
  :deps  {medley/medley {:mvn/version "1.4.0"}}
  :tasks

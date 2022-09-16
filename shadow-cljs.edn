@@ -1,17 +1,23 @@
 ;; shadow-cljs configuration
+;; :aliases 通过指令的方式选择性的安装某些依赖 参考文档5.3
 {:deps     {:aliases [:cljs]}
+;;  5.4.5 就是单纯的起一个web 服务.根目录是pacakges/index 这里的作用就是用来debug
  :dev-http {8000 ["packages"]}
 
  :build-defaults
+;;开发的一些工具：preloads(6.2.2)
+;; 后面跟的是自己写的开发工具 可以全局搜索 ns cljs-devtool  ns x.portal.setup
  {:devtools    {:preloads        [cljs-devtool x.portal.setup]
                 :console-support false
                 :devtools-url    "http://localhost:9630"}
+  ;; 当build 的时候记录查询数据库的端口号
   :build-hooks [(hooks.portal/start)]}
 
  :builds
  {:spec {:target           :esm
          :output-dir       "packages/spec/src"
          :js-options       {:js-package-dirs ["node_modules" "packages/spec/node_modules"]}
+        ;;  closure-defines 当是dev的时候 改变了 shadow.cljs.devtools.client.env/devtools-url的值
          :dev              {:closure-defines {shadow.cljs.devtools.client.env/devtools-url "http://localhost:9630"}}
          :compiler-options {:cross-chunk-method-motion false
                             :infer-externs             :auto}
