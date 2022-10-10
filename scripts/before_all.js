@@ -18,24 +18,21 @@ mustacheRender(
   {
     version: version.replace('-rc', ''),
     versionName: version,
-    contentSecurityPolicy: isDev()
-      ? `
-"content_security_policy": "
-object-src 'self' 'unsafe-eval' http://localhost:18001 http://localhost:18002 http://localhost:18003;
-script-src 'self' 'unsafe-eval' http://localhost:18001 http://localhost:18002 http://localhost:18003;
-connect-src * data: blob: filesystem:;
-style-src 'self' data: chrome-extension-resource: 'unsafe-inline';
-frame-src 'self' http://localhost:* data: chrome-extension-resource:;
-font-src 'self' data: chrome-extension-resource:;
-media-src * data: blob: filesystem:;",`.replaceAll('\n', ' ')
+    extensionPagesContentSecurityPolicy: isDev()
+      ? `"object-src 'self' http://localhost:18001 http://localhost:18002 http://localhost:18003;
+      script-src 'self' http://localhost:18001 http://localhost:18002 http://localhost:18003;
+      connect-src * data: blob: filesystem:;
+      style-src 'self' data: chrome-extension-resource: 'unsafe-inline';
+      frame-src 'self' http://localhost:* data: chrome-extension-resource:;
+      font-src 'self' data: chrome-extension-resource:;
+      media-src * data: blob: filesystem:;"`.replaceAll('\n', ' ')
       : '',
     name: isDev() ? 'AFluent' : '__MSG_extensionNAME__',
-    backgroundScripts: isDev()
-      ? '"reload.js","background.dev.js"'
-      : '"background/dist/index.prod.js"',
+    serviceWorkerScripts: '"background-script.js"',
     contentScripts: '"content-script.js"',
     webResources: '"content-script.js","inpage.js"',
     popupHTML: isDev() ? 'popup.html' : 'popup/popup.html',
-    permissions: isDev() ? '"<all_urls>",\n  "tabs",\n' : '',
+    permissions: isDev() ? '"tabs"' : '',
+    host_permissions: isDev() ? '"<all_urls>"' : '',
   },
 )

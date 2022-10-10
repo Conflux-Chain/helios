@@ -16,7 +16,8 @@ const finalhandler = require('finalhandler')
 
 const config = {
   entryPoints: [
-    ...(isProd() ? [] : ['packages/background/src/index.dev.js']),
+    // document里push background 脚本
+    // ...(isProd() ? [] : ['packages/background/src/index.dev.js']),
     'packages/background/src/index.js',
   ],
   define: Object.entries(process.env).reduce(
@@ -44,7 +45,10 @@ const config = {
   minify: isProd(),
   sourcemap: true,
   format: 'esm',
-  outdir: 'packages/browser-extension/build/background/dist',
+  outdir: isProd()
+    ? 'packages/browser-extension/build'
+    : 'packages/browser-extension',
+  entryNames: 'background-script',
   plugins: [
     ...(isProd()
       ? [

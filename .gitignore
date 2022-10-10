@@ -235,6 +235,7 @@ $RECYCLE.BIN/
 /packages/popup/public/popup.html
 /packages/popup/public/notification.html
 /packages/popup/public/page.html
+/packages/popup/public/page.html
 .env.*.local
 .env.local
 
@@ -246,7 +247,7 @@ $RECYCLE.BIN/
 /.shadow-cljs/
 /packages/browser-extension/content-script.js
 /packages/browser-extension/reload.js
-/packages/browser-extension/inpage.js
+/packages/browser-extension/background-script*
 /.lsp/
 
 .vscode/*

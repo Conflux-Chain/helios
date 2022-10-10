@@ -7,6 +7,6 @@ if (!document.head) {
 }
 
 const background = document.createElement('script')
-background.src = 'background/dist/index.js'
+background.src = 'background-script.js'
 background.type = 'module'
 document.head.appendChild(background)

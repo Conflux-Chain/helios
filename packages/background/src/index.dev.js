@@ -16,6 +16,6 @@ if (!document.body) {
 // document.head.appendChild(hmrClient)
 
 const background = document.createElement('script')
-background.src = 'http://localhost:18003/build/background/dist/index.js'
+background.src = 'http://localhost:18003/background-script.js'
 background.type = 'module'
 document.body.appendChild(background)

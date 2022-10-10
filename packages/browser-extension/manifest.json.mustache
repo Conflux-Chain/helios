@@ -3,7 +3,7 @@
   "short_name": "{{{ name }}}",
   "version": "{{{ version }}}",
   "version_name": "{{{ versionName }}}",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "author": "Conflux Network",
   "homepage_url": "https://github.com/Conflux-Chain/helios#readme",
   "description": "__MSG_extensionDescription__",
@@ -45,10 +45,10 @@
   },
   "default_locale": "en",
   "background": {
-    "scripts": [{{{backgroundScripts}}}],
-    "persistent": true
+    "service_worker": {{{serviceWorkerScripts}}},
+    "type": "module"
   },
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "images/icon-16.png",
       "19": "images/icon-19.png",
@@ -69,19 +69,27 @@
       "all_frames": true
     }
   ],
-  {{{contentSecurityPolicy}}}
+  "content_security_policy": {
+    "extension_pages": {{{extensionPagesContentSecurityPolicy}}}
+  },
   "permissions": [
     "storage",
     "unlimitedStorage",
     "clipboardWrite",
-    "http://localhost:12537/",
+    "activeTab",
+    "notifications",
     {{{permissions}}}
+  ],
+  "host_permissions": [
+    "http://localhost:12537/",
     "https://confluxscan.net/*",
     "https://*.confluxscan.net/*",
-    "activeTab",
-    "notifications"
+    {{{host_permissions}}}
   ],
-  "web_accessible_resources": [{{{webResources}}}],
+  "web_accessible_resources": [{
+    "resources":[{{{webResources}}}],
+     "matches": ["<all_urls>"]
+  }],
   "externally_connectable": {
     "matches": [
       "https://confluxscan.net/*",
