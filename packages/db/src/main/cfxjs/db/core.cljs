@@ -295,6 +295,7 @@
          schema-rst    (js-schema->schema js-schema)
         ;; 把缓存的数据库（storage中的那些）成一个atom.如果没有数据 那就创建一个空的atom.
          db-conn       (if db-to-restore (d/conn-from-db db-to-restore) (d/create-conn schema-rst))
+        ;;  如果数据库的scheam发生变化则处理一下旧的数据。避免脏数据
          db-conn       (cfxjs.db.migrate/run db-conn)
          tfn           (fn [txs] (d/transact! db-conn txs))
          qfn           (fn [query & args] (apply d/q query (d/db db-conn) args))
@@ -307,6 +308,7 @@
          ;; rst           (assoc rst :deleteById delete-by-id)
          ;; rst           (assoc rst :updateById update-by-id)
          rst           (assoc rst :tmpid random-tmp-id)
+        ;; 把一堆queries.cljs的方法放到了rst里
          rst           (apply-queries rst db-conn qfn efn tfn ffn pfn)]
      (def conn db-conn)
      (def t tfn)
@@ -328,8 +330,9 @@
      ;; (defn custom-pr-str [& objs]
      ;;   (pr-str-with-opts objs
      ;;                     (assoc (pr-opts) :alt-impl custom-pr-impl)))
-
-     (when persistfn
+    ;;  一个监听器。当调用d/transcat!事物改变数据库之后调用回调函数
+    ;;  这里当改变数据库拥有persist属性的datom是会存储到browser.storage
+     (when persistfn 
        (d/listen! conn "persist" (fn [_]
                                    (->> conn
                                         d/db
@@ -391,3 +394,4 @@
        :where [?v :dbmeta/version]])
   (t [{:db/id :dbmeta :dbmeta/version 1}])
   (d/schema (d/db conn)))
+

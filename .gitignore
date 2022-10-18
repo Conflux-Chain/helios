@@ -269,3 +269,4 @@ cljs-runtime
 /popup-report.txt
 
 .calva/
+out/

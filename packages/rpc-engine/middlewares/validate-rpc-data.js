@@ -4,7 +4,6 @@ import * as jsonRpcErr from '@fluent-wallet/json-rpc-error'
 import {addBreadcrumb} from '@fluent-wallet/sentry'
 
 function transformFakeDbRpcMethods(arg) {
-  console.log('arg', arg)
   const {req} = arg
   if (req.method.startsWith('walletdb_')) {
     const params = {

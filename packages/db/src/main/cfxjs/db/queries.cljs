@@ -2284,6 +2284,9 @@
 (defn apply-queries [rst conn qfn entity tfn ffn pfn]
   (defn pm [x eids]
     (db/pull-many @conn x eids))
+  ;; 这里因为文件最开始 用declare 声明了。相当于把那些全局变量都在这里赋值了。
+  ;; 这个方法在core.create-db里调用了。
+  ;; 一些数据库用到的写法。奇奇怪怪。
   (def p pfn)
   (def q qfn)
   (def e (fn [model eid] (entity model (model->attr-keys model) eid)))
