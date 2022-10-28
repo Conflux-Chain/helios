@@ -302,6 +302,7 @@
          pfn           (fn [selector eid] (d/pull (d/db db-conn) selector eid))
          efn           (fn [model attr-keys & args] (apply de/entity (d/db db-conn) model attr-keys args))
          ffn           (fn [f] (d/filter (d/db db-conn) f))
+        ;;  js-query-model-structure->query-fn 根据schema以及datascript 提供的一些api 如de/touch等。封装一些getEntinyByattribute 方法。如getValutbyId、getValutbyData等。
          rst           (apply merge (map js-query-model-structure->query-fn (js-schema->query-structure js-schema)))
          rst           (assoc rst :_db db-conn)
          ;; rst           (assoc rst :getById (comp clj->js get-by-id))

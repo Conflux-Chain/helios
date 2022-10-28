@@ -234,7 +234,7 @@ const schema = {
     value: {doc: 'balance value of one address/token tuple in hex'},
   },
 
-  // ## utils
+  // ## utils ?
   unlockReq: {
     req: {persist: false},
   },

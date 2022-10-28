@@ -402,6 +402,7 @@ export const main = async arg => {
   vault.data = await encrypt(password, vault.data)
 
   const vaultId = createVault(vault)
+  // 如果是第一次创建账户的话需要调用 wallet_unlock
   if (isFirstGroup) await wallet_unlock({password, waitSideEffects: true})
   const selectedAccountSetChan = chan(1)
   const firstAccountCreatedChan = chan(1)

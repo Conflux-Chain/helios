@@ -11,7 +11,6 @@
    [taoensso.encore :as enc]))
 
 (declare q p pm e t fdb)
-
 (defn j->c [a]
   (cfxjs.spec.cljs/js->clj a :keywordize-keys true))
 
@@ -59,7 +58,8 @@
                       (= y 0)                  '[*]
                       :else                    (throw (js/Error. (str "Invalid pull patter g: " x ":" y))))]
      [k v])))
-
+;; 全名是js pull pattern -> dataomic pull pattern
+;; 把grahpql 格式的 g 改成 dataomic pull 的格式
 (defn jsp->p [jsp]
   (if (seq jsp)
     (let [vs (vals jsp)]
@@ -71,7 +71,7 @@
         :else
         (throw (js/Error. (str "Invalid pull pattern" jsp)))))
     [:db/id]))
-
+;; 格式化数据库的属性
 (defn prst->js [prst]
   (postwalk
    (fn [x]
@@ -108,6 +108,7 @@
       clj->js
       js/console.log))
 
+;; 这个方法其实就是查询一下地址在不在数据库里。如果在的话返回数据库里地址的eid
 (defn new-address-tx
   "Generate a tx to create address,
   replace eid with eid or found addr dbid if eid is tmpid
@@ -119,6 +120,10 @@
         addr     (enc/assoc-when addr :value value)
         eid      (if (pos-int? eid)
                    eid
+                  ;; d/pull的三个参数可以传 lookup ref和ident代替entnyid
+                  ;; 这里使用的是 lookup ref。lookup ref 文档见：https://docs.datomic.com/on-prem/schema/identity.html#unique-identities
+                  ;; 根据db-scheam address.id是tuples: ['address/network', 'address/value']
+                  ;; 所以这里是 查询当前network下的address是否在数据库中已经存储了。如果有直接返回 eid
                    (or
                     (try (:db/id (p [:db/id] [:address/id [network value]]))
                          (catch js/Error _ eid))
@@ -398,6 +403,7 @@
   (let [g            (and g {:accountGroup g})
         post-process (if (seq g) identity #(get % :db/id))]
     (prst->js
+    ;;  如果传入了gropid 就返回enty id.
      (cond
        groupId
        (when (q '[:find ?g .
@@ -406,6 +412,7 @@
                 groupId)
          (post-process (p (jsp->p g) groupId)))
        :else
+      ;;  query-initial 就是datlog querey 语句
        (let [query-initial (cond-> '{:find  [[?g ...]]
                                      :in    [$]
                                      :where [[?g :accountGroup/vault _]]
@@ -1178,6 +1185,8 @@
              [?account :account/address ?addr]
              [(!= ?account ?acc)]]
            groupId)
+        ;; some #{} coll的写法用来返回 coll 中有的key见文档 https://clojuredocs.org/clojure.core/some 
+        ;; the first member of the collection that appears in the set is returned
         addrs-to-delete (filter #(not (some #{%} addrs-has-accs-not-in-group)) addrs-in-group)
         txs             (mapv #(vector :db.fn/retractEntity %) addrs-to-delete)
         txs             (conj txs [:db.fn/retractEntity groupId])]
@@ -2282,11 +2291,11 @@
               :getAccountGroupByVaultType         get-account-group-by-vault-type})
 
 (defn apply-queries [rst conn qfn entity tfn ffn pfn]
-  (defn pm [x eids]
-    (db/pull-many @conn x eids))
   ;; 这里因为文件最开始 用declare 声明了。相当于把那些全局变量都在这里赋值了。
   ;; 这个方法在core.create-db里调用了。
   ;; 一些数据库用到的写法。奇奇怪怪。
+  (defn pm [x eids]
+    (db/pull-many @conn x eids))
   (def p pfn)
   (def q qfn)
   (def e (fn [model eid] (entity model (model->attr-keys model) eid)))

@@ -55,7 +55,7 @@ export const main = async ({
     )
 
   const pwd = getPassword()
-
+  //导入的明文的助记词、公钥、私钥等。
   const decrypted = vault.ddata || (await decrypt(pwd, vault.data))
   if (vault.type === 'pub') {
     const addrTx = newAddressTx({

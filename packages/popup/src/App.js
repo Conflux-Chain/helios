@@ -317,7 +317,6 @@ function App() {
     zeroGroup: isZeroGroup,
     pendingAuthReq,
   } = useDataForPopup()
-
   // TODO add this when make sure pendingAuthReq return right
   // useEffect(() => {
   //   if (getPageType() === 'popup' && pendingAuthReq?.length > 0) {
