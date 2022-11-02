@@ -155,7 +155,6 @@ export const initBG = async ({
       1000 * 60 * 60,
     )
   }
-
   // ## Dev/Test
   if (!IS_TEST_MODE) {
     if (IS_DEV_MODE) {
