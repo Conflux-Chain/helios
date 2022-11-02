@@ -25,10 +25,7 @@ jobs:
           fetch-depth: 0 # https://yarnpkg.com/features/release-workflow/#commit-history
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
-        env:
-          FORCE_COLOR: 0
         with:
-          cache: "yarn"
           node-version: ${{ matrix.node-version }}
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
