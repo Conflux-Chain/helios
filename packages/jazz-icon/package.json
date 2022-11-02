@@ -2,7 +2,6 @@
   "name": "@fluent-wallet/jazz-icon",
   "type": "module",
   "version": "0.0.1",
-  "private": true,
   "main": "index.js",
   "license": "ISC",
   "dependencies": {

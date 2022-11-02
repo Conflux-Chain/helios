@@ -632,7 +632,9 @@ async function walletInitialized() {
               symbol: 'CFX',
               decimals: 18,
             },
-            rpcUrls: ['https://evmtestnet.confluxrpc.com'],
+            rpcUrls: [
+              'https://evmtestnet.confluxrpc.com/1BvViQet4km8KPALkc6Pa9',
+            ],
             blockExplorerUrls: ['https://evmtestnet.confluxscan.io'],
           },
         ],
