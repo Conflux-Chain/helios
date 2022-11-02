@@ -25,13 +25,14 @@ jobs:
           fetch-depth: 0 # https://yarnpkg.com/features/release-workflow/#commit-history
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
+        env:
+          FORCE_COLOR: 0
         with:
           cache: "yarn"
           node-version: ${{ matrix.node-version }}
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-        continue-on-error: true
       - uses: actions/cache@v3
         id: yarn-and-maven-cache # use this to check for `cache-hit` (`steps.yarn-and-maven-cache.outputs.cache-hit != 'true'`)
         with:
