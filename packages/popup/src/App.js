@@ -343,7 +343,7 @@ function App() {
   ) {
     return <PageLoading />
   }
-
+  console.log('hello')
   return (
     <Router>
       <ErrorBoundary
