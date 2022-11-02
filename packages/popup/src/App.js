@@ -259,6 +259,7 @@ const AppRoutes = withRouter(
       location.pathname === ERROR ||
       history.length === 1
     const {i18n} = useTranslation()
+    console.log(fullSwitch)
 
     return (
       <div
