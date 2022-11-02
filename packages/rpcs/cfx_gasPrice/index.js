@@ -1,5 +1,5 @@
 import {optParam} from '@fluent-wallet/spec'
-import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
+import {CFX_MAINNET_NAME, CFX_MAINNET_RPC_ENDPOINT} from '@fluent-wallet/consts'
 
 export const NAME = 'cfx_gasPrice'
 
@@ -20,7 +20,7 @@ export const cache = {
 async function gasStationFastest(gasPrice) {
   gasPrice = gasPrice || '0x0'
   if (typeof window?.fetch === 'function') {
-    const res = await fetch('https://main.confluxrpc.com/', {
+    const res = await fetch(`${CFX_MAINNET_RPC_ENDPOINT}/`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

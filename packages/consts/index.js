@@ -25,8 +25,9 @@ export const ADDRESS_TYPES = ['user', 'contract', 'builtin', 'null']
 
 // * network setting
 export const DEFAULT_CURRENCY_DECIMALS = 18
+export const CONFLUX_API_LIMIT_KEY = '1BvViQet4km8KPALkc6Pa9'
 
-export const CFX_MAINNET_RPC_ENDPOINT = 'https://portal-main.confluxrpc.com'
+export const CFX_MAINNET_RPC_ENDPOINT = `https://main.confluxrpc.com/${CONFLUX_API_LIMIT_KEY}`
 export const CFX_MAINNET_NAME = 'Conflux Mainnet'
 export const CFX_MAINNET_CHAINID = '0x405'
 export const CFX_MAINNET_NETID = 1029
@@ -34,7 +35,7 @@ export const CFX_MAINNET_CURRENCY_SYMBOL = 'CFX'
 export const CFX_MAINNET_CURRENCY_NAME = 'Conflux'
 export const CFX_MAINNET_EXPLORER_URL = 'https://confluxscan.io'
 
-export const CFX_ESPACE_MAINNET_RPC_ENDPOINT = 'https://evm.confluxrpc.com'
+export const CFX_ESPACE_MAINNET_RPC_ENDPOINT = `https://evm.confluxrpc.com/${CONFLUX_API_LIMIT_KEY}`
 export const CFX_ESPACE_MAINNET_NAME = 'Conflux eSpace'
 export const CFX_ESPACE_MAINNET_CHAINID = '0x406'
 export const CFX_ESPACE_MAINNET_NETID = 1030
@@ -42,7 +43,7 @@ export const CFX_ESPACE_MAINNET_CURRENCY_SYMBOL = 'CFX'
 export const CFX_ESPACE_MAINNET_CURRENCY_NAME = 'Conflux'
 export const CFX_ESPACE_MAINNET_EXPLORER_URL = 'https://evm.confluxscan.net'
 
-export const CFX_TESTNET_RPC_ENDPOINT = 'https://portal-test.confluxrpc.com'
+export const CFX_TESTNET_RPC_ENDPOINT = `https://test.confluxrpc.com/${CONFLUX_API_LIMIT_KEY}`
 export const CFX_TESTNET_NAME = 'Conflux Testnet'
 export const CFX_TESTNET_CHAINID = '0x1'
 export const CFX_TESTNET_NETID = 1
@@ -50,8 +51,7 @@ export const CFX_TESTNET_CURRENCY_SYMBOL = 'CFX'
 export const CFX_TESTNET_CURRENCY_NAME = 'Conflux'
 export const CFX_TESTNET_EXPLORER_URL = 'https://testnet.confluxscan.io'
 
-export const CFX_ESPACE_TESTNET_RPC_ENDPOINT =
-  'https://evmtestnet.confluxrpc.com'
+export const CFX_ESPACE_TESTNET_RPC_ENDPOINT = `https://evmtestnet.confluxrpc.com/${CONFLUX_API_LIMIT_KEY}`
 export const CFX_ESPACE_TESTNET_NAME = 'eSpace Testnet'
 export const CFX_ESPACE_TESTNET_CHAINID = '0x47'
 export const CFX_ESPACE_TESTNET_NETID = 71
