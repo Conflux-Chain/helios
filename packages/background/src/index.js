@@ -1,11 +1,7 @@
 // # imports
 import 'regenerator-runtime/runtime'
 
-import {
-  IS_PROD_MODE,
-  IS_DEV_MODE,
-  IS_TEST_MODE,
-} from '@fluent-wallet/inner-utils'
+import {IS_PROD_MODE, IS_TEST_MODE} from '@fluent-wallet/inner-utils'
 import {EXT_STORAGE} from '@fluent-wallet/consts'
 
 import {defRpcEngine} from '@fluent-wallet/rpc-engine'
@@ -156,19 +152,19 @@ export const initBG = async ({
     )
   }
   // ## Dev/Test
-  if (!IS_TEST_MODE) {
-    if (IS_DEV_MODE) {
-      // ### load dev script on ext startup
-      if (import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
-        try {
-          const localDevModule = await import(
-            import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH
-          )
-          await localDevModule.run({request, db})
-        } catch (err) {
-          console.log('local dev error', err)
-        }
-      }
-    }
-  }
+  // if (!IS_TEST_MODE) {
+  //   if (IS_DEV_MODE) {
+  //     // ### load dev script on ext startup
+  //     if (import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
+  //       try {
+  //         const localDevModule = await import(
+  //           import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH
+  //         )
+  //         await localDevModule.run({request, db})
+  //       } catch (err) {
+  //         console.log('local dev error', err)
+  //       }
+  //     }
+  //   }
+  // }
 })()
