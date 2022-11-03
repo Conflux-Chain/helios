@@ -69,19 +69,43 @@ export const ETH_MAINNET_CURRENCY_SYMBOL = 'ETH'
 export const ETH_MAINNET_CURRENCY_NAME = 'Ether'
 export const ETH_MAINNET_EXPLORER_URL = 'https://etherscan.io'
 
+export const ETH_ROPSTEN_RPC_ENDPOINT = `https://ropsten.infura.io/v3/${ETH_API_LIMIT_KEY}`
+export const ETH_ROPSTEN_NAME = 'Ethereum Ropsten'
+export const ETH_ROPSTEN_CHAINID = '0x3'
+export const ETH_ROPSTEN_NETID = 3
+export const ETH_ROPSTEN_CURRENCY_SYMBOL = 'ETH'
+export const ETH_ROPSTEN_CURRENCY_NAME = 'Ether'
+export const ETH_ROPSTEN_EXPLORER_URL = 'https://ropsten.etherscan.io'
+
+export const ETH_RINKEBY_RPC_ENDPOINT = `https://rinkeby.infura.io/v3/${ETH_API_LIMIT_KEY}`
+export const ETH_RINKEBY_NAME = 'Ethereum Rinkeby'
+export const ETH_RINKEBY_CHAINID = '0x4'
+export const ETH_RINKEBY_NETID = 4
+export const ETH_RINKEBY_CURRENCY_SYMBOL = 'ETH'
+export const ETH_RINKEBY_CURRENCY_NAME = 'Ether'
+export const ETH_RINKEBY_EXPLORER_URL = 'https://rinkeby.etherscan.io'
+
+export const ETH_KOVAN_RPC_ENDPOINT = `https://kovan.infura.io/v3/${ETH_API_LIMIT_KEY}`
+export const ETH_KOVAN_NAME = 'Ethereum Kovan'
+export const ETH_KOVAN_CHAINID = '0x2a'
+export const ETH_KOVAN_NETID = 42
+export const ETH_KOVAN_CURRENCY_SYMBOL = 'ETH'
+export const ETH_KOVAN_CURRENCY_NAME = 'Ether'
+export const ETH_KOVAN_EXPLORER_URL = 'https://kovan.etherscan.io'
+
 export const ETH_GOERLI_RPC_ENDPOINT = `https://goerli.infura.io/v3/${ETH_API_LIMIT_KEY}`
 export const ETH_GOERLI_NAME = 'Ethereum Goerli'
 export const ETH_GOERLI_CHAINID = '0x5'
 export const ETH_GOERLI_NETID = 5
 export const ETH_GOERLI_CURRENCY_SYMBOL = 'ETH'
-export const ETH_GOERLI_CURRENCY_NAME = 'Ether'
+export const ETH_GOERLI_CURRENCY_NAME = 'GoerliETH'
 export const ETH_GOERLI_EXPLORER_URL = 'https://goerli.etherscan.io'
 
 export const ETH_SEPOLIA_RPC_ENDPOINT = `https://sepolia.infura.io/v3/${ETH_API_LIMIT_KEY}`
 export const ETH_SEPOLIA_NAME = 'Ethereum Sepolia'
 export const ETH_SEPOLIA_CHAINID = '0xaa36a7'
 export const ETH_SEPOLIA_NETID = 11155111
-export const ETH_SEPOLIA_CURRENCY_SYMBOL = 'ETH'
+export const ETH_SEPOLIA_CURRENCY_SYMBOL = 'SepoliaETH'
 export const ETH_SEPOLIA_CURRENCY_NAME = 'Ether'
 export const ETH_SEPOLIA_EXPLORER_URL = 'https://sepolia.etherscan.io'
 

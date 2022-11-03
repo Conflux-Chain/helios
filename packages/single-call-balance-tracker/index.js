@@ -61,9 +61,9 @@ export const NetworkMetaData = {
     71: '0x74191f6b288dff3db43b34d3637842c8146e2103', // cfx espace testnet
     1030: '0x74191f6b288dff3db43b34d3637842c8146e2103', // cfx espace
     1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39', // ethereum
-    // 3: '0x8D9708f3F514206486D7E988533f770a16d074a7', // ropsten
-    // 4: '0x3183B673f4816C94BeF53958BaF93C671B7F8Cf2', // rinkeby
-    // 42: '0x55ABBa8d669D60A10c104CC493ec5ef389EC92bb', // kovan
+    3: '0x8D9708f3F514206486D7E988533f770a16d074a7', // ropsten
+    4: '0x3183B673f4816C94BeF53958BaF93C671B7F8Cf2', // rinkeby
+    42: '0x55ABBa8d669D60A10c104CC493ec5ef389EC92bb', // kovan
     56: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // bsc
     97: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // bsc test
     137: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // polygon
