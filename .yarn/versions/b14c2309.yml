@@ -3,6 +3,7 @@ releases:
   "@fluent-wallet/consts": patch
   "@fluent-wallet/db": patch
   "@fluent-wallet/jazz-icon": patch
+  "@fluent-wallet/wallet_after-unlock": patch
   helios-background: patch
 
 declined:
@@ -20,7 +21,6 @@ declined:
   - "@fluent-wallet/wallet_export-account-group"
   - "@fluent-wallet/wallet_refetch-tx-list"
   - "@fluent-wallet/wallet_send-transaction"
-  - "@fluent-wallet/single-call-balance-tracker"
   - "@fluent-wallet/spec"
   - "@fluent-wallet/tx-history-checker"
   - "@fluent-wallet/shorten-address"
