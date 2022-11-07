@@ -86,17 +86,24 @@ async function fillMissingAccountAddress({
         return acc
       }
     } else if (lackAddr(account)) {
+      const _networks = networks.filter(n =>
+        account.some(({address}) =>
+          address.every(({network: _n}) => _n.chainId !== n.chainId),
+        ),
+      )
       // rest account group, lack addrs
       return acc.concat(
-        networks.map(network => {
-          wallet_createAddress({accountGroupId: eid, networkId: network.eid})
+        _networks.map(network => {
+          return wallet_createAddress({
+            accountGroupId: eid,
+            networkId: network.eid,
+          })
         }),
       )
     } else {
       return acc
     }
   }, [])
-
   return Promise.all(promises)
 }
 
