@@ -267,3 +267,7 @@ cljs-runtime
 /.cpcache/
 /bg-report.txt
 /popup-report.txt
+
+# calva
+out/
+.calva/
