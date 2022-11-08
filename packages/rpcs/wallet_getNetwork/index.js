@@ -56,5 +56,28 @@ export const main = ({
   if (builtinDefined) query.builtin = builtin
   if (networkIdDefined) query.networkId = networkId
   if (chainId) query.chainId = chainId
-  return getNetwork(query)
+
+  // network order:  mainnet -> testnet -> custom
+  let ret = getNetwork(query)
+  if (ret?.length > 0) {
+    ret = ret.sort((a, b) => {
+      if (a.isMainnet && b.isMainnet) {
+        return 0
+      }
+      if (a.isMainnet && !b.isMainnet) {
+        return -1
+      }
+      if (!a.isMainnet && b.isMainnet) {
+        return 1
+      }
+      if (!a.isCustom && b.isCustom) {
+        return -1
+      }
+      if (a.isCustom && !b.isCustom) {
+        return 1
+      }
+      return 0
+    })
+  }
+  return ret
 }
