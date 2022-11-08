@@ -19,6 +19,7 @@ declined:
   - "@fluent-wallet/wallet_add-network"
   - "@fluent-wallet/wallet_add-vault"
   - "@fluent-wallet/wallet_export-account-group"
+  - "@fluent-wallet/wallet_get-network"
   - "@fluent-wallet/wallet_refetch-tx-list"
   - "@fluent-wallet/wallet_send-transaction"
   - "@fluent-wallet/spec"
