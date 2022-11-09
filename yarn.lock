@@ -6073,6 +6073,7 @@ __metadata:
   resolution: "@fluent-wallet/db@workspace:packages/db"
   dependencies:
     "@ethersproject/bignumber": 5.6.2
+    "@fluent-wallet/consts": "workspace:*"
   languageName: unknown
   linkType: soft
 

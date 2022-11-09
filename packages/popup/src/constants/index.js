@@ -1,5 +1,27 @@
 import langResources from '../locales'
 import {
+  CFX_MAINNET_RPC_ENDPOINT,
+  CFX_ESPACE_MAINNET_RPC_ENDPOINT,
+  CFX_TESTNET_RPC_ENDPOINT,
+  CFX_ESPACE_TESTNET_RPC_ENDPOINT,
+  ETH_MAINNET_RPC_ENDPOINT,
+  ETH_GOERLI_RPC_ENDPOINT,
+  ETH_SEPOLIA_RPC_ENDPOINT,
+  CFX_MAINNET_NAME,
+  CFX_ESPACE_MAINNET_NAME,
+  ETH_MAINNET_NAME,
+  CFX_TESTNET_NAME,
+  CFX_ESPACE_TESTNET_NAME,
+  ETH_GOERLI_NAME,
+  ETH_SEPOLIA_NAME,
+  ETH_RINKEBY_NAME,
+  ETH_ROPSTEN_NAME,
+  ETH_KOVAN_NAME,
+  ETH_RINKEBY_RPC_ENDPOINT,
+  ETH_ROPSTEN_RPC_ENDPOINT,
+  ETH_KOVAN_RPC_ENDPOINT,
+} from '@fluent-wallet/consts'
+import {
   CONNECT_SITE,
   DAPP_ADD_TOKEN,
   REQUEST_SIGNATURE,
@@ -82,18 +104,14 @@ export const MULTI_ADDRESS_PERMISSIONS = {
 }
 
 export const BUILTIN_NETWORK_ENDPOINTS = {
-  'Conflux Mainnet': 'https://portal-main.confluxrpc.com',
-  'Conflux eSpace': 'https://evm.confluxrpc.com',
-  'Ethereum Mainnet':
-    'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  'Conflux Testnet': 'https://portal-test.confluxrpc.com',
-  'eSpace Testnet': 'https://evmtestnet.confluxrpc.com',
-  'Ethereum Ropsten':
-    'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  'Ethereum Rinkeby':
-    'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  'Ethereum Goerli':
-    'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  'Ethereum Kovan':
-    'https://kovan.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  [CFX_MAINNET_NAME]: CFX_MAINNET_RPC_ENDPOINT,
+  [CFX_ESPACE_MAINNET_NAME]: CFX_ESPACE_MAINNET_RPC_ENDPOINT,
+  [ETH_MAINNET_NAME]: ETH_MAINNET_RPC_ENDPOINT,
+  [CFX_TESTNET_NAME]: CFX_TESTNET_RPC_ENDPOINT,
+  [CFX_ESPACE_TESTNET_NAME]: CFX_ESPACE_TESTNET_RPC_ENDPOINT,
+  [ETH_GOERLI_NAME]: ETH_GOERLI_RPC_ENDPOINT,
+  [ETH_SEPOLIA_NAME]: ETH_SEPOLIA_RPC_ENDPOINT,
+  [ETH_RINKEBY_NAME]: ETH_RINKEBY_RPC_ENDPOINT,
+  [ETH_ROPSTEN_NAME]: ETH_ROPSTEN_RPC_ENDPOINT,
+  [ETH_KOVAN_NAME]: ETH_KOVAN_RPC_ENDPOINT,
 }
