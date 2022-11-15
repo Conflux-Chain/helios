@@ -83,7 +83,7 @@ function SetPasswordForm() {
           value={password}
           id="password"
           onKeyDown={onKeyDown}
-          errorClassName="h-6"
+          errorClassName={displayErrorMessage ? '' : 'h-6'}
           ref={inputRef}
         />
         <PasswordInput
