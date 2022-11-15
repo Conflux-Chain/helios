@@ -97,8 +97,8 @@ export const ETH_GOERLI_RPC_ENDPOINT = `https://goerli.infura.io/v3/${ETH_API_LI
 export const ETH_GOERLI_NAME = 'Ethereum Goerli'
 export const ETH_GOERLI_CHAINID = '0x5'
 export const ETH_GOERLI_NETID = 5
-export const ETH_GOERLI_CURRENCY_SYMBOL = 'ETH'
-export const ETH_GOERLI_CURRENCY_NAME = 'GoerliETH'
+export const ETH_GOERLI_CURRENCY_SYMBOL = 'GoerliETH'
+export const ETH_GOERLI_CURRENCY_NAME = 'Ether'
 export const ETH_GOERLI_EXPLORER_URL = 'https://goerli.etherscan.io'
 
 export const ETH_SEPOLIA_RPC_ENDPOINT = `https://sepolia.infura.io/v3/${ETH_API_LIMIT_KEY}`
