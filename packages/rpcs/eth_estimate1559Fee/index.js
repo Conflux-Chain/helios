@@ -144,8 +144,13 @@ async function getGasFeeByGasStation(chainId) {
     const res = await fetch(gaseFeeApiUrl, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
-    }).then(res => res.json())
-    return res
+    })
+    if (!res.ok) {
+      throw new Error(
+        `Fetch failed with status '${res.status}' for request gasFeeApi`,
+      )
+    }
+    return res.json()
   }
 
   return {}
