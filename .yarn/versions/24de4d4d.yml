@@ -1,5 +1,6 @@
 releases:
   "@fluent-wallet/consts": patch
+  "@fluent-wallet/eth_estimate-1559-fee": patch
   "@fluent-wallet/wallet_register-site-metadata": patch
   helios-background: patch
 
