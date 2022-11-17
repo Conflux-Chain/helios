@@ -156,6 +156,8 @@ const uk = {
     tokenAndAmount: 'Токен і сума',
     available: 'Доступно: ',
     max: 'Все',
+    web3Name: 'web3 username',
+    alternativeName: 'account name/memo',
 
     // - Send Transaction / choose token
     chooseToken: 'Виберіть токен',

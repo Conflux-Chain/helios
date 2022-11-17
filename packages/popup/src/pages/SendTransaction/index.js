@@ -12,14 +12,21 @@ import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
 import {TitleNav, AccountDisplay, CurrentNetworkDisplay} from '../../components'
 import {useCurrentTxParams, useEstimateTx, useEstimateError} from '../../hooks'
-import {ToAddressInput, TokenAndAmount} from './components'
+import {
+  ToAddressInput,
+  TokenAndAmount,
+  AddressWithAlternativeName,
+} from './components'
 import {validateAddress, validateByEip55} from '../../utils'
 import {
   useNetworkTypeIsCfx,
   useCurrentAddress,
   useSingleTokenInfoWithNativeTokenSupport,
+  useAddressNote,
 } from '../../hooks/useApi'
 import {ROUTES} from '../../constants'
+import useGlobalStore from '../../stores'
+
 const {CONFIRM_TRANSACTION} = ROUTES
 
 function SendTransaction() {
@@ -156,6 +163,21 @@ function SendTransaction() {
   const sendDisabled =
     !!addressError || !!estimateError || !toAddress || !sendAmount
 
+  // get address alias name
+  const {addressNote, setAddressNote} = useGlobalStore()
+
+  const noteName = useAddressNote(
+    toAddress,
+    toAddress === Object.keys(addressNote)?.[0],
+  )
+  const displayNoteName = addressNote?.[toAddress] || noteName
+
+  useEffect(() => {
+    return () => {
+      setAddressNote?.({})
+    }
+  }, [setAddressNote])
+
   return (
     <div className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg">
       <TitleNav
@@ -168,6 +190,8 @@ function SendTransaction() {
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 pt-4 pb-6">
         <div className="flex flex-col">
+          {/* TODO: add check address logic */}
+          <AddressWithAlternativeName displayNoteName={displayNoteName} />
           <ToAddressInput
             address={toAddress}
             onChangeAddress={onChangeAddress}

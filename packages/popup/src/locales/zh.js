@@ -151,6 +151,8 @@ const zh = {
     tokenAndAmount: '代币和数量',
     available: '余额: ',
     max: '最大',
+    web3Name: 'web3 username',
+    alternativeName: 'account name/memo',
 
     // - Send Transaction / choose token
     chooseToken: '选择代币',

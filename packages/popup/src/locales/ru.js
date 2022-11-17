@@ -156,6 +156,8 @@ const ru = {
     tokenAndAmount: 'Токен и сумма',
     available: 'Доступно: ',
     max: 'Все',
+    web3Name: 'web3 username',
+    alternativeName: 'account name/memo',
 
     // - Send Transaction / choose token
     chooseToken: 'Выберите токен',

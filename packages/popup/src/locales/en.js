@@ -154,6 +154,8 @@ const en = {
     tokenAndAmount: 'Token and Amount',
     available: 'Available: ',
     max: 'MAX',
+    web3Name: 'web3 username',
+    alternativeName: 'account name/memo',
 
     // - Send Transaction / choose token
     chooseToken: 'Choose Token',

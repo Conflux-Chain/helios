@@ -160,6 +160,8 @@ const fr = {
     tokenAndAmount: 'Jeton et Montant',
     available: 'Disponible : ',
     max: 'MAX',
+    web3Name: 'web3 username',
+    alternativeName: 'account name/memo',
 
     // - Send Transaction / choose token
     chooseToken: 'Choisir un Jeton',
