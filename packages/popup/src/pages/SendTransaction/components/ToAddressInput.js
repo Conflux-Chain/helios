@@ -6,10 +6,10 @@ import Input from '@fluent-wallet/component-input'
 import {ContactsOutlined, RightOutlined} from '@fluent-wallet/component-icons'
 
 import {useAddressNote} from '../../../hooks/useApi'
-import {CompWithLabel, CustomTag} from '../../../components'
+import {CompWithLabel} from '../../../components'
 import useGlobalStore from '../../../stores'
 import {ROUTES} from '../../../constants'
-
+import {AddressCheckingSymbol} from './'
 const {ADDRESS_BOOK} = ROUTES
 
 function ToAddressInput({address, onChangeAddress, errorMessage}) {
@@ -58,20 +58,22 @@ function ToAddressInput({address, onChangeAddress, errorMessage}) {
         errorMessage={errorMessage}
         id="toAddressInput"
         suffixWrapperClassName="w-auto h-auto"
-        suffix={
-          displayNoteName && (
-            <CustomTag
-              backgroundColor="bg-primary-10"
-              roundedStyle="rounded"
-              width="max-w-[60px] min-w-[24px]"
-              className="h-auto"
-            >
-              <div className="text-primary text-ellipsis p-1">
-                {displayNoteName}
-              </div>
-            </CustomTag>
-          )
-        }
+        suffix={<AddressCheckingSymbol className="!w-5 !h-5 text-success" />}
+        // TODO：挪到别的地方了
+        // suffix={
+        //   displayNoteName && (
+        //     <CustomTag
+        //       backgroundColor="bg-primary-10"
+        //       roundedStyle="rounded"
+        //       width="max-w-[60px] min-w-[24px]"
+        //       className="h-auto"
+        //     >
+        //       <div className="text-primary text-ellipsis p-1">
+        //         {displayNoteName}
+        //       </div>
+        //     </CustomTag>
+        //   )
+        // }
       />
     </CompWithLabel>
   )

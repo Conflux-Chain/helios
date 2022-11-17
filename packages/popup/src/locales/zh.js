@@ -147,7 +147,7 @@ const zh = {
     // - Send Transaction / send transaction
     sendTransaction: '发送交易',
     toAddressLabel: '接收方',
-    toAddressPlaceholder: '请输入一个地址',
+    toAddressPlaceholder: 'Address(cfx*:), or Username',
     tokenAndAmount: '代币和数量',
     available: '余额: ',
     max: '最大',

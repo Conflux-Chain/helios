@@ -150,7 +150,7 @@ const en = {
     // - Send Transaction / send transaction
     sendTransaction: 'Send Transaction',
     toAddressLabel: 'Send To',
-    toAddressPlaceholder: 'Please enter an address',
+    toAddressPlaceholder: 'Address(cfx*:), or Username',
     tokenAndAmount: 'Token and Amount',
     available: 'Available: ',
     max: 'MAX',

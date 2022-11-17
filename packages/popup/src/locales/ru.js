@@ -152,7 +152,7 @@ const ru = {
     // - Send Transaction / send transaction
     sendTransaction: 'Отправить транзакцию',
     toAddressLabel: 'Отправить',
-    toAddressPlaceholder: 'Пожалуйста, введите адрес',
+    toAddressPlaceholder: 'Address(cfx*:), or Username',
     tokenAndAmount: 'Токен и сумма',
     available: 'Доступно: ',
     max: 'Все',

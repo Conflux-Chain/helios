@@ -156,7 +156,7 @@ const fr = {
     // - Send Transaction / send transaction
     sendTransaction: 'Transaction d’envoi',
     toAddressLabel: 'Envoyer à',
-    toAddressPlaceholder: 'Merci de saisir une adresse',
+    toAddressPlaceholder: 'Address(cfx*:), or Username',
     tokenAndAmount: 'Jeton et Montant',
     available: 'Disponible : ',
     max: 'MAX',

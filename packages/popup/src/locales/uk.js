@@ -152,7 +152,7 @@ const uk = {
     // - Send Transaction / send transaction
     sendTransaction: 'Відправити транзакцію',
     toAddressLabel: 'Відправити',
-    toAddressPlaceholder: 'Будь ласка, введіть адресу',
+    toAddressPlaceholder: 'Address(cfx*:), or Username',
     tokenAndAmount: 'Токен і сума',
     available: 'Доступно: ',
     max: 'Все',
