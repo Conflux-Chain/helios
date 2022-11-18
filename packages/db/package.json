@@ -1,6 +1,6 @@
 {
   "name": "@fluent-wallet/db",
-  "version": "1.0.70",
+  "version": "1.0.71",
   "main": "index.js",
   "type": "module",
   "files": [
@@ -8,6 +8,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@ethersproject/bignumber": "5.6.2"
+    "@ethersproject/bignumber": "5.6.2",
+    "@fluent-wallet/consts": "workspace:*"
   }
 }
