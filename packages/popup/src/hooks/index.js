@@ -2,7 +2,7 @@ import {useEffect, useState, useMemo} from 'react'
 import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import create from 'zustand'
-import {useAsync} from 'react-use'
+import {useAsync, useDebounce} from 'react-use'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {estimate} from '@fluent-wallet/estimate-tx'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
@@ -33,7 +33,7 @@ import {
   usePendingAuthReq,
   useNetwork1559Compatible,
 } from './useApi'
-import {validateAddress} from '../utils'
+import {validateAddress, validateByEip55, isValidDomainName} from '../utils'
 
 const {HOME} = ROUTES
 const {LEDGER_APP_NAME} = consts
@@ -590,4 +590,49 @@ export const useLedgerAppName = () => {
 export const useIsTxTreatedAsEIP1559 = txType => {
   const network1559Compatible = useNetwork1559Compatible()
   return network1559Compatible && (!txType || txType === ETH_TX_TYPES.EIP1559)
+}
+
+export const useValidatedAddressUsername = ({
+  netId,
+  initAddress,
+  initAddressError,
+}) => {
+  const {t} = useTranslation()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+
+  const [validatedAddress, setValidatedAddress] = useState(initAddress)
+  const [validatedAddressError, setValidatedAddressError] =
+    useState(initAddressError)
+
+  useDebounce(
+    async () => {
+      if (isValidDomainName(initAddress)) {
+        // TODO: fetch ens/cns address and setToAddress
+        // if validated setValidatedAddress and setAddressError "" else go next
+        return
+      }
+
+      if (!initAddress) {
+        return
+      }
+
+      if (!validateAddress(initAddress, networkTypeIsCfx, netId)) {
+        return setValidatedAddressError(
+          networkTypeIsCfx ? t('invalidAddress') : t('invalidHexAddress'),
+        )
+      }
+
+      if (!networkTypeIsCfx && !validateByEip55(initAddress)) {
+        return setValidatedAddressError(t('unChecksumAddress'))
+      }
+      setValidatedAddressError('')
+    },
+    300,
+    [initAddress],
+  )
+
+  return {
+    validatedAddressError,
+    validatedAddress,
+  }
 }

@@ -145,7 +145,7 @@ Text.propTypes = {
   as: PropTypes.oneOf(['span', 'p', 'div']),
   placeholder: PropTypes.string,
   placeholderAnimation: PropTypes.bool,
-  text: PropTypes.string,
+  text: PropTypes.oneOfType(PropTypes.node, PropTypes.string),
   skeleton: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   delay: PropTypes.number,
   className: PropTypes.string,

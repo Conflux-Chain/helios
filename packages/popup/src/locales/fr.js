@@ -13,8 +13,8 @@ const fr = {
     no: 'Non',
     yes: 'Oui',
     copiedSuccess: 'Copiée avec succès',
-    invalidAddress: 'Merci d’indiquer une adresse cfx valide',
-    invalidHexAddress: 'Merci d’indiquer une adresse hex valide',
+    invalidAddress: 'Please enter valid cfx address or cns',
+    invalidHexAddress: 'Please enter valid hex address or ens',
     unChecksumAddress:
       'Adresse invalide, assurez-vous que la casse des lettres est correcte',
     protocol: 'Protocole',

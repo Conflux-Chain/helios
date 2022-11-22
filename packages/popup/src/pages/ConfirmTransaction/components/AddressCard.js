@@ -11,7 +11,12 @@ import {
 } from '../../../hooks/useApi'
 import {useCheckImage} from '../../../hooks'
 import {formatIntoChecksumAddress} from '../../../utils'
-import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
+import {
+  DisplayBalance,
+  ProgressIcon,
+  CopyButton,
+  EnsNameLabel,
+} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
 
@@ -51,8 +56,10 @@ const TransactionDirection = ({
             <Text
               className="text-xs text-gray-40 mb-1"
               id="currentAccountName"
-              text={currentAccountName}
+              text={<EnsNameLabel ensName={'ensName'} />}
+              // text={currentAccountName}
             />
+            {/* {<EnsNameLabel ensName={'ensName'} />} */}
             <Text
               className="text-gray-80"
               id="fromAddress"

@@ -11,15 +11,18 @@ import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
 import {TitleNav, AccountDisplay, CurrentNetworkDisplay} from '../../components'
-import {useCurrentTxParams, useEstimateTx, useEstimateError} from '../../hooks'
+import {
+  useCurrentTxParams,
+  useEstimateTx,
+  useEstimateError,
+  useValidatedAddressUsername,
+} from '../../hooks'
 import {
   ToAddressInput,
   TokenAndAmount,
   AddressWithAlternativeName,
 } from './components'
-import {validateAddress, validateByEip55} from '../../utils'
 import {
-  useNetworkTypeIsCfx,
   useCurrentAddress,
   useSingleTokenInfoWithNativeTokenSupport,
   useAddressNote,
@@ -50,6 +53,7 @@ function SendTransaction() {
     tx,
     clearSendTransactionParams,
   } = useCurrentTxParams()
+
   const {
     data: {
       value: address,
@@ -59,8 +63,10 @@ function SendTransaction() {
   } = useCurrentAddress()
   const {address: tokenAddress, decimals} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
+
   const [addressError, setAddressError] = useState('')
+  const [inputAddress, setInputAddress] = useState(toAddress)
+
   const [estimateError, setEstimateError] = useState('')
   const [hasNoTxn, setHasNoTxn] = useState(false)
   const {errorAnimateStyle, displayErrorMsg} = useInputErrorAnimation(
@@ -136,7 +142,6 @@ function SendTransaction() {
   const onChangeToken = token => {
     setSendTokenId(token)
     if (maxMode) {
-      setSendAmount('')
       setMaxMode(false)
     }
   }
@@ -144,17 +149,22 @@ function SendTransaction() {
     setSendAmount(amount)
   }
   const onChangeAddress = address => {
-    setToAddress(address)
-    if (!validateAddress(address, networkTypeIsCfx, netId)) {
-      return setAddressError(
-        networkTypeIsCfx ? t('invalidAddress') : t('invalidHexAddress'),
-      )
-    }
-    if (!networkTypeIsCfx && !validateByEip55(address)) {
-      return setAddressError(t('unChecksumAddress'))
-    }
-    setAddressError('')
+    setInputAddress(address)
   }
+
+  //debounce get validate address(cns/ens address) message
+  const {validatedAddressError, validatedAddress} = useValidatedAddressUsername(
+    {
+      initAddress: inputAddress,
+      initAddressError: addressError,
+      netId,
+    },
+  )
+  useEffect(() => {
+    setAddressError(validatedAddressError)
+    setToAddress(validatedAddress)
+  }, [validatedAddressError, validatedAddress, setToAddress])
+
   useEffect(() => {
     if (nativeToken.symbol && !tokenAddress) setSendTokenId('native')
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -171,7 +181,6 @@ function SendTransaction() {
     toAddress === Object.keys(addressNote)?.[0],
   )
   const displayNoteName = addressNote?.[toAddress] || noteName
-
   useEffect(() => {
     return () => {
       setAddressNote?.({})
@@ -193,7 +202,7 @@ function SendTransaction() {
           {/* TODO: add check address logic */}
           <AddressWithAlternativeName displayNoteName={displayNoteName} />
           <ToAddressInput
-            address={toAddress}
+            address={inputAddress}
             onChangeAddress={onChangeAddress}
             errorMessage={addressError}
           />

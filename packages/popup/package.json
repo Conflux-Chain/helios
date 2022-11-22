@@ -39,6 +39,7 @@
     "dayjs": "1.10.7",
     "i18next": "21.5.2",
     "i18next-browser-languagedetector": "6.1.2",
+    "punycode": "2.1.1",
     "qrcode.react": "1.0.1",
     "react-copy-to-clipboard": "5.0.4",
     "react-error-boundary": "3.1.4",
@@ -50,5 +51,8 @@
     "valid-url": "1.0.9",
     "webextension-polyfill": "0.8.0",
     "zustand": "^3.7.2"
+  },
+  "devDependencies": {
+    "@types/punycode": "^2"
   }
 }

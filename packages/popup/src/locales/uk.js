@@ -13,9 +13,8 @@ const uk = {
     no: 'Ні',
     yes: 'Так',
     copiedSuccess: 'Скопійовано',
-    invalidAddress: 'Будь ласка, введіть дійсну адресу cfx',
-    invalidHexAddress:
-      'Будь ласка, введіть дійсну шістнадцятиричну (hex) адресу',
+    invalidAddress: 'Please enter valid cfx address or cns',
+    invalidHexAddress: 'Please enter valid hex address or ens',
     unChecksumAddress: 'Невірна адреса, переконайтеся, що регістр правильний',
     protocol: 'Протокол',
     viewData: 'Перегляд даних',
