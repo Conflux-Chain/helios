@@ -1,10 +1,8 @@
 {
   "name": "@fluent-wallet/did",
-  "type": "module",
   "main": "index.js",
   "version": "0.0.0",
   "dependencies": {
-    "@ensdomains/ens-contracts": "0.0.15",
     "@ensdomains/eth-ens-namehash": "2.0.15",
     "@web3identity/web3ns": "0.1.2",
     "graphql-request": "5.0.0",

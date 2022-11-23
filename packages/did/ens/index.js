@@ -1,8 +1,6 @@
-import {
-  PublicResolver,
-  ENSRegistryWithFallback,
-  Resolver,
-} from '@ensdomains/ens-contracts'
+import ENSRegistryWithFallback from './abi/ENSRegistryWithFallback.json'
+import Resolver from './abi/Resolver.json'
+import PublicResolver from './abi/PublicResolver.json'
 import Web3 from 'web3'
 import {hash} from '@ensdomains/eth-ens-namehash'
 
