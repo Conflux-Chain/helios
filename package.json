@@ -35,10 +35,11 @@
     "@ethersproject/properties": "^5.7.0",
     "@ethersproject/strings": "^5.7.0",
     "@ethersproject/sha2": "^5.7.0",
-    "js-conflux-sdk": "^2.0.7",
+    "js-conflux-sdk": "^2.1.9",
     "big.js": "^5.2.2",
     "eth-lib": "0.2.8",
-    "@ethersproject/abi": "^5.7.0"
+    "@ethersproject/abi": "^5.7.0",
+    "@web3identity/address-encoder": "0.2.20"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",
