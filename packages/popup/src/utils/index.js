@@ -10,6 +10,7 @@ import {
   NETWORK_TYPE,
   LANGUAGES,
   PAGE_LIMIT,
+  BUILTIN_NETWORK_ENDPOINTS,
 } from '../constants'
 const globalThis = window ?? global
 const {
@@ -312,4 +313,14 @@ export const getAvatarAddress = addresses => {
 
 export const addUnitForValue = (value, isCfxChain = false) => {
   return value ? `${value} ${isCfxChain ? 'GDrip' : 'GWei'}` : 'loading'
+}
+
+// hide inner api limit key
+export const getInnerUrlWithoutLimitKey = innerNetworkName => {
+  if (BUILTIN_NETWORK_ENDPOINTS?.[innerNetworkName]) {
+    let arr = BUILTIN_NETWORK_ENDPOINTS[innerNetworkName].split('/')
+    arr.pop()
+    return arr.join('/')
+  }
+  return ''
 }
