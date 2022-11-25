@@ -317,11 +317,10 @@ export const addUnitForValue = (value, isCfxChain = false) => {
 
 // hide inner api limit key
 export const getInnerUrlWithoutLimitKey = innerNetworkName => {
-  try {
-    return BUILTIN_NETWORK_ENDPOINTS?.[innerNetworkName]
-      ? new URL(BUILTIN_NETWORK_ENDPOINTS[innerNetworkName])?.origin || ''
-      : ''
-  } catch (e) {
-    return ''
+  if (BUILTIN_NETWORK_ENDPOINTS?.[innerNetworkName]) {
+    let arr = BUILTIN_NETWORK_ENDPOINTS[innerNetworkName].split('/')
+    arr.pop()
+    return arr.join('/')
   }
+  return ''
 }
