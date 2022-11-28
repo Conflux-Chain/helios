@@ -7,9 +7,6 @@ import {
   Bytes32,
   zeroOrMore,
 } from '@fluent-wallet/spec'
-import {ENS} from '@fluent-wallet/did'
-
-console.info('ENS====', ENS)
 
 export const NAME = 'wallet_getBlockchainExplorerUrl'
 
