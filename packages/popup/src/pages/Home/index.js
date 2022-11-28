@@ -1,6 +1,6 @@
 import {useState, useCallback} from 'react'
 import {ContactsOutlined} from '@fluent-wallet/component-icons'
-import {ENS} from '@fluent-wallet/did'
+// import {ENS} from '@fluent-wallet/did'
 import {
   CFX_MAINNET_CHAINID,
   CFX_ESPACE_MAINNET_CHAINID,
@@ -52,17 +52,17 @@ function Home() {
     },
   })
 
-  useEffectOnce(() => {
-    async function aGetName() {
-      //   const cnsName=await CNS.getName('cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn')
-      //   console.info('cnsName',cnsName)
-      const ensName = await ENS.getName(
-        '0xA64F0db02B33C23F7215e1F562Eb3d8eee928917',
-      )
-      console.info('ensName', ensName)
-    }
-    aGetName()
-  })
+  // useEffectOnce(() => {
+  //   async function aGetName() {
+  //     //   const cnsName=await CNS.getName('cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn')
+  //     //   console.info('cnsName',cnsName)
+  //     const ensName = await ENS.getName(
+  //       '0xA64F0db02B33C23F7215e1F562Eb3d8eee928917',
+  //     )
+  //     console.info('ensName', ensName)
+  //   }
+  //   aGetName()
+  // })
 
   useEffectOnce(() => {
     const forward = query.get('open')
