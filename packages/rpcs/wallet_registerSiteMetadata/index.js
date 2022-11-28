@@ -21,8 +21,8 @@ export const permissions = {
 
 export const main = ({
   Err: {InvalidRequest},
-  db: {t, findAccount},
-  rpcs: {wallet_requestPermissions, wallet_getPreferences},
+  db: {t},
+  rpcs: {wallet_getPreferences},
   params: {name, icon},
   _inpage,
   _origin,
@@ -30,7 +30,7 @@ export const main = ({
   network,
 }) => {
   if (_inpage && !_origin) throw InvalidRequest(`no origin found`)
-  const {tempids} = t([
+  t([
     {eid: 'newsite', site: {name, origin: _origin, post: _post}},
     icon && {eid: 'newsite', site: {icon}},
   ])
@@ -49,25 +49,6 @@ export const main = ({
     event: 'connect',
     params: {chainId: network.chainId, networkId: network.netId},
   })
-
-  // auto authed app
-  // x.fluentwallet.com
-  // x-x.fluentwallet.com
-  // x.x.fluentwallet.com
-  if (
-    tempids.newsite &&
-    (/^[a-zA-Z0-9-]+\.fluentwallet\.com$/.test(_origin) ||
-      /^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+\.fluentwallet\.com$/.test(_origin))
-  ) {
-    wallet_requestPermissions(
-      {_popup: true, network},
-      {
-        siteId: tempids.newsite,
-        permissions: [{wallet_accounts: {}}],
-        accounts: findAccount(),
-      },
-    )
-  }
 
   return
 }

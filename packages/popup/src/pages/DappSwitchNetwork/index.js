@@ -1,7 +1,9 @@
+import {useMemo} from 'react'
 import {useTranslation} from 'react-i18next'
 import {formatHexToDecimal} from '@fluent-wallet/data-format'
 import {DappFooter, DappProgressHeader, CustomTag} from '../../components'
 import {RPC_METHODS, NETWORK_TYPE} from '../../constants'
+import {getInnerUrlWithoutLimitKey} from '../../utils'
 import {usePendingAuthReq, useNetworkByChainId} from '../../hooks/useApi'
 const {WALLET_SWITCH_CONFLUX_CHAIN} = RPC_METHODS
 
@@ -15,10 +17,13 @@ function DappSwitchNetwork() {
       ? NETWORK_TYPE.CFX
       : NETWORK_TYPE.ETH,
   )
-
   const [{isTestnet, name, endpoint, icon}] = networkData.length
     ? networkData
     : [{}]
+
+  const disPlayRpcURL = useMemo(() => {
+    return getInnerUrlWithoutLimitKey(name) || endpoint
+  }, [name, endpoint])
 
   return (
     <div
@@ -68,7 +73,7 @@ function DappSwitchNetwork() {
             <div id="networkUrl">
               <div className="text-xs text-gray-40">{t('networkUrl')}</div>
               <div className="text-sm text-gray-80 font-medium mt-0.5 text-ellipsis">
-                {endpoint}
+                {disPlayRpcURL}
               </div>
             </div>
             <div className="mt-3" id="chainId">
