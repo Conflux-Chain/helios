@@ -1,5 +1,5 @@
 import validUrl from 'valid-url'
-import {useState, useEffect, useRef} from 'react'
+import {useState, useEffect, useRef, useMemo} from 'react'
 import {isUndefined} from '@fluent-wallet/checks'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
@@ -13,7 +13,7 @@ import {
   ETH_MAINNET_CURRENCY_NAME,
 } from '@fluent-wallet/consts'
 import {TitleNav, CompWithLabel, ConfirmPassword} from '../../components'
-import {request} from '../../utils'
+import {request, getInnerUrlWithoutLimitKey} from '../../utils'
 import {useCurrentAddress} from '../../hooks/useApi'
 import {
   ROUTES,
@@ -80,10 +80,23 @@ function NetworkDetail() {
   const rpcUrlInputRef = useRef(null)
 
   const {networkInfo, setNetworkInfo} = useGlobalStore()
+
+  const isAddingChain = !Object.keys(networkInfo).length
+  const isCustom = networkInfo?.networkType === 'custom'
+  const isBuiltin = !isAddingChain && !isCustom
+  const defaultOrigin = useMemo(() => {
+    return getInnerUrlWithoutLimitKey(networkInfo?.networkName)
+  }, [networkInfo?.networkName])
+
   const [networkFieldValues, setNetworkFieldValues] = useState(() => {
     return {
       chainName: networkInfo?.networkName ?? '',
-      rpcUrl: networkInfo?.rpcUrl ?? '',
+      rpcUrl: networkInfo?.rpcUrl
+        ? networkInfo.rpcUrl ===
+          BUILTIN_NETWORK_ENDPOINTS?.[networkInfo?.networkName]
+          ? defaultOrigin
+          : networkInfo.rpcUrl
+        : '',
       chainId: networkInfo?.chainId ?? '',
       networkType: getNetworkType(networkInfo?.type),
       symbol: networkInfo?.symbol ?? '',
@@ -103,20 +116,12 @@ function NetworkDetail() {
   const [rpcUrlChecked, setRpcUrlChecked] = useState(false)
   const [rpcUrlResetAble, setRpcUrlResetAble] = useState(false)
 
-  const isAddingChain = !Object.keys(networkInfo).length
-  const isCustom = networkInfo?.networkType === 'custom'
-  const isBuiltin = !isAddingChain && !isCustom
-
   const {data} = useCurrentAddress(isAddingChain)
   const currentNetworkId = data?.network?.eid
 
   useEffect(() => {
-    setRpcUrlResetAble(
-      isBuiltin &&
-        networkFieldValues.rpcUrl !==
-          BUILTIN_NETWORK_ENDPOINTS[networkInfo.networkName],
-    )
-  }, [isBuiltin, networkFieldValues.rpcUrl, networkInfo.networkName])
+    setRpcUrlResetAble(isBuiltin && networkFieldValues.rpcUrl !== defaultOrigin)
+  }, [isBuiltin, defaultOrigin, networkFieldValues.rpcUrl])
 
   useEffect(() => {
     return () => {
@@ -167,7 +172,11 @@ function NetworkDetail() {
   const onValidateRpcUrl = async () => {
     try {
       const res = await request(WALLET_DETECT_NETWORK_TYPE, {
-        url: networkFieldValues.rpcUrl,
+        url:
+          networkFieldValues.rpcUrl === defaultOrigin ||
+          networkFieldValues.rpcUrl === `${defaultOrigin}/`
+            ? BUILTIN_NETWORK_ENDPOINTS?.[networkInfo?.networkName]
+            : networkFieldValues.rpcUrl,
       })
       // validated url
       if (res?.chainId && res?.type) {
@@ -262,7 +271,12 @@ function NetworkDetail() {
   const onSave = async (type = 'add') => {
     const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
       networkFieldValues
-    if (type === 'innerEdit' && rpcUrl === networkInfo?.rpcUrl) {
+    if (
+      type === 'innerEdit' &&
+      (rpcUrl === networkInfo?.rpcUrl ||
+        rpcUrl === defaultOrigin ||
+        rpcUrl === `${defaultOrigin}/`)
+    ) {
       return history.push(HOME)
     }
     setLoading(true)
@@ -285,7 +299,11 @@ function NetworkDetail() {
         symbol: symbol || detectedChainType.toUpperCase(),
         decimals: COMMON_DECIMALS,
       },
-      rpcUrls: [rpcUrl],
+      rpcUrls: [
+        rpcUrl === defaultOrigin || rpcUrl === `${defaultOrigin}/`
+          ? BUILTIN_NETWORK_ENDPOINTS?.[networkInfo?.networkName]
+          : rpcUrl,
+      ],
     }
 
     if (blockExplorerUrl) {
@@ -324,10 +342,7 @@ function NetworkDetail() {
                     className="text-xs text-primary cursor-pointer"
                     onMouseDown={e => {
                       e.preventDefault()
-                      onNetworkInputChange(
-                        BUILTIN_NETWORK_ENDPOINTS[networkInfo.networkName],
-                        'rpcUrl',
-                      )
+                      onNetworkInputChange(defaultOrigin, 'rpcUrl')
                       rpcUrlInputRef?.current?.focus()
                     }}
                   >
