@@ -1,18 +1,22 @@
 import ENSRegistryWithFallback from './abi/ENSRegistryWithFallback.json'
 import Resolver from './abi/Resolver.json'
 import PublicResolver from './abi/PublicResolver.json'
-import Web3 from 'web3'
+// import Web3 from 'web3'
+import Web3EthContract from 'web3-eth-contract'
+import Web3Eth from 'web3-eth-ens'
 import {hash} from '@ensdomains/eth-ens-namehash'
 
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const ethereum = window['ethereum']
-export const web3 = new Web3(ethereum)
-export const ens = web3.eth.ens
-export const PublicResolverContract = new web3.eth.Contract(
+// console.log('hash', hash)
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const ethereum = window['___CFXJS_USE_RPC__PRIVIDER']
+export const ens = new Web3Eth(ethereum)
+
+export const PublicResolverContract = new Web3EthContract(
   PublicResolver,
   '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
 )
-export const ENSRegistryWithFallbackContract = new web3.eth.Contract(
+
+export const ENSRegistryWithFallbackContract = new Web3EthContract(
   ENSRegistryWithFallback,
   '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
 )
@@ -29,6 +33,7 @@ export const getName = async address => {
     const nameResult = await resolverContract.methods.name(hashStr).call()
     return nameResult.toString('hex')
   } catch (error) {
+    console.log('error', error)
     return ''
   }
 }
@@ -71,5 +76,5 @@ export const getAddresses = async names => {
 }
 
 export const getResolverContract = address => {
-  return new web3.eth.Contract(Resolver, address)
+  return new Web3EthContract(Resolver, address)
 }

@@ -1,6 +1,8 @@
 import {useState, useCallback} from 'react'
 import {ContactsOutlined} from '@fluent-wallet/component-icons'
 import {ENS} from '@fluent-wallet/did'
+
+console.log('ens', ENS)
 import {
   CFX_MAINNET_CHAINID,
   CFX_ESPACE_MAINNET_CHAINID,
@@ -59,6 +61,7 @@ function Home() {
       const ensName = await ENS.getName(
         '0xA64F0db02B33C23F7215e1F562Eb3d8eee928917',
       )
+      console.log('ENS.getName', ENS.getName)
       console.info('ensName', ensName)
     }
     aGetName()
