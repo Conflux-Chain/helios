@@ -6,53 +6,38 @@ import {
   decode as decodeCfxAddress,
 } from '@fluent-wallet/base32-address'
 
-import {COINID_CONFLUX} from '../constant.js'
-// import {encodeCfxAddress} from '../addressUtils'
+import {
+  COINID_CONFLUX,
+  CHAINID_CFX_MAINNET,
+  CHAINID_CFX_TESTNET,
+} from '../constant.js'
 import PublicResolver_ABI from './abis/PublicResolver.json'
 import ENS_ABI from './abis/ENS.json'
 import ReverseRegistrar_ABI from './abis/ReverseRegistrar.json'
 
-//TODO add env
-const isProduction = false
-const networkId = isProduction ? 1029 : 1
-export const REGISTRY_ADDRESS = isProduction
-  ? 'cfxtest:achg113s8916v2u756tvf6hdvmbsb73b16ykt1pvwm'
-  : 'cfxtest:achg113s8916v2u756tvf6hdvmbsb73b16ykt1pvwm'
-export const REVERSE_REGISTRAR_ADDRESS = isProduction
-  ? 'cfxtest:ach1p03gkptxz07p4ecn66gjpd0xrnkkbj1n6p96d5'
-  : 'cfxtest:ach1p03gkptxz07p4ecn66gjpd0xrnkkbj1n6p96d5'
-export const BASE_REGISTRAR_ADDRESS = isProduction
-  ? 'cfxtest:acc1ttg7287cybsdy6bn0002nzepypn29yavjbj36g'
-  : 'cfxtest:acc1ttg7287cybsdy6bn0002nzepypn29yavjbj36g'
-export const WEB3_CONTROLLER_ADDRESS = isProduction
-  ? 'cfxtest:acbrnwph2609zbf21np0501d87xb9dnvuakpv911xk'
-  : 'cfxtest:acbrnwph2609zbf21np0501d87xb9dnvuakpv911xk'
-export const NAME_WRAPPER_ADDRESS = isProduction
-  ? 'cfxtest:acdc4xzy0pg1dzrbajgmv8nw3cjyj6ezn2dzncc4w5'
-  : 'cfxtest:acdc4xzy0pg1dzrbajgmv8nw3cjyj6ezn2dzncc4w5'
-export const PUBLIC_RESOLVER_ADDRESS = isProduction
-  ? 'cfxtest:acecxexm0pg268m44jncw5bmagwwmun53jj9msmadj'
-  : 'cfxtest:acecxexm0pg268m44jncw5bmagwwmun53jj9msmadj'
-
 export default class CNS {
   provider = null
   cfxClient = null
+  chainId = 1029
   PublicResolver
   Registry
   ReverseRegistrar
-  constructor(provider) {
-    if (!provider) throw new Error('The provider is required')
+  constructor(provider, chainId) {
+    this._check(provider, chainId)
     this.provider = provider
     this.cfxClient = new Conflux()
     this.cfxClient.provider = provider
-    this._initContract()
+    this.chainId = chainId
+    this._initContract(chainId)
   }
 
-  setProvider(provider) {
+  setProvider(provider, chainId) {
+    this._check(provider, chainId)
     this.provider = provider
     if (!this.cfxClient) this.cfxClient = new Conflux()
     this.cfxClient.provider = provider
-    this._initContract()
+    this.chainId = chainId
+    this._initContract(this.chainId)
   }
 
   async getName(address) {
@@ -72,7 +57,7 @@ export default class CNS {
       const resolverAddr = await this.Registry.resolver(nh)
       const resolverContract = this._getResoverContract(resolverAddr)
       const addr = await resolverContract.addr(nh, COINID_CONFLUX)
-      return encodeCfxAddress(addr, networkId)
+      return encodeCfxAddress(addr, this.chainId)
     } catch (error) {
       console.warn('Error getting addr on the resolver contract')
       return ''
@@ -110,7 +95,7 @@ export default class CNS {
       const decoded = this.PublicResolver[
         'addr(bytes32,uint256)'
       ].decodeOutputs(item.toString('hex'))
-      const address = encodeCfxAddress(decoded, networkId)
+      const address = encodeCfxAddress(decoded, this.chainId)
       addressList[names[index]] = address
     })
     return addressList
@@ -120,7 +105,7 @@ export default class CNS {
     if (!address) return this.PublicResolver
     return this.cfxClient.Contract({
       abi: PublicResolver_ABI,
-      address: encodeCfxAddress(address, networkId),
+      address: encodeCfxAddress(address, this.chainId),
     })
   }
 
@@ -132,7 +117,28 @@ export default class CNS {
     return encodeData
   }
 
-  _initContract() {
+  _initContract(chainId) {
+    const isMainnet = chainId == CHAINID_CFX_MAINNET
+    //TODO：add mainnet address
+    const REGISTRY_ADDRESS = isMainnet
+      ? 'cfxtest:achg113s8916v2u756tvf6hdvmbsb73b16ykt1pvwm'
+      : 'cfxtest:achg113s8916v2u756tvf6hdvmbsb73b16ykt1pvwm'
+    const REVERSE_REGISTRAR_ADDRESS = isMainnet
+      ? 'cfxtest:ach1p03gkptxz07p4ecn66gjpd0xrnkkbj1n6p96d5'
+      : 'cfxtest:ach1p03gkptxz07p4ecn66gjpd0xrnkkbj1n6p96d5'
+    const PUBLIC_RESOLVER_ADDRESS = isMainnet
+      ? 'cfxtest:acecxexm0pg268m44jncw5bmagwwmun53jj9msmadj'
+      : 'cfxtest:acecxexm0pg268m44jncw5bmagwwmun53jj9msmadj'
+    //  const BASE_REGISTRAR_ADDRESS = isMainnet
+    //   ? 'cfxtest:acc1ttg7287cybsdy6bn0002nzepypn29yavjbj36g'
+    //   : 'cfxtest:acc1ttg7287cybsdy6bn0002nzepypn29yavjbj36g'
+    //  const WEB3_CONTROLLER_ADDRESS = isMainnet
+    //   ? 'cfxtest:acbrnwph2609zbf21np0501d87xb9dnvuakpv911xk'
+    //   : 'cfxtest:acbrnwph2609zbf21np0501d87xb9dnvuakpv911xk'
+    //  const NAME_WRAPPER_ADDRESS = isMainnet
+    //   ? 'cfxtest:acdc4xzy0pg1dzrbajgmv8nw3cjyj6ezn2dzncc4w5'
+    //   : 'cfxtest:acdc4xzy0pg1dzrbajgmv8nw3cjyj6ezn2dzncc4w5'
+
     this.PublicResolver = this.cfxClient.Contract({
       abi: PublicResolver_ABI,
       address: PUBLIC_RESOLVER_ADDRESS,
@@ -145,5 +151,11 @@ export default class CNS {
       abi: ReverseRegistrar_ABI,
       address: REVERSE_REGISTRAR_ADDRESS,
     })
+  }
+
+  _check(provider, chainId) {
+    if (!provider) throw new Error('The provider is required')
+    if (![CHAINID_CFX_MAINNET, CHAINID_CFX_TESTNET].includes(chainId))
+      throw new Error('Only support 1029 and 1')
   }
 }

@@ -56,7 +56,7 @@ function Home() {
   useEffectOnce(() => {
     async function aGetName() {
       //CNS DEMO
-      const cns = new CNS(globalThis.___CFXJS_USE_RPC__PRIVIDER)
+      const cns = new CNS(globalThis.___CFXJS_USE_RPC__PRIVIDER, 1)
       const name = await cns.getName(
         'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
       )
