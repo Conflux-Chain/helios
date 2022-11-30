@@ -1,2 +1,2 @@
-export * as CNS from './cns'
-export * as ENS from './ens'
+export {default as CNS} from './cns'
+export {default as ENS} from './ens'

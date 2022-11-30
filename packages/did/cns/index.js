@@ -1,14 +1,20 @@
 export * as validation from './validation.js'
 import {Conflux} from 'js-conflux-sdk'
-import {CNS, namehash, Web3Domain} from '@web3identity/web3ns'
-import {formatsByCoinType} from '@web3identity/address-encoder'
-import {COINID_CONFLUX} from '../constant.js'
+import {hash} from '@ensdomains/eth-ens-namehash'
+import {
+  encode as encodeCfxAddress,
+  decode as decodeCfxAddress,
+} from '@fluent-wallet/base32-address'
 
-const cfxClient = new Conflux()
-cfxClient.provider = window.conflux
+import {COINID_CONFLUX} from '../constant.js'
+// import {encodeCfxAddress} from '../addressUtils'
+import PublicResolver_ABI from './abis/PublicResolver.json'
+import ENS_ABI from './abis/ENS.json'
+import ReverseRegistrar_ABI from './abis/ReverseRegistrar.json'
 
 //TODO add env
 const isProduction = false
+const networkId = isProduction ? 1029 : 1
 export const REGISTRY_ADDRESS = isProduction
   ? 'cfxtest:achg113s8916v2u756tvf6hdvmbsb73b16ykt1pvwm'
   : 'cfxtest:achg113s8916v2u756tvf6hdvmbsb73b16ykt1pvwm'
@@ -28,73 +34,116 @@ export const PUBLIC_RESOLVER_ADDRESS = isProduction
   ? 'cfxtest:acecxexm0pg268m44jncw5bmagwwmun53jj9msmadj'
   : 'cfxtest:acecxexm0pg268m44jncw5bmagwwmun53jj9msmadj'
 
-export const cns = new CNS({
-  client: cfxClient,
-  registryAddress: REVERSE_REGISTRAR_ADDRESS,
-  reverseRegistrarAddress: REVERSE_REGISTRAR_ADDRESS,
-  baseRegistrarAddress: BASE_REGISTRAR_ADDRESS,
-  web3ControllerAddress: WEB3_CONTROLLER_ADDRESS,
-  nameWrapperAddress: NAME_WRAPPER_ADDRESS,
-  publicResolverAddress: PUBLIC_RESOLVER_ADDRESS,
-})
+export default class CNS {
+  provider = null
+  cfxClient = null
+  PublicResolver
+  Registry
+  ReverseRegistrar
+  constructor(provider) {
+    if (!provider) throw new Error('The provider is required')
+    this.provider = provider
+    this.cfxClient = new Conflux()
+    this.cfxClient.provider = provider
+    this._initContract()
+  }
 
-export const web3domain = new Web3Domain({
-  client: cfxClient,
-  registryAddress: REVERSE_REGISTRAR_ADDRESS,
-  reverseRegistrarAddress: REVERSE_REGISTRAR_ADDRESS,
-  baseRegistrarAddress: BASE_REGISTRAR_ADDRESS,
-  web3ControllerAddress: WEB3_CONTROLLER_ADDRESS,
-  nameWrapperAddress: NAME_WRAPPER_ADDRESS,
-  publicResolverAddress: PUBLIC_RESOLVER_ADDRESS,
-})
+  setProvider(provider) {
+    this.provider = provider
+    if (!this.cfxClient) this.cfxClient = new Conflux()
+    this.cfxClient.provider = provider
+    this._initContract()
+  }
 
-export const getName = address => {
-  return cns.getName(address)
-}
+  async getName(address) {
+    try {
+      const node = await this.ReverseRegistrar.node(address)
+      const name = await this.PublicResolver.name(node)
+      return name
+    } catch (error) {
+      console.warn(`Error getting name for reverse record of ${address}`, error)
+      return ''
+    }
+  }
 
-export const getAddress = name => {
-  return cns.name(name).getAddress(COINID_CONFLUX)
-}
+  async getAddress(name) {
+    const nh = hash(name)
+    try {
+      const resolverAddr = await this.Registry.resolver(nh)
+      const resolverContract = this._getResoverContract(resolverAddr)
+      const addr = await resolverContract.addr(nh, COINID_CONFLUX)
+      return encodeCfxAddress(addr, networkId)
+    } catch (error) {
+      console.warn('Error getting addr on the resolver contract')
+      return ''
+    }
+  }
 
-export const getNames = async addresses => {
-  const encodedList = []
-  addresses.map(address => {
-    const encoded = _getNameEncodedData(address)
-    encodedList.push(encoded)
-  })
-  const namesList = {}
-  const response = await web3domain.PublicResolver.multicall(encodedList)
-  response.map((item, index) => {
-    namesList[addresses[index]] = item.toString('hex')
-  })
-  return namesList
-}
+  async getNames(addresses) {
+    const encodedList = []
+    addresses.map(address => {
+      const encoded = this._getNameEncodedData(address)
+      encodedList.push(encoded)
+    })
+    const namesList = {}
+    const response = await this.PublicResolver.multicall(encodedList)
+    response.map((item, index) => {
+      const decoded = this.PublicResolver['name(bytes32)'].decodeOutputs(
+        item.toString('hex'),
+      )
+      namesList[addresses[index]] = decoded
+    })
+    return namesList
+  }
 
-export const getAddresses = async names => {
-  const coinTypeInstance = formatsByCoinType[COINID_CONFLUX]
-  const inputCoinType = coinTypeInstance.coinType
-  const encodedList = []
-  names.map(name => {
-    const encodeData = web3domain.PublicResolver[
-      'addr(bytes32,uint256)'
-    ].encodeData([namehash(name), inputCoinType])
-    encodedList.push(encodeData)
-  })
-  const response = await web3domain.PublicResolver.multicall(encodedList)
-  const addressList = {}
-  response.map((item, index) => {
-    const decoded = web3domain.PublicResolver[
-      'addr(bytes32,uint256)'
-    ].decodeOutputs(item.toString('hex'))
-    const address = coinTypeInstance.encoder(decoded)
-    addressList[names[index]] = address
-  })
-  return addressList
-}
+  async getAddresses(names) {
+    const encodedList = []
+    names.map(name => {
+      const encodeData = this.PublicResolver[
+        'addr(bytes32,uint256)'
+      ].encodeData([hash(name), COINID_CONFLUX])
+      encodedList.push(encodeData)
+    })
+    const response = await this.PublicResolver.multicall(encodedList)
+    const addressList = {}
+    response.map((item, index) => {
+      const decoded = this.PublicResolver[
+        'addr(bytes32,uint256)'
+      ].decodeOutputs(item.toString('hex'))
+      const address = encodeCfxAddress(decoded, networkId)
+      addressList[names[index]] = address
+    })
+    return addressList
+  }
 
-function _getNameEncodedData(address) {
-  const reverseStr = address.slice(2) + '.addr.reverse'
-  const nh = namehash(reverseStr)
-  const encodeData = web3domain.PublicResolver.name.encodeData([nh])
-  return encodeData
+  _getResoverContract(address) {
+    if (!address) return this.PublicResolver
+    return this.cfxClient.Contract({
+      abi: PublicResolver_ABI,
+      address: encodeCfxAddress(address, networkId),
+    })
+  }
+
+  _getNameEncodedData(address) {
+    const reverseStr =
+      decodeCfxAddress(address).hexAddress.slice(2) + '.addr.reverse'
+    const nh = hash(reverseStr)
+    const encodeData = this.PublicResolver.name.encodeData([nh])
+    return encodeData
+  }
+
+  _initContract() {
+    this.PublicResolver = this.cfxClient.Contract({
+      abi: PublicResolver_ABI,
+      address: PUBLIC_RESOLVER_ADDRESS,
+    })
+    this.Registry = this.cfxClient.Contract({
+      abi: ENS_ABI,
+      address: REGISTRY_ADDRESS,
+    })
+    this.ReverseRegistrar = this.cfxClient.Contract({
+      abi: ReverseRegistrar_ABI,
+      address: REVERSE_REGISTRAR_ADDRESS,
+    })
+  }
 }

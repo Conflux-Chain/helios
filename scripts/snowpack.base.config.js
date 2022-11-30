@@ -74,7 +74,7 @@ module.exports = {
     // packageLookupFields: ['browser', 'module'],
     packageLookupFields: ['module', 'browser'],
     packageExportLookupFields: ['exports', 'browser'],
-    knownEntrypoints: [],
+    knownEntrypoints: ['blakejs/blake2b'],
   },
   buildOptions: {
     // this brokes sourcemap
