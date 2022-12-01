@@ -57,31 +57,37 @@ function Home() {
     async function aGetName() {
       //CNS DEMO
       const cns = new CNS(globalThis.___CFXJS_USE_RPC__PRIVIDER, 1)
-      const name = await cns.getName(
-        'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
-      )
-      console.info('name===', name)
-      const address = await cns.getAddress('zctocm.web3')
-      console.info('address===', address)
-      const names = await cns.getNames([
-        'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
-        'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
-      ])
-      console.info('names===', names)
-      const addresses = await cns.getAddresses(['zctocm.web3', 'zctocm.web3'])
-      console.info('addresses===', addresses)
+      console.info(cns)
+      // const name = await cns.getName(
+      //   'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
+      // )
+      // console.info('name===', name)
+      // const address = await cns.getAddress('zctocm.web3')
+      // console.info('address===', address)
+      // const names = await cns.getNames([
+      //   'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
+      //   'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
+      // ])
+      // console.info('names===', names)
+      // const addresses = await cns.getAddresses(['zctocm.web3', 'zctocm.web3'])
+      // console.info('addresses===', addresses)
 
       //ENS DEMO
       const ens = new ENS(globalThis.___CFXJS_USE_RPC__PRIVIDER)
       console.info(ens)
-      // const name=await ens.getName('0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045')
-      // console.info('name===',name)
-      // const address=await ens.getAddress('vitalik.eth')
-      // console.info('address===',address)
-      // const names=await ens.getNames(['0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045','0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'])
-      // console.info('names===',names)
-      // const addresses=await ens.getAddresses(['vitalik.eth','vitalik.eth'])
-      // console.info('addresses===',addresses)
+      const name = await ens.getName(
+        '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      )
+      console.info('name===', name)
+      const address = await ens.getAddress('vitalik.eth')
+      console.info('address===', address)
+      const names = await ens.getNames([
+        '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+        '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      ])
+      console.info('names===', names)
+      const addresses = await ens.getAddresses(['vitalik.eth', 'vitalik.eth'])
+      console.info('addresses===', addresses)
     }
     aGetName()
   })
