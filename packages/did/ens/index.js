@@ -2,7 +2,6 @@ import ENSRegistryWithFallback from './abi/ENSRegistryWithFallback.json'
 import Resolver from './abi/Resolver.json'
 import PublicResolver from './abi/PublicResolver.json'
 import Web3EthContract from 'web3-eth-contract'
-import Web3Eth from 'web3-eth-ens'
 import Web3EthAbi from 'web3-eth-abi'
 import {hash} from '@ensdomains/eth-ens-namehash'
 
@@ -15,7 +14,6 @@ export default class ENS {
   ENSRegistryWithFallbackContract
   constructor(provider) {
     if (!provider) throw new Error('The provider is required')
-    this.ens = new Web3Eth(provider)
     Web3EthContract.setProvider(provider)
     this._initContract()
   }
@@ -28,7 +26,7 @@ export default class ENS {
       const resoverAddress = await this.ENSRegistryWithFallbackContract.methods
         .resolver(hashStr)
         .call()
-      const resolverContract = this.getResolverContract(resoverAddress)
+      const resolverContract = this._getResolverContract(resoverAddress)
       const nameResult = await resolverContract.methods.name(hashStr).call()
       return nameResult.toString('hex')
     } catch (error) {
@@ -37,9 +35,14 @@ export default class ENS {
   }
 
   async getAddress(name) {
+    const nh = hash(name)
     try {
-      const address = await this.ens.getAddress(name)
-      return address
+      const resolverAddr = await this.ENSRegistryWithFallbackContract.methods
+        .resolver(nh)
+        .call()
+      const resolverContract = this._getResolverContract(resolverAddr)
+      const addr = await resolverContract.methods.addr(nh).call()
+      return addr
     } catch (error) {
       return ''
     }
@@ -97,7 +100,7 @@ export default class ENS {
     )
   }
 
-  getResolverContract(address) {
+  _getResolverContract(address) {
     return new Web3EthContract(Resolver, address)
   }
 }

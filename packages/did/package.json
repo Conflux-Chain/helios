@@ -8,7 +8,6 @@
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "js-conflux-sdk": "2.0.7",
     "web3-eth-abi": "1.8.1",
-    "web3-eth-contract": "1.8.1",
-    "web3-eth-ens": "1.8.1"
+    "web3-eth-contract": "1.8.1"
   }
 }

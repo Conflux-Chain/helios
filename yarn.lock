@@ -3743,7 +3743,6 @@ __metadata:
     js-conflux-sdk: 2.0.7
     web3-eth-abi: 1.8.1
     web3-eth-contract: 1.8.1
-    web3-eth-ens: 1.8.1
   languageName: unknown
   linkType: soft
 
@@ -30309,22 +30308,6 @@ __metadata:
     web3-eth-contract: 1.2.11
     web3-utils: 1.2.11
   checksum: 987999713c5c79f23a67ad244813212e9582566f6a7665312f887ce0eda77d91b85d3c0df21af14ef6ab6e970626d5d02129a2df3a8c257151f9540d6968a748
-  languageName: node
-  linkType: hard
-
-"web3-eth-ens@npm:1.8.1":
-  version: 1.8.1
-  resolution: "web3-eth-ens@npm:1.8.1"
-  dependencies:
-    content-hash: ^2.5.2
-    eth-ens-namehash: 2.0.8
-    web3-core: 1.8.1
-    web3-core-helpers: 1.8.1
-    web3-core-promievent: 1.8.1
-    web3-eth-abi: 1.8.1
-    web3-eth-contract: 1.8.1
-    web3-utils: 1.8.1
-  checksum: a5fbbdf483585ca7b1ba291f712d79d3bb870886d128ef1ca6d4f05d47f7bc7f8753922f78a8d7965253545712d674a54e68fb171b33f81ae721c9ce1e962239
   languageName: node
   linkType: hard
 
