@@ -67,8 +67,8 @@ module.exports = {
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   modulePathIgnorePatterns: [
     '/packages/browser-extension',
-    '/packages/ui/components/Modal',
-    '/packages/workspace-tools',
+    // '/packages/ui/components/Modal',
+    // '/packages/workspace-tools',
   ],
   injectGlobals: true,
   globals: {
