@@ -66,6 +66,7 @@ function SendTransaction() {
 
   const [addressError, setAddressError] = useState('')
   const [inputAddress, setInputAddress] = useState(toAddress)
+  const [isInputAddr, setIsInputAddr] = useState(false)
 
   const [estimateError, setEstimateError] = useState('')
   const [hasNoTxn, setHasNoTxn] = useState(false)
@@ -149,17 +150,19 @@ function SendTransaction() {
     setSendAmount(amount)
   }
   const onChangeAddress = address => {
+    !isInputAddr && setIsInputAddr(true)
     setInputAddress(address)
   }
 
   //debounce get validate address(cns/ens address) message
-  const {validatedAddressError, validatedAddress} = useValidatedAddressUsername(
-    {
-      initAddress: inputAddress,
-      initAddressError: addressError,
+  const {error: validatedAddressError, address: validatedAddress} =
+    useValidatedAddressUsername({
+      inputAddress,
       netId,
-    },
-  )
+      type,
+      isInputAddr,
+    })
+
   useEffect(() => {
     setAddressError(validatedAddressError)
     setToAddress(validatedAddress)

@@ -1,5 +1,6 @@
 import BN from 'bn.js'
 import punycode from 'punycode/punycode'
+import {CNS, ENS} from '@fluent-wallet/did'
 import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress, isChecksummed, toChecksum} from '@fluent-wallet/account'
@@ -337,4 +338,54 @@ export function isValidDomainName(address) {
       /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
     )
   return match !== null
+}
+
+const getNameServiceInterface = ({type, provider, netId}) => {
+  if (type && provider) {
+    if (type === NETWORK_TYPE.CFX) {
+      return new CNS(provider, netId)
+    }
+    return new ENS(provider)
+  }
+  return null
+}
+
+export async function getSingleAddressWithNameService({
+  type,
+  netId,
+  provider,
+  name,
+}) {
+  const nameServiceInterface = getNameServiceInterface({type, provider, netId})
+  return await nameServiceInterface?.getAddress?.(name)
+}
+
+export async function getAddressesWithNameService({
+  type,
+  netId,
+  provider,
+  nameArr,
+}) {
+  const nameServiceInterface = getNameServiceInterface({type, provider, netId})
+  return await nameServiceInterface?.getAddresses?.([...nameArr])
+}
+
+export async function getSingleServiceNameWithAddress({
+  type,
+  netId,
+  provider,
+  address,
+}) {
+  const nameServiceInterface = getNameServiceInterface({type, provider, netId})
+  return await nameServiceInterface?.getName?.(address)
+}
+
+export async function getServiceNamesWithAddresses({
+  type,
+  netId,
+  provider,
+  addressArr,
+}) {
+  const nameServiceInterface = getNameServiceInterface({type, provider, netId})
+  return await nameServiceInterface?.getNames?.([...addressArr])
 }

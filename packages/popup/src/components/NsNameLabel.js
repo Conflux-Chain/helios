@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import Tooltip from '@fluent-wallet/component-tooltip'
 import {useTranslation} from 'react-i18next'
 
-function EnsNameLabel({ensName = '', className = ''}) {
+function NsNameLabel({nsName = '', className = ''}) {
   const {t} = useTranslation()
 
   return (
@@ -10,7 +10,7 @@ function EnsNameLabel({ensName = '', className = ''}) {
       content={
         <div>
           <div>{t('web3Name')}</div>
-          <div>{ensName}</div>
+          <div>{nsName}</div>
         </div>
       }
     >
@@ -22,16 +22,16 @@ function EnsNameLabel({ensName = '', className = ''}) {
         />
         {/* TODO: 计算字符长度 */}
         <div className="ml-0.5 text-primary text-ellipsis max-w-[140px]">
-          {ensName}
+          {nsName}
         </div>
       </div>
     </Tooltip>
   )
 }
 
-EnsNameLabel.propTypes = {
-  ensName: PropTypes.string,
+NsNameLabel.propTypes = {
+  nsName: PropTypes.string,
   className: PropTypes.string,
 }
 
-export default EnsNameLabel
+export default NsNameLabel

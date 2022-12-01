@@ -6,7 +6,7 @@ import {formatHexToDecimal} from '@fluent-wallet/data-format'
 import {SendOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 
 import {formatIntoChecksumAddress, formatLocalizationLang} from '../../../utils'
-import {SlideCard, CopyButton, WrapIcon} from '../../../components'
+import {SlideCard, CopyButton, WrapIcon, NsNameLabel} from '../../../components'
 import {HistoryStatusIcon, HistoryBalance, ResendButtons} from './'
 import {useAddressType} from '../../../hooks/useApi'
 
@@ -49,6 +49,7 @@ function TransitionDetail({
   isExternalTx,
   fromAddress = '',
   toAddress = '',
+  serviceName = '',
   actionName = '',
   statusIconColor = '',
   copyButtonContainerClassName,
@@ -118,7 +119,7 @@ function TransitionDetail({
             />
           )}
 
-          {displayAddress && (
+          {(displayAddress || serviceName) && (
             <TransitionItem
               transitionTitle={t(
                 isContractAddress
@@ -128,24 +129,30 @@ function TransitionDetail({
                   : 'toAddress',
               )}
               TransitionValueOverlay={
-                <div className="flex font-medium items-center">
-                  {isContractAddress && (
-                    <FileOutlined className="w-4 h-4 mr-1 text-primary" />
-                  )}
+                serviceName ? (
+                  <NsNameLabel nsName={serviceName} />
+                ) : (
+                  <div className="flex font-medium items-center">
+                    {isContractAddress && (
+                      <FileOutlined className="w-4 h-4 mr-1 text-primary" />
+                    )}
 
-                  <Tooltip content={displayAddress} placement="topLeft">
-                    {shortenAddress(formatIntoChecksumAddress(displayAddress))}
-                  </Tooltip>
-                  {
-                    <CopyButton
-                      text={displayAddress}
-                      className="w-3 h-3 text-primary"
-                      containerClassName={copyButtonContainerClassName}
-                      toastClassName={copyButtonToastClassName}
-                      wrapperClassName="!w-5 !h-5 ml-1"
-                    />
-                  }
-                </div>
+                    <Tooltip content={displayAddress} placement="topLeft">
+                      {shortenAddress(
+                        formatIntoChecksumAddress(displayAddress),
+                      )}
+                    </Tooltip>
+                    {
+                      <CopyButton
+                        text={displayAddress}
+                        className="w-3 h-3 text-primary"
+                        containerClassName={copyButtonContainerClassName}
+                        toastClassName={copyButtonToastClassName}
+                        wrapperClassName="!w-5 !h-5 ml-1"
+                      />
+                    }
+                  </div>
+                )
               }
             />
           )}
@@ -236,6 +243,7 @@ TransitionDetail.propTypes = {
   receipt: PropTypes.object,
   fromAddress: PropTypes.string,
   toAddress: PropTypes.string,
+  serviceName: PropTypes.string,
   actionName: PropTypes.string,
   copyButtonContainerClassName: PropTypes.string,
   copyButtonToastClassName: PropTypes.string,

@@ -1,4 +1,4 @@
-import {useEffect, useState, useMemo} from 'react'
+import {useEffect, useState, useMemo, useCallback} from 'react'
 import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import create from 'zustand'
@@ -33,7 +33,13 @@ import {
   usePendingAuthReq,
   useNetwork1559Compatible,
 } from './useApi'
-import {validateAddress, validateByEip55, isValidDomainName} from '../utils'
+import {
+  validateAddress,
+  validateByEip55,
+  isValidDomainName,
+  getSingleAddressWithNameService,
+  getSingleServiceNameWithAddress,
+} from '../utils'
 
 const {HOME} = ROUTES
 const {LEDGER_APP_NAME} = consts
@@ -594,45 +600,109 @@ export const useIsTxTreatedAsEIP1559 = txType => {
 
 export const useValidatedAddressUsername = ({
   netId,
-  initAddress,
-  initAddressError,
+  inputAddress,
+  type,
+  isInputAddr,
 }) => {
   const {t} = useTranslation()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const [validateRet, setValidateRet] = useState(() => ({
+    address: '',
+    nsName: '',
+    error: '',
+  }))
 
-  const [validatedAddress, setValidatedAddress] = useState(initAddress)
-  const [validatedAddressError, setValidatedAddressError] =
-    useState(initAddressError)
+  const [loading, setLoading] = useState(false)
+
+  const setWrongMessage = useCallback(
+    errMsg => {
+      setValidateRet({
+        address: inputAddress,
+        nsName: '',
+        error:
+          errMsg || networkTypeIsCfx
+            ? t('invalidAddress')
+            : t('invalidHexAddress'),
+      })
+    },
+    [inputAddress, networkTypeIsCfx, t],
+  )
+
+  const onRequestNsAddress = useCallback(async () => {
+    try {
+      setLoading(true)
+      const nsRet = await getSingleAddressWithNameService({
+        type,
+        netId,
+        provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+        name: inputAddress,
+      })
+      console.log('address', nsRet)
+      setLoading(false)
+      if (nsRet) {
+        setValidateRet({
+          error: '',
+          address: nsRet,
+          nsName: inputAddress,
+        })
+      } else {
+        setWrongMessage()
+      }
+    } catch (err) {
+      setLoading(false)
+      setWrongMessage()
+    }
+  }, [inputAddress, netId, setWrongMessage, type])
+
+  const onRequestNsName = useCallback(async () => {
+    try {
+      setLoading(true)
+      const nsRet = await getSingleServiceNameWithAddress({
+        type,
+        netId,
+        provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+        address: inputAddress,
+      })
+      console.log('name', nsRet)
+      setLoading(false)
+      setValidateRet({error: '', address: inputAddress, nsName: nsRet || ''})
+    } catch (err) {
+      setValidateRet({error: '', address: inputAddress, nsName: ''})
+      setLoading(false)
+    }
+  }, [inputAddress, netId, type])
 
   useDebounce(
     async () => {
-      if (isValidDomainName(initAddress)) {
-        // TODO: fetch ens/cns address and setToAddress
-        // if validated setValidatedAddress and setAddressError "" else go next
+      if (!inputAddress && !isInputAddr) {
         return
       }
-
-      if (!initAddress) {
-        return
+      // get ns name
+      if (isValidDomainName(inputAddress) && type) {
+        return onRequestNsAddress()
       }
-
-      if (!validateAddress(initAddress, networkTypeIsCfx, netId)) {
-        return setValidatedAddressError(
-          networkTypeIsCfx ? t('invalidAddress') : t('invalidHexAddress'),
-        )
+      // wrong address
+      if (!validateAddress(inputAddress, networkTypeIsCfx, netId)) {
+        return setWrongMessage()
       }
-
-      if (!networkTypeIsCfx && !validateByEip55(initAddress)) {
-        return setValidatedAddressError(t('unChecksumAddress'))
+      // wrong checkSum
+      if (!networkTypeIsCfx && !validateByEip55(inputAddress)) {
+        return setWrongMessage(t('unChecksumAddress'))
       }
-      setValidatedAddressError('')
+      //correct address
+      setValidateRet({
+        ...validateRet,
+        error: '',
+      })
+      // get ns name
+      onRequestNsName()
     },
     300,
-    [initAddress],
+    [inputAddress],
   )
 
   return {
-    validatedAddressError,
-    validatedAddress,
+    ...validateRet,
+    loading,
   }
 }

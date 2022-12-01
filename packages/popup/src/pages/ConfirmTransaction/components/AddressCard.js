@@ -15,7 +15,7 @@ import {
   DisplayBalance,
   ProgressIcon,
   CopyButton,
-  EnsNameLabel,
+  NsNameLabel,
 } from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
@@ -56,10 +56,10 @@ const TransactionDirection = ({
             <Text
               className="text-xs text-gray-40 mb-1"
               id="currentAccountName"
-              text={<EnsNameLabel ensName={'ensName'} />}
-              // text={currentAccountName}
+              // text={<NsNameLabel nsName={'nsName'} />}
+              text={currentAccountName}
             />
-            {/* {<EnsNameLabel ensName={'ensName'} />} */}
+            {/* {<NsNameLabel nsName={'nsName'} />} */}
             <Text
               className="text-gray-80"
               id="fromAddress"

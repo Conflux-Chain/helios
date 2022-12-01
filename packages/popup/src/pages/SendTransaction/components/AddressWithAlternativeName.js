@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Tooltip from '@fluent-wallet/component-tooltip'
-import {CustomTag, EnsNameLabel} from '../../../components'
+import {CustomTag, NsNameLabel} from '../../../components'
 import {AddressCheckedSymbol} from './'
 
 // TODO: remove mock data
@@ -10,7 +10,7 @@ function AddressWithAlternativeName({
   checked = true,
   address = 'cfxtest:aamx6vj8avtza17s92tsd5sr77mvtw7rparkba6px2',
   displayNoteName = 'my account',
-  ensName = '999999999999999999999999999999',
+  nsName = '999999999999999999999999999999',
 }) {
   const {t} = useTranslation()
 
@@ -18,7 +18,7 @@ function AddressWithAlternativeName({
     <div className="border-solid border-gray-20 border rounded-sm px-3 py-2 flex items-center justify-between">
       <div>
         <div className="flex items-center">
-          {ensName && <EnsNameLabel ensName={ensName} className="mr-3" />}
+          {nsName && <NsNameLabel nsName={nsName} className="mr-3" />}
           {displayNoteName && (
             <CustomTag
               backgroundColor="bg-primary-10"
@@ -56,7 +56,7 @@ AddressWithAlternativeName.propTypes = {
   checked: PropTypes.bool,
   displayNoteName: PropTypes.string,
   address: PropTypes.string,
-  ensName: PropTypes.string,
+  nsName: PropTypes.string,
 }
 
 export default AddressWithAlternativeName

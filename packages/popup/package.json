@@ -52,8 +52,5 @@
     "valid-url": "1.0.9",
     "webextension-polyfill": "0.8.0",
     "zustand": "^3.7.2"
-  },
-  "devDependencies": {
-    "@types/punycode": "^2"
   }
 }
