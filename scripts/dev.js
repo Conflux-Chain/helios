@@ -43,9 +43,10 @@ process.on('uncaughtException', (...args) => console.error(...args))
   if (shouldCleanCache) await clearCache()
   /* servers =  */ await Promise.all([
     ...builds.map(b => {
-      return loadConfiguration(undefined, b).then(config =>
-        startServer({config}),
-      )
+      return loadConfiguration(undefined, b).then(config => {
+        // console.log('config', config)
+        startServer({config})
+      })
     }),
     buildBg.serve(),
     buildExtReload(),
