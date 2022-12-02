@@ -24,7 +24,21 @@
     "esinstall/rollup-plugin-polyfill-node": "0.8.0",
     "esinstall/cjs-module-lexer": "^1.2.2",
     "esinstall/es-module-lexer": "^0.9.3",
-    "esinstall/@rollup/plugin-node-resolve": "^10.0.0"
+    "esinstall/@rollup/plugin-node-resolve": "^10.0.0",
+    "@ethersproject/address": "^5.7.0",
+    "@ethersproject/bignumber": "^5.7.0",
+    "@ethersproject/bytes": "^5.7.0",
+    "@ethersproject/constants": "^5.7.0",
+    "@ethersproject/hash": "^5.7.0",
+    "@ethersproject/keccak256": "^5.7.0",
+    "@ethersproject/logger": "^5.7.0",
+    "@ethersproject/properties": "^5.7.0",
+    "@ethersproject/strings": "^5.7.0",
+    "@ethersproject/sha2": "^5.7.0",
+    "js-conflux-sdk": "^2.1.9",
+    "big.js": "^5.2.2",
+    "eth-lib": "0.2.8",
+    "@ethersproject/abi": "^5.7.0"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",

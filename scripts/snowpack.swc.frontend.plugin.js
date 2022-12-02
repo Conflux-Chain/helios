@@ -83,6 +83,7 @@ module.exports = function (/* snowpackConfig, pluginOptions */) {
       if (!isDev()) return
       if (fileExt !== '.js' && fileExt !== '.jsx') return
       if (id.includes('js-conflux-sdk')) return
+      if (id.includes('web3-eth-contract/node_modules/util/util.js')) return
       // add code for react hmr
       const devJSFile = id.endsWith('/packages/popup/src/index.dev.js')
       if (devJSFile) {
