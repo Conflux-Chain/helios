@@ -603,6 +603,7 @@ export const useValidatedAddressUsername = ({
   inputAddress,
   type,
   isInputAddr,
+  cb,
 }) => {
   const {t} = useTranslation()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
@@ -629,9 +630,10 @@ export const useValidatedAddressUsername = ({
   )
 
   const onRequestNsAddress = useCallback(async () => {
+    let nsRet
     try {
       setLoading(true)
-      const nsRet = await getSingleAddressWithNameService({
+      nsRet = await getSingleAddressWithNameService({
         type,
         netId,
         provider: window?.___CFXJS_USE_RPC__PRIVIDER,
@@ -652,12 +654,14 @@ export const useValidatedAddressUsername = ({
       setLoading(false)
       setWrongMessage()
     }
+    return nsRet
   }, [inputAddress, netId, setWrongMessage, type])
 
   const onRequestNsName = useCallback(async () => {
+    let nsRet
     try {
       setLoading(true)
-      const nsRet = await getSingleServiceNameWithAddress({
+      nsRet = await getSingleServiceNameWithAddress({
         type,
         netId,
         provider: window?.___CFXJS_USE_RPC__PRIVIDER,
@@ -670,6 +674,7 @@ export const useValidatedAddressUsername = ({
       setValidateRet({error: '', address: inputAddress, nsName: ''})
       setLoading(false)
     }
+    return nsRet
   }, [inputAddress, netId, type])
 
   useDebounce(
@@ -679,7 +684,7 @@ export const useValidatedAddressUsername = ({
       }
       // get ns name
       if (isValidDomainName(inputAddress) && type) {
-        return onRequestNsAddress()
+        return cb?.({ret: await onRequestNsAddress(), type: 'address'})
       }
       // wrong address
       if (!validateAddress(inputAddress, networkTypeIsCfx, netId)) {
@@ -691,11 +696,12 @@ export const useValidatedAddressUsername = ({
       }
       //correct address
       setValidateRet({
-        ...validateRet,
+        address: inputAddress,
+        nsName: '',
         error: '',
       })
       // get ns name
-      onRequestNsName()
+      return cb?.({ret: await onRequestNsName(), type: 'nsName'})
     },
     300,
     [inputAddress],

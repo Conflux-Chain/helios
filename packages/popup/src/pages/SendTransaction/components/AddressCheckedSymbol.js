@@ -41,7 +41,7 @@ function AddressCheckedSymbol({checked, onClickCloseBtn, className = ''}) {
     )
   }
 
-  if (checked && showDeleteBtn) {
+  if ((checked && showDeleteBtn) || !checked) {
     return (
       <CloseCircleFilled
         className="text-gray-40 w-4 h-4 animate-fade-in opacity-1 cursor-pointer"

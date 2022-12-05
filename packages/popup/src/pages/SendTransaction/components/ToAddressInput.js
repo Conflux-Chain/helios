@@ -9,7 +9,14 @@ import {ROUTES} from '../../../constants'
 import {AddressCheckingSymbol} from './'
 const {ADDRESS_BOOK} = ROUTES
 
-function ToAddressInput({address, onChangeAddress, errorMessage}) {
+function ToAddressInput({
+  address,
+  onChangeAddress,
+  onClickCloseBtn,
+  errorMessage,
+  addressLoading = false,
+  addressChecked = false,
+}) {
   const {t} = useTranslation()
   const history = useHistory()
 
@@ -41,7 +48,16 @@ function ToAddressInput({address, onChangeAddress, errorMessage}) {
         errorMessage={errorMessage}
         id="toAddressInput"
         suffixWrapperClassName="w-auto h-auto"
-        suffix={<AddressCheckingSymbol className="!w-5 !h-5 text-success" />}
+        suffix={
+          address && (
+            <AddressCheckingSymbol
+              loading={addressLoading}
+              checked={addressChecked}
+              onClickCloseBtn={onClickCloseBtn}
+              className="!w-5 !h-5 text-success"
+            />
+          )
+        }
       />
     </CompWithLabel>
   )
@@ -50,7 +66,10 @@ function ToAddressInput({address, onChangeAddress, errorMessage}) {
 ToAddressInput.propTypes = {
   address: PropTypes.string,
   onChangeAddress: PropTypes.func,
+  onClickCloseBtn: PropTypes.func,
   errorMessage: PropTypes.string,
+  addressLoading: PropTypes.bool,
+  addressChecked: PropTypes.bool,
 }
 
 export default ToAddressInput

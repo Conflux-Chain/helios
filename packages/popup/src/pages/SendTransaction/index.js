@@ -67,6 +67,7 @@ function SendTransaction() {
   const [addressError, setAddressError] = useState('')
   const [inputAddress, setInputAddress] = useState(toAddress)
   const [isInputAddr, setIsInputAddr] = useState(false)
+  const [showAddressChecked, setShowAddressChecked] = useState(false)
 
   const [estimateError, setEstimateError] = useState('')
   const [hasNoTxn, setHasNoTxn] = useState(false)
@@ -150,18 +151,37 @@ function SendTransaction() {
     setSendAmount(amount)
   }
   const onChangeAddress = address => {
+    if (nsLoading) {
+      return
+    }
     !isInputAddr && setIsInputAddr(true)
+    setShowAddressChecked(false)
     setInputAddress(address)
   }
 
+  const onClickAddressInputCloseBtn = () => {
+    setInputAddress('')
+    !isInputAddr && setIsInputAddr(true)
+  }
   //debounce get validate address(cns/ens address) message
-  const {error: validatedAddressError, address: validatedAddress} =
-    useValidatedAddressUsername({
-      inputAddress,
-      netId,
-      type,
-      isInputAddr,
-    })
+  const onRequestNsCb = ({type, ret}) => {
+    if (!ret && type === 'nsName') {
+      setShowAddressChecked(true)
+    }
+  }
+
+  const {
+    error: validatedAddressError,
+    address: validatedAddress,
+    nsName,
+    loading: nsLoading,
+  } = useValidatedAddressUsername({
+    inputAddress,
+    netId,
+    type,
+    isInputAddr,
+    cb: onRequestNsCb,
+  })
 
   useEffect(() => {
     setAddressError(validatedAddressError)
@@ -184,6 +204,7 @@ function SendTransaction() {
     toAddress === Object.keys(addressNote)?.[0],
   )
   const displayNoteName = addressNote?.[toAddress] || noteName
+
   useEffect(() => {
     return () => {
       setAddressNote?.({})
@@ -202,13 +223,24 @@ function SendTransaction() {
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 pt-4 pb-6">
         <div className="flex flex-col">
-          {/* TODO: add check address logic */}
-          <AddressWithAlternativeName displayNoteName={displayNoteName} />
-          <ToAddressInput
-            address={inputAddress}
-            onChangeAddress={onChangeAddress}
-            errorMessage={addressError}
-          />
+          {(nsName || displayNoteName) && !nsLoading ? (
+            <AddressWithAlternativeName
+              address={!addressError ? toAddress : ''}
+              displayNoteName={displayNoteName}
+              nsName={nsName}
+              onClickCloseBtn={onClickAddressInputCloseBtn}
+            />
+          ) : (
+            <ToAddressInput
+              address={inputAddress}
+              onChangeAddress={onChangeAddress}
+              errorMessage={addressError}
+              addressLoading={nsLoading}
+              addressChecked={showAddressChecked}
+              onClickCloseBtn={onClickAddressInputCloseBtn}
+            />
+          )}
+
           <TokenAndAmount
             selectedTokenId={sendTokenId}
             amount={sendAmount}

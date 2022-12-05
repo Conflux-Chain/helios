@@ -1,6 +1,6 @@
 import {useState, useCallback} from 'react'
 import {ContactsOutlined} from '@fluent-wallet/component-icons'
-import {CNS, ENS} from '@fluent-wallet/did'
+// import {CNS, ENS} from '@fluent-wallet/did'
 import {
   CFX_MAINNET_CHAINID,
   CFX_ESPACE_MAINNET_CHAINID,
@@ -56,20 +56,20 @@ function Home() {
   useEffectOnce(() => {
     async function aGetName() {
       //CNS DEMO
-      const cns = new CNS(window.___CFXJS_USE_RPC__PRIVIDER, 1)
-      const name = await cns.getName(
-        'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
-      )
-      console.info('name===', name)
-      const address = await cns.getAddress('zctocm.web3')
-      console.info('address===', address)
-      const names = await cns.getNames([
-        'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
-        'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
-      ])
-      console.info('names===', names)
-      const addresses = await cns.getAddresses(['zctocm.web3', 'zctocm.web3'])
-      console.info('addresses===', addresses)
+      // const cns = new CNS(window.___CFXJS_USE_RPC__PRIVIDER, 1)
+      // const name = await cns.getName(
+      //   'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
+      // )
+      // console.info('name===', name)
+      // const address = await cns.getAddress('zctocm.web3')
+      // console.info('address===', address)
+      // const names = await cns.getNames([
+      //   'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
+      //   'cfxtest:aak86utdktvnh3yta2kjvz62yae3kkcu1y9m9fgykn',
+      // ])
+      // console.info('names===', names)
+      // const addresses = await cns.getAddresses(['zctocm.web3', 'zctocm.web3'])
+      // console.info('addresses===', addresses)
       // //ENS DEMO
       // const ens = new ENS(window.___CFXJS_USE_RPC__PRIVIDER)
       // console.info(ens)

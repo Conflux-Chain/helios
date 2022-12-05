@@ -5,12 +5,11 @@ import Tooltip from '@fluent-wallet/component-tooltip'
 import {CustomTag, NsNameLabel} from '../../../components'
 import {AddressCheckedSymbol} from './'
 
-// TODO: remove mock data
 function AddressWithAlternativeName({
-  checked = true,
-  address = 'cfxtest:aamx6vj8avtza17s92tsd5sr77mvtw7rparkba6px2',
-  displayNoteName = 'my account',
-  nsName = '999999999999999999999999999999',
+  onClickCloseBtn,
+  address = '',
+  displayNoteName = '',
+  nsName = '',
 }) {
   const {t} = useTranslation()
 
@@ -45,15 +44,16 @@ function AddressWithAlternativeName({
         <div>{address ? shortenAddress(address) : ''}</div>
       </div>
       <AddressCheckedSymbol
-        checked={checked}
+        checked={true}
         className="!w-5 !h-5 text-success"
+        onClickCloseBtn={onClickCloseBtn}
       />
     </div>
   )
 }
 
 AddressWithAlternativeName.propTypes = {
-  checked: PropTypes.bool,
+  onClickCloseBtn: PropTypes.func,
   displayNoteName: PropTypes.string,
   address: PropTypes.string,
   nsName: PropTypes.string,
