@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-import useSWR from 'swr'
 import {useState, useEffect, useRef} from 'react'
 import {Big} from '@fluent-wallet/data-format'
 import i18next from 'i18next'
@@ -15,14 +14,13 @@ import {
   transformToTitleCase,
   formatStatus,
   formatIntoChecksumAddress,
-  getSingleServiceNameWithAddress,
 } from '../../../utils'
 import {
   useNetworkTypeIsCfx,
   useCurrentTicker,
   useCurrentAddress,
 } from '../../../hooks/useApi'
-import {useDecodeData, useDappIcon} from '../../../hooks'
+import {useDecodeData, useDappIcon, useServiceName} from '../../../hooks'
 import {ROUTES} from '../../../constants'
 
 const {RESEND_TRANSACTION} = ROUTES
@@ -39,20 +37,6 @@ const ICON_COLOR = {
   executed: 'bg-[#F0FDFC] text-[#83DBC6]',
   pending: 'bg-warning-10 text-warning',
   confirmed: 'bg-success-10 text-success',
-}
-
-const useServiceName = ({type, netId, provider, address, notSend}, opts) => {
-  return useSWR(
-    type && provider && address && !notSend ? [type, netId, address] : null,
-    () =>
-      getSingleServiceNameWithAddress({
-        type,
-        netId,
-        provider,
-        address,
-      }),
-    opts,
-  )
 }
 
 function HistoryItem({

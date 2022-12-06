@@ -1,4 +1,6 @@
 import {useEffect, useState, useMemo, useCallback} from 'react'
+import {isArray} from '@fluent-wallet/checks'
+import useSWR from 'swr'
 import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import create from 'zustand'
@@ -39,6 +41,7 @@ import {
   isValidDomainName,
   getSingleAddressWithNameService,
   getSingleServiceNameWithAddress,
+  getServiceNamesWithAddresses,
 } from '../utils'
 
 const {HOME} = ROUTES
@@ -711,4 +714,40 @@ export const useValidatedAddressUsername = ({
     ...validateRet,
     loading,
   }
+}
+
+export const useServiceName = (
+  {type, netId, provider, address, notSend = false},
+  opts,
+) => {
+  return useSWR(
+    type && provider && address && !notSend ? [type, netId, address] : null,
+    () =>
+      getSingleServiceNameWithAddress({
+        type,
+        netId,
+        provider,
+        address,
+      }),
+    opts,
+  )
+}
+
+export const useServiceNames = (
+  {type, netId, provider, addressArr, notSend = false},
+  opts,
+) => {
+  return useSWR(
+    type && provider && isArray(addressArr) && addressArr?.length && !notSend
+      ? [type, netId, ...addressArr]
+      : null,
+    () =>
+      getServiceNamesWithAddresses({
+        type,
+        netId,
+        provider,
+        addressArr: [...addressArr],
+      }),
+    opts,
+  )
 }
