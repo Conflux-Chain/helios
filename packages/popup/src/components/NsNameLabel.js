@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import Tooltip from '@fluent-wallet/component-tooltip'
 import {useTranslation} from 'react-i18next'
-
+import {formatNsName} from '../utils'
 function NsNameLabel({nsName = '', className = ''}) {
   const {t} = useTranslation()
 
@@ -20,9 +20,8 @@ function NsNameLabel({nsName = '', className = ''}) {
           alt="group-icon"
           className="w-6 h-6"
         />
-        {/* TODO: 计算字符长度 */}
         <div className="ml-0.5 text-primary text-ellipsis max-w-[140px]">
-          {nsName}
+          {formatNsName(nsName)}
         </div>
       </div>
     </Tooltip>

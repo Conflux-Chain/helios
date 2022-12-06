@@ -80,15 +80,12 @@ function HistoryItem({
     data: {value: currentAddress, network},
   } = useCurrentAddress()
 
-  const {data: serviceName} = useServiceName({
+  const {data: nsName} = useServiceName({
     type: network?.type,
     netId: network?.netId,
     provider: window?.___CFXJS_USE_RPC__PRIVIDER,
     address: toAddress,
     notSend: isHide,
-    opts: {
-      refreshInterval: 3000,
-    },
   })
 
   const fromAddress = payload?.from || ''
@@ -271,8 +268,8 @@ function HistoryItem({
           <div className="flex mt-0.5 items-center justify-between text-gray-40 text-xs">
             <span>{contractName}</span>
             <span>
-              {serviceName
-                ? serviceName
+              {nsName
+                ? nsName
                 : toAddress &&
                   shortenAddress(formatIntoChecksumAddress(toAddress))}
             </span>
@@ -304,7 +301,7 @@ function HistoryItem({
         isExternalTx={isExternalTx}
         fromAddress={fromAddress}
         toAddress={toAddress}
-        serviceName={serviceName}
+        nsName={nsName}
         actionName={actionName}
         copyButtonContainerClassName={copyButtonContainerClassName}
         copyButtonToastClassName={copyButtonToastClassName}

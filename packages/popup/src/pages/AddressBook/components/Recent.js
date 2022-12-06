@@ -3,7 +3,9 @@ import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 
-import {useRecentTradingAddress} from '../../../hooks/useApi'
+import {useRecentTradingAddress, useCurrentAddress} from '../../../hooks/useApi'
+import {useServiceName, useAddressWithServiceName} from '../../../hooks'
+import {isValidDomainName, formatNsName} from '../../../utils'
 import {NoResult, ContactItem, Avatar} from '../../../components'
 
 function RecentItem({
@@ -17,6 +19,19 @@ function RecentItem({
 
   const [addToContact, setAddToContact] = useState(false)
 
+  const {
+    data: {
+      network: {type, netId},
+    },
+  } = useCurrentAddress()
+
+  const {data: nsName} = useServiceName({
+    type,
+    netId,
+    provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+    address,
+  })
+
   const onAddedContactCallback = async () => {
     setAddToContact(false)
     await refreshData?.()
@@ -28,13 +43,22 @@ function RecentItem({
   }
   return (
     <div className="cursor-pointer" id={`recent-tx-${address}`}>
-      {note ? (
+      {note || nsName ? (
         <div
           aria-hidden="true"
           id={recentItemId}
           onClick={() => onJumpToSendTx({address, note})}
         >
-          <ContactItem address={address} memo={note} />
+          <ContactItem
+            address={address}
+            memo={note}
+            memoOverlay={
+              <div>
+                {nsName && <span>{formatNsName(nsName)}</span>}
+                {note && <span>{note}</span>}
+              </div>
+            }
+          />
         </div>
       ) : address && !addToContact ? (
         <div
@@ -86,7 +110,23 @@ RecentItem.propTypes = {
 
 function Recent({fuzzy = '', onJumpToSendTx}) {
   const {t} = useTranslation()
-  const {data: tradingAddressData, mutate} = useRecentTradingAddress({fuzzy})
+  const {
+    data: {
+      network: {type, netId},
+    },
+  } = useCurrentAddress()
+
+  const {data} = useAddressWithServiceName({
+    type,
+    netId,
+    provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+    name: fuzzy,
+    notSend: !isValidDomainName(fuzzy),
+  })
+
+  const {data: tradingAddressData, mutate} = useRecentTradingAddress(
+    data ? {fuzzy: data} : {fuzzy},
+  )
 
   const [displayTradingAddressData, setDisplayTradingAddressData] =
     useState(undefined)

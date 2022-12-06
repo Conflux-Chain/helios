@@ -49,7 +49,7 @@ function TransitionDetail({
   isExternalTx,
   fromAddress = '',
   toAddress = '',
-  serviceName = '',
+  nsName = '',
   actionName = '',
   statusIconColor = '',
   copyButtonContainerClassName,
@@ -119,7 +119,7 @@ function TransitionDetail({
             />
           )}
 
-          {(displayAddress || serviceName) && (
+          {(displayAddress || nsName) && (
             <TransitionItem
               transitionTitle={t(
                 isContractAddress
@@ -129,8 +129,8 @@ function TransitionDetail({
                   : 'toAddress',
               )}
               TransitionValueOverlay={
-                serviceName ? (
-                  <NsNameLabel nsName={serviceName} />
+                nsName ? (
+                  <NsNameLabel nsName={nsName} />
                 ) : (
                   <div className="flex font-medium items-center">
                     {isContractAddress && (
@@ -243,7 +243,7 @@ TransitionDetail.propTypes = {
   receipt: PropTypes.object,
   fromAddress: PropTypes.string,
   toAddress: PropTypes.string,
-  serviceName: PropTypes.string,
+  nsName: PropTypes.string,
   actionName: PropTypes.string,
   copyButtonContainerClassName: PropTypes.string,
   copyButtonToastClassName: PropTypes.string,

@@ -5,7 +5,7 @@ import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress, isChecksummed, toChecksum} from '@fluent-wallet/account'
 import {CFX_MAINNET_CHAINID, ETH_MAINNET_CHAINID} from '@fluent-wallet/consts'
-import {isArray} from '@fluent-wallet/checks'
+import {isArray, isString} from '@fluent-wallet/checks'
 import {
   PASSWORD_REG_EXP,
   RPC_METHODS,
@@ -388,4 +388,12 @@ export async function getServiceNamesWithAddresses({
 }) {
   const nameServiceInterface = getNameServiceInterface({type, provider, netId})
   return await nameServiceInterface?.getNames?.([...addressArr])
+}
+
+export const formatNsName = nsName => {
+  if (isString(nsName) && nsName.length > 19) {
+    return nsName.substring(0, 6) + '...' + nsName.substring(nsName.length - 13)
+  }
+
+  return formatNsName
 }

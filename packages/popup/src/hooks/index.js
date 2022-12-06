@@ -687,7 +687,8 @@ export const useValidatedAddressUsername = ({
       }
       // get ns name
       if (isValidDomainName(inputAddress) && type) {
-        return cb?.({ret: await onRequestNsAddress(), type: 'address'})
+        const ret = await onRequestNsAddress()
+        return cb?.({ret, type: 'address'})
       }
       // wrong address
       if (!validateAddress(inputAddress, networkTypeIsCfx, netId)) {
@@ -704,7 +705,8 @@ export const useValidatedAddressUsername = ({
         error: '',
       })
       // get ns name
-      return cb?.({ret: await onRequestNsName(), type: 'nsName'})
+      const ret = await onRequestNsName()
+      return cb?.({ret, type: 'nsName'})
     },
     300,
     [inputAddress],
@@ -747,6 +749,23 @@ export const useServiceNames = (
         netId,
         provider,
         addressArr: [...addressArr],
+      }),
+    opts,
+  )
+}
+
+export const useAddressWithServiceName = (
+  {type, netId, provider, name, notSend = false},
+  opts,
+) => {
+  return useSWR(
+    type && provider && name && !notSend ? [type, netId, name] : null,
+    () =>
+      getSingleAddressWithNameService({
+        type,
+        netId,
+        provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+        name,
       }),
     opts,
   )

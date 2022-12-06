@@ -17,6 +17,7 @@ function ContactItem({
   containerClassName = 'mt-3',
   address = '',
   memo = '',
+  memoOverlay,
   memoId,
   onSubmitCallback,
   onClickAwayCallback,
@@ -182,22 +183,24 @@ function ContactItem({
             address={address}
           />
           <div>
-            <TextField
-              width="w-[170px]"
-              className="text-gray-80 font-medium mb-0.5"
-              inputClassName="overflow-hidden !rounded-sm"
-              inputInnerClassName="!text-xs !bg-white"
-              placeholder={t('name')}
-              triggerEnter={true}
-              triggerBlur={false}
-              maxLength={null}
-              textValue={memo}
-              inputValue={inputMemo}
-              showInputStatus={showMemoInput}
-              onInputChange={memo => setInputMemo(memo)}
-              onSubmit={onSubmitForm}
-              ref={memoTextInputRef}
-            />
+            {memoOverlay || (
+              <TextField
+                width="w-[170px]"
+                className="text-gray-80 font-medium mb-0.5"
+                inputClassName="overflow-hidden !rounded-sm"
+                inputInnerClassName="!text-xs !bg-white"
+                placeholder={t('name')}
+                triggerEnter={true}
+                triggerBlur={false}
+                maxLength={null}
+                textValue={memo}
+                inputValue={inputMemo}
+                showInputStatus={showMemoInput}
+                onInputChange={memo => setInputMemo(memo)}
+                onSubmit={onSubmitForm}
+                ref={memoTextInputRef}
+              />
+            )}
             <TextField
               width="w-[170px]"
               className="text-gray-40"
@@ -242,6 +245,7 @@ ContactItem.propTypes = {
   itemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   address: PropTypes.string,
   memo: PropTypes.string,
+  memoOverlay: PropTypes.node,
   memoId: PropTypes.number,
   onSubmitCallback: PropTypes.func,
   onClickAwayCallback: PropTypes.func,
