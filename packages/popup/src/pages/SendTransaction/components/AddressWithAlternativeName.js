@@ -40,8 +40,7 @@ function AddressWithAlternativeName({
             </CustomTag>
           )}
         </div>
-
-        <div>{address ? shortenAddress(address) : ''}</div>
+        <div className="mt-1">{address ? shortenAddress(address) : ''}</div>
       </div>
       <AddressCheckedSymbol
         checked={true}

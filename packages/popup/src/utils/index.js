@@ -395,5 +395,5 @@ export const formatNsName = nsName => {
     return nsName.substring(0, 6) + '...' + nsName.substring(nsName.length - 13)
   }
 
-  return formatNsName
+  return nsName
 }

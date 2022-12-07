@@ -193,7 +193,7 @@ function AddressCard({
     type,
     netId,
     provider: window?.___CFXJS_USE_RPC__PRIVIDER,
-    addressArr: [fromAddress, toAddress],
+    addressArr: [fromAddress, toAddress].filter(Boolean),
   })
   const nsNamesLoading = !nsNamesError && !nsNames
   const isImgUrl = useCheckImage(token?.logoURI)
