@@ -741,7 +741,7 @@ export const useServiceNames = (
 ) => {
   return useSWR(
     type && provider && isArray(addressArr) && addressArr?.length && !notSend
-      ? [type, netId, ...addressArr]
+      ? [type, netId, [...addressArr]]
       : null,
     () =>
       getServiceNamesWithAddresses({

@@ -53,9 +53,17 @@ function RecentItem({
             address={address}
             memo={note}
             memoOverlay={
-              <div>
-                {nsName && <span>{formatNsName(nsName)}</span>}
-                {note && <span>{note}</span>}
+              <div className="flex items-center">
+                {nsName && (
+                  <div className="text-[#808BE7]  font-medium	 mr-1">
+                    {formatNsName(nsName)}
+                  </div>
+                )}
+                {note && (
+                  <div className="p-1 text-xs text-primary bg-primary-10 text-ellipsis max-w-[108px]">
+                    {note}
+                  </div>
+                )}
               </div>
             }
           />

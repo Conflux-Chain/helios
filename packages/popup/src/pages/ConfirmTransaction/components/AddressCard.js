@@ -53,17 +53,17 @@ const TransactionDirection = ({
         />
       </div>
       <div className="ml-3 flex flex-col flex-1">
-        <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2">
+        <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2 items-end">
           <div className="flex flex-col">
             <Text
-              className="text-xs text-gray-40 mb-1"
+              className={`text-xs text-gray-40`}
               id="currentAccountName"
               text={
                 nsNamesLoading === false ? (
                   nsNames?.[fromAddress] ? (
                     <NsNameLabel nsName={nsNames?.[fromAddress]} />
                   ) : (
-                    currentAccountName
+                    <span className="mb-1"> {currentAccountName}</span>
                   )
                 ) : (
                   ''
@@ -201,7 +201,7 @@ function AddressCard({
   return (
     <div
       id="addressCardContainer"
-      className="address-card-container w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat mt-1 mb-4"
+      className="address-card-container w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat bg-cover mt-1 mb-4"
     >
       <header
         className="address-card-header text-primary flex items-center"

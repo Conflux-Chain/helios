@@ -185,8 +185,13 @@ function ContactItem({
           <div>
             {memoOverlay || (
               <TextField
+                height={`${showMemoInput ? '!h-5' : '!h-6'}`}
                 width="w-[170px]"
-                className="text-gray-80 font-medium mb-0.5"
+                className={`text-primary font-medium ${
+                  showMemoInput ? 'mb-1' : ''
+                }`}
+                textClassName="bg-primary-10 p-1 max-w-[108px]"
+                fontSize="text-xs"
                 inputClassName="overflow-hidden !rounded-sm"
                 inputInnerClassName="!text-xs !bg-white"
                 placeholder={t('name')}
@@ -202,6 +207,7 @@ function ContactItem({
               />
             )}
             <TextField
+              height="!h-5"
               width="w-[170px]"
               className="text-gray-40"
               fontSize="text-xs"
