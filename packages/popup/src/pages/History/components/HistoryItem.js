@@ -40,7 +40,6 @@ const ICON_COLOR = {
 }
 
 function HistoryItem({
-  index,
   containerScrollTop = 0,
   status,
   created,
@@ -234,7 +233,7 @@ function HistoryItem({
       const distanceToParent = new Big(offsetTop).minus(52)
       setIsHide(distanceToParent.lt(new Big(containerScrollTop)))
     }
-  }, [containerScrollTop, index])
+  }, [containerScrollTop])
   if (!actionName || !contractName) return null
 
   return (
@@ -324,7 +323,6 @@ function HistoryItem({
 
 HistoryItem.propTypes = {
   containerScrollTop: PropTypes.number.isRequired,
-  index: PropTypes.number.isRequired,
   status: PropTypes.number.isRequired,
   created: PropTypes.number.isRequired,
   pendingAt: PropTypes.number,

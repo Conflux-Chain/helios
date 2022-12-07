@@ -94,7 +94,6 @@ function History() {
                 err={err}
                 pendingAt={pendingAt}
                 copyButtonContainerClassName={index === 0 ? '' : undefined}
-                index={index}
                 copyButtonToastClassName={
                   index === 0 ? 'top-10 right-3' : undefined
                 }
