@@ -41,7 +41,7 @@ const ICON_COLOR = {
 
 function HistoryItem({
   index,
-  containerScrollTop,
+  containerScrollTop = 0,
   status,
   created,
   extra,
@@ -225,18 +225,20 @@ function HistoryItem({
 
   useEffect(() => {
     const clientHeight = historyItemRef?.current?.clientHeight
-    if (isNumber(clientHeight) && isNumber(containerScrollTop)) {
-      setIsHide(
-        new Big(clientHeight)
-          .times(new Big(index).plus(1))
-          .lt(new Big(containerScrollTop)),
-      )
+    const offsetTop = historyItemRef?.current?.offsetTop
+    if (
+      isNumber(clientHeight) &&
+      isNumber(containerScrollTop) &&
+      isNumber(offsetTop)
+    ) {
+      const distanceToParent = new Big(offsetTop).minus(52)
+      setIsHide(distanceToParent.lt(new Big(containerScrollTop)))
     }
   }, [containerScrollTop, index])
   if (!actionName || !contractName) return null
 
   return (
-    <div ref={historyItemRef} id="22" className="pt-3">
+    <div ref={historyItemRef} className="pt-3">
       <div
         className="flex items-center cursor-pointer p-3 bg-white mx-3 rounded"
         aria-hidden="true"
