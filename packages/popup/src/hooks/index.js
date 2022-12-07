@@ -642,7 +642,6 @@ export const useValidatedAddressUsername = ({
         provider: window?.___CFXJS_USE_RPC__PRIVIDER,
         name: inputAddress,
       })
-      console.log('address', nsRet)
       setLoading(false)
       if (nsRet) {
         setValidateRet({
@@ -670,7 +669,6 @@ export const useValidatedAddressUsername = ({
         provider: window?.___CFXJS_USE_RPC__PRIVIDER,
         address: inputAddress,
       })
-      console.log('name', nsRet)
       setLoading(false)
       setValidateRet({error: '', address: inputAddress, nsName: nsRet || ''})
     } catch (err) {

@@ -129,9 +129,8 @@ function TransitionDetail({
                   : 'toAddress',
               )}
               TransitionValueOverlay={
-                nsName ? (
-                  <NsNameLabel nsName={nsName} />
-                ) : (
+                <div>
+                  {nsName && <NsNameLabel nsName={nsName} />}
                   <div className="flex font-medium items-center">
                     {isContractAddress && (
                       <FileOutlined className="w-4 h-4 mr-1 text-primary" />
@@ -152,7 +151,7 @@ function TransitionDetail({
                       />
                     }
                   </div>
-                )
+                </div>
               }
             />
           )}

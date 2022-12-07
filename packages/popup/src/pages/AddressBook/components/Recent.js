@@ -43,7 +43,7 @@ function RecentItem({
   }
   return (
     <div className="cursor-pointer" id={`recent-tx-${address}`}>
-      {note || nsName ? (
+      {note ? (
         <div
           aria-hidden="true"
           id={recentItemId}
@@ -55,7 +55,7 @@ function RecentItem({
             memoOverlay={
               <div className="flex items-center">
                 {nsName && (
-                  <div className="text-[#808BE7]  font-medium	 mr-1">
+                  <div className="text-[#808BE7]  font-medium mr-1">
                     {formatNsName(nsName)}
                   </div>
                 )}
@@ -81,9 +81,16 @@ function RecentItem({
               diameter={30}
               address={address}
             />
-            <span className="text-gray-40 text-xs">
-              {shortenAddress(address)}
-            </span>
+            <div>
+              {nsName && (
+                <div className="text-[#808BE7]  font-medium">
+                  {formatNsName(nsName)}
+                </div>
+              )}
+              <div className="text-gray-40 text-xs">
+                {shortenAddress(address)}
+              </div>
+            </div>
           </div>
 
           <div

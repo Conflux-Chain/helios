@@ -39,7 +39,6 @@ export default class ENS {
       const addr = await resolverContract.methods.addr(nh).call()
       return addr
     } catch (error) {
-      console.log('error', error)
       return ''
     }
   }
