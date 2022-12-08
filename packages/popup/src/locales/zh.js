@@ -13,8 +13,8 @@ const zh = {
     no: '否',
     yes: '是',
     copiedSuccess: '复制成功',
-    invalidAddress: 'Please enter valid cfx address or cns',
-    invalidHexAddress: 'Please enter valid hex address or ens',
+    invalidAddress: '请输入有效的 CFX 地址或 .Web3 用户名',
+    invalidHexAddress: '请输入有效的 0x 地址或 ENS 域名',
     unChecksumAddress: '无效地址，请确保字母大小写无误',
     protocol: '协议',
     viewData: '查看数据',
@@ -147,12 +147,12 @@ const zh = {
     // - Send Transaction / send transaction
     sendTransaction: '发送交易',
     toAddressLabel: '接收方',
-    toAddressPlaceholder: 'Address(cfx*:), or Username',
+    toAddressPlaceholder: '地址(cfx*:) 或者 .web3 用户名',
     tokenAndAmount: '代币和数量',
     available: '余额: ',
     max: '最大',
-    web3Name: 'web3 username',
-    alternativeName: 'account name/memo',
+    web3Name: '.web3 用户名',
+    alternativeName: '账户名/备注',
 
     // - Send Transaction / choose token
     chooseToken: '选择代币',

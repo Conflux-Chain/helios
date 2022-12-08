@@ -37,8 +37,8 @@ const TextField = forwardRef(function TextField(
   return (
     <div className={`relative ${height} ${className}`} {...props}>
       {!showInputStatus && (
-        <div className={`flex ${width} items-center `}>
-          <div className={`${fontSize} text-ellipsis  ${textClassName}`}>
+        <div className={`flex ${width} items-center`}>
+          <div className={`${fontSize} text-ellipsis ${textClassName}`}>
             {isAddress && textValue ? shortenAddress(textValue) : textValue}
           </div>
           <div>{rightComponent || <div className="ml-2 w-4 h-4" />}</div>

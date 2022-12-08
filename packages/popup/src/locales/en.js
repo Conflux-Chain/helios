@@ -13,7 +13,7 @@ const en = {
     no: 'No',
     yes: 'Yes',
     copiedSuccess: 'Copied',
-    invalidAddress: 'Please enter valid cfx address or cns',
+    invalidAddress: 'Please enter valid cfx address or .web3 username',
     invalidHexAddress: 'Please enter valid hex address or ens',
     unChecksumAddress: 'Invalid address, make sure the letter case is correct',
     protocol: 'Protocol',
@@ -154,7 +154,7 @@ const en = {
     tokenAndAmount: 'Token and Amount',
     available: 'Available: ',
     max: 'MAX',
-    web3Name: 'web3 username',
+    web3Name: '.web3 username',
     alternativeName: 'account name/memo',
 
     // - Send Transaction / choose token
