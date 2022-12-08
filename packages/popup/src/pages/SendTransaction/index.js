@@ -7,10 +7,16 @@ import {
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
+import {ContactsOutlined, RightOutlined} from '@fluent-wallet/component-icons'
 import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
-import {TitleNav, AccountDisplay, CurrentNetworkDisplay} from '../../components'
+import {
+  TitleNav,
+  AccountDisplay,
+  CurrentNetworkDisplay,
+  CompWithLabel,
+} from '../../components'
 import {
   useCurrentTxParams,
   useEstimateTx,
@@ -30,7 +36,7 @@ import {
 import {ROUTES} from '../../constants'
 import useGlobalStore from '../../stores'
 
-const {CONFIRM_TRANSACTION} = ROUTES
+const {CONFIRM_TRANSACTION, ADDRESS_BOOK} = ROUTES
 
 function SendTransaction() {
   const {t} = useTranslation()
@@ -224,23 +230,43 @@ function SendTransaction() {
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 pt-4 pb-6">
         <div className="flex flex-col">
-          {(nsName || displayNoteName) && !nsLoading ? (
-            <AddressWithAlternativeName
-              address={!addressError ? toAddress : ''}
-              displayNoteName={displayNoteName}
-              nsName={nsName}
-              onClickCloseBtn={onClickAddressInputCloseBtn}
-            />
-          ) : (
-            <ToAddressInput
-              address={inputAddress}
-              onChangeAddress={onChangeAddress}
-              errorMessage={addressError}
-              addressLoading={nsLoading}
-              addressChecked={showAddressChecked}
-              onClickCloseBtn={onClickAddressInputCloseBtn}
-            />
-          )}
+          <CompWithLabel
+            label={
+              <div className="flex items-center justify-between">
+                <div className="text-gray-40">{t('toAddressLabel')}</div>
+                <div
+                  id="go-address-book"
+                  className="flex items-center text-primary cursor-pointer"
+                  aria-hidden="true"
+                  onClick={() => history.push(ADDRESS_BOOK)}
+                >
+                  <ContactsOutlined className="w-[14px] h-[14px]" />
+                  <span className="text-primary mx-1">{t('recent')}</span>
+                  <RightOutlined className="w-3 h-3" />
+                </div>
+              </div>
+            }
+            className="!mt-0"
+            labelClassName="!text-gray-40"
+          >
+            {(nsName || displayNoteName) && !nsLoading ? (
+              <AddressWithAlternativeName
+                address={!addressError ? toAddress : ''}
+                displayNoteName={displayNoteName}
+                nsName={nsName}
+                onClickCloseBtn={onClickAddressInputCloseBtn}
+              />
+            ) : (
+              <ToAddressInput
+                address={inputAddress}
+                onChangeAddress={onChangeAddress}
+                errorMessage={addressError}
+                addressLoading={nsLoading}
+                addressChecked={showAddressChecked}
+                onClickCloseBtn={onClickAddressInputCloseBtn}
+              />
+            )}
+          </CompWithLabel>
 
           <TokenAndAmount
             selectedTokenId={sendTokenId}
