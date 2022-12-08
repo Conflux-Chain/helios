@@ -199,6 +199,22 @@ module.exports = {
             opacity: '0',
           },
         },
+        'fade-in': {
+          '0%': {
+            opacity: '0',
+          },
+          '100%': {
+            opacity: '1',
+          },
+        },
+        'fade-out': {
+          '0%': {
+            opacity: '1',
+          },
+          '100%': {
+            opacity: '0',
+          },
+        },
         'address-change-blink': {
           '0%': {
             'background-color': 'rgba(128,139,231, 0)',
@@ -215,6 +231,8 @@ module.exports = {
         'slide-left-out': 'slide-left-out 0.3s linear forwards',
         'mask-fade-in': 'mask-fade-in 0.3s cubic-bezier(.23,1,.32,1)',
         'mask-fade-out': 'mask-fade-out 0.3s',
+        'fade-in': 'fade-in 0.3s linear forwards',
+        'fade-out': 'fade-out 0.3s',
         'address-change-blink': 'address-change-blink 1s linear 0s 2 alternate',
       },
       backgroundImage: {

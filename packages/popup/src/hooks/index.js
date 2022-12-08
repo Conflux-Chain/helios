@@ -1,8 +1,10 @@
-import {useEffect, useState, useMemo} from 'react'
+import {useEffect, useState, useMemo, useCallback} from 'react'
+import {isArray} from '@fluent-wallet/checks'
+import useSWR from 'swr'
 import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import create from 'zustand'
-import {useAsync} from 'react-use'
+import {useAsync, useDebounce} from 'react-use'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {estimate} from '@fluent-wallet/estimate-tx'
 import {iface} from '@fluent-wallet/contract-abis/777.js'
@@ -33,7 +35,14 @@ import {
   usePendingAuthReq,
   useNetwork1559Compatible,
 } from './useApi'
-import {validateAddress} from '../utils'
+import {
+  validateAddress,
+  validateByEip55,
+  isValidDomainName,
+  getSingleAddressWithNameService,
+  getSingleServiceNameWithAddress,
+  getServiceNamesWithAddresses,
+} from '../utils'
 
 const {HOME} = ROUTES
 const {LEDGER_APP_NAME} = consts
@@ -590,4 +599,172 @@ export const useLedgerAppName = () => {
 export const useIsTxTreatedAsEIP1559 = txType => {
   const network1559Compatible = useNetwork1559Compatible()
   return network1559Compatible && (!txType || txType === ETH_TX_TYPES.EIP1559)
+}
+
+export const useInputAddressInfo = ({
+  netId,
+  inputAddress,
+  type,
+  isInputAddr,
+  cb,
+}) => {
+  const {t} = useTranslation()
+  const networkTypeIsCfx = useNetworkTypeIsCfx()
+  const [validateRet, setValidateRet] = useState(() => ({
+    address: '',
+    nsName: '',
+    error: '',
+  }))
+
+  const [loading, setLoading] = useState(false)
+
+  const setWrongMessage = useCallback(
+    errMsg => {
+      setValidateRet({
+        address: inputAddress,
+        nsName: '',
+        error:
+          errMsg || networkTypeIsCfx
+            ? t('invalidAddress')
+            : t('invalidHexAddress'),
+      })
+    },
+    [inputAddress, networkTypeIsCfx, t],
+  )
+
+  const onRequestNsAddress = useCallback(async () => {
+    let nsRet
+    try {
+      setLoading(true)
+      nsRet = await getSingleAddressWithNameService({
+        type,
+        netId,
+        provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+        name: inputAddress,
+      })
+      setLoading(false)
+      if (nsRet) {
+        setValidateRet({
+          error: '',
+          address: nsRet,
+          nsName: inputAddress,
+        })
+      } else {
+        setWrongMessage()
+      }
+    } catch (err) {
+      setLoading(false)
+      setWrongMessage()
+    }
+    return nsRet
+  }, [inputAddress, netId, setWrongMessage, type])
+
+  const onRequestNsName = useCallback(async () => {
+    let nsRet
+    try {
+      setLoading(true)
+      nsRet = await getSingleServiceNameWithAddress({
+        type,
+        netId,
+        provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+        address: inputAddress,
+      })
+      setLoading(false)
+      setValidateRet({error: '', address: inputAddress, nsName: nsRet || ''})
+    } catch (err) {
+      setValidateRet({error: '', address: inputAddress, nsName: ''})
+      setLoading(false)
+    }
+    return nsRet
+  }, [inputAddress, netId, type])
+
+  useDebounce(
+    async () => {
+      if (!inputAddress && !isInputAddr) {
+        return
+      }
+      // get ns name
+      if (isValidDomainName(inputAddress) && type) {
+        const ret = await onRequestNsAddress()
+        return cb?.({ret, type: 'address'})
+      }
+      // wrong address
+      if (!validateAddress(inputAddress, networkTypeIsCfx, netId)) {
+        return setWrongMessage()
+      }
+      // wrong checkSum
+      if (!networkTypeIsCfx && !validateByEip55(inputAddress)) {
+        return setWrongMessage(t('unChecksumAddress'))
+      }
+      //correct address
+      setValidateRet({
+        address: inputAddress,
+        nsName: '',
+        error: '',
+      })
+      // get ns name
+      const ret = await onRequestNsName()
+      return cb?.({ret, type: 'nsName'})
+    },
+    300,
+    [inputAddress],
+  )
+
+  return {
+    ...validateRet,
+    loading,
+  }
+}
+
+export const useServiceName = (
+  {type, netId, provider, address, notSend = false},
+  opts,
+) => {
+  return useSWR(
+    type && provider && address && !notSend ? [type, netId, address] : null,
+    () =>
+      getSingleServiceNameWithAddress({
+        type,
+        netId,
+        provider,
+        address,
+      }),
+    opts,
+  )
+}
+
+export const useServiceNames = (
+  {type, netId, provider, addressArr, notSend = false},
+  opts,
+) => {
+  return useSWR(
+    type && provider && isArray(addressArr) && addressArr?.length && !notSend
+      ? [type, netId, [...addressArr]]
+      : null,
+    () =>
+      getServiceNamesWithAddresses({
+        type,
+        netId,
+        provider,
+        addressArr: [...addressArr],
+      }),
+    opts,
+  )
+}
+
+export const useAddressWithServiceName = (
+  {type, netId, provider, name, notSend = false},
+  opts,
+) => {
+  return useSWR(
+    type && provider && name && !notSend ? [type, netId, name] : null,
+    () =>
+      getSingleAddressWithNameService({
+        type,
+        netId,
+        provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+        name,
+      }),
+    opts,
+  )
 }

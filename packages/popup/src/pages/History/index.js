@@ -11,10 +11,13 @@ function History() {
   const historyRef = useRef(null)
   const [txList, setTxList] = useState(undefined)
   const [limit, setLimit] = useState(PAGE_LIMIT)
+  const [offset, setOffset] = useState(0)
   const [total, setTotal] = useState(0)
+  const [scrollTop, setScrollTop] = useState(0)
   const {data: historyListData} = useTxList({
     params: {
       limit,
+      offset,
     },
     includeExternalTx: true,
   })
@@ -25,7 +28,16 @@ function History() {
   )
 
   const onScroll = useCallback(() => {
-    setScrollPageLimit(historyRef?.current, setLimit, txList, total, limit)
+    historyRef?.current && setScrollTop(historyRef?.current.scrollTop)
+
+    setScrollPageLimit(
+      historyRef?.current,
+      setLimit,
+      txList,
+      total,
+      limit,
+      setOffset,
+    )
   }, [txList, limit, total])
 
   useEffect(() => {
@@ -69,6 +81,7 @@ function History() {
               index,
             ) => (
               <HistoryItem
+                containerScrollTop={scrollTop}
                 key={eid}
                 status={status}
                 created={created}

@@ -13,9 +13,8 @@ const ru = {
     no: 'Нет',
     yes: 'Да',
     copiedSuccess: 'Скопировано',
-    invalidAddress: 'Пожалуйста, введите действительный адрес cfx',
-    invalidHexAddress:
-      'Пожалуйста, введите действительный шестнадцатеричный (hex) адрес',
+    invalidAddress: 'Please enter valid cfx address or cns',
+    invalidHexAddress: 'Please enter valid hex address or ens',
     unChecksumAddress: 'Неверный адрес, убедитесь, что регистр правильный',
     protocol: 'Протокол',
     viewData: 'Просмотр данных',
@@ -152,10 +151,12 @@ const ru = {
     // - Send Transaction / send transaction
     sendTransaction: 'Отправить транзакцию',
     toAddressLabel: 'Отправить',
-    toAddressPlaceholder: 'Пожалуйста, введите адрес',
+    toAddressPlaceholder: 'Address(cfx*:), or Username',
     tokenAndAmount: 'Токен и сумма',
     available: 'Доступно: ',
     max: 'Все',
+    web3Name: 'web3 username',
+    alternativeName: 'account name/memo',
 
     // - Send Transaction / choose token
     chooseToken: 'Выберите токен',

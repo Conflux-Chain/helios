@@ -3734,7 +3734,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/did@workspace:packages/did":
+"@fluent-wallet/did@workspace:*, @fluent-wallet/did@workspace:packages/did":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/did@workspace:packages/did"
   dependencies:
@@ -17245,6 +17245,7 @@ __metadata:
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     "@fluent-wallet/data-format": "workspace:packages/ui/data-format"
+    "@fluent-wallet/did": "workspace:*"
     "@fluent-wallet/ethereum-tx-error": "workspace:*"
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
     "@fluent-wallet/inner-utils": "workspace:*"
@@ -17260,6 +17261,7 @@ __metadata:
     dayjs: 1.10.7
     i18next: 21.5.2
     i18next-browser-languagedetector: 6.1.2
+    punycode: 2.1.1
     qrcode.react: 1.0.1
     react-copy-to-clipboard: 5.0.4
     react-error-boundary: 3.1.4
@@ -24685,17 +24687,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"punycode@npm:2.1.1, punycode@npm:^2.1.0, punycode@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "punycode@npm:2.1.1"
+  checksum: 823bf443c6dd14f669984dea25757b37993f67e8d94698996064035edd43bed8a5a17a9f12e439c2b35df1078c6bec05a6c86e336209eb1061e8025c481168e8
+  languageName: node
+  linkType: hard
+
 "punycode@npm:^1.2.4, punycode@npm:^1.3.2":
   version: 1.4.1
   resolution: "punycode@npm:1.4.1"
   checksum: fa6e698cb53db45e4628559e557ddaf554103d2a96a1d62892c8f4032cd3bc8871796cae9eabc1bc700e2b6677611521ce5bb1d9a27700086039965d0cf34518
-  languageName: node
-  linkType: hard
-
-"punycode@npm:^2.1.0, punycode@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "punycode@npm:2.1.1"
-  checksum: 823bf443c6dd14f669984dea25757b37993f67e8d94698996064035edd43bed8a5a17a9f12e439c2b35df1078c6bec05a6c86e336209eb1061e8025c481168e8
   languageName: node
   linkType: hard
 

@@ -13,9 +13,8 @@ const uk = {
     no: 'Ні',
     yes: 'Так',
     copiedSuccess: 'Скопійовано',
-    invalidAddress: 'Будь ласка, введіть дійсну адресу cfx',
-    invalidHexAddress:
-      'Будь ласка, введіть дійсну шістнадцятиричну (hex) адресу',
+    invalidAddress: 'Please enter valid cfx address or cns',
+    invalidHexAddress: 'Please enter valid hex address or ens',
     unChecksumAddress: 'Невірна адреса, переконайтеся, що регістр правильний',
     protocol: 'Протокол',
     viewData: 'Перегляд даних',
@@ -152,10 +151,12 @@ const uk = {
     // - Send Transaction / send transaction
     sendTransaction: 'Відправити транзакцію',
     toAddressLabel: 'Відправити',
-    toAddressPlaceholder: 'Будь ласка, введіть адресу',
+    toAddressPlaceholder: 'Address(cfx*:), or Username',
     tokenAndAmount: 'Токен і сума',
     available: 'Доступно: ',
     max: 'Все',
+    web3Name: 'web3 username',
+    alternativeName: 'account name/memo',
 
     // - Send Transaction / choose token
     chooseToken: 'Виберіть токен',

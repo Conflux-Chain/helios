@@ -1,34 +1,24 @@
 import PropTypes from 'prop-types'
-import {useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
 import {ContactsOutlined, RightOutlined} from '@fluent-wallet/component-icons'
 
-import {useAddressNote} from '../../../hooks/useApi'
-import {CompWithLabel, CustomTag} from '../../../components'
-import useGlobalStore from '../../../stores'
+import {CompWithLabel} from '../../../components'
 import {ROUTES} from '../../../constants'
-
+import {AddressCheckingSymbol} from './'
 const {ADDRESS_BOOK} = ROUTES
 
-function ToAddressInput({address, onChangeAddress, errorMessage}) {
+function ToAddressInput({
+  address,
+  onChangeAddress,
+  onClickCloseBtn,
+  errorMessage,
+  addressLoading = false,
+  addressChecked = false,
+}) {
   const {t} = useTranslation()
-  const {addressNote, setAddressNote} = useGlobalStore()
   const history = useHistory()
-
-  const noteName = useAddressNote(
-    address,
-    address === Object.keys(addressNote)?.[0],
-  )
-
-  useEffect(() => {
-    return () => {
-      setAddressNote?.({})
-    }
-  }, [setAddressNote])
-
-  const displayNoteName = addressNote?.[address] || noteName
 
   return (
     <CompWithLabel
@@ -59,17 +49,13 @@ function ToAddressInput({address, onChangeAddress, errorMessage}) {
         id="toAddressInput"
         suffixWrapperClassName="w-auto h-auto"
         suffix={
-          displayNoteName && (
-            <CustomTag
-              backgroundColor="bg-primary-10"
-              roundedStyle="rounded"
-              width="max-w-[60px] min-w-[24px]"
-              className="h-auto"
-            >
-              <div className="text-primary text-ellipsis p-1">
-                {displayNoteName}
-              </div>
-            </CustomTag>
+          address && (
+            <AddressCheckingSymbol
+              loading={addressLoading}
+              checked={addressChecked}
+              onClickCloseBtn={onClickCloseBtn}
+              className="!w-5 !h-5 text-success"
+            />
           )
         }
       />
@@ -80,7 +66,10 @@ function ToAddressInput({address, onChangeAddress, errorMessage}) {
 ToAddressInput.propTypes = {
   address: PropTypes.string,
   onChangeAddress: PropTypes.func,
+  onClickCloseBtn: PropTypes.func,
   errorMessage: PropTypes.string,
+  addressLoading: PropTypes.bool,
+  addressChecked: PropTypes.bool,
 }
 
 export default ToAddressInput
