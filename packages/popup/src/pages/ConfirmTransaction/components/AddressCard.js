@@ -56,7 +56,7 @@ const TransactionDirection = ({
         <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2 items-end">
           <div className="flex flex-col">
             <Text
-              className={`text-xs text-gray-40`}
+              className="text-xs text-gray-40"
               id="currentAccountName"
               text={
                 nsNamesLoading === false ? (

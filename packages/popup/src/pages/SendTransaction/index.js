@@ -15,7 +15,7 @@ import {
   useCurrentTxParams,
   useEstimateTx,
   useEstimateError,
-  useValidatedAddressUsername,
+  useInputAddressInfo,
 } from '../../hooks'
 import {
   ToAddressInput,
@@ -144,6 +144,7 @@ function SendTransaction() {
   const onChangeToken = token => {
     setSendTokenId(token)
     if (maxMode) {
+      setSendAmount('')
       setMaxMode(false)
     }
   }
@@ -175,7 +176,7 @@ function SendTransaction() {
     address: validatedAddress,
     nsName,
     loading: nsLoading,
-  } = useValidatedAddressUsername({
+  } = useInputAddressInfo({
     inputAddress,
     netId,
     type,

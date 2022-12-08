@@ -601,7 +601,7 @@ export const useIsTxTreatedAsEIP1559 = txType => {
   return network1559Compatible && (!txType || txType === ETH_TX_TYPES.EIP1559)
 }
 
-export const useValidatedAddressUsername = ({
+export const useInputAddressInfo = ({
   netId,
   inputAddress,
   type,
