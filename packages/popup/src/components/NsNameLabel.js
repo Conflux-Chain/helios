@@ -15,11 +15,7 @@ function NsNameLabel({nsName = '', className = ''}) {
       }
     >
       <div className={`flex items-center ${className}`}>
-        <img
-          src="/images/seed-group-icon.svg"
-          alt="group-icon"
-          className="w-6 h-6"
-        />
+        <img src="/images/ns-logo.svg" alt="group-icon" className="w-6 h-6" />
         <div className="ml-0.5 text-primary text-ellipsis max-w-[140px]">
           {formatNsName(nsName)}
         </div>
