@@ -2,11 +2,12 @@ import PropTypes from 'prop-types'
 import Tooltip from '@fluent-wallet/component-tooltip'
 import {useTranslation} from 'react-i18next'
 import {formatNsName} from '../utils'
-function NsNameLabel({nsName = '', className = ''}) {
+function NsNameLabel({nsName = '', className = '', toolTipPlacement = ''}) {
   const {t} = useTranslation()
 
   return (
     <Tooltip
+      placement={toolTipPlacement}
       content={
         <div>
           <div>{t('web3Name')}</div>
@@ -26,6 +27,7 @@ function NsNameLabel({nsName = '', className = ''}) {
 
 NsNameLabel.propTypes = {
   nsName: PropTypes.string,
+  toolTipPlacement: PropTypes.string,
   className: PropTypes.string,
 }
 

@@ -130,7 +130,9 @@ function TransitionDetail({
               )}
               TransitionValueOverlay={
                 <div>
-                  {nsName && <NsNameLabel nsName={nsName} />}
+                  {nsName && (
+                    <NsNameLabel nsName={nsName} toolTipPlacement="topLeft" />
+                  )}
                   <div className="flex font-medium items-center">
                     {isContractAddress && (
                       <FileOutlined className="w-4 h-4 mr-1 text-primary" />
