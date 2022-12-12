@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Tooltip from '@fluent-wallet/component-tooltip'
 import {CustomTag, NsNameLabel} from '../../../components'
 import {AddressCheckedSymbol} from './'
@@ -40,7 +39,7 @@ function AddressWithAlternativeName({
             </CustomTag>
           )}
         </div>
-        <div className="mt-1">{address ? shortenAddress(address) : ''}</div>
+        <div className="mt-1 text-ellipsis max-w-[288px]">{address || ''}</div>
       </div>
       <AddressCheckedSymbol
         checked={true}
