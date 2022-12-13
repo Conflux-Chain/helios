@@ -13,7 +13,7 @@ import {
 } from '../constant.js'
 import PublicResolver_ABI from './abis/PublicResolver.json'
 import ENS_ABI from './abis/ENS.json'
-import ReverseRegistrar_ABI from './abis/ReverseRegistrar.json'
+import ReverseRecord_ABI from './abis/ReverseRecords.json'
 
 export default class CNS {
   provider = null
@@ -21,7 +21,7 @@ export default class CNS {
   chainId = 1029
   PublicResolver
   Registry
-  ReverseRegistrar
+  ReverseRecord
   constructor(provider, chainId) {
     this._check(provider, chainId)
     this.provider = provider
@@ -42,9 +42,8 @@ export default class CNS {
 
   async getName(address) {
     try {
-      const node = await this.ReverseRegistrar.node(address)
-      const name = await this.PublicResolver.name(node)
-      return name
+      const name = await this.ReverseRecord.getNames([address])
+      return name?.[0] || ''
     } catch (error) {
       console.warn(`Error getting name for reverse record of ${address}`, error)
       return ''
@@ -55,7 +54,7 @@ export default class CNS {
     const nh = hash(name)
     try {
       const resolverAddr = await this.Registry.resolver(nh)
-      const resolverContract = this._getResoverContract(resolverAddr)
+      const resolverContract = this._getResolverContract(resolverAddr)
       const addr = await resolverContract.addr(nh, COINID_CONFLUX)
       return encodeCfxAddress(addr, this.chainId)
     } catch (error) {
@@ -65,20 +64,16 @@ export default class CNS {
   }
 
   async getNames(addresses) {
-    const encodedList = []
-    addresses.map(address => {
-      const encoded = this._getNameEncodedData(address)
-      encodedList.push(encoded)
-    })
-    const namesList = {}
-    const response = await this.PublicResolver.multicall(encodedList)
-    response.map((item, index) => {
-      const decoded = this.PublicResolver['name(bytes32)'].decodeOutputs(
-        item.toString('hex'),
-      )
-      namesList[addresses[index]] = decoded
-    })
-    return namesList
+    const ret = {}
+    try {
+      const names = await this.ReverseRecord.getNames([...addresses])
+      names.forEach((name, index) => {
+        ret[addresses[index]] = name
+      })
+    } catch (error) {
+      console.warn(error)
+    }
+    return ret
   }
 
   async getAddresses(names) {
@@ -101,7 +96,7 @@ export default class CNS {
     return addressList
   }
 
-  _getResoverContract(address) {
+  _getResolverContract(address) {
     if (!address) return this.PublicResolver
     return this.cfxClient.Contract({
       abi: PublicResolver_ABI,
@@ -121,14 +116,15 @@ export default class CNS {
     const isMainnet = chainId == CHAINID_CFX_MAINNET
     //TODO：add mainnet address
     const REGISTRY_ADDRESS = isMainnet
-      ? 'cfxtest:achg113s8916v2u756tvf6hdvmbsb73b16ykt1pvwm'
-      : 'cfxtest:achg113s8916v2u756tvf6hdvmbsb73b16ykt1pvwm'
-    const REVERSE_REGISTRAR_ADDRESS = isMainnet
-      ? 'cfxtest:ach1p03gkptxz07p4ecn66gjpd0xrnkkbj1n6p96d5'
-      : 'cfxtest:ach1p03gkptxz07p4ecn66gjpd0xrnkkbj1n6p96d5'
+      ? 'cfxtest:acd3rm7y183trhpzvz8m3y72kx1abk4d0jh842585a'
+      : 'cfxtest:acd3rm7y183trhpzvz8m3y72kx1abk4d0jh842585a'
+    const REVERSE_RECORD_ADDRESS = isMainnet
+      ? 'cfxtest:acccv089mvek41rsmjyf1yyg922phjd0ppt16hfuv1'
+      : 'cfxtest:acccv089mvek41rsmjyf1yyg922phjd0ppt16hfuv1'
+
     const PUBLIC_RESOLVER_ADDRESS = isMainnet
-      ? 'cfxtest:acecxexm0pg268m44jncw5bmagwwmun53jj9msmadj'
-      : 'cfxtest:acecxexm0pg268m44jncw5bmagwwmun53jj9msmadj'
+      ? 'cfxtest:acfcb2fv6t8xrxyyx3x1atwmdrhh5xvfd21zsje216'
+      : 'cfxtest:acfcb2fv6t8xrxyyx3x1atwmdrhh5xvfd21zsje216'
     //  const BASE_REGISTRAR_ADDRESS = isMainnet
     //   ? 'cfxtest:acc1ttg7287cybsdy6bn0002nzepypn29yavjbj36g'
     //   : 'cfxtest:acc1ttg7287cybsdy6bn0002nzepypn29yavjbj36g'
@@ -147,9 +143,9 @@ export default class CNS {
       abi: ENS_ABI,
       address: REGISTRY_ADDRESS,
     })
-    this.ReverseRegistrar = this.cfxClient.Contract({
-      abi: ReverseRegistrar_ABI,
-      address: REVERSE_REGISTRAR_ADDRESS,
+    this.ReverseRecord = this.cfxClient.Contract({
+      abi: ReverseRecord_ABI,
+      address: REVERSE_RECORD_ADDRESS,
     })
   }
 
