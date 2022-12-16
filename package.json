@@ -64,7 +64,7 @@
     "@babel/plugin-syntax-import-meta": "7.10.4",
     "@babel/preset-env": "7.16.11",
     "@babel/preset-react": "7.16.7",
-    "@esbuild-plugins/node-modules-polyfill": "0.1.4",
+    "@cztocm/node-modules-polyfill": "0.1.9",
     "@mdx-js/esbuild": "2.1.1",
     "@mdx-js/react": "1.6.22",
     "@size-limit/esbuild": "7.0.8",
