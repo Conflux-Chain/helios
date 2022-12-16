@@ -151,7 +151,10 @@ const ru = {
     // - Send Transaction / send transaction
     sendTransaction: 'Отправить транзакцию',
     toAddressLabel: 'Отправить',
-    toAddressPlaceholder: 'Address(cfx*:), or Username',
+    cnsAddressPlaceholder: 'Address(cfx*:), or Username',
+    ensAddressPlaceholder: 'Address (0x...) or ENS Domains',
+    cfxAddressPlaceholder: 'Enter an address in Base32 format (cfx*:)',
+    ethAddressPlaceholder: 'Enter an address in Hex (0x...)',
     tokenAndAmount: 'Токен и сумма',
     available: 'Доступно: ',
     max: 'Все',

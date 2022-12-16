@@ -150,7 +150,10 @@ const en = {
     // - Send Transaction / send transaction
     sendTransaction: 'Send Transaction',
     toAddressLabel: 'Send To',
-    toAddressPlaceholder: 'Address(cfx*:), or Username',
+    cnsAddressPlaceholder: 'Address(cfx*:), or Username',
+    ensAddressPlaceholder: 'Address (0x...) or ENS Domains',
+    cfxAddressPlaceholder: 'Enter an address in Base32 format (cfx*:)',
+    ethAddressPlaceholder: 'Enter an address in Hex (0x...)',
     tokenAndAmount: 'Token and Amount',
     available: 'Available: ',
     max: 'MAX',

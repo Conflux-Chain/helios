@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
+import {isNumber} from '@fluent-wallet/checks'
 import {
   formatHexToDecimal,
   convertDataToValue,
@@ -11,6 +12,14 @@ import {ContactsOutlined, RightOutlined} from '@fluent-wallet/component-icons'
 import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
+import {
+  CFX_MAINNET_NETID,
+  CFX_TESTNET_NETID,
+  ETH_GOERLI_NETID,
+  ETH_SEPOLIA_NETID,
+  ETH_MAINNET_NETID,
+} from '@fluent-wallet/consts'
+
 import {
   TitleNav,
   AccountDisplay,
@@ -33,10 +42,41 @@ import {
   useSingleTokenInfoWithNativeTokenSupport,
   useAddressNote,
 } from '../../hooks/useApi'
-import {ROUTES} from '../../constants'
+import {ROUTES, NETWORK_TYPE} from '../../constants'
 import useGlobalStore from '../../stores'
 
 const {CONFIRM_TRANSACTION, ADDRESS_BOOK} = ROUTES
+
+const useToAddressPlaceHolder = ({type, netId}) => {
+  const [placeholder, setPlaceholder] = useState('')
+  const {t} = useTranslation()
+
+  useEffect(() => {
+    if (!isNumber(netId)) {
+      return
+    }
+
+    if (type === NETWORK_TYPE.CFX) {
+      if (netId === CFX_MAINNET_NETID || netId === CFX_TESTNET_NETID) {
+        return setPlaceholder(t('cnsAddressPlaceholder'))
+      }
+
+      setPlaceholder(t('cfxAddressPlaceholder'))
+    }
+
+    if (type === NETWORK_TYPE.ETH) {
+      if (
+        netId === ETH_MAINNET_NETID ||
+        netId === ETH_GOERLI_NETID ||
+        netId === ETH_SEPOLIA_NETID
+      ) {
+        return setPlaceholder(t('ensAddressPlaceholder'))
+      }
+      setPlaceholder(t('ethAddressPlaceholder'))
+    }
+  }, [type, netId, t])
+  return placeholder
+}
 
 function SendTransaction() {
   const {t} = useTranslation()
@@ -67,6 +107,8 @@ function SendTransaction() {
       account: {nickname},
     },
   } = useCurrentAddress()
+  const toAddressInputPlaceholder = useToAddressPlaceHolder({type, netId})
+
   const {address: tokenAddress, decimals} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
 
@@ -264,6 +306,7 @@ function SendTransaction() {
                 addressLoading={nsLoading}
                 addressChecked={showAddressChecked}
                 onClickCloseBtn={onClickAddressInputCloseBtn}
+                placeholder={toAddressInputPlaceholder}
               />
             )}
           </CompWithLabel>

@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-import {useTranslation} from 'react-i18next'
 import Input from '@fluent-wallet/component-input'
 
 import {AddressCheckingSymbol} from './'
@@ -11,14 +10,13 @@ function ToAddressInput({
   errorMessage,
   addressLoading = false,
   addressChecked = false,
+  placeholder,
 }) {
-  const {t} = useTranslation()
-
   return (
     <Input
       width="w-full"
       value={address}
-      placeholder={t('toAddressPlaceholder')}
+      placeholder={placeholder}
       onChange={e => onChangeAddress && onChangeAddress(e.target.value)}
       errorMessage={errorMessage}
       id="toAddressInput"
@@ -39,6 +37,7 @@ function ToAddressInput({
 
 ToAddressInput.propTypes = {
   address: PropTypes.string,
+  placeholder: PropTypes.string,
   onChangeAddress: PropTypes.func,
   onClickCloseBtn: PropTypes.func,
   errorMessage: PropTypes.string,
