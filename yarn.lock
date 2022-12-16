@@ -1849,6 +1849,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cztocm/node-modules-polyfill@npm:0.1.9":
+  version: 0.1.9
+  resolution: "@cztocm/node-modules-polyfill@npm:0.1.9"
+  dependencies:
+    "@cztocm/rollup-plugin-node-polyfills": ^0.2.2
+    escape-string-regexp: ^4.0.0
+  peerDependencies:
+    esbuild: "*"
+  checksum: 4275b942b7e63d5ece41ab2f83e524a038db789c8dcc69d6f2f9a96a51d4d8872fe46284e17e61457177e8b41b7614458f455c0cbb16123a922ea4850754256b
+  languageName: node
+  linkType: hard
+
+"@cztocm/rollup-plugin-node-polyfills@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@cztocm/rollup-plugin-node-polyfills@npm:0.2.2"
+  dependencies:
+    rollup-plugin-inject: ^3.0.0
+  checksum: 5f123bce802bea40bd2eecc70611e654a0731e0146c6c3fc75f40bfa097802a81c1ccfb7eaf50e784a985b08a8140fffce7ab8b9c3125c5ec092ba44f8bb561f
+  languageName: node
+  linkType: hard
+
 "@devicefarmer/adbkit-logcat@npm:^2.1.2":
   version: 2.1.2
   resolution: "@devicefarmer/adbkit-logcat@npm:2.1.2"
@@ -2357,18 +2378,6 @@ __metadata:
   version: 2.0.15
   resolution: "@ensdomains/eth-ens-namehash@npm:2.0.15"
   checksum: 56e2d4275f30b701e7328e488b7107b5ee793b57653342232f01396f769a51b812e73f9475faf894198ffc8ea97eead3809c1431e0955b9377400f503b4da970
-  languageName: node
-  linkType: hard
-
-"@esbuild-plugins/node-modules-polyfill@npm:0.1.4":
-  version: 0.1.4
-  resolution: "@esbuild-plugins/node-modules-polyfill@npm:0.1.4"
-  dependencies:
-    escape-string-regexp: ^4.0.0
-    rollup-plugin-node-polyfills: ^0.2.1
-  peerDependencies:
-    esbuild: "*"
-  checksum: 39ff2a816139d71ebfbb78914c024565b6026da3146776aa10d27ee1330938ce78c7b2aad11c2d7768c7675d0942d1d1690dabfe60fa79e07dbb31cfbe396cec
   languageName: node
   linkType: hard
 
@@ -17285,7 +17294,7 @@ __metadata:
     "@babel/plugin-syntax-import-meta": 7.10.4
     "@babel/preset-env": 7.16.11
     "@babel/preset-react": 7.16.7
-    "@esbuild-plugins/node-modules-polyfill": 0.1.4
+    "@cztocm/node-modules-polyfill": 0.1.9
     "@mdx-js/esbuild": 2.1.1
     "@mdx-js/react": 1.6.22
     "@size-limit/esbuild": 7.0.8
@@ -26320,15 +26329,6 @@ __metadata:
     magic-string: ^0.25.3
     rollup-pluginutils: ^2.8.1
   checksum: a014972c80fe34b8c8154056fa2533a8440066a31de831e3793fc21b15d108d92c22d8f7f472397bd5783d7c5e04d8cbf112fb72c5a26e997726e4eb090edad1
-  languageName: node
-  linkType: hard
-
-"rollup-plugin-node-polyfills@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "rollup-plugin-node-polyfills@npm:0.2.1"
-  dependencies:
-    rollup-plugin-inject: ^3.0.0
-  checksum: e84645212c443aca3cfae2ba69f01c6d8c5c250f0bf651416b69a4572b60aae9da7cdd687de3ab9b903f7a1ab96b06b71f0c4927d1b02a37485360d2b563937b
   languageName: node
   linkType: hard
 
