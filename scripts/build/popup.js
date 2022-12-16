@@ -1,5 +1,5 @@
 require('../setup-dotenv.js')
-const NodeModulesPolyfills = require('@esbuild-plugins/node-modules-polyfill')
+const NodeModulesPolyfills = require('@cztocm/node-modules-polyfill')
 const browserslist = require('browserslist')
 const {esbuildPluginBrowserslist} = require('esbuild-plugin-browserslist')
 const browserLists = require('../../package.json').browserslist
