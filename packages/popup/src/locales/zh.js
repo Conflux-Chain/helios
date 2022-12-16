@@ -147,7 +147,10 @@ const zh = {
     // - Send Transaction / send transaction
     sendTransaction: '发送交易',
     toAddressLabel: '接收方',
-    toAddressPlaceholder: '地址(cfx*:) 或者 .web3 用户名',
+    cnsAddressPlaceholder: '地址 (cfx*:) 或者 .web3 用户名',
+    ensAddressPlaceholder: '地址 (0x...) 或者 ENS 域名',
+    cfxAddressPlaceholder: '请输入一个 Base32 格式的地址 (cfx*:)',
+    ethAddressPlaceholder: '请输入一个 Hex 地址 (0x...)',
     tokenAndAmount: '代币和数量',
     available: '余额: ',
     max: '最大',
