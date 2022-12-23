@@ -90,7 +90,7 @@ const fallbackBalanceTracker = async (
       tokens.map(async t => {
         let res = '0x0'
         t = t.toLowerCase()
-
+        // 拿 native token 余额 和 token 20余额
         const call =
           t === '0x0'
             ? addr => getBalanceMethod([addr])
@@ -146,12 +146,14 @@ export const main = async arg => {
     throw InvalidParams('Invalid address format for current network')
 
   let rst
-
+  //如果没有 balanceChecker 合约 就直接call
   if (!balanceChecker) {
     rst = await fallbackBalanceTracker(callMethod, arg)
     return rst
   }
-
+  // 如果用 balanceChecker 也是直接call 只不过这里的to address(合约地址) 是balance checker.上面的是 token 的address
+  // balance checker 其实就是提供了一个 balances 的abi 逻辑和上面的那个一样
+  // 也是拿到加密的data 传给 call 函数
   try {
     rst = await balances(
       d => callMethod({errorFallThrough: true}, [d]),

@@ -51,7 +51,11 @@ export const main = async ({
   const mnemonic = vault.ddata || (await decrypt(getPassword(), vault.data))
 
   const networks = getNetwork()
-
+  // rpc engine packages/rpc-engine/middlewares/inject-rpc-store.js 里对所有rpc 方法封装了
+  // 如果参数的length 为2 那么第一项就为一些配置，第二项才是main 的参数
+  // 下面这个wallet_getBalance就是这么调用的
+  // 用来找到所有网络下有余额的地址或者有发生过交易的地址。返回的是个chanel
+  // 注意这个 oldAccountsCount 这里是判断 除了钱包现在的地址还有没有其他地址
   const channels = networks.map(({name, hdPath, token, type, netId}) =>
     discoverAccounts({
       getBalance: addr =>
@@ -83,6 +87,7 @@ export const main = async ({
   const accountIds = []
   const firstAccountCreatedChan = chan(1)
   const promises = channels.map(async (c, idx) => {
+    // read 是一个一个拿。write 一次 read 一次 挨着个拿。
     while (!c.isClosed()) {
       const found = await c.read()
       if (!found) {
@@ -91,6 +96,7 @@ export const main = async ({
         return
       }
       discoveredNewAddressOnEachNet[idx] += 1
+      // 如果有新的有余额/未完成交易的地址那么就会 创建一下新地址
       if (greatThanOthers(idx, discoveredNewAddressOnEachNet)) {
         accountIds.push(await wallet_createAccount({accountGroupId}))
         !firstAccountCreatedChan.isClosed() &&

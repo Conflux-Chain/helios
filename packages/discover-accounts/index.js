@@ -45,6 +45,7 @@ const _discoverAccounts = async ({
   const found = []
 
   for (let i = startFrom; i < startFrom + max; i++) {
+    // 一个一个拿对应网络下的私钥和地址
     const rst = await getNthAccountOfHDKey({
       mnemonic,
       hdPath,
@@ -63,6 +64,7 @@ const _discoverAccounts = async ({
 
     // always return the first address
     // nth: the try times starts at 0
+
     if ((return0 && i === 0) || txOk || balanceOk) {
       if (isFunction(onFindOne)) await onFindOne({...rst, nth: i})
       found.push({...rst, nth: i})
@@ -75,7 +77,7 @@ const _discoverAccounts = async ({
 
   return found
 }
-
+//  用来找到所有有余额的地址或者发生过交易的地址
 export const discoverAccounts = (args = {}) => {
   const c = chan()
   _discoverAccounts({...args, c})

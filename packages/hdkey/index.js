@@ -1,7 +1,9 @@
 import {randomInt} from '@fluent-wallet/utils'
 import {HDNode, entropyToMnemonic} from '@ethersproject/hdnode'
 import {randomBytes} from '@ethersproject/random'
-
+// https://learnblockchain.cn/2018/09/28/hdwallet
+// m / purpose' / coin' / account' / change / address_index
+// m/44 是固定的 503 是cfx 后面2个一个是account 的index 一个是address 的index
 const DEFAULT_HD_PATH = `m/44'/503'/0'/0`
 
 export const generateMnemonic = () => entropyToMnemonic(randomBytes(16))

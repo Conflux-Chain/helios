@@ -15,7 +15,7 @@ export const permissions = {
   locked: true,
   external: ['popup', 'inpage'],
 }
-
+// 这里的f 其实就是 rpc engine 里的 fetch.js 通过ky 库 直接调用 endpoint 的cfx_getBalance 方法
 export const main = async ({f, params}) => {
   return await f(params)
 }

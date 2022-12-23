@@ -94,6 +94,9 @@ export const ABI = [
 export const iface = new Interface(ABI)
 const request = (...args) => {
   const [methodName, r, to, ...rest] = args
+  // r 这里是主要调用的函数其实就是传进来 eth call或者cfx call
+  // 通过 encodeFunctionData 获得 call data
+  // 然后把 call data 传给r 函数 调用eth call /cfx call
   if (args.length === 2) return partial(request, methodName, r)
   if (args.length === 3 && iface.getFunction(methodName).inputs.length > 0)
     return partial(request, methodName, r, to)
@@ -138,9 +141,11 @@ export async function validateTokenInfo(...args) {
 
 const contractInterface = new Proxy(iface, {
   get() {
+    // methodName 是 外部调用的合约name
     const [, methodName] = arguments
     const f = iface.getFunction(methodName)
     if (!f) throw new Error(`Invalid contract method ${methodName}`)
+    // 偏函数 把methodName传递进去
     return partial(request, methodName)
   },
 })
