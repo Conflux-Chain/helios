@@ -91,6 +91,9 @@ export const main = async ({
     if (params[0].type === ETH_TX_TYPES.EIP1559 && params[0].gasPrice) {
       delete params[0].gasPrice
     }
+    // 如果是dapp 发起的交易的话 需要‘干run一下’
+    // 注意上文的inpage 表明这里的上下文环境就是dapp
+    // dryRun 就是用自己的私钥 run 一下。 判断是否被钱包拒了？
     try {
       // try sign tx
       await signTxFn(
@@ -109,7 +112,7 @@ export const main = async ({
         throw err
       }
     }
-
+    // 测试网咋办。可能rpc open api 不支持测试网？
     if (
       network.type === 'cfx' &&
       app.currentNetwork.name === CFX_MAINNET_NAME
@@ -125,7 +128,7 @@ export const main = async ({
         }
       } catch (err) {} // eslint-disable-line no-empty
     }
-
+    // 弹popup
     return await wallet_addPendingUserAuthRequest({
       appId: app.eid,
       req: {method: NAME, accountId: app.currentAccount.eid, params},
@@ -148,6 +151,7 @@ export const main = async ({
     if (!tx[0].gas) tx[0].gas = tx[0].gasLimit
     delete tx[0].gasLimit
   }
+
   const addr = findAddress({
     // filter by app.currentNetwork and app.currentAccount
     appId: authReq?.app?.eid,
@@ -156,6 +160,7 @@ export const main = async ({
     networkId: !authReqId ? network.eid : authReq.app.currentNetwork.eid,
     value: tx[0].from,
   })
+
   if (!addr) throw InvalidParams(`Invalid from address ${tx[0].from}`)
 
   let signed
@@ -192,6 +197,7 @@ export const main = async ({
     network.type === 'eth' &&
     (await eth_blockNumber({errorFallThrough: true}, []))
   const txExtra = {ok: false}
+  // _sendAction来自于参数 代表是加速还是取消
   if (_popup && _sendAction) txExtra.sendAction = _sendAction
   const dbtxs = [
     {eid: 'newTxPayload', txPayload: txMeta},
@@ -217,6 +223,7 @@ export const main = async ({
   } = t(dbtxs)
 
   try {
+    // 这个函数其实就是插入(更新)和交易关联的数据库的的key
     enrichTxFn(
       {
         errorFallThrough: true,

@@ -108,7 +108,7 @@ export const main = ({
   network,
 }) => {
   tx = getTxById(tx)
-  // this only happends in integration test
+  // this only happens in integration test
   if (!tx) return
   address = getAddressById(address)
   const cacheTime = network.cacheTime || 1000
@@ -135,6 +135,8 @@ export const main = ({
   }
 
   // # detect pivot chain switch
+  // 当切到别的网络的时候 上一个网络还有pending 交易的处理
+  // 为什么会有这种case。因为这里的逻辑 是用keepTrack不断的循环调用当前的方法
   if (status === 0) {
     // ## unsent
   } else if (status === 1) {
@@ -157,6 +159,7 @@ export const main = ({
         keepTruthy(),
         sideEffect(rst => {
           if (rst.blockHash !== tx.blockHash) {
+            // 这里在前面生成交易hash的时候 用的是 eth_blockNumber/cfx_blockNumber.这里更新一下正确的hash
             setTxPackaged({hash, blockHash: rst.blockHash})
             setTxChainSwitched({hash})
           }
@@ -195,6 +198,7 @@ export const main = ({
   // # process tx
   if (status === 0) {
     // ## unsent
+    // setTxSending 把 tx status 设为1
     s.transform(
       sideEffect(() => setTxSending({hash})),
       sideEffect(() => updateBadge(getUnfinishedTxCount())),
@@ -202,6 +206,7 @@ export const main = ({
       .map(() => {
         return cfx_sendRawTransaction({errorFallThrough: true}, [raw])
       })
+      // 发送错误处理
       .subscribe(
         resolve({
           fail: err => {
@@ -231,12 +236,14 @@ export const main = ({
             })
               .transform(
                 branchObj({
+                  // 根据上面的参数 failed，sameAsSuccess，resend的值 哪个为true就执行对应的方法（数组）
                   failed: [
                     sideEffect(
                       ({err}) =>
                         typeof failedCb === 'function' && failedCb(err),
                     ),
                     sideEffect(({errorType}) => {
+                      // setTxFailed 删除 tx/raw 的value 同时把tx/status 设为-1
                       if (setTxFailed({hash, error: errorType})) {
                         getExt().then(ext =>
                           ext.notifications.create(hash, {
@@ -268,6 +275,7 @@ export const main = ({
       )
       .transform(
         // successfully sent
+        // setTxPending 把status设置为2 继续下一轮循环
         sideEffect(() => setTxPending({hash})),
         sideEffect(() => typeof okCb === 'function' && okCb(hash)),
         sideEffect(keepTrack),
@@ -283,6 +291,9 @@ export const main = ({
         map(rst => {
           if (rst && rst.blockHash) return rst
           // getTransactionByHash return null
+          // 如果拿不到block hash 就去拿最近成功的epoch number
+          // 如果当前交易的height 和 epoch height 相差5 就冲洗发送交易
+          // 为什么这么处理。这里可能涉及到公链的底层逻辑。回头可以和pana确认一下
           cfx_epochNumber({errorFallThrough: true}, ['latest_state'])
             .then(n => {
               if (
@@ -299,6 +310,12 @@ export const main = ({
         keepTruthy(),
 
         // packaged
+        // status: https://developer.confluxnetwork.org/conflux-doc/docs/json_rpc#cfx_gettransactionbyhash
+        // 0 for success
+        // 1 if an error occurred
+        // 2 for skiped
+        // null when the transaction is skipped or not packed.
+
         map(rst => {
           setTxPackaged({hash, blockHash: rst.blockHash})
           const {status} = rst
@@ -370,9 +387,13 @@ export const main = ({
       )
       .subscribe(resolve({fail: keepTrack}))
       .transform(
+        // 这里的nonce 来自上面的 statusNull
+        // pluck 只把statusNull的结果给择出来给 transform了
         sideEffect(nonce => {
+          // next nonce 比交易的nonce大 证明不是交易nonce 的问题
           if (BigNumber.from(nonce).gt(BigNumber.from(tx.txPayload.nonce))) {
             if (tx.skippedChecked) {
+              // 如果是skipped 就算求了 status 设置为-2 结束
               if (setTxSkipped({hash, skippedChecked: true})) {
                 getExt().then(ext =>
                   ext.notifications.create(hash, {
@@ -387,6 +408,9 @@ export const main = ({
               updateBadge(getUnfinishedTxCount())
               return sdone()
             } else {
+              // 这里只是 设置了skippedChecked 为true 继续根据 status === 2 去执行
+              // 因为 走到这里 是因为 skippedChecked false
+              // skippedChecked false  没有执行 skipped 方法 交易还在交易池里 获取继续轮训 等待更新状态
               setTxSkipped({hash})
               return keepTrack(0)
             }

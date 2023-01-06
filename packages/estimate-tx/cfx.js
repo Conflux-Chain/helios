@@ -169,6 +169,7 @@ export const cfxEstimate = async (
     const clcGasPrice = customGasPrice || gasPrice
     const clcGasLimit = customGasLimit || '0x5208' /* 21000 */
     const clcStorageLimit = customStorageLimit || '0x0'
+    // cfxGetFeeData 就是拿bn.js 换算一下
     const cfxFeeData = cfxGetFeeData(
       {
         gasPrice: clcGasPrice,
@@ -212,7 +213,7 @@ export const cfxEstimate = async (
   rst = {
     ...rst,
   }
-
+  // contract 是有赞助的
   if (toAddressType === 'contract') {
     // check sponsor info if is contract interaction
     const {isBalanceEnough, willPayCollateral, willPayTxFee} = await request({

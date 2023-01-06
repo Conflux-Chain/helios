@@ -20,6 +20,7 @@ export const main = async ({
   rpcs: {wallet_validate20Token, wallet_refetchBalance},
   params: {txhash},
 }) => {
+  // 这里是从数据库根据hash查一下相关的数据
   const txData = getTxsToEnrich({txhash, type: 'cfx'})
   if (!txData) return
 
@@ -30,7 +31,7 @@ export const main = async ({
   let decoded
 
   let noError = true
-
+  // 如果是发送token的话要把tx 插入 token schema 中
   if (token) {
     txs.push({eid: token.eid, token: {tx: tx.eid}})
     if (!isTokenInAddr({tokenId: token.eid, addressId: address.eid})) {
@@ -56,14 +57,16 @@ export const main = async ({
   }
 
   if (!to && data) {
+    // ??
     if (receipt) txs.push({eid: txExtraEid, txExtra: {contractCreation: true}})
     else
       txs.push({eid: txExtraEid, txExtra: {contractCreation: true, ok: true}})
   }
-
+  // 20 token 交易
   if (to && data && decoded.type === 'contract') {
     const contractAddress = to
     try {
+      // wallet_validate20Token 通过 call 调用 name symbol decimals 方法 来判断是不是20token
       const {valid, symbol, name, decimals} = await wallet_validate20Token(
         {network, networkName: network.name, errorFallThrough: true},
         {tokenAddress: contractAddress},
