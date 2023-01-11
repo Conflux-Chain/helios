@@ -1,3 +1,5 @@
+// 整个文件 作为content-script/index.mustache 的 content参数
+// content-script/index.mustache 是最终运行在各个dapp中
 import {rpcStream} from '@fluent-wallet/extension-runtime/rpc-stream.js'
 import {initProvider} from '@fluent-wallet/provider-api'
 import {takeOver} from './take-over-portal'

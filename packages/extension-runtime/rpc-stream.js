@@ -6,6 +6,7 @@ const s = stream({
   closeOut: false,
 })
 
+// https://github.com/thi-ng/umbrella/blob/develop/packages/rstream/src/pubsub.ts
 const pb = pubsub({
   topic: ({id} = {}) => {
     return id

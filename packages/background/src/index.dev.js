@@ -10,7 +10,7 @@ if (!document.body) {
   document.querySelector('html').appendChild(document.createElement('body'))
 }
 
-// const hmrClient = document.createElement('script')
+// const hmrClient = document.createElement('script')2
 // hmrClient.src = 'http://localhost:18003/sp_/hmr-client.js'
 // hmrClient.type = 'module'
 // document.head.appendChild(hmrClient)

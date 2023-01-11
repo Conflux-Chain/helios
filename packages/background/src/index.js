@@ -52,6 +52,12 @@ async function initDB(initDBFn, skipRestore) {
   const importAllTx = (await browser.storage.local.get('wallet_importAll'))
     ?.wallet_importAll
 
+  console.log(
+    'browser.storage.local.get',
+    browser.storage.local.get(EXT_STORAGE),
+  )
+  console.log('chrome.storage.local.get', chrome.storage.local.get(EXT_STORAGE))
+
   const data =
     skipRestore || Boolean(importAllTx)
       ? null

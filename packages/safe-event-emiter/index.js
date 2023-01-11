@@ -2,6 +2,7 @@ import {CloseMode, pubsub, stream} from '@thi.ng/rstream'
 import {pluck} from '@fluent-wallet/transducers'
 import {isFunction, isObject, isString} from '@fluent-wallet/checks'
 
+// ui/provider-api 的基类
 export default class SafeEventEmitter {
   // #s
   #pb
@@ -64,12 +65,14 @@ export default class SafeEventEmitter {
     this.#checkEventType(eventType)
     this.#checkListener(listener)
   }
-
+  // 子类一开始 构建的时候 会执行 on("connect")，就是添加第一个监听器
+  // listener 就是 来自dapp 的回调函数
   on(eventType, listener) {
     this.#checkBeforeSub({eventType, listener})
     if (this.#listeners.has(listener)) return this
     const sub = {next: listener}
     this.#listeners.set(listener, sub)
+    // 给对应事件类型的stream 添加上 监听事件
     this.#streams[eventType].subscribe(sub)
     return this
   }
@@ -97,9 +100,11 @@ export default class SafeEventEmitter {
     this.#listeners = new Map()
     return this
   }
-
+  // 子类  this.#s.subscribe({next: this.#streamEventListener.bind(this)})
+  // 会触发。子类的#S来自于外界传入的
   emit(eventType, data) {
     this.#checkEventType(eventType)
+    // 这里最终会执行到 on的时候添加的event type
     this.#pb.next({topic: eventType, data})
     return true
   }

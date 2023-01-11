@@ -90,6 +90,9 @@ export const main = async ({
     throw InvalidRequest(`no origin found`)
 
   // called from inpage
+  // 如果请求的权限和已授权的权限一致则直接返回 Web3WalletPermission
+  // 否则的话就会进行授权
+  // 对对方进行验证的授权是 call-rpc.js 中调用 wallet_validateAppPermissions
   if ((_inpage || _internal) && !_popup) {
     const perms = formatPermissions(params)
     if (app && JSON.stringify(app.perms) === JSON.stringify(perms))
@@ -99,7 +102,7 @@ export const main = async ({
       method: NAME,
       params: perms,
     }
-
+    // 弹popup
     const rst = await wallet_addPendingUserAuthRequest({siteId: site.eid, req})
 
     return rst
@@ -108,6 +111,7 @@ export const main = async ({
   // called from popup
   // 1. confirm app permission request (authReqId is defined)
   // 2. alter/revoke permissions (authReqId is undefined)
+  // 这里就是popup 弹窗调用的方法
   if (_popup) {
     if (params.siteId && !params.accounts.length)
       throw InvalidParams('Must have at least 1 accounts')

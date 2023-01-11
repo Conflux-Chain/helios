@@ -56,7 +56,7 @@ function defRpcProxy({getRpcPermissions, rpcStore, req, sendNewRpcRequest}) {
           _rpcStack: req._rpcStack,
           _internal: true,
         }
-        // 调用前置method。同时将rpc stack 出栈。
+        // 所有 经由provider 调用的方法 都是 _internal。表示内部调用
         return sendNewRpcRequest(newReq).then(res => {
           req._rpcStack.pop()
           if (res.error) {

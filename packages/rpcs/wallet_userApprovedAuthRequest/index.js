@@ -15,6 +15,7 @@ export const main = async ({
 }) => {
   const authReq = getAuthReqById(authReqId)
   if (!authReq) throw InvalidParams(`Invalid auth request id ${authReqId}`)
+  // 触发 wallet_addPendingUserAuthRequest c.read
   if (authReq.c) authReq.c.write(res)
   retract(authReqId)
 

@@ -223,7 +223,6 @@ const schema = {
     currentNetwork: {ref: 'network'},
     tx: {many: true, ref: true, doc: 'tx initiated by this app'},
   },
-  //TODO: dapp 相关要研究一下
   authReq: {
     req: {doc: 'the req body of the auth req', persist: false},
     processed: {doc: 'if user reacted to this'},

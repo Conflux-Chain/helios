@@ -56,7 +56,7 @@ export const main = async args => {
     if (rst instanceof Error) throw rst
     return rst
   }
-
+  // csp 线程
   const c = chan(1)
   const {
     tempids: {authReqId},
