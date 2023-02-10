@@ -117,14 +117,14 @@ export default class CNS {
     //TODO：add mainnet address
     const REGISTRY_ADDRESS = isMainnet
       ? 'cfxtest:acd3rm7y183trhpzvz8m3y72kx1abk4d0jh842585a'
-      : 'cfxtest:acd3rm7y183trhpzvz8m3y72kx1abk4d0jh842585a'
+      : 'cfxtest:acemru7fu1u8brtyn3hrtae17kbcd4pd9u2m761bta'
     const REVERSE_RECORD_ADDRESS = isMainnet
       ? 'cfxtest:acccv089mvek41rsmjyf1yyg922phjd0ppt16hfuv1'
-      : 'cfxtest:acccv089mvek41rsmjyf1yyg922phjd0ppt16hfuv1'
+      : 'cfxtest:acgddsj3kah2f4f4c6959bvc4732f4juyj90h0zmg2'
 
     const PUBLIC_RESOLVER_ADDRESS = isMainnet
       ? 'cfxtest:acfcb2fv6t8xrxyyx3x1atwmdrhh5xvfd21zsje216'
-      : 'cfxtest:acfcb2fv6t8xrxyyx3x1atwmdrhh5xvfd21zsje216'
+      : 'cfxtest:acbfyf69zaxau5a23w10dgyrmb0hrz4p9pewn6sejp'
     //  const BASE_REGISTRAR_ADDRESS = isMainnet
     //   ? 'cfxtest:acc1ttg7287cybsdy6bn0002nzepypn29yavjbj36g'
     //   : 'cfxtest:acc1ttg7287cybsdy6bn0002nzepypn29yavjbj36g'
