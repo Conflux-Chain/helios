@@ -116,24 +116,15 @@ export default class CNS {
     const isMainnet = chainId == CHAINID_CFX_MAINNET
     //TODO：add mainnet address
     const REGISTRY_ADDRESS = isMainnet
-      ? 'cfxtest:acd3rm7y183trhpzvz8m3y72kx1abk4d0jh842585a'
+      ? 'cfx:acemru7fu1u8brtyn3hrtae17kbcd4pd9uwbspvnnm'
       : 'cfxtest:acemru7fu1u8brtyn3hrtae17kbcd4pd9u2m761bta'
     const REVERSE_RECORD_ADDRESS = isMainnet
-      ? 'cfxtest:acccv089mvek41rsmjyf1yyg922phjd0ppt16hfuv1'
+      ? 'cfx:achsgpgs5dgpmgpj2zd87apj6js33c07pjth6k33mj'
       : 'cfxtest:acgddsj3kah2f4f4c6959bvc4732f4juyj90h0zmg2'
 
     const PUBLIC_RESOLVER_ADDRESS = isMainnet
-      ? 'cfxtest:acfcb2fv6t8xrxyyx3x1atwmdrhh5xvfd21zsje216'
+      ? 'cfx:acasaruvgf44ss67pxzfs1exvj7k2vyt863f72n6up'
       : 'cfxtest:acbfyf69zaxau5a23w10dgyrmb0hrz4p9pewn6sejp'
-    //  const BASE_REGISTRAR_ADDRESS = isMainnet
-    //   ? 'cfxtest:acc1ttg7287cybsdy6bn0002nzepypn29yavjbj36g'
-    //   : 'cfxtest:acc1ttg7287cybsdy6bn0002nzepypn29yavjbj36g'
-    //  const WEB3_CONTROLLER_ADDRESS = isMainnet
-    //   ? 'cfxtest:acbrnwph2609zbf21np0501d87xb9dnvuakpv911xk'
-    //   : 'cfxtest:acbrnwph2609zbf21np0501d87xb9dnvuakpv911xk'
-    //  const NAME_WRAPPER_ADDRESS = isMainnet
-    //   ? 'cfxtest:acdc4xzy0pg1dzrbajgmv8nw3cjyj6ezn2dzncc4w5'
-    //   : 'cfxtest:acdc4xzy0pg1dzrbajgmv8nw3cjyj6ezn2dzncc4w5'
 
     this.PublicResolver = this.cfxClient.Contract({
       abi: PublicResolver_ABI,
