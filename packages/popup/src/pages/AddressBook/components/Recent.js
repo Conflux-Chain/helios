@@ -3,7 +3,9 @@ import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 
-import {useRecentTradingAddress} from '../../../hooks/useApi'
+import {useRecentTradingAddress, useCurrentAddress} from '../../../hooks/useApi'
+import {useServiceName, useAddressWithServiceName} from '../../../hooks'
+import {isValidDomainName, formatNsName} from '../../../utils'
 import {NoResult, ContactItem, Avatar} from '../../../components'
 
 function RecentItem({
@@ -16,6 +18,19 @@ function RecentItem({
   const {t} = useTranslation()
 
   const [addToContact, setAddToContact] = useState(false)
+
+  const {
+    data: {
+      network: {type, netId},
+    },
+  } = useCurrentAddress()
+
+  const {data: nsName} = useServiceName({
+    type,
+    netId,
+    provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+    address,
+  })
 
   const onAddedContactCallback = async () => {
     setAddToContact(false)
@@ -34,7 +49,24 @@ function RecentItem({
           id={recentItemId}
           onClick={() => onJumpToSendTx({address, note})}
         >
-          <ContactItem address={address} memo={note} />
+          <ContactItem
+            address={address}
+            memo={note}
+            memoOverlay={
+              <div className="flex items-center">
+                {nsName && (
+                  <div className="text-[#808BE7]  font-medium mr-1">
+                    {formatNsName(nsName)}
+                  </div>
+                )}
+                {note && (
+                  <div className="p-1 text-xs text-primary bg-primary-10 text-ellipsis max-w-[108px]">
+                    {note}
+                  </div>
+                )}
+              </div>
+            }
+          />
         </div>
       ) : address && !addToContact ? (
         <div
@@ -49,9 +81,16 @@ function RecentItem({
               diameter={30}
               address={address}
             />
-            <span className="text-gray-40 text-xs">
-              {shortenAddress(address)}
-            </span>
+            <div>
+              {nsName && (
+                <div className="text-[#808BE7]  font-medium">
+                  {formatNsName(nsName)}
+                </div>
+              )}
+              <div className="text-gray-40 text-xs">
+                {shortenAddress(address)}
+              </div>
+            </div>
           </div>
 
           <div
@@ -86,7 +125,23 @@ RecentItem.propTypes = {
 
 function Recent({fuzzy = '', onJumpToSendTx}) {
   const {t} = useTranslation()
-  const {data: tradingAddressData, mutate} = useRecentTradingAddress({fuzzy})
+  const {
+    data: {
+      network: {type, netId},
+    },
+  } = useCurrentAddress()
+
+  const {data} = useAddressWithServiceName({
+    type,
+    netId,
+    provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+    name: fuzzy,
+    notSend: !isValidDomainName(fuzzy),
+  })
+
+  const {data: tradingAddressData, mutate} = useRecentTradingAddress(
+    data ? {fuzzy: data} : {fuzzy},
+  )
 
   const [displayTradingAddressData, setDisplayTradingAddressData] =
     useState(undefined)

@@ -1,26 +1,82 @@
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
+import {isNumber} from '@fluent-wallet/checks'
 import {
   formatHexToDecimal,
   convertDataToValue,
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
+import {ContactsOutlined, RightOutlined} from '@fluent-wallet/component-icons'
 import useInputErrorAnimation from '@fluent-wallet/component-input/useAnimation'
 import Alert from '@fluent-wallet/component-alert'
 import txHistoryChecker from '@fluent-wallet/tx-history-checker'
-import {TitleNav, AccountDisplay, CurrentNetworkDisplay} from '../../components'
-import {useCurrentTxParams, useEstimateTx, useEstimateError} from '../../hooks'
-import {ToAddressInput, TokenAndAmount} from './components'
-import {validateAddress, validateByEip55} from '../../utils'
 import {
-  useNetworkTypeIsCfx,
+  CFX_MAINNET_NETID,
+  CFX_TESTNET_NETID,
+  ETH_GOERLI_NETID,
+  ETH_SEPOLIA_NETID,
+  ETH_MAINNET_NETID,
+} from '@fluent-wallet/consts'
+
+import {
+  TitleNav,
+  AccountDisplay,
+  CurrentNetworkDisplay,
+  CompWithLabel,
+} from '../../components'
+import {
+  useCurrentTxParams,
+  useEstimateTx,
+  useEstimateError,
+  useInputAddressInfo,
+} from '../../hooks'
+import {
+  ToAddressInput,
+  TokenAndAmount,
+  AddressWithAlternativeName,
+} from './components'
+import {
   useCurrentAddress,
   useSingleTokenInfoWithNativeTokenSupport,
+  useAddressNote,
 } from '../../hooks/useApi'
-import {ROUTES} from '../../constants'
-const {CONFIRM_TRANSACTION} = ROUTES
+import {ROUTES, NETWORK_TYPE} from '../../constants'
+import useGlobalStore from '../../stores'
+
+const {CONFIRM_TRANSACTION, ADDRESS_BOOK} = ROUTES
+
+const useToAddressPlaceHolder = ({type, netId}) => {
+  const [placeholder, setPlaceholder] = useState('')
+  const {t} = useTranslation()
+
+  useEffect(() => {
+    if (!isNumber(netId)) {
+      return
+    }
+
+    if (type === NETWORK_TYPE.CFX) {
+      if (netId === CFX_MAINNET_NETID || netId === CFX_TESTNET_NETID) {
+        return setPlaceholder(t('cnsAddressPlaceholder'))
+      }
+
+      setPlaceholder(t('cfxAddressPlaceholder'))
+    }
+
+    if (type === NETWORK_TYPE.ETH) {
+      if (
+        netId === ETH_MAINNET_NETID ||
+        netId === ETH_GOERLI_NETID ||
+        netId === ETH_SEPOLIA_NETID
+      ) {
+        return setPlaceholder(t('ensAddressPlaceholder'))
+      }
+      setPlaceholder(t('ethAddressPlaceholder'))
+    }
+  }, [type, netId, t])
+  return placeholder
+}
 
 function SendTransaction() {
   const {t} = useTranslation()
@@ -43,6 +99,7 @@ function SendTransaction() {
     tx,
     clearSendTransactionParams,
   } = useCurrentTxParams()
+
   const {
     data: {
       value: address,
@@ -50,10 +107,16 @@ function SendTransaction() {
       account: {nickname},
     },
   } = useCurrentAddress()
+  const toAddressInputPlaceholder = useToAddressPlaceHolder({type, netId})
+
   const {address: tokenAddress, decimals} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
-  const networkTypeIsCfx = useNetworkTypeIsCfx()
+
   const [addressError, setAddressError] = useState('')
+  const [inputAddress, setInputAddress] = useState(toAddress)
+  const [isInputAddr, setIsInputAddr] = useState(false)
+  const [showAddressChecked, setShowAddressChecked] = useState(false)
+
   const [estimateError, setEstimateError] = useState('')
   const [hasNoTxn, setHasNoTxn] = useState(false)
   const {errorAnimateStyle, displayErrorMsg} = useInputErrorAnimation(
@@ -137,17 +200,43 @@ function SendTransaction() {
     setSendAmount(amount)
   }
   const onChangeAddress = address => {
-    setToAddress(address)
-    if (!validateAddress(address, networkTypeIsCfx, netId)) {
-      return setAddressError(
-        networkTypeIsCfx ? t('invalidAddress') : t('invalidHexAddress'),
-      )
+    if (nsLoading) {
+      return
     }
-    if (!networkTypeIsCfx && !validateByEip55(address)) {
-      return setAddressError(t('unChecksumAddress'))
-    }
-    setAddressError('')
+    !isInputAddr && setIsInputAddr(true)
+    setShowAddressChecked(false)
+    setInputAddress(address)
   }
+
+  const onClickAddressInputCloseBtn = () => {
+    setInputAddress('')
+    !isInputAddr && setIsInputAddr(true)
+  }
+  //debounce get validate address(cns/ens address) message
+  const onRequestNsCb = ({type, ret}) => {
+    if (!ret && type === 'nsName') {
+      setShowAddressChecked(true)
+    }
+  }
+
+  const {
+    error: validatedAddressError,
+    address: validatedAddress,
+    nsName,
+    loading: nsLoading,
+  } = useInputAddressInfo({
+    inputAddress,
+    netId,
+    type,
+    isInputAddr,
+    cb: onRequestNsCb,
+  })
+
+  useEffect(() => {
+    setAddressError(validatedAddressError)
+    setToAddress(validatedAddress)
+  }, [validatedAddressError, validatedAddress, setToAddress])
+
   useEffect(() => {
     if (nativeToken.symbol && !tokenAddress) setSendTokenId('native')
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,6 +244,21 @@ function SendTransaction() {
 
   const sendDisabled =
     !!addressError || !!estimateError || !toAddress || !sendAmount
+
+  // get address alias name
+  const {addressNote, setAddressNote} = useGlobalStore()
+
+  const noteName = useAddressNote(
+    toAddress,
+    toAddress === Object.keys(addressNote)?.[0],
+  )
+  const displayNoteName = addressNote?.[toAddress] || noteName
+
+  useEffect(() => {
+    return () => {
+      setAddressNote?.({})
+    }
+  }, [setAddressNote])
 
   return (
     <div className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg">
@@ -168,11 +272,45 @@ function SendTransaction() {
       </div>
       <div className="flex flex-1 flex-col justify-between rounded-t-xl bg-gray-0 px-3 pt-4 pb-6">
         <div className="flex flex-col">
-          <ToAddressInput
-            address={toAddress}
-            onChangeAddress={onChangeAddress}
-            errorMessage={addressError}
-          />
+          <CompWithLabel
+            label={
+              <div className="flex items-center justify-between">
+                <div className="text-gray-40">{t('toAddressLabel')}</div>
+                <div
+                  id="go-address-book"
+                  className="flex items-center text-primary cursor-pointer"
+                  aria-hidden="true"
+                  onClick={() => history.push(ADDRESS_BOOK)}
+                >
+                  <ContactsOutlined className="w-[14px] h-[14px]" />
+                  <span className="text-primary mx-1">{t('recent')}</span>
+                  <RightOutlined className="w-3 h-3" />
+                </div>
+              </div>
+            }
+            className="!mt-0"
+            labelClassName="!text-gray-40"
+          >
+            {(nsName || displayNoteName) && !nsLoading ? (
+              <AddressWithAlternativeName
+                address={!addressError ? toAddress : ''}
+                displayNoteName={displayNoteName}
+                nsName={nsName}
+                onClickCloseBtn={onClickAddressInputCloseBtn}
+              />
+            ) : (
+              <ToAddressInput
+                address={inputAddress}
+                onChangeAddress={onChangeAddress}
+                errorMessage={addressError}
+                addressLoading={nsLoading}
+                addressChecked={showAddressChecked}
+                onClickCloseBtn={onClickAddressInputCloseBtn}
+                placeholder={toAddressInputPlaceholder}
+              />
+            )}
+          </CompWithLabel>
+
           <TokenAndAmount
             selectedTokenId={sendTokenId}
             amount={sendAmount}

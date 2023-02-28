@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
+import {Big} from '@fluent-wallet/data-format'
 import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import dayjs from 'dayjs'
-import {isUndefined} from '@fluent-wallet/checks'
+import {isUndefined, isNumber} from '@fluent-wallet/checks'
 import {convertDataToValue} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {cfxGetFeeData, ethGetFeeData} from '@fluent-wallet/estimate-tx'
@@ -19,7 +20,7 @@ import {
   useCurrentTicker,
   useCurrentAddress,
 } from '../../../hooks/useApi'
-import {useDecodeData, useDappIcon} from '../../../hooks'
+import {useDecodeData, useDappIcon, useServiceName} from '../../../hooks'
 import {ROUTES} from '../../../constants'
 
 const {RESEND_TRANSACTION} = ROUTES
@@ -39,6 +40,7 @@ const ICON_COLOR = {
 }
 
 function HistoryItem({
+  containerScrollTop = 0,
   status,
   created,
   extra,
@@ -54,13 +56,14 @@ function HistoryItem({
   copyButtonToastClassName,
 }) {
   const history = useHistory()
-
+  const historyItemRef = useRef(null)
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
   const [amount, setAmount] = useState('')
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const [showDetail, setShowDetail] = useState(false)
+  const [isHide, setIsHide] = useState(false)
 
   const {t} = useTranslation()
   const dappIconUrl = useDappIcon(app?.site?.icon)
@@ -73,8 +76,16 @@ function HistoryItem({
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const {
-    data: {value: currentAddress},
+    data: {value: currentAddress, network},
   } = useCurrentAddress()
+
+  const {data: nsName} = useServiceName({
+    type: network?.type,
+    netId: network?.netId,
+    provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+    address: toAddress,
+    notSend: isHide,
+  })
 
   const fromAddress = payload?.from || ''
   const txStatus = formatStatus(status)
@@ -211,12 +222,24 @@ function HistoryItem({
     decodeData?.args,
   ])
 
+  useEffect(() => {
+    const clientHeight = historyItemRef?.current?.clientHeight
+    const offsetTop = historyItemRef?.current?.offsetTop
+    if (
+      isNumber(clientHeight) &&
+      isNumber(containerScrollTop) &&
+      isNumber(offsetTop)
+    ) {
+      const distanceToParent = new Big(offsetTop).minus(52)
+      setIsHide(distanceToParent.lt(new Big(containerScrollTop)))
+    }
+  }, [containerScrollTop])
   if (!actionName || !contractName) return null
 
   return (
-    <div>
+    <div ref={historyItemRef} className="pt-3">
       <div
-        className="flex items-center cursor-pointer p-3 bg-white mx-3 mt-3 rounded"
+        className="flex items-center cursor-pointer p-3 bg-white mx-3 rounded"
         aria-hidden="true"
         onClick={() => setShowDetail(true)}
       >
@@ -246,8 +269,10 @@ function HistoryItem({
           <div className="flex mt-0.5 items-center justify-between text-gray-40 text-xs">
             <span>{contractName}</span>
             <span>
-              {toAddress &&
-                shortenAddress(formatIntoChecksumAddress(toAddress))}
+              {nsName
+                ? nsName
+                : toAddress &&
+                  shortenAddress(formatIntoChecksumAddress(toAddress))}
             </span>
           </div>
         </div>
@@ -277,6 +302,7 @@ function HistoryItem({
         isExternalTx={isExternalTx}
         fromAddress={fromAddress}
         toAddress={toAddress}
+        nsName={nsName}
         actionName={actionName}
         copyButtonContainerClassName={copyButtonContainerClassName}
         copyButtonToastClassName={copyButtonToastClassName}
@@ -296,6 +322,7 @@ function HistoryItem({
 }
 
 HistoryItem.propTypes = {
+  containerScrollTop: PropTypes.number.isRequired,
   status: PropTypes.number.isRequired,
   created: PropTypes.number.isRequired,
   pendingAt: PropTypes.number,

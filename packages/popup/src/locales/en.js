@@ -13,8 +13,8 @@ const en = {
     no: 'No',
     yes: 'Yes',
     copiedSuccess: 'Copied',
-    invalidAddress: 'Please enter valid cfx address',
-    invalidHexAddress: 'Please enter valid hex address',
+    invalidAddress: 'Please enter valid cfx address or .web3 username',
+    invalidHexAddress: 'Please enter valid hex address or ens',
     unChecksumAddress: 'Invalid address, make sure the letter case is correct',
     protocol: 'Protocol',
     viewData: 'View Data',
@@ -150,10 +150,15 @@ const en = {
     // - Send Transaction / send transaction
     sendTransaction: 'Send Transaction',
     toAddressLabel: 'Send To',
-    toAddressPlaceholder: 'Please enter an address',
+    cnsAddressPlaceholder: 'Address(cfx*:), or Username',
+    ensAddressPlaceholder: 'Address (0x...) or ENS Domains',
+    cfxAddressPlaceholder: 'Enter an address in Base32 format (cfx*:)',
+    ethAddressPlaceholder: 'Enter an address in Hex (0x...)',
     tokenAndAmount: 'Token and Amount',
     available: 'Available: ',
     max: 'MAX',
+    web3Name: '.web3 username',
+    alternativeName: 'account name/memo',
 
     // - Send Transaction / choose token
     chooseToken: 'Choose Token',

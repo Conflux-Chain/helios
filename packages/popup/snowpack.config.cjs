@@ -73,7 +73,13 @@ const mergedConfig = mergeConfig(baseConfig, {
       'rc-util/es/Dom/isVisible',
       'rc-util/es/Dom/canUseDom',
       'node-fetch',
-      ...(isDev() ? ['prop-types', 'react/jsx-dev-runtime'] : []),
+      ...(isDev()
+        ? [
+            'prop-types',
+            'react/jsx-dev-runtime',
+            'rc-util/es/hooks/useMergedState',
+          ]
+        : []),
     ],
     cache: '.snowpack-popup',
   },

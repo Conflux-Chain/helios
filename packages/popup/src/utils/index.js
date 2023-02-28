@@ -1,9 +1,11 @@
 import BN from 'bn.js'
+import punycode from 'punycode/punycode'
+import {CNS, ENS} from '@fluent-wallet/did'
 import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress, isChecksummed, toChecksum} from '@fluent-wallet/account'
 import {CFX_MAINNET_CHAINID, ETH_MAINNET_CHAINID} from '@fluent-wallet/consts'
-import {isArray} from '@fluent-wallet/checks'
+import {isArray, isString} from '@fluent-wallet/checks'
 import {
   PASSWORD_REG_EXP,
   RPC_METHODS,
@@ -323,4 +325,75 @@ export const getInnerUrlWithoutLimitKey = innerNetworkName => {
     return arr.join('/')
   }
   return ''
+}
+
+export function isValidDomainName(address) {
+  const match = punycode
+    .toASCII(address)
+    .toLowerCase()
+    // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
+    // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
+    // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
+    .match(
+      /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
+    )
+  return match !== null
+}
+
+const getNameServiceInterface = ({type, provider, netId}) => {
+  if (type && provider) {
+    if (type === NETWORK_TYPE.CFX) {
+      return new CNS(provider, netId)
+    }
+    return new ENS(provider)
+  }
+  return null
+}
+
+export async function getSingleAddressWithNameService({
+  type,
+  netId,
+  provider,
+  name,
+}) {
+  const nameServiceInterface = getNameServiceInterface({type, provider, netId})
+  return await nameServiceInterface?.getAddress?.(name)
+}
+
+export async function getAddressesWithNameService({
+  type,
+  netId,
+  provider,
+  nameArr,
+}) {
+  const nameServiceInterface = getNameServiceInterface({type, provider, netId})
+  return await nameServiceInterface?.getAddresses?.([...nameArr])
+}
+
+export async function getSingleServiceNameWithAddress({
+  type,
+  netId,
+  provider,
+  address,
+}) {
+  const nameServiceInterface = getNameServiceInterface({type, provider, netId})
+  return await nameServiceInterface?.getName?.(address)
+}
+
+export async function getServiceNamesWithAddresses({
+  type,
+  netId,
+  provider,
+  addressArr,
+}) {
+  const nameServiceInterface = getNameServiceInterface({type, provider, netId})
+  return await nameServiceInterface?.getNames?.([...addressArr])
+}
+
+export const formatNsName = nsName => {
+  if (isString(nsName) && nsName.length > 19) {
+    return nsName.substring(0, 6) + '...' + nsName.substring(nsName.length - 13)
+  }
+
+  return nsName
 }

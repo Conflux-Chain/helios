@@ -15,6 +15,7 @@ const TextField = forwardRef(function TextField(
     fontSize = 'text-sm',
     placeholder = '',
     className = '',
+    textClassName = '',
     inputClassName = '',
     inputInnerClassName = '',
     maxLength = '20',
@@ -37,10 +38,9 @@ const TextField = forwardRef(function TextField(
     <div className={`relative ${height} ${className}`} {...props}>
       {!showInputStatus && (
         <div className={`flex ${width} items-center`}>
-          <div className={`${fontSize} text-ellipsis`}>
+          <div className={`${fontSize} text-ellipsis ${textClassName}`}>
             {isAddress && textValue ? shortenAddress(textValue) : textValue}
           </div>
-
           <div>{rightComponent || <div className="ml-2 w-4 h-4" />}</div>
         </div>
       )}
@@ -73,6 +73,7 @@ TextField.propTypes = {
   height: PropTypes.string,
   fontSize: PropTypes.string,
   className: PropTypes.string,
+  textClassName: PropTypes.string,
   inputClassName: PropTypes.string,
   inputInnerClassName: PropTypes.string,
   maxLength: PropTypes.string,

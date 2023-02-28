@@ -9,15 +9,22 @@ import {
   useAddressType,
   useDbRefetchBalance,
 } from '../../../hooks/useApi'
-import {useCheckImage} from '../../../hooks'
+import {useCheckImage, useServiceNames} from '../../../hooks'
 import {formatIntoChecksumAddress} from '../../../utils'
-import {DisplayBalance, ProgressIcon, CopyButton} from '../../../components'
+import {
+  DisplayBalance,
+  ProgressIcon,
+  CopyButton,
+  NsNameLabel,
+} from '../../../components'
 import {RPC_METHODS} from '../../../constants'
 const {QUERY_ADDRESS} = RPC_METHODS
 
 const TransactionDirection = ({
   fromAddress,
   toAddress,
+  nsNames = {},
+  nsNamesLoading,
   currentAccountName,
   toAddressLabel,
   isCreateContract,
@@ -46,12 +53,22 @@ const TransactionDirection = ({
         />
       </div>
       <div className="ml-3 flex flex-col flex-1">
-        <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2">
+        <div className="pt-1 pb-2 flex justify-between border-b border-gray-20 mb-2 items-end">
           <div className="flex flex-col">
             <Text
-              className="text-xs text-gray-40 mb-1"
+              className="text-xs text-gray-40"
               id="currentAccountName"
-              text={currentAccountName}
+              text={
+                nsNamesLoading === false ? (
+                  nsNames?.[fromAddress] ? (
+                    <NsNameLabel nsName={nsNames?.[fromAddress]} />
+                  ) : (
+                    <span className="mb-1"> {currentAccountName}</span>
+                  )
+                ) : (
+                  ''
+                )
+              }
             />
             <Text
               className="text-gray-80"
@@ -77,7 +94,24 @@ const TransactionDirection = ({
             />
           </div>
         </div>
-        <span className="text-xs text-gray-40 mb-1">{toAddressLabel}</span>
+
+        <Text
+          className="text-xs text-gray-40 mb-1"
+          id="currentAccountName"
+          text={
+            nsNamesLoading === false ? (
+              nsNames?.[toAddress] ? (
+                <NsNameLabel nsName={nsNames?.[toAddress]} />
+              ) : (
+                <span className="text-xs text-gray-40 mb-1">
+                  {toAddressLabel}
+                </span>
+              )
+            ) : (
+              ''
+            )
+          }
+        />
         <span className="text-gray-80 flex items-center h-4" id="toAddress">
           {isContract && <FileOutlined className="w-4 h-4 mr-1 text-primary" />}
           {toAddress && shortenAddress(toAddress)}
@@ -96,6 +130,8 @@ const TransactionDirection = ({
 }
 
 TransactionDirection.propTypes = {
+  nsNames: PropTypes.object,
+  nsNamesLoading: PropTypes.bool,
   fromAddress: PropTypes.string,
   toAddress: PropTypes.string,
   currentAccountName: PropTypes.string,
@@ -106,12 +142,7 @@ TransactionDirection.propTypes = {
   symbol: PropTypes.string,
 }
 
-const useQueryAddressInAddressCard = address => {
-  const {
-    data: {
-      network: {eid: networkId},
-    },
-  } = useCurrentAddress()
+const useQueryAddressInAddressCard = ({address, networkId}) => {
   useDbRefetchBalance()
   const {data} = useRPC(
     address && networkId
@@ -147,17 +178,30 @@ function AddressCard({
 }) {
   const {t} = useTranslation()
   const {
+    data: {
+      network: {eid: networkId, type, netId},
+    },
+  } = useCurrentAddress()
+
+  const {
     nativeBalance,
     network: {
       ticker: {decimals, symbol},
     },
-  } = useQueryAddressInAddressCard(fromAddress)
+  } = useQueryAddressInAddressCard({address: fromAddress, networkId})
+  const {data: nsNames, nsNamesError} = useServiceNames({
+    type,
+    netId,
+    provider: window?.___CFXJS_USE_RPC__PRIVIDER,
+    addressArr: [fromAddress, toAddress].filter(Boolean),
+  })
+  const nsNamesLoading = !nsNamesError && !nsNames
   const isImgUrl = useCheckImage(token?.logoURI)
 
   return (
     <div
       id="addressCardContainer"
-      className="address-card-container w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat mt-1 mb-4"
+      className="address-card-container w-full flex flex-col pt-3 pb-6 px-4 items-center bg-blue-card-linear bg-no-repeat bg-cover mt-1 mb-4"
     >
       <header
         className="address-card-header text-primary flex items-center"
@@ -205,6 +249,8 @@ function AddressCard({
         </div>
       )}
       <TransactionDirection
+        nsNames={nsNames}
+        nsNamesLoading={nsNamesLoading}
         fromAddress={fromAddress}
         toAddress={toAddress}
         currentAccountName={nickname}

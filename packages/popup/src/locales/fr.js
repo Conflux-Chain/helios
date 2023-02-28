@@ -13,8 +13,8 @@ const fr = {
     no: 'Non',
     yes: 'Oui',
     copiedSuccess: 'Copiée avec succès',
-    invalidAddress: 'Merci d’indiquer une adresse cfx valide',
-    invalidHexAddress: 'Merci d’indiquer une adresse hex valide',
+    invalidAddress: 'Please enter valid cfx address or cns',
+    invalidHexAddress: 'Please enter valid hex address or ens',
     unChecksumAddress:
       'Adresse invalide, assurez-vous que la casse des lettres est correcte',
     protocol: 'Protocole',
@@ -156,10 +156,15 @@ const fr = {
     // - Send Transaction / send transaction
     sendTransaction: 'Transaction d’envoi',
     toAddressLabel: 'Envoyer à',
-    toAddressPlaceholder: 'Merci de saisir une adresse',
+    cnsAddressPlaceholder: 'Address(cfx*:), or Username',
+    ensAddressPlaceholder: 'Address (0x...) or ENS Domains',
+    cfxAddressPlaceholder: 'Enter an address in Base32 format (cfx*:)',
+    ethAddressPlaceholder: 'Enter an address in Hex (0x...)',
     tokenAndAmount: 'Jeton et Montant',
     available: 'Disponible : ',
     max: 'MAX',
+    web3Name: 'web3 username',
+    alternativeName: 'account name/memo',
 
     // - Send Transaction / choose token
     chooseToken: 'Choisir un Jeton',
