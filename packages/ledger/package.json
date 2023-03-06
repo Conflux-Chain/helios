@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/ledger",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/hw-app-conflux": "0.0.8",
