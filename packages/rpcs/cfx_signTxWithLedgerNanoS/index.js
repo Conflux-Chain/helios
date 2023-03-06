@@ -1,9 +1,6 @@
 import {map, dbid, mapp} from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
-import {
-  Conflux as LedgerConflux,
-  consts as ledgerConsts,
-} from '@fluent-wallet/ledger'
+import {Conflux as LedgerConflux} from '@fluent-wallet/ledger'
 import {
   cfxEncodeTx,
   cfxRecoverTransactionToAddress,
@@ -53,12 +50,6 @@ export const main = async ({
 
   if (!addr) throw InvalidParams(`Invalid address id ${addressId}`)
   if (addr.account.accountGroup.vault.type !== 'hw')
-    throw InvalidParams(`Invalid address id ${addressId}`)
-  if (
-    ![ledgerConsts.LEDGER_NANOS_NAME, ledgerConsts.LEDGER_NANOX_NAME].includes(
-      addr.account.accountGroup.vault.device,
-    )
-  )
     throw InvalidParams(`Invalid address id ${addressId}`)
 
   const decrypted = JSON.parse(

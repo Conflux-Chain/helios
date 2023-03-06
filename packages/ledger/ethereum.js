@@ -1,13 +1,7 @@
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 
-import {
-  LEDGER_APP_NAME,
-  LEDGER_CLA,
-  INS,
-  HDPATH,
-  LEDGER_DEVICE,
-  ERROR,
-} from './const.js'
+import {LEDGER_APP_NAME, LEDGER_CLA, INS, HDPATH, ERROR} from './const.js'
+import {handleName} from './index.js'
 
 /**
  * Connecting Ledger Ethereum App API for fluent
@@ -195,9 +189,9 @@ export default class Ethereum {
     if (devices.length > 0) {
       const device = devices[0]
       return {
-        name: LEDGER_DEVICE[device?.productName]?.NAME,
-        productId: device?.productId,
-        productName: device?.productName,
+        name: handleName(device?.productName),
+        productId: device?.productId, //deprecated
+        productName: device?.productName, //deprecated
       }
     }
     return {}
