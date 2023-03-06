@@ -11,7 +11,6 @@ import {
   Uint,
 } from '@fluent-wallet/spec'
 import {cfxSignTransaction} from '@fluent-wallet/signature'
-import {consts as ledgerConsts} from '@fluent-wallet/ledger'
 
 export const NAME = 'cfx_signTransaction'
 
@@ -190,13 +189,10 @@ async function signWithHardwareWallet({
   },
   tx,
   addressId,
-  device,
   accountId,
 }) {
-  const hwSignMap = {
-    [ledgerConsts.LEDGER_NANOS_NAME]: cfx_signTxWithLedgerNanoS,
-    [ledgerConsts.LEDGER_NANOX_NAME]: cfx_signTxWithLedgerNanoS,
-  }
-  const signMethod = hwSignMap[device]
-  return await signMethod({errorFallThrough: true}, {tx, addressId, accountId})
+  return await cfx_signTxWithLedgerNanoS(
+    {errorFallThrough: true},
+    {tx, addressId, accountId},
+  )
 }
