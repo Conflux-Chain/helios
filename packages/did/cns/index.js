@@ -6,11 +6,7 @@ import {
   decode as decodeCfxAddress,
 } from '@fluent-wallet/base32-address'
 
-import {
-  COINID_CONFLUX,
-  CHAINID_CFX_MAINNET,
-  CHAINID_CFX_TESTNET,
-} from '../constant.js'
+import {COINID_CONFLUX, CHAINID_CFX_MAINNET} from '../constant.js'
 import PublicResolver_ABI from './abis/PublicResolver.json'
 import ENS_ABI from './abis/ENS.json'
 import ReverseRecord_ABI from './abis/ReverseRecords.json'
@@ -23,7 +19,7 @@ export default class CNS {
   Registry
   ReverseRecord
   constructor(provider, chainId) {
-    this._check(provider, chainId)
+    this._check(provider)
     this.provider = provider
     this.cfxClient = new Conflux()
     this.cfxClient.provider = provider
@@ -32,7 +28,7 @@ export default class CNS {
   }
 
   setProvider(provider, chainId) {
-    this._check(provider, chainId)
+    this._check(provider)
     this.provider = provider
     if (!this.cfxClient) this.cfxClient = new Conflux()
     this.cfxClient.provider = provider
@@ -140,9 +136,7 @@ export default class CNS {
     })
   }
 
-  _check(provider, chainId) {
+  _check(provider) {
     if (!provider) throw new Error('The provider is required')
-    if (![CHAINID_CFX_MAINNET, CHAINID_CFX_TESTNET].includes(chainId))
-      throw new Error('Only support 1029 and 1')
   }
 }
