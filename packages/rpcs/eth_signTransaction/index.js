@@ -1,7 +1,6 @@
 import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import {ethSignTransaction} from '@fluent-wallet/signature'
-import {consts as ledgerConsts} from '@fluent-wallet/ledger'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {parseUnits} from '@ethersproject/units'
 
@@ -216,13 +215,10 @@ async function signWithHardwareWallet({
   },
   tx,
   addressId,
-  device,
   accountId,
 }) {
-  const hwSignMap = {
-    [ledgerConsts.LEDGER_NANOS_NAME]: eth_signTxWithLedgerNanoS,
-    [ledgerConsts.LEDGER_NANOX_NAME]: eth_signTxWithLedgerNanoS,
-  }
-  const signMethod = hwSignMap[device]
-  return await signMethod({errorFallThrough: true}, {tx, addressId, accountId})
+  return await eth_signTxWithLedgerNanoS(
+    {errorFallThrough: true},
+    {tx, addressId, accountId},
+  )
 }

@@ -341,12 +341,17 @@ export function isValidDomainName(address) {
 }
 
 const getNameServiceInterface = ({type, provider, netId}) => {
-  if (type && provider) {
-    if (type === NETWORK_TYPE.CFX) {
-      return new CNS(provider, netId)
+  try {
+    if (type && provider) {
+      if (type === NETWORK_TYPE.CFX) {
+        return new CNS(provider, netId)
+      }
+      return new ENS(provider)
     }
-    return new ENS(provider)
+  } catch (e) {
+    return null
   }
+
   return null
 }
 
