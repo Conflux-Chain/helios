@@ -1,0 +1,60 @@
+{
+  "name": "helios",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Conflux manifest v3 wallet",
+  "lint-staged": {
+    "**/*.{js,jsx}": [
+      "npm run lint",
+      "prettier --write"
+    ]
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "start": "node scripts/webpack.js",
+    "lint": "eslint --fix",
+    "pretty": "prettier --write .",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.3",
+    "@babel/eslint-parser": "^7.21.3",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-decorators": "^7.21.0",
+    "@babel/plugin-transform-runtime": "^7.19.6",
+    "@babel/preset-env": "7.13.15",
+    "@babel/preset-react": "^7.14.5",
+    "@types/chrome": "^0.0.159",
+    "babel-loader": "^8.2.2",
+    "babel-preset-react-app": "^10.0.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^9.0.1",
+    "css-loader": "^6.4.0",
+    "eslint": "^8.36.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "file-loader": "^6.2.0",
+    "html-loader": "^2.1.2",
+    "html-webpack-plugin": "^5.3.2",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.6",
+    "sass-loader": "^12.1.0",
+    "style-loader": "^3.3.0",
+    "webpack-cli": "^4.9.0",
+    "webpack-dev-server": "^4.13.1",
+    "write-file-webpack-plugin": "^4.5.1"
+  },
+  "dependencies": {
+    "@nozbe/watermelondb": "^0.25.5",
+    "@nozbe/with-observables": "^1.4.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-use": "^17.4.0",
+    "webpack": "^5.76.2"
+  }
+}
