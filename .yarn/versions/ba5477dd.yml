@@ -1,5 +1,2 @@
-releases:
-  "@fluent-wallet/eth_sign-tx-with-ledger-nano-s": patch
-
 declined:
-  - helios-background
+  - "@fluent-wallet/eth_sign-tx-with-ledger-nano-s"
