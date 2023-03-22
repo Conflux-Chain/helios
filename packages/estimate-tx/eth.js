@@ -195,7 +195,7 @@ export const ethEstimate = async (
       },
       {balance: balances['0x0']},
     )
-    if (toAddressType === 'user')
+    if (toAddressType !== 'contract')
       return {
         ...ethFeeData,
         gasPrice,
@@ -233,8 +233,11 @@ export const ethEstimate = async (
   const clcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
   const clcGasLimit =
     customGasLimit ||
-    pre0x(bn16(gasLimit).muln(chainIdToGasBuffer[chainId] || defaultGasBuffer))
-
+    pre0x(
+      bn16(gasLimit)
+        .muln(chainIdToGasBuffer[chainId] || defaultGasBuffer)
+        .toString(16),
+    )
   rst = {
     ...rst,
   }
