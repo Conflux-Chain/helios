@@ -28,7 +28,7 @@ style-src 'self' data: chrome-extension-resource: 'unsafe-inline';
 frame-src 'self' http://localhost:* data: chrome-extension-resource:;
 font-src 'self' data: chrome-extension-resource:;
 media-src * data: blob: filesystem:;",`.replaceAll('\n', ' ')
-      : `"content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"`,
+      : `"content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",`,
     name: isDev() ? 'AFluent' : '__MSG_extensionNAME__',
     backgroundScripts: isDev()
       ? '"reload.js","background.dev.js"'
