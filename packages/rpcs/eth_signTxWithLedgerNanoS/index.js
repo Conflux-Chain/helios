@@ -1,11 +1,11 @@
 import {map, dbid, mapp} from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
 import {Ethereum as LedgerEthereum} from '@fluent-wallet/ledger'
-import {
-  ethEncodeTx,
-  ethRecoverTransactionToAddress,
-  ethJoinTransactionAndSignature,
-} from '@fluent-wallet/signature'
+import {TransactionFactory} from '@ethereumjs/tx'
+import {RLP} from '@ethereumjs/rlp'
+import {bufArrToArr} from '@ethereumjs/util'
+import {Common} from '@ethereumjs/common'
+import {addHexPrefix} from '@fluent-wallet/utils'
 
 export const NAME = 'eth_signTxWithLedgerNanoS'
 
@@ -34,7 +34,7 @@ export const main = async ({
   db: {findAddress, getPassword},
   params: {tx, addressId, accountId},
 }) => {
-  const newTx = {...tx}
+  let newTx = {...tx}
   const addr = findAddress({
     addressId,
     accountId,
@@ -60,23 +60,34 @@ export const main = async ({
   if (!hdPath) throw InvalidParams(`Invalid address id ${addressId}`)
 
   try {
+    const common = Common.custom({chainId: tx.chainId})
+    const txData = TransactionFactory.fromTxData(newTx, {common})
+
+    let messageToSign = txData.getMessageToSign(false)
+    const rawTxHex = Buffer.isBuffer(messageToSign)
+      ? messageToSign.toString('hex')
+      : Buffer.from(RLP.encode(bufArrToArr(messageToSign)))
+
     const {r, s, v} = await new LedgerEthereum().signTransaction(
       hdPath,
-      ethEncodeTx(newTx, true),
+      rawTxHex,
     )
-    const recoveredAddr = ethRecoverTransactionToAddress(tx, {r, s, v})
 
+    const allTxData = {
+      ...newTx,
+      v: addHexPrefix(v),
+      r: addHexPrefix(r),
+      s: addHexPrefix(s),
+    }
+    const signedTx = TransactionFactory.fromTxData(allTxData, {common})
+    const recoveredAddr = signedTx.getSenderAddress().toString()
     if (recoveredAddr.toLowerCase() !== addr.value)
       throw InvalidParams(
         `The address in LedgerNanoS (${recoveredAddr}) doesn't match the address in fluent (${addr.value})`,
       )
 
-    const rawTx = ethJoinTransactionAndSignature({
-      tx: newTx,
-      signature: [r, s, v],
-    })
-
-    return rawTx
+    const rawTx = signedTx.serialize().toString('hex')
+    return addHexPrefix(rawTx)
   } catch (err) {
     const newError = UserRejected(
       'error while signing transaction with Ledger Nano S',

@@ -29,6 +29,7 @@ import {
   useDataForPopup,
   useCurrentAddress,
   useAddress,
+  useBalance,
   useNetworkTypeIsCfx,
   useAddressType,
   useValid20Token,
@@ -141,6 +142,8 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     gas,
     storageLimit,
   } = tx
+  const nativeBalance =
+    useBalance(from, network?.eid, '0x0')?.[from]?.['0x0'] || '0x0'
   const {
     value: rst,
     loading,
@@ -177,6 +180,7 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     // currentNetwork.netId,
     Boolean(provider),
     Object.keys(tokensAmount)?.[0],
+    nativeBalance,
     type,
   ])
 
