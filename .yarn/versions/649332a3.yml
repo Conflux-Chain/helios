@@ -1,2 +1,2 @@
-releases:
-  "@fluent-wallet/estimate-tx": patch
+declined:
+  - helios-popup
