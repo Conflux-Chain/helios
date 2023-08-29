@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/shorten-address": patch
+
+declined:
+  - helios-popup
