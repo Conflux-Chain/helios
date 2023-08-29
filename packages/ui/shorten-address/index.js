@@ -22,7 +22,7 @@ export const shortenCfxAddress = address => {
     throw new Error('Invalid conflux address')
   }
   const arr = address.split(':')
-  if (arr.length !== 2) {
+  if (!(arr.length === 2 || arr.length === 3)) {
     throw new Error('Only shorten the conflux address not containing type')
   }
   const {netId} = decode(address)
