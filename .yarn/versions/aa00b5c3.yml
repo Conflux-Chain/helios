@@ -1,6 +1,0 @@
-releases:
-  "@fluent-wallet/eth_estimate-1559-fee": patch
-  "@fluent-wallet/eth_fee-history": patch
-
-declined:
-  - helios-background
