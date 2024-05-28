@@ -21,7 +21,7 @@ export const permissions = {
 //Gas station url for EIP1559
 export const GAS_API_BASE_URL = 'https://gas-api.metaswap.codefi.network'
 // How many blocks to consider for priority fee estimation
-const FEE_HISTORY_BLOCKS = 5
+const FEE_HISTORY_BLOCKS = '0x5'
 // Levels of priority fee
 const PRIORITY_LEVELS = ['low', 'medium', 'high']
 const SETTINGS_BY_PRIORITY_LEVEL = {

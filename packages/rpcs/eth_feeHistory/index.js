@@ -5,6 +5,7 @@ import {
   or,
   zeroOrMore,
   number,
+  string,
   schema,
 } from '@fluent-wallet/spec'
 
@@ -12,7 +13,7 @@ export const NAME = 'eth_feeHistory'
 export const schemas = {
   input: [
     cat,
-    number,
+    string,
     [or, blockRef, Uint],
     [schema, [zeroOrMore, [number, {max: 100, min: 1}]]],
   ],
