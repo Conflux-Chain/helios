@@ -23483,12 +23483,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"manifest@workspace:packages/manifest":
-  version: 0.0.0-use.local
-  resolution: "manifest@workspace:packages/manifest"
-  languageName: unknown
-  linkType: soft
-
 "map-age-cleaner@npm:^0.1.3":
   version: 0.1.3
   resolution: "map-age-cleaner@npm:0.1.3"
