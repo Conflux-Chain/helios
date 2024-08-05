@@ -1,0 +1,5 @@
+declined:
+  - helios
+  - helios-background
+  - "@fluent-wallet/content-script"
+  - helios-popup
