@@ -1,6 +1,4 @@
 // # imports
-import 'regenerator-runtime/runtime'
-
 import {IS_PROD_MODE, IS_TEST_MODE} from '@fluent-wallet/inner-utils'
 import {EXT_STORAGE} from '@fluent-wallet/consts'
 
