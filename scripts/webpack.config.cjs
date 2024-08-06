@@ -9,19 +9,18 @@ const {EsbuildPlugin} = require('esbuild-loader')
 const packagesPath = path.join(path.resolve(), './packages')
 const devMode = process.env.NODE_ENV !== 'production'
 
-
 const targetBrowser = process.env.TARGET_BROWSER
 /**
  * @type {import('webpack').Configuration}
  */
 module.exports = {
   entry: {
-    background: path.join(packagesPath, 'background/src/index.js'),
+    service_worker: path.join(packagesPath, 'service-worker/index.ts'),
     'content-script': path.join(
       packagesPath,
       'content-script/indexTemplate.js', // TODO: remove and update
     ),
-    manifest: path.join(packagesPath, 'manifest/manifestv2.json'),
+    manifest: path.join(packagesPath, 'manifest/manifestv3.json'),
     popup: path.join(packagesPath, 'popup/src/index.js'),
     inpage: path.join(packagesPath, 'inpage/index.js'),
   },
@@ -38,7 +37,7 @@ module.exports = {
     rules: [
       {
         type: 'javascript/auto', // prevent webpack handling json with its own loaders,
-        test: /manifestv2\.json$/,
+        test: /manifestv3\.json$/,
         use: {
           loader: 'wext-manifest-loader',
           options: {
@@ -48,7 +47,7 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(js|ts)x?$/,
+        test: /\.js$/,
         loader: 'esbuild-loader',
         exclude: /node_modules/,
         resolve: {
@@ -58,6 +57,18 @@ module.exports = {
           // JavaScript version to compile to
           target: 'esnext',
           loader: 'jsx',
+        },
+      },
+      {
+        test: /\.(jsx|ts|tsx)$/,
+        loader: 'esbuild-loader',
+        exclude: /node_modules/,
+        resolve: {
+          fullySpecified: false, // disable the behaviour
+        },
+        options: {
+          // JavaScript version to compile to
+          target: 'esnext',
         },
       },
       {
