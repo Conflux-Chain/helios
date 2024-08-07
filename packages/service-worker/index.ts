@@ -1,5 +1,9 @@
 // // # imports
-import {IS_PROD_MODE, IS_TEST_MODE} from '@fluent-wallet/inner-utils'
+import {
+  IS_PROD_MODE,
+  IS_TEST_MODE,
+  isManifestV3,
+} from '@fluent-wallet/inner-utils'
 import {EXT_STORAGE} from '@fluent-wallet/consts'
 
 import {defRpcEngine} from '@fluent-wallet/rpc-engine'
@@ -53,8 +57,8 @@ async function initDB(initDBFn, skipRestore) {
   // create db
   const dbConnection = createdb(SCHEMA, persistToExtStorageHandler, data)
 
-//   if (!IS_PROD_MODE) window.d = dbConnection
-//   else window.__FLUENT_DB_CONN = dbConnection
+  //   if (!IS_PROD_MODE) window.d = dbConnection
+  //   else window.__FLUENT_DB_CONN = dbConnection
 
   if (!data) await initDBFn(dbConnection, {importAllTx})
 
@@ -111,8 +115,8 @@ async function initRPCEngine(dbConnection) {
     },
   })
 
-//   if (!IS_PROD_MODE) window.r = protectedRequest
-//   else window.__FLUENT_REQUEST = protectedRequest
+  //   if (!IS_PROD_MODE) window.r = protectedRequest
+  //   else window.__FLUENT_REQUEST = protectedRequest
 
   return protectedRequest
 }
@@ -128,9 +132,14 @@ export const initBG = async ({
   return {db: dbConnection, request: protectedRequest}
 }
 
+function saveTimestamp() {
+  const timestamp = new Date().toISOString()
+  browser.storage.session.set({timestamp})
+}
+
 // # initialize
-;(async () => {
-  // ## db
+
+async function initApp() {
   const {request, db} = await initBG()
 
   // ## sentry
@@ -148,20 +157,12 @@ export const initBG = async ({
       1000 * 60 * 60,
     )
   }
-  // ## Dev/Test
-  // if (!IS_TEST_MODE) {
-  //   if (IS_DEV_MODE) {
-  //     // ### load dev script on ext startup
-  //     if (import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
-  //       try {
-  //         const localDevModule = await import(
-  //           import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH
-  //         )
-  //         await localDevModule.run({request, db})
-  //       } catch (err) {
-  //         console.log('local dev error', err)
-  //       }
-  //     }
-  //   }
-  // }
-})()
+
+  if (isManifestV3) {
+    const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000
+    saveTimestamp()
+    setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS)
+  }
+}
+
+initApp()
