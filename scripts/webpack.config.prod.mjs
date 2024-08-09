@@ -19,7 +19,7 @@ export default merge(webpackConfig, {
       path: path.join(path.resolve(), './.env'),
       safe: true,
     }),
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
   ],
   optimization: {
     minimizer: [
