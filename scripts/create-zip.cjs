@@ -1,8 +1,7 @@
-import {PACKAGE_VERSION} from '@fluent-wallet/inner-utils'
-
 const {zip} = require('zip-a-folder')
 const path = require('path')
 const mkdirp = require('mkdirp')
+const PACKAGE_VERSION = require('../package.json').version
 
 const buildPath = path.resolve(__dirname, '../packages/browser-extension/build')
 const targetPath = path.resolve(__dirname, '../releases')
