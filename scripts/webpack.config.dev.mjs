@@ -13,7 +13,7 @@ const isFirefox = process.env.TARGET_BROWSER === 'firefox'
  */
 const devConfig = {
   mode: 'development',
-  devtool: 'inline-source-map',
+  devtool: 'inline-cheap-module-source-map',
   watch: true,
   plugins: [
     new Dotenv({
