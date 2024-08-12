@@ -1,15 +1,16 @@
 import path from 'node:path'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import webpackConfig from './webpack.config.cjs'
+import {defaultConfig, entries} from './webpack.config.cjs'
 import Dotenv from 'dotenv-webpack'
 import {merge} from 'webpack-merge'
 import {EsbuildPlugin} from 'esbuild-loader'
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer'
 
+const isFirefox = process.env.TARGET_BROWSER === 'firefox'
 /**
  * @type {import('webpack').Configuration}
  */
-export default merge(webpackConfig, {
+const prodConfig = {
   mode: 'production',
   devtool: false,
   plugins: [
@@ -28,4 +29,10 @@ export default merge(webpackConfig, {
       }),
     ],
   },
-})
+}
+
+prodConfig.entry = isFirefox ? entries.v2 : entries.v3
+/**
+ * @type {import('webpack').Configuration}
+ */
+export default merge(defaultConfig, prodConfig)

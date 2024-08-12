@@ -13,14 +13,12 @@ const targetBrowser = process.env.TARGET_BROWSER
 /**
  * @type {import('webpack').Configuration}
  */
-module.exports = {
+const defaultConfig = {
   entry: {
-    service_worker: path.join(packagesPath, 'service-worker/index.ts'),
     'content-script': path.join(
       packagesPath,
       'content-script/indexTemplate.js', // TODO: remove and update
     ),
-    manifest: path.join(packagesPath, 'manifest/manifestv3.json'),
     popup: path.join(packagesPath, 'popup/src/index.js'),
     inpage: path.join(packagesPath, 'inpage/index.js'),
   },
@@ -37,7 +35,7 @@ module.exports = {
     rules: [
       {
         type: 'javascript/auto', // prevent webpack handling json with its own loaders,
-        test: /manifestv3\.json$/,
+        test: /manifestv?\d*\.json$/,
         use: {
           loader: 'wext-manifest-loader',
           options: {
@@ -186,3 +184,16 @@ module.exports = {
     }),
   ],
 }
+
+const entries = {
+  v2: {
+    background: path.join(packagesPath, 'service-worker/index.ts'),
+    manifest: path.join(packagesPath, 'manifest/manifestv2.json'),
+  },
+  v3: {
+    service_worker: path.join(packagesPath, 'service-worker/index.ts'),
+    manifest: path.join(packagesPath, 'manifest/manifestv3.json'),
+  },
+}
+
+module.exports = {defaultConfig, entries}

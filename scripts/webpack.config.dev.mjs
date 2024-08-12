@@ -1,12 +1,17 @@
 import path from 'node:path'
 import {merge} from 'webpack-merge'
-import webpackConfig from './webpack.config.cjs'
+import {defaultConfig, entries} from './webpack.config.cjs'
 import Dotenv from 'dotenv-webpack'
 
+const isFirefox = process.env.TARGET_BROWSER === 'firefox'
+
+/**
+ * firefox is not support the manifest v3 yet
+ */
 /**
  * @type {import('webpack').Configuration}
  */
-export default merge(webpackConfig, {
+const devConfig = {
   mode: 'development',
   devtool: 'inline-source-map',
   watch: true,
@@ -16,4 +21,10 @@ export default merge(webpackConfig, {
       path: path.join(path.resolve(), './.env.development.local'),
     }),
   ],
-})
+}
+
+devConfig.entry = isFirefox ? entries.v2 : entries.v3
+/**
+ * @type {import('webpack').Configuration}
+ */
+export default merge(defaultConfig, devConfig)
