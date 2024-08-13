@@ -1,5 +1,16 @@
+releases:
+  "@fluent-wallet/cfx_gas-price": patch
+  "@fluent-wallet/content-script": patch
+  "@fluent-wallet/eth_estimate-1559-fee": patch
+  "@fluent-wallet/inner-utils": patch
+  "@fluent-wallet/sentry": patch
+  "@fluent-wallet/wallet_get-fluent-metadata": patch
+  "@fluent-wallet/wallet_import-all": patch
+  "@fluent-wallet/wallet_request-unlock-ui": patch
+  "@fluent-wallet/webextension": patch
+  helios: minor
+  helios-background: patch
+  helios-popup: patch
+
 declined:
-  - helios
-  - helios-background
-  - "@fluent-wallet/content-script"
-  - helios-popup
+  - "@fluent-wallet/db"
