@@ -126,6 +126,10 @@ const defaultConfig = {
           process.env.NODE_DEBUG || false,
         ),
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+        'process.env.CI': JSON.stringify(process.env.CI || false),
+        'process.env.SENTRY_DSN': JSON.stringify(
+          process.env.SNOWPACK_PUBLIC_SENTRY_DSN || '',
+        ),
       },
     }),
     // Plugin to not generate js bundle for manifest entry
