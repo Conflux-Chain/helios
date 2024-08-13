@@ -2,6 +2,7 @@ import i18next from 'i18next'
 import {initReactI18next} from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import resources from './locales'
+import {IS_DEV_MODE} from '@fluent-wallet/inner-utils'
 
 i18next
   .use(initReactI18next)
@@ -11,7 +12,7 @@ i18next
     react: {
       useSuspense: true,
     },
-    debug: import.meta.env.NODE_ENV === 'development' ? true : false,
+    debug: IS_DEV_MODE,
     fallbackLng: 'en',
     preload: ['en'],
     load: 'languageOnly',

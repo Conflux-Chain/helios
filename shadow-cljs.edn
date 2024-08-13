@@ -191,4 +191,4 @@
                                              q cfxjs.db.core/q
                                              t cfxjs.db.core/t}
                                    :depends-on #{:shared}
-                                   :prepend-js "if(window)window.datascript={};"}}}}}
+                                   :prepend-js "if(globalThis)globalThis.datascript={};"}}}}}

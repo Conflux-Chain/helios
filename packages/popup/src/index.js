@@ -5,7 +5,7 @@ import App from './App'
 import './i18n.js'
 import {SWRConfig} from 'swr'
 import {ROUTES} from './constants'
-import {IS_PROD_MODE} from '@fluent-wallet/inner-utils'
+import {IS_PROD_MODE, PACKAGE_VERSION} from '@fluent-wallet/inner-utils'
 import {
   init as initSentry,
   capture as sentryCapture,
@@ -97,7 +97,4 @@ ReactDOM.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals()
 
-if (!IS_PROD_MODE)
-  console.log(
-    `Fluent Version: ${import.meta.env.SNOWPACK_PUBLIC_FLUENT_VERSION}`,
-  )
+if (!IS_PROD_MODE) console.log(`Fluent Version: ${PACKAGE_VERSION}`)

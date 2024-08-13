@@ -2205,7 +2205,7 @@
 
 (def queries {:batchTx
               (fn [txs]
-                (let [txs (-> txs js/window.JSON.parse j->c)
+                (let [txs (-> txs js/globalThis.JSON.parse j->c)
                       txs (map (fn [[e a v]] [:db/add e (keyword a) v]) txs)
                       rst (t txs)]
                   (clj->js rst)))

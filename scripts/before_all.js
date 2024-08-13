@@ -1,6 +1,7 @@
 const {isDev, mustacheRender} = require('./snowpack.utils')
 const path = require('path')
 const {ensureDirSync} = require('fs-extra')
+const packageJson = require('../package.json')
 
 const extDir = path.resolve(__dirname, '../packages/browser-extension')
 
@@ -8,7 +9,7 @@ ensureDirSync(path.resolve(extDir, 'build'))
 ensureDirSync(path.resolve(extDir, 'build/popup'))
 ensureDirSync(path.resolve(extDir, 'build/background'))
 
-const version = process.env.SNOWPACK_PUBLIC_FLUENT_VERSION
+const version = packageJson.version
 
 mustacheRender(
   path.resolve(extDir, 'manifest.json.mustache'),

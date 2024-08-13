@@ -245,4 +245,4 @@
    :vault/data "b"
    :vault/type "a"
    :db/id 1}
-  (.get (goog.object.get js/window.a "vault") "data"))
+  (.get (goog.object.get js/globalThis.a "vault") "data"))

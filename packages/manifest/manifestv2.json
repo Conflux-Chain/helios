@@ -1,0 +1,94 @@
+{
+  "name": "__MSG_extensionNAME__",
+  "short_name": "__MSG_extensionNAME__",
+  "version": "",
+  "version_name": "",
+  "manifest_version": 2,
+  "author": "Conflux Network",
+  "homepage_url": "https://github.com/Conflux-Chain/helios#readme",
+  "description": "__MSG_extensionDescription__",
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Alt+Shift+F",
+        "mac": "Alt+Shift+F",
+        "chromeos": "Alt+Shift+F",
+        "linux": "Alt+Shift+F"
+      },
+      "description": "Open the extension popup"
+    },
+    "inner_debug_only": {
+      "suggested_key": {
+        "default": "Alt+Shift+3",
+        "mac": "Ctrl+MacCtrl+3"
+      },
+      "description": "Can only debug internally"
+    }
+  },
+  "icons": {
+    "16": "images/icon-16.png",
+    "19": "images/icon-19.png",
+    "32": "images/icon-32.png",
+    "38": "images/icon-38.png",
+    "64": "images/icon-64.png",
+    "128": "images/icon-128.png",
+    "512": "images/icon-512.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "fluent-wallet@confluxnetwork.org",
+      "strict_min_version": "69.0"
+    },
+    "safari": {
+      "strict_min_version": "14"
+    }
+  },
+  "default_locale": "en",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "images/icon-16.png",
+      "19": "images/icon-19.png",
+      "32": "images/icon-32.png",
+      "38": "images/icon-38.png",
+      "64": "images/icon-64.png",
+      "128": "images/icon-128.png",
+      "512": "images/icon-512.png"
+    },
+    "default_title": "Fluent",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "clipboardWrite",
+    "http://localhost:12537/",
+    "tabs",
+    "https://confluxscan.net/*",
+    "https://*.confluxscan.net/*",
+    "activeTab",
+    "notifications"
+  ],
+  "web_accessible_resources": ["content-script.js", "inpage.js"],
+  "externally_connectable": {
+    "matches": [
+      "https://confluxscan.net/*",
+      "https://*.confluxscan.net/*",
+      "https://confluxnetwork.org/*",
+      "https://wallet-main.confluxrpc.org/*",
+      "https://wallet-test.confluxrpc.org/*"
+    ]
+  }
+}

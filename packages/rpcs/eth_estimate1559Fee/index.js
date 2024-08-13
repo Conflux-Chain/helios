@@ -140,18 +140,15 @@ function medianOf(numbers) {
 
 async function getGasFeeByGasStation(chainId) {
   const gaseFeeApiUrl = `${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`
-  if (typeof window?.fetch === 'function') {
-    const res = await fetch(gaseFeeApiUrl, {
-      method: 'GET',
-      headers: {'Content-Type': 'application/json'},
-    })
-    if (!res.ok) {
-      throw new Error(
-        `Fetch failed with status '${res.status}' for request gasFeeApi`,
-      )
-    }
-    return res.json()
-  }
 
-  return {}
+  const res = await fetch(gaseFeeApiUrl, {
+    method: 'GET',
+    headers: {'Content-Type': 'application/json'},
+  })
+  if (!res.ok) {
+    throw new Error(
+      `Fetch failed with status '${res.status}' for request gasFeeApi`,
+    )
+  }
+  return res.json()
 }

@@ -32,6 +32,7 @@ import {
   Setting,
   CrossSpaceButton,
 } from './components'
+import {IS_DEV_MODE} from '@fluent-wallet/inner-utils'
 function Home() {
   const {t} = useTranslation()
   const [accountStatus, setAccountStatus] = useState(false)
@@ -122,7 +123,7 @@ function Home() {
       id="homeContainer"
     >
       {/* only for dev env*/}
-      {import.meta.env.NODE_ENV === 'development' ? (
+      {IS_DEV_MODE ? (
         <button onClick={() => open(location.href)} className="z-10 text-white">
           open
         </button>

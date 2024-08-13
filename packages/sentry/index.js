@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/browser'
-import {Integrations} from '@sentry/tracing'
+// import {Integrations} from '@sentry/tracing'
 import {keccak256} from '@ethersproject/keccak256'
 
 const defaultOpts = {
-  integrations: [new Integrations.BrowserTracing()],
+  integrations: [],
   environment: 'unknown',
   release: 'unknown',
 
