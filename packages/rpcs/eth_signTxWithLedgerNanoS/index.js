@@ -3,9 +3,9 @@ import {decrypt} from 'browser-passworder'
 import {Ethereum as LedgerEthereum} from '@fluent-wallet/ledger'
 import {TransactionFactory} from '@ethereumjs/tx'
 import {RLP} from '@ethereumjs/rlp'
-import {bufArrToArr} from '@ethereumjs/util'
 import {Common} from '@ethereumjs/common'
 import {addHexPrefix} from '@fluent-wallet/utils'
+import {bytesToHex} from '@ethereumjs/util'
 
 export const NAME = 'eth_signTxWithLedgerNanoS'
 
@@ -63,10 +63,9 @@ export const main = async ({
     const common = Common.custom({chainId: tx.chainId})
     const txData = TransactionFactory.fromTxData(newTx, {common})
 
-    let messageToSign = txData.getMessageToSign(false)
-    const rawTxHex = Buffer.isBuffer(messageToSign)
-      ? messageToSign.toString('hex')
-      : Buffer.from(RLP.encode(bufArrToArr(messageToSign)))
+    const messageToSign = txData.getMessageToSign()
+    const rawTxHex =
+      txData.type === 0 ? RLP.encode(messageToSign) : messageToSign
 
     const {r, s, v} = await new LedgerEthereum().signTransaction(
       hdPath,
@@ -85,8 +84,8 @@ export const main = async ({
       throw InvalidParams(
         `The address in LedgerNanoS (${recoveredAddr}) doesn't match the address in fluent (${addr.value})`,
       )
+    const rawTx = bytesToHex(signedTx.serialize())
 
-    const rawTx = signedTx.serialize().toString('hex')
     return addHexPrefix(rawTx)
   } catch (err) {
     const newError = UserRejected(

@@ -3,5 +3,5 @@
  * @name index.js
  */
 
-import * as utils from './utils'
+import * as utils from './utils.js'
 export {utils}
