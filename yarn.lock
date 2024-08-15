@@ -4751,7 +4751,7 @@ __metadata:
   resolution: "@fluent-wallet/fetch-rpc@workspace:packages/fetch-rpc"
   dependencies:
     "@thi.ng/cache": 1.0.94
-    ky: 0.33.3
+    ky: 0.30.0
     ky-universal: 0.10.1
   languageName: unknown
   linkType: soft
@@ -22113,10 +22113,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ky@npm:0.33.3":
-  version: 0.33.3
-  resolution: "ky@npm:0.33.3"
-  checksum: d1869e1f33c0165355f621b6726fcc1a9de20a31f4a826ca0cfd5753d83b9cba8723402d554a00194e0ee3959e0dda0638f4b99d54a3a7de928b55ff870b0bcc
+"ky@npm:0.30.0":
+  version: 0.30.0
+  resolution: "ky@npm:0.30.0"
+  checksum: d6ec6461e18cd2e4abb809b0574ff704c2e17bd61248843471c2492dd9486dfeadd4d139a5a6ec194b0175f9bc7b8c634685880d1ac646553a9f440c0982e8d3
   languageName: node
   linkType: hard
 

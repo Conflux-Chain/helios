@@ -21,7 +21,6 @@ export async function abiCoreSpace({
     if (res.code === 0) return JSON.parse(res.data)
     throw new Error(res.message)
   } catch (err) {
-    console.log(err)
     return
   }
 }
