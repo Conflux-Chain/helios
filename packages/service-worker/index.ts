@@ -1,11 +1,7 @@
 // // # imports
-import {
-  IS_PROD_MODE,
-  IS_TEST_MODE,
-  isManifestV3,
-} from '@fluent-wallet/inner-utils'
+import {IS_PROD_MODE, IS_TEST_MODE} from '@fluent-wallet/inner-utils'
 import {EXT_STORAGE} from '@fluent-wallet/consts'
-
+import {isManifestV3} from './env'
 import {defRpcEngine} from '@fluent-wallet/rpc-engine'
 import {persist as persistToExtStorageHandler} from '../background/src/persist-db-to-ext-storage'
 import {
