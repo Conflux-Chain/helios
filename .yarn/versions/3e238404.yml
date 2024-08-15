@@ -1,0 +1,14 @@
+releases:
+  "@fluent-wallet/eth_sign-tx-with-ledger-nano-s": patch
+  "@fluent-wallet/inner-utils": patch
+  "@fluent-wallet/ledger": patch
+  helios: patch
+
+declined:
+  - helios-background
+  - "@fluent-wallet/json-rpc"
+  - helios-popup
+  - "@fluent-wallet/cfx_sign-transaction"
+  - "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s"
+  - "@fluent-wallet/eth_sign-transaction"
+  - "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account"
