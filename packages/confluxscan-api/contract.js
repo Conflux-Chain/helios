@@ -1,3 +1,4 @@
+import 'cross-fetch/polyfill'
 import {fetch} from './fetcher.js'
 import {getURL, isCoreNetworkId} from './utils.js'
 
@@ -20,6 +21,7 @@ export async function abiCoreSpace({
     if (res.code === 0) return JSON.parse(res.data)
     throw new Error(res.message)
   } catch (err) {
+    console.log(err)
     return
   }
 }

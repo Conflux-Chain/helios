@@ -3,7 +3,6 @@
  * https://jestjs.io/docs/en/configuration.html
  */
 const path = require('path')
-
 // const snowpackReactJestConfig = require('@snowpack/app-scripts-react/jest.config.js')()
 
 module.exports = {
@@ -15,7 +14,7 @@ module.exports = {
     ),
   },
 
-  testEnvironment: './scripts/jest-test-jsdom-env.js',
+  testEnvironment: 'jsdom',
   // The glob patterns Jest uses to detect test files
   testMatch: ['<rootDir>/packages/**/*.test.[jt]s?(x)'],
 
