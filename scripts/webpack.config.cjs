@@ -1,11 +1,11 @@
 const path = require('node:path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const WextManifestWebpackPlugin = require('wext-manifest-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const {ProvidePlugin} = require('webpack')
 const {ProgressPlugin} = require('webpack')
 const {EsbuildPlugin} = require('esbuild-loader')
+const packageJson = require('../package.json')
 const packagesPath = path.join(path.resolve(), './packages')
 const devMode = process.env.NODE_ENV !== 'production'
 
@@ -130,6 +130,7 @@ const defaultConfig = {
         'process.env.SENTRY_DSN': JSON.stringify(
           process.env.SNOWPACK_PUBLIC_SENTRY_DSN || '',
         ),
+        'process.env.PACKAGE_VERSION': JSON.stringify(packageJson.version),
       },
     }),
     // Plugin to not generate js bundle for manifest entry

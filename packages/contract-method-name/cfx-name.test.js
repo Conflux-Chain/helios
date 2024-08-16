@@ -80,14 +80,15 @@ describe('CFX Name', () => {
           },
         })
 
-      const err = await getError(() => {
-        return getCFXContractMethodSignature(
-          'some-wrong-address',
-          erc20TransferData,
-          1,
-        )
-      })
-      expect(err).toEqual(new Error('invalid base32 address'))
+      await expect(
+        getError(() => {
+          return getCFXContractMethodSignature(
+            'some-wrong-address',
+            erc20TransferData,
+            1,
+          )
+        }),
+      ).resolves.toEqual(new Error('invalid base32 address'))
     })
 
     it('should throw error when got wrong transaction data', async () => {
@@ -98,14 +99,15 @@ describe('CFX Name', () => {
         data: abi,
       })
 
-      const err = await getError(() => {
-        return getCFXContractMethodSignature(
-          contractAddress,
-          'some-wrong-data',
-          1,
-        )
-      })
-      expect(err).toEqual(new Error('failed to parse transaction data'))
+      await expect(
+        getError(() => {
+          return getCFXContractMethodSignature(
+            contractAddress,
+            'some-wrong-data',
+            1,
+          )
+        }),
+      ).resolves.toEqual(new Error('failed to parse transaction data'))
     })
   })
 })

@@ -80,8 +80,10 @@ const rst = {
       jopts = mergeDeepObj(jopts, jestOptWithReact)
     }
 
-    if (compileWithSwc) return transformSync(src, jopts).code
-    return src
+    if (compileWithSwc) return {code: transformSync(src, jopts).code}
+    return {
+      code: src,
+    }
   },
 }
 

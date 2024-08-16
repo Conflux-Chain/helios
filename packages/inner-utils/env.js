@@ -1,6 +1,3 @@
-import browser from 'webextension-polyfill'
-import packageJson from '../../package.json'
-
 export const MODE = import.meta.env
   ? import.meta.env.NODE_ENV
   : process.env.NODE_ENV
@@ -9,6 +6,4 @@ export const IS_DEV_MODE = MODE === 'development'
 export const IS_PROD_MODE = MODE === 'production'
 export const IS_CI = process.env.CI === 'true'
 
-export const PACKAGE_VERSION = packageJson.version
-
-export const isManifestV3 = browser.runtime.getManifest().manifest_version === 3
+export const PACKAGE_VERSION = process.env.PACKAGE_VERSION

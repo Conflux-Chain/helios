@@ -15,7 +15,7 @@ module.exports = {
     ),
   },
 
-  testEnvironment: './scripts/jest-test-jsdom-env.js',
+  testEnvironment: 'jsdom',
   // The glob patterns Jest uses to detect test files
   testMatch: ['<rootDir>/packages/**/*.test.[jt]s?(x)'],
 
@@ -33,6 +33,7 @@ module.exports = {
     ...[
       '@fluent-wallet/jest-helper/setup-after-env.js',
       'jest-webextension-mock',
+      './scripts/jest-test-jsdom-env.js',
     ],
   ],
 
@@ -116,6 +117,8 @@ module.exports = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     tslib: 'tslib/tslib.es6.js',
     'react-use': 'react-use/esm/index.js',
+    uuid: require.resolve('uuid'),
+    '^uuid$': 'uuid',
   },
   // globalSetup: path.resolve(__dirname, './scripts/jest-global-setup.js')
 }
