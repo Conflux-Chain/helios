@@ -118,6 +118,7 @@ module.exports = {
     tslib: 'tslib/tslib.es6.js',
     'react-use': 'react-use/esm/index.js',
     uuid: require.resolve('uuid'),
+    '^uuid$': 'uuid',
   },
   // globalSetup: path.resolve(__dirname, './scripts/jest-global-setup.js')
 }
