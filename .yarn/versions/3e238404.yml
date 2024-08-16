@@ -6,9 +6,21 @@ releases:
 
 declined:
   - helios-background
+  - "@fluent-wallet/confluxscan-api"
+  - "@fluent-wallet/contract-method-name"
   - "@fluent-wallet/json-rpc"
   - helios-popup
   - "@fluent-wallet/cfx_sign-transaction"
   - "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s"
   - "@fluent-wallet/eth_sign-transaction"
   - "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account"
+  - "@fluent-wallet/component-alert"
+  - "@fluent-wallet/component-button"
+  - "@fluent-wallet/component-checkbox"
+  - "@fluent-wallet/component-input"
+  - "@fluent-wallet/component-link"
+  - "@fluent-wallet/component-loading"
+  - "@fluent-wallet/component-menu"
+  - "@fluent-wallet/component-modal"
+  - "@fluent-wallet/component-tag"
+  - "@fluent-wallet/component-toast"

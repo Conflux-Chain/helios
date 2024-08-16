@@ -117,6 +117,7 @@ module.exports = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     tslib: 'tslib/tslib.es6.js',
     'react-use': 'react-use/esm/index.js',
+    uuid: require.resolve('uuid'),
   },
   // globalSetup: path.resolve(__dirname, './scripts/jest-global-setup.js')
 }
