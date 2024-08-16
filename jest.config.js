@@ -3,6 +3,7 @@
  * https://jestjs.io/docs/en/configuration.html
  */
 const path = require('path')
+
 // const snowpackReactJestConfig = require('@snowpack/app-scripts-react/jest.config.js')()
 
 module.exports = {
@@ -32,6 +33,7 @@ module.exports = {
     ...[
       '@fluent-wallet/jest-helper/setup-after-env.js',
       'jest-webextension-mock',
+      './scripts/jest-test-jsdom-env.js',
     ],
   ],
 
