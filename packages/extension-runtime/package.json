@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/extension-runtime",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "dependencies": {
     "@thi.ng/rstream": "6.0.21",
     "webextension-polyfill": "0.8.0"
