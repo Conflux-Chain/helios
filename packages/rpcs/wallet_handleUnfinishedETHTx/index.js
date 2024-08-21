@@ -1,6 +1,5 @@
 import {mapp} from '@fluent-wallet/spec'
 import {stream, resolve, CloseMode} from '@thi.ng/rstream'
-import {capture as sentryCaptureError} from '@fluent-wallet/sentry'
 import {
   sideEffect,
   map,
@@ -223,52 +222,47 @@ export const main = ({
               !sameAsSuccess && (shouldDiscard || resendPriceTooLow)
 
             if (errorType === 'unknownError')
-              sentryCaptureError(err, {
-                tags: {
-                  custom_type: 'unknown sendTx error',
-                  rpc_network: network.name,
-                },
+              defs({
+                failed: failed && {errorType, err},
+                sameAsSuccess,
+                resend: !shouldDiscard && !sameAsSuccess,
               })
-
-            defs({
-              failed: failed && {errorType, err},
-              sameAsSuccess,
-              resend: !shouldDiscard && !sameAsSuccess,
-            })
-              .transform(
-                branchObj({
-                  failed: [
-                    sideEffect(
-                      ({err}) =>
-                        typeof failedCb === 'function' && failedCb(err),
-                    ),
-                    sideEffect(({errorType}) => {
-                      if (setTxFailed({hash, error: errorType})) {
-                        getExt().then(ext =>
-                          ext.notifications.create(hash, {
-                            title: 'Failed transaction',
-                            message: `Transaction ${parseInt(
-                              tx.txPayload.nonce,
-                              16,
-                            )} failed! ${err?.data || err?.message || ''}`,
-                          }),
-                        )
-                      }
-                    }),
-                    sideEffect(() => {
-                      updateBadge(getUnfinishedTxCount())
-                    }),
-                  ],
-                  resend: sideEffect(keepTrack),
-                  // retry in next run
-                  sameAsSuccess: [
-                    sideEffect(() => setTxPending({hash})),
-                    sideEffect(() => typeof okCb === 'function' && okCb(hash)),
-                    sideEffect(keepTrack),
-                  ],
-                }),
-              )
-              .done()
+                .transform(
+                  branchObj({
+                    failed: [
+                      sideEffect(
+                        ({err}) =>
+                          typeof failedCb === 'function' && failedCb(err),
+                      ),
+                      sideEffect(({errorType}) => {
+                        if (setTxFailed({hash, error: errorType})) {
+                          getExt().then(ext =>
+                            ext.notifications.create(hash, {
+                              title: 'Failed transaction',
+                              message: `Transaction ${parseInt(
+                                tx.txPayload.nonce,
+                                16,
+                              )} failed! ${err?.data || err?.message || ''}`,
+                            }),
+                          )
+                        }
+                      }),
+                      sideEffect(() => {
+                        updateBadge(getUnfinishedTxCount())
+                      }),
+                    ],
+                    resend: sideEffect(keepTrack),
+                    // retry in next run
+                    sameAsSuccess: [
+                      sideEffect(() => setTxPending({hash})),
+                      sideEffect(
+                        () => typeof okCb === 'function' && okCb(hash),
+                      ),
+                      sideEffect(keepTrack),
+                    ],
+                  }),
+                )
+                .done()
           },
         }),
       )

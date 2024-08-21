@@ -54,8 +54,8 @@ beforeEach(() => {
   }
 })
 
-describe('wallet_handleUnfinishedCFXTx', function () {
-  describe('unsent', function () {
+describe('wallet_handleUnfinishedCFXTx', () => {
+  describe('unsent', () => {
     test('success', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         db: {
@@ -804,7 +804,7 @@ describe('wallet_handleUnfinishedCFXTx', function () {
     })
   })
 
-  describe('sending', function () {
+  describe('sending', () => {
     test('nothing should be called', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         db: {
@@ -822,7 +822,7 @@ describe('wallet_handleUnfinishedCFXTx', function () {
     })
   })
 
-  describe('pending', function () {
+  describe('pending', () => {
     test('not packaged, not resend', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {

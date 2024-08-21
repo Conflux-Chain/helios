@@ -1,7 +1,6 @@
 import {defMiddleware} from '../middleware.js'
 import EpochRefConf from '@fluent-wallet/rpc-epoch-ref'
 import * as jsonRpcErr from '@fluent-wallet/json-rpc-error'
-import {addBreadcrumb} from '@fluent-wallet/sentry'
 
 function transformFakeDbRpcMethods(arg) {
   const {req} = arg
@@ -207,125 +206,75 @@ function formatEpochRef(arg) {
   return {...arg, req}
 }
 
-export default defMiddleware(
-  ({tx: {check, comp, pluck, map, filter, sideEffect}}) => [
-    {
-      id: 'transformFakeDbRpcMethods',
-      ins: {
-        req: {stream: '/validateAndFormatJsonRpc/node'},
-      },
-      fn: comp(
-        sideEffect(() =>
-          addBreadcrumb({category: 'middleware-transformFakeDbRpcMethods'}),
-        ),
-        map(transformFakeDbRpcMethods),
-        pluck('req'),
-      ),
+export default defMiddleware(({tx: {check, comp, pluck, map, filter}}) => [
+  {
+    id: 'transformFakeDbRpcMethods',
+    ins: {
+      req: {stream: '/validateAndFormatJsonRpc/node'},
     },
-    {
-      id: 'validateRpcMethod',
-      ins: {
-        req: {stream: '/transformFakeDbRpcMethods/node'},
-      },
-      fn: comp(
-        sideEffect(() =>
-          addBreadcrumb({category: 'middleware-validateRpcMethod'}),
-        ),
-        check(validateRpcMehtod),
-        pluck('req'),
-      ),
+    fn: comp(map(transformFakeDbRpcMethods), pluck('req')),
+  },
+  {
+    id: 'validateRpcMethod',
+    ins: {
+      req: {stream: '/transformFakeDbRpcMethods/node'},
     },
-    {
-      id: 'validateExternalMethod',
-      ins: {
-        req: {stream: '/validateRpcMethod/node'},
-      },
-      fn: comp(
-        sideEffect(() =>
-          addBreadcrumb({category: 'middleware-validateExternalMethod'}),
-        ),
-        check(validateExternalMethod),
-        pluck('req'),
-      ),
+    fn: comp(check(validateRpcMehtod), pluck('req')),
+  },
+  {
+    id: 'validateExternalMethod',
+    ins: {
+      req: {stream: '/validateRpcMethod/node'},
     },
-    {
-      id: 'validateLockState',
-      ins: {
-        req: {stream: '/validateExternalMethod/node'},
-      },
-      fn: comp(
-        sideEffect(() =>
-          addBreadcrumb({category: 'middleware-validateLockState'}),
-        ),
-        check(validateLockState),
-        pluck('req'),
-      ),
+    fn: comp(check(validateExternalMethod), pluck('req')),
+  },
+  {
+    id: 'validateLockState',
+    ins: {
+      req: {stream: '/validateExternalMethod/node'},
     },
-    {
-      id: 'formatRpcSiteAndApp',
-      ins: {
-        req: {stream: '/validateLockState/node'},
-      },
-      fn: comp(
-        sideEffect(() =>
-          addBreadcrumb({category: 'middleware-formatRpcSiteAndApp'}),
-        ),
-        map(formatRpcSiteAndApp),
-        pluck('req'),
-      ),
+    fn: comp(check(validateLockState), pluck('req')),
+  },
+  {
+    id: 'formatRpcSiteAndApp',
+    ins: {
+      req: {stream: '/validateLockState/node'},
     },
-    {
-      id: 'formatRpcNetwork',
-      ins: {
-        req: {stream: '/formatRpcSiteAndApp/node'},
-      },
-      fn: comp(
-        sideEffect(() =>
-          addBreadcrumb({category: 'middleware-formatRpcNetwork'}),
-        ),
-        map(formatRpcNetwork),
-        filter(({req}) => Boolean(req)),
-        pluck('req'),
-      ),
+    fn: comp(map(formatRpcSiteAndApp), pluck('req')),
+  },
+  {
+    id: 'formatRpcNetwork',
+    ins: {
+      req: {stream: '/formatRpcSiteAndApp/node'},
     },
-    {
-      id: 'formatEpochRef',
-      ins: {
-        req: {stream: '/formatRpcNetwork/node'},
-      },
-      fn: comp(
-        sideEffect(() =>
-          addBreadcrumb({category: 'middleware-formatEpochRef'}),
-        ),
-        map(formatEpochRef),
-        pluck('req'),
-      ),
+    fn: comp(
+      map(formatRpcNetwork),
+      filter(({req}) => Boolean(req)),
+      pluck('req'),
+    ),
+  },
+  {
+    id: 'formatEpochRef',
+    ins: {
+      req: {stream: '/formatRpcNetwork/node'},
     },
-    {
-      id: 'validateNetworkSupport',
-      ins: {
-        req: {stream: '/formatEpochRef/node'},
-      },
-      fn: comp(
-        sideEffect(() =>
-          addBreadcrumb({category: 'middleware-validateNetworkSupport'}),
-        ),
-        check(validateNetworkSupport),
-        pluck('req'),
-      ),
+    fn: comp(map(formatEpochRef), pluck('req')),
+  },
+  {
+    id: 'validateNetworkSupport',
+    ins: {
+      req: {stream: '/formatEpochRef/node'},
     },
-    {
-      id: 'validateRpcDataEnd',
-      ins: {
-        req: {stream: '/validateNetworkSupport/node'},
-      },
-      fn: comp(
-        sideEffect(() =>
-          addBreadcrumb({category: 'middleware-validateRpcDataEnd'}),
-        ),
-        pluck('req'),
-        filter(req => Boolean(req)),
-      ),
+    fn: comp(check(validateNetworkSupport), pluck('req')),
+  },
+  {
+    id: 'validateRpcDataEnd',
+    ins: {
+      req: {stream: '/validateNetworkSupport/node'},
     },
-  ],
-)
+    fn: comp(
+      pluck('req'),
+      filter(req => Boolean(req)),
+    ),
+  },
+])

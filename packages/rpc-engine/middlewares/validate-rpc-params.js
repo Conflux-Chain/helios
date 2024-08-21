@@ -1,6 +1,5 @@
 import {defMiddleware} from '../middleware.js'
 import {validate, explain} from '@fluent-wallet/spec'
-import {addBreadcrumb} from '@fluent-wallet/sentry'
 import {isString, isArray} from '@fluent-wallet/checks'
 
 const toLowerCaseFields = [
@@ -25,13 +24,12 @@ function preprocessTx(tx) {
   return tx
 }
 
-export default defMiddleware(({tx: {map, comp, sideEffect}}) => ({
+export default defMiddleware(({tx: {map, comp}}) => ({
   id: 'validateRpcParams',
   ins: {
     req: {stream: '/injectFetchFn/node'},
   },
   fn: comp(
-    sideEffect(() => addBreadcrumb({category: 'middleware-validateRpcParams'})),
     map(({rpcStore, req}) => {
       const {params, method} = req
       const {schemas, Err} = rpcStore[method]

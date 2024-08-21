@@ -1,0 +1,14 @@
+releases:
+  "@fluent-wallet/extension-runtime": patch
+  "@fluent-wallet/rpc-engine": patch
+  "@fluent-wallet/use-rpc": patch
+  "@fluent-wallet/wallet_add-vault": patch
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
+  "@fluent-wallet/wallet_handle-unfinished-eth-tx": patch
+  "@fluent-wallet/wallet_refetch-balance": patch
+  "@fluent-wallet/wallet_set-current-network": patch
+  browser-extension: patch
+  helios: patch
+  helios-background: patch
+  helios-inpage: patch
+  helios-popup: patch

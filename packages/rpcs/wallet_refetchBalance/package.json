@@ -5,7 +5,6 @@
   "packageManager": "yarn@3.0.1",
   "version": "0.0.10",
   "dependencies": {
-    "@fluent-wallet/sentry": "workspace:*",
     "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }
