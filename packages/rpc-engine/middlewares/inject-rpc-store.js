@@ -1,6 +1,5 @@
 import {defMiddleware} from '../middleware.js'
 import {parseError} from '@fluent-wallet/json-rpc-error'
-import {addBreadcrumb} from '@fluent-wallet/sentry'
 
 function updateReqRpcStack(req) {
   const {method} = req
@@ -85,14 +84,6 @@ export default defMiddleware(
     ins: {req: {stream: '/validateRpcDataEnd/node'}},
     fn: comp(
       sideEffect(({req}) => updateReqRpcStack(req)),
-      sideEffect(({req}) =>
-        addBreadcrumb({
-          category: 'middleware-injectRpcStore',
-          data: {
-            rpcStack: req._rpcStack,
-          },
-        }),
-      ),
       map(({sendNewRpcRequest, req, rpcStore}) => ({
         ...req,
         ...rpcStore[req.method],

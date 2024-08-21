@@ -31,7 +31,6 @@
     "@fluent-wallet/jazz-icon": "workspace:packages/jazz-icon",
     "@fluent-wallet/ledger": "workspace:packages/ledger",
     "@fluent-wallet/radio": "workspace:packages/ui/components/Radio",
-    "@fluent-wallet/sentry": "workspace:*",
     "@fluent-wallet/shorten-address": "workspace:packages/ui/shorten-address",
     "@fluent-wallet/tx-history-checker": "workspace:*",
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC",

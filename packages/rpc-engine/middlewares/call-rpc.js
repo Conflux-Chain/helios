@@ -1,6 +1,4 @@
 import {defMiddleware} from '../middleware.js'
-import {addBreadcrumb} from '@fluent-wallet/sentry'
-
 function formatRes(res, id) {
   const template = {id, jsonrpc: '2.0'}
   if (res !== undefined) {
@@ -23,7 +21,6 @@ export default defMiddleware(
         req: {stream: '/validateRpcParams/node'},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'middleware-beforeCallRpc'})),
         map(async ({rpcStore, req, db}) => {
           const method = rpcStore[req.method]
           // validate dapp permissions to call this rpc
@@ -90,7 +87,6 @@ export default defMiddleware(
         },
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'middleware-callRpc'})),
         map(async ({rpcStore, req}) => ({
           req,
           res: await rpcStore[req.method].main(req).catch(err => {
@@ -106,7 +102,6 @@ export default defMiddleware(
         ctx: {stream: r => r('/callRpc/node').subscribe(resolve())},
       },
       fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'middleware-afterCallRpc'})),
         map(({ctx: {req, res}}) => ({
           req,
           res: formatRes(res, req.id),
@@ -123,10 +118,7 @@ export default defMiddleware(
         res: {stream: '/afterCallRpc/outs/res'},
         req: {stream: '/afterCallRpc/outs/req'},
       },
-      fn: comp(
-        sideEffect(() => addBreadcrumb({category: 'middleware-END'})),
-        sideEffect(({res, req: {_c}}) => _c.write(res)),
-      ),
+      fn: comp(sideEffect(({res, req: {_c}}) => _c.write(res))),
     },
   ],
 )

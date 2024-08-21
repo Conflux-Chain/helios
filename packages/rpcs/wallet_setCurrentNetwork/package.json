@@ -4,7 +4,6 @@
   "main": "index.js",
   "version": "0.0.14",
   "dependencies": {
-    "@fluent-wallet/sentry": "workspace:*",
     "@fluent-wallet/spec": "workspace:packages/spec"
   }
 }

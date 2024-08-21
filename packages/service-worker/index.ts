@@ -4,19 +4,13 @@ import {EXT_STORAGE} from '@fluent-wallet/consts'
 import {isManifestV3} from './env'
 import {defRpcEngine} from '@fluent-wallet/rpc-engine'
 import {persist as persistToExtStorageHandler} from '../background/src/persist-db-to-ext-storage'
-import {
-  Sentry,
-  init as initSentry,
-  capture as sentryCapture,
-} from '@fluent-wallet/sentry'
-import {getDefaultOptions as getSentryDefaultOptions} from '@fluent-wallet/sentry/computeDefaultOptions'
 
 import browser from 'webextension-polyfill'
 import SCHEMA from '../background/src//db-schema'
 import {listen} from '@fluent-wallet/extension-runtime/background.js'
 import fillInitialDBData from '../background/src/init-db.js'
 import * as bb from '@fluent-wallet/webextension'
-import {updateUserId} from '@fluent-wallet/sentry'
+
 import {rpcEngineOpts} from '../background/src/rpc-engine-opts'
 
 // # setup
@@ -30,10 +24,6 @@ bb.commands.onCommand.addListener(commandName => {
     if (IS_PROD_MODE) window.open(`${location.origin}/popup/index.html`)
     else window.open(`${location.origin}/popup.html`)
 })
-
-// ## sentry
-initSentry(getSentryDefaultOptions())
-Sentry.setTag('custom_location', 'background')
 
 // ## init db
 async function initDB(initDBFn, skipRestore) {
@@ -66,7 +56,6 @@ async function initDB(initDBFn, skipRestore) {
 
 // ## init rpc engine
 async function initRPCEngine(dbConnection) {
-  rpcEngineOpts.sentryCapture = sentryCapture
 
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
   const protectedRequest = (req = {} as any) =>
@@ -138,8 +127,6 @@ function saveTimestamp() {
 async function initApp() {
   const {request, db} = await initBG()
 
-  // ## sentry
-  updateUserId(db.getAddress()?.[0]?.hex)
 
   // ## start long running jobs
   if (!IS_TEST_MODE) {

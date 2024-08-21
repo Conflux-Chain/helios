@@ -4740,7 +4740,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/extension-runtime@workspace:packages/extension-runtime"
   dependencies:
-    "@fluent-wallet/sentry": "workspace:*"
     "@thi.ng/rstream": 6.0.21
     webextension-polyfill: 0.8.0
   languageName: unknown
@@ -4924,7 +4923,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/sentry@workspace:*, @fluent-wallet/sentry@workspace:packages/sentry":
+"@fluent-wallet/sentry@workspace:packages/sentry":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/sentry@workspace:packages/sentry"
   dependencies:
@@ -5133,7 +5132,6 @@ __metadata:
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/csp": "workspace:*"
-    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
     "@fluent-wallet/utils": "workspace:packages/utils"
     browser-passworder: ^2.0.3
@@ -5527,7 +5525,6 @@ __metadata:
     "@ethersproject/bignumber": 5.6.2
     "@fluent-wallet/compose": "workspace:*"
     "@fluent-wallet/conflux-tx-error": "workspace:*"
-    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
     "@fluent-wallet/transducers": "workspace:*"
     "@fluent-wallet/webextension": "workspace:*"
@@ -5542,7 +5539,6 @@ __metadata:
     "@ethersproject/bignumber": 5.6.2
     "@fluent-wallet/compose": "workspace:*"
     "@fluent-wallet/ethereum-tx-error": "workspace:*"
-    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/spec": "workspace:*"
     "@thi.ng/rstream": 7.2.7
   languageName: unknown
@@ -5633,7 +5629,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_refetch-balance@workspace:packages/rpcs/wallet_refetchBalance"
   dependencies:
-    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -5744,7 +5739,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_set-current-network@workspace:packages/rpcs/wallet_setCurrentNetwork"
   dependencies:
-    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/spec": "workspace:packages/spec"
   languageName: unknown
   linkType: soft
@@ -19026,7 +19020,6 @@ __metadata:
     "@fluent-wallet/net_version": "workspace:packages/rpcs/net_version"
     "@fluent-wallet/personal_sign": "workspace:packages/rpcs/personal_sign"
     "@fluent-wallet/rpc-engine": "workspace:packages/rpc-engine"
-    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/test-helpers": "workspace:packages/test-helpers"
     "@fluent-wallet/transducers": "workspace:packages/transducers"
     "@fluent-wallet/txpool_next-nonce": "workspace:*"
@@ -19165,7 +19158,6 @@ __metadata:
     "@fluent-wallet/jazz-icon": "workspace:packages/jazz-icon"
     "@fluent-wallet/ledger": "workspace:packages/ledger"
     "@fluent-wallet/radio": "workspace:packages/ui/components/Radio"
-    "@fluent-wallet/sentry": "workspace:*"
     "@fluent-wallet/shorten-address": "workspace:packages/ui/shorten-address"
     "@fluent-wallet/tx-history-checker": "workspace:*"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"

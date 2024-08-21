@@ -12,14 +12,9 @@ export const appendRpcStackToErrorMessage = (err, stack) => {
   return err
 }
 
-export const rpcErrorHandlerFactory = ({
-  isProd = true,
-  debugLog,
-  sentryCapture = x => x,
-} = {}) => {
-  return function (err) {
+export const rpcErrorHandlerFactory = ({isProd = true, debugLog} = {}) => {
+  return err => {
     if (!err || !err.message || !err.rpcData || !err.rpcData._c) {
-      sentryCapture(err)
       if (!isProd) {
         console.error(
           'DEV_ONLY_ERROR in method: ',

@@ -1,5 +1,4 @@
 import {or, optParam, enums, map, truep} from '@fluent-wallet/spec'
-import {capture as sentryCaptureError} from '@fluent-wallet/sentry'
 
 export const NAME = 'wallet_refetchBalance'
 
@@ -55,14 +54,7 @@ export const main = async ({
       .then(rst => {
         return rst && upsertBalances({data: rst, networkId: network.id})
       })
-      .catch(err =>
-        sentryCaptureError(err, {
-          tags: {
-            custom_type: 'error refetch balance',
-            rpc_network: network?.endpoint,
-          },
-        }),
-      ),
+      .catch(err => console.warn('refetchBalance error', err)),
   )
 
   await Promise.all(promises)
