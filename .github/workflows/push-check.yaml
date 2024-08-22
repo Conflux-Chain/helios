@@ -16,14 +16,14 @@ on: [push]
 jobs:
   lint:
     if: ${{ github.ref != 'refs/heads/__release-pkg'}}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.14]
+        node-version: [22]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           cache: "yarn"
           node-version: ${{ matrix.node-version }}
@@ -56,14 +56,14 @@ jobs:
 
   unit-test:
     if: ${{ github.ref != 'refs/heads/__release-pkg'}}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.14]
+        node-version: [22]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           cache: "yarn"
           node-version: ${{ matrix.node-version }}
@@ -101,14 +101,14 @@ jobs:
 
   integration-test:
     if: ${{ github.ref != 'refs/heads/__release-pkg'}}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.14]
+        node-version: [22]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           cache: "yarn"
           node-version: ${{ matrix.node-version }}
@@ -145,14 +145,14 @@ jobs:
           verbose: true
 
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.14]
+        node-version: [22]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           cache: "yarn"
           node-version: ${{ matrix.node-version }}
@@ -185,14 +185,14 @@ jobs:
 
   build-doc:
     if: ${{ github.ref != 'refs/heads/__release-pkg'}}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.14]
+        node-version: [22]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           cache: "yarn"
           node-version: ${{ matrix.node-version }}
@@ -224,7 +224,7 @@ jobs:
       - run: yarn workspace doc build
   # build-storybook:
   #   if: ${{ github.ref != 'refs/heads/__release-pkg'}}
-  #   runs-on: ubuntu-20.04
+  #   runs-on: ubuntu-latest
   #   strategy:
   #     matrix:
   #       node-version: [16.14]

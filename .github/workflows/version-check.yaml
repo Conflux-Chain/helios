@@ -15,16 +15,16 @@ on: [pull_request]
 jobs:
   version-check:
     if: ${{ github.head_ref != '__release-pkg' }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.14]
+        node-version: [22]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # https://yarnpkg.com/features/release-workflow/#commit-history
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           cache: "yarn"
           node-version: ${{ matrix.node-version }}
