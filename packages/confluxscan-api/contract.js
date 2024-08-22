@@ -1,4 +1,4 @@
-import 'cross-fetch/polyfill'
+import 'cross-fetch/dist/node-polyfill.js'
 import {fetch} from './fetcher.js'
 import {getURL, isCoreNetworkId} from './utils.js'
 
