@@ -1,3 +1,7 @@
+releases:
+  "@fluent-wallet/account": patch
+  "@fluent-wallet/addr-by-network": patch
+
 declined:
   - helios
   - "@fluent-wallet/confluxscan-api"
