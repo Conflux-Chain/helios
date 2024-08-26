@@ -23,7 +23,7 @@
   (cfxjs.spec.cljs/js->clj v :keywordize-keys true))
 
 ;; debug
-(set! (.-jtc js/window) j->c)
+(set! (.-jtc js/globalThis) j->c)
 
 (declare conn t q p e fdb)
 
@@ -353,7 +353,7 @@
        [(?gid ?g)]
        [?g :accountGroup/account ?e]]
      #(= % 24))
-  (create-db (.-schema js/window))
+  (create-db (.-schema js/globalThis))
   (:schema @conn)
   (js/console.log (clj->js (t [{:db/id "a" :hdPath/name "a"}
                                {:db/id "a" :hdPath/value "b"}])))

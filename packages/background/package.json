@@ -1,6 +1,6 @@
 {
   "name": "helios-background",
-  "version": "0.0.12",
+  "version": "0.0.14",
   "type": "module",
   "main": "src/index.js",
   "private": true,
@@ -82,7 +82,6 @@
     "@fluent-wallet/net_version": "workspace:packages/rpcs/net_version",
     "@fluent-wallet/personal_sign": "workspace:packages/rpcs/personal_sign",
     "@fluent-wallet/rpc-engine": "workspace:packages/rpc-engine",
-    "@fluent-wallet/sentry": "workspace:*",
     "@fluent-wallet/transducers": "workspace:packages/transducers",
     "@fluent-wallet/txpool_next-nonce": "workspace:*",
     "@fluent-wallet/wallet_accounts": "workspace:*",

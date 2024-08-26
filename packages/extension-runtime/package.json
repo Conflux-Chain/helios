@@ -2,9 +2,8 @@
   "name": "@fluent-wallet/extension-runtime",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "dependencies": {
-    "@fluent-wallet/sentry": "workspace:*",
     "@thi.ng/rstream": "6.0.21",
     "webextension-polyfill": "0.8.0"
   }

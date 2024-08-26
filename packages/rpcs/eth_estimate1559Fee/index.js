@@ -21,7 +21,7 @@ export const permissions = {
 //Gas station url for EIP1559
 export const GAS_API_BASE_URL = 'https://gas-api.metaswap.codefi.network'
 // How many blocks to consider for priority fee estimation
-const FEE_HISTORY_BLOCKS = 5
+const FEE_HISTORY_BLOCKS = '0x5'
 // Levels of priority fee
 const PRIORITY_LEVELS = ['low', 'medium', 'high']
 const SETTINGS_BY_PRIORITY_LEVEL = {
@@ -140,18 +140,15 @@ function medianOf(numbers) {
 
 async function getGasFeeByGasStation(chainId) {
   const gaseFeeApiUrl = `${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`
-  if (typeof window?.fetch === 'function') {
-    const res = await fetch(gaseFeeApiUrl, {
-      method: 'GET',
-      headers: {'Content-Type': 'application/json'},
-    })
-    if (!res.ok) {
-      throw new Error(
-        `Fetch failed with status '${res.status}' for request gasFeeApi`,
-      )
-    }
-    return res.json()
-  }
 
-  return {}
+  const res = await fetch(gaseFeeApiUrl, {
+    method: 'GET',
+    headers: {'Content-Type': 'application/json'},
+  })
+  if (!res.ok) {
+    throw new Error(
+      `Fetch failed with status '${res.status}' for request gasFeeApi`,
+    )
+  }
+  return res.json()
 }

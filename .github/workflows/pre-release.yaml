@@ -34,12 +34,12 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          cache: "yarn"
+          cache: 'yarn'
           node-version: ${{ matrix.node-version }}
       - uses: actions/setup-java@v3
         with:
-          distribution: "adopt"
-          java-version: "11"
+          distribution: 'adopt'
+          java-version: '11'
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@7.0
         with:
@@ -104,11 +104,18 @@ jobs:
       - name: build and release
         env:
           SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
-          SNOWPACK_PUBLIC_FLUENT_ENV: "debug-release"
+          SNOWPACK_PUBLIC_FLUENT_ENV: 'debug-release'
           SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).version }}
-        run: yarn prod:release
+        run: yarn build
+        
+      - name: zip files
+        run: |
+          cd ./dist
+          zip -r ./chrome.zip ./chrome
+          zip -r ./firefox.zip ./firefox
+          zip -r ./edge.zip ./edge
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: releases/*
+          asset_path: dist/*.zip

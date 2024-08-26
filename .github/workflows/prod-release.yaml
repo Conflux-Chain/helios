@@ -94,12 +94,19 @@ jobs:
           SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
           SNOWPACK_PUBLIC_FLUENT_ENV: "production"
           SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION }}
-        run: yarn prod:release
+        run: yarn build
+
+      - name: zip files
+        run: |
+          cd ./dist
+          zip -r ./chrome.zip ./chrome
+          zip -r ./firefox.zip ./firefox
+          zip -r ./edge.zip ./edge
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: releases/*
+          asset_path: dist/*.zip
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4.0.4

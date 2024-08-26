@@ -1,23 +1,24 @@
-// # imports
+// // # imports
 import {IS_PROD_MODE, IS_TEST_MODE} from '@fluent-wallet/inner-utils'
 import {EXT_STORAGE} from '@fluent-wallet/consts'
-
+import {isManifestV3} from './env'
 import {defRpcEngine} from '@fluent-wallet/rpc-engine'
-import {persist as persistToExtStorageHandler} from './persist-db-to-ext-storage'
+import {persist as persistToExtStorageHandler} from '../background/src/persist-db-to-ext-storage'
+
 import browser from 'webextension-polyfill'
-import SCHEMA from './db-schema'
+import SCHEMA from '../background/src//db-schema'
 import {listen} from '@fluent-wallet/extension-runtime/background.js'
-import fillInitialDBData from './init-db.js'
+import fillInitialDBData from '../background/src/init-db.js'
 import * as bb from '@fluent-wallet/webextension'
-import {rpcEngineOpts} from './rpc-engine-opts'
+
+import {rpcEngineOpts} from '../background/src/rpc-engine-opts'
 
 // # setup
 // ## dev helper
-if (!IS_PROD_MODE) window.b = browser
-if (!IS_PROD_MODE) window.bb = bb
-
-// ## ext shortcuts
-// shortcut for popup page in big screen
+// if (!IS_PROD_MODE) window.b = browser
+// if (!IS_PROD_MODE) window.bb = bb
+// // ## ext shortcuts
+// // shortcut for popup page in big screen
 bb.commands.onCommand.addListener(commandName => {
   if (commandName === 'inner_debug_only')
     if (IS_PROD_MODE) window.open(`${location.origin}/popup/index.html`)
@@ -42,8 +43,8 @@ async function initDB(initDBFn, skipRestore) {
   // create db
   const dbConnection = createdb(SCHEMA, persistToExtStorageHandler, data)
 
-  if (!IS_PROD_MODE) window.d = dbConnection
-  else window.__FLUENT_DB_CONN = dbConnection
+  //   if (!IS_PROD_MODE) window.d = dbConnection
+  //   else window.__FLUENT_DB_CONN = dbConnection
 
   if (!data) await initDBFn(dbConnection, {importAllTx})
 
@@ -55,8 +56,9 @@ async function initDB(initDBFn, skipRestore) {
 
 // ## init rpc engine
 async function initRPCEngine(dbConnection) {
+
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
-  const protectedRequest = (req = {}) =>
+  const protectedRequest = (req = {} as any) =>
     request({
       id: req.id,
       jsonrpc: req.jsonrpc,
@@ -98,8 +100,8 @@ async function initRPCEngine(dbConnection) {
     },
   })
 
-  if (!IS_PROD_MODE) window.r = protectedRequest
-  else window.__FLUENT_REQUEST = protectedRequest
+  //   if (!IS_PROD_MODE) window.r = protectedRequest
+  //   else window.__FLUENT_REQUEST = protectedRequest
 
   return protectedRequest
 }
@@ -115,10 +117,16 @@ export const initBG = async ({
   return {db: dbConnection, request: protectedRequest}
 }
 
+function saveTimestamp() {
+  const timestamp = new Date().toISOString()
+  browser.storage.session.set({timestamp})
+}
+
 // # initialize
-;(async () => {
-  // ## db
-  const {request} = await initBG()
+
+async function initApp() {
+  const {request, db} = await initBG()
+
 
   // ## start long running jobs
   if (!IS_TEST_MODE) {
@@ -132,20 +140,12 @@ export const initBG = async ({
       1000 * 60 * 60,
     )
   }
-  // ## Dev/Test
-  // if (!IS_TEST_MODE) {
-  //   if (IS_DEV_MODE) {
-  //     // ### load dev script on ext startup
-  //     if (import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH) {
-  //       try {
-  //         const localDevModule = await import(
-  //           import.meta.env.SNOWPACK_PUBLIC_DEV_INIT_SCRIPT_PATH
-  //         )
-  //         await localDevModule.run({request, db})
-  //       } catch (err) {
-  //         console.log('local dev error', err)
-  //       }
-  //     }
-  //   }
-  // }
-})()
+
+  if (isManifestV3) {
+    const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000
+    saveTimestamp()
+    setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS)
+  }
+}
+
+initApp()
