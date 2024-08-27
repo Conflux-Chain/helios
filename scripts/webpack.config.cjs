@@ -113,6 +113,7 @@ const defaultConfig = {
     },
     alias: {
       '/images': path.join(packagesPath, 'browser-extension/images'),
+      "js-conflux-sdk": path.join(path.resolve(), './node_modules/js-conflux-sdk'),
     },
   },
   plugins: [

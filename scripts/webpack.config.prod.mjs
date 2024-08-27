@@ -13,6 +13,15 @@ const isFirefox = process.env.TARGET_BROWSER === 'firefox'
 const prodConfig = {
   mode: 'production',
   devtool: false,
+  performance: {
+    maxEntrypointSize: 2500000,
+    maxAssetSize: 2500000,
+  },
+  output: isFirefox
+    ? {
+        chunkFormat: 'array-push',
+      }
+    : undefined,
   plugins: [
     new MiniCssExtractPlugin(),
     new Dotenv({
@@ -23,6 +32,7 @@ const prodConfig = {
     // new BundleAnalyzerPlugin(),
   ],
   optimization: {
+    minimize: true,
     minimizer: [
       new EsbuildPlugin({
         target: 'esnext', // Syntax to transpile to (see options below for possible values)
