@@ -1,5 +1,4 @@
 import {dbid, oneOrMore} from '@fluent-wallet/spec'
-import {Sentry} from '@fluent-wallet/sentry'
 
 export const NAME = 'wallet_setCurrentNetwork'
 
@@ -79,6 +78,4 @@ export const main = async ({
   getConnectedSitesWithoutApps().forEach(site => {
     site.post({event: 'chainChanged', params: nextNetwork.chainId})
   })
-
-  Sentry.setTag('current_network', nextNetwork.name)
 }

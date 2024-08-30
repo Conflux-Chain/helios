@@ -1,4 +1,5 @@
 import {optParam} from '@fluent-wallet/spec'
+import {PACKAGE_VERSION} from '@fluent-wallet/inner-utils'
 
 export const NAME = 'wallet_getFluentMetadata'
 
@@ -14,5 +15,7 @@ export const permissions = {
 }
 
 export const main = () => {
-  return {version: import.meta.env.SNOWPACK_PUBLIC_FLUENT_VERSION}
+  return {
+    version: PACKAGE_VERSION,
+  }
 }

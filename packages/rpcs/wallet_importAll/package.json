@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/wallet_import-all",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "dependencies": {
     "@fluent-wallet/spec": "workspace:packages/spec",
     "browser-passworder": "2.0.3",

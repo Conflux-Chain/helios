@@ -69,7 +69,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
     error: rpcErrorHandlerFactory({
       isProd,
       debugLog: _debugLog,
-      sentryCapture: options?.sentryCapture || identity,
+      sentryCapture: identity,
     }),
   })
 

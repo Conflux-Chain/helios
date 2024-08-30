@@ -3,12 +3,11 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "dependencies": {
     "@ethersproject/bignumber": "5.6.2",
     "@fluent-wallet/compose": "workspace:*",
     "@fluent-wallet/ethereum-tx-error": "workspace:*",
-    "@fluent-wallet/sentry": "workspace:*",
     "@fluent-wallet/spec": "workspace:*",
     "@thi.ng/rstream": "7.2.7"
   }

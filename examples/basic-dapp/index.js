@@ -2,7 +2,9 @@
 // more info about js-conflux-sdk
 // https://github.com/Conflux-Chain/js-conflux-sdk#readme
 // eslint-disable-next-line import/no-unresolved
-import {Conflux, format} from 'https://cdn.skypack.dev/js-conflux-sdk'
+import * as SDK from 'https://cdn.skypack.dev/js-conflux-sdk'
+
+const {Conflux, format} = SDK.default
 
 const exampleContract = new Conflux().Contract({
   abi: [

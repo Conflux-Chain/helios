@@ -2,15 +2,6 @@ import browser from 'webextension-polyfill'
 // eslint-disable-next-line no-unused-vars
 import {stream, trace} from '@thi.ng/rstream'
 
-import {capture as sentryCaptureError} from '@fluent-wallet/sentry'
-
-function sentryCapturePostMessageeError(err) {
-  // skip disconnected port error
-  // these errors indicating bg try to post message to closed popup
-  if (!err?.message?.includes('disconnected port'))
-    sentryCaptureError(err, {tags: {custom_type: 'error postMessage'}})
-}
-
 const popupStream = stream({
   id: 'popup',
   closeIn: false,
@@ -39,10 +30,10 @@ function onConnect(port) {
           msg = JSON.parse(JSON.stringify(msg))
           port.postMessage(msg)
         } catch (err) {
-          sentryCapturePostMessageeError(err)
+          console.warn('failed to post message', err)
         }
       } else {
-        sentryCapturePostMessageeError(err)
+        console.warn('failed to post message', err)
       }
     }
   }

@@ -5,14 +5,7 @@ import App from './App'
 import './i18n.js'
 import {SWRConfig} from 'swr'
 import {ROUTES} from './constants'
-import {IS_PROD_MODE} from '@fluent-wallet/inner-utils'
-import {
-  init as initSentry,
-  capture as sentryCapture,
-} from '@fluent-wallet/sentry'
-import {getDefaultOptions} from '@fluent-wallet/sentry/computeDefaultOptions'
-
-initSentry(getDefaultOptions())
+import {IS_PROD_MODE, PACKAGE_VERSION} from '@fluent-wallet/inner-utils'
 
 const {ERROR} = ROUTES
 // import reportWebVitals from './reportWebVitals'
@@ -76,7 +69,6 @@ ReactDOM.render(
           if (error && location) {
             if (!IS_PROD_MODE) console.error(error)
             const prevPath = window?.location?.hash === '#/' ? 'home' : ''
-            sentryCapture(error)
             location.href = `${location.origin}${
               location.pathname
             }#${ERROR}?errorMsg=${
@@ -97,7 +89,4 @@ ReactDOM.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals()
 
-if (!IS_PROD_MODE)
-  console.log(
-    `Fluent Version: ${import.meta.env.SNOWPACK_PUBLIC_FLUENT_VERSION}`,
-  )
+if (!IS_PROD_MODE) console.log(`Fluent Version: ${PACKAGE_VERSION}`)

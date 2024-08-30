@@ -21,7 +21,7 @@ export const permissions = {
 }
 
 export const main = async ({
-  Err: {InvalidParams, Internal},
+  Err: {InvalidParams},
   rpcs: {wallet_addVault, wallet_validatePassword},
   params: {password, decryptPassword, vaults},
 }) => {
@@ -46,13 +46,10 @@ export const main = async ({
   }
 
   if (data.wallet === 'fluent') {
-    if (window) {
-      const browser = (await import('webextension-polyfill')).default
-      await browser.storage.local.set({wallet_importAll: decrypted})
-      browser?.runtime?.reload?.()
-    } else {
-      throw Internal('Invalid running env, window is not defined')
-    }
+    const browser = (await import('webextension-polyfill')).default
+    await browser.storage.local.set({wallet_importAll: decrypted})
+    browser?.runtime?.reload?.()
+
     return
   }
 

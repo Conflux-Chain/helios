@@ -17,25 +17,22 @@ export const cache = {
   key: () => NAME,
 }
 
-async function gasStationFastest(gasPrice) {
-  gasPrice = gasPrice || '0x0'
-  if (typeof window?.fetch === 'function') {
-    const res = await fetch(`${CFX_MAINNET_RPC_ENDPOINT}/`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        id: 1,
-        jsonrpc: '2.0',
-        method: 'gasstation_price',
-        params: [],
-      }),
-    }).then(res => res.json())
-    if (res && res.result) {
-      if (res.result.fastest > gasPrice) {
-        gasPrice = res.result.fastest
-      }
-    } else {
-      gasPrice = '0x3b9aca00'
+async function gasStationFastest(_gasPrice) {
+  let gasPrice = _gasPrice || '0x0'
+
+  const res = await fetch(`${CFX_MAINNET_RPC_ENDPOINT}/`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'gasstation_price',
+      params: [],
+    }),
+  }).then(res => res.json())
+  if (res && res.result) {
+    if (res.result.fastest > gasPrice) {
+      gasPrice = res.result.fastest
     }
   } else {
     gasPrice = '0x3b9aca00'

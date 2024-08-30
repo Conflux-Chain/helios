@@ -1,6 +1,5 @@
 import {mapp} from '@fluent-wallet/spec'
 import {stream, resolve, CloseMode} from '@thi.ng/rstream'
-import {capture as sentryCaptureError} from '@fluent-wallet/sentry'
 import {
   sideEffect,
   map,
@@ -215,14 +214,6 @@ export const main = ({
 
             const sameAsSuccess = isDuplicateTx || resendNonceTooStale
             const failed = !sameAsSuccess && shouldDiscard
-
-            if (errorType === 'unknownError')
-              sentryCaptureError(err, {
-                tags: {
-                  custom_type: 'unknown sendTx error',
-                  rpc_network: network.name,
-                },
-              })
 
             defs({
               failed: failed && {errorType, err},

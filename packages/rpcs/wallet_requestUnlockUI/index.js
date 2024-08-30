@@ -13,11 +13,11 @@ export const permissions = {
 }
 
 async function requestUnlockUI({
-  Err: {Internal},
+  // Err: {Internal},
   db: {getLocked, getUnlockReq, retract},
   MODE,
 }) {
-  if (!window) throw Internal('Invalid running env, window is not defined')
+  // if (!window) throw Internal('Invalid running env, window is not defined')
   const {browser, popup} = await import('@fluent-wallet/webextension')
   const w = await popup.show({
     alwaysOnTop: MODE.isProd ? true : false,

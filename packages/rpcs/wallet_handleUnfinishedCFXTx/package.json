@@ -3,12 +3,11 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "dependencies": {
     "@ethersproject/bignumber": "5.6.2",
     "@fluent-wallet/compose": "workspace:*",
     "@fluent-wallet/conflux-tx-error": "workspace:*",
-    "@fluent-wallet/sentry": "workspace:*",
     "@fluent-wallet/spec": "workspace:*",
     "@fluent-wallet/transducers": "workspace:*",
     "@fluent-wallet/webextension": "workspace:*",

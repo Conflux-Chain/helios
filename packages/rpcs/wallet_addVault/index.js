@@ -1,4 +1,3 @@
-import {updateUserId, captureMessage} from '@fluent-wallet/sentry'
 import {
   stringp,
   or,
@@ -300,7 +299,6 @@ const processAddress = address => {
 export const main = async arg => {
   const {
     db: {
-      getAddress,
       createVault,
       getVault,
       findGroup,
@@ -421,8 +419,6 @@ export const main = async arg => {
   if (arg.params.waitTillFinish) promises.push(allAccountCreatedChan.read())
 
   return await Promise.all(promises).then(() => {
-    updateUserId(getAddress()?.[0]?.hex)
-    if (isFirstGroup) captureMessage('user_created_first_account_group')
     return groupId
   })
 }
