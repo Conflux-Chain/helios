@@ -1,11 +1,9 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
-
+import {expect, describe, test} from 'vitest'
 import {isValidRequest} from './utils.js'
 
-describe('@fluent-wallet/json-rpc', function () {
-  describe('utils', function () {
-    describe('isValidVersionTwoRequest', function () {
+describe('@fluent-wallet/json-rpc', () => {
+  describe('utils', () => {
+    describe('isValidVersionTwoRequest', () => {
       test('should able to validate rpc requests', () => {
         expect(isValidRequest([])).toBeFalsy()
         expect(isValidRequest({})).toBeFalsy()
