@@ -1,13 +1,14 @@
-import {render, screen} from '@testing-library/react'
-import {describe, expect, jest, beforeEach, afterEach} from '@jest/globals'
+import {render, screen, cleanup} from '@testing-library/react'
+import {describe, expect, vi, beforeEach, afterEach, it} from 'vitest'
 import Toast from './index.js'
 
+beforeEach(cleanup)
 describe('Tag', () => {
   beforeEach(() => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
   })
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
   it('test snapshot', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -54,13 +55,13 @@ describe('Tag', () => {
     expect(screen.getByText('test-content')).toBeInTheDocument()
   })
   it('test onClose', async () => {
-    const onClose = jest.fn()
+    const onClose = vi.fn()
     render(<Toast open={true} content="test-content" onClose={onClose} />)
-    jest.advanceTimersByTime(2000)
+    vi.advanceTimersByTime(2000)
     expect(onClose).toHaveBeenCalledTimes(1)
   })
   it('test autoHideDuration', async () => {
-    const onClose = jest.fn()
+    const onClose = vi.fn()
     render(
       <Toast
         open={true}
@@ -69,7 +70,7 @@ describe('Tag', () => {
         autoHideDuration={3000}
       />,
     )
-    jest.advanceTimersByTime(3000)
+    vi.advanceTimersByTime(3000)
     expect(onClose).toHaveBeenCalledTimes(1)
   })
 })

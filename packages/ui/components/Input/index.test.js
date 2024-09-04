@@ -1,7 +1,8 @@
-import {render, screen, fireEvent} from '@testing-library/react'
-import {describe, expect, jest} from '@jest/globals'
+import {render, screen, fireEvent, cleanup} from '@testing-library/react'
+import {describe, expect, vi, it, beforeEach} from 'vitest'
 import Input from './index.js'
 
+beforeEach(cleanup)
 describe('Input', () => {
   it('test snapshot', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -21,7 +22,7 @@ describe('Input', () => {
     expect(screen.getByTestId('input-container')).toHaveClass('test-container')
   })
   it('should trigger the incoming onChange function', () => {
-    const onChange = jest.fn()
+    const onChange = vi.fn()
     render(<Input onChange={onChange} value="test value" />)
     fireEvent.change(screen.getByTestId('input-text'), {
       target: {value: 'value'},
@@ -87,7 +88,7 @@ describe('Input', () => {
     expect(screen.getByTestId('input-container')).toHaveClass('border-gray-20')
   })
   it('test incoming blur function', () => {
-    const onBlur = jest.fn()
+    const onBlur = vi.fn()
     render(<Input bordered={true} onBlur={onBlur} value="test value" />)
     fireEvent.focus(screen.getByTestId('input-text'))
     fireEvent.blur(screen.getByTestId('input-text'))

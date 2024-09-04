@@ -1,7 +1,8 @@
-import {render, screen, fireEvent} from '@testing-library/react'
-import {describe, expect, jest} from '@jest/globals'
+import {render, screen, fireEvent, cleanup} from '@testing-library/react'
+import {beforeEach, describe, expect, vi, it} from 'vitest'
 import MenuItem from './MenuItem'
 
+beforeEach(cleanup)
 describe('MenuItem', () => {
   it('test snapshot', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -67,7 +68,7 @@ describe('MenuItem', () => {
     )
   })
   it('test click function', () => {
-    const onClick = jest.fn()
+    const onClick = vi.fn()
     render(
       <MenuItem onClick={onClick} itemKey="key">
         content
@@ -77,7 +78,7 @@ describe('MenuItem', () => {
     expect(onClick).toHaveBeenCalledTimes(1)
   })
   it('test click function and wrapper style when got disabled attribute', () => {
-    const onClick = jest.fn()
+    const onClick = vi.fn()
     render(
       <MenuItem onClick={onClick} itemKey="key" disabled={true}>
         content

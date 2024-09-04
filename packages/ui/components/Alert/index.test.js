@@ -1,9 +1,11 @@
-import {render, screen, fireEvent} from '@testing-library/react'
-import {describe, expect, jest} from '@jest/globals'
+import {render, screen, fireEvent, cleanup} from '@testing-library/react'
+import {beforeEach, describe, expect, vi, it, afterEach} from 'vitest'
 import Alert from './index.js'
-let snapshot
+beforeEach(cleanup)
+
 describe('Alert', () => {
   describe('Dom structure', () => {
+    let snapshot
     beforeEach(() => {
       snapshot = render(
         <Alert
@@ -36,7 +38,7 @@ describe('Alert', () => {
   describe('Dom event', () => {
     let onClose = null
     beforeEach(() => {
-      onClose = jest.fn()
+      onClose = vi.fn()
       render(
         <Alert
           open={true}

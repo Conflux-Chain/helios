@@ -1,7 +1,14 @@
-import {render, screen, waitFor, fireEvent} from '@testing-library/react'
-import {describe, expect, jest} from '@jest/globals'
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  cleanup,
+} from '@testing-library/react'
+import {beforeEach, describe, expect, vi, it} from 'vitest'
 import Tag from './index.js'
 
+beforeEach(cleanup)
 describe('Tag', () => {
   it('test snapshot', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -61,7 +68,7 @@ describe('Tag', () => {
   })
 
   it('test onClose', async () => {
-    const onClose = jest.fn()
+    const onClose = vi.fn()
     render(
       <Tag closable={true} onClose={onClose}>
         some children
@@ -74,7 +81,7 @@ describe('Tag', () => {
   })
 
   it('test onClick', async () => {
-    const onClick = jest.fn()
+    const onClick = vi.fn()
     render(<Tag onClick={onClick}>some children</Tag>)
     await fireEvent.click(screen.getByRole('button'))
     await waitFor(() => {

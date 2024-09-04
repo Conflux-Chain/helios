@@ -1,7 +1,8 @@
-import {render, screen, fireEvent} from '@testing-library/react'
-import {describe, expect, jest} from '@jest/globals'
+import {render, screen, fireEvent, cleanup} from '@testing-library/react'
+import {beforeEach, describe, expect, vi, it, afterEach} from 'vitest'
 import Button from './index.js'
 
+beforeEach(cleanup)
 let snapshot
 describe('Button', () => {
   describe('normal Button status', () => {
@@ -63,7 +64,7 @@ describe('Button', () => {
   describe('Button event', () => {
     let onClick = null
     beforeEach(() => {
-      onClick = jest.fn()
+      onClick = vi.fn()
       render(<Button onClick={onClick}>test children</Button>)
     })
     afterEach(() => {

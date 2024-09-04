@@ -1,10 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable testing-library/await-async-utils */
 // eslint-disable-next-line no-unused-vars
-import {render, screen, waitFor, fireEvent} from '@testing-library/react'
-import {describe, expect, jest, afterEach} from '@jest/globals'
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  cleanup,
+} from '@testing-library/react'
+import {describe, expect, vi, afterEach, beforeEach, it} from 'vitest'
 import Message from './index.js'
 
+beforeEach(cleanup)
 // TODO resolve test error
 describe('Message', () => {
   afterEach(() => {
@@ -71,7 +78,7 @@ describe('Message', () => {
   // })
 
   // it('test close', async () => {
-  //   const onClose = jest.fn()
+  //   const onClose = vi.fn()
   //   Message.config({
   //     TEST_RENDER: node => {
   //       render(node)
@@ -88,7 +95,7 @@ describe('Message', () => {
   //   }, 300)
   // })
   // it('test click', () => {
-  //   const onClick = jest.fn()
+  //   const onClick = vi.fn()
 
   //   Message.config({
   //     TEST_RENDER: node => {

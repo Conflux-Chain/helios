@@ -1,7 +1,7 @@
-import {render, screen, fireEvent} from '@testing-library/react'
-import {describe, expect, jest} from '@jest/globals'
+import {render, screen, fireEvent, cleanup} from '@testing-library/react'
+import {beforeEach, describe, expect, vi, it} from 'vitest'
 import Checkbox from './index.js'
-
+beforeEach(cleanup)
 describe('Checkbox', () => {
   it('test snapshot', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -29,7 +29,7 @@ describe('Checkbox', () => {
   })
 
   it('should execute incoming onChange function', () => {
-    const onChange = jest.fn()
+    const onChange = vi.fn()
     render(<Checkbox onChange={onChange}>test children</Checkbox>)
     fireEvent.click(screen.getByTestId('checkbox-wrapper'))
     expect(onChange).toHaveBeenCalledTimes(1)
