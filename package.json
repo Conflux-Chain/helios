@@ -1,7 +1,7 @@
 {
   "name": "helios",
   "private": true,
-  "version": "2.7.2",
+  "version": "2.7.3",
   "workspaces": [
     "websites/*",
     "packages/doc-ui/*",
@@ -64,7 +64,8 @@
     "build:chrome": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=chrome webpack --config ./scripts/webpack.config.prod.mjs",
     "build:firefox": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=firefox webpack --config ./scripts/webpack.config.prod.mjs",
     "build:edge": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=edge webpack --config ./scripts/webpack.config.prod.mjs",
-    "build": "yarn build:chrome && yarn build:firefox && yarn build:edge"
+    "build": "yarn build:chrome && yarn build:firefox && yarn build:edge && yarn removeEmptyFile",
+    "removeEmptyFile": "rm -rf ./dist/*/manifest.js"
   },
   "devDependencies": {
     "@babel/core": "7.17.9",

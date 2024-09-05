@@ -3,7 +3,7 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "dependencies": {
     "@ethereumjs/rlp": "5.0.2",
     "@ethereumjs/tx": "5.3.0",
