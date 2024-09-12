@@ -1,134 +1,158 @@
-const {sendTx: cfxSendTx, cfxCall} = require('./cfx.js')
-const {sendTx: ethSendTx, ethCall} = require('./eth.js')
+const {sendTx: cfxSendTx} = require('./cfx.js')
+const {sendTx: ethSendTx} = require('./eth.js')
 const fs = require('fs')
 const path = require('path')
 const contractDir = path.resolve(__dirname, './contracts')
 const {Interface} = require('@ethersproject/abi')
+const {promisify} = require('util')
+const readfile = promisify(fs.readFile)
 
-const CFX_CREATE2_ADDR = 'net2999:acfdzevjd15ew6jfme7vuzb94s5a276sjayhcynp0j'
-const ETH_CREATE2_ADDR = '0xE5538A1FC85641053F5e4824846390c75B779A5F'
+// const CFX_CREATE2_ADDR = 'net2999:acfdzevjd15ew6jfme7vuzb94s5a276sjayhcynp0j'
+// const ETH_CREATE2_ADDR = '0x86503ed2A81168640B76211e6F94ea74EcD2f614'
 // const CFX_1820_ADDR = '0x88887eD889e776bCBe2f0f9932EcFaBcDfCd1820'
 // const ETH_1820_ADDR = '0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24'
 
-const contracts = [
-  fs.readFileSync(path.resolve(contractDir, 'TestToken1.bin'), {
-    encoding: 'utf-8',
-  }),
-  new Interface(
-    JSON.parse(
-      fs.readFileSync(path.resolve(contractDir, 'TestToken1.abi'), {
-        encoding: 'utf-8',
-      }),
-    ),
-  ),
-  // 0x8af438d1de8f5cb58353f418abcad1062eb9dbce
-  [
-    'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w',
-    '0x8af438d1de8f5cb58353f418abcad1062eb9dbce',
-    '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341',
-  ],
-  fs.readFileSync(path.resolve(contractDir, 'TestToken2.bin'), {
-    encoding: 'utf-8',
-  }),
-  new Interface(
-    JSON.parse(
-      fs.readFileSync(path.resolve(contractDir, 'TestToken2.abi'), {
-        encoding: 'utf-8',
-      }),
-    ),
-  ),
-  [
-    'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt',
-    '0x8c89ec5eb771bfd8c9cac0a46d52711ab6bbcea2',
-    '0x2f154def814f04aa5ae2446681264bf3428956b4',
-  ],
+const contractPath = path.resolve(__dirname, '../../contracts/compiled')
+const contractsName = [
+  // cfx net2999:acfdzevjd15ew6jfme7vuzb94s5a276sjayhcynp0j
+  // cfx 0x8a3a92281df6497105513b18543fd3b60c778e40
+  // eth 0xE5538A1FC85641053F5e4824846390c75B779A5F
+  'Create2Factory',
+  // cfx 0x88887eD889e776bCBe2f0f9932EcFaBcDfCd1820
+  // eth 0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24
+  'ERC1820Registry',
+  // cfx net2999:ach8cpret14pg9huwjtpva62w2pa1z1d0ub91hshds
+  // cfx 0x8fe131a47df4c37cf0921ec8839896180bd6e3b4
+  // eth 0x33845d47195725a6b0a08eeda1e60ce9f2dcc80b
+  'BalanceChecker',
+  // 'TestToken1',
+  // 'TestToken2',
 ]
-
-const create2 = new Interface(
-  JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, './contracts/Create2Factory.abi'), {
-      encoding: 'utf-8',
-    }),
-  ),
+let contractsBin = contractsName.map(c =>
+  path.resolve(contractPath, `./${c}.bin`),
+)
+let contractsAbi = contractsName.map(c =>
+  path.resolve(contractPath, `./${c}.abi`),
 )
 
-const deployCRC20 = async () => {
-  try {
-    // 0x8307b5ef8cc74e63603261b6e2cf75028334907f
-    // net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w
-    // 0x8c89ec5eb771bfd8c9cac0a46d52711ab6bbcea2
-    // cfxtest:acgjx5c8072590gk3namj5mwsernrs8syjn3pvb2uz
-    for (let i = 0; i < contracts.length; i += 3) {
-      const c = contracts[i]
-      // const iface = contracts[i + 1]
-      const addr = contracts[i + 2]
-      const deployed =
-        (await cfxCall({
-          tx: {
-            to: CFX_CREATE2_ADDR,
-            data: create2.encodeFunctionData('isDeployed', [addr[1]]),
-          },
-        })) ===
-        '0x0000000000000000000000000000000000000000000000000000000000000001'
+const getContracts = async () => {
+  const contract = {
+    bin: await Promise.all(
+      contractsBin.map(c => readfile(c, {encoding: 'utf-8'})),
+    ),
+    abi: await Promise.all(
+      contractsAbi.map(c =>
+        readfile(c, {encoding: 'utf-8'}).then(abi => JSON.parse(abi)),
+      ),
+    ),
+  }
 
-      if (!deployed) {
-        // await cfxCall({
-        //   tx: {
-        //     to: CFX_CREATE2_ADDR,
-        //     data: create2.encodeFunctionData('deploy', ['0x' + c, '0x1']),
-        //   },
-        // }).then(console.log)
-        await cfxSendTx({
-          tx: {
-            to: CFX_CREATE2_ADDR,
-            data: create2.encodeFunctionData('deploy', ['0x' + c, '0x1']),
-          },
-        })
-      }
-    }
-  } catch (err) {
-    console.log('deploy contract error', err)
-    if (/create2\sfailed/.test(err.message)) return
-    throw err
+  return contractsName.reduce(
+    (acc, c, idx) => ({
+      ...acc,
+      [c]: {
+        abi: contract.abi[idx],
+        bin: contract.bin[idx],
+        contract: new Interface(contract.abi[idx]),
+      },
+    }),
+    {},
+  )
+}
+
+export const deployETHBalanceChecker = async () => {
+  const contracts = await getContracts()
+  const balanceChecker = await ethSendTx({
+    tx: {
+      data: `0x${contracts.BalanceChecker.bin}`,
+    },
+  })
+  return {
+    contractAddress: balanceChecker.contractAddress.toLocaleLowerCase(),
+  }
+}
+export const deployCFXBalanceChecker = async () => {
+  const contracts = await getContracts()
+  const balanceChecker = await cfxSendTx({
+    tx: {
+      data: `0x${contracts.BalanceChecker.bin}`,
+    },
+  })
+  return {
+    contractAddress: balanceChecker.contractCreated.toLocaleLowerCase(),
+  }
+}
+
+const token1Bytecode = fs.readFileSync(
+  path.resolve(contractDir, 'TestToken1.bin'),
+  {
+    encoding: 'utf-8',
+  },
+)
+// const token1ABI = new Interface(
+//   JSON.parse(
+//     fs.readFileSync(path.resolve(contractDir, 'TestToken1.abi'), {
+//       encoding: 'utf-8',
+//     }),
+//   ),
+// )
+
+const token2Bytecode = fs.readFileSync(
+  path.resolve(contractDir, 'TestToken2.bin'),
+  {
+    encoding: 'utf-8',
+  },
+)
+
+// const token2ABI = new Interface(
+//   JSON.parse(
+//     fs.readFileSync(path.resolve(contractDir, 'TestToken2.abi'), {
+//       encoding: 'utf-8',
+//     }),
+//   ),
+// )
+
+const deployCRC20 = async () => {
+  const token1 = await cfxSendTx({
+    tx: {
+      data: `0x${token1Bytecode}`,
+    },
+  })
+
+  const token2 = await cfxSendTx({
+    tx: {
+      data: `0x${token2Bytecode}`,
+    },
+  })
+  return {
+    token1: {
+      contractAddress: token1.contractCreated.toLocaleLowerCase(),
+    },
+    token2: {
+      contractAddress: token2.contractCreated.toLocaleLowerCase(),
+    },
   }
 }
 
 const deployERC20 = async () => {
-  try {
-    // 0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341
-    // 0x2f154def814f04aa5ae2446681264bf3428956b4
-    for (let i = 0; i < contracts.length; i += 3) {
-      const c = contracts[i]
-      // const iface = contracts[i + 1]
-      const addr = contracts[i + 2]
-      const deployed =
-        (await ethCall({
-          tx: {
-            to: ETH_CREATE2_ADDR,
-            data: create2.encodeFunctionData('isDeployed', [addr[2]]),
-          },
-        })) ===
-        '0x0000000000000000000000000000000000000000000000000000000000000001'
+  const token1 = await ethSendTx({
+    tx: {
+      data: `0x${token1Bytecode}`,
+    },
+  })
 
-      if (!deployed) {
-        // await ethCall({
-        //   tx: {
-        //     to: ETH_CREATE2_ADDR,
-        //     data: create2.encodeFunctionData('deploy', ['0x' + c, '0x1']),
-        //   },
-        // }).then(console.log)
-        await ethSendTx({
-          tx: {
-            to: ETH_CREATE2_ADDR,
-            data: create2.encodeFunctionData('deploy', ['0x' + c, '0x1']),
-          },
-        })
-      }
-    }
-  } catch (err) {
-    console.log('deploy contract error', err)
-    if (/create2\sfailed/.test(err.message)) return
-    throw err
+  const token2 = await ethSendTx({
+    tx: {
+      data: `0x${token2Bytecode}`,
+    },
+  })
+  return {
+    token1: {
+      contractAddress: token1.contractAddress.toLocaleLowerCase(),
+    },
+    token2: {
+      contractAddress: token2.contractAddress.toLocaleLowerCase(),
+    },
   }
 }
 

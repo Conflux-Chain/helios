@@ -9,9 +9,9 @@ beforeEach(() => {
   browser.geckoProfiler.stop.mockClear()
 })
 
-describe('persist-db-to-ext-storage', function () {
-  describe('persist', function () {
-    it('should call the webextension storage.local.set api on new input data', async function () {
+describe('persist-db-to-ext-storage', () => {
+  describe('persist', () => {
+    it('should call the webextension storage.local.set api on new input data', async () => {
       await persist('foo')
       expect(browser.storage.local.set).not.toBeCalled()
 
