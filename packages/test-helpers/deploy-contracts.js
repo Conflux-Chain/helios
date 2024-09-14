@@ -60,7 +60,7 @@ const getContracts = async () => {
   )
 }
 
-export const deployETHBalanceChecker = async () => {
+const deployETHBalanceChecker = async () => {
   const contracts = await getContracts()
   const balanceChecker = await ethSendTx({
     tx: {
@@ -71,7 +71,7 @@ export const deployETHBalanceChecker = async () => {
     contractAddress: balanceChecker.contractAddress.toLocaleLowerCase(),
   }
 }
-export const deployCFXBalanceChecker = async () => {
+const deployCFXBalanceChecker = async () => {
   const contracts = await getContracts()
   const balanceChecker = await cfxSendTx({
     tx: {
@@ -112,7 +112,7 @@ const token2Bytecode = fs.readFileSync(
 //   ),
 // )
 
-export const deployCRC20 = async () => {
+const deployCRC20 = async () => {
   const token1 = await cfxSendTx({
     tx: {
       data: `0x${token1Bytecode}`,
@@ -134,7 +134,7 @@ export const deployCRC20 = async () => {
   }
 }
 
-export const deployERC20 = async () => {
+const deployERC20 = async () => {
   const token1 = await ethSendTx({
     tx: {
       data: `0x${token1Bytecode}`,
@@ -154,4 +154,11 @@ export const deployERC20 = async () => {
       contractAddress: token2.contractAddress.toLocaleLowerCase(),
     },
   }
+}
+
+module.exports = {
+  deployCFXBalanceChecker,
+  deployCRC20,
+  deployERC20,
+  deployETHBalanceChecker,
 }

@@ -146,4 +146,8 @@ const ETH_ACCOUNTS = [
   },
 ]
 
-export {ETH_ACCOUNTS, CFX_ACCOUNTS, MNEMONIC}
+module.exports = {
+  ETH_ACCOUNTS,
+  CFX_ACCOUNTS,
+  MNEMONIC,
+}
