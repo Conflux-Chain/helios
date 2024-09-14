@@ -1,11 +1,11 @@
-import {expect} from '@jest/globals'
+import {expect, describe, it} from 'vitest'
 import {validate} from '@fluent-wallet/spec'
 import {generateMnemonic, validateMnemonic} from 'bip39'
 import {schemas, main} from './'
 
-describe('wallet_generateMnemonic', function () {
-  describe('schemas', function () {
-    it('should be able to validate mnemonic', function () {
+describe('wallet_generateMnemonic', () => {
+  describe('schemas', () => {
+    it('should be able to validate mnemonic', () => {
       expect(validate(schemas.output, generateMnemonic())).toBeTruthy()
       expect(
         validate(schemas.output, generateMnemonic().replaceAll(' ', '')),
@@ -19,8 +19,8 @@ describe('wallet_generateMnemonic', function () {
     })
   })
 
-  describe('main', function () {
-    it('should generate a mnemonic', async function () {
+  describe('main', () => {
+    it('should generate a mnemonic', async () => {
       expect(validateMnemonic(main())).toBeTruthy()
     })
   })
