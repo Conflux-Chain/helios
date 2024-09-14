@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import { expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach } from '@jest/globals' // prettier-ignore
+import {expect, describe, test} from 'vitest'
 // eslint-disable-next-line no-unused-vars
 import waitForExpect from 'wait-for-expect'
 import {fromPrivate} from '@fluent-wallet/account'
@@ -12,8 +11,8 @@ import {
 } from './'
 import txhash1820 from './1820-txhash'
 
-describe('cfx', function () {
-  describe('personal sign', function () {
+describe('cfx', () => {
+  describe('personal sign', () => {
     test('personal sign and recover', async () => {
       const pk =
         '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
@@ -31,7 +30,7 @@ describe('cfx', function () {
     })
   })
 
-  describe('v4', function () {
+  describe('v4', () => {
     test('signTypedData_v4', async () => {
       const typedData = {
         types: {
@@ -155,9 +154,9 @@ describe('cfx', function () {
   })
 })
 
-describe('eth', function () {
-  describe('personal sign', function () {
-    test('personalSign and recover', async function () {
+describe('eth', () => {
+  describe('personal sign', () => {
+    test('personalSign and recover', async () => {
       const address = '0x29C76e6aD8f28BB1004902578Fb108c507Be341b'
       const privKeyHex =
         '4af1bceebf7f3634ec3cff8a2c38e51178d5d4ce585c52d6043e5e2cc3418bb0'
@@ -170,7 +169,7 @@ describe('eth', function () {
     })
   })
 
-  describe('v4', function () {
+  describe('v4', () => {
     test('signTypedData_v4', async () => {
       const typedData = {
         types: {
@@ -298,7 +297,7 @@ describe('eth', function () {
   })
 })
 
-describe('getTxHashFromRawTx', function () {
+describe('getTxHashFromRawTx', () => {
   test('getTxHashFromRawTx', async () => {
     expect(getTxHashFromRawTx(txhash1820)).toBe(
       '0xfefb2da535e927b85fe68eb81cb2e4a5827c905f78381a01ef2322aa9b0aee8e',
