@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, test, vi, beforeEach} from 'vitest'
 import waitForExpect from 'wait-for-expect'
 import {mergeDeepObj} from '@thi.ng/associative'
 import {main} from './index.js'
@@ -9,46 +8,46 @@ let defaultInputs
 beforeEach(() => {
   defaultInputs = {
     rpcs: {
-      cfx_epochNumber: jest.fn(() => Promise.resolve()),
-      cfx_sendRawTransaction: jest.fn(() => Promise.resolve()),
-      cfx_getTransactionByHash: jest.fn(() => Promise.resolve()),
-      cfx_getTransactionReceipt: jest.fn(() => Promise.resolve()),
-      cfx_getNextNonce: jest.fn(() => Promise.resolve()),
-      wallet_getBlockchainExplorerUrl: jest.fn(() =>
+      cfx_epochNumber: vi.fn(() => Promise.resolve()),
+      cfx_sendRawTransaction: vi.fn(() => Promise.resolve()),
+      cfx_getTransactionByHash: vi.fn(() => Promise.resolve()),
+      cfx_getTransactionReceipt: vi.fn(() => Promise.resolve()),
+      cfx_getNextNonce: vi.fn(() => Promise.resolve()),
+      wallet_getBlockchainExplorerUrl: vi.fn(() =>
         Promise.resolve({transaction: ['tx']}),
       ),
-      wallet_handleUnfinishedCFXTx: jest.fn(() => Promise.resolve()),
+      wallet_handleUnfinishedCFXTx: vi.fn(() => Promise.resolve()),
     },
     db: {
-      retractAttr: jest.fn(),
-      getUnfinishedTxCount: jest.fn(() => 0),
-      getAddressById: jest.fn(() => ({
+      retractAttr: vi.fn(),
+      getUnfinishedTxCount: vi.fn(() => 0),
+      getAddressById: vi.fn(() => ({
         eid: 'addreid',
         value: 'addr',
         hex: 'addr',
       })),
-      getTxById: jest.fn(() => ({
+      getTxById: vi.fn(() => ({
         eid: 'txeid',
         status: 0,
         hash: 'txhash',
         raw: 'txraw',
         txPayload: {nonce: 'txnonce', epochHeight: '0x1'},
       })),
-      setTxSkipped: jest.fn(),
-      setTxFailed: jest.fn(),
-      setTxSending: jest.fn(),
-      setTxPending: jest.fn(),
-      setTxPackaged: jest.fn(),
-      setTxExecuted: jest.fn(),
-      setTxConfirmed: jest.fn(),
-      setTxUnsent: jest.fn(),
-      setTxChainSwitched: jest.fn(),
+      setTxSkipped: vi.fn(),
+      setTxFailed: vi.fn(),
+      setTxSending: vi.fn(),
+      setTxPending: vi.fn(),
+      setTxPackaged: vi.fn(),
+      setTxExecuted: vi.fn(),
+      setTxConfirmed: vi.fn(),
+      setTxUnsent: vi.fn(),
+      setTxChainSwitched: vi.fn(),
     },
     params: {
       tx: 'txid',
       address: 'addr',
-      okCb: jest.fn(),
-      failedCb: jest.fn(),
+      okCb: vi.fn(),
+      failedCb: vi.fn(),
     },
     network: {cacheTime: 0},
   }
@@ -59,7 +58,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('success', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -105,12 +104,12 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('Error in sendRawTx tx already exist, should similar to success', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() =>
+          cfx_sendRawTransaction: vi.fn(() =>
             Promise.reject({data: 'tx already exist'}),
           ),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -156,10 +155,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'tx pool is full'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -206,10 +205,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'Transaction Pool is full'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -256,10 +255,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'still in the catch up mode'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -306,10 +305,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'Can not recover pubkey'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -356,10 +355,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'RlpIncorrectListLen'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -406,10 +405,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'ChainIdMismatch'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -456,10 +455,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'ZeroGasPrice'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -506,10 +505,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'too distant future'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -556,10 +555,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'EpochHeightOutOfBound'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -606,10 +605,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'exceeds the maximum value'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -656,10 +655,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'too stale nonce'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -706,10 +705,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'same nonce already inserted replace gas price'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -756,10 +755,10 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       const err = {data: 'unknownError uunnkknERRORnoowwnn'}
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_sendRawTransaction: jest.fn(() => Promise.reject(err)),
+          cfx_sendRawTransaction: vi.fn(() => Promise.reject(err)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 0,
             hash: 'txhash',
@@ -808,7 +807,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('nothing should be called', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 1,
             hash: 'txhash',
@@ -826,11 +825,11 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('not packaged, not resend', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_epochNumber: jest.fn(() => Promise.resolve('0x1')),
-          cfx_getTransactionByHash: jest.fn(() => Promise.resolve(null)),
+          cfx_epochNumber: vi.fn(() => Promise.resolve('0x1')),
+          cfx_getTransactionByHash: vi.fn(() => Promise.resolve(null)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -864,11 +863,11 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('not packaged, 40 epoch old', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_epochNumber: jest.fn(() => Promise.resolve('0x29')), // decimal 41
-          cfx_getTransactionByHash: jest.fn(() => Promise.resolve(null)),
+          cfx_epochNumber: vi.fn(() => Promise.resolve('0x29')), // decimal 41
+          cfx_getTransactionByHash: vi.fn(() => Promise.resolve(null)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -908,11 +907,11 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('not packaged, resend at 40 epoch before', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_epochNumber: jest.fn(() => Promise.resolve('0x51')), // decimal 81
-          cfx_getTransactionByHash: jest.fn(() => Promise.resolve(null)),
+          cfx_epochNumber: vi.fn(() => Promise.resolve('0x51')), // decimal 81
+          cfx_getTransactionByHash: vi.fn(() => Promise.resolve(null)),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -956,11 +955,11 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('not packaged (no blockhash), not resend', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_epochNumber: jest.fn(() => Promise.resolve('0x1')),
-          cfx_getTransactionByHash: jest.fn(() => Promise.resolve({})),
+          cfx_epochNumber: vi.fn(() => Promise.resolve('0x1')),
+          cfx_getTransactionByHash: vi.fn(() => Promise.resolve({})),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -994,11 +993,11 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('not packaged (no blockhash), 40 epoch old', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_epochNumber: jest.fn(() => Promise.resolve('0x29')), // decimal 41
-          cfx_getTransactionByHash: jest.fn(() => Promise.resolve({})),
+          cfx_epochNumber: vi.fn(() => Promise.resolve('0x29')), // decimal 41
+          cfx_getTransactionByHash: vi.fn(() => Promise.resolve({})),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -1038,11 +1037,11 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('not packaged (no blockhash), resend at 40 epoch before', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_epochNumber: jest.fn(() => Promise.resolve('0x51')), // decimal 81
-          cfx_getTransactionByHash: jest.fn(() => Promise.resolve({})),
+          cfx_epochNumber: vi.fn(() => Promise.resolve('0x51')), // decimal 81
+          cfx_getTransactionByHash: vi.fn(() => Promise.resolve({})),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -1086,15 +1085,15 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('packaged, failed, status = 0x1', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_getTransactionByHash: jest.fn(() =>
+          cfx_getTransactionByHash: vi.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: '0x1'}),
           ),
-          cfx_getTransactionReceipt: jest.fn(() =>
+          cfx_getTransactionReceipt: vi.fn(() =>
             Promise.resolve({txExecErrorMsg: 'txExecErrorMsg'}),
           ),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -1140,13 +1139,13 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('packaged, failed, status = 0x1, cfx_getTransactionReceipt failed', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_getTransactionByHash: jest.fn(() =>
+          cfx_getTransactionByHash: vi.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: '0x1'}),
           ),
-          cfx_getTransactionReceipt: jest.fn(() => Promise.reject()),
+          cfx_getTransactionReceipt: vi.fn(() => Promise.reject()),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -1193,12 +1192,12 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('packaged, skipped, status = 0x2', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_getTransactionByHash: jest.fn(() =>
+          cfx_getTransactionByHash: vi.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: '0x2'}),
           ),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -1245,13 +1244,13 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('packaged, check skipped, status = null', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_getTransactionByHash: jest.fn(() =>
+          cfx_getTransactionByHash: vi.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: null}),
           ),
-          cfx_getNextNonce: jest.fn(() => Promise.resolve('0x2')),
+          cfx_getNextNonce: vi.fn(() => Promise.resolve('0x2')),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -1291,13 +1290,13 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('packaged, recheck skipped, status = null', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_getTransactionByHash: jest.fn(() =>
+          cfx_getTransactionByHash: vi.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: null}),
           ),
-          cfx_getNextNonce: jest.fn(() => Promise.resolve('0x2')),
+          cfx_getNextNonce: vi.fn(() => Promise.resolve('0x2')),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -1339,12 +1338,12 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('packaged, executed, status = 0x0', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_getTransactionByHash: jest.fn(() =>
+          cfx_getTransactionByHash: vi.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: '0x0'}),
           ),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -1381,13 +1380,13 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('packages, not executed, status = null, nonce passed', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_getTransactionByHash: jest.fn(() =>
+          cfx_getTransactionByHash: vi.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: null}),
           ),
-          cfx_getNextNonce: jest.fn(() => Promise.resolve('0x1')),
+          cfx_getNextNonce: vi.fn(() => Promise.resolve('0x1')),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -1438,13 +1437,13 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('packages, not executed, status = null, nonce is right', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_getTransactionByHash: jest.fn(() =>
+          cfx_getTransactionByHash: vi.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: null}),
           ),
-          cfx_getNextNonce: jest.fn(() => Promise.resolve('0x0')),
+          cfx_getNextNonce: vi.fn(() => Promise.resolve('0x0')),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
@@ -1492,13 +1491,13 @@ describe('wallet_handleUnfinishedCFXTx', () => {
     test('packages, not executed, status = null, cfx_getNextNonce failed', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
-          cfx_getTransactionByHash: jest.fn(() =>
+          cfx_getTransactionByHash: vi.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: null}),
           ),
-          cfx_getNextNonce: jest.fn(() => Promise.reject()),
+          cfx_getNextNonce: vi.fn(() => Promise.reject()),
         },
         db: {
-          getTxById: jest.fn(() => ({
+          getTxById: vi.fn(() => ({
             eid: 'txeid',
             status: 2,
             hash: 'txhash',
