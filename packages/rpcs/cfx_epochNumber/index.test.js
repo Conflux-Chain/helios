@@ -1,11 +1,10 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it, vi} from 'vitest'
 import {validate} from '@fluent-wallet/spec'
 import {main, schemas} from './index.js'
 
-describe('@fluent-wallet/cfx_epoch-number', function () {
-  describe('schemas', function () {
-    it('should be able to validate the input', async function () {
+describe('@fluent-wallet/cfx_epoch-number', () => {
+  describe('schemas', () => {
+    it('should be able to validate the input', async () => {
       expect(validate(schemas.input)).toBeTruthy()
       expect(validate(schemas.input, [null])).toBeTruthy()
       expect(validate(schemas.input, [undefined])).toBeTruthy()
@@ -18,10 +17,10 @@ describe('@fluent-wallet/cfx_epoch-number', function () {
     })
   })
 
-  describe('main', function () {
-    it('should call the injected fetch function with the input params', async function () {
+  describe('main', () => {
+    it('should call the injected fetch function with the input params', async () => {
       const input = {
-        f: jest.fn(p => p),
+        f: vi.fn(p => p),
         params: ['bar'],
       }
       const res = await main(input)
