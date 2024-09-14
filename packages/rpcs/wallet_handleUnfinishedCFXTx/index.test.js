@@ -5,6 +5,13 @@ import {main} from './index.js'
 
 let defaultInputs
 
+// FAIL LOUDLY on unhandled promise rejections / errors
+process.on('unhandledRejection', reason => {
+  // eslint-disable-next-line no-console
+  console.log('FAILED TO HANDLE PROMISE REJECTION', reason)
+  // throw reason;
+})
+
 beforeEach(() => {
   defaultInputs = {
     rpcs: {
@@ -860,6 +867,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
 
       expect(inputs.db.setTxUnsent).toHaveBeenCalledTimes(0)
     })
+
     test('not packaged, 40 epoch old', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -904,6 +912,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         resendAt: '0x29',
       })
     })
+
     test('not packaged, resend at 40 epoch before', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -952,6 +961,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         resendAt: '0x51',
       })
     })
+
     test('not packaged (no blockhash), not resend', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -990,6 +1000,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
 
       expect(inputs.db.setTxUnsent).toHaveBeenCalledTimes(0)
     })
+
     test('not packaged (no blockhash), 40 epoch old', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -1034,6 +1045,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         resendAt: '0x29',
       })
     })
+
     test('not packaged (no blockhash), resend at 40 epoch before', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -1082,6 +1094,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         resendAt: '0x51',
       })
     })
+
     test('packaged, failed, status = 0x1', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -1136,6 +1149,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         error: 'txExecErrorMsg',
       })
     })
+
     test('packaged, failed, status = 0x1, cfx_getTransactionReceipt failed', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -1189,6 +1203,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         hash: 'txhash',
       })
     })
+
     test('packaged, skipped, status = 0x2', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -1241,6 +1256,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         inputs.rpcs.wallet_getBlockchainExplorerUrl,
       ).toHaveBeenLastCalledWith({transaction: ['txhash']})
     })
+
     test('packaged, check skipped, status = null', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -1287,6 +1303,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         hash: 'txhash',
       })
     })
+
     test('packaged, recheck skipped, status = null', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -1335,6 +1352,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         hash: 'txhash',
       })
     })
+
     test('packaged, executed, status = 0x0', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -1377,6 +1395,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         blockHash: 'blockhash',
       })
     })
+
     test('packages, not executed, status = null, nonce passed', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -1434,6 +1453,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         hash: 'txhash',
       })
     })
+
     test('packages, not executed, status = null, nonce is right', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
@@ -1488,6 +1508,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         ['addr'],
       )
     })
+
     test('packages, not executed, status = null, cfx_getNextNonce failed', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
