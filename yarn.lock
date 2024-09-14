@@ -20092,7 +20092,7 @@ __metadata:
     identity-obj-proxy: "npm:3.0.0"
     jest: "npm:29.7.0"
     jest-environment-jsdom: "npm:29.7.0"
-    jest-webextension-mock: "npm:^3.7.22"
+    jest-webextension-mock: "npm:3.9.0"
     js-string-escape: "npm:1.0.1"
     lint-staged: "npm:^13.0.1"
     mini-css-extract-plugin: "npm:2.9.0"
@@ -22258,7 +22258,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-webextension-mock@npm:^3.7.22":
+"jest-webextension-mock@npm:3.9.0":
   version: 3.9.0
   resolution: "jest-webextension-mock@npm:3.9.0"
   checksum: 10/169402f45c572be50dfa568db4e9294866ee2792e18949a50aa7fbbb50e6f3e1e151629c449d3d106aed5690415a6237195b401727c555ab8c6146b0d713cd70

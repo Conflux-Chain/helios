@@ -112,7 +112,7 @@ const token2Bytecode = fs.readFileSync(
 //   ),
 // )
 
-const deployCRC20 = async () => {
+export const deployCRC20 = async () => {
   const token1 = await cfxSendTx({
     tx: {
       data: `0x${token1Bytecode}`,
@@ -134,7 +134,7 @@ const deployCRC20 = async () => {
   }
 }
 
-const deployERC20 = async () => {
+export const deployERC20 = async () => {
   const token1 = await ethSendTx({
     tx: {
       data: `0x${token1Bytecode}`,
@@ -155,5 +155,3 @@ const deployERC20 = async () => {
     },
   }
 }
-
-module.exports = {deployCRC20, deployERC20}

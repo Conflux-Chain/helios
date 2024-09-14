@@ -29,7 +29,7 @@ beforeAll(async () => {
   await deployETHBalanceChecker()
   confluxServer = await createServer({
     // silent: false,
-    dev_block_interval_ms: 200,
+    dev_block_interval_ms: 100,
     mode: 'dev',
     chain_id: CFX_LOCALNET_NETID,
     genesis_secrets: [GENESIS_PRI_KEY, ...CFX_ACCOUNTS.map(v => v.privateKey)],
