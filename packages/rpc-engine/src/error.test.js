@@ -1,11 +1,10 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it, vi} from 'vitest'
 import {rpcErrorHandlerFactory} from './error'
 
-describe('error', function () {
-  describe('rpcErrorHandlerFactory', function () {
-    it('should append the error message with rpc stack', async function () {
-      const fakeCWrite = jest.fn()
+describe('error', () => {
+  describe('rpcErrorHandlerFactory', () => {
+    it('should append the error message with rpc stack', async () => {
+      const fakeCWrite = vi.fn()
 
       rpcErrorHandlerFactory()({
         message: 'original error message',
@@ -45,8 +44,8 @@ describe('error', function () {
       expect(rpcErrorHandlerFactory()(null)).toBe(true)
     })
 
-    it('should return the response with the same req id', async function () {
-      const fakeCWrite = jest.fn()
+    it('should return the response with the same req id', async () => {
+      const fakeCWrite = vi.fn()
 
       rpcErrorHandlerFactory()({
         message: 'original error message',
