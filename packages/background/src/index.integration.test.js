@@ -2744,11 +2744,8 @@ describe('integration test', () => {
             params: {mnemonic: MNEMONIC, password},
           })
 
-          await waitForExpect(() =>
-            expect(db.getAddress().length).toBeGreaterThan(0),
-          )
+          await waitForExpect(() => expect(db.getAccount().length).toBe(2))
 
-          await new Promise(resolve => setTimeout(resolve, 500))
           res = await request({
             method: 'cfx_sendTransaction',
             params: [
@@ -2769,11 +2766,8 @@ describe('integration test', () => {
             params: {mnemonic: MNEMONIC, password},
           })
 
-          await waitForExpect(() =>
-            expect(db.getAddress().length).toBeGreaterThan(0),
-          )
+          await waitForExpect(() => expect(db.getAccount().length).toBe(2))
 
-          await new Promise(resolve => setTimeout(resolve, 500))
           res = await request({
             method: 'cfx_sendTransaction',
             params: [
@@ -2797,9 +2791,7 @@ describe('integration test', () => {
           params: {mnemonic: MNEMONIC, password},
         })
 
-        await waitForExpect(() =>
-          expect(db.getAddress().length).toBeGreaterThan(0),
-        )
+        await waitForExpect(() => expect(db.getAccount().length).toBe(2))
 
         res = request({
           method: 'cfx_requestAccounts',
