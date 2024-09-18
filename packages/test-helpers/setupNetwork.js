@@ -3,7 +3,6 @@ import {beforeAll, afterAll} from 'vitest'
 import hre from 'hardhat'
 import {createServer} from '@xcfx/node'
 import {CFX_LOCALNET_NETID} from '@fluent-wallet/consts'
-import {CFX_ACCOUNTS} from './accounts'
 import {
   deployCFXBalanceChecker,
   deployETHBalanceChecker,
@@ -32,7 +31,7 @@ beforeAll(async () => {
     dev_block_interval_ms: 100,
     mode: 'dev',
     chain_id: CFX_LOCALNET_NETID,
-    genesis_secrets: [GENESIS_PRI_KEY, ...CFX_ACCOUNTS.map(v => v.privateKey)],
+    genesis_secrets: [GENESIS_PRI_KEY],
   })
   await confluxServer.start()
   await new Promise(resolve => setTimeout(resolve, 3000))
