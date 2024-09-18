@@ -137,7 +137,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
       - run: yarn install --immutable
-      - run: yarn test:integration --coverage --detectOpenHandles --forceExit
+      - run: yarn test:integration
       - uses: codecov/codecov-action@v3
         with:
           flags: integrationtests
@@ -181,7 +181,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
       - run: yarn install --immutable
-      - run: yarn prod
+      - run: yarn build
 
   build-doc:
     if: ${{ github.ref != 'refs/heads/__release-pkg'}}
