@@ -15,6 +15,11 @@ const devConfig = {
   mode: 'development',
   devtool: 'inline-cheap-module-source-map',
   watch: true,
+  output: isFirefox
+    ? {
+        chunkFormat: 'array-push',
+      }
+    : undefined,
   plugins: [
     new Dotenv({
       prefix: 'import.meta.env.',

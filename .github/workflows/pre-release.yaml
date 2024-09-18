@@ -62,15 +62,19 @@ jobs:
 
       - run: yarn install --immutable
 
-      - name: Dotenv Action
-        id: dotenv
-        uses: falti/dotenv-action@v0.2.8
+      - name: Set package version
+        id: get-package-version
+        run: |
+          echo "PACKAGE_VERSION=$(cat package.json | jq -r '.version')" >>  "$GITHUB_OUTPUT"
+
+      - name: Print package version
+        run: echo "PACKAGE_VERSION=${{ steps.get-package-version.outputs.PACKAGE_VERSION }}"
 
       - name: Get PR Release
         uses: actions/github-script@v6
         id: get-release-version-and-tag
         env:
-          NEXT_VERSION: ${{ steps.dotenv.outputs.SNOWPACK_PUBLIC_FLUENT_VERSION }}
+          NEXT_VERSION: ${{ steps.get-package-version.outputs.PACKAGE_VERSION }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -107,7 +111,7 @@ jobs:
           SNOWPACK_PUBLIC_FLUENT_ENV: 'debug-release'
           SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).version }}
         run: yarn build
-        
+
       - name: zip files
         run: |
           cd ./dist
