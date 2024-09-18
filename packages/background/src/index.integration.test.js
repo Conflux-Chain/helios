@@ -390,19 +390,12 @@ describe('integration test', () => {
           })
         ).result
 
-        // expect(db.getAccount().length).toBe(1) // can't stable to expect the length
-        expect(db.getAccount().length).toBeDefined()
-
-        // await waitForExpect(() => expect(db.getAddress().length).toBe(3), 20000) // can't stable to expect the length
-        expect(db.getAddress().length).toBeDefined()
-
+        expect(db.getAccount().length).toBe(1)
+        await waitForExpect(() => expect(db.getAddress().length).toBe(3), 20000)
         const addrs = db.getAddress()
-        // expect(addrs[addrs.length - 1].hex).toBe(CFX_ACCOUNTS[0].address)
-        expect(addrs[addrs.length - 1].hex).toBeDefined()
-        // expect(addrs[addrs.length - 1].value).toBe(CFX_ACCOUNTS[0].base32)
-        expect(addrs[addrs.length - 1].value).toBeDefined()
-        // expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
-        expect(db.findAddress({networkId})[0]).toBeDefined()
+        expect(addrs[addrs.length - 1].hex).toBe(CFX_ACCOUNTS[0].address)
+        expect(addrs[addrs.length - 1].value).toBe(CFX_ACCOUNTS[0].base32)
+        expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
 
         //error case:Duplicate network endpoint
         res = await request({
@@ -558,10 +551,8 @@ describe('integration test', () => {
           method: 'wallet_importMnemonic',
           params: {mnemonic: MNEMONIC, password},
         })
-        // await waitForExpect(() => expect(db.getAccount().length).toBe(1)) // can't stable get the length
-        expect(db.getAccount().length).toBeDefined()
-        // await waitForExpect(() => expect(db.getAddress().length).toBe(2)) // can't stable get the length
-        expect(db.getAddress().length).toBeDefined()
+        await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        await waitForExpect(() => expect(db.getAddress().length).toBe(2))
 
         await request({
           method: 'wallet_updateNetwork',
@@ -710,32 +701,23 @@ describe('integration test', () => {
         expect(db.getVault().length).toBe(1)
         expect(db.getVaultByType('hd').length).toBe(1)
         expect(db.getAccountGroup().length).toBe(1)
-        //         expect(db.getAccount().length).toBe(1) // can't to stable get length
-        expect(db.getAccount().length).toBeDefined()
-        //    expect(db.getAddress().length).toBe(2) // can't to stable get length
-        expect(db.getAddress().length).toBeDefined()
+        expect(db.getAccount().length).toBe(1)
+        expect(db.getAddress().length).toBe(2)
 
         const cfxAddr = db.findAddress({
           networkId: cfxNetId,
           g: {hex: 1, value: 1, pk: 1},
         })[0]
-
-        // expect(cfxAddr.hex).toBe(CFX_ACCOUNTS[0].address)
-        expect(cfxAddr.hex).toBeDefined()
-        // expect(cfxAddr.value).toBe(CFX_ACCOUNTS[0].base32)
-        expect(cfxAddr.value).toBeDefined()
-        // expect(cfxAddr.pk).toBe(CFX_ACCOUNTS[0].privateKey)
-        expect(cfxAddr.pk).toBeDefined()
+        expect(cfxAddr.hex).toBe(CFX_ACCOUNTS[0].address)
+        expect(cfxAddr.value).toBe(CFX_ACCOUNTS[0].base32)
+        expect(cfxAddr.pk).toBe(CFX_ACCOUNTS[0].privateKey)
         const ethAddr = db.findAddress({
           networkId: ethNetId,
           g: {hex: 1, value: 1, pk: 1},
         })[0]
-        // expect(ethAddr.hex).toBe(ETH_ACCOUNTS[0].address)
-        expect(ethAddr.hex).toBeDefined()
-        // expect(ethAddr.pk).toBe(ETH_ACCOUNTS[0].privateKey)
-        expect(ethAddr.pk).toBeDefined()
-        // expect(ethAddr.value).toBe(ETH_ACCOUNTS[0].address)
-        expect(ethAddr.value).toBeDefined()
+        expect(ethAddr.hex).toBe(ETH_ACCOUNTS[0].address)
+        expect(ethAddr.pk).toBe(ETH_ACCOUNTS[0].privateKey)
+        expect(ethAddr.value).toBe(ETH_ACCOUNTS[0].address)
 
         //test for error case
         res = await request({
@@ -781,10 +763,8 @@ describe('integration test', () => {
           method: 'wallet_createAccount',
           params: {accountGroupId: db.getAccountGroup()[0].eid},
         })
-        //  expect(db.getAccount().length).toBe(2) // can't to stable get length
-        expect(db.getAccount().length).toBeDefined()
-        // expect(db.getAddress().length).toBe(4) // can't to stable get length
-        expect(db.getAddress().length).toBeDefined()
+        expect(db.getAccount().length).toBe(2)
+        expect(db.getAddress().length).toBe(4)
       })
       test('wallet_createAccount with nickname', async () => {
         expect(db.getVault().length).toBe(0)
@@ -802,10 +782,8 @@ describe('integration test', () => {
           },
         })
 
-        // expect(db.getAccount().length).toBe(2) // can't to stable get length
-        expect(db.getAccount().length).toBeDefined()
-        // expect(db.getAddress().length).toBe(4) // can't to stable get length
-        expect(db.getAddress().length).toBeDefined()
+        expect(db.getAccount().length).toBe(2)
+        expect(db.getAddress().length).toBe(4)
         expect(db.getAccount({nickname: 'foo'}).length).toBe(1)
       })
       // test('wallet_createAccount with duplicate nickname', async function () {
@@ -2292,7 +2270,7 @@ describe('integration test', () => {
               networkName: CFX_MAINNET_NAME,
             })
           ).result,
-        ).toBe('0x21e19e0c9bab2400000')
+        ).toBe('0x0')
         let b
         res = await request({
           method: 'wallet_getBalance',
@@ -2303,8 +2281,8 @@ describe('integration test', () => {
           networkName: CFX_MAINNET_NAME,
         })
         b = res.result
-        expect(b[CFX_ACCOUNTS[0].base32]['0x0']).toBe('0x21e19e0c9bab2400000')
-        expect(b[CFX_ACCOUNTS[1].base32]['0x0']).toBe('0x21e19e0c9bab2400000')
+        expect(b[CFX_ACCOUNTS[0].base32]['0x0']).toBe('0x0')
+        expect(b[CFX_ACCOUNTS[1].base32]['0x0']).toBe('0x0')
         expect(b[CFX_ACCOUNTS[0].base32][token1.contractAddress]).toBe(
           '0x8ac7230489e80000',
         )
@@ -2331,8 +2309,8 @@ describe('integration test', () => {
           },
         })
         b = res.result
-        expect(b[CFX_ACCOUNTS[0].base32]['0x0']).toBe('0x21e19e0c9bab2400000')
-        expect(b[CFX_ACCOUNTS[1].base32]['0x0']).toBe('0x21e19e0c9bab2400000')
+        expect(b[CFX_ACCOUNTS[0].base32]['0x0']).toBe('0x0')
+        expect(b[CFX_ACCOUNTS[1].base32]['0x0']).toBe('0x0')
         expect(b[CFX_ACCOUNTS[0].base32][token1.contractAddress]).toBe(
           '0x8ac7230489e80000',
         )
@@ -2356,7 +2334,7 @@ describe('integration test', () => {
               networkName: ETH_MAINNET_NAME,
             })
           ).result,
-        ).toBe('0x21e19e0c9bab2400000')
+        ).toBe('0x0')
 
         const {token1, token2} = await deployERC20()
         let b
@@ -2369,8 +2347,8 @@ describe('integration test', () => {
           networkName: ETH_MAINNET_NAME,
         })
         b = res.result
-        expect(b[ETH_ACCOUNTS[0].address]['0x0']).toBe('0x21e19e0c9bab2400000')
-        expect(b[ETH_ACCOUNTS[1].address]['0x0']).toBe('0x21e19e0c9bab2400000')
+        expect(b[ETH_ACCOUNTS[0].address]['0x0']).toBe('0x0')
+        expect(b[ETH_ACCOUNTS[1].address]['0x0']).toBe('0x0')
         expect(b[ETH_ACCOUNTS[0].address][token1.contractAddress]).toBe(
           '0x8ac7230489e80000',
         )
@@ -2398,8 +2376,8 @@ describe('integration test', () => {
           networkName: ETH_MAINNET_NAME,
         })
         b = res.result
-        expect(b[ETH_ACCOUNTS[0].address]['0x0']).toBe('0x21e19e0c9bab2400000')
-        expect(b[ETH_ACCOUNTS[1].address]['0x0']).toBe('0x21e19e0c9bab2400000')
+        expect(b[ETH_ACCOUNTS[0].address]['0x0']).toBe('0x0')
+        expect(b[ETH_ACCOUNTS[1].address]['0x0']).toBe('0x0')
         expect(b[ETH_ACCOUNTS[0].address][token1.contractAddress]).toBe(
           '0x8ac7230489e80000',
         )
@@ -2758,125 +2736,125 @@ describe('integration test', () => {
       })
     })
 
-    // describe('cfx_sendTransaction', () => {
-    //   describe('popup', () => {
-    //     test('basic', async () => {
-    //       await request({
-    //         method: 'wallet_importMnemonic',
-    //         params: {mnemonic: MNEMONIC, password}
-    //       })
+    describe('cfx_sendTransaction', () => {
+      describe('popup', () => {
+        test('basic', async () => {
+          await request({
+            method: 'wallet_importMnemonic',
+            params: {mnemonic: MNEMONIC, password},
+          })
 
-    //       await waitForExpect(() =>
-    //         expect(db.getAddress().length).toBeGreaterThan(0),
-    //       )
+          await waitForExpect(() =>
+            expect(db.getAddress().length).toBeGreaterThan(0),
+          )
 
-    //       await new Promise(resolve => setTimeout(resolve, 500))
-    //       res = await request({
-    //         method: 'cfx_sendTransaction',
-    //         params: [
-    //           {
-    //             from: CFX_ACCOUNTS[0].base32,
-    //             to: CFX_ACCOUNTS[1].base32,
-    //             value: '0x1',
-    //           },
-    //         ],
-    //         _popup: true,
-    //       })
-    //       expect(res.result).toBeDefined()
-    //       expect(res.result.startsWith('0x')).toBe(true)
-    //     })
-    //     test('with data', async () => {
-    //       await request({
-    //         method: 'wallet_importMnemonic',
-    //         params: {mnemonic: MNEMONIC, password},
-    //       })
+          await new Promise(resolve => setTimeout(resolve, 500))
+          res = await request({
+            method: 'cfx_sendTransaction',
+            params: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                value: '0x1',
+              },
+            ],
+            _popup: true,
+          })
+          expect(res.result).toBeDefined()
+          expect(res.result.startsWith('0x')).toBe(true)
+        })
+        test('with data', async () => {
+          await request({
+            method: 'wallet_importMnemonic',
+            params: {mnemonic: MNEMONIC, password},
+          })
 
-    //       await waitForExpect(() =>
-    //         expect(db.getAddress().length).toBeGreaterThan(0),
-    //       )
+          await waitForExpect(() =>
+            expect(db.getAddress().length).toBeGreaterThan(0),
+          )
 
-    //       await new Promise(resolve => setTimeout(resolve, 500))
-    //       res = await request({
-    //         method: 'cfx_sendTransaction',
-    //         params: [
-    //           {
-    //             from: CFX_ACCOUNTS[0].base32,
-    //             to: CFX_ACCOUNTS[1].base32,
-    //             data: '0x10',
-    //             value: '0x1',
-    //           },
-    //         ],
-    //         _popup: true,
-    //       })
-    //       expect(res.result).toBeDefined()
-    //       expect(res.result.startsWith('0x')).toBe(true)
-    //     })
-    //   })
+          await new Promise(resolve => setTimeout(resolve, 500))
+          res = await request({
+            method: 'cfx_sendTransaction',
+            params: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                data: '0x10',
+                value: '0x1',
+              },
+            ],
+            _popup: true,
+          })
+          expect(res.result).toBeDefined()
+          expect(res.result.startsWith('0x')).toBe(true)
+        })
+      })
 
-    //   test('inpage', async () => {
-    //     await request({
-    //       method: 'wallet_importMnemonic',
-    //       params: {mnemonic: MNEMONIC, password},
-    //     })
+      test('inpage', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
 
-    //     await waitForExpect(() =>
-    //       expect(db.getAddress().length).toBeGreaterThan(0),
-    //     )
+        await waitForExpect(() =>
+          expect(db.getAddress().length).toBeGreaterThan(0),
+        )
 
-    //     res = request({
-    //       method: 'cfx_requestAccounts',
-    //       _inpage: true,
-    //       _origin: 'foo.site',
-    //       networkName: CFX_MAINNET_NAME,
-    //     })
-    //     await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
-    //     await request({
-    //       method: 'wallet_requestPermissions',
-    //       params: {
-    //         permissions: [{cfx_accounts: {}}],
-    //         accounts: [db.getAccount()[0].eid],
-    //         authReqId: db.getAuthReq()[0].eid,
-    //       },
-    //       networkName: CFX_MAINNET_NAME,
-    //       _popup: true,
-    //     })
+        res = request({
+          method: 'cfx_requestAccounts',
+          _inpage: true,
+          _origin: 'foo.site',
+          networkName: CFX_MAINNET_NAME,
+        })
+        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
+        await request({
+          method: 'wallet_requestPermissions',
+          params: {
+            permissions: [{cfx_accounts: {}}],
+            accounts: [db.getAccount()[0].eid],
+            authReqId: db.getAuthReq()[0].eid,
+          },
+          networkName: CFX_MAINNET_NAME,
+          _popup: true,
+        })
 
-    //     await res
+        await res
 
-    //     res = request({
-    //       _origin: 'foo.site',
-    //       _inpage: true,
-    //       networkName: CFX_MAINNET_NAME,
-    //       method: 'cfx_sendTransaction',
-    //       params: [
-    //         {
-    //           from: CFX_ACCOUNTS[0].base32,
-    //           to: CFX_ACCOUNTS[1].base32,
-    //           value: '0x1',
-    //         },
-    //       ],
-    //     }).catch(console.log)
+        res = request({
+          _origin: 'foo.site',
+          _inpage: true,
+          networkName: CFX_MAINNET_NAME,
+          method: 'cfx_sendTransaction',
+          params: [
+            {
+              from: CFX_ACCOUNTS[0].base32,
+              to: CFX_ACCOUNTS[1].base32,
+              value: '0x1',
+            },
+          ],
+        }).catch(console.log)
 
-    //     await waitForExpect(() => expect(db.getAuthReq().length).toBe(1), 20000)
+        await waitForExpect(() => expect(db.getAuthReq().length).toBe(1), 20000)
 
-    //     await request({
-    //       networkName: CFX_MAINNET_NAME,
-    //       _popup: true,
-    //       method: 'cfx_sendTransaction',
-    //       params: {
-    //         authReqId: db.getAuthReq()[0].eid,
-    //         tx: [
-    //           {
-    //             from: CFX_ACCOUNTS[0].base32,
-    //             to: CFX_ACCOUNTS[1].base32,
-    //             value: '0x1',
-    //           },
-    //         ],
-    //       },
-    //     })
-    //     res = await res
-    //     expect(res.result.startsWith('0x')).toBe(true)
-    //   })
-    // })
+        await request({
+          networkName: CFX_MAINNET_NAME,
+          _popup: true,
+          method: 'cfx_sendTransaction',
+          params: {
+            authReqId: db.getAuthReq()[0].eid,
+            tx: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                value: '0x1',
+              },
+            ],
+          },
+        })
+        res = await res
+        expect(res.result.startsWith('0x')).toBe(true)
+      })
+    })
   })
 })
