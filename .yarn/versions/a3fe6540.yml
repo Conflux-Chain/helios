@@ -11,6 +11,7 @@ declined:
   - "@fluent-wallet/content-script"
   - "@fluent-wallet/contract-method-name"
   - "@fluent-wallet/db"
+  - "@fluent-wallet/did"
   - "@fluent-wallet/discover-accounts"
   - "@fluent-wallet/extension-runtime"
   - "@fluent-wallet/hdkey"
