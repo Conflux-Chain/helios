@@ -37,6 +37,7 @@
     "@ethersproject/strings": "^5.7.0",
     "@ethersproject/sha2": "^5.7.0",
     "js-conflux-sdk": "^2.1.9",
+    "webpack": "5.93.0",
     "big.js": "^5.2.2",
     "eth-lib": "0.2.8",
     "@ethersproject/abi": "^5.7.0"
