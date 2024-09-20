@@ -1,4 +1,4 @@
-const ganache = require('ganache-core')
+const ganache = require('ganache-core') // ganache-core is removed
 const {promisify} = require('util')
 const ethers = require('ethers')
 const {sendETH, sendTx, sendRawTx, ethCall} = require('./sendETH')
