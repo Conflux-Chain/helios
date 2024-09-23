@@ -1,9 +1,10 @@
 /* eslint-disable testing-library/await-async-utils */
 // eslint-disable-next-line no-unused-vars
 
-import {render, screen, fireEvent} from '@testing-library/react'
-import {describe, expect, jest} from '@jest/globals'
+import {render, screen, fireEvent, cleanup} from '@testing-library/react'
+import {beforeEach, describe, expect, vi, it} from 'vitest'
 import Modal from './index.js'
+beforeEach(cleanup)
 
 describe('Modal', () => {
   it('test snapshot', () => {
@@ -68,7 +69,7 @@ describe('Modal', () => {
     expect(screen.getByTestId('test-close-icon')).toBeInTheDocument()
   })
   it('click close icon', () => {
-    const onClose = jest.fn()
+    const onClose = vi.fn()
     render(
       <Modal content="content" open={true} closable={true} onClose={onClose} />,
     )
@@ -76,7 +77,7 @@ describe('Modal', () => {
     expect(onClose).toHaveBeenCalledTimes(1)
   })
   it('trigger clicks outside the Modal', () => {
-    const onClose = jest.fn()
+    const onClose = vi.fn()
     render(
       <div>
         <div data-testid="outside-element">some other element</div>

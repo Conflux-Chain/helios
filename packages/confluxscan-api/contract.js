@@ -1,4 +1,4 @@
-import 'cross-fetch/polyfill'
+import 'cross-fetch/dist/node-polyfill.js'
 import {fetch} from './fetcher.js'
 import {getURL, isCoreNetworkId} from './utils.js'
 
@@ -16,7 +16,7 @@ export async function abiCoreSpace({
 }) {
   try {
     const res = await fetch(getURL(networkId, 'contract', '/getabi'), {
-      address,
+      searchParams: {address},
     }).json()
     if (res.code === 0) return JSON.parse(res.data)
     throw new Error(res.message)

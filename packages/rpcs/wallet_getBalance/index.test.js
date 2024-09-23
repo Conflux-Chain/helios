@@ -1,14 +1,13 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, test, vi} from 'vitest'
 import {main} from './index.js'
 
-describe('@fluent-wallet/wallet_getBalance', function () {
-  describe('main', function () {
+describe('@fluent-wallet/wallet_getBalance', () => {
+  describe('main', () => {
     test('logic', async () => {
       const input = {
         rpcs: {
-          cfx_getBalance: jest.fn(a => a),
-          eth_getBalance: jest.fn(a => a),
+          cfx_getBalance: vi.fn(a => a),
+          eth_getBalance: vi.fn(a => a),
         },
         Err: {InvalidParams: new Error()},
         params: [],

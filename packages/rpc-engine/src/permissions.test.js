@@ -1,10 +1,9 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it, vi, beforeEach} from 'vitest'
 import {defaultPermissions, format, getRpc, getWalletDB} from './permissions'
 
-describe('permissions', function () {
-  describe('format', function () {
-    it('should return the specified permissions with the default permissions filled', async function () {
+describe('permissions', () => {
+  describe('format', () => {
+    it('should return the specified permissions with the default permissions filled', async () => {
       expect(format()).toStrictEqual(defaultPermissions)
       expect(format({methods: ['cfx_mockRpc']})).toStrictEqual({
         ...defaultPermissions,
@@ -17,27 +16,27 @@ describe('permissions', function () {
     })
   })
 
-  describe('permissions check', function () {
+  describe('permissions check', () => {
     let rpcStore, db
 
-    beforeEach(function () {
+    beforeEach(() => {
       rpcStore = {
         cfx_mockRpc: {
           NAME: 'cfx_mockRpc',
-          main: jest.fn(),
+          main: vi.fn(),
           permissions: {...format()},
         },
         cfx_mockRpc2: 'cfx_mockRpc2',
       }
-      db = {getVault: jest.fn(), createVault: jest.fn()}
+      db = {getVault: vi.fn(), createVault: vi.fn()}
     })
 
-    describe('getRpc', function () {
-      it("should not return the rpc method if it's not permitted'", async function () {
+    describe('getRpc', () => {
+      it("should not return the rpc method if it's not permitted'", async () => {
         expect(getRpc(rpcStore, 'cfx_mockRpc', 'cfx_mockRpc2')).toBe(false)
       })
 
-      it("should return the rpc method if it's permitted'", function () {
+      it("should return the rpc method if it's permitted'", () => {
         rpcStore.cfx_mockRpc.permissions.methods = ['cfx_mockRpc2']
         expect(getRpc(rpcStore, 'cfx_mockRpc', 'cfx_mockRpc2')).toBe(
           rpcStore.cfx_mockRpc2,
@@ -45,8 +44,8 @@ describe('permissions', function () {
       })
     })
 
-    describe('getWalletDB', function () {
-      it('should return the protectedStore based on permission', async function () {
+    describe('getWalletDB', () => {
+      it('should return the protectedStore based on permission', async () => {
         expect(() => getWalletDB(rpcStore, db, 'cfx_mockRpc').getVault).toThrow(
           'No permission to call db method getVault in cfx_mockRpc',
         )

@@ -1,9 +1,8 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {describe, test, expect} from 'vitest'
 import addrByNetwork from './index.js'
 
 let address
-describe('@fluent-wallet/addr-by-network', function () {
+describe('@fluent-wallet/addr-by-network', () => {
   test('eth hex address', () => {
     address = '0x208b86e65753bba8f557ac2a8a79ba6536ab05e2'
     expect(
@@ -100,6 +99,16 @@ describe('@fluent-wallet/addr-by-network', function () {
         addressType: 'contract',
       }),
     ).toBe('cfxtest:acaj1b1gm7k51mhzm80czcx31kwxrm2f6jm6mzrfmu')
+
+    expect(
+      addrByNetwork({
+        address: '0x108b86e65753bba8f557ac2a8a79ba6536ab05e2',
+        networkType: 'cfx',
+        networkId: 1,
+      }),
+    ).toMatchInlineSnapshot(
+      `"cfxtest:aajj1b1gm7k51mhzm80czcx31kwxrm2f6j34hkuazd"`,
+    )
   })
 
   test('error', () => {

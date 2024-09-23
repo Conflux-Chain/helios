@@ -1,12 +1,11 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it, vi} from 'vitest'
 import {main} from './'
 
-describe('wallet_isLocked', function () {
-  describe('main', function () {
-    it('should call the db getLocked method and return the result', function () {
+describe('wallet_isLocked', () => {
+  describe('main', () => {
+    it('should call the db getLocked method and return the result', () => {
       const input = {
-        db: {getLocked: jest.fn(() => true)},
+        db: {getLocked: vi.fn(() => true)},
       }
 
       expect(main(input)).toBe(true)

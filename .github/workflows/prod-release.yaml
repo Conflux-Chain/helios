@@ -20,18 +20,18 @@ on:
 jobs:
   prod-release:
     if: ${{ github.event.pull_request.merged == true }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.14]
+        node-version: [22]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # to trigger next gh action
           # https://github.community/t/push-from-action-even-with-pat-does-not-trigger-action/17622/6
           persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           cache: 'yarn'
           node-version: ${{ matrix.node-version }}

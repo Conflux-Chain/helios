@@ -1,4 +1,4 @@
-import {expect, describe, afterEach} from '@jest/globals'
+import {expect, describe, afterEach, it} from 'vitest'
 import nock from 'nock'
 import {getCFXContractMethodSignature} from './cfx-name'
 import {Interface} from '@ethersproject/abi'

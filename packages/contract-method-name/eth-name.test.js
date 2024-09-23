@@ -1,4 +1,4 @@
-import {expect, describe} from '@jest/globals'
+import {expect, describe, it} from 'vitest'
 import {getEthContractMethodSignature} from './eth-name'
 
 describe('ETH Name', () => {

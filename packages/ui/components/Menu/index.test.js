@@ -1,6 +1,8 @@
-import {render, screen, fireEvent} from '@testing-library/react'
-import {describe, expect, jest} from '@jest/globals'
+import {render, screen, fireEvent, cleanup} from '@testing-library/react'
+import {beforeEach, describe, expect, vi, it} from 'vitest'
 import Menu from './index.js'
+
+beforeEach(cleanup)
 
 describe('Menu', () => {
   it('test snapshot', () => {
@@ -14,7 +16,7 @@ describe('Menu', () => {
   })
 
   it('test click function', () => {
-    const onClick = jest.fn()
+    const onClick = vi.fn()
     render(<Menu onClick={onClick}>children</Menu>)
     fireEvent.click(screen.getByTestId('menu-wrapper'))
     expect(onClick).toHaveBeenCalledTimes(1)

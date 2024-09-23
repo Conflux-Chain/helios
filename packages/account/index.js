@@ -2,29 +2,48 @@ import {getAddress as toChecksumAddress} from '@ethersproject/address'
 import {computeAddress} from '@ethersproject/transactions'
 import {Wallet} from '@ethersproject/wallet'
 import {randomInt, addHexPrefix} from '@fluent-wallet/utils'
-import {compL, threadFirst} from '@fluent-wallet/compose'
 import {
   NULL_HEX_ADDRESS,
   INTERNAL_CONTRACTS_HEX_ADDRESS,
   ADDRESS_TYPES,
 } from '@fluent-wallet/consts'
 
+/**
+ * @param {Object} options - An object that can contain a privateKey property.
+ * @param {string} options.pk - A hexadecimal string representing a private key.
+ * @return {Wallet} A new Wallet instance.
+ */
 export const create = ({pk} = {}) => {
   const kp = pk ? new Wallet(pk) : Wallet.createRandom()
   return kp
 }
+/**
+ *
+ * @param {string} address hex address
+ * @returns {string} checksum address
+ */
+export const toChecksum = address => toChecksumAddress(addHexPrefix(address)) // compL(addHexPrefix, toChecksumAddress)
 
-export const toChecksum = compL(addHexPrefix, toChecksumAddress)
-export const isChecksummed = compL(addHexPrefix, addr => {
+/**
+ *
+ * @param {string} addr
+ * @returns {boolean}
+ */
+export const isChecksummed = addr => {
   try {
-    return Boolean(toChecksumAddress(addr))
+    return Boolean(toChecksumAddress(addHexPrefix(addr)))
   } catch (err) {
     return false
   }
-})
-
+}
+/**
+ * @param {string} pk - private key
+ * @returns {Object}
+ * @property {string} address
+ * @property {string} privateKey
+ */
 export const fromPrivate = pk => ({
-  address: threadFirst(pk, addHexPrefix, computeAddress),
+  address: computeAddress(addHexPrefix(pk)), //threadFirst(pk, addHexPrefix, computeAddress),
   privateKey: addHexPrefix(pk),
 })
 
@@ -36,6 +55,15 @@ export const toContractAddress = address => {
   return address.replace(/^0x./, '0x8')
 }
 
+/**
+ * Generate a random hex address of the specified type.
+ *
+ * @param {string} [type] - The type of the address. Can be 'builtin', 'null', 'user', or 'contract'.
+ *    If not specified, a random type will be chosen.
+ * @param {boolean} [checksum=false] - Whether to return a checksummed address.
+ * @throws {Error} If the specified type is invalid.
+ * @returns {string} A random hex address.
+ */
 export const randomHexAddress = (type, checksum = false) => {
   if (type && !ADDRESS_TYPES.includes(type))
     throw new Error(`Invalid address type ${type}`)
