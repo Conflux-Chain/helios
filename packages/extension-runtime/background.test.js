@@ -1,12 +1,11 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it, vi} from 'vitest'
 import {listen} from './background.js'
 
-describe('@fluent-wallet/extension-runtime/background.js', function () {
-  describe('listen', function () {
-    it('should listen for port with name popup/content-script', async function () {
+describe('@fluent-wallet/extension-runtime/background.js', () => {
+  describe('listen', () => {
+    it('should listen for port with name popup/content-script', async () => {
       let p, i, port, onConnect, listener
-      browser.runtime.onConnect.addListener = jest.fn(f => (onConnect = f))
+      browser.runtime.onConnect.addListener = vi.fn(f => (onConnect = f))
       const {popupStream, inpageStream} = listen()
       expect(typeof onConnect).toBe('function')
       popupStream.subscribe({
@@ -22,9 +21,9 @@ describe('@fluent-wallet/extension-runtime/background.js', function () {
 
       port = {
         onMessage: {
-          addListener: jest.fn(l => (listener = l)),
+          addListener: vi.fn(l => (listener = l)),
         },
-        postMessage: {bind: jest.fn()},
+        postMessage: {bind: vi.fn()},
       }
 
       onConnect({...port, name: 'foo'})

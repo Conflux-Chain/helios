@@ -1,6 +1,4 @@
-/* eslint-disable jest/expect-expect */
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it} from 'vitest'
 import {encode, decode, validateBase32Address, randomBase32Address} from './'
 
 function verify(hexAddress, netId, base32Address) {
@@ -20,8 +18,8 @@ function verify(hexAddress, netId, base32Address) {
   }
 }
 
-describe('@fluent-wallet/base32-address', function () {
-  it('test examples in different types', async function () {
+describe('@fluent-wallet/base32-address', () => {
+  it('test examples in different types', async () => {
     expect(
       decode('cfx:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0sfbnjm2').hexAddress,
     ).toBe('0x0000000000000000000000000000000000000000')
@@ -100,7 +98,7 @@ describe('@fluent-wallet/base32-address', function () {
     )
   })
 
-  it('test error eamples', async function () {
+  it('test error eamples', async () => {
     expect(() => encode(Buffer.from('1', 'hex'), 1029)).toThrowError(
       'hexAddress should be at least 20 bytes',
     )
@@ -130,8 +128,8 @@ describe('@fluent-wallet/base32-address', function () {
     ).toThrowError(/Type of address doesn't match/)
   })
 
-  describe('validateBase32Address', function () {
-    it('should return the right validation result', async function () {
+  describe('validateBase32Address', () => {
+    it('should return the right validation result', async () => {
       expect(
         validateBase32Address(
           'cfx:aajg4wt2mbmbb44sp6szd783ry0jtad5bea80xdy7p',
@@ -177,8 +175,8 @@ describe('@fluent-wallet/base32-address', function () {
     })
   })
 
-  describe('randomBase32Address', function () {
-    it('should return a valid random address', async function () {
+  describe('randomBase32Address', () => {
+    it('should return a valid random address', async () => {
       expect(validateBase32Address(randomBase32Address())).toBe(true)
       expect(validateBase32Address(randomBase32Address(1), 1)).toBe(true)
       expect(validateBase32Address(randomBase32Address('user'), 'user')).toBe(

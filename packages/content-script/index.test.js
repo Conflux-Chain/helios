@@ -1,8 +1,7 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it} from 'vitest'
 
-describe.skip('content-script', function () {
-  it('should setup the bridge between content-script and inpage', async function () {
+describe.skip('content-script', () => {
+  it('should setup the bridge between content-script and inpage', async () => {
     window.addEventListener = jest.fn()
     expect(browser.runtime.connect).not.toHaveBeenCalled()
     // eslint-disable-next-line import/no-unresolved
@@ -23,7 +22,7 @@ describe.skip('content-script', function () {
     window.addEventListener.mock.calls[1][1]()
     expect(browser.runtime.getURL).toHaveBeenCalledWith('inpage.js')
     expect(document.head.childNodes.length).toBe(1)
-    expect(document.head.childNodes[0].src).toBe(`http://foo/bar.js`)
+    expect(document.head.childNodes[0].src).toBe('http://foo/bar.js')
     expect(document.head.childNodes[0].async).toBe(false)
   })
 })

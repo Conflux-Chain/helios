@@ -10,12 +10,10 @@ on:
 jobs:
   deploy-dapp-demo:
     if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [16.14]
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Deploy to dapp-demo.fluentwallet.dev
         uses: dswistowski/surge-sh-action@v1
         with:

@@ -1,4 +1,141 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Modal > test snapshot 1`] = `
+{
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <div
+        class="fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-[#000] bg-opacity-0 transition duration-500 ease-in-out flex justify-center items-center z-50 !bg-opacity-60"
+        data-testid="modal-wrapper"
+      >
+        <div
+          class="relative overflow-auto flex flex-col items-center z-20 scale-0 w-full md:w-80 show-modal-content rounded bg-gray-0 shadow-3 p-6 "
+          data-testid="modal-content"
+        >
+          <span
+            aria-hidden="true"
+            class="absolute top-3 right-3"
+            data-testid="modal-close-wrapper"
+          >
+            <svg
+              class="w-6 h-6 text-gray-40 cursor-pointer"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </span>
+          <div
+            class="text-gray-60 w-full "
+          >
+            content
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-[#000] bg-opacity-0 transition duration-500 ease-in-out flex justify-center items-center z-50 !bg-opacity-60"
+      data-testid="modal-wrapper"
+    >
+      <div
+        class="relative overflow-auto flex flex-col items-center z-20 scale-0 w-full md:w-80 show-modal-content rounded bg-gray-0 shadow-3 p-6 "
+        data-testid="modal-content"
+      >
+        <span
+          aria-hidden="true"
+          class="absolute top-3 right-3"
+          data-testid="modal-close-wrapper"
+        >
+          <svg
+            class="w-6 h-6 text-gray-40 cursor-pointer"
+            fill="none"
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18 6L6 18M6 6l12 12"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+        </span>
+        <div
+          class="text-gray-60 w-full "
+        >
+          content
+        </div>
+      </div>
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;
 
 exports[`Modal test snapshot 1`] = `
 {

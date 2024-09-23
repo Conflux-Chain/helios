@@ -7,7 +7,6 @@
     "@ethersproject/address": "5.6.1",
     "@ethersproject/transactions": "5.6.2",
     "@ethersproject/wallet": "5.6.2",
-    "@fluent-wallet/compose": "workspace:packages/compose",
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/utils": "workspace:packages/utils",
     "elliptic": "6.5.4"

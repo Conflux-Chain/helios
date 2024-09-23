@@ -1,15 +1,14 @@
-// eslint-disable-next-line no-unused-vars
-import { expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach, } from '@jest/globals' // prettier-ignore
+import {expect, describe, it, vi} from 'vitest'
 import {defRpcEngine} from './index'
 
 // eslint-disable-next-line
-describe.skip('RPCEngine', function () {
-  describe('defRpcEngine', function () {
-    const mockStore = {setState: jest.fn(), getState: jest.fn()}
+describe.skip('RPCEngine', () => {
+  describe('defRpcEngine', () => {
+    const mockStore = {setState: vi.fn(), getState: vi.fn()}
     const mockOpts = {
       methods: [
         {
-          main: jest.fn().mockResolvedValue(),
+          main: vi.fn().mockResolvedValue(),
           NAME: 'cfx_mockRpc',
           permissions: {
             methods: [],
@@ -18,7 +17,7 @@ describe.skip('RPCEngine', function () {
       ],
     }
 
-    it('should return the request method', async function () {
+    it('should return the request method', async () => {
       const {request} = defRpcEngine(mockStore, mockOpts)
       const res = await request({
         method: 'cfx_mockRpc',

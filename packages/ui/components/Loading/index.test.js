@@ -1,10 +1,10 @@
-import {render, screen} from '@testing-library/react'
+import {render, screen, cleanup} from '@testing-library/react'
 import Loading from './index.js'
-import {describe, expect} from '@jest/globals'
+import {beforeEach, describe, expect, it} from 'vitest'
 
+beforeEach(cleanup)
 describe('Loading', () => {
   it('test snapshot', () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention
     const snapshot = render(<Loading className="test-loading" />)
     expect(snapshot).toMatchSnapshot()
   })

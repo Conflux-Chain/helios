@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it} from 'vitest'
 import {main} from './'
 import {
   validate,
@@ -14,9 +13,9 @@ import {
   base32UserAddress,
 } from '@fluent-wallet/spec'
 
-describe('wallet_generateAddress', function () {
-  describe('main', function () {
-    it('should generate the correct address', async function () {
+describe('wallet_generateAddress', () => {
+  describe('main', () => {
+    it('should generate the correct address', async () => {
       expect(validate(ethHexAddress, main({params: {eth: true}}))).toBe(true)
       expect(validate(cfxHexAddress, main({params: {hex: true}}))).toBe(true)
       expect(

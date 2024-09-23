@@ -1,12 +1,11 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it, vi} from 'vitest'
 import {getNthAccountOfHDKey, validateHDPath, randomHDPath} from './'
 
 // there is a promise task in getNthAccountOfHDKey, need to increase timeout to avoid test fail
-jest.setTimeout(20000)
+vi.setConfig({testTimeout: 20000})
 
-describe('HDKey', function () {
-  it('should return a hdkey', async function () {
+describe('HDKey', () => {
+  it('should return a hdkey', async () => {
     const account = await getNthAccountOfHDKey({
       mnemonic:
         'error mom brown point sun magnet armor fish urge business until plastic',
@@ -19,7 +18,7 @@ describe('HDKey', function () {
     expect(account.address).toBe('0x12c557579a8ca61f94f6c5260cb144414cfec184')
   })
 
-  it('should return a the right address', async function () {
+  it('should return a the right address', async () => {
     const account = await getNthAccountOfHDKey({
       mnemonic:
         'error mom brown point sun magnet armor fish urge business until plastic',
@@ -31,7 +30,7 @@ describe('HDKey', function () {
     )
   })
 
-  it('should be able to validate a hd key', async function () {
+  it('should be able to validate a hd key', async () => {
     expect(validateHDPath(`m/44'/503'/0'/0`)).toBe(true)
     expect(validateHDPath(`m/44'/60'/0'/0`)).toBe(true)
     expect(validateHDPath(`m/44'/61'/0'/0`)).toBe(true)

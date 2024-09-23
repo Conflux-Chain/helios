@@ -1,9 +1,8 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, test} from 'vitest'
 import {main} from './index.js'
 
-describe('wallet_validatePrivateKey', function () {
-  describe('main', function () {
+describe('wallet_validatePrivateKey', () => {
+  describe('main', () => {
     test('logic', () => {
       expect(
         main({
