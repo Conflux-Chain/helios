@@ -46,6 +46,7 @@
     "@fluent-wallet/cfx_get-transaction-by-hash": "workspace:packages/rpcs/cfx_getTransactionByHash",
     "@fluent-wallet/cfx_get-transaction-receipt": "workspace:packages/rpcs/cfx_getTransactionReceipt",
     "@fluent-wallet/cfx_get-vote-list": "workspace:packages/rpcs/cfx_getVoteList",
+    "@fluent-wallet/cfx_max-priority-fee-per-gas": "workspace:*",
     "@fluent-wallet/cfx_net-version": "workspace:packages/rpcs/cfx_netVersion",
     "@fluent-wallet/cfx_opened-method-groups": "workspace:*",
     "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts",
