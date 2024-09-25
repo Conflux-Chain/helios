@@ -167,6 +167,20 @@ describe('integration test', () => {
       })
     })
 
+    describe('cfx_feeHistory', async () => {
+      test('cfx_feeHistory', async () => {
+        const result = await request({
+          method: 'cfx_feeHistory',
+          params: ['0x5', 'latest_state', [20, 30]],
+        })
+        console.log(result)
+        expect(result.result.baseFeePerGas.length).toBe(6)
+        expect(result.result.gasUsedRatio.length).toBe(5)
+        expect(result.result.oldestEpoch).toBeDefined()
+        expect(result.result.reward.length).toBe(5)
+      })
+    })
+
     describe('cfx_getStatus', () => {
       test('cfx_getStatus', async () => {
         const stat = await request({method: 'cfx_getStatus'})
@@ -329,7 +343,10 @@ describe('integration test', () => {
           (
             await request({
               method: 'wallet_deleteNetwork',
-              params: {password, networkId: db.getNetworkByType('eth')[0].eid},
+              params: {
+                password,
+                networkId: db.getNetworkByType('eth')[0].eid,
+              },
             })
           ).result,
         ).toBe(true)
@@ -359,7 +376,10 @@ describe('integration test', () => {
           (
             await request({
               method: 'wallet_deleteNetwork',
-              params: {password, networkId: db.getNetworkByName('foo')[0].eid},
+              params: {
+                password,
+                networkId: db.getNetworkByName('foo')[0].eid,
+              },
             })
           ).error.message,
         ).toMatch(/Not allowed to delete builtin network/)
@@ -1215,7 +1235,10 @@ describe('integration test', () => {
         // app is from the right site
         expect(app.site.eid).toBe(db.getSite()[0].eid)
         // app has the right permissions
-        expect(app.perms).toStrictEqual({wallet_accounts: {}, wallet_basic: {}})
+        expect(app.perms).toStrictEqual({
+          wallet_accounts: {},
+          wallet_basic: {},
+        })
         // app has the right authed accounts
         expect(
           app.account.map(a => [a1.eid, a2.eid].includes(a.eid)),
@@ -1289,7 +1312,10 @@ describe('integration test', () => {
         // app is from the right site
         expect(app.site.eid).toBe(db.getSite()[0].eid)
         // app has the right permissions
-        expect(app.perms).toStrictEqual({wallet_accounts: {}, wallet_basic: {}})
+        expect(app.perms).toStrictEqual({
+          wallet_accounts: {},
+          wallet_basic: {},
+        })
         // app has the right authed accounts
         expect(
           app.account.map(a => [a1.eid, a2.eid].includes(a.eid)),
@@ -1629,7 +1655,10 @@ describe('integration test', () => {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {address: addr.value, accountId: db.getAccount()[0].eid},
+              params: {
+                address: addr.value,
+                accountId: db.getAccount()[0].eid,
+              },
               _internal: true,
             })
           ).error.message,

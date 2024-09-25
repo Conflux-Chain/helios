@@ -3746,6 +3746,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_fee-history@workspace:packages/rpcs/cfx_feeHistory":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_fee-history@workspace:packages/rpcs/cfx_feeHistory"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_gas-price@workspace:packages/rpcs/cfx_gasPrice":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_gas-price@workspace:packages/rpcs/cfx_gasPrice"
@@ -4028,7 +4036,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/cfx_max-priority-fee-per-gas@workspace:*, @fluent-wallet/cfx_max-priority-fee-per-gas@workspace:packages/rpcs/cfx_maxPriorityFeePerGas":
+"@fluent-wallet/cfx_max-priority-fee-per-gas@workspace:packages/rpcs/cfx_maxPriorityFeePerGas":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_max-priority-fee-per-gas@workspace:packages/rpcs/cfx_maxPriorityFeePerGas"
   dependencies:
@@ -17884,6 +17892,7 @@ __metadata:
     "@fluent-wallet/cfx_client-version": "workspace:packages/rpcs/cfx_clientVersion"
     "@fluent-wallet/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber"
     "@fluent-wallet/cfx_estimate-gas-and-collateral": "workspace:packages/rpcs/cfx_estimateGasAndCollateral"
+    "@fluent-wallet/cfx_fee-history": "workspace:packages/rpcs/cfx_feeHistory"
     "@fluent-wallet/cfx_gas-price": "workspace:packages/rpcs/cfx_gasPrice"
     "@fluent-wallet/cfx_get-account": "workspace:packages/rpcs/cfx_getAccount"
     "@fluent-wallet/cfx_get-account-pending-info": "workspace:*"
@@ -17916,7 +17925,7 @@ __metadata:
     "@fluent-wallet/cfx_get-transaction-by-hash": "workspace:packages/rpcs/cfx_getTransactionByHash"
     "@fluent-wallet/cfx_get-transaction-receipt": "workspace:packages/rpcs/cfx_getTransactionReceipt"
     "@fluent-wallet/cfx_get-vote-list": "workspace:packages/rpcs/cfx_getVoteList"
-    "@fluent-wallet/cfx_max-priority-fee-per-gas": "workspace:*"
+    "@fluent-wallet/cfx_max-priority-fee-per-gas": "workspace:packages/rpcs/cfx_maxPriorityFeePerGas"
     "@fluent-wallet/cfx_net-version": "workspace:packages/rpcs/cfx_netVersion"
     "@fluent-wallet/cfx_opened-method-groups": "workspace:*"
     "@fluent-wallet/cfx_request-accounts": "workspace:packages/rpcs/cfx_requestAccounts"

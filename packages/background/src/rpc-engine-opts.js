@@ -91,7 +91,8 @@ import * as cfxSendRawTransaction from '@fluent-wallet/cfx_send-raw-transaction'
 import * as cfxSendTransaction from '@fluent-wallet/cfx_send-transaction'
 import * as cfxSignTransaction from '@fluent-wallet/cfx_sign-transaction'
 import * as cfxTypedSignV4 from '@fluent-wallet/cfx_sign-typed-data_v4'
-import * as cfx_maxPriorityFeePerGas from '@fluent-wallet/cfx_max-priority-fee-per-gas'
+import * as cfxMaxPriorityFeePerGas from '@fluent-wallet/cfx_max-priority-fee-per-gas'
+import * as cfxFeeHistory from '@fluent-wallet/cfx_fee-history'
 import * as ethAccounts from '@fluent-wallet/eth_accounts'
 import * as ethBlockNumber from '@fluent-wallet/eth_block-number'
 import * as ethCall from '@fluent-wallet/eth_call'
@@ -321,7 +322,8 @@ export const rpcEngineOpts = {
     cfxSendTransaction,
     cfxSignTxWithLedgerNanoS,
     cfxGetMaxGasLimit,
-    cfx_maxPriorityFeePerGas,
+    cfxMaxPriorityFeePerGas,
+    cfxFeeHistory,
 
     // eth
     ethGetCode,
