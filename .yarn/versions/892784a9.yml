@@ -1,0 +1,5 @@
+releases:
+  "@fluent-wallet/cfx_max-priority-fee-per-gas": patch
+  browser-extension: patch
+  helios: patch
+  helios-background: patch
