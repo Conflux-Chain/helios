@@ -2941,6 +2941,22 @@ describe('integration test', () => {
             })
           ).result.startsWith('0x'),
         ).toBe(true)
+        expect(
+          (
+            await request({
+              method: 'cfx_call',
+              params: [
+                {
+                  to: token1.contractAddress,
+                  data: '0x06fdde03',
+                  maxPriorityFeePerGas: '0x4a817c800',
+                  maxFeePerGas: '0x4a817c800',
+                  type: '0x2',
+                },
+              ],
+            })
+          ).result.startsWith('0x'),
+        ).toBe(true)
       })
     })
   })
