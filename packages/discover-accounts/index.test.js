@@ -1,29 +1,28 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, test, vi} from 'vitest'
 import {hasBalance, hasTx} from './index.js'
 
 let params
-describe('@fluent-wallet/discover-accounts', function () {
-  describe('hasTx', function () {
+describe('@fluent-wallet/discover-accounts', () => {
+  describe('hasTx', () => {
     test('logic', async () => {
-      params = {getTxCount: jest.fn(() => '0x1'), address: 'foo'}
+      params = {getTxCount: vi.fn(() => '0x1'), address: 'foo'}
       expect(await hasTx(params)).toBe(true)
 
-      params = {getTxCount: jest.fn(() => '0x0'), address: 'foo'}
+      params = {getTxCount: vi.fn(() => '0x0'), address: 'foo'}
       expect(await hasTx(params)).toBe(false)
     })
   })
 
-  describe('hasBalance', function () {
+  describe('hasBalance', () => {
     test('logic', async () => {
       params = {
-        getBalance: jest.fn(() => ({foo: {'0x0': '0x1'}})),
+        getBalance: vi.fn(() => ({foo: {'0x0': '0x1'}})),
         address: 'foo',
       }
       expect(await hasBalance(params)).toBe(true)
 
       params = {
-        getBalance: jest.fn(() => ({foo: {'0x0': '0x0'}})),
+        getBalance: vi.fn(() => ({foo: {'0x0': '0x0'}})),
         address: 'foo',
       }
       expect(await hasBalance(params)).toBe(false)

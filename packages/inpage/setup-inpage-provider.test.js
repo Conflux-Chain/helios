@@ -1,11 +1,9 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
-
-describe('inpage', function () {
-  describe('setupProvider', function () {
-    it('should setup the provider on window.conflux', async function () {
+import {expect, describe, it, vi} from 'vitest'
+describe('inpage', () => {
+  describe('setupProvider', () => {
+    it('should setup the provider on window.conflux', async () => {
       let listener, eventName
-      window.addEventListener = jest.fn((e, l) => {
+      window.addEventListener = vi.fn((e, l) => {
         eventName = e
         listener = l
       })
@@ -16,7 +14,7 @@ describe('inpage', function () {
       expect(window.conflux).toBeDefined()
     })
 
-    it('should not setup the provider on window.ethereum when already defined', async function () {
+    it('should not setup the provider on window.ethereum when already defined', async () => {
       window.ethereum = 1
       expect(window.ethereum).toBe(1)
       await import('./index.js')

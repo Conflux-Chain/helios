@@ -55,7 +55,7 @@ const sendTx = async ({
 
   const transactionResult = await cfx
     .sendTransaction(tx)
-    .confirmed({delta: 100})
+    .confirmed({delta: 1000})
   return transactionResult
 }
 

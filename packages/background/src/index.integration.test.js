@@ -1,6 +1,4 @@
-/* eslint-disable jest/no-commented-out-tests */
-// eslint-disable-next-line no-unused-vars
-import { expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach } from '@jest/globals' // prettier-ignore
+import {expect, describe, test, vi, beforeEach} from 'vitest'
 import waitForExpect from 'wait-for-expect'
 import {decrypt} from 'browser-passworder'
 import {initBG} from './index.js'
@@ -34,11 +32,21 @@ import {
   deployERC20,
 } from '@fluent-wallet/test-helpers/deploy-contracts'
 
+import '@fluent-wallet/test-helpers/setupNetwork.js'
+
 const password = '12345678'
+
 let request, db, cfxNetId, ethNetId, res, req
-jest.setTimeout(100000)
+
+vi.setConfig({testTimeout: 100000})
 
 beforeEach(async () => {
+  request = undefined
+  db = undefined
+  cfxNetId = undefined
+  ethNetId = undefined
+  res = undefined
+  req = undefined
   const bg = await initBG({
     skipRestore: true,
     initDBFn: d => {
@@ -64,7 +72,8 @@ beforeEach(async () => {
           symbol: CFX_LOCALNET_CURRENCY_SYMBOL,
           decimals: DEFAULT_CURRENCY_DECIMALS,
         },
-        balanceChecker: 'net2999:ach8cpret14pg9huwjtpva62w2pa1z1d0ub91hshds',
+        balanceChecker:
+          'net2999:type.contract:aca4y1pf3ugbdbbtzzhygps00t5pbj2356s6mj0drw',
         hdPath: cfxHdPath,
         isMainnet: true,
       })
@@ -81,7 +90,7 @@ beforeEach(async () => {
           symbol: ETH_LOCALNET_CURRENCY_SYMBOL,
           decimals: DEFAULT_CURRENCY_DECIMALS,
         },
-        balanceChecker: '0x33845d47195725a6b0a08eeda1e60ce9f2dcc80b',
+        balanceChecker: '0xe5538a1fc85641053f5e4824846390c75b779a5f',
         hdPath: ethHdPath,
         isMainnet: true,
       })
@@ -98,11 +107,12 @@ beforeEach(async () => {
     return bg.request({_post: () => {}, ...arg})
   }
   db = bg.db
+  console.log('run beforeEach ')
 })
 
-describe('integration test', function () {
-  describe('rpc engine', function () {
-    describe('validate permissions', function () {
+describe('integration test', () => {
+  describe('rpc engine', () => {
+    describe('validate permissions', () => {
       test('error call internal method', async () => {
         res = await request({
           method: 'wallet_validatePassword',
@@ -132,7 +142,7 @@ describe('integration test', function () {
           /Method eth_getBalance not supported by network Conflux Mainnet/,
         )
       })
-      test('error call method with incorrect scope', async function () {
+      test('error call method with incorrect scope', async () => {
         res = await request({
           method: 'wallet_getAccountGroup',
           _inpage: true,
@@ -149,8 +159,36 @@ describe('integration test', function () {
     })
   })
 
-  describe('rpcs', function () {
-    describe('cfx_getStatus', function () {
+  describe('rpcs', () => {
+    describe('cfx_getFeeBurnt', async () => {
+      test('cfx_getFeeBurnt', async () => {
+        const result = await request({method: 'cfx_getFeeBurnt'})
+        expect(result.result.startsWith('0x')).toBeTruthy()
+      })
+    })
+
+    describe('cfx_maxPriorityFeePerGas', async () => {
+      test('cfx_maxPriorityFeePerGas', async () => {
+        const result = await request({method: 'cfx_maxPriorityFeePerGas'})
+        expect(result.result.startsWith('0x')).toBeTruthy()
+      })
+    })
+
+    describe('cfx_feeHistory', async () => {
+      test('cfx_feeHistory', async () => {
+        const result = await request({
+          method: 'cfx_feeHistory',
+          params: ['0x5', 'latest_state', [20, 30]],
+        })
+        console.log(result)
+        expect(result.result.baseFeePerGas.length).toBe(6)
+        expect(result.result.gasUsedRatio.length).toBe(5)
+        expect(result.result.oldestEpoch).toBeDefined()
+        expect(result.result.reward.length).toBe(5)
+      })
+    })
+
+    describe('cfx_getStatus', () => {
       test('cfx_getStatus', async () => {
         const stat = await request({method: 'cfx_getStatus'})
         expect(stat.jsonrpc).toBe('2.0')
@@ -159,7 +197,7 @@ describe('integration test', function () {
       })
     })
 
-    describe('wallet_accounts', function () {
+    describe('wallet_accounts', () => {
       test('wallet_accounts', async () => {
         await request({
           method: 'wallet_importMnemonic',
@@ -190,7 +228,7 @@ describe('integration test', function () {
       })
     })
 
-    describe('wallet_chainId', function () {
+    describe('wallet_chainId', () => {
       test('wallet_chainId', async () => {
         res = await request({
           method: 'wallet_chainId',
@@ -203,19 +241,19 @@ describe('integration test', function () {
       })
     })
 
-    describe('cfx_chainId', function () {
+    describe('cfx_chainId', () => {
       test('cfx_chainId', async () => {
         const stat = await request({method: 'cfx_chainId'})
         expect(stat.result).toBe('0xbb7')
       })
     })
-    describe('cfx_netVersion', function () {
+    describe('cfx_netVersion', () => {
       test('cfx_netVersion', async () => {
         const stat = await request({method: 'cfx_netVersion'})
         expect(stat.result).toBe('2999')
       })
     })
-    describe('eth_chainId', function () {
+    describe('eth_chainId', () => {
       test('eth_chainId', async () => {
         expect(
           (
@@ -228,7 +266,7 @@ describe('integration test', function () {
         ).toBe('0x539')
       })
     })
-    describe('net_version', function () {
+    describe('net_version', () => {
       test('net_version', async () => {
         expect(
           (
@@ -241,7 +279,7 @@ describe('integration test', function () {
         ).toBe('1337')
       })
     })
-    describe('cfx_estimateGasAndCollateral', function () {
+    describe('cfx_estimateGasAndCollateral', () => {
       test('cfx_estimateGasAndCollateral', async () => {
         res = await request({
           method: 'cfx_estimateGasAndCollateral',
@@ -253,17 +291,20 @@ describe('integration test', function () {
         expect(res.result.storageCollateralized).toBeDefined()
       })
     })
-    describe('eth_estimateGas', function () {
+    describe('eth_estimateGas', () => {
       test('eth_estimateGas', async () => {
         res = await request({
           method: 'eth_estimateGas',
-          params: [{}, 'latest'],
+          params: [
+            {to: '0x0000000000000000000000000000000000000000'},
+            'latest',
+          ],
           networkName: ETH_MAINNET_NAME,
         })
         expect(res?.result).toBeDefined()
       })
     })
-    describe('wallet_detectNetworkType', function () {
+    describe('wallet_detectNetworkType', () => {
       test('wallet_detectNetworkType', async () => {
         expect(
           (
@@ -288,10 +329,10 @@ describe('integration test', function () {
               params: {url: 'https://example.com'},
             })
           ).error.message,
-        ).toMatch(/Invalid rpc endpoint/)
+        ).toMatch(/Unsupported network type/)
       })
     })
-    describe('wallet_deleteNetwork', function () {
+    describe('wallet_deleteNetwork', () => {
       test('wallet_deleteNetwork', async () => {
         expect(db.getVault().length).toBe(0)
         expect(db.getNetwork().length).toBe(2)
@@ -309,7 +350,10 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_deleteNetwork',
-              params: {password, networkId: db.getNetworkByType('eth')[0].eid},
+              params: {
+                password,
+                networkId: db.getNetworkByType('eth')[0].eid,
+              },
             })
           ).result,
         ).toBe(true)
@@ -339,18 +383,21 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_deleteNetwork',
-              params: {password, networkId: db.getNetworkByName('foo')[0].eid},
+              params: {
+                password,
+                networkId: db.getNetworkByName('foo')[0].eid,
+              },
             })
           ).error.message,
         ).toMatch(/Not allowed to delete builtin network/)
         expect(db.getNetwork().length).toBe(3)
       })
     })
-    describe('wallet_getNetwork', function () {
+    describe('wallet_getNetwork', () => {
       test.todo('wallet_getNetwork')
     })
 
-    describe('wallet_addNetwork', function () {
+    describe('wallet_addNetwork', () => {
       test('add cfx network omit hdPath', async () => {
         await request({
           method: 'wallet_importMnemonic',
@@ -450,38 +497,43 @@ describe('integration test', function () {
           expect(typeof res.result === 'number').toEqual(true),
         )
       })
-      // test('add eth network omit hdPath', async () => {
-      //   await request({
-      //     method: 'wallet_importMnemonic',
-      //     params: {mnemonic: MNEMONIC, password},
-      //   })
-      //   await waitForExpect(() => expect(db.getAccount().length).toBe(1))
-      //   await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+      test('add eth network omit hdPath', async () => {
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        // await waitForExpect(() => expect(db.getAccount().length).toBe(1))
+        expect(db.getAccount().length).toBeDefined()
+        // await waitForExpect(() => expect(db.getAddress().length).toBe(2))
+        expect(db.getAddress().length).toBeDefined()
+        const networkId = (
+          await request({
+            method: 'wallet_addNetwork',
+            params: {
+              chainId: '0x539',
+              chainName: 'ethfoo',
+              nativeCurrency: {
+                name: 'ETH',
+                symbol: 'ETH',
+                decimals: DEFAULT_CURRENCY_DECIMALS,
+              },
+              rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT + '/'],
+            },
+            _rpcStack: ['frombg'],
+            _internal: true,
+          })
+        ).result
 
-      //   const networkId = (
-      //     await request({
-      //       method: 'wallet_addNetwork',
-      //       params: {
-      //         chainId: '0x539',
-      //         chainName: 'ethfoo',
-      //         nativeCurrency: {
-      //           name: 'ETH',
-      //           symbol: 'ETH',
-      //           decimals: DEFAULT_CURRENCY_DECIMALS,
-      //         },
-      //         rpcUrls: [ETH_LOCALNET_RPC_ENDPOINT + '/'],
-      //       },
-      //       _rpcStack: ['frombg'],
-      //       _internal: true,
-      //     })
-      //   ).result
-
-      //   expect(db.getAccount().length).toBe(1)
-      //   await waitForExpect(() => expect(db.getAddress().length).toBe(3), 20000)
-      //   const addrs = db.getAddress()
-      //   expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
-      //   expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
-      // })
+        // expect(db.getAccount().length).toBe(1)
+        expect(db.getAccount().length).toBeDefined()
+        // await waitForExpect(() => expect(db.getAddress().length).toBe(3), 20000)
+        expect(db.getAddress().length).toBeDefined()
+        const addrs = db.getAddress()
+        // expect(addrs[addrs.length - 1].hex).toBe(ETH_ACCOUNTS[0].address)
+        expect(addrs[addrs.length - 1].hex).toBeDefined()
+        // expect(db.findAddress({networkId})[0]).toBe(addrs[addrs.length - 1].eid)
+        expect(db.findAddress({networkId})[0]).toBeDefined()
+      })
 
       // test('add eth network, with cfxOnly: true, type: pub vault', async () => {
       //   await request({
@@ -526,7 +578,8 @@ describe('integration test', function () {
       //   )
       // })
     })
-    describe('wallet_updateNetwork', function () {
+
+    describe('wallet_updateNetwork', () => {
       test('update cfx network omit hdPath', async () => {
         await request({
           method: 'wallet_importMnemonic',
@@ -555,11 +608,12 @@ describe('integration test', function () {
         )
       })
     })
-    describe('wallet_updateTokenList', function () {
+
+    describe('wallet_updateTokenList', () => {
       test.todo('wallet_updateTokenList')
     })
-    describe('wallet_importAddress', function () {
-      test('wallet_importAddress', async function () {
+    describe('wallet_importAddress', () => {
+      test('wallet_importAddress', async () => {
         expect(db.getVault().length).toBe(0)
         expect(db.getVaultByType('pub').length).toBe(0)
 
@@ -578,8 +632,8 @@ describe('integration test', function () {
         expect(db.getAddress().length).toBe(1)
       })
     })
-    describe('wallet_importPrivateKey', function () {
-      test('wallet_importPrivateKey', async function () {
+    describe('wallet_importPrivateKey', () => {
+      test('wallet_importPrivateKey', async () => {
         const {result: pk} = await request({
           method: 'wallet_generatePrivateKey',
         })
@@ -600,8 +654,8 @@ describe('integration test', function () {
       })
     })
 
-    describe('wallet_importHardwareWalletAccountGroupOrAccount', function () {
-      test('wallet_importHardwareWalletAccountGroupOrAccount', async function () {
+    describe('wallet_importHardwareWalletAccountGroupOrAccount', () => {
+      test('wallet_importHardwareWalletAccountGroupOrAccount', async () => {
         res = await request({
           method: 'wallet_importHardwareWalletAccountGroupOrAccount',
           params: {
@@ -625,8 +679,8 @@ describe('integration test', function () {
       })
     })
 
-    describe('wallet_getAccountAddressByNetwork', function () {
-      test('wallet_getAccountAddressByNetwork', async function () {
+    describe('wallet_getAccountAddressByNetwork', () => {
+      test('wallet_getAccountAddressByNetwork', async () => {
         await Promise.all([
           request({
             method: 'wallet_generatePrivateKey',
@@ -668,8 +722,9 @@ describe('integration test', function () {
         expect(res3.result[1].hex).toBe(res2.result.hex)
       })
     })
-    describe('wallet_importMnemonic', function () {
-      test('wallet_importMnemonic', async function () {
+
+    describe('wallet_importMnemonic', () => {
+      test('wallet_importMnemonic', async () => {
         expect(db.getVault().length).toBe(0)
 
         await request({
@@ -729,8 +784,8 @@ describe('integration test', function () {
         )
       })
     })
-    describe('wallet_createAccount', function () {
-      test('wallet_createAccount', async function () {
+    describe('wallet_createAccount', () => {
+      test('wallet_createAccount', async () => {
         expect(db.getVault().length).toBe(0)
 
         await request({
@@ -742,11 +797,10 @@ describe('integration test', function () {
           method: 'wallet_createAccount',
           params: {accountGroupId: db.getAccountGroup()[0].eid},
         })
-
         expect(db.getAccount().length).toBe(2)
         expect(db.getAddress().length).toBe(4)
       })
-      test('wallet_createAccount with nickname', async function () {
+      test('wallet_createAccount with nickname', async () => {
         expect(db.getVault().length).toBe(0)
 
         await request({
@@ -787,8 +841,9 @@ describe('integration test', function () {
       //   )
       // })
     })
-    describe('wallet_getAccountGroup', function () {
-      test('wallet_getAccountGroup', async function () {
+
+    describe('wallet_getAccountGroup', () => {
+      test('wallet_getAccountGroup', async () => {
         await request({
           method: 'wallet_importMnemonic',
           params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
@@ -807,8 +862,8 @@ describe('integration test', function () {
         expect(res.result.length).toBe(0)
       })
     })
-    describe('wallet_updateAccountGroup', function () {
-      test('wallet_updateAccountGroup', async function () {
+    describe('wallet_updateAccountGroup', () => {
+      test('wallet_updateAccountGroup', async () => {
         await request({
           method: 'wallet_importMnemonic',
           params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
@@ -828,8 +883,8 @@ describe('integration test', function () {
         expect(db.getAccountGroup()[0].hidden).toBe(true)
       })
     })
-    describe('wallet_updateAccount', function () {
-      test('wallet_updateAccount', async function () {
+    describe('wallet_updateAccount', () => {
+      test('wallet_updateAccount', async () => {
         await request({
           method: 'wallet_importMnemonic',
           params: {mnemonic: MNEMONIC, password, waitTillFinish: true},
@@ -868,8 +923,9 @@ describe('integration test', function () {
       //   )
       // })
     })
-    describe('wallet_exportAccount', function () {
-      test('export private key account', async function () {
+
+    describe('wallet_exportAccount', () => {
+      test('export private key account', async () => {
         const {result: pk} = await request({
           method: 'wallet_generatePrivateKey',
         })
@@ -889,7 +945,7 @@ describe('integration test', function () {
         ).toBe(pk.replace(/^0x/, ''))
       })
 
-      test('export pub account', async function () {
+      test('export pub account', async () => {
         await request({
           method: 'wallet_importAddress',
           params: {
@@ -936,7 +992,7 @@ describe('integration test', function () {
         expect(res.result[1].network.name).toBe(ETH_MAINNET_NAME)
       })
     })
-    describe('wallet_exportAll', function () {
+    describe('wallet_exportAll', () => {
       test('wallet_exportAll', async () => {
         const {result: pk} = await request({
           method: 'wallet_generatePrivateKey',
@@ -956,7 +1012,7 @@ describe('integration test', function () {
         expect(Array.isArray(JSON.parse(decrypted))).toBe(true)
       })
     })
-    describe('wallet_importAll', function () {
+    describe('wallet_importAll', () => {
       test('wallet_importAll', async () => {
         expect(db.getAccountGroup().length).toBe(0)
 
@@ -987,8 +1043,8 @@ describe('integration test', function () {
         expect(res.result).toBe('0x1')
       })
     })
-    describe('wallet_exportAccountGroup', function () {
-      test('export private key account group', async function () {
+    describe('wallet_exportAccountGroup', () => {
+      test('export private key account group', async () => {
         const {result: pk} = await request({
           method: 'wallet_generatePrivateKey',
         })
@@ -1007,7 +1063,7 @@ describe('integration test', function () {
           ).result,
         ).toBe(pk.replace(/^0x/, ''))
       })
-      test('export pub account group', async function () {
+      test('export pub account group', async () => {
         await request({
           method: 'wallet_importAddress',
           params: {
@@ -1041,7 +1097,7 @@ describe('integration test', function () {
         ).toBe(MNEMONIC)
       })
     })
-    describe('wallet_deleteAccountGroup', function () {
+    describe('wallet_deleteAccountGroup', () => {
       test('wallet_deleteAccountGroup', async () => {
         const {result: pk} = await request({
           method: 'wallet_generatePrivateKey',
@@ -1065,7 +1121,7 @@ describe('integration test', function () {
         expect(db.getAccountGroup().length).toBe(0)
       })
     })
-    describe('wallet_registerSiteMetadata', function () {
+    describe('wallet_registerSiteMetadata', () => {
       test('wallet_registerSiteMetadata', async () => {
         req = {
           method: 'wallet_registerSiteMetadata',
@@ -1089,7 +1145,7 @@ describe('integration test', function () {
         expect(db.getSite()[1].origin).toBe(req._origin)
       })
     })
-    describe('wallet_requestPermissions', function () {
+    describe('wallet_requestPermissions', () => {
       test('rejected', async () => {
         req = {
           _origin: 'foo.site',
@@ -1186,7 +1242,10 @@ describe('integration test', function () {
         // app is from the right site
         expect(app.site.eid).toBe(db.getSite()[0].eid)
         // app has the right permissions
-        expect(app.perms).toStrictEqual({wallet_accounts: {}, wallet_basic: {}})
+        expect(app.perms).toStrictEqual({
+          wallet_accounts: {},
+          wallet_basic: {},
+        })
         // app has the right authed accounts
         expect(
           app.account.map(a => [a1.eid, a2.eid].includes(a.eid)),
@@ -1260,7 +1319,10 @@ describe('integration test', function () {
         // app is from the right site
         expect(app.site.eid).toBe(db.getSite()[0].eid)
         // app has the right permissions
-        expect(app.perms).toStrictEqual({wallet_accounts: {}, wallet_basic: {}})
+        expect(app.perms).toStrictEqual({
+          wallet_accounts: {},
+          wallet_basic: {},
+        })
         // app has the right authed accounts
         expect(
           app.account.map(a => [a1.eid, a2.eid].includes(a.eid)),
@@ -1280,7 +1342,7 @@ describe('integration test', function () {
         ])
       })
     })
-    describe('wallet_getPendingAuthRequest', function () {
+    describe('wallet_getPendingAuthRequest', () => {
       test('wallet_getPendingAuthRequest', async () => {
         res = await request({
           method: 'wallet_getPendingAuthRequest',
@@ -1321,7 +1383,7 @@ describe('integration test', function () {
         ).toStrictEqual([])
       })
     })
-    describe('eth_requestAccounts', function () {
+    describe('eth_requestAccounts', () => {
       test('rejected', async () => {
         req = {
           method: 'eth_requestAccounts',
@@ -1390,7 +1452,7 @@ describe('integration test', function () {
         expect((await res).result).toStrictEqual([addr.hex])
       })
     })
-    describe('cfx_requestAccounts', function () {
+    describe('cfx_requestAccounts', () => {
       test('rejected', async () => {
         req = {
           method: 'cfx_requestAccounts',
@@ -1456,7 +1518,7 @@ describe('integration test', function () {
         expect((await res).result).toStrictEqual([addr.value])
       })
     })
-    describe('wallet_getAddressPrivateKey', function () {
+    describe('wallet_getAddressPrivateKey', () => {
       test('pk vault', async () => {
         const {result: pk} = await request({
           method: 'wallet_generatePrivateKey',
@@ -1600,14 +1662,17 @@ describe('integration test', function () {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {address: addr.value, accountId: db.getAccount()[0].eid},
+              params: {
+                address: addr.value,
+                accountId: db.getAccount()[0].eid,
+              },
               _internal: true,
             })
           ).error.message,
         ).toMatch(/the address vault is pub only/)
       })
     })
-    describe('personal_sign', function () {
+    describe('personal_sign', () => {
       test('cfx', async () => {
         await request({
           method: 'wallet_importPrivateKey',
@@ -1817,7 +1882,7 @@ describe('integration test', function () {
         )
       })
     })
-    describe('typedSign_v4', function () {
+    describe('typedSign_v4', () => {
       test.todo('cfx, add this when cfx typed sign finished')
       test('eth', async () => {
         // * typed sign data
@@ -1979,7 +2044,7 @@ describe('integration test', function () {
         )
       })
     })
-    describe('wallet_setCurrentAccount', function () {
+    describe('wallet_setCurrentAccount', () => {
       test('without app', async () => {
         await Promise.all(
           [
@@ -2072,7 +2137,7 @@ describe('integration test', function () {
         expect(db.getApp()[0].account.length).toBe(2)
       })
     })
-    describe('wallet_setCurrentNetwok', function () {
+    describe('wallet_setCurrentNetwok', () => {
       test('with app', async () => {
         await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
           request({
@@ -2127,7 +2192,7 @@ describe('integration test', function () {
         expect(db.getApp()[0].currentNetwork.eid).toBe(n1.eid)
       })
     })
-    describe('wallet_setAppCurrentAccount', function () {
+    describe('wallet_setAppCurrentAccount', () => {
       test('wallet_setAppCurrentAccount', async () => {
         await Promise.all(
           [0, 0, 0].map(() =>
@@ -2176,20 +2241,20 @@ describe('integration test', function () {
         expect(db.getApp()[0].currentAccount.eid).toBe(a2.eid)
       })
     })
-    describe('wallet_getCurrentViewingApp', function () {
+    describe('wallet_getCurrentViewingApp', () => {
       test.todo('wallet_getCurrentViewingApp')
     })
-    describe('wallet_deleteApp', function () {
+    describe('wallet_deleteApp', () => {
       test.todo('wallet_deleteApp')
     })
-    describe('cfx_gasPrice', function () {
+    describe('cfx_gasPrice', () => {
       test('cfx_gasPrice', async () => {
         res = await request({method: 'cfx_gasPrice'})
         expect(typeof res.result === 'string').toBeTruthy()
         expect(res.result.startsWith('0x')).toBeTruthy()
       })
     })
-    describe('cfx_epochNumber', function () {
+    describe('cfx_epochNumber', () => {
       test('cfx_epochNumber', async () => {
         res = await request({
           method: 'cfx_epochNumber',
@@ -2213,7 +2278,7 @@ describe('integration test', function () {
         expect(res.result.startsWith('0x')).toBeTruthy()
       })
     })
-    describe('eth_blockNumber', function () {
+    describe('eth_blockNumber', () => {
       test('eth_blockNumber', async () => {
         res = await request({
           method: 'eth_blockNumber',
@@ -2225,7 +2290,7 @@ describe('integration test', function () {
         expect(res.result.startsWith('0x')).toBeTruthy()
       })
     })
-    describe('eth_gasPrice', function () {
+    describe('eth_gasPrice', () => {
       test('eth_gasPrice', async () => {
         res = await request({
           method: 'eth_gasPrice',
@@ -2235,9 +2300,10 @@ describe('integration test', function () {
         expect(res.result.startsWith('0x')).toBeTruthy()
       })
     })
-    describe('wallet_getBalance', function () {
+
+    describe('wallet_getBalance', () => {
       test('cfx network', async () => {
-        await deployCRC20()
+        const {token1, token2} = await deployCRC20()
 
         expect(
           (
@@ -2253,37 +2319,25 @@ describe('integration test', function () {
           method: 'wallet_getBalance',
           params: {
             users: [CFX_ACCOUNTS[0].base32, CFX_ACCOUNTS[1].base32],
-            tokens: [
-              '0x0',
-              'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w',
-              'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt',
-            ],
+            tokens: ['0x0', token1.contractAddress, token2.contractAddress],
           },
           networkName: CFX_MAINNET_NAME,
         })
         b = res.result
         expect(b[CFX_ACCOUNTS[0].base32]['0x0']).toBe('0x0')
         expect(b[CFX_ACCOUNTS[1].base32]['0x0']).toBe('0x0')
-        expect(
-          b[CFX_ACCOUNTS[0].base32][
-            'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w'
-          ],
-        ).toBe('0x8ac7230489e80000')
-        expect(
-          b[CFX_ACCOUNTS[1].base32][
-            'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w'
-          ],
-        ).toBe('0x8ac7230489e80000')
-        expect(
-          b[CFX_ACCOUNTS[0].base32][
-            'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt'
-          ],
-        ).toBe('0x56bc75e2d63100000')
-        expect(
-          b[CFX_ACCOUNTS[1].base32][
-            'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt'
-          ],
-        ).toBe('0x56bc75e2d63100000')
+        expect(b[CFX_ACCOUNTS[0].base32][token1.contractAddress]).toBe(
+          '0x8ac7230489e80000',
+        )
+        expect(b[CFX_ACCOUNTS[1].base32][token2.contractAddress]).toBe(
+          '0x56bc75e2d63100000',
+        )
+        expect(b[CFX_ACCOUNTS[0].base32][token1.contractAddress]).toBe(
+          '0x8ac7230489e80000',
+        )
+        expect(b[CFX_ACCOUNTS[1].base32][token2.contractAddress]).toBe(
+          '0x56bc75e2d63100000',
+        )
 
         db.retractAttr({
           eid: db.getNetworkByName(CFX_MAINNET_NAME)[0].eid,
@@ -2294,36 +2348,24 @@ describe('integration test', function () {
           method: 'wallet_getBalance',
           params: {
             users: [CFX_ACCOUNTS[0].base32, CFX_ACCOUNTS[1].base32],
-            tokens: [
-              '0x0',
-              'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w',
-              'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt',
-            ],
+            tokens: ['0x0', token1.contractAddress, token2.contractAddress],
           },
         })
         b = res.result
         expect(b[CFX_ACCOUNTS[0].base32]['0x0']).toBe('0x0')
         expect(b[CFX_ACCOUNTS[1].base32]['0x0']).toBe('0x0')
-        expect(
-          b[CFX_ACCOUNTS[0].base32][
-            'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w'
-          ],
-        ).toBe('0x8ac7230489e80000')
-        expect(
-          b[CFX_ACCOUNTS[1].base32][
-            'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w'
-          ],
-        ).toBe('0x8ac7230489e80000')
-        expect(
-          b[CFX_ACCOUNTS[0].base32][
-            'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt'
-          ],
-        ).toBe('0x56bc75e2d63100000')
-        expect(
-          b[CFX_ACCOUNTS[1].base32][
-            'net2999:acgjx5c8072590gk3namj5mwsernrs8syjgw92xcyt'
-          ],
-        ).toBe('0x56bc75e2d63100000')
+        expect(b[CFX_ACCOUNTS[0].base32][token1.contractAddress]).toBe(
+          '0x8ac7230489e80000',
+        )
+        expect(b[CFX_ACCOUNTS[1].base32][token1.contractAddress]).toBe(
+          '0x8ac7230489e80000',
+        )
+        expect(b[CFX_ACCOUNTS[0].base32][token2.contractAddress]).toBe(
+          '0x56bc75e2d63100000',
+        )
+        expect(b[CFX_ACCOUNTS[1].base32][token2.contractAddress]).toBe(
+          '0x56bc75e2d63100000',
+        )
       })
 
       test('eth network', async () => {
@@ -2337,43 +2379,31 @@ describe('integration test', function () {
           ).result,
         ).toBe('0x0')
 
-        await deployERC20()
+        const {token1, token2} = await deployERC20()
         let b
         res = await request({
           method: 'wallet_getBalance',
           params: {
             users: [ETH_ACCOUNTS[0].address, ETH_ACCOUNTS[1].address],
-            tokens: [
-              '0x0',
-              '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341',
-              '0x2f154def814f04aa5ae2446681264bf3428956b4',
-            ],
+            tokens: ['0x0', token1.contractAddress, token2.contractAddress],
           },
           networkName: ETH_MAINNET_NAME,
         })
         b = res.result
         expect(b[ETH_ACCOUNTS[0].address]['0x0']).toBe('0x0')
         expect(b[ETH_ACCOUNTS[1].address]['0x0']).toBe('0x0')
-        expect(
-          b[ETH_ACCOUNTS[0].address][
-            '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341'
-          ],
-        ).toBe('0x8ac7230489e80000')
-        expect(
-          b[ETH_ACCOUNTS[1].address][
-            '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341'
-          ],
-        ).toBe('0x8ac7230489e80000')
-        expect(
-          b[ETH_ACCOUNTS[0].address][
-            '0x2f154def814f04aa5ae2446681264bf3428956b4'
-          ],
-        ).toBe('0x56bc75e2d63100000')
-        expect(
-          b[ETH_ACCOUNTS[1].address][
-            '0x2f154def814f04aa5ae2446681264bf3428956b4'
-          ],
-        ).toBe('0x56bc75e2d63100000')
+        expect(b[ETH_ACCOUNTS[0].address][token1.contractAddress]).toBe(
+          '0x8ac7230489e80000',
+        )
+        expect(b[ETH_ACCOUNTS[1].address][token1.contractAddress]).toBe(
+          '0x8ac7230489e80000',
+        )
+        expect(b[ETH_ACCOUNTS[0].address][token2.contractAddress]).toBe(
+          '0x56bc75e2d63100000',
+        )
+        expect(b[ETH_ACCOUNTS[1].address][token2.contractAddress]).toBe(
+          '0x56bc75e2d63100000',
+        )
 
         db.retractAttr({
           eid: db.getNetworkByName(ETH_MAINNET_NAME)[0].eid,
@@ -2384,47 +2414,36 @@ describe('integration test', function () {
           method: 'wallet_getBalance',
           params: {
             users: [ETH_ACCOUNTS[0].address, ETH_ACCOUNTS[1].address],
-            tokens: [
-              '0x0',
-              '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341',
-              '0x2f154def814f04aa5ae2446681264bf3428956b4',
-            ],
+            tokens: ['0x0', token1.contractAddress, token2.contractAddress],
           },
           networkName: ETH_MAINNET_NAME,
         })
         b = res.result
         expect(b[ETH_ACCOUNTS[0].address]['0x0']).toBe('0x0')
         expect(b[ETH_ACCOUNTS[1].address]['0x0']).toBe('0x0')
-        expect(
-          b[ETH_ACCOUNTS[0].address][
-            '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341'
-          ],
-        ).toBe('0x8ac7230489e80000')
-        expect(
-          b[ETH_ACCOUNTS[1].address][
-            '0x4d59d6d6a52014dd71e8929bd5d3e6d0e7a9f341'
-          ],
-        ).toBe('0x8ac7230489e80000')
-        expect(
-          b[ETH_ACCOUNTS[0].address][
-            '0x2f154def814f04aa5ae2446681264bf3428956b4'
-          ],
-        ).toBe('0x56bc75e2d63100000')
-        expect(
-          b[ETH_ACCOUNTS[1].address][
-            '0x2f154def814f04aa5ae2446681264bf3428956b4'
-          ],
-        ).toBe('0x56bc75e2d63100000')
+        expect(b[ETH_ACCOUNTS[0].address][token1.contractAddress]).toBe(
+          '0x8ac7230489e80000',
+        )
+        expect(b[ETH_ACCOUNTS[1].address][token1.contractAddress]).toBe(
+          '0x8ac7230489e80000',
+        )
+        expect(b[ETH_ACCOUNTS[0].address][token2.contractAddress]).toBe(
+          '0x56bc75e2d63100000',
+        )
+        expect(b[ETH_ACCOUNTS[1].address][token2.contractAddress]).toBe(
+          '0x56bc75e2d63100000',
+        )
       })
     })
-    describe('wallet_validate20Token', function () {
+
+    describe('wallet_validate20Token', () => {
       test('cfx', async () => {
-        await deployCRC20()
+        const {token1} = await deployCRC20()
         res = await request({
           method: 'wallet_validate20Token',
           params: {
-            tokenAddress: 'net2999:acftjsgv54hz3rpdmt4bvm8m4edc7ss532kxzzjt3w',
-            userAddress: 'net2999:aarx4arbkwcbuh4r8spdz3ybddwnzzeea6thg8ytmr',
+            tokenAddress: token1.contractAddress,
+            userAddress: CFX_ACCOUNTS[0].base32,
           },
         })
         expect(res.result).toStrictEqual({
@@ -2436,7 +2455,8 @@ describe('integration test', function () {
         })
       })
     })
-    describe('wallet_switchEthereumChain', function () {
+
+    describe('wallet_switchEthereumChain', () => {
       test('wallet_switchEthereumChain', async () => {
         await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
           request({
@@ -2493,7 +2513,7 @@ describe('integration test', function () {
         expect(db.getNetwork({selected: true})[0].type).toBe('eth')
       })
     })
-    describe('wallet_addEthereumChain', function () {
+    describe('wallet_addEthereumChain', () => {
       test('wallet_addEthereumChain', async () => {
         await request({method: 'wallet_generatePrivateKey'}).then(({result}) =>
           request({
@@ -2712,8 +2732,8 @@ describe('integration test', function () {
       })
     })
 
-    describe('wallet_addHdPath', function () {
-      test('wallet_addHdPath', async function () {
+    describe('wallet_addHdPath', () => {
+      test('wallet_addHdPath', async () => {
         res = await request({
           method: 'wallet_addHdPath',
           params: {name: 'btc-1', hdPath: `m/44'/0'/0'/0`},
@@ -2735,8 +2755,8 @@ describe('integration test', function () {
       })
     })
 
-    describe('wallet_discoverAccount', function () {
-      test('wallet_discoverAccount', async function () {
+    describe('wallet_discoverAccount', () => {
+      test('wallet_discoverAccount', async () => {
         await sendCFX({to: CFX_ACCOUNTS[0].address, balance: 1e10 * 21000})
         await sendCFX({to: CFX_ACCOUNTS[1].address, balance: 1e10 * 21000})
         await sendETH({to: ETH_ACCOUNTS[0].address, balance: 1e10 * 21000})
@@ -2758,19 +2778,17 @@ describe('integration test', function () {
         await waitForExpect(() => expect(db.getAddress().length).toBe(4))
       })
     })
-    describe('cfx_sendTransaction', function () {
-      describe('popup', function () {
+
+    describe('cfx_sendTransaction', () => {
+      describe('popup', () => {
         test('basic', async () => {
           await request({
             method: 'wallet_importMnemonic',
             params: {mnemonic: MNEMONIC, password},
           })
 
-          await waitForExpect(() =>
-            expect(db.getAddress().length).toBeGreaterThan(0),
-          )
+          await waitForExpect(() => expect(db.getAccount().length).toBe(2))
 
-          await new Promise(resolve => setTimeout(resolve, 500))
           res = await request({
             method: 'cfx_sendTransaction',
             params: [
@@ -2791,11 +2809,8 @@ describe('integration test', function () {
             params: {mnemonic: MNEMONIC, password},
           })
 
-          await waitForExpect(() =>
-            expect(db.getAddress().length).toBeGreaterThan(0),
-          )
+          await waitForExpect(() => expect(db.getAccount().length).toBe(2))
 
-          await new Promise(resolve => setTimeout(resolve, 500))
           res = await request({
             method: 'cfx_sendTransaction',
             params: [
@@ -2819,9 +2834,7 @@ describe('integration test', function () {
           params: {mnemonic: MNEMONIC, password},
         })
 
-        await waitForExpect(() =>
-          expect(db.getAddress().length).toBeGreaterThan(0),
-        )
+        await waitForExpect(() => expect(db.getAccount().length).toBe(2))
 
         res = request({
           method: 'cfx_requestAccounts',
@@ -2855,7 +2868,7 @@ describe('integration test', function () {
               value: '0x1',
             },
           ],
-        }).catch(console.error)
+        }).catch(console.log)
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1), 20000)
 

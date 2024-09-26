@@ -221,48 +221,45 @@ export const main = ({
             const failed =
               !sameAsSuccess && (shouldDiscard || resendPriceTooLow)
 
-            if (errorType === 'unknownError')
-              defs({
-                failed: failed && {errorType, err},
-                sameAsSuccess,
-                resend: !shouldDiscard && !sameAsSuccess,
-              })
-                .transform(
-                  branchObj({
-                    failed: [
-                      sideEffect(
-                        ({err}) =>
-                          typeof failedCb === 'function' && failedCb(err),
-                      ),
-                      sideEffect(({errorType}) => {
-                        if (setTxFailed({hash, error: errorType})) {
-                          getExt().then(ext =>
-                            ext.notifications.create(hash, {
-                              title: 'Failed transaction',
-                              message: `Transaction ${parseInt(
-                                tx.txPayload.nonce,
-                                16,
-                              )} failed! ${err?.data || err?.message || ''}`,
-                            }),
-                          )
-                        }
-                      }),
-                      sideEffect(() => {
-                        updateBadge(getUnfinishedTxCount())
-                      }),
-                    ],
-                    resend: sideEffect(keepTrack),
-                    // retry in next run
-                    sameAsSuccess: [
-                      sideEffect(() => setTxPending({hash})),
-                      sideEffect(
-                        () => typeof okCb === 'function' && okCb(hash),
-                      ),
-                      sideEffect(keepTrack),
-                    ],
-                  }),
-                )
-                .done()
+            defs({
+              failed: failed && {errorType, err},
+              sameAsSuccess,
+              resend: !shouldDiscard && !sameAsSuccess,
+            })
+              .transform(
+                branchObj({
+                  failed: [
+                    sideEffect(
+                      ({err}) =>
+                        typeof failedCb === 'function' && failedCb(err),
+                    ),
+                    sideEffect(({errorType}) => {
+                      if (setTxFailed({hash, error: errorType})) {
+                        getExt().then(ext =>
+                          ext.notifications.create(hash, {
+                            title: 'Failed transaction',
+                            message: `Transaction ${parseInt(
+                              tx.txPayload.nonce,
+                              16,
+                            )} failed! ${err?.data || err?.message || ''}`,
+                          }),
+                        )
+                      }
+                    }),
+                    sideEffect(() => {
+                      updateBadge(getUnfinishedTxCount())
+                    }),
+                  ],
+                  resend: sideEffect(keepTrack),
+                  // retry in next run
+                  sameAsSuccess: [
+                    sideEffect(() => setTxPending({hash})),
+                    sideEffect(() => typeof okCb === 'function' && okCb(hash)),
+                    sideEffect(keepTrack),
+                  ],
+                }),
+              )
+              .done()
           },
         }),
       )

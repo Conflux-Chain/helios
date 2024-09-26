@@ -1,9 +1,16 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable testing-library/await-async-utils */
-import {render, screen, waitFor, fireEvent} from '@testing-library/react'
-import {describe, expect, jest, afterEach} from '@jest/globals'
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  cleanup,
+} from '@testing-library/react'
+import {describe, expect, vi, afterEach, beforeEach, it} from 'vitest'
 import Notification from './index.js'
 
+beforeEach(cleanup)
 // TODO resolve test error
 describe('Notification', () => {
   describe('single Notification', () => {
@@ -67,7 +74,7 @@ describe('Notification', () => {
     //   }, 300)
     // })
     // it('test close', async () => {
-    //   const onClose = jest.fn()
+    //   const onClose = vi.fn()
     //   Notification.config({
     //     TEST_RENDER: node => {
     //       render(node)
@@ -84,7 +91,7 @@ describe('Notification', () => {
     //   }, 300)
     // })
     // it('test click', () => {
-    //   const onClick = jest.fn()
+    //   const onClick = vi.fn()
     //   Notification.config({
     //     TEST_RENDER: node => {
     //       render(node)

@@ -77,8 +77,8 @@ function StretchInput({
         ref={invisibleInputRef}
         onFocus={onInVisibleInputFocus}
         onBlur={onInVisibleInputBlur}
-        containerClassName="h-0 w-0 border-0"
-        className="w-0 h-0"
+        containerClassName="!h-0 w-0 border-0"
+        className="w-0 !h-0"
       />
       <div className={`flex items-center ${wrapperClassName}`}>
         {leftNode}

@@ -1,14 +1,13 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, test, vi} from 'vitest'
 import {main} from './index.js'
 
-describe('@fluent-wallet/wallet_get-next-nonce', function () {
-  describe('main', function () {
+describe('@fluent-wallet/wallet_get-next-nonce', () => {
+  describe('main', () => {
     test('main fn logic', async () => {
       const input = {
         rpcs: {
-          cfx_getNextNonce: jest.fn(a => a),
-          eth_getTransactionCount: jest.fn(a => a),
+          cfx_getNextNonce: vi.fn(a => a),
+          eth_getTransactionCount: vi.fn(a => a),
         },
         params: [],
         network: {type: 'cfx', netId: 1029},

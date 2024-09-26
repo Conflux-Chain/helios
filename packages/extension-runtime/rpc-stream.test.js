@@ -1,17 +1,16 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, test, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it, vi} from 'vitest'
 import {rpcStream} from './rpc-stream.js'
 
-describe('@fluent-wallet/extension-runtime/rpc-stream.js', function () {
-  describe('rpcStream', function () {
-    it('should return the send fn of the pubsub stream', async function () {
+describe('@fluent-wallet/extension-runtime/rpc-stream.js', () => {
+  describe('rpcStream', () => {
+    it('should return the send fn of the pubsub stream', async () => {
       let pubsubStreamNext, postReq
 
       const port = {
         onMessage: {
-          addListener: jest.fn(next => (pubsubStreamNext = next)),
+          addListener: vi.fn(next => (pubsubStreamNext = next)),
         },
-        postMessage: jest.fn(req => (postReq = req)),
+        postMessage: vi.fn(req => (postReq = req)),
       }
 
       const {send} = rpcStream(port)

@@ -1,0 +1,6 @@
+releases:
+  "@fluent-wallet/cfx_fee-history": patch
+
+declined:
+  - helios
+  - helios-background

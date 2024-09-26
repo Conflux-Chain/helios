@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import {expect, describe, it, jest, afterAll, afterEach, beforeAll, beforeEach} from '@jest/globals' // prettier-ignore
+import {expect, describe, it, test} from 'vitest'
 import * as db from './db.js'
 
 /* eslint-disable testing-library/prefer-screen-queries */
@@ -28,9 +27,9 @@ const schema = {
   },
 }
 
-describe('db', function () {
-  describe('create db', function () {
-    it('should return the get getby and create functions defined in schema', async function () {
+describe('db', () => {
+  describe('create db', () => {
+    it('should return the get getby and create functions defined in schema', async () => {
       const conn = db.createdb(schema)
       expect(typeof conn.createVault === 'function').toBe(true)
       expect(typeof conn.getVault === 'function').toBe(true)
@@ -44,8 +43,8 @@ describe('db', function () {
     })
   })
 
-  describe('create fn', function () {
-    it('should create the data and return the right entity id', async function () {
+  describe('create fn', () => {
+    it('should create the data and return the right entity id', async () => {
       const conn = db.createdb(schema)
       const txReport = conn.createVault({type: 'a', data: 'b'})
       // the first entity in the dbmeta/version
@@ -54,8 +53,8 @@ describe('db', function () {
     })
   })
 
-  describe('transact fn', function () {
-    it('should insert the right entity', async function () {
+  describe('transact fn', () => {
+    it('should insert the right entity', async () => {
       const conn = db.createdb(schema)
       conn.t([
         {eid: -1, vault: {data: 1, type: 'foo'}},
@@ -67,7 +66,7 @@ describe('db', function () {
       expect(conn.getAccount()[0].vault.type).toBe('foo')
     })
 
-    it('should insert the right entity with tmpid from tmpid fn', async function () {
+    it('should insert the right entity with tmpid from tmpid fn', async () => {
       const conn = db.createdb(schema)
       const tmpid = conn.tmpid()
       conn.t([
@@ -80,7 +79,7 @@ describe('db', function () {
       expect(conn.getAccount()[0].vault.type).toBe('foo')
     })
 
-    it('should insert the right entity with lookup ref', async function () {
+    it('should insert the right entity with lookup ref', async () => {
       const conn = db.createdb({
         vault: {name: {identity: true}},
         addr: {hex: {identity: true}, vault: {ref: true}},
@@ -93,7 +92,7 @@ describe('db', function () {
       expect(conn.getAddr()[0].vault.name).toBe('a')
     })
 
-    it('should insert the right entity with nested components', async function () {
+    it('should insert the right entity with nested components', async () => {
       const conn = db.createdb({
         country: {
           cites: {ref: 'city', many: true, component: true},
@@ -114,7 +113,7 @@ describe('db', function () {
       expect(conn.getCountry()[0].cites[0].country.name).toBe('china')
     })
 
-    test("inidcating that db can't do two way bind automatically on entities with same ref/component", async function () {
+    test("inidcating that db can't do two way bind automatically on entities with same ref/component", async () => {
       const conn = db.createdb({
         country: {
           cites: {ref: 'city', many: true, component: true},
@@ -131,8 +130,8 @@ describe('db', function () {
     })
   })
 
-  describe('get by fn', function () {
-    it('should get the right data with simple query', async function () {
+  describe('get by fn', () => {
+    it('should get the right data with simple query', async () => {
       const conn = db.createdb(schema)
       const vaultId = conn.createVault({type: 'a', data: 'b'})
       conn.createAccount({
@@ -156,7 +155,7 @@ describe('db', function () {
       expect(vault.eid).toBe(2)
     })
 
-    it('should return a empty array if found no data', async function () {
+    it('should return a empty array if found no data', async () => {
       const conn = db.createdb(schema)
       conn.createVault({type: 'a', data: 'b'})
       let rst
@@ -166,8 +165,8 @@ describe('db', function () {
     })
   })
 
-  describe('get fn', function () {
-    it('should get the right data', async function () {
+  describe('get fn', () => {
+    it('should get the right data', async () => {
       const conn = db.createdb(schema)
       conn.createVault({type: 'a', data: 'b'})
       conn.createVault({type: 'a', data: 'c'})
@@ -205,8 +204,8 @@ describe('db', function () {
     })
   })
 
-  describe('get one fn', function () {
-    it('should get the right data', async function () {
+  describe('get one fn', () => {
+    it('should get the right data', async () => {
       const conn = db.createdb(schema)
       conn.createVault({type: 'a', data: 'b'})
       conn.createVault({type: 'a', data: 'c'})
@@ -218,8 +217,8 @@ describe('db', function () {
     })
   })
 
-  describe('get by id fn', function () {
-    it('should return the right result', async function () {
+  describe('get by id fn', () => {
+    it('should return the right result', async () => {
       const conn = db.createdb(schema)
       const vaultId = conn.createVault({type: 'a', data: 'b'})
       const vault = conn.getVaultById(vaultId)
@@ -230,8 +229,8 @@ describe('db', function () {
     })
   })
 
-  describe('delete one fn', function () {
-    it('should remove the right data', async function () {
+  describe('delete one fn', () => {
+    it('should remove the right data', async () => {
       const conn = db.createdb(schema)
       const vault1Id = conn.createVault({type: 'a', data: 'b'})
       conn.createVault({type: 'a', data: 'c'})
@@ -249,8 +248,8 @@ describe('db', function () {
     })
   })
 
-  describe('delete many fn', function () {
-    it('should remove the right data', async function () {
+  describe('delete many fn', () => {
+    it('should remove the right data', async () => {
       const conn = db.createdb(schema)
 
       conn.createVault({type: 'a', data: '1'})
@@ -275,8 +274,8 @@ describe('db', function () {
     })
   })
 
-  describe('delete by id fn', function () {
-    it('should remove the right data', async function () {
+  describe('delete by id fn', () => {
+    it('should remove the right data', async () => {
       const conn = db.createdb(schema)
       const vaultId = conn.createVault({type: 'a', data: 'b'})
       const accountId = conn.createAccount({hexAddress: 'a', vault: 2})
@@ -291,8 +290,8 @@ describe('db', function () {
     })
   })
 
-  describe('update fn', function () {
-    it('should update the right data in db', async function () {
+  describe('update fn', () => {
+    it('should update the right data in db', async () => {
       const conn = db.createdb(schema)
 
       conn.createVault({type: 'a', data: '1'})
@@ -325,8 +324,8 @@ describe('db', function () {
     })
   })
 
-  describe('update one fn', function () {
-    it('should update the right data in db', async function () {
+  describe('update one fn', () => {
+    it('should update the right data in db', async () => {
       const conn = db.createdb(schema)
 
       conn.createVault({type: 'a', data: '1'})
@@ -341,8 +340,8 @@ describe('db', function () {
     })
   })
 
-  describe('Entity', function () {
-    it('should have the right instance method', async function () {
+  describe('Entity', () => {
+    it('should have the right instance method', async () => {
       const conn = db.createdb(schema)
       conn.createVault({type: 'a', data: 'b'})
       conn.createAccount({hexAddress: 'c', vault: 2})
@@ -364,8 +363,8 @@ describe('db', function () {
     })
   })
 
-  describe('persist', function () {
-    it('should be able to persist and restore the data', async function () {
+  describe('persist', () => {
+    it('should be able to persist and restore the data', async () => {
       const fakeLocalStorage = {
         storage: {},
         setItem(k, v) {
