@@ -160,6 +160,13 @@ describe('integration test', () => {
   })
 
   describe('rpcs', () => {
+    describe('cfx_getFeeBurnt', async () => {
+      test('cfx_getFeeBurnt', async () => {
+        const result = await request({method: 'cfx_getFeeBurnt'})
+        expect(result.result.startsWith('0x')).toBeTruthy()
+      })
+    })
+
     describe('cfx_maxPriorityFeePerGas', async () => {
       test('cfx_maxPriorityFeePerGas', async () => {
         const result = await request({method: 'cfx_maxPriorityFeePerGas'})

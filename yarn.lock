@@ -3900,6 +3900,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/cfx_get-fee-burnt@workspace:packages/rpcs/cfx_getFeeBurnt":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/cfx_get-fee-burnt@workspace:packages/rpcs/cfx_getFeeBurnt"
+  dependencies:
+    "@fluent-wallet/spec": "workspace:packages/spec"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cfx_get-interest-rate@workspace:*, @fluent-wallet/cfx_get-interest-rate@workspace:packages/rpcs/cfx_getInterestRate":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-interest-rate@workspace:packages/rpcs/cfx_getInterestRate"
@@ -17909,6 +17917,7 @@ __metadata:
     "@fluent-wallet/cfx_get-code": "workspace:packages/rpcs/cfx_getCode"
     "@fluent-wallet/cfx_get-collateral-for-storage": "workspace:packages/rpcs/cfx_getCollateralForStorage"
     "@fluent-wallet/cfx_get-confirmation-risk-by-hash": "workspace:packages/rpcs/cfx_getConfirmationRiskByHash"
+    "@fluent-wallet/cfx_get-fee-burnt": "workspace:packages/rpcs/cfx_getFeeBurnt"
     "@fluent-wallet/cfx_get-interest-rate": "workspace:*"
     "@fluent-wallet/cfx_get-logs": "workspace:packages/rpcs/cfx_getLogs"
     "@fluent-wallet/cfx_get-max-gas-limit": "workspace:*"
