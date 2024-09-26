@@ -163,7 +163,6 @@ describe('integration test', () => {
     describe('cfx_getFeeBurnt', async () => {
       test('cfx_getFeeBurnt', async () => {
         const result = await request({method: 'cfx_getFeeBurnt'})
-        console.log(result)
         expect(result.result.startsWith('0x')).toBeTruthy()
       })
     })
