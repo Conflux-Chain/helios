@@ -2891,5 +2891,57 @@ describe('integration test', () => {
         expect(res.result.startsWith('0x')).toBe(true)
       })
     })
+
+    describe('cfx_call', async () => {
+      test('cfx_call', async () => {
+        const {token1} = await deployCRC20()
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        expect(
+          (
+            await request({
+              method: 'cfx_call',
+              params: [
+                {
+                  to: token1.contractAddress,
+                  data: '0x06fdde03',
+                },
+              ],
+            })
+          ).result.startsWith('0x'),
+        ).toBe(true)
+        expect(
+          (
+            await request({
+              method: 'cfx_call',
+              params: [
+                {
+                  to: token1.contractAddress,
+                  data: '0x06fdde03',
+                  maxPriorityFeePerGas: '0x4a817c800',
+                },
+              ],
+            })
+          ).result.startsWith('0x'),
+        ).toBe(true)
+        expect(
+          (
+            await request({
+              method: 'cfx_call',
+              params: [
+                {
+                  to: token1.contractAddress,
+                  data: '0x06fdde03',
+                  maxPriorityFeePerGas: '0x4a817c800',
+                  maxFeePerGas: '0x4a817c800',
+                },
+              ],
+            })
+          ).result.startsWith('0x'),
+        ).toBe(true)
+      })
+    })
   })
 })
