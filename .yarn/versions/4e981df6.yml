@@ -2,4 +2,5 @@ releases:
   "@fluent-wallet/cfx_estimate-gas-and-collateral": patch
 
 declined:
+  - helios
   - helios-background
