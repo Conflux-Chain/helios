@@ -7,6 +7,8 @@ import {
   Bytes,
   epochRefNoMined,
   chainId,
+  catn,
+  Hash32,
 } from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_estimateGasAndCollateral'
@@ -35,6 +37,29 @@ export const schemas = {
       ['nonce', {optional: true, doc: 'default to 0x0'}, Uint],
       ['storageLimit', {optional: true}, Uint],
       ['epochHeight', {optional: true}, Uint],
+      ['type', {optional: true}, Uint],
+      ['maxPriorityFeePerGas', {optional: true}, Uint],
+      ['maxFeePerGas', {optional: true}, Uint],
+      [
+        'accessList',
+        {optional: true},
+        [
+          catn,
+          [
+            'AccessListEntry',
+            [
+              map,
+              {closed: true},
+              ['address', {optional: true}, base32Address],
+              [
+                'storageKeys',
+                {optional: true},
+                [catn, ['32BtyeHexValue', Hash32]],
+              ],
+            ],
+          ],
+        ],
+      ],
     ],
     epochRefNoMined,
   ],

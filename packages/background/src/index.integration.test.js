@@ -279,8 +279,40 @@ describe('integration test', () => {
         ).toBe('1337')
       })
     })
+
+    describe('cfx_call', async () => {
+      test('cfx_call', async () => {
+        const {token1} = await deployCRC20()
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        expect(
+          (
+            await request({
+              method: 'cfx_call',
+              params: [
+                {
+                  to: token1.contractAddress,
+                  data: '0x06fdde03',
+                  maxPriorityFeePerGas: '0x4a817c800',
+                  maxFeePerGas: '0x4a817c800',
+                  type: '0x2',
+                },
+              ],
+            })
+          ).result.startsWith('0x'),
+        ).toBe(true)
+      })
+    })
+
     describe('cfx_estimateGasAndCollateral', () => {
       test('cfx_estimateGasAndCollateral', async () => {
+        const {token1} = await deployCRC20()
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
         res = await request({
           method: 'cfx_estimateGasAndCollateral',
           params: [{}],
@@ -289,6 +321,23 @@ describe('integration test', () => {
         expect(res.result.gasLimit).toBeDefined()
         expect(res.result.gasUsed).toBeDefined()
         expect(res.result.storageCollateralized).toBeDefined()
+
+        const estimateRes = await request({
+          method: 'cfx_estimateGasAndCollateral',
+          params: [
+            {
+              type: '0x2',
+              to: token1.contractAddress,
+              data: '0x06fdde03',
+              maxPriorityFeePerGas: '0x4a817c800',
+              maxFeePerGas: '0x4a817c800',
+            },
+          ],
+        })
+        expect(estimateRes?.result).toBeDefined()
+        expect(estimateRes.result.gasLimit).toBeDefined()
+        expect(estimateRes.result.gasUsed).toBeDefined()
+        expect(estimateRes.result.storageCollateralized).toBeDefined()
       })
     })
     describe('eth_estimateGas', () => {
@@ -2889,74 +2938,6 @@ describe('integration test', () => {
         })
         res = await res
         expect(res.result.startsWith('0x')).toBe(true)
-      })
-    })
-
-    describe('cfx_call', async () => {
-      test('cfx_call', async () => {
-        const {token1} = await deployCRC20()
-        await request({
-          method: 'wallet_importMnemonic',
-          params: {mnemonic: MNEMONIC, password},
-        })
-        expect(
-          (
-            await request({
-              method: 'cfx_call',
-              params: [
-                {
-                  to: token1.contractAddress,
-                  data: '0x06fdde03',
-                },
-              ],
-            })
-          ).result.startsWith('0x'),
-        ).toBe(true)
-        expect(
-          (
-            await request({
-              method: 'cfx_call',
-              params: [
-                {
-                  to: token1.contractAddress,
-                  data: '0x06fdde03',
-                  maxPriorityFeePerGas: '0x4a817c800',
-                },
-              ],
-            })
-          ).result.startsWith('0x'),
-        ).toBe(true)
-        expect(
-          (
-            await request({
-              method: 'cfx_call',
-              params: [
-                {
-                  to: token1.contractAddress,
-                  data: '0x06fdde03',
-                  maxPriorityFeePerGas: '0x4a817c800',
-                  maxFeePerGas: '0x4a817c800',
-                },
-              ],
-            })
-          ).result.startsWith('0x'),
-        ).toBe(true)
-        expect(
-          (
-            await request({
-              method: 'cfx_call',
-              params: [
-                {
-                  to: token1.contractAddress,
-                  data: '0x06fdde03',
-                  maxPriorityFeePerGas: '0x4a817c800',
-                  maxFeePerGas: '0x4a817c800',
-                  type: '0x2',
-                },
-              ],
-            })
-          ).result.startsWith('0x'),
-        ).toBe(true)
       })
     })
   })
