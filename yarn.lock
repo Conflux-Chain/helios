@@ -4934,7 +4934,7 @@ __metadata:
     "@fluent-wallet/utils": "workspace:packages/utils"
     cip-23: "npm:0.2.0"
     eth-sig-util: "npm:3.0.1"
-    js-conflux-sdk: "npm:2.1.2"
+    js-conflux-sdk: "npm:2.4.10"
   languageName: unknown
   linkType: soft
 

@@ -14,6 +14,6 @@
     "@fluent-wallet/utils": "workspace:packages/utils",
     "cip-23": "0.2.0",
     "eth-sig-util": "3.0.1",
-    "js-conflux-sdk": "2.1.2"
+    "js-conflux-sdk": "2.4.10"
   }
 }
