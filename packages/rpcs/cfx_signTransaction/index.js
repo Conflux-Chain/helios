@@ -9,8 +9,11 @@ import {
   zeroOrOne,
   map,
   Uint,
+  catn,
+  Hash32,
 } from '@fluent-wallet/spec'
 import {cfxSignTransaction} from '@fluent-wallet/signature'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 
 export const NAME = 'cfx_signTransaction'
 
@@ -28,6 +31,25 @@ export const txSchema = [
   ['storageLimit', {optional: true}, Uint],
   ['chainId', {optional: true}, chainId],
   ['epochHeight', {optional: true}, Uint],
+  ['type', {optional: true}, Uint],
+  ['maxPriorityFeePerGas', {optional: true}, Uint],
+  ['maxFeePerGas', {optional: true}, Uint],
+  [
+    'accessList',
+    {optional: true},
+    [
+      catn,
+      [
+        'AccessListEntry',
+        [
+          map,
+          {closed: true},
+          ['address', {optional: true}, base32Address],
+          ['storageKeys', {optional: true}, [catn, ['32BtyeHexValue', Hash32]]],
+        ],
+      ],
+    ],
+  ],
 ]
 
 export const schemas = {
@@ -57,6 +79,9 @@ export const permissions = {
     'cfx_epochNumber',
     'cfx_estimateGasAndCollateral',
     'wallet_detectAddressType',
+    'cfx_getBlockByEpochNumber',
+    'wallet_network1559Compatible',
+    'cfx_maxPriorityFeePerGas',
   ],
   db: ['findAddress'],
 }
@@ -73,6 +98,9 @@ export const main = async args => {
       cfx_estimateGasAndCollateral,
       cfx_getNextUsableNonce,
       wallet_detectAddressType,
+      cfx_getBlockByEpochNumber,
+      wallet_network1559Compatible,
+      cfx_maxPriorityFeePerGas,
     },
     params: [tx, opts = {}],
     network,
@@ -85,6 +113,15 @@ export const main = async args => {
   tx.from = tx.from.toLowerCase()
   if (tx.to) tx.to = tx.to.toLowerCase()
   const newTx = {...tx}
+  const network1559Compatible = await wallet_network1559Compatible()
+
+  if (!newTx.type) {
+    if (network1559Compatible) {
+      newTx.type = ETH_TX_TYPES.EIP1559
+    } else {
+      newTx.type = ETH_TX_TYPES.LEGACY
+    }
+  }
 
   const fromAddr = findAddress({
     appId: app && app.eid,
@@ -119,6 +156,15 @@ export const main = async args => {
       newTx.from,
     ])
   }
+  // EIP-1559
+  const is1559Tx = newTx.type === ETH_TX_TYPES.EIP1559
+  if (is1559Tx && !network1559Compatible)
+    throw InvalidParams(
+      `Network ${network.name} don't support 1559 transaction`,
+    )
+  if (!is1559Tx && !newTx.gasPrice) {
+    newTx.gasPrice = await cfx_gasPrice()
+  }
 
   if (newTx.to && (!newTx.gas || !newTx.storageLimit)) {
     const {type} = await wallet_detectAddressType(
@@ -130,8 +176,6 @@ export const main = async args => {
       if (!newTx.storageLimit) newTx.storageLimit = '0x0'
     }
   }
-
-  if (!newTx.gasPrice) newTx.gasPrice = await cfx_gasPrice()
 
   if (!newTx.gas || !newTx.storageLimit) {
     try {
@@ -146,6 +190,34 @@ export const main = async args => {
       err.data = {originalData: err.data, estimateError: true}
       throw err
     }
+  }
+
+  if (is1559Tx && network1559Compatible) {
+    if (newTx.gasPrice) {
+      newTx.maxFeePerGas = newTx.gasPrice
+      newTx.maxPriorityFeePerGas = newTx.gasPrice
+      newTx.gasPrice = undefined
+    }
+
+    if (!newTx.maxPriorityFeePerGas) {
+      newTx.maxPriorityFeePerGas = await cfx_maxPriorityFeePerGas()
+    }
+    if (!newTx.maxFeePerGas) {
+      const block = await cfx_getBlockByEpochNumber(['latest_state', false])
+
+      const {baseFeePerGas} = block
+      newTx.maxFeePerGas = `0x${(
+        (Number.parseInt(newTx.maxPriorityFeePerGas, 16) +
+          Number.parseInt(baseFeePerGas, 16)) *
+        2
+      ).toString(16)}`
+    }
+  }
+
+  // change the type to number
+
+  if (newTx.type && typeof newTx.type === 'string') {
+    newTx.type = Number.parseInt(newTx.type, 16)
   }
 
   let raw
