@@ -13,6 +13,7 @@
     "@fluent-wallet/cfx_check-balance-against-transaction": "workspace:packages/rpcs/cfx_checkBalanceAgainstTransaction",
     "@fluent-wallet/cfx_client-version": "workspace:packages/rpcs/cfx_clientVersion",
     "@fluent-wallet/cfx_epoch-number": "workspace:packages/rpcs/cfx_epochNumber",
+    "@fluent-wallet/cfx_estimate-1559-fee": "workspace:packages/rpcs/cfx_estimate1559Fee",
     "@fluent-wallet/cfx_estimate-gas-and-collateral": "workspace:packages/rpcs/cfx_estimateGasAndCollateral",
     "@fluent-wallet/cfx_fee-history": "workspace:packages/rpcs/cfx_feeHistory",
     "@fluent-wallet/cfx_gas-price": "workspace:packages/rpcs/cfx_gasPrice",
