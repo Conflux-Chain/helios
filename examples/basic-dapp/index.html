@@ -42,7 +42,12 @@
           <footer>Address: <span id="address">N/A</span></footer>
         </article>
         <article>
-          <header>Send native token</header>
+          <label for="tx-type">transaction type:</label>
+          <select id="tx-type">
+            <option value="0x0">legacy</option>
+            <option value="0x2">eip1559</option>
+            <option value="0x1">eip2930</option>
+          <select>
           <button id="send_native_token" disabled="true">
             send native token to myself
           </button>
