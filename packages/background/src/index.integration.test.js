@@ -2845,6 +2845,36 @@ describe('integration test', () => {
                 from: CFX_ACCOUNTS[0].base32,
                 to: CFX_ACCOUNTS[1].base32,
                 value: '0x1',
+                type: '0x0',
+              },
+            ],
+            _popup: true,
+          })
+          expect(res.result).toBeDefined()
+          expect(res.result.startsWith('0x')).toBe(true)
+
+          res = await request({
+            method: 'cfx_sendTransaction',
+            params: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                value: '0x1',
+                type: '0x1',
+              },
+            ],
+            _popup: true,
+          })
+          expect(res.result).toBeDefined()
+          expect(res.result.startsWith('0x')).toBe(true)
+          res = await request({
+            method: 'cfx_sendTransaction',
+            params: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                value: '0x1',
+                type: '0x2',
               },
             ],
             _popup: true,
@@ -2868,6 +2898,22 @@ describe('integration test', () => {
                 to: CFX_ACCOUNTS[1].base32,
                 data: '0x10',
                 value: '0x1',
+                type: '0x0',
+              },
+            ],
+            _popup: true,
+          })
+          expect(res.result).toBeDefined()
+          expect(res.result.startsWith('0x')).toBe(true)
+          res = await request({
+            method: 'cfx_sendTransaction',
+            params: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                data: '0x10',
+                value: '0x1',
+                type: '0x2',
               },
             ],
             _popup: true,
