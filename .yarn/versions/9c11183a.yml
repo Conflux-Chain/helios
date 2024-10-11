@@ -1,6 +1,0 @@
-releases:
-  "@fluent-wallet/cfx_call": patch
-
-declined:
-  - helios
-  - helios-background
