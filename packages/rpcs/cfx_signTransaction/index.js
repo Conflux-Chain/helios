@@ -14,6 +14,7 @@ import {
 } from '@fluent-wallet/spec'
 import {cfxSignTransaction} from '@fluent-wallet/signature'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {parseUnits} from '@ethersproject/units'
 
 export const NAME = 'cfx_signTransaction'
 
@@ -82,6 +83,7 @@ export const permissions = {
     'cfx_getBlockByEpochNumber',
     'wallet_network1559Compatible',
     'cfx_maxPriorityFeePerGas',
+    'cfx_estimate1559Fee',
   ],
   db: ['findAddress'],
 }
@@ -98,9 +100,8 @@ export const main = async args => {
       cfx_estimateGasAndCollateral,
       cfx_getNextUsableNonce,
       wallet_detectAddressType,
-      cfx_getBlockByEpochNumber,
       wallet_network1559Compatible,
-      cfx_maxPriorityFeePerGas,
+      cfx_estimate1559Fee,
     },
     params: [tx, opts = {}],
     network,
@@ -193,25 +194,19 @@ export const main = async args => {
   }
 
   if (is1559Tx && network1559Compatible) {
-    if (newTx.gasPrice) {
-      newTx.maxFeePerGas = newTx.gasPrice
-      newTx.maxPriorityFeePerGas = newTx.gasPrice
-      newTx.gasPrice = undefined
-    }
-
-    if (!newTx.maxPriorityFeePerGas) {
-      newTx.maxPriorityFeePerGas = await cfx_maxPriorityFeePerGas()
-    }
-    if (!newTx.maxFeePerGas) {
-      const block = await cfx_getBlockByEpochNumber(['latest_state', false])
-
-      const {baseFeePerGas} = block
-      newTx.maxFeePerGas = `0x${(
-        (Number.parseInt(newTx.maxPriorityFeePerGas, 16) +
-          Number.parseInt(baseFeePerGas, 16)) *
-        2
-      ).toString(16)}`
-    }
+    const gasInfoEip1559 = await cfx_estimate1559Fee()
+    const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
+      gasInfoEip1559?.medium || {}
+    if (!newTx.maxPriorityFeePerGas)
+      newTx.maxPriorityFeePerGas = parseUnits(
+        suggestedMaxPriorityFeePerGas,
+        'gwei',
+      ).toHexString()
+    if (!newTx.maxFeePerGas)
+      newTx.maxFeePerGas = parseUnits(
+        suggestedMaxFeePerGas,
+        'gwei',
+      ).toHexString()
   }
 
   // change the type to number
