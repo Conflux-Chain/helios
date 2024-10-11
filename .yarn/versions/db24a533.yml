@@ -1,0 +1,19 @@
+releases:
+  "@fluent-wallet/cfx_estimate-1559-fee": patch
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/cfx_sign-transaction": patch
+  "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": patch
+  "@fluent-wallet/cfx_sign-typed-data_v4": patch
+  "@fluent-wallet/estimate-tx": patch
+  "@fluent-wallet/eth_send-transaction": patch
+  "@fluent-wallet/eth_sign-transaction": patch
+  "@fluent-wallet/eth_sign-typed-data_v4": patch
+  "@fluent-wallet/personal_sign": patch
+  "@fluent-wallet/signature": patch
+  "@fluent-wallet/wallet_network1559compatible": patch
+  "@fluent-wallet/wallet_send-transaction": patch
+  "@fluent-wallet/wallet_send-transaction-with-action": patch
+  helios: minor
+
+declined:
+  - helios-background
