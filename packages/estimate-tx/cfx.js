@@ -203,15 +203,15 @@ export const cfxEstimate = async (
 
   // simple send tx, gas is 21000, storageLimit is 0
   if (to && (!data || data === '0x')) {
-    const clcGasPrice = customGasPrice || gasPrice
-    const clcGasLimit = customGasLimit || '0x5208' /* 21000 */
-    const clcStorageLimit = customStorageLimit || '0x0'
-    const clcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
+    const calcGasPrice = customGasPrice || gasPrice
+    const calcGasLimit = customGasLimit || '0x5208' /* 21000 */
+    const calcStorageLimit = customStorageLimit || '0x0'
+    const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
     const cfxFeeData = cfxGetFeeData(
       {
-        gasPrice: isTxTreatedAsEIP1559 ? clcMaxFeePerGas : clcGasPrice,
-        gas: clcGasLimit,
-        storageLimit: clcStorageLimit,
+        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gas: calcGasLimit,
+        storageLimit: calcStorageLimit,
         value,
       },
       {balance: balances['0x0']},
@@ -250,10 +250,10 @@ export const cfxEstimate = async (
   // run estimate
   let rst = await cfxEstimateGasAndCollateralAdvance(request, newTx)
   const {gasLimit, storageCollateralized} = rst
-  const clcGasPrice = customGasPrice || gasPrice
-  const clcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
-  const clcGasLimit = customGasLimit || gasLimit
-  const clcStorageLimit = customStorageLimit || storageCollateralized
+  const calcGasPrice = customGasPrice || gasPrice
+  const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
+  const calcGasLimit = customGasLimit || gasLimit
+  const calcStorageLimit = customStorageLimit || storageCollateralized
 
   rst = {
     ...rst,
@@ -267,17 +267,17 @@ export const cfxEstimate = async (
         from,
         to,
         // prioritiz custom value so that user can adjust them for sponsorship
-        clcGasLimit,
-        isTxTreatedAsEIP1559 ? clcMaxFeePerGas : clcGasPrice,
-        clcStorageLimit,
+        calcGasLimit,
+        isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        calcStorageLimit,
         'latest_state',
       ],
     })
     const cfxFeeData = cfxGetFeeData(
       {
-        gasPrice: isTxTreatedAsEIP1559 ? clcMaxFeePerGas : clcGasPrice,
-        gas: clcGasLimit,
-        storageLimit: clcStorageLimit,
+        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gas: calcGasLimit,
+        storageLimit: calcStorageLimit,
         value,
         tokensAmount,
       },
@@ -293,9 +293,9 @@ export const cfxEstimate = async (
   } else {
     const cfxFeeData = cfxGetFeeData(
       {
-        gasPrice: isTxTreatedAsEIP1559 ? clcMaxFeePerGas : clcGasPrice,
-        gas: clcGasLimit,
-        storageLimit: clcStorageLimit,
+        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gas: calcGasLimit,
+        storageLimit: calcStorageLimit,
         value,
       },
       {balance: balances['0x0']},
