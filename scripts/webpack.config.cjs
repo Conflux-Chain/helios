@@ -110,6 +110,7 @@ const defaultConfig = {
       https: false,
       buffer: require.resolve('buffer/'),
       stream: require.resolve('stream-browserify'),
+      process: 'process/browser', 
     },
     alias: {
       '/images': path.join(packagesPath, 'browser-extension/images'),
@@ -120,6 +121,7 @@ const defaultConfig = {
     new ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
       React: 'react',
+      process: 'process/browser.js',
     }),
     new EsbuildPlugin({
       define: {
