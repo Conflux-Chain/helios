@@ -1169,6 +1169,12 @@
              [?g :accountGroup/account ?acc]
              [?acc :account/address ?addr]]
            groupId)
+        account-in-group
+        (q '[:find [?acc ...]
+             :in $ ?g
+             :where
+             [?g :accountGroup/account ?acc]]
+           groupId)
         addrs-has-accs-not-in-group
         (q '[:find [?addr ...]
              :in $ ?g
@@ -1180,10 +1186,17 @@
            groupId)
         addrs-to-delete (filter #(not (some #{%} addrs-has-accs-not-in-group)) addrs-in-group)
         txs             (mapv #(vector :db.fn/retractEntity %) addrs-to-delete)
-        txs             (conj txs [:db.fn/retractEntity groupId])]
+        txs             (conj txs [:db.fn/retractEntity groupId])
+        apps-info-and-txs (if (seq account-in-group)
+                             (map get-hidden-account-apps (map #(hash-map :accountId %) account-in-group))
+                             [[] []])
+        apps-txs (map first (map first apps-info-and-txs))
+        apps-sideeffects (filter not-empty (map first (map second apps-info-and-txs)))
+        txs            (concat txs apps-txs)
+        ]
     (t txs)
     (cleanup-token-list-after-delete-address)
-    true))
+    apps-sideeffects))
 
 (defn retract-account
   "used to retract accounts"
