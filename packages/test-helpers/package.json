@@ -8,7 +8,7 @@
     "js-conflux-sdk": "2.1.2"
   },
   "devDependencies": {
-    "@xcfx/node": "0.0.7",
+    "@xcfx/node": "0.3.2",
     "hardhat": "2.22.10"
   }
 }
