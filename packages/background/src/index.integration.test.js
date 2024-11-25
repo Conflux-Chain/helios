@@ -378,7 +378,7 @@ describe('integration test', () => {
               params: {url: 'https://example.com'},
             })
           ).error.message,
-        ).toMatch(/Unsupported network type/)
+        ).toMatch(/Invalid rpc endpoint/)
       })
     })
     describe('wallet_deleteNetwork', () => {

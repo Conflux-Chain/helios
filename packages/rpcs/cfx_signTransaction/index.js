@@ -128,6 +128,33 @@ export const main = async args => {
   // from address is not belong to wallet
   if (!fromAddr) throw InvalidParams(`Invalid from address ${newTx.from}`)
 
+  /**
+   * ledger app check, v1.x is is not support 1559 transaction
+   * so we need check this app version
+   */
+  let isV1LedgerAPP = false
+  if (fromAddr.account.accountGroup.vault.type === 'hw') {
+    // is hw wallet, we check is 1.x app version
+    const {Conflux: LedgerConflux} = await import('@fluent-wallet/ledger')
+    let ledger = new LedgerConflux()
+    // this call will establish a connection to the ledger device
+    const {version} = await ledger.getAppConfiguration()
+    if (version[0] === '1') {
+      isV1LedgerAPP = true
+    }
+    // disconnect from the ledger, if not disconnect will cause error when re-connect
+    await ledger.cleanUp()
+    ledger = null
+  }
+
+  if (!newTx.type) {
+    if (network1559Compatible && !isV1LedgerAPP) {
+      newTx.type = ETH_TX_TYPES.EIP1559
+    } else {
+      newTx.type = ETH_TX_TYPES.LEGACY
+    }
+  }
+
   // tx without to must have data (deploy contract)
   if (!newTx.to && !newTx.data)
     throw InvalidParams(
@@ -182,33 +209,6 @@ export const main = async args => {
     } catch (err) {
       err.data = {originalData: err.data, estimateError: true}
       throw err
-    }
-  }
-
-  /**
-   * ledger app check, v1.x is is not support 1559 transaction
-   * so we need check this app version
-   */
-  let isV1LedgerAPP = false
-  if (fromAddr.account.accountGroup.vault.type === 'hw') {
-    // is hw wallet, we check is 1.x app version
-    const {Conflux: LedgerConflux} = await import('@fluent-wallet/ledger')
-    let ledger = new LedgerConflux()
-    // this call will establish a connection to the ledger device
-    const {version} = await ledger.getAppConfiguration()
-    if (version[0] === '1') {
-      isV1LedgerAPP = true
-    }
-    // disconnect from the ledger, if not disconnect will cause error when re-connect
-    await ledger.cleanUp()
-    ledger = null
-  }
-
-  if (!newTx.type) {
-    if (network1559Compatible && !isV1LedgerAPP) {
-      newTx.type = ETH_TX_TYPES.EIP1559
-    } else {
-      newTx.type = ETH_TX_TYPES.LEGACY
     }
   }
 
