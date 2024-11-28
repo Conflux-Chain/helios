@@ -4,3 +4,6 @@ releases:
   "@fluent-wallet/wallet_delete-account-group": patch
   browser-extension: patch
   helios-background: patch
+
+declined:
+  - helios
