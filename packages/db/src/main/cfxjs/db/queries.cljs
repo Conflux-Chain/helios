@@ -1216,12 +1216,6 @@
              [?g :accountGroup/account ?acc]
              [?acc :account/address ?addr]]
            groupId)
-        account-in-group
-        (q '[:find [?acc ...]
-             :in $ ?g
-             :where
-             [?g :accountGroup/account ?acc]]
-           groupId)
         addrs-has-accs-not-in-group
         (q '[:find [?addr ...]
              :in $ ?g
