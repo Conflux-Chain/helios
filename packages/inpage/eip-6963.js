@@ -1,4 +1,4 @@
-const EIP6963EventNames = {
+export const EIP6963EventNames = {
   Announce: 'eip6963:announceProvider',
   Request: 'eip6963:requestProvider',
 }
