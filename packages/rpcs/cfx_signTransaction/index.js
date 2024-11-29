@@ -88,6 +88,16 @@ export const permissions = {
   db: ['findAddress'],
 }
 
+// conflux js sdk
+// hex type must be integer
+function formatTx(tx) {
+  const newTx = {...tx}
+
+  if (newTx.type && typeof newTx.type === 'string') {
+    newTx.type = parseInt(tx.type, 16)
+  }
+  return newTx
+}
 export const main = async args => {
   const {
     app,
@@ -151,6 +161,11 @@ export const main = async args => {
     if (network1559Compatible && !isV1LedgerAPP) {
       newTx.type = ETH_TX_TYPES.EIP1559
     } else {
+      newTx.type = ETH_TX_TYPES.LEGACY
+    }
+  } else {
+    // if there has type, we need check is v1.x ledger app
+    if (isV1LedgerAPP) {
       newTx.type = ETH_TX_TYPES.LEGACY
     }
   }
@@ -228,17 +243,11 @@ export const main = async args => {
       ).toHexString()
   }
 
-  // change the type to number
-
-  if (newTx.type && typeof newTx.type === 'string') {
-    newTx.type = Number.parseInt(newTx.type, 16)
-  }
-
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {
     if (dryRun) {
       raw = cfxSignTransaction(
-        newTx,
+        formatTx(newTx),
         '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
         network.netId,
       )
@@ -246,7 +255,7 @@ export const main = async args => {
       raw = await signWithHardwareWallet({
         args,
         accountId: fromAddr.account.eid,
-        tx: newTx,
+        tx: formatTx(newTx),
         addressId: fromAddr.eid,
         device: fromAddr.account.accountGroup.vault.device,
       })
@@ -259,7 +268,7 @@ export const main = async args => {
 
     if (dryRun)
       pk = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
-    raw = cfxSignTransaction(newTx, pk, network.netId)
+    raw = cfxSignTransaction(formatTx(newTx), pk, network.netId)
   }
 
   if (returnTxMeta) {
