@@ -18252,6 +18252,7 @@ __metadata:
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime"
     "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api"
     "@thi.ng/rstream": "npm:6.0.21"
+    uuid: "npm:^8.3.2"
     webextension-polyfill: "npm:0.8.0"
   languageName: unknown
   linkType: soft

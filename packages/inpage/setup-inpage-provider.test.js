@@ -1,16 +1,19 @@
 import {expect, describe, it, vi} from 'vitest'
+import {EIP6963EventNames} from './eip-6963.js'
 describe('inpage', () => {
   describe('setupProvider', () => {
     it('should setup the provider on window.conflux', async () => {
-      let listener, eventName
+      let listeners = [],
+        eventNames = []
       window.addEventListener = vi.fn((e, l) => {
-        eventName = e
-        listener = l
+        eventNames.push(e)
+        listeners.push(l)
       })
       expect(window.conflux).toBe(undefined)
       await import('./index.js')
-      expect(typeof listener).toBe('function')
-      expect(eventName).toBe('message')
+      listeners.forEach(l => expect(typeof l).toBe('function'))
+      expect(eventNames[0]).toBe('message')
+      expect(eventNames[1]).toBe(EIP6963EventNames.Request)
       expect(window.conflux).toBeDefined()
     })
 
