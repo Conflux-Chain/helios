@@ -67,7 +67,7 @@
     "build:firefox": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=firefox webpack --config ./scripts/webpack.config.prod.mjs && yarn removeEmptyFile",
     "build:edge": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=edge webpack --config ./scripts/webpack.config.prod.mjs && yarn removeEmptyFile",
     "build": "yarn build:chrome && yarn build:firefox && yarn build:edge && yarn removeEmptyFile",
-    "removeEmptyFile": "rm -rf ./dist/*/manifest.js"
+    "removeEmptyFile": "find ./dist -name \"manifest.js\" -type f -delete"
   },
   "devDependencies": {
     "@babel/core": "7.17.9",
