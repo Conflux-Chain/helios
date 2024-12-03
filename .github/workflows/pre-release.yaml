@@ -114,11 +114,10 @@ jobs:
 
       - name: zip files
         run: |
-          cd ./dist
-          zip -r ./chrome.zip ./chrome
-          zip -r ./firefox.zip ./firefox
-          zip -r ./edge.zip ./edge
-
+          cd ./dist/chrome && zip -FS -r ../chrome.zip .
+          cd ../firefox && zip -FS -r ../firefox.zip .
+          cd ../edge && zip -FS -r ../edge.zip .
+          
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
