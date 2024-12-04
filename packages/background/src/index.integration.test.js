@@ -1218,7 +1218,11 @@ describe('integration test', () => {
         expect(authReq.site.origin).toBe('foo.site')
         expect(authReq.req.method).toBe('wallet_requestPermissions')
         expect(authReq.req.params).toStrictEqual([
-          {wallet_basic: {}, wallet_accounts: {}},
+          {
+            wallet_basic: {},
+            wallet_accounts: {},
+            wallet_crossNetworkTypeGetConfluxBase32Address: {},
+          },
         ])
 
         const res2 = await request({
@@ -1268,7 +1272,11 @@ describe('integration test', () => {
         expect(authReq.site.origin).toBe('foo.site')
         expect(authReq.req.method).toBe('wallet_requestPermissions')
         expect(authReq.req.params).toStrictEqual([
-          {wallet_basic: {}, wallet_accounts: {}},
+          {
+            wallet_basic: {},
+            wallet_accounts: {},
+            wallet_crossNetworkTypeGetConfluxBase32Address: {},
+          },
         ])
 
         expect(db.getApp().length).toBe(0)
@@ -1294,6 +1302,7 @@ describe('integration test', () => {
         expect(app.perms).toStrictEqual({
           wallet_accounts: {},
           wallet_basic: {},
+          wallet_crossNetworkTypeGetEthereumHexAddress: {},
         })
         // app has the right authed accounts
         expect(
@@ -1314,6 +1323,7 @@ describe('integration test', () => {
           'wallet_accounts',
           'cfx_accounts',
           'eth_accounts',
+          'wallet_crossNetworkTypeGetEthereumHexAddress',
         ])
         res = await request({
           method: 'wallet_getPermissions',
@@ -1327,8 +1337,10 @@ describe('integration test', () => {
           true,
           true,
           true,
+          true,
         ])
         expect(res.result.map(({invoker}) => invoker === 'foo.site')).toEqual([
+          true,
           true,
           true,
           true,
@@ -1371,6 +1383,7 @@ describe('integration test', () => {
         expect(app.perms).toStrictEqual({
           wallet_accounts: {},
           wallet_basic: {},
+          wallet_crossNetworkTypeGetEthereumHexAddress: {},
         })
         // app has the right authed accounts
         expect(
@@ -1388,6 +1401,7 @@ describe('integration test', () => {
           'wallet_accounts',
           'cfx_accounts',
           'eth_accounts',
+          'wallet_crossNetworkTypeGetEthereumHexAddress',
         ])
       })
     })
