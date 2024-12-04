@@ -2,9 +2,8 @@ const path = require('node:path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
-const {ProvidePlugin} = require('webpack')
+const {ProvidePlugin, DefinePlugin} = require('webpack')
 const {ProgressPlugin} = require('webpack')
-const {EsbuildPlugin} = require('esbuild-loader')
 const packageJson = require('../package.json')
 const packagesPath = path.join(path.resolve(), './packages')
 const devMode = process.env.NODE_ENV !== 'production'
@@ -110,29 +109,30 @@ const defaultConfig = {
       https: false,
       buffer: require.resolve('buffer/'),
       stream: require.resolve('stream-browserify'),
+      process: 'process/browser',
     },
     alias: {
       '/images': path.join(packagesPath, 'browser-extension/images'),
-      "js-conflux-sdk": path.join(path.resolve(), './node_modules/js-conflux-sdk'),
+      'js-conflux-sdk': path.join(
+        path.resolve(),
+        './node_modules/js-conflux-sdk',
+      ),
     },
   },
   plugins: [
     new ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
       React: 'react',
+      process: 'process/browser.js',
     }),
-    new EsbuildPlugin({
-      define: {
-        'process.env.NODE_DEBUG': JSON.stringify(
-          process.env.NODE_DEBUG || false,
-        ),
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-        'process.env.CI': JSON.stringify(process.env.CI || false),
-        'process.env.SENTRY_DSN': JSON.stringify(
-          process.env.SNOWPACK_PUBLIC_SENTRY_DSN || '',
-        ),
-        'process.env.PACKAGE_VERSION': JSON.stringify(packageJson.version),
-      },
+    new DefinePlugin({
+      'process.env.NODE_DEBUG': JSON.stringify(process.env.NODE_DEBUG || false),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.CI': JSON.stringify(process.env.CI || false),
+      'process.env.SENTRY_DSN': JSON.stringify(
+        process.env.SNOWPACK_PUBLIC_SENTRY_DSN || '',
+      ),
+      'process.env.PACKAGE_VERSION': JSON.stringify(packageJson.version),
     }),
     // Plugin to not generate js bundle for manifest entry
     new HtmlWebpackPlugin({

@@ -24,7 +24,6 @@ export const main = async ({
   }
   const permissionsToRequest = {
     cfx_accounts: {},
-    wallet_crossNetworkTypeGetConfluxBase32Address: {},
   }
   const permsRes = await wallet_requestPermissions([permissionsToRequest])
 

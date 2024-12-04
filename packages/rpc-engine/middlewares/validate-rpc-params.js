@@ -34,8 +34,13 @@ export default defMiddleware(({tx: {map, comp}}) => ({
       const {params, method} = req
       const {schemas, Err} = rpcStore[method]
       // TODO: add a preprocess middleware to transform req params for more compatibilities
-      if (method === 'eth_sendTransaction' && isArray(params))
+      if (
+        (method === 'eth_sendTransaction' ||
+          method === 'cfx_sendTransaction') &&
+        isArray(params)
+      ) {
         params[0] = preprocessTx(params[0])
+      }
       if (schemas.input) {
         if (!validate(schemas.input, params, {netId: req.network.netId})) {
           throw Err.InvalidParams(

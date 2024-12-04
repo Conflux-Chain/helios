@@ -28,10 +28,10 @@ beforeAll(async () => {
   await deployETHBalanceChecker()
   confluxServer = await createServer({
     // silent: false,
-    dev_block_interval_ms: 100,
-    mode: 'dev',
-    chain_id: CFX_LOCALNET_NETID,
-    genesis_secrets: [GENESIS_PRI_KEY],
+    devBlockIntervalMs: 100,
+    chainId: CFX_LOCALNET_NETID,
+    genesisSecrets: [GENESIS_PRI_KEY.replace(/^0x/, '')],
+    jsonrpcHttpPort: 12537,
   })
   await confluxServer.start()
   await new Promise(resolve => setTimeout(resolve, 3000))
