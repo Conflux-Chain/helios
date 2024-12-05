@@ -53,6 +53,8 @@ export const main = async ({
 
   const sideEffects = retractAccount({accountId, hwVaultData: ddata})
 
-  await Promise.all(sideEffects.map(([method, params]) => rpcs[method](params)))
+  await Promise.all(
+    sideEffects?.map(([method, params]) => rpcs[method]?.(params)),
+  )
   return true
 }
