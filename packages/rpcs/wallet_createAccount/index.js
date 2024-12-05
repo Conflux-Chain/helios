@@ -44,7 +44,7 @@ export const main = async ({
       nickname: 1,
     },
   })
-  if (!group) throw InvalidParams('Invalid account group id')
+  if (!group) throw InvalidParams(`Invalid account group id ${accountGroupId}`)
 
   const {vault} = group
   if (vault.type !== 'hd')
@@ -78,8 +78,19 @@ export const main = async ({
           only0x1Prefixed: vault.cfxOnly,
         }),
       })),
-    ).then(params =>
-      params.map(({eid, netId, type, addr: {address, privateKey}}) => {
+    ).then(params => {
+      const _group = findGroup({
+        groupId: accountGroupId,
+        g: {
+          account: {nickname: 1},
+          vault: {type: 1, ddata: 1, data: 1, cfxOnly: 1},
+          nickname: 1,
+        },
+      })
+      // check group is deleted or not
+      if (!_group)
+        throw InvalidParams(`Invalid account group id ${accountGroupId}`)
+      return params.map(({eid, netId, type, addr: {address, privateKey}}) => {
         const accountId =
           findAccount({
             groupId: accountGroupId,
@@ -110,8 +121,8 @@ export const main = async ({
         ])
 
         return tempids.accountId ?? accountId
-      }),
-    )
+      })
+    })
   )[0]
 
   if (_popup && select) {
