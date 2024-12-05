@@ -16,6 +16,7 @@ export const permissions = {
     'eth_feeHistory',
     'wallet_network1559Compatible',
     'cfx_gasPrice',
+    'cfx_getBlockByEpochNumber',
   ],
   db: [],
 }
@@ -43,7 +44,7 @@ const SETTINGS_BY_PRIORITY_LEVEL = {
  */
 export const main = async ({
   Err: {InvalidParams},
-  rpcs: {wallet_network1559Compatible, cfx_gasPrice},
+  rpcs: {wallet_network1559Compatible, cfx_gasPrice, cfx_getBlockByEpochNumber},
   network,
 }) => {
   const network1559Compatible = await wallet_network1559Compatible()
@@ -54,6 +55,11 @@ export const main = async ({
 
   const gasPrice = await cfx_gasPrice()
   const gasPrice_bn = new BN(Number(gasPrice))
+  /**
+   * Why use gasPrice in EIP-1559?
+   * Since Conflux network has fast transaction processing, using direct gasPrice is enough. The network is rarely congested,
+   * so there's no need to pay extra gas fees for transactions.
+   */
   const gasInfo = Object.fromEntries(
     Object.entries(SETTINGS_BY_PRIORITY_LEVEL).map(([level, settings]) => [
       level,
@@ -77,6 +83,8 @@ export const main = async ({
       },
     ]),
   )
-
+  const latestBlock = await cfx_getBlockByEpochNumber(['latest_state', false])
+  const baseFeePerGas = new BN(Number(latestBlock?.baseFeePerGas))
+  gasInfo.estimatedBaseFee = formatUnits(baseFeePerGas.toString(), 'gwei')
   return gasInfo
 }
