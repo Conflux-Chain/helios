@@ -131,19 +131,22 @@ function EditGasFee({
       gas: formatDecimalToHex(gasLimit) || estimateGasLimit,
       nonce: formatDecimalToHex(nonce),
       storageLimit: formatDecimalToHex(storageLimit),
-      maxFeePerGas: suggestedMaxFeePerGas
-        ? convertValueToData(
-            new Big(suggestedMaxFeePerGas).round(9).toString(10),
-            GWEI_DECIMALS,
-          )
-        : '',
+      maxFeePerGas: !resendType
+        ? suggestedMaxFeePerGas
+          ? convertValueToData(
+              new Big(suggestedMaxFeePerGas).round(9).toString(10),
+              GWEI_DECIMALS,
+            )
+          : ''
+        : // resend use suggest gas price
+          suggestedGasPrice,
       maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas
         ? convertValueToData(
             new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
             GWEI_DECIMALS,
           )
         : '',
-      gasPrice: suggestedGasPrice,
+      gasPrice: !isTxTreatedAsEIP1559 ? suggestedGasPrice : '',
     }
   }
   if (!sendParams.maxFeePerGas) delete sendParams.maxFeePerGas
@@ -236,6 +239,7 @@ function EditGasFee({
             isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
             isHistoryTx={!isSendTx}
             gasInfoEip1559={gasInfoEip1559}
+            resendType={resendType}
             suggestedGasPrice={suggestedGasPrice}
             selectedGasLevel={selectedGasLevel}
             setSelectedGasLevel={setSelectedGasLevel}
