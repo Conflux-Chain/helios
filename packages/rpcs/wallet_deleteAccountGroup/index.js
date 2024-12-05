@@ -37,6 +37,8 @@ export const main = async ({
 
   const sideEffects = retractGroup({groupId: group.eid})
 
-  await Promise.all(sideEffects.map(([method, params]) => rpcs[method](params)))
+  await Promise.all(
+    sideEffects?.map(([method, params]) => rpcs[method]?.(params)),
+  )
   return true
 }
