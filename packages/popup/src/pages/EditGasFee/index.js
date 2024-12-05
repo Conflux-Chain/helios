@@ -138,7 +138,7 @@ function EditGasFee({
               GWEI_DECIMALS,
             )
           : ''
-        : // resend use suggest gas price
+        : // 1559 tx resend use suggest gas price
           suggestedGasPrice,
       maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas
         ? convertValueToData(
