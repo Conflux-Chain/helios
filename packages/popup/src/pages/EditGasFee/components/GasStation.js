@@ -205,7 +205,15 @@ function GasStation({
             pathname: ADVANCED_GAS,
             search: `?isHistoryTx=${isHistoryTx}&${
               isTxTreatedAsEIP1559
-                ? `suggestedMaxFeePerGas=${suggestedMaxFeePerGas}&suggestedMaxPriorityFeePerGas=${suggestedMaxPriorityFeePerGas}&selectedGasLevel=${selectedGasLevel}`
+                ? `suggestedMaxFeePerGas=${
+                    !resendType
+                      ? suggestedMaxFeePerGas
+                      : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
+                  }&suggestedMaxPriorityFeePerGas=${
+                    !resendType
+                      ? suggestedMaxPriorityFeePerGas
+                      : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
+                  }&selectedGasLevel=${selectedGasLevel}`
                 : ''
             }${
               !isTxTreatedAsEIP1559

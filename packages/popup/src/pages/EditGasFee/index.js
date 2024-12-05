@@ -138,14 +138,17 @@ function EditGasFee({
               GWEI_DECIMALS,
             )
           : ''
-        : // 1559 tx resend use suggest gas price
+        : // 1559 tx resend maxFeePerGas use suggest gas price
           suggestedGasPrice,
-      maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas
-        ? convertValueToData(
-            new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
-            GWEI_DECIMALS,
-          )
-        : '',
+      maxPriorityFeePerGas: !resendType
+        ? suggestedMaxPriorityFeePerGas
+          ? convertValueToData(
+              new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10),
+              GWEI_DECIMALS,
+            )
+          : ''
+        : // 1559 tx resend maxPriorityFeePerGas use suggest gas price
+          suggestedGasPrice,
       gasPrice: !isTxTreatedAsEIP1559 ? suggestedGasPrice : '',
     }
   }
