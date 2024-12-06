@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/cfx_estimate-1559-fee",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@ethersproject/units": "5.6.1",
     "@fluent-wallet/spec": "workspace:packages/spec",
