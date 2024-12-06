@@ -105,7 +105,6 @@ function calculateEstimatesForPriorityLevel(
   feeData,
   baseFeePerGas,
 ) {
-  console.log(feeData, 'feedata')
   const settings = SETTINGS_BY_PRIORITY_LEVEL[priorityLevel]
   const adjustedBaseFeePerGas = baseFeePerGas
     .mul(settings.baseFeePercentageMultiplier)
