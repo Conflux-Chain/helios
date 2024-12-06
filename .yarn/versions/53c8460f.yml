@@ -1,3 +1,7 @@
+releases:
+  "@fluent-wallet/cfx_estimate-1559-fee": patch
+  browser-extension: patch
+  helios-background: patch
+
 declined:
   - helios
-  - "@fluent-wallet/cfx_estimate-1559-fee"
