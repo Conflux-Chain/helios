@@ -224,11 +224,10 @@ export const main = ({
               tx.resendAt && errorType === 'replaceUnderpriced'
             if (resendPriceTooLow) errorType = 'replacedByAnotherTx'
             const sameNonceTxs = queryTxWithSameNonce({hash}) || []
-            const latestTx = sameNonceTxs
-              .filter(_tx => _tx.hash !== hash)
-              .sort((a, b) =>
-                BigNumber.from(getGasPrice(a)).sub(getGasPrice(b)).toNumber(),
-              )[0]
+            let latestTx = sameNonceTxs.sort((a, b) =>
+              BigNumber.from(getGasPrice(a)).sub(getGasPrice(b)).toNumber(),
+            )[0]
+            if (latestTx?.hash === hash) latestTx = null
             const sameAsSuccess =
               isDuplicateTx ||
               resendNonceTooStale ||
