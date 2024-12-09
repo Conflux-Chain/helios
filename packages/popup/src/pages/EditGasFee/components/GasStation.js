@@ -120,6 +120,7 @@ function GasStation({
   const {advancedGasSetting, clearAdvancedGasSetting} = useCurrentTxStore()
 
   const gasArray = ['high', 'medium', 'low']
+  console.log('gasInfoEip1559', gasInfoEip1559)
 
   return (
     <div className="bg-gray-4 px-2 pt-2 flex flex-col border border-[#f7f8fA] rounded w-full">
