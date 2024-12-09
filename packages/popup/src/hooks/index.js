@@ -452,7 +452,7 @@ export const useDecodeDisplay = ({
     displayToAddress = toAddress
     displayValue = sendAmount
   } else {
-    if (isSendNativeToken) {
+    if (isSendNativeToken || !!value) {
       displayToken = nativeToken
       displayFromAddress = from
       displayToAddress = to
