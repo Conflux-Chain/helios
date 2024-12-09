@@ -16,6 +16,11 @@ import {identity} from '@fluent-wallet/compose'
 
 export const NAME = 'wallet_handleUnfinishedETHTx'
 
+function getGasPrice(tx) {
+  const payload = tx.txPayload
+  return payload.type === '0x2' ? payload.maxFeePerGas : payload.gasPrice
+}
+
 function defs(...args) {
   const s = stream({
     id: args.length === 2 ? args[0] : undefined,
@@ -75,6 +80,7 @@ export const permissions = {
     'setTxConfirmed',
     'setTxUnsent',
     'setTxChainSwitched',
+    'queryTxWithSameNonce',
   ],
 }
 
@@ -102,6 +108,7 @@ export const main = ({
     setTxConfirmed,
     setTxUnsent,
     setTxChainSwitched,
+    queryTxWithSameNonce,
   },
   params: {tx, address, okCb, failedCb},
   network,
@@ -216,13 +223,29 @@ export const main = ({
             const resendPriceTooLow =
               tx.resendAt && errorType === 'replaceUnderpriced'
             if (resendPriceTooLow) errorType = 'replacedByAnotherTx'
+            const sameNonceTxs = queryTxWithSameNonce({hash}) || []
+            const latestTx = sameNonceTxs
+              .filter(_tx => _tx.hash !== hash)
+              .sort((a, b) =>
+                BigNumber.from(getGasPrice(a)).sub(getGasPrice(b)).toNumber(),
+              )[0]
+            const sameAsSuccess =
+              isDuplicateTx ||
+              resendNonceTooStale ||
+              (resendPriceTooLow &&
+                latestTx &&
+                latestTx.status >= 0 &&
+                latestTx.status < 5)
 
-            const sameAsSuccess = isDuplicateTx || resendNonceTooStale
             const failed =
               !sameAsSuccess && (shouldDiscard || resendPriceTooLow)
 
             defs({
-              failed: failed && {errorType, err},
+              failed: failed && {
+                errorType,
+                err,
+                disableNotification: !!latestTx,
+              },
               sameAsSuccess,
               resend: !shouldDiscard && !sameAsSuccess,
             })
@@ -233,17 +256,18 @@ export const main = ({
                       ({err}) =>
                         typeof failedCb === 'function' && failedCb(err),
                     ),
-                    sideEffect(({errorType}) => {
+                    sideEffect(({errorType, disableNotification}) => {
                       if (setTxFailed({hash, error: errorType})) {
-                        getExt().then(ext =>
-                          ext.notifications.create(hash, {
-                            title: 'Failed transaction',
-                            message: `Transaction ${parseInt(
-                              tx.txPayload.nonce,
-                              16,
-                            )} failed! ${err?.data || err?.message || ''}`,
-                          }),
-                        )
+                        !disableNotification &&
+                          getExt().then(ext =>
+                            ext.notifications.create(hash, {
+                              title: 'Failed transaction',
+                              message: `Transaction ${parseInt(
+                                tx.txPayload.nonce,
+                                16,
+                              )} failed! ${err?.data || err?.message || ''}`,
+                            }),
+                          )
                       }
                     }),
                     sideEffect(() => {
