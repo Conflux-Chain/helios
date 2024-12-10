@@ -11,6 +11,7 @@ import {
   // pluck,
 } from '@fluent-wallet/transducers'
 import {processError} from '@fluent-wallet/ethereum-tx-error'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {BigNumber} from '@ethersproject/bignumber'
 import {identity} from '@fluent-wallet/compose'
 
@@ -18,7 +19,9 @@ export const NAME = 'wallet_handleUnfinishedETHTx'
 
 function getGasPrice(tx) {
   const payload = tx.txPayload
-  return payload.type === '0x2' ? payload.maxFeePerGas : payload.gasPrice
+  return payload.type === ETH_TX_TYPES.EIP1559
+    ? payload.maxFeePerGas
+    : payload.gasPrice
 }
 
 function defs(...args) {
@@ -225,7 +228,7 @@ export const main = ({
             if (resendPriceTooLow) errorType = 'replacedByAnotherTx'
             const sameNonceTxs = queryTxWithSameNonce({hash}) || []
             let latestTx = sameNonceTxs.sort((a, b) =>
-              BigNumber.from(getGasPrice(a)).sub(getGasPrice(b)).toNumber(),
+              BigNumber.from(getGasPrice(b)).sub(getGasPrice(a)).toNumber(),
             )[0]
             if (latestTx?.hash === hash) latestTx = null
             const sameAsSuccess =
