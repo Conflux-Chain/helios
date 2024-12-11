@@ -217,32 +217,23 @@ export const main = ({
             // failed to send
             setTxUnsent({hash})
 
-            let {errorType, shouldDiscard} = processError(err)
+            const {errorType, shouldDiscard} = processError(err)
             const isDuplicateTx = errorType === 'duplicateTx'
             const resendNonceTooStale =
               tx.resendAt && errorType === 'tooStaleNonce'
-            const resendPriceTooLow =
-              tx.resendAt && errorType === 'replacedWithHigherGasPriceTx'
-            if (resendPriceTooLow) errorType = 'replacedByAnotherTx'
             const sameNonceTxs = queryTxWithSameNonce({hash}) || []
-            let latestTx = sameNonceTxs.sort((a, b) =>
+            const latestTx = sameNonceTxs.sort((a, b) =>
               BigNumber.from(getGasPrice(b)).sub(getGasPrice(a)).toNumber(),
             )[0]
-            if (latestTx?.hash === hash) latestTx = null
-            const sameAsSuccess =
-              isDuplicateTx ||
-              resendNonceTooStale ||
-              (resendPriceTooLow &&
-                latestTx &&
-                latestTx.status >= 0 &&
-                latestTx.status < 5)
+            const disableNotification = latestTx?.hash !== hash
+            const sameAsSuccess = isDuplicateTx || resendNonceTooStale
             const failed = !sameAsSuccess && shouldDiscard
 
             defs({
               failed: failed && {
                 errorType,
                 err,
-                disableNotification: !!latestTx,
+                disableNotification,
               },
               sameAsSuccess,
               resend: !shouldDiscard && !sameAsSuccess,
