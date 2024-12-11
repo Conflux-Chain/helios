@@ -227,17 +227,11 @@ export const main = ({
               tx.resendAt && errorType === 'replaceUnderpriced'
             if (resendPriceTooLow) errorType = 'replacedByAnotherTx'
             const sameNonceTxs = queryTxWithSameNonce({hash}) || []
-            let latestTx = sameNonceTxs.sort((a, b) =>
+            const latestTx = sameNonceTxs.sort((a, b) =>
               BigNumber.from(getGasPrice(b)).sub(getGasPrice(a)).toNumber(),
             )[0]
-            if (latestTx?.hash === hash) latestTx = null
-            const sameAsSuccess =
-              isDuplicateTx ||
-              resendNonceTooStale ||
-              (resendPriceTooLow &&
-                latestTx &&
-                latestTx.status >= 0 &&
-                latestTx.status < 5)
+            const disableNotification = latestTx?.hash !== hash
+            const sameAsSuccess = isDuplicateTx || resendNonceTooStale
 
             const failed =
               !sameAsSuccess && (shouldDiscard || resendPriceTooLow)
@@ -246,7 +240,7 @@ export const main = ({
               failed: failed && {
                 errorType,
                 err,
-                disableNotification: !!latestTx,
+                disableNotification: disableNotification,
               },
               sameAsSuccess,
               resend: !shouldDiscard && !sameAsSuccess,
