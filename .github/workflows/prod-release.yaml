@@ -98,6 +98,7 @@ jobs:
           SNOWPACK_PUBLIC_SENTRY_DSN: ${{ secrets.SNOWPACK_PUBLIC_SENTRY_DSN }}
           SNOWPACK_PUBLIC_FLUENT_ENV: 'production'
           SNOWPACK_PUBLIC_FLUENT_VERSION: ${{ steps.get-package-version.outputs.PACKAGE_VERSION }}
+          VIEW_PACKAGE_VERSION: ${{ fromJSON(steps.get-release-version-and-tag.outputs.result).prod_version }}
         run: yarn build
 
       - name: zip files
