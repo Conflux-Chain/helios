@@ -42,7 +42,7 @@ queue_rules:
       - status-success~=^build\s\(.*\)$
     merge_method: squash
   - name: default queue
-    conditions:
+    queue_conditions:
       - label!=work-in-progress
       - label!=wip
       - status-success~=^build\s\(.*\)$
@@ -68,8 +68,42 @@ pull_request_rules:
       - head!=main
     actions:
       update:
-  - name: Automatic queue to dev on approval (__release-pkg) [low] + Automatic queue
-      to dev on approval [low]
-    conditions: []
+  - name: Automatic queue to dev on approval [low]
+    conditions:
+      - "#approved-reviews-by>=1"
+      - label!=work-in-progress
+      - label!=wip
+      - label!=no-auto-squash-merge
+      - base=dev
+      - head!=next
+      - -conflict
+      - -draft
+      - -locked
+      - status-success~=^version-check\s\(.*\)$
+      - status-success~=^lint\s\(.*\)$
+      - status-success~=^build\s\(.*\)$
+      - status-success~=^build-doc\s\(.*\)$
+      - status-success~=^unit-test\s\(.*\)$
+      - status-success~=^integration-test\s\(.*\)$
+      - "#review-threads-unresolved=0"
     actions:
       queue:
+        name: default queue
+
+  - name: Automatic queue to dev on approval (__release-pkg) [low]
+    conditions:
+      - "#approved-reviews-by>=1"
+      - label!=work-in-progress
+      - label!=wip
+      - label!=no-auto-squash-merge
+      - base=dev
+      - head=__release-pkg
+      - -conflict
+      - -draft
+      - -locked
+      - status-success~=^build\s\(.*\)$
+      - "#review-threads-unresolved=0"
+    actions:
+      queue:
+        name: default queue
+
