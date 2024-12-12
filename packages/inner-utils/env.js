@@ -9,4 +9,4 @@ export const IS_CI = process.env.CI === 'true'
 export const PACKAGE_VERSION = process.env.PACKAGE_VERSION
 // this version is use by view, it include the version suffix e.g v1.0.0.rc-1
 export const VIEW_PACKAGE_VERSION =
-  'process.env.VIEW_PACKAGE_VERSION' || PACKAGE_VERSION
+  process.env.VIEW_PACKAGE_VERSION || PACKAGE_VERSION

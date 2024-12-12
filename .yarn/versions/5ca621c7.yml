@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/inner-utils": patch
+  browser-extension: patch
+  helios-background: patch
+  helios-popup: patch
+
+declined:
+  - helios
