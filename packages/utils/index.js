@@ -100,7 +100,10 @@ export function isHexString(value, length) {
     return false
   }
 
-  if (length && value.length !== 2 + 2 * length) {
+  if (typeof length === 'number' && value.length !== 2 + 2 * length) {
+    return false
+  }
+  if (length === true && value.length % 2 !== 0) {
     return false
   }
 
