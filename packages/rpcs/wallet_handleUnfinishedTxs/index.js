@@ -21,11 +21,17 @@ export const main = ({
   txs.forEach(({tx, address, network}) => {
     if (network.type === 'cfx') {
       try {
-        wallet_handleUnfinishedCFXTx({network}, {tx, address: address.eid})
+        wallet_handleUnfinishedCFXTx(
+          {network, networkName: network.name},
+          {tx, address: address.eid},
+        )
       } catch (err) {}
     } else {
       try {
-        wallet_handleUnfinishedETHTx({network}, {tx, address: address.eid})
+        wallet_handleUnfinishedETHTx(
+          {network, networkName: network.name},
+          {tx, address: address.eid},
+        )
       } catch (err) {}
     }
   })
