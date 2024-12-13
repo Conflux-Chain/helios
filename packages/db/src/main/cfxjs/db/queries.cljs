@@ -2138,8 +2138,7 @@
              [?txs :tx/txPayload ?tx-payload]
              [?tx-payload :txPayload/nonce ?nonce]
              [?address :address/value ?addrv]
-             [?tx-payload :txPayload/from ?addrv]
-             [?txs :tx/hash ?hash]]
+             [?tx-payload :txPayload/from ?addrv]]
            [:tx/hash hash])]
     (when txs
       (mapv tx-id->data txs))))
