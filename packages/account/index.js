@@ -1,7 +1,7 @@
 import {getAddress as toChecksumAddress} from '@ethersproject/address'
 import {computeAddress} from '@ethersproject/transactions'
 import {Wallet} from '@ethersproject/wallet'
-import {randomInt, addHexPrefix} from '@fluent-wallet/utils'
+import {randomInt, addHexPrefix, isHexString} from '@fluent-wallet/utils'
 import {
   NULL_HEX_ADDRESS,
   INTERNAL_CONTRACTS_HEX_ADDRESS,
@@ -121,6 +121,9 @@ export const randomPrivateKey = () => {
 export const validatePrivateKey = privateKey => {
   let valid = false
   try {
+    // If the string is not a 64-character hex string, then it is an invalid private key.
+    if (!isHexString(addHexPrefix(privateKey), 32)) return false
+
     const rst = fromPrivate(privateKey)
     valid = Boolean(rst.address)
   } catch (err) {
