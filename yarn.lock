@@ -4378,6 +4378,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluent-wallet/db@workspace:packages/db":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/db@workspace:packages/db"
+  dependencies:
+    "@ethersproject/bignumber": "npm:5.6.2"
+    "@fluent-wallet/consts": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/detect-address-type@workspace:packages/detect-address-type":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/detect-address-type@workspace:packages/detect-address-type"
@@ -4959,6 +4968,19 @@ __metadata:
   checksum: 10/46d8fd2b53b1f8ee3ae2c53ebb25a52434eda6b62cbac60256ed8b9dcbdaa8f36ad5b4f28b10cd049702956ed53aa5cbaa43b7384de134b1a9adb84dcff19367
   languageName: node
   linkType: hard
+
+"@fluent-wallet/spec@workspace:packages/spec":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/spec@workspace:packages/spec"
+  dependencies:
+    "@fluent-wallet/account": "workspace:packages/account"
+    "@fluent-wallet/associative": "workspace:packages/associative"
+    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/hdkey": "workspace:packages/hdkey"
+    bip39: "npm:^3.0.4"
+  languageName: unknown
+  linkType: soft
 
 "@fluent-wallet/test-helpers@workspace:packages/test-helpers":
   version: 0.0.0-use.local
