@@ -3630,7 +3630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluent-wallet/account@workspace:packages/account":
+"@fluent-wallet/account@npm:1.0.1, @fluent-wallet/account@workspace:packages/account":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/account@workspace:packages/account"
   dependencies:
@@ -3653,7 +3653,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/associative@workspace:packages/associative":
+"@fluent-wallet/associative@npm:0.0.4, @fluent-wallet/associative@workspace:packages/associative":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/associative@workspace:packages/associative"
   dependencies:
@@ -3661,7 +3661,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/base32-address@workspace:*, @fluent-wallet/base32-address@workspace:packages/base32-address":
+"@fluent-wallet/base32-address@npm:0.1.3, @fluent-wallet/base32-address@workspace:*, @fluent-wallet/base32-address@workspace:packages/base32-address":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/base32-address@workspace:packages/base32-address"
   dependencies:
@@ -4297,6 +4297,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/consts@npm:0.0.19":
+  version: 0.0.19
+  resolution: "@fluent-wallet/consts@npm:0.0.19"
+  checksum: 10/cb66a6c9cbfb44cda08ac801005bad6a487df0704854937d5585ee2ba94cee6fc5ab7ad7e96de72c03f5371c9cef10dca0b2274af3a185a240e7998da605483c
+  languageName: node
+  linkType: hard
+
+"@fluent-wallet/consts@npm:0.0.22":
+  version: 0.0.22
+  resolution: "@fluent-wallet/consts@npm:0.0.22"
+  checksum: 10/e22bc904b7602251c089288e709ca34b4675f65ef01e0eb1b87312596395d8710dfc2838988ad9f27aa10374d6a2c69534e3dff1fc2205372cc1969d1d302adc
+  languageName: node
+  linkType: hard
+
 "@fluent-wallet/consts@workspace:*, @fluent-wallet/consts@workspace:packages/consts":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/consts@workspace:packages/consts"
@@ -4354,14 +4368,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/db@npm:1.0.71, @fluent-wallet/db@workspace:packages/db":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/db@workspace:packages/db"
+"@fluent-wallet/db@npm:1.0.71":
+  version: 1.0.71
+  resolution: "@fluent-wallet/db@npm:1.0.71"
   dependencies:
     "@ethersproject/bignumber": "npm:5.6.2"
-    "@fluent-wallet/consts": "workspace:*"
-  languageName: unknown
-  linkType: soft
+    "@fluent-wallet/consts": "npm:0.0.22"
+  checksum: 10/5d1d1b0796b72a8afe2dae52417d624d565ca7fb7babec48137f690781a9139f8bea43a4dd5027802b6cc1cce8b45026e916238a46071d9cf477838d381284f2
+  languageName: node
+  linkType: hard
 
 "@fluent-wallet/detect-address-type@workspace:packages/detect-address-type":
   version: 0.0.0-use.local
@@ -4707,7 +4722,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/hdkey@workspace:packages/hdkey":
+"@fluent-wallet/hdkey@npm:0.1.1, @fluent-wallet/hdkey@workspace:packages/hdkey":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/hdkey@workspace:packages/hdkey"
   dependencies:
@@ -4931,18 +4946,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/spec@npm:1.0.4, @fluent-wallet/spec@workspace:packages/spec":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/spec@workspace:packages/spec"
+"@fluent-wallet/spec@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@fluent-wallet/spec@npm:1.0.4"
   dependencies:
-    "@fluent-wallet/account": "workspace:packages/account"
-    "@fluent-wallet/associative": "workspace:packages/associative"
-    "@fluent-wallet/base32-address": "workspace:packages/base32-address"
-    "@fluent-wallet/consts": "workspace:packages/consts"
-    "@fluent-wallet/hdkey": "workspace:packages/hdkey"
+    "@fluent-wallet/account": "npm:1.0.1"
+    "@fluent-wallet/associative": "npm:0.0.4"
+    "@fluent-wallet/base32-address": "npm:0.1.3"
+    "@fluent-wallet/consts": "npm:0.0.19"
+    "@fluent-wallet/hdkey": "npm:0.1.1"
     bip39: "npm:^3.0.4"
-  languageName: unknown
-  linkType: soft
+  checksum: 10/46d8fd2b53b1f8ee3ae2c53ebb25a52434eda6b62cbac60256ed8b9dcbdaa8f36ad5b4f28b10cd049702956ed53aa5cbaa43b7384de134b1a9adb84dcff19367
+  languageName: node
+  linkType: hard
 
 "@fluent-wallet/test-helpers@workspace:packages/test-helpers":
   version: 0.0.0-use.local
