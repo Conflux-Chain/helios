@@ -54,7 +54,7 @@
     "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": "workspace:*",
     "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4",
     "@fluent-wallet/consts": "workspace:packages/consts",
-    "@fluent-wallet/db": "workspace:packages/db",
+    "@fluent-wallet/db": "1.0.71",
     "@fluent-wallet/eth_accounts": "workspace:packages/rpcs/eth_accounts",
     "@fluent-wallet/eth_block-number": "workspace:packages/rpcs/eth_blockNumber",
     "@fluent-wallet/eth_call": "workspace:packages/rpcs/eth_call",

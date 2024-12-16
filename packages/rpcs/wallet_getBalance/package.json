@@ -9,6 +9,6 @@
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
     "@fluent-wallet/single-call-balance-tracker": "workspace:packages/single-call-balance-tracker",
-    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "1.0.4"
   }
 }

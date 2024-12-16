@@ -6,6 +6,6 @@
   "version": "1.0.0",
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:*",
-    "@fluent-wallet/spec": "workspace:*"
+    "@fluent-wallet/spec": "1.0.4"
   }
 }
