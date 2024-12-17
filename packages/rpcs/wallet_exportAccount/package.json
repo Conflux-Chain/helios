@@ -5,7 +5,7 @@
   "version": "0.0.8",
   "dependencies": {
     "@fluent-wallet/hdkey": "workspace:packages/hdkey",
-    "@fluent-wallet/spec": "1.0.4",
+    "@fluent-wallet/spec": "1.0.6",
     "browser-passworder": "2.0.3"
   }
 }

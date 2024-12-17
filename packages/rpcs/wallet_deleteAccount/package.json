@@ -5,7 +5,7 @@
   "packageManager": "yarn@3.2.0",
   "version": "0.0.2",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.4",
+    "@fluent-wallet/spec": "1.0.6",
     "browser-passworder": "2.0.3"
   }
 }

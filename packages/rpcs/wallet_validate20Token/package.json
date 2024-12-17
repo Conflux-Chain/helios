@@ -7,6 +7,6 @@
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
-    "@fluent-wallet/spec": "1.0.4"
+    "@fluent-wallet/spec": "1.0.6"
   }
 }

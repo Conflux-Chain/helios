@@ -7,6 +7,6 @@
   "dependencies": {
     "@fluent-wallet/cfx_epoch-number": "workspace:*",
     "@fluent-wallet/eth_block-number": "workspace:*",
-    "@fluent-wallet/spec": "1.0.4"
+    "@fluent-wallet/spec": "1.0.6"
   }
 }
