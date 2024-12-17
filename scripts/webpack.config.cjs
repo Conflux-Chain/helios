@@ -139,7 +139,6 @@ const defaultConfig = {
       template: path.join(packagesPath, 'popup/public/template.html'),
       inject: 'body',
       chunks: ['popup'],
-      hash: true,
       filename: 'popup.html',
       meta: {
         'popup-type': 'popup',
@@ -149,7 +148,6 @@ const defaultConfig = {
       template: path.join(packagesPath, 'popup/public/template.html'),
       inject: 'body',
       chunks: ['popup'],
-      hash: true,
       filename: 'popup.html',
       meta: {
         'popup-type': 'popup',
@@ -159,7 +157,6 @@ const defaultConfig = {
       template: path.join(packagesPath, 'popup/public/template.html'),
       inject: 'body',
       chunks: ['popup'],
-      hash: true,
       filename: 'notification.html',
       meta: {
         'popup-type': 'notification',
@@ -169,7 +166,6 @@ const defaultConfig = {
       template: path.join(packagesPath, 'popup/public/template.html'),
       inject: 'body',
       chunks: ['popup'],
-      hash: true,
       filename: 'page.html',
       meta: {
         'popup-type': 'big',
@@ -193,11 +189,11 @@ const defaultConfig = {
 
 const entries = {
   v2: {
-    background: path.join(packagesPath, 'service-worker/index.ts'),
+    background: path.join(packagesPath, 'background/src/service-worker.js'),
     manifest: path.join(packagesPath, 'manifest/manifestv2.json'),
   },
   v3: {
-    service_worker: path.join(packagesPath, 'service-worker/index.ts'),
+    service_worker: path.join(packagesPath, 'background/src/service-worker.js'),
     manifest: path.join(packagesPath, 'manifest/manifestv3.json'),
   },
 }
