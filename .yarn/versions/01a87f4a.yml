@@ -1,7 +1,5 @@
-releases:
-  helios: patch
-
 declined:
+  - helios
   - helios-background
   - "@fluent-wallet/rpc-engine"
   - "@fluent-wallet/cfx_accounts"
