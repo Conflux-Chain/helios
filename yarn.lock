@@ -4327,6 +4327,8 @@ __metadata:
 "@fluent-wallet/conflux-tx-error@workspace:*, @fluent-wallet/conflux-tx-error@workspace:packages/conflux-tx-error":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/conflux-tx-error@workspace:packages/conflux-tx-error"
+  dependencies:
+    "@fluent-wallet/json-rpc-error": "workspace:packages/json-rpc-error"
   languageName: unknown
   linkType: soft
 
@@ -4726,6 +4728,8 @@ __metadata:
 "@fluent-wallet/ethereum-tx-error@workspace:*, @fluent-wallet/ethereum-tx-error@workspace:packages/ethereum-tx-error":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/ethereum-tx-error@workspace:packages/ethereum-tx-error"
+  dependencies:
+    "@fluent-wallet/json-rpc-error": "workspace:packages/json-rpc-error"
   languageName: unknown
   linkType: soft
 

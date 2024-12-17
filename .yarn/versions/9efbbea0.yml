@@ -1,0 +1,11 @@
+releases:
+  "@fluent-wallet/conflux-tx-error": major
+  "@fluent-wallet/ethereum-tx-error": patch
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
+  "@fluent-wallet/wallet_handle-unfinished-eth-tx": patch
+  browser-extension: patch
+  helios-background: patch
+  helios-popup: patch
+
+declined:
+  - helios
