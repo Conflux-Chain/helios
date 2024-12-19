@@ -5,6 +5,7 @@
    [cfxjs.db.migrations.m11]
    [cfxjs.db.migrations.m12]
    [cfxjs.db.migrations.m13]
+   [cfxjs.db.migrations.m14]
    [cfxjs.db.migrations.m2]
    [cfxjs.db.migrations.m3]
    [cfxjs.db.migrations.m4]
@@ -26,5 +27,4 @@
                  cfxjs.db.migrations.m11/data
                  cfxjs.db.migrations.m12/data
                  cfxjs.db.migrations.m13/data
-                 ]
-  )
+                 cfxjs.db.migrations.m14/data])
