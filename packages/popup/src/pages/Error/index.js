@@ -7,9 +7,10 @@ import {useTranslation} from 'react-i18next'
 import {CopyButton, NetworkContent} from '../../components'
 import useGlobalStore from '../../stores/index.js'
 import {useQuery} from '../../hooks'
-import {useNetworkTypeIsCfx} from '../../hooks/useApi'
+import {useDataForPopup, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {RPC_METHODS} from '../../constants'
 import {request, getPageType} from '../../utils'
+import {WALLET_UNLOCK} from '../../constants/route'
 const {CFX_GET_STATUS, ETH_GET_CHAIN_ID} = RPC_METHODS
 
 const isDapp = getPageType() === 'notification'
@@ -17,6 +18,7 @@ const isDapp = getPageType() === 'notification'
 function Error() {
   const {t} = useTranslation()
   const {FATAL_ERROR} = useGlobalStore()
+  const {locked: isLocked} = useDataForPopup()
   const query = useQuery()
   const urlErrorMsg = query.get('errorMsg') ?? ''
   const isFromHome = query.get('from') === 'home'
@@ -64,6 +66,12 @@ function Error() {
     }
     setResetButtonText(t('back'))
   }, [isFromHome, errorType, t])
+
+  useEffect(() => {
+    if (isLocked && location) {
+      location.href = `${location.origin}${location.pathname}#${WALLET_UNLOCK}`
+    }
+  }, [isLocked])
 
   const onClickFeedback = () => {
     const timer = setTimeout(() => {
