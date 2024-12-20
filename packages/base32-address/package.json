@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/base32-address",
   "type": "module",
   "main": "index.js",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "dependencies": {
     "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/consts": "workspace:packages/consts",

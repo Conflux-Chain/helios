@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/wallet_delete-network",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "dependencies": {
     "@fluent-wallet/spec": "workspace:packages/spec"
   }
