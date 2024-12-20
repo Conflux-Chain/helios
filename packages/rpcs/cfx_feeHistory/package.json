@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/cfx_fee-history",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "@fluent-wallet/spec": "workspace:packages/spec"
   }

@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/wallet_validate-private-key",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "dependencies": {
     "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/spec": "workspace:packages/spec"
