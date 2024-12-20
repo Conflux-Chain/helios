@@ -26,7 +26,7 @@ export const ADDRESS_TYPES = ['user', 'contract', 'builtin', 'null']
 // * network setting
 export const DEFAULT_CURRENCY_DECIMALS = 18
 export const CONFLUX_API_LIMIT_KEY = '1BvViQet4km8KPALkc6Pa9'
-export const ETH_API_LIMIT_KEY = '9aa3d95b3bc440fa88ea12eaa4456161'
+export const ETH_API_LIMIT_KEY = 'b6bf7d3508c941499b10025c0776eaf8'
 
 export const CFX_MAINNET_RPC_ENDPOINT = `https://main.confluxrpc.com/${CONFLUX_API_LIMIT_KEY}`
 export const CFX_MAINNET_NAME = 'Conflux Mainnet'
