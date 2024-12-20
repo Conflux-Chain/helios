@@ -33,19 +33,6 @@
         new-db (d/db-with old-db (concat txs [(update-version-tx old-db id)]))]
     new-db))
 
-(defn down [new-db]
-  (let [networks (d/q '[:find [(pull ?e [*]) ...]
-                        :in $ ?suffix
-                        :where
-                        [?e :network/builtin true]
-                        [?e :network/endpoint ?endpoint]
-                        [(clojure.string/ends-with? ?endpoint ?suffix)]]
-                      new-db ETH_API_LIMIT_KEY)
-        txs (mapv (fn [{:db/keys [id] :network/keys [endpoint]}]
-                    {:db/id id
-                     :network/endpoint (str/replace endpoint ETH_API_LIMIT_KEY OLD_ETH_API_LIMIT_KEY)})
-                  networks)
-        old-db (d/db-with new-db (concat txs [(update-version-tx new-db (dec id))]))]
-    old-db))
+(defn down [new-db] new-db)
 
 (def data {:up up :down down :id id})
