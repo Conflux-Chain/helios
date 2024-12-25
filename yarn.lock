@@ -3067,7 +3067,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/abstract-provider@npm:^5.6.1, @ethersproject/abstract-provider@npm:^5.7.0":
+"@ethersproject/abstract-provider@npm:^5.6.0, @ethersproject/abstract-provider@npm:^5.6.1, @ethersproject/abstract-provider@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/abstract-provider@npm:5.7.0"
   dependencies:
@@ -3095,7 +3095,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/abstract-signer@npm:^5.6.2, @ethersproject/abstract-signer@npm:^5.7.0":
+"@ethersproject/abstract-signer@npm:^5.6.0, @ethersproject/abstract-signer@npm:^5.6.2, @ethersproject/abstract-signer@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/abstract-signer@npm:5.7.0"
   dependencies:
@@ -3243,7 +3243,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/hdnode@npm:^5.6.2, @ethersproject/hdnode@npm:^5.7.0":
+"@ethersproject/hdnode@npm:^5.6.0, @ethersproject/hdnode@npm:^5.6.2, @ethersproject/hdnode@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/hdnode@npm:5.7.0"
   dependencies:
@@ -3284,7 +3284,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/json-wallets@npm:^5.6.1":
+"@ethersproject/json-wallets@npm:^5.6.0, @ethersproject/json-wallets@npm:^5.6.1":
   version: 5.7.0
   resolution: "@ethersproject/json-wallets@npm:5.7.0"
   dependencies:
@@ -3407,7 +3407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/random@npm:^5.6.1, @ethersproject/random@npm:^5.7.0":
+"@ethersproject/random@npm:^5.6.0, @ethersproject/random@npm:^5.6.1, @ethersproject/random@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/random@npm:5.7.0"
   dependencies:
@@ -3427,7 +3427,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/rlp@npm:^5.5.0, @ethersproject/rlp@npm:^5.6.1, @ethersproject/rlp@npm:^5.7.0":
+"@ethersproject/rlp@npm:^5.5.0, @ethersproject/rlp@npm:^5.6.0, @ethersproject/rlp@npm:^5.6.1, @ethersproject/rlp@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/rlp@npm:5.7.0"
   dependencies:
@@ -3462,7 +3462,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/signing-key@npm:^5.6.2, @ethersproject/signing-key@npm:^5.7.0":
+"@ethersproject/signing-key@npm:^5.6.0, @ethersproject/signing-key@npm:^5.6.2, @ethersproject/signing-key@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/signing-key@npm:5.7.0"
   dependencies:
@@ -3501,6 +3501,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ethersproject/transactions@npm:5.6.0":
+  version: 5.6.0
+  resolution: "@ethersproject/transactions@npm:5.6.0"
+  dependencies:
+    "@ethersproject/address": "npm:^5.6.0"
+    "@ethersproject/bignumber": "npm:^5.6.0"
+    "@ethersproject/bytes": "npm:^5.6.0"
+    "@ethersproject/constants": "npm:^5.6.0"
+    "@ethersproject/keccak256": "npm:^5.6.0"
+    "@ethersproject/logger": "npm:^5.6.0"
+    "@ethersproject/properties": "npm:^5.6.0"
+    "@ethersproject/rlp": "npm:^5.6.0"
+    "@ethersproject/signing-key": "npm:^5.6.0"
+  checksum: 10/ee68160399bd7d088e24b0da46a36a978d2766711b9667d925cd62e08b6fbd8e14077eb8fdf6c3bd3dddc5492e15ca23fe94b894c8ffc5828aefee0c96eab6c7
+  languageName: node
+  linkType: hard
+
 "@ethersproject/transactions@npm:5.6.2":
   version: 5.6.2
   resolution: "@ethersproject/transactions@npm:5.6.2"
@@ -3518,7 +3535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/transactions@npm:^5.6.2, @ethersproject/transactions@npm:^5.7.0":
+"@ethersproject/transactions@npm:^5.6.0, @ethersproject/transactions@npm:^5.6.2, @ethersproject/transactions@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/transactions@npm:5.7.0"
   dependencies:
@@ -3543,6 +3560,29 @@ __metadata:
     "@ethersproject/constants": "npm:^5.6.1"
     "@ethersproject/logger": "npm:^5.6.0"
   checksum: 10/79cc7c35181fc3bd76fc33d95f1c8d2a20a6339dfc22745184967481b66e0782ee12bbf75b4269119152cbd23bf7980b900978d885b5da72cfb74cf897411065
+  languageName: node
+  linkType: hard
+
+"@ethersproject/wallet@npm:5.6.0":
+  version: 5.6.0
+  resolution: "@ethersproject/wallet@npm:5.6.0"
+  dependencies:
+    "@ethersproject/abstract-provider": "npm:^5.6.0"
+    "@ethersproject/abstract-signer": "npm:^5.6.0"
+    "@ethersproject/address": "npm:^5.6.0"
+    "@ethersproject/bignumber": "npm:^5.6.0"
+    "@ethersproject/bytes": "npm:^5.6.0"
+    "@ethersproject/hash": "npm:^5.6.0"
+    "@ethersproject/hdnode": "npm:^5.6.0"
+    "@ethersproject/json-wallets": "npm:^5.6.0"
+    "@ethersproject/keccak256": "npm:^5.6.0"
+    "@ethersproject/logger": "npm:^5.6.0"
+    "@ethersproject/properties": "npm:^5.6.0"
+    "@ethersproject/random": "npm:^5.6.0"
+    "@ethersproject/signing-key": "npm:^5.6.0"
+    "@ethersproject/transactions": "npm:^5.6.0"
+    "@ethersproject/wordlists": "npm:^5.6.0"
+  checksum: 10/b5629d5058599b1ca4957c5b41d90f5321661689a7caf869110c68cf4f8e5590c0c5bdaaf6d3f87a395ecc76194fe301006c51f2ea3887d6d179d1b8034d527e
   languageName: node
   linkType: hard
 
@@ -3608,7 +3648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/wordlists@npm:^5.6.1, @ethersproject/wordlists@npm:^5.7.0":
+"@ethersproject/wordlists@npm:^5.6.0, @ethersproject/wordlists@npm:^5.6.1, @ethersproject/wordlists@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/wordlists@npm:5.7.0"
   dependencies:
@@ -3634,6 +3674,21 @@ __metadata:
   dependencies:
     keccak: "npm:^3.0.0"
   checksum: 10/16f19c0553ae0243b6250215439cc9b9b7ac36f5e46e2188f5aed73b8c858631aebacaeda781db147d7bc4d393973fb689a82ca15be3ad37f2995de4aac26935
+  languageName: node
+  linkType: hard
+
+"@fluent-wallet/account@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@fluent-wallet/account@npm:1.0.1"
+  dependencies:
+    "@ethersproject/address": "npm:5.6.0"
+    "@ethersproject/transactions": "npm:5.6.0"
+    "@ethersproject/wallet": "npm:5.6.0"
+    "@fluent-wallet/compose": "npm:0.0.4"
+    "@fluent-wallet/consts": "npm:0.0.16"
+    "@fluent-wallet/utils": "npm:0.0.3"
+    elliptic: "npm:6.5.4"
+  checksum: 10/e4660d724490ad82a74c1eea14a2c80d1deff10c5df777c245096f813e0509de0174c1f1505add9723060402870e101a0e8635ad76fdd7798321567d42b1fc8a
   languageName: node
   linkType: hard
 
@@ -3682,7 +3737,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/base32-address@npm:0.1.3, @fluent-wallet/base32-address@workspace:*, @fluent-wallet/base32-address@workspace:packages/base32-address":
+"@fluent-wallet/base32-address@npm:0.1.3":
+  version: 0.1.3
+  resolution: "@fluent-wallet/base32-address@npm:0.1.3"
+  dependencies:
+    "@fluent-wallet/account": "npm:1.0.1"
+    "@fluent-wallet/consts": "npm:0.0.16"
+    "@fluent-wallet/utils": "npm:0.0.3"
+    "@thi.ng/cache": "npm:1.0.94"
+    "@thi.ng/memoize": "npm:2.1.21"
+    js-conflux-sdk: "npm:2.0.7"
+  checksum: 10/39e60233afc15ff95f5b14897013887e6bd20773786688f6b99b2691663f101a0903a483343d4a75c761303f3904bd6e18babea0ace341ee3996bc09fa3ede57
+  languageName: node
+  linkType: hard
+
+"@fluent-wallet/base32-address@workspace:*, @fluent-wallet/base32-address@workspace:packages/base32-address":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/base32-address@workspace:packages/base32-address"
   dependencies:
@@ -4330,7 +4399,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/compose@workspace:*, @fluent-wallet/compose@workspace:packages/compose":
+"@fluent-wallet/compose@npm:0.0.4, @fluent-wallet/compose@workspace:*, @fluent-wallet/compose@workspace:packages/compose":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/compose@workspace:packages/compose"
   dependencies:
@@ -4354,7 +4423,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/consts@npm:0.0.23, @fluent-wallet/consts@workspace:*, @fluent-wallet/consts@workspace:packages/consts":
+"@fluent-wallet/consts@npm:0.0.16":
+  version: 0.0.16
+  resolution: "@fluent-wallet/consts@npm:0.0.16"
+  checksum: 10/bc99d270167e7737c447cb83a2ddf201e0b57d15cd127cb22870286af8cfcb9c484ee6349c9cfa779bd6805060fa4b5b29aa84971e0d5455df7f727735b6fbf8
+  languageName: node
+  linkType: hard
+
+"@fluent-wallet/consts@npm:0.0.23":
+  version: 0.0.23
+  resolution: "@fluent-wallet/consts@npm:0.0.23"
+  checksum: 10/e2cbc5a996083810bf2cbae4cce02bde95d46dadd39c01dd726856f5b4b5868d6f31e7b679b63e47a0591af55dfc8f7aec3a1bee3a41ae37184ec8859c137654
+  languageName: node
+  linkType: hard
+
+"@fluent-wallet/consts@workspace:*, @fluent-wallet/consts@workspace:packages/consts":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/consts@workspace:packages/consts"
   languageName: unknown
