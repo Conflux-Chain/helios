@@ -84,6 +84,7 @@ export const permissions = {
     'setTxUnsent',
     'setTxChainSwitched',
     'queryTxWithSameNonce',
+    'forceSetTxStatus',
   ],
 }
 
@@ -112,6 +113,7 @@ export const main = ({
     setTxUnsent,
     setTxChainSwitched,
     queryTxWithSameNonce,
+    forceSetTxStatus,
   },
   params: {tx, address, okCb, failedCb},
   network,
@@ -220,66 +222,125 @@ export const main = ({
             setTxUnsent({hash})
 
             let {errorType, shouldDiscard} = processError(err)
+            const isResend = !!tx.resendAt
             const isDuplicateTx = errorType === 'duplicateTx'
             const resendNonceTooStale =
-              tx.resendAt && errorType === 'tooStaleNonce'
+              isResend && errorType === 'tooStaleNonce'
             const resendPriceTooLow =
-              tx.resendAt && errorType === 'replaceUnderpriced'
+              isResend && errorType === 'replaceUnderpriced'
             if (resendPriceTooLow) errorType = 'replacedByAnotherTx'
             const sameNonceTxs = queryTxWithSameNonce({hash}) || []
-            const latestTx = sameNonceTxs.sort((a, b) =>
-              BigNumber.from(getGasPrice(b)).sub(getGasPrice(a)).toNumber(),
-            )[0]
-            const disableNotification = latestTx?.hash !== hash
-            const sameAsSuccess = isDuplicateTx || resendNonceTooStale
+            const latestTx = sameNonceTxs
+              .filter(t => t.status >= 0)
+              .sort((a, b) =>
+                BigNumber.from(getGasPrice(b)).sub(getGasPrice(a)).toNumber(),
+              )[0]
+            const currentTxIsLatest = !latestTx || latestTx.hash === hash
+            let disableNotification = isResend && !currentTxIsLatest
+            let sameAsSuccess = isDuplicateTx || resendNonceTooStale
 
-            const failed =
-              !sameAsSuccess && (shouldDiscard || resendPriceTooLow)
+            let failed = !sameAsSuccess && (shouldDiscard || resendPriceTooLow)
 
-            defs({
-              failed: failed && {
-                errorType,
-                err,
-                disableNotification: disableNotification,
-              },
-              sameAsSuccess,
-              resend: !shouldDiscard && !sameAsSuccess,
-            })
-              .transform(
-                branchObj({
-                  failed: [
-                    sideEffect(
-                      ({err}) =>
-                        typeof failedCb === 'function' && failedCb(err),
-                    ),
-                    sideEffect(({errorType, disableNotification}) => {
-                      if (setTxFailed({hash, error: errorType})) {
-                        !disableNotification &&
-                          getExt().then(ext =>
-                            ext.notifications.create(hash, {
-                              title: 'Failed transaction',
-                              message: `Transaction ${parseInt(
-                                tx.txPayload.nonce,
-                                16,
-                              )} failed! ${err?.data || err?.message || ''}`,
-                            }),
-                          )
-                      }
-                    }),
-                    sideEffect(() => {
-                      updateBadge(getUnfinishedTxCount())
-                    }),
-                  ],
-                  resend: sideEffect(keepTrack),
-                  // retry in next run
-                  sameAsSuccess: [
-                    sideEffect(() => setTxPending({hash})),
-                    sideEffect(() => typeof okCb === 'function' && okCb(hash)),
-                    sideEffect(keepTrack),
-                  ],
-                }),
+            const handler = () => {
+              defs({
+                failed: failed && {
+                  errorType,
+                  err,
+                  disableNotification,
+                },
+                sameAsSuccess,
+                resend: !shouldDiscard && !sameAsSuccess,
+              })
+                .transform(
+                  branchObj({
+                    failed: [
+                      sideEffect(
+                        ({err}) =>
+                          typeof failedCb === 'function' && failedCb(err),
+                      ),
+                      sideEffect(({errorType, disableNotification}) => {
+                        if (setTxFailed({hash, error: errorType})) {
+                          !disableNotification &&
+                            getExt().then(ext =>
+                              ext.notifications.create(hash, {
+                                title: 'Failed transaction',
+                                message: `Transaction ${parseInt(
+                                  tx.txPayload.nonce,
+                                  16,
+                                )} failed! ${err?.data || err?.message || ''}`,
+                              }),
+                            )
+                        }
+                      }),
+                      sideEffect(() => {
+                        updateBadge(getUnfinishedTxCount())
+                      }),
+                    ],
+                    resend: sideEffect(keepTrack),
+                    // retry in next run
+                    sameAsSuccess: [
+                      sideEffect(() => setTxPending({hash})),
+                      sideEffect(
+                        () => typeof okCb === 'function' && okCb(hash),
+                      ),
+                      sideEffect(keepTrack),
+                    ],
+                  }),
+                )
+                .done()
+            }
+
+            if (isResend && currentTxIsLatest && resendNonceTooStale) {
+              let localTxExecuted = false
+              Promise.all(
+                sameNonceTxs.map(_tx =>
+                  eth_getTransactionByHash({errorFallThrough: true}, [
+                    _tx.hash,
+                  ]).then(res => {
+                    if (res && _tx.hash === hash) {
+                      // current tx is executed
+                      localTxExecuted = true
+                      sameAsSuccess = true
+                      failed = false
+                    } else if (res) {
+                      // local tx is executed but not the current tx
+                      localTxExecuted = true
+                      sameAsSuccess = false
+                      failed = true
+                      errorType = 'replacedByAnotherTx'
+                      disableNotification = true
+                      // start a new tracking
+                      forceSetTxStatus({hash: _tx.hash, status: 2, error: null})
+                      wallet_handleUnfinishedETHTx({
+                        tx: _tx.eid,
+                        address: address.eid,
+                      })
+                    }
+                  }),
+                ),
               )
-              .done()
+                .then(() => {
+                  if (!localTxExecuted) {
+                    return eth_getTransactionCount({errorFallThrough: true}, [
+                      address.value,
+                      'finalized',
+                    ]).then(finalizedNonce => {
+                      if (
+                        BigNumber.from(finalizedNonce).gt(
+                          BigNumber.from(tx.txPayload.nonce),
+                        )
+                      ) {
+                        sameAsSuccess = false
+                        failed = true
+                        errorType = 'replacedByAnotherTx'
+                      }
+                    })
+                  }
+                })
+                .finally(handler)
+            } else {
+              handler()
+            }
           },
         }),
       )
