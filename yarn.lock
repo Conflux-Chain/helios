@@ -3833,7 +3833,7 @@ __metadata:
   resolution: "@fluent-wallet/cfx_estimate-1559-fee@workspace:packages/rpcs/cfx_estimate1559Fee"
   dependencies:
     "@ethersproject/units": "npm:5.6.1"
-    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "npm:1.0.6"
     bn.js: "npm:5.2.0"
   languageName: unknown
   linkType: soft
@@ -3850,7 +3850,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_fee-history@workspace:packages/rpcs/cfx_feeHistory"
   dependencies:
-    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "npm:1.0.6"
   languageName: unknown
   linkType: soft
 
@@ -4004,7 +4004,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-fee-burnt@workspace:packages/rpcs/cfx_getFeeBurnt"
   dependencies:
-    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "npm:1.0.6"
   languageName: unknown
   linkType: soft
 
@@ -4148,7 +4148,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_max-priority-fee-per-gas@workspace:packages/rpcs/cfx_maxPriorityFeePerGas"
   dependencies:
-    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "npm:1.0.6"
   languageName: unknown
   linkType: soft
 

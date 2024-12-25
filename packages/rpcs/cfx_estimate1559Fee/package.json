@@ -5,7 +5,7 @@
   "version": "0.0.4",
   "dependencies": {
     "@ethersproject/units": "5.6.1",
-    "@fluent-wallet/spec": "workspace:packages/spec",
+    "@fluent-wallet/spec": "1.0.6",
     "bn.js": "5.2.0"
   }
 }
