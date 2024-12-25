@@ -226,7 +226,7 @@ function AddressCard({
             : 'signTransaction',
         )}
       </header>
-      {isSendToken && (
+      {(isSendToken || !!value) && (
         <div className="h-10 mt-1 mb-3 flex items-center" id="sendToken">
           <DisplayBalance
             id="sendAmount"

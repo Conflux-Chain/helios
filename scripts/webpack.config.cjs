@@ -132,7 +132,9 @@ const defaultConfig = {
       'process.env.SENTRY_DSN': JSON.stringify(
         process.env.SNOWPACK_PUBLIC_SENTRY_DSN || '',
       ),
-      'process.env.PACKAGE_VERSION': JSON.stringify(packageJson.version),
+      'process.env.VIEW_PACKAGE_VERSION': JSON.stringify(
+        process.env.VIEW_PACKAGE_VERSION,
+      ),
     }),
     // Plugin to not generate js bundle for manifest entry
     new HtmlWebpackPlugin({

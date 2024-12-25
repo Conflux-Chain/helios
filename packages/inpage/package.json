@@ -1,7 +1,7 @@
 {
   "name": "helios-inpage",
   "type": "module",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "main": "index.js",
   "author": "yqrashawn <namy.19@gmail.com>",
   "private": true,
@@ -10,6 +10,7 @@
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
     "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api",
     "@thi.ng/rstream": "6.0.21",
+    "uuid": "^8.3.2",
     "webextension-polyfill": "0.8.0"
   }
 }

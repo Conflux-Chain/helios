@@ -9,8 +9,12 @@ import {
   zeroOrOne,
   map,
   Uint,
+  catn,
+  Hash32,
 } from '@fluent-wallet/spec'
 import {cfxSignTransaction} from '@fluent-wallet/signature'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {parseUnits} from '@ethersproject/units'
 
 export const NAME = 'cfx_signTransaction'
 
@@ -28,6 +32,25 @@ export const txSchema = [
   ['storageLimit', {optional: true}, Uint],
   ['chainId', {optional: true}, chainId],
   ['epochHeight', {optional: true}, Uint],
+  ['type', {optional: true}, Uint],
+  ['maxPriorityFeePerGas', {optional: true}, Uint],
+  ['maxFeePerGas', {optional: true}, Uint],
+  [
+    'accessList',
+    {optional: true},
+    [
+      catn,
+      [
+        'AccessListEntry',
+        [
+          map,
+          {closed: true},
+          ['address', {optional: true}, base32Address],
+          ['storageKeys', {optional: true}, [catn, ['32BtyeHexValue', Hash32]]],
+        ],
+      ],
+    ],
+  ],
 ]
 
 export const schemas = {
@@ -57,10 +80,24 @@ export const permissions = {
     'cfx_epochNumber',
     'cfx_estimateGasAndCollateral',
     'wallet_detectAddressType',
+    'cfx_getBlockByEpochNumber',
+    'wallet_network1559Compatible',
+    'cfx_maxPriorityFeePerGas',
+    'cfx_estimate1559Fee',
   ],
   db: ['findAddress'],
 }
 
+// conflux js sdk
+// hex type must be integer
+function formatTx(tx) {
+  const newTx = {...tx}
+
+  if (newTx.type && typeof newTx.type === 'string') {
+    newTx.type = parseInt(tx.type, 16)
+  }
+  return newTx
+}
 export const main = async args => {
   const {
     app,
@@ -73,6 +110,8 @@ export const main = async args => {
       cfx_estimateGasAndCollateral,
       cfx_getNextUsableNonce,
       wallet_detectAddressType,
+      wallet_network1559Compatible,
+      cfx_estimate1559Fee,
     },
     params: [tx, opts = {}],
     network,
@@ -85,6 +124,7 @@ export const main = async args => {
   tx.from = tx.from.toLowerCase()
   if (tx.to) tx.to = tx.to.toLowerCase()
   const newTx = {...tx}
+  const network1559Compatible = await wallet_network1559Compatible()
 
   const fromAddr = findAddress({
     appId: app && app.eid,
@@ -97,6 +137,38 @@ export const main = async args => {
   })
   // from address is not belong to wallet
   if (!fromAddr) throw InvalidParams(`Invalid from address ${newTx.from}`)
+
+  /**
+   * ledger app check, v1.x is is not support 1559 transaction
+   * so we need check this app version
+   */
+  let isV1LedgerAPP = false
+  if (fromAddr.account.accountGroup.vault.type === 'hw') {
+    // is hw wallet, we check is 1.x app version
+    const {Conflux: LedgerConflux} = await import('@fluent-wallet/ledger')
+    let ledger = new LedgerConflux()
+    // this call will establish a connection to the ledger device
+    const {version} = await ledger.getAppConfiguration()
+    if (version[0] === '1') {
+      isV1LedgerAPP = true
+    }
+    // disconnect from the ledger, if not disconnect will cause error when re-connect
+    await ledger.cleanUp()
+    ledger = null
+  }
+
+  if (!newTx.type) {
+    if (network1559Compatible && !isV1LedgerAPP) {
+      newTx.type = ETH_TX_TYPES.EIP1559
+    } else {
+      newTx.type = ETH_TX_TYPES.LEGACY
+    }
+  } else {
+    // if there has type, we need check is v1.x ledger app
+    if (isV1LedgerAPP) {
+      newTx.type = ETH_TX_TYPES.LEGACY
+    }
+  }
 
   // tx without to must have data (deploy contract)
   if (!newTx.to && !newTx.data)
@@ -119,6 +191,15 @@ export const main = async args => {
       newTx.from,
     ])
   }
+  // EIP-1559
+  const is1559Tx = newTx.type === ETH_TX_TYPES.EIP1559
+  if (is1559Tx && !network1559Compatible)
+    throw InvalidParams(
+      `Network ${network.name} don't support 1559 transaction`,
+    )
+  if (!is1559Tx && !newTx.gasPrice) {
+    newTx.gasPrice = await cfx_gasPrice()
+  }
 
   if (newTx.to && (!newTx.gas || !newTx.storageLimit)) {
     const {type} = await wallet_detectAddressType(
@@ -130,8 +211,6 @@ export const main = async args => {
       if (!newTx.storageLimit) newTx.storageLimit = '0x0'
     }
   }
-
-  if (!newTx.gasPrice) newTx.gasPrice = await cfx_gasPrice()
 
   if (!newTx.gas || !newTx.storageLimit) {
     try {
@@ -148,11 +227,27 @@ export const main = async args => {
     }
   }
 
+  if (is1559Tx && network1559Compatible && !isV1LedgerAPP) {
+    const gasInfoEip1559 = await cfx_estimate1559Fee()
+    const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
+      gasInfoEip1559?.medium || {}
+    if (!newTx.maxPriorityFeePerGas)
+      newTx.maxPriorityFeePerGas = parseUnits(
+        suggestedMaxPriorityFeePerGas,
+        'gwei',
+      ).toHexString()
+    if (!newTx.maxFeePerGas)
+      newTx.maxFeePerGas = parseUnits(
+        suggestedMaxFeePerGas,
+        'gwei',
+      ).toHexString()
+  }
+
   let raw
   if (fromAddr.account.accountGroup.vault.type === 'hw') {
     if (dryRun) {
       raw = cfxSignTransaction(
-        newTx,
+        formatTx(newTx),
         '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
         network.netId,
       )
@@ -160,7 +255,7 @@ export const main = async args => {
       raw = await signWithHardwareWallet({
         args,
         accountId: fromAddr.account.eid,
-        tx: newTx,
+        tx: formatTx(newTx),
         addressId: fromAddr.eid,
         device: fromAddr.account.accountGroup.vault.device,
       })
@@ -173,7 +268,7 @@ export const main = async args => {
 
     if (dryRun)
       pk = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
-    raw = cfxSignTransaction(newTx, pk, network.netId)
+    raw = cfxSignTransaction(formatTx(newTx), pk, network.netId)
   }
 
   if (returnTxMeta) {

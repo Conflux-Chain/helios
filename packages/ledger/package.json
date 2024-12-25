@@ -2,11 +2,11 @@
   "name": "@fluent-wallet/ledger",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.9",
+  "version": "0.1.1",
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
-    "@fluent-wallet/hw-app-conflux": "0.0.8",
+    "@fluent-wallet/hw-app-conflux": "0.1.1",
     "@ledgerhq/hw-app-eth": "6.24.1",
-    "@ledgerhq/hw-transport-webusb": "6.29.2"
+    "@ledgerhq/hw-transport-webhid": "6.29.4"
   }
 }

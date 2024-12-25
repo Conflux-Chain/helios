@@ -3,7 +3,7 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "dependencies": {
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema",
     "@fluent-wallet/spec": "1.0.6"

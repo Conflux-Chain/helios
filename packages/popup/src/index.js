@@ -7,7 +7,7 @@ import {SWRConfig} from 'swr'
 import {ROUTES} from './constants'
 import {IS_PROD_MODE, PACKAGE_VERSION} from '@fluent-wallet/inner-utils'
 
-const {ERROR} = ROUTES
+const {ERROR, WALLET_UNLOCK} = ROUTES
 // import reportWebVitals from './reportWebVitals'
 
 // Fix chrome extension render problem in external screen
@@ -68,7 +68,13 @@ ReactDOM.render(
         onError: error => {
           if (error && location) {
             if (!IS_PROD_MODE) console.error(error)
-            const prevPath = window?.location?.hash === '#/' ? 'home' : ''
+            if (
+              location.href.includes(`#${ERROR}`) ||
+              location.href.includes(`#${WALLET_UNLOCK}`)
+            ) {
+              return
+            }
+            const prevPath = location?.hash === '#/' ? 'home' : ''
             location.href = `${location.origin}${
               location.pathname
             }#${ERROR}?errorMsg=${

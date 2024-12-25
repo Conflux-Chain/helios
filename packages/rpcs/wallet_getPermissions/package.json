@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/wallet_get-permissions",
   "type": "module",
   "main": "index.js",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "dependencies": {
     "@fluent-wallet/spec": "1.0.6"
   }

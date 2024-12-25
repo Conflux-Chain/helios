@@ -1,6 +1,7 @@
 import BN from 'bn.js'
 import {bn16, pre0x} from './util.js'
-
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import Big from 'big.js'
 async function cfxEstimateGasAndCollateralAdvance(request, tx) {
   try {
     const estimateRst = await request({
@@ -98,8 +99,19 @@ export const cfxEstimate = async (
     nonce: customNonce,
     data,
     value,
+    type,
+    maxPriorityFeePerGas: customMaxPriorityFeePerGas,
+    maxFeePerGas: customMaxFeePerGas,
   } = newTx
-  let gasPrice, nonce
+  let gasPrice, nonce, maxPriorityFeePerGas, maxFeePerGas, gasInfoEip1559
+
+  const network1559Compatible = await request({
+    method: 'wallet_network1559Compatible',
+  })
+
+  // If the network support EIP1559 transaction, we will send EIP1559-type tx first.
+  const isTxTreatedAsEIP1559 =
+    network1559Compatible && (!type || type === ETH_TX_TYPES.EIP1559)
 
   if (!from) throw new Error(`Invalid from ${from}`)
   // if (networkId !== undefined && !Number.isInteger(networkId))
@@ -145,9 +157,34 @@ export const cfxEstimate = async (
   )
 
   // get gasPrice
-  await request({method: 'cfx_gasPrice'}).then(r => {
-    gasPrice = r
-  })
+  if (!isTxTreatedAsEIP1559) {
+    await request({method: 'cfx_gasPrice'}).then(r => {
+      gasPrice = r
+    })
+  }
+
+  //fetch maxPriorityFeePerGas and maxFeePerGas
+
+  if (isTxTreatedAsEIP1559) {
+    await request({method: 'cfx_estimate1559Fee'}).then(gasInfo => {
+      gasInfoEip1559 = gasInfo
+      const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
+        gasInfo?.medium || {}
+      maxPriorityFeePerGas = pre0x(
+        new BN(
+          new Big(suggestedMaxPriorityFeePerGas)
+            .round(9)
+            .times('1e9')
+            .toString(10),
+        ).toString(16),
+      )
+      maxFeePerGas = pre0x(
+        new BN(
+          new Big(suggestedMaxFeePerGas).round(9).times('1e9').toString(10),
+        ).toString(16),
+      )
+    })
+  }
 
   // get nonce, since it may affect estimateGasAndCollateral result
   if (!nonce) {
@@ -166,14 +203,15 @@ export const cfxEstimate = async (
 
   // simple send tx, gas is 21000, storageLimit is 0
   if (to && (!data || data === '0x')) {
-    const clcGasPrice = customGasPrice || gasPrice
-    const clcGasLimit = customGasLimit || '0x5208' /* 21000 */
-    const clcStorageLimit = customStorageLimit || '0x0'
+    const calcGasPrice = customGasPrice || gasPrice
+    const calcGasLimit = customGasLimit || '0x5208' /* 21000 */
+    const calcStorageLimit = customStorageLimit || '0x0'
+    const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
     const cfxFeeData = cfxGetFeeData(
       {
-        gasPrice: clcGasPrice,
-        gas: clcGasLimit,
-        storageLimit: clcStorageLimit,
+        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gas: calcGasLimit,
+        storageLimit: calcStorageLimit,
         value,
       },
       {balance: balances['0x0']},
@@ -188,8 +226,13 @@ export const cfxEstimate = async (
         nonce,
         customGasPrice,
         customGasLimit,
-        customStorageLimit,
         customNonce,
+        customStorageLimit,
+        customMaxPriorityFeePerGas,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        customMaxFeePerGas,
+        gasInfoEip1559,
         willPayCollateral: true,
         willPayTxFee: true,
       }
@@ -200,14 +243,17 @@ export const cfxEstimate = async (
   delete newTx.gas
   delete newTx.storageLimit
   delete newTx.gasPrice
+  delete newTx.maxFeePerGas
+  delete newTx.maxPriorityFeePerGas
   newTx.nonce = nonce
 
   // run estimate
   let rst = await cfxEstimateGasAndCollateralAdvance(request, newTx)
   const {gasLimit, storageCollateralized} = rst
-  const clcGasPrice = customGasPrice || gasPrice
-  const clcGasLimit = customGasLimit || gasLimit
-  const clcStorageLimit = customStorageLimit || storageCollateralized
+  const calcGasPrice = customGasPrice || gasPrice
+  const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
+  const calcGasLimit = customGasLimit || gasLimit
+  const calcStorageLimit = customStorageLimit || storageCollateralized
 
   rst = {
     ...rst,
@@ -221,17 +267,17 @@ export const cfxEstimate = async (
         from,
         to,
         // prioritiz custom value so that user can adjust them for sponsorship
-        clcGasLimit,
-        clcGasPrice,
-        clcStorageLimit,
+        calcGasLimit,
+        isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        calcStorageLimit,
         'latest_state',
       ],
     })
     const cfxFeeData = cfxGetFeeData(
       {
-        gasPrice: clcGasPrice,
-        gas: clcGasLimit,
-        storageLimit: clcStorageLimit,
+        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gas: calcGasLimit,
+        storageLimit: calcStorageLimit,
         value,
         tokensAmount,
       },
@@ -247,9 +293,9 @@ export const cfxEstimate = async (
   } else {
     const cfxFeeData = cfxGetFeeData(
       {
-        gasPrice: clcGasPrice,
-        gas: clcGasLimit,
-        storageLimit: clcStorageLimit,
+        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gas: calcGasLimit,
+        storageLimit: calcStorageLimit,
         value,
       },
       {balance: balances['0x0']},
@@ -268,6 +314,11 @@ export const cfxEstimate = async (
   rst.customGasLimit = customGasLimit
   rst.customStorageLimit = customStorageLimit
   rst.customNonce = customNonce
+  rst.maxPriorityFeePerGas = maxPriorityFeePerGas
+  rst.customMaxPriorityFeePerGas = customMaxPriorityFeePerGas
+  rst.maxFeePerGas = maxFeePerGas
+  rst.customMaxFeePerGas = customMaxFeePerGas
+  rst.gasInfoEip1559 = gasInfoEip1559
 
   return rst
 }

@@ -184,13 +184,13 @@ export const ethEstimate = async (
 
   // simple send tx, gas is 21000
   if (to && (!data || data === '0x')) {
-    const clcGasPrice = customGasPrice || gasPrice
-    const clcGasLimit = customGasLimit || '0x5208' /* 21000 */
-    const clcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
+    const calcGasPrice = customGasPrice || gasPrice
+    const calcGasLimit = customGasLimit || '0x5208' /* 21000 */
+    const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
     const ethFeeData = ethGetFeeData(
       {
-        gasPrice: isTxTreatedAsEIP1559 ? clcMaxFeePerGas : clcGasPrice,
-        gas: clcGasLimit,
+        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gas: calcGasLimit,
         value,
       },
       {balance: balances['0x0']},
@@ -229,9 +229,9 @@ export const ethEstimate = async (
     request({method: 'eth_chainId'}),
   ])
   const {gasLimit} = rst
-  const clcGasPrice = customGasPrice || gasPrice
-  const clcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
-  const clcGasLimit =
+  const calcGasPrice = customGasPrice || gasPrice
+  const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
+  const calcGasLimit =
     customGasLimit ||
     pre0x(
       bn16(gasLimit)
@@ -245,8 +245,8 @@ export const ethEstimate = async (
   if (toAddressType === 'contract') {
     const ethFeeData = ethGetFeeData(
       {
-        gasPrice: isTxTreatedAsEIP1559 ? clcMaxFeePerGas : clcGasPrice,
-        gas: clcGasLimit,
+        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gas: calcGasLimit,
         value,
         tokensAmount,
       },
@@ -259,8 +259,8 @@ export const ethEstimate = async (
   } else {
     const ethFeeData = ethGetFeeData(
       {
-        gasPrice: isTxTreatedAsEIP1559 ? clcMaxFeePerGas : clcGasPrice,
-        gas: clcGasLimit,
+        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gas: calcGasLimit,
         value,
       },
       {balance: balances['0x0']},

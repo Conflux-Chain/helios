@@ -40,6 +40,20 @@ beforeEach(() => {
         raw: 'txraw',
         txPayload: {nonce: 'txnonce', epochHeight: '0x1'},
       })),
+      queryTxWithSameNonce: vi.fn(() => [
+        {
+          eid: 'txeid',
+          status: 0,
+          hash: 'txhash',
+          raw: 'txraw',
+          txPayload: {
+            nonce: 'txnonce',
+            epochHeight: '0x1',
+            type: '0x2',
+            maxFeePerGas: '0x5efeb1f00',
+          },
+        },
+      ]),
       setTxSkipped: vi.fn(),
       setTxFailed: vi.fn(),
       setTxSending: vi.fn(),

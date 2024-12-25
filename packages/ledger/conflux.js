@@ -1,4 +1,4 @@
-import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
+import TransportWebHID from '@ledgerhq/hw-transport-webhid'
 import {decode} from '@fluent-wallet/base32-address'
 import {LEDGER_APP_NAME, LEDGER_CLA, INS, HDPATH, ERROR} from './const.js'
 import {handleName} from './index.js'
@@ -20,12 +20,17 @@ export default class Conflux {
     this.transport = null
   }
 
+  async createApp(transport) {
+    const App = await import('@fluent-wallet/hw-app-conflux')
+    this.app = new App.default(transport)
+    this.transport = transport
+  }
+
   async setApp() {
     if (!this.app) {
       try {
-        this.transport = await TransportWebUSB.create()
-        const App = await import('@fluent-wallet/hw-app-conflux')
-        this.app = new App.default(this.transport)
+        const transport = await TransportWebHID.create()
+        await this.createApp(transport)
       } catch (error) {
         console.warn(error)
       }
@@ -85,7 +90,7 @@ export default class Conflux {
   }
 
   async isDeviceAuthed() {
-    const devices = await TransportWebUSB.list()
+    const devices = await TransportWebHID.list()
     return Boolean(devices.length)
   }
 
@@ -123,7 +128,10 @@ export default class Conflux {
    */
   async requestAuth() {
     try {
-      await TransportWebUSB?.request()
+      const transport = await TransportWebHID?.request()
+      if (!this.app) {
+        await this.createApp(transport)
+      }
       return true
     } catch (error) {
       return false
@@ -154,7 +162,7 @@ export default class Conflux {
   }
 
   async getDeviceInfo() {
-    const devices = await TransportWebUSB.list()
+    const devices = await TransportWebHID.list()
     if (devices.length > 0) {
       const device = devices[0]
       return {

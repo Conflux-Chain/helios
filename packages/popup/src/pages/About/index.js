@@ -47,7 +47,7 @@ AboutItem.propTypes = {
 
 function About() {
   const {t, i18n} = useTranslation()
-  const {version} = useWalletVersion()
+  const {view_version} = useWalletVersion()
 
   return (
     <div id="about" className="bg-gray-0 pb-4 h-full w-full flex flex-col">
@@ -65,7 +65,7 @@ function About() {
           </p>
           <p className="text-center text-gray-40 text-sm">{`${t(
             'version',
-          )} v${version}`}</p>
+          )} v${view_version}`}</p>
         </div>
       </header>
       <main className="mt-8">

@@ -1,10 +1,12 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useMemo} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {
   Big,
   formatDecimalToHex,
   formatHexToDecimal,
+  convertDecimal,
+  GWEI_DECIMALS,
 } from '@fluent-wallet/data-format'
 import EditGasFee from '../EditGasFee'
 import {
@@ -85,12 +87,15 @@ function ResendTransaction() {
     to,
     nonce,
     value,
-    gasPrice: lastGasPrice,
+    gasPrice,
+    maxFeePerGas,
     type: eipVersionType,
   } = txPayload
   const reSendTxStatus = formatStatus(status)
 
   const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(eipVersionType)
+
+  const lastGasPrice = isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice
 
   // decode erc20 data
   const {decodeData} = useDecodeData(
@@ -142,6 +147,30 @@ function ResendTransaction() {
   const originEstimateRst =
     useEstimateTx({...originParams}, token20Params) || {}
 
+  const {
+    gasPrice: estimateGasPrice,
+    gasInfoEip1559 = {},
+    loading,
+  } = originEstimateRst
+
+  const originEstimateGasPrice = useMemo(() => {
+    if (
+      loading ||
+      (!isTxTreatedAsEIP1559 && !estimateGasPrice) ||
+      (isTxTreatedAsEIP1559 && !gasInfoEip1559?.['medium'])
+    )
+      return null
+    return !isTxTreatedAsEIP1559
+      ? estimateGasPrice
+      : convertDecimal(
+          new Big(gasInfoEip1559?.['medium']?.suggestedMaxFeePerGas)
+            .round(9)
+            .toString(10),
+          'multiply',
+          GWEI_DECIMALS,
+        )
+  }, [isTxTreatedAsEIP1559, estimateGasPrice, gasInfoEip1559, loading])
+
   const resendTransaction = async params => {
     try {
       await request(WALLET_SEND_TRANSACTION_WITH_ACTION, {
@@ -168,7 +197,7 @@ function ResendTransaction() {
   }
 
   const onResend = async feeParams => {
-    if (originEstimateRst?.loading || !accountType) {
+    if (loading || !accountType) {
       return
     }
 
@@ -220,11 +249,9 @@ function ResendTransaction() {
 
   // set default gas price (legacy tx)
   useEffect(() => {
-    if (lastGasPrice && originEstimateRst?.gasPrice) {
+    if (lastGasPrice && originEstimateGasPrice) {
       const decimalGasPrice = formatHexToDecimal(lastGasPrice)
-      const decimalEstimateGasPrice = formatHexToDecimal(
-        originEstimateRst.gasPrice,
-      )
+      const decimalEstimateGasPrice = formatHexToDecimal(originEstimateGasPrice)
 
       const biggerGasPrice = new Big(decimalGasPrice).times(1.1)
 
@@ -238,7 +265,7 @@ function ResendTransaction() {
 
       setSuggestedGasPrice(formatDecimalToHex(recommendGasPrice))
     }
-  }, [originEstimateRst.gasPrice, lastGasPrice])
+  }, [originEstimateGasPrice, lastGasPrice])
 
   //cancel resend tx when tx status is not pending
   useEffect(() => {

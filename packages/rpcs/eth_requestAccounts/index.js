@@ -24,7 +24,6 @@ export const main = async ({
   }
   const permissionsToRequest = {
     eth_accounts: {},
-    wallet_crossNetworkTypeGetEthereumHexAddress: {},
   }
   const permsRes = await wallet_requestPermissions([permissionsToRequest])
 
