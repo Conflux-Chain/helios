@@ -5,3 +5,6 @@ releases:
   "@fluent-wallet/wallet_handle-unfinished-eth-tx": patch
   browser-extension: patch
   helios-background: patch
+
+declined:
+  - helios
