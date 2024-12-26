@@ -4,7 +4,7 @@
   "version": "0.0.8",
   "private": true,
   "dependencies": {
-    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "1.0.6"
   },
   "devDependencies": {
     "chokidar": "3.5.3"

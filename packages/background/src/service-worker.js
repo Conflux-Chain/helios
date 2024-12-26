@@ -1,17 +1,17 @@
 // // # imports
 import {IS_PROD_MODE, IS_TEST_MODE} from '@fluent-wallet/inner-utils'
 import {EXT_STORAGE} from '@fluent-wallet/consts'
-import {isManifestV3} from './env'
+import {isManifestV3} from './env.js'
 import {defRpcEngine} from '@fluent-wallet/rpc-engine'
-import {persist as persistToExtStorageHandler} from '../background/src/persist-db-to-ext-storage'
+import {persist as persistToExtStorageHandler} from './persist-db-to-ext-storage.js'
 
 import browser from 'webextension-polyfill'
-import SCHEMA from '../background/src//db-schema'
+import SCHEMA from './db-schema.js'
 import {listen} from '@fluent-wallet/extension-runtime/background.js'
-import fillInitialDBData from '../background/src/init-db.js'
+import fillInitialDBData from './init-db.js'
 import * as bb from '@fluent-wallet/webextension'
 
-import {rpcEngineOpts} from '../background/src/rpc-engine-opts'
+import {rpcEngineOpts} from './rpc-engine-opts.js'
 
 // # setup
 // ## dev helper
@@ -56,9 +56,8 @@ async function initDB(initDBFn, skipRestore) {
 
 // ## init rpc engine
 async function initRPCEngine(dbConnection) {
-
   const {request} = defRpcEngine(dbConnection, rpcEngineOpts)
-  const protectedRequest = (req = {} as any) =>
+  const protectedRequest = (req = {}) =>
     request({
       id: req.id,
       jsonrpc: req.jsonrpc,
@@ -125,8 +124,7 @@ function saveTimestamp() {
 // # initialize
 
 async function initApp() {
-  const {request, db} = await initBG()
-
+  const {request} = await initBG()
 
   // ## start long running jobs
   if (!IS_TEST_MODE) {

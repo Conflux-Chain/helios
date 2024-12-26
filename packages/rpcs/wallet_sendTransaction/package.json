@@ -11,6 +11,6 @@
     "@fluent-wallet/eth_send-transaction": "workspace:*",
     "@fluent-wallet/json-rpc-error": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
-    "@fluent-wallet/spec": "workspace:*"
+    "@fluent-wallet/spec": "1.0.6"
   }
 }
