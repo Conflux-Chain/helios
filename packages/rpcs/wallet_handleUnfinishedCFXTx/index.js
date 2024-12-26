@@ -302,7 +302,7 @@ export const main = ({
                       failed = true
                       errorType = 'replacedByAnotherTx'
                       disableNotification = true
-                      // start a new tracking
+                      // set executed tx to pending, start a new tracking
                       forceSetTxStatus({hash: _tx.hash, status: 2, error: null})
                       wallet_handleUnfinishedCFXTx({
                         tx: _tx.eid,
