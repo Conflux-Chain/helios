@@ -7,7 +7,7 @@
   "dependencies": {
     "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
-    "@fluent-wallet/spec": "1.0.6",
+    "@fluent-wallet/spec": "1.0.7",
     "browser-passworder": "2.0.3"
   }
 }

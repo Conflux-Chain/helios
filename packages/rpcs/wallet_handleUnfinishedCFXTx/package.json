@@ -8,7 +8,7 @@
     "@ethersproject/bignumber": "5.6.2",
     "@fluent-wallet/compose": "workspace:*",
     "@fluent-wallet/conflux-tx-error": "workspace:*",
-    "@fluent-wallet/spec": "1.0.6",
+    "@fluent-wallet/spec": "1.0.7",
     "@fluent-wallet/transducers": "workspace:*",
     "@fluent-wallet/webextension": "workspace:*",
     "@thi.ng/rstream": "6.0.21"

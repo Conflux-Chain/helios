@@ -5,7 +5,7 @@
   "version": "0.0.18",
   "dependencies": {
     "@fluent-wallet/signature": "workspace:packages/signature",
-    "@fluent-wallet/spec": "1.0.6",
+    "@fluent-wallet/spec": "1.0.7",
     "@fluent-wallet/typed-data-spec": "workspace:packages/typed-data-spec"
   }
 }

@@ -7,7 +7,7 @@
   "dependencies": {
     "@fluent-wallet/confluxscan-api": "workspace:*",
     "@fluent-wallet/consts": "workspace:*",
-    "@fluent-wallet/spec": "1.0.6",
+    "@fluent-wallet/spec": "1.0.7",
     "@thi.ng/cache": "2.1.10",
     "@thi.ng/memoize": "3.1.7"
   }
