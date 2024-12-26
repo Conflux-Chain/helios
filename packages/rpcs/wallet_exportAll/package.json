@@ -4,7 +4,7 @@
   "main": "index.js",
   "version": "0.0.8",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.8",
+    "@fluent-wallet/spec": "1.0.6",
     "browser-passworder": "2.0.3"
   }
 }

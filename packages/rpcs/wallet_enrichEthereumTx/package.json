@@ -6,6 +6,6 @@
   "version": "0.0.8",
   "dependencies": {
     "@fluent-wallet/contract-method-name": "workspace:*",
-    "@fluent-wallet/spec": "1.0.8"
+    "@fluent-wallet/spec": "1.0.6"
   }
 }

@@ -4,7 +4,7 @@
   "main": "index.js",
   "version": "3.0.2",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.8",
+    "@fluent-wallet/spec": "1.0.6",
     "@fluent-wallet/wallet-permission": "workspace:packages/wallet-permission"
   }
 }
