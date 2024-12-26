@@ -8,7 +8,7 @@
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/csp": "workspace:*",
-    "@fluent-wallet/spec": "1.0.7",
+    "@fluent-wallet/spec": "1.0.8",
     "@fluent-wallet/utils": "workspace:packages/utils",
     "browser-passworder": "^2.0.3"
   }

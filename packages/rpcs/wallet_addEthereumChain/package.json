@@ -4,7 +4,7 @@
   "main": "index.js",
   "version": "0.0.20",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.7",
+    "@fluent-wallet/spec": "1.0.8",
     "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
   }
 }

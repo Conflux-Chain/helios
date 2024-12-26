@@ -16,7 +16,7 @@
     "@fluent-wallet/json-rpc-error": "workspace:packages/json-rpc-error",
     "@fluent-wallet/random-id": "workspace:packages/random-id",
     "@fluent-wallet/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref",
-    "@fluent-wallet/spec": "1.0.7",
+    "@fluent-wallet/spec": "1.0.8",
     "@fluent-wallet/transducers": "workspace:packages/transducers",
     "@thi.ng/atom": "4.1.42",
     "@thi.ng/rstream": "6.0.21",
