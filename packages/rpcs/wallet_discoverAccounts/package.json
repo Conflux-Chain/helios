@@ -7,7 +7,7 @@
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network",
     "@fluent-wallet/csp": "workspace:packages/csp",
     "@fluent-wallet/discover-accounts": "workspace:packages/discover-accounts",
-    "@fluent-wallet/spec": "1.0.6",
+    "@fluent-wallet/spec": "1.0.8",
     "browser-passworder": "2.0.3"
   }
 }
