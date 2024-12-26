@@ -6,6 +6,6 @@
   "version": "2.0.7",
   "dependencies": {
     "@fluent-wallet/eth_sign-transaction": "workspace:*",
-    "@fluent-wallet/spec": "1.0.6"
+    "@fluent-wallet/spec": "1.0.8"
   }
 }

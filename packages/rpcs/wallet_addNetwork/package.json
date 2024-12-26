@@ -5,6 +5,6 @@
   "version": "1.0.13",
   "dependencies": {
     "@fluent-wallet/consts": "workspace:packages/consts",
-    "@fluent-wallet/spec": "1.0.6"
+    "@fluent-wallet/spec": "1.0.8"
   }
 }
