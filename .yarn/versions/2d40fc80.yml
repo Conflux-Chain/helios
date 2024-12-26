@@ -1,6 +1,0 @@
-releases:
-  "@fluent-wallet/db": patch
-  "@fluent-wallet/spec": patch
-
-declined:
-  - helios
