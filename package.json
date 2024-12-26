@@ -63,11 +63,11 @@
     "dev:chrome": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=chrome webpack --config ./scripts/webpack.config.dev.mjs",
     "dev:firefox": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=firefox webpack --config ./scripts/webpack.config.dev.mjs",
     "dev:edge": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=edge webpack --config ./scripts/webpack.config.dev.mjs",
-    "build:chrome": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=chrome webpack --config ./scripts/webpack.config.prod.mjs",
-    "build:firefox": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=firefox webpack --config ./scripts/webpack.config.prod.mjs",
-    "build:edge": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=edge webpack --config ./scripts/webpack.config.prod.mjs",
+    "build:chrome": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=chrome webpack --config ./scripts/webpack.config.prod.mjs && yarn removeEmptyFile",
+    "build:firefox": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=firefox webpack --config ./scripts/webpack.config.prod.mjs && yarn removeEmptyFile",
+    "build:edge": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=edge webpack --config ./scripts/webpack.config.prod.mjs && yarn removeEmptyFile",
     "build": "yarn build:chrome && yarn build:firefox && yarn build:edge && yarn removeEmptyFile",
-    "removeEmptyFile": "rm -rf ./dist/*/manifest.js"
+    "removeEmptyFile": "find ./dist -name \"manifest.js\" -type f -delete"
   },
   "devDependencies": {
     "@babel/core": "7.17.9",
@@ -94,7 +94,7 @@
     "@types/serve-static": "^1",
     "@types/webpack-bundle-analyzer": "^4",
     "@vitejs/plugin-react": "4.3.1",
-    "@vitest/coverage-v8": "2.0.5",
+    "@vitest/coverage-v8": "2.1.8",
     "@yarnpkg/esbuild-plugin-pnp": "3.0.0-rc.2",
     "@yqrashawn/snowpack": "3.8.6-fix-6",
     "autoprefixer": "10.4.20",
@@ -157,7 +157,7 @@
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-standard": "^26.0.0",
     "tailwindcss": "^3.1.1",
-    "vitest": "2.0.5",
+    "vitest": "2.1.8",
     "wait-for-expect": "3.0.2",
     "web-ext": "7.0.0",
     "webpack": "5.93.0",
