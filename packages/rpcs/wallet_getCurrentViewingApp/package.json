@@ -3,9 +3,9 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "dependencies": {
-    "@fluent-wallet/spec": "workspace:packages/spec",
+    "@fluent-wallet/spec": "1.0.6",
     "@fluent-wallet/webextension": "workspace:packages/webextension"
   }
 }

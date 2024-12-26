@@ -154,7 +154,12 @@ function ResendTransaction() {
   } = originEstimateRst
 
   const originEstimateGasPrice = useMemo(() => {
-    if (loading || Object.keys(originEstimateRst).length === 0) return null
+    if (
+      loading ||
+      (!isTxTreatedAsEIP1559 && !estimateGasPrice) ||
+      (isTxTreatedAsEIP1559 && !gasInfoEip1559?.['medium'])
+    )
+      return null
     return !isTxTreatedAsEIP1559
       ? estimateGasPrice
       : convertDecimal(

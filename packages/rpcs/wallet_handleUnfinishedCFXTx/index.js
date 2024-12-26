@@ -11,10 +11,18 @@ import {
   pluck,
 } from '@fluent-wallet/transducers'
 import {processError} from '@fluent-wallet/conflux-tx-error'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {BigNumber} from '@ethersproject/bignumber'
 import {identity} from '@fluent-wallet/compose'
 
 export const NAME = 'wallet_handleUnfinishedCFXTx'
+
+function getGasPrice(tx) {
+  const payload = tx.txPayload
+  return payload.type === ETH_TX_TYPES.EIP1559
+    ? payload.maxFeePerGas
+    : payload.gasPrice
+}
 
 function defs(...args) {
   const s = stream({
@@ -75,6 +83,7 @@ export const permissions = {
     'setTxConfirmed',
     'setTxUnsent',
     'setTxChainSwitched',
+    'queryTxWithSameNonce',
   ],
 }
 
@@ -102,6 +111,7 @@ export const main = ({
     setTxConfirmed,
     setTxUnsent,
     setTxChainSwitched,
+    queryTxWithSameNonce,
   },
   params: {tx, address, okCb, failedCb},
   network,
@@ -211,12 +221,20 @@ export const main = ({
             const isDuplicateTx = errorType === 'duplicateTx'
             const resendNonceTooStale =
               tx.resendAt && errorType === 'tooStaleNonce'
-
+            const sameNonceTxs = queryTxWithSameNonce({hash}) || []
+            const latestTx = sameNonceTxs.sort((a, b) =>
+              BigNumber.from(getGasPrice(b)).sub(getGasPrice(a)).toNumber(),
+            )[0]
+            const disableNotification = latestTx?.hash !== hash
             const sameAsSuccess = isDuplicateTx || resendNonceTooStale
             const failed = !sameAsSuccess && shouldDiscard
 
             defs({
-              failed: failed && {errorType, err},
+              failed: failed && {
+                errorType,
+                err,
+                disableNotification,
+              },
               sameAsSuccess,
               resend: !shouldDiscard && !sameAsSuccess,
             })
@@ -227,17 +245,18 @@ export const main = ({
                       ({err}) =>
                         typeof failedCb === 'function' && failedCb(err),
                     ),
-                    sideEffect(({errorType}) => {
+                    sideEffect(({errorType, disableNotification}) => {
                       if (setTxFailed({hash, error: errorType})) {
-                        getExt().then(ext =>
-                          ext.notifications.create(hash, {
-                            title: 'Failed transaction',
-                            message: `Transaction ${parseInt(
-                              tx.txPayload.nonce,
-                              16,
-                            )} failed! ${err?.data || err?.message || ''}`,
-                          }),
-                        )
+                        !disableNotification &&
+                          getExt().then(ext =>
+                            ext.notifications.create(hash, {
+                              title: 'Failed transaction',
+                              message: `Transaction ${parseInt(
+                                tx.txPayload.nonce,
+                                16,
+                              )} failed! ${err?.data || err?.message || ''}`,
+                            }),
+                          )
                       }
                     }),
                     sideEffect(() => {

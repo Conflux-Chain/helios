@@ -1,3 +1,5 @@
+import {ERROR} from '@fluent-wallet/json-rpc-error'
+
 // shouldDiscard means should stop tracking this tx
 // error from geth txpool error
 // https://github.com/ethereum/go-ethereum/blob/2d20fed893faa894f50af709349b13b6ad9b45db/core/tx_pool.go#L56
@@ -66,6 +68,10 @@ export function processError(err) {
     // can't find this error in geth
     if (/invalid chainid/i.test(errstr))
       return {errorType: 'chainIdMismatch', shouldDiscard: true}
+  }
+  // network error
+  if (err?.code === ERROR.SERVER.code) {
+    return {errorType: ERROR.SERVER.name, shouldDiscard: false}
   }
 
   return {errorType: 'unknownError', shouldDiscard: true}

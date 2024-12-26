@@ -1,7 +1,7 @@
 queue_rules:
-  - name: duplicated default queue from Automatic queue to dev on approval [low]
+  - name: Automatic queue to dev on approval
     queue_conditions:
-      - "#approved-reviews-by>=1"
+      - '#approved-reviews-by>=1'
       - label!=work-in-progress
       - label!=wip
       - label!=no-auto-squash-merge
@@ -16,16 +16,15 @@ queue_rules:
       - status-success~=^build-doc\s\(.*\)$
       - status-success~=^unit-test\s\(.*\)$
       - status-success~=^integration-test\s\(.*\)$
-      - "#review-threads-unresolved=0"
+      - '#review-threads-unresolved=0'
     merge_conditions:
       - label!=work-in-progress
       - label!=wip
       - status-success~=^build\s\(.*\)$
     merge_method: squash
-  - name: duplicated default queue from Automatic queue to dev on approval (__release-pkg)
-      [low]
+  - name: Automatic queue to dev on approval (__release-pkg)
     queue_conditions:
-      - "#approved-reviews-by>=1"
+      - '#approved-reviews-by>=1'
       - label!=work-in-progress
       - label!=wip
       - label!=no-auto-squash-merge
@@ -35,17 +34,12 @@ queue_rules:
       - -draft
       - -locked
       - status-success~=^build\s\(.*\)$
-      - "#review-threads-unresolved=0"
+      - '#review-threads-unresolved=0'
     merge_conditions:
       - label!=work-in-progress
       - label!=wip
       - status-success~=^build\s\(.*\)$
     merge_method: squash
-  - name: default queue
-    conditions:
-      - label!=work-in-progress
-      - label!=wip
-      - status-success~=^build\s\(.*\)$
 
 pull_request_rules:
   - name: automatic approval for release package PR
@@ -68,8 +62,17 @@ pull_request_rules:
       - head!=main
     actions:
       update:
-  - name: Automatic queue to dev on approval (__release-pkg) [low] + Automatic queue
-      to dev on approval [low]
+
+  - name: Automatic queue to dev on approval (__release-pkg)
+    conditions:
+      - author~=^ConfluxBot$
+      - head=__release-pkg
+    actions:
+      queue:
+        name: Automatic queue to dev on approval (__release-pkg)
+      
+  - name: Automatic queue to dev on approval [low]
     conditions: []
     actions:
       queue:
+        name: Automatic queue to dev on approval

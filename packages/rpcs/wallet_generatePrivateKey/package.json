@@ -1,10 +1,10 @@
 {
   "name": "@fluent-wallet/wallet_generate-private-key",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "type": "module",
   "main": "index.js",
   "dependencies": {
     "@fluent-wallet/account": "workspace:packages/account",
-    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "1.0.6"
   }
 }

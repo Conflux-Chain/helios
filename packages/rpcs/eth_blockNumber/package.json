@@ -2,8 +2,8 @@
   "name": "@fluent-wallet/eth_block-number",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "dependencies": {
-    "@fluent-wallet/spec": "workspace:packages/spec"
+    "@fluent-wallet/spec": "1.0.6"
   }
 }

@@ -2126,6 +2126,23 @@
         (assoc :app (and app-id (e :app app-id)))
         (assoc :token (and token-id (e :token token-id))))))
 
+(defn get-tx-with-same-nonce [{:keys [hash]}]
+  (let [txs
+        (q '[:find [?txs ...]
+             :in $ ?tx
+             :where
+             [?address :address/tx ?tx]
+             [?tx :tx/txPayload ?payload]
+             [?payload :txPayload/nonce ?nonce]
+             [?address :address/tx ?txs]
+             [?txs :tx/txPayload ?tx-payload]
+             [?tx-payload :txPayload/nonce ?nonce]
+             [?address :address/value ?addrv]
+             [?tx-payload :txPayload/from ?addrv]]
+           [:tx/hash hash])]
+    (when txs
+      (mapv tx-id->data txs))))
+
 (defn get-tx [{:keys [hash]}]
   (let [tx (q '[:find ?tx .
                 :in  $ ?tx
@@ -2315,6 +2332,7 @@
               :upsertMemo                          upsert-memo
               :queryNonceGapTxs                    query-nonce-gap-txs
               :insertExternalTx                    insert-external-tx
+              :queryTxWithSameNonce                get-tx-with-same-nonce
 
               :queryqueryRecentInterestingAddress get-recent-interesting-address-from-tx
               :queryqueryApp                      get-apps

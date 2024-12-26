@@ -678,6 +678,7 @@ export const useWalletVersion = () => {
   const {data} = useRPC([WALLET_GET_FLUENT_METADATA], undefined, {
     fallbackData: {
       version: '',
+      view_version: '',
     },
   })
   return data
