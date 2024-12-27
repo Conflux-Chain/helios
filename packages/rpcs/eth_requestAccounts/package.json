@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/eth_request-accounts",
   "type": "module",
   "main": "index.js",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "dependencies": {
     "@fluent-wallet/spec": "1.0.8"
   }

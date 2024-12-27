@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/cfx_gas-price",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "dependencies": {
     "@fluent-wallet/consts": "workspace:*",
     "@fluent-wallet/spec": "1.0.8",

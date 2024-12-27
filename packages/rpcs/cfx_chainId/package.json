@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/cfx_chain-id",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "dependencies": {
     "@fluent-wallet/spec": "1.0.8"
   }

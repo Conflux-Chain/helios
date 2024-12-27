@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/cfx_max-priority-fee-per-gas",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@fluent-wallet/spec": "1.0.8"
   }
