@@ -60,7 +60,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
 
-      - run: yarn install --immutable
+      - run: yarn install --immutable --no-check-resolutions
 
       - name: Set package version
         id: get-package-version
