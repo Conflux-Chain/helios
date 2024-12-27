@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/wallet_add-pending-user-auth-request",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "dependencies": {
     "@fluent-wallet/csp": "workspace:packages/csp",
     "@fluent-wallet/spec": "1.0.8",
