@@ -5,7 +5,7 @@ export const NAME = 'wallet_getSidePanelEnabled'
 
 const getSidePanel = async () => {
   const browser = (await import('webextension-polyfill')).default
-  browser.storage.local.get(SIDE_PANEL_KEY)
+  return browser.storage.local.get(SIDE_PANEL_KEY)
 }
 
 export const schemas = {
@@ -19,7 +19,7 @@ export const permissions = {
 }
 
 export const main = async ({rpcs: {wallet_getSidePanelSupported}}) => {
-  if (!wallet_getSidePanelSupported()) {
+  if (!(await wallet_getSidePanelSupported())) {
     return false
   }
   const res = await getSidePanel()
