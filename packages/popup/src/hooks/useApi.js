@@ -37,6 +37,8 @@ const {
   WALLET_GET_FLUENT_METADATA,
   CFX_GET_MAX_GAS_LIMIT,
   WALLET_GET_PREFERENCES,
+  WALLET_GET_SIDE_PANEL_ENABLED,
+  WALLET_GET_SIDE_PANEL_SUPPORTED,
   WALLET_QUERY_MEMO,
   WALLET_QUERY_RECENT_TRADING_ADDRESS,
   WALLET_NETWORK1559COMPATIBLE,
@@ -693,6 +695,27 @@ export const usePreferences = (stop = false) => {
     },
   )
   return {data, mutate}
+}
+
+export const useSidePanel = (stop = false) => {
+  const {data: enabled} = useRPC(
+    stop ? null : [WALLET_GET_SIDE_PANEL_ENABLED],
+    undefined,
+    {
+      refreshInterval: 0,
+    },
+  )
+  const {data: isSupported} = useRPC(
+    stop ? null : [WALLET_GET_SIDE_PANEL_SUPPORTED],
+    undefined,
+    {
+      refreshInterval: 0,
+    },
+  )
+  return {
+    enabled,
+    isSupported,
+  }
 }
 
 export const useCurrentNetworkAddressMemo = (params = {}, stopSend = false) => {

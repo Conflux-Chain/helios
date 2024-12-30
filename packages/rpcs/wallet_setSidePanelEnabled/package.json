@@ -1,0 +1,12 @@
+{
+  "name": "@fluent-wallet/wallet_set-side-panel-enabled",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.1.0",
+  "version": "0.0.1",
+  "dependencies": {
+    "@fluent-wallet/consts": "workspace:*",
+    "@fluent-wallet/spec": "workspace:*",
+    "webextension-polyfill": "0.8.0"
+  }
+}

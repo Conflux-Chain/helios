@@ -137,6 +137,8 @@ async function initApp() {
       () => request({method: 'wallet_cleanupTx', _rpcStack: ['frombg']}),
       1000 * 60 * 60,
     )
+    // set panel behavior
+    request({method: 'wallet_setSidePanelBehavior', _rpcStack: ['frombg']})
   }
 
   if (isManifestV3) {

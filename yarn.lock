@@ -5072,7 +5072,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/utils@workspace:packages/utils":
+"@fluent-wallet/utils@workspace:*, @fluent-wallet/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/utils@workspace:packages/utils"
   dependencies:
@@ -5535,6 +5535,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-side-panel-enabled@workspace:*, @fluent-wallet/wallet_get-side-panel-enabled@workspace:packages/rpcs/wallet_getSidePanelEnabled":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-side-panel-enabled@workspace:packages/rpcs/wallet_getSidePanelEnabled"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-side-panel-supported@workspace:*, @fluent-wallet/wallet_get-side-panel-supported@workspace:packages/rpcs/wallet_getSidePanelSupported":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-side-panel-supported@workspace:packages/rpcs/wallet_getSidePanelSupported"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
+    "@fluent-wallet/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:*, @fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:packages/rpcs/wallet_handleUnfinishedCFXTx":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:packages/rpcs/wallet_handleUnfinishedCFXTx"
@@ -5766,6 +5785,21 @@ __metadata:
   dependencies:
     "@fluent-wallet/checks": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.8"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_set-side-panel-behavior@workspace:*, @fluent-wallet/wallet_set-side-panel-behavior@workspace:packages/rpcs/wallet_setSidePanelBehavior":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_set-side-panel-behavior@workspace:packages/rpcs/wallet_setSidePanelBehavior"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_set-side-panel-enabled@workspace:*, @fluent-wallet/wallet_set-side-panel-enabled@workspace:packages/rpcs/wallet_setSidePanelEnabled":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_set-side-panel-enabled@workspace:packages/rpcs/wallet_setSidePanelEnabled"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:*"
+    "@fluent-wallet/spec": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18231,6 +18265,8 @@ __metadata:
     "@fluent-wallet/wallet_get-pending-auth-request": "workspace:packages/rpcs/wallet_getPendingAuthRequest"
     "@fluent-wallet/wallet_get-permissions": "workspace:packages/rpcs/wallet_getPermissions"
     "@fluent-wallet/wallet_get-preferences": "workspace:*"
+    "@fluent-wallet/wallet_get-side-panel-enabled": "workspace:*"
+    "@fluent-wallet/wallet_get-side-panel-supported": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-eth-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-txs": "workspace:*"
@@ -18256,6 +18292,8 @@ __metadata:
     "@fluent-wallet/wallet_set-current-account": "workspace:packages/rpcs/wallet_setCurrentAccount"
     "@fluent-wallet/wallet_set-current-network": "workspace:packages/rpcs/wallet_setCurrentNetwork"
     "@fluent-wallet/wallet_set-preferences": "workspace:*"
+    "@fluent-wallet/wallet_set-side-panel-behavior": "workspace:*"
+    "@fluent-wallet/wallet_set-side-panel-enabled": "workspace:*"
     "@fluent-wallet/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
     "@fluent-wallet/wallet_unwatch-asset": "workspace:packages/rpcs/wallet_unwatchAsset"
     "@fluent-wallet/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount"

@@ -4,11 +4,12 @@ import {useHistory} from 'react-router-dom'
 import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
 import {SlideCard, LanguageNav} from '../../../components'
-import {LockOutLined} from '@fluent-wallet/component-icons'
+import {LockOutLined, SidePanelSwitch} from '@fluent-wallet/component-icons'
 import {RPC_METHODS, ROUTES} from '../../../constants'
-import {useDataForPopup} from '../../../hooks/useApi'
+import {useDataForPopup, useSidePanel} from '../../../hooks/useApi'
 import {request} from '../../../utils'
 import useGlobalStore from '../../../stores'
+import {toggleSidePanelMode} from '../../../utils/side-panel'
 
 const {LOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 const {
@@ -76,6 +77,8 @@ function Setting({onClose, open, settingAnimate = true}) {
   const {setFatalError} = useGlobalStore()
   const {mutate} = useSWRConfig()
   const data = useDataForPopup()
+  const {enabled: sidePanelEnabled, isSupported: isSidePanelSupported} =
+    useSidePanel()
   const onLock = () => {
     request(LOCK)
       .then(() => {
@@ -87,6 +90,10 @@ function Setting({onClose, open, settingAnimate = true}) {
   const onClickSettingItem = jumpPath => {
     history.push('?open=setting-page')
     history.push(jumpPath)
+  }
+
+  const onSwitchSidePanel = () => {
+    toggleSidePanelMode(!sidePanelEnabled)
   }
 
   return (
@@ -125,21 +132,37 @@ function Setting({onClose, open, settingAnimate = true}) {
           </div>
         }
         cardFooter={
-          <div className="px-6 pb-6">
+          <div className="px-6 pb-4 flex items-center justify-between">
             <Button
               size="medium"
               fullWidth
               startIcon={
-                <LockOutLined className="!text-gray-40 w-3 h-3 group-hover:!text-primary" />
+                <LockOutLined className="!text-gray-40 !w-[0.75rem] !h-[0.75rem] group-hover:!text-primary" />
               }
               variant="text"
               color="primary"
-              className="!bg-bg hover:!bg-primary-10 hover:text-primary group"
+              className="!bg-bg hover:!bg-primary-10 hover:text-primary group max-w-[8rem]"
               id="lockBtn"
               onClick={onLock}
             >
               {t('lock')}
             </Button>
+            {isSidePanelSupported && (
+              <Button
+                size="medium"
+                fullWidth
+                startIcon={
+                  <SidePanelSwitch className="!text-gray-40 !w-[0.75rem] !h-[0.75rem] group-hover:!text-primary" />
+                }
+                variant="text"
+                color="primary"
+                className="!bg-bg hover:!bg-primary-10 hover:text-primary group max-w-[8.75rem]"
+                id="sidePanelBtn"
+                onClick={onSwitchSidePanel}
+              >
+                {sidePanelEnabled ? t('closeSidePanel') : t('openSidePanel')}
+              </Button>
+            )}
           </div>
         }
         direction="horizontal"
