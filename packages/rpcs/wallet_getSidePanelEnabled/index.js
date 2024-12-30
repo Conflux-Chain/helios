@@ -1,10 +1,12 @@
 import {optParam} from '@fluent-wallet/spec'
 import {SIDE_PANEL_KEY} from '@fluent-wallet/consts'
-import browser from 'webextension-polyfill'
 
 export const NAME = 'wallet_getSidePanelEnabled'
 
-const getSidePanel = () => browser.storage.local.get(SIDE_PANEL_KEY)
+const getSidePanel = async () => {
+  const browser = (await import('webextension-polyfill')).default
+  browser.storage.local.get(SIDE_PANEL_KEY)
+}
 
 export const schemas = {
   input: optParam,

@@ -1,11 +1,12 @@
 import {map, boolean} from '@fluent-wallet/spec'
 import {SIDE_PANEL_KEY} from '@fluent-wallet/consts'
-import browser from 'webextension-polyfill'
 
 export const NAME = 'wallet_setSidePanelEnabled'
 
-const setSidePanel = enabled =>
+const setSidePanel = async enabled => {
+  const browser = (await import('webextension-polyfill')).default
   browser.storage.local.set({[SIDE_PANEL_KEY]: enabled})
+}
 
 export const schemas = {
   input: [map, {closed: true}, ['enabled', boolean]],
