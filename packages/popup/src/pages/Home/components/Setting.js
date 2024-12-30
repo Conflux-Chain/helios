@@ -141,7 +141,9 @@ function Setting({onClose, open, settingAnimate = true}) {
               }
               variant="text"
               color="primary"
-              className="!bg-bg hover:!bg-primary-10 hover:text-primary group max-w-[8rem]"
+              className={`!bg-bg hover:!bg-primary-10 hover:text-primary group ${
+                isSidePanelSupported ? 'max-w-[8rem]' : ''
+              }`}
               id="lockBtn"
               onClick={onLock}
             >

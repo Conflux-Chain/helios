@@ -4995,7 +4995,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluent-wallet/spec@workspace:*, @fluent-wallet/spec@workspace:packages/spec":
+"@fluent-wallet/spec@workspace:packages/spec":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/spec@workspace:packages/spec"
   dependencies:
@@ -5540,7 +5540,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_get-side-panel-enabled@workspace:packages/rpcs/wallet_getSidePanelEnabled"
   dependencies:
     "@fluent-wallet/consts": "workspace:*"
-    "@fluent-wallet/spec": "workspace:*"
+    "@fluent-wallet/spec": "npm:1.0.8"
     webextension-polyfill: "npm:0.8.0"
   languageName: unknown
   linkType: soft
@@ -5549,7 +5549,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-side-panel-supported@workspace:packages/rpcs/wallet_getSidePanelSupported"
   dependencies:
-    "@fluent-wallet/spec": "workspace:*"
+    "@fluent-wallet/spec": "npm:1.0.8"
   languageName: unknown
   linkType: soft
 
@@ -5798,7 +5798,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_set-side-panel-enabled@workspace:packages/rpcs/wallet_setSidePanelEnabled"
   dependencies:
     "@fluent-wallet/consts": "workspace:*"
-    "@fluent-wallet/spec": "workspace:*"
+    "@fluent-wallet/spec": "npm:1.0.8"
     webextension-polyfill: "npm:0.8.0"
   languageName: unknown
   linkType: soft

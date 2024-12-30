@@ -697,16 +697,12 @@ export const usePreferences = (stop = false) => {
   return {data, mutate}
 }
 
-export const useSidePanel = (stop = false) => {
-  const {data: enabled} = useRPC(
-    stop ? null : [WALLET_GET_SIDE_PANEL_ENABLED],
-    undefined,
-    {
-      refreshInterval: 0,
-    },
-  )
+export const useSidePanel = () => {
+  const {data: enabled} = useRPC([WALLET_GET_SIDE_PANEL_ENABLED], undefined, {
+    refreshInterval: 0,
+  })
   const {data: isSupported} = useRPC(
-    stop ? null : [WALLET_GET_SIDE_PANEL_SUPPORTED],
+    [WALLET_GET_SIDE_PANEL_SUPPORTED],
     undefined,
     {
       refreshInterval: 0,

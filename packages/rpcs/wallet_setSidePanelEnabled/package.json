@@ -6,7 +6,7 @@
   "version": "0.0.1",
   "dependencies": {
     "@fluent-wallet/consts": "workspace:*",
-    "@fluent-wallet/spec": "workspace:*",
+    "@fluent-wallet/spec": "1.0.8",
     "webextension-polyfill": "0.8.0"
   }
 }
