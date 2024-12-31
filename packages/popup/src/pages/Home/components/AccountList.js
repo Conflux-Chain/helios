@@ -17,6 +17,7 @@ import {
 } from '../../../components'
 import {useAccountList, useCurrentAddress} from '../../../hooks/useApi'
 import {RPC_METHODS, ROUTES} from '../../../constants'
+import {isRunningInSidePanel} from '../../../utils/side-panel'
 
 const {WALLET_SET_CURRENT_ACCOUNT} = RPC_METHODS
 const {SELECT_CREATE_TYPE} = ROUTES
@@ -197,6 +198,7 @@ function AccountList({onClose, open, accountsAnimate = true}) {
           onChangeAccount={onChangeAccount}
         />
       }
+      width={isRunningInSidePanel() ? 'w-full' : undefined}
     />
   ) : null
 }

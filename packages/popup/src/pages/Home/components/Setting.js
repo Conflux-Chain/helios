@@ -9,7 +9,10 @@ import {RPC_METHODS, ROUTES} from '../../../constants'
 import {useDataForPopup, useSidePanel} from '../../../hooks/useApi'
 import {request} from '../../../utils'
 import useGlobalStore from '../../../stores'
-import {toggleSidePanelMode} from '../../../utils/side-panel'
+import {
+  isRunningInSidePanel,
+  toggleSidePanelMode,
+} from '../../../utils/side-panel'
 
 const {LOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
 const {
@@ -171,7 +174,9 @@ function Setting({onClose, open, settingAnimate = true}) {
         width="w-85"
         height="h-full"
         cardClassName="!rounded-t-none !p-0 flex flex-col"
-        containerClassName="pl-8"
+        containerClassName={`${
+          isRunningInSidePanel() ? 'pl-[calc(100%-21.25rem)]' : 'pl-8'
+        }`}
         backgroundColor="bg-gray-0"
       />
     </div>

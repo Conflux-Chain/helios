@@ -152,7 +152,7 @@ const defaultConfig = {
       chunks: ['popup'],
       filename: 'sidePanel.html',
       meta: {
-        'popup-type': 'popup',
+        'popup-type': 'side-panel',
       },
     }),
     new HtmlWebpackPlugin({

@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom'
 import {SlideCard, NetworkContent} from '../../../components'
 import {ROUTES} from '../../../constants'
 import {usePreferences} from '../../../hooks/useApi'
+import {isRunningInSidePanel} from '../../../utils/side-panel'
 
 const {ADVANCED_SETTINGS} = ROUTES
 
@@ -44,6 +45,7 @@ function NetworkList({onClose, open}) {
           }}
         />
       }
+      width={isRunningInSidePanel() ? 'w-full' : undefined}
     />
   )
 }
