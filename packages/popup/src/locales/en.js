@@ -345,6 +345,8 @@ const en = {
       'Fluent will be the first option when connecting to any dApp on EVM networks.',
     showTestnet: 'Show Testnet',
     showTestnetDes: 'Select this to show test networks in network list.',
+    openSidePanel: 'Open as sidebar',
+    closeSidePanel: 'Open as popup',
 
     // About
     about: 'About',

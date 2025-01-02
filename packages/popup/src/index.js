@@ -6,9 +6,21 @@ import './i18n.js'
 import {SWRConfig} from 'swr'
 import {ROUTES} from './constants'
 import {IS_PROD_MODE, PACKAGE_VERSION} from '@fluent-wallet/inner-utils'
+import {isRunningInSidePanel} from './utils/side-panel'
 
 const {ERROR, WALLET_UNLOCK} = ROUTES
 // import reportWebVitals from './reportWebVitals'
+
+if (isRunningInSidePanel()) {
+  const sidePanelSheet = new CSSStyleSheet()
+  sidePanelSheet.insertRule(`
+    html, body {
+      width: 100%;
+      overflow: hidden;
+    }
+  `)
+  document.adoptedStyleSheets = [...document.adoptedStyleSheets, sidePanelSheet]
+}
 
 // Fix chrome extension render problem in external screen
 if (
