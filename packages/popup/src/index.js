@@ -16,6 +16,7 @@ if (isRunningInSidePanel()) {
   sidePanelSheet.insertRule(`
     html, body {
       width: 100%;
+      overflow: hidden;
     }
   `)
   document.adoptedStyleSheets = [...document.adoptedStyleSheets, sidePanelSheet]

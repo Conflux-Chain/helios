@@ -264,7 +264,7 @@ const AppRoutes = withRouter(
     return (
       <div
         id="router"
-        className={`m-auto light relative overflow-hidden ${
+        className={`mx-auto light relative overflow-hidden ${
           FULL_WINDOW_ROUTES.includes(location.pathname) ||
           isRunningInSidePanel()
             ? 'h-screen w-full'

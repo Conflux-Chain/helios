@@ -29,7 +29,6 @@ import {
 } from '../../../hooks/useApi'
 import useLoading from '../../../hooks/useLoading'
 import {request, validateAddress} from '../../../utils'
-import {isRunningInSidePanel} from '../../../utils/side-panel'
 
 const {WALLET_WATCH_ASSET, WALLET_UNWATCH_ASSET} = RPC_METHODS
 
@@ -38,7 +37,6 @@ function AddToken({onClose, open}) {
   const [searchContent, setSearchContent] = useState('')
   const [showDeleteButtonTokenId, setShowDeleteButtonTokenId] = useState('')
   const [maskClosable, setMaskClosable] = useState(true)
-  const inSidePanel = isRunningInSidePanel()
 
   const {setLoading} = useLoading()
   const [debouncedSearchContent, setDebouncedSearchContent] =
@@ -205,7 +203,6 @@ function AddToken({onClose, open}) {
           {!tokenList && <NoResult content={t('noResult')} />}
         </div>
       }
-      width={inSidePanel ? 'w-full' : undefined}
     />
   )
 }
