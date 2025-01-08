@@ -4,6 +4,5 @@ export const MODE = import.meta.env
 export const IS_TEST_MODE = MODE === 'test'
 export const IS_DEV_MODE = MODE === 'development'
 export const IS_PROD_MODE = MODE === 'production'
-export const IS_CI = process.env.CI === 'true'
 
 export const PACKAGE_VERSION = process.env.PACKAGE_VERSION

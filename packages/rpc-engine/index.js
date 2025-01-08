@@ -29,7 +29,7 @@ const request = (s, req = {}) => {
 }
 
 const defRpcEngineFactory = (db, options = {methods: []}) => {
-  const {methods, isProd = true, isDev, isTest, isCI} = options
+  const {methods, isProd = true, isDev, isTest} = options
   const rpcStore = new Object() // to store rpc defination
 
   methods.forEach(rpc => {
@@ -92,7 +92,7 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
   const processSpec = ({ins, fn, outs}) => ({
     ins: {
       ...ins,
-      MODE: {const: {isProd, isDev, isTest, isCI}},
+      MODE: {const: {isProd, isDev, isTest}},
       db: {const: db},
       rpcStore: {const: rpcStore},
       sendNewRpcRequest: {const: () => sendNewRpcRequest},
