@@ -164,4 +164,5 @@ declined:
   - "@fluent-wallet/wallet_validate-private-key"
   - "@fluent-wallet/wallet_watch-asset"
   - "@fluent-wallet/wallet_zero-account-group"
+  - "@fluent-wallet/inner-utils"
   - workspace-tools
