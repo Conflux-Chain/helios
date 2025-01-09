@@ -69,6 +69,10 @@ function setupProvider() {
       location.origin,
     )
 
+  post({
+    event: '__INPAGE_INJECTED__',
+  })
+
   const {send: sendToBg, stream} = rpcStream({
     postMessage: post,
     onMessage: {
@@ -93,7 +97,6 @@ function setupProvider() {
   if (!window.ethereum) window.ethereum = PROVIDER
   Object.defineProperty(window, 'conflux', {value: PROVIDER, writable: false})
   takeOver(PROVIDER, 'cfx')
-
   if (window.localStorage.getItem(FLUENT_OVERRIDE_WINDOW_DOT_ETHEREUM)) {
     try {
       Object.defineProperty(window, 'ethereum', {
