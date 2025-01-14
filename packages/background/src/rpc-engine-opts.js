@@ -110,7 +110,6 @@ import * as ethMaxPriorityFeePerGas from '@fluent-wallet/eth_max-priority-fee-pe
 import * as ethEstimate1559Fee from '@fluent-wallet/eth_estimate-1559-fee'
 
 import {
-  IS_CI,
   IS_DEV_MODE,
   IS_PROD_MODE,
   IS_TEST_MODE,
@@ -186,7 +185,6 @@ export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
   isDev: IS_DEV_MODE,
   isTest: IS_TEST_MODE,
-  isCI: IS_CI,
   methods: [
     walletMetadataForPopup,
     walletDbQuery,

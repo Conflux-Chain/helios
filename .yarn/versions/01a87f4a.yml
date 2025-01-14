@@ -1,7 +1,5 @@
-releases:
-  helios: patch
-
 declined:
+  - helios
   - helios-background
   - "@fluent-wallet/rpc-engine"
   - "@fluent-wallet/cfx_accounts"
@@ -170,4 +168,5 @@ declined:
   - "@fluent-wallet/wallet_validate-private-key"
   - "@fluent-wallet/wallet_watch-asset"
   - "@fluent-wallet/wallet_zero-account-group"
+  - "@fluent-wallet/inner-utils"
   - workspace-tools
