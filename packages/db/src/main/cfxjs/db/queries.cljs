@@ -1614,6 +1614,12 @@
           {:db/id        [:tx/hash hash]
            :tx/status    2
            :tx/pendingAt (or pending-at (.now js/Date))}]))))
+(defn force-set-tx-status [{:keys [hash status error]}]
+  (let [txs [{:db/id [:tx/hash hash] :tx/status status}]]
+    (if error
+      (concat txs {:db/id [:tx/hash hash] :tx/err error})
+      (concat txs [:db.fn/retractAttribute [:tx/hash hash] :tx/err]))
+    (t txs)))
 (defn set-tx-packaged [{:keys [hash blockHash]}]
   (when-not (tx-end-state? hash)
     (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
@@ -2308,6 +2314,7 @@
               :setTxConfirmed                      set-tx-confirmed
               :setTxChainSwitched                  set-tx-chain-switched
               :setTxUnsent                         set-tx-unsent
+              :forceSetTxStatus                    force-set-tx-status
               :getTxsToEnrich                      get-txs-to-enrich
               :cleanupTx                           cleanup-tx
               :findApp                             get-apps

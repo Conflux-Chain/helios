@@ -2,13 +2,13 @@
   "name": "@fluent-wallet/wallet_get-balance",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "dependencies": {
     "@ethersproject/bytes": "5.6.1",
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network",
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
     "@fluent-wallet/single-call-balance-tracker": "workspace:packages/single-call-balance-tracker",
-    "@fluent-wallet/spec": "1.0.6"
+    "@fluent-wallet/spec": "1.0.8"
   }
 }

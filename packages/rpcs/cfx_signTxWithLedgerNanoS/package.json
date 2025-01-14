@@ -3,11 +3,11 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "dependencies": {
     "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
-    "@fluent-wallet/spec": "1.0.6",
+    "@fluent-wallet/spec": "1.0.8",
     "browser-passworder": "2.0.3"
   }
 }

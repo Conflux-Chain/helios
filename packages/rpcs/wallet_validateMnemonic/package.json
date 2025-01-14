@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/wallet_validate-mnemonic",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.6",
+    "@fluent-wallet/spec": "1.0.8",
     "bip39": "3.0.4"
   }
 }

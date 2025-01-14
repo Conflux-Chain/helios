@@ -64,10 +64,17 @@ export default defMiddleware(
               )
             ) {
               // allow some inpage rpc methods to request the unlock ui
-              await req.rpcs.wallet_requestUnlockUI().catch(err => {
-                err.rpcData = req
-                throw err
-              })
+              await req.rpcs
+                .wallet_requestUnlockUI(
+                  {
+                    errorFallThrough: true,
+                  },
+                  undefined,
+                )
+                .catch(err => {
+                  err.rpcData = req
+                  throw err
+                })
             } else {
               // reject others
               const err = req.Err.Unauthorized()

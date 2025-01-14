@@ -139,7 +139,7 @@ export const main = async args => {
   if (!fromAddr) throw InvalidParams(`Invalid from address ${newTx.from}`)
 
   /**
-   * ledger app check, v1.x is is not support 1559 transaction
+   * ledger app check, v1.x is not support 1559 transaction
    * so we need check this app version
    */
   let isV1LedgerAPP = false

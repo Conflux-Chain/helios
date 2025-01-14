@@ -3,10 +3,10 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.2.0",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@fluent-wallet/cfx_epoch-number": "workspace:*",
     "@fluent-wallet/eth_block-number": "workspace:*",
-    "@fluent-wallet/spec": "1.0.6"
+    "@fluent-wallet/spec": "1.0.8"
   }
 }

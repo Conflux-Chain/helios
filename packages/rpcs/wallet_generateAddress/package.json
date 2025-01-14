@@ -2,10 +2,10 @@
   "name": "@fluent-wallet/wallet_generate-address",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "dependencies": {
     "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
-    "@fluent-wallet/spec": "1.0.6"
+    "@fluent-wallet/spec": "1.0.8"
   }
 }
