@@ -14,15 +14,20 @@ export const schemas = {
 export const permissions = {
   db: ['getAccountGroupById', 'retractGroup'],
   external: ['popup'],
-  methods: ['wallet_validatePassword'],
+  methods: [
+    'wallet_deleteApp',
+    'wallet_setAppCurrentAccount',
+    'wallet_validatePassword',
+  ],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  rpcs: {wallet_validatePassword},
+  rpcs,
   db: {getAccountGroupById, retractGroup},
   params: {accountGroupId, password},
 }) => {
+  const {wallet_validatePassword} = rpcs
   if (!(await wallet_validatePassword({password})))
     throw InvalidParams('Invalid password')
 
@@ -30,6 +35,10 @@ export const main = async ({
 
   if (!group) throw InvalidParams(`Invalid account group id ${accountGroupId}`)
 
-  retractGroup({groupId: group.eid})
+  const sideEffects = retractGroup({groupId: group.eid})
+
+  await Promise.all(
+    sideEffects?.map(([method, params]) => rpcs[method]?.(params)),
+  )
   return true
 }

@@ -58,12 +58,12 @@ jobs:
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}-${{ hashFiles('./deps.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
-      - run: yarn install --immutable
+      - run: yarn install --immutable --no-check-resolutions
       - run: yarn version apply --all || true
       - run: rm -rf .yarn/versions || true
       - env:
           YARN_NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        run: ./scripts/any-packages-version-changed.sh && yarn workspaces foreach --topological --no-private --verbose --parallel --interlaced npm publish --access public --tolerate-republish || true
+        run: ./scripts/any-packages-version-changed.sh && yarn workspaces foreach -A --topological --no-private --verbose --parallel --interlaced npm publish --access public --tolerate-republish || true
       - run: git add .
       - run: |
           git -c user.name='ConfluxBot' \

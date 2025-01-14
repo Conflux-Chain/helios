@@ -1,6 +1,8 @@
 {
-  "name": "__MSG_extensionNAME__",
-  "short_name": "__MSG_extensionNAME__",
+  "__dev__name": "AFluent",
+  "__prod__name": "__MSG_extensionNAME__",
+  "__dev__short_name": "AFluent",
+  "__prod__short_name": "__MSG_extensionNAME__",
   "version": "",
   "version_name": "",
   "manifest_version": 2,

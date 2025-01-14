@@ -113,6 +113,7 @@ function GasStation({
   suggestedGasPrice,
   isCfxChain,
   estimateGasLimit,
+  resendType,
 }) {
   const {t} = useTranslation()
   const history = useHistory()
@@ -127,6 +128,7 @@ function GasStation({
         <span>{isTxTreatedAsEIP1559 ? t('maxFeePerGas') : t('gasPrice')}</span>
       </div>
       {isTxTreatedAsEIP1559 &&
+        !resendType &&
         gasArray.map((level, index) => (
           <GasStationItem
             key={index}
@@ -148,7 +150,7 @@ function GasStation({
             }}
           />
         ))}
-      {!isTxTreatedAsEIP1559 && (
+      {(!isTxTreatedAsEIP1559 || !!resendType) && (
         <GasStationItem
           level="suggested"
           data={{
@@ -203,7 +205,15 @@ function GasStation({
             pathname: ADVANCED_GAS,
             search: `?isHistoryTx=${isHistoryTx}&${
               isTxTreatedAsEIP1559
-                ? `suggestedMaxFeePerGas=${suggestedMaxFeePerGas}&suggestedMaxPriorityFeePerGas=${suggestedMaxPriorityFeePerGas}&selectedGasLevel=${selectedGasLevel}`
+                ? `suggestedMaxFeePerGas=${
+                    !resendType
+                      ? suggestedMaxFeePerGas
+                      : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
+                  }&suggestedMaxPriorityFeePerGas=${
+                    !resendType
+                      ? suggestedMaxPriorityFeePerGas
+                      : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
+                  }&selectedGasLevel=${selectedGasLevel}`
                 : ''
             }${
               !isTxTreatedAsEIP1559
@@ -227,6 +237,7 @@ GasStation.propTypes = {
   suggestedGasPrice: PropTypes.string,
   isCfxChain: PropTypes.bool,
   estimateGasLimit: PropTypes.string,
+  resendType: PropTypes.string,
 }
 
 export default GasStation

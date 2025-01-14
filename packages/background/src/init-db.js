@@ -245,32 +245,6 @@ function initNetwork(d) {
     },
     {
       network: {
-        name: ETH_GOERLI_NAME,
-        endpoint: ETH_GOERLI_RPC_ENDPOINT,
-        type: 'eth',
-        chainId: ETH_GOERLI_CHAINID,
-        netId: ETH_GOERLI_NETID,
-        icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg',
-        cacheTime: 15000,
-
-        ticker: {
-          name: ETH_GOERLI_CURRENCY_NAME,
-          symbol: ETH_GOERLI_CURRENCY_SYMBOL,
-          decimals: DEFAULT_CURRENCY_DECIMALS,
-          iconUrls: [
-            'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/eth.svg',
-          ],
-        },
-        scanUrl: ETH_GOERLI_EXPLORER_URL,
-        hdPath: -2,
-        builtin: true,
-        isTestnet: true,
-        balanceChecker: '0x9788c4e93f9002a7ad8e72633b11e8d1ecd51f9b',
-        gasBuffer: 1.5,
-      },
-    },
-    {
-      network: {
         name: ETH_SEPOLIA_NAME,
         endpoint: ETH_SEPOLIA_RPC_ENDPOINT,
         type: 'eth',
@@ -293,6 +267,33 @@ function initNetwork(d) {
         isTestnet: true,
         // TODO(SEPOLIA) There is currently no balance call address for Sepolia
         balanceChecker: '',
+        gasBuffer: 1.5,
+      },
+    },
+    {
+      network: {
+        name: ETH_GOERLI_NAME,
+        endpoint: ETH_GOERLI_RPC_ENDPOINT,
+        type: 'eth',
+        chainId: ETH_GOERLI_CHAINID,
+        netId: ETH_GOERLI_NETID,
+        icon: 'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/Ethereum.svg',
+        cacheTime: 15000,
+
+        ticker: {
+          name: ETH_GOERLI_CURRENCY_NAME,
+          symbol: ETH_GOERLI_CURRENCY_SYMBOL,
+          decimals: DEFAULT_CURRENCY_DECIMALS,
+          iconUrls: [
+            'https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/eth.svg',
+          ],
+        },
+        scanUrl: ETH_GOERLI_EXPLORER_URL,
+        hdPath: -2,
+        builtin: false,
+        isCustom: true,
+        isTestnet: true,
+        balanceChecker: '0x9788c4e93f9002a7ad8e72633b11e8d1ecd51f9b',
         gasBuffer: 1.5,
       },
     },

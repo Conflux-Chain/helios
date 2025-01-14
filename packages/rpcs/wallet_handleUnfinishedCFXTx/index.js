@@ -11,10 +11,18 @@ import {
   pluck,
 } from '@fluent-wallet/transducers'
 import {processError} from '@fluent-wallet/conflux-tx-error'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {BigNumber} from '@ethersproject/bignumber'
 import {identity} from '@fluent-wallet/compose'
 
 export const NAME = 'wallet_handleUnfinishedCFXTx'
+
+function getGasPrice(tx) {
+  const payload = tx.txPayload
+  return payload.type === ETH_TX_TYPES.EIP1559
+    ? payload.maxFeePerGas
+    : payload.gasPrice
+}
 
 function defs(...args) {
   const s = stream({
@@ -75,6 +83,8 @@ export const permissions = {
     'setTxConfirmed',
     'setTxUnsent',
     'setTxChainSwitched',
+    'queryTxWithSameNonce',
+    'forceSetTxStatus',
   ],
 }
 
@@ -102,6 +112,8 @@ export const main = ({
     setTxConfirmed,
     setTxUnsent,
     setTxChainSwitched,
+    queryTxWithSameNonce,
+    forceSetTxStatus,
   },
   params: {tx, address, okCb, failedCb},
   network,
@@ -207,53 +219,121 @@ export const main = ({
             // failed to send
             setTxUnsent({hash})
 
-            const {errorType, shouldDiscard} = processError(err)
+            let {errorType, shouldDiscard} = processError(err)
+            const isResend = !!tx.resendAt
             const isDuplicateTx = errorType === 'duplicateTx'
             const resendNonceTooStale =
-              tx.resendAt && errorType === 'tooStaleNonce'
+              isResend && errorType === 'tooStaleNonce'
+            const sameNonceTxs = queryTxWithSameNonce({hash}) || []
+            const latestTx = sameNonceTxs
+              .filter(t => t.status >= 0)
+              .sort((a, b) =>
+                BigNumber.from(getGasPrice(b)).sub(getGasPrice(a)).toNumber(),
+              )[0]
+            const currentTxIsLatest = !latestTx || latestTx.hash === hash
+            let disableNotification = isResend && !currentTxIsLatest
+            let sameAsSuccess = isDuplicateTx || resendNonceTooStale
+            let failed = !sameAsSuccess && shouldDiscard
 
-            const sameAsSuccess = isDuplicateTx || resendNonceTooStale
-            const failed = !sameAsSuccess && shouldDiscard
-
-            defs({
-              failed: failed && {errorType, err},
-              sameAsSuccess,
-              resend: !shouldDiscard && !sameAsSuccess,
-            })
-              .transform(
-                branchObj({
-                  failed: [
-                    sideEffect(
-                      ({err}) =>
-                        typeof failedCb === 'function' && failedCb(err),
-                    ),
-                    sideEffect(({errorType}) => {
-                      if (setTxFailed({hash, error: errorType})) {
-                        getExt().then(ext =>
-                          ext.notifications.create(hash, {
-                            title: 'Failed transaction',
-                            message: `Transaction ${parseInt(
-                              tx.txPayload.nonce,
-                              16,
-                            )} failed! ${err?.data || err?.message || ''}`,
-                          }),
-                        )
-                      }
-                    }),
-                    sideEffect(() => {
-                      updateBadge(getUnfinishedTxCount())
-                    }),
-                  ],
-                  resend: sideEffect(keepTrack),
-                  // retry in next run
-                  sameAsSuccess: [
-                    sideEffect(() => setTxPending({hash})),
-                    sideEffect(() => typeof okCb === 'function' && okCb(hash)),
-                    sideEffect(keepTrack),
-                  ],
-                }),
+            const handler = () => {
+              defs({
+                failed: failed && {
+                  errorType,
+                  err,
+                  disableNotification,
+                },
+                sameAsSuccess,
+                resend: !shouldDiscard && !sameAsSuccess,
+              })
+                .transform(
+                  branchObj({
+                    failed: [
+                      sideEffect(
+                        ({err}) =>
+                          typeof failedCb === 'function' && failedCb(err),
+                      ),
+                      sideEffect(({errorType, disableNotification}) => {
+                        if (setTxFailed({hash, error: errorType})) {
+                          !disableNotification &&
+                            getExt().then(ext =>
+                              ext.notifications.create(hash, {
+                                title: 'Failed transaction',
+                                message: `Transaction ${parseInt(
+                                  tx.txPayload.nonce,
+                                  16,
+                                )} failed! ${err?.data || err?.message || ''}`,
+                              }),
+                            )
+                        }
+                      }),
+                      sideEffect(() => {
+                        updateBadge(getUnfinishedTxCount())
+                      }),
+                    ],
+                    resend: sideEffect(keepTrack),
+                    // retry in next run
+                    sameAsSuccess: [
+                      sideEffect(() => setTxPending({hash})),
+                      sideEffect(
+                        () => typeof okCb === 'function' && okCb(hash),
+                      ),
+                      sideEffect(keepTrack),
+                    ],
+                  }),
+                )
+                .done()
+            }
+            if (isResend && currentTxIsLatest && resendNonceTooStale) {
+              let localTxExecuted = false
+              Promise.all(
+                sameNonceTxs.map(_tx =>
+                  cfx_getTransactionByHash({errorFallThrough: true}, [
+                    _tx.hash,
+                  ]).then(res => {
+                    if (res && _tx.hash === hash) {
+                      // current tx is executed
+                      localTxExecuted = true
+                      sameAsSuccess = true
+                      failed = false
+                    } else if (res) {
+                      // local tx is executed but not the current tx
+                      localTxExecuted = true
+                      sameAsSuccess = false
+                      failed = true
+                      errorType = 'replacedByAnotherTx'
+                      disableNotification = true
+                      // set executed tx to pending, start a new tracking
+                      forceSetTxStatus({hash: _tx.hash, status: 2, error: null})
+                      wallet_handleUnfinishedCFXTx({
+                        tx: _tx.eid,
+                        address: address.eid,
+                      })
+                    }
+                  }),
+                ),
               )
-              .done()
+                .then(() => {
+                  if (!localTxExecuted) {
+                    return cfx_getNextNonce({errorFallThrough: true}, [
+                      address.value,
+                      'latest_finalized',
+                    ]).then(finalizedNonce => {
+                      if (
+                        BigNumber.from(finalizedNonce).gt(
+                          BigNumber.from(tx.txPayload.nonce),
+                        )
+                      ) {
+                        sameAsSuccess = false
+                        failed = true
+                        errorType = 'replacedByAnotherTx'
+                      }
+                    })
+                  }
+                })
+                .finally(handler)
+            } else {
+              handler()
+            }
           },
         }),
       )

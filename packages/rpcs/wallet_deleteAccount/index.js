@@ -9,16 +9,22 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup'],
-  methods: ['wallet_validatePassword', 'wallet_deleteAccountGroup'],
+  methods: [
+    'wallet_validatePassword',
+    'wallet_deleteAccountGroup',
+    'wallet_deleteApp',
+    'wallet_setAppCurrentAccount',
+  ],
   db: ['retractAccount', 'findAccount'],
 }
 
 export const main = async ({
   Err: {InvalidParams},
   db: {findAccount, retractAccount},
-  rpcs: {wallet_validatePassword, wallet_deleteAccountGroup},
+  rpcs,
   params: {accountId, password},
 }) => {
+  const {wallet_validatePassword, wallet_deleteAccountGroup} = rpcs
   if (!(await wallet_validatePassword({password})))
     throw InvalidParams('Invalid password')
 
@@ -45,6 +51,10 @@ export const main = async ({
     })
   }
 
-  retractAccount({accountId, hwVaultData: ddata})
+  const sideEffects = retractAccount({accountId, hwVaultData: ddata})
+
+  await Promise.all(
+    sideEffects?.map(([method, params]) => rpcs[method]?.(params)),
+  )
   return true
 }

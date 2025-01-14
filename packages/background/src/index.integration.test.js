@@ -160,6 +160,34 @@ describe('integration test', () => {
   })
 
   describe('rpcs', () => {
+    describe('cfx_getFeeBurnt', async () => {
+      test('cfx_getFeeBurnt', async () => {
+        const result = await request({method: 'cfx_getFeeBurnt'})
+        expect(result.result.startsWith('0x')).toBeTruthy()
+      })
+    })
+
+    describe('cfx_maxPriorityFeePerGas', async () => {
+      test('cfx_maxPriorityFeePerGas', async () => {
+        const result = await request({method: 'cfx_maxPriorityFeePerGas'})
+        expect(result.result.startsWith('0x')).toBeTruthy()
+      })
+    })
+
+    describe('cfx_feeHistory', async () => {
+      test('cfx_feeHistory', async () => {
+        const result = await request({
+          method: 'cfx_feeHistory',
+          params: ['0x5', 'latest_state', [20, 30]],
+        })
+        console.log(result)
+        expect(result.result.baseFeePerGas.length).toBe(6)
+        expect(result.result.gasUsedRatio.length).toBe(5)
+        expect(result.result.oldestEpoch).toBeDefined()
+        expect(result.result.reward.length).toBe(5)
+      })
+    })
+
     describe('cfx_getStatus', () => {
       test('cfx_getStatus', async () => {
         const stat = await request({method: 'cfx_getStatus'})
@@ -251,8 +279,40 @@ describe('integration test', () => {
         ).toBe('1337')
       })
     })
+
+    describe('cfx_call', async () => {
+      test('cfx_call', async () => {
+        const {token1} = await deployCRC20()
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
+        expect(
+          (
+            await request({
+              method: 'cfx_call',
+              params: [
+                {
+                  to: token1.contractAddress,
+                  data: '0x06fdde03',
+                  maxPriorityFeePerGas: '0x4a817c800',
+                  maxFeePerGas: '0x4a817c800',
+                  type: '0x2',
+                },
+              ],
+            })
+          ).result.startsWith('0x'),
+        ).toBe(true)
+      })
+    })
+
     describe('cfx_estimateGasAndCollateral', () => {
       test('cfx_estimateGasAndCollateral', async () => {
+        const {token1} = await deployCRC20()
+        await request({
+          method: 'wallet_importMnemonic',
+          params: {mnemonic: MNEMONIC, password},
+        })
         res = await request({
           method: 'cfx_estimateGasAndCollateral',
           params: [{}],
@@ -261,6 +321,23 @@ describe('integration test', () => {
         expect(res.result.gasLimit).toBeDefined()
         expect(res.result.gasUsed).toBeDefined()
         expect(res.result.storageCollateralized).toBeDefined()
+
+        const estimateRes = await request({
+          method: 'cfx_estimateGasAndCollateral',
+          params: [
+            {
+              type: '0x2',
+              to: token1.contractAddress,
+              data: '0x06fdde03',
+              maxPriorityFeePerGas: '0x4a817c800',
+              maxFeePerGas: '0x4a817c800',
+            },
+          ],
+        })
+        expect(estimateRes?.result).toBeDefined()
+        expect(estimateRes.result.gasLimit).toBeDefined()
+        expect(estimateRes.result.gasUsed).toBeDefined()
+        expect(estimateRes.result.storageCollateralized).toBeDefined()
       })
     })
     describe('eth_estimateGas', () => {
@@ -322,7 +399,10 @@ describe('integration test', () => {
           (
             await request({
               method: 'wallet_deleteNetwork',
-              params: {password, networkId: db.getNetworkByType('eth')[0].eid},
+              params: {
+                password,
+                networkId: db.getNetworkByType('eth')[0].eid,
+              },
             })
           ).result,
         ).toBe(true)
@@ -352,7 +432,10 @@ describe('integration test', () => {
           (
             await request({
               method: 'wallet_deleteNetwork',
-              params: {password, networkId: db.getNetworkByName('foo')[0].eid},
+              params: {
+                password,
+                networkId: db.getNetworkByName('foo')[0].eid,
+              },
             })
           ).error.message,
         ).toMatch(/Not allowed to delete builtin network/)
@@ -1135,7 +1218,11 @@ describe('integration test', () => {
         expect(authReq.site.origin).toBe('foo.site')
         expect(authReq.req.method).toBe('wallet_requestPermissions')
         expect(authReq.req.params).toStrictEqual([
-          {wallet_basic: {}, wallet_accounts: {}},
+          {
+            wallet_basic: {},
+            wallet_accounts: {},
+            wallet_crossNetworkTypeGetConfluxBase32Address: {},
+          },
         ])
 
         const res2 = await request({
@@ -1185,7 +1272,11 @@ describe('integration test', () => {
         expect(authReq.site.origin).toBe('foo.site')
         expect(authReq.req.method).toBe('wallet_requestPermissions')
         expect(authReq.req.params).toStrictEqual([
-          {wallet_basic: {}, wallet_accounts: {}},
+          {
+            wallet_basic: {},
+            wallet_accounts: {},
+            wallet_crossNetworkTypeGetConfluxBase32Address: {},
+          },
         ])
 
         expect(db.getApp().length).toBe(0)
@@ -1208,7 +1299,11 @@ describe('integration test', () => {
         // app is from the right site
         expect(app.site.eid).toBe(db.getSite()[0].eid)
         // app has the right permissions
-        expect(app.perms).toStrictEqual({wallet_accounts: {}, wallet_basic: {}})
+        expect(app.perms).toStrictEqual({
+          wallet_accounts: {},
+          wallet_basic: {},
+          wallet_crossNetworkTypeGetEthereumHexAddress: {},
+        })
         // app has the right authed accounts
         expect(
           app.account.map(a => [a1.eid, a2.eid].includes(a.eid)),
@@ -1228,6 +1323,7 @@ describe('integration test', () => {
           'wallet_accounts',
           'cfx_accounts',
           'eth_accounts',
+          'wallet_crossNetworkTypeGetEthereumHexAddress',
         ])
         res = await request({
           method: 'wallet_getPermissions',
@@ -1241,8 +1337,10 @@ describe('integration test', () => {
           true,
           true,
           true,
+          true,
         ])
         expect(res.result.map(({invoker}) => invoker === 'foo.site')).toEqual([
+          true,
           true,
           true,
           true,
@@ -1282,7 +1380,11 @@ describe('integration test', () => {
         // app is from the right site
         expect(app.site.eid).toBe(db.getSite()[0].eid)
         // app has the right permissions
-        expect(app.perms).toStrictEqual({wallet_accounts: {}, wallet_basic: {}})
+        expect(app.perms).toStrictEqual({
+          wallet_accounts: {},
+          wallet_basic: {},
+          wallet_crossNetworkTypeGetEthereumHexAddress: {},
+        })
         // app has the right authed accounts
         expect(
           app.account.map(a => [a1.eid, a2.eid].includes(a.eid)),
@@ -1299,6 +1401,7 @@ describe('integration test', () => {
           'wallet_accounts',
           'cfx_accounts',
           'eth_accounts',
+          'wallet_crossNetworkTypeGetEthereumHexAddress',
         ])
       })
     })
@@ -1622,7 +1725,10 @@ describe('integration test', () => {
           (
             await request({
               method: 'wallet_getAddressPrivateKey',
-              params: {address: addr.value, accountId: db.getAccount()[0].eid},
+              params: {
+                address: addr.value,
+                accountId: db.getAccount()[0].eid,
+              },
               _internal: true,
             })
           ).error.message,
@@ -2753,6 +2859,36 @@ describe('integration test', () => {
                 from: CFX_ACCOUNTS[0].base32,
                 to: CFX_ACCOUNTS[1].base32,
                 value: '0x1',
+                type: '0x0',
+              },
+            ],
+            _popup: true,
+          })
+          expect(res.result).toBeDefined()
+          expect(res.result.startsWith('0x')).toBe(true)
+
+          res = await request({
+            method: 'cfx_sendTransaction',
+            params: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                value: '0x1',
+                type: '0x1',
+              },
+            ],
+            _popup: true,
+          })
+          expect(res.result).toBeDefined()
+          expect(res.result.startsWith('0x')).toBe(true)
+          res = await request({
+            method: 'cfx_sendTransaction',
+            params: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                value: '0x1',
+                type: '0x2',
               },
             ],
             _popup: true,
@@ -2776,6 +2912,22 @@ describe('integration test', () => {
                 to: CFX_ACCOUNTS[1].base32,
                 data: '0x10',
                 value: '0x1',
+                type: '0x0',
+              },
+            ],
+            _popup: true,
+          })
+          expect(res.result).toBeDefined()
+          expect(res.result.startsWith('0x')).toBe(true)
+          res = await request({
+            method: 'cfx_sendTransaction',
+            params: [
+              {
+                from: CFX_ACCOUNTS[0].base32,
+                to: CFX_ACCOUNTS[1].base32,
+                data: '0x10',
+                value: '0x1',
+                type: '0x2',
               },
             ],
             _popup: true,

@@ -406,17 +406,17 @@
 
 (def export-block-tag
   (update-properties
-   [:enum "latest" "earliest" "pending" nil]
+   [:enum "latest" "earliest" "pending" "safe" "finalized" nil]
    :type :epoch-tag
-   :error/message "invalid block tag, must be one of latest pending or earliest"
-   :doc "one of latest pending or earliest, default to latest"))
+   :error/message "invalid block tag, must be one of latest pending earliest safe or finalized"
+   :doc "one of latest pending earliest safe or finalized, default to latest"))
 
 (def export-block-ref
   (update-properties
    [:or export-block-tag Uint]
    :type :epoch-ref
-   :error/message "invalid block ref, must be one of latest, pending, earliest, block number or null"
-   :doc "one of latest, pending, earliest, block number or null"))
+   :error/message "invalid block ref, must be one of latest, pending, earliest, safe, finalized, block number or null"
+   :doc "one of latest, pending, earliest, safe, finalized, block number or null"))
 
 (def export-address-type
   (update-properties

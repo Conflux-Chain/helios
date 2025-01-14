@@ -421,10 +421,14 @@ async function walletInitialized() {
   // send 1 native token to the connected address
   sendNativeTokenButton.onclick = async () => {
     const [connectedAddress] = await provider.request({method: 'cfx_accounts'})
+
+    const txType = document.querySelector('#tx-type').value
+
     const tx = {
       from: connectedAddress,
       value: '0xde0b6b3a7640000',
       to: connectedAddress,
+      type: txType,
     }
 
     provider

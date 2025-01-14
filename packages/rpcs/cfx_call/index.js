@@ -6,6 +6,9 @@ import {
   base32ContractAddress,
   Uint,
   Bytes,
+  catn,
+  Hash32,
+  base32Address,
 } from '@fluent-wallet/spec'
 
 export const NAME = 'cfx_call'
@@ -32,6 +35,29 @@ export const schemas = {
       ['value', {optional: true}, Uint],
       ['data', {optional: true}, Bytes],
       ['nonce', {optional: true}, Uint],
+      ['type', {optional: true}, Uint],
+      ['maxPriorityFeePerGas', {optional: true}, Uint],
+      ['maxFeePerGas', {optional: true}, Uint],
+      [
+        'accessList',
+        {optional: true},
+        [
+          catn,
+          [
+            'AccessListEntry',
+            [
+              map,
+              {closed: true},
+              ['address', {optional: true}, base32Address],
+              [
+                'storageKeys',
+                {optional: true},
+                [catn, ['32BtyeHexValue', Hash32]],
+              ],
+            ],
+          ],
+        ],
+      ],
     ],
     epochRef,
   ],

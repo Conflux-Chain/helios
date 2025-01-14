@@ -55,7 +55,7 @@ jobs:
           key: ${{ runner.os }}-yarn-and-maven-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('./shadow-cljs.edn') }}-${{ hashFiles('./deps.edn') }}
           restore-keys: |
             ${{ runner.os }}-yarn-and-maven-
-      - run: yarn install --immutable
+      - run: yarn install --immutable --no-check-resolutions
       - run: yarn workspace doc build
 
       - name: Deploy

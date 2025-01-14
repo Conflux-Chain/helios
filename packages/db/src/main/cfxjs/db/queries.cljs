@@ -642,57 +642,42 @@
   return [txs sideeffects] to handle the hidden account"
   [{:keys [accountId]}]
   (let [apps-data
-        (q '[:find ?app (count-distinct ?all-acc) ?current-acc
+        (q '[:find ?app (distinct ?available-acc) ?current-acc
              :in $ ?acc
              :where
              [?app :app/account ?acc]
-             [?app :app/account ?all-acc]
              [?app :app/currentAccount ?curacc]
-             [(= ?curacc ?acc) ?current-acc]]
+             [(= ?curacc ?acc) ?current-acc]
+             [?app :app/account ?available-acc]
+             ;; make sure available acc has addr in current net
+             [?available-acc :account/address ?addr]
+             [?addr :address/network ?net]
+             [?net :network/selected true]]
            accountId)
 
         ->txs
         ;; txs: transactions send to db
         ;; sideeffects: methods to call in js to notify app
-        (fn [[txs sideeffects] [app-id authed-acc-count current-acc?]]
+        (fn [[txs sideeffects] [app-id available-acc-ids current-acc?]]
           (bc/cond
-            ;; hidden acc is the only and current authed acc of app
+            :let
+            [next-available-acc
+             (some #(when (not= % accountId) %) available-acc-ids)]
+            ;; hidden acc is the only available and current acc of app
             ;; delete the app
-            (and current-acc? (= authed-acc-count 1))
+            (and current-acc? (nil? next-available-acc))
             [txs (conj sideeffects [:wallet_deleteApp {:appId app-id}])]
 
-            ;; hidden acc is not current acc of dapp (more than 1 authed acc)
+            ;; hidden acc is not current acc of dapp (more than 1 available acc)
             ;; unauth acc
             (not current-acc?)
             [(conj txs [:db/retract app-id :app/account accountId]) sideeffects]
 
-            ;; hidden acc is current acc of app and app has multiple authed acc
+            ;; hidden acc is current acc of app and app has multiple available acc
             ;; switch current acc, unauth acc
-            :let
-            [app-switch-acc-data
-             (q '[:find ?app (distinct ?next-acc)
-                  :in $ ?acc
-                  :where
-                  [?app :app/currentAccount ?acc]
-                  [?app :app/account ?next-acc]
-                  (not [(= ?next-acc ?acc)])
-                  ;; make sure next acc has addr in current net
-                  [?next-acc :account/address ?addr]
-                  [?addr :address/network ?net]
-                  [?net :network/selected true]]
-                accountId)
-
-             ->txs
-             (fn [[txs sideeffects] [app-id next-acc-ids]]
-               (if (first next-acc-ids)
-                 ;; has next acc
-                 [(conj txs [:db/retract app-id :app/account accountId])
-                  (conj sideeffects [:wallet_setAppCurrentAccount {:appId app-id :accountId (first next-acc-ids)}])]
-                 ;; no next acc (next authed acc is hw acc and no addr under current net)
-                 [txs (conj sideeffects [:wallet_deleteApp {:appId app-id}])]))]
-
             :else
-            (reduce ->txs [txs sideeffects] app-switch-acc-data)))]
+            [(conj txs [:db/retract app-id :app/account accountId])
+             (conj sideeffects [:wallet_setAppCurrentAccount {:appId app-id :accountId next-available-acc}])]))]
     (reduce ->txs [[] []] apps-data)))
 
 (defn update-account [{:keys [accountId nickname hidden offline]}]
@@ -1159,6 +1144,68 @@
         txs (map (fn [eid] [:db.fn/retractEntity eid]) tokens)]
     (t txs)))
 
+(defn get-deleted-group-apps
+  "Given to-delete groupId, find apps which authed with accounts in this group,
+  return [txs sideeffects] to handle the deleted group"
+  [{:keys [groupId]}]
+  (let [accounts-in-group
+        (q '[:find [?acc ...]
+             :in $ ?g
+             :where
+             [?g :accountGroup/account ?acc]]
+           groupId)
+        apps-data
+        (q '[:find ?app (distinct ?available-acc) ?current-acc
+             :in $ [?acc ...]
+             :where
+             [?app :app/account ?acc]
+             [?app :app/currentAccount ?curacc]
+             [(= ?curacc ?acc) ?current-acc]
+             [?app :app/account ?available-acc]
+             ;; make sure available acc has addr in current net
+             [?available-acc :account/address ?addr]
+             [?addr :address/network ?net]
+             [?net :network/selected true]]
+           accounts-in-group)
+
+        ->merge-and-deduplicate
+        (fn [result item]
+          (let [[appid accounts bool] item]
+            (if (contains? result appid)
+              (update result appid (fn [[deleted-accounts next-account current-group?]] [deleted-accounts next-account (or current-group? bool)]))
+              (assoc result appid [(filter #(contains? (set accounts-in-group) %) accounts) (some #(when (not (contains? (set accounts-in-group) %)) %) accounts) bool]))))
+
+        ;; format apps-data to {appid [deleted-accounts next-account current-group?]}
+        processed-data (reduce ->merge-and-deduplicate {} apps-data)
+        ;; format processed-data to [[appid deleted-accounts next-account current-group?]]
+        final-data (into [] (mapv (fn [[k v]] (into [k] v)) processed-data))
+
+        ->txs
+        ;; txs: transactions send to db
+        ;; sideeffects: methods to call in js to notify app
+        ;; deleted-accounts is accounts that need to unauth in app
+        ;; next-account is next available account in app, nil if no available account
+        ;; current-group? is true if app's current account is in deleted group
+        (fn [[txs sideeffects] [app-id deleted-accounts next-account current-group?]]
+          (bc/cond
+            :let
+            [unauth-txs
+             (mapv #(vector :db/retract app-id :app/account %) deleted-accounts)]
+            ;; deleted group is current group of app and next-account is null
+            ;; delete the app
+            (and current-group? (nil? next-account))
+            [txs (conj sideeffects [:wallet_deleteApp {:appId app-id}])]
+            ;; deleted group is not current group of dapp and has available account in other group
+            ;; unauth acc
+            (not current-group?)
+            [(concat txs unauth-txs) sideeffects]
+
+            ;; deleted group is current group of app and app has available account in other group
+            ;; switch current acc, unauth acc
+            :else
+            [(concat txs unauth-txs) (conj sideeffects [:wallet_setAppCurrentAccount {:appId app-id :accountId next-account}])]))]
+    (reduce ->txs [[] []] final-data)))
+
 (defn retract-group
   "used to retract account group"
   [{:keys [groupId]}]
@@ -1180,10 +1227,12 @@
            groupId)
         addrs-to-delete (filter #(not (some #{%} addrs-has-accs-not-in-group)) addrs-in-group)
         txs             (mapv #(vector :db.fn/retractEntity %) addrs-to-delete)
-        txs             (conj txs [:db.fn/retractEntity groupId])]
+        txs             (conj txs [:db.fn/retractEntity groupId])
+        [apps-txs apps-sideeffects] (get-deleted-group-apps {:groupId groupId})
+        txs            (concat txs apps-txs)]
     (t txs)
     (cleanup-token-list-after-delete-address)
-    true))
+    apps-sideeffects))
 
 (defn retract-account
   "used to retract accounts"
@@ -1205,6 +1254,7 @@
         addrs-to-delete (filter #(not (some #{%} addrs-has-other-accs)) addrs-in-account)
         txs             (mapv #(vector :db.fn/retractEntity %) addrs-to-delete)
         txs             (conj txs [:db.fn/retractEntity accountId])
+        [apps-txs apps-sideeffects] (get-hidden-account-apps {:accountId accountId})
 
         vault (when hwVaultData
                 (q '[:find ?vault .
@@ -1213,10 +1263,11 @@
                      [?group :accountGroup/account ?acc]
                      [?group :accountGroup/vault ?vault]]
                    accountId))
-        txs   (enc/conj-when txs (and vault {:db/id vault :vault/data hwVaultData}))]
+        txs   (enc/conj-when txs (and vault {:db/id vault :vault/data hwVaultData}))
+        txs            (concat txs apps-txs)]
     (t txs)
     (cleanup-token-list-after-delete-address)
-    true))
+    apps-sideeffects))
 
 (defn retract-network [{:keys [networkId]}]
   (let [addrs  (q '[:find [?addr ...]
@@ -1563,6 +1614,12 @@
           {:db/id        [:tx/hash hash]
            :tx/status    2
            :tx/pendingAt (or pending-at (.now js/Date))}]))))
+(defn force-set-tx-status [{:keys [hash status error]}]
+  (let [txs [{:db/id [:tx/hash hash] :tx/status status}]]
+    (if error
+      (concat txs {:db/id [:tx/hash hash] :tx/err error})
+      (concat txs [:db.fn/retractAttribute [:tx/hash hash] :tx/err]))
+    (t txs)))
 (defn set-tx-packaged [{:keys [hash blockHash]}]
   (when-not (tx-end-state? hash)
     (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
@@ -2075,6 +2132,23 @@
         (assoc :app (and app-id (e :app app-id)))
         (assoc :token (and token-id (e :token token-id))))))
 
+(defn get-tx-with-same-nonce [{:keys [hash]}]
+  (let [txs
+        (q '[:find [?txs ...]
+             :in $ ?tx
+             :where
+             [?address :address/tx ?tx]
+             [?tx :tx/txPayload ?payload]
+             [?payload :txPayload/nonce ?nonce]
+             [?address :address/tx ?txs]
+             [?txs :tx/txPayload ?tx-payload]
+             [?tx-payload :txPayload/nonce ?nonce]
+             [?address :address/value ?addrv]
+             [?tx-payload :txPayload/from ?addrv]]
+           [:tx/hash hash])]
+    (when txs
+      (mapv tx-id->data txs))))
+
 (defn get-tx [{:keys [hash]}]
   (let [tx (q '[:find ?tx .
                 :in  $ ?tx
@@ -2240,6 +2314,7 @@
               :setTxConfirmed                      set-tx-confirmed
               :setTxChainSwitched                  set-tx-chain-switched
               :setTxUnsent                         set-tx-unsent
+              :forceSetTxStatus                    force-set-tx-status
               :getTxsToEnrich                      get-txs-to-enrich
               :cleanupTx                           cleanup-tx
               :findApp                             get-apps
@@ -2264,6 +2339,7 @@
               :upsertMemo                          upsert-memo
               :queryNonceGapTxs                    query-nonce-gap-txs
               :insertExternalTx                    insert-external-tx
+              :queryTxWithSameNonce                get-tx-with-same-nonce
 
               :queryqueryRecentInterestingAddress get-recent-interesting-address-from-tx
               :queryqueryApp                      get-apps

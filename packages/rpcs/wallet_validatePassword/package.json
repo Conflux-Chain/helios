@@ -1,10 +1,10 @@
 {
   "name": "@fluent-wallet/wallet_validate-password",
   "type": "module",
-  "version": "0.0.12",
+  "version": "0.0.14",
   "main": "index.js",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.6",
+    "@fluent-wallet/spec": "1.0.8",
     "browser-passworder": "^2.0.3"
   }
 }

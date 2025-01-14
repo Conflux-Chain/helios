@@ -1,3 +1,5 @@
+import {ERROR} from '@fluent-wallet/json-rpc-error'
+
 // shouldDiscard means should stop tracking this tx
 export function processError(err) {
   if (typeof err?.data === 'string') {
@@ -31,6 +33,10 @@ export function processError(err) {
       return {errorType: 'nodeInCatchUpMode', shouldDiscard: true}
     if (err.data?.includes?.('Can not recover pubkey'))
       return {errorType: 'canNotRecoverPubKey', shouldDiscard: true}
+  }
+  // network error
+  if (err?.code === ERROR.SERVER.code) {
+    return {errorType: ERROR.SERVER.name, shouldDiscard: false}
   }
 
   return {errorType: 'unknownError', shouldDiscard: true}
