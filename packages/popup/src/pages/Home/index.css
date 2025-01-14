@@ -7,6 +7,15 @@
   content: '';
 }
 
+.home-container.in-side-panel::before {
+  @apply absolute w-[100%] h-[210px] left-[0] top-[0] bg-secondary;
+
+  transform: unset;
+  border-radius: unset;
+  transition: none;
+  content: '';
+}
+
 .home-container::after {
   @apply absolute left-0 top-0 bottom-0 right-0 bg-homepage-background bg-no-repeat;
 

@@ -3,6 +3,7 @@ import {useClickAway} from 'react-use'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import {useRef} from 'react'
 import {useSlideAnimation} from '../hooks'
+import {isRunningInSidePanel} from '../utils/side-panel'
 
 function SlideCard({
   onClose,
@@ -16,12 +17,15 @@ function SlideCard({
   id = '',
   containerClassName = '',
   cardClassName = '',
-  width = 'w-93',
-  height = 'h-125',
+  width,
+  height,
   backgroundColor = 'bg-bg',
   direction = 'vertical',
 }) {
   const animateStyle = useSlideAnimation(open, direction, needAnimation)
+  const inSidePanel = isRunningInSidePanel()
+  width = width ?? (inSidePanel ? 'w-full' : 'w-93')
+  height = height ?? (inSidePanel ? 'h-125 max-h-[80%]' : 'h-125')
   const ref = useRef(null)
 
   useClickAway(ref, e => {
