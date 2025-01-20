@@ -26,11 +26,17 @@ function _takeOverEthereum(PROVIDER, resolve) {
 export async function takeOver(PROVIDER, type = 'cfx') {
   if (!PROVIDER) return
   const takeOverFn = type === 'cfx' ? _takeOverConflux : _takeOverEthereum
-  return await new Promise(resolve => {
-    TakeOverInterval[type] = setInterval(
-      () => takeOverFn(PROVIDER, resolve),
-      50,
-    )
+  return await new Promise((resolve, reject) => {
+    TakeOverInterval[type] = setInterval(() => {
+      try {
+        takeOverFn(PROVIDER, resolve)
+      } catch (error) {
+        if (error?.message?.includes('Cannot redefine property')) {
+          clearInterval(TakeOverInterval[type])
+          reject(error)
+        }
+      }
+    }, 50)
   })
 }
 
