@@ -132,11 +132,11 @@ export const guessErrorType = err => {
     if (err.code === ERROR.INVALID_PARAMS.code) return InvalidParams
     if (err.code === ERROR.INTERNAL.code) return Internal
     if (err.code === ERROR.SERVER.code) return Server
-    if (err.code === ERROR.USER_REJECTED) return UserRejected
+    if (err.code === ERROR.USER_REJECTED.code) return UserRejected
     if (err.code === ERROR.UNAUTHORIZED.code) return Unauthorized
-    if (err.code === ERROR.UNSUPPORTED_METHOD) return UnsupportedMethod
-    if (err.code === ERROR.DISCONNECTED) return Disconnected
-    if (err.code === ERROR.CHAIN_DISCON) return ChainDisconnected
+    if (err.code === ERROR.UNSUPPORTED_METHOD.code) return UnsupportedMethod
+    if (err.code === ERROR.DISCONNECTED.code) return Disconnected
+    if (err.code === ERROR.CHAIN_DISCONNECTED.code) return ChainDisconnected
   }
 
   return Internal
