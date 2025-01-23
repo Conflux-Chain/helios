@@ -1,0 +1,6 @@
+releases:
+  browser-extension: patch
+  helios-background: patch
+
+declined:
+  - helios
