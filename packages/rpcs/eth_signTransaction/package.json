@@ -3,13 +3,13 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "dependencies": {
     "@ethersproject/units": "5.6.1",
     "@fluent-wallet/consts": "workspace:*",
     "@fluent-wallet/eth-transaction-schema": "workspace:*",
     "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
-    "@fluent-wallet/spec": "1.0.8"
+    "@fluent-wallet/spec": "1.0.9"
   }
 }
