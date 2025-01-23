@@ -1,6 +1,0 @@
-releases:
-  browser-extension: patch
-  helios-inpage: patch
-
-declined:
-  - helios
