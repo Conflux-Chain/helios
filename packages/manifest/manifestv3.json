@@ -81,6 +81,7 @@
     "unlimitedStorage",
     "clipboardWrite",
     "tabs",
+    "scripting",
     "activeTab",
     "sidePanel",
     "notifications"

@@ -149,3 +149,28 @@ async function initApp() {
 }
 
 initApp()
+
+let count = 0
+const registerInPageContentScript = async () => {
+  count++
+  try {
+    await chrome.scripting.registerContentScripts([
+      {
+        id: 'inpage',
+        matches: ['file://*/*', 'http://*/*', 'https://*/*'],
+        js: ['inpage.js'],
+        runAt: 'document_start',
+        world: 'MAIN',
+        allFrames: true,
+      },
+    ])
+  } catch (err) {
+    console.error('registerInPageContentScript failed:', err)
+    if (count < 3) {
+      // retry
+      registerInPageContentScript()
+    }
+  }
+}
+
+registerInPageContentScript()
