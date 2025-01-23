@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/personal_sign",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "dependencies": {
     "@fluent-wallet/signature": "workspace:packages/signature",
-    "@fluent-wallet/spec": "1.0.8"
+    "@fluent-wallet/spec": "1.0.9"
   }
 }
