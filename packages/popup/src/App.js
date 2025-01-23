@@ -57,6 +57,7 @@ import AdvancedSettings from './pages/AdvancedSettings'
 import AddressBook from './pages/AddressBook'
 import Contacts from './pages/Contacts'
 import ResendTransaction from './pages/ResendTransaction'
+import {isRunningInSidePanel} from './utils/side-panel'
 
 const {
   HOME,
@@ -263,8 +264,9 @@ const AppRoutes = withRouter(
     return (
       <div
         id="router"
-        className={`m-auto light relative overflow-hidden ${
-          FULL_WINDOW_ROUTES.includes(location.pathname)
+        className={`mx-auto light relative overflow-hidden ${
+          FULL_WINDOW_ROUTES.includes(location.pathname) ||
+          isRunningInSidePanel()
             ? 'h-screen w-full'
             : 'h-150 w-93'
         } ${formatLocalizationLang(i18n.language) === 'zh' ? 'font-zh' : ''}`}

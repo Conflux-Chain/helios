@@ -62,6 +62,9 @@
     "default_title": "Fluent",
     "default_popup": "popup.html"
   },
+  "side_panel": {
+    "default_path": "sidePanel.html"
+  },
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
@@ -80,6 +83,7 @@
     "tabs",
     "scripting",
     "activeTab",
+    "sidePanel",
     "notifications"
   ],
   "host_permissions": [

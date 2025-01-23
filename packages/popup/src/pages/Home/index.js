@@ -33,6 +33,7 @@ import {
   CrossSpaceButton,
 } from './components'
 import {IS_DEV_MODE} from '@fluent-wallet/inner-utils'
+import {isRunningInSidePanel} from '../../utils/side-panel'
 function Home() {
   const {t} = useTranslation()
   const [accountStatus, setAccountStatus] = useState(false)
@@ -119,7 +120,9 @@ function Home() {
 
   return (
     <div
-      className="home-container flex flex-col bg-bg h-full w-full relative overflow-hidden"
+      className={`home-container flex flex-col bg-bg h-full w-full relative overflow-hidden ${
+        isRunningInSidePanel() ? 'in-side-panel' : ''
+      }`}
       id="homeContainer"
     >
       {/* only for dev env*/}
