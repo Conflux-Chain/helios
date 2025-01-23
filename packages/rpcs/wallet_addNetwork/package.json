@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/wallet_add-network",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "dependencies": {
     "@fluent-wallet/consts": "workspace:packages/consts",
-    "@fluent-wallet/spec": "1.0.8"
+    "@fluent-wallet/spec": "1.0.9"
   }
 }
