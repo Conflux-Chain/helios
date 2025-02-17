@@ -10,6 +10,7 @@ import {request, shuffle, updateAddedNewAccount} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
 import useLoading from '../../hooks/useLoading'
 import {RPC_METHODS, ROUTES} from '../../constants'
+import './index.css'
 const {WALLET_IMPORT_MNEMONIC, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 const {HOME} = ROUTES
 
@@ -115,7 +116,7 @@ function ConfirmSeed() {
           </span>
           <div
             id="mnemonicContainer"
-            className={`relative mt-4 px-3 pt-3 bg-bg rounded-sm flex flex-wrap justify-between z-10 ${
+            className={`seed-word-container relative mt-4 px-3 pt-3 bg-bg rounded-sm flex flex-wrap z-10 ${
               mnemonicError
                 ? 'after:absolute after:inset-0 after:border-error after:border after:border-solid after:z-[-1]'
                 : ''
@@ -138,9 +139,9 @@ function ConfirmSeed() {
           )}
           <div
             id="buttonArrayContainer"
-            className={`${
+            className={`seed-word-container ${
               mnemonicError ? 'mt-4' : 'mt-10'
-            } px-3 pt-3 flex flex-wrap justify-between`}
+            } px-3 pt-3 flex flex-wrap`}
           >
             {buttonArray.map((word, index) => (
               <Button

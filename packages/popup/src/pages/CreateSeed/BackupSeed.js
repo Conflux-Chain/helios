@@ -9,6 +9,7 @@ import {TitleNav} from '../../components'
 import {request} from '../../utils'
 import {useCreatedPasswordGuard} from '../../hooks'
 import {RPC_METHODS, ROUTES} from '../../constants'
+import './index.css'
 const {CONFIRM_SEED_PHRASE} = ROUTES
 const {WALLET_GENERATE_MNEMONIC} = RPC_METHODS
 
@@ -37,7 +38,7 @@ function BackupSeed() {
             <Trans i18nKey="backupSeedContent" />
           </span>
           <div
-            className="mt-4 pt-3 px-3 bg-bg rounded-sm flex flex-wrap justify-between"
+            className="seed-word-container mt-4 pt-3 px-3 bg-bg rounded-sm flex flex-wrap"
             id="mnemonicContainer"
           >
             {mnemonic.split(' ').map((word, index) => (
