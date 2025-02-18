@@ -108,10 +108,10 @@ function ConfirmSeed() {
       <TitleNav title={t('newAccount')} />
       <main className="px-3 pt-3 flex flex-col flex-1 justify-between">
         <div>
-          <span className="inline-block ml-1 mb-1 text-gray-80">
+          <span className="block ml-1 mb-1 text-gray-80">
             {t('confirmSeedTitle')}
           </span>
-          <span className="inline-block ml-1 text-xs text-gray-40">
+          <span className="block ml-1 text-xs text-gray-40">
             {t('confirmSeedContent')}
           </span>
           <div
