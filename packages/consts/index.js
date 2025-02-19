@@ -8,6 +8,7 @@ export const TESTNET = 'testnet'
 export const LOCALHOST = 'localhost'
 export const CUSTOM = 'custom'
 export const EXT_STORAGE = 'ext-storage'
+export const SIDE_PANEL_KEY = 'side-panel'
 export const NULL_HEX_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const ADMINE_CONTROL_HEX_ADDRESS =
   '0x0888000000000000000000000000000000000000'

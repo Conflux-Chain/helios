@@ -1,6 +1,5 @@
 import {rpcStream} from '@fluent-wallet/extension-runtime/rpc-stream.js'
 import {initProvider} from '@fluent-wallet/provider-api'
-import {takeOver} from './take-over-portal'
 import {announceProvider} from './eip-6963'
 import {v4 as uuid} from 'uuid'
 
@@ -69,6 +68,10 @@ function setupProvider() {
       location.origin,
     )
 
+  post({
+    event: '__INPAGE_INJECTED__',
+  })
+
   const {send: sendToBg, stream} = rpcStream({
     postMessage: post,
     onMessage: {
@@ -90,17 +93,17 @@ function setupProvider() {
   })
 
   window.fluent = PROVIDER
-  if (!window.ethereum) window.ethereum = PROVIDER
   Object.defineProperty(window, 'conflux', {value: PROVIDER, writable: false})
-  takeOver(PROVIDER, 'cfx')
-
-  if (window.localStorage.getItem(FLUENT_OVERRIDE_WINDOW_DOT_ETHEREUM)) {
+  if (
+    !window.ethereum ||
+    window.localStorage.getItem(FLUENT_OVERRIDE_WINDOW_DOT_ETHEREUM)
+  ) {
     try {
       Object.defineProperty(window, 'ethereum', {
         value: PROVIDER,
         writable: false,
+        configurable: false,
       })
-      takeOver(PROVIDER, 'eth')
     } catch (error) {
       console.log('Failed to override window.ethereum', error)
     }

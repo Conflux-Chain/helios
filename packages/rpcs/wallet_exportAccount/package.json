@@ -2,10 +2,10 @@
   "name": "@fluent-wallet/wallet_export-account",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "dependencies": {
     "@fluent-wallet/hdkey": "workspace:packages/hdkey",
-    "@fluent-wallet/spec": "1.0.8",
+    "@fluent-wallet/spec": "1.0.9",
     "browser-passworder": "2.0.3"
   }
 }

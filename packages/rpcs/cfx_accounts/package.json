@@ -2,8 +2,8 @@
   "name": "@fluent-wallet/cfx_accounts",
   "type": "module",
   "main": "index.js",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.8"
+    "@fluent-wallet/spec": "1.0.9"
   }
 }

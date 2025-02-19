@@ -1,0 +1,10 @@
+{
+  "name": "@fluent-wallet/wallet_get-side-panel-supported",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.1.0",
+  "version": "0.0.2",
+  "dependencies": {
+    "@fluent-wallet/spec": "1.0.9"
+  }
+}

@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/wallet_update-account-group",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "dependencies": {
     "@fluent-wallet/checks": "workspace:packages/checks",
-    "@fluent-wallet/spec": "1.0.8"
+    "@fluent-wallet/spec": "1.0.9"
   }
 }
