@@ -230,7 +230,7 @@ export default class Ethereum {
       : inputPath
 
     if (path === HDPATH.LEDGER_LIVE) {
-      return `m/44'/60'/${index}'/0/0`
+      return `44'/60'/${index}'/0/0`
     }
     return `${path}/${index}`
   }
