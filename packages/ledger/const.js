@@ -34,6 +34,7 @@ export const INS = {
 export const HDPATH = {
   CONFLUX: "44'/503'/0'/0/",
   ETHEREUM: "44'/60'/0'/0/",
+  LEDGER_LIVE: "m/44'/60'/0'/0/0",
 }
 
 export const ERROR = {

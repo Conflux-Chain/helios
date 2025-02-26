@@ -113,6 +113,11 @@ export const ETH_SEPOLIA_EXPLORER_URL = 'https://sepolia.etherscan.io'
 export const DEFAULT_CFX_HDPATH = `m/44'/503'/0'/0`
 export const DEFAULT_ETH_HDPATH = `m/44'/60'/0'/0`
 
+// for ledger import address path
+export const LEDGER_LIVE_PATH = `m/44'/60'/0'/0/0`
+// for MEW or MyCrypto import address path
+export const MEW_PATH = `m/44'/60'/0'`
+
 export const REGENERATE = 'REGENERATE'
 
 export const CFX_LOCALNET_RPC_ENDPOINT = 'http://localhost:12537'
