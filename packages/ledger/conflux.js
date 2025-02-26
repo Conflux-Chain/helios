@@ -147,7 +147,7 @@ export default class Conflux {
     const addressArr = []
     try {
       for (const index of indexArray) {
-        const hdPath = `${HDPATH.CONFLUX}${index}`
+        const hdPath = `${HDPATH.CONFLUX}/${index}`
         const {address} = await this.getAddress(hdPath)
         const {hexAddress} = decode(address)
         addressArr.push({
