@@ -56,7 +56,7 @@ releases:
   "@fluent-wallet/cfx_sign-transaction": patch
   "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": patch
   "@fluent-wallet/cfx_sign-typed-data_v4": patch
-  "@fluent-wallet/component-menu": patch
+  "@fluent-wallet/component-menu": minor
   "@fluent-wallet/consts": patch
   "@fluent-wallet/contract-method-name": patch
   "@fluent-wallet/db": patch
@@ -196,4 +196,13 @@ releases:
   workspace-tools: patch
 
 declined:
+  - "@fluent-wallet/component-alert"
+  - "@fluent-wallet/component-button"
+  - "@fluent-wallet/component-checkbox"
+  - "@fluent-wallet/component-input"
+  - "@fluent-wallet/component-link"
+  - "@fluent-wallet/component-loading"
+  - "@fluent-wallet/component-modal"
+  - "@fluent-wallet/component-tag"
+  - "@fluent-wallet/component-toast"
   - doc
