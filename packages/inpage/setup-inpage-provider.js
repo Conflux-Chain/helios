@@ -93,10 +93,12 @@ function setupProvider() {
   })
 
   window.fluent = PROVIDER
+  // do not lock window.ethereum if it's not defined
   if (!window.ethereum) window.ethereum = PROVIDER
   Object.defineProperty(window, 'conflux', {value: PROVIDER, writable: false})
   if (window.localStorage.getItem(FLUENT_OVERRIDE_WINDOW_DOT_ETHEREUM)) {
     try {
+      // only lock window.ethereum when priority connection is enabled
       Object.defineProperty(window, 'ethereum', {
         value: PROVIDER,
         writable: false,
