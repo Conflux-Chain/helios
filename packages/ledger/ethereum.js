@@ -222,7 +222,13 @@ export default class Ethereum {
     }
     return error
   }
-  getAddressesPathForIndex = (index, path) => {
+  getAddressesPathForIndex = (index, inputPath) => {
+    // if the path starts with 'm/', remove it
+    // because the ledger app doesn't need the 'm/' prefix(see: https://github.com/LedgerHQ/ledger-live/blob/develop/libs/ledger-live-common/src/families/celo/hw-app-celo.ts#L150)
+    const path = inputPath.startsWith('m/')
+      ? inputPath.replace('m/', '')
+      : inputPath
+
     if (path === HDPATH.LEDGER_LIVE) {
       return `m/44'/60'/${index}'/0/0`
     }
