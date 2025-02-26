@@ -1,0 +1,10 @@
+.seed-word-container {
+  justify-content: space-between;
+}
+
+@media (min-width: 548px) {
+  .seed-word-container {
+    gap: 0 10px;
+    justify-content: start;
+  }
+}
