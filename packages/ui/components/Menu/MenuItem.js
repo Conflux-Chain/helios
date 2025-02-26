@@ -10,6 +10,7 @@ function MenuItem({
   icon,
   onClick,
   disabled,
+  containerClassName = '',
 }) {
   const style = useMemo(() => {
     if (disabled) return 'text-gray-40 cursor-not-allowed'
@@ -37,7 +38,7 @@ function MenuItem({
       onClick={() => !disabled && onClick && onClick(itemKey)}
       className={`w-50 h-12 ${
         icon ? 'px-4' : 'pl-12 pr-4'
-      } flex items-center ${style}`}
+      } flex items-center ${style} ${containerClassName}`}
     >
       <div className="flex items-center flex-1">
         {iconComp}
@@ -74,6 +75,7 @@ MenuItem.propTypes = {
   icon: PropTypes.node,
   onClick: PropTypes.func,
   disabled: PropTypes.bool,
+  containerClassName: PropTypes.string,
 }
 
 export default MenuItem

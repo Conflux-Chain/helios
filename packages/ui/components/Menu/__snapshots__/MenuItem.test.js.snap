@@ -7,7 +7,7 @@ exports[`MenuItem > test snapshot 1`] = `
     <div>
       <div
         aria-hidden="true"
-        class="w-50 h-12 pl-12 pr-4 flex items-center bg-gray-0 text-primary cursor-pointer"
+        class="w-50 h-12 pl-12 pr-4 flex items-center bg-gray-0 text-primary cursor-pointer "
         data-testid="menu-item-wrapper"
       >
         <div
@@ -44,138 +44,7 @@ exports[`MenuItem > test snapshot 1`] = `
   "container": <div>
     <div
       aria-hidden="true"
-      class="w-50 h-12 pl-12 pr-4 flex items-center bg-gray-0 text-primary cursor-pointer"
-      data-testid="menu-item-wrapper"
-    >
-      <div
-        class="flex items-center flex-1"
-      >
-        content
-      </div>
-      <svg
-        class="w-4 h-4 text-success"
-        data-testid="success-filled-wrapper"
-        fill="none"
-        height="24"
-        viewBox="0 0 24 24"
-        width="24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          cx="12"
-          cy="12"
-          fill="currentColor"
-          r="10"
-        />
-        <path
-          d="M15.5 8.5L11.432 14 9 12.125"
-          stroke="#fff"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-        />
-      </svg>
-    </div>
-  </div>,
-  "debug": [Function],
-  "findAllByAltText": [Function],
-  "findAllByDisplayValue": [Function],
-  "findAllByLabelText": [Function],
-  "findAllByPlaceholderText": [Function],
-  "findAllByRole": [Function],
-  "findAllByTestId": [Function],
-  "findAllByText": [Function],
-  "findAllByTitle": [Function],
-  "findByAltText": [Function],
-  "findByDisplayValue": [Function],
-  "findByLabelText": [Function],
-  "findByPlaceholderText": [Function],
-  "findByRole": [Function],
-  "findByTestId": [Function],
-  "findByText": [Function],
-  "findByTitle": [Function],
-  "getAllByAltText": [Function],
-  "getAllByDisplayValue": [Function],
-  "getAllByLabelText": [Function],
-  "getAllByPlaceholderText": [Function],
-  "getAllByRole": [Function],
-  "getAllByTestId": [Function],
-  "getAllByText": [Function],
-  "getAllByTitle": [Function],
-  "getByAltText": [Function],
-  "getByDisplayValue": [Function],
-  "getByLabelText": [Function],
-  "getByPlaceholderText": [Function],
-  "getByRole": [Function],
-  "getByTestId": [Function],
-  "getByText": [Function],
-  "getByTitle": [Function],
-  "queryAllByAltText": [Function],
-  "queryAllByDisplayValue": [Function],
-  "queryAllByLabelText": [Function],
-  "queryAllByPlaceholderText": [Function],
-  "queryAllByRole": [Function],
-  "queryAllByTestId": [Function],
-  "queryAllByText": [Function],
-  "queryAllByTitle": [Function],
-  "queryByAltText": [Function],
-  "queryByDisplayValue": [Function],
-  "queryByLabelText": [Function],
-  "queryByPlaceholderText": [Function],
-  "queryByRole": [Function],
-  "queryByTestId": [Function],
-  "queryByText": [Function],
-  "queryByTitle": [Function],
-  "rerender": [Function],
-  "unmount": [Function],
-}
-`;
-
-exports[`MenuItem test snapshot 1`] = `
-{
-  "asFragment": [Function],
-  "baseElement": <body>
-    <div>
-      <div
-        aria-hidden="true"
-        class="w-50 h-12 pl-12 pr-4 flex items-center bg-gray-0 text-primary cursor-pointer"
-        data-testid="menu-item-wrapper"
-      >
-        <div
-          class="flex items-center flex-1"
-        >
-          content
-        </div>
-        <svg
-          class="w-4 h-4 text-success"
-          data-testid="success-filled-wrapper"
-          fill="none"
-          height="24"
-          viewBox="0 0 24 24"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle
-            cx="12"
-            cy="12"
-            fill="currentColor"
-            r="10"
-          />
-          <path
-            d="M15.5 8.5L11.432 14 9 12.125"
-            stroke="#fff"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-          />
-        </svg>
-      </div>
-    </div>
-  </body>,
-  "container": <div>
-    <div
-      aria-hidden="true"
-      class="w-50 h-12 pl-12 pr-4 flex items-center bg-gray-0 text-primary cursor-pointer"
+      class="w-50 h-12 pl-12 pr-4 flex items-center bg-gray-0 text-primary cursor-pointer "
       data-testid="menu-item-wrapper"
     >
       <div
