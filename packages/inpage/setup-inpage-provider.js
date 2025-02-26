@@ -93,11 +93,9 @@ function setupProvider() {
   })
 
   window.fluent = PROVIDER
+  if (!window.ethereum) window.ethereum = PROVIDER
   Object.defineProperty(window, 'conflux', {value: PROVIDER, writable: false})
-  if (
-    !window.ethereum ||
-    window.localStorage.getItem(FLUENT_OVERRIDE_WINDOW_DOT_ETHEREUM)
-  ) {
+  if (window.localStorage.getItem(FLUENT_OVERRIDE_WINDOW_DOT_ETHEREUM)) {
     try {
       Object.defineProperty(window, 'ethereum', {
         value: PROVIDER,
