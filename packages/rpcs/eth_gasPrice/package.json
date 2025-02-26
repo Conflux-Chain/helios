@@ -2,8 +2,8 @@
   "name": "@fluent-wallet/eth_gas-price",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.9"
+    "@fluent-wallet/spec": "1.0.10"
   }
 }

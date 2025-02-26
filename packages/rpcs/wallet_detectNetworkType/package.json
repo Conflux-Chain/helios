@@ -2,8 +2,8 @@
   "name": "@fluent-wallet/wallet_detect-network-type",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.9"
+    "@fluent-wallet/spec": "1.0.10"
   }
 }

@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/wallet_request-permissions",
   "type": "module",
   "main": "index.js",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.9",
+    "@fluent-wallet/spec": "1.0.10",
     "@fluent-wallet/wallet-permission": "workspace:packages/wallet-permission"
   }
 }
