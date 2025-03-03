@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/tx-history-checker",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:*",
     "@fluent-wallet/consts": "workspace:packages/consts"
