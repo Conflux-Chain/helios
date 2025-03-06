@@ -31,6 +31,10 @@ import * as ethGetBlockByHash from '@fluent-wallet/eth_get-block-by-hash'
 import * as ethGetBlockByNumber from '@fluent-wallet/eth_get-block-by-number'
 import * as walletSetPreferences from '@fluent-wallet/wallet_set-preferences'
 import * as walletGetPreferences from '@fluent-wallet/wallet_get-preferences'
+import * as walletSetSidePanelBehavior from '@fluent-wallet/wallet_set-side-panel-behavior'
+import * as walletSetSidePanelEnabled from '@fluent-wallet/wallet_set-side-panel-enabled'
+import * as walletGetSidePanelEnabled from '@fluent-wallet/wallet_get-side-panel-enabled'
+import * as walletGetSidePanelSupported from '@fluent-wallet/wallet_get-side-panel-supported'
 import * as walletUpdateNetwork from '@fluent-wallet/wallet_update-network'
 import * as cfxGetMaxGasLimit from '@fluent-wallet/cfx_get-max-gas-limit'
 import * as walletMetadataForPopup from '@fluent-wallet/wallet_metadata-for-popup'
@@ -110,7 +114,6 @@ import * as ethMaxPriorityFeePerGas from '@fluent-wallet/eth_max-priority-fee-pe
 import * as ethEstimate1559Fee from '@fluent-wallet/eth_estimate-1559-fee'
 
 import {
-  IS_CI,
   IS_DEV_MODE,
   IS_PROD_MODE,
   IS_TEST_MODE,
@@ -186,7 +189,6 @@ export const rpcEngineOpts = {
   isProd: IS_PROD_MODE,
   isDev: IS_DEV_MODE,
   isTest: IS_TEST_MODE,
-  isCI: IS_CI,
   methods: [
     walletMetadataForPopup,
     walletDbQuery,
@@ -369,6 +371,10 @@ export const rpcEngineOpts = {
     walletGetFluentMetadata,
     walletGetPreferences,
     walletSetPreferences,
+    walletGetSidePanelEnabled,
+    walletGetSidePanelSupported,
+    walletSetSidePanelBehavior,
+    walletSetSidePanelEnabled,
     walletUpsertMemo,
     walletDeleteMemo,
     walletGetBlockTime,

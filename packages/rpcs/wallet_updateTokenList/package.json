@@ -3,9 +3,9 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.6",
+    "@fluent-wallet/spec": "1.0.10",
     "@fluent-wallet/token-list-schema": "workspace:packages/token-list-schema"
   }
 }

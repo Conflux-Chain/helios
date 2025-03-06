@@ -150,9 +150,9 @@ const defaultConfig = {
       template: path.join(packagesPath, 'popup/public/template.html'),
       inject: 'body',
       chunks: ['popup'],
-      filename: 'popup.html',
+      filename: 'sidePanel.html',
       meta: {
-        'popup-type': 'popup',
+        'popup-type': 'side-panel',
       },
     }),
     new HtmlWebpackPlugin({

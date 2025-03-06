@@ -169,16 +169,14 @@ export default class Ethereum {
     }
   }
 
-  async getAddressList(indexArray) {
+  async getAddressList(indexArray, path = HDPATH.ETHEREUM) {
     if (!Array.isArray(indexArray)) return []
-    const isNumber = indexArray.every(function (item) {
-      return typeof item === 'number'
-    })
+    const isNumber = indexArray.every(item => typeof item === 'number')
     if (!isNumber) return []
     const addressArr = []
     try {
       for (const index of indexArray) {
-        const hdPath = `${HDPATH.ETHEREUM}${index}`
+        const hdPath = this.getAddressesPathForIndex(index, path)
         const {address} = await this.getAddress(hdPath)
         addressArr.push({
           address,
@@ -223,5 +221,17 @@ export default class Ethereum {
       }`
     }
     return error
+  }
+  getAddressesPathForIndex = (index, inputPath) => {
+    // if the path starts with 'm/', remove it
+    // because the ledger app doesn't need the 'm/' prefix(see: https://github.com/LedgerHQ/ledger-live/blob/develop/libs/ledger-live-common/src/families/celo/hw-app-celo.ts#L150)
+    const path = inputPath.startsWith('m/')
+      ? inputPath.replace('m/', '')
+      : inputPath
+
+    if (path === HDPATH.LEDGER_LIVE) {
+      return `44'/60'/${index}'/0/0`
+    }
+    return `${path}/${index}`
   }
 }

@@ -2,8 +2,8 @@
   "name": "@fluent-wallet/wallet_get-pending-auth-request",
   "type": "module",
   "main": "index.js",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.6"
+    "@fluent-wallet/spec": "1.0.10"
   }
 }

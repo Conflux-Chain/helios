@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/signature",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "dependencies": {
     "@ethersproject/bytes": "5.6.1",
     "@ethersproject/hash": "5.6.1",

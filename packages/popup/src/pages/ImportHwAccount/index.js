@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {useState, useEffect, useMemo} from 'react'
+import {useState, useEffect, useMemo, useCallback} from 'react'
 import {useAsync} from 'react-use'
 import {useSWRConfig} from 'swr'
 import {isUndefined} from '@fluent-wallet/checks'
@@ -17,7 +17,12 @@ import {
   CheckCircleFilled,
   QuestionCircleOutlined,
 } from '@fluent-wallet/component-icons'
-import {DEFAULT_CFX_HDPATH, DEFAULT_ETH_HDPATH} from '@fluent-wallet/consts'
+import {
+  DEFAULT_CFX_HDPATH,
+  DEFAULT_ETH_HDPATH,
+  LEDGER_LIVE_PATH,
+  MEW_PATH,
+} from '@fluent-wallet/consts'
 import {encode} from '@fluent-wallet/base32-address'
 import {TitleNav, CompWithLabel, Avatar, DisplayBalance} from '../../components'
 import {
@@ -34,11 +39,34 @@ import {useLedgerBindingApi} from '../../hooks'
 import useLoading from '../../hooks/useLoading'
 import useImportHWParams from './useImportHWParams'
 import {request} from '../../utils'
+import Dropdown from '@fluent-wallet/component-dropdown'
+import Menu from '../../../../ui/components/Menu'
+import MenuItem from '../../../../ui/components/Menu/MenuItem'
 
 const {
   WALLET_IMPORT_HARDWARE_WALLET_ACCOUNT_GROUP_OR_ACCOUNT,
   WALLETDB_REFETCH_BALANCE,
 } = RPC_METHODS
+
+const confluxLedgerPath = {
+  name: 'BIP 44 Standard',
+  value: DEFAULT_CFX_HDPATH,
+}
+
+const ethereumLedgerPath = [
+  {
+    name: 'BIP 44 Standard',
+    value: DEFAULT_ETH_HDPATH,
+  },
+  {
+    name: 'Ledger Live',
+    value: LEDGER_LIVE_PATH,
+  },
+  {
+    name: 'Legacy',
+    value: MEW_PATH,
+  },
+]
 
 function ImportingResults({importStatus}) {
   const {t} = useTranslation()
@@ -114,14 +142,18 @@ function ImportHwAccount() {
   const {data: importedAddressData} = useQueryImportedAddress(networkId)
   const ledgerBindingApi = useLedgerBindingApi()
 
+  const [selectedPath, setSelectedPath] = useState()
+
   const {value: addressList, loading} = useAsync(async () => {
     let addresses = []
+    if (selectedPath === undefined) return addresses
     try {
       if (ledgerBindingApi) {
         addresses = await ledgerBindingApi.getAddressList(
           new Array(HARDWARE_ACCOUNT_PAGE_LIMIT)
             .fill('')
             .map((_item, index) => index + offset),
+          selectedPath?.value,
         )
       }
     } catch (e) {
@@ -138,7 +170,13 @@ function ImportHwAccount() {
           return {address: address?.toLowerCase?.(), hdPath}
         })
       : addresses
-  }, [offset, ledgerBindingApi])
+  }, [selectedPath, offset, ledgerBindingApi])
+
+  const handleSelectChange = useCallback(path => {
+    // if user change the hd path, reset the offset
+    setSelectedPath(path)
+    setOffset(0)
+  }, [])
 
   const {value: deviceInfo} = useAsync(async () => {
     if (ledgerBindingApi) {
@@ -182,6 +220,16 @@ function ImportHwAccount() {
       Object.keys(checkboxStatusObj).every(id => checkboxStatusObj[id]),
     )
   }, [checkboxStatusObj])
+
+  useEffect(() => {
+    if (selectedPath === undefined) {
+      if (type === NETWORK_TYPE.CFX) {
+        setSelectedPath(confluxLedgerPath)
+      } else if (type === NETWORK_TYPE.ETH) {
+        setSelectedPath(ethereumLedgerPath[0])
+      }
+    }
+  }, [type, selectedPath])
 
   const onSelectAllAccount = () => {
     const ret = {}
@@ -278,17 +326,38 @@ function ImportHwAccount() {
           className="mt-5"
           label={<p className="text-sm text-gray-40">{t('hdPath')}</p>}
         >
-          <Input
-            value={`BIP 44 Standard(${
-              type === NETWORK_TYPE.CFX
-                ? DEFAULT_CFX_HDPATH
-                : DEFAULT_ETH_HDPATH
-            })`}
-            width="w-full box-border"
-            readOnly
-            className="pointer-events-none"
-            id="hd-path"
-          />
+          {type === NETWORK_TYPE.CFX ? (
+            <Input
+              value={`${confluxLedgerPath?.name}(${confluxLedgerPath?.value})`}
+              width="w-full box-border"
+              readOnly
+              className="pointer-events-none"
+              id="hd-path"
+            />
+          ) : (
+            <Dropdown
+              overlay={
+                <Menu>
+                  {ethereumLedgerPath.map(({name, value}) => (
+                    <MenuItem
+                      onClick={() => handleSelectChange({name, value})}
+                      selected={selectedPath?.value === value}
+                      containerClassName="w-full"
+                      key={value}
+                      itemKey={value}
+                    >{`${name}(${value})`}</MenuItem>
+                  ))}
+                </Menu>
+              }
+            >
+              <Input
+                value={`${selectedPath?.name}(${selectedPath?.value})`}
+                width="w-full box-border"
+                readOnly
+                id="hd-path"
+              />
+            </Dropdown>
+          )}
         </CompWithLabel>
         <CompWithLabel
           label={

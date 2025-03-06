@@ -2,12 +2,12 @@
   "name": "@fluent-wallet/wallet_discover-accounts",
   "main": "index.js",
   "type": "module",
-  "version": "1.0.6",
+  "version": "1.0.9",
   "dependencies": {
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network",
     "@fluent-wallet/csp": "workspace:packages/csp",
     "@fluent-wallet/discover-accounts": "workspace:packages/discover-accounts",
-    "@fluent-wallet/spec": "1.0.6",
+    "@fluent-wallet/spec": "1.0.10",
     "browser-passworder": "2.0.3"
   }
 }
