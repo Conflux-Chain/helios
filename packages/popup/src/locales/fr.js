@@ -285,6 +285,9 @@ const fr = {
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Signer ce Message ?',
+    signWithEthereumTitle: 'Demande de connexion',
+    signWithEthereum:
+      'Un site souhaite que vous vous connectiez pour prouver que vous possédez ce compte.',
     signTypeMessage: 'Signer le message saisi',
     message: 'Message',
 

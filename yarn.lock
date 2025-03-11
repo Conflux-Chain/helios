@@ -6612,6 +6612,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/hashes@npm:^1.1.2":
+  version: 1.7.1
+  resolution: "@noble/hashes@npm:1.7.1"
+  checksum: 10/ca3120da0c3e7881d6a481e9667465cc9ebbee1329124fb0de442e56d63fef9870f8cc96f264ebdb18096e0e36cebc0e6e979a872d545deb0a6fed9353f17e05
+  languageName: node
+  linkType: hard
+
 "@noble/hashes@npm:^1.5.0, @noble/hashes@npm:~1.6.0":
   version: 1.6.1
   resolution: "@noble/hashes@npm:1.6.1"
@@ -7647,6 +7654,26 @@ __metadata:
   dependencies:
     antlr4ts: "npm:^0.5.0-alpha.4"
   checksum: 10/b5f1ccca85e0e3c68792d986890cc66ac52a4ae1e5df262abdf62e1f2c2ebfb7b7429f8ba4960277b0385022f9f4c2f412e8a169e667978b987f03bd5064e0d7
+  languageName: node
+  linkType: hard
+
+"@spruceid/siwe-parser@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@spruceid/siwe-parser@npm:3.0.0"
+  dependencies:
+    "@noble/hashes": "npm:^1.1.2"
+    apg-js: "npm:^4.4.0"
+  checksum: 10/19239d4a18a953812e4a5cd25c51a9869b67643b00cf9b6f36091b0d7b8be09934d1ba41c7df60f6e05307ba5cbc7c4812c69b5d3de64a132ea08b80a35cb87f
+  languageName: node
+  linkType: hard
+
+"@spruceid/siwe-parser@patch:@spruceid/siwe-parser@npm%3A3.0.0#~/.yarn/patches/@spruceid-siwe-parser-npm-3.0.0-4572197cda.patch":
+  version: 3.0.0
+  resolution: "@spruceid/siwe-parser@patch:@spruceid/siwe-parser@npm%3A3.0.0#~/.yarn/patches/@spruceid-siwe-parser-npm-3.0.0-4572197cda.patch::version=3.0.0&hash=97a19c"
+  dependencies:
+    "@noble/hashes": "npm:^1.1.2"
+    apg-js: "npm:^4.4.0"
+  checksum: 10/4149089347e559ee1bc817fa79de22ed3262aa45cd80f9fbfcf9048aba7fa8b3f963d801a5f077585e5641486c9cdfb649c4839d6c05be984d7e5645c6b4be52
   languageName: node
   linkType: hard
 
@@ -10549,6 +10576,13 @@ __metadata:
     normalize-path: "npm:^3.0.0"
     picomatch: "npm:^2.0.4"
   checksum: 10/3e044fd6d1d26545f235a9fe4d7a534e2029d8e59fa7fd9f2a6eb21230f6b5380ea1eaf55136e60cbf8e613544b3b766e7a6fa2102e2a3a117505466e3025dc2
+  languageName: node
+  linkType: hard
+
+"apg-js@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "apg-js@npm:4.4.0"
+  checksum: 10/425f19096026742f5f156f26542b68f55602aa60f0c4ae2d72a0a888cf15fe9622223191202262dd8979d76a6125de9d8fd164d56c95fb113f49099f405eb08c
   languageName: node
   linkType: hard
 
@@ -18339,6 +18373,7 @@ __metadata:
     "@fluent-wallet/tx-history-checker": "workspace:*"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
     "@fluent-wallet/utils": "workspace:packages/utils"
+    "@spruceid/siwe-parser": "patch:@spruceid/siwe-parser@npm%3A3.0.0#~/.yarn/patches/@spruceid-siwe-parser-npm-3.0.0-4572197cda.patch"
     bn.js: "npm:5.2.1"
     dayjs: "npm:1.10.7"
     i18next: "npm:21.5.2"

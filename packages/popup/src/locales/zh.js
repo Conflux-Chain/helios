@@ -269,6 +269,8 @@ const zh = {
 
     // - request signature - 2. Sign Message
     signThisMessage: '签署这个信息？',
+    signWithEthereumTitle: '登录请求',
+    signWithEthereum: '网站请求您签名以证明您拥有此账户。',
     signTypeMessage: '签署类型信息',
     message: '信息',
 

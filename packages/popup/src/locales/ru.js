@@ -278,6 +278,9 @@ const ru = {
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Подписать это сообщение?',
+    signWithEthereumTitle: 'Запрос на вход',
+    signWithEthereum:
+      'Сайт просит вас подписаться, чтобы подтвердить владение этим аккаунтом.',
     signTypeMessage: 'Подписать написанное сообщение',
     message: 'Сообщение',
 

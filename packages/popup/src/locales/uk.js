@@ -277,6 +277,9 @@ const uk = {
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Підписати це повідомлення?',
+    signWithEthereumTitle: 'Запит на вхід',
+    signWithEthereum:
+      'Сайт просить вас підписатися, щоб підтвердити володіння цим акаунтом.',
     signTypeMessage: 'Підписати написане повідомлення',
     message: 'Повідомлення',
 

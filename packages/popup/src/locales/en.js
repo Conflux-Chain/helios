@@ -279,6 +279,9 @@ const en = {
     signThisMessage: 'Sign this Message?',
     signTypeMessage: 'Sign Type Message',
     message: 'Message',
+    signWithEthereumTitle: 'Sign-in request',
+    signWithEthereum:
+      'A site wants you to sign in to prove you own this account.',
 
     // - add network
     addNetwork: 'Add Network',

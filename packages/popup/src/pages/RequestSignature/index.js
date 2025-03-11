@@ -1,9 +1,8 @@
 import {useTranslation} from 'react-i18next'
 import {isUndefined} from '@fluent-wallet/checks'
-import Alert from '@fluent-wallet/component-alert'
+
 import {
   DappFooter,
-  CompWithLabel,
   TitleNav,
   AccountDisplay,
   DisplayBalance,
@@ -15,8 +14,13 @@ import {
   useCurrentTicker,
   useAddress,
 } from '../../hooks/useApi'
-import PlaintextMessage from './components/PlaintextMessage'
+
 import {RPC_METHODS} from '../../constants'
+import {detectSIWEMessage} from '../../utils'
+import {useMemo} from 'react'
+import {TypedDataSign} from './components/TypedDataSign'
+import {PersonalSign} from './components/PersonalSign'
+import {SignInSign} from './components/SignInSign'
 const {PERSONAL_SIGN, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
 function RequestSignature() {
@@ -38,9 +42,51 @@ function RequestSignature() {
   const isHw =
     AddressData?.account?.accountGroup?.vault?.type === ACCOUNT_GROUP_TYPE.HW
 
-  const plaintextData =
-    !isPersonalSign && req?.params?.[1] ? JSON.parse(req.params[1]) : {}
+  const plaintextData = useMemo(
+    () =>
+      !isPersonalSign && req?.params?.[1] ? JSON.parse(req.params[1]) : {},
+    [isPersonalSign, req?.params],
+  )
   const personalSignData = isPersonalSign ? req?.params?.[0] ?? '' : ''
+
+  const {isSIWEMessage, parsedMessage} = detectSIWEMessage(personalSignData)
+
+  const Content = useMemo(() => {
+    if (isPersonalSign) {
+      if (!isSIWEMessage)
+        return <PersonalSign personalSignData={personalSignData} isHw={isHw} />
+
+      return (
+        <SignInSign
+          parsedMessage={parsedMessage}
+          isHw={isHw}
+          currentNetwork={app?.currentNetwork}
+        />
+      )
+    }
+
+    return <TypedDataSign plaintextData={plaintextData} isHw={isHw} />
+  }, [
+    isPersonalSign,
+    isSIWEMessage,
+    parsedMessage,
+    isHw,
+    plaintextData,
+    app?.currentNetwork,
+    personalSignData,
+  ])
+
+  const signTitle = useMemo(() => {
+    if (isPersonalSign) {
+      if (isSIWEMessage) {
+        return t('signWithEthereumTitle')
+      }
+
+      return t('signText')
+    }
+
+    return t('signTypeMessage')
+  }, [isPersonalSign, isSIWEMessage, t])
 
   return (
     <div
@@ -48,10 +94,7 @@ function RequestSignature() {
       className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg"
     >
       <header id="header">
-        <TitleNav
-          title={isPersonalSign ? t('signText') : t('signTypeMessage')}
-          hasGoBack={false}
-        />
+        <TitleNav title={signTitle} hasGoBack={false} />
         <div className="flex mt-1 px-4 pb-3 items-center justify-between">
           <AccountDisplay
             address={address}
@@ -71,55 +114,7 @@ function RequestSignature() {
         </div>
       </header>
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
-        <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
-          {!isPersonalSign ? (
-            <div className="ml-1" id="signTypeMsgDes">
-              <div className="text-sm text-gray-80 font-medium">
-                {t('signThisMessage')}
-              </div>
-              <div className="text-xs text-gray-40 mt-1">
-                {plaintextData?.domain?.name}
-              </div>
-            </div>
-          ) : null}
-          <CompWithLabel
-            label={
-              <p id="labelDes" className="font-medium">
-                {isPersonalSign ? t('signThisText') : t('message')}
-              </p>
-            }
-          >
-            <div
-              id="plaintext"
-              className={`${
-                isPersonalSign ? 'pl-3 max-h-[316px]' : 'pl-1 max-h-[282px]'
-              } pr-3 pt-3 pb-4 rounded bg-gray-4 overflow-auto break-words`}
-            >
-              {isPersonalSign ? (
-                personalSignData
-                  .replace(/\r/g, '\n')
-                  .split('\n')
-                  .map(str => (
-                    <div key={str} className={str ? '' : 'h-[18px]'}>
-                      {str}
-                    </div>
-                  ))
-              ) : (
-                <PlaintextMessage message={plaintextData?.message ?? {}} />
-              )}
-            </div>
-          </CompWithLabel>
-          <Alert
-            open={isHw}
-            className="mt-3"
-            type="warning"
-            closable={false}
-            width="w-full"
-            content={t(
-              isPersonalSign ? 'disablePersonSign' : 'disableTypeSign',
-            )}
-          />
-        </main>
+        {Content}
         <DappFooter
           cancelText={t('cancel')}
           confirmText={t('sign')}
