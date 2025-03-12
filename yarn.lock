@@ -5052,6 +5052,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/utils@workspace:packages/utils"
   dependencies:
+    "@spruceid/siwe-parser": "patch:@spruceid/siwe-parser@npm%3A3.0.0#~/.yarn/patches/@spruceid-siwe-parser-npm-3.0.0-4572197cda.patch"
     bn.js: "npm:5.2.1"
     is-hex-prefixed: "npm:^1.0.0"
     randombytes: "npm:^2.1.0"
@@ -18373,7 +18374,6 @@ __metadata:
     "@fluent-wallet/tx-history-checker": "workspace:*"
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC"
     "@fluent-wallet/utils": "workspace:packages/utils"
-    "@spruceid/siwe-parser": "patch:@spruceid/siwe-parser@npm%3A3.0.0#~/.yarn/patches/@spruceid-siwe-parser-npm-3.0.0-4572197cda.patch"
     bn.js: "npm:5.2.1"
     dayjs: "npm:1.10.7"
     i18next: "npm:21.5.2"

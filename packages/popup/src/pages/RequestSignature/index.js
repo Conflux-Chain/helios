@@ -16,12 +16,12 @@ import {
 } from '../../hooks/useApi'
 
 import {RPC_METHODS} from '../../constants'
-import {detectSIWEMessage} from '../../utils'
 import {useMemo} from 'react'
 import {TypedDataSign} from './components/TypedDataSign'
 import {PersonalSign} from './components/PersonalSign'
 import {SignInSign} from './components/SignInSign'
 import Alert from '@fluent-wallet/component-alert'
+import {detectSIWEMessage} from '@fluent-wallet/utils'
 const {PERSONAL_SIGN, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
 function RequestSignature() {

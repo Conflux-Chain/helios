@@ -35,7 +35,6 @@
     "@fluent-wallet/tx-history-checker": "workspace:*",
     "@fluent-wallet/use-rpc": "workspace:packages/ui/useRPC",
     "@fluent-wallet/utils": "workspace:packages/utils",
-    "@spruceid/siwe-parser": "patch:@spruceid/siwe-parser@npm%3A3.0.0#~/.yarn/patches/@spruceid-siwe-parser-npm-3.0.0-4572197cda.patch",
     "bn.js": "5.2.1",
     "dayjs": "1.10.7",
     "i18next": "21.5.2",
