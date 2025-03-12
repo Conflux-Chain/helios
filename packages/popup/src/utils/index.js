@@ -414,7 +414,6 @@ export const detectSIWEMessage = message => {
     const decoder = new TextDecoder('utf-8')
 
     const decodedMessage = decoder.decode(bytes)
-    console.log(decodedMessage)
 
     const parsedMessage = new ParsedMessage(decodedMessage)
 
@@ -423,7 +422,6 @@ export const detectSIWEMessage = message => {
       isSIWEMessage: true,
     }
   } catch (e) {
-    console.log(e)
     return {
       isSIWEMessage: false,
     }

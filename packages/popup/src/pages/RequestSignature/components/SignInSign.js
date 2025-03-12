@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types'
-import Alert from '@fluent-wallet/component-alert'
 import {CompWithLabel, CurrentNetworkDisplay} from '../../../components'
 import {useTranslation} from 'react-i18next'
 
-export const SignInSign = ({isHw, parsedMessage, currentNetwork}) => {
+export const SignInSign = ({parsedMessage, currentNetwork}) => {
   const {t} = useTranslation()
   return (
-    <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
+    <>
       <div className="ml-1" id="signTypeMsgDes">
         <div className="text-sm text-gray-80 font-medium">
           {t('signWithEthereum')}
@@ -64,20 +63,11 @@ export const SignInSign = ({isHw, parsedMessage, currentNetwork}) => {
           </div>
         </div>
       </CompWithLabel>
-      <Alert
-        open={isHw}
-        className="mt-3"
-        type="warning"
-        closable={false}
-        width="w-full"
-        content={t('disableTypeSign')}
-      />
-    </main>
+    </>
   )
 }
 
 SignInSign.propTypes = {
-  isHw: PropTypes.bool,
   parsedMessage: PropTypes.object,
   currentNetwork: PropTypes.object,
 }

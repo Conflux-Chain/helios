@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {CompWithLabel} from '../../../components'
-import Alert from '@fluent-wallet/component-alert'
 import PlaintextMessage from './PlaintextMessage'
 
-export const TypedDataSign = ({plaintextData, isHw}) => {
+export const TypedDataSign = ({plaintextData}) => {
   const {t} = useTranslation()
 
   return (
-    <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
+    <>
       <div className="ml-1" id="signTypeMsgDes">
         <div className="text-sm text-gray-80 font-medium">
           {t('signThisMessage')}
@@ -32,15 +31,7 @@ export const TypedDataSign = ({plaintextData, isHw}) => {
           {<PlaintextMessage message={plaintextData?.message ?? {}} />}
         </div>
       </CompWithLabel>
-      <Alert
-        open={isHw}
-        className="mt-3"
-        type="warning"
-        closable={false}
-        width="w-full"
-        content={t('disableTypeSign')}
-      />
-    </main>
+    </>
   )
 }
 

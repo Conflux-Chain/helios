@@ -21,6 +21,7 @@ import {useMemo} from 'react'
 import {TypedDataSign} from './components/TypedDataSign'
 import {PersonalSign} from './components/PersonalSign'
 import {SignInSign} from './components/SignInSign'
+import Alert from '@fluent-wallet/component-alert'
 const {PERSONAL_SIGN, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
 function RequestSignature() {
@@ -51,26 +52,24 @@ function RequestSignature() {
 
   const {isSIWEMessage, parsedMessage} = detectSIWEMessage(personalSignData)
 
-  const Content = useMemo(() => {
+  const MessageContent = useMemo(() => {
     if (isPersonalSign) {
       if (!isSIWEMessage)
-        return <PersonalSign personalSignData={personalSignData} isHw={isHw} />
+        return <PersonalSign personalSignData={personalSignData} />
 
       return (
         <SignInSign
           parsedMessage={parsedMessage}
-          isHw={isHw}
           currentNetwork={app?.currentNetwork}
         />
       )
     }
 
-    return <TypedDataSign plaintextData={plaintextData} isHw={isHw} />
+    return <TypedDataSign plaintextData={plaintextData} />
   }, [
     isPersonalSign,
     isSIWEMessage,
     parsedMessage,
-    isHw,
     plaintextData,
     app?.currentNetwork,
     personalSignData,
@@ -114,7 +113,18 @@ function RequestSignature() {
         </div>
       </header>
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
-        {Content}
+        <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
+          {MessageContent}
+          <Alert
+            open={isHw}
+            className="mt-3"
+            type="warning"
+            closable={false}
+            width="w-full"
+            content={t('disablePersonSign')}
+          />
+        </main>
+
         <DappFooter
           cancelText={t('cancel')}
           confirmText={t('sign')}
