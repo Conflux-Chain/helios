@@ -101,7 +101,7 @@ function formatTx(tx) {
 export const main = async args => {
   const {
     app,
-    Err: {InvalidParams},
+    Err: {InvalidParams, Internal},
     db: {findAddress},
     rpcs: {
       wallet_getAddressPrivateKey,
@@ -148,6 +148,10 @@ export const main = async args => {
     const {Conflux: LedgerConflux} = await import('@fluent-wallet/ledger')
     let ledger = new LedgerConflux()
     // this call will establish a connection to the ledger device
+    const isAppOpen = await ledger.isAppOpen()
+    if (!isAppOpen) {
+      throw Internal('Ledger app is not open')
+    }
     const {version} = await ledger.getAppConfiguration()
     if (version[0] === '1') {
       isV1LedgerAPP = true
