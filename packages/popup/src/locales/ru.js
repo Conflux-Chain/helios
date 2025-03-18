@@ -272,14 +272,26 @@ const ru = {
     // - request signature - 1. Sign Text
     signText: 'Подписать текст',
     signThisText: 'Подписать этот текст?',
-    disablePersonSign:
-      'Personal sign with hardware wallet is not yet supported.',
-    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
+    disableUnsupportedSign: 'аппаратный кошелек пока не поддерживается',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Подписать это сообщение?',
+    signWithEthereumTitle: 'Запрос на вход',
+    signWithEthereum:
+      'Сайт просит вас подписаться, чтобы подтвердить владение этим аккаунтом.',
     signTypeMessage: 'Подписать написанное сообщение',
     message: 'Сообщение',
+    siweReviewAlert: 'Просмотр предупреждения',
+    siweWarningUrlTitle: 'Подозрительный запрос на вход',
+    siweWarningUrl:
+      'Сайт, отправляющий запрос, не является сайтом, на который вы входите. Это может быть попыткой кражи ваших учетных данных.',
+    siweWarningKnownRisk: 'Я осознаю риск и хочу продолжить.',
+    siweWarningAccountTitle: 'Неверный аккаунт',
+    siweWarningAccount:
+      'Сайт просит вас войти, используя другую учетную запись.',
+    siweAlert:
+      'Вход может представлять потенциальные риски. Пожалуйста, проверьте.',
+    siweModalConfirmBtn: 'Понятно',
 
     // - add network
     addNetwork: 'Добавить сеть',

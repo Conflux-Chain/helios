@@ -271,14 +271,28 @@ const en = {
     // - request signature - 1. Sign Text
     signText: 'Sign Text',
     signThisText: 'Sign this Text?',
-    disablePersonSign:
-      'Personal sign with hardware wallet is not yet supported.',
-    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
+    disableUnsupportedSign: 'hardware wallet is not yet supported.',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Sign this Message?',
     signTypeMessage: 'Sign Type Message',
     message: 'Message',
+
+    // - request signature - Sign in with Ethereum
+    signWithEthereumTitle: 'Sign-in request',
+    signWithEthereum:
+      'A site wants you to sign in to prove you own this account.',
+    siweReviewAlert: 'Review alert',
+    siweWarningUrlTitle: 'Suspicious sign-in request',
+    siweWarningUrl:
+      "The site making the request is not the site you're signing into. This could be an attempt to steal your login credentials.",
+    siweWarningKnownRisk:
+      'I have acknowledged the risk and still want to proceed.',
+    siweWarningAccountTitle: 'Wrong account',
+    siweWarningAccount:
+      'The site is asking you to log in using a different account.',
+    siweAlert: 'Sign-in may pose potential risks. Please review.',
+    siweModalConfirmBtn: 'Got it',
 
     // - add network
     addNetwork: 'Add Network',

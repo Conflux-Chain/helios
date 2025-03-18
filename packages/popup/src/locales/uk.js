@@ -271,14 +271,26 @@ const uk = {
     // - request signature - 1. Sign Text
     signText: 'Підписати текст',
     signThisText: 'Підписати цей текст?',
-    disablePersonSign:
-      'Personal sign with hardware wallet is not yet supported.',
-    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
+    disableUnsupportedSign: 'апаратний гаманець ще не підтримується',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Підписати це повідомлення?',
+    signWithEthereumTitle: 'Запит на вхід',
+    signWithEthereum:
+      'Сайт просить вас підписатися, щоб підтвердити володіння цим акаунтом.',
     signTypeMessage: 'Підписати написане повідомлення',
     message: 'Повідомлення',
+    siweReviewAlert: 'Перегляд попередження',
+    siweWarningUrlTitle: 'Підозрілий запит на вхід',
+    siweWarningUrl:
+      'Сайт, що надсилає запит, не є сайтом, на який ви входите. Це може бути спробою викрасти ваші облікові дані.',
+    siweWarningKnownRisk: 'Я усвідомлюю ризик і хочу продовжити.',
+    siweWarningAccountTitle: 'Неправильний обліковий запис',
+    siweWarningAccount:
+      'Сайт просить вас увійти, використовуючи інший обліковий запис.',
+    siweAlert:
+      'Вхід може представляти потенційні ризики. Будь ласка, перевірте.',
+    siweModalConfirmBtn: 'Зрозуміло',
 
     // - add network
     addNetwork: 'Додати мережу',

@@ -4,6 +4,7 @@
   "type": "module",
   "main": "index.js",
   "dependencies": {
+    "@spruceid/siwe-parser": "patch:@spruceid/siwe-parser@npm%3A3.0.0#~/.yarn/patches/@spruceid-siwe-parser-npm-3.0.0-4572197cda.patch",
     "bn.js": "5.2.1",
     "is-hex-prefixed": "^1.0.0",
     "randombytes": "^2.1.0",

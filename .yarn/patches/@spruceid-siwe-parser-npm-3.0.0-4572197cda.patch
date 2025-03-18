@@ -1,0 +1,17 @@
+diff --git a/dist/callbacks.js b/dist/callbacks.js
+index 72c2739ac3e5989cbee10059d14c3b38669c38e6..99ba5280664f8b38cd0e0ebad7741551bff105b2 100644
+--- a/dist/callbacks.js
++++ b/dist/callbacks.js
+@@ -86,9 +86,9 @@ exports.cb = {
+         switch (result.state) {
+             case id.MATCH:
+                 data.address = utils.charsToString(chars, phraseIndex, result.phraseLength);
+-                if (!(0, utils_1.isEIP55Address)(data.address)) {
+-                    data.errors.push(`line ${data.lineno}: invalid EIP-55 address - ${data.address}`);
+-                }
++                // if (!(0, utils_1.isEIP55Address)(data.address)) {
++                //     data.errors.push(`line ${data.lineno}: invalid EIP-55 address - ${data.address}`);
++                // }
+                 break;
+             case id.NOMATCH:
+                 data.errors.push(`line ${data.lineno}: invalid address`);

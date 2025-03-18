@@ -1,9 +1,8 @@
 import {useTranslation} from 'react-i18next'
 import {isUndefined} from '@fluent-wallet/checks'
-import Alert from '@fluent-wallet/component-alert'
+
 import {
   DappFooter,
-  CompWithLabel,
   TitleNav,
   AccountDisplay,
   DisplayBalance,
@@ -15,17 +14,49 @@ import {
   useCurrentTicker,
   useAddress,
 } from '../../hooks/useApi'
-import PlaintextMessage from './components/PlaintextMessage'
+
 import {RPC_METHODS} from '../../constants'
+import {useCallback, useMemo, useState} from 'react'
+import {TypedDataSign} from './components/TypedDataSign'
+import {PersonalSign} from './components/PersonalSign'
+import {SignInSign} from './components/SignInSign'
+import Alert from '@fluent-wallet/component-alert'
+import {detectSIWEMessage} from '@fluent-wallet/utils'
+import {WarningFilled} from '@fluent-wallet/component-icons'
+import {useSIWEValidation} from '../../hooks/useSIWEValidation'
+import Button from '@fluent-wallet/component-button'
+import SIWERiskModal from './components/SIWERiskModal'
+
 const {PERSONAL_SIGN, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 
 function RequestSignature() {
   const {t} = useTranslation()
   const pendingAuthReq = usePendingAuthReq()
   const [{req, app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+
   const isPersonalSign = req?.method === PERSONAL_SIGN
   const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
+  const origin = app?.site?.origin
+
+  const plaintextData = useMemo(
+    () =>
+      !isPersonalSign && req?.params?.[1] ? JSON.parse(req.params[1]) : {},
+    [isPersonalSign, req?.params],
+  )
+  const personalSignData = useMemo(
+    () => (isPersonalSign ? req?.params?.[0] ?? '' : ''),
+    [isPersonalSign, req?.params],
+  )
+
+  const {isSIWEMessage, parsedMessage} = useMemo(
+    () => detectSIWEMessage(personalSignData),
+    [personalSignData],
+  )
+  const [riskModalState, setRiskModalState] = useState({
+    open: false,
+  })
+
   const {decimals} = useCurrentTicker()
   const {value: address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const balanceData = useBalance(address, dappNetworkId)
@@ -38,9 +69,55 @@ function RequestSignature() {
   const isHw =
     AddressData?.account?.accountGroup?.vault?.type === ACCOUNT_GROUP_TYPE.HW
 
-  const plaintextData =
-    !isPersonalSign && req?.params?.[1] ? JSON.parse(req.params[1]) : {}
-  const personalSignData = isPersonalSign ? req?.params?.[0] ?? '' : ''
+  const [siweErrors] = useSIWEValidation({
+    parsedMessage,
+    origin: origin,
+    address,
+  })
+
+  const signTitle = useMemo(() => {
+    if (!isPersonalSign) return t('signTypeMessage')
+    return isSIWEMessage ? t('signWithEthereumTitle') : t('signText')
+  }, [isPersonalSign, isSIWEMessage, t])
+
+  const SignatureContent = useMemo(() => {
+    if (isPersonalSign) {
+      if (!isSIWEMessage)
+        return <PersonalSign personalSignData={personalSignData} />
+
+      return (
+        <SignInSign
+          parsedMessage={parsedMessage}
+          currentNetwork={app?.currentNetwork}
+          errors={siweErrors}
+        />
+      )
+    }
+    return <TypedDataSign plaintextData={plaintextData} />
+  }, [
+    isPersonalSign,
+    isSIWEMessage,
+    parsedMessage,
+    plaintextData,
+    personalSignData,
+    app?.currentNetwork,
+    siweErrors,
+  ])
+
+  const currentUrlError = siweErrors?.uri
+
+  const needsUserConfirmationError =
+    siweErrors &&
+    Object.keys(siweErrors).find(key => siweErrors[key]?.needConfirm)
+
+  const handleRiskReview = useCallback(() => {
+    if (
+      needsUserConfirmationError &&
+      siweErrors?.[needsUserConfirmationError]?.isUserConfirmed === false
+    ) {
+      setRiskModalState({open: true})
+    }
+  }, [needsUserConfirmationError, siweErrors])
 
   return (
     <div
@@ -48,10 +125,7 @@ function RequestSignature() {
       className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg"
     >
       <header id="header">
-        <TitleNav
-          title={isPersonalSign ? t('signText') : t('signTypeMessage')}
-          hasGoBack={false}
-        />
+        <TitleNav title={signTitle} hasGoBack={false} />
         <div className="flex mt-1 px-4 pb-3 items-center justify-between">
           <AccountDisplay
             address={address}
@@ -71,60 +145,65 @@ function RequestSignature() {
         </div>
       </header>
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
-        <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
-          {!isPersonalSign ? (
-            <div className="ml-1" id="signTypeMsgDes">
-              <div className="text-sm text-gray-80 font-medium">
-                {t('signThisMessage')}
-              </div>
-              <div className="text-xs text-gray-40 mt-1">
-                {plaintextData?.domain?.name}
-              </div>
-            </div>
-          ) : null}
-          <CompWithLabel
-            label={
-              <p id="labelDes" className="font-medium">
-                {isPersonalSign ? t('signThisText') : t('message')}
-              </p>
-            }
-          >
-            <div
-              id="plaintext"
-              className={`${
-                isPersonalSign ? 'pl-3 max-h-[316px]' : 'pl-1 max-h-[282px]'
-              } pr-3 pt-3 pb-4 rounded bg-gray-4 overflow-auto break-words`}
-            >
-              {isPersonalSign ? (
-                personalSignData
-                  .replace(/\r/g, '\n')
-                  .split('\n')
-                  .map(str => (
-                    <div key={str} className={str ? '' : 'h-[18px]'}>
-                      {str}
-                    </div>
-                  ))
-              ) : (
-                <PlaintextMessage message={plaintextData?.message ?? {}} />
-              )}
-            </div>
-          </CompWithLabel>
-          <Alert
-            open={isHw}
-            className="mt-3"
-            type="warning"
-            closable={false}
-            width="w-full"
-            content={t(
-              isPersonalSign ? 'disablePersonSign' : 'disableTypeSign',
-            )}
-          />
+        <main className="rounded-t-xl px-3 bg-gray-0">
+          {SignatureContent}
+          {isHw && (
+            <Alert
+              open={true}
+              className="mt-3"
+              type="warning"
+              closable={false}
+              width="w-full"
+              content={t('disableUnsupportedSign')}
+              id="disableSignAlert"
+            />
+          )}
+
+          {!isHw && siweErrors && Object.keys(siweErrors).length > 0 && (
+            <Alert
+              width="w-full"
+              open={true}
+              type="warning"
+              icon={<WarningFilled />}
+              closable={false}
+              content={<span className="ml-1 text-xs">{t('siweAlert')}</span>}
+              className="mb-2 mx-3 !w-auto"
+              id="siweAlert"
+            />
+          )}
         </main>
-        <DappFooter
-          cancelText={t('cancel')}
-          confirmText={t('sign')}
-          confirmDisabled={isHw}
-        />
+        <div>
+          <DappFooter
+            cancelText={t('cancel')}
+            confirmText={
+              needsUserConfirmationError ? t('siweReviewAlert') : t('sign')
+            }
+            confirmDisabled={isHw}
+            confirmComponent={
+              needsUserConfirmationError
+                ? () => (
+                    <Button
+                      id="confirmBtn"
+                      className="flex-1 !bg-error"
+                      onClick={handleRiskReview}
+                    >
+                      {t('siweReviewAlert')}
+                    </Button>
+                  )
+                : null
+            }
+          />
+
+          <SIWERiskModal
+            open={riskModalState.open}
+            onClose={() => setRiskModalState({open: false})}
+            title={currentUrlError?.title}
+            content={currentUrlError?.content}
+            knownRisk={currentUrlError?.knownRisk}
+            onConfirmationToggle={currentUrlError?.onConfirmationToggle}
+            isUserConfirmed={currentUrlError?.isUserConfirmed}
+          />
+        </div>
       </div>
     </div>
   )
