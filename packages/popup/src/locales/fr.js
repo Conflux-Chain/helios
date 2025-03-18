@@ -288,6 +288,18 @@ const fr = {
     signWithEthereumTitle: 'Demande de connexion',
     signWithEthereum:
       'Un site souhaite que vous vous connectiez pour prouver que vous possédez ce compte.',
+    siweReviewAlert: "Examiner l'alerte",
+    siweWarningUrlTitle: 'Demande de connexion suspecte',
+    siweWarningUrl:
+      "Le site qui fait la demande n'est pas le site auquel vous vous connectez. Il pourrait s'agir d'une tentative de vol de vos identifiants de connexion.",
+    siweWarningKnownRisk:
+      "J'ai pris connaissance du risque et je souhaite continuer.",
+    siweWarningAccountTitle: 'Mauvais compte',
+    siweWarningAccount:
+      'Le site vous demande de vous connecter avec un compte différent.',
+    siweAlert:
+      'La connexion peut présenter des risques potentiels. Veuillez examiner.',
+    siweModalConfirmBtn: "J'ai compris",
     signTypeMessage: 'Signer le message saisi',
     message: 'Message',
 

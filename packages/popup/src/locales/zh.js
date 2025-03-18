@@ -271,6 +271,15 @@ const zh = {
     signThisMessage: '签署这个信息？',
     signWithEthereumTitle: '登录请求',
     signWithEthereum: '网站请求您签名以证明您拥有此账户。',
+    siweReviewAlert: '请检查安全提示',
+    siweWarningUrlTitle: '可疑的登录请求',
+    siweWarningUrl:
+      '发起请求的网站与您正在登录的网站不一致。这可能是一个试图窃取您登录凭证的尝试。',
+    siweWarningKnownRisk: '我已了解风险并仍然继续。',
+    siweWarningAccountTitle: '错误的账户',
+    siweWarningAccount: '网站请求您使用其他账户登录。',
+    siweAlert: '登录可能存在潜在风险，请仔细检查。',
+    siweModalConfirmBtn: '我已了解',
     signTypeMessage: '签署类型信息',
     message: '信息',
 
