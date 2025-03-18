@@ -155,7 +155,7 @@ function RequestSignature() {
               closable={false}
               width="w-full"
               content={t('disableUnsupportedSign')}
-              id="disablePersonSignAlert"
+              id="disableSignAlert"
             />
           )}
 
@@ -168,6 +168,7 @@ function RequestSignature() {
               closable={false}
               content={<span className="ml-1 text-xs">{t('siweAlert')}</span>}
               className="mb-2 mx-3 !w-auto"
+              id="siweAlert"
             />
           )}
         </main>
