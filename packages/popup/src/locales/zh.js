@@ -264,8 +264,7 @@ const zh = {
     // - request signature - 1. Sign Text
     signText: '文本签名',
     signThisText: '签署这个文本？',
-    disablePersonSign: 'Personal sign 暂不支持使用硬件钱包签名',
-    disableTypeSign: 'Typed sign 暂不支持使用硬件钱包签名',
+    disableUnsupportedSign: '暂不支持使用硬件钱包签名',
 
     // - request signature - 2. Sign Message
     signThisMessage: '签署这个信息？',

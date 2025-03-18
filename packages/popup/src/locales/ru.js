@@ -272,9 +272,7 @@ const ru = {
     // - request signature - 1. Sign Text
     signText: 'Подписать текст',
     signThisText: 'Подписать этот текст?',
-    disablePersonSign:
-      'Personal sign with hardware wallet is not yet supported.',
-    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
+    disableUnsupportedSign: 'аппаратный кошелек пока не поддерживается',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Подписать это сообщение?',

@@ -106,7 +106,6 @@ function RequestSignature() {
 
   const currentUrlError = siweErrors?.uri
 
-  const hasAnyErrors = siweErrors && Object.keys(siweErrors).length > 0
   const needsUserConfirmationError =
     siweErrors &&
     Object.keys(siweErrors).find(key => siweErrors[key]?.needConfirm)
@@ -148,21 +147,22 @@ function RequestSignature() {
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
         <main className="rounded-t-xl px-3 bg-gray-0">
           {SignatureContent}
-          <Alert
-            open={isHw}
-            className="mt-3"
-            type="warning"
-            closable={false}
-            width="w-full"
-            content={t('disablePersonSign')}
-            id="disablePersonSignAlert"
-          />
-        </main>
-        <div>
-          {hasAnyErrors && (
+          {isHw && (
+            <Alert
+              open={true}
+              className="mt-3"
+              type="warning"
+              closable={false}
+              width="w-full"
+              content={t('disableUnsupportedSign')}
+              id="disablePersonSignAlert"
+            />
+          )}
+
+          {!isHw && siweErrors && Object.keys(siweErrors).length > 0 && (
             <Alert
               width="w-full"
-              open
+              open={true}
               type="warning"
               icon={<WarningFilled />}
               closable={false}
@@ -170,6 +170,8 @@ function RequestSignature() {
               className="mb-2 mx-3 !w-auto"
             />
           )}
+        </main>
+        <div>
           <DappFooter
             cancelText={t('cancel')}
             confirmText={

@@ -278,10 +278,8 @@ const fr = {
     // - request signature - 1. Sign Text
     signText: 'Signer le Texte',
     signThisText: 'Signer ce Texte ?',
-    disablePersonSign:
-      'Le portefeuille matériel ne supporte pas encore de signe personel.',
-    disableTypeSign:
-      'Le portefeuille matériel ne supporte pas encore de signe tapé.',
+    disableUnsupportedSign:
+      "Le portefeuille matériel n'est pas encore pris en charge",
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Signer ce Message ?',

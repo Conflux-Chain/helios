@@ -271,9 +271,7 @@ const uk = {
     // - request signature - 1. Sign Text
     signText: 'Підписати текст',
     signThisText: 'Підписати цей текст?',
-    disablePersonSign:
-      'Personal sign with hardware wallet is not yet supported.',
-    disableTypeSign: 'Typed sign with hardware wallet is not yet supported.',
+    disableUnsupportedSign: 'апаратний гаманець ще не підтримується',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Підписати це повідомлення?',
