@@ -11,7 +11,8 @@ const createValidators = t => [
     id: VALIDATOR_KEYS.uri,
     validate: ({parsedMessage, origin}) => {
       try {
-        const messageDomain = new URL(parsedMessage.uri).origin
+        const messageDomain = new URL(parsedMessage.uri).host
+
         return messageDomain === origin
       } catch {
         return false

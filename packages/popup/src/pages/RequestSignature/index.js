@@ -146,7 +146,7 @@ function RequestSignature() {
         </div>
       </header>
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
-        <main className="rounded-t-xl pt-4 px-3 bg-gray-0">
+        <main className="rounded-t-xl px-3 bg-gray-0">
           {SignatureContent}
           <Alert
             open={isHw}
