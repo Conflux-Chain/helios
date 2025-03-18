@@ -69,7 +69,7 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
           {fields.map(field => (
             <div className="flex" key={field.label}>
               <span className="text-gray-40 mr-2 w-16">{field.label}</span>
-              <div className="flex">
+              <div className="flex flex-1">
                 {field.error && (
                   <span className="text-red-60 mr-2">
                     <WarningFilled />
@@ -80,7 +80,7 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
                     type="button"
                     className={`${field.className || ''} ${
                       field.error ? 'text-warning cursor-pointer' : ''
-                    }`}
+                    } text-left`}
                     id={field.key}
                     onClick={() => field.error && handleErrorClick(field.key)}
                   >
