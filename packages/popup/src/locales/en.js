@@ -271,7 +271,7 @@ const en = {
     // - request signature - 1. Sign Text
     signText: 'Sign Text',
     signThisText: 'Sign this Text?',
-    disableUnsupportedSign: 'hardware wallet is not yet supported',
+    disableUnsupportedSign: 'hardware wallet is not yet supported.',
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Sign this Message?',
