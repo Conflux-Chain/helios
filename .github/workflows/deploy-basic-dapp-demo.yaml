@@ -1,23 +1,38 @@
-name: Deploy Dapp Demo
+name: Deploy static content to Pages
 
 on:
-  pull_request:
-    types:
-      - closed
-    branches:
-      - dev
+
+  push:
+    branches: ['dev']
+
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
 
 jobs:
-  deploy-dapp-demo:
-    if: ${{ github.event.pull_request.merged == true && github.head_ref == '__release-pkg' }}
-    runs-on: ubuntu-latest
 
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to dapp-demo.fluentwallet.dev
-        uses: dswistowski/surge-sh-action@v1
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          domain: "dapp-demo.fluentwallet.dev"
-          project: "./examples/basic-dapp/"
-          login: ${{ secrets.CONFLUX_ECO_SURGE_LOGIN}}
-          token: ${{ secrets.CONFLUX_ECO_SURGE_TOKEN}}
+          path: './examples/basic-dapp'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

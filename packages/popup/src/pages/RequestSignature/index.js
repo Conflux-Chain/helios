@@ -108,7 +108,9 @@ function RequestSignature() {
 
   const needsUserConfirmationError =
     siweErrors &&
-    Object.keys(siweErrors).find(key => siweErrors[key]?.needConfirm)
+    Object.keys(siweErrors).find(
+      key => siweErrors[key]?.needConfirm && !siweErrors[key]?.isUserConfirmed,
+    )
 
   const handleRiskReview = useCallback(() => {
     if (
