@@ -68,14 +68,14 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
         key: 'issuedAt',
         value:
           parsedMessage?.issuedAt &&
-          dayjs.utc(parsedMessage.issuedAt).format('D MMMM YYYY, HH:mm'),
+          dayjs.utc(parsedMessage.issuedAt).format('YYYY-MM-DD HH:mm:ss'),
       },
       {
         label: t('siweKeyResources'),
         key: 'resources',
         type: 'array',
         className: 'break-all',
-        value: parsedMessage?.resources || [],
+        value: parsedMessage?.resources,
       },
     ]
   }, [parsedMessage, currentNetwork, errors, t])
@@ -98,7 +98,7 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
               key={field.label}
               label={field.label}
               error={field.error}
-              ValueComponent={field.custom}
+              customValueComponent={field.custom}
               onClick={
                 field.error ? () => handleErrorClick(field.key) : undefined
               }
