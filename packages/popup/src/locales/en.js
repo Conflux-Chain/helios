@@ -294,6 +294,16 @@ const en = {
     siweAlert: 'Sign-in may pose potential risks. Please review.',
     siweModalConfirmBtn: 'Got it',
 
+    siweKeyMessage: 'Message',
+    siweKeyUri: 'URL',
+    siweKeyNetwork: 'Network',
+    siweKeyAddress: 'Account',
+    siweKeyVersion: 'Version',
+    siweKeyChainId: 'Chain ID',
+    siweKeyNonce: 'Nonce',
+    siweKeyIssuedAt: 'Issued',
+    siweKeyResources: 'Resources',
+
     // - add network
     addNetwork: 'Add Network',
     allowAddNetwork: 'Allow this site to add a network?',

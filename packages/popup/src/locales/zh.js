@@ -282,6 +282,17 @@ const zh = {
     signTypeMessage: '签署类型信息',
     message: '信息',
 
+    // add SIWE key translations
+    siweKeyMessage: '消息',
+    siweKeyUri: 'URL',
+    siweKeyNetwork: '网络',
+    siweKeyAddress: '账户',
+    siweKeyVersion: '版本',
+    siweKeyChainId: '链 ID',
+    siweKeyNonce: '随机数',
+    siweKeyIssuedAt: '发布于',
+    siweKeyResources: '资源',
+
     // - add network
     addNetwork: '添加网络',
     allowAddNetwork: '允许这个网站添加网络？',

@@ -163,13 +163,12 @@ function RequestSignature() {
 
           {!isHw && siweErrors && Object.keys(siweErrors).length > 0 && (
             <Alert
-              width="w-full"
               open={true}
               type="warning"
               icon={<WarningFilled />}
               closable={false}
               content={<span className="ml-1 text-xs">{t('siweAlert')}</span>}
-              className="mb-2 mx-3 !w-auto"
+              className="mb-2 w-auto"
               id="siweAlert"
             />
           )}

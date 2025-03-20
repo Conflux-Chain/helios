@@ -7,7 +7,9 @@ import {SWRConfig} from 'swr'
 import {ROUTES} from './constants'
 import {IS_PROD_MODE, PACKAGE_VERSION} from '@fluent-wallet/inner-utils'
 import {isRunningInSidePanel} from './utils/side-panel'
-
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
 const {ERROR, WALLET_UNLOCK} = ROUTES
 // import reportWebVitals from './reportWebVitals'
 
