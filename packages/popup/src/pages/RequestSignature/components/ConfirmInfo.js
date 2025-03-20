@@ -5,7 +5,7 @@ import {useMemo} from 'react'
 export const ConfirmInfo = ({
   label,
   error,
-  ValueComponent,
+  customValueComponent: CustomValueComponent,
   onClick,
   className,
   id,
@@ -55,6 +55,8 @@ export const ConfirmInfo = ({
     return null
   }, [Box, type, value])
 
+  if (!value && !CustomValueComponent) return null
+
   return (
     <div className="flex">
       <span className="text-gray-40 mr-2 w-16">{label}</span>
@@ -64,7 +66,7 @@ export const ConfirmInfo = ({
             <WarningFilled />
           </span>
         )}
-        {ValueComponent || DefaultValueComponent}
+        {CustomValueComponent || DefaultValueComponent}
       </div>
     </div>
   )
@@ -73,15 +75,11 @@ export const ConfirmInfo = ({
 ConfirmInfo.propTypes = {
   label: PropTypes.string,
   error: PropTypes.object,
-  ValueComponent: PropTypes.element,
+  customValueComponent: PropTypes.element,
   onClick: PropTypes.func,
   className: PropTypes.string,
   id: PropTypes.string,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-    PropTypes.oneOf([null, undefined]),
-  ]),
+  value: PropTypes.any,
   type: PropTypes.string,
 }
 
