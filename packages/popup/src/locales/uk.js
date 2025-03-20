@@ -292,6 +292,17 @@ const uk = {
       'Вхід може представляти потенційні ризики. Будь ласка, перевірте.',
     siweModalConfirmBtn: 'Зрозуміло',
 
+    // add SIWE key translations
+    siweKeyMessage: 'Повідомлення',
+    siweKeyUri: 'URL',
+    siweKeyNetwork: 'Мережа',
+    siweKeyAddress: 'Акаунт',
+    siweKeyVersion: 'Версія',
+    siweKeyChainId: 'ID мережі',
+    siweKeyNonce: 'Номер транзакції',
+    siweKeyIssuedAt: 'Видано',
+    siweKeyResources: 'Ресурси',
+
     // - add network
     addNetwork: 'Додати мережу',
     allowAddNetwork: 'Дозволити цьому сайту додати мережу?',

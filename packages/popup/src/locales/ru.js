@@ -293,6 +293,17 @@ const ru = {
       'Вход может представлять потенциальные риски. Пожалуйста, проверьте.',
     siweModalConfirmBtn: 'Понятно',
 
+    // add SIWE key translations
+    siweKeyMessage: 'Сообщение',
+    siweKeyUri: 'URL',
+    siweKeyNetwork: 'Сеть',
+    siweKeyAddress: 'Аккаунт',
+    siweKeyVersion: 'Версия',
+    siweKeyChainId: 'ID цепи',
+    siweKeyNonce: 'Номер транзакции',
+    siweKeyIssuedAt: 'Выпущено',
+    siweKeyResources: 'Ресурсы',
+
     // - add network
     addNetwork: 'Добавить сеть',
     allowAddNetwork: 'Разрешить этому сайту добавить сеть?',

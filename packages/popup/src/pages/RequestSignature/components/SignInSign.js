@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types'
 import {CompWithLabel, CurrentNetworkDisplay} from '../../../components'
 import {useTranslation} from 'react-i18next'
-import {WarningFilled} from '@fluent-wallet/component-icons'
 import {useMemo, useState} from 'react'
 import SIWERiskModal from './SIWERiskModal'
+import dayjs from 'dayjs'
+import ConfirmInfo from './ConfirmInfo'
 
 export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
   const {t} = useTranslation()
@@ -23,15 +24,20 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
 
   const fields = useMemo(() => {
     return [
-      {label: 'Message', value: parsedMessage?.statement},
       {
-        label: 'URL',
+        label: t('siweKeyMessage'),
+        key: 'message',
+        value: parsedMessage?.statement,
+      },
+      {
+        label: t('siweKeyUri'),
         value: parsedMessage?.uri,
         key: 'uri',
         error: errors?.uri,
       },
       {
-        label: 'Network',
+        label: t('siweKeyNetwork'),
+        key: 'network',
         custom: (
           <CurrentNetworkDisplay
             contentClassName="mr-1"
@@ -40,18 +46,39 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
         ),
       },
       {
-        label: 'Account',
+        label: t('siweKeyAddress'),
         value: parsedMessage?.address,
         className: 'break-all',
         key: 'address',
         error: errors?.address,
       },
-      {label: 'Version', value: parsedMessage?.version},
-      {label: 'Chain ID', value: parsedMessage?.chainId},
-      {label: 'Nonce', value: parsedMessage?.nonce},
-      {label: 'Issued', value: parsedMessage?.issuedAt},
+      {
+        label: t('siweKeyVersion'),
+        key: 'version',
+        value: parsedMessage?.version,
+      },
+      {
+        label: t('siweKeyChainId'),
+        key: 'chainId',
+        value: parsedMessage?.chainId,
+      },
+      {label: t('siweKeyNonce'), key: 'nonce', value: parsedMessage?.nonce},
+      {
+        label: t('siweKeyIssuedAt'),
+        key: 'issuedAt',
+        value:
+          parsedMessage?.issuedAt &&
+          dayjs.utc(parsedMessage.issuedAt).format('D MMMM YYYY, HH:mm'),
+      },
+      {
+        label: t('siweKeyResources'),
+        key: 'resources',
+        type: 'array',
+        className: 'break-all',
+        value: parsedMessage?.resources || [],
+      },
     ]
-  }, [parsedMessage, currentNetwork, errors])
+  }, [parsedMessage, currentNetwork, errors, t])
 
   const selectedError = errors[modalState.errorKey]
 
@@ -63,32 +90,23 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
     >
       <div
         id="plaintext"
-        className="p-3 rounded bg-gray-4 overflow-auto break-words"
+        className="p-3 rounded bg-gray-4 overflow-auto break-words max-h-85"
       >
         <div className="info-list-container flex flex-col gap-4">
           {fields.map(field => (
-            <div className="flex" key={field.label}>
-              <span className="text-gray-40 mr-2 w-16">{field.label}</span>
-              <div className="flex flex-1">
-                {field.error && (
-                  <span className="text-red-60 mr-2">
-                    <WarningFilled />
-                  </span>
-                )}
-                {field.custom || (
-                  <button
-                    type="button"
-                    className={`${field.className || ''} ${
-                      field.error ? 'text-warning cursor-pointer' : ''
-                    } text-left`}
-                    id={field.key}
-                    onClick={() => field.error && handleErrorClick(field.key)}
-                  >
-                    {field.value}
-                  </button>
-                )}
-              </div>
-            </div>
+            <ConfirmInfo
+              key={field.label}
+              label={field.label}
+              error={field.error}
+              ValueComponent={field.custom}
+              onClick={
+                field.error ? () => handleErrorClick(field.key) : undefined
+              }
+              className={field.className}
+              id={field.key}
+              value={field.value}
+              type={field.type}
+            />
           ))}
         </div>
       </div>

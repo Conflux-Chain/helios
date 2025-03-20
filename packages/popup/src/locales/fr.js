@@ -301,6 +301,17 @@ const fr = {
     signTypeMessage: 'Signer le message saisi',
     message: 'Message',
 
+    // add SIWE key translations
+    siweKeyMessage: 'Message',
+    siweKeyUri: 'URL',
+    siweKeyNetwork: 'Réseau',
+    siweKeyAddress: 'Compte',
+    siweKeyVersion: 'Version',
+    siweKeyChainId: 'ID de chaîne',
+    siweKeyNonce: 'Nonce',
+    siweKeyIssuedAt: 'Émis le',
+    siweKeyResources: 'Ressources',
+
     // - add network
     addNetwork: 'Ajouter un Réseau',
     allowAddNetwork: 'Autoriser ce site internet à ajouter un réseau?',
