@@ -12,30 +12,35 @@ export const ConfirmInfo = ({
   value,
   type = 'text',
 }) => {
-  // 使用 useMemo 缓存 Box 函数，避免每次渲染重新创建
   const Box = useMemo(() => {
-    const BoxComponent = child =>
-      error ? (
+    const BoxComponent = child => {
+      const baseClassName = `${className || ''} text-left`
+
+      return error ? (
         <button
           type="button"
-          className={`${className || ''} ${
+          className={`${baseClassName} ${
             error ? 'text-warning cursor-pointer' : ''
-          } text-left`}
+          }`}
           id={id}
           onClick={() => error && onClick && onClick(id)}
         >
           {child}
         </button>
       ) : (
-        <span className={`${className || ''} text-left`} id={id}>
+        <span className={baseClassName} id={id}>
           {child}
         </span>
       )
+    }
+
     BoxComponent.displayName = 'Box'
     return BoxComponent
   }, [error, className, id, onClick])
 
   const DefaultValueComponent = useMemo(() => {
+    if (!value) return null
+
     if (type === 'text') {
       return Box(value)
     }
@@ -59,7 +64,7 @@ export const ConfirmInfo = ({
 
   return (
     <div className="flex">
-      <span className="text-gray-40 mr-2 w-16">{label}</span>
+      <span className="text-gray-40 w-[66px]">{label}</span>
       <div className="flex flex-1">
         {error && (
           <span className="text-red-60 mr-2">
@@ -80,7 +85,7 @@ ConfirmInfo.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   value: PropTypes.any,
-  type: PropTypes.string,
+  type: PropTypes.oneOf(['text', 'array']),
 }
 
 export default ConfirmInfo

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {CompWithLabel, CurrentNetworkDisplay} from '../../../components'
 import {useTranslation} from 'react-i18next'
-import {useMemo, useState} from 'react'
+import {useCallback, useMemo, useState} from 'react'
 import SIWERiskModal from './SIWERiskModal'
 import dayjs from 'dayjs'
 import ConfirmInfo from './ConfirmInfo'
@@ -11,6 +11,7 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
 
   const [modalState, setModalState] = useState({
     open: false,
+    errorKey: null,
   })
 
   const handleErrorClick = key => {
@@ -22,8 +23,13 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
     }
   }
 
-  const fields = useMemo(() => {
-    return [
+  const closeModal = useCallback(
+    () => setModalState(prev => ({...prev, open: false})),
+    [],
+  )
+
+  const fields = useMemo(
+    () => [
       {
         label: t('siweKeyMessage'),
         key: 'message',
@@ -62,7 +68,11 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
         key: 'chainId',
         value: parsedMessage?.chainId,
       },
-      {label: t('siweKeyNonce'), key: 'nonce', value: parsedMessage?.nonce},
+      {
+        label: t('siweKeyNonce'),
+        key: 'nonce',
+        value: parsedMessage?.nonce,
+      },
       {
         label: t('siweKeyIssuedAt'),
         key: 'issuedAt',
@@ -77,8 +87,9 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
         className: 'break-all',
         value: parsedMessage?.resources,
       },
-    ]
-  }, [parsedMessage, currentNetwork, errors, t])
+    ],
+    [parsedMessage, currentNetwork, errors, t],
+  )
 
   const selectedError = errors[modalState.errorKey]
 
@@ -113,7 +124,7 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
 
       <SIWERiskModal
         open={modalState.open}
-        onClose={() => setModalState(prev => ({...prev, open: false}))}
+        onClose={closeModal}
         title={selectedError?.title}
         content={selectedError?.content}
         knownRisk={selectedError?.knownRisk}
