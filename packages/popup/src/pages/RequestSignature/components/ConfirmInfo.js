@@ -64,7 +64,7 @@ export const ConfirmInfo = ({
 
   return (
     <div className="flex">
-      <span className="text-gray-40 w-[66px]">{label}</span>
+      <span className="text-gray-40 w-[70px]">{label}</span>
       <div className="flex flex-1">
         {error && (
           <span className="text-red-60 mr-2">
