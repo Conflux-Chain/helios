@@ -39,6 +39,7 @@ function DappFooter({
   isHwAccount,
   pendingAuthReq: customPendingAuthReq,
   targetNetwork,
+  confirmComponent: ConfirmComponent,
 }) {
   const {t} = useTranslation()
 
@@ -171,14 +172,22 @@ function DappFooter({
         {cancelText}
       </Button>
       <div className="w-3" />
-      <Button
-        id="confirmBtn"
-        className="flex-1"
-        onClick={onConfirm}
-        disabled={confirmDisabled || !req?.method}
-      >
-        {confirmText}
-      </Button>
+      {ConfirmComponent ? (
+        <ConfirmComponent
+          onConfirm={onConfirm}
+          confirmDisabled={confirmDisabled}
+          disabled={confirmDisabled || !req?.method}
+        />
+      ) : (
+        <Button
+          id="confirmBtn"
+          className="flex-1"
+          onClick={onConfirm}
+          disabled={confirmDisabled || !req?.method}
+        >
+          {confirmText}
+        </Button>
+      )}
     </footer>
   )
 }
@@ -198,6 +207,7 @@ DappFooter.propTypes = {
   isHwAccount: PropTypes.bool,
   showError: PropTypes.bool,
   targetNetwork: PropTypes.object,
+  confirmComponent: PropTypes.elementType,
 }
 
 export default DappFooter
