@@ -6,6 +6,6 @@
   "version": "1.0.6",
   "dependencies": {
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema",
-    "@fluent-wallet/spec": "1.0.10"
+    "@fluent-wallet/spec": "1.0.11"
   }
 }
