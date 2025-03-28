@@ -106,7 +106,7 @@
                            (into [:enum] INTERNAL_CONTRACTS_HEX_ADDRESS)
                            :type :hexBuiltInAddress
                            :error/message (str "invalid hex builtin address, can only be one of " INTERNAL_CONTRACTS_HEX_ADDRESS)
-                           :doc "Hex address of conflux internal contract, can be found at https://confluxscan.io/contracts"
+                           :doc "Hex address of conflux internal contract, can be found at https://confluxscan.org/contracts"
                            :gen/elements INTERNAL_CONTRACTS_HEX_ADDRESS)
       :hexNullAddress     (update-properties
                            [:= "0x0000000000000000000000000000000000000000"]
