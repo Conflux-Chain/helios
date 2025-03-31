@@ -4,7 +4,7 @@
   "main": "index.js",
   "version": "0.0.12",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.10",
+    "@fluent-wallet/spec": "1.0.11",
     "bip39": "3.0.4"
   }
 }

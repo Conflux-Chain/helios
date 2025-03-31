@@ -35,7 +35,7 @@ export const CFX_MAINNET_CHAINID = '0x405'
 export const CFX_MAINNET_NETID = 1029
 export const CFX_MAINNET_CURRENCY_SYMBOL = 'CFX'
 export const CFX_MAINNET_CURRENCY_NAME = 'Conflux'
-export const CFX_MAINNET_EXPLORER_URL = 'https://confluxscan.io'
+export const CFX_MAINNET_EXPLORER_URL = 'https://confluxscan.org'
 
 export const CFX_ESPACE_MAINNET_RPC_ENDPOINT = `https://evm.confluxrpc.com/${CONFLUX_API_LIMIT_KEY}`
 export const CFX_ESPACE_MAINNET_NAME = 'Conflux eSpace'
@@ -51,7 +51,7 @@ export const CFX_TESTNET_CHAINID = '0x1'
 export const CFX_TESTNET_NETID = 1
 export const CFX_TESTNET_CURRENCY_SYMBOL = 'CFX'
 export const CFX_TESTNET_CURRENCY_NAME = 'Conflux'
-export const CFX_TESTNET_EXPLORER_URL = 'https://testnet.confluxscan.io'
+export const CFX_TESTNET_EXPLORER_URL = 'https://testnet.confluxscan.org'
 
 export const CFX_ESPACE_TESTNET_RPC_ENDPOINT = `https://evmtestnet.confluxrpc.com/${CONFLUX_API_LIMIT_KEY}`
 export const CFX_ESPACE_TESTNET_NAME = 'eSpace Testnet'
@@ -135,8 +135,8 @@ export const ETH_LOCALNET_CURRENCY_SYMBOL = 'ETH'
 export const ETH_LOCALNET_CURRENCY_NAME = 'Ether'
 
 export const CFX_SCAN_DOMAINS = {
-  [CFX_MAINNET_NETID]: 'https://confluxscan.io',
-  [CFX_TESTNET_NETID]: 'https://testnet.confluxscan.io',
+  [CFX_MAINNET_NETID]: 'https://confluxscan.org',
+  [CFX_TESTNET_NETID]: 'https://testnet.confluxscan.org',
 }
 
 export const ETH_SCAN_DOMAINS = {

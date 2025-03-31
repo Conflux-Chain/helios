@@ -641,7 +641,7 @@ async function walletInitialized() {
             rpcUrls: [
               'https://evmtestnet.confluxrpc.com/1BvViQet4km8KPALkc6Pa9',
             ],
-            blockExplorerUrls: ['https://evmtestnet.confluxscan.io'],
+            blockExplorerUrls: ['https://evmtestnet.confluxscan.org'],
           },
         ],
       })

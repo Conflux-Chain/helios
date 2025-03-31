@@ -10,6 +10,6 @@
     "@fluent-wallet/eth-transaction-schema": "workspace:*",
     "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
-    "@fluent-wallet/spec": "1.0.10"
+    "@fluent-wallet/spec": "1.0.11"
   }
 }
