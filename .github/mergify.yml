@@ -70,9 +70,19 @@ pull_request_rules:
     actions:
       queue:
         name: Automatic queue to dev on approval (__release-pkg)
-      
+
   - name: Automatic queue to dev on approval [low]
     conditions: []
     actions:
       queue:
         name: Automatic queue to dev on approval
+priority_rules:
+  - name: priority for queue `Automatic queue to dev on approval`
+    conditions:
+      - head!=next
+      - status-success~=^version-check\s\(.*\)$
+      - status-success~=^lint\s\(.*\)$
+      - status-success~=^build-doc\s\(.*\)$
+      - status-success~=^unit-test\s\(.*\)$
+      - status-success~=^integration-test\s\(.*\)$
+    priority: 2250
