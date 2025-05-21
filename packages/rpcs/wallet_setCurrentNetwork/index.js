@@ -8,25 +8,13 @@ export const schemas = {
 
 export const permissions = {
   external: ['popup'],
-  methods: ['wallet_setAppCurrentNetwork', 'wallet_requestPermissions'],
+  methods: ['wallet_setAppCurrentNetwork'],
   db: [
     'setCurrentNetwork',
     'getNetworkById',
     'getAppsWithDifferentSelectedNetwork',
     'getConnectedSitesWithoutApps',
   ],
-}
-
-function shouldGivenCrossNetworkAddressLookupPermissonsBasedOnNetworkChange(
-  currentNetwork,
-  nextNetwork,
-) {
-  if (currentNetwork.type === nextNetwork.type) return false
-  if (nextNetwork.type === 'cfx')
-    return 'wallet_crossNetworkTypeGetConfluxBase32Address'
-  if (nextNetwork.type === 'eth')
-    return 'wallet_crossNetworkTypeGetEthereumHexAddress'
-  return false
 }
 
 export const main = async ({
@@ -37,7 +25,7 @@ export const main = async ({
     getAppsWithDifferentSelectedNetwork,
     getConnectedSitesWithoutApps,
   },
-  rpcs: {wallet_setAppCurrentNetwork, wallet_requestPermissions},
+  rpcs: {wallet_setAppCurrentNetwork},
   params: networks,
   network,
 }) => {
@@ -50,23 +38,6 @@ export const main = async ({
 
   await Promise.all(
     apps.map(async app => {
-      const newPerm =
-        shouldGivenCrossNetworkAddressLookupPermissonsBasedOnNetworkChange(
-          app.currentNetwork,
-          nextNetwork,
-        )
-      if (newPerm && !app.perms[newPerm]) {
-        await wallet_requestPermissions(
-          {
-            _popup: true,
-          },
-          {
-            siteId: app.site.eid,
-            permissions: [{...app.perms, [newPerm]: {}}],
-            accounts: app.account.map(a => a.eid),
-          },
-        )
-      }
       await wallet_setAppCurrentNetwork(
         {network},
         {appId: app.eid, networkId: networkId},
