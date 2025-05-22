@@ -50,20 +50,15 @@ export const permissions = {
 
 const formatPermissions = perms => {
   return perms.map(p => {
-    const crossNetwork = {}
     const res = Object.keys(p).reduce(
       (p, key) => {
-        if (key.startsWith('cfx_'))
-          crossNetwork.wallet_crossNetworkTypeGetConfluxBase32Address = {}
-        if (key.startsWith('eth_'))
-          crossNetwork.wallet_crossNetworkTypeGetEthereumHexAddress = {}
         if (key === 'cfx_accounts' || key === 'eth_accounts')
           key = 'wallet_accounts'
         return {...p, [key]: {}}
       },
       {wallet_basic: {}},
     )
-    return {...res, ...crossNetwork}
+    return res
   })
 }
 

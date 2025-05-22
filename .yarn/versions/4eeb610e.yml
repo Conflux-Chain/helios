@@ -1,0 +1,11 @@
+releases:
+  "@fluent-wallet/cfx_accounts": patch
+  "@fluent-wallet/eth_accounts": patch
+  "@fluent-wallet/wallet_request-permissions": patch
+  "@fluent-wallet/wallet_set-current-network": patch
+  helios-background: patch
+  helios-popup: patch
+
+declined:
+  - helios
+  - browser-extension
