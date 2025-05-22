@@ -292,7 +292,6 @@ function ConnectSite() {
               />
             </div>
           </CompWithLabel>
-
           <ConnectSitesList
             currentNetworkId={currentNetworkId}
             allAccountGroupData={allAccountGroupData}
