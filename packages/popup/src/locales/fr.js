@@ -278,15 +278,39 @@ const fr = {
     // - request signature - 1. Sign Text
     signText: 'Signer le Texte',
     signThisText: 'Signer ce Texte ?',
-    disablePersonSign:
-      'Le portefeuille matériel ne supporte pas encore de signe personel.',
-    disableTypeSign:
-      'Le portefeuille matériel ne supporte pas encore de signe tapé.',
+    disableUnsupportedSign:
+      "Le portefeuille matériel n'est pas encore pris en charge",
 
     // - request signature - 2. Sign Message
     signThisMessage: 'Signer ce Message ?',
+    signWithEthereumTitle: 'Demande de connexion',
+    signWithEthereum:
+      'Un site souhaite que vous vous connectiez pour prouver que vous possédez ce compte.',
+    siweReviewAlert: "Examiner l'alerte",
+    siweWarningUrlTitle: 'Demande de connexion suspecte',
+    siweWarningUrl:
+      "Le site qui fait la demande n'est pas le site auquel vous vous connectez. Il pourrait s'agir d'une tentative de vol de vos identifiants de connexion.",
+    siweWarningKnownRisk:
+      "J'ai pris connaissance du risque et je souhaite continuer.",
+    siweWarningAccountTitle: 'Mauvais compte',
+    siweWarningAccount:
+      'Le site vous demande de vous connecter avec un compte différent.',
+    siweAlert:
+      'La connexion peut présenter des risques potentiels. Veuillez examiner.',
+    siweModalConfirmBtn: "J'ai compris",
     signTypeMessage: 'Signer le message saisi',
     message: 'Message',
+
+    // add SIWE key translations
+    siweKeyMessage: 'Message',
+    siweKeyUri: 'URL',
+    siweKeyNetwork: 'Réseau',
+    siweKeyAddress: 'Compte',
+    siweKeyVersion: 'Version',
+    siweKeyChainId: 'ID de chaîne',
+    siweKeyNonce: 'Nonce',
+    siweKeyIssuedAt: 'Émis le',
+    siweKeyResources: 'Ressources',
 
     // - add network
     addNetwork: 'Ajouter un Réseau',

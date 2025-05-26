@@ -4,6 +4,6 @@
   "main": "index.js",
   "version": "0.0.22",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.10"
+    "@fluent-wallet/spec": "1.0.11"
   }
 }

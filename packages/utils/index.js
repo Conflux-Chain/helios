@@ -1,6 +1,7 @@
 import randombytes from 'randombytes'
 import {Buffer} from 'buffer'
 import BN from 'bn.js'
+import {ParsedMessage} from '@spruceid/siwe-parser'
 
 export const randomHex = function (size) {
   return '0x' + randombytes(size).toString('hex')
@@ -199,4 +200,28 @@ export const setLength = setLengthLeft
  */
 export const setLengthRight = function (msg, length) {
   return setLength(msg, length, true)
+}
+
+export const detectSIWEMessage = message => {
+  try {
+    const sanitizedMessage = stripHexPrefix(message)
+    const bytes = new Uint8Array(sanitizedMessage.length / 2)
+    for (let i = 0; i < sanitizedMessage.length; i += 2) {
+      bytes[i / 2] = Number.parseInt(sanitizedMessage.substr(i, 2), 16)
+    }
+    const decoder = new TextDecoder('utf-8')
+
+    const decodedMessage = decoder.decode(bytes)
+
+    const parsedMessage = new ParsedMessage(decodedMessage)
+
+    return {
+      parsedMessage,
+      isSIWEMessage: true,
+    }
+  } catch (e) {
+    return {
+      isSIWEMessage: false,
+    }
+  }
 }
