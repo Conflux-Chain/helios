@@ -22,11 +22,7 @@ export const main = async ({
   if (getLocked()) return []
   if (_inpage && !app) return []
 
-  if (
-    app &&
-    app.perms.wallet_crossNetworkTypeGetConfluxBase32Address &&
-    getOneNetwork({selected: true}).type !== 'cfx'
-  ) {
+  if (app && getOneNetwork({selected: true}).type !== 'cfx') {
     const addr = findAddress({
       accountId: app.currentAccount.eid,
       networkId: getOneNetwork({

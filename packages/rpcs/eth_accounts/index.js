@@ -21,11 +21,7 @@ export const main = async ({
   if (getLocked()) return []
   if (_inpage && !app) return []
 
-  if (
-    app &&
-    app.perms.wallet_crossNetworkTypeGetEthereumHexAddress &&
-    getOneNetwork({selected: true}).type !== 'eth'
-  ) {
+  if (app && getOneNetwork({selected: true}).type !== 'eth') {
     // find any eth address under this account
     const addrs = findAddress({
       accountId: app.currentAccount.eid,

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {TitleNav, ProgressIcon} from '.'
 import {usePendingAuthReq} from '../hooks/useApi'
 import {useDappIcon} from '../hooks'
-function DappProgressHeader({title, showNext, setShowNext}) {
+function DappProgressHeader({title}) {
   const pendingAuthReq = usePendingAuthReq()
   const [{app, site}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
 
@@ -11,11 +11,7 @@ function DappProgressHeader({title, showNext, setShowNext}) {
   return (
     <header>
       <div id="dappProgressHeader">
-        <TitleNav
-          title={title}
-          hasGoBack={showNext}
-          onGoBack={() => setShowNext?.(false)}
-        />
+        <TitleNav title={title} hasGoBack={false} />
         <div className="flex justify-center items-center mt-1">
           <div className="w-12 h-12 rounded-full border-solid border-gray-20 border flex items-center justify-center mr-2">
             <img src={dappIconUrl} alt="favicon" className="w-8 h-8" />
@@ -47,7 +43,5 @@ function DappProgressHeader({title, showNext, setShowNext}) {
 
 DappProgressHeader.propTypes = {
   title: PropTypes.string.isRequired,
-  showNext: PropTypes.bool,
-  setShowNext: PropTypes.func,
 }
 export default DappProgressHeader

@@ -4,12 +4,8 @@ import {useState, useEffect} from 'react'
 import {isArray} from '@fluent-wallet/checks'
 import Input from '@fluent-wallet/component-input'
 import Checkbox from '@fluent-wallet/component-checkbox'
-import Button from '@fluent-wallet/component-button'
-import Message from '@fluent-wallet/component-message'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Modal from '@fluent-wallet/component-modal'
-import useLoading from '../../hooks/useLoading'
-import {request} from '../../utils'
 import {
   CaretDownFilled,
   QuestionCircleOutlined,
@@ -24,7 +20,6 @@ import {
   AccountGroupItem,
   AccountItem,
 } from '../../components'
-import {RPC_METHODS, MULTI_ADDRESS_PERMISSIONS} from '../../constants'
 import {formatLocalizationLang, formatIntoChecksumAddress} from '../../utils'
 import {
   useAccountList,
@@ -32,7 +27,6 @@ import {
   usePendingAuthReq,
 } from '../../hooks/useApi'
 
-const {WALLET_REJECT_PENDING_AUTH_REQUEST} = RPC_METHODS
 function ConnectSitesList({
   allAccountGroupData,
   onSelectSingleAccount,
@@ -172,17 +166,14 @@ function ConnectSite() {
   const [networkIcon, setNetworkIcon] = useState('')
   const [checkboxStatusObj, setCheckboxStatusObj] = useState({})
   const [confirmPermissions, setConfirmPermissions] = useState({})
-  const [showNext, setShowNext] = useState(false)
-  const {setLoading} = useLoading()
   const pendingAuthReq = usePendingAuthReq()
 
-  const [{eid, req, site = {}}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  const [{req, site = {}}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const permissions = req?.params?.[0] || {}
 
   const {
     data: {
       network: {
-        type,
         eid: currentNetworkId,
         icon: currentNetworkIcon,
         name: currentNetworkName,
@@ -192,14 +183,6 @@ function ConnectSite() {
   const {data: allAccountGroups} = useAccountList({
     networkId: currentNetworkId,
   })
-
-  const showSecondPermission =
-    type &&
-    Object.keys(permissions).indexOf(MULTI_ADDRESS_PERMISSIONS[type]) > -1
-
-  const checkedPermission =
-    Object.keys(confirmPermissions).indexOf(MULTI_ADDRESS_PERMISSIONS[type]) >
-    -1
 
   useEffect(() => {
     setConfirmPermissions(permissions)
@@ -273,41 +256,6 @@ function ConnectSite() {
     })
   }
 
-  const onCancel = () => {
-    setLoading(true)
-    request(WALLET_REJECT_PENDING_AUTH_REQUEST, {authReqId: eid})
-      .then(() => {
-        setLoading(false)
-        window.close()
-      })
-      .catch(e => {
-        Message.error({
-          content: e?.message ?? t('unCaughtErrMsg'),
-          top: '10px',
-          duration: 1,
-        })
-        setLoading(false)
-      })
-  }
-
-  const onNext = () => {
-    setShowNext(true)
-  }
-
-  const onChangePermission = () => {
-    if (checkedPermission) {
-      const newPermissions = {...confirmPermissions}
-      delete newPermissions[MULTI_ADDRESS_PERMISSIONS[type]]
-      setConfirmPermissions(newPermissions)
-    } else {
-      const newPermissions = {
-        ...confirmPermissions,
-        [MULTI_ADDRESS_PERMISSIONS[type]]: {},
-      }
-      setConfirmPermissions(newPermissions)
-    }
-  }
-
   if (!allAccountGroupData.length) return null
 
   return (
@@ -316,123 +264,60 @@ function ConnectSite() {
       className="flex flex-col h-full w-full justify-between bg-blue-circles bg-no-repeat pb-6"
     >
       <div id="content">
-        <DappProgressHeader
-          title={!showNext ? t('connectSite') : t('permissionRequest')}
-          showNext={showNext}
-          setShowNext={setShowNext}
-        />
-        {showNext ? (
-          <main className="px-3 pt-3">
-            <span className="mb-4 px-3 text-gray-40 text-sm inline-block">
-              {t('allowPermission')}
-            </span>
-            <div aria-hidden="true" className="flex px-3 items-center w-full">
-              <span className="flex-1 flex text-sm text-gray-80 mb-2">
-                {t('viewSelectedAddress')}
-              </span>
-              <Checkbox
-                checked={true}
-                id="default-current-address"
-                iconClassName="mr-0"
-                disabled={true}
+        <DappProgressHeader title={t('connectSite')} />
+        <main className="px-3">
+          <CompWithLabel
+            label={<p className="text-sm text-gray-40">{t('selectNetwork')}</p>}
+          >
+            <div
+              id="setNetworkShow"
+              aria-hidden="true"
+              onClick={() => setNetworkShow(true)}
+              className="cursor-pointer"
+            >
+              <Input
+                value={networkContent}
+                width="w-full box-border"
+                readOnly
+                className="pointer-events-none"
+                suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
+                id="selectNetwork"
+                prefix={
+                  <img
+                    src={networkIcon || '/images/default-network-icon.svg'}
+                    alt="network icon"
+                    className="w-4 h-4"
+                  />
+                }
               />
             </div>
-            {showSecondPermission && (
-              <div
-                id="multi-address"
-                aria-hidden="true"
-                className="flex px-3 items-center w-full cursor-pointer"
-                onClick={onChangePermission}
-              >
-                <span className="flex-1 flex text-sm text-gray-80">
-                  {t('viewMultiAddress')}
-                </span>
-                <Checkbox checked={checkedPermission} iconClassName="mr-0" />
-              </div>
-            )}
-          </main>
-        ) : (
-          <main className="px-3">
-            <CompWithLabel
-              label={
-                <p className="text-sm text-gray-40">{t('selectNetwork')}</p>
-              }
-            >
-              <div
-                id="setNetworkShow"
-                aria-hidden="true"
-                onClick={() => setNetworkShow(true)}
-                className="cursor-pointer"
-              >
-                <Input
-                  value={networkContent}
-                  width="w-full box-border"
-                  readOnly
-                  className="pointer-events-none"
-                  suffix={<CaretDownFilled className="w-4 h-4 text-gray-40" />}
-                  id="selectNetwork"
-                  prefix={
-                    <img
-                      src={networkIcon || '/images/default-network-icon.svg'}
-                      alt="network icon"
-                      className="w-4 h-4"
-                    />
-                  }
-                />
-              </div>
-            </CompWithLabel>
-
-            <ConnectSitesList
-              currentNetworkId={currentNetworkId}
-              allAccountGroupData={allAccountGroupData}
-              onSelectSingleAccount={onSelectSingleAccount}
-              checkboxStatusObj={checkboxStatusObj}
-            />
-            <Modal
-              id="networkModal"
-              open={networkShow}
-              size="medium"
-              title={t('chooseNetwork')}
-              onClose={() => setNetworkShow(false)}
-              content={
-                <NetworkContent onClickNetworkItem={onClickNetworkItem} />
-              }
-              className="bg-bg bg-gray-circles bg-no-repeat bg-contain max-h-[552px]"
-            />
-          </main>
-        )}
+          </CompWithLabel>
+          <ConnectSitesList
+            currentNetworkId={currentNetworkId}
+            allAccountGroupData={allAccountGroupData}
+            onSelectSingleAccount={onSelectSingleAccount}
+            checkboxStatusObj={checkboxStatusObj}
+          />
+        </main>
       </div>
-      {!showNext ? (
-        <footer className="dapp-footer-container flex w-full px-4">
-          <Button
-            id="cancelBtn"
-            className="flex-1"
-            variant="outlined"
-            onClick={onCancel}
-          >
-            {t('cancel')}
-          </Button>
-          <div className="w-3" />
-          <Button
-            id="nextBtn"
-            className="flex-1"
-            onClick={onNext}
-            disabled={!confirmAccounts.length}
-          >
-            {t('next')}
-          </Button>
-        </footer>
-      ) : (
-        <DappFooter
-          cancelText={t('cancel')}
-          confirmText={t('connect')}
-          confirmDisabled={!confirmAccounts.length}
-          confirmParams={{
-            accounts: [...confirmAccounts],
-            permissions: [confirmPermissions],
-          }}
-        />
-      )}
+      <DappFooter
+        cancelText={t('cancel')}
+        confirmText={t('connect')}
+        confirmDisabled={!confirmAccounts.length}
+        confirmParams={{
+          accounts: [...confirmAccounts],
+          permissions: [confirmPermissions],
+        }}
+      />
+      <Modal
+        id="networkModal"
+        open={networkShow}
+        size="medium"
+        title={t('chooseNetwork')}
+        onClose={() => setNetworkShow(false)}
+        content={<NetworkContent onClickNetworkItem={onClickNetworkItem} />}
+        className="bg-bg bg-gray-circles bg-no-repeat bg-contain max-h-[552px]"
+      />
     </div>
   )
 }
