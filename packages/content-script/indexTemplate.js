@@ -1,6 +1,9 @@
 import browser from 'webextension-polyfill'
 import {stream} from '@thi.ng/rstream'
 import {getSiteMetadata} from '@fluent-wallet/site-metadata'
+import {isScriptingApiSupported} from './env.js'
+
+let INPAGE_INJECTED = false
 
 function _retry() {
   let retryTimeout = 100
@@ -19,6 +22,25 @@ function _retry() {
     `[Fluent] Failed to connect background, retry: ${++CONNECT_RETRY_COUNT}`,
   )
   setTimeout(setup, retryTimeout)
+}
+
+function injectInpage(content) {
+  try {
+    // chrome mv3 use scripting api to inject inpage script
+    if (isScriptingApiSupported) return
+    // chrome mv2 or other browser use script tag to inject inpage script
+    const container = document.head || document.documentElement
+    const scriptTag = document.createElement('script')
+    scriptTag.setAttribute('async', 'false')
+    if (content) scriptTag.textContent = content
+    else scriptTag.src = browser.runtime.getURL('inpage.js')
+    container.insertBefore(scriptTag, container.children[0])
+    container.removeChild(scriptTag)
+    INPAGE_INJECTED = true
+    registerSite()
+  } catch (error) {
+    console.error('Fluent Wallet: Provider injection failed.', error)
+  }
 }
 
 let CONNECT_RETRY_COUNT = 0
@@ -74,6 +96,8 @@ function setup() {
     )
       return
     if (e.data.msg.event === '__INPAGE_INJECTED__') {
+      if (!isScriptingApiSupported) return
+      INPAGE_INJECTED = true
       registerSite()
       return
     }
@@ -111,6 +135,7 @@ function setup() {
     )
   })
 
-  registerSite()
+  if (INPAGE_INJECTED) registerSite()
 }
+injectInpage()
 setup()
