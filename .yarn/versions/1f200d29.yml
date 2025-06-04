@@ -1,0 +1,7 @@
+releases:
+  "@fluent-wallet/content-script": patch
+  browser-extension: patch
+  helios-background: patch
+
+declined:
+  - helios
