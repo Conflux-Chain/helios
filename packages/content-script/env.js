@@ -1,4 +1,4 @@
 export const isScriptingApiSupported =
-  window.chrome &&
+  chrome &&
   typeof chrome.scripting !== 'undefined' &&
   typeof chrome.scripting.registerContentScripts === 'function'
