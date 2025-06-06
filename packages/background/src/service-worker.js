@@ -1,7 +1,7 @@
 // // # imports
 import {IS_PROD_MODE, IS_TEST_MODE} from '@fluent-wallet/inner-utils'
 import {EXT_STORAGE} from '@fluent-wallet/consts'
-import {isManifestV3} from './env.js'
+import {isManifestV3, isScriptingApiSupported} from './env.js'
 import {defRpcEngine} from '@fluent-wallet/rpc-engine'
 import {persist as persistToExtStorageHandler} from './persist-db-to-ext-storage.js'
 
@@ -154,16 +154,17 @@ let count = 0
 const registerInPageContentScript = async () => {
   count++
   try {
-    await chrome.scripting.registerContentScripts([
-      {
-        id: 'fluent-inpage',
-        matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-        js: ['inpage.js'],
-        runAt: 'document_start',
-        world: 'MAIN',
-        allFrames: true,
-      },
-    ])
+    isScriptingApiSupported &&
+      (await chrome.scripting.registerContentScripts([
+        {
+          id: 'fluent-inpage',
+          matches: ['file://*/*', 'http://*/*', 'https://*/*'],
+          js: ['inpage.js'],
+          runAt: 'document_start',
+          world: 'MAIN',
+          allFrames: true,
+        },
+      ]))
   } catch (err) {
     console.error('registerInPageContentScript failed:', err)
     if (count < 3) {

@@ -3,7 +3,7 @@
   "private": true,
   "main": "index.js",
   "type": "module",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "dependencies": {
     "@fluent-wallet/site-metadata": "workspace:packages/site-metadata",
     "@thi.ng/rstream": "6.0.21",
