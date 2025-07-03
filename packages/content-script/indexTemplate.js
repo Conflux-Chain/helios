@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill'
 import {stream} from '@thi.ng/rstream'
 import {getSiteMetadata} from '@fluent-wallet/site-metadata'
-import {isScriptingApiSupported} from './env.js'
+import {isManifestV3} from './env.js'
 
 let INPAGE_INJECTED = false
 
@@ -27,7 +27,7 @@ function _retry() {
 function injectInpage(content) {
   try {
     // chrome mv3 use scripting api to inject inpage script
-    if (isScriptingApiSupported) return
+    if (isManifestV3) return
     // chrome mv2 or other browser use script tag to inject inpage script
     const container = document.head || document.documentElement
     const scriptTag = document.createElement('script')
@@ -96,7 +96,7 @@ function setup() {
     )
       return
     if (e.data.msg.event === '__INPAGE_INJECTED__') {
-      if (!isScriptingApiSupported) return
+      if (!isManifestV3) return
       INPAGE_INJECTED = true
       registerSite()
       return
