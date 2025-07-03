@@ -123,7 +123,6 @@ function ConfirmTransaction() {
   const {
     isApproveToken,
     isSendToken,
-    isSendNativeToken,
     displayToken,
     displayValue,
     displayFromAddress,
@@ -375,7 +374,6 @@ function ConfirmTransaction() {
             toAddress={displayToAddress}
             value={displayValue}
             isSendToken={isSendToken}
-            isSendNativeToken={isSendNativeToken}
             isApproveToken={isApproveToken}
           />
           <InfoList

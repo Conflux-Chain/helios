@@ -173,7 +173,6 @@ function AddressCard({
   toAddress,
   value,
   isSendToken,
-  isSendNativeToken,
   isApproveToken,
 }) {
   const {t} = useTranslation()
@@ -226,7 +225,7 @@ function AddressCard({
             : 'signTransaction',
         )}
       </header>
-      {(isSendToken || isSendNativeToken) && (
+      {isSendToken && (
         <div className="h-10 mt-1 mb-3 flex items-center" id="sendToken">
           <DisplayBalance
             id="sendAmount"
@@ -272,7 +271,6 @@ AddressCard.propTypes = {
   fromAddress: PropTypes.string,
   toAddress: PropTypes.string,
   isSendToken: PropTypes.bool,
-  isSendNativeToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,
   nickname: PropTypes.string,
 }
