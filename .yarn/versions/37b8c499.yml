@@ -1,0 +1,3 @@
+releases:
+  "@fluent-wallet/content-script": patch
+  helios: patch

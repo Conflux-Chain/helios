@@ -68,7 +68,7 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["content-script.js"],
+      "js": ["content-script-mv3.js"],
       "run_at": "document_start",
       "all_frames": true
     }
@@ -94,7 +94,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["content-script.js", "inpage.js"],
+      "resources": ["content-script-mv3.js", "inpage.js"],
       "matches": ["<all_urls>"]
     }
   ],

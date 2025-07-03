@@ -18,6 +18,10 @@ const defaultConfig = {
       packagesPath,
       'content-script/indexTemplate.js', // TODO: remove and update
     ),
+    'content-script-mv3': path.join(
+      packagesPath,
+      'content-script/index.mv3.js', // TODO: remove and update
+    ),
     popup: path.join(packagesPath, 'popup/src/index.js'),
     inpage: path.join(packagesPath, 'inpage/index.js'),
   },
