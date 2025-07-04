@@ -388,6 +388,7 @@ function ConfirmTransaction() {
             value={params.value}
             pendingAuthReq={pendingAuthReq}
             decimals={nativeToken?.decimals}
+            symbol={nativeToken?.symbol}
           />
           <GasFee
             estimateRst={estimateRst}

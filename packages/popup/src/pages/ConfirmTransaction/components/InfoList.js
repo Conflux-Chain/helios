@@ -20,6 +20,7 @@ function InfoList({
   token,
   value,
   decimals,
+  symbol,
   allowance,
   method,
   pendingAuthReq,
@@ -78,7 +79,7 @@ function InfoList({
             <div className="flex justify-between mb-4">
               <span className="text-gray-40">{t('amount')}</span>
               <span className="text-gray-80" id="amount">
-                {convertDataToValue(value, decimals)}
+                {`${convertDataToValue(value, decimals)} ${symbol}`}
               </span>
             </div>
           )}
@@ -111,6 +112,7 @@ InfoList.propTypes = {
   token: PropTypes.object,
   value: PropTypes.string,
   decimals: PropTypes.number,
+  symbol: PropTypes.string,
   isDapp: PropTypes.bool,
   allowance: PropTypes.string,
   method: PropTypes.string,

@@ -365,7 +365,8 @@ export const useDappParams = customPendingAuthReq => {
   return req?.params[0] || {}
 }
 
-export const useDecodeData = ({to, data} = {}) => {
+export const useDecodeData = ({to, data: rawData} = {}) => {
+  const data = padHexData(rawData)
   const [decodeData, setDecodeData] = useState({})
   const type = useAddressType(to)
   const {
@@ -404,7 +405,7 @@ export const useDecodeData = ({to, data} = {}) => {
     setDecodeData({})
   }, [data, isContract, to, netId, currentNetworkType])
 
-  return {isContract, isEOAAddress, token: crc20Token, decodeData}
+  return {isContract, isEOAAddress, token: crc20Token, decodeData, data}
 }
 
 export const useDecodeDisplay = ({

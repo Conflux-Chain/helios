@@ -1,14 +1,13 @@
 import {useTranslation} from 'react-i18next'
 import {TitleNav} from '../../components'
-import {useDappParams, useDecodeData, padHexData} from '../../hooks'
+import {useDappParams, useDecodeData} from '../../hooks'
 import {transformToTitleCase} from '../../utils'
 import {BigNumber} from '@ethersproject/bignumber'
 
 function ViewData() {
   const {t} = useTranslation()
   const tx = useDappParams()
-  const {decodeData} = useDecodeData(tx)
-  const {data: contractData} = tx
+  const {decodeData, data: contractData} = useDecodeData(tx)
   const contractMethod = decodeData?.name
     ? transformToTitleCase(decodeData.name)
     : ''
@@ -46,7 +45,7 @@ function ViewData() {
         <div>
           <p className="text-xs text-gray-40 mb-0.5">{t('hexData')}</p>
           <div className="text-sm text-gray-80 mb-3 break-words">
-            {padHexData(contractData)}
+            {contractData}
           </div>
         </div>
       </div>
