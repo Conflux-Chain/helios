@@ -150,7 +150,7 @@ function HistoryItem({
         ? t('send')
         : decodeData?.name
         ? transformToTitleCase(decodeData.name)
-        : '',
+        : '-',
     )
   }, [simple, isExternalTx, t, decodeData?.name])
 
