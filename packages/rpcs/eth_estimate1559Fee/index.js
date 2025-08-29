@@ -62,7 +62,7 @@ export const main = async ({
       `Network ${network.name} don't support 1559 transaction`,
     )
   let gasInfo = {}
-  //First fetch through gas station,if error occured, then fetch througe the rpc: eth_feeHistory
+  //First fetch through gas station,if error occurred, then fetch through the rpc: eth_feeHistory
   try {
     gasInfo = await getGasFeeByGasStation(Number(network.chainId))
   } catch (error) {
