@@ -174,7 +174,6 @@ function AddressCard({
   value,
   isSendToken,
   isApproveToken,
-  isDapp,
 }) {
   const {t} = useTranslation()
   const {
@@ -226,7 +225,7 @@ function AddressCard({
             : 'signTransaction',
         )}
       </header>
-      {(isSendToken || !!value) && (
+      {isSendToken && (
         <div className="h-10 mt-1 mb-3 flex items-center" id="sendToken">
           <DisplayBalance
             id="sendAmount"
@@ -235,7 +234,7 @@ function AddressCard({
             maxWidthStyle="max-w-[256px]"
             className="text-2xl"
             initialFontSize={32}
-            decimals={isDapp ? token?.decimals : 0}
+            decimals={0}
           />
           <span className="text-xs text-gray-60 mx-1" id="sendTokenSymbol">
             {token?.symbol}
@@ -273,7 +272,6 @@ AddressCard.propTypes = {
   toAddress: PropTypes.string,
   isSendToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,
-  isDapp: PropTypes.bool,
   nickname: PropTypes.string,
 }
 

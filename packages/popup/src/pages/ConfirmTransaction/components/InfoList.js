@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
+import {convertDataToValue} from '@fluent-wallet/data-format'
 import {useCurrentDapp} from '../../../hooks/useApi'
 import {useCurrentTxParams, useDappIcon} from '../../../hooks'
 import {
@@ -17,6 +18,9 @@ function InfoList({
   isApproveToken,
   isSign,
   token,
+  value,
+  decimals,
+  symbol,
   allowance,
   method,
   pendingAuthReq,
@@ -62,12 +66,24 @@ function InfoList({
         </div>
       )}
       {isSign && (
-        <div className="flex justify-between mb-4">
-          <span className="text-gray-40">{t('action')}</span>
-          <span className="text-gray-80" id="methodName">
-            {method}
-          </span>
-        </div>
+        <>
+          {!!method && (
+            <div className="flex justify-between mb-4">
+              <span className="text-gray-40">{t('action')}</span>
+              <span className="text-gray-80" id="methodName">
+                {method}
+              </span>
+            </div>
+          )}
+          {!!value && value !== '0x' && value !== '0x0' && (
+            <div className="flex justify-between mb-4">
+              <span className="text-gray-40">{t('amount')}</span>
+              <span className="text-gray-80" id="amount">
+                {`${convertDataToValue(value, decimals)} ${symbol}`}
+              </span>
+            </div>
+          )}
+        </>
       )}
       {isDapp && (
         <div className="flex justify-between mb-4">
@@ -94,6 +110,9 @@ InfoList.propTypes = {
   isApproveToken: PropTypes.bool,
   isSign: PropTypes.bool,
   token: PropTypes.object,
+  value: PropTypes.string,
+  decimals: PropTypes.number,
+  symbol: PropTypes.string,
   isDapp: PropTypes.bool,
   allowance: PropTypes.string,
   method: PropTypes.string,

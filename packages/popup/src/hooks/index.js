@@ -14,6 +14,7 @@ import {
   COMMON_DECIMALS,
   convertValueToData,
   convertDecimal,
+  convertDataToValue,
 } from '@fluent-wallet/data-format'
 import {
   getCFXContractMethodSignature,
@@ -364,7 +365,8 @@ export const useDappParams = customPendingAuthReq => {
   return req?.params[0] || {}
 }
 
-export const useDecodeData = ({to, data} = {}) => {
+export const useDecodeData = ({to, data: rawData} = {}) => {
+  const data = padHexData(rawData)
   const [decodeData, setDecodeData] = useState({})
   const type = useAddressType(to)
   const {
@@ -375,53 +377,52 @@ export const useDecodeData = ({to, data} = {}) => {
 
   const isContract = type === 'contract' || type === 'builtin'
   const isOutContract = type === 'contract'
+  const isEOAAddress = !isContract && !!type
   const crc20Token = useValid20Token(isOutContract ? to : '')
 
   useEffect(() => {
-    if (data && isContract && currentNetworkType) {
-      if (crc20Token.valid === false) {
-        return setDecodeData({name: 'unknown'})
+    if (!!data && data !== '0x') {
+      if (!currentNetworkType) {
+        return setDecodeData({})
       }
+      const getSignature =
+        currentNetworkType === NETWORK_TYPE.CFX
+          ? getCFXContractMethodSignature
+          : getEthContractMethodSignature
+      const params =
+        currentNetworkType === NETWORK_TYPE.CFX ? [to, data, netId] : [data]
+      const offlineParams = [...params, true]
 
-      if (crc20Token.valid === true) {
-        const getSignature =
-          currentNetworkType === NETWORK_TYPE.CFX
-            ? getCFXContractMethodSignature
-            : getEthContractMethodSignature
-        const params =
-          currentNetworkType === NETWORK_TYPE.CFX ? [to, data, netId] : [data]
-
-        getSignature(...params)
-          .then(result => {
-            setDecodeData({...result})
-          })
-          .catch(() => {
-            setDecodeData({name: 'unknown'})
-          })
-        return
-      }
+      getSignature(...(isContract ? params : offlineParams))
+        .then(result => {
+          setDecodeData({...result})
+        })
+        .catch(e => {
+          console.error('getSignature error:', e)
+        })
+      return
     }
-
     setDecodeData({})
-  }, [data, isContract, to, netId, currentNetworkType, crc20Token.valid])
+  }, [data, isContract, to, netId, currentNetworkType])
 
-  return {isContract, token: crc20Token, decodeData}
+  return {isContract, isEOAAddress, token: crc20Token, decodeData, data}
 }
 
 export const useDecodeDisplay = ({
   deps,
   isDapp,
   isContract,
+  isEOAAddress,
   nativeToken,
   pendingAuthReq = {},
   tx = {},
 }) => {
   let displayToken = {},
-    displayValue = '0x0',
+    displayValue = '',
     displayAccount,
     displayToAddress,
     displayFromAddress
-  const {from, to, data, value} = tx
+  const {from, to, value} = tx
   const {toAddress, sendTokenId, sendAmount} = useCurrentTxParams()
   const {
     data: {value: address, account},
@@ -435,14 +436,23 @@ export const useDecodeDisplay = ({
 
   displayAccount = account
   const {token, decodeData} = useDecodeData(tx)
-  const isApproveToken = isDapp && decodeData?.name === 'approve'
-  const isSendNativeToken = (!isContract && !!to) || !data || data === '0x'
+  const isApproveToken =
+    isDapp &&
+    isContract &&
+    decodeData?.name === 'approve' &&
+    (!value || value === '0x' || value === '0x0')
+  const isSendNativeToken = !!to && isEOAAddress
+  const args = decodeData?.args || []
+  const methodName = decodeData?.name || ''
   const isSendToken =
     !isDapp ||
+    isSendNativeToken ||
     (isDapp &&
-      decodeData?.name === 'transferFrom' &&
-      decodeData?.args?.[0] === address) ||
-    (isDapp && isSendNativeToken)
+      isContract &&
+      (!value || value === '0x' || value === '0x0') &&
+      ((methodName === 'transferFrom' &&
+        args?.[0]?.toLowerCase() === address?.toLowerCase()) ||
+        methodName === 'transfer'))
 
   displayToken = useSingleTokenInfoWithNativeTokenSupport(
     isDapp ? null : sendTokenId,
@@ -452,18 +462,35 @@ export const useDecodeDisplay = ({
     displayToAddress = toAddress
     displayValue = sendAmount
   } else {
-    if (isSendNativeToken || !!value) {
+    if (isSendNativeToken) {
       displayToken = nativeToken
       displayFromAddress = from
       displayToAddress = to
-      displayValue = value
+      displayValue = convertDataToValue(
+        !!value && value !== '0x' ? value : '0x0',
+        nativeToken?.decimals,
+      )
     } else {
       if (token?.symbol) displayToken = token
       if (isSendToken) {
-        displayFromAddress = decodeData?.args?.[0]
-        displayToAddress = decodeData?.args?.[1]
+        displayFromAddress =
+          methodName === 'transferFrom'
+            ? args?.[0]
+            : methodName === 'transfer'
+            ? address
+            : ''
+        displayToAddress =
+          methodName === 'transferFrom'
+            ? args?.[1]
+            : methodName === 'transfer'
+            ? args?.[0]
+            : ''
         displayValue = convertDecimal(
-          decodeData?.args[2].toString(10),
+          methodName === 'transferFrom'
+            ? args[2].toString(10)
+            : methodName === 'transfer'
+            ? args[1].toString(10)
+            : '0',
           'divide',
           token?.decimals,
         )
@@ -484,12 +511,20 @@ export const useDecodeDisplay = ({
   return {
     isApproveToken,
     isSendToken,
+    isSendNativeToken,
     displayFromAddress,
     displayToAddress,
     displayAccount,
     displayValue,
     displayToken,
   }
+}
+
+export function padHexData(data) {
+  if (typeof data !== 'string') return data
+  let hex = data.startsWith('0x') ? data.slice(2) : data
+  if (hex.length % 2 === 1) hex = '0' + hex
+  return '0x' + hex
 }
 
 export const useViewData = ({data, to} = {}, isApproveToken) => {
@@ -510,7 +545,7 @@ export const useViewData = ({data, to} = {}, isApproveToken) => {
         ? iface.encodeFunctionData('approve', [spender, allowance])
         : data
     } else {
-      return data
+      return padHexData(data)
     }
   }, [customAllowance, data, allowance, spender, isApproveToken])
   return viewData

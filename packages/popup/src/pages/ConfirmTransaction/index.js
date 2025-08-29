@@ -119,7 +119,7 @@ function ConfirmTransaction() {
   const tx = useDappParams(pendingAuthReq)
 
   // get to type and to token
-  const {isContract, decodeData} = useDecodeData(tx)
+  const {isContract, decodeData, isEOAAddress} = useDecodeData(tx)
   const {
     isApproveToken,
     isSendToken,
@@ -132,6 +132,7 @@ function ConfirmTransaction() {
     deps: [chainId, accountId],
     isDapp,
     isContract,
+    isEOAAddress,
     nativeToken,
     tx,
     pendingAuthReq: pendingAuthReq?.[0],
@@ -374,7 +375,6 @@ function ConfirmTransaction() {
             value={displayValue}
             isSendToken={isSendToken}
             isApproveToken={isApproveToken}
-            isDapp={isDapp}
           />
           <InfoList
             token={displayToken}
@@ -382,14 +382,13 @@ function ConfirmTransaction() {
             isDapp={isDapp}
             isSign={isSign}
             method={
-              decodeData?.name
-                ? decodeData.name === 'unknown'
-                  ? t('unknown')
-                  : transformToTitleCase(decodeData.name)
-                : '-'
+              decodeData?.name ? transformToTitleCase(decodeData.name) : ''
             }
             allowance={displayValue}
+            value={params.value}
             pendingAuthReq={pendingAuthReq}
+            decimals={nativeToken?.decimals}
+            symbol={nativeToken?.symbol}
           />
           <GasFee
             estimateRst={estimateRst}
@@ -397,7 +396,7 @@ function ConfirmTransaction() {
           />
         </div>
         <div className="flex flex-col items-center">
-          {isDapp && params.data && (
+          {!!params.data && params.data !== '0x' && (
             <Link onClick={() => history.push(VIEW_DATA)} className="mb-6">
               {t('viewData')}
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
