@@ -396,7 +396,7 @@ function ConfirmTransaction() {
           />
         </div>
         <div className="flex flex-col items-center">
-          {!!params.data && params.data !== '0x' && (
+          {isDapp && !!params.data && params.data !== '0x' && (
             <Link onClick={() => history.push(VIEW_DATA)} className="mb-6">
               {t('viewData')}
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
