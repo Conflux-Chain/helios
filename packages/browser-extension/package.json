@@ -1,6 +1,6 @@
 {
   "name": "browser-extension",
-  "version": "0.0.49",
+  "version": "0.0.50",
   "main": "index.js",
   "author": "yqrashawn <namy.19@gmail.com>",
   "license": "MIT",
