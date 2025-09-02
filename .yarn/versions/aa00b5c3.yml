@@ -1,7 +1,4 @@
-releases:
-  "@fluent-wallet/eth_estimate-1559-fee": patch
-
 declined:
   - helios
-  - helios-background
   - helios-popup
+  - "@fluent-wallet/eth_estimate-1559-fee"
