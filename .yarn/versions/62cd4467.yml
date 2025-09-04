@@ -1,4 +1,7 @@
 releases:
+  "@fluent-wallet/account": patch
+  "@fluent-wallet/addr-by-network": patch
+  "@fluent-wallet/base32-address": patch
   "@fluent-wallet/cfx_accounts": patch
   "@fluent-wallet/cfx_call": patch
   "@fluent-wallet/cfx_chain-id": patch
@@ -8,6 +11,7 @@ releases:
   "@fluent-wallet/cfx_estimate-1559-fee": patch
   "@fluent-wallet/cfx_estimate-gas-and-collateral": patch
   "@fluent-wallet/cfx_fee-history": patch
+  "@fluent-wallet/cfx_gas-price": patch
   "@fluent-wallet/cfx_get-account": patch
   "@fluent-wallet/cfx_get-account-pending-info": patch
   "@fluent-wallet/cfx_get-account-pending-transactions": patch
@@ -49,11 +53,16 @@ releases:
   "@fluent-wallet/cfx_request-accounts": patch
   "@fluent-wallet/cfx_send-raw-transaction": patch
   "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/cfx_sign-transaction": patch
   "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": patch
   "@fluent-wallet/cfx_sign-typed-data_v4": patch
   "@fluent-wallet/confluxscan-api": patch
   "@fluent-wallet/consts": patch
   "@fluent-wallet/contract-method-name": patch
+  "@fluent-wallet/db": patch
+  "@fluent-wallet/detect-address-type": patch
+  "@fluent-wallet/did": patch
+  "@fluent-wallet/estimate-tx": patch
   "@fluent-wallet/eth_accounts": patch
   "@fluent-wallet/eth_block-number": patch
   "@fluent-wallet/eth_call": patch
@@ -77,9 +86,13 @@ releases:
   "@fluent-wallet/eth_sign-transaction": patch
   "@fluent-wallet/eth_sign-tx-with-ledger-nano-s": patch
   "@fluent-wallet/eth_sign-typed-data_v4": patch
+  "@fluent-wallet/ledger": patch
   "@fluent-wallet/net_version": patch
   "@fluent-wallet/personal_sign": patch
+  "@fluent-wallet/rpc-engine": patch
   "@fluent-wallet/shorten-address": patch
+  "@fluent-wallet/signature": patch
+  "@fluent-wallet/single-call-balance-tracker": patch
   "@fluent-wallet/spec": patch
   "@fluent-wallet/tx-history-checker": patch
   "@fluent-wallet/txpool_next-nonce": patch
@@ -176,6 +189,8 @@ releases:
   "@fluent-wallet/wallet_validate20token": patch
   "@fluent-wallet/wallet_watch-asset": patch
   "@fluent-wallet/wallet_zero-account-group": patch
+  browser-extension: patch
+  helios-background: patch
   helios-popup: patch
   workspace-tools: patch
 
