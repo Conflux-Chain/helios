@@ -147,8 +147,8 @@ export const ETH_SCAN_DOMAINS = {
 export const CFX_SCAN_API_ENDPOINTS = {
   [CFX_MAINNET_NETID]: 'https://api.confluxscan.net/',
   [CFX_TESTNET_NETID]: 'https://api-testnet.confluxscan.net/',
-  [CFX_ESPACE_MAINNET_NETID]: 'https://evmapi.confluxscan.net/api',
-  [CFX_ESPACE_TESTNET_NETID]: 'https://evmapi-testnet.confluxscan.net/api',
+  [CFX_ESPACE_MAINNET_NETID]: 'https://evmapi.confluxscan.net/',
+  [CFX_ESPACE_TESTNET_NETID]: 'https://evmapi-testnet.confluxscan.net/',
 }
 
 export const ETH_TX_TYPES = {

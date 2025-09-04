@@ -389,8 +389,7 @@ export const useDecodeData = ({to, data: rawData} = {}) => {
         currentNetworkType === NETWORK_TYPE.CFX
           ? getCFXContractMethodSignature
           : getEthContractMethodSignature
-      const params =
-        currentNetworkType === NETWORK_TYPE.CFX ? [to, data, netId] : [data]
+      const params = [to, data, netId]
       const offlineParams = [...params, true]
 
       getSignature(...(isContract ? params : offlineParams))

@@ -28,11 +28,34 @@ export async function abiCoreSpace({
 export async function abiESpace({networkId = undefined, address = undefined}) {
   try {
     const res = await fetch(
-      getURL(networkId, {module: 'contract', action: 'getabi', address}),
+      getURL(networkId, '/api', {
+        searchParams: {
+          module: 'contract',
+          action: 'getabi',
+          address,
+        },
+      }),
     ).json()
     if (res.status === '1') return JSON.parse(res.result)
     throw new Error(res.message)
   } catch (err) {
     return
+  }
+}
+
+export async function decodeContractMethods({
+  networkId = undefined,
+  contractAddress,
+  inputData,
+}) {
+  try {
+    // this api response always return success, we need check the error in result
+    const res = await fetch(getURL(networkId, '/util/decode/method/raw'), {
+      searchParams: {contracts: contractAddress, inputs: inputData},
+    }).json()
+
+    return res?.result || []
+  } catch (error) {
+    return []
   }
 }
