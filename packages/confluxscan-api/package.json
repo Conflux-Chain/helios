@@ -1,6 +1,6 @@
 {
   "name": "@fluent-wallet/confluxscan-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "packageManager": "yarn@3.2.0",
   "dependencies": {

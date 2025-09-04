@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/shorten-address",
   "type": "module",
   "main": "index.js",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "dependencies": {
     "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",

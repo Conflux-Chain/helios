@@ -3,10 +3,10 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
-    "@fluent-wallet/spec": "1.0.11"
+    "@fluent-wallet/spec": "1.0.12"
   }
 }

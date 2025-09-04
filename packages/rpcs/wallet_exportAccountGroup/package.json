@@ -2,11 +2,11 @@
   "name": "@fluent-wallet/wallet_export-account-group",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/consts": "workspace:packages/consts",
-    "@fluent-wallet/spec": "1.0.11",
+    "@fluent-wallet/spec": "1.0.12",
     "browser-passworder": "2.0.3"
   }
 }
