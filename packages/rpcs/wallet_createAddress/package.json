@@ -2,12 +2,12 @@
   "name": "@fluent-wallet/wallet_create-address",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "dependencies": {
     "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
     "@fluent-wallet/hdkey": "workspace:packages/hdkey",
-    "@fluent-wallet/spec": "1.0.11",
+    "@fluent-wallet/spec": "1.0.12",
     "browser-passworder": "2.0.3"
   }
 }

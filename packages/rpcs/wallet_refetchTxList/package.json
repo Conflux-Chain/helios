@@ -3,11 +3,11 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.2.0",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "dependencies": {
     "@fluent-wallet/confluxscan-api": "workspace:*",
     "@fluent-wallet/consts": "workspace:*",
-    "@fluent-wallet/spec": "1.0.11",
+    "@fluent-wallet/spec": "1.0.12",
     "@thi.ng/cache": "2.1.10",
     "@thi.ng/memoize": "3.1.7"
   }

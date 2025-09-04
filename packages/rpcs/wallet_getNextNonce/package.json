@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/wallet_get-next-nonce",
   "type": "module",
   "main": "index.js",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "dependencies": {
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network",
-    "@fluent-wallet/spec": "1.0.11"
+    "@fluent-wallet/spec": "1.0.12"
   }
 }
