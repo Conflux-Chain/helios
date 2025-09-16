@@ -5052,7 +5052,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/utils@workspace:packages/utils"
   dependencies:
-    "@spruceid/siwe-parser": "patch:@spruceid/siwe-parser@npm%3A3.0.0#~/.yarn/patches/@spruceid-siwe-parser-npm-3.0.0-4572197cda.patch"
+    "@spruceid/siwe-parser": "npm:3.0.0"
     bn.js: "npm:5.2.1"
     is-hex-prefixed: "npm:^1.0.0"
     randombytes: "npm:^2.1.0"
@@ -7665,16 +7665,6 @@ __metadata:
     "@noble/hashes": "npm:^1.1.2"
     apg-js: "npm:^4.4.0"
   checksum: 10/19239d4a18a953812e4a5cd25c51a9869b67643b00cf9b6f36091b0d7b8be09934d1ba41c7df60f6e05307ba5cbc7c4812c69b5d3de64a132ea08b80a35cb87f
-  languageName: node
-  linkType: hard
-
-"@spruceid/siwe-parser@patch:@spruceid/siwe-parser@npm%3A3.0.0#~/.yarn/patches/@spruceid-siwe-parser-npm-3.0.0-4572197cda.patch":
-  version: 3.0.0
-  resolution: "@spruceid/siwe-parser@patch:@spruceid/siwe-parser@npm%3A3.0.0#~/.yarn/patches/@spruceid-siwe-parser-npm-3.0.0-4572197cda.patch::version=3.0.0&hash=97a19c"
-  dependencies:
-    "@noble/hashes": "npm:^1.1.2"
-    apg-js: "npm:^4.4.0"
-  checksum: 10/4149089347e559ee1bc817fa79de22ed3262aa45cd80f9fbfcf9048aba7fa8b3f963d801a5f077585e5641486c9cdfb649c4839d6c05be984d7e5645c6b4be52
   languageName: node
   linkType: hard
 
