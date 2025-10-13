@@ -3,9 +3,9 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "dependencies": {
     "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type",
-    "@fluent-wallet/spec": "1.0.12"
+    "@fluent-wallet/spec": "1.0.13"
   }
 }

@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/wallet_switch-conflux-chain",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "dependencies": {
     "@fluent-wallet/wallet_switch-ethereum-chain": "workspace:packages/rpcs/wallet_switchEthereumChain"
   }
