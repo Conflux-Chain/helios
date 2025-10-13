@@ -1,9 +1,9 @@
 {
   "name": "@fluent-wallet/wallet_import-private-key",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.12"
+    "@fluent-wallet/spec": "1.0.13"
   }
 }

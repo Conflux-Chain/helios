@@ -3,13 +3,13 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "dependencies": {
     "@ethereumjs/rlp": "5.0.2",
     "@ethereumjs/tx": "5.3.0",
     "@ethereumjs/util": "9.0.3",
     "@fluent-wallet/ledger": "workspace:*",
-    "@fluent-wallet/spec": "1.0.12",
+    "@fluent-wallet/spec": "1.0.13",
     "@fluent-wallet/utils": "workspace:packages/utils",
     "browser-passworder": "2.0.3"
   }

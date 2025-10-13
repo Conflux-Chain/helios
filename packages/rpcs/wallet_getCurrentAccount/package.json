@@ -2,8 +2,8 @@
   "name": "@fluent-wallet/wallet_get-current-account",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.12"
+    "@fluent-wallet/spec": "1.0.13"
   }
 }
