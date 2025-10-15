@@ -1,9 +1,23 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {CompWithLabel} from '../../../components'
+import {useMemo} from 'react'
+import {isHexString} from '@fluent-wallet/utils'
+import {hexToString} from '../../../utils'
 
 export const PersonalSign = ({personalSignData}) => {
   const {t} = useTranslation()
+
+  const personaMessage = useMemo(() => {
+    if (isHexString(personalSignData)) {
+      try {
+        return hexToString(personalSignData)
+      } catch (_error) {
+        return personalSignData
+      }
+    }
+    return personalSignData
+  }, [personalSignData])
 
   return (
     <CompWithLabel
@@ -17,7 +31,7 @@ export const PersonalSign = ({personalSignData}) => {
         id="plaintext"
         className="pl-3 max-h-[316px] pr-3 pt-3 pb-4 rounded bg-gray-4 overflow-auto break-words"
       >
-        {personalSignData
+        {personaMessage
           .replace(/\r/g, '\n')
           .split('\n')
           .map(str => (

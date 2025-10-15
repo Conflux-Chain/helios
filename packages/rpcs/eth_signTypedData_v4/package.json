@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/eth_sign-typed-data_v4",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.20",
+  "version": "0.0.22",
   "dependencies": {
     "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
   }

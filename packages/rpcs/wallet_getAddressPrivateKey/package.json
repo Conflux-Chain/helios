@@ -2,10 +2,10 @@
   "name": "@fluent-wallet/wallet_get-address-private-key",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "dependencies": {
     "@fluent-wallet/hdkey": "workspace:packages/hdkey",
-    "@fluent-wallet/spec": "1.0.11",
+    "@fluent-wallet/spec": "1.0.13",
     "@fluent-wallet/utils": "workspace:packages/utils",
     "browser-passworder": "2.0.3"
   }

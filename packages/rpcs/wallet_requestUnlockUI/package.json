@@ -2,10 +2,10 @@
   "name": "@fluent-wallet/wallet_request-unlock-ui",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "dependencies": {
     "@fluent-wallet/csp": "workspace:packages/csp",
-    "@fluent-wallet/spec": "1.0.11",
+    "@fluent-wallet/spec": "1.0.13",
     "@fluent-wallet/webextension": "workspace:packages/webextension"
   }
 }

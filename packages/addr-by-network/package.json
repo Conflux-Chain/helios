@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/addr-by-network",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "dependencies": {
     "@fluent-wallet/account": "workspace:packages/account",
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",

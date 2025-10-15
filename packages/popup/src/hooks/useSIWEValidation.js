@@ -27,7 +27,8 @@ const createValidators = t => [
   },
   {
     id: VALIDATOR_KEYS.address,
-    validate: ({parsedMessage, address}) => parsedMessage.address === address,
+    validate: ({parsedMessage, address}) =>
+      parsedMessage.address?.toLowerCase() === address?.toLowerCase(),
     getErrorData: () => ({
       title: t('siweWarningAccountTitle'),
       content: t('siweWarningAccount'),

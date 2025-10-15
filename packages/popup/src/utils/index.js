@@ -402,3 +402,19 @@ export const formatNsName = nsName => {
 
   return nsName
 }
+
+// see: https://stackoverflow.com/questions/38987784/how-to-convert-a-hexadecimal-string-to-uint8array-and-back-in-javascript
+export const hexToBytes = hex => {
+  const hexData = hex.startsWith('0x') ? hex.slice(2) : hex
+
+  if (hexData.length === 0) return new Uint8Array()
+
+  return new Uint8Array(
+    hexData.match(/.{1,2}/g).map(byte => parseInt(byte, 16)),
+  )
+}
+
+export const hexToString = hex => {
+  const bytes = hexToBytes(hex)
+  return new TextDecoder().decode(bytes)
+}

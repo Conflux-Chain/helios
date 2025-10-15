@@ -149,9 +149,7 @@ function HistoryItem({
       simple
         ? t('send')
         : decodeData?.name
-        ? decodeData.name === 'unknown'
-          ? t('unknown')
-          : transformToTitleCase(decodeData.name)
+        ? transformToTitleCase(decodeData.name)
         : '-',
     )
   }, [simple, isExternalTx, t, decodeData?.name])
@@ -253,9 +251,11 @@ function HistoryItem({
 
         <div className="flex-1 ml-2">
           <div className="flex items-center justify-between">
-            <div className="text-gray-80 text-sm max-w-[120px] text-ellipsis font-medium">
-              {actionName}
-            </div>
+            {!!actionName && (
+              <div className="text-gray-80 text-sm max-w-[120px] text-ellipsis font-medium">
+                {actionName}
+              </div>
+            )}
             {amount ? (
               <HistoryBalance
                 showNegative={isNegativeAmount}
