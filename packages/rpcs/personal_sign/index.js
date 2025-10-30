@@ -138,7 +138,7 @@ export const main = async ({
 
       if (!hdPath) throw InvalidParams(`Invalid address id ${from}`)
       const hexMessage = toHexString(message)
-      const res = await signLegerPersonalMessage(type, hdPath, hexMessage)
+      const res = await signPersonalMessageWithLedger(type, hdPath, hexMessage)
       const signature = joinSignature({
         r: addHexPrefix(res.r),
         s: addHexPrefix(res.s),
@@ -163,12 +163,8 @@ export const main = async ({
   }
 }
 
-const signLegerPersonalMessage = async (type, hdPath, message) => {
-  let res
-  if (type === 'cfx') {
-    res = await new LedgerConflux().signPersonalMessage(hdPath, message)
-  } else {
-    res = await new LedgerEthereum().signPersonalMessage(hdPath, message)
-  }
+const signPersonalMessageWithLedger = async (type, hdPath, message) => {
+  const ledger = type === 'cfx' ? new LedgerConflux() : new LedgerEthereum()
+  const res = await ledger.signPersonalMessage(hdPath, message)
   return res
 }
