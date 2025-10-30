@@ -10,6 +10,13 @@ import {
   zeroOrOne,
 } from '@fluent-wallet/spec'
 import {personalSign} from '@fluent-wallet/signature'
+import {
+  Ethereum as LedgerEthereum,
+  Conflux as LedgerConflux,
+} from '@fluent-wallet/ledger'
+import {decrypt} from 'browser-passworder'
+import {addHexPrefix, toHexString} from '@fluent-wallet/utils'
+import {joinSignature} from '@ethersproject/bytes'
 
 export const NAME = 'personal_sign'
 
@@ -39,13 +46,17 @@ export const permissions = {
     'wallet_userRejectedAuthRequest',
     'wallet_getAddressPrivateKey',
   ],
-  db: ['getAuthReqById', 'findAddress', 'validateAddrInApp'],
+  db: ['getAuthReqById', 'findAddress', 'validateAddrInApp', 'getPassword'],
   scope: {wallet_accounts: {}},
+}
+
+function getLedgerHDPathFromAddressAndGroupData(groupData, hex) {
+  return groupData[hex]
 }
 
 export const main = async ({
   Err: {InvalidParams, Unauthorized, UserRejected},
-  db: {getAuthReqById, findAddress, validateAddrInApp},
+  db: {getAuthReqById, findAddress, validateAddrInApp, getPassword},
   rpcs: {
     wallet_getAddressPrivateKey,
     wallet_userApprovedAuthRequest,
@@ -114,8 +125,28 @@ export const main = async ({
       networkId: authReq.app.currentNetwork.eid,
       appId: authReq.app.eid,
       value: from,
-      g: {pk: 1, _account: {eid: 1, _accountGroup: {vault: {type: 1}}}},
+      g: {pk: 1, hex: 1, _account: {eid: 1, _accountGroup: {vault: 1}}},
     })
+
+    if (addr.account.accountGroup.vault.type === 'hw') {
+      const decrypted = JSON.parse(
+        addr.account.accountGroup.vault.ddata ||
+          (await decrypt(getPassword(), addr.account.accountGroup.vault.data)),
+      )
+
+      const hdPath = getLedgerHDPathFromAddressAndGroupData(decrypted, addr.hex)
+
+      if (!hdPath) throw InvalidParams(`Invalid address id ${from}`)
+      const hexMessage = toHexString(message)
+      const res = await signLegerPersonalMessage(type, hdPath, hexMessage)
+      const signature = joinSignature({
+        r: addHexPrefix(res.r),
+        s: addHexPrefix(res.s),
+        v: res.v,
+      })
+
+      return await wallet_userApprovedAuthRequest({authReqId, res: signature})
+    }
 
     if (addr.account.accountGroup.vault.type === 'pub')
       return wallet_userRejectedAuthRequest({authReqId})
@@ -130,4 +161,14 @@ export const main = async ({
 
     return await wallet_userApprovedAuthRequest({authReqId, res: sig})
   }
+}
+
+const signLegerPersonalMessage = async (type, hdPath, message) => {
+  let res
+  if (type === 'cfx') {
+    res = await new LedgerConflux().signPersonalMessage(hdPath, message)
+  } else {
+    res = await new LedgerEthereum().signPersonalMessage(hdPath, message)
+  }
+  return res
 }
