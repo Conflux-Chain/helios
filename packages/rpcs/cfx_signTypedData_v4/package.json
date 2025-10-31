@@ -4,8 +4,11 @@
   "main": "index.js",
   "version": "0.0.23",
   "dependencies": {
+    "@ethersproject/bytes": "5.6.1",
+    "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:packages/signature",
     "@fluent-wallet/spec": "1.0.13",
-    "@fluent-wallet/typed-data-spec": "workspace:packages/typed-data-spec"
+    "@fluent-wallet/utils": "workspace:*",
+    "browser-passworder": "2.0.3"
   }
 }

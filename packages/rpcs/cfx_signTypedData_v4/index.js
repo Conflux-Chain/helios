@@ -1,9 +1,23 @@
 import * as spec from '@fluent-wallet/spec'
 import {encode} from '@fluent-wallet/base32-address'
 import getTypedDataSpec from '@fluent-wallet/typed-data-spec'
-import {signTypedData_v4, hashTypedData} from '@fluent-wallet/signature'
-
+import {
+  signTypedData_v4,
+  hashTypedData,
+  getLedgerTypedDataPayload,
+} from '@fluent-wallet/signature'
+import {
+  Ethereum as LedgerEthereum,
+  Conflux as LedgerConflux,
+} from '@fluent-wallet/ledger'
+import {decrypt} from 'browser-passworder'
+import {joinSignature} from '@ethersproject/bytes'
+import {addHexPrefix} from '@fluent-wallet/utils'
 const {map, dbid, or} = spec
+
+function getLedgerHDPathFromAddressAndGroupData(groupData, hex) {
+  return groupData[hex]
+}
 
 function validateAndFormatTypedDataString({
   type,
@@ -38,6 +52,33 @@ function validateAndFormatTypedDataString({
   return typedData
 }
 
+async function signTypedDataWithLedger(type, hdPath, typedData) {
+  const payload = await getLedgerTypedDataPayload(type, typedData)
+  const ledger = type === 'cfx' ? new LedgerConflux() : new LedgerEthereum()
+  try {
+    if (type === 'cfx') {
+      const res = await ledger.signEIP712Message(hdPath, payload.typedDataJSON)
+      return res
+    }
+
+    const res = await ledger.signEIP712Message(hdPath, payload.typedDataJSON)
+    return res
+  } catch (error) {
+    // signEIP712Message is not compatible with ledger nanos
+    const unsupported =
+      error?.statusCode === 0x6d00 ||
+      error?.statusText === 'INS_NOT_SUPPORTED' ||
+      /INS_NOT_SUPPORTED/.test(error?.message ?? '')
+
+    if (!unsupported) throw error
+    return ledger.signEIP712HashedMessage(
+      hdPath,
+      payload.domainHashHex,
+      payload.messageHashHex,
+    )
+  }
+}
+
 const {cat, ethHexAddress, base32UserAddress, stringp} = spec
 
 export const gen = {
@@ -62,7 +103,7 @@ export const gen = {
     type =>
     async ({
       Err: {InvalidParams, Unauthorized, UserRejected},
-      db: {getAuthReqById, findAddress, validateAddrInApp},
+      db: {getAuthReqById, findAddress, validateAddrInApp, getPassword},
       rpcs: {
         wallet_getAddressPrivateKey,
         wallet_addPendingUserAuthRequest,
@@ -143,7 +184,7 @@ export const gen = {
         const addr = findAddress({
           appId: authReq.app.eid,
           value: from,
-          g: {pk: 1, _account: {eid: 1, _accountGroup: {vault: {type: 1}}}},
+          g: {pk: 1, hex: 1, _account: {eid: 1, _accountGroup: {vault: 1}}},
         })
 
         if (addr.account.accountGroup.vault.type === 'pub')
@@ -155,6 +196,34 @@ export const gen = {
           spec,
           InvalidParams,
         })
+
+        if (addr.account.accountGroup.vault.type === 'hw') {
+          const decrypted = JSON.parse(
+            addr.account.accountGroup.vault.ddata ||
+              (await decrypt(
+                getPassword(),
+                addr.account.accountGroup.vault.data,
+              )),
+          )
+
+          const hdPath = getLedgerHDPathFromAddressAndGroupData(
+            decrypted,
+            addr.hex,
+          )
+          if (!hdPath) throw InvalidParams(`Invalid address id ${from}`)
+
+          const res = await signTypedDataWithLedger(type, hdPath, typedData)
+          const signature = joinSignature({
+            r: addHexPrefix(res.r),
+            s: addHexPrefix(res.s),
+            v: res.v,
+          })
+
+          return await wallet_userApprovedAuthRequest({
+            authReqId,
+            res: signature,
+          })
+        }
 
         const pk =
           addr.pk ||
@@ -176,7 +245,7 @@ export const schemas = gen.schemas('cfx')
 
 export const permissions = {
   external: ['inpage', 'popup'],
-  db: ['getAuthReqById', 'findAddress', 'validateAddrInApp'],
+  db: ['getAuthReqById', 'findAddress', 'validateAddrInApp', 'getPassword'],
   methods: [
     'wallet_getAddressPrivateKey',
     'wallet_addPendingUserAuthRequest',
