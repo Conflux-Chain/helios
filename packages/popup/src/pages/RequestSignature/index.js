@@ -67,7 +67,7 @@ function RequestSignature() {
   })
 
   // conflux ledger app is not supported signing message for now
-  const isUnsupportedHw =
+  const isUnsupportedSign =
     AddressData?.account?.accountGroup?.vault?.type === ACCOUNT_GROUP_TYPE.HW &&
     AddressData?.network?.type === 'cfx'
 
@@ -151,7 +151,7 @@ function RequestSignature() {
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
         <main className="rounded-t-xl px-3 bg-gray-0">
           {SignatureContent}
-          {isUnsupportedHw && (
+          {isUnsupportedSign && (
             <Alert
               open={true}
               className="mt-3"
@@ -163,7 +163,7 @@ function RequestSignature() {
             />
           )}
 
-          {!isUnsupportedHw &&
+          {!isUnsupportedSign &&
             siweErrors &&
             Object.keys(siweErrors).length > 0 && (
               <Alert
@@ -183,7 +183,7 @@ function RequestSignature() {
             confirmText={
               needsUserConfirmationError ? t('siweReviewAlert') : t('sign')
             }
-            confirmDisabled={isUnsupportedHw}
+            confirmDisabled={isUnsupportedSign}
             confirmComponent={
               needsUserConfirmationError
                 ? () => (
