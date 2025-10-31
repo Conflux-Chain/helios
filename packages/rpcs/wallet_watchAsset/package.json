@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/wallet_watch-asset",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "packageManager": "yarn@3.0.1",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.13"
+    "@fluent-wallet/spec": "1.0.14"
   }
 }

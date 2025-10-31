@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/wallet_import-all",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.13",
+    "@fluent-wallet/spec": "1.0.14",
     "browser-passworder": "2.0.3",
     "webextension-polyfill": "0.8.0"
   }
