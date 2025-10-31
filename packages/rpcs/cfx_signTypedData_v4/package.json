@@ -2,12 +2,12 @@
   "name": "@fluent-wallet/cfx_sign-typed-data_v4",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "dependencies": {
     "@ethersproject/bytes": "5.6.1",
     "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:packages/signature",
-    "@fluent-wallet/spec": "1.0.13",
+    "@fluent-wallet/spec": "1.0.14",
     "@fluent-wallet/utils": "workspace:*",
     "browser-passworder": "2.0.3"
   }
