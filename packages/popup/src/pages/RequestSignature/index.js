@@ -106,7 +106,7 @@ function RequestSignature() {
     siweErrors,
   ])
 
-  const currentUrlError = siweErrors?.uri
+  const isDomainMatchOriginError = siweErrors?.domain
 
   const needsUserConfirmationError =
     siweErrors &&
@@ -202,11 +202,13 @@ function RequestSignature() {
           <SIWERiskModal
             open={riskModalState.open}
             onClose={() => setRiskModalState({open: false})}
-            title={currentUrlError?.title}
-            content={currentUrlError?.content}
-            knownRisk={currentUrlError?.knownRisk}
-            onConfirmationToggle={currentUrlError?.onConfirmationToggle}
-            isUserConfirmed={currentUrlError?.isUserConfirmed}
+            title={isDomainMatchOriginError?.title}
+            content={isDomainMatchOriginError?.content}
+            knownRisk={isDomainMatchOriginError?.knownRisk}
+            onConfirmationToggle={
+              isDomainMatchOriginError?.onConfirmationToggle
+            }
+            isUserConfirmed={isDomainMatchOriginError?.isUserConfirmed}
           />
         </div>
       </div>

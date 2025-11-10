@@ -36,10 +36,15 @@ export const SignInSign = ({parsedMessage, currentNetwork, errors = {}}) => {
         value: parsedMessage?.statement,
       },
       {
+        label: t('siweDomain'),
+        value: parsedMessage?.domain,
+        key: 'domain',
+        error: errors?.domain,
+      },
+      {
         label: t('siweKeyUri'),
         value: parsedMessage?.uri,
         key: 'uri',
-        error: errors?.uri,
       },
       {
         label: t('siweKeyNetwork'),

@@ -302,7 +302,7 @@ const uk = {
     siweKeyNonce: 'Номер транзакції',
     siweKeyIssuedAt: 'Видано',
     siweKeyResources: 'Ресурси',
-
+    siweDomain: 'Домен',
     // - add network
     addNetwork: 'Додати мережу',
     allowAddNetwork: 'Дозволити цьому сайту додати мережу?',
