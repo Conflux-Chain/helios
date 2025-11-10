@@ -303,6 +303,7 @@ const ru = {
     siweKeyNonce: 'Номер транзакции',
     siweKeyIssuedAt: 'Выпущено',
     siweKeyResources: 'Ресурсы',
+    siweDomain: 'Домен',
 
     // - add network
     addNetwork: 'Добавить сеть',

@@ -292,7 +292,7 @@ const zh = {
     siweKeyNonce: '随机数',
     siweKeyIssuedAt: '发布于',
     siweKeyResources: '资源',
-
+    siweDomain: '域名',
     // - add network
     addNetwork: '添加网络',
     allowAddNetwork: '允许这个网站添加网络？',

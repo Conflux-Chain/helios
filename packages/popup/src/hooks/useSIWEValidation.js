@@ -2,18 +2,55 @@ import {useCallback, useEffect, useState} from 'react'
 import {useTranslation} from 'react-i18next'
 
 export const VALIDATOR_KEYS = {
-  uri: 'uri',
   address: 'address',
+  domain: 'domain',
+}
+
+export const parseDomainParts = (domain, originProtocol) => {
+  if (domain.match(/^[^/:]*:\/\//u)) {
+    return new URL(domain)
+  }
+  return new URL(`${originProtocol}//${domain}`)
 }
 
 const createValidators = t => [
   {
-    id: VALIDATOR_KEYS.uri,
+    id: VALIDATOR_KEYS.domain,
     validate: ({parsedMessage, origin}) => {
       try {
-        const messageDomain = new URL(parsedMessage.uri).host
+        if (!parsedMessage.domain || !origin) return false
 
-        return messageDomain === origin
+        let originURL
+        try {
+          originURL = new URL(origin)
+        } catch {
+          // The origin from app.site.origin doesn't include protocol information,
+          // so we add a default protocol (https://) just for URL parsing.
+          // Note: We skip protocol comparison since the original origin doesn't provide it.
+          originURL = new URL(`https://${origin}`)
+        }
+
+        const domainURL = parseDomainParts(
+          parsedMessage.domain,
+          originURL.protocol,
+        )
+
+        if (
+          domainURL.hostname.localeCompare(originURL.hostname, undefined, {
+            sensitivity: 'variant',
+          }) !== 0
+        ) {
+          return false
+        }
+
+        if (
+          domainURL.username !== '' &&
+          domainURL.username !== originURL.username
+        ) {
+          return false
+        }
+
+        return true
       } catch {
         return false
       }
@@ -52,7 +89,6 @@ export function useSIWEValidation({parsedMessage, origin, address}) {
 
   useEffect(() => {
     if (!parsedMessage) return
-
     const validators = createValidators(t)
     const newErrors = {}
 
