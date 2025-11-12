@@ -1,3 +1,4 @@
 releases:
   browser-extension: patch
+  helios: patch
   helios-popup: patch
