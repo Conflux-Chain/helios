@@ -368,6 +368,7 @@ export const useDappParams = customPendingAuthReq => {
 export const useDecodeData = ({to, data: rawData} = {}) => {
   const data = padHexData(rawData)
   const [decodeData, setDecodeData] = useState({})
+  const [isDecoding, setIsDecoding] = useState(false)
   const type = useAddressType(to)
   const {
     data: {
@@ -383,7 +384,9 @@ export const useDecodeData = ({to, data: rawData} = {}) => {
   useEffect(() => {
     if (!!data && data !== '0x') {
       if (!currentNetworkType) {
-        return setDecodeData({})
+        setDecodeData({})
+        setIsDecoding(false)
+        return
       }
       const getSignature =
         currentNetworkType === NETWORK_TYPE.CFX
@@ -391,20 +394,33 @@ export const useDecodeData = ({to, data: rawData} = {}) => {
           : getEthContractMethodSignature
       const params = [to, data, netId]
       const offlineParams = [...params, true]
+      if (isContract) {
+        setIsDecoding(true)
+      }
 
       getSignature(...(isContract ? params : offlineParams))
         .then(result => {
           setDecodeData({...result})
+          setIsDecoding(false)
         })
         .catch(e => {
           console.error('getSignature error:', e)
+          setIsDecoding(false)
         })
       return
     }
     setDecodeData({})
+    setIsDecoding(false)
   }, [data, isContract, to, netId, currentNetworkType])
 
-  return {isContract, isEOAAddress, token: crc20Token, decodeData, data}
+  return {
+    isContract,
+    isEOAAddress,
+    token: crc20Token,
+    decodeData,
+    data,
+    isDecoding,
+  }
 }
 
 export const useDecodeDisplay = ({
@@ -415,6 +431,8 @@ export const useDecodeDisplay = ({
   nativeToken,
   pendingAuthReq = {},
   tx = {},
+  decodeData: passedDecodeData,
+  token: passedToken,
 }) => {
   let displayToken = {},
     displayValue = '',
@@ -434,7 +452,9 @@ export const useDecodeDisplay = ({
   })
 
   displayAccount = account
-  const {token, decodeData} = useDecodeData(tx)
+  const token = passedToken
+  const decodeData = passedDecodeData
+
   const isApproveToken =
     isDapp &&
     isContract &&
@@ -526,12 +546,16 @@ export function padHexData(data) {
   return '0x' + hex
 }
 
-export const useViewData = ({data, to} = {}, isApproveToken) => {
-  const {decodeData, token} = useDecodeData({data, to})
+export const useViewData = (
+  {data} = {},
+  isApproveToken,
+  passedDecodeData,
+  passedToken,
+) => {
   const {customAllowance} = useCurrentTxParams()
   const allowance =
-    convertValueToData(customAllowance, token?.decimals) || '0x0'
-  const firstArg = decodeData?.args?.[0]
+    convertValueToData(customAllowance, passedToken?.decimals) || '0x0'
+  const firstArg = passedDecodeData?.args?.[0]
   const spender =
     isApproveToken && firstArg
       ? validateBase32Address(firstArg)
@@ -539,10 +563,12 @@ export const useViewData = ({data, to} = {}, isApproveToken) => {
         : firstArg
       : ''
   const viewData = useMemo(() => {
-    if (customAllowance && isApproveToken) {
-      return spender
-        ? iface.encodeFunctionData('approve', [spender, allowance])
-        : data
+    const shouldUseCustom = customAllowance && isApproveToken
+    if (shouldUseCustom) {
+      if (!spender) {
+        return data
+      }
+      return iface.encodeFunctionData('approve', [spender, allowance])
     } else {
       return padHexData(data)
     }

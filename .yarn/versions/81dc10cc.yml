@@ -1,0 +1,3 @@
+releases:
+  browser-extension: patch
+  helios-popup: patch
