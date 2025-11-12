@@ -25,6 +25,9 @@ class Provider extends SafeEventEmitter {
         'accountsChanged',
         'chainChanged',
         'message',
+
+        // temp for usdt0 page
+        'change',
       ],
       streamCacheLast: false,
     })
