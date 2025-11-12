@@ -2,6 +2,7 @@ import {CloseMode, pubsub, stream} from '@thi.ng/rstream'
 import {pluck} from '@fluent-wallet/transducers'
 import {isFunction, isObject, isString} from '@fluent-wallet/checks'
 
+// TODO: refactor with events
 export default class SafeEventEmitter {
   // #s
   #pb
