@@ -311,6 +311,7 @@ const fr = {
     siweKeyNonce: 'Nonce',
     siweKeyIssuedAt: 'Émis le',
     siweKeyResources: 'Ressources',
+    siweDomain: 'Domaine',
 
     // - add network
     addNetwork: 'Ajouter un Réseau',

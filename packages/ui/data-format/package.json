@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/data-format",
   "type": "module",
   "main": "index.js",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "dependencies": {
     "@fluent-wallet/utils": "workspace:packages/utils",
     "big.js": "^6.1.1",

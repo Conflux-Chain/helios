@@ -303,7 +303,7 @@ const en = {
     siweKeyNonce: 'Nonce',
     siweKeyIssuedAt: 'Issued',
     siweKeyResources: 'Resources',
-
+    siweDomain: 'Domain',
     // - add network
     addNetwork: 'Add Network',
     allowAddNetwork: 'Allow this site to add a network?',

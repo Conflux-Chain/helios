@@ -83,9 +83,64 @@ export default class Conflux {
   async signPersonalMessage(hdPath, messageHex) {
     await this.setApp()
     try {
-      return this.app?.signPersonalMessage(hdPath, messageHex)
+      const res = await this.app?.signPersonalMessage(hdPath, messageHex)
+      return res
     } catch (error) {
       return Promise.reject(error)
+    } finally {
+      await this.cleanUp()
+    }
+  }
+
+  /**
+   * TODO update this when the ledger app is updated
+   * Sign EIP712 hashed message
+   * @param {*} hdPath the hd path
+   * @param {*} domainSeparatorHex hex string of domain separator
+   * @param {*} hashStructMessageHex hex string of hash struct message
+   * @returns
+   */
+  async signEIP712HashedMessage(
+    hdPath,
+    domainSeparatorHex,
+    hashStructMessageHex,
+  ) {
+    await this.setApp()
+    try {
+      const res = await this.app?.signEIP712HashedMessage(
+        hdPath,
+        domainSeparatorHex,
+        hashStructMessageHex,
+      )
+      return res
+    } catch (error) {
+      return Promise.reject(error)
+    } finally {
+      await this.cleanUp()
+    }
+  }
+
+  /**
+   * TODO update this when the ledger app is updated
+   * Sign an EIP-712 formatted message
+   * @param {*} hdPath the hd path
+   * @param {*} jsonMessage message to sign
+   * @param {*} fullImplem use the legacy implementation (optional, default false)
+   * @returns
+   */
+  async signEIP712Message(hdPath, jsonMessage, fullImplem = false) {
+    await this.setApp()
+    try {
+      const res = await this.app?.signEIP712Message(
+        hdPath,
+        jsonMessage,
+        fullImplem,
+      )
+      return res
+    } catch (error) {
+      return Promise.reject(error)
+    } finally {
+      await this.cleanUp()
     }
   }
 

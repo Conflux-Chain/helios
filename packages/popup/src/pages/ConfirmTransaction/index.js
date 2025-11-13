@@ -94,6 +94,7 @@ function ConfirmTransaction() {
     nonce,
     maxMode,
     sendAmount,
+    customAllowance,
     setGasPrice,
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
@@ -119,7 +120,8 @@ function ConfirmTransaction() {
   const tx = useDappParams(pendingAuthReq)
 
   // get to type and to token
-  const {isContract, decodeData, isEOAAddress} = useDecodeData(tx)
+  const {isContract, decodeData, isEOAAddress, token, isDecoding} =
+    useDecodeData(tx)
   const {
     isApproveToken,
     isSendToken,
@@ -136,6 +138,8 @@ function ConfirmTransaction() {
     nativeToken,
     tx,
     pendingAuthReq: pendingAuthReq?.[0],
+    decodeData,
+    token,
   })
   const isSign = !isSendToken && !isApproveToken
 
@@ -170,7 +174,7 @@ function ConfirmTransaction() {
   }
 
   // user can edit the approve limit
-  const viewData = useViewData(params, isApproveToken)
+  const viewData = useViewData(params, isApproveToken, decodeData, token)
   params.data = viewData
 
   // send params, need to delete '' or undefined params,
@@ -351,7 +355,8 @@ function ConfirmTransaction() {
   const confirmDisabled =
     !!estimateError ||
     estimateRst.loading ||
-    Object.keys(estimateRst).length === 0
+    Object.keys(estimateRst).length === 0 ||
+    (customAllowance && isDecoding)
 
   return (
     <div className="confirm-transaction-container flex flex-col h-full w-full relative">

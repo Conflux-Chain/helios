@@ -66,8 +66,10 @@ function RequestSignature() {
     networkId: dappNetworkId,
   })
 
-  const isHw =
-    AddressData?.account?.accountGroup?.vault?.type === ACCOUNT_GROUP_TYPE.HW
+  // conflux ledger app is not supported signing message for now
+  const isUnsupportedSign =
+    AddressData?.account?.accountGroup?.vault?.type === ACCOUNT_GROUP_TYPE.HW &&
+    AddressData?.network?.type === 'cfx'
 
   const [siweErrors] = useSIWEValidation({
     parsedMessage,
@@ -104,7 +106,7 @@ function RequestSignature() {
     siweErrors,
   ])
 
-  const currentUrlError = siweErrors?.uri
+  const isDomainMatchOriginError = siweErrors?.domain
 
   const needsUserConfirmationError =
     siweErrors &&
@@ -149,7 +151,7 @@ function RequestSignature() {
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
         <main className="rounded-t-xl px-3 bg-gray-0">
           {SignatureContent}
-          {isHw && (
+          {isUnsupportedSign && (
             <Alert
               open={true}
               className="mt-3"
@@ -161,17 +163,19 @@ function RequestSignature() {
             />
           )}
 
-          {!isHw && siweErrors && Object.keys(siweErrors).length > 0 && (
-            <Alert
-              open={true}
-              type="warning"
-              icon={<WarningFilled />}
-              closable={false}
-              content={<span className="ml-1 text-xs">{t('siweAlert')}</span>}
-              className="mb-2 w-auto"
-              id="siweAlert"
-            />
-          )}
+          {!isUnsupportedSign &&
+            siweErrors &&
+            Object.keys(siweErrors).length > 0 && (
+              <Alert
+                open={true}
+                type="warning"
+                icon={<WarningFilled />}
+                closable={false}
+                content={<span className="ml-1 text-xs">{t('siweAlert')}</span>}
+                className="mb-2 w-auto"
+                id="siweAlert"
+              />
+            )}
         </main>
         <div>
           <DappFooter
@@ -179,7 +183,7 @@ function RequestSignature() {
             confirmText={
               needsUserConfirmationError ? t('siweReviewAlert') : t('sign')
             }
-            confirmDisabled={isHw}
+            confirmDisabled={isUnsupportedSign}
             confirmComponent={
               needsUserConfirmationError
                 ? () => (
@@ -198,11 +202,13 @@ function RequestSignature() {
           <SIWERiskModal
             open={riskModalState.open}
             onClose={() => setRiskModalState({open: false})}
-            title={currentUrlError?.title}
-            content={currentUrlError?.content}
-            knownRisk={currentUrlError?.knownRisk}
-            onConfirmationToggle={currentUrlError?.onConfirmationToggle}
-            isUserConfirmed={currentUrlError?.isUserConfirmed}
+            title={isDomainMatchOriginError?.title}
+            content={isDomainMatchOriginError?.content}
+            knownRisk={isDomainMatchOriginError?.knownRisk}
+            onConfirmationToggle={
+              isDomainMatchOriginError?.onConfirmationToggle
+            }
+            isUserConfirmed={isDomainMatchOriginError?.isUserConfirmed}
           />
         </div>
       </div>

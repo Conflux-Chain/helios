@@ -225,3 +225,28 @@ export const detectSIWEMessage = message => {
     }
   }
 }
+
+const textEncoder = new TextEncoder()
+
+export const utf8ToHex = value => {
+  if (typeof value !== 'string') {
+    throw new Error(`utf8ToHex expects string input, received ${typeof value}`)
+  }
+  const bytes = textEncoder.encode(value)
+  let hex = ''
+  for (const byte of bytes) {
+    hex += byte.toString(16).padStart(2, '0')
+  }
+  return hex
+}
+
+export const toHexString = value => {
+  if (Buffer.isBuffer(value)) return value.toString('hex')
+
+  if (typeof value === 'string') {
+    if (isHexString(value)) return stripHexPrefix(value)
+    return utf8ToHex(value)
+  }
+
+  return toBuffer(value).toString('hex')
+}

@@ -21,7 +21,7 @@ import {
   computeAddress as ethComputeAddress,
   serialize as serializeETHTransaction,
 } from '@ethersproject/transactions'
-import {getMessage as cip23GetMessage} from 'cip-23'
+import {getMessage as cip23GetMessage, getStructHash} from 'cip-23'
 import {keccak256} from '@ethersproject/keccak256'
 
 export const hashPersonalMessage = (type, message) =>
@@ -109,6 +109,42 @@ export async function recoverTypedSignature_v4(
   const digest = TypedDataUtils.sign(typedData, true)
   const pub = ethRecoverPublicKey(digest, signature)
   return ethComputeAddress(pub)
+}
+
+export async function getLedgerTypedDataPayload(type, typedData) {
+  if (type === 'eth') {
+    const {TypedDataUtils} = (await import('eth-sig-util')).default
+    const sanitized = TypedDataUtils.sanitizeData(typedData)
+    const domainHash = TypedDataUtils.hashStruct(
+      'EIP712Domain',
+      sanitized.domain,
+      sanitized.types,
+      true,
+    )
+    const messageHash = TypedDataUtils.hashStruct(
+      sanitized.primaryType,
+      sanitized.message,
+      sanitized.types,
+      true,
+    )
+    return {
+      typedDataJSON: sanitized,
+      domainHashHex: stripHexPrefix(domainHash.toString('hex')),
+      messageHashHex: stripHexPrefix(messageHash.toString('hex')),
+    }
+  }
+
+  const domainHash = getStructHash(typedData, 'CIP23Domain', typedData.domain)
+  const messageHash = getStructHash(
+    typedData,
+    typedData.primaryType,
+    typedData.message,
+  )
+  return {
+    typedDataJSON: typedData,
+    domainHashHex: stripHexPrefix(domainHash.toString('hex')),
+    messageHashHex: stripHexPrefix(messageHash.toString('hex')),
+  }
 }
 
 export const ethEcdsaSign = (hash, pk) =>
