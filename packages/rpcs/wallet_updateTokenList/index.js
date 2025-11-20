@@ -78,7 +78,7 @@ export const main = async ({
 
   let tokenList
   try {
-    tokenList = await fetch(url).then(r => r.json())
+    tokenList = await fetch(url, {cache: 'no-cache'}).then(r => r.json())
   } catch (err) {
     throw InvalidParams(`Invalid token list ${url}`)
   }
