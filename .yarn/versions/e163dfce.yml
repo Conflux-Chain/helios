@@ -1,7 +1,0 @@
-releases:
-  "@fluent-wallet/wallet_update-token-list": patch
-  browser-extension: patch
-  helios-background: patch
-
-declined:
-  - helios
