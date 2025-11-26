@@ -6,6 +6,7 @@ const POPUP_HEIGHT = 629
 const POPUP_WIDTH = 372
 let FOCUS_LISTENER = null
 let REMOVED_LISTENER = null
+let CURRENT_POPUP_ID = null
 
 const focus = async wid => {
   if (!FOCUS_LISTENER) {
@@ -60,13 +61,21 @@ const newPopup = async ({url, alwaysOnTop}) => {
   return w
 }
 
+const getPopup = async () => {
+  if (!browser?.windows?.getAll) return
+  const windows = await browser.windows.getAll()
+  return windows
+    ? windows.find(
+        win => win && win.type === 'popup' && win.id === CURRENT_POPUP_ID,
+      )
+    : null
+}
+
 export const show = async (arg = {}) => {
   let {url, alwaysOnTop = false} = arg
   url = url || 'notification.html'
   if (!browser?.windows?.getAll) return
-  let popup = (await browser.windows.getAll()).filter(
-    w => w.type === 'popup',
-  )?.[0]
+  let popup = await getPopup()
   if (popup) {
     try {
       // for some reason, chrome won't throw the error if popup is destroyed
@@ -80,16 +89,13 @@ export const show = async (arg = {}) => {
       // eslint-disable-next-line no-empty
     } catch (err) {
       // popup got deleted
-      if (
-        popup.id !==
-        (await browser.windows.getAll()).filter(w => w.type === 'popup')?.[0]
-          ?.id
-      ) {
+      if (popup.id !== (await getPopup()?.id)) {
         show(arg)
       }
     }
   } else {
     popup = await newPopup({url, alwaysOnTop})
+    CURRENT_POPUP_ID = popup.id
   }
   return popup
 }
@@ -97,9 +103,7 @@ export const show = async (arg = {}) => {
 export const removePopup = async () => {
   if (!browser?.windows?.getAll) return
   try {
-    const popup = (await browser.windows.getAll()).filter(
-      w => w.type === 'popup',
-    )?.[0]
+    const popup = await getPopup()
 
     if (popup) {
       await remove(popup.id)
@@ -125,6 +129,9 @@ if (browser?.windows?.onFocusChanged) {
   })
 
   browser.windows.onRemoved.addListener(id => {
+    if (CURRENT_POPUP_ID === id) {
+      CURRENT_POPUP_ID = undefined
+    }
     ON_REMOVED = ON_REMOVED.reduce((acc, f) => {
       try {
         const dontRemoveListener = f(id)
