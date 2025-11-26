@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/webextension",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "dependencies": {
     "@fluent-wallet/checks": "workspace:packages/checks",
     "webextension-polyfill": "0.8.0"
