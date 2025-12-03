@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef, useCallback} from 'react'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import Link from '@fluent-wallet/component-link'
@@ -74,6 +74,11 @@ function ConfirmTransaction() {
   const [sendError, setSendError] = useState({})
   const [estimateError, setEstimateError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
+
+  // force send unlock state
+  const [forceSendUnlocked, setForceSendUnlocked] = useState(false)
+  const forceSendTimer = useRef(null)
+
   const isDapp = getPageType() === 'notification'
   useEffect(() => {
     if (isDapp)
@@ -326,9 +331,11 @@ function ConfirmTransaction() {
       isTxTreatedAsEIP1559,
     )
     if (error) {
-      setLoading(false)
       setEstimateError(t(error))
-      return
+      if (!forceSendUnlocked) {
+        setLoading(false)
+        return
+      }
     }
 
     request(SEND_TRANSACTION, [params])
@@ -358,6 +365,55 @@ function ConfirmTransaction() {
     Object.keys(estimateRst).length === 0 ||
     (customAllowance && isDecoding)
 
+  const effectiveConfirmDisabled = confirmDisabled && !forceSendUnlocked
+  const clearForceSendTimer = useCallback(() => {
+    if (!forceSendTimer.current) return
+    clearTimeout(forceSendTimer.current)
+    forceSendTimer.current = null
+  }, [])
+  const startForceSendUnlock = useCallback(
+    event => {
+      if (!effectiveConfirmDisabled) return
+      event.preventDefault()
+      if (forceSendTimer.current) return
+      forceSendTimer.current = setTimeout(() => {
+        setForceSendUnlocked(true)
+        forceSendTimer.current = null
+      }, 5000)
+    },
+    [effectiveConfirmDisabled],
+  )
+  const cancelForceSendUnlock = useCallback(() => {
+    clearForceSendTimer()
+  }, [clearForceSendTimer])
+
+  useEffect(() => {
+    if (!confirmDisabled && forceSendUnlocked) {
+      setForceSendUnlocked(false)
+    }
+  }, [confirmDisabled, forceSendUnlocked])
+
+  useEffect(() => {
+    return () => {
+      clearForceSendTimer()
+    }
+  }, [clearForceSendTimer])
+
+  const ForceSendConfirmButton = useCallback(
+    ({onConfirm, disabled}) => (
+      <div
+        className="flex-1 relative"
+        onPointerDown={startForceSendUnlock}
+        onPointerUp={cancelForceSendUnlock}
+        onPointerLeave={cancelForceSendUnlock}
+      >
+        <Button className="w-full" onClick={onConfirm} disabled={disabled}>
+          {t('confirm')}
+        </Button>
+      </div>
+    ),
+    [startForceSendUnlock, cancelForceSendUnlock, t],
+  )
   return (
     <div className="confirm-transaction-container flex flex-col h-full w-full relative">
       <header>
@@ -434,8 +490,9 @@ function ConfirmTransaction() {
             <DappFooter
               confirmText={t('confirm')}
               cancelText={t('cancel')}
-              confirmDisabled={confirmDisabled}
+              confirmDisabled={effectiveConfirmDisabled}
               confirmParams={{tx: sendParams}}
+              confirmComponent={ForceSendConfirmButton}
               setSendStatus={setSendStatus}
               pendingAuthReq={pendingAuthReq}
               isHwAccount={isHwAccount}
