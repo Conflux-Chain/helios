@@ -1,0 +1,8 @@
+releases:
+  "@fluent-wallet/cfx_send-transaction": patch
+  "@fluent-wallet/cfx_sign-transaction": patch
+  "@fluent-wallet/wallet_send-transaction": patch
+  "@fluent-wallet/wallet_send-transaction-with-action": patch
+  browser-extension: patch
+  helios: patch
+  helios-background: patch
