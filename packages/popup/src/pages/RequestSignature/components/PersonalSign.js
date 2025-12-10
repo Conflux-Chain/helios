@@ -10,11 +10,8 @@ export const PersonalSign = ({personalSignData}) => {
 
   const personaMessage = useMemo(() => {
     if (isHexString(personalSignData)) {
-      try {
-        return hexToString(personalSignData)
-      } catch (_error) {
-        return personalSignData
-      }
+      const str = hexToString(personalSignData)
+      return str === null ? personalSignData : str
     }
     return personalSignData
   }, [personalSignData])
