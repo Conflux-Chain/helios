@@ -414,7 +414,16 @@ export const hexToBytes = hex => {
   )
 }
 
+const utf8Decoder = new TextDecoder('utf-8', {fatal: true})
+
 export const hexToString = hex => {
-  const bytes = hexToBytes(hex)
-  return new TextDecoder().decode(bytes)
+  if (typeof hex !== 'string') return null
+  const normalized = hex.startsWith('0x') ? hex.slice(2) : hex
+  if (normalized.length % 2) return null
+
+  try {
+    return utf8Decoder.decode(hexToBytes(normalized))
+  } catch {
+    return null
+  }
 }
