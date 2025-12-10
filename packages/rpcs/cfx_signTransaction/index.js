@@ -143,7 +143,10 @@ export const main = async args => {
    * so we need check this app version
    */
   let isV1LedgerAPP = false
-  if (fromAddr.account.accountGroup.vault.type === 'hw') {
+
+  const needLedgerVersionCheck =
+    fromAddr.account.accountGroup.vault.type === 'hw' && !dryRun && _popup
+  if (needLedgerVersionCheck) {
     // is hw wallet, we check is 1.x app version
     const {Conflux: LedgerConflux} = await import('@fluent-wallet/ledger')
     let ledger = new LedgerConflux()
