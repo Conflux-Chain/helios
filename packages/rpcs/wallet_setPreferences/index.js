@@ -1,5 +1,6 @@
 import {map, boolean} from '@fluent-wallet/spec'
 import {isUndefined} from '@fluent-wallet/checks'
+import {siteRuntimeManager} from '@fluent-wallet/site-runtime-manager'
 
 export const NAME = 'wallet_setPreferences'
 
@@ -31,11 +32,14 @@ export const main = async ({
   if (!isUndefined(params?.overrideWindowDotEthereum)) {
     const apps = getApp()
     apps.forEach(app => {
-      if (!app.site.post) return
-      app.site.post({
-        event: '__FLUENT_BACKEND_PREFERENCES__',
-        // don't pass all preferences to content script
-        params: {overrideWindowDotEthereum},
+      if (!app.site.origin) return
+      const posts = siteRuntimeManager.getPosts(app.site.origin) || []
+      posts.forEach(post => {
+        post({
+          event: '__FLUENT_BACKEND_PREFERENCES__',
+          // don't pass all preferences to content script
+          params: {overrideWindowDotEthereum},
+        })
       })
     })
   }

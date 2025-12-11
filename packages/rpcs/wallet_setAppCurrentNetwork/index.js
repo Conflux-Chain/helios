@@ -1,4 +1,5 @@
 import {map, dbid} from '@fluent-wallet/spec'
+import {siteRuntimeManager} from '@fluent-wallet/site-runtime-manager'
 
 export const NAME = 'wallet_setAppCurrentNetwork'
 
@@ -38,14 +39,17 @@ export const main = async ({
 
   t([{eid: app.eid, app: {currentNetwork: networkId}}])
 
-  const {post} = app.site
+  const {origin} = app.site
 
-  if (!post) return
+  if (!origin) return
 
-  post({event: 'chainChanged', params: nextNetwork.chainId})
-  post({
-    event: 'connect',
-    params: {chainId: nextNetwork.chainId, networkId: nextNetwork.netId},
+  const posts = siteRuntimeManager.getPosts(origin) || []
+  posts.forEach(post => {
+    post({event: 'chainChanged', params: nextNetwork.chainId})
+    post({
+      event: 'connect',
+      params: {chainId: nextNetwork.chainId, networkId: nextNetwork.netId},
+    })
   })
 
   // fire accountsChanged event when
@@ -70,6 +74,8 @@ export const main = async ({
       }
       return
     }
-    post({event: 'accountsChanged', params: [addr.value]})
+    posts.forEach(post => {
+      post({event: 'accountsChanged', params: [addr.value]})
+    })
   }
 }

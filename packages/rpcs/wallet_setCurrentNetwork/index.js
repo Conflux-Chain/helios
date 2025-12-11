@@ -1,4 +1,5 @@
 import {dbid, oneOrMore} from '@fluent-wallet/spec'
+import {siteRuntimeManager} from '@fluent-wallet/site-runtime-manager'
 
 export const NAME = 'wallet_setCurrentNetwork'
 
@@ -13,18 +14,12 @@ export const permissions = {
     'setCurrentNetwork',
     'getNetworkById',
     'getAppsWithDifferentSelectedNetwork',
-    'getConnectedSitesWithoutApps',
   ],
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {
-    setCurrentNetwork,
-    getNetworkById,
-    getAppsWithDifferentSelectedNetwork,
-    getConnectedSitesWithoutApps,
-  },
+  db: {setCurrentNetwork, getNetworkById, getAppsWithDifferentSelectedNetwork},
   rpcs: {wallet_setAppCurrentNetwork},
   params: networks,
   network,
@@ -46,7 +41,14 @@ export const main = async ({
     }),
   )
 
-  getConnectedSitesWithoutApps().forEach(site => {
-    site.post({event: 'chainChanged', params: nextNetwork.chainId})
+  // 查询所有已建立连接的 site
+  const origins = siteRuntimeManager.getAllOrigins()
+  origins.forEach(o => {
+    // 和 app 绑定的 site 会在 wallet_setAppCurrentNetwork 通知，此处不需要额外处理
+    if (apps.some(app => app.site.origin === o)) return
+    const posts = siteRuntimeManager.getPosts(o) || []
+    posts.forEach(post => {
+      post({event: 'chainChanged', params: nextNetwork.chainId})
+    })
   })
 }
