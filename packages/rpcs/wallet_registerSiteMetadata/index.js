@@ -33,14 +33,14 @@ export const main = ({
 }) => {
   if (_inpage && !_origin) throw InvalidRequest(`no origin found`)
 
-  // 在内存中注册 post 函数
+  // register post function in memory
   _sender?.tab?.id &&
     siteRuntimeManager.addPostListener(_origin, {
       post: _post,
       tabId: _sender.tab.id,
     })
 
-  // 只保存可序列化的数据到数据库
+  // only save serializable data to db
   t([
     {eid: 'newsite', site: {name, origin: _origin}},
     icon && {eid: 'newsite', site: {icon}},

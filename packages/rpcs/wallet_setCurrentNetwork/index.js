@@ -41,10 +41,10 @@ export const main = async ({
     }),
   )
 
-  // 查询所有已建立连接的 site
+  // get all connected sites
   const origins = siteRuntimeManager.getAllOrigins()
   origins.forEach(o => {
-    // 和 app 绑定的 site 会在 wallet_setAppCurrentNetwork 通知，此处不需要额外处理
+    // site with app bound will be notified by wallet_setAppCurrentNetwork, no need to handle here
     if (apps.some(app => app.site.origin === o)) return
     const posts = siteRuntimeManager.getPosts(o) || []
     posts.forEach(post => {

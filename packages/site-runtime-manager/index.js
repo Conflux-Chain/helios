@@ -2,26 +2,26 @@ import browser from 'webextension-polyfill'
 
 /**
  * Site Runtime Manager
- * 管理 site 的内存运行时数据（如 post ）
- * 这些数据不被持久化到数据库，只在内存中维护
+ * manages the runtime data of sites (e.g. post)
+ * these data are not persisted to the database and are only maintained in memory
  */
 class SiteRuntimeManager {
   constructor() {
     this.sites = new Map()
     this.tabs = new Map()
-    // 监听 tab 关闭事件
+    // listen tab close event
     browser.tabs.onRemoved.addListener(this.onTabRemoved.bind(this))
   }
 
   /**
-   * 更新 tabs 映射
-   * @param {string} origin - site 的 origin
+   * update tabs map
+   * @param {string} origin - origin
    * @param {number} tabId - tabId
    */
   updateTabs(origin, tabId) {
     if (this.tabs.has(tabId)) {
       const prevOrigin = this.tabs.get(tabId)
-      // 如果 tabId 对应的 origin 发生变化，则移除旧的映射关系
+      // if the origin of the tabId changes, remove the old mapping relationship
       if (origin !== prevOrigin) {
         this.removeSite2Tab(prevOrigin, tabId)
       }
@@ -30,7 +30,7 @@ class SiteRuntimeManager {
   }
 
   /**
-   * tab 关闭后处理过期数据
+   * remove tabId after tab close
    * @param {number} tabId - tabId
    */
   onTabRemoved(tabId) {
@@ -42,9 +42,9 @@ class SiteRuntimeManager {
   }
 
   /**
-   * 添加一个 post 函数
-   * @param {string} origin - site 的 origin
-   * @param {object} {post, tabId} - 要添加的 post 函数 及对应的 tabId
+   * add a post function to the site
+   * @param {string} origin - origin
+   * @param {object} {post, tabId} - post function and tabId
    */
   addPostListener(origin, {post, tabId}) {
     if (!origin || typeof post !== 'function') {
@@ -63,8 +63,8 @@ class SiteRuntimeManager {
   }
 
   /**
-   * 获取 site 的 post 函数列表
-   * @param {string} origin - site 的 origin
+   * get post functions of a site
+   * @param {string} origin - origin
    * @returns {array|null}
    */
   getPosts(origin) {
@@ -72,9 +72,9 @@ class SiteRuntimeManager {
   }
 
   /**
-   * 获取 site 指定 tabId 的 post 函数
-   * @param {string} origin - site 的 origin
-   * @param {number} tabId - site 的 tabId
+   * get post function of a site with specific tabId
+   * @param {string} origin - origin
+   * @param {number} tabId - tabId
    * @returns {function|undefined|null}
    */
   getPostsWithTabId(origin, tabId) {
@@ -82,9 +82,9 @@ class SiteRuntimeManager {
   }
 
   /**
-   * 移除一个 tabId post 监听器
-   * @param {string} origin - site 的 origin
-   * @param {number} tabId - 要移除的 tabId
+   * remove a post listener of a tabId
+   * @param {string} origin - origin
+   * @param {number} tabId - tabId
    */
   removePostListener(origin, tabId) {
     this.removeSite2Tab(origin, tabId)
@@ -95,7 +95,7 @@ class SiteRuntimeManager {
   }
 
   /**
-   * 获取所有 site 的 origins
+   * get all origins of sites
    * @returns {string[]}
    */
   getAllOrigins() {
@@ -103,16 +103,16 @@ class SiteRuntimeManager {
   }
 
   /**
-   * 移除 site 中 tab 的映射关系
-   * @param {string} origin - site 的 origin
-   * @param {number} tabId - 要移除的 tabId
+   * remove the mapping relationship of tab in site
+   * @param {string} origin - origin
+   * @param {number} tabId - tabId
    */
   removeSite2Tab(origin, tabId) {
     const site = this.sites.get(origin)
     if (site) {
       delete site[tabId]
       const size = Object.keys(site).length
-      // site 下没有 tabId 了，删除 site
+      // site is empty, delete site
       if (size === 0) {
         this.sites.delete(origin)
       }
@@ -120,7 +120,6 @@ class SiteRuntimeManager {
   }
 }
 
-// 创建单例实例
 export const siteRuntimeManager = new SiteRuntimeManager()
 
 export default SiteRuntimeManager
