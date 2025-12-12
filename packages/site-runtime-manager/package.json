@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/site-runtime-manager",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "webextension-polyfill": "0.8.0"
   }
