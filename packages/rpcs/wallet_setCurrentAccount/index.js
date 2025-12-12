@@ -1,4 +1,5 @@
 import {dbid, oneOrMore} from '@fluent-wallet/spec'
+import {siteRuntimeManager} from '@fluent-wallet/site-runtime-manager'
 
 export const NAME = 'wallet_setCurrentAccount'
 
@@ -22,15 +23,19 @@ export const main = ({
 
   const apps = setCurrentAccount(account)
 
-  apps.forEach(({eid, site: {post}}) => {
-    if (!post) return
+  apps.forEach(({eid, site: {origin}}) => {
+    if (!origin) return
+
     const addr = findAddress({
       appId: eid,
       g: {value: 1},
     })
-    post({
-      event: 'accountsChanged',
-      params: [addr.value],
+    const posts = siteRuntimeManager.getPosts(origin) || []
+    posts.forEach(post => {
+      post({
+        event: 'accountsChanged',
+        params: [addr.value],
+      })
     })
   })
 }

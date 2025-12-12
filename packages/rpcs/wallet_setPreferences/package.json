@@ -6,6 +6,7 @@
   "version": "1.0.8",
   "dependencies": {
     "@fluent-wallet/checks": "workspace:*",
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager",
     "@fluent-wallet/spec": "1.0.14"
   }
 }

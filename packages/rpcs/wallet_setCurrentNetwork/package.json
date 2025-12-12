@@ -4,6 +4,7 @@
   "main": "index.js",
   "version": "0.0.23",
   "dependencies": {
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager",
     "@fluent-wallet/spec": "1.0.14"
   }
 }

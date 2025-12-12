@@ -43,7 +43,7 @@ function onConnect(port) {
     )
   } else if (port?.name === 'content-script') {
     port.onMessage.addListener(req => {
-      inpageStream.next.call(inpageStream, [req, post])
+      inpageStream.next.call(inpageStream, [req, post, port.sender])
     })
   }
 }

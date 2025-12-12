@@ -64,6 +64,7 @@ async function initRPCEngine(dbConnection) {
       networkName: req.networkName,
       method: req.method,
       params: req.params,
+      _sender: req._sender,
       _popup: req._popup,
       _inpage: req._inpage,
       _origin: req._origin,
@@ -87,12 +88,13 @@ async function initRPCEngine(dbConnection) {
   })
 
   inpageStream.subscribe({
-    next([req, post]) {
+    next([req, post, sender]) {
       protectedRequest({
         ...(req || {}),
         _popup: false,
         _inpage: true,
         _post: post,
+        _sender: sender,
         _rpcStack: undefined,
       }).then(post)
       // .then(res => (console.log(req, res), post(res)))
