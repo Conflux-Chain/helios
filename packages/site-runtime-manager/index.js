@@ -1,5 +1,3 @@
-import browser from 'webextension-polyfill'
-
 /**
  * Site Runtime Manager
  * manages the runtime data of sites (e.g. post)
@@ -7,10 +5,17 @@ import browser from 'webextension-polyfill'
  */
 class SiteRuntimeManager {
   constructor() {
+    this.init()
+  }
+
+  async init() {
     this.sites = new Map()
     this.tabs = new Map()
-    // listen tab close event
-    browser.tabs.onRemoved.addListener(this.onTabRemoved.bind(this))
+    if (process.env.NODE_ENV !== 'test') {
+      // listen tab close event
+      const browser = (await import('webextension-polyfill')).default
+      browser.tabs.onRemoved.addListener(this.onTabRemoved.bind(this))
+    }
   }
 
   /**
