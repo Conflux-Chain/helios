@@ -4742,7 +4742,6 @@ __metadata:
   dependencies:
     "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@thi.ng/rstream": "npm:6.0.21"
-    uuid: "npm:^8.3.2"
     webextension-polyfill: "npm:0.8.0"
   languageName: unknown
   linkType: soft
