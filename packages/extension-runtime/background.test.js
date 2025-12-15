@@ -24,6 +24,9 @@ describe('@fluent-wallet/extension-runtime/background.js', () => {
           addListener: vi.fn(l => (listener = l)),
         },
         postMessage: {bind: vi.fn()},
+        onDisconnect: {
+          addListener: vi.fn(),
+        },
       }
 
       onConnect({...port, name: 'foo'})

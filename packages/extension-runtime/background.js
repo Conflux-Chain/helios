@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill'
 // eslint-disable-next-line no-unused-vars
 import {stream, trace} from '@thi.ng/rstream'
+import {siteRuntimeManager} from '@fluent-wallet/site-runtime-manager'
 
 const popupStream = stream({
   id: 'popup',
@@ -42,8 +43,23 @@ function onConnect(port) {
       popupStream.next.call(popupStream, [req, post]),
     )
   } else if (port?.name === 'content-script') {
+    const postId = crypto.randomUUID()
+    const origin = port?.sender?.url ? new URL(port.sender.url).host : undefined
+    // content-script save post function for bidirectional communication
+    if (origin) {
+      siteRuntimeManager.addPostListener(origin, {
+        post,
+        postId,
+      })
+    }
     port.onMessage.addListener(req => {
-      inpageStream.next.call(inpageStream, [req, post, port.sender])
+      inpageStream.next.call(inpageStream, [req, post])
+    })
+    // remove post function when port disconnect
+    port.onDisconnect.addListener(() => {
+      if (origin) {
+        siteRuntimeManager.removePostListener(origin, postId)
+      }
     })
   }
 }
