@@ -151,7 +151,7 @@ function DappFooter({
     } catch (e) {
       !isHwAccount && setLoading(false)
       setSendStatus?.(TX_STATUS.ERROR)
-      setSendError?.(e?.message ?? e)
+      setSendError?.(e)
       showError &&
         Message.error({
           content: e?.message ?? t('unCaughtErrMsg'),
