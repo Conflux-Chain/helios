@@ -4740,6 +4740,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/extension-runtime@workspace:packages/extension-runtime"
   dependencies:
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@thi.ng/rstream": "npm:6.0.21"
     webextension-polyfill: "npm:0.8.0"
   languageName: unknown
@@ -4981,8 +4982,6 @@ __metadata:
 "@fluent-wallet/site-runtime-manager@workspace:packages/site-runtime-manager":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/site-runtime-manager@workspace:packages/site-runtime-manager"
-  dependencies:
-    webextension-polyfill: "npm:0.8.0"
   languageName: unknown
   linkType: soft
 
@@ -5686,7 +5685,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_register-site-metadata@workspace:packages/rpcs/wallet_registerSiteMetadata"
   dependencies:
-    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@fluent-wallet/spec": "npm:1.0.14"
   languageName: unknown
   linkType: soft

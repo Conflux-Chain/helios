@@ -56,7 +56,7 @@
     "prod:release": "yarn prod && yarn prod:zip",
     "lint": "eslint  --ignore-path .gitignore packages",
     "lint:fix": "yarn run lint --fix",
-    "test:unit": "NODE_ENV=test vitest",
+    "test:unit": "vitest",
     "test:integration": "vitest packages/background/src/index.integration.test.js",
     "contract:compile": "bash ./scripts/solc.sh",
     "contract:watch": "watchexec --restart --on-busy-update queue -w ./contracts/ --debounce 500 yarn run contract:compile",
