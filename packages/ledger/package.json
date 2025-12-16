@@ -5,7 +5,7 @@
   "version": "0.1.6",
   "dependencies": {
     "@fluent-wallet/base32-address": "workspace:packages/base32-address",
-    "@fluent-wallet/hw-app-conflux": "0.1.1",
+    "@fluent-wallet/hw-app-conflux": "0.2.0",
     "@ledgerhq/hw-app-eth": "6.46.1",
     "@ledgerhq/hw-transport-webhid": "6.30.8"
   }
