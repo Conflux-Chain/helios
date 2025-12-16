@@ -4766,13 +4766,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/hw-app-conflux@npm:0.1.1":
-  version: 0.1.1
-  resolution: "@fluent-wallet/hw-app-conflux@npm:0.1.1"
+"@fluent-wallet/hw-app-conflux@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@fluent-wallet/hw-app-conflux@npm:0.2.0"
   dependencies:
     "@ledgerhq/hw-transport": "npm:^6.31.4"
     bip32-path: "npm:^0.4.2"
-  checksum: 10/59ad9397b50cc45d9905e8332daae33554c81bd732346c7f513ffc470b8bb60c6af15a9c215f685af0f3c972af82e97fa53e931e497f412f21e9f110303f8d76
+  checksum: 10/087b390a2a2533d0a74b62a0093c3ce1e99a346431fe2a229cff0d06a9406b999f6b9ae4f73d0eec9f731f163f8ea352eaf023ca6010dd31b9295147f69f30ff
   languageName: node
   linkType: hard
 
@@ -4827,7 +4827,7 @@ __metadata:
   resolution: "@fluent-wallet/ledger@workspace:packages/ledger"
   dependencies:
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
-    "@fluent-wallet/hw-app-conflux": "npm:0.1.1"
+    "@fluent-wallet/hw-app-conflux": "npm:0.2.0"
     "@ledgerhq/hw-app-eth": "npm:6.46.1"
     "@ledgerhq/hw-transport-webhid": "npm:6.30.8"
   languageName: unknown
