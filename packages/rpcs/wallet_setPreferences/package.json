@@ -3,9 +3,10 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "dependencies": {
     "@fluent-wallet/checks": "workspace:*",
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager",
     "@fluent-wallet/spec": "1.0.14"
   }
 }

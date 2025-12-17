@@ -15,7 +15,7 @@ export const permissions = {
   external: ['inpage'],
   locked: true,
   methods: ['wallet_requestPermissions', 'wallet_getPreferences'],
-  db: ['t', 'findAccount'],
+  db: ['t'],
   scope: null,
 }
 
@@ -30,8 +30,10 @@ export const main = ({
   network,
 }) => {
   if (_inpage && !_origin) throw InvalidRequest(`no origin found`)
+
+  // only save serializable data to db
   t([
-    {eid: 'newsite', site: {name, origin: _origin, post: _post}},
+    {eid: 'newsite', site: {name, origin: _origin}},
     icon && {eid: 'newsite', site: {icon}},
   ])
 

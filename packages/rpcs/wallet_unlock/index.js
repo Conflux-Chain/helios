@@ -1,4 +1,5 @@
 import {map, password, truep} from '@fluent-wallet/spec'
+import {siteRuntimeManager} from '@fluent-wallet/site-runtime-manager'
 
 export const NAME = 'wallet_unlock'
 
@@ -32,23 +33,25 @@ export const main = async ({
   unlockReq.forEach(({req, eid}) => req.write(true).then(() => retract(eid)))
 
   const apps = findApp({
-    g: {currentNetwork: {eid: 1}, currentAccount: {eid: 1}, site: {post: 1}},
+    g: {currentNetwork: {eid: 1}, currentAccount: {eid: 1}, site: {origin: 1}},
   })
   apps.forEach(app => {
-    if (!app?.site?.post) return
+    if (!app?.site?.origin) return
     const {
-      site: {post},
+      site: {origin},
       currentAccount: {eid: accountId},
       currentNetwork: {eid: networkId},
     } = app
     try {
       const addr = findAddress({accountId, networkId, g: {value: 1}})
       if (!addr) return
-      post &&
+      const posts = siteRuntimeManager.getPosts(origin) || []
+      posts.forEach(post => {
         post({
           event: 'accountsChanged',
           params: [addr.value],
         })
+      })
       // eslint-disable-next-line no-empty
     } catch (err) {}
   })

@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/use-rpc",
   "type": "module",
   "main": "index.js",
-  "version": "1.0.14",
+  "version": "1.0.16",
   "dependencies": {
     "@fluent-wallet/extension-runtime": "workspace:packages/extension-runtime",
     "@fluent-wallet/provider-api": "workspace:packages/ui/provider-api",

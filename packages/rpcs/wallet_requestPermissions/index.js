@@ -1,5 +1,6 @@
 import * as spec from '@fluent-wallet/spec'
 import {generateSchema as genPermissionSchema} from '@fluent-wallet/wallet-permission'
+import {siteRuntimeManager} from '@fluent-wallet/site-runtime-manager'
 
 const {map, dbid, or, zeroOrMore, oneOrMore} = spec
 
@@ -158,17 +159,21 @@ export const main = async ({
         g: {
           eid: 1,
           currentAccount: {eid: 1},
-          site: {post: 1},
+          site: {origin: 1},
           currentNetwork: {eid: 1},
         },
       })
-      if (app?.site?.post) {
+      if (app?.site?.origin) {
         const addr = findAddress({
           appId: app.eid,
           g: {value: 1},
         })
-        if (addr)
-          app.site.post({event: 'accountsChanged', params: [addr.value]})
+        if (addr) {
+          const posts = siteRuntimeManager.getPosts(app.site.origin) || []
+          posts.forEach(post => {
+            post({event: 'accountsChanged', params: [addr.value]})
+          })
+        }
       }
     }
 

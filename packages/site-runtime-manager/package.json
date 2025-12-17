@@ -1,0 +1,6 @@
+{
+  "name": "@fluent-wallet/site-runtime-manager",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.3"
+}

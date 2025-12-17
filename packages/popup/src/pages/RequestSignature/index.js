@@ -1,6 +1,4 @@
 import {useTranslation} from 'react-i18next'
-import {isUndefined} from '@fluent-wallet/checks'
-
 import {
   DappFooter,
   TitleNav,
@@ -12,7 +10,6 @@ import {
   useBalance,
   useAddressByNetworkId,
   useCurrentTicker,
-  useAddress,
 } from '../../hooks/useApi'
 
 import {RPC_METHODS} from '../../constants'
@@ -27,7 +24,7 @@ import {useSIWEValidation} from '../../hooks/useSIWEValidation'
 import Button from '@fluent-wallet/component-button'
 import SIWERiskModal from './components/SIWERiskModal'
 
-const {PERSONAL_SIGN, ACCOUNT_GROUP_TYPE} = RPC_METHODS
+const {PERSONAL_SIGN} = RPC_METHODS
 
 function RequestSignature() {
   const {t} = useTranslation()
@@ -60,16 +57,6 @@ function RequestSignature() {
   const {decimals} = useCurrentTicker()
   const {value: address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const balanceData = useBalance(address, dappNetworkId)
-  const {data: AddressData} = useAddress({
-    stop: isUndefined(dappAccountId) || isUndefined(dappNetworkId),
-    accountId: dappAccountId,
-    networkId: dappNetworkId,
-  })
-
-  // conflux ledger app is not supported signing message for now
-  const isUnsupportedSign =
-    AddressData?.account?.accountGroup?.vault?.type === ACCOUNT_GROUP_TYPE.HW &&
-    AddressData?.network?.type === 'cfx'
 
   const [siweErrors] = useSIWEValidation({
     parsedMessage,
@@ -151,31 +138,18 @@ function RequestSignature() {
       <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
         <main className="rounded-t-xl px-3 bg-gray-0">
           {SignatureContent}
-          {isUnsupportedSign && (
+
+          {siweErrors && Object.keys(siweErrors).length > 0 && (
             <Alert
               open={true}
-              className="mt-3"
               type="warning"
+              icon={<WarningFilled />}
               closable={false}
-              width="w-full"
-              content={t('disableUnsupportedSign')}
-              id="disableSignAlert"
+              content={<span className="ml-1 text-xs">{t('siweAlert')}</span>}
+              className="mb-2 w-auto"
+              id="siweAlert"
             />
           )}
-
-          {!isUnsupportedSign &&
-            siweErrors &&
-            Object.keys(siweErrors).length > 0 && (
-              <Alert
-                open={true}
-                type="warning"
-                icon={<WarningFilled />}
-                closable={false}
-                content={<span className="ml-1 text-xs">{t('siweAlert')}</span>}
-                className="mb-2 w-auto"
-                id="siweAlert"
-              />
-            )}
         </main>
         <div>
           <DappFooter
@@ -183,7 +157,6 @@ function RequestSignature() {
             confirmText={
               needsUserConfirmationError ? t('siweReviewAlert') : t('sign')
             }
-            confirmDisabled={isUnsupportedSign}
             confirmComponent={
               needsUserConfirmationError
                 ? () => (

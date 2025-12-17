@@ -4740,6 +4740,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/extension-runtime@workspace:packages/extension-runtime"
   dependencies:
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@thi.ng/rstream": "npm:6.0.21"
     webextension-polyfill: "npm:0.8.0"
   languageName: unknown
@@ -4765,13 +4766,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/hw-app-conflux@npm:0.1.1":
-  version: 0.1.1
-  resolution: "@fluent-wallet/hw-app-conflux@npm:0.1.1"
+"@fluent-wallet/hw-app-conflux@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@fluent-wallet/hw-app-conflux@npm:0.2.0"
   dependencies:
     "@ledgerhq/hw-transport": "npm:^6.31.4"
     bip32-path: "npm:^0.4.2"
-  checksum: 10/59ad9397b50cc45d9905e8332daae33554c81bd732346c7f513ffc470b8bb60c6af15a9c215f685af0f3c972af82e97fa53e931e497f412f21e9f110303f8d76
+  checksum: 10/087b390a2a2533d0a74b62a0093c3ce1e99a346431fe2a229cff0d06a9406b999f6b9ae4f73d0eec9f731f163f8ea352eaf023ca6010dd31b9295147f69f30ff
   languageName: node
   linkType: hard
 
@@ -4826,7 +4827,7 @@ __metadata:
   resolution: "@fluent-wallet/ledger@workspace:packages/ledger"
   dependencies:
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
-    "@fluent-wallet/hw-app-conflux": "npm:0.1.1"
+    "@fluent-wallet/hw-app-conflux": "npm:0.2.0"
     "@ledgerhq/hw-app-eth": "npm:6.46.1"
     "@ledgerhq/hw-transport-webhid": "npm:6.30.8"
   languageName: unknown
@@ -4975,6 +4976,12 @@ __metadata:
 "@fluent-wallet/site-metadata@workspace:packages/site-metadata":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/site-metadata@workspace:packages/site-metadata"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/site-runtime-manager@workspace:packages/site-runtime-manager":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/site-runtime-manager@workspace:packages/site-runtime-manager"
   languageName: unknown
   linkType: soft
 
@@ -5218,7 +5225,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_delete-app@workspace:packages/rpcs/wallet_deleteApp"
   dependencies:
-    "@fluent-wallet/checks": "workspace:*"
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@fluent-wallet/spec": "npm:1.0.14"
   languageName: unknown
   linkType: soft
@@ -5625,6 +5632,8 @@ __metadata:
 "@fluent-wallet/wallet_lock@workspace:packages/rpcs/wallet_lock":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_lock@workspace:packages/rpcs/wallet_lock"
+  dependencies:
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
   languageName: unknown
   linkType: soft
 
@@ -5692,6 +5701,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_request-permissions@workspace:packages/rpcs/wallet_requestPermissions"
   dependencies:
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@fluent-wallet/spec": "npm:1.0.14"
     "@fluent-wallet/wallet-permission": "workspace:packages/wallet-permission"
   languageName: unknown
@@ -5734,6 +5744,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_set-app-current-account@workspace:packages/rpcs/wallet_setAppCurrentAccount"
   dependencies:
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@fluent-wallet/spec": "npm:1.0.14"
   languageName: unknown
   linkType: soft
@@ -5742,6 +5753,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_set-app-current-network@workspace:packages/rpcs/wallet_setAppCurrentNetwork"
   dependencies:
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@fluent-wallet/spec": "npm:1.0.14"
   languageName: unknown
   linkType: soft
@@ -5750,6 +5762,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_set-current-account@workspace:packages/rpcs/wallet_setCurrentAccount"
   dependencies:
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@fluent-wallet/spec": "npm:1.0.14"
   languageName: unknown
   linkType: soft
@@ -5758,6 +5771,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_set-current-network@workspace:packages/rpcs/wallet_setCurrentNetwork"
   dependencies:
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@fluent-wallet/spec": "npm:1.0.14"
   languageName: unknown
   linkType: soft
@@ -5767,6 +5781,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_set-preferences@workspace:packages/rpcs/wallet_setPreferences"
   dependencies:
     "@fluent-wallet/checks": "workspace:*"
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@fluent-wallet/spec": "npm:1.0.14"
   languageName: unknown
   linkType: soft
@@ -5807,6 +5822,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_unlock@workspace:packages/rpcs/wallet_unlock"
   dependencies:
+    "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
     "@fluent-wallet/spec": "npm:1.0.14"
   languageName: unknown
   linkType: soft
