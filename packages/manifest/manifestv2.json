@@ -78,16 +78,16 @@
     "clipboardWrite",
     "http://localhost:12537/",
     "tabs",
-    "https://confluxscan.net/*",
-    "https://*.confluxscan.net/*",
+    "https://confluxscan.org/*",
+    "https://*.confluxscan.org/*",
     "activeTab",
     "notifications"
   ],
   "web_accessible_resources": ["content-script.js", "inpage.js"],
   "externally_connectable": {
     "matches": [
-      "https://confluxscan.net/*",
-      "https://*.confluxscan.net/*",
+      "https://confluxscan.org/*",
+      "https://*.confluxscan.org/*",
       "https://confluxnetwork.org/*",
       "https://wallet-main.confluxrpc.org/*",
       "https://wallet-test.confluxrpc.org/*"

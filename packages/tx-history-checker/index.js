@@ -23,7 +23,7 @@ export default async function txHistoryChecker({
           .fetch(
             `https://${
               chainId === CFX_MAINNET_NETID ? 'api' : 'api-testnet'
-            }.confluxscan.net/account/transactions?account=${address}&limit=0`,
+            }.confluxscan.org/account/transactions?account=${address}&limit=0`,
           )
           .then(response => response.json())
           .then(data => {
