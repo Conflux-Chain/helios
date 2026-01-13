@@ -4,6 +4,7 @@ import {
   TitleNav,
   AccountDisplay,
   DisplayBalance,
+  TransactionResult,
 } from '../../components'
 import {
   usePendingAuthReq,
@@ -12,12 +13,13 @@ import {
   useCurrentTicker,
 } from '../../hooks/useApi'
 
-import {RPC_METHODS} from '../../constants'
+import {RPC_METHODS, TX_STATUS} from '../../constants'
 import {useCallback, useMemo, useState} from 'react'
 import {TypedDataSign} from './components/TypedDataSign'
 import {PersonalSign} from './components/PersonalSign'
 import {SignInSign} from './components/SignInSign'
 import Alert from '@fluent-wallet/component-alert'
+import Message from '@fluent-wallet/component-message'
 import {detectSIWEMessage} from '@fluent-wallet/utils'
 import {WarningFilled} from '@fluent-wallet/component-icons'
 import {useSIWEValidation} from '../../hooks/useSIWEValidation'
@@ -25,6 +27,15 @@ import Button from '@fluent-wallet/component-button'
 import SIWERiskModal from './components/SIWERiskModal'
 
 const {PERSONAL_SIGN} = RPC_METHODS
+
+const isLedgerRejectedError = errorMessage => {
+  const message = String(errorMessage || '').toLowerCase()
+  return (
+    message.includes('0x6985') ||
+    message.includes('denied by the user') ||
+    message.includes('condition of use not satisfied')
+  )
+}
 
 function RequestSignature() {
   const {t} = useTranslation()
@@ -57,6 +68,9 @@ function RequestSignature() {
   const {decimals} = useCurrentTicker()
   const {value: address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const balanceData = useBalance(address, dappNetworkId)
+
+  const [sendStatus, setSendStatus] = useState()
+  const [sendError, setSendError] = useState()
 
   const [siweErrors] = useSIWEValidation({
     parsedMessage,
@@ -109,6 +123,33 @@ function RequestSignature() {
       setRiskModalState({open: true})
     }
   }, [needsUserConfirmationError, siweErrors])
+
+  const handleDappFooterError = useCallback(
+    e => {
+      const errorMessage = e?.message || ''
+      const isRejected =
+        errorMessage.includes('UserRejected') ||
+        isLedgerRejectedError(errorMessage)
+
+      if (isRejected) {
+        setSendStatus(TX_STATUS.ERROR)
+        setSendError({message: 'UserRejected'})
+        return
+      }
+
+      Message.error({
+        content: e?.message ?? t('unCaughtErrMsg'),
+        top: '10px',
+        duration: 1,
+      })
+    },
+    [t],
+  )
+
+  const onCloseTransactionResult = useCallback(() => {
+    setSendStatus(undefined)
+    setSendError(undefined)
+  }, [])
 
   return (
     <div
@@ -170,7 +211,17 @@ function RequestSignature() {
                   )
                 : null
             }
+            showError={false}
+            setSendError={handleDappFooterError}
           />
+
+          {sendStatus === TX_STATUS.ERROR && (
+            <TransactionResult
+              status={sendStatus}
+              sendError={sendError}
+              onClose={onCloseTransactionResult}
+            />
+          )}
 
           <SIWERiskModal
             open={riskModalState.open}
