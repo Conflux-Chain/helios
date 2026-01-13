@@ -25,11 +25,11 @@
                                  :network/chainId        "0x406"
                                  :network/netId          1030
                                  :network/ticker         {:name     "Conflux"
-                                                          :symbol   "CFX"
-                                                          :decimals 18
-                                                          :iconUrls ["https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/cfx.svg"]}
+                                                         :symbol   "CFX"
+                                                         :decimals 18
+                                                         :iconUrls ["https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/cfx.svg"]}
                                  :network/builtin        true
-                                 :network/scanUrl        "https://evm.confluxscan.net"
+                                 :network/scanUrl        "https://evm.confluxscan.org"
                                  :network/cacheTime      4000
                                  :network/tokenList      -2
                                  :network/balanceChecker "0x74191f6b288dff3db43b34d3637842c8146e2103"
@@ -62,11 +62,11 @@
                                  :network/chainId        "0x47"
                                  :network/netId          71
                                  :network/ticker         {:name     "Conflux"
-                                                          :symbol   "CFX"
-                                                          :decimals 18
-                                                          :iconUrls ["https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/cfx.svg"]}
+                                                         :symbol   "CFX"
+                                                         :decimals 18
+                                                         :iconUrls ["https://cdn.jsdelivr.net/gh/Conflux-Chain/helios@dev/packages/built-in-network-icons/cfx.svg"]}
                                  :network/builtin        true
-                                 :network/scanUrl        "https://evmtestnet.confluxscan.net"
+                                 :network/scanUrl        "https://evmtestnet.confluxscan.org"
                                  :network/cacheTime      4000
                                  :network/balanceChecker "0x74191f6b288dff3db43b34d3637842c8146e2103"
                                  :network/isTestnet      true}
