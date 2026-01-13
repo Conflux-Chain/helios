@@ -1,8 +1,0 @@
-releases:
-  helios: patch
-
-declined:
-  - browser-extension
-  - "@fluent-wallet/consts"
-  - "@fluent-wallet/db"
-  - "@fluent-wallet/tx-history-checker"
