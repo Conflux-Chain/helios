@@ -52,6 +52,13 @@ const addUrlPrefix = url => {
   return url || ''
 }
 
+const stripTrailingSlashes = url => {
+  if (!url) {
+    return url
+  }
+  return url.replace(/\/+$/, '')
+}
+
 const getNetworkType = type => {
   if (!type) {
     return ''
@@ -271,11 +278,16 @@ function NetworkDetail() {
   const onSave = async (type = 'add') => {
     const {chainId, chainName, symbol, rpcUrl, blockExplorerUrl} =
       networkFieldValues
+
+    const rpcUrlToSave =
+      rpcUrl === defaultOrigin || rpcUrl === `${defaultOrigin}/`
+        ? BUILTIN_NETWORK_ENDPOINTS?.[networkInfo?.networkName] || rpcUrl
+        : rpcUrl
+
     if (
       type === 'innerEdit' &&
-      (rpcUrl === networkInfo?.rpcUrl ||
-        rpcUrl === defaultOrigin ||
-        rpcUrl === `${defaultOrigin}/`)
+      stripTrailingSlashes(rpcUrlToSave) ===
+        stripTrailingSlashes(networkInfo?.rpcUrl)
     ) {
       return history.push(HOME)
     }
@@ -299,11 +311,7 @@ function NetworkDetail() {
         symbol: symbol || detectedChainType.toUpperCase(),
         decimals: COMMON_DECIMALS,
       },
-      rpcUrls: [
-        rpcUrl === defaultOrigin || rpcUrl === `${defaultOrigin}/`
-          ? BUILTIN_NETWORK_ENDPOINTS?.[networkInfo?.networkName]
-          : rpcUrl,
-      ],
+      rpcUrls: [rpcUrlToSave],
     }
 
     if (blockExplorerUrl) {
