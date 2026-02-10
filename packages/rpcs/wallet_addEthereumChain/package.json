@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/wallet_add-ethereum-chain",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.14",
+    "@fluent-wallet/spec": "1.0.15",
     "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
   }
 }
