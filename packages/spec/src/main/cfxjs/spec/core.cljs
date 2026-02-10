@@ -473,8 +473,8 @@
 
 (def export-token-symbol
   (update-properties
-   [:and [:re #"^[a-zA-Z0-9+\-%/$]+$"] [:string {:min 1 :max 20}]]
-   :error/message "invalid token symbol, 1. should match regex ^[a-zA-Z0-9+\\-%/$]+$ 2. length should between 1 to 20"
+   [:and [:re #"^[a-zA-Z0-9+\-%/$\u20AE]+$"] [:string {:min 1 :max 20}]]
+   :error/message "invalid token symbol, 1. should match regex ^[a-zA-Z0-9+\\-%/$\\u20AE]+$ 2. length should between 1 to 20"
    :doc "token symbol"))
 
 (def export-byte Byte)
