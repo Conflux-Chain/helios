@@ -1,6 +1,6 @@
 {
   "name": "helios-background",
-  "version": "0.0.51",
+  "version": "0.0.52",
   "type": "module",
   "main": "src/index.js",
   "private": true,
