@@ -375,10 +375,10 @@ describe('integration test', () => {
           (
             await request({
               method: 'wallet_detectNetworkType',
-              params: {url: 'https://example.com'},
+              params: {url: 'https://example.invalid'},
             })
           ).error.message,
-        ).toMatch(/Unsupported network type/)
+        ).toMatch(/Invalid rpc endpoint/)
       })
     })
     describe('wallet_deleteNetwork', () => {
