@@ -16,11 +16,11 @@ function CrossSpaceButton({type}) {
           onClick={() => {
             if (type === 'mainnet') {
               window.open(
-                'https://confluxhub.io/espace-bridge/cross-space#source=fluent-wallet',
+                'https://confluxhub.io/bridge/cross-space?sendSpace=Core&token=CFX',
               )
             } else if (type === 'testnet') {
               window.open(
-                'https://test.confluxhub.io/espace-bridge/cross-space#source=fluent-wallet',
+                'https://test.confluxhub.io/bridge/cross-space?sendSpace=Core&token=CFX',
               )
             }
           }}
