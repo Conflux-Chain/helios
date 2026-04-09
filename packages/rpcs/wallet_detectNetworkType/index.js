@@ -26,8 +26,9 @@ export const main = async ({f, Err: {InvalidParams}, params: {url}}) => {
       [],
     )
   } catch (err) {
-    if (!(err?.response?.status < 500))
-      throw InvalidParams(`Invalid rpc endpoint ${url}`)
+    console.log('cfx_getStatus err', err)
+    // if (!(err?.response?.status < 500))
+    //   throw InvalidParams(`Invalid rpc endpoint ${url}`)
   }
 
   if (rst?.result) {
@@ -49,7 +50,9 @@ export const main = async ({f, Err: {InvalidParams}, params: {url}}) => {
       },
       [],
     )
+    console.log('eth_chainId rst', rst)
   } catch (err) {
+    console.log('eth_chainId err', err)
     if (!(err?.response?.status < 500))
       throw InvalidParams(`Invalid rpc endpoint ${url}`)
   }
