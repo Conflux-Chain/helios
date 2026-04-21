@@ -56,7 +56,7 @@ function registerSite() {
       s.next.call(s, {
         method: 'wallet_registerSiteMetadata',
         params: metadata,
-        _origin: location.host,
+        _origin: location.origin,
       })
     })
     .catch(() => null)
@@ -106,7 +106,7 @@ function setup() {
     if (!Number.isInteger(e.data.msg.id)) return
     if (e.data.msg.method === 'wallet_registerSiteMetadata') return
     CONNECT_RETRY_COUNT = 0
-    s.next.call(s, {...e.data.msg, _origin: location.host})
+    s.next.call(s, {...e.data.msg, _origin: location.origin})
   }
 
   window.addEventListener('message', listenToInpageMessage, false)

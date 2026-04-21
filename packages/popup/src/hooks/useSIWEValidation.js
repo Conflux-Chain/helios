@@ -20,11 +20,7 @@ const createValidators = t => [
       try {
         if (!parsedMessage.domain || !origin) return false
 
-        // The origin from app.site.origin doesn't include protocol information,
-        // so we add a default protocol (https:) just for URL parsing.
-        // Note: We skip protocol comparison since the original origin doesn't provide it.
-        const originURL = parseDomainParts(origin, 'https:')
-
+        const originURL = new URL(origin)
         const domainURL = parseDomainParts(
           parsedMessage.domain,
           originURL.protocol,

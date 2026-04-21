@@ -24,8 +24,7 @@ export const main = async ({db: {getAppBySite, getSiteByOrigin}}) => {
     return null
   }
 
-  const urlSplit = t.url.split('/')
-  const origin = urlSplit[2]
+  const origin = new URL(t.url).origin
   const [site] = getSiteByOrigin(origin)
   if (!site) return null
 
