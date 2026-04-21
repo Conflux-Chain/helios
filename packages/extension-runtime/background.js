@@ -44,7 +44,9 @@ function onConnect(port) {
     )
   } else if (port?.name === 'content-script') {
     const postId = crypto.randomUUID()
-    const origin = port?.sender?.url ? new URL(port.sender.url).host : undefined
+    const origin = port?.sender?.url
+      ? new URL(port.sender.url).origin
+      : undefined
     // content-script save post function for bidirectional communication
     if (origin) {
       siteRuntimeManager.addPostListener(origin, {

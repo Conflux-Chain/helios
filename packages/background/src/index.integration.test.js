@@ -35,6 +35,7 @@ import {
 import '@fluent-wallet/test-helpers/setupNetwork.js'
 
 const password = '12345678'
+const TEST_ORIGIN = 'https://foo.site'
 
 let request, db, cfxNetId, ethNetId, res, req
 
@@ -98,7 +99,7 @@ beforeEach(async () => {
       d.t([
         {
           eid: 'site',
-          site: {origin: 'foo.site', name: 'foo.site', post: jest.fn()},
+          site: {origin: TEST_ORIGIN, name: TEST_ORIGIN, post: jest.fn()},
         },
       ])
     },
@@ -146,7 +147,7 @@ describe('integration test', () => {
         res = await request({
           method: 'wallet_getAccountGroup',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
         })
         expect(res.error.message).toMatch(/MethodNotFound/)
 
@@ -208,7 +209,7 @@ describe('integration test', () => {
         const accountsCfxInpage = await request({
           method: 'wallet_accounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
         })
         expect(accountsCfxInpage.result).toEqual([])
         const accountsAnother = await request({
@@ -218,7 +219,7 @@ describe('integration test', () => {
         })
         expect(accountsAnother.result[0]).toBe(ETH_ACCOUNTS[0].address)
         const accountsFromInpage = await request({
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           _inpage: true,
           method: 'wallet_accounts',
           params: [],
@@ -1197,7 +1198,7 @@ describe('integration test', () => {
     describe('wallet_requestPermissions', () => {
       test('rejected', async () => {
         req = {
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           _inpage: true,
           method: 'wallet_requestPermissions',
           params: [{cfx_accounts: {}}],
@@ -1211,11 +1212,11 @@ describe('integration test', () => {
 
         expect(res).toBeNull()
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
-        expect(db.getAuthReq()[0].site.origin).toBe('foo.site')
+        expect(db.getAuthReq()[0].site.origin).toBe(TEST_ORIGIN)
         expect(db.getAuthReq()[0].app).toBeFalsy()
 
         const authReq = db.getAuthReq()[0]
-        expect(authReq.site.origin).toBe('foo.site')
+        expect(authReq.site.origin).toBe(TEST_ORIGIN)
         expect(authReq.req.method).toBe('wallet_requestPermissions')
         expect(authReq.req.params).toStrictEqual([
           {
@@ -1255,7 +1256,7 @@ describe('integration test', () => {
         )
 
         req = {
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           _inpage: true,
           method: 'wallet_requestPermissions',
           params: [{cfx_accounts: {}}],
@@ -1268,7 +1269,7 @@ describe('integration test', () => {
         expect(res instanceof Promise).toBe(true)
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
         const authReq = db.getAuthReq()[0]
-        expect(authReq.site.origin).toBe('foo.site')
+        expect(authReq.site.origin).toBe(TEST_ORIGIN)
         expect(authReq.req.method).toBe('wallet_requestPermissions')
         expect(authReq.req.params).toStrictEqual([
           {
@@ -1323,7 +1324,7 @@ describe('integration test', () => {
         ])
         res = await request({
           method: 'wallet_getPermissions',
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           _inpage: true,
         })
         expect(res.result.map(({date}) => typeof date === 'number')).toEqual([
@@ -1334,7 +1335,7 @@ describe('integration test', () => {
           true,
           true,
         ])
-        expect(res.result.map(({invoker}) => invoker === 'foo.site')).toEqual([
+        expect(res.result.map(({invoker}) => invoker === TEST_ORIGIN)).toEqual([
           true,
           true,
           true,
@@ -1408,7 +1409,7 @@ describe('integration test', () => {
           method: 'wallet_requestPermissions',
           params: [{eth_accounts: {}}],
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
         })
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
         const res2 = await request({
@@ -1416,7 +1417,7 @@ describe('integration test', () => {
           _popup: true,
         })
         expect(res2.result.length).toBe(1)
-        expect(res2.result[0].site.origin).toBe('foo.site')
+        expect(res2.result[0].site.origin).toBe(TEST_ORIGIN)
 
         await request({
           method: 'wallet_requestPermissions',
@@ -1443,7 +1444,7 @@ describe('integration test', () => {
         req = {
           method: 'eth_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: ETH_MAINNET_NAME,
         }
 
@@ -1480,7 +1481,7 @@ describe('integration test', () => {
         req = {
           method: 'eth_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: ETH_MAINNET_NAME,
         }
 
@@ -1512,7 +1513,7 @@ describe('integration test', () => {
         req = {
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         }
 
@@ -1549,7 +1550,7 @@ describe('integration test', () => {
         req = {
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         }
 
@@ -1745,7 +1746,7 @@ describe('integration test', () => {
         res = request({
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         })
 
@@ -1772,7 +1773,7 @@ describe('integration test', () => {
           ],
           networkName: CFX_MAINNET_NAME,
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
         })
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
@@ -1810,7 +1811,7 @@ describe('integration test', () => {
           ],
           networkName: CFX_MAINNET_NAME,
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
         })
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
@@ -1848,7 +1849,7 @@ describe('integration test', () => {
         res = request({
           method: 'eth_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: ETH_MAINNET_NAME,
         })
 
@@ -1875,7 +1876,7 @@ describe('integration test', () => {
           ],
           networkName: ETH_MAINNET_NAME,
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
         })
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
@@ -1913,7 +1914,7 @@ describe('integration test', () => {
           ],
           networkName: ETH_MAINNET_NAME,
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
         })
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
@@ -2008,7 +2009,7 @@ describe('integration test', () => {
         res = request({
           method: 'eth_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: ETH_MAINNET_NAME,
         })
 
@@ -2036,7 +2037,7 @@ describe('integration test', () => {
           ],
           networkName: ETH_MAINNET_NAME,
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
         })
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
@@ -2075,7 +2076,7 @@ describe('integration test', () => {
           ],
           networkName: ETH_MAINNET_NAME,
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
         })
 
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
@@ -2147,7 +2148,7 @@ describe('integration test', () => {
         res = request({
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         })
 
@@ -2207,7 +2208,7 @@ describe('integration test', () => {
         res = request({
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         })
 
@@ -2266,7 +2267,7 @@ describe('integration test', () => {
         res = request({
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         })
 
@@ -2525,7 +2526,7 @@ describe('integration test', () => {
         res = request({
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         })
 
@@ -2548,7 +2549,7 @@ describe('integration test', () => {
 
         res = request({
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           method: 'wallet_switchEthereumChain',
           params: [{chainId: ETH_LOCALNET_CHAINID}],
         })
@@ -2582,7 +2583,7 @@ describe('integration test', () => {
         res = request({
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         })
 
@@ -2609,7 +2610,7 @@ describe('integration test', () => {
         expect(db.getNetwork().length).toBe(1)
 
         res = request({
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           _inpage: true,
           method: 'wallet_addEthereumChain',
           params: [
@@ -2691,7 +2692,7 @@ describe('integration test', () => {
         res = request({
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         })
 
@@ -2709,7 +2710,7 @@ describe('integration test', () => {
         })
 
         res = request({
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           _inpage: true,
           method: 'wallet_addEthereumChain',
           params: [
@@ -2743,7 +2744,7 @@ describe('integration test', () => {
         res = request({
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         })
 
@@ -2766,7 +2767,7 @@ describe('integration test', () => {
         })
 
         res = request({
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           _inpage: true,
           method: 'wallet_addEthereumChain',
           params: [
@@ -2940,7 +2941,7 @@ describe('integration test', () => {
         res = request({
           method: 'cfx_requestAccounts',
           _inpage: true,
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           networkName: CFX_MAINNET_NAME,
         })
         await waitForExpect(() => expect(db.getAuthReq().length).toBe(1))
@@ -2958,7 +2959,7 @@ describe('integration test', () => {
         await res
 
         res = request({
-          _origin: 'foo.site',
+          _origin: TEST_ORIGIN,
           _inpage: true,
           networkName: CFX_MAINNET_NAME,
           method: 'cfx_sendTransaction',
