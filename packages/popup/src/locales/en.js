@@ -369,6 +369,19 @@ const en = {
       'Fluent will be the first option when connecting to any dApp on EVM networks.',
     showTestnet: 'Show Testnet',
     showTestnetDes: 'Select this to show test networks in network list.',
+    eip7702Upgrade: 'EIP-7702 Upgrade',
+    eip7702UpgradeIntro:
+      'By upgrading EIP-7702, your account gains additional <Highlight>smart features</Highlight>:',
+    eip7702FlexibleGasTitle: 'Flexible gas payments',
+    eip7702FlexibleGasDesc:
+      'Pay gas fees in ERC-20 tokens, stablecoins, and native tokens.',
+    eip7702BatchTransactionsTitle: 'Bundle multiple transactions',
+    eip7702BatchTransactionsDesc: 'Save more gas with batch transactions.',
+    eip7702DappSupportTitle: 'Extra dApp support',
+    eip7702DappSupportDesc: 'Unlock smarter transactions with EIP-7702.',
+    eip7702SupportedNetwork: 'Supported network',
+    enable: 'Enable',
+    revoke: 'Revoke',
     openSidePanel: 'Open as sidebar',
     closeSidePanel: 'Open as popup',
 

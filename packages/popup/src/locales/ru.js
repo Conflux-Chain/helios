@@ -372,6 +372,21 @@ const ru = {
     showTestnet: 'Показать тестовую сеть',
     showTestnetDes:
       'Выберите этот параметр, чтобы показать тестовые сети в списке сетей.',
+    eip7702Upgrade: 'Обновление EIP-7702',
+    eip7702UpgradeIntro:
+      'После обновления до EIP-7702 ваш аккаунт получит дополнительные <Highlight>умные функции</Highlight>:',
+    eip7702FlexibleGasTitle: 'Гибкая оплата газа',
+    eip7702FlexibleGasDesc:
+      'Оплачивайте комиссии за газ токенами ERC-20, стейблкоинами и нативными токенами.',
+    eip7702BatchTransactionsTitle: 'Объединение нескольких транзакций',
+    eip7702BatchTransactionsDesc:
+      'Экономьте больше газа с пакетными транзакциями.',
+    eip7702DappSupportTitle: 'Расширенная поддержка dApp',
+    eip7702DappSupportDesc:
+      'Откройте доступ к более умным операциям с EIP-7702.',
+    eip7702SupportedNetwork: 'Поддерживаемые сети',
+    enable: 'Включить',
+    revoke: 'Отозвать',
 
     // About
     about: 'О проекте',

@@ -21,6 +21,7 @@ const {
   ABOUT,
   AUTHORIZED_WEBSITE,
   ADVANCED_SETTINGS,
+  EIP_7702_UPGRADE,
 } = ROUTES
 
 const SETTING_ITEMS = [
@@ -43,6 +44,11 @@ const SETTING_ITEMS = [
     contentKey: 'AdvancedSettings',
     iconPath: '/images/advanced-settings.svg',
     jumpPath: ADVANCED_SETTINGS,
+  },
+  {
+    contentKey: 'eip7702Upgrade',
+    iconPath: 'images/7702Upgrade.svg',
+    jumpPath: EIP_7702_UPGRADE,
   },
   {
     contentKey: 'about',

@@ -52,6 +52,7 @@ import HardwareGuard from './pages/HardwareGuard'
 import ConnectHardwareWallet from './pages/ConnectHardwareWallet'
 import ImportHwAccount from './pages/ImportHwAccount'
 import NetworkDetail from './pages/NetworkDetail'
+import EIP7702Upgrade from './pages/EIP7702Upgrade'
 import About from './pages/About'
 import AdvancedSettings from './pages/AdvancedSettings'
 import AddressBook from './pages/AddressBook'
@@ -93,6 +94,7 @@ const {
   NETWORK_MANAGEMENT,
   AUTHORIZED_WEBSITE,
   NETWORK_DETAIL,
+  EIP_7702_UPGRADE,
   ABOUT,
   ADVANCED_SETTINGS,
   ADDRESS_BOOK,
@@ -228,6 +230,10 @@ const routes = [
   {
     path: IMPORT_HW_ACCOUNT,
     component: ImportHwAccount,
+  },
+  {
+    path: EIP_7702_UPGRADE,
+    component: EIP7702Upgrade,
   },
   {
     path: ABOUT,

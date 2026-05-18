@@ -370,6 +370,21 @@ const uk = {
     showTestnet: 'Показати тестову мережу',
     showTestnetDes:
       'Виберіть цей параметр, щоб показати тестові мережі в списку мереж.',
+    eip7702Upgrade: 'Оновлення EIP-7702',
+    eip7702UpgradeIntro:
+      'Після оновлення до EIP-7702 ваш обліковий запис отримає додаткові <Highlight>розумні можливості</Highlight>:',
+    eip7702FlexibleGasTitle: 'Гнучка оплата газу',
+    eip7702FlexibleGasDesc:
+      'Сплачуйте комісії за газ токенами ERC-20, стейблкоїнами та нативними токенами.',
+    eip7702BatchTransactionsTitle: 'Об’єднання кількох транзакцій',
+    eip7702BatchTransactionsDesc:
+      'Заощаджуйте більше газу завдяки пакетним транзакціям.',
+    eip7702DappSupportTitle: 'Розширена підтримка dApp',
+    eip7702DappSupportDesc:
+      'Відкрийте доступ до розумніших операцій завдяки EIP-7702.',
+    eip7702SupportedNetwork: 'Підтримувані мережі',
+    enable: 'Увімкнути',
+    revoke: 'Відкликати',
 
     // About
     about: 'Про проект',

@@ -381,6 +381,21 @@ const fr = {
     showTestnet: 'Afficher la Testnet',
     showTestnetDes:
       'Selectionner cela pour afficher les testnets dans la liste de réseaux disponibles.',
+    eip7702Upgrade: 'Mise à niveau vers EIP-7702',
+    eip7702UpgradeIntro:
+      'En passant à EIP-7702, votre compte bénéficie de <Highlight>fonctionnalités intelligentes</Highlight> supplémentaires :',
+    eip7702FlexibleGasTitle: 'Paiement du gas plus flexible',
+    eip7702FlexibleGasDesc:
+      'Payez les frais de gas avec des jetons ERC-20, des stablecoins et des jetons natifs.',
+    eip7702BatchTransactionsTitle: 'Regrouper plusieurs transactions',
+    eip7702BatchTransactionsDesc:
+      'Économisez davantage de gas grâce aux transactions groupées.',
+    eip7702DappSupportTitle: 'Prise en charge étendue des dApps',
+    eip7702DappSupportDesc:
+      'Débloquez des interactions plus intelligentes grâce à EIP-7702.',
+    eip7702SupportedNetwork: 'Réseaux pris en charge',
+    enable: 'Activer',
+    revoke: 'Révoquer',
 
     // About
     about: 'À Propos',
