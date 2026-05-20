@@ -394,6 +394,10 @@ const fr = {
     eip7702DappSupportDesc:
       'Débloquez des interactions plus intelligentes grâce à EIP-7702.',
     eip7702SupportedNetwork: 'Réseaux pris en charge',
+    eip7702SwitchRequiredTitle: 'Changement de liaison requis',
+    eip7702SwitchRequiredDesc:
+      'Ce compte est actuellement lié à un contrat tiers. Passez à Fluent Wallet pour une meilleure expérience.',
+    bind: 'Lier',
     enable: 'Activer',
     revoke: 'Révoquer',
 

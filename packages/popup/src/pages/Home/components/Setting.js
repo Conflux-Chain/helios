@@ -5,8 +5,12 @@ import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
 import {SlideCard, LanguageNav} from '../../../components'
 import {LockOutLined, SidePanelSwitch} from '@fluent-wallet/component-icons'
-import {RPC_METHODS, ROUTES} from '../../../constants'
-import {useDataForPopup, useSidePanel} from '../../../hooks/useApi'
+import {NETWORK_TYPE, RPC_METHODS, ROUTES} from '../../../constants'
+import {
+  useCurrentAddress,
+  useDataForPopup,
+  useSidePanel,
+} from '../../../hooks/useApi'
 import {request} from '../../../utils'
 import useGlobalStore from '../../../stores'
 import {
@@ -47,8 +51,9 @@ const SETTING_ITEMS = [
   },
   {
     contentKey: 'eip7702Upgrade',
-    iconPath: 'images/7702Upgrade.svg',
+    iconPath: '/images/7702Upgrade.svg',
     jumpPath: EIP_7702_UPGRADE,
+    supportedNetworkType: NETWORK_TYPE.ETH,
   },
   {
     contentKey: 'about',
@@ -86,6 +91,11 @@ function Setting({onClose, open, settingAnimate = true}) {
   const {setFatalError} = useGlobalStore()
   const {mutate} = useSWRConfig()
   const data = useDataForPopup()
+  const {
+    data: {
+      network: {type: currentNetworkType},
+    },
+  } = useCurrentAddress()
   const {enabled: sidePanelEnabled, isSupported: isSidePanelSupported} =
     useSidePanel()
   const onLock = () => {
@@ -105,6 +115,11 @@ function Setting({onClose, open, settingAnimate = true}) {
     toggleSidePanelMode(!sidePanelEnabled)
   }
 
+  const visibleSettingItems = SETTING_ITEMS.filter(
+    ({supportedNetworkType}) =>
+      !supportedNetworkType || supportedNetworkType === currentNetworkType,
+  )
+
   return (
     <div>
       <SlideCard
@@ -123,7 +138,7 @@ function Setting({onClose, open, settingAnimate = true}) {
         }
         cardContent={
           <div className="pt-1 pb-4 flex-1">
-            {SETTING_ITEMS.map(({contentKey, iconPath, jumpPath}) => (
+            {visibleSettingItems.map(({contentKey, iconPath, jumpPath}) => (
               <SettingItem
                 key={contentKey}
                 onClick={() => onClickSettingItem(jumpPath)}

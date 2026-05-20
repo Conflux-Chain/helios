@@ -1,13 +1,18 @@
 import {Trans, useTranslation} from 'react-i18next'
 import Button from '@fluent-wallet/component-button'
 import {
+  EIP7702_NETWORK_CONFIGS,
   CFX_ESPACE_MAINNET_CHAINID,
-  ETH_MAINNET_CHAINID,
+  CFX_ESPACE_TESTNET_CHAINID,
 } from '@fluent-wallet/consts'
 
 import {TitleNav, AccountDisplay} from '../../components'
 import {NETWORK_TYPE} from '../../constants'
-import {useCurrentAddress, useNetworkByChainId} from '../../hooks/useApi'
+import {
+  useCurrentAddress,
+  useEip7702AccountStates,
+  useNetworkByChainId,
+} from '../../hooks/useApi'
 
 const FEATURE_ITEMS = [
   {
@@ -33,17 +38,56 @@ const FEATURE_ITEMS = [
 function EIP7702Upgrade() {
   const {t} = useTranslation()
   const {data: currentAddress = {}} = useCurrentAddress()
-  const {value: address, account: {nickname} = {}} = currentAddress
-  const espaceNetworks = useNetworkByChainId(
-    CFX_ESPACE_MAINNET_CHAINID,
+  const {
+    value: address,
+    account: {nickname, eid: accountId} = {},
+    network: {isMainnet, isTestnet} = {},
+  } = currentAddress
+
+  let targetUpgradeNetworkChainId = null
+
+  if (isMainnet) {
+    targetUpgradeNetworkChainId = CFX_ESPACE_MAINNET_CHAINID
+  } else if (isTestnet) {
+    targetUpgradeNetworkChainId = CFX_ESPACE_TESTNET_CHAINID
+  }
+
+  const hasConfiguredUpgradeNetwork = Boolean(
+    targetUpgradeNetworkChainId &&
+      EIP7702_NETWORK_CONFIGS[targetUpgradeNetworkChainId],
+  )
+  const targetUpgradeNetworkList = useNetworkByChainId(
+    hasConfiguredUpgradeNetwork ? targetUpgradeNetworkChainId : null,
     NETWORK_TYPE.ETH,
   )
-  const ethereumNetworks = useNetworkByChainId(
-    ETH_MAINNET_CHAINID,
-    NETWORK_TYPE.ETH,
+  const [targetUpgradeNetwork = {}] = targetUpgradeNetworkList
+  const shouldShowTargetUpgradeNetwork = Boolean(targetUpgradeNetwork?.eid)
+  const {data: targetUpgradeAccountStates = []} = useEip7702AccountStates(
+    accountId && shouldShowTargetUpgradeNetwork
+      ? [{accountId, networkId: targetUpgradeNetwork.eid}]
+      : [],
   )
-  const [espaceNetwork = {}] = espaceNetworks
-  const [ethereumNetwork = {}] = ethereumNetworks
+  const [targetUpgradeAccountState = {}] = targetUpgradeAccountStates
+
+  const targetNetworkAccountStateValue = targetUpgradeAccountState.state
+  const showSwitchRequired =
+    targetNetworkAccountStateValue === 'delegatedToOther'
+
+  let supportedNetworkButtonLabelKey = 'bind'
+  let supportedNetworkButtonVariant
+  let supportedNetworkButtonDisabled = false
+
+  switch (targetNetworkAccountStateValue) {
+    case 'delegatedToConfigured':
+      supportedNetworkButtonLabelKey = 'revoke'
+      supportedNetworkButtonVariant = 'outlined'
+      break
+    case 'unsupportedCode':
+    case 'unsupportedNetwork':
+      supportedNetworkButtonVariant = 'outlined'
+      supportedNetworkButtonDisabled = true
+      break
+  }
 
   return (
     <div
@@ -90,41 +134,61 @@ function EIP7702Upgrade() {
           ))}
         </section>
 
-        <div>
-          <p className="mt-4 text-sm font-normal text-gray-60">
-            {t('eip7702SupportedNetwork')}
-          </p>
-
-          <div className="mt-3 space-y-3">
-            <div className="flex items-center justify-between rounded-lg">
+        {shouldShowTargetUpgradeNetwork && showSwitchRequired && (
+          <div className="mt-4">
+            <p className="mt-4 text-sm font-normal text-gray-60">
+              {t('eip7702SwitchRequiredTitle')}
+            </p>
+            <p className="mt-1 text-xs font-normal leading-4 text-gray-60">
+              {t('eip7702SwitchRequiredDesc')}
+            </p>
+            <div className="mt-3 flex items-center justify-between rounded-lg">
               <div className="flex items-center min-w-0">
                 <img
                   className="w-4 h-4 mr-2 shrink-0"
-                  src={espaceNetwork?.icon}
+                  src={targetUpgradeNetwork?.icon}
                   alt="network icon"
                 />
                 <span className="text-sm font-medium text-gray-80 truncate">
-                  {espaceNetwork?.name}
+                  {targetUpgradeNetwork?.name}
                 </span>
               </div>
-              <Button>{t('enable')}</Button>
-            </div>
-
-            <div className="flex items-center justify-between rounded-lg">
-              <div className="flex items-center min-w-0">
-                <img
-                  className="w-4 h-4 mr-2 shrink-0"
-                  src={ethereumNetwork?.icon}
-                  alt="network icon"
-                />
-                <span className="text-sm font-medium text-gray-80 truncate">
-                  {ethereumNetwork?.name}
-                </span>
-              </div>
-              <Button variant="outlined">{t('revoke')}</Button>
+              <Button size="small">{t('switch')}</Button>
             </div>
           </div>
-        </div>
+        )}
+
+        {shouldShowTargetUpgradeNetwork && (
+          <div>
+            <p className="mt-4 text-sm font-normal text-gray-60">
+              {t('eip7702SupportedNetwork')}
+            </p>
+
+            <div className="mt-3">
+              <div className="flex items-center justify-between rounded-lg">
+                <div className="flex items-center min-w-0">
+                  <img
+                    className="w-4 h-4 mr-2 shrink-0"
+                    src={targetUpgradeNetwork?.icon}
+                    alt="network icon"
+                  />
+                  <span className="text-sm font-medium text-gray-80 truncate">
+                    {targetUpgradeNetwork?.name}
+                  </span>
+                </div>
+                <Button
+                  size="small"
+                  variant={supportedNetworkButtonVariant}
+                  disabled={
+                    supportedNetworkButtonDisabled || showSwitchRequired
+                  }
+                >
+                  {t(supportedNetworkButtonLabelKey)}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )

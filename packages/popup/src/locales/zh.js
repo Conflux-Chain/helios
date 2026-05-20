@@ -366,6 +366,10 @@ const zh = {
     eip7702DappSupportTitle: '更多 DApp 支持',
     eip7702DappSupportDesc: '借助 EIP-7702 解锁更智能的交易能力。',
     eip7702SupportedNetwork: '支持的网络',
+    eip7702SwitchRequiredTitle: '需要切换绑定',
+    eip7702SwitchRequiredDesc:
+      '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
+    bind: '绑定',
     enable: '启用',
     revoke: '撤销',
     openSidePanel: '侧边栏模式',

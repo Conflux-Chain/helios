@@ -13,6 +13,8 @@ export const WALLET_IS_LOCKED = 'wallet_isLocked'
 export const WALLET_GET_CURRENT_DAPP = 'wallet_getCurrentViewingApp'
 export const WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK =
   'wallet_getAccountAddressByNetwork'
+export const WALLET_GET_EIP7702_ACCOUNT_STATES =
+  'wallet_getEip7702AccountStates'
 export const WALLET_ZERO_ACCOUNT_GROUP = 'wallet_zeroAccountGroup'
 export const WALLET_METADATA_FOR_POPUP = 'wallet_metadataForPopup'
 export const WALLET_GENERATE_MNEMONIC = 'wallet_generateMnemonic'

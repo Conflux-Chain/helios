@@ -380,6 +380,10 @@ const en = {
     eip7702DappSupportTitle: 'Extra dApp support',
     eip7702DappSupportDesc: 'Unlock smarter transactions with EIP-7702.',
     eip7702SupportedNetwork: 'Supported network',
+    eip7702SwitchRequiredTitle: 'Bind switch required',
+    eip7702SwitchRequiredDesc:
+      'This account currently bound to a third party contract. Switch to Fluent Wallet for a better experience.',
+    bind: 'Bind',
     enable: 'Enable',
     revoke: 'Revoke',
     openSidePanel: 'Open as sidebar',

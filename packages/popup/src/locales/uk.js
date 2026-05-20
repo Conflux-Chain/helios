@@ -383,6 +383,10 @@ const uk = {
     eip7702DappSupportDesc:
       'Відкрийте доступ до розумніших операцій завдяки EIP-7702.',
     eip7702SupportedNetwork: 'Підтримувані мережі',
+    eip7702SwitchRequiredTitle: 'Потрібна зміна прив’язки',
+    eip7702SwitchRequiredDesc:
+      'Цей обліковий запис наразі прив’язаний до стороннього контракту. Перейдіть на Fluent Wallet для кращого досвіду.',
+    bind: 'Прив’язати',
     enable: 'Увімкнути',
     revoke: 'Відкликати',
 

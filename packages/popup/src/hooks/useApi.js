@@ -25,6 +25,7 @@ const {
   WALLET_GET_PENDING_AUTH_REQUEST,
   WALLET_ZERO_ACCOUNT_GROUP,
   WALLET_GET_NETWORK,
+  WALLET_GET_EIP7702_ACCOUNT_STATES,
   WALLET_IS_LOCKED,
   WALLET_METADATA_FOR_POPUP,
   ACCOUNT_GROUP_TYPE,
@@ -78,6 +79,8 @@ export const useAddress = (opts = {}) => {
           ticker: 1,
           netId: 1,
           chainId: 1,
+          isMainnet: 1,
+          isTestnet: 1,
           name: 1,
           icon: 1,
           scanUrl: 1,
@@ -247,6 +250,34 @@ export const useAddressByNetworkId = (accountIds = [], networkId) => {
     {fallbackData: isNumber(accountIds) ? {} : []},
   )
   return accountAddress || {}
+}
+
+export const useEip7702AccountStates = accountStateQueries => {
+  const canQueryAccountStates =
+    isArray(accountStateQueries) &&
+    accountStateQueries.length > 0 &&
+    accountStateQueries.every(
+      ({accountId, networkId}) => isNumber(accountId) && isNumber(networkId),
+    )
+
+  const {data: eip7702AccountStates, mutate} = useRPC(
+    canQueryAccountStates
+      ? [
+          WALLET_GET_EIP7702_ACCOUNT_STATES,
+          ...accountStateQueries.flatMap(({accountId, networkId}) => [
+            accountId,
+            networkId,
+          ]),
+        ]
+      : null,
+    accountStateQueries,
+    {fallbackData: []},
+  )
+
+  return {
+    data: eip7702AccountStates || [],
+    mutate,
+  }
 }
 
 export const useBalance = (

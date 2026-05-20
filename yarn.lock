@@ -5459,6 +5459,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-eip7702-account-states@workspace:packages/rpcs/wallet_getEip7702AccountState":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-eip7702-account-states@workspace:packages/rpcs/wallet_getEip7702AccountState"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "npm:1.0.15"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-fluent-metadata@workspace:*, @fluent-wallet/wallet_get-fluent-metadata@workspace:packages/rpcs/wallet_getFluentMetadata":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-fluent-metadata@workspace:packages/rpcs/wallet_getFluentMetadata"
@@ -18528,6 +18537,7 @@ __metadata:
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
+    "@fluent-wallet/wallet_get-eip7702-account-states": "workspace:packages/rpcs/wallet_getEip7702AccountState"
     "@fluent-wallet/wallet_get-fluent-metadata": "workspace:*"
     "@fluent-wallet/wallet_get-import-hardware-wallet-info": "workspace:*"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"

@@ -148,6 +148,7 @@ import * as walletGetBalance from '@fluent-wallet/wallet_get-balance'
 import * as walletGetCurrentAccount from '@fluent-wallet/wallet_get-current-account'
 import * as walletGetCurrentNetwork from '@fluent-wallet/wallet_get-current-network'
 import * as walletGetCurrentViewingApp from '@fluent-wallet/wallet_get-current-viewing-app'
+import * as walletGetEip7702AccountStates from '@fluent-wallet/wallet_get-eip7702-account-states'
 import * as walletGetNetwork from '@fluent-wallet/wallet_get-network'
 import * as walletGetNextNonce from '@fluent-wallet/wallet_get-next-nonce'
 import * as walletGetPendingAuthRequest from '@fluent-wallet/wallet_get-pending-auth-request'
@@ -240,6 +241,7 @@ export const rpcEngineOpts = {
     walletSetCurrentAccount,
     walletSetCurrentNetwork,
     walletGetCurrentViewingApp,
+    walletGetEip7702AccountStates,
     walletGetCurrentNetwork,
     walletGetCurrentAccount,
 

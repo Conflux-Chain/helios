@@ -385,6 +385,10 @@ const ru = {
     eip7702DappSupportDesc:
       'Откройте доступ к более умным операциям с EIP-7702.',
     eip7702SupportedNetwork: 'Поддерживаемые сети',
+    eip7702SwitchRequiredTitle: 'Требуется смена привязки',
+    eip7702SwitchRequiredDesc:
+      'Этот аккаунт сейчас привязан к стороннему контракту. Переключитесь на Fluent Wallet для лучшего опыта.',
+    bind: 'Привязать',
     enable: 'Включить',
     revoke: 'Отозвать',
 
