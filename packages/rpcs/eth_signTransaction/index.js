@@ -1,13 +1,20 @@
 import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
-import {ethSignTransaction} from '@fluent-wallet/signature'
-import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {
+  ethSignEip7702Transaction,
+  ethSignTransaction,
+  signEip7702AuthorizationList,
+} from '@fluent-wallet/signature'
+import {EIP7702_NETWORK_CONFIGS, ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {parseUnits} from '@ethersproject/units'
+import BN from 'bn.js'
+import {stripHexPrefix} from '@fluent-wallet/utils'
 
 const {
   TransactionLegacyUnsigned,
   Transaction1559Unsigned,
   Transaction2930Unsigned,
+  Transaction7702Unsigned,
 } = genEthTxSchema(spec)
 
 const {or, cat, zeroOrOne, map, blockRef, boolean} = spec
@@ -17,9 +24,13 @@ export const txSchema = [
   TransactionLegacyUnsigned,
   Transaction1559Unsigned,
   Transaction2930Unsigned,
+  Transaction7702Unsigned,
 ]
 
 export const NAME = 'eth_signTransaction'
+
+const DRY_RUN_PRIVATE_KEY =
+  '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 
 export const schemas = {
   input: [
@@ -98,7 +109,8 @@ export const main = async args => {
   const newTx = {...tx}
   const network1559Compatible = await wallet_network1559Compatible()
   if (!newTx.type) {
-    if (network1559Compatible) newTx.type = ETH_TX_TYPES.EIP1559
+    if (newTx.authorizationList) newTx.type = ETH_TX_TYPES.EIP7702
+    else if (network1559Compatible) newTx.type = ETH_TX_TYPES.EIP1559
     else newTx.type = ETH_TX_TYPES.LEGACY
   }
 
@@ -115,6 +127,17 @@ export const main = async args => {
   // from address is not belong to wallet
   if (!fromAddr) throw InvalidParams(`Invalid from address ${newTx.from}`)
 
+  const isHardwareWallet = fromAddr.account.accountGroup.vault.type === 'hw'
+  const is7702Tx = newTx.type === ETH_TX_TYPES.EIP7702
+  const is1559Tx = newTx.type === ETH_TX_TYPES.EIP1559
+  const uses1559Fees = is1559Tx || is7702Tx
+
+  if (is7702Tx && isHardwareWallet) {
+    throw InvalidParams(
+      'EIP-7702 transactions are not supported for hardware wallets',
+    )
+  }
+
   // tx without to must have data (deploy contract)
   if (!newTx.to && !newTx.data)
     throw InvalidParams(
@@ -123,6 +146,8 @@ export const main = async args => {
 
   if (newTx.data === '0x') newTx.data = undefined
   if (!newTx.value) newTx.value = '0x0'
+  if (!newTx.chainId) newTx.chainId = network.chainId
+  const walletSupportsEip7702 = Boolean(EIP7702_NETWORK_CONFIGS[newTx.chainId])
 
   if (!newTx.nonce) {
     newTx.nonce = await eth_getTransactionCount({errorFallThrough: true}, [
@@ -130,16 +155,37 @@ export const main = async args => {
       'pending',
     ])
   }
-  // EIP-1559
-  const is1559Tx = newTx.type === ETH_TX_TYPES.EIP1559
   if (is1559Tx && !network1559Compatible)
     throw InvalidParams(
       `Network ${network.name} don't support 1559 transaction`,
     )
+  if (is7702Tx && !walletSupportsEip7702)
+    throw InvalidParams(
+      `Fluent does not support EIP-7702 transactions on ${network.name} yet`,
+    )
 
-  if (!is1559Tx && !newTx.gasPrice) newTx.gasPrice = await eth_gasPrice()
+  if (!uses1559Fees && !newTx.gasPrice) newTx.gasPrice = await eth_gasPrice()
 
-  if (newTx.to && !newTx.gas) {
+  let pk
+  if (is7702Tx) {
+    pk = dryRun
+      ? DRY_RUN_PRIVATE_KEY
+      : await wallet_getAddressPrivateKey({
+          address: newTx.from,
+          accountId: fromAddr.account.eid,
+        })
+
+    newTx.authorizationList = signEip7702AuthorizationList(
+      prepareEip7702AuthorizationList(
+        newTx.authorizationList,
+        newTx.chainId,
+        newTx.nonce,
+      ),
+      pk,
+    )
+  }
+
+  if (!is7702Tx && newTx.to && !newTx.gas) {
     const {contract: typeContract} = await wallet_detectAddressType(
       {errorFallThrough: true},
       {address: newTx.to},
@@ -159,9 +205,7 @@ export const main = async args => {
       throw err
     }
   }
-
-  if (!newTx.chainId) newTx.chainId = network.chainId
-  if (is1559Tx && network1559Compatible) {
+  if ((is1559Tx && network1559Compatible) || is7702Tx) {
     const gasInfoEip1559 = await eth_estimate1559Fee()
     const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
       gasInfoEip1559?.medium || {}
@@ -176,13 +220,11 @@ export const main = async args => {
         'gwei',
       ).toHexString()
   }
+
   let raw
-  if (fromAddr.account.accountGroup.vault.type === 'hw') {
+  if (isHardwareWallet) {
     if (dryRun) {
-      raw = ethSignTransaction(
-        toEthersTx(newTx),
-        '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
-      )
+      raw = ethSignTransaction(toEthersTx(newTx), DRY_RUN_PRIVATE_KEY)
     } else {
       raw = await signWithHardwareWallet({
         args,
@@ -193,14 +235,16 @@ export const main = async args => {
       })
     }
   } else {
-    let pk = await wallet_getAddressPrivateKey({
-      address: newTx.from,
-      accountId: fromAddr.account.eid,
-    })
-
-    if (dryRun)
-      pk = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
-    raw = ethSignTransaction(toEthersTx(newTx), pk)
+    if (!pk)
+      pk = dryRun
+        ? DRY_RUN_PRIVATE_KEY
+        : await wallet_getAddressPrivateKey({
+            address: newTx.from,
+            accountId: fromAddr.account.eid,
+          })
+    raw = is7702Tx
+      ? ethSignEip7702Transaction(newTx, pk)
+      : ethSignTransaction(toEthersTx(newTx), pk)
   }
 
   if (returnTxMeta) {
@@ -221,4 +265,21 @@ async function signWithHardwareWallet({
     {errorFallThrough: true},
     {tx, addressId, accountId},
   )
+}
+
+function prepareEip7702AuthorizationList(authorizationList, chainId, nonce) {
+  const txNonce = new BN(stripHexPrefix(nonce), 16)
+
+  return authorizationList.map((authorization, index) => {
+    const authorizationNonce = `0x${txNonce
+      .clone()
+      .addn(index + 1)
+      .toString(16)}`
+
+    return {
+      address: authorization.address.toLowerCase(),
+      chainId,
+      nonce: authorizationNonce,
+    }
+  })
 }

@@ -250,3 +250,66 @@ export const toHexString = value => {
 
   return toBuffer(value).toString('hex')
 }
+
+/**
+ * Converts an unsigned integer-like value into a normalized 0x-prefixed hex quantity string.
+ *
+ * @example
+ * - `toHexQuantity(420)` -> `'0x1a4'`
+ * - `toHexQuantity(420n)` -> `'0x1a4'`
+ * - `toHexQuantity(new BN('420'))` -> `'0x1a4'`
+ * - `toHexQuantity('0x01')` -> `'0x1'`
+ * - `toHexQuantity('0x0')` -> `'0x0'`
+ *
+ * @param value
+ * @returns {String}
+ */
+export const toHexQuantity = value => {
+  if (typeof value === 'number') {
+    if (!Number.isSafeInteger(value) || value < 0) {
+      throw new Error(
+        `toHexQuantity expects unsigned integer number, received ${value}`,
+      )
+    }
+
+    return intToHex(value)
+  }
+
+  if (typeof value === 'bigint') {
+    if (value < 0n) {
+      throw new Error(
+        `toHexQuantity expects unsigned bigint, received ${value}`,
+      )
+    }
+
+    return `0x${value.toString(16)}`
+  }
+
+  if (BN.isBN(value)) {
+    if (value.isNeg()) {
+      throw new Error(
+        `toHexQuantity expects unsigned BN, received ${value.toString(10)}`,
+      )
+    }
+
+    return `0x${value.toString(16)}`
+  }
+
+  if (typeof value === 'string') {
+    if (!isHexString(value)) {
+      throw new Error(
+        `toHexQuantity expects 0x-prefixed hex string, received ${value}`,
+      )
+    }
+
+    const normalizedHex = stripHexPrefix(value).replace(/^0+/, '')
+
+    return `0x${normalizedHex || '0'}`
+  }
+
+  if (typeof value?.toHexString === 'function') {
+    return toHexQuantity(value.toHexString())
+  }
+
+  throw new Error(`toHexQuantity unsupported type ${typeof value}`)
+}

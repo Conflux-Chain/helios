@@ -1,9 +1,9 @@
 import {map, dbid, mapp} from '@fluent-wallet/spec'
 import {decrypt} from 'browser-passworder'
 import {Ethereum as LedgerEthereum} from '@fluent-wallet/ledger'
-import {TransactionFactory} from '@ethereumjs/tx'
+import {createTx} from '@ethereumjs/tx'
 import {RLP} from '@ethereumjs/rlp'
-import {Common} from '@ethereumjs/common'
+import {Mainnet, Hardfork, createCustomCommon} from '@ethereumjs/common'
 import {addHexPrefix} from '@fluent-wallet/utils'
 import {bytesToHex} from '@ethereumjs/util'
 
@@ -60,8 +60,17 @@ export const main = async ({
   if (!hdPath) throw InvalidParams(`Invalid address id ${addressId}`)
 
   try {
-    const common = Common.custom({chainId: tx.chainId})
-    const txData = TransactionFactory.fromTxData(newTx, {common})
+    const common = createCustomCommon(
+      {
+        chainId: tx.chainId,
+      },
+      Mainnet,
+      {
+        hardfork: Hardfork.Prague,
+        eips: [7702],
+      },
+    )
+    const txData = createTx(newTx, {common})
 
     const messageToSign = txData.getMessageToSign()
     const rawTxHex =
@@ -78,7 +87,7 @@ export const main = async ({
       r: addHexPrefix(r),
       s: addHexPrefix(s),
     }
-    const signedTx = TransactionFactory.fromTxData(allTxData, {common})
+    const signedTx = createTx(allTxData, {common})
     const recoveredAddr = signedTx.getSenderAddress().toString()
     if (recoveredAddr.toLowerCase() !== addr.value)
       throw InvalidParams(

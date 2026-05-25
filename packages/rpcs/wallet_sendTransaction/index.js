@@ -67,6 +67,14 @@ export const main = async ({
 
   if (_inpage) {
     if (params.authReqId) throw InvalidParams('Invalid tx data')
+    if (
+      params[0].authorizationList ||
+      params[0].type === ETH_TX_TYPES.EIP7702
+    ) {
+      throw InvalidParams(
+        'Dapp-initiated EIP-7702 transactions are not supported yet',
+      )
+    }
     if (params[0].gasLimit) {
       if (!params[0].gas) params[0].gas = params[0].gasLimit
       delete params[0].gasLimit

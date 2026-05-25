@@ -1,6 +1,18 @@
-import {addHexPrefix, stripHexPrefix, toBuffer} from '@fluent-wallet/utils'
+import {
+  addHexPrefix,
+  stripHexPrefix,
+  toBuffer,
+  toHexQuantity,
+} from '@fluent-wallet/utils'
 import {encode as encodeCfxAddress} from '@fluent-wallet/base32-address'
+import {Mainnet, Hardfork, createCustomCommon} from '@ethereumjs/common'
 import {hashMessage as ethHashPersonalMessage} from '@ethersproject/hash'
+import {
+  bytesToHex,
+  eoaCode7702AuthorizationHashedMessageToSign,
+  hexToBytes,
+} from '@ethereumjs/util'
+import {createTx} from '@ethereumjs/tx'
 import {
   SigningKey,
   recoverPublicKey as ethRecoverPublicKey,
@@ -172,6 +184,59 @@ export const ecdsaRecover = (type, hash, sig, netId) =>
     ? cfxEcdsaRecover(hash, sig, netId)
     : ethEcdsaRecover(hash, sig)
 
+// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-7702.md#behavior
+export const hashEip7702Authorization = ({chainId, contractAddress, nonce}) => {
+  return bytesToHex(
+    eoaCode7702AuthorizationHashedMessageToSign({
+      chainId: toHexQuantity(chainId),
+      address: addHexPrefix(contractAddress).toLowerCase(),
+      nonce: toHexQuantity(nonce),
+    }),
+  )
+}
+
+export const signEip7702Authorization = (authorization, privateKey) => {
+  const authorizationHash = hashEip7702Authorization(authorization)
+  const signature = new SigningKey(addHexPrefix(privateKey)).signDigest(
+    authorizationHash,
+  )
+
+  return {
+    r: signature.r.toLowerCase(),
+    s: signature.s.toLowerCase(),
+    yParity: `0x${signature.recoveryParam}`,
+  }
+}
+
+export const signEip7702AuthorizationList = (authorizationList, privateKey) => {
+  return authorizationList.map(authorization => ({
+    ...authorization,
+    ...signEip7702Authorization(
+      {
+        chainId: authorization.chainId,
+        contractAddress: authorization.address,
+        nonce: authorization.nonce,
+      },
+      privateKey,
+    ),
+  }))
+}
+
+export const ethSignEip7702Transaction = (tx, privateKey) => {
+  const unsignedTransaction = createEip7702Transaction(tx)
+  const signedTransaction = unsignedTransaction.sign(
+    hexToBytes(addHexPrefix(privateKey)),
+  )
+
+  return addHexPrefix(bytesToHex(signedTransaction.serialize()))
+}
+
+export const ethEncodeEip7702Transaction = tx => {
+  return addHexPrefix(
+    bytesToHex(createEip7702Transaction(tx).getMessageToSign()),
+  )
+}
+
 export const cfxSignTransaction = (tx, pk, netId) => {
   const transaction = new CfxTransaction(tx)
   return transaction.sign(pk, netId).serialize()
@@ -242,4 +307,25 @@ export const ethJoinTransactionAndSignature = ({tx, signature: [r, s, v]}) => {
 
 export const getTxHashFromRawTx = txhash => {
   return keccak256(txhash)
+}
+
+function createEip7702Transaction(tx) {
+  const {gas, gasLimit, ...restTx} = tx
+  const common = createCustomCommon(
+    {chainId: parseInt(tx.chainId, 16)},
+    Mainnet,
+    {
+      hardfork: Hardfork.Prague,
+      eips: [7702],
+    },
+  )
+
+  return createTx(
+    {
+      ...restTx,
+      gasLimit: gasLimit ?? gas,
+      type: 4,
+    },
+    {common},
+  )
 }

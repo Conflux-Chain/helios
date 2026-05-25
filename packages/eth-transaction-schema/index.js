@@ -9,6 +9,7 @@ export default function ({
   eq,
   chainId,
   catn,
+  oneOrMore,
   optionalMapKey,
 }) {
   const AccessEntrySpec = [
@@ -18,6 +19,12 @@ export default function ({
     ['storageKeys', {optional: true}, [catn, ['32BtyeHexValue', Hash32]]],
   ]
   const AccessListSpec = [catn, ['AccessListEntry', AccessEntrySpec]]
+  const AuthorizationRequestEntrySpec = [
+    map,
+    {closed: true},
+    ['address', ethHexAddress],
+  ]
+  const AuthorizationListSpec = [oneOrMore, AuthorizationRequestEntrySpec]
   const TxMapSpecs = {
     from: ['from', ethHexAddress],
     type: ['type', {doc: 'EIP 2718 Type'}, Byte],
@@ -31,6 +38,7 @@ export default function ({
     maxPriorityFeePerGas: ['maxPriorityFeePerGas', Uint],
     maxFeePerGas: ['maxFeePerGas', Uint],
     accessList: ['accessList', AccessListSpec],
+    authorizationList: ['authorizationList', AuthorizationListSpec],
     chainId: ['chainId', chainId],
   }
   // EIP-2930
@@ -98,13 +106,38 @@ export default function ({
     optionalMapKey(TxMapSpecs.gasPrice),
     optionalMapKey(TxMapSpecs.chainId),
   ]
+  const Transaction7702Unsigned = [
+    map,
+    {closed: true},
+    TxMapSpecs.from,
+
+    [
+      TxMapSpecs.type[0],
+      optionalMapKey(TxMapSpecs.type)[1],
+      [and, TxMapSpecs.type[2], [eq, '0x4']],
+    ],
+    optionalMapKey(TxMapSpecs.nonce),
+    optionalMapKey(TxMapSpecs.gas),
+    optionalMapKey(TxMapSpecs.gasLimit),
+    TxMapSpecs.to,
+    optionalMapKey(TxMapSpecs.value),
+    optionalMapKey(TxMapSpecs.data),
+    optionalMapKey(TxMapSpecs.accessList),
+    optionalMapKey(TxMapSpecs.maxPriorityFeePerGas),
+    optionalMapKey(TxMapSpecs.maxFeePerGas),
+    TxMapSpecs.authorizationList,
+    optionalMapKey(TxMapSpecs.chainId),
+  ]
 
   return {
     AccessEntrySpec,
     AccessListSpec,
+    AuthorizationListSpec,
+    AuthorizationRequestEntrySpec,
     TxMapSpecs,
     Transaction2930Unsigned,
     Transaction1559Unsigned,
     TransactionLegacyUnsigned,
+    Transaction7702Unsigned,
   }
 }

@@ -155,6 +155,7 @@ export const ETH_TX_TYPES = {
   LEGACY: '0x0',
   EIP2930: '0x1',
   EIP1559: '0x2',
+  EIP7702: '0x4',
 }
 
 export const EIP7702_DELEGATION_PREFIX = '0xef0100'
