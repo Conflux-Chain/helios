@@ -388,6 +388,10 @@ const ru = {
     eip7702SwitchRequiredTitle: 'Требуется смена привязки',
     eip7702SwitchRequiredDesc:
       'Этот аккаунт сейчас привязан к стороннему контракту. Переключитесь на Fluent Wallet для лучшего опыта.',
+    eip7702Delegation: 'Делегирование EIP-7702',
+    eip7702Switch: 'Переключение EIP-7702',
+    eip7702Revoke: 'Отзыв EIP-7702',
+    delegateTo: 'Делегировать на',
     bind: 'Привязать',
     enable: 'Включить',
     revoke: 'Отозвать',

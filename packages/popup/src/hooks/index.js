@@ -134,6 +134,7 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   const {
     from,
     to,
+    type: txType,
     value,
     data,
     nonce,
@@ -142,7 +143,13 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     maxPriorityFeePerGas,
     gas,
     storageLimit,
+    authorizationList,
   } = tx
+  const authorizationListKey = isArray(authorizationList)
+    ? authorizationList
+        .map(item => [item?.address, item?.chainId, item?.nonce].join(':'))
+        .join('|')
+    : ''
   const nativeBalance =
     useBalance(from, network?.eid, '0x0')?.[from]?.['0x0'] || '0x0'
   const {
@@ -168,6 +175,7 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   }, [
     from,
     to,
+    txType,
     value,
     data,
     nonce,
@@ -176,6 +184,7 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     maxPriorityFeePerGas,
     gas,
     storageLimit,
+    authorizationListKey,
     network.chainId,
     network.gasBuffer,
     // currentNetwork.netId,
@@ -221,6 +230,9 @@ const defaultSendTransactionParams = {
   sendTokenId: 'native',
   customAllowance: '',
   tx: {},
+  txContext: {},
+  // Internal preset-tx flows turn this off to avoid overwriting tx from send-form state.
+  syncTxWithForm: true,
   maxMode: false,
 }
 
@@ -228,6 +240,14 @@ export const useCurrentTxStore = create((set, get) => ({
   ...defaultSendTransactionParams,
 
   setTx: tx => set({tx}),
+  setSyncTxWithForm: syncTxWithForm => set({syncTxWithForm}),
+  setPresetTx: (tx, txContext = {}) =>
+    set({
+      ...defaultSendTransactionParams,
+      tx,
+      txContext,
+      syncTxWithForm: false,
+    }),
   setData: data => set({data}),
   setToAddress: toAddress => set({toAddress}),
   setSendAmount: sendAmount => set({sendAmount}),
@@ -256,7 +276,8 @@ export const useCurrentTxStore = create((set, get) => ({
 // MAYBE: support multiple tx and rename this to useTxParams
 export const useCurrentTxParams = () => {
   const txStore = useCurrentTxStore()
-  const {toAddress, sendAmount, sendTokenId, setData, setTx} = txStore
+  const {toAddress, sendAmount, sendTokenId, syncTxWithForm, setData, setTx} =
+    txStore
 
   const {decimals: tokenDecimals, address: tokenAddress} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
@@ -293,11 +314,13 @@ export const useCurrentTxParams = () => {
   }
   if (isNativeToken) params['value'] = sendData
   if (data) params['data'] = data
+  const paramsKey = JSON.stringify(params)
 
   useEffect(() => {
+    if (!syncTxWithForm) return
     if (data) setData(data)
     setTx(params)
-  }, [JSON.stringify(params)])
+  }, [syncTxWithForm, paramsKey])
 
   return txStore
 }
@@ -460,11 +483,16 @@ export const useDecodeDisplay = ({
     isContract &&
     decodeData?.name === 'approve' &&
     (!value || value === '0x' || value === '0x0')
-  const isSendNativeToken = !!to && isEOAAddress
+  const isInternalEip7702Tx =
+    !isDapp &&
+    tx?.type === ETH_TX_TYPES.EIP7702 &&
+    isArray(tx?.authorizationList) &&
+    tx.authorizationList.length > 0
+  const isSendNativeToken = isDapp && !!to && isEOAAddress
   const args = decodeData?.args || []
   const methodName = decodeData?.name || ''
   const isSendToken =
-    !isDapp ||
+    (!isDapp && !isInternalEip7702Tx) ||
     isSendNativeToken ||
     (isDapp &&
       isContract &&
@@ -660,9 +688,12 @@ export const useLedgerAppName = () => {
     : ''
 }
 
-export const useIsTxTreatedAsEIP1559 = txType => {
+export const useUses1559Fees = txType => {
   const network1559Compatible = useNetwork1559Compatible()
-  return network1559Compatible && (!txType || txType === ETH_TX_TYPES.EIP1559)
+  return (
+    txType === ETH_TX_TYPES.EIP7702 ||
+    (network1559Compatible && (!txType || txType === ETH_TX_TYPES.EIP1559))
+  )
 }
 
 export const useInputAddressInfo = ({

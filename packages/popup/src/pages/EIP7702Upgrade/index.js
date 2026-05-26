@@ -1,13 +1,17 @@
 import {Trans, useTranslation} from 'react-i18next'
+import {useHistory} from 'react-router-dom'
 import Button from '@fluent-wallet/component-button'
 import {
   EIP7702_NETWORK_CONFIGS,
   CFX_ESPACE_MAINNET_CHAINID,
   CFX_ESPACE_TESTNET_CHAINID,
+  ETH_TX_TYPES,
+  NULL_HEX_ADDRESS,
 } from '@fluent-wallet/consts'
 
 import {TitleNav, AccountDisplay} from '../../components'
-import {NETWORK_TYPE} from '../../constants'
+import {useCurrentTxStore} from '../../hooks'
+import {NETWORK_TYPE, ROUTES} from '../../constants'
 import {
   useCurrentAddress,
   useEip7702AccountStates,
@@ -37,6 +41,8 @@ const FEATURE_ITEMS = [
 
 function EIP7702Upgrade() {
   const {t} = useTranslation()
+  const history = useHistory()
+  const {setPresetTx} = useCurrentTxStore()
   const {data: currentAddress = {}} = useCurrentAddress()
   const {
     value: address,
@@ -68,10 +74,15 @@ function EIP7702Upgrade() {
       : [],
   )
   const [targetUpgradeAccountState = {}] = targetUpgradeAccountStates
+  const configuredDelegateAddress =
+    EIP7702_NETWORK_CONFIGS[targetUpgradeNetworkChainId]?.delegateAddress
 
   const targetNetworkAccountStateValue = targetUpgradeAccountState.state
   const showSwitchRequired =
     targetNetworkAccountStateValue === 'delegatedToOther'
+  const canPrepareUpgradeTx = Boolean(
+    address && configuredDelegateAddress && targetNetworkAccountStateValue,
+  )
 
   let supportedNetworkButtonLabelKey = 'bind'
   let supportedNetworkButtonVariant
@@ -87,6 +98,49 @@ function EIP7702Upgrade() {
       supportedNetworkButtonVariant = 'outlined'
       supportedNetworkButtonDisabled = true
       break
+  }
+
+  const openEip7702ConfirmPage = ({delegateAddress, action}) => {
+    if (!address || !delegateAddress || !action) return
+
+    const presetTx = {
+      from: address,
+      to: address,
+      value: '0x0',
+      type: ETH_TX_TYPES.EIP7702,
+      authorizationList: [{address: delegateAddress}],
+    }
+
+    setPresetTx(presetTx, {eip7702Action: action})
+
+    history.push({
+      pathname: ROUTES.CONFIRM_TRANSACTION,
+    })
+  }
+
+  const onClickSwitch = () => {
+    if (targetNetworkAccountStateValue !== 'delegatedToOther') return
+    openEip7702ConfirmPage({
+      delegateAddress: configuredDelegateAddress,
+      action: 'switch',
+    })
+  }
+
+  const onClickSupportedNetworkAction = () => {
+    if (targetNetworkAccountStateValue === 'delegatedToConfigured') {
+      openEip7702ConfirmPage({
+        delegateAddress: NULL_HEX_ADDRESS,
+        action: 'revoke',
+      })
+      return
+    }
+
+    if (targetNetworkAccountStateValue === 'notDelegated') {
+      openEip7702ConfirmPage({
+        delegateAddress: configuredDelegateAddress,
+        action: 'bind',
+      })
+    }
   }
 
   return (
@@ -153,7 +207,13 @@ function EIP7702Upgrade() {
                   {targetUpgradeNetwork?.name}
                 </span>
               </div>
-              <Button size="small">{t('switch')}</Button>
+              <Button
+                size="small"
+                disabled={!canPrepareUpgradeTx}
+                onClick={onClickSwitch}
+              >
+                {t('switch')}
+              </Button>
             </div>
           </div>
         )}
@@ -180,8 +240,11 @@ function EIP7702Upgrade() {
                   size="small"
                   variant={supportedNetworkButtonVariant}
                   disabled={
-                    supportedNetworkButtonDisabled || showSwitchRequired
+                    supportedNetworkButtonDisabled ||
+                    showSwitchRequired ||
+                    !canPrepareUpgradeTx
                   }
+                  onClick={onClickSupportedNetworkAction}
                 >
                   {t(supportedNetworkButtonLabelKey)}
                 </Button>

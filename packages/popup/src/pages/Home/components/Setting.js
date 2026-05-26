@@ -5,6 +5,7 @@ import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
 import {SlideCard, LanguageNav} from '../../../components'
 import {LockOutLined, SidePanelSwitch} from '@fluent-wallet/component-icons'
+import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
 import {NETWORK_TYPE, RPC_METHODS, ROUTES} from '../../../constants'
 import {
   useCurrentAddress,
@@ -54,6 +55,7 @@ const SETTING_ITEMS = [
     iconPath: '/images/7702Upgrade.svg',
     jumpPath: EIP_7702_UPGRADE,
     supportedNetworkType: NETWORK_TYPE.ETH,
+    supportedChainIds: Object.keys(EIP7702_NETWORK_CONFIGS),
   },
   {
     contentKey: 'about',
@@ -93,7 +95,7 @@ function Setting({onClose, open, settingAnimate = true}) {
   const data = useDataForPopup()
   const {
     data: {
-      network: {type: currentNetworkType},
+      network: {type: currentNetworkType, chainId},
     },
   } = useCurrentAddress()
   const {enabled: sidePanelEnabled, isSupported: isSidePanelSupported} =
@@ -116,8 +118,9 @@ function Setting({onClose, open, settingAnimate = true}) {
   }
 
   const visibleSettingItems = SETTING_ITEMS.filter(
-    ({supportedNetworkType}) =>
-      !supportedNetworkType || supportedNetworkType === currentNetworkType,
+    ({supportedNetworkType, supportedChainIds}) =>
+      (!supportedNetworkType || supportedNetworkType === currentNetworkType) &&
+      (!supportedChainIds || supportedChainIds.includes(chainId)),
   )
 
   return (

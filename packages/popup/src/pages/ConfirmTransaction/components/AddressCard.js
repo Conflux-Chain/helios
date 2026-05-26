@@ -174,6 +174,8 @@ function AddressCard({
   value,
   isSendToken,
   isApproveToken,
+  title,
+  toAddressLabel,
 }) {
   const {t} = useTranslation()
   const {
@@ -217,13 +219,14 @@ function AddressCard({
               : '/images/sign-icon.svg'
           }
         />
-        {t(
-          isSendToken
-            ? 'sendToken'
-            : isApproveToken
-            ? 'approveToken'
-            : 'signTransaction',
-        )}
+        {title ||
+          t(
+            isSendToken
+              ? 'sendToken'
+              : isApproveToken
+              ? 'approveToken'
+              : 'signTransaction',
+          )}
       </header>
       {isSendToken && (
         <div className="h-10 mt-1 mb-3 flex items-center" id="sendToken">
@@ -256,9 +259,16 @@ function AddressCard({
         nativeBalance={nativeBalance}
         decimals={decimals}
         symbol={symbol}
-        toAddressLabel={t(
-          isSendToken ? 'toAddress' : isApproveToken ? 'approveTo' : 'contract',
-        )}
+        toAddressLabel={
+          toAddressLabel ||
+          t(
+            isSendToken
+              ? 'toAddress'
+              : isApproveToken
+              ? 'approveTo'
+              : 'contract',
+          )
+        }
         isCreateContract={!isSendToken && !isApproveToken && !toAddress}
       />
     </div>
@@ -273,6 +283,8 @@ AddressCard.propTypes = {
   isSendToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,
   nickname: PropTypes.string,
+  title: PropTypes.string,
+  toAddressLabel: PropTypes.string,
 }
 
 export default AddressCard

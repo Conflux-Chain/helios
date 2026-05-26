@@ -96,6 +96,7 @@ function SendTransaction() {
     setNonce,
     setStorageLimit,
     setMaxMode,
+    setSyncTxWithForm,
     tx,
     clearSendTransactionParams,
   } = useCurrentTxParams()
@@ -108,6 +109,11 @@ function SendTransaction() {
     },
   } = useCurrentAddress()
   const toAddressInputPlaceholder = useToAddressPlaceHolder({type, netId})
+
+  useEffect(() => {
+    // reset syncTxWithForm to true.
+    setSyncTxWithForm(true)
+  }, [setSyncTxWithForm])
 
   const {address: tokenAddress, decimals} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)

@@ -10,6 +10,7 @@ import {
   convertValueToData,
   convertDataToValue,
 } from '@fluent-wallet/data-format'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {
   useCurrentTxParams,
   useEstimateTx,
@@ -19,7 +20,7 @@ import {
   useDappParams,
   useViewData,
   useLedgerBindingApi,
-  useIsTxTreatedAsEIP1559,
+  useUses1559Fees,
 } from '../../hooks'
 import {useCurrentAddress, useNetworkTypeIsCfx} from '../../hooks/useApi'
 import {useConnect} from '../../hooks/useLedger'
@@ -52,6 +53,37 @@ const {
   ETH_SEND_TRANSACTION,
   WALLET_GET_PENDING_AUTH_REQUEST,
 } = RPC_METHODS
+
+const EIP7702_ACTION_TITLE_KEYS = {
+  bind: 'eip7702Delegation',
+  switch: 'eip7702Switch',
+  revoke: 'eip7702Revoke',
+}
+
+function getInternalEip7702Display({tx, isDapp, action}) {
+  const authorizationList = tx?.authorizationList
+  const isInternalEip7702Tx =
+    !isDapp &&
+    tx?.type === ETH_TX_TYPES.EIP7702 &&
+    Array.isArray(authorizationList) &&
+    authorizationList.length > 0
+
+  if (!isInternalEip7702Tx) {
+    return {
+      isInternalEip7702Tx: false,
+      delegateAddress: '',
+      titleKey: '',
+      toAddressLabelKey: '',
+    }
+  }
+
+  return {
+    isInternalEip7702Tx: true,
+    delegateAddress: authorizationList[0]?.address || '',
+    titleKey: EIP7702_ACTION_TITLE_KEYS[action] || 'eip7702Delegation',
+    toAddressLabelKey: 'delegateTo',
+  }
+}
 
 function ConfirmTransaction() {
   const ledgerBindingApi = useLedgerBindingApi()
@@ -106,6 +138,7 @@ function ConfirmTransaction() {
     clearSendTransactionParams,
     clearAdvancedGasSetting,
     tx: txParams,
+    txContext,
   } = useCurrentTxParams()
   const {setLoading} = useLoading()
 
@@ -117,11 +150,18 @@ function ConfirmTransaction() {
   } = useCurrentAddress()
 
   const nativeToken = ticker || {}
-  const tx = useDappParams(pendingAuthReq)
+  const dappTx = useDappParams(pendingAuthReq)
+  const currentTx = isDapp ? dappTx : txParams
+  const eip7702Display = getInternalEip7702Display({
+    tx: currentTx,
+    isDapp,
+    action: txContext?.eip7702Action,
+  })
+  const {isInternalEip7702Tx} = eip7702Display
 
   // get to type and to token
   const {isContract, decodeData, isEOAAddress, token, isDecoding} =
-    useDecodeData(tx)
+    useDecodeData(currentTx)
   const {
     isApproveToken,
     isSendToken,
@@ -136,7 +176,7 @@ function ConfirmTransaction() {
     isContract,
     isEOAAddress,
     nativeToken,
-    tx,
+    tx: currentTx,
     pendingAuthReq: pendingAuthReq?.[0],
     decodeData,
     token,
@@ -149,9 +189,15 @@ function ConfirmTransaction() {
   const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
 
   // params in wallet send or dapp send
-  const originParams = !isDapp ? {...txParams} : {...tx}
+  const originParams = {...currentTx}
+  const addressCardFromAddress = isInternalEip7702Tx
+    ? originParams?.from
+    : displayFromAddress
+  const addressCardToAddress = isInternalEip7702Tx
+    ? eip7702Display.delegateAddress
+    : displayToAddress
 
-  const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
+  const uses1559Fees = useUses1559Fees(originParams?.type)
 
   // dapp send params
   const {
@@ -161,7 +207,7 @@ function ConfirmTransaction() {
     gas: initGasLimit,
     nonce: initNonce,
     storageLimit: initStorageLimit,
-  } = tx
+  } = dappTx
   // user can edit nonce, gasPrice and gas
   const params = {
     ...originParams,
@@ -323,7 +369,7 @@ function ConfirmTransaction() {
       isSendToken,
       sendTokenValue,
       networkTypeIsCfx,
-      isTxTreatedAsEIP1559,
+      uses1559Fees,
     )
     if (error) {
       setLoading(false)
@@ -365,6 +411,10 @@ function ConfirmTransaction() {
           title={t('signTransaction')}
           hasGoBack={!isDapp}
           onGoBack={() => {
+            if (isInternalEip7702Tx) {
+              clearSendTransactionParams()
+              return
+            }
             clearAdvancedGasSetting()
             setGasLevel('medium')
           }}
@@ -375,11 +425,19 @@ function ConfirmTransaction() {
           <AddressCard
             nickname={displayAccount?.nickname}
             token={displayToken}
-            fromAddress={displayFromAddress}
-            toAddress={displayToAddress}
+            fromAddress={addressCardFromAddress}
+            toAddress={addressCardToAddress}
             value={displayValue}
             isSendToken={isSendToken}
             isApproveToken={isApproveToken}
+            title={
+              eip7702Display.titleKey ? t(eip7702Display.titleKey) : undefined
+            }
+            toAddressLabel={
+              eip7702Display.toAddressLabelKey
+                ? t(eip7702Display.toAddressLabelKey)
+                : undefined
+            }
           />
           <InfoList
             token={displayToken}
@@ -395,10 +453,7 @@ function ConfirmTransaction() {
             decimals={nativeToken?.decimals}
             symbol={nativeToken?.symbol}
           />
-          <GasFee
-            estimateRst={estimateRst}
-            isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
-          />
+          <GasFee estimateRst={estimateRst} uses1559Fees={uses1559Fees} />
         </div>
         <div className="flex flex-col items-center">
           {isDapp && !!params.data && params.data !== '0x' && (

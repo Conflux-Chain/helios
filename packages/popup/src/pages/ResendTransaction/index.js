@@ -20,7 +20,7 @@ import {
   useDecodeData,
   useCurrentTxStore,
   useLedgerBindingApi,
-  useIsTxTreatedAsEIP1559,
+  useUses1559Fees,
   useQuery,
 } from '../../hooks'
 import {formatStatus, request, checkBalance} from '../../utils'
@@ -93,9 +93,9 @@ function ResendTransaction() {
   } = txPayload
   const reSendTxStatus = formatStatus(status)
 
-  const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(eipVersionType)
+  const uses1559Fees = useUses1559Fees(eipVersionType)
 
-  const lastGasPrice = isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice
+  const lastGasPrice = uses1559Fees ? maxFeePerGas : gasPrice
 
   // decode erc20 data
   const {decodeData} = useDecodeData(
@@ -156,11 +156,11 @@ function ResendTransaction() {
   const originEstimateGasPrice = useMemo(() => {
     if (
       loading ||
-      (!isTxTreatedAsEIP1559 && !estimateGasPrice) ||
-      (isTxTreatedAsEIP1559 && !gasInfoEip1559?.['medium'])
+      (!uses1559Fees && !estimateGasPrice) ||
+      (uses1559Fees && !gasInfoEip1559?.['medium'])
     )
       return null
-    return !isTxTreatedAsEIP1559
+    return !uses1559Fees
       ? estimateGasPrice
       : convertDecimal(
           new Big(gasInfoEip1559?.['medium']?.suggestedMaxFeePerGas)
@@ -169,7 +169,7 @@ function ResendTransaction() {
           'multiply',
           GWEI_DECIMALS,
         )
-  }, [isTxTreatedAsEIP1559, estimateGasPrice, gasInfoEip1559, loading])
+  }, [uses1559Fees, estimateGasPrice, gasInfoEip1559, loading])
 
   const resendTransaction = async params => {
     try {
@@ -228,7 +228,7 @@ function ResendTransaction() {
       resendType === 'speedup' ? isSendingToken || simple : true,
       sendTokenValue,
       networkTypeIsCfx,
-      isTxTreatedAsEIP1559,
+      uses1559Fees,
     )
 
     if (error) {
