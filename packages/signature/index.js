@@ -1,6 +1,7 @@
 import {
   addHexPrefix,
   stripHexPrefix,
+  prepareEip7702AuthorizationRequests,
   toBuffer,
   toHexQuantity,
 } from '@fluent-wallet/utils'
@@ -35,6 +36,8 @@ import {
 } from '@ethersproject/transactions'
 import {getMessage as cip23GetMessage, getStructHash} from 'cip-23'
 import {keccak256} from '@ethersproject/keccak256'
+
+export {prepareEip7702AuthorizationRequests}
 
 export const hashPersonalMessage = (type, message) =>
   type === 'cfx'

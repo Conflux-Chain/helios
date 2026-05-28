@@ -313,3 +313,37 @@ export const toHexQuantity = value => {
 
   throw new Error(`toHexQuantity unsupported type ${typeof value}`)
 }
+
+export const prepareEip7702AuthorizationRequests = (
+  authorizationList,
+  chainId,
+  txNonce,
+) => {
+  const txNonceValue = new BN(stripHexPrefix(toHexQuantity(txNonce)), 16)
+
+  return authorizationList.map((authorization, index) => ({
+    ...authorization,
+    address: authorization.address.toLowerCase(),
+    chainId: authorization.chainId ?? chainId,
+    nonce: toHexQuantity(
+      authorization.nonce ?? txNonceValue.clone().addn(index + 1),
+    ),
+  }))
+}
+
+const EIP7702_DUMMY_AUTHORIZATION_SIGNATURE =
+  '0x1111111111111111111111111111111111111111111111111111111111111111'
+
+export const prepareEip7702AuthorizationRequestsForEstimate = (
+  authorizationList,
+  chainId,
+  txNonce,
+) =>
+  prepareEip7702AuthorizationRequests(authorizationList, chainId, txNonce).map(
+    authorization => ({
+      ...authorization,
+      r: authorization.r ?? EIP7702_DUMMY_AUTHORIZATION_SIGNATURE,
+      s: authorization.s ?? EIP7702_DUMMY_AUTHORIZATION_SIGNATURE,
+      yParity: authorization.yParity ?? '0x1',
+    }),
+  )

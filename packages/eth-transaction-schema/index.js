@@ -22,7 +22,12 @@ export default function ({
   const AuthorizationRequestEntrySpec = [
     map,
     {closed: true},
+    ['chainId', {optional: true}, chainId],
     ['address', ethHexAddress],
+    ['nonce', {optional: true}, Uint],
+    ['yParity', {optional: true}, Byte],
+    ['r', {optional: true}, Hash32],
+    ['s', {optional: true}, Hash32],
   ]
   const AuthorizationListSpec = [oneOrMore, AuthorizationRequestEntrySpec]
   const TxMapSpecs = {

@@ -4697,7 +4697,6 @@ __metadata:
     "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.15"
     "@fluent-wallet/utils": "workspace:*"
-    bn.js: "npm:5.2.1"
   languageName: unknown
   linkType: soft
 

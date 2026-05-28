@@ -9,6 +9,39 @@ import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 
 export const NAME = 'wallet_sendTransaction'
 
+const EIP7702_AUTHORIZATION_DB_FIELDS = [
+  'chainId',
+  'address',
+  'nonce',
+  'yParity',
+  'r',
+  's',
+]
+
+function formatEip7702AuthorizationForDb(authorization) {
+  return {
+    eip7702Authorization: EIP7702_AUTHORIZATION_DB_FIELDS.reduce(
+      (formattedAuthorization, key) => {
+        if (authorization[key] !== undefined)
+          formattedAuthorization[key] = authorization[key]
+        return formattedAuthorization
+      },
+      {},
+    ),
+  }
+}
+
+function formatTxPayloadForDb(txMeta) {
+  if (!txMeta.authorizationList) return txMeta
+
+  return {
+    ...txMeta,
+    authorizationList: txMeta.authorizationList.map(
+      formatEip7702AuthorizationForDb,
+    ),
+  }
+}
+
 export const schemas = {
   input: [or, cfxSchema.input, ethSchema.input],
 }
@@ -188,6 +221,7 @@ export const main = async ({
     throw Server(`Server error while signning tx`)
   }
   const {raw: rawtx, txMeta} = signed
+  const txPayload = formatTxPayloadForDb(txMeta)
   const txhash = getTxHashFromRawTx(rawtx)
   const duptx = getAddrTxByHash({addressId: addr, txhash})
 
@@ -202,7 +236,7 @@ export const main = async ({
   const txExtra = {ok: false}
   if (_popup && _sendAction) txExtra.sendAction = _sendAction
   const dbtxs = [
-    {eid: 'newTxPayload', txPayload: txMeta},
+    {eid: 'newTxPayload', txPayload},
     {eid: 'newTxExtra', txExtra},
     {
       eid: 'newTxId',

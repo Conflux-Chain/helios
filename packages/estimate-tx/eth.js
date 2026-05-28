@@ -1,6 +1,7 @@
 import BN from 'bn.js'
 import {bn16, pre0x} from './util.js'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {prepareEip7702AuthorizationRequestsForEstimate} from '@fluent-wallet/utils'
 import Big from 'big.js'
 
 async function ethEstimateGasAdvance(request, tx) {
@@ -182,6 +183,7 @@ export const ethEstimate = async (
 
   // wait for all those values
   await Promise.all(promises)
+  const chainId = await request({method: 'eth_chainId'})
 
   // simple send tx, gas is 21000
   if (!isEip7702Tx && to && (!data || data === '0x')) {
@@ -223,12 +225,18 @@ export const ethEstimate = async (
   delete newTx.maxFeePerGas
   delete newTx.maxPriorityFeePerGas
   newTx.nonce = nonce
+  if (isEip7702Tx) {
+    newTx.type = ETH_TX_TYPES.EIP7702
+    newTx.chainId = newTx.chainId || chainId
+    newTx.authorizationList = prepareEip7702AuthorizationRequestsForEstimate(
+      newTx.authorizationList,
+      newTx.chainId,
+      newTx.nonce,
+    )
+  }
 
   // run estimate
-  let [rst, chainId] = await Promise.all([
-    ethEstimateGasAdvance(request, newTx),
-    request({method: 'eth_chainId'}),
-  ])
+  let rst = await ethEstimateGasAdvance(request, newTx)
   const {gasLimit} = rst
   const calcGasPrice = customGasPrice || gasPrice
   const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas

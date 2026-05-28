@@ -172,6 +172,12 @@ const schema = {
   txPayload: {
     type: {doc: 'tx type'},
     accessList: {doc: 'accessList'},
+    authorizationList: {
+      doc: 'EIP-7702 authorization list',
+      ref: 'eip7702Authorization',
+      many: true,
+      component: true,
+    },
     maxFeePerGas: {doc: 'maxFeePerGas'},
     maxPriorityFeePerGas: {doc: 'maxPriorityFeePerGas'},
     from: {doc: 'from addr'},
@@ -184,6 +190,14 @@ const schema = {
     nonce: {doc: 'nonce'},
     chainId: {doc: 'chainId'},
     epochHeight: {doc: 'epochHeight'},
+  },
+  eip7702Authorization: {
+    chainId: {doc: 'EIP-7702 authorization chain id'},
+    address: {doc: 'EIP-7702 delegate address'},
+    nonce: {doc: 'EIP-7702 authorization nonce'},
+    yParity: {doc: 'EIP-7702 authorization y parity'},
+    r: {doc: 'EIP-7702 authorization signature r'},
+    s: {doc: 'EIP-7702 authorization signature s'},
   },
   txExtra: {
     ok: {doc: 'extra data is finished'},

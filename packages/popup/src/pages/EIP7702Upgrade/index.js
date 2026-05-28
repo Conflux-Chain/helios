@@ -105,7 +105,7 @@ function EIP7702Upgrade() {
 
     const presetTx = {
       from: address,
-      to: address,
+      to: NULL_HEX_ADDRESS,
       value: '0x0',
       type: ETH_TX_TYPES.EIP7702,
       authorizationList: [{address: delegateAddress}],

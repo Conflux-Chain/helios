@@ -11,7 +11,6 @@
     "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
     "@fluent-wallet/spec": "1.0.15",
-    "@fluent-wallet/utils": "workspace:*",
-    "bn.js": "5.2.1"
+    "@fluent-wallet/utils": "workspace:*"
   }
 }

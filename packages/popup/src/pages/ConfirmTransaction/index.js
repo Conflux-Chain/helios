@@ -63,10 +63,7 @@ const EIP7702_ACTION_TITLE_KEYS = {
 function getInternalEip7702Display({tx, isDapp, action}) {
   const authorizationList = tx?.authorizationList
   const isInternalEip7702Tx =
-    !isDapp &&
-    tx?.type === ETH_TX_TYPES.EIP7702 &&
-    Array.isArray(authorizationList) &&
-    authorizationList.length > 0
+    !isDapp && Array.isArray(authorizationList) && authorizationList.length > 0
 
   if (!isInternalEip7702Tx) {
     return {
@@ -189,7 +186,10 @@ function ConfirmTransaction() {
   const isHwOpenAlert = authStatus && !isAppOpen && isHwAccount
 
   // params in wallet send or dapp send
-  const originParams = {...currentTx}
+  const originParams = {
+    ...currentTx,
+    ...(isInternalEip7702Tx ? {type: ETH_TX_TYPES.EIP7702} : {}),
+  }
   const addressCardFromAddress = isInternalEip7702Tx
     ? originParams?.from
     : displayFromAddress
@@ -218,7 +218,6 @@ function ConfirmTransaction() {
     nonce: formatDecimalToHex(nonce),
     storageLimit: formatDecimalToHex(storageLimit),
   }
-
   // user can edit the approve limit
   const viewData = useViewData(params, isApproveToken, decodeData, token)
   params.data = viewData
@@ -289,8 +288,9 @@ function ConfirmTransaction() {
     setEstimateError(errorMessage)
   }, [errorMessage])
   // when dapp send, init the gas edit global store
+  // internal 7702 tx also enters confirm page directly, so it uses the same init path.
   useEffect(() => {
-    if (isDapp) {
+    if (isDapp || isInternalEip7702Tx) {
       // store decimal number for dapp tx params
       !gasLimit &&
         setGasLimit(formatHexToDecimal(initGasLimit || estimateGasLimit || ''))
@@ -315,6 +315,7 @@ function ConfirmTransaction() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isDapp,
+    isInternalEip7702Tx,
     initGasLimit,
     initNonce,
     initGasPrice,

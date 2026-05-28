@@ -3,12 +3,11 @@ import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import {
   ethSignEip7702Transaction,
   ethSignTransaction,
+  prepareEip7702AuthorizationRequests,
   signEip7702AuthorizationList,
 } from '@fluent-wallet/signature'
 import {EIP7702_NETWORK_CONFIGS, ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {parseUnits} from '@ethersproject/units'
-import BN from 'bn.js'
-import {stripHexPrefix} from '@fluent-wallet/utils'
 
 const {
   TransactionLegacyUnsigned,
@@ -176,7 +175,7 @@ export const main = async args => {
         })
 
     newTx.authorizationList = signEip7702AuthorizationList(
-      prepareEip7702AuthorizationList(
+      prepareEip7702AuthorizationRequests(
         newTx.authorizationList,
         newTx.chainId,
         newTx.nonce,
@@ -265,21 +264,4 @@ async function signWithHardwareWallet({
     {errorFallThrough: true},
     {tx, addressId, accountId},
   )
-}
-
-function prepareEip7702AuthorizationList(authorizationList, chainId, nonce) {
-  const txNonce = new BN(stripHexPrefix(nonce), 16)
-
-  return authorizationList.map((authorization, index) => {
-    const authorizationNonce = `0x${txNonce
-      .clone()
-      .addn(index + 1)
-      .toString(16)}`
-
-    return {
-      address: authorization.address.toLowerCase(),
-      chainId,
-      nonce: authorizationNonce,
-    }
-  })
 }
