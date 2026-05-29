@@ -370,6 +370,7 @@ const zh = {
     eip7702SwitchRequiredDesc:
       '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
     eip7702Delegation: 'EIP-7702 授权',
+    tx7702Delegation: '7702 授权',
     eip7702Switch: 'EIP-7702 切换',
     eip7702Revoke: 'EIP-7702 撤销',
     delegateTo: '委托给',

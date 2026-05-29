@@ -384,9 +384,10 @@ const en = {
     eip7702SwitchRequiredDesc:
       'This account currently bound to a third party contract. Switch to Fluent Wallet for a better experience.',
     eip7702Delegation: 'EIP-7702 Delegation',
+    tx7702Delegation: '7702 Delegation',
     eip7702Switch: 'EIP-7702 Switch',
     eip7702Revoke: 'EIP-7702 Revoke',
-    delegateTo: 'Delegate To',
+    delegateTo: 'Delegate to',
     bind: 'Bind',
     enable: 'Enable',
     revoke: 'Revoke',

@@ -5,10 +5,11 @@ import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import dayjs from 'dayjs'
-import {isUndefined, isNumber} from '@fluent-wallet/checks'
+import {isArray, isUndefined, isNumber} from '@fluent-wallet/checks'
 import {convertDataToValue} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {cfxGetFeeData, ethGetFeeData} from '@fluent-wallet/estimate-tx'
+import {NULL_HEX_ADDRESS} from '@fluent-wallet/consts'
 
 import {
   transformToTitleCase,
@@ -37,6 +38,18 @@ const ICON_COLOR = {
   executed: 'bg-[#F0FDFC] text-[#83DBC6]',
   pending: 'bg-warning-10 text-warning',
   confirmed: 'bg-success-10 text-success',
+}
+
+function getEip7702DelegateAddress(authorizationList) {
+  const firstAuthorization = isArray(authorizationList)
+    ? authorizationList[0]
+    : authorizationList
+
+  return (
+    firstAuthorization?.address ||
+    firstAuthorization?.eip7702Authorization?.address ||
+    ''
+  )
 }
 
 function HistoryItem({
@@ -76,8 +89,16 @@ function HistoryItem({
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const {
-    data: {value: currentAddress, network},
+    data: {
+      value: currentAddress,
+      network,
+      account: {nickname: currentAccountNickname} = {},
+    },
   } = useCurrentAddress()
+  const delegateAddress = getEip7702DelegateAddress(payload?.authorizationList)
+  const isEip7702DelegationTx = Boolean(delegateAddress)
+  const isEip7702RevokeTx =
+    delegateAddress.toLowerCase() === NULL_HEX_ADDRESS.toLowerCase()
 
   const {data: nsName} = useServiceName({
     type: network?.type,
@@ -142,6 +163,11 @@ function HistoryItem({
   }
 
   useEffect(() => {
+    if (isEip7702DelegationTx) {
+      setActionName(t(isEip7702RevokeTx ? 'eip7702Revoke' : 'tx7702Delegation'))
+      return
+    }
+
     if (isExternalTx) {
       return setActionName(t('receive'))
     }
@@ -152,9 +178,21 @@ function HistoryItem({
         ? transformToTitleCase(decodeData.name)
         : '-',
     )
-  }, [simple, isExternalTx, t, decodeData?.name])
+  }, [
+    simple,
+    isExternalTx,
+    isEip7702DelegationTx,
+    isEip7702RevokeTx,
+    t,
+    decodeData?.name,
+  ])
 
   useEffect(() => {
+    if (isEip7702DelegationTx) {
+      setContractName(t('delegateTo'))
+      return
+    }
+
     if (simple && tokenName) {
       return setContractName(tokenName)
     }
@@ -169,6 +207,7 @@ function HistoryItem({
     }
   }, [
     tokenName,
+    isEip7702DelegationTx,
     simple,
     token20,
     t,
@@ -179,6 +218,13 @@ function HistoryItem({
   ])
 
   useEffect(() => {
+    if (isEip7702DelegationTx) {
+      setSymbol('')
+      setAmount('')
+      setToAddress(delegateAddress)
+      return
+    }
+
     if (simple && tokenSymbol) {
       setToAddress(payload?.to ?? '')
       if (!isUndefined(tokenDecimals)) {
@@ -210,6 +256,8 @@ function HistoryItem({
   }, [
     tokenSymbol,
     tokenDecimals,
+    isEip7702DelegationTx,
+    delegateAddress,
     simple,
     token20,
     actionName,
@@ -245,6 +293,7 @@ function HistoryItem({
           txStatus={txStatus}
           dappIconUrl={dappIconUrl}
           isDapp={!!app}
+          isEip7702Tx={isEip7702DelegationTx}
           isExternalTx={isExternalTx}
           className={statusIconColor}
         />
@@ -310,6 +359,8 @@ function HistoryItem({
         hash={hash}
         transactionUrl={transactionUrl}
         payload={payload}
+        isEip7702DelegationTx={isEip7702DelegationTx}
+        currentAccountName={currentAccountNickname}
         errorType={i18next?.exists(err) ? err : 'unknownError'}
         onCancelPendingTx={onCancelPendingTx}
         onSpeedupPendingTx={onSpeedupPendingTx}

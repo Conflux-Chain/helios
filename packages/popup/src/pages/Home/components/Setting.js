@@ -19,7 +19,7 @@ import {
   toggleSidePanelMode,
 } from '../../../utils/side-panel'
 
-const {LOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
+const {LOCK, WALLET_METADATA_FOR_POPUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 const {
   ACCOUNT_MANAGEMENT,
   NETWORK_MANAGEMENT,
@@ -95,6 +95,9 @@ function Setting({onClose, open, settingAnimate = true}) {
   const data = useDataForPopup()
   const {
     data: {
+      account: {
+        accountGroup: {vault: {type: currentAccountType} = {}} = {},
+      } = {},
       network: {type: currentNetworkType, chainId},
     },
   } = useCurrentAddress()
@@ -118,9 +121,17 @@ function Setting({onClose, open, settingAnimate = true}) {
   }
 
   const visibleSettingItems = SETTING_ITEMS.filter(
-    ({supportedNetworkType, supportedChainIds}) =>
-      (!supportedNetworkType || supportedNetworkType === currentNetworkType) &&
-      (!supportedChainIds || supportedChainIds.includes(chainId)),
+    ({contentKey, supportedNetworkType, supportedChainIds}) => {
+      const isEip7702UpgradeItem = contentKey === 'eip7702Upgrade'
+      const isHiddenForHardwareAccount =
+        isEip7702UpgradeItem && currentAccountType === ACCOUNT_GROUP_TYPE.HW
+      const matchesNetworkType =
+        !supportedNetworkType || supportedNetworkType === currentNetworkType
+      const matchesChainId =
+        !supportedChainIds || supportedChainIds.includes(chainId)
+
+      return !isHiddenForHardwareAccount && matchesNetworkType && matchesChainId
+    },
   )
 
   return (
