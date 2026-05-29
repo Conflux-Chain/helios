@@ -488,18 +488,22 @@ export const useDecodeDisplay = ({
     tx?.type === ETH_TX_TYPES.EIP7702 &&
     isArray(tx?.authorizationList) &&
     tx.authorizationList.length > 0
-  const isSendNativeToken = isDapp && !!to && isEOAAddress
   const args = decodeData?.args || []
   const methodName = decodeData?.name || ''
+  const hasZeroValue = !value || value === '0x' || value === '0x0'
+  const isTransferMethod = methodName === 'transfer'
+  const isTransferFromCurrentAddress =
+    methodName === 'transferFrom' &&
+    args?.[0]?.toLowerCase() === address?.toLowerCase()
+  const isInternalSendFlow = !isDapp && !isInternalEip7702Tx
+  const isDappNativeTransfer = isDapp && !!to && isEOAAddress
+  const isDappTokenTransfer =
+    isDapp &&
+    isContract &&
+    hasZeroValue &&
+    (isTransferMethod || isTransferFromCurrentAddress)
   const isSendToken =
-    (!isDapp && !isInternalEip7702Tx) ||
-    isSendNativeToken ||
-    (isDapp &&
-      isContract &&
-      (!value || value === '0x' || value === '0x0') &&
-      ((methodName === 'transferFrom' &&
-        args?.[0]?.toLowerCase() === address?.toLowerCase()) ||
-        methodName === 'transfer'))
+    isInternalSendFlow || isDappNativeTransfer || isDappTokenTransfer
 
   displayToken = useSingleTokenInfoWithNativeTokenSupport(
     isDapp ? null : sendTokenId,
@@ -509,7 +513,7 @@ export const useDecodeDisplay = ({
     displayToAddress = toAddress
     displayValue = sendAmount
   } else {
-    if (isSendNativeToken) {
+    if (isDappNativeTransfer) {
       displayToken = nativeToken
       displayFromAddress = from
       displayToAddress = to
@@ -519,7 +523,7 @@ export const useDecodeDisplay = ({
       )
     } else {
       if (token?.symbol) displayToken = token
-      if (isSendToken) {
+      if (isDappTokenTransfer) {
         displayFromAddress =
           methodName === 'transferFrom'
             ? args?.[0]
@@ -558,7 +562,6 @@ export const useDecodeDisplay = ({
   return {
     isApproveToken,
     isSendToken,
-    isSendNativeToken,
     displayFromAddress,
     displayToAddress,
     displayAccount,

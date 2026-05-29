@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
-import {isArray} from '@fluent-wallet/checks'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import Tooltip from '@fluent-wallet/component-tooltip'
 import {formatHexToDecimal} from '@fluent-wallet/data-format'
@@ -9,19 +8,8 @@ import {SendOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import {formatIntoChecksumAddress, formatLocalizationLang} from '../../../utils'
 import {SlideCard, CopyButton, WrapIcon, NsNameLabel} from '../../../components'
 import {HistoryStatusIcon, HistoryBalance, ResendButtons} from './'
+import {getEip7702DelegateAddress} from './eip7702'
 import {useAddressType} from '../../../hooks/useApi'
-
-function getEip7702DelegateAddress(authorizationList) {
-  const firstAuthorization = isArray(authorizationList)
-    ? authorizationList[0]
-    : authorizationList
-
-  return (
-    firstAuthorization?.address ||
-    firstAuthorization?.eip7702Authorization?.address ||
-    ''
-  )
-}
 
 function TransitionItem({
   className = 'mt-3',

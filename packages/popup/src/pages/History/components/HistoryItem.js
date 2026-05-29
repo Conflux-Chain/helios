@@ -5,7 +5,7 @@ import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import dayjs from 'dayjs'
-import {isArray, isUndefined, isNumber} from '@fluent-wallet/checks'
+import {isUndefined, isNumber} from '@fluent-wallet/checks'
 import {convertDataToValue} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {cfxGetFeeData, ethGetFeeData} from '@fluent-wallet/estimate-tx'
@@ -32,24 +32,13 @@ import {
   HistoryBalance,
   ResendButtons,
 } from './'
+import {getEip7702DelegateAddress} from './eip7702'
 
 const ICON_COLOR = {
   failed: 'bg-error-10 text-error',
   executed: 'bg-[#F0FDFC] text-[#83DBC6]',
   pending: 'bg-warning-10 text-warning',
   confirmed: 'bg-success-10 text-success',
-}
-
-function getEip7702DelegateAddress(authorizationList) {
-  const firstAuthorization = isArray(authorizationList)
-    ? authorizationList[0]
-    : authorizationList
-
-  return (
-    firstAuthorization?.address ||
-    firstAuthorization?.eip7702Authorization?.address ||
-    ''
-  )
 }
 
 function HistoryItem({
