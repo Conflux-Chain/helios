@@ -383,6 +383,11 @@ const en = {
     eip7702SwitchRequiredTitle: 'Bind switch required',
     eip7702SwitchRequiredDesc:
       'This account currently bound to a third party contract. Switch to Fluent Wallet for a better experience.',
+    eip7702SwitchInfoTitle: 'Switch to EIP-7702 service',
+    eip7702SwitchInfoDesc:
+      'This account currently bound to a third party contract. Switch to Fluent Wallet for a better experience.',
+    eip7702SwitchInfoBenefitsTitle: 'Enjoy more benefits',
+    eip7702SwitchInfoConfirm: 'Switch and continue',
     eip7702Delegation: 'EIP-7702 Delegation',
     tx7702Delegation: '7702 Delegation',
     eip7702Switch: 'EIP-7702 Switch',

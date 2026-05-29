@@ -397,6 +397,11 @@ const fr = {
     eip7702SwitchRequiredTitle: 'Changement de liaison requis',
     eip7702SwitchRequiredDesc:
       'Ce compte est actuellement lié à un contrat tiers. Passez à Fluent Wallet pour une meilleure expérience.',
+    eip7702SwitchInfoTitle: 'Passer au service EIP-7702',
+    eip7702SwitchInfoDesc:
+      'Ce compte est actuellement lié à un contrat tiers. Passez à Fluent Wallet pour une meilleure expérience.',
+    eip7702SwitchInfoBenefitsTitle: 'Profitez de plus d’avantages',
+    eip7702SwitchInfoConfirm: 'Passer et continuer',
     eip7702Delegation: 'Délégation EIP-7702',
     tx7702Delegation: 'Délégation 7702',
     eip7702Switch: 'Changement EIP-7702',

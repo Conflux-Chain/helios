@@ -30,7 +30,7 @@ import {
   checkBalance,
   transformToTitleCase,
 } from '../../utils'
-import {AddressCard, InfoList} from './components'
+import {AddressCard, Eip7702SwitchInfoDrawer, InfoList} from './components'
 import {
   TitleNav,
   GasFee,
@@ -103,6 +103,7 @@ function ConfirmTransaction() {
   const [sendError, setSendError] = useState({})
   const [estimateError, setEstimateError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
+  const [isSwitchInfoDrawerOpen, setIsSwitchInfoDrawerOpen] = useState(false)
   const isDapp = getPageType() === 'notification'
   useEffect(() => {
     if (isDapp)
@@ -149,12 +150,21 @@ function ConfirmTransaction() {
   const nativeToken = ticker || {}
   const dappTx = useDappParams(pendingAuthReq)
   const currentTx = isDapp ? dappTx : txParams
+  const eip7702Action = txContext?.eip7702Action
   const eip7702Display = getInternalEip7702Display({
     tx: currentTx,
     isDapp,
-    action: txContext?.eip7702Action,
+    action: eip7702Action,
   })
   const {isInternalEip7702Tx} = eip7702Display
+  const shouldOpenSwitchInfoDrawer =
+    isInternalEip7702Tx && eip7702Action === 'switch'
+
+  useEffect(() => {
+    if (shouldOpenSwitchInfoDrawer) {
+      setIsSwitchInfoDrawerOpen(true)
+    }
+  }, [shouldOpenSwitchInfoDrawer])
 
   // get to type and to token
   const {isContract, decodeData, isEOAAddress, token, isDecoding} =
@@ -464,7 +474,7 @@ function ConfirmTransaction() {
             </Link>
           )}
 
-          {!isDapp && (
+          {!isDapp && !isSwitchInfoDrawerOpen && (
             <div className="w-full flex px-3 z-50">
               <Button
                 variant="outlined"
@@ -516,6 +526,10 @@ function ConfirmTransaction() {
           )}
         </div>
       </div>
+      <Eip7702SwitchInfoDrawer
+        open={isSwitchInfoDrawerOpen}
+        onClose={() => setIsSwitchInfoDrawerOpen(false)}
+      />
     </div>
   )
 }

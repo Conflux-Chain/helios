@@ -386,6 +386,11 @@ const uk = {
     eip7702SwitchRequiredTitle: 'Потрібна зміна прив’язки',
     eip7702SwitchRequiredDesc:
       'Цей обліковий запис наразі прив’язаний до стороннього контракту. Перейдіть на Fluent Wallet для кращого досвіду.',
+    eip7702SwitchInfoTitle: 'Перейти на сервіс EIP-7702',
+    eip7702SwitchInfoDesc:
+      'Цей обліковий запис наразі прив’язаний до стороннього контракту. Перейдіть на Fluent Wallet для кращого досвіду.',
+    eip7702SwitchInfoBenefitsTitle: 'Отримайте більше можливостей',
+    eip7702SwitchInfoConfirm: 'Перейти та продовжити',
     eip7702Delegation: 'Делегування EIP-7702',
     tx7702Delegation: 'Делегування 7702',
     eip7702Switch: 'Перемикання EIP-7702',

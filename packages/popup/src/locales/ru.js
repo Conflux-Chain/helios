@@ -388,6 +388,11 @@ const ru = {
     eip7702SwitchRequiredTitle: 'Требуется смена привязки',
     eip7702SwitchRequiredDesc:
       'Этот аккаунт сейчас привязан к стороннему контракту. Переключитесь на Fluent Wallet для лучшего опыта.',
+    eip7702SwitchInfoTitle: 'Переключиться на сервис EIP-7702',
+    eip7702SwitchInfoDesc:
+      'Этот аккаунт сейчас привязан к стороннему контракту. Переключитесь на Fluent Wallet для лучшего опыта.',
+    eip7702SwitchInfoBenefitsTitle: 'Получите больше возможностей',
+    eip7702SwitchInfoConfirm: 'Переключиться и продолжить',
     eip7702Delegation: 'Делегирование EIP-7702',
     tx7702Delegation: 'Делегирование 7702',
     eip7702Switch: 'Переключение EIP-7702',
