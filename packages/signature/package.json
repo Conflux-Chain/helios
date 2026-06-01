@@ -4,6 +4,10 @@
   "main": "index.js",
   "version": "0.0.23",
   "dependencies": {
+    "@ethereumjs/common": "10.1.1",
+    "@ethereumjs/rlp": "10.1.1",
+    "@ethereumjs/tx": "10.1.1",
+    "@ethereumjs/util": "10.1.1",
     "@ethersproject/bytes": "5.6.1",
     "@ethersproject/hash": "5.6.1",
     "@ethersproject/keccak256": "5.6.1",

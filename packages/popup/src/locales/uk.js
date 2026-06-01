@@ -370,6 +370,35 @@ const uk = {
     showTestnet: 'Показати тестову мережу',
     showTestnetDes:
       'Виберіть цей параметр, щоб показати тестові мережі в списку мереж.',
+    eip7702Upgrade: 'Оновлення EIP-7702',
+    eip7702UpgradeIntro:
+      'Після оновлення до EIP-7702 ваш обліковий запис отримає додаткові <Highlight>розумні можливості</Highlight>:',
+    eip7702FlexibleGasTitle: 'Гнучка оплата газу',
+    eip7702FlexibleGasDesc:
+      'Сплачуйте комісії за газ токенами ERC-20, стейблкоїнами та нативними токенами.',
+    eip7702BatchTransactionsTitle: 'Об’єднання кількох транзакцій',
+    eip7702BatchTransactionsDesc:
+      'Заощаджуйте більше газу завдяки пакетним транзакціям.',
+    eip7702DappSupportTitle: 'Розширена підтримка dApp',
+    eip7702DappSupportDesc:
+      'Відкрийте доступ до розумніших операцій завдяки EIP-7702.',
+    eip7702SupportedNetwork: 'Підтримувані мережі',
+    eip7702SwitchRequiredTitle: 'Потрібна зміна прив’язки',
+    eip7702SwitchRequiredDesc:
+      'Цей обліковий запис наразі прив’язаний до стороннього контракту. Перейдіть на Fluent Wallet для кращого досвіду.',
+    eip7702SwitchInfoTitle: 'Перейти на сервіс EIP-7702',
+    eip7702SwitchInfoDesc:
+      'Цей обліковий запис наразі прив’язаний до стороннього контракту. Перейдіть на Fluent Wallet для кращого досвіду.',
+    eip7702SwitchInfoBenefitsTitle: 'Отримайте більше можливостей',
+    eip7702SwitchInfoConfirm: 'Перейти та продовжити',
+    eip7702Delegation: 'Делегування EIP-7702',
+    tx7702Delegation: 'Делегування 7702',
+    eip7702Switch: 'Перемикання EIP-7702',
+    eip7702Revoke: 'Відкликання EIP-7702',
+    delegateTo: 'Делегувати на',
+    bind: 'Прив’язати',
+    enable: 'Увімкнути',
+    revoke: 'Відкликати',
 
     // About
     about: 'Про проект',

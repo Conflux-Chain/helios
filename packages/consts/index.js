@@ -155,4 +155,15 @@ export const ETH_TX_TYPES = {
   LEGACY: '0x0',
   EIP2930: '0x1',
   EIP1559: '0x2',
+  EIP7702: '0x4',
+}
+
+export const EIP7702_DELEGATION_PREFIX = '0xef0100'
+
+export const EIP7702_NETWORK_CONFIGS = {
+  [CFX_ESPACE_TESTNET_CHAINID]: {
+    delegateAddress: '0xD165320665C36b2F8F2BB2EfA5621db7eA012028',
+    paymasterAddress: '0x2dbB152f7D3F673eea1459FE39EcebdF29106652',
+    bundlerEndpoint: 'https://aa-bundle.confluxrpc.org',
+  },
 }

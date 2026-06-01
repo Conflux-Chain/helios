@@ -1,0 +1,11 @@
+{
+  "name": "@fluent-wallet/wallet_get-eip7702-account-states",
+  "type": "module",
+  "main": "index.js",
+  "packageManager": "yarn@3.0.1",
+  "version": "0.0.1",
+  "dependencies": {
+    "@fluent-wallet/consts": "workspace:packages/consts",
+    "@fluent-wallet/spec": "1.0.15"
+  }
+}

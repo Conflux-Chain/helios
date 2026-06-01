@@ -7,6 +7,7 @@ const {
   TransactionLegacyUnsigned,
   Transaction1559Unsigned,
   Transaction2930Unsigned,
+  Transaction7702Unsigned,
 } = genEthTxSchema(spec)
 
 export const NAME = 'eth_estimateGas'
@@ -23,6 +24,9 @@ export const schemas = {
         Array.isArray(k) ? spec.optionalMapKey(k) : k,
       ),
       Transaction2930Unsigned.map(k =>
+        Array.isArray(k) ? spec.optionalMapKey(k) : k,
+      ),
+      Transaction7702Unsigned.map(k =>
         Array.isArray(k) ? spec.optionalMapKey(k) : k,
       ),
     ],

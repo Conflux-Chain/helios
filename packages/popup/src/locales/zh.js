@@ -355,6 +355,33 @@ const zh = {
     priorityConnectionDes: '在连接至 DApp 时，Fluent 将会作为默认钱包',
     showTestnet: '显示测试网络',
     showTestnetDes: '开启后，可在网络列表中展示测试网络',
+    eip7702Upgrade: 'EIP-7702 升级',
+    eip7702UpgradeIntro:
+      '升级 EIP-7702 后，您的账户将获得更多 <Highlight>智能特性</Highlight>：',
+    eip7702FlexibleGasTitle: '灵活支付 Gas 费用',
+    eip7702FlexibleGasDesc:
+      '支持使用 ERC-20 代币、稳定币和原生代币支付 Gas 费。',
+    eip7702BatchTransactionsTitle: '支持批量交易',
+    eip7702BatchTransactionsDesc: '通过批量交易进一步节省 Gas。',
+    eip7702DappSupportTitle: '更多 DApp 支持',
+    eip7702DappSupportDesc: '借助 EIP-7702 解锁更智能的交易能力。',
+    eip7702SupportedNetwork: '支持的网络',
+    eip7702SwitchRequiredTitle: '需要切换绑定',
+    eip7702SwitchRequiredDesc:
+      '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
+    eip7702SwitchInfoTitle: '切换到 EIP-7702 服务',
+    eip7702SwitchInfoDesc:
+      '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
+    eip7702SwitchInfoBenefitsTitle: '享受更多能力',
+    eip7702SwitchInfoConfirm: '切换并继续',
+    eip7702Delegation: 'EIP-7702 授权',
+    tx7702Delegation: '7702 授权',
+    eip7702Switch: 'EIP-7702 切换',
+    eip7702Revoke: 'EIP-7702 撤销',
+    delegateTo: '委托给',
+    bind: '绑定',
+    enable: '启用',
+    revoke: '撤销',
     openSidePanel: '侧边栏模式',
     closeSidePanel: '弹窗模式',
 

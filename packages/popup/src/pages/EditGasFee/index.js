@@ -16,7 +16,7 @@ import {GasStation} from './components'
 import {useNetworkTypeIsCfx, useIsCfxChain} from '../../hooks/useApi'
 import {
   useCurrentTxStore,
-  useIsTxTreatedAsEIP1559,
+  useUses1559Fees,
   useDappParams,
   useEstimateTx,
 } from '../../hooks'
@@ -80,7 +80,7 @@ function EditGasFee({
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const isCfxChain = useIsCfxChain()
-  const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
+  const uses1559Fees = useUses1559Fees(originParams?.type)
 
   const [selectedGasLevel, setSelectedGasLevel] = useState('')
 
@@ -149,7 +149,7 @@ function EditGasFee({
           : ''
         : // 1559 tx resend maxPriorityFeePerGas use suggest gas price
           suggestedGasPrice,
-      gasPrice: !isTxTreatedAsEIP1559 ? suggestedGasPrice : '',
+      gasPrice: !uses1559Fees ? suggestedGasPrice : '',
     }
   }
   if (!sendParams.maxFeePerGas) delete sendParams.maxFeePerGas
@@ -171,7 +171,7 @@ function EditGasFee({
     setGasLevel(selectedGasLevel)
 
     if (selectedGasLevel === 'advanced') {
-      if (isTxTreatedAsEIP1559) {
+      if (uses1559Fees) {
         setMaxFeePerGas(maxFeePerGas)
         setMaxPriorityFeePerGas(maxPriorityFeePerGas)
       } else {
@@ -181,7 +181,7 @@ function EditGasFee({
       setGasLimit(gasLimit)
       setStorageLimit(storageLimit)
     } else {
-      if (isTxTreatedAsEIP1559) {
+      if (uses1559Fees) {
         const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
         const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
         setMaxFeePerGas(
@@ -239,7 +239,7 @@ function EditGasFee({
             networkTypeIsCfx={networkTypeIsCfx}
           />
           <GasStation
-            isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
+            uses1559Fees={uses1559Fees}
             isHistoryTx={!isSendTx}
             gasInfoEip1559={gasInfoEip1559}
             resendType={resendType}
@@ -265,10 +265,10 @@ function EditGasFee({
           id="saveGasFeeBtn"
           onClick={saveGasData}
           disabled={
-            (isTxTreatedAsEIP1559 &&
+            (uses1559Fees &&
               selectedGasLevel !== 'advanced' &&
               !gasInfoEip1559[selectedGasLevel]) ||
-            (!isTxTreatedAsEIP1559 && !suggestedGasPrice) ||
+            (!uses1559Fees && !suggestedGasPrice) ||
             resendDisabled
           }
         >

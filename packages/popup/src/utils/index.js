@@ -185,15 +185,13 @@ export const checkBalance = async (
   isSendToken,
   sendTokenValue,
   networkTypeIsCfx,
-  isTxTreatedAsEIP1559,
+  uses1559Fees,
 ) => {
   const {from, to, gasPrice, maxFeePerGas, gas, value, storageLimit} = txParams
   const storageFeeDrip = bn16(storageLimit)
     .mul(bn16('0xde0b6b3a7640000' /* 1e18 */))
     .divn(1024)
-  const gasFeeDrip = bn16(gas).mul(
-    bn16(isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice),
-  )
+  const gasFeeDrip = bn16(gas).mul(bn16(uses1559Fees ? maxFeePerGas : gasPrice))
   const txFeeDrip = gasFeeDrip.add(storageFeeDrip)
   const {address: tokenAddress} = token
   try {

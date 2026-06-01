@@ -7,7 +7,7 @@ import {GWEI_DECIMALS} from '@fluent-wallet/data-format'
 function CustomGasPrice({
   // gasInfoEip1559,
   isCfxChain,
-  isTxTreatedAsEIP1559,
+  uses1559Fees,
   inputGasPrice,
   gasPriceErr,
   onChangeGasPrice,
@@ -26,7 +26,7 @@ function CustomGasPrice({
   // } = gasInfoEip1559 || {}
   return (
     <div className="p-2 flex flex-col rounded bg-gray-10 mb-4">
-      {isTxTreatedAsEIP1559 && (
+      {uses1559Fees && (
         <>
           <CompWithLabel
             label={`${t('maxFeePerGas')}(${isCfxChain ? 'GDrip' : 'GWei'})`}
@@ -95,7 +95,7 @@ function CustomGasPrice({
             )} */}
         </>
       )}
-      {!isTxTreatedAsEIP1559 && (
+      {!uses1559Fees && (
         <CompWithLabel
           label={`${t('gasPrice')}(${isCfxChain ? 'GDrip' : 'GWei'})`}
           className="!mt-0"
@@ -117,7 +117,7 @@ function CustomGasPrice({
 CustomGasPrice.propTypes = {
   //  gasInfoEip1559: PropTypes.object,
   isCfxChain: PropTypes.bool,
-  isTxTreatedAsEIP1559: PropTypes.bool,
+  uses1559Fees: PropTypes.bool,
   inputGasPrice: PropTypes.string,
   gasPriceErr: PropTypes.string,
   onChangeGasPrice: PropTypes.func,
