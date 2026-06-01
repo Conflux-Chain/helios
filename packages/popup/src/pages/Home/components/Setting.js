@@ -5,8 +5,13 @@ import {useSWRConfig} from 'swr'
 import Button from '@fluent-wallet/component-button'
 import {SlideCard, LanguageNav} from '../../../components'
 import {LockOutLined, SidePanelSwitch} from '@fluent-wallet/component-icons'
-import {RPC_METHODS, ROUTES} from '../../../constants'
-import {useDataForPopup, useSidePanel} from '../../../hooks/useApi'
+import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
+import {NETWORK_TYPE, RPC_METHODS, ROUTES} from '../../../constants'
+import {
+  useCurrentAddress,
+  useDataForPopup,
+  useSidePanel,
+} from '../../../hooks/useApi'
 import {request} from '../../../utils'
 import useGlobalStore from '../../../stores'
 import {
@@ -14,13 +19,14 @@ import {
   toggleSidePanelMode,
 } from '../../../utils/side-panel'
 
-const {LOCK, WALLET_METADATA_FOR_POPUP} = RPC_METHODS
+const {LOCK, WALLET_METADATA_FOR_POPUP, ACCOUNT_GROUP_TYPE} = RPC_METHODS
 const {
   ACCOUNT_MANAGEMENT,
   NETWORK_MANAGEMENT,
   ABOUT,
   AUTHORIZED_WEBSITE,
   ADVANCED_SETTINGS,
+  EIP_7702_UPGRADE,
 } = ROUTES
 
 const SETTING_ITEMS = [
@@ -43,6 +49,13 @@ const SETTING_ITEMS = [
     contentKey: 'AdvancedSettings',
     iconPath: '/images/advanced-settings.svg',
     jumpPath: ADVANCED_SETTINGS,
+  },
+  {
+    contentKey: 'eip7702Upgrade',
+    iconPath: '/images/7702Upgrade.svg',
+    jumpPath: EIP_7702_UPGRADE,
+    supportedNetworkType: NETWORK_TYPE.ETH,
+    supportedChainIds: Object.keys(EIP7702_NETWORK_CONFIGS),
   },
   {
     contentKey: 'about',
@@ -80,6 +93,14 @@ function Setting({onClose, open, settingAnimate = true}) {
   const {setFatalError} = useGlobalStore()
   const {mutate} = useSWRConfig()
   const data = useDataForPopup()
+  const {
+    data: {
+      account: {
+        accountGroup: {vault: {type: currentAccountType} = {}} = {},
+      } = {},
+      network: {type: currentNetworkType, chainId},
+    },
+  } = useCurrentAddress()
   const {enabled: sidePanelEnabled, isSupported: isSidePanelSupported} =
     useSidePanel()
   const onLock = () => {
@@ -99,6 +120,20 @@ function Setting({onClose, open, settingAnimate = true}) {
     toggleSidePanelMode(!sidePanelEnabled)
   }
 
+  const visibleSettingItems = SETTING_ITEMS.filter(
+    ({contentKey, supportedNetworkType, supportedChainIds}) => {
+      const isEip7702UpgradeItem = contentKey === 'eip7702Upgrade'
+      const isHiddenForHardwareAccount =
+        isEip7702UpgradeItem && currentAccountType === ACCOUNT_GROUP_TYPE.HW
+      const matchesNetworkType =
+        !supportedNetworkType || supportedNetworkType === currentNetworkType
+      const matchesChainId =
+        !supportedChainIds || supportedChainIds.includes(chainId)
+
+      return !isHiddenForHardwareAccount && matchesNetworkType && matchesChainId
+    },
+  )
+
   return (
     <div>
       <SlideCard
@@ -117,7 +152,7 @@ function Setting({onClose, open, settingAnimate = true}) {
         }
         cardContent={
           <div className="pt-1 pb-4 flex-1">
-            {SETTING_ITEMS.map(({contentKey, iconPath, jumpPath}) => (
+            {visibleSettingItems.map(({contentKey, iconPath, jumpPath}) => (
               <SettingItem
                 key={contentKey}
                 onClick={() => onClickSettingItem(jumpPath)}

@@ -20,7 +20,7 @@ const GasStationItem = ({
   level,
   onClick,
   data,
-  isTxTreatedAsEIP1559 = true,
+  uses1559Fees = true,
   isCfxChain = false,
 }) => {
   const {t} = useTranslation()
@@ -45,12 +45,12 @@ const GasStationItem = ({
         <span className="text-primary">
           {gasLevel === 'advanced' || level !== 'advanced'
             ? addUnitForValue(
-                isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice,
+                uses1559Fees ? maxFeePerGas : gasPrice,
                 isCfxChain,
               )
             : t('edit')}
         </span>
-        {level !== 'advanced' && isTxTreatedAsEIP1559 && (
+        {level !== 'advanced' && uses1559Fees && (
           <Popover
             content={
               <div className="flex flex-col text-xs w-50">
@@ -98,13 +98,13 @@ GasStationItem.propTypes = {
   selected: PropTypes.bool,
   level: PropTypes.string,
   onClick: PropTypes.func,
-  isTxTreatedAsEIP1559: PropTypes.bool,
+  uses1559Fees: PropTypes.bool,
   isCfxChain: PropTypes.bool,
   data: PropTypes.object,
 }
 
 function GasStation({
-  isTxTreatedAsEIP1559,
+  uses1559Fees,
   isHistoryTx,
   gasInfoEip1559,
   selectedGasLevel,
@@ -125,9 +125,9 @@ function GasStation({
     <div className="bg-gray-4 px-2 pt-2 flex flex-col border border-[#f7f8fA] rounded w-full">
       <div className="text-gray-40 flex justify-between mb-2 font-medium">
         <span>{t('gasOption')}</span>
-        <span>{isTxTreatedAsEIP1559 ? t('maxFeePerGas') : t('gasPrice')}</span>
+        <span>{uses1559Fees ? t('maxFeePerGas') : t('gasPrice')}</span>
       </div>
-      {isTxTreatedAsEIP1559 &&
+      {uses1559Fees &&
         !resendType &&
         gasArray.map((level, index) => (
           <GasStationItem
@@ -141,7 +141,7 @@ function GasStation({
               baseFee: gasInfoEip1559?.['estimatedBaseFee'],
             }}
             isCfxChain={isCfxChain}
-            isTxTreatedAsEIP1559={true}
+            uses1559Fees={true}
             selected={selectedGasLevel === level}
             onClick={level => {
               setSelectedGasLevel(level)
@@ -150,13 +150,13 @@ function GasStation({
             }}
           />
         ))}
-      {(!isTxTreatedAsEIP1559 || !!resendType) && (
+      {(!uses1559Fees || !!resendType) && (
         <GasStationItem
           level="suggested"
           data={{
             gasPrice: convertDataToValue(suggestedGasPrice, GWEI_DECIMALS),
           }}
-          isTxTreatedAsEIP1559={false}
+          uses1559Fees={false}
           isCfxChain={isCfxChain}
           selected={selectedGasLevel === 'medium'}
           onClick={() => {
@@ -189,14 +189,14 @@ function GasStation({
           gasLevel: advancedGasSetting?.['gasLevel'],
         }}
         isCfxChain={isCfxChain}
-        isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
+        uses1559Fees={uses1559Fees}
         selected={selectedGasLevel === 'advanced'}
         onClick={() => {
           if (
-            (isTxTreatedAsEIP1559 &&
+            (uses1559Fees &&
               selectedGasLevel !== 'advanced' &&
               !gasInfoEip1559?.[selectedGasLevel]) ||
-            (!isTxTreatedAsEIP1559 && !suggestedGasPrice)
+            (!uses1559Fees && !suggestedGasPrice)
           )
             return
           const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} =
@@ -204,7 +204,7 @@ function GasStation({
           history.push({
             pathname: ADVANCED_GAS,
             search: `?isHistoryTx=${isHistoryTx}&${
-              isTxTreatedAsEIP1559
+              uses1559Fees
                 ? `suggestedMaxFeePerGas=${
                     !resendType
                       ? suggestedMaxFeePerGas
@@ -215,11 +215,7 @@ function GasStation({
                       : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
                   }&selectedGasLevel=${selectedGasLevel}`
                 : ''
-            }${
-              !isTxTreatedAsEIP1559
-                ? 'suggestedGasPrice=' + suggestedGasPrice
-                : ''
-            }`,
+            }${!uses1559Fees ? 'suggestedGasPrice=' + suggestedGasPrice : ''}`,
           })
         }}
       />
@@ -228,7 +224,7 @@ function GasStation({
 }
 
 GasStation.propTypes = {
-  isTxTreatedAsEIP1559: PropTypes.bool,
+  uses1559Fees: PropTypes.bool,
   isHistoryTx: PropTypes.bool,
   gasInfoEip1559: PropTypes.object,
   selectedGasLevel: PropTypes.string,

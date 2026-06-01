@@ -8,6 +8,7 @@ import {SendOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import {formatIntoChecksumAddress, formatLocalizationLang} from '../../../utils'
 import {SlideCard, CopyButton, WrapIcon, NsNameLabel} from '../../../components'
 import {HistoryStatusIcon, HistoryBalance, ResendButtons} from './'
+import {getEip7702DelegateAddress} from './eip7702'
 import {useAddressType} from '../../../hooks/useApi'
 
 function TransitionItem({
@@ -60,8 +61,13 @@ function TransitionDetail({
   transactionUrl,
   payload,
   errorType,
+  isEip7702DelegationTx = false,
+  currentAccountName = '',
 }) {
   const {t, i18n} = useTranslation()
+  const delegateAddress = isEip7702DelegationTx
+    ? getEip7702DelegateAddress(payload?.authorizationList)
+    : ''
   const displayAddress = isExternalTx ? fromAddress : toAddress
   const displayAddressType = useAddressType(displayAddress)
   const isContractAddress =
@@ -87,6 +93,7 @@ function TransitionDetail({
             txStatus={txStatus}
             dappIconUrl={dappIconUrl}
             isDapp={!!app}
+            isEip7702Tx={isEip7702DelegationTx}
             className={statusIconColor}
             isExternalTx={isExternalTx}
           />
@@ -100,9 +107,9 @@ function TransitionDetail({
       }
       cardContent={
         <div className="bg-white p-3 mt-3">
-          {amount && (
+          {!isEip7702DelegationTx && amount && (
             <TransitionItem
-              className=""
+              className="mt-0"
               transitionTitle={t('amount')}
               TransitionValueOverlay={
                 <HistoryBalance
@@ -119,7 +126,48 @@ function TransitionDetail({
             />
           )}
 
-          {(displayAddress || nsName) && (
+          {isEip7702DelegationTx && fromAddress && (
+            <TransitionItem
+              className="mt-0"
+              transitionTitle={currentAccountName || t('account')}
+              TransitionValueOverlay={
+                <div className="flex font-medium items-center">
+                  <Tooltip content={fromAddress} placement="topLeft">
+                    {shortenAddress(formatIntoChecksumAddress(fromAddress))}
+                  </Tooltip>
+                  <CopyButton
+                    text={fromAddress}
+                    className="w-3 h-3 text-primary"
+                    containerClassName={copyButtonContainerClassName}
+                    toastClassName={copyButtonToastClassName}
+                    wrapperClassName="!w-5 !h-5 ml-1"
+                  />
+                </div>
+              }
+            />
+          )}
+
+          {isEip7702DelegationTx && delegateAddress && (
+            <TransitionItem
+              transitionTitle={t('delegateTo')}
+              TransitionValueOverlay={
+                <div className="flex font-medium items-center">
+                  <Tooltip content={delegateAddress} placement="topLeft">
+                    {shortenAddress(formatIntoChecksumAddress(delegateAddress))}
+                  </Tooltip>
+                  <CopyButton
+                    text={delegateAddress}
+                    className="w-3 h-3 text-primary"
+                    containerClassName={copyButtonContainerClassName}
+                    toastClassName={copyButtonToastClassName}
+                    wrapperClassName="!w-5 !h-5 ml-1"
+                  />
+                </div>
+              }
+            />
+          )}
+
+          {!isEip7702DelegationTx && (displayAddress || nsName) && (
             <TransitionItem
               transitionTitle={t(
                 isContractAddress
@@ -254,6 +302,8 @@ TransitionDetail.propTypes = {
   payload: PropTypes.object.isRequired,
   errorType: PropTypes.string,
   sendAction: PropTypes.string,
+  isEip7702DelegationTx: PropTypes.bool,
+  currentAccountName: PropTypes.string,
 }
 
 export default TransitionDetail

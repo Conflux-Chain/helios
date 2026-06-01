@@ -250,3 +250,100 @@ export const toHexString = value => {
 
   return toBuffer(value).toString('hex')
 }
+
+/**
+ * Converts an unsigned integer-like value into a normalized 0x-prefixed hex quantity string.
+ *
+ * @example
+ * - `toHexQuantity(420)` -> `'0x1a4'`
+ * - `toHexQuantity(420n)` -> `'0x1a4'`
+ * - `toHexQuantity(new BN('420'))` -> `'0x1a4'`
+ * - `toHexQuantity('0x01')` -> `'0x1'`
+ * - `toHexQuantity('0x0')` -> `'0x0'`
+ *
+ * @param value
+ * @returns {String}
+ */
+export const toHexQuantity = value => {
+  if (typeof value === 'number') {
+    if (!Number.isSafeInteger(value) || value < 0) {
+      throw new Error(
+        `toHexQuantity expects unsigned integer number, received ${value}`,
+      )
+    }
+
+    return intToHex(value)
+  }
+
+  if (typeof value === 'bigint') {
+    if (value < 0n) {
+      throw new Error(
+        `toHexQuantity expects unsigned bigint, received ${value}`,
+      )
+    }
+
+    return `0x${value.toString(16)}`
+  }
+
+  if (BN.isBN(value)) {
+    if (value.isNeg()) {
+      throw new Error(
+        `toHexQuantity expects unsigned BN, received ${value.toString(10)}`,
+      )
+    }
+
+    return `0x${value.toString(16)}`
+  }
+
+  if (typeof value === 'string') {
+    if (!isHexString(value)) {
+      throw new Error(
+        `toHexQuantity expects 0x-prefixed hex string, received ${value}`,
+      )
+    }
+
+    const normalizedHex = stripHexPrefix(value).replace(/^0+/, '')
+
+    return `0x${normalizedHex || '0'}`
+  }
+
+  if (typeof value?.toHexString === 'function') {
+    return toHexQuantity(value.toHexString())
+  }
+
+  throw new Error(`toHexQuantity unsupported type ${typeof value}`)
+}
+
+export const prepareEip7702AuthorizationRequests = (
+  authorizationList,
+  chainId,
+  txNonce,
+) => {
+  const txNonceValue = new BN(stripHexPrefix(toHexQuantity(txNonce)), 16)
+
+  return authorizationList.map((authorization, index) => ({
+    ...authorization,
+    address: authorization.address.toLowerCase(),
+    chainId: authorization.chainId ?? chainId,
+    nonce: toHexQuantity(
+      authorization.nonce ?? txNonceValue.clone().addn(index + 1),
+    ),
+  }))
+}
+
+const EIP7702_DUMMY_AUTHORIZATION_SIGNATURE =
+  '0x1111111111111111111111111111111111111111111111111111111111111111'
+
+export const prepareEip7702AuthorizationRequestsForEstimate = (
+  authorizationList,
+  chainId,
+  txNonce,
+) =>
+  prepareEip7702AuthorizationRequests(authorizationList, chainId, txNonce).map(
+    authorization => ({
+      ...authorization,
+      r: authorization.r ?? EIP7702_DUMMY_AUTHORIZATION_SIGNATURE,
+      s: authorization.s ?? EIP7702_DUMMY_AUTHORIZATION_SIGNATURE,
+      yParity: authorization.yParity ?? '0x1',
+    }),
+  )

@@ -381,6 +381,35 @@ const fr = {
     showTestnet: 'Afficher la Testnet',
     showTestnetDes:
       'Selectionner cela pour afficher les testnets dans la liste de réseaux disponibles.',
+    eip7702Upgrade: 'Mise à niveau vers EIP-7702',
+    eip7702UpgradeIntro:
+      'En passant à EIP-7702, votre compte bénéficie de <Highlight>fonctionnalités intelligentes</Highlight> supplémentaires :',
+    eip7702FlexibleGasTitle: 'Paiement du gas plus flexible',
+    eip7702FlexibleGasDesc:
+      'Payez les frais de gas avec des jetons ERC-20, des stablecoins et des jetons natifs.',
+    eip7702BatchTransactionsTitle: 'Regrouper plusieurs transactions',
+    eip7702BatchTransactionsDesc:
+      'Économisez davantage de gas grâce aux transactions groupées.',
+    eip7702DappSupportTitle: 'Prise en charge étendue des dApps',
+    eip7702DappSupportDesc:
+      'Débloquez des interactions plus intelligentes grâce à EIP-7702.',
+    eip7702SupportedNetwork: 'Réseaux pris en charge',
+    eip7702SwitchRequiredTitle: 'Changement de liaison requis',
+    eip7702SwitchRequiredDesc:
+      'Ce compte est actuellement lié à un contrat tiers. Passez à Fluent Wallet pour une meilleure expérience.',
+    eip7702SwitchInfoTitle: 'Passer au service EIP-7702',
+    eip7702SwitchInfoDesc:
+      'Ce compte est actuellement lié à un contrat tiers. Passez à Fluent Wallet pour une meilleure expérience.',
+    eip7702SwitchInfoBenefitsTitle: 'Profitez de plus d’avantages',
+    eip7702SwitchInfoConfirm: 'Passer et continuer',
+    eip7702Delegation: 'Délégation EIP-7702',
+    tx7702Delegation: 'Délégation 7702',
+    eip7702Switch: 'Changement EIP-7702',
+    eip7702Revoke: 'Révocation EIP-7702',
+    delegateTo: 'Déléguer à',
+    bind: 'Lier',
+    enable: 'Activer',
+    revoke: 'Révoquer',
 
     // About
     about: 'À Propos',

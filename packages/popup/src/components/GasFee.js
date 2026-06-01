@@ -13,7 +13,7 @@ const {EDIT_GAS_FEE} = ROUTES
 
 function GasFee({
   estimateRst,
-  isTxTreatedAsEIP1559 = false,
+  uses1559Fees = false,
   titleDes,
   goEdit = true,
   showDrip = true,
@@ -21,7 +21,7 @@ function GasFee({
   contentClassName = '',
 }) {
   const {gasPrice, maxFeePerGas, gasLevel} = useCurrentTxStore()
-  const txGasPrice = isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice
+  const txGasPrice = uses1559Fees ? maxFeePerGas : gasPrice
   const {t} = useTranslation()
   const history = useHistory()
   const isCfxChain = useIsCfxChain()
@@ -62,7 +62,7 @@ function GasFee({
               onClick={() => history.push(EDIT_GAS_FEE)}
               disabled={!realPayedFeeDrip || !displayGasPrice}
             >
-              {isTxTreatedAsEIP1559 ? t(gasLevel) : t('edit')}
+              {uses1559Fees ? t(gasLevel) : t('edit')}
               <RightOutlined className="w-3 h-3 text-primary ml-1" />
             </Link>
           </span>
@@ -126,7 +126,7 @@ GasFee.propTypes = {
   contentClassName: PropTypes.string,
   goEdit: PropTypes.bool,
   showDrip: PropTypes.bool,
-  isTxTreatedAsEIP1559: PropTypes.bool,
+  uses1559Fees: PropTypes.bool,
 }
 
 export default GasFee

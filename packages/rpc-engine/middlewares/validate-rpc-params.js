@@ -1,6 +1,7 @@
 import {defMiddleware} from '../middleware.js'
 import {validate, explain} from '@fluent-wallet/spec'
 import {isString, isArray} from '@fluent-wallet/checks'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 
 const toLowerCaseFields = [
   'gas',
@@ -17,10 +18,12 @@ function preprocessTx(tx) {
   toLowerCaseFields.forEach(k => {
     if (isString(tx[k])) tx[k] = tx[k].toLowerCase()
   })
+  // 7702 transactions also use 1559 fee fields, so detect them before 1559.
+  if (tx.authorizationList) tx.type = ETH_TX_TYPES.EIP7702
   // 1559
-  if (tx.maxFeePerGas) tx.type = '0x2'
+  else if (tx.maxFeePerGas) tx.type = ETH_TX_TYPES.EIP1559
   // 2930
-  if (!tx.maxFeePerGas && tx.accessList) tx.type = '0x1'
+  else if (tx.accessList) tx.type = ETH_TX_TYPES.EIP2930
   return tx
 }
 
