@@ -2,9 +2,9 @@
   "name": "@fluent-wallet/wallet_export-all",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.15",
+    "@fluent-wallet/spec": "1.0.16",
     "browser-passworder": "2.0.3"
   }
 }

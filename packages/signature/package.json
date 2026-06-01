@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/signature",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "dependencies": {
     "@ethereumjs/common": "10.1.1",
     "@ethereumjs/rlp": "10.1.1",
