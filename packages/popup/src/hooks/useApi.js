@@ -26,6 +26,7 @@ const {
   WALLET_ZERO_ACCOUNT_GROUP,
   WALLET_GET_NETWORK,
   WALLET_GET_EIP7702_ACCOUNT_STATES,
+  WALLET_GET_TOKEN_PAY_CONFIG,
   WALLET_IS_LOCKED,
   WALLET_METADATA_FOR_POPUP,
   ACCOUNT_GROUP_TYPE,
@@ -276,6 +277,28 @@ export const useEip7702AccountStates = accountStateQueries => {
 
   return {
     data: eip7702AccountStates || [],
+    mutate,
+  }
+}
+
+export const useTokenPayConfig = networkDbId => {
+  const canQueryTokenPayConfig = isNumber(networkDbId)
+
+  const {data: tokenPayConfig, mutate} = useRPC(
+    canQueryTokenPayConfig ? [WALLET_GET_TOKEN_PAY_CONFIG, networkDbId] : null,
+    {networkDbId},
+    {
+      fallbackData: {
+        available: false,
+        reason: null,
+        recipient: null,
+        tokens: [],
+      },
+    },
+  )
+
+  return {
+    data: tokenPayConfig,
     mutate,
   }
 }

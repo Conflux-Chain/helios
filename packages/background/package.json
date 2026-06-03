@@ -136,6 +136,7 @@
     "@fluent-wallet/wallet_get-preferences": "workspace:*",
     "@fluent-wallet/wallet_get-side-panel-enabled": "workspace:*",
     "@fluent-wallet/wallet_get-side-panel-supported": "workspace:*",
+    "@fluent-wallet/wallet_get-token-pay-config": "workspace:packages/rpcs/wallet_getTokenPayConfig",
     "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*",
     "@fluent-wallet/wallet_handle-unfinished-eth-tx": "workspace:*",
     "@fluent-wallet/wallet_handle-unfinished-txs": "workspace:*",
