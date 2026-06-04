@@ -20,6 +20,11 @@ function createUnavailableResult(reason) {
     reason,
     recipient: null,
     tokens: [],
+    minGasFeeRatio: null,
+    minGasTipRatio: null,
+    maxGasCost: null,
+    suggestedGasPriceBumpRatio: null,
+    suggestedTokenPriceBumpRatio: null,
   }
 }
 
@@ -33,7 +38,13 @@ async function fetchTokenPayConfig(backendBaseUrl) {
     throw new Error('Failed to fetch token-pay config')
   }
 
-  return response.json()
+  const result = await response.json()
+
+  if (result.code !== 0) {
+    throw new Error('Failed to fetch token-pay config')
+  }
+
+  return result.data
 }
 
 export const main = async ({
@@ -89,5 +100,10 @@ export const main = async ({
     reason: null,
     recipient: backendConfig.recipient,
     tokens,
+    minGasFeeRatio: backendConfig.minGasFeeRatio,
+    minGasTipRatio: backendConfig.minGasTipRatio,
+    maxGasCost: backendConfig.maxGasCost,
+    suggestedGasPriceBumpRatio: backendConfig.suggestedGasPriceBumpRatio,
+    suggestedTokenPriceBumpRatio: backendConfig.suggestedTokenPriceBumpRatio,
   }
 }

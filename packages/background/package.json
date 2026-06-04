@@ -148,6 +148,7 @@
     "@fluent-wallet/wallet_lock": "workspace:packages/rpcs/wallet_lock",
     "@fluent-wallet/wallet_metadata-for-popup": "workspace:*",
     "@fluent-wallet/wallet_network1559compatible": "workspace:*",
+    "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote",
     "@fluent-wallet/wallet_refetch-balance": "workspace:packages/rpcs/wallet_refetchBalance",
     "@fluent-wallet/wallet_refetch-token-list": "workspace:packages/rpcs/wallet_refetchTokenList",
     "@fluent-wallet/wallet_refetch-tx-list": "workspace:*",

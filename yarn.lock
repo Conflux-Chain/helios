@@ -5670,6 +5670,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_prepare-token-pay-quote@workspace:packages/rpcs/wallet_prepareTokenPayQuote":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_prepare-token-pay-quote@workspace:packages/rpcs/wallet_prepareTokenPayQuote"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
+    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/spec": "npm:1.0.17"
+    "@fluent-wallet/utils": "workspace:packages/utils"
+    bn.js: "npm:5.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_refetch-balance@workspace:packages/rpcs/wallet_refetchBalance":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_refetch-balance@workspace:packages/rpcs/wallet_refetchBalance"
@@ -18535,6 +18548,7 @@ __metadata:
     "@fluent-wallet/wallet_lock": "workspace:packages/rpcs/wallet_lock"
     "@fluent-wallet/wallet_metadata-for-popup": "workspace:*"
     "@fluent-wallet/wallet_network1559compatible": "workspace:*"
+    "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
     "@fluent-wallet/wallet_refetch-balance": "workspace:packages/rpcs/wallet_refetchBalance"
     "@fluent-wallet/wallet_refetch-token-list": "workspace:packages/rpcs/wallet_refetchTokenList"
     "@fluent-wallet/wallet_refetch-tx-list": "workspace:*"

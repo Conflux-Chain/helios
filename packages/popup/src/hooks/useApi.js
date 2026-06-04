@@ -27,6 +27,7 @@ const {
   WALLET_GET_NETWORK,
   WALLET_GET_EIP7702_ACCOUNT_STATES,
   WALLET_GET_TOKEN_PAY_CONFIG,
+  WALLET_PREPARE_TOKEN_PAY_QUOTE,
   WALLET_IS_LOCKED,
   WALLET_METADATA_FOR_POPUP,
   ACCOUNT_GROUP_TYPE,
@@ -299,6 +300,47 @@ export const useTokenPayConfig = networkDbId => {
 
   return {
     data: tokenPayConfig,
+    mutate,
+  }
+}
+
+export const usePrepareTokenPayQuote = ({
+  networkDbId,
+  accountId,
+  userTx,
+  gasTokenAddress,
+  gasLevel,
+}) => {
+  const canQueryQuote =
+    isNumber(networkDbId) &&
+    isNumber(accountId) &&
+    isObject(userTx) &&
+    isString(gasTokenAddress) &&
+    isString(gasLevel)
+
+  const {data: quote, mutate} = useRPC(
+    canQueryQuote
+      ? [
+          WALLET_PREPARE_TOKEN_PAY_QUOTE,
+          networkDbId,
+          accountId,
+          gasTokenAddress,
+          gasLevel,
+          JSON.stringify(userTx),
+        ]
+      : null,
+    {
+      networkDbId,
+      accountId,
+      userTx,
+      gasTokenAddress,
+      gasLevel,
+    },
+    {fallbackData: null},
+  )
+
+  return {
+    data: quote,
     mutate,
   }
 }
