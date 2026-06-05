@@ -209,6 +209,7 @@ const schema = {
     tokenNFT: {doc: 'nft contract'},
     address: {doc: 'intresting address of this tx, usually recipient'},
     method: {doc: 'contract call method name'},
+    tokenPay: {doc: 'token-pay transaction'},
   },
 
   // ## dapp interaction

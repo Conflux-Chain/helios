@@ -360,6 +360,12 @@ export const main = ({
         // not packaged or no blockhash in getTransactionByHash result
         map(rst => {
           if (rst && rst.blockHash) return rst
+
+          // Token-pay transactions are broadcast by backend; keep polling instead of entering resend flow.
+          if (tx.txExtra?.tokenPay) {
+            return keepTrack()
+          }
+
           // getTransactionByHash return null
           eth_blockNumber({errorFallThrough: true}, [])
             .then(n => {

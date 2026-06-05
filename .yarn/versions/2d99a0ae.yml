@@ -198,4 +198,5 @@ declined:
   - helios
   - "@fluent-wallet/wallet_get-token-pay-config"
   - "@fluent-wallet/wallet_prepare-token-pay-quote"
+  - "@fluent-wallet/wallet_submit-token-pay-transaction"
   - doc

@@ -5832,6 +5832,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_submit-token-pay-transaction@workspace:packages/rpcs/wallet_submitTokenPayTransaction":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_submit-token-pay-transaction@workspace:packages/rpcs/wallet_submitTokenPayTransaction"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/signature": "workspace:packages/signature"
+    "@fluent-wallet/spec": "npm:1.0.17"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_switch-conflux-chain@workspace:packages/rpcs/wallet_switchConfluxChain":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_switch-conflux-chain@workspace:packages/rpcs/wallet_switchConfluxChain"
@@ -18565,6 +18576,7 @@ __metadata:
     "@fluent-wallet/wallet_set-preferences": "workspace:*"
     "@fluent-wallet/wallet_set-side-panel-behavior": "workspace:*"
     "@fluent-wallet/wallet_set-side-panel-enabled": "workspace:*"
+    "@fluent-wallet/wallet_submit-token-pay-transaction": "workspace:packages/rpcs/wallet_submitTokenPayTransaction"
     "@fluent-wallet/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
     "@fluent-wallet/wallet_unwatch-asset": "workspace:packages/rpcs/wallet_unwatchAsset"
     "@fluent-wallet/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount"
