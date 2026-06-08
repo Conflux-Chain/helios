@@ -171,6 +171,12 @@ const en = {
     sendToken: 'Send Token',
     toAddress: 'To Address',
     gasFee: 'Gas fee',
+    gasPayFeeTooltip:
+      'This fee is paid to the network to process your transaction. If you choose to pay gas with a non-native token, Fluent will charge a service fee for the conversion.',
+    selectToken: 'Select a Token',
+    payWithNativeToken: 'Pay with native token',
+    payWithOtherTokens: 'Pay with other tokens',
+    tokenBalanceShort: 'Bal',
     edit: 'Edit',
     sponsored: 'Sponsored',
     partSponsored: 'Partially Sponsored',

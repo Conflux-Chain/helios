@@ -5561,6 +5561,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-token-pay-gas-options@workspace:packages/rpcs/wallet_getTokenPayGasOptions":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-token-pay-gas-options@workspace:packages/rpcs/wallet_getTokenPayGasOptions"
+  dependencies:
+    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/spec": "npm:1.0.17"
+    "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:*, @fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:packages/rpcs/wallet_handleUnfinishedCFXTx":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:packages/rpcs/wallet_handleUnfinishedCFXTx"
@@ -5840,6 +5850,9 @@ __metadata:
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
     "@fluent-wallet/signature": "workspace:packages/signature"
     "@fluent-wallet/spec": "npm:1.0.17"
+    "@fluent-wallet/utils": "workspace:packages/utils"
+    "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
+    bn.js: "npm:5.2.0"
   languageName: unknown
   linkType: soft
 
@@ -18548,6 +18561,7 @@ __metadata:
     "@fluent-wallet/wallet_get-side-panel-enabled": "workspace:*"
     "@fluent-wallet/wallet_get-side-panel-supported": "workspace:*"
     "@fluent-wallet/wallet_get-token-pay-config": "workspace:packages/rpcs/wallet_getTokenPayConfig"
+    "@fluent-wallet/wallet_get-token-pay-gas-options": "workspace:packages/rpcs/wallet_getTokenPayGasOptions"
     "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-eth-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-txs": "workspace:*"

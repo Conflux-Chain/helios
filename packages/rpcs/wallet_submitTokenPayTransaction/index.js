@@ -2,8 +2,15 @@ import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import {ETH_TX_TYPES, TOKEN_PAY_NETWORK_CONFIGS} from '@fluent-wallet/consts'
 import {getTxHashFromRawTx} from '@fluent-wallet/signature'
+import BN from 'bn.js'
+import {stripHexPrefix} from '@fluent-wallet/utils'
+import {
+  fetchTokenPayPrice,
+  prepareGasTokenQuote,
+  prepareTokenPayExecutionContext,
+} from '@fluent-wallet/wallet_prepare-token-pay-quote'
 
-const {or, map, dbid} = spec
+const {or, map, dbid, enums, ethHexAddress, hex} = spec
 
 const {Transaction1559Unsigned, Transaction7702Unsigned} = genEthTxSchema(spec)
 
@@ -15,20 +22,16 @@ export const userTxSchema = [
   Transaction7702Unsigned,
 ]
 
-const tokenPayTxsSchema = [
-  map,
-  {closed: true},
-  ['transferTokenTx', Transaction1559Unsigned],
-  ['preparedUserTx', userTxSchema],
-]
-
 export const schemas = {
   input: [
     map,
     {closed: true},
     ['networkDbId', dbid],
     ['accountId', dbid],
-    ['tokenPayTxs', tokenPayTxsSchema],
+    ['userTx', userTxSchema],
+    ['gasTokenAddress', ethHexAddress],
+    ['gasLevel', [enums, 'low', 'medium', 'high']],
+    ['maxTokenCost', hex],
   ],
 }
 
@@ -37,6 +40,10 @@ export const permissions = {
   locked: true,
   methods: [
     'eth_signTransaction',
+    'wallet_getTokenPayConfig',
+    'eth_getTransactionCount',
+    'eth_gasPrice',
+    'eth_estimateGas',
     'wallet_handleUnfinishedETHTx',
     'wallet_enrichEthereumTx',
   ],
@@ -113,8 +120,16 @@ export const main = async ({
     eth_signTransaction,
     wallet_handleUnfinishedETHTx,
     wallet_enrichEthereumTx,
+    ...rpcs
   },
-  params: {networkDbId, accountId, tokenPayTxs},
+  params: {
+    networkDbId,
+    accountId,
+    userTx,
+    gasTokenAddress,
+    gasLevel,
+    maxTokenCost,
+  },
 }) => {
   const account = getAccountById(accountId)
   if (!account) {
@@ -152,28 +167,8 @@ export const main = async ({
     )
   }
 
-  const transferTokenTx = tokenPayTxs?.transferTokenTx
-  const userTx = tokenPayTxs?.preparedUserTx
-
-  if (!transferTokenTx || !userTx) {
-    throw InvalidParams('Invalid token-pay transactions')
-  }
-
-  if (
-    !transferTokenTx.from ||
-    transferTokenTx.from.toLowerCase() !== accountAddress
-  ) {
-    throw InvalidParams('Invalid transfer token tx from address')
-  }
-
   if (!userTx.from || userTx.from.toLowerCase() !== accountAddress) {
     throw InvalidParams('Invalid user tx from address')
-  }
-
-  if (transferTokenTx.type !== ETH_TX_TYPES.EIP1559) {
-    throw InvalidParams(
-      `Unsupported transfer token tx type ${transferTokenTx.type}`,
-    )
   }
 
   const userTxType = userTx.authorizationList
@@ -187,12 +182,72 @@ export const main = async ({
     throw InvalidParams(`Unsupported user tx type ${userTxType}`)
   }
 
+  const {
+    tokenPayConfig,
+    tokenPayNetworkConfig,
+    txType,
+    nonceBase,
+    feeCaps,
+    quoteToken,
+    quoteTokenPrice,
+    estimateStateOverride,
+  } = await prepareTokenPayExecutionContext({
+    InvalidParams,
+    db: {
+      getAccountById,
+      getNetworkById,
+      accountAddrByNetwork,
+    },
+    rpcs,
+    params: {networkDbId, accountId, userTx, gasLevel},
+  })
+  const gasToken = tokenPayConfig.tokens.find(
+    token => token.address.toLowerCase() === gasTokenAddress.toLowerCase(),
+  )
+
+  if (!gasToken) {
+    throw InvalidParams(`Unsupported gas token ${gasTokenAddress}`)
+  }
+
+  const tokenPrice = await fetchTokenPayPrice(
+    tokenPayNetworkConfig.backendBaseUrl,
+    gasToken.address,
+  )
+  const gasTokenQuote = await prepareGasTokenQuote({
+    eth_estimateGas: rpcs.eth_estimateGas,
+    network,
+    accountAddress,
+    userTx,
+    gasToken,
+    tokenPayConfig,
+    nonceBase,
+    feeCaps,
+    gasLevel,
+    txType,
+    tokenPrice,
+    quoteToken,
+    quoteTokenPrice,
+    estimateStateOverride,
+    InvalidParams,
+    includeTxs: true,
+  })
+
+  if (
+    new BN(stripHexPrefix(gasTokenQuote.tokenCost), 16).gt(
+      new BN(stripHexPrefix(maxTokenCost), 16),
+    )
+  ) {
+    throw InvalidParams('Token pay quote exceeds approved amount')
+  }
+
+  const transferTokenTx = gasTokenQuote.transferTokenTx
+  const preparedUserTx = gasTokenQuote.preparedUserTx
   const signedTransferTokenTx = await eth_signTransaction({network}, [
     transferTokenTx,
     {returnTxMeta: true},
   ])
   const signedUserTx = await eth_signTransaction({network}, [
-    {...userTx, type: userTxType},
+    {...preparedUserTx, type: txType},
     {returnTxMeta: true},
   ])
 

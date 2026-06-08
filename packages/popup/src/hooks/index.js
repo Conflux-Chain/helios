@@ -330,8 +330,10 @@ export const useEstimateError = (
   sendTokenAddress,
   isNativeToken,
   isSendToken = true,
+  opts = {},
 ) => {
   const {t} = useTranslation()
+  const {ignoreGasBalanceError = false} = opts
   const {error, isBalanceEnough, tokens} = estimateRst
   const isTokenBalanceEnough = tokens?.[sendTokenAddress]?.isTokenBalanceEnough
   return useMemo(() => {
@@ -355,7 +357,7 @@ export const useEstimateError = (
       if (isSendToken) {
         if (isNativeToken) {
           if (isBalanceEnough === false) {
-            return t('balanceIsNotEnough')
+            return ignoreGasBalanceError ? '' : t('balanceIsNotEnough')
           } else {
             return ''
           }
@@ -365,7 +367,7 @@ export const useEstimateError = (
           }
         }
       }
-      if (isBalanceEnough === false) {
+      if (isBalanceEnough === false && !ignoreGasBalanceError) {
         return t('gasFeeIsNotEnough')
       } else {
         return ''
@@ -375,6 +377,7 @@ export const useEstimateError = (
     isNativeToken,
     isSendToken,
     isBalanceEnough,
+    ignoreGasBalanceError,
     error,
     isTokenBalanceEnough,
     t,

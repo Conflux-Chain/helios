@@ -19,6 +19,7 @@ function createUnavailableResult(reason) {
     available: false,
     reason,
     recipient: null,
+    quoteToken: null,
     tokens: [],
     minGasFeeRatio: null,
     minGasTipRatio: null,
@@ -74,31 +75,39 @@ export const main = async ({
     return createUnavailableResult('backendFetchFailed')
   }
 
-  const tokens = (
-    await Promise.all(
-      backendConfig.tokens.map(async tokenAddress => {
-        const tokenMetadata = await wallet_validate20Token({tokenAddress})
+  const tokenMetadataList = await Promise.all(
+    backendConfig.tokens.map(async tokenAddress => {
+      const tokenMetadata = await wallet_validate20Token({tokenAddress})
 
-        if (!tokenMetadata?.valid) return null
+      if (!tokenMetadata?.valid) return null
 
-        return {
-          address: tokenAddress.toLowerCase(),
-          name: tokenMetadata.name,
-          symbol: tokenMetadata.symbol,
-          decimals: tokenMetadata.decimals,
-        }
-      }),
-    )
-  ).filter(Boolean)
+      return {
+        address: tokenAddress.toLowerCase(),
+        name: tokenMetadata.name,
+        symbol: tokenMetadata.symbol,
+        decimals: tokenMetadata.decimals,
+      }
+    }),
+  )
+
+  if (!tokenMetadataList[0]) {
+    return createUnavailableResult('invalidQuoteToken')
+  }
+
+  const tokens = tokenMetadataList.filter(Boolean)
 
   if (tokens.length === 0) {
     return createUnavailableResult('noValidTokens')
   }
 
+  // Backend requires the first token to be the quote token for display value.
+  const quoteToken = tokens[0]
+
   return {
     available: true,
     reason: null,
     recipient: backendConfig.recipient,
+    quoteToken,
     tokens,
     minGasFeeRatio: backendConfig.minGasFeeRatio,
     minGasTipRatio: backendConfig.minGasTipRatio,

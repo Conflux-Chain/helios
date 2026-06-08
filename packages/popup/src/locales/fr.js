@@ -177,6 +177,12 @@ const fr = {
     sendToken: 'Envoyer le Jeton',
     toAddress: 'Vers l’Adresse',
     gasFee: 'Frais de Gas',
+    gasPayFeeTooltip:
+      'Ces frais sont payés au réseau pour traiter votre transaction. Si vous choisissez de payer le gas avec un jeton non natif, Fluent facturera des frais de service pour la conversion.',
+    selectToken: 'Sélectionner un jeton',
+    payWithNativeToken: 'Payer avec le jeton natif',
+    payWithOtherTokens: 'Payer avec d’autres jetons',
+    tokenBalanceShort: 'Solde',
     edit: 'Éditer',
     sponsored: 'Sponsorisé',
     partSponsored: 'Partiellement sponsorisé',

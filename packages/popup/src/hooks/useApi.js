@@ -27,6 +27,7 @@ const {
   WALLET_GET_NETWORK,
   WALLET_GET_EIP7702_ACCOUNT_STATES,
   WALLET_GET_TOKEN_PAY_CONFIG,
+  WALLET_GET_TOKEN_PAY_GAS_OPTIONS,
   WALLET_PREPARE_TOKEN_PAY_QUOTE,
   WALLET_IS_LOCKED,
   WALLET_METADATA_FOR_POPUP,
@@ -285,21 +286,20 @@ export const useEip7702AccountStates = accountStateQueries => {
 export const useTokenPayConfig = networkDbId => {
   const canQueryTokenPayConfig = isNumber(networkDbId)
 
-  const {data: tokenPayConfig, mutate} = useRPC(
+  const {
+    data: tokenPayConfig,
+    mutate,
+    isValidating,
+  } = useRPC(
     canQueryTokenPayConfig ? [WALLET_GET_TOKEN_PAY_CONFIG, networkDbId] : null,
     {networkDbId},
-    {
-      fallbackData: {
-        available: false,
-        reason: null,
-        recipient: null,
-        tokens: [],
-      },
-    },
+    {fallbackData: null},
   )
 
   return {
     data: tokenPayConfig,
+    loading: canQueryTokenPayConfig && isValidating && !tokenPayConfig,
+    isValidating,
     mutate,
   }
 }
@@ -318,7 +318,12 @@ export const usePrepareTokenPayQuote = ({
     isString(gasTokenAddress) &&
     isString(gasLevel)
 
-  const {data: quote, mutate} = useRPC(
+  const {
+    data: quote,
+    error,
+    mutate,
+    isValidating,
+  } = useRPC(
     canQueryQuote
       ? [
           WALLET_PREPARE_TOKEN_PAY_QUOTE,
@@ -341,6 +346,54 @@ export const usePrepareTokenPayQuote = ({
 
   return {
     data: quote,
+    error,
+    loading: canQueryQuote && isValidating && !quote,
+    isValidating,
+    mutate,
+  }
+}
+
+export const useGetTokenPayGasOptions = ({
+  networkDbId,
+  accountId,
+  userTx,
+  nativeGasFee,
+}) => {
+  const canQueryOptions =
+    isNumber(networkDbId) &&
+    isNumber(accountId) &&
+    isObject(userTx) &&
+    isString(nativeGasFee)
+
+  const {
+    data: options,
+    error,
+    mutate,
+    isValidating,
+  } = useRPC(
+    canQueryOptions
+      ? [
+          WALLET_GET_TOKEN_PAY_GAS_OPTIONS,
+          networkDbId,
+          accountId,
+          nativeGasFee,
+          JSON.stringify(userTx),
+        ]
+      : null,
+    {
+      networkDbId,
+      accountId,
+      userTx,
+      nativeGasFee,
+    },
+    {fallbackData: null},
+  )
+
+  return {
+    data: options,
+    error,
+    loading: canQueryOptions && isValidating && !options,
+    isValidating,
     mutate,
   }
 }
@@ -355,13 +408,19 @@ export const useBalance = (
       ? [address]
       : address
     : null
+  const tokens = isArray(tokenContractAddress)
+    ? tokenContractAddress
+    : [tokenContractAddress]
   const {data: balance} = useRPC(
-    userAddress && isNumber(networkId) && isString(tokenContractAddress)
-      ? [WALLET_GET_BALANCE, networkId, tokenContractAddress, ...userAddress]
+    userAddress &&
+      isNumber(networkId) &&
+      tokens.length > 0 &&
+      tokens.every(token => isString(token))
+      ? [WALLET_GET_BALANCE, networkId, ...tokens, ...userAddress]
       : null,
     {
       users: userAddress,
-      tokens: [tokenContractAddress],
+      tokens,
     },
     {fallbackData: {}},
   )
