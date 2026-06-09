@@ -114,6 +114,7 @@ function GasStation({
   isCfxChain,
   estimateGasLimit,
   resendType,
+  isTokenPayGas,
 }) {
   const {t} = useTranslation()
   const history = useHistory()
@@ -166,59 +167,63 @@ function GasStation({
           }}
         />
       )}
-      <GasStationItem
-        level="advanced"
-        data={{
-          maxFeePerGas: convertDecimal(
-            advancedGasSetting?.['maxFeePerGas'],
-            'divide',
-            GWEI_DECIMALS,
-          ),
-          maxPriorityFeePerGas: convertDecimal(
-            advancedGasSetting?.['maxPriorityFeePerGas'],
-            'divide',
-            GWEI_DECIMALS,
-          ),
-          gasLimit: advancedGasSetting?.['gasLimit'],
-          gasPrice: convertDecimal(
-            advancedGasSetting?.['gasPrice'],
-            'divide',
-            GWEI_DECIMALS,
-          ),
-          baseFee: gasInfoEip1559?.['estimatedBaseFee'],
-          gasLevel: advancedGasSetting?.['gasLevel'],
-        }}
-        isCfxChain={isCfxChain}
-        uses1559Fees={uses1559Fees}
-        selected={selectedGasLevel === 'advanced'}
-        onClick={() => {
-          if (
-            (uses1559Fees &&
-              selectedGasLevel !== 'advanced' &&
-              !gasInfoEip1559?.[selectedGasLevel]) ||
-            (!uses1559Fees && !suggestedGasPrice)
-          )
-            return
-          const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} =
-            gasInfoEip1559?.[selectedGasLevel] || {}
-          history.push({
-            pathname: ADVANCED_GAS,
-            search: `?isHistoryTx=${isHistoryTx}&${
-              uses1559Fees
-                ? `suggestedMaxFeePerGas=${
-                    !resendType
-                      ? suggestedMaxFeePerGas
-                      : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
-                  }&suggestedMaxPriorityFeePerGas=${
-                    !resendType
-                      ? suggestedMaxPriorityFeePerGas
-                      : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
-                  }&selectedGasLevel=${selectedGasLevel}`
-                : ''
-            }${!uses1559Fees ? 'suggestedGasPrice=' + suggestedGasPrice : ''}`,
-          })
-        }}
-      />
+      {!isTokenPayGas && (
+        <GasStationItem
+          level="advanced"
+          data={{
+            maxFeePerGas: convertDecimal(
+              advancedGasSetting?.['maxFeePerGas'],
+              'divide',
+              GWEI_DECIMALS,
+            ),
+            maxPriorityFeePerGas: convertDecimal(
+              advancedGasSetting?.['maxPriorityFeePerGas'],
+              'divide',
+              GWEI_DECIMALS,
+            ),
+            gasLimit: advancedGasSetting?.['gasLimit'],
+            gasPrice: convertDecimal(
+              advancedGasSetting?.['gasPrice'],
+              'divide',
+              GWEI_DECIMALS,
+            ),
+            baseFee: gasInfoEip1559?.['estimatedBaseFee'],
+            gasLevel: advancedGasSetting?.['gasLevel'],
+          }}
+          isCfxChain={isCfxChain}
+          uses1559Fees={uses1559Fees}
+          selected={selectedGasLevel === 'advanced'}
+          onClick={() => {
+            if (
+              (uses1559Fees &&
+                selectedGasLevel !== 'advanced' &&
+                !gasInfoEip1559?.[selectedGasLevel]) ||
+              (!uses1559Fees && !suggestedGasPrice)
+            )
+              return
+            const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} =
+              gasInfoEip1559?.[selectedGasLevel] || {}
+            history.push({
+              pathname: ADVANCED_GAS,
+              search: `?isHistoryTx=${isHistoryTx}&${
+                uses1559Fees
+                  ? `suggestedMaxFeePerGas=${
+                      !resendType
+                        ? suggestedMaxFeePerGas
+                        : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
+                    }&suggestedMaxPriorityFeePerGas=${
+                      !resendType
+                        ? suggestedMaxPriorityFeePerGas
+                        : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS)
+                    }&selectedGasLevel=${selectedGasLevel}`
+                  : ''
+              }${
+                !uses1559Fees ? 'suggestedGasPrice=' + suggestedGasPrice : ''
+              }`,
+            })
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -234,6 +239,7 @@ GasStation.propTypes = {
   isCfxChain: PropTypes.bool,
   estimateGasLimit: PropTypes.string,
   resendType: PropTypes.string,
+  isTokenPayGas: PropTypes.bool,
 }
 
 export default GasStation

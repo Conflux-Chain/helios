@@ -118,9 +118,12 @@ export const main = async ({
   },
   rpcs: {
     eth_signTransaction,
+    wallet_getTokenPayConfig,
+    eth_getTransactionCount,
+    eth_gasPrice,
+    eth_estimateGas,
     wallet_handleUnfinishedETHTx,
     wallet_enrichEthereumTx,
-    ...rpcs
   },
   params: {
     networkDbId,
@@ -198,7 +201,11 @@ export const main = async ({
       getNetworkById,
       accountAddrByNetwork,
     },
-    rpcs,
+    rpcs: {
+      wallet_getTokenPayConfig,
+      eth_getTransactionCount,
+      eth_gasPrice,
+    },
     params: {networkDbId, accountId, userTx, gasLevel},
   })
   const gasToken = tokenPayConfig.tokens.find(
@@ -214,7 +221,7 @@ export const main = async ({
     gasToken.address,
   )
   const gasTokenQuote = await prepareGasTokenQuote({
-    eth_estimateGas: rpcs.eth_estimateGas,
+    eth_estimateGas,
     network,
     accountAddress,
     userTx,

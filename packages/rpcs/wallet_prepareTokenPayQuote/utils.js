@@ -241,13 +241,13 @@ export async function prepareTokenPayBaseContext({
 export async function prepareTokenPayExecutionContext({
   InvalidParams,
   db,
-  rpcs: {eth_getTransactionCount, eth_gasPrice, ...rpcs},
+  rpcs: {wallet_getTokenPayConfig, eth_getTransactionCount, eth_gasPrice},
   params: {networkDbId, accountId, userTx, gasLevel},
 }) {
   const baseContext = await prepareTokenPayBaseContext({
     InvalidParams,
     db,
-    rpcs,
+    rpcs: {wallet_getTokenPayConfig},
     params: {networkDbId, accountId, userTx},
     ignoreQuoteTokenPriceError: true,
   })

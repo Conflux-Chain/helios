@@ -1,10 +1,11 @@
-import {useState} from 'react'
+import {useCallback, useEffect, useMemo} from 'react'
 import {
   useGetTokenPayGasOptions,
   usePrepareTokenPayQuote,
   useBalance,
 } from '../../hooks/useApi'
 import {useTokenPayAvailability} from '../../hooks/useTokenPay'
+import {useCurrentTxStore} from '../../hooks'
 import {bn16, request} from '../../utils'
 import {RPC_METHODS} from '../../constants'
 import {getNativeGasFee} from './components/tokenPayGasUtils'
@@ -20,10 +21,39 @@ function useTokenPayGas({
   gasLevel,
   estimateRst,
 }) {
-  const [selectedGasToken, setSelectedGasToken] = useState(null)
+  const {gasTokenAddress, setGasTokenAddress} = useCurrentTxStore()
   const {canUseTokenPay, tokenPayConfig, tokenPayConfigLoading} =
     useTokenPayAvailability({isDapp, isHwAccount, networkDbId})
   const gasTokenAddresses = tokenPayConfig?.tokens?.map(token => token.address)
+  const gasTokenByAddress = useMemo(
+    () =>
+      (tokenPayConfig?.tokens || []).reduce((acc, token) => {
+        acc[token.address.toLowerCase()] = token
+        return acc
+      }, {}),
+    [tokenPayConfig?.tokens],
+  )
+  const selectedGasToken = useMemo(
+    () => gasTokenByAddress[gasTokenAddress?.toLowerCase()] || null,
+    [gasTokenAddress, gasTokenByAddress],
+  )
+  const setSelectedGasToken = useCallback(
+    token => {
+      setGasTokenAddress(token?.address || '')
+    },
+    [setGasTokenAddress],
+  )
+
+  useEffect(() => {
+    if (
+      gasTokenAddress &&
+      tokenPayConfig &&
+      !gasTokenByAddress[gasTokenAddress.toLowerCase()]
+    ) {
+      setGasTokenAddress('')
+    }
+  }, [gasTokenAddress, gasTokenByAddress, setGasTokenAddress, tokenPayConfig])
+
   const gasTokenBalances = useBalance(
     params?.from,
     networkDbId,

@@ -229,6 +229,7 @@ const defaultSendTransactionParams = {
   nonce: '',
   sendTokenId: 'native',
   customAllowance: '',
+  gasTokenAddress: '',
   tx: {},
   txContext: {},
   // Internal preset-tx flows turn this off to avoid overwriting tx from send-form state.
@@ -266,6 +267,7 @@ export const useCurrentTxStore = create((set, get) => ({
   clearAdvancedGasSetting: () =>
     set({advancedGasSetting: initAdvancedGasSetting}),
   setCustomAllowance: customAllowance => set({customAllowance}),
+  setGasTokenAddress: gasTokenAddress => set({gasTokenAddress}),
   setNonce: nonce => set({nonce}),
   setSendTokenId: sendTokenId => set({sendTokenId}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
