@@ -34,8 +34,11 @@ function useTokenPayGas({
     [tokenPayConfig?.tokens],
   )
   const selectedGasToken = useMemo(
-    () => gasTokenByAddress[gasTokenAddress?.toLowerCase()] || null,
-    [gasTokenAddress, gasTokenByAddress],
+    () =>
+      canUseTokenPay
+        ? gasTokenByAddress[gasTokenAddress?.toLowerCase()] || null
+        : null,
+    [canUseTokenPay, gasTokenAddress, gasTokenByAddress],
   )
   const setSelectedGasToken = useCallback(
     token => {
@@ -45,6 +48,11 @@ function useTokenPayGas({
   )
 
   useEffect(() => {
+    if (gasTokenAddress && (isDapp || isHwAccount)) {
+      setGasTokenAddress('')
+      return
+    }
+
     if (
       gasTokenAddress &&
       tokenPayConfig &&
@@ -52,7 +60,14 @@ function useTokenPayGas({
     ) {
       setGasTokenAddress('')
     }
-  }, [gasTokenAddress, gasTokenByAddress, setGasTokenAddress, tokenPayConfig])
+  }, [
+    gasTokenAddress,
+    gasTokenByAddress,
+    isDapp,
+    isHwAccount,
+    setGasTokenAddress,
+    tokenPayConfig,
+  ])
 
   const gasTokenBalances = useBalance(
     params?.from,
