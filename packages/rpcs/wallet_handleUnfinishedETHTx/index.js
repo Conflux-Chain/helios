@@ -19,7 +19,8 @@ export const NAME = 'wallet_handleUnfinishedETHTx'
 
 function getGasPrice(tx) {
   const payload = tx.txPayload
-  return payload.type === ETH_TX_TYPES.EIP1559
+  return payload.type === ETH_TX_TYPES.EIP1559 ||
+    payload.type === ETH_TX_TYPES.EIP7702
     ? payload.maxFeePerGas
     : payload.gasPrice
 }
