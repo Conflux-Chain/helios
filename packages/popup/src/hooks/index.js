@@ -229,6 +229,7 @@ const defaultSendTransactionParams = {
   nonce: '',
   sendTokenId: 'native',
   customAllowance: '',
+  gasTokenAddress: '',
   tx: {},
   txContext: {},
   // Internal preset-tx flows turn this off to avoid overwriting tx from send-form state.
@@ -266,6 +267,7 @@ export const useCurrentTxStore = create((set, get) => ({
   clearAdvancedGasSetting: () =>
     set({advancedGasSetting: initAdvancedGasSetting}),
   setCustomAllowance: customAllowance => set({customAllowance}),
+  setGasTokenAddress: gasTokenAddress => set({gasTokenAddress}),
   setNonce: nonce => set({nonce}),
   setSendTokenId: sendTokenId => set({sendTokenId}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
@@ -330,8 +332,10 @@ export const useEstimateError = (
   sendTokenAddress,
   isNativeToken,
   isSendToken = true,
+  opts = {},
 ) => {
   const {t} = useTranslation()
+  const {ignoreGasBalanceError = false} = opts
   const {error, isBalanceEnough, tokens} = estimateRst
   const isTokenBalanceEnough = tokens?.[sendTokenAddress]?.isTokenBalanceEnough
   return useMemo(() => {
@@ -355,7 +359,7 @@ export const useEstimateError = (
       if (isSendToken) {
         if (isNativeToken) {
           if (isBalanceEnough === false) {
-            return t('balanceIsNotEnough')
+            return ignoreGasBalanceError ? '' : t('balanceIsNotEnough')
           } else {
             return ''
           }
@@ -365,7 +369,7 @@ export const useEstimateError = (
           }
         }
       }
-      if (isBalanceEnough === false) {
+      if (isBalanceEnough === false && !ignoreGasBalanceError) {
         return t('gasFeeIsNotEnough')
       } else {
         return ''
@@ -375,6 +379,7 @@ export const useEstimateError = (
     isNativeToken,
     isSendToken,
     isBalanceEnough,
+    ignoreGasBalanceError,
     error,
     isTokenBalanceEnough,
     t,

@@ -42,7 +42,9 @@ import {
   useSingleTokenInfoWithNativeTokenSupport,
   useAddressNote,
 } from '../../hooks/useApi'
+import {useTokenPayAvailability} from '../../hooks/useTokenPay'
 import {ROUTES, NETWORK_TYPE} from '../../constants'
+import {bn16} from '../../utils'
 import useGlobalStore from '../../stores'
 
 const {CONFIRM_TRANSACTION, ADDRESS_BOOK} = ROUTES
@@ -104,10 +106,15 @@ function SendTransaction() {
   const {
     data: {
       value: address,
+      nativeBalance,
       network: {eid: networkId, type, netId, ticker: nativeToken},
-      account: {nickname},
+      account: {nickname, _accountGroup: accountGroup},
     },
   } = useCurrentAddress()
+  const {canUseTokenPay} = useTokenPayAvailability({
+    isHwAccount: accountGroup?.vault?.type === 'hw',
+    networkDbId: networkId,
+  })
   const toAddressInputPlaceholder = useToAddressPlaceHolder({type, netId})
 
   useEffect(() => {
@@ -129,6 +136,14 @@ function SendTransaction() {
     sendAmount ? estimateError : '',
   )
   const isNativeToken = !tokenAddress
+  const nativeSendValue =
+    isNativeToken && sendAmount
+      ? convertValueToData(sendAmount, decimals)
+      : '0x0'
+  const hasNativeSendValue =
+    !isNativeToken ||
+    bn16(nativeBalance || '0x0').gte(bn16(nativeSendValue || '0x0'))
+  const canIgnoreGasBalanceError = canUseTokenPay && hasNativeSendValue
   const estimateRst =
     useEstimateTx(
       tx,
@@ -175,6 +190,8 @@ function SendTransaction() {
     estimateRst,
     tokenAddress,
     !tokenAddress,
+    true,
+    {ignoreGasBalanceError: canIgnoreGasBalanceError},
   )
   useEffect(() => {
     !loading && setEstimateError(errorMessage)

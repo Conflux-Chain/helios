@@ -28,12 +28,17 @@ import {
   request,
   getPageType,
   checkBalance,
+  bn16,
   transformToTitleCase,
 } from '../../utils'
-import {AddressCard, Eip7702SwitchInfoDrawer, InfoList} from './components'
+import {
+  AddressCard,
+  ConfirmGasFee,
+  Eip7702SwitchInfoDrawer,
+  InfoList,
+} from './components'
 import {
   TitleNav,
-  GasFee,
   DappFooter,
   TransactionResult,
   AlertMessage,
@@ -46,6 +51,7 @@ import {
   TX_STATUS,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
+import useTokenPayGas from './useTokenPayGas'
 
 const {VIEW_DATA, HOME} = ROUTES
 const {
@@ -123,6 +129,7 @@ function ConfirmTransaction() {
     storageLimit,
     nonce,
     maxMode,
+    gasLevel,
     sendAmount,
     customAllowance,
     setGasPrice,
@@ -142,7 +149,9 @@ function ConfirmTransaction() {
 
   const {
     data: {
-      network: {ticker, chainId},
+      value: currentAddressValue,
+      nativeBalance,
+      network: {eid: networkDbId, ticker, chainId},
       account: {eid: accountId},
     },
   } = useCurrentAddress()
@@ -259,6 +268,28 @@ function ConfirmTransaction() {
         : {},
     ) || {}
 
+  const tokenPayGas = useTokenPayGas({
+    isDapp,
+    isHwAccount,
+    networkDbId,
+    accountId,
+    params,
+    gasLevel,
+    estimateRst,
+  })
+
+  useEffect(() => {
+    if (tokenPayGas.isTokenPayGas && gasLevel === 'advanced') {
+      clearAdvancedGasSetting()
+      setGasLevel('medium')
+    }
+  }, [
+    tokenPayGas.isTokenPayGas,
+    gasLevel,
+    clearAdvancedGasSetting,
+    setGasLevel,
+  ])
+
   const {nativeMaxDrip} = estimateRst
 
   useEffect(() => {
@@ -292,6 +323,12 @@ function ConfirmTransaction() {
     displayTokenAddress,
     !displayTokenAddress,
     isSendToken,
+    {
+      ignoreGasBalanceError:
+        tokenPayGas.isTokenPayGas &&
+        (!isNativeToken ||
+          bn16(nativeBalance || '0x0').gte(bn16(params.value || '0x0'))),
+    },
   )
 
   useEffect(() => {
@@ -373,18 +410,47 @@ function ConfirmTransaction() {
         ? convertValueToData(displayValue, displayToken.decimals)
         : '0x0'
 
-    const error = await checkBalance(
-      params,
-      displayToken,
-      isNativeToken,
-      isSendToken,
-      sendTokenValue,
-      networkTypeIsCfx,
-      uses1559Fees,
-    )
+    if (tokenPayGas.isTokenPayGas && !tokenPayGas.tokenPayReady) {
+      setLoading(false)
+      return
+    }
+
+    const error = tokenPayGas.isTokenPayGas
+      ? await tokenPayGas.checkTokenPayBalance({
+          displayToken,
+          isNativeToken,
+          isSendToken,
+          sendTokenValue,
+        })
+      : await checkBalance(
+          params,
+          displayToken,
+          isNativeToken,
+          isSendToken,
+          sendTokenValue,
+          networkTypeIsCfx,
+          uses1559Fees,
+        )
     if (error) {
       setLoading(false)
       setEstimateError(t(error))
+      return
+    }
+
+    if (tokenPayGas.isTokenPayGas) {
+      tokenPayGas
+        .submitTokenPayTransaction()
+        .then(() => {
+          setLoading(false)
+          setTimeout(() => clearSendTransactionParams(), 500)
+          history.push(HOME)
+        })
+        .catch(error => {
+          console.error('error', error)
+          setLoading(false)
+          setSendStatus(TX_STATUS.ERROR)
+          setSendError(error)
+        })
       return
     }
 
@@ -413,6 +479,10 @@ function ConfirmTransaction() {
     !!estimateError ||
     estimateRst.loading ||
     Object.keys(estimateRst).length === 0 ||
+    (tokenPayGas.isTokenPayGas &&
+      (tokenPayGas.tokenPayQuoteLoading ||
+        tokenPayGas.tokenPayQuoteError ||
+        !tokenPayGas.tokenPayReady)) ||
     (customAllowance && isDecoding)
 
   return (
@@ -464,7 +534,17 @@ function ConfirmTransaction() {
             decimals={nativeToken?.decimals}
             symbol={nativeToken?.symbol}
           />
-          <GasFee estimateRst={estimateRst} uses1559Fees={uses1559Fees} />
+          <ConfirmGasFee
+            isDapp={isDapp}
+            isHwAccount={isHwAccount}
+            tokenPayGas={tokenPayGas}
+            nativeToken={nativeToken}
+            nativeBalance={nativeBalance}
+            accountAddress={currentAddressValue}
+            networkDbId={networkDbId}
+            estimateRst={estimateRst}
+            uses1559Fees={uses1559Fees}
+          />
         </div>
         <div className="flex flex-col items-center">
           {isDapp && !!params.data && params.data !== '0x' && (
