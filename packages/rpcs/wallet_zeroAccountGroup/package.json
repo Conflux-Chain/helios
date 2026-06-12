@@ -3,8 +3,8 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.17"
+    "@fluent-wallet/spec": "1.0.18"
   }
 }
