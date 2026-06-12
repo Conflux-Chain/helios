@@ -167,6 +167,12 @@ const zh = {
     sendToken: '发送代币',
     toAddress: '接收方地址',
     gasFee: '燃气费',
+    gasPayFeeTooltip:
+      '该费用支付给网络，用于处理你的交易。如果选择使用非原生代币支付燃气费，Fluent 将收取兑换服务费。',
+    selectToken: '选择代币',
+    payWithNativeToken: '使用原生代币支付',
+    payWithOtherTokens: '使用其他代币支付',
+    tokenBalanceShort: '余额',
     edit: '设置',
     sponsored: '已赞助',
     partSponsored: '部分赞助',

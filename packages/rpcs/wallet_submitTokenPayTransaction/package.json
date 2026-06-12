@@ -1,0 +1,16 @@
+{
+  "name": "@fluent-wallet/wallet_submit-token-pay-transaction",
+  "type": "module",
+  "main": "index.js",
+  "private": true,
+  "version": "0.0.1",
+  "dependencies": {
+    "@fluent-wallet/consts": "workspace:packages/consts",
+    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema",
+    "@fluent-wallet/signature": "workspace:packages/signature",
+    "@fluent-wallet/spec": "1.0.17",
+    "@fluent-wallet/utils": "workspace:packages/utils",
+    "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote",
+    "bn.js": "5.2.0"
+  }
+}

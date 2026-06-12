@@ -19,7 +19,8 @@ export const NAME = 'wallet_handleUnfinishedETHTx'
 
 function getGasPrice(tx) {
   const payload = tx.txPayload
-  return payload.type === ETH_TX_TYPES.EIP1559
+  return payload.type === ETH_TX_TYPES.EIP1559 ||
+    payload.type === ETH_TX_TYPES.EIP7702
     ? payload.maxFeePerGas
     : payload.gasPrice
 }
@@ -360,6 +361,12 @@ export const main = ({
         // not packaged or no blockhash in getTransactionByHash result
         map(rst => {
           if (rst && rst.blockHash) return rst
+
+          // Token-pay transactions are broadcast by backend; keep polling instead of entering resend flow.
+          if (tx.txExtra?.tokenPay) {
+            return keepTrack()
+          }
+
           // getTransactionByHash return null
           eth_blockNumber({errorFallThrough: true}, [])
             .then(n => {

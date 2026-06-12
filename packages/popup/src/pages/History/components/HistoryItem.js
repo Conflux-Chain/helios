@@ -110,10 +110,19 @@ function HistoryItem({
   const statusIconColor = ICON_COLOR?.[txStatus] ?? ''
 
   const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
+  const {
+    contractCreation,
+    simple,
+    contractInteraction,
+    token20,
+    sendAction,
+    tokenPay,
+  } = extra
 
   const showResendButtons =
     txStatus === 'pending' &&
     !isExternalTx &&
+    !tokenPay &&
     new Date().getTime() - pendingAt > 5000
 
   const {txFeeDrip = '0x0'} = receipt
@@ -128,9 +137,6 @@ function HistoryItem({
           gasPrice: receipt?.effectiveGasPrice || '0x1',
         })
     : {}
-
-  const {contractCreation, simple, contractInteraction, token20, sendAction} =
-    extra
 
   const {decodeData} = useDecodeData({
     to: payload?.to,

@@ -19,6 +19,8 @@ function GasFee({
   showDrip = true,
   titleClassName = 'mb-2',
   contentClassName = '',
+  prefix,
+  suffix,
 }) {
   const {gasPrice, maxFeePerGas, gasLevel} = useCurrentTxStore()
   const txGasPrice = uses1559Fees ? maxFeePerGas : gasPrice
@@ -69,39 +71,43 @@ function GasFee({
         )}
       </header>
       <div
-        className={`gas-fee-body flex flex-col bg-gray-4 border-gray-10 rounded px-2 py-3 relative ${contentClassName}`}
+        className={`gas-fee-body flex items-center bg-gray-4 border-gray-10 rounded px-2 py-3 relative ${contentClassName}`}
         id="gasFeeContainer"
       >
-        <DisplayBalance
-          id="realPayedFee"
-          balance={realPayedFeeDrip}
-          maxWidth={202}
-          maxWidthStyle="max-w-[202px]"
-          className="text-lg mb-0.5 font-medium"
-          symbol={symbol}
-          decimals={decimals}
-          initialFontSize={20}
-        />
-        {isBePayed && sponsoredFeeDrip !== '0x0' && (
-          <div className="flex text-gray-40">
-            <span>{`${t('sponsored')}:`}&nbsp;</span>
-            <DisplayBalance
-              id="sponsoredFee"
-              balance={sponsoredFeeDrip}
-              maxWidth={230}
-              maxWidthStyle="max-w-[230px]"
-              className="!text-gray-40 !font-normal mb-0.5"
-              symbol={symbol}
-              decimals={decimals}
-            />
-          </div>
-        )}
-        {showDrip && (
-          <span className="text-xs text-gray-60">{`${formatBalance(
-            displayGasPrice,
-            GWEI_DECIMALS,
-          )} ${isCfxChain ? 'GDrip' : 'GWei'}`}</span>
-        )}
+        {prefix && <div className="shrink-0">{prefix}</div>}
+        <div className="min-w-0 flex-1 flex flex-col">
+          <DisplayBalance
+            id="realPayedFee"
+            balance={realPayedFeeDrip}
+            maxWidth={202}
+            maxWidthStyle="max-w-[202px]"
+            className="text-lg mb-0.5 font-medium"
+            symbol={symbol}
+            decimals={decimals}
+            initialFontSize={20}
+          />
+          {isBePayed && sponsoredFeeDrip !== '0x0' && (
+            <div className="flex text-gray-40">
+              <span>{`${t('sponsored')}:`}&nbsp;</span>
+              <DisplayBalance
+                id="sponsoredFee"
+                balance={sponsoredFeeDrip}
+                maxWidth={230}
+                maxWidthStyle="max-w-[230px]"
+                className="!text-gray-40 !font-normal mb-0.5"
+                symbol={symbol}
+                decimals={decimals}
+              />
+            </div>
+          )}
+          {showDrip && (
+            <span className="text-xs text-gray-60">{`${formatBalance(
+              displayGasPrice,
+              GWEI_DECIMALS,
+            )} ${isCfxChain ? 'GDrip' : 'GWei'}`}</span>
+          )}
+        </div>
+        {suffix && <div className="shrink-0">{suffix}</div>}
         {isBePayed && sponsoredFeeDrip !== '0x0' && (
           <CustomTag
             width="w-auto"
@@ -121,12 +127,14 @@ function GasFee({
 
 GasFee.propTypes = {
   estimateRst: PropTypes.object,
-  titleDes: PropTypes.string,
+  titleDes: PropTypes.node,
   titleClassName: PropTypes.string,
   contentClassName: PropTypes.string,
   goEdit: PropTypes.bool,
   showDrip: PropTypes.bool,
   uses1559Fees: PropTypes.bool,
+  prefix: PropTypes.node,
+  suffix: PropTypes.node,
 }
 
 export default GasFee
