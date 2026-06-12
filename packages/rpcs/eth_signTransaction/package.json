@@ -3,14 +3,14 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "dependencies": {
     "@ethersproject/units": "5.6.1",
     "@fluent-wallet/consts": "workspace:*",
     "@fluent-wallet/eth-transaction-schema": "workspace:*",
     "@fluent-wallet/ledger": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
-    "@fluent-wallet/spec": "1.0.17",
+    "@fluent-wallet/spec": "1.0.18",
     "@fluent-wallet/utils": "workspace:*"
   }
 }
