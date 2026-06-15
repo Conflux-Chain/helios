@@ -132,6 +132,7 @@ function ConfirmTransaction() {
     gasLevel,
     sendAmount,
     customAllowance,
+    setGasTokenAddress,
     setGasPrice,
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
@@ -498,6 +499,7 @@ function ConfirmTransaction() {
             }
             clearAdvancedGasSetting()
             setGasLevel('medium')
+            setGasTokenAddress('')
           }}
         />
       </header>
