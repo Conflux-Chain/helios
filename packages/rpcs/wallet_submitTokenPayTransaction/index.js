@@ -1,6 +1,6 @@
 import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
-import {ETH_TX_TYPES, TOKEN_PAY_NETWORK_CONFIGS} from '@fluent-wallet/consts'
+import {TOKEN_PAY_NETWORK_CONFIGS} from '@fluent-wallet/consts'
 import {getTxHashFromRawTx} from '@fluent-wallet/signature'
 import BN from 'bn.js'
 import {stripHexPrefix} from '@fluent-wallet/utils'
@@ -10,29 +10,52 @@ import {
   prepareTokenPayExecutionContext,
 } from '@fluent-wallet/wallet_prepare-token-pay-quote'
 
-const {or, map, dbid, enums, ethHexAddress, hex} = spec
+const {or, map, dbid, enums, ethHexAddress, hex, cat} = spec
 
-const {Transaction1559Unsigned, Transaction7702Unsigned} = genEthTxSchema(spec)
+const {
+  TransactionLegacyUnsigned,
+  Transaction1559Unsigned,
+  Transaction7702Unsigned,
+} = genEthTxSchema(spec)
 
 export const NAME = 'wallet_submitTokenPayTransaction'
 
 export const userTxSchema = [
   or,
+  TransactionLegacyUnsigned,
   Transaction1559Unsigned,
   Transaction7702Unsigned,
 ]
 
+const tokenPaySchema = [
+  map,
+  {closed: true},
+  ['gasTokenAddress', ethHexAddress],
+  ['gasLevel', [enums, 'low', 'medium', 'high']],
+  ['maxTokenCost', hex],
+]
+
+const directSubmitSchema = [
+  map,
+  {closed: true},
+  ['networkDbId', dbid],
+  ['accountId', dbid],
+  ['userTx', userTxSchema],
+  ['gasTokenAddress', ethHexAddress],
+  ['gasLevel', [enums, 'low', 'medium', 'high']],
+  ['maxTokenCost', hex],
+]
+
+const dappApproveSubmitSchema = [
+  map,
+  {closed: true},
+  ['authReqId', dbid],
+  ['tx', [cat, userTxSchema]],
+  ['tokenPay', tokenPaySchema],
+]
+
 export const schemas = {
-  input: [
-    map,
-    {closed: true},
-    ['networkDbId', dbid],
-    ['accountId', dbid],
-    ['userTx', userTxSchema],
-    ['gasTokenAddress', ethHexAddress],
-    ['gasLevel', [enums, 'low', 'medium', 'high']],
-    ['maxTokenCost', hex],
-  ],
+  input: [or, directSubmitSchema, dappApproveSubmitSchema],
 }
 
 export const permissions = {
@@ -46,12 +69,15 @@ export const permissions = {
     'eth_estimateGas',
     'wallet_handleUnfinishedETHTx',
     'wallet_enrichEthereumTx',
+    'wallet_userApprovedAuthRequest',
+    'wallet_network1559Compatible',
   ],
   db: [
     'getAccountById',
     'getNetworkById',
     'accountAddrByNetwork',
     'getAddrTxByHash',
+    'getAuthReqById',
     't',
   ],
 }
@@ -114,6 +140,7 @@ export const main = async ({
     getNetworkById,
     accountAddrByNetwork,
     getAddrTxByHash,
+    getAuthReqById,
     t,
   },
   rpcs: {
@@ -124,16 +151,45 @@ export const main = async ({
     eth_estimateGas,
     wallet_handleUnfinishedETHTx,
     wallet_enrichEthereumTx,
+    wallet_userApprovedAuthRequest,
+    wallet_network1559Compatible,
   },
-  params: {
-    networkDbId,
-    accountId,
-    userTx,
-    gasTokenAddress,
-    gasLevel,
-    maxTokenCost,
-  },
+  params,
 }) => {
+  let authReq
+  let networkDbId
+  let accountId
+  let userTx
+  let gasTokenAddress
+  let gasLevel
+  let maxTokenCost
+
+  if (params.authReqId) {
+    authReq = getAuthReqById(params.authReqId)
+    if (!authReq) {
+      throw InvalidParams(`Invalid authReqId ${params.authReqId}`)
+    }
+
+    if (authReq.req?.method !== 'wallet_sendTransaction') {
+      throw InvalidParams(
+        'Token pay only supports wallet_sendTransaction approval',
+      )
+    }
+
+    networkDbId = authReq.app.currentNetwork.eid
+    accountId = authReq.app.currentAccount.eid
+    userTx = params.tx[0]
+    gasTokenAddress = params.tokenPay.gasTokenAddress
+    gasLevel = params.tokenPay.gasLevel
+    maxTokenCost = params.tokenPay.maxTokenCost
+  } else {
+    networkDbId = params.networkDbId
+    accountId = params.accountId
+    userTx = params.userTx
+    gasTokenAddress = params.gasTokenAddress
+    gasLevel = params.gasLevel
+    maxTokenCost = params.maxTokenCost
+  }
   const account = getAccountById(accountId)
   if (!account) {
     throw InvalidParams(`Invalid accountId ${accountId}`)
@@ -174,23 +230,12 @@ export const main = async ({
     throw InvalidParams('Invalid user tx from address')
   }
 
-  const userTxType = userTx.authorizationList
-    ? ETH_TX_TYPES.EIP7702
-    : userTx.type || ETH_TX_TYPES.EIP1559
-
-  if (
-    userTxType !== ETH_TX_TYPES.EIP1559 &&
-    userTxType !== ETH_TX_TYPES.EIP7702
-  ) {
-    throw InvalidParams(`Unsupported user tx type ${userTxType}`)
-  }
-
   const {
     tokenPayConfig,
     tokenPayNetworkConfig,
     txType,
     nonceBase,
-    feeCaps,
+    feeParams,
     quoteToken,
     quoteTokenPrice,
     estimateStateOverride,
@@ -205,6 +250,7 @@ export const main = async ({
       wallet_getTokenPayConfig,
       eth_getTransactionCount,
       eth_gasPrice,
+      wallet_network1559Compatible,
     },
     params: {networkDbId, accountId, userTx, gasLevel},
   })
@@ -228,7 +274,7 @@ export const main = async ({
     gasToken,
     tokenPayConfig,
     nonceBase,
-    feeCaps,
+    feeParams,
     gasLevel,
     txType,
     tokenPrice,
@@ -254,7 +300,7 @@ export const main = async ({
     {returnTxMeta: true},
   ])
   const signedUserTx = await eth_signTransaction({network}, [
-    {...preparedUserTx, type: txType},
+    preparedUserTx,
     {returnTxMeta: true},
   ])
 
@@ -327,6 +373,7 @@ export const main = async ({
     },
     {eid: addressRecord.eid, address: {tx: 'newTransferTokenTxId'}},
     {eid: addressRecord.eid, address: {tx: 'newUserTxId'}},
+    authReq && {eid: authReq.app.eid, app: {tx: 'newUserTxId'}},
   ])
 
   for (const txhash of [transferTokenTxHash, userTxHash]) {
@@ -350,6 +397,15 @@ export const main = async ({
       address: addressRecord.eid,
     },
   )
+
+  if (authReq) {
+    await wallet_userApprovedAuthRequest({
+      authReqId: params.authReqId,
+      res: userTxHash,
+    })
+
+    return userTxHash
+  }
 
   return {
     transferTokenTxHash,

@@ -1,17 +1,11 @@
 import {useTokenPayConfig} from './useApi'
 
-export function useTokenPayAvailability({
-  isDapp = false,
-  isHwAccount = false,
-  networkDbId,
-}) {
+export function useTokenPayAvailability({isHwAccount = false, networkDbId}) {
   const {data: tokenPayConfig, loading: tokenPayConfigLoading} =
     useTokenPayConfig(networkDbId)
 
   return {
-    canUseTokenPay: Boolean(
-      !isDapp && !isHwAccount && tokenPayConfig?.available,
-    ),
+    canUseTokenPay: Boolean(!isHwAccount && tokenPayConfig?.available),
     tokenPayConfig,
     tokenPayConfigLoading,
   }

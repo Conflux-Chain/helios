@@ -105,12 +105,7 @@ function GasTokenSelector({
 
   const modalContent = (
     <div className="relative flex flex-col overflow-hidden px-6 pb-6 pt-6">
-      <img
-        src="/images/gasTokenSelectorBg.svg"
-        alt=""
-        className="pointer-events-none absolute inset-x-0 top-0 z-0 w-full"
-      />
-      <div className="relative z-10 flex flex-col">
+      <div className="relative flex flex-col">
         <div className="mb-3 text-center text-base font-medium leading-[22px] text-[#1B1B1C]">
           {t('selectToken')}
         </div>
@@ -186,6 +181,7 @@ function GasTokenSelector({
       open={open}
       content={modalContent}
       onClose={onClose}
+      wrapperClassName="z-[60]"
     />
   )
 }

@@ -269,11 +269,11 @@ function ConfirmTransaction() {
         : {},
     ) || {}
 
+  const dappApp = isDapp ? pendingAuthReq?.[0]?.app : null
   const tokenPayGas = useTokenPayGas({
-    isDapp,
     isHwAccount,
-    networkDbId,
-    accountId,
+    networkDbId: isDapp ? dappApp?.currentNetwork?.eid : networkDbId,
+    accountId: isDapp ? dappApp?.currentAccount?.eid : accountId,
     params,
     gasLevel,
     estimateRst,
@@ -486,6 +486,39 @@ function ConfirmTransaction() {
         !tokenPayGas.tokenPayReady)) ||
     (customAllowance && isDecoding)
 
+  const dappConfirmParams =
+    isDapp && tokenPayGas.isTokenPayGas
+      ? {
+          tx: sendParams,
+          tokenPay: {
+            gasTokenAddress: tokenPayGas.selectedGasToken.address,
+            gasLevel: tokenPayGas.tokenPayGasLevel,
+            maxTokenCost: tokenPayGas.tokenPayQuote?.tokenCost,
+          },
+        }
+      : {tx: sendParams}
+  const beforeDappConfirm = async () => {
+    if (!tokenPayGas.isTokenPayGas) return
+
+    const sendTokenValue =
+      isSendToken && !isNativeToken && Object.keys(displayToken).length
+        ? convertValueToData(displayValue, displayToken.decimals)
+        : '0x0'
+
+    const error = await tokenPayGas.checkTokenPayBalance({
+      displayToken,
+      isNativeToken,
+      isSendToken,
+      sendTokenValue,
+    })
+
+    if (error) {
+      setEstimateError(t(error))
+      return false
+    }
+
+    return true
+  }
   return (
     <div className="confirm-transaction-container flex flex-col h-full w-full relative">
       <header>
@@ -583,7 +616,8 @@ function ConfirmTransaction() {
               confirmText={t('confirm')}
               cancelText={t('cancel')}
               confirmDisabled={confirmDisabled}
-              confirmParams={{tx: sendParams}}
+              confirmParams={dappConfirmParams}
+              beforeConfirm={beforeDappConfirm}
               setSendStatus={setSendStatus}
               pendingAuthReq={pendingAuthReq}
               isHwAccount={isHwAccount}

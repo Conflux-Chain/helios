@@ -60,6 +60,7 @@ export const permissions = {
     'wallet_handleUnfinishedETHTx',
     'wallet_enrichConfluxTx',
     'wallet_enrichEthereumTx',
+    'wallet_submitTokenPayTransaction',
   ],
   db: ['findAddress', 'getAuthReqById', 'getAddrTxByHash', 't'],
 }
@@ -79,6 +80,7 @@ export const main = async ({
     wallet_userApprovedAuthRequest,
     wallet_handleUnfinishedCFXTx,
     wallet_handleUnfinishedETHTx,
+    wallet_submitTokenPayTransaction,
   },
   params,
   _inpage,
@@ -199,6 +201,22 @@ export const main = async ({
   })
   if (!addr) throw InvalidParams(`Invalid from address ${tx[0].from}`)
 
+  if (params.tokenPay) {
+    if (!authReqId) {
+      throw InvalidParams('tokenPay is only supported for dapp approval')
+    }
+
+    try {
+      return await wallet_submitTokenPayTransaction({
+        authReqId,
+        tx,
+        tokenPay: params.tokenPay,
+      })
+    } catch (err) {
+      await wallet_userRejectedAuthRequest({authReqId, error: err})
+      throw err
+    }
+  }
   let signed
   try {
     signed = await signTxFn(
