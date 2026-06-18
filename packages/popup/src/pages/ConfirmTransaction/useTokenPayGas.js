@@ -13,7 +13,6 @@ import {getNativeGasFee} from './components/tokenPayGasUtils'
 const {WALLET_GET_BALANCE, WALLET_SUBMIT_TOKEN_PAY_TRANSACTION} = RPC_METHODS
 
 function useTokenPayGas({
-  isDapp,
   isHwAccount,
   networkDbId,
   accountId,
@@ -23,7 +22,7 @@ function useTokenPayGas({
 }) {
   const {gasTokenAddress, setGasTokenAddress} = useCurrentTxStore()
   const {canUseTokenPay, tokenPayConfig, tokenPayConfigLoading} =
-    useTokenPayAvailability({isDapp, isHwAccount, networkDbId})
+    useTokenPayAvailability({isHwAccount, networkDbId})
   const gasTokenAddresses = tokenPayConfig?.tokens?.map(token => token.address)
   const gasTokenByAddress = useMemo(
     () =>
@@ -33,6 +32,7 @@ function useTokenPayGas({
       }, {}),
     [tokenPayConfig?.tokens],
   )
+
   const selectedGasToken = useMemo(
     () =>
       canUseTokenPay
@@ -40,6 +40,7 @@ function useTokenPayGas({
         : null,
     [canUseTokenPay, gasTokenAddress, gasTokenByAddress],
   )
+
   const setSelectedGasToken = useCallback(
     token => {
       setGasTokenAddress(token?.address || '')
@@ -48,7 +49,7 @@ function useTokenPayGas({
   )
 
   useEffect(() => {
-    if (gasTokenAddress && (isDapp || isHwAccount)) {
+    if (gasTokenAddress && isHwAccount) {
       setGasTokenAddress('')
       return
     }
@@ -63,7 +64,6 @@ function useTokenPayGas({
   }, [
     gasTokenAddress,
     gasTokenByAddress,
-    isDapp,
     isHwAccount,
     setGasTokenAddress,
     tokenPayConfig,
@@ -192,6 +192,7 @@ function useTokenPayGas({
     canUseTokenPay,
     isTokenPayGas,
     tokenPayReady,
+    tokenPayGasLevel,
     nativeGasFee,
     checkTokenPayBalance,
     submitTokenPayTransaction,
