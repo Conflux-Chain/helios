@@ -3,7 +3,7 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.2.0",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "dependencies": {
     "@fluent-wallet/spec": "1.0.18",
     "@fluent-wallet/wallet_send-transaction": "workspace:*"
