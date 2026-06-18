@@ -32,6 +32,7 @@ function DappFooter({
   confirmParams = {},
   onClickCancel,
   onClickConfirm,
+  beforeConfirm,
   setSendStatus,
   setSendError,
   setAuthStatus,
@@ -143,6 +144,11 @@ function DappFooter({
           await setEffectiveCurrentAccount(targetNetwork.eid)
         }
       }
+      const shouldContinue = await beforeConfirm?.()
+      if (shouldContinue === false) {
+        if (!isHwAccount) setLoading(false)
+        return
+      }
       await sendDappRequest()
       onClickConfirm?.()
       if (!isHwAccount) setLoading(false)
@@ -208,6 +214,7 @@ DappFooter.propTypes = {
   showError: PropTypes.bool,
   targetNetwork: PropTypes.object,
   confirmComponent: PropTypes.elementType,
+  beforeConfirm: PropTypes.func,
 }
 
 export default DappFooter

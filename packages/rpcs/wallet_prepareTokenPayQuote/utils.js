@@ -76,7 +76,8 @@ function multiplyHexByRatio(hexValue, ratio) {
   )
 }
 
-export function calcTokenPayFeeCaps({
+export function calcTokenPayFeeParams({
+  txType,
   baseGasPrice,
   gasLevel,
   minGasFeeRatio,
@@ -85,13 +86,18 @@ export function calcTokenPayFeeCaps({
 }) {
   const bumpCount = gasLevel === 'high' ? 2 : gasLevel === 'medium' ? 1 : 0
 
-  const maxFeeRatio = minGasFeeRatio + suggestedGasPriceBumpRatio * bumpCount
-  const maxPriorityFeeRatio =
-    minGasTipRatio + suggestedGasPriceBumpRatio * bumpCount
+  const gasFeeRatio = minGasFeeRatio + suggestedGasPriceBumpRatio * bumpCount
+  const gasTipRatio = minGasTipRatio + suggestedGasPriceBumpRatio * bumpCount
+
+  if (txType === ETH_TX_TYPES.LEGACY) {
+    return {
+      gasPrice: multiplyHexByRatio(baseGasPrice, gasFeeRatio),
+    }
+  }
 
   return {
-    maxFeePerGas: multiplyHexByRatio(baseGasPrice, maxFeeRatio),
-    maxPriorityFeePerGas: multiplyHexByRatio(baseGasPrice, maxPriorityFeeRatio),
+    maxFeePerGas: multiplyHexByRatio(baseGasPrice, gasFeeRatio),
+    maxPriorityFeePerGas: multiplyHexByRatio(baseGasPrice, gasTipRatio),
   }
 }
 
@@ -165,6 +171,16 @@ export async function fetchTokenPayPrice(backendBaseUrl, tokenAddress) {
   }
 
   return result.data
+}
+
+function resolveTokenPayTxType({userTx, network1559Compatible}) {
+  if (userTx.authorizationList) return ETH_TX_TYPES.EIP7702
+  if (userTx.type) return userTx.type
+  if (userTx.maxFeePerGas || userTx.maxPriorityFeePerGas) {
+    return ETH_TX_TYPES.EIP1559
+  }
+  if (userTx.gasPrice) return ETH_TX_TYPES.LEGACY
+  return network1559Compatible ? ETH_TX_TYPES.EIP1559 : ETH_TX_TYPES.LEGACY
 }
 
 export async function prepareTokenPayBaseContext({
@@ -241,7 +257,12 @@ export async function prepareTokenPayBaseContext({
 export async function prepareTokenPayExecutionContext({
   InvalidParams,
   db,
-  rpcs: {wallet_getTokenPayConfig, eth_getTransactionCount, eth_gasPrice},
+  rpcs: {
+    wallet_getTokenPayConfig,
+    eth_getTransactionCount,
+    eth_gasPrice,
+    wallet_network1559Compatible,
+  },
   params: {networkDbId, accountId, userTx, gasLevel},
 }) {
   const baseContext = await prepareTokenPayBaseContext({
@@ -252,11 +273,15 @@ export async function prepareTokenPayExecutionContext({
     ignoreQuoteTokenPriceError: true,
   })
   const {accountAddress, network, tokenPayConfig} = baseContext
-  const txType = userTx.authorizationList
-    ? ETH_TX_TYPES.EIP7702
-    : userTx.type || ETH_TX_TYPES.EIP1559
+  const network1559Compatible = await wallet_network1559Compatible()
 
-  if (txType !== ETH_TX_TYPES.EIP1559 && txType !== ETH_TX_TYPES.EIP7702) {
+  const txType = resolveTokenPayTxType({userTx, network1559Compatible})
+
+  if (
+    txType !== ETH_TX_TYPES.LEGACY &&
+    txType !== ETH_TX_TYPES.EIP1559 &&
+    txType !== ETH_TX_TYPES.EIP7702
+  ) {
     throw InvalidParams(`Unsupported user tx type ${txType}`)
   }
 
@@ -277,24 +302,43 @@ export async function prepareTokenPayExecutionContext({
     'pending',
   ])
   const baseGasPrice = await eth_gasPrice({networkName: network.name}, [])
-  const feeCaps = calcTokenPayFeeCaps({
+  const feeParams = calcTokenPayFeeParams({
+    txType,
     baseGasPrice,
     gasLevel,
     minGasFeeRatio: tokenPayConfig.minGasFeeRatio,
     minGasTipRatio: tokenPayConfig.minGasTipRatio,
     suggestedGasPriceBumpRatio: tokenPayConfig.suggestedGasPriceBumpRatio,
   })
-
   return {
     ...baseContext,
     txType,
     nonceBase,
-    feeCaps,
+    feeParams,
     estimateStateOverride,
   }
 }
 
-function buildPreparedUserTx({userTx, nonceBase, network, txType, feeCaps}) {
+function getTokenPayGasCostPrice({txType, feeParams}) {
+  return txType === ETH_TX_TYPES.LEGACY
+    ? feeParams.gasPrice
+    : feeParams.maxFeePerGas
+}
+
+function getTokenPayTxFeeFields({txType, feeParams}) {
+  if (txType === ETH_TX_TYPES.LEGACY) {
+    return {
+      gasPrice: feeParams.gasPrice,
+    }
+  }
+
+  return {
+    maxFeePerGas: feeParams.maxFeePerGas,
+    maxPriorityFeePerGas: feeParams.maxPriorityFeePerGas,
+  }
+}
+
+function buildPreparedUserTx({userTx, nonceBase, network, txType, feeParams}) {
   return {
     from: userTx.from.toLowerCase(),
     ...(userTx.to ? {to: userTx.to.toLowerCase()} : {}),
@@ -309,8 +353,7 @@ function buildPreparedUserTx({userTx, nonceBase, network, txType, feeCaps}) {
       new BN(stripHexPrefix(nonceBase), 16).addn(1).toString(16),
     ),
     type: txType,
-    maxFeePerGas: feeCaps.maxFeePerGas,
-    maxPriorityFeePerGas: feeCaps.maxPriorityFeePerGas,
+    ...getTokenPayTxFeeFields({txType, feeParams}),
   }
 }
 
@@ -320,7 +363,8 @@ function buildTransferTokenTx({
   tokenPayConfig,
   nonceBase,
   network,
-  feeCaps,
+  txType,
+  feeParams,
 }) {
   return {
     from: accountAddress,
@@ -332,9 +376,11 @@ function buildTransferTokenTx({
     ]),
     chainId: network.chainId,
     nonce: nonceBase,
-    type: ETH_TX_TYPES.EIP1559,
-    maxFeePerGas: feeCaps.maxFeePerGas,
-    maxPriorityFeePerGas: feeCaps.maxPriorityFeePerGas,
+    type:
+      txType === ETH_TX_TYPES.LEGACY
+        ? ETH_TX_TYPES.LEGACY
+        : ETH_TX_TYPES.EIP1559,
+    ...getTokenPayTxFeeFields({txType, feeParams}),
   }
 }
 
@@ -346,7 +392,7 @@ export async function prepareGasTokenQuote({
   gasToken,
   tokenPayConfig,
   nonceBase,
-  feeCaps,
+  feeParams,
   gasLevel,
   txType,
   tokenPrice,
@@ -361,7 +407,7 @@ export async function prepareGasTokenQuote({
     nonceBase,
     network,
     txType,
-    feeCaps,
+    feeParams,
   })
   const transferTokenTx = buildTransferTokenTx({
     accountAddress,
@@ -369,8 +415,11 @@ export async function prepareGasTokenQuote({
     tokenPayConfig,
     nonceBase,
     network,
-    feeCaps,
+    txType,
+    feeParams,
   })
+
+  const gasCostPrice = getTokenPayGasCostPrice({txType, feeParams})
 
   transferTokenTx.gas = await eth_estimateGas({networkName: network.name}, [
     {
@@ -390,7 +439,7 @@ export async function prepareGasTokenQuote({
     accountAddress,
     userGas: preparedUserTx.gas,
     transferGas: transferTokenTx.gas,
-    gasPrice: feeCaps.maxFeePerGas,
+    gasPrice: gasCostPrice,
   })
 
   const tokenCost = calcTokenCost({
@@ -417,7 +466,7 @@ export async function prepareGasTokenQuote({
     accountAddress,
     userGas: preparedUserTx.gas,
     transferGas: transferTokenTx.gas,
-    gasPrice: feeCaps.maxFeePerGas,
+    gasPrice: gasCostPrice,
   })
 
   if (

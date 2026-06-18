@@ -8,11 +8,20 @@ import {
 
 const {map, dbid, or, hex} = spec
 
-const {Transaction1559Unsigned, Transaction7702Unsigned} = genEthTxSchema(spec)
+const {
+  TransactionLegacyUnsigned,
+  Transaction1559Unsigned,
+  Transaction7702Unsigned,
+} = genEthTxSchema(spec)
 
 export const NAME = 'wallet_getTokenPayGasOptions'
 
-export const txSchema = [or, Transaction1559Unsigned, Transaction7702Unsigned]
+export const txSchema = [
+  or,
+  TransactionLegacyUnsigned,
+  Transaction1559Unsigned,
+  Transaction7702Unsigned,
+]
 
 export const schemas = {
   input: [

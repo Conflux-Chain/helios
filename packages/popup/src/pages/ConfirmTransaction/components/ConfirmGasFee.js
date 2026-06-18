@@ -12,7 +12,6 @@ function GasFeePlaceholder() {
 }
 
 function ConfirmGasFee({
-  isDapp,
   isHwAccount,
   tokenPayGas,
   nativeToken,
@@ -22,7 +21,7 @@ function ConfirmGasFee({
   estimateRst,
   uses1559Fees,
 }) {
-  if (!isDapp && !isHwAccount && tokenPayGas.tokenPayConfigLoading) {
+  if (!isHwAccount && tokenPayGas.tokenPayConfigLoading) {
     return <GasFeePlaceholder />
   }
 
@@ -50,7 +49,6 @@ function ConfirmGasFee({
 }
 
 ConfirmGasFee.propTypes = {
-  isDapp: PropTypes.bool,
   isHwAccount: PropTypes.bool,
   tokenPayGas: PropTypes.object,
   nativeToken: PropTypes.object,

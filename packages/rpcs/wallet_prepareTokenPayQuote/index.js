@@ -16,12 +16,20 @@ export {
 
 const {map, dbid, enums, or, ethHexAddress} = spec
 
-const {Transaction1559Unsigned, Transaction7702Unsigned} = genEthTxSchema(spec)
+const {
+  TransactionLegacyUnsigned,
+  Transaction1559Unsigned,
+  Transaction7702Unsigned,
+} = genEthTxSchema(spec)
 
 export const NAME = 'wallet_prepareTokenPayQuote'
 
-export const txSchema = [or, Transaction1559Unsigned, Transaction7702Unsigned]
-
+export const txSchema = [
+  or,
+  TransactionLegacyUnsigned,
+  Transaction1559Unsigned,
+  Transaction7702Unsigned,
+]
 export const schemas = {
   input: [
     map,
@@ -42,6 +50,7 @@ export const permissions = {
     'eth_getTransactionCount',
     'eth_gasPrice',
     'eth_estimateGas',
+    'wallet_network1559Compatible',
   ],
   db: ['getAccountById', 'getNetworkById', 'accountAddrByNetwork'],
 }
@@ -59,7 +68,7 @@ export const main = async ({
     tokenPayNetworkConfig,
     txType,
     nonceBase,
-    feeCaps,
+    feeParams,
     quoteToken,
     quoteTokenPrice,
     estimateStateOverride,
@@ -90,7 +99,7 @@ export const main = async ({
     gasToken,
     tokenPayConfig,
     nonceBase,
-    feeCaps,
+    feeParams,
     gasLevel,
     txType,
     tokenPrice,
@@ -110,7 +119,7 @@ export const main = async ({
     quoteTokenPrice: gasTokenQuote.quoteTokenPrice,
     quoteAmount: gasTokenQuote.quoteAmount,
     nonceBase,
-    feeCaps,
+    feeParams,
     fundingGasLimit: gasTokenQuote.fundingGasLimit,
     gasCost: gasTokenQuote.gasCost,
     tokenCost: gasTokenQuote.tokenCost,
