@@ -63,6 +63,8 @@ function NativeGasPayFee({
   tokenPayConfig,
   onSelectGasToken,
   options,
+  sendTokenAddress,
+  sendTokenAmount,
 }) {
   const [open, setOpen] = useState(false)
   const nativeTokenIcon = getTokenIcon(nativeToken)
@@ -114,6 +116,8 @@ function NativeGasPayFee({
         selectedGasTokenQuoteAmount={null}
         quoteToken={tokenPayConfig?.quoteToken}
         onSelectGasToken={onSelectGasToken}
+        sendTokenAddress={sendTokenAddress}
+        sendTokenAmount={sendTokenAmount}
       />
     </>
   )
@@ -130,6 +134,8 @@ function TokenGasPayFee({
   gasTokenBalances,
   onSelectGasToken,
   uses1559Fees,
+  sendTokenAddress,
+  sendTokenAmount,
 }) {
   const [open, setOpen] = useState(false)
   const displayToken = quote?.gasToken || gasToken || {}
@@ -186,6 +192,8 @@ function TokenGasPayFee({
         selectedGasTokenQuoteAmount={displayQuoteAmount}
         quoteToken={displayQuoteToken || tokenPayConfig?.quoteToken}
         onSelectGasToken={onSelectGasToken}
+        sendTokenAddress={sendTokenAddress}
+        sendTokenAmount={sendTokenAmount}
       />
     </div>
   )
@@ -218,6 +226,8 @@ NativeGasPayFee.propTypes = {
   tokenPayConfig: PropTypes.object,
   options: PropTypes.object,
   onSelectGasToken: PropTypes.func,
+  sendTokenAddress: PropTypes.string,
+  sendTokenAmount: PropTypes.string,
 }
 
 TokenGasPayFee.propTypes = {
@@ -231,6 +241,8 @@ TokenGasPayFee.propTypes = {
   gasTokenBalances: PropTypes.object,
   onSelectGasToken: PropTypes.func,
   uses1559Fees: PropTypes.bool,
+  sendTokenAddress: PropTypes.string,
+  sendTokenAmount: PropTypes.string,
 }
 
 GasPayFee.propTypes = {

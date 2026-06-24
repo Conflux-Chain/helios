@@ -1,0 +1,15 @@
+{
+  "name": "@fluent-wallet/wallet_get-token-pay-max-sendable",
+  "type": "module",
+  "main": "index.js",
+  "private": true,
+  "packageManager": "yarn@3.0.1",
+  "version": "0.0.2",
+  "dependencies": {
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
+    "@fluent-wallet/spec": "1.0.18",
+    "@fluent-wallet/utils": "workspace:packages/utils",
+    "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:*",
+    "bn.js": "5.2.0"
+  }
+}

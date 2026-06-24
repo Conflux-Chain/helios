@@ -2,7 +2,11 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import Modal from '@fluent-wallet/component-modal'
 import {useCheckImage} from '../../../hooks'
-import {bn16} from '../../../utils'
+import {
+  NATIVE_TOKEN_BALANCE_KEY,
+  canTokenPayGas,
+  getTokenBalanceKey,
+} from '../../../utils/tokenPayGas'
 import {
   formatQuoteAmount,
   formatTokenAmount,
@@ -85,6 +89,8 @@ function GasTokenSelector({
   selectedGasTokenQuoteAmount,
   quoteToken,
   onSelectGasToken,
+  sendTokenAddress,
+  sendTokenAmount,
 }) {
   const {t} = useTranslation()
   const isNativeGas = !selectedGasToken
@@ -98,9 +104,16 @@ function GasTokenSelector({
     nativeToken?.decimals,
   )
   const displayQuoteToken = quoteToken || options?.quoteToken
+  const sendTokenBalanceKey = getTokenBalanceKey(sendTokenAddress)
   const isNativeBalanceNotEnough = Boolean(
     nativeGasFee &&
-      bn16(nativeBalance || '0x0').lt(bn16(nativeGasFee || '0x0')),
+      !canTokenPayGas({
+        gasTokenBalanceKey: NATIVE_TOKEN_BALANCE_KEY,
+        sendTokenBalanceKey,
+        sendAmount: sendTokenAmount,
+        gasTokenBalance: nativeBalance || '0x0',
+        gasPaymentAmount: nativeGasFee,
+      }),
   )
 
   const modalContent = (
@@ -122,6 +135,7 @@ function GasTokenSelector({
             displayQuoteToken,
           )}
           selected={isNativeGas}
+          disabled={!nativeGasFee || isNativeBalanceNotEnough}
           onClick={() => {
             onSelectGasToken?.(null)
             onClose?.()
@@ -131,37 +145,44 @@ function GasTokenSelector({
           {t('payWithOtherTokens')}
         </p>
         {tokens.map(token => {
-          const tokenAddress = token.address?.toLowerCase()
-          const rawBalance = getBalanceByAddress(tokenBalances, token.address)
-          const disabled = !rawBalance || bn16(rawBalance).isZero()
+          const gasTokenBalanceKey = getTokenBalanceKey(token.address)
+          const gasTokenBalance =
+            getBalanceByAddress(tokenBalances, token.address) || '0x0'
           const selected =
-            tokenAddress === selectedGasToken?.address?.toLowerCase()
-          const option = options?.tokens?.[tokenAddress]
-          const hasTokenAmount = Boolean(option?.estimatedTokenAmount)
-          let tokenAmount = ''
-          let tokenQuoteAmount = ''
-          if (!disabled) {
-            tokenAmount = selected
-              ? selectedGasTokenAmount || option?.estimatedTokenAmount
-              : option?.estimatedTokenAmount
-            tokenQuoteAmount = selected
-              ? selectedGasTokenQuoteAmount || option?.estimatedQuoteAmount
-              : option?.estimatedQuoteAmount
-          }
+            gasTokenBalanceKey === selectedGasToken?.address?.toLowerCase()
+          const option = options?.tokens?.[gasTokenBalanceKey]
+          const gasPaymentAmount = option?.estimatedTokenAmount
+          const canPayGas = canTokenPayGas({
+            gasTokenBalanceKey,
+            sendTokenBalanceKey,
+            sendAmount: sendTokenAmount,
+            gasTokenBalance,
+            gasPaymentAmount,
+          })
+          const hasGasPaymentEstimate = Boolean(gasPaymentAmount)
+          const isBalanceNotEnough = hasGasPaymentEstimate && !canPayGas
+          const disabled = !hasGasPaymentEstimate || isBalanceNotEnough
+          const tokenAmount = selected
+            ? selectedGasTokenAmount || gasPaymentAmount
+            : gasPaymentAmount
+          const tokenQuoteAmount = selected
+            ? selectedGasTokenQuoteAmount || option?.estimatedQuoteAmount
+            : option?.estimatedQuoteAmount
 
           return (
             <GasTokenOption
               key={token.address}
               token={token}
-              balance={formatTokenAmount(rawBalance, token.decimals)}
+              balance={formatTokenAmount(gasTokenBalance, token.decimals)}
+              warningText={isBalanceNotEnough ? t('balanceIsNotEnough') : ''}
               amount={formatTokenAmount(tokenAmount, token.decimals)}
               fiatAmount={formatQuoteAmount(
                 tokenQuoteAmount,
                 displayQuoteToken,
               )}
               selected={selected}
-              disabled={disabled || !hasTokenAmount}
-              hideEstimate={disabled}
+              disabled={disabled}
+              hideEstimate={!hasGasPaymentEstimate}
               onClick={() => {
                 onSelectGasToken?.(token)
                 onClose?.()
@@ -212,6 +233,8 @@ GasTokenSelector.propTypes = {
   selectedGasTokenQuoteAmount: PropTypes.string,
   quoteToken: PropTypes.object,
   onSelectGasToken: PropTypes.func,
+  sendTokenAddress: PropTypes.string,
+  sendTokenAmount: PropTypes.string,
 }
 
 export default GasTokenSelector
