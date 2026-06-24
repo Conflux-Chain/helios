@@ -5571,6 +5571,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-token-pay-max-sendable@workspace:packages/rpcs/wallet_getTokenPayMaxSendable":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-token-pay-max-sendable@workspace:packages/rpcs/wallet_getTokenPayMaxSendable"
+  dependencies:
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
+    "@fluent-wallet/spec": "npm:1.0.18"
+    "@fluent-wallet/utils": "workspace:packages/utils"
+    "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:*"
+    bn.js: "npm:5.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:*, @fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:packages/rpcs/wallet_handleUnfinishedCFXTx":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_handle-unfinished-cfx-tx@workspace:packages/rpcs/wallet_handleUnfinishedCFXTx"
@@ -5680,7 +5692,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/wallet_prepare-token-pay-quote@workspace:packages/rpcs/wallet_prepareTokenPayQuote":
+"@fluent-wallet/wallet_prepare-token-pay-quote@workspace:*, @fluent-wallet/wallet_prepare-token-pay-quote@workspace:packages/rpcs/wallet_prepareTokenPayQuote":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_prepare-token-pay-quote@workspace:packages/rpcs/wallet_prepareTokenPayQuote"
   dependencies:
@@ -18562,6 +18574,7 @@ __metadata:
     "@fluent-wallet/wallet_get-side-panel-supported": "workspace:*"
     "@fluent-wallet/wallet_get-token-pay-config": "workspace:packages/rpcs/wallet_getTokenPayConfig"
     "@fluent-wallet/wallet_get-token-pay-gas-options": "workspace:packages/rpcs/wallet_getTokenPayGasOptions"
+    "@fluent-wallet/wallet_get-token-pay-max-sendable": "workspace:packages/rpcs/wallet_getTokenPayMaxSendable"
     "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-eth-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-txs": "workspace:*"

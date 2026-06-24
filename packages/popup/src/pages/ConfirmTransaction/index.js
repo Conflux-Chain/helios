@@ -130,6 +130,7 @@ function ConfirmTransaction() {
     nonce,
     maxMode,
     gasLevel,
+    gasTokenAddress,
     sendAmount,
     customAllowance,
     setGasTokenAddress,
@@ -256,6 +257,15 @@ function ConfirmTransaction() {
   const {address: displayTokenAddress} = displayToken || {}
 
   const isNativeToken = !displayTokenAddress
+  const sendTokenValue =
+    isSendToken && !isNativeToken
+      ? convertValueToData(displayValue, displayToken.decimals)
+      : '0x0'
+  const sendTokenAmountForGasPayment = !isSendToken
+    ? '0x0'
+    : isNativeToken
+    ? params.value || '0x0'
+    : sendTokenValue
   const estimateRst =
     useEstimateTx(
       params,
@@ -295,12 +305,21 @@ function ConfirmTransaction() {
 
   useEffect(() => {
     const nativeMax = convertDataToValue(nativeMaxDrip, nativeToken?.decimals)
-    if (maxMode && isNativeToken && sendAmount !== nativeMax && !!nativeMax) {
+    if (
+      maxMode &&
+      isNativeToken &&
+      !gasTokenAddress &&
+      !tokenPayGas.isTokenPayGas &&
+      sendAmount !== nativeMax &&
+      !!nativeMax
+    ) {
       setSendAmount(nativeMax)
     }
   }, [
     maxMode,
     isNativeToken,
+    gasTokenAddress,
+    tokenPayGas.isTokenPayGas,
     sendAmount,
     setSendAmount,
     nativeMaxDrip,
@@ -406,11 +425,6 @@ function ConfirmTransaction() {
     if (!isHwAccount) setLoading(true)
     else setSendStatus(TX_STATUS.HW_WAITING)
 
-    const sendTokenValue =
-      isSendToken && !isNativeToken && Object.keys(displayToken).length
-        ? convertValueToData(displayValue, displayToken.decimals)
-        : '0x0'
-
     if (tokenPayGas.isTokenPayGas && !tokenPayGas.tokenPayReady) {
       setLoading(false)
       return
@@ -500,11 +514,6 @@ function ConfirmTransaction() {
   const beforeDappConfirm = async () => {
     if (!tokenPayGas.isTokenPayGas) return
 
-    const sendTokenValue =
-      isSendToken && !isNativeToken && Object.keys(displayToken).length
-        ? convertValueToData(displayValue, displayToken.decimals)
-        : '0x0'
-
     const error = await tokenPayGas.checkTokenPayBalance({
       displayToken,
       isNativeToken,
@@ -579,6 +588,8 @@ function ConfirmTransaction() {
             networkDbId={networkDbId}
             estimateRst={estimateRst}
             uses1559Fees={uses1559Fees}
+            sendTokenAddress={displayTokenAddress}
+            sendTokenAmount={sendTokenAmountForGasPayment}
           />
         </div>
         <div className="flex flex-col items-center">

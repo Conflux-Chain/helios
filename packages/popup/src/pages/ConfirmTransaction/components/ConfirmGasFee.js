@@ -20,6 +20,8 @@ function ConfirmGasFee({
   networkDbId,
   estimateRst,
   uses1559Fees,
+  sendTokenAddress,
+  sendTokenAmount,
 }) {
   if (!isHwAccount && tokenPayGas.tokenPayConfigLoading) {
     return <GasFeePlaceholder />
@@ -41,6 +43,8 @@ function ConfirmGasFee({
         estimateRst={estimateRst}
         uses1559Fees={uses1559Fees}
         onSelectGasToken={tokenPayGas.setSelectedGasToken}
+        sendTokenAddress={sendTokenAddress}
+        sendTokenAmount={sendTokenAmount}
       />
     )
   }
@@ -57,6 +61,8 @@ ConfirmGasFee.propTypes = {
   networkDbId: PropTypes.number,
   estimateRst: PropTypes.object,
   uses1559Fees: PropTypes.bool,
+  sendTokenAddress: PropTypes.string,
+  sendTokenAmount: PropTypes.string,
 }
 
 export default ConfirmGasFee
