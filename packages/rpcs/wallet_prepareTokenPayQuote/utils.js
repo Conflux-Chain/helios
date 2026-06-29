@@ -6,27 +6,12 @@ import {addHexPrefix, stripHexPrefix} from '@fluent-wallet/utils'
 const ONE_HUNDRED = new BN(100)
 const TEN_18 = new BN('1000000000000000000', 10)
 
-function calcEstimateOverrideBalance({maxGasCost, txValue}) {
+export function calcEstimateOverrideBalance({maxGasCost, txValue}) {
   return addHexPrefix(
     new BN(String(maxGasCost || 0), 10)
       .add(new BN(stripHexPrefix(txValue || '0x0'), 16))
       .toString(16),
   )
-}
-
-/**
- * Gives estimateGas the native balance that token-pay funding will provide.
- */
-export function buildTokenPayEstimateStateOverride({
-  accountAddress,
-  maxGasCost,
-  txValue,
-}) {
-  return {
-    [accountAddress]: {
-      balance: calcEstimateOverrideBalance({maxGasCost, txValue}),
-    },
-  }
 }
 
 export function calcTokenCost({
@@ -198,32 +183,11 @@ function resolveTokenPayTxType({userTx, network1559Compatible}) {
   return network1559Compatible ? ETH_TX_TYPES.EIP1559 : ETH_TX_TYPES.LEGACY
 }
 
-/**
- * Ensures the user transaction belongs to the selected account and network.
- */
-function assertUserTxMatchesTokenPayContext({
-  InvalidParams,
-  userTx,
-  accountAddress,
-  network,
-}) {
-  if (!userTx?.from || userTx.from.toLowerCase() !== accountAddress) {
-    throw InvalidParams(`Invalid from address ${userTx?.from}`)
-  }
-
-  if (userTx.chainId && userTx.chainId !== network.chainId) {
-    throw InvalidParams(`Invalid chainId ${userTx.chainId}`)
-  }
-}
-
-/**
- * Loads token-pay account/network config before a user transaction exists.
- */
-export async function prepareTokenPayAccountContext({
+export async function prepareTokenPayBaseContext({
   InvalidParams,
   db: {getAccountById, getNetworkById, accountAddrByNetwork},
   rpcs: {wallet_getTokenPayConfig},
-  params: {networkDbId, accountId},
+  params: {networkDbId, accountId, userTx},
   ignoreQuoteTokenPriceError = false,
 }) {
   const account = getAccountById(accountId)
@@ -246,6 +210,14 @@ export async function prepareTokenPayAccountContext({
     throw InvalidParams(
       `Account ${accountId} has no address on network ${networkDbId}`,
     )
+  }
+
+  if (userTx.from.toLowerCase() !== accountAddress) {
+    throw InvalidParams(`Invalid from address ${userTx.from}`)
+  }
+
+  if (userTx.chainId && userTx.chainId !== network.chainId) {
+    throw InvalidParams(`Invalid chainId ${userTx.chainId}`)
   }
 
   const tokenPayConfig = await wallet_getTokenPayConfig({networkDbId})
@@ -282,34 +254,6 @@ export async function prepareTokenPayAccountContext({
   }
 }
 
-/**
- * Loads token-pay config and validates that the user transaction belongs to it.
- */
-export async function prepareTokenPayBaseContext({
-  InvalidParams,
-  db,
-  rpcs,
-  params: {networkDbId, accountId, userTx},
-  ignoreQuoteTokenPriceError = false,
-}) {
-  const context = await prepareTokenPayAccountContext({
-    InvalidParams,
-    db,
-    rpcs,
-    params: {networkDbId, accountId},
-    ignoreQuoteTokenPriceError,
-  })
-
-  assertUserTxMatchesTokenPayContext({
-    InvalidParams,
-    userTx,
-    accountAddress: context.accountAddress,
-    network: context.network,
-  })
-
-  return context
-}
-
 export async function prepareTokenPayExecutionContext({
   InvalidParams,
   db,
@@ -320,24 +264,15 @@ export async function prepareTokenPayExecutionContext({
     wallet_network1559Compatible,
   },
   params: {networkDbId, accountId, userTx, gasLevel},
-  baseContext,
 }) {
-  const context =
-    baseContext ||
-    (await prepareTokenPayAccountContext({
-      InvalidParams,
-      db,
-      rpcs: {wallet_getTokenPayConfig},
-      params: {networkDbId, accountId},
-      ignoreQuoteTokenPriceError: true,
-    }))
-  const {accountAddress, network, tokenPayConfig} = context
-  assertUserTxMatchesTokenPayContext({
+  const baseContext = await prepareTokenPayBaseContext({
     InvalidParams,
-    userTx,
-    accountAddress,
-    network,
+    db,
+    rpcs: {wallet_getTokenPayConfig},
+    params: {networkDbId, accountId, userTx},
+    ignoreQuoteTokenPriceError: true,
   })
+  const {accountAddress, network, tokenPayConfig} = baseContext
   const network1559Compatible = await wallet_network1559Compatible()
 
   const txType = resolveTokenPayTxType({userTx, network1559Compatible})
@@ -354,11 +289,14 @@ export async function prepareTokenPayExecutionContext({
     throw InvalidParams('userTx.gas is required')
   }
 
-  const estimateStateOverride = buildTokenPayEstimateStateOverride({
-    accountAddress,
-    maxGasCost: tokenPayConfig.maxGasCost,
-    txValue: userTx.value,
-  })
+  const estimateStateOverride = {
+    [accountAddress]: {
+      balance: calcEstimateOverrideBalance({
+        maxGasCost: tokenPayConfig.maxGasCost,
+        txValue: userTx.value,
+      }),
+    },
+  }
   const nonceBase = await eth_getTransactionCount({networkName: network.name}, [
     accountAddress,
     'pending',
@@ -373,7 +311,7 @@ export async function prepareTokenPayExecutionContext({
     suggestedGasPriceBumpRatio: tokenPayConfig.suggestedGasPriceBumpRatio,
   })
   return {
-    ...context,
+    ...baseContext,
     txType,
     nonceBase,
     feeParams,

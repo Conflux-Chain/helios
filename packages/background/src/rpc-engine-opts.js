@@ -152,7 +152,6 @@ import * as walletGetEip7702AccountStates from '@fluent-wallet/wallet_get-eip770
 import * as walletGetNetwork from '@fluent-wallet/wallet_get-network'
 import * as walletGetTokenPayConfig from '@fluent-wallet/wallet_get-token-pay-config'
 import * as walletGetTokenPayGasOptions from '@fluent-wallet/wallet_get-token-pay-gas-options'
-import * as walletGetTokenPayMaxSendable from '@fluent-wallet/wallet_get-token-pay-max-sendable'
 import * as walletPrepareTokenPayQuote from '@fluent-wallet/wallet_prepare-token-pay-quote'
 import * as walletSubmitTokenPayTransaction from '@fluent-wallet/wallet_submit-token-pay-transaction'
 import * as walletGetNextNonce from '@fluent-wallet/wallet_get-next-nonce'
@@ -249,7 +248,6 @@ export const rpcEngineOpts = {
     walletGetEip7702AccountStates,
     walletGetTokenPayConfig,
     walletGetTokenPayGasOptions,
-    walletGetTokenPayMaxSendable,
     walletPrepareTokenPayQuote,
     walletSubmitTokenPayTransaction,
     walletGetCurrentNetwork,

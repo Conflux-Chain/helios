@@ -20,7 +20,6 @@ export const WALLET_GET_TOKEN_PAY_GAS_OPTIONS = 'wallet_getTokenPayGasOptions'
 export const WALLET_PREPARE_TOKEN_PAY_QUOTE = 'wallet_prepareTokenPayQuote'
 export const WALLET_SUBMIT_TOKEN_PAY_TRANSACTION =
   'wallet_submitTokenPayTransaction'
-export const WALLET_GET_TOKEN_PAY_MAX_SENDABLE = 'wallet_getTokenPayMaxSendable'
 export const WALLET_ZERO_ACCOUNT_GROUP = 'wallet_zeroAccountGroup'
 export const WALLET_METADATA_FOR_POPUP = 'wallet_metadataForPopup'
 export const WALLET_GENERATE_MNEMONIC = 'wallet_generateMnemonic'

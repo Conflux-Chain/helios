@@ -41,15 +41,11 @@ import {
   useCurrentAddress,
   useSingleTokenInfoWithNativeTokenSupport,
   useAddressNote,
-  useBalance,
 } from '../../hooks/useApi'
-
 import {useTokenPayAvailability} from '../../hooks/useTokenPay'
 import {ROUTES, NETWORK_TYPE} from '../../constants'
 import {bn16} from '../../utils'
 import useGlobalStore from '../../stores'
-import {getTokenBalanceKey} from '../../utils/tokenPayGas'
-import useTokenPayMaxSendable from './useTokenPayMaxSendable'
 
 const {CONFIRM_TRANSACTION, ADDRESS_BOOK} = ROUTES
 
@@ -92,7 +88,6 @@ function SendTransaction() {
     sendAmount,
     sendTokenId,
     maxMode,
-    gasLevel,
     setToAddress,
     setSendAmount,
     setSendTokenId,
@@ -102,10 +97,9 @@ function SendTransaction() {
     setGasLimit,
     setNonce,
     setStorageLimit,
-    setGasTokenAddress,
     setMaxMode,
     setSyncTxWithForm,
-    formTx,
+    tx,
     clearSendTransactionParams,
   } = useCurrentTxParams()
 
@@ -114,7 +108,7 @@ function SendTransaction() {
       value: address,
       nativeBalance,
       network: {eid: networkId, type, netId, ticker: nativeToken},
-      account: {nickname, _accountGroup: accountGroup, eid: accountId},
+      account: {nickname, _accountGroup: accountGroup},
     },
   } = useCurrentAddress()
   const {canUseTokenPay} = useTokenPayAvailability({
@@ -137,42 +131,22 @@ function SendTransaction() {
   const [showAddressChecked, setShowAddressChecked] = useState(false)
 
   const [estimateError, setEstimateError] = useState('')
-  const [hasMaxGasPaymentError, setHasMaxGasPaymentError] = useState(false)
   const [hasNoTxn, setHasNoTxn] = useState(false)
-  const displayEstimateError = hasMaxGasPaymentError
-    ? t('gasFeeIsNotEnough')
-    : estimateError
-  const shouldDisplayEstimateError = sendAmount || hasMaxGasPaymentError
   const {errorAnimateStyle, displayErrorMsg} = useInputErrorAnimation(
-    shouldDisplayEstimateError ? displayEstimateError : '',
+    sendAmount ? estimateError : '',
   )
-
   const isNativeToken = !tokenAddress
-
-  const sendTokenBalanceKey = getTokenBalanceKey(tokenAddress)
-
-  const sendTokenBalanceData = useBalance(
-    address,
-    networkId,
-    sendTokenBalanceKey,
-  )
-
-  const sendTokenBalance =
-    sendTokenBalanceData?.[address?.toLowerCase()]?.[sendTokenBalanceKey] ||
-    '0x0'
-
   const nativeSendValue =
     isNativeToken && sendAmount
       ? convertValueToData(sendAmount, decimals)
       : '0x0'
-
   const hasNativeSendValue =
     !isNativeToken ||
     bn16(nativeBalance || '0x0').gte(bn16(nativeSendValue || '0x0'))
   const canIgnoreGasBalanceError = canUseTokenPay && hasNativeSendValue
   const estimateRst =
     useEstimateTx(
-      formTx,
+      tx,
       !isNativeToken
         ? {[tokenAddress]: convertValueToData(sendAmount, decimals)}
         : {},
@@ -238,48 +212,26 @@ function SendTransaction() {
       })
   }, [netId, toAddress, type])
 
-  const {maxLoading, cancelMaxRequest, requestMaxSendable} =
-    useTokenPayMaxSendable({
-      networkId,
-      accountId,
-      toAddress,
-      sendTokenBalanceKey,
-      gasLevel,
-      decimals,
-      setGasTokenAddress,
-      setHasMaxGasPaymentError,
-      setMaxMode,
-      setSendAmount,
-    })
-
   const onChangeToken = token => {
-    cancelMaxRequest()
     setSendTokenId(token)
-    setHasMaxGasPaymentError(false)
     if (maxMode) {
       setSendAmount('')
       setMaxMode(false)
     }
   }
-
   const onChangeAmount = amount => {
-    cancelMaxRequest()
     setSendAmount(amount)
-    setHasMaxGasPaymentError(false)
   }
-
   const onChangeAddress = address => {
     if (nsLoading) {
       return
     }
-    cancelMaxRequest()
     !isInputAddr && setIsInputAddr(true)
     setShowAddressChecked(false)
     setInputAddress(address)
   }
 
   const onClickAddressInputCloseBtn = () => {
-    cancelMaxRequest()
     setInputAddress('')
     !isInputAddr && setIsInputAddr(true)
   }
@@ -308,28 +260,13 @@ function SendTransaction() {
     setToAddress(validatedAddress)
   }, [validatedAddressError, validatedAddress, setToAddress])
 
-  const shouldApplyTokenPayMaxRules =
-    canUseTokenPay && !!toAddress && !addressError && !nsLoading
-
   useEffect(() => {
     if (nativeToken.symbol && !tokenAddress) setSendTokenId('native')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [networkId])
 
-  const isNativeMaxUnavailable =
-    !canUseTokenPay && isNativeToken && (loading || !nativeMaxDrip)
-  const maxDisabled =
-    isNativeMaxUnavailable ||
-    (canUseTokenPay &&
-      (!toAddress || !!addressError || nsLoading || maxLoading))
-
   const sendDisabled =
-    maxLoading ||
-    !!addressError ||
-    !!estimateError ||
-    hasMaxGasPaymentError ||
-    !toAddress ||
-    !sendAmount
+    !!addressError || !!estimateError || !toAddress || !sendAmount
 
   // get address alias name
   const {addressNote, setAddressNote} = useGlobalStore()
@@ -346,24 +283,6 @@ function SendTransaction() {
     }
   }, [setAddressNote])
 
-  const onClickMax = () => {
-    if (maxDisabled) return
-
-    setHasMaxGasPaymentError(false)
-
-    if (shouldApplyTokenPayMaxRules) {
-      requestMaxSendable()
-      return
-    }
-
-    setGasTokenAddress('')
-    setMaxMode(true)
-    setSendAmount(
-      isNativeToken
-        ? convertDataToValue(nativeMaxDrip, decimals)
-        : convertDataToValue(sendTokenBalance, decimals),
-    )
-  }
   return (
     <div className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg">
       <TitleNav
@@ -420,9 +339,9 @@ function SendTransaction() {
             amount={sendAmount}
             onChangeAmount={onChangeAmount}
             onChangeToken={onChangeToken}
-            balance={sendTokenBalance}
-            onClickMax={onClickMax}
-            disabled={maxDisabled}
+            isNativeToken={isNativeToken}
+            nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
+            loading={loading}
           />
           <div className="overflow-hidden">
             <div
