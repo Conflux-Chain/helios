@@ -283,7 +283,7 @@ function ConfirmTransaction() {
   })
 
   const adjustedSendTx = useAdjustedSendTx({
-    enabled: maxMode && isSendToken,
+    enabled: !isDapp && maxMode && isSendToken,
     input: {
       amount: displayValue,
       amountHex: inputAmountHex,

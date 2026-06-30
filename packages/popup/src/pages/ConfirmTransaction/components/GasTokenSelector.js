@@ -10,23 +10,29 @@ import {
   getTokenIcon,
 } from './tokenPayGasUtils'
 
-function canPayWithGasToken({
+function canPayGasFee({
   balance,
   gasAmount,
   maxMode,
-  isSendTokenGas,
-  sendTokenAmount,
+  isSameAssetAsSend,
+  sendAmount,
 }) {
   if (!gasAmount) return false
 
   const balanceBN = bn16(balance || '0x0')
   const gasAmountBN = bn16(gasAmount)
 
-  if (!maxMode || !isSendTokenGas) {
+  if (!isSameAssetAsSend) {
     return balanceBN.gte(gasAmountBN)
   }
 
-  const sendAmountBN = bn16(sendTokenAmount || '0x0')
+  const sendAmountBN = bn16(sendAmount || '0x0')
+  if (!maxMode) {
+    return balanceBN.gte(sendAmountBN.add(gasAmountBN))
+  }
+
+  // In max mode sendAmountBN is the raw max amount. Confirm will submit
+  // sendAmountBN - gasAmountBN, so balance only needs to cover sendAmountBN.
   return balanceBN.gte(sendAmountBN) && sendAmountBN.gt(gasAmountBN)
 }
 
@@ -46,24 +52,31 @@ function getGasTokenOptionState({
   const rawBalance = getBalanceByAddress(tokenBalances, token.address) || '0x0'
   const selected = tokenAddress === selectedGasToken?.address?.toLowerCase()
   const option = options?.tokens?.[tokenAddress]
-  const gasAmount = option?.estimatedTokenAmount
-  const quoteAmount = option?.estimatedQuoteAmount
+  const estimatedGasAmount = option?.estimatedTokenAmount
+  const estimatedQuoteAmount = option?.estimatedQuoteAmount
+  const gasAmount = selected
+    ? selectedGasTokenAmount || estimatedGasAmount
+    : estimatedGasAmount
+  const quoteAmount = selected
+    ? selectedGasTokenQuoteAmount || estimatedQuoteAmount
+    : estimatedQuoteAmount
+  const hasEstimate = Boolean(gasAmount)
+  const canPayGas = canPayGasFee({
+    balance: rawBalance,
+    gasAmount,
+    maxMode,
+    isSameAssetAsSend: tokenAddress === sendTokenBalanceKey,
+    sendAmount: sendTokenAmount,
+  })
 
   return {
     rawBalance,
     selected,
-    gasAmount: selected ? selectedGasTokenAmount || gasAmount : gasAmount,
-    quoteAmount: selected
-      ? selectedGasTokenQuoteAmount || quoteAmount
-      : quoteAmount,
-    hasEstimate: Boolean(gasAmount),
-    canPayGas: canPayWithGasToken({
-      balance: rawBalance,
-      gasAmount,
-      maxMode,
-      isSendTokenGas: tokenAddress === sendTokenBalanceKey,
-      sendTokenAmount,
-    }),
+    gasAmount,
+    quoteAmount,
+    hasEstimate,
+    canPayGas,
+    warningText: hasEstimate && !canPayGas ? 'balanceIsNotEnough' : '',
   }
 }
 
@@ -149,6 +162,7 @@ function GasTokenSelector({
   const {t} = useTranslation()
   const isNativeGas = !selectedGasToken
   const tokens = tokenPayConfig?.tokens || []
+  const isSendNative = Boolean(!sendTokenAddress && sendTokenAmount !== '0x0')
   const nativeBalanceText = formatTokenAmount(
     nativeBalance,
     nativeToken?.decimals,
@@ -158,10 +172,14 @@ function GasTokenSelector({
     nativeToken?.decimals,
   )
   const displayQuoteToken = quoteToken || options?.quoteToken
-  const isNativeBalanceNotEnough = Boolean(
-    nativeGasFee &&
-      bn16(nativeBalance || '0x0').lt(bn16(nativeGasFee || '0x0')),
-  )
+  const canPayNativeGas = canPayGasFee({
+    balance: nativeBalance,
+    gasAmount: nativeGasFee,
+    maxMode,
+    isSameAssetAsSend: isSendNative,
+    sendAmount: sendTokenAmount,
+  })
+  const isNativeBalanceNotEnough = Boolean(nativeGasFee && !canPayNativeGas)
 
   const modalContent = (
     <div className="relative flex flex-col overflow-hidden px-6 pb-6 pt-6">
@@ -182,6 +200,8 @@ function GasTokenSelector({
             displayQuoteToken,
           )}
           selected={isNativeGas}
+          disabled={!canPayNativeGas}
+          hideEstimate={!nativeGasFee}
           onClick={() => {
             onSelectGasToken?.(null)
             onClose?.()
@@ -219,6 +239,9 @@ function GasTokenSelector({
               selected={optionState.selected}
               disabled={!optionState.canPayGas}
               hideEstimate={!optionState.hasEstimate}
+              warningText={
+                optionState.warningText ? t(optionState.warningText) : ''
+              }
               onClick={() => {
                 onSelectGasToken?.(token)
                 onClose?.()

@@ -42,6 +42,7 @@ import {
   useAddressNote,
 } from '../../hooks/useApi'
 import {ROUTES, NETWORK_TYPE} from '../../constants'
+import {bn16} from '../../utils'
 import useGlobalStore from '../../stores'
 
 const {CONFIRM_TRANSACTION, ADDRESS_BOOK} = ROUTES
@@ -103,6 +104,7 @@ function SendTransaction() {
   const {
     data: {
       value: address,
+      nativeBalance,
       network: {eid: networkId, type, netId, ticker: nativeToken},
       account: {nickname},
     },
@@ -129,6 +131,12 @@ function SendTransaction() {
     sendAmount ? estimateError : '',
   )
   const isNativeToken = !tokenAddress
+  const nativeSendValue =
+    isNativeToken && sendAmount
+      ? convertValueToData(sendAmount, decimals) || '0x0'
+      : '0x0'
+  const canIgnoreGasBalanceError =
+    !isNativeToken || bn16(nativeBalance || '0x0').gte(bn16(nativeSendValue))
 
   const estimateRst =
     useEstimateTx(
@@ -176,7 +184,7 @@ function SendTransaction() {
     tokenAddress,
     !tokenAddress,
     true,
-    {ignoreGasBalanceError: true},
+    {ignoreGasBalanceError: canIgnoreGasBalanceError},
   )
   useEffect(() => {
     !loading && setEstimateError(errorMessage)

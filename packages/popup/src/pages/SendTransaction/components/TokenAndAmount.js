@@ -87,8 +87,10 @@ function TokenAndAmount({
   } = useSingleTokenInfoWithNativeTokenSupport(selectedTokenId)
   const isImgUrl = useCheckImage(logoURI)
   const tokenAddress = selectedTokenIdAddress || '0x0'
+  const balanceData = useBalance(address, networkId, tokenAddress)
   const balance =
-    useBalance(address, networkId, tokenAddress)?.[address]?.[tokenAddress] ||
+    balanceData?.[address?.toLowerCase()]?.[tokenAddress?.toLowerCase()] ||
+    balanceData?.[address]?.[tokenAddress] ||
     '0x0'
   const label = (
     <span className="flex items-center justify-between text-gray-40 w-full">
