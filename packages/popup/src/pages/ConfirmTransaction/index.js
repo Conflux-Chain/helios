@@ -8,7 +8,6 @@ import {
   formatDecimalToHex,
   formatHexToDecimal,
   convertValueToData,
-  convertDataToValue,
 } from '@fluent-wallet/data-format'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {
@@ -52,6 +51,7 @@ import {
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import useTokenPayGas from './useTokenPayGas'
+import useAdjustedSendTx from './useAdjustedSendTx'
 
 const {VIEW_DATA, HOME} = ROUTES
 const {
@@ -130,7 +130,6 @@ function ConfirmTransaction() {
     nonce,
     maxMode,
     gasLevel,
-    sendAmount,
     customAllowance,
     setGasTokenAddress,
     setGasPrice,
@@ -139,7 +138,6 @@ function ConfirmTransaction() {
     setGasLimit,
     setStorageLimit,
     setNonce,
-    setSendAmount,
     setGasLevel,
     clearSendTransactionParams,
     clearAdvancedGasSetting,
@@ -229,7 +227,7 @@ function ConfirmTransaction() {
     storageLimit: initStorageLimit,
   } = dappTx
   // user can edit nonce, gasPrice and gas
-  const params = {
+  const inputParams = {
     ...originParams,
     gasPrice: formatDecimalToHex(gasPrice),
     maxFeePerGas: formatDecimalToHex(maxFeePerGas),
@@ -239,26 +237,25 @@ function ConfirmTransaction() {
     storageLimit: formatDecimalToHex(storageLimit),
   }
   // user can edit the approve limit
-  const viewData = useViewData(params, isApproveToken, decodeData, token)
-  params.data = viewData
+  const viewData = useViewData(inputParams, isApproveToken, decodeData, token)
+  inputParams.data = viewData
 
   // send params, need to delete '' or undefined params,
   // otherwise cfx_sendTransaction will return params error
-  if (!params.gasPrice) delete params.gasPrice
-  if (!params.maxFeePerGas) delete params.maxFeePerGas
-  if (!params.maxPriorityFeePerGas) delete params.maxPriorityFeePerGas
-  if (!params.nonce) delete params.nonce
-  if (!params.gas) delete params.gas
-  if (!params.storageLimit) delete params.storageLimit
-  if (!params.data) delete params.data
-  const sendParams = [params]
+  if (!inputParams.gasPrice) delete inputParams.gasPrice
+  if (!inputParams.maxFeePerGas) delete inputParams.maxFeePerGas
+  if (!inputParams.maxPriorityFeePerGas) delete inputParams.maxPriorityFeePerGas
+  if (!inputParams.nonce) delete inputParams.nonce
+  if (!inputParams.gas) delete inputParams.gas
+  if (!inputParams.storageLimit) delete inputParams.storageLimit
+  if (!inputParams.data) delete inputParams.data
 
   const {address: displayTokenAddress} = displayToken || {}
 
   const isNativeToken = !displayTokenAddress
   const estimateRst =
     useEstimateTx(
-      params,
+      inputParams,
       !isNativeToken && isSendToken
         ? {
             [displayTokenAddress]: convertValueToData(
@@ -269,15 +266,61 @@ function ConfirmTransaction() {
         : {},
     ) || {}
 
+  const inputAmountHex = isNativeToken
+    ? inputParams.value || '0x0'
+    : isSendToken
+    ? convertValueToData(displayValue, displayToken?.decimals)
+    : '0x0'
+
   const dappApp = isDapp ? pendingAuthReq?.[0]?.app : null
   const tokenPayGas = useTokenPayGas({
     isHwAccount,
     networkDbId: isDapp ? dappApp?.currentNetwork?.eid : networkDbId,
     accountId: isDapp ? dappApp?.currentAccount?.eid : accountId,
-    params,
+    params: inputParams,
     gasLevel,
     estimateRst,
   })
+
+  const adjustedSendTx = useAdjustedSendTx({
+    enabled: maxMode && isSendToken,
+    input: {
+      amount: displayValue,
+      amountHex: inputAmountHex,
+      params: inputParams,
+      recipientAddress: displayToAddress,
+    },
+    asset: {
+      isNative: isNativeToken,
+      address: displayTokenAddress,
+      decimals: isNativeToken ? nativeToken?.decimals : displayToken?.decimals,
+    },
+    gasPayment: {
+      isTokenPay: tokenPayGas.isTokenPayGas,
+      tokenAddress: tokenPayGas.selectedGasToken?.address,
+      nativeCostHex: tokenPayGas.nativeGasFee,
+      tokenCostHex: tokenPayGas.tokenPayQuote?.tokenCost,
+    },
+  })
+
+  const sendParams = [adjustedSendTx.params]
+  const needsAdjustedEstimate = adjustedSendTx.isGasCostDeducted
+  const adjustedEstimateRst =
+    useEstimateTx(
+      needsAdjustedEstimate ? adjustedSendTx.params : {},
+      needsAdjustedEstimate && !isNativeToken && isSendToken
+        ? {
+            [displayTokenAddress]: adjustedSendTx.amountHex,
+          }
+        : {},
+    ) || {}
+  const sendEstimateRst = needsAdjustedEstimate
+    ? adjustedEstimateRst
+    : estimateRst
+  const sendTokenValue =
+    isSendToken && !isNativeToken && Object.keys(displayToken || {}).length
+      ? adjustedSendTx.amountHex
+      : '0x0'
 
   useEffect(() => {
     if (tokenPayGas.isTokenPayGas && gasLevel === 'advanced') {
@@ -289,22 +332,6 @@ function ConfirmTransaction() {
     gasLevel,
     clearAdvancedGasSetting,
     setGasLevel,
-  ])
-
-  const {nativeMaxDrip} = estimateRst
-
-  useEffect(() => {
-    const nativeMax = convertDataToValue(nativeMaxDrip, nativeToken?.decimals)
-    if (maxMode && isNativeToken && sendAmount !== nativeMax && !!nativeMax) {
-      setSendAmount(nativeMax)
-    }
-  }, [
-    maxMode,
-    isNativeToken,
-    sendAmount,
-    setSendAmount,
-    nativeMaxDrip,
-    nativeToken?.decimals,
   ])
 
   // only need to estimate gas not need to get whether balance is enough
@@ -320,7 +347,7 @@ function ConfirmTransaction() {
     storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
   const errorMessage = useEstimateError(
-    estimateRst,
+    sendEstimateRst,
     displayTokenAddress,
     !displayTokenAddress,
     isSendToken,
@@ -328,13 +355,20 @@ function ConfirmTransaction() {
       ignoreGasBalanceError:
         tokenPayGas.isTokenPayGas &&
         (!isNativeToken ||
-          bn16(nativeBalance || '0x0').gte(bn16(params.value || '0x0'))),
+          bn16(nativeBalance || '0x0').gte(
+            bn16(adjustedSendTx.params.value || '0x0'),
+          )),
     },
   )
 
+  const adjustedAmountError =
+    maxMode && isSendToken && !adjustedSendTx.hasRemainingAmount
+      ? t('gasFeeIsNotEnough')
+      : ''
+
   useEffect(() => {
-    setEstimateError(errorMessage)
-  }, [errorMessage])
+    setEstimateError(adjustedAmountError || errorMessage)
+  }, [adjustedAmountError, errorMessage])
   // when dapp send, init the gas edit global store
   // internal 7702 tx also enters confirm page directly, so it uses the same init path.
   useEffect(() => {
@@ -406,11 +440,6 @@ function ConfirmTransaction() {
     if (!isHwAccount) setLoading(true)
     else setSendStatus(TX_STATUS.HW_WAITING)
 
-    const sendTokenValue =
-      isSendToken && !isNativeToken && Object.keys(displayToken).length
-        ? convertValueToData(displayValue, displayToken.decimals)
-        : '0x0'
-
     if (tokenPayGas.isTokenPayGas && !tokenPayGas.tokenPayReady) {
       setLoading(false)
       return
@@ -418,13 +447,14 @@ function ConfirmTransaction() {
 
     const error = tokenPayGas.isTokenPayGas
       ? await tokenPayGas.checkTokenPayBalance({
+          submitTx: adjustedSendTx.params,
           displayToken,
           isNativeToken,
           isSendToken,
           sendTokenValue,
         })
       : await checkBalance(
-          params,
+          adjustedSendTx.params,
           displayToken,
           isNativeToken,
           isSendToken,
@@ -440,7 +470,10 @@ function ConfirmTransaction() {
 
     if (tokenPayGas.isTokenPayGas) {
       tokenPayGas
-        .submitTokenPayTransaction()
+        .submitTokenPayTransaction({
+          submitTx: adjustedSendTx.params,
+          maxTokenCost: tokenPayGas.tokenPayQuote?.tokenCost,
+        })
         .then(() => {
           setLoading(false)
           setTimeout(() => clearSendTransactionParams(), 500)
@@ -455,7 +488,7 @@ function ConfirmTransaction() {
       return
     }
 
-    request(SEND_TRANSACTION, [params])
+    request(SEND_TRANSACTION, [adjustedSendTx.params])
       .then(() => {
         if (!isHwAccount) setLoading(false)
         else setSendStatus(TX_STATUS.HW_SUCCESS)
@@ -478,8 +511,8 @@ function ConfirmTransaction() {
 
   const confirmDisabled =
     !!estimateError ||
-    estimateRst.loading ||
-    Object.keys(estimateRst).length === 0 ||
+    sendEstimateRst.loading ||
+    Object.keys(sendEstimateRst).length === 0 ||
     (tokenPayGas.isTokenPayGas &&
       (tokenPayGas.tokenPayQuoteLoading ||
         tokenPayGas.tokenPayQuoteError ||
@@ -500,12 +533,8 @@ function ConfirmTransaction() {
   const beforeDappConfirm = async () => {
     if (!tokenPayGas.isTokenPayGas) return
 
-    const sendTokenValue =
-      isSendToken && !isNativeToken && Object.keys(displayToken).length
-        ? convertValueToData(displayValue, displayToken.decimals)
-        : '0x0'
-
     const error = await tokenPayGas.checkTokenPayBalance({
+      submitTx: adjustedSendTx.params,
       displayToken,
       isNativeToken,
       isSendToken,
@@ -543,7 +572,7 @@ function ConfirmTransaction() {
             token={displayToken}
             fromAddress={addressCardFromAddress}
             toAddress={addressCardToAddress}
-            value={displayValue}
+            value={adjustedSendTx.amount}
             isSendToken={isSendToken}
             isApproveToken={isApproveToken}
             title={
@@ -563,8 +592,8 @@ function ConfirmTransaction() {
             method={
               decodeData?.name ? transformToTitleCase(decodeData.name) : ''
             }
-            allowance={displayValue}
-            value={params.value}
+            allowance={adjustedSendTx.amount}
+            value={adjustedSendTx.params.value}
             pendingAuthReq={pendingAuthReq}
             decimals={nativeToken?.decimals}
             symbol={nativeToken?.symbol}
@@ -577,12 +606,15 @@ function ConfirmTransaction() {
             nativeBalance={nativeBalance}
             accountAddress={currentAddressValue}
             networkDbId={networkDbId}
-            estimateRst={estimateRst}
+            estimateRst={sendEstimateRst}
             uses1559Fees={uses1559Fees}
+            maxMode={maxMode}
+            sendTokenAddress={displayTokenAddress}
+            sendTokenAmount={inputAmountHex}
           />
         </div>
         <div className="flex flex-col items-center">
-          {isDapp && !!params.data && params.data !== '0x' && (
+          {isDapp && !!inputParams.data && inputParams.data !== '0x' && (
             <Link onClick={() => history.push(VIEW_DATA)} className="mb-6">
               {t('viewData')}
               <RightOutlined className="w-3 h-3 text-primary ml-1" />

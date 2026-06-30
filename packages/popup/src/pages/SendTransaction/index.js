@@ -4,7 +4,6 @@ import {useHistory} from 'react-router-dom'
 import {isNumber} from '@fluent-wallet/checks'
 import {
   formatHexToDecimal,
-  convertDataToValue,
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
@@ -42,9 +41,7 @@ import {
   useSingleTokenInfoWithNativeTokenSupport,
   useAddressNote,
 } from '../../hooks/useApi'
-import {useTokenPayAvailability} from '../../hooks/useTokenPay'
 import {ROUTES, NETWORK_TYPE} from '../../constants'
-import {bn16} from '../../utils'
 import useGlobalStore from '../../stores'
 
 const {CONFIRM_TRANSACTION, ADDRESS_BOOK} = ROUTES
@@ -106,15 +103,11 @@ function SendTransaction() {
   const {
     data: {
       value: address,
-      nativeBalance,
       network: {eid: networkId, type, netId, ticker: nativeToken},
-      account: {nickname, _accountGroup: accountGroup},
+      account: {nickname},
     },
   } = useCurrentAddress()
-  const {canUseTokenPay} = useTokenPayAvailability({
-    isHwAccount: accountGroup?.vault?.type === 'hw',
-    networkDbId: networkId,
-  })
+
   const toAddressInputPlaceholder = useToAddressPlaceHolder({type, netId})
 
   useEffect(() => {
@@ -136,14 +129,7 @@ function SendTransaction() {
     sendAmount ? estimateError : '',
   )
   const isNativeToken = !tokenAddress
-  const nativeSendValue =
-    isNativeToken && sendAmount
-      ? convertValueToData(sendAmount, decimals)
-      : '0x0'
-  const hasNativeSendValue =
-    !isNativeToken ||
-    bn16(nativeBalance || '0x0').gte(bn16(nativeSendValue || '0x0'))
-  const canIgnoreGasBalanceError = canUseTokenPay && hasNativeSendValue
+
   const estimateRst =
     useEstimateTx(
       tx,
@@ -158,7 +144,6 @@ function SendTransaction() {
     gasLimit: estimateGasLimit,
     storageCollateralized: estimateStorageLimit,
     nonce,
-    nativeMaxDrip,
     loading,
   } = estimateRst
 
@@ -191,7 +176,7 @@ function SendTransaction() {
     tokenAddress,
     !tokenAddress,
     true,
-    {ignoreGasBalanceError: canIgnoreGasBalanceError},
+    {ignoreGasBalanceError: true},
   )
   useEffect(() => {
     !loading && setEstimateError(errorMessage)
@@ -222,6 +207,7 @@ function SendTransaction() {
   const onChangeAmount = amount => {
     setSendAmount(amount)
   }
+
   const onChangeAddress = address => {
     if (nsLoading) {
       return
@@ -339,9 +325,6 @@ function SendTransaction() {
             amount={sendAmount}
             onChangeAmount={onChangeAmount}
             onChangeToken={onChangeToken}
-            isNativeToken={isNativeToken}
-            nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
-            loading={loading}
           />
           <div className="overflow-hidden">
             <div
@@ -349,6 +332,11 @@ function SendTransaction() {
             >
               {displayErrorMsg}
             </div>
+            {maxMode && (
+              <div className="pt-2 text-xs text-gray-40">
+                {t('sendMaxGasTip')}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-col">

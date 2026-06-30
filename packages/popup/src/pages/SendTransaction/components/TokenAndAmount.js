@@ -69,9 +69,6 @@ function TokenAndAmount({
   onChangeToken,
   amount,
   onChangeAmount,
-  isNativeToken,
-  nativeMax,
-  loading,
 }) {
   const {t} = useTranslation()
   const {maxMode, setMaxMode} = useCurrentTxStore()
@@ -89,7 +86,7 @@ function TokenAndAmount({
     address: selectedTokenIdAddress,
   } = useSingleTokenInfoWithNativeTokenSupport(selectedTokenId)
   const isImgUrl = useCheckImage(logoURI)
-  const tokenAddress = isNativeToken ? '0x0' : selectedTokenIdAddress
+  const tokenAddress = selectedTokenIdAddress || '0x0'
   const balance =
     useBalance(address, networkId, tokenAddress)?.[address]?.[tokenAddress] ||
     '0x0'
@@ -112,13 +109,8 @@ function TokenAndAmount({
     </span>
   )
   const onClickMax = () => {
-    if (loading) {
-      console.log('isLoading', loading)
-      return
-    }
     setMaxMode(true)
-    if (isNativeToken) onChangeAmount(nativeMax)
-    else onChangeAmount(convertDataToValue(balance, decimals))
+    onChangeAmount(convertDataToValue(balance, decimals))
   }
   const onSelectToken = token => {
     setTokenListShow(false)
@@ -182,9 +174,6 @@ TokenAndAmount.propTypes = {
   onChangeToken: PropTypes.func,
   amount: PropTypes.string,
   onChangeAmount: PropTypes.func,
-  isNativeToken: PropTypes.bool,
-  nativeMax: PropTypes.string,
-  loading: PropTypes.bool,
 }
 
 export default TokenAndAmount

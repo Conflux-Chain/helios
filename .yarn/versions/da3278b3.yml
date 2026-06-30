@@ -1,0 +1,10 @@
+releases:
+  "@fluent-wallet/wallet_get-token-pay-gas-options": patch
+  "@fluent-wallet/wallet_prepare-token-pay-quote": patch
+  "@fluent-wallet/wallet_submit-token-pay-transaction": patch
+  browser-extension: patch
+  helios-background: patch
+  helios-popup: patch
+
+declined:
+  - helios

@@ -10,6 +10,63 @@ import {
   getTokenIcon,
 } from './tokenPayGasUtils'
 
+function canPayWithGasToken({
+  balance,
+  gasAmount,
+  maxMode,
+  isSendTokenGas,
+  sendTokenAmount,
+}) {
+  if (!gasAmount) return false
+
+  const balanceBN = bn16(balance || '0x0')
+  const gasAmountBN = bn16(gasAmount)
+
+  if (!maxMode || !isSendTokenGas) {
+    return balanceBN.gte(gasAmountBN)
+  }
+
+  const sendAmountBN = bn16(sendTokenAmount || '0x0')
+  return balanceBN.gte(sendAmountBN) && sendAmountBN.gt(gasAmountBN)
+}
+
+function getGasTokenOptionState({
+  token,
+  tokenBalances,
+  options,
+  selectedGasToken,
+  selectedGasTokenAmount,
+  selectedGasTokenQuoteAmount,
+  maxMode,
+  sendTokenAddress,
+  sendTokenAmount,
+}) {
+  const tokenAddress = token.address?.toLowerCase()
+  const sendTokenBalanceKey = sendTokenAddress?.toLowerCase()
+  const rawBalance = getBalanceByAddress(tokenBalances, token.address) || '0x0'
+  const selected = tokenAddress === selectedGasToken?.address?.toLowerCase()
+  const option = options?.tokens?.[tokenAddress]
+  const gasAmount = option?.estimatedTokenAmount
+  const quoteAmount = option?.estimatedQuoteAmount
+
+  return {
+    rawBalance,
+    selected,
+    gasAmount: selected ? selectedGasTokenAmount || gasAmount : gasAmount,
+    quoteAmount: selected
+      ? selectedGasTokenQuoteAmount || quoteAmount
+      : quoteAmount,
+    hasEstimate: Boolean(gasAmount),
+    canPayGas: canPayWithGasToken({
+      balance: rawBalance,
+      gasAmount,
+      maxMode,
+      isSendTokenGas: tokenAddress === sendTokenBalanceKey,
+      sendTokenAmount,
+    }),
+  }
+}
+
 function GasTokenOption({
   token,
   balance,
@@ -85,6 +142,9 @@ function GasTokenSelector({
   selectedGasTokenQuoteAmount,
   quoteToken,
   onSelectGasToken,
+  maxMode,
+  sendTokenAddress,
+  sendTokenAmount,
 }) {
   const {t} = useTranslation()
   const isNativeGas = !selectedGasToken
@@ -131,37 +191,34 @@ function GasTokenSelector({
           {t('payWithOtherTokens')}
         </p>
         {tokens.map(token => {
-          const tokenAddress = token.address?.toLowerCase()
-          const rawBalance = getBalanceByAddress(tokenBalances, token.address)
-          const disabled = !rawBalance || bn16(rawBalance).isZero()
-          const selected =
-            tokenAddress === selectedGasToken?.address?.toLowerCase()
-          const option = options?.tokens?.[tokenAddress]
-          const hasTokenAmount = Boolean(option?.estimatedTokenAmount)
-          let tokenAmount = ''
-          let tokenQuoteAmount = ''
-          if (!disabled) {
-            tokenAmount = selected
-              ? selectedGasTokenAmount || option?.estimatedTokenAmount
-              : option?.estimatedTokenAmount
-            tokenQuoteAmount = selected
-              ? selectedGasTokenQuoteAmount || option?.estimatedQuoteAmount
-              : option?.estimatedQuoteAmount
-          }
+          const optionState = getGasTokenOptionState({
+            token,
+            tokenBalances,
+            options,
+            selectedGasToken,
+            selectedGasTokenAmount,
+            selectedGasTokenQuoteAmount,
+            maxMode,
+            sendTokenAddress,
+            sendTokenAmount,
+          })
 
           return (
             <GasTokenOption
               key={token.address}
               token={token}
-              balance={formatTokenAmount(rawBalance, token.decimals)}
-              amount={formatTokenAmount(tokenAmount, token.decimals)}
+              balance={formatTokenAmount(
+                optionState.rawBalance,
+                token.decimals,
+              )}
+              amount={formatTokenAmount(optionState.gasAmount, token.decimals)}
               fiatAmount={formatQuoteAmount(
-                tokenQuoteAmount,
+                optionState.quoteAmount,
                 displayQuoteToken,
               )}
-              selected={selected}
-              disabled={disabled || !hasTokenAmount}
-              hideEstimate={disabled}
+              selected={optionState.selected}
+              disabled={!optionState.canPayGas}
+              hideEstimate={!optionState.hasEstimate}
               onClick={() => {
                 onSelectGasToken?.(token)
                 onClose?.()
@@ -212,6 +269,9 @@ GasTokenSelector.propTypes = {
   selectedGasTokenQuoteAmount: PropTypes.string,
   quoteToken: PropTypes.object,
   onSelectGasToken: PropTypes.func,
+  maxMode: PropTypes.bool,
+  sendTokenAddress: PropTypes.string,
+  sendTokenAmount: PropTypes.string,
 }
 
 export default GasTokenSelector
