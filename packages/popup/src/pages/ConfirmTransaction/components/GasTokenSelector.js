@@ -11,29 +11,27 @@ import {
 } from './tokenPayGasUtils'
 
 function canPayGasFee({
-  balance,
-  gasAmount,
+  gasTokenBalance,
+  gasFeeAmount,
   maxMode,
-  isSameAssetAsSend,
+  isGasTokenSameAsSendToken,
   sendAmount,
 }) {
-  if (!gasAmount) return false
+  if (!gasFeeAmount) return false
 
-  const balanceBN = bn16(balance || '0x0')
-  const gasAmountBN = bn16(gasAmount)
+  const gasTokenBalanceBN = bn16(gasTokenBalance || '0x0')
+  const gasFeeBN = bn16(gasFeeAmount)
 
-  if (!isSameAssetAsSend) {
-    return balanceBN.gte(gasAmountBN)
+  if (!isGasTokenSameAsSendToken) {
+    return gasTokenBalanceBN.gte(gasFeeBN)
+  }
+
+  if (maxMode) {
+    return gasTokenBalanceBN.gt(gasFeeBN)
   }
 
   const sendAmountBN = bn16(sendAmount || '0x0')
-  if (!maxMode) {
-    return balanceBN.gte(sendAmountBN.add(gasAmountBN))
-  }
-
-  // In max mode sendAmountBN is the raw max amount. Confirm will submit
-  // sendAmountBN - gasAmountBN, so balance only needs to cover sendAmountBN.
-  return balanceBN.gte(sendAmountBN) && sendAmountBN.gt(gasAmountBN)
+  return gasTokenBalanceBN.gte(sendAmountBN.add(gasFeeBN))
 }
 
 function getGasTokenOptionState({
@@ -49,30 +47,31 @@ function getGasTokenOptionState({
 }) {
   const tokenAddress = token.address?.toLowerCase()
   const sendTokenBalanceKey = sendTokenAddress?.toLowerCase()
-  const rawBalance = getBalanceByAddress(tokenBalances, token.address) || '0x0'
+  const gasTokenBalance =
+    getBalanceByAddress(tokenBalances, token.address) || '0x0'
   const selected = tokenAddress === selectedGasToken?.address?.toLowerCase()
   const option = options?.tokens?.[tokenAddress]
-  const estimatedGasAmount = option?.estimatedTokenAmount
+  const estimatedGasFeeAmount = option?.estimatedTokenAmount
   const estimatedQuoteAmount = option?.estimatedQuoteAmount
-  const gasAmount = selected
-    ? selectedGasTokenAmount || estimatedGasAmount
-    : estimatedGasAmount
+  const gasFeeAmount = selected
+    ? selectedGasTokenAmount || estimatedGasFeeAmount
+    : estimatedGasFeeAmount
   const quoteAmount = selected
     ? selectedGasTokenQuoteAmount || estimatedQuoteAmount
     : estimatedQuoteAmount
-  const hasEstimate = Boolean(gasAmount)
+  const hasEstimate = Boolean(gasFeeAmount)
   const canPayGas = canPayGasFee({
-    balance: rawBalance,
-    gasAmount,
+    gasTokenBalance,
+    gasFeeAmount,
     maxMode,
-    isSameAssetAsSend: tokenAddress === sendTokenBalanceKey,
+    isGasTokenSameAsSendToken: tokenAddress === sendTokenBalanceKey,
     sendAmount: sendTokenAmount,
   })
 
   return {
-    rawBalance,
+    gasTokenBalance,
     selected,
-    gasAmount,
+    gasFeeAmount,
     quoteAmount,
     hasEstimate,
     canPayGas,
@@ -173,10 +172,10 @@ function GasTokenSelector({
   )
   const displayQuoteToken = quoteToken || options?.quoteToken
   const canPayNativeGas = canPayGasFee({
-    balance: nativeBalance,
-    gasAmount: nativeGasFee,
+    gasTokenBalance: nativeBalance,
+    gasFeeAmount: nativeGasFee,
     maxMode,
-    isSameAssetAsSend: isSendNative,
+    isGasTokenSameAsSendToken: isSendNative,
     sendAmount: sendTokenAmount,
   })
   const isNativeBalanceNotEnough = Boolean(nativeGasFee && !canPayNativeGas)
@@ -228,10 +227,13 @@ function GasTokenSelector({
               key={token.address}
               token={token}
               balance={formatTokenAmount(
-                optionState.rawBalance,
+                optionState.gasTokenBalance,
                 token.decimals,
               )}
-              amount={formatTokenAmount(optionState.gasAmount, token.decimals)}
+              amount={formatTokenAmount(
+                optionState.gasFeeAmount,
+                token.decimals,
+              )}
               fiatAmount={formatQuoteAmount(
                 optionState.quoteAmount,
                 displayQuoteToken,
