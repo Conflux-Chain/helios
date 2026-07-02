@@ -157,6 +157,7 @@ const en = {
     tokenAndAmount: 'Token and Amount',
     available: 'Available: ',
     max: 'MAX',
+    sendMaxGasTip: 'Send max. Final amount shown after gas.',
     web3Name: '.web3 username',
     alternativeName: 'account name/memo',
 

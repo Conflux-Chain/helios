@@ -8,7 +8,7 @@ import {useTokenPayAvailability} from '../../hooks/useTokenPay'
 import {useCurrentTxStore} from '../../hooks'
 import {bn16, request} from '../../utils'
 import {RPC_METHODS} from '../../constants'
-import {getUserPaidNativeGasFee} from '../../utils/tokenPayGas'
+import {getNativeGasFee} from './components/tokenPayGasUtils'
 
 const {WALLET_GET_BALANCE, WALLET_SUBMIT_TOKEN_PAY_TRANSACTION} = RPC_METHODS
 
@@ -93,7 +93,7 @@ function useTokenPayGas({
     gasTokenAddress: selectedGasToken?.address,
     gasLevel: tokenPayGasLevel,
   })
-  const nativeGasFee = getUserPaidNativeGasFee(estimateRst)
+  const nativeGasFee = getNativeGasFee(estimateRst)
   const {
     data: tokenPayGasOptions,
     error: tokenPayGasOptionsError,
@@ -111,26 +111,30 @@ function useTokenPayGas({
       tokenPayQuote?.tokenCost,
   )
 
-  const submitTokenPayTransaction = () => {
+  const submitTokenPayTransaction = ({
+    submitTx = params,
+    maxTokenCost = tokenPayQuote?.tokenCost,
+  } = {}) => {
     if (!tokenPayReady) return Promise.reject(new Error('Token pay not ready'))
 
     return request(WALLET_SUBMIT_TOKEN_PAY_TRANSACTION, {
       networkDbId,
       accountId,
-      userTx: params,
+      userTx: submitTx,
       gasTokenAddress: selectedGasToken.address,
       gasLevel: tokenPayGasLevel,
-      maxTokenCost: tokenPayQuote.tokenCost,
+      maxTokenCost,
     })
   }
 
   const checkTokenPayBalance = async ({
+    submitTx = params,
     displayToken,
     isNativeToken,
     isSendToken,
     sendTokenValue,
   }) => {
-    const from = params.from?.toLowerCase()
+    const from = submitTx.from?.toLowerCase()
     const gasTokenAddress = tokenPayQuote?.gasToken?.address?.toLowerCase()
     const tokenCost = tokenPayQuote?.tokenCost
 
@@ -149,7 +153,7 @@ function useTokenPayGas({
 
       if (isSendToken) {
         if (isNativeToken) {
-          if (bn16(balance['0x0'] || '0x0').lt(bn16(params.value || '0x0'))) {
+          if (bn16(balance['0x0'] || '0x0').lt(bn16(submitTx.value || '0x0'))) {
             return 'balanceIsNotEnough'
           }
         } else if (displayTokenAddress === gasTokenAddress) {

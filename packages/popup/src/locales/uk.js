@@ -158,6 +158,7 @@ const uk = {
     tokenAndAmount: 'Токен і сума',
     available: 'Доступно: ',
     max: 'Все',
+    sendMaxGasTip: 'Send max. Final amount shown after gas.',
     web3Name: 'web3 username',
     alternativeName: 'account name/memo',
 
