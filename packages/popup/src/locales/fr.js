@@ -163,6 +163,7 @@ const fr = {
     tokenAndAmount: 'Jeton et Montant',
     available: 'Disponible : ',
     max: 'MAX',
+    sendMaxGasTip: 'Send max. Final amount shown after gas.',
     web3Name: 'web3 username',
     alternativeName: 'account name/memo',
 

@@ -63,6 +63,7 @@ function NativeGasPayFee({
   tokenPayConfig,
   onSelectGasToken,
   options,
+  maxMode,
   sendTokenAddress,
   sendTokenAmount,
 }) {
@@ -116,6 +117,7 @@ function NativeGasPayFee({
         selectedGasTokenQuoteAmount={null}
         quoteToken={tokenPayConfig?.quoteToken}
         onSelectGasToken={onSelectGasToken}
+        maxMode={maxMode}
         sendTokenAddress={sendTokenAddress}
         sendTokenAmount={sendTokenAmount}
       />
@@ -134,6 +136,7 @@ function TokenGasPayFee({
   gasTokenBalances,
   onSelectGasToken,
   uses1559Fees,
+  maxMode,
   sendTokenAddress,
   sendTokenAmount,
 }) {
@@ -192,6 +195,7 @@ function TokenGasPayFee({
         selectedGasTokenQuoteAmount={displayQuoteAmount}
         quoteToken={displayQuoteToken || tokenPayConfig?.quoteToken}
         onSelectGasToken={onSelectGasToken}
+        maxMode={maxMode}
         sendTokenAddress={sendTokenAddress}
         sendTokenAmount={sendTokenAmount}
       />
@@ -226,6 +230,7 @@ NativeGasPayFee.propTypes = {
   tokenPayConfig: PropTypes.object,
   options: PropTypes.object,
   onSelectGasToken: PropTypes.func,
+  maxMode: PropTypes.bool,
   sendTokenAddress: PropTypes.string,
   sendTokenAmount: PropTypes.string,
 }
@@ -241,6 +246,7 @@ TokenGasPayFee.propTypes = {
   gasTokenBalances: PropTypes.object,
   onSelectGasToken: PropTypes.func,
   uses1559Fees: PropTypes.bool,
+  maxMode: PropTypes.bool,
   sendTokenAddress: PropTypes.string,
   sendTokenAmount: PropTypes.string,
 }

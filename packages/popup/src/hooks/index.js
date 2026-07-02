@@ -320,14 +320,11 @@ export const useCurrentTxParams = () => {
 
   useEffect(() => {
     if (!syncTxWithForm) return
-    if (params.data) setData(params.data)
+    if (data) setData(data)
     setTx(params)
   }, [syncTxWithForm, paramsKey])
 
-  return {
-    ...txStore,
-    formTx: params,
-  }
+  return txStore
 }
 
 export const useEstimateError = (

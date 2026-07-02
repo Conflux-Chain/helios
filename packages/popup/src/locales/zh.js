@@ -154,6 +154,7 @@ const zh = {
     tokenAndAmount: '代币和数量',
     available: '余额: ',
     max: '最大',
+    sendMaxGasTip: '全额发送，数量将在下一步扣除燃气费后确定',
     web3Name: '.web3 用户名',
     alternativeName: '账户名/备注',
 

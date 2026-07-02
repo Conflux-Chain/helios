@@ -20,6 +20,7 @@ function ConfirmGasFee({
   networkDbId,
   estimateRst,
   uses1559Fees,
+  maxMode,
   sendTokenAddress,
   sendTokenAmount,
 }) {
@@ -43,6 +44,7 @@ function ConfirmGasFee({
         estimateRst={estimateRst}
         uses1559Fees={uses1559Fees}
         onSelectGasToken={tokenPayGas.setSelectedGasToken}
+        maxMode={maxMode}
         sendTokenAddress={sendTokenAddress}
         sendTokenAmount={sendTokenAmount}
       />
@@ -61,6 +63,7 @@ ConfirmGasFee.propTypes = {
   networkDbId: PropTypes.number,
   estimateRst: PropTypes.object,
   uses1559Fees: PropTypes.bool,
+  maxMode: PropTypes.bool,
   sendTokenAddress: PropTypes.string,
   sendTokenAmount: PropTypes.string,
 }

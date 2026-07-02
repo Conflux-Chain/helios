@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
+import {convertDataToValue} from '@fluent-wallet/data-format'
 import {CaretDownFilled} from '@fluent-wallet/component-icons'
 import Modal from '@fluent-wallet/component-modal'
 import {
@@ -12,6 +13,7 @@ import {
 } from '../../../components'
 import {
   useCurrentNetworkTokens,
+  useBalance,
   useCurrentAddress,
   useSingleTokenInfoWithNativeTokenSupport,
 } from '../../../hooks/useApi'
@@ -67,17 +69,29 @@ function TokenAndAmount({
   onChangeToken,
   amount,
   onChangeAmount,
-  balance,
-  onClickMax,
-  disabled,
 }) {
   const {t} = useTranslation()
   const {maxMode, setMaxMode} = useCurrentTxStore()
   const [tokenListShow, setTokenListShow] = useState(false)
-  const {symbol, logoURI, decimals} =
-    useSingleTokenInfoWithNativeTokenSupport(selectedTokenId)
+  const {
+    data: {
+      value: address,
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+  const {
+    symbol,
+    logoURI,
+    decimals,
+    address: selectedTokenIdAddress,
+  } = useSingleTokenInfoWithNativeTokenSupport(selectedTokenId)
   const isImgUrl = useCheckImage(logoURI)
-
+  const tokenAddress = selectedTokenIdAddress || '0x0'
+  const balanceData = useBalance(address, networkId, tokenAddress)
+  const balance =
+    balanceData?.[address?.toLowerCase()]?.[tokenAddress?.toLowerCase()] ||
+    balanceData?.[address]?.[tokenAddress] ||
+    '0x0'
   const label = (
     <span className="flex items-center justify-between text-gray-40 w-full">
       {t('tokenAndAmount')}
@@ -96,12 +110,10 @@ function TokenAndAmount({
       </span>
     </span>
   )
-  const handleClickMax = () => {
-    if (disabled) return
-
-    onClickMax?.()
+  const onClickMax = () => {
+    setMaxMode(true)
+    onChangeAmount(convertDataToValue(balance, decimals))
   }
-
   const onSelectToken = token => {
     setTokenListShow(false)
     onChangeToken(token)
@@ -138,14 +150,12 @@ function TokenAndAmount({
           />
         </div>
         <div
-          onClick={handleClickMax}
+          onClick={onClickMax}
           id="max"
-          className={`px-1 py-0.5 border rounded text-xs ${
-            disabled
-              ? 'border-gray-20 bg-gray-10 text-gray-40 cursor-not-allowed'
-              : maxMode
-              ? 'border-primary bg-primary text-white cursor-pointer'
-              : 'border-primary bg-white cursor-pointer text-primary'
+          className={`px-1 py-0.5 border-primary border rounded text-xs ${
+            maxMode
+              ? 'bg-primary text-white'
+              : 'bg-white cursor-pointer text-primary'
           }`}
           aria-hidden="true"
         >
@@ -166,9 +176,6 @@ TokenAndAmount.propTypes = {
   onChangeToken: PropTypes.func,
   amount: PropTypes.string,
   onChangeAmount: PropTypes.func,
-  balance: PropTypes.string,
-  onClickMax: PropTypes.func,
-  disabled: PropTypes.bool,
 }
 
 export default TokenAndAmount
