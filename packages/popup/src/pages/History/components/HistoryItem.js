@@ -123,6 +123,8 @@ function HistoryItem({
     txStatus === 'pending' &&
     !isExternalTx &&
     !tokenPay &&
+    !isEip7702RevokeTx &&
+    !isEip7702DelegationTx &&
     new Date().getTime() - pendingAt > 5000
 
   const {txFeeDrip = '0x0'} = receipt

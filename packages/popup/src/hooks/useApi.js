@@ -293,7 +293,7 @@ export const useTokenPayConfig = networkDbId => {
   } = useRPC(
     canQueryTokenPayConfig ? [WALLET_GET_TOKEN_PAY_CONFIG, networkDbId] : null,
     {networkDbId},
-    {fallbackData: null},
+    {fallbackData: null, refreshInterval: 0},
   )
 
   return {
@@ -341,7 +341,7 @@ export const usePrepareTokenPayQuote = ({
       gasTokenAddress,
       gasLevel,
     },
-    {fallbackData: null},
+    {fallbackData: null, refreshInterval: 0},
   )
 
   return {
@@ -386,7 +386,7 @@ export const useGetTokenPayGasOptions = ({
       userTx,
       nativeGasFee,
     },
-    {fallbackData: null},
+    {fallbackData: null, refreshInterval: 0},
   )
 
   return {

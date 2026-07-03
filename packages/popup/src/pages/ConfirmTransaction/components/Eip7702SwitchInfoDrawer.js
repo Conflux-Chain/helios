@@ -70,6 +70,7 @@ function Eip7702SwitchInfoDrawer({open, onClose, title, content, actions}) {
       open={open}
       onClose={onClose}
       height="h-auto"
+      showClose={false}
       cardTitle={title || defaultTitle}
       cardContent={content || defaultContent}
       cardFooter={actions || defaultActions}
