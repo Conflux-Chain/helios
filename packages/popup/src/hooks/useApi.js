@@ -347,7 +347,7 @@ export const usePrepareTokenPayQuote = ({
   return {
     data: quote,
     error,
-    loading: canQueryQuote && isValidating,
+    loading: canQueryQuote && isValidating && !quote,
     isValidating,
     mutate,
   }

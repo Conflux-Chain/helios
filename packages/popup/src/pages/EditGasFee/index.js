@@ -13,15 +13,17 @@ import {
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, GasCost} from '../../components'
 import {GasStation} from './components'
-import {useNetworkTypeIsCfx, useIsCfxChain} from '../../hooks/useApi'
-import {
-  useCurrentTxStore,
-  useUses1559Fees,
-  useDappParams,
-  useEstimateTx,
-} from '../../hooks'
+import {useCurrentTxStore, useUses1559Fees, useEstimateTx} from '../../hooks'
 import {ROUTES} from '../../constants'
 import {getPageType} from '../../utils'
+import {
+  useCurrentAddress,
+  useNetworkTypeIsCfx,
+  useIsCfxChain,
+  usePendingAuthReq,
+  usePrepareTokenPayQuote,
+  useTokenPayConfig,
+} from '../../hooks/useApi'
 
 const {EDIT_GAS_FEE} = ROUTES
 
@@ -65,7 +67,14 @@ function EditGasFee({
   const isSendTx = location.pathname === EDIT_GAS_FEE
 
   const isDapp = getPageType() === 'notification'
-  const dappTx = useDappParams()
+  const pendingAuthReq = usePendingAuthReq()
+  const dappAuthReq = isDapp ? pendingAuthReq?.[0] : null
+  const dappTx = dappAuthReq?.req?.params?.[0] || {}
+  const dappApp = dappAuthReq?.app
+
+  const {
+    data: {network: currentNetwork = {}, account: currentAccount = {}} = {},
+  } = useCurrentAddress()
 
   const originParams = !isDapp ? {...txParams} : {...dappTx}
 
@@ -176,6 +185,47 @@ function EditGasFee({
   if (!sendParams.storageLimit) delete sendParams.storageLimit
   if (!sendParams.nonce) delete sendParams.nonce
 
+  const tokenPayNetworkDbId = isDapp
+    ? dappApp?.currentNetwork?.eid
+    : currentNetwork?.eid
+
+  const tokenPayAccountId = isDapp
+    ? dappApp?.currentAccount?.eid
+    : currentAccount?.eid
+
+  const {data: tokenPayConfig} = useTokenPayConfig(
+    isTokenPayGas ? tokenPayNetworkDbId : undefined,
+  )
+
+  const selectedGasToken = tokenPayConfig?.tokens?.find(
+    token => token.address?.toLowerCase() === gasTokenAddress?.toLowerCase(),
+  )
+
+  const canQuoteTokenPayGas = Boolean(
+    isTokenPayGas &&
+      sendParams?.gas &&
+      effectiveSelectedGasLevel &&
+      gasTokenAddress,
+  )
+
+  const {data: tokenPayQuote} = usePrepareTokenPayQuote({
+    networkDbId: tokenPayNetworkDbId,
+    accountId: tokenPayAccountId,
+    userTx: canQuoteTokenPayGas ? sendParams : null,
+    gasTokenAddress,
+    gasLevel: effectiveSelectedGasLevel,
+  })
+
+  const displayGasToken = tokenPayQuote?.gasToken || selectedGasToken
+
+  const tokenPayGasCost = isTokenPayGas
+    ? {
+        balance: tokenPayQuote?.tokenCost || '',
+        symbol: displayGasToken?.symbol || '',
+        decimals: displayGasToken?.decimals,
+      }
+    : null
+
   const saveGasData = () => {
     const {
       gasPrice,
@@ -255,6 +305,7 @@ function EditGasFee({
           <GasCost
             sendParams={sendParams}
             networkTypeIsCfx={networkTypeIsCfx}
+            displayFee={tokenPayGasCost}
           />
           <GasStation
             uses1559Fees={uses1559Fees}
