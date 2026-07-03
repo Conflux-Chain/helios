@@ -18,6 +18,10 @@ function applyAmountToSendParams({
     }
   }
 
+  if (!recipientAddress) {
+    return params
+  }
+
   return {
     ...params,
     data: iface.encodeFunctionData('transfer', [
