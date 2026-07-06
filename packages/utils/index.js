@@ -251,6 +251,9 @@ export const toHexString = value => {
   return toBuffer(value).toString('hex')
 }
 
+export const hexToBN = value =>
+  new BN(stripHexPrefix(value || '0x0') || '0', 16)
+
 /**
  * Converts an unsigned integer-like value into a normalized 0x-prefixed hex quantity string.
  *

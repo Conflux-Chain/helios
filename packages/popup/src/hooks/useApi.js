@@ -341,7 +341,12 @@ export const usePrepareTokenPayQuote = ({
       gasTokenAddress,
       gasLevel,
     },
-    {fallbackData: null, refreshInterval: 0},
+    {
+      fallbackData: null,
+      refreshInterval: 0,
+      onError: () => {},
+      shouldRetryOnError: false,
+    },
   )
 
   return {
@@ -358,12 +363,14 @@ export const useGetTokenPayGasOptions = ({
   accountId,
   userTx,
   nativeGasFee,
+  gasLevel,
 }) => {
   const canQueryOptions =
     isNumber(networkDbId) &&
     isNumber(accountId) &&
     isObject(userTx) &&
-    isString(nativeGasFee)
+    isString(nativeGasFee) &&
+    isString(gasLevel)
 
   const {
     data: options,
@@ -377,16 +384,17 @@ export const useGetTokenPayGasOptions = ({
           networkDbId,
           accountId,
           nativeGasFee,
+          gasLevel,
           JSON.stringify(userTx),
         ]
       : null,
+    {networkDbId, accountId, userTx, nativeGasFee, gasLevel},
     {
-      networkDbId,
-      accountId,
-      userTx,
-      nativeGasFee,
+      fallbackData: null,
+      refreshInterval: 0,
+      onError: () => {},
+      shouldRetryOnError: false,
     },
-    {fallbackData: null, refreshInterval: 0},
   )
 
   return {

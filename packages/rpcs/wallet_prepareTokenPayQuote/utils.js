@@ -319,7 +319,7 @@ export async function prepareTokenPayExecutionContext({
   }
 }
 
-function getTokenPayGasCostPrice({txType, feeParams}) {
+export function getTokenPayGasCostPrice({txType, feeParams}) {
   return txType === ETH_TX_TYPES.LEGACY
     ? feeParams.gasPrice
     : feeParams.maxFeePerGas

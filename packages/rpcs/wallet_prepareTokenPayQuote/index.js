@@ -9,6 +9,7 @@ import {
 export {
   calcTokenAmountFromNativeAmount,
   fetchTokenPayPrice,
+  getTokenPayGasCostPrice,
   prepareGasTokenQuote,
   prepareTokenPayBaseContext,
   prepareTokenPayExecutionContext,

@@ -1,6 +1,24 @@
 releases:
+  "@fluent-wallet/utils": patch
+  "@fluent-wallet/wallet_get-token-pay-gas-options": patch
+  "@fluent-wallet/wallet_prepare-token-pay-quote": patch
   browser-extension: patch
   helios-popup: patch
 
 declined:
   - helios
+  - "@fluent-wallet/account"
+  - helios-background
+  - "@fluent-wallet/base32-address"
+  - "@fluent-wallet/discover-accounts"
+  - "@fluent-wallet/estimate-tx"
+  - "@fluent-wallet/hdkey"
+  - "@fluent-wallet/cfx_sign-typed-data_v4"
+  - "@fluent-wallet/eth_sign-transaction"
+  - "@fluent-wallet/eth_sign-tx-with-ledger-nano-s"
+  - "@fluent-wallet/personal_sign"
+  - "@fluent-wallet/wallet_add-vault"
+  - "@fluent-wallet/wallet_get-address-private-key"
+  - "@fluent-wallet/wallet_submit-token-pay-transaction"
+  - "@fluent-wallet/signature"
+  - "@fluent-wallet/data-format"
