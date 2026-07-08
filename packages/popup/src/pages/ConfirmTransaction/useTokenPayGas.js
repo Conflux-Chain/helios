@@ -9,6 +9,7 @@ import {useCurrentTxStore} from '../../hooks'
 import {bn16, request} from '../../utils'
 import {RPC_METHODS} from '../../constants'
 import {getNativeGasFee} from './components/tokenPayGasUtils'
+import {getTokenPayGasLevel} from '../../utils/tokenPayGas'
 
 const {WALLET_GET_BALANCE, WALLET_SUBMIT_TOKEN_PAY_TRANSACTION} = RPC_METHODS
 
@@ -77,7 +78,7 @@ function useTokenPayGas({
   const gasTokenBalancesForAccount =
     gasTokenBalances?.[params?.from?.toLowerCase()] || {}
   const isTokenPayGas = Boolean(selectedGasToken?.address)
-  const tokenPayGasLevel = gasLevel === 'advanced' ? 'medium' : gasLevel
+  const tokenPayGasLevel = getTokenPayGasLevel(gasLevel)
   const canPrepareTokenPayQuote = Boolean(
     canUseTokenPay && isTokenPayGas && params?.gas,
   )
@@ -103,6 +104,7 @@ function useTokenPayGas({
     accountId,
     userTx: canUseTokenPay && params?.gas ? params : null,
     nativeGasFee,
+    gasLevel: tokenPayGasLevel,
   })
 
   const tokenPayReady = Boolean(

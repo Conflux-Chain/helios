@@ -29,18 +29,9 @@ import {ExecutedTransaction} from './components'
 
 import {RPC_METHODS, TX_STATUS} from '../../constants'
 
-const {WALLET_SEND_TRANSACTION_WITH_ACTION} = RPC_METHODS
+import {buildResendTxParams, omitFalsyTxParams} from './resendParams'
 
-const filterNonValueParams = (originParams = {}, otherParams = {}) => {
-  const ret = {}
-  originParams = {...originParams, ...otherParams}
-  Object.keys(originParams)
-    .filter(_k => !!originParams[_k])
-    .forEach(k => {
-      ret[k] = originParams[k]
-    })
-  return ret
-}
+const {WALLET_SEND_TRANSACTION_WITH_ACTION} = RPC_METHODS
 function ResendTransaction() {
   const history = useHistory()
   const {t} = useTranslation()
@@ -81,19 +72,16 @@ function ResendTransaction() {
 
   const {simple, token20} = txExtra
 
-  const {
-    data,
-    from,
-    to,
-    nonce,
-    value,
-    gasPrice,
-    maxFeePerGas,
-    type: eipVersionType,
-  } = txPayload
+  const {data, to, gasPrice, maxFeePerGas} = txPayload
   const reSendTxStatus = formatStatus(status)
+  const {txParams: resendTxParams} = buildResendTxParams({
+    resendType,
+    txPayload,
+  })
+  const resendParamsInvalid =
+    Object.keys(txPayload).length > 0 && !Object.keys(resendTxParams).length
 
-  const uses1559Fees = useUses1559Fees(eipVersionType)
+  const uses1559Fees = useUses1559Fees(resendTxParams?.type)
 
   const lastGasPrice = uses1559Fees ? maxFeePerGas : gasPrice
 
@@ -125,35 +113,16 @@ function ResendTransaction() {
       }
     : {}
 
-  const originParams = filterNonValueParams(
-    resendType === 'speedup'
-      ? {
-          type: eipVersionType,
-          from,
-          to,
-          nonce,
-          value,
-          data,
-        }
-      : {
-          type: eipVersionType,
-          from,
-          to: from,
-          nonce,
-          value: '0x0',
-        },
-  )
-
-  const originEstimateRst =
-    useEstimateTx({...originParams}, token20Params) || {}
+  const resendEstimateRst =
+    useEstimateTx({...resendTxParams}, token20Params) || {}
 
   const {
     gasPrice: estimateGasPrice,
     gasInfoEip1559 = {},
     loading,
-  } = originEstimateRst
+  } = resendEstimateRst
 
-  const originEstimateGasPrice = useMemo(() => {
+  const resendEstimateGasPrice = useMemo(() => {
     if (
       loading ||
       (!uses1559Fees && !estimateGasPrice) ||
@@ -197,7 +166,7 @@ function ResendTransaction() {
   }
 
   const onResend = async feeParams => {
-    if (loading || !accountType) {
+    if (loading || !accountType || resendParamsInvalid) {
       return
     }
 
@@ -220,7 +189,7 @@ function ResendTransaction() {
       setLoading(true)
     }
 
-    const params = filterNonValueParams({...originParams}, {...feeParams})
+    const params = omitFalsyTxParams(resendTxParams, feeParams)
     const error = await checkBalance(
       params,
       token || {},
@@ -249,9 +218,9 @@ function ResendTransaction() {
 
   // set default gas price (legacy tx)
   useEffect(() => {
-    if (lastGasPrice && originEstimateGasPrice) {
+    if (lastGasPrice && resendEstimateGasPrice) {
       const decimalGasPrice = formatHexToDecimal(lastGasPrice)
-      const decimalEstimateGasPrice = formatHexToDecimal(originEstimateGasPrice)
+      const decimalEstimateGasPrice = formatHexToDecimal(resendEstimateGasPrice)
 
       const biggerGasPrice = new Big(decimalGasPrice).times(1.1)
 
@@ -265,7 +234,7 @@ function ResendTransaction() {
 
       setSuggestedGasPrice(formatDecimalToHex(recommendGasPrice))
     }
-  }, [originEstimateGasPrice, lastGasPrice])
+  }, [resendEstimateGasPrice, lastGasPrice])
 
   //cancel resend tx when tx status is not pending
   useEffect(() => {
@@ -285,8 +254,8 @@ function ResendTransaction() {
         resendGasPrice={suggestedGasPrice}
         resendType={resendType}
         onSubmit={onResend}
-        tx={{...originParams}}
-        resendDisabled={!!estimateError}
+        tx={{...resendTxParams}}
+        resendDisabled={resendParamsInvalid || !!estimateError}
         onClickGasStationItem={() => setEstimateError('')}
       />
       {sendStatus && (
