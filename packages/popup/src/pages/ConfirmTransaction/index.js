@@ -365,10 +365,16 @@ function ConfirmTransaction() {
     maxMode && isSendToken && !adjustedSendTx.hasRemainingAmount
       ? t('gasFeeIsNotEnough')
       : ''
-
+  const tokenPayQuoteErrorMessage =
+    tokenPayGas.isTokenPayGas && tokenPayGas.tokenPayQuoteError
+      ? t('gasFeeIsNotEnough')
+      : ''
   useEffect(() => {
-    setEstimateError(adjustedAmountError || errorMessage)
-  }, [adjustedAmountError, errorMessage])
+    setEstimateError(
+      adjustedAmountError || tokenPayQuoteErrorMessage || errorMessage,
+    )
+  }, [adjustedAmountError, errorMessage, tokenPayQuoteErrorMessage])
+
   // when dapp send, init the gas edit global store
   // internal 7702 tx also enters confirm page directly, so it uses the same init path.
   useEffect(() => {

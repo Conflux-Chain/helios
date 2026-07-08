@@ -5567,6 +5567,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
     "@fluent-wallet/spec": "npm:1.0.18"
+    "@fluent-wallet/utils": "workspace:packages/utils"
     "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
   languageName: unknown
   linkType: soft

@@ -51,6 +51,7 @@ function getGasTokenOptionState({
     getBalanceByAddress(tokenBalances, token.address) || '0x0'
   const selected = tokenAddress === selectedGasToken?.address?.toLowerCase()
   const option = options?.tokens?.[tokenAddress]
+  const isOptionUnavailable = option?.available === false
   const estimatedGasFeeAmount = option?.estimatedTokenAmount
   const estimatedQuoteAmount = option?.estimatedQuoteAmount
   const gasFeeAmount = selected
@@ -60,13 +61,22 @@ function getGasTokenOptionState({
     ? selectedGasTokenQuoteAmount || estimatedQuoteAmount
     : estimatedQuoteAmount
   const hasEstimate = Boolean(gasFeeAmount)
-  const canPayGas = canPayGasFee({
-    gasTokenBalance,
-    gasFeeAmount,
-    maxMode,
-    isGasTokenSameAsSendToken: tokenAddress === sendTokenBalanceKey,
-    sendAmount: sendTokenAmount,
-  })
+  const canPayGas =
+    !isOptionUnavailable &&
+    canPayGasFee({
+      gasTokenBalance,
+      gasFeeAmount,
+      maxMode,
+      isGasTokenSameAsSendToken: tokenAddress === sendTokenBalanceKey,
+      sendAmount: sendTokenAmount,
+    })
+  const warningText = isOptionUnavailable
+    ? option?.unavailableReason === 'insufficientBalance'
+      ? 'balanceIsNotEnough'
+      : 'gasFeeIsNotEnough'
+    : hasEstimate && !canPayGas
+    ? 'balanceIsNotEnough'
+    : ''
 
   return {
     gasTokenBalance,
@@ -75,7 +85,7 @@ function getGasTokenOptionState({
     quoteAmount,
     hasEstimate,
     canPayGas,
-    warningText: hasEstimate && !canPayGas ? 'balanceIsNotEnough' : '',
+    warningText,
   }
 }
 
