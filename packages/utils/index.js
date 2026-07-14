@@ -350,3 +350,35 @@ export const prepareEip7702AuthorizationRequestsForEstimate = (
       yParity: authorization.yParity ?? '0x1',
     }),
   )
+
+const DECIMAL_UNSIGNED_INTEGER_PATTERN = /^\d+$/
+
+export function toUnsignedBN(value) {
+  if (BN.isBN(value)) {
+    if (value.isNeg()) {
+      throw new TypeError(`Invalid unsigned integer "${value}"`)
+    }
+
+    return value
+  }
+
+  if (typeof value === 'number') {
+    if (!Number.isSafeInteger(value) || value < 0) {
+      throw new TypeError(`Invalid unsigned integer "${value}"`)
+    }
+
+    return new BN(value)
+  }
+
+  if (typeof value === 'string') {
+    if (value.length > 2 && isHexString(value)) {
+      return new BN(value.slice(2), 16)
+    }
+
+    if (DECIMAL_UNSIGNED_INTEGER_PATTERN.test(value)) {
+      return new BN(value, 10)
+    }
+  }
+
+  throw new TypeError(`Invalid unsigned integer "${String(value)}"`)
+}

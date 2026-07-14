@@ -12,8 +12,39 @@ import {
 } from '@fluent-wallet/ledger'
 import {decrypt} from 'browser-passworder'
 import {joinSignature} from '@ethersproject/bytes'
-import {addHexPrefix} from '@fluent-wallet/utils'
+import {addHexPrefix, toUnsignedBN} from '@fluent-wallet/utils'
+
 const {map, dbid, or} = spec
+
+function assertTypedDataChainIdMatchesNetwork({
+  domain,
+  networkChainId,
+  InvalidParams,
+}) {
+  if (!domain || !Object.prototype.hasOwnProperty.call(domain, 'chainId')) {
+    return
+  }
+
+  let domainChainId
+
+  try {
+    domainChainId = toUnsignedBN(domain.chainId)
+  } catch {
+    throw InvalidParams(
+      `Invalid typed data domain chainId "${String(domain.chainId)}"`,
+    )
+  }
+
+  const activeChainId = toUnsignedBN(networkChainId)
+
+  if (!domainChainId.eq(activeChainId)) {
+    throw InvalidParams(
+      `Provided chainId "${domainChainId.toString(
+        10,
+      )}" must match the active chainId "${activeChainId.toString(10)}"`,
+    )
+  }
+}
 
 function getLedgerHDPathFromAddressAndGroupData(groupData, hex) {
   return groupData[hex]
@@ -138,10 +169,16 @@ export const gen = {
           g: {hex: 1, _account: {eid: 1, _accountGroup: {vault: {type: 1}}}},
         })
 
-        validateAndFormatTypedDataString({
+        const typedData = validateAndFormatTypedDataString({
           type,
           typedDataString,
           spec,
+          InvalidParams,
+        })
+
+        assertTypedDataChainIdMatchesNetwork({
+          domain: typedData.domain,
+          networkChainId: app.currentNetwork.chainId,
           InvalidParams,
         })
 
