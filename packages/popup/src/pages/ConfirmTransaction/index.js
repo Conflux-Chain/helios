@@ -515,6 +515,15 @@ function ConfirmTransaction() {
     else window.close()
   }
 
+  const onCancel = () => {
+    clearSendTransactionParams()
+    if (isInternalEip7702Tx) {
+      history.goBack()
+      return
+    }
+    history.push(HOME)
+  }
+
   const confirmDisabled =
     !!estimateError ||
     sendEstimateRst.loading ||
@@ -632,10 +641,7 @@ function ConfirmTransaction() {
               <Button
                 variant="outlined"
                 className="flex-1 mr-3"
-                onClick={() => {
-                  clearSendTransactionParams()
-                  history.push(HOME)
-                }}
+                onClick={onCancel}
               >
                 {t('cancel')}
               </Button>
