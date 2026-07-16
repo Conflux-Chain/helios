@@ -109,7 +109,6 @@ function ConfirmTransaction() {
   const [sendError, setSendError] = useState({})
   const [estimateError, setEstimateError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
-  const [isSwitchInfoDrawerOpen, setIsSwitchInfoDrawerOpen] = useState(false)
   const isDapp = getPageType() === 'notification'
   useEffect(() => {
     if (isDapp)
@@ -165,14 +164,15 @@ function ConfirmTransaction() {
     action: eip7702Action,
   })
   const {isInternalEip7702Tx} = eip7702Display
-  const shouldOpenSwitchInfoDrawer =
-    isInternalEip7702Tx && eip7702Action === 'switch'
-
-  useEffect(() => {
-    if (shouldOpenSwitchInfoDrawer) {
-      setIsSwitchInfoDrawerOpen(true)
-    }
-  }, [shouldOpenSwitchInfoDrawer])
+  // The switch flow enters this page with PUSH. Gas pages return with POP, so
+  // the drawer is only initialized as open on the first entry from switch.
+  const shouldOpenSwitchInfoDrawerOnMount =
+    isInternalEip7702Tx &&
+    eip7702Action === 'switch' &&
+    history.action === 'PUSH'
+  const [isSwitchInfoDrawerOpen, setIsSwitchInfoDrawerOpen] = useState(
+    () => shouldOpenSwitchInfoDrawerOnMount,
+  )
 
   // get to type and to token
   const {isContract, decodeData, isEOAAddress, token, isDecoding} =
