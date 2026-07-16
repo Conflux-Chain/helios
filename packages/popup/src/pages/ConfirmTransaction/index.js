@@ -7,6 +7,7 @@ import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
   formatDecimalToHex,
   formatHexToDecimal,
+  convertDataToValue,
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
@@ -48,6 +49,7 @@ import {
   LEDGER_AUTH_STATUS,
   LEDGER_OPEN_STATUS,
   TX_STATUS,
+  MAX_STRATEGY,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import useTokenPayGas from './useTokenPayGas'
@@ -127,9 +129,11 @@ function ConfirmTransaction() {
     gasLimit,
     storageLimit,
     nonce,
-    maxMode,
     gasLevel,
     customAllowance,
+    gasTokenAddress,
+    sendAmount,
+    maxStrategy,
     setGasTokenAddress,
     setGasPrice,
     setMaxFeePerGas,
@@ -137,6 +141,7 @@ function ConfirmTransaction() {
     setGasLimit,
     setStorageLimit,
     setNonce,
+    setSendAmount,
     setGasLevel,
     clearSendTransactionParams,
     clearAdvancedGasSetting,
@@ -197,6 +202,9 @@ function ConfirmTransaction() {
     token,
   })
   const isSign = !isSendToken && !isApproveToken
+
+  const isLegacyMax = maxStrategy === MAX_STRATEGY.LEGACY
+  const isDeferredMax = maxStrategy === MAX_STRATEGY.DEFERRED
 
   const type = displayAccount?.accountGroup?.vault?.type
   const isHwAccount = type === 'hw' && type !== undefined
@@ -282,8 +290,34 @@ function ConfirmTransaction() {
     estimateRst,
   })
 
+  const nativeMaxDrip = estimateRst.nativeMaxDrip
+
+  useEffect(() => {
+    const nativeMax = convertDataToValue(nativeMaxDrip, nativeToken?.decimals)
+
+    if (
+      isLegacyMax &&
+      isNativeToken &&
+      !gasTokenAddress &&
+      !tokenPayGas.isTokenPayGas &&
+      nativeMax &&
+      sendAmount !== nativeMax
+    ) {
+      setSendAmount(nativeMax)
+    }
+  }, [
+    gasTokenAddress,
+    isLegacyMax,
+    isNativeToken,
+    nativeMaxDrip,
+    nativeToken?.decimals,
+    sendAmount,
+    setSendAmount,
+    tokenPayGas.isTokenPayGas,
+  ])
+
   const adjustedSendTx = useAdjustedSendTx({
-    enabled: !isDapp && maxMode && isSendToken,
+    enabled: !isDapp && isDeferredMax && isSendToken,
     input: {
       amount: displayValue,
       amountHex: inputAmountHex,
@@ -362,9 +396,10 @@ function ConfirmTransaction() {
   )
 
   const adjustedAmountError =
-    maxMode && isSendToken && !adjustedSendTx.hasRemainingAmount
+    isDeferredMax && isSendToken && !adjustedSendTx.hasRemainingAmount
       ? t('gasFeeIsNotEnough')
       : ''
+
   const tokenPayQuoteErrorMessage =
     tokenPayGas.isTokenPayGas && tokenPayGas.tokenPayQuoteError
       ? t('gasFeeIsNotEnough')
@@ -623,7 +658,7 @@ function ConfirmTransaction() {
             networkDbId={networkDbId}
             estimateRst={sendEstimateRst}
             uses1559Fees={uses1559Fees}
-            maxMode={maxMode}
+            isDeferredMax={isDeferredMax}
             sendTokenAddress={displayTokenAddress}
             sendTokenAmount={inputAmountHex}
           />
