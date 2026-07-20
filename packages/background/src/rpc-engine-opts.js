@@ -17,6 +17,7 @@ import * as walletRequestAccounts from '@fluent-wallet/wallet_request-accounts'
 import * as walletAccounts from '@fluent-wallet/wallet_accounts'
 import * as walletChainId from '@fluent-wallet/wallet_chain-id'
 import * as walletGetNextUsableNonce from '@fluent-wallet/wallet_get-next-usable-nonce'
+import * as walletGetEthereumNonceState from '@fluent-wallet/wallet_get-ethereum-nonce-state'
 import * as walletEnrichEthereumTx from '@fluent-wallet/wallet_enrich-ethereum-tx'
 import * as walletSendTransaction from '@fluent-wallet/wallet_send-transaction'
 import * as walletHandleUnfinishedETHTx from '@fluent-wallet/wallet_handle-unfinished-eth-tx'
@@ -257,6 +258,7 @@ export const rpcEngineOpts = {
     walletAccounts,
     walletGetNextUsableNonce,
     walletGetNextNonce,
+    walletGetEthereumNonceState,
     walletGetBlockOrEpochNumber,
     walletGetBalance,
     walletRefreshBalance,

@@ -4836,6 +4836,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/nonce-manager@workspace:*, @fluent-wallet/nonce-manager@workspace:packages/nonce-manager":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/nonce-manager@workspace:packages/nonce-manager"
+  dependencies:
+    "@fluent-wallet/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/personal_sign@workspace:packages/rpcs/personal_sign":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/personal_sign@workspace:packages/rpcs/personal_sign"
@@ -5467,6 +5475,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-ethereum-nonce-state@workspace:packages/rpcs/wallet_getEthereumNonceState":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-ethereum-nonce-state@workspace:packages/rpcs/wallet_getEthereumNonceState"
+  dependencies:
+    "@fluent-wallet/signature": "workspace:*"
+    "@fluent-wallet/spec": "npm:1.0.18"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-fluent-metadata@workspace:*, @fluent-wallet/wallet_get-fluent-metadata@workspace:packages/rpcs/wallet_getFluentMetadata":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-fluent-metadata@workspace:packages/rpcs/wallet_getFluentMetadata"
@@ -5776,6 +5793,7 @@ __metadata:
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/eth_send-transaction": "workspace:*"
     "@fluent-wallet/json-rpc-error": "workspace:*"
+    "@fluent-wallet/nonce-manager": "workspace:*"
     "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
   languageName: unknown
@@ -18551,6 +18569,7 @@ __metadata:
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
     "@fluent-wallet/wallet_get-eip7702-account-states": "workspace:packages/rpcs/wallet_getEip7702AccountState"
+    "@fluent-wallet/wallet_get-ethereum-nonce-state": "workspace:packages/rpcs/wallet_getEthereumNonceState"
     "@fluent-wallet/wallet_get-fluent-metadata": "workspace:*"
     "@fluent-wallet/wallet_get-import-hardware-wallet-info": "workspace:*"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"

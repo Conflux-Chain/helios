@@ -44,7 +44,6 @@ function AdvancedGas() {
   const [inputMaxFeePerGas, setInputMaxFeePerGas] = useState('')
   const [inputMaxPriorityFeePerGas, setInputMaxPriorityFeePerGas] = useState('')
   const [inputGasLimit, setInputGasLimit] = useState('')
-  const [inputNonce, setInputNonce] = useState('')
   const [gasPriceErr, setGasPriceErr] = useState('')
   const [maxPriorityFeePerGasErr, setMaxPriorityFeePerGasErr] = useState('')
   const [gasLimitErr, setGasLimitErr] = useState('')
@@ -52,12 +51,15 @@ function AdvancedGas() {
 
   const {
     gasLimit,
-    nonce,
+    nonce: suggestedNonce,
+    customNonce,
     storageLimit,
     advancedGasSetting,
     setAdvancedGasSetting,
+    setCustomNonce,
     tx: txParams,
   } = useCurrentTxStore()
+  const [inputNonce, setInputNonce] = useState(isHistoryTx ? '' : customNonce)
 
   const isCfxChain = useIsCfxChain()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
@@ -80,7 +82,9 @@ function AdvancedGas() {
     gas: formatDecimalToHex(
       inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
     ),
-    nonce: formatDecimalToHex(inputNonce || advancedGasSetting.nonce || nonce),
+    nonce: isHistoryTx
+      ? originParams.nonce
+      : formatDecimalToHex(inputNonce || suggestedNonce),
     storageLimit: formatDecimalToHex(
       advancedGasSetting.storageLimit || storageLimit,
     ),
@@ -245,6 +249,7 @@ function AdvancedGas() {
   }
 
   const saveGasData = () => {
+    if (!isHistoryTx) setCustomNonce(inputNonce)
     setAdvancedGasSetting({
       gasPrice: convertDecimal(inputGasPrice, 'multiply', GWEI_DECIMALS),
       maxFeePerGas: convertDecimal(
@@ -262,7 +267,9 @@ function AdvancedGas() {
         advancedGasSetting.gasLimit ||
         gasLimit ||
         formatHexToDecimal(estimateGasLimit),
-      nonce: inputNonce || advancedGasSetting.nonce || nonce,
+      nonce: isHistoryTx
+        ? formatHexToDecimal(originParams.nonce)
+        : inputNonce || suggestedNonce,
       storageLimit:
         advancedGasSetting.storageLimit ||
         storageLimit ||
@@ -307,7 +314,7 @@ function AdvancedGas() {
               storageLimit ||
               formatHexToDecimal(estimateStorageLimit)
             }
-            nonce={advancedGasSetting.nonce || nonce}
+            nonce={inputNonce || suggestedNonce}
             gasLimit={
               advancedGasSetting.gasLimit ||
               gasLimit ||

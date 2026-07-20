@@ -227,6 +227,7 @@ const defaultSendTransactionParams = {
   advancedGasSetting: initAdvancedGasSetting,
   data: '',
   nonce: '',
+  customNonce: '',
   sendTokenId: 'native',
   customAllowance: '',
   gasTokenAddress: '',
@@ -269,6 +270,7 @@ export const useCurrentTxStore = create((set, get) => ({
   setCustomAllowance: customAllowance => set({customAllowance}),
   setGasTokenAddress: gasTokenAddress => set({gasTokenAddress}),
   setNonce: nonce => set({nonce}),
+  setCustomNonce: customNonce => set({customNonce}),
   setSendTokenId: sendTokenId => set({sendTokenId}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
 }))
