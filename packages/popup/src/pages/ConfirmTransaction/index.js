@@ -7,6 +7,7 @@ import {RightOutlined} from '@fluent-wallet/component-icons'
 import {
   formatDecimalToHex,
   formatHexToDecimal,
+  convertDataToValue,
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
@@ -48,6 +49,7 @@ import {
   LEDGER_AUTH_STATUS,
   LEDGER_OPEN_STATUS,
   TX_STATUS,
+  MAX_STRATEGY,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
 import useTokenPayGas from './useTokenPayGas'
@@ -109,7 +111,6 @@ function ConfirmTransaction() {
   const [sendError, setSendError] = useState({})
   const [estimateError, setEstimateError] = useState('')
   const [pendingAuthReq, setPendingAuthReq] = useState()
-  const [isSwitchInfoDrawerOpen, setIsSwitchInfoDrawerOpen] = useState(false)
   const isDapp = getPageType() === 'notification'
   useEffect(() => {
     if (isDapp)
@@ -128,9 +129,11 @@ function ConfirmTransaction() {
     gasLimit,
     storageLimit,
     nonce,
-    maxMode,
     gasLevel,
     customAllowance,
+    gasTokenAddress,
+    sendAmount,
+    maxStrategy,
     setGasTokenAddress,
     setGasPrice,
     setMaxFeePerGas,
@@ -138,6 +141,7 @@ function ConfirmTransaction() {
     setGasLimit,
     setStorageLimit,
     setNonce,
+    setSendAmount,
     setGasLevel,
     clearSendTransactionParams,
     clearAdvancedGasSetting,
@@ -165,14 +169,15 @@ function ConfirmTransaction() {
     action: eip7702Action,
   })
   const {isInternalEip7702Tx} = eip7702Display
-  const shouldOpenSwitchInfoDrawer =
-    isInternalEip7702Tx && eip7702Action === 'switch'
-
-  useEffect(() => {
-    if (shouldOpenSwitchInfoDrawer) {
-      setIsSwitchInfoDrawerOpen(true)
-    }
-  }, [shouldOpenSwitchInfoDrawer])
+  // The switch flow enters this page with PUSH. Gas pages return with POP, so
+  // the drawer is only initialized as open on the first entry from switch.
+  const shouldOpenSwitchInfoDrawerOnMount =
+    isInternalEip7702Tx &&
+    eip7702Action === 'switch' &&
+    history.action === 'PUSH'
+  const [isSwitchInfoDrawerOpen, setIsSwitchInfoDrawerOpen] = useState(
+    () => shouldOpenSwitchInfoDrawerOnMount,
+  )
 
   // get to type and to token
   const {isContract, decodeData, isEOAAddress, token, isDecoding} =
@@ -197,6 +202,9 @@ function ConfirmTransaction() {
     token,
   })
   const isSign = !isSendToken && !isApproveToken
+
+  const isLegacyMax = maxStrategy === MAX_STRATEGY.LEGACY
+  const isDeferredMax = maxStrategy === MAX_STRATEGY.DEFERRED
 
   const type = displayAccount?.accountGroup?.vault?.type
   const isHwAccount = type === 'hw' && type !== undefined
@@ -282,8 +290,34 @@ function ConfirmTransaction() {
     estimateRst,
   })
 
+  const nativeMaxDrip = estimateRst.nativeMaxDrip
+
+  useEffect(() => {
+    const nativeMax = convertDataToValue(nativeMaxDrip, nativeToken?.decimals)
+
+    if (
+      isLegacyMax &&
+      isNativeToken &&
+      !gasTokenAddress &&
+      !tokenPayGas.isTokenPayGas &&
+      nativeMax &&
+      sendAmount !== nativeMax
+    ) {
+      setSendAmount(nativeMax)
+    }
+  }, [
+    gasTokenAddress,
+    isLegacyMax,
+    isNativeToken,
+    nativeMaxDrip,
+    nativeToken?.decimals,
+    sendAmount,
+    setSendAmount,
+    tokenPayGas.isTokenPayGas,
+  ])
+
   const adjustedSendTx = useAdjustedSendTx({
-    enabled: !isDapp && maxMode && isSendToken,
+    enabled: !isDapp && isDeferredMax && isSendToken,
     input: {
       amount: displayValue,
       amountHex: inputAmountHex,
@@ -362,9 +396,10 @@ function ConfirmTransaction() {
   )
 
   const adjustedAmountError =
-    maxMode && isSendToken && !adjustedSendTx.hasRemainingAmount
+    isDeferredMax && isSendToken && !adjustedSendTx.hasRemainingAmount
       ? t('gasFeeIsNotEnough')
       : ''
+
   const tokenPayQuoteErrorMessage =
     tokenPayGas.isTokenPayGas && tokenPayGas.tokenPayQuoteError
       ? t('gasFeeIsNotEnough')
@@ -515,6 +550,15 @@ function ConfirmTransaction() {
     else window.close()
   }
 
+  const onCancel = () => {
+    clearSendTransactionParams()
+    if (isInternalEip7702Tx) {
+      history.goBack()
+      return
+    }
+    history.push(HOME)
+  }
+
   const confirmDisabled =
     !!estimateError ||
     sendEstimateRst.loading ||
@@ -614,7 +658,7 @@ function ConfirmTransaction() {
             networkDbId={networkDbId}
             estimateRst={sendEstimateRst}
             uses1559Fees={uses1559Fees}
-            maxMode={maxMode}
+            isDeferredMax={isDeferredMax}
             sendTokenAddress={displayTokenAddress}
             sendTokenAmount={inputAmountHex}
           />
@@ -632,10 +676,7 @@ function ConfirmTransaction() {
               <Button
                 variant="outlined"
                 className="flex-1 mr-3"
-                onClick={() => {
-                  clearSendTransactionParams()
-                  history.push(HOME)
-                }}
+                onClick={onCancel}
               >
                 {t('cancel')}
               </Button>

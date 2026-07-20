@@ -92,6 +92,11 @@ export const TX_STATUS = {
   ERROR: 'error', // used for all accounts
 }
 
+export const MAX_STRATEGY = {
+  LEGACY: 'legacy',
+  DEFERRED: 'deferred',
+}
+
 export const HARDWARE_ACCOUNT_PAGE_LIMIT = 5
 
 export const FULL_WINDOW_ROUTES = [CONNECT_HARDWARE_WALLET, IMPORT_HW_ACCOUNT]
