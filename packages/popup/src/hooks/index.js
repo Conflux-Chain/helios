@@ -234,7 +234,7 @@ const defaultSendTransactionParams = {
   txContext: {},
   // Internal preset-tx flows turn this off to avoid overwriting tx from send-form state.
   syncTxWithForm: true,
-  maxMode: false,
+  maxStrategy: null,
 }
 
 export const useCurrentTxStore = create((set, get) => ({
@@ -258,7 +258,7 @@ export const useCurrentTxStore = create((set, get) => ({
   setGasLimit: gasLimit => set({gasLimit}),
   setStorageLimit: storageLimit => set({storageLimit}),
   setGasLevel: gasLevel => set({gasLevel}),
-  setMaxMode: maxMode => set({maxMode}),
+  setMaxStrategy: maxStrategy => set({maxStrategy}),
   setAdvancedGasSetting: advancedGasSetting => {
     const oldSetting = get().advancedGasSetting
     const newSetting = {...oldSetting, ...advancedGasSetting}
@@ -273,7 +273,6 @@ export const useCurrentTxStore = create((set, get) => ({
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
 }))
 
-// TODO: support max mode
 // TODO: combine estimate here
 // MAYBE: support multiple tx and rename this to useTxParams
 export const useCurrentTxParams = () => {

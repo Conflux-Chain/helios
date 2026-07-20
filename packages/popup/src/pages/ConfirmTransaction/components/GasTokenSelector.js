@@ -13,7 +13,7 @@ import {
 function canPayGasFee({
   gasTokenBalance,
   gasFeeAmount,
-  maxMode,
+  isDeferredMax,
   isGasTokenSameAsSendToken,
   sendAmount,
 }) {
@@ -26,7 +26,7 @@ function canPayGasFee({
     return gasTokenBalanceBN.gte(gasFeeBN)
   }
 
-  if (maxMode) {
+  if (isDeferredMax) {
     return gasTokenBalanceBN.gt(gasFeeBN)
   }
 
@@ -41,9 +41,9 @@ function getGasTokenOptionState({
   selectedGasToken,
   selectedGasTokenAmount,
   selectedGasTokenQuoteAmount,
-  maxMode,
+  isDeferredMax,
   sendTokenAddress,
-  sendTokenAmount,
+  sendAmount,
 }) {
   const tokenAddress = token.address?.toLowerCase()
   const sendTokenBalanceKey = sendTokenAddress?.toLowerCase()
@@ -66,9 +66,9 @@ function getGasTokenOptionState({
     canPayGasFee({
       gasTokenBalance,
       gasFeeAmount,
-      maxMode,
+      isDeferredMax,
       isGasTokenSameAsSendToken: tokenAddress === sendTokenBalanceKey,
-      sendAmount: sendTokenAmount,
+      sendAmount,
     })
   const warningText = isOptionUnavailable
     ? option?.unavailableReason === 'insufficientBalance'
@@ -164,7 +164,7 @@ function GasTokenSelector({
   selectedGasTokenQuoteAmount,
   quoteToken,
   onSelectGasToken,
-  maxMode,
+  isDeferredMax,
   sendTokenAddress,
   sendTokenAmount,
 }) {
@@ -184,7 +184,7 @@ function GasTokenSelector({
   const canPayNativeGas = canPayGasFee({
     gasTokenBalance: nativeBalance,
     gasFeeAmount: nativeGasFee,
-    maxMode,
+    isDeferredMax,
     isGasTokenSameAsSendToken: isSendNative,
     sendAmount: sendTokenAmount,
   })
@@ -227,9 +227,9 @@ function GasTokenSelector({
             selectedGasToken,
             selectedGasTokenAmount,
             selectedGasTokenQuoteAmount,
-            maxMode,
+            isDeferredMax,
             sendTokenAddress,
-            sendTokenAmount,
+            sendAmount: sendTokenAmount,
           })
 
           return (
@@ -304,7 +304,7 @@ GasTokenSelector.propTypes = {
   selectedGasTokenQuoteAmount: PropTypes.string,
   quoteToken: PropTypes.object,
   onSelectGasToken: PropTypes.func,
-  maxMode: PropTypes.bool,
+  isDeferredMax: PropTypes.bool,
   sendTokenAddress: PropTypes.string,
   sendTokenAmount: PropTypes.string,
 }

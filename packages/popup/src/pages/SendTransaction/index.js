@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {isNumber} from '@fluent-wallet/checks'
 import {
+  convertDataToValue,
   formatHexToDecimal,
   convertValueToData,
 } from '@fluent-wallet/data-format'
@@ -38,10 +39,12 @@ import {
 } from './components'
 import {
   useCurrentAddress,
+  useBalance,
   useSingleTokenInfoWithNativeTokenSupport,
   useAddressNote,
 } from '../../hooks/useApi'
-import {ROUTES, NETWORK_TYPE} from '../../constants'
+import {useTokenPayAvailability} from '../../hooks/useTokenPay'
+import {ROUTES, NETWORK_TYPE, MAX_STRATEGY} from '../../constants'
 import {bn16} from '../../utils'
 import useGlobalStore from '../../stores'
 
@@ -85,7 +88,7 @@ function SendTransaction() {
     toAddress,
     sendAmount,
     sendTokenId,
-    maxMode,
+    maxStrategy,
     setToAddress,
     setSendAmount,
     setSendTokenId,
@@ -95,7 +98,8 @@ function SendTransaction() {
     setGasLimit,
     setNonce,
     setStorageLimit,
-    setMaxMode,
+    setMaxStrategy,
+    setGasTokenAddress,
     setSyncTxWithForm,
     tx,
     clearSendTransactionParams,
@@ -106,9 +110,14 @@ function SendTransaction() {
       value: address,
       nativeBalance,
       network: {eid: networkId, type, netId, ticker: nativeToken},
-      account: {nickname},
+      account: {nickname, accountGroup},
     },
   } = useCurrentAddress()
+  const isHwAccount = accountGroup?.vault?.type === 'hw'
+  const {canUseTokenPay, tokenPayConfigLoading} = useTokenPayAvailability({
+    isHwAccount,
+    networkDbId: networkId,
+  })
 
   const toAddressInputPlaceholder = useToAddressPlaceHolder({type, netId})
 
@@ -119,6 +128,20 @@ function SendTransaction() {
 
   const {address: tokenAddress, decimals} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
+
+  const sendTokenBalanceKey = tokenAddress || '0x0'
+  const sendTokenBalanceData = useBalance(
+    address,
+    networkId,
+    sendTokenBalanceKey,
+  )
+
+  const sendTokenBalance =
+    sendTokenBalanceData?.[address?.toLowerCase()]?.[
+      sendTokenBalanceKey.toLowerCase()
+    ] ||
+    sendTokenBalanceData?.[address]?.[sendTokenBalanceKey] ||
+    '0x0'
 
   const [addressError, setAddressError] = useState('')
   const [inputAddress, setInputAddress] = useState(toAddress)
@@ -135,8 +158,10 @@ function SendTransaction() {
     isNativeToken && sendAmount
       ? convertValueToData(sendAmount, decimals) || '0x0'
       : '0x0'
-  const canIgnoreGasBalanceError =
-    !isNativeToken || bn16(nativeBalance || '0x0').gte(bn16(nativeSendValue))
+  const hasNativeSendValue =
+    !isNativeToken ||
+    bn16(nativeBalance || '0x0').gte(bn16(nativeSendValue || '0x0'))
+  const canIgnoreGasBalanceError = canUseTokenPay && hasNativeSendValue
 
   const estimateRst =
     useEstimateTx(
@@ -152,6 +177,7 @@ function SendTransaction() {
     gasLimit: estimateGasLimit,
     storageCollateralized: estimateStorageLimit,
     nonce,
+    nativeMaxDrip,
     loading,
   } = estimateRst
 
@@ -205,15 +231,38 @@ function SendTransaction() {
       })
   }, [netId, toAddress, type])
 
+  const isLegacyNativeMaxUnavailable =
+    !canUseTokenPay && isNativeToken && (loading || !nativeMaxDrip)
+  const maxDisabled =
+    (!isHwAccount && tokenPayConfigLoading) || isLegacyNativeMaxUnavailable
+
   const onChangeToken = token => {
     setSendTokenId(token)
-    if (maxMode) {
-      setSendAmount('')
-      setMaxMode(false)
-    }
+    if (maxStrategy) setSendAmount('')
+    setMaxStrategy(null)
   }
   const onChangeAmount = amount => {
     setSendAmount(amount)
+    setMaxStrategy(null)
+  }
+
+  const onClickMax = () => {
+    if (maxDisabled) return
+
+    if (canUseTokenPay) {
+      setMaxStrategy(MAX_STRATEGY.DEFERRED)
+      setSendAmount(convertDataToValue(sendTokenBalance, decimals))
+      return
+    }
+
+    setGasTokenAddress('')
+    setMaxStrategy(MAX_STRATEGY.LEGACY)
+    setSendAmount(
+      convertDataToValue(
+        isNativeToken ? nativeMaxDrip : sendTokenBalance,
+        decimals,
+      ),
+    )
   }
 
   const onChangeAddress = address => {
@@ -331,8 +380,12 @@ function SendTransaction() {
           <TokenAndAmount
             selectedTokenId={sendTokenId}
             amount={sendAmount}
+            balance={sendTokenBalance}
+            isMaxSelected={Boolean(maxStrategy)}
+            maxDisabled={maxDisabled}
             onChangeAmount={onChangeAmount}
             onChangeToken={onChangeToken}
+            onClickMax={onClickMax}
           />
           <div className="overflow-hidden">
             <div
@@ -340,7 +393,7 @@ function SendTransaction() {
             >
               {displayErrorMsg}
             </div>
-            {maxMode && (
+            {maxStrategy === MAX_STRATEGY.DEFERRED && (
               <div className="pt-2 text-xs text-gray-40">
                 {t('sendMaxGasTip')}
               </div>
