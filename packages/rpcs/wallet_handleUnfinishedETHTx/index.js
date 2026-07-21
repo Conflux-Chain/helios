@@ -75,12 +75,12 @@ export const permissions = {
     'getUnfinishedTxCount',
     'getAddressById',
     'getTxById',
-    'setTxSkipped',
     'setTxFailed',
     'setTxSending',
     'setTxPending',
     'setTxPackaged',
     'setTxExecuted',
+    'setTxExecutionFailed',
     'setTxConfirmed',
     'setTxUnsent',
     'setTxChainSwitched',
@@ -104,12 +104,12 @@ export const main = ({
     getUnfinishedTxCount,
     getAddressById,
     getTxById,
-    setTxSkipped,
     setTxFailed,
     setTxSending,
     setTxPending,
     setTxPackaged,
     setTxExecuted,
+    setTxExecutionFailed,
     setTxConfirmed,
     setTxUnsent,
     setTxChainSwitched,
@@ -386,40 +386,8 @@ export const main = ({
         keepTruthy(),
 
         // packaged
-        map(rst => {
+        sideEffect(rst => {
           setTxPackaged({hash, blockHash: rst.blockHash})
-          return eth_getTransactionCount({errorFallThrough: true}, [
-            address.value,
-            rst.blockNumber,
-          ])
-        }),
-      )
-      .subscribe(resolve({fail: keepTrack}))
-      .transform(
-        sideEffect(nonce => {
-          if (
-            BigNumber.from(nonce).gt(BigNumber.from(tx.txPayload.nonce).add(1))
-          ) {
-            if (tx.skippedChecked) {
-              if (setTxSkipped({hash, skippedChecked: true})) {
-                getExt().then(ext =>
-                  ext.notifications.create(hash, {
-                    title: 'Skipped transaction',
-                    message: `Transaction ${parseInt(
-                      tx.txPayload.nonce,
-                      16,
-                    )}  skipped!`,
-                  }),
-                )
-              }
-              updateBadge(getUnfinishedTxCount())
-              return sdone()
-            } else {
-              setTxSkipped({hash})
-              // check if skipped again immediately
-              return keepTrack(0)
-            }
-          }
           keepTrack(0)
         }),
       )
@@ -464,7 +432,13 @@ export const main = ({
             if (txExecErrorMsg) {
               err = txExecErrorMsg
             }
-            if (setTxFailed({hash, error: err || 'tx failed'})) {
+            if (
+              setTxExecutionFailed({
+                hash,
+                error: err || 'tx failed',
+                receipt,
+              })
+            ) {
               getExt().then(ext =>
                 ext.notifications.create(hash, {
                   title: 'Failed transaction',

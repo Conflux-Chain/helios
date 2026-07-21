@@ -194,14 +194,14 @@ export const main = async ({
     t({eid: authReqId, authReq: {processed: true}})
   }
 
-  // tx array [tx]
   const tx = params.authReqId ? params.tx : params
+  const txParams = tx[0]
 
   const transactionNetwork = authReqId ? authReq.app.currentNetwork : network
 
-  if (tx[0].gasLimit) {
-    if (!tx[0].gas) tx[0].gas = tx[0].gasLimit
-    delete tx[0].gasLimit
+  if (txParams.gasLimit) {
+    if (!txParams.gas) txParams.gas = txParams.gasLimit
+    delete txParams.gasLimit
   }
   const addr = findAddress({
     // filter by app.currentNetwork and app.currentAccount
@@ -209,9 +209,9 @@ export const main = async ({
     selected: !authReqId ? true : undefined,
     // filter by current network
     networkId: transactionNetwork.eid,
-    value: tx[0].from,
+    value: txParams.from,
   })
-  if (!addr) throw InvalidParams(`Invalid from address ${tx[0].from}`)
+  if (!addr) throw InvalidParams(`Invalid from address ${txParams.from}`)
 
   if (params.tokenPay) {
     if (!authReqId) {
@@ -317,31 +317,45 @@ export const main = async ({
   let pendingTransaction
 
   try {
-    if (transactionNetwork.type === 'eth' && !_sendAction) {
+    if (transactionNetwork.type === 'eth') {
       pendingTransaction = await withEthereumNonceLock(
         {
           chainId: transactionNetwork.chainId,
-          address: tx[0].from,
+          address: txParams.from,
         },
         async () => {
+          if (_sendAction) {
+            const expectedNonces = [
+              txParams.nonce,
+              ...(txParams.authorizationList ?? []).map(
+                authorization => authorization.nonce,
+              ),
+            ]
+
+            return createPendingTransaction({
+              transaction: txParams,
+              expectedNonces,
+            })
+          }
+
           const {networkPendingNonce, occupiedNonces} =
             await wallet_getEthereumNonceState(
               {
                 errorFallThrough: true,
                 network: transactionNetwork,
               },
-              [tx[0].from],
+              [txParams.from],
             )
 
-          const authorizationList = tx[0].authorizationList ?? []
+          const authorizationList = txParams.authorizationList ?? []
           const expectedNonces = resolveTransactionNonces({
             networkPendingNonce,
             occupiedNonces,
             nonceCount: authorizationList.length + 1,
-            customNonce: tx[0].nonce,
+            customNonce: txParams.nonce,
           })
           const transaction = {
-            ...tx[0],
+            ...txParams,
             nonce: expectedNonces[0],
           }
 
@@ -362,7 +376,7 @@ export const main = async ({
       )
     } else {
       pendingTransaction = await createPendingTransaction({
-        transaction: tx[0],
+        transaction: txParams,
       })
     }
   } catch (err) {

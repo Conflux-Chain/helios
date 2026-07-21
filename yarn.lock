@@ -5779,8 +5779,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_send-transaction-with-action@workspace:packages/rpcs/wallet_sendTransactionWithAction"
   dependencies:
+    "@fluent-wallet/cfx_send-transaction": "workspace:*"
+    "@fluent-wallet/consts": "workspace:*"
+    "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
-    "@fluent-wallet/wallet_send-transaction": "workspace:*"
+    "@fluent-wallet/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

@@ -140,15 +140,32 @@ function ResendTransaction() {
         )
   }, [uses1559Fees, estimateGasPrice, gasInfoEip1559, loading])
 
-  const resendTransaction = async params => {
+  const resendTransaction = async txParams => {
+    const action =
+      resendType === 'expeditedCancellation' || resendType === 'cancel'
+        ? 'cancel'
+        : 'speedup'
+
+    const gasParams = omitFalsyTxParams({
+      gas: txParams.gas,
+      gasPrice: txParams.gasPrice,
+      maxFeePerGas: txParams.maxFeePerGas,
+      maxPriorityFeePerGas: txParams.maxPriorityFeePerGas,
+    })
+
+    const requestParams = networkTypeIsCfx
+      ? {
+          action,
+          tx: [txParams],
+        }
+      : {
+          action,
+          originalTxHash: hash,
+          ...gasParams,
+        }
+
     try {
-      await request(WALLET_SEND_TRANSACTION_WITH_ACTION, {
-        action:
-          resendType === 'expeditedCancellation' || resendType === 'cancel'
-            ? 'cancel'
-            : 'speedup',
-        tx: [params],
-      })
+      await request(WALLET_SEND_TRANSACTION_WITH_ACTION, requestParams)
       clearSendTransactionParams()
       history.goBack()
     } catch (error) {

@@ -1597,6 +1597,28 @@
   (when-not (tx-end-state? hash)
     (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
         {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}])))
+
+(defn- fail-unfinished-same-nonce-txs [hash]
+  (let [tx-hashes
+        (q '[:find [?tx-hash ...]
+             :in $ ?source-tx
+             :where
+             [?address :address/tx ?source-tx]
+             [?source-tx :tx/txPayload ?source-payload]
+             [?source-payload :txPayload/nonce ?nonce]
+             [?address :address/tx ?tx]
+             [?tx :tx/txPayload ?payload]
+             [?payload :txPayload/nonce ?nonce]
+             [?tx :tx/status ?status]
+             [(>= ?status 0)]
+             [(< ?status 5)]
+             [?address :address/value ?address-value]
+             [?payload :txPayload/from ?address-value]
+             [?tx :tx/hash ?tx-hash]]
+           [:tx/hash hash])]
+    (doseq [tx-hash tx-hashes]
+      (set-tx-failed {:hash tx-hash :error "replacedByAnotherTx"}))))
+
 (defn set-tx-unsent [{:keys [hash resendAt]}]
   (when-not (tx-end-state? hash)
     (let [tx {:db/id [:tx/hash hash] :tx/status 0}
@@ -1629,38 +1651,25 @@
     (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
         {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}])))
 
+(defn set-tx-execution-failed [{:keys [hash error receipt]}]
+  (when-not (tx-end-state? hash)
+    (let [failed
+          (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+              [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
+              {:db/id [:tx/hash hash]
+               :tx/status -1
+               :tx/err error
+               :tx/receipt receipt}])]
+      (fail-unfinished-same-nonce-txs hash)
+      failed)))
+
 (defn set-tx-confirmed [{:keys [hash]}]
   (when-not (tx-end-state? hash)
     (let [confirmed
           (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
               [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
-              {:db/id [:tx/hash hash] :tx/status 5}])
-
-         ;; find tx with
-         ;; 1. same addr
-         ;; 2. same nonce
-         ;; 3. not in end state
-         ;;
-         ;; set them as failed
-          replaced-none-finished-txs
-          (q '[:find [?hash ...]
-               :in $ ?confirmed-tx
-               :where
-               [?address :address/tx ?confirmed-tx]
-               [?confirmed-tx :tx/txPayload ?payload]
-               [?payload :txPayload/nonce ?nonce]
-               [?address :address/tx ?tx]
-               [?tx :tx/txPayload ?tx-payload]
-               [?tx-payload :txPayload/nonce ?nonce]
-               [?tx :tx/status ?status]
-               [(>= ?status 0)]
-               [(< ?status 5)]
-               [?address :address/value ?addrv]
-               [?tx-payload :txPayload/from ?addrv]
-               [?tx :tx/hash ?hash]]
-             [:tx/hash hash])]
-      (doseq [hash replaced-none-finished-txs]
-        (set-tx-failed {:hash hash :error "replacedByAnotherTx"}))
+              {:db/id [:tx/hash hash] :tx/status 5}])]
+      (fail-unfinished-same-nonce-txs hash)
       confirmed)))
 (defn set-tx-chain-switched [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
@@ -2311,6 +2320,7 @@
               :setTxPending                        set-tx-pending
               :setTxPackaged                       set-tx-packaged
               :setTxExecuted                       set-tx-executed
+              :setTxExecutionFailed                set-tx-execution-failed
               :setTxConfirmed                      set-tx-confirmed
               :setTxChainSwitched                  set-tx-chain-switched
               :setTxUnsent                         set-tx-unsent
