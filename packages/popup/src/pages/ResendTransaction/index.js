@@ -149,20 +149,16 @@ function ResendTransaction() {
     const gasParams = omitFalsyTxParams({
       gas: txParams.gas,
       gasPrice: txParams.gasPrice,
+      storageLimit: txParams.storageLimit,
       maxFeePerGas: txParams.maxFeePerGas,
       maxPriorityFeePerGas: txParams.maxPriorityFeePerGas,
     })
 
-    const requestParams = networkTypeIsCfx
-      ? {
-          action,
-          tx: [txParams],
-        }
-      : {
-          action,
-          originalTxHash: hash,
-          ...gasParams,
-        }
+    const requestParams = {
+      action,
+      originalTxHash: hash,
+      ...gasParams,
+    }
 
     try {
       await request(WALLET_SEND_TRANSACTION_WITH_ACTION, requestParams)

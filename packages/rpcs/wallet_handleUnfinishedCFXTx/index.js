@@ -80,6 +80,7 @@ export const permissions = {
     'setTxPending',
     'setTxPackaged',
     'setTxExecuted',
+    'setTxExecutionFailed',
     'setTxConfirmed',
     'setTxUnsent',
     'setTxChainSwitched',
@@ -109,6 +110,7 @@ export const main = ({
     setTxPending,
     setTxPackaged,
     setTxExecuted,
+    setTxExecutionFailed,
     setTxConfirmed,
     setTxUnsent,
     setTxChainSwitched,
@@ -383,35 +385,7 @@ export const main = ({
       )
       .transform(
         branchObj({
-          failed: map(() => {
-            sdone()
-            // get the error message in receipt
-            cfx_getTransactionReceipt({errorFallThrough: true}, [hash])
-              .then(receipt => {
-                let err = ''
-                if (receipt?.txExecErrorMsg) {
-                  err = receipt.txExecErrorMsg
-                }
-                setTxFailed({
-                  hash,
-                  error: err || 'tx failed',
-                })
-                updateBadge(getUnfinishedTxCount())
-                getExt().then(ext =>
-                  ext.notifications.create(hash, {
-                    title: 'Failed transaction',
-                    message: `Transaction ${parseInt(
-                      tx.txPayload.nonce,
-                      16,
-                    )} failed! ${err}`,
-                  }),
-                )
-              })
-              .catch(() => {
-                setTxPending({hash})
-                keepTrack()
-              })
-          }),
+          failed: map(keepTrack),
           skipped: map(() => {
             setTxSkipped({hash, skippedChecked: true})
             updateBadge(getUnfinishedTxCount())
@@ -506,7 +480,13 @@ export const main = ({
             setTxExecuted({hash, receipt})
             keepTrack()
           } else {
-            if (setTxFailed({hash, error: txExecErrorMsg})) {
+            if (
+              setTxExecutionFailed({
+                hash,
+                error: txExecErrorMsg || 'tx failed',
+                receipt,
+              })
+            ) {
               getExt().then(ext =>
                 ext.notifications.create(hash, {
                   title: 'Failed transaction',

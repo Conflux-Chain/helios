@@ -5,7 +5,7 @@
   "packageManager": "yarn@3.2.0",
   "version": "1.0.21",
   "dependencies": {
-    "@fluent-wallet/cfx_send-transaction": "workspace:*",
+    "@fluent-wallet/base32-address": "workspace:*",
     "@fluent-wallet/consts": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
     "@fluent-wallet/spec": "1.0.18",

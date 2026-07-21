@@ -9,7 +9,9 @@ releases:
   "@fluent-wallet/eth_sign-typed-data_v4": patch
   "@fluent-wallet/personal_sign": patch
   "@fluent-wallet/signature": patch
+  "@fluent-wallet/wallet_get-conflux-nonce-state": patch
   "@fluent-wallet/wallet_get-ethereum-nonce-state": patch
+  "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
   "@fluent-wallet/wallet_handle-unfinished-eth-tx": patch
   "@fluent-wallet/wallet_send-transaction": patch
   "@fluent-wallet/wallet_send-transaction-with-action": patch

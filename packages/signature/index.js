@@ -265,6 +265,14 @@ export const decodeEthRawTransaction = (rawTx, chainId) => {
   }
 }
 
+/**
+ * Decodes a signed raw Conflux transaction.
+ *
+ * @param {string} rawTx
+ * @returns {Object}
+ */
+export const decodeCfxRawTransaction = rawTx => CfxTransaction.decodeRaw(rawTx)
+
 export const ethSignTransaction = (tx, pk) => {
   pk = addHexPrefix(pk)
   const signature = new SigningKey(pk).signDigest(

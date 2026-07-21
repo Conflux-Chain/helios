@@ -340,9 +340,10 @@ function ConfirmTransaction() {
   })
 
   const sendTxParams = {...adjustedSendTx.params}
-  if (!networkTypeIsCfx && !customNonce && !tokenPayGas.isTokenPayGas) {
+  if (!customNonce && !tokenPayGas.isTokenPayGas) {
     delete sendTxParams.nonce
   }
+
   const sendParams = [sendTxParams]
   const needsAdjustedEstimate = adjustedSendTx.isGasCostDeducted
   const adjustedEstimateRst =

@@ -5441,6 +5441,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-conflux-nonce-state@workspace:packages/rpcs/wallet_getConfluxNonceState":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-conflux-nonce-state@workspace:packages/rpcs/wallet_getConfluxNonceState"
+  dependencies:
+    "@fluent-wallet/signature": "workspace:*"
+    "@fluent-wallet/spec": "npm:1.0.18"
+    "@fluent-wallet/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount"
@@ -5779,7 +5789,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_send-transaction-with-action@workspace:packages/rpcs/wallet_sendTransactionWithAction"
   dependencies:
-    "@fluent-wallet/cfx_send-transaction": "workspace:*"
+    "@fluent-wallet/base32-address": "workspace:*"
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
@@ -18568,6 +18578,7 @@ __metadata:
     "@fluent-wallet/wallet_get-block-or-epoch-number": "workspace:*"
     "@fluent-wallet/wallet_get-block-time": "workspace:*"
     "@fluent-wallet/wallet_get-blockchain-explorer-url": "workspace:*"
+    "@fluent-wallet/wallet_get-conflux-nonce-state": "workspace:packages/rpcs/wallet_getConfluxNonceState"
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"

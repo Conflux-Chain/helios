@@ -1,33 +1,28 @@
-import {Bytes32, Uint, enums, map, or} from '@fluent-wallet/spec'
-import {schemas as CfxSendTxSchema} from '@fluent-wallet/cfx_send-transaction'
-import {decodeEthRawTransaction} from '@fluent-wallet/signature'
+import {Bytes32, Uint, enums, map} from '@fluent-wallet/spec'
+import {
+  decodeCfxRawTransaction,
+  decodeEthRawTransaction,
+} from '@fluent-wallet/signature'
 
+import {buildConfluxReplacementTransaction} from './conflux.js'
 import {buildEthereumReplacementTransaction} from './ethereum.js'
 
 export const NAME = 'wallet_sendTransactionWithAction'
 
 const actionSchema = [enums, 'cancel', 'speedup']
 
-const cfxReplacementSchema = [
-  map,
-  {closed: true},
-  ['tx', CfxSendTxSchema.input],
-  ['action', actionSchema],
-]
-
-const ethereumReplacementSchema = [
-  map,
-  {closed: true},
-  ['originalTxHash', Bytes32],
-  ['action', actionSchema],
-  ['gas', {optional: true}, Uint],
-  ['gasPrice', {optional: true}, Uint],
-  ['maxFeePerGas', {optional: true}, Uint],
-  ['maxPriorityFeePerGas', {optional: true}, Uint],
-]
-
 export const schemas = {
-  input: [or, cfxReplacementSchema, ethereumReplacementSchema],
+  input: [
+    map,
+    {closed: true},
+    ['originalTxHash', Bytes32],
+    ['action', actionSchema],
+    ['gas', {optional: true}, Uint],
+    ['gasPrice', {optional: true}, Uint],
+    ['storageLimit', {optional: true}, Uint],
+    ['maxFeePerGas', {optional: true}, Uint],
+    ['maxPriorityFeePerGas', {optional: true}, Uint],
+  ],
 }
 
 export const permissions = {
@@ -43,20 +38,8 @@ export const main = ({
   params,
   network,
 }) => {
-  if (network.type === 'cfx') {
-    if (!params.tx) {
-      throw InvalidParams('Invalid Conflux replacement parameters')
-    }
-
-    return wallet_sendTransaction({_sendAction: params.action}, params.tx)
-  }
-
-  if (network.type !== 'eth') {
+  if (network.type !== 'cfx' && network.type !== 'eth') {
     throw InvalidParams(`Unsupported network type ${network.type}`)
-  }
-
-  if (!params.originalTxHash) {
-    throw InvalidParams('Invalid Ethereum replacement parameters')
   }
 
   const {
@@ -64,6 +47,7 @@ export const main = ({
     originalTxHash,
     gas,
     gasPrice,
+    storageLimit,
     maxFeePerGas,
     maxPriorityFeePerGas,
   } = params
@@ -74,19 +58,30 @@ export const main = ({
     throw InvalidParams(`Invalid original transaction ${originalTxHash}`)
   }
 
-  const originalTransaction = decodeEthRawTransaction(
-    storedTransaction.raw,
-    network.chainId,
-  )
+  const originalTransaction =
+    network.type === 'cfx'
+      ? decodeCfxRawTransaction(storedTransaction.raw)
+      : decodeEthRawTransaction(storedTransaction.raw, network.chainId)
 
-  const transaction = buildEthereumReplacementTransaction({
-    action,
-    originalTransaction,
-    gas,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-  })
+  const transaction =
+    network.type === 'cfx'
+      ? buildConfluxReplacementTransaction({
+          action,
+          originalTransaction,
+          gas,
+          gasPrice,
+          storageLimit,
+          maxFeePerGas,
+          maxPriorityFeePerGas,
+        })
+      : buildEthereumReplacementTransaction({
+          action,
+          originalTransaction,
+          gas,
+          gasPrice,
+          maxFeePerGas,
+          maxPriorityFeePerGas,
+        })
 
   return wallet_sendTransaction({_sendAction: action}, [transaction])
 }

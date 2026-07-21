@@ -2,11 +2,13 @@ import {or} from '@fluent-wallet/spec'
 import {schemas as cfxSchema} from '@fluent-wallet/cfx_send-transaction'
 import {schemas as ethSchema} from '@fluent-wallet/eth_send-transaction'
 import {
+  decodeCfxRawTransaction,
   decodeEthRawTransaction,
   getTxHashFromRawTx,
 } from '@fluent-wallet/signature'
 import {
   resolveTransactionNonces,
+  withConfluxNonceLock,
   withEthereumNonceLock,
 } from '@fluent-wallet/nonce-manager'
 import {ERROR} from '@fluent-wallet/json-rpc-error'
@@ -68,6 +70,7 @@ export const permissions = {
     'wallet_enrichConfluxTx',
     'wallet_enrichEthereumTx',
     'wallet_submitTokenPayTransaction',
+    'wallet_getConfluxNonceState',
     'wallet_getEthereumNonceState',
   ],
   db: ['findAddress', 'getAuthReqById', 'getAddrTxByHash', 't'],
@@ -89,6 +92,7 @@ export const main = async ({
     wallet_handleUnfinishedCFXTx,
     wallet_handleUnfinishedETHTx,
     wallet_submitTokenPayTransaction,
+    wallet_getConfluxNonceState,
     wallet_getEthereumNonceState,
   },
   params,
@@ -251,18 +255,24 @@ export const main = async ({
     const {raw: rawtx, txMeta} = signed
 
     if (expectedNonces) {
-      const decodedTransaction = decodeEthRawTransaction(
-        rawtx,
-        transactionNetwork.chainId,
-      )
-      const signedNonces = [
-        decodedTransaction.nonce,
-        ...(decodedTransaction.authorizationList ?? []).map(
-          authorization => authorization.nonce,
-        ),
-      ]
+      const decodedTransaction =
+        transactionNetwork.type === 'cfx'
+          ? decodeCfxRawTransaction(rawtx)
+          : decodeEthRawTransaction(rawtx, transactionNetwork.chainId)
+
+      const signedNonces = [decodedTransaction.nonce]
+
+      if (transactionNetwork.type === 'eth') {
+        signedNonces.push(
+          ...(decodedTransaction.authorizationList ?? []).map(
+            authorization => authorization.nonce,
+          ),
+        )
+      }
+
       const senderMatches =
         decodedTransaction.from.toLowerCase() === transaction.from.toLowerCase()
+
       const noncesMatch =
         signedNonces.length === expectedNonces.length &&
         signedNonces.every((nonce, index) =>
@@ -375,9 +385,40 @@ export const main = async ({
         },
       )
     } else {
-      pendingTransaction = await createPendingTransaction({
-        transaction: txParams,
-      })
+      pendingTransaction = await withConfluxNonceLock(
+        {address: txParams.from},
+        async () => {
+          if (_sendAction) {
+            return createPendingTransaction({
+              transaction: txParams,
+              expectedNonces: [txParams.nonce],
+            })
+          }
+
+          const {networkPendingNonce, occupiedNonces} =
+            await wallet_getConfluxNonceState(
+              {
+                errorFallThrough: true,
+                network: transactionNetwork,
+              },
+              [txParams.from],
+            )
+
+          const expectedNonces = resolveTransactionNonces({
+            networkPendingNonce,
+            occupiedNonces,
+            customNonce: txParams.nonce,
+          })
+
+          return createPendingTransaction({
+            transaction: {
+              ...txParams,
+              nonce: expectedNonces[0],
+            },
+            expectedNonces,
+          })
+        },
+      )
     }
   } catch (err) {
     if (authReqId) {

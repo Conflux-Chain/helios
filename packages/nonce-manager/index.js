@@ -92,3 +92,7 @@ const createEthereumNonceLockKey = ({chainId, address}) =>
 export function withEthereumNonceLock({chainId, address}, task) {
   return withNonceLock(createEthereumNonceLockKey({chainId, address}), task)
 }
+
+export function withConfluxNonceLock({address}, task) {
+  return withNonceLock(address.toLowerCase(), task)
+}
