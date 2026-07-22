@@ -340,7 +340,8 @@ function ConfirmTransaction() {
   })
 
   const sendTxParams = {...adjustedSendTx.params}
-  if (!customNonce && !tokenPayGas.isTokenPayGas) {
+  // Only non-token-pay transactions can keep a custom nonce.
+  if (!customNonce || tokenPayGas.isTokenPayGas) {
     delete sendTxParams.nonce
   }
 
@@ -520,7 +521,7 @@ function ConfirmTransaction() {
     if (tokenPayGas.isTokenPayGas) {
       tokenPayGas
         .submitTokenPayTransaction({
-          submitTx: adjustedSendTx.params,
+          submitTx: sendTxParams,
           maxTokenCost: tokenPayGas.tokenPayQuote?.tokenCost,
         })
         .then(() => {

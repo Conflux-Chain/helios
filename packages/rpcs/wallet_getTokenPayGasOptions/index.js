@@ -6,6 +6,7 @@ import {
   getTokenPayGasCostPrice,
   prepareGasTokenQuote,
   prepareTokenPayExecutionContext,
+  resolveTokenPayNonces,
 } from '@fluent-wallet/wallet_prepare-token-pay-quote'
 import {hexToBN, toHexQuantity} from '@fluent-wallet/utils'
 
@@ -107,6 +108,10 @@ export const main = async ({
     rpcs,
     params: {networkDbId, accountId, userTx, gasLevel},
   })
+  const bundleNonces = resolveTokenPayNonces({
+    networkPendingNonce: context.nonceBase,
+    userTx,
+  })
 
   const nativeQuoteAmount = calcTokenAmountFromNativeAmount({
     nativeAmount: nativeGasFee,
@@ -181,7 +186,7 @@ export const main = async ({
           userTx,
           gasToken,
           tokenPayConfig: context.tokenPayConfig,
-          nonceBase: context.nonceBase,
+          bundleNonces,
           feeParams: context.feeParams,
           gasLevel,
           txType: context.txType,

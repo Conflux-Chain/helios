@@ -1496,6 +1496,10 @@
     true))
 
 (defn retract [id] (t [[:db.fn/retractEntity id]]))
+
+(defn retract-entities [ids]
+  (t (mapv (fn [id] [:db.fn/retractEntity id]) ids)))
+
 (defn retract-attr [{:keys [eid attr]}] (t [[:db.fn/retractAttribute eid (keyword attr)]]))
 
 (defn retract-address-token [{:keys [tokenId addressId]}]
@@ -2304,6 +2308,7 @@
               :upsertAppPermissions                upsert-app-permissions
               :accountAddrByNetwork                account-addr-by-network
               :retract                             retract
+              :retractEntities                     retract-entities
               :retractAttr                         retract-attr
               :getCurrentAddr                      #(e :address (get-current-addr))
               :addTokenToAddr                      add-token-to-addr

@@ -5715,6 +5715,7 @@ __metadata:
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/nonce-manager": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/utils": "workspace:packages/utils"
     bn.js: "npm:5.2.0"
@@ -5880,6 +5881,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/nonce-manager": "workspace:*"
     "@fluent-wallet/signature": "workspace:packages/signature"
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/utils": "workspace:packages/utils"
