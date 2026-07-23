@@ -1,11 +1,7 @@
 import {or} from '@fluent-wallet/spec'
 import {schemas as cfxSchema} from '@fluent-wallet/cfx_send-transaction'
 import {schemas as ethSchema} from '@fluent-wallet/eth_send-transaction'
-import {
-  decodeCfxRawTransaction,
-  decodeEthRawTransaction,
-  getTxHashFromRawTx,
-} from '@fluent-wallet/signature'
+import {getTxHashFromRawTx} from '@fluent-wallet/signature'
 import {
   resolveTransactionNonces,
   withConfluxNonceLock,
@@ -233,7 +229,7 @@ export const main = async ({
       throw err
     }
   }
-  const createPendingTransaction = async ({transaction, expectedNonces}) => {
+  const createPendingTransaction = async ({transaction}) => {
     const signed = await signTxFn(
       {
         app: authReqId ? authReq.app : undefined,
@@ -253,36 +249,6 @@ export const main = async ({
     }
 
     const {raw: rawtx, txMeta} = signed
-
-    if (expectedNonces) {
-      const decodedTransaction =
-        transactionNetwork.type === 'cfx'
-          ? decodeCfxRawTransaction(rawtx)
-          : decodeEthRawTransaction(rawtx, transactionNetwork.chainId)
-
-      const signedNonces = [decodedTransaction.nonce]
-
-      if (transactionNetwork.type === 'eth') {
-        signedNonces.push(
-          ...(decodedTransaction.authorizationList ?? []).map(
-            authorization => authorization.nonce,
-          ),
-        )
-      }
-
-      const senderMatches =
-        decodedTransaction.from.toLowerCase() === transaction.from.toLowerCase()
-
-      const noncesMatch =
-        signedNonces.length === expectedNonces.length &&
-        signedNonces.every((nonce, index) =>
-          BigNumber.from(nonce).eq(expectedNonces[index]),
-        )
-
-      if (!senderMatches || !noncesMatch) {
-        throw Server('Signed transaction does not match allocated nonces')
-      }
-    }
 
     const txPayload = formatTxPayloadForDb(txMeta)
     const txhash = getTxHashFromRawTx(rawtx)
@@ -335,16 +301,8 @@ export const main = async ({
         },
         async () => {
           if (_sendAction) {
-            const expectedNonces = [
-              txParams.nonce,
-              ...(txParams.authorizationList ?? []).map(
-                authorization => authorization.nonce,
-              ),
-            ]
-
             return createPendingTransaction({
               transaction: txParams,
-              expectedNonces,
             })
           }
 
@@ -380,7 +338,6 @@ export const main = async ({
 
           return createPendingTransaction({
             transaction,
-            expectedNonces,
           })
         },
       )
@@ -391,7 +348,6 @@ export const main = async ({
           if (_sendAction) {
             return createPendingTransaction({
               transaction: txParams,
-              expectedNonces: [txParams.nonce],
             })
           }
 
@@ -415,7 +371,6 @@ export const main = async ({
               ...txParams,
               nonce: expectedNonces[0],
             },
-            expectedNonces,
           })
         },
       )

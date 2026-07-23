@@ -60,6 +60,7 @@ beforeEach(() => {
       setTxPending: vi.fn(),
       setTxPackaged: vi.fn(),
       setTxExecuted: vi.fn(),
+      setTxExecutionFailed: vi.fn(),
       setTxConfirmed: vi.fn(),
       setTxUnsent: vi.fn(),
       setTxChainSwitched: vi.fn(),
@@ -1109,14 +1110,11 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       })
     })
 
-    test('packaged, failed, status = 0x1', async () => {
+    test('moves a packaged transaction to receipt tracking', async () => {
       const inputs = mergeDeepObj(defaultInputs, {
         rpcs: {
           cfx_getTransactionByHash: vi.fn(() =>
             Promise.resolve({blockHash: 'blockhash', status: '0x1'}),
-          ),
-          cfx_getTransactionReceipt: vi.fn(() =>
-            Promise.resolve({txExecErrorMsg: 'txExecErrorMsg'}),
           ),
         },
         db: {
@@ -1132,59 +1130,7 @@ describe('wallet_handleUnfinishedCFXTx', () => {
             },
           })),
         },
-      })
-
-      main(inputs)
-
-      await waitForExpect(() =>
-        expect(inputs.db.setTxFailed).toHaveBeenCalledTimes(1),
-      )
-
-      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
-      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
-        {errorFallThrough: true},
-        ['txhash'],
-      )
-
-      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
-      expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
-        hash: 'txhash',
-        blockHash: 'blockhash',
-      })
-
-      expect(inputs.rpcs.cfx_getTransactionReceipt).toHaveBeenCalledTimes(1)
-      expect(inputs.rpcs.cfx_getTransactionReceipt).toHaveBeenLastCalledWith(
-        {errorFallThrough: true},
-        ['txhash'],
-      )
-
-      expect(inputs.db.setTxFailed).toHaveBeenLastCalledWith({
-        hash: 'txhash',
-        error: 'txExecErrorMsg',
-      })
-    })
-
-    test('packaged, failed, status = 0x1, cfx_getTransactionReceipt failed', async () => {
-      const inputs = mergeDeepObj(defaultInputs, {
-        rpcs: {
-          cfx_getTransactionByHash: vi.fn(() =>
-            Promise.resolve({blockHash: 'blockhash', status: '0x1'}),
-          ),
-          cfx_getTransactionReceipt: vi.fn(() => Promise.reject()),
-        },
-        db: {
-          getTxById: vi.fn(() => ({
-            eid: 'txeid',
-            status: 2,
-            hash: 'txhash',
-            raw: 'txraw',
-            txPayload: {
-              nonce: 'txnonce',
-              epochHeight: '0x1',
-              resendAt: '0x29',
-            },
-          })),
-        },
+        network: {cacheTime: 1},
       })
 
       main(inputs)
@@ -1195,27 +1141,15 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         ),
       )
 
-      expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenCalledTimes(1)
       expect(inputs.rpcs.cfx_getTransactionByHash).toHaveBeenLastCalledWith(
         {errorFallThrough: true},
         ['txhash'],
       )
-
-      expect(inputs.db.setTxPackaged).toHaveBeenCalledTimes(1)
       expect(inputs.db.setTxPackaged).toHaveBeenLastCalledWith({
         hash: 'txhash',
         blockHash: 'blockhash',
       })
-
-      expect(inputs.rpcs.cfx_getTransactionReceipt).toHaveBeenCalledTimes(1)
-      expect(inputs.rpcs.cfx_getTransactionReceipt).toHaveBeenLastCalledWith(
-        {errorFallThrough: true},
-        ['txhash'],
-      )
-      expect(inputs.db.setTxPending).toHaveBeenCalledTimes(1)
-      expect(inputs.db.setTxPending).toHaveBeenLastCalledWith({
-        hash: 'txhash',
-      })
+      expect(inputs.rpcs.cfx_getTransactionReceipt).not.toHaveBeenCalled()
     })
 
     test('packaged, skipped, status = 0x2', async () => {
@@ -1576,6 +1510,68 @@ describe('wallet_handleUnfinishedCFXTx', () => {
         {errorFallThrough: true},
         ['addr'],
       )
+    })
+  })
+
+  describe('packaged', () => {
+    test('records an execution failure from the receipt', async () => {
+      const receipt = {
+        outcomeStatus: '0x1',
+        blockHash: 'blockhash',
+        index: '0x0',
+        epochNumber: '0x10',
+        txExecErrorMsg: 'txExecErrorMsg',
+        gasUsed: '0x5208',
+        gasFee: '0x1',
+        storageCollateralized: '0x0',
+        storageCoveredBySponsor: false,
+        gasCoveredBySponsor: false,
+      }
+
+      const inputs = mergeDeepObj(defaultInputs, {
+        rpcs: {
+          cfx_getTransactionByHash: vi.fn(() =>
+            Promise.resolve({blockHash: 'blockhash'}),
+          ),
+          cfx_getTransactionReceipt: vi.fn(() => Promise.resolve(receipt)),
+        },
+        db: {
+          getTxById: vi.fn(() => ({
+            eid: 'txeid',
+            status: 3,
+            hash: 'txhash',
+            raw: 'txraw',
+            blockHash: 'blockhash',
+            txPayload: {nonce: '0x1'},
+          })),
+        },
+        network: {cacheTime: 1},
+      })
+
+      main(inputs)
+
+      await waitForExpect(() =>
+        expect(inputs.db.setTxExecutionFailed).toHaveBeenCalledTimes(1),
+      )
+
+      expect(inputs.rpcs.cfx_getTransactionReceipt).toHaveBeenLastCalledWith(
+        {errorFallThrough: true},
+        ['txhash'],
+      )
+      expect(inputs.db.setTxExecutionFailed).toHaveBeenLastCalledWith({
+        hash: 'txhash',
+        error: 'txExecErrorMsg',
+        receipt: {
+          blockHash: 'blockhash',
+          index: '0x0',
+          epochNumber: '0x10',
+          gasUsed: '0x5208',
+          gasFee: '0x1',
+          storageCollateralized: '0x0',
+          gasCoveredBySponsor: false,
+          storageCoveredBySponsor: false,
+        },
+      })
     })
   })
 })
