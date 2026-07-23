@@ -175,7 +175,7 @@ async function submitTokenPayTransactions({
     return {outcome: 'accepted'}
   }
 
-  if (response.ok && result?.code !== undefined) {
+  if (typeof result?.code === 'number' && result.code !== 0) {
     return {
       outcome: 'rejected',
       error: new Error(

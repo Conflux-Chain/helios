@@ -142,6 +142,7 @@ function ConfirmTransaction() {
     setGasLimit,
     setStorageLimit,
     setNonce: setSuggestedNonce,
+    setCustomNonce,
     setSendAmount,
     setGasLevel,
     clearSendTransactionParams,
@@ -340,7 +341,8 @@ function ConfirmTransaction() {
   })
 
   const sendTxParams = {...adjustedSendTx.params}
-  // Only non-token-pay transactions can keep a custom nonce.
+  // Only pass a nonce explicitly selected by the user.
+  // Token pay allocates its nonce bundle in the background.
   if (!customNonce || tokenPayGas.isTokenPayGas) {
     delete sendTxParams.nonce
   }
@@ -365,14 +367,20 @@ function ConfirmTransaction() {
       : '0x0'
 
   useEffect(() => {
-    if (tokenPayGas.isTokenPayGas && gasLevel === 'advanced') {
+    if (!tokenPayGas.isTokenPayGas) return
+
+    if (customNonce) setCustomNonce('')
+
+    if (gasLevel === 'advanced') {
       clearAdvancedGasSetting()
       setGasLevel('medium')
     }
   }, [
     tokenPayGas.isTokenPayGas,
+    customNonce,
     gasLevel,
     clearAdvancedGasSetting,
+    setCustomNonce,
     setGasLevel,
   ])
 

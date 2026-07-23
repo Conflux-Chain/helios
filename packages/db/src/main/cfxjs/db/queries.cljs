@@ -1658,15 +1658,12 @@
 
 (defn set-tx-execution-failed [{:keys [hash error receipt]}]
   (when-not (tx-end-state? hash)
-    (let [failed
-          (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-              [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
-              {:db/id [:tx/hash hash]
-               :tx/status -1
-               :tx/err error
-               :tx/receipt receipt}])]
-      (fail-replaced-txs {:winnerHash hash})
-      failed)))
+    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+        [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
+        {:db/id [:tx/hash hash]
+         :tx/status -1
+         :tx/err error
+         :tx/receipt receipt}])))
 
 (defn set-tx-confirmed [{:keys [hash]}]
   (when-not (tx-end-state? hash)
