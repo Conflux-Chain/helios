@@ -1602,14 +1602,14 @@
     (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
         {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}])))
 
-(defn- fail-unfinished-same-nonce-txs [hash]
+(defn fail-replaced-txs [{:keys [winnerHash]}]
   (let [tx-hashes
         (q '[:find [?tx-hash ...]
-             :in $ ?source-tx
+             :in $ ?winner-tx
              :where
-             [?address :address/tx ?source-tx]
-             [?source-tx :tx/txPayload ?source-payload]
-             [?source-payload :txPayload/nonce ?nonce]
+             [?address :address/tx ?winner-tx]
+             [?winner-tx :tx/txPayload ?winner-payload]
+             [?winner-payload :txPayload/nonce ?nonce]
              [?address :address/tx ?tx]
              [?tx :tx/txPayload ?payload]
              [?payload :txPayload/nonce ?nonce]
@@ -1619,8 +1619,9 @@
              [?address :address/value ?address-value]
              [?payload :txPayload/from ?address-value]
              [?tx :tx/hash ?tx-hash]]
-           [:tx/hash hash])]
-    (doseq [tx-hash tx-hashes]
+           [:tx/hash winnerHash])]
+    (doseq [tx-hash tx-hashes
+            :when (not= tx-hash winnerHash)]
       (set-tx-failed {:hash tx-hash :error "replacedByAnotherTx"}))))
 
 (defn set-tx-unsent [{:keys [hash resendAt]}]
@@ -1664,7 +1665,7 @@
                :tx/status -1
                :tx/err error
                :tx/receipt receipt}])]
-      (fail-unfinished-same-nonce-txs hash)
+      (fail-replaced-txs {:winnerHash hash})
       failed)))
 
 (defn set-tx-confirmed [{:keys [hash]}]
@@ -1673,7 +1674,7 @@
           (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
               [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
               {:db/id [:tx/hash hash] :tx/status 5}])]
-      (fail-unfinished-same-nonce-txs hash)
+      (fail-replaced-txs {:winnerHash hash})
       confirmed)))
 (defn set-tx-chain-switched [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
@@ -2321,6 +2322,7 @@
               :getUnfinishedTxCount                get-unfinished-tx-count
               :setTxSkipped                        set-tx-skipped
               :setTxFailed                         set-tx-failed
+              :failReplacedTxs                     fail-replaced-txs
               :setTxSending                        set-tx-sending
               :setTxPending                        set-tx-pending
               :setTxPackaged                       set-tx-packaged

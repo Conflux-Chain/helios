@@ -79,6 +79,7 @@ export const permissions = {
     'setTxSending',
     'setTxPending',
     'setTxPackaged',
+    'failReplacedTxs',
     'setTxExecuted',
     'setTxExecutionFailed',
     'setTxConfirmed',
@@ -108,6 +109,7 @@ export const main = ({
     setTxSending,
     setTxPending,
     setTxPackaged,
+    failReplacedTxs,
     setTxExecuted,
     setTxExecutionFailed,
     setTxConfirmed,
@@ -387,7 +389,9 @@ export const main = ({
 
         // packaged
         sideEffect(rst => {
-          setTxPackaged({hash, blockHash: rst.blockHash})
+          if (setTxPackaged({hash, blockHash: rst.blockHash})) {
+            failReplacedTxs({winnerHash: hash})
+          }
           keepTrack(0)
         }),
       )
