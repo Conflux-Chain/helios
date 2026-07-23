@@ -80,7 +80,6 @@ export const permissions = {
     'setTxPending',
     'setTxPackaged',
     'setTxExecuted',
-    'setTxExecutionFailed',
     'setTxConfirmed',
     'setTxUnsent',
     'setTxChainSwitched',
@@ -110,7 +109,6 @@ export const main = ({
     setTxPending,
     setTxPackaged,
     setTxExecuted,
-    setTxExecutionFailed,
     setTxConfirmed,
     setTxUnsent,
     setTxChainSwitched,
@@ -481,7 +479,7 @@ export const main = ({
             keepTrack()
           } else {
             if (
-              setTxExecutionFailed({
+              setTxFailed({
                 hash,
                 error: txExecErrorMsg || 'tx failed',
                 receipt,

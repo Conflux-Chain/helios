@@ -382,7 +382,7 @@ describe('db', () => {
   })
 
   describe('transaction replacement', () => {
-    test("fails only other unfinished transactions with the winner's nonce", () => {
+    test("confirms the winner and fails other unfinished transactions with the winner's nonce", () => {
       const conn = db.createdb(replacementSchema)
 
       conn.t([
@@ -439,11 +439,11 @@ describe('db', () => {
         },
       ])
 
-      conn.failReplacedTxs({winnerHash: '0xwinner'})
+      conn.setTxConfirmed({hash: '0xwinner'})
 
       expect(conn.getOneTx({hash: '0xwinner'})).toMatchObject({
-        status: 3,
-        raw: 'winner-raw',
+        status: 5,
+        raw: null,
       })
       expect(conn.getOneTx({hash: '0xreplaced'})).toMatchObject({
         status: -1,

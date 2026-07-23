@@ -1597,12 +1597,19 @@
           [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
           {:db/id [:tx/hash hash] :tx/status -2}])
       (t [{:db/id [:tx/hash hash] :tx/skippedChecked true}]))))
-(defn set-tx-failed [{:keys [hash error]}]
+(defn set-tx-failed [{:keys [hash error receipt]}]
   (when-not (tx-end-state? hash)
-    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-        {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}])))
+    ;; Execution failures include a receipt; other failures do not.
+    (let [failed-tx (enc/assoc-when
+                     {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}
+                     :tx/receipt receipt)]
+      (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+          [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
+          failed-tx]))))
 
-(defn fail-replaced-txs [{:keys [winnerHash]}]
+(defn- fail-replaced-txs [winner-hash]
+  ;; Find other unfinished transactions from the same address
+  ;; with the same nonce.
   (let [tx-hashes
         (q '[:find [?tx-hash ...]
              :in $ ?winner-tx
@@ -1619,9 +1626,8 @@
              [?address :address/value ?address-value]
              [?payload :txPayload/from ?address-value]
              [?tx :tx/hash ?tx-hash]]
-           [:tx/hash winnerHash])]
-    (doseq [tx-hash tx-hashes
-            :when (not= tx-hash winnerHash)]
+           [:tx/hash winner-hash])]
+    (doseq [tx-hash tx-hashes]
       (set-tx-failed {:hash tx-hash :error "replacedByAnotherTx"}))))
 
 (defn set-tx-unsent [{:keys [hash resendAt]}]
@@ -1656,22 +1662,13 @@
     (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
         {:db/id [:tx/hash hash] :tx/status 4 :tx/receipt receipt}])))
 
-(defn set-tx-execution-failed [{:keys [hash error receipt]}]
-  (when-not (tx-end-state? hash)
-    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-        [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
-        {:db/id [:tx/hash hash]
-         :tx/status -1
-         :tx/err error
-         :tx/receipt receipt}])))
-
 (defn set-tx-confirmed [{:keys [hash]}]
   (when-not (tx-end-state? hash)
     (let [confirmed
           (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
               [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
               {:db/id [:tx/hash hash] :tx/status 5}])]
-      (fail-replaced-txs {:winnerHash hash})
+      (fail-replaced-txs hash)
       confirmed)))
 (defn set-tx-chain-switched [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
@@ -2319,12 +2316,10 @@
               :getUnfinishedTxCount                get-unfinished-tx-count
               :setTxSkipped                        set-tx-skipped
               :setTxFailed                         set-tx-failed
-              :failReplacedTxs                     fail-replaced-txs
               :setTxSending                        set-tx-sending
               :setTxPending                        set-tx-pending
               :setTxPackaged                       set-tx-packaged
               :setTxExecuted                       set-tx-executed
-              :setTxExecutionFailed                set-tx-execution-failed
               :setTxConfirmed                      set-tx-confirmed
               :setTxChainSwitched                  set-tx-chain-switched
               :setTxUnsent                         set-tx-unsent

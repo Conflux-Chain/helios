@@ -60,7 +60,6 @@ beforeEach(() => {
       setTxPending: vi.fn(),
       setTxPackaged: vi.fn(),
       setTxExecuted: vi.fn(),
-      setTxExecutionFailed: vi.fn(),
       setTxConfirmed: vi.fn(),
       setTxUnsent: vi.fn(),
       setTxChainSwitched: vi.fn(),
@@ -1551,14 +1550,14 @@ describe('wallet_handleUnfinishedCFXTx', () => {
       main(inputs)
 
       await waitForExpect(() =>
-        expect(inputs.db.setTxExecutionFailed).toHaveBeenCalledTimes(1),
+        expect(inputs.db.setTxFailed).toHaveBeenCalledTimes(1),
       )
 
       expect(inputs.rpcs.cfx_getTransactionReceipt).toHaveBeenLastCalledWith(
         {errorFallThrough: true},
         ['txhash'],
       )
-      expect(inputs.db.setTxExecutionFailed).toHaveBeenLastCalledWith({
+      expect(inputs.db.setTxFailed).toHaveBeenLastCalledWith({
         hash: 'txhash',
         error: 'txExecErrorMsg',
         receipt: {
