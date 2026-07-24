@@ -39,9 +39,7 @@ export const main = async ({
 
     const transaction = decodeCfxRawTransaction(storedTx.raw)
 
-    if (transaction.from.toLowerCase() !== lowercaseAddress) {
-      throw new Error(`Stored transaction ${tx} has an unexpected sender`)
-    }
+    if (transaction.from.toLowerCase() !== lowercaseAddress) continue
 
     occupiedNonces.push(toHexQuantity(transaction.nonce))
   }

@@ -42,9 +42,8 @@ export const main = async ({
 
     const transaction = decodeEthRawTransaction(storedTx.raw, chainId)
 
-    if (transaction.from.toLowerCase() !== lowercaseAddress) {
-      throw new Error(`Stored transaction ${tx} has an unexpected sender`)
-    }
+    if (transaction.from.toLowerCase() !== lowercaseAddress) continue
+
     occupiedNonces.push(transaction.nonce)
 
     for (const authorization of transaction.authorizationList ?? []) {
