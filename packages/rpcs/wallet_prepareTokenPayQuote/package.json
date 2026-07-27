@@ -4,7 +4,7 @@
   "main": "index.js",
   "private": true,
   "packageManager": "yarn@3.0.1",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "dependencies": {
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
