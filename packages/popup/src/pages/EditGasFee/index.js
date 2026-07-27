@@ -46,7 +46,8 @@ function EditGasFee({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    nonce,
+    nonce: suggestedNonce,
+    customNonce,
     storageLimit,
     advancedGasSetting,
     gasTokenAddress,
@@ -57,7 +58,6 @@ function EditGasFee({
     setMaxPriorityFeePerGas,
     setGasLimit,
     setStorageLimit,
-    setNonce,
     setTx,
     setAdvancedGasSetting,
     clearAdvancedGasSetting,
@@ -65,6 +65,11 @@ function EditGasFee({
   } = useCurrentTxStore()
 
   const isSendTx = location.pathname === EDIT_GAS_FEE
+
+  const nonce =
+    !isSendTx && historyTx?.nonce
+      ? formatHexToDecimal(historyTx.nonce)
+      : customNonce || suggestedNonce
 
   const isDapp = getPageType() === 'notification'
   const pendingAuthReq = usePendingAuthReq()
@@ -231,7 +236,6 @@ function EditGasFee({
       gasPrice,
       maxPriorityFeePerGas,
       maxFeePerGas,
-      nonce,
       gasLimit,
       storageLimit,
     } = advancedGasSetting
@@ -245,7 +249,6 @@ function EditGasFee({
       } else {
         setGasPrice(gasPrice)
       }
-      setNonce(nonce)
       setGasLimit(gasLimit)
       setStorageLimit(storageLimit)
     } else {

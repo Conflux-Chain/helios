@@ -1,0 +1,10 @@
+{
+  "name": "@fluent-wallet/nonce-manager",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "@fluent-wallet/utils": "workspace:*"
+  }
+}

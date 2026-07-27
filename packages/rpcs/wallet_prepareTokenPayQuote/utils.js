@@ -2,6 +2,7 @@ import {ETH_TX_TYPES, TOKEN_PAY_NETWORK_CONFIGS} from '@fluent-wallet/consts'
 import {iface as erc20Iface} from '@fluent-wallet/contract-abis/777.js'
 import BN from 'bn.js'
 import {addHexPrefix, stripHexPrefix} from '@fluent-wallet/utils'
+import {resolveTransactionNonces} from '@fluent-wallet/nonce-manager'
 
 const ONE_HUNDRED = new BN(100)
 const TEN_18 = new BN('1000000000000000000', 10)
@@ -264,6 +265,7 @@ export async function prepareTokenPayExecutionContext({
     wallet_network1559Compatible,
   },
   params: {networkDbId, accountId, userTx, gasLevel},
+  nonceBase: providedNonceBase,
 }) {
   const baseContext = await prepareTokenPayBaseContext({
     InvalidParams,
@@ -297,10 +299,12 @@ export async function prepareTokenPayExecutionContext({
       }),
     },
   }
-  const nonceBase = await eth_getTransactionCount({networkName: network.name}, [
-    accountAddress,
-    'pending',
-  ])
+  const nonceBase =
+    providedNonceBase ??
+    (await eth_getTransactionCount({networkName: network.name}, [
+      accountAddress,
+      'pending',
+    ]))
   const baseGasPrice = await eth_gasPrice({networkName: network.name}, [])
   const feeParams = calcTokenPayFeeParams({
     txType,
@@ -317,6 +321,17 @@ export async function prepareTokenPayExecutionContext({
     feeParams,
     estimateStateOverride,
   }
+}
+export function resolveTokenPayNonces({
+  networkPendingNonce,
+  occupiedNonces = [],
+  userTx,
+}) {
+  return resolveTransactionNonces({
+    networkPendingNonce,
+    occupiedNonces,
+    nonceCount: 2 + (userTx.authorizationList?.length ?? 0),
+  })
 }
 
 export function getTokenPayGasCostPrice({txType, feeParams}) {
@@ -338,30 +353,45 @@ function getTokenPayTxFeeFields({txType, feeParams}) {
   }
 }
 
-function buildPreparedUserTx({userTx, nonceBase, network, txType, feeParams}) {
-  return {
+function buildPreparedUserTx({
+  userTx,
+  nonce,
+  authorizationNonces,
+  network,
+  txType,
+  feeParams,
+}) {
+  const preparedUserTx = {
     from: userTx.from.toLowerCase(),
-    ...(userTx.to ? {to: userTx.to.toLowerCase()} : {}),
-    ...(userTx.value ? {value: userTx.value} : {}),
-    ...(userTx.data ? {data: userTx.data} : {}),
     gas: userTx.gas,
-    ...(userTx.authorizationList
-      ? {authorizationList: userTx.authorizationList}
-      : {}),
     chainId: network.chainId,
-    nonce: addHexPrefix(
-      new BN(stripHexPrefix(nonceBase), 16).addn(1).toString(16),
-    ),
+    nonce,
     type: txType,
     ...getTokenPayTxFeeFields({txType, feeParams}),
   }
+
+  if (userTx.to) preparedUserTx.to = userTx.to.toLowerCase()
+  if (userTx.value) preparedUserTx.value = userTx.value
+  if (userTx.data) preparedUserTx.data = userTx.data
+  if (userTx.accessList) preparedUserTx.accessList = userTx.accessList
+
+  if (userTx.authorizationList) {
+    preparedUserTx.authorizationList = userTx.authorizationList.map(
+      (authorization, index) => ({
+        ...authorization,
+        nonce: authorizationNonces[index],
+      }),
+    )
+  }
+
+  return preparedUserTx
 }
 
 function buildTransferTokenTx({
   accountAddress,
   gasToken,
   tokenPayConfig,
-  nonceBase,
+  nonce,
   network,
   txType,
   feeParams,
@@ -375,7 +405,7 @@ function buildTransferTokenTx({
       '0x0',
     ]),
     chainId: network.chainId,
-    nonce: nonceBase,
+    nonce,
     type:
       txType === ETH_TX_TYPES.LEGACY
         ? ETH_TX_TYPES.LEGACY
@@ -391,7 +421,7 @@ export async function prepareGasTokenQuote({
   userTx,
   gasToken,
   tokenPayConfig,
-  nonceBase,
+  bundleNonces,
   feeParams,
   gasLevel,
   txType,
@@ -402,9 +432,11 @@ export async function prepareGasTokenQuote({
   InvalidParams,
   includeTxs = false,
 }) {
+  const [transferNonce, userNonce, ...authorizationNonces] = bundleNonces
   const preparedUserTx = buildPreparedUserTx({
     userTx,
-    nonceBase,
+    nonce: userNonce,
+    authorizationNonces,
     network,
     txType,
     feeParams,
@@ -413,7 +445,7 @@ export async function prepareGasTokenQuote({
     accountAddress,
     gasToken,
     tokenPayConfig,
-    nonceBase,
+    nonce: transferNonce,
     network,
     txType,
     feeParams,

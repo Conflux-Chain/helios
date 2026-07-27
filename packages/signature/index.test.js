@@ -16,6 +16,8 @@ import {
   recoverTypedSignature_v4,
   recoverPersonalSignature,
   getTxHashFromRawTx,
+  decodeEthRawTransaction,
+  decodeCfxRawTransaction,
 } from './'
 import txhash1820 from './1820-txhash'
 
@@ -318,6 +320,30 @@ describe('getTxHashFromRawTx', () => {
     )
   })
 })
+describe('raw transaction decoding', () => {
+  test('decodes an Ethereum transaction', () => {
+    const transaction = decodeEthRawTransaction(txhash1820, '0x1')
+
+    expect(transaction).toMatchObject({
+      type: '0x0',
+      chainId: '0x1',
+      nonce: '0x0',
+      from: '0xa990077c3205cbdf861e17fa532eeb069ce9ff96',
+    })
+  })
+
+  test('decodes a Conflux transaction', () => {
+    const rawTx =
+      '0xf863df0201825208948a1f6f3a2b6d4d4e8f7a3b1c2d3e4f5061728394808001018001a058e86d439556e6aaaa6fc55851635c82bd3bb2ece81dfa260191e3ef82cb3adaa05ad317acc07284594b175eb4adac8a5e1c1f7c90dced07f36a6a0c3874dbaab1'
+
+    const transaction = decodeCfxRawTransaction(rawTx)
+
+    expect(transaction).toMatchObject({
+      from: 'cfxtest:aak39z1fdm02v71y33znvaxwthh99skcp2s48zasbp',
+      nonce: 2n,
+    })
+  })
+})
 
 describe('eth eip-7702 authorization', () => {
   const authorization = {
@@ -468,5 +494,23 @@ describe('eth eip-7702 transaction', () => {
     expect(tx.getSenderAddress().toString()).toBe(
       testSigner.address.toLowerCase(),
     )
+  })
+  test('decodes transaction and authorization nonces', () => {
+    const rawTx = ethSignEip7702Transaction(
+      locallySignedAuthorizationTx,
+      privateKey,
+    )
+
+    const transaction = decodeEthRawTransaction(rawTx, '0x1')
+
+    expect(transaction).toMatchObject({
+      type: '0x4',
+      nonce: '0x311',
+      from: testSigner.address.toLowerCase(),
+    })
+    expect(transaction.authorizationList.map(({nonce}) => nonce)).toEqual([
+      '0x01a4',
+      '0x45',
+    ])
   })
 })

@@ -13,7 +13,7 @@ import {
   eoaCode7702AuthorizationHashedMessageToSign,
   hexToBytes,
 } from '@ethereumjs/util'
-import {createTx} from '@ethereumjs/tx'
+import {createTx, createTxFromRLP} from '@ethereumjs/tx'
 import {
   SigningKey,
   recoverPublicKey as ethRecoverPublicKey,
@@ -244,6 +244,34 @@ export const cfxSignTransaction = (tx, pk, netId) => {
   const transaction = new CfxTransaction(tx)
   return transaction.sign(pk, netId).serialize()
 }
+
+/**
+ * Decodes a signed raw Ethereum transaction.
+ *
+ * @param {string} rawTx
+ * @param {string} chainId
+ * @returns {Object} Decoded transaction.
+ */
+export const decodeEthRawTransaction = (rawTx, chainId) => {
+  const common = createCustomCommon({chainId}, Mainnet, {
+    hardfork: Hardfork.Prague,
+    eips: [7702],
+  })
+  const transaction = createTxFromRLP(hexToBytes(rawTx), {common})
+
+  return {
+    ...transaction.toJSON(),
+    from: transaction.getSenderAddress().toString(),
+  }
+}
+
+/**
+ * Decodes a signed raw Conflux transaction.
+ *
+ * @param {string} rawTx
+ * @returns {Object}
+ */
+export const decodeCfxRawTransaction = rawTx => CfxTransaction.decodeRaw(rawTx)
 
 export const ethSignTransaction = (tx, pk) => {
   pk = addHexPrefix(pk)

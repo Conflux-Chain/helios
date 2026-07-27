@@ -4836,6 +4836,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/nonce-manager@workspace:*, @fluent-wallet/nonce-manager@workspace:packages/nonce-manager":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/nonce-manager@workspace:packages/nonce-manager"
+  dependencies:
+    "@fluent-wallet/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/personal_sign@workspace:packages/rpcs/personal_sign":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/personal_sign@workspace:packages/rpcs/personal_sign"
@@ -5433,6 +5441,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-conflux-nonce-state@workspace:packages/rpcs/wallet_getConfluxNonceState":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-conflux-nonce-state@workspace:packages/rpcs/wallet_getConfluxNonceState"
+  dependencies:
+    "@fluent-wallet/signature": "workspace:*"
+    "@fluent-wallet/spec": "npm:1.0.18"
+    "@fluent-wallet/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount"
@@ -5463,6 +5481,15 @@ __metadata:
   resolution: "@fluent-wallet/wallet_get-eip7702-account-states@workspace:packages/rpcs/wallet_getEip7702AccountState"
   dependencies:
     "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "npm:1.0.18"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-ethereum-nonce-state@workspace:packages/rpcs/wallet_getEthereumNonceState":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-ethereum-nonce-state@workspace:packages/rpcs/wallet_getEthereumNonceState"
+  dependencies:
+    "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
   languageName: unknown
   linkType: soft
@@ -5688,6 +5715,7 @@ __metadata:
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/nonce-manager": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/utils": "workspace:packages/utils"
     bn.js: "npm:5.2.0"
@@ -5762,8 +5790,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_send-transaction-with-action@workspace:packages/rpcs/wallet_sendTransactionWithAction"
   dependencies:
+    "@fluent-wallet/base32-address": "workspace:*"
+    "@fluent-wallet/consts": "workspace:*"
+    "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
-    "@fluent-wallet/wallet_send-transaction": "workspace:*"
+    "@fluent-wallet/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5776,6 +5807,7 @@ __metadata:
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/eth_send-transaction": "workspace:*"
     "@fluent-wallet/json-rpc-error": "workspace:*"
+    "@fluent-wallet/nonce-manager": "workspace:*"
     "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
   languageName: unknown
@@ -5849,6 +5881,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
+    "@fluent-wallet/nonce-manager": "workspace:*"
     "@fluent-wallet/signature": "workspace:packages/signature"
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/utils": "workspace:packages/utils"
@@ -18547,10 +18580,12 @@ __metadata:
     "@fluent-wallet/wallet_get-block-or-epoch-number": "workspace:*"
     "@fluent-wallet/wallet_get-block-time": "workspace:*"
     "@fluent-wallet/wallet_get-blockchain-explorer-url": "workspace:*"
+    "@fluent-wallet/wallet_get-conflux-nonce-state": "workspace:packages/rpcs/wallet_getConfluxNonceState"
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
     "@fluent-wallet/wallet_get-eip7702-account-states": "workspace:packages/rpcs/wallet_getEip7702AccountState"
+    "@fluent-wallet/wallet_get-ethereum-nonce-state": "workspace:packages/rpcs/wallet_getEthereumNonceState"
     "@fluent-wallet/wallet_get-fluent-metadata": "workspace:*"
     "@fluent-wallet/wallet_get-import-hardware-wallet-info": "workspace:*"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"

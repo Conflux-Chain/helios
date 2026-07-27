@@ -9,6 +9,7 @@
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema",
+    "@fluent-wallet/nonce-manager": "workspace:*",
     "@fluent-wallet/spec": "1.0.18",
     "@fluent-wallet/utils": "workspace:packages/utils",
     "bn.js": "5.2.0"

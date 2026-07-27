@@ -1496,6 +1496,10 @@
     true))
 
 (defn retract [id] (t [[:db.fn/retractEntity id]]))
+
+(defn retract-entities [ids]
+  (t (mapv (fn [id] [:db.fn/retractEntity id]) ids)))
+
 (defn retract-attr [{:keys [eid attr]}] (t [[:db.fn/retractAttribute eid (keyword attr)]]))
 
 (defn retract-address-token [{:keys [tokenId addressId]}]
@@ -1593,10 +1597,39 @@
           [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
           {:db/id [:tx/hash hash] :tx/status -2}])
       (t [{:db/id [:tx/hash hash] :tx/skippedChecked true}]))))
-(defn set-tx-failed [{:keys [hash error]}]
+(defn set-tx-failed [{:keys [hash error receipt]}]
   (when-not (tx-end-state? hash)
-    (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
-        {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}])))
+    ;; Execution failures include a receipt; other failures do not.
+    (let [failed-tx (enc/assoc-when
+                     {:db/id [:tx/hash hash] :tx/status -1 :tx/err error}
+                     :tx/receipt receipt)]
+      (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
+          [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
+          failed-tx]))))
+
+(defn- fail-replaced-txs [winner-hash]
+  ;; Find other unfinished transactions from the same address
+  ;; with the same nonce.
+  (let [tx-hashes
+        (q '[:find [?tx-hash ...]
+             :in $ ?winner-tx
+             :where
+             [?address :address/tx ?winner-tx]
+             [?winner-tx :tx/txPayload ?winner-payload]
+             [?winner-payload :txPayload/nonce ?nonce]
+             [?address :address/tx ?tx]
+             [?tx :tx/txPayload ?payload]
+             [?payload :txPayload/nonce ?nonce]
+             [?tx :tx/status ?status]
+             [(>= ?status 0)]
+             [(< ?status 5)]
+             [?address :address/value ?address-value]
+             [?payload :txPayload/from ?address-value]
+             [?tx :tx/hash ?tx-hash]]
+           [:tx/hash winner-hash])]
+    (doseq [tx-hash tx-hashes]
+      (set-tx-failed {:hash tx-hash :error "replacedByAnotherTx"}))))
+
 (defn set-tx-unsent [{:keys [hash resendAt]}]
   (when-not (tx-end-state? hash)
     (let [tx {:db/id [:tx/hash hash] :tx/status 0}
@@ -1634,33 +1667,8 @@
     (let [confirmed
           (t [[:db.fn/retractAttribute [:tx/hash hash] :tx/raw]
               [:db.fn/retractAttribute [:tx/hash hash] :tx/skippedChecked]
-              {:db/id [:tx/hash hash] :tx/status 5}])
-
-         ;; find tx with
-         ;; 1. same addr
-         ;; 2. same nonce
-         ;; 3. not in end state
-         ;;
-         ;; set them as failed
-          replaced-none-finished-txs
-          (q '[:find [?hash ...]
-               :in $ ?confirmed-tx
-               :where
-               [?address :address/tx ?confirmed-tx]
-               [?confirmed-tx :tx/txPayload ?payload]
-               [?payload :txPayload/nonce ?nonce]
-               [?address :address/tx ?tx]
-               [?tx :tx/txPayload ?tx-payload]
-               [?tx-payload :txPayload/nonce ?nonce]
-               [?tx :tx/status ?status]
-               [(>= ?status 0)]
-               [(< ?status 5)]
-               [?address :address/value ?addrv]
-               [?tx-payload :txPayload/from ?addrv]
-               [?tx :tx/hash ?hash]]
-             [:tx/hash hash])]
-      (doseq [hash replaced-none-finished-txs]
-        (set-tx-failed {:hash hash :error "replacedByAnotherTx"}))
+              {:db/id [:tx/hash hash] :tx/status 5}])]
+      (fail-replaced-txs hash)
       confirmed)))
 (defn set-tx-chain-switched [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
@@ -2295,6 +2303,7 @@
               :upsertAppPermissions                upsert-app-permissions
               :accountAddrByNetwork                account-addr-by-network
               :retract                             retract
+              :retractEntities                     retract-entities
               :retractAttr                         retract-attr
               :getCurrentAddr                      #(e :address (get-current-addr))
               :addTokenToAddr                      add-token-to-addr
