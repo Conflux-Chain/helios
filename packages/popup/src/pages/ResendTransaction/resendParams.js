@@ -67,6 +67,7 @@ const buildSpeedupTxParams = txPayload => {
     nonce: txPayload.nonce,
     value: txPayload.value,
     data: txPayload.data,
+    accessList: txPayload.accessList,
   }
 
   if (!isEip7702TxPayload(txPayload)) {

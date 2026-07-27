@@ -4,6 +4,7 @@ import {
   fetchTokenPayPrice,
   prepareGasTokenQuote,
   prepareTokenPayExecutionContext,
+  resolveTokenPayNonces,
 } from './utils.js'
 
 export {
@@ -13,6 +14,7 @@ export {
   prepareGasTokenQuote,
   prepareTokenPayBaseContext,
   prepareTokenPayExecutionContext,
+  resolveTokenPayNonces,
 } from './utils.js'
 
 const {map, dbid, enums, or, ethHexAddress} = spec
@@ -91,6 +93,10 @@ export const main = async ({
     tokenPayNetworkConfig.backendBaseUrl,
     gasToken.address,
   )
+  const bundleNonces = resolveTokenPayNonces({
+    networkPendingNonce: nonceBase,
+    userTx,
+  })
 
   const gasTokenQuote = await prepareGasTokenQuote({
     eth_estimateGas: rpcs.eth_estimateGas,
@@ -99,7 +105,7 @@ export const main = async ({
     userTx,
     gasToken,
     tokenPayConfig,
-    nonceBase,
+    bundleNonces,
     feeParams,
     gasLevel,
     txType,

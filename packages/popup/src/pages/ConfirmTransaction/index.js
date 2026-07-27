@@ -128,7 +128,8 @@ function ConfirmTransaction() {
     maxPriorityFeePerGas,
     gasLimit,
     storageLimit,
-    nonce,
+    nonce: suggestedNonce,
+    customNonce,
     gasLevel,
     customAllowance,
     gasTokenAddress,
@@ -140,7 +141,8 @@ function ConfirmTransaction() {
     setMaxPriorityFeePerGas,
     setGasLimit,
     setStorageLimit,
-    setNonce,
+    setNonce: setSuggestedNonce,
+    setCustomNonce,
     setSendAmount,
     setGasLevel,
     clearSendTransactionParams,
@@ -148,6 +150,7 @@ function ConfirmTransaction() {
     tx: txParams,
     txContext,
   } = useCurrentTxParams()
+  const effectiveNonce = customNonce || suggestedNonce
   const {setLoading} = useLoading()
 
   const {
@@ -241,7 +244,7 @@ function ConfirmTransaction() {
     maxFeePerGas: formatDecimalToHex(maxFeePerGas),
     maxPriorityFeePerGas: formatDecimalToHex(maxPriorityFeePerGas),
     gas: formatDecimalToHex(gasLimit),
-    nonce: formatDecimalToHex(nonce),
+    nonce: formatDecimalToHex(effectiveNonce),
     storageLimit: formatDecimalToHex(storageLimit),
   }
   // user can edit the approve limit
@@ -337,7 +340,14 @@ function ConfirmTransaction() {
     },
   })
 
-  const sendParams = [adjustedSendTx.params]
+  const sendTxParams = {...adjustedSendTx.params}
+  // Only pass a nonce explicitly selected by the user.
+  // Token pay allocates its nonce bundle in the background.
+  if (!customNonce || tokenPayGas.isTokenPayGas) {
+    delete sendTxParams.nonce
+  }
+
+  const sendParams = [sendTxParams]
   const needsAdjustedEstimate = adjustedSendTx.isGasCostDeducted
   const adjustedEstimateRst =
     useEstimateTx(
@@ -357,14 +367,20 @@ function ConfirmTransaction() {
       : '0x0'
 
   useEffect(() => {
-    if (tokenPayGas.isTokenPayGas && gasLevel === 'advanced') {
+    if (!tokenPayGas.isTokenPayGas) return
+
+    if (customNonce) setCustomNonce('')
+
+    if (gasLevel === 'advanced') {
       clearAdvancedGasSetting()
       setGasLevel('medium')
     }
   }, [
     tokenPayGas.isTokenPayGas,
+    customNonce,
     gasLevel,
     clearAdvancedGasSetting,
+    setCustomNonce,
     setGasLevel,
   ])
 
@@ -433,7 +449,8 @@ function ConfirmTransaction() {
             initMaxPriorityFeePerGas || estimateMaxPriorityPerGas || '',
           ),
         )
-      !nonce && setNonce(formatHexToDecimal(initNonce || rpcNonce || ''))
+      !suggestedNonce &&
+        setSuggestedNonce(formatHexToDecimal(initNonce || rpcNonce || ''))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -446,7 +463,7 @@ function ConfirmTransaction() {
     initMaxPriorityFeePerGas,
     initStorageLimit,
     setGasPrice,
-    setNonce,
+    setSuggestedNonce,
     setGasLimit,
     setStorageLimit,
     estimateGasPrice,
@@ -460,7 +477,7 @@ function ConfirmTransaction() {
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    nonce,
+    suggestedNonce,
   ])
 
   const onSend = async () => {
@@ -512,7 +529,7 @@ function ConfirmTransaction() {
     if (tokenPayGas.isTokenPayGas) {
       tokenPayGas
         .submitTokenPayTransaction({
-          submitTx: adjustedSendTx.params,
+          submitTx: sendTxParams,
           maxTokenCost: tokenPayGas.tokenPayQuote?.tokenCost,
         })
         .then(() => {
@@ -529,7 +546,7 @@ function ConfirmTransaction() {
       return
     }
 
-    request(SEND_TRANSACTION, [adjustedSendTx.params])
+    request(SEND_TRANSACTION, sendParams)
       .then(() => {
         if (!isHwAccount) setLoading(false)
         else setSendStatus(TX_STATUS.HW_SUCCESS)
