@@ -36,6 +36,7 @@ import {
 } from '@ethersproject/transactions'
 import {getMessage as cip23GetMessage, getStructHash} from 'cip-23'
 import {keccak256} from '@ethersproject/keccak256'
+import ethSigUtil from 'eth-sig-util'
 
 export {prepareEip7702AuthorizationRequests}
 
@@ -66,12 +67,12 @@ export function recoverPersonalSignature(type, signature, message, netId) {
 }
 
 export function hashTypedData(type, typedData) {
-  return keccak256(
-    cip23GetMessage(
-      typedData,
-      false,
-      type === 'cfx' ? 'CIP23Domain' : 'EIP712Domain',
-    ),
+  if (type === 'cfx') {
+    return keccak256(cip23GetMessage(typedData, false, 'CIP23Domain'))
+  }
+
+  return addHexPrefix(
+    ethSigUtil.TypedDataUtils.sign(typedData, true).toString('hex'),
   )
 }
 
