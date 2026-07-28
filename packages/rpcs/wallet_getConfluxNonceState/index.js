@@ -1,5 +1,4 @@
 import {base32UserAddress, cat} from '@fluent-wallet/spec'
-import {decodeCfxRawTransaction} from '@fluent-wallet/signature'
 import {toHexQuantity} from '@fluent-wallet/utils'
 
 export const NAME = 'wallet_getConfluxNonceState'
@@ -35,13 +34,17 @@ export const main = async ({
     }
 
     const storedTx = getTxById(tx)
-    if (!storedTx?.fromFluent || !storedTx.raw) continue
+    const txPayload = storedTx?.txPayload
+    if (
+      !storedTx?.fromFluent ||
+      typeof txPayload?.from !== 'string' ||
+      txPayload.from.toLowerCase() !== lowercaseAddress ||
+      txPayload.nonce === undefined
+    ) {
+      continue
+    }
 
-    const transaction = decodeCfxRawTransaction(storedTx.raw)
-
-    if (transaction.from.toLowerCase() !== lowercaseAddress) continue
-
-    occupiedNonces.push(toHexQuantity(transaction.nonce))
+    occupiedNonces.push(toHexQuantity(txPayload.nonce))
   }
 
   let networkPendingNonce
