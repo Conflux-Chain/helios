@@ -1,10 +1,5 @@
 import {beforeEach, describe, expect, test, vi} from 'vitest'
-import {decodeEthRawTransaction} from '@fluent-wallet/signature'
 import {main} from './index.js'
-
-vi.mock('@fluent-wallet/signature', () => ({
-  decodeEthRawTransaction: vi.fn(),
-}))
 
 const ADDRESS = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
 const OTHER_ADDRESS = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
@@ -25,29 +20,23 @@ describe('wallet_getEthereumNonceState', () => {
     const storedTransactions = {
       'regular-ethereum-transaction': {
         fromFluent: true,
-        raw: 'regular-ethereum-raw',
+        txPayload: {
+          from: ADDRESS.toLowerCase(),
+          nonce: '0x5',
+        },
       },
       'eip-7702-transaction': {
         fromFluent: true,
-        raw: 'eip-7702-raw',
+        txPayload: {
+          from: ADDRESS.toLowerCase(),
+          nonce: '0x6',
+          authorizationList: [
+            {eip7702Authorization: {nonce: '0x7'}},
+            {eip7702Authorization: {nonce: '0x8'}},
+          ],
+        },
       },
     }
-
-    const decodedTransactions = {
-      'regular-ethereum-raw': {
-        from: ADDRESS.toLowerCase(),
-        nonce: '0x5',
-      },
-      'eip-7702-raw': {
-        from: ADDRESS.toLowerCase(),
-        nonce: '0x6',
-        authorizationList: [{nonce: '0x7'}, {nonce: '0x8'}],
-      },
-    }
-
-    decodeEthRawTransaction.mockImplementation(
-      rawTransaction => decodedTransactions[rawTransaction],
-    )
 
     const eth_getTransactionCount = vi.fn().mockResolvedValue('0x4')
 
@@ -77,18 +66,6 @@ describe('wallet_getEthereumNonceState', () => {
       occupiedNonces: ['0x5', '0x6', '0x7', '0x8'],
     })
 
-    expect(decodeEthRawTransaction).toHaveBeenCalledTimes(2)
-    expect(decodeEthRawTransaction).toHaveBeenNthCalledWith(
-      1,
-      'regular-ethereum-raw',
-      CHAIN_ID,
-    )
-    expect(decodeEthRawTransaction).toHaveBeenNthCalledWith(
-      2,
-      'eip-7702-raw',
-      CHAIN_ID,
-    )
-
     expect(eth_getTransactionCount).toHaveBeenCalledWith(
       {
         errorFallThrough: true,
@@ -104,7 +81,7 @@ describe('wallet_getEthereumNonceState', () => {
         fromFluent: false,
         raw: 'external-raw',
       },
-      'transaction-without-raw': {
+      'transaction-without-payload': {
         fromFluent: true,
       },
     }
@@ -135,7 +112,7 @@ describe('wallet_getEthereumNonceState', () => {
             network: NETWORK,
           },
           {
-            tx: 'transaction-without-raw',
+            tx: 'transaction-without-payload',
             address: {value: ADDRESS},
             network: NETWORK,
           },
@@ -155,8 +132,7 @@ describe('wallet_getEthereumNonceState', () => {
     })
     expect(getTxById.mock.calls).toEqual([
       ['non-wallet-signed-transaction'],
-      ['transaction-without-raw'],
+      ['transaction-without-payload'],
     ])
-    expect(decodeEthRawTransaction).not.toHaveBeenCalled()
   })
 })

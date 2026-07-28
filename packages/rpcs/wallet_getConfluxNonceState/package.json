@@ -5,7 +5,6 @@
   "version": "0.0.3",
   "private": true,
   "dependencies": {
-    "@fluent-wallet/signature": "workspace:*",
     "@fluent-wallet/spec": "1.0.18",
     "@fluent-wallet/utils": "workspace:*"
   }

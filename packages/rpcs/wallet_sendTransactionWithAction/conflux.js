@@ -1,5 +1,4 @@
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
-import {encode as encodeCfxAddress} from '@fluent-wallet/base32-address'
 import {toHexQuantity} from '@fluent-wallet/utils'
 
 export function buildConfluxReplacementTransaction({
@@ -50,12 +49,7 @@ export function buildConfluxReplacementTransaction({
   transaction.data = originalTransaction.data
 
   if (originalTransaction.accessList !== undefined) {
-    transaction.accessList = originalTransaction.accessList.entries.map(
-      ({address, storageKeys}) => ({
-        address: encodeCfxAddress(address, originalTransaction.chainId),
-        storageKeys,
-      }),
-    )
+    transaction.accessList = originalTransaction.accessList
   }
 
   return transaction

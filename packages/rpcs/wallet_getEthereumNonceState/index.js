@@ -1,5 +1,5 @@
 import {cat, ethHexAddress} from '@fluent-wallet/spec'
-import {decodeEthRawTransaction} from '@fluent-wallet/signature'
+import {toHexQuantity} from '@fluent-wallet/utils'
 
 export const NAME = 'wallet_getEthereumNonceState'
 
@@ -38,16 +38,24 @@ export const main = async ({
     }
 
     const storedTx = getTxById(tx)
-    if (!storedTx?.fromFluent || !storedTx.raw) continue
+    const txPayload = storedTx?.txPayload
+    if (
+      !storedTx?.fromFluent ||
+      typeof txPayload?.from !== 'string' ||
+      txPayload.from.toLowerCase() !== lowercaseAddress ||
+      txPayload.nonce === undefined
+    ) {
+      continue
+    }
 
-    const transaction = decodeEthRawTransaction(storedTx.raw, chainId)
+    occupiedNonces.push(toHexQuantity(txPayload.nonce))
 
-    if (transaction.from.toLowerCase() !== lowercaseAddress) continue
-
-    occupiedNonces.push(transaction.nonce)
-
-    for (const authorization of transaction.authorizationList ?? []) {
-      occupiedNonces.push(authorization.nonce)
+    for (const authorizationRecord of txPayload.authorizationList ?? []) {
+      const authorization =
+        authorizationRecord?.eip7702Authorization ?? authorizationRecord
+      if (authorization?.nonce !== undefined) {
+        occupiedNonces.push(toHexQuantity(authorization.nonce))
+      }
     }
   }
   const networkPendingNonce = await eth_getTransactionCount(

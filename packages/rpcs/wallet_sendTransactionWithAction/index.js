@@ -1,8 +1,4 @@
 import {Bytes32, Uint, enums, map} from '@fluent-wallet/spec'
-import {
-  decodeCfxRawTransaction,
-  decodeEthRawTransaction,
-} from '@fluent-wallet/signature'
 
 import {buildConfluxReplacementTransaction} from './conflux.js'
 import {buildEthereumReplacementTransaction} from './ethereum.js'
@@ -54,14 +50,11 @@ export const main = ({
 
   const storedTransaction = queryqueryTx({hash: originalTxHash})
 
-  if (!storedTransaction?.raw) {
+  if (!storedTransaction?.txPayload) {
     throw InvalidParams(`Invalid original transaction ${originalTxHash}`)
   }
 
-  const originalTransaction =
-    network.type === 'cfx'
-      ? decodeCfxRawTransaction(storedTransaction.raw)
-      : decodeEthRawTransaction(storedTransaction.raw, network.chainId)
+  const originalTransaction = storedTransaction.txPayload
 
   const transaction =
     network.type === 'cfx'
