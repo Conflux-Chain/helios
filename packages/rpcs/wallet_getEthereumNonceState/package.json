@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/wallet_get-ethereum-nonce-state",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "dependencies": {
     "@fluent-wallet/spec": "1.0.18",
