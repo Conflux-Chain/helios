@@ -288,6 +288,11 @@ const ru = {
       'Сайт просит вас подписаться, чтобы подтвердить владение этим аккаунтом.',
     signTypeMessage: 'Подписать написанное сообщение',
     message: 'Сообщение',
+    typedDataReview: 'Проверьте этот запрос на подпись:',
+    typedDataRequestFrom: 'Запрос от',
+    typedDataInteractWith: 'Взаимодействие с',
+    typedDataInteractWithTooltip:
+      'Это контракт, с которым вы взаимодействуете. Защитите себя от мошенников, проверив данные.',
     siweReviewAlert: 'Просмотр предупреждения',
     siweWarningUrlTitle: 'Подозрительный запрос на вход',
     siweWarningUrl:

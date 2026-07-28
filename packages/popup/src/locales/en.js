@@ -284,6 +284,11 @@ const en = {
     signThisMessage: 'Sign this Message?',
     signTypeMessage: 'Sign Type Message',
     message: 'Message',
+    typedDataReview: 'Please review this signature request:',
+    typedDataRequestFrom: 'Request from',
+    typedDataInteractWith: 'Interact with',
+    typedDataInteractWithTooltip:
+      "This is the contract you're interacting with. Protect yourself from scammers by verifying the details.",
 
     // - request signature - Sign in with Ethereum
     signWithEthereumTitle: 'Sign-in request',

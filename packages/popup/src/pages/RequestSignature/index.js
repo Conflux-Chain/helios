@@ -26,7 +26,7 @@ import {useSIWEValidation} from '../../hooks/useSIWEValidation'
 import Button from '@fluent-wallet/component-button'
 import SIWERiskModal from './components/SIWERiskModal'
 
-const {PERSONAL_SIGN} = RPC_METHODS
+const {PERSONAL_SIGN, CFX_SIGN_TYPED_DATA_V4} = RPC_METHODS
 
 const isLedgerRejectedError = errorMessage => {
   const message = String(errorMessage || '').toLowerCase()
@@ -40,12 +40,14 @@ const isLedgerRejectedError = errorMessage => {
 function RequestSignature() {
   const {t} = useTranslation()
   const pendingAuthReq = usePendingAuthReq()
-  const [{req, app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  const [{req, app, site}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
 
   const isPersonalSign = req?.method === PERSONAL_SIGN
   const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
-  const origin = app?.site?.origin
+  const origin = app?.site?.origin || site?.origin
+  const typedDataDomainTypeName =
+    req?.method === CFX_SIGN_TYPED_DATA_V4 ? 'CIP23Domain' : 'EIP712Domain'
 
   const plaintextData = useMemo(
     () =>
@@ -74,7 +76,7 @@ function RequestSignature() {
 
   const [siweErrors] = useSIWEValidation({
     parsedMessage,
-    origin: origin,
+    origin,
     address,
   })
 
@@ -96,7 +98,14 @@ function RequestSignature() {
         />
       )
     }
-    return <TypedDataSign plaintextData={plaintextData} />
+    return (
+      <TypedDataSign
+        plaintextData={plaintextData}
+        currentNetwork={app?.currentNetwork}
+        requestOrigin={origin}
+        domainTypeName={typedDataDomainTypeName}
+      />
+    )
   }, [
     isPersonalSign,
     isSIWEMessage,
@@ -104,6 +113,8 @@ function RequestSignature() {
     plaintextData,
     personalSignData,
     app?.currentNetwork,
+    origin,
+    typedDataDomainTypeName,
     siweErrors,
   ])
 
@@ -154,7 +165,7 @@ function RequestSignature() {
   return (
     <div
       id="requestSignatureContainer"
-      className="flex flex-col h-full w-full bg-blue-circles bg-no-repeat bg-bg"
+      className="flex h-screen w-full flex-col bg-bg bg-blue-circles bg-no-repeat"
     >
       <header id="header">
         <TitleNav title={signTitle} hasGoBack={false} />
@@ -176,8 +187,8 @@ function RequestSignature() {
           </div>
         </div>
       </header>
-      <div className="flex-1 flex justify-between flex-col bg-gray-0 rounded-t-xl pb-4">
-        <main className="rounded-t-xl px-3 bg-gray-0">
+      <div className="flex min-h-0 flex-1 flex-col justify-between rounded-t-xl bg-gray-0 pb-4">
+        <main className="flex-1 min-h-0 overflow-auto rounded-t-xl px-3 pb-2 bg-gray-0">
           {SignatureContent}
 
           {siweErrors && Object.keys(siweErrors).length > 0 && (
@@ -192,7 +203,7 @@ function RequestSignature() {
             />
           )}
         </main>
-        <div>
+        <div className="shrink-0">
           <DappFooter
             cancelText={t('cancel')}
             confirmText={
