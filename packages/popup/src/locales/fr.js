@@ -307,6 +307,11 @@ const fr = {
     siweModalConfirmBtn: "J'ai compris",
     signTypeMessage: 'Signer le message saisi',
     message: 'Message',
+    typedDataReview: 'Veuillez vérifier cette demande de signature :',
+    typedDataRequestFrom: 'Demande de',
+    typedDataInteractWith: 'Interaction avec',
+    typedDataInteractWithTooltip:
+      'Il s’agit du contrat avec lequel vous interagissez. Protégez-vous des escrocs en vérifiant les détails.',
 
     // add SIWE key translations
     siweKeyMessage: 'Message',

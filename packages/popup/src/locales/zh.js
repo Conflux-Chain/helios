@@ -288,6 +288,11 @@ const zh = {
     siweModalConfirmBtn: '我已了解',
     signTypeMessage: '签署类型信息',
     message: '信息',
+    typedDataReview: '请检查此签名请求：',
+    typedDataRequestFrom: '请求来源',
+    typedDataInteractWith: '交互对象',
+    typedDataInteractWithTooltip:
+      '这是您正在交互的合约。请核实详细信息，谨防诈骗。',
 
     // add SIWE key translations
     siweKeyMessage: '消息',
