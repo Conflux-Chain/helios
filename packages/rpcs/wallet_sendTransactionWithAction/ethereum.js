@@ -7,6 +7,9 @@ const toAuthorizationRequest = ({chainId, address, nonce}) => ({
   nonce: toHexQuantity(nonce),
 })
 
+const getAuthorization = authorizationRecord =>
+  authorizationRecord?.eip7702Authorization ?? authorizationRecord
+
 export function buildEthereumReplacementTransaction({
   action,
   originalTransaction,
@@ -26,7 +29,7 @@ export function buildEthereumReplacementTransaction({
     from: originalTransaction.from,
     chainId: originalTransaction.chainId,
     nonce: originalTransaction.nonce,
-    gas: gas ?? originalTransaction.gasLimit,
+    gas: gas ?? originalTransaction.gas ?? originalTransaction.gasLimit,
   }
 
   if (type === ETH_TX_TYPES.LEGACY || type === ETH_TX_TYPES.EIP2930) {
@@ -59,7 +62,8 @@ export function buildEthereumReplacementTransaction({
 
   if (originalTransaction.authorizationList?.length) {
     transaction.authorizationList = originalTransaction.authorizationList.map(
-      toAuthorizationRequest,
+      authorizationRecord =>
+        toAuthorizationRequest(getAuthorization(authorizationRecord)),
     )
   }
 

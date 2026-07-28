@@ -5,9 +5,7 @@
   "packageManager": "yarn@3.2.0",
   "version": "1.0.23",
   "dependencies": {
-    "@fluent-wallet/base32-address": "workspace:*",
     "@fluent-wallet/consts": "workspace:*",
-    "@fluent-wallet/signature": "workspace:*",
     "@fluent-wallet/spec": "1.0.18",
     "@fluent-wallet/utils": "workspace:*"
   }

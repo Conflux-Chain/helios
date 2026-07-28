@@ -5445,7 +5445,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-conflux-nonce-state@workspace:packages/rpcs/wallet_getConfluxNonceState"
   dependencies:
-    "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/utils": "workspace:*"
   languageName: unknown
@@ -5489,8 +5488,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-ethereum-nonce-state@workspace:packages/rpcs/wallet_getEthereumNonceState"
   dependencies:
-    "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
+    "@fluent-wallet/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5790,9 +5789,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_send-transaction-with-action@workspace:packages/rpcs/wallet_sendTransactionWithAction"
   dependencies:
-    "@fluent-wallet/base32-address": "workspace:*"
     "@fluent-wallet/consts": "workspace:*"
-    "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/utils": "workspace:*"
   languageName: unknown
