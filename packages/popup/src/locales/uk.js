@@ -287,6 +287,11 @@ const uk = {
       'Сайт просить вас підписатися, щоб підтвердити володіння цим акаунтом.',
     signTypeMessage: 'Підписати написане повідомлення',
     message: 'Повідомлення',
+    typedDataReview: 'Перевірте цей запит на підпис:',
+    typedDataRequestFrom: 'Запит від',
+    typedDataInteractWith: 'Взаємодія з',
+    typedDataInteractWithTooltip:
+      'Це контракт, з яким ви взаємодієте. Захистіть себе від шахраїв, перевіривши дані.',
     siweReviewAlert: 'Перегляд попередження',
     siweWarningUrlTitle: 'Підозрілий запит на вхід',
     siweWarningUrl:
