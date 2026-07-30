@@ -476,6 +476,9 @@ const zh = {
     waitingContent: '请在 Ledger 中确认此交易',
     rejectedContent: '交易被拒绝',
     copyError: '复制错误信息',
+    transactionSubmissionFailed: '交易提交失败',
+    pendingGasSponsoredTransaction:
+      '检测到有未完成的燃气费代付交易，请稍后再试',
 
     // conflux confirm tx error
     txPoolFull: '交易池拥堵',

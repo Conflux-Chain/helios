@@ -495,6 +495,9 @@ const en = {
     waitingContent: 'Please confirm this transaction in your Ledger.',
     rejectedContent: 'Transaction has been rejected.',
     copyError: 'Copy error code',
+    transactionSubmissionFailed: 'Transaction Submission Failed',
+    pendingGasSponsoredTransaction:
+      'You have a pending gas-sponsored transaction. Please try again later.',
 
     // conflux confirm tx error
     txPoolFull: 'Transaction pool is full',
