@@ -503,6 +503,9 @@ const ru = {
     transactionSubmissionFailed: 'Не удалось отправить транзакцию',
     pendingGasSponsoredTransaction:
       'У вас уже есть ожидающая транзакция с оплатой газа за счет спонсора. Пожалуйста, повторите попытку позже.',
+    tokenPayGasChangedTitle: 'Комиссия за газ изменилась',
+    tokenPayGasChangedContent:
+      'Количество токенов, необходимое для оплаты газа, изменилось. Проверьте новую котировку перед повторной отправкой.',
 
     // conflux confirm tx error
     txPoolFull: 'Пул транзакций заполнен',

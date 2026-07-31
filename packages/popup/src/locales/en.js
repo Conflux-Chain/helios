@@ -498,6 +498,9 @@ const en = {
     transactionSubmissionFailed: 'Transaction Submission Failed',
     pendingGasSponsoredTransaction:
       'You have a pending gas-sponsored transaction. Please try again later.',
+    tokenPayGasChangedTitle: 'Gas Changed',
+    tokenPayGasChangedContent:
+      'The required token amount for gas has changed. Please confirm the new quote before submitting.',
 
     // conflux confirm tx error
     txPoolFull: 'Transaction pool is full',

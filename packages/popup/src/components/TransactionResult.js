@@ -19,8 +19,12 @@ function TransactionResult({status, sendError, onClose}) {
   const open = status && status !== TX_STATUS.HW_SUCCESS
   const isRejected = errorMessage?.includes('UserRejected')
   const isWaiting = status === TX_STATUS.HW_WAITING
+
   const isTokenPayBlockedByPendingTransaction =
     sendError?.data?.code === TOKEN_PAY_ERROR_CODES.PENDING_TRANSACTION
+
+  const isTokenPayQuoteChanged =
+    sendError?.data?.code === TOKEN_PAY_ERROR_CODES.QUOTE_CHANGED
   const {errorType} = networkTypeIsCfx
     ? cfxProcessError(sendError)
     : ethProcessError(sendError)
@@ -37,6 +41,12 @@ function TransactionResult({status, sendError, onClose}) {
     if (isWaiting) {
       setTitle(t('waitingForSign'))
       setContent(t('waitingContent'))
+      return
+    }
+
+    if (isTokenPayQuoteChanged) {
+      setTitle(t('tokenPayGasChangedTitle'))
+      setContent(t('tokenPayGasChangedContent'))
       return
     }
 
@@ -60,6 +70,7 @@ function TransactionResult({status, sendError, onClose}) {
     isTokenPayBlockedByPendingTransaction,
     isRejected,
     isWaiting,
+    isTokenPayQuoteChanged,
     open,
     t,
   ])
@@ -84,6 +95,7 @@ function TransactionResult({status, sendError, onClose}) {
           </div>
           {!isWaiting &&
             !isRejected &&
+            !isTokenPayQuoteChanged &&
             !isTokenPayBlockedByPendingTransaction && (
               <CopyButton
                 text={content}

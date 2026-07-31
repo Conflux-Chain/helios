@@ -479,6 +479,9 @@ const zh = {
     transactionSubmissionFailed: '交易提交失败',
     pendingGasSponsoredTransaction:
       '检测到有未完成的燃气费代付交易，请稍后再试',
+    tokenPayGasChangedTitle: '燃气费有变化',
+    tokenPayGasChangedContent:
+      '当前支付燃气费所需 token 数量有变化，请核实新报价后再提交',
 
     // conflux confirm tx error
     txPoolFull: '交易池拥堵',

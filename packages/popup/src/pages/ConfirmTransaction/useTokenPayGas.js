@@ -87,6 +87,8 @@ function useTokenPayGas({
     data: tokenPayQuote,
     error: tokenPayQuoteError,
     loading: tokenPayQuoteLoading,
+    isValidating: tokenPayQuoteValidating,
+    mutate: mutateTokenPayQuote,
   } = usePrepareTokenPayQuote({
     networkDbId,
     accountId,
@@ -94,6 +96,12 @@ function useTokenPayGas({
     gasTokenAddress: selectedGasToken?.address,
     gasLevel: tokenPayGasLevel,
   })
+
+  const refreshTokenPayQuote = useCallback(
+    () => mutateTokenPayQuote(),
+    [mutateTokenPayQuote],
+  )
+
   const nativeGasFee = getNativeGasFee(estimateRst)
   const {
     data: tokenPayGasOptions,
@@ -195,6 +203,8 @@ function useTokenPayGas({
     gasTokenBalances: gasTokenBalancesForAccount,
     tokenPayQuoteError,
     tokenPayQuoteLoading,
+    tokenPayQuoteValidating,
+    refreshTokenPayQuote,
     canUseTokenPay,
     isTokenPayGas,
     tokenPayReady,
