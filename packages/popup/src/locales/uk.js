@@ -496,6 +496,12 @@ const uk = {
     waitingContent: 'Будь ласка, підтвердіть цю операцію у вашому Ledger',
     rejectedContent: 'Транзакція була відхилена.',
     copyError: 'Копіювати код помилки',
+    transactionSubmissionFailed: 'Не вдалося надіслати транзакцію',
+    pendingGasSponsoredTransaction:
+      'У вас уже є незавершена транзакція з оплатою газу коштом спонсора. Будь ласка, спробуйте ще раз пізніше.',
+    tokenPayGasChangedTitle: 'Комісія за газ змінилася',
+    tokenPayGasChangedContent:
+      'Кількість токенів, необхідна для оплати газу, змінилася. Перевірте нове котирування перед повторним надсиланням.',
 
     // conflux confirm tx error
     txPoolFull: 'Пул транзакцій заповнений',

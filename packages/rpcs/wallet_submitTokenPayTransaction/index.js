@@ -1,6 +1,10 @@
 import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
-import {TOKEN_PAY_NETWORK_CONFIGS} from '@fluent-wallet/consts'
+import {
+  TOKEN_PAY_ERROR_CODES,
+  TOKEN_PAY_NETWORK_CONFIGS,
+} from '@fluent-wallet/consts'
+
 import {
   decodeEthRawTransaction,
   getTxHashFromRawTx,
@@ -187,7 +191,7 @@ async function submitTokenPayTransactions({
   return {outcome: 'uncertain'}
 }
 export const main = async ({
-  Err: {InvalidParams},
+  Err: {InvalidParams, Server},
   db: {
     getAccountById,
     getNetworkById,
@@ -293,6 +297,15 @@ export const main = async ({
             {errorFallThrough: true, network},
             [accountAddress],
           )
+
+        if (occupiedNonces.length > 0) {
+          const error = Server('Pending transaction blocks token pay')
+          error.extra = {
+            code: TOKEN_PAY_ERROR_CODES.PENDING_TRANSACTION,
+          }
+          throw error
+        }
+
         const bundleNonces = resolveTokenPayNonces({
           networkPendingNonce,
           occupiedNonces,
@@ -353,12 +366,21 @@ export const main = async ({
           includeTxs: true,
         })
 
-        if (
-          new BN(stripHexPrefix(gasTokenQuote.tokenCost), 16).gt(
-            new BN(stripHexPrefix(maxTokenCost), 16),
-          )
-        ) {
-          throw InvalidParams('Token pay quote exceeds approved amount')
+        const currentTokenCost = new BN(
+          stripHexPrefix(gasTokenQuote.tokenCost),
+          16,
+        )
+        const approvedTokenCost = new BN(stripHexPrefix(maxTokenCost), 16)
+        const hasTokenCostChanged = !currentTokenCost.eq(approvedTokenCost)
+
+        if (hasTokenCostChanged) {
+          const error = Server('Token pay quote changed')
+          error.extra = {
+            code: TOKEN_PAY_ERROR_CODES.QUOTE_CHANGED,
+            approvedTokenCost: maxTokenCost,
+            currentTokenCost: gasTokenQuote.tokenCost,
+          }
+          throw error
         }
 
         const signedTransferTokenTx = await eth_signTransaction({network}, [

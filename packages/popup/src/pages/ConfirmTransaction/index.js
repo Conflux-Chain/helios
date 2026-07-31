@@ -10,7 +10,7 @@ import {
   convertDataToValue,
   convertValueToData,
 } from '@fluent-wallet/data-format'
-import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {ETH_TX_TYPES, TOKEN_PAY_ERROR_CODES} from '@fluent-wallet/consts'
 import {
   useCurrentTxParams,
   useEstimateTx,
@@ -292,8 +292,18 @@ function ConfirmTransaction() {
     gasLevel,
     estimateRst,
   })
+  const {refreshTokenPayQuote} = tokenPayGas
 
   const nativeMaxDrip = estimateRst.nativeMaxDrip
+
+  const isTokenPayQuoteChanged =
+    sendError?.data?.code === TOKEN_PAY_ERROR_CODES.QUOTE_CHANGED
+
+  useEffect(() => {
+    if (!isTokenPayQuoteChanged) return
+
+    refreshTokenPayQuote()
+  }, [isTokenPayQuoteChanged, refreshTokenPayQuote])
 
   useEffect(() => {
     const nativeMax = convertDataToValue(nativeMaxDrip, nativeToken?.decimals)
@@ -562,6 +572,12 @@ function ConfirmTransaction() {
   }
 
   const onCloseTransactionResult = () => {
+    if (isTokenPayQuoteChanged) {
+      setSendStatus(undefined)
+      setSendError({})
+      return
+    }
+
     clearSendTransactionParams()
     if (!isDapp) history.push(HOME)
     else window.close()
@@ -582,6 +598,7 @@ function ConfirmTransaction() {
     Object.keys(sendEstimateRst).length === 0 ||
     (tokenPayGas.isTokenPayGas &&
       (tokenPayGas.tokenPayQuoteLoading ||
+        tokenPayGas.tokenPayQuoteValidating ||
         tokenPayGas.tokenPayQuoteError ||
         !tokenPayGas.tokenPayReady)) ||
     (customAllowance && isDecoding)

@@ -511,6 +511,12 @@ const fr = {
     waitingContent: 'Merci de confirmer cette transaction sur votre Ledger.',
     rejectedContent: 'La transaction a été rejetée.',
     copyError: 'Copier le code erreur',
+    transactionSubmissionFailed: 'Échec de l’envoi de la transaction',
+    pendingGasSponsoredTransaction:
+      'Vous avez déjà une transaction en attente avec des frais de Gas pris en charge. Merci de réessayer plus tard.',
+    tokenPayGasChangedTitle: 'Les frais de Gas ont changé',
+    tokenPayGasChangedContent:
+      'Le montant de tokens requis pour payer les frais de Gas a changé. Veuillez vérifier le nouveau devis avant de soumettre à nouveau.',
 
     // conflux confirm tx error
     txPoolFull: 'La pool de transaction est pleine',

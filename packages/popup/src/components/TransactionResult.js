@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
+import {TOKEN_PAY_ERROR_CODES} from '@fluent-wallet/consts'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
 import Loading from '@fluent-wallet/component-loading'
@@ -18,6 +19,12 @@ function TransactionResult({status, sendError, onClose}) {
   const open = status && status !== TX_STATUS.HW_SUCCESS
   const isRejected = errorMessage?.includes('UserRejected')
   const isWaiting = status === TX_STATUS.HW_WAITING
+
+  const isTokenPayBlockedByPendingTransaction =
+    sendError?.data?.code === TOKEN_PAY_ERROR_CODES.PENDING_TRANSACTION
+
+  const isTokenPayQuoteChanged =
+    sendError?.data?.code === TOKEN_PAY_ERROR_CODES.QUOTE_CHANGED
   const {errorType} = networkTypeIsCfx
     ? cfxProcessError(sendError)
     : ethProcessError(sendError)
@@ -30,21 +37,43 @@ function TransactionResult({status, sendError, onClose}) {
     if (!open) {
       return
     }
-    setTitle(
-      isWaiting
-        ? t('waitingForSign')
-        : isRejected
-        ? t('rejected')
-        : t(errorType),
-    )
-    setContent(
-      isWaiting
-        ? t('waitingContent')
-        : isRejected
-        ? t('rejectedContent')
-        : errorMessage,
-    )
-  }, [isWaiting, isRejected, open, t, errorType, errorMessage])
+
+    if (isWaiting) {
+      setTitle(t('waitingForSign'))
+      setContent(t('waitingContent'))
+      return
+    }
+
+    if (isTokenPayQuoteChanged) {
+      setTitle(t('tokenPayGasChangedTitle'))
+      setContent(t('tokenPayGasChangedContent'))
+      return
+    }
+
+    if (isTokenPayBlockedByPendingTransaction) {
+      setTitle(t('transactionSubmissionFailed'))
+      setContent(t('pendingGasSponsoredTransaction'))
+      return
+    }
+
+    if (isRejected) {
+      setTitle(t('rejected'))
+      setContent(t('rejectedContent'))
+      return
+    }
+
+    setTitle(t(errorType))
+    setContent(errorMessage)
+  }, [
+    errorMessage,
+    errorType,
+    isTokenPayBlockedByPendingTransaction,
+    isRejected,
+    isWaiting,
+    isTokenPayQuoteChanged,
+    open,
+    t,
+  ])
 
   useEffect(() => {
     if (!open) {
@@ -64,21 +93,24 @@ function TransactionResult({status, sendError, onClose}) {
           <div className="flex w-full justify-center overflow-y-auto max-h-40 mb-4">
             {content}
           </div>
-          {!isWaiting && !isRejected && (
-            <CopyButton
-              text={content}
-              toastClassName="left-2/4 transform -translate-x-2/4 -top-8"
-              CopyInner={
-                <div
-                  id="feedback"
-                  aria-hidden="true"
-                  className="text-center text-xs text-primary cursor-pointer"
-                >
-                  {t('copyError')}
-                </div>
-              }
-            />
-          )}
+          {!isWaiting &&
+            !isRejected &&
+            !isTokenPayQuoteChanged &&
+            !isTokenPayBlockedByPendingTransaction && (
+              <CopyButton
+                text={content}
+                toastClassName="left-2/4 transform -translate-x-2/4 -top-8"
+                CopyInner={
+                  <div
+                    id="feedback"
+                    aria-hidden="true"
+                    className="text-center text-xs text-primary cursor-pointer"
+                  >
+                    {t('copyError')}
+                  </div>
+                }
+              />
+            )}
         </div>
       }
       icon={

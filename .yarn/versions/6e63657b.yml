@@ -1,0 +1,32 @@
+releases:
+  "@fluent-wallet/consts": patch
+  "@fluent-wallet/wallet_send-transaction": patch
+  "@fluent-wallet/wallet_submit-token-pay-transaction": patch
+  helios-background: patch
+  helios-popup: patch
+
+declined:
+  - helios
+  - "@fluent-wallet/account"
+  - "@fluent-wallet/addr-by-network"
+  - "@fluent-wallet/base32-address"
+  - browser-extension
+  - "@fluent-wallet/contract-method-name"
+  - "@fluent-wallet/db"
+  - "@fluent-wallet/estimate-tx"
+  - "@fluent-wallet/rpc-engine"
+  - "@fluent-wallet/cfx_gas-price"
+  - "@fluent-wallet/eth_sign-transaction"
+  - "@fluent-wallet/wallet_add-network"
+  - "@fluent-wallet/wallet_add-vault"
+  - "@fluent-wallet/wallet_export-account-group"
+  - "@fluent-wallet/wallet_get-eip7702-account-states"
+  - "@fluent-wallet/wallet_get-side-panel-enabled"
+  - "@fluent-wallet/wallet_get-token-pay-config"
+  - "@fluent-wallet/wallet_prepare-token-pay-quote"
+  - "@fluent-wallet/wallet_refetch-tx-list"
+  - "@fluent-wallet/wallet_send-transaction-with-action"
+  - "@fluent-wallet/wallet_set-side-panel-enabled"
+  - "@fluent-wallet/spec"
+  - "@fluent-wallet/tx-history-checker"
+  - "@fluent-wallet/shorten-address"

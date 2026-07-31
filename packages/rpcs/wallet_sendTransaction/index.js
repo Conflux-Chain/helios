@@ -10,7 +10,7 @@ import {
 import {ERROR} from '@fluent-wallet/json-rpc-error'
 import {CFX_MAINNET_NAME} from '@fluent-wallet/consts'
 import {BigNumber} from '@ethersproject/bignumber'
-import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {ETH_TX_TYPES, TOKEN_PAY_ERROR_CODES} from '@fluent-wallet/consts'
 
 export const NAME = 'wallet_sendTransaction'
 
@@ -219,12 +219,22 @@ export const main = async ({
     }
 
     try {
-      return await wallet_submitTokenPayTransaction({
-        authReqId,
-        tx,
-        tokenPay: params.tokenPay,
-      })
+      return await wallet_submitTokenPayTransaction(
+        {errorFallThrough: true},
+        {
+          authReqId,
+          tx,
+          tokenPay: params.tokenPay,
+        },
+      )
     } catch (err) {
+      const errorData = err?.data || err?.extra
+
+      if (errorData?.code === TOKEN_PAY_ERROR_CODES.QUOTE_CHANGED) {
+        t({eid: authReqId, authReq: {processed: false}})
+        throw err
+      }
+
       await wallet_userRejectedAuthRequest({authReqId, error: err})
       throw err
     }
