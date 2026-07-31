@@ -97,11 +97,6 @@ function useTokenPayGas({
     gasLevel: tokenPayGasLevel,
   })
 
-  const refreshTokenPayQuote = useCallback(
-    () => mutateTokenPayQuote(),
-    [mutateTokenPayQuote],
-  )
-
   const nativeGasFee = getNativeGasFee(estimateRst)
   const {
     data: tokenPayGasOptions,
@@ -204,7 +199,7 @@ function useTokenPayGas({
     tokenPayQuoteError,
     tokenPayQuoteLoading,
     tokenPayQuoteValidating,
-    refreshTokenPayQuote,
+    refreshTokenPayQuote: mutateTokenPayQuote,
     canUseTokenPay,
     isTokenPayGas,
     tokenPayReady,
