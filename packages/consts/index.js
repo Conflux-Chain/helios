@@ -168,6 +168,11 @@ export const EIP7702_NETWORK_CONFIGS = {
   },
 }
 
+export const TOKEN_PAY_ERROR_CODES = {
+  PENDING_TRANSACTION: 'TOKEN_PAY_TRANSACTION_PENDING',
+  QUOTE_CHANGED: 'TOKEN_PAY_QUOTE_CHANGED',
+}
+
 export const TOKEN_PAY_NETWORK_CONFIGS = {
   [CFX_ESPACE_TESTNET_CHAINID]: {
     backendBaseUrl: 'https://api-testnet.fluentwallet.com/api',
