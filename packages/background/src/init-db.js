@@ -113,6 +113,13 @@ function initNetwork(d) {
         url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list/cfx-espace.fluent.json',
       },
     },
+    {
+      eid: -7,
+      tokenList: {
+        name: 'eSpace Testnet',
+        url: 'https://cdn.jsdelivr.net/gh/conflux-fans/token-list/cfx-espace.test.fluent.json',
+      },
+    },
 
     // mainnets
     {
@@ -240,6 +247,7 @@ function initNetwork(d) {
         scanUrl: CFX_ESPACE_TESTNET_EXPLORER_URL,
         balanceChecker: '0x74191f6b288dff3db43b34d3637842c8146e2103',
         builtin: true,
+        tokenList: -7,
         isTestnet: true,
       },
     },
