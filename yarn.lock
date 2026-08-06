@@ -4402,7 +4402,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/db@npm:1.0.86, @fluent-wallet/db@workspace:packages/db":
+"@fluent-wallet/db@npm:1.0.87, @fluent-wallet/db@workspace:packages/db":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/db@workspace:packages/db"
   dependencies:
@@ -18533,7 +18533,7 @@ __metadata:
     "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": "workspace:*"
     "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
     "@fluent-wallet/consts": "workspace:packages/consts"
-    "@fluent-wallet/db": "npm:1.0.86"
+    "@fluent-wallet/db": "npm:1.0.87"
     "@fluent-wallet/eth_accounts": "workspace:packages/rpcs/eth_accounts"
     "@fluent-wallet/eth_block-number": "workspace:packages/rpcs/eth_blockNumber"
     "@fluent-wallet/eth_call": "workspace:packages/rpcs/eth_call"
