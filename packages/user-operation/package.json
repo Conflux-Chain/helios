@@ -1,0 +1,17 @@
+{
+  "name": "@fluent-wallet/user-operation",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@ethersproject/bignumber": "^5.7.0",
+    "@ethersproject/bytes": "^5.7.0",
+    "@ethersproject/hash": "^5.7.0",
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
+  },
+  "devDependencies": {
+    "@ethersproject/signing-key": "^5.7.0",
+    "@ethersproject/transactions": "^5.7.0"
+  }
+}

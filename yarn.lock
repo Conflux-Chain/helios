@@ -3680,6 +3680,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/bundler-client@workspace:packages/bundler-client":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/bundler-client@workspace:packages/bundler-client"
+  dependencies:
+    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cache-rpc@workspace:packages/cache-rpc":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cache-rpc@workspace:packages/cache-rpc"
@@ -5066,6 +5075,19 @@ __metadata:
   peerDependencies:
     react: ^17
     react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/user-operation@workspace:packages/user-operation":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/user-operation@workspace:packages/user-operation"
+  dependencies:
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/bytes": "npm:^5.7.0"
+    "@ethersproject/hash": "npm:^5.7.0"
+    "@ethersproject/signing-key": "npm:^5.7.0"
+    "@ethersproject/transactions": "npm:^5.7.0"
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
   languageName: unknown
   linkType: soft
 

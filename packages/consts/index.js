@@ -162,6 +162,8 @@ export const EIP7702_DELEGATION_PREFIX = '0xef0100'
 
 export const EIP7702_NETWORK_CONFIGS = {
   [CFX_ESPACE_TESTNET_CHAINID]: {
+    entryPointAddress: '0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108',
+    entryPointVersion: '0.8',
     delegateAddress: '0xD165320665C36b2F8F2BB2EfA5621db7eA012028',
     paymasterAddress: '0x2dbB152f7D3F673eea1459FE39EcebdF29106652',
     bundlerEndpoint: 'https://aa-bundle.confluxrpc.org',
