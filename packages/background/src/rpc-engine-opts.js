@@ -21,6 +21,8 @@ import * as walletGetConfluxNonceState from '@fluent-wallet/wallet_get-conflux-n
 import * as walletGetEthereumNonceState from '@fluent-wallet/wallet_get-ethereum-nonce-state'
 import * as walletEnrichEthereumTx from '@fluent-wallet/wallet_enrich-ethereum-tx'
 import * as walletSendTransaction from '@fluent-wallet/wallet_send-transaction'
+import * as walletSendUserOperation from '@fluent-wallet/wallet_send-user-operation'
+import * as walletHandleUserOperation from '@fluent-wallet/wallet_handle-user-operation'
 import * as walletHandleUnfinishedETHTx from '@fluent-wallet/wallet_handle-unfinished-eth-tx'
 import * as ethSendTransaction from '@fluent-wallet/eth_send-transaction'
 import * as ethGetTransactionByHash from '@fluent-wallet/eth_get-transaction-by-hash'
@@ -378,6 +380,8 @@ export const rpcEngineOpts = {
 
     walletSendTransactionWithAction,
     walletSendTransaction,
+    walletSendUserOperation,
+    walletHandleUserOperation,
     walletHandleUnfinishedETHTx,
     walletHandleUnfinishedCFXTx,
     walletHandleUnfinishedTxs,

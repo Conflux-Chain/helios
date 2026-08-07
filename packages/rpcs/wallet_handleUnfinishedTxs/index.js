@@ -9,13 +9,21 @@ export const schemas = {
 
 export const permissions = {
   locked: true,
-  methods: ['wallet_handleUnfinishedCFXTx', 'wallet_handleUnfinishedETHTx'],
-  db: ['getUnfinishedTx'],
+  methods: [
+    'wallet_handleUnfinishedCFXTx',
+    'wallet_handleUnfinishedETHTx',
+    'wallet_handleUserOperation',
+  ],
+  db: ['getUnfinishedTx', 'getUnfinishedUserOperations'],
 }
 
 export const main = ({
-  db: {getUnfinishedTx},
-  rpcs: {wallet_handleUnfinishedCFXTx, wallet_handleUnfinishedETHTx},
+  db: {getUnfinishedTx, getUnfinishedUserOperations},
+  rpcs: {
+    wallet_handleUnfinishedCFXTx,
+    wallet_handleUnfinishedETHTx,
+    wallet_handleUserOperation,
+  },
 }) => {
   const txs = getUnfinishedTx()
   txs.forEach(({tx, address, network}) => {
@@ -34,5 +42,14 @@ export const main = ({
         )
       } catch (err) {}
     }
+  })
+
+  getUnfinishedUserOperations().forEach(({hash, networkId}) => {
+    try {
+      void wallet_handleUserOperation(
+        {errorFallThrough: true},
+        {hash, networkId},
+      ).catch(() => {})
+    } catch (err) {}
   })
 }

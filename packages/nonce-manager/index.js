@@ -89,10 +89,28 @@ async function withNonceLock(key, task) {
 const createEthereumNonceLockKey = ({chainId, address}) =>
   `eth:${toHexQuantity(toUnsignedBN(chainId))}:${address.toLowerCase()}`
 
+const createUserOperationNonceLockKey = ({chainId, entryPoint, sender}) =>
+  [
+    'user-operation',
+    toHexQuantity(toUnsignedBN(chainId)),
+    entryPoint.toLowerCase(),
+    sender.toLowerCase(),
+  ].join(':')
+
 export function withEthereumNonceLock({chainId, address}, task) {
   return withNonceLock(createEthereumNonceLockKey({chainId, address}), task)
 }
 
 export function withConfluxNonceLock({address}, task) {
   return withNonceLock(address.toLowerCase(), task)
+}
+
+export function withUserOperationNonceLock(
+  {chainId, entryPoint, sender},
+  task,
+) {
+  return withNonceLock(
+    createUserOperationNonceLockKey({chainId, entryPoint, sender}),
+    task,
+  )
 }

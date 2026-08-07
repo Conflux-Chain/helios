@@ -3,6 +3,15 @@ import {toBundlerUserOperation} from '@fluent-wallet/user-operation'
 
 const DEFAULT_TIMEOUT = 60_000
 
+export class BundlerRpcError extends Error {
+  constructor({code, message, data}) {
+    super(message)
+    this.name = 'BundlerRpcError'
+    this.code = code
+    this.data = data
+  }
+}
+
 export function createBundlerClient({
   endpoint,
   fetcher = initFetcher(),
@@ -14,6 +23,7 @@ export function createBundlerClient({
     const response = await fetcher
       .post(endpoint, {
         timeout,
+        throwHttpErrors: false,
         json: {
           jsonrpc: '2.0',
           id: nextRequestId++,
@@ -24,16 +34,17 @@ export function createBundlerClient({
       .json()
 
     if (response.error) {
-      const error = new Error(response.error.message)
-      error.code = response.error.code
-      error.data = response.error.data
-      throw error
+      throw new BundlerRpcError(response.error)
     }
 
     return response.result
   }
 
   return {
+    getUserOperationGasPrice() {
+      return request('pimlico_getUserOperationGasPrice', [])
+    },
+
     estimateUserOperationGas(userOperation, entryPointAddress) {
       return request('eth_estimateUserOperationGas', [
         toBundlerUserOperation(userOperation),

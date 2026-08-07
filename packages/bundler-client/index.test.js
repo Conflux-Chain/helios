@@ -1,5 +1,5 @@
 import {expect, test, vi} from 'vitest'
-import {createBundlerClient} from './index.js'
+import {BundlerRpcError, createBundlerClient} from './index.js'
 
 const ENDPOINT = 'https://bundler.example'
 const ENTRY_POINT = '0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108'
@@ -94,9 +94,10 @@ test('preserves Bundler RPC error details', async () => {
   })
   const client = createBundlerClient({endpoint: ENDPOINT, fetcher})
 
-  await expect(
-    client.sendUserOperation(userOperation, ENTRY_POINT),
-  ).rejects.toMatchObject({
+  const request = client.sendUserOperation(userOperation, ENTRY_POINT)
+
+  await expect(request).rejects.toBeInstanceOf(BundlerRpcError)
+  await expect(request).rejects.toMatchObject({
     code: -32500,
     message: 'AA33 reverted',
     data: {reason: 'paymaster validation failed'},

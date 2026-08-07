@@ -130,6 +130,12 @@ const schema = {
       component: true,
       ref: true,
     },
+    userOperation: {
+      doc: 'user operations of this address',
+      many: true,
+      component: true,
+      ref: true,
+    },
   },
   account: {
     index: {doc: 'index of account in account group'},
@@ -210,6 +216,30 @@ const schema = {
     address: {doc: 'intresting address of this tx, usually recipient'},
     method: {doc: 'contract call method name'},
     tokenPay: {doc: 'token-pay transaction'},
+  },
+
+  // ## user operation
+  userOperation: {
+    hash: {
+      doc: 'user operation hash',
+      identity: true,
+    },
+    sender: {doc: 'smart account address'},
+    chainId: {doc: 'chain id'},
+    entryPoint: {doc: 'entry point address'},
+    nonce: {doc: 'entry point nonce'},
+    status: {
+      doc: 'submitting, pending, included or failed',
+    },
+    calls: {doc: 'ordered account calls'},
+    paymaster: {doc: 'paymaster address'},
+    transactionHash: {doc: 'bundler transaction hash'},
+    receipt: {doc: 'user operation receipt'},
+    success: {doc: 'user operation execution result'},
+    error: {doc: 'bundler submission error'},
+    created: {doc: 'created timestamp'},
+    pendingAt: {doc: 'bundler accepted timestamp'},
+    includedAt: {doc: 'included timestamp'},
   },
 
   // ## dapp interaction
