@@ -62,7 +62,6 @@ export const permissions = {
     'accountAddrByNetwork',
     'getOccupiedUserOperationNonces',
     'insertUserOperation',
-    'setUserOperationPending',
     'setUserOperationFailed',
   ],
 }
@@ -288,7 +287,6 @@ export const main = async ({
     accountAddrByNetwork,
     getOccupiedUserOperationNonces,
     insertUserOperation,
-    setUserOperationPending,
     setUserOperationFailed,
   },
   rpcs: {
@@ -372,7 +370,7 @@ export const main = async ({
         typeof bundlerUserOpHash !== 'string' ||
         bundlerUserOpHash.toLowerCase() !== userOpHash.toLowerCase()
       ) {
-        // The Bundler may have accepted something, so retain "submitting".
+        // The Bundler may have accepted the operation, so keep tracking it.
         startUserOperationTracking({
           wallet_handleUserOperation,
           hash: userOpHash,
@@ -380,8 +378,6 @@ export const main = async ({
         })
         throw Server('Bundler returned an unexpected UserOperation hash')
       }
-
-      setUserOperationPending({hash: userOpHash})
 
       startUserOperationTracking({
         wallet_handleUserOperation,

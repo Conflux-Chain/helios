@@ -1682,7 +1682,7 @@
                     :userOperation/chainId chainId
                     :userOperation/entryPoint entryPoint
                     :userOperation/nonce nonce
-                    :userOperation/status "submitting"
+                    :userOperation/status "pending"
                     :userOperation/calls calls
                     :userOperation/created (.now js/Date)}
                     :userOperation/paymaster paymaster)
@@ -1697,20 +1697,13 @@
 
 (defn get-unfinished-user-operations []
   (->> (q '[:find ?hash ?network
-            :in $ [?status ...]
             :where
             [?operation :userOperation/hash ?hash]
-            [?operation :userOperation/status ?status]
+            [?operation :userOperation/status "pending"]
             [?address :address/userOperation ?operation]
-            [?address :address/network ?network]]
-          ["submitting" "pending"])
+            [?address :address/network ?network]])
        (mapv (fn [[hash network-id]]
                {:hash hash :networkId network-id}))))
-
-(defn set-user-operation-pending [{:keys [hash]}]
-  (t [{:db/id [:userOperation/hash hash]
-        :userOperation/status "pending"
-        :userOperation/pendingAt (.now js/Date)}]))
 
 (defn set-user-operation-included
   [{:keys [hash transactionHash receipt success]}]
@@ -1729,17 +1722,16 @@
 (defn get-occupied-user-operation-nonces
   [{:keys [sender chainId entryPoint]}]
   (q '[:find [?nonce ...]
-        :in $ ?sender ?chain-id ?entry-point [?status ...]
+        :in $ ?sender ?chain-id ?entry-point
         :where
         [?operation :userOperation/sender ?sender]
         [?operation :userOperation/chainId ?chain-id]
         [?operation :userOperation/entryPoint ?entry-point]
-        [?operation :userOperation/status ?status]
+        [?operation :userOperation/status "pending"]
         [?operation :userOperation/nonce ?nonce]]
       sender
       chainId
-      entryPoint
-      ["submitting" "pending"]))
+      entryPoint))
 
 (defn get-txs-to-enrich
   ([] (get-txs-to-enrich {}))
@@ -2393,7 +2385,6 @@
               :insertUserOperation                 insert-user-operation
               :getOneUserOperation                 get-one-user-operation
               :getUnfinishedUserOperations         get-unfinished-user-operations
-              :setUserOperationPending             set-user-operation-pending
               :setUserOperationIncluded            set-user-operation-included
               :setUserOperationFailed              set-user-operation-failed
               :getOccupiedUserOperationNonces      get-occupied-user-operation-nonces

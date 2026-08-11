@@ -31,11 +31,7 @@ export const main = async ({
   const poll = async () => {
     const userOperation = getOneUserOperation({hash})
 
-    if (
-      !userOperation ||
-      userOperation.status === 'included' ||
-      userOperation.status === 'failed'
-    ) {
+    if (!userOperation || userOperation.status !== 'pending') {
       stopTracking()
       return
     }

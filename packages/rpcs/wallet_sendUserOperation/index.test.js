@@ -62,7 +62,6 @@ function createMainInput() {
     })),
     getOccupiedUserOperationNonces: vi.fn(() => []),
     insertUserOperation: vi.fn(),
-    setUserOperationPending: vi.fn(),
     setUserOperationFailed: vi.fn(),
   }
 
@@ -136,7 +135,7 @@ beforeEach(() => {
 })
 
 describe('wallet_sendUserOperation', () => {
-  test('stores, submits, marks pending, and starts receipt tracking', async () => {
+  test('stores pending, submits, and starts receipt tracking', async () => {
     const {input, db, rpcs} = createMainInput()
 
     bundler.sendUserOperation.mockImplementation(
@@ -163,9 +162,6 @@ describe('wallet_sendUserOperation', () => {
       calls: CALLS,
     })
 
-    expect(db.setUserOperationPending).toHaveBeenCalledWith({
-      hash: result.userOpHash,
-    })
     expect(db.setUserOperationFailed).not.toHaveBeenCalled()
     expectUserOperationTracking(rpcs, result.userOpHash)
 
@@ -173,9 +169,6 @@ describe('wallet_sendUserOperation', () => {
       bundler.sendUserOperation.mock.invocationCallOrder[0],
     )
     expect(bundler.sendUserOperation.mock.invocationCallOrder[0]).toBeLessThan(
-      db.setUserOperationPending.mock.invocationCallOrder[0],
-    )
-    expect(db.setUserOperationPending.mock.invocationCallOrder[0]).toBeLessThan(
       rpcs.wallet_handleUserOperation.mock.invocationCallOrder[0],
     )
   })
@@ -206,7 +199,6 @@ describe('wallet_sendUserOperation', () => {
         },
       },
     })
-    expect(db.setUserOperationPending).not.toHaveBeenCalled()
     expect(rpcs.wallet_handleUserOperation).not.toHaveBeenCalled()
   })
 
@@ -220,7 +212,6 @@ describe('wallet_sendUserOperation', () => {
 
     const storedUserOperation = getStoredUserOperation(db)
 
-    expect(db.setUserOperationPending).not.toHaveBeenCalled()
     expect(db.setUserOperationFailed).not.toHaveBeenCalled()
     expectUserOperationTracking(rpcs, storedUserOperation.hash)
   })
@@ -237,7 +228,6 @@ describe('wallet_sendUserOperation', () => {
     const storedUserOperation = getStoredUserOperation(db)
 
     expect(storedUserOperation.hash).not.toBe(UNEXPECTED_HASH)
-    expect(db.setUserOperationPending).not.toHaveBeenCalled()
     expect(db.setUserOperationFailed).not.toHaveBeenCalled()
     expectUserOperationTracking(rpcs, storedUserOperation.hash)
   })

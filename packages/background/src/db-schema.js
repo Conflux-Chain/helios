@@ -229,7 +229,7 @@ const schema = {
     entryPoint: {doc: 'entry point address'},
     nonce: {doc: 'entry point nonce'},
     status: {
-      doc: 'submitting, pending, included or failed',
+      doc: 'pending, included or failed',
     },
     calls: {doc: 'ordered account calls'},
     paymaster: {doc: 'paymaster address'},
@@ -238,7 +238,6 @@ const schema = {
     success: {doc: 'user operation execution result'},
     error: {doc: 'bundler submission error'},
     created: {doc: 'created timestamp'},
-    pendingAt: {doc: 'bundler accepted timestamp'},
     includedAt: {doc: 'included timestamp'},
   },
 
