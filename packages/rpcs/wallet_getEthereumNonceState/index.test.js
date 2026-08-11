@@ -39,6 +39,7 @@ describe('wallet_getEthereumNonceState', () => {
     }
 
     const eth_getTransactionCount = vi.fn().mockResolvedValue('0x4')
+    const getOccupiedEip7702AuthorizationNonces = vi.fn(() => ['0x9'])
 
     const result = await main({
       db: {
@@ -55,6 +56,7 @@ describe('wallet_getEthereumNonceState', () => {
           },
         ]),
         getTxById: vi.fn(transactionId => storedTransactions[transactionId]),
+        getOccupiedEip7702AuthorizationNonces,
       },
       rpcs: {eth_getTransactionCount},
       params: [ADDRESS],
@@ -63,7 +65,12 @@ describe('wallet_getEthereumNonceState', () => {
 
     expect(result).toEqual({
       networkPendingNonce: '0x4',
-      occupiedNonces: ['0x5', '0x6', '0x7', '0x8'],
+      occupiedNonces: ['0x5', '0x6', '0x7', '0x8', '0x9'],
+    })
+
+    expect(getOccupiedEip7702AuthorizationNonces).toHaveBeenCalledWith({
+      sender: ADDRESS.toLowerCase(),
+      chainId: CHAIN_ID,
     })
 
     expect(eth_getTransactionCount).toHaveBeenCalledWith(
@@ -118,6 +125,7 @@ describe('wallet_getEthereumNonceState', () => {
           },
         ]),
         getTxById,
+        getOccupiedEip7702AuthorizationNonces: vi.fn(() => []),
       },
       rpcs: {
         eth_getTransactionCount: vi.fn().mockResolvedValue('0x4'),

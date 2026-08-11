@@ -1674,18 +1674,34 @@
   (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
 
 (defn insert-user-operation
-  [{:keys [addressId hash sender chainId entryPoint nonce calls paymaster]}]
-  (let [operation (enc/assoc-when
-                    {:db/id -1
-                    :userOperation/hash hash
-                    :userOperation/sender sender
-                    :userOperation/chainId chainId
-                    :userOperation/entryPoint entryPoint
-                    :userOperation/nonce nonce
-                    :userOperation/status "pending"
-                    :userOperation/calls calls
-                    :userOperation/created (.now js/Date)}
-                    :userOperation/paymaster paymaster)
+  [{:keys [addressId
+           hash
+           sender
+           chainId
+           entryPoint
+           nonce
+           calls
+           paymaster
+           authorizationNonce
+           delegateAddress]}]
+  (let [operation (-> {:db/id -1
+                       :userOperation/hash hash
+                       :userOperation/sender sender
+                       :userOperation/chainId chainId
+                       :userOperation/entryPoint entryPoint
+                       :userOperation/nonce nonce
+                       :userOperation/status "pending"
+                       :userOperation/calls calls
+                       :userOperation/created (.now js/Date)}
+                      (enc/assoc-when
+                       :userOperation/paymaster
+                       paymaster)
+                      (enc/assoc-when
+                       :userOperation/authorizationNonce
+                       authorizationNonce)
+                      (enc/assoc-when
+                       :userOperation/delegateAddress
+                       delegateAddress))
         tx-report (t [operation
                       {:db/id addressId
                        :address/userOperation -1}])]
@@ -1732,6 +1748,18 @@
       sender
       chainId
       entryPoint))
+
+(defn get-occupied-eip7702-authorization-nonces
+  [{:keys [sender chainId]}]
+  (q '[:find [?nonce ...]
+       :in $ ?sender ?chain-id
+       :where
+       [?operation :userOperation/sender ?sender]
+       [?operation :userOperation/chainId ?chain-id]
+       [?operation :userOperation/status "pending"]
+       [?operation :userOperation/authorizationNonce ?nonce]]
+     sender
+     chainId))
 
 (defn get-txs-to-enrich
   ([] (get-txs-to-enrich {}))
@@ -2388,6 +2416,7 @@
               :setUserOperationIncluded            set-user-operation-included
               :setUserOperationFailed              set-user-operation-failed
               :getOccupiedUserOperationNonces      get-occupied-user-operation-nonces
+              :getOccupiedEip7702AuthorizationNonces get-occupied-eip7702-authorization-nonces
               :setTxUnsent                         set-tx-unsent
               :forceSetTxStatus                    force-set-tx-status
               :getTxsToEnrich                      get-txs-to-enrich

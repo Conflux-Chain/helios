@@ -228,6 +228,8 @@ const schema = {
     chainId: {doc: 'chain id'},
     entryPoint: {doc: 'entry point address'},
     nonce: {doc: 'entry point nonce'},
+    authorizationNonce: {doc: 'eip-7702 authorization nonce'},
+    delegateAddress: {doc: 'eip-7702 delegate address'},
     status: {
       doc: 'pending, included or failed',
     },

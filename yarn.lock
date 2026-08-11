@@ -5851,6 +5851,7 @@ __metadata:
     "@fluent-wallet/bundler-client": "workspace:packages/bundler-client"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/nonce-manager": "workspace:*"
+    "@fluent-wallet/signature": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/user-operation": "workspace:packages/user-operation"
   languageName: unknown

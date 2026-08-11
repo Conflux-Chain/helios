@@ -3,7 +3,11 @@ import {
   BundlerRpcError,
   createBundlerClient,
 } from '@fluent-wallet/bundler-client'
-import {getUserOperationHash} from '@fluent-wallet/user-operation'
+import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
+import {
+  EIP7702_AUTHORIZATION_STUB_SIGNATURE,
+  getUserOperationHash,
+} from '@fluent-wallet/user-operation'
 import {main} from './index.js'
 
 const bundler = vi.hoisted(() => ({
@@ -37,6 +41,9 @@ const NETWORK = {
   cacheTime: 1000,
 }
 
+const DELEGATE_ADDRESS =
+  EIP7702_NETWORK_CONFIGS[NETWORK.chainId].delegateAddress
+
 const CALLS = [
   {
     to: TARGET,
@@ -67,12 +74,17 @@ function createMainInput() {
 
   const rpcs = {
     eth_call: vi.fn().mockResolvedValue(`0x${'0'.repeat(64)}`),
+    eth_getTransactionCount: vi.fn().mockResolvedValue('0x0'),
     wallet_getAddressPrivateKey: vi.fn().mockResolvedValue(PRIVATE_KEY),
     wallet_getEip7702AccountStates: vi.fn().mockResolvedValue([
       {
         state: 'delegatedToConfigured',
       },
     ]),
+    wallet_getEthereumNonceState: vi.fn().mockResolvedValue({
+      networkPendingNonce: '0x0',
+      occupiedNonces: [],
+    }),
     wallet_handleUserOperation: vi.fn().mockResolvedValue(),
   }
 
@@ -135,6 +147,77 @@ beforeEach(() => {
 })
 
 describe('wallet_sendUserOperation', () => {
+  test('submits a signed EIP-7702 authorization for an undelegated account', async () => {
+    const {input, db, rpcs} = createMainInput()
+
+    rpcs.wallet_getEip7702AccountStates.mockResolvedValue([
+      {
+        state: 'notDelegated',
+      },
+    ])
+
+    bundler.sendUserOperation.mockImplementation(
+      async (userOperation, entryPointAddress) =>
+        getUserOperationHash({
+          chainId: NETWORK.chainId,
+          entryPointAddress,
+          userOperation,
+        }),
+    )
+
+    const result = await main(input)
+
+    const [estimatedUserOperation] =
+      bundler.estimateUserOperationGas.mock.calls[0]
+    const [submittedUserOperation] = bundler.sendUserOperation.mock.calls[0]
+    const storedUserOperation = getStoredUserOperation(db)
+
+    expect(estimatedUserOperation).toMatchObject({
+      factory: '0x7702',
+      factoryData: '0x',
+      authorization: {
+        chainId: NETWORK.chainId,
+        address: DELEGATE_ADDRESS,
+        nonce: '0x0',
+        ...EIP7702_AUTHORIZATION_STUB_SIGNATURE,
+      },
+    })
+
+    expect(submittedUserOperation.authorization).toMatchObject({
+      chainId: NETWORK.chainId,
+      address: DELEGATE_ADDRESS,
+      nonce: '0x0',
+      r: expect.stringMatching(/^0x[0-9a-f]{64}$/),
+      s: expect.stringMatching(/^0x[0-9a-f]{64}$/),
+      yParity: expect.stringMatching(/^0x[01]$/),
+    })
+    expect(submittedUserOperation.authorization).not.toEqual(
+      estimatedUserOperation.authorization,
+    )
+
+    expect(storedUserOperation).toMatchObject({
+      hash: result.userOpHash,
+      authorizationNonce: '0x0',
+      delegateAddress: DELEGATE_ADDRESS,
+    })
+
+    expect(storedUserOperation).not.toHaveProperty('authorization')
+    expect(rpcs.wallet_getEip7702AccountStates).toHaveBeenCalledTimes(2)
+    expect(rpcs.wallet_getAddressPrivateKey).toHaveBeenCalledOnce()
+    expect(
+      bundler.estimateUserOperationGas.mock.invocationCallOrder[0],
+    ).toBeLessThan(rpcs.wallet_getAddressPrivateKey.mock.invocationCallOrder[0])
+
+    expect(rpcs.eth_getTransactionCount).toHaveBeenCalledWith(
+      {
+        errorFallThrough: true,
+        networkName: NETWORK.name,
+        _cacheConf: {type: null},
+      },
+      [SENDER.toLowerCase(), 'latest'],
+    )
+  })
+
   test('stores pending, submits, and starts receipt tracking', async () => {
     const {input, db, rpcs} = createMainInput()
 
