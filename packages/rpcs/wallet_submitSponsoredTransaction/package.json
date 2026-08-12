@@ -1,0 +1,10 @@
+{
+  "name": "@fluent-wallet/wallet_submit-sponsored-transaction",
+  "type": "module",
+  "main": "index.js",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@fluent-wallet/spec": "1.0.18"
+  }
+}

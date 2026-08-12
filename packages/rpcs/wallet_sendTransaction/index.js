@@ -66,6 +66,7 @@ export const permissions = {
     'wallet_enrichConfluxTx',
     'wallet_enrichEthereumTx',
     'wallet_submitTokenPayTransaction',
+    'wallet_submitSponsoredTransaction',
     'wallet_getConfluxNonceState',
     'wallet_getEthereumNonceState',
   ],
@@ -88,6 +89,7 @@ export const main = async ({
     wallet_handleUnfinishedCFXTx,
     wallet_handleUnfinishedETHTx,
     wallet_submitTokenPayTransaction,
+    wallet_submitSponsoredTransaction,
     wallet_getConfluxNonceState,
     wallet_getEthereumNonceState,
   },
@@ -239,6 +241,45 @@ export const main = async ({
       throw err
     }
   }
+
+  if (params.gasPayment === 'sponsored') {
+    let transactionHash
+
+    try {
+      transactionHash = await wallet_submitSponsoredTransaction(
+        {
+          errorFallThrough: true,
+          network: transactionNetwork,
+        },
+        {
+          accountId: authReq.app.currentAccount.eid,
+          networkId: transactionNetwork.eid,
+          call: {
+            to: txParams.to,
+            value: txParams.value ?? '0x0',
+            data: txParams.data ?? '0x',
+          },
+        },
+      )
+    } catch (error) {
+      t({
+        eid: authReqId,
+        authReq: {
+          processed: false,
+        },
+      })
+
+      throw error
+    }
+
+    await wallet_userApprovedAuthRequest({
+      authReqId,
+      res: transactionHash,
+    })
+
+    return transactionHash
+  }
+
   const createPendingTransaction = async ({transaction}) => {
     const signed = await signTxFn(
       {

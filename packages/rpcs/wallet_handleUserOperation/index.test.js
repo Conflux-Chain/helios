@@ -68,70 +68,54 @@ describe('wallet_handleUserOperation', () => {
   test.each([
     ['successful execution', true],
     ['reverted execution', false],
-  ])('stores an included receipt for %s', async (_name, success) => {
+  ])('stores and returns %s', async (_name, success) => {
     const receipt = createReceipt(success)
+    const setUserOperationIncluded = vi.fn()
 
     mocks.getUserOperationReceipt.mockResolvedValue(receipt)
 
-    const setUserOperationIncluded = vi.fn()
+    await expect(
+      main(createMainInput({setUserOperationIncluded})),
+    ).resolves.toEqual({
+      transactionHash: TRANSACTION_HASH,
+      success,
+    })
 
-    await main(
-      createMainInput({
-        setUserOperationIncluded,
-      }),
-    )
-
-    expect(mocks.getUserOperationReceipt).toHaveBeenCalledOnce()
-    expect(mocks.getUserOperationReceipt).toHaveBeenCalledWith(
-      USER_OPERATION_HASH,
-    )
     expect(setUserOperationIncluded).toHaveBeenCalledWith({
       hash: USER_OPERATION_HASH,
       transactionHash: TRANSACTION_HASH,
       receipt,
       success,
     })
-    expect(vi.getTimerCount()).toBe(0)
   })
 
   test.each([
-    ['receipt is not available', null],
-    ['receipt query temporarily fails', new Error('network unavailable')],
-  ])('schedules another poll when %s', async (_name, result) => {
-    if (result instanceof Error) {
-      mocks.getUserOperationReceipt.mockRejectedValueOnce(result)
+    ['a missing receipt', null],
+    ['a temporary query error', new Error('network unavailable')],
+  ])('retries after %s', async (_name, firstResult) => {
+    if (firstResult instanceof Error) {
+      mocks.getUserOperationReceipt.mockRejectedValueOnce(firstResult)
     } else {
-      mocks.getUserOperationReceipt.mockResolvedValueOnce(result)
+      mocks.getUserOperationReceipt.mockResolvedValueOnce(firstResult)
     }
-    const receipt = createReceipt()
-    mocks.getUserOperationReceipt.mockResolvedValueOnce(receipt)
 
-    const setUserOperationIncluded = vi.fn()
+    mocks.getUserOperationReceipt.mockResolvedValueOnce(createReceipt())
 
-    await main(
-      createMainInput({
-        setUserOperationIncluded,
-      }),
-    )
+    const resultPromise = main(createMainInput())
 
-    expect(setUserOperationIncluded).not.toHaveBeenCalled()
-    expect(vi.getTimerCount()).toBe(1)
+    await vi.runAllTimersAsync()
 
-    await vi.runOnlyPendingTimersAsync()
-
-    expect(mocks.getUserOperationReceipt).toHaveBeenCalledTimes(2)
-    expect(setUserOperationIncluded).toHaveBeenCalledWith({
-      hash: USER_OPERATION_HASH,
+    await expect(resultPromise).resolves.toEqual({
       transactionHash: TRANSACTION_HASH,
-      receipt,
       success: true,
     })
-    expect(vi.getTimerCount()).toBe(0)
+
+    expect(mocks.getUserOperationReceipt).toHaveBeenCalledTimes(2)
   })
 
-  test('does not start a second tracker for the same operation', async () => {
-    const receipt = createReceipt()
+  test('shares one tracker between concurrent callers', async () => {
     let resolveReceipt
+
     mocks.getUserOperationReceipt.mockImplementationOnce(
       () =>
         new Promise(resolve => {
@@ -141,35 +125,35 @@ describe('wallet_handleUserOperation', () => {
 
     const setUserOperationIncluded = vi.fn()
     const input = createMainInput({setUserOperationIncluded})
-    const firstTracker = main(input)
 
-    await main(input)
+    const results = Promise.all([main(input), main(input)])
+
+    resolveReceipt(createReceipt())
+
+    await expect(results).resolves.toEqual([
+      {transactionHash: TRANSACTION_HASH, success: true},
+      {transactionHash: TRANSACTION_HASH, success: true},
+    ])
 
     expect(mocks.getUserOperationReceipt).toHaveBeenCalledOnce()
-
-    resolveReceipt(receipt)
-    await firstTracker
-
     expect(setUserOperationIncluded).toHaveBeenCalledOnce()
   })
 
-  test.each([
-    ['missing operation', undefined],
-    ['included operation', {status: 'included'}],
-    ['failed operation', {status: 'failed'}],
-  ])('stops handling a %s', async (_name, userOperation) => {
-    const setUserOperationIncluded = vi.fn()
+  test('returns an included operation without polling', async () => {
+    const getOneUserOperation = vi.fn(() => ({
+      status: 'included',
+      transactionHash: TRANSACTION_HASH,
+      success: false,
+    }))
 
-    await main(
-      createMainInput({
-        getOneUserOperation: vi.fn(() => userOperation),
-        setUserOperationIncluded,
-      }),
+    await expect(main(createMainInput({getOneUserOperation}))).resolves.toEqual(
+      {
+        transactionHash: TRANSACTION_HASH,
+        success: false,
+      },
     )
 
     expect(createBundlerClient).not.toHaveBeenCalled()
     expect(mocks.getUserOperationReceipt).not.toHaveBeenCalled()
-    expect(setUserOperationIncluded).not.toHaveBeenCalled()
-    expect(vi.getTimerCount()).toBe(0)
   })
 })

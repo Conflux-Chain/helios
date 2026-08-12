@@ -170,6 +170,7 @@
     "@fluent-wallet/wallet_set-preferences": "workspace:*",
     "@fluent-wallet/wallet_set-side-panel-behavior": "workspace:*",
     "@fluent-wallet/wallet_set-side-panel-enabled": "workspace:*",
+    "@fluent-wallet/wallet_submit-sponsored-transaction": "workspace:*",
     "@fluent-wallet/wallet_submit-token-pay-transaction": "workspace:packages/rpcs/wallet_submitTokenPayTransaction",
     "@fluent-wallet/wallet_unlock": "workspace:packages/rpcs/wallet_unlock",
     "@fluent-wallet/wallet_unwatch-asset": "workspace:packages/rpcs/wallet_unwatchAsset",

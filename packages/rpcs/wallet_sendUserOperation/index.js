@@ -345,38 +345,39 @@ async function submitUserOperationToBundler({
   userOperation,
   userOpHash,
   setUserOperationFailed,
-  wallet_handleUserOperation,
-  networkId,
 }) {
   try {
-    return await bundlerClient.sendUserOperation(
+    const bundlerUserOpHash = await bundlerClient.sendUserOperation(
       userOperation,
       entryPointAddress,
     )
-  } catch (error) {
-    if (error instanceof BundlerRpcError) {
-      // A Bundler JSON-RPC rejection is definitive.
-      setUserOperationFailed({
-        hash: userOpHash,
-        error: {
-          code: error.code,
-          message: error.message,
-          ...(error.data === undefined ? {} : {data: error.data}),
-        },
-      })
-    } else {
-      // Without a definitive JSON-RPC rejection, the submission outcome is unknown.
-      startUserOperationTracking({
-        wallet_handleUserOperation,
-        hash: userOpHash,
-        networkId,
-      })
+
+    if (
+      typeof bundlerUserOpHash === 'string' &&
+      bundlerUserOpHash.toLowerCase() === userOpHash.toLowerCase()
+    ) {
+      return
     }
+
+    // The request may have been accepted even if the response is invalid.
+  } catch (error) {
+    if (!(error instanceof BundlerRpcError)) {
+      // The request may have reached the Bundler before the connection failed.
+      return
+    }
+
+    setUserOperationFailed({
+      hash: userOpHash,
+      error: {
+        code: error.code,
+        message: error.message,
+        ...(error.data === undefined ? {} : {data: error.data}),
+      },
+    })
 
     throw error
   }
 }
-
 function startUserOperationTracking({
   wallet_handleUserOperation,
   hash,
@@ -479,28 +480,13 @@ export const main = async ({
           authorizationNonce: authorization?.nonce,
           delegateAddress: authorization?.address,
         })
-
-        const bundlerUserOpHash = await submitUserOperationToBundler({
+        await submitUserOperationToBundler({
           bundlerClient,
           entryPointAddress,
           userOperation,
           userOpHash,
           setUserOperationFailed,
-          wallet_handleUserOperation,
-          networkId,
         })
-        if (
-          typeof bundlerUserOpHash !== 'string' ||
-          bundlerUserOpHash.toLowerCase() !== userOpHash.toLowerCase()
-        ) {
-          // The Bundler may have accepted the operation, so keep tracking it.
-          startUserOperationTracking({
-            wallet_handleUserOperation,
-            hash: userOpHash,
-            networkId,
-          })
-          throw Server('Bundler returned an unexpected UserOperation hash')
-        }
 
         startUserOperationTracking({
           wallet_handleUserOperation,

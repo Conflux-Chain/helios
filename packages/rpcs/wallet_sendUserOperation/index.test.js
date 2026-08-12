@@ -285,31 +285,34 @@ describe('wallet_sendUserOperation', () => {
     expect(rpcs.wallet_handleUserOperation).not.toHaveBeenCalled()
   })
 
-  test('tracks an operation when the submission outcome is unknown', async () => {
+  test('returns the local hash and tracks when submission is uncertain', async () => {
     const {input, db, rpcs} = createMainInput()
-    const error = new Error('network unavailable')
 
-    bundler.sendUserOperation.mockRejectedValue(error)
+    bundler.sendUserOperation.mockRejectedValue(
+      new Error('network unavailable'),
+    )
 
-    await expect(main(input)).rejects.toBe(error)
-
+    const result = await main(input)
     const storedUserOperation = getStoredUserOperation(db)
 
+    expect(result).toEqual({
+      userOpHash: storedUserOperation.hash,
+    })
     expect(db.setUserOperationFailed).not.toHaveBeenCalled()
     expectUserOperationTracking(rpcs, storedUserOperation.hash)
   })
 
-  test('rejects an unexpected Bundler hash and tracks the local hash', async () => {
+  test('uses the local hash when the Bundler returns an unexpected hash', async () => {
     const {input, db, rpcs} = createMainInput()
 
     bundler.sendUserOperation.mockResolvedValue(UNEXPECTED_HASH)
 
-    await expect(main(input)).rejects.toThrow(
-      'Bundler returned an unexpected UserOperation hash',
-    )
-
+    const result = await main(input)
     const storedUserOperation = getStoredUserOperation(db)
 
+    expect(result).toEqual({
+      userOpHash: storedUserOperation.hash,
+    })
     expect(storedUserOperation.hash).not.toBe(UNEXPECTED_HASH)
     expect(db.setUserOperationFailed).not.toHaveBeenCalled()
     expectUserOperationTracking(rpcs, storedUserOperation.hash)
