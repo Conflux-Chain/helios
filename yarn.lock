@@ -5739,6 +5739,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_prepare-sponsored-user-operation@workspace:packages/rpcs/wallet_prepareSponsoredUserOperation":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_prepare-sponsored-user-operation@workspace:packages/rpcs/wallet_prepareSponsoredUserOperation"
+  dependencies:
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/bytes": "npm:^5.7.0"
+    "@fluent-wallet/bundler-client": "workspace:packages/bundler-client"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "npm:1.0.18"
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_prepare-token-pay-quote@workspace:packages/rpcs/wallet_prepareTokenPayQuote":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_prepare-token-pay-quote@workspace:packages/rpcs/wallet_prepareTokenPayQuote"
@@ -5750,6 +5763,19 @@ __metadata:
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/utils": "workspace:packages/utils"
     bn.js: "npm:5.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_prepare-user-operation@workspace:packages/rpcs/wallet_prepareUserOperation":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_prepare-user-operation@workspace:packages/rpcs/wallet_prepareUserOperation"
+  dependencies:
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@fluent-wallet/bundler-client": "workspace:packages/bundler-client"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "npm:1.0.18"
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
+    "@fluent-wallet/utils": "workspace:packages/utils"
   languageName: unknown
   linkType: soft
 
@@ -5923,7 +5949,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_submit-sponsored-transaction@workspace:packages/rpcs/wallet_submitSponsoredTransaction"
   dependencies:
-    "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/spec": "npm:1.0.18"
   languageName: unknown
   linkType: soft
@@ -18663,7 +18688,9 @@ __metadata:
     "@fluent-wallet/wallet_lock": "workspace:packages/rpcs/wallet_lock"
     "@fluent-wallet/wallet_metadata-for-popup": "workspace:*"
     "@fluent-wallet/wallet_network1559compatible": "workspace:*"
+    "@fluent-wallet/wallet_prepare-sponsored-user-operation": "workspace:packages/rpcs/wallet_prepareSponsoredUserOperation"
     "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
+    "@fluent-wallet/wallet_prepare-user-operation": "workspace:packages/rpcs/wallet_prepareUserOperation"
     "@fluent-wallet/wallet_refetch-balance": "workspace:packages/rpcs/wallet_refetchBalance"
     "@fluent-wallet/wallet_refetch-token-list": "workspace:packages/rpcs/wallet_refetchTokenList"
     "@fluent-wallet/wallet_refetch-tx-list": "workspace:*"

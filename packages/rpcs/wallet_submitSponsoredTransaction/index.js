@@ -37,6 +37,7 @@ export const main = async ({
       accountId,
       networkId,
       calls: [call],
+      sponsorship: 'whitelist',
     },
   )
 

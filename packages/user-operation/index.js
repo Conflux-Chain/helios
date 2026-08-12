@@ -32,3 +32,5 @@ export {
 export {createUserOperationForEstimate} from './create-user-operation.js'
 
 export {EIP7702_AUTHORIZATION_STUB_SIGNATURE} from './eip7702-authorization.js'
+
+export {decodeCanSponsorResult, encodeCanSponsorCall} from './sponsorship.js'

@@ -6,13 +6,15 @@ import {
 import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
 import {
   EIP7702_AUTHORIZATION_STUB_SIGNATURE,
+  SMART_ACCOUNT_7702_STUB_SIGNATURE,
+  createUserOperationForEstimate,
+  encodeAccountCalls,
   getUserOperationHash,
+  mergeUserOperationGasEstimate,
 } from '@fluent-wallet/user-operation'
 import {main} from './index.js'
 
 const bundler = vi.hoisted(() => ({
-  getUserOperationGasPrice: vi.fn(),
-  estimateUserOperationGas: vi.fn(),
   sendUserOperation: vi.fn(),
 }))
 
@@ -43,6 +45,8 @@ const NETWORK = {
 
 const DELEGATE_ADDRESS =
   EIP7702_NETWORK_CONFIGS[NETWORK.chainId].delegateAddress
+const PAYMASTER_ADDRESS =
+  EIP7702_NETWORK_CONFIGS[NETWORK.chainId].whitelistPaymasterAddress
 
 const CALLS = [
   {
@@ -51,6 +55,39 @@ const CALLS = [
     data: '0x1234',
   },
 ]
+
+function prepareUserOperation({
+  sender,
+  nonce,
+  calls,
+  authorization,
+  paymaster,
+}) {
+  const userOperation = createUserOperationForEstimate({
+    sender,
+    nonce,
+    callData: encodeAccountCalls(calls),
+    maxFeePerGas: '0x5efeb1f00',
+    maxPriorityFeePerGas: '0x59682f00',
+    signature: SMART_ACCOUNT_7702_STUB_SIGNATURE,
+    paymaster,
+    authorization: authorization
+      ? {...authorization, ...EIP7702_AUTHORIZATION_STUB_SIGNATURE}
+      : undefined,
+  })
+
+  return mergeUserOperationGasEstimate(userOperation, {
+    preVerificationGas: '0xbfd5',
+    verificationGasLimit: '0x1320b',
+    callGasLimit: '0x3fc3',
+    ...(paymaster
+      ? {
+          paymasterVerificationGasLimit: '0x52e3',
+          paymasterPostOpGasLimit: '0x141f',
+        }
+      : {}),
+  })
+}
 
 function createMainInput() {
   const db = {
@@ -86,6 +123,18 @@ function createMainInput() {
       occupiedNonces: [],
     }),
     wallet_handleUserOperation: vi.fn().mockResolvedValue(),
+    wallet_prepareUserOperation: vi.fn(async (_options, params) => ({
+      userOperation: prepareUserOperation(params),
+      gasCost: '0x0',
+    })),
+    wallet_prepareSponsoredUserOperation: vi.fn(async (_options, params) => ({
+      userOperation: prepareUserOperation({
+        ...params,
+        paymaster: PAYMASTER_ADDRESS,
+      }),
+      sponsorship: {sponsorable: true, reason: ''},
+      gasCost: '0x0',
+    })),
   }
 
   return {
@@ -129,21 +178,6 @@ beforeEach(() => {
   }
 
   vi.mocked(createBundlerClient).mockClear()
-
-  bundler.getUserOperationGasPrice.mockResolvedValue({
-    standard: {
-      maxFeePerGas: '0x5efeb1f00',
-      maxPriorityFeePerGas: '0x59682f00',
-    },
-  })
-
-  bundler.estimateUserOperationGas.mockResolvedValue({
-    preVerificationGas: '0xbfd5',
-    verificationGasLimit: '0x1320b',
-    callGasLimit: '0x3fc3',
-    paymasterVerificationGasLimit: '0x52e3',
-    paymasterPostOpGasLimit: '0x141f',
-  })
 })
 
 describe('wallet_sendUserOperation', () => {
@@ -167,8 +201,8 @@ describe('wallet_sendUserOperation', () => {
 
     const result = await main(input)
 
-    const [estimatedUserOperation] =
-      bundler.estimateUserOperationGas.mock.calls[0]
+    const [, prepareParams] = rpcs.wallet_prepareUserOperation.mock.calls[0]
+    const estimatedUserOperation = prepareUserOperation(prepareParams)
     const [submittedUserOperation] = bundler.sendUserOperation.mock.calls[0]
     const storedUserOperation = getStoredUserOperation(db)
 
@@ -202,11 +236,13 @@ describe('wallet_sendUserOperation', () => {
     })
 
     expect(storedUserOperation).not.toHaveProperty('authorization')
+    expect(storedUserOperation.paymaster).toBeUndefined()
     expect(rpcs.wallet_getEip7702AccountStates).toHaveBeenCalledTimes(2)
     expect(rpcs.wallet_getAddressPrivateKey).toHaveBeenCalledOnce()
     expect(
-      bundler.estimateUserOperationGas.mock.invocationCallOrder[0],
+      rpcs.wallet_prepareUserOperation.mock.invocationCallOrder[0],
     ).toBeLessThan(rpcs.wallet_getAddressPrivateKey.mock.invocationCallOrder[0])
+    expect(rpcs.wallet_prepareSponsoredUserOperation).not.toHaveBeenCalled()
 
     expect(rpcs.eth_getTransactionCount).toHaveBeenCalledWith(
       {
@@ -256,13 +292,64 @@ describe('wallet_sendUserOperation', () => {
     )
   })
 
+  test('uses the whitelist adapter only when sponsorship is selected', async () => {
+    const {input, db, rpcs} = createMainInput()
+    input.params.sponsorship = 'whitelist'
+
+    bundler.sendUserOperation.mockImplementation(
+      async (userOperation, entryPointAddress) =>
+        getUserOperationHash({
+          chainId: NETWORK.chainId,
+          entryPointAddress,
+          userOperation,
+        }),
+    )
+
+    await main(input)
+
+    expect(rpcs.wallet_prepareUserOperation).not.toHaveBeenCalled()
+    expect(rpcs.wallet_prepareSponsoredUserOperation).toHaveBeenCalledOnce()
+    expect(getStoredUserOperation(db)).toMatchObject({
+      paymaster: PAYMASTER_ADDRESS,
+    })
+  })
+
+  test('stops before signing when whitelist sponsorship is unavailable', async () => {
+    const {input, db, rpcs} = createMainInput()
+    input.params.sponsorship = 'whitelist'
+    rpcs.wallet_prepareSponsoredUserOperation.mockResolvedValue({
+      userOperation: prepareUserOperation({
+        sender: SENDER,
+        nonce: '0x0',
+        calls: CALLS,
+        paymaster: PAYMASTER_ADDRESS,
+      }),
+      gasCost: '0x0',
+      sponsorship: {
+        sponsorable: false,
+        reason: 'sponsorship denied',
+      },
+    })
+
+    await expect(main(input)).rejects.toMatchObject({
+      extra: {
+        code: 'USER_OPERATION_SPONSORSHIP_UNAVAILABLE',
+        reason: 'sponsorship denied',
+      },
+    })
+
+    expect(rpcs.wallet_getAddressPrivateKey).not.toHaveBeenCalled()
+    expect(db.insertUserOperation).not.toHaveBeenCalled()
+    expect(bundler.sendUserOperation).not.toHaveBeenCalled()
+  })
+
   test('marks a definitive Bundler rejection as failed', async () => {
     const {input, db, rpcs} = createMainInput()
     const error = new BundlerRpcError({
       code: -32501,
-      message: 'paymaster validation failed',
+      message: 'validation failed',
       data: {
-        reason: 'sponsorship denied',
+        reason: 'account validation denied',
       },
     })
 
@@ -276,9 +363,9 @@ describe('wallet_sendUserOperation', () => {
       hash: storedUserOperation.hash,
       error: {
         code: -32501,
-        message: 'paymaster validation failed',
+        message: 'validation failed',
         data: {
-          reason: 'sponsorship denied',
+          reason: 'account validation denied',
         },
       },
     })

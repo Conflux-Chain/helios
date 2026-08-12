@@ -14,24 +14,21 @@ import {
   withUserOperationNonceLock,
 } from '@fluent-wallet/nonce-manager'
 import {signEip7702Authorization} from '@fluent-wallet/signature'
+
 import {
   Bytes,
   Uint,
   dbid,
+  enums,
   ethHexAddress,
   map,
   oneOrMore,
 } from '@fluent-wallet/spec'
 
 import {
-  EIP7702_AUTHORIZATION_STUB_SIGNATURE,
-  SMART_ACCOUNT_7702_STUB_SIGNATURE,
-  createUserOperationForEstimate,
   decodeGetNonceResult,
-  encodeAccountCalls,
   encodeGetNonceCall,
   getUserOperationHash,
-  mergeUserOperationGasEstimate,
 } from '@fluent-wallet/user-operation'
 
 export const NAME = 'wallet_sendUserOperation'
@@ -51,6 +48,7 @@ export const schemas = {
     ['accountId', dbid],
     ['networkId', dbid],
     ['calls', [oneOrMore, callSchema]],
+    ['sponsorship', {optional: true}, [enums, 'whitelist']],
   ],
 }
 
@@ -63,6 +61,8 @@ export const permissions = {
     'wallet_getEip7702AccountStates',
     'wallet_getEthereumNonceState',
     'wallet_handleUserOperation',
+    'wallet_prepareSponsoredUserOperation',
+    'wallet_prepareUserOperation',
   ],
   db: [
     'getAccountById',
@@ -264,39 +264,6 @@ function signUserOperationAuthorization(authorization, privateKey) {
   }
 }
 
-async function prepareUserOperationForEstimate({
-  bundlerClient,
-  entryPointAddress,
-  paymasterAddress,
-  sender,
-  nonce,
-  calls,
-  authorization,
-}) {
-  const {standard: gasPrice} = await bundlerClient.getUserOperationGasPrice()
-  const authorizationForEstimate = authorization
-    ? {...authorization, ...EIP7702_AUTHORIZATION_STUB_SIGNATURE}
-    : undefined
-
-  const userOperationForEstimate = createUserOperationForEstimate({
-    sender,
-    nonce,
-    callData: encodeAccountCalls(calls),
-    maxFeePerGas: gasPrice.maxFeePerGas,
-    maxPriorityFeePerGas: gasPrice.maxPriorityFeePerGas,
-    signature: SMART_ACCOUNT_7702_STUB_SIGNATURE,
-    paymaster: paymasterAddress,
-    authorization: authorizationForEstimate,
-  })
-
-  const gasEstimate = await bundlerClient.estimateUserOperationGas(
-    userOperationForEstimate,
-    entryPointAddress,
-  )
-
-  return mergeUserOperationGasEstimate(userOperationForEstimate, gasEstimate)
-}
-
 async function signUserOperationForSubmission({
   wallet_getAddressPrivateKey,
   network,
@@ -407,8 +374,10 @@ export const main = async ({
     wallet_getEip7702AccountStates,
     wallet_getEthereumNonceState,
     wallet_handleUserOperation,
+    wallet_prepareSponsoredUserOperation,
+    wallet_prepareUserOperation,
   },
-  params: {accountId, networkId, calls},
+  params: {accountId, networkId, calls, sponsorship},
   network: requestNetwork,
 }) => {
   const {addressId, sender, network, networkConfig, delegationState} =
@@ -424,7 +393,7 @@ export const main = async ({
       networkId,
     })
 
-  const {entryPointAddress, paymasterAddress, bundlerEndpoint} = networkConfig
+  const {entryPointAddress, bundlerEndpoint} = networkConfig
 
   const bundlerClient = createBundlerClient({
     endpoint: bundlerEndpoint,
@@ -447,15 +416,34 @@ export const main = async ({
           sender,
         })
 
-        const estimatedUserOperation = await prepareUserOperationForEstimate({
-          bundlerClient,
-          entryPointAddress,
-          paymasterAddress,
+        const preparationParams = {
           sender,
           nonce,
           calls,
-          authorization,
-        })
+          ...(authorization ? {authorization} : {}),
+        }
+
+        const prepared =
+          sponsorship === 'whitelist'
+            ? await wallet_prepareSponsoredUserOperation(
+                {errorFallThrough: true, network},
+                preparationParams,
+              )
+            : await wallet_prepareUserOperation(
+                {errorFallThrough: true, network},
+                preparationParams,
+              )
+
+        if (sponsorship === 'whitelist' && !prepared.sponsorship.sponsorable) {
+          const error = Server('Sponsorship is unavailable')
+          error.extra = {
+            code: USER_OPERATION_ERROR_CODES.SPONSORSHIP_UNAVAILABLE,
+            reason: prepared.sponsorship.reason,
+          }
+          throw error
+        }
+
+        const estimatedUserOperation = prepared.userOperation
 
         const {userOperation, userOpHash} =
           await signUserOperationForSubmission({
@@ -476,7 +464,7 @@ export const main = async ({
           entryPoint: entryPointAddress,
           nonce,
           calls,
-          paymaster: paymasterAddress,
+          paymaster: estimatedUserOperation.paymaster,
           authorizationNonce: authorization?.nonce,
           delegateAddress: authorization?.address,
         })
