@@ -7,7 +7,7 @@ import {
 import {useTokenPayAvailability} from '../../hooks/useTokenPay'
 import {useCurrentTxStore} from '../../hooks'
 import {bn16, request} from '../../utils'
-import {RPC_METHODS} from '../../constants'
+import {GAS_PAYMENT_METHOD, RPC_METHODS} from '../../constants'
 import {getNativeGasFee} from './components/tokenPayGasUtils'
 import {getTokenPayGasLevel} from '../../utils/tokenPayGas'
 
@@ -21,9 +21,15 @@ function useTokenPayGas({
   gasLevel,
   estimateRst,
 }) {
-  const {gasTokenAddress, setGasTokenAddress} = useCurrentTxStore()
+  const {gasPayment, setGasPayment} = useCurrentTxStore()
+  const gasTokenAddress =
+    gasPayment?.method === GAS_PAYMENT_METHOD.TOKEN
+      ? gasPayment.tokenAddress
+      : ''
+
   const {canUseTokenPay, tokenPayConfig, tokenPayConfigLoading} =
     useTokenPayAvailability({isHwAccount, networkDbId})
+
   const gasTokenAddresses = tokenPayConfig?.tokens?.map(token => token.address)
   const gasTokenByAddress = useMemo(
     () =>
@@ -44,29 +50,39 @@ function useTokenPayGas({
 
   const setSelectedGasToken = useCallback(
     token => {
-      setGasTokenAddress(token?.address || '')
+      setGasPayment(
+        token
+          ? {
+              method: GAS_PAYMENT_METHOD.TOKEN,
+              tokenAddress: token.address,
+            }
+          : {
+              method: GAS_PAYMENT_METHOD.NATIVE,
+            },
+      )
     },
-    [setGasTokenAddress],
+    [setGasPayment],
   )
 
   useEffect(() => {
     if (gasTokenAddress && isHwAccount) {
-      setGasTokenAddress('')
+      setGasPayment({method: GAS_PAYMENT_METHOD.NATIVE})
       return
     }
 
     if (
       gasTokenAddress &&
       tokenPayConfig &&
-      !gasTokenByAddress[gasTokenAddress.toLowerCase()]
+      (!canUseTokenPay || !gasTokenByAddress[gasTokenAddress.toLowerCase()])
     ) {
-      setGasTokenAddress('')
+      setGasPayment({method: GAS_PAYMENT_METHOD.NATIVE})
     }
   }, [
+    canUseTokenPay,
     gasTokenAddress,
     gasTokenByAddress,
     isHwAccount,
-    setGasTokenAddress,
+    setGasPayment,
     tokenPayConfig,
   ])
 
@@ -77,7 +93,11 @@ function useTokenPayGas({
   )
   const gasTokenBalancesForAccount =
     gasTokenBalances?.[params?.from?.toLowerCase()] || {}
-  const isTokenPayGas = Boolean(selectedGasToken?.address)
+
+  const isTokenPayGas =
+    gasPayment?.method === GAS_PAYMENT_METHOD.TOKEN &&
+    Boolean(selectedGasToken?.address)
+
   const tokenPayGasLevel = getTokenPayGasLevel(gasLevel)
   const canPrepareTokenPayQuote = Boolean(
     canUseTokenPay && isTokenPayGas && params?.gas,

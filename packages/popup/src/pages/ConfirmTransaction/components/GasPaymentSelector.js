@@ -9,6 +9,7 @@ import {
   getBalanceByAddress,
   getTokenIcon,
 } from './tokenPayGasUtils'
+import {GAS_PAYMENT_METHOD} from '../../../constants'
 
 function canPayGasFee({
   gasTokenBalance,
@@ -107,7 +108,7 @@ function GasTokenOption({
   return (
     <button
       type="button"
-      className={`mb-2 flex min-h-[58px] w-full items-center justify-between rounded-[4px] border p-3 text-left ${
+      className={`relative mb-2 flex min-h-[58px] w-full items-center justify-between rounded-[4px] border p-3 text-left ${
         selected
           ? 'border-[#808BE7] bg-[#F3F6FF]'
           : 'border-transparent bg-gray-4'
@@ -150,9 +151,10 @@ function GasTokenOption({
   )
 }
 
-function GasTokenSelector({
+function GasPaymentSelector({
   open,
   onClose,
+  payment,
   tokenPayConfig,
   nativeToken,
   nativeBalance,
@@ -163,13 +165,14 @@ function GasTokenSelector({
   selectedGasTokenAmount,
   selectedGasTokenQuoteAmount,
   quoteToken,
+  onSelectPayment,
   onSelectGasToken,
   isDeferredMax,
   sendTokenAddress,
   sendTokenAmount,
 }) {
   const {t} = useTranslation()
-  const isNativeGas = !selectedGasToken
+  const isNativeGas = payment?.method === GAS_PAYMENT_METHOD.NATIVE
   const tokens = tokenPayConfig?.tokens || []
   const isSendNative = Boolean(!sendTokenAddress && sendTokenAmount !== '0x0')
   const nativeBalanceText = formatTokenAmount(
@@ -212,10 +215,11 @@ function GasTokenSelector({
           disabled={!canPayNativeGas}
           hideEstimate={!nativeGasFee}
           onClick={() => {
-            onSelectGasToken?.(null)
+            onSelectPayment?.({method: GAS_PAYMENT_METHOD.NATIVE})
             onClose?.()
           }}
         />
+
         <p className="mb-2 mt-2 text-xs font-normal leading-4 text-gray-40">
           {t('payWithOtherTokens')}
         </p>
@@ -290,9 +294,13 @@ GasTokenOption.propTypes = {
   onClick: PropTypes.func,
 }
 
-GasTokenSelector.propTypes = {
+GasPaymentSelector.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
+  payment: PropTypes.shape({
+    method: PropTypes.oneOf(Object.values(GAS_PAYMENT_METHOD)),
+    tokenAddress: PropTypes.string,
+  }),
   tokenPayConfig: PropTypes.object,
   nativeToken: PropTypes.object,
   nativeBalance: PropTypes.string,
@@ -303,10 +311,11 @@ GasTokenSelector.propTypes = {
   selectedGasTokenAmount: PropTypes.string,
   selectedGasTokenQuoteAmount: PropTypes.string,
   quoteToken: PropTypes.object,
+  onSelectPayment: PropTypes.func,
   onSelectGasToken: PropTypes.func,
   isDeferredMax: PropTypes.bool,
   sendTokenAddress: PropTypes.string,
   sendTokenAmount: PropTypes.string,
 }
 
-export default GasTokenSelector
+export default GasPaymentSelector

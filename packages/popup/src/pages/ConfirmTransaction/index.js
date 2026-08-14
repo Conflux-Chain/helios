@@ -10,7 +10,11 @@ import {
   convertDataToValue,
   convertValueToData,
 } from '@fluent-wallet/data-format'
-import {ETH_TX_TYPES, TOKEN_PAY_ERROR_CODES} from '@fluent-wallet/consts'
+import {
+  ETH_TX_TYPES,
+  TOKEN_PAY_ERROR_CODES,
+  USER_OPERATION_ERROR_CODES,
+} from '@fluent-wallet/consts'
 import {
   useCurrentTxParams,
   useEstimateTx,
@@ -46,13 +50,15 @@ import {
 import {
   ROUTES,
   RPC_METHODS,
+  NETWORK_TYPE,
   LEDGER_AUTH_STATUS,
   LEDGER_OPEN_STATUS,
   TX_STATUS,
   MAX_STRATEGY,
+  GAS_PAYMENT_METHOD,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
-import useTokenPayGas from './useTokenPayGas'
+import useGasPayment from './useGasPayment'
 import useAdjustedSendTx from './useAdjustedSendTx'
 
 const {VIEW_DATA, HOME} = ROUTES
@@ -132,10 +138,8 @@ function ConfirmTransaction() {
     customNonce,
     gasLevel,
     customAllowance,
-    gasTokenAddress,
     sendAmount,
     maxStrategy,
-    setGasTokenAddress,
     setGasPrice,
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
@@ -157,7 +161,7 @@ function ConfirmTransaction() {
     data: {
       value: currentAddressValue,
       nativeBalance,
-      network: {eid: networkDbId, ticker, chainId},
+      network: {eid: networkDbId, ticker, chainId, type: currentNetworkType},
       account: {eid: accountId},
     },
   } = useCurrentAddress()
@@ -284,26 +288,62 @@ function ConfirmTransaction() {
     : '0x0'
 
   const dappApp = isDapp ? pendingAuthReq?.[0]?.app : null
-  const tokenPayGas = useTokenPayGas({
+  const transactionAccountId = isDapp ? dappApp?.currentAccount?.eid : accountId
+  const transactionNetworkId = isDapp
+    ? dappApp?.currentNetwork?.eid
+    : networkDbId
+  const transactionNetworkType = isDapp
+    ? dappApp?.currentNetwork?.type
+    : currentNetworkType
+
+  const sponsorshipCalls =
+    !isDapp &&
+    transactionNetworkType === NETWORK_TYPE.ETH &&
+    !isInternalEip7702Tx &&
+    inputParams.to
+      ? [
+          {
+            to: inputParams.to,
+            ...(inputParams.value ? {value: inputParams.value} : {}),
+            ...(inputParams.data ? {data: inputParams.data} : {}),
+          },
+        ]
+      : null
+
+  const gasPayment = useGasPayment({
     isHwAccount,
-    networkDbId: isDapp ? dappApp?.currentNetwork?.eid : networkDbId,
-    accountId: isDapp ? dappApp?.currentAccount?.eid : accountId,
+    networkId: transactionNetworkId,
+    accountId: transactionAccountId,
     params: inputParams,
+    calls: sponsorshipCalls,
+    sponsorshipEnabled: !isDapp,
     gasLevel,
     estimateRst,
   })
-  const {refreshTokenPayQuote} = tokenPayGas
+
+  const {tokenPay, sponsorship} = gasPayment
+  const {refreshQuote} = tokenPay
+  const {refresh: refreshSponsorship} = sponsorship
 
   const nativeMaxDrip = estimateRst.nativeMaxDrip
 
   const isTokenPayQuoteChanged =
     sendError?.data?.code === TOKEN_PAY_ERROR_CODES.QUOTE_CHANGED
 
+  const isSponsorshipUnavailable =
+    sendError?.data?.code === USER_OPERATION_ERROR_CODES.SPONSORSHIP_UNAVAILABLE
+
   useEffect(() => {
     if (!isTokenPayQuoteChanged) return
 
-    refreshTokenPayQuote()
-  }, [isTokenPayQuoteChanged, refreshTokenPayQuote])
+    refreshQuote()
+  }, [isTokenPayQuoteChanged, refreshQuote])
+
+  useEffect(() => {
+    if (!isSponsorshipUnavailable) return
+
+    refreshSponsorship()
+  }, [isSponsorshipUnavailable, refreshSponsorship])
 
   useEffect(() => {
     const nativeMax = convertDataToValue(nativeMaxDrip, nativeToken?.decimals)
@@ -311,22 +351,20 @@ function ConfirmTransaction() {
     if (
       isLegacyMax &&
       isNativeToken &&
-      !gasTokenAddress &&
-      !tokenPayGas.isTokenPayGas &&
+      gasPayment.isNative &&
       nativeMax &&
       sendAmount !== nativeMax
     ) {
       setSendAmount(nativeMax)
     }
   }, [
-    gasTokenAddress,
+    gasPayment.isNative,
     isLegacyMax,
     isNativeToken,
     nativeMaxDrip,
     nativeToken?.decimals,
     sendAmount,
     setSendAmount,
-    tokenPayGas.isTokenPayGas,
   ])
 
   const adjustedSendTx = useAdjustedSendTx({
@@ -343,21 +381,28 @@ function ConfirmTransaction() {
       decimals: isNativeToken ? nativeToken?.decimals : displayToken?.decimals,
     },
     gasPayment: {
-      isTokenPay: tokenPayGas.isTokenPayGas,
-      tokenAddress: tokenPayGas.selectedGasToken?.address,
-      nativeCostHex: tokenPayGas.nativeGasFee,
-      tokenCostHex: tokenPayGas.tokenPayQuote?.tokenCost,
+      method: gasPayment.payment.method,
+      tokenAddress: tokenPay.selectedToken?.address,
+      nativeCostHex: gasPayment.nativeGasFee,
+      tokenCostHex: tokenPay.quote?.tokenCost,
     },
   })
 
   const sendTxParams = {...adjustedSendTx.params}
-  // Only pass a nonce explicitly selected by the user.
-  // Token pay allocates its nonce bundle in the background.
-  if (!customNonce || tokenPayGas.isTokenPayGas) {
+
+  // Native uses the selected EOA nonce. Other payment methods allocate their
+  // execution nonce in the background.
+  if (!customNonce || !gasPayment.isNative) {
     delete sendTxParams.nonce
   }
 
   const sendParams = [sendTxParams]
+
+  const sponsoredTransactionParams = {
+    tx: sendParams,
+    gasPayment: GAS_PAYMENT_METHOD.SPONSORED,
+  }
+
   const needsAdjustedEstimate = adjustedSendTx.isGasCostDeducted
   const adjustedEstimateRst =
     useEstimateTx(
@@ -377,7 +422,7 @@ function ConfirmTransaction() {
       : '0x0'
 
   useEffect(() => {
-    if (!tokenPayGas.isTokenPayGas) return
+    if (gasPayment.isNative) return
 
     if (customNonce) setCustomNonce('')
 
@@ -386,7 +431,7 @@ function ConfirmTransaction() {
       setGasLevel('medium')
     }
   }, [
-    tokenPayGas.isTokenPayGas,
+    gasPayment.isNative,
     customNonce,
     gasLevel,
     clearAdvancedGasSetting,
@@ -413,7 +458,7 @@ function ConfirmTransaction() {
     isSendToken,
     {
       ignoreGasBalanceError:
-        tokenPayGas.isTokenPayGas &&
+        !gasPayment.isNative &&
         (!isNativeToken ||
           bn16(nativeBalance || '0x0').gte(
             bn16(adjustedSendTx.params.value || '0x0'),
@@ -427,9 +472,8 @@ function ConfirmTransaction() {
       : ''
 
   const tokenPayQuoteErrorMessage =
-    tokenPayGas.isTokenPayGas && tokenPayGas.tokenPayQuoteError
-      ? t('gasFeeIsNotEnough')
-      : ''
+    gasPayment.isToken && tokenPay.quoteError ? t('gasFeeIsNotEnough') : ''
+
   useEffect(() => {
     setEstimateError(
       adjustedAmountError || tokenPayQuoteErrorMessage || errorMessage,
@@ -508,39 +552,44 @@ function ConfirmTransaction() {
     if (!isHwAccount) setLoading(true)
     else setSendStatus(TX_STATUS.HW_WAITING)
 
-    if (tokenPayGas.isTokenPayGas && !tokenPayGas.tokenPayReady) {
+    if (gasPayment.isToken && !tokenPay.ready) {
       setLoading(false)
       return
     }
 
-    const error = tokenPayGas.isTokenPayGas
-      ? await tokenPayGas.checkTokenPayBalance({
-          submitTx: adjustedSendTx.params,
-          displayToken,
-          isNativeToken,
-          isSendToken,
-          sendTokenValue,
-        })
-      : await checkBalance(
-          adjustedSendTx.params,
-          displayToken,
-          isNativeToken,
-          isSendToken,
-          sendTokenValue,
-          networkTypeIsCfx,
-          uses1559Fees,
-        )
+    let error = ''
+
+    if (gasPayment.isToken) {
+      error = await tokenPay.checkBalance({
+        submitTx: adjustedSendTx.params,
+        displayToken,
+        isNativeToken,
+        isSendToken,
+        sendTokenValue,
+      })
+    } else if (gasPayment.isNative) {
+      error = await checkBalance(
+        adjustedSendTx.params,
+        displayToken,
+        isNativeToken,
+        isSendToken,
+        sendTokenValue,
+        networkTypeIsCfx,
+        uses1559Fees,
+      )
+    }
+
     if (error) {
       setLoading(false)
       setEstimateError(t(error))
       return
     }
 
-    if (tokenPayGas.isTokenPayGas) {
-      tokenPayGas
-        .submitTokenPayTransaction({
+    if (gasPayment.isToken) {
+      tokenPay
+        .submit({
           submitTx: sendTxParams,
-          maxTokenCost: tokenPayGas.tokenPayQuote?.tokenCost,
+          maxTokenCost: tokenPay.quote?.tokenCost,
         })
         .then(() => {
           setLoading(false)
@@ -556,7 +605,10 @@ function ConfirmTransaction() {
       return
     }
 
-    request(SEND_TRANSACTION, sendParams)
+    request(
+      SEND_TRANSACTION,
+      gasPayment.isSponsored ? sponsoredTransactionParams : sendParams,
+    )
       .then(() => {
         if (!isHwAccount) setLoading(false)
         else setSendStatus(TX_STATUS.HW_SUCCESS)
@@ -572,7 +624,7 @@ function ConfirmTransaction() {
   }
 
   const onCloseTransactionResult = () => {
-    if (isTokenPayQuoteChanged) {
+    if (isTokenPayQuoteChanged || isSponsorshipUnavailable) {
       setSendStatus(undefined)
       setSendError({})
       return
@@ -593,31 +645,38 @@ function ConfirmTransaction() {
   }
 
   const confirmDisabled =
+    gasPayment.loading ||
     !!estimateError ||
     sendEstimateRst.loading ||
     Object.keys(sendEstimateRst).length === 0 ||
-    (tokenPayGas.isTokenPayGas &&
-      (tokenPayGas.tokenPayQuoteLoading ||
-        tokenPayGas.tokenPayQuoteValidating ||
-        tokenPayGas.tokenPayQuoteError ||
-        !tokenPayGas.tokenPayReady)) ||
+    (gasPayment.isToken &&
+      (tokenPay.quoteLoading ||
+        tokenPay.quoteValidating ||
+        tokenPay.quoteError ||
+        !tokenPay.ready)) ||
     (customAllowance && isDecoding)
 
-  const dappConfirmParams =
-    isDapp && tokenPayGas.isTokenPayGas
-      ? {
-          tx: sendParams,
-          tokenPay: {
-            gasTokenAddress: tokenPayGas.selectedGasToken.address,
-            gasLevel: tokenPayGas.tokenPayGasLevel,
-            maxTokenCost: tokenPayGas.tokenPayQuote?.tokenCost,
-          },
-        }
-      : {tx: sendParams}
-  const beforeDappConfirm = async () => {
-    if (!tokenPayGas.isTokenPayGas) return
+  let dappConfirmParams = {
+    tx: sendParams,
+  }
 
-    const error = await tokenPayGas.checkTokenPayBalance({
+  if (gasPayment.isToken) {
+    dappConfirmParams = {
+      tx: sendParams,
+      tokenPay: {
+        gasTokenAddress: tokenPay.selectedToken.address,
+        gasLevel: tokenPay.gasLevel,
+        maxTokenCost: tokenPay.quote?.tokenCost,
+      },
+    }
+  } else if (gasPayment.isSponsored) {
+    dappConfirmParams = sponsoredTransactionParams
+  }
+
+  const beforeDappConfirm = async () => {
+    if (!gasPayment.isToken) return
+
+    const error = await tokenPay.checkBalance({
       submitTx: adjustedSendTx.params,
       displayToken,
       isNativeToken,
@@ -632,6 +691,7 @@ function ConfirmTransaction() {
 
     return true
   }
+
   return (
     <div className="confirm-transaction-container flex flex-col h-full w-full relative">
       <header>
@@ -645,7 +705,7 @@ function ConfirmTransaction() {
             }
             clearAdvancedGasSetting()
             setGasLevel('medium')
-            setGasTokenAddress('')
+            gasPayment.selectPayment({method: GAS_PAYMENT_METHOD.NATIVE})
           }}
         />
       </header>
@@ -683,9 +743,7 @@ function ConfirmTransaction() {
             symbol={nativeToken?.symbol}
           />
           <ConfirmGasFee
-            isDapp={isDapp}
-            isHwAccount={isHwAccount}
-            tokenPayGas={tokenPayGas}
+            gasPayment={gasPayment}
             nativeToken={nativeToken}
             nativeBalance={nativeBalance}
             accountAddress={currentAddressValue}

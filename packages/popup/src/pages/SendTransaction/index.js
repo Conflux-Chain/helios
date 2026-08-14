@@ -44,7 +44,12 @@ import {
   useAddressNote,
 } from '../../hooks/useApi'
 import {useTokenPayAvailability} from '../../hooks/useTokenPay'
-import {ROUTES, NETWORK_TYPE, MAX_STRATEGY} from '../../constants'
+import {
+  GAS_PAYMENT_METHOD,
+  ROUTES,
+  NETWORK_TYPE,
+  MAX_STRATEGY,
+} from '../../constants'
 import {bn16} from '../../utils'
 import useGlobalStore from '../../stores'
 
@@ -99,7 +104,7 @@ function SendTransaction() {
     setNonce,
     setStorageLimit,
     setMaxStrategy,
-    setGasTokenAddress,
+    setGasPayment,
     setSyncTxWithForm,
     tx,
     clearSendTransactionParams,
@@ -255,7 +260,7 @@ function SendTransaction() {
       return
     }
 
-    setGasTokenAddress('')
+    setGasPayment({method: GAS_PAYMENT_METHOD.NATIVE})
     setMaxStrategy(MAX_STRATEGY.LEGACY)
     setSendAmount(
       convertDataToValue(

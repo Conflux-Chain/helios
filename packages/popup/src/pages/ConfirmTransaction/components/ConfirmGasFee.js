@@ -12,8 +12,7 @@ function GasFeePlaceholder() {
 }
 
 function ConfirmGasFee({
-  isHwAccount,
-  tokenPayGas,
+  gasPayment,
   nativeToken,
   nativeBalance,
   accountAddress,
@@ -24,39 +23,48 @@ function ConfirmGasFee({
   sendTokenAddress,
   sendTokenAmount,
 }) {
-  if (!isHwAccount && tokenPayGas.tokenPayConfigLoading) {
+  const {tokenPay, sponsorship} = gasPayment
+
+  if (gasPayment.loading) {
     return <GasFeePlaceholder />
   }
 
-  if (tokenPayGas.canUseTokenPay || tokenPayGas.selectedGasToken) {
-    return (
-      <GasPayFee
-        quote={tokenPayGas.selectedGasToken ? tokenPayGas.tokenPayQuote : null}
-        options={tokenPayGas.tokenPayGasOptions}
-        nativeGasFee={tokenPayGas.nativeGasFee}
-        gasTokenBalances={tokenPayGas.gasTokenBalances}
-        gasToken={tokenPayGas.selectedGasToken}
-        tokenPayConfig={tokenPayGas.tokenPayConfig}
-        nativeToken={nativeToken}
-        nativeBalance={nativeBalance}
-        accountAddress={accountAddress}
-        networkDbId={networkDbId}
-        estimateRst={estimateRst}
-        uses1559Fees={uses1559Fees}
-        onSelectGasToken={tokenPayGas.setSelectedGasToken}
-        isDeferredMax={isDeferredMax}
-        sendTokenAddress={sendTokenAddress}
-        sendTokenAmount={sendTokenAmount}
-      />
-    )
+  const hasAlternativePayment =
+    sponsorship.available ||
+    tokenPay.available ||
+    Boolean(tokenPay.selectedToken)
+
+  if (!hasAlternativePayment) {
+    return <GasFee estimateRst={estimateRst} uses1559Fees={uses1559Fees} />
   }
 
-  return <GasFee estimateRst={estimateRst} uses1559Fees={uses1559Fees} />
+  return (
+    <GasPayFee
+      payment={gasPayment.payment}
+      sponsorship={sponsorship}
+      quote={tokenPay.selectedToken ? tokenPay.quote : null}
+      options={tokenPay.options}
+      nativeGasFee={gasPayment.nativeGasFee}
+      gasTokenBalances={tokenPay.balances}
+      gasToken={tokenPay.selectedToken}
+      tokenPayConfig={tokenPay.config}
+      nativeToken={nativeToken}
+      nativeBalance={nativeBalance}
+      accountAddress={accountAddress}
+      networkDbId={networkDbId}
+      estimateRst={estimateRst}
+      uses1559Fees={uses1559Fees}
+      onSelectPayment={gasPayment.selectPayment}
+      onSelectGasToken={tokenPay.selectToken}
+      isDeferredMax={isDeferredMax}
+      sendTokenAddress={sendTokenAddress}
+      sendTokenAmount={sendTokenAmount}
+    />
+  )
 }
 
 ConfirmGasFee.propTypes = {
-  isHwAccount: PropTypes.bool,
-  tokenPayGas: PropTypes.object,
+  gasPayment: PropTypes.object,
   nativeToken: PropTypes.object,
   nativeBalance: PropTypes.string,
   accountAddress: PropTypes.string,

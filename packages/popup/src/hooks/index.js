@@ -230,7 +230,10 @@ const defaultSendTransactionParams = {
   customNonce: '',
   sendTokenId: 'native',
   customAllowance: '',
-  gasTokenAddress: '',
+
+  // null means the user has not explicitly selected a gas payment method.
+  gasPayment: null,
+
   tx: {},
   txContext: {},
   // Internal preset-tx flows turn this off to avoid overwriting tx from send-form state.
@@ -268,7 +271,7 @@ export const useCurrentTxStore = create((set, get) => ({
   clearAdvancedGasSetting: () =>
     set({advancedGasSetting: initAdvancedGasSetting}),
   setCustomAllowance: customAllowance => set({customAllowance}),
-  setGasTokenAddress: gasTokenAddress => set({gasTokenAddress}),
+  setGasPayment: gasPayment => set({gasPayment}),
   setNonce: nonce => set({nonce}),
   setCustomNonce: customNonce => set({customNonce}),
   setSendTokenId: sendTokenId => set({sendTokenId}),

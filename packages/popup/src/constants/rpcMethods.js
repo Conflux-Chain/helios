@@ -15,6 +15,7 @@ export const WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK =
   'wallet_getAccountAddressByNetwork'
 export const WALLET_GET_EIP7702_ACCOUNT_STATES =
   'wallet_getEip7702AccountStates'
+export const WALLET_GET_SPONSORSHIP = 'wallet_getSponsorship'
 export const WALLET_GET_TOKEN_PAY_CONFIG = 'wallet_getTokenPayConfig'
 export const WALLET_GET_TOKEN_PAY_GAS_OPTIONS = 'wallet_getTokenPayGasOptions'
 export const WALLET_PREPARE_TOKEN_PAY_QUOTE = 'wallet_prepareTokenPayQuote'
