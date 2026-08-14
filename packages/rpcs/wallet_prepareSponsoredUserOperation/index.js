@@ -1,4 +1,7 @@
-import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
+import {
+  EIP7702_DELEGATION_PREFIX,
+  EIP7702_NETWORK_CONFIGS,
+} from '@fluent-wallet/consts'
 import {Bytes, Uint, ethHexAddress, map, oneOrMore} from '@fluent-wallet/spec'
 import {
   decodeCanSponsorResult,
@@ -55,6 +58,16 @@ export const main = async ({
 
   const {whitelistPaymasterAddress} = networkConfig
 
+  const stateOverride = params.authorization
+    ? {
+        [params.sender]: {
+          code: `${EIP7702_DELEGATION_PREFIX}${params.authorization.address.slice(
+            2,
+          )}`,
+        },
+      }
+    : undefined
+
   const prepared = await wallet_prepareUserOperation(
     {
       errorFallThrough: true,
@@ -72,12 +85,14 @@ export const main = async ({
       network,
       _cacheConf: {type: null},
     },
+    // Simulate the delegation applied by the bundle's EIP-7702 authorization.
     [
       {
         to: whitelistPaymasterAddress,
         data: encodeCanSponsorCall(prepared.userOperation),
       },
       'latest',
+      ...(stateOverride ? [stateOverride] : []),
     ],
   )
 

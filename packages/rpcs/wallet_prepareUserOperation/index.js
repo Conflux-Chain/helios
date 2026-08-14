@@ -55,7 +55,7 @@ const GAS_LIMIT_FIELDS = [
   'preVerificationGas',
 ]
 
-function calculateGasCost(userOperation) {
+function calculateMaxGasCost(userOperation) {
   const totalGasLimit = GAS_LIMIT_FIELDS.reduce(
     (total, field) => total.add(userOperation[field] ?? 0),
     BigNumber.from(0),
@@ -104,6 +104,6 @@ export const main = async ({
 
   return {
     userOperation,
-    gasCost: calculateGasCost(userOperation),
+    maxGasCost: calculateMaxGasCost(userOperation),
   }
 }

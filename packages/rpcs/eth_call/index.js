@@ -4,8 +4,10 @@ import {
   blockRef,
   cat,
   map,
+  mapp,
   optionalMapKey,
   zeroOrMore,
+  zeroOrOne,
 } from '@fluent-wallet/spec'
 
 const {TxMapSpecs} = genEthTxSchema(spec)
@@ -26,6 +28,7 @@ export const schemas = {
       optionalMapKey(TxMapSpecs.data),
     ],
     [zeroOrMore, blockRef],
+    [zeroOrOne, mapp],
   ],
 }
 
@@ -38,14 +41,12 @@ export const permissions = {
 
 export const cache = {
   type: 'block',
-  key: ({params}) => {
-    const req = params[0]
-    return `${NAME}${JSON.stringify(req)}`
-  },
+  key: ({params}) => `${NAME}${JSON.stringify(params)}`,
 }
 
 export const main = async ({f, params}) => {
-  let [tx, ref] = params
+  let [tx, ref, stateOverride] = params
   ref = ref || 'latest'
-  return await f([tx, ref])
+
+  return await f(stateOverride ? [tx, ref, stateOverride] : [tx, ref])
 }

@@ -5600,6 +5600,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/wallet_get-sponsorship@workspace:packages/rpcs/wallet_getSponsorship":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-sponsorship@workspace:packages/rpcs/wallet_getSponsorship"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/nonce-manager": "workspace:*"
+    "@fluent-wallet/spec": "npm:1.0.18"
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/wallet_get-token-pay-config@workspace:packages/rpcs/wallet_getTokenPayConfig":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-token-pay-config@workspace:packages/rpcs/wallet_getTokenPayConfig"
@@ -5743,9 +5754,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_prepare-sponsored-user-operation@workspace:packages/rpcs/wallet_prepareSponsoredUserOperation"
   dependencies:
-    "@ethersproject/bignumber": "npm:^5.7.0"
-    "@ethersproject/bytes": "npm:^5.7.0"
-    "@fluent-wallet/bundler-client": "workspace:packages/bundler-client"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/user-operation": "workspace:packages/user-operation"
@@ -18674,6 +18682,7 @@ __metadata:
     "@fluent-wallet/wallet_get-preferences": "workspace:*"
     "@fluent-wallet/wallet_get-side-panel-enabled": "workspace:*"
     "@fluent-wallet/wallet_get-side-panel-supported": "workspace:*"
+    "@fluent-wallet/wallet_get-sponsorship": "workspace:packages/rpcs/wallet_getSponsorship"
     "@fluent-wallet/wallet_get-token-pay-config": "workspace:packages/rpcs/wallet_getTokenPayConfig"
     "@fluent-wallet/wallet_get-token-pay-gas-options": "workspace:packages/rpcs/wallet_getTokenPayGasOptions"
     "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*"

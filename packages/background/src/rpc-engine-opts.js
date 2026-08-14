@@ -21,6 +21,7 @@ import * as walletGetConfluxNonceState from '@fluent-wallet/wallet_get-conflux-n
 import * as walletGetEthereumNonceState from '@fluent-wallet/wallet_get-ethereum-nonce-state'
 import * as walletEnrichEthereumTx from '@fluent-wallet/wallet_enrich-ethereum-tx'
 import * as walletSendTransaction from '@fluent-wallet/wallet_send-transaction'
+import * as walletGetSponsorship from '@fluent-wallet/wallet_get-sponsorship'
 import * as walletPrepareUserOperation from '@fluent-wallet/wallet_prepare-user-operation'
 import * as walletPrepareSponsoredUserOperation from '@fluent-wallet/wallet_prepare-sponsored-user-operation'
 import * as walletSendUserOperation from '@fluent-wallet/wallet_send-user-operation'
@@ -159,7 +160,6 @@ import * as walletGetNetwork from '@fluent-wallet/wallet_get-network'
 import * as walletGetTokenPayConfig from '@fluent-wallet/wallet_get-token-pay-config'
 import * as walletGetTokenPayGasOptions from '@fluent-wallet/wallet_get-token-pay-gas-options'
 import * as walletPrepareTokenPayQuote from '@fluent-wallet/wallet_prepare-token-pay-quote'
-import * as walletSubmitSponsoredTransaction from '@fluent-wallet/wallet_submit-sponsored-transaction'
 import * as walletSubmitTokenPayTransaction from '@fluent-wallet/wallet_submit-token-pay-transaction'
 import * as walletGetNextNonce from '@fluent-wallet/wallet_get-next-nonce'
 import * as walletGetPendingAuthRequest from '@fluent-wallet/wallet_get-pending-auth-request'
@@ -256,7 +256,6 @@ export const rpcEngineOpts = {
     walletGetTokenPayConfig,
     walletGetTokenPayGasOptions,
     walletPrepareTokenPayQuote,
-    walletSubmitSponsoredTransaction,
     walletSubmitTokenPayTransaction,
     walletGetCurrentNetwork,
     walletGetCurrentAccount,
@@ -384,6 +383,7 @@ export const rpcEngineOpts = {
 
     walletSendTransactionWithAction,
     walletSendTransaction,
+    walletGetSponsorship,
     walletPrepareUserOperation,
     walletPrepareSponsoredUserOperation,
     walletSendUserOperation,

@@ -125,7 +125,7 @@ function createMainInput() {
     wallet_handleUserOperation: vi.fn().mockResolvedValue(),
     wallet_prepareUserOperation: vi.fn(async (_options, params) => ({
       userOperation: prepareUserOperation(params),
-      gasCost: '0x0',
+      maxGasCost: '0x0',
     })),
     wallet_prepareSponsoredUserOperation: vi.fn(async (_options, params) => ({
       userOperation: prepareUserOperation({
@@ -133,7 +133,7 @@ function createMainInput() {
         paymaster: PAYMASTER_ADDRESS,
       }),
       sponsorship: {sponsorable: true, reason: ''},
-      gasCost: '0x0',
+      maxGasCost: '0x0',
     })),
   }
 
@@ -324,7 +324,7 @@ describe('wallet_sendUserOperation', () => {
         calls: CALLS,
         paymaster: PAYMASTER_ADDRESS,
       }),
-      gasCost: '0x0',
+      maxGasCost: '0x0',
       sponsorship: {
         sponsorable: false,
         reason: 'sponsorship denied',

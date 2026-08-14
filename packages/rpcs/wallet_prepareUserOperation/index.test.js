@@ -76,6 +76,6 @@ test('prepares a UserOperation using the standard gas price', async () => {
       verificationGasLimit: '0x1320b',
       callGasLimit: '0x3fc3',
     },
-    gasCost: '0xd068a01a3bd00',
+    maxGasCost: '0xd068a01a3bd00',
   })
 })
