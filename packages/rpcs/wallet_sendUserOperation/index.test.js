@@ -91,7 +91,7 @@ function prepareUserOperation({
 
 function createMainInput() {
   const db = {
-    getAccountById: vi.fn(() => ({
+    findAccount: vi.fn(() => ({
       eid: ACCOUNT_ID,
       accountGroup: {
         vault: {

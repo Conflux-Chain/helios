@@ -5953,14 +5953,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/wallet_submit-sponsored-transaction@workspace:*, @fluent-wallet/wallet_submit-sponsored-transaction@workspace:packages/rpcs/wallet_submitSponsoredTransaction":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/wallet_submit-sponsored-transaction@workspace:packages/rpcs/wallet_submitSponsoredTransaction"
-  dependencies:
-    "@fluent-wallet/spec": "npm:1.0.18"
-  languageName: unknown
-  linkType: soft
-
 "@fluent-wallet/wallet_submit-token-pay-transaction@workspace:packages/rpcs/wallet_submitTokenPayTransaction":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_submit-token-pay-transaction@workspace:packages/rpcs/wallet_submitTokenPayTransaction"
@@ -18717,7 +18709,6 @@ __metadata:
     "@fluent-wallet/wallet_set-preferences": "workspace:*"
     "@fluent-wallet/wallet_set-side-panel-behavior": "workspace:*"
     "@fluent-wallet/wallet_set-side-panel-enabled": "workspace:*"
-    "@fluent-wallet/wallet_submit-sponsored-transaction": "workspace:*"
     "@fluent-wallet/wallet_submit-token-pay-transaction": "workspace:packages/rpcs/wallet_submitTokenPayTransaction"
     "@fluent-wallet/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
     "@fluent-wallet/wallet_unwatch-asset": "workspace:packages/rpcs/wallet_unwatchAsset"

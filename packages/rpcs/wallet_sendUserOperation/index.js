@@ -65,7 +65,7 @@ export const permissions = {
     'wallet_prepareUserOperation',
   ],
   db: [
-    'getAccountById',
+    'findAccount',
     'getNetworkById',
     'accountAddrByNetwork',
     'getOccupiedUserOperationNonces',
@@ -101,14 +101,17 @@ async function validateUserOperationSender({
   InvalidParams,
   Server,
   requestNetwork,
-  getAccountById,
+  findAccount,
   getNetworkById,
   accountAddrByNetwork,
   wallet_getEip7702AccountStates,
   accountId,
   networkId,
 }) {
-  const account = getAccountById(accountId)
+  const account = findAccount({
+    accountId,
+    g: {_accountGroup: {vault: {type: 1}}},
+  })
   if (!account) {
     throw InvalidParams(`Invalid account id ${accountId}`)
   }
@@ -131,7 +134,7 @@ async function validateUserOperationSender({
     )
   }
 
-  const vaultType = account.accountGroup?.vault?.type
+  const vaultType = account.accountGroup.vault.type
   if (vaultType !== 'hd' && vaultType !== 'pk') {
     throw InvalidParams('UserOperation only supports software accounts')
   }
@@ -360,7 +363,7 @@ function startUserOperationTracking({
 export const main = async ({
   Err: {InvalidParams, Server},
   db: {
-    getAccountById,
+    findAccount,
     getNetworkById,
     accountAddrByNetwork,
     getOccupiedUserOperationNonces,
@@ -385,7 +388,7 @@ export const main = async ({
       InvalidParams,
       Server,
       requestNetwork,
-      getAccountById,
+      findAccount,
       getNetworkById,
       accountAddrByNetwork,
       wallet_getEip7702AccountStates,

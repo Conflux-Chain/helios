@@ -66,7 +66,9 @@ export const permissions = {
     'wallet_enrichConfluxTx',
     'wallet_enrichEthereumTx',
     'wallet_submitTokenPayTransaction',
-    'wallet_submitSponsoredTransaction',
+
+    'wallet_sendUserOperation',
+
     'wallet_getConfluxNonceState',
     'wallet_getEthereumNonceState',
   ],
@@ -89,7 +91,7 @@ export const main = async ({
     wallet_handleUnfinishedCFXTx,
     wallet_handleUnfinishedETHTx,
     wallet_submitTokenPayTransaction,
-    wallet_submitSponsoredTransaction,
+    wallet_sendUserOperation,
     wallet_getConfluxNonceState,
     wallet_getEthereumNonceState,
   },
@@ -196,7 +198,7 @@ export const main = async ({
     t({eid: authReqId, authReq: {processed: true}})
   }
 
-  const tx = params.authReqId ? params.tx : params
+  const tx = Array.isArray(params) ? params : params.tx
   const txParams = tx[0]
 
   const transactionNetwork = authReqId ? authReq.app.currentNetwork : network
@@ -205,15 +207,23 @@ export const main = async ({
     if (!txParams.gas) txParams.gas = txParams.gasLimit
     delete txParams.gasLimit
   }
-  const addr = findAddress({
-    // filter by app.currentNetwork and app.currentAccount
+  const addressRecord = findAddress({
+    // Resolve the address and its signing account from the same wallet context.
     appId: authReq?.app?.eid,
     selected: !authReqId ? true : undefined,
-    // filter by current network
     networkId: transactionNetwork.eid,
     value: txParams.from,
+    accountG: {
+      eid: 1,
+    },
   })
-  if (!addr) throw InvalidParams(`Invalid from address ${txParams.from}`)
+
+  if (!addressRecord) {
+    throw InvalidParams(`Invalid from address ${txParams.from}`)
+  }
+
+  const addr = addressRecord.eid
+  const accountId = addressRecord.account.eid
 
   if (params.tokenPay) {
     if (!authReqId) {
@@ -242,42 +252,29 @@ export const main = async ({
     }
   }
 
-  if (params.gasPayment === 'sponsored') {
-    let transactionHash
-
-    try {
-      transactionHash = await wallet_submitSponsoredTransaction(
-        {
-          errorFallThrough: true,
-          network: transactionNetwork,
-        },
-        {
-          accountId: authReq.app.currentAccount.eid,
-          networkId: transactionNetwork.eid,
-          call: {
+  if (params.gasPayment === 'sponsored' && !authReqId) {
+    const submission = await wallet_sendUserOperation(
+      {
+        errorFallThrough: true,
+        network: transactionNetwork,
+      },
+      {
+        accountId,
+        networkId: transactionNetwork.eid,
+        calls: [
+          {
             to: txParams.to,
             value: txParams.value ?? '0x0',
             data: txParams.data ?? '0x',
           },
-        },
-      )
-    } catch (error) {
-      t({
-        eid: authReqId,
-        authReq: {
-          processed: false,
-        },
-      })
+        ],
+        sponsorship: 'whitelist',
+      },
+    )
 
-      throw error
-    }
+    const {userOpHash} = submission
 
-    await wallet_userApprovedAuthRequest({
-      authReqId,
-      res: transactionHash,
-    })
-
-    return transactionHash
+    return userOpHash
   }
 
   const createPendingTransaction = async ({transaction}) => {

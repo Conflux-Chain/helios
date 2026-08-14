@@ -36,7 +36,7 @@ export const schemas = {
     [
       map,
       {closed: true},
-      ['authReqId', dbid],
+      ['authReqId', {optional: true}, dbid],
       ['tx', [cat, txSchema]],
       ['gasPayment', [enums, 'sponsored']],
     ],
