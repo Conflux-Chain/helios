@@ -193,6 +193,7 @@ function AddressCard({
   const {data: nsNames, nsNamesError} = useServiceNames({
     type,
     netId,
+    networkId,
     provider: window?.___CFXJS_USE_RPC__PRIVIDER,
     addressArr: [fromAddress, toAddress].filter(Boolean),
   })

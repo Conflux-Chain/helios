@@ -21,13 +21,14 @@ function RecentItem({
 
   const {
     data: {
-      network: {type, netId},
+      network: {eid: networkId, type, netId},
     },
   } = useCurrentAddress()
 
   const {data: nsName} = useServiceName({
     type,
     netId,
+    networkId,
     provider: window?.___CFXJS_USE_RPC__PRIVIDER,
     address,
   })
@@ -127,13 +128,14 @@ function Recent({fuzzy = '', onJumpToSendTx}) {
   const {t} = useTranslation()
   const {
     data: {
-      network: {type, netId},
+      network: {eid: networkId, type, netId},
     },
   } = useCurrentAddress()
 
   const {data} = useAddressWithServiceName({
     type,
     netId,
+    networkId,
     provider: window?.___CFXJS_USE_RPC__PRIVIDER,
     name: fuzzy,
     notSend: !isValidDomainName(fuzzy),

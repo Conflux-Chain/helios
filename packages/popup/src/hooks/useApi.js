@@ -497,15 +497,24 @@ export const useIsCfxChain = () => {
 }
 
 export const useAddressType = address => {
-  const netId = useCurrentAddress().data.network.netId
+  const {
+    data: {
+      network: {eid: networkId, netId},
+    },
+  } = useCurrentAddress()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const isValidAddress = validateAddress(address, networkTypeIsCfx, netId)
   const {
     data: {type},
   } = useRPC(
-    isValidAddress ? [WALLET_DETECT_ADDRESS_TYPE, address] : null,
+    isValidAddress && isNumber(networkId)
+      ? [WALLET_DETECT_ADDRESS_TYPE, networkId, address]
+      : null,
     {address},
-    {fallbackData: {}},
+    {
+      fallbackData: {},
+      refreshInterval: 0,
+    },
   )
   return type
 }
@@ -694,11 +703,20 @@ export const useGroupAccountAuthorizedDapps = () => {
 }
 
 export const useValid20Token = address => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+
   const {data: token} = useRPC(
-    address ? [WALLET_VALIDATE_20TOKEN, address] : null,
+    address && isNumber(networkId)
+      ? [WALLET_VALIDATE_20TOKEN, networkId, address]
+      : null,
     {tokenAddress: address},
     {
       fallbackData: {},
+      refreshInterval: 0,
       postprocessSuccessData: d => (address ? {...(d || {}), address} : d),
     },
   )

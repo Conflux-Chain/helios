@@ -822,13 +822,14 @@ export const useInputAddressInfo = ({
     loading,
   }
 }
-
 export const useServiceName = (
-  {type, netId, provider, address, notSend = false},
+  {type, networkId, netId, provider, address, notSend = false},
   opts,
 ) => {
   return useSWR(
-    type && provider && address && !notSend ? [type, netId, address] : null,
+    type && provider && address && !notSend
+      ? ['serviceName', type, networkId, netId, address]
+      : null,
     () =>
       getSingleServiceNameWithAddress({
         type,
@@ -836,17 +837,20 @@ export const useServiceName = (
         provider,
         address,
       }),
-    opts,
+    {
+      refreshInterval: 0,
+      ...opts,
+    },
   )
 }
 
 export const useServiceNames = (
-  {type, netId, provider, addressArr, notSend = false},
+  {type, networkId, netId, provider, addressArr, notSend = false},
   opts,
 ) => {
   return useSWR(
-    type && provider && isArray(addressArr) && addressArr?.length && !notSend
-      ? [type, netId, [...addressArr]]
+    type && provider && isArray(addressArr) && addressArr.length && !notSend
+      ? ['serviceNames', type, networkId, netId, [...addressArr]]
       : null,
     () =>
       getServiceNamesWithAddresses({
@@ -855,16 +859,21 @@ export const useServiceNames = (
         provider,
         addressArr: [...addressArr],
       }),
-    opts,
+    {
+      refreshInterval: 0,
+      ...opts,
+    },
   )
 }
 
 export const useAddressWithServiceName = (
-  {type, netId, provider, name, notSend = false},
+  {type, networkId, netId, provider, name, notSend = false},
   opts,
 ) => {
   return useSWR(
-    type && provider && name && !notSend ? [type, netId, name] : null,
+    type && provider && name && !notSend
+      ? ['addressWithServiceName', type, networkId, netId, name]
+      : null,
     () =>
       getSingleAddressWithNameService({
         type,
@@ -872,6 +881,9 @@ export const useAddressWithServiceName = (
         provider: window?.___CFXJS_USE_RPC__PRIVIDER,
         name,
       }),
-    opts,
+    {
+      refreshInterval: 0,
+      ...opts,
+    },
   )
 }
