@@ -47,6 +47,7 @@ export const schemas = {
     {closed: true},
     ['accountId', dbid],
     ['networkId', dbid],
+    ['appId', {optional: true}, dbid],
     ['calls', [oneOrMore, callSchema]],
     ['sponsorship', {optional: true}, [enums, 'whitelist']],
   ],
@@ -380,7 +381,7 @@ export const main = async ({
     wallet_prepareSponsoredUserOperation,
     wallet_prepareUserOperation,
   },
-  params: {accountId, networkId, calls, sponsorship},
+  params: {accountId, networkId, appId, calls, sponsorship},
   network: requestNetwork,
 }) => {
   const {addressId, sender, network, networkConfig, delegationState} =
@@ -461,6 +462,7 @@ export const main = async ({
 
         insertUserOperation({
           addressId,
+          appId,
           hash: userOpHash,
           sender,
           chainId: network.chainId,

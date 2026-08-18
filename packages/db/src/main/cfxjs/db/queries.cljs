@@ -1675,6 +1675,7 @@
 
 (defn insert-user-operation
   [{:keys [addressId
+           appId
            hash
            sender
            chainId
@@ -1702,9 +1703,13 @@
                       (enc/assoc-when
                        :userOperation/delegateAddress
                        delegateAddress))
-        tx-report (t [operation
-                      {:db/id addressId
-                       :address/userOperation -1}])]
+        txs (cond-> [operation
+                     {:db/id addressId
+                      :address/userOperation -1}]
+              (some? appId)
+              (conj {:db/id appId
+                     :app/userOperation -1}))
+        tx-report (t txs)]
     (get-in tx-report [:tempids -1])))
 
 (defn get-one-user-operation [{:keys [hash]}]

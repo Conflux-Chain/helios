@@ -268,6 +268,11 @@ const schema = {
     network: {doc: 'authed network', ref: true, many: true},
     currentNetwork: {ref: 'network'},
     tx: {many: true, ref: true, doc: 'tx initiated by this app'},
+    userOperation: {
+      many: true,
+      ref: true,
+      doc: 'user operations initiated by this app',
+    },
   },
   authReq: {
     req: {doc: 'the req body of the auth req', persist: false},

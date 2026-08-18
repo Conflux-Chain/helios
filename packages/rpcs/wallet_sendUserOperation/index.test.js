@@ -26,6 +26,7 @@ vi.mock('@fluent-wallet/bundler-client', async importOriginal => ({
 const ACCOUNT_ID = 1
 const NETWORK_ID = 2
 const ADDRESS_ID = 3
+const APP_ID = 4
 
 const PRIVATE_KEY =
   '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
@@ -256,7 +257,7 @@ describe('wallet_sendUserOperation', () => {
 
   test('stores pending, submits, and starts receipt tracking', async () => {
     const {input, db, rpcs} = createMainInput()
-
+    input.params.appId = APP_ID
     bundler.sendUserOperation.mockImplementation(
       async (userOperation, entryPointAddress) =>
         getUserOperationHash({
@@ -274,6 +275,7 @@ describe('wallet_sendUserOperation', () => {
     })
     expect(storedUserOperation).toMatchObject({
       addressId: ADDRESS_ID,
+      appId: APP_ID,
       hash: result.userOpHash,
       sender: SENDER.toLowerCase(),
       chainId: NETWORK.chainId,

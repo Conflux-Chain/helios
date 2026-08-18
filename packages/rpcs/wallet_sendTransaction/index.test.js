@@ -456,6 +456,7 @@ describe('wallet_sendTransaction', () => {
         sponsorship: 'whitelist',
       },
     )
+
     expect(wallet_handleUserOperation).not.toHaveBeenCalled()
   })
 })
