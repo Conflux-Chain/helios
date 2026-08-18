@@ -496,7 +496,7 @@ export const useIsCfxChain = () => {
   return type === NETWORK_TYPE.CFX || symbol?.toLowerCase() === NETWORK_TYPE.CFX
 }
 
-export const useAddressType = address => {
+export const useAddressTypeInfo = address => {
   const {
     data: {
       network: {eid: networkId, netId},
@@ -504,9 +504,7 @@ export const useAddressType = address => {
   } = useCurrentAddress()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const isValidAddress = validateAddress(address, networkTypeIsCfx, netId)
-  const {
-    data: {type},
-  } = useRPC(
+  const {data} = useRPC(
     isValidAddress && isNumber(networkId)
       ? [WALLET_DETECT_ADDRESS_TYPE, networkId, address]
       : null,
@@ -516,7 +514,11 @@ export const useAddressType = address => {
       refreshInterval: 0,
     },
   )
-  return type
+  return data || {}
+}
+
+export const useAddressType = address => {
+  return useAddressTypeInfo(address).type
 }
 
 export const useDbRefetchBalance = (params = {}) => {

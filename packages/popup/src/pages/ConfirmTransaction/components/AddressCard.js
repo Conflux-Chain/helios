@@ -6,7 +6,7 @@ import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import Text from '../../../components/Text'
 import {
   useCurrentAddress,
-  useAddressType,
+  useAddressTypeInfo,
   useDbRefetchBalance,
 } from '../../../hooks/useApi'
 import {useCheckImage, useServiceNames} from '../../../hooks'
@@ -33,8 +33,9 @@ const TransactionDirection = ({
   symbol,
 }) => {
   const {t} = useTranslation()
-  const type = useAddressType(toAddress)
-  const isContract = type === 'contract' || type === 'builtin'
+  const {type, eip7702Delegated} = useAddressTypeInfo(toAddress)
+  const isContract =
+    !eip7702Delegated && (type === 'contract' || type === 'builtin')
 
   return (
     <div

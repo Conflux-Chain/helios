@@ -32,7 +32,7 @@ import {
   useAddress,
   useBalance,
   useNetworkTypeIsCfx,
-  useAddressType,
+  useAddressTypeInfo,
   useValid20Token,
   usePendingAuthReq,
   useNetwork1559Compatible,
@@ -401,17 +401,20 @@ export const useDecodeData = ({to, data: rawData} = {}) => {
   const data = padHexData(rawData)
   const [decodeData, setDecodeData] = useState({})
   const [isDecoding, setIsDecoding] = useState(false)
-  const type = useAddressType(to)
+  const {type, eip7702Delegated} = useAddressTypeInfo(to)
   const {
     data: {
       network: {netId, type: currentNetworkType},
     },
   } = useCurrentAddress()
 
-  const isContract = type === 'contract' || type === 'builtin'
-  const isOutContract = type === 'contract'
+  const isContract =
+    (type === 'contract' || type === 'builtin') &&
+    !(eip7702Delegated && data === '0x')
+  const shouldValidateToken =
+    type === 'contract' && isContract && !eip7702Delegated
   const isEOAAddress = !isContract && !!type
-  const crc20Token = useValid20Token(isOutContract ? to : '')
+  const crc20Token = useValid20Token(shouldValidateToken ? to : '')
 
   useEffect(() => {
     if (!!data && data !== '0x') {
