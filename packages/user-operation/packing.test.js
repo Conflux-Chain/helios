@@ -26,7 +26,7 @@ test('packs an EntryPoint v0.8 EIP-7702 UserOperation', () => {
   expect(toPackedUserOperation(userOperation)).toEqual({
     sender: '0x1234567890123456789012345678901234567890',
     nonce: '0x0',
-    initCode: '0x7702deadbeef',
+    initCode: '0x7702000000000000000000000000000000000000deadbeef',
     callData: '0xdeadbeef',
     accountGasLimits:
       '0x0000000000000000000000000069ed750000000000000000000000000069ed75',

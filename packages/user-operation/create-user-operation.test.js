@@ -52,7 +52,7 @@ test('adds EIP-7702 fields for the first delegation', () => {
   expect(
     createUserOperationForEstimate({...parameters, authorization}),
   ).toMatchObject({
-    factory: '0x7702',
+    factory: '0x7702000000000000000000000000000000000000',
     factoryData: '0x',
     authorization,
   })

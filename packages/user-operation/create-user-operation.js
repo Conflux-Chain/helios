@@ -1,5 +1,5 @@
 import {hexValue} from '@ethersproject/bytes'
-import {EIP7702_FACTORY_MARKER} from './packing.js'
+import {EIP7702_PADDED_FACTORY_MARKER} from './packing.js'
 
 export function createUserOperationForEstimate({
   sender,
@@ -31,7 +31,11 @@ export function createUserOperationForEstimate({
       : {}),
     ...(authorization
       ? {
-          factory: EIP7702_FACTORY_MARKER,
+          // ERC-7769 recommends the short `0x7702` RPC marker. Our Alto
+          // bundler also accepts this padded form, which is required because
+          // the configured Paymaster parses packed initCode with OpenZeppelin
+          // ERC4337Utils.factory() and rejects values shorter than 20 bytes.
+          factory: EIP7702_PADDED_FACTORY_MARKER,
           factoryData: '0x',
           authorization,
         }

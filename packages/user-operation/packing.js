@@ -37,7 +37,7 @@ export function packPaymasterAndData({
 
 export const EIP7702_FACTORY_MARKER = '0x7702'
 
-const EIP7702_FULL_INIT_CODE_MARKER =
+export const EIP7702_PADDED_FACTORY_MARKER =
   '0x7702000000000000000000000000000000000000'
 
 function isEip7702FactoryMarker(factory) {
@@ -45,7 +45,7 @@ function isEip7702FactoryMarker(factory) {
 
   return (
     lowercaseFactory === EIP7702_FACTORY_MARKER ||
-    lowercaseFactory === EIP7702_FULL_INIT_CODE_MARKER
+    lowercaseFactory === EIP7702_PADDED_FACTORY_MARKER
   )
 }
 
@@ -53,8 +53,12 @@ export function buildUserOperationInitCode(
   {factory, factoryData, authorization},
   {forHash = false} = {},
 ) {
-  if (forHash && isEip7702FactoryMarker(factory)) {
-    if (!authorization) return EIP7702_FULL_INIT_CODE_MARKER
+  if (isEip7702FactoryMarker(factory)) {
+    if (!forHash) {
+      return hexConcat([EIP7702_PADDED_FACTORY_MARKER, factoryData ?? '0x'])
+    }
+
+    if (!authorization) return EIP7702_PADDED_FACTORY_MARKER
 
     return hexConcat([authorization.address, factoryData ?? '0x'])
   }
