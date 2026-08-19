@@ -38,6 +38,7 @@ import {
 import {
   AddressCard,
   ConfirmGasFee,
+  Eip7702DelegationDrawer,
   Eip7702SwitchInfoDrawer,
   InfoList,
 } from './components'
@@ -153,6 +154,7 @@ function ConfirmTransaction() {
     clearAdvancedGasSetting,
     tx: txParams,
     txContext,
+    setSponsorshipDeclined,
   } = useCurrentTxParams()
   const effectiveNonce = customNonce || suggestedNonce
   const {setLoading} = useLoading()
@@ -185,6 +187,8 @@ function ConfirmTransaction() {
   const [isSwitchInfoDrawerOpen, setIsSwitchInfoDrawerOpen] = useState(
     () => shouldOpenSwitchInfoDrawerOnMount,
   )
+
+  const [pendingSubmission, setPendingSubmission] = useState(null)
 
   // get to type and to token
   const {isContract, decodeData, isEOAAddress, token, isDecoding} =
@@ -534,32 +538,21 @@ function ConfirmTransaction() {
     suggestedNonce,
   ])
 
-  const onSend = async () => {
-    if (isHwAccount) {
-      if (!ledgerBindingApi) {
-        return
-      }
-      const authStatus = await ledgerBindingApi.isDeviceAuthed()
-      const isAppOpen = await ledgerBindingApi.isAppOpen()
-      if (!authStatus) {
-        setAuthStatus(authStatus)
-        return
-      } else if (!isAppOpen) {
-        setIsAppOpen(isAppOpen)
-        return
-      }
-    }
+  const submitWalletTransaction = async ({params, paymentMethod}) => {
     if (!isHwAccount) setLoading(true)
     else setSendStatus(TX_STATUS.HW_WAITING)
 
-    if (gasPayment.isToken && !tokenPay.ready) {
+    const isTokenPayment = paymentMethod === GAS_PAYMENT_METHOD.TOKEN
+    const isNativePayment = paymentMethod === GAS_PAYMENT_METHOD.NATIVE
+
+    if (isTokenPayment && !tokenPay.ready) {
       setLoading(false)
       return
     }
 
     let error = ''
 
-    if (gasPayment.isToken) {
+    if (isTokenPayment) {
       error = await tokenPay.checkBalance({
         submitTx: adjustedSendTx.params,
         displayToken,
@@ -567,7 +560,7 @@ function ConfirmTransaction() {
         isSendToken,
         sendTokenValue,
       })
-    } else if (gasPayment.isNative) {
+    } else if (isNativePayment) {
       error = await checkBalance(
         adjustedSendTx.params,
         displayToken,
@@ -585,42 +578,113 @@ function ConfirmTransaction() {
       return
     }
 
-    if (gasPayment.isToken) {
-      tokenPay
-        .submit({
+    try {
+      if (isTokenPayment) {
+        await tokenPay.submit({
           submitTx: sendTxParams,
           maxTokenCost: tokenPay.quote?.tokenCost,
         })
-        .then(() => {
-          setLoading(false)
-          setTimeout(() => clearSendTransactionParams(), 500)
-          history.push(HOME)
+      } else {
+        await request(SEND_TRANSACTION, params)
+      }
+
+      if (!isHwAccount) setLoading(false)
+      else setSendStatus(TX_STATUS.HW_SUCCESS)
+
+      setTimeout(() => clearSendTransactionParams(), 500)
+      history.push(HOME)
+    } catch (error) {
+      const errorData = error?.data || error?.extra
+      const requiredDelegationAction = errorData?.requiredDelegationAction
+
+      const needsDelegationConfirmation =
+        paymentMethod === GAS_PAYMENT_METHOD.SPONSORED &&
+        errorData?.code ===
+          USER_OPERATION_ERROR_CODES.EIP7702_DELEGATION_CONFIRMATION_REQUIRED &&
+        (requiredDelegationAction === 'upgrade' ||
+          requiredDelegationAction === 'switch')
+
+      if (needsDelegationConfirmation) {
+        if (!isHwAccount) setLoading(false)
+        setSendStatus(undefined)
+        setSendError({})
+        setSponsorshipDeclined(false)
+
+        const retryParams = {...params}
+        delete retryParams.approvedDelegationAction
+
+        setPendingSubmission({
+          params: retryParams,
+          paymentMethod,
+          requiredDelegationAction,
         })
-        .catch(error => {
-          console.error('error', error)
-          setLoading(false)
-          setSendStatus(TX_STATUS.ERROR)
-          setSendError(error)
-        })
+        return
+      }
+
+      console.error('error', error)
+
+      if (!isHwAccount) setLoading(false)
+      setSendStatus(TX_STATUS.ERROR)
+      setSendError(error)
+    }
+  }
+
+  const onSend = async () => {
+    if (isHwAccount) {
+      if (!ledgerBindingApi) {
+        return
+      }
+
+      const authStatus = await ledgerBindingApi.isDeviceAuthed()
+      const isAppOpen = await ledgerBindingApi.isAppOpen()
+
+      if (!authStatus) {
+        setAuthStatus(authStatus)
+        return
+      }
+
+      if (!isAppOpen) {
+        setIsAppOpen(isAppOpen)
+        return
+      }
+    }
+    const submission = {
+      params: gasPayment.isSponsored ? sponsoredTransactionParams : sendParams,
+      paymentMethod: gasPayment.payment.method,
+    }
+
+    if (
+      submission.paymentMethod === GAS_PAYMENT_METHOD.SPONSORED &&
+      sponsorship.requiredDelegationAction
+    ) {
+      setPendingSubmission({
+        ...submission,
+        requiredDelegationAction: sponsorship.requiredDelegationAction,
+      })
       return
     }
 
-    request(
-      SEND_TRANSACTION,
-      gasPayment.isSponsored ? sponsoredTransactionParams : sendParams,
-    )
-      .then(() => {
-        if (!isHwAccount) setLoading(false)
-        else setSendStatus(TX_STATUS.HW_SUCCESS)
-        setTimeout(() => clearSendTransactionParams(), 500)
-        history.push(HOME)
-      })
-      .catch(error => {
-        console.error('error', error)
-        if (!isHwAccount) setLoading(false)
-        setSendStatus(TX_STATUS.ERROR)
-        setSendError(error)
-      })
+    await submitWalletTransaction(submission)
+  }
+
+  const confirmPendingSubmission = () => {
+    if (!pendingSubmission) return
+
+    const submission = pendingSubmission
+    setPendingSubmission(null)
+
+    void submitWalletTransaction({
+      ...submission,
+      params: {
+        ...submission.params,
+        approvedDelegationAction: submission.requiredDelegationAction,
+      },
+    })
+  }
+
+  const declinePendingSubmission = () => {
+    setPendingSubmission(null)
+    setSponsorshipDeclined(true)
   }
 
   const onCloseTransactionResult = () => {
@@ -692,6 +756,20 @@ function ConfirmTransaction() {
     return true
   }
 
+  const sponsorshipDrawerProps =
+    pendingSubmission?.requiredDelegationAction === 'upgrade'
+      ? {
+          title: t('eip7702SponsoredUpgradeTitle'),
+          description: t('eip7702SponsoredUpgradeDesc'),
+          confirmText: t('eip7702SponsoredUpgradeConfirm'),
+        }
+      : pendingSubmission?.requiredDelegationAction === 'switch'
+      ? {
+          title: t('eip7702SwitchInfoTitle'),
+          description: t('eip7702SwitchInfoDesc'),
+          confirmText: t('eip7702SwitchInfoConfirm'),
+        }
+      : null
   return (
     <div className="confirm-transaction-container flex flex-col h-full w-full relative">
       <header>
@@ -763,7 +841,7 @@ function ConfirmTransaction() {
             </Link>
           )}
 
-          {!isDapp && !isSwitchInfoDrawerOpen && (
+          {!isDapp && !isSwitchInfoDrawerOpen && !pendingSubmission && (
             <div className="w-full flex px-3 z-50">
               <Button
                 variant="outlined"
@@ -817,6 +895,16 @@ function ConfirmTransaction() {
         open={isSwitchInfoDrawerOpen}
         onClose={() => setIsSwitchInfoDrawerOpen(false)}
       />
+      {pendingSubmission && sponsorshipDrawerProps && (
+        <Eip7702DelegationDrawer
+          id="eip7702-sponsored-delegation"
+          {...sponsorshipDrawerProps}
+          showClose
+          open
+          onConfirm={confirmPendingSubmission}
+          onClose={declinePendingSubmission}
+        />
+      )}
     </div>
   )
 }

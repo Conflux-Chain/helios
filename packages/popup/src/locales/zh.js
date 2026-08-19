@@ -381,6 +381,9 @@ const zh = {
     eip7702SwitchRequiredTitle: '需要切换绑定',
     eip7702SwitchRequiredDesc:
       '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
+    eip7702SponsoredUpgradeTitle: '启用 EIP-7702 升级',
+    eip7702SponsoredUpgradeDesc: '升级后，您的账户将获得以下智能功能。',
+    eip7702SponsoredUpgradeConfirm: '启用并继续',
     eip7702SwitchInfoTitle: '切换到 EIP-7702 服务',
     eip7702SwitchInfoDesc:
       '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',

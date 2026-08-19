@@ -30,7 +30,7 @@ function ConfirmGasFee({
   }
 
   const hasAlternativePayment =
-    sponsorship.available ||
+    gasPayment.isSponsored ||
     tokenPay.available ||
     Boolean(tokenPay.selectedToken)
 

@@ -233,6 +233,7 @@ const defaultSendTransactionParams = {
 
   // null means the user has not explicitly selected a gas payment method.
   gasPayment: null,
+  sponsorshipDeclined: false,
 
   tx: {},
   txContext: {},
@@ -272,6 +273,7 @@ export const useCurrentTxStore = create((set, get) => ({
     set({advancedGasSetting: initAdvancedGasSetting}),
   setCustomAllowance: customAllowance => set({customAllowance}),
   setGasPayment: gasPayment => set({gasPayment}),
+  setSponsorshipDeclined: sponsorshipDeclined => set({sponsorshipDeclined}),
   setNonce: nonce => set({nonce}),
   setCustomNonce: customNonce => set({customNonce}),
   setSendTokenId: sendTokenId => set({sendTokenId}),

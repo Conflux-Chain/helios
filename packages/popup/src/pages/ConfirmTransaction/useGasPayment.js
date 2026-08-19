@@ -14,7 +14,11 @@ function useGasPayment({
   gasLevel,
   estimateRst,
 }) {
-  const {gasPayment: paymentSelection, setGasPayment} = useCurrentTxStore()
+  const {
+    gasPayment: paymentSelection,
+    sponsorshipDeclined,
+    setGasPayment,
+  } = useCurrentTxStore()
 
   const tokenPay = useTokenPayGas({
     isHwAccount,
@@ -36,12 +40,16 @@ function useGasPayment({
     available: sponsorshipQuery.data?.available === true,
     reason: sponsorshipQuery.data?.reason || '',
     maxGasCost: sponsorshipQuery.data?.maxGasCost || null,
-    requiresDelegation: sponsorshipQuery.data?.requiresDelegation === true,
+    requiredDelegationAction:
+      sponsorshipQuery.data?.requiredDelegationAction || null,
     loading: sponsorshipQuery.loading,
     isValidating: sponsorshipQuery.isValidating,
     error: sponsorshipQuery.error,
     refresh: sponsorshipQuery.mutate,
   }
+
+  const isSponsorshipSelected =
+    sponsorshipEnabled && sponsorship.available && !sponsorshipDeclined
 
   const defaultPayment = {method: GAS_PAYMENT_METHOD.NATIVE}
   // A persisted token selection is effective only after the current network
@@ -50,19 +58,18 @@ function useGasPayment({
     paymentSelection?.method === GAS_PAYMENT_METHOD.TOKEN &&
     tokenPay.isTokenPayGas
 
-  const payment =
-    sponsorshipEnabled && sponsorship.available
-      ? {method: GAS_PAYMENT_METHOD.SPONSORED}
-      : hasValidTokenSelection
-      ? {
-          method: GAS_PAYMENT_METHOD.TOKEN,
-          tokenAddress: tokenPay.selectedGasToken.address,
-        }
-      : defaultPayment
+  const payment = isSponsorshipSelected
+    ? {method: GAS_PAYMENT_METHOD.SPONSORED}
+    : hasValidTokenSelection
+    ? {
+        method: GAS_PAYMENT_METHOD.TOKEN,
+        tokenAddress: tokenPay.selectedGasToken.address,
+      }
+    : defaultPayment
 
   const loading = sponsorshipEnabled
     ? sponsorship.loading ||
-      (!sponsorship.available && !isHwAccount && tokenPay.tokenPayConfigLoading)
+      (!isSponsorshipSelected && !isHwAccount && tokenPay.tokenPayConfigLoading)
     : !isHwAccount && tokenPay.tokenPayConfigLoading
 
   const selectPayment = useCallback(

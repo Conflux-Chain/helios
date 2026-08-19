@@ -409,6 +409,10 @@ const fr = {
     eip7702SwitchRequiredTitle: 'Changement de liaison requis',
     eip7702SwitchRequiredDesc:
       'Ce compte est actuellement lié à un contrat tiers. Passez à Fluent Wallet pour une meilleure expérience.',
+    eip7702SponsoredUpgradeTitle: 'Activer la mise à niveau EIP-7702',
+    eip7702SponsoredUpgradeDesc:
+      'Après la mise à niveau, votre compte bénéficiera des fonctionnalités intelligentes suivantes.',
+    eip7702SponsoredUpgradeConfirm: 'Activer et continuer',
     eip7702SwitchInfoTitle: 'Passer au service EIP-7702',
     eip7702SwitchInfoDesc:
       'Ce compte est actuellement lié à un contrat tiers. Passez à Fluent Wallet pour une meilleure expérience.',

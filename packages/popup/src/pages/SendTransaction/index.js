@@ -105,6 +105,7 @@ function SendTransaction() {
     setStorageLimit,
     setMaxStrategy,
     setGasPayment,
+    setSponsorshipDeclined,
     setSyncTxWithForm,
     tx,
     clearSendTransactionParams,
@@ -428,6 +429,7 @@ function SendTransaction() {
               disabled={sendDisabled}
               onClick={() => {
                 if (loading) return
+                setSponsorshipDeclined(false)
                 history.push(CONFIRM_TRANSACTION)
               }}
               className="flex-1"

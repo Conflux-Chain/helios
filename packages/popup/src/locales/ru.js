@@ -400,6 +400,10 @@ const ru = {
     eip7702SwitchRequiredTitle: 'Требуется смена привязки',
     eip7702SwitchRequiredDesc:
       'Этот аккаунт сейчас привязан к стороннему контракту. Переключитесь на Fluent Wallet для лучшего опыта.',
+    eip7702SponsoredUpgradeTitle: 'Включить обновление EIP-7702',
+    eip7702SponsoredUpgradeDesc:
+      'После обновления вашему аккаунту станут доступны следующие интеллектуальные функции.',
+    eip7702SponsoredUpgradeConfirm: 'Включить и продолжить',
     eip7702SwitchInfoTitle: 'Переключиться на сервис EIP-7702',
     eip7702SwitchInfoDesc:
       'Этот аккаунт сейчас привязан к стороннему контракту. Переключитесь на Fluent Wallet для лучшего опыта.',
