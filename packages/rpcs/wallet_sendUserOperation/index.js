@@ -49,6 +49,11 @@ export const schemas = {
     ['networkId', dbid],
     ['appId', {optional: true}, dbid],
     ['calls', [oneOrMore, callSchema]],
+    [
+      'approvedDelegationAction',
+      {optional: true},
+      [enums, 'upgrade', 'switch'],
+    ],
     ['sponsorship', {optional: true}, [enums, 'whitelist']],
   ],
 }
@@ -94,6 +99,15 @@ function createUnsupportedDelegationStateError(Server, state) {
   error.extra = {
     code: USER_OPERATION_ERROR_CODES.UNSUPPORTED_DELEGATION_STATE,
     state,
+  }
+  return error
+}
+
+function createDelegationConfirmationRequiredError(Server, action) {
+  const error = Server(`EIP-7702 ${action} was not confirmed by the user`)
+  error.extra = {
+    code: USER_OPERATION_ERROR_CODES.EIP7702_DELEGATION_CONFIRMATION_REQUIRED,
+    requiredDelegationAction: action,
   }
   return error
 }
@@ -160,7 +174,8 @@ async function validateUserOperationSender({
 
   if (
     accountState.state !== 'notDelegated' &&
-    accountState.state !== 'delegatedToConfigured'
+    accountState.state !== 'delegatedToConfigured' &&
+    accountState.state !== 'delegatedToOther'
   ) {
     throw createUnsupportedDelegationStateError(Server, accountState.state)
   }
@@ -240,7 +255,9 @@ async function getEip7702AuthorizationNonce({
 
   // A 7702 authorization must use the current EOA nonce; it cannot skip pending transactions.
   if (networkLatestNonce !== networkPendingNonce || occupiedNonces.length > 0) {
-    const error = Server('Pending transaction blocks first EIP-7702 delegation')
+    const error = Server(
+      'Pending transaction blocks EIP-7702 delegation authorization',
+    )
     error.extra = {
       code: USER_OPERATION_ERROR_CODES.EIP7702_PENDING_TRANSACTION,
     }
@@ -381,7 +398,14 @@ export const main = async ({
     wallet_prepareSponsoredUserOperation,
     wallet_prepareUserOperation,
   },
-  params: {accountId, networkId, appId, calls, sponsorship},
+  params: {
+    accountId,
+    networkId,
+    appId,
+    calls,
+    approvedDelegationAction,
+    sponsorship,
+  },
   network: requestNetwork,
 }) => {
   const {addressId, sender, network, networkConfig, delegationState} =
@@ -495,7 +519,7 @@ export const main = async ({
     return sendUserOperation()
   }
 
-  // A first delegation shares the EOA nonce domain with regular transactions.
+  // A delegation authorization shares the EOA nonce domain with regular transactions.
   return withEthereumNonceLock(
     {
       chainId: network.chainId,
@@ -514,26 +538,40 @@ export const main = async ({
         return sendUserOperation()
       }
 
-      if (currentAccountState.state === 'notDelegated') {
-        const authorizationNonce = await getEip7702AuthorizationNonce({
-          Server,
-          eth_getTransactionCount,
-          wallet_getEthereumNonceState,
-          network,
-          sender,
-        })
+      const requiredDelegationAction =
+        currentAccountState.state === 'notDelegated'
+          ? 'upgrade'
+          : currentAccountState.state === 'delegatedToOther'
+          ? 'switch'
+          : null
 
-        return sendUserOperation({
-          chainId: network.chainId,
-          address: networkConfig.delegateAddress,
-          nonce: authorizationNonce,
-        })
+      if (!requiredDelegationAction) {
+        throw createUnsupportedDelegationStateError(
+          Server,
+          currentAccountState.state,
+        )
       }
 
-      throw createUnsupportedDelegationStateError(
+      if (approvedDelegationAction !== requiredDelegationAction) {
+        throw createDelegationConfirmationRequiredError(
+          Server,
+          requiredDelegationAction,
+        )
+      }
+
+      const authorizationNonce = await getEip7702AuthorizationNonce({
         Server,
-        currentAccountState.state,
-      )
+        eth_getTransactionCount,
+        wallet_getEthereumNonceState,
+        network,
+        sender,
+      })
+
+      return sendUserOperation({
+        chainId: network.chainId,
+        address: networkConfig.delegateAddress,
+        nonce: authorizationNonce,
+      })
     },
   )
 }

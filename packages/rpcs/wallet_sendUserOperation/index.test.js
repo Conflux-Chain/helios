@@ -182,7 +182,89 @@ beforeEach(() => {
 })
 
 describe('wallet_sendUserOperation', () => {
-  test('submits a signed EIP-7702 authorization for an undelegated account', async () => {
+  test.each([
+    ['upgrade', 'notDelegated'],
+    ['switch', 'delegatedToOther'],
+  ])(
+    'submits a signed EIP-7702 authorization after confirmed %s',
+    async (approvedDelegationAction, accountState) => {
+      const {input, db, rpcs} = createMainInput()
+      input.params.approvedDelegationAction = approvedDelegationAction
+
+      rpcs.wallet_getEip7702AccountStates.mockResolvedValue([
+        {
+          state: accountState,
+        },
+      ])
+
+      bundler.sendUserOperation.mockImplementation(
+        async (userOperation, entryPointAddress) =>
+          getUserOperationHash({
+            chainId: NETWORK.chainId,
+            entryPointAddress,
+            userOperation,
+          }),
+      )
+
+      const result = await main(input)
+
+      const [, prepareParams] = rpcs.wallet_prepareUserOperation.mock.calls[0]
+      const estimatedUserOperation = prepareUserOperation(prepareParams)
+      const [submittedUserOperation] = bundler.sendUserOperation.mock.calls[0]
+      const storedUserOperation = getStoredUserOperation(db)
+
+      expect(estimatedUserOperation).toMatchObject({
+        factory: '0x7702000000000000000000000000000000000000',
+        factoryData: '0x',
+        authorization: {
+          chainId: NETWORK.chainId,
+          address: DELEGATE_ADDRESS,
+          nonce: '0x0',
+          ...EIP7702_AUTHORIZATION_STUB_SIGNATURE,
+        },
+      })
+
+      expect(submittedUserOperation.authorization).toMatchObject({
+        chainId: NETWORK.chainId,
+        address: DELEGATE_ADDRESS,
+        nonce: '0x0',
+        r: expect.stringMatching(/^0x[0-9a-f]{64}$/),
+        s: expect.stringMatching(/^0x[0-9a-f]{64}$/),
+        yParity: expect.stringMatching(/^0x[01]$/),
+      })
+      expect(submittedUserOperation.authorization).not.toEqual(
+        estimatedUserOperation.authorization,
+      )
+
+      expect(storedUserOperation).toMatchObject({
+        hash: result.userOpHash,
+        authorizationNonce: '0x0',
+        delegateAddress: DELEGATE_ADDRESS,
+      })
+
+      expect(storedUserOperation).not.toHaveProperty('authorization')
+      expect(storedUserOperation.paymaster).toBeUndefined()
+      expect(rpcs.wallet_getEip7702AccountStates).toHaveBeenCalledTimes(2)
+      expect(rpcs.wallet_getAddressPrivateKey).toHaveBeenCalledOnce()
+      expect(
+        rpcs.wallet_prepareUserOperation.mock.invocationCallOrder[0],
+      ).toBeLessThan(
+        rpcs.wallet_getAddressPrivateKey.mock.invocationCallOrder[0],
+      )
+      expect(rpcs.wallet_prepareSponsoredUserOperation).not.toHaveBeenCalled()
+
+      expect(rpcs.eth_getTransactionCount).toHaveBeenCalledWith(
+        {
+          errorFallThrough: true,
+          networkName: NETWORK.name,
+          _cacheConf: {type: null},
+        },
+        [SENDER.toLowerCase(), 'latest'],
+      )
+    },
+  )
+
+  test('stops before signing when delegation was not confirmed', async () => {
     const {input, db, rpcs} = createMainInput()
 
     rpcs.wallet_getEip7702AccountStates.mockResolvedValue([
@@ -191,68 +273,14 @@ describe('wallet_sendUserOperation', () => {
       },
     ])
 
-    bundler.sendUserOperation.mockImplementation(
-      async (userOperation, entryPointAddress) =>
-        getUserOperationHash({
-          chainId: NETWORK.chainId,
-          entryPointAddress,
-          userOperation,
-        }),
+    await expect(main(input)).rejects.toThrow(
+      'EIP-7702 upgrade was not confirmed by the user',
     )
 
-    const result = await main(input)
-
-    const [, prepareParams] = rpcs.wallet_prepareUserOperation.mock.calls[0]
-    const estimatedUserOperation = prepareUserOperation(prepareParams)
-    const [submittedUserOperation] = bundler.sendUserOperation.mock.calls[0]
-    const storedUserOperation = getStoredUserOperation(db)
-
-    expect(estimatedUserOperation).toMatchObject({
-      factory: '0x7702',
-      factoryData: '0x',
-      authorization: {
-        chainId: NETWORK.chainId,
-        address: DELEGATE_ADDRESS,
-        nonce: '0x0',
-        ...EIP7702_AUTHORIZATION_STUB_SIGNATURE,
-      },
-    })
-
-    expect(submittedUserOperation.authorization).toMatchObject({
-      chainId: NETWORK.chainId,
-      address: DELEGATE_ADDRESS,
-      nonce: '0x0',
-      r: expect.stringMatching(/^0x[0-9a-f]{64}$/),
-      s: expect.stringMatching(/^0x[0-9a-f]{64}$/),
-      yParity: expect.stringMatching(/^0x[01]$/),
-    })
-    expect(submittedUserOperation.authorization).not.toEqual(
-      estimatedUserOperation.authorization,
-    )
-
-    expect(storedUserOperation).toMatchObject({
-      hash: result.userOpHash,
-      authorizationNonce: '0x0',
-      delegateAddress: DELEGATE_ADDRESS,
-    })
-
-    expect(storedUserOperation).not.toHaveProperty('authorization')
-    expect(storedUserOperation.paymaster).toBeUndefined()
-    expect(rpcs.wallet_getEip7702AccountStates).toHaveBeenCalledTimes(2)
-    expect(rpcs.wallet_getAddressPrivateKey).toHaveBeenCalledOnce()
-    expect(
-      rpcs.wallet_prepareUserOperation.mock.invocationCallOrder[0],
-    ).toBeLessThan(rpcs.wallet_getAddressPrivateKey.mock.invocationCallOrder[0])
-    expect(rpcs.wallet_prepareSponsoredUserOperation).not.toHaveBeenCalled()
-
-    expect(rpcs.eth_getTransactionCount).toHaveBeenCalledWith(
-      {
-        errorFallThrough: true,
-        networkName: NETWORK.name,
-        _cacheConf: {type: null},
-      },
-      [SENDER.toLowerCase(), 'latest'],
-    )
+    expect(rpcs.wallet_prepareUserOperation).not.toHaveBeenCalled()
+    expect(rpcs.wallet_getAddressPrivateKey).not.toHaveBeenCalled()
+    expect(db.insertUserOperation).not.toHaveBeenCalled()
+    expect(bundler.sendUserOperation).not.toHaveBeenCalled()
   })
 
   test('stores pending, submits, and starts receipt tracking', async () => {

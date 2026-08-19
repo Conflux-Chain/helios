@@ -39,6 +39,11 @@ export const schemas = {
       ['authReqId', {optional: true}, dbid],
       ['tx', [cat, txSchema]],
       ['gasPayment', [enums, 'sponsored']],
+      [
+        'approvedDelegationAction',
+        {optional: true},
+        [enums, 'upgrade', 'switch'],
+      ],
     ],
   ],
 }

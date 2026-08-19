@@ -261,6 +261,12 @@ export const main = async ({
       {
         accountId,
         networkId: transactionNetwork.eid,
+        ...(params.approvedDelegationAction
+          ? {
+              approvedDelegationAction: params.approvedDelegationAction,
+            }
+          : {}),
+
         calls: [
           {
             to: txParams.to,

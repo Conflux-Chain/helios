@@ -49,7 +49,7 @@ function unsupportedResult(reason) {
     available: false,
     reason,
     maxGasCost: null,
-    requiresDelegation: false,
+    requiredDelegationAction: null,
   }
 }
 
@@ -100,10 +100,19 @@ export const main = async ({
     [{accountId, networkId}],
   )
 
-  const requiresDelegation = accountState.state === 'notDelegated'
+  let requiredDelegationAction = null
 
-  if (!requiresDelegation && accountState.state !== 'delegatedToConfigured') {
-    return unsupportedResult(accountState.state)
+  switch (accountState.state) {
+    case 'notDelegated':
+      requiredDelegationAction = 'upgrade'
+      break
+    case 'delegatedToOther':
+      requiredDelegationAction = 'switch'
+      break
+    case 'delegatedToConfigured':
+      break
+    default:
+      return unsupportedResult(accountState.state)
   }
 
   const sender = accountState.accountAddress.toLowerCase()
@@ -137,7 +146,7 @@ export const main = async ({
 
   let authorization
 
-  if (requiresDelegation) {
+  if (requiredDelegationAction) {
     const authorizationNonce = await eth_getTransactionCount(
       {
         errorFallThrough: true,
@@ -172,6 +181,6 @@ export const main = async ({
     available: prepared.sponsorship.sponsorable,
     reason: prepared.sponsorship.reason,
     maxGasCost: prepared.maxGasCost,
-    requiresDelegation,
+    requiredDelegationAction,
   }
 }

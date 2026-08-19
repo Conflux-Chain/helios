@@ -433,6 +433,7 @@ describe('wallet_sendTransaction', () => {
           },
         ],
         gasPayment: 'sponsored',
+        approvedDelegationAction: 'upgrade',
       },
       network: NETWORK,
     })
@@ -446,6 +447,7 @@ describe('wallet_sendTransaction', () => {
       {
         accountId: ACCOUNT_ID,
         networkId: NETWORK.eid,
+        approvedDelegationAction: 'upgrade',
         calls: [
           {
             to: TO_ADDRESS,
