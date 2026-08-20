@@ -8,6 +8,29 @@ const createNonceSequence = (startNonce, nonceCount) =>
   )
 
 /**
+ * Returns whether an EIP-7702 authorization cannot use the current EOA nonce.
+ *
+ * Authorization nonce must match the network pending nonce exactly.
+ * It cannot skip a pending transaction or a locally occupied nonce.
+ *
+ * @param {Object} options
+ * @param {string} options.networkLatestNonce Latest confirmed EOA nonce.
+ * @param {string} options.networkPendingNonce Pending EOA nonce.
+ * @param {string[]} [options.occupiedNonces=[]] Locally occupied EOA nonces.
+ * @returns {boolean}
+ */
+export function hasEip7702AuthorizationNonceConflict({
+  networkLatestNonce,
+  networkPendingNonce,
+  occupiedNonces = [],
+}) {
+  return (
+    !toUnsignedBN(networkLatestNonce).eq(toUnsignedBN(networkPendingNonce)) ||
+    occupiedNonces.length > 0
+  )
+}
+
+/**
  * Returns consecutive nonces for a new transaction.
  *
  * @param {Object} options

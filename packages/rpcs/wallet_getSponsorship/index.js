@@ -1,5 +1,8 @@
 import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
-import {resolveTransactionNonces} from '@fluent-wallet/nonce-manager'
+import {
+  hasEip7702AuthorizationNonceConflict,
+  resolveTransactionNonces,
+} from '@fluent-wallet/nonce-manager'
 import {
   Bytes,
   Uint,
@@ -39,6 +42,7 @@ export const permissions = {
     'eth_getTransactionCount',
     'wallet_getEip7702AccountStates',
     'wallet_prepareSponsoredUserOperation',
+    'wallet_getEthereumNonceState',
   ],
   db: ['findAccount', 'getNetworkById', 'getOccupiedUserOperationNonces'],
 }
@@ -61,6 +65,7 @@ export const main = async ({
     eth_getTransactionCount,
     wallet_getEip7702AccountStates,
     wallet_prepareSponsoredUserOperation,
+    wallet_getEthereumNonceState,
   },
   params: {accountId, networkId, calls},
 }) => {
@@ -118,6 +123,51 @@ export const main = async ({
   const sender = accountState.accountAddress.toLowerCase()
   const {entryPointAddress, delegateAddress} = networkConfig
 
+  let authorization
+
+  if (requiredDelegationAction) {
+    const [{networkPendingNonce, occupiedNonces}, networkLatestNonce] =
+      await Promise.all([
+        wallet_getEthereumNonceState(
+          {
+            errorFallThrough: true,
+            network,
+          },
+          [sender],
+        ),
+        eth_getTransactionCount(
+          {
+            errorFallThrough: true,
+            networkName: network.name,
+            _cacheConf: {type: null},
+          },
+          [sender, 'latest'],
+        ),
+      ])
+
+    if (
+      hasEip7702AuthorizationNonceConflict({
+        networkLatestNonce,
+        networkPendingNonce,
+        occupiedNonces,
+      })
+    ) {
+      return {
+        supported: true,
+        available: false,
+        reason: 'pendingTransaction',
+        maxGasCost: null,
+        requiredDelegationAction: null,
+      }
+    }
+
+    authorization = {
+      chainId: network.chainId,
+      address: delegateAddress,
+      nonce: networkLatestNonce,
+    }
+  }
+
   const encodedNonce = await eth_call(
     {
       errorFallThrough: true,
@@ -143,25 +193,6 @@ export const main = async ({
     networkPendingNonce: networkUserOperationNonce,
     occupiedNonces: occupiedUserOperationNonces,
   })
-
-  let authorization
-
-  if (requiredDelegationAction) {
-    const authorizationNonce = await eth_getTransactionCount(
-      {
-        errorFallThrough: true,
-        network,
-        _cacheConf: {type: null},
-      },
-      [sender, 'latest'],
-    )
-
-    authorization = {
-      chainId: network.chainId,
-      address: delegateAddress,
-      nonce: authorizationNonce,
-    }
-  }
 
   const prepared = await wallet_prepareSponsoredUserOperation(
     {

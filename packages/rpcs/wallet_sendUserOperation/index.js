@@ -9,6 +9,7 @@ import {
   USER_OPERATION_ERROR_CODES,
 } from '@fluent-wallet/consts'
 import {
+  hasEip7702AuthorizationNonceConflict,
   resolveTransactionNonces,
   withEthereumNonceLock,
   withUserOperationNonceLock,
@@ -254,7 +255,13 @@ async function getEip7702AuthorizationNonce({
     ])
 
   // A 7702 authorization must use the current EOA nonce; it cannot skip pending transactions.
-  if (networkLatestNonce !== networkPendingNonce || occupiedNonces.length > 0) {
+  if (
+    hasEip7702AuthorizationNonceConflict({
+      networkLatestNonce,
+      networkPendingNonce,
+      occupiedNonces,
+    })
+  ) {
     const error = Server(
       'Pending transaction blocks EIP-7702 delegation authorization',
     )
@@ -333,6 +340,7 @@ async function submitUserOperationToBundler({
   userOperation,
   userOpHash,
   setUserOperationFailed,
+  Server,
 }) {
   try {
     const bundlerUserOpHash = await bundlerClient.sendUserOperation(
@@ -341,17 +349,17 @@ async function submitUserOperationToBundler({
     )
 
     if (
-      typeof bundlerUserOpHash === 'string' &&
-      bundlerUserOpHash.toLowerCase() === userOpHash.toLowerCase()
+      typeof bundlerUserOpHash !== 'string' ||
+      bundlerUserOpHash.toLowerCase() !== userOpHash.toLowerCase()
     ) {
-      return
+      throw Server('Bundler returned an unexpected UserOperation hash')
     }
 
-    // The request may have been accepted even if the response is invalid.
+    return
   } catch (error) {
     if (!(error instanceof BundlerRpcError)) {
       // The request may have reached the Bundler before the connection failed.
-      return
+      throw error
     }
 
     setUserOperationFailed({
@@ -497,13 +505,26 @@ export const main = async ({
           authorizationNonce: authorization?.nonce,
           delegateAddress: authorization?.address,
         })
-        await submitUserOperationToBundler({
-          bundlerClient,
-          entryPointAddress,
-          userOperation,
-          userOpHash,
-          setUserOperationFailed,
-        })
+        try {
+          await submitUserOperationToBundler({
+            bundlerClient,
+            entryPointAddress,
+            userOperation,
+            userOpHash,
+            setUserOperationFailed,
+            Server,
+          })
+        } catch (error) {
+          if (!(error instanceof BundlerRpcError)) {
+            startUserOperationTracking({
+              wallet_handleUserOperation,
+              hash: userOpHash,
+              networkId,
+            })
+          }
+
+          throw error
+        }
 
         startUserOperationTracking({
           wallet_handleUserOperation,
