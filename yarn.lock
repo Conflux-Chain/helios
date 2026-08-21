@@ -3661,6 +3661,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/backend-client@workspace:packages/backend-client":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/backend-client@workspace:packages/backend-client"
+  dependencies:
+    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/base32-address@workspace:*, @fluent-wallet/base32-address@workspace:packages/base32-address":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/base32-address@workspace:packages/base32-address"
@@ -5617,6 +5625,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-token-pay-config@workspace:packages/rpcs/wallet_getTokenPayConfig"
   dependencies:
+    "@fluent-wallet/backend-client": "workspace:packages/backend-client"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/spec": "npm:1.0.18"
   languageName: unknown
@@ -5766,6 +5775,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_prepare-token-pay-quote@workspace:packages/rpcs/wallet_prepareTokenPayQuote"
   dependencies:
+    "@fluent-wallet/backend-client": "workspace:packages/backend-client"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
@@ -5959,6 +5969,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_submit-token-pay-transaction@workspace:packages/rpcs/wallet_submitTokenPayTransaction"
   dependencies:
+    "@fluent-wallet/backend-client": "workspace:packages/backend-client"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
     "@fluent-wallet/nonce-manager": "workspace:*"

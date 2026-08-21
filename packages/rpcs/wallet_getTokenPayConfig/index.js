@@ -1,5 +1,6 @@
 import {dbid, map} from '@fluent-wallet/spec'
 import {TOKEN_PAY_NETWORK_CONFIGS} from '@fluent-wallet/consts'
+import {createBackendClient} from '@fluent-wallet/backend-client'
 
 export const NAME = 'wallet_getTokenPayConfig'
 
@@ -29,25 +30,6 @@ function createUnavailableResult(reason) {
   }
 }
 
-async function fetchTokenPayConfig(backendBaseUrl) {
-  const response = await fetch(`${backendBaseUrl}/tokenpay/config`, {
-    method: 'GET',
-    headers: {'Content-Type': 'application/json'},
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch token-pay config')
-  }
-
-  const result = await response.json()
-
-  if (result.code !== 0) {
-    throw new Error('Failed to fetch token-pay config')
-  }
-
-  return result.data
-}
-
 export const main = async ({
   Err: {InvalidParams},
   db: {getNetworkById},
@@ -67,10 +49,13 @@ export const main = async ({
   }
 
   let backendConfig
+
   try {
-    backendConfig = await fetchTokenPayConfig(
-      tokenPayNetworkConfig.backendBaseUrl,
-    )
+    const backendClient = createBackendClient({
+      baseUrl: tokenPayNetworkConfig.backendBaseUrl,
+    })
+
+    backendConfig = await backendClient.getTokenPayConfig()
   } catch {
     return createUnavailableResult('backendFetchFailed')
   }

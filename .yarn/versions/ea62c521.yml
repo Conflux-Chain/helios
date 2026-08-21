@@ -210,3 +210,6 @@ releases:
   helios-background: patch
   helios-popup: patch
   workspace-tools: patch
+
+declined:
+  - "@fluent-wallet/backend-client"

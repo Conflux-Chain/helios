@@ -5,6 +5,7 @@
   "private": true,
   "version": "0.0.8",
   "dependencies": {
+    "@fluent-wallet/backend-client": "workspace:packages/backend-client",
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema",
     "@fluent-wallet/nonce-manager": "workspace:*",
