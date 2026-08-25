@@ -502,6 +502,9 @@ const en = {
     transactionSubmissionFailed: 'Transaction Submission Failed',
     pendingGasSponsoredTransaction:
       'You have a pending gas-sponsored transaction. Please try again later.',
+    gasSponsorshipRefreshRequiredTitle: 'Gas Sponsorship No Longer Valid',
+    gasSponsorshipRefreshRequiredContent:
+      'This gas sponsorship is no longer valid. Please resubmit your transaction.',
     tokenPayGasChangedTitle: 'Gas Changed',
     tokenPayGasChangedContent:
       'The required token amount for gas has changed. Please confirm the new quote before submitting.',

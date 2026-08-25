@@ -518,6 +518,10 @@ const fr = {
     transactionSubmissionFailed: 'Échec de l’envoi de la transaction',
     pendingGasSponsoredTransaction:
       'Vous avez déjà une transaction en attente avec des frais de Gas pris en charge. Merci de réessayer plus tard.',
+    gasSponsorshipRefreshRequiredTitle:
+      'Prise en charge des frais de Gas invalide',
+    gasSponsorshipRefreshRequiredContent:
+      'La prise en charge des frais de Gas pour cette transaction n’est plus valide. Veuillez soumettre à nouveau votre transaction.',
     tokenPayGasChangedTitle: 'Les frais de Gas ont changé',
     tokenPayGasChangedContent:
       'Le montant de tokens requis pour payer les frais de Gas a changé. Veuillez vérifier le nouveau devis avant de soumettre à nouveau.',

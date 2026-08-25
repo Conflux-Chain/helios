@@ -1,16 +1,15 @@
 import {useCallback} from 'react'
 import {useCurrentTxStore} from '../../hooks'
-import {useSponsorship} from '../../hooks/useApi'
 import {GAS_PAYMENT_METHOD} from '../../constants'
 import useTokenPayGas from './useTokenPayGas'
+import useSponsorship from './useSponsorship'
 
 function useGasPayment({
   isHwAccount,
   networkId,
   accountId,
   params,
-  calls,
-  sponsorshipEnabled = true,
+  sponsorshipCalls,
   gasLevel,
   estimateRst,
 }) {
@@ -29,27 +28,13 @@ function useGasPayment({
     estimateRst,
   })
 
-  const sponsorshipQuery = useSponsorship({
-    accountId: sponsorshipEnabled ? accountId : null,
-    networkId: sponsorshipEnabled ? networkId : null,
-    calls: sponsorshipEnabled ? calls : null,
+  const sponsorship = useSponsorship({
+    accountId,
+    networkId,
+    calls: sponsorshipCalls,
   })
 
-  const sponsorship = {
-    supported: sponsorshipQuery.data?.supported === true,
-    available: sponsorshipQuery.data?.available === true,
-    reason: sponsorshipQuery.data?.reason || '',
-    maxGasCost: sponsorshipQuery.data?.maxGasCost || null,
-    requiredDelegationAction:
-      sponsorshipQuery.data?.requiredDelegationAction || null,
-    loading: sponsorshipQuery.loading,
-    isValidating: sponsorshipQuery.isValidating,
-    error: sponsorshipQuery.error,
-    refresh: sponsorshipQuery.mutate,
-  }
-
-  const isSponsorshipSelected =
-    sponsorshipEnabled && sponsorship.available && !sponsorshipDeclined
+  const isSponsorshipSelected = sponsorship.available && !sponsorshipDeclined
 
   const defaultPayment = {method: GAS_PAYMENT_METHOD.NATIVE}
   // A persisted token selection is effective only after the current network
@@ -67,10 +52,9 @@ function useGasPayment({
       }
     : defaultPayment
 
-  const loading = sponsorshipEnabled
-    ? sponsorship.loading ||
-      (!isSponsorshipSelected && !isHwAccount && tokenPay.tokenPayConfigLoading)
-    : !isHwAccount && tokenPay.tokenPayConfigLoading
+  const loading =
+    sponsorship.loading ||
+    (!isSponsorshipSelected && !isHwAccount && tokenPay.tokenPayConfigLoading)
 
   const selectPayment = useCallback(
     payment => {

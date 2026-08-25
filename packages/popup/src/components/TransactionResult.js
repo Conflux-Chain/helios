@@ -32,9 +32,9 @@ function TransactionResult({status, sendError, onClose}) {
     ? cfxProcessError(sendError)
     : ethProcessError(sendError)
 
-  const isSponsorshipUnavailable =
-    sendError?.data?.code === USER_OPERATION_ERROR_CODES.SPONSORSHIP_UNAVAILABLE
-  const sponsorshipUnavailableReason = sendError?.data?.reason
+  const isSponsorshipRefreshRequired =
+    sendError?.data?.code ===
+    USER_OPERATION_ERROR_CODES.SPONSORSHIP_REFRESH_REQUIRED
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -63,9 +63,9 @@ function TransactionResult({status, sendError, onClose}) {
       return
     }
 
-    if (isSponsorshipUnavailable) {
-      setTitle(t('transactionSubmissionFailed'))
-      setContent(sponsorshipUnavailableReason || errorMessage)
+    if (isSponsorshipRefreshRequired) {
+      setTitle(t('gasSponsorshipRefreshRequiredTitle'))
+      setContent(t('gasSponsorshipRefreshRequiredContent'))
       return
     }
 
@@ -84,8 +84,7 @@ function TransactionResult({status, sendError, onClose}) {
     isRejected,
     isWaiting,
     isTokenPayQuoteChanged,
-    isSponsorshipUnavailable,
-    sponsorshipUnavailableReason,
+    isSponsorshipRefreshRequired,
     open,
     t,
   ])
@@ -111,7 +110,8 @@ function TransactionResult({status, sendError, onClose}) {
           {!isWaiting &&
             !isRejected &&
             !isTokenPayQuoteChanged &&
-            !isTokenPayBlockedByPendingTransaction && (
+            !isTokenPayBlockedByPendingTransaction &&
+            !isSponsorshipRefreshRequired && (
               <CopyButton
                 text={content}
                 toastClassName="left-2/4 transform -translate-x-2/4 -top-8"

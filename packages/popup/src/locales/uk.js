@@ -503,6 +503,9 @@ const uk = {
     transactionSubmissionFailed: 'Не вдалося надіслати транзакцію',
     pendingGasSponsoredTransaction:
       'У вас уже є незавершена транзакція з оплатою газу коштом спонсора. Будь ласка, спробуйте ще раз пізніше.',
+    gasSponsorshipRefreshRequiredTitle: 'Спонсорська оплата газу недійсна',
+    gasSponsorshipRefreshRequiredContent:
+      'Спонсорська оплата газу для цієї транзакції більше недійсна. Надішліть транзакцію повторно.',
     tokenPayGasChangedTitle: 'Комісія за газ змінилася',
     tokenPayGasChangedContent:
       'Кількість токенів, необхідна для оплати газу, змінилася. Перевірте нове котирування перед повторним надсиланням.',

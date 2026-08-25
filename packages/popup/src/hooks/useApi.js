@@ -29,7 +29,6 @@ const {
   WALLET_GET_TOKEN_PAY_CONFIG,
   WALLET_GET_TOKEN_PAY_GAS_OPTIONS,
   WALLET_PREPARE_TOKEN_PAY_QUOTE,
-  WALLET_GET_SPONSORSHIP,
   WALLET_IS_LOCKED,
   WALLET_METADATA_FOR_POPUP,
   ACCOUNT_GROUP_TYPE,
@@ -280,50 +279,6 @@ export const useEip7702AccountStates = accountStateQueries => {
 
   return {
     data: eip7702AccountStates || [],
-    mutate,
-  }
-}
-
-export const useSponsorship = ({accountId, networkId, calls}) => {
-  const canQuerySponsorship =
-    isNumber(accountId) &&
-    isNumber(networkId) &&
-    isArray(calls) &&
-    calls.length > 0 &&
-    calls.every(isObject)
-
-  const {
-    data: sponsorship,
-    error,
-    mutate,
-    isValidating,
-  } = useRPC(
-    canQuerySponsorship
-      ? [WALLET_GET_SPONSORSHIP, accountId, networkId, JSON.stringify(calls)]
-      : null,
-    {accountId, networkId, calls},
-    {
-      fallbackData: null,
-      refreshInterval: 0,
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 0,
-      onError: () => {},
-      shouldRetryOnError: false,
-    },
-  )
-
-  const loading =
-    canQuerySponsorship && (isValidating || (!sponsorship && !error))
-  const freshSponsorship =
-    !canQuerySponsorship || loading || error ? null : sponsorship
-
-  return {
-    data: freshSponsorship,
-    error,
-    loading,
-    isValidating,
     mutate,
   }
 }
