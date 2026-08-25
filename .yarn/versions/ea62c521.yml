@@ -152,9 +152,9 @@ releases:
   "@fluent-wallet/wallet_get-preferences": patch
   "@fluent-wallet/wallet_get-side-panel-enabled": patch
   "@fluent-wallet/wallet_get-side-panel-supported": patch
-  "@fluent-wallet/wallet_get-sponsorship": patch
   "@fluent-wallet/wallet_get-token-pay-config": patch
   "@fluent-wallet/wallet_get-token-pay-gas-options": patch
+  "@fluent-wallet/wallet_get-user-operation-nonce-state": patch
   "@fluent-wallet/wallet_handle-unfinished-cfx-tx": patch
   "@fluent-wallet/wallet_handle-unfinished-eth-tx": patch
   "@fluent-wallet/wallet_handle-unfinished-txs": patch
@@ -166,7 +166,7 @@ releases:
   "@fluent-wallet/wallet_import-private-key": patch
   "@fluent-wallet/wallet_metadata-for-popup": patch
   "@fluent-wallet/wallet_network1559compatible": patch
-  "@fluent-wallet/wallet_prepare-sponsored-user-operation": patch
+  "@fluent-wallet/wallet_prepare-sponsorship": patch
   "@fluent-wallet/wallet_prepare-token-pay-quote": patch
   "@fluent-wallet/wallet_prepare-user-operation": patch
   "@fluent-wallet/wallet_refetch-balance": patch
