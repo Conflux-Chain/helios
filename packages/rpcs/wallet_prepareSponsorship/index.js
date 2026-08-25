@@ -1,4 +1,8 @@
-import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
+import {EIP7702_NETWORK_CONFIGS, NULL_HEX_ADDRESS} from '@fluent-wallet/consts'
+import {
+  createBackendClient,
+  BackendServiceError,
+} from '@fluent-wallet/backend-client'
 import {
   hasEip7702AuthorizationNonceConflict,
   resolveTransactionNonces,
@@ -11,12 +15,8 @@ import {
   map,
   oneOrMore,
 } from '@fluent-wallet/spec'
-import {
-  decodeGetNonceResult,
-  encodeGetNonceCall,
-} from '@fluent-wallet/user-operation'
 
-export const NAME = 'wallet_getSponsorship'
+export const NAME = 'wallet_prepareSponsorship'
 
 const callSchema = [
   map,
@@ -38,15 +38,43 @@ export const schemas = {
 export const permissions = {
   external: ['popup'],
   methods: [
-    'eth_call',
     'eth_getTransactionCount',
     'wallet_getEip7702AccountStates',
-    'wallet_prepareSponsoredUserOperation',
     'wallet_getEthereumNonceState',
+    'wallet_getUserOperationNonceState',
+    'wallet_prepareUserOperation',
   ],
-  db: ['findAccount', 'getNetworkById', 'getOccupiedUserOperationNonces'],
+  db: ['findAccount', 'getNetworkById'],
 }
 
+const PAYMASTER_ERROR_REASONS = {
+  1: 'invalidRequest',
+  3: 'rateLimited',
+  4001: 'maxGasCostExceeded',
+  4002: 'smartAccountNotWhitelisted',
+  4003: 'contractNotWhitelisted',
+  4004: 'paymasterPaused',
+  4005: 'tooManyPendingUserOperations',
+}
+
+function getPaymasterErrorReason(error) {
+  if (!(error instanceof BackendServiceError)) {
+    return 'backendUnavailable'
+  }
+
+  return PAYMASTER_ERROR_REASONS[error.code] || 'backendUnavailable'
+}
+
+function unavailableResult(reason, requiredDelegationAction = null) {
+  return {
+    supported: true,
+    available: false,
+    reason,
+    maxGasCost: null,
+    requiredDelegationAction,
+    sponsorship: null,
+  }
+}
 function unsupportedResult(reason) {
   return {
     supported: false,
@@ -54,18 +82,19 @@ function unsupportedResult(reason) {
     reason,
     maxGasCost: null,
     requiredDelegationAction: null,
+    sponsorship: null,
   }
 }
 
 export const main = async ({
   Err: {InvalidParams},
-  db: {findAccount, getNetworkById, getOccupiedUserOperationNonces},
+  db: {findAccount, getNetworkById},
   rpcs: {
-    eth_call,
     eth_getTransactionCount,
     wallet_getEip7702AccountStates,
-    wallet_prepareSponsoredUserOperation,
     wallet_getEthereumNonceState,
+    wallet_getUserOperationNonceState,
+    wallet_prepareUserOperation,
   },
   params: {accountId, networkId, calls},
 }) => {
@@ -85,10 +114,6 @@ export const main = async ({
   const networkConfig = EIP7702_NETWORK_CONFIGS[network.chainId]
   if (!networkConfig) {
     return unsupportedResult('unsupportedNetwork')
-  }
-
-  if (!networkConfig.whitelistPaymasterAddress) {
-    return unsupportedResult('sponsorshipNotConfigured')
   }
 
   const vaultType = account.accountGroup.vault.type
@@ -121,8 +146,11 @@ export const main = async ({
   }
 
   const sender = accountState.accountAddress.toLowerCase()
-  const {entryPointAddress, delegateAddress} = networkConfig
+  const {backendBaseUrl, delegateAddress} = networkConfig
 
+  if (!backendBaseUrl) {
+    return unsupportedResult('sponsorshipNotConfigured')
+  }
   let authorization
 
   if (requiredDelegationAction) {
@@ -158,6 +186,7 @@ export const main = async ({
         reason: 'pendingTransaction',
         maxGasCost: null,
         requiredDelegationAction: null,
+        sponsorship: null,
       }
     }
 
@@ -168,33 +197,29 @@ export const main = async ({
     }
   }
 
-  const encodedNonce = await eth_call(
-    {
-      errorFallThrough: true,
-      network,
-    },
-    [
-      {
-        to: entryPointAddress,
-        data: encodeGetNonceCall(sender),
-      },
-      'latest',
-    ],
-  )
-
-  const networkUserOperationNonce = decodeGetNonceResult(encodedNonce)
-  const occupiedUserOperationNonces = getOccupiedUserOperationNonces({
-    sender,
-    chainId: network.chainId,
-    entryPoint: entryPointAddress,
-  })
+  const {networkPendingNonce, occupiedNonces} =
+    await wallet_getUserOperationNonceState({errorFallThrough: true, network}, [
+      sender,
+    ])
 
   const [nonce] = resolveTransactionNonces({
-    networkPendingNonce: networkUserOperationNonce,
-    occupiedNonces: occupiedUserOperationNonces,
+    networkPendingNonce,
+    occupiedNonces,
   })
 
-  const prepared = await wallet_prepareSponsoredUserOperation(
+  const backendClient = createBackendClient({
+    baseUrl: backendBaseUrl,
+  })
+
+  let paymasterStub
+
+  try {
+    paymasterStub = await backendClient.getPaymasterStub()
+  } catch (error) {
+    return unavailableResult(getPaymasterErrorReason(error))
+  }
+
+  const prepared = await wallet_prepareUserOperation(
     {
       errorFallThrough: true,
       network,
@@ -203,15 +228,40 @@ export const main = async ({
       sender,
       nonce,
       calls,
+      paymaster: paymasterStub.address,
+      paymasterData: paymasterStub.data,
       ...(authorization ? {authorization} : {}),
     },
   )
 
+  const {authorization: preparedAuthorization, ...paymasterUserOperation} =
+    prepared.userOperation
+
+  let signedPaymasterData
+
+  try {
+    signedPaymasterData = await backendClient.signPaymasterUserOperation({
+      ...paymasterUserOperation,
+      delegatedContract: preparedAuthorization?.address ?? NULL_HEX_ADDRESS,
+    })
+  } catch (error) {
+    return unavailableResult(
+      getPaymasterErrorReason(error),
+      requiredDelegationAction,
+    )
+  }
+
   return {
     supported: true,
-    available: prepared.sponsorship.sponsorable,
-    reason: prepared.sponsorship.reason,
+    available: true,
+    reason: null,
     maxGasCost: prepared.maxGasCost,
     requiredDelegationAction,
+    sponsorship: {
+      userOperation: {
+        ...prepared.userOperation,
+        paymasterData: signedPaymasterData,
+      },
+    },
   }
 }

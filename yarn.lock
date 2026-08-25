@@ -5610,17 +5610,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/wallet_get-sponsorship@workspace:packages/rpcs/wallet_getSponsorship":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/wallet_get-sponsorship@workspace:packages/rpcs/wallet_getSponsorship"
-  dependencies:
-    "@fluent-wallet/consts": "workspace:packages/consts"
-    "@fluent-wallet/nonce-manager": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.18"
-    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
-  languageName: unknown
-  linkType: soft
-
 "@fluent-wallet/wallet_get-token-pay-config@workspace:packages/rpcs/wallet_getTokenPayConfig":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-token-pay-config@workspace:packages/rpcs/wallet_getTokenPayConfig"
@@ -5639,6 +5628,16 @@ __metadata:
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/utils": "workspace:packages/utils"
     "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-user-operation-nonce-state@workspace:packages/rpcs/wallet_getUserOperationNonceState":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-user-operation-nonce-state@workspace:packages/rpcs/wallet_getUserOperationNonceState"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "npm:1.0.18"
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
   languageName: unknown
   linkType: soft
 
@@ -5761,11 +5760,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/wallet_prepare-sponsored-user-operation@workspace:packages/rpcs/wallet_prepareSponsoredUserOperation":
+"@fluent-wallet/wallet_prepare-sponsorship@workspace:packages/rpcs/wallet_prepareSponsorship":
   version: 0.0.0-use.local
-  resolution: "@fluent-wallet/wallet_prepare-sponsored-user-operation@workspace:packages/rpcs/wallet_prepareSponsoredUserOperation"
+  resolution: "@fluent-wallet/wallet_prepare-sponsorship@workspace:packages/rpcs/wallet_prepareSponsorship"
   dependencies:
+    "@fluent-wallet/backend-client": "workspace:packages/backend-client"
     "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/nonce-manager": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.18"
     "@fluent-wallet/user-operation": "workspace:packages/user-operation"
   languageName: unknown
@@ -18687,9 +18688,9 @@ __metadata:
     "@fluent-wallet/wallet_get-preferences": "workspace:*"
     "@fluent-wallet/wallet_get-side-panel-enabled": "workspace:*"
     "@fluent-wallet/wallet_get-side-panel-supported": "workspace:*"
-    "@fluent-wallet/wallet_get-sponsorship": "workspace:packages/rpcs/wallet_getSponsorship"
     "@fluent-wallet/wallet_get-token-pay-config": "workspace:packages/rpcs/wallet_getTokenPayConfig"
     "@fluent-wallet/wallet_get-token-pay-gas-options": "workspace:packages/rpcs/wallet_getTokenPayGasOptions"
+    "@fluent-wallet/wallet_get-user-operation-nonce-state": "workspace:packages/rpcs/wallet_getUserOperationNonceState"
     "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-eth-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-txs": "workspace:*"
@@ -18702,7 +18703,7 @@ __metadata:
     "@fluent-wallet/wallet_lock": "workspace:packages/rpcs/wallet_lock"
     "@fluent-wallet/wallet_metadata-for-popup": "workspace:*"
     "@fluent-wallet/wallet_network1559compatible": "workspace:*"
-    "@fluent-wallet/wallet_prepare-sponsored-user-operation": "workspace:packages/rpcs/wallet_prepareSponsoredUserOperation"
+    "@fluent-wallet/wallet_prepare-sponsorship": "workspace:packages/rpcs/wallet_prepareSponsorship"
     "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
     "@fluent-wallet/wallet_prepare-user-operation": "workspace:packages/rpcs/wallet_prepareUserOperation"
     "@fluent-wallet/wallet_refetch-balance": "workspace:packages/rpcs/wallet_refetchBalance"

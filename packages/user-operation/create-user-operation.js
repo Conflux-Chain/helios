@@ -9,6 +9,7 @@ export function createUserOperationForEstimate({
   maxPriorityFeePerGas,
   signature,
   paymaster,
+  paymasterData,
   authorization,
 }) {
   return {
@@ -26,15 +27,13 @@ export function createUserOperationForEstimate({
           paymaster,
           paymasterVerificationGasLimit: '0x0',
           paymasterPostOpGasLimit: '0x0',
-          paymasterData: '0x',
+          paymasterData: paymasterData ?? '0x',
         }
       : {}),
     ...(authorization
       ? {
-          // ERC-7769 recommends the short `0x7702` RPC marker. Our Alto
-          // bundler also accepts this padded form, which is required because
-          // the configured Paymaster parses packed initCode with OpenZeppelin
-          // ERC4337Utils.factory() and rejects values shorter than 20 bytes.
+          // Keep the padded marker because the Paymaster service requires
+          // factory to be encoded as a 20-byte value.
           factory: EIP7702_PADDED_FACTORY_MARKER,
           factoryData: '0x',
           authorization,

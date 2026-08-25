@@ -38,6 +38,7 @@ export const schemas = {
     ['calls', [oneOrMore, callSchema]],
     ['authorization', {optional: true}, authorizationSchema],
     ['paymaster', {optional: true}, ethHexAddress],
+    ['paymasterData', {optional: true}, Bytes],
   ],
 }
 
@@ -65,7 +66,7 @@ function calculateMaxGasCost(userOperation) {
 }
 export const main = async ({
   Err: {InvalidParams},
-  params: {sender, nonce, calls, authorization, paymaster},
+  params: {sender, nonce, calls, authorization, paymaster, paymasterData},
   network,
 }) => {
   const networkConfig = EIP7702_NETWORK_CONFIGS[network.chainId]
@@ -87,6 +88,7 @@ export const main = async ({
     maxPriorityFeePerGas: gasPrice.maxPriorityFeePerGas,
     signature: SMART_ACCOUNT_7702_STUB_SIGNATURE,
     paymaster,
+    paymasterData,
     authorization: authorization
       ? {...authorization, ...EIP7702_AUTHORIZATION_STUB_SIGNATURE}
       : undefined,

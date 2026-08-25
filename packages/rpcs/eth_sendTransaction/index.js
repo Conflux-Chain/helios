@@ -24,25 +24,12 @@ export const schemas = {
     or,
     [cat, txSchema],
     [map, {closed: true}, ['authReqId', dbid], ['tx', [cat, txSchema]]],
-    // Token pay gas
     [
       map,
       {closed: true},
       ['authReqId', dbid],
       ['tx', [cat, txSchema]],
       ['tokenPay', tokenPaySchema],
-    ],
-    // 4337 sponsored tx
-    [
-      map,
-      {closed: true},
-      ['tx', [cat, txSchema]],
-      ['gasPayment', [enums, 'sponsored']],
-      [
-        'approvedDelegationAction',
-        {optional: true},
-        [enums, 'upgrade', 'switch'],
-      ],
     ],
   ],
 }

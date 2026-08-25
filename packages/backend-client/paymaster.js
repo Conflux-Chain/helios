@@ -5,7 +5,7 @@
  */
 
 /**
- * @typedef {Object} PaymasterUserOperation
+ * @typedef {Object} PaymasterSignRequest
  * @property {string} sender Sender address.
  * @property {string} nonce Hex-encoded nonce.
  * @property {string} [factory] Factory address or EIP-7702 marker.
@@ -16,11 +16,11 @@
  * @property {string} preVerificationGas Pre-verification gas.
  * @property {string} maxFeePerGas Maximum fee per gas.
  * @property {string} maxPriorityFeePerGas Maximum priority fee per gas.
- * @property {string} signature Account or dummy signature.
+ * @property {string} signature Dummy account signature.
  * @property {string} paymaster Verifying Paymaster address.
  * @property {string} paymasterVerificationGasLimit Paymaster verification gas limit.
  * @property {string} paymasterPostOpGasLimit Paymaster post-operation gas limit.
- * @property {string} paymasterData Stub or signed Paymaster data.
+ * @property {string} paymasterData Stub Paymaster data used for estimation.
  * @property {string} delegatedContract EIP-7702 delegate, or zero address.
  */
 
@@ -42,7 +42,7 @@ export function createPaymasterMethods(request) {
      * Returns the signed 77-byte paymasterData only.
      * POST /aa/paymaster/sign
      *
-     * @param {PaymasterUserOperation} userOperation UserOperation to sign.
+     * @param {PaymasterSignRequest} userOperation UserOperation to sign.
      * @returns {Promise<string>}
      */
     signPaymasterUserOperation(userOperation) {

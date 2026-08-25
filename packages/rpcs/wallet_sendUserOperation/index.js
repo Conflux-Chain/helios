@@ -27,8 +27,7 @@ import {
 } from '@fluent-wallet/spec'
 
 import {
-  decodeGetNonceResult,
-  encodeGetNonceCall,
+  decodeVerifyingPaymasterValidUntil,
   getUserOperationHash,
 } from '@fluent-wallet/user-operation'
 
@@ -40,6 +39,44 @@ const callSchema = [
   ['to', ethHexAddress],
   ['value', {optional: true}, Uint],
   ['data', {optional: true}, Bytes],
+]
+
+const userOperationAuthorizationSchema = [
+  map,
+  {closed: true},
+  ['chainId', Uint],
+  ['address', ethHexAddress],
+  ['nonce', Uint],
+  ['r', Bytes],
+  ['s', Bytes],
+  ['yParity', Uint],
+]
+
+const sponsoredUserOperationSchema = [
+  map,
+  {closed: true},
+  ['sender', ethHexAddress],
+  ['nonce', Uint],
+  ['factory', {optional: true}, Bytes],
+  ['factoryData', {optional: true}, Bytes],
+  ['callData', Bytes],
+  ['authorization', {optional: true}, userOperationAuthorizationSchema],
+  ['verificationGasLimit', Uint],
+  ['callGasLimit', Uint],
+  ['preVerificationGas', Uint],
+  ['maxFeePerGas', Uint],
+  ['maxPriorityFeePerGas', Uint],
+  ['signature', Bytes],
+  ['paymaster', ethHexAddress],
+  ['paymasterVerificationGasLimit', Uint],
+  ['paymasterPostOpGasLimit', Uint],
+  ['paymasterData', Bytes],
+]
+
+export const sponsorshipSchema = [
+  map,
+  {closed: true},
+  ['userOperation', sponsoredUserOperationSchema],
 ]
 
 export const schemas = {
@@ -55,30 +92,36 @@ export const schemas = {
       {optional: true},
       [enums, 'upgrade', 'switch'],
     ],
-    ['sponsorship', {optional: true}, [enums, 'whitelist']],
+    ['sponsorship', {optional: true}, sponsorshipSchema],
   ],
 }
 
 export const permissions = {
-  external: [],
+  external: ['popup'],
   methods: [
-    'eth_call',
     'eth_getTransactionCount',
     'wallet_getAddressPrivateKey',
     'wallet_getEip7702AccountStates',
     'wallet_getEthereumNonceState',
+    'wallet_getUserOperationNonceState',
     'wallet_handleUserOperation',
-    'wallet_prepareSponsoredUserOperation',
     'wallet_prepareUserOperation',
   ],
   db: [
     'findAccount',
     'getNetworkById',
     'accountAddrByNetwork',
-    'getOccupiedUserOperationNonces',
     'insertUserOperation',
     'setUserOperationFailed',
   ],
+}
+
+function createSponsorshipRefreshRequiredError(Server) {
+  const error = Server('Sponsorship must be refreshed')
+  error.extra = {
+    code: USER_OPERATION_ERROR_CODES.SPONSORSHIP_REFRESH_REQUIRED,
+  }
+  return error
 }
 
 async function getEip7702AccountState({
@@ -190,44 +233,6 @@ async function validateUserOperationSender({
   }
 }
 
-function callEntryPoint({eth_call, entryPointAddress, data}) {
-  return eth_call({errorFallThrough: true}, [
-    {
-      to: entryPointAddress,
-      data,
-    },
-    'latest',
-  ])
-}
-
-async function getNextUserOperationNonce({
-  eth_call,
-  getOccupiedUserOperationNonces,
-  network,
-  entryPointAddress,
-  sender,
-}) {
-  const encodedNonce = await callEntryPoint({
-    eth_call,
-    entryPointAddress,
-    data: encodeGetNonceCall(sender),
-  })
-
-  const networkPendingNonce = decodeGetNonceResult(encodedNonce)
-  const occupiedNonces = getOccupiedUserOperationNonces({
-    sender,
-    chainId: network.chainId,
-    entryPoint: entryPointAddress,
-  })
-
-  const [nonce] = resolveTransactionNonces({
-    networkPendingNonce,
-    occupiedNonces,
-  })
-
-  return nonce
-}
-
 async function getEip7702AuthorizationNonce({
   Server,
   eth_getTransactionCount,
@@ -298,7 +303,7 @@ async function signUserOperationForSubmission({
   entryPointAddress,
   accountId,
   sender,
-  estimatedUserOperation,
+  preparedUserOperation,
   authorization,
 }) {
   const privateKey = await wallet_getAddressPrivateKey(
@@ -311,13 +316,13 @@ async function signUserOperationForSubmission({
 
   const userOperationForSubmission = authorization
     ? {
-        ...estimatedUserOperation,
+        ...preparedUserOperation,
         authorization: signUserOperationAuthorization(
           authorization,
           privateKey,
         ),
       }
-    : estimatedUserOperation
+    : preparedUserOperation
 
   const userOpHash = getUserOperationHash({
     chainId: network.chainId,
@@ -392,18 +397,16 @@ export const main = async ({
     findAccount,
     getNetworkById,
     accountAddrByNetwork,
-    getOccupiedUserOperationNonces,
     insertUserOperation,
     setUserOperationFailed,
   },
   rpcs: {
-    eth_call,
     eth_getTransactionCount,
     wallet_getAddressPrivateKey,
     wallet_getEip7702AccountStates,
     wallet_getEthereumNonceState,
+    wallet_getUserOperationNonceState,
     wallet_handleUserOperation,
-    wallet_prepareSponsoredUserOperation,
     wallet_prepareUserOperation,
   },
   params: {
@@ -444,42 +447,53 @@ export const main = async ({
       },
 
       async () => {
-        const nonce = await getNextUserOperationNonce({
-          eth_call,
-          getOccupiedUserOperationNonces,
-          network,
-          entryPointAddress,
-          sender,
+        const nonceState = await wallet_getUserOperationNonceState(
+          {errorFallThrough: true, network},
+          [sender],
+        )
+        const [nonce] = resolveTransactionNonces({
+          networkPendingNonce: nonceState.networkPendingNonce,
+          occupiedNonces: nonceState.occupiedNonces,
         })
 
-        const preparationParams = {
-          sender,
-          nonce,
-          calls,
-          ...(authorization ? {authorization} : {}),
-        }
+        let preparedUserOperation
 
-        const prepared =
-          sponsorship === 'whitelist'
-            ? await wallet_prepareSponsoredUserOperation(
-                {errorFallThrough: true, network},
-                preparationParams,
-              )
-            : await wallet_prepareUserOperation(
-                {errorFallThrough: true, network},
-                preparationParams,
-              )
+        if (sponsorship) {
+          const sponsoredUserOperation = sponsorship.userOperation
+          const sponsoredDelegateAddress =
+            sponsoredUserOperation.authorization?.address?.toLowerCase()
+          const currentDelegateAddress = authorization?.address?.toLowerCase()
 
-        if (sponsorship === 'whitelist' && !prepared.sponsorship.sponsorable) {
-          const error = Server('Sponsorship is unavailable')
-          error.extra = {
-            code: USER_OPERATION_ERROR_CODES.SPONSORSHIP_UNAVAILABLE,
-            reason: prepared.sponsorship.reason,
+          const sponsorshipNeedsRefresh =
+            sponsoredUserOperation.nonce !== nonce ||
+            sponsoredDelegateAddress !== currentDelegateAddress
+
+          if (sponsorshipNeedsRefresh) {
+            throw createSponsorshipRefreshRequiredError(Server)
           }
-          throw error
-        }
 
-        const estimatedUserOperation = prepared.userOperation
+          const validUntil = decodeVerifyingPaymasterValidUntil(
+            sponsoredUserOperation.paymasterData,
+          )
+
+          if (validUntil <= Math.floor(Date.now() / 1000)) {
+            throw createSponsorshipRefreshRequiredError(Server)
+          }
+
+          preparedUserOperation = sponsoredUserOperation
+        } else {
+          const prepared = await wallet_prepareUserOperation(
+            {errorFallThrough: true, network},
+            {
+              sender,
+              nonce,
+              calls,
+              ...(authorization ? {authorization} : {}),
+            },
+          )
+
+          preparedUserOperation = prepared.userOperation
+        }
 
         const {userOperation, userOpHash} =
           await signUserOperationForSubmission({
@@ -488,7 +502,7 @@ export const main = async ({
             entryPointAddress,
             accountId,
             sender,
-            estimatedUserOperation,
+            preparedUserOperation,
             authorization,
           })
 
@@ -501,7 +515,7 @@ export const main = async ({
           entryPoint: entryPointAddress,
           nonce,
           calls,
-          paymaster: estimatedUserOperation.paymaster,
+          paymaster: preparedUserOperation.paymaster,
           authorizationNonce: authorization?.nonce,
           delegateAddress: authorization?.address,
         })

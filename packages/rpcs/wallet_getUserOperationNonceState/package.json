@@ -1,5 +1,5 @@
 {
-  "name": "@fluent-wallet/wallet_prepare-sponsored-user-operation",
+  "name": "@fluent-wallet/wallet_get-user-operation-nonce-state",
   "type": "module",
   "main": "index.js",
   "version": "0.0.1",

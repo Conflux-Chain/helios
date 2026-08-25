@@ -24,17 +24,6 @@ const SIGNED_RAW_TRANSACTION = '0x1234'
 const TRANSACTION_HASH =
   '0x1111111111111111111111111111111111111111111111111111111111111111'
 
-const ACCOUNT_ID = 30
-
-const ADDRESS_RECORD = {
-  eid: ADDRESS_ID,
-  account: {
-    eid: ACCOUNT_ID,
-  },
-}
-
-const USER_OPERATION_HASH =
-  '0x2222222222222222222222222222222222222222222222222222222222222222'
 beforeEach(() => {
   vi.resetAllMocks()
 })
@@ -98,7 +87,7 @@ describe('wallet_sendTransaction', () => {
         Server: message => new Error(message),
       },
       db: {
-        findAddress: vi.fn(() => ADDRESS_RECORD),
+        findAddress: vi.fn(() => ADDRESS_ID),
         getAuthReqById: vi.fn(),
         getAddrTxByHash: vi.fn(),
         t,
@@ -249,7 +238,7 @@ describe('wallet_sendTransaction', () => {
         Server: message => new Error(message),
       },
       db: {
-        findAddress: vi.fn(() => ADDRESS_RECORD),
+        findAddress: vi.fn(() => ADDRESS_ID),
         getAuthReqById: vi.fn(),
         getAddrTxByHash: vi.fn(),
         t: saveTransactions,
@@ -379,7 +368,7 @@ describe('wallet_sendTransaction', () => {
         Server: message => new Error(message),
       },
       db: {
-        findAddress: vi.fn(() => ADDRESS_RECORD),
+        findAddress: vi.fn(() => ADDRESS_ID),
         getAuthReqById: vi.fn(),
         getAddrTxByHash: vi.fn(),
         t: saveTransactions,
@@ -403,62 +392,5 @@ describe('wallet_sendTransaction', () => {
     expect(sentTransactionHashes).toEqual(expectedTransactionHashes)
     expect(occupiedNoncesSeenByEachSend).toEqual([[], ['0x4']])
     expect(signedNonces).toEqual(['0x4', '0x5'])
-  })
-
-  test('does not wait for wallet-sponsored transaction inclusion', async () => {
-    const wallet_sendUserOperation = vi.fn().mockResolvedValue({
-      userOpHash: USER_OPERATION_HASH,
-    })
-    const wallet_handleUserOperation = vi.fn()
-
-    const result = await main({
-      Err: {
-        InvalidParams: message => new Error(message),
-        Server: message => new Error(message),
-      },
-      db: {
-        findAddress: vi.fn(() => ADDRESS_RECORD),
-      },
-      rpcs: {
-        wallet_sendUserOperation,
-        wallet_handleUserOperation,
-      },
-      params: {
-        tx: [
-          {
-            from: FROM_ADDRESS,
-            to: TO_ADDRESS,
-            value: '0x1',
-            data: '0x1234',
-          },
-        ],
-        gasPayment: 'sponsored',
-        approvedDelegationAction: 'upgrade',
-      },
-      network: NETWORK,
-    })
-
-    expect(result).toBe(USER_OPERATION_HASH)
-    expect(wallet_sendUserOperation).toHaveBeenCalledWith(
-      {
-        errorFallThrough: true,
-        network: NETWORK,
-      },
-      {
-        accountId: ACCOUNT_ID,
-        networkId: NETWORK.eid,
-        approvedDelegationAction: 'upgrade',
-        calls: [
-          {
-            to: TO_ADDRESS,
-            value: '0x1',
-            data: '0x1234',
-          },
-        ],
-        sponsorship: 'whitelist',
-      },
-    )
-
-    expect(wallet_handleUserOperation).not.toHaveBeenCalled()
   })
 })

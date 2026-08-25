@@ -3,7 +3,10 @@ import {
   BundlerRpcError,
   createBundlerClient,
 } from '@fluent-wallet/bundler-client'
-import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
+import {
+  EIP7702_NETWORK_CONFIGS,
+  USER_OPERATION_ERROR_CODES,
+} from '@fluent-wallet/consts'
 import {
   EIP7702_AUTHORIZATION_STUB_SIGNATURE,
   SMART_ACCOUNT_7702_STUB_SIGNATURE,
@@ -46,8 +49,15 @@ const NETWORK = {
 
 const DELEGATE_ADDRESS =
   EIP7702_NETWORK_CONFIGS[NETWORK.chainId].delegateAddress
-const PAYMASTER_ADDRESS =
-  EIP7702_NETWORK_CONFIGS[NETWORK.chainId].whitelistPaymasterAddress
+const PAYMASTER_ADDRESS = '0xc7Ef0FDb0c52b1a9E73B2BDa7793611D73f0163e'
+
+function createPaymasterData(validUntil) {
+  // validAfter(6) || validUntil(6) || signature(65)
+  return `0x${'0'.repeat(12)}${validUntil.padStart(12, '0')}${'0'.repeat(130)}`
+}
+
+const VALID_PAYMASTER_DATA = createPaymasterData('ffffffffffff')
+const EXPIRED_PAYMASTER_DATA = createPaymasterData('0')
 
 const CALLS = [
   {
@@ -63,6 +73,7 @@ function prepareUserOperation({
   calls,
   authorization,
   paymaster,
+  paymasterData,
 }) {
   const userOperation = createUserOperationForEstimate({
     sender,
@@ -72,6 +83,7 @@ function prepareUserOperation({
     maxPriorityFeePerGas: '0x59682f00',
     signature: SMART_ACCOUNT_7702_STUB_SIGNATURE,
     paymaster,
+    paymasterData,
     authorization: authorization
       ? {...authorization, ...EIP7702_AUTHORIZATION_STUB_SIGNATURE}
       : undefined,
@@ -105,13 +117,11 @@ function createMainInput() {
       eid: ADDRESS_ID,
       value: SENDER,
     })),
-    getOccupiedUserOperationNonces: vi.fn(() => []),
     insertUserOperation: vi.fn(),
     setUserOperationFailed: vi.fn(),
   }
 
   const rpcs = {
-    eth_call: vi.fn().mockResolvedValue(`0x${'0'.repeat(64)}`),
     eth_getTransactionCount: vi.fn().mockResolvedValue('0x0'),
     wallet_getAddressPrivateKey: vi.fn().mockResolvedValue(PRIVATE_KEY),
     wallet_getEip7702AccountStates: vi.fn().mockResolvedValue([
@@ -123,17 +133,13 @@ function createMainInput() {
       networkPendingNonce: '0x0',
       occupiedNonces: [],
     }),
+    wallet_getUserOperationNonceState: vi.fn().mockResolvedValue({
+      networkPendingNonce: '0x0',
+      occupiedNonces: [],
+    }),
     wallet_handleUserOperation: vi.fn().mockResolvedValue(),
     wallet_prepareUserOperation: vi.fn(async (_options, params) => ({
       userOperation: prepareUserOperation(params),
-      maxGasCost: '0x0',
-    })),
-    wallet_prepareSponsoredUserOperation: vi.fn(async (_options, params) => ({
-      userOperation: prepareUserOperation({
-        ...params,
-        paymaster: PAYMASTER_ADDRESS,
-      }),
-      sponsorship: {sponsorable: true, reason: ''},
       maxGasCost: '0x0',
     })),
   }
@@ -209,11 +215,11 @@ describe('wallet_sendUserOperation', () => {
       const result = await main(input)
 
       const [, prepareParams] = rpcs.wallet_prepareUserOperation.mock.calls[0]
-      const estimatedUserOperation = prepareUserOperation(prepareParams)
+      const preparedUserOperation = prepareUserOperation(prepareParams)
       const [submittedUserOperation] = bundler.sendUserOperation.mock.calls[0]
       const storedUserOperation = getStoredUserOperation(db)
 
-      expect(estimatedUserOperation).toMatchObject({
+      expect(preparedUserOperation).toMatchObject({
         factory: '0x7702000000000000000000000000000000000000',
         factoryData: '0x',
         authorization: {
@@ -233,7 +239,7 @@ describe('wallet_sendUserOperation', () => {
         yParity: expect.stringMatching(/^0x[01]$/),
       })
       expect(submittedUserOperation.authorization).not.toEqual(
-        estimatedUserOperation.authorization,
+        preparedUserOperation.authorization,
       )
 
       expect(storedUserOperation).toMatchObject({
@@ -251,8 +257,6 @@ describe('wallet_sendUserOperation', () => {
       ).toBeLessThan(
         rpcs.wallet_getAddressPrivateKey.mock.invocationCallOrder[0],
       )
-      expect(rpcs.wallet_prepareSponsoredUserOperation).not.toHaveBeenCalled()
-
       expect(rpcs.eth_getTransactionCount).toHaveBeenCalledWith(
         {
           errorFallThrough: true,
@@ -322,9 +326,17 @@ describe('wallet_sendUserOperation', () => {
     )
   })
 
-  test('uses the whitelist adapter only when sponsorship is selected', async () => {
+  test('reuses the sponsored UserOperation without preparing it again', async () => {
     const {input, db, rpcs} = createMainInput()
-    input.params.sponsorship = 'whitelist'
+    input.params.sponsorship = {
+      userOperation: prepareUserOperation({
+        sender: SENDER,
+        nonce: '0x0',
+        calls: CALLS,
+        paymaster: PAYMASTER_ADDRESS,
+        paymasterData: VALID_PAYMASTER_DATA,
+      }),
+    }
 
     bundler.sendUserOperation.mockImplementation(
       async (userOperation, entryPointAddress) =>
@@ -338,36 +350,34 @@ describe('wallet_sendUserOperation', () => {
     await main(input)
 
     expect(rpcs.wallet_prepareUserOperation).not.toHaveBeenCalled()
-    expect(rpcs.wallet_prepareSponsoredUserOperation).toHaveBeenCalledOnce()
+    expect(bundler.sendUserOperation.mock.calls[0][0]).toMatchObject({
+      paymaster: PAYMASTER_ADDRESS,
+      paymasterData: VALID_PAYMASTER_DATA,
+    })
     expect(getStoredUserOperation(db)).toMatchObject({
       paymaster: PAYMASTER_ADDRESS,
     })
   })
 
-  test('stops before signing when whitelist sponsorship is unavailable', async () => {
+  test('stops before signing when sponsorship is expired', async () => {
     const {input, db, rpcs} = createMainInput()
-    input.params.sponsorship = 'whitelist'
-    rpcs.wallet_prepareSponsoredUserOperation.mockResolvedValue({
+    input.params.sponsorship = {
       userOperation: prepareUserOperation({
         sender: SENDER,
         nonce: '0x0',
         calls: CALLS,
         paymaster: PAYMASTER_ADDRESS,
+        paymasterData: EXPIRED_PAYMASTER_DATA,
       }),
-      maxGasCost: '0x0',
-      sponsorship: {
-        sponsorable: false,
-        reason: 'sponsorship denied',
-      },
-    })
+    }
 
     await expect(main(input)).rejects.toMatchObject({
       extra: {
-        code: 'USER_OPERATION_SPONSORSHIP_UNAVAILABLE',
-        reason: 'sponsorship denied',
+        code: USER_OPERATION_ERROR_CODES.SPONSORSHIP_REFRESH_REQUIRED,
       },
     })
 
+    expect(rpcs.wallet_prepareUserOperation).not.toHaveBeenCalled()
     expect(rpcs.wallet_getAddressPrivateKey).not.toHaveBeenCalled()
     expect(db.insertUserOperation).not.toHaveBeenCalled()
     expect(bundler.sendUserOperation).not.toHaveBeenCalled()
