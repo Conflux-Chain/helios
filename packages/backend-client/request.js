@@ -29,6 +29,10 @@ export function createBackendRequest({
 
     let result
 
+    if (!response.ok) {
+      throw new BackendRequestError()
+    }
+
     try {
       result = await response.json()
     } catch {
@@ -41,10 +45,6 @@ export function createBackendRequest({
         data: result.data,
         message: result.message,
       })
-    }
-
-    if (!response.ok) {
-      throw new BackendRequestError()
     }
 
     return result.data
