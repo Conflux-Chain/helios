@@ -27,15 +27,13 @@ export async function abiCoreSpace({
 
 export async function abiESpace({networkId = undefined, address = undefined}) {
   try {
-    const res = await fetch(
-      getURL(networkId, '/api', {
-        searchParams: {
-          module: 'contract',
-          action: 'getabi',
-          address,
-        },
-      }),
-    ).json()
+    const res = await fetch(getURL(networkId, '/api'), {
+      searchParams: {
+        module: 'contract',
+        action: 'getabi',
+        address,
+      },
+    }).json()
     if (res.status === '1') return JSON.parse(res.result)
     throw new Error(res.message)
   } catch (err) {
