@@ -409,6 +409,10 @@ const fr = {
     eip7702SwitchRequiredTitle: 'Changement de liaison requis',
     eip7702SwitchRequiredDesc:
       'Ce compte est actuellement lié à un contrat tiers. Passez à Fluent Wallet pour une meilleure expérience.',
+    eip7702SponsoredUpgradeTitle: 'Activer la mise à niveau EIP-7702',
+    eip7702SponsoredUpgradeDesc:
+      'Après la mise à niveau, votre compte bénéficiera des fonctionnalités intelligentes suivantes.',
+    eip7702SponsoredUpgradeConfirm: 'Activer et continuer',
     eip7702SwitchInfoTitle: 'Passer au service EIP-7702',
     eip7702SwitchInfoDesc:
       'Ce compte est actuellement lié à un contrat tiers. Passez à Fluent Wallet pour une meilleure expérience.',
@@ -514,6 +518,10 @@ const fr = {
     transactionSubmissionFailed: 'Échec de l’envoi de la transaction',
     pendingGasSponsoredTransaction:
       'Vous avez déjà une transaction en attente avec des frais de Gas pris en charge. Merci de réessayer plus tard.',
+    gasSponsorshipRefreshRequiredTitle:
+      'Prise en charge des frais de Gas invalide',
+    gasSponsorshipRefreshRequiredContent:
+      'La prise en charge des frais de Gas pour cette transaction n’est plus valide. Veuillez soumettre à nouveau votre transaction.',
     tokenPayGasChangedTitle: 'Les frais de Gas ont changé',
     tokenPayGasChangedContent:
       'Le montant de tokens requis pour payer les frais de Gas a changé. Veuillez vérifier le nouveau devis avant de soumettre à nouveau.',

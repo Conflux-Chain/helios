@@ -6,6 +6,7 @@
   "packageManager": "yarn@3.0.1",
   "version": "0.0.6",
   "dependencies": {
+    "@fluent-wallet/backend-client": "workspace:packages/backend-client",
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis",
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema",

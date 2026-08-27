@@ -44,7 +44,12 @@ import {
   useAddressNote,
 } from '../../hooks/useApi'
 import {useTokenPayAvailability} from '../../hooks/useTokenPay'
-import {ROUTES, NETWORK_TYPE, MAX_STRATEGY} from '../../constants'
+import {
+  GAS_PAYMENT_METHOD,
+  ROUTES,
+  NETWORK_TYPE,
+  MAX_STRATEGY,
+} from '../../constants'
 import {bn16} from '../../utils'
 import useGlobalStore from '../../stores'
 
@@ -99,7 +104,8 @@ function SendTransaction() {
     setNonce,
     setStorageLimit,
     setMaxStrategy,
-    setGasTokenAddress,
+    setGasPayment,
+    setSponsorshipDeclined,
     setSyncTxWithForm,
     tx,
     clearSendTransactionParams,
@@ -255,7 +261,7 @@ function SendTransaction() {
       return
     }
 
-    setGasTokenAddress('')
+    setGasPayment({method: GAS_PAYMENT_METHOD.NATIVE})
     setMaxStrategy(MAX_STRATEGY.LEGACY)
     setSendAmount(
       convertDataToValue(
@@ -423,6 +429,7 @@ function SendTransaction() {
               disabled={sendDisabled}
               onClick={() => {
                 if (loading) return
+                setSponsorshipDeclined(false)
                 history.push(CONFIRM_TRANSACTION)
               }}
               className="flex-1"

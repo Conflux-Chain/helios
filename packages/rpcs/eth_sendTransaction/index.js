@@ -23,12 +23,13 @@ export const schemas = {
   input: [
     or,
     [cat, txSchema],
+    [map, {closed: true}, ['authReqId', dbid], ['tx', [cat, txSchema]]],
     [
       map,
       {closed: true},
       ['authReqId', dbid],
       ['tx', [cat, txSchema]],
-      ['tokenPay', {optional: true}, tokenPaySchema],
+      ['tokenPay', tokenPaySchema],
     ],
   ],
 }

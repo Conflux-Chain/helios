@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
-import {TOKEN_PAY_ERROR_CODES} from '@fluent-wallet/consts'
+import {
+  TOKEN_PAY_ERROR_CODES,
+  USER_OPERATION_ERROR_CODES,
+} from '@fluent-wallet/consts'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
 import Loading from '@fluent-wallet/component-loading'
@@ -28,6 +31,10 @@ function TransactionResult({status, sendError, onClose}) {
   const {errorType} = networkTypeIsCfx
     ? cfxProcessError(sendError)
     : ethProcessError(sendError)
+
+  const isSponsorshipRefreshRequired =
+    sendError?.data?.code ===
+    USER_OPERATION_ERROR_CODES.SPONSORSHIP_REFRESH_REQUIRED
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -56,6 +63,12 @@ function TransactionResult({status, sendError, onClose}) {
       return
     }
 
+    if (isSponsorshipRefreshRequired) {
+      setTitle(t('gasSponsorshipRefreshRequiredTitle'))
+      setContent(t('gasSponsorshipRefreshRequiredContent'))
+      return
+    }
+
     if (isRejected) {
       setTitle(t('rejected'))
       setContent(t('rejectedContent'))
@@ -71,6 +84,7 @@ function TransactionResult({status, sendError, onClose}) {
     isRejected,
     isWaiting,
     isTokenPayQuoteChanged,
+    isSponsorshipRefreshRequired,
     open,
     t,
   ])
@@ -96,7 +110,8 @@ function TransactionResult({status, sendError, onClose}) {
           {!isWaiting &&
             !isRejected &&
             !isTokenPayQuoteChanged &&
-            !isTokenPayBlockedByPendingTransaction && (
+            !isTokenPayBlockedByPendingTransaction &&
+            !isSponsorshipRefreshRequired && (
               <CopyButton
                 text={content}
                 toastClassName="left-2/4 transform -translate-x-2/4 -top-8"

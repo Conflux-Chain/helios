@@ -194,7 +194,7 @@ export const main = async ({
     t({eid: authReqId, authReq: {processed: true}})
   }
 
-  const tx = params.authReqId ? params.tx : params
+  const tx = authReqId ? params.tx : params
   const txParams = tx[0]
 
   const transactionNetwork = authReqId ? authReq.app.currentNetwork : network
@@ -204,14 +204,15 @@ export const main = async ({
     delete txParams.gasLimit
   }
   const addr = findAddress({
-    // filter by app.currentNetwork and app.currentAccount
     appId: authReq?.app?.eid,
     selected: !authReqId ? true : undefined,
-    // filter by current network
     networkId: transactionNetwork.eid,
     value: txParams.from,
   })
-  if (!addr) throw InvalidParams(`Invalid from address ${txParams.from}`)
+
+  if (!addr) {
+    throw InvalidParams(`Invalid from address ${txParams.from}`)
+  }
 
   if (params.tokenPay) {
     if (!authReqId) {
@@ -239,6 +240,7 @@ export const main = async ({
       throw err
     }
   }
+
   const createPendingTransaction = async ({transaction}) => {
     const signed = await signTxFn(
       {

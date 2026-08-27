@@ -68,7 +68,8 @@ export const main = async ({
       txs.push({eid: txExtraEid, txExtra: {contractCreation: true, ok: true}})
   }
 
-  if (to && data && toAddressType.contract) {
+  // A delegated EOA may execute code, but it is not a token contract target.
+  if (to && data && toAddressType.contract && !toAddressType.eip7702Delegated) {
     const contractAddress = to
     try {
       const {valid, symbol, name, decimals} = await wallet_validate20Token(

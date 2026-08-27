@@ -12,8 +12,8 @@ import {
 import {withEthereumNonceLock} from '@fluent-wallet/nonce-manager'
 import BN from 'bn.js'
 import {stripHexPrefix} from '@fluent-wallet/utils'
+import {BackendServiceError} from '@fluent-wallet/backend-client'
 import {
-  fetchTokenPayPrice,
   prepareGasTokenQuote,
   prepareTokenPayExecutionContext,
   resolveTokenPayNonces,
@@ -154,41 +154,23 @@ function validateSignedTokenPayBundle({
 }
 
 async function submitTokenPayTransactions({
-  backendBaseUrl,
+  backendClient,
   rawTransferTokenTx,
   rawUserTx,
 }) {
-  let response
-
   try {
-    response = await fetch(`${backendBaseUrl}/tokenpay/submit`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        rawTransferTokenTx,
-        rawBusinessTx: rawUserTx,
-      }),
+    await backendClient.submitTokenPayTransactions({
+      rawTransferTokenTx,
+      rawBusinessTx: rawUserTx,
     })
-  } catch {
+    return {outcome: 'accepted'}
+  } catch (error) {
+    if (error instanceof BackendServiceError) {
+      return {outcome: 'rejected', error}
+    }
+
     return {outcome: 'uncertain'}
   }
-
-  const result = await response.json().catch(() => null)
-
-  if (response.ok && result?.code === 0) {
-    return {outcome: 'accepted'}
-  }
-
-  if (typeof result?.code === 'number' && result.code !== 0) {
-    return {
-      outcome: 'rejected',
-      error: new Error(
-        result.message || 'Failed to submit token-pay transaction',
-      ),
-    }
-  }
-
-  return {outcome: 'uncertain'}
 }
 export const main = async ({
   Err: {InvalidParams, Server},
@@ -313,7 +295,7 @@ export const main = async ({
         })
         const {
           tokenPayConfig,
-          tokenPayNetworkConfig,
+          backendClient,
           txType,
           feeParams,
           quoteToken,
@@ -343,8 +325,7 @@ export const main = async ({
           throw InvalidParams(`Unsupported gas token ${gasTokenAddress}`)
         }
 
-        const tokenPrice = await fetchTokenPayPrice(
-          tokenPayNetworkConfig.backendBaseUrl,
+        const tokenPrice = await backendClient.getTokenPayPrice(
           gasToken.address,
         )
         const gasTokenQuote = await prepareGasTokenQuote({
@@ -470,7 +451,7 @@ export const main = async ({
         ])
 
         const submission = await submitTokenPayTransactions({
-          backendBaseUrl,
+          backendClient,
           rawTransferTokenTx,
           rawUserTx,
         })

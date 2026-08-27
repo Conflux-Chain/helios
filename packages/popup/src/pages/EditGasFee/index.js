@@ -14,7 +14,7 @@ import Button from '@fluent-wallet/component-button'
 import {TitleNav, GasCost} from '../../components'
 import {GasStation} from './components'
 import {useCurrentTxStore, useUses1559Fees, useEstimateTx} from '../../hooks'
-import {ROUTES} from '../../constants'
+import {GAS_PAYMENT_METHOD, ROUTES} from '../../constants'
 import {getPageType} from '../../utils'
 import {
   useCurrentAddress,
@@ -50,7 +50,7 @@ function EditGasFee({
     customNonce,
     storageLimit,
     advancedGasSetting,
-    gasTokenAddress,
+    gasPayment,
     tx: txParams,
     setGasLevel,
     setGasPrice,
@@ -65,6 +65,11 @@ function EditGasFee({
   } = useCurrentTxStore()
 
   const isSendTx = location.pathname === EDIT_GAS_FEE
+
+  const gasTokenAddress =
+    gasPayment?.method === GAS_PAYMENT_METHOD.TOKEN
+      ? gasPayment.tokenAddress
+      : ''
 
   const nonce =
     !isSendTx && historyTx?.nonce

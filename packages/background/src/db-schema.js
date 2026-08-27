@@ -130,6 +130,12 @@ const schema = {
       component: true,
       ref: true,
     },
+    userOperation: {
+      doc: 'user operations of this address',
+      many: true,
+      component: true,
+      ref: true,
+    },
   },
   account: {
     index: {doc: 'index of account in account group'},
@@ -212,6 +218,31 @@ const schema = {
     tokenPay: {doc: 'token-pay transaction'},
   },
 
+  // ## user operation
+  userOperation: {
+    hash: {
+      doc: 'user operation hash',
+      identity: true,
+    },
+    sender: {doc: 'smart account address'},
+    chainId: {doc: 'chain id'},
+    entryPoint: {doc: 'entry point address'},
+    nonce: {doc: 'entry point nonce'},
+    authorizationNonce: {doc: 'eip-7702 authorization nonce'},
+    delegateAddress: {doc: 'eip-7702 delegate address'},
+    status: {
+      doc: 'pending, included or failed',
+    },
+    calls: {doc: 'ordered account calls'},
+    paymaster: {doc: 'paymaster address'},
+    transactionHash: {doc: 'bundler transaction hash'},
+    receipt: {doc: 'user operation receipt'},
+    success: {doc: 'user operation execution result'},
+    error: {doc: 'bundler submission error'},
+    created: {doc: 'created timestamp'},
+    includedAt: {doc: 'included timestamp'},
+  },
+
   // ## dapp interaction
   site: {
     origin: {
@@ -237,6 +268,11 @@ const schema = {
     network: {doc: 'authed network', ref: true, many: true},
     currentNetwork: {ref: 'network'},
     tx: {many: true, ref: true, doc: 'tx initiated by this app'},
+    userOperation: {
+      many: true,
+      ref: true,
+      doc: 'user operations initiated by this app',
+    },
   },
   authReq: {
     req: {doc: 'the req body of the auth req', persist: false},

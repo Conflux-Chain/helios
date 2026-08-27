@@ -11,9 +11,9 @@ import {
 import Link from '@fluent-wallet/component-link'
 import {DisplayBalance, GasFee} from '../../../components'
 import {useCheckImage, useCurrentTxStore} from '../../../hooks'
-import {ROUTES} from '../../../constants'
+import {GAS_PAYMENT_METHOD, ROUTES} from '../../../constants'
 import {formatQuoteAmount, getTokenIcon} from './tokenPayGasUtils'
-import GasTokenSelector from './GasTokenSelector'
+import GasPaymentSelector from './GasPaymentSelector'
 
 const {EDIT_GAS_FEE} = ROUTES
 
@@ -30,7 +30,7 @@ function GasPayHeader({children}) {
   )
 }
 
-function TokenGasPayHeader({uses1559Fees, disabled}) {
+function GasPaymentHeader({uses1559Fees, disabled, label}) {
   const {t} = useTranslation()
   const history = useHistory()
   const {gasLevel} = useCurrentTxStore()
@@ -43,31 +43,19 @@ function TokenGasPayHeader({uses1559Fees, disabled}) {
           <QuestionCircleOutlined className="ml-1 h-3.5 w-3.5 cursor-pointer text-gray-40" />
         </Tooltip>
       </div>
-      <span className="flex items-center">
-        <Link onClick={() => history.push(EDIT_GAS_FEE)} disabled={disabled}>
-          {uses1559Fees ? t(gasLevel) : t('edit')}
-          <RightOutlined className="ml-1 h-3 w-3 text-primary" />
-        </Link>
-      </span>
+      <Link onClick={() => history.push(EDIT_GAS_FEE)} disabled={disabled}>
+        {label || (uses1559Fees ? t(gasLevel) : t('edit'))}
+        <RightOutlined
+          className={`ml-1 h-3 w-3 ${
+            disabled ? 'text-gray-40' : 'text-primary'
+          }`}
+        />
+      </Link>
     </header>
   )
 }
 
-function NativeGasPayFee({
-  estimateRst,
-  uses1559Fees,
-  nativeToken,
-  nativeBalance,
-  nativeGasFee,
-  gasTokenBalances,
-  tokenPayConfig,
-  onSelectGasToken,
-  options,
-  isDeferredMax,
-  sendTokenAddress,
-  sendTokenAmount,
-}) {
-  const [open, setOpen] = useState(false)
+function NativeGasPayFee({estimateRst, uses1559Fees, nativeToken, onOpen}) {
   const nativeTokenIcon = getTokenIcon(nativeToken)
   const isImgUrl = useCheckImage(nativeTokenIcon)
 
@@ -81,7 +69,7 @@ function NativeGasPayFee({
           <button
             type="button"
             className="flex mr-2 items-center justify-center rounded-full bg-gray-0"
-            onClick={() => setOpen(true)}
+            onClick={onOpen}
           >
             <img
               src={
@@ -96,51 +84,17 @@ function NativeGasPayFee({
           <button
             type="button"
             className="flex ml-2 h-8 w-8 items-center justify-center"
-            onClick={() => setOpen(true)}
+            onClick={onOpen}
           >
             <DownOutlined className="h-4 w-4 text-gray-60" />
           </button>
         }
       />
-
-      <GasTokenSelector
-        open={open}
-        onClose={() => setOpen(false)}
-        tokenPayConfig={tokenPayConfig}
-        options={options}
-        nativeToken={nativeToken}
-        nativeBalance={nativeBalance}
-        nativeGasFee={nativeGasFee}
-        tokenBalances={gasTokenBalances}
-        selectedGasToken={null}
-        selectedGasTokenAmount={null}
-        selectedGasTokenQuoteAmount={null}
-        quoteToken={tokenPayConfig?.quoteToken}
-        onSelectGasToken={onSelectGasToken}
-        isDeferredMax={isDeferredMax}
-        sendTokenAddress={sendTokenAddress}
-        sendTokenAmount={sendTokenAmount}
-      />
     </>
   )
 }
 
-function TokenGasPayFee({
-  gasToken,
-  tokenPayConfig,
-  quote,
-  options,
-  uses1559Fees,
-  nativeToken,
-  nativeBalance,
-  nativeGasFee,
-  gasTokenBalances,
-  onSelectGasToken,
-  isDeferredMax,
-  sendTokenAddress,
-  sendTokenAmount,
-}) {
-  const [open, setOpen] = useState(false)
+function TokenGasPayFee({gasToken, quote, options, uses1559Fees, onOpen}) {
   const displayToken = quote?.gasToken || gasToken || {}
   const displayTokenIcon = getTokenIcon(displayToken)
   const isImgUrl = useCheckImage(displayTokenIcon)
@@ -152,14 +106,14 @@ function TokenGasPayFee({
 
   return (
     <div className="gas-pay-fee-container flex flex-col">
-      <TokenGasPayHeader
+      <GasPaymentHeader
         uses1559Fees={uses1559Fees}
         disabled={!displayTokenCost}
       />
       <button
         type="button"
         className="relative flex w-full items-center rounded border border-gray-10 px-3 py-3 text-left"
-        onClick={() => setOpen(true)}
+        onClick={onOpen}
       >
         <img
           src={isImgUrl ? displayTokenIcon : '/images/default-token-icon.svg'}
@@ -181,33 +135,132 @@ function TokenGasPayFee({
         </div>
         <DownOutlined className="ml-2 h-4 w-4 shrink-0 text-gray-60" />
       </button>
-      <GasTokenSelector
-        open={open}
-        onClose={() => setOpen(false)}
-        tokenPayConfig={tokenPayConfig}
-        options={options}
-        nativeToken={nativeToken}
-        nativeBalance={nativeBalance}
-        nativeGasFee={nativeGasFee}
-        tokenBalances={gasTokenBalances}
-        selectedGasToken={gasToken}
-        selectedGasTokenAmount={displayTokenCost}
-        selectedGasTokenQuoteAmount={displayQuoteAmount}
-        quoteToken={displayQuoteToken || tokenPayConfig?.quoteToken}
-        onSelectGasToken={onSelectGasToken}
-        isDeferredMax={isDeferredMax}
-        sendTokenAddress={sendTokenAddress}
-        sendTokenAmount={sendTokenAmount}
-      />
     </div>
   )
 }
 
-function GasPayFee({gasToken, ...props}) {
-  return gasToken ? (
-    <TokenGasPayFee gasToken={gasToken} {...props} />
-  ) : (
-    <NativeGasPayFee {...props} />
+function SponsoredGasPayFee({
+  sponsorship,
+  nativeToken,
+  estimateRst,
+  uses1559Fees,
+}) {
+  const {t} = useTranslation()
+  const nativeTokenIcon = getTokenIcon(nativeToken)
+  const isImgUrl = useCheckImage(nativeTokenIcon)
+
+  return (
+    <GasFee
+      estimateRst={estimateRst}
+      uses1559Fees={uses1559Fees}
+      showDrip={false}
+      displayFee={{
+        balance: sponsorship.maxGasCost,
+        symbol: nativeToken?.symbol,
+        decimals: nativeToken?.decimals,
+      }}
+      sponsored
+      editDisabled
+      editLabel={t('medium')}
+      prefix={
+        <div className="mr-2 flex items-center justify-center rounded-full bg-gray-0">
+          <img
+            src={isImgUrl ? nativeTokenIcon : '/images/default-token-icon.svg'}
+            alt=""
+            className="h-8 w-8 rounded-full"
+          />
+        </div>
+      }
+    />
+  )
+}
+
+function GasPayFee({
+  payment,
+  sponsorship,
+  gasToken,
+  tokenPayConfig,
+  quote,
+  options,
+  nativeToken,
+  nativeBalance,
+  nativeGasFee,
+  gasTokenBalances,
+  estimateRst,
+  uses1559Fees,
+  onSelectPayment,
+  onSelectGasToken,
+  isDeferredMax,
+  sendTokenAddress,
+  sendTokenAmount,
+}) {
+  const [selectorOpen, setSelectorOpen] = useState(false)
+  const selectedTokenOption =
+    options?.tokens?.[gasToken?.address?.toLowerCase()]
+  const selectedGasTokenAmount =
+    quote?.tokenCost || selectedTokenOption?.estimatedTokenAmount
+  const selectedGasTokenQuoteAmount =
+    quote?.quoteAmount || selectedTokenOption?.estimatedQuoteAmount
+  const quoteToken =
+    quote?.quoteToken || options?.quoteToken || tokenPayConfig?.quoteToken
+
+  let fee
+  if (payment?.method === GAS_PAYMENT_METHOD.SPONSORED) {
+    fee = (
+      <SponsoredGasPayFee
+        sponsorship={sponsorship}
+        nativeToken={nativeToken}
+        estimateRst={estimateRst}
+        uses1559Fees={uses1559Fees}
+      />
+    )
+  } else if (payment?.method === GAS_PAYMENT_METHOD.TOKEN && gasToken) {
+    fee = (
+      <TokenGasPayFee
+        gasToken={gasToken}
+        quote={quote}
+        options={options}
+        uses1559Fees={uses1559Fees}
+        onOpen={() => setSelectorOpen(true)}
+      />
+    )
+  } else {
+    fee = (
+      <NativeGasPayFee
+        estimateRst={estimateRst}
+        uses1559Fees={uses1559Fees}
+        nativeToken={nativeToken}
+        onOpen={() => setSelectorOpen(true)}
+      />
+    )
+  }
+
+  return (
+    <>
+      {fee}
+      {payment?.method !== GAS_PAYMENT_METHOD.SPONSORED && (
+        <GasPaymentSelector
+          open={selectorOpen}
+          onClose={() => setSelectorOpen(false)}
+          payment={payment}
+          tokenPayConfig={tokenPayConfig}
+          options={options}
+          nativeToken={nativeToken}
+          nativeBalance={nativeBalance}
+          nativeGasFee={nativeGasFee}
+          tokenBalances={gasTokenBalances}
+          selectedGasToken={gasToken}
+          selectedGasTokenAmount={selectedGasTokenAmount}
+          selectedGasTokenQuoteAmount={selectedGasTokenQuoteAmount}
+          quoteToken={quoteToken}
+          onSelectPayment={onSelectPayment}
+          onSelectGasToken={onSelectGasToken}
+          isDeferredMax={isDeferredMax}
+          sendTokenAddress={sendTokenAddress}
+          sendTokenAmount={sendTokenAmount}
+        />
+      )}
+    </>
   )
 }
 
@@ -215,45 +268,57 @@ GasPayHeader.propTypes = {
   children: PropTypes.node,
 }
 
-TokenGasPayHeader.propTypes = {
+GasPaymentHeader.propTypes = {
   uses1559Fees: PropTypes.bool,
   disabled: PropTypes.bool,
+  label: PropTypes.string,
 }
 
 NativeGasPayFee.propTypes = {
   estimateRst: PropTypes.object,
   uses1559Fees: PropTypes.bool,
   nativeToken: PropTypes.object,
-  nativeBalance: PropTypes.string,
-  nativeGasFee: PropTypes.string,
-  gasTokenBalances: PropTypes.object,
-  tokenPayConfig: PropTypes.object,
-  options: PropTypes.object,
-  onSelectGasToken: PropTypes.func,
-  isDeferredMax: PropTypes.bool,
-  sendTokenAddress: PropTypes.string,
-  sendTokenAmount: PropTypes.string,
+  onOpen: PropTypes.func,
 }
 
 TokenGasPayFee.propTypes = {
   quote: PropTypes.object,
   gasToken: PropTypes.object,
+  options: PropTypes.object,
+  uses1559Fees: PropTypes.bool,
+  onOpen: PropTypes.func,
+}
+
+SponsoredGasPayFee.propTypes = {
+  sponsorship: PropTypes.shape({
+    maxGasCost: PropTypes.string,
+  }).isRequired,
+  nativeToken: PropTypes.object,
+  estimateRst: PropTypes.object,
+  uses1559Fees: PropTypes.bool,
+}
+
+GasPayFee.propTypes = {
+  payment: PropTypes.shape({
+    method: PropTypes.oneOf(Object.values(GAS_PAYMENT_METHOD)),
+    tokenAddress: PropTypes.string,
+  }),
+  sponsorship: PropTypes.object,
+  gasToken: PropTypes.object,
   tokenPayConfig: PropTypes.object,
+  quote: PropTypes.object,
   options: PropTypes.object,
   nativeToken: PropTypes.object,
   nativeBalance: PropTypes.string,
   nativeGasFee: PropTypes.string,
   gasTokenBalances: PropTypes.object,
-  onSelectGasToken: PropTypes.func,
+  estimateRst: PropTypes.object,
   uses1559Fees: PropTypes.bool,
+  onSelectPayment: PropTypes.func,
+  onSelectGasToken: PropTypes.func,
   isDeferredMax: PropTypes.bool,
   sendTokenAddress: PropTypes.string,
   sendTokenAmount: PropTypes.string,
-}
-
-GasPayFee.propTypes = {
-  gasToken: PropTypes.object,
-  options: PropTypes.object,
 }
 
 export default GasPayFee

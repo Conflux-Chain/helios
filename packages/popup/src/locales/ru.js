@@ -400,6 +400,10 @@ const ru = {
     eip7702SwitchRequiredTitle: 'Требуется смена привязки',
     eip7702SwitchRequiredDesc:
       'Этот аккаунт сейчас привязан к стороннему контракту. Переключитесь на Fluent Wallet для лучшего опыта.',
+    eip7702SponsoredUpgradeTitle: 'Включить обновление EIP-7702',
+    eip7702SponsoredUpgradeDesc:
+      'После обновления вашему аккаунту станут доступны следующие интеллектуальные функции.',
+    eip7702SponsoredUpgradeConfirm: 'Включить и продолжить',
     eip7702SwitchInfoTitle: 'Переключиться на сервис EIP-7702',
     eip7702SwitchInfoDesc:
       'Этот аккаунт сейчас привязан к стороннему контракту. Переключитесь на Fluent Wallet для лучшего опыта.',
@@ -503,6 +507,10 @@ const ru = {
     transactionSubmissionFailed: 'Не удалось отправить транзакцию',
     pendingGasSponsoredTransaction:
       'У вас уже есть ожидающая транзакция с оплатой газа за счет спонсора. Пожалуйста, повторите попытку позже.',
+    gasSponsorshipRefreshRequiredTitle:
+      'Спонсорская оплата газа недействительна',
+    gasSponsorshipRefreshRequiredContent:
+      'Спонсорская оплата газа для этой транзакции больше недействительна. Отправьте транзакцию повторно.',
     tokenPayGasChangedTitle: 'Комиссия за газ изменилась',
     tokenPayGasChangedContent:
       'Количество токенов, необходимое для оплаты газа, изменилось. Проверьте новую котировку перед повторной отправкой.',

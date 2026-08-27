@@ -1,7 +1,6 @@
 import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import {
-  fetchTokenPayPrice,
   prepareGasTokenQuote,
   prepareTokenPayExecutionContext,
   resolveTokenPayNonces,
@@ -9,7 +8,6 @@ import {
 
 export {
   calcTokenAmountFromNativeAmount,
-  fetchTokenPayPrice,
   getTokenPayGasCostPrice,
   prepareGasTokenQuote,
   prepareTokenPayBaseContext,
@@ -68,7 +66,7 @@ export const main = async ({
     network,
     accountAddress,
     tokenPayConfig,
-    tokenPayNetworkConfig,
+    backendClient,
     txType,
     nonceBase,
     feeParams,
@@ -89,10 +87,7 @@ export const main = async ({
     throw InvalidParams(`Unsupported gas token ${gasTokenAddress}`)
   }
 
-  const tokenPrice = await fetchTokenPayPrice(
-    tokenPayNetworkConfig.backendBaseUrl,
-    gasToken.address,
-  )
+  const tokenPrice = await backendClient.getTokenPayPrice(gasToken.address)
   const bundleNonces = resolveTokenPayNonces({
     networkPendingNonce: nonceBase,
     userTx,

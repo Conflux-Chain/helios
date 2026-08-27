@@ -4,6 +4,7 @@ import {decode, validateBase32Address} from '@fluent-wallet/base32-address'
 import {convertDataToValue} from '@fluent-wallet/data-format'
 import {toHexQuantity} from '@fluent-wallet/utils'
 import {bn16} from '../../utils'
+import {GAS_PAYMENT_METHOD} from '../../constants'
 
 function applyAmountToSendParams({
   params,
@@ -37,7 +38,7 @@ function getGasCostToDeduct({
   enabled,
   isNativeAsset,
   sendTokenAddress,
-  isTokenPay,
+  paymentMethod,
   gasTokenAddress,
   nativeCostHex,
   tokenCostHex,
@@ -45,12 +46,13 @@ function getGasCostToDeduct({
   if (!enabled) return '0x0'
 
   // Native max sends must keep enough native balance for native gas.
-  if (isNativeAsset && !isTokenPay) {
+  if (isNativeAsset && paymentMethod === GAS_PAYMENT_METHOD.NATIVE) {
     return nativeCostHex || '0x0'
   }
 
   // Token max sends are only reduced when the same token is selected to pay gas.
   if (
+    paymentMethod === GAS_PAYMENT_METHOD.TOKEN &&
     !isNativeAsset &&
     sendTokenAddress &&
     sendTokenAddress === gasTokenAddress
@@ -71,7 +73,7 @@ function useAdjustedSendTx({enabled, input, asset, gasPayment}) {
       enabled,
       isNativeAsset: asset.isNative,
       sendTokenAddress,
-      isTokenPay: gasPayment.isTokenPay,
+      paymentMethod: gasPayment.method,
       gasTokenAddress,
       nativeCostHex: gasPayment.nativeCostHex,
       tokenCostHex: gasPayment.tokenCostHex,
@@ -109,7 +111,7 @@ function useAdjustedSendTx({enabled, input, asset, gasPayment}) {
     asset.decimals,
     asset.isNative,
     enabled,
-    gasPayment.isTokenPay,
+    gasPayment.method,
     gasPayment.nativeCostHex,
     gasPayment.tokenAddress,
     gasPayment.tokenCostHex,
