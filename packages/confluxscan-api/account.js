@@ -191,7 +191,7 @@ export async function transactionsESpace({
     let finished = false
     let list = []
     while (!finished) {
-      const res = await fetch(getURL(networkId), {
+      const res = await fetch(getURL(networkId, '/api'), {
         searchParams: {
           module: 'account',
           action: 'txlist',
