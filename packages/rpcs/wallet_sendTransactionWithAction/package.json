@@ -3,10 +3,10 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.2.0",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "dependencies": {
     "@fluent-wallet/consts": "workspace:*",
-    "@fluent-wallet/spec": "1.0.18",
+    "@fluent-wallet/spec": "1.0.19",
     "@fluent-wallet/utils": "workspace:*"
   }
 }

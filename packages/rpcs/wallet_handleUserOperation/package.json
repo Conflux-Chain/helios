@@ -2,11 +2,11 @@
   "name": "@fluent-wallet/wallet_handle-user-operation",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "dependencies": {
     "@fluent-wallet/bundler-client": "workspace:packages/bundler-client",
     "@fluent-wallet/consts": "workspace:packages/consts",
-    "@fluent-wallet/spec": "1.0.18"
+    "@fluent-wallet/spec": "1.0.19"
   }
 }

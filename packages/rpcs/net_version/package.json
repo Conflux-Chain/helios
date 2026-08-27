@@ -2,8 +2,8 @@
   "name": "@fluent-wallet/net_version",
   "type": "module",
   "main": "index.js",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.18"
+    "@fluent-wallet/spec": "1.0.19"
   }
 }

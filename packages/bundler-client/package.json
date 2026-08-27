@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/bundler-client",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "dependencies": {
     "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc",
