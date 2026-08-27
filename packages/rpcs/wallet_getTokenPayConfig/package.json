@@ -3,10 +3,10 @@
   "type": "module",
   "main": "index.js",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "@fluent-wallet/backend-client": "workspace:packages/backend-client",
     "@fluent-wallet/consts": "workspace:packages/consts",
-    "@fluent-wallet/spec": "1.0.18"
+    "@fluent-wallet/spec": "1.0.19"
   }
 }

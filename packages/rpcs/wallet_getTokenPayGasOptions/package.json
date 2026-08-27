@@ -4,10 +4,10 @@
   "main": "index.js",
   "private": true,
   "packageManager": "yarn@3.0.1",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "dependencies": {
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema",
-    "@fluent-wallet/spec": "1.0.18",
+    "@fluent-wallet/spec": "1.0.19",
     "@fluent-wallet/utils": "workspace:packages/utils",
     "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
   }
