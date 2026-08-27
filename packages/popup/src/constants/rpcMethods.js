@@ -15,6 +15,7 @@ export const WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK =
   'wallet_getAccountAddressByNetwork'
 export const WALLET_GET_EIP7702_ACCOUNT_STATES =
   'wallet_getEip7702AccountStates'
+export const WALLET_PREPARE_SPONSORSHIP = 'wallet_prepareSponsorship'
 export const WALLET_GET_TOKEN_PAY_CONFIG = 'wallet_getTokenPayConfig'
 export const WALLET_GET_TOKEN_PAY_GAS_OPTIONS = 'wallet_getTokenPayGasOptions'
 export const WALLET_PREPARE_TOKEN_PAY_QUOTE = 'wallet_prepareTokenPayQuote'
@@ -85,6 +86,7 @@ export const WALLET_GET_SIDE_PANEL_SUPPORTED = 'wallet_getSidePanelSupported'
 export const WALLET_UPDATE_ACCOUNT_GROUP = 'wallet_updateAccountGroup'
 export const WALLET_UPDATE_NETWORK = 'wallet_updateNetwork'
 export const WALLET_SEND_TRANSACTION = 'wallet_sendTransaction'
+export const WALLET_SEND_USER_OPERATION = 'wallet_sendUserOperation'
 export const WALLET_SEND_TRANSACTION_WITH_ACTION =
   'wallet_sendTransactionWithAction'
 export const ETH_GET_CHAIN_ID = 'eth_chainId'

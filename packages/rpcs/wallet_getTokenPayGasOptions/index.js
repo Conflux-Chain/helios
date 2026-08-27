@@ -2,7 +2,6 @@ import * as spec from '@fluent-wallet/spec'
 import genEthTxSchema from '@fluent-wallet/eth-transaction-schema'
 import {
   calcTokenAmountFromNativeAmount,
-  fetchTokenPayPrice,
   getTokenPayGasCostPrice,
   prepareGasTokenQuote,
   prepareTokenPayExecutionContext,
@@ -154,8 +153,7 @@ export const main = async ({
       let tokenPrice = ''
 
       try {
-        tokenPrice = await fetchTokenPayPrice(
-          context.tokenPayNetworkConfig.backendBaseUrl,
+        tokenPrice = await context.backendClient.getTokenPayPrice(
           gasToken.address,
         )
 

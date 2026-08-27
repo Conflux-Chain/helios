@@ -395,6 +395,10 @@ const en = {
     eip7702SwitchRequiredTitle: 'Bind switch required',
     eip7702SwitchRequiredDesc:
       'This account currently bound to a third party contract. Switch to Fluent Wallet for a better experience.',
+    eip7702SponsoredUpgradeTitle: 'Enable EIP-7702 Upgrade',
+    eip7702SponsoredUpgradeDesc:
+      'By upgrading, your account gains the following smart features.',
+    eip7702SponsoredUpgradeConfirm: 'Enable and continue',
     eip7702SwitchInfoTitle: 'Switch to EIP-7702 service',
     eip7702SwitchInfoDesc:
       'This account currently bound to a third party contract. Switch to Fluent Wallet for a better experience.',
@@ -498,6 +502,9 @@ const en = {
     transactionSubmissionFailed: 'Transaction Submission Failed',
     pendingGasSponsoredTransaction:
       'You have a pending gas-sponsored transaction. Please try again later.',
+    gasSponsorshipRefreshRequiredTitle: 'Gas Sponsorship No Longer Valid',
+    gasSponsorshipRefreshRequiredContent:
+      'This gas sponsorship is no longer valid. Please resubmit your transaction.',
     tokenPayGasChangedTitle: 'Gas Changed',
     tokenPayGasChangedContent:
       'The required token amount for gas has changed. Please confirm the new quote before submitting.',

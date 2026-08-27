@@ -381,6 +381,9 @@ const zh = {
     eip7702SwitchRequiredTitle: '需要切换绑定',
     eip7702SwitchRequiredDesc:
       '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
+    eip7702SponsoredUpgradeTitle: '启用 EIP-7702 升级',
+    eip7702SponsoredUpgradeDesc: '升级后，您的账户将获得以下智能功能。',
+    eip7702SponsoredUpgradeConfirm: '启用并继续',
     eip7702SwitchInfoTitle: '切换到 EIP-7702 服务',
     eip7702SwitchInfoDesc:
       '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
@@ -479,6 +482,9 @@ const zh = {
     transactionSubmissionFailed: '交易提交失败',
     pendingGasSponsoredTransaction:
       '检测到有未完成的燃气费代付交易，请稍后再试',
+    gasSponsorshipRefreshRequiredTitle: '燃气费代付失效',
+    gasSponsorshipRefreshRequiredContent:
+      '本次燃气费代付已失效，请重新提交交易',
     tokenPayGasChangedTitle: '燃气费有变化',
     tokenPayGasChangedContent:
       '当前支付燃气费所需 token 数量有变化，请核实新报价后再提交',

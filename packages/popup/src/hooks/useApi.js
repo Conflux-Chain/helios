@@ -451,18 +451,29 @@ export const useIsCfxChain = () => {
   return type === NETWORK_TYPE.CFX || symbol?.toLowerCase() === NETWORK_TYPE.CFX
 }
 
-export const useAddressType = address => {
-  const netId = useCurrentAddress().data.network.netId
+export const useAddressTypeInfo = address => {
+  const {
+    data: {
+      network: {eid: networkId, netId},
+    },
+  } = useCurrentAddress()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const isValidAddress = validateAddress(address, networkTypeIsCfx, netId)
-  const {
-    data: {type},
-  } = useRPC(
-    isValidAddress ? [WALLET_DETECT_ADDRESS_TYPE, address] : null,
+  const {data} = useRPC(
+    isValidAddress && isNumber(networkId)
+      ? [WALLET_DETECT_ADDRESS_TYPE, networkId, address]
+      : null,
     {address},
-    {fallbackData: {}},
+    {
+      fallbackData: {},
+      refreshInterval: 0,
+    },
   )
-  return type
+  return data || {}
+}
+
+export const useAddressType = address => {
+  return useAddressTypeInfo(address).type
 }
 
 export const useDbRefetchBalance = (params = {}) => {
@@ -649,11 +660,20 @@ export const useGroupAccountAuthorizedDapps = () => {
 }
 
 export const useValid20Token = address => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+
   const {data: token} = useRPC(
-    address ? [WALLET_VALIDATE_20TOKEN, address] : null,
+    address && isNumber(networkId)
+      ? [WALLET_VALIDATE_20TOKEN, networkId, address]
+      : null,
     {tokenAddress: address},
     {
       fallbackData: {},
+      refreshInterval: 0,
       postprocessSuccessData: d => (address ? {...(d || {}), address} : d),
     },
   )

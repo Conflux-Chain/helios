@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types'
-import {useState, useEffect, useRef} from 'react'
-import {Big} from '@fluent-wallet/data-format'
+import {useState, useEffect} from 'react'
 import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import dayjs from 'dayjs'
-import {isUndefined, isNumber} from '@fluent-wallet/checks'
+import {isUndefined} from '@fluent-wallet/checks'
 import {convertDataToValue} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {cfxGetFeeData, ethGetFeeData} from '@fluent-wallet/estimate-tx'
@@ -32,6 +31,7 @@ import {
   HistoryBalance,
   ResendButtons,
 } from './'
+import {shouldShowNegativeAmount} from '../amount'
 import {getEip7702DelegateAddress} from './eip7702'
 
 const ICON_COLOR = {
@@ -42,7 +42,6 @@ const ICON_COLOR = {
 }
 
 function HistoryItem({
-  containerScrollTop = 0,
   status,
   created,
   extra,
@@ -58,14 +57,12 @@ function HistoryItem({
   copyButtonToastClassName,
 }) {
   const history = useHistory()
-  const historyItemRef = useRef(null)
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
   const [amount, setAmount] = useState('')
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const [showDetail, setShowDetail] = useState(false)
-  const [isHide, setIsHide] = useState(false)
 
   const {t} = useTranslation()
   const dappIconUrl = useDappIcon(app?.site?.icon)
@@ -92,9 +89,9 @@ function HistoryItem({
   const {data: nsName} = useServiceName({
     type: network?.type,
     netId: network?.netId,
+    networkId: network?.eid,
     provider: window?.___CFXJS_USE_RPC__PRIVIDER,
     address: toAddress,
-    notSend: isHide,
   })
 
   const fromAddress = payload?.from || ''
@@ -103,9 +100,6 @@ function HistoryItem({
   // is external transition
   const isExternalTx =
     currentAddress !== payload?.from && currentAddress === payload?.to
-  // show negative amount
-  const isNegativeAmount =
-    amount != 0 && actionName !== 'Approve' && !isExternalTx
   // color according to tx status
   const statusIconColor = ICON_COLOR?.[txStatus] ?? ''
 
@@ -141,6 +135,26 @@ function HistoryItem({
   const {decodeData} = useDecodeData({
     to: payload?.to,
     data: payload?.data,
+  })
+
+  const isTokenAction =
+    token20 &&
+    (decodeData?.name === 'transfer' ||
+      decodeData?.name === 'transferFrom' ||
+      decodeData?.name === 'approve')
+  const displayAddressRole = isExternalTx
+    ? 'fromAddress'
+    : isTokenAction
+    ? 'toAddress'
+    : contractInteraction
+    ? 'contract'
+    : 'toAddress'
+  const isNegativeAmount = shouldShowNegativeAmount({
+    amount,
+    methodName: decodeData?.name,
+    methodArgs: decodeData?.args,
+    accountAddress: currentAddress,
+    isExternalTx,
   })
 
   const onCancelPendingTx = () => {
@@ -263,22 +277,10 @@ function HistoryItem({
     decodeData?.args,
   ])
 
-  useEffect(() => {
-    const clientHeight = historyItemRef?.current?.clientHeight
-    const offsetTop = historyItemRef?.current?.offsetTop
-    if (
-      isNumber(clientHeight) &&
-      isNumber(containerScrollTop) &&
-      isNumber(offsetTop)
-    ) {
-      const distanceToParent = new Big(offsetTop).minus(52)
-      setIsHide(distanceToParent.lt(new Big(containerScrollTop)))
-    }
-  }, [containerScrollTop])
   if (!actionName || !contractName) return null
 
   return (
-    <div ref={historyItemRef} className="pt-3">
+    <div className="pt-3">
       <div
         className="flex items-center cursor-pointer p-3 bg-white mx-3 rounded"
         aria-hidden="true"
@@ -346,6 +348,7 @@ function HistoryItem({
         isExternalTx={isExternalTx}
         fromAddress={fromAddress}
         toAddress={toAddress}
+        displayAddressRole={displayAddressRole}
         nsName={nsName}
         actionName={actionName}
         copyButtonContainerClassName={copyButtonContainerClassName}
@@ -368,7 +371,6 @@ function HistoryItem({
 }
 
 HistoryItem.propTypes = {
-  containerScrollTop: PropTypes.number.isRequired,
   status: PropTypes.number.isRequired,
   created: PropTypes.number.isRequired,
   pendingAt: PropTypes.number,

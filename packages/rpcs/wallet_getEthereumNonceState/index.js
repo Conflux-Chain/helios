@@ -10,11 +10,11 @@ export const schemas = {
 export const permissions = {
   locked: true,
   methods: ['eth_getTransactionCount'],
-  db: ['getUnfinishedTx', 'getTxById'],
+  db: ['getUnfinishedTx', 'getTxById', 'getOccupiedEip7702AuthorizationNonces'],
 }
 
 export const main = async ({
-  db: {getUnfinishedTx, getTxById},
+  db: {getUnfinishedTx, getTxById, getOccupiedEip7702AuthorizationNonces},
   rpcs: {eth_getTransactionCount},
   params: [address],
   network,
@@ -58,6 +58,18 @@ export const main = async ({
       }
     }
   }
+
+  const occupiedAuthorizationNonces = getOccupiedEip7702AuthorizationNonces({
+    sender: lowercaseAddress,
+    chainId,
+  })
+
+  occupiedNonces.push(
+    ...occupiedAuthorizationNonces.map(authorizationNonce =>
+      toHexQuantity(authorizationNonce),
+    ),
+  )
+
   const networkPendingNonce = await eth_getTransactionCount(
     {
       errorFallThrough: true,

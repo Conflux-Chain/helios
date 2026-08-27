@@ -1,12 +1,8 @@
 import {map, dbid, oneOrMore} from '@fluent-wallet/spec'
-import {
-  EIP7702_DELEGATION_PREFIX,
-  EIP7702_NETWORK_CONFIGS,
-} from '@fluent-wallet/consts'
+import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
+import {getEip7702DelegateAddressFromCode} from '@fluent-wallet/detect-address-type'
 
 export const NAME = 'wallet_getEip7702AccountStates'
-
-const EIP7702_DELEGATION_CODE_LENGTH = EIP7702_DELEGATION_PREFIX.length + 40
 
 export const schemas = {
   input: [
@@ -30,25 +26,16 @@ function parseEip7702AccountCode(accountCodeHex, configuredDelegateAddress) {
     }
   }
 
-  const lowerCaseAccountCodeHex = accountCodeHex.toLowerCase()
-  const lowerCaseConfiguredDelegateAddress =
-    configuredDelegateAddress.toLowerCase()
+  const delegatedAddress = getEip7702DelegateAddressFromCode(accountCodeHex)
 
-  if (
-    !lowerCaseAccountCodeHex.startsWith(EIP7702_DELEGATION_PREFIX) ||
-    lowerCaseAccountCodeHex.length !== EIP7702_DELEGATION_CODE_LENGTH
-  ) {
+  if (!delegatedAddress) {
     return {
       state: 'unsupportedCode',
       delegatedAddress: null,
     }
   }
 
-  const delegatedAddress = `0x${lowerCaseAccountCodeHex.slice(
-    EIP7702_DELEGATION_PREFIX.length,
-  )}`
-
-  if (delegatedAddress === lowerCaseConfiguredDelegateAddress) {
+  if (delegatedAddress === configuredDelegateAddress.toLowerCase()) {
     return {
       state: 'delegatedToConfigured',
       delegatedAddress,

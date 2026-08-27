@@ -32,7 +32,7 @@ import {
   useAddress,
   useBalance,
   useNetworkTypeIsCfx,
-  useAddressType,
+  useAddressTypeInfo,
   useValid20Token,
   usePendingAuthReq,
   useNetwork1559Compatible,
@@ -230,7 +230,11 @@ const defaultSendTransactionParams = {
   customNonce: '',
   sendTokenId: 'native',
   customAllowance: '',
-  gasTokenAddress: '',
+
+  // null means the user has not explicitly selected a gas payment method.
+  gasPayment: null,
+  sponsorshipDeclined: false,
+
   tx: {},
   txContext: {},
   // Internal preset-tx flows turn this off to avoid overwriting tx from send-form state.
@@ -268,7 +272,8 @@ export const useCurrentTxStore = create((set, get) => ({
   clearAdvancedGasSetting: () =>
     set({advancedGasSetting: initAdvancedGasSetting}),
   setCustomAllowance: customAllowance => set({customAllowance}),
-  setGasTokenAddress: gasTokenAddress => set({gasTokenAddress}),
+  setGasPayment: gasPayment => set({gasPayment}),
+  setSponsorshipDeclined: sponsorshipDeclined => set({sponsorshipDeclined}),
   setNonce: nonce => set({nonce}),
   setCustomNonce: customNonce => set({customNonce}),
   setSendTokenId: sendTokenId => set({sendTokenId}),
@@ -398,17 +403,20 @@ export const useDecodeData = ({to, data: rawData} = {}) => {
   const data = padHexData(rawData)
   const [decodeData, setDecodeData] = useState({})
   const [isDecoding, setIsDecoding] = useState(false)
-  const type = useAddressType(to)
+  const {type, eip7702Delegated} = useAddressTypeInfo(to)
   const {
     data: {
       network: {netId, type: currentNetworkType},
     },
   } = useCurrentAddress()
 
-  const isContract = type === 'contract' || type === 'builtin'
-  const isOutContract = type === 'contract'
+  const isContract =
+    (type === 'contract' || type === 'builtin') &&
+    !(eip7702Delegated && data === '0x')
+  const shouldValidateToken =
+    type === 'contract' && isContract && !eip7702Delegated
   const isEOAAddress = !isContract && !!type
-  const crc20Token = useValid20Token(isOutContract ? to : '')
+  const crc20Token = useValid20Token(shouldValidateToken ? to : '')
 
   useEffect(() => {
     if (!!data && data !== '0x') {
@@ -819,13 +827,14 @@ export const useInputAddressInfo = ({
     loading,
   }
 }
-
 export const useServiceName = (
-  {type, netId, provider, address, notSend = false},
+  {type, networkId, netId, provider, address, notSend = false},
   opts,
 ) => {
   return useSWR(
-    type && provider && address && !notSend ? [type, netId, address] : null,
+    type && provider && address && !notSend
+      ? ['serviceName', type, networkId, netId, address]
+      : null,
     () =>
       getSingleServiceNameWithAddress({
         type,
@@ -833,17 +842,20 @@ export const useServiceName = (
         provider,
         address,
       }),
-    opts,
+    {
+      refreshInterval: 0,
+      ...opts,
+    },
   )
 }
 
 export const useServiceNames = (
-  {type, netId, provider, addressArr, notSend = false},
+  {type, networkId, netId, provider, addressArr, notSend = false},
   opts,
 ) => {
   return useSWR(
-    type && provider && isArray(addressArr) && addressArr?.length && !notSend
-      ? [type, netId, [...addressArr]]
+    type && provider && isArray(addressArr) && addressArr.length && !notSend
+      ? ['serviceNames', type, networkId, netId, [...addressArr]]
       : null,
     () =>
       getServiceNamesWithAddresses({
@@ -852,16 +864,21 @@ export const useServiceNames = (
         provider,
         addressArr: [...addressArr],
       }),
-    opts,
+    {
+      refreshInterval: 0,
+      ...opts,
+    },
   )
 }
 
 export const useAddressWithServiceName = (
-  {type, netId, provider, name, notSend = false},
+  {type, networkId, netId, provider, name, notSend = false},
   opts,
 ) => {
   return useSWR(
-    type && provider && name && !notSend ? [type, netId, name] : null,
+    type && provider && name && !notSend
+      ? ['addressWithServiceName', type, networkId, netId, name]
+      : null,
     () =>
       getSingleAddressWithNameService({
         type,
@@ -869,6 +886,9 @@ export const useAddressWithServiceName = (
         provider: window?.___CFXJS_USE_RPC__PRIVIDER,
         name,
       }),
-    opts,
+    {
+      refreshInterval: 0,
+      ...opts,
+    },
   )
 }

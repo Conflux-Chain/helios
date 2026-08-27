@@ -21,6 +21,10 @@ function GasFee({
   contentClassName = '',
   prefix,
   suffix,
+  displayFee,
+  sponsored = false,
+  editDisabled = false,
+  editLabel,
 }) {
   const {gasPrice, maxFeePerGas, gasLevel} = useCurrentTxStore()
   const txGasPrice = uses1559Fees ? maxFeePerGas : gasPrice
@@ -51,6 +55,11 @@ function GasFee({
   )
 
   const displayGasPrice = useDebouncedValue(txGasPrice, [txGasPrice])
+  const feeBalance = displayFee?.balance ?? realPayedFeeDrip
+  const feeSymbol = displayFee?.symbol ?? symbol
+  const feeDecimals = displayFee?.decimals ?? decimals
+  const hasExistingSponsorship = isBePayed && sponsoredFeeDrip !== '0x0'
+  const isEditDisabled = editDisabled || !feeBalance || !displayGasPrice
 
   return (
     <div className="gas-fee-container flex flex-col">
@@ -62,10 +71,14 @@ function GasFee({
           <span className="flex items-center">
             <Link
               onClick={() => history.push(EDIT_GAS_FEE)}
-              disabled={!realPayedFeeDrip || !displayGasPrice}
+              disabled={isEditDisabled}
             >
-              {uses1559Fees ? t(gasLevel) : t('edit')}
-              <RightOutlined className="w-3 h-3 text-primary ml-1" />
+              {editLabel || (uses1559Fees ? t(gasLevel) : t('edit'))}
+              <RightOutlined
+                className={`ml-1 h-3 w-3 ${
+                  editDisabled ? 'text-gray-40' : 'text-primary'
+                }`}
+              />
             </Link>
           </span>
         )}
@@ -78,15 +91,17 @@ function GasFee({
         <div className="min-w-0 flex-1 flex flex-col">
           <DisplayBalance
             id="realPayedFee"
-            balance={realPayedFeeDrip}
+            balance={feeBalance}
             maxWidth={202}
             maxWidthStyle="max-w-[202px]"
-            className="text-lg mb-0.5 font-medium"
-            symbol={symbol}
-            decimals={decimals}
+            className={`text-lg mb-0.5 font-medium ${
+              sponsored ? '!text-gray-40 line-through' : ''
+            }`}
+            symbol={feeSymbol}
+            decimals={feeDecimals}
             initialFontSize={20}
           />
-          {isBePayed && sponsoredFeeDrip !== '0x0' && (
+          {!sponsored && hasExistingSponsorship && (
             <div className="flex text-gray-40">
               <span>{`${t('sponsored')}:`}&nbsp;</span>
               <DisplayBalance
@@ -108,7 +123,7 @@ function GasFee({
           )}
         </div>
         {suffix && <div className="shrink-0">{suffix}</div>}
-        {isBePayed && sponsoredFeeDrip !== '0x0' && (
+        {(sponsored || hasExistingSponsorship) && (
           <CustomTag
             width="w-auto"
             textColor="text-white"
@@ -116,7 +131,7 @@ function GasFee({
             className="absolute right-0 top-0 !h-6 px-2"
           >
             <span className="text-2xs text-white">
-              {isBeAllPayed ? t('sponsored') : t('partSponsored')}
+              {sponsored || isBeAllPayed ? t('sponsored') : t('partSponsored')}
             </span>
           </CustomTag>
         )}
@@ -135,6 +150,14 @@ GasFee.propTypes = {
   uses1559Fees: PropTypes.bool,
   prefix: PropTypes.node,
   suffix: PropTypes.node,
+  displayFee: PropTypes.shape({
+    balance: PropTypes.string,
+    symbol: PropTypes.string,
+    decimals: PropTypes.number,
+  }),
+  sponsored: PropTypes.bool,
+  editDisabled: PropTypes.bool,
+  editLabel: PropTypes.string,
 }
 
 export default GasFee

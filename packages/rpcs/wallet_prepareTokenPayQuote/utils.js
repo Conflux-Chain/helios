@@ -3,6 +3,7 @@ import {iface as erc20Iface} from '@fluent-wallet/contract-abis/777.js'
 import BN from 'bn.js'
 import {addHexPrefix, stripHexPrefix} from '@fluent-wallet/utils'
 import {resolveTransactionNonces} from '@fluent-wallet/nonce-manager'
+import {createBackendClient} from '@fluent-wallet/backend-client'
 
 const ONE_HUNDRED = new BN(100)
 const TEN_18 = new BN('1000000000000000000', 10)
@@ -151,29 +152,6 @@ export async function estimateQuoteGasCost({
     gasCost,
   }
 }
-
-export async function fetchTokenPayPrice(backendBaseUrl, tokenAddress) {
-  const response = await fetch(
-    `${backendBaseUrl}/tokenpay/price?token=${tokenAddress}`,
-    {
-      method: 'GET',
-      headers: {'Content-Type': 'application/json'},
-    },
-  )
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch token-pay price')
-  }
-
-  const result = await response.json()
-
-  if (result.code !== 0) {
-    throw new Error('Failed to fetch token-pay price')
-  }
-
-  return result.data
-}
-
 function resolveTokenPayTxType({userTx, network1559Compatible}) {
   if (userTx.authorizationList) return ETH_TX_TYPES.EIP7702
   if (userTx.type) return userTx.type
@@ -232,14 +210,15 @@ export async function prepareTokenPayBaseContext({
     throw InvalidParams('Token pay is not available on current network')
   }
 
+  const backendClient = createBackendClient({
+    baseUrl: tokenPayNetworkConfig.backendBaseUrl,
+  })
+
   const quoteToken = tokenPayConfig.quoteToken
   let quoteTokenPrice = null
   if (quoteToken) {
     try {
-      quoteTokenPrice = await fetchTokenPayPrice(
-        tokenPayNetworkConfig.backendBaseUrl,
-        quoteToken.address,
-      )
+      quoteTokenPrice = await backendClient.getTokenPayPrice(quoteToken.address)
     } catch (err) {
       if (!ignoreQuoteTokenPriceError) throw err
     }
@@ -249,7 +228,7 @@ export async function prepareTokenPayBaseContext({
     network,
     accountAddress,
     tokenPayConfig,
-    tokenPayNetworkConfig,
+    backendClient,
     quoteToken,
     quoteTokenPrice,
   }

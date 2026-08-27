@@ -97,6 +97,12 @@ export const MAX_STRATEGY = {
   DEFERRED: 'deferred',
 }
 
+export const GAS_PAYMENT_METHOD = {
+  NATIVE: 'native',
+  TOKEN: 'token',
+  SPONSORED: 'sponsored',
+}
+
 export const HARDWARE_ACCOUNT_PAGE_LIMIT = 5
 
 export const FULL_WINDOW_ROUTES = [CONNECT_HARDWARE_WALLET, IMPORT_HW_ACCOUNT]

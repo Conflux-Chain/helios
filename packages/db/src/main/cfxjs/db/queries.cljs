@@ -1673,6 +1673,99 @@
 (defn set-tx-chain-switched [{:keys [hash]}]
   (t [{:db/id [:tx/hash hash] :tx/chainSwitched true}]))
 
+(defn insert-user-operation
+  [{:keys [addressId
+           appId
+           hash
+           sender
+           chainId
+           entryPoint
+           nonce
+           calls
+           paymaster
+           authorizationNonce
+           delegateAddress]}]
+  (let [operation (-> {:db/id -1
+                       :userOperation/hash hash
+                       :userOperation/sender sender
+                       :userOperation/chainId chainId
+                       :userOperation/entryPoint entryPoint
+                       :userOperation/nonce nonce
+                       :userOperation/status "pending"
+                       :userOperation/calls calls
+                       :userOperation/created (.now js/Date)}
+                      (enc/assoc-when
+                       :userOperation/paymaster
+                       paymaster)
+                      (enc/assoc-when
+                       :userOperation/authorizationNonce
+                       authorizationNonce)
+                      (enc/assoc-when
+                       :userOperation/delegateAddress
+                       delegateAddress))
+        txs (cond-> [operation
+                     {:db/id addressId
+                      :address/userOperation -1}]
+              (some? appId)
+              (conj {:db/id appId
+                     :app/userOperation -1}))
+        tx-report (t txs)]
+    (get-in tx-report [:tempids -1])))
+
+(defn get-one-user-operation [{:keys [hash]}]
+  (some-> (p '[*] [:userOperation/hash hash])
+          prst->js))
+
+(defn get-unfinished-user-operations []
+  (->> (q '[:find ?hash ?network
+            :where
+            [?operation :userOperation/hash ?hash]
+            [?operation :userOperation/status "pending"]
+            [?address :address/userOperation ?operation]
+            [?address :address/network ?network]])
+       (mapv (fn [[hash network-id]]
+               {:hash hash :networkId network-id}))))
+
+(defn set-user-operation-included
+  [{:keys [hash transactionHash receipt success]}]
+  (t [{:db/id [:userOperation/hash hash]
+        :userOperation/status "included"
+        :userOperation/transactionHash transactionHash
+        :userOperation/receipt receipt
+        :userOperation/success success
+        :userOperation/includedAt (.now js/Date)}]))
+
+(defn set-user-operation-failed [{:keys [hash error]}]
+  (t [{:db/id [:userOperation/hash hash]
+        :userOperation/status "failed"
+        :userOperation/error error}]))
+
+(defn get-occupied-user-operation-nonces
+  [{:keys [sender chainId entryPoint]}]
+  (q '[:find [?nonce ...]
+        :in $ ?sender ?chain-id ?entry-point
+        :where
+        [?operation :userOperation/sender ?sender]
+        [?operation :userOperation/chainId ?chain-id]
+        [?operation :userOperation/entryPoint ?entry-point]
+        [?operation :userOperation/status "pending"]
+        [?operation :userOperation/nonce ?nonce]]
+      sender
+      chainId
+      entryPoint))
+
+(defn get-occupied-eip7702-authorization-nonces
+  [{:keys [sender chainId]}]
+  (q '[:find [?nonce ...]
+       :in $ ?sender ?chain-id
+       :where
+       [?operation :userOperation/sender ?sender]
+       [?operation :userOperation/chainId ?chain-id]
+       [?operation :userOperation/status "pending"]
+       [?operation :userOperation/authorizationNonce ?nonce]]
+     sender
+     chainId))
+
 (defn get-txs-to-enrich
   ([] (get-txs-to-enrich {}))
   ([{:keys [txhash type]}]
@@ -2097,23 +2190,10 @@
      :currentNetwork cur-net
      :accountGroups  data}))
 
-(defn- sort-tx [[_ _ createda] [_ _ createdb]]
-  (cond
-    ;; sort by created
-    (> createda createdb)
-    true
-
-    ;; ;; sort by nonce
-    ;; (.gt (bn/BigNumber.from noncea)
-    ;;      (bn/BigNumber.from nonceb))
-    ;; true
-
-    ;; ;; sort by created order when with same nonce
-    ;; (.eq (bn/BigNumber.from noncea)
-    ;;      (bn/BigNumber.from nonceb))
-    ;; (> txa txb)
-    :else
-    false))
+(defn- sort-history-entry [[_ id-a created-a] [_ id-b created-b]]
+  (if (= created-a created-b)
+    (> id-a id-b)
+    (> created-a created-b)))
 
 (defn- ->single-nonce-tx-id
   "filter txs with same nonce and add tx/created value"
@@ -2124,6 +2204,11 @@
                           [tx-id (:tx/status tx) (:tx/created tx)])))
        (sort-by second >)
        first))
+
+(defn- app-id->history-data [id]
+  (when id
+    (-> (.toMap (e :app id))
+        (dissoc :userOperation))))
 
 (defn- tx-id->data [id]
   (let [app-id   (->> id
@@ -2137,8 +2222,53 @@
                       first
                       :db/id)]
     (-> (.toMap (e :tx id))
-        (assoc :app (and app-id (e :app app-id)))
+        (assoc :type "transaction")
+        (assoc :app (app-id->history-data app-id))
         (assoc :token (and token-id (e :token token-id))))))
+
+(defn- user-operation-id->data [id]
+  (let [app-id (->> id
+                    (p [:app/_userOperation [:db/id]])
+                    :app/_userOperation
+                    first
+                    :db/id)]
+    (-> (.toMap (e :userOperation id))
+        (assoc :type "userOperation")
+        (assoc :app (app-id->history-data app-id)))))
+
+(defn- query-user-operation-entries
+  [{:keys [addressId appId tokenId extraType status pendingOnly]}]
+  (let [{ext-and :and ext-or :or} (when (map? extraType) extraType)
+        transaction-only-filter? (or (some? tokenId)
+                                     (some? status)
+                                     (seq ext-and)
+                                     (seq ext-or))]
+    ;; These filters refer to relations or numeric states owned by transactions.
+    (if transaction-only-filter?
+      []
+      (let [query-initial
+            (cond-> '{:find [?operation ?created]
+                      :in [$]
+                      :where [[?operation :userOperation/created ?created]]
+                      :args []}
+              addressId
+              (-> (update :args conj addressId)
+                  (update :in conj '?address)
+                  (update :where conj
+                          '[?address :address/userOperation ?operation]))
+              appId
+              (-> (update :args conj appId)
+                  (update :in conj '?app)
+                  (update :where conj
+                          '[?app :app/userOperation ?operation]))
+              pendingOnly
+              (update :where conj
+                      '[?operation :userOperation/status "pending"]))
+            query (concat [:find] (:find query-initial)
+                          [:in] (:in query-initial)
+                          [:where] (:where query-initial))]
+        (mapv (fn [[id created]] [:userOperation id created])
+              (apply q query (:args query-initial)))))))
 
 (defn get-tx-with-same-nonce [{:keys [hash]}]
   (let [txs
@@ -2166,7 +2296,8 @@
     (when tx
       (tx-id->data tx))))
 
-(defnc query-tx-list [{:keys [offset limit addressId tokenId appId extraType status countOnly]}]
+(defnc query-tx-list
+  [{:keys [offset limit addressId tokenId appId extraType status pendingOnly countOnly]}]
   ;; :do (js/console.time "query-tx-list")
   :let [offset (or offset 0)
         limit  (min 100 (or limit 10))
@@ -2208,6 +2339,10 @@
           (-> (update :where into ext-and-where))
           ext-or-where
           (-> (update :where into ext-or-where))
+          pendingOnly
+          (-> (update :where into '[[?tx :tx/status ?status]
+                                    [(>= ?status 0)]
+                                    [(< ?status 4)]]))
           (int? status)
           (-> (update :args conj status)
               (update :in conj '?target-status)
@@ -2243,23 +2378,34 @@
                       [:in] (:in query-initial)
                       [:where] (:where query-initial))
 
-        txs   (apply q query (:args query-initial))
-        total (count txs)]
+        txs (apply q query (:args query-initial))
+        transaction-entries
+        (->> txs
+             (map ->single-nonce-tx-id)
+             (map (fn [[id _ created]] [:transaction id created])))
+        user-operation-entries
+        (query-user-operation-entries
+         {:addressId addressId
+          :appId appId
+          :tokenId tokenId
+          :extraType extraType
+          :status status
+          :pendingOnly pendingOnly})
+        history-entries (concat transaction-entries user-operation-entries)
+        total (count history-entries)]
   countOnly  total
-  :let  [txs (->> txs
-                  ;; ["0x1a" #{188 192}]
-                  ;; ["nonce" #{tx-id1 tx-id2}]
-                  ;; tx-id1 tx-id2 has same nonce
-                  (map ->single-nonce-tx-id)
-                  (sort sort-tx)
-                  (drop offset)
-                  (take limit)
-                  ;; get tx-id
-                  (map first)
-                  (map tx-id->data))]
+  :let [history (->> history-entries
+                     (sort sort-history-entry)
+                     (drop offset)
+                     (take limit)
+                     (mapv
+                      (fn [[type id _]]
+                        (case type
+                          :transaction (tx-id->data id)
+                          :userOperation (user-operation-id->data id)))))]
   ;; :do (js/console.timeEnd "query-tx-list")
   {:total total
-   :data  txs})
+   :data history})
 
 (comment
   (query-tx-list {}))
@@ -2322,6 +2468,13 @@
               :setTxExecuted                       set-tx-executed
               :setTxConfirmed                      set-tx-confirmed
               :setTxChainSwitched                  set-tx-chain-switched
+              :insertUserOperation                 insert-user-operation
+              :getOneUserOperation                 get-one-user-operation
+              :getUnfinishedUserOperations         get-unfinished-user-operations
+              :setUserOperationIncluded            set-user-operation-included
+              :setUserOperationFailed              set-user-operation-failed
+              :getOccupiedUserOperationNonces      get-occupied-user-operation-nonces
+              :getOccupiedEip7702AuthorizationNonces get-occupied-eip7702-authorization-nonces
               :setTxUnsent                         set-tx-unsent
               :forceSetTxStatus                    force-set-tx-status
               :getTxsToEnrich                      get-txs-to-enrich
