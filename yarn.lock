@@ -5610,27 +5610,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/wallet_get-token-pay-config@workspace:packages/rpcs/wallet_getTokenPayConfig":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/wallet_get-token-pay-config@workspace:packages/rpcs/wallet_getTokenPayConfig"
-  dependencies:
-    "@fluent-wallet/backend-client": "workspace:packages/backend-client"
-    "@fluent-wallet/consts": "workspace:packages/consts"
-    "@fluent-wallet/spec": "npm:1.0.19"
-  languageName: unknown
-  linkType: soft
-
-"@fluent-wallet/wallet_get-token-pay-gas-options@workspace:packages/rpcs/wallet_getTokenPayGasOptions":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/wallet_get-token-pay-gas-options@workspace:packages/rpcs/wallet_getTokenPayGasOptions"
-  dependencies:
-    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
-    "@fluent-wallet/spec": "npm:1.0.19"
-    "@fluent-wallet/utils": "workspace:packages/utils"
-    "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
-  languageName: unknown
-  linkType: soft
-
 "@fluent-wallet/wallet_get-user-operation-nonce-state@workspace:packages/rpcs/wallet_getUserOperationNonceState":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-user-operation-nonce-state@workspace:packages/rpcs/wallet_getUserOperationNonceState"
@@ -5769,21 +5748,6 @@ __metadata:
     "@fluent-wallet/nonce-manager": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.19"
     "@fluent-wallet/user-operation": "workspace:packages/user-operation"
-  languageName: unknown
-  linkType: soft
-
-"@fluent-wallet/wallet_prepare-token-pay-quote@workspace:packages/rpcs/wallet_prepareTokenPayQuote":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/wallet_prepare-token-pay-quote@workspace:packages/rpcs/wallet_prepareTokenPayQuote"
-  dependencies:
-    "@fluent-wallet/backend-client": "workspace:packages/backend-client"
-    "@fluent-wallet/consts": "workspace:packages/consts"
-    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
-    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
-    "@fluent-wallet/nonce-manager": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.19"
-    "@fluent-wallet/utils": "workspace:packages/utils"
-    bn.js: "npm:5.2.0"
   languageName: unknown
   linkType: soft
 
@@ -5963,22 +5927,6 @@ __metadata:
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/spec": "npm:1.0.19"
     webextension-polyfill: "npm:0.8.0"
-  languageName: unknown
-  linkType: soft
-
-"@fluent-wallet/wallet_submit-token-pay-transaction@workspace:packages/rpcs/wallet_submitTokenPayTransaction":
-  version: 0.0.0-use.local
-  resolution: "@fluent-wallet/wallet_submit-token-pay-transaction@workspace:packages/rpcs/wallet_submitTokenPayTransaction"
-  dependencies:
-    "@fluent-wallet/backend-client": "workspace:packages/backend-client"
-    "@fluent-wallet/consts": "workspace:packages/consts"
-    "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
-    "@fluent-wallet/nonce-manager": "workspace:*"
-    "@fluent-wallet/signature": "workspace:packages/signature"
-    "@fluent-wallet/spec": "npm:1.0.19"
-    "@fluent-wallet/utils": "workspace:packages/utils"
-    "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
-    bn.js: "npm:5.2.0"
   languageName: unknown
   linkType: soft
 
@@ -18688,8 +18636,6 @@ __metadata:
     "@fluent-wallet/wallet_get-preferences": "workspace:*"
     "@fluent-wallet/wallet_get-side-panel-enabled": "workspace:*"
     "@fluent-wallet/wallet_get-side-panel-supported": "workspace:*"
-    "@fluent-wallet/wallet_get-token-pay-config": "workspace:packages/rpcs/wallet_getTokenPayConfig"
-    "@fluent-wallet/wallet_get-token-pay-gas-options": "workspace:packages/rpcs/wallet_getTokenPayGasOptions"
     "@fluent-wallet/wallet_get-user-operation-nonce-state": "workspace:packages/rpcs/wallet_getUserOperationNonceState"
     "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-eth-tx": "workspace:*"
@@ -18704,7 +18650,6 @@ __metadata:
     "@fluent-wallet/wallet_metadata-for-popup": "workspace:*"
     "@fluent-wallet/wallet_network1559compatible": "workspace:*"
     "@fluent-wallet/wallet_prepare-sponsorship": "workspace:packages/rpcs/wallet_prepareSponsorship"
-    "@fluent-wallet/wallet_prepare-token-pay-quote": "workspace:packages/rpcs/wallet_prepareTokenPayQuote"
     "@fluent-wallet/wallet_prepare-user-operation": "workspace:packages/rpcs/wallet_prepareUserOperation"
     "@fluent-wallet/wallet_refetch-balance": "workspace:packages/rpcs/wallet_refetchBalance"
     "@fluent-wallet/wallet_refetch-token-list": "workspace:packages/rpcs/wallet_refetchTokenList"
@@ -18723,7 +18668,6 @@ __metadata:
     "@fluent-wallet/wallet_set-preferences": "workspace:*"
     "@fluent-wallet/wallet_set-side-panel-behavior": "workspace:*"
     "@fluent-wallet/wallet_set-side-panel-enabled": "workspace:*"
-    "@fluent-wallet/wallet_submit-token-pay-transaction": "workspace:packages/rpcs/wallet_submitTokenPayTransaction"
     "@fluent-wallet/wallet_unlock": "workspace:packages/rpcs/wallet_unlock"
     "@fluent-wallet/wallet_unwatch-asset": "workspace:packages/rpcs/wallet_unwatchAsset"
     "@fluent-wallet/wallet_update-account": "workspace:packages/rpcs/wallet_updateAccount"

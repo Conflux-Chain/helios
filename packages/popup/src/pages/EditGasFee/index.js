@@ -14,15 +14,12 @@ import Button from '@fluent-wallet/component-button'
 import {TitleNav, GasCost} from '../../components'
 import {GasStation} from './components'
 import {useCurrentTxStore, useUses1559Fees, useEstimateTx} from '../../hooks'
-import {GAS_PAYMENT_METHOD, ROUTES} from '../../constants'
+import {ROUTES} from '../../constants'
 import {getPageType} from '../../utils'
 import {
-  useCurrentAddress,
   useNetworkTypeIsCfx,
   useIsCfxChain,
   usePendingAuthReq,
-  usePrepareTokenPayQuote,
-  useTokenPayConfig,
 } from '../../hooks/useApi'
 
 const {EDIT_GAS_FEE} = ROUTES
@@ -50,7 +47,6 @@ function EditGasFee({
     customNonce,
     storageLimit,
     advancedGasSetting,
-    gasPayment,
     tx: txParams,
     setGasLevel,
     setGasPrice,
@@ -66,11 +62,6 @@ function EditGasFee({
 
   const isSendTx = location.pathname === EDIT_GAS_FEE
 
-  const gasTokenAddress =
-    gasPayment?.method === GAS_PAYMENT_METHOD.TOKEN
-      ? gasPayment.tokenAddress
-      : ''
-
   const nonce =
     !isSendTx && historyTx?.nonce
       ? formatHexToDecimal(historyTx.nonce)
@@ -80,12 +71,6 @@ function EditGasFee({
   const pendingAuthReq = usePendingAuthReq()
   const dappAuthReq = isDapp ? pendingAuthReq?.[0] : null
   const dappTx = dappAuthReq?.req?.params?.[0] || {}
-  const dappApp = dappAuthReq?.app
-
-  const {
-    data: {network: currentNetwork = {}, account: currentAccount = {}} = {},
-  } = useCurrentAddress()
-
   const originParams = !isDapp ? {...txParams} : {...dappTx}
 
   const estimateRst = useEstimateTx(originParams) || {}
@@ -101,13 +86,8 @@ function EditGasFee({
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const isCfxChain = useIsCfxChain()
   const uses1559Fees = useUses1559Fees(originParams?.type)
-  const isTokenPayGas = isSendTx && Boolean(gasTokenAddress)
 
   const [selectedGasLevel, setSelectedGasLevel] = useState('')
-  const effectiveSelectedGasLevel =
-    isTokenPayGas && selectedGasLevel === 'advanced'
-      ? 'medium'
-      : selectedGasLevel
 
   useEffect(() => {
     if (!isSendTx) {
@@ -116,22 +96,10 @@ function EditGasFee({
   }, [isSendTx, JSON.stringify(historyTx), setTx])
 
   useEffect(() => {
-    if (isTokenPayGas && selectedGasLevel === 'advanced') {
-      clearAdvancedGasSetting()
-      setSelectedGasLevel('medium')
-    } else if (!isTokenPayGas && advancedGasSetting.gasLevel === 'advanced')
+    if (advancedGasSetting.gasLevel === 'advanced')
       setSelectedGasLevel('advanced')
-    else if (!selectedGasLevel)
-      setSelectedGasLevel(
-        isTokenPayGas && gasLevel === 'advanced' ? 'medium' : gasLevel,
-      )
-  }, [
-    advancedGasSetting.gasLevel,
-    clearAdvancedGasSetting,
-    gasLevel,
-    isTokenPayGas,
-    selectedGasLevel,
-  ])
+    else if (!selectedGasLevel) setSelectedGasLevel(gasLevel)
+  }, [advancedGasSetting.gasLevel, gasLevel, selectedGasLevel])
 
   useEffect(() => {
     if (gasLevel === 'advanced') {
@@ -149,7 +117,7 @@ function EditGasFee({
   }, [])
 
   let sendParams = {}
-  if (effectiveSelectedGasLevel === 'advanced') {
+  if (selectedGasLevel === 'advanced') {
     const {gasPrice, maxFeePerGas, maxPriorityFeePerGas} = advancedGasSetting
     sendParams = {
       ...originParams,
@@ -161,7 +129,7 @@ function EditGasFee({
       gasPrice: formatDecimalToHex(gasPrice),
     }
   } else {
-    const gasInfo = gasInfoEip1559[effectiveSelectedGasLevel] || {}
+    const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
     const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
     sendParams = {
       ...originParams,
@@ -195,47 +163,6 @@ function EditGasFee({
   if (!sendParams.storageLimit) delete sendParams.storageLimit
   if (!sendParams.nonce) delete sendParams.nonce
 
-  const tokenPayNetworkDbId = isDapp
-    ? dappApp?.currentNetwork?.eid
-    : currentNetwork?.eid
-
-  const tokenPayAccountId = isDapp
-    ? dappApp?.currentAccount?.eid
-    : currentAccount?.eid
-
-  const {data: tokenPayConfig} = useTokenPayConfig(
-    isTokenPayGas ? tokenPayNetworkDbId : undefined,
-  )
-
-  const selectedGasToken = tokenPayConfig?.tokens?.find(
-    token => token.address?.toLowerCase() === gasTokenAddress?.toLowerCase(),
-  )
-
-  const canQuoteTokenPayGas = Boolean(
-    isTokenPayGas &&
-      sendParams?.gas &&
-      effectiveSelectedGasLevel &&
-      gasTokenAddress,
-  )
-
-  const {data: tokenPayQuote} = usePrepareTokenPayQuote({
-    networkDbId: tokenPayNetworkDbId,
-    accountId: tokenPayAccountId,
-    userTx: canQuoteTokenPayGas ? sendParams : null,
-    gasTokenAddress,
-    gasLevel: effectiveSelectedGasLevel,
-  })
-
-  const displayGasToken = tokenPayQuote?.gasToken || selectedGasToken
-
-  const tokenPayGasCost = isTokenPayGas
-    ? {
-        balance: tokenPayQuote?.tokenCost || '',
-        symbol: displayGasToken?.symbol || '',
-        decimals: displayGasToken?.decimals,
-      }
-    : null
-
   const saveGasData = () => {
     const {
       gasPrice,
@@ -245,9 +172,9 @@ function EditGasFee({
       storageLimit,
     } = advancedGasSetting
 
-    setGasLevel(effectiveSelectedGasLevel)
+    setGasLevel(selectedGasLevel)
 
-    if (effectiveSelectedGasLevel === 'advanced') {
+    if (selectedGasLevel === 'advanced') {
       if (uses1559Fees) {
         setMaxFeePerGas(maxFeePerGas)
         setMaxPriorityFeePerGas(maxPriorityFeePerGas)
@@ -258,7 +185,7 @@ function EditGasFee({
       setStorageLimit(storageLimit)
     } else {
       if (uses1559Fees) {
-        const gasInfo = gasInfoEip1559[effectiveSelectedGasLevel] || {}
+        const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
         const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
         setMaxFeePerGas(
           convertDecimal(
@@ -313,16 +240,14 @@ function EditGasFee({
           <GasCost
             sendParams={sendParams}
             networkTypeIsCfx={networkTypeIsCfx}
-            displayFee={tokenPayGasCost}
           />
           <GasStation
             uses1559Fees={uses1559Fees}
-            isTokenPayGas={isTokenPayGas}
             isHistoryTx={!isSendTx}
             gasInfoEip1559={gasInfoEip1559}
             resendType={resendType}
             suggestedGasPrice={suggestedGasPrice}
-            selectedGasLevel={effectiveSelectedGasLevel}
+            selectedGasLevel={selectedGasLevel}
             setSelectedGasLevel={setSelectedGasLevel}
             onClickGasStationItem={onClickGasStationItem}
             isCfxChain={isCfxChain}
@@ -344,8 +269,8 @@ function EditGasFee({
           onClick={saveGasData}
           disabled={
             (uses1559Fees &&
-              effectiveSelectedGasLevel !== 'advanced' &&
-              !gasInfoEip1559[effectiveSelectedGasLevel]) ||
+              selectedGasLevel !== 'advanced' &&
+              !gasInfoEip1559[selectedGasLevel]) ||
             (!uses1559Fees && !suggestedGasPrice) ||
             resendDisabled
           }

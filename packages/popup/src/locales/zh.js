@@ -154,7 +154,6 @@ const zh = {
     tokenAndAmount: '代币和数量',
     available: '余额: ',
     max: '最大',
-    sendMaxGasTip: '全额发送，数量将在下一步扣除燃气费后确定',
     web3Name: '.web3 用户名',
     alternativeName: '账户名/备注',
 
@@ -168,12 +167,6 @@ const zh = {
     sendToken: '发送代币',
     toAddress: '接收方地址',
     gasFee: '燃气费',
-    gasPayFeeTooltip:
-      '该费用支付给网络，用于处理你的交易。如果选择使用非原生代币支付燃气费，Fluent 将收取兑换服务费。',
-    selectToken: '选择代币',
-    payWithNativeToken: '使用原生代币支付',
-    payWithOtherTokens: '使用其他代币支付',
-    tokenBalanceShort: '余额',
     edit: '设置',
     sponsored: '已赞助',
     partSponsored: '部分赞助',
@@ -372,7 +365,7 @@ const zh = {
       '升级 EIP-7702 后，您的账户将获得更多 <Highlight>智能特性</Highlight>：',
     eip7702FlexibleGasTitle: '灵活支付 Gas 费用',
     eip7702FlexibleGasDesc:
-      '支持使用 ERC-20 代币、稳定币和原生代币支付 Gas 费。',
+      '支持使用原生代币支付 Gas 费，或使用可用的 Gas 赞助。',
     eip7702BatchTransactionsTitle: '支持批量交易',
     eip7702BatchTransactionsDesc: '通过批量交易进一步节省 Gas。',
     eip7702DappSupportTitle: '更多 DApp 支持',
@@ -422,7 +415,7 @@ const zh = {
     backupSeedDes: '请以正确的顺序备份助记词，不要在网络环境中存储或分享助记词',
     backupPk: '备份私钥',
     backupPkDes:
-      '获得了私钥就等于拥有了钱包里的资产，请妥善保管，一单丢失就无法找回',
+      '获得了私钥就等于拥有了钱包里的资产，请妥善保管，一旦丢失就无法找回',
     confluxPathStandard: 'Conflux Core 钱包',
     confluxPathStandardDes: "由 Conflux 助记词路径 'm/503' 生成",
     ethereumPathStandard: 'Ethereum 钱包',
@@ -479,15 +472,9 @@ const zh = {
     waitingContent: '请在 Ledger 中确认此交易',
     rejectedContent: '交易被拒绝',
     copyError: '复制错误信息',
-    transactionSubmissionFailed: '交易提交失败',
-    pendingGasSponsoredTransaction:
-      '检测到有未完成的燃气费代付交易，请稍后再试',
     gasSponsorshipRefreshRequiredTitle: '燃气费代付失效',
     gasSponsorshipRefreshRequiredContent:
       '本次燃气费代付已失效，请重新提交交易',
-    tokenPayGasChangedTitle: '燃气费有变化',
-    tokenPayGasChangedContent:
-      '当前支付燃气费所需 token 数量有变化，请核实新报价后再提交',
 
     // conflux confirm tx error
     txPoolFull: '交易池拥堵',

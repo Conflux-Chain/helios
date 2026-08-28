@@ -158,7 +158,6 @@ const uk = {
     tokenAndAmount: 'Токен і сума',
     available: 'Доступно: ',
     max: 'Все',
-    sendMaxGasTip: 'Send max. Final amount shown after gas.',
     web3Name: 'web3 username',
     alternativeName: 'account name/memo',
 
@@ -173,12 +172,6 @@ const uk = {
     sendToken: 'Відправити токен',
     toAddress: 'За адресою',
     gasFee: 'Плата за газ',
-    gasPayFeeTooltip:
-      'Ця комісія сплачується мережі за обробку вашої транзакції. Якщо ви виберете оплату газу не нативним токеном, Fluent стягне сервісну комісію за конвертацію.',
-    selectToken: 'Виберіть токен',
-    payWithNativeToken: 'Оплатити нативним токеном',
-    payWithOtherTokens: 'Оплатити іншими токенами',
-    tokenBalanceShort: 'Бал.',
     edit: 'Редагувати',
     sponsored: 'Спонсорується',
     partSponsored: 'Частково спонсорується',
@@ -387,7 +380,7 @@ const uk = {
       'Після оновлення до EIP-7702 ваш обліковий запис отримає додаткові <Highlight>розумні можливості</Highlight>:',
     eip7702FlexibleGasTitle: 'Гнучка оплата газу',
     eip7702FlexibleGasDesc:
-      'Сплачуйте комісії за газ токенами ERC-20, стейблкоїнами та нативними токенами.',
+      'Сплачуйте комісію за газ нативним токеном або коштом доступного спонсорства.',
     eip7702BatchTransactionsTitle: 'Об’єднання кількох транзакцій',
     eip7702BatchTransactionsDesc:
       'Заощаджуйте більше газу завдяки пакетним транзакціям.',
@@ -500,16 +493,9 @@ const uk = {
     waitingContent: 'Будь ласка, підтвердіть цю операцію у вашому Ledger',
     rejectedContent: 'Транзакція була відхилена.',
     copyError: 'Копіювати код помилки',
-    transactionSubmissionFailed: 'Не вдалося надіслати транзакцію',
-    pendingGasSponsoredTransaction:
-      'У вас уже є незавершена транзакція з оплатою газу коштом спонсора. Будь ласка, спробуйте ще раз пізніше.',
     gasSponsorshipRefreshRequiredTitle: 'Спонсорська оплата газу недійсна',
     gasSponsorshipRefreshRequiredContent:
       'Спонсорська оплата газу для цієї транзакції більше недійсна. Надішліть транзакцію повторно.',
-    tokenPayGasChangedTitle: 'Комісія за газ змінилася',
-    tokenPayGasChangedContent:
-      'Кількість токенів, необхідна для оплати газу, змінилася. Перевірте нове котирування перед повторним надсиланням.',
-
     // conflux confirm tx error
     txPoolFull: 'Пул транзакцій заповнений',
     nodeInCatchUpMode: 'Вузол в режимі сихронизации',

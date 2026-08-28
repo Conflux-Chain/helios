@@ -231,15 +231,14 @@ const defaultSendTransactionParams = {
   sendTokenId: 'native',
   customAllowance: '',
 
-  // null means the user has not explicitly selected a gas payment method.
-  gasPayment: null,
   sponsorshipDeclined: false,
 
   tx: {},
   txContext: {},
   // Internal preset-tx flows turn this off to avoid overwriting tx from send-form state.
   syncTxWithForm: true,
-  maxStrategy: null,
+  // MAX is user intent. The final amount may change after gas is resolved.
+  isMaxSelected: false,
 }
 
 export const useCurrentTxStore = create((set, get) => ({
@@ -263,7 +262,7 @@ export const useCurrentTxStore = create((set, get) => ({
   setGasLimit: gasLimit => set({gasLimit}),
   setStorageLimit: storageLimit => set({storageLimit}),
   setGasLevel: gasLevel => set({gasLevel}),
-  setMaxStrategy: maxStrategy => set({maxStrategy}),
+  setIsMaxSelected: isMaxSelected => set({isMaxSelected}),
   setAdvancedGasSetting: advancedGasSetting => {
     const oldSetting = get().advancedGasSetting
     const newSetting = {...oldSetting, ...advancedGasSetting}
@@ -272,7 +271,6 @@ export const useCurrentTxStore = create((set, get) => ({
   clearAdvancedGasSetting: () =>
     set({advancedGasSetting: initAdvancedGasSetting}),
   setCustomAllowance: customAllowance => set({customAllowance}),
-  setGasPayment: gasPayment => set({gasPayment}),
   setSponsorshipDeclined: sponsorshipDeclined => set({sponsorshipDeclined}),
   setNonce: nonce => set({nonce}),
   setCustomNonce: customNonce => set({customNonce}),
@@ -346,14 +344,20 @@ export const useEstimateError = (
   const isTokenBalanceEnough = tokens?.[sendTokenAddress]?.isTokenBalanceEnough
   return useMemo(() => {
     if (error?.message) {
+      const isTransferBalanceError = error.message.includes(
+        'transfer amount exceeds balance',
+      )
+      const isGasBalanceError =
+        error.message.includes('insufficient funds') ||
+        error.message.includes('NotEnoughCash')
+
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
         return t('transferAmountExceedsAllowance')
-      } else if (
-        error?.message?.indexOf('transfer amount exceeds balance') > -1 ||
-        error?.message?.indexOf('insufficient funds') > -1 ||
-        error?.message?.indexOf('NotEnoughCash') > -1
-      ) {
+      } else if (isTransferBalanceError) {
         return t('balanceIsNotEnough')
+      } else if (isGasBalanceError) {
+        // Ignore only gas balance errors. The sender must still have enough transfer balance.
+        return ignoreGasBalanceError ? '' : t('balanceIsNotEnough')
       } else {
         return (
           t('contractError') + error?.message?.split?.('\n')?.[0] ??

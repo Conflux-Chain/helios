@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
-import {
-  TOKEN_PAY_ERROR_CODES,
-  USER_OPERATION_ERROR_CODES,
-} from '@fluent-wallet/consts'
+import {USER_OPERATION_ERROR_CODES} from '@fluent-wallet/consts'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
 import Loading from '@fluent-wallet/component-loading'
@@ -23,11 +20,6 @@ function TransactionResult({status, sendError, onClose}) {
   const isRejected = errorMessage?.includes('UserRejected')
   const isWaiting = status === TX_STATUS.HW_WAITING
 
-  const isTokenPayBlockedByPendingTransaction =
-    sendError?.data?.code === TOKEN_PAY_ERROR_CODES.PENDING_TRANSACTION
-
-  const isTokenPayQuoteChanged =
-    sendError?.data?.code === TOKEN_PAY_ERROR_CODES.QUOTE_CHANGED
   const {errorType} = networkTypeIsCfx
     ? cfxProcessError(sendError)
     : ethProcessError(sendError)
@@ -51,18 +43,6 @@ function TransactionResult({status, sendError, onClose}) {
       return
     }
 
-    if (isTokenPayQuoteChanged) {
-      setTitle(t('tokenPayGasChangedTitle'))
-      setContent(t('tokenPayGasChangedContent'))
-      return
-    }
-
-    if (isTokenPayBlockedByPendingTransaction) {
-      setTitle(t('transactionSubmissionFailed'))
-      setContent(t('pendingGasSponsoredTransaction'))
-      return
-    }
-
     if (isSponsorshipRefreshRequired) {
       setTitle(t('gasSponsorshipRefreshRequiredTitle'))
       setContent(t('gasSponsorshipRefreshRequiredContent'))
@@ -80,10 +60,8 @@ function TransactionResult({status, sendError, onClose}) {
   }, [
     errorMessage,
     errorType,
-    isTokenPayBlockedByPendingTransaction,
     isRejected,
     isWaiting,
-    isTokenPayQuoteChanged,
     isSponsorshipRefreshRequired,
     open,
     t,
@@ -107,25 +85,21 @@ function TransactionResult({status, sendError, onClose}) {
           <div className="flex w-full justify-center overflow-y-auto max-h-40 mb-4">
             {content}
           </div>
-          {!isWaiting &&
-            !isRejected &&
-            !isTokenPayQuoteChanged &&
-            !isTokenPayBlockedByPendingTransaction &&
-            !isSponsorshipRefreshRequired && (
-              <CopyButton
-                text={content}
-                toastClassName="left-2/4 transform -translate-x-2/4 -top-8"
-                CopyInner={
-                  <div
-                    id="feedback"
-                    aria-hidden="true"
-                    className="text-center text-xs text-primary cursor-pointer"
-                  >
-                    {t('copyError')}
-                  </div>
-                }
-              />
-            )}
+          {!isWaiting && !isRejected && !isSponsorshipRefreshRequired && (
+            <CopyButton
+              text={content}
+              toastClassName="left-2/4 transform -translate-x-2/4 -top-8"
+              CopyInner={
+                <div
+                  id="feedback"
+                  aria-hidden="true"
+                  className="text-center text-xs text-primary cursor-pointer"
+                >
+                  {t('copyError')}
+                </div>
+              }
+            />
+          )}
         </div>
       }
       icon={
