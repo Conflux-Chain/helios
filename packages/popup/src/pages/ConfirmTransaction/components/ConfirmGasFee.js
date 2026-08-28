@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {GasFee} from '../../../components'
-import GasPayFee from './GasPayFee'
+import SponsoredGasFee from './SponsoredGasFee'
 
 function GasFeePlaceholder() {
   return (
@@ -12,68 +12,38 @@ function GasFeePlaceholder() {
 }
 
 function ConfirmGasFee({
-  gasPayment,
+  sponsoredUserOperation,
   nativeToken,
-  nativeBalance,
-  accountAddress,
-  networkDbId,
   estimateRst,
   uses1559Fees,
-  isDeferredMax,
-  sendTokenAddress,
-  sendTokenAmount,
 }) {
-  const {tokenPay, sponsorship} = gasPayment
-
-  if (gasPayment.loading) {
+  if (sponsoredUserOperation.loading) {
     return <GasFeePlaceholder />
   }
 
-  const hasAlternativePayment =
-    gasPayment.isSponsored ||
-    tokenPay.available ||
-    Boolean(tokenPay.selectedToken)
-
-  if (!hasAlternativePayment) {
+  if (!sponsoredUserOperation.isActive) {
     return <GasFee estimateRst={estimateRst} uses1559Fees={uses1559Fees} />
   }
 
   return (
-    <GasPayFee
-      payment={gasPayment.payment}
-      sponsorship={sponsorship}
-      quote={tokenPay.selectedToken ? tokenPay.quote : null}
-      options={tokenPay.options}
-      nativeGasFee={gasPayment.nativeGasFee}
-      gasTokenBalances={tokenPay.balances}
-      gasToken={tokenPay.selectedToken}
-      tokenPayConfig={tokenPay.config}
+    <SponsoredGasFee
+      maxGasCost={sponsoredUserOperation.maxGasCost}
       nativeToken={nativeToken}
-      nativeBalance={nativeBalance}
-      accountAddress={accountAddress}
-      networkDbId={networkDbId}
       estimateRst={estimateRst}
       uses1559Fees={uses1559Fees}
-      onSelectPayment={gasPayment.selectPayment}
-      onSelectGasToken={tokenPay.selectToken}
-      isDeferredMax={isDeferredMax}
-      sendTokenAddress={sendTokenAddress}
-      sendTokenAmount={sendTokenAmount}
     />
   )
 }
 
 ConfirmGasFee.propTypes = {
-  gasPayment: PropTypes.object,
+  sponsoredUserOperation: PropTypes.shape({
+    isActive: PropTypes.bool,
+    loading: PropTypes.bool,
+    maxGasCost: PropTypes.string,
+  }),
   nativeToken: PropTypes.object,
-  nativeBalance: PropTypes.string,
-  accountAddress: PropTypes.string,
-  networkDbId: PropTypes.number,
   estimateRst: PropTypes.object,
   uses1559Fees: PropTypes.bool,
-  isDeferredMax: PropTypes.bool,
-  sendTokenAddress: PropTypes.string,
-  sendTokenAmount: PropTypes.string,
 }
 
 export default ConfirmGasFee

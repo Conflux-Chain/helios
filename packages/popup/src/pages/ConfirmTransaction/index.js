@@ -10,11 +10,7 @@ import {
   convertDataToValue,
   convertValueToData,
 } from '@fluent-wallet/data-format'
-import {
-  ETH_TX_TYPES,
-  TOKEN_PAY_ERROR_CODES,
-  USER_OPERATION_ERROR_CODES,
-} from '@fluent-wallet/consts'
+import {ETH_TX_TYPES, USER_OPERATION_ERROR_CODES} from '@fluent-wallet/consts'
 import {
   useCurrentTxParams,
   useEstimateTx,
@@ -33,6 +29,7 @@ import {
   getPageType,
   checkBalance,
   bn16,
+  isGasSponsorshipConfigured,
   transformToTitleCase,
 } from '../../utils'
 import {
@@ -51,16 +48,12 @@ import {
 import {
   ROUTES,
   RPC_METHODS,
-  NETWORK_TYPE,
   LEDGER_AUTH_STATUS,
   LEDGER_OPEN_STATUS,
   TX_STATUS,
-  MAX_STRATEGY,
-  GAS_PAYMENT_METHOD,
 } from '../../constants'
 import useLoading from '../../hooks/useLoading'
-import useGasPayment from './useGasPayment'
-import useAdjustedSendTx from './useAdjustedSendTx'
+import useSponsoredUserOperation from './useSponsoredUserOperation'
 
 const {VIEW_DATA, HOME} = ROUTES
 const {
@@ -140,9 +133,8 @@ function ConfirmTransaction() {
     customNonce,
     gasLevel,
     customAllowance,
-    sendAmount,
+    isMaxSelected,
     toAddress,
-    maxStrategy,
     setGasPrice,
     setMaxFeePerGas,
     setMaxPriorityFeePerGas,
@@ -150,7 +142,6 @@ function ConfirmTransaction() {
     setStorageLimit,
     setNonce: setSuggestedNonce,
     setCustomNonce,
-    setSendAmount,
     setGasLevel,
     clearSendTransactionParams,
     clearAdvancedGasSetting,
@@ -163,8 +154,6 @@ function ConfirmTransaction() {
 
   const {
     data: {
-      value: currentAddressValue,
-      nativeBalance,
       network: {eid: networkDbId, ticker, chainId, type: currentNetworkType},
       account: {eid: accountId},
     },
@@ -190,8 +179,7 @@ function ConfirmTransaction() {
     () => shouldOpenSwitchInfoDrawerOnMount,
   )
 
-  const [pendingDelegationSubmission, setPendingDelegationSubmission] =
-    useState(null)
+  const [pendingDelegationAction, setPendingDelegationAction] = useState(null)
 
   // get to type and to token
   const {isContract, decodeData, isEOAAddress, token, isDecoding} =
@@ -216,9 +204,6 @@ function ConfirmTransaction() {
     token,
   })
   const isSign = !isSendToken && !isApproveToken
-
-  const isLegacyMax = maxStrategy === MAX_STRATEGY.LEGACY
-  const isDeferredMax = maxStrategy === MAX_STRATEGY.DEFERRED
 
   const type = displayAccount?.accountGroup?.vault?.type
   const isHwAccount = type === 'hw' && type !== undefined
@@ -275,7 +260,7 @@ function ConfirmTransaction() {
   const {address: displayTokenAddress} = displayToken || {}
 
   const isNativeToken = !displayTokenAddress
-  const estimateRst =
+  const requestedTransactionEstimate =
     useEstimateTx(
       inputParams,
       !isNativeToken && isSendToken
@@ -287,7 +272,6 @@ function ConfirmTransaction() {
           }
         : {},
     ) || {}
-
   const inputAmountHex = isNativeToken
     ? inputParams.value || '0x0'
     : isSendToken
@@ -302,11 +286,16 @@ function ConfirmTransaction() {
   const transactionNetworkType = isDapp
     ? dappApp?.currentNetwork?.type
     : currentNetworkType
+  const shouldPrepareSponsorship =
+    !isDapp &&
+    isGasSponsorshipConfigured({
+      chainId,
+      networkType: transactionNetworkType,
+    })
 
-  const sponsorshipCalls = useMemo(
+  const userOperationCalls = useMemo(
     () =>
-      !isDapp &&
-      transactionNetworkType === NETWORK_TYPE.ETH &&
+      shouldPrepareSponsorship &&
       !isInternalEip7702Tx &&
       toAddress &&
       inputParams.to
@@ -322,122 +311,79 @@ function ConfirmTransaction() {
       inputParams.data,
       inputParams.to,
       inputParams.value,
-      isDapp,
+      shouldPrepareSponsorship,
       isInternalEip7702Tx,
       toAddress,
-      transactionNetworkType,
     ],
   )
-  const gasPayment = useGasPayment({
-    isHwAccount,
+  const sponsoredUserOperation = useSponsoredUserOperation({
     networkId: transactionNetworkId,
     accountId: transactionAccountId,
-    params: inputParams,
-    sponsorshipCalls,
-    gasLevel,
-    estimateRst,
+    calls: userOperationCalls,
   })
 
-  const {tokenPay, sponsorship} = gasPayment
-  const {refreshQuote} = tokenPay
-
-  const nativeMaxDrip = estimateRst.nativeMaxDrip
-
-  const isTokenPayQuoteChanged =
-    sendError?.data?.code === TOKEN_PAY_ERROR_CODES.QUOTE_CHANGED
+  const isSponsoredSubmission = sponsoredUserOperation.isActive
+  const maxTransferValue = requestedTransactionEstimate.nativeMaxDrip
 
   const isSponsorshipRefreshRequired =
     sendError?.data?.code ===
     USER_OPERATION_ERROR_CODES.SPONSORSHIP_REFRESH_REQUIRED
 
-  useEffect(() => {
-    if (!isTokenPayQuoteChanged) return
-
-    refreshQuote()
-  }, [isTokenPayQuoteChanged, refreshQuote])
-
-  useEffect(() => {
-    const nativeMax = convertDataToValue(nativeMaxDrip, nativeToken?.decimals)
-
-    if (
-      isLegacyMax &&
-      isNativeToken &&
-      gasPayment.isNative &&
-      nativeMax &&
-      sendAmount !== nativeMax
-    ) {
-      setSendAmount(nativeMax)
-    }
-  }, [
-    gasPayment.isNative,
-    isLegacyMax,
-    isNativeToken,
-    nativeMaxDrip,
-    nativeToken?.decimals,
-    sendAmount,
-    setSendAmount,
-  ])
-
-  const adjustedSendTx = useAdjustedSendTx({
-    enabled: !isDapp && isDeferredMax && isSendToken,
-    input: {
-      amount: displayValue,
-      amountHex: inputAmountHex,
-      params: inputParams,
-      recipientAddress: displayToAddress,
-    },
-    asset: {
-      isNative: isNativeToken,
-      address: displayTokenAddress,
-      decimals: isNativeToken ? nativeToken?.decimals : displayToken?.decimals,
-    },
-    gasPayment: {
-      method: gasPayment.payment.method,
-      tokenAddress: tokenPay.selectedToken?.address,
-      nativeCostHex: gasPayment.nativeGasFee,
-      tokenCostHex: tokenPay.quote?.tokenCost,
-    },
-  })
-
-  const sendTxParams = {...adjustedSendTx.params}
-
-  // Native uses the selected EOA nonce. Other payment methods allocate their
-  // execution nonce in the background.
-  if (!customNonce || !gasPayment.isNative) {
-    delete sendTxParams.nonce
+  // A native MAX transfer must leave enough balance for gas when sponsorship is unavailable.
+  let resolvedValue = inputParams.value
+  if (
+    !isDapp &&
+    isMaxSelected &&
+    isNativeToken &&
+    isSendToken &&
+    !sponsoredUserOperation.loading &&
+    !isSponsoredSubmission &&
+    maxTransferValue
+  ) {
+    resolvedValue = maxTransferValue
   }
 
-  const sendParams = [sendTxParams]
+  const isValueAdjustedForGas = resolvedValue !== inputParams.value
+  const transactionParams = {
+    ...inputParams,
+    ...(isValueAdjustedForGas ? {value: resolvedValue} : {}),
+  }
+  const adjustedTransactionEstimate =
+    useEstimateTx(isValueAdjustedForGas ? transactionParams : {}) || {}
+  const transactionEstimate = isValueAdjustedForGas
+    ? adjustedTransactionEstimate
+    : requestedTransactionEstimate
+  const transactionEstimateRequired =
+    !sponsoredUserOperation.loading && !isSponsoredSubmission
 
-  const sponsoredUserOperationParams = {
+  const sendTransactionParams = {...transactionParams}
+
+  if (!customNonce) {
+    delete sendTransactionParams.nonce
+  }
+
+  const sendTransactionRpcParams = [sendTransactionParams]
+
+  const sponsoredUserOperationRpcParams = {
     accountId: transactionAccountId,
     networkId: transactionNetworkId,
-    calls: sponsorshipCalls,
+    calls: userOperationCalls,
     sponsorship: {
-      userOperation: sponsorship.userOperation,
+      userOperation: sponsoredUserOperation.userOperation,
     },
   }
 
-  const needsAdjustedEstimate = adjustedSendTx.isGasCostDeducted
-  const adjustedEstimateRst =
-    useEstimateTx(
-      needsAdjustedEstimate ? adjustedSendTx.params : {},
-      needsAdjustedEstimate && !isNativeToken && isSendToken
-        ? {
-            [displayTokenAddress]: adjustedSendTx.amountHex,
-          }
-        : {},
-    ) || {}
-  const sendEstimateRst = needsAdjustedEstimate
-    ? adjustedEstimateRst
-    : estimateRst
   const sendTokenValue =
     isSendToken && !isNativeToken && Object.keys(displayToken || {}).length
-      ? adjustedSendTx.amountHex
+      ? inputAmountHex
       : '0x0'
 
+  const transactionDisplayValue = isValueAdjustedForGas
+    ? convertDataToValue(resolvedValue, nativeToken?.decimals)
+    : displayValue
+
   useEffect(() => {
-    if (gasPayment.isNative) return
+    if (!isSponsoredSubmission) return
 
     if (customNonce) setCustomNonce('')
 
@@ -446,7 +392,7 @@ function ConfirmTransaction() {
       setGasLevel('medium')
     }
   }, [
-    gasPayment.isNative,
+    isSponsoredSubmission,
     customNonce,
     gasLevel,
     clearAdvancedGasSetting,
@@ -467,33 +413,21 @@ function ConfirmTransaction() {
     storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
   const errorMessage = useEstimateError(
-    sendEstimateRst,
+    transactionEstimate,
     displayTokenAddress,
     !displayTokenAddress,
     isSendToken,
-    {
-      ignoreGasBalanceError:
-        !gasPayment.isNative &&
-        (!isNativeToken ||
-          bn16(nativeBalance || '0x0').gte(
-            bn16(adjustedSendTx.params.value || '0x0'),
-          )),
-    },
   )
-
-  const adjustedAmountError =
-    isDeferredMax && isSendToken && !adjustedSendTx.hasRemainingAmount
+  const maxAmountError =
+    isValueAdjustedForGas && !bn16(resolvedValue).gt(bn16('0x0'))
       ? t('gasFeeIsNotEnough')
       : ''
 
-  const tokenPayQuoteErrorMessage =
-    gasPayment.isToken && tokenPay.quoteError ? t('gasFeeIsNotEnough') : ''
-
   useEffect(() => {
     setEstimateError(
-      adjustedAmountError || tokenPayQuoteErrorMessage || errorMessage,
+      transactionEstimateRequired ? maxAmountError || errorMessage : '',
     )
-  }, [adjustedAmountError, errorMessage, tokenPayQuoteErrorMessage])
+  }, [errorMessage, maxAmountError, transactionEstimateRequired])
 
   // when dapp send, init the gas edit global store
   // internal 7702 tx also enters confirm page directly, so it uses the same init path.
@@ -549,97 +483,89 @@ function ConfirmTransaction() {
     suggestedNonce,
   ])
 
-  const submitWalletTransaction = async ({params, paymentMethod}) => {
+  const beginSubmission = () => {
     if (!isHwAccount) setLoading(true)
     else setSendStatus(TX_STATUS.HW_WAITING)
+  }
 
-    const isTokenPayment = paymentMethod === GAS_PAYMENT_METHOD.TOKEN
-    const isNativePayment = paymentMethod === GAS_PAYMENT_METHOD.NATIVE
-    const isSponsoredPayment = paymentMethod === GAS_PAYMENT_METHOD.SPONSORED
+  const resetSubmissionStatus = () => {
+    if (!isHwAccount) setLoading(false)
+    else setSendStatus(undefined)
+  }
 
-    if (isTokenPayment && !tokenPay.ready) {
-      setLoading(false)
-      return
-    }
+  const completeSubmission = () => {
+    if (!isHwAccount) setLoading(false)
+    else setSendStatus(TX_STATUS.HW_SUCCESS)
 
-    let error = ''
+    setTimeout(() => clearSendTransactionParams(), 500)
+    history.push(HOME)
+  }
 
-    if (isTokenPayment) {
-      error = await tokenPay.checkBalance({
-        submitTx: adjustedSendTx.params,
-        displayToken,
-        isNativeToken,
-        isSendToken,
-        sendTokenValue,
-      })
-    } else if (isNativePayment) {
-      error = await checkBalance(
-        adjustedSendTx.params,
-        displayToken,
-        isNativeToken,
-        isSendToken,
-        sendTokenValue,
-        networkTypeIsCfx,
-        uses1559Fees,
-      )
-    }
+  const failSubmission = error => {
+    console.error('error', error)
 
-    if (error) {
-      setLoading(false)
-      setEstimateError(t(error))
+    if (!isHwAccount) setLoading(false)
+    setSendStatus(TX_STATUS.ERROR)
+    setSendError(error)
+  }
+
+  const submitTransaction = async () => {
+    beginSubmission()
+
+    const balanceError = await checkBalance(
+      sendTransactionParams,
+      displayToken,
+      isNativeToken,
+      isSendToken,
+      sendTokenValue,
+      networkTypeIsCfx,
+      uses1559Fees,
+    )
+
+    if (balanceError) {
+      resetSubmissionStatus()
+      setEstimateError(t(balanceError))
       return
     }
 
     try {
-      if (isTokenPayment) {
-        await tokenPay.submit({
-          submitTx: sendTxParams,
-          maxTokenCost: tokenPay.quote?.tokenCost,
-        })
-      } else if (isSponsoredPayment) {
-        await request(WALLET_SEND_USER_OPERATION, params)
-      } else {
-        await request(SEND_TRANSACTION, params)
-      }
+      await request(SEND_TRANSACTION, sendTransactionRpcParams)
+      completeSubmission()
+    } catch (error) {
+      failSubmission(error)
+    }
+  }
 
-      if (!isHwAccount) setLoading(false)
-      else setSendStatus(TX_STATUS.HW_SUCCESS)
+  const submitSponsoredUserOperation = async ({
+    approvedDelegationAction,
+  } = {}) => {
+    beginSubmission()
 
-      setTimeout(() => clearSendTransactionParams(), 500)
-      history.push(HOME)
+    try {
+      await request(WALLET_SEND_USER_OPERATION, {
+        ...sponsoredUserOperationRpcParams,
+        ...(approvedDelegationAction ? {approvedDelegationAction} : {}),
+      })
+      completeSubmission()
     } catch (error) {
       const errorData = error?.data || error?.extra
       const requiredDelegationAction = errorData?.requiredDelegationAction
 
       const needsDelegationConfirmation =
-        paymentMethod === GAS_PAYMENT_METHOD.SPONSORED &&
         errorData?.code ===
           USER_OPERATION_ERROR_CODES.EIP7702_DELEGATION_CONFIRMATION_REQUIRED &&
         (requiredDelegationAction === 'upgrade' ||
           requiredDelegationAction === 'switch')
 
       if (needsDelegationConfirmation) {
-        if (!isHwAccount) setLoading(false)
-        setSendStatus(undefined)
+        resetSubmissionStatus()
         setSendError({})
         setSponsorshipDeclined(false)
-
-        const retryParams = {...params}
-        delete retryParams.approvedDelegationAction
-
-        setPendingDelegationSubmission({
-          params: retryParams,
-          paymentMethod,
-          requiredDelegationAction,
-        })
+        setPendingDelegationAction(requiredDelegationAction)
         return
       }
 
-      console.error('error', error)
-
-      if (!isHwAccount) setLoading(false)
-      setSendStatus(TX_STATUS.ERROR)
-      setSendError(error)
+      failSubmission(error)
     }
   }
 
@@ -662,44 +588,32 @@ function ConfirmTransaction() {
         return
       }
     }
-    const submission = {
-      params: gasPayment.isSponsored
-        ? sponsoredUserOperationParams
-        : sendParams,
-      paymentMethod: gasPayment.payment.method,
-    }
+    if (isSponsoredSubmission) {
+      if (sponsoredUserOperation.requiredDelegationAction) {
+        setPendingDelegationAction(
+          sponsoredUserOperation.requiredDelegationAction,
+        )
+        return
+      }
 
-    if (
-      submission.paymentMethod === GAS_PAYMENT_METHOD.SPONSORED &&
-      sponsorship.requiredDelegationAction
-    ) {
-      setPendingDelegationSubmission({
-        ...submission,
-        requiredDelegationAction: sponsorship.requiredDelegationAction,
-      })
+      await submitSponsoredUserOperation()
       return
     }
 
-    await submitWalletTransaction(submission)
+    await submitTransaction()
   }
 
-  const confirmPendingDelegationSubmission = () => {
-    if (!pendingDelegationSubmission) return
+  const confirmPendingDelegation = () => {
+    if (!pendingDelegationAction) return
 
-    const submission = pendingDelegationSubmission
-    setPendingDelegationSubmission(null)
+    const approvedDelegationAction = pendingDelegationAction
+    setPendingDelegationAction(null)
 
-    void submitWalletTransaction({
-      ...submission,
-      params: {
-        ...submission.params,
-        approvedDelegationAction: submission.requiredDelegationAction,
-      },
-    })
+    void submitSponsoredUserOperation({approvedDelegationAction})
   }
 
-  const declinePendingDelegationSubmission = () => {
-    setPendingDelegationSubmission(null)
+  const declinePendingDelegation = () => {
+    setPendingDelegationAction(null)
     setSponsorshipDeclined(true)
   }
 
@@ -707,13 +621,7 @@ function ConfirmTransaction() {
     if (isSponsorshipRefreshRequired) {
       setSendStatus(undefined)
       setSendError({})
-      void sponsorship.prepare()
-      return
-    }
-
-    if (isTokenPayQuoteChanged) {
-      setSendStatus(undefined)
-      setSendError({})
+      void sponsoredUserOperation.prepare()
       return
     }
 
@@ -737,59 +645,25 @@ function ConfirmTransaction() {
   }
 
   const confirmDisabled =
-    gasPayment.loading ||
-    !!estimateError ||
-    sendEstimateRst.loading ||
-    Object.keys(sendEstimateRst).length === 0 ||
-    (gasPayment.isToken &&
-      (tokenPay.quoteLoading ||
-        tokenPay.quoteValidating ||
-        tokenPay.quoteError ||
-        !tokenPay.ready)) ||
+    sponsoredUserOperation.loading ||
+    (transactionEstimateRequired &&
+      (!!estimateError ||
+        transactionEstimate.loading ||
+        Object.keys(transactionEstimate).length === 0)) ||
     (customAllowance && isDecoding)
 
-  let dappConfirmParams = {
-    tx: sendParams,
-  }
-
-  if (gasPayment.isToken) {
-    dappConfirmParams = {
-      tx: sendParams,
-      tokenPay: {
-        gasTokenAddress: tokenPay.selectedToken.address,
-        gasLevel: tokenPay.gasLevel,
-        maxTokenCost: tokenPay.quote?.tokenCost,
-      },
-    }
-  }
-
-  const beforeDappConfirm = async () => {
-    if (!gasPayment.isToken) return
-
-    const error = await tokenPay.checkBalance({
-      submitTx: adjustedSendTx.params,
-      displayToken,
-      isNativeToken,
-      isSendToken,
-      sendTokenValue,
-    })
-
-    if (error) {
-      setEstimateError(t(error))
-      return false
-    }
-
-    return true
+  const dappConfirmParams = {
+    tx: sendTransactionRpcParams,
   }
 
   const sponsorshipDrawerProps =
-    pendingDelegationSubmission?.requiredDelegationAction === 'upgrade'
+    pendingDelegationAction === 'upgrade'
       ? {
           title: t('eip7702SponsoredUpgradeTitle'),
           description: t('eip7702SponsoredUpgradeDesc'),
           confirmText: t('eip7702SponsoredUpgradeConfirm'),
         }
-      : pendingDelegationSubmission?.requiredDelegationAction === 'switch'
+      : pendingDelegationAction === 'switch'
       ? {
           title: t('eip7702SwitchInfoTitle'),
           description: t('eip7702SwitchInfoDesc'),
@@ -809,7 +683,6 @@ function ConfirmTransaction() {
             }
             clearAdvancedGasSetting()
             setGasLevel('medium')
-            gasPayment.selectPayment({method: GAS_PAYMENT_METHOD.NATIVE})
           }}
         />
       </header>
@@ -820,7 +693,7 @@ function ConfirmTransaction() {
             token={displayToken}
             fromAddress={addressCardFromAddress}
             toAddress={addressCardToAddress}
-            value={adjustedSendTx.amount}
+            value={transactionDisplayValue}
             isSendToken={isSendToken}
             isApproveToken={isApproveToken}
             title={
@@ -840,23 +713,17 @@ function ConfirmTransaction() {
             method={
               decodeData?.name ? transformToTitleCase(decodeData.name) : ''
             }
-            allowance={adjustedSendTx.amount}
-            value={adjustedSendTx.params.value}
+            allowance={transactionDisplayValue}
+            value={transactionParams.value}
             pendingAuthReq={pendingAuthReq}
             decimals={nativeToken?.decimals}
             symbol={nativeToken?.symbol}
           />
           <ConfirmGasFee
-            gasPayment={gasPayment}
+            sponsoredUserOperation={sponsoredUserOperation}
             nativeToken={nativeToken}
-            nativeBalance={nativeBalance}
-            accountAddress={currentAddressValue}
-            networkDbId={networkDbId}
-            estimateRst={sendEstimateRst}
+            estimateRst={transactionEstimate}
             uses1559Fees={uses1559Fees}
-            isDeferredMax={isDeferredMax}
-            sendTokenAddress={displayTokenAddress}
-            sendTokenAmount={inputAmountHex}
           />
         </div>
         <div className="flex flex-col items-center">
@@ -867,26 +734,24 @@ function ConfirmTransaction() {
             </Link>
           )}
 
-          {!isDapp &&
-            !isSwitchInfoDrawerOpen &&
-            !pendingDelegationSubmission && (
-              <div className="w-full flex px-3 z-50">
-                <Button
-                  variant="outlined"
-                  className="flex-1 mr-3"
-                  onClick={onCancel}
-                >
-                  {t('cancel')}
-                </Button>
-                <Button
-                  className="flex-1"
-                  onClick={onSend}
-                  disabled={confirmDisabled}
-                >
-                  {t('confirm')}
-                </Button>
-              </div>
-            )}
+          {!isDapp && !isSwitchInfoDrawerOpen && !pendingDelegationAction && (
+            <div className="w-full flex px-3 z-50">
+              <Button
+                variant="outlined"
+                className="flex-1 mr-3"
+                onClick={onCancel}
+              >
+                {t('cancel')}
+              </Button>
+              <Button
+                className="flex-1"
+                onClick={onSend}
+                disabled={confirmDisabled}
+              >
+                {t('confirm')}
+              </Button>
+            </div>
+          )}
 
           {isDapp && (
             <DappFooter
@@ -894,7 +759,6 @@ function ConfirmTransaction() {
               cancelText={t('cancel')}
               confirmDisabled={confirmDisabled}
               confirmParams={dappConfirmParams}
-              beforeConfirm={beforeDappConfirm}
               setSendStatus={setSendStatus}
               pendingAuthReq={pendingAuthReq}
               isHwAccount={isHwAccount}
@@ -923,14 +787,14 @@ function ConfirmTransaction() {
         open={isSwitchInfoDrawerOpen}
         onClose={() => setIsSwitchInfoDrawerOpen(false)}
       />
-      {pendingDelegationSubmission && sponsorshipDrawerProps && (
+      {pendingDelegationAction && sponsorshipDrawerProps && (
         <Eip7702DelegationDrawer
           id="eip7702-sponsored-delegation"
           {...sponsorshipDrawerProps}
           showClose
           open
-          onConfirm={confirmPendingDelegationSubmission}
-          onClose={declinePendingDelegationSubmission}
+          onConfirm={confirmPendingDelegation}
+          onClose={declinePendingDelegation}
         />
       )}
     </div>

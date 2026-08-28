@@ -157,7 +157,6 @@ const en = {
     tokenAndAmount: 'Token and Amount',
     available: 'Available: ',
     max: 'MAX',
-    sendMaxGasTip: 'Send max. Final amount shown after gas.',
     web3Name: '.web3 username',
     alternativeName: 'account name/memo',
 
@@ -172,12 +171,6 @@ const en = {
     sendToken: 'Send Token',
     toAddress: 'To Address',
     gasFee: 'Gas fee',
-    gasPayFeeTooltip:
-      'This fee is paid to the network to process your transaction. If you choose to pay gas with a non-native token, Fluent will charge a service fee for the conversion.',
-    selectToken: 'Select a Token',
-    payWithNativeToken: 'Pay with native token',
-    payWithOtherTokens: 'Pay with other tokens',
-    tokenBalanceShort: 'Bal',
     edit: 'Edit',
     sponsored: 'Sponsored',
     partSponsored: 'Partially Sponsored',
@@ -386,7 +379,7 @@ const en = {
       'By upgrading EIP-7702, your account gains additional <Highlight>smart features</Highlight>:',
     eip7702FlexibleGasTitle: 'Flexible gas payments',
     eip7702FlexibleGasDesc:
-      'Pay gas fees in ERC-20 tokens, stablecoins, and native tokens.',
+      'Pay gas fees with native tokens or available sponsorship.',
     eip7702BatchTransactionsTitle: 'Bundle multiple transactions',
     eip7702BatchTransactionsDesc: 'Save more gas with batch transactions.',
     eip7702DappSupportTitle: 'Extra dApp support',
@@ -499,16 +492,9 @@ const en = {
     waitingContent: 'Please confirm this transaction in your Ledger.',
     rejectedContent: 'Transaction has been rejected.',
     copyError: 'Copy error code',
-    transactionSubmissionFailed: 'Transaction Submission Failed',
-    pendingGasSponsoredTransaction:
-      'You have a pending gas-sponsored transaction. Please try again later.',
     gasSponsorshipRefreshRequiredTitle: 'Gas Sponsorship No Longer Valid',
     gasSponsorshipRefreshRequiredContent:
       'This gas sponsorship is no longer valid. Please resubmit your transaction.',
-    tokenPayGasChangedTitle: 'Gas Changed',
-    tokenPayGasChangedContent:
-      'The required token amount for gas has changed. Please confirm the new quote before submitting.',
-
     // conflux confirm tx error
     txPoolFull: 'Transaction pool is full',
     nodeInCatchUpMode: 'Node in catch-up mode',
