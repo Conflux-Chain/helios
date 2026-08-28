@@ -4,7 +4,11 @@ import {CNS, ENS} from '@fluent-wallet/did'
 import {stripHexPrefix} from '@fluent-wallet/utils'
 import {validateBase32Address} from '@fluent-wallet/base32-address'
 import {isHexAddress, isChecksummed, toChecksum} from '@fluent-wallet/account'
-import {CFX_MAINNET_CHAINID, ETH_MAINNET_CHAINID} from '@fluent-wallet/consts'
+import {
+  CFX_MAINNET_CHAINID,
+  EIP7702_NETWORK_CONFIGS,
+  ETH_MAINNET_CHAINID,
+} from '@fluent-wallet/consts'
 import {isArray, isString} from '@fluent-wallet/checks'
 import {
   PASSWORD_REG_EXP,
@@ -82,6 +86,13 @@ export const validateByEip55 = address => {
 }
 
 export const bn16 = x => new BN(stripHexPrefix(x), 16)
+
+export function isGasSponsorshipConfigured({chainId, networkType}) {
+  return Boolean(
+    networkType === NETWORK_TYPE.ETH &&
+      EIP7702_NETWORK_CONFIGS[chainId]?.backendBaseUrl,
+  )
+}
 
 export function updateAddedNewAccount(mutate, noAccountBefore, groupType) {
   const promises = []

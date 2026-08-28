@@ -1,9 +1,13 @@
 import {useRPC} from '@fluent-wallet/use-rpc'
+import {useCurrentTxStore} from '../../hooks'
 import {RPC_METHODS} from '../../constants'
 
 const {WALLET_PREPARE_SPONSORSHIP} = RPC_METHODS
 
-function useSponsorship({accountId, networkId, calls}) {
+function useSponsoredUserOperation({accountId, networkId, calls}) {
+  const sponsorshipDeclined = useCurrentTxStore(
+    state => state.sponsorshipDeclined,
+  )
   const enabled =
     Boolean(calls) && accountId !== undefined && networkId !== undefined
 
@@ -30,10 +34,12 @@ function useSponsorship({accountId, networkId, calls}) {
   )
 
   const result = enabled && !isValidating && !error ? data : null
+  const available = result?.available === true
 
   return {
     supported: result?.supported === true,
-    available: result?.available === true,
+    available,
+    isActive: available && !sponsorshipDeclined,
     reason: result?.reason || '',
     maxGasCost: result?.maxGasCost || null,
     requiredDelegationAction: result?.requiredDelegationAction || null,
@@ -44,4 +50,4 @@ function useSponsorship({accountId, networkId, calls}) {
   }
 }
 
-export default useSponsorship
+export default useSponsoredUserOperation

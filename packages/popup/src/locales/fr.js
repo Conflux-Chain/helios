@@ -163,7 +163,6 @@ const fr = {
     tokenAndAmount: 'Jeton et Montant',
     available: 'Disponible : ',
     max: 'MAX',
-    sendMaxGasTip: 'Send max. Final amount shown after gas.',
     web3Name: 'web3 username',
     alternativeName: 'account name/memo',
 
@@ -178,12 +177,6 @@ const fr = {
     sendToken: 'Envoyer le Jeton',
     toAddress: 'Vers l’Adresse',
     gasFee: 'Frais de Gas',
-    gasPayFeeTooltip:
-      'Ces frais sont payés au réseau pour traiter votre transaction. Si vous choisissez de payer le gas avec un jeton non natif, Fluent facturera des frais de service pour la conversion.',
-    selectToken: 'Sélectionner un jeton',
-    payWithNativeToken: 'Payer avec le jeton natif',
-    payWithOtherTokens: 'Payer avec d’autres jetons',
-    tokenBalanceShort: 'Solde',
     edit: 'Éditer',
     sponsored: 'Sponsorisé',
     partSponsored: 'Partiellement sponsorisé',
@@ -398,7 +391,7 @@ const fr = {
       'En passant à EIP-7702, votre compte bénéficie de <Highlight>fonctionnalités intelligentes</Highlight> supplémentaires :',
     eip7702FlexibleGasTitle: 'Paiement du gas plus flexible',
     eip7702FlexibleGasDesc:
-      'Payez les frais de gas avec des jetons ERC-20, des stablecoins et des jetons natifs.',
+      'Payez les frais de gas avec le jeton natif ou une prise en charge disponible.',
     eip7702BatchTransactionsTitle: 'Regrouper plusieurs transactions',
     eip7702BatchTransactionsDesc:
       'Économisez davantage de gas grâce aux transactions groupées.',
@@ -515,17 +508,10 @@ const fr = {
     waitingContent: 'Merci de confirmer cette transaction sur votre Ledger.',
     rejectedContent: 'La transaction a été rejetée.',
     copyError: 'Copier le code erreur',
-    transactionSubmissionFailed: 'Échec de l’envoi de la transaction',
-    pendingGasSponsoredTransaction:
-      'Vous avez déjà une transaction en attente avec des frais de Gas pris en charge. Merci de réessayer plus tard.',
     gasSponsorshipRefreshRequiredTitle:
       'Prise en charge des frais de Gas invalide',
     gasSponsorshipRefreshRequiredContent:
       'La prise en charge des frais de Gas pour cette transaction n’est plus valide. Veuillez soumettre à nouveau votre transaction.',
-    tokenPayGasChangedTitle: 'Les frais de Gas ont changé',
-    tokenPayGasChangedContent:
-      'Le montant de tokens requis pour payer les frais de Gas a changé. Veuillez vérifier le nouveau devis avant de soumettre à nouveau.',
-
     // conflux confirm tx error
     txPoolFull: 'La pool de transaction est pleine',
     nodeInCatchUpMode: 'Le noeud est en mode rattrapage',
