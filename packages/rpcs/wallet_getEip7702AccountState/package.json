@@ -3,10 +3,10 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.0.1",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "dependencies": {
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type",
-    "@fluent-wallet/spec": "1.0.19"
+    "@fluent-wallet/spec": "1.0.20"
   }
 }
