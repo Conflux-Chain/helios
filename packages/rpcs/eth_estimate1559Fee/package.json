@@ -2,10 +2,10 @@
   "name": "@fluent-wallet/eth_estimate-1559-fee",
   "type": "module",
   "main": "index.js",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "dependencies": {
     "@ethersproject/units": "5.6.1",
-    "@fluent-wallet/spec": "1.0.19",
+    "@fluent-wallet/spec": "1.0.20",
     "bn.js": "5.2.0"
   }
 }
