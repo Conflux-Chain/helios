@@ -2,11 +2,11 @@
   "name": "@fluent-wallet/wallet_get-user-operation-nonce-state",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "dependencies": {
     "@fluent-wallet/consts": "workspace:packages/consts",
-    "@fluent-wallet/spec": "1.0.19",
+    "@fluent-wallet/spec": "1.0.20",
     "@fluent-wallet/user-operation": "workspace:packages/user-operation"
   }
 }
