@@ -25,9 +25,9 @@ export default function ({
     ['chainId', {optional: true}, chainId],
     ['address', ethHexAddress],
     ['nonce', {optional: true}, Uint],
-    ['yParity', {optional: true}, Byte],
-    ['r', {optional: true}, Hash32],
-    ['s', {optional: true}, Hash32],
+    ['yParity', {optional: true}, Uint],
+    ['r', {optional: true}, Uint],
+    ['s', {optional: true}, Uint],
   ]
   const AuthorizationListSpec = [oneOrMore, AuthorizationRequestEntrySpec]
   const TxMapSpecs = {
