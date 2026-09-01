@@ -154,6 +154,7 @@ function ConfirmTransaction() {
 
   const {
     data: {
+      nativeBalance,
       network: {eid: networkDbId, ticker, chainId, type: currentNetworkType},
       account: {eid: accountId},
     },
@@ -348,11 +349,7 @@ function ConfirmTransaction() {
     ...inputParams,
     ...(isValueAdjustedForGas ? {value: resolvedValue} : {}),
   }
-  const adjustedTransactionEstimate =
-    useEstimateTx(isValueAdjustedForGas ? transactionParams : {}) || {}
-  const transactionEstimate = isValueAdjustedForGas
-    ? adjustedTransactionEstimate
-    : requestedTransactionEstimate
+  const transactionEstimate = requestedTransactionEstimate
   const transactionEstimateRequired =
     !sponsoredUserOperation.loading && !isSponsoredSubmission
 
@@ -412,11 +409,21 @@ function ConfirmTransaction() {
     nonce: rpcNonce,
     storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
+  const hasEnoughNativeTransferBalance =
+    !isNativeToken ||
+    bn16(nativeBalance || '0x0').gte(bn16(transactionParams.value || '0x0'))
+  const canIgnoreGasBalanceError =
+    hasEnoughNativeTransferBalance &&
+    isNativeToken &&
+    isValueAdjustedForGas
   const errorMessage = useEstimateError(
     transactionEstimate,
     displayTokenAddress,
     !displayTokenAddress,
     isSendToken,
+    {
+      ignoreGasBalanceError: canIgnoreGasBalanceError,
+    },
   )
   const maxAmountError =
     isValueAdjustedForGas && !bn16(resolvedValue).gt(bn16('0x0'))
