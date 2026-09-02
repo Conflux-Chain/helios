@@ -409,13 +409,14 @@ function ConfirmTransaction() {
     nonce: rpcNonce,
     storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
-  const hasEnoughNativeTransferBalance =
-    !isNativeToken ||
-    bn16(nativeBalance || '0x0').gte(bn16(transactionParams.value || '0x0'))
+
+  const hasEnoughAdjustedNativeBalance = bn16(nativeBalance || '0x0').gte(
+    bn16(transactionParams.value || '0x0'),
+  )
+  // Ignore the stale gas balance error only for an adjusted native MAX transfer.
   const canIgnoreGasBalanceError =
-    hasEnoughNativeTransferBalance &&
-    isNativeToken &&
-    isValueAdjustedForGas
+    isNativeToken && isValueAdjustedForGas && hasEnoughAdjustedNativeBalance
+
   const errorMessage = useEstimateError(
     transactionEstimate,
     displayTokenAddress,
