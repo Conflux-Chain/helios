@@ -110,3 +110,4 @@ priority_rules:
       - status-success~=^unit-test\s\(.*\)$
       - status-success~=^integration-test\s\(.*\)$
     priority: 2250
+    allow_checks_interruption: true
