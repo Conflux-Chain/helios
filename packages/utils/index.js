@@ -327,7 +327,7 @@ export const prepareEip7702AuthorizationRequests = (
   return authorizationList.map((authorization, index) => ({
     ...authorization,
     address: authorization.address.toLowerCase(),
-    chainId: authorization.chainId ?? chainId,
+    chainId: toHexQuantity(authorization.chainId ?? chainId),
     nonce: toHexQuantity(
       authorization.nonce ?? txNonceValue.clone().addn(index + 1),
     ),
@@ -345,9 +345,13 @@ export const prepareEip7702AuthorizationRequestsForEstimate = (
   prepareEip7702AuthorizationRequests(authorizationList, chainId, txNonce).map(
     authorization => ({
       ...authorization,
-      r: authorization.r ?? EIP7702_DUMMY_AUTHORIZATION_SIGNATURE,
-      s: authorization.s ?? EIP7702_DUMMY_AUTHORIZATION_SIGNATURE,
-      yParity: authorization.yParity ?? '0x1',
+      r: toHexQuantity(
+        authorization.r ?? EIP7702_DUMMY_AUTHORIZATION_SIGNATURE,
+      ),
+      s: toHexQuantity(
+        authorization.s ?? EIP7702_DUMMY_AUTHORIZATION_SIGNATURE,
+      ),
+      yParity: toHexQuantity(authorization.yParity ?? '0x1'),
     }),
   )
 
