@@ -328,7 +328,7 @@ function ConfirmTransaction() {
   // MAX starts as the full balance while sponsorship is checked. If sponsorship
   // is unavailable, reserve the estimated gas fee before sending.
   const shouldSubtractGasFromMax =
-    shouldPrepareSponsorship &&
+    !isDapp &&
     !isInternalEip7702Tx &&
     isMaxSelected &&
     isNativeToken &&
