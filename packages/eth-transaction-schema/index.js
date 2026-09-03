@@ -25,7 +25,7 @@ export default function ({
     ['chainId', {optional: true}, chainId],
     ['address', ethHexAddress],
     ['nonce', {optional: true}, Uint],
-    ['yParity', {optional: true}, Uint],
+    ['yParity', {optional: true}, Byte],
     ['r', {optional: true}, Uint],
     ['s', {optional: true}, Uint],
   ]

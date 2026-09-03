@@ -154,7 +154,6 @@ function ConfirmTransaction() {
 
   const {
     data: {
-      nativeBalance,
       network: {eid: networkDbId, ticker, chainId, type: currentNetworkType},
       account: {eid: accountId},
     },
@@ -261,7 +260,7 @@ function ConfirmTransaction() {
   const {address: displayTokenAddress} = displayToken || {}
 
   const isNativeToken = !displayTokenAddress
-  const requestedTransactionEstimate =
+  const estimateRst =
     useEstimateTx(
       inputParams,
       !isNativeToken && isSendToken
@@ -324,36 +323,41 @@ function ConfirmTransaction() {
   })
 
   const isSponsoredSubmission = sponsoredUserOperation.isActive
-  const maxTransferValue = requestedTransactionEstimate.nativeMaxDrip
+  const maxValueAfterGas = estimateRst.nativeMaxDrip
+
+  // MAX starts as the full balance while sponsorship is checked. If sponsorship
+  // is unavailable, reserve the estimated gas fee before sending.
+  const shouldSubtractGasFromMax =
+    shouldPrepareSponsorship &&
+    !isInternalEip7702Tx &&
+    isMaxSelected &&
+    isNativeToken &&
+    !sponsoredUserOperation.loading &&
+    !isSponsoredSubmission &&
+    maxValueAfterGas !== undefined
+
+  const sendValue = shouldSubtractGasFromMax
+    ? maxValueAfterGas
+    : inputParams.value
+
+  // Recheck the balance flag against the value that will actually be sent.
+  const estimateForSend = shouldSubtractGasFromMax
+    ? {
+        ...estimateRst,
+        isBalanceEnough: bn16(estimateRst.balanceDrip).gte(
+          bn16(sendValue).add(bn16(estimateRst.txFeeDrip)),
+        ),
+      }
+    : estimateRst
 
   const isSponsorshipRefreshRequired =
     sendError?.data?.code ===
     USER_OPERATION_ERROR_CODES.SPONSORSHIP_REFRESH_REQUIRED
 
-  // A native MAX transfer must leave enough balance for gas when sponsorship is unavailable.
-  let resolvedValue = inputParams.value
-  if (
-    !isDapp &&
-    isMaxSelected &&
-    isNativeToken &&
-    isSendToken &&
-    !sponsoredUserOperation.loading &&
-    !isSponsoredSubmission &&
-    maxTransferValue
-  ) {
-    resolvedValue = maxTransferValue
-  }
-
-  const isValueAdjustedForGas = resolvedValue !== inputParams.value
-  const transactionParams = {
+  const sendTransactionParams = {
     ...inputParams,
-    ...(isValueAdjustedForGas ? {value: resolvedValue} : {}),
+    ...(shouldSubtractGasFromMax ? {value: sendValue} : {}),
   }
-  const transactionEstimate = requestedTransactionEstimate
-  const transactionEstimateRequired =
-    !sponsoredUserOperation.loading && !isSponsoredSubmission
-
-  const sendTransactionParams = {...transactionParams}
 
   if (!customNonce) {
     delete sendTransactionParams.nonce
@@ -375,8 +379,8 @@ function ConfirmTransaction() {
       ? inputAmountHex
       : '0x0'
 
-  const transactionDisplayValue = isValueAdjustedForGas
-    ? convertDataToValue(resolvedValue, nativeToken?.decimals)
+  const sendDisplayValue = shouldSubtractGasFromMax
+    ? convertDataToValue(sendValue, nativeToken?.decimals)
     : displayValue
 
   useEffect(() => {
@@ -410,32 +414,31 @@ function ConfirmTransaction() {
     storageCollateralized: estimateStorageLimit,
   } = originEstimateRst || {}
 
-  const hasEnoughAdjustedNativeBalance = bn16(nativeBalance || '0x0').gte(
-    bn16(transactionParams.value || '0x0'),
-  )
-  // Ignore the stale gas balance error only for an adjusted native MAX transfer.
-  const canIgnoreGasBalanceError =
-    isNativeToken && isValueAdjustedForGas && hasEnoughAdjustedNativeBalance
-
   const errorMessage = useEstimateError(
-    transactionEstimate,
+    estimateForSend,
     displayTokenAddress,
     !displayTokenAddress,
     isSendToken,
-    {
-      ignoreGasBalanceError: canIgnoreGasBalanceError,
-    },
   )
+
   const maxAmountError =
-    isValueAdjustedForGas && !bn16(resolvedValue).gt(bn16('0x0'))
+    shouldSubtractGasFromMax && !bn16(sendValue).gt(bn16('0x0'))
       ? t('gasFeeIsNotEnough')
       : ''
 
   useEffect(() => {
+    const shouldHideEstimateError =
+      sponsoredUserOperation.loading || isSponsoredSubmission
+
     setEstimateError(
-      transactionEstimateRequired ? maxAmountError || errorMessage : '',
+      shouldHideEstimateError ? '' : maxAmountError || errorMessage,
     )
-  }, [errorMessage, maxAmountError, transactionEstimateRequired])
+  }, [
+    errorMessage,
+    isSponsoredSubmission,
+    maxAmountError,
+    sponsoredUserOperation.loading,
+  ])
 
   // when dapp send, init the gas edit global store
   // internal 7702 tx also enters confirm page directly, so it uses the same init path.
@@ -654,10 +657,12 @@ function ConfirmTransaction() {
 
   const confirmDisabled =
     sponsoredUserOperation.loading ||
-    (transactionEstimateRequired &&
+    (!isSponsoredSubmission &&
       (!!estimateError ||
-        transactionEstimate.loading ||
-        Object.keys(transactionEstimate).length === 0)) ||
+        !!maxAmountError ||
+        !!errorMessage ||
+        estimateForSend.loading ||
+        Object.keys(estimateForSend).length === 0)) ||
     (customAllowance && isDecoding)
 
   const dappConfirmParams = {
@@ -701,7 +706,7 @@ function ConfirmTransaction() {
             token={displayToken}
             fromAddress={addressCardFromAddress}
             toAddress={addressCardToAddress}
-            value={transactionDisplayValue}
+            value={sendDisplayValue}
             isSendToken={isSendToken}
             isApproveToken={isApproveToken}
             title={
@@ -721,8 +726,8 @@ function ConfirmTransaction() {
             method={
               decodeData?.name ? transformToTitleCase(decodeData.name) : ''
             }
-            allowance={transactionDisplayValue}
-            value={transactionParams.value}
+            allowance={sendDisplayValue}
+            value={sendTransactionParams.value}
             pendingAuthReq={pendingAuthReq}
             decimals={nativeToken?.decimals}
             symbol={nativeToken?.symbol}
@@ -730,7 +735,7 @@ function ConfirmTransaction() {
           <ConfirmGasFee
             sponsoredUserOperation={sponsoredUserOperation}
             nativeToken={nativeToken}
-            estimateRst={transactionEstimate}
+            estimateRst={estimateForSend}
             uses1559Fees={uses1559Fees}
           />
         </div>
