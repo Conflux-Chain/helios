@@ -2,7 +2,7 @@
   "name": "@fluent-wallet/wallet_prepare-sponsorship",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "dependencies": {
     "@fluent-wallet/backend-client": "workspace:packages/backend-client",
