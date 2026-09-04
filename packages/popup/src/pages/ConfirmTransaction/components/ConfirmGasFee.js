@@ -29,8 +29,6 @@ function ConfirmGasFee({
     <SponsoredGasFee
       maxGasCost={sponsoredUserOperation.maxGasCost}
       nativeToken={nativeToken}
-      estimateRst={estimateRst}
-      uses1559Fees={uses1559Fees}
     />
   )
 }
