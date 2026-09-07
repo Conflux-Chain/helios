@@ -9,6 +9,7 @@ import {formatIntoChecksumAddress, formatLocalizationLang} from '../../../utils'
 import {SlideCard, CopyButton, WrapIcon, NsNameLabel} from '../../../components'
 import {HistoryStatusIcon, HistoryBalance, ResendButtons} from './'
 import {getEip7702DelegateAddress} from './eip7702'
+import SponsoredGasFeeDisplay from './SponsoredGasFeeDisplay'
 
 function TransitionItem({
   className = 'mt-3',
@@ -206,24 +207,21 @@ function TransitionDetail({
             <TransitionItem
               transitionTitle={t('gasFee')}
               TransitionValueOverlay={
-                <div className="flex items-center">
-                  <HistoryBalance
+                sponsored ? (
+                  <SponsoredGasFeeDisplay
                     amount={txFeeDrip}
                     symbol={gasFeeSymbol}
-                    symbolClassName="ml-1 !font-medium !text-gray-80"
-                    className={`!font-medium ${
-                      sponsored ? 'line-through' : ''
-                    }`}
                   />
-                  {sponsored && (
+                ) : (
+                  <div className="flex items-center">
                     <HistoryBalance
-                      amount="0x0"
+                      amount={txFeeDrip}
                       symbol={gasFeeSymbol}
                       symbolClassName="ml-1 !font-medium !text-gray-80"
-                      className="ml-2 !font-medium"
+                      className="!font-medium"
                     />
-                  )}
-                </div>
+                  </div>
+                )
               }
             />
           )}

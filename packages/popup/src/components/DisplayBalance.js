@@ -21,6 +21,7 @@ function DisplayBalance({
   symbol = '',
   decimals = COMMON_DECIMALS,
   id,
+  inlineSymbol = false,
 }) {
   let displayBalance
   let displayRealBalance
@@ -35,9 +36,13 @@ function DisplayBalance({
   }
 
   const showTooltip = displayBalance === '<0.000001'
+  const displayText =
+    inlineSymbol && displayBalance
+      ? [displayBalance, symbol].filter(Boolean).join(' ')
+      : displayBalance
   const balanceRef = useRef()
   const hiddenRef = useRef()
-  useFontSize(balanceRef, hiddenRef, maxWidth, displayBalance, initialFontSize)
+  useFontSize(balanceRef, hiddenRef, maxWidth, displayText, initialFontSize)
 
   return (
     <div
@@ -48,7 +53,7 @@ function DisplayBalance({
           <Tooltip content={`${displayRealBalance} ${symbol}`}>
             <Text
               ref={balanceRef}
-              text={displayBalance}
+              text={displayText}
               placeholderAnimation
               className="leading-none"
             />
@@ -56,21 +61,23 @@ function DisplayBalance({
         ) : (
           <Text
             ref={balanceRef}
-            text={displayBalance}
+            text={displayText}
             placeholderAnimation
             className="leading-none"
           />
         )}
 
         <span ref={hiddenRef} className="invisible absolute left-0">
-          {displayBalance}
+          {displayText}
         </span>
       </div>
-      <span
-        className={classNames('inline-block ml-0.5', {
-          'opacity-0': !displayBalance,
-        })}
-      >{`${symbol}`}</span>
+      {!inlineSymbol && (
+        <span
+          className={classNames('inline-block ml-0.5', {
+            'opacity-0': !displayBalance,
+          })}
+        >{`${symbol}`}</span>
+      )}
     </div>
   )
 }
@@ -84,6 +91,7 @@ DisplayBalance.propTypes = {
   symbol: PropTypes.string,
   decimals: PropTypes.number,
   id: PropTypes.string,
+  inlineSymbol: PropTypes.bool,
 }
 
 export default DisplayBalance
