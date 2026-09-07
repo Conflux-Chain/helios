@@ -376,7 +376,15 @@ const zh = {
       '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
     eip7702SponsoredUpgradeTitle: '启用 EIP-7702 升级',
     eip7702SponsoredUpgradeDesc: '升级后，您的账户将获得以下智能功能。',
+    eip7702SponsoredDescription:
+      '该交易符合Gas费赞助资格。升级账户后，你将解锁以下智能功能，可随时在设置中撤销。',
+    eip7702SponsoredBenefitsTitle: '解锁更多权益',
+    eip7702SponsoredGasFreeDapps: '支持的DApp上免Gas交易',
+    eip7702SponsoredFlexibleGas: '灵活支付Gas费用',
+    eip7702SponsoredBatchTransactions: '批量打包多笔交易',
     eip7702SponsoredUpgradeConfirm: '启用并继续',
+    eip7702SponsoredSwitchTitle: '切换到 EIP-7702 服务',
+    eip7702SponsoredSwitchConfirm: '切换并继续',
     eip7702SwitchInfoTitle: '切换到 EIP-7702 服务',
     eip7702SwitchInfoDesc:
       '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
