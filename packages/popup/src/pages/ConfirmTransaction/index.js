@@ -660,14 +660,14 @@ function ConfirmTransaction() {
     pendingDelegationAction === 'upgrade'
       ? {
           title: t('eip7702SponsoredUpgradeTitle'),
-          description: t('eip7702SponsoredUpgradeDesc'),
+          description: t('eip7702SponsoredDescription'),
           confirmText: t('eip7702SponsoredUpgradeConfirm'),
         }
       : pendingDelegationAction === 'switch'
       ? {
-          title: t('eip7702SwitchInfoTitle'),
-          description: t('eip7702SwitchInfoDesc'),
-          confirmText: t('eip7702SwitchInfoConfirm'),
+          title: t('eip7702SponsoredSwitchTitle'),
+          description: t('eip7702SponsoredDescription'),
+          confirmText: t('eip7702SponsoredSwitchConfirm'),
         }
       : null
   return (

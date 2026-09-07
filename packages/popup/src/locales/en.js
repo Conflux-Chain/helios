@@ -391,7 +391,15 @@ const en = {
     eip7702SponsoredUpgradeTitle: 'Enable EIP-7702 Upgrade',
     eip7702SponsoredUpgradeDesc:
       'By upgrading, your account gains the following smart features.',
-    eip7702SponsoredUpgradeConfirm: 'Enable and continue',
+    eip7702SponsoredDescription:
+      'This transaction is eligible for gas sponsorship. By upgrading, your account gains smart features as followed. You can revoke it anytime in Settings.',
+    eip7702SponsoredBenefitsTitle: 'Enjoy more benefits',
+    eip7702SponsoredGasFreeDapps: 'Gas-free transactions on supported DApps',
+    eip7702SponsoredFlexibleGas: 'Flexible gas payments',
+    eip7702SponsoredBatchTransactions: 'Bundle multiple transactions',
+    eip7702SponsoredUpgradeConfirm: 'Upgrade and continue',
+    eip7702SponsoredSwitchTitle: 'Switch to EIP-7702 service',
+    eip7702SponsoredSwitchConfirm: 'Switch and continue',
     eip7702SwitchInfoTitle: 'Switch to EIP-7702 service',
     eip7702SwitchInfoDesc:
       'This account currently bound to a third party contract. Switch to Fluent Wallet for a better experience.',
