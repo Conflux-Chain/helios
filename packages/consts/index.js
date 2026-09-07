@@ -161,13 +161,25 @@ export const ETH_TX_TYPES = {
 export const EIP7702_DELEGATION_PREFIX = '0xef0100'
 
 const FLUENT_BACKEND_BASE_URLS = {
+  [CFX_ESPACE_MAINNET_CHAINID]: 'https://api.fluentwallet.com/api',
   [CFX_ESPACE_TESTNET_CHAINID]: 'https://api-testnet.fluentwallet.com/api',
 }
 
+const ENTRY_POINT_CONTRACT_ADDRESS =
+  '0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108'
+const ENTRY_POINT_VERSION = '0.8'
+
 export const EIP7702_NETWORK_CONFIGS = {
+  [CFX_ESPACE_MAINNET_CHAINID]: {
+    entryPointAddress: ENTRY_POINT_CONTRACT_ADDRESS,
+    entryPointVersion: ENTRY_POINT_VERSION,
+    delegateAddress: '0x4938A2036200fcb9Bfb05368836CcE2CB8abd57f',
+    bundlerEndpoint: 'https://bundler.confluxrpc.org',
+    backendBaseUrl: FLUENT_BACKEND_BASE_URLS[CFX_ESPACE_MAINNET_CHAINID],
+  },
   [CFX_ESPACE_TESTNET_CHAINID]: {
-    entryPointAddress: '0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108',
-    entryPointVersion: '0.8',
+    entryPointAddress: ENTRY_POINT_CONTRACT_ADDRESS,
+    entryPointVersion: ENTRY_POINT_VERSION,
     delegateAddress: '0x8F5d8d7f3467Dd2e34186E232D8b5a5f35462949',
     bundlerEndpoint: 'https://aa-bundle.confluxrpc.org',
     backendBaseUrl: FLUENT_BACKEND_BASE_URLS[CFX_ESPACE_TESTNET_CHAINID],
