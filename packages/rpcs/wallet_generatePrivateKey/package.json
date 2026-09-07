@@ -1,6 +1,6 @@
 {
   "name": "@fluent-wallet/wallet_generate-private-key",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "type": "module",
   "main": "index.js",
   "dependencies": {

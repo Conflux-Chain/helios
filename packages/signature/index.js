@@ -213,17 +213,24 @@ export const signEip7702Authorization = (authorization, privateKey) => {
 }
 
 export const signEip7702AuthorizationList = (authorizationList, privateKey) => {
-  return authorizationList.map(authorization => ({
-    ...authorization,
-    ...signEip7702Authorization(
+  return authorizationList.map(authorization => {
+    const signature = signEip7702Authorization(
       {
         chainId: authorization.chainId,
         contractAddress: authorization.address,
         nonce: authorization.nonce,
       },
       privateKey,
-    ),
-  }))
+    )
+    return {
+      ...authorization,
+      chainId: toHexQuantity(authorization.chainId),
+      nonce: toHexQuantity(authorization.nonce),
+      yParity: toHexQuantity(signature.yParity),
+      r: toHexQuantity(signature.r),
+      s: toHexQuantity(signature.s),
+    }
+  })
 }
 
 export const ethSignEip7702Transaction = (tx, privateKey) => {
