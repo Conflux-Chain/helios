@@ -5,16 +5,16 @@ import {SlideCard} from '../../../components'
 
 const BENEFIT_ITEMS = [
   {
+    iconSrc: '/images/7702DappSupport.svg',
+    titleKey: 'eip7702SponsoredGasFreeDapps',
+  },
+  {
     iconSrc: '/images/7702FlexibleGas.svg',
-    titleKey: 'eip7702FlexibleGasTitle',
+    titleKey: 'eip7702SponsoredFlexibleGas',
   },
   {
     iconSrc: '/images/7702BatchTransactions.svg',
-    titleKey: 'eip7702BatchTransactionsTitle',
-  },
-  {
-    iconSrc: '/images/7702DappSupport.svg',
-    titleKey: 'eip7702DappSupportTitle',
+    titleKey: 'eip7702SponsoredBatchTransactions',
   },
 ]
 
@@ -48,7 +48,7 @@ function Eip7702DelegationDrawer({
       cardContent={
         <div className="my-4 rounded-lg bg-white p-3">
           <p className="text-sm font-medium text-gray-80">
-            {t('eip7702SwitchInfoBenefitsTitle')}
+            {t('eip7702SponsoredBenefitsTitle')}
           </p>
 
           <div className="mt-2 flex flex-col gap-2">
