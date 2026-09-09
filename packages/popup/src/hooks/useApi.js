@@ -25,6 +25,7 @@ const {
   WALLET_GET_PENDING_AUTH_REQUEST,
   WALLET_ZERO_ACCOUNT_GROUP,
   WALLET_GET_NETWORK,
+  WALLET_GET_EIP7702_ACCOUNT_STATES,
   WALLET_IS_LOCKED,
   WALLET_METADATA_FOR_POPUP,
   ACCOUNT_GROUP_TYPE,
@@ -78,6 +79,8 @@ export const useAddress = (opts = {}) => {
           ticker: 1,
           netId: 1,
           chainId: 1,
+          isMainnet: 1,
+          isTestnet: 1,
           name: 1,
           icon: 1,
           scanUrl: 1,
@@ -249,6 +252,34 @@ export const useAddressByNetworkId = (accountIds = [], networkId) => {
   return accountAddress || {}
 }
 
+export const useEip7702AccountStates = accountStateQueries => {
+  const canQueryAccountStates =
+    isArray(accountStateQueries) &&
+    accountStateQueries.length > 0 &&
+    accountStateQueries.every(
+      ({accountId, networkId}) => isNumber(accountId) && isNumber(networkId),
+    )
+
+  const {data: eip7702AccountStates, mutate} = useRPC(
+    canQueryAccountStates
+      ? [
+          WALLET_GET_EIP7702_ACCOUNT_STATES,
+          ...accountStateQueries.flatMap(({accountId, networkId}) => [
+            accountId,
+            networkId,
+          ]),
+        ]
+      : null,
+    accountStateQueries,
+    {fallbackData: []},
+  )
+
+  return {
+    data: eip7702AccountStates || [],
+    mutate,
+  }
+}
+
 export const useBalance = (
   address,
   networkId,
@@ -259,13 +290,19 @@ export const useBalance = (
       ? [address]
       : address
     : null
+  const tokens = isArray(tokenContractAddress)
+    ? tokenContractAddress
+    : [tokenContractAddress]
   const {data: balance} = useRPC(
-    userAddress && isNumber(networkId) && isString(tokenContractAddress)
-      ? [WALLET_GET_BALANCE, networkId, tokenContractAddress, ...userAddress]
+    userAddress &&
+      isNumber(networkId) &&
+      tokens.length > 0 &&
+      tokens.every(token => isString(token))
+      ? [WALLET_GET_BALANCE, networkId, ...tokens, ...userAddress]
       : null,
     {
       users: userAddress,
-      tokens: [tokenContractAddress],
+      tokens,
     },
     {fallbackData: {}},
   )
@@ -288,18 +325,29 @@ export const useIsCfxChain = () => {
   return type === NETWORK_TYPE.CFX || symbol?.toLowerCase() === NETWORK_TYPE.CFX
 }
 
-export const useAddressType = address => {
-  const netId = useCurrentAddress().data.network.netId
+export const useAddressTypeInfo = address => {
+  const {
+    data: {
+      network: {eid: networkId, netId},
+    },
+  } = useCurrentAddress()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const isValidAddress = validateAddress(address, networkTypeIsCfx, netId)
-  const {
-    data: {type},
-  } = useRPC(
-    isValidAddress ? [WALLET_DETECT_ADDRESS_TYPE, address] : null,
+  const {data} = useRPC(
+    isValidAddress && isNumber(networkId)
+      ? [WALLET_DETECT_ADDRESS_TYPE, networkId, address]
+      : null,
     {address},
-    {fallbackData: {}},
+    {
+      fallbackData: {},
+      refreshInterval: 0,
+    },
   )
-  return type
+  return data || {}
+}
+
+export const useAddressType = address => {
+  return useAddressTypeInfo(address).type
 }
 
 export const useDbRefetchBalance = (params = {}) => {
@@ -486,11 +534,20 @@ export const useGroupAccountAuthorizedDapps = () => {
 }
 
 export const useValid20Token = address => {
+  const {
+    data: {
+      network: {eid: networkId},
+    },
+  } = useCurrentAddress()
+
   const {data: token} = useRPC(
-    address ? [WALLET_VALIDATE_20TOKEN, address] : null,
+    address && isNumber(networkId)
+      ? [WALLET_VALIDATE_20TOKEN, networkId, address]
+      : null,
     {tokenAddress: address},
     {
       fallbackData: {},
+      refreshInterval: 0,
       postprocessSuccessData: d => (address ? {...(d || {}), address} : d),
     },
   )

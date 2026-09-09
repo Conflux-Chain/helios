@@ -17,6 +17,7 @@ function Modal({
   actions,
   size = 'medium',
   contentClassName = '',
+  wrapperClassName = 'z-50',
   ...props
 }) {
   const ref = useRef(null)
@@ -53,7 +54,7 @@ function Modal({
   return (
     <div
       data-testid="modal-wrapper"
-      className={`fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-[#000] bg-opacity-0 transition duration-500 ease-in-out flex justify-center items-center z-50 ${wrapperAnimateStyle}`}
+      className={`fixed w-full h-full top-0 left-0 px-3 md:px-0 bg-[#000] bg-opacity-0 transition duration-500 ease-in-out flex justify-center items-center ${wrapperClassName} ${wrapperAnimateStyle}`}
     >
       <div
         data-testid="modal-content"
@@ -73,7 +74,7 @@ function Modal({
           <span
             aria-hidden="true"
             onClick={e => onCloseClick(e)}
-            className="absolute top-3 right-3"
+            className="absolute top-3 right-3 z-10"
             data-testid="modal-close-wrapper"
           >
             {closeIcon ? (
@@ -111,6 +112,7 @@ export default Modal
 Modal.propTypes = {
   className: PropTypes.string,
   contentClassName: PropTypes.string,
+  wrapperClassName: PropTypes.string,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   width: PropTypes.string,
   title: PropTypes.string,

@@ -20,7 +20,7 @@ import {
   useDecodeData,
   useCurrentTxStore,
   useLedgerBindingApi,
-  useIsTxTreatedAsEIP1559,
+  useUses1559Fees,
   useQuery,
 } from '../../hooks'
 import {formatStatus, request, checkBalance} from '../../utils'
@@ -29,18 +29,9 @@ import {ExecutedTransaction} from './components'
 
 import {RPC_METHODS, TX_STATUS} from '../../constants'
 
-const {WALLET_SEND_TRANSACTION_WITH_ACTION} = RPC_METHODS
+import {buildResendTxParams, omitFalsyTxParams} from './resendParams'
 
-const filterNonValueParams = (originParams = {}, otherParams = {}) => {
-  const ret = {}
-  originParams = {...originParams, ...otherParams}
-  Object.keys(originParams)
-    .filter(_k => !!originParams[_k])
-    .forEach(k => {
-      ret[k] = originParams[k]
-    })
-  return ret
-}
+const {WALLET_SEND_TRANSACTION_WITH_ACTION} = RPC_METHODS
 function ResendTransaction() {
   const history = useHistory()
   const {t} = useTranslation()
@@ -81,21 +72,18 @@ function ResendTransaction() {
 
   const {simple, token20} = txExtra
 
-  const {
-    data,
-    from,
-    to,
-    nonce,
-    value,
-    gasPrice,
-    maxFeePerGas,
-    type: eipVersionType,
-  } = txPayload
+  const {data, to, gasPrice, maxFeePerGas} = txPayload
   const reSendTxStatus = formatStatus(status)
+  const {txParams: resendTxParams} = buildResendTxParams({
+    resendType,
+    txPayload,
+  })
+  const resendParamsInvalid =
+    Object.keys(txPayload).length > 0 && !Object.keys(resendTxParams).length
 
-  const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(eipVersionType)
+  const uses1559Fees = useUses1559Fees(resendTxParams?.type)
 
-  const lastGasPrice = isTxTreatedAsEIP1559 ? maxFeePerGas : gasPrice
+  const lastGasPrice = uses1559Fees ? maxFeePerGas : gasPrice
 
   // decode erc20 data
   const {decodeData} = useDecodeData(
@@ -125,42 +113,23 @@ function ResendTransaction() {
       }
     : {}
 
-  const originParams = filterNonValueParams(
-    resendType === 'speedup'
-      ? {
-          type: eipVersionType,
-          from,
-          to,
-          nonce,
-          value,
-          data,
-        }
-      : {
-          type: eipVersionType,
-          from,
-          to: from,
-          nonce,
-          value: '0x0',
-        },
-  )
-
-  const originEstimateRst =
-    useEstimateTx({...originParams}, token20Params) || {}
+  const resendEstimateRst =
+    useEstimateTx({...resendTxParams}, token20Params) || {}
 
   const {
     gasPrice: estimateGasPrice,
     gasInfoEip1559 = {},
     loading,
-  } = originEstimateRst
+  } = resendEstimateRst
 
-  const originEstimateGasPrice = useMemo(() => {
+  const resendEstimateGasPrice = useMemo(() => {
     if (
       loading ||
-      (!isTxTreatedAsEIP1559 && !estimateGasPrice) ||
-      (isTxTreatedAsEIP1559 && !gasInfoEip1559?.['medium'])
+      (!uses1559Fees && !estimateGasPrice) ||
+      (uses1559Fees && !gasInfoEip1559?.['medium'])
     )
       return null
-    return !isTxTreatedAsEIP1559
+    return !uses1559Fees
       ? estimateGasPrice
       : convertDecimal(
           new Big(gasInfoEip1559?.['medium']?.suggestedMaxFeePerGas)
@@ -169,17 +138,30 @@ function ResendTransaction() {
           'multiply',
           GWEI_DECIMALS,
         )
-  }, [isTxTreatedAsEIP1559, estimateGasPrice, gasInfoEip1559, loading])
+  }, [uses1559Fees, estimateGasPrice, gasInfoEip1559, loading])
 
-  const resendTransaction = async params => {
+  const resendTransaction = async txParams => {
+    const action =
+      resendType === 'expeditedCancellation' || resendType === 'cancel'
+        ? 'cancel'
+        : 'speedup'
+
+    const gasParams = omitFalsyTxParams({
+      gas: txParams.gas,
+      gasPrice: txParams.gasPrice,
+      storageLimit: txParams.storageLimit,
+      maxFeePerGas: txParams.maxFeePerGas,
+      maxPriorityFeePerGas: txParams.maxPriorityFeePerGas,
+    })
+
+    const requestParams = {
+      action,
+      originalTxHash: hash,
+      ...gasParams,
+    }
+
     try {
-      await request(WALLET_SEND_TRANSACTION_WITH_ACTION, {
-        action:
-          resendType === 'expeditedCancellation' || resendType === 'cancel'
-            ? 'cancel'
-            : 'speedup',
-        tx: [params],
-      })
+      await request(WALLET_SEND_TRANSACTION_WITH_ACTION, requestParams)
       clearSendTransactionParams()
       history.goBack()
     } catch (error) {
@@ -197,7 +179,7 @@ function ResendTransaction() {
   }
 
   const onResend = async feeParams => {
-    if (loading || !accountType) {
+    if (loading || !accountType || resendParamsInvalid) {
       return
     }
 
@@ -220,7 +202,7 @@ function ResendTransaction() {
       setLoading(true)
     }
 
-    const params = filterNonValueParams({...originParams}, {...feeParams})
+    const params = omitFalsyTxParams(resendTxParams, feeParams)
     const error = await checkBalance(
       params,
       token || {},
@@ -228,7 +210,7 @@ function ResendTransaction() {
       resendType === 'speedup' ? isSendingToken || simple : true,
       sendTokenValue,
       networkTypeIsCfx,
-      isTxTreatedAsEIP1559,
+      uses1559Fees,
     )
 
     if (error) {
@@ -249,9 +231,9 @@ function ResendTransaction() {
 
   // set default gas price (legacy tx)
   useEffect(() => {
-    if (lastGasPrice && originEstimateGasPrice) {
+    if (lastGasPrice && resendEstimateGasPrice) {
       const decimalGasPrice = formatHexToDecimal(lastGasPrice)
-      const decimalEstimateGasPrice = formatHexToDecimal(originEstimateGasPrice)
+      const decimalEstimateGasPrice = formatHexToDecimal(resendEstimateGasPrice)
 
       const biggerGasPrice = new Big(decimalGasPrice).times(1.1)
 
@@ -265,7 +247,7 @@ function ResendTransaction() {
 
       setSuggestedGasPrice(formatDecimalToHex(recommendGasPrice))
     }
-  }, [originEstimateGasPrice, lastGasPrice])
+  }, [resendEstimateGasPrice, lastGasPrice])
 
   //cancel resend tx when tx status is not pending
   useEffect(() => {
@@ -285,8 +267,8 @@ function ResendTransaction() {
         resendGasPrice={suggestedGasPrice}
         resendType={resendType}
         onSubmit={onResend}
-        tx={{...originParams}}
-        resendDisabled={!!estimateError}
+        tx={{...resendTxParams}}
+        resendDisabled={resendParamsInvalid || !!estimateError}
         onClickGasStationItem={() => setEstimateError('')}
       />
       {sendStatus && (

@@ -2985,53 +2985,46 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/common@npm:^4.3.0":
-  version: 4.4.0
-  resolution: "@ethereumjs/common@npm:4.4.0"
+"@ethereumjs/common@npm:10.1.1, @ethereumjs/common@npm:^10.1.1":
+  version: 10.1.1
+  resolution: "@ethereumjs/common@npm:10.1.1"
   dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-  checksum: 10/dd5cc78575a762b367601f94d6af7e36cb3a5ecab45eec0c1259c433e755a16c867753aa88f331e3963791a18424ad0549682a3a6a0a160640fe846db6ce8014
+    "@ethereumjs/util": "npm:^10.1.1"
+    eventemitter3: "npm:^5.0.1"
+  checksum: 10/c47aeed4e839fb7cd85944d570c31722bd20d8a0a1f4ddde2f2501e69f12ba563dda69e0d5c079590fe81e53889e34ccf46caa90956fa9563577f1359c7bc76b
   languageName: node
   linkType: hard
 
-"@ethereumjs/rlp@npm:5.0.2, @ethereumjs/rlp@npm:^5.0.2":
-  version: 5.0.2
-  resolution: "@ethereumjs/rlp@npm:5.0.2"
+"@ethereumjs/rlp@npm:10.1.1, @ethereumjs/rlp@npm:^10.1.1":
+  version: 10.1.1
+  resolution: "@ethereumjs/rlp@npm:10.1.1"
   bin:
     rlp: bin/rlp.cjs
-  checksum: 10/2af80d98faf7f64dfb6d739c2df7da7350ff5ad52426c3219897e843ee441215db0ffa346873200a6be6d11142edb9536e66acd62436b5005fa935baaf7eb6bd
+  checksum: 10/6f713406e2cc32edb21096d03653e0391bab624cd3a1e518f15afc117d7aa9f5de56154b224b7c2628066289d72ac2d7c236f17aee4e28e6f5427cc32ab57b28
   languageName: node
   linkType: hard
 
-"@ethereumjs/tx@npm:5.3.0":
-  version: 5.3.0
-  resolution: "@ethereumjs/tx@npm:5.3.0"
+"@ethereumjs/tx@npm:10.1.1":
+  version: 10.1.1
+  resolution: "@ethereumjs/tx@npm:10.1.1"
   dependencies:
-    "@ethereumjs/common": "npm:^4.3.0"
-    "@ethereumjs/rlp": "npm:^5.0.2"
-    "@ethereumjs/util": "npm:^9.0.3"
-    ethereum-cryptography: "npm:^2.1.3"
-  checksum: 10/4eb48e763d81ea0978648367d61c568c8d10f769c1ea7d32307ebe02299d4fa9fe5d7bf794ec1ee22e92edef6bfe1f459d5816e1c62d3f93602d931807ca488b
+    "@ethereumjs/common": "npm:^10.1.1"
+    "@ethereumjs/rlp": "npm:^10.1.1"
+    "@ethereumjs/util": "npm:^10.1.1"
+    "@noble/curves": "npm:^2.0.1"
+    "@noble/hashes": "npm:^2.0.1"
+  checksum: 10/f6ecb73068c6291844c66b33d0f3417f174839c32a40996a40454dd69b8676ae20df429f3d33cbce3b4f31eebdf6ef7b4e85836da4c085e87e32fa5e72a1a48c
   languageName: node
   linkType: hard
 
-"@ethereumjs/util@npm:9.0.3":
-  version: 9.0.3
-  resolution: "@ethereumjs/util@npm:9.0.3"
+"@ethereumjs/util@npm:10.1.1, @ethereumjs/util@npm:^10.1.1":
+  version: 10.1.1
+  resolution: "@ethereumjs/util@npm:10.1.1"
   dependencies:
-    "@ethereumjs/rlp": "npm:^5.0.2"
-    ethereum-cryptography: "npm:^2.1.3"
-  checksum: 10/d9c313a0672e0b4842ba80e2f413ccd5302c3942dc4ed718d6e3faab89c4eeeaaeb6661e9275679c22b83b1cb6502ea772e1c837d105b6a9faf5957a59bc3e4c
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/util@npm:^9.0.3, @ethereumjs/util@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@ethereumjs/util@npm:9.1.0"
-  dependencies:
-    "@ethereumjs/rlp": "npm:^5.0.2"
-    ethereum-cryptography: "npm:^2.2.1"
-  checksum: 10/4e22c4081c63eebb808eccd54f7f91cd3407f4cac192da5f30a0d6983fe07d51f25e6a9d08624f1376e604bb7dce574aafcf0fbf0becf42f62687c11e710ac41
+    "@ethereumjs/rlp": "npm:^10.1.1"
+    "@noble/curves": "npm:^2.0.1"
+    "@noble/hashes": "npm:^2.0.1"
+  checksum: 10/5ab48a85d52371126d1b29ec8304ae1fac8f61de9fc8becabbf2166fee9a2d168dfb85d7acd7190e02c5bef61f09afcd7552f1d38aea6bba33395fb49cf3f531
   languageName: node
   linkType: hard
 
@@ -3668,6 +3661,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/backend-client@workspace:packages/backend-client":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/backend-client@workspace:packages/backend-client"
+  dependencies:
+    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/base32-address@workspace:*, @fluent-wallet/base32-address@workspace:packages/base32-address":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/base32-address@workspace:packages/base32-address"
@@ -3687,6 +3688,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fluent-wallet/bundler-client@workspace:packages/bundler-client":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/bundler-client@workspace:packages/bundler-client"
+  dependencies:
+    "@fluent-wallet/fetch-rpc": "workspace:packages/fetch-rpc"
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
+  languageName: unknown
+  linkType: soft
+
 "@fluent-wallet/cache-rpc@workspace:packages/cache-rpc":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cache-rpc@workspace:packages/cache-rpc"
@@ -3701,7 +3711,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_accounts@workspace:packages/rpcs/cfx_accounts"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3709,7 +3719,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_call@workspace:packages/rpcs/cfx_call"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3717,7 +3727,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_chain-id@workspace:packages/rpcs/cfx_chainId"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3725,7 +3735,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_check-balance-against-transaction@workspace:packages/rpcs/cfx_checkBalanceAgainstTransaction"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3733,7 +3743,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_client-version@workspace:packages/rpcs/cfx_clientVersion"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3741,7 +3751,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_epoch-number@workspace:packages/rpcs/cfx_epochNumber"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3750,7 +3760,7 @@ __metadata:
   resolution: "@fluent-wallet/cfx_estimate-1559-fee@workspace:packages/rpcs/cfx_estimate1559Fee"
   dependencies:
     "@ethersproject/units": "npm:5.6.1"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     bn.js: "npm:5.2.0"
   languageName: unknown
   linkType: soft
@@ -3759,7 +3769,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_estimate-gas-and-collateral@workspace:packages/rpcs/cfx_estimateGasAndCollateral"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3767,7 +3777,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_fee-history@workspace:packages/rpcs/cfx_feeHistory"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3776,7 +3786,7 @@ __metadata:
   resolution: "@fluent-wallet/cfx_gas-price@workspace:packages/rpcs/cfx_gasPrice"
   dependencies:
     "@fluent-wallet/consts": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@thi.ng/cache": "npm:2.1.9"
   languageName: unknown
   linkType: soft
@@ -3785,7 +3795,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-account-pending-info@workspace:packages/rpcs/cfx_getAccountPendingInfo"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3793,7 +3803,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-account-pending-transactions@workspace:packages/rpcs/cfx_getAccountPendingTransactions"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3801,7 +3811,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-account@workspace:packages/rpcs/cfx_getAccount"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3809,7 +3819,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-accumulate-interest-rate@workspace:packages/rpcs/cfx_getAccumulateInterestRate"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3817,7 +3827,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-admin@workspace:packages/rpcs/cfx_getAdmin"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3825,7 +3835,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-balance@workspace:packages/rpcs/cfx_getBalance"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3833,7 +3843,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-best-block-hash@workspace:packages/rpcs/cfx_getBestBlockHash"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3841,7 +3851,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-block-by-block-number@workspace:packages/rpcs/cfx_getBlockByBlockNumber"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3849,7 +3859,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-block-by-epoch-number@workspace:packages/rpcs/cfx_getBlockByEpochNumber"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3857,7 +3867,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-block-by-hash-with-pivot-assumption@workspace:packages/rpcs/cfx_getBlockByHashWithPivotAssumption"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3865,7 +3875,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-block-by-hash@workspace:packages/rpcs/cfx_getBlockByHash"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3873,7 +3883,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-block-reward-info@workspace:packages/rpcs/cfx_getBlockRewardInfo"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3881,7 +3891,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-blocks-by-epoch@workspace:packages/rpcs/cfx_getBlocksByEpoch"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3889,7 +3899,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-code@workspace:packages/rpcs/cfx_getCode"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3897,7 +3907,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-collateral-for-storage@workspace:packages/rpcs/cfx_getCollateralForStorage"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3905,7 +3915,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-confirmation-risk-by-hash@workspace:packages/rpcs/cfx_getConfirmationRiskByHash"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3913,7 +3923,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-deposit-list@workspace:packages/rpcs/cfx_getDepositList"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3921,7 +3931,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-fee-burnt@workspace:packages/rpcs/cfx_getFeeBurnt"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3929,7 +3939,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-interest-rate@workspace:packages/rpcs/cfx_getInterestRate"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3937,7 +3947,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-logs@workspace:packages/rpcs/cfx_getLogs"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3945,7 +3955,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-max-gas-limit@workspace:packages/rpcs/cfx_getMaxGasLimit"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3953,7 +3963,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-next-nonce@workspace:packages/rpcs/cfx_getNextNonce"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3961,7 +3971,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-next-usable-nonce@workspace:packages/rpcs/cfx_getNextUsableNonce"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3969,7 +3979,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-pos-economics@workspace:packages/rpcs/cfx_getPoSEconomics"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3977,7 +3987,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-pos-reward-by-epoch@workspace:packages/rpcs/cfx_getPoSRewardByEpoch"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3985,7 +3995,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-skipped-blocks-by-epoch@workspace:packages/rpcs/cfx_getSkippedBlocksByEpoch"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -3993,7 +4003,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-sponsor-info@workspace:packages/rpcs/cfx_getSponsorInfo"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4001,7 +4011,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-staking-balance@workspace:packages/rpcs/cfx_getStakingBalance"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4009,7 +4019,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-status@workspace:packages/rpcs/cfx_getStatus"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4017,7 +4027,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-storage-at@workspace:packages/rpcs/cfx_getStorageAt"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4025,7 +4035,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-storage-root@workspace:packages/rpcs/cfx_getStorageRoot"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4033,7 +4043,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-supply-info@workspace:packages/rpcs/cfx_getSupplyInfo"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4041,7 +4051,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-transaction-by-hash@workspace:packages/rpcs/cfx_getTransactionByHash"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4049,7 +4059,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-transaction-receipt@workspace:packages/rpcs/cfx_getTransactionReceipt"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4057,7 +4067,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_get-vote-list@workspace:packages/rpcs/cfx_getVoteList"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4065,7 +4075,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_max-priority-fee-per-gas@workspace:packages/rpcs/cfx_maxPriorityFeePerGas"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4073,7 +4083,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_net-version@workspace:packages/rpcs/cfx_netVersion"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4081,7 +4091,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_opened-method-groups@workspace:packages/rpcs/cfx_openedMethodGroups"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4089,7 +4099,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_request-accounts@workspace:packages/rpcs/cfx_requestAccounts"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4097,7 +4107,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/cfx_send-raw-transaction@workspace:packages/rpcs/cfx_sendRawTransaction"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4106,7 +4116,7 @@ __metadata:
   resolution: "@fluent-wallet/cfx_send-transaction@workspace:packages/rpcs/cfx_sendTransaction"
   dependencies:
     "@fluent-wallet/cfx_sign-transaction": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4125,7 +4135,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/ledger": "workspace:*"
     "@fluent-wallet/signature": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
   linkType: soft
@@ -4137,7 +4147,7 @@ __metadata:
     "@ethersproject/bytes": "npm:5.6.1"
     "@fluent-wallet/ledger": "workspace:*"
     "@fluent-wallet/signature": "workspace:packages/signature"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/utils": "workspace:*"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
@@ -4400,7 +4410,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/db@npm:1.0.82, @fluent-wallet/db@workspace:packages/db":
+"@fluent-wallet/db@npm:1.0.90, @fluent-wallet/db@workspace:packages/db":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/db@workspace:packages/db"
   dependencies:
@@ -4415,6 +4425,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/checks": "workspace:packages/checks"
+    "@fluent-wallet/consts": "workspace:packages/consts"
   languageName: unknown
   linkType: soft
 
@@ -4532,7 +4543,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_accounts@workspace:packages/rpcs/eth_accounts"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4540,7 +4551,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_block-number@workspace:packages/rpcs/eth_blockNumber"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4549,7 +4560,7 @@ __metadata:
   resolution: "@fluent-wallet/eth_call@workspace:packages/rpcs/eth_call"
   dependencies:
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4557,7 +4568,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_chain-id@workspace:packages/rpcs/eth_chainId"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4566,7 +4577,7 @@ __metadata:
   resolution: "@fluent-wallet/eth_estimate-1559-fee@workspace:packages/rpcs/eth_estimate1559Fee"
   dependencies:
     "@ethersproject/units": "npm:5.6.1"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     bn.js: "npm:5.2.0"
   languageName: unknown
   linkType: soft
@@ -4576,7 +4587,7 @@ __metadata:
   resolution: "@fluent-wallet/eth_estimate-gas@workspace:packages/rpcs/eth_estimateGas"
   dependencies:
     "@fluent-wallet/eth-transaction-schema": "workspace:packages/eth-transaction-schema"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4584,7 +4595,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_fee-history@workspace:packages/rpcs/eth_feeHistory"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4592,7 +4603,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_gas-price@workspace:packages/rpcs/eth_gasPrice"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4600,7 +4611,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_get-balance@workspace:packages/rpcs/eth_getBalance"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4608,7 +4619,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_get-block-by-hash@workspace:packages/rpcs/eth_getBlockByHash"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4616,7 +4627,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_get-block-by-number@workspace:packages/rpcs/eth_getBlockByNumber"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4624,7 +4635,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_get-code@workspace:packages/rpcs/eth_getCode"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4632,7 +4643,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_get-logs@workspace:packages/rpcs/eth_getLogs"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4640,7 +4651,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_get-transaction-by-hash@workspace:packages/rpcs/eth_getTransactionByHash"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4648,7 +4659,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_get-transaction-count@workspace:packages/rpcs/eth_getTransactionCount"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4656,7 +4667,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_get-transaction-receipt@workspace:packages/rpcs/eth_getTransactionReceipt"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4664,7 +4675,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_max-priority-fee-per-gas@workspace:packages/rpcs/eth_maxPriorityFeePerGas"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4672,7 +4683,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_request-accounts@workspace:packages/rpcs/eth_requestAccounts"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4680,7 +4691,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_send-raw-transaction@workspace:packages/rpcs/eth_sendRawTransaction"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4689,7 +4700,7 @@ __metadata:
   resolution: "@fluent-wallet/eth_send-transaction@workspace:packages/rpcs/eth_sendTransaction"
   dependencies:
     "@fluent-wallet/eth_sign-transaction": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -4702,7 +4713,8 @@ __metadata:
     "@fluent-wallet/eth-transaction-schema": "workspace:*"
     "@fluent-wallet/ledger": "workspace:*"
     "@fluent-wallet/signature": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
+    "@fluent-wallet/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -4710,11 +4722,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/eth_sign-tx-with-ledger-nano-s@workspace:packages/rpcs/eth_signTxWithLedgerNanoS"
   dependencies:
-    "@ethereumjs/rlp": "npm:5.0.2"
-    "@ethereumjs/tx": "npm:5.3.0"
-    "@ethereumjs/util": "npm:9.0.3"
+    "@ethereumjs/common": "npm:10.1.1"
+    "@ethereumjs/rlp": "npm:10.1.1"
+    "@ethereumjs/tx": "npm:10.1.1"
+    "@ethereumjs/util": "npm:10.1.1"
     "@fluent-wallet/ledger": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/utils": "workspace:packages/utils"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
@@ -4837,7 +4850,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/net_version@workspace:packages/rpcs/net_version"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/nonce-manager@workspace:*, @fluent-wallet/nonce-manager@workspace:packages/nonce-manager":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/nonce-manager@workspace:packages/nonce-manager"
+  dependencies:
+    "@fluent-wallet/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -4848,7 +4869,7 @@ __metadata:
     "@ethersproject/bytes": "npm:5.6.1"
     "@fluent-wallet/ledger": "workspace:*"
     "@fluent-wallet/signature": "workspace:packages/signature"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/utils": "workspace:*"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
@@ -4899,7 +4920,7 @@ __metadata:
     "@fluent-wallet/json-rpc-error": "workspace:packages/json-rpc-error"
     "@fluent-wallet/random-id": "workspace:packages/random-id"
     "@fluent-wallet/rpc-epoch-ref": "workspace:packages/rpc-epoch-ref"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/transducers": "workspace:packages/transducers"
     "@thi.ng/atom": "npm:4.1.42"
     "@thi.ng/rstream": "npm:6.0.21"
@@ -4948,6 +4969,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/signature@workspace:packages/signature"
   dependencies:
+    "@ethereumjs/common": "npm:10.1.1"
+    "@ethereumjs/rlp": "npm:10.1.1"
+    "@ethereumjs/tx": "npm:10.1.1"
+    "@ethereumjs/util": "npm:10.1.1"
     "@ethersproject/bytes": "npm:5.6.1"
     "@ethersproject/hash": "npm:5.6.1"
     "@ethersproject/keccak256": "npm:5.6.1"
@@ -4985,7 +5010,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fluent-wallet/spec@npm:1.0.15, @fluent-wallet/spec@workspace:packages/spec":
+"@fluent-wallet/spec@npm:1.0.21, @fluent-wallet/spec@workspace:packages/spec":
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/spec@workspace:packages/spec"
   dependencies:
@@ -5037,7 +5062,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/txpool_next-nonce@workspace:packages/rpcs/txpool_nextNonce"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5059,6 +5084,19 @@ __metadata:
   peerDependencies:
     react: ^17
     react-dom: ^17
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/user-operation@workspace:packages/user-operation":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/user-operation@workspace:packages/user-operation"
+  dependencies:
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/bytes": "npm:^5.7.0"
+    "@ethersproject/hash": "npm:^5.7.0"
+    "@ethersproject/signing-key": "npm:^5.7.0"
+    "@ethersproject/transactions": "npm:^5.7.0"
+    "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
   languageName: unknown
   linkType: soft
 
@@ -5084,7 +5122,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_accounts@workspace:packages/rpcs/wallet_accounts"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5100,7 +5138,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_add-ethereum-chain@workspace:packages/rpcs/wallet_addEthereumChain"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/wallet_add-network": "workspace:packages/rpcs/wallet_addNetwork"
   languageName: unknown
   linkType: soft
@@ -5109,7 +5147,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_add-hd-path@workspace:packages/rpcs/wallet_addHdPath"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5118,7 +5156,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_add-network@workspace:packages/rpcs/wallet_addNetwork"
   dependencies:
     "@fluent-wallet/consts": "workspace:packages/consts"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5127,7 +5165,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_add-pending-user-auth-request@workspace:packages/rpcs/wallet_addPendingUserAuthRequest"
   dependencies:
     "@fluent-wallet/csp": "workspace:packages/csp"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/webextension": "workspace:packages/webextension"
   languageName: unknown
   linkType: soft
@@ -5140,7 +5178,7 @@ __metadata:
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/csp": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/utils": "workspace:packages/utils"
     browser-passworder: "npm:^2.0.3"
   languageName: unknown
@@ -5150,7 +5188,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_after-unlock@workspace:packages/rpcs/wallet_afterUnlock"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@types/ramda": "npm:^0"
     ramda: "npm:0.28.0"
   languageName: unknown
@@ -5160,7 +5198,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_chain-id@workspace:packages/rpcs/wallet_chainId"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5168,7 +5206,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_cleanup-tx@workspace:packages/rpcs/wallet_cleanupTx"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5179,7 +5217,7 @@ __metadata:
     "@fluent-wallet/account": "workspace:packages/account"
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/hdkey": "workspace:packages/hdkey"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:^2.0.3"
   languageName: unknown
   linkType: soft
@@ -5191,7 +5229,7 @@ __metadata:
     "@fluent-wallet/account": "workspace:packages/account"
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/hdkey": "workspace:packages/hdkey"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
   linkType: soft
@@ -5200,7 +5238,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_db-query@workspace:packages/rpcs/wallet_dbQuery"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5208,7 +5246,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_delete-account-group@workspace:packages/rpcs/wallet_deleteAccountGroup"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5216,7 +5254,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_delete-account@workspace:packages/rpcs/wallet_deleteAccount"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
   linkType: soft
@@ -5226,7 +5264,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_delete-app@workspace:packages/rpcs/wallet_deleteApp"
   dependencies:
     "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5234,7 +5272,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_delete-memo@workspace:packages/rpcs/wallet_deleteMemo"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5242,7 +5280,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_delete-network@workspace:packages/rpcs/wallet_deleteNetwork"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5251,7 +5289,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_detect-address-type@workspace:packages/rpcs/wallet_detectAddressType"
   dependencies:
     "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5259,7 +5297,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_detect-network-type@workspace:packages/rpcs/wallet_detectNetworkType"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5270,7 +5308,7 @@ __metadata:
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network"
     "@fluent-wallet/csp": "workspace:packages/csp"
     "@fluent-wallet/discover-accounts": "workspace:packages/discover-accounts"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
   linkType: soft
@@ -5281,7 +5319,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/base32-address": "workspace:*"
     "@fluent-wallet/contract-method-name": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5290,7 +5328,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_enrich-ethereum-tx@workspace:packages/rpcs/wallet_enrichEthereumTx"
   dependencies:
     "@fluent-wallet/contract-method-name": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5298,7 +5336,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_enrich-txs@workspace:packages/rpcs/wallet_enrichTxs"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5308,7 +5346,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/consts": "workspace:packages/consts"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
   linkType: soft
@@ -5318,7 +5356,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_export-account@workspace:packages/rpcs/wallet_exportAccount"
   dependencies:
     "@fluent-wallet/hdkey": "workspace:packages/hdkey"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
   linkType: soft
@@ -5327,7 +5365,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_export-all@workspace:packages/rpcs/wallet_exportAll"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
   linkType: soft
@@ -5338,7 +5376,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/account": "workspace:packages/account"
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5355,7 +5393,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_generate-private-key@workspace:packages/rpcs/wallet_generatePrivateKey"
   dependencies:
     "@fluent-wallet/account": "workspace:packages/account"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5363,7 +5401,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-account-address-by-network@workspace:packages/rpcs/wallet_getAccountAddressByNetwork"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5371,7 +5409,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-account-group-vault-value@workspace:packages/rpcs/wallet_getAccountGroupVaultValue"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
   linkType: soft
@@ -5380,7 +5418,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-account-group@workspace:packages/rpcs/wallet_getAccountGroup"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5389,7 +5427,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_get-address-private-key@workspace:packages/rpcs/wallet_getAddressPrivateKey"
   dependencies:
     "@fluent-wallet/hdkey": "workspace:packages/hdkey"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/utils": "workspace:packages/utils"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
@@ -5404,7 +5442,7 @@ __metadata:
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
     "@fluent-wallet/single-call-balance-tracker": "workspace:packages/single-call-balance-tracker"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5414,7 +5452,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/cfx_epoch-number": "workspace:*"
     "@fluent-wallet/eth_block-number": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5422,7 +5460,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-block-time@workspace:packages/rpcs/wallet_getBlockTime"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5430,7 +5468,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-blockchain-explorer-url@workspace:packages/rpcs/wallet_getBlockchainExplorerUrl"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-conflux-nonce-state@workspace:packages/rpcs/wallet_getConfluxNonceState":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-conflux-nonce-state@workspace:packages/rpcs/wallet_getConfluxNonceState"
+  dependencies:
+    "@fluent-wallet/spec": "npm:1.0.21"
+    "@fluent-wallet/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5438,7 +5485,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-current-account@workspace:packages/rpcs/wallet_getCurrentAccount"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5446,7 +5493,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-current-network@workspace:packages/rpcs/wallet_getCurrentNetwork"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5454,8 +5501,27 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-current-viewing-app@workspace:packages/rpcs/wallet_getCurrentViewingApp"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/webextension": "workspace:packages/webextension"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-eip7702-account-states@workspace:packages/rpcs/wallet_getEip7702AccountState":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-eip7702-account-states@workspace:packages/rpcs/wallet_getEip7702AccountState"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type"
+    "@fluent-wallet/spec": "npm:1.0.21"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-ethereum-nonce-state@workspace:packages/rpcs/wallet_getEthereumNonceState":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-ethereum-nonce-state@workspace:packages/rpcs/wallet_getEthereumNonceState"
+  dependencies:
+    "@fluent-wallet/spec": "npm:1.0.21"
+    "@fluent-wallet/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5463,7 +5529,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-fluent-metadata@workspace:packages/rpcs/wallet_getFluentMetadata"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5471,7 +5537,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-import-hardware-wallet-info@workspace:packages/rpcs/wallet_getImportHardwareWalletInfo"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
   linkType: soft
@@ -5481,7 +5547,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_get-network@workspace:packages/rpcs/wallet_getNetwork"
   dependencies:
     "@fluent-wallet/checks": "workspace:packages/checks"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5490,7 +5556,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_get-next-nonce@workspace:packages/rpcs/wallet_getNextNonce"
   dependencies:
     "@fluent-wallet/addr-by-network": "workspace:packages/addr-by-network"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5498,7 +5564,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-next-usable-nonce@workspace:packages/rpcs/wallet_getNextUsableNonce"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5506,7 +5572,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-pending-auth-request@workspace:packages/rpcs/wallet_getPendingAuthRequest"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5514,7 +5580,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-permissions@workspace:packages/rpcs/wallet_getPermissions"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5522,7 +5588,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-preferences@workspace:packages/rpcs/wallet_getPreferences"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5531,7 +5597,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_get-side-panel-enabled@workspace:packages/rpcs/wallet_getSidePanelEnabled"
   dependencies:
     "@fluent-wallet/consts": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     webextension-polyfill: "npm:0.8.0"
   languageName: unknown
   linkType: soft
@@ -5540,7 +5606,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-side-panel-supported@workspace:packages/rpcs/wallet_getSidePanelSupported"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_get-user-operation-nonce-state@workspace:packages/rpcs/wallet_getUserOperationNonceState":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_get-user-operation-nonce-state@workspace:packages/rpcs/wallet_getUserOperationNonceState"
+  dependencies:
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "npm:1.0.21"
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
   languageName: unknown
   linkType: soft
 
@@ -5551,7 +5627,7 @@ __metadata:
     "@ethersproject/bignumber": "npm:5.6.2"
     "@fluent-wallet/compose": "workspace:*"
     "@fluent-wallet/conflux-tx-error": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/transducers": "workspace:*"
     "@fluent-wallet/webextension": "workspace:*"
     "@thi.ng/rstream": "npm:6.0.21"
@@ -5565,7 +5641,7 @@ __metadata:
     "@ethersproject/bignumber": "npm:5.6.2"
     "@fluent-wallet/compose": "workspace:*"
     "@fluent-wallet/ethereum-tx-error": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@thi.ng/rstream": "npm:7.2.7"
   languageName: unknown
   linkType: soft
@@ -5574,7 +5650,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_handle-unfinished-txs@workspace:packages/rpcs/wallet_handleUnfinishedTxs"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_handle-user-operation@workspace:*, @fluent-wallet/wallet_handle-user-operation@workspace:packages/rpcs/wallet_handleUserOperation":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_handle-user-operation@workspace:packages/rpcs/wallet_handleUserOperation"
+  dependencies:
+    "@fluent-wallet/bundler-client": "workspace:packages/bundler-client"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5582,7 +5668,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_import-address@workspace:packages/rpcs/wallet_importAddress"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5590,7 +5676,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_import-all@workspace:packages/rpcs/wallet_importAll"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
     webextension-polyfill: "npm:0.8.0"
   languageName: unknown
@@ -5602,7 +5688,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/base32-address": "workspace:*"
     "@fluent-wallet/ledger": "workspace:packages/ledger"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:2.0.3"
   languageName: unknown
   linkType: soft
@@ -5611,7 +5697,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_import-mnemonic@workspace:packages/rpcs/wallet_importMnemonic"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5619,7 +5705,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_import-private-key@workspace:packages/rpcs/wallet_importPrivateKey"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5641,7 +5727,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_metadata-for-popup@workspace:packages/rpcs/wallet_metadataForPopup"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5649,7 +5735,32 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_network1559compatible@workspace:packages/rpcs/wallet_network1559Compatible"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_prepare-sponsorship@workspace:packages/rpcs/wallet_prepareSponsorship":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_prepare-sponsorship@workspace:packages/rpcs/wallet_prepareSponsorship"
+  dependencies:
+    "@fluent-wallet/backend-client": "workspace:packages/backend-client"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/nonce-manager": "workspace:*"
+    "@fluent-wallet/spec": "npm:1.0.21"
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_prepare-user-operation@workspace:packages/rpcs/wallet_prepareUserOperation":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_prepare-user-operation@workspace:packages/rpcs/wallet_prepareUserOperation"
+  dependencies:
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@fluent-wallet/bundler-client": "workspace:packages/bundler-client"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/spec": "npm:1.0.21"
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
+    "@fluent-wallet/utils": "workspace:packages/utils"
   languageName: unknown
   linkType: soft
 
@@ -5657,7 +5768,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_refetch-balance@workspace:packages/rpcs/wallet_refetchBalance"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5665,7 +5776,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_refetch-token-list@workspace:packages/rpcs/wallet_refetchTokenList"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5675,7 +5786,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/confluxscan-api": "workspace:*"
     "@fluent-wallet/consts": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@thi.ng/cache": "npm:2.1.10"
     "@thi.ng/memoize": "npm:3.1.7"
   languageName: unknown
@@ -5685,7 +5796,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_register-site-metadata@workspace:packages/rpcs/wallet_registerSiteMetadata"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5693,7 +5804,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_request-accounts@workspace:packages/rpcs/wallet_requestAccounts"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5702,7 +5813,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_request-permissions@workspace:packages/rpcs/wallet_requestPermissions"
   dependencies:
     "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/wallet-permission": "workspace:packages/wallet-permission"
   languageName: unknown
   linkType: soft
@@ -5712,7 +5823,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_request-unlock-ui@workspace:packages/rpcs/wallet_requestUnlockUI"
   dependencies:
     "@fluent-wallet/csp": "workspace:packages/csp"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/webextension": "workspace:packages/webextension"
   languageName: unknown
   linkType: soft
@@ -5721,8 +5832,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_send-transaction-with-action@workspace:packages/rpcs/wallet_sendTransactionWithAction"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
-    "@fluent-wallet/wallet_send-transaction": "workspace:*"
+    "@fluent-wallet/consts": "workspace:*"
+    "@fluent-wallet/spec": "npm:1.0.21"
+    "@fluent-wallet/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5735,8 +5847,24 @@ __metadata:
     "@fluent-wallet/consts": "workspace:*"
     "@fluent-wallet/eth_send-transaction": "workspace:*"
     "@fluent-wallet/json-rpc-error": "workspace:*"
+    "@fluent-wallet/nonce-manager": "workspace:*"
     "@fluent-wallet/signature": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
+  languageName: unknown
+  linkType: soft
+
+"@fluent-wallet/wallet_send-user-operation@workspace:*, @fluent-wallet/wallet_send-user-operation@workspace:packages/rpcs/wallet_sendUserOperation":
+  version: 0.0.0-use.local
+  resolution: "@fluent-wallet/wallet_send-user-operation@workspace:packages/rpcs/wallet_sendUserOperation"
+  dependencies:
+    "@ethersproject/bytes": "npm:^5.7.0"
+    "@ethersproject/signing-key": "npm:^5.7.0"
+    "@fluent-wallet/bundler-client": "workspace:packages/bundler-client"
+    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/nonce-manager": "workspace:*"
+    "@fluent-wallet/signature": "workspace:*"
+    "@fluent-wallet/spec": "npm:1.0.21"
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
   languageName: unknown
   linkType: soft
 
@@ -5745,7 +5873,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_set-app-current-account@workspace:packages/rpcs/wallet_setAppCurrentAccount"
   dependencies:
     "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5754,7 +5882,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_set-app-current-network@workspace:packages/rpcs/wallet_setAppCurrentNetwork"
   dependencies:
     "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5763,7 +5891,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_set-current-account@workspace:packages/rpcs/wallet_setCurrentAccount"
   dependencies:
     "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5772,7 +5900,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_set-current-network@workspace:packages/rpcs/wallet_setCurrentNetwork"
   dependencies:
     "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5782,7 +5910,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/checks": "workspace:*"
     "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5797,7 +5925,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_set-side-panel-enabled@workspace:packages/rpcs/wallet_setSidePanelEnabled"
   dependencies:
     "@fluent-wallet/consts": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     webextension-polyfill: "npm:0.8.0"
   languageName: unknown
   linkType: soft
@@ -5814,7 +5942,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_switch-ethereum-chain@workspace:packages/rpcs/wallet_switchEthereumChain"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5823,7 +5951,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_unlock@workspace:packages/rpcs/wallet_unlock"
   dependencies:
     "@fluent-wallet/site-runtime-manager": "workspace:packages/site-runtime-manager"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5831,7 +5959,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_unwatch-asset@workspace:packages/rpcs/wallet_unwatchAsset"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5840,7 +5968,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_update-account-group@workspace:packages/rpcs/wallet_updateAccountGroup"
   dependencies:
     "@fluent-wallet/checks": "workspace:packages/checks"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5848,7 +5976,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_update-account@workspace:packages/rpcs/wallet_updateAccount"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5856,7 +5984,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_update-network@workspace:packages/rpcs/wallet_updateNetwork"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/wallet_add-network": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -5865,7 +5993,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_update-token-list@workspace:packages/rpcs/wallet_updateTokenList"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     "@fluent-wallet/token-list-schema": "workspace:packages/token-list-schema"
   languageName: unknown
   linkType: soft
@@ -5875,7 +6003,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_upsert-memo@workspace:packages/rpcs/wallet_upsertMemo"
   dependencies:
     "@fluent-wallet/base32-address": "workspace:*"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5883,7 +6011,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_user-approved-auth-request@workspace:packages/rpcs/wallet_userApprovedAuthRequest"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5891,7 +6019,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_user-rejected-auth-request@workspace:packages/rpcs/wallet_userRejectedAuthRequest"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5899,7 +6027,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_validate-app-permissions@workspace:packages/rpcs/wallet_validateAppPermissions"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5907,7 +6035,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_validate-mnemonic@workspace:packages/rpcs/wallet_validateMnemonic"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     bip39: "npm:3.0.4"
   languageName: unknown
   linkType: soft
@@ -5916,7 +6044,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_validate-password@workspace:packages/rpcs/wallet_validatePassword"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     browser-passworder: "npm:^2.0.3"
   languageName: unknown
   linkType: soft
@@ -5926,7 +6054,7 @@ __metadata:
   resolution: "@fluent-wallet/wallet_validate-private-key@workspace:packages/rpcs/wallet_validatePrivateKey"
   dependencies:
     "@fluent-wallet/account": "workspace:packages/account"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5936,7 +6064,7 @@ __metadata:
   dependencies:
     "@fluent-wallet/base32-address": "workspace:packages/base32-address"
     "@fluent-wallet/contract-abis": "workspace:packages/contract-abis"
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5944,7 +6072,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_watch-asset@workspace:packages/rpcs/wallet_watchAsset"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -5952,7 +6080,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_zero-account-group@workspace:packages/rpcs/wallet_zeroAccountGroup"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
   languageName: unknown
   linkType: soft
 
@@ -6655,15 +6783,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.4.2, @noble/curves@npm:~1.4.0":
-  version: 1.4.2
-  resolution: "@noble/curves@npm:1.4.2"
-  dependencies:
-    "@noble/hashes": "npm:1.4.0"
-  checksum: 10/f433a2e8811ae345109388eadfa18ef2b0004c1f79417553241db4f0ad0d59550be6298a4f43d989c627e9f7551ffae6e402a4edf0173981e6da95fc7cab5123
-  languageName: node
-  linkType: hard
-
 "@noble/curves@npm:1.6.0, @noble/curves@npm:~1.6.0":
   version: 1.6.0
   resolution: "@noble/curves@npm:1.6.0"
@@ -6682,17 +6801,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/curves@npm:^2.0.1":
+  version: 2.2.0
+  resolution: "@noble/curves@npm:2.2.0"
+  dependencies:
+    "@noble/hashes": "npm:2.2.0"
+  checksum: 10/f9545e55bb8b6cdf2618c936870b9229339c90b25f129fc368b4b534e723f274e5c0daf8abca2f891bcf0a59c3b49c5ac5205899aec07f5251f545ec616e3aa9
+  languageName: node
+  linkType: hard
+
 "@noble/hashes@npm:1.2.0, @noble/hashes@npm:~1.2.0":
   version: 1.2.0
   resolution: "@noble/hashes@npm:1.2.0"
   checksum: 10/c295684a2799f4ddad10a855efd9b82c70c27ac5f7437642df9700e120087c796851dd95b12d2e7596802303fe6afbfdf0f8733b5c7453f70c4c080746dde6ff
-  languageName: node
-  linkType: hard
-
-"@noble/hashes@npm:1.4.0, @noble/hashes@npm:~1.4.0":
-  version: 1.4.0
-  resolution: "@noble/hashes@npm:1.4.0"
-  checksum: 10/e156e65794c473794c52fa9d06baf1eb20903d0d96719530f523cc4450f6c721a957c544796e6efd0197b2296e7cd70efeb312f861465e17940a3e3c7e0febc6
   languageName: node
   linkType: hard
 
@@ -6707,6 +6828,13 @@ __metadata:
   version: 1.6.0
   resolution: "@noble/hashes@npm:1.6.0"
   checksum: 10/b44b043b02adbecd33596adeed97d9f9864c24a2410f7ac3b847986c2ecf1f6f0df76024b3f1b14d6ea954932960d88898fe551fb9d39844a8b870e9f9044ea1
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:2.2.0, @noble/hashes@npm:^2.0.1":
+  version: 2.2.0
+  resolution: "@noble/hashes@npm:2.2.0"
+  checksum: 10/b1b78bedc2a01394be047429f3d888905015fe8a09f1b7e43e0b5736b54133df62f73dcc73ede43af38e96e86156afb45b86973fdeaa95d9f0880333c3fc0907
   languageName: node
   linkType: hard
 
@@ -7345,7 +7473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/base@npm:~1.1.0, @scure/base@npm:~1.1.6, @scure/base@npm:~1.1.7, @scure/base@npm:~1.1.8":
+"@scure/base@npm:~1.1.0, @scure/base@npm:~1.1.7, @scure/base@npm:~1.1.8":
   version: 1.1.9
   resolution: "@scure/base@npm:1.1.9"
   checksum: 10/f0ab7f687bbcdee2a01377fe3cd808bf63977999672751295b6a92625d5322f4754a96d40f6bd579bc367aad48ecf8a4e6d0390e70296e6ded1076f52adb16bb
@@ -7367,17 +7495,6 @@ __metadata:
     "@noble/secp256k1": "npm:~1.7.0"
     "@scure/base": "npm:~1.1.0"
   checksum: 10/4c83e943a66e7b212d18f47b4650ed9b1dfeb69d8bdd8b491b12ba70ca8635cda67fb1ac920d642d66c8a3c2c03303b623c1faceafe7141a6f20a7cd7f66191e
-  languageName: node
-  linkType: hard
-
-"@scure/bip32@npm:1.4.0":
-  version: 1.4.0
-  resolution: "@scure/bip32@npm:1.4.0"
-  dependencies:
-    "@noble/curves": "npm:~1.4.0"
-    "@noble/hashes": "npm:~1.4.0"
-    "@scure/base": "npm:~1.1.6"
-  checksum: 10/6cd5062d902564d9e970597ec8b1adacb415b2eadfbb95aee1a1a0480a52eb0de4d294d3753aa8b48548064c9795ed108d348a31a8ce3fc88785377bb12c63b9
   languageName: node
   linkType: hard
 
@@ -7410,16 +7527,6 @@ __metadata:
     "@noble/hashes": "npm:~1.2.0"
     "@scure/base": "npm:~1.1.0"
   checksum: 10/08908145e0890e481e3398191424961d9ebfb8913fed6e6cdfc63eb1281bd1895244d46c0e8762b0e30d8dc6f498ed296311382fecbf034253838e3a50f60ca1
-  languageName: node
-  linkType: hard
-
-"@scure/bip39@npm:1.3.0":
-  version: 1.3.0
-  resolution: "@scure/bip39@npm:1.3.0"
-  dependencies:
-    "@noble/hashes": "npm:~1.4.0"
-    "@scure/base": "npm:~1.1.6"
-  checksum: 10/7d71fd58153de22fe8cd65b525f6958a80487bc9d0fbc32c71c328aeafe41fa259f989d2f1e0fa4fdfeaf83b8fcf9310d52ed9862987e46c2f2bfb9dd8cf9fc1
   languageName: node
   linkType: hard
 
@@ -16409,18 +16516,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereum-cryptography@npm:^2.1.3, ethereum-cryptography@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "ethereum-cryptography@npm:2.2.1"
-  dependencies:
-    "@noble/curves": "npm:1.4.2"
-    "@noble/hashes": "npm:1.4.0"
-    "@scure/bip32": "npm:1.4.0"
-    "@scure/bip39": "npm:1.3.0"
-  checksum: 10/ab123bbfe843500ac2d645ce9edc4bc814962ffb598db6bf8bf01fbecac656e6c81ff4cf2472f1734844bbcbad2bf658d8b699cb7248d768e0f06ae13ecf43b8
-  languageName: node
-  linkType: hard
-
 "ethereumjs-abi@npm:^0.6.8":
   version: 0.6.8
   resolution: "ethereumjs-abi@npm:0.6.8"
@@ -18459,7 +18554,7 @@ __metadata:
     "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": "workspace:*"
     "@fluent-wallet/cfx_sign-typed-data_v4": "workspace:packages/rpcs/cfx_signTypedData_v4"
     "@fluent-wallet/consts": "workspace:packages/consts"
-    "@fluent-wallet/db": "npm:1.0.82"
+    "@fluent-wallet/db": "npm:1.0.90"
     "@fluent-wallet/eth_accounts": "workspace:packages/rpcs/eth_accounts"
     "@fluent-wallet/eth_block-number": "workspace:packages/rpcs/eth_blockNumber"
     "@fluent-wallet/eth_call": "workspace:packages/rpcs/eth_call"
@@ -18525,9 +18620,12 @@ __metadata:
     "@fluent-wallet/wallet_get-block-or-epoch-number": "workspace:*"
     "@fluent-wallet/wallet_get-block-time": "workspace:*"
     "@fluent-wallet/wallet_get-blockchain-explorer-url": "workspace:*"
+    "@fluent-wallet/wallet_get-conflux-nonce-state": "workspace:packages/rpcs/wallet_getConfluxNonceState"
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount"
     "@fluent-wallet/wallet_get-current-network": "workspace:packages/rpcs/wallet_getCurrentNetwork"
     "@fluent-wallet/wallet_get-current-viewing-app": "workspace:packages/rpcs/wallet_getCurrentViewingApp"
+    "@fluent-wallet/wallet_get-eip7702-account-states": "workspace:packages/rpcs/wallet_getEip7702AccountState"
+    "@fluent-wallet/wallet_get-ethereum-nonce-state": "workspace:packages/rpcs/wallet_getEthereumNonceState"
     "@fluent-wallet/wallet_get-fluent-metadata": "workspace:*"
     "@fluent-wallet/wallet_get-import-hardware-wallet-info": "workspace:*"
     "@fluent-wallet/wallet_get-network": "workspace:packages/rpcs/wallet_getNetwork"
@@ -18538,9 +18636,11 @@ __metadata:
     "@fluent-wallet/wallet_get-preferences": "workspace:*"
     "@fluent-wallet/wallet_get-side-panel-enabled": "workspace:*"
     "@fluent-wallet/wallet_get-side-panel-supported": "workspace:*"
+    "@fluent-wallet/wallet_get-user-operation-nonce-state": "workspace:packages/rpcs/wallet_getUserOperationNonceState"
     "@fluent-wallet/wallet_handle-unfinished-cfx-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-eth-tx": "workspace:*"
     "@fluent-wallet/wallet_handle-unfinished-txs": "workspace:*"
+    "@fluent-wallet/wallet_handle-user-operation": "workspace:*"
     "@fluent-wallet/wallet_import-address": "workspace:packages/rpcs/wallet_importAddress"
     "@fluent-wallet/wallet_import-all": "workspace:packages/rpcs/wallet_importAll"
     "@fluent-wallet/wallet_import-hardware-wallet-account-group-or-account": "workspace:*"
@@ -18549,6 +18649,8 @@ __metadata:
     "@fluent-wallet/wallet_lock": "workspace:packages/rpcs/wallet_lock"
     "@fluent-wallet/wallet_metadata-for-popup": "workspace:*"
     "@fluent-wallet/wallet_network1559compatible": "workspace:*"
+    "@fluent-wallet/wallet_prepare-sponsorship": "workspace:packages/rpcs/wallet_prepareSponsorship"
+    "@fluent-wallet/wallet_prepare-user-operation": "workspace:packages/rpcs/wallet_prepareUserOperation"
     "@fluent-wallet/wallet_refetch-balance": "workspace:packages/rpcs/wallet_refetchBalance"
     "@fluent-wallet/wallet_refetch-token-list": "workspace:packages/rpcs/wallet_refetchTokenList"
     "@fluent-wallet/wallet_refetch-tx-list": "workspace:*"
@@ -18558,6 +18660,7 @@ __metadata:
     "@fluent-wallet/wallet_request-unlock-ui": "workspace:packages/rpcs/wallet_requestUnlockUI"
     "@fluent-wallet/wallet_send-transaction": "workspace:*"
     "@fluent-wallet/wallet_send-transaction-with-action": "workspace:*"
+    "@fluent-wallet/wallet_send-user-operation": "workspace:*"
     "@fluent-wallet/wallet_set-app-current-account": "workspace:packages/rpcs/wallet_setAppCurrentAccount"
     "@fluent-wallet/wallet_set-app-current-network": "workspace:packages/rpcs/wallet_setAppCurrentNetwork"
     "@fluent-wallet/wallet_set-current-account": "workspace:packages/rpcs/wallet_setCurrentAccount"
@@ -31768,7 +31871,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "workspace-tools@workspace:packages/workspace-tools"
   dependencies:
-    "@fluent-wallet/spec": "npm:1.0.15"
+    "@fluent-wallet/spec": "npm:1.0.21"
     chokidar: "npm:3.5.3"
   languageName: unknown
   linkType: soft

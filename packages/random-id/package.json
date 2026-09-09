@@ -2,5 +2,5 @@
   "name": "@fluent-wallet/random-id",
   "type": "module",
   "main": "index.js",
-  "version": "0.0.2"
+  "version": "0.0.3"
 }

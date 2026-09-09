@@ -281,6 +281,11 @@ const zh = {
     siweModalConfirmBtn: '我已了解',
     signTypeMessage: '签署类型信息',
     message: '信息',
+    typedDataReview: '请检查此签名请求：',
+    typedDataRequestFrom: '请求来源',
+    typedDataInteractWith: '交互对象',
+    typedDataInteractWithTooltip:
+      '这是您正在交互的合约。请核实详细信息，谨防诈骗。',
 
     // add SIWE key translations
     siweKeyMessage: '消息',
@@ -355,6 +360,44 @@ const zh = {
     priorityConnectionDes: '在连接至 DApp 时，Fluent 将会作为默认钱包',
     showTestnet: '显示测试网络',
     showTestnetDes: '开启后，可在网络列表中展示测试网络',
+    eip7702Upgrade: 'EIP-7702 升级',
+    eip7702UpgradeIntro:
+      '升级 EIP-7702 后，您的账户将获得更多 <Highlight>智能特性</Highlight>：',
+    eip7702FlexibleGasTitle: '灵活支付 Gas 费用',
+    eip7702FlexibleGasDesc:
+      '支持使用原生代币支付 Gas 费，或使用可用的 Gas 赞助。',
+    eip7702BatchTransactionsTitle: '支持批量交易',
+    eip7702BatchTransactionsDesc: '通过批量交易进一步节省 Gas。',
+    eip7702DappSupportTitle: '更多 DApp 支持',
+    eip7702DappSupportDesc: '借助 EIP-7702 解锁更智能的交易能力。',
+    eip7702SupportedNetwork: '支持的网络',
+    eip7702SwitchRequiredTitle: '需要切换绑定',
+    eip7702SwitchRequiredDesc:
+      '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
+    eip7702SponsoredUpgradeTitle: '启用 EIP-7702 升级',
+    eip7702SponsoredUpgradeDesc: '升级后，您的账户将获得以下智能功能。',
+    eip7702SponsoredDescription:
+      '该交易符合Gas费赞助资格。升级账户后，你将解锁以下智能功能，可随时在设置中撤销。',
+    eip7702SponsoredBenefitsTitle: '解锁更多权益',
+    eip7702SponsoredGasFreeDapps: '支持的DApp上免Gas交易',
+    eip7702SponsoredFlexibleGas: '灵活支付Gas费用',
+    eip7702SponsoredBatchTransactions: '批量打包多笔交易',
+    eip7702SponsoredUpgradeConfirm: '启用并继续',
+    eip7702SponsoredSwitchTitle: '切换到 EIP-7702 服务',
+    eip7702SponsoredSwitchConfirm: '切换并继续',
+    eip7702SwitchInfoTitle: '切换到 EIP-7702 服务',
+    eip7702SwitchInfoDesc:
+      '该账户当前已绑定到第三方合约。切换到 Fluent Wallet 可获得更好的使用体验。',
+    eip7702SwitchInfoBenefitsTitle: '享受更多能力',
+    eip7702SwitchInfoConfirm: '切换并继续',
+    eip7702Delegation: 'EIP-7702 授权',
+    tx7702Delegation: '7702 授权',
+    eip7702Switch: 'EIP-7702 切换',
+    eip7702Revoke: 'EIP-7702 撤销',
+    delegateTo: '委托给',
+    bind: '绑定',
+    enable: '启用',
+    revoke: '撤销',
     openSidePanel: '侧边栏模式',
     closeSidePanel: '弹窗模式',
 
@@ -380,7 +423,7 @@ const zh = {
     backupSeedDes: '请以正确的顺序备份助记词，不要在网络环境中存储或分享助记词',
     backupPk: '备份私钥',
     backupPkDes:
-      '获得了私钥就等于拥有了钱包里的资产，请妥善保管，一单丢失就无法找回',
+      '获得了私钥就等于拥有了钱包里的资产，请妥善保管，一旦丢失就无法找回',
     confluxPathStandard: 'Conflux Core 钱包',
     confluxPathStandardDes: "由 Conflux 助记词路径 'm/503' 生成",
     ethereumPathStandard: 'Ethereum 钱包',
@@ -437,6 +480,9 @@ const zh = {
     waitingContent: '请在 Ledger 中确认此交易',
     rejectedContent: '交易被拒绝',
     copyError: '复制错误信息',
+    gasSponsorshipRefreshRequiredTitle: '燃气费代付失效',
+    gasSponsorshipRefreshRequiredContent:
+      '本次燃气费代付已失效，请重新提交交易',
 
     // conflux confirm tx error
     txPoolFull: '交易池拥堵',

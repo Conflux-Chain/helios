@@ -8,7 +8,8 @@ import {SendOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import {formatIntoChecksumAddress, formatLocalizationLang} from '../../../utils'
 import {SlideCard, CopyButton, WrapIcon, NsNameLabel} from '../../../components'
 import {HistoryStatusIcon, HistoryBalance, ResendButtons} from './'
-import {useAddressType} from '../../../hooks/useApi'
+import {getEip7702DelegateAddress} from './eip7702'
+import SponsoredGasFeeDisplay from './SponsoredGasFeeDisplay'
 
 function TransitionItem({
   className = 'mt-3',
@@ -49,23 +50,31 @@ function TransitionDetail({
   isExternalTx,
   fromAddress = '',
   toAddress = '',
+  displayAddressRole,
   nsName = '',
   actionName = '',
   statusIconColor = '',
   copyButtonContainerClassName,
   copyButtonToastClassName,
   txFeeDrip = '0x0',
+  nonce,
   hash = '',
   sendAction = '',
   transactionUrl,
   payload,
   errorType,
+  errorMessage = '',
+  sponsored = false,
+  isEip7702DelegationTx = false,
+  currentAccountName = '',
 }) {
   const {t, i18n} = useTranslation()
+  const delegateAddress = isEip7702DelegationTx
+    ? getEip7702DelegateAddress(payload?.authorizationList)
+    : ''
   const displayAddress = isExternalTx ? fromAddress : toAddress
-  const displayAddressType = useAddressType(displayAddress)
-  const isContractAddress =
-    displayAddressType === 'contract' || displayAddressType === 'builtin'
+  const addressRole =
+    displayAddressRole || (isExternalTx ? 'fromAddress' : 'toAddress')
 
   const displayActionName =
     txStatus === 'failed'
@@ -87,6 +96,7 @@ function TransitionDetail({
             txStatus={txStatus}
             dappIconUrl={dappIconUrl}
             isDapp={!!app}
+            isEip7702Tx={isEip7702DelegationTx}
             className={statusIconColor}
             isExternalTx={isExternalTx}
           />
@@ -100,9 +110,9 @@ function TransitionDetail({
       }
       cardContent={
         <div className="bg-white p-3 mt-3">
-          {amount && (
+          {!isEip7702DelegationTx && amount && (
             <TransitionItem
-              className=""
+              className="mt-0"
               transitionTitle={t('amount')}
               TransitionValueOverlay={
                 <HistoryBalance
@@ -119,22 +129,57 @@ function TransitionDetail({
             />
           )}
 
-          {(displayAddress || nsName) && (
+          {isEip7702DelegationTx && fromAddress && (
             <TransitionItem
-              transitionTitle={t(
-                isContractAddress
-                  ? 'contract'
-                  : isExternalTx
-                  ? 'fromAddress'
-                  : 'toAddress',
-              )}
+              className="mt-0"
+              transitionTitle={currentAccountName || t('account')}
+              TransitionValueOverlay={
+                <div className="flex font-medium items-center">
+                  <Tooltip content={fromAddress} placement="topLeft">
+                    {shortenAddress(formatIntoChecksumAddress(fromAddress))}
+                  </Tooltip>
+                  <CopyButton
+                    text={fromAddress}
+                    className="w-3 h-3 text-primary"
+                    containerClassName={copyButtonContainerClassName}
+                    toastClassName={copyButtonToastClassName}
+                    wrapperClassName="!w-5 !h-5 ml-1"
+                  />
+                </div>
+              }
+            />
+          )}
+
+          {isEip7702DelegationTx && delegateAddress && (
+            <TransitionItem
+              transitionTitle={t('delegateTo')}
+              TransitionValueOverlay={
+                <div className="flex font-medium items-center">
+                  <Tooltip content={delegateAddress} placement="topLeft">
+                    {shortenAddress(formatIntoChecksumAddress(delegateAddress))}
+                  </Tooltip>
+                  <CopyButton
+                    text={delegateAddress}
+                    className="w-3 h-3 text-primary"
+                    containerClassName={copyButtonContainerClassName}
+                    toastClassName={copyButtonToastClassName}
+                    wrapperClassName="!w-5 !h-5 ml-1"
+                  />
+                </div>
+              }
+            />
+          )}
+
+          {!isEip7702DelegationTx && (displayAddress || nsName) && (
+            <TransitionItem
+              transitionTitle={t(addressRole)}
               TransitionValueOverlay={
                 <div>
                   {nsName && (
                     <NsNameLabel nsName={nsName} toolTipPlacement="topLeft" />
                   )}
                   <div className="flex font-medium items-center">
-                    {isContractAddress && (
+                    {addressRole === 'contract' && (
                       <FileOutlined className="w-4 h-4 mr-1 text-primary" />
                     )}
 
@@ -162,24 +207,32 @@ function TransitionDetail({
             <TransitionItem
               transitionTitle={t('gasFee')}
               TransitionValueOverlay={
-                <HistoryBalance
-                  amount={txFeeDrip}
-                  symbol={gasFeeSymbol}
-                  symbolClassName="ml-1 !font-medium !text-gray-80"
-                  className="!font-medium"
-                />
+                sponsored ? (
+                  <SponsoredGasFeeDisplay
+                    amount={txFeeDrip}
+                    symbol={gasFeeSymbol}
+                  />
+                ) : (
+                  <div className="flex items-center">
+                    <HistoryBalance
+                      amount={txFeeDrip}
+                      symbol={gasFeeSymbol}
+                      symbolClassName="ml-1 !font-medium !text-gray-80"
+                      className="!font-medium"
+                    />
+                  </div>
+                )
               }
             />
           )}
-          <TransitionItem
-            transitionTitle={t('hash')}
-            TransitionValueOverlay={
-              <div className="flex items-center font-medium">
-                <Tooltip content={hash} placement="topLeft">
-                  <div className="max-w-[100px] text-ellipsis">{hash}</div>
-                </Tooltip>
-
-                {hash && (
+          {hash && (
+            <TransitionItem
+              transitionTitle={t('hash')}
+              TransitionValueOverlay={
+                <div className="flex items-center font-medium">
+                  <Tooltip content={hash} placement="topLeft">
+                    <div className="max-w-[100px] text-ellipsis">{hash}</div>
+                  </Tooltip>
                   <CopyButton
                     text={hash}
                     className="w-3 h-3 text-primary"
@@ -187,27 +240,31 @@ function TransitionDetail({
                     toastClassName={copyButtonToastClassName}
                     wrapperClassName="!w-5 !h-5"
                   />
-                )}
-                {transactionUrl && (
-                  <WrapIcon
-                    size="w-5 h-5 ml-2"
-                    id="openScanTxUrl"
-                    onClick={() => window.open(transactionUrl)}
-                  >
-                    <SendOutlined className="w-3 h-3 text-primary" />
-                  </WrapIcon>
-                )}
-              </div>
-            }
-          />
+                  {transactionUrl && (
+                    <WrapIcon
+                      size="w-5 h-5 ml-2"
+                      id="openScanTxUrl"
+                      onClick={() => window.open(transactionUrl)}
+                    >
+                      <SendOutlined className="w-3 h-3 text-primary" />
+                    </WrapIcon>
+                  )}
+                </div>
+              }
+            />
+          )}
 
-          <TransitionItem
-            transitionTitle={t('nonce')}
-            transitionValue={`#${formatHexToDecimal(payload?.nonce)}`}
-          />
+          {(nonce || payload?.nonce) && (
+            <TransitionItem
+              transitionTitle={t('nonce')}
+              transitionValue={`#${formatHexToDecimal(nonce || payload.nonce)}`}
+            />
+          )}
 
           {txStatus === 'failed' && (
-            <p className="text-error text-xs mt-3">{t(errorType)}</p>
+            <p className="text-error text-xs mt-3 break-words">
+              {errorMessage || t(errorType)}
+            </p>
           )}
         </div>
       }
@@ -244,16 +301,22 @@ TransitionDetail.propTypes = {
   receipt: PropTypes.object,
   fromAddress: PropTypes.string,
   toAddress: PropTypes.string,
+  displayAddressRole: PropTypes.oneOf(['contract', 'fromAddress', 'toAddress']),
   nsName: PropTypes.string,
   actionName: PropTypes.string,
   copyButtonContainerClassName: PropTypes.string,
   copyButtonToastClassName: PropTypes.string,
   txFeeDrip: PropTypes.string,
+  nonce: PropTypes.string,
   hash: PropTypes.string,
   transactionUrl: PropTypes.string,
-  payload: PropTypes.object.isRequired,
+  payload: PropTypes.object,
   errorType: PropTypes.string,
+  errorMessage: PropTypes.string,
+  sponsored: PropTypes.bool,
   sendAction: PropTypes.string,
+  isEip7702DelegationTx: PropTypes.bool,
+  currentAccountName: PropTypes.string,
 }
 
 export default TransitionDetail

@@ -19,7 +19,8 @@ export const NAME = 'wallet_handleUnfinishedETHTx'
 
 function getGasPrice(tx) {
   const payload = tx.txPayload
-  return payload.type === ETH_TX_TYPES.EIP1559
+  return payload.type === ETH_TX_TYPES.EIP1559 ||
+    payload.type === ETH_TX_TYPES.EIP7702
     ? payload.maxFeePerGas
     : payload.gasPrice
 }
@@ -74,7 +75,6 @@ export const permissions = {
     'getUnfinishedTxCount',
     'getAddressById',
     'getTxById',
-    'setTxSkipped',
     'setTxFailed',
     'setTxSending',
     'setTxPending',
@@ -103,7 +103,6 @@ export const main = ({
     getUnfinishedTxCount,
     getAddressById,
     getTxById,
-    setTxSkipped,
     setTxFailed,
     setTxSending,
     setTxPending,
@@ -360,6 +359,7 @@ export const main = ({
         // not packaged or no blockhash in getTransactionByHash result
         map(rst => {
           if (rst && rst.blockHash) return rst
+
           // getTransactionByHash return null
           eth_blockNumber({errorFallThrough: true}, [])
             .then(n => {
@@ -379,40 +379,8 @@ export const main = ({
         keepTruthy(),
 
         // packaged
-        map(rst => {
+        sideEffect(rst => {
           setTxPackaged({hash, blockHash: rst.blockHash})
-          return eth_getTransactionCount({errorFallThrough: true}, [
-            address.value,
-            rst.blockNumber,
-          ])
-        }),
-      )
-      .subscribe(resolve({fail: keepTrack}))
-      .transform(
-        sideEffect(nonce => {
-          if (
-            BigNumber.from(nonce).gt(BigNumber.from(tx.txPayload.nonce).add(1))
-          ) {
-            if (tx.skippedChecked) {
-              if (setTxSkipped({hash, skippedChecked: true})) {
-                getExt().then(ext =>
-                  ext.notifications.create(hash, {
-                    title: 'Skipped transaction',
-                    message: `Transaction ${parseInt(
-                      tx.txPayload.nonce,
-                      16,
-                    )}  skipped!`,
-                  }),
-                )
-              }
-              updateBadge(getUnfinishedTxCount())
-              return sdone()
-            } else {
-              setTxSkipped({hash})
-              // check if skipped again immediately
-              return keepTrack(0)
-            }
-          }
           keepTrack(0)
         }),
       )
@@ -457,7 +425,13 @@ export const main = ({
             if (txExecErrorMsg) {
               err = txExecErrorMsg
             }
-            if (setTxFailed({hash, error: err || 'tx failed'})) {
+            if (
+              setTxFailed({
+                hash,
+                error: err || 'tx failed',
+                receipt,
+              })
+            ) {
               getExt().then(ext =>
                 ext.notifications.create(hash, {
                   title: 'Failed transaction',

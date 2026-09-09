@@ -130,6 +130,12 @@ const schema = {
       component: true,
       ref: true,
     },
+    userOperation: {
+      doc: 'user operations of this address',
+      many: true,
+      component: true,
+      ref: true,
+    },
   },
   account: {
     index: {doc: 'index of account in account group'},
@@ -172,6 +178,12 @@ const schema = {
   txPayload: {
     type: {doc: 'tx type'},
     accessList: {doc: 'accessList'},
+    authorizationList: {
+      doc: 'EIP-7702 authorization list',
+      ref: 'eip7702Authorization',
+      many: true,
+      component: true,
+    },
     maxFeePerGas: {doc: 'maxFeePerGas'},
     maxPriorityFeePerGas: {doc: 'maxPriorityFeePerGas'},
     from: {doc: 'from addr'},
@@ -185,6 +197,14 @@ const schema = {
     chainId: {doc: 'chainId'},
     epochHeight: {doc: 'epochHeight'},
   },
+  eip7702Authorization: {
+    chainId: {doc: 'EIP-7702 authorization chain id'},
+    address: {doc: 'EIP-7702 delegate address'},
+    nonce: {doc: 'EIP-7702 authorization nonce'},
+    yParity: {doc: 'EIP-7702 authorization y parity'},
+    r: {doc: 'EIP-7702 authorization signature r'},
+    s: {doc: 'EIP-7702 authorization signature s'},
+  },
   txExtra: {
     ok: {doc: 'extra data is finished'},
     contractCreation: {doc: 'contract creation tx'},
@@ -195,6 +215,31 @@ const schema = {
     tokenNFT: {doc: 'nft contract'},
     address: {doc: 'intresting address of this tx, usually recipient'},
     method: {doc: 'contract call method name'},
+  },
+
+  // ## user operation
+  userOperation: {
+    hash: {
+      doc: 'user operation hash',
+      identity: true,
+    },
+    sender: {doc: 'smart account address'},
+    chainId: {doc: 'chain id'},
+    entryPoint: {doc: 'entry point address'},
+    nonce: {doc: 'entry point nonce'},
+    authorizationNonce: {doc: 'eip-7702 authorization nonce'},
+    delegateAddress: {doc: 'eip-7702 delegate address'},
+    status: {
+      doc: 'pending, included or failed',
+    },
+    calls: {doc: 'ordered account calls'},
+    paymaster: {doc: 'paymaster address'},
+    transactionHash: {doc: 'bundler transaction hash'},
+    receipt: {doc: 'user operation receipt'},
+    success: {doc: 'user operation execution result'},
+    error: {doc: 'bundler submission error'},
+    created: {doc: 'created timestamp'},
+    includedAt: {doc: 'included timestamp'},
   },
 
   // ## dapp interaction
@@ -222,6 +267,11 @@ const schema = {
     network: {doc: 'authed network', ref: true, many: true},
     currentNetwork: {ref: 'network'},
     tx: {many: true, ref: true, doc: 'tx initiated by this app'},
+    userOperation: {
+      many: true,
+      ref: true,
+      doc: 'user operations initiated by this app',
+    },
   },
   authReq: {
     req: {doc: 'the req body of the auth req', persist: false},

@@ -3,14 +3,15 @@
   "type": "module",
   "main": "index.js",
   "packageManager": "yarn@3.1.0",
-  "version": "3.0.17",
+  "version": "3.0.29",
   "dependencies": {
     "@ethersproject/bignumber": "5.6.2",
     "@fluent-wallet/cfx_send-transaction": "workspace:*",
     "@fluent-wallet/consts": "workspace:*",
     "@fluent-wallet/eth_send-transaction": "workspace:*",
     "@fluent-wallet/json-rpc-error": "workspace:*",
+    "@fluent-wallet/nonce-manager": "workspace:*",
     "@fluent-wallet/signature": "workspace:*",
-    "@fluent-wallet/spec": "1.0.15"
+    "@fluent-wallet/spec": "1.0.21"
   }
 }

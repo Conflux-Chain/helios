@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {useTranslation} from 'react-i18next'
+import {USER_OPERATION_ERROR_CODES} from '@fluent-wallet/consts'
 import {CloseCircleFilled} from '@fluent-wallet/component-icons'
 import Button from '@fluent-wallet/component-button'
 import Loading from '@fluent-wallet/component-loading'
@@ -18,9 +19,14 @@ function TransactionResult({status, sendError, onClose}) {
   const open = status && status !== TX_STATUS.HW_SUCCESS
   const isRejected = errorMessage?.includes('UserRejected')
   const isWaiting = status === TX_STATUS.HW_WAITING
+
   const {errorType} = networkTypeIsCfx
     ? cfxProcessError(sendError)
     : ethProcessError(sendError)
+
+  const isSponsorshipRefreshRequired =
+    sendError?.data?.code ===
+    USER_OPERATION_ERROR_CODES.SPONSORSHIP_REFRESH_REQUIRED
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -30,21 +36,36 @@ function TransactionResult({status, sendError, onClose}) {
     if (!open) {
       return
     }
-    setTitle(
-      isWaiting
-        ? t('waitingForSign')
-        : isRejected
-        ? t('rejected')
-        : t(errorType),
-    )
-    setContent(
-      isWaiting
-        ? t('waitingContent')
-        : isRejected
-        ? t('rejectedContent')
-        : errorMessage,
-    )
-  }, [isWaiting, isRejected, open, t, errorType, errorMessage])
+
+    if (isWaiting) {
+      setTitle(t('waitingForSign'))
+      setContent(t('waitingContent'))
+      return
+    }
+
+    if (isSponsorshipRefreshRequired) {
+      setTitle(t('gasSponsorshipRefreshRequiredTitle'))
+      setContent(t('gasSponsorshipRefreshRequiredContent'))
+      return
+    }
+
+    if (isRejected) {
+      setTitle(t('rejected'))
+      setContent(t('rejectedContent'))
+      return
+    }
+
+    setTitle(t(errorType))
+    setContent(errorMessage)
+  }, [
+    errorMessage,
+    errorType,
+    isRejected,
+    isWaiting,
+    isSponsorshipRefreshRequired,
+    open,
+    t,
+  ])
 
   useEffect(() => {
     if (!open) {
@@ -64,7 +85,7 @@ function TransactionResult({status, sendError, onClose}) {
           <div className="flex w-full justify-center overflow-y-auto max-h-40 mb-4">
             {content}
           </div>
-          {!isWaiting && !isRejected && (
+          {!isWaiting && !isRejected && !isSponsorshipRefreshRequired && (
             <CopyButton
               text={content}
               toastClassName="left-2/4 transform -translate-x-2/4 -top-8"

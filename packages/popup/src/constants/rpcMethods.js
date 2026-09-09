@@ -13,6 +13,9 @@ export const WALLET_IS_LOCKED = 'wallet_isLocked'
 export const WALLET_GET_CURRENT_DAPP = 'wallet_getCurrentViewingApp'
 export const WALLET_GET_ACCOUNT_ADDRESS_BY_NETWORK =
   'wallet_getAccountAddressByNetwork'
+export const WALLET_GET_EIP7702_ACCOUNT_STATES =
+  'wallet_getEip7702AccountStates'
+export const WALLET_PREPARE_SPONSORSHIP = 'wallet_prepareSponsorship'
 export const WALLET_ZERO_ACCOUNT_GROUP = 'wallet_zeroAccountGroup'
 export const WALLET_METADATA_FOR_POPUP = 'wallet_metadataForPopup'
 export const WALLET_GENERATE_MNEMONIC = 'wallet_generateMnemonic'
@@ -78,6 +81,7 @@ export const WALLET_GET_SIDE_PANEL_SUPPORTED = 'wallet_getSidePanelSupported'
 export const WALLET_UPDATE_ACCOUNT_GROUP = 'wallet_updateAccountGroup'
 export const WALLET_UPDATE_NETWORK = 'wallet_updateNetwork'
 export const WALLET_SEND_TRANSACTION = 'wallet_sendTransaction'
+export const WALLET_SEND_USER_OPERATION = 'wallet_sendUserOperation'
 export const WALLET_SEND_TRANSACTION_WITH_ACTION =
   'wallet_sendTransactionWithAction'
 export const ETH_GET_CHAIN_ID = 'eth_chainId'

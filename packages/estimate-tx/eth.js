@@ -1,6 +1,7 @@
 import BN from 'bn.js'
 import {bn16, pre0x} from './util.js'
 import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {prepareEip7702AuthorizationRequestsForEstimate} from '@fluent-wallet/utils'
 import Big from 'big.js'
 
 async function ethEstimateGasAdvance(request, tx) {
@@ -100,9 +101,10 @@ export const ethEstimate = async (
     method: 'wallet_network1559Compatible',
   })
 
-  // If the network support EIP1559 transaction, we will send EIP1559-type tx first.
-  const isTxTreatedAsEIP1559 =
-    network1559Compatible && (!type || type === ETH_TX_TYPES.EIP1559)
+  const isEip7702Tx = type === ETH_TX_TYPES.EIP7702 || !!newTx.authorizationList
+  const uses1559Fees =
+    isEip7702Tx ||
+    (network1559Compatible && (!type || type === ETH_TX_TYPES.EIP1559))
 
   let gasPrice, nonce, maxPriorityFeePerGas, maxFeePerGas, gasInfoEip1559
 
@@ -141,13 +143,13 @@ export const ethEstimate = async (
   )
 
   // get gasPrice
-  !isTxTreatedAsEIP1559 &&
+  !uses1559Fees &&
     (await request({method: 'eth_gasPrice'}).then(r => {
       gasPrice = r
     }))
 
   //fetch maxPriorityFeePerGas and maxFeePerGas
-  isTxTreatedAsEIP1559 &&
+  uses1559Fees &&
     (await request({method: 'eth_estimate1559Fee'}).then(gasInfo => {
       gasInfoEip1559 = gasInfo
       const {suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas} =
@@ -181,15 +183,16 @@ export const ethEstimate = async (
 
   // wait for all those values
   await Promise.all(promises)
+  const chainId = await request({method: 'eth_chainId'})
 
   // simple send tx, gas is 21000
-  if (to && (!data || data === '0x')) {
+  if (!isEip7702Tx && to && (!data || data === '0x')) {
     const calcGasPrice = customGasPrice || gasPrice
     const calcGasLimit = customGasLimit || '0x5208' /* 21000 */
     const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
     const ethFeeData = ethGetFeeData(
       {
-        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gasPrice: uses1559Fees ? calcMaxFeePerGas : calcGasPrice,
         gas: calcGasLimit,
         value,
       },
@@ -222,12 +225,18 @@ export const ethEstimate = async (
   delete newTx.maxFeePerGas
   delete newTx.maxPriorityFeePerGas
   newTx.nonce = nonce
+  if (isEip7702Tx) {
+    newTx.type = ETH_TX_TYPES.EIP7702
+    newTx.chainId = newTx.chainId || chainId
+    newTx.authorizationList = prepareEip7702AuthorizationRequestsForEstimate(
+      newTx.authorizationList,
+      newTx.chainId,
+      newTx.nonce,
+    )
+  }
 
   // run estimate
-  let [rst, chainId] = await Promise.all([
-    ethEstimateGasAdvance(request, newTx),
-    request({method: 'eth_chainId'}),
-  ])
+  let rst = await ethEstimateGasAdvance(request, newTx)
   const {gasLimit} = rst
   const calcGasPrice = customGasPrice || gasPrice
   const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
@@ -245,7 +254,7 @@ export const ethEstimate = async (
   if (toAddressType === 'contract') {
     const ethFeeData = ethGetFeeData(
       {
-        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gasPrice: uses1559Fees ? calcMaxFeePerGas : calcGasPrice,
         gas: calcGasLimit,
         value,
         tokensAmount,
@@ -259,7 +268,7 @@ export const ethEstimate = async (
   } else {
     const ethFeeData = ethGetFeeData(
       {
-        gasPrice: isTxTreatedAsEIP1559 ? calcMaxFeePerGas : calcGasPrice,
+        gasPrice: uses1559Fees ? calcMaxFeePerGas : calcGasPrice,
         gas: calcGasLimit,
         value,
       },

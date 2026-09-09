@@ -32,7 +32,7 @@ import {
   useAddress,
   useBalance,
   useNetworkTypeIsCfx,
-  useAddressType,
+  useAddressTypeInfo,
   useValid20Token,
   usePendingAuthReq,
   useNetwork1559Compatible,
@@ -134,6 +134,7 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   const {
     from,
     to,
+    type: txType,
     value,
     data,
     nonce,
@@ -142,7 +143,13 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     maxPriorityFeePerGas,
     gas,
     storageLimit,
+    authorizationList,
   } = tx
+  const authorizationListKey = isArray(authorizationList)
+    ? authorizationList
+        .map(item => [item?.address, item?.chainId, item?.nonce].join(':'))
+        .join('|')
+    : ''
   const nativeBalance =
     useBalance(from, network?.eid, '0x0')?.[from]?.['0x0'] || '0x0'
   const {
@@ -168,6 +175,7 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
   }, [
     from,
     to,
+    txType,
     value,
     data,
     nonce,
@@ -176,6 +184,7 @@ export const useEstimateTx = (tx = {}, tokensAmount = {}) => {
     maxPriorityFeePerGas,
     gas,
     storageLimit,
+    authorizationListKey,
     network.chainId,
     network.gasBuffer,
     // currentNetwork.netId,
@@ -218,16 +227,32 @@ const defaultSendTransactionParams = {
   advancedGasSetting: initAdvancedGasSetting,
   data: '',
   nonce: '',
+  customNonce: '',
   sendTokenId: 'native',
   customAllowance: '',
+
+  sponsorshipDeclined: false,
+
   tx: {},
-  maxMode: false,
+  txContext: {},
+  // Internal preset-tx flows turn this off to avoid overwriting tx from send-form state.
+  syncTxWithForm: true,
+  // MAX is user intent. The final amount may change after gas is resolved.
+  isMaxSelected: false,
 }
 
 export const useCurrentTxStore = create((set, get) => ({
   ...defaultSendTransactionParams,
 
   setTx: tx => set({tx}),
+  setSyncTxWithForm: syncTxWithForm => set({syncTxWithForm}),
+  setPresetTx: (tx, txContext = {}) =>
+    set({
+      ...defaultSendTransactionParams,
+      tx,
+      txContext,
+      syncTxWithForm: false,
+    }),
   setData: data => set({data}),
   setToAddress: toAddress => set({toAddress}),
   setSendAmount: sendAmount => set({sendAmount}),
@@ -237,7 +262,7 @@ export const useCurrentTxStore = create((set, get) => ({
   setGasLimit: gasLimit => set({gasLimit}),
   setStorageLimit: storageLimit => set({storageLimit}),
   setGasLevel: gasLevel => set({gasLevel}),
-  setMaxMode: maxMode => set({maxMode}),
+  setIsMaxSelected: isMaxSelected => set({isMaxSelected}),
   setAdvancedGasSetting: advancedGasSetting => {
     const oldSetting = get().advancedGasSetting
     const newSetting = {...oldSetting, ...advancedGasSetting}
@@ -246,17 +271,19 @@ export const useCurrentTxStore = create((set, get) => ({
   clearAdvancedGasSetting: () =>
     set({advancedGasSetting: initAdvancedGasSetting}),
   setCustomAllowance: customAllowance => set({customAllowance}),
+  setSponsorshipDeclined: sponsorshipDeclined => set({sponsorshipDeclined}),
   setNonce: nonce => set({nonce}),
+  setCustomNonce: customNonce => set({customNonce}),
   setSendTokenId: sendTokenId => set({sendTokenId}),
   clearSendTransactionParams: () => set({...defaultSendTransactionParams}),
 }))
 
-// TODO: support max mode
 // TODO: combine estimate here
 // MAYBE: support multiple tx and rename this to useTxParams
 export const useCurrentTxParams = () => {
   const txStore = useCurrentTxStore()
-  const {toAddress, sendAmount, sendTokenId, setData, setTx} = txStore
+  const {toAddress, sendAmount, sendTokenId, syncTxWithForm, setData, setTx} =
+    txStore
 
   const {decimals: tokenDecimals, address: tokenAddress} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
@@ -293,11 +320,13 @@ export const useCurrentTxParams = () => {
   }
   if (isNativeToken) params['value'] = sendData
   if (data) params['data'] = data
+  const paramsKey = JSON.stringify(params)
 
   useEffect(() => {
+    if (!syncTxWithForm) return
     if (data) setData(data)
     setTx(params)
-  }, [JSON.stringify(params)])
+  }, [syncTxWithForm, paramsKey])
 
   return txStore
 }
@@ -307,20 +336,28 @@ export const useEstimateError = (
   sendTokenAddress,
   isNativeToken,
   isSendToken = true,
+  opts = {},
 ) => {
   const {t} = useTranslation()
+  const {ignoreGasBalanceError = false} = opts
   const {error, isBalanceEnough, tokens} = estimateRst
   const isTokenBalanceEnough = tokens?.[sendTokenAddress]?.isTokenBalanceEnough
   return useMemo(() => {
     if (error?.message) {
+      const isTransferBalanceError = error.message.includes(
+        'transfer amount exceeds balance',
+      )
+      const isGasBalanceError =
+        error.message.includes('insufficient funds') ||
+        error.message.includes('NotEnoughCash')
+
       if (error?.message?.indexOf('transfer amount exceeds allowance') > -1) {
         return t('transferAmountExceedsAllowance')
-      } else if (
-        error?.message?.indexOf('transfer amount exceeds balance') > -1 ||
-        error?.message?.indexOf('insufficient funds') > -1 ||
-        error?.message?.indexOf('NotEnoughCash') > -1
-      ) {
+      } else if (isTransferBalanceError) {
         return t('balanceIsNotEnough')
+      } else if (isGasBalanceError) {
+        // Ignore only gas balance errors. The sender must still have enough transfer balance.
+        return ignoreGasBalanceError ? '' : t('balanceIsNotEnough')
       } else {
         return (
           t('contractError') + error?.message?.split?.('\n')?.[0] ??
@@ -332,7 +369,7 @@ export const useEstimateError = (
       if (isSendToken) {
         if (isNativeToken) {
           if (isBalanceEnough === false) {
-            return t('balanceIsNotEnough')
+            return ignoreGasBalanceError ? '' : t('balanceIsNotEnough')
           } else {
             return ''
           }
@@ -342,7 +379,7 @@ export const useEstimateError = (
           }
         }
       }
-      if (isBalanceEnough === false) {
+      if (isBalanceEnough === false && !ignoreGasBalanceError) {
         return t('gasFeeIsNotEnough')
       } else {
         return ''
@@ -352,6 +389,7 @@ export const useEstimateError = (
     isNativeToken,
     isSendToken,
     isBalanceEnough,
+    ignoreGasBalanceError,
     error,
     isTokenBalanceEnough,
     t,
@@ -369,17 +407,20 @@ export const useDecodeData = ({to, data: rawData} = {}) => {
   const data = padHexData(rawData)
   const [decodeData, setDecodeData] = useState({})
   const [isDecoding, setIsDecoding] = useState(false)
-  const type = useAddressType(to)
+  const {type, eip7702Delegated} = useAddressTypeInfo(to)
   const {
     data: {
       network: {netId, type: currentNetworkType},
     },
   } = useCurrentAddress()
 
-  const isContract = type === 'contract' || type === 'builtin'
-  const isOutContract = type === 'contract'
+  const isContract =
+    (type === 'contract' || type === 'builtin') &&
+    !(eip7702Delegated && data === '0x')
+  const shouldValidateToken =
+    type === 'contract' && isContract && !eip7702Delegated
   const isEOAAddress = !isContract && !!type
-  const crc20Token = useValid20Token(isOutContract ? to : '')
+  const crc20Token = useValid20Token(shouldValidateToken ? to : '')
 
   useEffect(() => {
     if (!!data && data !== '0x') {
@@ -460,18 +501,27 @@ export const useDecodeDisplay = ({
     isContract &&
     decodeData?.name === 'approve' &&
     (!value || value === '0x' || value === '0x0')
-  const isSendNativeToken = !!to && isEOAAddress
+  const isInternalEip7702Tx =
+    !isDapp &&
+    tx?.type === ETH_TX_TYPES.EIP7702 &&
+    isArray(tx?.authorizationList) &&
+    tx.authorizationList.length > 0
   const args = decodeData?.args || []
   const methodName = decodeData?.name || ''
+  const hasZeroValue = !value || value === '0x' || value === '0x0'
+  const isTransferMethod = methodName === 'transfer'
+  const isTransferFromCurrentAddress =
+    methodName === 'transferFrom' &&
+    args?.[0]?.toLowerCase() === address?.toLowerCase()
+  const isInternalSendFlow = !isDapp && !isInternalEip7702Tx
+  const isDappNativeTransfer = isDapp && !!to && isEOAAddress
+  const isDappTokenTransfer =
+    isDapp &&
+    isContract &&
+    hasZeroValue &&
+    (isTransferMethod || isTransferFromCurrentAddress)
   const isSendToken =
-    !isDapp ||
-    isSendNativeToken ||
-    (isDapp &&
-      isContract &&
-      (!value || value === '0x' || value === '0x0') &&
-      ((methodName === 'transferFrom' &&
-        args?.[0]?.toLowerCase() === address?.toLowerCase()) ||
-        methodName === 'transfer'))
+    isInternalSendFlow || isDappNativeTransfer || isDappTokenTransfer
 
   displayToken = useSingleTokenInfoWithNativeTokenSupport(
     isDapp ? null : sendTokenId,
@@ -481,7 +531,7 @@ export const useDecodeDisplay = ({
     displayToAddress = toAddress
     displayValue = sendAmount
   } else {
-    if (isSendNativeToken) {
+    if (isDappNativeTransfer) {
       displayToken = nativeToken
       displayFromAddress = from
       displayToAddress = to
@@ -491,7 +541,7 @@ export const useDecodeDisplay = ({
       )
     } else {
       if (token?.symbol) displayToken = token
-      if (isSendToken) {
+      if (isDappTokenTransfer) {
         displayFromAddress =
           methodName === 'transferFrom'
             ? args?.[0]
@@ -530,7 +580,6 @@ export const useDecodeDisplay = ({
   return {
     isApproveToken,
     isSendToken,
-    isSendNativeToken,
     displayFromAddress,
     displayToAddress,
     displayAccount,
@@ -660,9 +709,12 @@ export const useLedgerAppName = () => {
     : ''
 }
 
-export const useIsTxTreatedAsEIP1559 = txType => {
+export const useUses1559Fees = txType => {
   const network1559Compatible = useNetwork1559Compatible()
-  return network1559Compatible && (!txType || txType === ETH_TX_TYPES.EIP1559)
+  return (
+    txType === ETH_TX_TYPES.EIP7702 ||
+    (network1559Compatible && (!txType || txType === ETH_TX_TYPES.EIP1559))
+  )
 }
 
 export const useInputAddressInfo = ({
@@ -779,13 +831,14 @@ export const useInputAddressInfo = ({
     loading,
   }
 }
-
 export const useServiceName = (
-  {type, netId, provider, address, notSend = false},
+  {type, networkId, netId, provider, address, notSend = false},
   opts,
 ) => {
   return useSWR(
-    type && provider && address && !notSend ? [type, netId, address] : null,
+    type && provider && address && !notSend
+      ? ['serviceName', type, networkId, netId, address]
+      : null,
     () =>
       getSingleServiceNameWithAddress({
         type,
@@ -793,17 +846,20 @@ export const useServiceName = (
         provider,
         address,
       }),
-    opts,
+    {
+      refreshInterval: 0,
+      ...opts,
+    },
   )
 }
 
 export const useServiceNames = (
-  {type, netId, provider, addressArr, notSend = false},
+  {type, networkId, netId, provider, addressArr, notSend = false},
   opts,
 ) => {
   return useSWR(
-    type && provider && isArray(addressArr) && addressArr?.length && !notSend
-      ? [type, netId, [...addressArr]]
+    type && provider && isArray(addressArr) && addressArr.length && !notSend
+      ? ['serviceNames', type, networkId, netId, [...addressArr]]
       : null,
     () =>
       getServiceNamesWithAddresses({
@@ -812,16 +868,21 @@ export const useServiceNames = (
         provider,
         addressArr: [...addressArr],
       }),
-    opts,
+    {
+      refreshInterval: 0,
+      ...opts,
+    },
   )
 }
 
 export const useAddressWithServiceName = (
-  {type, netId, provider, name, notSend = false},
+  {type, networkId, netId, provider, name, notSend = false},
   opts,
 ) => {
   return useSWR(
-    type && provider && name && !notSend ? [type, netId, name] : null,
+    type && provider && name && !notSend
+      ? ['addressWithServiceName', type, networkId, netId, name]
+      : null,
     () =>
       getSingleAddressWithNameService({
         type,
@@ -829,6 +890,9 @@ export const useAddressWithServiceName = (
         provider: window?.___CFXJS_USE_RPC__PRIVIDER,
         name,
       }),
-    opts,
+    {
+      refreshInterval: 0,
+      ...opts,
+    },
   )
 }

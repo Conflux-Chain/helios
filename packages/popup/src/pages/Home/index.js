@@ -50,7 +50,7 @@ function Home() {
   const history = useHistory()
   const {data: pendingCount} = useTxList({
     params: {
-      status: {gte: 0, lt: 4},
+      pendingOnly: true,
       countOnly: true,
     },
   })

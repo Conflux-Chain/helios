@@ -27,6 +27,24 @@ const schema = {
   },
 }
 
+const replacementSchema = {
+  address: {
+    value: {},
+    tx: {many: true, ref: true},
+  },
+  tx: {
+    hash: {identity: true},
+    status: {},
+    raw: {},
+    err: {},
+    txPayload: {ref: true},
+  },
+  txPayload: {
+    nonce: {},
+    from: {},
+  },
+}
+
 describe('db', () => {
   describe('create db', () => {
     it('should return the get getby and create functions defined in schema', async () => {
@@ -360,6 +378,82 @@ describe('db', () => {
       const account = conn.getOneAccount({hexAddress: 'c'})
       expect(account.vault.type).toBe('a')
       expect(account.vault.data).toBe('b')
+    })
+  })
+
+  describe('transaction replacement', () => {
+    test("confirms the winner and fails other unfinished transactions with the winner's nonce", () => {
+      const conn = db.createdb(replacementSchema)
+
+      conn.t([
+        {
+          eid: 'winner-payload',
+          txPayload: {nonce: '0x1', from: '0xabc'},
+        },
+        {
+          eid: 'winner',
+          tx: {
+            hash: '0xwinner',
+            status: 3,
+            raw: 'winner-raw',
+            txPayload: 'winner-payload',
+          },
+        },
+        {
+          eid: 'replaced-payload',
+          txPayload: {nonce: '0x1', from: '0xabc'},
+        },
+        {
+          eid: 'replaced',
+          tx: {
+            hash: '0xreplaced',
+            status: 2,
+            raw: 'replaced-raw',
+            txPayload: 'replaced-payload',
+          },
+        },
+        {
+          eid: 'next-payload',
+          txPayload: {nonce: '0x2', from: '0xabc'},
+        },
+        {
+          eid: 'next',
+          tx: {
+            hash: '0xnext',
+            status: 2,
+            raw: 'next-raw',
+            txPayload: 'next-payload',
+          },
+        },
+        {
+          eid: 'address',
+          address: {value: '0xabc', tx: 'winner'},
+        },
+        {
+          eid: 'address',
+          address: {tx: 'replaced'},
+        },
+        {
+          eid: 'address',
+          address: {tx: 'next'},
+        },
+      ])
+
+      conn.setTxConfirmed({hash: '0xwinner'})
+
+      expect(conn.getOneTx({hash: '0xwinner'})).toMatchObject({
+        status: 5,
+        raw: null,
+      })
+      expect(conn.getOneTx({hash: '0xreplaced'})).toMatchObject({
+        status: -1,
+        raw: null,
+        err: 'replacedByAnotherTx',
+      })
+      expect(conn.getOneTx({hash: '0xnext'})).toMatchObject({
+        status: 2,
+        raw: 'next-raw',
+      })
     })
   })
 

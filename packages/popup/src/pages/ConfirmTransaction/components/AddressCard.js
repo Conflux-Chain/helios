@@ -6,7 +6,7 @@ import {DownOutlined, FileOutlined} from '@fluent-wallet/component-icons'
 import Text from '../../../components/Text'
 import {
   useCurrentAddress,
-  useAddressType,
+  useAddressTypeInfo,
   useDbRefetchBalance,
 } from '../../../hooks/useApi'
 import {useCheckImage, useServiceNames} from '../../../hooks'
@@ -33,8 +33,9 @@ const TransactionDirection = ({
   symbol,
 }) => {
   const {t} = useTranslation()
-  const type = useAddressType(toAddress)
-  const isContract = type === 'contract' || type === 'builtin'
+  const {type, eip7702Delegated} = useAddressTypeInfo(toAddress)
+  const isContract =
+    !eip7702Delegated && (type === 'contract' || type === 'builtin')
 
   return (
     <div
@@ -174,6 +175,8 @@ function AddressCard({
   value,
   isSendToken,
   isApproveToken,
+  title,
+  toAddressLabel,
 }) {
   const {t} = useTranslation()
   const {
@@ -191,6 +194,7 @@ function AddressCard({
   const {data: nsNames, nsNamesError} = useServiceNames({
     type,
     netId,
+    networkId,
     provider: window?.___CFXJS_USE_RPC__PRIVIDER,
     addressArr: [fromAddress, toAddress].filter(Boolean),
   })
@@ -217,13 +221,14 @@ function AddressCard({
               : '/images/sign-icon.svg'
           }
         />
-        {t(
-          isSendToken
-            ? 'sendToken'
-            : isApproveToken
-            ? 'approveToken'
-            : 'signTransaction',
-        )}
+        {title ||
+          t(
+            isSendToken
+              ? 'sendToken'
+              : isApproveToken
+              ? 'approveToken'
+              : 'signTransaction',
+          )}
       </header>
       {isSendToken && (
         <div className="h-10 mt-1 mb-3 flex items-center" id="sendToken">
@@ -256,9 +261,16 @@ function AddressCard({
         nativeBalance={nativeBalance}
         decimals={decimals}
         symbol={symbol}
-        toAddressLabel={t(
-          isSendToken ? 'toAddress' : isApproveToken ? 'approveTo' : 'contract',
-        )}
+        toAddressLabel={
+          toAddressLabel ||
+          t(
+            isSendToken
+              ? 'toAddress'
+              : isApproveToken
+              ? 'approveTo'
+              : 'contract',
+          )
+        }
         isCreateContract={!isSendToken && !isApproveToken && !toAddress}
       />
     </div>
@@ -273,6 +285,8 @@ AddressCard.propTypes = {
   isSendToken: PropTypes.bool,
   isApproveToken: PropTypes.bool,
   nickname: PropTypes.string,
+  title: PropTypes.string,
+  toAddressLabel: PropTypes.string,
 }
 
 export default AddressCard

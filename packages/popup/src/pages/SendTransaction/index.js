@@ -3,8 +3,8 @@ import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {isNumber} from '@fluent-wallet/checks'
 import {
-  formatHexToDecimal,
   convertDataToValue,
+  formatHexToDecimal,
   convertValueToData,
 } from '@fluent-wallet/data-format'
 import Button from '@fluent-wallet/component-button'
@@ -39,10 +39,12 @@ import {
 } from './components'
 import {
   useCurrentAddress,
+  useBalance,
   useSingleTokenInfoWithNativeTokenSupport,
   useAddressNote,
 } from '../../hooks/useApi'
 import {ROUTES, NETWORK_TYPE} from '../../constants'
+import {bn16, isGasSponsorshipConfigured} from '../../utils'
 import useGlobalStore from '../../stores'
 
 const {CONFIRM_TRANSACTION, ADDRESS_BOOK} = ROUTES
@@ -85,7 +87,7 @@ function SendTransaction() {
     toAddress,
     sendAmount,
     sendTokenId,
-    maxMode,
+    isMaxSelected,
     setToAddress,
     setSendAmount,
     setSendTokenId,
@@ -95,7 +97,9 @@ function SendTransaction() {
     setGasLimit,
     setNonce,
     setStorageLimit,
-    setMaxMode,
+    setIsMaxSelected,
+    setSponsorshipDeclined,
+    setSyncTxWithForm,
     tx,
     clearSendTransactionParams,
   } = useCurrentTxParams()
@@ -103,14 +107,36 @@ function SendTransaction() {
   const {
     data: {
       value: address,
-      network: {eid: networkId, type, netId, ticker: nativeToken},
+      network: {eid: networkId, type, netId, chainId, ticker: nativeToken},
       account: {nickname},
     },
   } = useCurrentAddress()
+
   const toAddressInputPlaceholder = useToAddressPlaceHolder({type, netId})
+
+  useEffect(() => {
+    // reset syncTxWithForm to true.
+    setSyncTxWithForm(true)
+  }, [setSyncTxWithForm])
 
   const {address: tokenAddress, decimals} =
     useSingleTokenInfoWithNativeTokenSupport(sendTokenId)
+
+  const sendTokenBalanceKey = tokenAddress || '0x0'
+  const sendTokenBalanceData = useBalance(
+    address,
+    networkId,
+    sendTokenBalanceKey,
+  )
+
+  const balancesByToken =
+    sendTokenBalanceData?.[address?.toLowerCase()] ??
+    sendTokenBalanceData?.[address]
+  const requestedBalance =
+    balancesByToken?.[sendTokenBalanceKey.toLowerCase()] ??
+    balancesByToken?.[sendTokenBalanceKey]
+  const isBalanceReady = requestedBalance !== undefined
+  const sendTokenBalance = requestedBalance ?? '0x0'
 
   const [addressError, setAddressError] = useState('')
   const [inputAddress, setInputAddress] = useState(toAddress)
@@ -123,13 +149,20 @@ function SendTransaction() {
     sendAmount ? estimateError : '',
   )
   const isNativeToken = !tokenAddress
+  const sponsorshipConfigured = isGasSponsorshipConfigured({
+    chainId,
+    networkType: type,
+  })
+  const sendValue = sendAmount
+    ? convertValueToData(sendAmount, decimals) || '0x0'
+    : '0x0'
+  const hasPositiveSendValue = bn16(sendValue).gt(bn16('0x0'))
+  const hasTransferBalance = bn16(sendTokenBalance).gte(bn16(sendValue))
+  const canDeferGasBalanceValidation =
+    sponsorshipConfigured && hasTransferBalance
+
   const estimateRst =
-    useEstimateTx(
-      tx,
-      !isNativeToken
-        ? {[tokenAddress]: convertValueToData(sendAmount, decimals)}
-        : {},
-    ) || {}
+    useEstimateTx(tx, !isNativeToken ? {[tokenAddress]: sendValue} : {}) || {}
   const {
     gasPrice: estimateGasPrice,
     maxFeePerGas: estimateMaxFeePerGas,
@@ -169,6 +202,8 @@ function SendTransaction() {
     estimateRst,
     tokenAddress,
     !tokenAddress,
+    true,
+    {ignoreGasBalanceError: canDeferGasBalanceValidation},
   )
   useEffect(() => {
     !loading && setEstimateError(errorMessage)
@@ -189,16 +224,34 @@ function SendTransaction() {
       })
   }, [netId, toAddress, type])
 
+  const isNativeMaxUnavailable =
+    !sponsorshipConfigured && isNativeToken && (loading || !nativeMaxDrip)
+  const maxDisabled =
+    !isBalanceReady ||
+    !bn16(sendTokenBalance).gt(bn16('0x0')) ||
+    isNativeMaxUnavailable
+
   const onChangeToken = token => {
     setSendTokenId(token)
-    if (maxMode) {
-      setSendAmount('')
-      setMaxMode(false)
-    }
+    if (isMaxSelected) setSendAmount('')
+    setIsMaxSelected(false)
   }
   const onChangeAmount = amount => {
     setSendAmount(amount)
+    setIsMaxSelected(false)
   }
+
+  const onClickMax = () => {
+    if (maxDisabled) return
+
+    // Keep the full native balance until sponsorship is checked.
+    const maxAmount =
+      isNativeToken && !sponsorshipConfigured ? nativeMaxDrip : sendTokenBalance
+
+    setIsMaxSelected(true)
+    setSendAmount(convertDataToValue(maxAmount, decimals))
+  }
+
   const onChangeAddress = address => {
     if (nsLoading) {
       return
@@ -243,7 +296,11 @@ function SendTransaction() {
   }, [networkId])
 
   const sendDisabled =
-    !!addressError || !!estimateError || !toAddress || !sendAmount
+    !!addressError ||
+    !!estimateError ||
+    !toAddress ||
+    !sendAmount ||
+    !hasPositiveSendValue
 
   // get address alias name
   const {addressNote, setAddressNote} = useGlobalStore()
@@ -314,11 +371,12 @@ function SendTransaction() {
           <TokenAndAmount
             selectedTokenId={sendTokenId}
             amount={sendAmount}
+            balance={sendTokenBalance}
+            isMaxSelected={isMaxSelected}
+            maxDisabled={maxDisabled}
             onChangeAmount={onChangeAmount}
             onChangeToken={onChangeToken}
-            isNativeToken={isNativeToken}
-            nativeMax={convertDataToValue(nativeMaxDrip, decimals)}
-            loading={loading}
+            onClickMax={onClickMax}
           />
           <div className="overflow-hidden">
             <div
@@ -351,6 +409,7 @@ function SendTransaction() {
               disabled={sendDisabled}
               onClick={() => {
                 if (loading) return
+                setSponsorshipDeclined(false)
                 history.push(CONFIRM_TRANSACTION)
               }}
               className="flex-1"

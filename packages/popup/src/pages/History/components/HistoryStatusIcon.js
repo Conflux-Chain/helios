@@ -11,6 +11,7 @@ import {WrapIcon} from '../../../components'
 function HistoryStatusIcon({
   isExternalTx = false,
   isDapp = false,
+  isEip7702Tx = false,
   txStatus = '',
   dappIconUrl = '',
   className = '',
@@ -30,7 +31,15 @@ function HistoryStatusIcon({
           <img src={dappIconUrl} alt="favicon" className="w-5 h-5" />
         )}
 
-        {txStatus === 'confirmed' && !isDapp && (
+        {txStatus === 'confirmed' && !isDapp && isEip7702Tx && (
+          <img
+            src="/images/eip7702-history-icon.svg"
+            alt="EIP-7702"
+            className="w-4 h-4"
+          />
+        )}
+
+        {txStatus === 'confirmed' && !isDapp && !isEip7702Tx && (
           <SendOutlined className="w-4 h-4" />
         )}
 
@@ -49,6 +58,7 @@ HistoryStatusIcon.propTypes = {
   dappIconUrl: PropTypes.string,
   className: PropTypes.string,
   isDapp: PropTypes.bool,
+  isEip7702Tx: PropTypes.bool,
   showDes: PropTypes.bool,
   isExternalTx: PropTypes.bool,
 }

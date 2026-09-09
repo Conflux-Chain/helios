@@ -277,6 +277,11 @@ const en = {
     signThisMessage: 'Sign this Message?',
     signTypeMessage: 'Sign Type Message',
     message: 'Message',
+    typedDataReview: 'Please review this signature request:',
+    typedDataRequestFrom: 'Request from',
+    typedDataInteractWith: 'Interact with',
+    typedDataInteractWithTooltip:
+      "This is the contract you're interacting with. Protect yourself from scammers by verifying the details.",
 
     // - request signature - Sign in with Ethereum
     signWithEthereumTitle: 'Sign-in request',
@@ -369,6 +374,45 @@ const en = {
       'Fluent will be the first option when connecting to any dApp on EVM networks.',
     showTestnet: 'Show Testnet',
     showTestnetDes: 'Select this to show test networks in network list.',
+    eip7702Upgrade: 'EIP-7702 Upgrade',
+    eip7702UpgradeIntro:
+      'By upgrading EIP-7702, your account gains additional <Highlight>smart features</Highlight>:',
+    eip7702FlexibleGasTitle: 'Flexible gas payments',
+    eip7702FlexibleGasDesc:
+      'Pay gas fees with native tokens or available sponsorship.',
+    eip7702BatchTransactionsTitle: 'Bundle multiple transactions',
+    eip7702BatchTransactionsDesc: 'Save more gas with batch transactions.',
+    eip7702DappSupportTitle: 'Extra dApp support',
+    eip7702DappSupportDesc: 'Unlock smarter transactions with EIP-7702.',
+    eip7702SupportedNetwork: 'Supported network',
+    eip7702SwitchRequiredTitle: 'Bind switch required',
+    eip7702SwitchRequiredDesc:
+      'This account currently bound to a third party contract. Switch to Fluent Wallet for a better experience.',
+    eip7702SponsoredUpgradeTitle: 'Enable EIP-7702 Upgrade',
+    eip7702SponsoredUpgradeDesc:
+      'By upgrading, your account gains the following smart features.',
+    eip7702SponsoredDescription:
+      'This transaction is eligible for gas sponsorship. By upgrading, your account gains smart features as followed. You can revoke it anytime in Settings.',
+    eip7702SponsoredBenefitsTitle: 'Enjoy more benefits',
+    eip7702SponsoredGasFreeDapps: 'Gas-free transactions on supported DApps',
+    eip7702SponsoredFlexibleGas: 'Flexible gas payments',
+    eip7702SponsoredBatchTransactions: 'Bundle multiple transactions',
+    eip7702SponsoredUpgradeConfirm: 'Upgrade and continue',
+    eip7702SponsoredSwitchTitle: 'Switch to EIP-7702 service',
+    eip7702SponsoredSwitchConfirm: 'Switch and continue',
+    eip7702SwitchInfoTitle: 'Switch to EIP-7702 service',
+    eip7702SwitchInfoDesc:
+      'This account currently bound to a third party contract. Switch to Fluent Wallet for a better experience.',
+    eip7702SwitchInfoBenefitsTitle: 'Enjoy more benefits',
+    eip7702SwitchInfoConfirm: 'Switch and continue',
+    eip7702Delegation: 'EIP-7702 Delegation',
+    tx7702Delegation: '7702 Delegation',
+    eip7702Switch: 'EIP-7702 Switch',
+    eip7702Revoke: 'EIP-7702 Revoke',
+    delegateTo: 'Delegate to',
+    bind: 'Bind',
+    enable: 'Enable',
+    revoke: 'Revoke',
     openSidePanel: 'Open as sidebar',
     closeSidePanel: 'Open as popup',
 
@@ -456,7 +500,9 @@ const en = {
     waitingContent: 'Please confirm this transaction in your Ledger.',
     rejectedContent: 'Transaction has been rejected.',
     copyError: 'Copy error code',
-
+    gasSponsorshipRefreshRequiredTitle: 'Gas Sponsorship No Longer Valid',
+    gasSponsorshipRefreshRequiredContent:
+      'This gas sponsorship is no longer valid. Please resubmit your transaction.',
     // conflux confirm tx error
     txPoolFull: 'Transaction pool is full',
     nodeInCatchUpMode: 'Node in catch-up mode',

@@ -13,15 +13,14 @@ import {
 import Button from '@fluent-wallet/component-button'
 import {TitleNav, GasCost} from '../../components'
 import {GasStation} from './components'
-import {useNetworkTypeIsCfx, useIsCfxChain} from '../../hooks/useApi'
-import {
-  useCurrentTxStore,
-  useIsTxTreatedAsEIP1559,
-  useDappParams,
-  useEstimateTx,
-} from '../../hooks'
+import {useCurrentTxStore, useUses1559Fees, useEstimateTx} from '../../hooks'
 import {ROUTES} from '../../constants'
 import {getPageType} from '../../utils'
+import {
+  useNetworkTypeIsCfx,
+  useIsCfxChain,
+  usePendingAuthReq,
+} from '../../hooks/useApi'
 
 const {EDIT_GAS_FEE} = ROUTES
 
@@ -44,7 +43,8 @@ function EditGasFee({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    nonce,
+    nonce: suggestedNonce,
+    customNonce,
     storageLimit,
     advancedGasSetting,
     tx: txParams,
@@ -54,7 +54,6 @@ function EditGasFee({
     setMaxPriorityFeePerGas,
     setGasLimit,
     setStorageLimit,
-    setNonce,
     setTx,
     setAdvancedGasSetting,
     clearAdvancedGasSetting,
@@ -63,9 +62,15 @@ function EditGasFee({
 
   const isSendTx = location.pathname === EDIT_GAS_FEE
 
-  const isDapp = getPageType() === 'notification'
-  const dappTx = useDappParams()
+  const nonce =
+    !isSendTx && historyTx?.nonce
+      ? formatHexToDecimal(historyTx.nonce)
+      : customNonce || suggestedNonce
 
+  const isDapp = getPageType() === 'notification'
+  const pendingAuthReq = usePendingAuthReq()
+  const dappAuthReq = isDapp ? pendingAuthReq?.[0] : null
+  const dappTx = dappAuthReq?.req?.params?.[0] || {}
   const originParams = !isDapp ? {...txParams} : {...dappTx}
 
   const estimateRst = useEstimateTx(originParams) || {}
@@ -80,7 +85,7 @@ function EditGasFee({
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const isCfxChain = useIsCfxChain()
-  const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
+  const uses1559Fees = useUses1559Fees(originParams?.type)
 
   const [selectedGasLevel, setSelectedGasLevel] = useState('')
 
@@ -149,7 +154,7 @@ function EditGasFee({
           : ''
         : // 1559 tx resend maxPriorityFeePerGas use suggest gas price
           suggestedGasPrice,
-      gasPrice: !isTxTreatedAsEIP1559 ? suggestedGasPrice : '',
+      gasPrice: !uses1559Fees ? suggestedGasPrice : '',
     }
   }
   if (!sendParams.maxFeePerGas) delete sendParams.maxFeePerGas
@@ -163,7 +168,6 @@ function EditGasFee({
       gasPrice,
       maxPriorityFeePerGas,
       maxFeePerGas,
-      nonce,
       gasLimit,
       storageLimit,
     } = advancedGasSetting
@@ -171,17 +175,16 @@ function EditGasFee({
     setGasLevel(selectedGasLevel)
 
     if (selectedGasLevel === 'advanced') {
-      if (isTxTreatedAsEIP1559) {
+      if (uses1559Fees) {
         setMaxFeePerGas(maxFeePerGas)
         setMaxPriorityFeePerGas(maxPriorityFeePerGas)
       } else {
         setGasPrice(gasPrice)
       }
-      setNonce(nonce)
       setGasLimit(gasLimit)
       setStorageLimit(storageLimit)
     } else {
-      if (isTxTreatedAsEIP1559) {
+      if (uses1559Fees) {
         const gasInfo = gasInfoEip1559[selectedGasLevel] || {}
         const {suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas} = gasInfo
         setMaxFeePerGas(
@@ -239,7 +242,7 @@ function EditGasFee({
             networkTypeIsCfx={networkTypeIsCfx}
           />
           <GasStation
-            isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
+            uses1559Fees={uses1559Fees}
             isHistoryTx={!isSendTx}
             gasInfoEip1559={gasInfoEip1559}
             resendType={resendType}
@@ -265,10 +268,10 @@ function EditGasFee({
           id="saveGasFeeBtn"
           onClick={saveGasData}
           disabled={
-            (isTxTreatedAsEIP1559 &&
+            (uses1559Fees &&
               selectedGasLevel !== 'advanced' &&
               !gasInfoEip1559[selectedGasLevel]) ||
-            (!isTxTreatedAsEIP1559 && !suggestedGasPrice) ||
+            (!uses1559Fees && !suggestedGasPrice) ||
             resendDisabled
           }
         >

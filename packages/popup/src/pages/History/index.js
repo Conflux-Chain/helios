@@ -1,10 +1,13 @@
 import {useTranslation} from 'react-i18next'
 import {useState, useRef, useEffect, useCallback} from 'react'
 import {TitleNav, NoResult} from '../../components'
-import {HistoryItem} from './components'
+import {HistoryItem, UserOperationHistoryItem} from './components'
 import {useTxList, useBlockchainExplorerUrl} from '../../hooks/useApi'
 import {setScrollPageLimit} from '../../utils'
 import {PAGE_LIMIT} from '../../constants'
+
+const getExplorerTransactionHash = item =>
+  item.type === 'userOperation' ? item.transactionHash : item.hash
 
 function History() {
   const {t} = useTranslation()
@@ -13,7 +16,6 @@ function History() {
   const [limit, setLimit] = useState(PAGE_LIMIT)
   const [offset, setOffset] = useState(0)
   const [total, setTotal] = useState(0)
-  const [scrollTop, setScrollTop] = useState(0)
   const {data: historyListData} = useTxList({
     params: {
       limit,
@@ -21,15 +23,19 @@ function History() {
     },
     includeExternalTx: true,
   })
+  const transactionHashes =
+    historyListData?.data?.map(getExplorerTransactionHash).filter(Boolean) || []
+
   const {transaction: transactionUrls} = useBlockchainExplorerUrl(
-    historyListData?.data
-      ? {transaction: historyListData?.data.map(d => d.hash)}
-      : null,
+    transactionHashes.length ? {transaction: transactionHashes} : null,
   )
 
-  const onScroll = useCallback(() => {
-    historyRef?.current && setScrollTop(historyRef?.current.scrollTop)
+  const transactionUrlByHash = transactionHashes.reduce((urls, hash, index) => {
+    urls[hash] = transactionUrls?.[index]
+    return urls
+  }, {})
 
+  const onScroll = useCallback(() => {
     setScrollPageLimit(
       historyRef?.current,
       setLimit,
@@ -63,44 +69,46 @@ function History() {
         ref={historyRef}
       >
         {txList?.length > 0 &&
-          txList.map(
-            (
-              {
-                status,
-                created,
-                txExtra,
-                txPayload,
-                app,
-                token,
-                eid,
-                hash,
-                err,
-                receipt,
-                pendingAt,
-              },
-              index,
-            ) => (
+          txList.map((item, index) => {
+            const transactionHash = getExplorerTransactionHash(item)
+            const transactionUrl = transactionHash
+              ? transactionUrlByHash[transactionHash]
+              : undefined
+            const copyButtonContainerClassName = index === 0 ? '' : undefined
+            const copyButtonToastClassName =
+              index === 0 ? 'top-10 right-3' : undefined
+
+            if (item.type === 'userOperation') {
+              return (
+                <UserOperationHistoryItem
+                  key={`userOperation:${item.eid}`}
+                  operation={item}
+                  transactionUrl={transactionUrl}
+                  copyButtonContainerClassName={copyButtonContainerClassName}
+                  copyButtonToastClassName={copyButtonToastClassName}
+                />
+              )
+            }
+
+            return (
               <HistoryItem
-                containerScrollTop={scrollTop}
-                key={eid}
-                status={status}
-                created={created}
-                extra={txExtra}
-                payload={txPayload}
-                app={app}
-                token={token}
-                hash={hash}
-                receipt={receipt}
-                err={err}
-                pendingAt={pendingAt}
-                copyButtonContainerClassName={index === 0 ? '' : undefined}
-                copyButtonToastClassName={
-                  index === 0 ? 'top-10 right-3' : undefined
-                }
-                transactionUrl={transactionUrls?.[index]}
+                key={`transaction:${item.eid}`}
+                status={item.status}
+                created={item.created}
+                extra={item.txExtra}
+                payload={item.txPayload}
+                app={item.app}
+                token={item.token}
+                hash={item.hash}
+                receipt={item.receipt}
+                err={item.err}
+                pendingAt={item.pendingAt}
+                copyButtonContainerClassName={copyButtonContainerClassName}
+                copyButtonToastClassName={copyButtonToastClassName}
+                transactionUrl={transactionUrl}
               />
-            ),
-          )}
+            )
+          })}
         {txList?.length === 0 && <NoResult content={t('noResult')} />}
       </main>
     </div>

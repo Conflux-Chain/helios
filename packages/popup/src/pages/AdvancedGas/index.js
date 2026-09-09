@@ -22,7 +22,7 @@ import {
   useEstimateTx,
   useDappParams,
   useQuery,
-  useIsTxTreatedAsEIP1559,
+  useUses1559Fees,
 } from '../../hooks'
 import {getPageType} from '../../utils'
 import {CustomGasPrice, CustomOptional} from './components'
@@ -44,7 +44,6 @@ function AdvancedGas() {
   const [inputMaxFeePerGas, setInputMaxFeePerGas] = useState('')
   const [inputMaxPriorityFeePerGas, setInputMaxPriorityFeePerGas] = useState('')
   const [inputGasLimit, setInputGasLimit] = useState('')
-  const [inputNonce, setInputNonce] = useState('')
   const [gasPriceErr, setGasPriceErr] = useState('')
   const [maxPriorityFeePerGasErr, setMaxPriorityFeePerGasErr] = useState('')
   const [gasLimitErr, setGasLimitErr] = useState('')
@@ -52,12 +51,15 @@ function AdvancedGas() {
 
   const {
     gasLimit,
-    nonce,
+    nonce: suggestedNonce,
+    customNonce,
     storageLimit,
     advancedGasSetting,
     setAdvancedGasSetting,
+    setCustomNonce,
     tx: txParams,
   } = useCurrentTxStore()
+  const [inputNonce, setInputNonce] = useState(isHistoryTx ? '' : customNonce)
 
   const isCfxChain = useIsCfxChain()
   const networkTypeIsCfx = useNetworkTypeIsCfx()
@@ -67,7 +69,7 @@ function AdvancedGas() {
   const tx = useDappParams()
   const originParams = !isDapp ? {...txParams} : {...tx}
 
-  const isTxTreatedAsEIP1559 = useIsTxTreatedAsEIP1559(originParams?.type)
+  const uses1559Fees = useUses1559Fees(originParams?.type)
   const params = {
     ...originParams,
     gasPrice: convertValueToData(inputGasPrice, GWEI_DECIMALS),
@@ -80,7 +82,9 @@ function AdvancedGas() {
     gas: formatDecimalToHex(
       inputGasLimit || advancedGasSetting.gasLimit || gasLimit,
     ),
-    nonce: formatDecimalToHex(inputNonce || advancedGasSetting.nonce || nonce),
+    nonce: isHistoryTx
+      ? originParams.nonce
+      : formatDecimalToHex(inputNonce || suggestedNonce),
     storageLimit: formatDecimalToHex(
       advancedGasSetting.storageLimit || storageLimit,
     ),
@@ -108,14 +112,14 @@ function AdvancedGas() {
 
   useEffect(() => {
     const wrapSuggestedMaxFeePerGas =
-      isTxTreatedAsEIP1559 && !isNaN(Number(suggestedMaxFeePerGas))
+      uses1559Fees && !isNaN(Number(suggestedMaxFeePerGas))
         ? new Big(suggestedMaxFeePerGas).round(9).toString(10)
         : ''
     const wrapSuggestedMaxPriorityFeePerGas =
-      isTxTreatedAsEIP1559 && !isNaN(Number(suggestedMaxPriorityFeePerGas))
+      uses1559Fees && !isNaN(Number(suggestedMaxPriorityFeePerGas))
         ? new Big(suggestedMaxPriorityFeePerGas).round(9).toString(10)
         : ''
-    !isTxTreatedAsEIP1559 &&
+    !uses1559Fees &&
       !inputGasPrice &&
       setInputGasPrice(
         advancedGasPrice
@@ -123,14 +127,14 @@ function AdvancedGas() {
           : convertDataToValue(suggestedGasPrice, GWEI_DECIMALS),
       )
     // gas station unit is GWei
-    isTxTreatedAsEIP1559 &&
+    uses1559Fees &&
       !inputMaxFeePerGas &&
       setInputMaxFeePerGas(
         selectedGasLevel === 'advanced'
           ? convertDecimal(advancedMaxFeePerGas, 'divide', GWEI_DECIMALS)
           : wrapSuggestedMaxFeePerGas,
       )
-    isTxTreatedAsEIP1559 &&
+    uses1559Fees &&
       !inputMaxPriorityFeePerGas &&
       setInputMaxPriorityFeePerGas(
         selectedGasLevel === 'advanced'
@@ -144,7 +148,7 @@ function AdvancedGas() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     selectedGasLevel,
-    isTxTreatedAsEIP1559,
+    uses1559Fees,
     suggestedGasPrice,
     suggestedMaxFeePerGas,
     suggestedMaxPriorityFeePerGas,
@@ -245,6 +249,7 @@ function AdvancedGas() {
   }
 
   const saveGasData = () => {
+    if (!isHistoryTx) setCustomNonce(inputNonce)
     setAdvancedGasSetting({
       gasPrice: convertDecimal(inputGasPrice, 'multiply', GWEI_DECIMALS),
       maxFeePerGas: convertDecimal(
@@ -262,7 +267,9 @@ function AdvancedGas() {
         advancedGasSetting.gasLimit ||
         gasLimit ||
         formatHexToDecimal(estimateGasLimit),
-      nonce: inputNonce || advancedGasSetting.nonce || nonce,
+      nonce: isHistoryTx
+        ? formatHexToDecimal(originParams.nonce)
+        : inputNonce || suggestedNonce,
       storageLimit:
         advancedGasSetting.storageLimit ||
         storageLimit ||
@@ -283,7 +290,7 @@ function AdvancedGas() {
           <GasCost sendParams={params} networkTypeIsCfx={networkTypeIsCfx} />
           <CustomGasPrice
             isCfxChain={isCfxChain}
-            isTxTreatedAsEIP1559={isTxTreatedAsEIP1559}
+            uses1559Fees={uses1559Fees}
             inputGasPrice={inputGasPrice}
             gasPriceErr={gasPriceErr}
             onChangeGasPrice={onChangeGasPrice}
@@ -307,7 +314,7 @@ function AdvancedGas() {
               storageLimit ||
               formatHexToDecimal(estimateStorageLimit)
             }
-            nonce={advancedGasSetting.nonce || nonce}
+            nonce={inputNonce || suggestedNonce}
             gasLimit={
               advancedGasSetting.gasLimit ||
               gasLimit ||

@@ -15,7 +15,7 @@ exports[`Modal > test snapshot 1`] = `
         >
           <span
             aria-hidden="true"
-            class="absolute top-3 right-3"
+            class="absolute top-3 right-3 z-10"
             data-testid="modal-close-wrapper"
           >
             <svg
@@ -55,7 +55,7 @@ exports[`Modal > test snapshot 1`] = `
       >
         <span
           aria-hidden="true"
-          class="absolute top-3 right-3"
+          class="absolute top-3 right-3 z-10"
           data-testid="modal-close-wrapper"
         >
           <svg

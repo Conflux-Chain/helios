@@ -15,7 +15,10 @@
    [cfxjs.db.migrations.m8]
    [cfxjs.db.migrations.m9]
    [cfxjs.db.migrations.m15]
-   [cfxjs.db.migrations.m16]))
+   [cfxjs.db.migrations.m16]
+   [cfxjs.db.migrations.m17]
+   [cfxjs.db.migrations.m18]
+   [cfxjs.db.migrations.m19]))
 (def migrations [cfxjs.db.migrations.m1/data
                  cfxjs.db.migrations.m2/data
                  cfxjs.db.migrations.m3/data
@@ -31,4 +34,7 @@
                  cfxjs.db.migrations.m13/data
                  cfxjs.db.migrations.m14/data
                  cfxjs.db.migrations.m15/data
-                 cfxjs.db.migrations.m16/data])
+                 cfxjs.db.migrations.m16/data
+                 cfxjs.db.migrations.m17/data
+                 cfxjs.db.migrations.m18/data
+                 cfxjs.db.migrations.m19/data])

@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types'
-import {useState, useEffect, useRef} from 'react'
-import {Big} from '@fluent-wallet/data-format'
+import {useState, useEffect} from 'react'
 import i18next from 'i18next'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import dayjs from 'dayjs'
-import {isUndefined, isNumber} from '@fluent-wallet/checks'
+import {isUndefined} from '@fluent-wallet/checks'
 import {convertDataToValue} from '@fluent-wallet/data-format'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import {cfxGetFeeData, ethGetFeeData} from '@fluent-wallet/estimate-tx'
+import {NULL_HEX_ADDRESS} from '@fluent-wallet/consts'
 
 import {
   transformToTitleCase,
@@ -31,6 +31,8 @@ import {
   HistoryBalance,
   ResendButtons,
 } from './'
+import {shouldShowNegativeAmount} from '../amount'
+import {getEip7702DelegateAddress} from './eip7702'
 
 const ICON_COLOR = {
   failed: 'bg-error-10 text-error',
@@ -40,7 +42,6 @@ const ICON_COLOR = {
 }
 
 function HistoryItem({
-  containerScrollTop = 0,
   status,
   created,
   extra,
@@ -56,14 +57,12 @@ function HistoryItem({
   copyButtonToastClassName,
 }) {
   const history = useHistory()
-  const historyItemRef = useRef(null)
   const [actionName, setActionName] = useState('')
   const [contractName, setContractName] = useState('')
   const [amount, setAmount] = useState('')
   const [symbol, setSymbol] = useState('')
   const [toAddress, setToAddress] = useState('')
   const [showDetail, setShowDetail] = useState(false)
-  const [isHide, setIsHide] = useState(false)
 
   const {t} = useTranslation()
   const dappIconUrl = useDappIcon(app?.site?.icon)
@@ -76,15 +75,23 @@ function HistoryItem({
 
   const networkTypeIsCfx = useNetworkTypeIsCfx()
   const {
-    data: {value: currentAddress, network},
+    data: {
+      value: currentAddress,
+      network,
+      account: {nickname: currentAccountNickname} = {},
+    },
   } = useCurrentAddress()
+  const delegateAddress = getEip7702DelegateAddress(payload?.authorizationList)
+  const isEip7702DelegationTx = Boolean(delegateAddress)
+  const isEip7702RevokeTx =
+    delegateAddress.toLowerCase() === NULL_HEX_ADDRESS.toLowerCase()
 
   const {data: nsName} = useServiceName({
     type: network?.type,
     netId: network?.netId,
+    networkId: network?.eid,
     provider: window?.___CFXJS_USE_RPC__PRIVIDER,
     address: toAddress,
-    notSend: isHide,
   })
 
   const fromAddress = payload?.from || ''
@@ -93,13 +100,12 @@ function HistoryItem({
   // is external transition
   const isExternalTx =
     currentAddress !== payload?.from && currentAddress === payload?.to
-  // show negative amount
-  const isNegativeAmount =
-    amount != 0 && actionName !== 'Approve' && !isExternalTx
   // color according to tx status
   const statusIconColor = ICON_COLOR?.[txStatus] ?? ''
 
   const createdTime = dayjs(created).format('YYYY/MM/DD HH:mm:ss')
+  const {contractCreation, simple, contractInteraction, token20, sendAction} =
+    extra
 
   const showResendButtons =
     txStatus === 'pending' &&
@@ -119,12 +125,29 @@ function HistoryItem({
         })
     : {}
 
-  const {contractCreation, simple, contractInteraction, token20, sendAction} =
-    extra
-
   const {decodeData} = useDecodeData({
     to: payload?.to,
     data: payload?.data,
+  })
+
+  const isTokenAction =
+    token20 &&
+    (decodeData?.name === 'transfer' ||
+      decodeData?.name === 'transferFrom' ||
+      decodeData?.name === 'approve')
+  const displayAddressRole = isExternalTx
+    ? 'fromAddress'
+    : isTokenAction
+    ? 'toAddress'
+    : contractInteraction
+    ? 'contract'
+    : 'toAddress'
+  const isNegativeAmount = shouldShowNegativeAmount({
+    amount,
+    methodName: decodeData?.name,
+    methodArgs: decodeData?.args,
+    accountAddress: currentAddress,
+    isExternalTx,
   })
 
   const onCancelPendingTx = () => {
@@ -142,6 +165,11 @@ function HistoryItem({
   }
 
   useEffect(() => {
+    if (isEip7702DelegationTx) {
+      setActionName(t(isEip7702RevokeTx ? 'eip7702Revoke' : 'tx7702Delegation'))
+      return
+    }
+
     if (isExternalTx) {
       return setActionName(t('receive'))
     }
@@ -152,9 +180,21 @@ function HistoryItem({
         ? transformToTitleCase(decodeData.name)
         : '-',
     )
-  }, [simple, isExternalTx, t, decodeData?.name])
+  }, [
+    simple,
+    isExternalTx,
+    isEip7702DelegationTx,
+    isEip7702RevokeTx,
+    t,
+    decodeData?.name,
+  ])
 
   useEffect(() => {
+    if (isEip7702DelegationTx) {
+      setContractName(t('delegateTo'))
+      return
+    }
+
     if (simple && tokenName) {
       return setContractName(tokenName)
     }
@@ -169,6 +209,7 @@ function HistoryItem({
     }
   }, [
     tokenName,
+    isEip7702DelegationTx,
     simple,
     token20,
     t,
@@ -179,6 +220,13 @@ function HistoryItem({
   ])
 
   useEffect(() => {
+    if (isEip7702DelegationTx) {
+      setSymbol('')
+      setAmount('')
+      setToAddress(delegateAddress)
+      return
+    }
+
     if (simple && tokenSymbol) {
       setToAddress(payload?.to ?? '')
       if (!isUndefined(tokenDecimals)) {
@@ -210,6 +258,8 @@ function HistoryItem({
   }, [
     tokenSymbol,
     tokenDecimals,
+    isEip7702DelegationTx,
+    delegateAddress,
     simple,
     token20,
     actionName,
@@ -220,22 +270,10 @@ function HistoryItem({
     decodeData?.args,
   ])
 
-  useEffect(() => {
-    const clientHeight = historyItemRef?.current?.clientHeight
-    const offsetTop = historyItemRef?.current?.offsetTop
-    if (
-      isNumber(clientHeight) &&
-      isNumber(containerScrollTop) &&
-      isNumber(offsetTop)
-    ) {
-      const distanceToParent = new Big(offsetTop).minus(52)
-      setIsHide(distanceToParent.lt(new Big(containerScrollTop)))
-    }
-  }, [containerScrollTop])
   if (!actionName || !contractName) return null
 
   return (
-    <div ref={historyItemRef} className="pt-3">
+    <div className="pt-3">
       <div
         className="flex items-center cursor-pointer p-3 bg-white mx-3 rounded"
         aria-hidden="true"
@@ -245,6 +283,7 @@ function HistoryItem({
           txStatus={txStatus}
           dappIconUrl={dappIconUrl}
           isDapp={!!app}
+          isEip7702Tx={isEip7702DelegationTx}
           isExternalTx={isExternalTx}
           className={statusIconColor}
         />
@@ -302,6 +341,7 @@ function HistoryItem({
         isExternalTx={isExternalTx}
         fromAddress={fromAddress}
         toAddress={toAddress}
+        displayAddressRole={displayAddressRole}
         nsName={nsName}
         actionName={actionName}
         copyButtonContainerClassName={copyButtonContainerClassName}
@@ -310,6 +350,8 @@ function HistoryItem({
         hash={hash}
         transactionUrl={transactionUrl}
         payload={payload}
+        isEip7702DelegationTx={isEip7702DelegationTx}
+        currentAccountName={currentAccountNickname}
         errorType={i18next?.exists(err) ? err : 'unknownError'}
         onCancelPendingTx={onCancelPendingTx}
         onSpeedupPendingTx={onSpeedupPendingTx}
@@ -322,7 +364,6 @@ function HistoryItem({
 }
 
 HistoryItem.propTypes = {
-  containerScrollTop: PropTypes.number.isRequired,
   status: PropTypes.number.isRequired,
   created: PropTypes.number.isRequired,
   pendingAt: PropTypes.number,

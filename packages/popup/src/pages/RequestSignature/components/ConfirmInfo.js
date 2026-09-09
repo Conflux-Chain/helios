@@ -1,89 +1,82 @@
 import {WarningFilled} from '@fluent-wallet/component-icons'
 import PropTypes from 'prop-types'
-import {useMemo} from 'react'
 
 export const ConfirmInfo = ({
   label,
   error,
-  customValueComponent: CustomValueComponent,
+  customValueComponent,
   onClick,
   className,
+  labelClassName = 'w-[70px]',
   id,
   value,
   type = 'text',
 }) => {
-  const Box = useMemo(() => {
-    const BoxComponent = child => {
-      const baseClassName = `${className || ''} text-left`
+  const hasValue = Boolean(value)
 
-      return error ? (
-        <button
-          type="button"
-          className={`${baseClassName} ${
-            error ? 'text-warning cursor-pointer' : ''
-          }`}
-          id={id}
-          onClick={() => error && onClick && onClick(id)}
-        >
-          {child}
-        </button>
-      ) : (
-        <span className={baseClassName} id={id}>
+  const renderValue = child => {
+    const valueClassName = `${className ?? ''} text-left`
+
+    if (!error) {
+      return (
+        <span className={valueClassName} id={id}>
           {child}
         </span>
       )
     }
 
-    BoxComponent.displayName = 'Box'
-    return BoxComponent
-  }, [error, className, id, onClick])
+    return (
+      <button
+        type="button"
+        className={`${valueClassName} cursor-pointer text-warning`}
+        id={id}
+        onClick={() => onClick?.(id)}
+      >
+        {child}
+      </button>
+    )
+  }
 
-  const DefaultValueComponent = useMemo(() => {
-    if (!value) return null
+  let defaultValueComponent = null
+  if (hasValue && type === 'text') {
+    defaultValueComponent = renderValue(value)
+  } else if (type === 'array' && Array.isArray(value)) {
+    defaultValueComponent = (
+      <div>
+        {value.map((item, index) => (
+          <div className="mb-1 flex flex-1" key={index}>
+            {renderValue(item)}
+          </div>
+        ))}
+      </div>
+    )
+  }
 
-    if (type === 'text') {
-      return Box(value)
-    }
-
-    if (type === 'array' && Array.isArray(value)) {
-      return (
-        <div>
-          {value.map((v, i) => (
-            <div className="flex flex-1 mb-1" key={i}>
-              {Box(v)}
-            </div>
-          ))}
-        </div>
-      )
-    }
-
-    return null
-  }, [Box, type, value])
-
-  if (!value && !CustomValueComponent) return null
+  if (!hasValue && !customValueComponent) return null
 
   return (
     <div className="flex">
-      <span className="text-gray-40 w-[70px]">{label}</span>
-      <div className="flex flex-1">
+      <span className={`text-gray-40 ${labelClassName}`}>{label}</span>
+      <div className="flex min-w-0 flex-1">
         {error && (
           <span className="text-red-60 mr-2">
             <WarningFilled />
           </span>
         )}
-        {CustomValueComponent || DefaultValueComponent}
+        {customValueComponent ?? defaultValueComponent}
       </div>
     </div>
   )
 }
 
 ConfirmInfo.propTypes = {
-  label: PropTypes.string,
+  label: PropTypes.node.isRequired,
   error: PropTypes.object,
   customValueComponent: PropTypes.element,
   onClick: PropTypes.func,
   className: PropTypes.string,
-  id: PropTypes.string,
+  labelClassName: PropTypes.string,
+  id: PropTypes.string.isRequired,
   value: PropTypes.any,
   type: PropTypes.oneOf(['text', 'array']),
 }

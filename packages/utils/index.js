@@ -250,3 +250,139 @@ export const toHexString = value => {
 
   return toBuffer(value).toString('hex')
 }
+
+export const hexToBN = value =>
+  new BN(stripHexPrefix(value || '0x0') || '0', 16)
+
+/**
+ * Converts an unsigned integer-like value into a normalized 0x-prefixed hex quantity string.
+ *
+ * @example
+ * - `toHexQuantity(420)` -> `'0x1a4'`
+ * - `toHexQuantity(420n)` -> `'0x1a4'`
+ * - `toHexQuantity(new BN('420'))` -> `'0x1a4'`
+ * - `toHexQuantity('0x01')` -> `'0x1'`
+ * - `toHexQuantity('0x0')` -> `'0x0'`
+ *
+ * @param value
+ * @returns {String}
+ */
+export const toHexQuantity = value => {
+  if (typeof value === 'number') {
+    if (!Number.isSafeInteger(value) || value < 0) {
+      throw new Error(
+        `toHexQuantity expects unsigned integer number, received ${value}`,
+      )
+    }
+
+    return intToHex(value)
+  }
+
+  if (typeof value === 'bigint') {
+    if (value < 0n) {
+      throw new Error(
+        `toHexQuantity expects unsigned bigint, received ${value}`,
+      )
+    }
+
+    return `0x${value.toString(16)}`
+  }
+
+  if (BN.isBN(value)) {
+    if (value.isNeg()) {
+      throw new Error(
+        `toHexQuantity expects unsigned BN, received ${value.toString(10)}`,
+      )
+    }
+
+    return `0x${value.toString(16)}`
+  }
+
+  if (typeof value === 'string') {
+    if (!isHexString(value)) {
+      throw new Error(
+        `toHexQuantity expects 0x-prefixed hex string, received ${value}`,
+      )
+    }
+
+    const normalizedHex = stripHexPrefix(value).replace(/^0+/, '')
+
+    return `0x${normalizedHex || '0'}`
+  }
+
+  if (typeof value?.toHexString === 'function') {
+    return toHexQuantity(value.toHexString())
+  }
+
+  throw new Error(`toHexQuantity unsupported type ${typeof value}`)
+}
+
+export const prepareEip7702AuthorizationRequests = (
+  authorizationList,
+  chainId,
+  txNonce,
+) => {
+  const txNonceValue = new BN(stripHexPrefix(toHexQuantity(txNonce)), 16)
+
+  return authorizationList.map((authorization, index) => ({
+    ...authorization,
+    address: authorization.address.toLowerCase(),
+    chainId: toHexQuantity(authorization.chainId ?? chainId),
+    nonce: toHexQuantity(
+      authorization.nonce ?? txNonceValue.clone().addn(index + 1),
+    ),
+  }))
+}
+
+const EIP7702_DUMMY_AUTHORIZATION_SIGNATURE =
+  '0x1111111111111111111111111111111111111111111111111111111111111111'
+
+export const prepareEip7702AuthorizationRequestsForEstimate = (
+  authorizationList,
+  chainId,
+  txNonce,
+) =>
+  prepareEip7702AuthorizationRequests(authorizationList, chainId, txNonce).map(
+    authorization => ({
+      ...authorization,
+      r: toHexQuantity(
+        authorization.r ?? EIP7702_DUMMY_AUTHORIZATION_SIGNATURE,
+      ),
+      s: toHexQuantity(
+        authorization.s ?? EIP7702_DUMMY_AUTHORIZATION_SIGNATURE,
+      ),
+      yParity: toHexQuantity(authorization.yParity ?? '0x1'),
+    }),
+  )
+
+const DECIMAL_UNSIGNED_INTEGER_PATTERN = /^\d+$/
+
+export function toUnsignedBN(value) {
+  if (BN.isBN(value)) {
+    if (value.isNeg()) {
+      throw new TypeError(`Invalid unsigned integer "${value}"`)
+    }
+
+    return value
+  }
+
+  if (typeof value === 'number') {
+    if (!Number.isSafeInteger(value) || value < 0) {
+      throw new TypeError(`Invalid unsigned integer "${value}"`)
+    }
+
+    return new BN(value)
+  }
+
+  if (typeof value === 'string') {
+    if (value.length > 2 && isHexString(value)) {
+      return new BN(value.slice(2), 16)
+    }
+
+    if (DECIMAL_UNSIGNED_INTEGER_PATTERN.test(value)) {
+      return new BN(value, 10)
+    }
+  }
+
+  throw new TypeError(`Invalid unsigned integer "${String(value)}"`)
+}

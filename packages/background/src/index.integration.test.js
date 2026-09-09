@@ -1967,7 +1967,7 @@ describe('integration test', () => {
           domain: {
             name: 'Ether Mail',
             version: '1',
-            chainId: 1,
+            chainId: ETH_LOCALNET_CHAINID,
             verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
           },
           primaryType: 'Mail',
@@ -2057,7 +2057,7 @@ describe('integration test', () => {
 
         res = await res
         expect(res.result).toBe(
-          '0x65cbd956f2fae28a601bebc9b906cea0191744bd4c4247bcd27cd08f8eb6b71c78efdf7a31dc9abee78f492292721f362d296cf86b4538e07b51303b67f749061b',
+          '0xcd4542e0ce524bb912176a5de788baf7632a07b99cfa31eca929976724ec18615ffaab126c64706605cffc8ff9d7ca24499f48bdcaa98e5622a522fc24af72791c',
         )
 
         // * sign without cached pk
@@ -2096,7 +2096,7 @@ describe('integration test', () => {
 
         res = await res
         expect(res.result).toBe(
-          '0x65cbd956f2fae28a601bebc9b906cea0191744bd4c4247bcd27cd08f8eb6b71c78efdf7a31dc9abee78f492292721f362d296cf86b4538e07b51303b67f749061b',
+          '0xcd4542e0ce524bb912176a5de788baf7632a07b99cfa31eca929976724ec18615ffaab126c64706605cffc8ff9d7ca24499f48bdcaa98e5622a522fc24af72791c',
         )
       })
     })
