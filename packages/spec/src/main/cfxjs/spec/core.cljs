@@ -214,6 +214,11 @@
                      :type :uint-256
                      :error/message "should match regex ^0x[0-9a-f]{64}$"
                      :doc "hex encoded unsigned integer"))
+(def Quantity
+  (update-properties [:re #"^0x(?:0|[1-9a-fA-F][0-9a-fA-F]*)$"]
+                     :type :quantity
+                     :error/message "should match regex ^0x(?:0|[1-9a-fA-F][0-9a-fA-F]*)$"
+                     :doc "hex encoded unsigned integer without leading zeros"))
 (def Hash32
   (update-properties [:re #"^0x[0-9a-f]{64}$"]
                      :type :hash-32
@@ -484,6 +489,7 @@
 (def export-bytes65 Bytes65)
 (def export-uint Uint)
 (def export-uint256 Uint256)
+(def export-quantity Quantity)
 (def export-hash32 Hash32)
 (comment
   (set! (.-jtc js/window) j->c)

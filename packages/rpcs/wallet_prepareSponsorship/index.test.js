@@ -3,7 +3,10 @@ import {
   BackendServiceError,
   createBackendClient,
 } from '@fluent-wallet/backend-client'
-import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
+import {
+  EIP7702_ACCOUNT_STATES,
+  EIP7702_NETWORK_CONFIGS,
+} from '@fluent-wallet/consts'
 import {EIP7702_AUTHORIZATION_STUB_SIGNATURE} from '@fluent-wallet/user-operation'
 import {main} from './index.js'
 
@@ -204,5 +207,51 @@ describe('wallet_prepareSponsorship', () => {
       sponsorship: null,
     })
     expect(backend.signPaymasterUserOperation).toHaveBeenCalledOnce()
+  })
+
+  test('prepares sponsorship for a delegation switch', async () => {
+    const {input, rpcs} = createMainInput(
+      EIP7702_ACCOUNT_STATES.DELEGATED_TO_OTHER,
+    )
+
+    const result = await main(input)
+
+    expect(rpcs.wallet_getEthereumNonceState).toHaveBeenCalledOnce()
+    expect(rpcs.wallet_getUserOperationNonceState).toHaveBeenCalledOnce()
+
+    expect(rpcs.wallet_prepareUserOperation).toHaveBeenCalledWith(
+      {errorFallThrough: true, network: NETWORK},
+      expect.objectContaining({
+        sender: SENDER.toLowerCase(),
+        nonce: '0x0',
+        calls: CALLS,
+        authorization: {
+          chainId: NETWORK.chainId,
+          address: PREFERRED_DELEGATE,
+          nonce: '0x0',
+        },
+      }),
+    )
+
+    expect(backend.getPaymasterStub).toHaveBeenCalledWith({
+      sender: SENDER.toLowerCase(),
+      delegation: PREFERRED_DELEGATE,
+    })
+
+    expect(result).toMatchObject({
+      supported: true,
+      available: true,
+      reason: null,
+      requiredDelegationAction: 'switch',
+      sponsorship: {
+        userOperation: {
+          authorization: {
+            chainId: NETWORK.chainId,
+            address: PREFERRED_DELEGATE,
+            nonce: '0x0',
+          },
+        },
+      },
+    })
   })
 })
