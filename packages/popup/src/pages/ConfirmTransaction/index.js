@@ -186,6 +186,7 @@ function ConfirmTransaction() {
     useDecodeData(currentTx)
   const {
     isApproveToken,
+    isUnlimited,
     isSendToken,
     displayToken,
     displayValue,
@@ -727,6 +728,7 @@ function ConfirmTransaction() {
               decodeData?.name ? transformToTitleCase(decodeData.name) : ''
             }
             allowance={sendDisplayValue}
+            isUnlimited={isUnlimited}
             value={sendTransactionParams.value}
             pendingAuthReq={pendingAuthReq}
             decimals={nativeToken?.decimals}

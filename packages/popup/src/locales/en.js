@@ -282,6 +282,16 @@ const en = {
     typedDataInteractWith: 'Interact with',
     typedDataInteractWithTooltip:
       "This is the contract you're interacting with. Protect yourself from scammers by verifying the details.",
+    permitSignatureAuthorization: 'Signature Authorization',
+    permitSpendingCap: 'Spending cap',
+    permitSpender: 'Spender',
+    permitTooltipTitle: 'What is Permit',
+    permitTooltipDescription:
+      'An off-chain approval signature. After you sign, the spender can use your tokens up to the cap before the deadline—no prior approve tx and no gas fee.',
+    permitSpenderTooltip:
+      'The contract or address allowed to move tokens from your wallet. After you confirm, it can use your tokens up to the spending cap. This does not transfer ownership, but a malicious spender can drain approved tokens—verify the address before confirming.',
+    unlimited: 'Unlimited',
+    showMore: 'More',
 
     // - request signature - Sign in with Ethereum
     signWithEthereumTitle: 'Sign-in request',

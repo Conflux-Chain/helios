@@ -16,6 +16,7 @@ const {EDIT_ALLOWANCE} = ROUTES
 function InfoList({
   isDapp,
   isApproveToken,
+  isUnlimited,
   isSign,
   token,
   value,
@@ -51,6 +52,8 @@ function InfoList({
             <DisplayBalance
               id="allowance"
               balance={customAllowance || allowance}
+              isUnlimited={isUnlimited}
+              mode="allowance"
               maxWidth={160}
               maxWidthStyle="max-w-[160px]"
               symbol={token?.symbol}
@@ -109,6 +112,7 @@ function InfoList({
 InfoList.propTypes = {
   isApproveToken: PropTypes.bool,
   isSign: PropTypes.bool,
+  isUnlimited: PropTypes.bool,
   token: PropTypes.object,
   value: PropTypes.string,
   decimals: PropTypes.number,
