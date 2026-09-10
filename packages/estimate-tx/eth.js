@@ -1,24 +1,85 @@
 import BN from 'bn.js'
 import {bn16, pre0x} from './util.js'
-import {ETH_TX_TYPES} from '@fluent-wallet/consts'
+import {
+  EIP7702_DELEGATION_PREFIX,
+  ETH_TX_TYPES,
+  NULL_HEX_ADDRESS,
+} from '@fluent-wallet/consts'
 import {prepareEip7702AuthorizationRequestsForEstimate} from '@fluent-wallet/utils'
 import Big from 'big.js'
 
-async function ethEstimateGasAdvance(request, tx) {
-  try {
-    const estimateRst = await request({
-      method: 'eth_estimateGas',
-      params: [tx, 'latest'],
-    })
+const ETH_INTRINSIC_GAS = 21000
 
-    return {gasUsed: estimateRst, gasLimit: estimateRst}
-  } catch (err) {
-    if (err.message?.includes?.('nonce is too old')) {
-      tx.nonce = pre0x(bn16(tx.nonce).addn(1).toString(16))
-      return await ethEstimateGasAdvance(request, tx)
-    } else {
-      throw err
+const toEip7702DelegationCode = delegateAddress =>
+  `${EIP7702_DELEGATION_PREFIX}${delegateAddress.slice(2).toLowerCase()}`
+
+async function requestGasEstimate(request, tx, stateOverride) {
+  const params = [tx, 'latest']
+
+  if (stateOverride !== undefined) {
+    params.push(stateOverride)
+  }
+
+  const gas = await request({
+    method: 'eth_estimateGas',
+    params,
+  })
+
+  return {
+    gasUsed: gas,
+    gasLimit: gas,
+  }
+}
+
+async function estimateGasWithNonceRetry(tx, estimate) {
+  try {
+    return {
+      result: await estimate(tx),
+      nonce: tx.nonce,
     }
+  } catch (error) {
+    if (!error.message?.includes?.('nonce is too old')) {
+      throw error
+    }
+
+    return estimateGasWithNonceRetry(
+      {
+        ...tx,
+        nonce: pre0x(bn16(tx.nonce).addn(1).toString(16)),
+      },
+      estimate,
+    )
+  }
+}
+
+async function estimateEip7702SelfCall(request, tx, finalDelegateAddress) {
+  const authorizationEstimate = await requestGasEstimate(request, {
+    ...tx,
+    to: tx.from,
+    data: '0x',
+  })
+
+  const executionTx = {...tx}
+
+  delete executionTx.type
+  delete executionTx.authorizationList
+
+  const executionEstimate = await requestGasEstimate(request, executionTx, {
+    [tx.from]: {
+      code: toEip7702DelegationCode(finalDelegateAddress),
+    },
+  })
+
+  const combinedGas = pre0x(
+    bn16(authorizationEstimate.gasLimit)
+      .add(bn16(executionEstimate.gasLimit))
+      .subn(ETH_INTRINSIC_GAS)
+      .toString(16),
+  )
+
+  return {
+    gasUsed: combinedGas,
+    gasLimit: combinedGas,
   }
 }
 
@@ -112,6 +173,23 @@ export const ethEstimate = async (
   if (!to && !data)
     throw new Error(`Invalid tx, to and data are both undefined`)
 
+  const authorizationRequests = newTx.authorizationList ?? []
+
+  const isEip7702SelfCallWithAuthorization = Boolean(
+    isEip7702Tx &&
+      authorizationRequests.length > 0 &&
+      data &&
+      data !== '0x' &&
+      to?.toLowerCase() === from.toLowerCase(),
+  )
+
+  const finalAuthorization =
+    authorizationRequests[authorizationRequests.length - 1]
+  const finalDelegateAddress = finalAuthorization?.address
+
+  const needsSplitEip7702Estimate =
+    isEip7702SelfCallWithAuthorization &&
+    finalDelegateAddress.toLowerCase() !== NULL_HEX_ADDRESS.toLowerCase()
   const promises = []
 
   value = value || '0x0'
@@ -225,18 +303,40 @@ export const ethEstimate = async (
   delete newTx.maxFeePerGas
   delete newTx.maxPriorityFeePerGas
   newTx.nonce = nonce
+
   if (isEip7702Tx) {
     newTx.type = ETH_TX_TYPES.EIP7702
     newTx.chainId = newTx.chainId || chainId
-    newTx.authorizationList = prepareEip7702AuthorizationRequestsForEstimate(
-      newTx.authorizationList,
-      newTx.chainId,
-      newTx.nonce,
-    )
   }
 
+  const {result: estimatedGas, nonce: estimatedNonce} =
+    await estimateGasWithNonceRetry(newTx, async transaction => {
+      const transactionForEstimate = isEip7702Tx
+        ? {
+            ...transaction,
+            authorizationList: prepareEip7702AuthorizationRequestsForEstimate(
+              authorizationRequests,
+              transaction.chainId,
+              transaction.nonce,
+            ),
+          }
+        : transaction
+
+      if (needsSplitEip7702Estimate) {
+        return estimateEip7702SelfCall(
+          request,
+          transactionForEstimate,
+          finalDelegateAddress,
+        )
+      }
+
+      return requestGasEstimate(request, transactionForEstimate)
+    })
+
+  newTx.nonce = estimatedNonce
+
   // run estimate
-  let rst = await ethEstimateGasAdvance(request, newTx)
+  let rst = estimatedGas
   const {gasLimit} = rst
   const calcGasPrice = customGasPrice || gasPrice
   const calcMaxFeePerGas = customMaxFeePerGas || maxFeePerGas
