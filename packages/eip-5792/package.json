@@ -1,0 +1,10 @@
+{
+  "name": "@fluent-wallet/eip-5792",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "@fluent-wallet/consts": "workspace:packages/consts"
+  }
+}
