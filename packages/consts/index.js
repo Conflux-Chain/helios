@@ -160,6 +160,14 @@ export const ETH_TX_TYPES = {
 
 export const EIP7702_DELEGATION_PREFIX = '0xef0100'
 
+export const EIP7702_ACCOUNT_STATES = {
+  NOT_DELEGATED: 'notDelegated',
+  DELEGATED_TO_CONFIGURED: 'delegatedToConfigured',
+  DELEGATED_TO_OTHER: 'delegatedToOther',
+  UNSUPPORTED_CODE: 'unsupportedCode',
+  UNSUPPORTED_NETWORK: 'unsupportedNetwork',
+}
+
 const FLUENT_BACKEND_BASE_URLS = {
   [CFX_ESPACE_MAINNET_CHAINID]: 'https://api.fluentwallet.com/api',
   [CFX_ESPACE_TESTNET_CHAINID]: 'https://api-testnet.fluentwallet.com/api',
@@ -175,12 +183,14 @@ export const EIP7702_NETWORK_CONFIGS = {
     entryPointVersion: ENTRY_POINT_VERSION,
     bundlerEndpoint: 'https://bundler.confluxrpc.org',
     backendBaseUrl: FLUENT_BACKEND_BASE_URLS[CFX_ESPACE_MAINNET_CHAINID],
+    canSwitchDelegation: true,
   },
   [CFX_ESPACE_TESTNET_CHAINID]: {
     entryPointAddress: ENTRY_POINT_CONTRACT_ADDRESS,
     entryPointVersion: ENTRY_POINT_VERSION,
     bundlerEndpoint: 'https://aa-bundle.confluxrpc.org',
     backendBaseUrl: FLUENT_BACKEND_BASE_URLS[CFX_ESPACE_TESTNET_CHAINID],
+    canSwitchDelegation: true,
   },
 }
 
