@@ -51,6 +51,25 @@ const defRpcEngineFactory = (db, options = {methods: []}) => {
           jsonRpcErr.UnrecognizedChainId,
         ),
         ChainDisconnected: wrapRpcError(rpc.NAME, jsonRpcErr.ChainDisconnected),
+        UnsupportedCapability: wrapRpcError(
+          rpc.NAME,
+          jsonRpcErr.UnsupportedCapability,
+        ),
+        UnsupportedChainId: wrapRpcError(
+          rpc.NAME,
+          jsonRpcErr.UnsupportedChainId,
+        ),
+        DuplicateId: wrapRpcError(rpc.NAME, jsonRpcErr.DuplicateId),
+        UnknownBundleId: wrapRpcError(rpc.NAME, jsonRpcErr.UnknownBundleId),
+        BundleTooLarge: wrapRpcError(rpc.NAME, jsonRpcErr.BundleTooLarge),
+        UserRejectedUpgrade: wrapRpcError(
+          rpc.NAME,
+          jsonRpcErr.UserRejectedUpgrade,
+        ),
+        AtomicityNotSupported: wrapRpcError(
+          rpc.NAME,
+          jsonRpcErr.AtomicityNotSupported,
+        ),
       },
       NAME,
       schemas,

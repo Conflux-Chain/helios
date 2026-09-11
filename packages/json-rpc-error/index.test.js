@@ -81,4 +81,48 @@ describe('json-rpc-error', () => {
       )
     })
   })
+
+  describe('EIP-5792 errors', () => {
+    const errorCases = [
+      [
+        'unsupported capability',
+        err.ERROR.UNSUPPORTED_CAPABILITY,
+        err.UnsupportedCapability,
+      ],
+      [
+        'unsupported chain ID',
+        err.ERROR.UNSUPPORTED_CHAIN_ID,
+        err.UnsupportedChainId,
+      ],
+      ['duplicate ID', err.ERROR.DUPLICATE_ID, err.DuplicateId],
+      ['unknown bundle ID', err.ERROR.UNKNOWN_BUNDLE_ID, err.UnknownBundleId],
+      ['bundle too large', err.ERROR.BUNDLE_TOO_LARGE, err.BundleTooLarge],
+      [
+        'user rejected upgrade',
+        err.ERROR.USER_REJECTED_UPGRADE,
+        err.UserRejectedUpgrade,
+      ],
+      [
+        'atomicity not supported',
+        err.ERROR.ATOMICITY_NOT_SUPPORTED,
+        err.AtomicityNotSupported,
+      ],
+    ]
+
+    it.each(errorCases)(
+      'preserves the %s error across RPC boundaries',
+      (_name, definition, ErrorConstructor) => {
+        const parsedError = err.parseError({
+          code: definition.code,
+          message: 'Wallet call error',
+        })
+
+        expect(parsedError).toBeInstanceOf(ErrorConstructor)
+        expect(parsedError.message).toContain(
+          `[${definition.name} ${definition.code}]`,
+        )
+        expect(err.errorInstanceToErrorCode(parsedError)).toBe(definition.code)
+      },
+    )
+  })
 })

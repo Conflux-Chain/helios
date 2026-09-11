@@ -1673,6 +1673,7 @@
 (defn insert-user-operation
   [{:keys [addressId
            appId
+           bundleId
            hash
            sender
            chainId
@@ -1699,7 +1700,10 @@
                        authorizationNonce)
                       (enc/assoc-when
                        :userOperation/delegateAddress
-                       delegateAddress))
+                       delegateAddress)
+                      (enc/assoc-when
+                       :userOperation/bundleId
+                       bundleId))
         txs (cond-> [operation
                      {:db/id addressId
                       :address/userOperation -1}]
@@ -1712,6 +1716,39 @@
 (defn get-one-user-operation [{:keys [hash]}]
   (some-> (p '[*] [:userOperation/hash hash])
           prst->js))
+
+(defn get-call-bundle-records
+  [{:keys [appId bundleId]}]
+  (let [tx-ids
+        (q '[:find [?tx ...]
+              :in $ ?app-id ?bundle-id
+              :where
+              [?app-id :app/tx ?tx]
+              [?tx :tx/bundleId ?bundle-id]]
+            appId
+            bundleId)
+
+        user-operation-ids
+        (q '[:find [?operation ...]
+              :in $ ?app-id ?bundle-id
+              :where
+              [?app-id :app/userOperation ?operation]
+              [?operation :userOperation/bundleId ?bundle-id]]
+            appId
+            bundleId)]
+
+    (vec
+     (concat
+      (map
+       (fn [tx-id]
+         {:type "transaction"
+          :record (.toMap (e :tx tx-id))})
+       tx-ids)
+      (map
+       (fn [operation-id]
+         {:type "userOperation"
+          :record (.toMap (e :userOperation operation-id))})
+       user-operation-ids)))))
 
 (defn get-unfinished-user-operations []
   (->> (q '[:find ?hash ?network
@@ -2466,6 +2503,7 @@
               :setTxChainSwitched                  set-tx-chain-switched
               :insertUserOperation                 insert-user-operation
               :getOneUserOperation                 get-one-user-operation
+              :getCallBundleRecords                get-call-bundle-records
               :getUnfinishedUserOperations         get-unfinished-user-operations
               :setUserOperationIncluded            set-user-operation-included
               :setUserOperationFailed              set-user-operation-failed

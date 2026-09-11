@@ -1,0 +1,11 @@
+{
+  "name": "@fluent-wallet/wallet_get-calls-status",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "@fluent-wallet/eip-5792": "workspace:packages/eip-5792",
+    "@fluent-wallet/spec": "1.0.22"
+  }
+}
