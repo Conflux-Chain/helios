@@ -2,6 +2,7 @@ releases:
   "@fluent-wallet/account": patch
   "@fluent-wallet/addr-by-network": patch
   "@fluent-wallet/base32-address": patch
+  "@fluent-wallet/bundler-client": patch
   "@fluent-wallet/cfx_accounts": patch
   "@fluent-wallet/cfx_call": patch
   "@fluent-wallet/cfx_chain-id": patch
@@ -56,7 +57,10 @@ releases:
   "@fluent-wallet/cfx_sign-transaction": patch
   "@fluent-wallet/cfx_sign-tx-with-ledger-nano-s": patch
   "@fluent-wallet/cfx_sign-typed-data_v4": patch
+  "@fluent-wallet/conflux-tx-error": patch
+  "@fluent-wallet/confluxscan-api": patch
   "@fluent-wallet/consts": patch
+  "@fluent-wallet/contract-abis": patch
   "@fluent-wallet/contract-method-name": patch
   "@fluent-wallet/db": patch
   "@fluent-wallet/detect-address-type": patch
@@ -86,6 +90,8 @@ releases:
   "@fluent-wallet/eth_sign-transaction": patch
   "@fluent-wallet/eth_sign-tx-with-ledger-nano-s": patch
   "@fluent-wallet/eth_sign-typed-data_v4": patch
+  "@fluent-wallet/ethereum-tx-error": patch
+  "@fluent-wallet/json-rpc-error": patch
   "@fluent-wallet/ledger": patch
   "@fluent-wallet/net_version": patch
   "@fluent-wallet/personal_sign": patch
@@ -96,6 +102,7 @@ releases:
   "@fluent-wallet/spec": patch
   "@fluent-wallet/tx-history-checker": patch
   "@fluent-wallet/txpool_next-nonce": patch
+  "@fluent-wallet/user-operation": patch
   "@fluent-wallet/wallet_accounts": patch
   "@fluent-wallet/wallet_add-conflux-chain": patch
   "@fluent-wallet/wallet_add-ethereum-chain": patch
@@ -133,6 +140,7 @@ releases:
   "@fluent-wallet/wallet_get-block-or-epoch-number": patch
   "@fluent-wallet/wallet_get-block-time": patch
   "@fluent-wallet/wallet_get-blockchain-explorer-url": patch
+  "@fluent-wallet/wallet_get-calls-status": patch
   "@fluent-wallet/wallet_get-capabilities": patch
   "@fluent-wallet/wallet_get-conflux-nonce-state": patch
   "@fluent-wallet/wallet_get-current-account": patch
