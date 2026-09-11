@@ -396,6 +396,7 @@ export const main = ({
         sideEffect(rst => {
           const {
             status,
+            logs,
             blockHash,
             transactionIndex,
             blockNumber,
@@ -416,6 +417,11 @@ export const main = ({
             gasUsed,
           }
           if (contractAddress) receipt.contractCreated = contractAddress
+
+          if (typeof tx.bundleId === 'string') {
+            receipt.status = status
+            receipt.logs = logs
+          }
 
           if (status === '0x1') {
             setTxExecuted({hash, receipt})

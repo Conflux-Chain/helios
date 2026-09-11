@@ -122,6 +122,7 @@
     "@fluent-wallet/wallet_get-balance": "workspace:packages/rpcs/wallet_getBalance",
     "@fluent-wallet/wallet_get-block-or-epoch-number": "workspace:*",
     "@fluent-wallet/wallet_get-blockchain-explorer-url": "workspace:*",
+    "@fluent-wallet/wallet_get-calls-status": "workspace:packages/rpcs/wallet_getCallsStatus",
     "@fluent-wallet/wallet_get-capabilities": "workspace:packages/rpcs/wallet_getCapabilities",
     "@fluent-wallet/wallet_get-conflux-nonce-state": "workspace:packages/rpcs/wallet_getConfluxNonceState",
     "@fluent-wallet/wallet_get-current-account": "workspace:packages/rpcs/wallet_getCurrentAccount",
