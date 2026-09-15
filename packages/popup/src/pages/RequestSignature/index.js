@@ -6,12 +6,7 @@ import {
   DisplayBalance,
   TransactionResult,
 } from '../../components'
-import {
-  usePendingAuthReq,
-  useBalance,
-  useAddressByNetworkId,
-  useCurrentTicker,
-} from '../../hooks/useApi'
+import {useBalance, useCurrentTicker} from '../../hooks/useApi'
 
 import {RPC_METHODS, TX_STATUS} from '../../constants'
 import {useCallback, useMemo, useState} from 'react'
@@ -25,6 +20,8 @@ import {WarningFilled} from '@fluent-wallet/component-icons'
 import {useSIWEValidation} from '../../hooks/useSIWEValidation'
 import Button from '@fluent-wallet/component-button'
 import SIWERiskModal from './components/SIWERiskModal'
+import {Permit} from './components/Permit'
+import {useSignatureRequest} from '../../hooks/useSignatureRequest'
 
 const {PERSONAL_SIGN, CFX_SIGN_TYPED_DATA_V4} = RPC_METHODS
 
@@ -39,21 +36,16 @@ const isLedgerRejectedError = errorMessage => {
 
 function RequestSignature() {
   const {t} = useTranslation()
-  const pendingAuthReq = usePendingAuthReq()
-  const [{req, app, site}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
+  const {req, app, site, address, plaintextData, permitType} =
+    useSignatureRequest()
 
   const isPersonalSign = req?.method === PERSONAL_SIGN
-  const dappAccountId = app?.currentAccount?.eid
   const dappNetworkId = app?.currentNetwork?.eid
   const origin = app?.site?.origin || site?.origin
+  const siteIcon = app?.site?.icon || site?.icon
   const typedDataDomainTypeName =
     req?.method === CFX_SIGN_TYPED_DATA_V4 ? 'CIP23Domain' : 'EIP712Domain'
 
-  const plaintextData = useMemo(
-    () =>
-      !isPersonalSign && req?.params?.[1] ? JSON.parse(req.params[1]) : {},
-    [isPersonalSign, req?.params],
-  )
   const personalSignData = useMemo(
     () => (isPersonalSign ? req?.params?.[0] ?? '' : ''),
     [isPersonalSign, req?.params],
@@ -68,7 +60,6 @@ function RequestSignature() {
   })
 
   const {decimals} = useCurrentTicker()
-  const {value: address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const balanceData = useBalance(address, dappNetworkId)
 
   const [sendStatus, setSendStatus] = useState()
@@ -161,6 +152,22 @@ function RequestSignature() {
     setSendStatus(undefined)
     setSendError(undefined)
   }, [])
+
+  if (permitType) {
+    return (
+      <Permit
+        typedData={plaintextData}
+        permitType={permitType}
+        currentNetwork={app?.currentNetwork}
+        requestOrigin={origin}
+        siteIcon={siteIcon}
+        sendStatus={sendStatus}
+        sendError={sendError}
+        setSendError={handleDappFooterError}
+        onCloseTransactionResult={onCloseTransactionResult}
+      />
+    )
+  }
 
   return (
     <div

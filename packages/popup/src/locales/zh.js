@@ -294,8 +294,10 @@ const zh = {
       '一种链下签名授权：签名后 Spender 可在额度与截止时间内使用你的代币，无需先发 approve，也不消耗燃气费。',
     permitSpenderTooltip:
       '指被允许从你钱包划走代币的合约或地址。确认后，对方可在「授权数额」内使用你的代币，不会转移资产所有权；若来源不可信，可能被恶意合约滥用额度，请核对地址后再确认。',
-    unlimited: 'Unlimited',
-    showMore: 'More',
+    unlimited: '无限额度',
+    primaryType: '主要类型',
+    showMore: '更多',
+    myAccount: '我的账户',
 
     // add SIWE key translations
     siweKeyMessage: '消息',
