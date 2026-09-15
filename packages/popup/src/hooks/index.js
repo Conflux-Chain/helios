@@ -23,7 +23,7 @@ import {
 import useGlobalStore from '../stores'
 import {useHistory, useLocation} from 'react-router-dom'
 import {consts} from '@fluent-wallet/ledger'
-import {ETH_TX_TYPES, MaxUint256} from '@fluent-wallet/consts'
+import {ETH_TX_TYPES} from '@fluent-wallet/consts'
 import {ROUTES, ANIMATE_DURING_TIME, NETWORK_TYPE} from '../constants'
 import {
   useSingleTokenInfoWithNativeTokenSupport,
@@ -44,9 +44,7 @@ import {
   getSingleAddressWithNameService,
   getSingleServiceNameWithAddress,
   getServiceNamesWithAddresses,
-  bn16,
 } from '../utils'
-import {BN} from 'bn.js'
 
 const {HOME} = ROUTES
 const {LEDGER_APP_NAME} = consts
@@ -479,7 +477,6 @@ export const useDecodeDisplay = ({
 }) => {
   let displayToken = {},
     displayValue = '',
-    isUnlimited = false,
     displayAccount,
     displayToAddress,
     displayFromAddress
@@ -571,7 +568,6 @@ export const useDecodeDisplay = ({
         displayToAddress = decodeData?.args?.[0]
         const approveValue = decodeData?.args[1].toString(10)
         displayValue = convertDecimal(approveValue, 'divide', token?.decimals)
-        isUnlimited = bn16(MaxUint256).eq(new BN(approveValue))
       } else {
         displayFromAddress = from
         displayToAddress = to
@@ -580,7 +576,6 @@ export const useDecodeDisplay = ({
   }
   return {
     isApproveToken,
-    isUnlimited,
     isSendToken,
     displayFromAddress,
     displayToAddress,

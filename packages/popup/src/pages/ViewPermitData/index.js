@@ -14,6 +14,24 @@ import PermitTokenInfo from '../../components/PermitTokenInfo'
 import {EndsWithArrayReg, formatPermitAmount} from '../../utils/permit'
 import Tooltip from '@fluent-wallet/component-tooltip'
 
+const DateFields = [
+  'deadline',
+  'endTime',
+  'expiration',
+  'expiry',
+  'sigDeadline',
+  'startTime',
+  'validTo',
+]
+const TokenValueFields = [
+  'amount',
+  'buyAmount',
+  'endAmount',
+  'sellAmount',
+  'startAmount',
+  'value',
+]
+
 const PermitRow = ({label, children, nested = false}) => (
   <div className={classNames('flex flex-wrap', nested && 'flex-col gap-4')}>
     <span className="shrink-0 text-sm font-normal text-gray-40 capitalize">
@@ -70,21 +88,11 @@ const renderValue = ({type, value, name, token}) => {
       </Tooltip>
     )
   }
-  if (
-    (name === 'deadline' ||
-      name === 'sigDeadline' ||
-      name === 'expiration' ||
-      name === 'expiry') &&
-    type.startsWith('uint')
-  ) {
+  if (DateFields.includes(name) && type.startsWith('uint')) {
     const date = dayjs(value * 1000)
     return date.isValid() ? date.format('YYYY/MM/DD HH:mm:ss') : String(value)
   }
-  if (
-    (name === 'amount' || name === 'value') &&
-    type.startsWith('uint') &&
-    token
-  ) {
+  if (TokenValueFields.includes(name) && type.startsWith('uint') && token) {
     return <PermitAmount type={type} amount={value} tokenAddress={token} />
   }
   return String(value)

@@ -11,12 +11,14 @@ import {
   CurrentNetworkDisplay,
 } from '../../../components'
 import {ROUTES} from '../../../constants'
+import {bn16} from '../../../utils'
+import {MaxUint256} from '@fluent-wallet/consts'
+import {BN} from 'bn.js'
 const {EDIT_ALLOWANCE} = ROUTES
 
 function InfoList({
   isDapp,
   isApproveToken,
-  isUnlimited,
   isSign,
   token,
   value,
@@ -35,6 +37,9 @@ function InfoList({
   const currentNetwork = isDapp ? app?.currentNetwork : {}
 
   const dappIconUrl = useDappIcon(currentDapp?.site?.icon)
+
+  const realAllowance = customAllowance || allowance
+  const isUnlimited = bn16(MaxUint256).eq(new BN(realAllowance))
 
   return (
     <div className="info-list-container flex flex-col">
