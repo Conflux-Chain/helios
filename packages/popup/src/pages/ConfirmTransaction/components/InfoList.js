@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
-import {convertDataToValue} from '@fluent-wallet/data-format'
+import {convertDataToValue, convertDecimal} from '@fluent-wallet/data-format'
 import {useCurrentDapp} from '../../../hooks/useApi'
 import {useCurrentTxParams, useDappIcon} from '../../../hooks'
 import {
@@ -39,7 +39,9 @@ function InfoList({
   const dappIconUrl = useDappIcon(currentDapp?.site?.icon)
 
   const realAllowance = customAllowance || allowance
-  const isUnlimited = bn16(MaxUint256).eq(new BN(realAllowance))
+  const isUnlimited = bn16(MaxUint256).eq(
+    new BN(convertDecimal(realAllowance, 'multiply', token.decimals)),
+  )
 
   return (
     <div className="info-list-container flex flex-col">
