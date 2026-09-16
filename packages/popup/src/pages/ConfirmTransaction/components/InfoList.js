@@ -119,7 +119,6 @@ function InfoList({
 InfoList.propTypes = {
   isApproveToken: PropTypes.bool,
   isSign: PropTypes.bool,
-  isUnlimited: PropTypes.bool,
   token: PropTypes.object,
   value: PropTypes.string,
   decimals: PropTypes.number,

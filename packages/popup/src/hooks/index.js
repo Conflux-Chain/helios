@@ -566,8 +566,11 @@ export const useDecodeDisplay = ({
       } else if (isApproveToken) {
         displayFromAddress = from
         displayToAddress = decodeData?.args?.[0]
-        const approveValue = decodeData?.args[1].toString(10)
-        displayValue = convertDecimal(approveValue, 'divide', token?.decimals)
+        displayValue = convertDecimal(
+          decodeData?.args[1].toString(10),
+          'divide',
+          token?.decimals,
+        )
       } else {
         displayFromAddress = from
         displayToAddress = to
