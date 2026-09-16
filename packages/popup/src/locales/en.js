@@ -291,7 +291,7 @@ const en = {
     permitSpenderTooltip:
       'The contract or address allowed to move tokens from your wallet. After you confirm, it can use your tokens up to the spending cap. This does not transfer ownership, but a malicious spender can drain approved tokens—verify the address before confirming.',
     unlimited: 'Unlimited',
-    primaryType: 'primaryType',
+    primaryType: 'Primary type',
     showMore: 'More',
     myAccount: 'My account',
 

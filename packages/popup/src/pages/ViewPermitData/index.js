@@ -3,15 +3,19 @@ import {useHistory} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import TitleNav from '../../components/TitleNav'
-import {usePermitType} from '../../hooks/useSignatureRequest'
+import {useSignatureRequest} from '../../hooks/useSignatureRequest'
 import {formatIntoChecksumAddress} from '../../utils'
 import {useValid20Token} from '../../hooks/useApi'
-import {useEffect} from 'react'
+import {useEffect, useMemo} from 'react'
 import {REQUEST_SIGNATURE} from '../../constants/route'
 import {shortenAddress} from '@fluent-wallet/shorten-address'
 import dayjs from 'dayjs'
 import PermitTokenInfo from '../../components/PermitTokenInfo'
-import {EndsWithArrayReg, formatPermitAmount} from '../../utils/permit'
+import {
+  detectPermitType,
+  EndsWithArrayReg,
+  formatPermitAmount,
+} from '../../utils/permit'
 import Tooltip from '@fluent-wallet/component-tooltip'
 
 const DateFields = [
@@ -168,7 +172,9 @@ function ViewPermitData() {
   const history = useHistory()
   const {t} = useTranslation()
 
-  const permitType = usePermitType()
+  const {typedData} = useSignatureRequest()
+
+  const permitType = useMemo(() => detectPermitType({typedData}), [typedData])
 
   useEffect(() => {
     if (!permitType) {
@@ -178,7 +184,7 @@ function ViewPermitData() {
 
   if (!permitType) return null
 
-  const {primaryType, message, types, domain} = permitType.typedData
+  const {primaryType, message, types, domain} = typedData
 
   return (
     <div

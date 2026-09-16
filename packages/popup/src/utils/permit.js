@@ -4,9 +4,185 @@ import {convertDecimal, toThousands} from '@fluent-wallet/data-format'
 // Match both fixed-size and dynamic EIP-712 array type names.
 export const EndsWithArrayReg = /\[(?:\d+)?\]$/
 
-const UINT_MAX_BITS = {
-  permit: 256,
-  permit2: 160,
+/**
+ * Check whether an EIP-712 type declares a field with the expected name and type.
+ */
+const isEip712PrimaryTypeField = (types, primaryType, fieldName, fieldType) =>
+  Array.isArray(types?.[primaryType]) &&
+  types[primaryType].some(
+    ({name, type}) =>
+      name === fieldName && (fieldType === undefined || type === fieldType),
+  )
+
+const hasFields = (types, typeName, fields) =>
+  fields.every(([name, type]) =>
+    isEip712PrimaryTypeField(types, typeName, name, type),
+  )
+
+const DOMAIN_FIELDS = [
+  ['name', 'string'],
+  ['chainId', 'uint256'],
+  ['verifyingContract', 'address'],
+]
+
+const PERMIT_DETAILS_FIELDS = [
+  ['token', 'address'],
+  ['amount', 'uint160'],
+  ['expiration', 'uint48'],
+  ['nonce', 'uint48'],
+]
+const PERMIT_FIELDS = [
+  ['owner', 'address'],
+  ['spender', 'address'],
+  ['value', 'uint256'],
+  ['nonce', 'uint256'],
+  ['deadline', 'uint256'],
+]
+const DAI_PERMIT_FIELDS = [
+  ['holder', 'address'],
+  ['spender', 'address'],
+  ['nonce', 'uint256'],
+  ['expiry', 'uint256'],
+  ['allowed', 'bool'],
+]
+
+/**
+ * Check that all required message fields are own properties with defined values.
+ */
+const hasKeys = (value, keys) =>
+  value &&
+  typeof value === 'object' &&
+  keys.every(
+    key =>
+      Object.prototype.hasOwnProperty.call(value, key) &&
+      value[key] !== undefined,
+  )
+
+const PERMIT2_TRANSFER_TYPES = {
+  PermitTransferFrom: {isBatch: false, isWitness: false},
+  PermitBatchTransferFrom: {isBatch: true, isWitness: false},
+  PermitWitnessTransferFrom: {isBatch: false, isWitness: true},
+  PermitBatchWitnessTransferFrom: {isBatch: true, isWitness: true},
+}
+
+const matchesMessage = (types, primaryType, message, fields) =>
+  hasFields(types, primaryType, fields) &&
+  hasKeys(
+    message,
+    fields.map(([name]) => name),
+  )
+
+// Resolve the amount field through the signed type declarations.
+const getAmountBits = (types, primaryType, permissionField, fallback) => {
+  const permissionType = permissionField
+    ? types[primaryType]?.find(({name}) => name === permissionField)?.type
+    : null
+  const amountStruct = permissionField
+    ? permissionType?.replace(EndsWithArrayReg, '')
+    : primaryType
+  const amountField = permissionField ? 'amount' : 'value'
+  const amountType = types[amountStruct]?.find(
+    ({name}) => name === amountField,
+  )?.type
+
+  return amountType?.startsWith('uint') ? Number(amountType.slice(4)) : fallback
+}
+
+const detectPermit2 = ({types, primaryType, message}) => {
+  if (primaryType === 'PermitSingle' || primaryType === 'PermitBatch') {
+    const isBatch = primaryType === 'PermitBatch'
+    const fields = [
+      ['details', isBatch ? 'PermitDetails[]' : 'PermitDetails'],
+      ['spender', 'address'],
+      ['sigDeadline', 'uint256'],
+    ]
+    if (
+      hasFields(types, 'PermitDetails', PERMIT_DETAILS_FIELDS) &&
+      matchesMessage(types, primaryType, message, fields)
+    ) {
+      return {
+        type: 'permit2',
+        mode: 'signature-allowance',
+        amountBits: getAmountBits(types, primaryType, 'details', 160),
+        permissionField: 'details',
+        isBatch,
+        isWitness: false,
+      }
+    }
+    return null
+  }
+
+  if (
+    !Object.prototype.hasOwnProperty.call(PERMIT2_TRANSFER_TYPES, primaryType)
+  ) {
+    return null
+  }
+  const {isBatch, isWitness} = PERMIT2_TRANSFER_TYPES[primaryType]
+  const fields = [
+    ['permitted', isBatch ? 'TokenPermissions[]' : 'TokenPermissions'],
+    ['spender', 'address'],
+    ['nonce', 'uint256'],
+    ['deadline', 'uint256'],
+  ]
+  if (
+    hasFields(types, 'TokenPermissions', [
+      ['token', 'address'],
+      ['amount', 'uint256'],
+    ]) &&
+    matchesMessage(types, primaryType, message, fields) &&
+    (!isWitness || hasKeys(message, ['witness']))
+  ) {
+    return {
+      type: 'permit2',
+      mode: 'signature-transfer',
+      amountBits: getAmountBits(types, primaryType, 'permitted', 256),
+      permissionField: 'permitted',
+      isBatch,
+      isWitness,
+    }
+  }
+  return null
+}
+
+/**
+ * Identify supported permit shapes and describe their display semantics.
+ * The result contains no payload; callers retain the original typed data.
+ */
+export const detectPermitType = (options = {}) => {
+  const {typedData} = options || {}
+  const {types = {}, domain = {}, primaryType, message = {}} = typedData || {}
+
+  // Only attribute a permit to a contract that is included in the signed domain.
+  if (
+    !hasFields(types, 'EIP712Domain', DOMAIN_FIELDS) ||
+    typeof domain?.verifyingContract !== 'string' ||
+    !domain.verifyingContract
+  ) {
+    return null
+  }
+
+  if (domain.name === 'Permit2') {
+    const permit2 = detectPermit2({types, primaryType, message})
+    if (permit2) return permit2
+  }
+
+  if (primaryType !== 'Permit') return null
+  for (const [mode, fields] of [
+    ['normal-permit', PERMIT_FIELDS],
+    ['dai-permit', DAI_PERMIT_FIELDS],
+  ]) {
+    if (matchesMessage(types, primaryType, message, fields)) {
+      return {
+        type: 'permit',
+        mode,
+        amountBits: getAmountBits(types, primaryType, null, 256),
+        permissionField: null,
+        isBatch: false,
+        isWitness: false,
+      }
+    }
+  }
+  return null
 }
 
 /**
@@ -62,62 +238,38 @@ export const formatPermitAmount = (
  * Normalize supported permit payloads into the fields used by the approval UI.
  */
 export const getPermitDisplayData = (typedData, permitType) => {
-  const message = typedData?.message || {}
-  const domain = typedData?.domain || {}
-  const types = typedData?.types || {}
-  const primaryType = typedData?.primaryType || ''
+  if (!permitType) return null
 
-  let amountBits = UINT_MAX_BITS[permitType?.type]
-  if (permitType?.type === 'permit2') {
-    const isAllowance = permitType.mode === 'signature-allowance'
-    const permissionList = isAllowance ? message.details : message.permitted
-    const permissionType = types[primaryType]?.find(item =>
-      isAllowance ? item.name === 'details' : item.name === 'permitted',
-    )?.type
-    if (permissionType) {
-      const realType = permissionType.replace(EndsWithArrayReg, '')
-      const amountType = types[realType]?.find(
-        item => item.name === 'amount',
-      )?.type
-      if (amountType?.startsWith('uint')) {
-        amountBits = Number(amountType.replace('uint', ''))
-      }
-    }
-    const permissions = Array.isArray(permissionList)
+  const {message, domain} = typedData
+  const {amountBits, permissionField, isBatch, mode} = permitType
+  let permissions
+
+  if (permissionField) {
+    const permissionList = message[permissionField]
+    permissions = Array.isArray(permissionList)
       ? permissionList
       : permissionList
       ? [permissionList]
       : []
-
-    return {
-      permissions,
-      amountBits,
-      isBatch: Boolean(permitType.isBatch),
-      spender: message.spender,
-      tokenCount: permissions.length,
-    }
-  }
-  const amountType = types[primaryType]?.find(
-    item => item.name === 'value',
-  )?.type
-  if (amountType?.startsWith('uint')) {
-    amountBits = Number(amountType.replace('uint', ''))
-  }
-  const isDaiPermit = permitType?.mode === 'dai-permit'
-  return {
-    permissions: [
+  } else {
+    permissions = [
       {
-        amount: isDaiPermit
-          ? message.allowed
-            ? new BN(1).ushln(UINT_MAX_BITS.permit).subn(1).toString(10)
-            : '0'
-          : message.value,
+        amount:
+          mode === 'dai-permit'
+            ? message.allowed
+              ? new BN(1).ushln(amountBits).subn(1).toString(10)
+              : '0'
+            : message.value,
         token: domain.verifyingContract,
       },
-    ],
+    ]
+  }
+
+  return {
+    permissions,
     amountBits,
-    isBatch: false,
+    isBatch,
     spender: message.spender,
-    tokenCount: 1,
+    tokenCount: permissions.length,
   }
 }

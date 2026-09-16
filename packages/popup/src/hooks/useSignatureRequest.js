@@ -1,10 +1,25 @@
 import {useMemo} from 'react'
 import {PERSONAL_SIGN} from '../constants/rpcMethods'
-import {detectPermitType, parseTypedData} from '../utils'
 import {useAddressByNetworkId, usePendingAuthReq} from './useApi'
 
 /**
- * Read the pending auth request and classify its typed data as a supported permit.
+ * Safely parse serialized EIP-712 data, returning an empty object for invalid input.
+ */
+const parseTypedData = value => {
+  if (typeof value !== 'string') return {}
+
+  try {
+    const parsed = JSON.parse(value)
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+      ? parsed
+      : {}
+  } catch {
+    return {}
+  }
+}
+
+/**
+ * Read the pending signature request, resolve its account, and parse typed data.
  */
 export const useSignatureRequest = () => {
   const pendingAuthReq = usePendingAuthReq()
@@ -14,20 +29,10 @@ export const useSignatureRequest = () => {
 
   const isPersonalSign = req?.method === PERSONAL_SIGN
   const {value: address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
-  const plaintextData = useMemo(
+  const typedData = useMemo(
     () =>
       !isPersonalSign && req?.params?.[1] ? parseTypedData(req.params[1]) : {},
     [isPersonalSign, req?.params],
   )
-  const permitType = useMemo(
-    () =>
-      detectPermitType({
-        typedData: plaintextData,
-        signerAddress: address,
-      }),
-    [plaintextData, address],
-  )
-  return {req, app, site, address, plaintextData, permitType}
+  return {req, app, site, address, typedData}
 }
-
-export const usePermitType = () => useSignatureRequest().permitType

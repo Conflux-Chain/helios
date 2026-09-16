@@ -21,11 +21,7 @@ import {
   TransactionResult,
 } from '../../../components'
 import {TX_STATUS} from '../../../constants'
-import {
-  useAddressByNetworkId,
-  useAddressTypeInfo,
-  usePendingAuthReq,
-} from '../../../hooks/useApi'
+import {useAddressTypeInfo} from '../../../hooks/useApi'
 import {formatIntoChecksumAddress} from '../../../utils'
 import {formatPermitAmount, getPermitDisplayData} from '../../../utils/permit'
 import {VIEW_PERMIT_DATA} from '../../../constants/route'
@@ -105,6 +101,8 @@ PermitToken.propTypes = {
 }
 
 export const Permit = ({
+  address,
+  nickname,
   typedData,
   permitType,
   currentNetwork,
@@ -119,12 +117,6 @@ export const Permit = ({
   const {t} = useTranslation()
   const [showMore, setShowMore] = useState(false)
 
-  const pendingAuthReq = usePendingAuthReq()
-  const [{app}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
-  const dappAccountId = app?.currentAccount?.eid
-  const dappNetworkId = app?.currentNetwork?.eid
-
-  const {value: address} = useAddressByNetworkId(dappAccountId, dappNetworkId)
   const displayData = useMemo(
     () => getPermitDisplayData(typedData, permitType) || {},
     [permitType, typedData],
@@ -135,12 +127,11 @@ export const Permit = ({
   const permitName = permitType?.type === 'permit2' ? 'Permit2' : 'Permit'
   const protocol = requestOrigin || typedData?.domain?.name || '-'
   const verifyingContract = typedData?.domain?.verifyingContract
-  const tooManyPermissions = displayData.permissions.length > 2
+  const tooManyPermissions = displayData.permissions?.length > 2
 
   const permissions = useMemo(() => {
-    return showMore
-      ? displayData.permissions
-      : displayData.permissions.slice(0, 2)
+    const permissions = displayData.permissions ?? []
+    return showMore ? permissions : permissions.slice(0, 2)
   }, [showMore, displayData.permissions])
 
   return (
@@ -242,7 +233,7 @@ export const Permit = ({
             <PermitRow label={t('myAccount')}>
               <AccountDisplay
                 address={address}
-                nickname={app?.currentAccount?.nickname}
+                nickname={nickname}
                 showAvatar={false}
                 addressClassName="order-1 text-sm font-normal text-gray-80"
                 nicknameClassName="order-2 text-xs font-normal text-gray-60 text-right"
@@ -320,5 +311,7 @@ Permit.propTypes = {
   sendStatus: PropTypes.string,
   setSendError: PropTypes.func,
   siteIcon: PropTypes.string,
+  address: PropTypes.string,
+  nickname: PropTypes.string,
   typedData: PropTypes.object.isRequired,
 }

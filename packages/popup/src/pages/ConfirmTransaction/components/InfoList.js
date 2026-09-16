@@ -14,6 +14,7 @@ import {ROUTES} from '../../../constants'
 import {bn16} from '../../../utils'
 import {MaxUint256} from '@fluent-wallet/consts'
 import {BN} from 'bn.js'
+import {useMemo} from 'react'
 const {EDIT_ALLOWANCE} = ROUTES
 
 function InfoList({
@@ -39,9 +40,16 @@ function InfoList({
   const dappIconUrl = useDappIcon(currentDapp?.site?.icon)
 
   const realAllowance = customAllowance || allowance
-  const isUnlimited = bn16(MaxUint256).eq(
-    new BN(convertDecimal(realAllowance, 'multiply', token.decimals)),
-  )
+  const isUnlimited = useMemo(() => {
+    if (!isApproveToken) return false
+    try {
+      return bn16(MaxUint256).eq(
+        new BN(convertDecimal(realAllowance, 'multiply', token?.decimals)),
+      )
+    } catch {
+      return false
+    }
+  }, [isApproveToken, realAllowance, token?.decimals])
 
   return (
     <div className="info-list-container flex flex-col">

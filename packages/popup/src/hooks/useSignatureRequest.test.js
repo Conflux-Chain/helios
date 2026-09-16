@@ -44,13 +44,12 @@ const typedData = {
 }
 
 function Result() {
-  const permitType = useSignatureRequest().permitType
+  const {typedData, address} = useSignatureRequest()
   return (
-    <output data-testid="result">
-      {permitType
-        ? `${permitType.type}:${permitType.mode}:${permitType.ownerMatchesSigner}`
-        : 'null'}
-    </output>
+    <>
+      <output data-testid="result">{JSON.stringify(typedData)}</output>
+      <output data-testid="address">{address}</output>
+    </>
   )
 }
 
@@ -61,18 +60,18 @@ beforeEach(() => {
   mocks.useAddressByNetworkId.mockReturnValue({})
 })
 
-describe('usePermitType', () => {
-  it('returns null when there is no pending request', () => {
+describe('useSignatureRequest', () => {
+  it('returns empty typed data when there is no pending request', () => {
     render(<Result />)
 
-    expect(screen.getByTestId('result')).toHaveTextContent('null')
+    expect(screen.getByTestId('result')).toHaveTextContent('{}')
     expect(mocks.useAddressByNetworkId).toHaveBeenCalledWith(
       undefined,
       undefined,
     )
   })
 
-  it('parses typed-data requests and detects their Permit type', () => {
+  it('parses typed-data requests and resolves the account address', () => {
     mocks.usePendingAuthReq.mockReturnValue([
       {
         req: {
@@ -89,9 +88,10 @@ describe('usePermitType', () => {
 
     render(<Result />)
 
-    expect(screen.getByTestId('result')).toHaveTextContent(
-      'permit:normal-permit:true',
+    expect(JSON.parse(screen.getByTestId('result').textContent)).toEqual(
+      typedData,
     )
+    expect(screen.getByTestId('address')).toHaveTextContent(OWNER_ADDRESS)
     expect(mocks.useAddressByNetworkId).toHaveBeenCalledWith(7, 8)
   })
 
@@ -100,28 +100,31 @@ describe('usePermitType', () => {
       {
         req: {
           method: 'personal_sign',
-          params: ['not-json', 'also-not-json'],
+          params: [JSON.stringify(typedData), JSON.stringify(typedData)],
         },
       },
     ])
 
     render(<Result />)
 
-    expect(screen.getByTestId('result')).toHaveTextContent('null')
+    expect(screen.getByTestId('result')).toHaveTextContent('{}')
   })
 
-  it('ignores malformed typed-data payloads without throwing', () => {
-    mocks.usePendingAuthReq.mockReturnValue([
-      {
-        req: {
-          method: 'eth_signTypedData_v4',
-          params: ['0xignored', 'not-json'],
+  it.each(['not-json', 'null', '[]', '42', '"text"', undefined, typedData])(
+    'returns empty typed data for invalid payload %j',
+    payload => {
+      mocks.usePendingAuthReq.mockReturnValue([
+        {
+          req: {
+            method: 'eth_signTypedData_v4',
+            params: ['0xignored', payload],
+          },
         },
-      },
-    ])
+      ])
 
-    render(<Result />)
+      render(<Result />)
 
-    expect(screen.getByTestId('result')).toHaveTextContent('null')
-  })
+      expect(screen.getByTestId('result')).toHaveTextContent('{}')
+    },
+  )
 })

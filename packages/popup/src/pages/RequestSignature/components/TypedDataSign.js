@@ -22,13 +22,13 @@ const getSignedDomainValues = (typedData, domainTypeName) => {
 }
 
 export const TypedDataSign = ({
-  plaintextData,
+  typedData,
   currentNetwork,
   requestOrigin,
   domainTypeName,
 }) => {
   const {t} = useTranslation()
-  const signedDomain = getSignedDomainValues(plaintextData, domainTypeName)
+  const signedDomain = getSignedDomainValues(typedData, domainTypeName)
   const {chainId, verifyingContract} = signedDomain
 
   const metadataRows = [
@@ -141,7 +141,7 @@ export const TypedDataSign = ({
           id="plaintext"
           className="max-h-[140px] overflow-auto break-words rounded bg-gray-4 pb-4 pl-1 pr-3 pt-3"
         >
-          <PlaintextMessage message={plaintextData?.message ?? {}} />
+          <PlaintextMessage message={typedData?.message ?? {}} />
         </div>
       </CompWithLabel>
     </>
@@ -149,7 +149,7 @@ export const TypedDataSign = ({
 }
 
 TypedDataSign.propTypes = {
-  plaintextData: PropTypes.object.isRequired,
+  typedData: PropTypes.object.isRequired,
   currentNetwork: PropTypes.object,
   requestOrigin: PropTypes.string,
   domainTypeName: PropTypes.oneOf(['EIP712Domain', 'CIP23Domain']).isRequired,
