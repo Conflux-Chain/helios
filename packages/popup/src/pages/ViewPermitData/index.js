@@ -90,7 +90,11 @@ const renderValue = ({type, value, name, token}) => {
   }
   if (DateFields.includes(name) && type.startsWith('uint')) {
     const date = dayjs(value * 1000)
-    return date.isValid() ? date.format('YYYY/MM/DD HH:mm:ss') : String(value)
+    return date.unix() === 0
+      ? '0'
+      : date.isValid()
+      ? date.format('YYYY/MM/DD HH:mm:ss')
+      : String(value)
   }
   if (TokenValueFields.includes(name) && type.startsWith('uint') && token) {
     return <PermitAmount type={type} amount={value} tokenAddress={token} />
