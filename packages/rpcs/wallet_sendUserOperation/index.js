@@ -1,10 +1,6 @@
 import {joinSignature} from '@ethersproject/bytes'
 import {SigningKey} from '@ethersproject/signing-key'
 import {
-  BundlerRpcError,
-  createBundlerClient,
-} from '@fluent-wallet/bundler-client'
-import {
   EIP7702_NETWORK_CONFIGS,
   USER_OPERATION_ERROR_CODES,
 } from '@fluent-wallet/consts'
@@ -30,6 +26,9 @@ import {
   decodeVerifyingPaymasterData,
   getUserOperationHash,
 } from '@fluent-wallet/user-operation'
+import {submitPendingUserOperation} from './submit-pending-user-operation.js'
+
+export {submitPendingUserOperation}
 
 export const NAME = 'wallet_sendUserOperation'
 
@@ -339,86 +338,28 @@ async function signUserOperationForSubmission({
   }
 }
 
-async function submitUserOperationToBundler({
-  bundlerClient,
-  entryPointAddress,
-  userOperation,
-  userOpHash,
-  setUserOperationFailed,
-  Server,
-}) {
-  try {
-    const bundlerUserOpHash = await bundlerClient.sendUserOperation(
-      userOperation,
-      entryPointAddress,
-    )
-
-    if (
-      typeof bundlerUserOpHash !== 'string' ||
-      bundlerUserOpHash.toLowerCase() !== userOpHash.toLowerCase()
-    ) {
-      throw Server('Bundler returned an unexpected UserOperation hash')
-    }
-
-    return
-  } catch (error) {
-    if (!(error instanceof BundlerRpcError)) {
-      // The request may have reached the Bundler before the connection failed.
-      throw error
-    }
-
-    setUserOperationFailed({
-      hash: userOpHash,
-      error: {
-        code: error.code,
-        message: error.message,
-        ...(error.data === undefined ? {} : {data: error.data}),
-      },
-    })
-
-    throw error
-  }
-}
-function startUserOperationTracking({
-  wallet_handleUserOperation,
-  hash,
-  networkId,
-}) {
-  // The handler owns polling errors; its promise must not affect the send RPC.
-  void wallet_handleUserOperation(
-    {errorFallThrough: true},
-    {hash, networkId},
-  ).catch(() => {})
-}
-
-export const main = async ({
+export async function createPendingUserOperation({
   Err: {InvalidParams, Server},
-  db: {
-    findAccount,
-    getNetworkById,
-    accountAddrByNetwork,
-    insertUserOperation,
-    setUserOperationFailed,
-  },
+  db: {findAccount, getNetworkById, accountAddrByNetwork, insertUserOperation},
   rpcs: {
     eth_getTransactionCount,
     wallet_getAddressPrivateKey,
     wallet_getEip7702AccountStates,
     wallet_getEthereumNonceState,
     wallet_getUserOperationNonceState,
-    wallet_handleUserOperation,
     wallet_prepareUserOperation,
   },
   params: {
     accountId,
     networkId,
     appId,
+    bundleId,
     calls,
     approvedDelegationAction,
     sponsorship,
   },
   network: requestNetwork,
-}) => {
+}) {
   const {addressId, sender, network, networkConfig, accountState} =
     await validateUserOperationSender({
       InvalidParams,
@@ -434,18 +375,13 @@ export const main = async ({
 
   const {entryPointAddress, bundlerEndpoint} = networkConfig
 
-  const bundlerClient = createBundlerClient({
-    endpoint: bundlerEndpoint,
-  })
-
-  const sendUserOperation = ({authorization, delegateAddress} = {}) =>
+  const createPendingOperation = ({authorization, delegateAddress}) =>
     withUserOperationNonceLock(
       {
         chainId: network.chainId,
         entryPoint: entryPointAddress,
         sender,
       },
-
       async () => {
         const nonceState = await wallet_getUserOperationNonceState(
           {errorFallThrough: true, network},
@@ -509,6 +445,7 @@ export const main = async ({
         insertUserOperation({
           addressId,
           appId,
+          bundleId,
           hash: userOpHash,
           sender,
           chainId: network.chainId,
@@ -519,51 +456,31 @@ export const main = async ({
           authorizationNonce: authorization?.nonce,
           delegateAddress: authorization?.address,
         })
-        try {
-          await submitUserOperationToBundler({
-            bundlerClient,
-            entryPointAddress,
-            userOperation,
-            userOpHash,
-            setUserOperationFailed,
-            Server,
-          })
-        } catch (error) {
-          if (!(error instanceof BundlerRpcError)) {
-            startUserOperationTracking({
-              wallet_handleUserOperation,
-              hash: userOpHash,
-              networkId,
-            })
-          }
 
-          throw error
-        }
-
-        startUserOperationTracking({
-          wallet_handleUserOperation,
-          hash: userOpHash,
+        return {
+          userOperation,
+          userOpHash,
           networkId,
-        })
-
-        return {userOpHash}
+          entryPointAddress,
+          bundlerEndpoint,
+        }
       },
     )
 
   if (accountState.state === 'delegatedToConfigured') {
-    return sendUserOperation({
+    return createPendingOperation({
       delegateAddress: accountState.delegatedAddress,
     })
   }
 
-  // A delegation authorization shares the EOA nonce domain with regular transactions.
+  // Delegation authorization shares the EOA nonce with regular transactions.
   return withEthereumNonceLock(
     {
       chainId: network.chainId,
       address: sender,
     },
     async () => {
-      // Delegation may have completed while this request was waiting for the nonce lock.
+      // Delegation may have changed while waiting for the nonce lock.
       const currentAccountState = await getEip7702AccountState({
         wallet_getEip7702AccountStates,
         network,
@@ -572,7 +489,7 @@ export const main = async ({
       })
 
       if (currentAccountState.state === 'delegatedToConfigured') {
-        return sendUserOperation({
+        return createPendingOperation({
           delegateAddress: currentAccountState.delegatedAddress,
         })
       }
@@ -608,7 +525,7 @@ export const main = async ({
 
       const delegateAddress = currentAccountState.preferredDelegateAddress
 
-      return sendUserOperation({
+      return createPendingOperation({
         delegateAddress,
         authorization: {
           chainId: network.chainId,
@@ -618,4 +535,18 @@ export const main = async ({
       })
     },
   )
+}
+
+export const main = async args => {
+  const pendingUserOperation = await createPendingUserOperation(args)
+
+  await submitPendingUserOperation(pendingUserOperation, {
+    setUserOperationFailed: args.db.setUserOperationFailed,
+    wallet_handleUserOperation: args.rpcs.wallet_handleUserOperation,
+    Server: args.Err.Server,
+  })
+
+  return {
+    userOpHash: pendingUserOperation.userOpHash,
+  }
 }
