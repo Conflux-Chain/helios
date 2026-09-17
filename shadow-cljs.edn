@@ -163,6 +163,7 @@
                               Uint        cfxjs.spec.core/export-uint
                               Uint256     cfxjs.spec.core/export-uint256
                               Quantity    cfxjs.spec.core/export-quantity
+                              HexData     cfxjs.spec.core/export-hex-data
                               Hash32      cfxjs.spec.core/export-hash32}
                              :depends-on #{:shared}}
                             :gen {:exports    {gen cfxjs.spec.gen/gen}
