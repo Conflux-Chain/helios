@@ -1,10 +1,10 @@
 {
   "name": "workspace-tools",
   "type": "module",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "private": true,
   "dependencies": {
-    "@fluent-wallet/spec": "1.0.21"
+    "@fluent-wallet/spec": "1.0.22"
   },
   "devDependencies": {
     "chokidar": "3.5.3"
