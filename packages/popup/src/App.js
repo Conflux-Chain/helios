@@ -59,6 +59,7 @@ import AddressBook from './pages/AddressBook'
 import Contacts from './pages/Contacts'
 import ResendTransaction from './pages/ResendTransaction'
 import {isRunningInSidePanel} from './utils/side-panel'
+import ViewPermitData from './pages/ViewPermitData'
 
 const {
   HOME,
@@ -84,6 +85,7 @@ const {
   EDIT_ALLOWANCE,
   CONFIRM_TRANSACTION,
   VIEW_DATA,
+  VIEW_PERMIT_DATA,
   HISTORY,
   ACCOUNT_MANAGEMENT,
   EXPORT_SEED,
@@ -166,6 +168,10 @@ const routes = [
   {
     path: VIEW_DATA,
     component: ViewData,
+  },
+  {
+    path: VIEW_PERMIT_DATA,
+    component: ViewPermitData,
   },
   {
     path: CONNECT_SITE,

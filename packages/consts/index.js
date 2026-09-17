@@ -193,3 +193,6 @@ export const USER_OPERATION_ERROR_CODES = {
   EIP7702_DELEGATION_CONFIRMATION_REQUIRED:
     'USER_OPERATION_EIP7702_DELEGATION_CONFIRMATION_REQUIRED',
 }
+
+export const MaxUint256 =
+  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
