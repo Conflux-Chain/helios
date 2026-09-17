@@ -11,6 +11,7 @@ import Tooltip from '@fluent-wallet/component-tooltip'
 import Text from '../components/Text'
 import classNames from 'classnames'
 import {useFontSize} from '../hooks'
+import {useTranslation} from 'react-i18next'
 
 function DisplayBalance({
   maxWidth = 175,
@@ -22,7 +23,10 @@ function DisplayBalance({
   decimals = COMMON_DECIMALS,
   id,
   inlineSymbol = false,
+  mode = 'balance',
+  isUnlimited = false,
 }) {
+  const {t} = useTranslation()
   let displayBalance
   let displayRealBalance
   if (balance) {
@@ -35,9 +39,14 @@ function DisplayBalance({
     }
   }
 
-  const showTooltip = displayBalance === '<0.000001'
+  const isAllowance = mode === 'allowance'
+
+  const showTooltip =
+    displayBalance === '<0.000001' || (isAllowance && isUnlimited)
   const displayText =
-    inlineSymbol && displayBalance
+    isAllowance && isUnlimited
+      ? t('unlimited')
+      : inlineSymbol && displayBalance
       ? [displayBalance, symbol].filter(Boolean).join(' ')
       : displayBalance
   const balanceRef = useRef()
@@ -75,6 +84,7 @@ function DisplayBalance({
         <span
           className={classNames('inline-block ml-0.5', {
             'opacity-0': !displayBalance,
+            'ml-2': isAllowance && isUnlimited,
           })}
         >{`${symbol}`}</span>
       )}
@@ -85,6 +95,7 @@ function DisplayBalance({
 DisplayBalance.propTypes = {
   maxWidth: PropTypes.number,
   balance: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  mode: PropTypes.string,
   maxWidthStyle: PropTypes.string,
   className: PropTypes.string,
   initialFontSize: PropTypes.number,
@@ -92,6 +103,7 @@ DisplayBalance.propTypes = {
   decimals: PropTypes.number,
   id: PropTypes.string,
   inlineSymbol: PropTypes.bool,
+  isUnlimited: PropTypes.bool,
 }
 
 export default DisplayBalance

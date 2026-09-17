@@ -305,6 +305,18 @@ const fr = {
     typedDataInteractWith: 'Interaction avec',
     typedDataInteractWithTooltip:
       'Il s’agit du contrat avec lequel vous interagissez. Protégez-vous des escrocs en vérifiant les détails.',
+    permitSignatureAuthorization: 'Autorisation de signature',
+    permitSpendingCap: 'Plafond de dépense',
+    permitSpender: 'Dépenseur',
+    permitTooltipTitle: 'Qu’est-ce que Permit ?',
+    permitTooltipDescription:
+      'Une signature d’autorisation hors chaîne. Après votre signature, le dépenseur peut utiliser vos jetons jusqu’au plafond avant la date limite, sans transaction approve préalable ni frais de gas.',
+    permitSpenderTooltip:
+      'Le contrat ou l’adresse autorisé à déplacer des jetons depuis votre portefeuille. Après confirmation, il peut utiliser vos jetons dans la limite du plafond de dépense. Cela ne transfère pas la propriété, mais un dépenseur malveillant peut vider les jetons autorisés : vérifiez l’adresse avant de confirmer.',
+    unlimited: 'Illimité',
+    primaryType: 'Type principal',
+    showMore: 'Plus',
+    myAccount: 'Mon compte',
 
     // add SIWE key translations
     siweKeyMessage: 'Message',
@@ -405,7 +417,16 @@ const fr = {
     eip7702SponsoredUpgradeTitle: 'Activer la mise à niveau EIP-7702',
     eip7702SponsoredUpgradeDesc:
       'Après la mise à niveau, votre compte bénéficiera des fonctionnalités intelligentes suivantes.',
+    eip7702SponsoredDescription:
+      'Cette transaction peut bénéficier d’une prise en charge des frais de gas. Après la mise à niveau, votre compte bénéficiera des fonctionnalités intelligentes suivantes. Vous pouvez révoquer cette autorisation à tout moment dans les paramètres.',
+    eip7702SponsoredBenefitsTitle: 'Profitez de plus d’avantages',
+    eip7702SponsoredGasFreeDapps:
+      'Transactions sans frais de gas sur les dApps prises en charge',
+    eip7702SponsoredFlexibleGas: 'Paiement flexible des frais de gas',
+    eip7702SponsoredBatchTransactions: 'Regrouper plusieurs transactions',
     eip7702SponsoredUpgradeConfirm: 'Activer et continuer',
+    eip7702SponsoredSwitchTitle: 'Passer au service EIP-7702',
+    eip7702SponsoredSwitchConfirm: 'Passer et continuer',
     eip7702SwitchInfoTitle: 'Passer au service EIP-7702',
     eip7702SwitchInfoDesc:
       'Ce compte est actuellement lié à un contrat tiers. Passez à Fluent Wallet pour une meilleure expérience.',
@@ -419,6 +440,8 @@ const fr = {
     bind: 'Lier',
     enable: 'Activer',
     revoke: 'Révoquer',
+    openSidePanel: 'Ouvrir dans la barre latérale',
+    closeSidePanel: 'Ouvrir dans une fenêtre contextuelle',
 
     // About
     about: 'À Propos',

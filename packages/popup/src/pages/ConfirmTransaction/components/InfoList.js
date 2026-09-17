@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {useTranslation} from 'react-i18next'
 import {useHistory} from 'react-router-dom'
 import {EditOutlined} from '@fluent-wallet/component-icons'
-import {convertDataToValue} from '@fluent-wallet/data-format'
+import {convertDataToValue, convertDecimal} from '@fluent-wallet/data-format'
 import {useCurrentDapp} from '../../../hooks/useApi'
 import {useCurrentTxParams, useDappIcon} from '../../../hooks'
 import {
@@ -11,6 +11,10 @@ import {
   CurrentNetworkDisplay,
 } from '../../../components'
 import {ROUTES} from '../../../constants'
+import {bn16} from '../../../utils'
+import {MaxUint256} from '@fluent-wallet/consts'
+import {BN} from 'bn.js'
+import {useMemo} from 'react'
 const {EDIT_ALLOWANCE} = ROUTES
 
 function InfoList({
@@ -35,6 +39,18 @@ function InfoList({
 
   const dappIconUrl = useDappIcon(currentDapp?.site?.icon)
 
+  const effectiveAllowance = customAllowance || allowance
+  const isUnlimited = useMemo(() => {
+    if (!isApproveToken) return false
+    try {
+      return bn16(MaxUint256).eq(
+        new BN(convertDecimal(effectiveAllowance, 'multiply', token?.decimals)),
+      )
+    } catch {
+      return false
+    }
+  }, [isApproveToken, effectiveAllowance, token?.decimals])
+
   return (
     <div className="info-list-container flex flex-col">
       <div className="flex justify-between mb-4">
@@ -50,7 +66,9 @@ function InfoList({
           <span className="flex items-center">
             <DisplayBalance
               id="allowance"
-              balance={customAllowance || allowance}
+              balance={effectiveAllowance}
+              isUnlimited={isUnlimited}
+              mode="allowance"
               maxWidth={160}
               maxWidthStyle="max-w-[160px]"
               symbol={token?.symbol}

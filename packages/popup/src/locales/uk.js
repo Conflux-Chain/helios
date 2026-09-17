@@ -285,6 +285,18 @@ const uk = {
     typedDataInteractWith: 'Взаємодія з',
     typedDataInteractWithTooltip:
       'Це контракт, з яким ви взаємодієте. Захистіть себе від шахраїв, перевіривши дані.',
+    permitSignatureAuthorization: 'Авторизація підпису',
+    permitSpendingCap: 'Ліміт витрат',
+    permitSpender: 'Спендер',
+    permitTooltipTitle: 'Що таке Permit',
+    permitTooltipDescription:
+      'Авторизація у вигляді позамережевого підпису. Після підписання спендер може використовувати ваші токени в межах ліміту до завершення терміну дії — без попередньої транзакції approve та комісії за газ.',
+    permitSpenderTooltip:
+      'Контракт або адреса, яким дозволено переміщувати токени з вашого гаманця. Після підтвердження вони можуть використовувати ваші токени в межах ліміту витрат. Це не передає право власності, але зловмисний спендер може вивести дозволені токени — перевірте адресу перед підтвердженням.',
+    unlimited: 'Без обмежень',
+    primaryType: 'Основний тип',
+    showMore: 'Більше',
+    myAccount: 'Мій акаунт',
     siweReviewAlert: 'Перегляд попередження',
     siweWarningUrlTitle: 'Підозрілий запит на вхід',
     siweWarningUrl:
@@ -394,7 +406,16 @@ const uk = {
     eip7702SponsoredUpgradeTitle: 'Увімкнути оновлення EIP-7702',
     eip7702SponsoredUpgradeDesc:
       'Після оновлення ваш обліковий запис отримає такі інтелектуальні функції.',
+    eip7702SponsoredDescription:
+      'Ця транзакція підходить для спонсорування комісії за газ. Після оновлення ваш обліковий запис отримає такі інтелектуальні функції. Ви можете відкликати цей дозвіл у будь-який час у налаштуваннях.',
+    eip7702SponsoredBenefitsTitle: 'Отримайте більше переваг',
+    eip7702SponsoredGasFreeDapps:
+      'Транзакції без комісії за газ у підтримуваних dApp',
+    eip7702SponsoredFlexibleGas: 'Гнучка оплата газу',
+    eip7702SponsoredBatchTransactions: 'Об’єднання кількох транзакцій',
     eip7702SponsoredUpgradeConfirm: 'Увімкнути й продовжити',
+    eip7702SponsoredSwitchTitle: 'Перейти на сервіс EIP-7702',
+    eip7702SponsoredSwitchConfirm: 'Перейти та продовжити',
     eip7702SwitchInfoTitle: 'Перейти на сервіс EIP-7702',
     eip7702SwitchInfoDesc:
       'Цей обліковий запис наразі прив’язаний до стороннього контракту. Перейдіть на Fluent Wallet для кращого досвіду.',
@@ -408,6 +429,8 @@ const uk = {
     bind: 'Прив’язати',
     enable: 'Увімкнути',
     revoke: 'Відкликати',
+    openSidePanel: 'Відкрити в бічній панелі',
+    closeSidePanel: 'Відкрити у спливаючому вікні',
 
     // About
     about: 'Про проект',
