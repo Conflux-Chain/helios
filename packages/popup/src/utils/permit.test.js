@@ -1,8 +1,9 @@
 import {describe, expect, it} from 'vitest'
 import {
-  detectPermitType,
+  detectPermit,
   formatPermitAmount,
   getPermitDisplayData,
+  getPermitFieldDisplay,
 } from './permit'
 
 const TOKEN_ADDRESS = '0x1111111111111111111111111111111111111111'
@@ -115,18 +116,18 @@ const createDaiPermitData = overrides => ({
   ...overrides,
 })
 
-describe('detectPermitType', () => {
+describe('detectPermit', () => {
   it('returns null for missing or unsupported typed data', () => {
-    expect(detectPermitType()).toBeNull()
-    expect(detectPermitType(null)).toBeNull()
-    expect(detectPermitType({typedData: null})).toBeNull()
+    expect(detectPermit()).toBeNull()
+    expect(detectPermit(null)).toBeNull()
+    expect(detectPermit({typedData: null})).toBeNull()
     expect(
-      detectPermitType({
+      detectPermit({
         typedData: {primaryType: 'Message', types: {}, message: {}},
       }),
     ).toBeNull()
     expect(
-      detectPermitType({typedData: {domain: null, types: null, message: null}}),
+      detectPermit({typedData: {domain: null, types: null, message: null}}),
     ).toBeNull()
   })
 
@@ -141,7 +142,7 @@ describe('detectPermitType', () => {
       },
     })
 
-    expect(detectPermitType({typedData})).toEqual({
+    expect(detectPermit({typedData})).toEqual({
       type: 'permit2',
       mode: 'signature-allowance',
       amountBits: 160,
@@ -149,14 +150,11 @@ describe('detectPermitType', () => {
       isBatch: false,
       isWitness: false,
     })
-    expect(
-      getPermitDisplayData(typedData, detectPermitType({typedData})),
-    ).toEqual({
+    expect(getPermitDisplayData(typedData, detectPermit({typedData}))).toEqual({
       permissions: [permit2Message.details],
       amountBits: 160,
       isBatch: false,
       spender: SPENDER_ADDRESS,
-      tokenCount: 1,
     })
   })
 
@@ -176,7 +174,7 @@ describe('detectPermitType', () => {
       },
     })
 
-    expect(detectPermitType({typedData})).toEqual({
+    expect(detectPermit({typedData})).toEqual({
       type: 'permit2',
       mode: 'signature-allowance',
       amountBits: 160,
@@ -184,14 +182,11 @@ describe('detectPermitType', () => {
       isBatch: true,
       isWitness: false,
     })
-    expect(
-      getPermitDisplayData(typedData, detectPermitType({typedData})),
-    ).toEqual({
+    expect(getPermitDisplayData(typedData, detectPermit({typedData}))).toEqual({
       permissions: typedData.message.details,
       amountBits: 160,
       isBatch: true,
       spender: SPENDER_ADDRESS,
-      tokenCount: 1,
     })
   })
 
@@ -229,7 +224,18 @@ describe('detectPermitType', () => {
         },
       })
 
-      expect(detectPermitType({typedData})).toEqual({
+      if (isWitness) {
+        expect(
+          detectPermit({
+            typedData: {
+              ...typedData,
+              message: {...typedData.message, witness: null},
+            },
+          }),
+        ).not.toBeNull()
+      }
+
+      expect(detectPermit({typedData})).toEqual({
         type: 'permit2',
         mode: 'signature-transfer',
         isBatch,
@@ -238,7 +244,7 @@ describe('detectPermitType', () => {
         permissionField: 'permitted',
       })
       expect(
-        getPermitDisplayData(typedData, detectPermitType({typedData})),
+        getPermitDisplayData(typedData, detectPermit({typedData})),
       ).toEqual({
         permissions: isBatch
           ? typedData.message.permitted
@@ -246,7 +252,6 @@ describe('detectPermitType', () => {
         amountBits: 256,
         isBatch,
         spender: SPENDER_ADDRESS,
-        tokenCount: isBatch ? 2 : 1,
       })
     },
   )
@@ -263,7 +268,7 @@ describe('detectPermitType', () => {
     })
 
     expect(
-      detectPermitType({
+      detectPermit({
         typedData: {
           ...valid,
           message: {...valid.message, sigDeadline: undefined},
@@ -272,7 +277,7 @@ describe('detectPermitType', () => {
     ).toBeNull()
 
     expect(
-      detectPermitType({
+      detectPermit({
         typedData: {
           ...valid,
           types: {
@@ -286,7 +291,7 @@ describe('detectPermitType', () => {
     ).toBeNull()
 
     expect(
-      detectPermitType({
+      detectPermit({
         typedData: {
           ...valid,
           domain: {...valid.domain, name: 'Not Permit2'},
@@ -310,7 +315,7 @@ describe('detectPermitType', () => {
       ),
     ]) {
       expect(
-        detectPermitType({
+        detectPermit({
           typedData: {
             ...typedData,
             types: {...typedData.types, EIP712Domain: domainFields},
@@ -321,7 +326,7 @@ describe('detectPermitType', () => {
 
     for (const verifyingContract of [undefined, null, '']) {
       expect(
-        detectPermitType({
+        detectPermit({
           typedData: {
             ...typedData,
             domain: {...typedData.domain, verifyingContract},
@@ -334,7 +339,7 @@ describe('detectPermitType', () => {
   it('detects a standard Permit', () => {
     const typedData = createStandardPermitData()
 
-    expect(detectPermitType({typedData})).toEqual({
+    expect(detectPermit({typedData})).toEqual({
       type: 'permit',
       mode: 'normal-permit',
       amountBits: 256,
@@ -348,7 +353,7 @@ describe('detectPermitType', () => {
     const typedData = createDaiPermitData()
     typedData.message.allowed = allowed
 
-    expect(detectPermitType({typedData})).toEqual({
+    expect(detectPermit({typedData})).toEqual({
       type: 'permit',
       mode: 'dai-permit',
       amountBits: 256,
@@ -410,31 +415,26 @@ describe('getPermitDisplayData', () => {
   it('does not build a display model for an unrecognized payload', () => {
     const typedData = {primaryType: 'Message'}
     expect(
-      getPermitDisplayData(typedData, detectPermitType({typedData})),
+      getPermitDisplayData(typedData, detectPermit({typedData})),
     ).toBeNull()
   })
 
   it('maps a recognized standard Permit to the verifying token', () => {
     const typedData = createStandardPermitData()
-    expect(
-      getPermitDisplayData(typedData, detectPermitType({typedData})),
-    ).toEqual({
+    expect(getPermitDisplayData(typedData, detectPermit({typedData}))).toEqual({
       permissions: [
         {amount: typedData.message.value, token: VERIFYING_CONTRACT},
       ],
       amountBits: 256,
       isBatch: false,
       spender: SPENDER_ADDRESS,
-      tokenCount: 1,
     })
   })
 
   it.each([true, false])('maps DAI allowed=%s to its allowance', allowed => {
     const typedData = createDaiPermitData()
     typedData.message.allowed = allowed
-    expect(
-      getPermitDisplayData(typedData, detectPermitType({typedData})),
-    ).toEqual({
+    expect(getPermitDisplayData(typedData, detectPermit({typedData}))).toEqual({
       permissions: [
         {
           amount: allowed ? ((1n << 256n) - 1n).toString() : '0',
@@ -444,7 +444,6 @@ describe('getPermitDisplayData', () => {
       amountBits: 256,
       isBatch: false,
       spender: SPENDER_ADDRESS,
-      tokenCount: 1,
     })
   })
 
@@ -455,10 +454,131 @@ describe('getPermitDisplayData', () => {
       typedData.types.Permit = typedData.types.Permit.map(field =>
         field.name === 'value' ? {...field, type} : field,
       )
-      expect(detectPermitType({typedData})).toBeNull()
+      expect(detectPermit({typedData})).toBeNull()
       expect(
-        getPermitDisplayData(typedData, detectPermitType({typedData})),
+        getPermitDisplayData(typedData, detectPermit({typedData})),
       ).toBeNull()
     },
   )
+})
+
+describe('Permit2 permission data boundaries', () => {
+  it.each([
+    ['PermitSingle', 'details', false],
+    ['PermitBatch', 'details', true],
+    ['PermitTransferFrom', 'permitted', false],
+    ['PermitBatchTransferFrom', 'permitted', true],
+  ])(
+    'rejects missing or malformed permissions for %s',
+    (primaryType, field, isBatch) => {
+      const isAllowance = field === 'details'
+      const permissionType = isAllowance ? 'PermitDetails' : 'TokenPermissions'
+      const typedData = createPermit2Data({
+        primaryType,
+        types: {
+          TokenPermissions: TOKEN_PERMISSIONS,
+          [primaryType]: [
+            {name: field, type: permissionType + (isBatch ? '[]' : '')},
+            {name: 'spender', type: 'address'},
+            ...(isAllowance
+              ? [{name: 'sigDeadline', type: 'uint256'}]
+              : [
+                  {name: 'nonce', type: 'uint256'},
+                  {name: 'deadline', type: 'uint256'},
+                ]),
+          ],
+        },
+      })
+      for (const invalid of [
+        null,
+        undefined,
+        'invalid',
+        {},
+        ...(isBatch ? [[null], [{}]] : [[]]),
+      ]) {
+        const data = {
+          ...typedData,
+          message: {
+            spender: SPENDER_ADDRESS,
+            sigDeadline: '456',
+            nonce: '0',
+            deadline: '456',
+            [field]: invalid,
+          },
+        }
+        expect(detectPermit({typedData: data})).toBeNull()
+      }
+    },
+  )
+})
+
+describe('getPermitFieldDisplay name matching', () => {
+  it.each([
+    'deadline',
+    'endTime',
+    'expiration',
+    'expiry',
+    'sigDeadline',
+    'startTime',
+    'validTo',
+  ])('recognizes date field %s at root and nested paths', name => {
+    for (const path of [[name], ['witness', name]]) {
+      expect(getPermitFieldDisplay({}, {}, path)).toEqual({kind: 'date'})
+    }
+  })
+
+  it.each([
+    'amount',
+    'buyAmount',
+    'endAmount',
+    'sellAmount',
+    'startAmount',
+    'value',
+  ])('recognizes amount field %s with trusted token context', name => {
+    const typedData = createStandardPermitData()
+    typedData.message.token = TOKEN_ADDRESS
+    expect(
+      getPermitFieldDisplay(typedData, detectPermit({typedData}), [name]),
+    ).toEqual({
+      kind: 'amount',
+      tokenAddress: VERIFYING_CONTRACT,
+    })
+    for (const isBatch of [false, true]) {
+      const data = createPermit2Data({
+        types: {
+          PermitSingle: [
+            {
+              name: 'details',
+              type: isBatch ? 'PermitDetails[]' : 'PermitDetails',
+            },
+          ],
+        },
+        message: {
+          details: isBatch ? [permit2Message.details] : permit2Message.details,
+        },
+      })
+      const descriptor = {type: 'permit2', permissionField: 'details', isBatch}
+      expect(
+        getPermitFieldDisplay(
+          data,
+          descriptor,
+          isBatch ? ['details', 0, name] : ['details', name],
+        ),
+      ).toEqual({
+        kind: 'amount',
+        tokenAddress: TOKEN_ADDRESS,
+      })
+      expect(
+        getPermitFieldDisplay(data, descriptor, ['witness', name]),
+      ).toBeNull()
+      data.types.PermitDetails = [{name: 'amount', type: 'uint160'}]
+      expect(
+        getPermitFieldDisplay(
+          data,
+          descriptor,
+          isBatch ? ['details', 0, name] : ['details', name],
+        ),
+      ).toBeNull()
+    }
+  })
 })

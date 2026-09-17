@@ -7,17 +7,15 @@ export const EndsWithArrayReg = /\[(?:\d+)?\]$/
 /**
  * Check whether an EIP-712 type declares a field with the expected name and type.
  */
-const isEip712PrimaryTypeField = (types, primaryType, fieldName, fieldType) =>
-  Array.isArray(types?.[primaryType]) &&
-  types[primaryType].some(
+const hasTypedDataField = (types, typeName, fieldName, fieldType) =>
+  Array.isArray(types?.[typeName]) &&
+  types[typeName].some(
     ({name, type}) =>
       name === fieldName && (fieldType === undefined || type === fieldType),
   )
 
 const hasFields = (types, typeName, fields) =>
-  fields.every(([name, type]) =>
-    isEip712PrimaryTypeField(types, typeName, name, type),
-  )
+  fields.every(([name, type]) => hasTypedDataField(types, typeName, name, type))
 
 const DOMAIN_FIELDS = [
   ['name', 'string'],
@@ -58,6 +56,22 @@ const hasKeys = (value, keys) =>
       value[key] !== undefined,
   )
 
+// Required permission objects must be usable by the specialized summary.
+const hasPermissionData = (value, isBatch, fields) => {
+  const isPermission = item =>
+    item !== null &&
+    typeof item === 'object' &&
+    !Array.isArray(item) &&
+    hasKeys(
+      item,
+      fields.map(([name]) => name),
+    ) &&
+    fields.every(([name]) => item[name] !== null)
+  return isBatch
+    ? Array.isArray(value) && value.every(isPermission)
+    : isPermission(value)
+}
+
 const PERMIT2_TRANSFER_TYPES = {
   PermitTransferFrom: {isBatch: false, isWitness: false},
   PermitBatchTransferFrom: {isBatch: true, isWitness: false},
@@ -65,7 +79,8 @@ const PERMIT2_TRANSFER_TYPES = {
   PermitBatchWitnessTransferFrom: {isBatch: true, isWitness: true},
 }
 
-const matchesMessage = (types, primaryType, message, fields) =>
+// Check field declarations and presence, not the validity of message values.
+const hasRequiredMessageFields = (types, primaryType, message, fields) =>
   hasFields(types, primaryType, fields) &&
   hasKeys(
     message,
@@ -73,19 +88,21 @@ const matchesMessage = (types, primaryType, message, fields) =>
   )
 
 // Resolve the amount field through the signed type declarations.
-const getAmountBits = (types, primaryType, permissionField, fallback) => {
+const inferAmountBits = (types, primaryType, permissionField, defaultBits) => {
   const permissionType = permissionField
     ? types[primaryType]?.find(({name}) => name === permissionField)?.type
     : null
-  const amountStruct = permissionField
+  const amountTypeName = permissionField
     ? permissionType?.replace(EndsWithArrayReg, '')
     : primaryType
   const amountField = permissionField ? 'amount' : 'value'
-  const amountType = types[amountStruct]?.find(
+  const amountType = types[amountTypeName]?.find(
     ({name}) => name === amountField,
   )?.type
 
-  return amountType?.startsWith('uint') ? Number(amountType.slice(4)) : fallback
+  return amountType?.startsWith('uint')
+    ? Number(amountType.slice(4))
+    : defaultBits
 }
 
 const detectPermit2 = ({types, primaryType, message}) => {
@@ -98,12 +115,13 @@ const detectPermit2 = ({types, primaryType, message}) => {
     ]
     if (
       hasFields(types, 'PermitDetails', PERMIT_DETAILS_FIELDS) &&
-      matchesMessage(types, primaryType, message, fields)
+      hasRequiredMessageFields(types, primaryType, message, fields) &&
+      hasPermissionData(message.details, isBatch, PERMIT_DETAILS_FIELDS)
     ) {
       return {
         type: 'permit2',
         mode: 'signature-allowance',
-        amountBits: getAmountBits(types, primaryType, 'details', 160),
+        amountBits: inferAmountBits(types, primaryType, 'details', 160),
         permissionField: 'details',
         isBatch,
         isWitness: false,
@@ -129,13 +147,17 @@ const detectPermit2 = ({types, primaryType, message}) => {
       ['token', 'address'],
       ['amount', 'uint256'],
     ]) &&
-    matchesMessage(types, primaryType, message, fields) &&
-    (!isWitness || hasKeys(message, ['witness']))
+    hasRequiredMessageFields(types, primaryType, message, fields) &&
+    (!isWitness || hasKeys(message, ['witness'])) &&
+    hasPermissionData(message.permitted, isBatch, [
+      ['token', 'address'],
+      ['amount', 'uint256'],
+    ])
   ) {
     return {
       type: 'permit2',
       mode: 'signature-transfer',
-      amountBits: getAmountBits(types, primaryType, 'permitted', 256),
+      amountBits: inferAmountBits(types, primaryType, 'permitted', 256),
       permissionField: 'permitted',
       isBatch,
       isWitness,
@@ -148,7 +170,7 @@ const detectPermit2 = ({types, primaryType, message}) => {
  * Identify supported permit shapes and describe their display semantics.
  * The result contains no payload; callers retain the original typed data.
  */
-export const detectPermitType = (options = {}) => {
+export const detectPermit = (options = {}) => {
   const {typedData} = options || {}
   const {types = {}, domain = {}, primaryType, message = {}} = typedData || {}
 
@@ -171,11 +193,11 @@ export const detectPermitType = (options = {}) => {
     ['normal-permit', PERMIT_FIELDS],
     ['dai-permit', DAI_PERMIT_FIELDS],
   ]) {
-    if (matchesMessage(types, primaryType, message, fields)) {
+    if (hasRequiredMessageFields(types, primaryType, message, fields)) {
       return {
         type: 'permit',
         mode,
-        amountBits: getAmountBits(types, primaryType, null, 256),
+        amountBits: inferAmountBits(types, primaryType, null, 256),
         permissionField: null,
         isBatch: false,
         isWitness: false,
@@ -237,11 +259,11 @@ export const formatPermitAmount = (
 /**
  * Normalize supported permit payloads into the fields used by the approval UI.
  */
-export const getPermitDisplayData = (typedData, permitType) => {
-  if (!permitType) return null
+export const getPermitDisplayData = (typedData, permitDescriptor) => {
+  if (!permitDescriptor) return null
 
   const {message, domain} = typedData
-  const {amountBits, permissionField, isBatch, mode} = permitType
+  const {amountBits, permissionField, isBatch, mode} = permitDescriptor
   let permissions
 
   if (permissionField) {
@@ -270,6 +292,58 @@ export const getPermitDisplayData = (typedData, permitType) => {
     amountBits,
     isBatch,
     spender: message.spender,
-    tokenCount: permissions.length,
   }
+}
+
+const DATE_FIELD_NAMES = [
+  'deadline',
+  'endTime',
+  'expiration',
+  'expiry',
+  'sigDeadline',
+  'startTime',
+  'validTo',
+]
+const TOKEN_AMOUNT_FIELD_NAMES = [
+  'amount',
+  'buyAmount',
+  'endAmount',
+  'sellAmount',
+  'startAmount',
+  'value',
+]
+
+/** Match familiar field names while restricting where token context comes from. */
+export const getPermitFieldDisplay = (typedData, descriptor, path) => {
+  const {permissionField, isBatch, type} = descriptor
+  const name = path[path.length - 1]
+  if (DATE_FIELD_NAMES.includes(name)) return {kind: 'date'}
+  const isAmount = TOKEN_AMOUNT_FIELD_NAMES.includes(name)
+  if (path.length === 1 && type === 'permit' && isAmount) {
+    return {kind: 'amount', tokenAddress: typedData.domain.verifyingContract}
+  }
+
+  const isPermissionField =
+    permissionField &&
+    path[0] === permissionField &&
+    (isBatch
+      ? path.length === 3 && Number.isInteger(path[1])
+      : path.length === 2)
+  if (!isPermissionField) return null
+
+  const permissionType = typedData.types[typedData.primaryType]
+    ?.find(field => field.name === permissionField)
+    ?.type?.replace(EndsWithArrayReg, '')
+  if (!hasTypedDataField(typedData.types, permissionType, 'token', 'address'))
+    return null
+  const permission = isBatch
+    ? typedData.message[permissionField]?.[path[1]]
+    : typedData.message[permissionField]
+  if (isAmount || name === 'token') {
+    return {
+      kind: isAmount ? 'amount' : 'token',
+      tokenAddress: permission?.token,
+    }
+  }
+  return null
 }

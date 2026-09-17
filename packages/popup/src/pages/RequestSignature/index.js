@@ -22,7 +22,7 @@ import Button from '@fluent-wallet/component-button'
 import SIWERiskModal from './components/SIWERiskModal'
 import {Permit} from './components/Permit'
 import {useSignatureRequest} from '../../hooks/useSignatureRequest'
-import {detectPermitType} from '../../utils/permit'
+import {detectPermit} from '../../utils/permit'
 
 const {PERSONAL_SIGN, CFX_SIGN_TYPED_DATA_V4} = RPC_METHODS
 
@@ -39,7 +39,7 @@ function RequestSignature() {
   const {t} = useTranslation()
   const {req, app, site, address, typedData} = useSignatureRequest()
 
-  const permitType = useMemo(() => detectPermitType({typedData}), [typedData])
+  const permitDescriptor = useMemo(() => detectPermit({typedData}), [typedData])
 
   const isPersonalSign = req?.method === PERSONAL_SIGN
   const dappNetworkId = app?.currentNetwork?.eid
@@ -155,13 +155,13 @@ function RequestSignature() {
     setSendError(undefined)
   }, [])
 
-  if (permitType) {
+  if (permitDescriptor) {
     return (
       <Permit
         address={address}
         nickname={app?.currentAccount?.nickname}
         typedData={typedData}
-        permitType={permitType}
+        permitDescriptor={permitDescriptor}
         currentNetwork={app?.currentNetwork}
         requestOrigin={origin}
         siteIcon={siteIcon}

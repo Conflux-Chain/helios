@@ -3,7 +3,8 @@ import {PERSONAL_SIGN} from '../constants/rpcMethods'
 import {useAddressByNetworkId, usePendingAuthReq} from './useApi'
 
 /**
- * Safely parse serialized EIP-712 data, returning an empty object for invalid input.
+ * Parse a typed-data JSON object for EIP-712 or CIP-23 without schema validation.
+ * Return an empty object for invalid JSON or non-object input.
  */
 const parseTypedData = value => {
   if (typeof value !== 'string') return {}

@@ -73,7 +73,7 @@ PermitRow.propTypes = {
   label: PropTypes.node.isRequired,
 }
 
-const PermitToken = ({amount, amountBits, tokenAddress}) => {
+const PermitTokenAmount = ({amount, amountBits, tokenAddress}) => {
   const {t} = useTranslation()
   return (
     <PermitTokenInfo tokenAddress={tokenAddress}>
@@ -94,7 +94,7 @@ const PermitToken = ({amount, amountBits, tokenAddress}) => {
   )
 }
 
-PermitToken.propTypes = {
+PermitTokenAmount.propTypes = {
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   amountBits: PropTypes.number.isRequired,
   tokenAddress: PropTypes.string.isRequired,
@@ -104,7 +104,7 @@ export const Permit = ({
   address,
   nickname,
   typedData,
-  permitType,
+  permitDescriptor,
   currentNetwork,
   requestOrigin,
   siteIcon,
@@ -115,24 +115,24 @@ export const Permit = ({
 }) => {
   const history = useHistory()
   const {t} = useTranslation()
-  const [showMore, setShowMore] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const displayData = useMemo(
-    () => getPermitDisplayData(typedData, permitType) || {},
-    [permitType, typedData],
+    () => getPermitDisplayData(typedData, permitDescriptor) || {},
+    [permitDescriptor, typedData],
   )
   const {type, eip7702Delegated} = useAddressTypeInfo(displayData.spender)
   const isContract =
     (type === 'contract' || type === 'builtin') && !eip7702Delegated
-  const permitName = permitType?.type === 'permit2' ? 'Permit2' : 'Permit'
+  const permitName = permitDescriptor?.type === 'permit2' ? 'Permit2' : 'Permit'
   const protocol = requestOrigin || typedData?.domain?.name || '-'
   const verifyingContract = typedData?.domain?.verifyingContract
-  const tooManyPermissions = displayData.permissions?.length > 2
+  const hasMorePermissions = displayData.permissions?.length > 2
 
-  const permissions = useMemo(() => {
+  const visiblePermissions = useMemo(() => {
     const permissions = displayData.permissions ?? []
-    return showMore ? permissions : permissions.slice(0, 2)
-  }, [showMore, displayData.permissions])
+    return isExpanded ? permissions : permissions.slice(0, 2)
+  }, [isExpanded, displayData.permissions])
 
   return (
     <div
@@ -171,9 +171,9 @@ export const Permit = ({
 
             <PermitRow label={t('permitSpendingCap')}>
               <div className="max-h-[144px] overflow-y-auto flex flex-col gap-4">
-                {permissions.map((item, index) => {
+                {visiblePermissions.map((item, index) => {
                   return (
-                    <PermitToken
+                    <PermitTokenAmount
                       key={index}
                       amount={item.amount}
                       amountBits={displayData.amountBits}
@@ -182,14 +182,14 @@ export const Permit = ({
                   )
                 })}
               </div>
-              {tooManyPermissions && (
+              {hasMorePermissions && (
                 <button
                   type="button"
                   className="flex items-center justify-center text-sm font-normal text-primary w-fit self-end mt-4"
-                  onClick={() => setShowMore(value => !value)}
+                  onClick={() => setIsExpanded(value => !value)}
                 >
                   {t('showMore')}
-                  {showMore ? (
+                  {isExpanded ? (
                     <UpOutlined className="ml-1 h-3 w-3" />
                   ) : (
                     <DownOutlined className="ml-1 h-3 w-3" />
@@ -305,7 +305,7 @@ export const Permit = ({
 Permit.propTypes = {
   currentNetwork: PropTypes.object,
   onCloseTransactionResult: PropTypes.func,
-  permitType: PropTypes.object,
+  permitDescriptor: PropTypes.object,
   requestOrigin: PropTypes.string,
   sendError: PropTypes.object,
   sendStatus: PropTypes.string,

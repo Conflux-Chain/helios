@@ -12,29 +12,12 @@ import {shortenAddress} from '@fluent-wallet/shorten-address'
 import dayjs from 'dayjs'
 import PermitTokenInfo from '../../components/PermitTokenInfo'
 import {
-  detectPermitType,
+  detectPermit,
   EndsWithArrayReg,
   formatPermitAmount,
+  getPermitFieldDisplay,
 } from '../../utils/permit'
 import Tooltip from '@fluent-wallet/component-tooltip'
-
-const DateFields = [
-  'deadline',
-  'endTime',
-  'expiration',
-  'expiry',
-  'sigDeadline',
-  'startTime',
-  'validTo',
-]
-const TokenValueFields = [
-  'amount',
-  'buyAmount',
-  'endAmount',
-  'sellAmount',
-  'startAmount',
-  'value',
-]
 
 const PermitRow = ({label, children, nested = false}) => (
   <div className={classNames('flex flex-wrap', nested && 'flex-col gap-4')}>
@@ -82,17 +65,29 @@ PermitAmount.propTypes = {
   tokenAddress: PropTypes.string,
 }
 
-const renderValue = ({type, value, name, token}) => {
-  if (type === 'address') {
-    return name === 'token' ? (
-      <PermitTokenInfo tokenAddress={value} />
-    ) : (
-      <Tooltip content={value} placement="bottomLeft">
-        <span>{shortenAddress(formatIntoChecksumAddress(value))}</span>
-      </Tooltip>
-    )
+const renderRawValue = value => {
+  if (value === undefined) return '-'
+  if (value === null) return 'null'
+  return typeof value === 'object' ? JSON.stringify(value) : String(value)
+}
+
+const renderValue = ({type, value, display}) => {
+  if (value == null || typeof value === 'object') return renderRawValue(value)
+  if (display?.kind === 'token' && typeof value === 'string') {
+    return <PermitTokenInfo tokenAddress={value} />
   }
-  if (DateFields.includes(name) && type.startsWith('uint')) {
+  if (type === 'address' && typeof value === 'string') {
+    try {
+      return (
+        <Tooltip content={value} placement="bottomLeft">
+          <span>{shortenAddress(formatIntoChecksumAddress(value))}</span>
+        </Tooltip>
+      )
+    } catch {
+      return value
+    }
+  }
+  if (display?.kind === 'date' && type.startsWith('uint')) {
     const date = dayjs(value * 1000)
     return date.unix() === 0
       ? '0'
@@ -100,20 +95,48 @@ const renderValue = ({type, value, name, token}) => {
       ? date.format('YYYY/MM/DD HH:mm:ss')
       : String(value)
   }
-  if (TokenValueFields.includes(name) && type.startsWith('uint') && token) {
-    return <PermitAmount type={type} amount={value} tokenAddress={token} />
+  if (
+    display?.kind === 'amount' &&
+    type.startsWith('uint') &&
+    display.tokenAddress
+  ) {
+    return (
+      <PermitAmount
+        type={type}
+        amount={value}
+        tokenAddress={display.tokenAddress}
+      />
+    )
   }
-  return String(value)
+  return renderRawValue(value)
 }
 
-const PermitMessageItem = ({name, type, types, value, token}) => {
+const PermitMessageItem = ({
+  name,
+  type,
+  types,
+  value,
+  typedData,
+  descriptor,
+  path,
+}) => {
   const nested = EndsWithArrayReg.test(type) || !!types[type]
   return (
     <PermitRow label={name} nested={nested}>
       {nested ? (
-        <PermitMessages types={types} type={type} data={value} token={token} />
+        <PermitMessages
+          type={type}
+          data={value}
+          typedData={typedData}
+          descriptor={descriptor}
+          path={path}
+        />
       ) : (
-        renderValue({name, value, type, token})
+        renderValue({
+          type,
+          value,
+          display: getPermitFieldDisplay(typedData, descriptor, path),
+        })
       )}
     </PermitRow>
   )
@@ -122,50 +145,65 @@ const PermitMessageItem = ({name, type, types, value, token}) => {
 PermitMessageItem.propTypes = {
   type: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  token: PropTypes.string,
   types: PropTypes.object.isRequired,
-  value: PropTypes.any.isRequired,
+  value: PropTypes.any,
+  typedData: PropTypes.object.isRequired,
+  descriptor: PropTypes.object.isRequired,
+  path: PropTypes.array.isRequired,
 }
 
-const PermitMessages = ({type, types, data, token}) => {
+export const PermitMessages = ({
+  type,
+  data,
+  typedData,
+  descriptor,
+  path = [],
+}) => {
+  const {types} = typedData
+  if (data == null) return renderRawValue(data)
   if (EndsWithArrayReg.test(type)) {
-    return Array.isArray(data)
-      ? data.map((value, index) => {
-          return (
-            <PermitMessageItem
-              key={index}
-              name={`${index}`}
-              type={type.replace(EndsWithArrayReg, '')}
-              types={types}
-              value={value}
-              token={token}
-            />
-          )
-        })
-      : null
-  }
-  const messageTypes = types[type]
-  if (!messageTypes || !Array.isArray(messageTypes)) return null
-
-  return messageTypes.map(({name, type}, index) => {
-    return (
+    if (!Array.isArray(data) || data.length === 0) return renderRawValue(data)
+    return data.map((value, index) => (
       <PermitMessageItem
         key={index}
-        name={name}
-        type={type}
+        name={`${index}`}
+        type={type.replace(EndsWithArrayReg, '')}
         types={types}
-        value={data[name]}
-        token={data.token ?? token}
+        value={value}
+        typedData={typedData}
+        descriptor={descriptor}
+        path={[...path, index]}
       />
-    )
-  })
+    ))
+  }
+  const fieldDefinitions = types[type]
+  if (
+    !Array.isArray(fieldDefinitions) ||
+    typeof data !== 'object' ||
+    Array.isArray(data)
+  ) {
+    return renderRawValue(data)
+  }
+  return fieldDefinitions.map(({name, type}, index) => (
+    <PermitMessageItem
+      key={index}
+      name={name}
+      type={type}
+      types={types}
+      value={data[name]}
+      typedData={typedData}
+      descriptor={descriptor}
+      path={[...path, name]}
+    />
+  ))
 }
 
 PermitMessages.propTypes = {
   type: PropTypes.string.isRequired,
-  types: PropTypes.object.isRequired,
-  data: PropTypes.any.isRequired,
-  token: PropTypes.string,
+  data: PropTypes.any,
+  typedData: PropTypes.object.isRequired,
+  descriptor: PropTypes.object.isRequired,
+  path: PropTypes.array,
 }
 
 function ViewPermitData() {
@@ -174,21 +212,21 @@ function ViewPermitData() {
 
   const {typedData} = useSignatureRequest()
 
-  const permitType = useMemo(() => detectPermitType({typedData}), [typedData])
+  const permitDescriptor = useMemo(() => detectPermit({typedData}), [typedData])
 
   useEffect(() => {
-    if (!permitType) {
+    if (!permitDescriptor) {
       history.push(REQUEST_SIGNATURE)
     }
-  }, [permitType, history])
+  }, [permitDescriptor, history])
 
-  if (!permitType) return null
+  if (!permitDescriptor) return null
 
-  const {primaryType, message, types, domain} = typedData
+  const {primaryType, message} = typedData
 
   return (
     <div
-      id="viemPermissionContainer"
+      id="viewPermitDataContainer"
       className="h-full w-full flex flex-col bg-blue-circles bg-no-repeat"
     >
       <TitleNav title={t('viewData')} />
@@ -199,11 +237,9 @@ function ViewPermitData() {
         <PermitRow label={t('primaryType')}>{primaryType}</PermitRow>
         <PermitMessages
           type={primaryType}
-          types={types}
           data={message}
-          token={
-            permitType.type === 'permit' ? domain.verifyingContract : undefined
-          }
+          typedData={typedData}
+          descriptor={permitDescriptor}
         />
       </div>
     </div>

@@ -39,17 +39,17 @@ function InfoList({
 
   const dappIconUrl = useDappIcon(currentDapp?.site?.icon)
 
-  const realAllowance = customAllowance || allowance
+  const effectiveAllowance = customAllowance || allowance
   const isUnlimited = useMemo(() => {
     if (!isApproveToken) return false
     try {
       return bn16(MaxUint256).eq(
-        new BN(convertDecimal(realAllowance, 'multiply', token?.decimals)),
+        new BN(convertDecimal(effectiveAllowance, 'multiply', token?.decimals)),
       )
     } catch {
       return false
     }
-  }, [isApproveToken, realAllowance, token?.decimals])
+  }, [isApproveToken, effectiveAllowance, token?.decimals])
 
   return (
     <div className="info-list-container flex flex-col">
@@ -66,7 +66,7 @@ function InfoList({
           <span className="flex items-center">
             <DisplayBalance
               id="allowance"
-              balance={customAllowance || allowance}
+              balance={effectiveAllowance}
               isUnlimited={isUnlimited}
               mode="allowance"
               maxWidth={160}
