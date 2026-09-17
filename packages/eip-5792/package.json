@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": true,
   "dependencies": {
-    "@fluent-wallet/consts": "workspace:packages/consts"
+    "@fluent-wallet/consts": "workspace:packages/consts",
+    "@fluent-wallet/user-operation": "workspace:packages/user-operation"
   }
 }
