@@ -21,7 +21,7 @@ import {useSIWEValidation} from '../../hooks/useSIWEValidation'
 import Button from '@fluent-wallet/component-button'
 import SIWERiskModal from './components/SIWERiskModal'
 import {Permit} from './components/Permit'
-import {useSignatureRequest} from '../../hooks/useSignatureRequest'
+import {useSignatureRequestData} from '../../hooks/useSignatureRequestData'
 import {detectPermit} from '../../utils/permit'
 
 const {PERSONAL_SIGN, CFX_SIGN_TYPED_DATA_V4} = RPC_METHODS
@@ -37,7 +37,7 @@ const isLedgerRejectedError = errorMessage => {
 
 function RequestSignature() {
   const {t} = useTranslation()
-  const {req, app, site, address, typedData} = useSignatureRequest()
+  const {req, app, site, address, typedData} = useSignatureRequestData()
 
   const permitDescriptor = useMemo(() => detectPermit({typedData}), [typedData])
 

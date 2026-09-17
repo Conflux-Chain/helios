@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import TitleNav from '../../components/TitleNav'
-import {useSignatureRequest} from '../../hooks/useSignatureRequest'
+import {useSignatureRequestData} from '../../hooks/useSignatureRequestData'
 import {formatIntoChecksumAddress} from '../../utils'
 import {useValid20Token} from '../../hooks/useApi'
 import {useEffect, useMemo} from 'react'
@@ -210,7 +210,7 @@ function ViewPermitData() {
   const history = useHistory()
   const {t} = useTranslation()
 
-  const {typedData} = useSignatureRequest()
+  const {typedData} = useSignatureRequestData()
 
   const permitDescriptor = useMemo(() => detectPermit({typedData}), [typedData])
 

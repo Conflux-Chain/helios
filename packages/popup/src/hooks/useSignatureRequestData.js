@@ -22,7 +22,7 @@ const parseTypedData = value => {
 /**
  * Read the pending signature request, resolve its account, and parse typed data.
  */
-export const useSignatureRequest = () => {
+export const useSignatureRequestData = () => {
   const pendingAuthReq = usePendingAuthReq()
   const [{req, app, site}] = pendingAuthReq?.length ? pendingAuthReq : [{}]
   const dappAccountId = app?.currentAccount?.eid
