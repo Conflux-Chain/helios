@@ -5,6 +5,7 @@
   "packageManager": "yarn@3.0.1",
   "version": "0.0.9",
   "dependencies": {
+    "@fluent-wallet/backend-client": "workspace:packages/backend-client",
     "@fluent-wallet/consts": "workspace:packages/consts",
     "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type",
     "@fluent-wallet/spec": "1.0.22"

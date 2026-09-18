@@ -74,14 +74,14 @@ function EIP7702Upgrade() {
       : [],
   )
   const [targetUpgradeAccountState = {}] = targetUpgradeAccountStates
-  const configuredDelegateAddress =
-    EIP7702_NETWORK_CONFIGS[targetUpgradeNetworkChainId]?.delegateAddress
+  const {preferredDelegateAddress} = targetUpgradeAccountState
 
   const targetNetworkAccountStateValue = targetUpgradeAccountState.state
   const showSwitchRequired =
     targetNetworkAccountStateValue === 'delegatedToOther'
+
   const canPrepareUpgradeTx = Boolean(
-    address && configuredDelegateAddress && targetNetworkAccountStateValue,
+    address && preferredDelegateAddress && targetNetworkAccountStateValue,
   )
 
   let supportedNetworkButtonLabelKey = 'bind'
@@ -120,8 +120,9 @@ function EIP7702Upgrade() {
 
   const onClickSwitch = () => {
     if (targetNetworkAccountStateValue !== 'delegatedToOther') return
+
     openEip7702ConfirmPage({
-      delegateAddress: configuredDelegateAddress,
+      delegateAddress: preferredDelegateAddress,
       action: 'switch',
     })
   }
@@ -137,7 +138,7 @@ function EIP7702Upgrade() {
 
     if (targetNetworkAccountStateValue === 'notDelegated') {
       openEip7702ConfirmPage({
-        delegateAddress: configuredDelegateAddress,
+        delegateAddress: preferredDelegateAddress,
         action: 'bind',
       })
     }

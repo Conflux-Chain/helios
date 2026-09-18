@@ -5510,6 +5510,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fluent-wallet/wallet_get-eip7702-account-states@workspace:packages/rpcs/wallet_getEip7702AccountState"
   dependencies:
+    "@fluent-wallet/backend-client": "workspace:packages/backend-client"
     "@fluent-wallet/consts": "workspace:packages/consts"
     "@fluent-wallet/detect-address-type": "workspace:packages/detect-address-type"
     "@fluent-wallet/spec": "npm:1.0.22"

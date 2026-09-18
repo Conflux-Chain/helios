@@ -1,4 +1,4 @@
-import {EIP7702_NETWORK_CONFIGS, NULL_HEX_ADDRESS} from '@fluent-wallet/consts'
+import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
 import {
   createBackendClient,
   BackendServiceError,
@@ -53,8 +53,7 @@ const PAYMASTER_ERROR_REASONS = {
   4001: 'maxGasCostExceeded',
   4002: 'smartAccountNotWhitelisted',
   4003: 'contractNotWhitelisted',
-  4004: 'paymasterPaused',
-  4005: 'tooManyPendingUserOperations',
+  4004: 'tooManyPendingUserOperations',
 }
 
 function getPaymasterErrorReason(error) {
@@ -146,11 +145,12 @@ export const main = async ({
   }
 
   const sender = accountState.accountAddress.toLowerCase()
-  const {backendBaseUrl, delegateAddress} = networkConfig
+  const {backendBaseUrl} = networkConfig
+  const sponsorshipDelegateAddress =
+    accountState.state === 'delegatedToConfigured'
+      ? accountState.delegatedAddress
+      : accountState.preferredDelegateAddress
 
-  if (!backendBaseUrl) {
-    return unsupportedResult('sponsorshipNotConfigured')
-  }
   let authorization
 
   if (requiredDelegationAction) {
@@ -192,7 +192,7 @@ export const main = async ({
 
     authorization = {
       chainId: network.chainId,
-      address: delegateAddress,
+      address: sponsorshipDelegateAddress,
       nonce: networkLatestNonce,
     }
   }
@@ -214,7 +214,10 @@ export const main = async ({
   let paymasterStub
 
   try {
-    paymasterStub = await backendClient.getPaymasterStub()
+    paymasterStub = await backendClient.getPaymasterStub({
+      sender,
+      delegation: sponsorshipDelegateAddress,
+    })
   } catch (error) {
     return unavailableResult(getPaymasterErrorReason(error))
   }
@@ -234,16 +237,15 @@ export const main = async ({
     },
   )
 
-  const {authorization: preparedAuthorization, ...paymasterUserOperation} =
-    prepared.userOperation
+  const paymasterUserOperation = {...prepared.userOperation}
+  delete paymasterUserOperation.authorization
 
   let signedPaymasterData
 
   try {
-    signedPaymasterData = await backendClient.signPaymasterUserOperation({
-      ...paymasterUserOperation,
-      delegatedContract: preparedAuthorization?.address ?? NULL_HEX_ADDRESS,
-    })
+    signedPaymasterData = await backendClient.signPaymasterUserOperation(
+      paymasterUserOperation,
+    )
   } catch (error) {
     return unavailableResult(
       getPaymasterErrorReason(error),

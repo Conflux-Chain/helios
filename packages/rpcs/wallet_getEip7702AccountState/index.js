@@ -1,6 +1,7 @@
-import {map, dbid, oneOrMore} from '@fluent-wallet/spec'
+import {createBackendClient} from '@fluent-wallet/backend-client'
 import {EIP7702_NETWORK_CONFIGS} from '@fluent-wallet/consts'
 import {getEip7702DelegateAddressFromCode} from '@fluent-wallet/detect-address-type'
+import {map, dbid, oneOrMore} from '@fluent-wallet/spec'
 
 export const NAME = 'wallet_getEip7702AccountStates'
 
@@ -18,7 +19,7 @@ export const permissions = {
   db: ['getAccountById', 'getNetworkById', 'accountAddrByNetwork'],
 }
 
-function parseEip7702AccountCode(accountCodeHex, configuredDelegateAddress) {
+function parseEip7702AccountCode(accountCodeHex, supportedDelegateAddresses) {
   if (!accountCodeHex || accountCodeHex === '0x') {
     return {
       state: 'notDelegated',
@@ -35,77 +36,85 @@ function parseEip7702AccountCode(accountCodeHex, configuredDelegateAddress) {
     }
   }
 
-  if (delegatedAddress === configuredDelegateAddress.toLowerCase()) {
-    return {
-      state: 'delegatedToConfigured',
-      delegatedAddress,
-    }
-  }
-
   return {
-    state: 'delegatedToOther',
+    state: supportedDelegateAddresses.includes(delegatedAddress)
+      ? 'delegatedToConfigured'
+      : 'delegatedToOther',
     delegatedAddress,
   }
 }
 
 export const main = async ({
-  Err: {InvalidParams},
+  Err: {InvalidParams, Server},
   db: {getAccountById, getNetworkById, accountAddrByNetwork},
   rpcs: {eth_getCode},
   params: accountStateQueries,
-}) => {
-  const accountStates = await Promise.all(
+}) =>
+  Promise.all(
     accountStateQueries.map(async ({accountId, networkId}) => {
       const account = getAccountById(accountId)
-      if (!account) throw InvalidParams(`Invalid account id ${accountId}`)
+      if (!account) {
+        throw InvalidParams(`Invalid account id ${accountId}`)
+      }
 
       const network = getNetworkById(networkId)
-      if (!network) throw InvalidParams(`Invalid network id ${networkId}`)
+      if (!network) {
+        throw InvalidParams(`Invalid network id ${networkId}`)
+      }
 
-      const targetNetworkAddressRecord = accountAddrByNetwork({
+      const accountAddress = accountAddrByNetwork({
         account: accountId,
         network: networkId,
-      })
-      const targetNetworkAccountAddress = targetNetworkAddressRecord?.value
+      })?.value
 
-      if (!targetNetworkAccountAddress) {
+      if (!accountAddress) {
         throw InvalidParams(
           `Account ${accountId} has no address on network ${networkId}`,
         )
       }
 
-      const configuredDelegateAddress =
-        EIP7702_NETWORK_CONFIGS[network.chainId]?.delegateAddress || null
+      const {backendBaseUrl} = EIP7702_NETWORK_CONFIGS[network.chainId] || {}
 
-      if (!configuredDelegateAddress) {
+      if (!backendBaseUrl) {
         return {
           accountId,
           networkId,
           state: 'unsupportedNetwork',
-          accountAddress: targetNetworkAccountAddress,
+          accountAddress,
           chainId: network.chainId,
           code: null,
           delegatedAddress: null,
-          configuredDelegateAddress: null,
+          preferredDelegateAddress: null,
         }
       }
 
+      const {smartAccountWhitelist} = await createBackendClient({
+        baseUrl: backendBaseUrl,
+      }).getPaymasterConfig()
+
+      if (!smartAccountWhitelist?.length) {
+        throw Server('No EIP-7702 delegate address is configured')
+      }
+
+      const supportedDelegateAddresses = smartAccountWhitelist.map(address =>
+        address.toLowerCase(),
+      )
+
+      const preferredDelegateAddress = supportedDelegateAddresses[0]
+
       const accountCodeHex = await eth_getCode({networkName: network.name}, [
-        targetNetworkAccountAddress,
+        accountAddress,
         'latest',
       ])
 
       return {
         accountId,
         networkId,
-        ...parseEip7702AccountCode(accountCodeHex, configuredDelegateAddress),
-        accountAddress: targetNetworkAccountAddress,
+        ...parseEip7702AccountCode(accountCodeHex, supportedDelegateAddresses),
+        accountAddress,
         chainId: network.chainId,
         code: accountCodeHex,
-        configuredDelegateAddress,
+        preferredDelegateAddress,
       }
     }),
   )
-
-  return accountStates
-}

@@ -27,7 +27,7 @@ import {
 } from '@fluent-wallet/spec'
 
 import {
-  decodeVerifyingPaymasterValidUntil,
+  decodeVerifyingPaymasterData,
   getUserOperationHash,
 } from '@fluent-wallet/user-operation'
 
@@ -229,7 +229,7 @@ async function validateUserOperationSender({
     sender: addressRecord.value.toLowerCase(),
     network,
     networkConfig,
-    delegationState: accountState.state,
+    accountState,
   }
 }
 
@@ -419,7 +419,7 @@ export const main = async ({
   },
   network: requestNetwork,
 }) => {
-  const {addressId, sender, network, networkConfig, delegationState} =
+  const {addressId, sender, network, networkConfig, accountState} =
     await validateUserOperationSender({
       InvalidParams,
       Server,
@@ -438,7 +438,7 @@ export const main = async ({
     endpoint: bundlerEndpoint,
   })
 
-  const sendUserOperation = authorization =>
+  const sendUserOperation = ({authorization, delegateAddress} = {}) =>
     withUserOperationNonceLock(
       {
         chainId: network.chainId,
@@ -460,21 +460,21 @@ export const main = async ({
 
         if (sponsorship) {
           const sponsoredUserOperation = sponsorship.userOperation
-          const sponsoredDelegateAddress =
+          const sponsoredAuthorizationAddress =
             sponsoredUserOperation.authorization?.address?.toLowerCase()
-          const currentDelegateAddress = authorization?.address?.toLowerCase()
+          const authorizationAddress = authorization?.address?.toLowerCase()
+          const {delegateAddress: sponsoredDelegateAddress, validUntil} =
+            decodeVerifyingPaymasterData(sponsoredUserOperation.paymasterData)
 
           const sponsorshipNeedsRefresh =
             sponsoredUserOperation.nonce !== nonce ||
-            sponsoredDelegateAddress !== currentDelegateAddress
+            sponsoredAuthorizationAddress !== authorizationAddress ||
+            sponsoredDelegateAddress.toLowerCase() !==
+              delegateAddress.toLowerCase()
 
           if (sponsorshipNeedsRefresh) {
             throw createSponsorshipRefreshRequiredError(Server)
           }
-
-          const validUntil = decodeVerifyingPaymasterValidUntil(
-            sponsoredUserOperation.paymasterData,
-          )
 
           if (validUntil <= Math.floor(Date.now() / 1000)) {
             throw createSponsorshipRefreshRequiredError(Server)
@@ -550,8 +550,10 @@ export const main = async ({
       },
     )
 
-  if (delegationState === 'delegatedToConfigured') {
-    return sendUserOperation()
+  if (accountState.state === 'delegatedToConfigured') {
+    return sendUserOperation({
+      delegateAddress: accountState.delegatedAddress,
+    })
   }
 
   // A delegation authorization shares the EOA nonce domain with regular transactions.
@@ -570,7 +572,9 @@ export const main = async ({
       })
 
       if (currentAccountState.state === 'delegatedToConfigured') {
-        return sendUserOperation()
+        return sendUserOperation({
+          delegateAddress: currentAccountState.delegatedAddress,
+        })
       }
 
       const requiredDelegationAction =
@@ -602,10 +606,15 @@ export const main = async ({
         sender,
       })
 
+      const delegateAddress = currentAccountState.preferredDelegateAddress
+
       return sendUserOperation({
-        chainId: network.chainId,
-        address: networkConfig.delegateAddress,
-        nonce: authorizationNonce,
+        delegateAddress,
+        authorization: {
+          chainId: network.chainId,
+          address: delegateAddress,
+          nonce: authorizationNonce,
+        },
       })
     },
   )

@@ -173,14 +173,12 @@ export const EIP7702_NETWORK_CONFIGS = {
   [CFX_ESPACE_MAINNET_CHAINID]: {
     entryPointAddress: ENTRY_POINT_CONTRACT_ADDRESS,
     entryPointVersion: ENTRY_POINT_VERSION,
-    delegateAddress: '0x4938A2036200fcb9Bfb05368836CcE2CB8abd57f',
     bundlerEndpoint: 'https://bundler.confluxrpc.org',
     backendBaseUrl: FLUENT_BACKEND_BASE_URLS[CFX_ESPACE_MAINNET_CHAINID],
   },
   [CFX_ESPACE_TESTNET_CHAINID]: {
     entryPointAddress: ENTRY_POINT_CONTRACT_ADDRESS,
     entryPointVersion: ENTRY_POINT_VERSION,
-    delegateAddress: '0x8F5d8d7f3467Dd2e34186E232D8b5a5f35462949',
     bundlerEndpoint: 'https://aa-bundle.confluxrpc.org',
     backendBaseUrl: FLUENT_BACKEND_BASE_URLS[CFX_ESPACE_TESTNET_CHAINID],
   },

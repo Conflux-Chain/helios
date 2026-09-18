@@ -1,7 +1,20 @@
 /**
+ * @typedef {Object} PaymasterConfig
+ * @property {string[]} smartAccountWhitelist Supported EIP-7702 delegate addresses.
+ * @property {string[]} contractWhitelist Sponsored contract addresses.
+ * @property {number} maxGasCost Maximum sponsored gas cost.
+ */
+
+/**
+ * @typedef {Object} PaymasterStubRequest
+ * @property {string} sender Smart account address.
+ * @property {string} delegation EIP-7702 delegate address.
+ */
+
+/**
  * @typedef {Object} PaymasterStub
  * @property {string} address Verifying Paymaster address.
- * @property {string} data 77-byte stub data for gas estimation.
+ * @property {string} data Stub paymaster data used for gas estimation.
  */
 
 /**
@@ -20,30 +33,44 @@
  * @property {string} paymaster Verifying Paymaster address.
  * @property {string} paymasterVerificationGasLimit Paymaster verification gas limit.
  * @property {string} paymasterPostOpGasLimit Paymaster post-operation gas limit.
- * @property {string} paymasterData Stub Paymaster data used for estimation.
- * @property {string} delegatedContract EIP-7702 delegate, or zero address.
+ * @property {string} paymasterData Stub paymaster data used for estimation.
  */
 
 export function createPaymasterMethods(request) {
   return {
     /**
-     * Returns dummy Paymaster data for gas estimation.
-     * This endpoint does not check sponsorship eligibility.
-     * GET /aa/paymaster/stub
+     * Returns the Verifying Paymaster configuration exposed to clients.
      *
-     * @returns {Promise<PaymasterStub>}
+     * GET /aa/paymaster/config
+     *
+     * @returns {Promise<PaymasterConfig>}
      */
-    getPaymasterStub() {
-      return request('/aa/paymaster/stub')
+    getPaymasterConfig() {
+      return request('/aa/paymaster/config')
     },
 
     /**
-     * Validates and signs a flat UserOperationWithAuth.
-     * Returns the signed 77-byte paymasterData only.
+     * Returns stub paymaster data for gas estimation.
+     *
+     * POST /aa/paymaster/stub
+     *
+     * @param {PaymasterStubRequest} params Stub request parameters.
+     * @returns {Promise<PaymasterStub>}
+     */
+    getPaymasterStub(params) {
+      return request('/aa/paymaster/stub', {
+        method: 'POST',
+        body: params,
+      })
+    },
+
+    /**
+     * Validates and signs a UserOperation.
+     *
      * POST /aa/paymaster/sign
      *
      * @param {PaymasterSignRequest} userOperation UserOperation to sign.
-     * @returns {Promise<string>}
+     * @returns {Promise<string>} Signed paymaster data.
      */
     signPaymasterUserOperation(userOperation) {
       return request('/aa/paymaster/sign', {
