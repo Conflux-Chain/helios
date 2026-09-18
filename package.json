@@ -41,7 +41,8 @@
     "webpack": "5.93.0",
     "big.js": "^5.2.2",
     "eth-lib": "0.2.8",
-    "@ethersproject/abi": "^5.7.0"
+    "@ethersproject/abi": "^5.7.0",
+    "@thi.ng/paths": "5.1.63"
   },
   "scripts": {
     "postinstall": "husky install && yarn run prod:shadow",
