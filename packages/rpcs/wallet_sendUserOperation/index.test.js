@@ -3,10 +3,7 @@ import {
   BundlerRpcError,
   createBundlerClient,
 } from '@fluent-wallet/bundler-client'
-import {
-  EIP7702_NETWORK_CONFIGS,
-  USER_OPERATION_ERROR_CODES,
-} from '@fluent-wallet/consts'
+import {USER_OPERATION_ERROR_CODES} from '@fluent-wallet/consts'
 import {
   EIP7702_AUTHORIZATION_STUB_SIGNATURE,
   SMART_ACCOUNT_7702_STUB_SIGNATURE,
@@ -47,13 +44,15 @@ const NETWORK = {
   cacheTime: 1000,
 }
 
-const DELEGATE_ADDRESS =
-  EIP7702_NETWORK_CONFIGS[NETWORK.chainId].delegateAddress
+const DELEGATE_ADDRESS = '0x8F5d8d7f3467Dd2e34186E232D8b5a5f35462949'
+const NORMALIZED_DELEGATE_ADDRESS = DELEGATE_ADDRESS.toLowerCase()
 const PAYMASTER_ADDRESS = '0xc7Ef0FDb0c52b1a9E73B2BDa7793611D73f0163e'
 
 function createPaymasterData(validUntil) {
-  // validAfter(6) || validUntil(6) || signature(65)
-  return `0x${'0'.repeat(12)}${validUntil.padStart(12, '0')}${'0'.repeat(130)}`
+  // delegation(20) || validAfter(6) || validUntil(6) || signature(65)
+  return `0x${NORMALIZED_DELEGATE_ADDRESS.slice(2)}${'0'.repeat(
+    12,
+  )}${validUntil.padStart(12, '0')}${'0'.repeat(130)}`
 }
 
 const VALID_PAYMASTER_DATA = createPaymasterData('ffffffffffff')
@@ -127,6 +126,8 @@ function createMainInput() {
     wallet_getEip7702AccountStates: vi.fn().mockResolvedValue([
       {
         state: 'delegatedToConfigured',
+        delegatedAddress: NORMALIZED_DELEGATE_ADDRESS,
+        preferredDelegateAddress: NORMALIZED_DELEGATE_ADDRESS,
       },
     ]),
     wallet_getEthereumNonceState: vi.fn().mockResolvedValue({
@@ -200,6 +201,8 @@ describe('wallet_sendUserOperation', () => {
       rpcs.wallet_getEip7702AccountStates.mockResolvedValue([
         {
           state: accountState,
+          delegatedAddress: null,
+          preferredDelegateAddress: NORMALIZED_DELEGATE_ADDRESS,
         },
       ])
 
@@ -224,7 +227,7 @@ describe('wallet_sendUserOperation', () => {
         factoryData: '0x',
         authorization: {
           chainId: NETWORK.chainId,
-          address: DELEGATE_ADDRESS,
+          address: NORMALIZED_DELEGATE_ADDRESS,
           nonce: '0x0',
           ...EIP7702_AUTHORIZATION_STUB_SIGNATURE,
         },
@@ -232,7 +235,7 @@ describe('wallet_sendUserOperation', () => {
 
       expect(submittedUserOperation.authorization).toMatchObject({
         chainId: NETWORK.chainId,
-        address: DELEGATE_ADDRESS,
+        address: NORMALIZED_DELEGATE_ADDRESS,
         nonce: '0x0',
         r: expect.stringMatching(/^0x[0-9a-f]{64}$/),
         s: expect.stringMatching(/^0x[0-9a-f]{64}$/),
@@ -245,7 +248,7 @@ describe('wallet_sendUserOperation', () => {
       expect(storedUserOperation).toMatchObject({
         hash: result.userOpHash,
         authorizationNonce: '0x0',
-        delegateAddress: DELEGATE_ADDRESS,
+        delegateAddress: NORMALIZED_DELEGATE_ADDRESS,
       })
 
       expect(storedUserOperation).not.toHaveProperty('authorization')
@@ -274,6 +277,8 @@ describe('wallet_sendUserOperation', () => {
     rpcs.wallet_getEip7702AccountStates.mockResolvedValue([
       {
         state: 'notDelegated',
+        delegatedAddress: null,
+        preferredDelegateAddress: NORMALIZED_DELEGATE_ADDRESS,
       },
     ])
 
