@@ -21,9 +21,11 @@ const ACCOUNT_ID = 1
 const NETWORK_ID = 2
 const SENDER = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
 const TARGET = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
+const PREFERRED_DELEGATE = '0x1111111111111111111111111111111111111111'
+const CURRENT_DELEGATE = '0x2222222222222222222222222222222222222222'
 const PAYMASTER = '0xc7Ef0FDb0c52b1a9E73B2BDa7793611D73f0163e'
-const STUB_PAYMASTER_DATA = `0x${'00'.repeat(77)}`
-const SIGNED_PAYMASTER_DATA = `0x${'11'.repeat(77)}`
+const STUB_PAYMASTER_DATA = `0x${'00'.repeat(97)}`
+const SIGNED_PAYMASTER_DATA = `0x${'11'.repeat(97)}`
 
 const NETWORK = {
   eid: NETWORK_ID,
@@ -55,6 +57,9 @@ function createMainInput(accountState = 'notDelegated') {
       {
         state: accountState,
         accountAddress: SENDER,
+        delegatedAddress:
+          accountState === 'delegatedToConfigured' ? CURRENT_DELEGATE : null,
+        preferredDelegateAddress: PREFERRED_DELEGATE,
       },
     ]),
     wallet_getEthereumNonceState: vi.fn().mockResolvedValue({
@@ -125,11 +130,13 @@ describe('wallet_prepareSponsorship', () => {
   test('prepares and signs one sponsorship for an account upgrade', async () => {
     const {input, rpcs} = createMainInput()
     const result = await main(input)
-    const {backendBaseUrl, delegateAddress} =
-      EIP7702_NETWORK_CONFIGS[NETWORK.chainId]
+    const {backendBaseUrl} = EIP7702_NETWORK_CONFIGS[NETWORK.chainId]
 
     expect(createBackendClient).toHaveBeenCalledWith({baseUrl: backendBaseUrl})
-    expect(backend.getPaymasterStub).toHaveBeenCalledOnce()
+    expect(backend.getPaymasterStub).toHaveBeenCalledWith({
+      sender: SENDER.toLowerCase(),
+      delegation: PREFERRED_DELEGATE,
+    })
     expect(rpcs.wallet_prepareUserOperation).toHaveBeenCalledWith(
       {errorFallThrough: true, network: NETWORK},
       {
@@ -140,7 +147,7 @@ describe('wallet_prepareSponsorship', () => {
         paymasterData: STUB_PAYMASTER_DATA,
         authorization: {
           chainId: NETWORK.chainId,
-          address: delegateAddress,
+          address: PREFERRED_DELEGATE,
           nonce: '0x0',
         },
       },
@@ -154,8 +161,8 @@ describe('wallet_prepareSponsorship', () => {
       nonce: '0x0',
       paymaster: PAYMASTER,
       paymasterData: STUB_PAYMASTER_DATA,
-      delegatedContract: delegateAddress,
     })
+    expect(signRequest).not.toHaveProperty('delegatedContract')
     expect(backend.getPaymasterStub.mock.invocationCallOrder[0]).toBeLessThan(
       rpcs.wallet_prepareUserOperation.mock.invocationCallOrder[0],
     )
