@@ -170,32 +170,34 @@ export const Permit = ({
             </div>
 
             <PermitRow label={t('permitSpendingCap')}>
-              <div className="max-h-[144px] overflow-y-auto flex flex-col gap-4">
-                {visiblePermissions.map((item, index) => {
-                  return (
-                    <PermitTokenAmount
-                      key={index}
-                      amount={item.amount}
-                      amountBits={displayData.amountBits}
-                      tokenAddress={item.token}
-                    />
-                  )
-                })}
+              <div className="flex flex-col gap-4">
+                <div className="max-h-[144px] overflow-y-auto flex flex-col gap-4">
+                  {visiblePermissions.map((item, index) => {
+                    return (
+                      <PermitTokenAmount
+                        key={index}
+                        amount={item.amount}
+                        amountBits={displayData.amountBits}
+                        tokenAddress={item.token}
+                      />
+                    )
+                  })}
+                </div>
+                {hasMorePermissions && (
+                  <button
+                    type="button"
+                    className="flex items-center justify-center text-sm font-normal text-primary w-fit self-end"
+                    onClick={() => setIsExpanded(value => !value)}
+                  >
+                    {t('showMore')}
+                    {isExpanded ? (
+                      <UpOutlined className="ml-1 h-3 w-3" />
+                    ) : (
+                      <DownOutlined className="ml-1 h-3 w-3" />
+                    )}
+                  </button>
+                )}
               </div>
-              {hasMorePermissions && (
-                <button
-                  type="button"
-                  className="flex items-center justify-center text-sm font-normal text-primary w-fit self-end mt-4"
-                  onClick={() => setIsExpanded(value => !value)}
-                >
-                  {t('showMore')}
-                  {isExpanded ? (
-                    <UpOutlined className="ml-1 h-3 w-3" />
-                  ) : (
-                    <DownOutlined className="ml-1 h-3 w-3" />
-                  )}
-                </button>
-              )}
             </PermitRow>
 
             <div className="h-[1px] bg-gray-20 w-full my-3"></div>
