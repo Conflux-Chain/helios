@@ -1,4 +1,4 @@
-import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr'
 import {useRPCProvider} from '@fluent-wallet/use-rpc'
 import {RPC_METHODS} from '../constants'
 
@@ -8,7 +8,7 @@ export function useTokenMetadata({address, network}) {
   const {provider} = useRPCProvider()
   const {eid: networkId, name: networkName} = network ?? {}
 
-  const {data} = useSWRImmutable(
+  const {data} = useSWR(
     provider && address && networkName
       ? [WALLET_VALIDATE_20TOKEN, networkId, networkName, address]
       : null,
@@ -26,8 +26,6 @@ export function useTokenMetadata({address, network}) {
       }
     },
     {
-      // Reuse cached metadata without polling.
-      revalidateOnMount: undefined,
       refreshInterval: 0,
     },
   )

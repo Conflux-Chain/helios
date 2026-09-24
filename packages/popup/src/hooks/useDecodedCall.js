@@ -1,5 +1,5 @@
 import {useMemo} from 'react'
-import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr'
 import {
   decodeCallData,
   decodeCallDataWithScan,
@@ -14,7 +14,7 @@ export function useDecodedCall({to, data, networkType, networkId}) {
     hasNetwork && !localDecodedCall && to && data && data !== '0x',
   )
 
-  const {data: remoteDecodedCall} = useSWRImmutable(
+  const {data: remoteDecodedCall} = useSWR(
     shouldFetch ? ['decodedCall', networkType, networkId, to, data] : null,
     () =>
       decodeCallDataWithScan({
@@ -24,8 +24,6 @@ export function useDecodedCall({to, data, networkType, networkId}) {
         data,
       }),
     {
-      // Override popup defaults: fetch only when there is no cached result.
-      revalidateOnMount: undefined,
       refreshInterval: 0,
     },
   )
