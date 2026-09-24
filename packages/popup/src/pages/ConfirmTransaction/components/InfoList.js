@@ -20,6 +20,8 @@ const {EDIT_ALLOWANCE} = ROUTES
 function InfoList({
   isDapp,
   isApproveToken,
+  canEditAllowance = false,
+
   isSign,
   token,
   value,
@@ -73,13 +75,15 @@ function InfoList({
               maxWidthStyle="max-w-[160px]"
               symbol={token?.symbol}
             />
-            <WrapIcon className="mx-1 shadow-none !bg-transparent hover:!bg-primary-10 group">
-              <EditOutlined
-                className="w-4 h-4 cursor-pointer group-hover:text-primary"
-                id="editAllowance"
-                onClick={() => history.push(EDIT_ALLOWANCE)}
-              />
-            </WrapIcon>
+            {canEditAllowance && (
+              <WrapIcon className="mx-1 shadow-none !bg-transparent hover:!bg-primary-10 group">
+                <EditOutlined
+                  className="w-4 h-4 cursor-pointer group-hover:text-primary"
+                  id="editAllowance"
+                  onClick={() => history.push(EDIT_ALLOWANCE)}
+                />
+              </WrapIcon>
+            )}
           </span>
         </div>
       )}
@@ -135,6 +139,7 @@ InfoList.propTypes = {
   allowance: PropTypes.string,
   method: PropTypes.string,
   pendingAuthReq: PropTypes.array,
+  canEditAllowance: PropTypes.bool,
 }
 
 export default InfoList

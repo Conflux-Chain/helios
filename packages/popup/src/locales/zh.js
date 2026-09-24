@@ -171,6 +171,18 @@ const zh = {
     sponsored: '已赞助',
     partSponsored: '部分赞助',
 
+    // - Call bundle confirmation
+    signBatchTransaction: '批量交易签名',
+    signatureRequest: '签名请求',
+    callBundleCallTitle: '交易 {{number}}',
+    callBundleInteractingWith: '交互地址',
+    callBundleData: '数据',
+    callBundleHex: '十六进制',
+    callBundleTransactionCount: '包含 {{count}} 笔操作',
+    callBundleAtomicExecution: '原子执行',
+    callBundleAtomicExecutionDescription:
+      '本批次中的所有操作将一起执行。若任一操作失败，所有操作都会回滚。',
+
     // - Send Transaction / Error or Warning
     error: '错误',
     warning: '警告',
@@ -212,6 +224,8 @@ const zh = {
     // - Send Transaction / Sign Transaction / 3. token approve - confirm transaction
     approveToken: '代币授权',
     approveTo: '授权给',
+    spendingCap: '授权数额',
+    spender: '授权给',
     contract: '合约',
     allowLimit: '授权数额',
     action: '行为',
