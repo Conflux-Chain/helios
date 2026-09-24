@@ -3,3 +3,4 @@ releases:
   "@fluent-wallet/eth_estimate-gas": patch
   browser-extension: patch
   helios-background: patch
+  helios-popup: patch
