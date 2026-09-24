@@ -10,13 +10,23 @@ import {ROUTES} from '../constants'
 
 const {CONNECT_HARDWARE_WALLET} = ROUTES
 
-function AlertMessage({isHwUnAuth, isHwOpenAlert, estimateError, isDapp}) {
+function AlertMessage({
+  isHwUnAuth,
+  isHwOpenAlert,
+  estimateError,
+  isDapp,
+  inline = false,
+}) {
   const {t} = useTranslation()
   const LedgerAppName = useLedgerAppName()
 
   if (!isHwUnAuth && !isHwOpenAlert && !estimateError) return null
   return (
-    <div className="bg-bg bg-gray-circles bg-no-repeat bg-contain w-full flex flex-col absolute bottom-0 pt-6 pb-[88px] px-3 rounded-t-xl">
+    <div
+      className={`bg-bg bg-gray-circles bg-no-repeat bg-contain w-full flex shrink-0 flex-col pt-6 px-3 rounded-t-xl ${
+        inline ? 'pb-4' : 'absolute bottom-0 pb-[88px]'
+      }`}
+    >
       <div className="flex items-start">
         <span className="shrink-0">
           {(isHwUnAuth || isHwOpenAlert) && (
@@ -71,6 +81,7 @@ AlertMessage.propTypes = {
   isHwOpenAlert: PropTypes.bool,
   estimateError: PropTypes.string,
   isDapp: PropTypes.bool,
+  inline: PropTypes.bool,
 }
 
 export default AlertMessage

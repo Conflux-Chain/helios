@@ -81,6 +81,8 @@ export const WALLET_GET_SIDE_PANEL_SUPPORTED = 'wallet_getSidePanelSupported'
 export const WALLET_UPDATE_ACCOUNT_GROUP = 'wallet_updateAccountGroup'
 export const WALLET_UPDATE_NETWORK = 'wallet_updateNetwork'
 export const WALLET_SEND_TRANSACTION = 'wallet_sendTransaction'
+export const WALLET_SEND_CALLS = 'wallet_sendCalls'
+export const WALLET_SUBMIT_CALL_BUNDLE = 'wallet_submitCallBundle'
 export const WALLET_SEND_USER_OPERATION = 'wallet_sendUserOperation'
 export const WALLET_SEND_TRANSACTION_WITH_ACTION =
   'wallet_sendTransactionWithAction'
