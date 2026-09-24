@@ -1,6 +1,9 @@
 import {map, Bytes32} from '@fluent-wallet/spec'
 import {decode} from '@fluent-wallet/base32-address'
-import {getCFXContractMethodSignature} from '@fluent-wallet/contract-method-name'
+import {
+  decodeCallData,
+  formatConfluxCallAddresses,
+} from '@fluent-wallet/contract-method-name'
 
 export const NAME = 'wallet_enrichConfluxTx'
 
@@ -85,27 +88,19 @@ export const main = async ({
         if (app) txs.push({eid: tokenTx.eid, token: {fromApp: true}})
         else txs.push({eid: tokenTx.eid, token: {fromUser: true}})
 
-        try {
-          const {name, args} = await getCFXContractMethodSignature(
-            to,
-            data,
-            network.netId,
-          )
-          switch (name) {
-            case 'transfer':
-            case 'approve':
-            case 'send':
-              txs.push({
-                eid: txExtraEid,
-                txExtra: {
-                  // moreInfo: {args: [...args]},
-                  address: args[0].toLowerCase(),
-                  method: name,
-                },
-              })
-              break
-          }
-        } catch (err) {} // eslint-disable-line no-empty
+        const decodedCall = formatConfluxCallAddresses(
+          decodeCallData(data),
+          network.netId,
+        )
+        if (['transfer', 'approve', 'send'].includes(decodedCall?.name)) {
+          txs.push({
+            eid: txExtraEid,
+            txExtra: {
+              address: decodedCall.args[0].toLowerCase(),
+              method: decodedCall.name,
+            },
+          })
+        }
 
         wallet_refetchBalance(
           {
