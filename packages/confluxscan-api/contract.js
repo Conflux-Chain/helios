@@ -42,18 +42,22 @@ export async function abiESpace({networkId = undefined, address = undefined}) {
 }
 
 export async function decodeContractMethods({
-  networkId = undefined,
+  networkId,
   contractAddress,
   inputData,
 }) {
   try {
-    // this api response always return success, we need check the error in result
     const res = await fetch(getURL(networkId, '/util/decode/method/raw'), {
       searchParams: {contracts: contractAddress, inputs: inputData},
     }).json()
 
-    return res?.result || []
-  } catch (error) {
+    // Core Space and eSpace Scan APIs use different response formats.
+    if (isCoreNetworkId(networkId)) {
+      return res.code === 0 ? res.data : []
+    }
+
+    return res.status === '1' ? res.result : []
+  } catch {
     return []
   }
 }
